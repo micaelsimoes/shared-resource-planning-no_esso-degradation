@@ -132,6 +132,19 @@ run's own ESSO models. It enters the eval key (`evaluation_key`); an entry
 without it keeps its exact key. A spec holding one carries
 `model_variant_label` == `MODEL_VARIANT_LABEL` at the top level and on each such
 entry, and every record of such an entry carries the variant and the label.
+Addendum 30 (W21, evaluation identity of the ESS ageing baseline): a spec may declare
+`configuration.ess_ageing_baseline` -- the EXACT ageing dict the ESS parameters file
+`ESS_PARAMS_FILE_REL` loads to (`validate_ess_ageing_baseline`,
+`ess_ageing_parameters_as_loaded`; types included) -- with a non-empty
+`ess_ageing_baseline_label`. `freeze_campaign_spec` refuses unless the file loads to the
+declaration, and pins the file (`configuration.ess_params_file`: path, sha256, last
+commit). The declaration enters the eval key (`evaluation_key`), so the same candidate under
+two ageing baselines never shares a key. The child refuses unless the file hashes to the
+pin, the LOADED parameters equal the declaration and every ESS carries its soh_min / phi / k
+(`verify_ess_ageing_in_child`), and -- without a model variant -- the declaration's k, phi
+and floor bound are read back from probe ESSO models (`ess_ageing_readback_models`); post-run
+the read-back is repeated on clones and the ageing trajectory is captured. Undeclared specs
+keep their exact format, keys and behaviour.
 AFTER the run, in the child, inside `run_admm_arm`'s post_run_hook (same live
 models/state), `run_post_certification` does, only if the trajectory is
 certified under the spec's bar (else it records `status: skipped` + reason):
@@ -212,6 +225,16 @@ MODEL_VARIANT_KEYS = frozenset({'eol_retention_r', 'calendar_retention_per_year'
 MODEL_VARIANT_SOH_POINTS = ('end', 'mid')
 MODEL_VARIANT_LABEL = 'MODEL VARIANT \u2014 not the baseline'
 MODEL_VARIANT_READBACK_RTOL = 1e-12
+# P5.15 Addendum 30 (W21): a spec may DECLARE the shared-ESS ageing parameters its evaluations run with
+# (`configuration.ess_ageing_baseline`, `validate_ess_ageing_baseline`): the exact dict production's loader yields
+# from the ESS parameters file (`ess_ageing_parameters_as_loaded`), keyed as in the file. Declared -> the child
+# refuses unless the loaded parameters equal it (types included) and the file hashes to the pinned sha256, and the
+# declaration enters the eval key; undeclared -> every key and format is exactly as before.
+ESS_PARAMS_FILE_REL = os.path.join('data', 'SRP1', 'SharedESS', 'SRP1_ESS_Params.json')
+ESS_AGEING_KEYS = frozenset({'calendar_life_years', 'cycle_life_nominal', 'depth_of_discharge_nominal',
+                             'minimum_soh', 'calendar_retention_per_year', 'calibration'})
+ESS_AGEING_CALIBRATION_KEYS = frozenset({'status', 'cycles_n', 'reference_dod_d', 'eol_retention_r'})
+ESS_AGEING_CALIBRATION_STATUSES = ('ACTIVE', 'DECLARED_NOT_CONSUMED')
 ACTIVE_NODES = (5, 7, 9)
 INVESTMENT_YEAR = 2025
 BAR_WINDOW = 10  # STEP4 2.5: "its bar (max objective step over the last 10 cycles)"
@@ -451,7 +474,83 @@ def validate_model_variant(model_variant):
     return out
 
 
-def evaluation_key(candidate_key_hex, overrides, case_file_aa=None, model_variant=None):
+def _ess_number(value, name, allow_none=False):
+    if value is None and allow_none:
+        return None
+    if isinstance(value, bool) or not isinstance(value, (int, float)) or value != value \
+            or value in (float('inf'), float('-inf')):
+        raise ValueError(f'ess_ageing_baseline.{name} must be a finite number, got {value!r}')
+    return value
+
+
+def validate_ess_ageing_baseline(declared):
+    """P5.15 Addendum 30 (W21): a spec's declaration of the shared-ESS ageing parameters, i.e. the EXACT dict
+    `ess_ageing_parameters_as_loaded` returns for the ESS parameters file the evaluations run with. None = not
+    declared (every pre-W21 meaning and key unchanged). Keys as in the file's `ageing` block: EXACTLY
+    `ESS_AGEING_KEYS`, `calibration` EXACTLY `ESS_AGEING_CALIBRATION_KEYS`. Numbers keep their JSON type (the
+    loader preserves int vs float, and the eval key is computed on this dict), so the declaration must carry
+    them as the loader yields them; the child compares canonical JSON, types included. Returns a copy.
+    No model import (parent side)."""
+    if declared is None:
+        return None
+    if not isinstance(declared, dict):
+        raise ValueError('ess_ageing_baseline must be a dict')
+    missing, extra = sorted(ESS_AGEING_KEYS - set(declared)), sorted(set(declared) - ESS_AGEING_KEYS)
+    if missing or extra:
+        raise ValueError(f'ess_ageing_baseline must carry exactly {sorted(ESS_AGEING_KEYS)}: missing={missing} '
+                         f'extra={extra}')
+    cal = declared['calibration']
+    if not isinstance(cal, dict):
+        raise ValueError('ess_ageing_baseline.calibration must be a dict')
+    missing, extra = (sorted(ESS_AGEING_CALIBRATION_KEYS - set(cal)), sorted(set(cal) - ESS_AGEING_CALIBRATION_KEYS))
+    if missing or extra:
+        raise ValueError(f'ess_ageing_baseline.calibration must carry exactly {sorted(ESS_AGEING_CALIBRATION_KEYS)}: '
+                         f'missing={missing} extra={extra}')
+    if cal['status'] not in ESS_AGEING_CALIBRATION_STATUSES:
+        raise ValueError(f"ess_ageing_baseline.calibration.status must be one of {ESS_AGEING_CALIBRATION_STATUSES}, "
+                         f"got {cal['status']!r}")
+    out = {name: _ess_number(declared[name], name) for name in sorted(ESS_AGEING_KEYS - {'calibration'})}
+    active = cal['status'] == 'ACTIVE'
+    out['calibration'] = {'status': cal['status']}
+    for name in ('cycles_n', 'reference_dod_d', 'eol_retention_r'):
+        out['calibration'][name] = _ess_number(cal[name], f'calibration.{name}', allow_none=not active)
+    if not 0.0 <= out['minimum_soh'] < 1.0:
+        raise ValueError(f"ess_ageing_baseline.minimum_soh must lie in [0, 1), got {out['minimum_soh']}")
+    if not 0.0 < out['calendar_retention_per_year'] <= 1.0:
+        raise ValueError(f"ess_ageing_baseline.calendar_retention_per_year must lie in (0, 1], got "
+                         f"{out['calendar_retention_per_year']}")
+    r = out['calibration']['eol_retention_r']
+    if r is not None and not 0.0 < r < 1.0:
+        raise ValueError(f'ess_ageing_baseline.calibration.eol_retention_r must lie in (0, 1), got {r}')
+    return out
+
+
+def ess_ageing_canonical_text(ageing_dict):
+    """Canonical JSON of an ageing dict (types preserved: 10000 and 10000.0 differ) -- the comparison form."""
+    return json.dumps(ageing_dict, sort_keys=True, separators=(',', ':'))
+
+
+def ess_ageing_parameters_as_loaded(ageing):
+    """The dict of a LOADED `shared_energy_storage_parameters.EnergyStorageAgeingParameters` object, keyed as in
+    the ESS parameters file's `ageing` block (values exactly as the production loader stored them)."""
+    cal = ageing.calibration
+    return {'calendar_life_years': ageing.t_cal, 'cycle_life_nominal': ageing.cl_nom,
+            'depth_of_discharge_nominal': ageing.dod_nom, 'minimum_soh': ageing.soh_min,
+            'calendar_retention_per_year': ageing.calendar_retention_per_year,
+            'calibration': {'status': cal.status, 'cycles_n': cal.cycles_n, 'reference_dod_d': cal.reference_dod_d,
+                            'eol_retention_r': cal.eol_retention_r}}
+
+
+def load_ess_ageing_parameters(path):
+    """Load an ESS parameters file with PRODUCTION's loader (`SharedEnergyStorageParameters.
+    read_parameters_from_file`; parameters only, no model is built) and return its ageing dict."""
+    from shared_energy_storage_parameters import SharedEnergyStorageParameters  # local: loader only
+    params = SharedEnergyStorageParameters()
+    params.read_parameters_from_file(path)
+    return ess_ageing_parameters_as_loaded(params.ageing)
+
+
+def evaluation_key(candidate_key_hex, overrides, case_file_aa=None, model_variant=None, ess_ageing_baseline=None):
     """Identity of one EVALUATION (candidate x configuration). The case-file
     configuration (no overrides) keeps the candidate key itself, so a D
     evaluation's directory name is `<candidate key16>_<label>` as in s44_gate;
@@ -464,8 +563,23 @@ def evaluation_key(candidate_key_hex, overrides, case_file_aa=None, model_varian
     Addenda 28-29 (W20): with a `model_variant` (validated), the key is sha256 of
     the SAME payload plus 'model_variant' -- never the bare candidate key -- so a
     variant evaluation can never collide with the baseline evaluation of the same
-    candidate. `model_variant=None` returns exactly what the formulas above return."""
+    candidate. `model_variant=None` returns exactly what the formulas above return.
+    P5.15 Addendum 30 (W21): with a declared `ess_ageing_baseline` (validated), the key is sha256 of the SAME
+    payload the rules above would hash (with 'effective_anderson_acceleration' when `case_file_aa` is declared,
+    'model_variant' when given) plus 'ess_ageing_baseline' -- never the bare candidate key -- so evaluations of
+    one candidate under two ageing baselines never share a key. `ess_ageing_baseline=None` returns exactly what
+    the formulas above return."""
     model_variant = validate_model_variant(model_variant)
+    ess_ageing_baseline = validate_ess_ageing_baseline(ess_ageing_baseline)
+    if ess_ageing_baseline is not None:
+        payload = {'candidate_key': candidate_key_hex, 'overrides': overrides or {},
+                   'ess_ageing_baseline': ess_ageing_baseline}
+        if case_file_aa is not None:
+            payload['effective_anderson_acceleration'] = effective_anderson_acceleration(case_file_aa, overrides)
+        if model_variant is not None:
+            payload['model_variant'] = model_variant
+        text = json.dumps(payload, sort_keys=True, separators=(',', ':'))
+        return hashlib.sha256(text.encode()).hexdigest()
     if case_file_aa is not None:
         payload = {'candidate_key': candidate_key_hex,
                    'effective_anderson_acceleration': effective_anderson_acceleration(case_file_aa, overrides),
@@ -608,6 +722,10 @@ def freeze_campaign_spec(campaign_root, campaign_id, candidates, configuration, 
         (`validate_model_variant`); enters the eval key; the entry and the spec
         then carry `model_variant_label` == MODEL_VARIANT_LABEL. Entries without
         it (and specs with no such entry) keep their exact format and keys.
+    `configuration` may carry (Addendum 30, W21) `ess_ageing_baseline` (the exact loaded ageing dict, see
+    `validate_ess_ageing_baseline`) with `ess_ageing_baseline_label`; then the ESS parameters file must load to
+    it (refused otherwise), its sha256 is pinned as `configuration.ess_params_file`, and it enters every entry's
+    eval key. Without it the spec keeps its exact format and keys.
     One entry = one EVALUATION: its `eval_key` (`evaluation_key`) identifies
     candidate x configuration; labels and eval keys must be unique (the same
     candidate may appear under two configurations)."""
@@ -616,6 +734,23 @@ def freeze_campaign_spec(campaign_root, campaign_id, candidates, configuration, 
     overrides = validate_overrides(configuration.get('overrides'))
     # Addendum 27 item 1: optional declaration of the case file's AA dict (None = not declared).
     case_file_aa = validate_case_file_anderson_acceleration(configuration.get('case_file_anderson_acceleration'))
+    # Addendum 30 (W21): optional declaration of the ESS ageing parameters (None = not declared). When declared,
+    # the ESS parameters file must load (production loader) to EXACTLY the declaration, types included, and its
+    # sha256 is pinned in the spec; a label may only accompany a declaration.
+    ess_ageing = validate_ess_ageing_baseline(configuration.get('ess_ageing_baseline'))
+    ess_label = configuration.get('ess_ageing_baseline_label')
+    ess_params_pin = None
+    if ess_ageing is None and ess_label is not None:
+        raise ValueError('ess_ageing_baseline_label given without an ess_ageing_baseline declaration')
+    if ess_ageing is not None:
+        if not isinstance(ess_label, str) or not ess_label.strip():
+            raise ValueError('an ess_ageing_baseline declaration needs a non-empty ess_ageing_baseline_label')
+        ess_path = os.path.join(REPO, ESS_PARAMS_FILE_REL)
+        loaded = load_ess_ageing_parameters(ess_path)
+        if ess_ageing_canonical_text(loaded) != ess_ageing_canonical_text(ess_ageing):
+            raise ValueError(f'ess_ageing_baseline declaration does not equal what {ESS_PARAMS_FILE_REL} loads to '
+                             f'(types included): declared {ess_ageing}, loaded {loaded}')
+        ess_params_pin = {'path': ESS_PARAMS_FILE_REL, 'sha256': sha256_file(ess_path)}
     cand_entries, seen_labels, seen_keys = [], set(), set()
     any_model_variant = False
     for item in candidates:
@@ -633,7 +768,8 @@ def freeze_campaign_spec(campaign_root, campaign_id, candidates, configuration, 
         key = candidate_key(canon)
         eff_overrides = validate_overrides(options['overrides']) if 'overrides' in options else dict(overrides)
         model_variant = validate_model_variant(options.get('model_variant'))
-        ekey = evaluation_key(key, eff_overrides, case_file_aa=case_file_aa, model_variant=model_variant)
+        ekey = evaluation_key(key, eff_overrides, case_file_aa=case_file_aa, model_variant=model_variant,
+                              ess_ageing_baseline=ess_ageing)
         if label in seen_labels or ekey in seen_keys:
             raise ValueError(f'duplicate evaluation label or key (candidate x configuration): {label} / {ekey[:16]}')
         seen_labels.add(label)
@@ -686,6 +822,14 @@ def freeze_campaign_spec(campaign_root, campaign_id, candidates, configuration, 
     }
     if case_file_aa is not None:  # only when declared, so undeclared specs keep their exact format
         spec['configuration']['case_file_anderson_acceleration'] = case_file_aa
+    if ess_ageing is not None:  # W21: only when declared, so undeclared specs keep their exact format
+        try:
+            ess_params_pin['last_commit'] = _git(['log', '-1', '--format=%H', '--', ESS_PARAMS_FILE_REL])
+        except Exception as error:  # noqa: BLE001
+            raise RuntimeError(f'git provenance unavailable: {error}') from error
+        spec['configuration']['ess_ageing_baseline'] = ess_ageing
+        spec['configuration']['ess_ageing_baseline_label'] = ess_label
+        spec['configuration']['ess_params_file'] = ess_params_pin
     if any_model_variant:  # W20: a campaign holding a model variant says so at the top level
         spec['model_variant_label'] = MODEL_VARIANT_LABEL
     text = json.dumps(spec, indent=1, sort_keys=True, default=str)
@@ -941,6 +1085,11 @@ def _barrier_record_for_missing(ctx, entry, eval_dir, exit_code):
         # W20: a model-variant entry's record carries the variant and its label on every path.
         **({'model_variant': entry['model_variant'], 'model_variant_label': MODEL_VARIANT_LABEL}
            if entry.get('model_variant') is not None else {}),
+        # W21: a declared-ESS-ageing spec's record carries the declaration and its label on every path.
+        **({'ess_ageing_baseline': ctx.spec['configuration']['ess_ageing_baseline'],
+            'ess_ageing_baseline_label': ctx.spec['configuration'].get('ess_ageing_baseline_label'),
+            'ess_params_sha256_in_child': None}
+           if ctx.spec['configuration'].get('ess_ageing_baseline') is not None else {}),
     }
 
 
@@ -1559,6 +1708,83 @@ def model_variant_readback_models(models, sed, model_variant, investment_year, c
                        + ('on clones of the given models' if clone else 'on probe models'))}
 
 
+def ess_ageing_baseline_expected(declared):
+    """The constants a validated `ess_ageing_baseline` declaration MUST produce in a built ESSO model, from closed
+    forms of the DECLARATION alone: k = cycles_n * reference_dod_d / (-ln eol_retention_r) when the calibration
+    is ACTIVE, else cycle_life_nominal; phi = calendar_retention_per_year; the floor row's lower bound =
+    minimum_soh; the default SoH point ('end') and ageing on (no model variant)."""
+    from math import log
+    declared = validate_ess_ageing_baseline(declared)
+    cal = declared['calibration']
+    if cal['status'] == 'ACTIVE':
+        k = cal['cycles_n'] * cal['reference_dod_d'] / (-log(cal['eol_retention_r']))
+        k_formula = (f"cycles_n * reference_dod_d / (-ln eol_retention_r) = {cal['cycles_n']} * "
+                     f"{cal['reference_dod_d']} / (-ln {cal['eol_retention_r']})")
+    else:
+        k, k_formula = declared['cycle_life_nominal'], 'cycle_life_nominal (calibration not ACTIVE)'
+    return {'k': k, 'k_formula': k_formula, 'phi_cal_in_model': declared['calendar_retention_per_year'],
+            'floor_row_lower': declared['minimum_soh'], 'available_energy_soh_point': 'end',
+            'ageing_enabled': True, 'd_row_form': 'D * 2kE == 365 n avg'}
+
+
+def ess_ageing_readback_models(models, sed, declared, investment_year, clone=True):
+    """`model_variant_readback` (k, phi, SoH-point mode, floor-row lower bound, read NUMERICALLY from the built
+    rows) for every node's ESSO model at the cohort of `investment_year`, against `ess_ageing_baseline_expected`
+    (the declaration's closed forms). `clone=True` reads back from CLONES (the given models are untouched)."""
+    from math import isclose
+    expected = ess_ageing_baseline_expected(declared)
+    y_inv = [int(y) for y in sed.years].index(int(investment_year))
+    per_node, all_ok = {}, True
+    for node_id, model in models.items():
+        target = model.clone() if clone else model
+        readback = model_variant_readback(target, sed, y_inv)
+        checks = compare_readback(readback, expected)
+        checks['floor_row_lower'] = (readback['floor_row_lower'] is not None and isclose(
+            readback['floor_row_lower'], expected['floor_row_lower'], rel_tol=MODEL_VARIANT_READBACK_RTOL, abs_tol=0.0))
+        all_ok = all_ok and all(checks.values())
+        per_node[str(node_id)] = {'readback': readback, 'checks': checks}
+        if clone:
+            del target
+    return {'expected': expected, 'per_node': per_node, 'all_match': all_ok,
+            'method': ('numerical read-back from the built rows (model_variant_readback) against the declaration\'s '
+                       'closed forms; ' + ('on clones of the given models' if clone else 'on probe models'))}
+
+
+def verify_ess_ageing_in_child(sed, declared, pin):
+    """Child side (configuration hook, before any ESSO model of the run is built): the shared-ESS data of THIS
+    evaluation was read from the pinned file, loaded to EXACTLY the declaration (canonical JSON, types
+    included), and every SharedEnergyStorage carries the declaration's soh_min / phi and production's k
+    (`effective_cycle_constant`). Returns the evidence; raises on any mismatch."""
+    declared = validate_ess_ageing_baseline(declared)
+    pin = pin or {}
+    file_used = os.path.join(sed.data_dir, 'SharedESS', sed.params_file)
+    pinned_path = os.path.join(REPO, pin.get('path') or '')
+    loaded = ess_ageing_parameters_as_loaded(sed.params.ageing)
+    k_prod = sed.params.ageing.effective_cycle_constant()
+    per_ess = [{'year': str(y), 'bus': e.bus, 'soh_min': e.soh_min, 'phi_cal': e.phi_cal, 'cl_eff': e.cl_eff}
+               for y in sed.years for e in sed.shared_energy_storages[y]]
+    sha_now = sha256_file(pinned_path) if os.path.isfile(pinned_path) else None
+    checks = {
+        'pin_path_is_ess_params_file': pin.get('path') == ESS_PARAMS_FILE_REL,
+        'file_used_by_production_is_pinned_file': (os.path.isfile(file_used) and os.path.isfile(pinned_path)
+                                                   and os.path.samefile(file_used, pinned_path)),
+        'file_sha256_equals_pin': sha_now is not None and sha_now == pin.get('sha256'),
+        'loaded_equals_declaration_types_included': (ess_ageing_canonical_text(loaded)
+                                                     == ess_ageing_canonical_text(declared)),
+        'every_ess_soh_min_is_declared': all(e['soh_min'] == declared['minimum_soh'] for e in per_ess),
+        'every_ess_phi_cal_is_declared': all(e['phi_cal'] == declared['calendar_retention_per_year'] for e in per_ess),
+        'every_ess_cl_eff_is_production_k': all(e['cl_eff'] == k_prod for e in per_ess),
+    }
+    out = {'declared': declared, 'loaded': loaded, 'file_used_by_production': os.path.relpath(file_used, REPO),
+           'file_sha256': sha_now, 'pin': pin, 'k_production': k_prod, 'per_ess': per_ess, 'checks': checks}
+    failed = sorted(k for k, v in checks.items() if not v)
+    if failed:
+        raise RuntimeError(f'ess_ageing_baseline: the loaded shared-ESS ageing parameters are not the declared '
+                           f'ones: {failed}; declared {declared}, loaded {loaded}, file {out["file_used_by_production"]} '
+                           f'sha256 {sha_now} vs pin {pin.get("sha256")}')
+    return out
+
+
 def ageing_trajectory_terminal(models, sed):
     """READ-ONLY capture from the run's own ESSO models (no mutation): per node, per ACTIVE (y_inv, y)
     (e_rated not fixed): E_rated, throughput, EFC/day = avg / (2 E_rated), D, the END-of-block SoH, the
@@ -1628,6 +1854,10 @@ def _config_hook_factory(spec, holder, overrides=None, model_variant=None, inves
     overrides = validate_overrides(overrides)
     case_file_aa = validate_case_file_anderson_acceleration(
         spec['configuration'].get('case_file_anderson_acceleration'))
+    # Addendum 30 (W21): a declared ESS ageing baseline is verified against the loaded parameters (and, without a
+    # model variant, read back from probe ESSO models) before any solve; undeclared specs: nothing changes.
+    ess_ageing = validate_ess_ageing_baseline(spec['configuration'].get('ess_ageing_baseline'))
+    ess_params_pin = spec['configuration'].get('ess_params_file')
 
     def hook(planning, sed, candidate, report):
         a = planning.params.admm
@@ -1681,6 +1911,30 @@ def _config_hook_factory(spec, holder, overrides=None, model_variant=None, inves
         holder['configuration_checks'] = checks
         holder['overrides_applied'] = applied
         holder['anderson_acceleration_effective'] = dict(a.anderson_acceleration)
+        if ess_ageing is not None:  # W21: before the model variant (if any) touches the ageing parameters
+            import shared_energy_storage_data as SED
+            verified = verify_ess_ageing_in_child(sed, ess_ageing, ess_params_pin)
+            if model_variant is None:
+                probes = {node_id: SED._build_subproblem(sed, node_id)
+                          for node_id in sed.active_distribution_network_nodes}
+                floor_rows_probe, _floor_counts = G._identify_soh_floor_rows(probes)
+                verified['readback_pre_run'] = ess_ageing_readback_models(probes, sed, ess_ageing, investment_year,
+                                                                          clone=False)
+                del probes
+                verified['floor_rows_identical_to_precheck'] = (expected_floor_rows is None
+                                                                or floor_rows_probe == expected_floor_rows)
+            holder['ess_ageing_verified_pre_run'] = verified
+            report['rule_eleven_checklist']['w21_ess_ageing_baseline'] = {
+                'declared': ess_ageing, 'label': spec['configuration'].get('ess_ageing_baseline_label'),
+                'checks': verified['checks'],
+                'readback_all_match': (verified.get('readback_pre_run') or {}).get('all_match'),
+                'floor_rows_identical_to_precheck': verified.get('floor_rows_identical_to_precheck')}
+            if model_variant is None and not verified['readback_pre_run']['all_match']:
+                raise RuntimeError(f'ess_ageing_baseline read-back from the built ESSO model does not match the '
+                                   f'declaration: '
+                                   f"{ {n: v['checks'] for n, v in verified['readback_pre_run']['per_node'].items()} }")
+            if model_variant is None and not verified['floor_rows_identical_to_precheck']:
+                raise RuntimeError('ess_ageing_baseline: the probe SoH-floor rows differ from the precheck floor rows')
         if model_variant is not None:
             import shared_energy_storage_data as SED
             applied_mv = apply_model_variant(sed, model_variant)
@@ -1941,6 +2195,17 @@ def _child_real(args, spec, spec_path, entry, eval_dir, lock_content, env_caps, 
         aa_on = bool(effective_anderson_acceleration(case_file_aa, eff_overrides).get('enabled'))
     case_file_sha256_in_child = sha256_file(CASE_FILE)
     progress['case_file_sha256_in_child'] = case_file_sha256_in_child
+    # Addendum 30 (W21): a declared ESS ageing baseline -> the ESS parameters file must hash to the spec's pin
+    # before anything is built (the hook then checks the LOADED parameters against the declaration).
+    ess_ageing = validate_ess_ageing_baseline(spec['configuration'].get('ess_ageing_baseline'))
+    ess_params_sha256_in_child = None
+    if ess_ageing is not None:
+        ess_params_sha256_in_child = sha256_file(os.path.join(REPO, ESS_PARAMS_FILE_REL))
+        progress['ess_params_sha256_in_child'] = ess_params_sha256_in_child
+        pin = spec['configuration'].get('ess_params_file') or {}
+        if pin.get('path') != ESS_PARAMS_FILE_REL or pin.get('sha256') != ess_params_sha256_in_child:
+            raise RuntimeError(f'ess_ageing_baseline: {ESS_PARAMS_FILE_REL} sha256 {ess_params_sha256_in_child} != '
+                               f'the spec pin {pin}')
     # Addenda 28-29 (W20): a model variant runs only under its explicit label, at spec AND entry level.
     model_variant = validate_model_variant(entry.get('model_variant'))
     if model_variant is not None and (spec.get('model_variant_label') != MODEL_VARIANT_LABEL
@@ -1996,6 +2261,12 @@ def _child_real(args, spec, spec_path, entry, eval_dir, lock_content, env_caps, 
             holder['model_variant_readback_terminal'] = model_variant_readback_models(
                 models['esso'], sed, model_variant, investment_year, clone=True)
             holder['ageing_trajectory_terminal'] = ageing_trajectory_terminal(models['esso'], sed)
+        if ess_ageing is not None:  # W21: read back from CLONES of the run's own ESSO models; read-only capture
+            if model_variant is None:
+                holder['ess_ageing_readback_terminal'] = ess_ageing_readback_models(
+                    models['esso'], sed, ess_ageing, investment_year, clone=True)
+            if 'ageing_trajectory_terminal' not in holder:
+                holder['ageing_trajectory_terminal'] = ageing_trajectory_terminal(models['esso'], sed)
         st = state or {}
         holder['peak_rss_ru_maxrss_production'] = st.get('peak_rss_ru_maxrss')
         holder['peak_rss_platform_units'] = st.get('peak_rss_platform_units')
@@ -2073,6 +2344,15 @@ def _child_real(args, spec, spec_path, entry, eval_dir, lock_content, env_caps, 
             'model_variant_readback_terminal': holder.get('model_variant_readback_terminal'),
             'ageing_trajectory_terminal': holder.get('ageing_trajectory_terminal'),
         }
+    if ess_ageing is not None:  # W21: only for declared specs, so every other record keeps its format
+        variant_extra.update({
+            'ess_ageing_baseline': ess_ageing,
+            'ess_ageing_baseline_label': spec['configuration'].get('ess_ageing_baseline_label'),
+            'ess_params_sha256_in_child': ess_params_sha256_in_child,
+            'ess_ageing_verified_pre_run': holder.get('ess_ageing_verified_pre_run'),
+            'ess_ageing_readback_terminal': holder.get('ess_ageing_readback_terminal'),
+            'ageing_trajectory_terminal': holder.get('ageing_trajectory_terminal'),
+        })
     record = build_evaluation_record(
         spec=spec, spec_path=spec_path, spec_sha256=args.spec_sha256, entry=entry, report=report,
         component_levels=component_levels,
@@ -2171,6 +2451,12 @@ def main_child(argv):
                 **({'model_variant': entry['model_variant'], 'model_variant_label': MODEL_VARIANT_LABEL,
                     'model_variant_applied_in_child': (progress.get('holder') or {}).get('model_variant_applied')}
                    if entry.get('model_variant') is not None else {}),
+                # W21: a declared-ESS-ageing spec's record carries the declaration, its label and the file hash seen.
+                **({'ess_ageing_baseline': spec['configuration']['ess_ageing_baseline'],
+                    'ess_ageing_baseline_label': spec['configuration'].get('ess_ageing_baseline_label'),
+                    'ess_params_sha256_in_child': progress.get('ess_params_sha256_in_child'),
+                    'ess_ageing_verified_pre_run': (progress.get('holder') or {}).get('ess_ageing_verified_pre_run')}
+                   if spec['configuration'].get('ess_ageing_baseline') is not None else {}),
             })
         sys.exit(1)
 

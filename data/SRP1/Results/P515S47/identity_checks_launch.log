@@ -1,0 +1,44 @@
+14:38:28 [W21-identity] P5.15 Addendum 30 W21 item 2 -- ESS ageing parameters in the evaluation identity: zero-solve checks
+14:38:28 [W21-identity] git HEAD abf0cb303882b3aa8ccfecf51a152682c29e852e; data/SRP1/SharedESS/SRP1_ESS_Params.json sha256 fdce321ffe1bf0f4b81424cdf081d826c3c81c410a4eb9f3b3561675e26b80f0 loads to {'calendar_life_years': 15, 'cycle_life_nominal': 10000, 'depth_of_discharge_nominal': 0.8, 'minimum_soh': 0.5, 'calendar_retention_per_year': 1.0, 'calibration': {'status': 'ACTIVE', 'cycles_n': 10000, 'reference_dod_d': 0.8, 'eol_retention_r': 0.5}}
+14:38:28 [W21-identity] K1: {'K1_committed_specs_found': True, 'K1_committed_spec_keys_eval_keys_dirs_ids_identical': True, 'K1_no_committed_spec_declares_ess_ageing': True, 'K1_committed_records_keys_identical': True} scope {'searched': 'git ls-files -- data/SRP1/Results/P515S44 data/SRP1/Results/P515S45 data/SRP1/Results/P515S46', 'included': ['campaign_spec_*.json', 'evaluation_record.json'], 'excluded': ['frozen_s4x_*_spec_*.json (Planner specs: no candidate / eval keys)', 'uncommitted campaign roots', 'campaign specs outside P515S44-S46 (none tracked: git ls-files data/SRP1/Results | grep campaign_spec_)'], 'n_campaign_specs': 30, 'n_spec_entries': 127, 'n_evaluation_records': 100, 'n_record_eval_keys_recomputed': 81}
+14:38:28 [W21-identity] K2: {'K2_a1a_unit_is_the_committed_c3_key': True, 'K2_s46_calfade_variant_is_c2_calfade_soh_min_0p50': True, 'K2_baseline_unit_key_differs_from_a1a_c3_key': True, 'K2_baseline_unit_key_differs_from_s46_c2_calfade_key': True, 'K2_baseline_unit_key_is_not_the_candidate_key': True, 'K2_baseline_unit_key_differs_from_every_committed_eval_key': True, 'K2_committed_c_star_evaluations_found': True, 'K2_baseline_c_star_key_differs_from_every_committed_c_star_key': True, 'K2_baseline_c_star_key_differs_from_every_committed_eval_key': True, 'K2_declaring_the_current_file_dict_differs_from_undeclared': True, 'K2_key_is_dict_order_independent': True, 'K2_key_is_content_sensitive': True, 'K2_declared_key_without_aa_declaration_is_not_the_candidate_key': True}
+14:38:28 [W21-identity]    unit C2-baseline bd504ecf5a288d44 vs A1a C3 7eb1ce62c2509f54 vs s46 C2_calfade 98e2857016a16d1c; C* baseline 070f833e1e318f85 vs 24 committed C* keys
+14:38:28 [W21-identity] K3: {'K3_validation_refuses_every_malformed_declaration': True, 'K3_validation_accepts_the_baseline_unchanged': True, 'K3_none_is_no_declaration': True}
+14:38:28 [W21-identity] K4: {'K4_declared_freeze_records_declaration_and_label': True, 'K4_declared_freeze_pins_the_file': True, 'K4_declared_entry_eval_key_recomputes': True, 'K4_declared_entry_keeps_entry_format': True, 'K4_undeclared_fixture_has_none_of_the_new_keys': True, 'K4_undeclared_fixture_eval_key_is_the_pre_w21_key': True, 'K4_freeze_refuses_every_bad_configuration': True, 'K4_refused_freezes_left_no_directory': True}
+14:38:40 [W21-identity] K5: {'K5_matching_declaration_passes_the_hook': True, 'K5_readback_from_probe_models_matches_the_declaration': True, 'K5_probe_floor_rows_identical_to_precheck': True, 'K5_rule_eleven_entry_written': True, 'K5_mismatching_declaration_raises_before_any_solve': True, 'K5_wrong_sha256_pin_raises_before_any_solve': True}; node-7 read-back {'k': 11541.560327111707, 'phi_cal_in_model': 1.0, 'floor_row_lower': 0.5, 'd_row_form': 'D * 2kE == 365 n avg', 'available_energy_soh_point': 'end', 'y_inv': 0, 'y0': 0} expected {'k': 11541.560327111707, 'k_formula': 'cycles_n * reference_dod_d / (-ln eol_retention_r) = 10000 * 0.8 / (-ln 0.5)', 'phi_cal_in_model': 1.0, 'floor_row_lower': 0.5, 'available_energy_soh_point': 'end', 'ageing_enabled': True, 'd_row_form': 'D * 2kE == 365 n avg'}
+14:38:40 [W21-identity]   OK   K1_committed_specs_found
+14:38:40 [W21-identity]   OK   K1_committed_spec_keys_eval_keys_dirs_ids_identical
+14:38:40 [W21-identity]   OK   K1_no_committed_spec_declares_ess_ageing
+14:38:40 [W21-identity]   OK   K1_committed_records_keys_identical
+14:38:40 [W21-identity]   OK   K2_a1a_unit_is_the_committed_c3_key
+14:38:40 [W21-identity]   OK   K2_s46_calfade_variant_is_c2_calfade_soh_min_0p50
+14:38:40 [W21-identity]   OK   K2_baseline_unit_key_differs_from_a1a_c3_key
+14:38:40 [W21-identity]   OK   K2_baseline_unit_key_differs_from_s46_c2_calfade_key
+14:38:40 [W21-identity]   OK   K2_baseline_unit_key_is_not_the_candidate_key
+14:38:40 [W21-identity]   OK   K2_baseline_unit_key_differs_from_every_committed_eval_key
+14:38:40 [W21-identity]   OK   K2_committed_c_star_evaluations_found
+14:38:40 [W21-identity]   OK   K2_baseline_c_star_key_differs_from_every_committed_c_star_key
+14:38:40 [W21-identity]   OK   K2_baseline_c_star_key_differs_from_every_committed_eval_key
+14:38:40 [W21-identity]   OK   K2_declaring_the_current_file_dict_differs_from_undeclared
+14:38:40 [W21-identity]   OK   K2_key_is_dict_order_independent
+14:38:40 [W21-identity]   OK   K2_key_is_content_sensitive
+14:38:40 [W21-identity]   OK   K2_declared_key_without_aa_declaration_is_not_the_candidate_key
+14:38:40 [W21-identity]   OK   K3_validation_refuses_every_malformed_declaration
+14:38:40 [W21-identity]   OK   K3_validation_accepts_the_baseline_unchanged
+14:38:40 [W21-identity]   OK   K3_none_is_no_declaration
+14:38:40 [W21-identity]   OK   K4_declared_freeze_records_declaration_and_label
+14:38:40 [W21-identity]   OK   K4_declared_freeze_pins_the_file
+14:38:40 [W21-identity]   OK   K4_declared_entry_eval_key_recomputes
+14:38:40 [W21-identity]   OK   K4_declared_entry_keeps_entry_format
+14:38:40 [W21-identity]   OK   K4_undeclared_fixture_has_none_of_the_new_keys
+14:38:40 [W21-identity]   OK   K4_undeclared_fixture_eval_key_is_the_pre_w21_key
+14:38:40 [W21-identity]   OK   K4_freeze_refuses_every_bad_configuration
+14:38:40 [W21-identity]   OK   K4_refused_freezes_left_no_directory
+14:38:40 [W21-identity]   OK   K5_matching_declaration_passes_the_hook
+14:38:40 [W21-identity]   OK   K5_readback_from_probe_models_matches_the_declaration
+14:38:40 [W21-identity]   OK   K5_probe_floor_rows_identical_to_precheck
+14:38:40 [W21-identity]   OK   K5_rule_eleven_entry_written
+14:38:40 [W21-identity]   OK   K5_mismatching_declaration_raises_before_any_solve
+14:38:40 [W21-identity]   OK   K5_wrong_sha256_pin_raises_before_any_solve
+14:38:40 [W21-identity]   OK   guard_zero_solves_verified
+14:38:40 [W21-identity] ALL_OK=True guard={'permitted_solve': 0, 'permitted_exec': 0, 'blocked_solve': 0, 'blocked_exec': 0} wall=13.4s
