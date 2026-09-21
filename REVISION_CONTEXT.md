@@ -216,6 +216,34 @@ Authority: Addendum 27 (with the author's decisions) and `STEP4_DFO_METHOD.md`. 
   - staging (needs a multi-cohort candidate form);
   - the paper-scale route.
 
+### Addenda 28–29: ageing batch done — stopped for review (2026-09-21). Report: `P5_15_ADDENDUM28_AGEING_REPORT.md`
+
+- **Phase A was accepted** (Addendum 28).
+- **Settled by the author:**
+  - Staging is not wanted.
+  - The reduced-scenario variant is deferred.
+  - Paper scale goes to a ≥ 64 GiB machine for three evaluations, after the code-path generalization and row 18.
+  - SRP1 concurrency is 5 (Addendum 29).
+- **Ageing batch at n7 0.25 / 1.0, 2025.** Five model variants, all certified.
+
+  | variant | value − I (EUR) | verdict |
+  |---|---|---|
+  | C2 | −23,084 | indeterminate by bars, negative vs σ_Q |
+  | C4 | −41,004 | negative |
+  | C2 + calendar fade | −44,193 | negative |
+  | C3 mid-block | −53,844 | negative |
+  | no ageing | **+485** | break-even |
+
+- **The ageing convention does not decide the sign.** Available energy rises as predicted, but value is sub-proportional to it: elasticity ≈ 0.6 at fixed power.
+- **Zero-solve reports:**
+  - **Structural finding.** The storage is at the upstream terminal (DN bus 1) of the single constrained interface branch 1–2. It is not idle in the binding slots; it simply cannot change the constrained flow.
+  - **Discount rate.** Value-to-cost is 0.905 / 0.823 / 0.726 / 0.651 at 0 / 2 / 5 / 8 %.
+  - **Captured spread.** 52.1 €/MWh per cycle, against a 98 €/MWh daily 4 h spread.
+- **Case file.** `max_energy_to_power_factor` is 4; the oracle is unaffected.
+- **Next, after the review:**
+  1. The Phase B formal record.
+  2. The memory task, run alone, with its decision rule recorded in spec v16. **Stop for review** after it.
+
 ---
 
 # SUPERSEDED "CURRENT" SECTION — 2026-09-14 (P5.15 Step 1 closed through gates G1–G5)
