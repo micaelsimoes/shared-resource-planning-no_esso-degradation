@@ -1,0 +1,1555 @@
+{
+ "LABEL": "MODEL VARIANT \u2014 not the baseline",
+ "STOP_FOR_REVIEW": true,
+ "stop_reason": "spec v16 ageing_batch.stop: STOP FOR REVIEW after the ageing batch",
+ "non_certified_points": [],
+ "harness_errors": [],
+ "readback_mismatch_points": [],
+ "execution": "spec v16 ageing_batch.execution: \"one batch, 5 evaluations, concurrency 5, cap 500; non-certified variants reported with cause\"; the batch is followed by STOP FOR REVIEW (spec v16 ageing_batch.stop)",
+ "authority": [
+  "PLANNER_BRIEF_2026-09-13.md Addenda 28-29",
+  "data/SRP1/Results/P515S46/frozen_s46_ageing_spec_v16_f4295086.json ageing_batch, concurrency",
+  "Planner task W20 item 5 (one campaign s46_ageing holding 5 evaluations, each with its own model_variant; x = 0 not re-run, Q(0) from the A0 record; value_C3 261,807.504426 from A1a)",
+  "e5721b6d (ageing switches + harness model_variant + zero-solve checks), cb165d4e (case-file edit + gate), 8ed12e30 (two-cycle bitwise gate, defaults unchanged)"
+ ],
+ "timestamp_utc": "2026-09-21T14:15:46.408241+00:00",
+ "git_head_at_run": "3e0cd105854f0a3f84079cd0dc5a43669b422902",
+ "campaign_spec_path": "data/SRP1/Results/P515S46/campaign_s46_ageing/campaign_spec_s46_ageing_6544c17e.json",
+ "campaign_spec_sha256": "6544c17e5231db41db401c4dc768472142a4fe878d86b2a33b1ff33990963f45",
+ "objective_convention": "Q(x) = certified_cost = gross_operational_cost (settlement-excluded); value = Q(0) - Q(x) with Q(0) from the pinned A0 x0 record; F would be I(x) + Q(x); terminal_salvage_value and net_operational_recourse are reported, excluded (Addendum 27 item 3).",
+ "resolution_rule": "spec v16 ageing_batch.predictions_recorded_before_run.resolution: \"a variant's value - I is reported with the sum of its bar and x0's bar and with sigma_Q; a difference below them is indeterminate\". Here: indeterminate_vs_bars = |value - I| <= bar_variant + bar_x0; indeterminate_vs_sigma_Q = |value - I| <= the upper end of the sigma_Q range spec v16 states (10k-18k EUR, Planner prediction text); both reported, neither computed from judgement.",
+ "midblock_formula": "SoH_mid_y = SoH_{y-1} * exp(-D_y / 2) * phi**(n / 2): the within-block exponential decay SoH(t) = SoH_{y-1} exp(-(D_y/n) t) phi**t at t = n/2, equal to the geometric mean sqrt(SoH_{y-1} SoH_y); shared_energy_storage_data._esso_ageing_model_settings (e5721b6d)",
+ "baseline_inputs": {
+  "Q0_eur": 653859461.2279255,
+  "Q0_bar_eur": 9629.97833788395,
+  "Q0_source": {
+   "path": "data/SRP1/Results/P515S45/campaign_s45_a0_c7/campaign_results.json",
+   "sha256": "423678b98c0ca9a26dbc76a1b46a5e36a51c8ccccc0459253020bfe1061653b4",
+   "label": "x0"
+  },
+  "Q0_eval_dir": "data/SRP1/Results/P515S45/campaign_s45_a0_c7/evals/7aa017f09989b56d_x0",
+  "Q0_certification_cycle": 132,
+  "Q_C3_eur": 653597653.7234993,
+  "Q_C3_bar_eur": 11340.31878066063,
+  "Q_C3_source": {
+   "path": "data/SRP1/Results/P515S45/campaign_s45_a1a/campaign_results.json",
+   "sha256": "b6e9adce6fe33878082ce78a92c719c39c674c72b80930eb02b36d2d2c576aec",
+   "label": "n7_4h_e1"
+  },
+  "Q_C3_eval_dir": "data/SRP1/Results/P515S45/campaign_s45_a1a/evals/7eb1ce62c2509f54_n7_4h_e1",
+  "value_C3_eur": 261807.50442624092,
+  "value_C3_planner_pin_eur": 261807.504426,
+  "I_x_eur": 317957.0085035586,
+  "I_x_source": {
+   "path": "data/SRP1/Results/P515S45/investment_cost/investment_cost_results.json",
+   "sha256": "28152120f5c7acc57655d40871f764a5e797b93428f5a9f87b7eed55fbe4790b",
+   "field": "candidates.<label>.I_new_eur, matched by candidate_key"
+  },
+  "unit_candidate_key": "db77e1549af855bcb3521950c634db55fe6c155ab2de591b0441b5f2bf4b369a",
+  "x0_candidate_key": "8435c71859ddde68e7ae5818b4ff91c03b4171791bcfaa70edcc3ddb52bacb57",
+  "value_C3_minus_I_eur": -56149.50407731766,
+  "predictions_recorded_before_run": {
+   "Planner": "agrees in ordering (no_ageing > C2 > C4 > C2_calfade ~ C3_midblock > C3); expects C2 and no_ageing to bring the smallest unit to or past break-even, C2 within resolution of it (predicted +4k against sigma_Q 10-18k) - i.e. the sign under C2 may be indeterminate at the smallest unit",
+   "break_even_multiplier_smallest_unit": 1.2145,
+   "expert_value_multiplier_vs_C3": {
+    "C2": 1.23,
+    "C2_calfade": 1.1,
+    "C3_midblock": 1.09,
+    "C4": 1.16,
+    "no_ageing": 1.36
+   },
+   "implied_value_eur": {
+    "C2": 322023,
+    "C2_calfade": 287988,
+    "C3_midblock": 285370,
+    "C4": 303697,
+    "no_ageing": 356058
+   },
+   "implied_value_minus_I_eur": {
+    "C2": 4066,
+    "C2_calfade": -29969,
+    "C3_midblock": -32587,
+    "C4": -14260,
+    "no_ageing": 38101
+   },
+   "resolution": "a variant's value - I is reported with the sum of its bar and x0's bar and with sigma_Q; a difference below them is indeterminate"
+  },
+  "Q0_not_rerun": "x = 0 has no storage, so Q(0) is ageing-independent (spec v16 ageing_batch.Q0_unchanged); taken from the pinned A0 record",
+  "checks": {
+   "a0_x0_certified": true,
+   "a0_x0_candidate_key": true,
+   "a1a_unit_certified": true,
+   "a1a_unit_candidate_key": true,
+   "spec_v16_candidate_key": true,
+   "spec_v16_candidate_nodes": true,
+   "spec_v16_Q0_equals_a0": true,
+   "spec_v16_Q_C3_equals_a1a": true,
+   "value_C3_equals_planner_pin_1e-6": true,
+   "value_C3_equals_spec_v16_rounded": true,
+   "I_x_single_value_in_w2_table": true,
+   "I_x_equals_spec_v16": true,
+   "I_x_equals_a1a_record": true,
+   "spec_v16_variant_names": true
+  }
+ },
+ "table_objective_convention": "Q gross (settlement excluded); value = Q(0) - Q; salvage excluded",
+ "table": [
+  {
+   "variant": "C2",
+   "status": "certified",
+   "cycles": 119,
+   "Q": 653564588.2611413,
+   "value": 294872.9667842388,
+   "I_x": 317957.0085035586,
+   "value_minus_I": -23084.041719319765,
+   "value_over_value_C3": 1.1262968471070447,
+   "bar": 14269.066940784454,
+   "bar_sum": 23899.045278668404,
+   "indeterminate_vs_bars": true,
+   "k_read_back": 35851.3609417964,
+   "phi_read_back": 1.0,
+   "soh_point_read_back": "end",
+   "prediction_value_minus_I": 4066
+  },
+  {
+   "variant": "C4",
+   "status": "certified",
+   "cycles": 119,
+   "Q": 653582507.7663511,
+   "value": 276953.46157443523,
+   "I_x": 317957.0085035586,
+   "value_minus_I": -41003.546929123346,
+   "value_over_value_C3": 1.0578515011683378,
+   "bar": 13980.185742378235,
+   "bar_sum": 23610.164080262184,
+   "indeterminate_vs_bars": false,
+   "k_read_back": 22429.38601645703,
+   "phi_read_back": 1.0,
+   "soh_point_read_back": "end",
+   "prediction_value_minus_I": -14260
+  },
+  {
+   "variant": "C2_calfade",
+   "status": "certified",
+   "cycles": 121,
+   "Q": 653585696.827074,
+   "value": 273764.4008514881,
+   "I_x": 317957.0085035586,
+   "value_minus_I": -44192.60765207047,
+   "value_over_value_C3": 1.0456705641476973,
+   "bar": 11516.992573976517,
+   "bar_sum": 21146.970911860466,
+   "indeterminate_vs_bars": false,
+   "k_read_back": 35851.3609417964,
+   "phi_read_back": 0.985,
+   "soh_point_read_back": "end",
+   "prediction_value_minus_I": -29969
+  },
+  {
+   "variant": "C3_midblock",
+   "status": "certified",
+   "cycles": 123,
+   "Q": 653595347.9763142,
+   "value": 264113.25161135197,
+   "I_x": 317957.0085035586,
+   "value_minus_I": -53843.75689220661,
+   "value_over_value_C3": 1.0088070324422678,
+   "bar": 14903.21850514412,
+   "bar_sum": 24533.19684302807,
+   "indeterminate_vs_bars": false,
+   "k_read_back": 11541.560327111707,
+   "phi_read_back": 1.0,
+   "soh_point_read_back": "mid",
+   "prediction_value_minus_I": -32587
+  },
+  {
+   "variant": "no_ageing",
+   "status": "certified",
+   "cycles": 118,
+   "Q": 653541019.3493049,
+   "value": 318441.87862062454,
+   "I_x": 317957.0085035586,
+   "value_minus_I": 484.8701170659624,
+   "value_over_value_C3": 1.2163206678070575,
+   "bar": 9180.610110521317,
+   "bar_sum": 18810.588448405266,
+   "indeterminate_vs_bars": true,
+   "k_read_back": null,
+   "phi_read_back": 1.0,
+   "soh_point_read_back": "end",
+   "prediction_value_minus_I": 38101
+  }
+ ],
+ "points": {
+  "n7_4h_e1_C2": {
+   "label": "n7_4h_e1_C2",
+   "variant": "C2",
+   "model_variant": {
+    "eol_retention_r": 0.8,
+    "calendar_retention_per_year": 1.0,
+    "available_energy_soh_point": "end",
+    "ageing_enabled": true
+   },
+   "model_variant_label": "MODEL VARIANT \u2014 not the baseline",
+   "description": "EOL retention 0.80 (cycles 10000, DoD 0.80) -> k = 35,851; soh_min 0.50; phi_cal 1.0",
+   "candidate_key": "db77e1549af855bcb3521950c634db55fe6c155ab2de591b0441b5f2bf4b369a",
+   "eval_key": "c6b53015fcf65e248bcf936d7e4fd9f61f1e09ebd8f78b7e4dda55d6736e7b78",
+   "eval_dir": "data/SRP1/Results/P515S46/campaign_s46_ageing/evals/c6b53015fcf65e24_n7_4h_e1_c2",
+   "status": "certified",
+   "barrier": false,
+   "barrier_cause": null,
+   "cycles_run": 119,
+   "certification_cycle": 119,
+   "Q_gross_eur": 653564588.2611413,
+   "terminal_gross_operational_cost": 653564588.2611413,
+   "Q0_eur": 653859461.2279255,
+   "value_eur": 294872.9667842388,
+   "I_x_eur": 317957.0085035586,
+   "value_minus_I_eur": -23084.041719319765,
+   "value_over_value_C3": 1.1262968471070447,
+   "value_C3_eur": 261807.50442624092,
+   "bar": {
+    "value": 14269.066940784454,
+    "definition": "max over the last 10 cycles of |gross_operational_cost[k] - gross_operational_cost[k-1]| (settlement-excluded gross cost; the predecessor of the first window row is taken from the full trajectory; a step is unavailable when cycle k-1 is absent or either gross value is None)"
+   },
+   "x0_bar": 9629.97833788395,
+   "bar_sum": 23899.045278668404,
+   "terminal_gross_step": 1257.5503017902374,
+   "rule_ten": {
+    "terminal_gross_step_over_threshold": 0.019241408184859685,
+    "terminal_objective_tolerance": 65356.45882611413,
+    "terminal_step_over_threshold_production": 0.019241408184859685,
+    "boyd_terminal_ratio_max_per_channel": {
+     "v": 0.11799740144555369,
+     "pf": 0.4101105183851278,
+     "ess": 0.1432020394028344
+    }
+   },
+   "resolution": {
+    "rule": "spec v16 ageing_batch.predictions_recorded_before_run.resolution: \"a variant's value - I is reported with the sum of its bar and x0's bar and with sigma_Q; a difference below them is indeterminate\". Here: indeterminate_vs_bars = |value - I| <= bar_variant + bar_x0; indeterminate_vs_sigma_Q = |value - I| <= the upper end of the sigma_Q range spec v16 states (10k-18k EUR, Planner prediction text); both reported, neither computed from judgement.",
+    "abs_value_minus_I_eur": 23084.041719319765,
+    "indeterminate_vs_bars": true,
+    "sigma_Q_stated_range_eur": [
+     10000.0,
+     18000.0
+    ],
+    "indeterminate_vs_sigma_Q_upper": false,
+    "sign_of_value_minus_I": "negative"
+   },
+   "prediction": {
+    "expert_value_multiplier_vs_C3": 1.23,
+    "implied_value_eur": 322023,
+    "implied_value_minus_I_eur": 4066
+   },
+   "readback_pre_run": {
+    "all_match": true,
+    "expected": {
+     "k": 35851.3609417964,
+     "k_formula": "cycles_n * reference_dod_d / (-ln eol_retention_r) = 10000 * 0.8 / (-ln 0.8)",
+     "phi_cal_in_model": 1.0,
+     "available_energy_soh_point": "end",
+     "ageing_enabled": true,
+     "d_row_form": "D * 2kE == 365 n avg"
+    },
+    "node7": {
+     "k": 35851.3609417964,
+     "phi_cal_in_model": 1.0,
+     "available_energy_soh_point": "end",
+     "d_row_form": "D * 2kE == 365 n avg",
+     "checks": {
+      "k": true,
+      "n_years_from_d_row_equals_data": true,
+      "phi_cal_in_model": true,
+      "d_row_form": true,
+      "available_energy_soh_point": true,
+      "soh_row_exp_form": true
+     }
+    },
+    "per_node_all_checks": {
+     "5": true,
+     "7": true,
+     "9": true
+    }
+   },
+   "readback_terminal": {
+    "all_match": true,
+    "expected": {
+     "k": 35851.3609417964,
+     "k_formula": "cycles_n * reference_dod_d / (-ln eol_retention_r) = 10000 * 0.8 / (-ln 0.8)",
+     "phi_cal_in_model": 1.0,
+     "available_energy_soh_point": "end",
+     "ageing_enabled": true,
+     "d_row_form": "D * 2kE == 365 n avg"
+    },
+    "node7": {
+     "k": 35851.3609417964,
+     "phi_cal_in_model": 1.0,
+     "available_energy_soh_point": "end",
+     "d_row_form": "D * 2kE == 365 n avg",
+     "checks": {
+      "k": true,
+      "n_years_from_d_row_equals_data": true,
+      "phi_cal_in_model": true,
+      "d_row_form": true,
+      "available_energy_soh_point": true,
+      "soh_row_exp_form": true
+     }
+    },
+    "per_node_all_checks": {
+     "5": true,
+     "7": true,
+     "9": true
+    }
+   },
+   "model_variant_applied_checks": {
+    "settings_read_by_production": true,
+    "every_ess_cl_eff_is_k": true,
+    "every_ess_phi_cal_is_variant": true,
+    "other_ageing_constants_unchanged": true,
+    "calibration_n_d_status_unchanged": true
+   },
+   "efc_per_day_per_block": {
+    "2025": 1.2533211954661165,
+    "2030": 1.2242456951816334,
+    "2035": 1.02625975733814
+   },
+   "soh_trajectory_per_block": [
+    {
+     "investment_year": "2025",
+     "block_year": "2025",
+     "n_years": 5,
+     "D": 0.06379984250637077,
+     "soh_prev_end": 1.0,
+     "soh_end": 0.938192767051053,
+     "soh_used_for_available_energy": 0.938192767051053,
+     "soh_mid_closed_form": 0.9686035138545381,
+     "e_rated": 1.0,
+     "e_available": 0.938192767051053,
+     "cl_eff": 35851.3609417964,
+     "phi_cal_in_model": 1.0
+    },
+    {
+     "investment_year": "2025",
+     "block_year": "2030",
+     "n_years": 5,
+     "D": 0.06231976513621659,
+     "soh_prev_end": 0.938192767051053,
+     "soh_end": 0.8815094052146132,
+     "soh_used_for_available_energy": 0.8815094052146132,
+     "soh_mid_closed_form": 0.9094095601326847,
+     "e_rated": 1.0,
+     "e_available": 0.8815094052146132,
+     "cl_eff": 35851.3609417964,
+     "phi_cal_in_model": 1.0
+    },
+    {
+     "investment_year": "2025",
+     "block_year": "2035",
+     "n_years": 5,
+     "D": 0.052241365681563415,
+     "soh_prev_end": 0.8815094052146132,
+     "soh_end": 0.8366403641175433,
+     "soh_used_for_available_energy": 0.8366403641175433,
+     "soh_mid_closed_form": 0.8587818988275222,
+     "e_rated": 1.0,
+     "e_available": 0.8366403641175433,
+     "cl_eff": 35851.3609417964,
+     "phi_cal_in_model": 1.0
+    }
+   ],
+   "salvage": {
+    "terminal_salvage_value_recourse_components": -1.4802631458282634e-50,
+    "per_node_salvage_value": {
+     "5": 0.0,
+     "7": -1.4802631458282634e-50,
+     "9": 0.0
+    },
+    "net_operational_recourse": 653564588.2611413
+   },
+   "wall_time": {
+    "record": {
+     "child_process_s": 3772.2823810577393,
+     "run_admm_arm_s": 3757.5210587978363,
+     "run_admm_arm_reported_wall_clock_s": 3756.2354769706726
+    },
+    "parent_view_s": 3779.2319118976593
+   },
+   "peak_rss": {
+    "record": {
+     "units": "bytes on macOS/BSD, kilobytes on Linux (ru_maxrss)",
+     "child_python_process_ru_maxrss": 2336555008,
+     "production_state_peak_rss_ru_maxrss": 2336555008,
+     "solver_subprocesses_max_ru_maxrss": 57196544,
+     "semantics": "child_python_process = RUSAGE_SELF of the evaluation process at record time (the evaluation's own peak); production_state = the same measure taken by production at the end of run_operational_planning; solver_subprocesses = RUSAGE_CHILDREN max over the IPOPT executables this evaluation launched; when a post-certification step ran, child_python_process includes it (the ADMM run alone is production_state)"
+    },
+    "parent_wait4_ru_maxrss_bytes": 2336555008
+   },
+   "aa_action_counts": {
+    "insufficient memory (m_k=0)": 8,
+    "accepted": 50,
+    "rejected (safeguard; memory retained)": 51,
+    "off (all channels within Boyd tolerance)": 10
+   },
+   "local_solve_failures": 0,
+   "anderson_acceleration_effective_in_child": {
+    "enabled": true,
+    "memory": 5,
+    "regularization": 1e-10,
+    "reject_policy": "keep_memory"
+   },
+   "case_file_sha256_in_child": "dbfdb2a07d12bfedab5e66bf94b3df98e5ab0305616652b4083266476972006b",
+   "exit_code": 0,
+   "per_cycle_trajectory": {
+    "path": "data/SRP1/Results/P515S46/campaign_s46_ageing/evals/c6b53015fcf65e24_n7_4h_e1_c2/per_cycle_record.jsonl",
+    "present": true,
+    "sha256": "2f3e2f428098537153c8e866e6cf5706aa65e3bd85aa7df36bb18d8752b0e046",
+    "n_rows": 119,
+    "n_rows_equals_cycles_run": true
+   }
+  },
+  "n7_4h_e1_C4": {
+   "label": "n7_4h_e1_C4",
+   "variant": "C4",
+   "model_variant": {
+    "eol_retention_r": 0.7,
+    "calendar_retention_per_year": 1.0,
+    "available_energy_soh_point": "end",
+    "ageing_enabled": true
+   },
+   "model_variant_label": "MODEL VARIANT \u2014 not the baseline",
+   "description": "EOL retention 0.70 -> k = 22,429; soh_min 0.50; phi_cal 1.0",
+   "candidate_key": "db77e1549af855bcb3521950c634db55fe6c155ab2de591b0441b5f2bf4b369a",
+   "eval_key": "65a5da775d1ff5b270518f9a90734bbf6e3894c98510f0af16dc81f3346f6850",
+   "eval_dir": "data/SRP1/Results/P515S46/campaign_s46_ageing/evals/65a5da775d1ff5b2_n7_4h_e1_c4",
+   "status": "certified",
+   "barrier": false,
+   "barrier_cause": null,
+   "cycles_run": 119,
+   "certification_cycle": 119,
+   "Q_gross_eur": 653582507.7663511,
+   "terminal_gross_operational_cost": 653582507.7663511,
+   "Q0_eur": 653859461.2279255,
+   "value_eur": 276953.46157443523,
+   "I_x_eur": 317957.0085035586,
+   "value_minus_I_eur": -41003.546929123346,
+   "value_over_value_C3": 1.0578515011683378,
+   "value_C3_eur": 261807.50442624092,
+   "bar": {
+    "value": 13980.185742378235,
+    "definition": "max over the last 10 cycles of |gross_operational_cost[k] - gross_operational_cost[k-1]| (settlement-excluded gross cost; the predecessor of the first window row is taken from the full trajectory; a step is unavailable when cycle k-1 is absent or either gross value is None)"
+   },
+   "x0_bar": 9629.97833788395,
+   "bar_sum": 23610.164080262184,
+   "terminal_gross_step": 3420.2054246664047,
+   "rule_ten": {
+    "terminal_gross_step_over_threshold": 0.05232985103091298,
+    "terminal_objective_tolerance": 65358.59279717758,
+    "terminal_step_over_threshold_production": 0.05232985103091298,
+    "boyd_terminal_ratio_max_per_channel": {
+     "v": 0.12739214266811894,
+     "pf": 0.32250725675723224,
+     "ess": 0.14335577928380605
+    }
+   },
+   "resolution": {
+    "rule": "spec v16 ageing_batch.predictions_recorded_before_run.resolution: \"a variant's value - I is reported with the sum of its bar and x0's bar and with sigma_Q; a difference below them is indeterminate\". Here: indeterminate_vs_bars = |value - I| <= bar_variant + bar_x0; indeterminate_vs_sigma_Q = |value - I| <= the upper end of the sigma_Q range spec v16 states (10k-18k EUR, Planner prediction text); both reported, neither computed from judgement.",
+    "abs_value_minus_I_eur": 41003.546929123346,
+    "indeterminate_vs_bars": false,
+    "sigma_Q_stated_range_eur": [
+     10000.0,
+     18000.0
+    ],
+    "indeterminate_vs_sigma_Q_upper": false,
+    "sign_of_value_minus_I": "negative"
+   },
+   "prediction": {
+    "expert_value_multiplier_vs_C3": 1.16,
+    "implied_value_eur": 303697,
+    "implied_value_minus_I_eur": -14260
+   },
+   "readback_pre_run": {
+    "all_match": true,
+    "expected": {
+     "k": 22429.38601645703,
+     "k_formula": "cycles_n * reference_dod_d / (-ln eol_retention_r) = 10000 * 0.8 / (-ln 0.7)",
+     "phi_cal_in_model": 1.0,
+     "available_energy_soh_point": "end",
+     "ageing_enabled": true,
+     "d_row_form": "D * 2kE == 365 n avg"
+    },
+    "node7": {
+     "k": 22429.38601645703,
+     "phi_cal_in_model": 1.0,
+     "available_energy_soh_point": "end",
+     "d_row_form": "D * 2kE == 365 n avg",
+     "checks": {
+      "k": true,
+      "n_years_from_d_row_equals_data": true,
+      "phi_cal_in_model": true,
+      "d_row_form": true,
+      "available_energy_soh_point": true,
+      "soh_row_exp_form": true
+     }
+    },
+    "per_node_all_checks": {
+     "5": true,
+     "7": true,
+     "9": true
+    }
+   },
+   "readback_terminal": {
+    "all_match": true,
+    "expected": {
+     "k": 22429.38601645703,
+     "k_formula": "cycles_n * reference_dod_d / (-ln eol_retention_r) = 10000 * 0.8 / (-ln 0.7)",
+     "phi_cal_in_model": 1.0,
+     "available_energy_soh_point": "end",
+     "ageing_enabled": true,
+     "d_row_form": "D * 2kE == 365 n avg"
+    },
+    "node7": {
+     "k": 22429.38601645703,
+     "phi_cal_in_model": 1.0,
+     "available_energy_soh_point": "end",
+     "d_row_form": "D * 2kE == 365 n avg",
+     "checks": {
+      "k": true,
+      "n_years_from_d_row_equals_data": true,
+      "phi_cal_in_model": true,
+      "d_row_form": true,
+      "available_energy_soh_point": true,
+      "soh_row_exp_form": true
+     }
+    },
+    "per_node_all_checks": {
+     "5": true,
+     "7": true,
+     "9": true
+    }
+   },
+   "model_variant_applied_checks": {
+    "settings_read_by_production": true,
+    "every_ess_cl_eff_is_k": true,
+    "every_ess_phi_cal_is_variant": true,
+    "other_ageing_constants_unchanged": true,
+    "calibration_n_d_status_unchanged": true
+   },
+   "efc_per_day_per_block": {
+    "2025": 1.2196629702530883,
+    "2030": 1.1578266239477404,
+    "2035": 0.9570356925188545
+   },
+   "soh_trajectory_per_block": [
+    {
+     "investment_year": "2025",
+     "block_year": "2025",
+     "n_years": 5,
+     "D": 0.09923967241362273,
+     "soh_prev_end": 1.0,
+     "soh_end": 0.9055256524943572,
+     "soh_used_for_available_energy": 0.9055256524943572,
+     "soh_mid_closed_form": 0.9515911162336192,
+     "e_rated": 1.0,
+     "e_available": 0.9055256524943572,
+     "cl_eff": 22429.38601645703,
+     "phi_cal_in_model": 1.0
+    },
+    {
+     "investment_year": "2025",
+     "block_year": "2030",
+     "n_years": 5,
+     "D": 0.09420826709898515,
+     "soh_prev_end": 0.9055256524943572,
+     "soh_end": 0.8241127387875559,
+     "soh_used_for_available_energy": 0.8241127387875559,
+     "soh_mid_closed_form": 0.8638606516798106,
+     "e_rated": 1.0,
+     "e_available": 0.8241127387875559,
+     "cl_eff": 22429.38601645703,
+     "phi_cal_in_model": 1.0
+    },
+    {
+     "investment_year": "2025",
+     "block_year": "2035",
+     "n_years": 5,
+     "D": 0.07787061748214553,
+     "soh_prev_end": 0.8241127387875559,
+     "soh_end": 0.7623735982712441,
+     "soh_used_for_available_energy": 0.7623735982712441,
+     "soh_mid_closed_form": 0.792642286314315,
+     "e_rated": 1.0,
+     "e_available": 0.7623735982712441,
+     "cl_eff": 22429.38601645703,
+     "phi_cal_in_model": 1.0
+    }
+   ],
+   "salvage": {
+    "terminal_salvage_value_recourse_components": -2.2882504872059047e-36,
+    "per_node_salvage_value": {
+     "5": 0.0,
+     "7": -2.2882504872059047e-36,
+     "9": 0.0
+    },
+    "net_operational_recourse": 653582507.7663511
+   },
+   "wall_time": {
+    "record": {
+     "child_process_s": 3788.2590079307556,
+     "run_admm_arm_s": 3773.4582438468933,
+     "run_admm_arm_reported_wall_clock_s": 3772.168137073517
+    },
+    "parent_view_s": 3794.2473390102386
+   },
+   "peak_rss": {
+    "record": {
+     "units": "bytes on macOS/BSD, kilobytes on Linux (ru_maxrss)",
+     "child_python_process_ru_maxrss": 2375680000,
+     "production_state_peak_rss_ru_maxrss": 2375680000,
+     "solver_subprocesses_max_ru_maxrss": 54935552,
+     "semantics": "child_python_process = RUSAGE_SELF of the evaluation process at record time (the evaluation's own peak); production_state = the same measure taken by production at the end of run_operational_planning; solver_subprocesses = RUSAGE_CHILDREN max over the IPOPT executables this evaluation launched; when a post-certification step ran, child_python_process includes it (the ADMM run alone is production_state)"
+    },
+    "parent_wait4_ru_maxrss_bytes": 2382004224
+   },
+   "aa_action_counts": {
+    "insufficient memory (m_k=0)": 8,
+    "accepted": 47,
+    "rejected (safeguard; memory retained)": 54,
+    "off (all channels within Boyd tolerance)": 10
+   },
+   "local_solve_failures": 0,
+   "anderson_acceleration_effective_in_child": {
+    "enabled": true,
+    "memory": 5,
+    "regularization": 1e-10,
+    "reject_policy": "keep_memory"
+   },
+   "case_file_sha256_in_child": "dbfdb2a07d12bfedab5e66bf94b3df98e5ab0305616652b4083266476972006b",
+   "exit_code": 0,
+   "per_cycle_trajectory": {
+    "path": "data/SRP1/Results/P515S46/campaign_s46_ageing/evals/65a5da775d1ff5b2_n7_4h_e1_c4/per_cycle_record.jsonl",
+    "present": true,
+    "sha256": "fb93587fa04d86be15511ecb28b31479fc7336a565958a1991de71b11d9bc0a1",
+    "n_rows": 119,
+    "n_rows_equals_cycles_run": true
+   }
+  },
+  "n7_4h_e1_C2_calfade": {
+   "label": "n7_4h_e1_C2_calfade",
+   "variant": "C2_calfade",
+   "model_variant": {
+    "eol_retention_r": 0.8,
+    "calendar_retention_per_year": 0.985,
+    "available_energy_soh_point": "end",
+    "ageing_enabled": true
+   },
+   "model_variant_label": "MODEL VARIANT \u2014 not the baseline",
+   "description": "C2 with calendar fade phi_cal = 0.985 per year",
+   "candidate_key": "db77e1549af855bcb3521950c634db55fe6c155ab2de591b0441b5f2bf4b369a",
+   "eval_key": "98e2857016a16d1c09aea36acb06929baed718ffc7c01ca53de1e24d4f3e9cfd",
+   "eval_dir": "data/SRP1/Results/P515S46/campaign_s46_ageing/evals/98e2857016a16d1c_n7_4h_e1_c2_calfade",
+   "status": "certified",
+   "barrier": false,
+   "barrier_cause": null,
+   "cycles_run": 121,
+   "certification_cycle": 121,
+   "Q_gross_eur": 653585696.827074,
+   "terminal_gross_operational_cost": 653585696.827074,
+   "Q0_eur": 653859461.2279255,
+   "value_eur": 273764.4008514881,
+   "I_x_eur": 317957.0085035586,
+   "value_minus_I_eur": -44192.60765207047,
+   "value_over_value_C3": 1.0456705641476973,
+   "value_C3_eur": 261807.50442624092,
+   "bar": {
+    "value": 11516.992573976517,
+    "definition": "max over the last 10 cycles of |gross_operational_cost[k] - gross_operational_cost[k-1]| (settlement-excluded gross cost; the predecessor of the first window row is taken from the full trajectory; a step is unavailable when cycle k-1 is absent or either gross value is None)"
+   },
+   "x0_bar": 9629.97833788395,
+   "bar_sum": 21146.970911860466,
+   "terminal_gross_step": 3222.4691803455353,
+   "rule_ten": {
+    "terminal_gross_step_over_threshold": 0.04930421990347232,
+    "terminal_objective_tolerance": 65358.891929625446,
+    "terminal_step_over_threshold_production": 0.04930421990347232,
+    "boyd_terminal_ratio_max_per_channel": {
+     "v": 0.10992038192801201,
+     "pf": 0.483546840244636,
+     "ess": 0.11176190001075918
+    }
+   },
+   "resolution": {
+    "rule": "spec v16 ageing_batch.predictions_recorded_before_run.resolution: \"a variant's value - I is reported with the sum of its bar and x0's bar and with sigma_Q; a difference below them is indeterminate\". Here: indeterminate_vs_bars = |value - I| <= bar_variant + bar_x0; indeterminate_vs_sigma_Q = |value - I| <= the upper end of the sigma_Q range spec v16 states (10k-18k EUR, Planner prediction text); both reported, neither computed from judgement.",
+    "abs_value_minus_I_eur": 44192.60765207047,
+    "indeterminate_vs_bars": false,
+    "sigma_Q_stated_range_eur": [
+     10000.0,
+     18000.0
+    ],
+    "indeterminate_vs_sigma_Q_upper": false,
+    "sign_of_value_minus_I": "negative"
+   },
+   "prediction": {
+    "expert_value_multiplier_vs_C3": 1.1,
+    "implied_value_eur": 287988,
+    "implied_value_minus_I_eur": -29969
+   },
+   "readback_pre_run": {
+    "all_match": true,
+    "expected": {
+     "k": 35851.3609417964,
+     "k_formula": "cycles_n * reference_dod_d / (-ln eol_retention_r) = 10000 * 0.8 / (-ln 0.8)",
+     "phi_cal_in_model": 0.985,
+     "available_energy_soh_point": "end",
+     "ageing_enabled": true,
+     "d_row_form": "D * 2kE == 365 n avg"
+    },
+    "node7": {
+     "k": 35851.3609417964,
+     "phi_cal_in_model": 0.985,
+     "available_energy_soh_point": "end",
+     "d_row_form": "D * 2kE == 365 n avg",
+     "checks": {
+      "k": true,
+      "n_years_from_d_row_equals_data": true,
+      "phi_cal_in_model": true,
+      "d_row_form": true,
+      "available_energy_soh_point": true,
+      "soh_row_exp_form": true
+     }
+    },
+    "per_node_all_checks": {
+     "5": true,
+     "7": true,
+     "9": true
+    }
+   },
+   "readback_terminal": {
+    "all_match": true,
+    "expected": {
+     "k": 35851.3609417964,
+     "k_formula": "cycles_n * reference_dod_d / (-ln eol_retention_r) = 10000 * 0.8 / (-ln 0.8)",
+     "phi_cal_in_model": 0.985,
+     "available_energy_soh_point": "end",
+     "ageing_enabled": true,
+     "d_row_form": "D * 2kE == 365 n avg"
+    },
+    "node7": {
+     "k": 35851.3609417964,
+     "phi_cal_in_model": 0.985,
+     "available_energy_soh_point": "end",
+     "d_row_form": "D * 2kE == 365 n avg",
+     "checks": {
+      "k": true,
+      "n_years_from_d_row_equals_data": true,
+      "phi_cal_in_model": true,
+      "d_row_form": true,
+      "available_energy_soh_point": true,
+      "soh_row_exp_form": true
+     }
+    },
+    "per_node_all_checks": {
+     "5": true,
+     "7": true,
+     "9": true
+    }
+   },
+   "model_variant_applied_checks": {
+    "settings_read_by_production": true,
+    "every_ess_cl_eff_is_k": true,
+    "every_ess_phi_cal_is_variant": true,
+    "other_ageing_constants_unchanged": true,
+    "calibration_n_d_status_unchanged": true
+   },
+   "efc_per_day_per_block": {
+    "2025": 1.1849136818112997,
+    "2030": 1.0904838509990038,
+    "2035": 0.8789566273341424
+   },
+   "soh_trajectory_per_block": [
+    {
+     "investment_year": "2025",
+     "block_year": "2025",
+     "n_years": 5,
+     "D": 0.060317583837788534,
+     "soh_prev_end": 1.0,
+     "soh_end": 0.8729423404762146,
+     "soh_used_for_available_energy": 0.8729423404762146,
+     "soh_mid_closed_form": 0.9343138340388644,
+     "e_rated": 1.0,
+     "e_available": 0.8729423404762146,
+     "cl_eff": 35851.3609417964,
+     "phi_cal_in_model": 0.985
+    },
+    {
+     "investment_year": "2025",
+     "block_year": "2030",
+     "n_years": 5,
+     "D": 0.05551066893399395,
+     "soh_prev_end": 0.8729423404762146,
+     "soh_end": 0.7657001531322141,
+     "soh_used_for_available_energy": 0.7657001531322141,
+     "soh_mid_closed_form": 0.8175647275774218,
+     "e_rated": 1.0,
+     "e_available": 0.7657001531322141,
+     "cl_eff": 35851.3609417964,
+     "phi_cal_in_model": 0.985
+    },
+    {
+     "investment_year": "2025",
+     "block_year": "2035",
+     "n_years": 5,
+     "D": 0.044742955434495524,
+     "soh_prev_end": 0.7657001531322141,
+     "soh_end": 0.678903844156344,
+     "soh_used_for_available_energy": 0.678903844156344,
+     "soh_mid_closed_form": 0.72099707172326,
+     "e_rated": 1.0,
+     "e_available": 0.678903844156344,
+     "cl_eff": 35851.3609417964,
+     "phi_cal_in_model": 0.985
+    }
+   ],
+   "salvage": {
+    "terminal_salvage_value_recourse_components": 2.248500981004957e-51,
+    "per_node_salvage_value": {
+     "5": 0.0,
+     "7": 2.248500981004957e-51,
+     "9": 0.0
+    },
+    "net_operational_recourse": 653585696.827074
+   },
+   "wall_time": {
+    "record": {
+     "child_process_s": 3823.2145278453827,
+     "run_admm_arm_s": 3808.418406009674,
+     "run_admm_arm_reported_wall_clock_s": 3807.2105190753937
+    },
+    "parent_view_s": 3829.314211130142
+   },
+   "peak_rss": {
+    "record": {
+     "units": "bytes on macOS/BSD, kilobytes on Linux (ru_maxrss)",
+     "child_python_process_ru_maxrss": 2381398016,
+     "production_state_peak_rss_ru_maxrss": 2379694080,
+     "solver_subprocesses_max_ru_maxrss": 55361536,
+     "semantics": "child_python_process = RUSAGE_SELF of the evaluation process at record time (the evaluation's own peak); production_state = the same measure taken by production at the end of run_operational_planning; solver_subprocesses = RUSAGE_CHILDREN max over the IPOPT executables this evaluation launched; when a post-certification step ran, child_python_process includes it (the ADMM run alone is production_state)"
+    },
+    "parent_wait4_ru_maxrss_bytes": 2388344832
+   },
+   "aa_action_counts": {
+    "insufficient memory (m_k=0)": 8,
+    "accepted": 49,
+    "rejected (safeguard; memory retained)": 54,
+    "off (all channels within Boyd tolerance)": 10
+   },
+   "local_solve_failures": 0,
+   "anderson_acceleration_effective_in_child": {
+    "enabled": true,
+    "memory": 5,
+    "regularization": 1e-10,
+    "reject_policy": "keep_memory"
+   },
+   "case_file_sha256_in_child": "dbfdb2a07d12bfedab5e66bf94b3df98e5ab0305616652b4083266476972006b",
+   "exit_code": 0,
+   "per_cycle_trajectory": {
+    "path": "data/SRP1/Results/P515S46/campaign_s46_ageing/evals/98e2857016a16d1c_n7_4h_e1_c2_calfade/per_cycle_record.jsonl",
+    "present": true,
+    "sha256": "8392100874ec5ace1d8dacdcc640293fc06bb5bd710a4726426f5128ef0b3b5b",
+    "n_rows": 121,
+    "n_rows_equals_cycles_run": true
+   }
+  },
+  "n7_4h_e1_C3_midblock": {
+   "label": "n7_4h_e1_C3_midblock",
+   "variant": "C3_midblock",
+   "model_variant": {
+    "eol_retention_r": 0.5,
+    "calendar_retention_per_year": 1.0,
+    "available_energy_soh_point": "mid",
+    "ageing_enabled": true
+   },
+   "model_variant_label": "MODEL VARIANT \u2014 not the baseline",
+   "description": "C3 (k = 11,541.56) with available energy in block y at the MID-block SoH SoH_{y-1} exp(-D_y/2) phi^(n/2); end-of-block SoH propagates to the next block, the floor and the salvage",
+   "candidate_key": "db77e1549af855bcb3521950c634db55fe6c155ab2de591b0441b5f2bf4b369a",
+   "eval_key": "ed4a1acc7059784d03b2847e7639bfae00e80ee0a8487520a9e532fbdbf3967a",
+   "eval_dir": "data/SRP1/Results/P515S46/campaign_s46_ageing/evals/ed4a1acc7059784d_n7_4h_e1_c3_midblock",
+   "status": "certified",
+   "barrier": false,
+   "barrier_cause": null,
+   "cycles_run": 123,
+   "certification_cycle": 123,
+   "Q_gross_eur": 653595347.9763142,
+   "terminal_gross_operational_cost": 653595347.9763142,
+   "Q0_eur": 653859461.2279255,
+   "value_eur": 264113.25161135197,
+   "I_x_eur": 317957.0085035586,
+   "value_minus_I_eur": -53843.75689220661,
+   "value_over_value_C3": 1.0088070324422678,
+   "value_C3_eur": 261807.50442624092,
+   "bar": {
+    "value": 14903.21850514412,
+    "definition": "max over the last 10 cycles of |gross_operational_cost[k] - gross_operational_cost[k-1]| (settlement-excluded gross cost; the predecessor of the first window row is taken from the full trajectory; a step is unavailable when cycle k-1 is absent or either gross value is None)"
+   },
+   "x0_bar": 9629.97833788395,
+   "bar_sum": 24533.19684302807,
+   "terminal_gross_step": 3971.2284524440765,
+   "rule_ten": {
+    "terminal_gross_step_over_threshold": 0.060759372535391626,
+    "terminal_objective_tolerance": 65359.931920476665,
+    "terminal_step_over_threshold_production": 0.060759372535391626,
+    "boyd_terminal_ratio_max_per_channel": {
+     "v": 0.11209912253345512,
+     "pf": 0.35799473151439004,
+     "ess": 0.2463060451354437
+    }
+   },
+   "resolution": {
+    "rule": "spec v16 ageing_batch.predictions_recorded_before_run.resolution: \"a variant's value - I is reported with the sum of its bar and x0's bar and with sigma_Q; a difference below them is indeterminate\". Here: indeterminate_vs_bars = |value - I| <= bar_variant + bar_x0; indeterminate_vs_sigma_Q = |value - I| <= the upper end of the sigma_Q range spec v16 states (10k-18k EUR, Planner prediction text); both reported, neither computed from judgement.",
+    "abs_value_minus_I_eur": 53843.75689220661,
+    "indeterminate_vs_bars": false,
+    "sigma_Q_stated_range_eur": [
+     10000.0,
+     18000.0
+    ],
+    "indeterminate_vs_sigma_Q_upper": false,
+    "sign_of_value_minus_I": "negative"
+   },
+   "prediction": {
+    "expert_value_multiplier_vs_C3": 1.09,
+    "implied_value_eur": 285370,
+    "implied_value_minus_I_eur": -32587
+   },
+   "readback_pre_run": {
+    "all_match": true,
+    "expected": {
+     "k": 11541.560327111707,
+     "k_formula": "cycles_n * reference_dod_d / (-ln eol_retention_r) = 10000 * 0.8 / (-ln 0.5)",
+     "phi_cal_in_model": 1.0,
+     "available_energy_soh_point": "mid",
+     "ageing_enabled": true,
+     "d_row_form": "D * 2kE == 365 n avg"
+    },
+    "node7": {
+     "k": 11541.560327111707,
+     "phi_cal_in_model": 1.0,
+     "available_energy_soh_point": "mid",
+     "d_row_form": "D * 2kE == 365 n avg",
+     "checks": {
+      "k": true,
+      "n_years_from_d_row_equals_data": true,
+      "phi_cal_in_model": true,
+      "d_row_form": true,
+      "available_energy_soh_point": true,
+      "soh_row_exp_form": true
+     }
+    },
+    "per_node_all_checks": {
+     "5": true,
+     "7": true,
+     "9": true
+    }
+   },
+   "readback_terminal": {
+    "all_match": true,
+    "expected": {
+     "k": 11541.560327111707,
+     "k_formula": "cycles_n * reference_dod_d / (-ln eol_retention_r) = 10000 * 0.8 / (-ln 0.5)",
+     "phi_cal_in_model": 1.0,
+     "available_energy_soh_point": "mid",
+     "ageing_enabled": true,
+     "d_row_form": "D * 2kE == 365 n avg"
+    },
+    "node7": {
+     "k": 11541.560327111707,
+     "phi_cal_in_model": 1.0,
+     "available_energy_soh_point": "mid",
+     "d_row_form": "D * 2kE == 365 n avg",
+     "checks": {
+      "k": true,
+      "n_years_from_d_row_equals_data": true,
+      "phi_cal_in_model": true,
+      "d_row_form": true,
+      "available_energy_soh_point": true,
+      "soh_row_exp_form": true
+     }
+    },
+    "per_node_all_checks": {
+     "5": true,
+     "7": true,
+     "9": true
+    }
+   },
+   "model_variant_applied_checks": {
+    "settings_read_by_production": true,
+    "every_ess_cl_eff_is_k": true,
+    "every_ess_phi_cal_is_variant": true,
+    "other_ageing_constants_unchanged": true,
+    "calibration_n_d_status_unchanged": true
+   },
+   "efc_per_day_per_block": {
+    "2025": 1.2217637791341065,
+    "2030": 1.0804842956090919,
+    "2035": 0.8524402016753773
+   },
+   "soh_trajectory_per_block": [
+    {
+     "investment_year": "2025",
+     "block_year": "2025",
+     "n_years": 5,
+     "D": 0.19319042085514404,
+     "soh_prev_end": 1.0,
+     "soh_end": 0.8243249905219296,
+     "soh_used_for_available_energy": 0.907923449704165,
+     "soh_mid_closed_form": 0.9079234497045956,
+     "e_rated": 1.0,
+     "e_available": 0.907923449704165,
+     "cl_eff": 11541.560327111707,
+     "phi_cal_in_model": 1.0
+    },
+    {
+     "investment_year": "2025",
+     "block_year": "2030",
+     "n_years": 5,
+     "D": 0.17085071546648145,
+     "soh_prev_end": 0.8243249905219296,
+     "soh_end": 0.6948626100575503,
+     "soh_used_for_available_energy": 0.756830637890902,
+     "soh_mid_closed_form": 0.7568306378928361,
+     "e_rated": 1.0,
+     "e_available": 0.756830637890902,
+     "cl_eff": 11541.560327111707,
+     "phi_cal_in_model": 1.0
+    },
+    {
+     "investment_year": "2025",
+     "block_year": "2035",
+     "n_years": 5,
+     "D": 0.13479142541958888,
+     "soh_prev_end": 0.6948626100575503,
+     "soh_end": 0.6072391602776196,
+     "soh_used_for_available_energy": 0.6495750825277669,
+     "soh_mid_closed_form": 0.6495750825333259,
+     "e_rated": 1.0,
+     "e_available": 0.6495750825277669,
+     "cl_eff": 11541.560327111707,
+     "phi_cal_in_model": 1.0
+    }
+   ],
+   "salvage": {
+    "terminal_salvage_value_recourse_components": 0.0,
+    "per_node_salvage_value": {
+     "5": 0.0,
+     "7": 0.0,
+     "9": 0.0
+    },
+    "net_operational_recourse": 653595347.9763142
+   },
+   "wall_time": {
+    "record": {
+     "child_process_s": 3859.918076276779,
+     "run_admm_arm_s": 3845.0678260326385,
+     "run_admm_arm_reported_wall_clock_s": 3843.9416279792786
+    },
+    "parent_view_s": 3864.3763251304626
+   },
+   "peak_rss": {
+    "record": {
+     "units": "bytes on macOS/BSD, kilobytes on Linux (ru_maxrss)",
+     "child_python_process_ru_maxrss": 2354429952,
+     "production_state_peak_rss_ru_maxrss": 2352447488,
+     "solver_subprocesses_max_ru_maxrss": 57475072,
+     "semantics": "child_python_process = RUSAGE_SELF of the evaluation process at record time (the evaluation's own peak); production_state = the same measure taken by production at the end of run_operational_planning; solver_subprocesses = RUSAGE_CHILDREN max over the IPOPT executables this evaluation launched; when a post-certification step ran, child_python_process includes it (the ADMM run alone is production_state)"
+    },
+    "parent_wait4_ru_maxrss_bytes": 2360475648
+   },
+   "aa_action_counts": {
+    "insufficient memory (m_k=0)": 8,
+    "accepted": 47,
+    "rejected (safeguard; memory retained)": 58,
+    "off (all channels within Boyd tolerance)": 10
+   },
+   "local_solve_failures": 0,
+   "anderson_acceleration_effective_in_child": {
+    "enabled": true,
+    "memory": 5,
+    "regularization": 1e-10,
+    "reject_policy": "keep_memory"
+   },
+   "case_file_sha256_in_child": "dbfdb2a07d12bfedab5e66bf94b3df98e5ab0305616652b4083266476972006b",
+   "exit_code": 0,
+   "per_cycle_trajectory": {
+    "path": "data/SRP1/Results/P515S46/campaign_s46_ageing/evals/ed4a1acc7059784d_n7_4h_e1_c3_midblock/per_cycle_record.jsonl",
+    "present": true,
+    "sha256": "18ce54dcff5023aa4476326b27e7bd58842c34f6be75a3d1fe00775e8db25f63",
+    "n_rows": 123,
+    "n_rows_equals_cycles_run": true
+   }
+  },
+  "n7_4h_e1_no_ageing": {
+   "label": "n7_4h_e1_no_ageing",
+   "variant": "no_ageing",
+   "model_variant": {
+    "eol_retention_r": 0.5,
+    "calendar_retention_per_year": 1.0,
+    "available_energy_soh_point": "end",
+    "ageing_enabled": false
+   },
+   "model_variant_label": "MODEL VARIANT \u2014 not the baseline",
+   "description": "SoH identically 1 (no cycle or calendar loss): D row D == 0, phi 1",
+   "candidate_key": "db77e1549af855bcb3521950c634db55fe6c155ab2de591b0441b5f2bf4b369a",
+   "eval_key": "06f092d164f1381936520acd48d0b8ac4ec8c739adbd32557e7158a46c1276e1",
+   "eval_dir": "data/SRP1/Results/P515S46/campaign_s46_ageing/evals/06f092d164f13819_n7_4h_e1_no_ageing",
+   "status": "certified",
+   "barrier": false,
+   "barrier_cause": null,
+   "cycles_run": 118,
+   "certification_cycle": 118,
+   "Q_gross_eur": 653541019.3493049,
+   "terminal_gross_operational_cost": 653541019.3493049,
+   "Q0_eur": 653859461.2279255,
+   "value_eur": 318441.87862062454,
+   "I_x_eur": 317957.0085035586,
+   "value_minus_I_eur": 484.8701170659624,
+   "value_over_value_C3": 1.2163206678070575,
+   "value_C3_eur": 261807.50442624092,
+   "bar": {
+    "value": 9180.610110521317,
+    "definition": "max over the last 10 cycles of |gross_operational_cost[k] - gross_operational_cost[k-1]| (settlement-excluded gross cost; the predecessor of the first window row is taken from the full trajectory; a step is unavailable when cycle k-1 is absent or either gross value is None)"
+   },
+   "x0_bar": 9629.97833788395,
+   "bar_sum": 18810.588448405266,
+   "terminal_gross_step": 1022.6178810596466,
+   "rule_ten": {
+    "terminal_gross_step_over_threshold": 0.01564731593979063,
+    "terminal_objective_tolerance": 65354.2041967186,
+    "terminal_step_over_threshold_production": 0.01564731593979063,
+    "boyd_terminal_ratio_max_per_channel": {
+     "v": 0.13313946570816992,
+     "pf": 0.32252414162945237,
+     "ess": 0.17199184248117455
+    }
+   },
+   "resolution": {
+    "rule": "spec v16 ageing_batch.predictions_recorded_before_run.resolution: \"a variant's value - I is reported with the sum of its bar and x0's bar and with sigma_Q; a difference below them is indeterminate\". Here: indeterminate_vs_bars = |value - I| <= bar_variant + bar_x0; indeterminate_vs_sigma_Q = |value - I| <= the upper end of the sigma_Q range spec v16 states (10k-18k EUR, Planner prediction text); both reported, neither computed from judgement.",
+    "abs_value_minus_I_eur": 484.8701170659624,
+    "indeterminate_vs_bars": true,
+    "sigma_Q_stated_range_eur": [
+     10000.0,
+     18000.0
+    ],
+    "indeterminate_vs_sigma_Q_upper": true,
+    "sign_of_value_minus_I": "positive"
+   },
+   "prediction": {
+    "expert_value_multiplier_vs_C3": 1.36,
+    "implied_value_eur": 356058,
+    "implied_value_minus_I_eur": 38101
+   },
+   "readback_pre_run": {
+    "all_match": true,
+    "expected": {
+     "k": null,
+     "k_formula": "cycles_n * reference_dod_d / (-ln eol_retention_r) = 10000 * 0.8 / (-ln 0.5)",
+     "phi_cal_in_model": 1.0,
+     "available_energy_soh_point": "end",
+     "ageing_enabled": false,
+     "d_row_form": "D == 0"
+    },
+    "node7": {
+     "k": null,
+     "phi_cal_in_model": 1.0,
+     "available_energy_soh_point": "end",
+     "d_row_form": "D == 0",
+     "checks": {
+      "k": true,
+      "n_years_from_d_row_equals_data": true,
+      "phi_cal_in_model": true,
+      "d_row_form": true,
+      "available_energy_soh_point": true,
+      "soh_row_exp_form": true
+     }
+    },
+    "per_node_all_checks": {
+     "5": true,
+     "7": true,
+     "9": true
+    }
+   },
+   "readback_terminal": {
+    "all_match": true,
+    "expected": {
+     "k": null,
+     "k_formula": "cycles_n * reference_dod_d / (-ln eol_retention_r) = 10000 * 0.8 / (-ln 0.5)",
+     "phi_cal_in_model": 1.0,
+     "available_energy_soh_point": "end",
+     "ageing_enabled": false,
+     "d_row_form": "D == 0"
+    },
+    "node7": {
+     "k": null,
+     "phi_cal_in_model": 1.0,
+     "available_energy_soh_point": "end",
+     "d_row_form": "D == 0",
+     "checks": {
+      "k": true,
+      "n_years_from_d_row_equals_data": true,
+      "phi_cal_in_model": true,
+      "d_row_form": true,
+      "available_energy_soh_point": true,
+      "soh_row_exp_form": true
+     }
+    },
+    "per_node_all_checks": {
+     "5": true,
+     "7": true,
+     "9": true
+    }
+   },
+   "model_variant_applied_checks": {
+    "settings_read_by_production": true,
+    "every_ess_cl_eff_is_k": true,
+    "every_ess_phi_cal_is_variant": true,
+    "other_ageing_constants_unchanged": true,
+    "calibration_n_d_status_unchanged": true
+   },
+   "efc_per_day_per_block": {
+    "2025": 1.3134442677571954,
+    "2030": 1.3536085184304318,
+    "2035": 1.1725351186181752
+   },
+   "soh_trajectory_per_block": [
+    {
+     "investment_year": "2025",
+     "block_year": "2025",
+     "n_years": 5,
+     "D": 0.0,
+     "soh_prev_end": 1.0,
+     "soh_end": 1.0,
+     "soh_used_for_available_energy": 1.0,
+     "soh_mid_closed_form": 1.0,
+     "e_rated": 1.0,
+     "e_available": 1.0,
+     "cl_eff": 11541.560327111707,
+     "phi_cal_in_model": 1.0
+    },
+    {
+     "investment_year": "2025",
+     "block_year": "2030",
+     "n_years": 5,
+     "D": 0.0,
+     "soh_prev_end": 1.0,
+     "soh_end": 1.0,
+     "soh_used_for_available_energy": 1.0,
+     "soh_mid_closed_form": 1.0,
+     "e_rated": 1.0,
+     "e_available": 1.0,
+     "cl_eff": 11541.560327111707,
+     "phi_cal_in_model": 1.0
+    },
+    {
+     "investment_year": "2025",
+     "block_year": "2035",
+     "n_years": 5,
+     "D": 0.0,
+     "soh_prev_end": 1.0,
+     "soh_end": 1.0,
+     "soh_used_for_available_energy": 1.0,
+     "soh_mid_closed_form": 1.0,
+     "e_rated": 1.0,
+     "e_available": 1.0,
+     "cl_eff": 11541.560327111707,
+     "phi_cal_in_model": 1.0
+    }
+   ],
+   "salvage": {
+    "terminal_salvage_value_recourse_components": 1.4990006540033047e-51,
+    "per_node_salvage_value": {
+     "5": 0.0,
+     "7": 1.4990006540033047e-51,
+     "9": 0.0
+    },
+    "net_operational_recourse": 653541019.3493049
+   },
+   "wall_time": {
+    "record": {
+     "child_process_s": 3745.0509960651398,
+     "run_admm_arm_s": 3730.177572250366,
+     "run_admm_arm_reported_wall_clock_s": 3725.521422147751
+    },
+    "parent_view_s": 3749.1905698776245
+   },
+   "peak_rss": {
+    "record": {
+     "units": "bytes on macOS/BSD, kilobytes on Linux (ru_maxrss)",
+     "child_python_process_ru_maxrss": 2388885504,
+     "production_state_peak_rss_ru_maxrss": 2369519616,
+     "solver_subprocesses_max_ru_maxrss": 54427648,
+     "semantics": "child_python_process = RUSAGE_SELF of the evaluation process at record time (the evaluation's own peak); production_state = the same measure taken by production at the end of run_operational_planning; solver_subprocesses = RUSAGE_CHILDREN max over the IPOPT executables this evaluation launched; when a post-certification step ran, child_python_process includes it (the ADMM run alone is production_state)"
+    },
+    "parent_wait4_ru_maxrss_bytes": 2394423296
+   },
+   "aa_action_counts": {
+    "insufficient memory (m_k=0)": 8,
+    "accepted": 48,
+    "rejected (safeguard; memory retained)": 51,
+    "off (all channels within Boyd tolerance)": 11
+   },
+   "local_solve_failures": 0,
+   "anderson_acceleration_effective_in_child": {
+    "enabled": true,
+    "memory": 5,
+    "regularization": 1e-10,
+    "reject_policy": "keep_memory"
+   },
+   "case_file_sha256_in_child": "dbfdb2a07d12bfedab5e66bf94b3df98e5ab0305616652b4083266476972006b",
+   "exit_code": 0,
+   "per_cycle_trajectory": {
+    "path": "data/SRP1/Results/P515S46/campaign_s46_ageing/evals/06f092d164f13819_n7_4h_e1_no_ageing/per_cycle_record.jsonl",
+    "present": true,
+    "sha256": "19de84ca2bb4fc308cbe13344805246c0b66ab858801737b8519cc407385c0ce",
+    "n_rows": 118,
+    "n_rows_equals_cycles_run": true
+   }
+  }
+ },
+ "memory_preflight_at_run": {
+  "utc": "2026-09-21T13:11:21.985341+00:00",
+  "vm_stat_header": "Mach Virtual Memory Statistics: (page size of 16384 bytes)",
+  "page_size_bytes": 16384,
+  "vm_stat_pages": {
+   "pages_free": 4154,
+   "pages_active": 781792,
+   "pages_inactive": 1014467,
+   "pages_speculative": 49061,
+   "pages_wired_down": 132085,
+   "pages_purgeable": 2311,
+   "file_backed_pages": 1370316,
+   "anonymous_pages": 475004,
+   "pages_stored_in_compressor": 141175,
+   "pages_occupied_by_compressor": 66727
+  },
+  "hw_memsize_bytes": 34359738368,
+  "required_bytes": 14763950080,
+  "required_gib": 13.75,
+  "per_child_budget_gib": 2.75,
+  "concurrency": 5,
+  "rule": "hw.memsize - (wired + anonymous + compressor-occupied) x page size >= 5 x 2.75 GiB",
+  "rule_rationale": "non-reclaimable load = wired + anonymous + compressor-occupied pages; file-backed pages (active or inactive) are cache the kernel reclaims on demand, so free + inactive under-counts what new processes can obtain (free + inactive recorded alongside)",
+  "missing_vm_stat_figures": [],
+  "wired_bytes": 2164080640,
+  "anonymous_bytes": 7782465536,
+  "compressor_occupied_bytes": 1093255168,
+  "non_reclaimable_bytes": 11039801344,
+  "non_reclaimable_gib": 10.2816162109375,
+  "available_bytes": 23319937024,
+  "available_gib": 21.7183837890625,
+  "free_plus_inactive_bytes": 16689086464,
+  "free_plus_inactive_gib": 15.542922973632812,
+  "free_plus_inactive_would_pass_same_threshold": true,
+  "pass": true
+ },
+ "pre_run_evidence": {
+  "case_file_aa": {
+   "loaded": {
+    "enabled": true,
+    "memory": 5,
+    "regularization": 1e-10,
+    "reject_policy": "keep_memory"
+   },
+   "equals_declaration": true
+  },
+  "pins": {
+   "spec_v16": {
+    "path": "data/SRP1/Results/P515S46/frozen_s46_ageing_spec_v16_f4295086.json",
+    "sha256_pinned": "f4295086c10b22c7b33f4e7eff0bd38f7c93c09aeefc12117175633e8efc41f0",
+    "sha256_on_disk": "f4295086c10b22c7b33f4e7eff0bd38f7c93c09aeefc12117175633e8efc41f0",
+    "match": true,
+    "git_tracked": true,
+    "git_clean": true
+   },
+   "cost_file": {
+    "path": "data/SRP1/SharedESS/SRP1_ESS.xlsx",
+    "sha256_pinned": "e17bd5887e1d0738005ae17c3144593527081c9a0776e19cfaa50aafefe39cd6",
+    "sha256_on_disk": "e17bd5887e1d0738005ae17c3144593527081c9a0776e19cfaa50aafefe39cd6",
+    "match": true,
+    "git_tracked": true,
+    "git_clean": true
+   },
+   "ess_params_file": {
+    "path": "data/SRP1/SharedESS/SRP1_ESS_Params.json",
+    "sha256_pinned": "fdce321ffe1bf0f4b81424cdf081d826c3c81c410a4eb9f3b3561675e26b80f0",
+    "sha256_on_disk": "fdce321ffe1bf0f4b81424cdf081d826c3c81c410a4eb9f3b3561675e26b80f0",
+    "match": true,
+    "git_tracked": true,
+    "git_clean": true
+   },
+   "a0_spec": {
+    "path": "data/SRP1/Results/P515S45/campaign_s45_a0_c7/campaign_spec_s45_a0_c7_9d08ad2f.json",
+    "sha256_pinned": "9d08ad2f144b67ea97dae8dc25d91288fc86a77dd52c7f53276a52c5f00f8b34",
+    "sha256_on_disk": "9d08ad2f144b67ea97dae8dc25d91288fc86a77dd52c7f53276a52c5f00f8b34",
+    "match": true,
+    "git_tracked": true,
+    "git_clean": true
+   },
+   "a0_results": {
+    "path": "data/SRP1/Results/P515S45/campaign_s45_a0_c7/campaign_results.json",
+    "sha256_pinned": "423678b98c0ca9a26dbc76a1b46a5e36a51c8ccccc0459253020bfe1061653b4",
+    "sha256_on_disk": "423678b98c0ca9a26dbc76a1b46a5e36a51c8ccccc0459253020bfe1061653b4",
+    "match": true,
+    "git_tracked": true,
+    "git_clean": true
+   },
+   "a1a_results": {
+    "path": "data/SRP1/Results/P515S45/campaign_s45_a1a/campaign_results.json",
+    "sha256_pinned": "b6e9adce6fe33878082ce78a92c719c39c674c72b80930eb02b36d2d2c576aec",
+    "sha256_on_disk": "b6e9adce6fe33878082ce78a92c719c39c674c72b80930eb02b36d2d2c576aec",
+    "match": true,
+    "git_tracked": true,
+    "git_clean": true
+   },
+   "investment_cost_results": {
+    "path": "data/SRP1/Results/P515S45/investment_cost/investment_cost_results.json",
+    "sha256_pinned": "28152120f5c7acc57655d40871f764a5e797b93428f5a9f87b7eed55fbe4790b",
+    "sha256_on_disk": "28152120f5c7acc57655d40871f764a5e797b93428f5a9f87b7eed55fbe4790b",
+    "match": true,
+    "git_tracked": true,
+    "git_clean": true
+   },
+   "variant_checks": {
+    "path": "data/SRP1/Results/P515S46/variant_checks/variant_checks.json",
+    "commit": "e5721b6d",
+    "commit_in_HEAD": true,
+    "git_tracked": true,
+    "sha256": "c9b68b7e4be4d0997756061cbf104f2b3b28398a490888b63ae620a06c5af784",
+    "passed": true
+   },
+   "case_file_edit_gate": {
+    "path": "data/SRP1/Results/P515S46/case_file_edit/after/case_file_edit_after.json",
+    "commit": "cb165d4e",
+    "commit_in_HEAD": true,
+    "git_tracked": true,
+    "sha256": "1611416c88e043fabcfd2a7116c8542ffd16e58886f50c3ccfe4fa4c00ca78a8",
+    "passed": true
+   },
+   "two_cycle_gate": {
+    "path": "data/SRP1/Results/P515S46/default_two_cycle_gate/gate.json",
+    "commit": "8ed12e30",
+    "commit_in_HEAD": true,
+    "git_tracked": true,
+    "sha256": "93fd58d2120bcf201a09af69d0b99f08a82d4f9292bc79ff3d8129da6032a024",
+    "passed": true
+   }
+  },
+  "memory_rule_vs_a0_spec": {
+   "a0_rule": "hw.memsize - (wired + anonymous + compressor-occupied) x page size >= 7 x 2.75 GiB",
+   "a0_concurrency": 7,
+   "rule": "hw.memsize - (wired + anonymous + compressor-occupied) x page size >= 5 x 2.75 GiB",
+   "template_reproduces_a0_rule": true,
+   "a0_rationale_matches": true,
+   "match": true
+  }
+ },
+ "rule_eleven_asserted_before_run": {
+  "status": true,
+  "barrier_cause": true,
+  "cycles_run": true,
+  "certification_cycle": true,
+  "Q_gross": true,
+  "bar_gross_step": true,
+  "rule_ten": true,
+  "per_cycle_trajectory_written": true,
+  "per_cycle_gross_and_tolerance": true,
+  "salvage_recourse_components": true,
+  "model_variant_in_record": true,
+  "model_variant_in_error_records": true,
+  "readback_pre_run": true,
+  "readback_terminal": true,
+  "ageing_trajectory_terminal": true,
+  "variant_applied_in_hook_before_build": true,
+  "child_refuses_unlabelled_variant": true,
+  "wall_time": true,
+  "peak_rss": true,
+  "aa_action_counts": true,
+  "I_x_Q0_value_C3_frozen_in_spec": true
+ },
+ "batch_info": {
+  "max_concurrent_observed": 5,
+  "timeline": [
+   {
+    "event": "start",
+    "label": "n7_4h_e1_C2",
+    "pid": 80262,
+    "t": 1789996282.000489
+   },
+   {
+    "event": "start",
+    "label": "n7_4h_e1_C4",
+    "pid": 80263,
+    "t": 1789996282.003458
+   },
+   {
+    "event": "start",
+    "label": "n7_4h_e1_C2_calfade",
+    "pid": 80264,
+    "t": 1789996282.007967
+   },
+   {
+    "event": "start",
+    "label": "n7_4h_e1_C3_midblock",
+    "pid": 80265,
+    "t": 1789996282.011316
+   },
+   {
+    "event": "start",
+    "label": "n7_4h_e1_no_ageing",
+    "pid": 80266,
+    "t": 1789996282.014517
+   },
+   {
+    "event": "end",
+    "label": "n7_4h_e1_no_ageing",
+    "pid": 80266,
+    "t": 1790000031.205087,
+    "exit_code": 0
+   },
+   {
+    "event": "end",
+    "label": "n7_4h_e1_C2",
+    "pid": 80262,
+    "t": 1790000061.232401,
+    "exit_code": 0
+   },
+   {
+    "event": "end",
+    "label": "n7_4h_e1_C4",
+    "pid": 80263,
+    "t": 1790000076.250797,
+    "exit_code": 0
+   },
+   {
+    "event": "end",
+    "label": "n7_4h_e1_C2_calfade",
+    "pid": 80264,
+    "t": 1790000111.3221781,
+    "exit_code": 0
+   },
+   {
+    "event": "end",
+    "label": "n7_4h_e1_C3_midblock",
+    "pid": 80265,
+    "t": 1790000146.3876412,
+    "exit_code": 0
+   }
+  ]
+ },
+ "parent_solve_profile_guard": {
+  "counts": {
+   "permitted_solve": 0,
+   "permitted_exec": 0,
+   "blocked_solve": 0,
+   "blocked_exec": 0
+  },
+  "verify_0_failures": []
+ },
+ "wall_clock_s": 3866.038402080536
+}
