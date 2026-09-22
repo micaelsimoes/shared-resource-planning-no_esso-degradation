@@ -1,0 +1,63 @@
+{
+ "authority": [
+  "PLANNER_BRIEF_2026-09-13.md Addendum 35 and Addendum 36",
+  "P5_15_ADDENDUM32_34_REPORT.md (accepted in full)"
+ ],
+ "items": {
+  "1_harness": "scale script's solve identity aligned with the per-event rule (as the ladder harness does); explicit unrecovered-failure policy for long runs recorded and verified against production behaviour: continue with the last iterate, count the event, and NO unrecovered failure inside the 10 certifying cycles",
+  "2_marginal_mwh": {
+   "I_x_eur": 635914.0170071172,
+   "predictions_recorded_before_run": {
+    "author_expert": [
+     "the marginal MWh pays at m = 2 (value per MWh ~ 300k > the 253,878 EUR/MWh energy cost)",
+     "the optimum under the EUR 1M budget is the budget corner"
+    ],
+    "planner": "agrees the 2 MWh point pays at m = 2; expects value(2 MWh, m=2) - I in the range +80k to +160k, i.e. the value per MWh above the smallest unit's, since at m = 2 displaced flexibility is dearer; at m = 3 clearly paying"
+   },
+   "what": "SRP1, baseline ageing, flexibility multipliers m = 2 and m = 3: node 7, 4 h, 2 MWh (0.5 MVA / 2.0 MWh, 2025), 2 evaluations, concurrency 2; x = 0 at each m is taken from the committed ladder (dc468ab4)"
+  },
+  "3_generalization": "the four single-scenario code paths: hull-polish helpers, settlement reporting (s31c), p56a_oracle.load_baseline, run_admm_arm's solve count. Gate: bitwise two-cycle reproduction on SRP1 after the change (run when no campaign holds the lock)",
+  "4_pilot": {
+   "instance": "the paper's 5 representative years and 4 days, 2 market x 2 operation scenarios, row 18 active with alpha = 0.50, baseline ageing, AA-on, campaign cost file and budget, frozen spec",
+   "predictions_recorded_before_run": {
+    "author": "blocks ~4x SRP1; cycle of a few minutes; evaluation ~8-10 h",
+    "planner": "cycle time scales ~ per-block solve time x blocks: SRP1 32 s/cycle, paper 42 min at 25x scenarios; at 4x expect 2.5-6 min/cycle and 5-12 h per evaluation; memory ~4-6 GiB per process; value per MWh within 10 % of SRP1's, i.e. the R = 0.937 prediction is on the market spread while the storage sees the bus-7 marginal cost - a deviation is informative either way"
+   },
+   "report": "cycle time and memory as the second point on the block-size scaling law; value per MWh against SRP1's and against the R = 0.937 prediction; anything the generalization changed",
+   "runs": "x = 0 and the smallest node-7 4 h unit, concurrency 2, 10-cycle bar, hull polish on both, a two-cycle bitwise reproduction of one, and the full manuscript output (per-scenario costs and interface profiles, interface dispersion under soft non-anticipativity, ESS dispatch and SoH trajectory, settlement, penalty-table components, Excel writers)",
+   "stop": "STOP FOR REVIEW after the pilot, with the marginal test attached"
+  },
+  "5_F2_demonstration": "only if item 2 confirms: scenario F2 = flexibility price m = 2, labelled a flexibility-price scenario and never the baseline; the node-7 4 h ladder under F2 (5 points), then Phase B under the EUR 1M budget from the best point, frozen spec, hull polish on the incumbent. May run after the pilot while the review is pending",
+  "6_paper_scale_route": "author's decision on the pilot's timing: (a) >= 64 GiB server; (d) full instance serially here, two evaluations only (x = 0 and the smallest unit); (c) 3 x 3 scenario reduction. Same alpha as the pilot. Only after items 1 and 3",
+  "7_step5": [
+   "coordination benefit: uncoordinated dispatch vs ADMM-coordinated at x = 0, after the _add_dso_scenario_deviation_penalty guard fix",
+   "R3.6: discount (done, zero solves); soh_min 0.50 vs 0.70 under the baseline (one evaluation); salvage (zero-solve add-back); alpha {0.25, 0.5, 1.0} on the multi-scenario instance",
+   "certification statistics for the method section"
+  ]
+ },
+ "manuscript_mechanism_item": "in the expensive hours the DSOs shed imports, the TN is covered by zero-cost RES with every conventional unit at zero output, and the bus-7 price is the DSOs' flexibility shadow price (daily balance dual mu, plus the hourly price where P-down is marginal): demand-side flexibility sets the price on the vertical step of the supply curve, and the shared storage is valued at the distributed flexibility it displaces. Evidence: hour-by-hour identity (<= 0.078 EUR/MWh over 270 hours, d68c814d), flatness decomposition (-6.68 capped peaks, -5.25 hour reselection, -0.39 losses, dd0a86b3/d68c814d)",
+ "order": [
+  "1 harness + unrecovered-failure policy",
+  "2 marginal-MWh test (now, SRP1, while the generalization is written)",
+  "3 generalization + SRP1 bitwise gate",
+  "4 pilot",
+  "STOP FOR REVIEW (pilot + marginal test)",
+  "5 F2 demonstration if confirmed (may run while the review is pending)",
+  "6 paper-scale route per the author",
+  "7 Step 5"
+ ],
+ "predecessor": {
+  "path": "data/SRP1/Results/P515S49/frozen_s49_spec_v19_f8adcc97.json",
+  "sha256": "f8adcc9787f2b6e6761d037b8971e89fe26a408787f683331f425ffc73b09121"
+ },
+ "settled_no_further_work": [
+  "the flexibility ladder is reported as a break-even axis with the different-systems caveat; the baseline price is unchanged; realism claimed only with an author-supplied data anchor",
+  "the congestion/shifting dichotomy is dropped: the node-7 rating binds in CHEAP hours as an import limit on unpriced up-shifting; the flexibility cost is the priced down-leg",
+  "negative penalty levels: solver bound-relaxation residue, no defect",
+  "reactive flexibility is structurally absent; the manuscript claims none; voltage support earns nothing at bus 7",
+  "signal-size wording is section 5's",
+  "NOMAD recorded as verified on the direction and rounding machinery; STEP4 5.2 corrected by the author (the frame rule is ours)",
+  "expert ceiling and break-even predictions recorded as REFUTED, superseded by the price-mechanism proof"
+ ],
+ "stage": "P5.15 Addenda 35-36 - harness policy; marginal-MWh test; single-scenario generalization; multi-scenario pilot; F2 demonstration; paper-scale route; Step 5"
+}
