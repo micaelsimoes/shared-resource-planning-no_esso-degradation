@@ -244,6 +244,32 @@ Authority: Addendum 27 (with the author's decisions) and `STEP4_DFO_METHOD.md`. 
   1. The Phase B formal record.
   2. The memory task, run alone, with its decision rule recorded in spec v16. **Stop for review** after it.
 
+### Addenda 30–31: baseline C2 + φ_cal 0.985 + soh_min 0.70; Phase B record done — stopped for review (2026-09-22). Report: `P5_15_ADDENDUM30_PHASE_B_REPORT.md`
+
+- **Baseline in the case file** (`2466401d`). The ESS ageing parameters now enter the evaluation key (`65525006`). C3 results are the sensitivity set and are never mixed with the baseline.
+- **Re-certification.**
+  - C\* certified at 87 cycles; the smallest node-7 unit at 112 (value 259,428; value − I −58,529).
+  - The 0.70 floor binds in 2035 at every point.
+- **A1a under the baseline:** 30 of 30 certified.
+  - x = 0 still minimises F; the closest point is n5 0.25 / 1.0 at +53,607.
+  - Node-7 surface: value = 10,379 + 233,136·E + 52,699·P.
+  - Break-even energy cost: 182.2k €/MWh at the margin, 195–200k for the first unit.
+- **Phase B formal record:** terminated at x = 0, and the unit-poll certificate holds. All 14 feasible neighbours were evaluated and all are worse; the closest is +33,459.
+  - Completion ruling A2: at every unit poll, every feasible lattice point within one step of the incumbent is added to the poll.
+  - Reparametrization (option b) is referred to the author.
+- **The storage prices at the bus-7 TSO marginal cost** (4 h spread 80.6, against the market's 98.0).
+  - Value split: TSO generation 60 %, DSO flexibility 40 %, spread across all three DNs.
+  - Captured spread: 60.4 €/MWh per cycle under the baseline.
+- **Paper-scale prediction:** R = 0.937 on the market spread.
+- **Signal size:** 3.97e-4 of the system cost, not "four orders of magnitude".
+- **Open questions:**
+  - citations for the baseline values, not yet supplied;
+  - the reparametrization (option b);
+  - the NOMAD comparison;
+  - a terminal TSO capture;
+  - negative penalty-component levels.
+- **Next:** the memory task (Addendum 29), then **stop for review**.
+
 ---
 
 # SUPERSEDED "CURRENT" SECTION — 2026-09-14 (P5.15 Step 1 closed through gates G1–G5)
