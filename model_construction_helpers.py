@@ -808,6 +808,50 @@ def period_duration_hours(m):
     return HOURS_PER_REPRESENTATIVE_DAY / n_periods
 
 
+# ----------------------------------------------------------------------------------------------------------------------
+#  P5.15 Addendum 38 (B) -- HARD NON-ANTICIPATIVITY OF THE SHARED-ESS SCHEDULE
+# ----------------------------------------------------------------------------------------------------------------------
+# PLANNER_BRIEF_2026-09-13.md Addendum 37 (iv) and Addendum 38 (B), frozen spec
+# `data/SRP1/Results/P515S51/frozen_s51_spec_v21_13cb828c.json`, `row18_design.B_storage`:
+#
+#   "one scenario-free shared-ESS variable per period referenced in every scenario's
+#    balance rows; the per-scenario variables are RETAINED UNWIRED (fixtures must still
+#    load); non-anticipativity on charge and discharge separately"
+#
+# The ONE scenario-free variable per (e, p) is realized as the FIRST scenario pair's copy,
+# `shared_es_*[e, s_m0, s_o0, p]`: every scenario's balance row, every objective term and
+# every operational row references that single VarData, and the copies at every OTHER
+# scenario pair are left declared, unreferenced and unconstrained -- retained and unwired,
+# never deleted (repository retain-and-unwire rule), so preserved fixtures still unpickle
+# and `_SHARED_ESS_OPERATIONAL_VARIABLES` keeps gating all of them.
+#
+# Why an alias rather than a new Var plus equalities:
+#   * equalities tying per-scenario copies are exactly what Addendum 37 (iv) forbids
+#     (the duplicated-row dual non-identifiability found in Step 3);
+#   * a NEW scenario-free Var would rename shared-ESS columns in the NL file at ONE
+#     scenario too, where non-anticipativity is vacuous, and so would break the SRP1
+#     two-cycle bitwise gate for no modelling reason. With the alias, at one scenario
+#     `(s_m0, s_o0)` IS `(s_m, s_o)` and every expression below is literally unchanged.
+#
+# Non-anticipativity therefore covers `shared_es_pch` and `shared_es_pdch` SEPARATELY
+# (not only their net), together with `pch_hat`, `pdch_hat`, `pnet`, `qnet`, `soc` and the
+# day-balance slacks, because throughput -- not the net -- drives degradation.
+
+
+def sess_na_scenario(m):
+    """The single scenario pair whose shared-ESS copy is the scenario-free schedule."""
+    return next(iter(m.scenarios_market)), next(iter(m.scenarios_operation))
+
+
+def sess_row_is_duplicate(m, s_m, s_o):
+    """True for the scenario pairs whose shared-ESS operational rows are redundant
+    under hard non-anticipativity (every pair except the first). The rules below
+    return `pe.Constraint.Skip` for those, so the row exists exactly once per (e, p)
+    instead of once per (e, scenario, p). Always False at one scenario."""
+    s_m0, s_o0 = sess_na_scenario(m)
+    return s_m != s_m0 or s_o != s_o0
+
+
 def sess_converter_capability_rule(m, e, s_m, s_o, p):
     """Shared-ESS converter apparent-power capability (P5.4-A).
 
@@ -820,8 +864,11 @@ def sess_converter_capability_rule(m, e, s_m, s_o, p):
     `shared_es_s_rated` Var -- see the note above `configure_shared_ess_operational_state`.
     This row is therefore a convex SOC constraint, not an indefinite quadratic.
     """
-    return (m.shared_es_pnet[e, s_m, s_o, p] ** 2
-            + m.shared_es_qnet[e, s_m, s_o, p] ** 2) <= m.shared_es_s_rated_fixed[e] ** 2
+    if sess_row_is_duplicate(m, s_m, s_o):
+        return pe.Constraint.Skip
+    s_m0, s_o0 = sess_na_scenario(m)
+    return (m.shared_es_pnet[e, s_m0, s_o0, p] ** 2
+            + m.shared_es_qnet[e, s_m0, s_o0, p] ** 2) <= m.shared_es_s_rated_fixed[e] ** 2
 
 
 def sess_active_sum_limit_rule(m, e, s_m, s_o, p):
@@ -833,18 +880,27 @@ def sess_active_sum_limit_rule(m, e, s_m, s_o, p):
     envelope exactly. `S_rated` is `shared_es_s_rated_fixed` (P5.15-1b
     Candidate 2); this row is linear.
     """
-    return (m.shared_es_pch[e, s_m, s_o, p]
-            + m.shared_es_pdch[e, s_m, s_o, p]) <= m.shared_es_s_rated_fixed[e]
+    if sess_row_is_duplicate(m, s_m, s_o):
+        return pe.Constraint.Skip
+    s_m0, s_o0 = sess_na_scenario(m)
+    return (m.shared_es_pch[e, s_m0, s_o0, p]
+            + m.shared_es_pdch[e, s_m0, s_o0, p]) <= m.shared_es_s_rated_fixed[e]
 
 
 def sess_soc_lower_limit(m, e, s_m, s_o, p):
+    if sess_row_is_duplicate(m, s_m, s_o):
+        return pe.Constraint.Skip
+    s_m0, s_o0 = sess_na_scenario(m)
     soc_min = m.shared_es_e_rated_fixed[e] * ENERGY_STORAGE_MIN_ENERGY_STORED
-    return m.shared_es_soc[e, s_m, s_o, p] >= soc_min
+    return m.shared_es_soc[e, s_m0, s_o0, p] >= soc_min
 
 
 def sess_soc_upper_limit(m, e, s_m, s_o, p):
+    if sess_row_is_duplicate(m, s_m, s_o):
+        return pe.Constraint.Skip
+    s_m0, s_o0 = sess_na_scenario(m)
     soc_max = m.shared_es_e_rated_fixed[e] * ENERGY_STORAGE_MAX_ENERGY_STORED
-    return m.shared_es_soc[e, s_m, s_o, p] <= soc_max
+    return m.shared_es_soc[e, s_m0, s_o0, p] <= soc_max
 
 
 def sess_pch_hat_link_rule(m, e, s_m, s_o, p):
@@ -859,13 +915,19 @@ def sess_pch_hat_link_rule(m, e, s_m, s_o, p):
     P5.15-1b (Step 2 Candidate 2): `S_rated` is now `shared_es_s_rated_fixed`
     (a Param), so this row is LINEAR rather than bilinear.
     """
-    return (m.shared_es_pch[e, s_m, s_o, p]
-            - m.shared_es_s_rated_fixed[e] * m.shared_es_pch_hat[e, s_m, s_o, p]) == 0
+    if sess_row_is_duplicate(m, s_m, s_o):
+        return pe.Constraint.Skip
+    s_m0, s_o0 = sess_na_scenario(m)
+    return (m.shared_es_pch[e, s_m0, s_o0, p]
+            - m.shared_es_s_rated_fixed[e] * m.shared_es_pch_hat[e, s_m0, s_o0, p]) == 0
 
 
 def sess_pdch_hat_link_rule(m, e, s_m, s_o, p):
-    return (m.shared_es_pdch[e, s_m, s_o, p]
-            - m.shared_es_s_rated_fixed[e] * m.shared_es_pdch_hat[e, s_m, s_o, p]) == 0
+    if sess_row_is_duplicate(m, s_m, s_o):
+        return pe.Constraint.Skip
+    s_m0, s_o0 = sess_na_scenario(m)
+    return (m.shared_es_pdch[e, s_m0, s_o0, p]
+            - m.shared_es_s_rated_fixed[e] * m.shared_es_pdch_hat[e, s_m0, s_o0, p]) == 0
 
 
 def sess_comp_rule(m, e, s_m, s_o, p, network, params):
@@ -877,13 +939,16 @@ def sess_comp_rule(m, e, s_m, s_o, p, network, params):
     # 1e-4 instead of O(S^2) ~ 1e-12, which is what IPOPT can actually resolve.
     # ESS_COMPLEMENTARITY_TOLERANCE is unchanged at 1e-4; this stage rescales
     # the row, it does not tighten the physical tolerance.
-    pch = m.shared_es_pch[e, s_m, s_o, p]
-    pdch = m.shared_es_pdch[e, s_m, s_o, p]
+    if sess_row_is_duplicate(m, s_m, s_o):
+        return pe.Constraint.Skip
+    s_m0, s_o0 = sess_na_scenario(m)
+    pch = m.shared_es_pch[e, s_m0, s_o0, p]
+    pdch = m.shared_es_pdch[e, s_m0, s_o0, p]
     if params.shared_ess_model == ESS_MODEL_EXACT:
         return pch * pdch <= EQUALITY_TOLERANCE
     elif params.shared_ess_model == ESS_MODEL_BILINEAR_RELAXATION:
-        return (m.shared_es_pch_hat[e, s_m, s_o, p]
-                * m.shared_es_pdch_hat[e, s_m, s_o, p]) <= ESS_COMPLEMENTARITY_TOLERANCE
+        return (m.shared_es_pch_hat[e, s_m0, s_o0, p]
+                * m.shared_es_pdch_hat[e, s_m0, s_o0, p]) <= ESS_COMPLEMENTARITY_TOLERANCE
     elif params.shared_ess_model == ESS_MODEL_POLYNOMIAL_COMPLEMENTARITY:
         return pch ** 2 + pdch ** 2 <= (pch + pdch) ** 2 + EQUALITY_TOLERANCE
     else:
@@ -897,6 +962,9 @@ def sess_soc_rule(m, e, s_m, s_o, p, network, params):
     # explicit (period_duration_hours) rather than an implicit assumption; for
     # the standard 24-instant representative day it is exactly 1 h, which
     # reproduces the previous numerical coefficient.
+    if sess_row_is_duplicate(m, s_m, s_o):
+        return pe.Constraint.Skip
+    s_m0, s_o0 = sess_na_scenario(m)
     sess = network.shared_energy_storages[e]
     eff_ch = sess.eff_ch
     eff_dch = sess.eff_dch
@@ -904,25 +972,31 @@ def sess_soc_rule(m, e, s_m, s_o, p, network, params):
     if p == 0:
         soc_prev = m.shared_es_e_rated_fixed[e] * ENERGY_STORAGE_RELATIVE_INIT_SOC
     else:
-        soc_prev = m.shared_es_soc[e, s_m, s_o, p - 1]
+        soc_prev = m.shared_es_soc[e, s_m0, s_o0, p - 1]
 
-    delta = (eff_ch * m.shared_es_pch[e, s_m, s_o, p] * dt
-             - m.shared_es_pdch[e, s_m, s_o, p] * dt / eff_dch)
+    delta = (eff_ch * m.shared_es_pch[e, s_m0, s_o0, p] * dt
+             - m.shared_es_pdch[e, s_m0, s_o0, p] * dt / eff_dch)
 
-    return m.shared_es_soc[e, s_m, s_o, p] == soc_prev + delta
+    return m.shared_es_soc[e, s_m0, s_o0, p] == soc_prev + delta
 
 
 def sess_soc_final_rule(m, e, s_m, s_o, network, params):
+    if sess_row_is_duplicate(m, s_m, s_o):
+        return pe.Constraint.Skip
+    s_m0, s_o0 = sess_na_scenario(m)
     final_soc = m.shared_es_e_rated_fixed[e] * ENERGY_STORAGE_RELATIVE_INIT_SOC
     final_p = m.periods[-1]
     if params.slacks.shared_ess.day_balance:
-        return m.shared_es_soc[e, s_m, s_o, final_p] == final_soc + m.slack_shared_es_soc_final_up[e, s_m, s_o] - m.slack_shared_es_soc_final_down[e, s_m, s_o]
+        return m.shared_es_soc[e, s_m0, s_o0, final_p] == final_soc + m.slack_shared_es_soc_final_up[e, s_m0, s_o0] - m.slack_shared_es_soc_final_down[e, s_m0, s_o0]
     else:
-        return pe.inequality(-EQUALITY_TOLERANCE, m.shared_es_soc[e, s_m, s_o, final_p] - final_soc, EQUALITY_TOLERANCE)
+        return pe.inequality(-EQUALITY_TOLERANCE, m.shared_es_soc[e, s_m0, s_o0, final_p] - final_soc, EQUALITY_TOLERANCE)
 
 
 def sess_pnet_rule(m, e, s_m, s_o, p):
-    return m.shared_es_pnet[e, s_m, s_o, p] == m.shared_es_pch[e, s_m, s_o, p] - m.shared_es_pdch[e, s_m, s_o, p]
+    if sess_row_is_duplicate(m, s_m, s_o):
+        return pe.Constraint.Skip
+    s_m0, s_o0 = sess_na_scenario(m)
+    return m.shared_es_pnet[e, s_m0, s_o0, p] == m.shared_es_pch[e, s_m0, s_o0, p] - m.shared_es_pdch[e, s_m0, s_o0, p]
 
 
 _SHARED_ESS_OPERATIONAL_VARIABLES = (
@@ -1179,7 +1253,10 @@ def interface_pf_p_transmission_def(m, dn, s_m, s_o, p, network, params):
     # interface expression `pc + legs` in the hierarchical/uncoordinated paths
     # (delta == 0) and `pc + delta` in the ADMM path (legs == 0), without a
     # path-specific branch in this shared rule.
-    pc_adn += m.interface_delta_p[dn, s_m, s_o, p]
+    # P5.15 Addendum 38 (A): scenario-free (see `sess_na_scenario`'s note) -- the TSO
+    # operates on its committed schedule in every scenario.
+    s_m0, s_o0 = sess_na_scenario(m)
+    pc_adn += m.interface_delta_p[dn, s_m0, s_o0, p]
     if params.fl_reg:
         pc_adn += m.flex_p_up[adn_load_idx, s_m, s_o, p] - m.flex_p_down[adn_load_idx, s_m, s_o, p]
     return pc_adn
@@ -1193,7 +1270,9 @@ def interface_pf_q_transmission_def(m, dn, s_m, s_o, p, network, params):
         m.qc_curt_up[adn_load_idx, s_m, s_o, p].fix(EQUALITY_TOLERANCE)
     qc_adn = m.qc[adn_load_idx, s_m, s_o, p]
     # P5.15 Step 3.1-C (Addendum 12 item 2): see interface_pf_p_transmission_def.
-    qc_adn += m.interface_delta_q[dn, s_m, s_o, p]
+    # P5.15 Addendum 38 (A): scenario-free -- see interface_pf_p_transmission_def.
+    s_m0, s_o0 = sess_na_scenario(m)
+    qc_adn += m.interface_delta_q[dn, s_m0, s_o0, p]
     if params.fl_reg:
         qc_adn += m.flex_q_up[adn_load_idx, s_m, s_o, p] - m.flex_q_down[adn_load_idx, s_m, s_o, p]
     return qc_adn
@@ -1208,8 +1287,10 @@ def interface_vmag_distribution_def(m, s_m, s_o, p, network):
 def interface_pf_p_distribution_def(m, s_m, s_o, p, network):
     ref_gen_idx = network.get_reference_gen_idx()
     ref_node_id = network.get_reference_node_id()
+    # P5.15 Addendum 38 (B): the scenario-free shared-ESS schedule (see `sess_na_scenario`).
+    s_m0, s_o0 = sess_na_scenario(m)
     shared_ess_p = sum(
-        m.shared_es_pnet[e, s_m, s_o, p]
+        m.shared_es_pnet[e, s_m0, s_o0, p]
         for e in m.shared_energy_storages
         if network.shared_energy_storages[e].bus == ref_node_id
     )
@@ -1219,8 +1300,10 @@ def interface_pf_p_distribution_def(m, s_m, s_o, p, network):
 def interface_pf_q_distribution_def(m, s_m, s_o, p, network):
     ref_gen_idx = network.get_reference_gen_idx()
     ref_node_id = network.get_reference_node_id()
+    # P5.15 Addendum 38 (B): the scenario-free shared-ESS schedule (see `sess_na_scenario`).
+    s_m0, s_o0 = sess_na_scenario(m)
     shared_ess_q = sum(
-        m.shared_es_qnet[e, s_m, s_o, p]
+        m.shared_es_qnet[e, s_m0, s_o0, p]
         for e in m.shared_energy_storages
         if network.shared_energy_storages[e].bus == ref_node_id
     )
@@ -1302,8 +1385,12 @@ def compute_node_load(model, i, s_m, s_o, p, network, params):
             # nonzero depending on the path.
             if network.is_transmission and load_is_tso_adn_interface(network, load):
                 dn = network.active_distribution_network_nodes.index(load.bus)
-                Pd += model.interface_delta_p[dn, s_m, s_o, p]
-                Qd += model.interface_delta_q[dn, s_m, s_o, p]
+                # P5.15 Addendum 38 (A): scenario-free, exactly as in
+                # `interface_pf_p_transmission_def`, so the node balance and the
+                # interface expression stay identical row by row.
+                s_m0, s_o0 = sess_na_scenario(model)
+                Pd += model.interface_delta_p[dn, s_m0, s_o0, p]
+                Qd += model.interface_delta_q[dn, s_m0, s_o0, p]
             if params.fl_reg and load.fl_reg:
                 Pd += model.flex_p_up[c, s_m, s_o, p] - model.flex_p_down[c, s_m, s_o, p]
                 Qd += model.flex_q_up[c, s_m, s_o, p] - model.flex_q_down[c, s_m, s_o, p]
@@ -1326,8 +1413,11 @@ def compute_node_load(model, i, s_m, s_o, p, network, params):
         if es.bus == node.bus_i:
             # Shared ESS net power follows the load convention: positive values
             # are charging demand and therefore increase net demand.
-            Pd += model.shared_es_pnet[e, s_m, s_o, p]
-            Qd += model.shared_es_qnet[e, s_m, s_o, p]
+            # P5.15 Addendum 38 (B): the ONE scenario-free shared-ESS variable per
+            # period, referenced by EVERY scenario's node-balance row.
+            s_m0, s_o0 = sess_na_scenario(model)
+            Pd += model.shared_es_pnet[e, s_m0, s_o0, p]
+            Qd += model.shared_es_qnet[e, s_m0, s_o0, p]
 
     return Pd, Qd
 
@@ -1611,6 +1701,28 @@ def build_objective(model, network, params):
     model.interface_settlement_weight = pe.Param(initialize=0.00, mutable=True)
     model.interface_settlement = pe.Expression(expr=interface_energy_settlement(model, network))
 
+    # P5.15 Addendum 38 (C) (frozen spec v21 `row18_design.C_settlement`): the settlement
+    # SPLIT. The objective above still carries the WHOLE settlement -- the DSO pays the
+    # market at the scenario price -- but the two parts have different economic status:
+    #
+    #   contracted  = sum_t pibar_t * baseMVA * (sum_s omega_s p_int[s,t])
+    #                 the commitment valued at the mean price: a TRANSFER, which cancels
+    #                 against the TSO's opposite-signed term at the consensus point (the
+    #                 TSO being pinned, its own deviation part is identically zero), and
+    #                 which `_get_operational_recourse_components` therefore excludes
+    #                 from Q(x), exactly as the whole settlement used to be excluded;
+    #   deviation   = settlement - contracted
+    #                 = sum_t baseMVA * Cov_s(pi_t[s], p_int[s,t]), the price-deviation
+    #                 covariance: the energy the block deviated by, valued at the scenario
+    #                 price. With the TSO pinned this does NOT cancel; it is ECONOMIC and
+    #                 stays inside Q(x) together with the row 18 premium.
+    #
+    # With ONE market scenario pi_t[s] == pibar_t identically, so `deviation` is zero by
+    # construction and `contracted` IS the whole settlement -- every single-market-scenario
+    # result (all of SRP1) is therefore untouched, bit for bit.
+    model.interface_settlement_contracted = pe.Expression(expr=interface_energy_settlement_contracted(model, network))
+    model.interface_settlement_deviation = pe.Expression(expr=model.interface_settlement - model.interface_settlement_contracted)
+
     model.objective = pe.Objective(sense=pe.minimize, rule=partial(objective_function_rule, params=params))
 
 
@@ -1644,6 +1756,58 @@ def interface_energy_settlement(model, network):
         return settlement
 
 
+def expected_market_price(network, p):
+    """P5.15 Addendum 37 (i): pibar_t, the PROBABILITY-WEIGHTED MEAN over market
+    scenarios of hour t's price, for this representative year and day --
+    `sum_sm prob_market_scenarios[s_m] * cost_energy_p[s_m][t]`, the network's own
+    operational probability vector (never the ESS workbook's investment-cost
+    probabilities; Addendum 27 item 5b). At one market scenario the sum has a single
+    term and this is `cost_energy_p[0][t]` exactly."""
+    total = None
+    for s_m in range(len(network.prob_market_scenarios)):
+        contribution = network.prob_market_scenarios[s_m] * network.cost_energy_p[s_m][p]
+        total = contribution if total is None else total + contribution
+    return 0.0 if total is None else total
+
+
+def interface_energy_settlement_contracted(model, network):
+    """P5.15 Addendum 38 (C): the CONTRACTED part of the interface energy settlement --
+    the block's own expected (committed) interface schedule valued at the mean price
+    pibar_t, with the same sign convention as `interface_energy_settlement`:
+    `-sum_t pibar_t * baseMVA * E_s[pc_adn]` for the TSO, `+...E_s[pg_adn]` for a DSO.
+
+    The expectation is written as the probability-weighted sum over (s_m, s_o) of the
+    block's own per-scenario interface expression -- the same quantity the coupled
+    `expected_interface_pf_p` Var is DEFINED to equal (`dn_interface_expected_pf_p_def`
+    / `tn_interface_expected_pf_p_def`) -- so that this expression can be built here,
+    with the objective, before that Var is added by the coordination path.
+
+    `interface_energy_settlement - interface_energy_settlement_contracted` is then
+    exactly `sum_t baseMVA * Cov_s(pi_t[s_m], p_int[s_m,s_o,t])` (both sides), since
+    `E[pi p] - E[pi] E[p] = Cov(pi, p)` term by term in t.
+    """
+    contracted = 0.0
+    if network.is_transmission:
+        for dn in model.adn_nodes:
+            for p in model.periods:
+                expected_interface = 0.0
+                for s_m in model.scenarios_market:
+                    for s_o in model.scenarios_operation:
+                        probability = network.prob_market_scenarios[s_m] * network.prob_operation_scenarios[s_o]
+                        expected_interface += probability * model.pc_adn[dn, s_m, s_o, p]
+                contracted += expected_market_price(network, p) * network.baseMVA * expected_interface
+        return -contracted
+    else:
+        for p in model.periods:
+            expected_interface = 0.0
+            for s_m in model.scenarios_market:
+                for s_o in model.scenarios_operation:
+                    probability = network.prob_market_scenarios[s_m] * network.prob_operation_scenarios[s_o]
+                    expected_interface += probability * model.pg_adn[s_m, s_o, p]
+            contracted += expected_market_price(network, p) * network.baseMVA * expected_interface
+        return contracted
+
+
 def objective_function_rule(model, params):
     if params.obj_type == OBJ_MIN_COST:
         obj = model.total_gen_cost + model.total_flex_cost + model.total_load_curt_cost + model.total_gen_curt_penalty
@@ -1657,7 +1821,181 @@ def objective_function_rule(model, params):
     # `_get_operational_recourse_components` (shared_resources_planning.py)
     # subtracts it back out.
     obj += model.interface_settlement_weight * model.interface_settlement
+    # P5.15 Addendum 38 / frozen spec v21 `row18_design`: both terms below are added by
+    # `add_scenario_commitment_terms`, which ALSO REBUILDS this objective, so
+    # `model.objective` and `objective_function_rule` coincide by construction -- the
+    # asymmetry W37 found above 1 x 1 (the polish minimised `model.objective`, which
+    # carried the retired scenario-deviation quadratic, while Delta was measured on this
+    # rule, which did not) cannot recur. Neither component exists at ONE scenario, where
+    # both terms are vacuous, so every single-scenario objective is unchanged bit for bit.
+    #
+    # row 18 (category E, INSIDE Q(x)): the DSO-side linear imbalance premium
+    #   sum_{s,t} omega_s * alpha * pibar_t * baseMVA * (d+ + d-) on its per-scenario
+    #   interface deviation from its own committed schedule.
+    if hasattr(model, 'row18_deviation_charge'):
+        obj += model.row18_deviation_charge
+    # the interface-voltage pin (category D, SOLVER-ONLY): kept in the solver objective
+    #   (hard non-anticipativity on the interface voltage is what a TSO holding a
+    #   substation setpoint does) and subtracted back out of the reported Q(x) by
+    #   `_get_operational_recourse_components`, exactly as the settlement transfer is.
+    if hasattr(model, 'scenario_voltage_pin'):
+        obj += model.scenario_voltage_pin_weight * model.scenario_voltage_pin
     return obj
+
+
+# ----------------------------------------------------------------------------------------------------------------------
+#  P5.15 Addendum 38 -- ROW 18 AS SIGNED (commitment + imbalance settlement)
+# ----------------------------------------------------------------------------------------------------------------------
+# PLANNER_BRIEF_2026-09-13.md Addendum 10 (the signed row 18), 37 (i)-(iv) and 38 (A)-(D);
+# frozen spec `data/SRP1/Results/P515S51/frozen_s51_spec_v21_13cb828c.json`, `row18_design`.
+#
+# `add_scenario_commitment_terms` is the ONE place that wires the two multi-scenario
+# objective terms and rebuilds the objective. It REPLACES
+# `shared_resources_planning._add_tso_scenario_deviation_penalty` /
+# `_add_dso_scenario_deviation_penalty` (the 9e4 V + interface P/Q, 1e4 storage quadratic,
+# added to `model.objective.expr` AFTER `objective_function_rule` and therefore OUTSIDE
+# Q(x)); those two functions are RETAINED, UNWIRED and UNUSED -- never deleted -- under
+# the repository retain-and-unwire rule.
+
+
+def row18_interface_deviation_p_rule(m, s_m, s_o, p):
+    """d_p[s,t] = p_int[s,t] - pbar_t = d+ - d-, with pbar_t the block's OWN coupled
+    day-ahead expectation Var (`expected_interface_pf_p`), never the incoming consensus
+    value (Addendum 37 (ii): pricing movement relative to an ADMM iterate is the defect
+    removed in row 3). LP form: no |.| enters the NLP."""
+    return (m.pg_adn[s_m, s_o, p] - m.expected_interface_pf_p[p]
+            == m.row18_dev_p_up[s_m, s_o, p] - m.row18_dev_p_down[s_m, s_o, p])
+
+
+def row18_interface_deviation_q_rule(m, s_m, s_o, p):
+    """Reactive counterpart of `row18_interface_deviation_p_rule`, priced at the SAME
+    alpha * pibar_t (Addendum 10, stated as an assumption)."""
+    return (m.qg_adn[s_m, s_o, p] - m.expected_interface_pf_q[p]
+            == m.row18_dev_q_up[s_m, s_o, p] - m.row18_dev_q_down[s_m, s_o, p])
+
+
+def add_scenario_commitment_terms(model, network, params, premium_alpha=0.0,
+                                  premium_floor=None, include_voltage=True):
+    """Wire row 18 (DSO side) and the interface-voltage pin, then rebuild the objective.
+
+    Returns a provenance dict recording exactly what was wired (consumed by the stage's
+    zero-solve checks and written into the campaign artifacts).
+
+    AT ONE SCENARIO NOTHING IS WIRED. Both terms are vacuous there -- a single scenario
+    cannot deviate from its own expectation -- so the model, its objective expression and
+    hence every SRP1 measurement are untouched bit for bit. This is the same guard, and
+    the same provable-no-op argument, that the retired quadratic carried.
+
+    `premium_alpha` defaults to 0.0: ROW 18 INACTIVE, the free-deviation reference and the
+    behaviour of every result committed before this stage. It is set from
+    `ADMMParameters.interface_deviation_premium` ('alpha'), which itself defaults to 0.0
+    and may be raised by a campaign/harness configuration or the case file.
+
+    `premium_floor` is applied to pibar_t ONLY if the caller passes one; Addendum 38 makes
+    that conditional on some hour's mean price being non-positive, which is a property of
+    the price data and is checked before the run, never assumed.
+    """
+
+    n_scenarios = len(model.scenarios_market) * len(model.scenarios_operation)
+    wired = {
+        'n_scenarios_market': len(model.scenarios_market),
+        'n_scenarios_operation': len(model.scenarios_operation),
+        'n_scenarios': n_scenarios,
+        'is_transmission': bool(network.is_transmission),
+        'row18_wired': False,
+        'row18_alpha': float(premium_alpha),
+        'row18_premium_floor': None,
+        'row18_premium_floor_applied': False,
+        'row18_n_deviation_variables': 0,
+        'row18_n_deviation_rows': 0,
+        'voltage_pin_wired': False,
+        'voltage_pin_weight': 0.0,
+        'objective_rebuilt': False,
+        'reason': None,
+    }
+
+    if n_scenarios == 1:
+        wired['reason'] = ('single scenario: row 18 and the voltage pin are vacuous and '
+                           'are not constructed (structural absence, not a zero weight)')
+        return wired
+
+    # ------------------------------------------------------------------------------
+    # (D) interface-voltage pin -- solver-only, excluded from Q(x)
+    # ------------------------------------------------------------------------------
+    if include_voltage:
+        if not hasattr(model, 'expected_interface_vmag'):
+            raise ValueError('add_scenario_commitment_terms: the interface-voltage pin needs '
+                             '`expected_interface_vmag`; call this AFTER the coordination path '
+                             'has added the expected-interface Vars.')
+        voltage_deviation = 0.0
+        for s_m in model.scenarios_market:
+            for s_o in model.scenarios_operation:
+                probability = network.prob_market_scenarios[s_m] * network.prob_operation_scenarios[s_o]
+                for p in model.periods:
+                    if network.is_transmission:
+                        for dn in model.adn_nodes:
+                            voltage_deviation += probability * (model.vmag_adn[dn, s_m, s_o, p] - model.expected_interface_vmag[dn, p]) ** 2
+                    else:
+                        voltage_deviation += probability * (model.vmag_adn[s_m, s_o, p] - model.expected_interface_vmag[p]) ** 2
+        model.scenario_voltage_pin_weight = pe.Param(initialize=PENALTY_SCENARIO_DEVIATION, mutable=True)
+        model.scenario_voltage_pin = pe.Expression(expr=voltage_deviation)
+        wired['voltage_pin_wired'] = True
+        wired['voltage_pin_weight'] = float(PENALTY_SCENARIO_DEVIATION)
+
+    # ------------------------------------------------------------------------------
+    # row 18 -- DSO side only (Addendum 37 (iii) / 38 (A): the TSO carries no term)
+    # ------------------------------------------------------------------------------
+    if (not network.is_transmission) and premium_alpha > 0.0:
+        if not (hasattr(model, 'expected_interface_pf_p') and hasattr(model, 'expected_interface_pf_q')):
+            raise ValueError('add_scenario_commitment_terms: row 18 needs the coupled '
+                             '`expected_interface_pf_p/q` Vars; call this AFTER the '
+                             'coordination path has added them.')
+
+        premium = {}
+        floor_applied = False
+        for p in model.periods:
+            pibar = expected_market_price(network, p)
+            if premium_floor is not None and pibar < premium_floor:
+                pibar = premium_floor
+                floor_applied = True
+            premium[p] = pibar
+
+        model.row18_alpha = pe.Param(initialize=float(premium_alpha), mutable=True)
+        model.row18_premium = pe.Param(model.periods, initialize=premium, mutable=True)
+
+        model.row18_dev_p_up = pe.Var(model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
+        model.row18_dev_p_down = pe.Var(model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
+        model.row18_dev_q_up = pe.Var(model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
+        model.row18_dev_q_down = pe.Var(model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
+
+        model.row18_dev_p_def = pe.Constraint(model.scenarios_market, model.scenarios_operation, model.periods, rule=row18_interface_deviation_p_rule)
+        model.row18_dev_q_def = pe.Constraint(model.scenarios_market, model.scenarios_operation, model.periods, rule=row18_interface_deviation_q_rule)
+
+        charge = 0.0
+        for s_m in model.scenarios_market:
+            for s_o in model.scenarios_operation:
+                probability = network.prob_market_scenarios[s_m] * network.prob_operation_scenarios[s_o]
+                for p in model.periods:
+                    charge += (probability * model.row18_alpha * model.row18_premium[p] * network.baseMVA
+                               * (model.row18_dev_p_up[s_m, s_o, p] + model.row18_dev_p_down[s_m, s_o, p]
+                                  + model.row18_dev_q_up[s_m, s_o, p] + model.row18_dev_q_down[s_m, s_o, p]))
+        model.row18_deviation_charge = pe.Expression(expr=charge)
+
+        wired['row18_wired'] = True
+        wired['row18_premium_floor'] = premium_floor
+        wired['row18_premium_floor_applied'] = floor_applied
+        wired['row18_n_deviation_variables'] = 4 * n_scenarios * len(model.periods)
+        wired['row18_n_deviation_rows'] = 2 * n_scenarios * len(model.periods)
+
+    # ------------------------------------------------------------------------------
+    # Rebuild the objective so that `model.objective` IS `objective_function_rule`
+    # ------------------------------------------------------------------------------
+    if wired['row18_wired'] or wired['voltage_pin_wired']:
+        model.del_component(model.objective)
+        model.objective = pe.Objective(sense=pe.minimize, rule=partial(objective_function_rule, params=params))
+        wired['objective_rebuilt'] = True
+
+    return wired
 
 
 def generation_cost(model, network, s_m, s_o, params):
@@ -1874,7 +2212,10 @@ def ess_utilization_cost_penalty(model, network, s_m, s_o, params):
             # zero the shared term for ADMM without silently zeroing the local
             # one too (hygiene for future cases with `es_reg` active; inert on
             # SRP1 -- see `P5_15_S31_PENALTY_TABLE_DRAFT.md` row 8).
-            cost += model.penalty_shared_ess_usage * network.baseMVA * (model.shared_es_pch[e, s_m, s_o, p] + model.shared_es_pdch[e, s_m, s_o, p])
+            # P5.15 Addendum 38 (B): scenario-free schedule. Each scenario's expression
+            # is the same, so the probability-weighted total is unchanged in value.
+            s_m0, s_o0 = sess_na_scenario(model)
+            cost += model.penalty_shared_ess_usage * network.baseMVA * (model.shared_es_pch[e, s_m0, s_o0, p] + model.shared_es_pdch[e, s_m0, s_o0, p])
     if params.es_reg:
         for e in model.energy_storages:
             for p in model.periods:
@@ -1995,7 +2336,9 @@ def shared_ess_day_balance_slack_penalty(model, network, s_m, s_o, params):
     base = network.baseMVA
     for e in model.shared_energy_storages:
         if params.slacks.shared_ess.day_balance:
-            total += base * PENALTY_SHARED_ESS_BALANCE * (model.slack_shared_es_soc_final_up[e, s_m, s_o] + model.slack_shared_es_soc_final_down[e, s_m, s_o])
+            # P5.15 Addendum 38 (B): scenario-free day-balance slacks.
+            s_m0, s_o0 = sess_na_scenario(model)
+            total += base * PENALTY_SHARED_ESS_BALANCE * (model.slack_shared_es_soc_final_up[e, s_m0, s_o0] + model.slack_shared_es_soc_final_down[e, s_m0, s_o0])
     return total
 
 
@@ -2017,7 +2360,9 @@ def ess_complementarity_bilinear_value(model, network, s_m, s_o, params):
     for e in model.shared_energy_storages:
         for p in model.periods:
             if params.shared_ess_model == ESS_MODEL_BILINEAR_RELAXATION:
-                total += base * PENALTY_ESS_COMPLEMENTARITY * (model.shared_es_pch[e, s_m, s_o, p] * model.shared_es_pdch[e, s_m, s_o, p])
+                # P5.15 Addendum 38 (B): scenario-free schedule.
+                s_m0, s_o0 = sess_na_scenario(model)
+                total += base * PENALTY_ESS_COMPLEMENTARITY * (model.shared_es_pch[e, s_m0, s_o0, p] * model.shared_es_pdch[e, s_m0, s_o0, p])
     return total
 
 
@@ -2103,11 +2448,13 @@ def dn_interface_expected_pf_q_rule(m, p, network):
 
 
 def dn_interface_expected_sess_p_def(m, p, network, shared_ess_idx):
-    return sum(network.prob_market_scenarios[s_m] * network.prob_operation_scenarios[s_o] * m.shared_es_pnet[shared_ess_idx, s_m, s_o, p] for s_m in m.scenarios_market for s_o in m.scenarios_operation)
+    s_m0, s_o0 = sess_na_scenario(m)  # P5.15 Addendum 38 (B)
+    return sum(network.prob_market_scenarios[s_m] * network.prob_operation_scenarios[s_o] * m.shared_es_pnet[shared_ess_idx, s_m0, s_o0, p] for s_m in m.scenarios_market for s_o in m.scenarios_operation)
 
 
 def dn_interface_expected_sess_q_def(m, p, network, shared_ess_idx):
-    return sum(network.prob_market_scenarios[s_m] * network.prob_operation_scenarios[s_o] * m.shared_es_qnet[shared_ess_idx, s_m, s_o, p] for s_m in m.scenarios_market for s_o in m.scenarios_operation)
+    s_m0, s_o0 = sess_na_scenario(m)  # P5.15 Addendum 38 (B)
+    return sum(network.prob_market_scenarios[s_m] * network.prob_operation_scenarios[s_o] * m.shared_es_qnet[shared_ess_idx, s_m0, s_o0, p] for s_m in m.scenarios_market for s_o in m.scenarios_operation)
 
 
 def dn_interface_expected_sess_p_rule(m, p, network, shared_ess_idx):
@@ -2146,11 +2493,13 @@ def tn_interface_expected_pf_q_rule(m, dn, p, network):
 
 
 def tn_interface_expected_sess_p_def(m, e, p, network):
-    return sum(network.prob_market_scenarios[s_m] * network.prob_operation_scenarios[s_o] * m.shared_es_pnet[e, s_m, s_o, p] for s_m in m.scenarios_market for s_o in m.scenarios_operation)
+    s_m0, s_o0 = sess_na_scenario(m)  # P5.15 Addendum 38 (B)
+    return sum(network.prob_market_scenarios[s_m] * network.prob_operation_scenarios[s_o] * m.shared_es_pnet[e, s_m0, s_o0, p] for s_m in m.scenarios_market for s_o in m.scenarios_operation)
 
 
 def tn_interface_expected_sess_q_def(m, e, p, network):
-    return sum(network.prob_market_scenarios[s_m] * network.prob_operation_scenarios[s_o] * m.shared_es_qnet[e, s_m, s_o, p] for s_m in m.scenarios_market for s_o in m.scenarios_operation)
+    s_m0, s_o0 = sess_na_scenario(m)  # P5.15 Addendum 38 (B)
+    return sum(network.prob_market_scenarios[s_m] * network.prob_operation_scenarios[s_o] * m.shared_es_qnet[e, s_m0, s_o0, p] for s_m in m.scenarios_market for s_o in m.scenarios_operation)
 
 
 def tn_interface_expected_sess_p_rule(m, e, p, network):

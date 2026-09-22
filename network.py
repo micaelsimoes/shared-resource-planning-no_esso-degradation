@@ -1615,10 +1615,15 @@ def _process_results(network, model, params, results=dict()):
                     # loading magnitude sqrt(pnet^2 + qnet^2) in MVA. The retired
                     # sch/sdch difference was a signed apparent charge/discharge
                     # quantity; direction remains available from 'p' (load-positive).
-                    s_ess = sqrt(max(pe.value(model.shared_es_pnet[e, s_m, s_o, p]) ** 2 + pe.value(model.shared_es_qnet[e, s_m, s_o, p]) ** 2, 0.0)) * network.baseMVA
-                    p_ess = pe.value(model.shared_es_pch[e, s_m, s_o, p] - model.shared_es_pdch[e, s_m, s_o, p]) * network.baseMVA
-                    q_ess = pe.value(model.shared_es_qnet[e, s_m, s_o, p]) * network.baseMVA
-                    soc_ess = pe.value(model.shared_es_soc[e, s_m, s_o, p]) * network.baseMVA
+                    # P5.15 Addendum 38 (B): the shared-ESS schedule is scenario-free
+                    # (`sess_na_scenario`), so every scenario's results table reports the
+                    # ONE committed schedule rather than the unwired per-scenario copies.
+                    # At one scenario these indices are (s_m, s_o) themselves.
+                    s_m0, s_o0 = sess_na_scenario(model)
+                    s_ess = sqrt(max(pe.value(model.shared_es_pnet[e, s_m0, s_o0, p]) ** 2 + pe.value(model.shared_es_qnet[e, s_m0, s_o0, p]) ** 2, 0.0)) * network.baseMVA
+                    p_ess = pe.value(model.shared_es_pch[e, s_m0, s_o0, p] - model.shared_es_pdch[e, s_m0, s_o0, p]) * network.baseMVA
+                    q_ess = pe.value(model.shared_es_qnet[e, s_m0, s_o0, p]) * network.baseMVA
+                    soc_ess = pe.value(model.shared_es_soc[e, s_m0, s_o0, p]) * network.baseMVA
                     processed_results['scenarios'][s_m][s_o]['shared_energy_storages']['p'][node_id].append(p_ess)
                     processed_results['scenarios'][s_m][s_o]['shared_energy_storages']['q'][node_id].append(q_ess)
                     processed_results['scenarios'][s_m][s_o]['shared_energy_storages']['s'][node_id].append(s_ess)
@@ -1663,7 +1668,9 @@ def _process_results(network, model, params, results=dict()):
             for e in model.shared_energy_storages:
                 node_id = network.shared_energy_storages[e].bus
                 if params.slacks.shared_ess.day_balance:
-                    slack_soc_final = pe.value(model.slack_shared_es_soc_final_up[e, s_m, s_o] - model.slack_shared_es_soc_final_down[e, s_m, s_o]) * s_base
+                    # P5.15 Addendum 38 (B): scenario-free day-balance slacks.
+                    s_m0, s_o0 = sess_na_scenario(model)
+                    slack_soc_final = pe.value(model.slack_shared_es_soc_final_up[e, s_m0, s_o0] - model.slack_shared_es_soc_final_down[e, s_m0, s_o0]) * s_base
                     processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storages']['soc_final'][node_id] = slack_soc_final
 
             # - Node balance
