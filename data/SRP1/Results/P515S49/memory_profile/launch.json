@@ -1,0 +1,395 @@
+{
+ "schema": "p515_s49_memory_profile_v1",
+ "stage": "P5.15 Addendum 29 W32 M1 -- per-solve memory profile of one network block (classification)",
+ "authority": [
+  "PLANNER_BRIEF_2026-09-13.md Addendum 29",
+  "data/SRP1/Results/P515S48/frozen_s48_spec_v18_8bda2a0a.json memory_task",
+  "Planner task W32 (memory: profile, classify, fix bookkeeping, gate)"
+ ],
+ "utc": "2026-09-22T11:02:21.474703+00:00",
+ "git_head": "d68c814d75b57096943757690da771ff36ef9b21",
+ "git_tracked_changes": [
+  "M PLANNER_BRIEF_2026-09-13.md"
+ ],
+ "script": "p515_s49_memory_profile.py",
+ "script_sha256": "0bad8735f5300c071ec44f43efdf397c4682979e469b570928c4ad40ae3e5d79",
+ "interpreter": "/Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python",
+ "nlp_solver_path_env": null,
+ "label": "memory_profile",
+ "only": null,
+ "derived_cases": {
+  "srp1": {
+   "path": "data/SRP1/Results/P515S49/memory_profile/case/SRP1__srp1.json",
+   "sha256": "45e8e700a547de22b2c9cd2f9373c4307da30764461e647424eca7eb2d1594b3",
+   "source": "data/SRP1/SRP1.json",
+   "source_sha256": "61a794a7ce7a3fb983f2e92128eec446dd7dbb17ad75a3b3b1c5735f8bd4e4ef",
+   "changes_vs_source": [],
+   "instance_definition": {
+    "description": "the current SRP1 case file unchanged (3 years x 4 days x 1 x 1 scenario)",
+    "years": null,
+    "num_market_scenarios": null,
+    "num_operation_scenarios": null
+   }
+  },
+  "paper": {
+   "path": "data/SRP1/Results/P515S49/memory_profile/case/SRP1__paper.json",
+   "sha256": "d726307c1949d91b34b00241fbc713412c689b113222929133eda38d9756ca14",
+   "source": "data/SRP1/SRP1.json",
+   "source_sha256": "61a794a7ce7a3fb983f2e92128eec446dd7dbb17ad75a3b3b1c5735f8bd4e4ef",
+   "changes_vs_source": [
+    {
+     "key": "Years",
+     "from": {
+      "2025": 5,
+      "2030": 5,
+      "2035": 5
+     },
+     "to": {
+      "2025": 3,
+      "2028": 3,
+      "2031": 3,
+      "2034": 3,
+      "2037": 3
+     }
+    },
+    {
+     "key": "NumMarketScenarios",
+     "from": 1,
+     "to": 5
+    },
+    {
+     "key": "TransmissionNetwork[case9].num_operation_scenarios",
+     "from": 1,
+     "to": 5
+    },
+    {
+     "key": "DistributionNetworks[case33_1].num_operation_scenarios",
+     "from": 1,
+     "to": 5
+    },
+    {
+     "key": "DistributionNetworks[case33_2].num_operation_scenarios",
+     "from": 1,
+     "to": 5
+    },
+    {
+     "key": "DistributionNetworks[case33_3].num_operation_scenarios",
+     "from": 1,
+     "to": 5
+    }
+   ],
+   "instance_definition": {
+    "description": "the paper instance: 5 representative years (2025, 2028, 2031, 2034, 2037; each a 3-year block, sum 15) x 4 days x 5 market x 5 operation scenarios (25 combinations per block)",
+    "years": {
+     "2025": 3,
+     "2028": 3,
+     "2031": 3,
+     "2034": 3,
+     "2037": 3
+    },
+    "num_market_scenarios": 5,
+    "num_operation_scenarios": 5,
+    "sources": [
+     "EXPERT_REVIEW.md:81 (five representative years, 25 market/operational combinations per day)",
+     "EXPERT_REVIEW.md:147 (five three-year blocks beginning in 2025; 2037 last label)",
+     "git 0198407e:data/SRP1/SRP1.json (Years 2025/2028/2031/2034/2037 x 3; NumMarketScenarios 5; num_operation_scenarios 5 for case9 and case33_1..3)",
+     "data/SRP1/Results/20251221_3 years/ Main Info (5 years, 5 market / 5 operation scenarios)"
+    ]
+   }
+  }
+ },
+ "plan": [
+  {
+   "instance": "srp1",
+   "mode": "single",
+   "variant": "a",
+   "rep": 1
+  },
+  {
+   "instance": "srp1",
+   "mode": "single",
+   "variant": "b",
+   "rep": 1
+  },
+  {
+   "instance": "srp1",
+   "mode": "single",
+   "variant": "c",
+   "rep": 1
+  },
+  {
+   "instance": "srp1",
+   "mode": "single",
+   "variant": "d",
+   "rep": 1
+  },
+  {
+   "instance": "srp1",
+   "mode": "single",
+   "variant": "e",
+   "rep": 1
+  },
+  {
+   "instance": "srp1",
+   "mode": "single",
+   "variant": "a",
+   "rep": 2
+  },
+  {
+   "instance": "srp1",
+   "mode": "single",
+   "variant": "b",
+   "rep": 2
+  },
+  {
+   "instance": "srp1",
+   "mode": "single",
+   "variant": "c",
+   "rep": 2
+  },
+  {
+   "instance": "srp1",
+   "mode": "single",
+   "variant": "d",
+   "rep": 2
+  },
+  {
+   "instance": "srp1",
+   "mode": "single",
+   "variant": "e",
+   "rep": 2
+  },
+  {
+   "instance": "srp1",
+   "mode": "single",
+   "variant": "a",
+   "rep": 3
+  },
+  {
+   "instance": "srp1",
+   "mode": "single",
+   "variant": "b",
+   "rep": 3
+  },
+  {
+   "instance": "srp1",
+   "mode": "single",
+   "variant": "c",
+   "rep": 3
+  },
+  {
+   "instance": "srp1",
+   "mode": "single",
+   "variant": "d",
+   "rep": 3
+  },
+  {
+   "instance": "srp1",
+   "mode": "single",
+   "variant": "e",
+   "rep": 3
+  },
+  {
+   "instance": "srp1",
+   "mode": "attribution",
+   "variant": "a",
+   "rep": 1
+  },
+  {
+   "instance": "srp1",
+   "mode": "sequence",
+   "variant": "a",
+   "rep": 1
+  },
+  {
+   "instance": "srp1",
+   "mode": "sequence",
+   "variant": "e",
+   "rep": 1
+  },
+  {
+   "instance": "srp1",
+   "mode": "sequence",
+   "variant": "a",
+   "rep": 2
+  },
+  {
+   "instance": "srp1",
+   "mode": "sequence",
+   "variant": "e",
+   "rep": 2
+  },
+  {
+   "instance": "srp1",
+   "mode": "long",
+   "variant": "a",
+   "rep": 1
+  },
+  {
+   "instance": "srp1",
+   "mode": "long",
+   "variant": "e",
+   "rep": 1
+  },
+  {
+   "instance": "paper",
+   "mode": "single",
+   "variant": "a",
+   "rep": 1
+  },
+  {
+   "instance": "paper",
+   "mode": "single",
+   "variant": "b",
+   "rep": 1
+  },
+  {
+   "instance": "paper",
+   "mode": "single",
+   "variant": "c",
+   "rep": 1
+  },
+  {
+   "instance": "paper",
+   "mode": "single",
+   "variant": "d",
+   "rep": 1
+  },
+  {
+   "instance": "paper",
+   "mode": "single",
+   "variant": "e",
+   "rep": 1
+  },
+  {
+   "instance": "paper",
+   "mode": "single",
+   "variant": "a",
+   "rep": 2
+  },
+  {
+   "instance": "paper",
+   "mode": "single",
+   "variant": "b",
+   "rep": 2
+  },
+  {
+   "instance": "paper",
+   "mode": "single",
+   "variant": "c",
+   "rep": 2
+  },
+  {
+   "instance": "paper",
+   "mode": "single",
+   "variant": "d",
+   "rep": 2
+  },
+  {
+   "instance": "paper",
+   "mode": "single",
+   "variant": "e",
+   "rep": 2
+  },
+  {
+   "instance": "paper",
+   "mode": "single",
+   "variant": "a",
+   "rep": 3
+  },
+  {
+   "instance": "paper",
+   "mode": "single",
+   "variant": "b",
+   "rep": 3
+  },
+  {
+   "instance": "paper",
+   "mode": "single",
+   "variant": "c",
+   "rep": 3
+  },
+  {
+   "instance": "paper",
+   "mode": "single",
+   "variant": "d",
+   "rep": 3
+  },
+  {
+   "instance": "paper",
+   "mode": "single",
+   "variant": "e",
+   "rep": 3
+  },
+  {
+   "instance": "paper",
+   "mode": "attribution",
+   "variant": "a",
+   "rep": 1
+  },
+  {
+   "instance": "paper",
+   "mode": "sequence",
+   "variant": "a",
+   "rep": 1
+  },
+  {
+   "instance": "paper",
+   "mode": "sequence",
+   "variant": "e",
+   "rep": 1
+  },
+  {
+   "instance": "paper",
+   "mode": "sequence",
+   "variant": "a",
+   "rep": 2
+  },
+  {
+   "instance": "paper",
+   "mode": "sequence",
+   "variant": "e",
+   "rep": 2
+  },
+  {
+   "instance": "paper",
+   "mode": "long",
+   "variant": "a",
+   "rep": 1
+  },
+  {
+   "instance": "paper",
+   "mode": "long",
+   "variant": "e",
+   "rep": 1
+  }
+ ],
+ "declared_solves_per_child": {
+  "single": 3,
+  "attribution": 3,
+  "sequence": 12,
+  "long": 10
+ },
+ "variants": {
+  "a": "production as is (SolverResults kept by the caller; model.solutions untouched)",
+  "b": "a + result.solution.clear() (Pyomo load_solutions=True housekeeping)",
+  "c": "a + model.solutions.clear() + result.solution.clear() + result._smap=None (suffixes kept)",
+  "d": "a + gc.collect()",
+  "e": "c + gc.collect()"
+ },
+ "node": 7,
+ "watchdog_limit_gib": 20.0,
+ "measurement": {
+  "samples_per_checkpoint": 5,
+  "gap_s": 0.1,
+  "ipopt_sampler_s": 0.02,
+  "rss": "psutil memory_info().rss",
+  "footprint": "libproc ri_phys_footprint"
+ },
+ "machine": {
+  "total_memory_bytes": 34359738368,
+  "cpu_count": 12,
+  "available_at_launch": 17804705792,
+  "swap_used_at_launch": 928776192
+ }
+}
