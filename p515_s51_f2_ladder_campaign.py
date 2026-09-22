@@ -402,6 +402,17 @@ def investment_inputs():
         master['min_energy_to_power_ratio'] <= DURATION_H <= master['max_energy_to_power_ratio'])
     corner, more = M.budget_corner(w2)
     failures += more
+    # M.budget_corner's own `statement` is worded for the marginal-MWh stage ("this campaign evaluates 2 MWh ...
+    # the corner itself is NOT evaluated here"), which is false here: F2 evaluates the corner (E = 3). The
+    # inherited wording is kept, clearly attributed, and the stage's own statement replaces it.
+    corner['statement_as_worded_by_the_s50_marginal_launcher'] = corner['statement']
+    corner['statement'] = (f"under the EUR {corner['budget_eur']:,.0f} budget the node-7 4 h ladder at {YEAR} is "
+                           f"feasible up to {corner['corner_e_mwh']} MWh (I = {corner['corner_I_eur']}, slack "
+                           f"{corner['corner_slack_eur']}); the next rung is infeasible. The BUDGET CORNER is that "
+                           f"point, E = 3 MWh, and THIS campaign evaluates it, together with E = 4 and E = 5 (both "
+                           f"budget-infeasible, evaluated to trace the ladder up to the max_capacity cap of "
+                           f"{w2['master_facts']['max_capacity_mwh']} MWh). E = 1 and E = 2 are committed "
+                           f"({LADDER_RESULTS['commit']}, {MARGINAL_RESULTS['commit']}) and are not re-run.")
     checks['budget_corner_is_3_mwh'] = corner['corner_e_mwh'] == BUDGET_CORNER_E_MWH_EXPECTED
     by_e = {p['e_mwh']: p for p in corner['ladder']}
     checks['budget_ladder_I_matches_by_key'] = all(by_e[float(e)]['I_eur'] == i_by_rung[str(e)] for e in RUNGS
