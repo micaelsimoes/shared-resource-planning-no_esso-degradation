@@ -270,6 +270,18 @@ Authority: Addendum 27 (with the author's decisions) and `STEP4_DFO_METHOD.md`. 
   - negative penalty-component levels.
 - **Next:** the memory task (Addendum 29), then **stop for review**.
 
+### Addenda 32–34 — memory route, price mechanism, flexibility break-even. Stopped for review (2026-09-22). Report: `P5_15_ADDENDUM32_34_REPORT.md`
+
+- **Paper-scale route decided by the rule: FAILS on cycle time.**
+  - Footprint after initialization **24.78 GiB** (threshold 26) — the memory fix works; the bookkeeping growth (≈ 140 MiB per paper DSO block, Pyomo solution copies nothing reads) is released behind a switch, default off, bitwise-gated.
+  - One ADMM cycle **42.3 min** (limit 25) ⇒ ≈ 78 h per evaluation. **Route: ≥ 64 GiB machine, or the SRP1-with-caveat fallback.** A larger machine does not fix a CPU-bound cycle.
+  - No memory leak exists. σ calibration passed at paper scale (0.597). One DSO block unrecovered in cycle 1.
+- **What sets the storage's price** (`dd0a86b3`, `d68c814d`): in the peak hours all TN conventional units are at zero output and the bus-7 price equals the DSOs' **daily flexibility energy-balance shadow price** μ (plus the hourly flexibility price where P-down is marginal), carried in by the ADMM interface dual. Verified to ≤ 0.078 €/MWh over 270 hours; reproduces the −12.3 €/MWh flatness term (residual 6e-7). No DN-local storage exists; congestion is zero everywhere.
+- **Flexibility-price ladder** (`dc468ab4`): value − I = −58,529 (×1) / −31,075 (×1.5) / **+48,396 (×2, resolution 4,847: pays)** / +116,617 (×3). Break-even is between ×1.5 and ×2, where the flexibility price (≈ 97 €/MWh) reaches the market 4 h spread (98). The predicted 65–80 €/MWh ceiling is exceeded (86.5, 102.9): DSO flexibility use is structural, not optional. **Q(0) rises 653.9M → 876.0M across the ladder — different systems, not a sensitivity band.**
+- **Zero-solve findings:** negative penalty levels are IPOPT bound-relaxation residue (absolute Q biased ≤ 2e-5, differences ≤ 181 €), no unbounded slack; reactive flexibility is structurally absent (bounds 2e-5 p.u.); the storage's value is 97 % active power; voltage support is unmonetized (the 1.1 pu bound never binds at bus 7); the DSOs buy no priced flexibility in the binding hours (relief there is free P-up), so Addendum 33's congestion/shifting dichotomy captures nothing as defined.
+- **NOMAD** (`2c1272f4`): installed in a separate environment; the in-house Householder/rounding/bounds/(n+1) machinery reproduces it on 144 polls. STEP4 §5.2's "double/halve as in NOMAD 4" is wrong (NOMAD uses 1-2-5).
+- **Open for the author:** paper-scale route; whether a data anchor exists for the flexibility price; the congestion/shifting definition; the untested marginal-MWh prediction; STEP4 corrections; the baseline citations (spec v18 records them as proposed, author to confirm).
+
 ---
 
 # SUPERSEDED "CURRENT" SECTION — 2026-09-14 (P5.15 Step 1 closed through gates G1–G5)
