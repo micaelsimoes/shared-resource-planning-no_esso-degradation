@@ -1,0 +1,3004 @@
+{
+ "schema": "p515_s44_scale_measurement_v1",
+ "stage": "P5.15 Addendum 25 paper-scale build measurement (frozen spec v14 item4_scale_measurement)",
+ "authority": [
+  "PLANNER_BRIEF_2026-09-13.md Addendum 25 (Scale)",
+  "STEP4_DFO_METHOD.md section 7",
+  "data/SRP1/Results/P515S44/frozen_s44_selection_spec_v14_e4500e27.json item4_scale_measurement"
+ ],
+ "mode": "build",
+ "label": "srp1_build_memfix_plumbing",
+ "instance": "srp1",
+ "instance_definition": {
+  "description": "the current SRP1 case file unchanged (3 years x 4 days x 1 x 1 scenario)",
+  "years": null,
+  "num_market_scenarios": null,
+  "num_operation_scenarios": null
+ },
+ "derived_case": {
+  "path": "data/SRP1/Results/P515S44/scale_measurement/srp1_build_memfix_plumbing/case/SRP1__srp1.json",
+  "sha256": "45e8e700a547de22b2c9cd2f9373c4307da30764461e647424eca7eb2d1594b3",
+  "source": "data/SRP1/SRP1.json",
+  "source_sha256": "61a794a7ce7a3fb983f2e92128eec446dd7dbb17ad75a3b3b1c5735f8bd4e4ef",
+  "source_last_commit": "9568835ad7774244c8838fc02a2263e1d2e859d6",
+  "changes_vs_source": [],
+  "cli_overrides": {}
+ },
+ "candidate": "0.96875 MVA / 3.875 MWh at nodes 5, 7, 9, investment year 2025 (spec v14 C_star)",
+ "status": "complete",
+ "pid": 99823,
+ "thread_caps_seen": {
+  "OMP_NUM_THREADS": "1",
+  "MKL_NUM_THREADS": "1",
+  "OPENBLAS_NUM_THREADS": "1",
+  "VECLIB_MAXIMUM_THREADS": "1",
+  "NUMEXPR_NUM_THREADS": "1"
+ },
+ "steps_not_exercised": [
+  "every solve: the initialization solves (intercepted, \"no result\") and the ADMM loop",
+  "_compute_common_admm_objective_scale on solved blocks -> the fixed-sigma calibration assertion (needs the initialization solves); case-file fixed sigma used (declared substitution)",
+  "IPOPT SolverResults objects, multiplier suffix contents loaded by load_from, NL-writer transient, IPOPT process memory (exist only after real solves; --time-one-cycle measures them)",
+  "p515_s40_polish_gap._build_floor_rows (the campaign child's zero-solve floor-row precheck: a transient planning copy + 3 ESSO builds, deleted before the run)",
+  "the harness capture wrappers s38_pf_capture_hooks / s39_exempt_until_capture_hooks and esso_capture_hooks (per-solve sidecar writers)"
+ ],
+ "declared_substitutions": [
+  "initialization .optimize intercepted on the planning instance (returns no result)",
+  "objective scale: case-file fixed sigma (admm.objective_scale) used without the calibration assertion against a computed sigma",
+  "tso_pristine_base / dso_pristine_base: production's own shared_resources_planning._build_pristine_snapshot_bases is CALLED (since P5.15 Addendum 27 item 5(a)); before that its clone expressions were replicated here"
+ ],
+ "scenario_checksum": "5a02b77ccbbbbbb869de92958a3851d095624711abc2dbfc0157466064410358",
+ "checksum_matches_canonical": true,
+ "planning_dimensions": {
+  "years": {
+   "2025": 5,
+   "2030": 5,
+   "2035": 5
+  },
+  "days": {
+   "Spring": 92,
+   "Summer": 91,
+   "Autumn": 91,
+   "Winter": 91
+  },
+  "num_instants": 24,
+  "random_seed": 2026,
+  "num_market_scenarios": 1,
+  "num_operation_scenarios": {
+   "case9": 1,
+   "case33_1": 1,
+   "case33_2": 1,
+   "case33_3": 1
+  },
+  "active_distribution_network_nodes": [
+   5,
+   7,
+   9
+  ],
+  "scenario_metadata": {
+   "random_seed": 2026,
+   "deterministic_scenarios": true,
+   "market_scenario_checksum": "a8c958289c1e0bdaaf0df36ce56fb4da6734621bf34be7711babcae94d79d907",
+   "operational_scenario_checksum": "502de30606ff8f0290498c56559b59ea01436ce43d9c21a0fc87c876a17ce30e",
+   "combined_scenario_checksum": "5a02b77ccbbbbbb869de92958a3851d095624711abc2dbfc0157466064410358"
+  }
+ },
+ "expected_block_counts": {
+  "tso_blocks": 12,
+  "dso_blocks": 36,
+  "network_blocks": 48,
+  "esso_models": 3,
+  "solves_per_cycle": 51
+ },
+ "provenance": {
+  "timestamp_utc": "2026-09-22T12:17:18.112732+00:00",
+  "git_head": "4cf5666c2e669b77807323d0b1697a86a5d4e859",
+  "sys_executable": "/Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python",
+  "conda_default_env": null,
+  "conda_env_from_path": "opf_env_py311",
+  "python_version": "3.11.11",
+  "numpy_version": "2.4.2",
+  "pandas_version": "3.0.0",
+  "scipy_version": "1.17.0",
+  "pyomo_version": "6.9.5",
+  "ipopt": {
+   "path": "/usr/local/bin/ipopt",
+   "exists": true,
+   "version": "3.14.18",
+   "asl": "20241111",
+   "banner": "Ipopt 3.14.18 (aarch64-apple-darwin24.5.0), ASL(20241111)",
+   "path_ipopt_not_used": {
+    "path": "/usr/local/bin/ipopt",
+    "version": "3.14.18",
+    "shadows_canonical": false
+   }
+  },
+  "hsl_linear_solver": "ma97",
+  "gurobi": {
+   "gurobipy": "13.0.1",
+   "gurobi_runtime": "13.0.1",
+   "licence": "ACADEMIC",
+   "licence_expiry": "2027-04-14",
+   "available": true,
+   "licence_id": "2807206",
+   "licence_version": "13"
+  },
+  "scenario_checksum": "5a02b77ccbbbbbb869de92958a3851d095624711abc2dbfc0157466064410358",
+  "canonical_checksum": "5a02b77ccbbbbbb869de92958a3851d095624711abc2dbfc0157466064410358",
+  "checksum_matches_canonical": true,
+  "canonical_ipopt_path": "/usr/local/bin/ipopt",
+  "canonical_ipopt_version": "3.14.18",
+  "canonical_ipopt_asl": "20241111",
+  "canonical_hsl_linear_solver": "ma97",
+  "gate_failures": [],
+  "checksum_expected_to_differ": false,
+  "gate_passes_for_this_instance": true
+ },
+ "construct_report": {
+  "results_dir_redirect": {
+   "target_results_dir": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S44/scale_measurement/srp1_build_memfix_plumbing/arm_build/results",
+   "planning": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S44/scale_measurement/srp1_build_memfix_plumbing/arm_build/results",
+   "transmission_network": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S44/scale_measurement/srp1_build_memfix_plumbing/arm_build/results",
+   "distribution_networks": {
+    "5": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S44/scale_measurement/srp1_build_memfix_plumbing/arm_build/results",
+    "7": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S44/scale_measurement/srp1_build_memfix_plumbing/arm_build/results",
+    "9": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S44/scale_measurement/srp1_build_memfix_plumbing/arm_build/results"
+   },
+   "shared_ess_data": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S44/scale_measurement/srp1_build_memfix_plumbing/arm_build/results",
+   "network_year_day_sample": {
+    "transmission_network": {
+     "2025": {
+      "Spring": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S44/scale_measurement/srp1_build_memfix_plumbing/arm_build/results",
+      "Summer": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S44/scale_measurement/srp1_build_memfix_plumbing/arm_build/results",
+      "Autumn": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S44/scale_measurement/srp1_build_memfix_plumbing/arm_build/results",
+      "Winter": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S44/scale_measurement/srp1_build_memfix_plumbing/arm_build/results"
+     },
+     "2030": {
+      "Spring": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S44/scale_measurement/srp1_build_memfix_plumbing/arm_build/results",
+      "Summer": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S44/scale_measurement/srp1_build_memfix_plumbing/arm_build/results",
+      "Autumn": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S44/scale_measurement/srp1_build_memfix_plumbing/arm_build/results",
+      "Winter": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S44/scale_measurement/srp1_build_memfix_plumbing/arm_build/results"
+     },
+     "2035": {
+      "Spring": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S44/scale_measurement/srp1_build_memfix_plumbing/arm_build/results",
+      "Summer": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S44/scale_measurement/srp1_build_memfix_plumbing/arm_build/results",
+      "Autumn": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S44/scale_measurement/srp1_build_memfix_plumbing/arm_build/results",
+      "Winter": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S44/scale_measurement/srp1_build_memfix_plumbing/arm_build/results"
+     }
+    },
+    "distribution_networks[5]": {
+     "2025": {
+      "Spring": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S44/scale_measurement/srp1_build_memfix_plumbing/arm_build/results",
+      "Summer": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S44/scale_measurement/srp1_build_memfix_plumbing/arm_build/results",
+      "Autumn": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S44/scale_measurement/srp1_build_memfix_plumbing/arm_build/results",
+      "Winter": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S44/scale_measurement/srp1_build_memfix_plumbing/arm_build/results"
+     },
+     "2030": {
+      "Spring": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S44/scale_measurement/srp1_build_memfix_plumbing/arm_build/results",
+      "Summer": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S44/scale_measurement/srp1_build_memfix_plumbing/arm_build/results",
+      "Autumn": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S44/scale_measurement/srp1_build_memfix_plumbing/arm_build/results",
+      "Winter": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S44/scale_measurement/srp1_build_memfix_plumbing/arm_build/results"
+     },
+     "2035": {
+      "Spring": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S44/scale_measurement/srp1_build_memfix_plumbing/arm_build/results",
+      "Summer": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S44/scale_measurement/srp1_build_memfix_plumbing/arm_build/results",
+      "Autumn": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S44/scale_measurement/srp1_build_memfix_plumbing/arm_build/results",
+      "Winter": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S44/scale_measurement/srp1_build_memfix_plumbing/arm_build/results"
+     }
+    },
+    "distribution_networks[7]": {
+     "2025": {
+      "Spring": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S44/scale_measurement/srp1_build_memfix_plumbing/arm_build/results",
+      "Summer": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S44/scale_measurement/srp1_build_memfix_plumbing/arm_build/results",
+      "Autumn": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S44/scale_measurement/srp1_build_memfix_plumbing/arm_build/results",
+      "Winter": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S44/scale_measurement/srp1_build_memfix_plumbing/arm_build/results"
+     },
+     "2030": {
+      "Spring": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S44/scale_measurement/srp1_build_memfix_plumbing/arm_build/results",
+      "Summer": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S44/scale_measurement/srp1_build_memfix_plumbing/arm_build/results",
+      "Autumn": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S44/scale_measurement/srp1_build_memfix_plumbing/arm_build/results",
+      "Winter": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S44/scale_measurement/srp1_build_memfix_plumbing/arm_build/results"
+     },
+     "2035": {
+      "Spring": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S44/scale_measurement/srp1_build_memfix_plumbing/arm_build/results",
+      "Summer": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S44/scale_measurement/srp1_build_memfix_plumbing/arm_build/results",
+      "Autumn": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S44/scale_measurement/srp1_build_memfix_plumbing/arm_build/results",
+      "Winter": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S44/scale_measurement/srp1_build_memfix_plumbing/arm_build/results"
+     }
+    },
+    "distribution_networks[9]": {
+     "2025": {
+      "Spring": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S44/scale_measurement/srp1_build_memfix_plumbing/arm_build/results",
+      "Summer": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S44/scale_measurement/srp1_build_memfix_plumbing/arm_build/results",
+      "Autumn": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S44/scale_measurement/srp1_build_memfix_plumbing/arm_build/results",
+      "Winter": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S44/scale_measurement/srp1_build_memfix_plumbing/arm_build/results"
+     },
+     "2030": {
+      "Spring": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S44/scale_measurement/srp1_build_memfix_plumbing/arm_build/results",
+      "Summer": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S44/scale_measurement/srp1_build_memfix_plumbing/arm_build/results",
+      "Autumn": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S44/scale_measurement/srp1_build_memfix_plumbing/arm_build/results",
+      "Winter": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S44/scale_measurement/srp1_build_memfix_plumbing/arm_build/results"
+     },
+     "2035": {
+      "Spring": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S44/scale_measurement/srp1_build_memfix_plumbing/arm_build/results",
+      "Summer": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S44/scale_measurement/srp1_build_memfix_plumbing/arm_build/results",
+      "Autumn": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S44/scale_measurement/srp1_build_memfix_plumbing/arm_build/results",
+      "Winter": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S44/scale_measurement/srp1_build_memfix_plumbing/arm_build/results"
+     }
+    }
+   }
+  },
+  "apply_rho": false,
+  "k_in_force": {
+   "2025": 35851.3609417964,
+   "2030": 35851.3609417964,
+   "2035": 35851.3609417964
+  },
+  "instance": {
+   "year": 2025,
+   "assignment": "per-node",
+   "investment_map": {
+    "5": [
+     0.96875,
+     3.875
+    ],
+    "7": [
+     0.96875,
+     3.875
+    ],
+    "9": [
+     0.96875,
+     3.875
+    ]
+   }
+  },
+  "rule_eleven_checklist": {
+   "s44_campaign_configuration_checks": {
+    "rho_v_matches_D": true,
+    "rho_pf_matches_D": true,
+    "rho_ess_matches_D": true,
+    "tau_is_0": true,
+    "gamma_policy_tied_to_rho": true,
+    "balancing_exempt_until_matches_D": true,
+    "balancing_exempt_channels_empty": true,
+    "freeze_after_unchanged_cycles_is_10": true,
+    "freeze_backstop_cycle_is_200": true,
+    "minimum_consecutive_converged_cycles_matches_spec": true,
+    "shared_ess_initialization_is_standalone": true,
+    "num_max_iters_is_spec_cap": true,
+    "anderson_acceleration_case_file_matches_declaration": true,
+    "anderson_acceleration_case_file_memory_regularization_frozen": true,
+    "persistent_workers_off": true,
+    "parallel_execution_off": true
+   },
+   "s44_campaign_overrides_applied": {}
+  }
+ },
+ "d_configuration_checks": {
+  "configuration_checks": {
+   "rho_v_matches_D": true,
+   "rho_pf_matches_D": true,
+   "rho_ess_matches_D": true,
+   "tau_is_0": true,
+   "gamma_policy_tied_to_rho": true,
+   "balancing_exempt_until_matches_D": true,
+   "balancing_exempt_channels_empty": true,
+   "freeze_after_unchanged_cycles_is_10": true,
+   "freeze_backstop_cycle_is_200": true,
+   "minimum_consecutive_converged_cycles_matches_spec": true,
+   "shared_ess_initialization_is_standalone": true,
+   "num_max_iters_is_spec_cap": true,
+   "anderson_acceleration_case_file_matches_declaration": true,
+   "anderson_acceleration_case_file_memory_regularization_frozen": true,
+   "persistent_workers_off": true,
+   "parallel_execution_off": true
+  },
+  "case_file_anderson_acceleration_declared": {
+   "enabled": true,
+   "memory": 5,
+   "regularization": 1e-10,
+   "reject_policy": "keep_memory"
+  },
+  "anderson_acceleration_effective": {
+   "enabled": true,
+   "memory": 5,
+   "regularization": 1e-10,
+   "reject_policy": "keep_memory"
+  },
+  "overrides_applied": {},
+  "declaration_note": "spec_like declares configuration.case_file_anderson_acceleration; the harness hook checks the loaded AA equals it exactly and raises otherwise (p515_s44_campaign_harness._config_hook_factory)"
+ },
+ "snapshot_setting": {
+  "requested": "off",
+  "tso_mode_before": "lightweight",
+  "dso_mode_before": "lightweight",
+  "tso_mode_after": "off",
+  "dso_mode_after": "off",
+  "expected": [
+   "off",
+   "off"
+  ],
+  "took_effect": true,
+  "persistent_workers_enabled": false
+ },
+ "release_solution_bookkeeping": {
+  "requested": true,
+  "before": {
+   "tso": false,
+   "dso_5": false,
+   "dso_7": false,
+   "dso_9": false
+  },
+  "read_back": {
+   "tso": true,
+   "dso_5": true,
+   "dso_7": true,
+   "dso_9": true
+  },
+  "solver_params_objects_distinct": true,
+  "took_effect": true
+ },
+ "memory_at_build_complete": {
+  "t": 20.278,
+  "stage": "child start",
+  "rss_self": 973209600,
+  "rss_children": 0,
+  "n_children": 0,
+  "rss_tree": 973209600,
+  "footprint_self": 773162544,
+  "measure": 973209600,
+  "sys_available": 15019950080,
+  "sys_used_pct": 56.3,
+  "swap_used": 928776192,
+  "gating_measure": "rss_tree",
+  "gating_value": 973209600
+ },
+ "ru_maxrss_self_at_build_complete": 973209600,
+ "build_wall_s": 20.279,
+ "counts_by_agent": {
+  "TSO": {
+   "models": 12,
+   "len_counts": {
+    "var": 46872,
+    "constraint": 40320,
+    "expression": 18324,
+    "param": 18384,
+    "objective": 36,
+    "suffix": 0
+   },
+   "deep": {
+    "var_data": 46872,
+    "var_fixed": 7056,
+    "var_free": 39816,
+    "constraint_data": 40320,
+    "constraint_active": 40320,
+    "constraint_active_equality": 21636,
+    "constraint_active_inequality": 18684,
+    "objective_active": 12
+   }
+  },
+  "DSO": {
+   "models": 36,
+   "len_counts": {
+    "var": 391752,
+    "constraint": 279684,
+    "expression": 150012,
+    "param": 73044,
+    "objective": 108,
+    "suffix": 0
+   },
+   "deep": {
+    "var_data": 391752,
+    "var_fixed": 2304,
+    "var_free": 389448,
+    "constraint_data": 279684,
+    "constraint_active": 279684,
+    "constraint_active_equality": 154980,
+    "constraint_active_inequality": 124704,
+    "objective_active": 36
+   }
+  },
+  "ESSO": {
+   "models": 3,
+   "len_counts": {
+    "var": 8847,
+    "constraint": 9693,
+    "expression": 9,
+    "param": 3507,
+    "objective": 6,
+    "suffix": 0
+   },
+   "deep": {
+    "var_data": 8847,
+    "var_fixed": 3528,
+    "var_free": 5319,
+    "constraint_data": 9693,
+    "constraint_active": 3600,
+    "constraint_active_equality": 999,
+    "constraint_active_inequality": 2601,
+    "objective_active": 3
+   }
+  },
+  "ALL": {
+   "models": 51,
+   "len_counts": {
+    "var": 447471,
+    "constraint": 329697,
+    "expression": 168345,
+    "param": 94935,
+    "objective": 150,
+    "suffix": 0
+   },
+   "deep": {
+    "var_data": 447471,
+    "var_fixed": 12888,
+    "var_free": 434583,
+    "constraint_data": 329697,
+    "constraint_active": 323604,
+    "constraint_active_equality": 177615,
+    "constraint_active_inequality": 145989,
+    "objective_active": 51
+   }
+  }
+ },
+ "counts_per_model": [
+  {
+   "agent": "TSO",
+   "node": null,
+   "year": 2025,
+   "day": "Spring",
+   "name": "case9",
+   "scenario_combinations": 1,
+   "len_counts": {
+    "var": 3906,
+    "constraint": 3378,
+    "expression": 1527,
+    "param": 1532,
+    "objective": 3,
+    "suffix": 0
+   },
+   "deep": {
+    "var_data": 3906,
+    "var_fixed": 588,
+    "var_free": 3318,
+    "constraint_data": 3378,
+    "constraint_active": 3378,
+    "constraint_active_equality": 1803,
+    "constraint_active_inequality": 1575,
+    "objective_active": 1
+   }
+  },
+  {
+   "agent": "TSO",
+   "node": null,
+   "year": 2025,
+   "day": "Summer",
+   "name": "case9",
+   "scenario_combinations": 1,
+   "len_counts": {
+    "var": 3906,
+    "constraint": 3378,
+    "expression": 1527,
+    "param": 1532,
+    "objective": 3,
+    "suffix": 0
+   },
+   "deep": {
+    "var_data": 3906,
+    "var_fixed": 588,
+    "var_free": 3318,
+    "constraint_data": 3378,
+    "constraint_active": 3378,
+    "constraint_active_equality": 1803,
+    "constraint_active_inequality": 1575,
+    "objective_active": 1
+   }
+  },
+  {
+   "agent": "TSO",
+   "node": null,
+   "year": 2025,
+   "day": "Autumn",
+   "name": "case9",
+   "scenario_combinations": 1,
+   "len_counts": {
+    "var": 3906,
+    "constraint": 3342,
+    "expression": 1527,
+    "param": 1532,
+    "objective": 3,
+    "suffix": 0
+   },
+   "deep": {
+    "var_data": 3906,
+    "var_fixed": 588,
+    "var_free": 3318,
+    "constraint_data": 3342,
+    "constraint_active": 3342,
+    "constraint_active_equality": 1803,
+    "constraint_active_inequality": 1539,
+    "objective_active": 1
+   }
+  },
+  {
+   "agent": "TSO",
+   "node": null,
+   "year": 2025,
+   "day": "Winter",
+   "name": "case9",
+   "scenario_combinations": 1,
+   "len_counts": {
+    "var": 3906,
+    "constraint": 3342,
+    "expression": 1527,
+    "param": 1532,
+    "objective": 3,
+    "suffix": 0
+   },
+   "deep": {
+    "var_data": 3906,
+    "var_fixed": 588,
+    "var_free": 3318,
+    "constraint_data": 3342,
+    "constraint_active": 3342,
+    "constraint_active_equality": 1803,
+    "constraint_active_inequality": 1539,
+    "objective_active": 1
+   }
+  },
+  {
+   "agent": "TSO",
+   "node": null,
+   "year": 2030,
+   "day": "Spring",
+   "name": "case9",
+   "scenario_combinations": 1,
+   "len_counts": {
+    "var": 3906,
+    "constraint": 3378,
+    "expression": 1527,
+    "param": 1532,
+    "objective": 3,
+    "suffix": 0
+   },
+   "deep": {
+    "var_data": 3906,
+    "var_fixed": 588,
+    "var_free": 3318,
+    "constraint_data": 3378,
+    "constraint_active": 3378,
+    "constraint_active_equality": 1803,
+    "constraint_active_inequality": 1575,
+    "objective_active": 1
+   }
+  },
+  {
+   "agent": "TSO",
+   "node": null,
+   "year": 2030,
+   "day": "Summer",
+   "name": "case9",
+   "scenario_combinations": 1,
+   "len_counts": {
+    "var": 3906,
+    "constraint": 3378,
+    "expression": 1527,
+    "param": 1532,
+    "objective": 3,
+    "suffix": 0
+   },
+   "deep": {
+    "var_data": 3906,
+    "var_fixed": 588,
+    "var_free": 3318,
+    "constraint_data": 3378,
+    "constraint_active": 3378,
+    "constraint_active_equality": 1803,
+    "constraint_active_inequality": 1575,
+    "objective_active": 1
+   }
+  },
+  {
+   "agent": "TSO",
+   "node": null,
+   "year": 2030,
+   "day": "Autumn",
+   "name": "case9",
+   "scenario_combinations": 1,
+   "len_counts": {
+    "var": 3906,
+    "constraint": 3342,
+    "expression": 1527,
+    "param": 1532,
+    "objective": 3,
+    "suffix": 0
+   },
+   "deep": {
+    "var_data": 3906,
+    "var_fixed": 588,
+    "var_free": 3318,
+    "constraint_data": 3342,
+    "constraint_active": 3342,
+    "constraint_active_equality": 1803,
+    "constraint_active_inequality": 1539,
+    "objective_active": 1
+   }
+  },
+  {
+   "agent": "TSO",
+   "node": null,
+   "year": 2030,
+   "day": "Winter",
+   "name": "case9",
+   "scenario_combinations": 1,
+   "len_counts": {
+    "var": 3906,
+    "constraint": 3342,
+    "expression": 1527,
+    "param": 1532,
+    "objective": 3,
+    "suffix": 0
+   },
+   "deep": {
+    "var_data": 3906,
+    "var_fixed": 588,
+    "var_free": 3318,
+    "constraint_data": 3342,
+    "constraint_active": 3342,
+    "constraint_active_equality": 1803,
+    "constraint_active_inequality": 1539,
+    "objective_active": 1
+   }
+  },
+  {
+   "agent": "TSO",
+   "node": null,
+   "year": 2035,
+   "day": "Spring",
+   "name": "case9",
+   "scenario_combinations": 1,
+   "len_counts": {
+    "var": 3906,
+    "constraint": 3378,
+    "expression": 1527,
+    "param": 1532,
+    "objective": 3,
+    "suffix": 0
+   },
+   "deep": {
+    "var_data": 3906,
+    "var_fixed": 588,
+    "var_free": 3318,
+    "constraint_data": 3378,
+    "constraint_active": 3378,
+    "constraint_active_equality": 1803,
+    "constraint_active_inequality": 1575,
+    "objective_active": 1
+   }
+  },
+  {
+   "agent": "TSO",
+   "node": null,
+   "year": 2035,
+   "day": "Summer",
+   "name": "case9",
+   "scenario_combinations": 1,
+   "len_counts": {
+    "var": 3906,
+    "constraint": 3378,
+    "expression": 1527,
+    "param": 1532,
+    "objective": 3,
+    "suffix": 0
+   },
+   "deep": {
+    "var_data": 3906,
+    "var_fixed": 588,
+    "var_free": 3318,
+    "constraint_data": 3378,
+    "constraint_active": 3378,
+    "constraint_active_equality": 1803,
+    "constraint_active_inequality": 1575,
+    "objective_active": 1
+   }
+  },
+  {
+   "agent": "TSO",
+   "node": null,
+   "year": 2035,
+   "day": "Autumn",
+   "name": "case9",
+   "scenario_combinations": 1,
+   "len_counts": {
+    "var": 3906,
+    "constraint": 3342,
+    "expression": 1527,
+    "param": 1532,
+    "objective": 3,
+    "suffix": 0
+   },
+   "deep": {
+    "var_data": 3906,
+    "var_fixed": 588,
+    "var_free": 3318,
+    "constraint_data": 3342,
+    "constraint_active": 3342,
+    "constraint_active_equality": 1803,
+    "constraint_active_inequality": 1539,
+    "objective_active": 1
+   }
+  },
+  {
+   "agent": "TSO",
+   "node": null,
+   "year": 2035,
+   "day": "Winter",
+   "name": "case9",
+   "scenario_combinations": 1,
+   "len_counts": {
+    "var": 3906,
+    "constraint": 3342,
+    "expression": 1527,
+    "param": 1532,
+    "objective": 3,
+    "suffix": 0
+   },
+   "deep": {
+    "var_data": 3906,
+    "var_fixed": 588,
+    "var_free": 3318,
+    "constraint_data": 3342,
+    "constraint_active": 3342,
+    "constraint_active_equality": 1803,
+    "constraint_active_inequality": 1539,
+    "objective_active": 1
+   }
+  },
+  {
+   "agent": "DSO",
+   "node": 5,
+   "year": 2025,
+   "day": "Spring",
+   "name": "case33_1",
+   "scenario_combinations": 1,
+   "len_counts": {
+    "var": 10882,
+    "constraint": 7776,
+    "expression": 4167,
+    "param": 2029,
+    "objective": 3,
+    "suffix": 0
+   },
+   "deep": {
+    "var_data": 10882,
+    "var_fixed": 64,
+    "var_free": 10818,
+    "constraint_data": 7776,
+    "constraint_active": 7776,
+    "constraint_active_equality": 4305,
+    "constraint_active_inequality": 3471,
+    "objective_active": 1
+   }
+  },
+  {
+   "agent": "DSO",
+   "node": 5,
+   "year": 2025,
+   "day": "Summer",
+   "name": "case33_1",
+   "scenario_combinations": 1,
+   "len_counts": {
+    "var": 10882,
+    "constraint": 7776,
+    "expression": 4167,
+    "param": 2029,
+    "objective": 3,
+    "suffix": 0
+   },
+   "deep": {
+    "var_data": 10882,
+    "var_fixed": 64,
+    "var_free": 10818,
+    "constraint_data": 7776,
+    "constraint_active": 7776,
+    "constraint_active_equality": 4305,
+    "constraint_active_inequality": 3471,
+    "objective_active": 1
+   }
+  },
+  {
+   "agent": "DSO",
+   "node": 5,
+   "year": 2025,
+   "day": "Autumn",
+   "name": "case33_1",
+   "scenario_combinations": 1,
+   "len_counts": {
+    "var": 10882,
+    "constraint": 7740,
+    "expression": 4167,
+    "param": 2029,
+    "objective": 3,
+    "suffix": 0
+   },
+   "deep": {
+    "var_data": 10882,
+    "var_fixed": 64,
+    "var_free": 10818,
+    "constraint_data": 7740,
+    "constraint_active": 7740,
+    "constraint_active_equality": 4305,
+    "constraint_active_inequality": 3435,
+    "objective_active": 1
+   }
+  },
+  {
+   "agent": "DSO",
+   "node": 5,
+   "year": 2025,
+   "day": "Winter",
+   "name": "case33_1",
+   "scenario_combinations": 1,
+   "len_counts": {
+    "var": 10882,
+    "constraint": 7740,
+    "expression": 4167,
+    "param": 2029,
+    "objective": 3,
+    "suffix": 0
+   },
+   "deep": {
+    "var_data": 10882,
+    "var_fixed": 64,
+    "var_free": 10818,
+    "constraint_data": 7740,
+    "constraint_active": 7740,
+    "constraint_active_equality": 4305,
+    "constraint_active_inequality": 3435,
+    "objective_active": 1
+   }
+  },
+  {
+   "agent": "DSO",
+   "node": 5,
+   "year": 2030,
+   "day": "Spring",
+   "name": "case33_1",
+   "scenario_combinations": 1,
+   "len_counts": {
+    "var": 10882,
+    "constraint": 7776,
+    "expression": 4167,
+    "param": 2029,
+    "objective": 3,
+    "suffix": 0
+   },
+   "deep": {
+    "var_data": 10882,
+    "var_fixed": 64,
+    "var_free": 10818,
+    "constraint_data": 7776,
+    "constraint_active": 7776,
+    "constraint_active_equality": 4305,
+    "constraint_active_inequality": 3471,
+    "objective_active": 1
+   }
+  },
+  {
+   "agent": "DSO",
+   "node": 5,
+   "year": 2030,
+   "day": "Summer",
+   "name": "case33_1",
+   "scenario_combinations": 1,
+   "len_counts": {
+    "var": 10882,
+    "constraint": 7776,
+    "expression": 4167,
+    "param": 2029,
+    "objective": 3,
+    "suffix": 0
+   },
+   "deep": {
+    "var_data": 10882,
+    "var_fixed": 64,
+    "var_free": 10818,
+    "constraint_data": 7776,
+    "constraint_active": 7776,
+    "constraint_active_equality": 4305,
+    "constraint_active_inequality": 3471,
+    "objective_active": 1
+   }
+  },
+  {
+   "agent": "DSO",
+   "node": 5,
+   "year": 2030,
+   "day": "Autumn",
+   "name": "case33_1",
+   "scenario_combinations": 1,
+   "len_counts": {
+    "var": 10882,
+    "constraint": 7740,
+    "expression": 4167,
+    "param": 2029,
+    "objective": 3,
+    "suffix": 0
+   },
+   "deep": {
+    "var_data": 10882,
+    "var_fixed": 64,
+    "var_free": 10818,
+    "constraint_data": 7740,
+    "constraint_active": 7740,
+    "constraint_active_equality": 4305,
+    "constraint_active_inequality": 3435,
+    "objective_active": 1
+   }
+  },
+  {
+   "agent": "DSO",
+   "node": 5,
+   "year": 2030,
+   "day": "Winter",
+   "name": "case33_1",
+   "scenario_combinations": 1,
+   "len_counts": {
+    "var": 10882,
+    "constraint": 7740,
+    "expression": 4167,
+    "param": 2029,
+    "objective": 3,
+    "suffix": 0
+   },
+   "deep": {
+    "var_data": 10882,
+    "var_fixed": 64,
+    "var_free": 10818,
+    "constraint_data": 7740,
+    "constraint_active": 7740,
+    "constraint_active_equality": 4305,
+    "constraint_active_inequality": 3435,
+    "objective_active": 1
+   }
+  },
+  {
+   "agent": "DSO",
+   "node": 5,
+   "year": 2035,
+   "day": "Spring",
+   "name": "case33_1",
+   "scenario_combinations": 1,
+   "len_counts": {
+    "var": 10882,
+    "constraint": 7776,
+    "expression": 4167,
+    "param": 2029,
+    "objective": 3,
+    "suffix": 0
+   },
+   "deep": {
+    "var_data": 10882,
+    "var_fixed": 64,
+    "var_free": 10818,
+    "constraint_data": 7776,
+    "constraint_active": 7776,
+    "constraint_active_equality": 4305,
+    "constraint_active_inequality": 3471,
+    "objective_active": 1
+   }
+  },
+  {
+   "agent": "DSO",
+   "node": 5,
+   "year": 2035,
+   "day": "Summer",
+   "name": "case33_1",
+   "scenario_combinations": 1,
+   "len_counts": {
+    "var": 10882,
+    "constraint": 7776,
+    "expression": 4167,
+    "param": 2029,
+    "objective": 3,
+    "suffix": 0
+   },
+   "deep": {
+    "var_data": 10882,
+    "var_fixed": 64,
+    "var_free": 10818,
+    "constraint_data": 7776,
+    "constraint_active": 7776,
+    "constraint_active_equality": 4305,
+    "constraint_active_inequality": 3471,
+    "objective_active": 1
+   }
+  },
+  {
+   "agent": "DSO",
+   "node": 5,
+   "year": 2035,
+   "day": "Autumn",
+   "name": "case33_1",
+   "scenario_combinations": 1,
+   "len_counts": {
+    "var": 10882,
+    "constraint": 7740,
+    "expression": 4167,
+    "param": 2029,
+    "objective": 3,
+    "suffix": 0
+   },
+   "deep": {
+    "var_data": 10882,
+    "var_fixed": 64,
+    "var_free": 10818,
+    "constraint_data": 7740,
+    "constraint_active": 7740,
+    "constraint_active_equality": 4305,
+    "constraint_active_inequality": 3435,
+    "objective_active": 1
+   }
+  },
+  {
+   "agent": "DSO",
+   "node": 5,
+   "year": 2035,
+   "day": "Winter",
+   "name": "case33_1",
+   "scenario_combinations": 1,
+   "len_counts": {
+    "var": 10882,
+    "constraint": 7740,
+    "expression": 4167,
+    "param": 2029,
+    "objective": 3,
+    "suffix": 0
+   },
+   "deep": {
+    "var_data": 10882,
+    "var_fixed": 64,
+    "var_free": 10818,
+    "constraint_data": 7740,
+    "constraint_active": 7740,
+    "constraint_active_equality": 4305,
+    "constraint_active_inequality": 3435,
+    "objective_active": 1
+   }
+  },
+  {
+   "agent": "DSO",
+   "node": 7,
+   "year": 2025,
+   "day": "Spring",
+   "name": "case33_2",
+   "scenario_combinations": 1,
+   "len_counts": {
+    "var": 10882,
+    "constraint": 7803,
+    "expression": 4167,
+    "param": 2029,
+    "objective": 3,
+    "suffix": 0
+   },
+   "deep": {
+    "var_data": 10882,
+    "var_fixed": 64,
+    "var_free": 10818,
+    "constraint_data": 7803,
+    "constraint_active": 7803,
+    "constraint_active_equality": 4305,
+    "constraint_active_inequality": 3498,
+    "objective_active": 1
+   }
+  },
+  {
+   "agent": "DSO",
+   "node": 7,
+   "year": 2025,
+   "day": "Summer",
+   "name": "case33_2",
+   "scenario_combinations": 1,
+   "len_counts": {
+    "var": 10882,
+    "constraint": 7803,
+    "expression": 4167,
+    "param": 2029,
+    "objective": 3,
+    "suffix": 0
+   },
+   "deep": {
+    "var_data": 10882,
+    "var_fixed": 64,
+    "var_free": 10818,
+    "constraint_data": 7803,
+    "constraint_active": 7803,
+    "constraint_active_equality": 4305,
+    "constraint_active_inequality": 3498,
+    "objective_active": 1
+   }
+  },
+  {
+   "agent": "DSO",
+   "node": 7,
+   "year": 2025,
+   "day": "Autumn",
+   "name": "case33_2",
+   "scenario_combinations": 1,
+   "len_counts": {
+    "var": 10882,
+    "constraint": 7779,
+    "expression": 4167,
+    "param": 2029,
+    "objective": 3,
+    "suffix": 0
+   },
+   "deep": {
+    "var_data": 10882,
+    "var_fixed": 64,
+    "var_free": 10818,
+    "constraint_data": 7779,
+    "constraint_active": 7779,
+    "constraint_active_equality": 4305,
+    "constraint_active_inequality": 3474,
+    "objective_active": 1
+   }
+  },
+  {
+   "agent": "DSO",
+   "node": 7,
+   "year": 2025,
+   "day": "Winter",
+   "name": "case33_2",
+   "scenario_combinations": 1,
+   "len_counts": {
+    "var": 10882,
+    "constraint": 7779,
+    "expression": 4167,
+    "param": 2029,
+    "objective": 3,
+    "suffix": 0
+   },
+   "deep": {
+    "var_data": 10882,
+    "var_fixed": 64,
+    "var_free": 10818,
+    "constraint_data": 7779,
+    "constraint_active": 7779,
+    "constraint_active_equality": 4305,
+    "constraint_active_inequality": 3474,
+    "objective_active": 1
+   }
+  },
+  {
+   "agent": "DSO",
+   "node": 7,
+   "year": 2030,
+   "day": "Spring",
+   "name": "case33_2",
+   "scenario_combinations": 1,
+   "len_counts": {
+    "var": 10882,
+    "constraint": 7803,
+    "expression": 4167,
+    "param": 2029,
+    "objective": 3,
+    "suffix": 0
+   },
+   "deep": {
+    "var_data": 10882,
+    "var_fixed": 64,
+    "var_free": 10818,
+    "constraint_data": 7803,
+    "constraint_active": 7803,
+    "constraint_active_equality": 4305,
+    "constraint_active_inequality": 3498,
+    "objective_active": 1
+   }
+  },
+  {
+   "agent": "DSO",
+   "node": 7,
+   "year": 2030,
+   "day": "Summer",
+   "name": "case33_2",
+   "scenario_combinations": 1,
+   "len_counts": {
+    "var": 10882,
+    "constraint": 7803,
+    "expression": 4167,
+    "param": 2029,
+    "objective": 3,
+    "suffix": 0
+   },
+   "deep": {
+    "var_data": 10882,
+    "var_fixed": 64,
+    "var_free": 10818,
+    "constraint_data": 7803,
+    "constraint_active": 7803,
+    "constraint_active_equality": 4305,
+    "constraint_active_inequality": 3498,
+    "objective_active": 1
+   }
+  },
+  {
+   "agent": "DSO",
+   "node": 7,
+   "year": 2030,
+   "day": "Autumn",
+   "name": "case33_2",
+   "scenario_combinations": 1,
+   "len_counts": {
+    "var": 10882,
+    "constraint": 7779,
+    "expression": 4167,
+    "param": 2029,
+    "objective": 3,
+    "suffix": 0
+   },
+   "deep": {
+    "var_data": 10882,
+    "var_fixed": 64,
+    "var_free": 10818,
+    "constraint_data": 7779,
+    "constraint_active": 7779,
+    "constraint_active_equality": 4305,
+    "constraint_active_inequality": 3474,
+    "objective_active": 1
+   }
+  },
+  {
+   "agent": "DSO",
+   "node": 7,
+   "year": 2030,
+   "day": "Winter",
+   "name": "case33_2",
+   "scenario_combinations": 1,
+   "len_counts": {
+    "var": 10882,
+    "constraint": 7779,
+    "expression": 4167,
+    "param": 2029,
+    "objective": 3,
+    "suffix": 0
+   },
+   "deep": {
+    "var_data": 10882,
+    "var_fixed": 64,
+    "var_free": 10818,
+    "constraint_data": 7779,
+    "constraint_active": 7779,
+    "constraint_active_equality": 4305,
+    "constraint_active_inequality": 3474,
+    "objective_active": 1
+   }
+  },
+  {
+   "agent": "DSO",
+   "node": 7,
+   "year": 2035,
+   "day": "Spring",
+   "name": "case33_2",
+   "scenario_combinations": 1,
+   "len_counts": {
+    "var": 10882,
+    "constraint": 7803,
+    "expression": 4167,
+    "param": 2029,
+    "objective": 3,
+    "suffix": 0
+   },
+   "deep": {
+    "var_data": 10882,
+    "var_fixed": 64,
+    "var_free": 10818,
+    "constraint_data": 7803,
+    "constraint_active": 7803,
+    "constraint_active_equality": 4305,
+    "constraint_active_inequality": 3498,
+    "objective_active": 1
+   }
+  },
+  {
+   "agent": "DSO",
+   "node": 7,
+   "year": 2035,
+   "day": "Summer",
+   "name": "case33_2",
+   "scenario_combinations": 1,
+   "len_counts": {
+    "var": 10882,
+    "constraint": 7803,
+    "expression": 4167,
+    "param": 2029,
+    "objective": 3,
+    "suffix": 0
+   },
+   "deep": {
+    "var_data": 10882,
+    "var_fixed": 64,
+    "var_free": 10818,
+    "constraint_data": 7803,
+    "constraint_active": 7803,
+    "constraint_active_equality": 4305,
+    "constraint_active_inequality": 3498,
+    "objective_active": 1
+   }
+  },
+  {
+   "agent": "DSO",
+   "node": 7,
+   "year": 2035,
+   "day": "Autumn",
+   "name": "case33_2",
+   "scenario_combinations": 1,
+   "len_counts": {
+    "var": 10882,
+    "constraint": 7779,
+    "expression": 4167,
+    "param": 2029,
+    "objective": 3,
+    "suffix": 0
+   },
+   "deep": {
+    "var_data": 10882,
+    "var_fixed": 64,
+    "var_free": 10818,
+    "constraint_data": 7779,
+    "constraint_active": 7779,
+    "constraint_active_equality": 4305,
+    "constraint_active_inequality": 3474,
+    "objective_active": 1
+   }
+  },
+  {
+   "agent": "DSO",
+   "node": 7,
+   "year": 2035,
+   "day": "Winter",
+   "name": "case33_2",
+   "scenario_combinations": 1,
+   "len_counts": {
+    "var": 10882,
+    "constraint": 7779,
+    "expression": 4167,
+    "param": 2029,
+    "objective": 3,
+    "suffix": 0
+   },
+   "deep": {
+    "var_data": 10882,
+    "var_fixed": 64,
+    "var_free": 10818,
+    "constraint_data": 7779,
+    "constraint_active": 7779,
+    "constraint_active_equality": 4305,
+    "constraint_active_inequality": 3474,
+    "objective_active": 1
+   }
+  },
+  {
+   "agent": "DSO",
+   "node": 9,
+   "year": 2025,
+   "day": "Spring",
+   "name": "case33_3",
+   "scenario_combinations": 1,
+   "len_counts": {
+    "var": 10882,
+    "constraint": 7776,
+    "expression": 4167,
+    "param": 2029,
+    "objective": 3,
+    "suffix": 0
+   },
+   "deep": {
+    "var_data": 10882,
+    "var_fixed": 64,
+    "var_free": 10818,
+    "constraint_data": 7776,
+    "constraint_active": 7776,
+    "constraint_active_equality": 4305,
+    "constraint_active_inequality": 3471,
+    "objective_active": 1
+   }
+  },
+  {
+   "agent": "DSO",
+   "node": 9,
+   "year": 2025,
+   "day": "Summer",
+   "name": "case33_3",
+   "scenario_combinations": 1,
+   "len_counts": {
+    "var": 10882,
+    "constraint": 7776,
+    "expression": 4167,
+    "param": 2029,
+    "objective": 3,
+    "suffix": 0
+   },
+   "deep": {
+    "var_data": 10882,
+    "var_fixed": 64,
+    "var_free": 10818,
+    "constraint_data": 7776,
+    "constraint_active": 7776,
+    "constraint_active_equality": 4305,
+    "constraint_active_inequality": 3471,
+    "objective_active": 1
+   }
+  },
+  {
+   "agent": "DSO",
+   "node": 9,
+   "year": 2025,
+   "day": "Autumn",
+   "name": "case33_3",
+   "scenario_combinations": 1,
+   "len_counts": {
+    "var": 10882,
+    "constraint": 7740,
+    "expression": 4167,
+    "param": 2029,
+    "objective": 3,
+    "suffix": 0
+   },
+   "deep": {
+    "var_data": 10882,
+    "var_fixed": 64,
+    "var_free": 10818,
+    "constraint_data": 7740,
+    "constraint_active": 7740,
+    "constraint_active_equality": 4305,
+    "constraint_active_inequality": 3435,
+    "objective_active": 1
+   }
+  },
+  {
+   "agent": "DSO",
+   "node": 9,
+   "year": 2025,
+   "day": "Winter",
+   "name": "case33_3",
+   "scenario_combinations": 1,
+   "len_counts": {
+    "var": 10882,
+    "constraint": 7740,
+    "expression": 4167,
+    "param": 2029,
+    "objective": 3,
+    "suffix": 0
+   },
+   "deep": {
+    "var_data": 10882,
+    "var_fixed": 64,
+    "var_free": 10818,
+    "constraint_data": 7740,
+    "constraint_active": 7740,
+    "constraint_active_equality": 4305,
+    "constraint_active_inequality": 3435,
+    "objective_active": 1
+   }
+  },
+  {
+   "agent": "DSO",
+   "node": 9,
+   "year": 2030,
+   "day": "Spring",
+   "name": "case33_3",
+   "scenario_combinations": 1,
+   "len_counts": {
+    "var": 10882,
+    "constraint": 7776,
+    "expression": 4167,
+    "param": 2029,
+    "objective": 3,
+    "suffix": 0
+   },
+   "deep": {
+    "var_data": 10882,
+    "var_fixed": 64,
+    "var_free": 10818,
+    "constraint_data": 7776,
+    "constraint_active": 7776,
+    "constraint_active_equality": 4305,
+    "constraint_active_inequality": 3471,
+    "objective_active": 1
+   }
+  },
+  {
+   "agent": "DSO",
+   "node": 9,
+   "year": 2030,
+   "day": "Summer",
+   "name": "case33_3",
+   "scenario_combinations": 1,
+   "len_counts": {
+    "var": 10882,
+    "constraint": 7776,
+    "expression": 4167,
+    "param": 2029,
+    "objective": 3,
+    "suffix": 0
+   },
+   "deep": {
+    "var_data": 10882,
+    "var_fixed": 64,
+    "var_free": 10818,
+    "constraint_data": 7776,
+    "constraint_active": 7776,
+    "constraint_active_equality": 4305,
+    "constraint_active_inequality": 3471,
+    "objective_active": 1
+   }
+  },
+  {
+   "agent": "DSO",
+   "node": 9,
+   "year": 2030,
+   "day": "Autumn",
+   "name": "case33_3",
+   "scenario_combinations": 1,
+   "len_counts": {
+    "var": 10882,
+    "constraint": 7740,
+    "expression": 4167,
+    "param": 2029,
+    "objective": 3,
+    "suffix": 0
+   },
+   "deep": {
+    "var_data": 10882,
+    "var_fixed": 64,
+    "var_free": 10818,
+    "constraint_data": 7740,
+    "constraint_active": 7740,
+    "constraint_active_equality": 4305,
+    "constraint_active_inequality": 3435,
+    "objective_active": 1
+   }
+  },
+  {
+   "agent": "DSO",
+   "node": 9,
+   "year": 2030,
+   "day": "Winter",
+   "name": "case33_3",
+   "scenario_combinations": 1,
+   "len_counts": {
+    "var": 10882,
+    "constraint": 7740,
+    "expression": 4167,
+    "param": 2029,
+    "objective": 3,
+    "suffix": 0
+   },
+   "deep": {
+    "var_data": 10882,
+    "var_fixed": 64,
+    "var_free": 10818,
+    "constraint_data": 7740,
+    "constraint_active": 7740,
+    "constraint_active_equality": 4305,
+    "constraint_active_inequality": 3435,
+    "objective_active": 1
+   }
+  },
+  {
+   "agent": "DSO",
+   "node": 9,
+   "year": 2035,
+   "day": "Spring",
+   "name": "case33_3",
+   "scenario_combinations": 1,
+   "len_counts": {
+    "var": 10882,
+    "constraint": 7776,
+    "expression": 4167,
+    "param": 2029,
+    "objective": 3,
+    "suffix": 0
+   },
+   "deep": {
+    "var_data": 10882,
+    "var_fixed": 64,
+    "var_free": 10818,
+    "constraint_data": 7776,
+    "constraint_active": 7776,
+    "constraint_active_equality": 4305,
+    "constraint_active_inequality": 3471,
+    "objective_active": 1
+   }
+  },
+  {
+   "agent": "DSO",
+   "node": 9,
+   "year": 2035,
+   "day": "Summer",
+   "name": "case33_3",
+   "scenario_combinations": 1,
+   "len_counts": {
+    "var": 10882,
+    "constraint": 7776,
+    "expression": 4167,
+    "param": 2029,
+    "objective": 3,
+    "suffix": 0
+   },
+   "deep": {
+    "var_data": 10882,
+    "var_fixed": 64,
+    "var_free": 10818,
+    "constraint_data": 7776,
+    "constraint_active": 7776,
+    "constraint_active_equality": 4305,
+    "constraint_active_inequality": 3471,
+    "objective_active": 1
+   }
+  },
+  {
+   "agent": "DSO",
+   "node": 9,
+   "year": 2035,
+   "day": "Autumn",
+   "name": "case33_3",
+   "scenario_combinations": 1,
+   "len_counts": {
+    "var": 10882,
+    "constraint": 7740,
+    "expression": 4167,
+    "param": 2029,
+    "objective": 3,
+    "suffix": 0
+   },
+   "deep": {
+    "var_data": 10882,
+    "var_fixed": 64,
+    "var_free": 10818,
+    "constraint_data": 7740,
+    "constraint_active": 7740,
+    "constraint_active_equality": 4305,
+    "constraint_active_inequality": 3435,
+    "objective_active": 1
+   }
+  },
+  {
+   "agent": "DSO",
+   "node": 9,
+   "year": 2035,
+   "day": "Winter",
+   "name": "case33_3",
+   "scenario_combinations": 1,
+   "len_counts": {
+    "var": 10882,
+    "constraint": 7740,
+    "expression": 4167,
+    "param": 2029,
+    "objective": 3,
+    "suffix": 0
+   },
+   "deep": {
+    "var_data": 10882,
+    "var_fixed": 64,
+    "var_free": 10818,
+    "constraint_data": 7740,
+    "constraint_active": 7740,
+    "constraint_active_equality": 4305,
+    "constraint_active_inequality": 3435,
+    "objective_active": 1
+   }
+  },
+  {
+   "agent": "ESSO",
+   "node": 5,
+   "year": null,
+   "day": null,
+   "name": "'ESSO, Operational Planning'",
+   "scenario_combinations": null,
+   "len_counts": {
+    "var": 2949,
+    "constraint": 3231,
+    "expression": 3,
+    "param": 1169,
+    "objective": 2,
+    "suffix": 0
+   },
+   "deep": {
+    "var_data": 2949,
+    "var_fixed": 1176,
+    "var_free": 1773,
+    "constraint_data": 3231,
+    "constraint_active": 1200,
+    "constraint_active_equality": 333,
+    "constraint_active_inequality": 867,
+    "objective_active": 1
+   }
+  },
+  {
+   "agent": "ESSO",
+   "node": 7,
+   "year": null,
+   "day": null,
+   "name": "'ESSO, Operational Planning'",
+   "scenario_combinations": null,
+   "len_counts": {
+    "var": 2949,
+    "constraint": 3231,
+    "expression": 3,
+    "param": 1169,
+    "objective": 2,
+    "suffix": 0
+   },
+   "deep": {
+    "var_data": 2949,
+    "var_fixed": 1176,
+    "var_free": 1773,
+    "constraint_data": 3231,
+    "constraint_active": 1200,
+    "constraint_active_equality": 333,
+    "constraint_active_inequality": 867,
+    "objective_active": 1
+   }
+  },
+  {
+   "agent": "ESSO",
+   "node": 9,
+   "year": null,
+   "day": null,
+   "name": "'ESSO, Operational Planning'",
+   "scenario_combinations": null,
+   "len_counts": {
+    "var": 2949,
+    "constraint": 3231,
+    "expression": 3,
+    "param": 1169,
+    "objective": 2,
+    "suffix": 0
+   },
+   "deep": {
+    "var_data": 2949,
+    "var_fixed": 1176,
+    "var_free": 1773,
+    "constraint_data": 3231,
+    "constraint_active": 1200,
+    "constraint_active_equality": 333,
+    "constraint_active_inequality": 867,
+    "objective_active": 1
+   }
+  }
+ ],
+ "counts_note": "len_counts = sum of len() over component objects (constructed data objects) per type, descend_into=True; deep = full iteration (fixed vars, active/equality constraints). Counted on the final models after ADMM preparation. The pristine clones (see trace.pristine_clone_blocks) are structural copies of the TSO blocks and the node-7 DSO blocks at loop start and are not re-counted.",
+ "blocks_at_build_model": [
+  {
+   "agent": "DSO",
+   "node": 5,
+   "network": "case33_1",
+   "year": 2025,
+   "day": "Spring",
+   "wall_s": 0.2,
+   "rss_tree_after": 476102656,
+   "footprint_self_after": 275858632,
+   "scenario_combinations": 1,
+   "len_counts_at_build_model": {
+    "var": 10762,
+    "constraint": 7656,
+    "expression": 4167,
+    "param": 1783,
+    "objective": 1,
+    "suffix": 0
+   }
+  },
+  {
+   "agent": "DSO",
+   "node": 5,
+   "network": "case33_1",
+   "year": 2025,
+   "day": "Summer",
+   "wall_s": 0.157,
+   "rss_tree_after": 487047168,
+   "footprint_self_after": 286819528,
+   "scenario_combinations": 1,
+   "len_counts_at_build_model": {
+    "var": 10762,
+    "constraint": 7656,
+    "expression": 4167,
+    "param": 1783,
+    "objective": 1,
+    "suffix": 0
+   }
+  },
+  {
+   "agent": "DSO",
+   "node": 5,
+   "network": "case33_1",
+   "year": 2025,
+   "day": "Autumn",
+   "wall_s": 0.162,
+   "rss_tree_after": 498204672,
+   "footprint_self_after": 297977032,
+   "scenario_combinations": 1,
+   "len_counts_at_build_model": {
+    "var": 10762,
+    "constraint": 7620,
+    "expression": 4167,
+    "param": 1783,
+    "objective": 1,
+    "suffix": 0
+   }
+  },
+  {
+   "agent": "DSO",
+   "node": 5,
+   "network": "case33_1",
+   "year": 2025,
+   "day": "Winter",
+   "wall_s": 0.18,
+   "rss_tree_after": 509427712,
+   "footprint_self_after": 309216480,
+   "scenario_combinations": 1,
+   "len_counts_at_build_model": {
+    "var": 10762,
+    "constraint": 7620,
+    "expression": 4167,
+    "param": 1783,
+    "objective": 1,
+    "suffix": 0
+   }
+  },
+  {
+   "agent": "DSO",
+   "node": 5,
+   "network": "case33_1",
+   "year": 2030,
+   "day": "Spring",
+   "wall_s": 0.195,
+   "rss_tree_after": 520683520,
+   "footprint_self_after": 320488672,
+   "scenario_combinations": 1,
+   "len_counts_at_build_model": {
+    "var": 10762,
+    "constraint": 7656,
+    "expression": 4167,
+    "param": 1783,
+    "objective": 1,
+    "suffix": 0
+   }
+  },
+  {
+   "agent": "DSO",
+   "node": 5,
+   "network": "case33_1",
+   "year": 2030,
+   "day": "Summer",
+   "wall_s": 0.093,
+   "rss_tree_after": 531955712,
+   "footprint_self_after": 331760864,
+   "scenario_combinations": 1,
+   "len_counts_at_build_model": {
+    "var": 10762,
+    "constraint": 7656,
+    "expression": 4167,
+    "param": 1783,
+    "objective": 1,
+    "suffix": 0
+   }
+  },
+  {
+   "agent": "DSO",
+   "node": 5,
+   "network": "case33_1",
+   "year": 2030,
+   "day": "Autumn",
+   "wall_s": 0.198,
+   "rss_tree_after": 543227904,
+   "footprint_self_after": 343049464,
+   "scenario_combinations": 1,
+   "len_counts_at_build_model": {
+    "var": 10762,
+    "constraint": 7620,
+    "expression": 4167,
+    "param": 1783,
+    "objective": 1,
+    "suffix": 0
+   }
+  },
+  {
+   "agent": "DSO",
+   "node": 5,
+   "network": "case33_1",
+   "year": 2030,
+   "day": "Winter",
+   "wall_s": 0.093,
+   "rss_tree_after": 554516480,
+   "footprint_self_after": 354321656,
+   "scenario_combinations": 1,
+   "len_counts_at_build_model": {
+    "var": 10762,
+    "constraint": 7620,
+    "expression": 4167,
+    "param": 1783,
+    "objective": 1,
+    "suffix": 0
+   }
+  },
+  {
+   "agent": "DSO",
+   "node": 5,
+   "network": "case33_1",
+   "year": 2035,
+   "day": "Spring",
+   "wall_s": 0.22,
+   "rss_tree_after": 565870592,
+   "footprint_self_after": 365675768,
+   "scenario_combinations": 1,
+   "len_counts_at_build_model": {
+    "var": 10762,
+    "constraint": 7656,
+    "expression": 4167,
+    "param": 1783,
+    "objective": 1,
+    "suffix": 0
+   }
+  },
+  {
+   "agent": "DSO",
+   "node": 5,
+   "network": "case33_1",
+   "year": 2035,
+   "day": "Summer",
+   "wall_s": 0.093,
+   "rss_tree_after": 577191936,
+   "footprint_self_after": 377029904,
+   "scenario_combinations": 1,
+   "len_counts_at_build_model": {
+    "var": 10762,
+    "constraint": 7656,
+    "expression": 4167,
+    "param": 1783,
+    "objective": 1,
+    "suffix": 0
+   }
+  },
+  {
+   "agent": "DSO",
+   "node": 5,
+   "network": "case33_1",
+   "year": 2035,
+   "day": "Autumn",
+   "wall_s": 0.093,
+   "rss_tree_after": 588513280,
+   "footprint_self_after": 388351248,
+   "scenario_combinations": 1,
+   "len_counts_at_build_model": {
+    "var": 10762,
+    "constraint": 7620,
+    "expression": 4167,
+    "param": 1783,
+    "objective": 1,
+    "suffix": 0
+   }
+  },
+  {
+   "agent": "DSO",
+   "node": 5,
+   "network": "case33_1",
+   "year": 2035,
+   "day": "Winter",
+   "wall_s": 0.249,
+   "rss_tree_after": 599801856,
+   "footprint_self_after": 399639824,
+   "scenario_combinations": 1,
+   "len_counts_at_build_model": {
+    "var": 10762,
+    "constraint": 7620,
+    "expression": 4167,
+    "param": 1783,
+    "objective": 1,
+    "suffix": 0
+   }
+  },
+  {
+   "agent": "DSO",
+   "node": 7,
+   "network": "case33_2",
+   "year": 2025,
+   "day": "Spring",
+   "wall_s": 0.099,
+   "rss_tree_after": 612073472,
+   "footprint_self_after": 411911464,
+   "scenario_combinations": 1,
+   "len_counts_at_build_model": {
+    "var": 10762,
+    "constraint": 7683,
+    "expression": 4167,
+    "param": 1783,
+    "objective": 1,
+    "suffix": 0
+   }
+  },
+  {
+   "agent": "DSO",
+   "node": 7,
+   "network": "case33_2",
+   "year": 2025,
+   "day": "Summer",
+   "wall_s": 0.094,
+   "rss_tree_after": 623411200,
+   "footprint_self_after": 423265576,
+   "scenario_combinations": 1,
+   "len_counts_at_build_model": {
+    "var": 10762,
+    "constraint": 7683,
+    "expression": 4167,
+    "param": 1783,
+    "objective": 1,
+    "suffix": 0
+   }
+  },
+  {
+   "agent": "DSO",
+   "node": 7,
+   "network": "case33_2",
+   "year": 2025,
+   "day": "Autumn",
+   "wall_s": 0.282,
+   "rss_tree_after": 634765312,
+   "footprint_self_after": 434636072,
+   "scenario_combinations": 1,
+   "len_counts_at_build_model": {
+    "var": 10762,
+    "constraint": 7659,
+    "expression": 4167,
+    "param": 1783,
+    "objective": 1,
+    "suffix": 0
+   }
+  },
+  {
+   "agent": "DSO",
+   "node": 7,
+   "network": "case33_2",
+   "year": 2025,
+   "day": "Winter",
+   "wall_s": 0.093,
+   "rss_tree_after": 646479872,
+   "footprint_self_after": 446367040,
+   "scenario_combinations": 1,
+   "len_counts_at_build_model": {
+    "var": 10762,
+    "constraint": 7659,
+    "expression": 4167,
+    "param": 1783,
+    "objective": 1,
+    "suffix": 0
+   }
+  },
+  {
+   "agent": "DSO",
+   "node": 7,
+   "network": "case33_2",
+   "year": 2030,
+   "day": "Spring",
+   "wall_s": 0.094,
+   "rss_tree_after": 658997248,
+   "footprint_self_after": 458933568,
+   "scenario_combinations": 1,
+   "len_counts_at_build_model": {
+    "var": 10762,
+    "constraint": 7683,
+    "expression": 4167,
+    "param": 1783,
+    "objective": 1,
+    "suffix": 0
+   }
+  },
+  {
+   "agent": "DSO",
+   "node": 7,
+   "network": "case33_2",
+   "year": 2030,
+   "day": "Summer",
+   "wall_s": 0.094,
+   "rss_tree_after": 670679040,
+   "footprint_self_after": 471106880,
+   "scenario_combinations": 1,
+   "len_counts_at_build_model": {
+    "var": 10762,
+    "constraint": 7683,
+    "expression": 4167,
+    "param": 1783,
+    "objective": 1,
+    "suffix": 0
+   }
+  },
+  {
+   "agent": "DSO",
+   "node": 7,
+   "network": "case33_2",
+   "year": 2030,
+   "day": "Autumn",
+   "wall_s": 0.094,
+   "rss_tree_after": 683032576,
+   "footprint_self_after": 482919768,
+   "scenario_combinations": 1,
+   "len_counts_at_build_model": {
+    "var": 10762,
+    "constraint": 7659,
+    "expression": 4167,
+    "param": 1783,
+    "objective": 1,
+    "suffix": 0
+   }
+  },
+  {
+   "agent": "DSO",
+   "node": 7,
+   "network": "case33_2",
+   "year": 2030,
+   "day": "Winter",
+   "wall_s": 0.325,
+   "rss_tree_after": 694632448,
+   "footprint_self_after": 494536024,
+   "scenario_combinations": 1,
+   "len_counts_at_build_model": {
+    "var": 10762,
+    "constraint": 7659,
+    "expression": 4167,
+    "param": 1783,
+    "objective": 1,
+    "suffix": 0
+   }
+  },
+  {
+   "agent": "DSO",
+   "node": 7,
+   "network": "case33_2",
+   "year": 2035,
+   "day": "Spring",
+   "wall_s": 0.094,
+   "rss_tree_after": 706281472,
+   "footprint_self_after": 506168664,
+   "scenario_combinations": 1,
+   "len_counts_at_build_model": {
+    "var": 10762,
+    "constraint": 7683,
+    "expression": 4167,
+    "param": 1783,
+    "objective": 1,
+    "suffix": 0
+   }
+  },
+  {
+   "agent": "DSO",
+   "node": 7,
+   "network": "case33_2",
+   "year": 2035,
+   "day": "Summer",
+   "wall_s": 0.098,
+   "rss_tree_after": 717897728,
+   "footprint_self_after": 517866864,
+   "scenario_combinations": 1,
+   "len_counts_at_build_model": {
+    "var": 10762,
+    "constraint": 7683,
+    "expression": 4167,
+    "param": 1783,
+    "objective": 1,
+    "suffix": 0
+   }
+  },
+  {
+   "agent": "DSO",
+   "node": 7,
+   "network": "case33_2",
+   "year": 2035,
+   "day": "Autumn",
+   "wall_s": 0.093,
+   "rss_tree_after": 730021888,
+   "footprint_self_after": 529909104,
+   "scenario_combinations": 1,
+   "len_counts_at_build_model": {
+    "var": 10762,
+    "constraint": 7659,
+    "expression": 4167,
+    "param": 1783,
+    "objective": 1,
+    "suffix": 0
+   }
+  },
+  {
+   "agent": "DSO",
+   "node": 7,
+   "network": "case33_2",
+   "year": 2035,
+   "day": "Winter",
+   "wall_s": 0.093,
+   "rss_tree_after": 742227968,
+   "footprint_self_after": 542164336,
+   "scenario_combinations": 1,
+   "len_counts_at_build_model": {
+    "var": 10762,
+    "constraint": 7659,
+    "expression": 4167,
+    "param": 1783,
+    "objective": 1,
+    "suffix": 0
+   }
+  },
+  {
+   "agent": "DSO",
+   "node": 9,
+   "network": "case33_3",
+   "year": 2025,
+   "day": "Spring",
+   "wall_s": 0.484,
+   "rss_tree_after": 755695616,
+   "footprint_self_after": 555632008,
+   "scenario_combinations": 1,
+   "len_counts_at_build_model": {
+    "var": 10762,
+    "constraint": 7656,
+    "expression": 4167,
+    "param": 1783,
+    "objective": 1,
+    "suffix": 0
+   }
+  },
+  {
+   "agent": "DSO",
+   "node": 9,
+   "network": "case33_3",
+   "year": 2025,
+   "day": "Summer",
+   "wall_s": 0.093,
+   "rss_tree_after": 767361024,
+   "footprint_self_after": 567281032,
+   "scenario_combinations": 1,
+   "len_counts_at_build_model": {
+    "var": 10762,
+    "constraint": 7656,
+    "expression": 4167,
+    "param": 1783,
+    "objective": 1,
+    "suffix": 0
+   }
+  },
+  {
+   "agent": "DSO",
+   "node": 9,
+   "network": "case33_3",
+   "year": 2025,
+   "day": "Autumn",
+   "wall_s": 0.092,
+   "rss_tree_after": 779255808,
+   "footprint_self_after": 579700104,
+   "scenario_combinations": 1,
+   "len_counts_at_build_model": {
+    "var": 10762,
+    "constraint": 7620,
+    "expression": 4167,
+    "param": 1783,
+    "objective": 1,
+    "suffix": 0
+   }
+  },
+  {
+   "agent": "DSO",
+   "node": 9,
+   "network": "case33_3",
+   "year": 2025,
+   "day": "Winter",
+   "wall_s": 0.092,
+   "rss_tree_after": 791379968,
+   "footprint_self_after": 591807928,
+   "scenario_combinations": 1,
+   "len_counts_at_build_model": {
+    "var": 10762,
+    "constraint": 7620,
+    "expression": 4167,
+    "param": 1783,
+    "objective": 1,
+    "suffix": 0
+   }
+  },
+  {
+   "agent": "DSO",
+   "node": 9,
+   "network": "case33_3",
+   "year": 2030,
+   "day": "Spring",
+   "wall_s": 0.093,
+   "rss_tree_after": 804012032,
+   "footprint_self_after": 603981240,
+   "scenario_combinations": 1,
+   "len_counts_at_build_model": {
+    "var": 10762,
+    "constraint": 7656,
+    "expression": 4167,
+    "param": 1783,
+    "objective": 1,
+    "suffix": 0
+   }
+  },
+  {
+   "agent": "DSO",
+   "node": 9,
+   "network": "case33_3",
+   "year": 2030,
+   "day": "Summer",
+   "wall_s": 0.093,
+   "rss_tree_after": 815349760,
+   "footprint_self_after": 615302584,
+   "scenario_combinations": 1,
+   "len_counts_at_build_model": {
+    "var": 10762,
+    "constraint": 7656,
+    "expression": 4167,
+    "param": 1783,
+    "objective": 1,
+    "suffix": 0
+   }
+  },
+  {
+   "agent": "DSO",
+   "node": 9,
+   "network": "case33_3",
+   "year": 2030,
+   "day": "Autumn",
+   "wall_s": 0.099,
+   "rss_tree_after": 826703872,
+   "footprint_self_after": 626656720,
+   "scenario_combinations": 1,
+   "len_counts_at_build_model": {
+    "var": 10762,
+    "constraint": 7620,
+    "expression": 4167,
+    "param": 1783,
+    "objective": 1,
+    "suffix": 0
+   }
+  },
+  {
+   "agent": "DSO",
+   "node": 9,
+   "network": "case33_3",
+   "year": 2030,
+   "day": "Winter",
+   "wall_s": 0.561,
+   "rss_tree_after": 838352896,
+   "footprint_self_after": 638354896,
+   "scenario_combinations": 1,
+   "len_counts_at_build_model": {
+    "var": 10762,
+    "constraint": 7620,
+    "expression": 4167,
+    "param": 1783,
+    "objective": 1,
+    "suffix": 0
+   }
+  },
+  {
+   "agent": "DSO",
+   "node": 9,
+   "network": "case33_3",
+   "year": 2035,
+   "day": "Spring",
+   "wall_s": 0.093,
+   "rss_tree_after": 850575360,
+   "footprint_self_after": 651068880,
+   "scenario_combinations": 1,
+   "len_counts_at_build_model": {
+    "var": 10762,
+    "constraint": 7656,
+    "expression": 4167,
+    "param": 1783,
+    "objective": 1,
+    "suffix": 0
+   }
+  },
+  {
+   "agent": "DSO",
+   "node": 9,
+   "network": "case33_3",
+   "year": 2035,
+   "day": "Summer",
+   "wall_s": 0.093,
+   "rss_tree_after": 863420416,
+   "footprint_self_after": 663406056,
+   "scenario_combinations": 1,
+   "len_counts_at_build_model": {
+    "var": 10762,
+    "constraint": 7656,
+    "expression": 4167,
+    "param": 1783,
+    "objective": 1,
+    "suffix": 0
+   }
+  },
+  {
+   "agent": "DSO",
+   "node": 9,
+   "network": "case33_3",
+   "year": 2035,
+   "day": "Autumn",
+   "wall_s": 0.093,
+   "rss_tree_after": 874741760,
+   "footprint_self_after": 674776552,
+   "scenario_combinations": 1,
+   "len_counts_at_build_model": {
+    "var": 10762,
+    "constraint": 7620,
+    "expression": 4167,
+    "param": 1783,
+    "objective": 1,
+    "suffix": 0
+   }
+  },
+  {
+   "agent": "DSO",
+   "node": 9,
+   "network": "case33_3",
+   "year": 2035,
+   "day": "Winter",
+   "wall_s": 0.092,
+   "rss_tree_after": 887128064,
+   "footprint_self_after": 687130088,
+   "scenario_combinations": 1,
+   "len_counts_at_build_model": {
+    "var": 10762,
+    "constraint": 7620,
+    "expression": 4167,
+    "param": 1783,
+    "objective": 1,
+    "suffix": 0
+   }
+  },
+  {
+   "agent": "TSO",
+   "node": null,
+   "network": "case9",
+   "year": 2025,
+   "day": "Spring",
+   "wall_s": 0.038,
+   "rss_tree_after": 892649472,
+   "footprint_self_after": 692651520,
+   "scenario_combinations": 1,
+   "len_counts_at_build_model": {
+    "var": 3546,
+    "constraint": 3018,
+    "expression": 1527,
+    "param": 443,
+    "objective": 1,
+    "suffix": 0
+   }
+  },
+  {
+   "agent": "TSO",
+   "node": null,
+   "network": "case9",
+   "year": 2025,
+   "day": "Summer",
+   "wall_s": 0.044,
+   "rss_tree_after": 896974848,
+   "footprint_self_after": 697484800,
+   "scenario_combinations": 1,
+   "len_counts_at_build_model": {
+    "var": 3546,
+    "constraint": 3018,
+    "expression": 1527,
+    "param": 443,
+    "objective": 1,
+    "suffix": 0
+   }
+  },
+  {
+   "agent": "TSO",
+   "node": null,
+   "network": "case9",
+   "year": 2025,
+   "day": "Autumn",
+   "wall_s": 0.038,
+   "rss_tree_after": 901726208,
+   "footprint_self_after": 701711872,
+   "scenario_combinations": 1,
+   "len_counts_at_build_model": {
+    "var": 3546,
+    "constraint": 2982,
+    "expression": 1527,
+    "param": 443,
+    "objective": 1,
+    "suffix": 0
+   }
+  },
+  {
+   "agent": "TSO",
+   "node": null,
+   "network": "case9",
+   "year": 2025,
+   "day": "Winter",
+   "wall_s": 0.039,
+   "rss_tree_after": 906035200,
+   "footprint_self_after": 706037248,
+   "scenario_combinations": 1,
+   "len_counts_at_build_model": {
+    "var": 3546,
+    "constraint": 2982,
+    "expression": 1527,
+    "param": 443,
+    "objective": 1,
+    "suffix": 0
+   }
+  },
+  {
+   "agent": "TSO",
+   "node": null,
+   "network": "case9",
+   "year": 2030,
+   "day": "Spring",
+   "wall_s": 0.039,
+   "rss_tree_after": 910295040,
+   "footprint_self_after": 710329856,
+   "scenario_combinations": 1,
+   "len_counts_at_build_model": {
+    "var": 3546,
+    "constraint": 3018,
+    "expression": 1527,
+    "param": 443,
+    "objective": 1,
+    "suffix": 0
+   }
+  },
+  {
+   "agent": "TSO",
+   "node": null,
+   "network": "case9",
+   "year": 2030,
+   "day": "Summer",
+   "wall_s": 0.039,
+   "rss_tree_after": 914685952,
+   "footprint_self_after": 714737152,
+   "scenario_combinations": 1,
+   "len_counts_at_build_model": {
+    "var": 3546,
+    "constraint": 3018,
+    "expression": 1527,
+    "param": 443,
+    "objective": 1,
+    "suffix": 0
+   }
+  },
+  {
+   "agent": "TSO",
+   "node": null,
+   "network": "case9",
+   "year": 2030,
+   "day": "Autumn",
+   "wall_s": 0.038,
+   "rss_tree_after": 919486464,
+   "footprint_self_after": 719521280,
+   "scenario_combinations": 1,
+   "len_counts_at_build_model": {
+    "var": 3546,
+    "constraint": 2982,
+    "expression": 1527,
+    "param": 443,
+    "objective": 1,
+    "suffix": 0
+   }
+  },
+  {
+   "agent": "TSO",
+   "node": null,
+   "network": "case9",
+   "year": 2030,
+   "day": "Winter",
+   "wall_s": 0.038,
+   "rss_tree_after": 924319744,
+   "footprint_self_after": 724387352,
+   "scenario_combinations": 1,
+   "len_counts_at_build_model": {
+    "var": 3546,
+    "constraint": 2982,
+    "expression": 1527,
+    "param": 443,
+    "objective": 1,
+    "suffix": 0
+   }
+  },
+  {
+   "agent": "TSO",
+   "node": null,
+   "network": "case9",
+   "year": 2035,
+   "day": "Spring",
+   "wall_s": 0.038,
+   "rss_tree_after": 929120256,
+   "footprint_self_after": 729187864,
+   "scenario_combinations": 1,
+   "len_counts_at_build_model": {
+    "var": 3546,
+    "constraint": 3018,
+    "expression": 1527,
+    "param": 443,
+    "objective": 1,
+    "suffix": 0
+   }
+  },
+  {
+   "agent": "TSO",
+   "node": null,
+   "network": "case9",
+   "year": 2035,
+   "day": "Summer",
+   "wall_s": 0.59,
+   "rss_tree_after": 933625856,
+   "footprint_self_after": 733627928,
+   "scenario_combinations": 1,
+   "len_counts_at_build_model": {
+    "var": 3546,
+    "constraint": 3018,
+    "expression": 1527,
+    "param": 443,
+    "objective": 1,
+    "suffix": 0
+   }
+  },
+  {
+   "agent": "TSO",
+   "node": null,
+   "network": "case9",
+   "year": 2035,
+   "day": "Autumn",
+   "wall_s": 0.038,
+   "rss_tree_after": 937885696,
+   "footprint_self_after": 737904152,
+   "scenario_combinations": 1,
+   "len_counts_at_build_model": {
+    "var": 3546,
+    "constraint": 2982,
+    "expression": 1527,
+    "param": 443,
+    "objective": 1,
+    "suffix": 0
+   }
+  },
+  {
+   "agent": "TSO",
+   "node": null,
+   "network": "case9",
+   "year": 2035,
+   "day": "Winter",
+   "wall_s": 0.038,
+   "rss_tree_after": 942456832,
+   "footprint_self_after": 742508056,
+   "scenario_combinations": 1,
+   "len_counts_at_build_model": {
+    "var": 3546,
+    "constraint": 2982,
+    "expression": 1527,
+    "param": 443,
+    "objective": 1,
+    "suffix": 0
+   }
+  }
+ ],
+ "block_counts": {
+  "tso_blocks": 12,
+  "dso_blocks": 36,
+  "dso_blocks_per_node": {
+   "5": 12,
+   "7": 12,
+   "9": 12
+  },
+  "esso_models": 3,
+  "network_build_model_calls": 48,
+  "pristine_clone_blocks": {},
+  "network_blocks": 48
+ },
+ "block_counts_match_expected": true,
+ "interceptor_check": {
+  "declared": {
+   "dso": 3,
+   "tso": 1,
+   "esso_init": 1
+  },
+  "observed": {
+   "dso": 3,
+   "tso": 1,
+   "esso_init": 1
+  },
+  "exact_match": true
+ },
+ "trace": {
+  "admm_local_solves_succeeded_on_intercepted_results (expected False)": false,
+  "sigma_computed_on_unsolved_blocks": "ValueError: Cannot compute common ADMM objective scale: no valid weighted TSO/DSO objective values were found.",
+  "objective_scale_used": 93635360.0,
+  "al_scale_esso": 227210.9966521344,
+  "shared_ess_initialization": "standalone",
+  "tso_snapshot_capture_mode": "off",
+  "dso_snapshot_capture_mode": "off",
+  "pristine_clone_blocks": {}
+ },
+ "guard": {
+  "permitted": [],
+  "counts": {
+   "permitted_solve": 0,
+   "permitted_exec": 0,
+   "blocked_solve": 0,
+   "blocked_exec": 0
+  },
+  "declared_solves": 0,
+  "verify_failures": []
+ },
+ "watchdog": {
+  "limit_bytes": 25769803776,
+  "sample_interval_s": 0.5,
+  "n_samples": 38,
+  "peak": {
+   "measure": 973242368,
+   "rss_tree": 973242368,
+   "rss_self": 973242368,
+   "footprint_self": 773162544,
+   "stage_at_peak_measure": "counting (after build complete)",
+   "t_at_peak_measure": 20.518,
+   "gating_measure": "rss_tree",
+   "gating_value": 973242368,
+   "stage_at_peak_gating_value": "counting (after build complete)",
+   "t_at_peak_gating_value": 20.518,
+   "swap_used": 928776192,
+   "stage_at_peak_swap_used": "child start"
+  },
+  "min_available_bytes": 1073741824,
+  "gating_measure": "rss_tree",
+  "thresholds": {
+   "gating_measure": "rss_tree",
+   "gating_measure_sample_field": "rss_tree",
+   "gating_measures_available": [
+    "rss_tree",
+    "footprint"
+   ],
+   "rss_limit_bytes": 25769803776,
+   "rss_limit_gib": 24.0,
+   "min_available_bytes": 1073741824,
+   "swap_used_limit_bytes": 2147483648,
+   "swap_growth_limit_bytes": 1073741824,
+   "swap_growth_window_s": 60.0,
+   "sample_interval_s": 0.5
+  }
+ },
+ "peak_under_limit": true,
+ "peak_under_limit_gating_measure": "rss_tree",
+ "peak_footprint_measure_under_limit": true,
+ "memory_final": {
+  "t": 20.518,
+  "stage": "counting (after build complete)",
+  "rss_self": 973242368,
+  "rss_children": 0,
+  "n_children": 0,
+  "rss_tree": 973242368,
+  "footprint_self": 773162544,
+  "measure": 973242368,
+  "sys_available": 15019950080,
+  "sys_used_pct": 56.3,
+  "swap_used": 928776192,
+  "gating_measure": "rss_tree",
+  "gating_value": 973242368
+ },
+ "ru_maxrss_self_final": 973242368,
+ "ru_maxrss_units": "bytes on macOS",
+ "stages": [
+  {
+   "event": "end",
+   "stage": "import production modules",
+   "ok": true,
+   "error": null,
+   "t_start": 0.026,
+   "wall_s": 1.22,
+   "rss_tree_before": 35405824,
+   "rss_tree_after": 220102656,
+   "rss_self_after": 220102656,
+   "footprint_self_after": 178095016,
+   "peak_measure_so_far": 189071360,
+   "ru_maxrss_self_after": 220151808
+  },
+  {
+   "event": "end",
+   "stage": "read_planning_problem (data, copula/KDE scenario generation, networks, ESS)",
+   "ok": true,
+   "error": null,
+   "t_start": 1.245,
+   "wall_s": 11.805,
+   "rss_tree_before": 220168192,
+   "rss_tree_after": 461914112,
+   "rss_self_after": 461914112,
+   "footprint_self_after": 272958640,
+   "peak_measure_so_far": 451657728,
+   "ru_maxrss_self_after": 461914112
+  },
+  {
+   "event": "end",
+   "stage": "provenance (IPOPT identity probe: `ipopt --version`, not a solve)",
+   "ok": true,
+   "error": null,
+   "t_start": 13.05,
+   "wall_s": 0.161,
+   "rss_tree_before": 461914112,
+   "rss_tree_after": 467271680,
+   "rss_self_after": 467271680,
+   "footprint_self_after": 275137736,
+   "peak_measure_so_far": 461914112,
+   "ru_maxrss_self_after": 468238336
+  },
+  {
+   "event": "end",
+   "stage": "oracle construction: _construct_arm_planning (fresh_planning deepcopy, results redirect, budget, candidate C*)",
+   "ok": true,
+   "error": null,
+   "t_start": 13.211,
+   "wall_s": 0.049,
+   "rss_tree_before": 467271680,
+   "rss_tree_after": 470728704,
+   "rss_self_after": 470728704,
+   "footprint_self_after": 278594760,
+   "peak_measure_so_far": 461914112,
+   "ru_maxrss_self_after": 470728704
+  },
+  {
+   "event": "end",
+   "stage": "create_admm_variables",
+   "ok": true,
+   "error": null,
+   "t_start": 13.26,
+   "wall_s": 0.011,
+   "rss_tree_before": 470728704,
+   "rss_tree_after": 470958080,
+   "rss_self_after": 470958080,
+   "footprint_self_after": 278627528,
+   "peak_measure_so_far": 461914112,
+   "ru_maxrss_self_after": 470958080
+  },
+  {
+   "event": "end",
+   "stage": "create_distribution_networks_models (sequential; optimize intercepted)",
+   "ok": true,
+   "error": null,
+   "t_start": 13.272,
+   "wall_s": 5.529,
+   "rss_tree_before": 470958080,
+   "rss_tree_after": 887832576,
+   "rss_self_after": 887832576,
+   "footprint_self_after": 687883752,
+   "peak_measure_so_far": 828866560,
+   "ru_maxrss_self_after": 887930880
+  },
+  {
+   "event": "end",
+   "stage": "create_transmission_network_model (optimize intercepted)",
+   "ok": true,
+   "error": null,
+   "t_start": 18.8,
+   "wall_s": 1.08,
+   "rss_tree_before": 887930880,
+   "rss_tree_after": 945340416,
+   "rss_self_after": 945340416,
+   "footprint_self_after": 745358872,
+   "peak_measure_so_far": 929792000,
+   "ru_maxrss_self_after": 945373184
+  },
+  {
+   "event": "end",
+   "stage": "create_shared_energy_storage_model (optimize intercepted)",
+   "ok": true,
+   "error": null,
+   "t_start": 19.88,
+   "wall_s": 0.074,
+   "rss_tree_before": 945373184,
+   "rss_tree_after": 954236928,
+   "rss_self_after": 954236928,
+   "footprint_self_after": 754746904,
+   "peak_measure_so_far": 929792000,
+   "ru_maxrss_self_after": 954761216
+  },
+  {
+   "event": "end",
+   "stage": "_prepare_distribution/transmission_objectives_for_admm",
+   "ok": true,
+   "error": null,
+   "t_start": 19.954,
+   "wall_s": 0.011,
+   "rss_tree_before": 954761216,
+   "rss_tree_after": 954843136,
+   "rss_self_after": 954843136,
+   "footprint_self_after": 754828824,
+   "peak_measure_so_far": 929792000,
+   "ru_maxrss_self_after": 954843136
+  },
+  {
+   "event": "end",
+   "stage": "_compute_common_admm_objective_scale (attempted on unsolved blocks)",
+   "ok": true,
+   "error": null,
+   "t_start": 19.965,
+   "wall_s": 0.136,
+   "rss_tree_before": 954843136,
+   "rss_tree_after": 954957824,
+   "rss_self_after": 954957824,
+   "footprint_self_after": 754976280,
+   "peak_measure_so_far": 929792000,
+   "ru_maxrss_self_after": 954990592
+  },
+  {
+   "event": "end",
+   "stage": "ADMM preparation: ESSO AL scale; update_*_to_admm (TSO/DSO under patched_admm_objectives); ESSO AL objective; consensus initialization",
+   "ok": true,
+   "error": null,
+   "t_start": 20.101,
+   "wall_s": 0.134,
+   "rss_tree_before": 954990592,
+   "rss_tree_after": 972570624,
+   "rss_self_after": 972570624,
+   "footprint_self_after": 772572720,
+   "peak_measure_so_far": 929792000,
+   "ru_maxrss_self_after": 972619776
+  },
+  {
+   "event": "end",
+   "stage": "update_interface_power_flow_variables (skips unsolved blocks)",
+   "ok": true,
+   "error": null,
+   "t_start": 20.241,
+   "wall_s": 0.011,
+   "rss_tree_before": 972668928,
+   "rss_tree_after": 972701696,
+   "rss_self_after": 972701696,
+   "footprint_self_after": 773162544,
+   "peak_measure_so_far": 972619776,
+   "ru_maxrss_self_after": 973209600
+  },
+  {
+   "event": "end",
+   "stage": "get_updated_capacities",
+   "ok": true,
+   "error": null,
+   "t_start": 20.252,
+   "wall_s": 0.011,
+   "rss_tree_before": 973209600,
+   "rss_tree_after": 973209600,
+   "rss_self_after": 973209600,
+   "footprint_self_after": 773162544,
+   "peak_measure_so_far": 972619776,
+   "ru_maxrss_self_after": 973209600
+  },
+  {
+   "event": "end",
+   "stage": "pristine clones kept by the ADMM loop (tso_pristine_base, dso_pristine_base)",
+   "ok": true,
+   "error": null,
+   "t_start": 20.263,
+   "wall_s": 0.01,
+   "rss_tree_before": 973209600,
+   "rss_tree_after": 973209600,
+   "rss_self_after": 973209600,
+   "footprint_self_after": 773162544,
+   "peak_measure_so_far": 972619776,
+   "ru_maxrss_self_after": 973209600
+  },
+  {
+   "event": "end",
+   "stage": "model counting (len per component type, all models; deep iteration, all models)",
+   "ok": true,
+   "error": null,
+   "t_start": 20.278,
+   "wall_s": 0.234,
+   "rss_tree_before": 973209600,
+   "rss_tree_after": 973225984,
+   "rss_self_after": 973225984,
+   "footprint_self_after": 773195312,
+   "peak_measure_so_far": 972619776,
+   "ru_maxrss_self_after": 973242368
+  }
+ ],
+ "wall_s": 20.518,
+ "utc_end": "2026-09-22T12:17:25.569668+00:00"
+}

@@ -22,6 +22,10 @@ class SolverParameters:
         # is never called (e.g. a harness that builds `SolverParameters` directly).
         self.recovery_enabled = True
         self.recovery_tier2_enabled = True
+        # P5.15 Addendum 29 (W32): after a successful network solve, release
+        # Pyomo's solution bookkeeping (network._release_solution_bookkeeping).
+        # Default False = the pre-W32 behaviour, byte for byte.
+        self.release_solution_bookkeeping = False
         self.solver_path = next((os.getenv(var) for var in path_env_vars if os.getenv(var)), None)
 
         if require_path and not self.solver_path:
@@ -48,3 +52,5 @@ def _read_solver_parameters(parameters, solver_data):
     recovery_policy = solver_data.get('recovery') or {}
     parameters.recovery_enabled = bool(recovery_policy.get('enabled', True))
     parameters.recovery_tier2_enabled = bool(recovery_policy.get('tier2_enabled', True))
+    # P5.15 Addendum 29 (W32): optional; absent means False (pre-W32 behaviour).
+    parameters.release_solution_bookkeeping = bool(solver_data.get('release_solution_bookkeeping', False))

@@ -769,6 +769,23 @@ def _print_network_failure_context(network, model, result, from_warm_start, solv
         print(f'[WARNING] IPOPT {attempt_label} log for {solve_context}: {solver_log_path}')
 
 
+def _release_solution_bookkeeping(model, result):
+    # P5.15 Addendum 29 (W32; data/SRP1/Results/P515S49/memory_profile): called by
+    # `_run_smopf` only when `solver_params.release_solution_bookkeeping` is on, and
+    # only after `model.solutions.load_from(result)` succeeded -- i.e. after every
+    # value has been copied into the Vars and the import suffixes (dual,
+    # ipopt_zL_out, ipopt_zU_out). It drops the two copies of the solution Pyomo
+    # keeps afterwards and production never reads: the ModelSolution in
+    # `model.solutions` (one (component, entry) pair per Var and per active
+    # constraint) and the SolverResults' own `solution` container (the entry
+    # dicts both share). ~154 MiB per paper-scale DSO block. The Var values, the
+    # suffixes (warm start) and `result.solver` (status, termination, message,
+    # time) are untouched. `model.solutions.clear()` also empties the symbol-map
+    # registry, which `load_from` has already emptied (delete_symbol_map=True).
+    model.solutions.clear()
+    result.solution.clear()
+
+
 def _run_smopf(network, model, params, from_warm_start=False):
 
     solve_context = f'{network.name}, year={network.year}, day={network.day}'
@@ -840,6 +857,8 @@ def _run_smopf(network, model, params, from_warm_start=False):
             if recovery_attempted:
                 _restore_multiplier_suffixes(model, multiplier_snapshot)
             result = None
+        if result is not None and getattr(params.solver_params, 'release_solution_bookkeeping', False):
+            _release_solution_bookkeeping(model, result)
         if recovery_attempted and result is not None:
             if tier2_attempted:
                 print(f'[INFO] Network tier-2 recovery solve succeeded for {solve_context}.')

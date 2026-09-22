@@ -224,6 +224,12 @@ GiB on the 32 GiB machine, system-available floor and thrashing guards active) -
       --instance paper --label paper_cycle_snapoff_r2 --snapshots off --time-one-cycle \\
       --rss-limit-gib 28 \\
       > data/SRP1/Results/P515S44/scale_measurement/paper_cycle_snapoff_r2_launch.log 2>&1
+Paper scale, snapshots off, one timed cycle, W13 watchdog, solution bookkeeping released (P5.15
+Addendum 29 W32; Planner; alone):
+  /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python -u p515_s44_scale_measurement.py \\
+      --instance paper --label paper_cycle_snapoff_memfix_r1 --snapshots off --time-one-cycle \\
+      --rss-limit-gib 28 --release-solution-bookkeeping \\
+      > data/SRP1/Results/P515S44/scale_measurement/paper_cycle_snapoff_memfix_r1_launch.log 2>&1
 Watchdog abort-path test (Worker; SRP1 scale, limit lowered to 0.5 GiB, recorded):
   /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python -u p515_s44_scale_measurement.py \\
       --instance srp1 --label srp1_watchdog_abort_test_r2 --rss-limit-gib 0.5 \\
@@ -897,6 +903,43 @@ def snapshot_hook_wrapper(inner_hook, snapshots, record):
     return hook
 
 
+def set_release_solution_bookkeeping(planning, value):
+    """P5.15 Addendum 29 (W32): sets `SolverParameters.release_solution_bookkeeping` on the TSO's
+    and every DSO's network parameters -- the `params` `NetworkData.optimize` hands to
+    `network._run_smopf`, which consults the switch -- READS IT BACK, and raises if it did not
+    take effect. The shared-ESS solver parameters are not touched (the ESSO solve path does not
+    consult the switch). Returns the applied record."""
+    value = bool(value)
+    holders = [('tso', planning.transmission_network)] + [
+        (f'dso_{n}', planning.distribution_networks[n]) for n in sorted(planning.distribution_networks)]
+    before, read_back = {}, {}
+    for name, holder in holders:
+        solver_params = holder.params.solver_params
+        before[name] = getattr(solver_params, 'release_solution_bookkeeping', None)
+        solver_params.release_solution_bookkeeping = value
+        read_back[name] = solver_params.release_solution_bookkeeping
+    applied = {'requested': value, 'before': before, 'read_back': read_back,
+               'solver_params_objects_distinct': len({id(h.params.solver_params) for _, h in holders}) == len(holders),
+               'took_effect': len(holders) > 1 and all(v is value for v in read_back.values())}
+    if not applied['took_effect']:
+        raise RuntimeError(f'release_solution_bookkeeping={value} did not take effect: {applied}')
+    return applied
+
+
+def release_bookkeeping_hook_wrapper(inner_hook, record):
+    """P5.15 Addendum 29 (W32): wraps a `run_admm_arm` `pre_solve_hook` (same pattern as
+    `snapshot_hook_wrapper`) so `--release-solution-bookkeeping` is applied to the planning object
+    the arm runs on, after the inner hook; recorded in the child record and in the arm report's
+    `rule_eleven_checklist`."""
+    def hook(planning, sed, candidate, report):
+        inner_hook(planning=planning, sed=sed, candidate=candidate, report=report)
+        applied = set_release_solution_bookkeeping(planning, True)
+        if record is not None:
+            record['release_solution_bookkeeping'] = applied
+        report.setdefault('rule_eleven_checklist', {})['w32_release_solution_bookkeeping'] = applied
+    return hook
+
+
 def provenance_record(planning, instance, checksum):
     import p54r_provenance as P
     prov, _ = P.collect(planning)
@@ -1123,6 +1166,9 @@ def child_build(args):
         # (the build child constructs its own arm planning, so there is no pre_solve_hook to
         # wrap here) and verified before anything is built.
         apply_snapshot_setting(planning, launch.get('snapshots', 'on'), record)
+        # P5.15 Addendum 29 (W32): recorded here for completeness (the build child makes no solves).
+        if launch.get('release_solution_bookkeeping'):
+            record['release_solution_bookkeeping'] = set_release_solution_bookkeeping(planning, True)
         if planning.parallel_execution:
             raise RuntimeError('ParallelExecution is on; the build trace follows the sequential path')
 
@@ -1445,6 +1491,9 @@ def child_cycle(args):
         # changes nothing but still records the modes in force.
         cycle_hook = snapshot_hook_wrapper(H._config_hook_factory(spec_like, holder, overrides={}),
                                            launch.get('snapshots', 'on'), record)
+        # P5.15 Addendum 29 (W32): --release-solution-bookkeeping, applied after the hooks above.
+        if launch.get('release_solution_bookkeeping'):
+            cycle_hook = release_bookkeeping_hook_wrapper(cycle_hook, record)
         with srp_stage_wrappers(srp, network_module, stamps), \
                 stages.stage('run_admm_arm, cap 1 (initialization + one ADMM cycle)'):
             report, report_path = G.run_admm_arm(
@@ -1714,6 +1763,8 @@ def scale_measurement_block(args, launch, build_record, build_info, cycle_info, 
         'snapshots_requested': launch.get('snapshots'),
         'snapshot_setting_build': build_record.get('snapshot_setting'),
         'snapshot_setting_cycle': cycle_record.get('snapshot_setting'),
+        'release_solution_bookkeeping_requested': launch.get('release_solution_bookkeeping', False),
+        'release_solution_bookkeeping_cycle': cycle_record.get('release_solution_bookkeeping'),
         'case_file_anderson_acceleration_declared': launch.get('case_file_anderson_acceleration_declared'),
         'anderson_acceleration_effective_cycle': cycle_record.get('anderson_acceleration_effective_in_child'),
         'anderson_acceleration_effective_build': (
@@ -1868,6 +1919,13 @@ def main_parent(args):
                                   'exactly and RAISES otherwise; a case file without AA loads the '
                                   "admm_parameters default (enabled False, no reject_policy), which does "
                                   'not equal the declaration, so the hook refuses rather than proceeding'),
+            'release_solution_bookkeeping': bool(args.release_solution_bookkeeping),
+            'release_solution_bookkeeping_note': (
+                'P5.15 Addendum 29 (W32): when true, SolverParameters.release_solution_bookkeeping is set '
+                'on the TSO and every DSO network params of the child planning object (read back, '
+                'recorded under "release_solution_bookkeeping"); network._run_smopf then clears '
+                'model.solutions and result.solution after each successful load. Default false = '
+                'the pre-W32 behaviour.'),
             'snapshots': args.snapshots,
             'snapshots_note': ('P5.15 Addendum 27 item 5(a): "on" = committed behaviour (capture modes '
                                'untouched); "off" = both admm_parameters.*_snapshot_capture_mode set to '
@@ -1966,6 +2024,10 @@ def main():
                               'dso_snapshot_capture_mode to \'off\' on the planning object of the '
                               'build child and (through the pre_solve_hook) of the cycle child, so '
                               'no pristine base is cloned and no per-cycle capture is taken.'))
+    parser.add_argument('--release-solution-bookkeeping', action='store_true',
+                        help=('P5.15 Addendum 29 (W32): switch SolverParameters.release_solution_bookkeeping '
+                              'ON for the TSO and every DSO (network._run_smopf clears model.solutions and '
+                              'result.solution after each successful load). Default off = pre-W32 behaviour.'))
     parser.add_argument('--rss-limit-gib', type=float, default=RSS_LIMIT_GIB_DEFAULT,
                         help='watchdog limit in GiB (default 24 = the spec; lower ONLY to test the abort path)')
     parser.add_argument('--watchdog-measure', choices=GATING_MEASURES, default=GATING_MEASURE_DEFAULT,
