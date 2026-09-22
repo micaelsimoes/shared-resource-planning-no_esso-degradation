@@ -1,0 +1,49 @@
+{
+ "F2": {
+  "ladder": "node 7, 4 h, E in {1,2,3,4,5} MWh at 2025 - 5 points; the m = 2 rows for E = 1 (ladder dc468ab4) and E = 2 (marginal test 0e36ec0a) are already committed and are NOT re-run; x = 0 at m = 2 is pinned from the ladder",
+  "phase_B": "from the best budget-feasible ladder point, under the EUR 1M budget, own frozen spec, hull polish on the incumbent, the unit-poll completion ruling (A2) in force",
+  "predictions_recorded_before_run": {
+   "planner": [
+    "the ladder's value - I keeps rising with E: predicted +125k to +140k at 3 MWh, +150k to +175k at 4 MWh, +175k to +200k at 5 MWh (from the measured concavity: first MWh 366,353, second 360,723, so ~350-355k per further MWh against 317,957 each)",
+    "under the EUR 1M budget the optimum is the budget corner, 3 MWh (0.75 MVA / 3.0 MWh, I = 953,871, slack 46,129)",
+    "unconstrained, the optimum would be the max_capacity cap (5 MWh), not an interior point - the objective stays affine with a positive margin",
+    "Phase B terminates at the corner with few new evaluations, since the ladder supplies most cached neighbours"
+   ]
+  },
+  "what": "the demonstration case for the planning method, SRP1, flexibility price m = 2 (a flexibility-price scenario, never the baseline), baseline ageing, AA-on"
+ },
+ "R3_6_alpha": "alpha in {0.25, 0.5, 1.0} on the multi-scenario instance, with alpha = 0 as the free-deviation reference",
+ "authority": [
+  "PLANNER_BRIEF_2026-09-13.md Addendum 38 (rulings A-D), Addendum 37 (gates, metric), Addendum 36 (pilot), Addendum 35",
+  "P5_15_ADDENDUM35_37_REPORT.md (accepted)"
+ ],
+ "dispersion_metric": "per DSO: RMS and max of d over scenarios and hours, in MW and as a share of the mean interface flow, plus the total charge (Addendum 37)",
+ "gates": [
+  "SRP1 two-cycle bitwise identity (row 18 vacuous at one scenario)",
+  "2x2 two-cycle limit check: alpha -> large reproduces the pinned behaviour (dispersion -> 0)",
+  "single-block 2x2 A/B at alpha in {0, 0.5, large} BEFORE the pilot; report alpha*pibar_t against each DSO's internal flexibility price per hour",
+  "zero-solve structural checks at 2x2: TSO deviations fixed at zero; one scenario-free storage variable referenced by every scenario's balance rows; per-scenario storage variables present but unwired; preserved fixtures still unpickle; the settlement split reconciles to the covariance identity"
+ ],
+ "order": [
+  "F2 ladder (SRP1, now) and, in parallel, row 18 built in an ISOLATED WORKTREE so production edits cannot reach the running campaign's children",
+  "F2 Phase B",
+  "row 18 merged to the main tree + its gates (SRP1 bitwise, 2x2 limit, single-block A/B)",
+  "the pilot at alpha = 0.50 (Addendum 36)",
+  "STOP FOR REVIEW"
+ ],
+ "predecessor": {
+  "path": "data/SRP1/Results/P515S50/frozen_s50_spec_v20_69bccc62.json",
+  "sha256": "69bccc6227845a51fbfbf0edba8273b33a6d638d5de717dd85c4a13000e7c244"
+ },
+ "row18_design": {
+  "A_tso": "the TSO's per-scenario interface deviations (interface_delta_p/q) are FIXED AT ZERO: it operates on the committed schedule in every scenario. Per-scenario consensus channels rejected for this revision, recorded as future work",
+  "B_storage": "one scenario-free shared-ESS variable per period referenced in every scenario's balance rows; the per-scenario variables are RETAINED UNWIRED (fixtures must still load); non-anticipativity on charge and discharge separately",
+  "C_settlement": "split the DSO settlement: the contracted part (on the commitment) is a transfer and cancels; the deviation part (price-deviation covariance = the deviated energy at the scenario price) is ECONOMIC and enters Q(x) together with the premium. Addendum 13's cancellation gate becomes 'residual = covariance term by construction'; both reported",
+  "D_voltage": "the voltage pin is KEPT as a solver-only term excluded from Q(x) (hard non-anticipativity on the interface voltage); the per-scenario mismatch is reported",
+  "charge": "per DSO block, inside objective_function_rule (economic, in Q(x)): sum_{s,t} omega_s * c_t * (d+_{s,t} + d-_{s,t}) with d_{s,t} = p_int_{s,t} - pbar_t, pbar_t = sum_s omega_s p_int_{s,t} the block's own coupled expectation Var; d = d+ - d-, d+ , d- >= 0 (LP form, no |.| in the NLP); likewise for Q",
+  "polish_asymmetry": "with the quadratic unwired and row 18 inside objective_function_rule, model.objective and objective_function_rule coincide again; the implementation asserts this equality at 2x2 (it restores 'polish delta <= 0 by construction', which W37 found does not hold above 1x1 today)",
+  "premium": "c_t = alpha * pibar_t, pibar_t = probability-weighted mean over market scenarios of that hour's price (per representative year and day); premium floor applied ONLY if some hour's pibar_t <= 0 - verify first, do not assume",
+  "quadratic_pin": "the existing scenario-deviation quadratic (9e4 V + interface P/Q, 1e4 storage, both sides) is UNWIRED, NOT DELETED (retain-and-unwire rule)"
+ },
+ "stage": "P5.15 Addendum 38 - row 18 as signed (commitment + imbalance settlement); F2 demonstration on SRP1; then the multi-scenario pilot at alpha = 0.50"
+}
