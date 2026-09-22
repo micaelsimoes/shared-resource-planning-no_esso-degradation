@@ -1,0 +1,61 @@
+{
+ "unit_costs_2025": {
+  "power_eur_per_mva": 256317.32425986166,
+  "energy_eur_per_mwh": 253877.6774385931,
+  "source": "data/SRP1/Results/P515S45/investment_cost/investment_cost_results.json"
+ },
+ "node7_fit": {
+  "n": 10,
+  "labels": [
+   "n7_2h_e1",
+   "n7_4h_e1",
+   "n7_2h_e2",
+   "n7_4h_e2",
+   "n7_2h_e3",
+   "n7_4h_e3",
+   "n7_2h_e4",
+   "n7_4h_e4",
+   "n7_2h_e5",
+   "n7_4h_e5"
+  ],
+  "a": 10378.76349731099,
+  "b": 233135.6450237866,
+  "c": 52699.17807514017,
+  "se": {
+   "a": 4686.166250357589,
+   "b": 2294.161597437013,
+   "c": 4819.810812211472
+  },
+  "residual_rms": 5286.708528890395,
+  "residual_max_abs": 8222.768091615639,
+  "formula": "value = a + b*E + c*P, OLS; SE = sqrt(diag(sigma^2 (X^T X)^-1)), sigma^2 = RSS/(n-3)"
+ },
+ "breakeven": {
+  "first_unit_n7_eur_per_mwh": 195348.4366903046,
+  "first_unit_n7_ratio_to_current": 0.7694588932008593,
+  "first_unit_best_node_label": "n5_4h_e1",
+  "first_unit_best_node_eur_per_mwh": 200271.12242028507,
+  "first_unit_best_node_ratio_to_current": 0.7888488836074445,
+  "marginal_4h_eur_per_mwh": 182231.10847760626,
+  "marginal_4h_ratio_to_current": 0.7177909862582683,
+  "marginal_4h_se_eur_per_mwh": 2591.348770765749,
+  "formulas": {
+   "first": "(V_meas - P*p_cost)/E",
+   "marginal": "b + c/4 - p_cost/4 (SE ignores the b-c covariance)"
+  }
+ },
+ "value_to_cost_ratio_by_duration": {
+  "2": 0.679216103772804,
+  "4": 0.7746658603369486,
+  "6": 0.8156476719655551,
+  "8": 0.8384347720642822,
+  "10": 0.8529428864194832
+ },
+ "closest_ladder_point": {
+  "label": "n5_4h_e1",
+  "F_minus_F0_eur": 53606.55501830578,
+  "value_eur": 264350.4534852505,
+  "I_x_eur": 317957.0085035586
+ }
+}
+guard {'permitted_solve': 0, 'permitted_exec': 0, 'blocked_solve': 0, 'blocked_exec': 0} []
