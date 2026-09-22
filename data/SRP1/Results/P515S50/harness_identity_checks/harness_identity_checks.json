@@ -1,0 +1,470 @@
+{
+ "schema": "p515_s50_harness_identity_checks_v1",
+ "stage": "P5.15 Addendum 35 W35 item 1 -- scale-harness per-event solve identity + unrecovered-failure policy",
+ "authority": [
+  "PLANNER_BRIEF_2026-09-13.md Addendum 35",
+  "data/SRP1/Results/P515S50/frozen_s50_spec_v20_69bccc62.json item 1_harness",
+  "Planner task W35 item 1"
+ ],
+ "timestamp_utc": "2026-09-22T18:46:30.698064+00:00",
+ "git_head": "a4d23ab982b6dd2e3a04f6eefd13a43bd8468a8e",
+ "rule_gated_on": "observed == base + sum over network-failure events of [recovery_attempted] + [tier2_attempted] (every retry actually attempted, recovered or NOT); unsupported when an ESSO recovery event or an 'indeterminate' network event exists, or the event file does not hold summary.n_blocks events",
+ "replicated_from": "p515_s49_flex_ladder_campaign.solve_reconciliation / p515_s49_flex_price_gate.event_level_reconciliation; replicated because both modules install a SolveProfileGuard at module import",
+ "records": [
+  {
+   "label": "paper_cycle_snapoff_memfix_r1 (78a9b230, ONE UNRECOVERED BLOCK)",
+   "observed": 168,
+   "declared_base": 166,
+   "per_event_expected": 168,
+   "per_event_supported": true,
+   "per_event_retries_credited": 2,
+   "per_event_events_by_class": {
+    "recovered_tier1": 0,
+    "recovered_tier2": 0,
+    "unrecovered": 1,
+    "not_attempted": 0,
+    "indeterminate": 0
+   },
+   "per_event_identity_holds": true,
+   "recovered_only_expected": 166,
+   "recovered_only_identity_holds": false,
+   "ladder_expected": 168,
+   "ladder_retries_credited": 2,
+   "ladder_supported": true,
+   "ladder_base": 166,
+   "ladder_base_agrees_with_declared": true,
+   "replica_agrees_with_ladder": true,
+   "events_file": "data/SRP1/Results/P515S44/scale_measurement/paper_cycle_snapoff_memfix_r1/one_cycle/network_failures_s44_scale_cycle.jsonl"
+  },
+  {
+   "label": "paper_cycle_snapoff_r2",
+   "missing": "data/SRP1/Results/P515S44/scale_measurement/paper_cycle_snapoff_r2/cycle_record.json",
+   "cycle_exit_code": "97",
+   "watchdog_abort": true,
+   "reason": "memory-watchdog abort of the cycle child (exit 97): no cycle record by design"
+  },
+  {
+   "label": "paper_cycle_snapoff_r1",
+   "missing": "data/SRP1/Results/P515S44/scale_measurement/paper_cycle_snapoff_r1/cycle_record.json",
+   "cycle_exit_code": "97",
+   "watchdog_abort": true,
+   "reason": "memory-watchdog abort of the cycle child (exit 97): no cycle record by design"
+  },
+  {
+   "label": "srp1_cycle_snapoff_r1",
+   "observed": 102,
+   "declared_base": 102,
+   "per_event_expected": 102,
+   "per_event_supported": true,
+   "per_event_retries_credited": 0,
+   "per_event_events_by_class": {
+    "recovered_tier1": 0,
+    "recovered_tier2": 0,
+    "unrecovered": 0,
+    "not_attempted": 0,
+    "indeterminate": 0
+   },
+   "per_event_identity_holds": true,
+   "recovered_only_expected": 102,
+   "recovered_only_identity_holds": true,
+   "ladder_expected": 102,
+   "ladder_retries_credited": 0,
+   "ladder_supported": true,
+   "ladder_base": 102,
+   "ladder_base_agrees_with_declared": true,
+   "replica_agrees_with_ladder": true,
+   "events_file": "data/SRP1/Results/P515S44/scale_measurement/srp1_cycle_snapoff_r1/one_cycle/network_failures_s44_scale_cycle.jsonl"
+  },
+  {
+   "label": "srp1_calibration_r2",
+   "missing": "data/SRP1/Results/P515S44/scale_measurement/srp1_calibration_r2/cycle_record.json",
+   "cycle_exit_code": null,
+   "watchdog_abort": false,
+   "reason": "build-only run: no cycle child was launched"
+  },
+  {
+   "label": "srp1_calibration",
+   "missing": "data/SRP1/Results/P515S44/scale_measurement/srp1_calibration/cycle_record.json",
+   "cycle_exit_code": null,
+   "watchdog_abort": false,
+   "reason": "build-only run: no cycle child was launched"
+  },
+  {
+   "label": "s47_recert 070f833e1e318f85_c_star",
+   "observed": 4528,
+   "declared_base": 4488,
+   "per_event_expected": 4528,
+   "per_event_supported": true,
+   "per_event_retries_credited": 40,
+   "per_event_events_by_class": {
+    "recovered_tier1": 34,
+    "recovered_tier2": 3,
+    "unrecovered": 0,
+    "not_attempted": 0,
+    "indeterminate": 0
+   },
+   "per_event_identity_holds": true,
+   "recovered_only_expected": 4528,
+   "recovered_only_identity_holds": true,
+   "ladder_expected": 4528,
+   "ladder_retries_credited": 40,
+   "ladder_supported": true,
+   "ladder_base": 4488,
+   "ladder_base_agrees_with_declared": true,
+   "replica_agrees_with_ladder": true,
+   "events_file": "data/SRP1/Results/P515S47/campaign_s47_recert/evals/070f833e1e318f85_c_star/network_failures_s39_D.jsonl"
+  },
+  {
+   "label": "s47_recert bd504ecf5a288d44_n7_4h_e1",
+   "observed": 5764,
+   "declared_base": 5763,
+   "per_event_expected": 5764,
+   "per_event_supported": true,
+   "per_event_retries_credited": 1,
+   "per_event_events_by_class": {
+    "recovered_tier1": 1,
+    "recovered_tier2": 0,
+    "unrecovered": 0,
+    "not_attempted": 0,
+    "indeterminate": 0
+   },
+   "per_event_identity_holds": true,
+   "recovered_only_expected": 5764,
+   "recovered_only_identity_holds": true,
+   "ladder_expected": 5764,
+   "ladder_retries_credited": 1,
+   "ladder_supported": true,
+   "ladder_base": 5763,
+   "ladder_base_agrees_with_declared": true,
+   "replica_agrees_with_ladder": true,
+   "events_file": "data/SRP1/Results/P515S47/campaign_s47_recert/evals/bd504ecf5a288d44_n7_4h_e1/network_failures_s39_D.jsonl"
+  },
+  {
+   "label": "s49_flex_ladder 0513054158970f16_n7_4h_e1_m3",
+   "observed": 7344,
+   "declared_base": 7344,
+   "per_event_expected": 7344,
+   "per_event_supported": true,
+   "per_event_retries_credited": 0,
+   "per_event_events_by_class": {
+    "recovered_tier1": 0,
+    "recovered_tier2": 0,
+    "unrecovered": 0,
+    "not_attempted": 0,
+    "indeterminate": 0
+   },
+   "per_event_identity_holds": true,
+   "recovered_only_expected": 7344,
+   "recovered_only_identity_holds": true,
+   "ladder_expected": 7344,
+   "ladder_retries_credited": 0,
+   "ladder_supported": true,
+   "ladder_base": 7344,
+   "ladder_base_agrees_with_declared": true,
+   "replica_agrees_with_ladder": true,
+   "events_file": "data/SRP1/Results/P515S49/campaign_s49_flex_ladder/evals/0513054158970f16_n7_4h_e1_m3/network_failures_s39_D.jsonl"
+  },
+  {
+   "label": "s49_flex_ladder 50dea31c5780df57_x0_m2",
+   "observed": 6885,
+   "declared_base": 6885,
+   "per_event_expected": 6885,
+   "per_event_supported": true,
+   "per_event_retries_credited": 0,
+   "per_event_events_by_class": {
+    "recovered_tier1": 0,
+    "recovered_tier2": 0,
+    "unrecovered": 0,
+    "not_attempted": 0,
+    "indeterminate": 0
+   },
+   "per_event_identity_holds": true,
+   "recovered_only_expected": 6885,
+   "recovered_only_identity_holds": true,
+   "ladder_expected": 6885,
+   "ladder_retries_credited": 0,
+   "ladder_supported": true,
+   "ladder_base": 6885,
+   "ladder_base_agrees_with_declared": true,
+   "replica_agrees_with_ladder": true,
+   "events_file": "data/SRP1/Results/P515S49/campaign_s49_flex_ladder/evals/50dea31c5780df57_x0_m2/network_failures_s39_D.jsonl"
+  },
+  {
+   "label": "s49_flex_ladder 74eda68d74d990b2_n7_4h_e1_m2",
+   "observed": 6784,
+   "declared_base": 6783,
+   "per_event_expected": 6784,
+   "per_event_supported": true,
+   "per_event_retries_credited": 1,
+   "per_event_events_by_class": {
+    "recovered_tier1": 1,
+    "recovered_tier2": 0,
+    "unrecovered": 0,
+    "not_attempted": 0,
+    "indeterminate": 0
+   },
+   "per_event_identity_holds": true,
+   "recovered_only_expected": 6784,
+   "recovered_only_identity_holds": true,
+   "ladder_expected": 6784,
+   "ladder_retries_credited": 1,
+   "ladder_supported": true,
+   "ladder_base": 6783,
+   "ladder_base_agrees_with_declared": true,
+   "replica_agrees_with_ladder": true,
+   "events_file": "data/SRP1/Results/P515S49/campaign_s49_flex_ladder/evals/74eda68d74d990b2_n7_4h_e1_m2/network_failures_s39_D.jsonl"
+  },
+  {
+   "label": "s49_flex_ladder 75c65e733528d4c4_x0_m3",
+   "observed": 4233,
+   "declared_base": 4233,
+   "per_event_expected": 4233,
+   "per_event_supported": true,
+   "per_event_retries_credited": 0,
+   "per_event_events_by_class": {
+    "recovered_tier1": 0,
+    "recovered_tier2": 0,
+    "unrecovered": 0,
+    "not_attempted": 0,
+    "indeterminate": 0
+   },
+   "per_event_identity_holds": true,
+   "recovered_only_expected": 4233,
+   "recovered_only_identity_holds": true,
+   "ladder_expected": 4233,
+   "ladder_retries_credited": 0,
+   "ladder_supported": true,
+   "ladder_base": 4233,
+   "ladder_base_agrees_with_declared": true,
+   "replica_agrees_with_ladder": true,
+   "events_file": "data/SRP1/Results/P515S49/campaign_s49_flex_ladder/evals/75c65e733528d4c4_x0_m3/network_failures_s39_D.jsonl"
+  },
+  {
+   "label": "s49_flex_ladder aa8a76d71ae49f13_x0_m1p5",
+   "observed": 5253,
+   "declared_base": 5253,
+   "per_event_expected": 5253,
+   "per_event_supported": true,
+   "per_event_retries_credited": 0,
+   "per_event_events_by_class": {
+    "recovered_tier1": 0,
+    "recovered_tier2": 0,
+    "unrecovered": 0,
+    "not_attempted": 0,
+    "indeterminate": 0
+   },
+   "per_event_identity_holds": true,
+   "recovered_only_expected": 5253,
+   "recovered_only_identity_holds": true,
+   "ladder_expected": 5253,
+   "ladder_retries_credited": 0,
+   "ladder_supported": true,
+   "ladder_base": 5253,
+   "ladder_base_agrees_with_declared": true,
+   "replica_agrees_with_ladder": true,
+   "events_file": "data/SRP1/Results/P515S49/campaign_s49_flex_ladder/evals/aa8a76d71ae49f13_x0_m1p5/network_failures_s39_D.jsonl"
+  },
+  {
+   "label": "s49_flex_ladder f9eae48ff6133f6c_n7_4h_e1_m1p5",
+   "observed": 4847,
+   "declared_base": 4845,
+   "per_event_expected": 4847,
+   "per_event_supported": true,
+   "per_event_retries_credited": 2,
+   "per_event_events_by_class": {
+    "recovered_tier1": 2,
+    "recovered_tier2": 0,
+    "unrecovered": 0,
+    "not_attempted": 0,
+    "indeterminate": 0
+   },
+   "per_event_identity_holds": true,
+   "recovered_only_expected": 4847,
+   "recovered_only_identity_holds": true,
+   "ladder_expected": 4847,
+   "ladder_retries_credited": 2,
+   "ladder_supported": true,
+   "ladder_base": 4845,
+   "ladder_base_agrees_with_declared": true,
+   "replica_agrees_with_ladder": true,
+   "events_file": "data/SRP1/Results/P515S49/campaign_s49_flex_ladder/evals/f9eae48ff6133f6c_n7_4h_e1_m1p5/network_failures_s39_D.jsonl"
+  }
+ ],
+ "checks": {
+  "replica_agrees_with_ladder_everywhere": true,
+  "per_event_identity_holds_everywhere": true,
+  "per_event_holds_wherever_recovered_only_did": true,
+  "the_two_agree_when_no_unrecovered_block": true,
+  "unrecovered_case_present_in_the_evidence": true,
+  "unrecovered_case_old_rule_fails_new_rule_holds": true,
+  "n_records_checked": 10,
+  "unrecovered_failure_policy_verified_against_production": true,
+  "zero_solves": true
+ },
+ "all_ok": true,
+ "unrecovered_failure_policy": {
+  "production_already_complies": true,
+  "n_sub_checks": 13,
+  "clauses": {
+   "clause_1_continue_with_the_last_iterate": {
+    "statement": "an unrecovered local network solve neither stops the run nor overwrites the block's values; the model keeps the previous cycle's iterate",
+    "solver_called_with_load_solutions_false": {
+     "holds": true,
+     "at": {
+      "file": "network.py",
+      "line": 608,
+      "text": "result = solver.solve(model, tee=params.solver_params.verbose, load_solutions=False)"
+     }
+    },
+    "solution_loaded_only_on_success": {
+     "holds": true,
+     "at": {
+      "file": "network.py",
+      "line": 854,
+      "text": "model.solutions.load_from(result)"
+     },
+     "guarded_by": {
+      "file": "network.py",
+      "line": 852,
+      "text": "if solver_result_succeeded(result):"
+     }
+    },
+    "multiplier_suffixes_restored_on_failed_tier2": {
+     "holds": true,
+     "at": {
+      "file": "network.py",
+      "line": 849,
+      "text": "if not solver_result_succeeded(tier2_result):"
+     }
+    },
+    "admm_loop_breaks_only_on_convergence": {
+     "holds": true,
+     "at": {
+      "file": "shared_resources_planning.py",
+      "line": 3270,
+      "text": "if convergence:"
+     },
+     "n_break_statements_in_the_cycle_loop": 1
+    }
+   },
+   "clause_2_count_the_event": {
+    "statement": "the failure is written as ONE event with its attempt flags and its retries are credited",
+    "event_carries_attempt_flags": {
+     "holds": true,
+     "at": {
+      "file": "p515_g_g1_g4_admm_gates.py",
+      "line": 558,
+      "text": "'recovery_attempted': False,"
+     }
+    },
+    "per_event_rule_is_what_the_harness_gates_on": {
+     "holds": true,
+     "at": {
+      "file": "p515_s44_scale_measurement.py",
+      "line": 1628,
+      "text": "_event_level = event_level_solve_reconciliation(report, declared_solves)"
+     }
+    }
+   },
+   "clause_3_no_unrecovered_failure_inside_the_certifying_cycles": {
+    "statement": "an unrecovered failure resets the consecutive-converged counter, so a certified point cannot contain one in its last `minimum_consecutive_converged_cycles` cycles",
+    "local_solves_ok_is_false_for_the_cycle": {
+     "holds": true,
+     "at": {
+      "file": "shared_resources_planning.py",
+      "line": 6940,
+      "text": "def _admm_local_solves_succeeded(planning_problem, results):"
+     }
+    },
+    "cycle_convergence_requires_local_solves_ok": {
+     "holds": true,
+     "at": {
+      "file": "shared_resources_planning.py",
+      "line": 2954,
+      "text": "cycle_convergence = boyd_all_pass and local_solves_ok"
+     }
+    },
+    "counter_reset_to_zero": {
+     "holds": true,
+     "at": {
+      "file": "shared_resources_planning.py",
+      "line": 2958,
+      "text": "consecutive_converged_cycles = 0"
+     }
+    },
+    "certification_needs_the_streak": {
+     "holds": true,
+     "at": {
+      "file": "shared_resources_planning.py",
+      "line": 2959,
+      "text": "convergence = (consecutive_converged_cycles >= admm_parameters.minimum_consecutive_converged_cycles)"
+     }
+    },
+    "aa_step_skipped": {
+     "holds": true,
+     "at": {
+      "file": "shared_resources_planning.py",
+      "line": 2849,
+      "text": "aa_record = aa_state.skip_on_failure(iter)"
+     }
+    },
+    "rho_not_updated": {
+     "holds": true,
+     "at": {
+      "file": "shared_resources_planning.py",
+      "line": 2968,
+      "text": "iter=iter, allow_update=local_solves_ok, freeze_state=freeze_state,"
+     }
+    },
+    "residual_convergence_forced_false": {
+     "holds": true,
+     "at": {
+      "file": "shared_resources_planning.py",
+      "line": 2831,
+      "text": "residual_convergence = False"
+     }
+    }
+   }
+  }
+ },
+ "guard": {
+  "permitted": [],
+  "counts": {
+   "permitted_solve": 0,
+   "permitted_exec": 0,
+   "blocked_solve": 0,
+   "blocked_exec": 0
+  },
+  "declared_solves": 0,
+  "verify_failures": [],
+  "ladder_parent_guard_counts": {
+   "permitted_solve": 0,
+   "permitted_exec": 0,
+   "blocked_solve": 0,
+   "blocked_exec": 0
+  },
+  "ladder_parent_guard_verify_failures": []
+ },
+ "evidence_sha256": {
+  "data/SRP1/Results/P515S44/scale_measurement/paper_cycle_snapoff_memfix_r1/cycle_record.json": "089c44eb64ecb72d455c140da140626f0009877fea559daa0fef11fc42906f4e",
+  "data/SRP1/Results/P515S44/scale_measurement/paper_cycle_snapoff_memfix_r1/one_cycle/network_failures_s44_scale_cycle.jsonl": "cebfb33ab2bfb80b7add7191de2266bbc82fe0883858357bab198519abb9403a",
+  "data/SRP1/Results/P515S44/scale_measurement/srp1_cycle_snapoff_r1/cycle_record.json": "7ca2a219e56bc9e9766fb240d933c928b376b6b51ab469bcbd43c2984d11046d",
+  "data/SRP1/Results/P515S44/scale_measurement/srp1_cycle_snapoff_r1/one_cycle/network_failures_s44_scale_cycle.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "data/SRP1/Results/P515S47/campaign_s47_recert/evals/070f833e1e318f85_c_star/g_s39_D.json": "ced90e47873925b5bb87360984d348558d11ea11fd004e93f3a2668fdc389971",
+  "data/SRP1/Results/P515S47/campaign_s47_recert/evals/070f833e1e318f85_c_star/network_failures_s39_D.jsonl": "50732eed7dae5621b607f9ccf8e653e65cd770fef1a0012fdb73aada512a896e",
+  "data/SRP1/Results/P515S47/campaign_s47_recert/evals/bd504ecf5a288d44_n7_4h_e1/g_s39_D.json": "f78b25959a0b06f92c7f69763b4e16b0517a9e0852c7c38335e3d7b23190084e",
+  "data/SRP1/Results/P515S47/campaign_s47_recert/evals/bd504ecf5a288d44_n7_4h_e1/network_failures_s39_D.jsonl": "d9b994a7b099ba8d101dfadd4f60d724bb77397db04837da18066ce78805180f",
+  "data/SRP1/Results/P515S49/campaign_s49_flex_ladder/evals/0513054158970f16_n7_4h_e1_m3/g_s39_D.json": "f484f4ce8b5ad39d0c486b7fb8fb84557e15c7face1bbfbacd6fd32628796794",
+  "data/SRP1/Results/P515S49/campaign_s49_flex_ladder/evals/0513054158970f16_n7_4h_e1_m3/network_failures_s39_D.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "data/SRP1/Results/P515S49/campaign_s49_flex_ladder/evals/50dea31c5780df57_x0_m2/g_s39_D.json": "0d7d8e6e927897f877762860c1569bcd7e71526bb5779928311883157fd3d6d2",
+  "data/SRP1/Results/P515S49/campaign_s49_flex_ladder/evals/50dea31c5780df57_x0_m2/network_failures_s39_D.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "data/SRP1/Results/P515S49/campaign_s49_flex_ladder/evals/74eda68d74d990b2_n7_4h_e1_m2/g_s39_D.json": "944b9ae813ddd209644f71693f24cb258d10c258381c025c1f7304ab0e6bcd8f",
+  "data/SRP1/Results/P515S49/campaign_s49_flex_ladder/evals/74eda68d74d990b2_n7_4h_e1_m2/network_failures_s39_D.jsonl": "9dd0a07ce992e1e3e789e8e8d7e95d9264bbb52cf58421d09be1b84a085fbd8f",
+  "data/SRP1/Results/P515S49/campaign_s49_flex_ladder/evals/75c65e733528d4c4_x0_m3/g_s39_D.json": "aa837e207c554d9533ba1124e713c65c97e8293c56e17e931e3ab448038de4ff",
+  "data/SRP1/Results/P515S49/campaign_s49_flex_ladder/evals/75c65e733528d4c4_x0_m3/network_failures_s39_D.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "data/SRP1/Results/P515S49/campaign_s49_flex_ladder/evals/aa8a76d71ae49f13_x0_m1p5/g_s39_D.json": "cd52bcdf9bb33533422fd0e64f141c095155bf2a26b9e0546a71cf0c319222fd",
+  "data/SRP1/Results/P515S49/campaign_s49_flex_ladder/evals/aa8a76d71ae49f13_x0_m1p5/network_failures_s39_D.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "data/SRP1/Results/P515S49/campaign_s49_flex_ladder/evals/f9eae48ff6133f6c_n7_4h_e1_m1p5/g_s39_D.json": "302f46381b5a094a1a5228c288f6729703b56533c68e0ca23485d4da8715dd91",
+  "data/SRP1/Results/P515S49/campaign_s49_flex_ladder/evals/f9eae48ff6133f6c_n7_4h_e1_m1p5/network_failures_s39_D.jsonl": "ffd1084ab530ff2888fc890283f376a8c9fb855510ee07bc8cd5ef0e5ab52b66"
+ }
+}

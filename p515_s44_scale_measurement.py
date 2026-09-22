@@ -180,12 +180,52 @@ frozen snapshot (tier 2). `declared_solve_profile` derives, from the planning ob
 the run,
     solves_per_cycle = (1 + n_dso) x n_years x n_days + n_esso_nodes   (51 SRP1; 83 paper)
     base             = solves_per_cycle x (1 initialization + CYCLE_CAP cycles)  (102; 166)
-and the run is gated on the identity
-    observed == base + 1 x recovered_tier1 + 2 x recovered_tier2
-with the tier counts read from the run's OWN `network_failures_summary`. The bounded
+and the run is GATED ON the per-EVENT identity (W35 item 1(a), `event_level_solve_reconciliation`)
+    observed == base + sum over network-failure events of [recovery_attempted] + [tier2_attempted]
+read from the run's OWN `network_failures_s<label>.jsonl`. Every retry ACTUALLY ATTEMPTED is
+credited, recovered or not. An ESSO recovery event, an 'indeterminate' network event, or an event
+file that does not hold `summary.n_blocks` events makes the reconciliation UNSUPPORTED and fails
+loudly; it is never silently credited. The pre-W35 recovered-only rule
+    observed == base + 1 x recovered_tier1 + 2 x recovered_tier2   (classes, not events)
+is still computed and REPORTED beside it, never gated on: it credits retries only to RECOVERED
+blocks, so the paper-scale re-measure at 78a9b230 -- one DSO block unrecovered after two attempted
+retries -- observed 168 against a declared 166 and exited 1 on that accounting gap. The two agree
+exactly whenever no unrecovered / not_attempted block occurs. The bounded
 `SolveProfileGuard(p514_n.PERMITTED)` is armed for the whole cycle child and `verify()`-ed
-EXACTLY against that reconciled total (too few fails as loudly as too many). This follows
-`p515_s45_snapshot_off_failure_gate.py` section (5), which does the same for its two arms.
+EXACTLY against the reconciled total (too few fails as loudly as too many). The rule is the ladder
+harness's (`p515_s49_flex_ladder_campaign.solve_reconciliation`) and the W33 gate's
+(`p515_s49_flex_price_gate.event_level_reconciliation`), REPLICATED rather than imported because
+both of those modules install a SolveProfileGuard at module import.
+
+================================================================================
+UNRECOVERED-FAILURE POLICY FOR LONG RUNS (W35 item 1(b))
+================================================================================
+POLICY (verified against production, zero solves -- see
+`data/SRP1/Results/P515S50/unrecovered_failure_policy.md` for the citations and the verification):
+
+  (1) CONTINUE WITH THE LAST ITERATE. An unrecovered local network solve does not stop the run and
+      does not overwrite the block's values. `network._run_smopf` solves with
+      `load_solutions=False` (network.py:608) and calls `model.solutions.load_from(result)` ONLY
+      when `solver_result_succeeded(result)` (network.py:852-854); on failure it restores the
+      multiplier suffixes (network.py:849-850) and leaves the model at the previous cycle's
+      iterate. The ADMM loop's ONLY `break` is on convergence
+      (shared_resources_planning.py:3373-3375); a failed cycle never stops it.
+  (2) COUNT THE EVENT. The failure is written as one event, with its attempt flags, to
+      `network_failures_s<label>.jsonl`; the per-event identity above credits its retries.
+  (3) NO UNRECOVERED FAILURE INSIDE THE CERTIFYING CYCLES. `_admm_local_solves_succeeded`
+      (shared_resources_planning.py:7043-7054) is False for the cycle;
+      `cycle_convergence = boyd_all_pass and local_solves_ok` (:3057) is therefore False, and
+      `consecutive_converged_cycles` is RESET TO 0 (:3061). Certification needs
+      `consecutive_converged_cycles >= minimum_consecutive_converged_cycles` (:3062) -- 10 here --
+      so a certified point cannot contain an unrecovered failure in its last 10 cycles. The cycle
+      also skips the AA step (:2951-2952), forces `residual_convergence` False (:2932-2934),
+      reports no recourse (:2965), and does not update rho
+      (`allow_update=local_solves_ok`, :3071).
+  Production ALREADY behaves this way; nothing was changed to make it so. Line numbers are those
+  of the tree AFTER W35 item 3 (which edits `_get_interface_reporting_detail`, above them all);
+  both the pre- and post-item-3 verifications are committed, and each re-derives the line numbers
+  with `inspect` rather than asserting them.
+
 Output: `data/SRP1/Results/P515S44/scale_measurement/<label>/`.
 Exit codes: 0 complete; 97 watchdog abort; 98 parent backstop kill; 1 error; 2 refused.
 
@@ -843,12 +883,14 @@ def read_planning_from_derived_case(launch, out_dir, stages):
 
 
 def inject_oracle_baseline(O, planning, launch):
+    """W35 item 3: delegates to `p56a_oracle.install_baseline` (the installable-baseline route)
+    instead of assigning `O._BASELINE` directly. The same three refusals: the canonical-checksum
+    assertion for `instance == 'srp1'`, no comparison against the SRP1 constant for any other
+    instance, and a refusal to install twice in one process. ONE difference, deliberate: the
+    double-install refusal is now checked FIRST (it is the unrecoverable one), where this function
+    used to check it after the checksum; both still raise, and no run has ever reached either."""
     checksum = planning.scenario_metadata['combined_scenario_checksum']
-    if launch['instance'] == 'srp1' and checksum != O.CANONICAL_CHECKSUM:
-        raise RuntimeError(f'srp1 instance: scenario checksum {checksum} != canonical {O.CANONICAL_CHECKSUM}')
-    if O._BASELINE is not None:
-        raise RuntimeError('oracle baseline already loaded in this process; refusing to inject')
-    O._BASELINE = {'planning': planning, 'checksum': checksum}
+    O.install_baseline(planning, checksum, instance_label=launch['instance'])
     return checksum
 
 
@@ -1006,7 +1048,70 @@ def declared_solve_profile(planning, cap):
         'declared_base_solves': per_cycle * (cap + 1),
         'identity': ('observed == base + 1 * recovered_tier1 + 2 * recovered_tier2 (recovery counts '
                      'from the run\'s own network_failures_summary)'),
+        'identity_gated_on': EVENT_LEVEL_IDENTITY,
+        'identity_recovered_only_reported_beside_it': (
+            'observed == base + 1 * recovered_tier1 + 2 * recovered_tier2 -- the PRE-W35 rule, kept as a '
+            'reported quantity only; it undercounts when a block stays unrecovered (78a9b230: 168 observed '
+            'vs 166 declared, one unrecovered DSO block that had attempted two retries)'),
     }
+
+
+EVENT_LEVEL_IDENTITY = (
+    'observed == base + sum over network-failure events of [recovery_attempted] + [tier2_attempted] '
+    '(every retry actually attempted, recovered or NOT); unsupported when an ESSO recovery event or an '
+    "'indeterminate' network event exists, or the event file does not hold summary.n_blocks events")
+
+
+def event_level_solve_reconciliation(report, base):
+    """W35 item 1(a). The LADDER's per-EVENT solve identity, applied to this harness.
+
+    Rule (identical to `p515_s49_flex_ladder_campaign.solve_reconciliation` and to the W33 gate
+    `p515_s49_flex_price_gate.event_level_reconciliation`):
+
+        observed == base + sum over network-failure events of [recovery_attempted] + [tier2_attempted]
+
+    read from the run's OWN `network_failures_s<label>.jsonl` (the per-event flags the production-log
+    parser `p515_g_g1_g4_admm_gates._scan_and_write_network_failures` writes). Every retry ACTUALLY
+    ATTEMPTED is credited, whether or not it recovered the block -- which is what the pre-W35 rule
+    (`declared_solve_profile`'s `observed == base + tier1 + 2 x tier2`, tier counts from the summary's
+    CLASSES) does not do: a block whose two retries both failed is classified 'unrecovered' and
+    contributes 0, so the paper-scale re-measure at 78a9b230 observed 168 solves against a declared 166
+    and exited 1 on a harness accounting gap, not on a production defect.
+
+    An ESSO recovery event carries no attempt count in that record, so ANY ESSO recovery event -- and any
+    'indeterminate' network event, and an event file that does not hold `summary.n_blocks` events --
+    makes the reconciliation UNSUPPORTED (`expected` None), which fails loudly at `verify()`; it is never
+    silently credited.
+
+    REPLICATED, NOT IMPORTED, and this is why: `p515_s49_flex_ladder_campaign` installs
+    `SolveProfileGuard(permitted=())` AT IMPORT (its module level, `PARENT_GUARD`), and
+    `p515_s49_flex_price_gate` installs W10's armed guard the same way. Either import would install a
+    second, foreign guard inside THIS harness's solving cycle child. The ladder itself replicates the
+    gate's function for exactly this reason (its own SOLVE_RECONCILIATION note). The replica is checked
+    against the ladder's own function, on the same inputs, by the zero-solve
+    `p515_s50_harness_identity_checks.py`.
+    """
+    summary = (report or {}).get('network_failures_summary') or {}
+    path = summary.get('path')
+    events = []
+    if path and os.path.isfile(os.path.join(REPO, path)):
+        with open(os.path.join(REPO, path)) as handle:
+            events = [json.loads(line) for line in handle if line.strip()]
+    network_events = [e for e in events if e.get('record_type', 'network_block') == 'network_block'
+                      and e.get('class') is not None]
+    retries = sum(int(bool(e.get('recovery_attempted'))) + int(bool(e.get('tier2_attempted')))
+                  for e in network_events)
+    n_esso = int(summary.get('n_esso_recovery_events') or 0)
+    n_indet = sum(1 for e in network_events if e.get('class') == 'indeterminate')
+    supported = (n_esso == 0 and n_indet == 0 and len(network_events) == int(summary.get('n_blocks') or 0))
+    return {'definition': EVENT_LEVEL_IDENTITY,
+            'events_file': path, 'n_network_events': len(network_events),
+            'n_events_by_class': {c: sum(1 for e in network_events if e.get('class') == c)
+                                  for c in ('recovered_tier1', 'recovered_tier2', 'unrecovered',
+                                            'not_attempted', 'indeterminate')},
+            'retry_solves_credited': retries, 'n_esso_recovery_events': n_esso, 'n_indeterminate': n_indet,
+            'supported': supported, 'base': base,
+            'expected': (base + retries) if supported else None}
 
 
 def d_configuration_check(H, planning, sed, candidate, report, cap):
@@ -1513,15 +1618,24 @@ def child_cycle(args):
         print(traceback.format_exc(), file=sys.stderr, flush=True)
         return EXIT_ERROR
     guard.uninstall()
-    # W12 solve reconciliation: the base was declared before the run; the count actually gated
-    # on adds the run's OWN recovery attempts (1 extra solve per tier-1 recovery, 2 per tier-2),
-    # and the process-wide guard -- armed for the whole child -- is verify()-ed EXACTLY against
-    # it (too few fails as loudly as too many).
+    # W35 item 1(a) solve reconciliation: the base was declared before the run; the count actually
+    # GATED ON adds every retry the run's own network-failure events record as ATTEMPTED
+    # (`event_level_solve_reconciliation`, the ladder's per-EVENT rule), and the process-wide guard --
+    # armed for the whole child -- is verify()-ed EXACTLY against it (too few fails as loudly as too
+    # many). The pre-W35 recovered-only count is computed and REPORTED beside it, never gated on: it
+    # credits retries only to RECOVERED blocks, so an unrecovered block's attempts went uncounted
+    # (78a9b230: 168 observed vs 166 declared, exit 1 on the accounting gap). An unsupported
+    # reconciliation (ESSO recovery / indeterminate event / event-file mismatch) fails loudly here.
     _classes = ((report.get('network_failures_summary') or {}).get('classes')) or {}
     _tier1 = _classes.get('recovered_tier1', 0)
     _tier2 = _classes.get('recovered_tier2', 0)
-    reconciled_solves = declared_solves + _tier1 + 2 * _tier2
-    guard_failures = guard.verify(reconciled_solves)
+    recovered_only_solves = declared_solves + _tier1 + 2 * _tier2
+    _event_level = event_level_solve_reconciliation(report, declared_solves)
+    reconciled_solves = _event_level['expected']
+    if reconciled_solves is None:
+        guard_failures = [f'event-level solve reconciliation UNSUPPORTED: {_event_level}']
+    else:
+        guard_failures = guard.verify(reconciled_solves)
     final = wd.stop()
 
     def first(name, key):
@@ -1547,14 +1661,22 @@ def child_cycle(args):
         'guard': {'permitted': [list(p) for p in N.PERMITTED], 'counts': dict(guard.counts),
                   'declared_base_solves': declared_solves,
                   'recovered_tier1': _tier1, 'recovered_tier2': _tier2,
+                  'event_level_reconciliation_GATING': _event_level,
+                  'recovered_only_identity_reported': {
+                      'expected': recovered_only_solves,
+                      'holds': guard.counts['permitted_solve'] == recovered_only_solves,
+                      'note': ('pre-W35 rule, REPORTED not gated: credits retries only to RECOVERED '
+                               'blocks, so an unrecovered block\'s attempts are uncounted')},
                   'reconciled_expected_solves': reconciled_solves,
                   'observed_solves': guard.counts['permitted_solve'],
-                  'identity': record['declared_solve_profile']['identity'],
-                  'identity_holds': guard.counts['permitted_solve'] == reconciled_solves,
+                  'identity': EVENT_LEVEL_IDENTITY,
+                  'identity_holds': (reconciled_solves is not None
+                                     and guard.counts['permitted_solve'] == reconciled_solves),
                   'declared_solves': reconciled_solves, 'verify_failures': guard_failures},
-        'run_admm_arm_identity_holds_note': ('run_admm_arm\'s own solve_profile.identity_holds uses the SRP1 '
-                                             'constant 51 per cycle and no recovery term; superseded here by '
-                                             'the declared base reconciled with the run\'s own tier counts'),
+        'run_admm_arm_identity_holds_note': ('run_admm_arm\'s own solve_profile.identity_holds derives its '
+                                             'per-cycle count from the planning instance and reconciles it '
+                                             'with the SAME per-event rule (W35 item 3); this record keeps '
+                                             'its own declaration, made BEFORE the run'),
         'anderson_acceleration_effective_in_child': holder.get('anderson_acceleration_effective'),
         'configuration_checks': holder.get('configuration_checks'),
         'timing_s': {
@@ -1584,7 +1706,8 @@ def child_cycle(args):
     _write_once_json(os.path.join(out_dir, 'cycle_record.json'), record)
     print(f"[SCALE-CYCLE] status={record['status']} timing={record['timing_s']} "
           f"solves={guard.counts['permitted_solve']}/{reconciled_solves} "
-          f"(base {declared_solves} + {_tier1} tier1 + 2 x {_tier2} tier2) "
+          f"(base {declared_solves} + {_event_level['retry_solves_credited']} attempted retries over "
+          f"{_event_level['n_network_events']} events; recovered-only rule would say {recovered_only_solves}) "
           f"aa={record['anderson_acceleration_effective_in_child']} "
           f"sigma={record['objective_scale'].get('sigma_fixed')} "
           f"al_scale_esso={record['objective_scale'].get('al_scale_esso')} "
