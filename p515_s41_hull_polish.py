@@ -365,6 +365,28 @@ def apply_hull_bounds(planning, models, hull):
     to the interval's [min, max] -- there is no ESSO Pyomo Var to bound,
     since the ESSO subproblem is not one of the 48 network blocks and is not
     re-solved here.
+
+    MULTI-SCENARIO (P5.15 Addendum 36, W35 item 3). The components bounded follow
+    `p56a_oracle.common_coordinated_values`, which is where the interval's endpoints
+    were read, and therefore change with the number of scenarios:
+
+      * 1 market x 1 operation scenario (SRP1): exactly as described above --
+        `vmag_sqr[idx, 0, 0, p]` on the squared interval, ConstraintList rows on the
+        `pc_adn`/`pg_adn` Expressions, and `shared_es_pnet/qnet[e, 0, 0, p]`. Byte-identical
+        to the pre-W35 harness.
+      * Above 1 x 1: the coordinated quantities are the EXPECTATIONS the ADMM actually
+        couples, and every one of them is a genuine `pe.Var` --
+        `expected_interface_vmag[dn|.,p]` (on V, so no squaring),
+        `expected_interface_pf_p/q[dn|.,p]` (so NO ConstraintList row is needed: the row
+        exists only because `pc_adn`/`pg_adn` are Expressions) and
+        `expected_shared_ess_p/q[e,p]` (TSO) / `[p]` (DSO). Bounding those leaves each
+        scenario's own copy free to deviate from the expectation under production's soft
+        non-anticipativity penalty, which is the behaviour the formulation has and the
+        dispersion the multi-scenario run is there to measure.
+
+    FEASIBILITY IS PRESERVED IN BOTH CASES BY CONSTRUCTION: every interval is the closed hull
+    of the agents' OWN achieved values at the certified cycle, so the achieved point is inside
+    it, so the bounded block is feasible at the point it starts from.
     """
     tso = planning.transmission_network
     descriptors = []
@@ -383,6 +405,11 @@ def apply_hull_bounds(planning, models, hull):
                 d_sess = [e for e, s in enumerate(d_net.shared_energy_storages)
                           if s.bus == ref_id]
 
+                # W35 item 3: which component carries each coupling quantity depends on the
+                # number of scenarios -- see `p56a_oracle.common_coordinated_values`'s
+                # MULTI-SCENARIO note, whose reads this bounding must mirror exactly.
+                expectation_mode = not O._block_is_single_scenario(t_model)
+
                 rows_tp = _get_or_add_constraint_list(t_model, 'p515s41_hull_pf_p_rows')
                 rows_tq = _get_or_add_constraint_list(t_model, 'p515s41_hull_pf_q_rows')
                 rows_dp = _get_or_add_constraint_list(d_model, 'p515s41_hull_pf_p_rows')
@@ -393,26 +420,53 @@ def apply_hull_bounds(planning, models, hull):
 
                     # ---- Voltage (2 agents) ----
                     lo_v, hi_v, deg_v = _interval(entry['tso_v'], entry['dso_v'])
-                    lo_vs, hi_vs = lo_v ** 2, hi_v ** 2
-                    tv = t_model.vmag_sqr[adn_idx, 0, 0, p]
-                    dv = d_model.vmag_sqr[ref_idx, 0, 0, p]
-                    _bound_var(tv, lo_vs, hi_vs, deg_v)
-                    _bound_var(dv, lo_vs, hi_vs, deg_v)
-                    descriptors.append({
-                        'channel': 'V', 'node': node, 'year': year, 'day': day, 'period': p,
-                        'side': 'tso', 'lo': lo_v, 'hi': hi_v, 'degenerate': deg_v,
-                        'get_value': (lambda v=tv: pe.value(v) ** 0.5)})
-                    descriptors.append({
-                        'channel': 'V', 'node': node, 'year': year, 'day': day, 'period': p,
-                        'side': 'dso', 'lo': lo_v, 'hi': hi_v, 'degenerate': deg_v,
-                        'get_value': (lambda v=dv: pe.value(v) ** 0.5)})
+                    if not expectation_mode:
+                        lo_vs, hi_vs = lo_v ** 2, hi_v ** 2
+                        tv = t_model.vmag_sqr[adn_idx, 0, 0, p]
+                        dv = d_model.vmag_sqr[ref_idx, 0, 0, p]
+                        _bound_var(tv, lo_vs, hi_vs, deg_v)
+                        _bound_var(dv, lo_vs, hi_vs, deg_v)
+                        descriptors.append({
+                            'channel': 'V', 'node': node, 'year': year, 'day': day, 'period': p,
+                            'side': 'tso', 'lo': lo_v, 'hi': hi_v, 'degenerate': deg_v,
+                            'get_value': (lambda v=tv: pe.value(v) ** 0.5)})
+                        descriptors.append({
+                            'channel': 'V', 'node': node, 'year': year, 'day': day, 'period': p,
+                            'side': 'dso', 'lo': lo_v, 'hi': hi_v, 'degenerate': deg_v,
+                            'get_value': (lambda v=dv: pe.value(v) ** 0.5)})
+                    else:
+                        # W35 item 3: the coordinated voltage is E[V], carried by the model's own
+                        # `expected_interface_vmag` Var (on V, not on V^2) -- the SAME quantity
+                        # `common_coordinated_values` read to build this interval.
+                        tv = t_model.expected_interface_vmag[dn, p]
+                        dv = d_model.expected_interface_vmag[p]
+                        _bound_var(tv, lo_v, hi_v, deg_v)
+                        _bound_var(dv, lo_v, hi_v, deg_v)
+                        descriptors.append({
+                            'channel': 'V', 'node': node, 'year': year, 'day': day, 'period': p,
+                            'side': 'tso', 'lo': lo_v, 'hi': hi_v, 'degenerate': deg_v,
+                            'get_value': (lambda v=tv: pe.value(v))})
+                        descriptors.append({
+                            'channel': 'V', 'node': node, 'year': year, 'day': day, 'period': p,
+                            'side': 'dso', 'lo': lo_v, 'hi': hi_v, 'degenerate': deg_v,
+                            'get_value': (lambda v=dv: pe.value(v))})
 
                     # ---- Interface P (2 agents) ----
                     lo_p, hi_p, deg_p = _interval(entry['tso_p'], entry['dso_p'])
-                    tp_expr = t_model.pc_adn[dn, 0, 0, p]
-                    dp_expr = d_model.pg_adn[0, 0, p]
-                    _bound_expr(rows_tp, tp_expr, lo_p, hi_p, deg_p)
-                    _bound_expr(rows_dp, dp_expr, lo_p, hi_p, deg_p)
+                    if not expectation_mode:
+                        tp_expr = t_model.pc_adn[dn, 0, 0, p]
+                        dp_expr = d_model.pg_adn[0, 0, p]
+                        _bound_expr(rows_tp, tp_expr, lo_p, hi_p, deg_p)
+                        _bound_expr(rows_dp, dp_expr, lo_p, hi_p, deg_p)
+                    else:
+                        # W35 item 3: above 1 x 1 the coordinated interface power is
+                        # E[p_int], a genuine Var on both sides -- so it is BOUNDED
+                        # DIRECTLY and no ConstraintList row is needed (the row exists only
+                        # because `pc_adn`/`pg_adn` are Expressions, not Vars).
+                        tp_expr = t_model.expected_interface_pf_p[dn, p]
+                        dp_expr = d_model.expected_interface_pf_p[p]
+                        _bound_var(tp_expr, lo_p, hi_p, deg_p)
+                        _bound_var(dp_expr, lo_p, hi_p, deg_p)
                     descriptors.append({
                         'channel': 'PF_P', 'node': node, 'year': year, 'day': day, 'period': p,
                         'side': 'tso', 'lo': lo_p, 'hi': hi_p, 'degenerate': deg_p,
@@ -424,10 +478,16 @@ def apply_hull_bounds(planning, models, hull):
 
                     # ---- Interface Q (2 agents) ----
                     lo_q, hi_q, deg_q = _interval(entry['tso_q'], entry['dso_q'])
-                    tq_expr = t_model.qc_adn[dn, 0, 0, p]
-                    dq_expr = d_model.qg_adn[0, 0, p]
-                    _bound_expr(rows_tq, tq_expr, lo_q, hi_q, deg_q)
-                    _bound_expr(rows_dq, dq_expr, lo_q, hi_q, deg_q)
+                    if not expectation_mode:
+                        tq_expr = t_model.qc_adn[dn, 0, 0, p]
+                        dq_expr = d_model.qg_adn[0, 0, p]
+                        _bound_expr(rows_tq, tq_expr, lo_q, hi_q, deg_q)
+                        _bound_expr(rows_dq, dq_expr, lo_q, hi_q, deg_q)
+                    else:
+                        tq_expr = t_model.expected_interface_pf_q[dn, p]
+                        dq_expr = d_model.expected_interface_pf_q[p]
+                        _bound_var(tq_expr, lo_q, hi_q, deg_q)
+                        _bound_var(dq_expr, lo_q, hi_q, deg_q)
                     descriptors.append({
                         'channel': 'PF_Q', 'node': node, 'year': year, 'day': day, 'period': p,
                         'side': 'tso', 'lo': lo_q, 'hi': hi_q, 'degenerate': deg_q,
@@ -440,15 +500,24 @@ def apply_hull_bounds(planning, models, hull):
                     # ---- Shared-ESS P (3 agents: TSO, DSO, ESSO) ----
                     lo_ep, hi_ep, deg_ep = _interval(
                         entry['tso_sess_p'], entry['dso_sess_p'], entry['esso_sess_p'])
-                    for e in t_sess:
-                        var = t_model.shared_es_pnet[e, 0, 0, p]
+                    if not expectation_mode:
+                        t_vars = [t_model.shared_es_pnet[e, 0, 0, p] for e in t_sess]
+                        d_vars = [d_model.shared_es_pnet[e, 0, 0, p] for e in d_sess]
+                    else:
+                        # W35 item 3: above 1 x 1 the coordinated shared-ESS quantity is
+                        # E[P_ess] / E[Q_ess]. The TSO's expected Var is indexed by the
+                        # shared-ESS index, the DSO's by period alone (it holds exactly one
+                        # shared ESS at its reference node -- `common_coordinated_values`
+                        # refuses the block otherwise).
+                        t_vars = [t_model.expected_shared_ess_p[e, p] for e in t_sess]
+                        d_vars = [d_model.expected_shared_ess_p[p]]
+                    for var in t_vars:
                         _bound_var(var, lo_ep, hi_ep, deg_ep)
                         descriptors.append({
                             'channel': 'ESS_P', 'node': node, 'year': year, 'day': day,
                             'period': p, 'side': 'tso', 'lo': lo_ep, 'hi': hi_ep,
                             'degenerate': deg_ep, 'get_value': (lambda v=var: pe.value(v))})
-                    for e in d_sess:
-                        var = d_model.shared_es_pnet[e, 0, 0, p]
+                    for var in d_vars:
                         _bound_var(var, lo_ep, hi_ep, deg_ep)
                         descriptors.append({
                             'channel': 'ESS_P', 'node': node, 'year': year, 'day': day,
@@ -458,15 +527,24 @@ def apply_hull_bounds(planning, models, hull):
                     # ---- Shared-ESS Q (3 agents: TSO, DSO, ESSO) ----
                     lo_eq, hi_eq, deg_eq = _interval(
                         entry['tso_sess_q'], entry['dso_sess_q'], entry['esso_sess_q'])
-                    for e in t_sess:
-                        var = t_model.shared_es_qnet[e, 0, 0, p]
+                    if not expectation_mode:
+                        t_vars = [t_model.shared_es_qnet[e, 0, 0, p] for e in t_sess]
+                        d_vars = [d_model.shared_es_qnet[e, 0, 0, p] for e in d_sess]
+                    else:
+                        # W35 item 3: above 1 x 1 the coordinated shared-ESS quantity is
+                        # E[P_ess] / E[Q_ess]. The TSO's expected Var is indexed by the
+                        # shared-ESS index, the DSO's by period alone (it holds exactly one
+                        # shared ESS at its reference node -- `common_coordinated_values`
+                        # refuses the block otherwise).
+                        t_vars = [t_model.expected_shared_ess_q[e, p] for e in t_sess]
+                        d_vars = [d_model.expected_shared_ess_q[p]]
+                    for var in t_vars:
                         _bound_var(var, lo_eq, hi_eq, deg_eq)
                         descriptors.append({
                             'channel': 'ESS_Q', 'node': node, 'year': year, 'day': day,
                             'period': p, 'side': 'tso', 'lo': lo_eq, 'hi': hi_eq,
                             'degenerate': deg_eq, 'get_value': (lambda v=var: pe.value(v))})
-                    for e in d_sess:
-                        var = d_model.shared_es_qnet[e, 0, 0, p]
+                    for var in d_vars:
                         _bound_var(var, lo_eq, hi_eq, deg_eq)
                         descriptors.append({
                             'channel': 'ESS_Q', 'node': node, 'year': year, 'day': day,

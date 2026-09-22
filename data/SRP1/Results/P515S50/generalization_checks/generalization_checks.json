@@ -1,0 +1,133 @@
+{
+ "schema": "p515_s50_generalization_checks_v1",
+ "stage": "P5.15 Addendum 36 W35 item 3 -- zero-solve checks for the four single-scenario code paths",
+ "authority": [
+  "PLANNER_BRIEF_2026-09-13.md Addenda 35 and 36",
+  "data/SRP1/Results/P515S50/frozen_s50_spec_v20_69bccc62.json item 3_generalization",
+  "Planner task W35 item 3"
+ ],
+ "timestamp_utc": "2026-09-22T18:57:37.998387+00:00",
+ "git_head": "a4d23ab982b6dd2e3a04f6eefd13a43bd8468a8e",
+ "sections": {
+  "A_install_baseline": {
+   "non_srp1_instance_installs": true,
+   "load_baseline_returns_the_installed_record": true,
+   "second_installation_refused": true,
+   "srp1_label_still_asserts_canonical_checksum": true,
+   "srp1_label_accepts_canonical_checksum": true,
+   "load_baseline_srp1_path_unchanged": true,
+   "scale_harness_delegates_to_install_baseline": true
+  },
+  "B_run_admm_arm_solve_count": {
+   "hard_coded_51_gone_from_the_assignment": true,
+   "derivation_present": true,
+   "per_event_credit_present": true,
+   "esso_or_indeterminate_makes_it_unsupported": true,
+   "srp1_solves_per_cycle_derivation": {
+    "n_dso": 3,
+    "n_years": 3,
+    "n_days": 4,
+    "n_esso_nodes": 3,
+    "derived": 51,
+    "expected": 51,
+    "agrees_with_scale_harness_declaration": true,
+    "holds": true
+   },
+   "srp1_solves_per_cycle_holds": true,
+   "paper_solves_per_cycle_derivation": {
+    "n_dso": 3,
+    "n_years": 5,
+    "n_days": 4,
+    "n_esso_nodes": 3,
+    "derived": 83,
+    "expected": 83,
+    "agrees_with_scale_harness_declaration": true,
+    "holds": true
+   },
+   "paper_solves_per_cycle_holds": true,
+   "c_star_identity_now_holds_where_it_was_recorded_false": {
+    "recorded_identity_holds": false,
+    "observed": 4528,
+    "cycles_run": 87,
+    "base": 4488,
+    "retries_credited": 40,
+    "new_expected": 4528,
+    "new_identity_holds": true,
+    "holds": true
+   },
+   "c_star_identity_repaired": true
+  },
+  "C_expectation_helpers": {
+   "scenario_expectation_is_bitwise_identity_at_1x1": true,
+   "scenario_expectation_1x1_mismatches": [],
+   "scenario_expectation_2x2": {
+    "got": 30.0,
+    "manual": 30.0,
+    "holds": true
+   },
+   "scenario_expectation_2x2_holds": true,
+   "expected_market_price_is_bitwise_identity_at_one_market_scenario": true,
+   "expected_market_price_mismatches": [],
+   "expected_market_price_two_market_scenarios": {
+    "got": 70.0,
+    "manual": 70.0,
+    "holds": true
+   },
+   "expected_market_price_two_market_scenarios_holds": true,
+   "srp1_probability_vectors_are_unit_on_every_block": {
+    "n_blocks": 48,
+    "n_not_unit": 0,
+    "first_bad": [],
+    "source": "data/SRP1/Results/P515S45/probability_audit/probability_audit.json",
+    "holds": true
+   },
+   "srp1_probability_vectors_are_unit_on_every_block_holds": true
+  },
+  "D_branch_selection": {
+   "single_scenario_predicate": {
+    "1x1": true,
+    "2x1": false,
+    "1x2": false,
+    "2x2": false
+   },
+   "single_scenario_predicate_holds": true,
+   "legacy_single_scenario_reads_intact": true,
+   "multi_scenario_reads_are_the_expected_vars": true,
+   "legacy_single_scenario_bounds_intact": true,
+   "multi_scenario_bounds_are_the_expected_vars": true,
+   "apply_common_values_raises_above_1x1": true,
+   "apply_common_values_message": "p56a_oracle.apply_common_values is single-scenario only: it fixes the scenario-(0, 0) copies of the coupling quantities, and above one scenario the ADMM couples their EXPECTATIONS (the copies are held near them only by a soft non-anticipativity penalty). Pinning every scenario copy to one common value would impose hard non-anticipativity the formulation does not have and would suppress the interface dispersion the run measures. Use the interval-hull polish (p515_s41_hull_polish.apply_hull_bounds, which bounds the expected Vars above 1 x 1), or generalize this site. Block TSO 2025 Spring has 2 market x 2 operation scenarios.",
+   "apply_common_values_proceeds_at_1x1": true,
+   "common_coordinated_values_refuses_multi_ess_dso_above_1x1": true
+  },
+  "E_settlement_priced_residual": {
+   "n_period_entries_compared": 864,
+   "n_mismatches": 0,
+   "first_mismatches": [],
+   "priced_residual_reproduced_bitwise": true,
+   "note": "the writer now reads `priced_interface_residual_expected_mu`; at one market scenario `_get_interface_reporting_detail` forms it as `price * (p_int_tso_expected - p_int_dso_expected)`, the exact expression the writer used before, so every committed value is reproduced bit for bit"
+  }
+ },
+ "failures": [],
+ "all_ok": true,
+ "guard": {
+  "permitted": [],
+  "counts": {
+   "permitted_solve": 0,
+   "permitted_exec": 0,
+   "blocked_solve": 0,
+   "blocked_exec": 0
+  },
+  "declared_solves": 0,
+  "verify_failures": []
+ },
+ "evidence_sha256": {
+  "data/SRP1/Results/P515S44/scale_measurement/srp1_cycle_snapoff_r1/cycle_record.json": "7ca2a219e56bc9e9766fb240d933c928b376b6b51ab469bcbd43c2984d11046d",
+  "data/SRP1/Results/P515S44/scale_measurement/paper_cycle_snapoff_memfix_r1/cycle_record.json": "089c44eb64ecb72d455c140da140626f0009877fea559daa0fef11fc42906f4e",
+  "data/SRP1/Results/P515S47/campaign_s47_recert/evals/070f833e1e318f85_c_star/g_s39_D.json": "ced90e47873925b5bb87360984d348558d11ea11fd004e93f3a2668fdc389971",
+  "data/SRP1/Results/P515S47/campaign_s47_recert/evals/070f833e1e318f85_c_star/network_failures_s39_D.jsonl": "50732eed7dae5621b607f9ccf8e653e65cd770fef1a0012fdb73aada512a896e",
+  "data/SRP1/Results/P515S45/probability_audit/probability_audit.json": "007769db6c669b8d715171537a1315ed2d35d19e62ed02d79382f46d62dadc2e",
+  "data/SRP1/Results/P515S47/campaign_s47_recert/evals/070f833e1e318f85_c_star/interface_settlement_detail_s31c.json": "cff2f3f1f12500ee8c17baae62271bebf9b884a5ed8cc214dbf7eab11dcd4739"
+ },
+ "script_sha256": "b6eebd1906206726017ea97619d42d2a8e0ac5b41cc330d9c30b8e635fffb3e1"
+}

@@ -114,6 +114,45 @@ def load_baseline(verbose=False):
     return _BASELINE
 
 
+def install_baseline(planning, checksum, instance_label='srp1'):
+    """P5.15 Addendum 36 (W35 item 3) -- the INSTALLABLE-baseline route.
+
+    `load_baseline` above is hard-wired to `data/SRP1` / `SRP1.json` and asserts the SRP1
+    `CANONICAL_CHECKSUM`.  Everything downstream of it (`fresh_planning`, `evaluate`, every
+    harness that imports this module) works on whatever planning object `_BASELINE` holds, so a
+    NON-SRP1 instance only needs that object installed -- it must not have to edit, monkey-patch
+    or bypass the SRP1 path.  This is that route:
+
+        planning = SharedResourcesPlanning(<data_dir>, <case.json>); planning.read_planning_problem()
+        install_baseline(planning, planning.scenario_metadata['combined_scenario_checksum'],
+                         instance_label='pilot_2x2')
+
+    Rules, all of them refusals rather than silent behaviour:
+      * `instance_label == 'srp1'` keeps the SRP1 contract EXACTLY -- the checksum must equal
+        `CANONICAL_CHECKSUM` or this raises, the same assertion `load_baseline` makes.
+      * any other label is a declared non-SRP1 instance: the checksum is recorded, never compared
+        with the SRP1 constant (it is a different problem and WILL differ).
+      * installing twice in one process raises.  The baseline is read-only by contract and a second
+        installation would silently change what every later `fresh_planning()` deep-copies.
+      * `load_baseline()` is left untouched and still refuses anything but canonical SRP1; it
+        returns the installed baseline if one is present, because it returns `_BASELINE` when set.
+
+    `p515_s44_scale_measurement.inject_oracle_baseline` (the pre-existing site that set
+    `O._BASELINE` directly, for the paper-scale measurement) delegates here; its behaviour is
+    unchanged.  Returns the installed record.
+    """
+    global _BASELINE
+    if _BASELINE is not None:
+        raise RuntimeError('oracle baseline already installed in this process; refusing to install '
+                           'a second one (the baseline is read-only by contract)')
+    if instance_label == 'srp1' and checksum != CANONICAL_CHECKSUM:
+        raise RuntimeError(f'srp1 instance: scenario checksum {checksum} != canonical {CANONICAL_CHECKSUM}')
+    _BASELINE = {'planning': planning, 'checksum': checksum, 'instance_label': instance_label,
+                 'installed': True,
+                 'checksum_matches_srp1_canonical': checksum == CANONICAL_CHECKSUM}
+    return _BASELINE
+
+
 def _scenario_checksum(text):
     for line in text.splitlines():
         if 'checksum' in line.lower():
@@ -234,6 +273,19 @@ def investment_cost(planning, candidate):
 # ===========================================================================
 #  coordinated quantities
 # ===========================================================================
+def _block_is_single_scenario(model):
+    """True when the block has exactly one market and one operation scenario.
+
+    P5.15 Addendum 36 (W35 item 3). This is the condition under which a block's scenario-(0, 0)
+    copy of a coupling quantity IS its expectation: `expected_interface_pf_p` and friends are
+    defined as `sum_s prob_m[s_m] prob_o[s_o] x <copy>` (`model_construction_helpers`,
+    `tn_/dn_interface_expected_*_def`), so with one term and probability 1 the expected Var and
+    the copy carry the same value. Above 1 x 1 they are different quantities, and it is the
+    EXPECTATION that the ADMM couples.
+    """
+    return len(model.scenarios_market) == 1 and len(model.scenarios_operation) == 1
+
+
 def common_coordinated_values(planning, models, consensus_vars,
                               interface_anchor='midpoint'):
     """One common value per coordinated quantity, per (node, year, day, period).
@@ -255,6 +307,27 @@ def common_coordinated_values(planning, models, consensus_vars,
                   purpose.  Offered because the midpoint can push a distribution
                   block outside its feasible set when the ADMM residual is large
                   (P5.6-A6: DSO9 2030 Spring).
+
+    MULTI-SCENARIO (P5.15 Addendum 36, W35 item 3). WHICH Pyomo component carries a coupling
+    quantity depends on the number of scenarios, and this function follows production:
+
+      * At 1 market x 1 operation scenario (SRP1) the agents' achieved values are read from the
+        scenario-(0, 0) copies -- `pc_adn[dn, 0, 0, p]`, `pg_adn[0, 0, p]`,
+        `vmag_sqr[idx, 0, 0, p] ** 0.5`, `shared_es_pnet[e, 0, 0, p]` -- exactly as before, line
+        for line, so SRP1 behaviour is byte-identical.
+      * Above 1 x 1 those copies are NOT the coordinated quantities. The ADMM couples the
+        EXPECTATIONS: the augmented-Lagrangian rows are built on `expected_interface_vmag`,
+        `expected_interface_pf_p/q` and `expected_shared_ess_p/q`
+        (`shared_resources_planning.py`, `_update_*_coordination_model*` AL rows), and the
+        per-scenario copies are held near them only by a SOFT non-anticipativity penalty
+        (`shared_resources_planning.py`, `scenario deviation` terms), i.e. they are deliberately
+        allowed to disperse. Reading, fixing or bounding the (0, 0) copy would therefore (a) read
+        one scenario's realization as if it were the consensus quantity and (b) suppress exactly
+        the interface dispersion a multi-scenario run exists to measure. So above 1 x 1 the
+        achieved values are read from the model's own expected Vars.
+
+    The dictionary's KEY is unchanged in both cases -- `(node, year, day, period)` -- because the
+    coordinated quantities are scenario-free by construction (an expectation, and the ADMM's `z`).
     """
     tso = planning.transmission_network
     common = {}
@@ -275,21 +348,47 @@ def common_coordinated_values(planning, models, consensus_vars,
                           if s.bus == ref_id]
                 z_p = consensus_vars['ess']['z']['current'][node][year][day]['p']
                 z_q = consensus_vars['ess']['z']['current'][node][year][day]['q']
+                expectation_mode = not _block_is_single_scenario(t_model)
+                if expectation_mode and len(d_sess) != 1:
+                    raise NotImplementedError(
+                        f'p56a_oracle.common_coordinated_values: DSO {node} {year} {day} has '
+                        f'{len(d_sess)} shared-ESS indices at its reference node; the '
+                        "multi-scenario route reads the DSO's single `expected_shared_ess_p[p]` "
+                        'Var, which cannot be attributed across several indices. Generalize this '
+                        'site before running a multi-scenario instance with more than one '
+                        'shared ESS per DSO reference node.')
                 for p in t_model.periods:
-                    t_p = float(pe.value(t_model.pc_adn[dn, 0, 0, p]))
-                    t_q = float(pe.value(t_model.qc_adn[dn, 0, 0, p]))
-                    d_p = float(pe.value(d_model.pg_adn[0, 0, p]))
-                    d_q = float(pe.value(d_model.qg_adn[0, 0, p]))
-                    t_v = float(pe.value(t_model.vmag_sqr[adn_idx, 0, 0, p])) ** 0.5
-                    d_v = float(pe.value(d_model.vmag_sqr[ref_idx, 0, 0, p])) ** 0.5
-                    t_sp = sum(float(pe.value(t_model.shared_es_pnet[e, 0, 0, p]))
-                               for e in t_sess)
-                    t_sq = sum(float(pe.value(t_model.shared_es_qnet[e, 0, 0, p]))
-                               for e in t_sess)
-                    d_sp = sum(float(pe.value(d_model.shared_es_pnet[e, 0, 0, p]))
-                               for e in d_sess)
-                    d_sq = sum(float(pe.value(d_model.shared_es_qnet[e, 0, 0, p]))
-                               for e in d_sess)
+                    if not expectation_mode:
+                        t_p = float(pe.value(t_model.pc_adn[dn, 0, 0, p]))
+                        t_q = float(pe.value(t_model.qc_adn[dn, 0, 0, p]))
+                        d_p = float(pe.value(d_model.pg_adn[0, 0, p]))
+                        d_q = float(pe.value(d_model.qg_adn[0, 0, p]))
+                        t_v = float(pe.value(t_model.vmag_sqr[adn_idx, 0, 0, p])) ** 0.5
+                        d_v = float(pe.value(d_model.vmag_sqr[ref_idx, 0, 0, p])) ** 0.5
+                        t_sp = sum(float(pe.value(t_model.shared_es_pnet[e, 0, 0, p]))
+                                   for e in t_sess)
+                        t_sq = sum(float(pe.value(t_model.shared_es_qnet[e, 0, 0, p]))
+                                   for e in t_sess)
+                        d_sp = sum(float(pe.value(d_model.shared_es_pnet[e, 0, 0, p]))
+                                   for e in d_sess)
+                        d_sq = sum(float(pe.value(d_model.shared_es_qnet[e, 0, 0, p]))
+                                   for e in d_sess)
+                    else:
+                        # W35 item 3: above one scenario the coordinated quantity is the
+                        # EXPECTATION, and the model carries it explicitly -- see the
+                        # "MULTI-SCENARIO" section of this docstring.
+                        t_p = float(pe.value(t_model.expected_interface_pf_p[dn, p]))
+                        t_q = float(pe.value(t_model.expected_interface_pf_q[dn, p]))
+                        d_p = float(pe.value(d_model.expected_interface_pf_p[p]))
+                        d_q = float(pe.value(d_model.expected_interface_pf_q[p]))
+                        t_v = float(pe.value(t_model.expected_interface_vmag[dn, p]))
+                        d_v = float(pe.value(d_model.expected_interface_vmag[p]))
+                        t_sp = sum(float(pe.value(t_model.expected_shared_ess_p[e, p]))
+                                   for e in t_sess)
+                        t_sq = sum(float(pe.value(t_model.expected_shared_ess_q[e, p]))
+                                   for e in t_sess)
+                        d_sp = float(pe.value(d_model.expected_shared_ess_p[p]))
+                        d_sq = float(pe.value(d_model.expected_shared_ess_q[p]))
                     common[(node, year, day, p)] = {
                         'tso_p': t_p, 'dso_p': d_p, 'tso_q': t_q, 'dso_q': d_q,
                         'tso_v': t_v, 'dso_v': d_v,
@@ -311,6 +410,11 @@ def common_coordinated_values(planning, models, consensus_vars,
                         'common_sess_p_mw': float(z_p[p]),
                         'common_sess_q_mw': float(z_q[p]),
                         'source_sess': "consensus_vars['ess']['z']",
+                        'source_agent_values': ('scenario (0, 0) copies (single-scenario instance)'
+                                                if not expectation_mode else
+                                                'expected_interface_vmag / expected_interface_pf_p|q '
+                                                '/ expected_shared_ess_p|q (multi-scenario)'),
+                        'expectation_mode': expectation_mode,
                     }
     return common
 
@@ -444,8 +548,40 @@ def _interface_expression_legacy_pre_addendum12(t_model, adn_load, p, kind):
 
 
 def apply_common_values(planning, models, common):
-    """Fix every coordinated quantity to its common value on both sides."""
+    """Fix every coordinated quantity to its common value on both sides.
+
+    SINGLE-SCENARIO ONLY -- raises above 1 x 1 (P5.15 Addendum 36, W35 item 3). This function
+    FIXES the scenario-(0, 0) copies: `vmag_sqr[idx, 0, 0, p]`, `pg[ref_gen, 0, 0, p]`,
+    `shared_es_pnet/qnet[e, 0, 0, p]`, and a row on `pc_adn[dn, 0, 0, p]`. Above one scenario that
+    is not a generalization gap but a WRONG MECHANISM: the ADMM couples the expectations and holds
+    the per-scenario copies near them only through a soft non-anticipativity penalty, so pinning
+    every scenario's copy to one common value would impose hard non-anticipativity the formulation
+    does not have, suppressing the interface dispersion the multi-scenario run measures, and would
+    change the recourse it reports. The correct multi-scenario form fixes the model's own
+    `expected_*` Vars instead; `p515_s41_hull_polish.apply_hull_bounds` already does exactly that
+    and is what the campaign's post-certification polish calls. This function is NOT on that path
+    (`_polish_all_blocks_hull` uses `hull_entries_with_esso` + `apply_hull_bounds`); it is the older
+    exact-fix polish, used by `p515_s40_polish_gap`, `p515_s42_exact_fix_rerun`, `p56b_policy`,
+    `p57_eval`, `p58_eval` and `p512_a`. It is therefore left single-scenario and made to FAIL
+    LOUDLY rather than generalized untested. Generalize it before any multi-scenario run needs the
+    exact-fix polish.
+    """
     tso = planning.transmission_network
+    for year in tso.years:
+        for day in tso.days:
+            if not _block_is_single_scenario(models['tso'][year][day]):
+                raise NotImplementedError(
+                    'p56a_oracle.apply_common_values is single-scenario only: it fixes the '
+                    'scenario-(0, 0) copies of the coupling quantities, and above one scenario '
+                    'the ADMM couples their EXPECTATIONS (the copies are held near them only by '
+                    'a soft non-anticipativity penalty). Pinning every scenario copy to one '
+                    'common value would impose hard non-anticipativity the formulation does not '
+                    'have and would suppress the interface dispersion the run measures. Use the '
+                    'interval-hull polish (p515_s41_hull_polish.apply_hull_bounds, which bounds '
+                    'the expected Vars above 1 x 1), or generalize this site. Block '
+                    f'TSO {year} {day} has {len(models["tso"][year][day].scenarios_market)} '
+                    f'market x {len(models["tso"][year][day].scenarios_operation)} operation '
+                    'scenarios.')
     for node, dso in sorted(planning.distribution_networks.items()):
         for year in tso.years:
             for day in tso.days:
@@ -505,6 +641,31 @@ def apply_common_values(planning, models, common):
                         d_model.shared_es_qnet[e, 0, 0, p].fix(entry['common_sess_q'])
 
 
+def _scenario_expectation(model, network, term):
+    """P5.15 Addendum 36 (W35 item 3) -- the probability-weighted expectation over scenarios of a
+    per-scenario quantity, using the NETWORK's own probability vectors and production's own
+    weighting (`model_construction_helpers.total_generation_cost_rule` and every other
+    `total_*_rule`: `network.prob_market_scenarios[s_m] * network.prob_operation_scenarios[s_o]`).
+
+    `term(s_m, s_o)` returns the per-scenario float.
+
+    EQUIVALENCE AT 1 x 1, BY CONSTRUCTION: with one market and one operation scenario the loop runs
+    once and returns `1.0 * term(0, 0)` -- and the accumulator is SEEDED with the first term rather
+    than with 0.0, so the result is that product exactly, bit for bit, including the sign of a zero.
+    SRP1's network probability vectors are `[1.0] x [1.0]` (P5.15 Addendum 27 item 5b probability
+    audit, `data/SRP1/Results/P515S45/probability_audit/`), so `1.0 * x is x` and the value is the
+    pre-W35 single-scenario value byte for byte.
+    """
+    total = None
+    for s_m in model.scenarios_market:
+        for s_o in model.scenarios_operation:
+            probability = (network.prob_market_scenarios[s_m]
+                           * network.prob_operation_scenarios[s_o])
+            contribution = probability * term(s_m, s_o)
+            total = contribution if total is None else total + contribution
+    return 0.0 if total is None else total
+
+
 def per_block_base_objectives(planning, models):
     """Weighted base-objective contribution of every (agent, year, day) block.
 
@@ -512,6 +673,18 @@ def per_block_base_objectives(planning, models):
     polished values are directly comparable and their difference decomposes the
     recourse change exactly.  Captured before AND after polishing so P5.6-A2 can
     attribute the change without a second ADMM run.
+
+    P5.15 Addendum 36 (W35 item 3), MULTI-SCENARIO. `weighted_base_objective` was always correct
+    above one scenario: `objective_function_rule` sums the model's own `total_*` aggregates, each
+    of which is already the probability-weighted expectation over scenarios. The `families`
+    decomposition was NOT: every family helper (`generation_cost`, `flexibility_cost`, ...) is a
+    PER-SCENARIO expression and was evaluated at scenario (0, 0) only, so above 1 x 1 the families
+    would no longer sum towards the objective they decompose. CONVENTION CHOSEN: each family is now
+    the EXPECTATION over scenarios under the network's own probabilities -- the same weighting the
+    model's `total_*` aggregates use, so the decomposition matches the quantity it decomposes at any
+    number of scenarios. At 1 x 1 the value is unchanged bit for bit (`_scenario_expectation`).
+    `per_scenario` carries the undiscounted, unweighted per-scenario family values beside it, so a
+    multi-scenario run can report dispersion without a second pass.
     """
     out = {}
     for tag, holder in _tagged_holders(planning):
@@ -523,27 +696,42 @@ def per_block_base_objectives(planning, models):
                          else models['dso'][node_of][year][day])
                 weight = srp._get_admm_block_weight(holder, year, day)
                 families = {}
+                per_scenario = {}
                 for name in ('generation_cost', 'flexibility_cost',
                              'load_curtailment_cost', 'gen_curtailment_penalty',
                              'ess_utilization_cost_penalty', 'slack_penalties',
                              'ess_complementarity_penalties'):
-                    try:
-                        if name == 'ess_complementarity_penalties':
-                            value = float(pe.value(
+                    if name == 'ess_complementarity_penalties':
+                        def term(s_m, s_o, _name=name):
+                            return float(pe.value(
                                 mch.ess_complementarity_penalties_rule(
-                                    model, 0, 0, network=network,
+                                    model, s_m, s_o, network=network,
                                     params=holder.params)))
-                        else:
-                            value = float(pe.value(getattr(mch, name)(
-                                model, network, 0, 0, holder.params)))
+                    else:
+                        def term(s_m, s_o, _name=name):
+                            return float(pe.value(getattr(mch, _name)(
+                                model, network, s_m, s_o, holder.params)))
+                    try:
+                        value = _scenario_expectation(model, network, term)
                     except Exception:
                         value = None
                     families[name] = None if value is None else weight * value
+                    try:
+                        per_scenario[name] = {f'{s_m}_{s_o}': term(s_m, s_o)
+                                              for s_m in model.scenarios_market
+                                              for s_o in model.scenarios_operation}
+                    except Exception:
+                        per_scenario[name] = None
                 out[f'{tag}|{year}|{day}'] = {
                     'weight': weight,
                     'weighted_base_objective': weight * float(pe.value(
                         mch.objective_function_rule(model, holder.params))),
                     'families': families,
+                    'families_convention': ('expectation over scenarios under '
+                                            'network.prob_market_scenarios x '
+                                            'network.prob_operation_scenarios, then x block weight '
+                                            "(production's own total_*_rule weighting)"),
+                    'families_per_scenario_unweighted': per_scenario,
                 }
     return out
 

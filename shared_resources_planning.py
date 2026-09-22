@@ -839,6 +839,34 @@ def _get_operational_interface_settlement_blocks(planning_problem, models):
     return blocks
 
 
+_INTERFACE_REPORTING_PRICE_CONVENTION = (
+    'price_per_mwh is the EXPECTED market price E[pi_t] = sum_sm prob_market[s_m] * '
+    'cost_energy_p[s_m][t] (identically cost_energy_p[0][t] when there is one market scenario); '
+    'price_per_mwh_by_scenario carries the per-scenario prices. dso_settlement_sum_pi_p_int is '
+    'E[pi_t * p_int,t] summed over periods -- computed as pi_t * E[p_int,t] from the model\'s own '
+    'expected-interface Var when the price is deterministic (one market scenario), and as the '
+    'probability-weighted sum over (s_m, s_o) of pi_t[s_m] * pg_adn[s_m, s_o, t] otherwise, which '
+    'is exactly the form of production\'s own settlement objective term '
+    '(model_construction_helpers.interface_energy_settlement)')
+
+
+def _expected_market_price(model, network, p):
+    """P5.15 Addendum 36 (W35 item 3): the expected hourly market price
+    E[pi_t] = sum_sm prob_market_scenarios[s_m] * cost_energy_p[s_m][t], using the NETWORK's own
+    probability vector (the operational one -- never the ESS workbook's investment-cost
+    probabilities; P5.15 Addendum 27 item 5b probability audit).
+
+    At one market scenario the sum has a single term and the accumulator is seeded with it, so the
+    result is `prob[0] * cost_energy_p[0][t]` exactly; SRP1's `prob_market_scenarios` is `[1.0]`,
+    so this is `cost_energy_p[0][t]` bit for bit -- the value the pre-W35 code read directly.
+    """
+    total = None
+    for s_m in model.scenarios_market:
+        contribution = network.prob_market_scenarios[s_m] * network.cost_energy_p[s_m][p]
+        total = contribution if total is None else total + contribution
+    return 0.0 if total is None else total
+
+
 def _get_interface_reporting_detail(planning_problem, models):
     """P5.15 Step 3.1-C (PLANNER_BRIEF_2026-09-13.md Addendum 12, Part 1 item 4).
 
@@ -851,6 +879,30 @@ def _get_interface_reporting_detail(planning_problem, models):
     this is reporting granularity, not the recourse total computed by
     `_get_operational_interface_settlement_blocks`). All power quantities are
     in MW/MVAr (converted from the model's per-unit values via `baseMVA`).
+
+    PRICE AND SETTLEMENT ABOVE ONE MARKET SCENARIO (P5.15 Addendum 36, W35 item 3).
+    `delta_P`/`delta_Q` and the anchor were always reported per scenario; the PRICE was not.
+    The pre-W35 code took `cost_energy_p[first market scenario][t]` and multiplied it by the
+    expected interface power, which is correct only while the price is deterministic. Now:
+
+      * `price_per_mwh` is the EXPECTED price `E[pi_t] = sum_sm prob_market[s_m] * cost_energy_p
+        [s_m][t]` (`_expected_market_price`). With one market scenario this is
+        `cost_energy_p[0][t]` bit for bit -- SRP1's `prob_market_scenarios` is `[1.0]` -- so the
+        reported value is unchanged there.
+      * `price_per_mwh_by_scenario` is new and carries the per-scenario prices, keyed
+        `'<s_m>_<s_o>'` like the delta and anchor maps beside it.
+      * `dso_settlement_sum_pi_p_int` is `sum_t E[pi_t * p_int,t]`. With ONE market scenario the
+        price is deterministic, `E[pi p] == pi E[p]` exactly, and the model's own expected
+        interface Var is used -- the pre-W35 expression, unchanged. With SEVERAL market scenarios
+        the price is scenario-dependent, so the product is taken INSIDE the expectation, in
+        exactly the form production's own settlement objective term uses
+        (`model_construction_helpers.interface_energy_settlement`: probability x price x baseMVA x
+        `pg_adn[s_m, s_o, t]`, with the DISTRIBUTION network's own price and probability vectors,
+        as that term does). Taking `E[pi] * E[p_int]` instead would drop the price-quantity
+        covariance -- the whole content of a multi-market-scenario run.
+
+    The convention actually applied is recorded per (node, year, day) in `price_convention`,
+    beside the scenario counts, so no artifact leaves the convention to prose.
     """
     transmission_network = planning_problem.transmission_network
     distribution_networks = planning_problem.distribution_networks
@@ -891,11 +943,58 @@ def _get_interface_reporting_detail(planning_problem, models):
                     p_int_dso_expected = pe.value(local_dso_model.expected_interface_pf_p[p]) * s_base
                     q_int_dso_expected = pe.value(local_dso_model.expected_interface_pf_q[p]) * s_base
 
-                    s_m0 = next(iter(local_tso_model.scenarios_market))
-                    price = c_p_by_scenario[s_m0][p]
-                    dso_settlement_sum_pi_p_int += price * p_int_dso_expected
+                    # P5.15 Addendum 36 (W35 item 3), MULTI-SCENARIO -- see this function's
+                    # docstring, section "PRICE AND SETTLEMENT ABOVE ONE MARKET SCENARIO".
+                    price_by_scenario = {f'{s_m}_{s_o}': c_p_by_scenario[s_m][p]
+                                         for s_m in local_tso_model.scenarios_market
+                                         for s_o in local_tso_model.scenarios_operation}
+                    price = _expected_market_price(local_tso_model, network, p)
+                    if len(local_tso_model.scenarios_market) == 1:
+                        # One market scenario: the price is deterministic, so
+                        # E[pi * p_int] == pi * E[p_int] exactly and the model's own expected
+                        # interface Var is used, unchanged.
+                        dso_settlement_sum_pi_p_int += price * p_int_dso_expected
+                    else:
+                        # Several market scenarios: the price is scenario-dependent, so the
+                        # settlement must be taken INSIDE the expectation, exactly as
+                        # production's own objective term does
+                        # (`model_construction_helpers.interface_energy_settlement`).
+                        d_network = distribution_network.network[year][day]
+                        dso_settlement_sum_pi_p_int += sum(
+                            d_network.prob_market_scenarios[s_m]
+                            * d_network.prob_operation_scenarios[s_o]
+                            * d_network.cost_energy_p[s_m][p]
+                            * pe.value(local_dso_model.pg_adn[s_m, s_o, p]) * s_base
+                            for s_m in local_dso_model.scenarios_market
+                            for s_o in local_dso_model.scenarios_operation)
+
+                    # P5.15 Addendum 36 (W35 item 3): the PRICED interface consensus residual,
+                    # the quantity the S31C reading rule reconciles against T_TSO + T_DSO. With one
+                    # market scenario the price is deterministic and this is exactly the pre-W35
+                    # `price * (p_int_tso_expected - p_int_dso_expected)`; above it, price and
+                    # quantity are multiplied INSIDE the expectation, per side, in the same form as
+                    # `interface_energy_settlement` (so the reconciliation identity still holds).
+                    residual_expected_mw = p_int_tso_expected - p_int_dso_expected
+                    if len(local_tso_model.scenarios_market) == 1:
+                        priced_interface_residual = price * residual_expected_mw
+                    else:
+                        d_net_r = distribution_network.network[year][day]
+                        priced_interface_residual = (
+                            sum(network.prob_market_scenarios[s_m]
+                                * network.prob_operation_scenarios[s_o]
+                                * c_p_by_scenario[s_m][p]
+                                * pe.value(local_tso_model.pc_adn[dn, s_m, s_o, p]) * s_base
+                                for s_m in local_tso_model.scenarios_market
+                                for s_o in local_tso_model.scenarios_operation)
+                            - sum(d_net_r.prob_market_scenarios[s_m]
+                                  * d_net_r.prob_operation_scenarios[s_o]
+                                  * d_net_r.cost_energy_p[s_m][p]
+                                  * pe.value(local_dso_model.pg_adn[s_m, s_o, p]) * s_base
+                                  for s_m in local_dso_model.scenarios_market
+                                  for s_o in local_dso_model.scenarios_operation))
 
                     periods_detail[p] = {
+                        'priced_interface_residual_expected_mu': priced_interface_residual,
                         'p_int_tso_expected_mw': p_int_tso_expected,
                         'q_int_tso_expected_mvar': q_int_tso_expected,
                         'p_int_dso_expected_mw': p_int_dso_expected,
@@ -905,11 +1004,15 @@ def _get_interface_reporting_detail(planning_problem, models):
                         'anchor_p_mw': anchor_p_by_scenario,
                         'anchor_q_mvar': anchor_q_by_scenario,
                         'price_per_mwh': price,
+                        'price_per_mwh_by_scenario': price_by_scenario,
                     }
 
                 detail[node_id][year][day] = {
                     'periods': periods_detail,
                     'dso_settlement_sum_pi_p_int': dso_settlement_sum_pi_p_int,
+                    'n_market_scenarios': len(local_tso_model.scenarios_market),
+                    'n_operation_scenarios': len(local_tso_model.scenarios_operation),
+                    'price_convention': _INTERFACE_REPORTING_PRICE_CONVENTION,
                 }
 
     return detail

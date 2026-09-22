@@ -1356,8 +1356,50 @@ def run_admm_arm(label, out_dir, k_override=None, investment_map=None,
     except Exception as error:
         report['esso_models_pickle'] = {'error': f'{type(error).__name__}: {error}'}
 
-    report['solve_profile'] = {'observed': dict(guard.counts),
-                               'identity_holds': guard.counts['permitted_solve'] == 51 * len(rows) + 51}
+    # ---- W35 item 3: solve count DERIVED FROM THE INSTANCE, reconciled per FAILURE EVENT ----
+    # Was `51 * len(rows) + 51` -- the SRP1 constant, with no recovery term, so `identity_holds`
+    # read False on every campaign run that recovered a block (e.g. the committed C*
+    # re-certification: 4528 observed against 4488 base, 34 tier-1 and 3 tier-2 recoveries).
+    #   solves_per_cycle = (1 + n_dso) x n_years x n_days + n_esso_nodes
+    # which is 4 x 3 x 4 + 3 = 51 at SRP1 -- the constant it replaces, identically -- and 83 at the
+    # paper instance. `base` covers the initialization round plus `cycles_run` ADMM cycles, the same
+    # `len(rows) + 1` the constant used. The identity is the per-EVENT rule of W35 item 1
+    # (`p515_s44_scale_measurement.event_level_solve_reconciliation`, the ladder's rule): every retry
+    # ACTUALLY ATTEMPTED is credited, recovered or not. `final_blocks` is this run's own event list,
+    # already in memory. ESSO recovery events carry no attempt count, so any of them -- and any
+    # 'indeterminate' network event -- makes the reconciliation UNSUPPORTED (`identity_holds` False,
+    # `reconciliation_supported` False), never silently credited. This field is REPORTING; the arm's
+    # exact-count enforcement is the caller's armed `SolveProfileGuard.verify`.
+    _n_dso = len(planning.distribution_networks)
+    _n_esso = len(sed.active_distribution_network_nodes)
+    _solves_per_cycle = (1 + _n_dso) * len(planning.years) * len(planning.days) + _n_esso
+    _base_solves = _solves_per_cycle * (len(rows) + 1)
+    _retries = sum(int(bool(b.get('recovery_attempted'))) + int(bool(b.get('tier2_attempted')))
+                   for b in final_blocks)
+    _supported = (len(final_esso_events) == 0
+                  and not any(b.get('class') == 'indeterminate' for b in final_blocks))
+    _expected = (_base_solves + _retries) if _supported else None
+    _recovered_only = (_base_solves + _class_counts['recovered_tier1']
+                       + 2 * _class_counts['recovered_tier2'])
+    report['solve_profile'] = {
+        'observed': dict(guard.counts),
+        'identity_holds': (_expected is not None
+                           and guard.counts['permitted_solve'] == _expected),
+        'identity': ('observed == base + sum over network-failure events of [recovery_attempted] + '
+                     '[tier2_attempted]; unsupported when an ESSO recovery event or an '
+                     "'indeterminate' network event exists"),
+        'derivation': '(1 + n_dso) * n_years * n_days + n_esso_nodes, per cycle, from the planning object',
+        'n_dso': _n_dso, 'n_years': len(planning.years), 'n_days': len(planning.days),
+        'n_esso_nodes': _n_esso, 'solves_per_cycle': _solves_per_cycle,
+        'rounds': len(rows) + 1, 'rounds_note': 'one initialization round + cycles_run ADMM cycles',
+        'base_solves': _base_solves, 'retry_solves_credited': _retries,
+        'reconciliation_supported': _supported, 'expected_solves': _expected,
+        'recovered_only_identity': {
+            'expected': _recovered_only,
+            'holds': guard.counts['permitted_solve'] == _recovered_only,
+            'note': ('pre-W35 rule, REPORTED not gated: credits retries only to RECOVERED blocks, '
+                     "so an unrecovered block's attempts go uncounted (78a9b230)")},
+    }
 
     if post_run_hook is not None:
         # S31 worker task, Part 3: zero extra solves -- `models` is the SAME dict
@@ -1915,7 +1957,11 @@ def _s31c_interface_detail(planning, models):
                 dso_settlement_sum_pi_p_int_weighted += block_weight * day_detail['dso_settlement_sum_pi_p_int']
                 for p, period_detail in day_detail['periods'].items():
                     residual_mw = period_detail['p_int_tso_expected_mw'] - period_detail['p_int_dso_expected_mw']
-                    priced_residual = period_detail['price_per_mwh'] * residual_mw
+                    # W35 item 3: the priced residual now comes from
+                    # `_get_interface_reporting_detail`, which forms it per side and inside the
+                    # expectation above one market scenario. With one market scenario it IS
+                    # `price_per_mwh * residual_mw`, computed there, so this is unchanged at SRP1.
+                    priced_residual = period_detail['priced_interface_residual_expected_mu']
                     residual_periods[f'{year}|{day}|{p}'] = {
                         'p_int_tso_expected_mw': period_detail['p_int_tso_expected_mw'],
                         'p_int_dso_expected_mw': period_detail['p_int_dso_expected_mw'],
