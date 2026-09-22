@@ -145,6 +145,18 @@ pin, the LOADED parameters equal the declaration and every ESS carries its soh_m
 and floor bound are read back from probe ESSO models (`ess_ageing_readback_models`); post-run
 the read-back is repeated on clones and the ageing trajectory is captured. Undeclared specs
 keep their exact format, keys and behaviour.
+Addendum 34 (W33, the flexibility-price ladder): an entry may carry `flex_price_multiplier` -- a positive
+float m (`validate_flex_price_multiplier`; absent or 1.0 = today's price). In the child, LAST in the
+configuration hook (before any DSO model is built), every DSO block's `network[year][day].cost_flex` -- the
+hourly profile per (year, day), growth included, that `model_construction_helpers.flexibility_cost` bakes into
+the DSO objective as constants at BUILD time -- is replaced by a NEW array m * cost_flex (never in place: the
+same array object is bound to the TSO and every DSO), uniformly over years / days / hours; the TSO's arrays and
+`planning.cost_flex` are untouched and no file is edited (`apply_flex_price_multiplier`). READ-BACK: probe DSO
+blocks built by production before and after, objective standard repn compared -- flex coefficients = m x the
+m = 1 coefficients, everything else identical -- refusing on any mismatch; post-run the coefficients of the
+run's own DSO models are read back (`flex_price_readback_run_models`). m enters the eval key ONLY when != 1.0
+(`evaluation_key`), with `flex_price_label` == FLEX_PRICE_LABEL on the spec and the entry; every record of such
+an entry carries the multiplier (and the label when != 1.0). Entries without it keep their exact format and keys.
 AFTER the run, in the child, inside `run_admm_arm`'s post_run_hook (same live
 models/state), `run_post_certification` does, only if the trajectory is
 certified under the spec's bar (else it records `status: skipped` + reason):
@@ -216,7 +228,16 @@ FROZEN_AA_REGULARIZATION = 1e-10
 POST_CERTIFICATION_KEYS = frozenset({'persist_certified_models', 'hull_polish', 'reference'})
 # Addendum 27 (W14): 'investment_year' is the SINGLE cohort year this evaluation's candidate is
 # placed at; omitted => INVESTMENT_YEAR (2025), so every spec frozen before W14 is unchanged.
-EVALUATION_OPTION_KEYS = frozenset({'overrides', 'post_certification', 'investment_year', 'model_variant'})
+EVALUATION_OPTION_KEYS = frozenset({'overrides', 'post_certification', 'investment_year', 'model_variant',
+                                    'flex_price_multiplier'})
+# P5.15 Addendum 34 (W33): a uniform multiplier m on the DSO flexibility-price profile `cost_flex` (see
+# `validate_flex_price_multiplier` / `apply_flex_price_multiplier`). Absent or 1.0 = today's price; it enters the
+# eval key ONLY when present and != 1.0, so every key frozen before W33 is byte-identical.
+FLEX_PRICE_LABEL = 'MODEL VARIANT — flexibility price × m'
+FLEX_PRICE_VARS = ('flex_p_down', 'flex_q_down')  # the variables `mch.flexibility_cost` prices at cost_flex
+# Read-back tolerance: coef(m) vs m * coef(1) differ only by the rounding order of (m * c) * baseMVA against
+# m * (c * baseMVA) -- at most a few ulp; 1e-15 relative (~4.5 ulp) is stated before any run.
+FLEX_PRICE_READBACK_REL_TOL = 1e-15
 # Addenda 28-29 (W20): a MODEL VARIANT of the shared-ESS ageing law (see `validate_model_variant`). Exactly these
 # four keys; `available_energy_soh_point` values mirror shared_energy_storage_data.AVAILABLE_ENERGY_SOH_POINTS
 # (re-checked against production in the child, so the parent stays free of model imports).
@@ -474,6 +495,27 @@ def validate_model_variant(model_variant):
     return out
 
 
+def validate_flex_price_multiplier(value):
+    """P5.15 Addendum 34 (W33): the uniform multiplier m on the `cost_flex` profile bound to every DSO block.
+    None = not given (today's price). Otherwise a finite number > 0 (bool refused), returned as float.
+    No model import (parent side)."""
+    if value is None:
+        return None
+    if isinstance(value, bool) or not isinstance(value, (int, float)):
+        raise ValueError(f'flex_price_multiplier must be a positive finite number, got {value!r}')
+    out = float(value)
+    if out != out or out in (float('inf'), float('-inf')) or out <= 0.0:
+        raise ValueError(f'flex_price_multiplier must be a positive finite number, got {value!r}')
+    return out
+
+
+def flex_price_multiplier_in_key(value):
+    """The multiplier as it enters the eval key: None when absent OR exactly 1.0 (today's price -- the same
+    evaluation as the baseline), else the validated float."""
+    out = validate_flex_price_multiplier(value)
+    return None if (out is None or out == 1.0) else out
+
+
 def _ess_number(value, name, allow_none=False):
     if value is None and allow_none:
         return None
@@ -550,7 +592,8 @@ def load_ess_ageing_parameters(path):
     return ess_ageing_parameters_as_loaded(params.ageing)
 
 
-def evaluation_key(candidate_key_hex, overrides, case_file_aa=None, model_variant=None, ess_ageing_baseline=None):
+def evaluation_key(candidate_key_hex, overrides, case_file_aa=None, model_variant=None, ess_ageing_baseline=None,
+                   flex_price_multiplier=None):
     """Identity of one EVALUATION (candidate x configuration). The case-file
     configuration (no overrides) keeps the candidate key itself, so a D
     evaluation's directory name is `<candidate key16>_<label>` as in s44_gate;
@@ -568,9 +611,15 @@ def evaluation_key(candidate_key_hex, overrides, case_file_aa=None, model_varian
     payload the rules above would hash (with 'effective_anderson_acceleration' when `case_file_aa` is declared,
     'model_variant' when given) plus 'ess_ageing_baseline' -- never the bare candidate key -- so evaluations of
     one candidate under two ageing baselines never share a key. `ess_ageing_baseline=None` returns exactly what
-    the formulas above return."""
+    the formulas above return.
+    P5.15 Addendum 34 (W33): with a `flex_price_multiplier` m that is present AND != 1.0
+    (`flex_price_multiplier_in_key`), the key is sha256 of the SAME payload the rules above would hash plus
+    'flex_price_multiplier': m -- never the bare candidate key (a case-file D evaluation under m != 1 hashes
+    {candidate_key, overrides, flex_price_multiplier}). Absent or 1.0 returns exactly what the formulas above
+    return, so every key frozen before W33 is byte-identical."""
     model_variant = validate_model_variant(model_variant)
     ess_ageing_baseline = validate_ess_ageing_baseline(ess_ageing_baseline)
+    flex_m = flex_price_multiplier_in_key(flex_price_multiplier)
     if ess_ageing_baseline is not None:
         payload = {'candidate_key': candidate_key_hex, 'overrides': overrides or {},
                    'ess_ageing_baseline': ess_ageing_baseline}
@@ -578,6 +627,8 @@ def evaluation_key(candidate_key_hex, overrides, case_file_aa=None, model_varian
             payload['effective_anderson_acceleration'] = effective_anderson_acceleration(case_file_aa, overrides)
         if model_variant is not None:
             payload['model_variant'] = model_variant
+        if flex_m is not None:
+            payload['flex_price_multiplier'] = flex_m
         text = json.dumps(payload, sort_keys=True, separators=(',', ':'))
         return hashlib.sha256(text.encode()).hexdigest()
     if case_file_aa is not None:
@@ -586,11 +637,19 @@ def evaluation_key(candidate_key_hex, overrides, case_file_aa=None, model_varian
                    'overrides': overrides or {}}
         if model_variant is not None:
             payload['model_variant'] = model_variant
+        if flex_m is not None:
+            payload['flex_price_multiplier'] = flex_m
         text = json.dumps(payload, sort_keys=True, separators=(',', ':'))
         return hashlib.sha256(text.encode()).hexdigest()
     if model_variant is not None:
+        payload = {'candidate_key': candidate_key_hex, 'overrides': overrides or {}, 'model_variant': model_variant}
+        if flex_m is not None:
+            payload['flex_price_multiplier'] = flex_m
+        text = json.dumps(payload, sort_keys=True, separators=(',', ':'))
+        return hashlib.sha256(text.encode()).hexdigest()
+    if flex_m is not None:
         text = json.dumps({'candidate_key': candidate_key_hex, 'overrides': overrides or {},
-                           'model_variant': model_variant}, sort_keys=True, separators=(',', ':'))
+                           'flex_price_multiplier': flex_m}, sort_keys=True, separators=(',', ':'))
         return hashlib.sha256(text.encode()).hexdigest()
     if not overrides:
         return candidate_key_hex
@@ -722,6 +781,11 @@ def freeze_campaign_spec(campaign_root, campaign_id, candidates, configuration, 
         (`validate_model_variant`); enters the eval key; the entry and the spec
         then carry `model_variant_label` == MODEL_VARIANT_LABEL. Entries without
         it (and specs with no such entry) keep their exact format and keys.
+      - 'flex_price_multiplier' (Addendum 34, W33): the uniform multiplier m on the
+        DSO flexibility-price profile (`validate_flex_price_multiplier`). The entry
+        records it; it enters the eval key only when != 1.0, and then the entry and
+        the spec carry `flex_price_label` == FLEX_PRICE_LABEL. Entries without it
+        keep their exact format and keys.
     `configuration` may carry (Addendum 30, W21) `ess_ageing_baseline` (the exact loaded ageing dict, see
     `validate_ess_ageing_baseline`) with `ess_ageing_baseline_label`; then the ESS parameters file must load to
     it (refused otherwise), its sha256 is pinned as `configuration.ess_params_file`, and it enters every entry's
@@ -753,6 +817,7 @@ def freeze_campaign_spec(campaign_root, campaign_id, candidates, configuration, 
         ess_params_pin = {'path': ESS_PARAMS_FILE_REL, 'sha256': sha256_file(ess_path)}
     cand_entries, seen_labels, seen_keys = [], set(), set()
     any_model_variant = False
+    any_flex_price = False
     for item in candidates:
         if len(item) == 2:
             (label, cand), options = item, {}
@@ -768,8 +833,9 @@ def freeze_campaign_spec(campaign_root, campaign_id, candidates, configuration, 
         key = candidate_key(canon)
         eff_overrides = validate_overrides(options['overrides']) if 'overrides' in options else dict(overrides)
         model_variant = validate_model_variant(options.get('model_variant'))
+        flex_m = validate_flex_price_multiplier(options.get('flex_price_multiplier'))
         ekey = evaluation_key(key, eff_overrides, case_file_aa=case_file_aa, model_variant=model_variant,
-                              ess_ageing_baseline=ess_ageing)
+                              ess_ageing_baseline=ess_ageing, flex_price_multiplier=flex_m)
         if label in seen_labels or ekey in seen_keys:
             raise ValueError(f'duplicate evaluation label or key (candidate x configuration): {label} / {ekey[:16]}')
         seen_labels.add(label)
@@ -785,6 +851,11 @@ def freeze_campaign_spec(campaign_root, campaign_id, candidates, configuration, 
             cand_entry['model_variant'] = model_variant
             cand_entry['model_variant_label'] = MODEL_VARIANT_LABEL
             any_model_variant = True
+        if flex_m is not None:  # W33: only when given, so every other entry keeps its exact format
+            cand_entry['flex_price_multiplier'] = flex_m
+            if flex_price_multiplier_in_key(flex_m) is not None:
+                cand_entry['flex_price_label'] = FLEX_PRICE_LABEL
+                any_flex_price = True
         cand_entries.append(cand_entry)
     os.makedirs(campaign_root, exist_ok=True)  # only after every validation above has passed
     try:
@@ -832,6 +903,8 @@ def freeze_campaign_spec(campaign_root, campaign_id, candidates, configuration, 
         spec['configuration']['ess_params_file'] = ess_params_pin
     if any_model_variant:  # W20: a campaign holding a model variant says so at the top level
         spec['model_variant_label'] = MODEL_VARIANT_LABEL
+    if any_flex_price:  # W33: a campaign holding a flexibility-price variant says so at the top level
+        spec['flex_price_label'] = FLEX_PRICE_LABEL
     text = json.dumps(spec, indent=1, sort_keys=True, default=str)
     digest = hashlib.sha256(text.encode()).hexdigest()
     path = os.path.join(campaign_root, f'campaign_spec_{_sanitize_id(campaign_id)}_{digest[:8]}.json')
@@ -1090,7 +1163,17 @@ def _barrier_record_for_missing(ctx, entry, eval_dir, exit_code):
             'ess_ageing_baseline_label': ctx.spec['configuration'].get('ess_ageing_baseline_label'),
             'ess_params_sha256_in_child': None}
            if ctx.spec['configuration'].get('ess_ageing_baseline') is not None else {}),
+        # W33: a flexibility-price entry's record carries the multiplier (and its label when != 1.0) on every path.
+        **(_flex_price_record_fields(entry) if 'flex_price_multiplier' in entry else {}),
     }
+
+
+def _flex_price_record_fields(entry):
+    """W33: the multiplier fields every record of a flexibility-price entry carries (label only when != 1.0)."""
+    out = {'flex_price_multiplier': entry.get('flex_price_multiplier')}
+    if flex_price_multiplier_in_key(entry.get('flex_price_multiplier')) is not None:
+        out['flex_price_label'] = FLEX_PRICE_LABEL
+    return out
 
 
 def evaluate(batch, ctx):
@@ -1825,8 +1908,243 @@ def ageing_trajectory_terminal(models, sed):
     return out
 
 
+# ==============================================================================
+#  the flexibility-price multiplier (P5.15 Addendum 34, W33) -- CHILD SIDE
+# ==============================================================================
+def _scaled_cost_flex(array, m):
+    """The ONLY arithmetic of the override: a NEW float64 array m * array. Never in place -- production binds the
+    SAME `planning.cost_flex[year][day]` array object to the TSO and to every DSO block
+    (shared_resources_planning.py, the `cost_flex` bindings of `_read_planning_problem`)."""
+    import numpy as np
+    return np.asarray(array, dtype=np.float64) * m
+
+
+def _flex_price_objective_summary(model):
+    """Standard repn of a BUILT block's `objective` (values computed): the coefficient of every FLEX_PRICE_VARS
+    variable by name, and digests of everything else (other linear terms, quadratic terms, constant, nonlinear
+    part). Read-only."""
+    from pyomo.repn import generate_standard_repn
+    repn = generate_standard_repn(model.objective.expr, compute_values=True, quadratic=True)
+    flex, other = {}, []
+    for var, coef in zip(repn.linear_vars, repn.linear_coefs):
+        if var.parent_component().local_name in FLEX_PRICE_VARS:
+            if var.name in flex:
+                raise RuntimeError(f'flex variable {var.name} appears twice in the linear repn')
+            flex[var.name] = float(coef)
+        else:
+            other.append([var.name, repr(float(coef))])
+    quad = sorted([v1.name, v2.name, repr(float(c))] for (v1, v2), c in zip(repn.quadratic_vars, repn.quadratic_coefs))
+    flex_in_quadratic = any(v.parent_component().local_name in FLEX_PRICE_VARS
+                            for pair in repn.quadratic_vars for v in pair)
+    nonlinear = None if repn.nonlinear_expr is None else str(repn.nonlinear_expr)
+    return {'flex': flex,
+            'other_linear_sha256': hashlib.sha256(json.dumps(sorted(other)).encode()).hexdigest(),
+            'n_other_linear': len(other),
+            'quadratic_sha256': hashlib.sha256(json.dumps(quad).encode()).hexdigest(), 'n_quadratic': len(quad),
+            'flex_in_quadratic': flex_in_quadratic,
+            'constant': repr(float(repn.constant)) if repn.constant is not None else None,
+            'nonlinear_sha256': None if nonlinear is None else hashlib.sha256(nonlinear.encode()).hexdigest(),
+            'flex_in_nonlinear': bool(nonlinear) and any(n in nonlinear for n in FLEX_PRICE_VARS)}
+
+
+def compare_flex_price_summaries(before, after, m):
+    """`_flex_price_objective_summary` at m (after) against m = 1 (before), for the SAME block: the flex
+    coefficients scale by m (relative deviation <= FLEX_PRICE_READBACK_REL_TOL; bitwise-exact count reported) and
+    every other part of the objective is identical. Returns {check: bool} plus the deviation figures."""
+    keys_equal = set(before['flex']) == set(after['flex'])
+    devs, exact = [], 0
+    for name, c1 in before['flex'].items():
+        cm = after['flex'].get(name)
+        if cm is None:
+            continue
+        target = m * c1
+        devs.append(abs(cm - target) / abs(target) if target else abs(cm))
+        exact += int(cm == target)
+    max_dev = max(devs) if devs else None
+    checks = {
+        'flex_variables_identical_and_present': keys_equal and bool(before['flex']),
+        'flex_coefficients_scale_by_m': bool(devs) and max_dev <= FLEX_PRICE_READBACK_REL_TOL,
+        'other_linear_terms_identical': (before['other_linear_sha256'] == after['other_linear_sha256']
+                                         and before['n_other_linear'] == after['n_other_linear']),
+        'quadratic_terms_identical': before['quadratic_sha256'] == after['quadratic_sha256'],
+        'constant_identical': before['constant'] == after['constant'],
+        'nonlinear_part_identical': before['nonlinear_sha256'] == after['nonlinear_sha256'],
+        'flex_variables_only_linear': not (before['flex_in_quadratic'] or after['flex_in_quadratic']
+                                           or before['flex_in_nonlinear'] or after['flex_in_nonlinear']),
+    }
+    return checks, {'n_flex_coefficients': len(devs), 'n_bitwise_exact': exact, 'max_rel_dev': max_dev}
+
+
+def _flex_price_block_iter(planning):
+    for node_id in sorted(planning.distribution_networks):
+        dn = planning.distribution_networks[node_id]
+        for year in dn.years:
+            for day in dn.days:
+                yield node_id, dn, year, day
+
+
+def apply_flex_price_multiplier(planning, m):
+    """Apply a validated flexibility-price multiplier m to THIS evaluation's planning object BEFORE any DSO model
+    is built (`run_admm_arm`'s pre_solve_hook): every DSO block's `network[year][day].cost_flex` -- the array
+    `model_construction_helpers.flexibility_cost` reads when the block's objective is BUILT (it is baked into the
+    `flex_cost_scenario` Expression as constants, not a mutable Param, so rescaling after the build would need
+    rewriting expressions) -- is REPLACED by a new array m * cost_flex (`_scaled_cost_flex`), for every year / day
+    / hour uniformly; each DSO holder's `cost_flex` dict is rebound to those arrays. The TSO's arrays (its flexibility
+    charge excludes the ADN-interface loads, its only loads on SRP1) and `planning.cost_flex` are left untouched;
+    no file is edited.
+
+    READ-BACK before returning (zero solves): for EVERY DSO block a probe is built by production
+    (`network.build_model(params)`) before and after the replacement, and the objective's standard repn is
+    compared (`compare_flex_price_summaries`): flex coefficients = m x the m = 1 coefficients, everything else
+    identical. Any mismatch raises. Returns a JSON-able record; the original arrays are returned under the
+    private key '_original_arrays' (popped by the caller, used for the post-run read-back)."""
+    import numpy as np
+    from definitions import OBJ_MIN_COST
+    m = validate_flex_price_multiplier(m)
+    if m is None:
+        raise ValueError('apply_flex_price_multiplier needs a multiplier')
+    tso = planning.transmission_network
+    tso_arrays = {(y, d): tso.network[y][d].cost_flex for y in tso.years for d in tso.days}
+    tso_values = {k: np.array(v, copy=True) for k, v in tso_arrays.items()}
+    planning_arrays = {(y, d): planning.cost_flex[y][d] for y in planning.cost_flex for d in planning.cost_flex[y]}
+    energy_arrays = {(n, y, d): dn.network[y][d].cost_energy_p for n, dn, y, d in _flex_price_block_iter(planning)}
+    precondition = {}
+    for node_id in sorted(planning.distribution_networks):
+        params = planning.distribution_networks[node_id].params
+        precondition[str(node_id)] = {'obj_type_is_min_cost': params.obj_type == OBJ_MIN_COST,
+                                      'fl_reg': bool(params.fl_reg)}
+    if not all(all(v.values()) for v in precondition.values()):
+        raise RuntimeError(f'flex_price_multiplier: a DSO does not price flexibility at cost_flex '
+                           f'(obj_type OBJ_MIN_COST and fl_reg required): {precondition}')
+    before = {}
+    for node_id, dn, year, day in _flex_price_block_iter(planning):
+        before[(node_id, year, day)] = _flex_price_objective_summary(dn.network[year][day].build_model(dn.params))
+    original = {}
+    for node_id in sorted(planning.distribution_networks):
+        dn = planning.distribution_networks[node_id]
+        rebound = {}
+        for year in dn.years:
+            rebound[year] = {}
+            for day in dn.days:
+                net = dn.network[year][day]
+                orig = net.cost_flex
+                if not isinstance(orig, np.ndarray) or orig.dtype != np.float64:
+                    raise RuntimeError(f'flex_price_multiplier: DSO {node_id} {year} {day} cost_flex is not a float64 '
+                                       f'ndarray ({type(orig).__name__})')
+                scaled = _scaled_cost_flex(orig, m)
+                net.cost_flex = scaled
+                rebound[year][day] = scaled
+                original[(node_id, year, day)] = orig
+        dn.cost_flex = rebound
+    per_block, all_match, agg = {}, True, {'n_flex_coefficients': 0, 'n_bitwise_exact': 0, 'max_rel_dev': 0.0}
+    for node_id, dn, year, day in _flex_price_block_iter(planning):
+        after = _flex_price_objective_summary(dn.network[year][day].build_model(dn.params))
+        checks, figures = compare_flex_price_summaries(before[(node_id, year, day)], after, m)
+        all_match = all_match and all(checks.values())
+        per_block[f'DSO|{node_id}|{year}|{day}'] = {'checks': checks, **figures}
+        agg['n_flex_coefficients'] += figures['n_flex_coefficients']
+        agg['n_bitwise_exact'] += figures['n_bitwise_exact']
+        agg['max_rel_dev'] = max(agg['max_rel_dev'], figures['max_rel_dev'] or 0.0)
+    arrays = [(k, dn.network[k[1]][k[2]].cost_flex) for k, dn in
+              ((k, planning.distribution_networks[k[0]]) for k in original)]
+    checks = {
+        'every_dso_array_is_m_times_original_bitwise': all(np.array_equal(a, _scaled_cost_flex(original[k], m))
+                                                           for k, a in arrays),
+        'every_dso_array_is_a_new_object': all(a is not original[k] for k, a in arrays),
+        'no_dso_array_shared_with_the_tso': not any(a is t for _k, a in arrays for t in tso_arrays.values()),
+        'dso_holder_cost_flex_rebound': all(planning.distribution_networks[n].cost_flex[y][d]
+                                            is planning.distribution_networks[n].network[y][d].cost_flex
+                                            for (n, y, d) in original),
+        'tso_arrays_unchanged': all(tso.network[y][d].cost_flex is tso_arrays[(y, d)]
+                                    and np.array_equal(tso_arrays[(y, d)], tso_values[(y, d)])
+                                    for (y, d) in tso_arrays),
+        'planning_cost_flex_unchanged': all(planning.cost_flex[y][d] is a for (y, d), a in planning_arrays.items()),
+        'dso_energy_prices_unchanged': all(planning.distribution_networks[n].network[y][d].cost_energy_p is a
+                                           for (n, y, d), a in energy_arrays.items()),
+        'readback_every_dso_block_objective': all_match and len(per_block) == len(original),
+    }
+    profile = {}
+    for (node_id, year, day), orig in sorted(original.items(), key=lambda kv: (kv[0][0], kv[0][1], str(kv[0][2]))):
+        if node_id != min(planning.distribution_networks):
+            continue  # the same profile object is bound to every DSO (checked below); record it once
+        profile[f'{year}|{day}'] = {'base': [float(v) for v in orig.ravel()],
+                                    'applied': [float(v) for v in _scaled_cost_flex(orig, m).ravel()]}
+    shared_profile = all(np.array_equal(original[(n, y, d)], original[(min(planning.distribution_networks), y, d)])
+                         for (n, y, d) in original)
+    out = {'flex_price_multiplier': m, 'label': FLEX_PRICE_LABEL if m != 1.0 else None,
+           'where_applied': ('pre_solve_hook (after _construct_arm_planning, before run_operational_planning): '
+                             'DSO network[year][day].cost_flex replaced by m * cost_flex (new arrays); DSO '
+                             'holder cost_flex rebound; TSO and planning.cost_flex untouched; no file edited'),
+           'precondition': precondition, 'checks': checks,
+           'readback_pre_run': {'method': ('probe DSO blocks built by production network.build_model(params) before '
+                                           'and after the replacement; objective standard repn compared '
+                                           '(compare_flex_price_summaries)'),
+                                'rel_tol': FLEX_PRICE_READBACK_REL_TOL, 'n_blocks': len(per_block),
+                                'all_match': all_match, **agg, 'per_block': per_block},
+           'profile_applied_per_year_day': profile,
+           'profile_identical_across_dso': shared_profile,
+           '_original_arrays': original}
+    failed = sorted(k for k, v in checks.items() if not v)
+    if failed:
+        raise RuntimeError(f'flex_price_multiplier {m} did not take effect as specified: {failed}; '
+                           f'failing blocks: {[k for k, v in per_block.items() if not all(v["checks"].values())][:6]}')
+    return out
+
+
+def flex_price_readback_run_models(dso_models, planning, original, m):
+    """READ-ONLY read-back from the run's OWN DSO models (post-run): for every block and every
+    `flex_cost_scenario[s_m, s_o]` Expression (the flexibility term of the objective), the coefficient of each
+    FLEX_PRICE_VARS variable must equal the closed form production computes, `cost_flex[s_m][p] * baseMVA` with the
+    APPLIED array (bitwise), and m x the same with the ORIGINAL array (FLEX_PRICE_READBACK_REL_TOL). Also re-checks
+    that the TSO arrays are still the planning's."""
+    from pyomo.repn import generate_standard_repn
+    m = validate_flex_price_multiplier(m)
+    per_block, all_match = {}, True
+    n_coef = n_exact_applied = n_exact_ratio = 0
+    max_dev = 0.0
+    for node_id, dn, year, day in _flex_price_block_iter(planning):
+        net = dn.network[year][day]
+        model = dso_models[node_id][year][day]
+        applied, orig, base = net.cost_flex, original[(node_id, year, day)], net.baseMVA
+        ok_applied = ok_ratio = True
+        count = 0
+        for s_m in model.scenarios_market:
+            for s_o in model.scenarios_operation:
+                repn = generate_standard_repn(model.flex_cost_scenario[s_m, s_o].expr, compute_values=True)
+                if repn.nonlinear_expr is not None or repn.quadratic_vars:
+                    ok_applied = ok_ratio = False
+                for var, coef in zip(repn.linear_vars, repn.linear_coefs):
+                    if var.parent_component().local_name not in FLEX_PRICE_VARS:
+                        ok_applied = ok_ratio = False
+                        continue
+                    p = var.index()[-1]
+                    expected_applied = float(applied[s_m][p] * base)
+                    target = m * float(orig[s_m][p] * base)
+                    dev = abs(float(coef) - target) / abs(target) if target else abs(float(coef))
+                    max_dev = max(max_dev, dev)
+                    ok_applied = ok_applied and float(coef) == expected_applied
+                    ok_ratio = ok_ratio and dev <= FLEX_PRICE_READBACK_REL_TOL
+                    n_exact_applied += int(float(coef) == expected_applied)
+                    n_exact_ratio += int(float(coef) == target)
+                    count += 1
+        n_coef += count
+        ok = ok_applied and ok_ratio and count > 0
+        all_match = all_match and ok
+        per_block[f'DSO|{node_id}|{year}|{day}'] = {'n_coefficients': count, 'equals_applied_closed_form': ok_applied,
+                                                    'equals_m_times_original_within_tol': ok_ratio}
+    tso = planning.transmission_network
+    tso_ok = all(tso.network[y][d].cost_flex is planning.cost_flex[y][d] for y in tso.years for d in tso.days)
+    return {'method': ('generate_standard_repn of every DSO block flex_cost_scenario Expression of the run\'s own '
+                       'models (read-only)'),
+            'flex_price_multiplier': m, 'rel_tol': FLEX_PRICE_READBACK_REL_TOL, 'n_blocks': len(per_block),
+            'n_coefficients': n_coef, 'n_bitwise_equal_applied_closed_form': n_exact_applied,
+            'n_bitwise_equal_m_times_original': n_exact_ratio, 'max_rel_dev_vs_m_times_original': max_dev,
+            'tso_arrays_still_the_planning_arrays': tso_ok,
+            'all_match': all_match and tso_ok and bool(per_block), 'per_block': per_block}
+
+
 def _config_hook_factory(spec, holder, overrides=None, model_variant=None, investment_year=INVESTMENT_YEAR,
-                         expected_floor_rows=None):
+                         expected_floor_rows=None, flex_price_multiplier=None):
     """pre_solve_hook: verify the case file carries the D oracle configuration
     (same checks as `p515_s43_aa_run._aa_on_pre_solve_hook`), then apply the
     evaluation's overrides (`overrides`; default = the campaign-level
@@ -1846,9 +2164,14 @@ def _config_hook_factory(spec, holder, overrides=None, model_variant=None, inves
     production's `_build_subproblem` (`model_variant_readback_models`, cohort of
     `investment_year`); any mismatch -- or a change of the SoH-floor row
     identification against `expected_floor_rows` (the baseline probe's, used by
-    the floor sidecar) -- raises before any solve. Without it nothing changes."""
+    the floor sidecar) -- raises before any solve. Without it nothing changes.
+    Addendum 34 (W33): with `flex_price_multiplier` (validated; 1.0 included), LAST
+    of all, the multiplier is applied to the DSO flexibility-price arrays and read
+    back from probe DSO blocks (`apply_flex_price_multiplier`); any mismatch raises
+    before any solve. Without it (None) nothing changes."""
     import p515_g_g1_g4_admm_gates as G
     model_variant = validate_model_variant(model_variant)
+    flex_price_multiplier = validate_flex_price_multiplier(flex_price_multiplier)
     if overrides is None:
         overrides = spec['configuration'].get('overrides') or {}
     overrides = validate_overrides(overrides)
@@ -1955,6 +2278,15 @@ def _config_hook_factory(spec, holder, overrides=None, model_variant=None, inves
                                    f"{ {n: v['checks'] for n, v in readback['per_node'].items()} }")
             if not floor_rows_ok:
                 raise RuntimeError('model_variant changed the SoH-floor row identification of the ESSO model')
+        if flex_price_multiplier is not None:  # W33: last, so every check above ran on the unmodified planning
+            applied_fp = apply_flex_price_multiplier(planning, flex_price_multiplier)  # raises on any mismatch
+            holder['_flex_price_original_arrays'] = applied_fp.pop('_original_arrays')
+            holder['flex_price_applied'] = applied_fp
+            report['rule_eleven_checklist']['w33_flex_price_multiplier'] = {
+                'flex_price_multiplier': flex_price_multiplier, 'label': applied_fp['label'],
+                'checks': applied_fp['checks'], 'readback_all_match': applied_fp['readback_pre_run']['all_match'],
+                'n_flex_coefficients': applied_fp['readback_pre_run']['n_flex_coefficients'],
+                'max_rel_dev': applied_fp['readback_pre_run']['max_rel_dev']}
     return hook
 
 
@@ -2212,6 +2544,13 @@ def _child_real(args, spec, spec_path, entry, eval_dir, lock_content, env_caps, 
                                       or entry.get('model_variant_label') != MODEL_VARIANT_LABEL):
         raise RuntimeError(f'model_variant entry {entry["label"]!r} without the label {MODEL_VARIANT_LABEL!r} '
                            f'at spec and entry level')
+    # Addendum 34 (W33): a flexibility-price multiplier != 1.0 runs only under its explicit label, at spec AND entry
+    # level; 1.0 (explicit) runs the override path with no label (it is the baseline evaluation, same key).
+    flex_m = validate_flex_price_multiplier(entry.get('flex_price_multiplier'))
+    if flex_price_multiplier_in_key(flex_m) is not None and (spec.get('flex_price_label') != FLEX_PRICE_LABEL
+                                                             or entry.get('flex_price_label') != FLEX_PRICE_LABEL):
+        raise RuntimeError(f'flex_price_multiplier entry {entry["label"]!r} without the label {FLEX_PRICE_LABEL!r} '
+                           f'at spec and entry level')
     post_request = entry.get('post_certification')
     post_checklist = None
     if post_request:
@@ -2267,6 +2606,9 @@ def _child_real(args, spec, spec_path, entry, eval_dir, lock_content, env_caps, 
                     models['esso'], sed, ess_ageing, investment_year, clone=True)
             if 'ageing_trajectory_terminal' not in holder:
                 holder['ageing_trajectory_terminal'] = ageing_trajectory_terminal(models['esso'], sed)
+        if flex_m is not None:  # W33: read back from the run's OWN DSO models; read-only
+            holder['flex_price_readback_terminal'] = flex_price_readback_run_models(
+                models['dso'], planning, holder['_flex_price_original_arrays'], flex_m)
         st = state or {}
         holder['peak_rss_ru_maxrss_production'] = st.get('peak_rss_ru_maxrss')
         holder['peak_rss_platform_units'] = st.get('peak_rss_platform_units')
@@ -2303,7 +2645,8 @@ def _child_real(args, spec, spec_path, entry, eval_dir, lock_content, env_caps, 
             full_diagnostics_in_rows=True, post_run_hook=post_run_hook,
             pre_solve_hook=_config_hook_factory(spec, holder, overrides=eff_overrides, model_variant=model_variant,
                                                 investment_year=investment_year,
-                                                expected_floor_rows=floor_rows_by_node),
+                                                expected_floor_rows=floor_rows_by_node,
+                                                flex_price_multiplier=flex_m),
             investment_year=investment_year)
     run_wall = time.time() - t0
 
@@ -2352,6 +2695,12 @@ def _child_real(args, spec, spec_path, entry, eval_dir, lock_content, env_caps, 
             'ess_ageing_verified_pre_run': holder.get('ess_ageing_verified_pre_run'),
             'ess_ageing_readback_terminal': holder.get('ess_ageing_readback_terminal'),
             'ageing_trajectory_terminal': holder.get('ageing_trajectory_terminal'),
+        })
+    if 'flex_price_multiplier' in entry:  # W33: only for flexibility-price entries, so every other record keeps its format
+        variant_extra.update({
+            **_flex_price_record_fields(entry),
+            'flex_price_applied_in_child': holder.get('flex_price_applied'),
+            'flex_price_readback_terminal': holder.get('flex_price_readback_terminal'),
         })
     record = build_evaluation_record(
         spec=spec, spec_path=spec_path, spec_sha256=args.spec_sha256, entry=entry, report=report,
@@ -2457,6 +2806,10 @@ def main_child(argv):
                     'ess_params_sha256_in_child': progress.get('ess_params_sha256_in_child'),
                     'ess_ageing_verified_pre_run': (progress.get('holder') or {}).get('ess_ageing_verified_pre_run')}
                    if spec['configuration'].get('ess_ageing_baseline') is not None else {}),
+                # W33: a flexibility-price entry's record carries the multiplier (+ label) and what was applied.
+                **({**_flex_price_record_fields(entry),
+                    'flex_price_applied_in_child': (progress.get('holder') or {}).get('flex_price_applied')}
+                   if 'flex_price_multiplier' in entry else {}),
             })
         sys.exit(1)
 
