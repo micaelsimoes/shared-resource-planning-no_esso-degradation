@@ -1,0 +1,4335 @@
+{
+ "LABEL": "BASELINE (C2 + phi_cal 0.985 + soh_min 0.70)",
+ "stage": "P5.15 Addendum 30 S4 -- Phase B formal record under the ageing BASELINE (STEP4 section 5 MADS poll, B = 1e6)",
+ "authority": [
+  "PLANNER_BRIEF_2026-09-13.md Addenda 27, 28, 29, 30 (Phase B formal record under the chosen baseline)",
+  "STEP4_DFO_METHOD.md sections 1.2, 1.3, 2.4, 2.6, 3, 5.2-5.5, 6, 8",
+  "data/SRP1/Results/P515S47/frozen_s47_baseline_spec_v17_ff0056b8.json step S4",
+  "Planner task W23 (launcher; concurrency 5, cap 500, 10 cycles, AA-on case file, baseline declared)"
+ ],
+ "timestamp_utc": "2026-09-22T01:10:27.390855+00:00",
+ "git_head_at_run": "353e094b55e2575340e8279a3faa0fde5c4daeaa",
+ "campaign_spec_path": "data/SRP1/Results/P515S47/campaign_s47_phase_b/campaign_spec_s47_phase_b_8cfa264e.json",
+ "campaign_spec_sha256": "8cfa264e7ab0d92ac0832657c9b328d70b45851ba92f4623384d11fddb334185",
+ "objective_convention": "Q(x) = certified_cost = gross_operational_cost (settlement-excluded); F(x) = I(x) + Q(x); I(0) = 0 so F(0) = Q(0), Q(0) from the pinned A0 x0 record; salvage and net recourse reported by the harness records, excluded from F (Addendum 27 item 3).",
+ "resolution_rule": "a polled x improves the incumbent iff F(inc) - F(x) > max(bar(x) + bar(inc), sigma_Q); 0 < F(inc) - F(x) <= that resolution is INDETERMINATE and not accepted; bar = record max gross step over the last 10 cycles; a missing bar makes the resolution +inf",
+ "stop_rule": "STOP_FOR_REVIEW (no further batch) if >= 2 NEW barrier evaluations in one poll or >= 3 overall (STEP4 2.4 \"a run of barrier points in a region stops the campaign for review\"; a1a stop-rule thresholds)",
+ "completion_rule": "at every poll of unit size (Delta = 1) the poll set is the union of the rounded OrthoMADS directions and the POLL COMPLETION: every bound-, rule- and budget-feasible canonical lattice point within l_inf distance 1 of the incumbent in the 7 variables (zP5, zE5, zP7, zE7, zP9, zE9, zY); if the completion has more than 30 feasible points the poll is refused (nothing evaluated, never truncated) and the run STOPS FOR REVIEW (STOP_FOR_REVIEW_completion_cap); the cap is checked before the evaluation budget",
+ "planner_rulings": {
+  "source": "Planner rulings on the W23 worker-report list (task W24, P5.15 Addendum 30), recorded verbatim in substance",
+  "A1": "ACCEPTED: 7 variables (zP5, zE5, zP7, zE7, zP9, zE9, zY) with ONE common investment year (single-cohort form); the harness carries one year per candidate, so per-node years are not evaluable.",
+  "A2": "RULED (main): at the final unit poll (Delta = 1) the poll set is the union of the rounded OrthoMADS directions and the POLL COMPLETION: every bound-, rule- and budget-feasible lattice point within l_inf distance 1 of the incumbent in the 7 variables (zP5, zE5, zP7, zE7, zP9, zE9, zY). Rationale: at x = 0 the constraints P = 0 <=> E = 0 and zP <= zE <= 2 zP make every rounded direction infeasible, so a unit-poll failure without completion certifies nothing; completion makes the termination certificate \"no feasible lattice neighbour of the incumbent improves F\". Cap: if the completion has more than 30 feasible points, refuse and STOP FOR REVIEW (do not truncate). At x = 0 the completion is the 14 points 0.25/0.5 at every non-empty node subset x {2025, 2030}. Implemented at EVERY poll of unit size (the final unit poll is the one that fails).",
+  "A2_option_b": "NOT IMPLEMENTED -- recorded as a METHOD CHANGE REFERRED TO THE AUTHOR: per-node reparametrization (zP, zE - zP).",
+  "A3": "ACCEPTED: STEP4 5.2 double/halve rule (double on success, halve on failure, never below 1; Delta_0 = 4).",
+  "A4": "ACCEPTED: improvement threshold max(bar_x + bar_inc, sigma_Q); 0 < F(inc) - F(x) <= threshold is INDETERMINATE: recorded and not accepted.",
+  "A5": "ACCEPTED, direction details as implemented: OrthoMADS n+1 NEG; Halton bases = the first 7 primes; t = t0 + k with t0 = p_7 = 17 and k the poll counter from 0; v = (2 u_t - 1)/||2 u_t - 1||; H = I - 2 v v^T; directions = the 7 columns of H and -(sum of the columns); each projected as d = round_half_away_from_zero(Delta h / ||h||_inf) so ||d||_inf = Delta; mesh size 1 lattice unit; full poll (no opportunistic stop) in batches of <= 5; incumbent updated after the whole poll to the argmin F among determinate improvers (ties: lower I, then label); canonical form (P = 0 -> E = 0; no storage -> year y1), inactive-only moves and duplicate eval keys dropped.",
+  "A6": "ACCEPTED: sigma_Q = phase_a_tables T3 residual_max_abs_eur = 18,449.66 EUR (C3-era, not re-measured under the baseline). Under the baseline the bar sum (~50k at S2) dominates it: S2 bars 25,146.49 (c_star) + 25,104.65 (n7_4h_e1) = 50,251.14 EUR; n7_4h_e1 + pinned x0 (9,629.98) = 34,734.63 EUR.",
+  "A7": "ACCEPTED: stop thresholds 2 new barrier evaluations per poll, 3 overall.",
+  "A8": "RULED: MAX_NEW_EVALUATIONS = 20, MAX_POLLS = 60.",
+  "A9": "OPEN ITEM: the STEP4 section 6 NOMAD comparison is NOT done -- PyNomad is not installed and installing it is an unauthorised environment change.",
+  "A10": "ACCEPTED as implemented (W23 worker-report item A10; launcher commit 4b8854b0).",
+  "A11": "ACCEPTED as implemented (W23 worker-report item A11; launcher commit 4b8854b0)."
+ },
+ "open_items": [
+  "OPEN ITEM: the STEP4 section 6 NOMAD comparison is NOT done -- PyNomad is not installed and installing it is an unauthorised environment change."
+ ],
+ "method_changes_referred_to_author": [
+  "NOT IMPLEMENTED -- recorded as a METHOD CHANGE REFERRED TO THE AUTHOR: per-node reparametrization (zP, zE - zP)."
+ ],
+ "termination_certificate": {
+  "statement": "no feasible lattice neighbour of the incumbent improves F: every bound-, rule- and budget-feasible lattice point within l_inf distance 1 of the incumbent in (zP5, zE5, zP7, zE7, zP9, zE9, zY) was polled at the final unit poll and none is a determinate improvement (F(inc) - F(x) > max(bar_x + bar_inc, sigma_Q)); indeterminate neighbours are listed unresolved, barrier neighbours are F = +inf (extreme barrier)",
+  "incumbent": "x0",
+  "n_feasible_neighbours": 14,
+  "all_feasible_neighbours_polled": true,
+  "n_no_improvement": 14,
+  "n_indeterminate_unresolved": 0,
+  "n_barrier": 0,
+  "n_improvement": 0,
+  "holds": true
+ },
+ "STOP_FOR_REVIEW": false,
+ "termination": {
+  "reason": "mesh_local_optimum_unit_poll_failed",
+  "poll_size_reached": 1
+ },
+ "final_incumbent": {
+  "label": "x0",
+  "eval_key": "d2c96b1480402a3b61aca4abc188e41c6009eb582d8e6ccdd380e51651f996c7",
+  "z": [
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0
+  ],
+  "I": 0.0,
+  "Q": 653859461.2279255,
+  "F": 653859461.2279255,
+  "bar": 9629.97833788395
+ },
+ "initial_incumbent": {
+  "rule": "argmin F over certified, on-lattice, budget-feasible cache entries incl. x = 0; ties -> lower I, then label",
+  "incumbent": {
+   "label": "x0",
+   "eval_key": "d2c96b1480402a3b61aca4abc188e41c6009eb582d8e6ccdd380e51651f996c7",
+   "z": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "I": 0.0,
+   "Q": 653859461.2279255,
+   "F": 653859461.2279255,
+   "bar": 9629.97833788395,
+   "source": {
+    "kind": "pinned_A0_x0_ageing_independent",
+    "path": "data/SRP1/Results/P515S45/campaign_s45_a0_c7/campaign_results.json",
+    "sha256": "423678b98c0ca9a26dbc76a1b46a5e36a51c8ccccc0459253020bfe1061653b4",
+    "a0_eval_key_C3": "7aa017f09989b56d17a1307d7ae2d9d86582e9666295ee9e25ef560ee32f975b",
+    "certification_cycle": 132,
+    "eval_dir": "data/SRP1/Results/P515S45/campaign_s45_a0_c7/evals/7aa017f09989b56d_x0"
+   }
+  },
+  "is_x0": true,
+  "margin_vs_x0": null,
+  "margin_vs_runner_up": {
+   "other": "y2025__n5_p0.25_e1",
+   "F_other_minus_F_incumbent_eur": 53606.55501830578,
+   "resolution_eur": 18449.663947025518,
+   "determinate": true
+  },
+  "every_storage_point_F_gt_F0": true,
+  "n_eligible": 16,
+  "eligible_ranked": [
+   {
+    "label": "x0",
+    "F": 653859461.2279255,
+    "I": 0.0,
+    "bar": 9629.97833788395
+   },
+   {
+    "label": "y2025__n5_p0.25_e1",
+    "F": 653913067.7829438,
+    "I": 317957.0085035585,
+    "bar": 5120.020704746246
+   },
+   {
+    "label": "y2025__n9_p0.25_e1",
+    "F": 653915261.2766753,
+    "I": 317957.0085035585,
+    "bar": 37547.85113978386
+   },
+   {
+    "label": "y2025__n7_p0.25_e1",
+    "F": 653917990.4686738,
+    "I": 317957.0085035585,
+    "bar": 25104.654562950134
+   },
+   {
+    "label": "y2025__n5_p0.5_e1",
+    "F": 653970089.3753389,
+    "I": 382036.3395685239,
+    "bar": 21760.48862838745
+   },
+   {
+    "label": "y2025__n7_p0.5_e1",
+    "F": 653970114.4730452,
+    "I": 382036.3395685239,
+    "bar": 16015.789025425911
+   },
+   {
+    "label": "y2025__n9_p0.5_e1",
+    "F": 653972269.1542645,
+    "I": 382036.3395685239,
+    "bar": 39039.99399924278
+   },
+   {
+    "label": "y2025__n5_p0.5_e2",
+    "F": 653988496.4053781,
+    "I": 635914.017007117,
+    "bar": 15084.382972478867
+   },
+   {
+    "label": "y2025__n7_p0.5_e2",
+    "F": 654000173.345334,
+    "I": 635914.017007117,
+    "bar": 8969.504928469658
+   },
+   {
+    "label": "y2025__n9_p0.5_e2",
+    "F": 654007978.8648493,
+    "I": 635914.017007117,
+    "bar": 25527.129046559334
+   },
+   {
+    "label": "y2025__n9_p0.75_e3",
+    "F": 654037153.7489213,
+    "I": 953871.0255106755,
+    "bar": 36068.03469157219
+   },
+   {
+    "label": "y2025__n7_p0.75_e3",
+    "F": 654058411.5744412,
+    "I": 953871.0255106755,
+    "bar": 28589.705193161964
+   },
+   {
+    "label": "y2025__n5_p0.75_e3",
+    "F": 654063817.1151546,
+    "I": 953871.0255106755,
+    "bar": 5414.411985754967
+   },
+   {
+    "label": "y2025__n7_p1_e2",
+    "F": 654097333.372153,
+    "I": 764072.6791370478,
+    "bar": 26773.70228600502
+   },
+   {
+    "label": "y2025__n9_p1_e2",
+    "F": 654099614.9231182,
+    "I": 764072.6791370478,
+    "bar": 8544.326983809471
+   },
+   {
+    "label": "y2025__n5_p1_e2",
+    "F": 654104416.9709148,
+    "I": 764072.6791370478,
+    "bar": 4117.956779956818
+   }
+  ],
+  "excluded": [
+   {
+    "eval_key": "070f833e1e318f8500f51a85c05993425e11081db6d17065e1e60463db26e6cb",
+    "label": "c_star",
+    "reason": "off the lattice / not an instance year"
+   },
+   {
+    "eval_key": "209b9d3362f045f41652453c6b67fb6b3356193bcfe92f3c8c98a4c6d5509bf7",
+    "label": "n9_2h_e5",
+    "reason": "budget: I(x) = 1910181.70 > B = 1e+06"
+   },
+   {
+    "eval_key": "3632b0ae8de45fc64a5e3ea29e51becdde1c5e04d77899a4370e2a545b21529f",
+    "label": "n7_4h_e4",
+    "reason": "budget: I(x) = 1271828.03 > B = 1e+06"
+   },
+   {
+    "eval_key": "366864896179e01df0f7290fb9f8b1a4981a8b486b48d4bebcb275326d981d48",
+    "label": "n7_4h_e5",
+    "reason": "budget: I(x) = 1589785.04 > B = 1e+06"
+   },
+   {
+    "eval_key": "3e57c18a1a134beff5178fa9be5322e3654225888af0362773d199a39a910787",
+    "label": "n5_4h_e5",
+    "reason": "budget: I(x) = 1589785.04 > B = 1e+06"
+   },
+   {
+    "eval_key": "3ee9cd30873c7b3b0bcf7e4554b621b73aa106d7a1725c00439689c655ccceb3",
+    "label": "n5_2h_e3",
+    "reason": "budget: I(x) = 1146109.02 > B = 1e+06"
+   },
+   {
+    "eval_key": "58de187f7806c66e618075f7f9b2dc014eb909a75171fa632d5b961f7f41d84e",
+    "label": "n9_2h_e4",
+    "reason": "budget: I(x) = 1528145.36 > B = 1e+06"
+   },
+   {
+    "eval_key": "6a5f1810c7764ec6ece169876494c99dd9906d540b989b02863ac0bc48878822",
+    "label": "n5_2h_e5",
+    "reason": "budget: I(x) = 1910181.70 > B = 1e+06"
+   },
+   {
+    "eval_key": "7ec6d3a2e040b9406e73aee413a989b2ef1dbbd2758d41a03466ba2105bb18b0",
+    "label": "n9_2h_e3",
+    "reason": "budget: I(x) = 1146109.02 > B = 1e+06"
+   },
+   {
+    "eval_key": "8160e09e0d7e7ad836e4b1051c82475f79a1cd86f292bcaefa8edbeac9932445",
+    "label": "n5_4h_e4",
+    "reason": "budget: I(x) = 1271828.03 > B = 1e+06"
+   },
+   {
+    "eval_key": "9246ed01f072b31fb93ab0d9378707142c74810990920515dbf405c2d03939a5",
+    "label": "n7_2h_e5",
+    "reason": "budget: I(x) = 1910181.70 > B = 1e+06"
+   },
+   {
+    "eval_key": "be0a39962f866f6841182986890f02df887d6832702ca39f12e3752c17de6849",
+    "label": "n9_4h_e4",
+    "reason": "budget: I(x) = 1271828.03 > B = 1e+06"
+   },
+   {
+    "eval_key": "c7fee8beeb210466dc1150cbfea6addbccb75ceda97508538f0784149bf0aa7a",
+    "label": "n7_2h_e4",
+    "reason": "budget: I(x) = 1528145.36 > B = 1e+06"
+   },
+   {
+    "eval_key": "d877282f87fc103cc9629b6220b15c35afcf9e39a6e562c00a372bf11901667c",
+    "label": "n9_4h_e5",
+    "reason": "budget: I(x) = 1589785.04 > B = 1e+06"
+   },
+   {
+    "eval_key": "e0fd79e013daa0d8d8453f72c26d34e93e7e5f289268640dea7f98c620d20833",
+    "label": "n5_2h_e4",
+    "reason": "budget: I(x) = 1528145.36 > B = 1e+06"
+   },
+   {
+    "eval_key": "f759dd4825d3f3af4360d012f6e6f1340215150334db38fd58c3bbaf96512e79",
+    "label": "n7_2h_e3",
+    "reason": "budget: I(x) = 1146109.02 > B = 1e+06"
+   }
+  ]
+ },
+ "sigma_Q": {
+  "sigma_Q_eur": 18449.663947025518,
+  "residual_rms_eur": 10285.394012489985,
+  "n_fit_points": 16,
+  "source": {
+   "path": "data/SRP1/Results/P515S45/phase_a_tables/phase_a_tables.json",
+   "sha256": "a2b78541b5c50ad2a185ca3eb3d0f1b38bb388c4866c45628a984c407b4a3995",
+   "commit": "c1b64278",
+   "field": "T3.residual_max_abs_eur (sigma_Q; T3.residual_rms_eur recorded beside it)"
+  },
+  "note": "measured under the C3 calibration (Phase A A3 fit, Addendum 28 \"sigma_Q ~ 10-18k\"); the oracle configuration is unchanged; not re-measured under the baseline"
+ },
+ "n_polls": 3,
+ "n_new_evaluations": 14,
+ "n_barrier_new_evaluations": 0,
+ "final_poll_unresolved_indeterminate": [],
+ "final_poll_feasible_points": [
+  "y2025__n9_p0.25_e0.5",
+  "y2030__n9_p0.25_e0.5",
+  "y2025__n7_p0.25_e0.5",
+  "y2030__n7_p0.25_e0.5",
+  "y2025__n7_p0.25_e0.5__n9_p0.25_e0.5",
+  "y2030__n7_p0.25_e0.5__n9_p0.25_e0.5",
+  "y2025__n5_p0.25_e0.5",
+  "y2030__n5_p0.25_e0.5",
+  "y2025__n5_p0.25_e0.5__n9_p0.25_e0.5",
+  "y2030__n5_p0.25_e0.5__n9_p0.25_e0.5",
+  "y2025__n5_p0.25_e0.5__n7_p0.25_e0.5",
+  "y2030__n5_p0.25_e0.5__n7_p0.25_e0.5",
+  "y2025__n5_p0.25_e0.5__n7_p0.25_e0.5__n9_p0.25_e0.5",
+  "y2030__n5_p0.25_e0.5__n7_p0.25_e0.5__n9_p0.25_e0.5"
+ ],
+ "lattice_neighbourhood_of_incumbent": [
+  {
+   "label": "y2025__n9_p0.25_e0.5",
+   "eval_key": "1bff3ed2fb98302a10e5eadaff8cdd1fda48d9178564b1ea0ee62824450aa163",
+   "in_cache": true,
+   "polled_in_final_poll": true,
+   "I_x_eur": 191018.16978426196
+  },
+  {
+   "label": "y2030__n9_p0.25_e0.5",
+   "eval_key": "a30a9faffdd74f9ebef7de4e72c12e9f4b0ca7e4cd63c425faf4c6c37278dd67",
+   "in_cache": true,
+   "polled_in_final_poll": true,
+   "I_x_eur": 141882.02186349596
+  },
+  {
+   "label": "y2025__n7_p0.25_e0.5",
+   "eval_key": "10c73abd8511010de3962ea8be10693d51c411b7fca0a0dfb92d2730c6b9ec89",
+   "in_cache": true,
+   "polled_in_final_poll": true,
+   "I_x_eur": 191018.16978426196
+  },
+  {
+   "label": "y2030__n7_p0.25_e0.5",
+   "eval_key": "d7030f598c2aeb4dbf00af404568ba801c0c02bd1c26c4b70e97f43eb30f0f66",
+   "in_cache": true,
+   "polled_in_final_poll": true,
+   "I_x_eur": 141882.02186349596
+  },
+  {
+   "label": "y2025__n7_p0.25_e0.5__n9_p0.25_e0.5",
+   "eval_key": "25fb61a4b5a4a7c0208e8b1f4fc608be3a9e56c915c104bb1a0d1beb7de88909",
+   "in_cache": true,
+   "polled_in_final_poll": true,
+   "I_x_eur": 382036.3395685239
+  },
+  {
+   "label": "y2030__n7_p0.25_e0.5__n9_p0.25_e0.5",
+   "eval_key": "4f5bccb02f7ba1554d93b41c76393e68ee3e5b3fb04fba2617b862e6b3fa96ef",
+   "in_cache": true,
+   "polled_in_final_poll": true,
+   "I_x_eur": 283764.0437269919
+  },
+  {
+   "label": "y2025__n5_p0.25_e0.5",
+   "eval_key": "4a8527254a85b9cca48e1eb872b35ed9f3d5209f84002e2c255516b8af5b304a",
+   "in_cache": true,
+   "polled_in_final_poll": true,
+   "I_x_eur": 191018.16978426196
+  },
+  {
+   "label": "y2030__n5_p0.25_e0.5",
+   "eval_key": "d0c1f1605a44d5a86554dcf5ee169517122667cd2c93c2bdff81cbc4cf395b51",
+   "in_cache": true,
+   "polled_in_final_poll": true,
+   "I_x_eur": 141882.02186349596
+  },
+  {
+   "label": "y2025__n5_p0.25_e0.5__n9_p0.25_e0.5",
+   "eval_key": "156ce2d1d53d36f4ea683c42879dce9be4a3c802030083ab2ff94178ca4fc3ad",
+   "in_cache": true,
+   "polled_in_final_poll": true,
+   "I_x_eur": 382036.3395685239
+  },
+  {
+   "label": "y2030__n5_p0.25_e0.5__n9_p0.25_e0.5",
+   "eval_key": "226df5da6e1eb902f0b0d036a3eb63e2f5bc62a672bc7c4995f1e71b410f2ff4",
+   "in_cache": true,
+   "polled_in_final_poll": true,
+   "I_x_eur": 283764.0437269919
+  },
+  {
+   "label": "y2025__n5_p0.25_e0.5__n7_p0.25_e0.5",
+   "eval_key": "5204ec67e0ba7bf5b22ce0400c288abed0be8954d5121c41b929e389a91e95a4",
+   "in_cache": true,
+   "polled_in_final_poll": true,
+   "I_x_eur": 382036.3395685239
+  },
+  {
+   "label": "y2030__n5_p0.25_e0.5__n7_p0.25_e0.5",
+   "eval_key": "6597a79dbe8ed61fb45aed6e3eebfe27c4a5035976d5f0a9f20a4601ac88e12b",
+   "in_cache": true,
+   "polled_in_final_poll": true,
+   "I_x_eur": 283764.0437269919
+  },
+  {
+   "label": "y2025__n5_p0.25_e0.5__n7_p0.25_e0.5__n9_p0.25_e0.5",
+   "eval_key": "56bb0b466d2a63c2b0a05d2fa23c88cb15a382224080e2462a052c1da2692fc9",
+   "in_cache": true,
+   "polled_in_final_poll": true,
+   "I_x_eur": 573054.5093527859
+  },
+  {
+   "label": "y2030__n5_p0.25_e0.5__n7_p0.25_e0.5__n9_p0.25_e0.5",
+   "eval_key": "9e9c61f81f584b05e8d962ac8f6200fd7fba934a39b9917a6933eb2d89615d21",
+   "in_cache": true,
+   "polled_in_final_poll": true,
+   "I_x_eur": 425646.0655904879
+  }
+ ],
+ "claim_scope": "on termination by the unit-poll failure the claim is the termination_certificate (ruling A2: the final unit poll = rounded directions UNION the completion of every feasible ||dz||_inf <= 1 lattice neighbour; certificate.holds must be true); indeterminate neighbours are unresolved, not improvements; on any other termination no mesh-local claim is made; lattice_neighbourhood_of_incumbent lists every feasible neighbour with whether it was polled or cached",
+ "poll_history": [
+  {
+   "poll_index": 0,
+   "halton_t": 17,
+   "halton_u": [
+    0.53125,
+    0.9259259259259258,
+    0.52,
+    0.4693877551020408,
+    0.5537190082644627,
+    0.3136094674556213,
+    0.0034602076124567475
+   ],
+   "poll_size_delta": 4,
+   "mesh_size": 1,
+   "incumbent": {
+    "label": "x0",
+    "eval_key": "d2c96b1480402a3b61aca4abc188e41c6009eb582d8e6ccdd380e51651f996c7",
+    "z": [
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "I": 0.0,
+    "Q": 653859461.2279255,
+    "F": 653859461.2279255,
+    "bar": 9629.97833788395
+   },
+   "directions": [
+    [
+     4,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    [
+     0,
+     1,
+     0,
+     0,
+     0,
+     2,
+     4
+    ],
+    [
+     0,
+     0,
+     4,
+     0,
+     0,
+     0,
+     0
+    ],
+    [
+     0,
+     0,
+     0,
+     4,
+     0,
+     0,
+     0
+    ],
+    [
+     0,
+     0,
+     0,
+     0,
+     4,
+     0,
+     0
+    ],
+    [
+     0,
+     2,
+     0,
+     0,
+     0,
+     4,
+     -2
+    ],
+    [
+     0,
+     4,
+     0,
+     0,
+     1,
+     -2,
+     0
+    ],
+    [
+     -3,
+     -4,
+     -3,
+     -3,
+     -3,
+     -3,
+     -2
+    ]
+   ],
+   "candidates": [
+    {
+     "poll_part": "direction",
+     "direction_index": 0,
+     "direction": [
+      4,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     "z": [
+      4,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     "label": null,
+     "eval_key": null,
+     "canonical": null,
+     "feasible": false,
+     "infeasibility_reasons": [
+      "duration: node 5 P = 0 <=> E = 0 violated (P=1, E=0)"
+     ],
+     "I_x_eur": null,
+     "disposition": "rejected_infeasible",
+     "source": null,
+     "status": null,
+     "barrier_cause": null,
+     "Q_eur": null,
+     "F_eur": null,
+     "bar_eur": null,
+     "incumbent_bar_eur": 9629.97833788395,
+     "bar_sum_eur": null,
+     "sigma_Q_eur": 18449.663947025518,
+     "resolution_eur": null,
+     "F_inc_minus_F_eur": null,
+     "outcome": "barrier_infeasible_not_evaluated"
+    },
+    {
+     "poll_part": "direction",
+     "direction_index": 1,
+     "direction": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      2,
+      4
+     ],
+     "z": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      2,
+      4
+     ],
+     "label": null,
+     "eval_key": null,
+     "canonical": null,
+     "feasible": false,
+     "infeasibility_reasons": [
+      "duration: node 5 P = 0 <=> E = 0 violated (P=0, E=0.5)",
+      "duration: node 9 P = 0 <=> E = 0 violated (P=0, E=1)",
+      "bound: year index 4 outside 0..2"
+     ],
+     "I_x_eur": null,
+     "disposition": "rejected_infeasible",
+     "source": null,
+     "status": null,
+     "barrier_cause": null,
+     "Q_eur": null,
+     "F_eur": null,
+     "bar_eur": null,
+     "incumbent_bar_eur": 9629.97833788395,
+     "bar_sum_eur": null,
+     "sigma_Q_eur": 18449.663947025518,
+     "resolution_eur": null,
+     "F_inc_minus_F_eur": null,
+     "outcome": "barrier_infeasible_not_evaluated"
+    },
+    {
+     "poll_part": "direction",
+     "direction_index": 2,
+     "direction": [
+      0,
+      0,
+      4,
+      0,
+      0,
+      0,
+      0
+     ],
+     "z": [
+      0,
+      0,
+      4,
+      0,
+      0,
+      0,
+      0
+     ],
+     "label": null,
+     "eval_key": null,
+     "canonical": null,
+     "feasible": false,
+     "infeasibility_reasons": [
+      "duration: node 7 P = 0 <=> E = 0 violated (P=1, E=0)"
+     ],
+     "I_x_eur": null,
+     "disposition": "rejected_infeasible",
+     "source": null,
+     "status": null,
+     "barrier_cause": null,
+     "Q_eur": null,
+     "F_eur": null,
+     "bar_eur": null,
+     "incumbent_bar_eur": 9629.97833788395,
+     "bar_sum_eur": null,
+     "sigma_Q_eur": 18449.663947025518,
+     "resolution_eur": null,
+     "F_inc_minus_F_eur": null,
+     "outcome": "barrier_infeasible_not_evaluated"
+    },
+    {
+     "poll_part": "direction",
+     "direction_index": 3,
+     "direction": [
+      0,
+      0,
+      0,
+      4,
+      0,
+      0,
+      0
+     ],
+     "z": [
+      0,
+      0,
+      0,
+      4,
+      0,
+      0,
+      0
+     ],
+     "label": null,
+     "eval_key": null,
+     "canonical": null,
+     "feasible": false,
+     "infeasibility_reasons": [
+      "duration: node 7 P = 0 <=> E = 0 violated (P=0, E=2)"
+     ],
+     "I_x_eur": null,
+     "disposition": "rejected_infeasible",
+     "source": null,
+     "status": null,
+     "barrier_cause": null,
+     "Q_eur": null,
+     "F_eur": null,
+     "bar_eur": null,
+     "incumbent_bar_eur": 9629.97833788395,
+     "bar_sum_eur": null,
+     "sigma_Q_eur": 18449.663947025518,
+     "resolution_eur": null,
+     "F_inc_minus_F_eur": null,
+     "outcome": "barrier_infeasible_not_evaluated"
+    },
+    {
+     "poll_part": "direction",
+     "direction_index": 4,
+     "direction": [
+      0,
+      0,
+      0,
+      0,
+      4,
+      0,
+      0
+     ],
+     "z": [
+      0,
+      0,
+      0,
+      0,
+      4,
+      0,
+      0
+     ],
+     "label": null,
+     "eval_key": null,
+     "canonical": null,
+     "feasible": false,
+     "infeasibility_reasons": [
+      "duration: node 9 P = 0 <=> E = 0 violated (P=1, E=0)"
+     ],
+     "I_x_eur": null,
+     "disposition": "rejected_infeasible",
+     "source": null,
+     "status": null,
+     "barrier_cause": null,
+     "Q_eur": null,
+     "F_eur": null,
+     "bar_eur": null,
+     "incumbent_bar_eur": 9629.97833788395,
+     "bar_sum_eur": null,
+     "sigma_Q_eur": 18449.663947025518,
+     "resolution_eur": null,
+     "F_inc_minus_F_eur": null,
+     "outcome": "barrier_infeasible_not_evaluated"
+    },
+    {
+     "poll_part": "direction",
+     "direction_index": 5,
+     "direction": [
+      0,
+      2,
+      0,
+      0,
+      0,
+      4,
+      -2
+     ],
+     "z": [
+      0,
+      2,
+      0,
+      0,
+      0,
+      4,
+      -2
+     ],
+     "label": null,
+     "eval_key": null,
+     "canonical": null,
+     "feasible": false,
+     "infeasibility_reasons": [
+      "duration: node 5 P = 0 <=> E = 0 violated (P=0, E=1)",
+      "duration: node 9 P = 0 <=> E = 0 violated (P=0, E=2)",
+      "bound: year index -2 outside 0..2"
+     ],
+     "I_x_eur": null,
+     "disposition": "rejected_infeasible",
+     "source": null,
+     "status": null,
+     "barrier_cause": null,
+     "Q_eur": null,
+     "F_eur": null,
+     "bar_eur": null,
+     "incumbent_bar_eur": 9629.97833788395,
+     "bar_sum_eur": null,
+     "sigma_Q_eur": 18449.663947025518,
+     "resolution_eur": null,
+     "F_inc_minus_F_eur": null,
+     "outcome": "barrier_infeasible_not_evaluated"
+    },
+    {
+     "poll_part": "direction",
+     "direction_index": 6,
+     "direction": [
+      0,
+      4,
+      0,
+      0,
+      1,
+      -2,
+      0
+     ],
+     "z": [
+      0,
+      4,
+      0,
+      0,
+      1,
+      -2,
+      0
+     ],
+     "label": null,
+     "eval_key": null,
+     "canonical": null,
+     "feasible": false,
+     "infeasibility_reasons": [
+      "duration: node 5 P = 0 <=> E = 0 violated (P=0, E=2)",
+      "bound: node 9 negative capacity (P=0.25, E=-1)"
+     ],
+     "I_x_eur": null,
+     "disposition": "rejected_infeasible",
+     "source": null,
+     "status": null,
+     "barrier_cause": null,
+     "Q_eur": null,
+     "F_eur": null,
+     "bar_eur": null,
+     "incumbent_bar_eur": 9629.97833788395,
+     "bar_sum_eur": null,
+     "sigma_Q_eur": 18449.663947025518,
+     "resolution_eur": null,
+     "F_inc_minus_F_eur": null,
+     "outcome": "barrier_infeasible_not_evaluated"
+    },
+    {
+     "poll_part": "direction",
+     "direction_index": 7,
+     "direction": [
+      -3,
+      -4,
+      -3,
+      -3,
+      -3,
+      -3,
+      -2
+     ],
+     "z": [
+      -3,
+      -4,
+      -3,
+      -3,
+      -3,
+      -3,
+      -2
+     ],
+     "label": null,
+     "eval_key": null,
+     "canonical": null,
+     "feasible": false,
+     "infeasibility_reasons": [
+      "bound: node 5 negative capacity (P=-0.75, E=-2)",
+      "bound: node 7 negative capacity (P=-0.75, E=-1.5)",
+      "bound: node 9 negative capacity (P=-0.75, E=-1.5)",
+      "bound: year index -2 outside 0..2"
+     ],
+     "I_x_eur": null,
+     "disposition": "rejected_infeasible",
+     "source": null,
+     "status": null,
+     "barrier_cause": null,
+     "Q_eur": null,
+     "F_eur": null,
+     "bar_eur": null,
+     "incumbent_bar_eur": 9629.97833788395,
+     "bar_sum_eur": null,
+     "sigma_Q_eur": 18449.663947025518,
+     "resolution_eur": null,
+     "F_inc_minus_F_eur": null,
+     "outcome": "barrier_infeasible_not_evaluated"
+    }
+   ],
+   "n_new_evaluations": 0,
+   "n_cache_hits": 0,
+   "batches": [],
+   "decision": "failure",
+   "next_incumbent": "x0",
+   "next_poll_size": 2,
+   "unit_poll": false,
+   "completion": null
+  },
+  {
+   "poll_index": 1,
+   "halton_t": 18,
+   "halton_u": [
+    0.28125,
+    0.07407407407407407,
+    0.7200000000000001,
+    0.6122448979591837,
+    0.6446280991735537,
+    0.3905325443786982,
+    0.06228373702422145
+   ],
+   "poll_size_delta": 2,
+   "mesh_size": 1,
+   "incumbent": {
+    "label": "x0",
+    "eval_key": "d2c96b1480402a3b61aca4abc188e41c6009eb582d8e6ccdd380e51651f996c7",
+    "z": [
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "I": 0.0,
+    "Q": 653859461.2279255,
+    "F": 653859461.2279255,
+    "bar": 9629.97833788395
+   },
+   "directions": [
+    [
+     2,
+     -1,
+     0,
+     0,
+     0,
+     0,
+     -1
+    ],
+    [
+     -1,
+     1,
+     1,
+     1,
+     1,
+     -1,
+     -2
+    ],
+    [
+     0,
+     1,
+     2,
+     0,
+     0,
+     0,
+     1
+    ],
+    [
+     0,
+     0,
+     0,
+     2,
+     0,
+     0,
+     0
+    ],
+    [
+     0,
+     1,
+     0,
+     0,
+     2,
+     0,
+     1
+    ],
+    [
+     0,
+     0,
+     0,
+     0,
+     0,
+     2,
+     0
+    ],
+    [
+     -1,
+     -2,
+     1,
+     1,
+     1,
+     -1,
+     1
+    ],
+    [
+     0,
+     0,
+     -2,
+     -2,
+     -2,
+     -1,
+     0
+    ]
+   ],
+   "candidates": [
+    {
+     "poll_part": "direction",
+     "direction_index": 0,
+     "direction": [
+      2,
+      -1,
+      0,
+      0,
+      0,
+      0,
+      -1
+     ],
+     "z": [
+      2,
+      -1,
+      0,
+      0,
+      0,
+      0,
+      -1
+     ],
+     "label": null,
+     "eval_key": null,
+     "canonical": null,
+     "feasible": false,
+     "infeasibility_reasons": [
+      "bound: node 5 negative capacity (P=0.5, E=-0.5)",
+      "bound: year index -1 outside 0..2"
+     ],
+     "I_x_eur": null,
+     "disposition": "rejected_infeasible",
+     "source": null,
+     "status": null,
+     "barrier_cause": null,
+     "Q_eur": null,
+     "F_eur": null,
+     "bar_eur": null,
+     "incumbent_bar_eur": 9629.97833788395,
+     "bar_sum_eur": null,
+     "sigma_Q_eur": 18449.663947025518,
+     "resolution_eur": null,
+     "F_inc_minus_F_eur": null,
+     "outcome": "barrier_infeasible_not_evaluated"
+    },
+    {
+     "poll_part": "direction",
+     "direction_index": 1,
+     "direction": [
+      -1,
+      1,
+      1,
+      1,
+      1,
+      -1,
+      -2
+     ],
+     "z": [
+      -1,
+      1,
+      1,
+      1,
+      1,
+      -1,
+      -2
+     ],
+     "label": null,
+     "eval_key": null,
+     "canonical": null,
+     "feasible": false,
+     "infeasibility_reasons": [
+      "bound: node 5 negative capacity (P=-0.25, E=0.5)",
+      "bound: node 9 negative capacity (P=0.25, E=-0.5)",
+      "bound: year index -2 outside 0..2"
+     ],
+     "I_x_eur": null,
+     "disposition": "rejected_infeasible",
+     "source": null,
+     "status": null,
+     "barrier_cause": null,
+     "Q_eur": null,
+     "F_eur": null,
+     "bar_eur": null,
+     "incumbent_bar_eur": 9629.97833788395,
+     "bar_sum_eur": null,
+     "sigma_Q_eur": 18449.663947025518,
+     "resolution_eur": null,
+     "F_inc_minus_F_eur": null,
+     "outcome": "barrier_infeasible_not_evaluated"
+    },
+    {
+     "poll_part": "direction",
+     "direction_index": 2,
+     "direction": [
+      0,
+      1,
+      2,
+      0,
+      0,
+      0,
+      1
+     ],
+     "z": [
+      0,
+      1,
+      2,
+      0,
+      0,
+      0,
+      1
+     ],
+     "label": null,
+     "eval_key": null,
+     "canonical": null,
+     "feasible": false,
+     "infeasibility_reasons": [
+      "duration: node 5 P = 0 <=> E = 0 violated (P=0, E=0.5)",
+      "duration: node 7 P = 0 <=> E = 0 violated (P=0.5, E=0)"
+     ],
+     "I_x_eur": null,
+     "disposition": "rejected_infeasible",
+     "source": null,
+     "status": null,
+     "barrier_cause": null,
+     "Q_eur": null,
+     "F_eur": null,
+     "bar_eur": null,
+     "incumbent_bar_eur": 9629.97833788395,
+     "bar_sum_eur": null,
+     "sigma_Q_eur": 18449.663947025518,
+     "resolution_eur": null,
+     "F_inc_minus_F_eur": null,
+     "outcome": "barrier_infeasible_not_evaluated"
+    },
+    {
+     "poll_part": "direction",
+     "direction_index": 3,
+     "direction": [
+      0,
+      0,
+      0,
+      2,
+      0,
+      0,
+      0
+     ],
+     "z": [
+      0,
+      0,
+      0,
+      2,
+      0,
+      0,
+      0
+     ],
+     "label": null,
+     "eval_key": null,
+     "canonical": null,
+     "feasible": false,
+     "infeasibility_reasons": [
+      "duration: node 7 P = 0 <=> E = 0 violated (P=0, E=1)"
+     ],
+     "I_x_eur": null,
+     "disposition": "rejected_infeasible",
+     "source": null,
+     "status": null,
+     "barrier_cause": null,
+     "Q_eur": null,
+     "F_eur": null,
+     "bar_eur": null,
+     "incumbent_bar_eur": 9629.97833788395,
+     "bar_sum_eur": null,
+     "sigma_Q_eur": 18449.663947025518,
+     "resolution_eur": null,
+     "F_inc_minus_F_eur": null,
+     "outcome": "barrier_infeasible_not_evaluated"
+    },
+    {
+     "poll_part": "direction",
+     "direction_index": 4,
+     "direction": [
+      0,
+      1,
+      0,
+      0,
+      2,
+      0,
+      1
+     ],
+     "z": [
+      0,
+      1,
+      0,
+      0,
+      2,
+      0,
+      1
+     ],
+     "label": null,
+     "eval_key": null,
+     "canonical": null,
+     "feasible": false,
+     "infeasibility_reasons": [
+      "duration: node 5 P = 0 <=> E = 0 violated (P=0, E=0.5)",
+      "duration: node 9 P = 0 <=> E = 0 violated (P=0.5, E=0)"
+     ],
+     "I_x_eur": null,
+     "disposition": "rejected_infeasible",
+     "source": null,
+     "status": null,
+     "barrier_cause": null,
+     "Q_eur": null,
+     "F_eur": null,
+     "bar_eur": null,
+     "incumbent_bar_eur": 9629.97833788395,
+     "bar_sum_eur": null,
+     "sigma_Q_eur": 18449.663947025518,
+     "resolution_eur": null,
+     "F_inc_minus_F_eur": null,
+     "outcome": "barrier_infeasible_not_evaluated"
+    },
+    {
+     "poll_part": "direction",
+     "direction_index": 5,
+     "direction": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      2,
+      0
+     ],
+     "z": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      2,
+      0
+     ],
+     "label": null,
+     "eval_key": null,
+     "canonical": null,
+     "feasible": false,
+     "infeasibility_reasons": [
+      "duration: node 9 P = 0 <=> E = 0 violated (P=0, E=1)"
+     ],
+     "I_x_eur": null,
+     "disposition": "rejected_infeasible",
+     "source": null,
+     "status": null,
+     "barrier_cause": null,
+     "Q_eur": null,
+     "F_eur": null,
+     "bar_eur": null,
+     "incumbent_bar_eur": 9629.97833788395,
+     "bar_sum_eur": null,
+     "sigma_Q_eur": 18449.663947025518,
+     "resolution_eur": null,
+     "F_inc_minus_F_eur": null,
+     "outcome": "barrier_infeasible_not_evaluated"
+    },
+    {
+     "poll_part": "direction",
+     "direction_index": 6,
+     "direction": [
+      -1,
+      -2,
+      1,
+      1,
+      1,
+      -1,
+      1
+     ],
+     "z": [
+      -1,
+      -2,
+      1,
+      1,
+      1,
+      -1,
+      1
+     ],
+     "label": null,
+     "eval_key": null,
+     "canonical": null,
+     "feasible": false,
+     "infeasibility_reasons": [
+      "bound: node 5 negative capacity (P=-0.25, E=-1)",
+      "bound: node 9 negative capacity (P=0.25, E=-0.5)"
+     ],
+     "I_x_eur": null,
+     "disposition": "rejected_infeasible",
+     "source": null,
+     "status": null,
+     "barrier_cause": null,
+     "Q_eur": null,
+     "F_eur": null,
+     "bar_eur": null,
+     "incumbent_bar_eur": 9629.97833788395,
+     "bar_sum_eur": null,
+     "sigma_Q_eur": 18449.663947025518,
+     "resolution_eur": null,
+     "F_inc_minus_F_eur": null,
+     "outcome": "barrier_infeasible_not_evaluated"
+    },
+    {
+     "poll_part": "direction",
+     "direction_index": 7,
+     "direction": [
+      0,
+      0,
+      -2,
+      -2,
+      -2,
+      -1,
+      0
+     ],
+     "z": [
+      0,
+      0,
+      -2,
+      -2,
+      -2,
+      -1,
+      0
+     ],
+     "label": null,
+     "eval_key": null,
+     "canonical": null,
+     "feasible": false,
+     "infeasibility_reasons": [
+      "bound: node 7 negative capacity (P=-0.5, E=-1)",
+      "bound: node 9 negative capacity (P=-0.5, E=-0.5)"
+     ],
+     "I_x_eur": null,
+     "disposition": "rejected_infeasible",
+     "source": null,
+     "status": null,
+     "barrier_cause": null,
+     "Q_eur": null,
+     "F_eur": null,
+     "bar_eur": null,
+     "incumbent_bar_eur": 9629.97833788395,
+     "bar_sum_eur": null,
+     "sigma_Q_eur": 18449.663947025518,
+     "resolution_eur": null,
+     "F_inc_minus_F_eur": null,
+     "outcome": "barrier_infeasible_not_evaluated"
+    }
+   ],
+   "n_new_evaluations": 0,
+   "n_cache_hits": 0,
+   "batches": [],
+   "decision": "failure",
+   "next_incumbent": "x0",
+   "next_poll_size": 1,
+   "unit_poll": false,
+   "completion": null
+  },
+  {
+   "poll_index": 2,
+   "halton_t": 19,
+   "halton_u": [
+    0.78125,
+    0.4074074074074074,
+    0.92,
+    0.7551020408163265,
+    0.7355371900826446,
+    0.46745562130177515,
+    0.12110726643598616
+   ],
+   "poll_size_delta": 1,
+   "mesh_size": 1,
+   "incumbent": {
+    "label": "x0",
+    "eval_key": "d2c96b1480402a3b61aca4abc188e41c6009eb582d8e6ccdd380e51651f996c7",
+    "z": [
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "I": 0.0,
+    "Q": 653859461.2279255,
+    "F": 653859461.2279255,
+    "bar": 9629.97833788395
+   },
+   "directions": [
+    [
+     1,
+     0,
+     -1,
+     0,
+     0,
+     0,
+     1
+    ],
+    [
+     0,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    [
+     -1,
+     0,
+     1,
+     -1,
+     -1,
+     0,
+     1
+    ],
+    [
+     0,
+     0,
+     -1,
+     1,
+     0,
+     0,
+     0
+    ],
+    [
+     0,
+     0,
+     0,
+     0,
+     1,
+     0,
+     0
+    ],
+    [
+     0,
+     0,
+     0,
+     0,
+     0,
+     1,
+     0
+    ],
+    [
+     1,
+     0,
+     1,
+     1,
+     1,
+     0,
+     1
+    ],
+    [
+     0,
+     -1,
+     0,
+     0,
+     0,
+     -1,
+     -1
+    ]
+   ],
+   "candidates": [
+    {
+     "poll_part": "direction",
+     "direction_index": 0,
+     "direction": [
+      1,
+      0,
+      -1,
+      0,
+      0,
+      0,
+      1
+     ],
+     "z": [
+      1,
+      0,
+      -1,
+      0,
+      0,
+      0,
+      1
+     ],
+     "label": null,
+     "eval_key": null,
+     "canonical": null,
+     "feasible": false,
+     "infeasibility_reasons": [
+      "duration: node 5 P = 0 <=> E = 0 violated (P=0.25, E=0)",
+      "bound: node 7 negative capacity (P=-0.25, E=0)"
+     ],
+     "I_x_eur": null,
+     "disposition": "rejected_infeasible",
+     "source": null,
+     "status": null,
+     "barrier_cause": null,
+     "Q_eur": null,
+     "F_eur": null,
+     "bar_eur": null,
+     "incumbent_bar_eur": 9629.97833788395,
+     "bar_sum_eur": null,
+     "sigma_Q_eur": 18449.663947025518,
+     "resolution_eur": null,
+     "F_inc_minus_F_eur": null,
+     "outcome": "barrier_infeasible_not_evaluated"
+    },
+    {
+     "poll_part": "direction",
+     "direction_index": 1,
+     "direction": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     "z": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     "label": null,
+     "eval_key": null,
+     "canonical": null,
+     "feasible": false,
+     "infeasibility_reasons": [
+      "duration: node 5 P = 0 <=> E = 0 violated (P=0, E=0.5)"
+     ],
+     "I_x_eur": null,
+     "disposition": "rejected_infeasible",
+     "source": null,
+     "status": null,
+     "barrier_cause": null,
+     "Q_eur": null,
+     "F_eur": null,
+     "bar_eur": null,
+     "incumbent_bar_eur": 9629.97833788395,
+     "bar_sum_eur": null,
+     "sigma_Q_eur": 18449.663947025518,
+     "resolution_eur": null,
+     "F_inc_minus_F_eur": null,
+     "outcome": "barrier_infeasible_not_evaluated"
+    },
+    {
+     "poll_part": "direction",
+     "direction_index": 2,
+     "direction": [
+      -1,
+      0,
+      1,
+      -1,
+      -1,
+      0,
+      1
+     ],
+     "z": [
+      -1,
+      0,
+      1,
+      -1,
+      -1,
+      0,
+      1
+     ],
+     "label": null,
+     "eval_key": null,
+     "canonical": null,
+     "feasible": false,
+     "infeasibility_reasons": [
+      "bound: node 5 negative capacity (P=-0.25, E=0)",
+      "bound: node 7 negative capacity (P=0.25, E=-0.5)",
+      "bound: node 9 negative capacity (P=-0.25, E=0)"
+     ],
+     "I_x_eur": null,
+     "disposition": "rejected_infeasible",
+     "source": null,
+     "status": null,
+     "barrier_cause": null,
+     "Q_eur": null,
+     "F_eur": null,
+     "bar_eur": null,
+     "incumbent_bar_eur": 9629.97833788395,
+     "bar_sum_eur": null,
+     "sigma_Q_eur": 18449.663947025518,
+     "resolution_eur": null,
+     "F_inc_minus_F_eur": null,
+     "outcome": "barrier_infeasible_not_evaluated"
+    },
+    {
+     "poll_part": "direction",
+     "direction_index": 3,
+     "direction": [
+      0,
+      0,
+      -1,
+      1,
+      0,
+      0,
+      0
+     ],
+     "z": [
+      0,
+      0,
+      -1,
+      1,
+      0,
+      0,
+      0
+     ],
+     "label": null,
+     "eval_key": null,
+     "canonical": null,
+     "feasible": false,
+     "infeasibility_reasons": [
+      "bound: node 7 negative capacity (P=-0.25, E=0.5)"
+     ],
+     "I_x_eur": null,
+     "disposition": "rejected_infeasible",
+     "source": null,
+     "status": null,
+     "barrier_cause": null,
+     "Q_eur": null,
+     "F_eur": null,
+     "bar_eur": null,
+     "incumbent_bar_eur": 9629.97833788395,
+     "bar_sum_eur": null,
+     "sigma_Q_eur": 18449.663947025518,
+     "resolution_eur": null,
+     "F_inc_minus_F_eur": null,
+     "outcome": "barrier_infeasible_not_evaluated"
+    },
+    {
+     "poll_part": "direction",
+     "direction_index": 4,
+     "direction": [
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0
+     ],
+     "z": [
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0
+     ],
+     "label": null,
+     "eval_key": null,
+     "canonical": null,
+     "feasible": false,
+     "infeasibility_reasons": [
+      "duration: node 9 P = 0 <=> E = 0 violated (P=0.25, E=0)"
+     ],
+     "I_x_eur": null,
+     "disposition": "rejected_infeasible",
+     "source": null,
+     "status": null,
+     "barrier_cause": null,
+     "Q_eur": null,
+     "F_eur": null,
+     "bar_eur": null,
+     "incumbent_bar_eur": 9629.97833788395,
+     "bar_sum_eur": null,
+     "sigma_Q_eur": 18449.663947025518,
+     "resolution_eur": null,
+     "F_inc_minus_F_eur": null,
+     "outcome": "barrier_infeasible_not_evaluated"
+    },
+    {
+     "poll_part": "direction",
+     "direction_index": 5,
+     "direction": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0
+     ],
+     "z": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0
+     ],
+     "label": null,
+     "eval_key": null,
+     "canonical": null,
+     "feasible": false,
+     "infeasibility_reasons": [
+      "duration: node 9 P = 0 <=> E = 0 violated (P=0, E=0.5)"
+     ],
+     "I_x_eur": null,
+     "disposition": "rejected_infeasible",
+     "source": null,
+     "status": null,
+     "barrier_cause": null,
+     "Q_eur": null,
+     "F_eur": null,
+     "bar_eur": null,
+     "incumbent_bar_eur": 9629.97833788395,
+     "bar_sum_eur": null,
+     "sigma_Q_eur": 18449.663947025518,
+     "resolution_eur": null,
+     "F_inc_minus_F_eur": null,
+     "outcome": "barrier_infeasible_not_evaluated"
+    },
+    {
+     "poll_part": "direction",
+     "direction_index": 6,
+     "direction": [
+      1,
+      0,
+      1,
+      1,
+      1,
+      0,
+      1
+     ],
+     "z": [
+      1,
+      0,
+      1,
+      1,
+      1,
+      0,
+      1
+     ],
+     "label": null,
+     "eval_key": null,
+     "canonical": null,
+     "feasible": false,
+     "infeasibility_reasons": [
+      "duration: node 5 P = 0 <=> E = 0 violated (P=0.25, E=0)",
+      "duration: node 9 P = 0 <=> E = 0 violated (P=0.25, E=0)"
+     ],
+     "I_x_eur": null,
+     "disposition": "rejected_infeasible",
+     "source": null,
+     "status": null,
+     "barrier_cause": null,
+     "Q_eur": null,
+     "F_eur": null,
+     "bar_eur": null,
+     "incumbent_bar_eur": 9629.97833788395,
+     "bar_sum_eur": null,
+     "sigma_Q_eur": 18449.663947025518,
+     "resolution_eur": null,
+     "F_inc_minus_F_eur": null,
+     "outcome": "barrier_infeasible_not_evaluated"
+    },
+    {
+     "poll_part": "direction",
+     "direction_index": 7,
+     "direction": [
+      0,
+      -1,
+      0,
+      0,
+      0,
+      -1,
+      -1
+     ],
+     "z": [
+      0,
+      -1,
+      0,
+      0,
+      0,
+      -1,
+      -1
+     ],
+     "label": null,
+     "eval_key": null,
+     "canonical": null,
+     "feasible": false,
+     "infeasibility_reasons": [
+      "bound: node 5 negative capacity (P=0, E=-0.5)",
+      "bound: node 9 negative capacity (P=0, E=-0.5)",
+      "bound: year index -1 outside 0..2"
+     ],
+     "I_x_eur": null,
+     "disposition": "rejected_infeasible",
+     "source": null,
+     "status": null,
+     "barrier_cause": null,
+     "Q_eur": null,
+     "F_eur": null,
+     "bar_eur": null,
+     "incumbent_bar_eur": 9629.97833788395,
+     "bar_sum_eur": null,
+     "sigma_Q_eur": 18449.663947025518,
+     "resolution_eur": null,
+     "F_inc_minus_F_eur": null,
+     "outcome": "barrier_infeasible_not_evaluated"
+    },
+    {
+     "poll_part": "completion",
+     "direction_index": null,
+     "direction": [
+      0,
+      0,
+      0,
+      0,
+      1,
+      1,
+      0
+     ],
+     "z": [
+      0,
+      0,
+      0,
+      0,
+      1,
+      1,
+      0
+     ],
+     "label": "y2025__n9_p0.25_e0.5",
+     "eval_key": "1bff3ed2fb98302a10e5eadaff8cdd1fda48d9178564b1ea0ee62824450aa163",
+     "canonical": {
+      "investment_year": 2025,
+      "nodes": {
+       "5": [
+        0.0,
+        0.0
+       ],
+       "7": [
+        0.0,
+        0.0
+       ],
+       "9": [
+        0.25,
+        0.5
+       ]
+      }
+     },
+     "feasible": true,
+     "infeasibility_reasons": [],
+     "I_x_eur": 191018.16978426196,
+     "disposition": "new_evaluation",
+     "source": {
+      "kind": "phase_b_new_evaluation",
+      "eval_dir": "data/SRP1/Results/P515S47/campaign_s47_phase_b/evals/1bff3ed2fb98302a_y2025__n9_p0_25_e0_5"
+     },
+     "status": "certified",
+     "barrier_cause": null,
+     "Q_eur": 653722932.4752731,
+     "F_eur": 653913950.6450574,
+     "bar_eur": 37575.27598762512,
+     "incumbent_bar_eur": 9629.97833788395,
+     "bar_sum_eur": 47205.25432550907,
+     "sigma_Q_eur": 18449.663947025518,
+     "resolution_eur": 47205.25432550907,
+     "F_inc_minus_F_eur": -54489.41713190079,
+     "outcome": "no_improvement"
+    },
+    {
+     "poll_part": "completion",
+     "direction_index": null,
+     "direction": [
+      0,
+      0,
+      0,
+      0,
+      1,
+      1,
+      1
+     ],
+     "z": [
+      0,
+      0,
+      0,
+      0,
+      1,
+      1,
+      1
+     ],
+     "label": "y2030__n9_p0.25_e0.5",
+     "eval_key": "a30a9faffdd74f9ebef7de4e72c12e9f4b0ca7e4cd63c425faf4c6c37278dd67",
+     "canonical": {
+      "investment_year": 2030,
+      "nodes": {
+       "5": [
+        0.0,
+        0.0
+       ],
+       "7": [
+        0.0,
+        0.0
+       ],
+       "9": [
+        0.25,
+        0.5
+       ]
+      }
+     },
+     "feasible": true,
+     "infeasibility_reasons": [],
+     "I_x_eur": 141882.02186349596,
+     "disposition": "new_evaluation",
+     "source": {
+      "kind": "phase_b_new_evaluation",
+      "eval_dir": "data/SRP1/Results/P515S47/campaign_s47_phase_b/evals/a30a9faffdd74f9e_y2030__n9_p0_25_e0_5"
+     },
+     "status": "certified",
+     "barrier_cause": null,
+     "Q_eur": 653751038.531909,
+     "F_eur": 653892920.5537724,
+     "bar_eur": 8182.425278425217,
+     "incumbent_bar_eur": 9629.97833788395,
+     "bar_sum_eur": 17812.403616309166,
+     "sigma_Q_eur": 18449.663947025518,
+     "resolution_eur": 18449.663947025518,
+     "F_inc_minus_F_eur": -33459.32584691048,
+     "outcome": "no_improvement"
+    },
+    {
+     "poll_part": "completion",
+     "direction_index": null,
+     "direction": [
+      0,
+      0,
+      1,
+      1,
+      0,
+      0,
+      0
+     ],
+     "z": [
+      0,
+      0,
+      1,
+      1,
+      0,
+      0,
+      0
+     ],
+     "label": "y2025__n7_p0.25_e0.5",
+     "eval_key": "10c73abd8511010de3962ea8be10693d51c411b7fca0a0dfb92d2730c6b9ec89",
+     "canonical": {
+      "investment_year": 2025,
+      "nodes": {
+       "5": [
+        0.0,
+        0.0
+       ],
+       "7": [
+        0.25,
+        0.5
+       ],
+       "9": [
+        0.0,
+        0.0
+       ]
+      }
+     },
+     "feasible": true,
+     "infeasibility_reasons": [],
+     "I_x_eur": 191018.16978426196,
+     "disposition": "new_evaluation",
+     "source": {
+      "kind": "phase_b_new_evaluation",
+      "eval_dir": "data/SRP1/Results/P515S47/campaign_s47_phase_b/evals/10c73abd8511010d_y2025__n7_p0_25_e0_5"
+     },
+     "status": "certified",
+     "barrier_cause": null,
+     "Q_eur": 653725854.4554961,
+     "F_eur": 653916872.6252804,
+     "bar_eur": 12515.046368837357,
+     "incumbent_bar_eur": 9629.97833788395,
+     "bar_sum_eur": 22145.024706721306,
+     "sigma_Q_eur": 18449.663947025518,
+     "resolution_eur": 22145.024706721306,
+     "F_inc_minus_F_eur": -57411.39735484123,
+     "outcome": "no_improvement"
+    },
+    {
+     "poll_part": "completion",
+     "direction_index": null,
+     "direction": [
+      0,
+      0,
+      1,
+      1,
+      0,
+      0,
+      1
+     ],
+     "z": [
+      0,
+      0,
+      1,
+      1,
+      0,
+      0,
+      1
+     ],
+     "label": "y2030__n7_p0.25_e0.5",
+     "eval_key": "d7030f598c2aeb4dbf00af404568ba801c0c02bd1c26c4b70e97f43eb30f0f66",
+     "canonical": {
+      "investment_year": 2030,
+      "nodes": {
+       "5": [
+        0.0,
+        0.0
+       ],
+       "7": [
+        0.25,
+        0.5
+       ],
+       "9": [
+        0.0,
+        0.0
+       ]
+      }
+     },
+     "feasible": true,
+     "infeasibility_reasons": [],
+     "I_x_eur": 141882.02186349596,
+     "disposition": "new_evaluation",
+     "source": {
+      "kind": "phase_b_new_evaluation",
+      "eval_dir": "data/SRP1/Results/P515S47/campaign_s47_phase_b/evals/d7030f598c2aeb4d_y2030__n7_p0_25_e0_5"
+     },
+     "status": "certified",
+     "barrier_cause": null,
+     "Q_eur": 653759847.4845948,
+     "F_eur": 653901729.5064583,
+     "bar_eur": 5614.614292144775,
+     "incumbent_bar_eur": 9629.97833788395,
+     "bar_sum_eur": 15244.592630028725,
+     "sigma_Q_eur": 18449.663947025518,
+     "resolution_eur": 18449.663947025518,
+     "F_inc_minus_F_eur": -42268.278532743454,
+     "outcome": "no_improvement"
+    },
+    {
+     "poll_part": "completion",
+     "direction_index": null,
+     "direction": [
+      0,
+      0,
+      1,
+      1,
+      1,
+      1,
+      0
+     ],
+     "z": [
+      0,
+      0,
+      1,
+      1,
+      1,
+      1,
+      0
+     ],
+     "label": "y2025__n7_p0.25_e0.5__n9_p0.25_e0.5",
+     "eval_key": "25fb61a4b5a4a7c0208e8b1f4fc608be3a9e56c915c104bb1a0d1beb7de88909",
+     "canonical": {
+      "investment_year": 2025,
+      "nodes": {
+       "5": [
+        0.0,
+        0.0
+       ],
+       "7": [
+        0.25,
+        0.5
+       ],
+       "9": [
+        0.25,
+        0.5
+       ]
+      }
+     },
+     "feasible": true,
+     "infeasibility_reasons": [],
+     "I_x_eur": 382036.3395685239,
+     "disposition": "new_evaluation",
+     "source": {
+      "kind": "phase_b_new_evaluation",
+      "eval_dir": "data/SRP1/Results/P515S47/campaign_s47_phase_b/evals/25fb61a4b5a4a7c0_y2025__n7_p0_25_e0_5__n9_p0_25_e0_5"
+     },
+     "status": "certified",
+     "barrier_cause": null,
+     "Q_eur": 653591087.6519583,
+     "F_eur": 653973123.9915268,
+     "bar_eur": 3781.249687075615,
+     "incumbent_bar_eur": 9629.97833788395,
+     "bar_sum_eur": 13411.228024959564,
+     "sigma_Q_eur": 18449.663947025518,
+     "resolution_eur": 18449.663947025518,
+     "F_inc_minus_F_eur": -113662.7636013031,
+     "outcome": "no_improvement"
+    },
+    {
+     "poll_part": "completion",
+     "direction_index": null,
+     "direction": [
+      0,
+      0,
+      1,
+      1,
+      1,
+      1,
+      1
+     ],
+     "z": [
+      0,
+      0,
+      1,
+      1,
+      1,
+      1,
+      1
+     ],
+     "label": "y2030__n7_p0.25_e0.5__n9_p0.25_e0.5",
+     "eval_key": "4f5bccb02f7ba1554d93b41c76393e68ee3e5b3fb04fba2617b862e6b3fa96ef",
+     "canonical": {
+      "investment_year": 2030,
+      "nodes": {
+       "5": [
+        0.0,
+        0.0
+       ],
+       "7": [
+        0.25,
+        0.5
+       ],
+       "9": [
+        0.25,
+        0.5
+       ]
+      }
+     },
+     "feasible": true,
+     "infeasibility_reasons": [],
+     "I_x_eur": 283764.0437269919,
+     "disposition": "new_evaluation",
+     "source": {
+      "kind": "phase_b_new_evaluation",
+      "eval_dir": "data/SRP1/Results/P515S47/campaign_s47_phase_b/evals/4f5bccb02f7ba155_y2030__n7_p0_25_e0_5__n9_p0_25_e0_5"
+     },
+     "status": "certified",
+     "barrier_cause": null,
+     "Q_eur": 653678526.7808001,
+     "F_eur": 653962290.8245271,
+     "bar_eur": 6311.607275605202,
+     "incumbent_bar_eur": 9629.97833788395,
+     "bar_sum_eur": 15941.585613489151,
+     "sigma_Q_eur": 18449.663947025518,
+     "resolution_eur": 18449.663947025518,
+     "F_inc_minus_F_eur": -102829.59660160542,
+     "outcome": "no_improvement"
+    },
+    {
+     "poll_part": "completion",
+     "direction_index": null,
+     "direction": [
+      1,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     "z": [
+      1,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     "label": "y2025__n5_p0.25_e0.5",
+     "eval_key": "4a8527254a85b9cca48e1eb872b35ed9f3d5209f84002e2c255516b8af5b304a",
+     "canonical": {
+      "investment_year": 2025,
+      "nodes": {
+       "5": [
+        0.25,
+        0.5
+       ],
+       "7": [
+        0.0,
+        0.0
+       ],
+       "9": [
+        0.0,
+        0.0
+       ]
+      }
+     },
+     "feasible": true,
+     "infeasibility_reasons": [],
+     "I_x_eur": 191018.16978426196,
+     "disposition": "new_evaluation",
+     "source": {
+      "kind": "phase_b_new_evaluation",
+      "eval_dir": "data/SRP1/Results/P515S47/campaign_s47_phase_b/evals/4a8527254a85b9cc_y2025__n5_p0_25_e0_5"
+     },
+     "status": "certified",
+     "barrier_cause": null,
+     "Q_eur": 653711463.530828,
+     "F_eur": 653902481.7006123,
+     "bar_eur": 30558.742288827896,
+     "incumbent_bar_eur": 9629.97833788395,
+     "bar_sum_eur": 40188.720626711845,
+     "sigma_Q_eur": 18449.663947025518,
+     "resolution_eur": 40188.720626711845,
+     "F_inc_minus_F_eur": -43020.47268676758,
+     "outcome": "no_improvement"
+    },
+    {
+     "poll_part": "completion",
+     "direction_index": null,
+     "direction": [
+      1,
+      1,
+      0,
+      0,
+      0,
+      0,
+      1
+     ],
+     "z": [
+      1,
+      1,
+      0,
+      0,
+      0,
+      0,
+      1
+     ],
+     "label": "y2030__n5_p0.25_e0.5",
+     "eval_key": "d0c1f1605a44d5a86554dcf5ee169517122667cd2c93c2bdff81cbc4cf395b51",
+     "canonical": {
+      "investment_year": 2030,
+      "nodes": {
+       "5": [
+        0.25,
+        0.5
+       ],
+       "7": [
+        0.0,
+        0.0
+       ],
+       "9": [
+        0.0,
+        0.0
+       ]
+      }
+     },
+     "feasible": true,
+     "infeasibility_reasons": [],
+     "I_x_eur": 141882.02186349596,
+     "disposition": "new_evaluation",
+     "source": {
+      "kind": "phase_b_new_evaluation",
+      "eval_dir": "data/SRP1/Results/P515S47/campaign_s47_phase_b/evals/d0c1f1605a44d5a8_y2030__n5_p0_25_e0_5"
+     },
+     "status": "certified",
+     "barrier_cause": null,
+     "Q_eur": 653761255.120128,
+     "F_eur": 653903137.1419915,
+     "bar_eur": 7370.2622146606445,
+     "incumbent_bar_eur": 9629.97833788395,
+     "bar_sum_eur": 17000.240552544594,
+     "sigma_Q_eur": 18449.663947025518,
+     "resolution_eur": 18449.663947025518,
+     "F_inc_minus_F_eur": -43675.91406595707,
+     "outcome": "no_improvement"
+    },
+    {
+     "poll_part": "completion",
+     "direction_index": null,
+     "direction": [
+      1,
+      1,
+      0,
+      0,
+      1,
+      1,
+      0
+     ],
+     "z": [
+      1,
+      1,
+      0,
+      0,
+      1,
+      1,
+      0
+     ],
+     "label": "y2025__n5_p0.25_e0.5__n9_p0.25_e0.5",
+     "eval_key": "156ce2d1d53d36f4ea683c42879dce9be4a3c802030083ab2ff94178ca4fc3ad",
+     "canonical": {
+      "investment_year": 2025,
+      "nodes": {
+       "5": [
+        0.25,
+        0.5
+       ],
+       "7": [
+        0.0,
+        0.0
+       ],
+       "9": [
+        0.25,
+        0.5
+       ]
+      }
+     },
+     "feasible": true,
+     "infeasibility_reasons": [],
+     "I_x_eur": 382036.3395685239,
+     "disposition": "new_evaluation",
+     "source": {
+      "kind": "phase_b_new_evaluation",
+      "eval_dir": "data/SRP1/Results/P515S47/campaign_s47_phase_b/evals/156ce2d1d53d36f4_y2025__n5_p0_25_e0_5__n9_p0_25_e0_5"
+     },
+     "status": "certified",
+     "barrier_cause": null,
+     "Q_eur": 653574496.7121261,
+     "F_eur": 653956533.0516946,
+     "bar_eur": 12498.859098911285,
+     "incumbent_bar_eur": 9629.97833788395,
+     "bar_sum_eur": 22128.837436795235,
+     "sigma_Q_eur": 18449.663947025518,
+     "resolution_eur": 22128.837436795235,
+     "F_inc_minus_F_eur": -97071.82376909256,
+     "outcome": "no_improvement"
+    },
+    {
+     "poll_part": "completion",
+     "direction_index": null,
+     "direction": [
+      1,
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+     ],
+     "z": [
+      1,
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+     ],
+     "label": "y2030__n5_p0.25_e0.5__n9_p0.25_e0.5",
+     "eval_key": "226df5da6e1eb902f0b0d036a3eb63e2f5bc62a672bc7c4995f1e71b410f2ff4",
+     "canonical": {
+      "investment_year": 2030,
+      "nodes": {
+       "5": [
+        0.25,
+        0.5
+       ],
+       "7": [
+        0.0,
+        0.0
+       ],
+       "9": [
+        0.25,
+        0.5
+       ]
+      }
+     },
+     "feasible": true,
+     "infeasibility_reasons": [],
+     "I_x_eur": 283764.0437269919,
+     "disposition": "new_evaluation",
+     "source": {
+      "kind": "phase_b_new_evaluation",
+      "eval_dir": "data/SRP1/Results/P515S47/campaign_s47_phase_b/evals/226df5da6e1eb902_y2030__n5_p0_25_e0_5__n9_p0_25_e0_5"
+     },
+     "status": "certified",
+     "barrier_cause": null,
+     "Q_eur": 653687714.1650413,
+     "F_eur": 653971478.2087684,
+     "bar_eur": 5673.465463399887,
+     "incumbent_bar_eur": 9629.97833788395,
+     "bar_sum_eur": 15303.443801283836,
+     "sigma_Q_eur": 18449.663947025518,
+     "resolution_eur": 18449.663947025518,
+     "F_inc_minus_F_eur": -112016.98084282875,
+     "outcome": "no_improvement"
+    },
+    {
+     "poll_part": "completion",
+     "direction_index": null,
+     "direction": [
+      1,
+      1,
+      1,
+      1,
+      0,
+      0,
+      0
+     ],
+     "z": [
+      1,
+      1,
+      1,
+      1,
+      0,
+      0,
+      0
+     ],
+     "label": "y2025__n5_p0.25_e0.5__n7_p0.25_e0.5",
+     "eval_key": "5204ec67e0ba7bf5b22ce0400c288abed0be8954d5121c41b929e389a91e95a4",
+     "canonical": {
+      "investment_year": 2025,
+      "nodes": {
+       "5": [
+        0.25,
+        0.5
+       ],
+       "7": [
+        0.25,
+        0.5
+       ],
+       "9": [
+        0.0,
+        0.0
+       ]
+      }
+     },
+     "feasible": true,
+     "infeasibility_reasons": [],
+     "I_x_eur": 382036.3395685239,
+     "disposition": "new_evaluation",
+     "source": {
+      "kind": "phase_b_new_evaluation",
+      "eval_dir": "data/SRP1/Results/P515S47/campaign_s47_phase_b/evals/5204ec67e0ba7bf5_y2025__n5_p0_25_e0_5__n7_p0_25_e0_5"
+     },
+     "status": "certified",
+     "barrier_cause": null,
+     "Q_eur": 653579253.8540719,
+     "F_eur": 653961290.1936404,
+     "bar_eur": 7163.901824593544,
+     "incumbent_bar_eur": 9629.97833788395,
+     "bar_sum_eur": 16793.880162477493,
+     "sigma_Q_eur": 18449.663947025518,
+     "resolution_eur": 18449.663947025518,
+     "F_inc_minus_F_eur": -101828.96571481228,
+     "outcome": "no_improvement"
+    },
+    {
+     "poll_part": "completion",
+     "direction_index": null,
+     "direction": [
+      1,
+      1,
+      1,
+      1,
+      0,
+      0,
+      1
+     ],
+     "z": [
+      1,
+      1,
+      1,
+      1,
+      0,
+      0,
+      1
+     ],
+     "label": "y2030__n5_p0.25_e0.5__n7_p0.25_e0.5",
+     "eval_key": "6597a79dbe8ed61fb45aed6e3eebfe27c4a5035976d5f0a9f20a4601ac88e12b",
+     "canonical": {
+      "investment_year": 2030,
+      "nodes": {
+       "5": [
+        0.25,
+        0.5
+       ],
+       "7": [
+        0.25,
+        0.5
+       ],
+       "9": [
+        0.0,
+        0.0
+       ]
+      }
+     },
+     "feasible": true,
+     "infeasibility_reasons": [],
+     "I_x_eur": 283764.0437269919,
+     "disposition": "new_evaluation",
+     "source": {
+      "kind": "phase_b_new_evaluation",
+      "eval_dir": "data/SRP1/Results/P515S47/campaign_s47_phase_b/evals/6597a79dbe8ed61f_y2030__n5_p0_25_e0_5__n7_p0_25_e0_5"
+     },
+     "status": "certified",
+     "barrier_cause": null,
+     "Q_eur": 653706335.6864134,
+     "F_eur": 653990099.7301404,
+     "bar_eur": 34456.676449894905,
+     "incumbent_bar_eur": 9629.97833788395,
+     "bar_sum_eur": 44086.654787778854,
+     "sigma_Q_eur": 18449.663947025518,
+     "resolution_eur": 44086.654787778854,
+     "F_inc_minus_F_eur": -130638.5022149086,
+     "outcome": "no_improvement"
+    },
+    {
+     "poll_part": "completion",
+     "direction_index": null,
+     "direction": [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0
+     ],
+     "z": [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0
+     ],
+     "label": "y2025__n5_p0.25_e0.5__n7_p0.25_e0.5__n9_p0.25_e0.5",
+     "eval_key": "56bb0b466d2a63c2b0a05d2fa23c88cb15a382224080e2462a052c1da2692fc9",
+     "canonical": {
+      "investment_year": 2025,
+      "nodes": {
+       "5": [
+        0.25,
+        0.5
+       ],
+       "7": [
+        0.25,
+        0.5
+       ],
+       "9": [
+        0.25,
+        0.5
+       ]
+      }
+     },
+     "feasible": true,
+     "infeasibility_reasons": [],
+     "I_x_eur": 573054.5093527859,
+     "disposition": "new_evaluation",
+     "source": {
+      "kind": "phase_b_new_evaluation",
+      "eval_dir": "data/SRP1/Results/P515S47/campaign_s47_phase_b/evals/56bb0b466d2a63c2_y2025__n5_p0_25_e0_5__n7_p0_25_e0_5__n9_p0_25_e0_5"
+     },
+     "status": "certified",
+     "barrier_cause": null,
+     "Q_eur": 653438213.3107345,
+     "F_eur": 654011267.8200873,
+     "bar_eur": 34158.44423055649,
+     "incumbent_bar_eur": 9629.97833788395,
+     "bar_sum_eur": 43788.42256844044,
+     "sigma_Q_eur": 18449.663947025518,
+     "resolution_eur": 43788.42256844044,
+     "F_inc_minus_F_eur": -151806.59216177464,
+     "outcome": "no_improvement"
+    },
+    {
+     "poll_part": "completion",
+     "direction_index": null,
+     "direction": [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1
+     ],
+     "z": [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1
+     ],
+     "label": "y2030__n5_p0.25_e0.5__n7_p0.25_e0.5__n9_p0.25_e0.5",
+     "eval_key": "9e9c61f81f584b05e8d962ac8f6200fd7fba934a39b9917a6933eb2d89615d21",
+     "canonical": {
+      "investment_year": 2030,
+      "nodes": {
+       "5": [
+        0.25,
+        0.5
+       ],
+       "7": [
+        0.25,
+        0.5
+       ],
+       "9": [
+        0.25,
+        0.5
+       ]
+      }
+     },
+     "feasible": true,
+     "infeasibility_reasons": [],
+     "I_x_eur": 425646.0655904879,
+     "disposition": "new_evaluation",
+     "source": {
+      "kind": "phase_b_new_evaluation",
+      "eval_dir": "data/SRP1/Results/P515S47/campaign_s47_phase_b/evals/9e9c61f81f584b05_y2030__n5_p0_25_e0_5__n7_p0_25_e0_5__n9_p0_25_e0_5"
+     },
+     "status": "certified",
+     "barrier_cause": null,
+     "Q_eur": 653566019.1447264,
+     "F_eur": 653991665.2103169,
+     "bar_eur": 6187.690523266792,
+     "incumbent_bar_eur": 9629.97833788395,
+     "bar_sum_eur": 15817.668861150742,
+     "sigma_Q_eur": 18449.663947025518,
+     "resolution_eur": 18449.663947025518,
+     "F_inc_minus_F_eur": -132203.98239135742,
+     "outcome": "no_improvement"
+    }
+   ],
+   "n_new_evaluations": 14,
+   "n_cache_hits": 0,
+   "batches": [
+    [
+     "y2025__n9_p0.25_e0.5",
+     "y2030__n9_p0.25_e0.5",
+     "y2025__n7_p0.25_e0.5",
+     "y2030__n7_p0.25_e0.5",
+     "y2025__n7_p0.25_e0.5__n9_p0.25_e0.5"
+    ],
+    [
+     "y2030__n7_p0.25_e0.5__n9_p0.25_e0.5",
+     "y2025__n5_p0.25_e0.5",
+     "y2030__n5_p0.25_e0.5",
+     "y2025__n5_p0.25_e0.5__n9_p0.25_e0.5",
+     "y2030__n5_p0.25_e0.5__n9_p0.25_e0.5"
+    ],
+    [
+     "y2025__n5_p0.25_e0.5__n7_p0.25_e0.5",
+     "y2030__n5_p0.25_e0.5__n7_p0.25_e0.5",
+     "y2025__n5_p0.25_e0.5__n7_p0.25_e0.5__n9_p0.25_e0.5",
+     "y2030__n5_p0.25_e0.5__n7_p0.25_e0.5__n9_p0.25_e0.5"
+    ]
+   ],
+   "decision": "failure_at_unit_poll_size",
+   "next_incumbent": "x0",
+   "next_poll_size": null,
+   "unit_poll": true,
+   "completion": {
+    "rule": "at every poll of unit size (Delta = 1) the poll set is the union of the rounded OrthoMADS directions and the POLL COMPLETION: every bound-, rule- and budget-feasible canonical lattice point within l_inf distance 1 of the incumbent in the 7 variables (zP5, zE5, zP7, zE7, zP9, zE9, zY); if the completion has more than 30 feasible points the poll is refused (nothing evaluated, never truncated) and the run STOPS FOR REVIEW (STOP_FOR_REVIEW_completion_cap); the cap is checked before the evaluation budget",
+    "n_feasible": 14,
+    "cap": 30,
+    "over_cap": false,
+    "points": [
+     "y2025__n9_p0.25_e0.5",
+     "y2030__n9_p0.25_e0.5",
+     "y2025__n7_p0.25_e0.5",
+     "y2030__n7_p0.25_e0.5",
+     "y2025__n7_p0.25_e0.5__n9_p0.25_e0.5",
+     "y2030__n7_p0.25_e0.5__n9_p0.25_e0.5",
+     "y2025__n5_p0.25_e0.5",
+     "y2030__n5_p0.25_e0.5",
+     "y2025__n5_p0.25_e0.5__n9_p0.25_e0.5",
+     "y2030__n5_p0.25_e0.5__n9_p0.25_e0.5",
+     "y2025__n5_p0.25_e0.5__n7_p0.25_e0.5",
+     "y2030__n5_p0.25_e0.5__n7_p0.25_e0.5",
+     "y2025__n5_p0.25_e0.5__n7_p0.25_e0.5__n9_p0.25_e0.5",
+     "y2030__n5_p0.25_e0.5__n7_p0.25_e0.5__n9_p0.25_e0.5"
+    ],
+    "n_raw_offsets": 2186,
+    "rejected_raw_offsets_by_class": {
+     "bound": 2058,
+     "duration": 1158
+    },
+    "budget_rejected": []
+   }
+  }
+ ],
+ "points": {
+  "y2025__n9_p0.25_e0.5": {
+   "status": "certified",
+   "eval_key": "1bff3ed2fb98302a10e5eadaff8cdd1fda48d9178564b1ea0ee62824450aa163",
+   "candidate_canonical": {
+    "investment_year": 2025,
+    "nodes": {
+     "5": [
+      0.0,
+      0.0
+     ],
+     "7": [
+      0.0,
+      0.0
+     ],
+     "9": [
+      0.25,
+      0.5
+     ]
+    }
+   },
+   "certified_cost_gross_settlement_excluded": 653722932.4752731,
+   "bar": {
+    "value": 37575.27598762512
+   },
+   "barrier_cause": null,
+   "eval_dir": "data/SRP1/Results/P515S47/campaign_s47_phase_b/evals/1bff3ed2fb98302a_y2025__n9_p0_25_e0_5",
+   "detail": {
+    "label": "y2025__n9_p0.25_e0.5",
+    "status": "certified",
+    "eval_key": "1bff3ed2fb98302a10e5eadaff8cdd1fda48d9178564b1ea0ee62824450aa163",
+    "Q": 653722932.4752731,
+    "bar": 37575.27598762512,
+    "canonical": {
+     "investment_year": 2025,
+     "nodes": {
+      "5": [
+       0.0,
+       0.0
+      ],
+      "7": [
+       0.0,
+       0.0
+      ],
+      "9": [
+       0.25,
+       0.5
+      ]
+     }
+    },
+    "barrier_cause": null,
+    "cycles_run": 122,
+    "certification_cycle": 122,
+    "rule_ten_terminal_step_over_threshold": 0.01774354009437612,
+    "ess_ageing_readback_pre_run_all_match": true,
+    "ess_ageing_readback_terminal_all_match": true,
+    "wall_time": {
+     "child_process_s": 3831.879107236862,
+     "run_admm_arm_s": 3816.9583778381348,
+     "run_admm_arm_reported_wall_clock_s": 3815.653538942337
+    },
+    "peak_rss": {
+     "units": "bytes on macOS/BSD, kilobytes on Linux (ru_maxrss)",
+     "child_python_process_ru_maxrss": 2550415360,
+     "production_state_peak_rss_ru_maxrss": 2550415360,
+     "solver_subprocesses_max_ru_maxrss": 58228736,
+     "semantics": "child_python_process = RUSAGE_SELF of the evaluation process at record time (the evaluation's own peak); production_state = the same measure taken by production at the end of run_operational_planning; solver_subprocesses = RUSAGE_CHILDREN max over the IPOPT executables this evaluation launched; when a post-certification step ran, child_python_process includes it (the ADMM run alone is production_state)"
+    },
+    "eval_dir": "data/SRP1/Results/P515S47/campaign_s47_phase_b/evals/1bff3ed2fb98302a_y2025__n9_p0_25_e0_5",
+    "per_cycle_record": {
+     "path": "data/SRP1/Results/P515S47/campaign_s47_phase_b/evals/1bff3ed2fb98302a_y2025__n9_p0_25_e0_5/per_cycle_record.jsonl",
+     "sha256": "129859c10482980cc48ca9826dc342e517e59da56d219409027fd9225bc99b09"
+    },
+    "exit_code": 0,
+    "source": {
+     "kind": "phase_b_new_evaluation",
+     "eval_dir": "data/SRP1/Results/P515S47/campaign_s47_phase_b/evals/1bff3ed2fb98302a_y2025__n9_p0_25_e0_5"
+    }
+   }
+  },
+  "y2030__n9_p0.25_e0.5": {
+   "status": "certified",
+   "eval_key": "a30a9faffdd74f9ebef7de4e72c12e9f4b0ca7e4cd63c425faf4c6c37278dd67",
+   "candidate_canonical": {
+    "investment_year": 2030,
+    "nodes": {
+     "5": [
+      0.0,
+      0.0
+     ],
+     "7": [
+      0.0,
+      0.0
+     ],
+     "9": [
+      0.25,
+      0.5
+     ]
+    }
+   },
+   "certified_cost_gross_settlement_excluded": 653751038.531909,
+   "bar": {
+    "value": 8182.425278425217
+   },
+   "barrier_cause": null,
+   "eval_dir": "data/SRP1/Results/P515S47/campaign_s47_phase_b/evals/a30a9faffdd74f9e_y2030__n9_p0_25_e0_5",
+   "detail": {
+    "label": "y2030__n9_p0.25_e0.5",
+    "status": "certified",
+    "eval_key": "a30a9faffdd74f9ebef7de4e72c12e9f4b0ca7e4cd63c425faf4c6c37278dd67",
+    "Q": 653751038.531909,
+    "bar": 8182.425278425217,
+    "canonical": {
+     "investment_year": 2030,
+     "nodes": {
+      "5": [
+       0.0,
+       0.0
+      ],
+      "7": [
+       0.0,
+       0.0
+      ],
+      "9": [
+       0.25,
+       0.5
+      ]
+     }
+    },
+    "barrier_cause": null,
+    "cycles_run": 129,
+    "certification_cycle": 129,
+    "rule_ten_terminal_step_over_threshold": 0.0067829112761575525,
+    "ess_ageing_readback_pre_run_all_match": true,
+    "ess_ageing_readback_terminal_all_match": true,
+    "wall_time": {
+     "child_process_s": 3936.0762157440186,
+     "run_admm_arm_s": 3921.1462008953094,
+     "run_admm_arm_reported_wall_clock_s": 3919.931960105896
+    },
+    "peak_rss": {
+     "units": "bytes on macOS/BSD, kilobytes on Linux (ru_maxrss)",
+     "child_python_process_ru_maxrss": 2546565120,
+     "production_state_peak_rss_ru_maxrss": 2546565120,
+     "solver_subprocesses_max_ru_maxrss": 55459840,
+     "semantics": "child_python_process = RUSAGE_SELF of the evaluation process at record time (the evaluation's own peak); production_state = the same measure taken by production at the end of run_operational_planning; solver_subprocesses = RUSAGE_CHILDREN max over the IPOPT executables this evaluation launched; when a post-certification step ran, child_python_process includes it (the ADMM run alone is production_state)"
+    },
+    "eval_dir": "data/SRP1/Results/P515S47/campaign_s47_phase_b/evals/a30a9faffdd74f9e_y2030__n9_p0_25_e0_5",
+    "per_cycle_record": {
+     "path": "data/SRP1/Results/P515S47/campaign_s47_phase_b/evals/a30a9faffdd74f9e_y2030__n9_p0_25_e0_5/per_cycle_record.jsonl",
+     "sha256": "b7889025d1ad4ec2c010f5fc2327a9963060fe21bace8aeab56e0c96aa6566d2"
+    },
+    "exit_code": 0,
+    "source": {
+     "kind": "phase_b_new_evaluation",
+     "eval_dir": "data/SRP1/Results/P515S47/campaign_s47_phase_b/evals/a30a9faffdd74f9e_y2030__n9_p0_25_e0_5"
+    }
+   }
+  },
+  "y2025__n7_p0.25_e0.5": {
+   "status": "certified",
+   "eval_key": "10c73abd8511010de3962ea8be10693d51c411b7fca0a0dfb92d2730c6b9ec89",
+   "candidate_canonical": {
+    "investment_year": 2025,
+    "nodes": {
+     "5": [
+      0.0,
+      0.0
+     ],
+     "7": [
+      0.25,
+      0.5
+     ],
+     "9": [
+      0.0,
+      0.0
+     ]
+    }
+   },
+   "certified_cost_gross_settlement_excluded": 653725854.4554961,
+   "bar": {
+    "value": 12515.046368837357
+   },
+   "barrier_cause": null,
+   "eval_dir": "data/SRP1/Results/P515S47/campaign_s47_phase_b/evals/10c73abd8511010d_y2025__n7_p0_25_e0_5",
+   "detail": {
+    "label": "y2025__n7_p0.25_e0.5",
+    "status": "certified",
+    "eval_key": "10c73abd8511010de3962ea8be10693d51c411b7fca0a0dfb92d2730c6b9ec89",
+    "Q": 653725854.4554961,
+    "bar": 12515.046368837357,
+    "canonical": {
+     "investment_year": 2025,
+     "nodes": {
+      "5": [
+       0.0,
+       0.0
+      ],
+      "7": [
+       0.25,
+       0.5
+      ],
+      "9": [
+       0.0,
+       0.0
+      ]
+     }
+    },
+    "barrier_cause": null,
+    "cycles_run": 121,
+    "certification_cycle": 121,
+    "rule_ten_terminal_step_over_threshold": 0.015765592478068007,
+    "ess_ageing_readback_pre_run_all_match": true,
+    "ess_ageing_readback_terminal_all_match": true,
+    "wall_time": {
+     "child_process_s": 3778.8114428520203,
+     "run_admm_arm_s": 3763.935261964798,
+     "run_admm_arm_reported_wall_clock_s": 3762.5841352939606
+    },
+    "peak_rss": {
+     "units": "bytes on macOS/BSD, kilobytes on Linux (ru_maxrss)",
+     "child_python_process_ru_maxrss": 2547466240,
+     "production_state_peak_rss_ru_maxrss": 2547466240,
+     "solver_subprocesses_max_ru_maxrss": 55590912,
+     "semantics": "child_python_process = RUSAGE_SELF of the evaluation process at record time (the evaluation's own peak); production_state = the same measure taken by production at the end of run_operational_planning; solver_subprocesses = RUSAGE_CHILDREN max over the IPOPT executables this evaluation launched; when a post-certification step ran, child_python_process includes it (the ADMM run alone is production_state)"
+    },
+    "eval_dir": "data/SRP1/Results/P515S47/campaign_s47_phase_b/evals/10c73abd8511010d_y2025__n7_p0_25_e0_5",
+    "per_cycle_record": {
+     "path": "data/SRP1/Results/P515S47/campaign_s47_phase_b/evals/10c73abd8511010d_y2025__n7_p0_25_e0_5/per_cycle_record.jsonl",
+     "sha256": "de4bc52b23884eaf71a5ccec616a4ffb9f4a3332dde57661a0ea386c8878ef3d"
+    },
+    "exit_code": 0,
+    "source": {
+     "kind": "phase_b_new_evaluation",
+     "eval_dir": "data/SRP1/Results/P515S47/campaign_s47_phase_b/evals/10c73abd8511010d_y2025__n7_p0_25_e0_5"
+    }
+   }
+  },
+  "y2030__n7_p0.25_e0.5": {
+   "status": "certified",
+   "eval_key": "d7030f598c2aeb4dbf00af404568ba801c0c02bd1c26c4b70e97f43eb30f0f66",
+   "candidate_canonical": {
+    "investment_year": 2030,
+    "nodes": {
+     "5": [
+      0.0,
+      0.0
+     ],
+     "7": [
+      0.25,
+      0.5
+     ],
+     "9": [
+      0.0,
+      0.0
+     ]
+    }
+   },
+   "certified_cost_gross_settlement_excluded": 653759847.4845948,
+   "bar": {
+    "value": 5614.614292144775
+   },
+   "barrier_cause": null,
+   "eval_dir": "data/SRP1/Results/P515S47/campaign_s47_phase_b/evals/d7030f598c2aeb4d_y2030__n7_p0_25_e0_5",
+   "detail": {
+    "label": "y2030__n7_p0.25_e0.5",
+    "status": "certified",
+    "eval_key": "d7030f598c2aeb4dbf00af404568ba801c0c02bd1c26c4b70e97f43eb30f0f66",
+    "Q": 653759847.4845948,
+    "bar": 5614.614292144775,
+    "canonical": {
+     "investment_year": 2030,
+     "nodes": {
+      "5": [
+       0.0,
+       0.0
+      ],
+      "7": [
+       0.25,
+       0.5
+      ],
+      "9": [
+       0.0,
+       0.0
+      ]
+     }
+    },
+    "barrier_cause": null,
+    "cycles_run": 134,
+    "certification_cycle": 134,
+    "rule_ten_terminal_step_over_threshold": 0.005300393999441404,
+    "ess_ageing_readback_pre_run_all_match": true,
+    "ess_ageing_readback_terminal_all_match": true,
+    "wall_time": {
+     "child_process_s": 4050.734694957733,
+     "run_admm_arm_s": 4035.9416592121124,
+     "run_admm_arm_reported_wall_clock_s": 4034.8218188285828
+    },
+    "peak_rss": {
+     "units": "bytes on macOS/BSD, kilobytes on Linux (ru_maxrss)",
+     "child_python_process_ru_maxrss": 2512470016,
+     "production_state_peak_rss_ru_maxrss": 2512470016,
+     "solver_subprocesses_max_ru_maxrss": 55820288,
+     "semantics": "child_python_process = RUSAGE_SELF of the evaluation process at record time (the evaluation's own peak); production_state = the same measure taken by production at the end of run_operational_planning; solver_subprocesses = RUSAGE_CHILDREN max over the IPOPT executables this evaluation launched; when a post-certification step ran, child_python_process includes it (the ADMM run alone is production_state)"
+    },
+    "eval_dir": "data/SRP1/Results/P515S47/campaign_s47_phase_b/evals/d7030f598c2aeb4d_y2030__n7_p0_25_e0_5",
+    "per_cycle_record": {
+     "path": "data/SRP1/Results/P515S47/campaign_s47_phase_b/evals/d7030f598c2aeb4d_y2030__n7_p0_25_e0_5/per_cycle_record.jsonl",
+     "sha256": "ab250b6557d9548c04e4c0f24ea827ee026b4fd9593cc70fcc3f717881f97eb4"
+    },
+    "exit_code": 0,
+    "source": {
+     "kind": "phase_b_new_evaluation",
+     "eval_dir": "data/SRP1/Results/P515S47/campaign_s47_phase_b/evals/d7030f598c2aeb4d_y2030__n7_p0_25_e0_5"
+    }
+   }
+  },
+  "y2025__n7_p0.25_e0.5__n9_p0.25_e0.5": {
+   "status": "certified",
+   "eval_key": "25fb61a4b5a4a7c0208e8b1f4fc608be3a9e56c915c104bb1a0d1beb7de88909",
+   "candidate_canonical": {
+    "investment_year": 2025,
+    "nodes": {
+     "5": [
+      0.0,
+      0.0
+     ],
+     "7": [
+      0.25,
+      0.5
+     ],
+     "9": [
+      0.25,
+      0.5
+     ]
+    }
+   },
+   "certified_cost_gross_settlement_excluded": 653591087.6519583,
+   "bar": {
+    "value": 3781.249687075615
+   },
+   "barrier_cause": null,
+   "eval_dir": "data/SRP1/Results/P515S47/campaign_s47_phase_b/evals/25fb61a4b5a4a7c0_y2025__n7_p0_25_e0_5__n9_p0_25_e0_5",
+   "detail": {
+    "label": "y2025__n7_p0.25_e0.5__n9_p0.25_e0.5",
+    "status": "certified",
+    "eval_key": "25fb61a4b5a4a7c0208e8b1f4fc608be3a9e56c915c104bb1a0d1beb7de88909",
+    "Q": 653591087.6519583,
+    "bar": 3781.249687075615,
+    "canonical": {
+     "investment_year": 2025,
+     "nodes": {
+      "5": [
+       0.0,
+       0.0
+      ],
+      "7": [
+       0.25,
+       0.5
+      ],
+      "9": [
+       0.25,
+       0.5
+      ]
+     }
+    },
+    "barrier_cause": null,
+    "cycles_run": 115,
+    "certification_cycle": 115,
+    "rule_ten_terminal_step_over_threshold": 0.03986079549612109,
+    "ess_ageing_readback_pre_run_all_match": true,
+    "ess_ageing_readback_terminal_all_match": true,
+    "wall_time": {
+     "child_process_s": 3875.780608177185,
+     "run_admm_arm_s": 3860.9612481594086,
+     "run_admm_arm_reported_wall_clock_s": 3859.671075105667
+    },
+    "peak_rss": {
+     "units": "bytes on macOS/BSD, kilobytes on Linux (ru_maxrss)",
+     "child_python_process_ru_maxrss": 2532802560,
+     "production_state_peak_rss_ru_maxrss": 2532802560,
+     "solver_subprocesses_max_ru_maxrss": 55246848,
+     "semantics": "child_python_process = RUSAGE_SELF of the evaluation process at record time (the evaluation's own peak); production_state = the same measure taken by production at the end of run_operational_planning; solver_subprocesses = RUSAGE_CHILDREN max over the IPOPT executables this evaluation launched; when a post-certification step ran, child_python_process includes it (the ADMM run alone is production_state)"
+    },
+    "eval_dir": "data/SRP1/Results/P515S47/campaign_s47_phase_b/evals/25fb61a4b5a4a7c0_y2025__n7_p0_25_e0_5__n9_p0_25_e0_5",
+    "per_cycle_record": {
+     "path": "data/SRP1/Results/P515S47/campaign_s47_phase_b/evals/25fb61a4b5a4a7c0_y2025__n7_p0_25_e0_5__n9_p0_25_e0_5/per_cycle_record.jsonl",
+     "sha256": "ee21f7b704e35e465ed8763bc57244dbd95d7ff22d0c69ba222e0f05572e6aed"
+    },
+    "exit_code": 0,
+    "source": {
+     "kind": "phase_b_new_evaluation",
+     "eval_dir": "data/SRP1/Results/P515S47/campaign_s47_phase_b/evals/25fb61a4b5a4a7c0_y2025__n7_p0_25_e0_5__n9_p0_25_e0_5"
+    }
+   }
+  },
+  "y2030__n7_p0.25_e0.5__n9_p0.25_e0.5": {
+   "status": "certified",
+   "eval_key": "4f5bccb02f7ba1554d93b41c76393e68ee3e5b3fb04fba2617b862e6b3fa96ef",
+   "candidate_canonical": {
+    "investment_year": 2030,
+    "nodes": {
+     "5": [
+      0.0,
+      0.0
+     ],
+     "7": [
+      0.25,
+      0.5
+     ],
+     "9": [
+      0.25,
+      0.5
+     ]
+    }
+   },
+   "certified_cost_gross_settlement_excluded": 653678526.7808001,
+   "bar": {
+    "value": 6311.607275605202
+   },
+   "barrier_cause": null,
+   "eval_dir": "data/SRP1/Results/P515S47/campaign_s47_phase_b/evals/4f5bccb02f7ba155_y2030__n7_p0_25_e0_5__n9_p0_25_e0_5",
+   "detail": {
+    "label": "y2030__n7_p0.25_e0.5__n9_p0.25_e0.5",
+    "status": "certified",
+    "eval_key": "4f5bccb02f7ba1554d93b41c76393e68ee3e5b3fb04fba2617b862e6b3fa96ef",
+    "Q": 653678526.7808001,
+    "bar": 6311.607275605202,
+    "canonical": {
+     "investment_year": 2030,
+     "nodes": {
+      "5": [
+       0.0,
+       0.0
+      ],
+      "7": [
+       0.25,
+       0.5
+      ],
+      "9": [
+       0.25,
+       0.5
+      ]
+     }
+    },
+    "barrier_cause": null,
+    "cycles_run": 132,
+    "certification_cycle": 132,
+    "rule_ten_terminal_step_over_threshold": 0.039364709816274115,
+    "ess_ageing_readback_pre_run_all_match": true,
+    "ess_ageing_readback_terminal_all_match": true,
+    "wall_time": {
+     "child_process_s": 4200.705773115158,
+     "run_admm_arm_s": 4185.353063106537,
+     "run_admm_arm_reported_wall_clock_s": 4181.34729385376
+    },
+    "peak_rss": {
+     "units": "bytes on macOS/BSD, kilobytes on Linux (ru_maxrss)",
+     "child_python_process_ru_maxrss": 2613100544,
+     "production_state_peak_rss_ru_maxrss": 2613100544,
+     "solver_subprocesses_max_ru_maxrss": 55574528,
+     "semantics": "child_python_process = RUSAGE_SELF of the evaluation process at record time (the evaluation's own peak); production_state = the same measure taken by production at the end of run_operational_planning; solver_subprocesses = RUSAGE_CHILDREN max over the IPOPT executables this evaluation launched; when a post-certification step ran, child_python_process includes it (the ADMM run alone is production_state)"
+    },
+    "eval_dir": "data/SRP1/Results/P515S47/campaign_s47_phase_b/evals/4f5bccb02f7ba155_y2030__n7_p0_25_e0_5__n9_p0_25_e0_5",
+    "per_cycle_record": {
+     "path": "data/SRP1/Results/P515S47/campaign_s47_phase_b/evals/4f5bccb02f7ba155_y2030__n7_p0_25_e0_5__n9_p0_25_e0_5/per_cycle_record.jsonl",
+     "sha256": "772cbf41e88263002e234f34a66f9ce04104a75789646e743760746983a8c62b"
+    },
+    "exit_code": 0,
+    "source": {
+     "kind": "phase_b_new_evaluation",
+     "eval_dir": "data/SRP1/Results/P515S47/campaign_s47_phase_b/evals/4f5bccb02f7ba155_y2030__n7_p0_25_e0_5__n9_p0_25_e0_5"
+    }
+   }
+  },
+  "y2025__n5_p0.25_e0.5": {
+   "status": "certified",
+   "eval_key": "4a8527254a85b9cca48e1eb872b35ed9f3d5209f84002e2c255516b8af5b304a",
+   "candidate_canonical": {
+    "investment_year": 2025,
+    "nodes": {
+     "5": [
+      0.25,
+      0.5
+     ],
+     "7": [
+      0.0,
+      0.0
+     ],
+     "9": [
+      0.0,
+      0.0
+     ]
+    }
+   },
+   "certified_cost_gross_settlement_excluded": 653711463.530828,
+   "bar": {
+    "value": 30558.742288827896
+   },
+   "barrier_cause": null,
+   "eval_dir": "data/SRP1/Results/P515S47/campaign_s47_phase_b/evals/4a8527254a85b9cc_y2025__n5_p0_25_e0_5",
+   "detail": {
+    "label": "y2025__n5_p0.25_e0.5",
+    "status": "certified",
+    "eval_key": "4a8527254a85b9cca48e1eb872b35ed9f3d5209f84002e2c255516b8af5b304a",
+    "Q": 653711463.530828,
+    "bar": 30558.742288827896,
+    "canonical": {
+     "investment_year": 2025,
+     "nodes": {
+      "5": [
+       0.25,
+       0.5
+      ],
+      "7": [
+       0.0,
+       0.0
+      ],
+      "9": [
+       0.0,
+       0.0
+      ]
+     }
+    },
+    "barrier_cause": null,
+    "cycles_run": 119,
+    "certification_cycle": 119,
+    "rule_ten_terminal_step_over_threshold": 0.006289845278191861,
+    "ess_ageing_readback_pre_run_all_match": true,
+    "ess_ageing_readback_terminal_all_match": true,
+    "wall_time": {
+     "child_process_s": 3711.7375259399414,
+     "run_admm_arm_s": 3696.864878177643,
+     "run_admm_arm_reported_wall_clock_s": 3695.428938150406
+    },
+    "peak_rss": {
+     "units": "bytes on macOS/BSD, kilobytes on Linux (ru_maxrss)",
+     "child_python_process_ru_maxrss": 2591408128,
+     "production_state_peak_rss_ru_maxrss": 2591408128,
+     "solver_subprocesses_max_ru_maxrss": 55590912,
+     "semantics": "child_python_process = RUSAGE_SELF of the evaluation process at record time (the evaluation's own peak); production_state = the same measure taken by production at the end of run_operational_planning; solver_subprocesses = RUSAGE_CHILDREN max over the IPOPT executables this evaluation launched; when a post-certification step ran, child_python_process includes it (the ADMM run alone is production_state)"
+    },
+    "eval_dir": "data/SRP1/Results/P515S47/campaign_s47_phase_b/evals/4a8527254a85b9cc_y2025__n5_p0_25_e0_5",
+    "per_cycle_record": {
+     "path": "data/SRP1/Results/P515S47/campaign_s47_phase_b/evals/4a8527254a85b9cc_y2025__n5_p0_25_e0_5/per_cycle_record.jsonl",
+     "sha256": "c84067449b6c5908b8c1187936d0516ba953c89bacc0255fb746c04437e2d9e7"
+    },
+    "exit_code": 0,
+    "source": {
+     "kind": "phase_b_new_evaluation",
+     "eval_dir": "data/SRP1/Results/P515S47/campaign_s47_phase_b/evals/4a8527254a85b9cc_y2025__n5_p0_25_e0_5"
+    }
+   }
+  },
+  "y2030__n5_p0.25_e0.5": {
+   "status": "certified",
+   "eval_key": "d0c1f1605a44d5a86554dcf5ee169517122667cd2c93c2bdff81cbc4cf395b51",
+   "candidate_canonical": {
+    "investment_year": 2030,
+    "nodes": {
+     "5": [
+      0.25,
+      0.5
+     ],
+     "7": [
+      0.0,
+      0.0
+     ],
+     "9": [
+      0.0,
+      0.0
+     ]
+    }
+   },
+   "certified_cost_gross_settlement_excluded": 653761255.120128,
+   "bar": {
+    "value": 7370.2622146606445
+   },
+   "barrier_cause": null,
+   "eval_dir": "data/SRP1/Results/P515S47/campaign_s47_phase_b/evals/d0c1f1605a44d5a8_y2030__n5_p0_25_e0_5",
+   "detail": {
+    "label": "y2030__n5_p0.25_e0.5",
+    "status": "certified",
+    "eval_key": "d0c1f1605a44d5a86554dcf5ee169517122667cd2c93c2bdff81cbc4cf395b51",
+    "Q": 653761255.120128,
+    "bar": 7370.2622146606445,
+    "canonical": {
+     "investment_year": 2030,
+     "nodes": {
+      "5": [
+       0.25,
+       0.5
+      ],
+      "7": [
+       0.0,
+       0.0
+      ],
+      "9": [
+       0.0,
+       0.0
+      ]
+     }
+    },
+    "barrier_cause": null,
+    "cycles_run": 131,
+    "certification_cycle": 131,
+    "rule_ten_terminal_step_over_threshold": 0.012410572226931371,
+    "ess_ageing_readback_pre_run_all_match": true,
+    "ess_ageing_readback_terminal_all_match": true,
+    "wall_time": {
+     "child_process_s": 3988.2469811439514,
+     "run_admm_arm_s": 3973.467439889908,
+     "run_admm_arm_reported_wall_clock_s": 3972.180985689163
+    },
+    "peak_rss": {
+     "units": "bytes on macOS/BSD, kilobytes on Linux (ru_maxrss)",
+     "child_python_process_ru_maxrss": 2583199744,
+     "production_state_peak_rss_ru_maxrss": 2583199744,
+     "solver_subprocesses_max_ru_maxrss": 55066624,
+     "semantics": "child_python_process = RUSAGE_SELF of the evaluation process at record time (the evaluation's own peak); production_state = the same measure taken by production at the end of run_operational_planning; solver_subprocesses = RUSAGE_CHILDREN max over the IPOPT executables this evaluation launched; when a post-certification step ran, child_python_process includes it (the ADMM run alone is production_state)"
+    },
+    "eval_dir": "data/SRP1/Results/P515S47/campaign_s47_phase_b/evals/d0c1f1605a44d5a8_y2030__n5_p0_25_e0_5",
+    "per_cycle_record": {
+     "path": "data/SRP1/Results/P515S47/campaign_s47_phase_b/evals/d0c1f1605a44d5a8_y2030__n5_p0_25_e0_5/per_cycle_record.jsonl",
+     "sha256": "7d0dddd5eb23a0eda78572e37cdf701018c7e942a9bc02056596a335d315f5ca"
+    },
+    "exit_code": 0,
+    "source": {
+     "kind": "phase_b_new_evaluation",
+     "eval_dir": "data/SRP1/Results/P515S47/campaign_s47_phase_b/evals/d0c1f1605a44d5a8_y2030__n5_p0_25_e0_5"
+    }
+   }
+  },
+  "y2025__n5_p0.25_e0.5__n9_p0.25_e0.5": {
+   "status": "certified",
+   "eval_key": "156ce2d1d53d36f4ea683c42879dce9be4a3c802030083ab2ff94178ca4fc3ad",
+   "candidate_canonical": {
+    "investment_year": 2025,
+    "nodes": {
+     "5": [
+      0.25,
+      0.5
+     ],
+     "7": [
+      0.0,
+      0.0
+     ],
+     "9": [
+      0.25,
+      0.5
+     ]
+    }
+   },
+   "certified_cost_gross_settlement_excluded": 653574496.7121261,
+   "bar": {
+    "value": 12498.859098911285
+   },
+   "barrier_cause": null,
+   "eval_dir": "data/SRP1/Results/P515S47/campaign_s47_phase_b/evals/156ce2d1d53d36f4_y2025__n5_p0_25_e0_5__n9_p0_25_e0_5",
+   "detail": {
+    "label": "y2025__n5_p0.25_e0.5__n9_p0.25_e0.5",
+    "status": "certified",
+    "eval_key": "156ce2d1d53d36f4ea683c42879dce9be4a3c802030083ab2ff94178ca4fc3ad",
+    "Q": 653574496.7121261,
+    "bar": 12498.859098911285,
+    "canonical": {
+     "investment_year": 2025,
+     "nodes": {
+      "5": [
+       0.25,
+       0.5
+      ],
+      "7": [
+       0.0,
+       0.0
+      ],
+      "9": [
+       0.25,
+       0.5
+      ]
+     }
+    },
+    "barrier_cause": null,
+    "cycles_run": 114,
+    "certification_cycle": 114,
+    "rule_ten_terminal_step_over_threshold": 0.039844087827379235,
+    "ess_ageing_readback_pre_run_all_match": true,
+    "ess_ageing_readback_terminal_all_match": true,
+    "wall_time": {
+     "child_process_s": 3866.7146859169006,
+     "run_admm_arm_s": 3852.2031440734863,
+     "run_admm_arm_reported_wall_clock_s": 3850.8659629821777
+    },
+    "peak_rss": {
+     "units": "bytes on macOS/BSD, kilobytes on Linux (ru_maxrss)",
+     "child_python_process_ru_maxrss": 2581102592,
+     "production_state_peak_rss_ru_maxrss": 2581102592,
+     "solver_subprocesses_max_ru_maxrss": 57262080,
+     "semantics": "child_python_process = RUSAGE_SELF of the evaluation process at record time (the evaluation's own peak); production_state = the same measure taken by production at the end of run_operational_planning; solver_subprocesses = RUSAGE_CHILDREN max over the IPOPT executables this evaluation launched; when a post-certification step ran, child_python_process includes it (the ADMM run alone is production_state)"
+    },
+    "eval_dir": "data/SRP1/Results/P515S47/campaign_s47_phase_b/evals/156ce2d1d53d36f4_y2025__n5_p0_25_e0_5__n9_p0_25_e0_5",
+    "per_cycle_record": {
+     "path": "data/SRP1/Results/P515S47/campaign_s47_phase_b/evals/156ce2d1d53d36f4_y2025__n5_p0_25_e0_5__n9_p0_25_e0_5/per_cycle_record.jsonl",
+     "sha256": "8b4ac54c9f659337e9bce7f5ff7363d04edd773ebbc19cb57b7d841036b477c8"
+    },
+    "exit_code": 0,
+    "source": {
+     "kind": "phase_b_new_evaluation",
+     "eval_dir": "data/SRP1/Results/P515S47/campaign_s47_phase_b/evals/156ce2d1d53d36f4_y2025__n5_p0_25_e0_5__n9_p0_25_e0_5"
+    }
+   }
+  },
+  "y2030__n5_p0.25_e0.5__n9_p0.25_e0.5": {
+   "status": "certified",
+   "eval_key": "226df5da6e1eb902f0b0d036a3eb63e2f5bc62a672bc7c4995f1e71b410f2ff4",
+   "candidate_canonical": {
+    "investment_year": 2030,
+    "nodes": {
+     "5": [
+      0.25,
+      0.5
+     ],
+     "7": [
+      0.0,
+      0.0
+     ],
+     "9": [
+      0.25,
+      0.5
+     ]
+    }
+   },
+   "certified_cost_gross_settlement_excluded": 653687714.1650413,
+   "bar": {
+    "value": 5673.465463399887
+   },
+   "barrier_cause": null,
+   "eval_dir": "data/SRP1/Results/P515S47/campaign_s47_phase_b/evals/226df5da6e1eb902_y2030__n5_p0_25_e0_5__n9_p0_25_e0_5",
+   "detail": {
+    "label": "y2030__n5_p0.25_e0.5__n9_p0.25_e0.5",
+    "status": "certified",
+    "eval_key": "226df5da6e1eb902f0b0d036a3eb63e2f5bc62a672bc7c4995f1e71b410f2ff4",
+    "Q": 653687714.1650413,
+    "bar": 5673.465463399887,
+    "canonical": {
+     "investment_year": 2030,
+     "nodes": {
+      "5": [
+       0.25,
+       0.5
+      ],
+      "7": [
+       0.0,
+       0.0
+      ],
+      "9": [
+       0.25,
+       0.5
+      ]
+     }
+    },
+    "barrier_cause": null,
+    "cycles_run": 133,
+    "certification_cycle": 133,
+    "rule_ten_terminal_step_over_threshold": 0.040249493413632494,
+    "ess_ageing_readback_pre_run_all_match": true,
+    "ess_ageing_readback_terminal_all_match": true,
+    "wall_time": {
+     "child_process_s": 4241.987529993057,
+     "run_admm_arm_s": 4226.990056276321,
+     "run_admm_arm_reported_wall_clock_s": 4225.865221977234
+    },
+    "peak_rss": {
+     "units": "bytes on macOS/BSD, kilobytes on Linux (ru_maxrss)",
+     "child_python_process_ru_maxrss": 2581495808,
+     "production_state_peak_rss_ru_maxrss": 2581495808,
+     "solver_subprocesses_max_ru_maxrss": 55279616,
+     "semantics": "child_python_process = RUSAGE_SELF of the evaluation process at record time (the evaluation's own peak); production_state = the same measure taken by production at the end of run_operational_planning; solver_subprocesses = RUSAGE_CHILDREN max over the IPOPT executables this evaluation launched; when a post-certification step ran, child_python_process includes it (the ADMM run alone is production_state)"
+    },
+    "eval_dir": "data/SRP1/Results/P515S47/campaign_s47_phase_b/evals/226df5da6e1eb902_y2030__n5_p0_25_e0_5__n9_p0_25_e0_5",
+    "per_cycle_record": {
+     "path": "data/SRP1/Results/P515S47/campaign_s47_phase_b/evals/226df5da6e1eb902_y2030__n5_p0_25_e0_5__n9_p0_25_e0_5/per_cycle_record.jsonl",
+     "sha256": "96eacd6bb42523a7c97d1d735cfaf79bc4cc9647108b4b895b2869c99b7432b3"
+    },
+    "exit_code": 0,
+    "source": {
+     "kind": "phase_b_new_evaluation",
+     "eval_dir": "data/SRP1/Results/P515S47/campaign_s47_phase_b/evals/226df5da6e1eb902_y2030__n5_p0_25_e0_5__n9_p0_25_e0_5"
+    }
+   }
+  },
+  "y2025__n5_p0.25_e0.5__n7_p0.25_e0.5": {
+   "status": "certified",
+   "eval_key": "5204ec67e0ba7bf5b22ce0400c288abed0be8954d5121c41b929e389a91e95a4",
+   "candidate_canonical": {
+    "investment_year": 2025,
+    "nodes": {
+     "5": [
+      0.25,
+      0.5
+     ],
+     "7": [
+      0.25,
+      0.5
+     ],
+     "9": [
+      0.0,
+      0.0
+     ]
+    }
+   },
+   "certified_cost_gross_settlement_excluded": 653579253.8540719,
+   "bar": {
+    "value": 7163.901824593544
+   },
+   "barrier_cause": null,
+   "eval_dir": "data/SRP1/Results/P515S47/campaign_s47_phase_b/evals/5204ec67e0ba7bf5_y2025__n5_p0_25_e0_5__n7_p0_25_e0_5",
+   "detail": {
+    "label": "y2025__n5_p0.25_e0.5__n7_p0.25_e0.5",
+    "status": "certified",
+    "eval_key": "5204ec67e0ba7bf5b22ce0400c288abed0be8954d5121c41b929e389a91e95a4",
+    "Q": 653579253.8540719,
+    "bar": 7163.901824593544,
+    "canonical": {
+     "investment_year": 2025,
+     "nodes": {
+      "5": [
+       0.25,
+       0.5
+      ],
+      "7": [
+       0.25,
+       0.5
+      ],
+      "9": [
+       0.0,
+       0.0
+      ]
+     }
+    },
+    "barrier_cause": null,
+    "cycles_run": 117,
+    "certification_cycle": 117,
+    "rule_ten_terminal_step_over_threshold": 0.053633955846336796,
+    "ess_ageing_readback_pre_run_all_match": true,
+    "ess_ageing_readback_terminal_all_match": true,
+    "wall_time": {
+     "child_process_s": 3763.6709361076355,
+     "run_admm_arm_s": 3748.43768286705,
+     "run_admm_arm_reported_wall_clock_s": 3747.1032938957214
+    },
+    "peak_rss": {
+     "units": "bytes on macOS/BSD, kilobytes on Linux (ru_maxrss)",
+     "child_python_process_ru_maxrss": 2513223680,
+     "production_state_peak_rss_ru_maxrss": 2513223680,
+     "solver_subprocesses_max_ru_maxrss": 54624256,
+     "semantics": "child_python_process = RUSAGE_SELF of the evaluation process at record time (the evaluation's own peak); production_state = the same measure taken by production at the end of run_operational_planning; solver_subprocesses = RUSAGE_CHILDREN max over the IPOPT executables this evaluation launched; when a post-certification step ran, child_python_process includes it (the ADMM run alone is production_state)"
+    },
+    "eval_dir": "data/SRP1/Results/P515S47/campaign_s47_phase_b/evals/5204ec67e0ba7bf5_y2025__n5_p0_25_e0_5__n7_p0_25_e0_5",
+    "per_cycle_record": {
+     "path": "data/SRP1/Results/P515S47/campaign_s47_phase_b/evals/5204ec67e0ba7bf5_y2025__n5_p0_25_e0_5__n7_p0_25_e0_5/per_cycle_record.jsonl",
+     "sha256": "7dc2258f42d96cdbb41449e36b838d0fa64ce2894957b8c7ccca9d5638eb8841"
+    },
+    "exit_code": 0,
+    "source": {
+     "kind": "phase_b_new_evaluation",
+     "eval_dir": "data/SRP1/Results/P515S47/campaign_s47_phase_b/evals/5204ec67e0ba7bf5_y2025__n5_p0_25_e0_5__n7_p0_25_e0_5"
+    }
+   }
+  },
+  "y2030__n5_p0.25_e0.5__n7_p0.25_e0.5": {
+   "status": "certified",
+   "eval_key": "6597a79dbe8ed61fb45aed6e3eebfe27c4a5035976d5f0a9f20a4601ac88e12b",
+   "candidate_canonical": {
+    "investment_year": 2030,
+    "nodes": {
+     "5": [
+      0.25,
+      0.5
+     ],
+     "7": [
+      0.25,
+      0.5
+     ],
+     "9": [
+      0.0,
+      0.0
+     ]
+    }
+   },
+   "certified_cost_gross_settlement_excluded": 653706335.6864134,
+   "bar": {
+    "value": 34456.676449894905
+   },
+   "barrier_cause": null,
+   "eval_dir": "data/SRP1/Results/P515S47/campaign_s47_phase_b/evals/6597a79dbe8ed61f_y2030__n5_p0_25_e0_5__n7_p0_25_e0_5",
+   "detail": {
+    "label": "y2030__n5_p0.25_e0.5__n7_p0.25_e0.5",
+    "status": "certified",
+    "eval_key": "6597a79dbe8ed61fb45aed6e3eebfe27c4a5035976d5f0a9f20a4601ac88e12b",
+    "Q": 653706335.6864134,
+    "bar": 34456.676449894905,
+    "canonical": {
+     "investment_year": 2030,
+     "nodes": {
+      "5": [
+       0.25,
+       0.5
+      ],
+      "7": [
+       0.25,
+       0.5
+      ],
+      "9": [
+       0.0,
+       0.0
+      ]
+     }
+    },
+    "barrier_cause": null,
+    "cycles_run": 140,
+    "certification_cycle": 140,
+    "rule_ten_terminal_step_over_threshold": 0.010920324672905712,
+    "ess_ageing_readback_pre_run_all_match": true,
+    "ess_ageing_readback_terminal_all_match": true,
+    "wall_time": {
+     "child_process_s": 4267.668914318085,
+     "run_admm_arm_s": 4252.4312970638275,
+     "run_admm_arm_reported_wall_clock_s": 4251.309059143066
+    },
+    "peak_rss": {
+     "units": "bytes on macOS/BSD, kilobytes on Linux (ru_maxrss)",
+     "child_python_process_ru_maxrss": 2549383168,
+     "production_state_peak_rss_ru_maxrss": 2549383168,
+     "solver_subprocesses_max_ru_maxrss": 55558144,
+     "semantics": "child_python_process = RUSAGE_SELF of the evaluation process at record time (the evaluation's own peak); production_state = the same measure taken by production at the end of run_operational_planning; solver_subprocesses = RUSAGE_CHILDREN max over the IPOPT executables this evaluation launched; when a post-certification step ran, child_python_process includes it (the ADMM run alone is production_state)"
+    },
+    "eval_dir": "data/SRP1/Results/P515S47/campaign_s47_phase_b/evals/6597a79dbe8ed61f_y2030__n5_p0_25_e0_5__n7_p0_25_e0_5",
+    "per_cycle_record": {
+     "path": "data/SRP1/Results/P515S47/campaign_s47_phase_b/evals/6597a79dbe8ed61f_y2030__n5_p0_25_e0_5__n7_p0_25_e0_5/per_cycle_record.jsonl",
+     "sha256": "021ab950e13ffedd689ff88eb293ec6c6dddc653e85f5ab661e87cf1d0b4b896"
+    },
+    "exit_code": 0,
+    "source": {
+     "kind": "phase_b_new_evaluation",
+     "eval_dir": "data/SRP1/Results/P515S47/campaign_s47_phase_b/evals/6597a79dbe8ed61f_y2030__n5_p0_25_e0_5__n7_p0_25_e0_5"
+    }
+   }
+  },
+  "y2025__n5_p0.25_e0.5__n7_p0.25_e0.5__n9_p0.25_e0.5": {
+   "status": "certified",
+   "eval_key": "56bb0b466d2a63c2b0a05d2fa23c88cb15a382224080e2462a052c1da2692fc9",
+   "candidate_canonical": {
+    "investment_year": 2025,
+    "nodes": {
+     "5": [
+      0.25,
+      0.5
+     ],
+     "7": [
+      0.25,
+      0.5
+     ],
+     "9": [
+      0.25,
+      0.5
+     ]
+    }
+   },
+   "certified_cost_gross_settlement_excluded": 653438213.3107345,
+   "bar": {
+    "value": 34158.44423055649
+   },
+   "barrier_cause": null,
+   "eval_dir": "data/SRP1/Results/P515S47/campaign_s47_phase_b/evals/56bb0b466d2a63c2_y2025__n5_p0_25_e0_5__n7_p0_25_e0_5__n9_p0_25_e0_5",
+   "detail": {
+    "label": "y2025__n5_p0.25_e0.5__n7_p0.25_e0.5__n9_p0.25_e0.5",
+    "status": "certified",
+    "eval_key": "56bb0b466d2a63c2b0a05d2fa23c88cb15a382224080e2462a052c1da2692fc9",
+    "Q": 653438213.3107345,
+    "bar": 34158.44423055649,
+    "canonical": {
+     "investment_year": 2025,
+     "nodes": {
+      "5": [
+       0.25,
+       0.5
+      ],
+      "7": [
+       0.25,
+       0.5
+      ],
+      "9": [
+       0.25,
+       0.5
+      ]
+     }
+    },
+    "barrier_cause": null,
+    "cycles_run": 108,
+    "certification_cycle": 108,
+    "rule_ten_terminal_step_over_threshold": 0.005310596380880254,
+    "ess_ageing_readback_pre_run_all_match": true,
+    "ess_ageing_readback_terminal_all_match": true,
+    "wall_time": {
+     "child_process_s": 3766.360579252243,
+     "run_admm_arm_s": 3751.1230618953705,
+     "run_admm_arm_reported_wall_clock_s": 3749.7749569416046
+    },
+    "peak_rss": {
+     "units": "bytes on macOS/BSD, kilobytes on Linux (ru_maxrss)",
+     "child_python_process_ru_maxrss": 2560163840,
+     "production_state_peak_rss_ru_maxrss": 2560163840,
+     "solver_subprocesses_max_ru_maxrss": 56377344,
+     "semantics": "child_python_process = RUSAGE_SELF of the evaluation process at record time (the evaluation's own peak); production_state = the same measure taken by production at the end of run_operational_planning; solver_subprocesses = RUSAGE_CHILDREN max over the IPOPT executables this evaluation launched; when a post-certification step ran, child_python_process includes it (the ADMM run alone is production_state)"
+    },
+    "eval_dir": "data/SRP1/Results/P515S47/campaign_s47_phase_b/evals/56bb0b466d2a63c2_y2025__n5_p0_25_e0_5__n7_p0_25_e0_5__n9_p0_25_e0_5",
+    "per_cycle_record": {
+     "path": "data/SRP1/Results/P515S47/campaign_s47_phase_b/evals/56bb0b466d2a63c2_y2025__n5_p0_25_e0_5__n7_p0_25_e0_5__n9_p0_25_e0_5/per_cycle_record.jsonl",
+     "sha256": "e3e03a75e20df67db09b8b44487aeea681637724fb8398a20d5b51010b3e8ed8"
+    },
+    "exit_code": 0,
+    "source": {
+     "kind": "phase_b_new_evaluation",
+     "eval_dir": "data/SRP1/Results/P515S47/campaign_s47_phase_b/evals/56bb0b466d2a63c2_y2025__n5_p0_25_e0_5__n7_p0_25_e0_5__n9_p0_25_e0_5"
+    }
+   }
+  },
+  "y2030__n5_p0.25_e0.5__n7_p0.25_e0.5__n9_p0.25_e0.5": {
+   "status": "certified",
+   "eval_key": "9e9c61f81f584b05e8d962ac8f6200fd7fba934a39b9917a6933eb2d89615d21",
+   "candidate_canonical": {
+    "investment_year": 2030,
+    "nodes": {
+     "5": [
+      0.25,
+      0.5
+     ],
+     "7": [
+      0.25,
+      0.5
+     ],
+     "9": [
+      0.25,
+      0.5
+     ]
+    }
+   },
+   "certified_cost_gross_settlement_excluded": 653566019.1447264,
+   "bar": {
+    "value": 6187.690523266792
+   },
+   "barrier_cause": null,
+   "eval_dir": "data/SRP1/Results/P515S47/campaign_s47_phase_b/evals/9e9c61f81f584b05_y2030__n5_p0_25_e0_5__n7_p0_25_e0_5__n9_p0_25_e0_5",
+   "detail": {
+    "label": "y2030__n5_p0.25_e0.5__n7_p0.25_e0.5__n9_p0.25_e0.5",
+    "status": "certified",
+    "eval_key": "9e9c61f81f584b05e8d962ac8f6200fd7fba934a39b9917a6933eb2d89615d21",
+    "Q": 653566019.1447264,
+    "bar": 6187.690523266792,
+    "canonical": {
+     "investment_year": 2030,
+     "nodes": {
+      "5": [
+       0.25,
+       0.5
+      ],
+      "7": [
+       0.25,
+       0.5
+      ],
+      "9": [
+       0.25,
+       0.5
+      ]
+     }
+    },
+    "barrier_cause": null,
+    "cycles_run": 129,
+    "certification_cycle": 129,
+    "rule_ten_terminal_step_over_threshold": 0.016199520632877343,
+    "ess_ageing_readback_pre_run_all_match": true,
+    "ess_ageing_readback_terminal_all_match": true,
+    "wall_time": {
+     "child_process_s": 4200.749156236649,
+     "run_admm_arm_s": 4185.516566038132,
+     "run_admm_arm_reported_wall_clock_s": 4184.291769981384
+    },
+    "peak_rss": {
+     "units": "bytes on macOS/BSD, kilobytes on Linux (ru_maxrss)",
+     "child_python_process_ru_maxrss": 2515451904,
+     "production_state_peak_rss_ru_maxrss": 2515451904,
+     "solver_subprocesses_max_ru_maxrss": 56639488,
+     "semantics": "child_python_process = RUSAGE_SELF of the evaluation process at record time (the evaluation's own peak); production_state = the same measure taken by production at the end of run_operational_planning; solver_subprocesses = RUSAGE_CHILDREN max over the IPOPT executables this evaluation launched; when a post-certification step ran, child_python_process includes it (the ADMM run alone is production_state)"
+    },
+    "eval_dir": "data/SRP1/Results/P515S47/campaign_s47_phase_b/evals/9e9c61f81f584b05_y2030__n5_p0_25_e0_5__n7_p0_25_e0_5__n9_p0_25_e0_5",
+    "per_cycle_record": {
+     "path": "data/SRP1/Results/P515S47/campaign_s47_phase_b/evals/9e9c61f81f584b05_y2030__n5_p0_25_e0_5__n7_p0_25_e0_5__n9_p0_25_e0_5/per_cycle_record.jsonl",
+     "sha256": "ce2c5e7cf88b817e850f3c9b0035a56bd58651eae562f6dac53c0cf865f6e080"
+    },
+    "exit_code": 0,
+    "source": {
+     "kind": "phase_b_new_evaluation",
+     "eval_dir": "data/SRP1/Results/P515S47/campaign_s47_phase_b/evals/9e9c61f81f584b05_y2030__n5_p0_25_e0_5__n7_p0_25_e0_5__n9_p0_25_e0_5"
+    }
+   }
+  }
+ },
+ "harness_errors": [],
+ "readback_mismatch_points": [],
+ "batch_info": [
+  {
+   "labels": [
+    "y2025__n9_p0.25_e0.5",
+    "y2030__n9_p0.25_e0.5",
+    "y2025__n7_p0.25_e0.5",
+    "y2030__n7_p0.25_e0.5",
+    "y2025__n7_p0.25_e0.5__n9_p0.25_e0.5"
+   ],
+   "max_concurrent_observed": 5,
+   "timeline": [
+    {
+     "event": "start",
+     "label": "y2025__n9_p0.25_e0.5",
+     "pid": 87984,
+     "t": 1790026850.560496
+    },
+    {
+     "event": "start",
+     "label": "y2030__n9_p0.25_e0.5",
+     "pid": 87985,
+     "t": 1790026850.563583
+    },
+    {
+     "event": "start",
+     "label": "y2025__n7_p0.25_e0.5",
+     "pid": 87986,
+     "t": 1790026850.5669918
+    },
+    {
+     "event": "start",
+     "label": "y2030__n7_p0.25_e0.5",
+     "pid": 87987,
+     "t": 1790026850.570436
+    },
+    {
+     "event": "start",
+     "label": "y2025__n7_p0.25_e0.5__n9_p0.25_e0.5",
+     "pid": 87988,
+     "t": 1790026850.5735848
+    },
+    {
+     "event": "end",
+     "label": "y2025__n7_p0.25_e0.5",
+     "pid": 87986,
+     "t": 1790030636.784721,
+     "exit_code": 0
+    },
+    {
+     "event": "end",
+     "label": "y2025__n9_p0.25_e0.5",
+     "pid": 87984,
+     "t": 1790030686.8830988,
+     "exit_code": 0
+    },
+    {
+     "event": "end",
+     "label": "y2025__n7_p0.25_e0.5__n9_p0.25_e0.5",
+     "pid": 87988,
+     "t": 1790030731.966433,
+     "exit_code": 0
+    },
+    {
+     "event": "end",
+     "label": "y2030__n9_p0.25_e0.5",
+     "pid": 87985,
+     "t": 1790030792.085891,
+     "exit_code": 0
+    },
+    {
+     "event": "end",
+     "label": "y2030__n7_p0.25_e0.5",
+     "pid": 87987,
+     "t": 1790030907.311268,
+     "exit_code": 0
+    }
+   ]
+  },
+  {
+   "labels": [
+    "y2030__n7_p0.25_e0.5__n9_p0.25_e0.5",
+    "y2025__n5_p0.25_e0.5",
+    "y2030__n5_p0.25_e0.5",
+    "y2025__n5_p0.25_e0.5__n9_p0.25_e0.5",
+    "y2030__n5_p0.25_e0.5__n9_p0.25_e0.5"
+   ],
+   "max_concurrent_observed": 5,
+   "timeline": [
+    {
+     "event": "start",
+     "label": "y2030__n7_p0.25_e0.5__n9_p0.25_e0.5",
+     "pid": 21442,
+     "t": 1790030907.333643
+    },
+    {
+     "event": "start",
+     "label": "y2025__n5_p0.25_e0.5",
+     "pid": 21443,
+     "t": 1790030907.339565
+    },
+    {
+     "event": "start",
+     "label": "y2030__n5_p0.25_e0.5",
+     "pid": 21444,
+     "t": 1790030907.344393
+    },
+    {
+     "event": "start",
+     "label": "y2025__n5_p0.25_e0.5__n9_p0.25_e0.5",
+     "pid": 21445,
+     "t": 1790030907.349492
+    },
+    {
+     "event": "start",
+     "label": "y2030__n5_p0.25_e0.5__n9_p0.25_e0.5",
+     "pid": 21446,
+     "t": 1790030907.3557901
+    },
+    {
+     "event": "end",
+     "label": "y2025__n5_p0.25_e0.5",
+     "pid": 21443,
+     "t": 1790034623.82636,
+     "exit_code": 0
+    },
+    {
+     "event": "end",
+     "label": "y2025__n5_p0.25_e0.5__n9_p0.25_e0.5",
+     "pid": 21445,
+     "t": 1790034779.1019142,
+     "exit_code": 0
+    },
+    {
+     "event": "end",
+     "label": "y2030__n5_p0.25_e0.5",
+     "pid": 21444,
+     "t": 1790034904.3131678,
+     "exit_code": 0
+    },
+    {
+     "event": "end",
+     "label": "y2030__n7_p0.25_e0.5__n9_p0.25_e0.5",
+     "pid": 21442,
+     "t": 1790035114.711006,
+     "exit_code": 0
+    },
+    {
+     "event": "end",
+     "label": "y2030__n5_p0.25_e0.5__n9_p0.25_e0.5",
+     "pid": 21446,
+     "t": 1790035154.783329,
+     "exit_code": 0
+    }
+   ]
+  },
+  {
+   "labels": [
+    "y2025__n5_p0.25_e0.5__n7_p0.25_e0.5",
+    "y2030__n5_p0.25_e0.5__n7_p0.25_e0.5",
+    "y2025__n5_p0.25_e0.5__n7_p0.25_e0.5__n9_p0.25_e0.5",
+    "y2030__n5_p0.25_e0.5__n7_p0.25_e0.5__n9_p0.25_e0.5"
+   ],
+   "max_concurrent_observed": 4,
+   "timeline": [
+    {
+     "event": "start",
+     "label": "y2025__n5_p0.25_e0.5__n7_p0.25_e0.5",
+     "pid": 54539,
+     "t": 1790035154.798843
+    },
+    {
+     "event": "start",
+     "label": "y2030__n5_p0.25_e0.5__n7_p0.25_e0.5",
+     "pid": 54540,
+     "t": 1790035154.803173
+    },
+    {
+     "event": "start",
+     "label": "y2025__n5_p0.25_e0.5__n7_p0.25_e0.5__n9_p0.25_e0.5",
+     "pid": 54541,
+     "t": 1790035154.80657
+    },
+    {
+     "event": "start",
+     "label": "y2030__n5_p0.25_e0.5__n7_p0.25_e0.5__n9_p0.25_e0.5",
+     "pid": 54542,
+     "t": 1790035154.810147
+    },
+    {
+     "event": "end",
+     "label": "y2025__n5_p0.25_e0.5__n7_p0.25_e0.5",
+     "pid": 54539,
+     "t": 1790038926.365487,
+     "exit_code": 0
+    },
+    {
+     "event": "end",
+     "label": "y2025__n5_p0.25_e0.5__n7_p0.25_e0.5__n9_p0.25_e0.5",
+     "pid": 54541,
+     "t": 1790038926.366393,
+     "exit_code": 0
+    },
+    {
+     "event": "end",
+     "label": "y2030__n5_p0.25_e0.5__n7_p0.25_e0.5__n9_p0.25_e0.5",
+     "pid": 54542,
+     "t": 1790039362.214623,
+     "exit_code": 0
+    },
+    {
+     "event": "end",
+     "label": "y2030__n5_p0.25_e0.5__n7_p0.25_e0.5",
+     "pid": 54540,
+     "t": 1790039427.333772,
+     "exit_code": 0
+    }
+   ]
+  }
+ ],
+ "pre_run_evidence": {
+  "pins": {
+   "spec_v17": {
+    "path": "data/SRP1/Results/P515S47/frozen_s47_baseline_spec_v17_ff0056b8.json",
+    "sha256_pinned": "ff0056b850957d47cc3aa2595eab13497e100cc7bcda84514c5ca58e25d1e109",
+    "sha256_on_disk": "ff0056b850957d47cc3aa2595eab13497e100cc7bcda84514c5ca58e25d1e109",
+    "match": true,
+    "git_tracked": true,
+    "git_clean": true
+   },
+   "spec_v15": {
+    "path": "data/SRP1/Results/P515S45/frozen_s45_phaseA_spec_v15_5feefd7b.json",
+    "sha256_pinned": "5feefd7b642fc3d480156ad5e52ed6e1cf9d6698cfd40dbb33389bab6e6229fe",
+    "sha256_on_disk": "5feefd7b642fc3d480156ad5e52ed6e1cf9d6698cfd40dbb33389bab6e6229fe",
+    "match": true,
+    "git_tracked": true,
+    "git_clean": true
+   },
+   "ess_params_file": {
+    "path": "data/SRP1/SharedESS/SRP1_ESS_Params.json",
+    "sha256_pinned": "39106f934bf3edbf18f01a5ef1fadfefc2f7a518706e6c8fa6d962617a312706",
+    "sha256_on_disk": "39106f934bf3edbf18f01a5ef1fadfefc2f7a518706e6c8fa6d962617a312706",
+    "match": true,
+    "git_tracked": true,
+    "git_clean": true
+   },
+   "cost_file": {
+    "path": "data/SRP1/SharedESS/SRP1_ESS.xlsx",
+    "sha256_pinned": "e17bd5887e1d0738005ae17c3144593527081c9a0776e19cfaa50aafefe39cd6",
+    "sha256_on_disk": "e17bd5887e1d0738005ae17c3144593527081c9a0776e19cfaa50aafefe39cd6",
+    "match": true,
+    "git_tracked": true,
+    "git_clean": true
+   },
+   "a0_results": {
+    "path": "data/SRP1/Results/P515S45/campaign_s45_a0_c7/campaign_results.json",
+    "sha256_pinned": "423678b98c0ca9a26dbc76a1b46a5e36a51c8ccccc0459253020bfe1061653b4",
+    "sha256_on_disk": "423678b98c0ca9a26dbc76a1b46a5e36a51c8ccccc0459253020bfe1061653b4",
+    "match": true,
+    "git_tracked": true,
+    "git_clean": true
+   },
+   "investment_cost_results": {
+    "path": "data/SRP1/Results/P515S45/investment_cost/investment_cost_results.json",
+    "sha256_pinned": "28152120f5c7acc57655d40871f764a5e797b93428f5a9f87b7eed55fbe4790b",
+    "sha256_on_disk": "28152120f5c7acc57655d40871f764a5e797b93428f5a9f87b7eed55fbe4790b",
+    "match": true,
+    "git_tracked": true,
+    "git_clean": true
+   },
+   "phase_a_tables": {
+    "path": "data/SRP1/Results/P515S45/phase_a_tables/phase_a_tables.json",
+    "sha256_pinned": "a2b78541b5c50ad2a185ca3eb3d0f1b38bb388c4866c45628a984c407b4a3995",
+    "sha256_on_disk": "a2b78541b5c50ad2a185ca3eb3d0f1b38bb388c4866c45628a984c407b4a3995",
+    "match": true,
+    "git_tracked": true,
+    "git_clean": true
+   },
+   "identity_checks": {
+    "path": "data/SRP1/Results/P515S47/identity_checks/identity_checks.json",
+    "commit": "65525006",
+    "commit_in_HEAD": true,
+    "git_tracked": true,
+    "git_clean": true,
+    "sha256": "f076dfb92b82edbeb794dcb443da12d817846b00b399482244cefdc9ac88b2f2",
+    "all_ok": true,
+    "failing_checks": [],
+    "expect": "all_ok true"
+   },
+   "case_file_gate": {
+    "path": "data/SRP1/Results/P515S47/case_file_baseline/after/case_file_baseline_after.json",
+    "commit": "2466401d",
+    "commit_in_HEAD": true,
+    "git_tracked": true,
+    "git_clean": true,
+    "sha256": "867a51032c2482315c26e52c14eb32673b18fd14d0e2f90de19bb1563fbeb977",
+    "all_ok": false,
+    "failing_checks": [
+     "b_x0_every_block_digest_identical_before_after"
+    ],
+    "expect": "all_ok false, only b_x0_every_block_digest_identical_before_after"
+   },
+   "x0_diff_analysis": {
+    "path": "data/SRP1/Results/P515S47/case_file_baseline/x0_diff_analysis/x0_diff_analysis.json",
+    "commit": "2466401d",
+    "commit_in_HEAD": true,
+    "git_tracked": true,
+    "git_clean": true,
+    "sha256": "f2db3be7671efea78d0a45841fc32013361bb41ad2484afff94120793c5b69cd",
+    "all_ok": true,
+    "failing_checks": [],
+    "expect": "all_ok true"
+   },
+   "baseline_launcher": {
+    "path": "p515_s47_baseline_campaign.py",
+    "commit": "6642b33b",
+    "commit_in_HEAD": true,
+    "git_tracked": true,
+    "git_clean": true,
+    "sha256": "abaf503d410b94201d6bfbc2f4d2e63927f86f3294883855fc020ff1274db4e2"
+   }
+  },
+  "case_file_aa": {
+   "loaded": {
+    "enabled": true,
+    "memory": 5,
+    "regularization": 1e-10,
+    "reject_policy": "keep_memory"
+   },
+   "equals_declaration": true
+  },
+  "cache_sources_accepted": [
+   {
+    "path": "data/SRP1/Results/P515S47/campaign_s47_a1a_baseline/campaign_results.json",
+    "sha256": "98c57895c46a4302cd64ebccd4f0632eb40ae21ac2845d5a355bac27b56b56ef",
+    "git_tracked": true,
+    "git_clean": true,
+    "campaign_id": "s47_a1a_baseline",
+    "campaign_spec_path": "data/SRP1/Results/P515S47/campaign_s47_a1a_baseline/campaign_spec_s47_a1a_baseline_add4ebd8.json",
+    "campaign_spec_sha256": "add4ebd850ae46764307e15644470ddcf49ab7af4ec10d8233ad2ffd535b580f",
+    "spec_checks": {
+     "ess_ageing_baseline": true,
+     "case_file_aa": true,
+     "ess_params_sha256": true,
+     "case_file_sha256": true,
+     "overrides_empty": true,
+     "arm_label": true,
+     "cap": true,
+     "required_consecutive_cycles": true,
+     "no_model_variant": true,
+     "no_per_entry_overrides": true
+    },
+    "spec_git_tracked": true,
+    "spec_git_clean": true,
+    "manifest": {
+     "path": "data/SRP1/Results/P515S47/campaign_s47_a1a_baseline/campaign_manifest_sha256.json",
+     "sha256": "97ea6cc1539ef1ef98286c783aa2529e101fb9f8416ef192356b70946b9b2bf6",
+     "n_record_files_checked": 60,
+     "mismatched": []
+    },
+    "n_entries": 30,
+    "skipped_not_evaluations": []
+   },
+   {
+    "path": "data/SRP1/Results/P515S47/campaign_s47_recert/campaign_results.json",
+    "sha256": "e48dad43470829ee1d936cdab5e6433cffd688f9439e86e011b84dad74e19a3e",
+    "git_tracked": true,
+    "git_clean": true,
+    "campaign_id": "s47_recert",
+    "campaign_spec_path": "data/SRP1/Results/P515S47/campaign_s47_recert/campaign_spec_s47_recert_902f93aa.json",
+    "campaign_spec_sha256": "902f93aa22093455daa50927bdfa28bc885b2c5491151d211dc943bb3de86ee4",
+    "spec_checks": {
+     "ess_ageing_baseline": true,
+     "case_file_aa": true,
+     "ess_params_sha256": true,
+     "case_file_sha256": true,
+     "overrides_empty": true,
+     "arm_label": true,
+     "cap": true,
+     "required_consecutive_cycles": true,
+     "no_model_variant": true,
+     "no_per_entry_overrides": true
+    },
+    "spec_git_tracked": true,
+    "spec_git_clean": true,
+    "manifest": {
+     "path": "data/SRP1/Results/P515S47/campaign_s47_recert/campaign_manifest_sha256.json",
+     "sha256": "519f9102a741b4cbc56a41827a322d0049f4c8c6eb70eddf8fab790bebffb94d",
+     "n_record_files_checked": 4,
+     "mismatched": []
+    },
+    "n_entries": 2,
+    "skipped_not_evaluations": []
+   }
+  ],
+  "c3_exclusion": {
+   "scope_globs": [
+    "data/SRP1/Results/P515S44/**/campaign_results.json",
+    "data/SRP1/Results/P515S45/**/campaign_results.json",
+    "data/SRP1/Results/P515S46/**/campaign_results.json"
+   ],
+   "files": [
+    {
+     "file": "data/SRP1/Results/P515S44/campaign_s44_aa_variant/campaign_results.json",
+     "n_keys": 0,
+     "spec_declares_ess_ageing_baseline": false
+    },
+    {
+     "file": "data/SRP1/Results/P515S44/campaign_s44_aa_variant_smoke/campaign_results.json",
+     "n_keys": 0,
+     "spec_declares_ess_ageing_baseline": false
+    },
+    {
+     "file": "data/SRP1/Results/P515S44/campaign_s44_selection_aa/campaign_results.json",
+     "n_keys": 0,
+     "spec_declares_ess_ageing_baseline": false
+    },
+    {
+     "file": "data/SRP1/Results/P515S45/campaign_s45_a0_c7/campaign_results.json",
+     "n_keys": 8,
+     "spec_declares_ess_ageing_baseline": false
+    },
+    {
+     "file": "data/SRP1/Results/P515S45/campaign_s45_a1a/campaign_results.json",
+     "n_keys": 30,
+     "spec_declares_ess_ageing_baseline": false
+    },
+    {
+     "file": "data/SRP1/Results/P515S45/campaign_s45_a1b/campaign_results.json",
+     "n_keys": 20,
+     "spec_declares_ess_ageing_baseline": false
+    },
+    {
+     "file": "data/SRP1/Results/P515S45/campaign_s45_a2/campaign_results.json",
+     "n_keys": 5,
+     "spec_declares_ess_ageing_baseline": false
+    },
+    {
+     "file": "data/SRP1/Results/P515S45/campaign_s45_a3/campaign_results.json",
+     "n_keys": 5,
+     "spec_declares_ess_ageing_baseline": false
+    },
+    {
+     "file": "data/SRP1/Results/P515S45/reverify_aa_c_star/campaign_results.json",
+     "n_keys": 0,
+     "spec_declares_ess_ageing_baseline": false
+    },
+    {
+     "file": "data/SRP1/Results/P515S46/campaign_s46_ageing/campaign_results.json",
+     "n_keys": 5,
+     "spec_declares_ess_ageing_baseline": false
+    }
+   ],
+   "n_files": 10,
+   "key_collisions": [],
+   "specs_declaring_a_baseline": [],
+   "ok": true
+  },
+  "I_x_cross_check_vs_W2": {
+   "n": 105,
+   "max_abs_diff_eur": 2.3283064365386963e-10,
+   "worst_label": "n9_4h_e5_y2030",
+   "ok": true
+  },
+  "degradation_clause": {
+   "unit_step_costs_eur": {
+    "P_2025": 64079.331064965416,
+    "E_2025": 126938.83871929655,
+    "P_2030": 47596.02220786583,
+    "E_2030": 94285.99965563012,
+    "P_2035": 39901.733134216716,
+    "E_2035": 79043.89110756524
+   },
+   "min_unit_step_cost_eur": 39901.733134216716,
+   "sigma_Q_eur": 18449.663947025518,
+   "sigma_Q_exceeds_one_step": false,
+   "two_sigma_Q_below_min_step": true,
+   "triggered": false,
+   "note": "the year coordinate has no fixed step cost (it scales with the capacity moved); its smallest unit move on the domain is recorded separately as min_year_step_cost_eur",
+   "min_year_step_cost_eur": 22936.397621714,
+   "between": [
+    "y2030__n9_p0.25_e0.5",
+    "y2035__n9_p0.25_e0.5"
+   ]
+  }
+ },
+ "rule_eleven_asserted_before_run": {
+  "record_status": true,
+  "record_barrier_cause": true,
+  "record_Q_gross": true,
+  "record_bar": true,
+  "record_cycles_and_certification_cycle": true,
+  "record_rule_ten": true,
+  "record_wall_and_rss": true,
+  "per_cycle_trajectory_written": true,
+  "ess_ageing_readback_terminal": true,
+  "parent_barrier_record_for_missing": true,
+  "poll_record_fields": true,
+  "candidate_record_fields": true,
+  "terminal_record_fields": true,
+  "unit_poll_completion_record": true
+ },
+ "parent_solve_profile_guard": {
+  "counts": {
+   "permitted_solve": 0,
+   "permitted_exec": 0,
+   "blocked_solve": 0,
+   "blocked_exec": 0
+  },
+  "verify_0_failures": []
+ },
+ "wall_clock_s": 12580.330793142319
+}
