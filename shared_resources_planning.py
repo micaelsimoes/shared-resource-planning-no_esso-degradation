@@ -807,19 +807,95 @@ def _get_operational_detector_component_blocks(planning_problem, models):
     return blocks
 
 
-def _get_local_interface_settlement(model):
+def _get_local_interface_settlement(model, part='total'):
     # P5.15 Step 3.1-C (PLANNER_BRIEF_2026-09-13.md Addendum 12 item 1): the
     # local block's settlement contribution at its CURRENT weight (1 in the
     # ADMM path, 0 otherwise) -- `model.interface_settlement_weight *
     # model.interface_settlement`, read directly off the model so it can never
     # diverge from what `objective_function_rule` actually added.
-    return pe.value(model.interface_settlement_weight) * pe.value(model.interface_settlement)
+    #
+    # P5.15 Addendum 38 (C): `part` selects one side of the settlement SPLIT.
+    #   'total'      -- the whole settlement, as before (the default: every existing
+    #                   caller keeps its exact meaning);
+    #   'contracted' -- the commitment valued at the mean price pibar_t: a TRANSFER,
+    #                   which cancels against the other side at consensus and which is
+    #                   what Q(x) now excludes;
+    #   'deviation'  -- settlement - contracted = the price-deviation COVARIANCE, which
+    #                   is economic and stays inside Q(x).
+    # A model built before Addendum 38 (a preserved fixture) carries no split; its
+    # 'contracted' part is then the whole settlement and its 'deviation' part is 0,
+    # which is also the exact truth at one market scenario.
+    weight = pe.value(model.interface_settlement_weight)
+    if part == 'total':
+        return weight * pe.value(model.interface_settlement)
+    if part == 'contracted':
+        if not hasattr(model, 'interface_settlement_contracted'):
+            return weight * pe.value(model.interface_settlement)
+        return weight * pe.value(model.interface_settlement_contracted)
+    if part == 'deviation':
+        if not hasattr(model, 'interface_settlement_deviation'):
+            return 0.0
+        return weight * pe.value(model.interface_settlement_deviation)
+    raise ValueError(f"_get_local_interface_settlement: unknown part {part!r}; "
+                     "expected 'total', 'contracted' or 'deviation'.")
 
 
-def _get_operational_interface_settlement_blocks(planning_problem, models):
+def _get_local_voltage_pin(model):
+    """P5.15 Addendum 38 (D): the block's interface-voltage pin,
+    `scenario_voltage_pin_weight * scenario_voltage_pin`, at its current weight.
+
+    The pin is a category-D detector: it IS in the solver objective (it is added by
+    `objective_function_rule`, so `model.objective` and that rule coincide) and is
+    excluded from the reported Q(x) by `_get_operational_recourse_components`. Returns
+    0.0 for a model that carries no pin -- one scenario, or a pre-Addendum-38 fixture,
+    whose retired `scenario_deviation_penalty` was never inside `objective_function_rule`
+    and so must NOT be subtracted from that model's Q(x)."""
+    if not hasattr(model, 'scenario_voltage_pin'):
+        return 0.0
+    return pe.value(model.scenario_voltage_pin_weight) * pe.value(model.scenario_voltage_pin)
+
+
+def _get_local_scenario_voltage_mismatch(model, network):
+    """P5.15 Addendum 38 (D): "the per-scenario mismatch is reported" -- the interface
+    voltage's dispersion around the block's own committed (expected) interface voltage,
+    in per unit: the probability-weighted RMS and the max over scenarios and periods.
+    Independent of the pin's weight, and computed even when no pin is wired."""
+    if not hasattr(model, 'expected_interface_vmag'):
+        return None
+    is_transmission = bool(network.is_transmission)
+    weighted_square = 0.0
+    max_abs = 0.0
+    n_terms = 0
+    for s_m in model.scenarios_market:
+        for s_o in model.scenarios_operation:
+            probability = network.prob_market_scenarios[s_m] * network.prob_operation_scenarios[s_o]
+            for p in model.periods:
+                if is_transmission:
+                    for dn in model.adn_nodes:
+                        mismatch = pe.value(model.vmag_adn[dn, s_m, s_o, p]) - pe.value(model.expected_interface_vmag[dn, p])
+                        weighted_square += probability * mismatch ** 2
+                        max_abs = max(max_abs, abs(mismatch))
+                        n_terms += 1
+                else:
+                    mismatch = pe.value(model.vmag_adn[s_m, s_o, p]) - pe.value(model.expected_interface_vmag[p])
+                    weighted_square += probability * mismatch ** 2
+                    max_abs = max(max_abs, abs(mismatch))
+                    n_terms += 1
+    return {
+        'rms_pu': sqrt(weighted_square / len(model.periods)) if n_terms else 0.0,
+        'max_abs_pu': max_abs,
+        'weighted_sum_of_squares_pu2': weighted_square,
+        'n_terms': n_terms,
+    }
+
+
+def _get_operational_interface_settlement_blocks(planning_problem, models, part='total'):
     # P5.15 Step 3.1-C (Addendum 12 item 1): weighted (year/day/discount, as
     # `get_primal_value` uses -- `_get_admm_block_weight`) per-block settlement
     # T_TSO / T_DSO, mirroring `_get_operational_detector_component_blocks`.
+    # P5.15 Addendum 38 (C): `part` is passed through to
+    # `_get_local_interface_settlement` ('total' by default -- every existing caller
+    # keeps its exact meaning).
     blocks = {}
 
     transmission_network = planning_problem.transmission_network
@@ -827,16 +903,146 @@ def _get_operational_interface_settlement_blocks(planning_problem, models):
         for day in transmission_network.days:
             local_model = models['tso'][year][day]
             weight = _get_admm_block_weight(transmission_network, year, day)
-            blocks[('TSO', None, year, day)] = weight * _get_local_interface_settlement(local_model)
+            blocks[('TSO', None, year, day)] = weight * _get_local_interface_settlement(local_model, part=part)
 
     for node_id, distribution_network in planning_problem.distribution_networks.items():
         for year in distribution_network.years:
             for day in distribution_network.days:
                 local_model = models['dso'][node_id][year][day]
                 weight = _get_admm_block_weight(distribution_network, year, day)
-                blocks[('DSO', node_id, year, day)] = weight * _get_local_interface_settlement(local_model)
+                blocks[('DSO', node_id, year, day)] = weight * _get_local_interface_settlement(local_model, part=part)
 
     return blocks
+
+
+def _get_local_interface_dispersion(model, network):
+    """P5.15 Addendum 37 ("Dispersion metric") / Addendum 38: per DSO block, the
+    dispersion of the per-scenario interface exchange around the block's OWN committed
+    schedule -- exactly the quantity row 18 prices.
+
+    d_{s,t} = p_int_{s,t} - pbar_t (and the reactive counterpart), in MW / MVAr:
+      * `rms_mw`  -- probability-weighted RMS over scenarios and hours;
+      * `max_abs_mw` -- max over scenarios and hours;
+      * `*_share_of_mean_flow` -- the same, divided by the mean |pbar_t| over hours
+        ("as a share of the mean interface flow"); None when that mean is zero;
+      * `row18_charge` -- the block's row 18 charge at its configured alpha (0 when row
+        18 is not wired), read off `model.row18_deviation_charge` so it can never diverge
+        from what `objective_function_rule` added, and `alpha` / `premium_by_period`
+        beside it so the charge is interpretable without the model.
+    Returns None for a block with no committed interface schedule (no
+    `expected_interface_pf_p`), and is defined -- and worth reporting -- whether or not
+    row 18 is active, which is what makes the alpha = 0 arm a usable reference."""
+    if network.is_transmission or not hasattr(model, 'expected_interface_pf_p'):
+        return None
+
+    s_base = network.baseMVA
+    weighted_square_p = 0.0
+    weighted_square_q = 0.0
+    max_abs_p = 0.0
+    max_abs_q = 0.0
+    per_scenario = {}
+    for s_m in model.scenarios_market:
+        for s_o in model.scenarios_operation:
+            probability = network.prob_market_scenarios[s_m] * network.prob_operation_scenarios[s_o]
+            scen_key = f'{s_m}_{s_o}'
+            d_p_profile = []
+            d_q_profile = []
+            for p in model.periods:
+                d_p = (pe.value(model.pg_adn[s_m, s_o, p]) - pe.value(model.expected_interface_pf_p[p])) * s_base
+                d_q = (pe.value(model.qg_adn[s_m, s_o, p]) - pe.value(model.expected_interface_pf_q[p])) * s_base
+                weighted_square_p += probability * d_p ** 2
+                weighted_square_q += probability * d_q ** 2
+                max_abs_p = max(max_abs_p, abs(d_p))
+                max_abs_q = max(max_abs_q, abs(d_q))
+                d_p_profile.append(d_p)
+                d_q_profile.append(d_q)
+            per_scenario[scen_key] = {'d_p_mw': d_p_profile, 'd_q_mvar': d_q_profile}
+
+    n_periods = len(model.periods)
+    mean_abs_flow_mw = sum(abs(pe.value(model.expected_interface_pf_p[p])) for p in model.periods) * s_base / n_periods
+    mean_abs_flow_mvar = sum(abs(pe.value(model.expected_interface_pf_q[p])) for p in model.periods) * s_base / n_periods
+    rms_p = sqrt(weighted_square_p / n_periods)
+    rms_q = sqrt(weighted_square_q / n_periods)
+
+    row18_charge = float(pe.value(model.row18_deviation_charge)) if hasattr(model, 'row18_deviation_charge') else 0.0
+    row18_alpha = float(pe.value(model.row18_alpha)) if hasattr(model, 'row18_alpha') else 0.0
+    premium_by_period = ({p: float(pe.value(model.row18_premium[p])) for p in model.periods}
+                         if hasattr(model, 'row18_premium') else None)
+
+    return {
+        'p': {
+            'rms_mw': rms_p,
+            'max_abs_mw': max_abs_p,
+            'rms_share_of_mean_flow': (rms_p / mean_abs_flow_mw) if mean_abs_flow_mw else None,
+            'max_abs_share_of_mean_flow': (max_abs_p / mean_abs_flow_mw) if mean_abs_flow_mw else None,
+            'mean_abs_committed_flow_mw': mean_abs_flow_mw,
+        },
+        'q': {
+            'rms_mvar': rms_q,
+            'max_abs_mvar': max_abs_q,
+            'rms_share_of_mean_flow': (rms_q / mean_abs_flow_mvar) if mean_abs_flow_mvar else None,
+            'max_abs_share_of_mean_flow': (max_abs_q / mean_abs_flow_mvar) if mean_abs_flow_mvar else None,
+            'mean_abs_committed_flow_mvar': mean_abs_flow_mvar,
+        },
+        'row18_charge': row18_charge,
+        'row18_alpha': row18_alpha,
+        'row18_wired': hasattr(model, 'row18_deviation_charge'),
+        'row18_premium_by_period': premium_by_period,
+        'per_scenario': per_scenario,
+        'n_scenarios': len(model.scenarios_market) * len(model.scenarios_operation),
+    }
+
+
+def _get_operational_interface_dispersion(planning_problem, models):
+    """P5.15 Addendum 37/38: `_get_local_interface_dispersion` per DSO block, keyed like
+    `_get_operational_interface_settlement_blocks`. The TSO carries no dispersion (its
+    per-scenario deviation is fixed at zero, ruling A) and is not reported here."""
+    detail = {}
+    for node_id, distribution_network in planning_problem.distribution_networks.items():
+        for year in distribution_network.years:
+            for day in distribution_network.days:
+                detail[('DSO', node_id, year, day)] = _get_local_interface_dispersion(
+                    models['dso'][node_id][year][day], distribution_network.network[year][day])
+    return detail
+
+
+def _get_operational_voltage_pin_blocks(planning_problem, models):
+    # P5.15 Addendum 38 (D): weighted per-block interface-voltage pin, exactly
+    # mirroring `_get_operational_interface_settlement_blocks`.
+    blocks = {}
+
+    transmission_network = planning_problem.transmission_network
+    for year in transmission_network.years:
+        for day in transmission_network.days:
+            weight = _get_admm_block_weight(transmission_network, year, day)
+            blocks[('TSO', None, year, day)] = weight * _get_local_voltage_pin(models['tso'][year][day])
+
+    for node_id, distribution_network in planning_problem.distribution_networks.items():
+        for year in distribution_network.years:
+            for day in distribution_network.days:
+                weight = _get_admm_block_weight(distribution_network, year, day)
+                blocks[('DSO', node_id, year, day)] = weight * _get_local_voltage_pin(models['dso'][node_id][year][day])
+
+    return blocks
+
+
+def _get_operational_scenario_voltage_mismatch(planning_problem, models):
+    # P5.15 Addendum 38 (D): the per-scenario interface-voltage mismatch, per block.
+    detail = {}
+
+    transmission_network = planning_problem.transmission_network
+    for year in transmission_network.years:
+        for day in transmission_network.days:
+            detail[('TSO', None, year, day)] = _get_local_scenario_voltage_mismatch(
+                models['tso'][year][day], transmission_network.network[year][day])
+
+    for node_id, distribution_network in planning_problem.distribution_networks.items():
+        for year in distribution_network.years:
+            for day in distribution_network.days:
+                detail[('DSO', node_id, year, day)] = _get_local_scenario_voltage_mismatch(
+                    models['dso'][node_id][year][day], distribution_network.network[year][day])
+
+    return detail
 
 
 _INTERFACE_REPORTING_PRICE_CONVENTION = (
@@ -933,8 +1139,15 @@ def _get_interface_reporting_detail(planning_problem, models):
                     for s_m in local_tso_model.scenarios_market:
                         for s_o in local_tso_model.scenarios_operation:
                             scen_key = f'{s_m}_{s_o}'
-                            delta_p_by_scenario[scen_key] = pe.value(local_tso_model.interface_delta_p[dn, s_m, s_o, p]) * s_base
-                            delta_q_by_scenario[scen_key] = pe.value(local_tso_model.interface_delta_q[dn, s_m, s_o, p]) * s_base
+                            # P5.15 Addendum 38 (A): the TSO's interface flexibility is
+                            # scenario-free -- every scenario's interface expression
+                            # references the first pair's copy, and the other copies stay
+                            # fixed at 0 and unwired. Report the flexibility the TSO
+                            # actually applies in each scenario, which is that one value.
+                            # At one scenario these indices are (s_m, s_o) themselves.
+                            s_m0, s_o0 = sess_na_scenario(local_tso_model)
+                            delta_p_by_scenario[scen_key] = pe.value(local_tso_model.interface_delta_p[dn, s_m0, s_o0, p]) * s_base
+                            delta_q_by_scenario[scen_key] = pe.value(local_tso_model.interface_delta_q[dn, s_m0, s_o0, p]) * s_base
                             anchor_p_by_scenario[scen_key] = pe.value(local_tso_model.pc[adn_load_idx, s_m, s_o, p]) * s_base
                             anchor_q_by_scenario[scen_key] = pe.value(local_tso_model.qc[adn_load_idx, s_m, s_o, p]) * s_base
 
@@ -1043,7 +1256,52 @@ def _get_operational_recourse_components(planning_problem, models):
             interface_settlement_dso[node_id] = interface_settlement_dso.get(node_id, 0.0) + value
     interface_settlement_total = interface_settlement_tso + sum(interface_settlement_dso.values())
 
-    gross_operational_cost = gross_operational_cost_including_settlement - interface_settlement_total
+    # P5.15 Addendum 38 (C) (frozen spec v21 `row18_design.C_settlement`): the settlement
+    # SPLIT. With the TSO pinned (ruling A) the settlement no longer cancels: its residual
+    # is the price-deviation covariance -- the energy the DSO deviated by, valued at the
+    # scenario price -- which is ECONOMIC and stays in Q(x). Only the CONTRACTED part (the
+    # commitment at the mean price) is a transfer, and only that part is excluded here.
+    # Addendum 13's cancellation gate accordingly becomes
+    #     residual := T_TSO + sum_DSO T_DSO  ==  covariance term   (by construction),
+    # and both sides of that identity are reported below
+    # (`interface_settlement_total`, `interface_settlement_deviation_total`), together
+    # with the leftover `interface_settlement_identity_residual`, which is the SAME
+    # price-weighted interface consensus residual Addendum 13 measured at 2e-7.
+    #
+    # With ONE market scenario the covariance is identically zero and the contracted part
+    # IS the whole settlement, so `gross_operational_cost` is bit-for-bit what it was.
+    contracted_blocks = _get_operational_interface_settlement_blocks(planning_problem, models, part='contracted')
+    deviation_blocks = _get_operational_interface_settlement_blocks(planning_problem, models, part='deviation')
+    interface_settlement_contracted_tso = sum(value for (kind, _node, _year, _day), value in contracted_blocks.items() if kind == 'TSO')
+    interface_settlement_contracted_dso = {}
+    for (kind, node_id, year, day), value in contracted_blocks.items():
+        if kind == 'DSO':
+            interface_settlement_contracted_dso[node_id] = interface_settlement_contracted_dso.get(node_id, 0.0) + value
+    interface_settlement_contracted_total = interface_settlement_contracted_tso + sum(interface_settlement_contracted_dso.values())
+
+    interface_settlement_deviation_tso = sum(value for (kind, _node, _year, _day), value in deviation_blocks.items() if kind == 'TSO')
+    interface_settlement_deviation_dso = {}
+    for (kind, node_id, year, day), value in deviation_blocks.items():
+        if kind == 'DSO':
+            interface_settlement_deviation_dso[node_id] = interface_settlement_deviation_dso.get(node_id, 0.0) + value
+    interface_settlement_deviation_total = interface_settlement_deviation_tso + sum(interface_settlement_deviation_dso.values())
+    interface_settlement_identity_residual = interface_settlement_total - interface_settlement_deviation_total
+
+    # P5.15 Addendum 38 (D): the interface-voltage pin is a SOLVER-ONLY term. It is inside
+    # `objective_function_rule` (so `model.objective` and that rule coincide, which is what
+    # restores "polish Delta <= 0 by construction" above 1 x 1) and is subtracted back out
+    # here, exactly as the settlement transfer is. 0 at one scenario.
+    voltage_pin_blocks = _get_operational_voltage_pin_blocks(planning_problem, models)
+    voltage_pin_tso = sum(value for (kind, _node, _year, _day), value in voltage_pin_blocks.items() if kind == 'TSO')
+    voltage_pin_dso = {}
+    for (kind, node_id, year, day), value in voltage_pin_blocks.items():
+        if kind == 'DSO':
+            voltage_pin_dso[node_id] = voltage_pin_dso.get(node_id, 0.0) + value
+    voltage_pin_total = voltage_pin_tso + sum(voltage_pin_dso.values())
+
+    gross_operational_cost = (gross_operational_cost_including_settlement
+                              - interface_settlement_contracted_total
+                              - voltage_pin_total)
     terminal_salvage_value = planning_problem.shared_ess_data.get_salvage_value(models['esso'])
     net_operational_recourse = gross_operational_cost - terminal_salvage_value
 
@@ -1064,6 +1322,20 @@ def _get_operational_recourse_components(planning_problem, models):
         'interface_settlement_tso': interface_settlement_tso,
         'interface_settlement_dso': interface_settlement_dso,
         'interface_settlement_total': interface_settlement_total,
+        # P5.15 Addendum 38 (C): the split, and both sides of the identity that replaces
+        # Addendum 13's cancellation gate.
+        'interface_settlement_contracted_tso': interface_settlement_contracted_tso,
+        'interface_settlement_contracted_dso': interface_settlement_contracted_dso,
+        'interface_settlement_contracted_total': interface_settlement_contracted_total,
+        'interface_settlement_deviation_tso': interface_settlement_deviation_tso,
+        'interface_settlement_deviation_dso': interface_settlement_deviation_dso,
+        'interface_settlement_deviation_total': interface_settlement_deviation_total,
+        'interface_settlement_covariance_total': interface_settlement_deviation_total,
+        'interface_settlement_identity_residual': interface_settlement_identity_residual,
+        # P5.15 Addendum 38 (D): the solver-only interface-voltage pin, excluded above.
+        'voltage_pin_tso': voltage_pin_tso,
+        'voltage_pin_dso': voltage_pin_dso,
+        'voltage_pin_total': voltage_pin_total,
         'terminal_salvage_value': terminal_salvage_value,
         'net_operational_recourse': net_operational_recourse,
         'detector_penalty_total': detector_penalty_total,
@@ -1103,7 +1375,12 @@ def _get_operational_recourse_block_components(planning_problem, models):
         for day in transmission_network.days:
             model = models['tso'][year][day]
             local_value = transmission_network.network[year][day].get_primal_value(model, transmission_network.params)
-            local_value -= _get_local_interface_settlement(model)
+            # P5.15 Addendum 38 (C)/(D): exclude exactly what
+            # `_get_operational_recourse_components` excludes -- the CONTRACTED settlement
+            # (the transfer) and the solver-only voltage pin -- so this decomposition
+            # keeps reconciling with `net_operational_recourse`.
+            local_value -= _get_local_interface_settlement(model, part='contracted')
+            local_value -= _get_local_voltage_pin(model)
             weight = _get_admm_block_weight(transmission_network, year, day)
             blocks[('TSO', None, year, day)] = float(weight * local_value)
 
@@ -1114,7 +1391,9 @@ def _get_operational_recourse_block_components(planning_problem, models):
             for day in distribution_network.days:
                 model = models['dso'][node_id][year][day]
                 local_value = distribution_network.network[year][day].get_primal_value(model, distribution_network.params)
-                local_value -= _get_local_interface_settlement(model)
+                # P5.15 Addendum 38 (C)/(D): see the TSO branch above.
+                local_value -= _get_local_interface_settlement(model, part='contracted')
+                local_value -= _get_local_voltage_pin(model)
                 weight = _get_admm_block_weight(distribution_network, year, day)
                 blocks[('DSO', node_id, year, day)] = float(weight * local_value)
 
@@ -2574,11 +2853,16 @@ def _run_operational_planning(planning_problem, candidate_solution, initial_stat
     if initial_state is None:
         # Create ADMM variables and obtain the initial local solutions.
         consensus_vars, dual_vars = create_admm_variables(planning_problem)
+        # P5.15 Addendum 38: row 18's imbalance premium. Default-inactive (alpha = 0,
+        # no floor) unless a campaign/harness configuration or the case file raises it.
+        interface_premium = admm_parameters.interface_deviation_premium
         dso_models, results['dso'] = create_distribution_networks_models(
             distribution_networks,
             consensus_vars,
             candidate_solution['total_capacity'],
             parallel_execution=planning_problem.parallel_execution,
+            premium_alpha=interface_premium['alpha'],
+            premium_floor=interface_premium['floor'],
         )
         tso_model, results['tso'] = create_transmission_network_model(
             planning_problem, consensus_vars, candidate_solution['total_capacity']
@@ -3540,7 +3824,13 @@ def _compute_common_admm_objective_scale(planning_problem, tso_model, dso_models
             weight = _get_admm_block_weight(transmission_network, year, day)
             raw_value = pe.value(tso_model[year][day].objective.expr)
             weighted_value = abs(weight * raw_value)
-            scenario_penalty = pe.value(tso_model[year][day].scenario_deviation_penalty) if hasattr(tso_model[year][day], 'scenario_deviation_penalty') else 0.0
+            # P5.15 Addendum 38: the scenario-deviation quadratic is unwired; the
+            # block's scenario-deviation term is now the interface-voltage pin. The
+            # legacy attribute is still read first so a preserved fixture reports the
+            # same quantity it always did.
+            scenario_penalty = (pe.value(tso_model[year][day].scenario_deviation_penalty)
+                                if hasattr(tso_model[year][day], 'scenario_deviation_penalty')
+                                else _get_local_voltage_pin(tso_model[year][day]))
             raw_base = raw_value - scenario_penalty
             if isfinite(weighted_value) and weighted_value > SMALL_TOLERANCE:
                 values.append(weighted_value)
@@ -3567,7 +3857,10 @@ def _compute_common_admm_objective_scale(planning_problem, tso_model, dso_models
                 weight = _get_admm_block_weight(distribution_network, year, day)
                 raw_value = pe.value(dso_models[node_id][year][day].objective.expr)
                 weighted_value = abs(weight * raw_value)
-                scenario_penalty = pe.value(dso_models[node_id][year][day].scenario_deviation_penalty) if hasattr(dso_models[node_id][year][day], 'scenario_deviation_penalty') else 0.0
+                # P5.15 Addendum 38: see the TSO branch above.
+                scenario_penalty = (pe.value(dso_models[node_id][year][day].scenario_deviation_penalty)
+                                    if hasattr(dso_models[node_id][year][day], 'scenario_deviation_penalty')
+                                    else _get_local_voltage_pin(dso_models[node_id][year][day]))
                 raw_base = raw_value - scenario_penalty
                 if isfinite(weighted_value) and weighted_value > SMALL_TOLERANCE:
                     values.append(weighted_value)
@@ -3721,6 +4014,18 @@ def _resolve_esso_al_scale(planning_problem, admm_parameters, objective_scale_us
 
 
 def _add_tso_scenario_deviation_penalty(model, network, include_voltage=True):
+    """RETIRED by P5.15 Addendum 38 (frozen spec v21 `row18_design.quadratic_pin`:
+    "the existing scenario-deviation quadratic (9e4 V + interface P/Q, 1e4 storage,
+    both sides) is UNWIRED, NOT DELETED").
+
+    UNWIRED AND UNUSED -- do not call this from any model build. Every call site now
+    calls `model_construction_helpers.add_scenario_commitment_terms`, which puts the
+    DSO-side row 18 premium INSIDE `objective_function_rule` (so it enters Q(x)) and
+    keeps the interface-voltage pin as a solver-only term excluded from Q(x). The
+    function body is retained under the repository retain-and-unwire rule: preserved
+    fixtures hold `functools.partial` objects that resolve names at unpickling, and
+    `p51_small_capacity_scaling_diagnostic.py` still calls the DSO variant.
+    """
 
     # P5.15-1b (PLANNER_BRIEF_2026-09-13.md, Step 2 Candidate 5): with a
     # single market and a single operation scenario the five deviation
@@ -3758,6 +4063,8 @@ def _add_tso_scenario_deviation_penalty(model, network, include_voltage=True):
 
 
 def _add_dso_scenario_deviation_penalty(model, network, include_voltage=True):
+    """RETIRED by P5.15 Addendum 38 -- see `_add_tso_scenario_deviation_penalty`'s
+    docstring. UNWIRED on every production path; retained, not deleted."""
 
     # P5.15-1b (PLANNER_BRIEF_2026-09-13.md, Step 2 Candidate 5): see the
     # identical guard and rationale in `_add_tso_scenario_deviation_penalty`.
@@ -3883,12 +4190,25 @@ def create_transmission_network_model(planning_problem, consensus_vars, candidat
                             tso_model[year][day].flex_q_up[adn_load_idx, s_m, s_o, p].fix(0.00)
                             tso_model[year][day].flex_q_down[adn_load_idx, s_m, s_o, p].fix(0.00)
 
-                            tso_model[year][day].interface_delta_p[dn, s_m, s_o, p].fixed = False
-                            tso_model[year][day].interface_delta_q[dn, s_m, s_o, p].fixed = False
-                            tso_model[year][day].interface_delta_p[dn, s_m, s_o, p].setlb(-interface_transf_rating)
-                            tso_model[year][day].interface_delta_p[dn, s_m, s_o, p].setub(interface_transf_rating)
-                            tso_model[year][day].interface_delta_q[dn, s_m, s_o, p].setlb(-interface_transf_rating)
-                            tso_model[year][day].interface_delta_q[dn, s_m, s_o, p].setub(interface_transf_rating)
+                            # P5.15 Addendum 38 (A) (frozen spec v21 `row18_design.A_tso`):
+                            # the TSO's per-scenario interface DEVIATIONS are fixed at zero
+                            # -- it operates on the committed schedule in every scenario.
+                            # `interface_delta` itself is NOT fixed at zero (Addendum 12
+                            # item 2 forbids that: it is the TSO's only interface
+                            # flexibility channel here); it is made SCENARIO-FREE. Only the
+                            # first scenario pair's copy is freed, and that copy is the one
+                            # every scenario's interface expression and node-balance row
+                            # references (`interface_pf_p_transmission_def`,
+                            # `compute_node_load`). The other copies stay fixed at 0,
+                            # retained and unwired. At one scenario this loop body is
+                            # entered exactly as before.
+                            if (s_m, s_o) == sess_na_scenario(tso_model[year][day]):
+                                tso_model[year][day].interface_delta_p[dn, s_m, s_o, p].fixed = False
+                                tso_model[year][day].interface_delta_q[dn, s_m, s_o, p].fixed = False
+                                tso_model[year][day].interface_delta_p[dn, s_m, s_o, p].setlb(-interface_transf_rating)
+                                tso_model[year][day].interface_delta_p[dn, s_m, s_o, p].setub(interface_transf_rating)
+                                tso_model[year][day].interface_delta_q[dn, s_m, s_o, p].setlb(-interface_transf_rating)
+                                tso_model[year][day].interface_delta_q[dn, s_m, s_o, p].setub(interface_transf_rating)
 
             # Add expected interface values shared-ESS schedule
             tso_model[year][day].expected_interface_vmag = pe.Var(tso_model[year][day].active_distribution_networks, tso_model[year][day].periods, domain=pe.NonNegativeReals, initialize=1.0)
@@ -3904,8 +4224,17 @@ def create_transmission_network_model(planning_problem, consensus_vars, candidat
             for e in tso_model[year][day].shared_energy_storages:
                 configure_shared_ess_operational_state(tso_model[year][day], e, pe.value(tso_model[year][day].shared_es_s_rated_fixed[e]), pe.value(tso_model[year][day].shared_es_e_rated_fixed[e]),)
 
-            # A soft, probability-weighted penalty promotes one expected interface schedule.
-            _add_tso_scenario_deviation_penalty(tso_model[year][day], transmission_network.network[year][day])
+            # P5.15 Addendum 38: the interface-voltage pin (category D, solver-only,
+            # excluded from Q(x)). The TSO carries NO deviation charge (Addendum 37 (iii)
+            # / 38 (A)) -- `premium_alpha` is 0 on this side by construction -- and its
+            # per-scenario interface deviation is zero because `interface_delta` is
+            # scenario-free. Nothing is wired at one scenario.
+            add_scenario_commitment_terms(
+                tso_model[year][day],
+                transmission_network.network[year][day],
+                transmission_network.params,
+                premium_alpha=0.0,
+            )
 
     # Run SMOPF
     results = transmission_network.optimize(tso_model)
@@ -3935,14 +4264,20 @@ def create_transmission_network_model(planning_problem, consensus_vars, candidat
     return tso_model, results
 
 
-def create_distribution_networks_models(distribution_networks, consensus_vars, candidate_solution, parallel_execution=False):
+def create_distribution_networks_models(distribution_networks, consensus_vars, candidate_solution, parallel_execution=False, premium_alpha=0.0, premium_floor=None):
+    """`premium_alpha` / `premium_floor` carry the row 18 imbalance premium (P5.15
+    Addendum 38) down to `add_scenario_commitment_terms`. Both default to the INACTIVE
+    setting -- alpha = 0, no floor -- which is the behaviour of every result committed
+    before this stage; `_run_operational_planning` passes
+    `ADMMParameters.interface_deviation_premium`, itself default-inactive.
+    """
     if parallel_execution:
-        return create_distribution_networks_models_parallel(distribution_networks, consensus_vars, candidate_solution)
+        return create_distribution_networks_models_parallel(distribution_networks, consensus_vars, candidate_solution, premium_alpha=premium_alpha, premium_floor=premium_floor)
     else:
-        return create_distribution_networks_models_sequential(distribution_networks, consensus_vars, candidate_solution)
+        return create_distribution_networks_models_sequential(distribution_networks, consensus_vars, candidate_solution, premium_alpha=premium_alpha, premium_floor=premium_floor)
 
 
-def create_distribution_networks_models_sequential(distribution_networks, consensus_vars, candidate_solution):
+def create_distribution_networks_models_sequential(distribution_networks, consensus_vars, candidate_solution, premium_alpha=0.0, premium_floor=None):
 
     dso_models = dict()
     results = dict()
@@ -3977,8 +4312,17 @@ def create_distribution_networks_models_sequential(distribution_networks, consen
                 dso_model[year][day].expected_shared_ess_q_def = pe.Constraint(dso_model[year][day].periods, rule=partial(dn_interface_expected_sess_q_rule, network=distribution_network.network[year][day], shared_ess_idx=shared_ess_idx,),)
                 configure_shared_ess_operational_state(dso_model[year][day], shared_ess_idx, pe.value(dso_model[year][day].shared_es_s_rated_fixed[shared_ess_idx]), pe.value(dso_model[year][day].shared_es_e_rated_fixed[shared_ess_idx]),)
 
-                # A soft, probability-weighted penalty promotes one expected interface schedule.
-                _add_dso_scenario_deviation_penalty(dso_model[year][day], distribution_network.network[year][day],)
+                # P5.15 Addendum 38: row 18 (the DSO-side linear imbalance premium, inside
+                # `objective_function_rule` and therefore inside Q(x)) plus the
+                # interface-voltage pin. `premium_alpha` defaults to 0 -- row 18 inactive,
+                # the behaviour of every previously committed result.
+                add_scenario_commitment_terms(
+                    dso_model[year][day],
+                    distribution_network.network[year][day],
+                    distribution_network.params,
+                    premium_alpha=premium_alpha,
+                    premium_floor=premium_floor,
+                )
 
         # Run SMOPF
         results[node_id] = distribution_network.optimize(dso_model)
@@ -4010,7 +4354,7 @@ def create_distribution_networks_models_sequential(distribution_networks, consen
     return dso_models, results
 
 
-def create_distribution_networks_models_parallel(distribution_networks, consensus_vars, candidate_solution):
+def create_distribution_networks_models_parallel(distribution_networks, consensus_vars, candidate_solution, premium_alpha=0.0, premium_floor=None):
 
     results = dict()
     dso_models = dict()
@@ -4023,7 +4367,7 @@ def create_distribution_networks_models_parallel(distribution_networks, consensu
     with ProcessPoolExecutor(max_workers=max_workers) as executor:
 
         for node_id in distribution_networks:
-            tasks.append(executor.submit(create_distribution_network_model, node_id, distribution_networks[node_id], candidate_solution))
+            tasks.append(executor.submit(create_distribution_network_model, node_id, distribution_networks[node_id], candidate_solution, premium_alpha, premium_floor))
 
         for future in as_completed(tasks):
 
@@ -4055,7 +4399,7 @@ def create_distribution_networks_models_parallel(distribution_networks, consensu
     return dso_models, results
 
 
-def create_distribution_network_model(node_id, distribution_network, candidate_solution):
+def create_distribution_network_model(node_id, distribution_network, candidate_solution, premium_alpha=0.0, premium_floor=None):
 
     # Build model, fix candidate solution
     distribution_network.update_data_with_candidate_solution(candidate_solution)
@@ -4082,10 +4426,16 @@ def create_distribution_network_model(node_id, distribution_network, candidate_s
             dso_model[year][day].expected_shared_ess_q_def = pe.Constraint(dso_model[year][day].periods, rule=partial(dn_interface_expected_sess_q_rule, network=distribution_network.network[year][day], shared_ess_idx=shared_ess_idx,),)
             configure_shared_ess_operational_state(dso_model[year][day], shared_ess_idx, pe.value(dso_model[year][day].shared_es_s_rated_fixed[shared_ess_idx]), pe.value(dso_model[year][day].shared_es_e_rated_fixed[shared_ess_idx]),)
 
-    # Add probability-weighted deviations from the expected interface schedule.
+    # P5.15 Addendum 38: row 18 + the interface-voltage pin (see the sequential builder).
     for year in distribution_network.years:
         for day in distribution_network.days:
-            _add_dso_scenario_deviation_penalty(dso_model[year][day], distribution_network.network[year][day],)
+            add_scenario_commitment_terms(
+                dso_model[year][day],
+                distribution_network.network[year][day],
+                distribution_network.params,
+                premium_alpha=premium_alpha,
+                premium_floor=premium_floor,
+            )
 
     # Run SMOPF
     res = distribution_network.optimize(dso_model)
@@ -4230,8 +4580,20 @@ def _run_operational_planning_hierarchical(planning_problem, num_steps=8, print_
                         c = ineq['c'] / s_base
                         tso_model[year][day].pq_maps.add(a * tso_model[year][day].expected_interface_pf_p[dn, p] + b * tso_model[year][day].expected_interface_pf_q[dn, p] <= c)
 
-            # Promote the expected interface schedule represented by the PQ maps.
-            _add_tso_scenario_deviation_penalty(tso_model[year][day], transmission_network.network[year][day], include_voltage=False,)
+            # P5.15 Addendum 38 (`row18_design.quadratic_pin`): the interface P/Q and
+            # storage quadratic that used to promote one expected interface schedule here
+            # is UNWIRED. The voltage part was already excluded on this path
+            # (`include_voltage=False`), so above one scenario this benchmark path now
+            # carries no scenario-deviation term at all; at one scenario the quadratic was
+            # skipped anyway and nothing changes. The call is kept, explicitly wiring
+            # nothing, so the site stays visible.
+            add_scenario_commitment_terms(
+                tso_model[year][day],
+                transmission_network.network[year][day],
+                transmission_network.params,
+                premium_alpha=0.0,
+                include_voltage=False,
+            )
 
     # Optimize TN, Get resulting interface PFs
     print(f'[INFO] - Running OPF on {transmission_network.name} with hierarchical constraints...')
@@ -8055,9 +8417,15 @@ def _run_operational_planning_without_coordination(planning_problem):
                 dso_model[year][day].expected_interface_pf_p_def = pe.Constraint(dso_model[year][day].periods, rule=partial(dn_interface_expected_pf_p_rule, network=distribution_network.network[year][day]))
                 dso_model[year][day].expected_interface_pf_q_def = pe.Constraint(dso_model[year][day].periods, rule=partial(dn_interface_expected_pf_q_rule, network=distribution_network.network[year][day]))
 
-                _add_dso_scenario_deviation_penalty(
+                # P5.15 Addendum 38: the uncoordinated benchmark has no day-ahead
+                # commitment to deviate from and no settlement, so row 18 is inactive here
+                # (`premium_alpha=0`); the interface-voltage pin is kept, as on every
+                # other path.
+                add_scenario_commitment_terms(
                     dso_model[year][day],
                     distribution_network.network[year][day],
+                    distribution_network.params,
+                    premium_alpha=0.0,
                 )
 
         results['dso'][node_id] = distribution_network.optimize(dso_model)

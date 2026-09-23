@@ -85,6 +85,23 @@ def main(argv):
             'settlement_magnitude_scale': scale,
             't_sum_relative_to_settlement_scale': (t_sum / scale) if scale else None,
             't_sum_relative_to_system_cost': (t_sum / rc['gross_operational_cost']) if rc['gross_operational_cost'] else None,
+            # P5.15 Addendum 38 (C): with the TSO pinned the settlement no longer cancels
+            # to the priced consensus residual alone -- its residual IS the price-deviation
+            # covariance. Addendum 13's cancellation gate therefore becomes
+            #     T_TSO + sum_DSO T_DSO  ==  covariance term   (by construction),
+            # and BOTH sides are reported, together with what is left over
+            # (`identity_residual_t_sum_minus_covariance`), which is the same priced
+            # consensus residual the old gate measured. All four keys are `.get`: an
+            # artifact written before Addendum 38 reports them as None, and at one market
+            # scenario the covariance is identically zero, so this row reproduces the old
+            # cancellation statement exactly.
+            'contracted_total': rc.get('interface_settlement_contracted_total'),
+            'covariance_term_total': rc.get('interface_settlement_covariance_total'),
+            'identity_residual_t_sum_minus_covariance': rc.get('interface_settlement_identity_residual'),
+            'closure_identity_residual_plus_priced_residual': (
+                (rc['interface_settlement_identity_residual'] + priced_residual)
+                if rc.get('interface_settlement_identity_residual') is not None else None),
+            'voltage_pin_total_excluded_from_Qx': rc.get('voltage_pin_total'),
         },
         '2_convergence': {
             'cycles_run': g.get('cycles_run'), 'converged_at_cycle': g.get('converged_at_cycle'),

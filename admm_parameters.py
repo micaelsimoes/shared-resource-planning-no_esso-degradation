@@ -285,6 +285,36 @@ class ADMMParameters:
             'regularization': 1e-10,
         }
 
+        # P5.15 Addendum 38 (PLANNER_BRIEF_2026-09-13.md Addenda 10 / 37 / 38; frozen
+        # spec `data/SRP1/Results/P515S51/frozen_s51_spec_v21_13cb828c.json`,
+        # `row18_design`): ROW 18, the DSO-side imbalance premium on each per-scenario
+        # interface deviation from the block's own committed schedule, priced at
+        # c_t = alpha * pibar_t (pibar_t the probability-weighted mean market price of
+        # that hour, per representative year and day) and charged INSIDE
+        # `objective_function_rule`, i.e. inside Q(x).
+        #
+        # DEFAULT INACTIVE: `alpha` 0.0, source 'default'. At alpha = 0 the deviation
+        # variables and rows are NOT CONSTRUCTED AT ALL (structural absence, not a zero
+        # weight -- a zero-cost LP pair would leave a cost-free ray), so the model is the
+        # pre-Addendum-38 model and every committed result stands unchanged. At ONE
+        # scenario row 18 is additionally vacuous and is never constructed whatever alpha
+        # says (`add_scenario_commitment_terms`), which is what makes the SRP1 two-cycle
+        # bitwise gate hold.
+        #
+        # `floor` is a floor on pibar_t, applied ONLY if the price data of the case study
+        # actually has a non-positive hourly mean price (Addendum 38: "a premium floor
+        # only if any hour's mean price is non-positive" -- verified against the data
+        # before the run, never assumed). None (default) means no floor.
+        #
+        # May be set programmatically (campaign/harness configuration) or from an OPTIONAL
+        # case-file key `admm.interface_deviation_premium`; when the key is absent this
+        # dict is left exactly as it is, so every other case study loads unchanged.
+        self.interface_deviation_premium = {
+            'alpha': 0.0,
+            'floor': None,
+            'source': 'default',
+        }
+
     def read_parameters_from_file(self, params_data):
         _read_parameters_from_file(self, params_data)
 
@@ -591,9 +621,37 @@ def _read_parameters_from_file(admm_params, params_data):
     # every case study without this key loads unchanged. Present -> must be
     # an object with keys drawn from {enabled, memory, regularization,
     # reject_policy}, merged onto the current dict.
+    # P5.15 Addendum 38: optional row 18 premium. Absent key -> the default-inactive
+    # dict above (alpha 0.0, no floor, source 'default').
+    if 'interface_deviation_premium' in params_data:
+        admm_params.interface_deviation_premium = _read_interface_deviation_premium(
+            admm_params.interface_deviation_premium, params_data['interface_deviation_premium'])
+
     if 'anderson_acceleration' in params_data:
         admm_params.anderson_acceleration = _read_anderson_acceleration(
             admm_params.anderson_acceleration, params_data['anderson_acceleration'])
+
+
+def _read_interface_deviation_premium(current_settings, premium_data):
+    """P5.15 Addendum 38: validate and merge the optional row 18 premium block."""
+    if not isinstance(premium_data, dict):
+        raise ValueError('ADMM interface_deviation_premium must be an object (dict).')
+    supported_keys = {'alpha', 'floor'}
+    unknown_keys = sorted(set(premium_data) - supported_keys)
+    if unknown_keys:
+        raise ValueError(
+            f'ADMM interface_deviation_premium: unsupported keys {unknown_keys}; '
+            f'supported: {sorted(supported_keys)}.')
+    settings = dict(current_settings)
+    if 'alpha' in premium_data:
+        alpha = float(premium_data['alpha'])
+        if alpha < 0.0:
+            raise ValueError('ADMM interface_deviation_premium.alpha must be non-negative.')
+        settings['alpha'] = alpha
+    if 'floor' in premium_data and premium_data['floor'] is not None:
+        settings['floor'] = float(premium_data['floor'])
+    settings['source'] = 'case_file'
+    return settings
 
 
 def _read_anderson_acceleration(current_settings, aa_data):
