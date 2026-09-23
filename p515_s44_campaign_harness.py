@@ -157,6 +157,29 @@ m = 1 coefficients, everything else identical -- refusing on any mismatch; post-
 run's own DSO models are read back (`flex_price_readback_run_models`). m enters the eval key ONLY when != 1.0
 (`evaluation_key`), with `flex_price_label` == FLEX_PRICE_LABEL on the spec and the entry; every record of such
 an entry carries the multiplier (and the label when != 1.0). Entries without it keep their exact format and keys.
+P5.15 Addendum 39 (W47, the multi-scenario pilot): a spec may declare `configuration.derived_instance` -- a
+DERIVED case file written by `p515_s44_scale_measurement.derive_case` (it edits only Years / NumMarketScenarios /
+num_operation_scenarios of data/SRP1/SRP1.json), declared by EXACTLY `DERIVED_INSTANCE_KEYS`
+(`validate_derived_instance`): its repo-relative path and sha256, the scenario checksum production's reader
+computes for it, the instance label (never 'srp1'), and its source and changes (provenance). `freeze_campaign_spec`
+refuses unless the file hashes to the declaration. In the child, FIRST (before anything reads the oracle baseline),
+`install_derived_instance` hashes the file again, reads it with the scale harness's own reader
+(`p515_s44_scale_measurement.read_planning_from_derived_case`, plots redirected into the eval dir), refuses unless
+the combined scenario checksum equals the declaration, and installs it with `p56a_oracle.install_baseline`
+(W35's installable-baseline route), so every later `fresh_planning` -- the precheck and the run -- is the derived
+instance. An entry may carry `interface_deviation_premium` = {'alpha': a >= 0, 'floor': None | float}
+(`validate_interface_deviation_premium`): row 18's premium, applied in the configuration hook to
+`planning.params.admm.interface_deviation_premium` before any model is built and read back from the run's own
+DSO models afterwards. Both enter the eval key (`evaluation_key`) only when declared; every other spec keeps its
+exact format, keys and behaviour. With either declared, the post-run hook ALSO writes, zero solves and BEFORE any
+post-certification step (so on the terminal, unpolished models): `MULTISCENARIO_TERMINAL_FILE`
+(`multiscenario_terminal_capture`: per-block interface dispersion with per-DSO max-over-blocks RMS, E|d| and
+sum omega d^2; the row 18 charge and its read-back; the settlement split with the covariance recomputed
+independently; per-scenario costs reconciled to the block recourse; per-scenario interface profiles; the
+scenario-free shared-ESS schedule; the interface-voltage mismatch; the sigma calibration inputs), and production's
+own operational-planning workbook (`SharedResourcesPlanning.write_operational_planning_results_to_excel`, with the
+run's own SolverResults and primal evolution). A capture error is recorded in the record and the child exits 2
+after writing it (the evaluation itself stands), as a post-certification error does.
 AFTER the run, in the child, inside `run_admm_arm`'s post_run_hook (same live
 models/state), `run_post_certification` does, only if the trajectory is
 certified under the spec's bar (else it records `status: skipped` + reason):
@@ -229,7 +252,16 @@ POST_CERTIFICATION_KEYS = frozenset({'persist_certified_models', 'hull_polish', 
 # Addendum 27 (W14): 'investment_year' is the SINGLE cohort year this evaluation's candidate is
 # placed at; omitted => INVESTMENT_YEAR (2025), so every spec frozen before W14 is unchanged.
 EVALUATION_OPTION_KEYS = frozenset({'overrides', 'post_certification', 'investment_year', 'model_variant',
-                                    'flex_price_multiplier'})
+                                    'flex_price_multiplier', 'interface_deviation_premium'})
+# P5.15 Addendum 39 (W47): a DERIVED INSTANCE (see the module docstring) and row 18's premium. The identity keys
+# of a derived instance enter the eval key; the other keys are provenance. Absent -> nothing changes.
+DERIVED_INSTANCE_KEYS = frozenset({'instance_label', 'case_path', 'case_sha256', 'scenario_checksum',
+                                   'source_case_path', 'source_case_sha256', 'changes_vs_source'})
+DERIVED_INSTANCE_IDENTITY_KEYS = ('instance_label', 'case_sha256', 'scenario_checksum')
+DERIVED_INSTANCE_DATA_DIR_REL = os.path.join('data', 'SRP1')  # the scale harness's DATA_DIR (checked in the child)
+INTERFACE_DEVIATION_PREMIUM_KEYS = frozenset({'alpha', 'floor'})
+MULTISCENARIO_TERMINAL_FILE = 'multiscenario_terminal.json'
+MULTISCENARIO_IDENTITY_REL_TOL = 1e-9   # declared before any run: relative tolerance of the zero-solve identities
 # P5.15 Addendum 34 (W33): a uniform multiplier m on the DSO flexibility-price profile `cost_flex` (see
 # `validate_flex_price_multiplier` / `apply_flex_price_multiplier`). Absent or 1.0 = today's price; it enters the
 # eval key ONLY when present and != 1.0, so every key frozen before W33 is byte-identical.
@@ -516,6 +548,68 @@ def flex_price_multiplier_in_key(value):
     return None if (out is None or out == 1.0) else out
 
 
+_HEX64 = frozenset('0123456789abcdef')
+
+
+def _is_hex64(value):
+    return isinstance(value, str) and len(value) == 64 and set(value) <= _HEX64
+
+
+def validate_derived_instance(declared):
+    """P5.15 Addendum 39 (W47): a spec's declaration of a DERIVED instance (module docstring). None = not declared
+    (the canonical SRP1 instance, every pre-W47 meaning and key unchanged). Otherwise a dict of EXACTLY
+    `DERIVED_INSTANCE_KEYS`: instance_label (non-empty str, never 'srp1' -- the SRP1 contract is the canonical
+    checksum, which `p56a_oracle.install_baseline` enforces for that label), case_path / source_case_path
+    (repo-relative str), case_sha256 / source_case_sha256 / scenario_checksum (64 lowercase hex), changes_vs_source
+    (non-empty list). Returns a copy. No model import (parent side)."""
+    if declared is None:
+        return None
+    if not isinstance(declared, dict):
+        raise ValueError('derived_instance must be a dict')
+    missing, extra = sorted(DERIVED_INSTANCE_KEYS - set(declared)), sorted(set(declared) - DERIVED_INSTANCE_KEYS)
+    if missing or extra:
+        raise ValueError(f'derived_instance must carry exactly {sorted(DERIVED_INSTANCE_KEYS)}: missing={missing} '
+                         f'extra={extra}')
+    label = declared['instance_label']
+    if not isinstance(label, str) or not label.strip() or label == 'srp1':
+        raise ValueError(f"derived_instance.instance_label must be a non-empty str other than 'srp1', got {label!r}")
+    for name in ('case_path', 'source_case_path'):
+        value = declared[name]
+        if not isinstance(value, str) or not value or os.path.isabs(value):
+            raise ValueError(f'derived_instance.{name} must be a repo-relative path, got {value!r}')
+    for name in ('case_sha256', 'source_case_sha256', 'scenario_checksum'):
+        if not _is_hex64(declared[name]):
+            raise ValueError(f'derived_instance.{name} must be 64 lowercase hex characters, got {declared[name]!r}')
+    if not isinstance(declared['changes_vs_source'], list) or not declared['changes_vs_source']:
+        raise ValueError('derived_instance.changes_vs_source must be a non-empty list')
+    return json.loads(json.dumps(declared))
+
+
+def derived_instance_identity(derived_instance):
+    """The part of a validated derived-instance declaration that enters the eval key."""
+    return {k: derived_instance[k] for k in DERIVED_INSTANCE_IDENTITY_KEYS}
+
+
+def validate_interface_deviation_premium(value):
+    """P5.15 Addendum 39 (W47): row 18's premium for one evaluation, {'alpha': a, 'floor': f}. None = not given
+    (the case file's own setting -- SRP1: absent, i.e. alpha 0, row 18 inactive). alpha: finite number >= 0 (bool
+    refused); floor: None or a finite number (Addendum 38: a floor only if some hour's mean price is non-positive).
+    Returns {'alpha': float, 'floor': None | float}. No model import (parent side)."""
+    if value is None:
+        return None
+    if not isinstance(value, dict) or set(value) != INTERFACE_DEVIATION_PREMIUM_KEYS:
+        raise ValueError(f'interface_deviation_premium must be a dict with exactly '
+                         f'{sorted(INTERFACE_DEVIATION_PREMIUM_KEYS)}, got {value!r}')
+    alpha, floor = value['alpha'], value['floor']
+    if isinstance(alpha, bool) or not isinstance(alpha, (int, float)) or alpha != alpha \
+            or alpha in (float('inf'), float('-inf')) or alpha < 0.0:
+        raise ValueError(f'interface_deviation_premium.alpha must be a finite number >= 0, got {alpha!r}')
+    if floor is not None and (isinstance(floor, bool) or not isinstance(floor, (int, float)) or floor != floor
+                              or floor in (float('inf'), float('-inf'))):
+        raise ValueError(f'interface_deviation_premium.floor must be None or a finite number, got {floor!r}')
+    return {'alpha': float(alpha), 'floor': None if floor is None else float(floor)}
+
+
 def _ess_number(value, name, allow_none=False):
     if value is None and allow_none:
         return None
@@ -593,7 +687,7 @@ def load_ess_ageing_parameters(path):
 
 
 def evaluation_key(candidate_key_hex, overrides, case_file_aa=None, model_variant=None, ess_ageing_baseline=None,
-                   flex_price_multiplier=None):
+                   flex_price_multiplier=None, derived_instance=None, interface_deviation_premium=None):
     """Identity of one EVALUATION (candidate x configuration). The case-file
     configuration (no overrides) keeps the candidate key itself, so a D
     evaluation's directory name is `<candidate key16>_<label>` as in s44_gate;
@@ -616,10 +710,34 @@ def evaluation_key(candidate_key_hex, overrides, case_file_aa=None, model_varian
     (`flex_price_multiplier_in_key`), the key is sha256 of the SAME payload the rules above would hash plus
     'flex_price_multiplier': m -- never the bare candidate key (a case-file D evaluation under m != 1 hashes
     {candidate_key, overrides, flex_price_multiplier}). Absent or 1.0 returns exactly what the formulas above
-    return, so every key frozen before W33 is byte-identical."""
+    return, so every key frozen before W33 is byte-identical.
+    P5.15 Addendum 39 (W47): with a declared `derived_instance` and/or an `interface_deviation_premium` (validated),
+    the key is sha256 of {candidate_key, overrides} plus every declared item the rules above would hash
+    ('effective_anderson_acceleration', 'model_variant', 'ess_ageing_baseline', 'flex_price_multiplier' -- the last
+    only when != 1.0) plus 'derived_instance' (its identity keys: label, case sha256, scenario checksum) and/or
+    'interface_deviation_premium' -- never the bare candidate key, so one candidate on two instances, or under two
+    premiums, never shares a key. Both None returns exactly what the formulas above return."""
     model_variant = validate_model_variant(model_variant)
     ess_ageing_baseline = validate_ess_ageing_baseline(ess_ageing_baseline)
     flex_m = flex_price_multiplier_in_key(flex_price_multiplier)
+    derived_instance = validate_derived_instance(derived_instance)
+    premium = validate_interface_deviation_premium(interface_deviation_premium)
+    if derived_instance is not None or premium is not None:
+        payload = {'candidate_key': candidate_key_hex, 'overrides': overrides or {}}
+        if case_file_aa is not None:
+            payload['effective_anderson_acceleration'] = effective_anderson_acceleration(case_file_aa, overrides)
+        if model_variant is not None:
+            payload['model_variant'] = model_variant
+        if ess_ageing_baseline is not None:
+            payload['ess_ageing_baseline'] = ess_ageing_baseline
+        if flex_m is not None:
+            payload['flex_price_multiplier'] = flex_m
+        if derived_instance is not None:
+            payload['derived_instance'] = derived_instance_identity(derived_instance)
+        if premium is not None:
+            payload['interface_deviation_premium'] = premium
+        text = json.dumps(payload, sort_keys=True, separators=(',', ':'))
+        return hashlib.sha256(text.encode()).hexdigest()
     if ess_ageing_baseline is not None:
         payload = {'candidate_key': candidate_key_hex, 'overrides': overrides or {},
                    'ess_ageing_baseline': ess_ageing_baseline}
@@ -790,6 +908,10 @@ def freeze_campaign_spec(campaign_root, campaign_id, candidates, configuration, 
     `validate_ess_ageing_baseline`) with `ess_ageing_baseline_label`; then the ESS parameters file must load to
     it (refused otherwise), its sha256 is pinned as `configuration.ess_params_file`, and it enters every entry's
     eval key. Without it the spec keeps its exact format and keys.
+    P5.15 Addendum 39 (W47): `configuration` may carry `derived_instance` (`validate_derived_instance`; the case
+    file must hash to its `case_sha256`, refused otherwise) and an entry's options `interface_deviation_premium`
+    (`validate_interface_deviation_premium`); both enter the eval key and are recorded (spec
+    `configuration.derived_instance`, entry `interface_deviation_premium`) only when given.
     One entry = one EVALUATION: its `eval_key` (`evaluation_key`) identifies
     candidate x configuration; labels and eval keys must be unique (the same
     candidate may appear under two configurations)."""
@@ -815,6 +937,14 @@ def freeze_campaign_spec(campaign_root, campaign_id, candidates, configuration, 
             raise ValueError(f'ess_ageing_baseline declaration does not equal what {ESS_PARAMS_FILE_REL} loads to '
                              f'(types included): declared {ess_ageing}, loaded {loaded}')
         ess_params_pin = {'path': ESS_PARAMS_FILE_REL, 'sha256': sha256_file(ess_path)}
+    # Addendum 39 (W47): optional derived instance; the file must hash to the declaration at freeze time.
+    derived = validate_derived_instance(configuration.get('derived_instance'))
+    if derived is not None:
+        case_abs = os.path.join(REPO, derived['case_path'])
+        got = sha256_file(case_abs) if os.path.isfile(case_abs) else None
+        if got != derived['case_sha256']:
+            raise ValueError(f"derived_instance: {derived['case_path']} sha256 {got} != declared "
+                             f"{derived['case_sha256']}")
     cand_entries, seen_labels, seen_keys = [], set(), set()
     any_model_variant = False
     any_flex_price = False
@@ -834,8 +964,10 @@ def freeze_campaign_spec(campaign_root, campaign_id, candidates, configuration, 
         eff_overrides = validate_overrides(options['overrides']) if 'overrides' in options else dict(overrides)
         model_variant = validate_model_variant(options.get('model_variant'))
         flex_m = validate_flex_price_multiplier(options.get('flex_price_multiplier'))
+        premium = validate_interface_deviation_premium(options.get('interface_deviation_premium'))
         ekey = evaluation_key(key, eff_overrides, case_file_aa=case_file_aa, model_variant=model_variant,
-                              ess_ageing_baseline=ess_ageing, flex_price_multiplier=flex_m)
+                              ess_ageing_baseline=ess_ageing, flex_price_multiplier=flex_m,
+                              derived_instance=derived, interface_deviation_premium=premium)
         if label in seen_labels or ekey in seen_keys:
             raise ValueError(f'duplicate evaluation label or key (candidate x configuration): {label} / {ekey[:16]}')
         seen_labels.add(label)
@@ -856,6 +988,8 @@ def freeze_campaign_spec(campaign_root, campaign_id, candidates, configuration, 
             if flex_price_multiplier_in_key(flex_m) is not None:
                 cand_entry['flex_price_label'] = FLEX_PRICE_LABEL
                 any_flex_price = True
+        if premium is not None:  # W47: only when given, so every other entry keeps its exact format
+            cand_entry['interface_deviation_premium'] = premium
         cand_entries.append(cand_entry)
     os.makedirs(campaign_root, exist_ok=True)  # only after every validation above has passed
     try:
@@ -901,6 +1035,8 @@ def freeze_campaign_spec(campaign_root, campaign_id, candidates, configuration, 
         spec['configuration']['ess_ageing_baseline'] = ess_ageing
         spec['configuration']['ess_ageing_baseline_label'] = ess_label
         spec['configuration']['ess_params_file'] = ess_params_pin
+    if derived is not None:  # W47: only when declared, so undeclared specs keep their exact format
+        spec['configuration']['derived_instance'] = derived
     if any_model_variant:  # W20: a campaign holding a model variant says so at the top level
         spec['model_variant_label'] = MODEL_VARIANT_LABEL
     if any_flex_price:  # W33: a campaign holding a flexibility-price variant says so at the top level
@@ -1165,7 +1301,20 @@ def _barrier_record_for_missing(ctx, entry, eval_dir, exit_code):
            if ctx.spec['configuration'].get('ess_ageing_baseline') is not None else {}),
         # W33: a flexibility-price entry's record carries the multiplier (and its label when != 1.0) on every path.
         **(_flex_price_record_fields(entry) if 'flex_price_multiplier' in entry else {}),
+        # W47: a derived-instance spec / premium entry carries its declaration on every path.
+        **_derived_record_fields(ctx.spec, entry),
     }
+
+
+def _derived_record_fields(spec, entry):
+    """W47: the declaration fields every record of a derived-instance spec / premium entry carries (empty
+    otherwise, so every other record keeps its exact format)."""
+    out = {}
+    if spec['configuration'].get('derived_instance') is not None:
+        out['derived_instance'] = spec['configuration']['derived_instance']
+    if 'interface_deviation_premium' in entry:
+        out['interface_deviation_premium'] = entry['interface_deviation_premium']
+    return out
 
 
 def _flex_price_record_fields(entry):
@@ -2144,7 +2293,7 @@ def flex_price_readback_run_models(dso_models, planning, original, m):
 
 
 def _config_hook_factory(spec, holder, overrides=None, model_variant=None, investment_year=INVESTMENT_YEAR,
-                         expected_floor_rows=None, flex_price_multiplier=None):
+                         expected_floor_rows=None, flex_price_multiplier=None, interface_deviation_premium=None):
     """pre_solve_hook: verify the case file carries the D oracle configuration
     (same checks as `p515_s43_aa_run._aa_on_pre_solve_hook`), then apply the
     evaluation's overrides (`overrides`; default = the campaign-level
@@ -2168,10 +2317,18 @@ def _config_hook_factory(spec, holder, overrides=None, model_variant=None, inves
     Addendum 34 (W33): with `flex_price_multiplier` (validated; 1.0 included), LAST
     of all, the multiplier is applied to the DSO flexibility-price arrays and read
     back from probe DSO blocks (`apply_flex_price_multiplier`); any mismatch raises
-    before any solve. Without it (None) nothing changes."""
+    before any solve. Without it (None) nothing changes.
+    Addendum 39 (W47): with `interface_deviation_premium` (validated), after the D checks and overrides,
+    `planning.params.admm.interface_deviation_premium` is set to {alpha, floor, source} -- the ONLY place row 18's
+    premium enters (`_run_operational_planning` threads it to the DSO builders) -- and verified to have taken
+    effect; the run's own DSO models are read back post-run (`multiscenario_terminal_capture`). With a declared
+    `derived_instance` the planning object's combined scenario checksum is checked against the declaration.
+    Without them (None) nothing changes."""
     import p515_g_g1_g4_admm_gates as G
     model_variant = validate_model_variant(model_variant)
     flex_price_multiplier = validate_flex_price_multiplier(flex_price_multiplier)
+    premium = validate_interface_deviation_premium(interface_deviation_premium)
+    derived = validate_derived_instance(spec['configuration'].get('derived_instance'))
     if overrides is None:
         overrides = spec['configuration'].get('overrides') or {}
     overrides = validate_overrides(overrides)
@@ -2234,6 +2391,30 @@ def _config_hook_factory(spec, holder, overrides=None, model_variant=None, inves
         holder['configuration_checks'] = checks
         holder['overrides_applied'] = applied
         holder['anderson_acceleration_effective'] = dict(a.anderson_acceleration)
+        if derived is not None:  # W47: the planning object IS the declared derived instance
+            got = (getattr(planning, 'scenario_metadata', None) or {}).get('combined_scenario_checksum')
+            derived_checks = {'planning_scenario_checksum_equals_declaration': got == derived['scenario_checksum'],
+                              'planning_has_more_than_one_scenario_combination': (
+                                  planning.num_market_scenarios * planning.transmission_network.num_oper_scenarios
+                                  > 1)}
+            holder['derived_instance_checks'] = derived_checks
+            report['rule_eleven_checklist']['w47_derived_instance'] = {'declared': derived, 'checks': derived_checks,
+                                                                        'planning_scenario_checksum': got}
+            if not all(derived_checks.values()):
+                raise RuntimeError(f'derived_instance: the planning object is not the declared instance: '
+                                   f'{derived_checks} (checksum {got})')
+        if premium is not None:  # W47: row 18's premium, set before any model is built, verified
+            before = dict(a.interface_deviation_premium)
+            a.interface_deviation_premium = {'alpha': premium['alpha'], 'floor': premium['floor'],
+                                             'source': 'campaign spec entry interface_deviation_premium '
+                                                       '(p515_s44_campaign_harness, W47)'}
+            after = dict(a.interface_deviation_premium)
+            took = after.get('alpha') == premium['alpha'] and after.get('floor') == premium['floor']
+            applied_premium = {'declared': premium, 'before': before, 'after': after, 'took_effect': took}
+            holder['interface_deviation_premium_applied'] = applied_premium
+            report['rule_eleven_checklist']['w47_interface_deviation_premium'] = applied_premium
+            if not took:
+                raise RuntimeError(f'interface_deviation_premium did not take effect: {applied_premium}')
         if ess_ageing is not None:  # W21: before the model variant (if any) touches the ageing parameters
             import shared_energy_storage_data as SED
             verified = verify_ess_ageing_in_child(sed, ess_ageing, ess_params_pin)
@@ -2502,6 +2683,537 @@ def post_certification_summary(pc):
     return s
 
 
+# ==============================================================================
+#  P5.15 Addendum 39 (W47): the derived instance and the multi-scenario terminal capture -- CHILD SIDE
+# ==============================================================================
+class _NoStageLog:
+    """`p515_s44_scale_measurement.read_planning_from_derived_case` wraps the read in `stages.stage(label)`;
+    the campaign child keeps no stage log / watchdog (the parent records wait4 rusage), so this is a no-op
+    context manager with the same interface."""
+
+    def stage(self, label):
+        from contextlib import nullcontext
+        return nullcontext(label)
+
+
+def install_derived_instance(derived, eval_dir):
+    """CHILD SIDE, FIRST (before anything reads the oracle baseline): hash the declared case file, read it with
+    the scale harness's own reader (`p515_s44_scale_measurement.read_planning_from_derived_case`: production's
+    `SharedResourcesPlanning` on data/SRP1 with the derived file; plots / results / logs of the READ redirected into
+    `<eval_dir>/planning_read`), refuse unless the combined scenario checksum equals the declaration, and install
+    it as the oracle baseline (`p56a_oracle.install_baseline`, instance label = the declaration's), so every later
+    `fresh_planning` of this process -- the floor-row precheck and the run -- deep-copies the derived instance.
+    Zero solves. Returns the evidence; raises on any mismatch."""
+    import p56a_oracle as O
+    import p515_s44_scale_measurement as S
+    derived = validate_derived_instance(derived)
+    case_abs = os.path.join(REPO, derived['case_path'])
+    got = sha256_file(case_abs) if os.path.isfile(case_abs) else None
+    if got != derived['case_sha256']:
+        raise RuntimeError(f"derived_instance: {derived['case_path']} sha256 {got} != declared {derived['case_sha256']}")
+    if os.path.abspath(S.DATA_DIR) != os.path.abspath(os.path.join(REPO, DERIVED_INSTANCE_DATA_DIR_REL)):
+        raise RuntimeError(f'derived_instance: the scale harness data dir {S.DATA_DIR} is not '
+                           f'{DERIVED_INSTANCE_DATA_DIR_REL}')
+    if O._BASELINE is not None:
+        raise RuntimeError('derived_instance: an oracle baseline is already installed in this process')
+    read_dir = os.path.join(eval_dir, 'planning_read')
+    if os.path.exists(read_dir):
+        raise RuntimeError(f'refusing to overwrite existing artifact: {read_dir}')
+    t0 = time.time()
+    planning = S.read_planning_from_derived_case({'derived_case': {'path': derived['case_path']}}, eval_dir,
+                                                 _NoStageLog())
+    checksum = (planning.scenario_metadata or {}).get('combined_scenario_checksum')
+    if checksum != derived['scenario_checksum']:
+        raise RuntimeError(f"derived_instance: combined scenario checksum {checksum} != declared "
+                           f"{derived['scenario_checksum']}")
+    installed = O.install_baseline(planning, checksum, instance_label=derived['instance_label'])
+    return {'case_path': derived['case_path'], 'case_sha256_in_child': got, 'scenario_checksum_in_child': checksum,
+            'instance_label': installed['instance_label'],
+            'checksum_matches_srp1_canonical': installed['checksum_matches_srp1_canonical'],
+            'planning_dimensions': S.planning_dimensions(planning),
+            'expected_block_counts': S.expected_block_counts(planning),
+            'planning_read_dir': os.path.relpath(read_dir, REPO), 'read_wall_s': time.time() - t0,
+            'reader': 'p515_s44_scale_measurement.read_planning_from_derived_case (production SharedResourcesPlanning)'}
+
+
+def _scenario_probability(network, s_m, s_o):
+    return network.prob_market_scenarios[s_m] * network.prob_operation_scenarios[s_o]
+
+
+def _rel_diff(a, b, scale=None):
+    """|a - b| relative to `scale` (default max(|a|, |b|, 1)); a python float (never a numpy scalar, so every
+    comparison built on it is a python bool and serializes as JSON true/false)."""
+    if a is None or b is None:
+        return None
+    denom = max(abs(a), abs(b), 1.0) if scale is None else max(abs(scale), abs(a), abs(b), 1.0)
+    return float(abs(a - b) / denom)
+
+
+def _dispersion_block_metrics(detail, network, model):
+    """Addendum 37's metric (production `_get_local_interface_dispersion`) plus the two aggregates of the Planner's
+    alpha-sweep ruling, per DSO block, probability-weighted, block-local (MWh per representative day; one period is
+    one hour, so a sum over periods of MW is MWh):
+        E|d|_p     = sum_s omega_s sum_t |d_{s,t}|             (MWh)
+        sum w d2_p = sum_s omega_s sum_t d_{s,t}^2             (MW^2 h)  -- identically rms_mw^2 * n_periods
+    and the reactive counterparts. d_{s,t} = p_int_{s,t} - pbar_t, read from production's own per-scenario
+    profiles (`per_scenario[...]['d_p_mw' / 'd_q_mvar']`)."""
+    probs = {f'{s_m}_{s_o}': _scenario_probability(network, s_m, s_o)
+             for s_m in model.scenarios_market for s_o in model.scenarios_operation}
+    per = detail['per_scenario']
+    e_abs_p = sum(probs[k] * sum(abs(x) for x in v['d_p_mw']) for k, v in per.items())
+    e_abs_q = sum(probs[k] * sum(abs(x) for x in v['d_q_mvar']) for k, v in per.items())
+    s2_p = sum(probs[k] * sum(x * x for x in v['d_p_mw']) for k, v in per.items())
+    s2_q = sum(probs[k] * sum(x * x for x in v['d_q_mvar']) for k, v in per.items())
+    n = len(model.periods)
+    return {'probabilities': probs, 'E_abs_d_p_mwh': e_abs_p, 'E_abs_d_q_mvarh': e_abs_q,
+            'sum_omega_d2_p_mw2h': s2_p, 'sum_omega_d2_q_mvar2h': s2_q,
+            'identity_sum_omega_d2_p_equals_rms_sq_times_n_rel_diff': _rel_diff(
+                s2_p, detail['p']['rms_mw'] ** 2 * n),
+            'identity_sum_omega_d2_q_equals_rms_sq_times_n_rel_diff': _rel_diff(
+                s2_q, detail['q']['rms_mvar'] ** 2 * n)}
+
+
+def _covariance_recomputed(model, network):
+    """sum_t baseMVA * Cov_s(pi_t[s_m], p_int[s,t]) for a DSO block (+) or minus the same over the ADN interfaces
+    for the TSO block -- recomputed from the model's own Var values and the network's price and probability
+    vectors, INDEPENDENTLY of `interface_settlement_deviation` (the form of `p515_s51_row18_zero_solve_checks`
+    check H). pbar_t = `model_construction_helpers.expected_market_price`."""
+    import pyomo.environ as pe
+    import model_construction_helpers as MCH
+    scen = [(s_m, s_o) for s_m in model.scenarios_market for s_o in model.scenarios_operation]
+    total = 0.0
+    if network.is_transmission:
+        for dn in model.adn_nodes:
+            for p in model.periods:
+                pibar = MCH.expected_market_price(network, p)
+                e_pi_p = sum(_scenario_probability(network, s_m, s_o) * network.cost_energy_p[s_m][p]
+                             * float(pe.value(model.pc_adn[dn, s_m, s_o, p])) for s_m, s_o in scen)
+                e_p = sum(_scenario_probability(network, s_m, s_o) * float(pe.value(model.pc_adn[dn, s_m, s_o, p]))
+                          for s_m, s_o in scen)
+                total -= network.baseMVA * (e_pi_p - pibar * e_p)
+    else:
+        for p in model.periods:
+            pibar = MCH.expected_market_price(network, p)
+            e_pi_p = sum(_scenario_probability(network, s_m, s_o) * network.cost_energy_p[s_m][p]
+                         * float(pe.value(model.pg_adn[s_m, s_o, p])) for s_m, s_o in scen)
+            e_p = sum(_scenario_probability(network, s_m, s_o) * float(pe.value(model.pg_adn[s_m, s_o, p]))
+                      for s_m, s_o in scen)
+            total += network.baseMVA * (e_pi_p - pibar * e_p)
+    return total
+
+
+def _per_scenario_costs(model, network, params):
+    """Per scenario: production's per-scenario base objective and its components
+    (`Network.process_results_summary_detail`), plus the two per-scenario terms the base objective does not
+    carry -- the interface settlement at the SCENARIO price (the form of
+    `model_construction_helpers.interface_energy_settlement`, un-weighted by the settlement weight) and, on a DSO
+    block with row 18 wired, the scenario's row 18 charge (the form of `add_scenario_commitment_terms`) -- each
+    reconciled to production's block totals (`interface_settlement`, `row18_deviation_charge`)."""
+    import pyomo.environ as pe
+    detail = network.process_results_summary_detail(model, params)
+    base_mva = network.baseMVA
+    wired = hasattr(model, 'row18_deviation_charge')
+    out, sum_settle, sum_row18, sum_obj = {}, 0.0, 0.0, 0.0
+    for s_m in model.scenarios_market:
+        c_p = network.cost_energy_p[s_m]
+        for s_o in model.scenarios_operation:
+            prob = _scenario_probability(network, s_m, s_o)
+            if network.is_transmission:
+                settle = -sum(c_p[p] * base_mva * float(pe.value(model.pc_adn[dn, s_m, s_o, p]))
+                              for dn in model.adn_nodes for p in model.periods)
+            else:
+                settle = sum(c_p[p] * base_mva * float(pe.value(model.pg_adn[s_m, s_o, p])) for p in model.periods)
+            row18 = None
+            if wired:
+                row18 = sum(float(pe.value(model.row18_alpha)) * float(pe.value(model.row18_premium[p])) * base_mva
+                            * float(pe.value(model.row18_dev_p_up[s_m, s_o, p] + model.row18_dev_p_down[s_m, s_o, p]
+                                             + model.row18_dev_q_up[s_m, s_o, p] + model.row18_dev_q_down[s_m, s_o, p]))
+                            for p in model.periods)
+                sum_row18 += prob * row18
+            entry = dict(detail['scenarios'][s_m][s_o])
+            entry.update({'settlement_at_scenario_price': settle, 'row18_charge_scenario': row18})
+            out[f'{s_m}_{s_o}'] = entry
+            sum_settle += prob * settle
+            sum_obj += prob * entry['obj']
+    settlement_model = float(pe.value(model.interface_settlement))
+    row18_model = float(pe.value(model.row18_deviation_charge)) if wired else None
+    return out, {'expected_base_objective': sum_obj,
+                 'expected_settlement_recomputed': sum_settle, 'interface_settlement_model': settlement_model,
+                 'settlement_rel_diff': _rel_diff(sum_settle, settlement_model),
+                 'expected_row18_charge_recomputed': sum_row18 if wired else None,
+                 'row18_deviation_charge_model': row18_model,
+                 'row18_rel_diff': _rel_diff(sum_row18, row18_model) if wired else None}
+
+
+def _shared_ess_schedule(model, network, kind):
+    """The scenario-free shared-ESS schedule of a network block (Addendum 38 (B)): read at
+    `model_construction_helpers.sess_na_scenario` -- the ONE copy every scenario's balance rows reference; the
+    other per-scenario copies are unwired and are NOT read -- beside the coupled expectation Var."""
+    import pyomo.environ as pe
+    import model_construction_helpers as MCH
+    s_m0, s_o0 = MCH.sess_na_scenario(model)
+    base_mva = network.baseMVA
+    out = {}
+    for e in model.shared_energy_storages:
+        node_id = network.shared_energy_storages[e].bus
+        pnet = [float(pe.value(model.shared_es_pnet[e, s_m0, s_o0, p])) * base_mva for p in model.periods]
+        qnet = [float(pe.value(model.shared_es_qnet[e, s_m0, s_o0, p])) * base_mva for p in model.periods]
+        soc = [float(pe.value(model.shared_es_soc[e, s_m0, s_o0, p])) * base_mva for p in model.periods]
+        if kind == 'TSO':
+            exp_p = [float(pe.value(model.expected_shared_ess_p[e, p])) * base_mva for p in model.periods]
+            exp_q = [float(pe.value(model.expected_shared_ess_q[e, p])) * base_mva for p in model.periods]
+        else:
+            exp_p = [float(pe.value(model.expected_shared_ess_p[p])) * base_mva for p in model.periods]
+            exp_q = [float(pe.value(model.expected_shared_ess_q[p])) * base_mva for p in model.periods]
+        out[str(node_id)] = {'na_scenario': [s_m0, s_o0], 'pnet_mw': pnet, 'qnet_mvar': qnet, 'soc_mwh': soc,
+                             'expected_p_mw': exp_p, 'expected_q_mvar': exp_q,
+                             'max_abs_na_minus_expected_p_mw': max(abs(a - b) for a, b in zip(pnet, exp_p)),
+                             'max_abs_na_minus_expected_q_mvar': max(abs(a - b) for a, b in zip(qnet, exp_q))}
+    return out
+
+
+def _interface_profiles(model, network, kind):
+    """Per-scenario interface V / P / Q (production `Network.process_results_interface`) and the block's own
+    committed (expected) interface schedule beside it."""
+    import pyomo.environ as pe
+    base_mva = network.baseMVA
+    per = network.process_results_interface(model)
+    if kind == 'TSO':
+        committed = {}
+        for dn in model.adn_nodes:
+            node_id = network.active_distribution_network_nodes[dn]
+            committed[str(node_id)] = {
+                'p_mw': [float(pe.value(model.expected_interface_pf_p[dn, p])) * base_mva for p in model.periods],
+                'q_mvar': [float(pe.value(model.expected_interface_pf_q[dn, p])) * base_mva for p in model.periods],
+                'v_pu': [float(pe.value(model.expected_interface_vmag[dn, p])) for p in model.periods]}
+        per = {str(n): {f'{s_m}_{s_o}': v for s_m, by_o in by_m.items() for s_o, v in by_o.items()}
+               for n, by_m in per.items()}
+    else:
+        committed = {'p_mw': [float(pe.value(model.expected_interface_pf_p[p])) * base_mva for p in model.periods],
+                     'q_mvar': [float(pe.value(model.expected_interface_pf_q[p])) * base_mva for p in model.periods],
+                     'v_pu': [float(pe.value(model.expected_interface_vmag[p])) for p in model.periods]}
+        per = {f'{s_m}_{s_o}': v for s_m, by_o in per.items() for s_o, v in by_o.items()}
+    return {'per_scenario': per, 'committed': committed}
+
+
+def _row18_readback(model, network, alpha_in_force, floor_in_force):
+    """Row 18 as BUILT on a DSO block of the run: wired iff alpha > 0 and the block has more than one scenario
+    (`add_scenario_commitment_terms`); alpha on the model == the one in force; premium_t == pibar_t
+    (`model_construction_helpers.expected_market_price`, the floor applied only when given and binding) --
+    exact equality."""
+    import pyomo.environ as pe
+    import model_construction_helpers as MCH
+    n_scen = len(model.scenarios_market) * len(model.scenarios_operation)
+    wired = hasattr(model, 'row18_deviation_charge')
+    expected_wired = alpha_in_force > 0.0 and n_scen > 1
+    out = {'wired': wired, 'expected_wired': expected_wired, 'wired_as_expected': wired == expected_wired}
+    if wired:
+        expected_premium = []
+        for p in model.periods:
+            pibar = MCH.expected_market_price(network, p)
+            if floor_in_force is not None and pibar < floor_in_force:
+                pibar = floor_in_force
+            expected_premium.append(pibar)
+        premium = [float(pe.value(model.row18_premium[p])) for p in model.periods]
+        out.update({'alpha_on_model': float(pe.value(model.row18_alpha)),
+                    'alpha_equals_in_force': float(pe.value(model.row18_alpha)) == alpha_in_force,
+                    'premium_equals_pibar_exactly': premium == expected_premium,
+                    'min_premium': min(premium), 'max_premium': max(premium)})
+    out['all_match'] = out['wired_as_expected'] and (not wired or (out['alpha_equals_in_force']
+                                                                  and out['premium_equals_pibar_exactly']))
+    return out
+
+
+def sigma_calibration_record(planning, state):
+    """The fixed-sigma calibration assertion's inputs and outcome, as production resolved them
+    (`shared_resources_planning._resolve_common_admm_objective_scale`: raises unless
+    1/F <= sigma_computed / sigma_fixed <= F). A run that reaches the post-run hook passed it."""
+    st = state or {}
+    fixed, computed = st.get('sigma_fixed'), st.get('sigma_computed')
+    factor = planning.params.admm.objective_scale_assert_factor
+    ratio = (computed / fixed) if (fixed and computed is not None) else None
+    return {'sigma_fixed': fixed, 'sigma_computed': computed, 'ratio_computed_over_fixed': ratio,
+            'assert_factor': factor, 'band': [1.0 / factor, factor] if factor else None,
+            'ratio_over_lower_edge': (ratio * factor) if (ratio is not None and factor) else None,
+            'upper_edge_over_ratio': (factor / ratio) if (ratio and factor) else None,
+            'within_band': (ratio is not None and factor is not None and 1.0 / factor <= ratio <= factor),
+            'objective_scale_source': planning.params.admm.objective_scale_source,
+            'definition': ('sigma_computed = max over TSO/DSO blocks of |w_b * f_b| at the initialization solve '
+                           '(shared_resources_planning._compute_common_admm_objective_scale); the resolver raises '
+                           'unless 1/F <= sigma_computed/sigma_fixed <= F')}
+
+
+def multiscenario_terminal_capture(planning, models, state=None, premium=None):
+    """W47, ZERO SOLVES: the manuscript's multi-scenario quantities at the TERMINAL point of the run (read with
+    `pe.value` off the run's own final models, before any post-certification step mutates them). Every reported
+    total is also reconciled against production's own function for it; the identities, their residuals and the
+    declared relative tolerance `MULTISCENARIO_IDENTITY_REL_TOL` are recorded. Returns (payload, summary)."""
+    import pyomo.environ as pe
+    import shared_resources_planning as srp
+    admm = planning.params.admm
+    alpha_in_force = float(admm.interface_deviation_premium.get('alpha') or 0.0)
+    floor_in_force = admm.interface_deviation_premium.get('floor')
+    tol = MULTISCENARIO_IDENTITY_REL_TOL
+    tn = planning.transmission_network
+    blocks = [('TSO', None, tn, year, day) for year in tn.years for day in tn.days]
+    for node_id, dn in planning.distribution_networks.items():
+        blocks += [('DSO', node_id, dn, year, day) for year in dn.years for day in dn.days]
+    dispersion = srp._get_operational_interface_dispersion(planning, models)
+    block_components = srp._get_operational_recourse_block_components(planning, models)
+    per_block, per_dso = {}, {}
+    worst = {'settlement_split_rel': 0.0, 'covariance_vs_deviation_rel': 0.0, 'per_scenario_settlement_rel': 0.0,
+             'per_scenario_row18_rel': 0.0, 'per_scenario_q_reconciliation_rel': 0.0,
+             'dispersion_identity_rel': 0.0}
+    row18_ok, n_row18_wired, weighted = True, 0, {'covariance_recomputed': 0.0}
+    for kind, node_id, holder, year, day in blocks:
+        model = models['tso'][year][day] if kind == 'TSO' else models['dso'][node_id][year][day]
+        network = holder.network[year][day]
+        weight = srp._get_admm_block_weight(holder, year, day)
+        key = f'{kind}|{node_id}|{year}|{day}' if kind == 'DSO' else f'TSO|{year}|{day}'
+        total = srp._get_local_interface_settlement(model, part='total')
+        contracted = srp._get_local_interface_settlement(model, part='contracted')
+        deviation = srp._get_local_interface_settlement(model, part='deviation')
+        s_weight = float(pe.value(model.interface_settlement_weight))
+        covariance = s_weight * _covariance_recomputed(model, network)
+        costs, cost_checks = _per_scenario_costs(model, network, holder.params)
+        # per-block Q reconciliation: production's block recourse (weighted) / weight, against
+        #   sum_s omega_s obj_s + (settlement - contracted) + row 18 charge
+        local_q = block_components[(kind, node_id, year, day)] / weight
+        rebuilt_q = (cost_checks['expected_base_objective'] + s_weight * cost_checks['interface_settlement_model']
+                     - contracted + (cost_checks['row18_deviation_charge_model'] or 0.0))
+        entry = {
+            'kind': kind, 'node_id': node_id, 'year': str(year), 'day': str(day), 'admm_block_weight': weight,
+            'n_scenarios': len(model.scenarios_market) * len(model.scenarios_operation),
+            # the deviation part is a DIFFERENCE of two settlement-sized sums, so its rounding error scales with
+            # the settlement magnitude: the covariance identity is measured relative to that scale
+            'settlement': {'total': total, 'contracted': contracted, 'deviation': deviation,
+                           'covariance_recomputed': covariance, 'settlement_weight': s_weight,
+                           'split_rel_diff': _rel_diff(total - contracted, deviation, scale=max(abs(total),
+                                                                                              abs(contracted))),
+                           'deviation_vs_covariance_rel_diff': _rel_diff(deviation, covariance,
+                                                                         scale=max(abs(total), abs(contracted))),
+                           'relative_to': 'max(|total|, |contracted|, |a|, |b|, 1)'},
+            'per_scenario_costs': costs, 'per_scenario_cost_checks': cost_checks,
+            'block_recourse_production_local': local_q, 'block_recourse_rebuilt_from_scenarios': rebuilt_q,
+            'block_recourse_rel_diff': _rel_diff(local_q, rebuilt_q),
+            'interface_profiles': _interface_profiles(model, network, kind),
+            'shared_ess_schedule': _shared_ess_schedule(model, network, kind),
+        }
+        worst['settlement_split_rel'] = max(worst['settlement_split_rel'], entry['settlement']['split_rel_diff'])
+        worst['covariance_vs_deviation_rel'] = max(worst['covariance_vs_deviation_rel'],
+                                                   entry['settlement']['deviation_vs_covariance_rel_diff'])
+        worst['per_scenario_settlement_rel'] = max(worst['per_scenario_settlement_rel'],
+                                                   cost_checks['settlement_rel_diff'])
+        if cost_checks['row18_rel_diff'] is not None:
+            worst['per_scenario_row18_rel'] = max(worst['per_scenario_row18_rel'], cost_checks['row18_rel_diff'])
+        worst['per_scenario_q_reconciliation_rel'] = max(worst['per_scenario_q_reconciliation_rel'],
+                                                         entry['block_recourse_rel_diff'])
+        weighted['covariance_recomputed'] += weight * covariance
+        if kind == 'DSO':
+            detail = dispersion[('DSO', node_id, year, day)]
+            if detail is not None:
+                metrics = _dispersion_block_metrics(detail, network, model)
+                worst['dispersion_identity_rel'] = max(
+                    worst['dispersion_identity_rel'],
+                    metrics['identity_sum_omega_d2_p_equals_rms_sq_times_n_rel_diff'] or 0.0,
+                    metrics['identity_sum_omega_d2_q_equals_rms_sq_times_n_rel_diff'] or 0.0)
+                import model_construction_helpers as MCH
+                # the prices beside d, so the W46 decomposition (p515_s51_coordinated_decomposition.
+                # block_decomposition: market / operation parts, covariance) can be applied post hoc
+                entry['dispersion'] = {**{k: v for k, v in detail.items() if k != 'per_scenario'},
+                                       'per_scenario_d': detail['per_scenario'], **metrics,
+                                       'pi_by_market_by_hour': [[float(network.cost_energy_p[s_m][p])
+                                                                 for s_m in model.scenarios_market]
+                                                                for p in model.periods],
+                                       'pibar_by_hour': [float(MCH.expected_market_price(network, p))
+                                                         for p in model.periods]}
+                agg = per_dso.setdefault(str(node_id), {
+                    'rms_mw_max_over_blocks': 0.0, 'max_abs_mw': 0.0, 'rms_mvar_max_over_blocks': 0.0,
+                    'rms_share_of_mean_flow_max_over_blocks': None, 'E_abs_d_p_mwh_sum_over_blocks': 0.0,
+                    'E_abs_d_p_mwh_weighted': 0.0, 'sum_omega_d2_p_mw2h_sum_over_blocks': 0.0,
+                    'sum_omega_d2_p_mw2h_weighted': 0.0, 'E_abs_d_q_mvarh_sum_over_blocks': 0.0,
+                    'row18_charge_sum_over_blocks': 0.0, 'row18_charge_weighted': 0.0,
+                    'argmax_rms_block': None, 'n_blocks': 0})
+                if detail['p']['rms_mw'] >= agg['rms_mw_max_over_blocks']:
+                    agg['argmax_rms_block'] = f'{year}|{day}'
+                agg['rms_mw_max_over_blocks'] = max(agg['rms_mw_max_over_blocks'], detail['p']['rms_mw'])
+                agg['max_abs_mw'] = max(agg['max_abs_mw'], detail['p']['max_abs_mw'])
+                agg['rms_mvar_max_over_blocks'] = max(agg['rms_mvar_max_over_blocks'], detail['q']['rms_mvar'])
+                share = detail['p']['rms_share_of_mean_flow']
+                if share is not None:
+                    prev = agg['rms_share_of_mean_flow_max_over_blocks']
+                    agg['rms_share_of_mean_flow_max_over_blocks'] = share if prev is None else max(prev, share)
+                agg['E_abs_d_p_mwh_sum_over_blocks'] += metrics['E_abs_d_p_mwh']
+                agg['E_abs_d_p_mwh_weighted'] += weight * metrics['E_abs_d_p_mwh']
+                agg['sum_omega_d2_p_mw2h_sum_over_blocks'] += metrics['sum_omega_d2_p_mw2h']
+                agg['sum_omega_d2_p_mw2h_weighted'] += weight * metrics['sum_omega_d2_p_mw2h']
+                agg['E_abs_d_q_mvarh_sum_over_blocks'] += metrics['E_abs_d_q_mvarh']
+                agg['row18_charge_sum_over_blocks'] += detail['row18_charge']
+                agg['row18_charge_weighted'] += weight * detail['row18_charge']
+                agg['n_blocks'] += 1
+            readback = _row18_readback(model, network, alpha_in_force, floor_in_force)
+            entry['row18_readback'] = readback
+            row18_ok = row18_ok and readback['all_match']
+            n_row18_wired += int(readback['wired'])
+        per_block[key] = entry
+    rc = srp._get_operational_recourse_components(planning, models)
+    all_dso = {name: sum(v[name] for v in per_dso.values()) for name in (
+        'E_abs_d_p_mwh_sum_over_blocks', 'E_abs_d_p_mwh_weighted', 'sum_omega_d2_p_mw2h_sum_over_blocks',
+        'sum_omega_d2_p_mw2h_weighted', 'E_abs_d_q_mvarh_sum_over_blocks', 'row18_charge_sum_over_blocks',
+        'row18_charge_weighted')}
+    all_dso['rms_mw_max_over_all_dso_blocks'] = max([v['rms_mw_max_over_blocks'] for v in per_dso.values()] or [0.0])
+    all_dso['max_abs_mw_over_all_dso_blocks'] = max([v['max_abs_mw'] for v in per_dso.values()] or [0.0])
+    settlement_identity = {
+        'definition': ('Addendum 38 (C): residual := T_TSO + sum_DSO T_DSO (interface_settlement_total) == the '
+                       'price-deviation covariance (interface_settlement_deviation_total) + the leftover priced '
+                       'interface consensus residual (interface_settlement_identity_residual = the contracted '
+                       'parts, which cancel at consensus); the covariance is also recomputed here from the models'),
+        'residual_interface_settlement_total': rc.get('interface_settlement_total'),
+        'covariance_interface_settlement_deviation_total': rc.get('interface_settlement_deviation_total'),
+        'covariance_recomputed_weighted_total': weighted['covariance_recomputed'],
+        'covariance_recomputed_vs_production_rel_diff': _rel_diff(
+            weighted['covariance_recomputed'], rc.get('interface_settlement_deviation_total'),
+            scale=max(abs(rc.get('interface_settlement_total') or 0.0),
+                      abs(rc.get('interface_settlement_contracted_total') or 0.0))),
+        'leftover_identity_residual': rc.get('interface_settlement_identity_residual'),
+        'contracted_total': rc.get('interface_settlement_contracted_total'),
+        'tso_deviation_part': rc.get('interface_settlement_deviation_tso'),
+        'dso_deviation_part': rc.get('interface_settlement_deviation_dso'),
+    }
+    checks = {name: bool(value <= tol) for name, value in worst.items()}
+    checks['covariance_recomputed_vs_production'] = bool(
+        (settlement_identity['covariance_recomputed_vs_production_rel_diff'] or 0.0) <= tol)
+    checks['row18_readback_all_blocks'] = bool(row18_ok)
+    voltage = {f'{k[0]}|{k[1]}|{k[2]}|{k[3]}': v
+               for k, v in srp._get_operational_scenario_voltage_mismatch(planning, models).items()}
+    summary = {
+        'objective_convention': ('per-scenario obj = production base SMOPF objective per scenario (no settlement, '
+                                 'no row 18, no voltage pin); Q per block = sum_s omega_s obj_s + (settlement - '
+                                 'contracted) + row 18 charge = gross_operational_cost convention '
+                                 '(_get_operational_recourse_block_components / weight)'),
+        'dispersion_convention': ('d_{s,t} = p_int_{s,t} - pbar_t (the DSO block\'s own committed schedule); '
+                                  'block-local, probability-weighted; *_sum_over_blocks = summed over the DSO\'s '
+                                  '(year, day) blocks UNWEIGHTED (MWh per representative day summed, the W44 '
+                                  'convention); *_weighted = weighted by _get_admm_block_weight (the Q weighting)'),
+        'alpha_in_force': alpha_in_force, 'floor_in_force': floor_in_force,
+        'n_blocks': len(per_block), 'n_dso_blocks_row18_wired': n_row18_wired,
+        'per_dso': per_dso, 'all_dso': all_dso, 'settlement_identity': settlement_identity,
+        'identity_worst_rel_diffs': worst, 'identity_rel_tol': tol, 'checks': checks,
+        'all_checks_pass': bool(all(checks.values())),
+        'recourse_components': {k: rc.get(k) for k in (
+            'gross_operational_cost', 'net_operational_recourse', 'terminal_salvage_value', 'voltage_pin_total',
+            'detector_penalty_total')},
+        'voltage_pin_mismatch_max_rms_pu': max((v or {}).get('rms_pu', 0.0) for v in voltage.values()),
+    }
+    payload = {'schema': 'p515_s44_multiscenario_terminal_v1', 'summary': summary, 'blocks': per_block,
+               'scenario_voltage_mismatch': voltage}
+    return payload, summary
+
+
+def write_multiscenario_terminal(planning, models, state, eval_dir, premium=None):
+    """Writes `MULTISCENARIO_TERMINAL_FILE` (write-once) and returns the summary (+ path, sha256, sigma)."""
+    t0 = time.time()
+    payload, summary = multiscenario_terminal_capture(planning, models, state=state, premium=premium)
+    payload['sigma_calibration'] = sigma_calibration_record(planning, state)
+    path = os.path.join(eval_dir, MULTISCENARIO_TERMINAL_FILE)
+    _write_once_json(path, payload)
+    return {'status': 'written', 'path': os.path.relpath(path, REPO), 'sha256': sha256_file(path),
+            'runtime_s': time.time() - t0, 'sigma_calibration': payload['sigma_calibration'], **summary}
+
+
+TERMINAL_PHASE_LOCK_NAME = '.terminal_phase.lock'
+TERMINAL_PHASE_LOCK_POLL_S = 5.0
+TERMINAL_PHASE_LOCK_TIMEOUT_S = 45 * 60.0
+
+
+def _pid_alive(pid):
+    try:
+        os.kill(int(pid), 0)
+    except (OSError, ValueError, TypeError):
+        return False
+    return True
+
+
+def acquire_terminal_phase_lock(lock_path, timeout_s=TERMINAL_PHASE_LOCK_TIMEOUT_S,
+                                poll_s=TERMINAL_PHASE_LOCK_POLL_S):
+    """W47: at most ONE child of a derived-instance campaign runs its TERMINAL PHASE (the multi-scenario capture,
+    production's workbook and the post-certification step) at a time. Measured zero-solve on the pilot's own models
+    (p515_s52_pilot_checks, memory_by_stage): the workbook writer holds a +3.5-3.75 GiB transient for ~2 min and the
+    certified-model pickle a +5 GiB transient, on top of the run's models; two children in that phase together
+    would stack them. The lock (created O_EXCL in the campaign root) holds the holder's pid; a lock whose pid is
+    dead is stale and is taken over (recorded). Waits up to `timeout_s`; on timeout the phase runs WITHOUT the lock
+    (recorded) rather than losing its outputs. Returns the record."""
+    t0 = time.time()
+    stolen = []
+    while True:
+        try:
+            fd = os.open(lock_path, os.O_CREAT | os.O_EXCL | os.O_WRONLY)
+            os.write(fd, json.dumps({'pid': os.getpid(), 'utc': _utc()}).encode())
+            os.close(fd)
+            return {'status': 'held', 'lock_path': os.path.relpath(lock_path, REPO), 'waited_s': time.time() - t0,
+                    'stale_locks_taken_over': stolen}
+        except FileExistsError:
+            try:
+                with open(lock_path) as handle:
+                    holder = json.load(handle)
+            except (OSError, ValueError):
+                holder = {}
+            if holder.get('pid') is not None and not _pid_alive(holder.get('pid')):
+                stolen.append(holder)
+                try:
+                    os.remove(lock_path)
+                except FileNotFoundError:
+                    pass
+                continue
+            if time.time() - t0 > timeout_s:
+                return {'status': 'timeout_ran_without_lock', 'lock_path': os.path.relpath(lock_path, REPO),
+                        'waited_s': time.time() - t0, 'held_by': holder, 'stale_locks_taken_over': stolen}
+            time.sleep(poll_s)
+
+
+def release_terminal_phase_lock(lock_path, record):
+    if (record or {}).get('status') != 'held' or not os.path.exists(lock_path):
+        return False
+    try:
+        with open(lock_path) as handle:
+            holder = json.load(handle)
+    except (OSError, ValueError):
+        holder = {}
+    if holder.get('pid') == os.getpid():
+        os.remove(lock_path)
+        return True
+    return False
+
+
+def write_operational_workbook(planning, models, optimization_results, primal_evolution, state, execution_time):
+    """Production's own operational-planning workbook of the terminal point
+    (`SharedResourcesPlanning.write_operational_planning_results_to_excel`, the call `run_operational_planning`
+    makes with print_results=True), fed the run's own per-block SolverResults and primal evolution. Written to
+    `planning.results_dir` (the eval dir's results/, `_set_results_dir_for_arm`). Refuses to overwrite; fails
+    loudly when production falls back to its timestamped backup name. Collects the writer's garbage afterwards
+    (the openpyxl workbook is cyclic garbage: +3.5 GiB held until collected, measured)."""
+    import gc
+    t0 = time.time()
+    filename = f'{planning.name}_distributed_terminal'
+    path = os.path.join(planning.results_dir, f'{filename}.xlsx')
+    if os.path.exists(path):
+        raise RuntimeError(f'refusing to overwrite existing artifact: {path}')
+    planning.write_operational_planning_results_to_excel(
+        models, optimization_results, filename=filename, primal_evolution=list(primal_evolution or []),
+        admm_diagnostics=(state or {}).get('admm_diagnostics', []),
+        solver_recovery_diagnostics=(state or {}).get('solver_recovery_diagnostics', []),
+        execution_time=execution_time)
+    write_s = time.time() - t0
+    gc.collect()  # the writer's openpyxl workbook is cyclic garbage: release it before the next step
+    if not os.path.isfile(path):
+        raise RuntimeError(f'the operational workbook was not written at {path} (production may have used a '
+                           f'timestamped backup name)')
+    return {'status': 'written', 'path': os.path.relpath(path, REPO), 'sha256': sha256_file(path),
+            'size_bytes': os.path.getsize(path), 'runtime_s': time.time() - t0, 'write_s': write_s,
+            'writer': 'SharedResourcesPlanning.write_operational_planning_results_to_excel (production)',
+            'point': 'terminal models of the run, BEFORE any post-certification step'}
+
+
 def _child_real(args, spec, spec_path, entry, eval_dir, lock_content, env_caps, started, progress=None):
     """`progress` (Addendum 27, W5): a dict the caller (`main_child`) owns; filled with
     `case_file_sha256_in_child` and the configuration-hook `holder` as soon as each is
@@ -2562,6 +3274,18 @@ def _child_real(args, spec, spec_path, entry, eval_dir, lock_content, env_caps, 
     for eid in ids.values():
         if os.path.exists(os.path.join(G.O.WORK_DIR, eid)):
             raise RuntimeError(f'working dir id already used (never reusable): {eid}')
+    # Addendum 39 (W47): a declared derived instance is installed as the oracle baseline FIRST -- before
+    # `instance_investment_years` and the floor-row precheck read it -- and a premium entry is validated.
+    derived = validate_derived_instance(spec['configuration'].get('derived_instance'))
+    premium = validate_interface_deviation_premium(entry.get('interface_deviation_premium'))
+    derived_installed = None
+    if derived is not None:
+        derived_installed = install_derived_instance(derived, eval_dir)
+        progress['derived_instance_installed'] = derived_installed
+        print(f"[S44-CHILD] derived instance {derived['instance_label']} installed: case sha256 "
+              f"{derived_installed['case_sha256_in_child']} scenario checksum "
+              f"{derived_installed['scenario_checksum_in_child']}", flush=True)
+    capture_multiscenario = derived is not None or premium is not None
     label = spec['configuration']['arm_label']
     investment_map = investment_map_from_canonical(entry['canonical'])
     # Addendum 27 (W14): the candidate carries its own SINGLE cohort year. It must be one of
@@ -2586,7 +3310,8 @@ def _child_real(args, spec, spec_path, entry, eval_dir, lock_content, env_caps, 
         if os.path.exists(p):
             raise RuntimeError(f'refusing to overwrite existing artifact: {p}')
 
-    def post_run_hook(planning, sed, models, rows, report, out_dir, label, state=None):
+    def post_run_hook(planning, sed, models, rows, report, out_dir, label, state=None, optimization_results=None,
+                      primal_evolution=None):
         report['s34_recourse_jump_sidecar_path'] = os.path.relpath(paths['recourse_jump'], REPO)
         report['s34_ess_entry_stride_sidecar_path'] = os.path.relpath(paths['ess_stride'], REPO)
         report['s35ref_soh_floor_sidecar_path'] = os.path.relpath(paths['floor'], REPO)
@@ -2612,6 +3337,44 @@ def _child_real(args, spec, spec_path, entry, eval_dir, lock_content, env_caps, 
         st = state or {}
         holder['peak_rss_ru_maxrss_production'] = st.get('peak_rss_ru_maxrss')
         holder['peak_rss_platform_units'] = st.get('peak_rss_platform_units')
+        # W47: a derived-instance campaign serializes its children's TERMINAL PHASE (capture, workbook,
+        # post-certification) -- see `acquire_terminal_phase_lock`; released in the `finally` below.
+        terminal_lock_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(eval_dir))),
+                                          TERMINAL_PHASE_LOCK_NAME)
+        terminal_lock = acquire_terminal_phase_lock(terminal_lock_path) if capture_multiscenario else None
+        if terminal_lock is not None:
+            holder['terminal_phase_lock'] = terminal_lock
+            print(f"[S44-CHILD] terminal-phase lock: {terminal_lock['status']} after {terminal_lock['waited_s']:.0f}s",
+                  flush=True)
+        try:
+            _terminal_phase(planning, models, rows, report, state, st, optimization_results, primal_evolution)
+        finally:
+            if terminal_lock is not None:
+                holder['terminal_phase_lock']['released'] = release_terminal_phase_lock(terminal_lock_path,
+                                                                                        terminal_lock)
+
+    def _terminal_phase(planning, models, rows, report, state, st, optimization_results, primal_evolution):
+        if capture_multiscenario:  # W47: zero solves, on the terminal models, BEFORE any post-certification step
+            try:
+                holder['multiscenario_terminal'] = write_multiscenario_terminal(planning, models, state, eval_dir,
+                                                                                premium=premium)
+            except Exception as error:  # noqa: BLE001 -- recorded loudly; the evaluation itself stands
+                tb = traceback.format_exc()
+                print(tb, file=sys.stderr, flush=True)
+                holder['multiscenario_terminal'] = {'status': 'error', 'error': f'{type(error).__name__}: {error}',
+                                                    'traceback': tb}
+            try:
+                holder['operational_workbook'] = write_operational_workbook(
+                    planning, models, optimization_results, primal_evolution, state, report.get('wall_clock_s'))
+            except Exception as error:  # noqa: BLE001 -- recorded loudly; the evaluation itself stands
+                tb = traceback.format_exc()
+                print(tb, file=sys.stderr, flush=True)
+                holder['operational_workbook'] = {'status': 'error', 'error': f'{type(error).__name__}: {error}',
+                                                  'traceback': tb}
+            print(f"[S44-CHILD] multi-scenario terminal capture: "
+                  f"{(holder['multiscenario_terminal'] or {}).get('status')} "
+                  f"(checks pass: {(holder['multiscenario_terminal'] or {}).get('all_checks_pass')}); workbook: "
+                  f"{(holder['operational_workbook'] or {}).get('status')}", flush=True)
         if aa_on:
             import p515_s43_aa_run as S43  # its sidecar builder, BY IMPORT, unchanged
             S43._build_aa_per_cycle_sidecar(rows, os.path.join(eval_dir, AA_SIDECAR_FILE))
@@ -2646,7 +3409,8 @@ def _child_real(args, spec, spec_path, entry, eval_dir, lock_content, env_caps, 
             pre_solve_hook=_config_hook_factory(spec, holder, overrides=eff_overrides, model_variant=model_variant,
                                                 investment_year=investment_year,
                                                 expected_floor_rows=floor_rows_by_node,
-                                                flex_price_multiplier=flex_m),
+                                                flex_price_multiplier=flex_m,
+                                                interface_deviation_premium=premium),
             investment_year=investment_year)
     run_wall = time.time() - t0
 
@@ -2702,6 +3466,19 @@ def _child_real(args, spec, spec_path, entry, eval_dir, lock_content, env_caps, 
             'flex_price_applied_in_child': holder.get('flex_price_applied'),
             'flex_price_readback_terminal': holder.get('flex_price_readback_terminal'),
         })
+    if capture_multiscenario:  # W47: only for derived-instance specs / premium entries, so every other record keeps its format
+        ms = holder.get('multiscenario_terminal') or {'status': 'not_reached'}
+        variant_extra.update({
+            **_derived_record_fields(spec, entry),
+            'derived_instance_installed_in_child': derived_installed,
+            'derived_instance_checks_in_child': holder.get('derived_instance_checks'),
+            'interface_deviation_premium_applied_in_child': holder.get('interface_deviation_premium_applied'),
+            'multiscenario_terminal': {k: v for k, v in ms.items() if k != 'traceback'},
+            'multiscenario_terminal_error_traceback': ms.get('traceback'),
+            'operational_workbook': holder.get('operational_workbook') or {'status': 'not_reached'},
+            'terminal_phase_lock': holder.get('terminal_phase_lock'),
+            'sigma_calibration': ms.get('sigma_calibration'),
+        })
     record = build_evaluation_record(
         spec=spec, spec_path=spec_path, spec_sha256=args.spec_sha256, entry=entry, report=report,
         component_levels=component_levels,
@@ -2741,7 +3518,10 @@ def _child_real(args, spec, spec_path, entry, eval_dir, lock_content, env_caps, 
     print(f"[S44-CHILD] {entry['label']}: status={record['status']} cycles={record['cycles_run']} "
           f"certified_cost={record['certified_cost']} bar={record['bar']['value']} "
           f"peak_rss={self_ru.ru_maxrss}")
-    return {'post_certification_error': (holder.get('post_certification') or {}).get('status') == 'error'}
+    capture_error = capture_multiscenario and any(
+        (holder.get(k) or {}).get('status') != 'written' for k in ('multiscenario_terminal', 'operational_workbook'))
+    return {'post_certification_error': (holder.get('post_certification') or {}).get('status') == 'error',
+            'multiscenario_capture_error': capture_error}
 
 
 def main_child(argv):
@@ -2778,6 +3558,10 @@ def main_child(argv):
                 print('[S44-CHILD] post-certification step FAILED (recorded in post_certification.json); '
                       'exiting 2', file=sys.stderr, flush=True)
                 sys.exit(2)
+            if outcome and outcome.get('multiscenario_capture_error'):  # W47
+                print('[S44-CHILD] multi-scenario terminal capture / workbook FAILED (recorded in '
+                      'evaluation_record.json); exiting 2', file=sys.stderr, flush=True)
+                sys.exit(2)
     except SystemExit:
         raise
     except BaseException as error:  # noqa: BLE001 -- recorded as a barrier with its cause, then exit 1
@@ -2810,6 +3594,12 @@ def main_child(argv):
                 **({**_flex_price_record_fields(entry),
                     'flex_price_applied_in_child': (progress.get('holder') or {}).get('flex_price_applied')}
                    if 'flex_price_multiplier' in entry else {}),
+                # W47: a derived-instance spec / premium entry's record carries its declaration and what was done.
+                **({**_derived_record_fields(spec, entry),
+                    'derived_instance_installed_in_child': progress.get('derived_instance_installed'),
+                    'interface_deviation_premium_applied_in_child': (
+                        (progress.get('holder') or {}).get('interface_deviation_premium_applied'))}
+                   if _derived_record_fields(spec, entry) else {}),
             })
         sys.exit(1)
 

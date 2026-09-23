@@ -9057,16 +9057,24 @@ def _process_scenario_dispersion_results(planning_problem, tso_model, dso_models
                         lambda s_m, s_o, p, dn=dn: model.qc_adn[dn, s_m, s_o, p],
                         network.baseMVA,
                     ),
+                    # P5.15 Addendum 39 (W47, scenario-indexing audit): the shared-ESS schedule is
+                    # scenario-free (Addendum 38 (B)): every scenario's balance rows reference the ONE
+                    # copy at `sess_na_scenario`, and the other per-scenario copies are unwired, so the
+                    # per-scenario value IS that copy. Reading `[e, s_m, s_o, p]` read the unwired copies
+                    # (their initial value) and reported a spurious dispersion. At one scenario the NA
+                    # pair is (s_m, s_o) itself, so every single-scenario record is unchanged.
                     (
                         'Shared ESS P, [MW]',
                         lambda p, e=shared_ess_idx: model.expected_shared_ess_p[e, p],
-                        lambda s_m, s_o, p, e=shared_ess_idx: model.shared_es_pnet[e, s_m, s_o, p],
+                        lambda s_m, s_o, p, e=shared_ess_idx, na=sess_na_scenario(model): (
+                            model.shared_es_pnet[e, na[0], na[1], p]),
                         network.baseMVA,
                     ),
                     (
                         'Shared ESS Q, [MVAr]',
                         lambda p, e=shared_ess_idx: model.expected_shared_ess_q[e, p],
-                        lambda s_m, s_o, p, e=shared_ess_idx: model.shared_es_qnet[e, s_m, s_o, p],
+                        lambda s_m, s_o, p, e=shared_ess_idx, na=sess_na_scenario(model): (
+                            model.shared_es_qnet[e, na[0], na[1], p]),
                         network.baseMVA,
                     ),
                 )
@@ -9104,19 +9112,20 @@ def _process_scenario_dispersion_results(planning_problem, tso_model, dso_models
                         lambda s_m, s_o, p: model.qg_adn[s_m, s_o, p],
                         network.baseMVA,
                     ),
+                    # P5.15 Addendum 39 (W47): scenario-free shared-ESS schedule -- see the TSO branch.
                     (
                         'Shared ESS P, [MW]',
                         lambda p: model.expected_shared_ess_p[p],
-                        lambda s_m, s_o, p: model.shared_es_pnet[
-                            shared_ess_idx, s_m, s_o, p
+                        lambda s_m, s_o, p, na=sess_na_scenario(model): model.shared_es_pnet[
+                            shared_ess_idx, na[0], na[1], p
                         ],
                         network.baseMVA,
                     ),
                     (
                         'Shared ESS Q, [MVAr]',
                         lambda p: model.expected_shared_ess_q[p],
-                        lambda s_m, s_o, p: model.shared_es_qnet[
-                            shared_ess_idx, s_m, s_o, p
+                        lambda s_m, s_o, p, na=sess_na_scenario(model): model.shared_es_qnet[
+                            shared_ess_idx, na[0], na[1], p
                         ],
                         network.baseMVA,
                     ),

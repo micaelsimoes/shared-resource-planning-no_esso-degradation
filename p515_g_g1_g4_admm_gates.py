@@ -1415,6 +1415,14 @@ def run_admm_arm(label, out_dir, k_override=None, investment_map=None,
         # change that could silently alter an existing hook's behaviour).
         if 'state' in inspect.signature(post_run_hook).parameters:
             hook_kwargs['state'] = state
+        # P5.15 Addendum 39 (W47): the run's own per-block SolverResults and primal evolution -- what
+        # `run_operational_planning` hands production's workbook writer when print_results=True -- passed ONLY
+        # to a hook that declares the parameter (signature-inspected, exactly as `state` above), so every
+        # pre-existing hook is called exactly as before.
+        if 'optimization_results' in inspect.signature(post_run_hook).parameters:
+            hook_kwargs['optimization_results'] = _results
+        if 'primal_evolution' in inspect.signature(post_run_hook).parameters:
+            hook_kwargs['primal_evolution'] = _p
         post_run_hook(**hook_kwargs)
 
     path = os.path.join(out_dir, f'g_{label}.json')
@@ -1972,11 +1980,25 @@ def _s31c_interface_detail(planning, models):
                     }
                     sum_pi_baseMVA_residual_unweighted += priced_residual
                     sum_pi_baseMVA_residual_weighted += block_weight * priced_residual
-                    for delta_p_mw in period_detail['delta_p_mw'].values():
-                        abs_delta_p_sum_mw += abs(delta_p_mw)
+                    # P5.15 Addendum 39 (W47, scenario-indexing audit): `delta_*` is keyed per
+                    # scenario '<s_m>_<s_o>', and under Addendum 38 (A) every key holds the SAME
+                    # scenario-free TSO flexibility value, so the plain sum over keys counted it
+                    # n_scenarios times above one scenario. The sum is now the PROBABILITY-WEIGHTED
+                    # expectation over the keys (the TSO network's own operational probabilities);
+                    # at one scenario the weight is prob_market[0] * prob_operation[0] = 1.0 * 1.0,
+                    # so every SRP1 value is unchanged bit for bit. The max is unchanged.
+                    t_net_w47 = transmission_network.network[year][day]
+                    for scen_key, delta_p_mw in period_detail['delta_p_mw'].items():
+                        s_m_w47, s_o_w47 = (int(part) for part in scen_key.split('_'))
+                        omega_w47 = (t_net_w47.prob_market_scenarios[s_m_w47]
+                                     * t_net_w47.prob_operation_scenarios[s_o_w47])
+                        abs_delta_p_sum_mw += omega_w47 * abs(delta_p_mw)
                         max_abs_delta_p_mw = max(max_abs_delta_p_mw, abs(delta_p_mw))
-                    for delta_q_mvar in period_detail['delta_q_mvar'].values():
-                        abs_delta_q_sum_mvar += abs(delta_q_mvar)
+                    for scen_key, delta_q_mvar in period_detail['delta_q_mvar'].items():
+                        s_m_w47, s_o_w47 = (int(part) for part in scen_key.split('_'))
+                        omega_w47 = (t_net_w47.prob_market_scenarios[s_m_w47]
+                                     * t_net_w47.prob_operation_scenarios[s_o_w47])
+                        abs_delta_q_sum_mvar += omega_w47 * abs(delta_q_mvar)
                         max_abs_delta_q_mvar = max(max_abs_delta_q_mvar, abs(delta_q_mvar))
 
         consensus_residual_per_dso[node_id] = {
