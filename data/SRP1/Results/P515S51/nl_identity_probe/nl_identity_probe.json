@@ -1,0 +1,93 @@
+{
+ "schema": "p515_s51_nl_identity_probe_v1",
+ "stage": "P5.15 Addendum 38 (W39) -- NL-file identity probe at one scenario",
+ "authority": [
+  "PLANNER_BRIEF_2026-09-13.md Addendum 38",
+  "data/SRP1/Results/P515S51/frozen_s51_spec_v21_13cb828c.json gates[0]"
+ ],
+ "timestamp_utc": "2026-09-23T04:30:08.339317+00:00",
+ "interpreter": "/Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python",
+ "script": "p515_s51_nl_identity_probe.py",
+ "script_sha256": "5c9f16482511d12b02c6ba7c8eab506916b0fae6fbb0d042a3cc48d1018d0ab3",
+ "git_head": "7fd8e5dd4e806eccd21bd6f57985ad4d8cc6e05f",
+ "git_tracked_changes": [],
+ "instance": {
+  "definition": {
+   "description": "the current SRP1 case file unchanged (3 years x 4 days x 1 x 1 scenario)",
+   "years": {
+    "2025": 5
+   },
+   "num_market_scenarios": null,
+   "num_operation_scenarios": null
+  },
+  "changes_vs_source": [
+   {
+    "key": "Years",
+    "from": {
+     "2025": 5,
+     "2030": 5,
+     "2035": 5
+    },
+    "to": {
+     "2025": 5
+    }
+   }
+  ],
+  "case_sha256": "7fc0bce418c1e5d5656ec23f2e29c8f860ef99c69201e5f5d596286cb951bbfc",
+  "note": "ONE market x ONE operation scenario, one representative year"
+ },
+ "reporting_only_expressions_removed_in_arm_B": [
+  "interface_settlement_contracted",
+  "interface_settlement_deviation"
+ ],
+ "blocks": {
+  "DSO:5:case33_1:2025:Spring": {
+   "reporting_expressions_present_as_built": {
+    "interface_settlement_contracted": true,
+    "interface_settlement_deviation": true
+   },
+   "nl_A_sha256": "0e28ff73d410d1148c5c71ee7170412edf59af77e2938e110f6d804741bad651",
+   "nl_B_sha256": "0e28ff73d410d1148c5c71ee7170412edf59af77e2938e110f6d804741bad651",
+   "nl_A_bytes": 2460131,
+   "nl_B_bytes": 2460131,
+   "nl_identical": true,
+   "row_A_sha256": "557d76e2578f0ef3002b5ab32901eeea0e506ee5df0e1afd636af295e390f748",
+   "row_B_sha256": "557d76e2578f0ef3002b5ab32901eeea0e506ee5df0e1afd636af295e390f748",
+   "row_identical": true,
+   "col_A_sha256": "25bc2069645b0102f8505ce7e584817ab2e49731473fc654885f665a84956ba2",
+   "col_B_sha256": "25bc2069645b0102f8505ce7e584817ab2e49731473fc654885f665a84956ba2",
+   "col_identical": true,
+   "pass": true
+  },
+  "TSO:case9:2025:Spring": {
+   "reporting_expressions_present_as_built": {
+    "interface_settlement_contracted": true,
+    "interface_settlement_deviation": true
+   },
+   "nl_A_sha256": "f599025b4eb48531a2abed9d73fdca63ce939062c03fd2a3fff1b44bd6d956cf",
+   "nl_B_sha256": "f599025b4eb48531a2abed9d73fdca63ce939062c03fd2a3fff1b44bd6d956cf",
+   "nl_A_bytes": 783184,
+   "nl_B_bytes": 783184,
+   "nl_identical": true,
+   "row_A_sha256": "c608ed133279df442e965138d3327361fb1f15141124c5c1be3a9783a43d1af4",
+   "row_B_sha256": "c608ed133279df442e965138d3327361fb1f15141124c5c1be3a9783a43d1af4",
+   "row_identical": true,
+   "col_A_sha256": "6606f0f5d49452a4847f67a2f3b0f19928dda49b79b6bb1fc6570ebc218bc060",
+   "col_B_sha256": "6606f0f5d49452a4847f67a2f3b0f19928dda49b79b6bb1fc6570ebc218bc060",
+   "col_identical": true,
+   "pass": true
+  }
+ },
+ "does_not_establish": "this compares the CURRENT code against itself with two components removed; it does NOT compare against the pre-Addendum-38 code, which only the SRP1 two-cycle bitwise gate settles",
+ "solve_profile_guard": {
+  "permitted": [],
+  "counts": {
+   "permitted_solve": 0,
+   "permitted_exec": 0,
+   "blocked_solve": 0,
+   "blocked_exec": 0
+  },
+  "verify_failures": []
+ },
+ "all_checks_pass": true
+}
