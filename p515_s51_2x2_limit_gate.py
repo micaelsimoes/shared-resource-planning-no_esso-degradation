@@ -82,6 +82,27 @@ class of each such hour: `deviate-and-pay` if E|d_t| > HOUR_DEV_TOL_MWH, else
 two increases and exceeds VOLUME_TOL_MWH, else `priced-down-leg` if the fl_reg DOWN-leg increase
 does, else `other`. Increases are against the alpha = 0 arm, whose ADMM path (TSO requests,
 duals) differs -- the attribution is of two-cycle arms, not of a converged response.
+
+W46 MONOTONICITY RULING (Planner, P5.15 Addendum 39 follow-up, task W46). The W44 sweep
+(alpha_sweep_r1, HEAD 4483fdab) stopped on the per-DSO max-over-blocks RMS, which is driven by
+single blocks and is not the quantity the threshold is about. From W46 the sweep's
+non-monotone stop rule is stated on the AGGREGATE
+    Sigma omega d^2 = sum over every DSO (year, day) block of sum_t sum_s omega_s d_{s,t}^2 (MW^2 h)
+(production's per-scenario d, the block's own omega), computed by
+`p515_s51_coordinated_decomposition.block_decomposition` / `aggregate` -- imported, ONE
+definition shared with the committed analysis script. Non-monotone iff
+Sigma omega d^2 (alpha_k) > Sigma omega d^2 (alpha_{k-1}) + AGG_TOL, with
+AGG_TOL = n_dso_blocks * n_hours * DISPERSION_ZERO_TOL_MW^2 (the aggregate at which every block's
+RMS equals the per-block zero tolerance), declared in launch.json before the run from the
+planning object. `alpha_threshold` also reports alpha*_agg = the smallest tested alpha with
+Sigma omega d^2 <= AGG_TOL, with its bracket. All three measures are recorded per arm: the
+per-DSO max-over-blocks RMS (continuity; recorded, NOT gated -- its rises are logged as
+`per_dso_rms_rises_vs_previous_informational`), the aggregate E|d| and Sigma omega d^2 (gated).
+OPTIONAL `--previous-sweep LABEL` (sweep mode only): a committed earlier sweep of this gate on the
+SAME instance (derived-case sha256 and scenario checksum checked equal) supplies the `previous`
+arm for the FIRST new arm's monotonicity check -- its arm with the largest alpha below the
+smallest new alpha; its Sigma omega d^2 is recomputed here from its committed, manifest-verified
+dispersion detail with this run's instance probabilities, and recorded in launch.json.
 Exit 0 on PASS, 1 on FAIL, 2 on a precondition refusal.
 """
 
@@ -120,6 +141,8 @@ import pyomo.environ as pe  # noqa: E402
 # first and verified exactly -- is again the only armed guard of this process.
 import p515_s51_single_block_ab as SB  # noqa: E402
 SB.GUARD.uninstall()
+# W46: the aggregate dispersion formulas (pure json / math; installs no guard when imported)
+import p515_s51_coordinated_decomposition as DEC  # noqa: E402
 if any(SB.GUARD.counts.values()):
     raise RuntimeError(f'p515_s51_single_block_ab guard counted at import: {SB.GUARD.counts}')
 
@@ -155,6 +178,13 @@ HOUR_DEV_TOL_MWH = 1.0e-2     # an hour "deviates" iff E|d_t| exceeds this (= W4
 VOLUME_TOL_MWH = 1.0e-2       # a leg "is used" iff its increase over the alpha = 0 arm exceeds this
 AVAIL_EQUAL_TOL_MW = 1.0e-9   # operation scenarios with equal availability define no omega_lo (= W43's)
 SWEEP_MODE = False            # set by --alphas
+PREVIOUS_SEED = None          # set by --previous-sweep (W46)
+MONOTONICITY_METRIC = ('W46 Planner ruling: the sweep stop rule gates monotonicity on the AGGREGATE '
+                       'Sigma omega d^2 over every DSO block (MW^2 h), non-monotone iff it rises by more '
+                       'than AGG_TOL = n_dso_blocks * n_hours * DISPERSION_ZERO_TOL_MW^2 between consecutive '
+                       'tested alphas; the per-DSO max-over-blocks RMS and the aggregate E|d| are recorded '
+                       'beside it, not gated (the per-block max is driven by single blocks and is not the '
+                       'quantity the threshold is about)')
 
 GIB = 1 << 30
 RSS_LIMIT_GIB = 12.0
@@ -190,7 +220,7 @@ PRODUCTION_FILES_TO_CHECK_CLEAN = (
     'model_construction_helpers.py', 'shared_resources_planning.py', 'network.py',
     'admm_parameters.py', 'p515_g_g1_g4_admm_gates.py', 'p515_s44_campaign_harness.py',
     'p515_s44_scale_measurement.py', 'p56a_oracle.py', 'p515_s51_single_block_ab.py',
-    os.path.basename(__file__))
+    'p515_s51_coordinated_decomposition.py', os.path.basename(__file__))
 
 
 def check_preconditions(out_dir):
@@ -241,6 +271,11 @@ def capture_path_checklist():
         'dso_duals_set_on_the_model_before_each_dso_solve': (
             'dual_pf_p_req[p].set_value' in __import__('inspect').getsource(
                 srp.update_distribution_coordination_models_and_solve_sequential)),
+        'aggregate_dispersion_formula_callable': all(
+            callable(getattr(DEC, name, None)) for name in ('block_decomposition', 'aggregate',
+                                                            'alpha_star_aggregate')),
+        'production_dispersion_detail_carries_per_scenario_d': (
+            "'per_scenario'" in __import__('inspect').getsource(srp._get_local_interface_dispersion)),
         'dso_al_objective_carries_dual_rho_rating_scale': all(
             token in __import__('inspect').getsource(srp.update_distribution_models_to_admm)
             for token in ('dual_pf_p_req', 'rho_pf', 'admm_objective_scale', 'get_interface_branch_rating')),
@@ -409,6 +444,41 @@ def _dispersion_summary(dispersion_detail):
     return per_node, overall
 
 
+def block_probabilities(planning):
+    """W46: omega_s per DSO block, 'DSO:<node>:<year>:<day>' -> {'<s_m>_<s_o>': omega}, the
+    block's own operational vector (as production's dispersion function weights it)."""
+    out = {}
+    for node_id, network_data in planning.distribution_networks.items():
+        for year in network_data.years:
+            for day in network_data.days:
+                network = network_data.network[year][day]
+                out[f'DSO:{node_id}:{year}:{day}'] = {
+                    f'{s_m}_{s_o}': network.prob_market_scenarios[s_m] * network.prob_operation_scenarios[s_o]
+                    for s_m in range(len(network.prob_market_scenarios))
+                    for s_o in range(len(network.prob_operation_scenarios))}
+    return out
+
+
+def aggregate_dispersion(detail_by_key, probabilities):
+    """W46: Sigma omega d^2 (and the market / operation split, E|d|) over every DSO block, from
+    production's per-scenario d (`detail_by_key`: 'DSO:<node>:<year>:<day>' -> dispersion detail),
+    via `p515_s51_coordinated_decomposition`; plus the identity check against production's own
+    per-block RMS (sum_omega_d2 = rms_mw^2 * n_hours)."""
+    blocks, max_rel = {}, 0.0
+    for key, det in detail_by_key.items():
+        if not key.startswith('DSO:') or det is None:
+            continue
+        d = {k: v['d_p_mw'] for k, v in det['per_scenario'].items()}
+        blocks[key] = DEC.block_decomposition(d, probabilities[key])
+        production = det['p']['rms_mw'] ** 2 * blocks[key]['n_hours']
+        value = blocks[key]['totals']['sum_omega_d2']
+        max_rel = max(max_rel, abs(value - production) / production if production else abs(value))
+    agg = DEC.aggregate(blocks, DISPERSION_ZERO_TOL_MW)
+    agg['rms_identity_max_rel'] = max_rel
+    agg['block_sum_omega_d2'] = {key: b['totals']['sum_omega_d2'] for key, b in blocks.items()}
+    return agg
+
+
 def _make_post_run_hook(arm, record):
     def hook(planning=None, sed=None, models=None, rows=None, report=None, out_dir=None, label=None):
         detail = srp._get_operational_interface_dispersion(planning, models)
@@ -425,6 +495,13 @@ def _make_post_run_hook(arm, record):
             json.dump({f'{k[0]}:{k[1]}:{k[2]}:{k[3]}': v for k, v in detail.items()},
                       handle, indent=1, default=str)
         record['dispersion_detail_path'] = os.path.relpath(raw_path, REPO)
+        # W46 (zero solves): the aggregate Sigma omega d^2 the sweep's stop rule gates on
+        try:
+            record['aggregate_dispersion'] = aggregate_dispersion(
+                {f'{k[0]}:{k[1]}:{k[2]}:{k[3]}': v for k, v in detail.items()}, block_probabilities(planning))
+        except Exception as error:  # noqa: BLE001
+            _log(f'AGGREGATE DISPERSION FAILED at {arm}: {error!r}')
+            record['aggregate_dispersion'] = {'capture_error': repr(error)}
         # W44 (zero solves): mechanism + prices/duals per DSO block, off the terminal models
         mechanism, coordination, summary = {}, {}, {}
         for node_id, network_data in planning.distribution_networks.items():
@@ -483,7 +560,16 @@ def arm_sweep_row(record):
     totals = {name: sum(v.get(name, 0.0) for v in per_dso.values())
               for name in ('E_abs_d_mwh', 'E_curt_mwh', 'E_flex_down_mwh', 'E_flex_up_mwh',
                            'E_flex_down_cost', 'settlement_deviation', 'total_row18_charge')}
-    return {'alpha': record['alpha'], 'per_dso': per_dso, 'all_dso': totals,
+    agg = record.get('aggregate_dispersion') or {}
+    aggregate_row = ({'sum_omega_d2_mw2h': agg['all_dso']['sum_omega_d2'],
+                      'market_part_mw2h': agg['all_dso']['market_part'],
+                      'operation_part_mw2h': agg['all_dso']['operation_part'],
+                      'market_share': agg['all_dso']['market_share_of_sum_omega_d2'],
+                      'E_abs_d_mwh_from_production_d': agg['all_dso']['E_abs_d'],
+                      'pooled_rms_mw': agg['pooled_rms_mw'], 'agg_tol_mw2h': agg['agg_tol_mw2h'],
+                      'per_dso_sum_omega_d2_mw2h': {n: v['sum_omega_d2'] for n, v in agg['per_dso'].items()}}
+                     if 'all_dso' in agg else {'capture_error': agg.get('capture_error', 'absent')})
+    return {'alpha': record['alpha'], 'per_dso': per_dso, 'all_dso': totals, 'aggregate': aggregate_row,
             'rms_mw_max_over_all_dso_blocks': record['dispersion_overall']['rms_mw_max_over_all_dso_blocks'],
             'max_abs_mw_over_all_dso_blocks': record['dispersion_overall']['max_abs_mw_over_all_dso_blocks'],
             'settlement_deviation_weighted_dso': record.get('settlement_deviation_weighted_dso'),
@@ -510,10 +596,22 @@ def alpha_threshold(holder):
     nodes = sorted({n for r in records for n in r['dispersion_per_node']})
     per_dso = {n: locate({r['alpha']: r['dispersion_per_node'][n]['rms_mw_max_over_blocks']
                           for r in records if n in r['dispersion_per_node']}) for n in nodes}
+    # W46: the aggregate alpha* (the gated metric); the seed arm of --previous-sweep included
+    agg_values, agg_tols = {}, set()
+    for r in records + ([PREVIOUS_SEED] if PREVIOUS_SEED else []):
+        agg = r.get('aggregate_dispersion') or {}
+        if 'all_dso' in agg:
+            agg_values[r['alpha']] = agg['all_dso']['sum_omega_d2']
+            agg_tols.add(agg['agg_tol_mw2h'])
+    aggregate = (DEC.alpha_star_aggregate(agg_values, agg_tols.pop()) if (agg_values and len(agg_tols) == 1)
+                 else {'unavailable': f'values {agg_values} tolerances {agg_tols}'})
+    aggregate['includes_previous_sweep_seed_arm'] = PREVIOUS_SEED['arm'] if PREVIOUS_SEED else None
     return {'definition': ('alpha* = smallest tested alpha with dispersion (max over blocks of the '
                            'per-block RMS interface-P dispersion, MW) <= DISPERSION_ZERO_TOL_MW; '
                            'bracket = (largest tested alpha above it and below alpha*, alpha*]'),
-            'dispersion_zero_tol_mw': DISPERSION_ZERO_TOL_MW, 'overall': overall, 'per_dso': per_dso}
+            'dispersion_zero_tol_mw': DISPERSION_ZERO_TOL_MW, 'overall': overall, 'per_dso': per_dso,
+            'aggregate_definition': DEC.FORMULAS['alpha_star_agg'] + '; agg_tol = ' + DEC.FORMULAS['agg_tol'],
+            'aggregate': aggregate}
 
 
 def attribution(holder):
@@ -597,13 +695,35 @@ def sweep_stop_reasons(record, previous):
         reasons.append(f'network failures {bad}')
     if record.get('capture_errors'):
         reasons.append(f"capture defects on {record['capture_errors']}")
-    if previous is not None:
-        for node, disp in record['dispersion_per_node'].items():
-            before = previous['dispersion_per_node'].get(node, {}).get('rms_mw_max_over_blocks')
-            if before is not None and disp['rms_mw_max_over_blocks'] > before + DISPERSION_ZERO_TOL_MW:
-                reasons.append(f"non-monotone: DSO {node} rms {disp['rms_mw_max_over_blocks']} at alpha "
-                               f"{record['alpha']} > {before} at alpha {previous['alpha']} + tol")
+    agg = record.get('aggregate_dispersion') or {}
+    if 'all_dso' not in agg:
+        reasons.append(f"aggregate dispersion not captured: {agg.get('capture_error', 'absent')}")
+    elif agg['rms_identity_max_rel'] > DEC.IDENTITY_REL_TOL:
+        reasons.append(f"aggregate dispersion disagrees with production's rms: rel {agg['rms_identity_max_rel']}")
+    if previous is not None and 'all_dso' in agg:
+        # W46 ruling: monotonicity is gated on the AGGREGATE Sigma omega d^2, not on the per-DSO max
+        before = (previous.get('aggregate_dispersion') or {}).get('all_dso', {}).get('sum_omega_d2')
+        now = agg['all_dso']['sum_omega_d2']
+        if before is None:
+            reasons.append(f"previous arm {previous.get('arm')} carries no aggregate dispersion")
+        elif now > before + agg['agg_tol_mw2h']:
+            reasons.append(f"non-monotone (aggregate): Sigma omega d^2 {now} at alpha {record['alpha']} > "
+                           f"{before} at alpha {previous['alpha']} ({previous.get('arm')}) + agg_tol "
+                           f"{agg['agg_tol_mw2h']}")
     return reasons
+
+
+def per_dso_rms_rises(record, previous):
+    """W46: the W44 per-DSO rule, kept as an INFORMATIONAL record only (not a stop reason)."""
+    rises = []
+    if previous is None:
+        return rises
+    for node, disp in record['dispersion_per_node'].items():
+        before = (previous.get('dispersion_per_node') or {}).get(node, {}).get('rms_mw_max_over_blocks')
+        if before is not None and disp['rms_mw_max_over_blocks'] > before + DISPERSION_ZERO_TOL_MW:
+            rises.append({'dso': node, 'alpha': record['alpha'], 'rms_mw': disp['rms_mw_max_over_blocks'],
+                          'previous_alpha': previous['alpha'], 'previous_rms_mw': before})
+    return rises
 
 
 def _make_pre_solve_hook(arm, alpha, record, cfg_holder):
@@ -677,9 +797,15 @@ def main():
     parser.add_argument('--cycles', type=int, default=CYCLES)
     parser.add_argument('--alphas', type=float, nargs='+', default=None,
                         help='W44 sweep arm list; omitted = the committed pilot/large pair')
+    parser.add_argument('--previous-sweep', default=None,
+                        help='W46: committed earlier sweep label on the same instance supplying the '
+                             'first new arm\'s monotonicity reference (sweep mode only)')
     args = parser.parse_args()
+    if args.previous_sweep is not None and args.alphas is None:
+        print('REFUSED: --previous-sweep needs --alphas (sweep mode)', file=sys.stderr)
+        return EXIT_REFUSED
     CYCLES = args.cycles
-    global ARMS, ALPHA_BY_ARM, SWEEP_MODE
+    global ARMS, ALPHA_BY_ARM, SWEEP_MODE, PREVIOUS_SEED
     alpha_list_source = 'default ARMS (pilot / large, as committed)'
     if args.alphas is not None:
         if len(set(args.alphas)) != len(args.alphas) or any(a < 0.0 for a in args.alphas):
@@ -765,6 +891,50 @@ def main():
         launch['declared_solve_profile'] = {**declared, 'n_arms': len(ARMS),
                                             'declared_total_strict': len(ARMS) * declared_base}
 
+        # W46: the aggregate tolerance, declared before the run from the planning object
+        n_dso_blocks = launch['expected_block_counts']['dso_blocks']
+        n_hours = {network_data.network[y][d].num_instants
+                   for network_data in planning0.distribution_networks.values()
+                   for y in network_data.years for d in network_data.days}
+        if len(n_hours) != 1:
+            raise RuntimeError(f'DSO blocks differ in horizon: {n_hours}')
+        n_hours = n_hours.pop()
+        launch['monotonicity_metric'] = MONOTONICITY_METRIC
+        launch['thresholds_declared_before_the_run']['agg_tol_mw2h'] = (
+            n_dso_blocks * n_hours * DISPERSION_ZERO_TOL_MW ** 2)
+        launch['thresholds_declared_before_the_run']['agg_tol_definition'] = (
+            f'n_dso_blocks ({n_dso_blocks}) * n_hours ({n_hours}) * DISPERSION_ZERO_TOL_MW^2')
+
+        if args.previous_sweep is not None:
+            inventory = {}
+            prior = DEC._Run(args.previous_sweep, inventory)
+            if (prior.launch['derived_case']['sha256'] != launch['derived_case']['sha256']
+                    or prior.launch['scenario_checksum'] != launch['scenario_checksum']):
+                raise RuntimeError(f'--previous-sweep {args.previous_sweep} is not this instance')
+            lowest = min(ALPHA_BY_ARM.values())
+            candidates = [r for r in prior.gate['arms'].values() if r['alpha'] < lowest]
+            if not candidates:
+                raise RuntimeError(f'--previous-sweep {args.previous_sweep} has no arm below alpha {lowest}')
+            seed_record = max(candidates, key=lambda r: r['alpha'])
+            detail = prior.load(os.path.relpath(os.path.join(REPO, seed_record['dispersion_detail_path']),
+                                                prior.dir))
+            seed_agg = aggregate_dispersion(detail, block_probabilities(planning0))
+            if seed_agg['rms_identity_max_rel'] > DEC.IDENTITY_REL_TOL:
+                raise RuntimeError(f'seed arm aggregate disagrees with its rms: {seed_agg["rms_identity_max_rel"]}')
+            if abs(seed_agg['agg_tol_mw2h'] - launch['thresholds_declared_before_the_run']['agg_tol_mw2h']) > 0.0:
+                raise RuntimeError('seed arm block count / horizon differs from this run')
+            PREVIOUS_SEED = {'arm': f"{args.previous_sweep}:{seed_record['arm']}", 'alpha': seed_record['alpha'],
+                             'aggregate_dispersion': seed_agg,
+                             'dispersion_per_node': seed_record['dispersion_per_node']}
+            launch['previous_sweep_seed'] = {
+                'label': args.previous_sweep, 'arm': seed_record['arm'], 'alpha': seed_record['alpha'],
+                'files_sha256_manifest_verified': inventory,
+                'sum_omega_d2_mw2h': seed_agg['all_dso']['sum_omega_d2'],
+                'E_abs_d_mwh': seed_agg['all_dso']['E_abs_d'],
+                'per_dso_rms_mw_max_over_blocks': {n: v['rms_mw_max_over_blocks']
+                                                  for n, v in seed_record['dispersion_per_node'].items()},
+                'rms_identity_max_rel': seed_agg['rms_identity_max_rel']}
+
         checklist = capture_path_checklist()
         launch['capture_path_checklist_asserted_before_run'] = checklist
         if not all(checklist.values()):
@@ -783,7 +953,7 @@ def main():
         # explicit release entry point, and the committed gates do not release it either.
         G._acquire_exclusive_run_lock()
         stopped = None
-        previous = None
+        previous = PREVIOUS_SEED
         for index, arm in enumerate(ARMS):
             _log(f'arm {arm}: alpha = {ALPHA_BY_ARM[arm]}')
             run_arm(arm, out_root, planning0, declared_base, holder)
@@ -798,6 +968,12 @@ def main():
                  f"settle_dev={row['all_dso']['settlement_deviation']:.4f} "
                  f"capture_errors={holder[arm].get('capture_errors')}")
             if SWEEP_MODE:
+                agg_row = row['aggregate']
+                _log(f"arm {arm}: Sigma omega d^2 = {agg_row.get('sum_omega_d2_mw2h')} MW^2 h "
+                     f"(market {agg_row.get('market_part_mw2h')}; previous "
+                     f"{(previous or {}).get('arm')} = "
+                     f"{((previous or {}).get('aggregate_dispersion') or {}).get('all_dso', {}).get('sum_omega_d2')})")
+                holder[arm]['per_dso_rms_rises_vs_previous_informational'] = per_dso_rms_rises(holder[arm], previous)
                 reasons = sweep_stop_reasons(holder[arm], previous)
                 if reasons:
                     stopped = {'after_arm': arm, 'reasons': reasons, 'arms_not_run': list(ARMS[index + 1:])}
@@ -863,6 +1039,8 @@ def main():
                     math.isclose(r['alpha_applied']['alpha'], ALPHA_BY_ARM[r['arm']]) for r in holder.values()),
                 'mechanism_and_prices_captured_on_every_dso_block': all(
                     not r.get('capture_errors') for r in holder.values()),
+                'aggregate_dispersion_captured_on_every_arm': all(
+                    'all_dso' in (r.get('aggregate_dispersion') or {}) for r in holder.values()),
                 'large_arm_dispersion_below_the_declared_tolerance': (
                     large['rms_mw_max_over_all_dso_blocks'] <= DISPERSION_ZERO_TOL_MW if large else None),
                 'large_arm_dispersion_collapses_against_the_pilot': (
@@ -883,6 +1061,8 @@ def main():
                 'thresholds': launch['thresholds_declared_before_the_run'],
             } if (pilot and large) else None),
             'sweep_stopped': stopped,
+            'previous_sweep_seed_arm': ({k: v for k, v in PREVIOUS_SEED.items() if k != 'dispersion_per_node'}
+                                        if PREVIOUS_SEED else None),
             'sweep_table': [arm_sweep_row(r) for r in sorted(holder.values(), key=lambda r: r['alpha'])],
             'alpha_threshold': alpha_threshold(holder),
             'attribution': attribution(holder),
