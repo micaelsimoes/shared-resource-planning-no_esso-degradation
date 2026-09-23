@@ -52,6 +52,15 @@ arm; items whose arm is absent are recorded as not applicable and skipped. Every
 records `alpha_threshold`: alpha* = the smallest tested alpha whose dispersion (max over
 blocks of the RMS, MW) is at or below DISPERSION_ZERO_TOL_MW, its bracket, and the price
 ratio alpha* * pibar_t / c_flex_t from the zero-solve price table.
+MECHANISM CAPTURE (P5.15 Addendum 39 ruling 2 follow-up, task W42, ZERO extra solves):
+every block of every arm also records `mechanism` -- read with `pe.value` off the model the
+arm has ALREADY solved, never re-solved -- so the question "how does the DSO remove its
+deviation d as alpha rises?" can be answered from the artifact: per scenario and hour, the
+interface P, the committed P, d, the row 18 legs d+/d-, the load, the priced DOWN and
+unpriced UP flexibility legs (fl_reg loads, the loads `flexibility_cost` prices), the
+priced down-leg cost c_flex * down, load curtailment, ordinary / shared ESS, the non-
+reference generation, the losses-and-slacks residual sum(pg_node) - sum(pc_node), the
+P day-balance slacks, and the per-scenario objective components.
 Exit 0 on PASS, 1 on FAIL, 2 on a precondition refusal.
 """
 
@@ -180,6 +189,12 @@ def capture_path_checklist(planning):
         'builder_accepts_premium_alpha': 'premium_alpha' in __import__('inspect').signature(
             srp.create_distribution_networks_models).parameters,
         'selected_node_present': SELECTED_NODE in planning.distribution_networks,
+        # W42 mechanism capture (zero-solve, read off the solved model)
+        'flexibility_cost_callable': callable(getattr(MCH, 'flexibility_cost', None)),
+        'flexibility_p_day_balance_slack_penalty_callable': callable(
+            getattr(MCH, 'flexibility_p_day_balance_slack_penalty', None)),
+        'interface_pf_p_distribution_def_callable': callable(
+            getattr(MCH, 'interface_pf_p_distribution_def', None)),
     }
 
 
@@ -224,6 +239,127 @@ def price_table(planning):
                     'rows': rows,
                 }
     return table
+
+
+def mechanism_record(model, network, params):
+    """W42 (ZERO SOLVES): the per-scenario, per-hour composition of the DSO's interface P,
+    read with `pe.value` off the ALREADY-SOLVED block model. MW (x baseMVA); one period is
+    one hour, so a sum over periods of MW is MWh. Identity recorded, per (s, t):
+
+        interface_p = sum_i pc_node - sum_{g != ref} pg + residual - shared_ess_at_ref
+        sum_i pc_node = load + flex_up - flex_down - curt_down + curt_up + es_pnet + shared_es_pnet
+        residual      = sum_i pg_node - sum_i pc_node   (losses, shunts, node-balance slacks)
+
+    `flex_*` are summed over the fl_reg loads -- the loads `flexibility_cost` prices, whose
+    DOWN legs cost c_flex[s_m][t] * baseMVA and whose UP legs are unpriced, subject only to
+    the per-scenario P day balance sum_t up = sum_t down (+ bounded slacks)."""
+    s_base = network.baseMVA
+    ref_gen = network.get_reference_gen_idx()
+    ref_node = network.get_reference_node_id()
+    fl_loads = [c for c in model.loads if network.loads[c].fl_reg] if hasattr(model, 'flex_p_up') else []
+
+    def _v(component, *index):
+        return float(pe.value(component[index]))
+
+    per_scenario = {}
+    for s_m in model.scenarios_market:
+        for s_o in model.scenarios_operation:
+            prob = network.prob_market_scenarios[s_m] * network.prob_operation_scenarios[s_o]
+            c_flex = network.cost_flex[s_m]
+            series = {k: [] for k in (
+                'interface_p_mw', 'committed_p_mw', 'd_p_mw', 'row18_dev_p_up_mw', 'row18_dev_p_down_mw',
+                'load_p_mw', 'flex_p_up_mw', 'flex_p_down_mw', 'flex_q_up_mvar', 'flex_q_down_mvar',
+                'flex_p_down_cost', 'curt_p_down_mw', 'curt_p_up_mw', 'es_pnet_mw', 'shared_es_pnet_mw',
+                'gen_nonref_p_mw', 'gen_curtaillable_avail_mw', 'residual_losses_slacks_mw',
+                'shared_ess_at_ref_mw', 'c_flex')}
+            for p in model.periods:
+                interface = float(pe.value(model.pg_adn[s_m, s_o, p])) * s_base
+                committed = float(pe.value(model.expected_interface_pf_p[p])) * s_base
+                series['interface_p_mw'].append(interface)
+                series['committed_p_mw'].append(committed)
+                series['d_p_mw'].append(interface - committed)
+                series['row18_dev_p_up_mw'].append(
+                    _v(model.row18_dev_p_up, s_m, s_o, p) * s_base if hasattr(model, 'row18_dev_p_up') else None)
+                series['row18_dev_p_down_mw'].append(
+                    _v(model.row18_dev_p_down, s_m, s_o, p) * s_base if hasattr(model, 'row18_dev_p_down') else None)
+                series['load_p_mw'].append(sum(_v(model.pc, c, s_m, s_o, p) for c in model.loads) * s_base)
+                down = sum(_v(model.flex_p_down, c, s_m, s_o, p) for c in fl_loads) * s_base
+                series['flex_p_up_mw'].append(sum(_v(model.flex_p_up, c, s_m, s_o, p) for c in fl_loads) * s_base)
+                series['flex_p_down_mw'].append(down)
+                series['flex_q_up_mvar'].append(sum(_v(model.flex_q_up, c, s_m, s_o, p) for c in fl_loads) * s_base)
+                series['flex_q_down_mvar'].append(sum(_v(model.flex_q_down, c, s_m, s_o, p) for c in fl_loads) * s_base)
+                series['flex_p_down_cost'].append(float(c_flex[p]) * down)
+                series['c_flex'].append(float(c_flex[p]))
+                if hasattr(model, 'pc_curt_down'):
+                    series['curt_p_down_mw'].append(sum(_v(model.pc_curt_down, c, s_m, s_o, p) for c in model.loads) * s_base)
+                    series['curt_p_up_mw'].append(sum(_v(model.pc_curt_up, c, s_m, s_o, p) for c in model.loads) * s_base)
+                else:
+                    series['curt_p_down_mw'].append(0.0)
+                    series['curt_p_up_mw'].append(0.0)
+                series['es_pnet_mw'].append(
+                    sum(_v(model.es_pnet, e, s_m, s_o, p) for e in model.energy_storages) * s_base
+                    if hasattr(model, 'es_pnet') else 0.0)
+                # the ONE scenario-free shared-ESS variable every scenario's node balance uses
+                s_m0, s_o0 = MCH.sess_na_scenario(model)
+                series['shared_es_pnet_mw'].append(
+                    sum(_v(model.shared_es_pnet, e, s_m0, s_o0, p) for e in model.shared_energy_storages) * s_base)
+                series['shared_ess_at_ref_mw'].append(
+                    (float(pe.value(model.pg[ref_gen, s_m, s_o, p])) * s_base) - interface)
+                series['gen_nonref_p_mw'].append(
+                    sum(_v(model.pg, g, s_m, s_o, p) for g in model.generators if g != ref_gen) * s_base)
+                series['gen_curtaillable_avail_mw'].append(
+                    sum(_v(model.pg_avail, g, s_o, p) for g in model.generators
+                        if network.generators[g].is_curtaillable()) * s_base
+                    if hasattr(model, 'pg_avail') else None)
+                series['residual_losses_slacks_mw'].append(
+                    (sum(float(pe.value(model.pg_node[i, s_m, s_o, p])) for i in model.nodes)
+                     - sum(float(pe.value(model.pc_node[i, s_m, s_o, p])) for i in model.nodes)) * s_base)
+            day_balance_slack = None
+            if hasattr(model, 'slack_flex_p_balance_up'):
+                day_balance_slack = {
+                    'up_mwh': sum(_v(model.slack_flex_p_balance_up, c, s_m, s_o) for c in fl_loads) * s_base,
+                    'down_mwh': sum(_v(model.slack_flex_p_balance_down, c, s_m, s_o) for c in fl_loads) * s_base}
+            objective_components = {}
+            for name in ('gen_cost_scenario', 'flex_cost_scenario', 'load_curt_cost_scenario',
+                         'gen_curt_penalty_scenario', 'ess_utilization_cost_penalty_scenario',
+                         'slack_penalties_scenario', 'ess_complementarity_penalty_scenario'):
+                if hasattr(model, name):
+                    objective_components[name] = float(pe.value(getattr(model, name)[s_m, s_o]))
+            objective_components['flexibility_p_day_balance_slack_penalty'] = float(pe.value(
+                MCH.flexibility_p_day_balance_slack_penalty(model, network, s_m, s_o, params)))
+            per_scenario[f'{s_m}_{s_o}'] = {
+                'probability': prob, 'series': series,
+                'flex_p_day_balance_slack': day_balance_slack,
+                'objective_components': objective_components,
+            }
+    totals = {}
+    for name in ('total_gen_cost', 'total_flex_cost', 'total_load_curt_cost', 'total_gen_curt_penalty',
+                 'total_ess_utilization_cost_penalty', 'total_slack_penalties',
+                 'total_ess_complementarity_penalties', 'row18_deviation_charge', 'interface_settlement'):
+        if hasattr(model, name):
+            totals[name] = float(pe.value(getattr(model, name)))
+    totals['interface_settlement_weight'] = float(pe.value(model.interface_settlement_weight))
+    totals['voltage_pin_weighted'] = (
+        float(pe.value(model.scenario_voltage_pin_weight) * pe.value(model.scenario_voltage_pin))
+        if hasattr(model, 'scenario_voltage_pin') else 0.0)
+    return {
+        'units': 'MW / MVAr per hour (x baseMVA); currency for *_cost and objective components',
+        'base_mva': s_base, 'reference_gen_idx': ref_gen, 'reference_node_id': ref_node,
+        'n_fl_reg_loads': len(fl_loads), 'n_loads': len(list(model.loads)),
+        'n_energy_storages': len(list(model.energy_storages)),
+        'n_shared_energy_storages': len(list(model.shared_energy_storages)),
+        'per_scenario': per_scenario, 'objective_totals': totals,
+    }
+
+
+def mechanism_record_or_error(model, network, params, where):
+    """The capture runs AFTER the arm's solves; a capture defect must not destroy the arm's
+    solved result, so it is recorded (and logged) in place of the record, never swallowed."""
+    try:
+        return mechanism_record(model, network, params)
+    except Exception as error:  # noqa: BLE001
+        _log(f'MECHANISM CAPTURE FAILED at {where}: {error!r}')
+        return {'capture_error': repr(error)}
 
 
 def run_arm(alpha, out_root, holder):
@@ -272,6 +408,8 @@ def run_arm(alpha, out_root, holder):
                 'interface_settlement_deviation': float(pe.value(model.interface_settlement_deviation)),
                 'voltage_mismatch': srp._get_local_scenario_voltage_mismatch(model, network),
                 'dispersion': dispersion,
+                'mechanism': mechanism_record_or_error(model, network, network_data.params,
+                                                       f'{arm} {year}:{day}'),
             }
     record['blocks'] = blocks
     record['n_blocks'] = len(blocks)
