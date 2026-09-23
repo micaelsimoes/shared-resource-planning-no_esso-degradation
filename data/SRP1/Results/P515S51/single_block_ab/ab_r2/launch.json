@@ -1,0 +1,5834 @@
+{
+ "schema": "p515_s51_single_block_ab_v1",
+ "stage": "P5.15 Addendum 38 W39 gate 3 -- single-block 2x2 A/B at alpha in {0, 0.5, large}; alpha*pibar_t against each DSO's internal flexibility price per hour",
+ "authority": [
+  "PLANNER_BRIEF_2026-09-13.md Addendum 38",
+  "data/SRP1/Results/P515S51/frozen_s51_spec_v21_13cb828c.json gates[2]"
+ ],
+ "label": "ab_r2",
+ "instance": "s51_2x2_single_block",
+ "instance_definition": {
+  "description": "the current SRP1 case file unchanged (3 years x 4 days x 1 x 1 scenario)",
+  "years": {
+   "2025": 5
+  },
+  "num_market_scenarios": 2,
+  "num_operation_scenarios": 2
+ },
+ "derived_case": {
+  "path": "data/SRP1/Results/P515S51/single_block_ab/ab_r2/case/SRP1__s51_2x2_ab.json",
+  "sha256": "fe054c22ff4c9e0195d0260b63986d4b697b60e3b3f8900b8329ed81d52c3688",
+  "source": "data/SRP1/SRP1.json",
+  "source_sha256": "61a794a7ce7a3fb983f2e92128eec446dd7dbb17ad75a3b3b1c5735f8bd4e4ef",
+  "changes_vs_source": [
+   {
+    "key": "Years",
+    "from": {
+     "2025": 5,
+     "2030": 5,
+     "2035": 5
+    },
+    "to": {
+     "2025": 5
+    }
+   },
+   {
+    "key": "NumMarketScenarios",
+    "from": 1,
+    "to": 2
+   },
+   {
+    "key": "TransmissionNetwork[case9].num_operation_scenarios",
+    "from": 1,
+    "to": 2
+   },
+   {
+    "key": "DistributionNetworks[case33_1].num_operation_scenarios",
+    "from": 1,
+    "to": 2
+   },
+   {
+    "key": "DistributionNetworks[case33_2].num_operation_scenarios",
+    "from": 1,
+    "to": 2
+   },
+   {
+    "key": "DistributionNetworks[case33_3].num_operation_scenarios",
+    "from": 1,
+    "to": 2
+   }
+  ]
+ },
+ "argv": [
+  "p515_s51_single_block_ab.py",
+  "--label",
+  "ab_r2"
+ ],
+ "interpreter": "/Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python",
+ "script": "p515_s51_single_block_ab.py",
+ "script_sha256": "c7bad107965c2d5795efc8bd614261cf48f71cafbb5d17cce8e335c64bff306b",
+ "git_head": "4ce7447bd0bc56373976a2fa91e703fc0fe6ac2c",
+ "git_tracked_changes": [
+  "M PLANNER_BRIEF_2026-09-13.md"
+ ],
+ "nlp_solver_path_env": "/usr/local/bin/ipopt",
+ "alphas": [
+  0.0,
+  0.5,
+  1000.0
+ ],
+ "selected_node": 7,
+ "dispersion_zero_tol_mw_declared_before_the_run": 0.01,
+ "guard_permitted": [
+  [
+   "network.py",
+   "_run_smopf_solver_attempt"
+  ],
+  [
+   "shared_energy_storage_data.py",
+   "_run_solver_attempt"
+  ]
+ ],
+ "started_utc": "2026-09-23T16:41:31.487658+00:00",
+ "pid": 97341,
+ "scenario_checksum": "9d6335848b80ee9bb484ffd0c82fc70362b0ee02d79c5d351c15da1e25b0c857",
+ "planning_dimensions": {
+  "years": {
+   "2025": 5
+  },
+  "days": {
+   "Spring": 92,
+   "Summer": 91,
+   "Autumn": 91,
+   "Winter": 91
+  },
+  "num_instants": 24,
+  "random_seed": 2026,
+  "num_market_scenarios": 2,
+  "num_operation_scenarios": {
+   "case9": 2,
+   "case33_1": 2,
+   "case33_2": 2,
+   "case33_3": 2
+  },
+  "active_distribution_network_nodes": [
+   5,
+   7,
+   9
+  ],
+  "scenario_metadata": {
+   "random_seed": 2026,
+   "deterministic_scenarios": true,
+   "market_scenario_checksum": "5547b2180f2b659136d65ac7034622dea040579366f114af0bcdea5fb385b44c",
+   "operational_scenario_checksum": "3b8cd257a930348f3a525d8c2c41540cddcef264fde39a3fa08695c6f80fe426",
+   "combined_scenario_checksum": "9d6335848b80ee9bb484ffd0c82fc70362b0ee02d79c5d351c15da1e25b0c857"
+  }
+ },
+ "provenance": {
+  "timestamp_utc": "2026-09-23T16:41:42.969425+00:00",
+  "git_head": "4ce7447bd0bc56373976a2fa91e703fc0fe6ac2c",
+  "sys_executable": "/Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python",
+  "conda_default_env": null,
+  "conda_env_from_path": "opf_env_py311",
+  "python_version": "3.11.11",
+  "numpy_version": "2.4.2",
+  "pandas_version": "3.0.0",
+  "scipy_version": "1.17.0",
+  "pyomo_version": "6.9.5",
+  "ipopt": {
+   "path": "/usr/local/bin/ipopt",
+   "exists": true,
+   "version": "3.14.18",
+   "asl": "20241111",
+   "banner": "Ipopt 3.14.18 (aarch64-apple-darwin24.5.0), ASL(20241111)",
+   "path_ipopt_not_used": {
+    "path": "/usr/local/bin/ipopt",
+    "version": "3.14.18",
+    "shadows_canonical": false
+   }
+  },
+  "hsl_linear_solver": "ma97",
+  "gurobi": {
+   "gurobipy": "13.0.1",
+   "gurobi_runtime": "13.0.1",
+   "licence": "ACADEMIC",
+   "licence_expiry": "2027-04-14",
+   "available": true,
+   "licence_id": "2807206",
+   "licence_version": "13"
+  },
+  "scenario_checksum": "9d6335848b80ee9bb484ffd0c82fc70362b0ee02d79c5d351c15da1e25b0c857",
+  "canonical_checksum": "5a02b77ccbbbbbb869de92958a3851d095624711abc2dbfc0157466064410358",
+  "checksum_matches_canonical": false,
+  "canonical_ipopt_path": "/usr/local/bin/ipopt",
+  "canonical_ipopt_version": "3.14.18",
+  "canonical_ipopt_asl": "20241111",
+  "canonical_hsl_linear_solver": "ma97",
+  "gate_failures": [
+   {
+    "identity": "scenario checksum",
+    "observed": "9d6335848b80ee9bb484ffd0c82fc70362b0ee02d79c5d351c15da1e25b0c857",
+    "canonical": "5a02b77ccbbbbbb869de92958a3851d095624711abc2dbfc0157466064410358"
+   }
+  ],
+  "checksum_expected_to_differ": true,
+  "gate_passes_for_this_instance": true
+ },
+ "capture_path_checklist_asserted_before_run": {
+  "dispersion_metric_callable": true,
+  "row18_wiring_callable": true,
+  "expected_market_price_callable": true,
+  "network_carries_cost_flex": true,
+  "network_carries_cost_energy_p": true,
+  "builder_accepts_premium_alpha": true,
+  "selected_node_present": true
+ },
+ "declared_solve_profile": {
+  "n_blocks_per_arm": 4,
+  "n_arms": 3,
+  "declared_total_strict": 12,
+  "derivation": "one standalone DSO SMOPF solve per (year, day) block per arm"
+ },
+ "price_table": {
+  "DSO:5:case33_1:2025:Spring": {
+   "n_periods": 24,
+   "pibar_min": 9.81204468708017,
+   "pibar_max": 157.6525959539668,
+   "c_flex_expected_min": 22.58028607017752,
+   "c_flex_expected_max": 54.91540991588853,
+   "n_hours_premium_below_c_flex": {
+    "0.0": 24,
+    "0.5": 9,
+    "1000.0": 0
+   },
+   "rows": [
+    {
+     "period": 0,
+     "pibar": 143.06281197426998,
+     "c_flex_expected": 49.23588390462982,
+     "c_flex_by_market_scenario": [
+      50.387905127438465,
+      48.08386268182118
+     ],
+     "pi_by_market_scenario": [
+      116.6741563028345,
+      169.45146764570546
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 71.53140598713499,
+     "alpha_0.5_over_c_flex": 1.452830746893703,
+     "alpha_1000.0_premium": 143062.81197426998,
+     "alpha_1000.0_over_c_flex": 2905.6614937874056
+    },
+    {
+     "period": 1,
+     "pibar": 139.6947974758054,
+     "c_flex_expected": 47.228001043756805,
+     "c_flex_by_market_scenario": [
+      48.65359133086557,
+      45.80241075664805
+     ],
+     "pi_by_market_scenario": [
+      117.72769218863633,
+      161.66190276297448
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 69.8473987379027,
+     "alpha_0.5_over_c_flex": 1.4789403996410728,
+     "alpha_1000.0_premium": 139694.7974758054,
+     "alpha_1000.0_over_c_flex": 2957.8807992821457
+    },
+    {
+     "period": 2,
+     "pibar": 140.6098662066097,
+     "c_flex_expected": 47.590990703490476,
+     "c_flex_by_market_scenario": [
+      46.72559591861644,
+      48.45638548836452
+     ],
+     "pi_by_market_scenario": [
+      120.19845744897576,
+      161.02127496424364
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 70.30493310330485,
+     "alpha_0.5_over_c_flex": 1.4772739979575265,
+     "alpha_1000.0_premium": 140609.8662066097,
+     "alpha_1000.0_over_c_flex": 2954.547995915053
+    },
+    {
+     "period": 3,
+     "pibar": 138.25642522116277,
+     "c_flex_expected": 46.049905516320834,
+     "c_flex_by_market_scenario": [
+      43.060250738740194,
+      49.03956029390147
+     ],
+     "pi_by_market_scenario": [
+      119.22860902435463,
+      157.28424141797092
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 69.12821261058139,
+     "alpha_0.5_over_c_flex": 1.501158619882102,
+     "alpha_1000.0_premium": 138256.42522116276,
+     "alpha_1000.0_over_c_flex": 3002.3172397642043
+    },
+    {
+     "period": 4,
+     "pibar": 143.0295804936227,
+     "c_flex_expected": 47.6740870500894,
+     "c_flex_by_market_scenario": [
+      45.282609269431376,
+      50.06556483074743
+     ],
+     "pi_by_market_scenario": [
+      124.72952816104966,
+      161.32963282619573
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 71.51479024681134,
+     "alpha_0.5_over_c_flex": 1.5000767643787998,
+     "alpha_1000.0_premium": 143029.5804936227,
+     "alpha_1000.0_over_c_flex": 3000.1535287576
+    },
+    {
+     "period": 5,
+     "pibar": 138.17306421976687,
+     "c_flex_expected": 47.635046814118795,
+     "c_flex_by_market_scenario": [
+      47.57717684335567,
+      47.692916784881916
+     ],
+     "pi_by_market_scenario": [
+      128.03663614649625,
+      148.3094922930375
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 69.08653210988344,
+     "alpha_0.5_over_c_flex": 1.4503298879808495,
+     "alpha_1000.0_premium": 138173.06421976688,
+     "alpha_1000.0_over_c_flex": 2900.6597759616993
+    },
+    {
+     "period": 6,
+     "pibar": 143.7164317919366,
+     "c_flex_expected": 50.31722797681877,
+     "c_flex_by_market_scenario": [
+      53.22349887442124,
+      47.41095707921631
+     ],
+     "pi_by_market_scenario": [
+      134.8799247808026,
+      152.55293880307062
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 71.8582158959683,
+     "alpha_0.5_over_c_flex": 1.428103629418407,
+     "alpha_1000.0_premium": 143716.4317919366,
+     "alpha_1000.0_over_c_flex": 2856.207258836814
+    },
+    {
+     "period": 7,
+     "pibar": 135.64215626970383,
+     "c_flex_expected": 47.52745140602663,
+     "c_flex_by_market_scenario": [
+      48.246631926239175,
+      46.80827088581408
+     ],
+     "pi_by_market_scenario": [
+      115.96857921951926,
+      155.3157333198884
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 67.82107813485192,
+     "alpha_0.5_over_c_flex": 1.4269874804659102,
+     "alpha_1000.0_premium": 135642.15626970385,
+     "alpha_1000.0_over_c_flex": 2853.9749609318205
+    },
+    {
+     "period": 8,
+     "pibar": 85.08084612302565,
+     "c_flex_expected": 37.899428768635936,
+     "c_flex_by_market_scenario": [
+      36.86053437713862,
+      38.93832316013325
+     ],
+     "pi_by_market_scenario": [
+      77.83624431368597,
+      92.32544793236534
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 42.540423061512826,
+     "alpha_0.5_over_c_flex": 1.1224555209316927,
+     "alpha_1000.0_premium": 85080.84612302565,
+     "alpha_1000.0_over_c_flex": 2244.911041863385
+    },
+    {
+     "period": 9,
+     "pibar": 53.38696659581049,
+     "c_flex_expected": 30.208523684656836,
+     "c_flex_by_market_scenario": [
+      31.85411914133111,
+      28.56292822798256
+     ],
+     "pi_by_market_scenario": [
+      38.123663843804934,
+      68.65026934781605
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 26.693483297905246,
+     "alpha_0.5_over_c_flex": 0.8836407755822603,
+     "alpha_1000.0_premium": 53386.96659581049,
+     "alpha_1000.0_over_c_flex": 1767.2815511645206
+    },
+    {
+     "period": 10,
+     "pibar": 41.9810617816493,
+     "c_flex_expected": 27.490514031555506,
+     "c_flex_by_market_scenario": [
+      28.714134054080947,
+      26.266894009030068
+     ],
+     "pi_by_market_scenario": [
+      33.608660885680955,
+      50.35346267761764
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 20.99053089082465,
+     "alpha_0.5_over_c_flex": 0.7635554164876754,
+     "alpha_1000.0_premium": 41981.0617816493,
+     "alpha_1000.0_over_c_flex": 1527.110832975351
+    },
+    {
+     "period": 11,
+     "pibar": 42.25064979739398,
+     "c_flex_expected": 26.792067793302017,
+     "c_flex_by_market_scenario": [
+      26.89141928054934,
+      26.69271630605469
+     ],
+     "pi_by_market_scenario": [
+      30.838312307723616,
+      53.662987287064354
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 21.12532489869699,
+     "alpha_0.5_over_c_flex": 0.7884917678499714,
+     "alpha_1000.0_premium": 42250.649797393984,
+     "alpha_1000.0_over_c_flex": 1576.9835356999429
+    },
+    {
+     "period": 12,
+     "pibar": 25.276070958584995,
+     "c_flex_expected": 25.935842572416362,
+     "c_flex_by_market_scenario": [
+      25.17986357266501,
+      26.691821572167715
+     ],
+     "pi_by_market_scenario": [
+      15.689403206252234,
+      34.86273871091776
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 12.638035479292498,
+     "alpha_0.5_over_c_flex": 0.48728069828483117,
+     "alpha_1000.0_premium": 25276.070958584995,
+     "alpha_1000.0_over_c_flex": 974.5613965696624
+    },
+    {
+     "period": 13,
+     "pibar": 19.439798732724533,
+     "c_flex_expected": 24.014969030453443,
+     "c_flex_by_market_scenario": [
+      23.773915213933044,
+      24.256022846973842
+     ],
+     "pi_by_market_scenario": [
+      12.702646780769136,
+      26.17695068467993
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 9.719899366362267,
+     "alpha_0.5_over_c_flex": 0.404743364608817,
+     "alpha_1000.0_premium": 19439.798732724532,
+     "alpha_1000.0_over_c_flex": 809.486729217634
+    },
+    {
+     "period": 14,
+     "pibar": 9.81204468708017,
+     "c_flex_expected": 22.58028607017752,
+     "c_flex_by_market_scenario": [
+      21.277557180050266,
+      23.883014960304777
+     ],
+     "pi_by_market_scenario": [
+      3.2589652668910762,
+      16.365124107269267
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 4.906022343540085,
+     "alpha_0.5_over_c_flex": 0.21727015894717205,
+     "alpha_1000.0_premium": 9812.044687080172,
+     "alpha_1000.0_over_c_flex": 434.5403178943442
+    },
+    {
+     "period": 15,
+     "pibar": 10.205057828809375,
+     "c_flex_expected": 22.65686782207991,
+     "c_flex_by_market_scenario": [
+      22.52860069631732,
+      22.785134947842504
+     ],
+     "pi_by_market_scenario": [
+      6.985251712125617,
+      13.424863945493133
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 5.1025289144046875,
+     "alpha_0.5_over_c_flex": 0.22520892801572928,
+     "alpha_1000.0_premium": 10205.057828809375,
+     "alpha_1000.0_over_c_flex": 450.41785603145854
+    },
+    {
+     "period": 16,
+     "pibar": 21.894471133466936,
+     "c_flex_expected": 24.423994988578816,
+     "c_flex_by_market_scenario": [
+      23.988446813264254,
+      24.859543163893377
+     ],
+     "pi_by_market_scenario": [
+      13.601224711837649,
+      30.18771755509622
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 10.947235566733468,
+     "alpha_0.5_over_c_flex": 0.4482164188066952,
+     "alpha_1000.0_premium": 21894.471133466937,
+     "alpha_1000.0_over_c_flex": 896.4328376133906
+    },
+    {
+     "period": 17,
+     "pibar": 47.200838155478834,
+     "c_flex_expected": 28.509666687407062,
+     "c_flex_by_market_scenario": [
+      29.1398648377484,
+      27.879468537065726
+     ],
+     "pi_by_market_scenario": [
+      41.51769184732111,
+      52.88398446363655
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 23.600419077739417,
+     "alpha_0.5_over_c_flex": 0.8278041036573711,
+     "alpha_1000.0_premium": 47200.838155478836,
+     "alpha_1000.0_over_c_flex": 1655.6082073147425
+    },
+    {
+     "period": 18,
+     "pibar": 82.76412321400265,
+     "c_flex_expected": 36.39178562139286,
+     "c_flex_by_market_scenario": [
+      37.91058362644221,
+      34.872987616343515
+     ],
+     "pi_by_market_scenario": [
+      80.21280042116278,
+      85.31544600684252
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 41.382061607001326,
+     "alpha_0.5_over_c_flex": 1.1371264393983167,
+     "alpha_1000.0_premium": 82764.12321400266,
+     "alpha_1000.0_over_c_flex": 2274.2528787966335
+    },
+    {
+     "period": 19,
+     "pibar": 126.3886609908497,
+     "c_flex_expected": 49.12360223963641,
+     "c_flex_by_market_scenario": [
+      47.147343358829865,
+      51.09986112044297
+     ],
+     "pi_by_market_scenario": [
+      113.9651653572442,
+      138.81215662445518
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 63.19433049542485,
+     "alpha_0.5_over_c_flex": 1.2864351882654723,
+     "alpha_1000.0_premium": 126388.6609908497,
+     "alpha_1000.0_over_c_flex": 2572.870376530945
+    },
+    {
+     "period": 20,
+     "pibar": 152.92975853312942,
+     "c_flex_expected": 54.91540991588853,
+     "c_flex_by_market_scenario": [
+      55.33405622692387,
+      54.4967636048532
+     ],
+     "pi_by_market_scenario": [
+      142.53569675079214,
+      163.32382031546666
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 76.46487926656471,
+     "alpha_0.5_over_c_flex": 1.3924120640032103,
+     "alpha_1000.0_premium": 152929.7585331294,
+     "alpha_1000.0_over_c_flex": 2784.8241280064203
+    },
+    {
+     "period": 21,
+     "pibar": 144.03692142295293,
+     "c_flex_expected": 49.80724919037783,
+     "c_flex_by_market_scenario": [
+      49.86962068414622,
+      49.744877696609436
+     ],
+     "pi_by_market_scenario": [
+      134.53195913830874,
+      153.54188370759712
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 72.01846071147646,
+     "alpha_0.5_over_c_flex": 1.4459433492542602,
+     "alpha_1000.0_premium": 144036.92142295293,
+     "alpha_1000.0_over_c_flex": 2891.8866985085206
+    },
+    {
+     "period": 22,
+     "pibar": 141.643678158228,
+     "c_flex_expected": 49.022156850023094,
+     "c_flex_by_market_scenario": [
+      50.2138448675198,
+      47.83046883252638
+     ],
+     "pi_by_market_scenario": [
+      125.49672518746387,
+      157.79063112899212
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 70.821839079114,
+     "alpha_0.5_over_c_flex": 1.4446903936883926,
+     "alpha_1000.0_premium": 141643.678158228,
+     "alpha_1000.0_over_c_flex": 2889.380787376785
+    },
+    {
+     "period": 23,
+     "pibar": 157.6525959539668,
+     "c_flex_expected": 47.46409732287877,
+     "c_flex_by_market_scenario": [
+      47.08031355487596,
+      47.847881090881586
+     ],
+     "pi_by_market_scenario": [
+      158.08689556133885,
+      157.21829634659477
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 78.8262979769834,
+     "alpha_0.5_over_c_flex": 1.6607562857618559,
+     "alpha_1000.0_premium": 157652.59595396678,
+     "alpha_1000.0_over_c_flex": 3321.5125715237114
+    }
+   ]
+  },
+  "DSO:5:case33_1:2025:Summer": {
+   "n_periods": 24,
+   "pibar_min": 37.458328086001686,
+   "pibar_max": 142.74079256354335,
+   "c_flex_expected_min": 33.676265883281445,
+   "c_flex_expected_max": 62.029804910723726,
+   "n_hours_premium_below_c_flex": {
+    "0.0": 24,
+    "0.5": 11,
+    "1000.0": 0
+   },
+   "rows": [
+    {
+     "period": 0,
+     "pibar": 117.94150513577767,
+     "c_flex_expected": 49.23414596831314,
+     "c_flex_by_market_scenario": [
+      49.17568066575419,
+      49.2926112708721
+     ],
+     "pi_by_market_scenario": [
+      121.74287276332464,
+      114.14013750823071
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 58.97075256788884,
+     "alpha_0.5_over_c_flex": 1.1977612571129421,
+     "alpha_1000.0_premium": 117941.50513577767,
+     "alpha_1000.0_over_c_flex": 2395.522514225884
+    },
+    {
+     "period": 1,
+     "pibar": 112.9041016035761,
+     "c_flex_expected": 49.55439057126114,
+     "c_flex_by_market_scenario": [
+      50.16029495683979,
+      48.94848618568249
+     ],
+     "pi_by_market_scenario": [
+      115.32886788799718,
+      110.479335319155
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 56.45205080178805,
+     "alpha_0.5_over_c_flex": 1.1391937253391868,
+     "alpha_1000.0_premium": 112904.1016035761,
+     "alpha_1000.0_over_c_flex": 2278.3874506783736
+    },
+    {
+     "period": 2,
+     "pibar": 110.45599636628705,
+     "c_flex_expected": 47.75012436442381,
+     "c_flex_by_market_scenario": [
+      47.93024725672766,
+      47.57000147211996
+     ],
+     "pi_by_market_scenario": [
+      112.00342991401446,
+      108.90856281855966
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 55.22799818314353,
+     "alpha_0.5_over_c_flex": 1.1566042794286646,
+     "alpha_1000.0_premium": 110455.99636628706,
+     "alpha_1000.0_over_c_flex": 2313.2085588573295
+    },
+    {
+     "period": 3,
+     "pibar": 106.936160821221,
+     "c_flex_expected": 44.948047710448435,
+     "c_flex_by_market_scenario": [
+      44.66301122239913,
+      45.23308419849774
+     ],
+     "pi_by_market_scenario": [
+      108.17294045880145,
+      105.69938118364053
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 53.4680804106105,
+     "alpha_0.5_over_c_flex": 1.1895528979378014,
+     "alpha_1000.0_premium": 106936.160821221,
+     "alpha_1000.0_over_c_flex": 2379.105795875603
+    },
+    {
+     "period": 4,
+     "pibar": 109.66076375058476,
+     "c_flex_expected": 45.774244458040556,
+     "c_flex_by_market_scenario": [
+      45.831791098871385,
+      45.716697817209734
+     ],
+     "pi_by_market_scenario": [
+      111.28348464173462,
+      108.03804285943491
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 54.83038187529238,
+     "alpha_0.5_over_c_flex": 1.1978435149389135,
+     "alpha_1000.0_premium": 109660.76375058477,
+     "alpha_1000.0_over_c_flex": 2395.687029877827
+    },
+    {
+     "period": 5,
+     "pibar": 106.11041199446615,
+     "c_flex_expected": 46.0372754659968,
+     "c_flex_by_market_scenario": [
+      46.03284583501982,
+      46.041705096973786
+     ],
+     "pi_by_market_scenario": [
+      105.1551409954758,
+      107.06568299345648
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 53.055205997233074,
+     "alpha_0.5_over_c_flex": 1.1524401794024437,
+     "alpha_1000.0_premium": 106110.41199446615,
+     "alpha_1000.0_over_c_flex": 2304.8803588048877
+    },
+    {
+     "period": 6,
+     "pibar": 111.49614366717518,
+     "c_flex_expected": 50.059574597616034,
+     "c_flex_by_market_scenario": [
+      50.003931502942486,
+      50.11521769228959
+     ],
+     "pi_by_market_scenario": [
+      109.57559794692766,
+      113.41668938742271
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 55.74807183358759,
+     "alpha_0.5_over_c_flex": 1.11363455006752,
+     "alpha_1000.0_premium": 111496.14366717517,
+     "alpha_1000.0_over_c_flex": 2227.26910013504
+    },
+    {
+     "period": 7,
+     "pibar": 109.43264451868025,
+     "c_flex_expected": 53.357919819726035,
+     "c_flex_by_market_scenario": [
+      53.961514103193196,
+      52.75432553625888
+     ],
+     "pi_by_market_scenario": [
+      104.5472472304923,
+      114.3180418068682
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 54.716322259340124,
+     "alpha_0.5_over_c_flex": 1.0254583095481151,
+     "alpha_1000.0_premium": 109432.64451868024,
+     "alpha_1000.0_over_c_flex": 2050.91661909623
+    },
+    {
+     "period": 8,
+     "pibar": 84.71569500950989,
+     "c_flex_expected": 50.08690533412032,
+     "c_flex_by_market_scenario": [
+      50.44828555328529,
+      49.72552511495535
+     ],
+     "pi_by_market_scenario": [
+      79.15592927859231,
+      90.27546074042746
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 42.35784750475494,
+     "alpha_0.5_over_c_flex": 0.8456870557722366,
+     "alpha_1000.0_premium": 84715.69500950989,
+     "alpha_1000.0_over_c_flex": 1691.3741115444732
+    },
+    {
+     "period": 9,
+     "pibar": 66.26497941240858,
+     "c_flex_expected": 45.222386137203046,
+     "c_flex_by_market_scenario": [
+      45.78911445878577,
+      44.65565781562033
+     ],
+     "pi_by_market_scenario": [
+      62.119846687817166,
+      70.410112137
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 33.13248970620429,
+     "alpha_0.5_over_c_flex": 0.7326568219041238,
+     "alpha_1000.0_premium": 66264.97941240857,
+     "alpha_1000.0_over_c_flex": 1465.3136438082474
+    },
+    {
+     "period": 10,
+     "pibar": 59.48067763726977,
+     "c_flex_expected": 39.39941117755543,
+     "c_flex_by_market_scenario": [
+      39.1221023335275,
+      39.67672002158336
+     ],
+     "pi_by_market_scenario": [
+      57.76247392536227,
+      61.19888134917727
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 29.740338818634886,
+     "alpha_0.5_over_c_flex": 0.7548422153978026,
+     "alpha_1000.0_premium": 59480.67763726977,
+     "alpha_1000.0_over_c_flex": 1509.684430795605
+    },
+    {
+     "period": 11,
+     "pibar": 51.339697702670136,
+     "c_flex_expected": 36.72602488091766,
+     "c_flex_by_market_scenario": [
+      36.994516646840204,
+      36.45753311499512
+     ],
+     "pi_by_market_scenario": [
+      48.215049170836885,
+      54.46434623450338
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 25.669848851335068,
+     "alpha_0.5_over_c_flex": 0.6989552758450798,
+     "alpha_1000.0_premium": 51339.697702670135,
+     "alpha_1000.0_over_c_flex": 1397.9105516901595
+    },
+    {
+     "period": 12,
+     "pibar": 42.63780471112676,
+     "c_flex_expected": 37.5043323561042,
+     "c_flex_by_market_scenario": [
+      37.46751591726923,
+      37.54114879493916
+     ],
+     "pi_by_market_scenario": [
+      38.424589573272584,
+      46.85101984898095
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 21.31890235556338,
+     "alpha_0.5_over_c_flex": 0.5684383914140927,
+     "alpha_1000.0_premium": 42637.80471112676,
+     "alpha_1000.0_over_c_flex": 1136.8767828281852
+    },
+    {
+     "period": 13,
+     "pibar": 39.938429730256445,
+     "c_flex_expected": 36.33190893998793,
+     "c_flex_by_market_scenario": [
+      36.82115187669457,
+      35.842666003281295
+     ],
+     "pi_by_market_scenario": [
+      36.41228701489688,
+      43.464572445616014
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 19.969214865128222,
+     "alpha_0.5_over_c_flex": 0.5496329658348762,
+     "alpha_1000.0_premium": 39938.429730256445,
+     "alpha_1000.0_over_c_flex": 1099.2659316697525
+    },
+    {
+     "period": 14,
+     "pibar": 37.458328086001686,
+     "c_flex_expected": 33.676265883281445,
+     "c_flex_by_market_scenario": [
+      33.377755902602296,
+      33.974775863960595
+     ],
+     "pi_by_market_scenario": [
+      33.63971087294918,
+      41.27694529905419
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 18.729164043000843,
+     "alpha_0.5_over_c_flex": 0.5561532299309622,
+     "alpha_1000.0_premium": 37458.32808600168,
+     "alpha_1000.0_over_c_flex": 1112.3064598619242
+    },
+    {
+     "period": 15,
+     "pibar": 42.54710716309923,
+     "c_flex_expected": 36.57028777902052,
+     "c_flex_by_market_scenario": [
+      36.68637707010694,
+      36.45419848793409
+     ],
+     "pi_by_market_scenario": [
+      37.88721781582405,
+      47.2069965103744
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 21.273553581549614,
+     "alpha_0.5_over_c_flex": 0.5817168765555554,
+     "alpha_1000.0_premium": 42547.10716309923,
+     "alpha_1000.0_over_c_flex": 1163.4337531111107
+    },
+    {
+     "period": 16,
+     "pibar": 55.73621437635212,
+     "c_flex_expected": 41.08268540053151,
+     "c_flex_by_market_scenario": [
+      41.24484269614679,
+      40.92052810491623
+     ],
+     "pi_by_market_scenario": [
+      51.35847584956535,
+      60.11395290313889
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 27.86810718817606,
+     "alpha_0.5_over_c_flex": 0.6783419077034218,
+     "alpha_1000.0_premium": 55736.21437635212,
+     "alpha_1000.0_over_c_flex": 1356.6838154068437
+    },
+    {
+     "period": 17,
+     "pibar": 81.49022230162942,
+     "c_flex_expected": 47.9724347784398,
+     "c_flex_by_market_scenario": [
+      48.75443204890988,
+      47.19043750796972
+     ],
+     "pi_by_market_scenario": [
+      80.27603961812194,
+      82.70440498513688
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 40.74511115081471,
+     "alpha_0.5_over_c_flex": 0.8493442398534823,
+     "alpha_1000.0_premium": 81490.22230162942,
+     "alpha_1000.0_over_c_flex": 1698.6884797069647
+    },
+    {
+     "period": 18,
+     "pibar": 107.54725626932105,
+     "c_flex_expected": 54.39960647153222,
+     "c_flex_by_market_scenario": [
+      53.74510679762383,
+      55.05410614544061
+     ],
+     "pi_by_market_scenario": [
+      106.45642056661225,
+      108.63809197202987
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 53.77362813466053,
+     "alpha_0.5_over_c_flex": 0.9884929620364207,
+     "alpha_1000.0_premium": 107547.25626932105,
+     "alpha_1000.0_over_c_flex": 1976.9859240728413
+    },
+    {
+     "period": 19,
+     "pibar": 125.46686653638369,
+     "c_flex_expected": 62.029804910723726,
+     "c_flex_by_market_scenario": [
+      61.716859899658594,
+      62.34274992178885
+     ],
+     "pi_by_market_scenario": [
+      123.07440809088446,
+      127.8593249818829
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 62.733433268191845,
+     "alpha_0.5_over_c_flex": 1.0113433914306327,
+     "alpha_1000.0_premium": 125466.86653638369,
+     "alpha_1000.0_over_c_flex": 2022.6867828612653
+    },
+    {
+     "period": 20,
+     "pibar": 142.74079256354335,
+     "c_flex_expected": 60.14630313069083,
+     "c_flex_by_market_scenario": [
+      58.95279776995153,
+      61.339808491430134
+     ],
+     "pi_by_market_scenario": [
+      144.2626415559513,
+      141.2189435711354
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 71.37039628177168,
+     "alpha_0.5_over_c_flex": 1.1866131842998267,
+     "alpha_1000.0_premium": 142740.79256354336,
+     "alpha_1000.0_over_c_flex": 2373.226368599653
+    },
+    {
+     "period": 21,
+     "pibar": 131.6720298381851,
+     "c_flex_expected": 57.38945596170295,
+     "c_flex_by_market_scenario": [
+      58.00923393423022,
+      56.769677989175676
+     ],
+     "pi_by_market_scenario": [
+      131.71640251884176,
+      131.6276571575284
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 65.83601491909255,
+     "alpha_0.5_over_c_flex": 1.1471796310985445,
+     "alpha_1000.0_premium": 131672.0298381851,
+     "alpha_1000.0_over_c_flex": 2294.359262197089
+    },
+    {
+     "period": 22,
+     "pibar": 127.64630769648736,
+     "c_flex_expected": 52.5201295675743,
+     "c_flex_by_market_scenario": [
+      52.06487162746869,
+      52.975387507679905
+     ],
+     "pi_by_market_scenario": [
+      130.1211567572963,
+      125.17145863567842
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 63.82315384824368,
+     "alpha_0.5_over_c_flex": 1.2152131834733289,
+     "alpha_1000.0_premium": 127646.30769648736,
+     "alpha_1000.0_over_c_flex": 2430.426366946658
+    },
+    {
+     "period": 23,
+     "pibar": 127.33240630188625,
+     "c_flex_expected": 51.42024068498566,
+     "c_flex_by_market_scenario": [
+      51.48900323929059,
+      51.35147813068072
+     ],
+     "pi_by_market_scenario": [
+      125.89553071647589,
+      128.76928188729661
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 63.666203150943126,
+     "alpha_0.5_over_c_flex": 1.2381545146974235,
+     "alpha_1000.0_premium": 127332.40630188625,
+     "alpha_1000.0_over_c_flex": 2476.309029394847
+    }
+   ]
+  },
+  "DSO:5:case33_1:2025:Autumn": {
+   "n_periods": 24,
+   "pibar_min": 81.43953394552642,
+   "pibar_max": 157.62302620541436,
+   "c_flex_expected_min": 44.002227317442156,
+   "c_flex_expected_max": 76.31934557585501,
+   "n_hours_premium_below_c_flex": {
+    "0.0": 24,
+    "0.5": 21,
+    "1000.0": 0
+   },
+   "rows": [
+    {
+     "period": 0,
+     "pibar": 93.18816981209449,
+     "c_flex_expected": 49.54821861302782,
+     "c_flex_by_market_scenario": [
+      49.63697380384428,
+      49.459463422211364
+     ],
+     "pi_by_market_scenario": [
+      95.55431057471607,
+      90.8220290494729
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 46.59408490604724,
+     "alpha_0.5_over_c_flex": 0.9403786091675183,
+     "alpha_1000.0_premium": 93188.1698120945,
+     "alpha_1000.0_over_c_flex": 1880.7572183350367
+    },
+    {
+     "period": 1,
+     "pibar": 90.69026870833386,
+     "c_flex_expected": 50.04733714112453,
+     "c_flex_by_market_scenario": [
+      50.025626511243445,
+      50.069047771005614
+     ],
+     "pi_by_market_scenario": [
+      93.18084783640107,
+      88.19968958026664
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 45.34513435416693,
+     "alpha_0.5_over_c_flex": 0.9060448955815925,
+     "alpha_1000.0_premium": 90690.26870833387,
+     "alpha_1000.0_over_c_flex": 1812.089791163185
+    },
+    {
+     "period": 2,
+     "pibar": 89.54562436739184,
+     "c_flex_expected": 47.45267725924403,
+     "c_flex_by_market_scenario": [
+      47.431677828564524,
+      47.473676689923536
+     ],
+     "pi_by_market_scenario": [
+      92.14002418701001,
+      86.95122454777368
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 44.77281218369592,
+     "alpha_0.5_over_c_flex": 0.9435255241573107,
+     "alpha_1000.0_premium": 89545.62436739184,
+     "alpha_1000.0_over_c_flex": 1887.0510483146213
+    },
+    {
+     "period": 3,
+     "pibar": 82.96886035016172,
+     "c_flex_expected": 45.91796563050147,
+     "c_flex_by_market_scenario": [
+      46.148259480758696,
+      45.687671780244244
+     ],
+     "pi_by_market_scenario": [
+      84.81557569560239,
+      81.12214500472106
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 41.48443017508086,
+     "alpha_0.5_over_c_flex": 0.9034466053854182,
+     "alpha_1000.0_premium": 82968.86035016172,
+     "alpha_1000.0_over_c_flex": 1806.8932107708365
+    },
+    {
+     "period": 4,
+     "pibar": 84.7844044811362,
+     "c_flex_expected": 44.002227317442156,
+     "c_flex_by_market_scenario": [
+      44.03248064322951,
+      43.9719739916548
+     ],
+     "pi_by_market_scenario": [
+      87.24578403322691,
+      82.3230249290455
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 42.3922022405681,
+     "alpha_0.5_over_c_flex": 0.9634103731781811,
+     "alpha_1000.0_premium": 84784.40448113621,
+     "alpha_1000.0_over_c_flex": 1926.8207463563624
+    },
+    {
+     "period": 5,
+     "pibar": 88.14560835476436,
+     "c_flex_expected": 44.19509037241963,
+     "c_flex_by_market_scenario": [
+      44.13546448324996,
+      44.2547162615893
+     ],
+     "pi_by_market_scenario": [
+      90.12445289047265,
+      86.16676381905609
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 44.07280417738218,
+     "alpha_0.5_over_c_flex": 0.9972330366561766,
+     "alpha_1000.0_premium": 88145.60835476436,
+     "alpha_1000.0_over_c_flex": 1994.4660733123533
+    },
+    {
+     "period": 6,
+     "pibar": 100.05660243856099,
+     "c_flex_expected": 50.19008094809603,
+     "c_flex_by_market_scenario": [
+      50.320832558068986,
+      50.05932933812308
+     ],
+     "pi_by_market_scenario": [
+      102.1153437560564,
+      97.99786112106557
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 50.02830121928049,
+     "alpha_0.5_over_c_flex": 0.9967766593366757,
+     "alpha_1000.0_premium": 100056.60243856099,
+     "alpha_1000.0_over_c_flex": 1993.5533186733514
+    },
+    {
+     "period": 7,
+     "pibar": 113.56290833335534,
+     "c_flex_expected": 57.039729175030374,
+     "c_flex_by_market_scenario": [
+      56.99410356922245,
+      57.08535478083829
+     ],
+     "pi_by_market_scenario": [
+      114.61430739991985,
+      112.51150926679082
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 56.78145416667767,
+     "alpha_0.5_over_c_flex": 0.9954720155216696,
+     "alpha_1000.0_premium": 113562.90833335534,
+     "alpha_1000.0_over_c_flex": 1990.9440310433395
+    },
+    {
+     "period": 8,
+     "pibar": 109.04009720885915,
+     "c_flex_expected": 60.77134544789678,
+     "c_flex_by_market_scenario": [
+      60.65408168005125,
+      60.88860921574231
+     ],
+     "pi_by_market_scenario": [
+      106.70823614436681,
+      111.3719582733515
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 54.520048604429576,
+     "alpha_0.5_over_c_flex": 0.8971341378507599,
+     "alpha_1000.0_premium": 109040.09720885915,
+     "alpha_1000.0_over_c_flex": 1794.2682757015198
+    },
+    {
+     "period": 9,
+     "pibar": 109.56691327624546,
+     "c_flex_expected": 57.41959045280876,
+     "c_flex_by_market_scenario": [
+      57.17931189526381,
+      57.65986901035371
+     ],
+     "pi_by_market_scenario": [
+      110.71365374036111,
+      108.4201728121298
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 54.78345663812273,
+     "alpha_0.5_over_c_flex": 0.9540899927377123,
+     "alpha_1000.0_premium": 109566.91327624545,
+     "alpha_1000.0_over_c_flex": 1908.1799854754247
+    },
+    {
+     "period": 10,
+     "pibar": 93.23047637759893,
+     "c_flex_expected": 52.07804966515103,
+     "c_flex_by_market_scenario": [
+      52.100121754466485,
+      52.05597757583558
+     ],
+     "pi_by_market_scenario": [
+      93.18821526799111,
+      93.27273748720675
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 46.61523818879947,
+     "alpha_0.5_over_c_flex": 0.8951033782663504,
+     "alpha_1000.0_premium": 93230.47637759893,
+     "alpha_1000.0_over_c_flex": 1790.2067565327009
+    },
+    {
+     "period": 11,
+     "pibar": 84.00631671342835,
+     "c_flex_expected": 45.758199435853385,
+     "c_flex_by_market_scenario": [
+      45.71668372902448,
+      45.79971514268228
+     ],
+     "pi_by_market_scenario": [
+      83.75767012687857,
+      84.25496329997813
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 42.003158356714174,
+     "alpha_0.5_over_c_flex": 0.9179373068557198,
+     "alpha_1000.0_premium": 84006.31671342834,
+     "alpha_1000.0_over_c_flex": 1835.8746137114395
+    },
+    {
+     "period": 12,
+     "pibar": 81.88236959309461,
+     "c_flex_expected": 49.153895430940935,
+     "c_flex_by_market_scenario": [
+      49.144709343947575,
+      49.163081517934295
+     ],
+     "pi_by_market_scenario": [
+      80.5488384104911,
+      83.2159007756981
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 40.941184796547304,
+     "alpha_0.5_over_c_flex": 0.8329184175050353,
+     "alpha_1000.0_premium": 81882.36959309461,
+     "alpha_1000.0_over_c_flex": 1665.8368350100704
+    },
+    {
+     "period": 13,
+     "pibar": 81.43953394552642,
+     "c_flex_expected": 46.98002182069193,
+     "c_flex_by_market_scenario": [
+      46.91061809156841,
+      47.049425549815446
+     ],
+     "pi_by_market_scenario": [
+      80.68186183488376,
+      82.19720605616908
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 40.71976697276321,
+     "alpha_0.5_over_c_flex": 0.8667464465678164,
+     "alpha_1000.0_premium": 81439.53394552642,
+     "alpha_1000.0_over_c_flex": 1733.4928931356328
+    },
+    {
+     "period": 14,
+     "pibar": 85.98295711864522,
+     "c_flex_expected": 46.04546463155047,
+     "c_flex_by_market_scenario": [
+      46.10530639125782,
+      45.98562287184312
+     ],
+     "pi_by_market_scenario": [
+      86.01972898629111,
+      85.94618525099932
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 42.99147855932261,
+     "alpha_0.5_over_c_flex": 0.9336745519528266,
+     "alpha_1000.0_premium": 85982.95711864522,
+     "alpha_1000.0_over_c_flex": 1867.3491039056532
+    },
+    {
+     "period": 15,
+     "pibar": 103.07411303853804,
+     "c_flex_expected": 49.938187582806954,
+     "c_flex_by_market_scenario": [
+      49.93120071786118,
+      49.94517444775273
+     ],
+     "pi_by_market_scenario": [
+      104.37244864915272,
+      101.77577742792337
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 51.53705651926902,
+     "alpha_0.5_over_c_flex": 1.032016959642575,
+     "alpha_1000.0_premium": 103074.11303853804,
+     "alpha_1000.0_over_c_flex": 2064.0339192851498
+    },
+    {
+     "period": 16,
+     "pibar": 113.58162275843242,
+     "c_flex_expected": 57.06386482157525,
+     "c_flex_by_market_scenario": [
+      56.97456170740788,
+      57.15316793574263
+     ],
+     "pi_by_market_scenario": [
+      113.63648766663488,
+      113.52675785022997
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 56.79081137921621,
+     "alpha_0.5_over_c_flex": 0.9952149500701921,
+     "alpha_1000.0_premium": 113581.62275843242,
+     "alpha_1000.0_over_c_flex": 1990.4299001403845
+    },
+    {
+     "period": 17,
+     "pibar": 129.12049469544775,
+     "c_flex_expected": 63.90552106583792,
+     "c_flex_by_market_scenario": [
+      63.639812819586865,
+      64.17122931208897
+     ],
+     "pi_by_market_scenario": [
+      128.91485584443214,
+      129.32613354646338
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 64.56024734772387,
+     "alpha_0.5_over_c_flex": 1.0102452224935532,
+     "alpha_1000.0_premium": 129120.49469544775,
+     "alpha_1000.0_over_c_flex": 2020.4904449871062
+    },
+    {
+     "period": 18,
+     "pibar": 157.62302620541436,
+     "c_flex_expected": 75.69989257838094,
+     "c_flex_by_market_scenario": [
+      76.06444315847455,
+      75.33534199828732
+     ],
+     "pi_by_market_scenario": [
+      161.80042086881863,
+      153.44563154201012
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 78.81151310270718,
+     "alpha_0.5_over_c_flex": 1.0411046887695965,
+     "alpha_1000.0_premium": 157623.02620541435,
+     "alpha_1000.0_over_c_flex": 2082.209377539193
+    },
+    {
+     "period": 19,
+     "pibar": 147.31395525130682,
+     "c_flex_expected": 76.31934557585501,
+     "c_flex_by_market_scenario": [
+      76.38114733935285,
+      76.25754381235718
+     ],
+     "pi_by_market_scenario": [
+      149.48148826112856,
+      145.14642224148508
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 73.65697762565341,
+     "alpha_0.5_over_c_flex": 0.965115424796778,
+     "alpha_1000.0_premium": 147313.95525130682,
+     "alpha_1000.0_over_c_flex": 1930.230849593556
+    },
+    {
+     "period": 20,
+     "pibar": 116.88205615181406,
+     "c_flex_expected": 69.94460582996946,
+     "c_flex_by_market_scenario": [
+      70.19449486780165,
+      69.69471679213727
+     ],
+     "pi_by_market_scenario": [
+      111.14134173937182,
+      122.62277056425629
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 58.44102807590703,
+     "alpha_0.5_over_c_flex": 0.8355330247763946,
+     "alpha_1000.0_premium": 116882.05615181406,
+     "alpha_1000.0_over_c_flex": 1671.0660495527893
+    },
+    {
+     "period": 21,
+     "pibar": 113.12648030844656,
+     "c_flex_expected": 62.21268178173264,
+     "c_flex_by_market_scenario": [
+      61.97916741175868,
+      62.4461961517066
+     ],
+     "pi_by_market_scenario": [
+      109.29163298630553,
+      116.96132763058759
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 56.56324015422328,
+     "alpha_0.5_over_c_flex": 0.9091914788799831,
+     "alpha_1000.0_premium": 113126.48030844655,
+     "alpha_1000.0_over_c_flex": 1818.382957759966
+    },
+    {
+     "period": 22,
+     "pibar": 114.75430082265487,
+     "c_flex_expected": 57.46149308691424,
+     "c_flex_by_market_scenario": [
+      57.524993336869414,
+      57.39799283695906
+     ],
+     "pi_by_market_scenario": [
+      114.64658697350838,
+      114.86201467180135
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 57.377150411327435,
+     "alpha_0.5_over_c_flex": 0.9985321878869519,
+     "alpha_1000.0_premium": 114754.30082265487,
+     "alpha_1000.0_over_c_flex": 1997.0643757739037
+    },
+    {
+     "period": 23,
+     "pibar": 107.83642251342697,
+     "c_flex_expected": 55.040214329720925,
+     "c_flex_by_market_scenario": [
+      54.99209967257155,
+      55.0883289868703
+     ],
+     "pi_by_market_scenario": [
+      108.86599817620075,
+      106.80684685065319
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 53.918211256713484,
+     "alpha_0.5_over_c_flex": 0.9796148491303825,
+     "alpha_1000.0_premium": 107836.42251342697,
+     "alpha_1000.0_over_c_flex": 1959.229698260765
+    }
+   ]
+  },
+  "DSO:5:case33_1:2025:Winter": {
+   "n_periods": 24,
+   "pibar_min": 84.92881425282786,
+   "pibar_max": 140.54841735412435,
+   "c_flex_expected_min": 21.322493305475497,
+   "c_flex_expected_max": 45.35856577381253,
+   "n_hours_premium_below_c_flex": {
+    "0.0": 24,
+    "0.5": 0,
+    "1000.0": 0
+   },
+   "rows": [
+    {
+     "period": 0,
+     "pibar": 98.39651036154538,
+     "c_flex_expected": 35.34969849425171,
+     "c_flex_by_market_scenario": [
+      36.14252978286299,
+      34.55686720564044
+     ],
+     "pi_by_market_scenario": [
+      97.73315729186665,
+      99.05986343122413
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 49.19825518077269,
+     "alpha_0.5_over_c_flex": 1.3917588346269183,
+     "alpha_1000.0_premium": 98396.51036154538,
+     "alpha_1000.0_over_c_flex": 2783.5176692538366
+    },
+    {
+     "period": 1,
+     "pibar": 92.67166112911289,
+     "c_flex_expected": 35.466374177781795,
+     "c_flex_by_market_scenario": [
+      34.95375062335762,
+      35.97899773220597
+     ],
+     "pi_by_market_scenario": [
+      91.68951173342124,
+      93.65381052480456
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 46.335830564556446,
+     "alpha_0.5_over_c_flex": 1.30647216240063,
+     "alpha_1000.0_premium": 92671.6611291129,
+     "alpha_1000.0_over_c_flex": 2612.94432480126
+    },
+    {
+     "period": 2,
+     "pibar": 87.63582501611171,
+     "c_flex_expected": 33.49732837097939,
+     "c_flex_by_market_scenario": [
+      34.55337582646039,
+      32.44128091549838
+     ],
+     "pi_by_market_scenario": [
+      86.8481101860464,
+      88.42353984617704
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 43.817912508055855,
+     "alpha_0.5_over_c_flex": 1.308101709568509,
+     "alpha_1000.0_premium": 87635.8250161117,
+     "alpha_1000.0_over_c_flex": 2616.2034191370176
+    },
+    {
+     "period": 3,
+     "pibar": 85.77071274414213,
+     "c_flex_expected": 35.06865332422834,
+     "c_flex_by_market_scenario": [
+      34.81460120962257,
+      35.32270543883411
+     ],
+     "pi_by_market_scenario": [
+      84.78616509037643,
+      86.75526039790783
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 42.885356372071065,
+     "alpha_0.5_over_c_flex": 1.2228971547773206,
+     "alpha_1000.0_premium": 85770.71274414213,
+     "alpha_1000.0_over_c_flex": 2445.794309554641
+    },
+    {
+     "period": 4,
+     "pibar": 84.92881425282786,
+     "c_flex_expected": 32.58693134574012,
+     "c_flex_by_market_scenario": [
+      34.1177490893825,
+      31.056113602097742
+     ],
+     "pi_by_market_scenario": [
+      84.1287791281758,
+      85.72884937747993
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 42.46440712641393,
+     "alpha_0.5_over_c_flex": 1.3031115656726306,
+     "alpha_1000.0_premium": 84928.81425282787,
+     "alpha_1000.0_over_c_flex": 2606.2231313452617
+    },
+    {
+     "period": 5,
+     "pibar": 86.26265640741167,
+     "c_flex_expected": 34.470592736712945,
+     "c_flex_by_market_scenario": [
+      34.8607320638934,
+      34.08045340953248
+     ],
+     "pi_by_market_scenario": [
+      85.5685196105134,
+      86.95679320430993
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 43.131328203705834,
+     "alpha_0.5_over_c_flex": 1.2512499722051127,
+     "alpha_1000.0_premium": 86262.65640741168,
+     "alpha_1000.0_over_c_flex": 2502.499944410226
+    },
+    {
+     "period": 6,
+     "pibar": 93.44557802805865,
+     "c_flex_expected": 38.163428841012575,
+     "c_flex_by_market_scenario": [
+      37.375039998826196,
+      38.95181768319895
+     ],
+     "pi_by_market_scenario": [
+      91.66792812391392,
+      95.22322793220337
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 46.722789014029324,
+     "alpha_0.5_over_c_flex": 1.224281738642372,
+     "alpha_1000.0_premium": 93445.57802805865,
+     "alpha_1000.0_over_c_flex": 2448.5634772847443
+    },
+    {
+     "period": 7,
+     "pibar": 109.54338440552047,
+     "c_flex_expected": 38.76864672285589,
+     "c_flex_by_market_scenario": [
+      38.67820063361696,
+      38.85909281209483
+     ],
+     "pi_by_market_scenario": [
+      108.67001880403274,
+      110.4167500070082
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 54.771692202760235,
+     "alpha_0.5_over_c_flex": 1.4127831851935604,
+     "alpha_1000.0_premium": 109543.38440552047,
+     "alpha_1000.0_over_c_flex": 2825.566370387121
+    },
+    {
+     "period": 8,
+     "pibar": 127.65078346350482,
+     "c_flex_expected": 35.36494149463019,
+     "c_flex_by_market_scenario": [
+      35.76572547231954,
+      34.964157516940844
+     ],
+     "pi_by_market_scenario": [
+      124.24538255992334,
+      131.0561843670863
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 63.82539173175241,
+     "alpha_0.5_over_c_flex": 1.8047645219897694,
+     "alpha_1000.0_premium": 127650.78346350482,
+     "alpha_1000.0_over_c_flex": 3609.5290439795385
+    },
+    {
+     "period": 9,
+     "pibar": 123.51216756821943,
+     "c_flex_expected": 31.183107993340094,
+     "c_flex_by_market_scenario": [
+      32.195131467865124,
+      30.17108451881506
+     ],
+     "pi_by_market_scenario": [
+      119.83858069901969,
+      127.18575443741916
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 61.75608378410971,
+     "alpha_0.5_over_c_flex": 1.9804338873886214,
+     "alpha_1000.0_premium": 123512.16756821942,
+     "alpha_1000.0_over_c_flex": 3960.867774777242
+    },
+    {
+     "period": 10,
+     "pibar": 105.54186413966681,
+     "c_flex_expected": 27.35030077122442,
+     "c_flex_by_market_scenario": [
+      27.98787746054062,
+      26.712724081908217
+     ],
+     "pi_by_market_scenario": [
+      103.96607274798963,
+      107.117655531344
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 52.77093206983341,
+     "alpha_0.5_over_c_flex": 1.9294461333805273,
+     "alpha_1000.0_premium": 105541.86413966681,
+     "alpha_1000.0_over_c_flex": 3858.8922667610545
+    },
+    {
+     "period": 11,
+     "pibar": 94.82917407891978,
+     "c_flex_expected": 26.724181912025074,
+     "c_flex_by_market_scenario": [
+      26.17830471890746,
+      27.270059105142693
+     ],
+     "pi_by_market_scenario": [
+      92.04593158873284,
+      97.61241656910671
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 47.41458703945989,
+     "alpha_0.5_over_c_flex": 1.774220337054537,
+     "alpha_1000.0_premium": 94829.17407891978,
+     "alpha_1000.0_over_c_flex": 3548.4406741090743
+    },
+    {
+     "period": 12,
+     "pibar": 92.22981555098909,
+     "c_flex_expected": 22.933811533663885,
+     "c_flex_by_market_scenario": [
+      23.256770791052812,
+      22.610852276274954
+     ],
+     "pi_by_market_scenario": [
+      89.56756562944251,
+      94.89206547253565
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 46.114907775494544,
+     "alpha_0.5_over_c_flex": 2.0107825386026126,
+     "alpha_1000.0_premium": 92229.8155509891,
+     "alpha_1000.0_over_c_flex": 4021.5650772052254
+    },
+    {
+     "period": 13,
+     "pibar": 89.86115757796313,
+     "c_flex_expected": 22.732124409309105,
+     "c_flex_by_market_scenario": [
+      22.956938545192614,
+      22.507310273425595
+     ],
+     "pi_by_market_scenario": [
+      87.38870127829533,
+      92.33361387763094
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 44.93057878898156,
+     "alpha_0.5_over_c_flex": 1.9765235303121031,
+     "alpha_1000.0_premium": 89861.15757796312,
+     "alpha_1000.0_over_c_flex": 3953.047060624206
+    },
+    {
+     "period": 14,
+     "pibar": 89.7960736261713,
+     "c_flex_expected": 21.322493305475497,
+     "c_flex_by_market_scenario": [
+      21.43247498710086,
+      21.212511623850137
+     ],
+     "pi_by_market_scenario": [
+      88.02522700287633,
+      91.56692024946629
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 44.89803681308565,
+     "alpha_0.5_over_c_flex": 2.1056654196043803,
+     "alpha_1000.0_premium": 89796.0736261713,
+     "alpha_1000.0_over_c_flex": 4211.33083920876
+    },
+    {
+     "period": 15,
+     "pibar": 91.0334227226272,
+     "c_flex_expected": 22.023057761777512,
+     "c_flex_by_market_scenario": [
+      22.273133691562514,
+      21.77298183199251
+     ],
+     "pi_by_market_scenario": [
+      89.73970575705343,
+      92.32713968820094
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 45.5167113613136,
+     "alpha_0.5_over_c_flex": 2.0667752795123158,
+     "alpha_1000.0_premium": 91033.42272262719,
+     "alpha_1000.0_over_c_flex": 4133.550559024632
+    },
+    {
+     "period": 16,
+     "pibar": 102.41435400337421,
+     "c_flex_expected": 25.699529537824553,
+     "c_flex_by_market_scenario": [
+      25.583704621588737,
+      25.81535445406037
+     ],
+     "pi_by_market_scenario": [
+      102.46203129151371,
+      102.36667671523472
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 51.20717700168711,
+     "alpha_0.5_over_c_flex": 1.9925336347624736,
+     "alpha_1000.0_premium": 102414.35400337422,
+     "alpha_1000.0_over_c_flex": 3985.0672695249473
+    },
+    {
+     "period": 17,
+     "pibar": 123.13011529174287,
+     "c_flex_expected": 30.02981083779489,
+     "c_flex_by_market_scenario": [
+      30.085575381898163,
+      29.974046293691618
+     ],
+     "pi_by_market_scenario": [
+      125.02645316997688,
+      121.23377741350885
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 61.565057645871434,
+     "alpha_0.5_over_c_flex": 2.0501313837244335,
+     "alpha_1000.0_premium": 123130.11529174287,
+     "alpha_1000.0_over_c_flex": 4100.262767448868
+    },
+    {
+     "period": 18,
+     "pibar": 129.56802238874786,
+     "c_flex_expected": 36.80631814733607,
+     "c_flex_by_market_scenario": [
+      37.217491931949425,
+      36.39514436272271
+     ],
+     "pi_by_market_scenario": [
+      133.2831014434276,
+      125.85294333406814
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 64.78401119437393,
+     "alpha_0.5_over_c_flex": 1.7601328917237216,
+     "alpha_1000.0_premium": 129568.02238874786,
+     "alpha_1000.0_over_c_flex": 3520.2657834474435
+    },
+    {
+     "period": 19,
+     "pibar": 140.54841735412435,
+     "c_flex_expected": 40.857856615298076,
+     "c_flex_by_market_scenario": [
+      42.40972656762173,
+      39.30598666297441
+     ],
+     "pi_by_market_scenario": [
+      141.0096736584578,
+      140.08716104979086
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 70.27420867706218,
+     "alpha_0.5_over_c_flex": 1.7199680673104614,
+     "alpha_1000.0_premium": 140548.41735412437,
+     "alpha_1000.0_over_c_flex": 3439.936134620923
+    },
+    {
+     "period": 20,
+     "pibar": 129.0050063748031,
+     "c_flex_expected": 45.35856577381253,
+     "c_flex_by_market_scenario": [
+      44.13541069009076,
+      46.5817208575343
+     ],
+     "pi_by_market_scenario": [
+      127.11803812529799,
+      130.8919746243082
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 64.50250318740154,
+     "alpha_0.5_over_c_flex": 1.4220578205460288,
+     "alpha_1000.0_premium": 129005.00637480308,
+     "alpha_1000.0_over_c_flex": 2844.1156410920576
+    },
+    {
+     "period": 21,
+     "pibar": 116.8330115526405,
+     "c_flex_expected": 38.08653878218891,
+     "c_flex_by_market_scenario": [
+      38.36275875034545,
+      37.81031881403238
+     ],
+     "pi_by_market_scenario": [
+      115.91226793021733,
+      117.75375517506366
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 58.41650577632025,
+     "alpha_0.5_over_c_flex": 1.5337835267834474,
+     "alpha_1000.0_premium": 116833.0115526405,
+     "alpha_1000.0_over_c_flex": 3067.5670535668946
+    },
+    {
+     "period": 22,
+     "pibar": 107.10042310020573,
+     "c_flex_expected": 38.95156890786101,
+     "c_flex_by_market_scenario": [
+      38.837935132977314,
+      39.065202682744705
+     ],
+     "pi_by_market_scenario": [
+      106.37516503291006,
+      107.8256811675014
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 53.550211550102865,
+     "alpha_0.5_over_c_flex": 1.374789592603435,
+     "alpha_1000.0_premium": 107100.42310020573,
+     "alpha_1000.0_over_c_flex": 2749.57918520687
+    },
+    {
+     "period": 23,
+     "pibar": 97.25589311253225,
+     "c_flex_expected": 38.319064623839104,
+     "c_flex_by_market_scenario": [
+      38.51874251746752,
+      38.119386730210685
+     ],
+     "pi_by_market_scenario": [
+      97.68618559438974,
+      96.82560063067477
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 48.627946556266124,
+     "alpha_0.5_over_c_flex": 1.269027494110951,
+     "alpha_1000.0_premium": 97255.89311253224,
+     "alpha_1000.0_over_c_flex": 2538.0549882219016
+    }
+   ]
+  },
+  "DSO:7:case33_2:2025:Spring": {
+   "n_periods": 24,
+   "pibar_min": 9.81204468708017,
+   "pibar_max": 157.6525959539668,
+   "c_flex_expected_min": 22.58028607017752,
+   "c_flex_expected_max": 54.91540991588853,
+   "n_hours_premium_below_c_flex": {
+    "0.0": 24,
+    "0.5": 9,
+    "1000.0": 0
+   },
+   "rows": [
+    {
+     "period": 0,
+     "pibar": 143.06281197426998,
+     "c_flex_expected": 49.23588390462982,
+     "c_flex_by_market_scenario": [
+      50.387905127438465,
+      48.08386268182118
+     ],
+     "pi_by_market_scenario": [
+      116.6741563028345,
+      169.45146764570546
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 71.53140598713499,
+     "alpha_0.5_over_c_flex": 1.452830746893703,
+     "alpha_1000.0_premium": 143062.81197426998,
+     "alpha_1000.0_over_c_flex": 2905.6614937874056
+    },
+    {
+     "period": 1,
+     "pibar": 139.6947974758054,
+     "c_flex_expected": 47.228001043756805,
+     "c_flex_by_market_scenario": [
+      48.65359133086557,
+      45.80241075664805
+     ],
+     "pi_by_market_scenario": [
+      117.72769218863633,
+      161.66190276297448
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 69.8473987379027,
+     "alpha_0.5_over_c_flex": 1.4789403996410728,
+     "alpha_1000.0_premium": 139694.7974758054,
+     "alpha_1000.0_over_c_flex": 2957.8807992821457
+    },
+    {
+     "period": 2,
+     "pibar": 140.6098662066097,
+     "c_flex_expected": 47.590990703490476,
+     "c_flex_by_market_scenario": [
+      46.72559591861644,
+      48.45638548836452
+     ],
+     "pi_by_market_scenario": [
+      120.19845744897576,
+      161.02127496424364
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 70.30493310330485,
+     "alpha_0.5_over_c_flex": 1.4772739979575265,
+     "alpha_1000.0_premium": 140609.8662066097,
+     "alpha_1000.0_over_c_flex": 2954.547995915053
+    },
+    {
+     "period": 3,
+     "pibar": 138.25642522116277,
+     "c_flex_expected": 46.049905516320834,
+     "c_flex_by_market_scenario": [
+      43.060250738740194,
+      49.03956029390147
+     ],
+     "pi_by_market_scenario": [
+      119.22860902435463,
+      157.28424141797092
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 69.12821261058139,
+     "alpha_0.5_over_c_flex": 1.501158619882102,
+     "alpha_1000.0_premium": 138256.42522116276,
+     "alpha_1000.0_over_c_flex": 3002.3172397642043
+    },
+    {
+     "period": 4,
+     "pibar": 143.0295804936227,
+     "c_flex_expected": 47.6740870500894,
+     "c_flex_by_market_scenario": [
+      45.282609269431376,
+      50.06556483074743
+     ],
+     "pi_by_market_scenario": [
+      124.72952816104966,
+      161.32963282619573
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 71.51479024681134,
+     "alpha_0.5_over_c_flex": 1.5000767643787998,
+     "alpha_1000.0_premium": 143029.5804936227,
+     "alpha_1000.0_over_c_flex": 3000.1535287576
+    },
+    {
+     "period": 5,
+     "pibar": 138.17306421976687,
+     "c_flex_expected": 47.635046814118795,
+     "c_flex_by_market_scenario": [
+      47.57717684335567,
+      47.692916784881916
+     ],
+     "pi_by_market_scenario": [
+      128.03663614649625,
+      148.3094922930375
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 69.08653210988344,
+     "alpha_0.5_over_c_flex": 1.4503298879808495,
+     "alpha_1000.0_premium": 138173.06421976688,
+     "alpha_1000.0_over_c_flex": 2900.6597759616993
+    },
+    {
+     "period": 6,
+     "pibar": 143.7164317919366,
+     "c_flex_expected": 50.31722797681877,
+     "c_flex_by_market_scenario": [
+      53.22349887442124,
+      47.41095707921631
+     ],
+     "pi_by_market_scenario": [
+      134.8799247808026,
+      152.55293880307062
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 71.8582158959683,
+     "alpha_0.5_over_c_flex": 1.428103629418407,
+     "alpha_1000.0_premium": 143716.4317919366,
+     "alpha_1000.0_over_c_flex": 2856.207258836814
+    },
+    {
+     "period": 7,
+     "pibar": 135.64215626970383,
+     "c_flex_expected": 47.52745140602663,
+     "c_flex_by_market_scenario": [
+      48.246631926239175,
+      46.80827088581408
+     ],
+     "pi_by_market_scenario": [
+      115.96857921951926,
+      155.3157333198884
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 67.82107813485192,
+     "alpha_0.5_over_c_flex": 1.4269874804659102,
+     "alpha_1000.0_premium": 135642.15626970385,
+     "alpha_1000.0_over_c_flex": 2853.9749609318205
+    },
+    {
+     "period": 8,
+     "pibar": 85.08084612302565,
+     "c_flex_expected": 37.899428768635936,
+     "c_flex_by_market_scenario": [
+      36.86053437713862,
+      38.93832316013325
+     ],
+     "pi_by_market_scenario": [
+      77.83624431368597,
+      92.32544793236534
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 42.540423061512826,
+     "alpha_0.5_over_c_flex": 1.1224555209316927,
+     "alpha_1000.0_premium": 85080.84612302565,
+     "alpha_1000.0_over_c_flex": 2244.911041863385
+    },
+    {
+     "period": 9,
+     "pibar": 53.38696659581049,
+     "c_flex_expected": 30.208523684656836,
+     "c_flex_by_market_scenario": [
+      31.85411914133111,
+      28.56292822798256
+     ],
+     "pi_by_market_scenario": [
+      38.123663843804934,
+      68.65026934781605
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 26.693483297905246,
+     "alpha_0.5_over_c_flex": 0.8836407755822603,
+     "alpha_1000.0_premium": 53386.96659581049,
+     "alpha_1000.0_over_c_flex": 1767.2815511645206
+    },
+    {
+     "period": 10,
+     "pibar": 41.9810617816493,
+     "c_flex_expected": 27.490514031555506,
+     "c_flex_by_market_scenario": [
+      28.714134054080947,
+      26.266894009030068
+     ],
+     "pi_by_market_scenario": [
+      33.608660885680955,
+      50.35346267761764
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 20.99053089082465,
+     "alpha_0.5_over_c_flex": 0.7635554164876754,
+     "alpha_1000.0_premium": 41981.0617816493,
+     "alpha_1000.0_over_c_flex": 1527.110832975351
+    },
+    {
+     "period": 11,
+     "pibar": 42.25064979739398,
+     "c_flex_expected": 26.792067793302017,
+     "c_flex_by_market_scenario": [
+      26.89141928054934,
+      26.69271630605469
+     ],
+     "pi_by_market_scenario": [
+      30.838312307723616,
+      53.662987287064354
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 21.12532489869699,
+     "alpha_0.5_over_c_flex": 0.7884917678499714,
+     "alpha_1000.0_premium": 42250.649797393984,
+     "alpha_1000.0_over_c_flex": 1576.9835356999429
+    },
+    {
+     "period": 12,
+     "pibar": 25.276070958584995,
+     "c_flex_expected": 25.935842572416362,
+     "c_flex_by_market_scenario": [
+      25.17986357266501,
+      26.691821572167715
+     ],
+     "pi_by_market_scenario": [
+      15.689403206252234,
+      34.86273871091776
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 12.638035479292498,
+     "alpha_0.5_over_c_flex": 0.48728069828483117,
+     "alpha_1000.0_premium": 25276.070958584995,
+     "alpha_1000.0_over_c_flex": 974.5613965696624
+    },
+    {
+     "period": 13,
+     "pibar": 19.439798732724533,
+     "c_flex_expected": 24.014969030453443,
+     "c_flex_by_market_scenario": [
+      23.773915213933044,
+      24.256022846973842
+     ],
+     "pi_by_market_scenario": [
+      12.702646780769136,
+      26.17695068467993
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 9.719899366362267,
+     "alpha_0.5_over_c_flex": 0.404743364608817,
+     "alpha_1000.0_premium": 19439.798732724532,
+     "alpha_1000.0_over_c_flex": 809.486729217634
+    },
+    {
+     "period": 14,
+     "pibar": 9.81204468708017,
+     "c_flex_expected": 22.58028607017752,
+     "c_flex_by_market_scenario": [
+      21.277557180050266,
+      23.883014960304777
+     ],
+     "pi_by_market_scenario": [
+      3.2589652668910762,
+      16.365124107269267
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 4.906022343540085,
+     "alpha_0.5_over_c_flex": 0.21727015894717205,
+     "alpha_1000.0_premium": 9812.044687080172,
+     "alpha_1000.0_over_c_flex": 434.5403178943442
+    },
+    {
+     "period": 15,
+     "pibar": 10.205057828809375,
+     "c_flex_expected": 22.65686782207991,
+     "c_flex_by_market_scenario": [
+      22.52860069631732,
+      22.785134947842504
+     ],
+     "pi_by_market_scenario": [
+      6.985251712125617,
+      13.424863945493133
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 5.1025289144046875,
+     "alpha_0.5_over_c_flex": 0.22520892801572928,
+     "alpha_1000.0_premium": 10205.057828809375,
+     "alpha_1000.0_over_c_flex": 450.41785603145854
+    },
+    {
+     "period": 16,
+     "pibar": 21.894471133466936,
+     "c_flex_expected": 24.423994988578816,
+     "c_flex_by_market_scenario": [
+      23.988446813264254,
+      24.859543163893377
+     ],
+     "pi_by_market_scenario": [
+      13.601224711837649,
+      30.18771755509622
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 10.947235566733468,
+     "alpha_0.5_over_c_flex": 0.4482164188066952,
+     "alpha_1000.0_premium": 21894.471133466937,
+     "alpha_1000.0_over_c_flex": 896.4328376133906
+    },
+    {
+     "period": 17,
+     "pibar": 47.200838155478834,
+     "c_flex_expected": 28.509666687407062,
+     "c_flex_by_market_scenario": [
+      29.1398648377484,
+      27.879468537065726
+     ],
+     "pi_by_market_scenario": [
+      41.51769184732111,
+      52.88398446363655
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 23.600419077739417,
+     "alpha_0.5_over_c_flex": 0.8278041036573711,
+     "alpha_1000.0_premium": 47200.838155478836,
+     "alpha_1000.0_over_c_flex": 1655.6082073147425
+    },
+    {
+     "period": 18,
+     "pibar": 82.76412321400265,
+     "c_flex_expected": 36.39178562139286,
+     "c_flex_by_market_scenario": [
+      37.91058362644221,
+      34.872987616343515
+     ],
+     "pi_by_market_scenario": [
+      80.21280042116278,
+      85.31544600684252
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 41.382061607001326,
+     "alpha_0.5_over_c_flex": 1.1371264393983167,
+     "alpha_1000.0_premium": 82764.12321400266,
+     "alpha_1000.0_over_c_flex": 2274.2528787966335
+    },
+    {
+     "period": 19,
+     "pibar": 126.3886609908497,
+     "c_flex_expected": 49.12360223963641,
+     "c_flex_by_market_scenario": [
+      47.147343358829865,
+      51.09986112044297
+     ],
+     "pi_by_market_scenario": [
+      113.9651653572442,
+      138.81215662445518
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 63.19433049542485,
+     "alpha_0.5_over_c_flex": 1.2864351882654723,
+     "alpha_1000.0_premium": 126388.6609908497,
+     "alpha_1000.0_over_c_flex": 2572.870376530945
+    },
+    {
+     "period": 20,
+     "pibar": 152.92975853312942,
+     "c_flex_expected": 54.91540991588853,
+     "c_flex_by_market_scenario": [
+      55.33405622692387,
+      54.4967636048532
+     ],
+     "pi_by_market_scenario": [
+      142.53569675079214,
+      163.32382031546666
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 76.46487926656471,
+     "alpha_0.5_over_c_flex": 1.3924120640032103,
+     "alpha_1000.0_premium": 152929.7585331294,
+     "alpha_1000.0_over_c_flex": 2784.8241280064203
+    },
+    {
+     "period": 21,
+     "pibar": 144.03692142295293,
+     "c_flex_expected": 49.80724919037783,
+     "c_flex_by_market_scenario": [
+      49.86962068414622,
+      49.744877696609436
+     ],
+     "pi_by_market_scenario": [
+      134.53195913830874,
+      153.54188370759712
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 72.01846071147646,
+     "alpha_0.5_over_c_flex": 1.4459433492542602,
+     "alpha_1000.0_premium": 144036.92142295293,
+     "alpha_1000.0_over_c_flex": 2891.8866985085206
+    },
+    {
+     "period": 22,
+     "pibar": 141.643678158228,
+     "c_flex_expected": 49.022156850023094,
+     "c_flex_by_market_scenario": [
+      50.2138448675198,
+      47.83046883252638
+     ],
+     "pi_by_market_scenario": [
+      125.49672518746387,
+      157.79063112899212
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 70.821839079114,
+     "alpha_0.5_over_c_flex": 1.4446903936883926,
+     "alpha_1000.0_premium": 141643.678158228,
+     "alpha_1000.0_over_c_flex": 2889.380787376785
+    },
+    {
+     "period": 23,
+     "pibar": 157.6525959539668,
+     "c_flex_expected": 47.46409732287877,
+     "c_flex_by_market_scenario": [
+      47.08031355487596,
+      47.847881090881586
+     ],
+     "pi_by_market_scenario": [
+      158.08689556133885,
+      157.21829634659477
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 78.8262979769834,
+     "alpha_0.5_over_c_flex": 1.6607562857618559,
+     "alpha_1000.0_premium": 157652.59595396678,
+     "alpha_1000.0_over_c_flex": 3321.5125715237114
+    }
+   ]
+  },
+  "DSO:7:case33_2:2025:Summer": {
+   "n_periods": 24,
+   "pibar_min": 37.458328086001686,
+   "pibar_max": 142.74079256354335,
+   "c_flex_expected_min": 33.676265883281445,
+   "c_flex_expected_max": 62.029804910723726,
+   "n_hours_premium_below_c_flex": {
+    "0.0": 24,
+    "0.5": 11,
+    "1000.0": 0
+   },
+   "rows": [
+    {
+     "period": 0,
+     "pibar": 117.94150513577767,
+     "c_flex_expected": 49.23414596831314,
+     "c_flex_by_market_scenario": [
+      49.17568066575419,
+      49.2926112708721
+     ],
+     "pi_by_market_scenario": [
+      121.74287276332464,
+      114.14013750823071
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 58.97075256788884,
+     "alpha_0.5_over_c_flex": 1.1977612571129421,
+     "alpha_1000.0_premium": 117941.50513577767,
+     "alpha_1000.0_over_c_flex": 2395.522514225884
+    },
+    {
+     "period": 1,
+     "pibar": 112.9041016035761,
+     "c_flex_expected": 49.55439057126114,
+     "c_flex_by_market_scenario": [
+      50.16029495683979,
+      48.94848618568249
+     ],
+     "pi_by_market_scenario": [
+      115.32886788799718,
+      110.479335319155
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 56.45205080178805,
+     "alpha_0.5_over_c_flex": 1.1391937253391868,
+     "alpha_1000.0_premium": 112904.1016035761,
+     "alpha_1000.0_over_c_flex": 2278.3874506783736
+    },
+    {
+     "period": 2,
+     "pibar": 110.45599636628705,
+     "c_flex_expected": 47.75012436442381,
+     "c_flex_by_market_scenario": [
+      47.93024725672766,
+      47.57000147211996
+     ],
+     "pi_by_market_scenario": [
+      112.00342991401446,
+      108.90856281855966
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 55.22799818314353,
+     "alpha_0.5_over_c_flex": 1.1566042794286646,
+     "alpha_1000.0_premium": 110455.99636628706,
+     "alpha_1000.0_over_c_flex": 2313.2085588573295
+    },
+    {
+     "period": 3,
+     "pibar": 106.936160821221,
+     "c_flex_expected": 44.948047710448435,
+     "c_flex_by_market_scenario": [
+      44.66301122239913,
+      45.23308419849774
+     ],
+     "pi_by_market_scenario": [
+      108.17294045880145,
+      105.69938118364053
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 53.4680804106105,
+     "alpha_0.5_over_c_flex": 1.1895528979378014,
+     "alpha_1000.0_premium": 106936.160821221,
+     "alpha_1000.0_over_c_flex": 2379.105795875603
+    },
+    {
+     "period": 4,
+     "pibar": 109.66076375058476,
+     "c_flex_expected": 45.774244458040556,
+     "c_flex_by_market_scenario": [
+      45.831791098871385,
+      45.716697817209734
+     ],
+     "pi_by_market_scenario": [
+      111.28348464173462,
+      108.03804285943491
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 54.83038187529238,
+     "alpha_0.5_over_c_flex": 1.1978435149389135,
+     "alpha_1000.0_premium": 109660.76375058477,
+     "alpha_1000.0_over_c_flex": 2395.687029877827
+    },
+    {
+     "period": 5,
+     "pibar": 106.11041199446615,
+     "c_flex_expected": 46.0372754659968,
+     "c_flex_by_market_scenario": [
+      46.03284583501982,
+      46.041705096973786
+     ],
+     "pi_by_market_scenario": [
+      105.1551409954758,
+      107.06568299345648
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 53.055205997233074,
+     "alpha_0.5_over_c_flex": 1.1524401794024437,
+     "alpha_1000.0_premium": 106110.41199446615,
+     "alpha_1000.0_over_c_flex": 2304.8803588048877
+    },
+    {
+     "period": 6,
+     "pibar": 111.49614366717518,
+     "c_flex_expected": 50.059574597616034,
+     "c_flex_by_market_scenario": [
+      50.003931502942486,
+      50.11521769228959
+     ],
+     "pi_by_market_scenario": [
+      109.57559794692766,
+      113.41668938742271
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 55.74807183358759,
+     "alpha_0.5_over_c_flex": 1.11363455006752,
+     "alpha_1000.0_premium": 111496.14366717517,
+     "alpha_1000.0_over_c_flex": 2227.26910013504
+    },
+    {
+     "period": 7,
+     "pibar": 109.43264451868025,
+     "c_flex_expected": 53.357919819726035,
+     "c_flex_by_market_scenario": [
+      53.961514103193196,
+      52.75432553625888
+     ],
+     "pi_by_market_scenario": [
+      104.5472472304923,
+      114.3180418068682
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 54.716322259340124,
+     "alpha_0.5_over_c_flex": 1.0254583095481151,
+     "alpha_1000.0_premium": 109432.64451868024,
+     "alpha_1000.0_over_c_flex": 2050.91661909623
+    },
+    {
+     "period": 8,
+     "pibar": 84.71569500950989,
+     "c_flex_expected": 50.08690533412032,
+     "c_flex_by_market_scenario": [
+      50.44828555328529,
+      49.72552511495535
+     ],
+     "pi_by_market_scenario": [
+      79.15592927859231,
+      90.27546074042746
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 42.35784750475494,
+     "alpha_0.5_over_c_flex": 0.8456870557722366,
+     "alpha_1000.0_premium": 84715.69500950989,
+     "alpha_1000.0_over_c_flex": 1691.3741115444732
+    },
+    {
+     "period": 9,
+     "pibar": 66.26497941240858,
+     "c_flex_expected": 45.222386137203046,
+     "c_flex_by_market_scenario": [
+      45.78911445878577,
+      44.65565781562033
+     ],
+     "pi_by_market_scenario": [
+      62.119846687817166,
+      70.410112137
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 33.13248970620429,
+     "alpha_0.5_over_c_flex": 0.7326568219041238,
+     "alpha_1000.0_premium": 66264.97941240857,
+     "alpha_1000.0_over_c_flex": 1465.3136438082474
+    },
+    {
+     "period": 10,
+     "pibar": 59.48067763726977,
+     "c_flex_expected": 39.39941117755543,
+     "c_flex_by_market_scenario": [
+      39.1221023335275,
+      39.67672002158336
+     ],
+     "pi_by_market_scenario": [
+      57.76247392536227,
+      61.19888134917727
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 29.740338818634886,
+     "alpha_0.5_over_c_flex": 0.7548422153978026,
+     "alpha_1000.0_premium": 59480.67763726977,
+     "alpha_1000.0_over_c_flex": 1509.684430795605
+    },
+    {
+     "period": 11,
+     "pibar": 51.339697702670136,
+     "c_flex_expected": 36.72602488091766,
+     "c_flex_by_market_scenario": [
+      36.994516646840204,
+      36.45753311499512
+     ],
+     "pi_by_market_scenario": [
+      48.215049170836885,
+      54.46434623450338
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 25.669848851335068,
+     "alpha_0.5_over_c_flex": 0.6989552758450798,
+     "alpha_1000.0_premium": 51339.697702670135,
+     "alpha_1000.0_over_c_flex": 1397.9105516901595
+    },
+    {
+     "period": 12,
+     "pibar": 42.63780471112676,
+     "c_flex_expected": 37.5043323561042,
+     "c_flex_by_market_scenario": [
+      37.46751591726923,
+      37.54114879493916
+     ],
+     "pi_by_market_scenario": [
+      38.424589573272584,
+      46.85101984898095
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 21.31890235556338,
+     "alpha_0.5_over_c_flex": 0.5684383914140927,
+     "alpha_1000.0_premium": 42637.80471112676,
+     "alpha_1000.0_over_c_flex": 1136.8767828281852
+    },
+    {
+     "period": 13,
+     "pibar": 39.938429730256445,
+     "c_flex_expected": 36.33190893998793,
+     "c_flex_by_market_scenario": [
+      36.82115187669457,
+      35.842666003281295
+     ],
+     "pi_by_market_scenario": [
+      36.41228701489688,
+      43.464572445616014
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 19.969214865128222,
+     "alpha_0.5_over_c_flex": 0.5496329658348762,
+     "alpha_1000.0_premium": 39938.429730256445,
+     "alpha_1000.0_over_c_flex": 1099.2659316697525
+    },
+    {
+     "period": 14,
+     "pibar": 37.458328086001686,
+     "c_flex_expected": 33.676265883281445,
+     "c_flex_by_market_scenario": [
+      33.377755902602296,
+      33.974775863960595
+     ],
+     "pi_by_market_scenario": [
+      33.63971087294918,
+      41.27694529905419
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 18.729164043000843,
+     "alpha_0.5_over_c_flex": 0.5561532299309622,
+     "alpha_1000.0_premium": 37458.32808600168,
+     "alpha_1000.0_over_c_flex": 1112.3064598619242
+    },
+    {
+     "period": 15,
+     "pibar": 42.54710716309923,
+     "c_flex_expected": 36.57028777902052,
+     "c_flex_by_market_scenario": [
+      36.68637707010694,
+      36.45419848793409
+     ],
+     "pi_by_market_scenario": [
+      37.88721781582405,
+      47.2069965103744
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 21.273553581549614,
+     "alpha_0.5_over_c_flex": 0.5817168765555554,
+     "alpha_1000.0_premium": 42547.10716309923,
+     "alpha_1000.0_over_c_flex": 1163.4337531111107
+    },
+    {
+     "period": 16,
+     "pibar": 55.73621437635212,
+     "c_flex_expected": 41.08268540053151,
+     "c_flex_by_market_scenario": [
+      41.24484269614679,
+      40.92052810491623
+     ],
+     "pi_by_market_scenario": [
+      51.35847584956535,
+      60.11395290313889
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 27.86810718817606,
+     "alpha_0.5_over_c_flex": 0.6783419077034218,
+     "alpha_1000.0_premium": 55736.21437635212,
+     "alpha_1000.0_over_c_flex": 1356.6838154068437
+    },
+    {
+     "period": 17,
+     "pibar": 81.49022230162942,
+     "c_flex_expected": 47.9724347784398,
+     "c_flex_by_market_scenario": [
+      48.75443204890988,
+      47.19043750796972
+     ],
+     "pi_by_market_scenario": [
+      80.27603961812194,
+      82.70440498513688
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 40.74511115081471,
+     "alpha_0.5_over_c_flex": 0.8493442398534823,
+     "alpha_1000.0_premium": 81490.22230162942,
+     "alpha_1000.0_over_c_flex": 1698.6884797069647
+    },
+    {
+     "period": 18,
+     "pibar": 107.54725626932105,
+     "c_flex_expected": 54.39960647153222,
+     "c_flex_by_market_scenario": [
+      53.74510679762383,
+      55.05410614544061
+     ],
+     "pi_by_market_scenario": [
+      106.45642056661225,
+      108.63809197202987
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 53.77362813466053,
+     "alpha_0.5_over_c_flex": 0.9884929620364207,
+     "alpha_1000.0_premium": 107547.25626932105,
+     "alpha_1000.0_over_c_flex": 1976.9859240728413
+    },
+    {
+     "period": 19,
+     "pibar": 125.46686653638369,
+     "c_flex_expected": 62.029804910723726,
+     "c_flex_by_market_scenario": [
+      61.716859899658594,
+      62.34274992178885
+     ],
+     "pi_by_market_scenario": [
+      123.07440809088446,
+      127.8593249818829
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 62.733433268191845,
+     "alpha_0.5_over_c_flex": 1.0113433914306327,
+     "alpha_1000.0_premium": 125466.86653638369,
+     "alpha_1000.0_over_c_flex": 2022.6867828612653
+    },
+    {
+     "period": 20,
+     "pibar": 142.74079256354335,
+     "c_flex_expected": 60.14630313069083,
+     "c_flex_by_market_scenario": [
+      58.95279776995153,
+      61.339808491430134
+     ],
+     "pi_by_market_scenario": [
+      144.2626415559513,
+      141.2189435711354
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 71.37039628177168,
+     "alpha_0.5_over_c_flex": 1.1866131842998267,
+     "alpha_1000.0_premium": 142740.79256354336,
+     "alpha_1000.0_over_c_flex": 2373.226368599653
+    },
+    {
+     "period": 21,
+     "pibar": 131.6720298381851,
+     "c_flex_expected": 57.38945596170295,
+     "c_flex_by_market_scenario": [
+      58.00923393423022,
+      56.769677989175676
+     ],
+     "pi_by_market_scenario": [
+      131.71640251884176,
+      131.6276571575284
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 65.83601491909255,
+     "alpha_0.5_over_c_flex": 1.1471796310985445,
+     "alpha_1000.0_premium": 131672.0298381851,
+     "alpha_1000.0_over_c_flex": 2294.359262197089
+    },
+    {
+     "period": 22,
+     "pibar": 127.64630769648736,
+     "c_flex_expected": 52.5201295675743,
+     "c_flex_by_market_scenario": [
+      52.06487162746869,
+      52.975387507679905
+     ],
+     "pi_by_market_scenario": [
+      130.1211567572963,
+      125.17145863567842
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 63.82315384824368,
+     "alpha_0.5_over_c_flex": 1.2152131834733289,
+     "alpha_1000.0_premium": 127646.30769648736,
+     "alpha_1000.0_over_c_flex": 2430.426366946658
+    },
+    {
+     "period": 23,
+     "pibar": 127.33240630188625,
+     "c_flex_expected": 51.42024068498566,
+     "c_flex_by_market_scenario": [
+      51.48900323929059,
+      51.35147813068072
+     ],
+     "pi_by_market_scenario": [
+      125.89553071647589,
+      128.76928188729661
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 63.666203150943126,
+     "alpha_0.5_over_c_flex": 1.2381545146974235,
+     "alpha_1000.0_premium": 127332.40630188625,
+     "alpha_1000.0_over_c_flex": 2476.309029394847
+    }
+   ]
+  },
+  "DSO:7:case33_2:2025:Autumn": {
+   "n_periods": 24,
+   "pibar_min": 81.43953394552642,
+   "pibar_max": 157.62302620541436,
+   "c_flex_expected_min": 44.002227317442156,
+   "c_flex_expected_max": 76.31934557585501,
+   "n_hours_premium_below_c_flex": {
+    "0.0": 24,
+    "0.5": 21,
+    "1000.0": 0
+   },
+   "rows": [
+    {
+     "period": 0,
+     "pibar": 93.18816981209449,
+     "c_flex_expected": 49.54821861302782,
+     "c_flex_by_market_scenario": [
+      49.63697380384428,
+      49.459463422211364
+     ],
+     "pi_by_market_scenario": [
+      95.55431057471607,
+      90.8220290494729
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 46.59408490604724,
+     "alpha_0.5_over_c_flex": 0.9403786091675183,
+     "alpha_1000.0_premium": 93188.1698120945,
+     "alpha_1000.0_over_c_flex": 1880.7572183350367
+    },
+    {
+     "period": 1,
+     "pibar": 90.69026870833386,
+     "c_flex_expected": 50.04733714112453,
+     "c_flex_by_market_scenario": [
+      50.025626511243445,
+      50.069047771005614
+     ],
+     "pi_by_market_scenario": [
+      93.18084783640107,
+      88.19968958026664
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 45.34513435416693,
+     "alpha_0.5_over_c_flex": 0.9060448955815925,
+     "alpha_1000.0_premium": 90690.26870833387,
+     "alpha_1000.0_over_c_flex": 1812.089791163185
+    },
+    {
+     "period": 2,
+     "pibar": 89.54562436739184,
+     "c_flex_expected": 47.45267725924403,
+     "c_flex_by_market_scenario": [
+      47.431677828564524,
+      47.473676689923536
+     ],
+     "pi_by_market_scenario": [
+      92.14002418701001,
+      86.95122454777368
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 44.77281218369592,
+     "alpha_0.5_over_c_flex": 0.9435255241573107,
+     "alpha_1000.0_premium": 89545.62436739184,
+     "alpha_1000.0_over_c_flex": 1887.0510483146213
+    },
+    {
+     "period": 3,
+     "pibar": 82.96886035016172,
+     "c_flex_expected": 45.91796563050147,
+     "c_flex_by_market_scenario": [
+      46.148259480758696,
+      45.687671780244244
+     ],
+     "pi_by_market_scenario": [
+      84.81557569560239,
+      81.12214500472106
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 41.48443017508086,
+     "alpha_0.5_over_c_flex": 0.9034466053854182,
+     "alpha_1000.0_premium": 82968.86035016172,
+     "alpha_1000.0_over_c_flex": 1806.8932107708365
+    },
+    {
+     "period": 4,
+     "pibar": 84.7844044811362,
+     "c_flex_expected": 44.002227317442156,
+     "c_flex_by_market_scenario": [
+      44.03248064322951,
+      43.9719739916548
+     ],
+     "pi_by_market_scenario": [
+      87.24578403322691,
+      82.3230249290455
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 42.3922022405681,
+     "alpha_0.5_over_c_flex": 0.9634103731781811,
+     "alpha_1000.0_premium": 84784.40448113621,
+     "alpha_1000.0_over_c_flex": 1926.8207463563624
+    },
+    {
+     "period": 5,
+     "pibar": 88.14560835476436,
+     "c_flex_expected": 44.19509037241963,
+     "c_flex_by_market_scenario": [
+      44.13546448324996,
+      44.2547162615893
+     ],
+     "pi_by_market_scenario": [
+      90.12445289047265,
+      86.16676381905609
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 44.07280417738218,
+     "alpha_0.5_over_c_flex": 0.9972330366561766,
+     "alpha_1000.0_premium": 88145.60835476436,
+     "alpha_1000.0_over_c_flex": 1994.4660733123533
+    },
+    {
+     "period": 6,
+     "pibar": 100.05660243856099,
+     "c_flex_expected": 50.19008094809603,
+     "c_flex_by_market_scenario": [
+      50.320832558068986,
+      50.05932933812308
+     ],
+     "pi_by_market_scenario": [
+      102.1153437560564,
+      97.99786112106557
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 50.02830121928049,
+     "alpha_0.5_over_c_flex": 0.9967766593366757,
+     "alpha_1000.0_premium": 100056.60243856099,
+     "alpha_1000.0_over_c_flex": 1993.5533186733514
+    },
+    {
+     "period": 7,
+     "pibar": 113.56290833335534,
+     "c_flex_expected": 57.039729175030374,
+     "c_flex_by_market_scenario": [
+      56.99410356922245,
+      57.08535478083829
+     ],
+     "pi_by_market_scenario": [
+      114.61430739991985,
+      112.51150926679082
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 56.78145416667767,
+     "alpha_0.5_over_c_flex": 0.9954720155216696,
+     "alpha_1000.0_premium": 113562.90833335534,
+     "alpha_1000.0_over_c_flex": 1990.9440310433395
+    },
+    {
+     "period": 8,
+     "pibar": 109.04009720885915,
+     "c_flex_expected": 60.77134544789678,
+     "c_flex_by_market_scenario": [
+      60.65408168005125,
+      60.88860921574231
+     ],
+     "pi_by_market_scenario": [
+      106.70823614436681,
+      111.3719582733515
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 54.520048604429576,
+     "alpha_0.5_over_c_flex": 0.8971341378507599,
+     "alpha_1000.0_premium": 109040.09720885915,
+     "alpha_1000.0_over_c_flex": 1794.2682757015198
+    },
+    {
+     "period": 9,
+     "pibar": 109.56691327624546,
+     "c_flex_expected": 57.41959045280876,
+     "c_flex_by_market_scenario": [
+      57.17931189526381,
+      57.65986901035371
+     ],
+     "pi_by_market_scenario": [
+      110.71365374036111,
+      108.4201728121298
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 54.78345663812273,
+     "alpha_0.5_over_c_flex": 0.9540899927377123,
+     "alpha_1000.0_premium": 109566.91327624545,
+     "alpha_1000.0_over_c_flex": 1908.1799854754247
+    },
+    {
+     "period": 10,
+     "pibar": 93.23047637759893,
+     "c_flex_expected": 52.07804966515103,
+     "c_flex_by_market_scenario": [
+      52.100121754466485,
+      52.05597757583558
+     ],
+     "pi_by_market_scenario": [
+      93.18821526799111,
+      93.27273748720675
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 46.61523818879947,
+     "alpha_0.5_over_c_flex": 0.8951033782663504,
+     "alpha_1000.0_premium": 93230.47637759893,
+     "alpha_1000.0_over_c_flex": 1790.2067565327009
+    },
+    {
+     "period": 11,
+     "pibar": 84.00631671342835,
+     "c_flex_expected": 45.758199435853385,
+     "c_flex_by_market_scenario": [
+      45.71668372902448,
+      45.79971514268228
+     ],
+     "pi_by_market_scenario": [
+      83.75767012687857,
+      84.25496329997813
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 42.003158356714174,
+     "alpha_0.5_over_c_flex": 0.9179373068557198,
+     "alpha_1000.0_premium": 84006.31671342834,
+     "alpha_1000.0_over_c_flex": 1835.8746137114395
+    },
+    {
+     "period": 12,
+     "pibar": 81.88236959309461,
+     "c_flex_expected": 49.153895430940935,
+     "c_flex_by_market_scenario": [
+      49.144709343947575,
+      49.163081517934295
+     ],
+     "pi_by_market_scenario": [
+      80.5488384104911,
+      83.2159007756981
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 40.941184796547304,
+     "alpha_0.5_over_c_flex": 0.8329184175050353,
+     "alpha_1000.0_premium": 81882.36959309461,
+     "alpha_1000.0_over_c_flex": 1665.8368350100704
+    },
+    {
+     "period": 13,
+     "pibar": 81.43953394552642,
+     "c_flex_expected": 46.98002182069193,
+     "c_flex_by_market_scenario": [
+      46.91061809156841,
+      47.049425549815446
+     ],
+     "pi_by_market_scenario": [
+      80.68186183488376,
+      82.19720605616908
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 40.71976697276321,
+     "alpha_0.5_over_c_flex": 0.8667464465678164,
+     "alpha_1000.0_premium": 81439.53394552642,
+     "alpha_1000.0_over_c_flex": 1733.4928931356328
+    },
+    {
+     "period": 14,
+     "pibar": 85.98295711864522,
+     "c_flex_expected": 46.04546463155047,
+     "c_flex_by_market_scenario": [
+      46.10530639125782,
+      45.98562287184312
+     ],
+     "pi_by_market_scenario": [
+      86.01972898629111,
+      85.94618525099932
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 42.99147855932261,
+     "alpha_0.5_over_c_flex": 0.9336745519528266,
+     "alpha_1000.0_premium": 85982.95711864522,
+     "alpha_1000.0_over_c_flex": 1867.3491039056532
+    },
+    {
+     "period": 15,
+     "pibar": 103.07411303853804,
+     "c_flex_expected": 49.938187582806954,
+     "c_flex_by_market_scenario": [
+      49.93120071786118,
+      49.94517444775273
+     ],
+     "pi_by_market_scenario": [
+      104.37244864915272,
+      101.77577742792337
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 51.53705651926902,
+     "alpha_0.5_over_c_flex": 1.032016959642575,
+     "alpha_1000.0_premium": 103074.11303853804,
+     "alpha_1000.0_over_c_flex": 2064.0339192851498
+    },
+    {
+     "period": 16,
+     "pibar": 113.58162275843242,
+     "c_flex_expected": 57.06386482157525,
+     "c_flex_by_market_scenario": [
+      56.97456170740788,
+      57.15316793574263
+     ],
+     "pi_by_market_scenario": [
+      113.63648766663488,
+      113.52675785022997
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 56.79081137921621,
+     "alpha_0.5_over_c_flex": 0.9952149500701921,
+     "alpha_1000.0_premium": 113581.62275843242,
+     "alpha_1000.0_over_c_flex": 1990.4299001403845
+    },
+    {
+     "period": 17,
+     "pibar": 129.12049469544775,
+     "c_flex_expected": 63.90552106583792,
+     "c_flex_by_market_scenario": [
+      63.639812819586865,
+      64.17122931208897
+     ],
+     "pi_by_market_scenario": [
+      128.91485584443214,
+      129.32613354646338
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 64.56024734772387,
+     "alpha_0.5_over_c_flex": 1.0102452224935532,
+     "alpha_1000.0_premium": 129120.49469544775,
+     "alpha_1000.0_over_c_flex": 2020.4904449871062
+    },
+    {
+     "period": 18,
+     "pibar": 157.62302620541436,
+     "c_flex_expected": 75.69989257838094,
+     "c_flex_by_market_scenario": [
+      76.06444315847455,
+      75.33534199828732
+     ],
+     "pi_by_market_scenario": [
+      161.80042086881863,
+      153.44563154201012
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 78.81151310270718,
+     "alpha_0.5_over_c_flex": 1.0411046887695965,
+     "alpha_1000.0_premium": 157623.02620541435,
+     "alpha_1000.0_over_c_flex": 2082.209377539193
+    },
+    {
+     "period": 19,
+     "pibar": 147.31395525130682,
+     "c_flex_expected": 76.31934557585501,
+     "c_flex_by_market_scenario": [
+      76.38114733935285,
+      76.25754381235718
+     ],
+     "pi_by_market_scenario": [
+      149.48148826112856,
+      145.14642224148508
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 73.65697762565341,
+     "alpha_0.5_over_c_flex": 0.965115424796778,
+     "alpha_1000.0_premium": 147313.95525130682,
+     "alpha_1000.0_over_c_flex": 1930.230849593556
+    },
+    {
+     "period": 20,
+     "pibar": 116.88205615181406,
+     "c_flex_expected": 69.94460582996946,
+     "c_flex_by_market_scenario": [
+      70.19449486780165,
+      69.69471679213727
+     ],
+     "pi_by_market_scenario": [
+      111.14134173937182,
+      122.62277056425629
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 58.44102807590703,
+     "alpha_0.5_over_c_flex": 0.8355330247763946,
+     "alpha_1000.0_premium": 116882.05615181406,
+     "alpha_1000.0_over_c_flex": 1671.0660495527893
+    },
+    {
+     "period": 21,
+     "pibar": 113.12648030844656,
+     "c_flex_expected": 62.21268178173264,
+     "c_flex_by_market_scenario": [
+      61.97916741175868,
+      62.4461961517066
+     ],
+     "pi_by_market_scenario": [
+      109.29163298630553,
+      116.96132763058759
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 56.56324015422328,
+     "alpha_0.5_over_c_flex": 0.9091914788799831,
+     "alpha_1000.0_premium": 113126.48030844655,
+     "alpha_1000.0_over_c_flex": 1818.382957759966
+    },
+    {
+     "period": 22,
+     "pibar": 114.75430082265487,
+     "c_flex_expected": 57.46149308691424,
+     "c_flex_by_market_scenario": [
+      57.524993336869414,
+      57.39799283695906
+     ],
+     "pi_by_market_scenario": [
+      114.64658697350838,
+      114.86201467180135
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 57.377150411327435,
+     "alpha_0.5_over_c_flex": 0.9985321878869519,
+     "alpha_1000.0_premium": 114754.30082265487,
+     "alpha_1000.0_over_c_flex": 1997.0643757739037
+    },
+    {
+     "period": 23,
+     "pibar": 107.83642251342697,
+     "c_flex_expected": 55.040214329720925,
+     "c_flex_by_market_scenario": [
+      54.99209967257155,
+      55.0883289868703
+     ],
+     "pi_by_market_scenario": [
+      108.86599817620075,
+      106.80684685065319
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 53.918211256713484,
+     "alpha_0.5_over_c_flex": 0.9796148491303825,
+     "alpha_1000.0_premium": 107836.42251342697,
+     "alpha_1000.0_over_c_flex": 1959.229698260765
+    }
+   ]
+  },
+  "DSO:7:case33_2:2025:Winter": {
+   "n_periods": 24,
+   "pibar_min": 84.92881425282786,
+   "pibar_max": 140.54841735412435,
+   "c_flex_expected_min": 21.322493305475497,
+   "c_flex_expected_max": 45.35856577381253,
+   "n_hours_premium_below_c_flex": {
+    "0.0": 24,
+    "0.5": 0,
+    "1000.0": 0
+   },
+   "rows": [
+    {
+     "period": 0,
+     "pibar": 98.39651036154538,
+     "c_flex_expected": 35.34969849425171,
+     "c_flex_by_market_scenario": [
+      36.14252978286299,
+      34.55686720564044
+     ],
+     "pi_by_market_scenario": [
+      97.73315729186665,
+      99.05986343122413
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 49.19825518077269,
+     "alpha_0.5_over_c_flex": 1.3917588346269183,
+     "alpha_1000.0_premium": 98396.51036154538,
+     "alpha_1000.0_over_c_flex": 2783.5176692538366
+    },
+    {
+     "period": 1,
+     "pibar": 92.67166112911289,
+     "c_flex_expected": 35.466374177781795,
+     "c_flex_by_market_scenario": [
+      34.95375062335762,
+      35.97899773220597
+     ],
+     "pi_by_market_scenario": [
+      91.68951173342124,
+      93.65381052480456
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 46.335830564556446,
+     "alpha_0.5_over_c_flex": 1.30647216240063,
+     "alpha_1000.0_premium": 92671.6611291129,
+     "alpha_1000.0_over_c_flex": 2612.94432480126
+    },
+    {
+     "period": 2,
+     "pibar": 87.63582501611171,
+     "c_flex_expected": 33.49732837097939,
+     "c_flex_by_market_scenario": [
+      34.55337582646039,
+      32.44128091549838
+     ],
+     "pi_by_market_scenario": [
+      86.8481101860464,
+      88.42353984617704
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 43.817912508055855,
+     "alpha_0.5_over_c_flex": 1.308101709568509,
+     "alpha_1000.0_premium": 87635.8250161117,
+     "alpha_1000.0_over_c_flex": 2616.2034191370176
+    },
+    {
+     "period": 3,
+     "pibar": 85.77071274414213,
+     "c_flex_expected": 35.06865332422834,
+     "c_flex_by_market_scenario": [
+      34.81460120962257,
+      35.32270543883411
+     ],
+     "pi_by_market_scenario": [
+      84.78616509037643,
+      86.75526039790783
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 42.885356372071065,
+     "alpha_0.5_over_c_flex": 1.2228971547773206,
+     "alpha_1000.0_premium": 85770.71274414213,
+     "alpha_1000.0_over_c_flex": 2445.794309554641
+    },
+    {
+     "period": 4,
+     "pibar": 84.92881425282786,
+     "c_flex_expected": 32.58693134574012,
+     "c_flex_by_market_scenario": [
+      34.1177490893825,
+      31.056113602097742
+     ],
+     "pi_by_market_scenario": [
+      84.1287791281758,
+      85.72884937747993
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 42.46440712641393,
+     "alpha_0.5_over_c_flex": 1.3031115656726306,
+     "alpha_1000.0_premium": 84928.81425282787,
+     "alpha_1000.0_over_c_flex": 2606.2231313452617
+    },
+    {
+     "period": 5,
+     "pibar": 86.26265640741167,
+     "c_flex_expected": 34.470592736712945,
+     "c_flex_by_market_scenario": [
+      34.8607320638934,
+      34.08045340953248
+     ],
+     "pi_by_market_scenario": [
+      85.5685196105134,
+      86.95679320430993
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 43.131328203705834,
+     "alpha_0.5_over_c_flex": 1.2512499722051127,
+     "alpha_1000.0_premium": 86262.65640741168,
+     "alpha_1000.0_over_c_flex": 2502.499944410226
+    },
+    {
+     "period": 6,
+     "pibar": 93.44557802805865,
+     "c_flex_expected": 38.163428841012575,
+     "c_flex_by_market_scenario": [
+      37.375039998826196,
+      38.95181768319895
+     ],
+     "pi_by_market_scenario": [
+      91.66792812391392,
+      95.22322793220337
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 46.722789014029324,
+     "alpha_0.5_over_c_flex": 1.224281738642372,
+     "alpha_1000.0_premium": 93445.57802805865,
+     "alpha_1000.0_over_c_flex": 2448.5634772847443
+    },
+    {
+     "period": 7,
+     "pibar": 109.54338440552047,
+     "c_flex_expected": 38.76864672285589,
+     "c_flex_by_market_scenario": [
+      38.67820063361696,
+      38.85909281209483
+     ],
+     "pi_by_market_scenario": [
+      108.67001880403274,
+      110.4167500070082
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 54.771692202760235,
+     "alpha_0.5_over_c_flex": 1.4127831851935604,
+     "alpha_1000.0_premium": 109543.38440552047,
+     "alpha_1000.0_over_c_flex": 2825.566370387121
+    },
+    {
+     "period": 8,
+     "pibar": 127.65078346350482,
+     "c_flex_expected": 35.36494149463019,
+     "c_flex_by_market_scenario": [
+      35.76572547231954,
+      34.964157516940844
+     ],
+     "pi_by_market_scenario": [
+      124.24538255992334,
+      131.0561843670863
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 63.82539173175241,
+     "alpha_0.5_over_c_flex": 1.8047645219897694,
+     "alpha_1000.0_premium": 127650.78346350482,
+     "alpha_1000.0_over_c_flex": 3609.5290439795385
+    },
+    {
+     "period": 9,
+     "pibar": 123.51216756821943,
+     "c_flex_expected": 31.183107993340094,
+     "c_flex_by_market_scenario": [
+      32.195131467865124,
+      30.17108451881506
+     ],
+     "pi_by_market_scenario": [
+      119.83858069901969,
+      127.18575443741916
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 61.75608378410971,
+     "alpha_0.5_over_c_flex": 1.9804338873886214,
+     "alpha_1000.0_premium": 123512.16756821942,
+     "alpha_1000.0_over_c_flex": 3960.867774777242
+    },
+    {
+     "period": 10,
+     "pibar": 105.54186413966681,
+     "c_flex_expected": 27.35030077122442,
+     "c_flex_by_market_scenario": [
+      27.98787746054062,
+      26.712724081908217
+     ],
+     "pi_by_market_scenario": [
+      103.96607274798963,
+      107.117655531344
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 52.77093206983341,
+     "alpha_0.5_over_c_flex": 1.9294461333805273,
+     "alpha_1000.0_premium": 105541.86413966681,
+     "alpha_1000.0_over_c_flex": 3858.8922667610545
+    },
+    {
+     "period": 11,
+     "pibar": 94.82917407891978,
+     "c_flex_expected": 26.724181912025074,
+     "c_flex_by_market_scenario": [
+      26.17830471890746,
+      27.270059105142693
+     ],
+     "pi_by_market_scenario": [
+      92.04593158873284,
+      97.61241656910671
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 47.41458703945989,
+     "alpha_0.5_over_c_flex": 1.774220337054537,
+     "alpha_1000.0_premium": 94829.17407891978,
+     "alpha_1000.0_over_c_flex": 3548.4406741090743
+    },
+    {
+     "period": 12,
+     "pibar": 92.22981555098909,
+     "c_flex_expected": 22.933811533663885,
+     "c_flex_by_market_scenario": [
+      23.256770791052812,
+      22.610852276274954
+     ],
+     "pi_by_market_scenario": [
+      89.56756562944251,
+      94.89206547253565
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 46.114907775494544,
+     "alpha_0.5_over_c_flex": 2.0107825386026126,
+     "alpha_1000.0_premium": 92229.8155509891,
+     "alpha_1000.0_over_c_flex": 4021.5650772052254
+    },
+    {
+     "period": 13,
+     "pibar": 89.86115757796313,
+     "c_flex_expected": 22.732124409309105,
+     "c_flex_by_market_scenario": [
+      22.956938545192614,
+      22.507310273425595
+     ],
+     "pi_by_market_scenario": [
+      87.38870127829533,
+      92.33361387763094
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 44.93057878898156,
+     "alpha_0.5_over_c_flex": 1.9765235303121031,
+     "alpha_1000.0_premium": 89861.15757796312,
+     "alpha_1000.0_over_c_flex": 3953.047060624206
+    },
+    {
+     "period": 14,
+     "pibar": 89.7960736261713,
+     "c_flex_expected": 21.322493305475497,
+     "c_flex_by_market_scenario": [
+      21.43247498710086,
+      21.212511623850137
+     ],
+     "pi_by_market_scenario": [
+      88.02522700287633,
+      91.56692024946629
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 44.89803681308565,
+     "alpha_0.5_over_c_flex": 2.1056654196043803,
+     "alpha_1000.0_premium": 89796.0736261713,
+     "alpha_1000.0_over_c_flex": 4211.33083920876
+    },
+    {
+     "period": 15,
+     "pibar": 91.0334227226272,
+     "c_flex_expected": 22.023057761777512,
+     "c_flex_by_market_scenario": [
+      22.273133691562514,
+      21.77298183199251
+     ],
+     "pi_by_market_scenario": [
+      89.73970575705343,
+      92.32713968820094
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 45.5167113613136,
+     "alpha_0.5_over_c_flex": 2.0667752795123158,
+     "alpha_1000.0_premium": 91033.42272262719,
+     "alpha_1000.0_over_c_flex": 4133.550559024632
+    },
+    {
+     "period": 16,
+     "pibar": 102.41435400337421,
+     "c_flex_expected": 25.699529537824553,
+     "c_flex_by_market_scenario": [
+      25.583704621588737,
+      25.81535445406037
+     ],
+     "pi_by_market_scenario": [
+      102.46203129151371,
+      102.36667671523472
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 51.20717700168711,
+     "alpha_0.5_over_c_flex": 1.9925336347624736,
+     "alpha_1000.0_premium": 102414.35400337422,
+     "alpha_1000.0_over_c_flex": 3985.0672695249473
+    },
+    {
+     "period": 17,
+     "pibar": 123.13011529174287,
+     "c_flex_expected": 30.02981083779489,
+     "c_flex_by_market_scenario": [
+      30.085575381898163,
+      29.974046293691618
+     ],
+     "pi_by_market_scenario": [
+      125.02645316997688,
+      121.23377741350885
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 61.565057645871434,
+     "alpha_0.5_over_c_flex": 2.0501313837244335,
+     "alpha_1000.0_premium": 123130.11529174287,
+     "alpha_1000.0_over_c_flex": 4100.262767448868
+    },
+    {
+     "period": 18,
+     "pibar": 129.56802238874786,
+     "c_flex_expected": 36.80631814733607,
+     "c_flex_by_market_scenario": [
+      37.217491931949425,
+      36.39514436272271
+     ],
+     "pi_by_market_scenario": [
+      133.2831014434276,
+      125.85294333406814
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 64.78401119437393,
+     "alpha_0.5_over_c_flex": 1.7601328917237216,
+     "alpha_1000.0_premium": 129568.02238874786,
+     "alpha_1000.0_over_c_flex": 3520.2657834474435
+    },
+    {
+     "period": 19,
+     "pibar": 140.54841735412435,
+     "c_flex_expected": 40.857856615298076,
+     "c_flex_by_market_scenario": [
+      42.40972656762173,
+      39.30598666297441
+     ],
+     "pi_by_market_scenario": [
+      141.0096736584578,
+      140.08716104979086
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 70.27420867706218,
+     "alpha_0.5_over_c_flex": 1.7199680673104614,
+     "alpha_1000.0_premium": 140548.41735412437,
+     "alpha_1000.0_over_c_flex": 3439.936134620923
+    },
+    {
+     "period": 20,
+     "pibar": 129.0050063748031,
+     "c_flex_expected": 45.35856577381253,
+     "c_flex_by_market_scenario": [
+      44.13541069009076,
+      46.5817208575343
+     ],
+     "pi_by_market_scenario": [
+      127.11803812529799,
+      130.8919746243082
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 64.50250318740154,
+     "alpha_0.5_over_c_flex": 1.4220578205460288,
+     "alpha_1000.0_premium": 129005.00637480308,
+     "alpha_1000.0_over_c_flex": 2844.1156410920576
+    },
+    {
+     "period": 21,
+     "pibar": 116.8330115526405,
+     "c_flex_expected": 38.08653878218891,
+     "c_flex_by_market_scenario": [
+      38.36275875034545,
+      37.81031881403238
+     ],
+     "pi_by_market_scenario": [
+      115.91226793021733,
+      117.75375517506366
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 58.41650577632025,
+     "alpha_0.5_over_c_flex": 1.5337835267834474,
+     "alpha_1000.0_premium": 116833.0115526405,
+     "alpha_1000.0_over_c_flex": 3067.5670535668946
+    },
+    {
+     "period": 22,
+     "pibar": 107.10042310020573,
+     "c_flex_expected": 38.95156890786101,
+     "c_flex_by_market_scenario": [
+      38.837935132977314,
+      39.065202682744705
+     ],
+     "pi_by_market_scenario": [
+      106.37516503291006,
+      107.8256811675014
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 53.550211550102865,
+     "alpha_0.5_over_c_flex": 1.374789592603435,
+     "alpha_1000.0_premium": 107100.42310020573,
+     "alpha_1000.0_over_c_flex": 2749.57918520687
+    },
+    {
+     "period": 23,
+     "pibar": 97.25589311253225,
+     "c_flex_expected": 38.319064623839104,
+     "c_flex_by_market_scenario": [
+      38.51874251746752,
+      38.119386730210685
+     ],
+     "pi_by_market_scenario": [
+      97.68618559438974,
+      96.82560063067477
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 48.627946556266124,
+     "alpha_0.5_over_c_flex": 1.269027494110951,
+     "alpha_1000.0_premium": 97255.89311253224,
+     "alpha_1000.0_over_c_flex": 2538.0549882219016
+    }
+   ]
+  },
+  "DSO:9:case33_3:2025:Spring": {
+   "n_periods": 24,
+   "pibar_min": 9.81204468708017,
+   "pibar_max": 157.6525959539668,
+   "c_flex_expected_min": 22.58028607017752,
+   "c_flex_expected_max": 54.91540991588853,
+   "n_hours_premium_below_c_flex": {
+    "0.0": 24,
+    "0.5": 9,
+    "1000.0": 0
+   },
+   "rows": [
+    {
+     "period": 0,
+     "pibar": 143.06281197426998,
+     "c_flex_expected": 49.23588390462982,
+     "c_flex_by_market_scenario": [
+      50.387905127438465,
+      48.08386268182118
+     ],
+     "pi_by_market_scenario": [
+      116.6741563028345,
+      169.45146764570546
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 71.53140598713499,
+     "alpha_0.5_over_c_flex": 1.452830746893703,
+     "alpha_1000.0_premium": 143062.81197426998,
+     "alpha_1000.0_over_c_flex": 2905.6614937874056
+    },
+    {
+     "period": 1,
+     "pibar": 139.6947974758054,
+     "c_flex_expected": 47.228001043756805,
+     "c_flex_by_market_scenario": [
+      48.65359133086557,
+      45.80241075664805
+     ],
+     "pi_by_market_scenario": [
+      117.72769218863633,
+      161.66190276297448
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 69.8473987379027,
+     "alpha_0.5_over_c_flex": 1.4789403996410728,
+     "alpha_1000.0_premium": 139694.7974758054,
+     "alpha_1000.0_over_c_flex": 2957.8807992821457
+    },
+    {
+     "period": 2,
+     "pibar": 140.6098662066097,
+     "c_flex_expected": 47.590990703490476,
+     "c_flex_by_market_scenario": [
+      46.72559591861644,
+      48.45638548836452
+     ],
+     "pi_by_market_scenario": [
+      120.19845744897576,
+      161.02127496424364
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 70.30493310330485,
+     "alpha_0.5_over_c_flex": 1.4772739979575265,
+     "alpha_1000.0_premium": 140609.8662066097,
+     "alpha_1000.0_over_c_flex": 2954.547995915053
+    },
+    {
+     "period": 3,
+     "pibar": 138.25642522116277,
+     "c_flex_expected": 46.049905516320834,
+     "c_flex_by_market_scenario": [
+      43.060250738740194,
+      49.03956029390147
+     ],
+     "pi_by_market_scenario": [
+      119.22860902435463,
+      157.28424141797092
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 69.12821261058139,
+     "alpha_0.5_over_c_flex": 1.501158619882102,
+     "alpha_1000.0_premium": 138256.42522116276,
+     "alpha_1000.0_over_c_flex": 3002.3172397642043
+    },
+    {
+     "period": 4,
+     "pibar": 143.0295804936227,
+     "c_flex_expected": 47.6740870500894,
+     "c_flex_by_market_scenario": [
+      45.282609269431376,
+      50.06556483074743
+     ],
+     "pi_by_market_scenario": [
+      124.72952816104966,
+      161.32963282619573
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 71.51479024681134,
+     "alpha_0.5_over_c_flex": 1.5000767643787998,
+     "alpha_1000.0_premium": 143029.5804936227,
+     "alpha_1000.0_over_c_flex": 3000.1535287576
+    },
+    {
+     "period": 5,
+     "pibar": 138.17306421976687,
+     "c_flex_expected": 47.635046814118795,
+     "c_flex_by_market_scenario": [
+      47.57717684335567,
+      47.692916784881916
+     ],
+     "pi_by_market_scenario": [
+      128.03663614649625,
+      148.3094922930375
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 69.08653210988344,
+     "alpha_0.5_over_c_flex": 1.4503298879808495,
+     "alpha_1000.0_premium": 138173.06421976688,
+     "alpha_1000.0_over_c_flex": 2900.6597759616993
+    },
+    {
+     "period": 6,
+     "pibar": 143.7164317919366,
+     "c_flex_expected": 50.31722797681877,
+     "c_flex_by_market_scenario": [
+      53.22349887442124,
+      47.41095707921631
+     ],
+     "pi_by_market_scenario": [
+      134.8799247808026,
+      152.55293880307062
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 71.8582158959683,
+     "alpha_0.5_over_c_flex": 1.428103629418407,
+     "alpha_1000.0_premium": 143716.4317919366,
+     "alpha_1000.0_over_c_flex": 2856.207258836814
+    },
+    {
+     "period": 7,
+     "pibar": 135.64215626970383,
+     "c_flex_expected": 47.52745140602663,
+     "c_flex_by_market_scenario": [
+      48.246631926239175,
+      46.80827088581408
+     ],
+     "pi_by_market_scenario": [
+      115.96857921951926,
+      155.3157333198884
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 67.82107813485192,
+     "alpha_0.5_over_c_flex": 1.4269874804659102,
+     "alpha_1000.0_premium": 135642.15626970385,
+     "alpha_1000.0_over_c_flex": 2853.9749609318205
+    },
+    {
+     "period": 8,
+     "pibar": 85.08084612302565,
+     "c_flex_expected": 37.899428768635936,
+     "c_flex_by_market_scenario": [
+      36.86053437713862,
+      38.93832316013325
+     ],
+     "pi_by_market_scenario": [
+      77.83624431368597,
+      92.32544793236534
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 42.540423061512826,
+     "alpha_0.5_over_c_flex": 1.1224555209316927,
+     "alpha_1000.0_premium": 85080.84612302565,
+     "alpha_1000.0_over_c_flex": 2244.911041863385
+    },
+    {
+     "period": 9,
+     "pibar": 53.38696659581049,
+     "c_flex_expected": 30.208523684656836,
+     "c_flex_by_market_scenario": [
+      31.85411914133111,
+      28.56292822798256
+     ],
+     "pi_by_market_scenario": [
+      38.123663843804934,
+      68.65026934781605
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 26.693483297905246,
+     "alpha_0.5_over_c_flex": 0.8836407755822603,
+     "alpha_1000.0_premium": 53386.96659581049,
+     "alpha_1000.0_over_c_flex": 1767.2815511645206
+    },
+    {
+     "period": 10,
+     "pibar": 41.9810617816493,
+     "c_flex_expected": 27.490514031555506,
+     "c_flex_by_market_scenario": [
+      28.714134054080947,
+      26.266894009030068
+     ],
+     "pi_by_market_scenario": [
+      33.608660885680955,
+      50.35346267761764
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 20.99053089082465,
+     "alpha_0.5_over_c_flex": 0.7635554164876754,
+     "alpha_1000.0_premium": 41981.0617816493,
+     "alpha_1000.0_over_c_flex": 1527.110832975351
+    },
+    {
+     "period": 11,
+     "pibar": 42.25064979739398,
+     "c_flex_expected": 26.792067793302017,
+     "c_flex_by_market_scenario": [
+      26.89141928054934,
+      26.69271630605469
+     ],
+     "pi_by_market_scenario": [
+      30.838312307723616,
+      53.662987287064354
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 21.12532489869699,
+     "alpha_0.5_over_c_flex": 0.7884917678499714,
+     "alpha_1000.0_premium": 42250.649797393984,
+     "alpha_1000.0_over_c_flex": 1576.9835356999429
+    },
+    {
+     "period": 12,
+     "pibar": 25.276070958584995,
+     "c_flex_expected": 25.935842572416362,
+     "c_flex_by_market_scenario": [
+      25.17986357266501,
+      26.691821572167715
+     ],
+     "pi_by_market_scenario": [
+      15.689403206252234,
+      34.86273871091776
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 12.638035479292498,
+     "alpha_0.5_over_c_flex": 0.48728069828483117,
+     "alpha_1000.0_premium": 25276.070958584995,
+     "alpha_1000.0_over_c_flex": 974.5613965696624
+    },
+    {
+     "period": 13,
+     "pibar": 19.439798732724533,
+     "c_flex_expected": 24.014969030453443,
+     "c_flex_by_market_scenario": [
+      23.773915213933044,
+      24.256022846973842
+     ],
+     "pi_by_market_scenario": [
+      12.702646780769136,
+      26.17695068467993
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 9.719899366362267,
+     "alpha_0.5_over_c_flex": 0.404743364608817,
+     "alpha_1000.0_premium": 19439.798732724532,
+     "alpha_1000.0_over_c_flex": 809.486729217634
+    },
+    {
+     "period": 14,
+     "pibar": 9.81204468708017,
+     "c_flex_expected": 22.58028607017752,
+     "c_flex_by_market_scenario": [
+      21.277557180050266,
+      23.883014960304777
+     ],
+     "pi_by_market_scenario": [
+      3.2589652668910762,
+      16.365124107269267
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 4.906022343540085,
+     "alpha_0.5_over_c_flex": 0.21727015894717205,
+     "alpha_1000.0_premium": 9812.044687080172,
+     "alpha_1000.0_over_c_flex": 434.5403178943442
+    },
+    {
+     "period": 15,
+     "pibar": 10.205057828809375,
+     "c_flex_expected": 22.65686782207991,
+     "c_flex_by_market_scenario": [
+      22.52860069631732,
+      22.785134947842504
+     ],
+     "pi_by_market_scenario": [
+      6.985251712125617,
+      13.424863945493133
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 5.1025289144046875,
+     "alpha_0.5_over_c_flex": 0.22520892801572928,
+     "alpha_1000.0_premium": 10205.057828809375,
+     "alpha_1000.0_over_c_flex": 450.41785603145854
+    },
+    {
+     "period": 16,
+     "pibar": 21.894471133466936,
+     "c_flex_expected": 24.423994988578816,
+     "c_flex_by_market_scenario": [
+      23.988446813264254,
+      24.859543163893377
+     ],
+     "pi_by_market_scenario": [
+      13.601224711837649,
+      30.18771755509622
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 10.947235566733468,
+     "alpha_0.5_over_c_flex": 0.4482164188066952,
+     "alpha_1000.0_premium": 21894.471133466937,
+     "alpha_1000.0_over_c_flex": 896.4328376133906
+    },
+    {
+     "period": 17,
+     "pibar": 47.200838155478834,
+     "c_flex_expected": 28.509666687407062,
+     "c_flex_by_market_scenario": [
+      29.1398648377484,
+      27.879468537065726
+     ],
+     "pi_by_market_scenario": [
+      41.51769184732111,
+      52.88398446363655
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 23.600419077739417,
+     "alpha_0.5_over_c_flex": 0.8278041036573711,
+     "alpha_1000.0_premium": 47200.838155478836,
+     "alpha_1000.0_over_c_flex": 1655.6082073147425
+    },
+    {
+     "period": 18,
+     "pibar": 82.76412321400265,
+     "c_flex_expected": 36.39178562139286,
+     "c_flex_by_market_scenario": [
+      37.91058362644221,
+      34.872987616343515
+     ],
+     "pi_by_market_scenario": [
+      80.21280042116278,
+      85.31544600684252
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 41.382061607001326,
+     "alpha_0.5_over_c_flex": 1.1371264393983167,
+     "alpha_1000.0_premium": 82764.12321400266,
+     "alpha_1000.0_over_c_flex": 2274.2528787966335
+    },
+    {
+     "period": 19,
+     "pibar": 126.3886609908497,
+     "c_flex_expected": 49.12360223963641,
+     "c_flex_by_market_scenario": [
+      47.147343358829865,
+      51.09986112044297
+     ],
+     "pi_by_market_scenario": [
+      113.9651653572442,
+      138.81215662445518
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 63.19433049542485,
+     "alpha_0.5_over_c_flex": 1.2864351882654723,
+     "alpha_1000.0_premium": 126388.6609908497,
+     "alpha_1000.0_over_c_flex": 2572.870376530945
+    },
+    {
+     "period": 20,
+     "pibar": 152.92975853312942,
+     "c_flex_expected": 54.91540991588853,
+     "c_flex_by_market_scenario": [
+      55.33405622692387,
+      54.4967636048532
+     ],
+     "pi_by_market_scenario": [
+      142.53569675079214,
+      163.32382031546666
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 76.46487926656471,
+     "alpha_0.5_over_c_flex": 1.3924120640032103,
+     "alpha_1000.0_premium": 152929.7585331294,
+     "alpha_1000.0_over_c_flex": 2784.8241280064203
+    },
+    {
+     "period": 21,
+     "pibar": 144.03692142295293,
+     "c_flex_expected": 49.80724919037783,
+     "c_flex_by_market_scenario": [
+      49.86962068414622,
+      49.744877696609436
+     ],
+     "pi_by_market_scenario": [
+      134.53195913830874,
+      153.54188370759712
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 72.01846071147646,
+     "alpha_0.5_over_c_flex": 1.4459433492542602,
+     "alpha_1000.0_premium": 144036.92142295293,
+     "alpha_1000.0_over_c_flex": 2891.8866985085206
+    },
+    {
+     "period": 22,
+     "pibar": 141.643678158228,
+     "c_flex_expected": 49.022156850023094,
+     "c_flex_by_market_scenario": [
+      50.2138448675198,
+      47.83046883252638
+     ],
+     "pi_by_market_scenario": [
+      125.49672518746387,
+      157.79063112899212
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 70.821839079114,
+     "alpha_0.5_over_c_flex": 1.4446903936883926,
+     "alpha_1000.0_premium": 141643.678158228,
+     "alpha_1000.0_over_c_flex": 2889.380787376785
+    },
+    {
+     "period": 23,
+     "pibar": 157.6525959539668,
+     "c_flex_expected": 47.46409732287877,
+     "c_flex_by_market_scenario": [
+      47.08031355487596,
+      47.847881090881586
+     ],
+     "pi_by_market_scenario": [
+      158.08689556133885,
+      157.21829634659477
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 78.8262979769834,
+     "alpha_0.5_over_c_flex": 1.6607562857618559,
+     "alpha_1000.0_premium": 157652.59595396678,
+     "alpha_1000.0_over_c_flex": 3321.5125715237114
+    }
+   ]
+  },
+  "DSO:9:case33_3:2025:Summer": {
+   "n_periods": 24,
+   "pibar_min": 37.458328086001686,
+   "pibar_max": 142.74079256354335,
+   "c_flex_expected_min": 33.676265883281445,
+   "c_flex_expected_max": 62.029804910723726,
+   "n_hours_premium_below_c_flex": {
+    "0.0": 24,
+    "0.5": 11,
+    "1000.0": 0
+   },
+   "rows": [
+    {
+     "period": 0,
+     "pibar": 117.94150513577767,
+     "c_flex_expected": 49.23414596831314,
+     "c_flex_by_market_scenario": [
+      49.17568066575419,
+      49.2926112708721
+     ],
+     "pi_by_market_scenario": [
+      121.74287276332464,
+      114.14013750823071
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 58.97075256788884,
+     "alpha_0.5_over_c_flex": 1.1977612571129421,
+     "alpha_1000.0_premium": 117941.50513577767,
+     "alpha_1000.0_over_c_flex": 2395.522514225884
+    },
+    {
+     "period": 1,
+     "pibar": 112.9041016035761,
+     "c_flex_expected": 49.55439057126114,
+     "c_flex_by_market_scenario": [
+      50.16029495683979,
+      48.94848618568249
+     ],
+     "pi_by_market_scenario": [
+      115.32886788799718,
+      110.479335319155
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 56.45205080178805,
+     "alpha_0.5_over_c_flex": 1.1391937253391868,
+     "alpha_1000.0_premium": 112904.1016035761,
+     "alpha_1000.0_over_c_flex": 2278.3874506783736
+    },
+    {
+     "period": 2,
+     "pibar": 110.45599636628705,
+     "c_flex_expected": 47.75012436442381,
+     "c_flex_by_market_scenario": [
+      47.93024725672766,
+      47.57000147211996
+     ],
+     "pi_by_market_scenario": [
+      112.00342991401446,
+      108.90856281855966
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 55.22799818314353,
+     "alpha_0.5_over_c_flex": 1.1566042794286646,
+     "alpha_1000.0_premium": 110455.99636628706,
+     "alpha_1000.0_over_c_flex": 2313.2085588573295
+    },
+    {
+     "period": 3,
+     "pibar": 106.936160821221,
+     "c_flex_expected": 44.948047710448435,
+     "c_flex_by_market_scenario": [
+      44.66301122239913,
+      45.23308419849774
+     ],
+     "pi_by_market_scenario": [
+      108.17294045880145,
+      105.69938118364053
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 53.4680804106105,
+     "alpha_0.5_over_c_flex": 1.1895528979378014,
+     "alpha_1000.0_premium": 106936.160821221,
+     "alpha_1000.0_over_c_flex": 2379.105795875603
+    },
+    {
+     "period": 4,
+     "pibar": 109.66076375058476,
+     "c_flex_expected": 45.774244458040556,
+     "c_flex_by_market_scenario": [
+      45.831791098871385,
+      45.716697817209734
+     ],
+     "pi_by_market_scenario": [
+      111.28348464173462,
+      108.03804285943491
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 54.83038187529238,
+     "alpha_0.5_over_c_flex": 1.1978435149389135,
+     "alpha_1000.0_premium": 109660.76375058477,
+     "alpha_1000.0_over_c_flex": 2395.687029877827
+    },
+    {
+     "period": 5,
+     "pibar": 106.11041199446615,
+     "c_flex_expected": 46.0372754659968,
+     "c_flex_by_market_scenario": [
+      46.03284583501982,
+      46.041705096973786
+     ],
+     "pi_by_market_scenario": [
+      105.1551409954758,
+      107.06568299345648
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 53.055205997233074,
+     "alpha_0.5_over_c_flex": 1.1524401794024437,
+     "alpha_1000.0_premium": 106110.41199446615,
+     "alpha_1000.0_over_c_flex": 2304.8803588048877
+    },
+    {
+     "period": 6,
+     "pibar": 111.49614366717518,
+     "c_flex_expected": 50.059574597616034,
+     "c_flex_by_market_scenario": [
+      50.003931502942486,
+      50.11521769228959
+     ],
+     "pi_by_market_scenario": [
+      109.57559794692766,
+      113.41668938742271
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 55.74807183358759,
+     "alpha_0.5_over_c_flex": 1.11363455006752,
+     "alpha_1000.0_premium": 111496.14366717517,
+     "alpha_1000.0_over_c_flex": 2227.26910013504
+    },
+    {
+     "period": 7,
+     "pibar": 109.43264451868025,
+     "c_flex_expected": 53.357919819726035,
+     "c_flex_by_market_scenario": [
+      53.961514103193196,
+      52.75432553625888
+     ],
+     "pi_by_market_scenario": [
+      104.5472472304923,
+      114.3180418068682
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 54.716322259340124,
+     "alpha_0.5_over_c_flex": 1.0254583095481151,
+     "alpha_1000.0_premium": 109432.64451868024,
+     "alpha_1000.0_over_c_flex": 2050.91661909623
+    },
+    {
+     "period": 8,
+     "pibar": 84.71569500950989,
+     "c_flex_expected": 50.08690533412032,
+     "c_flex_by_market_scenario": [
+      50.44828555328529,
+      49.72552511495535
+     ],
+     "pi_by_market_scenario": [
+      79.15592927859231,
+      90.27546074042746
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 42.35784750475494,
+     "alpha_0.5_over_c_flex": 0.8456870557722366,
+     "alpha_1000.0_premium": 84715.69500950989,
+     "alpha_1000.0_over_c_flex": 1691.3741115444732
+    },
+    {
+     "period": 9,
+     "pibar": 66.26497941240858,
+     "c_flex_expected": 45.222386137203046,
+     "c_flex_by_market_scenario": [
+      45.78911445878577,
+      44.65565781562033
+     ],
+     "pi_by_market_scenario": [
+      62.119846687817166,
+      70.410112137
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 33.13248970620429,
+     "alpha_0.5_over_c_flex": 0.7326568219041238,
+     "alpha_1000.0_premium": 66264.97941240857,
+     "alpha_1000.0_over_c_flex": 1465.3136438082474
+    },
+    {
+     "period": 10,
+     "pibar": 59.48067763726977,
+     "c_flex_expected": 39.39941117755543,
+     "c_flex_by_market_scenario": [
+      39.1221023335275,
+      39.67672002158336
+     ],
+     "pi_by_market_scenario": [
+      57.76247392536227,
+      61.19888134917727
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 29.740338818634886,
+     "alpha_0.5_over_c_flex": 0.7548422153978026,
+     "alpha_1000.0_premium": 59480.67763726977,
+     "alpha_1000.0_over_c_flex": 1509.684430795605
+    },
+    {
+     "period": 11,
+     "pibar": 51.339697702670136,
+     "c_flex_expected": 36.72602488091766,
+     "c_flex_by_market_scenario": [
+      36.994516646840204,
+      36.45753311499512
+     ],
+     "pi_by_market_scenario": [
+      48.215049170836885,
+      54.46434623450338
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 25.669848851335068,
+     "alpha_0.5_over_c_flex": 0.6989552758450798,
+     "alpha_1000.0_premium": 51339.697702670135,
+     "alpha_1000.0_over_c_flex": 1397.9105516901595
+    },
+    {
+     "period": 12,
+     "pibar": 42.63780471112676,
+     "c_flex_expected": 37.5043323561042,
+     "c_flex_by_market_scenario": [
+      37.46751591726923,
+      37.54114879493916
+     ],
+     "pi_by_market_scenario": [
+      38.424589573272584,
+      46.85101984898095
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 21.31890235556338,
+     "alpha_0.5_over_c_flex": 0.5684383914140927,
+     "alpha_1000.0_premium": 42637.80471112676,
+     "alpha_1000.0_over_c_flex": 1136.8767828281852
+    },
+    {
+     "period": 13,
+     "pibar": 39.938429730256445,
+     "c_flex_expected": 36.33190893998793,
+     "c_flex_by_market_scenario": [
+      36.82115187669457,
+      35.842666003281295
+     ],
+     "pi_by_market_scenario": [
+      36.41228701489688,
+      43.464572445616014
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 19.969214865128222,
+     "alpha_0.5_over_c_flex": 0.5496329658348762,
+     "alpha_1000.0_premium": 39938.429730256445,
+     "alpha_1000.0_over_c_flex": 1099.2659316697525
+    },
+    {
+     "period": 14,
+     "pibar": 37.458328086001686,
+     "c_flex_expected": 33.676265883281445,
+     "c_flex_by_market_scenario": [
+      33.377755902602296,
+      33.974775863960595
+     ],
+     "pi_by_market_scenario": [
+      33.63971087294918,
+      41.27694529905419
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 18.729164043000843,
+     "alpha_0.5_over_c_flex": 0.5561532299309622,
+     "alpha_1000.0_premium": 37458.32808600168,
+     "alpha_1000.0_over_c_flex": 1112.3064598619242
+    },
+    {
+     "period": 15,
+     "pibar": 42.54710716309923,
+     "c_flex_expected": 36.57028777902052,
+     "c_flex_by_market_scenario": [
+      36.68637707010694,
+      36.45419848793409
+     ],
+     "pi_by_market_scenario": [
+      37.88721781582405,
+      47.2069965103744
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 21.273553581549614,
+     "alpha_0.5_over_c_flex": 0.5817168765555554,
+     "alpha_1000.0_premium": 42547.10716309923,
+     "alpha_1000.0_over_c_flex": 1163.4337531111107
+    },
+    {
+     "period": 16,
+     "pibar": 55.73621437635212,
+     "c_flex_expected": 41.08268540053151,
+     "c_flex_by_market_scenario": [
+      41.24484269614679,
+      40.92052810491623
+     ],
+     "pi_by_market_scenario": [
+      51.35847584956535,
+      60.11395290313889
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 27.86810718817606,
+     "alpha_0.5_over_c_flex": 0.6783419077034218,
+     "alpha_1000.0_premium": 55736.21437635212,
+     "alpha_1000.0_over_c_flex": 1356.6838154068437
+    },
+    {
+     "period": 17,
+     "pibar": 81.49022230162942,
+     "c_flex_expected": 47.9724347784398,
+     "c_flex_by_market_scenario": [
+      48.75443204890988,
+      47.19043750796972
+     ],
+     "pi_by_market_scenario": [
+      80.27603961812194,
+      82.70440498513688
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 40.74511115081471,
+     "alpha_0.5_over_c_flex": 0.8493442398534823,
+     "alpha_1000.0_premium": 81490.22230162942,
+     "alpha_1000.0_over_c_flex": 1698.6884797069647
+    },
+    {
+     "period": 18,
+     "pibar": 107.54725626932105,
+     "c_flex_expected": 54.39960647153222,
+     "c_flex_by_market_scenario": [
+      53.74510679762383,
+      55.05410614544061
+     ],
+     "pi_by_market_scenario": [
+      106.45642056661225,
+      108.63809197202987
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 53.77362813466053,
+     "alpha_0.5_over_c_flex": 0.9884929620364207,
+     "alpha_1000.0_premium": 107547.25626932105,
+     "alpha_1000.0_over_c_flex": 1976.9859240728413
+    },
+    {
+     "period": 19,
+     "pibar": 125.46686653638369,
+     "c_flex_expected": 62.029804910723726,
+     "c_flex_by_market_scenario": [
+      61.716859899658594,
+      62.34274992178885
+     ],
+     "pi_by_market_scenario": [
+      123.07440809088446,
+      127.8593249818829
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 62.733433268191845,
+     "alpha_0.5_over_c_flex": 1.0113433914306327,
+     "alpha_1000.0_premium": 125466.86653638369,
+     "alpha_1000.0_over_c_flex": 2022.6867828612653
+    },
+    {
+     "period": 20,
+     "pibar": 142.74079256354335,
+     "c_flex_expected": 60.14630313069083,
+     "c_flex_by_market_scenario": [
+      58.95279776995153,
+      61.339808491430134
+     ],
+     "pi_by_market_scenario": [
+      144.2626415559513,
+      141.2189435711354
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 71.37039628177168,
+     "alpha_0.5_over_c_flex": 1.1866131842998267,
+     "alpha_1000.0_premium": 142740.79256354336,
+     "alpha_1000.0_over_c_flex": 2373.226368599653
+    },
+    {
+     "period": 21,
+     "pibar": 131.6720298381851,
+     "c_flex_expected": 57.38945596170295,
+     "c_flex_by_market_scenario": [
+      58.00923393423022,
+      56.769677989175676
+     ],
+     "pi_by_market_scenario": [
+      131.71640251884176,
+      131.6276571575284
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 65.83601491909255,
+     "alpha_0.5_over_c_flex": 1.1471796310985445,
+     "alpha_1000.0_premium": 131672.0298381851,
+     "alpha_1000.0_over_c_flex": 2294.359262197089
+    },
+    {
+     "period": 22,
+     "pibar": 127.64630769648736,
+     "c_flex_expected": 52.5201295675743,
+     "c_flex_by_market_scenario": [
+      52.06487162746869,
+      52.975387507679905
+     ],
+     "pi_by_market_scenario": [
+      130.1211567572963,
+      125.17145863567842
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 63.82315384824368,
+     "alpha_0.5_over_c_flex": 1.2152131834733289,
+     "alpha_1000.0_premium": 127646.30769648736,
+     "alpha_1000.0_over_c_flex": 2430.426366946658
+    },
+    {
+     "period": 23,
+     "pibar": 127.33240630188625,
+     "c_flex_expected": 51.42024068498566,
+     "c_flex_by_market_scenario": [
+      51.48900323929059,
+      51.35147813068072
+     ],
+     "pi_by_market_scenario": [
+      125.89553071647589,
+      128.76928188729661
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 63.666203150943126,
+     "alpha_0.5_over_c_flex": 1.2381545146974235,
+     "alpha_1000.0_premium": 127332.40630188625,
+     "alpha_1000.0_over_c_flex": 2476.309029394847
+    }
+   ]
+  },
+  "DSO:9:case33_3:2025:Autumn": {
+   "n_periods": 24,
+   "pibar_min": 81.43953394552642,
+   "pibar_max": 157.62302620541436,
+   "c_flex_expected_min": 44.002227317442156,
+   "c_flex_expected_max": 76.31934557585501,
+   "n_hours_premium_below_c_flex": {
+    "0.0": 24,
+    "0.5": 21,
+    "1000.0": 0
+   },
+   "rows": [
+    {
+     "period": 0,
+     "pibar": 93.18816981209449,
+     "c_flex_expected": 49.54821861302782,
+     "c_flex_by_market_scenario": [
+      49.63697380384428,
+      49.459463422211364
+     ],
+     "pi_by_market_scenario": [
+      95.55431057471607,
+      90.8220290494729
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 46.59408490604724,
+     "alpha_0.5_over_c_flex": 0.9403786091675183,
+     "alpha_1000.0_premium": 93188.1698120945,
+     "alpha_1000.0_over_c_flex": 1880.7572183350367
+    },
+    {
+     "period": 1,
+     "pibar": 90.69026870833386,
+     "c_flex_expected": 50.04733714112453,
+     "c_flex_by_market_scenario": [
+      50.025626511243445,
+      50.069047771005614
+     ],
+     "pi_by_market_scenario": [
+      93.18084783640107,
+      88.19968958026664
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 45.34513435416693,
+     "alpha_0.5_over_c_flex": 0.9060448955815925,
+     "alpha_1000.0_premium": 90690.26870833387,
+     "alpha_1000.0_over_c_flex": 1812.089791163185
+    },
+    {
+     "period": 2,
+     "pibar": 89.54562436739184,
+     "c_flex_expected": 47.45267725924403,
+     "c_flex_by_market_scenario": [
+      47.431677828564524,
+      47.473676689923536
+     ],
+     "pi_by_market_scenario": [
+      92.14002418701001,
+      86.95122454777368
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 44.77281218369592,
+     "alpha_0.5_over_c_flex": 0.9435255241573107,
+     "alpha_1000.0_premium": 89545.62436739184,
+     "alpha_1000.0_over_c_flex": 1887.0510483146213
+    },
+    {
+     "period": 3,
+     "pibar": 82.96886035016172,
+     "c_flex_expected": 45.91796563050147,
+     "c_flex_by_market_scenario": [
+      46.148259480758696,
+      45.687671780244244
+     ],
+     "pi_by_market_scenario": [
+      84.81557569560239,
+      81.12214500472106
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 41.48443017508086,
+     "alpha_0.5_over_c_flex": 0.9034466053854182,
+     "alpha_1000.0_premium": 82968.86035016172,
+     "alpha_1000.0_over_c_flex": 1806.8932107708365
+    },
+    {
+     "period": 4,
+     "pibar": 84.7844044811362,
+     "c_flex_expected": 44.002227317442156,
+     "c_flex_by_market_scenario": [
+      44.03248064322951,
+      43.9719739916548
+     ],
+     "pi_by_market_scenario": [
+      87.24578403322691,
+      82.3230249290455
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 42.3922022405681,
+     "alpha_0.5_over_c_flex": 0.9634103731781811,
+     "alpha_1000.0_premium": 84784.40448113621,
+     "alpha_1000.0_over_c_flex": 1926.8207463563624
+    },
+    {
+     "period": 5,
+     "pibar": 88.14560835476436,
+     "c_flex_expected": 44.19509037241963,
+     "c_flex_by_market_scenario": [
+      44.13546448324996,
+      44.2547162615893
+     ],
+     "pi_by_market_scenario": [
+      90.12445289047265,
+      86.16676381905609
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 44.07280417738218,
+     "alpha_0.5_over_c_flex": 0.9972330366561766,
+     "alpha_1000.0_premium": 88145.60835476436,
+     "alpha_1000.0_over_c_flex": 1994.4660733123533
+    },
+    {
+     "period": 6,
+     "pibar": 100.05660243856099,
+     "c_flex_expected": 50.19008094809603,
+     "c_flex_by_market_scenario": [
+      50.320832558068986,
+      50.05932933812308
+     ],
+     "pi_by_market_scenario": [
+      102.1153437560564,
+      97.99786112106557
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 50.02830121928049,
+     "alpha_0.5_over_c_flex": 0.9967766593366757,
+     "alpha_1000.0_premium": 100056.60243856099,
+     "alpha_1000.0_over_c_flex": 1993.5533186733514
+    },
+    {
+     "period": 7,
+     "pibar": 113.56290833335534,
+     "c_flex_expected": 57.039729175030374,
+     "c_flex_by_market_scenario": [
+      56.99410356922245,
+      57.08535478083829
+     ],
+     "pi_by_market_scenario": [
+      114.61430739991985,
+      112.51150926679082
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 56.78145416667767,
+     "alpha_0.5_over_c_flex": 0.9954720155216696,
+     "alpha_1000.0_premium": 113562.90833335534,
+     "alpha_1000.0_over_c_flex": 1990.9440310433395
+    },
+    {
+     "period": 8,
+     "pibar": 109.04009720885915,
+     "c_flex_expected": 60.77134544789678,
+     "c_flex_by_market_scenario": [
+      60.65408168005125,
+      60.88860921574231
+     ],
+     "pi_by_market_scenario": [
+      106.70823614436681,
+      111.3719582733515
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 54.520048604429576,
+     "alpha_0.5_over_c_flex": 0.8971341378507599,
+     "alpha_1000.0_premium": 109040.09720885915,
+     "alpha_1000.0_over_c_flex": 1794.2682757015198
+    },
+    {
+     "period": 9,
+     "pibar": 109.56691327624546,
+     "c_flex_expected": 57.41959045280876,
+     "c_flex_by_market_scenario": [
+      57.17931189526381,
+      57.65986901035371
+     ],
+     "pi_by_market_scenario": [
+      110.71365374036111,
+      108.4201728121298
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 54.78345663812273,
+     "alpha_0.5_over_c_flex": 0.9540899927377123,
+     "alpha_1000.0_premium": 109566.91327624545,
+     "alpha_1000.0_over_c_flex": 1908.1799854754247
+    },
+    {
+     "period": 10,
+     "pibar": 93.23047637759893,
+     "c_flex_expected": 52.07804966515103,
+     "c_flex_by_market_scenario": [
+      52.100121754466485,
+      52.05597757583558
+     ],
+     "pi_by_market_scenario": [
+      93.18821526799111,
+      93.27273748720675
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 46.61523818879947,
+     "alpha_0.5_over_c_flex": 0.8951033782663504,
+     "alpha_1000.0_premium": 93230.47637759893,
+     "alpha_1000.0_over_c_flex": 1790.2067565327009
+    },
+    {
+     "period": 11,
+     "pibar": 84.00631671342835,
+     "c_flex_expected": 45.758199435853385,
+     "c_flex_by_market_scenario": [
+      45.71668372902448,
+      45.79971514268228
+     ],
+     "pi_by_market_scenario": [
+      83.75767012687857,
+      84.25496329997813
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 42.003158356714174,
+     "alpha_0.5_over_c_flex": 0.9179373068557198,
+     "alpha_1000.0_premium": 84006.31671342834,
+     "alpha_1000.0_over_c_flex": 1835.8746137114395
+    },
+    {
+     "period": 12,
+     "pibar": 81.88236959309461,
+     "c_flex_expected": 49.153895430940935,
+     "c_flex_by_market_scenario": [
+      49.144709343947575,
+      49.163081517934295
+     ],
+     "pi_by_market_scenario": [
+      80.5488384104911,
+      83.2159007756981
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 40.941184796547304,
+     "alpha_0.5_over_c_flex": 0.8329184175050353,
+     "alpha_1000.0_premium": 81882.36959309461,
+     "alpha_1000.0_over_c_flex": 1665.8368350100704
+    },
+    {
+     "period": 13,
+     "pibar": 81.43953394552642,
+     "c_flex_expected": 46.98002182069193,
+     "c_flex_by_market_scenario": [
+      46.91061809156841,
+      47.049425549815446
+     ],
+     "pi_by_market_scenario": [
+      80.68186183488376,
+      82.19720605616908
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 40.71976697276321,
+     "alpha_0.5_over_c_flex": 0.8667464465678164,
+     "alpha_1000.0_premium": 81439.53394552642,
+     "alpha_1000.0_over_c_flex": 1733.4928931356328
+    },
+    {
+     "period": 14,
+     "pibar": 85.98295711864522,
+     "c_flex_expected": 46.04546463155047,
+     "c_flex_by_market_scenario": [
+      46.10530639125782,
+      45.98562287184312
+     ],
+     "pi_by_market_scenario": [
+      86.01972898629111,
+      85.94618525099932
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 42.99147855932261,
+     "alpha_0.5_over_c_flex": 0.9336745519528266,
+     "alpha_1000.0_premium": 85982.95711864522,
+     "alpha_1000.0_over_c_flex": 1867.3491039056532
+    },
+    {
+     "period": 15,
+     "pibar": 103.07411303853804,
+     "c_flex_expected": 49.938187582806954,
+     "c_flex_by_market_scenario": [
+      49.93120071786118,
+      49.94517444775273
+     ],
+     "pi_by_market_scenario": [
+      104.37244864915272,
+      101.77577742792337
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 51.53705651926902,
+     "alpha_0.5_over_c_flex": 1.032016959642575,
+     "alpha_1000.0_premium": 103074.11303853804,
+     "alpha_1000.0_over_c_flex": 2064.0339192851498
+    },
+    {
+     "period": 16,
+     "pibar": 113.58162275843242,
+     "c_flex_expected": 57.06386482157525,
+     "c_flex_by_market_scenario": [
+      56.97456170740788,
+      57.15316793574263
+     ],
+     "pi_by_market_scenario": [
+      113.63648766663488,
+      113.52675785022997
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 56.79081137921621,
+     "alpha_0.5_over_c_flex": 0.9952149500701921,
+     "alpha_1000.0_premium": 113581.62275843242,
+     "alpha_1000.0_over_c_flex": 1990.4299001403845
+    },
+    {
+     "period": 17,
+     "pibar": 129.12049469544775,
+     "c_flex_expected": 63.90552106583792,
+     "c_flex_by_market_scenario": [
+      63.639812819586865,
+      64.17122931208897
+     ],
+     "pi_by_market_scenario": [
+      128.91485584443214,
+      129.32613354646338
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 64.56024734772387,
+     "alpha_0.5_over_c_flex": 1.0102452224935532,
+     "alpha_1000.0_premium": 129120.49469544775,
+     "alpha_1000.0_over_c_flex": 2020.4904449871062
+    },
+    {
+     "period": 18,
+     "pibar": 157.62302620541436,
+     "c_flex_expected": 75.69989257838094,
+     "c_flex_by_market_scenario": [
+      76.06444315847455,
+      75.33534199828732
+     ],
+     "pi_by_market_scenario": [
+      161.80042086881863,
+      153.44563154201012
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 78.81151310270718,
+     "alpha_0.5_over_c_flex": 1.0411046887695965,
+     "alpha_1000.0_premium": 157623.02620541435,
+     "alpha_1000.0_over_c_flex": 2082.209377539193
+    },
+    {
+     "period": 19,
+     "pibar": 147.31395525130682,
+     "c_flex_expected": 76.31934557585501,
+     "c_flex_by_market_scenario": [
+      76.38114733935285,
+      76.25754381235718
+     ],
+     "pi_by_market_scenario": [
+      149.48148826112856,
+      145.14642224148508
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 73.65697762565341,
+     "alpha_0.5_over_c_flex": 0.965115424796778,
+     "alpha_1000.0_premium": 147313.95525130682,
+     "alpha_1000.0_over_c_flex": 1930.230849593556
+    },
+    {
+     "period": 20,
+     "pibar": 116.88205615181406,
+     "c_flex_expected": 69.94460582996946,
+     "c_flex_by_market_scenario": [
+      70.19449486780165,
+      69.69471679213727
+     ],
+     "pi_by_market_scenario": [
+      111.14134173937182,
+      122.62277056425629
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 58.44102807590703,
+     "alpha_0.5_over_c_flex": 0.8355330247763946,
+     "alpha_1000.0_premium": 116882.05615181406,
+     "alpha_1000.0_over_c_flex": 1671.0660495527893
+    },
+    {
+     "period": 21,
+     "pibar": 113.12648030844656,
+     "c_flex_expected": 62.21268178173264,
+     "c_flex_by_market_scenario": [
+      61.97916741175868,
+      62.4461961517066
+     ],
+     "pi_by_market_scenario": [
+      109.29163298630553,
+      116.96132763058759
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 56.56324015422328,
+     "alpha_0.5_over_c_flex": 0.9091914788799831,
+     "alpha_1000.0_premium": 113126.48030844655,
+     "alpha_1000.0_over_c_flex": 1818.382957759966
+    },
+    {
+     "period": 22,
+     "pibar": 114.75430082265487,
+     "c_flex_expected": 57.46149308691424,
+     "c_flex_by_market_scenario": [
+      57.524993336869414,
+      57.39799283695906
+     ],
+     "pi_by_market_scenario": [
+      114.64658697350838,
+      114.86201467180135
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 57.377150411327435,
+     "alpha_0.5_over_c_flex": 0.9985321878869519,
+     "alpha_1000.0_premium": 114754.30082265487,
+     "alpha_1000.0_over_c_flex": 1997.0643757739037
+    },
+    {
+     "period": 23,
+     "pibar": 107.83642251342697,
+     "c_flex_expected": 55.040214329720925,
+     "c_flex_by_market_scenario": [
+      54.99209967257155,
+      55.0883289868703
+     ],
+     "pi_by_market_scenario": [
+      108.86599817620075,
+      106.80684685065319
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 53.918211256713484,
+     "alpha_0.5_over_c_flex": 0.9796148491303825,
+     "alpha_1000.0_premium": 107836.42251342697,
+     "alpha_1000.0_over_c_flex": 1959.229698260765
+    }
+   ]
+  },
+  "DSO:9:case33_3:2025:Winter": {
+   "n_periods": 24,
+   "pibar_min": 84.92881425282786,
+   "pibar_max": 140.54841735412435,
+   "c_flex_expected_min": 21.322493305475497,
+   "c_flex_expected_max": 45.35856577381253,
+   "n_hours_premium_below_c_flex": {
+    "0.0": 24,
+    "0.5": 0,
+    "1000.0": 0
+   },
+   "rows": [
+    {
+     "period": 0,
+     "pibar": 98.39651036154538,
+     "c_flex_expected": 35.34969849425171,
+     "c_flex_by_market_scenario": [
+      36.14252978286299,
+      34.55686720564044
+     ],
+     "pi_by_market_scenario": [
+      97.73315729186665,
+      99.05986343122413
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 49.19825518077269,
+     "alpha_0.5_over_c_flex": 1.3917588346269183,
+     "alpha_1000.0_premium": 98396.51036154538,
+     "alpha_1000.0_over_c_flex": 2783.5176692538366
+    },
+    {
+     "period": 1,
+     "pibar": 92.67166112911289,
+     "c_flex_expected": 35.466374177781795,
+     "c_flex_by_market_scenario": [
+      34.95375062335762,
+      35.97899773220597
+     ],
+     "pi_by_market_scenario": [
+      91.68951173342124,
+      93.65381052480456
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 46.335830564556446,
+     "alpha_0.5_over_c_flex": 1.30647216240063,
+     "alpha_1000.0_premium": 92671.6611291129,
+     "alpha_1000.0_over_c_flex": 2612.94432480126
+    },
+    {
+     "period": 2,
+     "pibar": 87.63582501611171,
+     "c_flex_expected": 33.49732837097939,
+     "c_flex_by_market_scenario": [
+      34.55337582646039,
+      32.44128091549838
+     ],
+     "pi_by_market_scenario": [
+      86.8481101860464,
+      88.42353984617704
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 43.817912508055855,
+     "alpha_0.5_over_c_flex": 1.308101709568509,
+     "alpha_1000.0_premium": 87635.8250161117,
+     "alpha_1000.0_over_c_flex": 2616.2034191370176
+    },
+    {
+     "period": 3,
+     "pibar": 85.77071274414213,
+     "c_flex_expected": 35.06865332422834,
+     "c_flex_by_market_scenario": [
+      34.81460120962257,
+      35.32270543883411
+     ],
+     "pi_by_market_scenario": [
+      84.78616509037643,
+      86.75526039790783
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 42.885356372071065,
+     "alpha_0.5_over_c_flex": 1.2228971547773206,
+     "alpha_1000.0_premium": 85770.71274414213,
+     "alpha_1000.0_over_c_flex": 2445.794309554641
+    },
+    {
+     "period": 4,
+     "pibar": 84.92881425282786,
+     "c_flex_expected": 32.58693134574012,
+     "c_flex_by_market_scenario": [
+      34.1177490893825,
+      31.056113602097742
+     ],
+     "pi_by_market_scenario": [
+      84.1287791281758,
+      85.72884937747993
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 42.46440712641393,
+     "alpha_0.5_over_c_flex": 1.3031115656726306,
+     "alpha_1000.0_premium": 84928.81425282787,
+     "alpha_1000.0_over_c_flex": 2606.2231313452617
+    },
+    {
+     "period": 5,
+     "pibar": 86.26265640741167,
+     "c_flex_expected": 34.470592736712945,
+     "c_flex_by_market_scenario": [
+      34.8607320638934,
+      34.08045340953248
+     ],
+     "pi_by_market_scenario": [
+      85.5685196105134,
+      86.95679320430993
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 43.131328203705834,
+     "alpha_0.5_over_c_flex": 1.2512499722051127,
+     "alpha_1000.0_premium": 86262.65640741168,
+     "alpha_1000.0_over_c_flex": 2502.499944410226
+    },
+    {
+     "period": 6,
+     "pibar": 93.44557802805865,
+     "c_flex_expected": 38.163428841012575,
+     "c_flex_by_market_scenario": [
+      37.375039998826196,
+      38.95181768319895
+     ],
+     "pi_by_market_scenario": [
+      91.66792812391392,
+      95.22322793220337
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 46.722789014029324,
+     "alpha_0.5_over_c_flex": 1.224281738642372,
+     "alpha_1000.0_premium": 93445.57802805865,
+     "alpha_1000.0_over_c_flex": 2448.5634772847443
+    },
+    {
+     "period": 7,
+     "pibar": 109.54338440552047,
+     "c_flex_expected": 38.76864672285589,
+     "c_flex_by_market_scenario": [
+      38.67820063361696,
+      38.85909281209483
+     ],
+     "pi_by_market_scenario": [
+      108.67001880403274,
+      110.4167500070082
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 54.771692202760235,
+     "alpha_0.5_over_c_flex": 1.4127831851935604,
+     "alpha_1000.0_premium": 109543.38440552047,
+     "alpha_1000.0_over_c_flex": 2825.566370387121
+    },
+    {
+     "period": 8,
+     "pibar": 127.65078346350482,
+     "c_flex_expected": 35.36494149463019,
+     "c_flex_by_market_scenario": [
+      35.76572547231954,
+      34.964157516940844
+     ],
+     "pi_by_market_scenario": [
+      124.24538255992334,
+      131.0561843670863
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 63.82539173175241,
+     "alpha_0.5_over_c_flex": 1.8047645219897694,
+     "alpha_1000.0_premium": 127650.78346350482,
+     "alpha_1000.0_over_c_flex": 3609.5290439795385
+    },
+    {
+     "period": 9,
+     "pibar": 123.51216756821943,
+     "c_flex_expected": 31.183107993340094,
+     "c_flex_by_market_scenario": [
+      32.195131467865124,
+      30.17108451881506
+     ],
+     "pi_by_market_scenario": [
+      119.83858069901969,
+      127.18575443741916
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 61.75608378410971,
+     "alpha_0.5_over_c_flex": 1.9804338873886214,
+     "alpha_1000.0_premium": 123512.16756821942,
+     "alpha_1000.0_over_c_flex": 3960.867774777242
+    },
+    {
+     "period": 10,
+     "pibar": 105.54186413966681,
+     "c_flex_expected": 27.35030077122442,
+     "c_flex_by_market_scenario": [
+      27.98787746054062,
+      26.712724081908217
+     ],
+     "pi_by_market_scenario": [
+      103.96607274798963,
+      107.117655531344
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 52.77093206983341,
+     "alpha_0.5_over_c_flex": 1.9294461333805273,
+     "alpha_1000.0_premium": 105541.86413966681,
+     "alpha_1000.0_over_c_flex": 3858.8922667610545
+    },
+    {
+     "period": 11,
+     "pibar": 94.82917407891978,
+     "c_flex_expected": 26.724181912025074,
+     "c_flex_by_market_scenario": [
+      26.17830471890746,
+      27.270059105142693
+     ],
+     "pi_by_market_scenario": [
+      92.04593158873284,
+      97.61241656910671
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 47.41458703945989,
+     "alpha_0.5_over_c_flex": 1.774220337054537,
+     "alpha_1000.0_premium": 94829.17407891978,
+     "alpha_1000.0_over_c_flex": 3548.4406741090743
+    },
+    {
+     "period": 12,
+     "pibar": 92.22981555098909,
+     "c_flex_expected": 22.933811533663885,
+     "c_flex_by_market_scenario": [
+      23.256770791052812,
+      22.610852276274954
+     ],
+     "pi_by_market_scenario": [
+      89.56756562944251,
+      94.89206547253565
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 46.114907775494544,
+     "alpha_0.5_over_c_flex": 2.0107825386026126,
+     "alpha_1000.0_premium": 92229.8155509891,
+     "alpha_1000.0_over_c_flex": 4021.5650772052254
+    },
+    {
+     "period": 13,
+     "pibar": 89.86115757796313,
+     "c_flex_expected": 22.732124409309105,
+     "c_flex_by_market_scenario": [
+      22.956938545192614,
+      22.507310273425595
+     ],
+     "pi_by_market_scenario": [
+      87.38870127829533,
+      92.33361387763094
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 44.93057878898156,
+     "alpha_0.5_over_c_flex": 1.9765235303121031,
+     "alpha_1000.0_premium": 89861.15757796312,
+     "alpha_1000.0_over_c_flex": 3953.047060624206
+    },
+    {
+     "period": 14,
+     "pibar": 89.7960736261713,
+     "c_flex_expected": 21.322493305475497,
+     "c_flex_by_market_scenario": [
+      21.43247498710086,
+      21.212511623850137
+     ],
+     "pi_by_market_scenario": [
+      88.02522700287633,
+      91.56692024946629
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 44.89803681308565,
+     "alpha_0.5_over_c_flex": 2.1056654196043803,
+     "alpha_1000.0_premium": 89796.0736261713,
+     "alpha_1000.0_over_c_flex": 4211.33083920876
+    },
+    {
+     "period": 15,
+     "pibar": 91.0334227226272,
+     "c_flex_expected": 22.023057761777512,
+     "c_flex_by_market_scenario": [
+      22.273133691562514,
+      21.77298183199251
+     ],
+     "pi_by_market_scenario": [
+      89.73970575705343,
+      92.32713968820094
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 45.5167113613136,
+     "alpha_0.5_over_c_flex": 2.0667752795123158,
+     "alpha_1000.0_premium": 91033.42272262719,
+     "alpha_1000.0_over_c_flex": 4133.550559024632
+    },
+    {
+     "period": 16,
+     "pibar": 102.41435400337421,
+     "c_flex_expected": 25.699529537824553,
+     "c_flex_by_market_scenario": [
+      25.583704621588737,
+      25.81535445406037
+     ],
+     "pi_by_market_scenario": [
+      102.46203129151371,
+      102.36667671523472
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 51.20717700168711,
+     "alpha_0.5_over_c_flex": 1.9925336347624736,
+     "alpha_1000.0_premium": 102414.35400337422,
+     "alpha_1000.0_over_c_flex": 3985.0672695249473
+    },
+    {
+     "period": 17,
+     "pibar": 123.13011529174287,
+     "c_flex_expected": 30.02981083779489,
+     "c_flex_by_market_scenario": [
+      30.085575381898163,
+      29.974046293691618
+     ],
+     "pi_by_market_scenario": [
+      125.02645316997688,
+      121.23377741350885
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 61.565057645871434,
+     "alpha_0.5_over_c_flex": 2.0501313837244335,
+     "alpha_1000.0_premium": 123130.11529174287,
+     "alpha_1000.0_over_c_flex": 4100.262767448868
+    },
+    {
+     "period": 18,
+     "pibar": 129.56802238874786,
+     "c_flex_expected": 36.80631814733607,
+     "c_flex_by_market_scenario": [
+      37.217491931949425,
+      36.39514436272271
+     ],
+     "pi_by_market_scenario": [
+      133.2831014434276,
+      125.85294333406814
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 64.78401119437393,
+     "alpha_0.5_over_c_flex": 1.7601328917237216,
+     "alpha_1000.0_premium": 129568.02238874786,
+     "alpha_1000.0_over_c_flex": 3520.2657834474435
+    },
+    {
+     "period": 19,
+     "pibar": 140.54841735412435,
+     "c_flex_expected": 40.857856615298076,
+     "c_flex_by_market_scenario": [
+      42.40972656762173,
+      39.30598666297441
+     ],
+     "pi_by_market_scenario": [
+      141.0096736584578,
+      140.08716104979086
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 70.27420867706218,
+     "alpha_0.5_over_c_flex": 1.7199680673104614,
+     "alpha_1000.0_premium": 140548.41735412437,
+     "alpha_1000.0_over_c_flex": 3439.936134620923
+    },
+    {
+     "period": 20,
+     "pibar": 129.0050063748031,
+     "c_flex_expected": 45.35856577381253,
+     "c_flex_by_market_scenario": [
+      44.13541069009076,
+      46.5817208575343
+     ],
+     "pi_by_market_scenario": [
+      127.11803812529799,
+      130.8919746243082
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 64.50250318740154,
+     "alpha_0.5_over_c_flex": 1.4220578205460288,
+     "alpha_1000.0_premium": 129005.00637480308,
+     "alpha_1000.0_over_c_flex": 2844.1156410920576
+    },
+    {
+     "period": 21,
+     "pibar": 116.8330115526405,
+     "c_flex_expected": 38.08653878218891,
+     "c_flex_by_market_scenario": [
+      38.36275875034545,
+      37.81031881403238
+     ],
+     "pi_by_market_scenario": [
+      115.91226793021733,
+      117.75375517506366
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 58.41650577632025,
+     "alpha_0.5_over_c_flex": 1.5337835267834474,
+     "alpha_1000.0_premium": 116833.0115526405,
+     "alpha_1000.0_over_c_flex": 3067.5670535668946
+    },
+    {
+     "period": 22,
+     "pibar": 107.10042310020573,
+     "c_flex_expected": 38.95156890786101,
+     "c_flex_by_market_scenario": [
+      38.837935132977314,
+      39.065202682744705
+     ],
+     "pi_by_market_scenario": [
+      106.37516503291006,
+      107.8256811675014
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 53.550211550102865,
+     "alpha_0.5_over_c_flex": 1.374789592603435,
+     "alpha_1000.0_premium": 107100.42310020573,
+     "alpha_1000.0_over_c_flex": 2749.57918520687
+    },
+    {
+     "period": 23,
+     "pibar": 97.25589311253225,
+     "c_flex_expected": 38.319064623839104,
+     "c_flex_by_market_scenario": [
+      38.51874251746752,
+      38.119386730210685
+     ],
+     "pi_by_market_scenario": [
+      97.68618559438974,
+      96.82560063067477
+     ],
+     "alpha_0.0_premium": 0.0,
+     "alpha_0.0_over_c_flex": 0.0,
+     "alpha_0.5_premium": 48.627946556266124,
+     "alpha_0.5_over_c_flex": 1.269027494110951,
+     "alpha_1000.0_premium": 97255.89311253224,
+     "alpha_1000.0_over_c_flex": 2538.0549882219016
+    }
+   ]
+  }
+ }
+}
