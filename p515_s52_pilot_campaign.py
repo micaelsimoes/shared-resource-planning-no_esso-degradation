@@ -24,11 +24,13 @@ production's own (`_resolve_common_admm_objective_scale`, band [1/3, 3] of sigma
 ACTUAL sigma_computed / sigma_fixed and the ratio (`sigma_calibration`), printed in a banner.
 
 STAGES (`--stage`), one campaign root and one frozen spec each:
-  pilot  `s52_pilot`        x = 0 and the smallest node-7 4 h unit (0.25 MVA / 1.0 MWh, 2025), ONE wave at
+  pilot  `s52_pilot_nopersist`
+                            x = 0 and the smallest node-7 4 h unit (0.25 MVA / 1.0 MWh, 2025), ONE wave at
                             concurrency 2, cap 500, 10 consecutive all-pass cycles; post-certification on BOTH:
-                            persist the certified TSO/DSO models, then the interval-hull polish (no reference:
-                            no D evaluation of this instance exists; gates (b)/(c) are None).
-  repro  `s52_pilot_repro`  the TWO-CYCLE BITWISE REPRODUCTION of the x = 0 evaluation: the same entry (same eval
+                            the interval-hull polish only (no reference: no D evaluation of this instance exists;
+                            gates (b)/(c) are None). The certified models are NOT persisted (W48 ruling below).
+  repro  `s52_pilot_repro_nopersist`
+                            the TWO-CYCLE BITWISE REPRODUCTION of the x = 0 evaluation: the same entry (same eval
                             key: candidate x configuration), cap 2, concurrency 1, no post-certification. Either
                             order is valid; run FIRST it is also a ~15-minute smoke of the whole child path on this
                             instance (derived-instance install, row 18, ageing read-back on the 5-year ESSO, the
@@ -48,6 +50,21 @@ and the covariance identity, the per-scenario cost reconciliation), the workbook
 network failures and the certifying window, the solve reconciliation, ESS dispatch / SoH / floor, AA counts, wall
 time, cycle time, peak RSS, per-cycle trajectory path + sha256; and for the unit: value = Q(0) - Q(x), value - I,
 the resolution bar_x + bar_0, value per MWh against SRP1's (S2, 79b99b59: 259,427.77) and the R = 0.937 prediction.
+
+W48 RE-FREEZE (Planner ruling, 2026-09-23). `persist_certified_models` is DROPPED from the pilot: it was the W47
+Worker's addition, not in spec v22, and the model pickle is the terminal phase's largest cost (+5.1 GiB transient,
++2.3 GiB retained, measured) -- it is what made the memory preflight refuse (19.76 GiB available against 20 GiB
+required). The terminal capture (multiscenario_terminal.json) and production's workbook already record what the
+manuscript needs; if the models are ever wanted, a single evaluation can be re-run deterministically. With the
+pickle gone the terminal-phase transient is the workbook's (+3.73 GiB measured), so the transient budget falls from
+6 to 4 GiB: required = concurrency x 7 + 4 GiB (pilot 18 GiB, repro 11 GiB). Both specs are re-frozen under NEW
+campaign ids (`s52_pilot_nopersist`, `s52_pilot_repro_nopersist`) because a campaign root is write-once; the W47
+specs (`campaign_s52_pilot/campaign_spec_s52_pilot_b62dc2b5.json`,
+`campaign_s52_pilot_repro/campaign_spec_s52_pilot_repro_444ee0d0.json`) are left unmodified, each root carries a
+SUPERSEDED.md naming its successor, each successor records its predecessor (path + sha256) as
+`extra.predecessor_spec`, and --run refuses a predecessor's sha256 explicitly (the A0 -> A0_c7 precedent, 99b81181).
+The repro is re-frozen too: its spec pins this script's sha256, which the ruling changes. Eval keys are unchanged
+(post-certification is not part of the key).
 
 MODES (attached, both streams captured, never detached):
   --stage <s> --freeze                   ZERO SOLVES. Writes the instance file (write-once; bytes re-derived and
@@ -69,10 +86,10 @@ Exit codes (--run): 0 every point certified and every capture clean; 2 a non-cer
 
 EXACT COMMANDS (repo root, canonical interpreter):
   /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python -u p515_s52_pilot_campaign.py --stage pilot \\
-      --freeze --scratch <scratch dir> > data/SRP1/Results/P515S52/campaign_s52_pilot_freeze_launch.log 2>&1
+      --freeze --scratch <scratch dir> > data/SRP1/Results/P515S52/campaign_s52_pilot_nopersist_freeze_launch.log 2>&1
   set -o noclobber && /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python -u p515_s52_pilot_campaign.py \\
-      --stage pilot --run --spec-sha256 <sha> > data/SRP1/Results/P515S52/campaign_s52_pilot_launch.log 2>&1
-  and the same with `--stage repro` and `campaign_s52_pilot_repro_{freeze_launch,launch}.log`; then
+      --stage pilot --run --spec-sha256 <sha> > data/SRP1/Results/P515S52/campaign_s52_pilot_nopersist_launch.log 2>&1
+  and the same with `--stage repro` and `campaign_s52_pilot_repro_nopersist_{freeze_launch,launch}.log`; then
   /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python -u p515_s52_pilot_campaign.py --compare \\
       > data/SRP1/Results/P515S52/pilot_repro_compare_launch.log 2>&1
   One stage at a time, attached, alone, never detached.
@@ -133,8 +150,17 @@ ACTIVE_NODES = (5, 7, 9)
 UNIT_NODE, UNIT_S_MVA, UNIT_E_MWH = 7, 0.25, 1.0
 BUDGET_EUR = 1e6
 REQUIRED_CONSECUTIVE_CYCLES = 10
-POST_CERTIFICATION = {'persist_certified_models': True, 'hull_polish': True}
+# W48 (Planner ruling): persistence DROPPED -- declared explicitly False so the spec states it.
+POST_CERTIFICATION = {'persist_certified_models': False, 'hull_polish': True}
 POST_CERTIFICATION_RATIONALE = (
+    'hull polish on BOTH (spec v22 pilot.runs). The certified TSO/DSO models are NOT persisted (Planner ruling, '
+    'W48): persistence was the W47 Worker\'s addition, not in spec v22; the model pickle costs a +5.1 GiB transient '
+    'and +2.3 GiB retained per child (measured, p515_s52_pilot_checks r1 D3) and is what made the memory preflight '
+    'refuse (19.76 GiB available against 20 GiB required); the terminal capture (multiscenario_terminal.json) and '
+    'production\'s operational workbook already record what the manuscript needs; if the models are ever wanted, a '
+    'single evaluation can be re-run deterministically. No reference: no D evaluation of this instance exists, so '
+    'post-certification gates (b)/(c) are None by construction.')
+POST_CERTIFICATION_RATIONALE_W47_SUPERSEDED = (
     'hull polish on BOTH (spec v22 pilot.runs). The certified TSO/DSO models are ALSO persisted (before the polish '
     'mutates them): a pilot evaluation costs 7-10 h, and every manuscript quantity must stay recomputable without '
     're-running it (CLAUDE.md rule eleven incident: a quantity the spec required was unrecoverable because the '
@@ -142,16 +168,31 @@ POST_CERTIFICATION_RATIONALE = (
     'the child and campaign manifests. No reference: no D evaluation of this instance exists, so post-certification '
     'gates (b)/(c) are None by construction.')
 STAGES = {
-    'pilot': {'campaign_id': 's52_pilot', 'cap': 500, 'concurrency': 2,
+    'pilot': {'campaign_id': 's52_pilot_nopersist', 'cap': 500, 'concurrency': 2,
               'points': ('x0', 'n7_4h_e1'), 'post_certification': dict(POST_CERTIFICATION),
               'description': ('P5.15 Addendum 36 pilot: x = 0 and the node-7 4 h unit (0.25 / 1.0, 2025), one wave '
-                              'at concurrency 2, cap 500, 10-cycle bar, persist + hull polish on both')},
-    'repro': {'campaign_id': 's52_pilot_repro', 'cap': 2, 'concurrency': 1,
+                              'at concurrency 2, cap 500, 10-cycle bar, hull polish on both (no model persistence, '
+                              'W48)')},
+    'repro': {'campaign_id': 's52_pilot_repro_nopersist', 'cap': 2, 'concurrency': 1,
               'points': ('x0',), 'post_certification': None,
               'description': ('P5.15 Addendum 36 pilot, two-cycle bitwise reproduction of the x = 0 evaluation '
                               '(same eval key, cap 2, concurrency 1, no post-certification)')},
 }
 COMPARE_ROOT_REL = os.path.join(_P52, 'pilot_repro_compare')
+# W48: the W47 specs, frozen at e52c8135 and never run; recorded in each successor, refused by --run.
+PREDECESSOR_SPECS = {
+    'pilot': {'path': os.path.join(_P52, 'campaign_s52_pilot', 'campaign_spec_s52_pilot_b62dc2b5.json'),
+              'sha256': 'b62dc2b5cd57eacdfd267d583f09e2d61b646006df09836c26d57f71e5499523',
+              'campaign_id': 's52_pilot', 'frozen_at_commit': 'e52c8135', 'launcher_commit': '298e58f0',
+              'reason': ('superseded before any run (W48, Planner ruling): persist_certified_models dropped; memory '
+                         'transient budget 6 -> 4 GiB (required 20 -> 18 GiB)')},
+    'repro': {'path': os.path.join(_P52, 'campaign_s52_pilot_repro', 'campaign_spec_s52_pilot_repro_444ee0d0.json'),
+              'sha256': '444ee0d014dbeb63b73e268931e7597ec9fb18a43d6301e30e12b660f85391a7',
+              'campaign_id': 's52_pilot_repro', 'frozen_at_commit': 'e52c8135', 'launcher_commit': '298e58f0',
+              'reason': ('superseded before any run (W48): re-frozen with the pilot because the spec pins this '
+                         "launcher's sha256, which the persistence ruling changes; its own configuration is unchanged "
+                         '(no post-certification), memory required 13 -> 11 GiB')},
+}
 
 # ---- pins ------------------------------------------------------------------------------------------------------
 SPEC_V22 = {'path': os.path.join(_P52, 'frozen_s52_spec_v22_5d8df1e8.json'),
@@ -208,7 +249,8 @@ STOP_RULE = ('as a1a (spec v15 execution.barrier), for form: STOP if 2 or more n
 # ---- memory ----------------------------------------------------------------------------------------------------
 GIB = 1 << 30
 MEMORY_PER_CHILD_SUSTAINED_BYTES = 7 * GIB
-MEMORY_TERMINAL_TRANSIENT_BYTES = 6 * GIB
+MEMORY_TERMINAL_TRANSIENT_BYTES = 4 * GIB   # W48: 6 -> 4 GiB (no model pickle; the workbook's +3.73 GiB)
+MEMORY_TERMINAL_TRANSIENT_BYTES_W47_SUPERSEDED = 6 * GIB
 MEMORY_RULE_TEMPLATE = ('hw.memsize - (wired + anonymous + compressor-occupied) x page size >= {concurrency} x '
                         '{per_child:g} GiB + {transient:g} GiB (one terminal-phase transient at a time: the harness '
                         'terminal-phase lock)')
@@ -226,12 +268,19 @@ MEMORY_BUDGET_DERIVATION = (
     'fixed overhead (SRP1 campaign children peak at 2.32-2.40 GiB for ~0.6 GiB of models). Sustained per child: '
     '~5.5-6.5 GiB -> 7 GiB; the terminal-phase transient -> 6 GiB, counted ONCE because the harness serializes the '
     'children\'s terminal phases (`acquire_terminal_phase_lock` on the campaign root). Without the model pickle the '
-    'transient would be the workbook\'s ~4 GiB.')
+    'transient would be the workbook\'s ~4 GiB. '
+    'W48 (Planner ruling: persist_certified_models dropped): the terminal-phase transient is now the workbook\'s -- '
+    'measured RSS 3,730,014,208 -> peak 7,732,314,112 bytes (+3.727 GiB), retained +0.537 GiB after it -- budgeted '
+    'at 4 GiB (was 6 GiB for the pickle); the +2.3 GiB the pickle retained is gone too. Per-child sustained budget '
+    'unchanged at 7 GiB. Required: pilot 2 x 7 + 4 = 18 GiB (was 20), repro 1 x 7 + 4 = 11 GiB (was 13). Still '
+    'NOT measured: the hull polish\'s own solve-time memory (it re-solves the 80 blocks after the workbook).')
 
 AUTHORITY = [
     'PLANNER_BRIEF_2026-09-13.md Addendum 36 (the pilot) and Addendum 39 (alpha = 0.50 fixed; pilot first)',
     'data/SRP1/Results/P515S52/frozen_s52_spec_v22_5d8df1e8.json pilot',
     'Planner task W47 (instance, harness, freeze; zero solves)',
+    'Planner task W48 (ruling 1: persist_certified_models dropped, both specs re-frozen; ruling 2: SRP1 bitwise '
+    'gate e75a575e PASS)',
     '700cf13c (row 18 merged), gates 4ce7447b / c9b39bf5 / 59476bff; c8f4b4c7 (W45 sigma check)',
 ]
 SCRIPT_NAME = os.path.basename(__file__)
@@ -740,6 +789,15 @@ WORKER_PREDICTIONS = {
 }
 
 
+WORKER_PREDICTIONS_W48_AMENDMENT = {
+    'recorded_by': 'Worker (W48), 2026-09-23, before any pilot solve; amends the W47 predictions above, kept verbatim',
+    'memory': ('no model pickle: PEAK per child in the terminal phase ~ sustained (5.5-6.5 GiB) + the workbook\'s '
+               '+3.73 GiB = ~9.5-10.5 GiB; the two terminal phases serialized, so the wave peaks at ~13-15 GiB; '
+               'refusing budget 2 x 7 + 4 = 18 GiB (11 GiB for the repro)'),
+    'evaluation_wall_time': 'unchanged central ~9 h, less the model pickle (~45 s + write of ~0.66 GB)',
+}
+
+
 # ======================================================================================================================
 #  --freeze
 # ======================================================================================================================
@@ -778,6 +836,9 @@ def validate_spec(stage, spec, derived, facts_frozen):
         'extra_stage_recorded': extra.get('stage') == stage,
         'objective_convention_recorded': extra.get('objective_convention') == OBJECTIVE_CONVENTION,
         'facts_frozen': extra.get('instance_facts') == facts_frozen,
+        'predecessor_recorded': extra.get('predecessor_spec') == PREDECESSOR_SPECS[stage],
+        'persistence_not_requested': not any((e.get('post_certification') or {}).get('persist_certified_models')
+                                             for e in entries),
     }
     for e in entries:
         label = e['label']
@@ -873,7 +934,28 @@ def freeze(stage, started, scratch):
                                                   resolution=SRP1_RESOLUTION_EXPECTED),
         'r_prediction': R_PREDICTION,
         'predictions_recorded_before_run': {'planner_spec_v22': _load(SPEC_V22['path'])['pilot'][
-            'predictions_recorded_before_run'], 'worker': WORKER_PREDICTIONS},
+            'predictions_recorded_before_run'], 'worker': WORKER_PREDICTIONS,
+            'worker_w48_amendment': WORKER_PREDICTIONS_W48_AMENDMENT},
+        'predecessor_spec': dict(PREDECESSOR_SPECS[stage]),
+        'w48_persistence_ruling': {
+            'ruling': ('Planner, W48 ruling 1: drop persist_certified_models from the pilot; re-freeze both specs '
+                       'under new hashes'),
+            'why': POST_CERTIFICATION_RATIONALE,
+            'post_certification_w47_superseded': {'persist_certified_models': True, 'hull_polish': True},
+            'post_certification_rationale_w47_superseded': POST_CERTIFICATION_RATIONALE_W47_SUPERSEDED,
+            'memory_budget': {
+                'per_child_sustained_gib': MEMORY_PER_CHILD_SUSTAINED_BYTES / GIB,
+                'terminal_transient_gib': MEMORY_TERMINAL_TRANSIENT_BYTES / GIB,
+                'terminal_transient_gib_w47_superseded': MEMORY_TERMINAL_TRANSIENT_BYTES_W47_SUPERSEDED / GIB,
+                'required_gib_this_stage': memory_required_bytes(st['concurrency']) / GIB,
+                'required_gib_this_stage_w47_superseded': (
+                    st['concurrency'] * MEMORY_PER_CHILD_SUSTAINED_BYTES
+                    + MEMORY_TERMINAL_TRANSIENT_BYTES_W47_SUPERSEDED) / GIB,
+                'measured_basis': ('p515_s52_pilot_checks r1 (ae951d31) memory_by_stage: workbook RSS 3,730,014,208 '
+                                   '-> peak 7,732,314,112 bytes (+3.727 GiB), retained +0.537 GiB; pickle +5.1 GiB '
+                                   'transient, +2.3 GiB retained (now not incurred)')},
+            'gate_before_the_pilot': ('SRP1 two-cycle bitwise identity for the W47 harness extension: PASS, '
+                                      'p515_s52_srp1_bitwise_gate.py, evidence e75a575e')},
         'memory_preflight_rule': memory_rule(st['concurrency']), 'memory_preflight_rule_rationale': MEMORY_RULE_RATIONALE,
         'memory_budget_derivation': MEMORY_BUDGET_DERIVATION, 'memory_at_freeze_non_gating': memory,
         'lock_observations_at_freeze_non_gating': lock_observations,
@@ -1075,6 +1157,11 @@ def stop_rule_state(records):
 def run(stage, started, spec_sha256):
     tag = f'S52-{stage.upper()}'
     root = campaign_root(stage)
+    superseded = {v['sha256']: v for v in PREDECESSOR_SPECS.values()}
+    if spec_sha256 in superseded:   # W48: never run a superseded spec
+        _log(f"[{tag} PRECONDITION FAILED] {spec_sha256} is a superseded predecessor spec "
+             f"({superseded[spec_sha256]['path']}; {superseded[spec_sha256]['reason']}); it is never run")
+        raise SystemExit(1)
     spec_path, spec = H.load_frozen_spec(root, spec_sha256)
     failures = [f for f in H.check_campaign_preconditions(root, extra_clean_files=EXTRA_CLEAN_FILES)
                 if f != f'campaign root already exists (write-once): {root}']
