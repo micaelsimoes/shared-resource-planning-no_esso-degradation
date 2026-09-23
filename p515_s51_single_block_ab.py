@@ -42,6 +42,16 @@ EXACT LAUNCH COMMAND (repo root; attached, ALONE, both streams captured; never d
         p515_s51_single_block_ab.py --label <write-once-label> \\
         > data/SRP1/Results/P515S51/single_block_ab_launch_<label>.log 2>&1
 OUTPUT (write-once): data/SRP1/Results/P515S51/single_block_ab/<label>/
+
+OPTIONAL `--alphas a1 a2 ...` (P5.15 Addendum 39 ruling 2, task W41 "locate alpha*";
+frozen spec v22 `data/SRP1/Results/P515S52/frozen_s52_spec_v22_5d8df1e8.json`
+`ruling2_alpha`): replaces the arm list. Omitted, the arms are exactly the committed
+default ALPHAS, so the committed runs stay reproducible. Gate items are scoped per arm: the
+alpha = 0 item applies only if 0 is an arm, the alpha = large item only if ALPHA_LARGE is an
+arm; items whose arm is absent are recorded as not applicable and skipped. Every run also
+records `alpha_threshold`: alpha* = the smallest tested alpha whose dispersion (max over
+blocks of the RMS, MW) is at or below DISPERSION_ZERO_TOL_MW, its bracket, and the price
+ratio alpha* * pibar_t / c_flex_t from the zero-solve price table.
 Exit 0 on PASS, 1 on FAIL, 2 on a precondition refusal.
 """
 
@@ -278,10 +288,63 @@ def run_arm(alpha, out_root, holder):
     return record
 
 
+def alpha_threshold(holder, table):
+    """alpha* = the smallest tested alpha whose dispersion (max over the selected DSO's blocks
+    of the RMS, MW) is at or below DISPERSION_ZERO_TOL_MW; bracket = (the largest tested alpha
+    with dispersion above the tolerance, alpha*). Also the price ratio alpha * pibar_t /
+    c_flex_expected_t at alpha* (min / max over hours, per DSO block) and the hours with the
+    premium below c_flex, per arm, for the selected DSO."""
+    alphas = sorted(ALPHAS)
+    rms = {a: holder[f'alpha_{a}']['rms_mw_max_over_blocks'] for a in alphas}
+    at_or_below = [a for a in alphas if rms[a] <= DISPERSION_ZERO_TOL_MW]
+    above = [a for a in alphas if rms[a] > DISPERSION_ZERO_TOL_MW]
+    alpha_star = at_or_below[0] if at_or_below else None
+    below_star = [a for a in above if alpha_star is None or a < alpha_star]
+    ratio_at_star = {}
+    if alpha_star is not None:
+        for key, block in table.items():
+            ratios = [r[f'alpha_{alpha_star}_over_c_flex'] for r in block['rows']
+                      if r[f'alpha_{alpha_star}_over_c_flex'] is not None]
+            ratio_at_star[key] = {'min': min(ratios) if ratios else None,
+                                  'max': max(ratios) if ratios else None,
+                                  'n_hours_ratio_defined': len(ratios),
+                                  'n_hours_ratio_below_1': sum(1 for x in ratios if x < 1.0)}
+    selected = {k: v for k, v in table.items() if k.startswith(f'DSO:{SELECTED_NODE}:')}
+    return {
+        'definition': ('alpha* = smallest tested alpha with dispersion (max over blocks of the '
+                       'per-block RMS interface-P dispersion, MW) <= the declared tolerance; '
+                       'bracket = [largest tested alpha with dispersion above the tolerance, '
+                       'alpha*]'),
+        'dispersion_zero_tol_mw': DISPERSION_ZERO_TOL_MW,
+        'dispersion_rms_mw_by_alpha': rms,
+        'dispersion_max_abs_mw_by_alpha': {a: holder[f'alpha_{a}']['max_abs_mw_over_blocks'] for a in alphas},
+        'charge_by_alpha': {a: holder[f'alpha_{a}']['total_charge'] for a in alphas},
+        'alpha_star': alpha_star,
+        'bracket': [below_star[-1] if below_star else None, alpha_star],
+        'any_alpha_above_tol_after_alpha_star': [a for a in above if alpha_star is not None and a > alpha_star],
+        'alpha_star_is_smallest_positive_tested': (
+            alpha_star is not None and alpha_star == min([a for a in alphas if a > 0.0], default=None)),
+        'ratio_alpha_star_pibar_over_c_flex_expected_by_dso_block': ratio_at_star,
+        'n_hours_premium_below_c_flex_selected_dso_by_block': {
+            k: v['n_hours_premium_below_c_flex'] for k, v in selected.items()},
+    }
+
+
 def main():
     parser = argparse.ArgumentParser(description=STAGE)
     parser.add_argument('--label', required=True, help='write-once output label')
+    parser.add_argument('--alphas', type=float, nargs='+', default=None,
+                        help='arm list (W41); omitted = the committed default ALPHAS')
     args = parser.parse_args()
+    global ALPHAS
+    alpha_list_source = 'default ALPHAS (as committed)'
+    if args.alphas is not None:
+        if len(set(args.alphas)) != len(args.alphas) or any(a < 0.0 for a in args.alphas):
+            print(f'REFUSED: --alphas must be distinct and non-negative: {args.alphas}', file=sys.stderr)
+            return EXIT_REFUSED
+        ALPHAS = tuple(sorted(float(a) for a in args.alphas))
+        alpha_list_source = ('command line --alphas (P5.15 Addendum 39 ruling 2, W41; '
+                             'frozen_s52_spec_v22_5d8df1e8.json ruling2_alpha)')
 
     out_root = os.path.join(OUT_ROOT, args.label)
     failures = check_preconditions(out_root)
@@ -326,7 +389,8 @@ def main():
             'git_head': _git(['rev-parse', 'HEAD']),
             'git_tracked_changes': _git(['status', '--porcelain', '--untracked-files=no']).splitlines(),
             'nlp_solver_path_env': os.environ.get('NLP_SOLVER_PATH'),
-            'alphas': list(ALPHAS), 'selected_node': SELECTED_NODE,
+            'alphas': list(ALPHAS), 'alpha_list_source': alpha_list_source,
+            'selected_node': SELECTED_NODE,
             'dispersion_zero_tol_mw_declared_before_the_run': DISPERSION_ZERO_TOL_MW,
             'guard_permitted': [list(p) for p in PERMITTED],
             'started_utc': _utc(), 'pid': os.getpid(),
@@ -391,18 +455,21 @@ def main():
             'row18_present_iff_alpha_positive': all(
                 all(b['row18_wired'] == (r['alpha'] > 0.0) for b in r['blocks'].values())
                 for r in holder.values()),
-            'alpha_zero_arm_has_no_row18_component': all(
+            'alpha_zero_arm_has_no_row18_component': (all(
                 b['row18_wired'] is False and b['dispersion']['row18_charge'] == 0.0
-                for b in holder['alpha_0.0']['blocks'].values()),
+                for b in holder['alpha_0.0']['blocks'].values()) if 0.0 in ALPHAS else None),
             'large_arm_dispersion_below_the_declared_tolerance': (
-                rms[ALPHA_LARGE] <= DISPERSION_ZERO_TOL_MW),
+                rms[ALPHA_LARGE] <= DISPERSION_ZERO_TOL_MW if ALPHA_LARGE in ALPHAS else None),
             'dispersion_non_increasing_in_alpha': monotone,
             'objective_equals_objective_function_rule_on_every_block': all(
                 abs(b['model_objective_value'] - b['objective_function_rule_value'])
                 <= 1e-9 * max(1.0, abs(b['objective_function_rule_value']))
                 for r in holder.values() for b in r['blocks'].values()),
         }
+        gate_items_not_applicable = [k for k, v in gate_items.items() if v is None]
+        gate_items = {k: v for k, v in gate_items.items() if v is not None}
         gate_pass = all(gate_items.values())
+        threshold = alpha_threshold(holder, launch['price_table'])
 
         payload = {
             **launch,
@@ -421,6 +488,8 @@ def main():
                               'observed': GUARD.counts['permitted_solve'],
                               'counts': dict(GUARD.counts), 'verify_failures': guard_failures},
             'gate_items': gate_items, 'gate_pass': gate_pass,
+            'gate_items_not_applicable_arm_absent': gate_items_not_applicable,
+            'alpha_threshold': threshold,
         }
         gate_path = os.path.join(out_root, 'gate.json')
         G._refuse_overwrite(gate_path)
@@ -440,6 +509,7 @@ def main():
         for key, value in gate_items.items():
             _log(f'   {key}: {value}')
         _log(f'GATE_PASS={gate_pass}; dispersion by alpha (MW) = {rms}')
+        _log(f"alpha* = {threshold['alpha_star']}; bracket = {threshold['bracket']}")
         return EXIT_OK if gate_pass else EXIT_ERROR
     finally:
         GUARD.uninstall()
