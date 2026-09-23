@@ -1,0 +1,1019 @@
+{
+ "authority": [
+  "PLANNER_BRIEF_2026-09-13.md Addendum 36 (the pilot) and Addendum 39 (alpha = 0.50 fixed; pilot first)",
+  "data/SRP1/Results/P515S52/frozen_s52_spec_v22_5d8df1e8.json pilot",
+  "Planner task W47 (instance, harness, freeze; zero solves)",
+  "700cf13c (row 18 merged), gates 4ce7447b / c9b39bf5 / 59476bff; c8f4b4c7 (W45 sigma check)"
+ ],
+ "bar_window_cycles": 10,
+ "campaign_id": "s52_pilot",
+ "candidates": [
+  {
+   "canonical": {
+    "investment_year": 2025,
+    "nodes": {
+     "5": [
+      0.0,
+      0.0
+     ],
+     "7": [
+      0.0,
+      0.0
+     ],
+     "9": [
+      0.0,
+      0.0
+     ]
+    }
+   },
+   "effective_anderson_acceleration": {
+    "enabled": true,
+    "memory": 5,
+    "regularization": 1e-10,
+    "reject_policy": "keep_memory"
+   },
+   "eval_dir": "7d53b6f21b686a44_x0",
+   "eval_key": "7d53b6f21b686a44db69f0901e03c870d14e15d00bfaaa6a5379822890918a94",
+   "interface_deviation_premium": {
+    "alpha": 0.5,
+    "floor": null
+   },
+   "key": "8435c71859ddde68e7ae5818b4ff91c03b4171791bcfaa70edcc3ddb52bacb57",
+   "label": "x0",
+   "overrides": {},
+   "post_certification": {
+    "hull_polish": true,
+    "persist_certified_models": true,
+    "reference": null
+   },
+   "working_dir_ids": {
+    "precheck": "p515s44_s52_pilot_7d53b6f21b686a44_precheck",
+    "run": "p515s44_s52_pilot_7d53b6f21b686a44_run"
+   }
+  },
+  {
+   "canonical": {
+    "investment_year": 2025,
+    "nodes": {
+     "5": [
+      0.0,
+      0.0
+     ],
+     "7": [
+      0.25,
+      1.0
+     ],
+     "9": [
+      0.0,
+      0.0
+     ]
+    }
+   },
+   "effective_anderson_acceleration": {
+    "enabled": true,
+    "memory": 5,
+    "regularization": 1e-10,
+    "reject_policy": "keep_memory"
+   },
+   "eval_dir": "711fce9aa74d6878_n7_4h_e1",
+   "eval_key": "711fce9aa74d687892b994e332472c7d59745ef74ce9030abc12d54a9aaf83b4",
+   "interface_deviation_premium": {
+    "alpha": 0.5,
+    "floor": null
+   },
+   "key": "db77e1549af855bcb3521950c634db55fe6c155ab2de591b0441b5f2bf4b369a",
+   "label": "n7_4h_e1",
+   "overrides": {},
+   "post_certification": {
+    "hull_polish": true,
+    "persist_certified_models": true,
+    "reference": null
+   },
+   "working_dir_ids": {
+    "precheck": "p515s44_s52_pilot_711fce9aa74d6878_precheck",
+    "run": "p515s44_s52_pilot_711fce9aa74d6878_run"
+   }
+  }
+ ],
+ "cap": 500,
+ "concurrency": 2,
+ "configuration": {
+  "apply_rho": false,
+  "arm_label": "s39_D",
+  "case_file": "data/SRP1/SRP1_params.json",
+  "case_file_anderson_acceleration": {
+   "enabled": true,
+   "memory": 5,
+   "regularization": 1e-10,
+   "reject_policy": "keep_memory"
+  },
+  "case_file_last_commit": "b5629311c092863c78cc508eaf34676382ac9f83",
+  "case_file_sha256": "dbfdb2a07d12bfedab5e66bf94b3df98e5ab0305616652b4083266476972006b",
+  "derived_instance": {
+   "case_path": "data/SRP1/Results/P515S52/pilot_instance/SRP1__s52_pilot_2x2.json",
+   "case_sha256": "7ecff44a874892187d1dd2e3d5ed0664a2f90a4bfa4cdb820a4abcbbd828f949",
+   "changes_vs_source": [
+    {
+     "from": {
+      "2025": 5,
+      "2030": 5,
+      "2035": 5
+     },
+     "key": "Years",
+     "to": {
+      "2025": 3,
+      "2028": 3,
+      "2031": 3,
+      "2034": 3,
+      "2037": 3
+     }
+    },
+    {
+     "from": 1,
+     "key": "NumMarketScenarios",
+     "to": 2
+    },
+    {
+     "from": 1,
+     "key": "TransmissionNetwork[case9].num_operation_scenarios",
+     "to": 2
+    },
+    {
+     "from": 1,
+     "key": "DistributionNetworks[case33_1].num_operation_scenarios",
+     "to": 2
+    },
+    {
+     "from": 1,
+     "key": "DistributionNetworks[case33_2].num_operation_scenarios",
+     "to": 2
+    },
+    {
+     "from": 1,
+     "key": "DistributionNetworks[case33_3].num_operation_scenarios",
+     "to": 2
+    }
+   ],
+   "instance_label": "s52_pilot_2x2",
+   "scenario_checksum": "53b4bea4142001617282a08541079952564903b6d84db066f90d71a650b7d563",
+   "source_case_path": "data/SRP1/SRP1.json",
+   "source_case_sha256": "61a794a7ce7a3fb983f2e92128eec446dd7dbb17ad75a3b3b1c5735f8bd4e4ef"
+  },
+  "ess_ageing_baseline": {
+   "calendar_life_years": 15,
+   "calendar_retention_per_year": 0.985,
+   "calibration": {
+    "cycles_n": 10000,
+    "eol_retention_r": 0.8,
+    "reference_dod_d": 0.8,
+    "status": "ACTIVE"
+   },
+   "cycle_life_nominal": 10000,
+   "depth_of_discharge_nominal": 0.8,
+   "minimum_soh": 0.7
+  },
+  "ess_ageing_baseline_label": "BASELINE (C2 + phi_cal 0.985 + soh_min 0.70)",
+  "ess_params_file": {
+   "last_commit": "2466401d429eeb43a680b36e32947878372c3cbf",
+   "path": "data/SRP1/SharedESS/SRP1_ESS_Params.json",
+   "sha256": "39106f934bf3edbf18f01a5ef1fadfefc2f7a518706e6c8fa6d962617a312706"
+  },
+  "full_diagnostics_in_rows": true,
+  "name": "BASELINE (C2 + phi_cal 0.985 + soh_min 0.70); the derived pilot instance s52_pilot_2x2 (paper years x 4 days x 2 x 2); row 18 at alpha = 0.50 per entry; case-file AA declared",
+  "note": "no overrides; no model variant; no flexibility-price variant; the derived instance is installed in the child before anything reads the oracle baseline; the premium is set in the configuration hook before any model is built; num_max_iters := cap",
+  "overrides": {}
+ },
+ "extra": {
+  "alpha_statement": "alpha = 0.50: the author's fixed pilot value (Addendum 39); no premium floor (min hourly mean price 9.8120 > 0)",
+  "budget_convention": "budget_slack_eur = B - I(x) at B = 1e+06 EUR (the case file budget), REPORTED only",
+  "campaign_script": "p515_s52_pilot_campaign.py",
+  "campaign_script_sha256": "547f40b2efebf0529ece09afb25dd197177b8dfca760cfa1c299a9884bde8762",
+  "cost_file": {
+   "path": "data/SRP1/SharedESS/SRP1_ESS.xlsx",
+   "sha256": "e17bd5887e1d0738005ae17c3144593527081c9a0776e19cfaa50aafefe39cd6"
+  },
+  "dispersion_convention": "the Planner's ruling from the alpha sweep: per DSO, the MAX over (year, day) blocks of the block's RMS interface-P dispersion (MW), and aggregates E|d| (MWh) and sum omega d^2 (MW^2 h) -- d_{s,t} = p_int_{s,t} - pbar_t against the block's OWN committed schedule; block-local, probability-weighted; reported both summed over blocks UNWEIGHTED (the W44 convention) and weighted by _get_admm_block_weight (the Q weighting). The premium convention stated with it: unpriced UPWARD flexibility makes holding the schedule cheaper than cost_flex suggests (spec v22 ruling2_alpha.manuscript_convention).",
+  "ess_params_file": {
+   "commit": "2466401d",
+   "note": "the ageing BASELINE edit of W21 (Addendum 30)",
+   "path": "data/SRP1/SharedESS/SRP1_ESS_Params.json",
+   "sha256": "39106f934bf3edbf18f01a5ef1fadfefc2f7a518706e6c8fa6d962617a312706"
+  },
+  "instance": {
+   "case_path": "data/SRP1/Results/P515S52/pilot_instance/SRP1__s52_pilot_2x2.json",
+   "case_sha256": "7ecff44a874892187d1dd2e3d5ed0664a2f90a4bfa4cdb820a4abcbbd828f949",
+   "changes_vs_source": [
+    {
+     "from": {
+      "2025": 5,
+      "2030": 5,
+      "2035": 5
+     },
+     "key": "Years",
+     "to": {
+      "2025": 3,
+      "2028": 3,
+      "2031": 3,
+      "2034": 3,
+      "2037": 3
+     }
+    },
+    {
+     "from": 1,
+     "key": "NumMarketScenarios",
+     "to": 2
+    },
+    {
+     "from": 1,
+     "key": "TransmissionNetwork[case9].num_operation_scenarios",
+     "to": 2
+    },
+    {
+     "from": 1,
+     "key": "DistributionNetworks[case33_1].num_operation_scenarios",
+     "to": 2
+    },
+    {
+     "from": 1,
+     "key": "DistributionNetworks[case33_2].num_operation_scenarios",
+     "to": 2
+    },
+    {
+     "from": 1,
+     "key": "DistributionNetworks[case33_3].num_operation_scenarios",
+     "to": 2
+    }
+   ],
+   "derive_base": "paper",
+   "derive_description": "the paper instance: 5 representative years (2025, 2028, 2031, 2034, 2037; each a 3-year block, sum 15) x 4 days x 5 market x 5 operation scenarios (25 combinations per block)",
+   "derive_overrides": {
+    "num_market_scenarios": 2,
+    "num_operation_scenarios": 2
+   },
+   "equals_w45_pilot_case_sha256": true,
+   "existed_before": false,
+   "source_case_path": "data/SRP1/SRP1.json",
+   "source_case_sha256": "61a794a7ce7a3fb983f2e92128eec446dd7dbb17ad75a3b3b1c5735f8bd4e4ef",
+   "years": {
+    "2025": 3,
+    "2028": 3,
+    "2031": 3,
+    "2034": 3,
+    "2037": 3
+   },
+   "years_expected": true
+  },
+  "instance_facts": {
+   "block_weights_tso": {
+    "2025|Autumn": 273.0,
+    "2025|Spring": 276.0,
+    "2025|Summer": 273.0,
+    "2025|Winter": 273.0,
+    "2028|Autumn": 257.2539973313431,
+    "2028|Spring": 260.08096433498423,
+    "2028|Summer": 257.2539973313431,
+    "2028|Winter": 257.2539973313431,
+    "2031|Autumn": 242.4161873368304,
+    "2031|Spring": 245.080101483389,
+    "2031|Summer": 242.4161873368304,
+    "2031|Winter": 242.4161873368304,
+    "2034|Autumn": 228.4341875832357,
+    "2034|Spring": 230.94445338085367,
+    "2034|Summer": 228.4341875832357,
+    "2034|Winter": 228.4341875832357,
+    "2037|Autumn": 215.25863693379213,
+    "2037|Spring": 217.62411646053712,
+    "2037|Summer": 215.25863693379213,
+    "2037|Winter": 215.25863693379213
+   },
+   "case_file_admm": {
+    "anderson_acceleration": {
+     "enabled": true,
+     "memory": 5,
+     "regularization": 1e-10,
+     "reject_policy": "keep_memory"
+    },
+    "dso_snapshot_capture_mode": "lightweight",
+    "interface_deviation_premium_in_case_file": {
+     "alpha": 0.0,
+     "floor": null,
+     "source": "default"
+    },
+    "objective_scale": 93635360.0,
+    "objective_scale_assert_factor": 3.0,
+    "objective_scale_source": "case_file",
+    "parallel_execution": false,
+    "tso_snapshot_capture_mode": "lightweight"
+   },
+   "declared_solve_profile_per_cycle": 83,
+   "expected_block_counts": {
+    "dso_blocks": 60,
+    "esso_models": 3,
+    "network_blocks": 80,
+    "solves_per_cycle": 83,
+    "tso_blocks": 20
+   },
+   "investment_cost": {
+    "n7_4h_e1": {
+     "I_x_eur_master_expression": 317957.0085035586,
+     "I_x_eur_p56a_transcription": 317957.0085035586,
+     "abs_diff": 0.0,
+     "budget_eur": 1000000.0,
+     "budget_slack_eur": 682042.9914964414,
+     "candidate_key": "db77e1549af855bcb3521950c634db55fe6c155ab2de591b0441b5f2bf4b369a",
+     "case_file_budget_eur": 1000000.0,
+     "equals_srp1_w2_table": true,
+     "srp1_w2_table_I_eur": 317957.0085035586
+    },
+    "x0": {
+     "I_x_eur_master_expression": 0.0,
+     "I_x_eur_p56a_transcription": 0.0,
+     "abs_diff": 0.0,
+     "budget_eur": 1000000.0,
+     "budget_slack_eur": 1000000.0,
+     "candidate_key": "8435c71859ddde68e7ae5818b4ff91c03b4171791bcfaa70edcc3ddb52bacb57",
+     "case_file_budget_eur": 1000000.0
+    }
+   },
+   "investment_cost_note": "I(x) of THIS instance, production master expression (discount to the first year, 2025, and the ESS workbook scenario weights); the SRP1 W2 value is recorded beside it for comparison",
+   "median_block_weight_production": 242.4161873368304,
+   "min_hourly_mean_price": 9.81204468708017,
+   "per_block_size": {
+    "block_x_scenario_units": {
+     "paper": 2000,
+     "pilot": 320,
+     "srp1": 48
+    },
+    "blocks_probed": [
+     [
+      "TSO",
+      null,
+      "2025",
+      "Spring"
+     ],
+     [
+      "DSO",
+      7,
+      "2025",
+      "Spring"
+     ]
+    ],
+    "committed_pre_addendum38": {
+     "paper": [
+      {
+       "code": "pre-Addendum-38 (the scale measurement, P5.15 Addendum 25/27)",
+       "len_counts_at_build_model": {
+        "constraint": 75450,
+        "expression": 37983,
+        "objective": 1,
+        "param": 2171,
+        "suffix": 0,
+        "var": 88650
+       },
+       "scenario_combinations": 25,
+       "sha256": "c704e398343eef6d3c4ebd95cc3afaadd407eadeeb41a944de6c6799e7e8544a",
+       "source": "data/SRP1/Results/P515S44/scale_measurement/paper_build/blocks_build.jsonl"
+      },
+      {
+       "code": "pre-Addendum-38 (the scale measurement, P5.15 Addendum 25/27)",
+       "len_counts_at_build_model": {
+        "constraint": 192075,
+        "expression": 103983,
+        "objective": 1,
+        "param": 39607,
+        "suffix": 0,
+        "var": 269050
+       },
+       "scenario_combinations": 25,
+       "sha256": "c704e398343eef6d3c4ebd95cc3afaadd407eadeeb41a944de6c6799e7e8544a",
+       "source": "data/SRP1/Results/P515S44/scale_measurement/paper_build/blocks_build.jsonl"
+      }
+     ],
+     "srp1": [
+      {
+       "code": "pre-Addendum-38 (the scale measurement, P5.15 Addendum 25/27)",
+       "len_counts_at_build_model": {
+        "constraint": 3018,
+        "expression": 1527,
+        "objective": 1,
+        "param": 443,
+        "suffix": 0,
+        "var": 3546
+       },
+       "scenario_combinations": 1,
+       "sha256": "2e5c15d820e0ae01445fb02ab9d974dbb837a7feb43e3be921ba187dcf086fb1",
+       "source": "data/SRP1/Results/P515S44/scale_measurement/srp1_cycle_snapoff_r1/blocks_build.jsonl"
+      },
+      {
+       "code": "pre-Addendum-38 (the scale measurement, P5.15 Addendum 25/27)",
+       "len_counts_at_build_model": {
+        "constraint": 7683,
+        "expression": 4167,
+        "objective": 1,
+        "param": 1783,
+        "suffix": 0,
+        "var": 10762
+       },
+       "scenario_combinations": 1,
+       "sha256": "2e5c15d820e0ae01445fb02ab9d974dbb837a7feb43e3be921ba187dcf086fb1",
+       "source": "data/SRP1/Results/P515S44/scale_measurement/srp1_cycle_snapoff_r1/blocks_build.jsonl"
+      }
+     ]
+    },
+    "current_code": {
+     "paper": [
+      {
+       "agent": "TSO",
+       "build_model_wall_s": 1.0554249286651611,
+       "day": "Spring",
+       "deep_counts_at_build_model": {
+        "constraint_active": 59826,
+        "constraint_active_equality": 29091,
+        "constraint_active_inequality": 30735,
+        "constraint_data": 59826,
+        "objective_active": 1,
+        "var_data": 88650,
+        "var_fixed": 3900,
+        "var_free": 84750
+       },
+       "len_counts_at_build_model": {
+        "constraint": 59826,
+        "expression": 37985,
+        "objective": 1,
+        "param": 2171,
+        "suffix": 0,
+        "var": 88650
+       },
+       "network": "case9",
+       "node": null,
+       "scenario_combinations": 25,
+       "year": "2025"
+      },
+      {
+       "agent": "DSO",
+       "build_model_wall_s": 3.149618148803711,
+       "day": "Spring",
+       "deep_counts_at_build_model": {
+        "constraint_active": 186867,
+        "constraint_active_equality": 102297,
+        "constraint_active_inequality": 84570,
+        "constraint_data": 186867,
+        "objective_active": 1,
+        "var_data": 269050,
+        "var_fixed": 1600,
+        "var_free": 267450
+       },
+       "len_counts_at_build_model": {
+        "constraint": 186867,
+        "expression": 103985,
+        "objective": 1,
+        "param": 39607,
+        "suffix": 0,
+        "var": 269050
+       },
+       "network": "case33_2",
+       "node": 7,
+       "scenario_combinations": 25,
+       "year": "2025"
+      }
+     ],
+     "pilot": [
+      {
+       "agent": "TSO",
+       "build_model_wall_s": 0.19453001022338867,
+       "day": "Spring",
+       "deep_counts_at_build_model": {
+        "constraint_active": 10119,
+        "constraint_active_equality": 4899,
+        "constraint_active_inequality": 5220,
+        "constraint_data": 10119,
+        "objective_active": 1,
+        "var_data": 14184,
+        "var_fixed": 624,
+        "var_free": 13560
+       },
+       "len_counts_at_build_model": {
+        "constraint": 10119,
+        "expression": 6086,
+        "objective": 1,
+        "param": 875,
+        "suffix": 0,
+        "var": 14184
+       },
+       "network": "case9",
+       "node": null,
+       "scenario_combinations": 4,
+       "year": "2025"
+      },
+      {
+       "agent": "DSO",
+       "build_model_wall_s": 0.6063580513000488,
+       "day": "Spring",
+       "deep_counts_at_build_model": {
+        "constraint_active": 30081,
+        "constraint_active_equality": 16449,
+        "constraint_active_inequality": 13632,
+        "constraint_data": 30081,
+        "objective_active": 1,
+        "var_data": 43048,
+        "var_fixed": 256,
+        "var_free": 42792
+       },
+       "len_counts_at_build_model": {
+        "constraint": 30081,
+        "expression": 16646,
+        "objective": 1,
+        "param": 6631,
+        "suffix": 0,
+        "var": 43048
+       },
+       "network": "case33_2",
+       "node": 7,
+       "scenario_combinations": 4,
+       "year": "2025"
+      }
+     ],
+     "srp1": [
+      {
+       "agent": "TSO",
+       "build_model_wall_s": 0.0899500846862793,
+       "day": "Spring",
+       "deep_counts_at_build_model": {
+        "constraint_active": 3018,
+        "constraint_active_equality": 1443,
+        "constraint_active_inequality": 1575,
+        "constraint_data": 3018,
+        "objective_active": 1,
+        "var_data": 3546,
+        "var_fixed": 156,
+        "var_free": 3390
+       },
+       "len_counts_at_build_model": {
+        "constraint": 3018,
+        "expression": 1529,
+        "objective": 1,
+        "param": 443,
+        "suffix": 0,
+        "var": 3546
+       },
+       "network": "case9",
+       "node": null,
+       "scenario_combinations": 1,
+       "year": "2025"
+      },
+      {
+       "agent": "DSO",
+       "build_model_wall_s": 0.1344470977783203,
+       "day": "Spring",
+       "deep_counts_at_build_model": {
+        "constraint_active": 7683,
+        "constraint_active_equality": 4185,
+        "constraint_active_inequality": 3498,
+        "constraint_data": 7683,
+        "objective_active": 1,
+        "var_data": 10762,
+        "var_fixed": 64,
+        "var_free": 10698
+       },
+       "len_counts_at_build_model": {
+        "constraint": 7683,
+        "expression": 4169,
+        "objective": 1,
+        "param": 1783,
+        "suffix": 0,
+        "var": 10762
+       },
+       "network": "case33_2",
+       "node": 7,
+       "scenario_combinations": 1,
+       "year": "2025"
+      }
+     ]
+    },
+    "network_blocks_per_cycle": {
+     "paper": 80,
+     "pilot": 80,
+     "srp1": 48
+    },
+    "note": "build_model counts (len over constructed component data, as the scale measurement records); the ADMM additions (expected-interface Vars, row 18, AL terms) come after build_model and are not in these counts",
+    "ratios": {
+     "DSO|7|2025|Spring": {
+      "constraints": {
+       "paper": 186867,
+       "pilot": 30081,
+       "srp1": 7683
+      },
+      "paper_over_pilot_constraints": 6.212127256407699,
+      "paper_over_pilot_vars": 6.25,
+      "pilot_over_srp1_constraints": 3.9152674736431083,
+      "pilot_over_srp1_vars": 4.0,
+      "vars": {
+       "paper": 269050,
+       "pilot": 43048,
+       "srp1": 10762
+      }
+     },
+     "TSO|None|2025|Spring": {
+      "constraints": {
+       "paper": 59826,
+       "pilot": 10119,
+       "srp1": 3018
+      },
+      "paper_over_pilot_constraints": 5.91224429291432,
+      "paper_over_pilot_vars": 6.25,
+      "pilot_over_srp1_constraints": 3.352882703777336,
+      "pilot_over_srp1_vars": 4.0,
+      "vars": {
+       "paper": 88650,
+       "pilot": 14184,
+       "srp1": 3546
+      }
+     }
+    },
+    "scenario_combinations_per_block": {
+     "paper": 25,
+     "pilot": 4,
+     "srp1": 1
+    },
+    "size_probe_cases": {
+     "paper": {
+      "derived_to_scratch": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w47_freeze/w47_case_paper_u3fvqbpb/SRP1__paper.json",
+      "scenario_checksum": "1e8bdd3e5233442a87fbe44b78281c8ae61b09c09700388fed20ab9684d18aef",
+      "sha256": "d726307c1949d91b34b00241fbc713412c689b113222929133eda38d9756ca14"
+     },
+     "srp1": {
+      "derived_to_scratch": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w47_freeze/w47_case_srp1_vkw8rr07/SRP1__srp1.json",
+      "scenario_checksum": "5a02b77ccbbbbbb869de92958a3851d095624711abc2dbfc0157466064410358",
+      "sha256": "45e8e700a547de22b2c9cd2f9373c4307da30764461e647424eca7eb2d1594b3"
+     }
+    }
+   },
+   "planning_dimensions": {
+    "active_distribution_network_nodes": [
+     5,
+     7,
+     9
+    ],
+    "days": {
+     "Autumn": 91,
+     "Spring": 92,
+     "Summer": 91,
+     "Winter": 91
+    },
+    "num_instants": 24,
+    "num_market_scenarios": 2,
+    "num_operation_scenarios": {
+     "case33_1": 2,
+     "case33_2": 2,
+     "case33_3": 2,
+     "case9": 2
+    },
+    "random_seed": 2026,
+    "scenario_metadata": {
+     "combined_scenario_checksum": "53b4bea4142001617282a08541079952564903b6d84db066f90d71a650b7d563",
+     "deterministic_scenarios": true,
+     "market_scenario_checksum": "f96ae5bffa617abbd0d35f53cb32dd07e0ec9ef3dbe1598f63d3f1c931fb45b7",
+     "operational_scenario_checksum": "433864055b30e0adc48616ef032a76609070e8271208ca54967bcc67737f6683",
+     "random_seed": 2026
+    },
+    "years": {
+     "2025": 3,
+     "2028": 3,
+     "2031": 3,
+     "2034": 3,
+     "2037": 3
+    }
+   },
+   "planning_read_redirected_to": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w47_freeze/w47_pilot_n158n3pz",
+   "premium_floor_needed": false,
+   "scenario_checksum": "53b4bea4142001617282a08541079952564903b6d84db066f90d71a650b7d563",
+   "scenario_checksum_equals_w45": true
+  },
+  "instance_label": "s52_pilot_2x2",
+  "instance_record": {
+   "path": "data/SRP1/Results/P515S52/pilot_instance/instance_record.json",
+   "sha256": "af539cd13d0fde164c5328b8944e903a46bed177a023f8af985288c8df5afb81"
+  },
+  "interface_deviation_premium": {
+   "alpha": 0.5,
+   "floor": null
+  },
+  "label": "BASELINE (C2 + phi_cal 0.985 + soh_min 0.70)",
+  "lock_observations_at_freeze_non_gating": [],
+  "memory_at_freeze_non_gating": {
+   "available_bytes": 20745486336,
+   "available_gib": 19.32073974609375,
+   "budget_derivation": "MEASURED zero-solve on the pilot instance (p515_s52_pilot_checks, memory_by_stage): the 80 ADMM-built network blocks + 3 ESSO models of the unit candidate hold 3.40 GiB RSS (no pristine clones, no solver state); the multi-scenario capture adds ~0; production's workbook writer a +3.75 GiB TRANSIENT for ~2 min (released by gc.collect() to +0.55 GiB); the certified-model pickle (0.66 GB on disk) a +5.1 GiB TRANSIENT and +2.3 GiB retained. NOT measured (need solves): the pristine snapshot clones (lightweight, the default: every TSO block and every node-7 DSO block, ~1.3 GiB estimated), solver state (multiplier suffixes, SolverResults, AA memory) and the fixed overhead (SRP1 campaign children peak at 2.32-2.40 GiB for ~0.6 GiB of models). Sustained per child: ~5.5-6.5 GiB -> 7 GiB; the terminal-phase transient -> 6 GiB, counted ONCE because the harness serializes the children's terminal phases (`acquire_terminal_phase_lock` on the campaign root). Without the model pickle the transient would be the workbook's ~4 GiB.",
+   "concurrency": 2,
+   "free_plus_inactive_gib": 14.85675048828125,
+   "hw_memsize_bytes": 34359738368,
+   "missing_vm_stat_figures": [],
+   "non_reclaimable_gib": 12.67926025390625,
+   "page_size_bytes": 16384,
+   "pass": false,
+   "per_child_sustained_budget_gib": 7.0,
+   "required_bytes": 21474836480,
+   "required_gib": 20.0,
+   "rule": "hw.memsize - (wired + anonymous + compressor-occupied) x page size >= 2 x 7 GiB + 6 GiB (one terminal-phase transient at a time: the harness terminal-phase lock)",
+   "rule_rationale": "non-reclaimable load = wired + anonymous + compressor-occupied pages; file-backed pages (active or inactive) are cache the kernel reclaims on demand, so free + inactive under-counts what new processes can obtain (free + inactive recorded alongside); the measure of A0 / S47, with the budget re-derived for this instance",
+   "terminal_transient_budget_gib": 6.0,
+   "utc": "2026-09-23T20:23:20.347887+00:00",
+   "vm_stat_header": "Mach Virtual Memory Statistics: (page size of 16384 bytes)",
+   "vm_stat_pages": {
+    "anonymous_pages": 572243,
+    "file_backed_pages": 983521,
+    "pages_active": 778142,
+    "pages_free": 233818,
+    "pages_inactive": 739834,
+    "pages_occupied_by_compressor": 73901,
+    "pages_purgeable": 17844,
+    "pages_speculative": 37788,
+    "pages_stored_in_compressor": 187610,
+    "pages_wired_down": 184804
+   }
+  },
+  "memory_budget_derivation": "MEASURED zero-solve on the pilot instance (p515_s52_pilot_checks, memory_by_stage): the 80 ADMM-built network blocks + 3 ESSO models of the unit candidate hold 3.40 GiB RSS (no pristine clones, no solver state); the multi-scenario capture adds ~0; production's workbook writer a +3.75 GiB TRANSIENT for ~2 min (released by gc.collect() to +0.55 GiB); the certified-model pickle (0.66 GB on disk) a +5.1 GiB TRANSIENT and +2.3 GiB retained. NOT measured (need solves): the pristine snapshot clones (lightweight, the default: every TSO block and every node-7 DSO block, ~1.3 GiB estimated), solver state (multiplier suffixes, SolverResults, AA memory) and the fixed overhead (SRP1 campaign children peak at 2.32-2.40 GiB for ~0.6 GiB of models). Sustained per child: ~5.5-6.5 GiB -> 7 GiB; the terminal-phase transient -> 6 GiB, counted ONCE because the harness serializes the children's terminal phases (`acquire_terminal_phase_lock` on the campaign root). Without the model pickle the transient would be the workbook's ~4 GiB.",
+  "memory_preflight_rule": "hw.memsize - (wired + anonymous + compressor-occupied) x page size >= 2 x 7 GiB + 6 GiB (one terminal-phase transient at a time: the harness terminal-phase lock)",
+  "memory_preflight_rule_rationale": "non-reclaimable load = wired + anonymous + compressor-occupied pages; file-backed pages (active or inactive) are cache the kernel reclaims on demand, so free + inactive under-counts what new processes can obtain (free + inactive recorded alongside); the measure of A0 / S47, with the budget re-derived for this instance",
+  "objective_convention": "Q(x) = certified_cost = gross_operational_cost (_get_operational_recourse_components: the CONTRACTED interface settlement and the solver-only interface-voltage pin excluded; the row 18 charge and the price-deviation covariance -- the settlement DEVIATION part -- included, Addendum 38 (C)); value = Q(0) - Q(x); F = I + Q; terminal salvage and net_operational_recourse = gross - salvage reported, excluded.",
+  "path_statement": "every evaluation runs through p515_s44_campaign_harness -> p515_g_g1_g4_admm_gates.run_admm_arm (asserted: path_is_run_admm_arm, path_never_calls_run_s39_arm)",
+  "pins": {
+   "cost_file": {
+    "git_clean": true,
+    "git_tracked": true,
+    "match": true,
+    "path": "data/SRP1/SharedESS/SRP1_ESS.xlsx",
+    "sha256_on_disk": "e17bd5887e1d0738005ae17c3144593527081c9a0776e19cfaa50aafefe39cd6",
+    "sha256_pinned": "e17bd5887e1d0738005ae17c3144593527081c9a0776e19cfaa50aafefe39cd6"
+   },
+   "ess_params_file": {
+    "git_clean": true,
+    "git_tracked": true,
+    "match": true,
+    "path": "data/SRP1/SharedESS/SRP1_ESS_Params.json",
+    "sha256_on_disk": "39106f934bf3edbf18f01a5ef1fadfefc2f7a518706e6c8fa6d962617a312706",
+    "sha256_pinned": "39106f934bf3edbf18f01a5ef1fadfefc2f7a518706e6c8fa6d962617a312706"
+   },
+   "investment_cost_results": {
+    "git_clean": true,
+    "git_tracked": true,
+    "match": true,
+    "path": "data/SRP1/Results/P515S45/investment_cost/investment_cost_results.json",
+    "sha256_on_disk": "28152120f5c7acc57655d40871f764a5e797b93428f5a9f87b7eed55fbe4790b",
+    "sha256_pinned": "28152120f5c7acc57655d40871f764a5e797b93428f5a9f87b7eed55fbe4790b"
+   },
+   "pilot_checks": {
+    "all_ok": true,
+    "expect": "all_ok true",
+    "failing": [],
+    "git_clean": true,
+    "git_tracked": true,
+    "harness_sha256_now": "abf797989997535e610b614ce051848cfa780b5ead311cbe7dc169345bcedeb5",
+    "harness_sha256_recorded": "abf797989997535e610b614ce051848cfa780b5ead311cbe7dc169345bcedeb5",
+    "path": "data/SRP1/Results/P515S52/pilot_checks/r1/pilot_checks.json",
+    "script_sha256_recorded": "edb7f3ee209037f267224d3eddff04d7aa6ff15aa3a9a0cfe772044b7712f52a",
+    "sha256": "23459939738323c5e4a6c256ddbf75ec8b8b493faf91038e8e64b1f3e9c3fa29"
+   },
+   "sigma_check": {
+    "commit": "c8f4b4c7",
+    "commit_in_HEAD": true,
+    "git_clean": true,
+    "git_tracked": true,
+    "path": "data/SRP1/Results/P515S52/sigma_check/r2/sigma_check.json",
+    "sha256": "c5ee751dab9b56f5cc6f4cb0c332ac3121bbdda01b3c45e24b682a0844302dcf"
+   },
+   "spec_v22": {
+    "git_clean": true,
+    "git_tracked": true,
+    "match": true,
+    "path": "data/SRP1/Results/P515S52/frozen_s52_spec_v22_5d8df1e8.json",
+    "sha256_on_disk": "5d8df1e8fe7f3741a3e03167937881ac85c47fd713fe6aa7b938e3113106fe1c",
+    "sha256_pinned": "5d8df1e8fe7f3741a3e03167937881ac85c47fd713fe6aa7b938e3113106fe1c"
+   },
+   "srp1_s2_results": {
+    "git_clean": true,
+    "git_tracked": true,
+    "match": true,
+    "path": "data/SRP1/Results/P515S47/campaign_s47_recert/campaign_results.json",
+    "sha256_on_disk": "e48dad43470829ee1d936cdab5e6433cffd688f9439e86e011b84dad74e19a3e",
+    "sha256_pinned": "e48dad43470829ee1d936cdab5e6433cffd688f9439e86e011b84dad74e19a3e"
+   }
+  },
+  "points": {
+   "n7_4h_e1": {
+    "I_x": {
+     "I_x_eur_master_expression": 317957.0085035586,
+     "I_x_eur_p56a_transcription": 317957.0085035586,
+     "abs_diff": 0.0,
+     "budget_eur": 1000000.0,
+     "budget_slack_eur": 682042.9914964414,
+     "candidate_key": "db77e1549af855bcb3521950c634db55fe6c155ab2de591b0441b5f2bf4b369a",
+     "case_file_budget_eur": 1000000.0,
+     "equals_srp1_w2_table": true,
+     "srp1_w2_table_I_eur": 317957.0085035586
+    },
+    "candidate_key": "db77e1549af855bcb3521950c634db55fe6c155ab2de591b0441b5f2bf4b369a",
+    "eval_key": "711fce9aa74d687892b994e332472c7d59745ef74ce9030abc12d54a9aaf83b4",
+    "investment_year": 2025,
+    "nodes": {
+     "5": [
+      0.0,
+      0.0
+     ],
+     "7": [
+      0.25,
+      1.0
+     ],
+     "9": [
+      0.0,
+      0.0
+     ]
+    }
+   },
+   "x0": {
+    "I_x": {
+     "I_x_eur_master_expression": 0.0,
+     "I_x_eur_p56a_transcription": 0.0,
+     "abs_diff": 0.0,
+     "budget_eur": 1000000.0,
+     "budget_slack_eur": 1000000.0,
+     "candidate_key": "8435c71859ddde68e7ae5818b4ff91c03b4171791bcfaa70edcc3ddb52bacb57",
+     "case_file_budget_eur": 1000000.0
+    },
+    "candidate_key": "8435c71859ddde68e7ae5818b4ff91c03b4171791bcfaa70edcc3ddb52bacb57",
+    "eval_key": "7d53b6f21b686a44db69f0901e03c870d14e15d00bfaaa6a5379822890918a94",
+    "investment_year": 2025,
+    "nodes": {
+     "5": [
+      0.0,
+      0.0
+     ],
+     "7": [
+      0.0,
+      0.0
+     ],
+     "9": [
+      0.0,
+      0.0
+     ]
+    }
+   }
+  },
+  "post_certification": {
+   "hull_polish": true,
+   "persist_certified_models": true
+  },
+  "post_certification_rationale": "hull polish on BOTH (spec v22 pilot.runs). The certified TSO/DSO models are ALSO persisted (before the polish mutates them): a pilot evaluation costs 7-10 h, and every manuscript quantity must stay recomputable without re-running it (CLAUDE.md rule eleven incident: a quantity the spec required was unrecoverable because the models were not serialized). Not committed (about 1 GB each, ~6.6 x the 166 MB SRP1 pickle); hash-recorded in the child and campaign manifests. No reference: no D evaluation of this instance exists, so post-certification gates (b)/(c) are None by construction.",
+  "predictions_recorded_before_run": {
+   "planner_spec_v22": {
+    "planner": [
+     "cycle time 3-5 min (measured 46.7 s/cycle at 2x2 with 1 year x 4 days under full ADMM; the pilot has 5 years, so ~5x the blocks)",
+     "7-10 h per evaluation at 100-140 cycles; ~3.9 GiB per process",
+     "interface dispersion ~ 0 at alpha = 0.50 (single-block and 2x2 limit evidence), reported as a priced result with the unpriced-up-shifting convention stated",
+     "the settlement identity residual equals the covariance term by construction",
+     "value per MWh within 10% of SRP1's; the R = 0.937 prediction is on the market spread while the storage prices at the bus-7 marginal cost - a deviation either way is informative"
+    ]
+   },
+   "worker": {
+    "cycle_time": "3.5-5 min per ADMM cycle per evaluation at concurrency 2 (2x2 limit gate: 118-129 s for init + 2 cycles on 16 blocks of 4 scenarios = ~40 s per round, ~2.5 s per network block; the pilot has 80 blocks -> ~3.4 min alone, +10-25 % for two concurrent children on 12 cores)",
+    "dispersion": "per-DSO max-over-blocks RMS ~0 at alpha = 0.50 under a CONVERGED run (single-block and 2x2 limit evidence); the W44 two-cycle arms at alpha 0.5 still read 1.2-3.4 MW, so a nonzero terminal dispersion of up to ~1 MW would not be a contradiction of the single-block result",
+    "evaluation_wall_time": "6-14 h per evaluation, central ~9 h (100-170 cycles to the 10-cycle certification -- SRP1 ran 87-170 -- at ~4 min, + ~5 min initialization, + the terminal capture ~10 s and the workbook ~2 min (both measured zero-solve), + post-certification ~10 min: model pickle ~1 GB, hull polish of 80 blocks); both evaluations run in parallel, so the pilot wave ~ the slower of the two",
+    "memory": "sustained 5.5-6.5 GiB per child through the ADMM run (3.40 GiB of models measured zero-solve, + lightweight pristine clones, solver state and the SRP1-like fixed overhead; the Planner's 3.9 GiB was extrapolated from the snapshots-OFF 2x2 gate); PEAK ~11-12 GiB per child in the terminal phase (the model pickle's +5.1 GiB transient, measured; the workbook's +3.75 GiB before it); the two children's terminal phases are serialized, so the wave peaks at ~17-18 GiB; refusing budget 2 x 7 + 6 = 20 GiB (13 GiB for the repro at concurrency 1)",
+    "recorded_by": "Worker (W47), 2026-09-23, before any pilot solve",
+    "repro_stage": "~12-20 min (initialization + 2 cycles, one child)",
+    "sigma": "ratio 0.36-0.60, passes (W45)"
+   }
+  },
+  "r_prediction": 0.937,
+  "rule_eleven_asserted_before_run": {
+   "capture_error_exits_2": true,
+   "capture_wired_before_post_certification": true,
+   "covariance_recomputed_independently": true,
+   "derived_instance_checksum_checked_in_child": true,
+   "derived_instance_installed_first": true,
+   "dispersion_max_over_blocks_E_abs_d_sum_omega_d2": true,
+   "dispersion_production_function": true,
+   "ess_dispatch_esso_capture": true,
+   "excel_dispersion_reads_na_copy": true,
+   "hull_polish_gate": true,
+   "network_results_shared_ess_at_na": true,
+   "path_is_run_admm_arm": true,
+   "path_never_calls_run_s39_arm": true,
+   "penalty_table_component_levels": true,
+   "per_cycle_trajectory_written": true,
+   "per_scenario_costs_production": true,
+   "per_scenario_costs_reconciled_to_block_recourse": true,
+   "per_scenario_interface_profiles_production": true,
+   "premium_applied_in_config_hook": true,
+   "premium_threaded_by_production": true,
+   "record_carries_multiscenario_summary": true,
+   "record_rule_ten": true,
+   "row18_charge_and_readback": true,
+   "run_s39_arm_is_the_one_with_the_hard_coded_sigma": true,
+   "settlement_identity_reported": true,
+   "settlement_split_parts": true,
+   "shared_ess_schedule_read_at_na_scenario": true,
+   "sigma_assertion_is_production": true,
+   "sigma_calibration_recorded": true,
+   "sigma_in_state": true,
+   "soh_trajectory_declared_ageing": true,
+   "terminal_phase_serialized": true,
+   "voltage_mismatch_reported": true,
+   "workbook_gets_run_results": true,
+   "workbook_production_writer": true
+  },
+  "rule_eleven_fields": [
+   "status",
+   "barrier_cause",
+   "cycles_run",
+   "certification_cycle",
+   "certified_cost_gross",
+   "bar",
+   "rule_ten",
+   "sigma_calibration",
+   "dispersion_per_dso_max_over_blocks_rms",
+   "dispersion_E_abs_d",
+   "dispersion_sum_omega_d2",
+   "row18_charge_and_readback",
+   "settlement_split_and_covariance_identity",
+   "per_scenario_costs_reconciled",
+   "per_scenario_interface_profiles",
+   "ess_dispatch_and_soh",
+   "penalty_table_components",
+   "operational_workbook",
+   "hull_polish_gate",
+   "unrecovered_failures_and_certifying_window",
+   "solve_reconciliation",
+   "wall_time",
+   "cycle_time",
+   "peak_rss",
+   "aa_action_counts",
+   "per_cycle_trajectory",
+   "value_and_resolution"
+  ],
+  "sigma_check_inputs": {
+   "assert_factor": 3.0,
+   "band": [
+    0.3333333333333333,
+    3.0
+   ],
+   "formula_floor": "floor = max_b |weighted_total_b(gate alpha=0.50)| * w_pilot(b) / w_gate(b) over the gate arm's ten printed blocks (all 2025); a hard lower bound on the pilot sigma_computed conditional on identity_2025 and the same alpha/candidate/code",
+   "gate_2x2_sigma_exact": {
+    "path": "data/SRP1/Results/P515S51/2x2_limit_gate/limit_r1/gate.json",
+    "sha256": "6b4ea95d62e116a1713a75f17d6f687445d902282bd9ccfed96d2856e063b96a",
+    "value": 56274385.453676455
+   },
+   "median_block_weight_production": 242.4161873368304,
+   "paper_5x5_reference_ratio": 0.5969895347227799,
+   "prediction_recorded_before_run": "sigma ratio in [0.36, 0.60] against the band [1/3, 3] (W45: floor 0.3606 = 1.082 x the lower edge, i.e. an 8 % worst-case margin; the paper 5x5 reference 0.597). The pilot passes the assertion.",
+   "ratio_floor": 0.36059701454884,
+   "ratio_floor_over_lower_band_edge": 1.0817910436465201,
+   "sha256": "c5ee751dab9b56f5cc6f4cb0c332ac3121bbdda01b3c45e24b682a0844302dcf",
+   "sigma_definition": "sigma_computed = max_b |w_b * f_b| over every TSO and DSO (year, day) block (shared_resources_planning._compute_common_admm_objective_scale), f_b = pe.value(model.objective.expr) after the initialization solve, w_b = _get_admm_block_weight = N_years * N_days / (1+discount)^(year-first_year); raise ValueError unless 1/F <= sigma_computed/sigma_fixed <= F (_resolve_common_admm_objective_scale)",
+   "sigma_fixed_case_file": 93635360.0,
+   "sigma_floor": 33764631.272205874,
+   "source": {
+    "commit": "c8f4b4c7",
+    "path": "data/SRP1/Results/P515S52/sigma_check/r2/sigma_check.json"
+   },
+   "w45_pilot_case_sha256": "7ecff44a874892187d1dd2e3d5ed0664a2f90a4bfa4cdb820a4abcbbd828f949",
+   "w45_pilot_scenario_checksum": "53b4bea4142001617282a08541079952564903b6d84db066f90d71a650b7d563"
+  },
+  "spec_v22": {
+   "path": "data/SRP1/Results/P515S52/frozen_s52_spec_v22_5d8df1e8.json",
+   "sha256": "5d8df1e8fe7f3741a3e03167937881ac85c47fd713fe6aa7b938e3113106fe1c"
+  },
+  "srp1_reference_for_value_per_mwh": {
+   "commit": "79b99b59",
+   "label": "n7_4h_e1",
+   "path": "data/SRP1/Results/P515S47/campaign_s47_recert/campaign_results.json",
+   "resolution": 34734.63290083408,
+   "sha256": "e48dad43470829ee1d936cdab5e6433cffd688f9439e86e011b84dad74e19a3e",
+   "value_per_mwh": 259427.76775527
+  },
+  "stage": "pilot",
+  "stage_description": "P5.15 Addendum 36 pilot: x = 0 and the node-7 4 h unit (0.25 / 1.0, 2025), one wave at concurrency 2, cap 500, 10-cycle bar, persist + hull polish on both",
+  "stop_rule": "as a1a (spec v15 execution.barrier), for form: STOP if 2 or more non-certified points fall in ONE region (node + duration ladder) or 3 or more overall. The pilot is ONE wave of two points in two regions (x0_y2025, n7_4h_y2025), so the rule cannot fire; spec v22 orders STOP FOR REVIEW after the pilot regardless.",
+  "value_definition": "value = Q(0) - Q(x_unit) on THIS instance (both evaluations of this campaign); resolution = bar_x + bar_0 (record.bar of each: the max gross step over the last 10 cycles); |value| or |value - I| <= resolution is INDETERMINATE (CLAUDE.md: the bar bounds stopping slack only). value per MWh = value / E; compared with SRP1's value per MWh for the same unit (S2 79b99b59: 259,427.77, resolution 34,734.63) as a ratio, and that ratio against R = 0.937 (Addendum 31 prediction on the market spread; the storage prices at the bus-7 marginal cost, so a deviation either way is informative -- spec v22 pilot prediction)."
+ },
+ "frozen_utc": "2026-09-23T20:23:20.457161+00:00",
+ "git_head": "ae951d31d551e2114e3671daeb7367d1e3359336",
+ "harness": {
+  "path": "p515_s44_campaign_harness.py",
+  "sha256": "abf797989997535e610b614ce051848cfa780b5ead311cbe7dc169345bcedeb5"
+ },
+ "interpreter": "/Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python",
+ "nlp_solver_path_env": {
+  "NLP_SOLVER_PATH": "/usr/local/bin/ipopt",
+  "source": "environment"
+ },
+ "required_consecutive_cycles": 10,
+ "schema": "p515_s44_campaign_spec_v2",
+ "thread_caps": {
+  "MKL_NUM_THREADS": "1",
+  "NUMEXPR_NUM_THREADS": "1",
+  "OMP_NUM_THREADS": "1",
+  "OPENBLAS_NUM_THREADS": "1",
+  "VECLIB_MAXIMUM_THREADS": "1"
+ }
+}
