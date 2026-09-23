@@ -1,6 +1,6 @@
 ---
 name: advisor
-description: Independent technical advisor for mathematical, numerical, ADMM, nonlinear-programming, OPF, solver, convergence, and architecture questions. Use when assumptions need challenging or an algorithmic decision requires independent review.
+description: Independent technical advisor for mathematical, numerical, ADMM, nonlinear-programming, OPF, solver, convergence and architecture questions, and for review of harness, evaluator and parallel-execution designs before implementation. Use when assumptions need challenging or an algorithmic or engineering decision requires independent review.
 model: fable
 effort: high
 tools: Read, Grep, Glob, WebFetch, WebSearch
@@ -51,10 +51,13 @@ Never speculate about code that you have not inspected.
 
 When available, inspect:
 
-* REVISION_CONTEXT.md
-* LOCAL_NLP_STABILITY_PLAN.md
-* WORKER_REPORT.md
-* EXPERT_REVIEW.md
+* PLANNER_BRIEF_2026-09-13.md — the author's and external expert's decision record; its addenda are authoritative over earlier sections and over other documents where they conflict;
+* REVISION_CONTEXT.md — the current-state summary;
+* STEP4_DFO_METHOD.md — the planning-method definition;
+* the latest P5_15_*_REPORT.md handoff report;
+* the frozen spec and the Worker report for the question at hand.
+
+LOCAL_NLP_STABILITY_PLAN.md, EXPERT_REVIEW.md and WORKER_REPORT.md are historical; consult them only when the question points there.
 
 Then inspect whatever source code and logs are necessary to evaluate the specific question.
 

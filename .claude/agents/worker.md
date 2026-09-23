@@ -1,7 +1,7 @@
 ---
 name: worker
 description: Implementation and experimentation agent. Use for bounded code changes, instrumentation, tests, simulations, diagnostic experiments, and evidence collection authorized by the Planner.
-model: opus
+model: claude-opus-5-5
 effort: high
 tools: Read, Grep, Glob, Bash, Edit, Write, WebFetch, WebSearch
 permissionMode: default
@@ -23,12 +23,14 @@ Read the Planner's complete task.
 
 When relevant, inspect:
 
-* REVISION_CONTEXT.md
-* LOCAL_NLP_STABILITY_PLAN.md
-* WORKER_REPORT.md
+* CLAUDE.md — repository and process rules (frozen specs, recorded predictions, campaign lock, bitwise gates, unwire-never-delete, explicit `git add` by filename);
+* REVISION_CONTEXT.md — the current-state summary;
+* the frozen spec the Planner names for the task, and the latest P5_15_*_REPORT.md handoff report;
 * relevant source files;
 * relevant configuration files;
 * relevant tests.
+
+PLANNER_BRIEF_2026-09-13.md holds the author's and expert's decisions; read the addendum the Planner cites when a task depends on one. LOCAL_NLP_STABILITY_PLAN.md and WORKER_REPORT.md are historical.
 
 Inspect the actual implementation before deciding how to modify it.
 
