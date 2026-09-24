@@ -1,0 +1,123 @@
+{
+ "stage": "P5.15 W65 ruling 6 -- zero-solve harness-isolation check",
+ "utc": "2026-09-24T15:46:27.418806+00:00",
+ "git_head": "5ad77b2706c81edd7e1137e1396e6ba7af1db602",
+ "harness_sha256": "5c67acc27d2e56c8783fc93705cd5de7201cf0800a969281ae8ebbb5c8a50589",
+ "script_sha256": "be4462e9dccdb88c84bbf900c3a4740ec40bb230d8665f499c2c87726122d496",
+ "scratch": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w65_isolation",
+ "baseline": {
+  "probe": "baseline_srp1",
+  "derived_instance": false,
+  "premium": null,
+  "campaign_spec_sha256": "d28b4e250767817783fca8dbefa31909bf96afe349cbf7a1becbe45a21bca80a",
+  "eval_key": "d2c96b1480402a3b61aca4abc188e41c6009eb582d8e6ccdd380e51651f996c7",
+  "stopped_by_probe_before_any_solve": false,
+  "error": {
+   "error": "AssertionError: RULE ELEVEN: capture paths missing for the evaluation record: ['run_admm_arm_accepts_investment_map', 'run_admm_arm_post_run_hook_gets_state']",
+   "traceback": "Traceback (most recent call last):\n  File \"/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/p515_s53_alpha_row_campaign.py\", line 2827, in _isolation_probe\n    H._child_real(SimpleNamespace(spec_sha256=spec_sha), spec, spec_path, entry, eval_dir,\n  File \"/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/p515_s44_campaign_harness.py\", line 4389, in _child_real\n    capture_checklist = assert_record_capture_paths()\n                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/p515_s44_campaign_harness.py\", line 1711, in assert_record_capture_paths\n    raise AssertionError(f'RULE ELEVEN: capture paths missing for the evaluation record: {missing}')\nAssertionError: RULE ELEVEN: capture paths missing for the evaluation record: ['run_admm_arm_accepts_investment_map', 'run_admm_arm_post_run_hook_gets_state']\n"
+  },
+  "reached_run_admm_arm": false,
+  "six_production_functions_at_run": null,
+  "w64_harness_calls_at_run": null,
+  "w64_harness_calls_total": {
+   "assert_alpha_row_capture_paths": 0,
+   "alpha_row_run_hooks": 0,
+   "activation_readback": 0,
+   "initialisation_identity_record": 0,
+   "register_initialisation_identity": 0,
+   "per_cycle_response_record": 0,
+   "read_per_cycle_response": 0,
+   "response_terminal_capture": 0,
+   "write_response_terminal": 0,
+   "write_multiscenario_terminal": 0,
+   "install_derived_instance": 0
+  },
+  "run_admm_arm_kwargs": null,
+  "files_written_under_probe_root": [
+   "campaign_spec_w65_isolation_baseline_srp1_d28b4e25.json"
+  ],
+  "w64_output_files_present": [],
+  "init_identity_dir_present": false,
+  "six_restored_after": true,
+  "harness_functions_restored_after": true
+ },
+ "positive_control": {
+  "probe": "positive_control_derived_premium",
+  "derived_instance": true,
+  "premium": {
+   "alpha": 0.5,
+   "floor": null
+  },
+  "campaign_spec_sha256": "9c1bd168e2b24d0a60085ea8f3609aedc32296b06bd2f2f0d0e385a139ee575f",
+  "eval_key": "7d53b6f21b686a44db69f0901e03c870d14e15d00bfaaa6a5379822890918a94",
+  "stopped_by_probe_before_any_solve": false,
+  "error": {
+   "error": "AssertionError: RULE ELEVEN: capture paths missing for the evaluation record: ['run_admm_arm_accepts_investment_map', 'run_admm_arm_post_run_hook_gets_state']",
+   "traceback": "Traceback (most recent call last):\n  File \"/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/p515_s53_alpha_row_campaign.py\", line 2827, in _isolation_probe\n    H._child_real(SimpleNamespace(spec_sha256=spec_sha), spec, spec_path, entry, eval_dir,\n  File \"/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/p515_s44_campaign_harness.py\", line 4389, in _child_real\n    capture_checklist = assert_record_capture_paths()\n                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/p515_s44_campaign_harness.py\", line 1711, in assert_record_capture_paths\n    raise AssertionError(f'RULE ELEVEN: capture paths missing for the evaluation record: {missing}')\nAssertionError: RULE ELEVEN: capture paths missing for the evaluation record: ['run_admm_arm_accepts_investment_map', 'run_admm_arm_post_run_hook_gets_state']\n"
+  },
+  "reached_run_admm_arm": false,
+  "six_production_functions_at_run": null,
+  "w64_harness_calls_at_run": null,
+  "w64_harness_calls_total": {
+   "assert_alpha_row_capture_paths": 0,
+   "alpha_row_run_hooks": 0,
+   "activation_readback": 0,
+   "initialisation_identity_record": 0,
+   "register_initialisation_identity": 0,
+   "per_cycle_response_record": 0,
+   "read_per_cycle_response": 0,
+   "response_terminal_capture": 0,
+   "write_response_terminal": 0,
+   "write_multiscenario_terminal": 0,
+   "install_derived_instance": 0
+  },
+  "run_admm_arm_kwargs": null,
+  "files_written_under_probe_root": [
+   "campaign_spec_w65_isolation_positive_control_derived_premium_9c1bd168.json"
+  ],
+  "w64_output_files_present": [],
+  "init_identity_dir_present": false,
+  "six_restored_after": true,
+  "harness_functions_restored_after": true
+ },
+ "oracle_baseline_dropped_between_probes": false,
+ "static": {
+  "per_cycle_trajectory_fields_equal_pre_w64_record_fields": true,
+  "record_trajectory_fields_equal_pre_w64": true,
+  "non_derived_per_cycle_record_writes_trajectory_fields_only": true,
+  "alpha_row_checklist_only_if_capture_multiscenario": true,
+  "hooks_nullcontext_otherwise": true,
+  "w64_record_keys_only_in_the_capture_multiscenario_branch": true,
+  "terminal_captures_only_in_the_capture_multiscenario_branch": true,
+  "capture_error_only_if_capture_multiscenario": true,
+  "capture_multiscenario_definition": true,
+  "pre_w64_revision": "70950e8c^"
+ },
+ "expectations": {
+  "A_baseline_reached_run_and_stopped": false,
+  "A_baseline_no_w64_wrapper_installed": false,
+  "A_baseline_no_w64_harness_call": true,
+  "A_baseline_no_w64_output": true,
+  "A_baseline_restored": true,
+  "B_positive_reached_run_and_stopped": false,
+  "B_positive_all_six_w64_wrappers_installed": false,
+  "B_positive_checklist_hooks_and_derived_install_called_once": false,
+  "B_positive_restored": true,
+  "C_static_all": true,
+  "no_tracked_file_changed": true
+ },
+ "tracked_status_before": "M PLANNER_BRIEF_2026-09-13.md\n M REVISION_CONTEXT.md",
+ "tracked_status_after": "M PLANNER_BRIEF_2026-09-13.md\n M REVISION_CONTEXT.md",
+ "solve_guard": {
+  "counts": {
+   "permitted_solve": 0,
+   "permitted_exec": 0,
+   "blocked_solve": 0,
+   "blocked_exec": 0
+  },
+  "verify_0_failures": [],
+  "label": "P5.15 W64 alpha-row launcher (no solve outside the smoke gate)"
+ },
+ "pass": false,
+ "scope_note": "the probe stops at run_admm_arm: the post-run branches are covered by (C) only; no full SRP1 campaign bitwise gate was run (known, accepted: spec v25 known_gaps)"
+}
