@@ -1,0 +1,38 @@
+[P5.15 Addendum 40 ruling 3 W52 -- 3 x 3 selection rule and R prediction (spec v23; zero solves)] start 2026-09-24T08:57:29.109408+00:00; HEAD e1f98be8360697125fbd9c71e54f6483dd5e3f81
+[read] SRP1 ...
+[read] paper ...
+[extract] operational data ...
+[prefix] realization check ...
+[market ranking] [[1, [2, 3, 4], 91.8964, 0.1687], [2, [1, 3, 5], 91.9169, 0.1891], [3, [1, 3, 4], 91.4068, -0.3209], [4, [1, 2, 3], 91.2994, -0.4284], [5, [1, 2, 4], 92.2034, 0.4756], [6, [1, 2, 5], 92.4831, 0.7553], [7, [1, 4, 5], 92.5043, 0.7766], [8, [3, 4, 5], 92.7045, 0.9768], [9, [2, 3, 5], 92.8715, 1.1438], [10, [2, 4, 5], 93.3382, 1.6105]]
+[market selected] [2, 3, 4]; ties []
+[operation ranking] [[1, 4, 3594.579, 11655.754], [2, 3, 3598.379, 11633.859], [3, 5, 3608.247, 11654.445], [4, 2, 3608.38, 11629.258], [5, 1, 3636.828, 11676.406]]
+[operation selected] [4, 5, 1]; Kendall W 0.0140
+[R prediction] {"selected": {"spread_u": 91.89641979698735, "spread_r2": 91.11406973888263, "spread_growth_normalized_u": 78.83277358614954, "R_u": 0.9378060303206183, "R_r2": 0.939147128418694, "R_gn": 0.9169432010352184}, "five": {"spread_u": 91.72775939691898, "spread_r2": 90.9307562006712, "spread_growth_normalized_u": 78.67122807904639, "R_u": 0.9360848453102575, "R_r2": 0.9372576465471794, "R_gn": 0.9150641848892984}, "bias_vs_five": {"R_u": 0.0018387062016693712, "R_r2": 0.0020159684783318532, "R_gn": 0.0020534255158803916}}
+[prefix] market prefix 40/40, operation prefix 10620/10620. If all true, a case derived with NumMarketScenarios = 3 and num_operation_scenarios = 3 (the p515_s44_scale_measurement.derive_case route used for the 2 x 2 pilot) holds exactly indices [1, 2, 3] in both dimensions, NOT the selected market [2, 3, 4] x operation [4, 5, 1]. Indices [1, 2, 3] rank 4 of 10 on the market rule (spread_u 91.2994, R_r2 0.9331). Realizing the selected set needs a selection mechanism the derive route does not have.
+[checks] {
+ "solve_guard_verify_0": true,
+ "no_model_construction_call": true,
+ "stop_point_hits_exactly_declared": true,
+ "no_curtailable_generator_other_than_pv_wind": true,
+ "srp1_scenario_checksum_matches": true,
+ "srp1_prices_bound_to_every_block_are_planning_object": true,
+ "srp1_network_pm_is_planning_prob_market_scenarios": true,
+ "srp1_no_congestion_management_network": true,
+ "paper_scenario_checksum_matches": true,
+ "paper_prices_bound_to_every_block_are_planning_object": true,
+ "paper_network_pm_is_planning_prob_market_scenarios": true,
+ "paper_no_congestion_management_network": true,
+ "paper_pm_all_0_2": true,
+ "srp1_recomputed_spread_equals_Z4_97.99_to_1e-9": true,
+ "srp1_recomputed_spread_r2_equals_Z4_97.02_to_1e-9": true,
+ "five_set_spread_u_reproduces_W22_to_1e-9": true,
+ "five_set_R_u_reproduces_W22_to_1e-9": true,
+ "five_set_R_r2_reproduces_W22_to_1e-9": true,
+ "five_set_R_gn_reproduces_W22_to_1e-9": true,
+ "ten_market_subsets_ranked": true,
+ "five_operation_indices_ranked": true,
+ "operation_selection_three_distinct": true,
+ "prefix_check_ran_market": true,
+ "prefix_check_ran_operation": true
+}
+[P5.15 Addendum 40 ruling 3 W52 -- 3 x 3 selection rule and R prediction (spec v23; zero solves)] ok=True; guard counts {'permitted_solve': 0, 'permitted_exec': 0, 'blocked_solve': 0, 'blocked_exec': 0}; blocked []; stop hits 2; elapsed 40.2 s
