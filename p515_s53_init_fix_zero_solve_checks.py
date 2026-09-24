@@ -1,6 +1,29 @@
 """
-P5.15 Addendum 40 ruling 2 (tasks W51 -> W54 -> W56) -- ZERO-SOLVE checks for "row 18 INACTIVE at the initialisation
-solve, activated with the settlement weight", in its STRUCTURAL form.
+P5.15 Addendum 40 ruling 2 (tasks W51 -> W54 -> W56 -> W57) -- ZERO-SOLVE checks for "row 18 INACTIVE at the
+initialisation solve, activated with the settlement weight", in its STRUCTURAL form.
+
+W57 UPDATE (schema v3; frozen spec v3 `frozen_s53_row18_structural_spec_v3_1064db50.json`, key `zero_solve_checks_r6`,
+predecessor v2 5123e67b; Planner rulings on W56's Q1/Q2):
+  * B and A2 run on an EMULATED LOADED SOLUTION, NOT A SOLVE. At r5 every stubbed solve loaded nothing, so
+    e = value(flow) - value(expectation) was 0.0 at all 2304 indices and the minimal-split assertion tested nothing.
+    Now, before `_prepare_distribution_objectives_for_admm`, `emulate_loaded_solution` sets per block:
+    expected_interface_pf_{p,q}[t] to distinct non-zero values, and the reference generator's pg/qg[ref, s, t] so that
+    e hits a declared target per index -- a distinct magnitude per (block, family, index), both signs (negative iff
+    (k + f + b) % 3 == 0, i.e. 32 of 96 per family per block). The emulated point is NOT feasible and nothing is
+    solved; it exists only to make the split non-trivial.
+  * The defining-row BODY, evaluated by Pyomo from the model itself (not from the recomputed e), must be 0 within
+    TOL_BODY_ABS. That is the check that cross-validates the family table against the actual rows (the per-index
+    split assertion uses this script's own table, which equals production's by the checklist, so on its own it
+    cannot detect a table that is wrong in both places).
+  * NON-VACUITY (fails the check if not met): in every (block, family) >= 25 % of indices e > 0, >= 25 % e < 0, none
+    e == 0; all |e| of a block (both families) pairwise distinct with gap >= MIN_MAG_GAP; all |e| of the run
+    distinct; the emulation hit every target within TOL_EMULATION_ABS.
+  * Production (W57 item 2) now evaluates each defining row's body after activation and raises above
+    `_ROW18_ACTIVATION_BODY_TOL`. A2 ends with a NEGATIVE CONTROL: on one block, reset to the initialisation state by
+    production's own `_set_row18_inactive_for_initialisation`, `_ROW18_DEVIATION_FAMILIES` swapped between families
+    for one call -> production MUST raise that RuntimeError (restored in `finally`; A2's recorded assertions precede it).
+  * C2: n_expression_data +1 in BOTH phases (`row18_deviation_charge` is a scalar Expression) -- v2 predicted +0;
+    that was a spec error (r5 C2 FAIL stays on the record).
 
 Authority: PLANNER_BRIEF_2026-09-13.md Addendum 40 ruling 2; frozen spec v23
 `data/SRP1/Results/P515S53/frozen_s53_spec_v23_39a07fd8.json`, key `ruling2_init_fix` (the ruling), as amended in
@@ -84,12 +107,12 @@ memory low while a campaign runs in the main checkout; 1 x 1 = `derive_case('srp
 unchanged. Derived case files are written to <out>/cases/ and hash-recorded; the reader's Diagrams/Results dirs
 go to --scratch.
 
-EXACT COMMAND (worktree/repo root, canonical interpreter, attached, BOTH streams captured; label r5 -- r4 is W51's
-committed evidence and r1-r3 are W51's abandoned labels):
+EXACT COMMAND (worktree/repo root, canonical interpreter, attached, BOTH streams captured; label r6 -- r4 is W51's
+and r5 W56's committed evidence, r1-r3 are W51's abandoned labels; none is reused):
   NLP_SOLVER_PATH=/usr/local/bin/ipopt LP_SOLVER_PATH=<from the main checkout .env> \\
   /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python -u p515_s53_init_fix_zero_solve_checks.py \\
-      --label r5 --scratch <dir outside the repo> \\
-      > data/SRP1/Results/P515S53/init_fix_zero_solve_checks_r5_launch.log 2>&1
+      --label r6 --scratch <dir outside the repo> \\
+      > data/SRP1/Results/P515S53/init_fix_zero_solve_checks_r6_launch.log 2>&1
 OUTPUT (write-once): data/SRP1/Results/P515S53/init_fix_zero_solve_checks/<label>/
     {init_fix_zero_solve_checks.json, manifest_sha256.json, cases/}
 Exit 0 when every check passes, 1 otherwise.
@@ -114,7 +137,7 @@ os.chdir(REPO)
 
 from p513_solve_profile_guard import SolveProfileGuard  # noqa: E402
 
-GUARD = SolveProfileGuard(permitted=(), label='P5.15 W56 init-fix zero-solve checks (never solves)').install()
+GUARD = SolveProfileGuard(permitted=(), label='P5.15 W57 init-fix zero-solve checks (never solves)').install()
 
 import pyomo.environ as pe  # noqa: E402
 from pyomo.core.expr.visitor import identify_mutable_parameters  # noqa: E402
@@ -123,20 +146,29 @@ import shared_resources_planning as srp  # noqa: E402
 import p515_s44_scale_measurement as S  # noqa: E402
 import p515_s51_row18_zero_solve_checks as W39C  # noqa: E402 -- installs its own zero guard (verified below)
 from shared_resources_planning import SharedResourcesPlanning  # noqa: E402
+from network import Network  # noqa: E402
 
-STAGE = ('P5.15 Addendum 40 ruling 2 (W56) -- row 18 STRUCTURALLY inactive at the initialisation solve, activated '
-         'with the settlement weight: zero-solve checks')
-SCHEMA = 'p515_s53_init_fix_zero_solve_checks_v2'
-AUTHORITY = ['Planner task W56 (2026-09-24)',
+STAGE = ('P5.15 Addendum 40 ruling 2 (W57) -- row 18 STRUCTURALLY inactive at the initialisation solve, activated '
+         'with the settlement weight: zero-solve checks on an EMULATED loaded solution (not a solve)')
+SCHEMA = 'p515_s53_init_fix_zero_solve_checks_v3'
+AUTHORITY = ['Planner task W57 (2026-09-24): rulings on W56 Q1 (re-freeze v3, C2 +1) and Q2 (option (a): emulate a '
+             'loaded solution)',
+             'Planner task W56 (2026-09-24)',
              'PLANNER_BRIEF_2026-09-13.md Addendum 40 ruling 2',
              'data/SRP1/Results/P515S53/frozen_s53_spec_v23_39a07fd8.json (ruling2_init_fix)',
              'data/SRP1/Results/P515S53/row18_structural/frozen_s53_row18_structural_spec_v2_5123e67b.json '
-             '(zero_solve_checks)']
+             '(zero_solve_checks)',
+             'data/SRP1/Results/P515S53/row18_structural/frozen_s53_row18_structural_spec_v3_1064db50.json '
+             '(zero_solve_checks_r6)']
 SPEC_PATH = os.path.join('data', 'SRP1', 'Results', 'P515S53', 'frozen_s53_spec_v23_39a07fd8.json')
 SPEC_SHA256 = '39a07fd8'   # prefix, as named in the file name; the full hash is recorded on output
 SPEC_V2_PATH = os.path.join('data', 'SRP1', 'Results', 'P515S53', 'row18_structural',
                             'frozen_s53_row18_structural_spec_v2_5123e67b.json')
 SPEC_V2_SHA256 = '5123e67bd9643ff2037977def18ce3e12aaa1cd7de6d7ead4a2bae4f9ba7675f'
+SPEC_V3_PATH = os.path.join('data', 'SRP1', 'Results', 'P515S53', 'row18_structural',
+                            'frozen_s53_row18_structural_spec_v3_1064db50.json')
+SPEC_V3_SHA256 = '1064db50f8d339ac8bbc9ffdcdb2485e9e06b20707dbb73748dd840fe3878ff7'
+SPEC_V3_KEY = 'zero_solve_checks_r6'
 PARENT_COMMIT = 'e1f98be8'
 OUT_ROOT_REL = os.path.join('data', 'SRP1', 'Results', 'P515S53', 'init_fix_zero_solve_checks')
 
@@ -162,6 +194,25 @@ FAMILIES = (
 # eps * |objective|: 1e-9 relative.
 TOL_REL_CHARGE = 1e-12
 TOL_REL_OBJECTIVE = 1e-9
+# W57, declared in spec v3 before the r6 run.
+# The EMULATED loaded solution (NOT a solve): block ordinal b (the block's position in the node/year/day order of the
+# run), family f (0 = P, 1 = Q), index k (the defining row's own iteration order, 0 .. N-1, N = n T):
+#   target e = sign * (EMU_MAG_BASE + EMU_MAG_STEP * ((2 b + f) N + k)),  sign = -1 iff (k + f + b) % EMU_NEG_EVERY == 0
+#   expected_interface_pf_{p,q}[t] = a_f + c_f * t_ordinal + d_f * b          (EMU_EXPECTATION[f] = (a_f, c_f, d_f))
+# and the reference generator's pg (P) / qg (Q) [ref, s_m, s_o, t] is shifted so that value(flow) - value(expectation)
+# hits the target.
+EMU_MAG_BASE = 0.01       # per unit
+EMU_MAG_STEP = 1e-4       # per unit, per global ordinal: every |e| of a run distinct by construction
+EMU_NEG_EVERY = 3
+EMU_EXPECTATION = ((0.20, 0.003, 0.0005), (-0.07, -0.002, -0.0003))
+TOL_EMULATION_ABS = 1e-12  # |achieved e - target| per index
+TOL_BODY_ABS = 1e-12       # |value(body) - value(upper)| per defining row after activation (Pyomo, from the model)
+MIN_SIGN_SHARE = 0.25      # per (block, family): share of e > 0 and share of e < 0, each at least this
+MIN_MAG_GAP = 5e-5         # per unit: minimum gap between sorted distinct |e| (block, both families; and whole run)
+PRODUCTION_BODY_TOL_DECLARED = 1e-9   # production's `_ROW18_ACTIVATION_BODY_TOL` (W57 item 2), checked
+SOLUTION_SOURCE = ('EMULATED loaded solution, NOT a solve: expected_interface_pf_{p,q} and the reference generator '
+                   'pg/qg set by emulate_loaded_solution (declared formula, spec v3); the point is not feasible and '
+                   'nothing is solved')
 NAMED_CTYPES = (pe.Var, pe.Param, pe.Constraint, pe.Expression, pe.Objective, pe.Block)
 
 
@@ -170,7 +221,7 @@ def _utc():
 
 
 def _log(msg):
-    print(f'{datetime.now(timezone.utc).strftime("%H:%M:%S")} [W56-checks] {msg}', flush=True)
+    print(f'{datetime.now(timezone.utc).strftime("%H:%M:%S")} [W57-checks] {msg}', flush=True)
 
 
 def _sha256_file(path):
@@ -256,6 +307,103 @@ def _probes(block, network, params):
     return out
 
 
+def emulate_loaded_solution(block, network, ordinal):
+    """EMULATED loaded solution -- NOT a solve (W57, Planner ruling on W56 Q2, option (a)). Sets the values a loaded
+    initialisation solution would have set, so that e = value(flow) - value(expectation) is non-zero with both signs
+    and a distinct magnitude per (block, family, index); formula and constants declared in spec v3 (see the EMU_*
+    constants). The flow is moved through the reference generator's pg (P) / qg (Q) Var, which enters pg_adn / qg_adn
+    with coefficient +1 (model_construction_helpers.interface_pf_{p,q}_distribution_def); the achieved e is read back
+    from the model per index and compared with its target, so a wrong Var or coefficient fails here. Bounds are NOT
+    respected and nothing is feasible: the point only has to make the minimal split non-trivial."""
+    if not hasattr(block, 'row18_alpha'):
+        return {'wired': False}
+    ref_gen = network.get_reference_gen_idx()
+    t_ord = {p: i for i, p in enumerate(block.periods)}
+    gen_vars = (block.pg, block.qg)       # this emulation's own mapping; verified through the achieved e below
+    out = {'wired': True, 'ordinal': ordinal, 'reference_gen_idx': ref_gen, 'families': {}}
+    for f, (row_name, _up, _down, flow_name, expectation_name) in enumerate(FAMILIES):
+        row, flow, expectation = getattr(block, row_name), getattr(block, flow_name), getattr(block, expectation_name)
+        a, c, d = EMU_EXPECTATION[f]
+        for p in block.periods:
+            expectation[p].set_value(a + c * t_ord[p] + d * ordinal)
+        n_idx = len(row)
+        max_err, n_pos, n_neg, mags = 0.0, 0, 0, []
+        for k, index in enumerate(row):
+            s_m, s_o, p = index
+            sign = -1.0 if (k + f + ordinal) % EMU_NEG_EVERY == 0 else 1.0
+            target = sign * (EMU_MAG_BASE + EMU_MAG_STEP * ((2 * ordinal + f) * n_idx + k))
+            var = gen_vars[f][ref_gen, s_m, s_o, p]
+            shift = (float(pe.value(expectation[p])) + target) - float(pe.value(flow[s_m, s_o, p]))
+            var.set_value(float(var.value) + shift)
+            achieved = float(pe.value(flow[s_m, s_o, p])) - float(pe.value(expectation[p]))
+            max_err = max(max_err, abs(achieved - target))
+            n_pos += target > 0.0
+            n_neg += target < 0.0
+            mags.append(abs(target))
+        out['families'][row_name] = {
+            'generator_var': gen_vars[f].local_name, 'n_indices': n_idx, 'n_target_pos': n_pos,
+            'n_target_neg': n_neg, 'target_abs_min': min(mags), 'target_abs_max': max(mags),
+            'expectation_values': [float(pe.value(expectation[p])) for p in block.periods],
+            'max_abs_achieved_minus_target': max_err, 'within_tolerance': max_err <= TOL_EMULATION_ABS}
+    out['pass'] = all(v['within_tolerance'] for v in out['families'].values())
+    return out
+
+
+def emulate_all(planning, dso_models, node_ids=None):
+    """`emulate_loaded_solution` on every wired DSO block, ordinal = position in node/year/day order."""
+    records, ordinal = {}, 0
+    for node_id, dn in planning.distribution_networks.items():
+        if node_ids is not None and node_id not in node_ids:
+            continue
+        for y in dn.years:
+            for d in dn.days:
+                records[f'DSO:{node_id}:{y}:{d}'] = emulate_loaded_solution(dso_models[node_id][y][d],
+                                                                            dn.network[y][d], ordinal)
+                ordinal += 1
+    return records
+
+
+def _min_gap(values):
+    s = sorted(values)
+    return min((b - a for a, b in zip(s, s[1:])), default=float('inf'))
+
+
+def non_vacuity(states, emulation):
+    """W57 NON-VACUITY (declared in spec v3; the check FAILS if any requirement is not met): per (block, family)
+    >= MIN_SIGN_SHARE of indices e > 0 and e < 0 and none e == 0; per block all |e| (both families) pairwise
+    distinct with gap >= MIN_MAG_GAP; over the run all |e| distinct with gap >= MIN_MAG_GAP; every emulation target
+    hit within TOL_EMULATION_ABS. `states` maps block key -> the active-phase `row18_structural` output (with its
+    private `_abs_e_by_family`, popped here)."""
+    per_block, all_mags, ok = {}, [], bool(states)
+    for key, st in states.items():
+        abs_e = st.pop('_abs_e_by_family')
+        fam = {}
+        for row_name, counts in st['e_sign_counts_by_family'].items():
+            n = sum(counts.values())
+            share_pos, share_neg = counts['e_pos'] / n, counts['e_neg'] / n
+            fam[row_name] = {**counts, 'share_pos': share_pos, 'share_neg': share_neg,
+                             'abs_e_min': min(abs_e[row_name]), 'abs_e_max': max(abs_e[row_name]),
+                             'pass': share_pos >= MIN_SIGN_SHARE and share_neg >= MIN_SIGN_SHARE
+                             and counts['e_zero'] == 0}
+        block_mags = [m for v in abs_e.values() for m in v]
+        gap = _min_gap(block_mags)
+        distinct = len(set(block_mags)) == len(block_mags) and gap >= MIN_MAG_GAP
+        emu_ok = bool(emulation.get(key, {}).get('pass'))
+        b_ok = all(v['pass'] for v in fam.values()) and distinct and emu_ok
+        per_block[key] = {'families': fam, 'n_abs_e': len(block_mags), 'n_distinct_abs_e': len(set(block_mags)),
+                          'min_gap_abs_e_both_families': gap, 'magnitudes_distinct': distinct,
+                          'emulation_within_tolerance': emu_ok, 'pass': b_ok}
+        all_mags += block_mags
+        ok = ok and b_ok
+    run_gap = _min_gap(all_mags)
+    run_distinct = len(set(all_mags)) == len(all_mags) and run_gap >= MIN_MAG_GAP
+    return {'requirements': {'min_sign_share_each_sign_per_block_family': MIN_SIGN_SHARE, 'e_zero_allowed': 0,
+                             'min_mag_gap': MIN_MAG_GAP, 'tol_emulation_abs': TOL_EMULATION_ABS},
+            'per_block': per_block, 'n_abs_e_run': len(all_mags), 'n_distinct_abs_e_run': len(set(all_mags)),
+            'min_gap_abs_e_run': run_gap, 'magnitudes_distinct_run': run_distinct,
+            'pass': bool(ok and run_distinct)}
+
+
 def row18_structural(block, phase):
     """PER-INDEX structural assertions on a wired block (spec v2 `zero_solve_checks`). `phase` is 'init' (at the
     would-be initialisation solve) or 'active' (after `_prepare_distribution_objectives_for_admm`). Every index of
@@ -267,9 +415,14 @@ def row18_structural(block, phase):
     families = {}
     fixed_pair_active_row = []
     signs = {'e_pos': 0, 'e_neg': 0, 'e_zero': 0}
+    signs_by_family = {}
+    abs_e_by_family = {}
     max_abs_e = 0.0
     ok = True
     for row_name, up_name, down_name, flow_name, expectation_name in FAMILIES:
+        fam_signs = signs_by_family.setdefault(row_name, {'e_pos': 0, 'e_neg': 0, 'e_zero': 0})
+        fam_abs_e = abs_e_by_family.setdefault(row_name, [])
+        max_abs_residual, n_residual_exactly_zero = 0.0, 0
         row, up, down = getattr(block, row_name), getattr(block, up_name), getattr(block, down_name)
         flow, expectation = getattr(block, flow_name), getattr(block, expectation_name)
         index_sets_equal = set(row.keys()) == set(up.keys()) == set(down.keys())
@@ -295,10 +448,20 @@ def row18_structural(block, phase):
             else:
                 s_m, s_o, p = index
                 e = float(pe.value(flow[s_m, s_o, p])) - float(pe.value(expectation[p]))
-                signs['e_pos' if e > 0.0 else ('e_neg' if e < 0.0 else 'e_zero')] += 1
+                sign_key = 'e_pos' if e > 0.0 else ('e_neg' if e < 0.0 else 'e_zero')
+                signs[sign_key] += 1
+                fam_signs[sign_key] += 1
+                fam_abs_e.append(abs(e))
                 max_abs_e = max(max_abs_e, abs(e))
                 expected_up, expected_down = max(e, 0.0), max(-e, 0.0)
+                # The BODY of the defining row, evaluated by Pyomo from the model itself -- NOT from the e recomputed
+                # above. The split assertion below uses this script's FAMILIES table, which equals production's (the
+                # checklist), so it cannot detect a table wrong in both places; the body can: it is zero only if the
+                # split production wrote satisfies the actual row. This is the check that cross-validates the family
+                # table against the rows (W57).
                 residual = float(pe.value(r.body)) - float(pe.value(r.upper))
+                max_abs_residual = max(max_abs_residual, abs(residual))
+                n_residual_exactly_zero += residual == 0.0
                 if not r.active:
                     bad.append('row_inactive')
                 if u.fixed:
@@ -311,14 +474,18 @@ def row18_structural(block, phase):
                     bad.append(f'down={d.value!r}!=max(-e,0)={expected_down!r}')
                 if not r.equality or float(pe.value(r.lower)) != float(pe.value(r.upper)):
                     bad.append('row_not_an_equality')
-                if residual != 0.0:
-                    bad.append(f'residual={residual!r}')
+                if not abs(residual) <= TOL_BODY_ABS:
+                    bad.append(f'body_residual={residual!r}')
             if bad:
                 violations.append({'index': str(index), 'failures': bad})
         fam_ok = index_sets_equal and n_idx == n_expected and not violations
         families[row_name] = {'n_indices': n_idx, 'n_expected': n_expected, 'index_sets_equal': index_sets_equal,
                               'n_violations': len(violations), 'violations_first_20': violations[:20],
                               'pass': fam_ok}
+        if phase == 'active':
+            families[row_name]['body_residual_max_abs'] = max_abs_residual
+            families[row_name]['body_residual_n_exactly_zero'] = n_residual_exactly_zero
+            families[row_name]['body_residual_tolerance'] = TOL_BODY_ABS
         ok = ok and fam_ok
     out = {'phase': phase, 'families': families,
            'n_indices_fixed_pair_with_active_row': len(fixed_pair_active_row),
@@ -330,7 +497,9 @@ def row18_structural(block, phase):
         ok = ok and out['charge_exactly_zero']
     else:
         out['e_sign_counts'] = signs
+        out['e_sign_counts_by_family'] = signs_by_family
         out['max_abs_e'] = max_abs_e
+        out['_abs_e_by_family'] = abs_e_by_family    # private: consumed (popped) by non_vacuity
     out['pass'] = bool(ok)
     return out
 
@@ -528,13 +697,15 @@ def check_2x2(planning, results):
         'pass': a_ok and tso_ok and n_indices_init > 0,
     }
 
-    _log('B: _prepare_distribution_objectives_for_admm on the returned models')
+    _log('B: EMULATED loaded solution (NOT a solve) on every DSO block, then _prepare_distribution_objectives_for_admm')
+    emulation_b = emulate_all(planning, dso_models)
     post = post_prepare_states(planning, dso_models)
     b_ok = True
     c_ok = True
     per_block_b, per_block_c = {}, {}
     n_steps_b = 0
     signs_b = {'e_pos': 0, 'e_neg': 0, 'e_zero': 0}
+    structural_b = {}
     for node_id, blocks in post.items():
         for key, st in blocks.items():
             st0 = init[node_id][key]
@@ -549,6 +720,7 @@ def check_2x2(planning, results):
             for k in signs_b:
                 signs_b[k] += st['structural']['e_sign_counts'][k]
             per_block_b[f'DSO:{node_id}:{key}'] = {**_strip(st), 'pass': ok}
+            structural_b[f'DSO:{node_id}:{key}'] = st['structural']
             b_ok = b_ok and ok
             n_s, n_t = st['n_scenarios'], st['n_periods']
             delta = {k: st['counts'][k] - st0['counts'][k] for k in st['counts']}
@@ -560,7 +732,8 @@ def check_2x2(planning, results):
                                                    'delta_after_minus_init': delta,
                                                    'expected_delta': expected_delta, 'pass': same}
             c_ok = c_ok and same
-    non_vacuous_b = signs_b['e_pos'] > 0 and signs_b['e_neg'] > 0
+    non_vacuity_b = non_vacuity(structural_b, emulation_b)
+    non_vacuous_b = non_vacuity_b['pass'] and signs_b['e_pos'] > 0 and signs_b['e_neg'] > 0
 
     _log('B: update_distribution_models_to_admm (placeholder scale) -> ADMM objective references row18_alpha')
     admm_refs = {}
@@ -592,8 +765,11 @@ def check_2x2(planning, results):
         'call': 'shared_resources_planning._prepare_distribution_objectives_for_admm(distribution_networks, models)',
         'mechanism': ('structural (W54): per index minimal split, unfix, then activate; row18_alpha untouched; '
                       'no rebuild'),
-        'e_sign_counts_all_blocks': signs_b, 'minimal_split_assertion_non_vacuous': non_vacuous_b,
-        'tolerances_declared': {'charge_rel': TOL_REL_CHARGE, 'objective_rel': TOL_REL_OBJECTIVE},
+        'solution_source': SOLUTION_SOURCE, 'emulation_per_block': emulation_b,
+        'e_sign_counts_all_blocks': signs_b, 'non_vacuity': non_vacuity_b,
+        'minimal_split_assertion_non_vacuous': non_vacuous_b,
+        'tolerances_declared': {'charge_rel': TOL_REL_CHARGE, 'objective_rel': TOL_REL_OBJECTIVE,
+                                'body_abs': TOL_BODY_ABS, 'emulation_abs': TOL_EMULATION_ABS},
         'per_block': per_block_b, 'n_unit_steps': n_steps_b,
         'admm_objective': {'placeholder_objective_scale': PLACEHOLDER_OBJECTIVE_SCALE, 'error': admm_error,
                            'per_block': admm_refs, 'pass': admm_ok},
@@ -621,10 +797,12 @@ def check_2x2_vs_alpha0(planning0, init_run, post_run, results):
             a_post = post_run[node_id][key]
             delta_init = {k: st['counts'][k] - z_init['counts'][k] for k in st['counts']}
             delta_post = {k: a_post['counts'][k] - z_post['counts'][k] for k in a_post['counts']}
+            # W57 (spec v3): n_expression_data +1 in both phases -- `row18_deviation_charge` is a scalar Expression.
+            # v2 predicted +0 (a spec error; r5's C2 FAIL stays on the record).
             expected_init = {'n_var_data': 4 * n_s * n_t, 'n_constraint_data': 2 * n_s * n_t,
-                             'n_constraint_data_active': 0, 'n_expression_data': 0, 'n_var_data_unfixed': 0}
+                             'n_constraint_data_active': 0, 'n_expression_data': 1, 'n_var_data_unfixed': 0}
             expected_post = {'n_var_data': 4 * n_s * n_t, 'n_constraint_data': 2 * n_s * n_t,
-                             'n_constraint_data_active': 2 * n_s * n_t, 'n_expression_data': 0,
+                             'n_constraint_data_active': 2 * n_s * n_t, 'n_expression_data': 1,
                              'n_var_data_unfixed': 4 * n_s * n_t}
             ok = (not z_init['row18_wired'] and z_init['row18_alpha'] is None and z_init['row18_alpha_admm'] is None
                   and not z_post['row18_wired'] and z_post['row18_alpha_admm'] is None
@@ -660,8 +838,11 @@ def check_parallel_builder(planning, results):
         per_block[f'DSO:{node_id}:{key}'] = {**_strip(st), 'pass': b}
         ok = ok and b
     n_init_blocks = len(per_block)
+    _log('A2: EMULATED loaded solution (NOT a solve) on the node, then _prepare_distribution_objectives_for_admm')
+    emulation = emulate_all(planning, {node_id: model}, node_ids=(node_id,))
     srp._prepare_distribution_objectives_for_admm({node_id: dn}, {node_id: model})
     per_block_active = {}
+    structural = {}
     ok_active = True
     signs = {'e_pos': 0, 'e_neg': 0, 'e_zero': 0}
     for y in dn.years:
@@ -671,13 +852,46 @@ def check_parallel_builder(planning, results):
             for k in signs:
                 signs[k] += st['structural']['e_sign_counts'][k]
             per_block_active[f'DSO:{node_id}:{y}:{d}'] = {**_strip(st), 'pass': b}
+            structural[f'DSO:{node_id}:{y}:{d}'] = st['structural']
             ok_active = ok_active and b
+    nv = non_vacuity(structural, emulation)
     n_expected = len(dn.years) * len(dn.days)
+    negative = negative_control_swapped_family_table(
+        model[next(iter(dn.years))][next(iter(dn.days))], f'DSO:{node_id}:{next(iter(dn.years))}:{next(iter(dn.days))}')
     results['A2_parallel_builder_in_process'] = {
         'call': f'create_distribution_network_model({node_id}, ..., premium_alpha={ALPHA_RUN}, premium_floor=None)',
+        'solution_source': SOLUTION_SOURCE, 'emulation_per_block': emulation,
         'per_block_init': per_block, 'per_block_after_activation': per_block_active,
-        'e_sign_counts_after_activation': signs, 'stub_calls': probe.counts(),
-        'pass': (ok and ok_active and n_init_blocks == n_expected and len(per_block_active) == n_expected)}
+        'e_sign_counts_after_activation': signs, 'non_vacuity': nv, 'stub_calls': probe.counts(),
+        'negative_control_production_body_check': negative,
+        'pass': (ok and ok_active and nv['pass'] and negative['pass'] and n_init_blocks == n_expected
+                 and len(per_block_active) == n_expected)}
+
+
+def negative_control_swapped_family_table(block, key):
+    """W57 NEGATIVE CONTROL for production's body check (item 2), run AFTER A2's activation assertions are recorded:
+    the block is returned to the initialisation state by production's own `_set_row18_inactive_for_initialisation`
+    (the emulated flows and expectations are untouched), `_ROW18_DEVIATION_FAMILIES` is replaced for ONE call by a
+    table whose flow/expectation are swapped between the P and Q families, and `_activate_row18_with_settlement`
+    MUST raise its body-check RuntimeError. The table is restored in `finally` and asserted restored."""
+    original = srp._ROW18_DEVIATION_FAMILIES
+    swapped = ((original[0][0], original[0][1], original[0][2], original[1][3], original[1][4]),
+               (original[1][0], original[1][1], original[1][2], original[0][3], original[0][4]))
+    srp._set_row18_inactive_for_initialisation(block)
+    error = None
+    srp._ROW18_DEVIATION_FAMILIES = swapped
+    try:
+        srp._activate_row18_with_settlement(block)
+    except RuntimeError as exc:
+        error = str(exc)
+    finally:
+        srp._ROW18_DEVIATION_FAMILIES = original
+    restored = srp._ROW18_DEVIATION_FAMILIES is original
+    raised_by_body_check = error is not None and 'defining-row body' in error
+    return {'block': key, 'swapped_table': [list(r) for r in swapped], 'raised': error is not None,
+            'error': error, 'raised_by_body_check': raised_by_body_check, 'table_restored': restored,
+            'note': 'the block is left in the swapped-activation state; nothing after this reads it',
+            'pass': bool(raised_by_body_check and restored)}
 
 
 # ======================================================================================================================
@@ -811,8 +1025,19 @@ def capture_path_checklist():
     inactive = getattr(srp, '_set_row18_inactive_for_initialisation', None)
     activate = getattr(srp, '_activate_row18_with_settlement', None)
     sources = [inspect.getsource(f) for f in (inactive, activate) if callable(f)]
+    activate_src = inspect.getsource(activate) if callable(activate) else ''
+    with open(os.path.join(REPO, SPEC_V3_PATH)) as handle:
+        spec_v3 = json.load(handle)
+    declared = spec_v3.get(SPEC_V3_KEY, {}).get('declared_constants', {})
     return {
         'frozen_spec_v2_sha256_matches': _sha256_file(os.path.join(REPO, SPEC_V2_PATH)) == SPEC_V2_SHA256,
+        'frozen_spec_v3_sha256_matches': _sha256_file(os.path.join(REPO, SPEC_V3_PATH)) == SPEC_V3_SHA256,
+        'frozen_spec_v3_constants_equal_this_scripts': declared == DECLARED_CONSTANTS,
+        'production_body_check_present_with_declared_tolerance': (
+            getattr(srp, '_ROW18_ACTIVATION_BODY_TOL', None) == PRODUCTION_BODY_TOL_DECLARED
+            and 'pe.value(row[index].body) - pe.value(row[index].upper)' in activate_src
+            and 'if not abs(body_residual) <= _ROW18_ACTIVATION_BODY_TOL:' in activate_src),
+        'emulation_capture_path_reference_gen_idx': callable(getattr(Network, 'get_reference_gen_idx', None)),
         'both_production_functions_present': callable(inactive) and callable(activate),
         'production_family_table_equals_this_scripts': getattr(srp, '_ROW18_DEVIATION_FAMILIES', None) == FAMILIES,
         'production_functions_never_write_row18_alpha': bool(sources) and all(
@@ -820,6 +1045,13 @@ def capture_path_checklist():
         'W39_counts_helper_reports_active_and_unfixed': {'n_constraint_data_active', 'n_var_data_unfixed'} <= set(
             W39C._component_counts(pe.ConcreteModel()).keys()),
     }
+
+
+DECLARED_CONSTANTS = {
+    'EMU_MAG_BASE': EMU_MAG_BASE, 'EMU_MAG_STEP': EMU_MAG_STEP, 'EMU_NEG_EVERY': EMU_NEG_EVERY,
+    'EMU_EXPECTATION': [list(x) for x in EMU_EXPECTATION], 'TOL_EMULATION_ABS': TOL_EMULATION_ABS,
+    'TOL_BODY_ABS': TOL_BODY_ABS, 'MIN_SIGN_SHARE': MIN_SIGN_SHARE, 'MIN_MAG_GAP': MIN_MAG_GAP,
+    'PRODUCTION_BODY_TOL_DECLARED': PRODUCTION_BODY_TOL_DECLARED}
 
 
 def main():
@@ -873,6 +1105,9 @@ def main():
                         'sha256_observed': _sha256_file(os.path.join(REPO, SPEC_PATH))},
         'frozen_spec_v2': {'path': SPEC_V2_PATH, 'sha256_pinned': SPEC_V2_SHA256,
                            'sha256_observed': _sha256_file(os.path.join(REPO, SPEC_V2_PATH))},
+        'frozen_spec_v3': {'path': SPEC_V3_PATH, 'key': SPEC_V3_KEY, 'sha256_pinned': SPEC_V3_SHA256,
+                           'sha256_observed': _sha256_file(os.path.join(REPO, SPEC_V3_PATH))},
+        'solution_source': SOLUTION_SOURCE, 'declared_constants': DECLARED_CONSTANTS,
         'capture_path_checklist': checklist,
         'timestamp_utc': _utc(), 'interpreter': sys.executable, 'argv': sys.argv,
         'script': os.path.basename(__file__), 'script_sha256': _sha256_file(os.path.abspath(__file__)),

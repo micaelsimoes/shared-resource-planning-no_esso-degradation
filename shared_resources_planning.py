@@ -5153,6 +5153,11 @@ _ROW18_DEVIATION_FAMILIES = (
     ('row18_dev_p_def', 'row18_dev_p_up', 'row18_dev_p_down', 'pg_adn', 'expected_interface_pf_p'),
     ('row18_dev_q_def', 'row18_dev_q_up', 'row18_dev_q_down', 'qg_adn', 'expected_interface_pf_q'),
 )
+# P5.15 W57 (Planner item 2): absolute tolerance (per unit) on each defining row's
+# body right after `_activate_row18_with_settlement` sets the minimal split. The body
+# is then zero up to floating-point rounding of order eps * |flow|, so a residual
+# above this bound can only mean the family table above does not match the rows.
+_ROW18_ACTIVATION_BODY_TOL = 1e-9
 
 
 def _set_row18_inactive_for_initialisation(model):
@@ -5205,7 +5210,13 @@ def _activate_row18_with_settlement(model):
 
     A no-op where row 18 is not wired. On a wired block every index must be in the
     initialisation state (row inactive, both deviation Vars fixed); anything else raises
-    rather than being repaired."""
+    rather than being repaired.
+
+    P5.15 W57: after activation each defining row's body is evaluated ONCE, by Pyomo,
+    from the model itself, and a residual above `_ROW18_ACTIVATION_BODY_TOL` raises --
+    a runtime cross-check of `_ROW18_DEVIATION_FAMILIES` against the actual rows on
+    every instance (3x3, paper scale), where no harness runs. O(indices), once per
+    activation."""
     if not hasattr(model, 'row18_alpha'):
         return
     for row_name, up_name, down_name, _flow_name, _expectation_name in _ROW18_DEVIATION_FAMILIES:
@@ -5231,6 +5242,15 @@ def _activate_row18_with_settlement(model):
             up[index].unfix()
             down[index].unfix()
             row[index].activate()
+    for row_name, _up_name, _down_name, _flow_name, _expectation_name in _ROW18_DEVIATION_FAMILIES:
+        row = getattr(model, row_name)
+        for index in row:
+            body_residual = pe.value(row[index].body) - pe.value(row[index].upper)
+            if not abs(body_residual) <= _ROW18_ACTIVATION_BODY_TOL:   # also catches NaN
+                raise RuntimeError(f'_activate_row18_with_settlement: defining-row body of {row_name}[{index}] '
+                                   f'on block {model.name!r} is {body_residual!r} after the minimal split '
+                                   f'(tolerance {_ROW18_ACTIVATION_BODY_TOL!r}): the row 18 family table does '
+                                   f'not match the rows; refusing to continue.')
 
 
 def _prepare_distribution_objectives_for_admm(distribution_networks, models):

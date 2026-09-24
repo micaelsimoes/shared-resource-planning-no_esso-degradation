@@ -25,6 +25,10 @@ claimed to be no-ops on every block. The zero-solve checks (`p515_s53_init_fix_z
 show it structurally at 1 x 1 without solving; this gate is the solve-bearing test.
 W56 UPDATE (Planner task W56): substitution 3's `w51_code_presence` and the armed counter's acting markers are
 re-targeted to the structural mechanism; nothing else in this gate changed. WRITTEN, NOT RUN at W56.
+W57 UPDATE (Planner task W57 item 4): `_activate_row18_with_settlement` now evaluates each defining row's body after
+activation and raises above `_ROW18_ACTIVATION_BODY_TOL` (W57 item 2; frozen spec v3). The 19 W56 presence checks
+still hold on the live module unchanged; two are ADDED (the body check follows activation, in order; the tolerance
+is the declared 1e-9). Nothing else in this gate changed. WRITTEN, NOT RUN at W57.
 
 HOW IT IS BUILT. The committed W48 gate (`p515_s52_srp1_bitwise_gate.py`) BY IMPORT, which imports the W39 gate 1
 (`p515_s51_srp1_bitwise_gate.py`) -> the W35 gate (`p515_s50_generalization_gate.py`) -> W32 -> W10, whose armed
@@ -149,6 +153,8 @@ EXPECTED_ROW18_DEVIATION_FAMILIES = (
     ('row18_dev_p_def', 'row18_dev_p_up', 'row18_dev_p_down', 'pg_adn', 'expected_interface_pf_p'),
     ('row18_dev_q_def', 'row18_dev_q_up', 'row18_dev_q_down', 'qg_adn', 'expected_interface_pf_q'),
 )
+# W57: the activation body-check tolerance (production `_ROW18_ACTIVATION_BODY_TOL`), declared here.
+EXPECTED_ROW18_ACTIVATION_BODY_TOL = 1e-9
 
 
 def w51_code_presence():
@@ -184,6 +190,12 @@ def w51_code_presence():
             'up[index].unfix()', 'down[index].unfix()', 'row[index].activate()'),
         'activate_never_writes_alpha': ('row18_alpha.set_value' not in activate_src
                                         and 'row18_alpha_admm' not in activate_src),
+        'activate_checks_defining_row_bodies_after_activation': _ordered(
+            activate_src, 'row[index].activate()',
+            'body_residual = pe.value(row[index].body) - pe.value(row[index].upper)',
+            'if not abs(body_residual) <= _ROW18_ACTIVATION_BODY_TOL:', 'defining-row body of'),
+        'activation_body_tolerance_as_declared': (
+            getattr(srp, '_ROW18_ACTIVATION_BODY_TOL', None) == EXPECTED_ROW18_ACTIVATION_BODY_TOL),
         'w51_param_retired_from_module': 'row18_alpha_admm' not in srp_src,
         'sequential_builder_deactivates_after_wiring_before_solve': _ordered(
             seq_src, 'add_scenario_commitment_terms(', '_set_row18_inactive_for_initialisation(dso_model[year][day])',
@@ -325,9 +337,11 @@ def main():
     payload = {
         'schema': SCHEMA + '_addendum', 'stage': STAGE,
         'authority': ['Planner task W51', 'Planner task W56 (structural form)',
+                      'Planner task W57 (activation body check)',
                       'PLANNER_BRIEF_2026-09-13.md Addendum 40 ruling 2',
                       'data/SRP1/Results/P515S53/frozen_s53_spec_v23_39a07fd8.json ruling2_init_fix',
-                      'data/SRP1/Results/P515S53/row18_structural/frozen_s53_row18_structural_spec_v2_5123e67b.json'],
+                      'data/SRP1/Results/P515S53/row18_structural/frozen_s53_row18_structural_spec_v2_5123e67b.json',
+                      'data/SRP1/Results/P515S53/row18_structural/frozen_s53_row18_structural_spec_v3_1064db50.json'],
         'recorded_prediction': 'the SRP1 bitwise gate passes unchanged (nothing is wired at one scenario)',
         'timestamp_utc': datetime.now(timezone.utc).isoformat(),
         'git_head_at_run': W10._git(['rev-parse', 'HEAD']),

@@ -1,9 +1,17 @@
-"""P5.15 Addendum 40 ruling 2 (task W54) -- .NL PROBE for row 18's STRUCTURAL inactivation at the ADMM
+"""P5.15 Addendum 40 ruling 2 (tasks W54 -> W57) -- .NL PROBE for row 18's STRUCTURAL inactivation at the ADMM
 initialisation solve. ZERO SOLVES.
 
-Authority: frozen spec `data/SRP1/Results/P515S53/row18_structural/frozen_s53_row18_structural_spec_v1_05934ab0.json`
-(amends v23 `ruling2_init_fix`'s mechanism; its predictions P0-P3 were recorded before this run);
+Authority: frozen spec `data/SRP1/Results/P515S53/row18_structural/frozen_s53_row18_structural_spec_v3_1064db50.json`
+(key `nl_probe_r2`; predecessor v2 5123e67b, which succeeded v1 05934ab0 -- v1 governed r1 of this probe);
 PLANNER_BRIEF_2026-09-13.md Addendum 40 ruling 2. Template: `p515_s51_nl_identity_probe.py`.
+
+W57 (Planner item 3): r1 showed P1 (A == B) on ONE block only (node 5, 2025 Spring). This version (schema v2)
+probes EVERY DSO block of the 2 x 2 instance (3 nodes x 1 year x 4 days = 12 blocks; the declared list is asserted
+against the instance before any build), all arms, and evaluates each prediction PER BLOCK. The r1 script
+(sha256 a15cfaef..., committed at d573e145) is in git; r1's evidence is cited in a Planner report and is never
+re-run onto: the output directory is write-once and label r1 exists. P3 is v2's restated P3 (same columns,
++2nT rows), recorded in v3 BEFORE this run -- at r2 it is a genuine prediction, not an explanation. P4 (new,
+v3): the r1 block's A and B files reproduce r1's hashes exactly.
 
 THE CLAIM UNDER TEST. W54 holds row 18 inactive at initialisation by deactivating its defining rows and fixing the
 deviation pairs at 0 (`shared_resources_planning._set_row18_inactive_for_initialisation`). The approach is licensed
@@ -11,9 +19,9 @@ only if the .nl file production hands IPOPT for such a block is BYTE-IDENTICAL t
 Pyomo's nl_v2 writer folds the fixed Vars to constants and skips the inactive rows. That is expected from the writer
 source but was not verified before this probe.
 
-ARMS (one 2 x 2 DSO block: the first DSO node's first (year, day) block, captured at the moment production would
-hand it to IPOPT -- the node's `.optimize` is replaced ON THE INSTANCE by a stub that writes the .nl files and
-returns no result):
+ARMS (every 2 x 2 DSO block, each captured at the moment production would hand it to IPOPT -- the node's
+`.optimize` is replaced ON THE INSTANCE by a stub that writes the .nl files of every block of the node and returns
+no result; one build per (arm, node)):
   A         alpha = 0 build (row 18 not constructed)
   A_repeat  declared determinism control: a second, independent alpha = 0 build
   B         alpha = 0.5, W54 structural fix (rows inactive, deviation Vars fixed at 0)
@@ -22,22 +30,23 @@ returns no result):
   D         NEGATIVE CONTROL: alpha = 0.5, deviation Vars fixed at 0, rows left ACTIVE (probe-local, never production)
 Each block is written twice: symbolic_solver_labels off (the production form) and on (names; .row/.col).
 
-PREDICTIONS (recorded in the frozen spec before the run; evaluated here, never tuned):
-  P0  sha256(A) == sha256(A_repeat)          (control)
-  P1  sha256(A) == sha256(B) exactly          (STOP if false -- no workaround)
+PREDICTIONS (recorded in frozen spec v3 before the run; evaluated PER BLOCK here, never tuned):
+  P0  sha256(A) == sha256(A_repeat), both label settings, .row/.col identical      (control)
+  P1  sha256(A) == sha256(B) EXACTLY, both label settings, .row/.col identical     (STOP if false on ANY block)
   P2  C - A = +4nT columns, +2nT rows, and the extra names are exactly row 18's
-  P3  D has fewer columns than A              (STOP if false -- the hazard reading would be wrong)
+  P3  D has the SAME columns as A (.col identical) and +2nT rows, the extra rows exactly row18_dev_{p,q}_def
+  P4  (block DSO:5:2025:Spring only) A's and B's files reproduce r1's sha256 exactly (both label settings, .row/.col)
 
 Writing an .nl is not a solve: `SolveProfileGuard(permitted=())` is armed for the whole run and verified at exactly 0.
 
 EXACT COMMAND (worktree root, canonical interpreter, attached, BOTH streams captured):
   NLP_SOLVER_PATH=/usr/local/bin/ipopt LP_SOLVER_PATH=<from the main checkout .env> \\
   /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python -u p515_s53_row18_structural_nl_probe.py \\
-      --label r1 --scratch <dir outside the repo> \\
-      > data/SRP1/Results/P515S53/row18_structural/nl_probe_r1_launch.log 2>&1
+      --label r2 --scratch <dir outside the repo> \\
+      > data/SRP1/Results/P515S53/row18_structural/nl_probe_r2_launch.log 2>&1
 OUTPUT (write-once): data/SRP1/Results/P515S53/row18_structural/nl_probe/<label>/{nl_probe.json, manifest_sha256.json,
 cases/}; the .nl/.row/.col files go to <scratch>/nl and are hash-recorded in nl_probe.json.
-Exit 0 when P0-P3 all hold, 1 otherwise.
+Exit 0 when P0-P4 all hold on every block, 1 otherwise.
 """
 
 import argparse
@@ -66,11 +75,21 @@ import shared_resources_planning as srp  # noqa: E402
 import p515_s44_scale_measurement as S  # noqa: E402
 from shared_resources_planning import SharedResourcesPlanning  # noqa: E402
 
-STAGE = 'P5.15 Addendum 40 ruling 2 (W54) -- .nl probe: row 18 structurally inactive at initialisation'
-SCHEMA = 'p515_s53_row18_structural_nl_probe_v1'
+STAGE = ('P5.15 Addendum 40 ruling 2 (W57) -- .nl probe r2: row 18 structurally inactive at initialisation, '
+         'every 2 x 2 DSO block')
+SCHEMA = 'p515_s53_row18_structural_nl_probe_v2'
 SPEC_REL = os.path.join('data', 'SRP1', 'Results', 'P515S53', 'row18_structural',
-                        'frozen_s53_row18_structural_spec_v1_05934ab0.json')
-SPEC_SHA256 = '05934ab0803a6744a5f22106865baafa27eb46f76d4240adbbc53244aac7be04'
+                        'frozen_s53_row18_structural_spec_v3_1064db50.json')
+SPEC_SHA256 = '1064db50f8d339ac8bbc9ffdcdb2485e9e06b20707dbb73748dd840fe3878ff7'
+SPEC_KEY = 'nl_probe_r2'
+# Declared in spec v3 before the run: every DSO block of the 2 x 2 instance (asserted against the instance read).
+DECLARED_BLOCKS = tuple(f'DSO:{n}:2025:{d}' for n in (5, 7, 9) for d in ('Spring', 'Summer', 'Autumn', 'Winter'))
+# r1 (v1, committed at bf36d414): block DSO:5:2025:Spring, arms A and B (identical); P4 compares against these.
+R1_BLOCK = 'DSO:5:2025:Spring'
+R1_HASHES = {'labels_off': {'nl': 'a65a93ff3c49f0e1362dea6b100b5b85ef315c6aa59e7aa68cf5fb6556e9d87d'},
+             'labels_on': {'nl': '8379c362fb5e261da8e0c1fe6605803a671820d18e05b21e396c2a506ccfe968',
+                           'row': '59af856a5034545b99343c68d767abcf794f873663a74964bd81c8430b69b389',
+                           'col': 'a12d53c2cd24bcb67c35047c0324c2b1e9bcfab6bf9b7ea0878ce692b5d05144'}}
 OUT_ROOT_REL = os.path.join('data', 'SRP1', 'Results', 'P515S53', 'row18_structural', 'nl_probe')
 W51_COMMIT = '7a98b25e'
 FUNCTION = '_set_row18_inactive_for_initialisation'
@@ -81,7 +100,7 @@ DEV_VARS = ('row18_dev_p_up', 'row18_dev_p_down', 'row18_dev_q_up', 'row18_dev_q
 
 
 def _log(msg):
-    print(f'{datetime.now(timezone.utc).strftime("%H:%M:%S")} [W54-nl-probe] {msg}', flush=True)
+    print(f'{datetime.now(timezone.utc).strftime("%H:%M:%S")} [W57-nl-probe] {msg}', flush=True)
 
 
 def _sha256_file(path):
@@ -160,10 +179,10 @@ def _nl_header(path):
             'n_objs': nums[2], 'n_ranges': nums[3], 'n_eqns': nums[4]}
 
 
-def write_nl(block, arm, nl_dir):
+def write_nl(block, stem, nl_dir):
     out = {}
     for flag, tag in ((False, 'labels_off'), (True, 'labels_on')):
-        path = os.path.join(nl_dir, f'{arm}_{tag}.nl')
+        path = os.path.join(nl_dir, f'{stem}_{tag}.nl')
         if os.path.exists(path):
             raise SystemExit(f'REFUSED: exists: {path}')
         block.write(path, format='nl', io_options={'symbolic_solver_labels': flag})
@@ -178,18 +197,19 @@ def write_nl(block, arm, nl_dir):
 
 
 def build_arm(planning, node_id, arm, alpha, init_fn, nl_dir):
-    """Production's sequential DSO builder on one node, `.optimize` stubbed: writes the first block's .nl at the
-    moment it would be handed to IPOPT. `init_fn` (arms C/D) replaces the module-level initialisation function the
-    builder calls, for this build only."""
+    """Production's sequential DSO builder on one node, `.optimize` stubbed: writes EVERY block's .nl at the moment
+    it would be handed to IPOPT. `init_fn` (arms C/D) replaces the module-level initialisation function the builder
+    calls, for this build only. Returns one record per block, keyed 'DSO:<node>:<year>:<day>'."""
     dn = planning.distribution_networks[node_id]
-    year, day = next(iter(dn.years)), next(iter(dn.days))
-    captured = {'calls': 0}
+    captured = {'calls': 0, 'blocks': {}}
 
     def stub(model, *args, **kwargs):
         captured['calls'] += 1
-        block = model[year][day]
-        captured['state'] = row18_state(block)
-        captured['nl'] = write_nl(block, arm, nl_dir)
+        for y in dn.years:
+            for d in dn.days:
+                block = model[y][d]
+                captured['blocks'][f'DSO:{node_id}:{y}:{d}'] = {
+                    'state': row18_state(block), 'nl': write_nl(block, f'{arm}_{node_id}_{y}_{d}', nl_dir)}
         return {y: {d: None for d in dn.days} for y in dn.years}
 
     original = srp._set_row18_inactive_for_initialisation
@@ -205,11 +225,12 @@ def build_arm(planning, node_id, arm, alpha, init_fn, nl_dir):
         srp._set_row18_inactive_for_initialisation = original
         del dn.optimize
     assert srp._set_row18_inactive_for_initialisation is original
-    return {'arm': arm, 'alpha': alpha, 'block': f'DSO:{node_id}:{year}:{day}',
-            'init_function': 'production' if init_fn is None else init_fn.__name__ + (
-                f' ({W51_COMMIT})' if init_fn.__name__ == FUNCTION else ' (probe-local negative control)'),
-            'stub_calls': captured['calls'], 'row18_state_at_would_be_solve': captured.get('state'),
-            'nl': captured.get('nl')}
+    init_label = 'production' if init_fn is None else init_fn.__name__ + (
+        f' ({W51_COMMIT})' if init_fn.__name__ == FUNCTION else ' (probe-local negative control)')
+    return {key: {'arm': arm, 'alpha': alpha, 'block': key, 'init_function': init_label,
+                  'stub_calls_for_node': captured['calls'], 'row18_state_at_would_be_solve': rec['state'],
+                  'nl': rec['nl']}
+            for key, rec in captured['blocks'].items()}
 
 
 def _names(path):
@@ -254,6 +275,63 @@ def _all_true(d):
     return all(_all_true(v) if isinstance(v, dict) else bool(v) for v in d.values())
 
 
+def _block_predictions(A, A_repeat, B, C, D):
+    """P0-P3 on one block (P4 is evaluated separately, on the r1 block only)."""
+    sb = B['row18_state_at_would_be_solve']
+    n, T = sb['n_scenarios'], sb['n_periods']
+    cols = {k: v['nl']['labels_off']['n_vars_columns'] for k, v in (('A', A), ('C', C), ('D', D))}
+    rows = {k: v['nl']['labels_off']['n_cons_rows'] for k, v in (('A', A), ('C', C), ('D', D))}
+    p0 = _same(A, A_repeat)
+    p1 = _same(A, B)
+    diff_ac = name_diff(A, C)
+    diff_ad = name_diff(A, D)
+    expected_c_cols = {'row18_dev_p_down': n * T, 'row18_dev_p_up': n * T, 'row18_dev_q_down': n * T,
+                       'row18_dev_q_up': n * T}
+    expected_rows = {'row18_dev_p_def': n * T, 'row18_dev_q_def': n * T}
+    d_col_identical = A['nl']['labels_on']['col_sha256'] == D['nl']['labels_on']['col_sha256']
+    return n, T, {
+        'P0_control_A_equals_A_repeat': {'outcome': p0, 'holds': _all_true(p0)},
+        'P1_A_equals_B': {'outcome': p1, 'holds': _all_true(p1),
+                          'on_false': 'STOP and report the difference; no workaround'},
+        'P2_C_minus_A': {'n': n, 'T': T, 'column_delta': cols['C'] - cols['A'], 'row_delta': rows['C'] - rows['A'],
+                         'expected_column_delta': 4 * n * T, 'expected_row_delta': 2 * n * T,
+                         'extra_names': diff_ac,
+                         'holds': (cols['C'] - cols['A'] == 4 * n * T and rows['C'] - rows['A'] == 2 * n * T
+                                   and diff_ac['col']['only_in_y_by_family'] == expected_c_cols
+                                   and diff_ac['row']['only_in_y_by_family'] == expected_rows
+                                   and not diff_ac['col']['only_in_x_by_family']
+                                   and not diff_ac['row']['only_in_x_by_family'])},
+        'P3_D_same_columns_plus_2nT_rows': {
+            'column_delta': cols['D'] - cols['A'], 'row_delta': rows['D'] - rows['A'],
+            'expected_column_delta': 0, 'expected_row_delta': 2 * n * T,
+            'col_file_identical_to_A': d_col_identical, 'names_vs_A': diff_ad,
+            'holds': (cols['D'] == cols['A'] and rows['D'] - rows['A'] == 2 * n * T and d_col_identical
+                      and not diff_ad['col']['only_in_y_by_family'] and not diff_ad['col']['only_in_x_by_family']
+                      and diff_ad['row']['only_in_y_by_family'] == expected_rows
+                      and not diff_ad['row']['only_in_x_by_family'])},
+    }
+
+
+def _arm_state_assertions(A, B, C, D, n, T):
+    sa, sb, sc, sd = (A['row18_state_at_would_be_solve'], B['row18_state_at_would_be_solve'],
+                      C['row18_state_at_would_be_solve'], D['row18_state_at_would_be_solve'])
+    return {
+        'A_not_wired': sa['row18_wired'] is False and not sa['row18_alpha_admm_present'],
+        'B_structural_init_state': (sb['row18_wired'] and sb['row18_alpha'] == ALPHA_RUN
+                                    and not sb['row18_alpha_admm_present']
+                                    and sb['n_rows'] == 2 * n * T and sb['n_rows_active'] == 0
+                                    and sb['n_dev_vars'] == 4 * n * T and sb['n_dev_vars_fixed'] == 4 * n * T
+                                    and sb['fixed_dev_values'] == [0.0]
+                                    and sb['n_indices_fixed_pair_with_active_row'] == 0
+                                    and sb['charge_value'] == 0.0),
+        'C_w51_param_only_state': (sc['row18_wired'] and sc['row18_alpha'] == 0.0 and sc['row18_alpha_admm_present']
+                                   and sc['n_rows_active'] == 2 * n * T and sc['n_dev_vars_fixed'] == 0),
+        'D_negative_control_state': (sd['row18_wired'] and sd['row18_alpha'] == ALPHA_RUN
+                                     and sd['n_rows_active'] == 2 * n * T and sd['n_dev_vars_fixed'] == 4 * n * T
+                                     and sd['n_indices_fixed_pair_with_active_row'] == 2 * n * T),
+    }
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('--label', required=True)
@@ -273,10 +351,15 @@ def main():
 
     # ---- capture-path checklist, BEFORE anything is built (fails fast) ----
     spec_sha = _sha256_file(os.path.join(REPO, SPEC_REL))
+    with open(os.path.join(REPO, SPEC_REL)) as handle:
+        spec_v3 = json.load(handle)
     w51_fn, w51_src = w51_function()
     prod_init_src = inspect.getsource(srp._set_row18_inactive_for_initialisation)
     checklist = {
         'frozen_spec_sha256_matches': spec_sha == SPEC_SHA256,
+        'frozen_spec_declares_these_blocks_and_predictions': (
+            tuple(spec_v3.get(SPEC_KEY, {}).get('blocks_declared', ())) == DECLARED_BLOCKS
+            and sorted(spec_v3.get(SPEC_KEY, {}).get('predictions_per_block', {})) == ['P0', 'P1', 'P2', 'P3', 'P4']),
         'production_init_is_structural': ('.deactivate()' in prod_init_src and '.fix(0.0)' in prod_init_src
                                           and 'row18_alpha.set_value' not in prod_init_src
                                           and 'row18_alpha_admm' not in prod_init_src),
@@ -306,79 +389,72 @@ def main():
     planning.logs_dir = os.path.join(planning.results_dir, 'Logs')
     planning.read_planning_problem()
     planning.parallel_execution = False
-    node_id = next(iter(planning.distribution_networks))
+    instance_blocks = tuple(f'DSO:{node_id}:{y}:{d}' for node_id, dn in planning.distribution_networks.items()
+                            for y in dn.years for d in dn.days)
+    if instance_blocks != DECLARED_BLOCKS:
+        print(f'REFUSED: instance blocks {instance_blocks} != declared {DECLARED_BLOCKS}', file=sys.stderr)
+        return 1
 
-    arms = {}
+    arms = {}           # arms[arm][block_key] -> record
+    stub_calls = {}
     plan = (('A', 0.0, None), ('A_repeat', 0.0, None), ('B', ALPHA_RUN, None),
             ('C', ALPHA_RUN, w51_fn), ('D', ALPHA_RUN, negative_control_fix_rows_active))
     for arm, alpha, fn in plan:
-        _log(f'arm {arm}: alpha {alpha}, init function {"production" if fn is None else fn.__name__}')
-        arms[arm] = build_arm(planning, node_id, arm, alpha, fn, nl_dir)
-        for tag, e in arms[arm]['nl'].items():
-            _log(f"   {tag}: columns {e['n_vars_columns']} rows {e['n_cons_rows']} sha256 {e['sha256'][:16]}")
-        _log(f"   row 18 state: {arms[arm]['row18_state_at_would_be_solve']}")
-    labels_on_ok = all('row_sha256' in a['nl']['labels_on'] and 'col_sha256' in a['nl']['labels_on']
-                       for a in arms.values())
+        arms[arm] = {}
+        for node_id in planning.distribution_networks:
+            _log(f'arm {arm} node {node_id}: alpha {alpha}, init function '
+                 f'{"production" if fn is None else fn.__name__}')
+            recs = build_arm(planning, node_id, arm, alpha, fn, nl_dir)
+            stub_calls[f'{arm}:{node_id}'] = next(iter(recs.values()))['stub_calls_for_node'] if recs else 0
+            arms[arm].update(recs)
+            for key, rec in recs.items():
+                e = rec['nl']['labels_off']
+                _log(f"   {key}: columns {e['n_vars_columns']} rows {e['n_cons_rows']} sha256 {e['sha256'][:16]}")
 
-    A, B, C, D = arms['A'], arms['B'], arms['C'], arms['D']
-    n = B['row18_state_at_would_be_solve']['n_scenarios']
-    T = B['row18_state_at_would_be_solve']['n_periods']
-    cols = {k: v['nl']['labels_off']['n_vars_columns'] for k, v in arms.items()}
-    rows = {k: v['nl']['labels_off']['n_cons_rows'] for k, v in arms.items()}
-    header_counts_label_invariant = all(
-        v['nl']['labels_off']['line2'] == v['nl']['labels_on']['line2'] for v in arms.values())
+    labels_on_ok = all('row_sha256' in r['nl']['labels_on'] and 'col_sha256' in r['nl']['labels_on']
+                       for recs in arms.values() for r in recs.values())
+    header_counts_label_invariant = all(r['nl']['labels_off']['line2'] == r['nl']['labels_on']['line2']
+                                        for recs in arms.values() for r in recs.values())
+    every_arm_every_block = all(tuple(arms[a].keys()) == DECLARED_BLOCKS for a in arms)
+    one_stub_call_per_arm_node = bool(stub_calls) and all(v == 1 for v in stub_calls.values())
 
-    # ---- arm-state assertions (per index, summarised) ----
-    sa, sb, sc, sd = (A['row18_state_at_would_be_solve'], B['row18_state_at_would_be_solve'],
-                      C['row18_state_at_would_be_solve'], D['row18_state_at_would_be_solve'])
-    arm_states = {
-        'A_not_wired': sa['row18_wired'] is False and not sa['row18_alpha_admm_present'],
-        'B_structural_init_state': (sb['row18_wired'] and sb['row18_alpha'] == ALPHA_RUN
-                                    and not sb['row18_alpha_admm_present']
-                                    and sb['n_rows'] == 2 * n * T and sb['n_rows_active'] == 0
-                                    and sb['n_dev_vars'] == 4 * n * T and sb['n_dev_vars_fixed'] == 4 * n * T
-                                    and sb['fixed_dev_values'] == [0.0]
-                                    and sb['n_indices_fixed_pair_with_active_row'] == 0
-                                    and sb['charge_value'] == 0.0),
-        'C_w51_param_only_state': (sc['row18_wired'] and sc['row18_alpha'] == 0.0 and sc['row18_alpha_admm_present']
-                                   and sc['n_rows_active'] == 2 * n * T and sc['n_dev_vars_fixed'] == 0),
-        'D_negative_control_state': (sd['row18_wired'] and sd['row18_alpha'] == ALPHA_RUN
-                                     and sd['n_rows_active'] == 2 * n * T and sd['n_dev_vars_fixed'] == 4 * n * T
-                                     and sd['n_indices_fixed_pair_with_active_row'] == 2 * n * T),
-        'one_stub_call_per_arm': all(a['stub_calls'] == 1 for a in arms.values()),
-    }
+    per_block = {}
+    for key in DECLARED_BLOCKS:
+        A, A_rep, B, C, D = (arms[a][key] for a in ('A', 'A_repeat', 'B', 'C', 'D'))
+        n, T, preds = _block_predictions(A, A_rep, B, C, D)
+        states = _arm_state_assertions(A, B, C, D, n, T)
+        per_block[key] = {
+            'n_scenarios': n, 'n_periods': T,
+            'columns_by_arm': {a: arms[a][key]['nl']['labels_off']['n_vars_columns'] for a in arms},
+            'rows_by_arm': {a: arms[a][key]['nl']['labels_off']['n_cons_rows'] for a in arms},
+            'sha256_labels_off_by_arm': {a: arms[a][key]['nl']['labels_off']['sha256'] for a in arms},
+            'sha256_labels_on_by_arm': {a: arms[a][key]['nl']['labels_on']['sha256'] for a in arms},
+            'arm_state_assertions': states, 'predictions': preds}
 
-    p0 = _same(A, arms['A_repeat'])
-    p1 = _same(A, B)
-    diff_ac = name_diff(A, C)
-    diff_ad = name_diff(A, D)
-    expected_c_cols = {'row18_dev_p_down': n * T, 'row18_dev_p_up': n * T, 'row18_dev_q_down': n * T,
-                       'row18_dev_q_up': n * T}
-    expected_c_rows = {'row18_dev_p_def': n * T, 'row18_dev_q_def': n * T}
-    predictions = {
-        'P0_control_A_equals_A_repeat': {'outcome': p0, 'holds': _all_true(p0)},
-        'P1_A_equals_B': {'outcome': p1, 'holds': _all_true(p1),
-                          'on_false': 'STOP and report the difference; no workaround'},
-        'P2_C_minus_A': {'n': n, 'T': T, 'column_delta': cols['C'] - cols['A'], 'row_delta': rows['C'] - rows['A'],
-                         'expected_column_delta': 4 * n * T, 'expected_row_delta': 2 * n * T,
-                         'extra_names': diff_ac,
-                         'holds': (cols['C'] - cols['A'] == 4 * n * T and rows['C'] - rows['A'] == 2 * n * T
-                                   and diff_ac['col']['only_in_y_by_family'] == expected_c_cols
-                                   and diff_ac['row']['only_in_y_by_family'] == expected_c_rows
-                                   and not diff_ac['col']['only_in_x_by_family']
-                                   and not diff_ac['row']['only_in_x_by_family'])},
-        'P3_D_fewer_columns_than_A': {'column_delta': cols['D'] - cols['A'], 'row_delta': rows['D'] - rows['A'],
-                                      'names_vs_A': diff_ad, 'holds': cols['D'] < cols['A'],
-                                      'on_false': 'STOP and report: the stated hazard reading would be wrong'},
-    }
+    rA, rB = arms['A'][R1_BLOCK], arms['B'][R1_BLOCK]
+    p4_outcome = {arm: {tag: {kind: (rec['nl'][tag]['sha256'] if kind == 'nl' else rec['nl'][tag][f'{kind}_sha256'])
+                              == expected for kind, expected in R1_HASHES[tag].items()}
+                        for tag in R1_HASHES}
+                  for arm, rec in (('A', rA), ('B', rB))}
+    per_block[R1_BLOCK]['predictions']['P4_reproduces_r1_hashes'] = {
+        'r1_hashes': R1_HASHES, 'outcome': p4_outcome, 'holds': _all_true(p4_outcome)}
+
+    def _holds(pid):
+        return {key: b['predictions'][pid]['holds'] for key, b in per_block.items() if pid in b['predictions']}
+
+    summary = {pid: _holds(pid) for pid in ('P0_control_A_equals_A_repeat', 'P1_A_equals_B', 'P2_C_minus_A',
+                                            'P3_D_same_columns_plus_2nT_rows', 'P4_reproduces_r1_hashes')}
+    p1_all = all(summary['P1_A_equals_B'].values()) and len(summary['P1_A_equals_B']) == len(DECLARED_BLOCKS)
+    arm_states_all = all(all(b['arm_state_assertions'].values()) for b in per_block.values())
 
     GUARD.uninstall()
     verify_failures = GUARD.verify(expected_solves=0)
-    all_pass = (all(p['holds'] for p in predictions.values()) and all(arm_states.values()) and labels_on_ok
-                and header_counts_label_invariant and not verify_failures)
+    all_pass = (all(all(v.values()) and v for v in summary.values()) and arm_states_all and labels_on_ok
+                and header_counts_label_invariant and every_arm_every_block and one_stub_call_per_arm_node
+                and not verify_failures)
     payload = {
         'schema': SCHEMA, 'stage': STAGE,
-        'frozen_spec': {'path': SPEC_REL, 'sha256_pinned': SPEC_SHA256, 'sha256_observed': spec_sha},
+        'frozen_spec': {'path': SPEC_REL, 'key': SPEC_KEY, 'sha256_pinned': SPEC_SHA256, 'sha256_observed': spec_sha},
         'timestamp_utc': datetime.now(timezone.utc).isoformat(), 'interpreter': sys.executable, 'argv': sys.argv,
         'pyomo_version': pyomo.version.version,
         'script': os.path.basename(__file__), 'script_sha256': _sha256_file(os.path.abspath(__file__)),
@@ -391,13 +467,16 @@ def main():
         'production_init_function_source_sha256': hashlib.sha256(prod_init_src.encode()).hexdigest(),
         'instance': {'overrides': OVERRIDES_2X2, 'definition': spec, 'changes_vs_source': changes,
                      'case_path': os.path.relpath(case_path, REPO), 'case_sha256': _sha256_file(case_path),
-                     'dso_node': node_id, 'n_scenarios': n, 'n_periods': T},
+                     'blocks': list(DECLARED_BLOCKS)},
         'scratch': scratch,
-        'arms': arms, 'columns_by_arm': cols, 'rows_by_arm': rows,
+        'arms': arms, 'stub_calls_per_arm_node': stub_calls,
         'header_counts_identical_between_label_settings': header_counts_label_invariant,
-        'labels_on_row_col_written_for_every_arm': labels_on_ok,
-        'arm_state_assertions': arm_states,
-        'predictions': predictions,
+        'labels_on_row_col_written_for_every_arm_and_block': labels_on_ok,
+        'every_arm_wrote_every_declared_block': every_arm_every_block,
+        'one_stub_call_per_arm_node': one_stub_call_per_arm_node,
+        'per_block': per_block,
+        'predictions_holds_by_block': summary,
+        'P1_holds_on_every_block': p1_all,
         'solve_profile_guard': {'permitted': [], 'counts': dict(GUARD.counts), 'verify_failures': verify_failures},
         'all_checks_pass': bool(all_pass), 'wall_s': time.time() - started,
     }
@@ -411,11 +490,14 @@ def main():
             manifest[os.path.relpath(fpath, REPO)] = _sha256_file(fpath)
     with open(os.path.join(out_dir, 'manifest_sha256.json'), 'w') as handle:
         json.dump(manifest, handle, indent=2, sort_keys=True)
-    _log(f'columns {cols}')
-    _log(f'rows    {rows}')
-    _log(f'arm states {arm_states}')
-    for key, value in predictions.items():
-        _log(f"  {key}: {'HOLDS' if value['holds'] else 'FAILS'}")
+    for key, b in per_block.items():
+        _log(f"{key}: columns {b['columns_by_arm']} rows {b['rows_by_arm']}")
+        _log(f"   {({pid: ('HOLDS' if p['holds'] else 'FAILS') for pid, p in b['predictions'].items()})}; "
+             f"arm states {all(b['arm_state_assertions'].values())}")
+    for pid, v in summary.items():
+        _log(f'  {pid}: {sum(v.values())}/{len(v)} blocks hold')
+    if not p1_all:
+        _log('P1 FAILS on at least one block -> STOP (Planner W57)')
     _log(f'guard {dict(GUARD.counts)} verify_failures {verify_failures}')
     _log(f'all_checks_pass = {all_pass}; wrote {os.path.relpath(out_path, REPO)}')
     return 0 if all_pass else 1
