@@ -2856,8 +2856,9 @@ def _run_operational_planning(planning_problem, candidate_solution, initial_stat
         # P5.15 Addendum 38: row 18's imbalance premium. Default-inactive (alpha = 0,
         # no floor) unless a campaign/harness configuration or the case file raises it.
         # Addendum 40 ruling 2: the run's alpha wires row 18's STRUCTURE here, but the
-        # builders set `row18_alpha` to 0 for the initialisation solve; it takes the run's
-        # alpha with the settlement weight in `_prepare_distribution_objectives_for_admm`.
+        # builders hold it structurally inactive for the initialisation solve (rows
+        # deactivated, deviation Vars fixed at 0); it is activated with the settlement
+        # weight in `_prepare_distribution_objectives_for_admm`.
         interface_premium = admm_parameters.interface_deviation_premium
         dso_models, results['dso'] = create_distribution_networks_models(
             distribution_networks,
@@ -4275,9 +4276,10 @@ def create_distribution_networks_models(distribution_networks, consensus_vars, c
     `ADMMParameters.interface_deviation_premium`, itself default-inactive.
 
     P5.15 Addendum 40 ruling 2: a nonzero `premium_alpha` wires row 18's structure, but
-    `row18_alpha` is 0 at the initialisation solve these builders run
-    (`_set_row18_inactive_for_initialisation`); `_prepare_distribution_objectives_for_admm`
-    restores the run's alpha together with the settlement weight.
+    it is structurally inactive at the initialisation solve these builders run (rows
+    deactivated, deviation Vars fixed at 0: `_set_row18_inactive_for_initialisation`);
+    `_prepare_distribution_objectives_for_admm` activates it together with the
+    settlement weight.
     """
     if parallel_execution:
         return create_distribution_networks_models_parallel(distribution_networks, consensus_vars, candidate_solution, premium_alpha=premium_alpha, premium_floor=premium_floor)
@@ -5144,39 +5146,91 @@ def update_transmission_model_to_admm(planning_problem, model, params, objective
             model[year][day].admm_objective = pe.Objective(sense=pe.minimize, expr=obj)
 
 
+# P5.15 Addendum 40 ruling 2 (W54 structural form): each row 18 defining-row family with
+# its deviation pair and the two sides of its defining identity
+#     flow[s,t] - expectation[t] == up[s,t] - down[s,t].
+_ROW18_DEVIATION_FAMILIES = (
+    ('row18_dev_p_def', 'row18_dev_p_up', 'row18_dev_p_down', 'pg_adn', 'expected_interface_pf_p'),
+    ('row18_dev_q_def', 'row18_dev_q_up', 'row18_dev_q_down', 'qg_adn', 'expected_interface_pf_q'),
+)
+
+
 def _set_row18_inactive_for_initialisation(model):
-    """P5.15 Addendum 40 ruling 2 (frozen spec v23 `ruling2_init_fix`): row 18 is INACTIVE
-    at the ADMM initialisation solve and activated with the settlement weight.
+    """P5.15 Addendum 40 ruling 2 (frozen spec v23 `ruling2_init_fix`; mechanism W54):
+    row 18 is INACTIVE at the ADMM initialisation solve and activated with the
+    settlement weight.
 
     Called by the DSO initialisation builders right after `add_scenario_commitment_terms`
-    and BEFORE the initialisation solve. Row 18 keeps its full structure (the deviation
-    Vars, their defining rows, `row18_premium` with any floor, `row18_deviation_charge`) --
-    only the mutable `row18_alpha` Param is set to 0 for this solve; the run's alpha is
-    recorded on the block as `row18_alpha_admm` so `_activate_row18_with_settlement` can
-    restore it exactly. Reason: in the initialisation economy the interface import is
-    unpriced (`interface_settlement_weight` = 0 until `_prepare_distribution_objectives_for_admm`,
-    reference generator outside the generation cost), so charging a premium for deviating
+    and BEFORE the initialisation solve. STRUCTURAL inactivation, per index: each
+    defining row (`row18_dev_p_def`, `row18_dev_q_def`) is DEACTIVATED, and then its
+    deviation pair (`row18_dev_*_up`, `row18_dev_*_down`) is FIXED at 0. `row18_alpha`
+    keeps the run's value; the charge folds to the constant 0.0 because every deviation
+    Var in it is fixed at 0. Reason: in the initialisation economy the interface import
+    is unpriced (`interface_settlement_weight` = 0 until
+    `_prepare_distribution_objectives_for_admm`), so charging a premium for deviating
     from a commitment that carries no settlement is inconsistent -- the same reason the
-    uncoordinated benchmark (`_run_operational_planning_without_coordination`) passes
-    alpha = 0. It also made the standalone alpha* ~ 0.1 an artefact of that economy.
+    uncoordinated benchmark passes alpha = 0.
 
-    A no-op on any block where row 18 is not wired -- in particular at ONE scenario, where
-    `add_scenario_commitment_terms` constructs nothing, so SRP1 is untouched."""
+    Why not a zero alpha with the rows kept (W51, rejected on review): each (up, down)
+    pair then has a zero-cost ray and the barrier problem has no central path.
+
+    HAZARD, excluded by construction: a deviation pair fixed while its row is ACTIVE
+    turns the row into a hard `flow[s,t] == expectation[t]` (non-anticipativity on the
+    interface flow), which the NL writer's linear presolve would substitute away
+    silently. So a row is always deactivated BEFORE its pair is fixed, and
+    `_activate_row18_with_settlement` unfixes a pair BEFORE its row is activated.
+
+    A no-op on any block where row 18 is not wired -- in particular at ONE scenario,
+    where `add_scenario_commitment_terms` constructs nothing, so SRP1 is untouched."""
     if not hasattr(model, 'row18_alpha'):
         return
-    model.row18_alpha_admm = pe.Param(initialize=float(pe.value(model.row18_alpha)), mutable=False)
-    model.row18_alpha.set_value(0.0)
+    for row_name, up_name, down_name, _flow_name, _expectation_name in _ROW18_DEVIATION_FAMILIES:
+        row = getattr(model, row_name)
+        up = getattr(model, up_name)
+        down = getattr(model, down_name)
+        for index in row:
+            row[index].deactivate()
+            up[index].fix(0.0)
+            down[index].fix(0.0)
 
 
 def _activate_row18_with_settlement(model):
-    """P5.15 Addendum 40 ruling 2: restores the run's alpha recorded by
-    `_set_row18_inactive_for_initialisation`, as a Param update (no rebuild): the floor,
-    `row18_premium` and the charge expression are left exactly as built. A no-op where row
-    18 is not wired, and on a block built before this change (no `row18_alpha_admm`: its
-    `row18_alpha` already carries the run's alpha)."""
-    if not hasattr(model, 'row18_alpha_admm'):
+    """P5.15 Addendum 40 ruling 2 (mechanism W54): activates row 18 on a block left in
+    the initialisation state by `_set_row18_inactive_for_initialisation`. Per index:
+    e = flow[s,t] - expectation[t] is read from the current (initialisation-solution)
+    values, the pair is set to the MINIMAL split up = max(e, 0), down = max(-e, 0),
+    UNFIXED, and only then is the defining row ACTIVATED -- a row is never active
+    while its pair is fixed. No rebuild: `row18_alpha`, the floor, `row18_premium`
+    and the charge expression are left exactly as built.
+
+    A no-op where row 18 is not wired. On a wired block every index must be in the
+    initialisation state (row inactive, both deviation Vars fixed); anything else raises
+    rather than being repaired."""
+    if not hasattr(model, 'row18_alpha'):
         return
-    model.row18_alpha.set_value(pe.value(model.row18_alpha_admm))
+    for row_name, up_name, down_name, _flow_name, _expectation_name in _ROW18_DEVIATION_FAMILIES:
+        row = getattr(model, row_name)
+        up = getattr(model, up_name)
+        down = getattr(model, down_name)
+        for index in row:
+            if row[index].active or not up[index].fixed or not down[index].fixed:
+                raise RuntimeError(f'_activate_row18_with_settlement: {row_name}[{index}] on block '
+                                   f'{model.name!r} is not in the initialisation state (row inactive, '
+                                   f'deviation pair fixed); refusing to activate.')
+    for row_name, up_name, down_name, flow_name, expectation_name in _ROW18_DEVIATION_FAMILIES:
+        row = getattr(model, row_name)
+        up = getattr(model, up_name)
+        down = getattr(model, down_name)
+        flow = getattr(model, flow_name)
+        expectation = getattr(model, expectation_name)
+        for index in row:
+            s_m, s_o, p = index
+            e = pe.value(flow[s_m, s_o, p]) - pe.value(expectation[p])
+            up[index].set_value(e if e > 0.0 else 0.0)
+            down[index].set_value(-e if e < 0.0 else 0.0)
+            up[index].unfix()
+            down[index].unfix()
+            row[index].activate()
 
 
 def _prepare_distribution_objectives_for_admm(distribution_networks, models):
