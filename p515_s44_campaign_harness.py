@@ -3236,10 +3236,29 @@ def _termination_record(result):
     `_release_solution_bookkeeping`); `succeeded` is production's own `solver_result_succeeded`."""
     from helper_functions import solver_result_succeeded
     if result is None or not hasattr(result, 'solver'):
-        return {'available': False, 'status': None, 'termination_condition': None, 'succeeded': False}
+        return {'available': False, 'status': None, 'termination_condition': None, 'succeeded': False,
+                'message': None, 'ipopt_exit': None}
+    # W65 (Addendum 40 ruling 1, G13): Pyomo maps BOTH IPOPT success exits ("Optimal Solution Found", converged to
+    # `tol`, and "Solved To Acceptable Level", converged only to `acceptable_tol`) to termination_condition optimal;
+    # the exit message (the .sol message, `pyomo.opt.plugins.sol`) is what tells them apart, and the G13 primal bound
+    # depends on which tolerance the block's last solve met.
+    message = getattr(result.solver, 'message', None)
+    message = None if message is None else str(message)
     return {'available': True, 'status': str(result.solver.status),
             'termination_condition': str(result.solver.termination_condition),
-            'succeeded': bool(solver_result_succeeded(result))}
+            'succeeded': bool(solver_result_succeeded(result)),
+            'message': message, 'ipopt_exit': ipopt_exit_class(message)}
+
+
+def ipopt_exit_class(message):
+    """'optimal' ("Optimal Solution Found"), 'acceptable' ("Solved To Acceptable Level"), 'other', or None."""
+    if message is None:
+        return None
+    if 'Optimal Solution Found' in message:
+        return 'optimal'
+    if 'Solved To Acceptable Level' in message:
+        return 'acceptable'
+    return 'other'
 
 
 def _curtailed_block_mwh(model, network, params):
@@ -3689,6 +3708,76 @@ def _row18_legs_block(model, network):
     return legs
 
 
+# W65 (Addendum 40 ruling 1, G13): IPOPT 3.14.18 defaults (`/usr/local/bin/ipopt --print-options`) for the options the
+# DSO case files leave unset; the G13 primal bound reads the case-file value where one is set and these otherwise.
+IPOPT_DEFAULTS_3_14_18 = {'tol': 1e-08, 'acceptable_tol': 1e-06, 'constr_viol_tol': 1e-04,
+                          'acceptable_constr_viol_tol': 1e-02, 'bound_relax_factor': 1e-08,
+                          'honor_original_bounds': 'no', 'nlp_scaling_method': 'gradient-based',
+                          'nlp_scaling_max_gradient': 100.0}
+
+
+def ipopt_options_in_force(params):
+    """The block family's configured IPOPT options (`params.solver_params.options`, the case file) relevant to the
+    G13 bound, each with its source ('case_file' or 'ipopt_default'). A retry's option_overrides are NOT reflected
+    (the G13 gate requires zero retries)."""
+    configured = dict(getattr(getattr(params, 'solver_params', None), 'options', None) or {})
+    out = {}
+    for name, default in IPOPT_DEFAULTS_3_14_18.items():
+        if name in configured:
+            out[name] = {'value': configured[name], 'source': 'case_file'}
+        else:
+            out[name] = {'value': default, 'source': 'ipopt_default'}
+    return out
+
+
+def _row18_primal_split_block(model, network):
+    """W65 (G13), ZERO SOLVES: the REALIZED decomposition of the gap between the charge form and the |d| form of
+    P on one DSO block, per unit alpha (EUR per representative day, unweighted), both legs:
+        gap_b = sum_{s,t} omega_s pibar_t B [ (d+ + d-) - |d| ],   d = pg_adn - expected_interface_pf_p (P leg; the
+                Q leg likewise) -- the SAME d `_get_local_interface_dispersion` reports, so sum_b w_b gap_b =
+                P_charge - P_posthoc up to summation order;
+    with r = d - (d+ - d-) the row-18 defining-row residual, and per index
+        (d+ + d-) - |d| in [ 2 min(d+, d-) - |r|,  2 min(d+, d-) + |r| ],
+    so |gap_b - split_b| <= residual_b, where split_b = sum omega pibar B 2 min(d+, d-) (its NEGATIVE part is the
+    bound violation of the returned point -- honor_original_bounds = no, bound_relax_factor; its POSITIVE part is
+    incomplete complementarity) and residual_b = sum omega pibar B |r|. bound_weight_b = sum_{s,t} omega_s pibar_t B
+    (ONE leg), the multiplier of the per-index tolerance in the G13 bound. Maxima in per unit. None where row 18 is not
+    wired."""
+    import pyomo.environ as pe
+    if not hasattr(model, 'row18_deviation_charge'):
+        return None
+    base = network.baseMVA
+    acc = {'gap': 0.0, 'split': 0.0, 'split_negative': 0.0, 'split_positive': 0.0, 'residual': 0.0,
+           'bound_weight': 0.0}
+    mx = {'max_abs_row_residual_pu_p': 0.0, 'max_abs_row_residual_pu_q': 0.0, 'max_bound_violation_pu': 0.0,
+          'max_min_split_pu': 0.0}
+    legs = (('pg_adn', 'expected_interface_pf_p', 'row18_dev_p_up', 'row18_dev_p_down', 'max_abs_row_residual_pu_p'),
+            ('qg_adn', 'expected_interface_pf_q', 'row18_dev_q_up', 'row18_dev_q_down', 'max_abs_row_residual_pu_q'))
+    for s_m in model.scenarios_market:
+        for s_o in model.scenarios_operation:
+            omega = _scenario_probability(network, s_m, s_o)
+            for p in model.periods:
+                w = omega * float(pe.value(model.row18_premium[p])) * base
+                acc['bound_weight'] += w
+                for flow, expected, up_name, down_name, rkey in legs:
+                    d = float(pe.value(getattr(model, flow)[s_m, s_o, p])) - float(pe.value(getattr(model, expected)[p]))
+                    up = float(pe.value(getattr(model, up_name)[s_m, s_o, p]))
+                    dn = float(pe.value(getattr(model, down_name)[s_m, s_o, p]))
+                    r = d - (up - dn)
+                    low = min(up, dn)
+                    acc['gap'] += w * ((up + dn) - abs(d))
+                    acc['split'] += w * 2.0 * low
+                    acc['split_negative'] += w * 2.0 * max(0.0, -low)
+                    acc['split_positive'] += w * 2.0 * max(0.0, low)
+                    acc['residual'] += w * abs(r)
+                    mx[rkey] = max(mx[rkey], abs(r))
+                    mx['max_bound_violation_pu'] = max(mx['max_bound_violation_pu'], -min(up, dn, 0.0))
+                    mx['max_min_split_pu'] = max(mx['max_min_split_pu'], low)
+    acc['identity_abs_gap_minus_split_le_residual'] = bool(abs(acc['gap'] - acc['split']) <= acc['residual'] * (1.0 + 1e-9)
+                                                           + 1e-12)
+    return {**acc, **mx, 'units': 'EUR per unit alpha per representative day (unweighted); maxima per unit'}
+
+
 def _node_index_of_bus(network, bus_id):
     for i, node in enumerate(network.nodes):
         if node.bus_i == bus_id:
@@ -3814,6 +3903,12 @@ def response_terminal_capture(planning, models, optimization_results=None):
     coordination, flexibility, row18_legs, p_posthoc = {}, {}, {}, {}
     tot = {'charge_p_weighted': 0.0, 'charge_q_weighted': 0.0, 'P_posthoc_weighted': 0.0,
            'P_posthoc_p_leg_weighted': 0.0}
+    # W65 (G13): the realized (d+ + d-) - |d| decomposition, weighted, and the per-DSO IPOPT options in force
+    split_tot = {k: 0.0 for k in ('gap', 'split', 'split_negative', 'split_positive', 'residual', 'bound_weight')}
+    split_max = {k: 0.0 for k in ('max_abs_row_residual_pu_p', 'max_abs_row_residual_pu_q', 'max_bound_violation_pu',
+                                  'max_min_split_pu')}
+    split_identity_all = True
+    ipopt_options_dso, dso_exit_counts = {}, {}
     per_network = {}
     zl = {'n_checked': 0, 'n_missing_suffix_values': 0, 'n_le_1e-6': 0, 'n_le_1e-4': 0, 'n_le_1e-2': 0,
           'worst_rel_zl_sum_vs_2coef': 0.0, 'worst_rel_abs_dual_vs_half_zl_diff': 0.0}
@@ -3841,6 +3936,16 @@ def response_terminal_capture(planning, models, optimization_results=None):
         coordination[key]['termination_last_solve'] = term
         flexibility[key] = dict(_flexibility_block(model, network, holder.params), admm_block_weight=weight)
         legs = _row18_legs_block(model, network)
+        if legs is not None:   # W65 (G13): computed separately, so the W64 leg sums above are untouched
+            legs['primal_split'] = _row18_primal_split_block(model, network)
+            for name in split_tot:
+                split_tot[name] += weight * legs['primal_split'][name]
+            for name in split_max:
+                split_max[name] = max(split_max[name], legs['primal_split'][name])
+            split_identity_all = split_identity_all and legs['primal_split']['identity_abs_gap_minus_split_le_residual']
+        ipopt_options_dso.setdefault(f'DSO{node_id}', ipopt_options_in_force(holder.params))
+        exit_class = str(term.get('ipopt_exit'))
+        dso_exit_counts[exit_class] = dso_exit_counts.get(exit_class, 0) + 1
         row18_legs[key] = legs
         if legs is not None:
             tot['charge_p_weighted'] += weight * legs['charge_p']
@@ -3897,8 +4002,15 @@ def response_terminal_capture(planning, models, optimization_results=None):
             'interface_settlement_total', 'interface_settlement_deviation_total', 'detector_penalty_total')},
         'n_blocks_last_solve_not_succeeded': sum(1 for b in curtail_blocks.values()
                                                  if not b['termination_last_solve']['succeeded']),
+        # W65 (G13): the realized gap P_charge - P_posthoc decomposed (weighted, EUR per unit alpha), the maxima of the
+        # returned point's row residual / bound violation / split, the DSO last-solve IPOPT exits, the options in force
+        'P_gap_decomposition_weighted': ({**split_tot, **split_max,
+                                          'identity_abs_gap_minus_split_le_residual_all_blocks': split_identity_all}
+                                         if alpha > 0.0 else None),
+        'dso_last_solve_ipopt_exit_counts': dso_exit_counts,
+        'ipopt_options_in_force_dso': ipopt_options_dso,
     }
-    payload = {'schema': 'p515_s44_response_terminal_v1', 'summary': summary,
+    payload = {'schema': 'p515_s44_response_terminal_v1', 'summary': summary,   # in memory; v2 = its compact layout
                'curtailment_entries': entries, 'network_hour_rows': rows_by_hour,
                'curtailment_by_block': curtail_blocks, 'coordination_by_dso_block': coordination,
                'flexibility_by_dso_block': flexibility, 'row18_legs_by_dso_block': row18_legs,
@@ -3909,9 +4021,131 @@ def response_terminal_capture(planning, models, optimization_results=None):
     return payload, summary
 
 
+# ==============================================================================
+#  W65 (Addendum 40 ruling 1, G9): the COMPACT, LOSSLESS serialization of RESPONSE_TERMINAL_FILE. Nothing is capped,
+#  subsampled or dropped: every captured entry is written; only the REPRESENTATION changes --
+#    * no indentation, no spaces (separators ',' ':');
+#    * curtailment_entries COLUMNAR: field names once, one column per field; the fields constant within a block
+#      (RESPONSE_ENTRY_BLOCK_FIELDS) once per block in a block table, with the fields that block's entries lack;
+#      network_hour_rows_key (== '{block}|{scenario}|{hour}', asserted per entry) rebuilt on decode;
+#    * each coordination record's `hours` list COLUMNAR (field names once per block).
+#  `write_response_terminal` re-reads the written file, decodes it and asserts it equals the in-memory payload's JSON
+#  form EXACTLY (every entry, every field, every float) before returning; a mismatch raises (capture error).
+#  `load_response_terminal` is the one reader (it also reads the v1 layout of the r1 smoke unchanged).
+# ==============================================================================
+RESPONSE_TERMINAL_SCHEMA = 'p515_s44_response_terminal_v2'
+RESPONSE_ENTRIES_ENCODING = 'p515_s44_columnar_entries_v1'
+RESPONSE_ROWS_ENCODING = 'p515_s44_columnar_rows_v1'
+RESPONSE_ENTRY_BLOCK_FIELDS = ('block', 'network', 'year', 'day', 'ref_bus_index', 'termination_last_solve',
+                               'row18_alpha')
+
+
+def _hour_key(entry):
+    return f"{entry['block']}|{entry['scenario']}|{entry['hour']}"
+
+
+def encode_curtailment_entries(entries):
+    """Lossless columnar form of the curtailment entries (see the section note). Raises if an assumption of the
+    encoding (block-constant fields, the derivable hour key) does not hold, rather than writing a lossy form."""
+    fields, seen = [], set()
+    for e in entries:
+        for k in e:
+            if k not in seen and k not in RESPONSE_ENTRY_BLOCK_FIELDS and k != 'network_hour_rows_key':
+                seen.add(k)
+                fields.append(k)
+    table, block_index, index_of = [], [], {}
+    for e in entries:
+        if e.get('network_hour_rows_key') != _hour_key(e):
+            raise ValueError(f'entry hour key {e.get("network_hour_rows_key")!r} != {_hour_key(e)!r}')
+        const = {k: e[k] for k in RESPONSE_ENTRY_BLOCK_FIELDS if k in e}
+        absent = [k for k in fields if k not in e]
+        sig = json.dumps([const, absent], sort_keys=True, default=str)
+        i = index_of.get(e['block'])
+        if i is None:
+            i = index_of[e['block']] = len(table)
+            table.append({'const': const, 'absent_fields': absent, '_sig': sig})
+        elif table[i]['_sig'] != sig:
+            raise ValueError(f"block-constant fields vary within block {e['block']}")
+        block_index.append(i)
+    return {'encoding': RESPONSE_ENTRIES_ENCODING, 'n': len(entries), 'fields': fields,
+            'block_table': [{'const': b['const'], 'absent_fields': b['absent_fields']} for b in table],
+            'block_index': block_index, 'columns': [[e.get(k) for e in entries] for k in fields],
+            'rebuilt_on_decode': {'network_hour_rows_key': '{block}|{scenario}|{hour}'}}
+
+
+def decode_curtailment_entries(encoded):
+    if isinstance(encoded, list):   # the v1 layout (r1 smoke): already a list of dicts
+        return encoded
+    if encoded.get('encoding') != RESPONSE_ENTRIES_ENCODING:
+        raise ValueError(f"unknown entries encoding {encoded.get('encoding')!r}")
+    fields, columns, table = encoded['fields'], encoded['columns'], encoded['block_table']
+    absent = [set(b['absent_fields']) for b in table]
+    out = []
+    for j, i in enumerate(encoded['block_index']):
+        e = dict(table[i]['const'])
+        for k, col in zip(fields, columns):
+            if k not in absent[i]:
+                e[k] = col[j]
+        e['network_hour_rows_key'] = _hour_key(e)
+        out.append(e)
+    if len(out) != encoded['n']:
+        raise ValueError(f"decoded {len(out)} entries, header says {encoded['n']}")
+    return out
+
+
+def encode_rows(rows):
+    """Columnar form of a list of dicts sharing one key list (in order); returned unchanged otherwise."""
+    if not isinstance(rows, list) or not rows or not all(isinstance(r, dict) for r in rows):
+        return rows
+    keys = list(rows[0])
+    if any(list(r) != keys for r in rows):
+        return rows
+    return {'encoding': RESPONSE_ROWS_ENCODING, 'n': len(rows), 'fields': keys,
+            'columns': [[r[k] for r in rows] for k in keys]}
+
+
+def decode_rows(value):
+    if isinstance(value, dict) and value.get('encoding') == RESPONSE_ROWS_ENCODING:
+        return [dict(zip(value['fields'], vals)) for vals in zip(*value['columns'])] if value['n'] else []
+    return value
+
+
+def encode_response_payload(payload):
+    out = dict(payload)
+    out['schema'] = RESPONSE_TERMINAL_SCHEMA
+    out['curtailment_entries'] = encode_curtailment_entries(payload['curtailment_entries'])
+    out['coordination_by_dso_block'] = {k: ({**c, 'hours': encode_rows(c['hours'])} if 'hours' in c else c)
+                                        for k, c in payload['coordination_by_dso_block'].items()}
+    return out
+
+
+def decode_response_payload(stored):
+    out = dict(stored)
+    out['curtailment_entries'] = decode_curtailment_entries(stored['curtailment_entries'])
+    out['coordination_by_dso_block'] = {k: ({**c, 'hours': decode_rows(c['hours'])} if 'hours' in c else c)
+                                        for k, c in stored['coordination_by_dso_block'].items()}
+    return out
+
+
+def load_response_terminal(path):
+    """THE reader of RESPONSE_TERMINAL_FILE: the payload with entries and coordination hours in list-of-dict form
+    (v2 compact files decoded; v1 files returned as stored)."""
+    with open(path) as handle:
+        return decode_response_payload(json.load(handle))
+
+
+def _write_once_json_compact(path, obj):
+    if os.path.exists(path):
+        raise RuntimeError(f'refusing to overwrite existing artifact: {path}')
+    with open(path, 'x') as handle:
+        json.dump(obj, handle, separators=(',', ':'), default=str)
+
+
 def write_response_terminal(planning, models, eval_dir, optimization_results=None):
-    """Writes RESPONSE_TERMINAL_FILE (write-once) with its own cost: runtime, the process RSS before / after, the
-    process peak before / after (so the capture's memory is MEASURED, not assumed) and the file size."""
+    """Writes RESPONSE_TERMINAL_FILE (write-once, COMPACT and LOSSLESS -- W65) with its own cost: runtime, the process
+    RSS before / after, the process peak before / after (so the capture's memory is MEASURED, not assumed), the file
+    size, and the round-trip verification (the written file decoded == the in-memory payload's JSON form, exactly;
+    raises otherwise)."""
     import resource as _resource
     try:
         import psutil
@@ -3929,10 +4163,28 @@ def write_response_terminal(planning, models, eval_dir, optimization_results=Non
             'ru_maxrss_units': 'bytes on macOS/BSD, kilobytes on Linux'}
     payload['capture_cost'] = cost
     path = os.path.join(eval_dir, RESPONSE_TERMINAL_FILE)
-    _write_once_json(path, payload)
+    t_w = time.time()
+    _write_once_json_compact(path, encode_response_payload(payload))
+    expected = json.loads(json.dumps(payload, default=str))
+    got = load_response_terminal(path)
+    got['schema'] = expected['schema']   # the only intended difference: the layout's schema tag
+    # canonical JSON text per section: exact (floats round-trip through repr) and NaN-safe (nan != nan in Python)
+    mismatch = sorted(k for k in set(expected) | set(got)
+                      if json.dumps(expected.get(k), sort_keys=True) != json.dumps(got.get(k), sort_keys=True))
+    if mismatch:
+        raise RuntimeError(f'{RESPONSE_TERMINAL_FILE}: the compact file does not decode to the captured payload '
+                           f'(sections differing: {mismatch})')
+    roundtrip = {'verified': True, 'sections_compared': sorted(expected), 'n_entries_written': len(
+        got['curtailment_entries']), 'n_entries_captured': len(payload['curtailment_entries']),
+        'write_and_verify_s': time.time() - t_w}
+    del expected, got
     cost['file_bytes'] = os.path.getsize(path)
+    cost['roundtrip'] = roundtrip
+    # the write-and-verify step's own memory, measured (it holds the payload's JSON form and its decoded copy)
+    cost['rss_after_write_verify_bytes'] = proc.memory_info().rss if proc is not None else None
+    cost['ru_maxrss_after_write_verify_bytes'] = _resource.getrusage(_resource.RUSAGE_SELF).ru_maxrss
     return {'status': 'written', 'path': os.path.relpath(path, REPO), 'sha256': sha256_file(path),
-            'capture_cost': cost, **summary}
+            'schema': RESPONSE_TERMINAL_SCHEMA, 'capture_cost': cost, **summary}
 
 
 def assert_alpha_row_capture_paths():
@@ -4009,6 +4261,19 @@ def assert_alpha_row_capture_paths():
             < child_src.find('run_post_certification(')),
         'child_merges_per_cycle_response': 'read_per_cycle_response(eval_dir)' in child_src,
         'child_response_capture_error_exits_2': "'response_terminal'" in child_src,
+        # W65 (Addendum 40 ruling 1): the G13 bound inputs and the compact lossless layout (G9)
+        'termination_record_carries_ipopt_exit': "'ipopt_exit': ipopt_exit_class(message)" in inspect.getsource(
+            _termination_record),
+        'primal_split_captured_per_dso_block': ("legs['primal_split'] = _row18_primal_split_block(model, network)"
+                                                in inspect.getsource(response_terminal_capture)),
+        'primal_split_terms': all(t in inspect.getsource(_row18_primal_split_block) for t in (
+            "acc['gap']", "acc['split_negative']", "acc['split_positive']", "acc['residual']", "acc['bound_weight']")),
+        'ipopt_options_in_force_captured': "'ipopt_options_in_force_dso'" in inspect.getsource(response_terminal_capture),
+        'compact_writer_with_roundtrip': all(t in inspect.getsource(write_response_terminal) for t in (
+            '_write_once_json_compact(path, encode_response_payload(payload))', 'load_response_terminal(path)',
+            "'verified': True")),
+        'no_entry_cap_in_encoder': ("'columns': [[e.get(k) for e in entries] for k in fields]"
+                                    in inspect.getsource(encode_curtailment_entries)),
     }
     missing = sorted(k for k, v in checks.items() if not v)
     if missing:
