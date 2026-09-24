@@ -1,5 +1,5 @@
 """
-P5.15 Addendum 40 ruling 4 (task W49) -- F2 CERTIFICATE CONTINUATION: the STANDARD UNIT POLL of Addendum 39
+P5.15 Addendum 40 ruling 4 (tasks W49, W50) -- F2 CERTIFICATE CONTINUATION: the STANDARD UNIT POLL of Addendum 39
 ruling 1 (frozen in spec v23 `ruling4_F2_certificate`) at the flexibility price m = 2 under the EUR 1M budget,
 continued from the committed incumbent of the s51 F2 Phase B (campaign s51_f2_phase_b, spec 5ce295e1 / c39c4836,
 run 0012d85b), which stopped for review when the box completion of that incumbent had 61 feasible points (> 30).
@@ -11,6 +11,24 @@ run 0012d85b), which stopped for review when the box completion of that incumben
 
 AUTHORITY: PLANNER_BRIEF_2026-09-13.md Addendum 39 ruling 1 and Addendum 40 ruling 4;
 data/SRP1/Results/P515S53/frozen_s53_spec_v23_39a07fd8.json `ruling4_F2_certificate`; Planner task W49.
+
+================================================================================
+W50 -- the Planner's rulings on the W49 report (re-frozen as campaign s53_f2_certificate_r1)
+================================================================================
+  1. SNAP_RULE: "same investment year as the incumbent" is a tie-break level inserted BEFORE "lower I(x)" (as
+     frozen in W49, directions 0, 5 and 12 collapsed onto one 2035 point and 6 of 11 poll points were 2035 plans --
+     a drift produced by the tie-break, not by the geometry). The rest of the order is unchanged.
+  2. The certificate records every feasible box neighbour of the incumbent that is in the cache but outside the
+     poll set, with F, F(x) - F(inc), the resolution and a SYMMETRIC class (better / worse / INDETERMINATE:
+     |F(x) - F(inc)| <= resolution is indeterminate, never "unexamined"); zero evaluation cost. A cached box
+     neighbour that is determinately BETTER than the incumbent refuses the freeze and the run
+     (continuation_facts) and makes a run-time certificate NOT hold.
+  3. The certificate states its own scope (`scope`): whether the incumbent is interior (signed unit steps, nodes
+     at the lower bound, budget slack), the rank and positive spanning of the poll displacement set and of the full
+     box, the claim ("poll failure over the recorded poll set at unit mesh", a positive-spanning-set certificate
+     only if the poll set positively spans R^7), and the count and identity of box neighbours outside the poll set.
+  The W49 spec 3b9d6df9 (campaign s53_f2_certificate) is SUPERSEDED before any run: recorded as
+  extra.predecessor_spec, its root carries SUPERSEDED.md, and --run refuses its sha256 and its campaign id.
 
 ================================================================================
 WHAT IS REUSED, BY IMPORT (not re-implemented, not re-decided)
@@ -57,9 +75,11 @@ a poll failure whose certificate does not hold.
 
 EXACT COMMANDS (repo root, canonical interpreter):
   /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python -u p515_s53_f2_certificate.py --freeze \\
-      > data/SRP1/Results/P515S53/campaign_s53_f2_certificate_freeze_launch.log 2>&1
+      --campaign-id s53_f2_certificate_r1 \\
+      > data/SRP1/Results/P515S53/campaign_s53_f2_certificate_r1_freeze_launch.log 2>&1
   /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python -u p515_s53_f2_certificate.py --run \\
-      --spec-sha256 <sha> > data/SRP1/Results/P515S53/campaign_s53_f2_certificate_launch.log 2>&1
+      --campaign-id s53_f2_certificate_r1 --spec-sha256 <sha> \\
+      > data/SRP1/Results/P515S53/campaign_s53_f2_certificate_r1_launch.log 2>&1
 """
 
 import argparse
@@ -97,8 +117,26 @@ STAGE = ('P5.15 Addendum 40 ruling 4 (W49) -- F2 CERTIFICATE CONTINUATION: the s
 
 _P51 = os.path.join('data', 'SRP1', 'Results', 'P515S51')
 _P53 = os.path.join('data', 'SRP1', 'Results', 'P515S53')
-DEFAULT_CAMPAIGN_ID = 's53_f2_certificate'
+DEFAULT_CAMPAIGN_ID = 's53_f2_certificate_r1'          # W50: the W49 id s53_f2_certificate is superseded
 CAMPAIGN_ID_PATTERN = re.compile(r'^s53_f2_certificate(_r[0-9]+)?$')
+# W50: the W49 spec, frozen at d00fda67 (committed a9277128) and never run; recorded in the successor, refused by --run.
+PREDECESSOR_SPECS = {
+    's53_f2_certificate': {
+        'path': os.path.join(_P53, 'campaign_s53_f2_certificate', 'campaign_spec_s53_f2_certificate_3b9d6df9.json'),
+        'sha256': '3b9d6df9b14013744d89702fee1917cdb8febf24901be3bd7a533d64de142725',
+        'campaign_id': 's53_f2_certificate', 'git_head_at_freeze': 'd00fda67', 'committed_in': 'a9277128',
+        'launcher_commit': 'd00fda67',
+        'launcher_sha256': 'bcdbad669fc72ac2211826488c55d73867609f50bef259d86b5553c8f595edf4',
+        'reason': ('superseded before any run (W50, Planner rulings on the W49 report): (1) SNAP_RULE tie-break '
+                   '"same investment year as the incumbent" inserted before "lower I(x)" -- as frozen, directions 0, '
+                   '5 and 12 collapsed onto one 2035 point and 6 of 11 poll points were 2035 plans, a drift produced '
+                   'by the tie-break rather than by the geometry; (2) the certificate records every cached feasible '
+                   'box neighbour outside the poll set with F, its difference from the incumbent, the resolution and '
+                   'a better / worse / indeterminate class, and a determinately better one refuses the freeze; (3) '
+                   'the certificate records its own scope (incumbent not interior, rank / positive spanning of the '
+                   'poll set and of the box, the claim, the box neighbours outside the poll set)')},
+}
+PREDECESSOR_SPEC = PREDECESSOR_SPECS['s53_f2_certificate']
 
 M_FLEX = F51.M_FLEX
 CASE_FILE_AA = dict(F51.CASE_FILE_AA)
@@ -189,8 +227,9 @@ SNAP_RULE = (
     'an infeasible rounded point r = inc + d is replaced by the NEAREST point of the SNAP SET = every feasible '
     'canonical lattice point z != inc with ||z - inc||_inf <= 1 (the unit frame of the incumbent, '
     'PB.Lattice.neighbourhood -- the same set as the completion). NEAREST = lexicographic minimum of (1) ||z - r||_1, '
-    '(2) ||z - r||_inf, (3) ||z - inc||_1, (4) I(z) (lower first), (5) the lattice label (string order). Distances '
-    'are in lattice units over the 7 coordinates (zP5, zE5, zP7, zE7, zP9, zE9, zY); the year coordinate is counted '
+    '(2) ||z - r||_inf, (3) ||z - inc||_1, (4) the SAME INVESTMENT YEAR AS THE INCUMBENT first (a point without '
+    'storage has no active year and counts as a different year; level inserted by the W50 Planner ruling 1), (5) '
+    'I(z) (lower first), (6) the lattice label (string order). Distances are in lattice units over the 7 coordinates (zP5, zE5, zP7, zE7, zP9, zE9, zY); the year coordinate is counted '
     'only when z holds storage (it is inactive otherwise, STEP4 5.4). If the snap set is empty the direction is '
     "recorded 'no feasible snap' and contributes no poll point (extreme barrier, not evaluated). Recorded for EVERY "
     'direction: the rounded point, whether it is feasible or the reasons it is not, the snapped point or '
@@ -208,9 +247,16 @@ CERTIFICATE_STATEMENT = (
     'POLL FAILURE AT UNIT MESH over the recorded poll set: every point of the final poll set (the 2n rounded '
     'directions after snapping, plus the completion when it was triggered) was evaluated or read from the cache and '
     'none is a determinate improvement (F(inc) - F(x) > max(bar_x + bar_inc, sigma_Q)); indeterminate points are '
-    'listed unresolved; barrier points are F = +inf. SCOPE: unless the completion was triggered this is NOT the '
-    'full-box certificate of ruling A2 -- the feasible box neighbours outside the poll set are listed as unexamined; '
-    'whether the poll displacement set positively spans R^7 is RECORDED (rank and an LP test), not assumed.')
+    'listed unresolved; barrier points are F = +inf. SCOPE, recorded in the certificate itself (`scope`): the claim '
+    'is "poll failure over the recorded poll set at unit mesh"; it is a positive-spanning-set certificate ONLY if the '
+    'poll displacement set positively spans R^7 (rank and an LP test, recorded for the poll set and for the full '
+    'feasible box, never assumed); unless the completion was triggered it is NOT the full-box certificate of ruling '
+    'A2; whether the incumbent is interior (every signed unit step inc +- e_i feasible) is recorded with the nodes at '
+    'the lower bound and the budget slack; every feasible box neighbour outside the poll set is listed by identity -- '
+    'those in the cache with F, F(x) - F(inc), the resolution and a SYMMETRIC class (better: F(inc) - F(x) > res; '
+    'worse: F(x) - F(inc) > res; otherwise INDETERMINATE), at zero evaluation cost; those not in the cache as not '
+    'evaluated. The certificate does NOT hold if any cached box neighbour is determinately better than the '
+    'incumbent.')
 INHERITED_RULING_SCOPE = (
     'Rulings of the Phase B record (PB, W24) as they apply here: A1 (7 variables, one common year) kept; A2 (box '
     'completion at every unit poll) REPLACED for this continuation by Addendum 39 ruling 1 (POLL_RULE; the cap of 30 '
@@ -240,7 +286,15 @@ POLL_RECORD_FIELDS = tuple(PB.POLL_RECORD_FIELDS) + ('poll_design', 'snap_table'
 CANDIDATE_RECORD_FIELDS = tuple(PB.CANDIDATE_RECORD_FIELDS) + ('snap',)
 CERTIFICATE_FIELDS = ('statement', 'incumbent', 'poll_index', 'halton_t', 'poll_set', 'n_poll_points',
                       'all_poll_points_resolved', 'n_no_improvement', 'n_indeterminate_unresolved', 'n_barrier',
-                      'n_improvement', 'completion_triggered', 'box_neighbourhood', 'spanning', 'holds')
+                      'n_improvement', 'completion_triggered', 'box_neighbourhood', 'spanning',
+                      'cached_box_neighbours', 'scope', 'holds')
+CACHED_BOX_NEIGHBOUR_FIELDS = ('label', 'eval_key', 'z', 'I_x_eur', 'status', 'Q_eur', 'F_eur', 'bar_eur',
+                               'incumbent_bar_eur', 'sigma_Q_eur', 'resolution_eur', 'F_minus_F_inc_eur',
+                               'comparison_vs_incumbent', 'poll_outcome_rule_A4', 'source')
+SCOPE_FIELDS = ('claim', 'positive_spanning_set_certificate', 'full_box_certificate', 'statement',
+                'incumbent_position', 'poll_set_spanning', 'full_box_spanning', 'n_box_neighbours_feasible',
+                'n_box_neighbours_in_poll_set', 'n_box_neighbours_outside_poll_set', 'box_neighbours_outside_poll_set',
+                'n_outside_cached', 'n_outside_not_evaluated', 'outside_cached_counts_by_class')
 POINT_RECORD_FIELDS = tuple(F51.POINT_RECORD_FIELDS)
 CAMPAIGN_RESULT_FIELDS = (('termination', 'termination_certificate', 'final_incumbent', 'initial_incumbent',
                            'sigma_Q', 'cache_table_at_start', 'budget_facts', 'baseline_exclusion', 'poll_history',
@@ -249,6 +303,9 @@ CAMPAIGN_RESULT_FIELDS = (('termination', 'termination_certificate', 'final_incu
                           + tuple(f'poll_history[].candidates[].{f}' for f in CANDIDATE_RECORD_FIELDS)
                           + tuple(f'poll_history[].snap_table[].{f}' for f in SNAP_RECORD_FIELDS)
                           + tuple(f'termination_certificate.{f}' for f in CERTIFICATE_FIELDS)
+                          + tuple(f'termination_certificate.cached_box_neighbours.rows[].{f}'
+                                  for f in CACHED_BOX_NEIGHBOUR_FIELDS)
+                          + tuple(f'termination_certificate.scope.{f}' for f in SCOPE_FIELDS)
                           + tuple(f'points[].{f}' for f in POINT_RECORD_FIELDS))
 
 _log = L._log
@@ -280,13 +337,19 @@ def _snap_distances(lattice, z, r):
     return sum(diffs), max(diffs) if diffs else 0
 
 
+def same_year(lattice, z, z_inc):
+    """W50 ruling 1: True iff z and the incumbent both hold storage and share the investment year index."""
+    return bool(lattice.has_storage(z) and lattice.has_storage(z_inc) and z[-1] == z_inc[-1])
+
+
 def snap_key(lattice, z, r, z_inc):
     l1, linf = _snap_distances(lattice, z, r)
     l1_inc = _snap_distances(lattice, z, z_inc)[0]
-    return (l1, linf, l1_inc, lattice.investment_cost(z), lattice.label(z))
+    return (l1, linf, l1_inc, 0 if same_year(lattice, z, z_inc) else 1, lattice.investment_cost(z), lattice.label(z))
 
 
-SNAP_KEY_LEVELS = ('l1_to_rounded', 'linf_to_rounded', 'l1_to_incumbent', 'lower_I', 'label')
+SNAP_KEY_LEVELS = ('l1_to_rounded', 'linf_to_rounded', 'l1_to_incumbent', 'same_year_as_incumbent', 'lower_I',
+                   'label')
 
 
 def snap(lattice, r, z_inc, frame):
@@ -309,8 +372,11 @@ def snap(lattice, r, z_inc, frame):
             'snapped_linf_from_incumbent': max(abs(a - b) for a, b in zip(best, z_inc)),
             'n_tied_at_min_l1': len(tied),
             'tied_at_min_l1': [{'label': lattice.label(z), 'linf_to_rounded': k[1], 'l1_to_incumbent': k[2],
-                                'I_x_eur': k[3]} for k, z in tied],
+                                'same_year_as_incumbent': k[3] == 0, 'I_x_eur': k[4]} for k, z in tied],
             'decided_by': decided_by}
+
+
+COORD_NAMES = ('zP5', 'zE5', 'zP7', 'zE7', 'zP9', 'zE9', 'zY')
 
 
 def spanning_diagnostic(displacements, n=N_VARS):
@@ -320,7 +386,7 @@ def spanning_diagnostic(displacements, n=N_VARS):
     solvers only). Also lists the signed unit vectors +-e_i NOT in the cone of D. Recorded, never gating."""
     import numpy as np
     from scipy.optimize import linprog
-    names = ('zP5', 'zE5', 'zP7', 'zE7', 'zP9', 'zE9', 'zY')
+    names = COORD_NAMES
     if not displacements:
         return {'n_vectors': 0, 'rank': 0, 'positively_spans_R7': False, 'zero_strictly_interior': False,
                 'signed_unit_vectors_not_in_cone': [f'{s}{v}' for v in names for s in '+-'],
@@ -427,18 +493,141 @@ def build_poll(lattice, cache, key_of, inc, k, sigma_q, completion_cap=COMPLETIO
     return record, completion
 
 
-def _certificate(lattice, key_of, cache, inc, record):
+def compare_symmetric(f_inc, f_x, res):
+    """W50 ruling 2: 'better' (F(inc) - F(x) > res), 'worse' (F(x) - F(inc) > res), 'indeterminate' otherwise,
+    'barrier' for F = +inf / None. Recorded only; the poll decision stays PB.classify (ruling A4)."""
+    if f_x is None or not math.isfinite(f_x):
+        return 'barrier'
+    if res is None or not math.isfinite(res):
+        return 'indeterminate'
+    diff = f_inc - f_x
+    if diff > res:
+        return 'better'
+    if -diff > res:
+        return 'worse'
+    return 'indeterminate'
+
+
+def cached_box_neighbours(lattice, key_of, cache, inc, sigma_q, exclude_keys=()):
+    """W50 ruling 2 (zero evaluation cost): every feasible box neighbour of the incumbent (PB.Lattice.neighbourhood)
+    that is in the cache and whose eval key is not in `exclude_keys` (the poll set), with F, F(x) - F(inc), the
+    resolution and the symmetric class."""
+    rows = []
+    for z in lattice.neighbourhood(tuple(inc['z'])):
+        ekey = key_of(z)
+        if ekey in exclude_keys or ekey not in cache:
+            continue
+        rec = cache[ekey]
+        i_x = lattice.investment_cost(z)
+        certified = rec.get('status') == 'certified' and rec.get('Q') is not None
+        f_x = (i_x + rec['Q']) if certified else None
+        res = PB.resolution(rec.get('bar'), inc['bar'], sigma_q) if certified else None
+        res = res if (res is not None and math.isfinite(res)) else None
+        src = rec.get('source')
+        rows.append({'label': lattice.label(z), 'eval_key': ekey, 'z': list(z), 'I_x_eur': i_x,
+                     'status': rec.get('status'), 'Q_eur': rec.get('Q') if certified else None, 'F_eur': f_x,
+                     'bar_eur': rec.get('bar') if certified else None, 'incumbent_bar_eur': inc['bar'],
+                     'sigma_Q_eur': sigma_q, 'resolution_eur': res,
+                     'F_minus_F_inc_eur': (f_x - inc['F']) if f_x is not None else None,
+                     'comparison_vs_incumbent': compare_symmetric(inc['F'], f_x, res),
+                     'poll_outcome_rule_A4': PB.classify(inc['F'], f_x, res if res is not None else float('inf')),
+                     'source': (src.get('campaign') or src.get('kind')) if isinstance(src, dict) else src})
+    counts = {k: sum(r['comparison_vs_incumbent'] == k for r in rows)
+              for k in ('better', 'worse', 'indeterminate', 'barrier')}
+    return {'rule': ('every feasible box neighbour of the incumbent (||z - inc||_inf <= 1) in the cache and outside '
+                     'the poll set; comparison_vs_incumbent is SYMMETRIC: better if F(inc) - F(x) > res, worse if '
+                     'F(x) - F(inc) > res, otherwise INDETERMINATE (res = max(bar_x + bar_inc, sigma_Q)); '
+                     'poll_outcome_rule_A4 is PB.classify, recorded beside it'),
+            'n': len(rows), 'counts_by_class': counts, 'rows': rows,
+            'determinately_better': [r['label'] for r in rows if r['comparison_vs_incumbent'] == 'better']}
+
+
+def incumbent_position(lattice, z_inc):
+    """W50 ruling 3: is the incumbent interior? interior = every signed unit step inc +- e_i is bound-, rule- and
+    budget-feasible. Recorded with the nodes at the lower bound (zero capacity), the year index and the budget
+    slack."""
+    z_inc = tuple(z_inc)
+    steps = []
+    for i in range(N_VARS):
+        for sign in (1, -1):
+            r = list(z_inc)
+            r[i] += sign
+            why = lattice.reasons(tuple(r))
+            steps.append({'step': f"{'+' if sign > 0 else '-'}{COORD_NAMES[i]}", 'feasible': not why,
+                          'reasons': why})
+    comp = lattice.completion(z_inc)
+    return {'definition': ('interior = every signed unit step inc +- e_i (the 7 coordinates) is bound-, rule- and '
+                           'budget-feasible'),
+            'interior': all(s['feasible'] for s in steps),
+            'signed_unit_steps': steps, 'n_feasible_signed_unit_steps': sum(s['feasible'] for s in steps),
+            'nodes_at_lower_bound': [n for n, (p, e) in zip(lattice.nodes, lattice.node_pairs(z_inc))
+                                     if p == 0 and e == 0],
+            'year_index': z_inc[-1], 'year': lattice.year_of(z_inc) if lattice.has_storage(z_inc) else None,
+            'I_x_eur': lattice.investment_cost(z_inc), 'budget_eur': lattice.budget,
+            'budget_slack_eur': lattice.budget - lattice.investment_cost(z_inc),
+            'raw_box_offsets_rejected_by_class': comp['rejected_raw_offsets_by_class'],
+            'n_raw_box_offsets': comp['n_raw_offsets'], 'n_box_budget_rejected_points': len(comp['budget_rejected'])}
+
+
+def certificate_scope(lattice, key_of, cache, inc, record, sigma_q):
+    """W50 ruling 3 (with ruling 2's table): the scope the certificate states about itself. Pure, zero solves."""
+    z_inc = tuple(inc['z'])
+    polled = [c for c in record['candidates'] if c['disposition'] in ('cache_hit', 'new_evaluation')]
+    polled_keys = {c['eval_key'] for c in polled}
+    nb = lattice.neighbourhood(z_inc)
+    poll_span = record['poll_set_spanning']
+    box_span = spanning_diagnostic([[a - b for a, b in zip(z, z_inc)] for z in nb])
+    position = incumbent_position(lattice, z_inc)
+    cached = cached_box_neighbours(lattice, key_of, cache, inc, sigma_q, exclude_keys=polled_keys)
+    cached_keys = {r['eval_key'] for r in cached['rows']}
+    outside = []
+    for z in nb:
+        ekey = key_of(z)
+        if ekey in polled_keys:
+            continue
+        row = next((r for r in cached['rows'] if r['eval_key'] == ekey), None)
+        outside.append({'label': lattice.label(z), 'eval_key': ekey, 'z': list(z),
+                        'I_x_eur': lattice.investment_cost(z),
+                        'status': ('cached_' + row['comparison_vs_incumbent']) if row else 'not_evaluated'})
+    pss = bool(poll_span.get('positively_spans_R7'))
+    full_box = all(key_of(z) in polled_keys for z in nb)
+    claim = ('poll failure over the recorded poll set at unit mesh'
+             + ('' if pss else ', NOT a positive-spanning-set certificate')
+             + ('' if full_box else ', NOT the full-box certificate'))
+    statement = (
+        f"The claim is {claim}. The incumbent {inc['label']} is "
+        f"{'interior' if position['interior'] else 'NOT interior'}: nodes at the lower bound (zero capacity) "
+        f"{position['nodes_at_lower_bound']}, budget slack {position['budget_slack_eur']:.2f} EUR of "
+        f"{position['budget_eur']:g}, {position['n_feasible_signed_unit_steps']} of {2 * N_VARS} signed unit steps "
+        f"feasible. The poll displacement set ({poll_span.get('n_vectors')} vectors) has rank {poll_span.get('rank')} "
+        f"and {'positively spans' if pss else 'does NOT positively span'} R^7; the full feasible box "
+        f"({box_span['n_vectors']} points) has rank {box_span['rank']} and "
+        f"{'positively spans' if box_span['positively_spans_R7'] else 'does NOT positively span'} R^7. "
+        f"{len(outside)} of {len(nb)} feasible box neighbours lie outside the poll set: {len(cached_keys)} in the "
+        f"cache ({cached['counts_by_class']}), {len(outside) - len(cached_keys)} not evaluated.")
+    return {'claim': claim, 'positive_spanning_set_certificate': pss, 'full_box_certificate': full_box,
+            'statement': statement, 'incumbent_position': position, 'poll_set_spanning': poll_span,
+            'full_box_spanning': box_span, 'n_box_neighbours_feasible': len(nb),
+            'n_box_neighbours_in_poll_set': len(nb) - len(outside), 'n_box_neighbours_outside_poll_set': len(outside),
+            'box_neighbours_outside_poll_set': outside, 'n_outside_cached': len(cached_keys),
+            'n_outside_not_evaluated': len(outside) - len(cached_keys),
+            'outside_cached_counts_by_class': cached['counts_by_class']}, cached
+
+
+def _certificate(lattice, key_of, cache, inc, record, sigma_q):
     polled = [c for c in record['candidates'] if c['disposition'] in ('cache_hit', 'new_evaluation')]
     outcomes = [c['outcome'] for c in polled]
     nb = lattice.neighbourhood(tuple(inc['z']))
     polled_keys = {c['eval_key'] for c in polled}
     nb_rows = [{'label': lattice.label(z), 'in_poll_set': key_of(z) in polled_keys, 'in_cache': key_of(z) in cache,
                 'I_x_eur': lattice.investment_cost(z)} for z in nb]
+    scope, cached = certificate_scope(lattice, key_of, cache, inc, record, sigma_q)
     cert = {'statement': CERTIFICATE_STATEMENT, 'incumbent': inc['label'], 'poll_index': record['poll_index'],
             'halton_t': record['halton_t'],
             'poll_set': [{'label': c['label'], 'poll_part': c['poll_part'], 'direction_index': c['direction_index'],
                           'disposition': c['disposition'], 'outcome': c['outcome'], 'F_eur': c['F_eur'],
-                          'F_inc_minus_F_eur': c['F_inc_minus_F_eur'], 'resolution_eur': c['resolution_eur']}
+                          'F_inc_minus_F_eur': c['F_inc_minus_F_eur'], 'resolution_eur': c['resolution_eur'],
+                          'comparison_vs_incumbent': compare_symmetric(inc['F'], c['F_eur'], c['resolution_eur'])}
                          for c in polled],
             'n_poll_points': len(polled),
             'all_poll_points_resolved': all(o in ('no_improvement', 'indeterminate', 'barrier', 'improvement')
@@ -447,11 +636,12 @@ def _certificate(lattice, key_of, cache, inc, record):
             'n_indeterminate_unresolved': outcomes.count('indeterminate'), 'n_barrier': outcomes.count('barrier'),
             'n_improvement': outcomes.count('improvement'), 'completion_triggered': record['completion_triggered'],
             'box_neighbourhood': {'n_feasible': len(nb), 'n_in_poll_set': sum(r['in_poll_set'] for r in nb_rows),
-                                  'n_unexamined': sum(1 for r in nb_rows if not r['in_poll_set']),
-                                  'unexamined': [r for r in nb_rows if not r['in_poll_set']],
+                                  'n_outside_poll_set': sum(1 for r in nb_rows if not r['in_poll_set']),
+                                  'outside_poll_set': [r for r in nb_rows if not r['in_poll_set']],
                                   'is_the_full_box_certificate': all(r['in_poll_set'] for r in nb_rows)},
-            'spanning': record['poll_set_spanning']}
-    cert['holds'] = cert['all_poll_points_resolved'] and cert['n_improvement'] == 0 and cert['n_poll_points'] > 0
+            'spanning': record['poll_set_spanning'], 'cached_box_neighbours': cached, 'scope': scope}
+    cert['holds'] = (cert['all_poll_points_resolved'] and cert['n_improvement'] == 0 and cert['n_poll_points'] > 0
+                     and not cached['determinately_better'])
     return cert
 
 
@@ -556,7 +746,7 @@ def run_continuation(lattice, cache, key_of, incumbent, evaluate_fn, sigma_q, k0
         record.update({'decision': 'failure_at_unit_mesh', 'next_incumbent': inc['label'], 'next_poll_size': None})
         _finish(record)
         termination = {'reason': 'poll_failure_at_unit_mesh', 'poll_size_reached': DELTA_UNIT}
-        certificate = _certificate(lattice, key_of, cache, inc, record)
+        certificate = _certificate(lattice, key_of, cache, inc, record, sigma_q)
         break
     if termination is None:
         termination = {'reason': 'max_polls_reached', 'poll_size_reached': DELTA_UNIT}
@@ -595,8 +785,12 @@ def dry_run(lattice, cache, key_of, inc, sigma_q):
                 'termination_certificate': out['termination_certificate'],
                 'polls': [_poll_plan(p, cache) for p in out['history']]}
     except _DryStop:
-        return {'complete_without_new_evaluations': False, 'first_evaluating_poll': _poll_plan(started[-1], cache),
-                'earlier_polls': [_poll_plan(p, cache) for p in started[:-1]]}
+        first = started[-1]
+        scope, cached = certificate_scope(lattice, key_of, cache, first['incumbent'], first, sigma_q)
+        return {'complete_without_new_evaluations': False, 'first_evaluating_poll': _poll_plan(first, cache),
+                'earlier_polls': [_poll_plan(p, cache) for p in started[:-1]],
+                'certificate_scope_if_this_poll_fails': scope,
+                'cached_box_neighbours_outside_this_poll_set': cached}
 
 
 def _poll_plan(poll, cache):
@@ -734,7 +928,7 @@ def load_phase_b_source(case_file_sha256, lattice):
     return True, info, entries
 
 
-def continuation_facts(lattice, cache, key_of):
+def continuation_facts(lattice, cache, key_of, sigma_q):
     """The incumbent and the poll counter are the committed s51 Phase B's, asserted: final_incumbent bitwise, I(z)
     recomputed, in the cache with the same Q and bar; the s51 terminal poll is the refused unit poll k = 4 (t = 21)
     with the 61-point box completion, which reproduces here; its n H-columns equal the first n directions of the 2n
@@ -769,10 +963,15 @@ def continuation_facts(lattice, cache, key_of):
     }
     inc = {'eval_key': fin['eval_key'], 'z': z, 'label': fin['label'], 'I': fin['I'], 'Q': fin['Q'], 'F': fin['F'],
            'bar': fin['bar'], 'source': entry.get('source')}
+    # W50 ruling 2: STOP before running if any cached box neighbour is determinately better than the incumbent
+    cached_nb = cached_box_neighbours(lattice, key_of, cache, inc, sigma_q)
+    checks['no_cached_box_neighbour_determinately_better_than_the_incumbent'] = not cached_nb['determinately_better']
     return inc, {'incumbent': dict(fin), 'budget_slack_eur': lattice.budget - lattice.investment_cost(z),
                  's51_terminal_poll': {k: last[k] for k in ('poll_index', 'halton_t', 'poll_size_delta', 'decision',
                                                             'directions')},
                  's51_termination': res['termination'], 'first_halton_k': FIRST_HALTON_K, 'first_halton_t': t_k0,
+                 'cached_box_neighbours_of_the_incumbent': cached_nb,
+                 'incumbent_position': incumbent_position(lattice, z),
                  'box_neighbourhood_spanning_non_gating': spanning_diagnostic(
                      [[a - b for a, b in zip(nb, z)] for nb in lattice.neighbourhood(z)]),
                  'checks': checks}
@@ -909,7 +1108,38 @@ def rule_eleven(lattice, sigma_q, cache, key_of, incumbent):
         'c_certificate_fields': all(f in cert for f in CERTIFICATE_FIELDS),
         'c_certificate_holds_on_synthetic_failure': cert.get('holds') is True,
         'c_box_scope_recorded': 'is_the_full_box_certificate' in (cert.get('box_neighbourhood') or {}),
+        'c_scope_fields': all(f in (cert.get('scope') or {}) for f in SCOPE_FIELDS),
+        'c_cached_box_neighbour_fields': all(all(f in r for f in CACHED_BOX_NEIGHBOUR_FIELDS)
+                                             for r in (cert.get('cached_box_neighbours') or {}).get('rows', [])),
+        'c_scope_counts_consistent': ((cert.get('scope') or {}).get('n_box_neighbours_in_poll_set', -1)
+                                      + (cert.get('scope') or {}).get('n_box_neighbours_outside_poll_set', -1)
+                                      == (cert.get('scope') or {}).get('n_box_neighbours_feasible')),
+        'c_no_outside_row_is_unexamined': all(
+            r['status'] in ('not_evaluated', 'cached_better', 'cached_worse', 'cached_indeterminate', 'cached_barrier')
+            for r in (cert.get('scope') or {}).get('box_neighbours_outside_poll_set', [])),
+        'c_symmetric_classes': (compare_symmetric(100.0, 50.0, 10.0) == 'better'
+                                and compare_symmetric(100.0, 150.0, 10.0) == 'worse'
+                                and compare_symmetric(100.0, 105.0, 10.0) == 'indeterminate'
+                                and compare_symmetric(100.0, 95.0, 10.0) == 'indeterminate'
+                                and compare_symmetric(100.0, None, 10.0) == 'barrier'),
     })
+    # (c') a cached box neighbour outside the poll set that is determinately better makes the certificate NOT hold
+    last_c = out_c['history'][-1]
+    inc_c = last_c['incumbent']
+    polled_c = {c['eval_key'] for c in last_c['candidates'] if c['disposition'] in ('cache_hit', 'new_evaluation')}
+    outside_c = [z for z in lattice.neighbourhood(tuple(inc_c['z'])) if key_of(z) not in polled_c]
+    if outside_c:
+        z_b = outside_c[0]
+        cache_b = dict(cache)
+        cache_b[key_of(z_b)] = {'label': lattice.label(z_b), 'status': 'certified', 'eval_key': key_of(z_b),
+                                'Q': inc_c['F'] - lattice.investment_cost(z_b) - 1.0e7, 'bar': 1.0,
+                                'canonical': PB.canonical_of(lattice, z_b), 'source': 'synthetic'}
+        cert_b = _certificate(lattice, key_of, cache_b, inc_c, last_c, sigma_q)
+        checks['c_determinately_better_cached_neighbour_breaks_the_certificate'] = (
+            cert_b['holds'] is False
+            and cert_b['cached_box_neighbours']['determinately_better'] == [lattice.label(z_b)])
+    else:
+        checks['c_determinately_better_cached_neighbour_breaks_the_certificate'] = False
     # (d) success path: the first new point improves by 1e7 -> the incumbent moves, the next poll is a UNIT poll at
     #     k + 1; afterwards nothing improves -> failure with the certificate at the new incumbent
     first = {}
@@ -949,6 +1179,8 @@ def rule_eleven(lattice, sigma_q, cache, key_of, incumbent):
                                      and out_f['termination']['reason'] == 'STOP_FOR_REVIEW_completion_cap'
                                      and out_f['n_new_evaluations'] == 0),
         'e_trigger_is_strict_n_plus_1': MIN_FEASIBLE_POLL_POINTS == N_VARS + 1 == 8,
+        'f_snap_key_year_level_before_I': SNAP_KEY_LEVELS.index('same_year_as_incumbent') + 1
+        == SNAP_KEY_LEVELS.index('lower_I') == 4,
     })
     missing = sorted(k for k, v in checks.items() if not v)
     if missing:
@@ -1073,7 +1305,7 @@ def build_inputs(own_root_rel):
     failures += [f'budget fact failed: {k}' for k, v in ev['budget_facts']['checks'].items() if not v]
 
     # ---- the incumbent: the committed s51 Phase B final incumbent (asserted), argmin-F recorded beside it ----
-    inc, facts = continuation_facts(lattice, cache, key_of)
+    inc, facts = continuation_facts(lattice, cache, key_of, sq['sigma_Q_eur'])
     ev['continuation_facts'] = facts
     failures += [f'continuation fact failed: {k}' for k, v in facts['checks'].items() if not v]
     _argmin, argmin_record = PB.initial_incumbent(lattice, cache, key_of(lattice.x0()), sq['sigma_Q_eur'])
@@ -1110,6 +1342,7 @@ def _script_pin(path, commit=None):
 def _extra(ev, lattice, domain, dry, memory):
     return {'campaign_script': os.path.basename(__file__),
             'campaign_script_sha256': H.sha256_file(os.path.abspath(__file__)),
+            'predecessor_spec': dict(PREDECESSOR_SPEC),
             's51_phase_b_script': _script_pin(PHASE_B_SOURCE['script']['path'], PHASE_B_SOURCE['script']['commit']),
             'phase_b_record_script': _script_pin(F51.PHASE_B_SCRIPT['path'], F51.PHASE_B_SCRIPT['commit']),
             'f2_ladder_script': _script_pin(F51.F2_LADDER_SCRIPT['path'], F51.F2_LADDER_SCRIPT['commit']),
@@ -1158,7 +1391,9 @@ def validate_spec(spec, lattice, key_of, domain, domain_labels, ev):
     entries = spec['candidates']
     pd = extra.get('poll_design') or {}
     checks = {
-        'campaign_id': spec.get('campaign_id', '').startswith(DEFAULT_CAMPAIGN_ID),
+        'campaign_id': (bool(CAMPAIGN_ID_PATTERN.match(spec.get('campaign_id', '')))
+                        and spec.get('campaign_id') not in PREDECESSOR_SPECS),
+        'predecessor_recorded': extra.get('predecessor_spec') == PREDECESSOR_SPEC,
         'n_entries_equal_domain': len(entries) == len(domain),
         'entries_in_domain_order': [e['label'] for e in entries] == domain_labels,
         'eval_keys_recompute_at_m2': all(e['eval_key'] == key_of(z) for e, z in zip(entries, domain)),
@@ -1227,6 +1462,23 @@ def _guard_counts():
     out = {'s53_parent': dict(PARENT_GUARD.counts)}
     out.update(F51._guard_counts())
     return out
+
+
+def _log_scope(tag, scope, cached):
+    _log(f"[{tag}]   CERTIFICATE SCOPE if this poll fails (W50 ruling 3): {scope['statement']}")
+    pos = scope['incumbent_position']
+    _log(f"[{tag}]     incumbent position: interior={pos['interior']} nodes_at_lower_bound="
+         f"{pos['nodes_at_lower_bound']} budget_slack={pos['budget_slack_eur']} feasible signed unit steps="
+         f"{[s['step'] for s in pos['signed_unit_steps'] if s['feasible']]}")
+    for r in scope['box_neighbours_outside_poll_set']:
+        _log(f"[{tag}]     outside the poll set: {r['label']} I={r['I_x_eur']} -> {r['status']}")
+    _log(f"[{tag}]   CACHED BOX NEIGHBOURS outside the poll set (W50 ruling 2): n={cached['n']} "
+         f"{cached['counts_by_class']}")
+    for r in cached['rows']:
+        _log(f"[{tag}]     {r['label']}: F={r['F_eur']} F-F_inc={r['F_minus_F_inc_eur']} resolution="
+             f"{r['resolution_eur']} (bar_x={r['bar_eur']} bar_inc={r['incumbent_bar_eur']} sigma_Q={r['sigma_Q_eur']})"
+             f" -> {r['comparison_vs_incumbent'].upper()} (A4 poll outcome: {r['poll_outcome_rule_A4']}; "
+             f"source {r['source']})")
 
 
 def _log_poll_plan(tag, plan):
@@ -1337,6 +1589,10 @@ def freeze(campaign_id, started):
         _log_poll_plan(tag, dry['first_evaluating_poll'])
         _log(f"[{tag}]   evaluation cap = {MAX_NEW_EVALUATIONS}; this poll needs "
              f"{dry['first_evaluating_poll']['n_new_evaluations']}")
+        _log_scope(tag, dry['certificate_scope_if_this_poll_fails'], dry['cached_box_neighbours_outside_this_poll_set'])
+    cnb = ev['continuation_facts']['cached_box_neighbours_of_the_incumbent']
+    _log(f"[{tag}] cached box neighbours of the incumbent (ALL, poll set included; W50 ruling 2 stop test): n="
+         f"{cnb['n']} {cnb['counts_by_class']} determinately better={cnb['determinately_better']}")
     _log(f'[{tag}] DRY RUN (full record, zero solves): {json.dumps(dry, default=str)}')
     _log(f"[{tag}] rule eleven: {ev['rule_eleven']['checks']}")
     _log(f"[{tag}] shared constants: {ev['shared_constants_with_reused_modules']}")
@@ -1378,6 +1634,12 @@ def _log_poll(record):
 
 def run(campaign_id, started, spec_sha256):
     tag = 'S53-F2-CERT'
+    superseded = {v['sha256']: v for v in PREDECESSOR_SPECS.values()}
+    if spec_sha256 in superseded or campaign_id in PREDECESSOR_SPECS:   # W50: never run a superseded spec
+        what = superseded.get(spec_sha256) or PREDECESSOR_SPECS[campaign_id]
+        _log(f"[{tag} PRECONDITION FAILED] {spec_sha256} / campaign {campaign_id} is a superseded predecessor spec "
+             f"({what['path']}; {what['reason']}); it is never run")
+        raise SystemExit(1)
     root = campaign_root(campaign_id)
     own_rel = os.path.relpath(root, REPO)
     spec_path, spec = H.load_frozen_spec(root, spec_sha256)
@@ -1500,10 +1762,13 @@ def run(campaign_id, started, spec_sha256):
         'lattice_neighbourhood_of_incumbent': result['lattice_neighbourhood_of_incumbent'],
         'claim_scope': ('on termination by poll failure the claim is the termination_certificate (CERTIFICATE_'
                         'STATEMENT; holds must be true): poll failure over the RECORDED poll set at unit mesh, NOT '
-                        'the full-box certificate unless the completion was triggered; the unexamined box neighbours '
-                        'and the spanning facts are recorded with it; on evaluation_budget_exhausted / '
-                        'STOP_FOR_REVIEW / max_polls no certificate claim is made. Every figure is a figure of the '
-                        'm = 2 FLEXIBILITY-PRICE SCENARIO under the EUR 1M budget.'),
+                        'the full-box certificate unless the completion was triggered, and a positive-spanning-set '
+                        'certificate only if termination_certificate.scope says so; the box neighbours outside the '
+                        'poll set (cached ones classified better / worse / indeterminate), the incumbent position '
+                        'and the spanning facts are recorded in termination_certificate.scope; on '
+                        'evaluation_budget_exhausted / STOP_FOR_REVIEW / max_polls no certificate claim is made. '
+                        'Every figure is a figure of the m = 2 FLEXIBILITY-PRICE SCENARIO under the EUR 1M budget.'),
+        'predecessor_spec': dict(PREDECESSOR_SPEC),
         'poll_history': result['history'],
         'cache_table_at_start': ev['cache_table'], 'cache_sources_accepted': ev['cache_sources_accepted'],
         'points': new_points,
@@ -1566,6 +1831,8 @@ def main():
     args = parser.parse_args()
     if not CAMPAIGN_ID_PATTERN.match(args.campaign_id):
         parser.error(f'--campaign-id must match {CAMPAIGN_ID_PATTERN.pattern}')
+    if args.freeze and args.campaign_id in PREDECESSOR_SPECS:
+        parser.error(f'--campaign-id {args.campaign_id} is superseded (W50); use {DEFAULT_CAMPAIGN_ID}')
     started = time.time()
     os.chdir(REPO)
     if args.freeze:
