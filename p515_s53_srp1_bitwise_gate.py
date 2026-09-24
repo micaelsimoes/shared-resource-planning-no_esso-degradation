@@ -29,6 +29,10 @@ W57 UPDATE (Planner task W57 item 4): `_activate_row18_with_settlement` now eval
 activation and raises above `_ROW18_ACTIVATION_BODY_TOL` (W57 item 2; frozen spec v3). The 19 W56 presence checks
 still hold on the live module unchanged; two are ADDED (the body check follows activation, in order; the tolerance
 is the declared 1e-9). Nothing else in this gate changed. WRITTEN, NOT RUN at W57.
+W60 UPDATE (Planner task W60): W59's run (r1) refused at the W35 precondition because the counter was installed
+BEFORE `S51G.main()`, so the presence checks read its wrappers. The counter is now armed at the run-lock acquisition
+W35 performs after its preconditions, capture-path checklist and declaration, immediately before the arm; it covers
+the arm and is removed when `S51G.main()` returns. Checks, declared counts and tolerances are unchanged.
 
 HOW IT IS BUILT. The committed W48 gate (`p515_s52_srp1_bitwise_gate.py`) BY IMPORT, which imports the W39 gate 1
 (`p515_s51_srp1_bitwise_gate.py`) -> the W35 gate (`p515_s50_generalization_gate.py`) -> W32 -> W10, whose armed
@@ -309,10 +313,22 @@ def main():
     S51G.row18_code_presence = combined_code_presence
     W35G.EXTRA_FORBIDDEN = EXTRA_FORBIDDEN
 
-    COUNTER.install()
+    # W60: the counter is armed only AFTER the W35 precondition/presence stage, at the run-lock acquisition that
+    # W35 performs immediately before `W10.run_arm` (one-shot: the lock function is restored before it is called),
+    # so the presence checks read the LIVE functions, not the counter's wrappers (W59 r1 defect).
+    acquire_run_lock = W10.G._acquire_exclusive_run_lock
+
+    def acquire_run_lock_then_arm_counter(*args, **kwargs):
+        W10.G._acquire_exclusive_run_lock = acquire_run_lock
+        result = acquire_run_lock(*args, **kwargs)
+        COUNTER.install()
+        return result
+
+    W10.G._acquire_exclusive_run_lock = acquire_run_lock_then_arm_counter
     try:
         status = S51G.main()   # W39 gate 1 as committed (-> W35 gate main); exits 1 on a precondition refusal
     finally:
+        W10.G._acquire_exclusive_run_lock = acquire_run_lock
         COUNTER.uninstall()
     _log(f'W39/W35 gate verdict (exit status): {status}')
     _log(f'W51 counter: calls {COUNTER.calls}; acting {({k: len(v) for k, v in COUNTER.acting.items()})}')
@@ -361,8 +377,10 @@ def main():
         'declared_solve_profile': declared,
         'w51_code_presence_asserted_before_run': presence_w51,
         'w51_counter_ARMED': {
-            'mechanism': ('pass-through wrappers on both new functions for the whole run (CLAUDE.md rule six: '
-                          'armed, never asserted); count declared from the case file before the run'),
+            'mechanism': ('pass-through wrappers on both new functions, armed at the run-lock acquisition after the '
+                          'W35 precondition/presence stage and before the arm, removed when S51G.main returns '
+                          '(CLAUDE.md rule six: armed, never asserted); count declared from the case file before '
+                          'the run'),
             'expected_calls_each': expected_w51_calls, 'calls': dict(COUNTER.calls),
             'acting_calls': COUNTER.acting, 'pass': counter_ok},
         'comparison_vs_committed_w48_arm_GATING': comparison,
