@@ -282,6 +282,22 @@ Authority: Addendum 27 (with the author's decisions) and `STEP4_DFO_METHOD.md`. 
 - **NOMAD** (`2c1272f4`): installed in a separate environment; the in-house Householder/rounding/bounds/(n+1) machinery reproduces it on 144 polls. STEP4 §5.2's "double/halve as in NOMAD 4" is wrong (NOMAD uses 1-2-5).
 - **Open for the author:** paper-scale route; whether a data anchor exists for the flexibility price; the congestion/shifting definition; the untested marginal-MWh prediction; STEP4 corrections; the baseline citations (spec v18 records them as proposed, author to confirm).
 
+### Addenda 38–39 — F2 demonstration, row 18, and the multi-scenario pilot. Stopped for review (2026-09-24)
+
+Reports: `P5_15_ADDENDUM38_REPORT.md`, `P5_15_ADDENDUM39_PILOT_REPORT.md`. Specs v21 `13cb828c`, v22 `5d8df1e8`.
+
+- **F2 (flexibility price ×2) is the paper's demonstration case.** Every marginal MWh pays; Phase B left the 2025 budget corner for a **2030 two-node plan** (0.25/0.5 at node 5 + 1.0/3.5 at node 7, I = 992,268), improving F by 102,117 at 5.5× resolution — the method finding what a ladder cannot. The corner and cache-hit predictions were refuted. The run stopped at the completion cap with mesh-local optimality **not** established; the certificate continuation (standard unit poll, snap-to-feasible, cap 60) is specified and pending.
+- **Row 18 as signed is implemented, merged and gated** (`700cf13c`): linear DSO premium inside Q(x), TSO pinned, one scenario-free storage variable with the old copies retained unwired, settlement split (deviation energy economic), voltage pin solver-only, old quadratic unwired. Three gates pass; inert at one scenario, so every committed result stands.
+- **The multi-scenario pilot certified** (`f239ee02`): 5 years × 4 days × 2×2 scenarios, α = 0.50, x = 0 at 74 cycles and the smallest unit at 72, in 4 h at concurrency 2 (~3.3 min/cycle).
+  - **R = 0.937 confirmed at 0.942** — a prediction recorded before any multi-scenario run, from the mean price profile alone. The mean-profile argument transfers, which strengthens the SRP1-with-caveat fallback.
+  - Value 244,321 (resolution 15,511); **value − I = −73,636**, so the unit still does not pay at 2×2.
+  - **Interface dispersion at α = 0.50 is substantial**: 16.1 % of mean flow at worst, peak 34.5 MW. Addendum 39's "schedule-honouring regime" premise is **refuted**.
+  - Settlement split reconciles per block to 1e-15; σ ratios 0.489 / 0.479 inside the band.
+- **α: the standalone α\* = 0.1 does not transfer**, and both earlier explanations are withdrawn. It is an artefact of the **initialisation** economy, where interface import is unpriced and the DSO holds its schedule by curtailing RES at a flat 1 €/MWh. Under coordination the premium suppresses **market-price arbitrage** (91 % of the deviation at α = 0; the earned covariance falls 140-fold by α = 1). **α\*(coordinated) cannot be located from 2-cycle arms** — the coordination gap dominates the premium by more than an order of magnitude — so the R3.6 row as ordered would show no transition.
+- **Pre-run audit caught two real bugs**, invisible at one scenario: the Excel dispersion sheet read row 18's unwired storage copies (spurious 98.75 MW), and the S31C flexibility volumes were inflated by the scenario count. Both fixed and gated.
+- **Models** (2026-09-24): Worker and Planner pinned to `claude-opus-5-5` (Planner from its next restart), Advisor on Fable 5.1.
+- **Open:** the R3.6 row (settled sweep, 2–4 h, or report α = 0.50 alone); row 18 at initialisation (fix or document); the paper-scale route (route (c) 3×3 now ≈ 16 h per evaluation); the F2 certificate continuation.
+
 ---
 
 # SUPERSEDED "CURRENT" SECTION — 2026-09-14 (P5.15 Step 1 closed through gates G1–G5)
