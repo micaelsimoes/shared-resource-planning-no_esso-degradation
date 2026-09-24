@@ -2855,6 +2855,9 @@ def _run_operational_planning(planning_problem, candidate_solution, initial_stat
         consensus_vars, dual_vars = create_admm_variables(planning_problem)
         # P5.15 Addendum 38: row 18's imbalance premium. Default-inactive (alpha = 0,
         # no floor) unless a campaign/harness configuration or the case file raises it.
+        # Addendum 40 ruling 2: the run's alpha wires row 18's STRUCTURE here, but the
+        # builders set `row18_alpha` to 0 for the initialisation solve; it takes the run's
+        # alpha with the settlement weight in `_prepare_distribution_objectives_for_admm`.
         interface_premium = admm_parameters.interface_deviation_premium
         dso_models, results['dso'] = create_distribution_networks_models(
             distribution_networks,
@@ -4270,6 +4273,11 @@ def create_distribution_networks_models(distribution_networks, consensus_vars, c
     setting -- alpha = 0, no floor -- which is the behaviour of every result committed
     before this stage; `_run_operational_planning` passes
     `ADMMParameters.interface_deviation_premium`, itself default-inactive.
+
+    P5.15 Addendum 40 ruling 2: a nonzero `premium_alpha` wires row 18's structure, but
+    `row18_alpha` is 0 at the initialisation solve these builders run
+    (`_set_row18_inactive_for_initialisation`); `_prepare_distribution_objectives_for_admm`
+    restores the run's alpha together with the settlement weight.
     """
     if parallel_execution:
         return create_distribution_networks_models_parallel(distribution_networks, consensus_vars, candidate_solution, premium_alpha=premium_alpha, premium_floor=premium_floor)
@@ -4323,6 +4331,8 @@ def create_distribution_networks_models_sequential(distribution_networks, consen
                     premium_alpha=premium_alpha,
                     premium_floor=premium_floor,
                 )
+                # P5.15 Addendum 40 ruling 2: row 18 inactive at this (initialisation) solve.
+                _set_row18_inactive_for_initialisation(dso_model[year][day])
 
         # Run SMOPF
         results[node_id] = distribution_network.optimize(dso_model)
@@ -4436,6 +4446,8 @@ def create_distribution_network_model(node_id, distribution_network, candidate_s
                 premium_alpha=premium_alpha,
                 premium_floor=premium_floor,
             )
+            # P5.15 Addendum 40 ruling 2: row 18 inactive at this (initialisation) solve.
+            _set_row18_inactive_for_initialisation(dso_model[year][day])
 
     # Run SMOPF
     res = distribution_network.optimize(dso_model)
@@ -5132,6 +5144,41 @@ def update_transmission_model_to_admm(planning_problem, model, params, objective
             model[year][day].admm_objective = pe.Objective(sense=pe.minimize, expr=obj)
 
 
+def _set_row18_inactive_for_initialisation(model):
+    """P5.15 Addendum 40 ruling 2 (frozen spec v23 `ruling2_init_fix`): row 18 is INACTIVE
+    at the ADMM initialisation solve and activated with the settlement weight.
+
+    Called by the DSO initialisation builders right after `add_scenario_commitment_terms`
+    and BEFORE the initialisation solve. Row 18 keeps its full structure (the deviation
+    Vars, their defining rows, `row18_premium` with any floor, `row18_deviation_charge`) --
+    only the mutable `row18_alpha` Param is set to 0 for this solve; the run's alpha is
+    recorded on the block as `row18_alpha_admm` so `_activate_row18_with_settlement` can
+    restore it exactly. Reason: in the initialisation economy the interface import is
+    unpriced (`interface_settlement_weight` = 0 until `_prepare_distribution_objectives_for_admm`,
+    reference generator outside the generation cost), so charging a premium for deviating
+    from a commitment that carries no settlement is inconsistent -- the same reason the
+    uncoordinated benchmark (`_run_operational_planning_without_coordination`) passes
+    alpha = 0. It also made the standalone alpha* ~ 0.1 an artefact of that economy.
+
+    A no-op on any block where row 18 is not wired -- in particular at ONE scenario, where
+    `add_scenario_commitment_terms` constructs nothing, so SRP1 is untouched."""
+    if not hasattr(model, 'row18_alpha'):
+        return
+    model.row18_alpha_admm = pe.Param(initialize=float(pe.value(model.row18_alpha)), mutable=False)
+    model.row18_alpha.set_value(0.0)
+
+
+def _activate_row18_with_settlement(model):
+    """P5.15 Addendum 40 ruling 2: restores the run's alpha recorded by
+    `_set_row18_inactive_for_initialisation`, as a Param update (no rebuild): the floor,
+    `row18_premium` and the charge expression are left exactly as built. A no-op where row
+    18 is not wired, and on a block built before this change (no `row18_alpha_admm`: its
+    `row18_alpha` already carries the run's alpha)."""
+    if not hasattr(model, 'row18_alpha_admm'):
+        return
+    model.row18_alpha.set_value(pe.value(model.row18_alpha_admm))
+
+
 def _prepare_distribution_objectives_for_admm(distribution_networks, models):
     for node_id in distribution_networks:
         dso_model = models[node_id]
@@ -5157,6 +5204,9 @@ def _prepare_distribution_objectives_for_admm(distribution_networks, models):
                 # P5.15 Step 3.1-C (Addendum 12 item 1): interface energy
                 # settlement is active (weight 1) only in the ADMM path.
                 dso_model[year][day].interface_settlement_weight.set_value(1.00)
+                # P5.15 Addendum 40 ruling 2: row 18 is activated with the settlement
+                # weight (it was inactive at the initialisation solve).
+                _activate_row18_with_settlement(dso_model[year][day])
 
 
 def update_distribution_models_to_admm(planning_problem, models, params, objective_scale):
