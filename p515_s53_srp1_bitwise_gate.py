@@ -1,5 +1,5 @@
 """
-P5.15 Addendum 40 ruling 2 (task W51) -- the SRP1 TWO-CYCLE BITWISE IDENTITY gate for "row 18 INACTIVE at the
+P5.15 Addendum 40 ruling 2 (tasks W51 -> W56) -- the SRP1 TWO-CYCLE BITWISE IDENTITY gate for "row 18 INACTIVE at the
 initialisation solve, activated with the settlement weight", against the SAME committed baseline C* reference as
 the W35 / W39 / W48 gates, plus the whole arm against the committed W48 gate arm.
 
@@ -11,15 +11,20 @@ event and an armed bounded guard, plus code-presence assertions for this change"
 RECORDED PREDICTION (spec v23 `ruling2_init_fix.predictions_recorded_before_run.planner[0]`): "the SRP1 bitwise gate
 passes unchanged (nothing is wired at one scenario)".
 
-WHAT IS UNDER TEST. W51 (d7962d4e) changed `shared_resources_planning.py` only:
+WHAT IS UNDER TEST. W51 (d7962d4e) and W54 (d573e145, the STRUCTURAL form that replaced W51's Param-only form;
+frozen spec `data/SRP1/Results/P515S53/row18_structural/frozen_s53_row18_structural_spec_v2_5123e67b.json`) changed
+`shared_resources_planning.py` only:
   * `_set_row18_inactive_for_initialisation` -- called by both DSO initialisation builders after
-    `add_scenario_commitment_terms`, before the initialisation solve; returns at once where `row18_alpha` does not
-    exist;
+    `add_scenario_commitment_terms`, before the initialisation solve; per index deactivates `row18_dev_{p,q}_def`
+    then fixes the deviation pair at 0; returns at once where `row18_alpha` does not exist;
   * `_activate_row18_with_settlement` -- called in `_prepare_distribution_objectives_for_admm` after the
-    settlement weight is set to 1; returns at once where `row18_alpha_admm` does not exist.
+    settlement weight is set to 1; per index sets the minimal split, unfixes the pair, then activates the row;
+    returns at once where `row18_alpha` does not exist (W51's `row18_alpha_admm` marker no longer exists).
 At SRP1 (ONE market x ONE operation scenario) `add_scenario_commitment_terms` constructs nothing, so both are
-claimed to be no-ops on every block. The W51 zero-solve checks (cc1ca8f8, check D) showed it structurally at 1 x 1
-without solving; this gate is the solve-bearing test.
+claimed to be no-ops on every block. The zero-solve checks (`p515_s53_init_fix_zero_solve_checks.py`, check D)
+show it structurally at 1 x 1 without solving; this gate is the solve-bearing test.
+W56 UPDATE (Planner task W56): substitution 3's `w51_code_presence` and the armed counter's acting markers are
+re-targeted to the structural mechanism; nothing else in this gate changed. WRITTEN, NOT RUN at W56.
 
 HOW IT IS BUILT. The committed W48 gate (`p515_s52_srp1_bitwise_gate.py`) BY IMPORT, which imports the W39 gate 1
 (`p515_s51_srp1_bitwise_gate.py`) -> the W35 gate (`p515_s50_generalization_gate.py`) -> W32 -> W10, whose armed
@@ -40,7 +45,7 @@ these declared substitutions and no others:
      model_construction_helpers.py and every imported gate script are already in it), so the gate refuses to run
      against an uncommitted edit of any of them;
   3. the live-module presence assertion = W39's row 18 checks + W48's W47 checks + `w51_code_presence` below
-     (a stale import of pre-W51 code cannot pass);
+     (W56: the structural form; a stale import of pre-W51 code, or of W51's Param-only form, cannot pass);
   4. `EXTRA_FORBIDDEN` -- extended with 'p515_s53_' (the F2 certificate campaign), so a live campaign process
      refuses the gate (this process and its launching shells are excluded as ancestors, the committed convention);
   5. the reference arm of W48's whole-arm comparison -> the COMMITTED W48 gate arm
@@ -52,7 +57,8 @@ PLUS ONE ARMED COUNTER, declared here before the run (CLAUDE.md rule six: armed,
 are wrapped for the whole run (pass-through: the original is called unchanged); the gate requires EXACTLY
 n_dso_blocks = 3 DSOs x 12 (year, day) = 36 calls of each (derived from the case file before the run -- too few
 fails as loudly as too many, since it would mean the path under test did not run) and ZERO calls on a block
-carrying `row18_alpha` / `row18_alpha_admm` (i.e. both returned without acting on every block).
+carrying `row18_alpha` (W56: the one marker both functions now test -- i.e. both returned without acting on every
+block).
 
 GATE = the W39/W35 gate verdict (every W35 item + row 18 presence + retired quadratic never called) AND all
 presence checks (row 18, W47, W51) AND zero genuine diffs against the committed W48 arm with every compared file
@@ -60,7 +66,7 @@ present AND the armed W51 counter exact with zero acting calls.
 
 NOT COVERED, stated rather than implied: the fix's effect above one scenario (the change is designed to alter the
 initialisation solve there -- it is the subject of the alpha row, not of this gate; the W51 zero-solve checks A-C
-cover its structure); the parallel DSO builder (`create_distribution_network_model`) runs only with
+cover its structure, per index in both phases); the parallel DSO builder (`create_distribution_network_model`) runs only with
 `parallel_execution` true, which this arm does not use (zero-solve check A2 exercised it in-process).
 
 EXACT LAUNCH COMMAND (repo root; attached, ALONE, both streams captured; never detached):
@@ -138,7 +144,16 @@ def _ordered(text, *needles):
 # ======================================================================================================================
 #  substitution 3 -- the W51 change must be present in the LIVE modules
 # ======================================================================================================================
+# W56: the structural mechanism's family table (W54), declared here and compared with the live module.
+EXPECTED_ROW18_DEVIATION_FAMILIES = (
+    ('row18_dev_p_def', 'row18_dev_p_up', 'row18_dev_p_down', 'pg_adn', 'expected_interface_pf_p'),
+    ('row18_dev_q_def', 'row18_dev_q_up', 'row18_dev_q_down', 'qg_adn', 'expected_interface_pf_q'),
+)
+
+
 def w51_code_presence():
+    """W51 -> W56: the row 18 initialisation fix in its STRUCTURAL form (W54) must be present in the live modules.
+    (Name kept: it is substitution 3's hook and the addendum's key prefix.)"""
     inactive = getattr(srp, '_set_row18_inactive_for_initialisation', None)
     activate = getattr(srp, '_activate_row18_with_settlement', None)
     inactive_src = inspect.getsource(inactive) if callable(inactive) else ''
@@ -147,16 +162,29 @@ def w51_code_presence():
     par_src = inspect.getsource(srp.create_distribution_network_model)
     prep_src = inspect.getsource(srp._prepare_distribution_objectives_for_admm)
     run_src = inspect.getsource(srp._run_operational_planning)
+    srp_src = inspect.getsource(srp)
     return {
+        'family_table_present_and_as_declared': (
+            getattr(srp, '_ROW18_DEVIATION_FAMILIES', None) == EXPECTED_ROW18_DEVIATION_FAMILIES),
         'inactive_function_present': callable(inactive),
         'inactive_returns_where_row18_not_wired': "if not hasattr(model, 'row18_alpha'):\n        return" in inactive_src,
-        'inactive_records_run_alpha': (
-            'model.row18_alpha_admm = pe.Param(initialize=float(pe.value(model.row18_alpha)), mutable=False)'
-            in inactive_src),
-        'inactive_sets_alpha_param_to_zero': 'model.row18_alpha.set_value(0.0)' in inactive_src,
+        'inactive_deactivates_row_before_fixing_pair_at_zero': _ordered(
+            inactive_src, 'for row_name, up_name, down_name, _flow_name, _expectation_name in _ROW18_DEVIATION_FAMILIES:',
+            'row[index].deactivate()', 'up[index].fix(0.0)', 'down[index].fix(0.0)'),
+        'inactive_never_writes_alpha': ('row18_alpha.set_value' not in inactive_src
+                                        and 'row18_alpha_admm' not in inactive_src),
         'activate_function_present': callable(activate),
-        'activate_returns_where_not_recorded': "if not hasattr(model, 'row18_alpha_admm'):\n        return" in activate_src,
-        'activate_is_a_param_update': 'model.row18_alpha.set_value(pe.value(model.row18_alpha_admm))' in activate_src,
+        'activate_returns_where_row18_not_wired': "if not hasattr(model, 'row18_alpha'):\n        return" in activate_src,
+        'activate_refuses_unless_initialisation_state': _ordered(
+            activate_src, 'if row[index].active or not up[index].fixed or not down[index].fixed:',
+            'raise RuntimeError(', 'e = pe.value(flow[s_m, s_o, p]) - pe.value(expectation[p])'),
+        'activate_minimal_split_then_unfix_then_activate': _ordered(
+            activate_src, 'e = pe.value(flow[s_m, s_o, p]) - pe.value(expectation[p])',
+            'up[index].set_value(e if e > 0.0 else 0.0)', 'down[index].set_value(-e if e < 0.0 else 0.0)',
+            'up[index].unfix()', 'down[index].unfix()', 'row[index].activate()'),
+        'activate_never_writes_alpha': ('row18_alpha.set_value' not in activate_src
+                                        and 'row18_alpha_admm' not in activate_src),
+        'w51_param_retired_from_module': 'row18_alpha_admm' not in srp_src,
         'sequential_builder_deactivates_after_wiring_before_solve': _ordered(
             seq_src, 'add_scenario_commitment_terms(', '_set_row18_inactive_for_initialisation(dso_model[year][day])',
             'results[node_id] = distribution_network.optimize(dso_model)'),
@@ -171,7 +199,7 @@ def w51_code_presence():
             run_src, 'create_distribution_networks_models(',
             '_prepare_distribution_objectives_for_admm(distribution_networks, dso_models)',
             '_compute_common_admm_objective_scale(', 'update_distribution_models_to_admm('),
-        'model_construction_helpers_file_unchanged_by_w51': (
+        'model_construction_helpers_file_unchanged_by_w51_w54': (
             CP._sha256_file(os.path.join(REPO, 'model_construction_helpers.py'))
             == PIN_MODEL_CONSTRUCTION_HELPERS_FILE_SHA256),
         'add_scenario_commitment_terms_source_unchanged': (
@@ -195,8 +223,10 @@ def combined_code_presence():
 # ======================================================================================================================
 class _W51CallCounter:
     NAMES = ('_set_row18_inactive_for_initialisation', '_activate_row18_with_settlement')
+    # W56: both functions now act exactly where `row18_alpha` exists (W51's `row18_alpha_admm` is retired), so a call
+    # on a block carrying `row18_alpha` is an ACTING call; at SRP1 (one scenario) the gate requires none.
     MARKERS = {'_set_row18_inactive_for_initialisation': 'row18_alpha',
-               '_activate_row18_with_settlement': 'row18_alpha_admm'}
+               '_activate_row18_with_settlement': 'row18_alpha'}
 
     def __init__(self):
         self.calls = {n: 0 for n in self.NAMES}
@@ -294,8 +324,10 @@ def main():
     gate_pass = all(gate_items.values())
     payload = {
         'schema': SCHEMA + '_addendum', 'stage': STAGE,
-        'authority': ['Planner task W51', 'PLANNER_BRIEF_2026-09-13.md Addendum 40 ruling 2',
-                      'data/SRP1/Results/P515S53/frozen_s53_spec_v23_39a07fd8.json ruling2_init_fix'],
+        'authority': ['Planner task W51', 'Planner task W56 (structural form)',
+                      'PLANNER_BRIEF_2026-09-13.md Addendum 40 ruling 2',
+                      'data/SRP1/Results/P515S53/frozen_s53_spec_v23_39a07fd8.json ruling2_init_fix',
+                      'data/SRP1/Results/P515S53/row18_structural/frozen_s53_row18_structural_spec_v2_5123e67b.json'],
         'recorded_prediction': 'the SRP1 bitwise gate passes unchanged (nothing is wired at one scenario)',
         'timestamp_utc': datetime.now(timezone.utc).isoformat(),
         'git_head_at_run': W10._git(['rev-parse', 'HEAD']),
