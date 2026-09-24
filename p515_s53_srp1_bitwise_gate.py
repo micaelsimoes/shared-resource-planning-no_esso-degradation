@@ -33,13 +33,6 @@ W60 UPDATE (Planner task W60): W59's run (r1) refused at the W35 precondition be
 BEFORE `S51G.main()`, so the presence checks read its wrappers. The counter is now armed at the run-lock acquisition
 W35 performs after its preconditions, capture-path checklist and declaration, immediately before the arm; it covers
 the arm and is removed when `S51G.main()` returns. Checks, declared counts and tolerances are unchanged.
-W61 UPDATE (Planner task W61): r2 (d5a00bd9) PASSED, but the committed W39 gate writes `row18_gate_addendum.json`
-after W35 returns, while the counter was still installed, so that file's presence field read the wrappers (six
-w51 body checks false; non-gating). The counter is now REMOVED as soon as the arm finishes: at arming, `W10.run_arm`
-is replaced by a one-shot pass-through that restores the original, calls it, and uninstalls the counter in a
-`finally` when it returns (or raises). The counter's recorded counts are kept for verification (uninstall does not
-reset them). The output root is redirected to `srp1_bitwise_gate_r3` (r2's `srp1_bitwise_gate` is committed and
-write-once). Checks, declared counts and tolerances are unchanged.
 
 HOW IT IS BUILT. The committed W48 gate (`p515_s52_srp1_bitwise_gate.py`) BY IMPORT, which imports the W39 gate 1
 (`p515_s51_srp1_bitwise_gate.py`) -> the W35 gate (`p515_s50_generalization_gate.py`) -> W32 -> W10, whose armed
@@ -88,7 +81,7 @@ EXACT LAUNCH COMMAND (repo root; attached, ALONE, both streams captured; never d
     set -o noclobber && /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python -u \\
         p515_s53_srp1_bitwise_gate.py \\
         > data/SRP1/Results/P515S53/srp1_bitwise_gate_launch.log 2>&1
-OUTPUT (write-once; W61: r3 root): data/SRP1/Results/P515S53/srp1_bitwise_gate_r3/{gate.json, gate.md, manifest_sha256.json,
+OUTPUT (write-once): data/SRP1/Results/P515S53/srp1_bitwise_gate/{gate.json, gate.md, manifest_sha256.json,
 row18_gate_addendum.json, w51_gate_addendum.json, w51_manifest_sha256.json, arm/}
 Exit 0 on PASS, 1 on FAIL or a precondition refusal.
 """
@@ -121,7 +114,7 @@ STAGE = ('P5.15 Addendum 40 ruling 2 W51 -- SRP1 two-cycle bitwise identity: row
          'initialisation solve is inert at one scenario, vs committed baseline C* and the committed W48 arm')
 SCHEMA = 'p515_s53_srp1_bitwise_gate_v1'
 ARM = 's53w51gate'
-OUT_REL = os.path.join('data', 'SRP1', 'Results', 'P515S53', 'srp1_bitwise_gate_r3')   # W61: r2's root is committed
+OUT_REL = os.path.join('data', 'SRP1', 'Results', 'P515S53', 'srp1_bitwise_gate')
 EXTRA_CLEAN_FILES = tuple(S52G.EXTRA_CLEAN_FILES) + (   # already names srp, MCH and every imported gate script
     'p515_s53_init_fix_zero_solve_checks.py', os.path.basename(__file__))
 EXTRA_FORBIDDEN = tuple(S52G.EXTRA_FORBIDDEN) + ('p515_s53_',)
@@ -323,24 +316,12 @@ def main():
     # W60: the counter is armed only AFTER the W35 precondition/presence stage, at the run-lock acquisition that
     # W35 performs immediately before `W10.run_arm` (one-shot: the lock function is restored before it is called),
     # so the presence checks read the LIVE functions, not the counter's wrappers (W59 r1 defect).
-    # W61: the counter is removed as soon as the arm finishes (one-shot pass-through around `W10.run_arm`, installed
-    # at arming), so everything after the arm -- including W39's `row18_gate_addendum.json` -- reads the LIVE
-    # functions. The counts are kept (uninstall does not reset them).
     acquire_run_lock = W10.G._acquire_exclusive_run_lock
-    run_arm = W10.run_arm
-
-    def run_arm_then_disarm_counter(*args, **kwargs):
-        W10.run_arm = run_arm
-        try:
-            return run_arm(*args, **kwargs)
-        finally:
-            COUNTER.uninstall()
 
     def acquire_run_lock_then_arm_counter(*args, **kwargs):
         W10.G._acquire_exclusive_run_lock = acquire_run_lock
         result = acquire_run_lock(*args, **kwargs)
         COUNTER.install()
-        W10.run_arm = run_arm_then_disarm_counter
         return result
 
     W10.G._acquire_exclusive_run_lock = acquire_run_lock_then_arm_counter
@@ -348,7 +329,6 @@ def main():
         status = S51G.main()   # W39 gate 1 as committed (-> W35 gate main); exits 1 on a precondition refusal
     finally:
         W10.G._acquire_exclusive_run_lock = acquire_run_lock
-        W10.run_arm = run_arm
         COUNTER.uninstall()
     _log(f'W39/W35 gate verdict (exit status): {status}')
     _log(f'W51 counter: calls {COUNTER.calls}; acting {({k: len(v) for k, v in COUNTER.acting.items()})}')
@@ -398,7 +378,7 @@ def main():
         'w51_code_presence_asserted_before_run': presence_w51,
         'w51_counter_ARMED': {
             'mechanism': ('pass-through wrappers on both new functions, armed at the run-lock acquisition after the '
-                          'W35 precondition/presence stage and before the arm, removed as soon as the arm returns (W61) '
+                          'W35 precondition/presence stage and before the arm, removed when S51G.main returns '
                           '(CLAUDE.md rule six: armed, never asserted); count declared from the case file before '
                           'the run'),
             'expected_calls_each': expected_w51_calls, 'calls': dict(COUNTER.calls),
