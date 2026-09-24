@@ -5180,10 +5180,12 @@ def _set_row18_inactive_for_initialisation(model):
     pair then has a zero-cost ray and the barrier problem has no central path.
 
     HAZARD, excluded by construction: a deviation pair fixed while its row is ACTIVE
-    turns the row into a hard `flow[s,t] == expectation[t]` (non-anticipativity on the
-    interface flow), which the NL writer's linear presolve would substitute away
-    silently. So a row is always deactivated BEFORE its pair is fixed, and
-    `_activate_row18_with_settlement` unfixes a pair BEFORE its row is activated.
+    turns the row into a hard non-anticipativity row `pg_adn - expected == 0` (resp. q)
+    on the interface flow. It is NOT substituted away: linear presolve is disabled on
+    production's writer path (`NLWriter.__call__` sets `config.linear_presolve = False`),
+    so the hazard is VISIBLE as +2nT added rows (spec v2 presolve finding). So a row is
+    always deactivated BEFORE its pair is fixed, and `_activate_row18_with_settlement`
+    unfixes a pair BEFORE its row is activated.
 
     A no-op on any block where row 18 is not wired -- in particular at ONE scenario,
     where `add_scenario_commitment_terms` constructs nothing, so SRP1 is untouched."""
