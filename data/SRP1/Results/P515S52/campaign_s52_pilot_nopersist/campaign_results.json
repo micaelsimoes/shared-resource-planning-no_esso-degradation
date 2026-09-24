@@ -1,0 +1,1399 @@
+{
+ "STAGE": "P5.15 Addendum 39 (W47) -- the multi-scenario pilot (Addendum 36): paper years x 4 days x 2 market x 2 operation scenarios, row 18 at alpha = 0.50, baseline ageing, AA-on",
+ "LABEL": "BASELINE (C2 + phi_cal 0.985 + soh_min 0.70)",
+ "stage_id": "pilot",
+ "stage": "P5.15 Addendum 36 pilot: x = 0 and the node-7 4 h unit (0.25 / 1.0, 2025), one wave at concurrency 2, cap 500, 10-cycle bar, hull polish on both (no model persistence, W48)",
+ "STOP_FOR_REVIEW": true,
+ "stop_for_review_reason": "spec v22 order: pilot -> STOP FOR REVIEW",
+ "stop_rule": "as a1a (spec v15 execution.barrier), for form: STOP if 2 or more non-certified points fall in ONE region (node + duration ladder) or 3 or more overall. The pilot is ONE wave of two points in two regions (x0_y2025, n7_4h_y2025), so the rule cannot fire; spec v22 orders STOP FOR REVIEW after the pilot regardless.",
+ "stop_rule_state": {
+  "triggered": false,
+  "reasons": [],
+  "non_certified_labels": []
+ },
+ "non_certified_points": [],
+ "harness_errors": [],
+ "capture_problems": [],
+ "sigma_assertion_failures": [],
+ "authority": [
+  "PLANNER_BRIEF_2026-09-13.md Addendum 36 (the pilot) and Addendum 39 (alpha = 0.50 fixed; pilot first)",
+  "data/SRP1/Results/P515S52/frozen_s52_spec_v22_5d8df1e8.json pilot",
+  "Planner task W47 (instance, harness, freeze; zero solves)",
+  "Planner task W48 (ruling 1: persist_certified_models dropped, both specs re-frozen; ruling 2: SRP1 bitwise gate e75a575e PASS)",
+  "700cf13c (row 18 merged), gates 4ce7447b / c9b39bf5 / 59476bff; c8f4b4c7 (W45 sigma check)"
+ ],
+ "timestamp_utc": "2026-09-24T01:04:49.769903+00:00",
+ "git_head_at_run": "bb52aeafb6c994075b5c2448ecff8f80429b613c",
+ "campaign_spec_path": "data/SRP1/Results/P515S52/campaign_s52_pilot_nopersist/campaign_spec_s52_pilot_nopersist_08790b4d.json",
+ "campaign_spec_sha256": "08790b4db71a8161ac968479f3547f7908942a910dc387e33b93018161e45f54",
+ "objective_convention": "Q(x) = certified_cost = gross_operational_cost (_get_operational_recourse_components: the CONTRACTED interface settlement and the solver-only interface-voltage pin excluded; the row 18 charge and the price-deviation covariance -- the settlement DEVIATION part -- included, Addendum 38 (C)); value = Q(0) - Q(x); F = I + Q; terminal salvage and net_operational_recourse = gross - salvage reported, excluded.",
+ "dispersion_convention": "the Planner's ruling from the alpha sweep: per DSO, the MAX over (year, day) blocks of the block's RMS interface-P dispersion (MW), and aggregates E|d| (MWh) and sum omega d^2 (MW^2 h) -- d_{s,t} = p_int_{s,t} - pbar_t against the block's OWN committed schedule; block-local, probability-weighted; reported both summed over blocks UNWEIGHTED (the W44 convention) and weighted by _get_admm_block_weight (the Q weighting). The premium convention stated with it: unpriced UPWARD flexibility makes holding the schedule cheaper than cost_flex suggests (spec v22 ruling2_alpha.manuscript_convention).",
+ "budget_convention": "budget_slack_eur = B - I(x) at B = 1e+06 EUR (the case file budget), REPORTED only",
+ "table_objective_convention": "Q gross (contracted settlement and voltage pin excluded; row 18 and covariance included); salvage excluded",
+ "table": [
+  {
+   "label": "x0",
+   "status": "certified",
+   "cycles": 74,
+   "cert_cycle": 74,
+   "Q_gross": 841964496.8267072,
+   "bar": 8403.2885222435,
+   "rule_ten_production": 0.005597194416458415,
+   "sigma_ratio": 0.4893821273263238,
+   "rms_mw_max_over_all_dso_blocks": 9.69450722612141,
+   "E_abs_d_mwh_sum_over_blocks": 1785.840053914947,
+   "row18_charge_weighted": 20065783.22759092,
+   "hull_polish_pass": true,
+   "cycle_time_s": 180.25881598790485,
+   "wall_s": 13555.908371925354,
+   "peak_rss_bytes": 11241193472
+  },
+  {
+   "label": "n7_4h_e1",
+   "status": "certified",
+   "cycles": 72,
+   "cert_cycle": 72,
+   "Q_gross": 841720175.5352484,
+   "bar": 7107.546754479408,
+   "rule_ten_production": 0.011164200410565537,
+   "sigma_ratio": 0.4789064803848231,
+   "rms_mw_max_over_all_dso_blocks": 9.690469020559293,
+   "E_abs_d_mwh_sum_over_blocks": 1785.7842202456006,
+   "row18_charge_weighted": 20063455.812792413,
+   "hull_polish_pass": true,
+   "cycle_time_s": 200.21744337147229,
+   "wall_s": 14648.014678001404,
+   "peak_rss_bytes": 12062490624
+  }
+ ],
+ "points": {
+  "x0": {
+   "label": "x0",
+   "LABEL": "BASELINE (C2 + phi_cal 0.985 + soh_min 0.70)",
+   "instance_label": "s52_pilot_2x2",
+   "alpha": 0.5,
+   "candidate_key": "8435c71859ddde68e7ae5818b4ff91c03b4171791bcfaa70edcc3ddb52bacb57",
+   "candidate_canonical": {
+    "investment_year": 2025,
+    "nodes": {
+     "5": [
+      0.0,
+      0.0
+     ],
+     "7": [
+      0.0,
+      0.0
+     ],
+     "9": [
+      0.0,
+      0.0
+     ]
+    }
+   },
+   "eval_key": "7d53b6f21b686a44db69f0901e03c870d14e15d00bfaaa6a5379822890918a94",
+   "eval_dir": "data/SRP1/Results/P515S52/campaign_s52_pilot_nopersist/evals/7d53b6f21b686a44_x0",
+   "status": "certified",
+   "barrier_cause": null,
+   "cycles_run": 74,
+   "certification_cycle": 74,
+   "certified_cost_gross": 841964496.8267072,
+   "terminal_gross_operational_cost": 841964496.8267072,
+   "net_operational_recourse": 841964496.8267072,
+   "terminal_salvage_value": 0.0,
+   "bar": 8403.2885222435,
+   "rule_ten": {
+    "terminal_step_over_threshold_production": 0.005597194416458415,
+    "terminal_gross_step_abs": 471.26416182518005,
+    "terminal_gross_step_over_threshold": 0.005597194416458415,
+    "boyd_terminal_ratio_max_per_channel": {
+     "v": 0.6577878951382657,
+     "pf": 0.727908892370553,
+     "ess": 2.439171979941129e-21
+    }
+   },
+   "sigma_calibration": {
+    "sigma_fixed": 93635360.0,
+    "sigma_computed": 45823471.669766165,
+    "ratio_computed_over_fixed": 0.4893821273263238,
+    "assert_factor": 3.0,
+    "band": [
+     0.3333333333333333,
+     3.0
+    ],
+    "ratio_over_lower_edge": 1.4681463819789715,
+    "upper_edge_over_ratio": 6.130178918445823,
+    "within_band": true,
+    "objective_scale_source": "case_file",
+    "definition": "sigma_computed = max over TSO/DSO blocks of |w_b * f_b| at the initialization solve (shared_resources_planning._compute_common_admm_objective_scale); the resolver raises unless 1/F <= sigma_computed/sigma_fixed <= F"
+   },
+   "sigma_assertion_failure": null,
+   "multiscenario_terminal": {
+    "status": "written",
+    "error": null,
+    "path": "data/SRP1/Results/P515S52/campaign_s52_pilot_nopersist/evals/7d53b6f21b686a44_x0/multiscenario_terminal.json",
+    "sha256": "34fd168b49a250ea554e43a2bfa271676ec754b130a9447a9f4291398c381598",
+    "alpha_in_force": 0.5,
+    "n_blocks": 80,
+    "n_dso_blocks_row18_wired": 60,
+    "per_dso": {
+     "5": {
+      "rms_mw_max_over_blocks": 6.213306771435531,
+      "max_abs_mw": 31.10405508071456,
+      "rms_mvar_max_over_blocks": 5.849597560509526e-08,
+      "rms_share_of_mean_flow_max_over_blocks": 0.16149024150771552,
+      "E_abs_d_p_mwh_sum_over_blocks": 627.7680642893417,
+      "E_abs_d_p_mwh_weighted": 152285.7152598942,
+      "sum_omega_d2_p_mw2h_sum_over_blocks": 4869.75633358256,
+      "sum_omega_d2_p_mw2h_weighted": 1159992.3824933798,
+      "E_abs_d_q_mvarh_sum_over_blocks": 6.437817232822843e-06,
+      "row18_charge_sum_over_blocks": 29187.00568822113,
+      "row18_charge_weighted": 7009118.118726411,
+      "argmax_rms_block": "2031|Summer",
+      "n_blocks": 20
+     },
+     "7": {
+      "rms_mw_max_over_blocks": 9.69450722612141,
+      "max_abs_mw": 34.50781574852722,
+      "rms_mvar_max_over_blocks": 1.5547179296816426e-07,
+      "rms_share_of_mean_flow_max_over_blocks": 0.3956617441890493,
+      "E_abs_d_p_mwh_sum_over_blocks": 668.8228064993597,
+      "E_abs_d_p_mwh_weighted": 164814.7270319727,
+      "sum_omega_d2_p_mw2h_sum_over_blocks": 6309.92584181202,
+      "sum_omega_d2_p_mw2h_weighted": 1557091.4943586339,
+      "E_abs_d_q_mvarh_sum_over_blocks": 9.200077302516988e-06,
+      "row18_charge_sum_over_blocks": 31393.63923379914,
+      "row18_charge_weighted": 7693234.467736927,
+      "argmax_rms_block": "2031|Autumn",
+      "n_blocks": 20
+     },
+     "9": {
+      "rms_mw_max_over_blocks": 4.890113975328574,
+      "max_abs_mw": 28.630418732766806,
+      "rms_mvar_max_over_blocks": 3.081162145615765e-08,
+      "rms_share_of_mean_flow_max_over_blocks": 0.16492169554728467,
+      "E_abs_d_p_mwh_sum_over_blocks": 489.2491831262456,
+      "E_abs_d_p_mwh_weighted": 119168.09323009466,
+      "sum_omega_d2_p_mw2h_sum_over_blocks": 3562.901572436055,
+      "sum_omega_d2_p_mw2h_weighted": 862429.1640515196,
+      "E_abs_d_q_mvarh_sum_over_blocks": 5.499773709756131e-06,
+      "row18_charge_sum_over_blocks": 22106.43256699624,
+      "row18_charge_weighted": 5363430.64112758,
+      "argmax_rms_block": "2031|Summer",
+      "n_blocks": 20
+     }
+    },
+    "all_dso": {
+     "E_abs_d_p_mwh_sum_over_blocks": 1785.840053914947,
+     "E_abs_d_p_mwh_weighted": 436268.5355219615,
+     "sum_omega_d2_p_mw2h_sum_over_blocks": 14742.583747830635,
+     "sum_omega_d2_p_mw2h_weighted": 3579513.0409035333,
+     "E_abs_d_q_mvarh_sum_over_blocks": 2.113766824509596e-05,
+     "row18_charge_sum_over_blocks": 82687.0774890165,
+     "row18_charge_weighted": 20065783.22759092,
+     "rms_mw_max_over_all_dso_blocks": 9.69450722612141,
+     "max_abs_mw_over_all_dso_blocks": 34.50781574852722
+    },
+    "settlement_identity": {
+     "definition": "Addendum 38 (C): residual := T_TSO + sum_DSO T_DSO (interface_settlement_total) == the price-deviation covariance (interface_settlement_deviation_total) + the leftover priced interface consensus residual (interface_settlement_identity_residual = the contracted parts, which cancel at consensus); the covariance is also recomputed here from the models",
+     "residual_interface_settlement_total": -566864.982763052,
+     "covariance_interface_settlement_deviation_total": -543142.4337504169,
+     "covariance_recomputed_weighted_total": -543142.4337502695,
+     "covariance_recomputed_vs_production_rel_diff": 2.5999453470299234e-13,
+     "leftover_identity_residual": -23722.549012635136,
+     "contracted_total": -23722.54901242256,
+     "tso_deviation_part": -1.2202649740805046e-07,
+     "dso_deviation_part": {
+      "5": -208339.17995366617,
+      "7": -195865.19117743254,
+      "9": -138938.06261919613
+     }
+    },
+    "identity_worst_rel_diffs": {
+     "settlement_split_rel": 0.0,
+     "covariance_vs_deviation_rel": 1.839931135025953e-15,
+     "per_scenario_settlement_rel": 1.6789529162660453e-15,
+     "per_scenario_row18_rel": 8.136691457891185e-16,
+     "per_scenario_q_reconciliation_rel": 3.667338025155477e-15,
+     "dispersion_identity_rel": 7.087461898278449e-16
+    },
+    "checks": {
+     "settlement_split_rel": true,
+     "covariance_vs_deviation_rel": true,
+     "per_scenario_settlement_rel": true,
+     "per_scenario_row18_rel": true,
+     "per_scenario_q_reconciliation_rel": true,
+     "dispersion_identity_rel": true,
+     "covariance_recomputed_vs_production": true,
+     "row18_readback_all_blocks": true
+    },
+    "all_checks_pass": true,
+    "voltage_pin_mismatch_max_rms_pu": 0.00026435978015486723,
+    "runtime_s": 9.584611892700195
+   },
+   "operational_workbook": {
+    "status": "written",
+    "path": "data/SRP1/Results/P515S52/campaign_s52_pilot_nopersist/evals/7d53b6f21b686a44_x0/results/SRP1_distributed_terminal.xlsx",
+    "sha256": "ecbb11f43ac62272a40dc1973b0bb3bc3ab914f89d91ff180d51df2b6b2148ee",
+    "size_bytes": 92986299,
+    "runtime_s": 446.3769121170044,
+    "write_s": 436.3321681022644,
+    "writer": "SharedResourcesPlanning.write_operational_planning_results_to_excel (production)",
+    "point": "terminal models of the run, BEFORE any post-certification step"
+   },
+   "post_certification": {
+    "status": "evaluated",
+    "skip_reason": null,
+    "error": null,
+    "persisted_models": null,
+    "gate_d_hull_polish": {
+     "blocks_solved": 80,
+     "n_blocks": 80,
+     "relative_pct": 1.1693396767048918e-05,
+     "threshold_pct": 0.1,
+     "settlement_excluded_change": 315.11338901519775,
+     "settlement_remainder_before": -566864.982763052,
+     "settlement_remainder_after": -567067.6735982895,
+     "hull_bounds_non_degenerate_by_channel": {
+      "V": {
+       "total": 2880,
+       "degenerate": 0,
+       "non_degenerate": 2880,
+       "active_non_degenerate": 758
+      },
+      "PF_P": {
+       "total": 2880,
+       "degenerate": 0,
+       "non_degenerate": 2880,
+       "active_non_degenerate": 1225
+      },
+      "PF_Q": {
+       "total": 2880,
+       "degenerate": 0,
+       "non_degenerate": 2880,
+       "active_non_degenerate": 1369
+      },
+      "ESS_P": {
+       "total": 2880,
+       "degenerate": 0,
+       "non_degenerate": 2880,
+       "active_non_degenerate": 2880
+      },
+      "ESS_Q": {
+       "total": 2880,
+       "degenerate": 2880,
+       "non_degenerate": 0,
+       "active_non_degenerate": 0
+      }
+     },
+     "pass": true
+    }
+   },
+   "unrecovered_failures": {
+    "classes": {
+     "recovered_tier1": 0,
+     "recovered_tier2": 0,
+     "unrecovered": 0,
+     "not_attempted": 0,
+     "indeterminate": 0,
+     "recovered": 0
+    },
+    "n_blocks": 0,
+    "n_esso_recovery_events": 0,
+    "certifying_window_local_solves_ok": true,
+    "policy": "continue with the last iterate, count the event, no unrecovered failure inside the 10 certifying cycles (production behaviour, W35)"
+   },
+   "solve_reconciliation": {
+    "observed": {
+     "permitted_solve": 6225,
+     "permitted_exec": 6225,
+     "blocked_solve": 0,
+     "blocked_exec": 0
+    },
+    "identity_holds": true,
+    "reconciliation_supported": true,
+    "expected_solves": 6225,
+    "base_solves": 6225,
+    "retry_solves_credited": 0,
+    "solves_per_cycle": 83
+   },
+   "storage_per_node": {
+    "5": {
+     "s_mva": 0.0,
+     "e_mwh": 0.0,
+     "has_storage": false,
+     "efc_per_day_max": null,
+     "efc_per_day_per_cohort_year": {},
+     "terminal_soh_per_active_cohort_year": {},
+     "terminal_soh_min_over_active_cohort_years": null,
+     "soh_floor_rows_active_at_terminal": [],
+     "published_available_capacity_terminal": {
+      "2025": {
+       "s_available": 0.0,
+       "e_available": 0.0
+      },
+      "2028": {
+       "s_available": 0.0,
+       "e_available": 0.0
+      },
+      "2031": {
+       "s_available": 0.0,
+       "e_available": 0.0
+      },
+      "2034": {
+       "s_available": 0.0,
+       "e_available": 0.0
+      },
+      "2037": {
+       "s_available": 0.0,
+       "e_available": 0.0
+      }
+     },
+     "note_zero_node": "zero-capacity node: no active cohort; EFC undefined (None), SoH variables fixed at 1.0 by production and not reported as a result"
+    },
+    "7": {
+     "s_mva": 0.0,
+     "e_mwh": 0.0,
+     "has_storage": false,
+     "efc_per_day_max": null,
+     "efc_per_day_per_cohort_year": {},
+     "terminal_soh_per_active_cohort_year": {},
+     "terminal_soh_min_over_active_cohort_years": null,
+     "soh_floor_rows_active_at_terminal": [],
+     "published_available_capacity_terminal": {
+      "2025": {
+       "s_available": 0.0,
+       "e_available": 0.0
+      },
+      "2028": {
+       "s_available": 0.0,
+       "e_available": 0.0
+      },
+      "2031": {
+       "s_available": 0.0,
+       "e_available": 0.0
+      },
+      "2034": {
+       "s_available": 0.0,
+       "e_available": 0.0
+      },
+      "2037": {
+       "s_available": 0.0,
+       "e_available": 0.0
+      }
+     },
+     "note_zero_node": "zero-capacity node: no active cohort; EFC undefined (None), SoH variables fixed at 1.0 by production and not reported as a result"
+    },
+    "9": {
+     "s_mva": 0.0,
+     "e_mwh": 0.0,
+     "has_storage": false,
+     "efc_per_day_max": null,
+     "efc_per_day_per_cohort_year": {},
+     "terminal_soh_per_active_cohort_year": {},
+     "terminal_soh_min_over_active_cohort_years": null,
+     "soh_floor_rows_active_at_terminal": [],
+     "published_available_capacity_terminal": {
+      "2025": {
+       "s_available": 0.0,
+       "e_available": 0.0
+      },
+      "2028": {
+       "s_available": 0.0,
+       "e_available": 0.0
+      },
+      "2031": {
+       "s_available": 0.0,
+       "e_available": 0.0
+      },
+      "2034": {
+       "s_available": 0.0,
+       "e_available": 0.0
+      },
+      "2037": {
+       "s_available": 0.0,
+       "e_available": 0.0
+      }
+     },
+     "note_zero_node": "zero-capacity node: no active cohort; EFC undefined (None), SoH variables fixed at 1.0 by production and not reported as a result"
+    }
+   },
+   "ageing_trajectory_terminal": {
+    "available_energy_soh_point": "end",
+    "ageing_enabled": true,
+    "nodes": {
+     "5": {
+      "cells": [],
+      "salvage_value": 0.0
+     },
+     "7": {
+      "cells": [],
+      "salvage_value": 0.0
+     },
+     "9": {
+      "cells": [],
+      "salvage_value": 0.0
+     }
+    }
+   },
+   "ess_ageing_readback_terminal_all_match": true,
+   "ess_ageing_readback_pre_run_all_match": true,
+   "derived_instance_installed_in_child": {
+    "case_path": "data/SRP1/Results/P515S52/pilot_instance/SRP1__s52_pilot_2x2.json",
+    "case_sha256_in_child": "7ecff44a874892187d1dd2e3d5ed0664a2f90a4bfa4cdb820a4abcbbd828f949",
+    "scenario_checksum_in_child": "53b4bea4142001617282a08541079952564903b6d84db066f90d71a650b7d563",
+    "instance_label": "s52_pilot_2x2",
+    "checksum_matches_srp1_canonical": false,
+    "planning_dimensions": {
+     "years": {
+      "2025": 3,
+      "2028": 3,
+      "2031": 3,
+      "2034": 3,
+      "2037": 3
+     },
+     "days": {
+      "Spring": 92,
+      "Summer": 91,
+      "Autumn": 91,
+      "Winter": 91
+     },
+     "num_instants": 24,
+     "random_seed": 2026,
+     "num_market_scenarios": 2,
+     "num_operation_scenarios": {
+      "case9": 2,
+      "case33_1": 2,
+      "case33_2": 2,
+      "case33_3": 2
+     },
+     "active_distribution_network_nodes": [
+      5,
+      7,
+      9
+     ],
+     "scenario_metadata": {
+      "random_seed": 2026,
+      "deterministic_scenarios": true,
+      "market_scenario_checksum": "f96ae5bffa617abbd0d35f53cb32dd07e0ec9ef3dbe1598f63d3f1c931fb45b7",
+      "operational_scenario_checksum": "433864055b30e0adc48616ef032a76609070e8271208ca54967bcc67737f6683",
+      "combined_scenario_checksum": "53b4bea4142001617282a08541079952564903b6d84db066f90d71a650b7d563"
+     }
+    },
+    "expected_block_counts": {
+     "tso_blocks": 20,
+     "dso_blocks": 60,
+     "network_blocks": 80,
+     "esso_models": 3,
+     "solves_per_cycle": 83
+    },
+    "planning_read_dir": "data/SRP1/Results/P515S52/campaign_s52_pilot_nopersist/evals/7d53b6f21b686a44_x0/planning_read",
+    "read_wall_s": 13.174382209777832,
+    "reader": "p515_s44_scale_measurement.read_planning_from_derived_case (production SharedResourcesPlanning)"
+   },
+   "interface_deviation_premium_applied_in_child": {
+    "declared": {
+     "alpha": 0.5,
+     "floor": null
+    },
+    "before": {
+     "alpha": 0.0,
+     "floor": null,
+     "source": "default"
+    },
+    "after": {
+     "alpha": 0.5,
+     "floor": null,
+     "source": "campaign spec entry interface_deviation_premium (p515_s44_campaign_harness, W47)"
+    },
+    "took_effect": true
+   },
+   "wall_time": {
+    "child_process_s": 13535.328210115433,
+    "run_admm_arm_s": 13519.411199092865,
+    "run_admm_arm_reported_wall_clock_s": 12885.68020606041
+   },
+   "parent_view": {
+    "exit_code": 0,
+    "wall_s": 13555.908371925354,
+    "wait4_ru_maxrss": 11241193472
+   },
+   "cycle_time_s_mean_incl_init_round": 180.25881598790485,
+   "peak_rss": {
+    "units": "bytes on macOS/BSD, kilobytes on Linux (ru_maxrss)",
+    "child_python_process_ru_maxrss": 11241193472,
+    "production_state_peak_rss_ru_maxrss": 11241193472,
+    "solver_subprocesses_max_ru_maxrss": 188317696,
+    "semantics": "child_python_process = RUSAGE_SELF of the evaluation process at record time (the evaluation's own peak); production_state = the same measure taken by production at the end of run_operational_planning; solver_subprocesses = RUSAGE_CHILDREN max over the IPOPT executables this evaluation launched; when a post-certification step ran, child_python_process includes it (the ADMM run alone is production_state)"
+   },
+   "aa_action_counts": {
+    "insufficient memory (m_k=0)": 22,
+    "accepted": 23,
+    "rejected (safeguard; memory retained)": 19,
+    "off (all channels within Boyd tolerance)": 10
+   },
+   "per_cycle_trajectory": {
+    "path": "data/SRP1/Results/P515S52/campaign_s52_pilot_nopersist/evals/7d53b6f21b686a44_x0/per_cycle_record.jsonl",
+    "present": true,
+    "sha256": "8150474abd369d055ff3ead80ec958f8b240705f520e77d5be515ec073b8c208",
+    "n_rows": 74,
+    "n_rows_equals_cycles_run": true
+   },
+   "I_x": {
+    "I_x_eur_master_expression": 0.0,
+    "I_x_eur_p56a_transcription": 0.0,
+    "abs_diff": 0.0,
+    "budget_eur": 1000000.0,
+    "budget_slack_eur": 1000000.0,
+    "candidate_key": "8435c71859ddde68e7ae5818b4ff91c03b4171791bcfaa70edcc3ddb52bacb57",
+    "case_file_budget_eur": 1000000.0
+   }
+  },
+  "n7_4h_e1": {
+   "label": "n7_4h_e1",
+   "LABEL": "BASELINE (C2 + phi_cal 0.985 + soh_min 0.70)",
+   "instance_label": "s52_pilot_2x2",
+   "alpha": 0.5,
+   "candidate_key": "db77e1549af855bcb3521950c634db55fe6c155ab2de591b0441b5f2bf4b369a",
+   "candidate_canonical": {
+    "investment_year": 2025,
+    "nodes": {
+     "5": [
+      0.0,
+      0.0
+     ],
+     "7": [
+      0.25,
+      1.0
+     ],
+     "9": [
+      0.0,
+      0.0
+     ]
+    }
+   },
+   "eval_key": "711fce9aa74d687892b994e332472c7d59745ef74ce9030abc12d54a9aaf83b4",
+   "eval_dir": "data/SRP1/Results/P515S52/campaign_s52_pilot_nopersist/evals/711fce9aa74d6878_n7_4h_e1",
+   "status": "certified",
+   "barrier_cause": null,
+   "cycles_run": 72,
+   "certification_cycle": 72,
+   "certified_cost_gross": 841720175.5352484,
+   "terminal_gross_operational_cost": 841720175.5352484,
+   "net_operational_recourse": 841720175.5352484,
+   "terminal_salvage_value": 0.0,
+   "bar": 7107.546754479408,
+   "rule_ten": {
+    "terminal_step_over_threshold_production": 0.011164200410565537,
+    "terminal_gross_step_abs": 939.7132729291916,
+    "terminal_gross_step_over_threshold": 0.011164200410565537,
+    "boyd_terminal_ratio_max_per_channel": {
+     "v": 0.6685926233861121,
+     "pf": 0.6071469879128983,
+     "ess": 0.5029073356857008
+    }
+   },
+   "sigma_calibration": {
+    "sigma_fixed": 93635360.0,
+    "sigma_computed": 44842580.69716585,
+    "ratio_computed_over_fixed": 0.4789064803848231,
+    "assert_factor": 3.0,
+    "band": [
+     0.3333333333333333,
+     3.0
+    ],
+    "ratio_over_lower_edge": 1.4367194411544693,
+    "upper_edge_over_ratio": 6.264271048471434,
+    "within_band": true,
+    "objective_scale_source": "case_file",
+    "definition": "sigma_computed = max over TSO/DSO blocks of |w_b * f_b| at the initialization solve (shared_resources_planning._compute_common_admm_objective_scale); the resolver raises unless 1/F <= sigma_computed/sigma_fixed <= F"
+   },
+   "sigma_assertion_failure": null,
+   "multiscenario_terminal": {
+    "status": "written",
+    "error": null,
+    "path": "data/SRP1/Results/P515S52/campaign_s52_pilot_nopersist/evals/711fce9aa74d6878_n7_4h_e1/multiscenario_terminal.json",
+    "sha256": "df634b99dca0384b7c5046952a6c7372f6cc171aa99a77b3eae2d1f4c664d04a",
+    "alpha_in_force": 0.5,
+    "n_blocks": 80,
+    "n_dso_blocks_row18_wired": 60,
+    "per_dso": {
+     "5": {
+      "rms_mw_max_over_blocks": 6.211334703359721,
+      "max_abs_mw": 31.14825397792167,
+      "rms_mvar_max_over_blocks": 5.848178582505346e-08,
+      "rms_share_of_mean_flow_max_over_blocks": 0.16143979990737195,
+      "E_abs_d_p_mwh_sum_over_blocks": 627.7744753034993,
+      "E_abs_d_p_mwh_weighted": 152287.11038594285,
+      "sum_omega_d2_p_mw2h_sum_over_blocks": 4870.54876454445,
+      "sum_omega_d2_p_mw2h_weighted": 1160161.3691888708,
+      "E_abs_d_q_mvarh_sum_over_blocks": 6.442482619866546e-06,
+      "row18_charge_sum_over_blocks": 29175.028432605555,
+      "row18_charge_weighted": 7006501.716834464,
+      "argmax_rms_block": "2031|Summer",
+      "n_blocks": 20
+     },
+     "7": {
+      "rms_mw_max_over_blocks": 9.690469020559293,
+      "max_abs_mw": 34.50764578230409,
+      "rms_mvar_max_over_blocks": 1.5544004371363486e-07,
+      "rms_share_of_mean_flow_max_over_blocks": 0.3954980661982422,
+      "E_abs_d_p_mwh_sum_over_blocks": 668.764787892132,
+      "E_abs_d_p_mwh_weighted": 164799.95794303901,
+      "sum_omega_d2_p_mw2h_sum_over_blocks": 6317.969624618146,
+      "sum_omega_d2_p_mw2h_weighted": 1558997.6299195425,
+      "E_abs_d_q_mvarh_sum_over_blocks": 8.981688292211015e-06,
+      "row18_charge_sum_over_blocks": 31395.35809319858,
+      "row18_charge_weighted": 7693685.808265634,
+      "argmax_rms_block": "2031|Autumn",
+      "n_blocks": 20
+     },
+     "9": {
+      "rms_mw_max_over_blocks": 4.8915570172876395,
+      "max_abs_mw": 28.64749731761761,
+      "rms_mvar_max_over_blocks": 3.080776211758909e-08,
+      "rms_share_of_mean_flow_max_over_blocks": 0.16497222376330667,
+      "E_abs_d_p_mwh_sum_over_blocks": 489.2449570499693,
+      "E_abs_d_p_mwh_weighted": 119167.05077237941,
+      "sum_omega_d2_p_mw2h_sum_over_blocks": 3567.6635685213687,
+      "sum_omega_d2_p_mw2h_weighted": 863510.818204999,
+      "E_abs_d_q_mvarh_sum_over_blocks": 5.494749599957015e-06,
+      "row18_charge_sum_over_blocks": 22105.7512912094,
+      "row18_charge_weighted": 5363268.287692318,
+      "argmax_rms_block": "2031|Summer",
+      "n_blocks": 20
+     }
+    },
+    "all_dso": {
+     "E_abs_d_p_mwh_sum_over_blocks": 1785.7842202456006,
+     "E_abs_d_p_mwh_weighted": 436254.11910136126,
+     "sum_omega_d2_p_mw2h_sum_over_blocks": 14756.181957683966,
+     "sum_omega_d2_p_mw2h_weighted": 3582669.817313412,
+     "E_abs_d_q_mvarh_sum_over_blocks": 2.0918920512034576e-05,
+     "row18_charge_sum_over_blocks": 82676.13781701353,
+     "row18_charge_weighted": 20063455.812792413,
+     "rms_mw_max_over_all_dso_blocks": 9.690469020559293,
+     "max_abs_mw_over_all_dso_blocks": 34.50764578230409
+    },
+    "settlement_identity": {
+     "definition": "Addendum 38 (C): residual := T_TSO + sum_DSO T_DSO (interface_settlement_total) == the price-deviation covariance (interface_settlement_deviation_total) + the leftover priced interface consensus residual (interface_settlement_identity_residual = the contracted parts, which cancel at consensus); the covariance is also recomputed here from the models",
+     "residual_interface_settlement_total": -577932.7342457771,
+     "covariance_interface_settlement_deviation_total": -542992.0846777189,
+     "covariance_recomputed_weighted_total": -542992.0846775783,
+     "covariance_recomputed_vs_production_rel_diff": 2.4333231262711577e-13,
+     "leftover_identity_residual": -34940.6495680582,
+     "contracted_total": -34940.64956784248,
+     "tso_deviation_part": -1.0948773588077523e-07,
+     "dso_deviation_part": {
+      "5": -208164.66100626814,
+      "7": -196051.5439972916,
+      "9": -138775.8796740498
+     }
+    },
+    "identity_worst_rel_diffs": {
+     "settlement_split_rel": 0.0,
+     "covariance_vs_deviation_rel": 1.367556999558761e-15,
+     "per_scenario_settlement_rel": 1.4829654031985266e-15,
+     "per_scenario_row18_rel": 7.139554544102965e-16,
+     "per_scenario_q_reconciliation_rel": 3.4102905307634706e-15,
+     "dispersion_identity_rel": 1.0535175230512e-15
+    },
+    "checks": {
+     "settlement_split_rel": true,
+     "covariance_vs_deviation_rel": true,
+     "per_scenario_settlement_rel": true,
+     "per_scenario_row18_rel": true,
+     "per_scenario_q_reconciliation_rel": true,
+     "dispersion_identity_rel": true,
+     "covariance_recomputed_vs_production": true,
+     "row18_readback_all_blocks": true
+    },
+    "all_checks_pass": true,
+    "voltage_pin_mismatch_max_rms_pu": 0.00026437311226035925,
+    "runtime_s": 8.718589067459106
+   },
+   "operational_workbook": {
+    "status": "written",
+    "path": "data/SRP1/Results/P515S52/campaign_s52_pilot_nopersist/evals/711fce9aa74d6878_n7_4h_e1/results/SRP1_distributed_terminal.xlsx",
+    "sha256": "1a28ceb214dc44c274d2d046ed87d85db8bbf6117dd464c0a9b5492a3afe499d",
+    "size_bytes": 92972045,
+    "runtime_s": 391.5016188621521,
+    "write_s": 382.02083110809326,
+    "writer": "SharedResourcesPlanning.write_operational_planning_results_to_excel (production)",
+    "point": "terminal models of the run, BEFORE any post-certification step"
+   },
+   "post_certification": {
+    "status": "evaluated",
+    "skip_reason": null,
+    "error": null,
+    "persisted_models": null,
+    "gate_d_hull_polish": {
+     "blocks_solved": 80,
+     "n_blocks": 80,
+     "relative_pct": 3.203992062945063e-05,
+     "threshold_pct": 0.1,
+     "settlement_excluded_change": 1064.9464079141617,
+     "settlement_remainder_before": -577932.7342457771,
+     "settlement_remainder_after": -579241.6051418781,
+     "hull_bounds_non_degenerate_by_channel": {
+      "V": {
+       "total": 2880,
+       "degenerate": 0,
+       "non_degenerate": 2880,
+       "active_non_degenerate": 685
+      },
+      "PF_P": {
+       "total": 2880,
+       "degenerate": 0,
+       "non_degenerate": 2880,
+       "active_non_degenerate": 1157
+      },
+      "PF_Q": {
+       "total": 2880,
+       "degenerate": 0,
+       "non_degenerate": 2880,
+       "active_non_degenerate": 1382
+      },
+      "ESS_P": {
+       "total": 2880,
+       "degenerate": 0,
+       "non_degenerate": 2880,
+       "active_non_degenerate": 1938
+      },
+      "ESS_Q": {
+       "total": 2880,
+       "degenerate": 1920,
+       "non_degenerate": 960,
+       "active_non_degenerate": 880
+      }
+     },
+     "pass": true
+    }
+   },
+   "unrecovered_failures": {
+    "classes": {
+     "recovered_tier1": 7,
+     "recovered_tier2": 0,
+     "unrecovered": 0,
+     "not_attempted": 0,
+     "indeterminate": 0,
+     "recovered": 7
+    },
+    "n_blocks": 7,
+    "n_esso_recovery_events": 0,
+    "certifying_window_local_solves_ok": true,
+    "policy": "continue with the last iterate, count the event, no unrecovered failure inside the 10 certifying cycles (production behaviour, W35)"
+   },
+   "solve_reconciliation": {
+    "observed": {
+     "permitted_solve": 6066,
+     "permitted_exec": 6066,
+     "blocked_solve": 0,
+     "blocked_exec": 0
+    },
+    "identity_holds": true,
+    "reconciliation_supported": true,
+    "expected_solves": 6066,
+    "base_solves": 6059,
+    "retry_solves_credited": 7,
+    "solves_per_cycle": 83
+   },
+   "storage_per_node": {
+    "5": {
+     "s_mva": 0.0,
+     "e_mwh": 0.0,
+     "has_storage": false,
+     "efc_per_day_max": null,
+     "efc_per_day_per_cohort_year": {},
+     "terminal_soh_per_active_cohort_year": {},
+     "terminal_soh_min_over_active_cohort_years": null,
+     "soh_floor_rows_active_at_terminal": [],
+     "published_available_capacity_terminal": {
+      "2025": {
+       "s_available": 0.0,
+       "e_available": 0.0
+      },
+      "2028": {
+       "s_available": 0.0,
+       "e_available": 0.0
+      },
+      "2031": {
+       "s_available": 0.0,
+       "e_available": 0.0
+      },
+      "2034": {
+       "s_available": 0.0,
+       "e_available": 0.0
+      },
+      "2037": {
+       "s_available": 0.0,
+       "e_available": 0.0
+      }
+     },
+     "note_zero_node": "zero-capacity node: no active cohort; EFC undefined (None), SoH variables fixed at 1.0 by production and not reported as a result"
+    },
+    "7": {
+     "s_mva": 0.25,
+     "e_mwh": 1.0,
+     "has_storage": true,
+     "efc_per_day_max": 0.9876680119525881,
+     "efc_per_day_per_cohort_year": {
+      "(0, 0)": 0.9876680119525881,
+      "(0, 1)": 0.8907747794413293,
+      "(0, 2)": 0.8292514536313869,
+      "(0, 3)": 0.783574600579039,
+      "(0, 4)": 0.7640876860200851
+     },
+     "terminal_soh_per_active_cohort_year": {
+      "(0, 0)": 0.9272732081663796,
+      "(0, 1)": 0.8623839587287782,
+      "(0, 2)": 0.8035440822218426,
+      "(0, 3)": 0.7497640757533102,
+      "(0, 4)": 0.6999999900000342
+     },
+     "terminal_soh_min_over_active_cohort_years": 0.6999999900000342,
+     "soh_floor_rows_active_at_terminal": [
+      "(0, 4)"
+     ],
+     "published_available_capacity_terminal": {
+      "2025": {
+       "s_available": 0.25,
+       "e_available": 0.9272732081663796
+      },
+      "2028": {
+       "s_available": 0.25,
+       "e_available": 0.8623839587287782
+      },
+      "2031": {
+       "s_available": 0.25,
+       "e_available": 0.8035440822218426
+      },
+      "2034": {
+       "s_available": 0.25,
+       "e_available": 0.7497640757533102
+      },
+      "2037": {
+       "s_available": 0.25,
+       "e_available": 0.6999999900000342
+      }
+     },
+     "note_zero_node": null
+    },
+    "9": {
+     "s_mva": 0.0,
+     "e_mwh": 0.0,
+     "has_storage": false,
+     "efc_per_day_max": null,
+     "efc_per_day_per_cohort_year": {},
+     "terminal_soh_per_active_cohort_year": {},
+     "terminal_soh_min_over_active_cohort_years": null,
+     "soh_floor_rows_active_at_terminal": [],
+     "published_available_capacity_terminal": {
+      "2025": {
+       "s_available": 0.0,
+       "e_available": 0.0
+      },
+      "2028": {
+       "s_available": 0.0,
+       "e_available": 0.0
+      },
+      "2031": {
+       "s_available": 0.0,
+       "e_available": 0.0
+      },
+      "2034": {
+       "s_available": 0.0,
+       "e_available": 0.0
+      },
+      "2037": {
+       "s_available": 0.0,
+       "e_available": 0.0
+      }
+     },
+     "note_zero_node": "zero-capacity node: no active cohort; EFC undefined (None), SoH variables fixed at 1.0 by production and not reported as a result"
+    }
+   },
+   "ageing_trajectory_terminal": {
+    "available_energy_soh_point": "end",
+    "ageing_enabled": true,
+    "nodes": {
+     "5": {
+      "cells": [],
+      "salvage_value": 0.0
+     },
+     "7": {
+      "cells": [
+       {
+        "y_inv": 0,
+        "investment_year": "2025",
+        "y": 0,
+        "block_year": "2025",
+        "n_years": 3,
+        "e_rated": 1.0,
+        "avg_ch_dch": 1.9753360239051763,
+        "efc_per_day": 0.9876680119525881,
+        "D": 0.030166120467333465,
+        "soh_prev_end": 1.0,
+        "soh_end": 0.9272732081663796,
+        "soh_used_for_available_energy": 0.9272732081663796,
+        "e_available": 0.9272732081663796,
+        "soh_mid_closed_form": 0.962950262561042,
+        "phi_cal_in_model": 0.985,
+        "cl_eff": 35851.3609417964
+       },
+       {
+        "y_inv": 0,
+        "investment_year": "2025",
+        "y": 1,
+        "block_year": "2028",
+        "n_years": 3,
+        "e_rated": 1.0,
+        "avg_ch_dch": 1.7815495588826586,
+        "efc_per_day": 0.8907747794413293,
+        "D": 0.027206732404713593,
+        "soh_prev_end": 0.9272732081663796,
+        "soh_end": 0.8623839587287782,
+        "soh_used_for_available_energy": 0.8623839587287782,
+        "e_available": 0.8623839587287782,
+        "soh_mid_closed_form": 0.8942402026758006,
+        "phi_cal_in_model": 0.985,
+        "cl_eff": 35851.3609417964
+       },
+       {
+        "y_inv": 0,
+        "investment_year": "2025",
+        "y": 2,
+        "block_year": "2031",
+        "n_years": 3,
+        "e_rated": 1.0,
+        "avg_ch_dch": 1.6585029072627737,
+        "efc_per_day": 0.8292514536313869,
+        "D": 0.025327639394234665,
+        "soh_prev_end": 0.8623839587287782,
+        "soh_end": 0.8035440822218426,
+        "soh_used_for_available_energy": 0.8035440822218426,
+        "e_available": 0.8035440822218426,
+        "soh_mid_closed_form": 0.8324443084312341,
+        "phi_cal_in_model": 0.985,
+        "cl_eff": 35851.3609417964
+       },
+       {
+        "y_inv": 0,
+        "investment_year": "2025",
+        "y": 3,
+        "block_year": "2034",
+        "n_years": 3,
+        "e_rated": 1.0,
+        "avg_ch_dch": 1.567149201158078,
+        "efc_per_day": 0.783574600579039,
+        "D": 0.023932541613329764,
+        "soh_prev_end": 0.8035440822218426,
+        "soh_end": 0.7497640757533102,
+        "soh_used_for_available_energy": 0.7497640757533102,
+        "e_available": 0.7497640757533102,
+        "soh_mid_closed_form": 0.7761884346820054,
+        "phi_cal_in_model": 0.985,
+        "cl_eff": 35851.3609417964
+       },
+       {
+        "y_inv": 0,
+        "investment_year": "2025",
+        "y": 4,
+        "block_year": "2037",
+        "n_years": 3,
+        "e_rated": 1.0,
+        "avg_ch_dch": 1.5281753720401703,
+        "efc_per_day": 0.7640876860200851,
+        "D": 0.023337357194063327,
+        "soh_prev_end": 0.7497640757533102,
+        "soh_end": 0.6999999900000342,
+        "soh_used_for_available_energy": 0.6999999900000342,
+        "e_available": 0.6999999900000342,
+        "soh_mid_closed_form": 0.7244548609331722,
+        "phi_cal_in_model": 0.985,
+        "cl_eff": 35851.3609417964
+       }
+      ],
+      "salvage_value": 0.0
+     },
+     "9": {
+      "cells": [],
+      "salvage_value": 0.0
+     }
+    }
+   },
+   "ess_ageing_readback_terminal_all_match": true,
+   "ess_ageing_readback_pre_run_all_match": true,
+   "derived_instance_installed_in_child": {
+    "case_path": "data/SRP1/Results/P515S52/pilot_instance/SRP1__s52_pilot_2x2.json",
+    "case_sha256_in_child": "7ecff44a874892187d1dd2e3d5ed0664a2f90a4bfa4cdb820a4abcbbd828f949",
+    "scenario_checksum_in_child": "53b4bea4142001617282a08541079952564903b6d84db066f90d71a650b7d563",
+    "instance_label": "s52_pilot_2x2",
+    "checksum_matches_srp1_canonical": false,
+    "planning_dimensions": {
+     "years": {
+      "2025": 3,
+      "2028": 3,
+      "2031": 3,
+      "2034": 3,
+      "2037": 3
+     },
+     "days": {
+      "Spring": 92,
+      "Summer": 91,
+      "Autumn": 91,
+      "Winter": 91
+     },
+     "num_instants": 24,
+     "random_seed": 2026,
+     "num_market_scenarios": 2,
+     "num_operation_scenarios": {
+      "case9": 2,
+      "case33_1": 2,
+      "case33_2": 2,
+      "case33_3": 2
+     },
+     "active_distribution_network_nodes": [
+      5,
+      7,
+      9
+     ],
+     "scenario_metadata": {
+      "random_seed": 2026,
+      "deterministic_scenarios": true,
+      "market_scenario_checksum": "f96ae5bffa617abbd0d35f53cb32dd07e0ec9ef3dbe1598f63d3f1c931fb45b7",
+      "operational_scenario_checksum": "433864055b30e0adc48616ef032a76609070e8271208ca54967bcc67737f6683",
+      "combined_scenario_checksum": "53b4bea4142001617282a08541079952564903b6d84db066f90d71a650b7d563"
+     }
+    },
+    "expected_block_counts": {
+     "tso_blocks": 20,
+     "dso_blocks": 60,
+     "network_blocks": 80,
+     "esso_models": 3,
+     "solves_per_cycle": 83
+    },
+    "planning_read_dir": "data/SRP1/Results/P515S52/campaign_s52_pilot_nopersist/evals/711fce9aa74d6878_n7_4h_e1/planning_read",
+    "read_wall_s": 13.246803998947144,
+    "reader": "p515_s44_scale_measurement.read_planning_from_derived_case (production SharedResourcesPlanning)"
+   },
+   "interface_deviation_premium_applied_in_child": {
+    "declared": {
+     "alpha": 0.5,
+     "floor": null
+    },
+    "before": {
+     "alpha": 0.0,
+     "floor": null,
+     "source": "default"
+    },
+    "after": {
+     "alpha": 0.5,
+     "floor": null,
+     "source": "campaign spec entry interface_deviation_premium (p515_s44_campaign_harness, W47)"
+    },
+    "took_effect": true
+   },
+   "wall_time": {
+    "child_process_s": 14631.887006998062,
+    "run_admm_arm_s": 14615.873366117477,
+    "run_admm_arm_reported_wall_clock_s": 13976.08839225769
+   },
+   "parent_view": {
+    "exit_code": 0,
+    "wall_s": 14648.014678001404,
+    "wait4_ru_maxrss": 12062490624
+   },
+   "cycle_time_s_mean_incl_init_round": 200.21744337147229,
+   "peak_rss": {
+    "units": "bytes on macOS/BSD, kilobytes on Linux (ru_maxrss)",
+    "child_python_process_ru_maxrss": 12062490624,
+    "production_state_peak_rss_ru_maxrss": 11263918080,
+    "solver_subprocesses_max_ru_maxrss": 1275969536,
+    "semantics": "child_python_process = RUSAGE_SELF of the evaluation process at record time (the evaluation's own peak); production_state = the same measure taken by production at the end of run_operational_planning; solver_subprocesses = RUSAGE_CHILDREN max over the IPOPT executables this evaluation launched; when a post-certification step ran, child_python_process includes it (the ADMM run alone is production_state)"
+   },
+   "aa_action_counts": {
+    "insufficient memory (m_k=0)": 13,
+    "accepted": 26,
+    "rejected (safeguard; memory retained)": 22,
+    "off (all channels within Boyd tolerance)": 11
+   },
+   "per_cycle_trajectory": {
+    "path": "data/SRP1/Results/P515S52/campaign_s52_pilot_nopersist/evals/711fce9aa74d6878_n7_4h_e1/per_cycle_record.jsonl",
+    "present": true,
+    "sha256": "c6c51aeac406aef9a0874bb9e81ecef3c90e183d0b33027c0441289a5f509d34",
+    "n_rows": 72,
+    "n_rows_equals_cycles_run": true
+   },
+   "I_x": {
+    "I_x_eur_master_expression": 317957.0085035586,
+    "I_x_eur_p56a_transcription": 317957.0085035586,
+    "abs_diff": 0.0,
+    "budget_eur": 1000000.0,
+    "budget_slack_eur": 682042.9914964414,
+    "candidate_key": "db77e1549af855bcb3521950c634db55fe6c155ab2de591b0441b5f2bf4b369a",
+    "case_file_budget_eur": 1000000.0,
+    "equals_srp1_w2_table": true,
+    "srp1_w2_table_I_eur": 317957.0085035586
+   }
+  }
+ },
+ "value": {
+  "available": true,
+  "Q0": 841964496.8267072,
+  "Q_unit": 841720175.5352484,
+  "value_eur": 244321.29145884514,
+  "I_x_eur": 317957.0085035586,
+  "value_minus_I_eur": -73635.71704471344,
+  "F_unit": 842038132.543752,
+  "resolution_eur": 15510.835276722908,
+  "value_determinate": true,
+  "value_minus_I_determinate": true,
+  "value_per_mwh": 244321.29145884514,
+  "srp1_value_per_mwh": 259427.76775527,
+  "srp1_resolution": 34734.63290083408,
+  "ratio_pilot_over_srp1": 0.9417700100990134,
+  "ratio_resolution": 0.1395497644529453,
+  "r_prediction": 0.937,
+  "ratio_minus_r": 0.004770010099013344,
+  "within_10pct_of_srp1": true,
+  "definition": "value = Q(0) - Q(x_unit) on THIS instance (both evaluations of this campaign); resolution = bar_x + bar_0 (record.bar of each: the max gross step over the last 10 cycles); |value| or |value - I| <= resolution is INDETERMINATE (CLAUDE.md: the bar bounds stopping slack only). value per MWh = value / E; compared with SRP1's value per MWh for the same unit (S2 79b99b59: 259,427.77, resolution 34,734.63) as a ratio, and that ratio against R = 0.937 (Addendum 31 prediction on the market spread; the storage prices at the bus-7 marginal cost, so a deviation either way is informative -- spec v22 pilot prediction)."
+ },
+ "memory_preflight_at_run": {
+  "utc": "2026-09-23T21:00:41.721755+00:00",
+  "vm_stat_header": "Mach Virtual Memory Statistics: (page size of 16384 bytes)",
+  "page_size_bytes": 16384,
+  "vm_stat_pages": {
+   "pages_free": 510310,
+   "pages_active": 615342,
+   "pages_inactive": 650740,
+   "pages_speculative": 7536,
+   "pages_wired_down": 187068,
+   "pages_purgeable": 7771,
+   "file_backed_pages": 791432,
+   "anonymous_pages": 482186,
+   "pages_stored_in_compressor": 198544,
+   "pages_occupied_by_compressor": 77291
+  },
+  "hw_memsize_bytes": 34359738368,
+  "required_bytes": 19327352832,
+  "required_gib": 18.0,
+  "per_child_sustained_budget_gib": 7.0,
+  "terminal_transient_budget_gib": 4.0,
+  "concurrency": 2,
+  "rule": "hw.memsize - (wired + anonymous + compressor-occupied) x page size >= 2 x 7 GiB + 4 GiB (one terminal-phase transient at a time: the harness terminal-phase lock)",
+  "rule_rationale": "non-reclaimable load = wired + anonymous + compressor-occupied pages; file-backed pages (active or inactive) are cache the kernel reclaims on demand, so free + inactive under-counts what new processes can obtain (free + inactive recorded alongside); the measure of A0 / S47, with the budget re-derived for this instance",
+  "budget_derivation": "MEASURED zero-solve on the pilot instance (p515_s52_pilot_checks, memory_by_stage): the 80 ADMM-built network blocks + 3 ESSO models of the unit candidate hold 3.40 GiB RSS (no pristine clones, no solver state); the multi-scenario capture adds ~0; production's workbook writer a +3.75 GiB TRANSIENT for ~2 min (released by gc.collect() to +0.55 GiB); the certified-model pickle (0.66 GB on disk) a +5.1 GiB TRANSIENT and +2.3 GiB retained. NOT measured (need solves): the pristine snapshot clones (lightweight, the default: every TSO block and every node-7 DSO block, ~1.3 GiB estimated), solver state (multiplier suffixes, SolverResults, AA memory) and the fixed overhead (SRP1 campaign children peak at 2.32-2.40 GiB for ~0.6 GiB of models). Sustained per child: ~5.5-6.5 GiB -> 7 GiB; the terminal-phase transient -> 6 GiB, counted ONCE because the harness serializes the children's terminal phases (`acquire_terminal_phase_lock` on the campaign root). Without the model pickle the transient would be the workbook's ~4 GiB. W48 (Planner ruling: persist_certified_models dropped): the terminal-phase transient is now the workbook's -- measured RSS 3,730,014,208 -> peak 7,732,314,112 bytes (+3.727 GiB), retained +0.537 GiB after it -- budgeted at 4 GiB (was 6 GiB for the pickle); the +2.3 GiB the pickle retained is gone too. Per-child sustained budget unchanged at 7 GiB. Required: pilot 2 x 7 + 4 = 18 GiB (was 20), repro 1 x 7 + 4 = 11 GiB (was 13). Still NOT measured: the hull polish's own solve-time memory (it re-solves the 80 blocks after the workbook).",
+  "missing_vm_stat_figures": [],
+  "non_reclaimable_gib": 11.391372680664062,
+  "available_bytes": 22128345088,
+  "available_gib": 20.608627319335938,
+  "free_plus_inactive_gib": 17.716217041015625,
+  "pass": true
+ },
+ "pre_run_evidence": {
+  "pins": {
+   "spec_v22": {
+    "path": "data/SRP1/Results/P515S52/frozen_s52_spec_v22_5d8df1e8.json",
+    "sha256_pinned": "5d8df1e8fe7f3741a3e03167937881ac85c47fd713fe6aa7b938e3113106fe1c",
+    "sha256_on_disk": "5d8df1e8fe7f3741a3e03167937881ac85c47fd713fe6aa7b938e3113106fe1c",
+    "match": true,
+    "git_tracked": true,
+    "git_clean": true
+   },
+   "ess_params_file": {
+    "path": "data/SRP1/SharedESS/SRP1_ESS_Params.json",
+    "sha256_pinned": "39106f934bf3edbf18f01a5ef1fadfefc2f7a518706e6c8fa6d962617a312706",
+    "sha256_on_disk": "39106f934bf3edbf18f01a5ef1fadfefc2f7a518706e6c8fa6d962617a312706",
+    "match": true,
+    "git_tracked": true,
+    "git_clean": true
+   },
+   "cost_file": {
+    "path": "data/SRP1/SharedESS/SRP1_ESS.xlsx",
+    "sha256_pinned": "e17bd5887e1d0738005ae17c3144593527081c9a0776e19cfaa50aafefe39cd6",
+    "sha256_on_disk": "e17bd5887e1d0738005ae17c3144593527081c9a0776e19cfaa50aafefe39cd6",
+    "match": true,
+    "git_tracked": true,
+    "git_clean": true
+   },
+   "investment_cost_results": {
+    "path": "data/SRP1/Results/P515S45/investment_cost/investment_cost_results.json",
+    "sha256_pinned": "28152120f5c7acc57655d40871f764a5e797b93428f5a9f87b7eed55fbe4790b",
+    "sha256_on_disk": "28152120f5c7acc57655d40871f764a5e797b93428f5a9f87b7eed55fbe4790b",
+    "match": true,
+    "git_tracked": true,
+    "git_clean": true
+   },
+   "srp1_s2_results": {
+    "path": "data/SRP1/Results/P515S47/campaign_s47_recert/campaign_results.json",
+    "sha256_pinned": "e48dad43470829ee1d936cdab5e6433cffd688f9439e86e011b84dad74e19a3e",
+    "sha256_on_disk": "e48dad43470829ee1d936cdab5e6433cffd688f9439e86e011b84dad74e19a3e",
+    "match": true,
+    "git_tracked": true,
+    "git_clean": true
+   },
+   "sigma_check": {
+    "path": "data/SRP1/Results/P515S52/sigma_check/r2/sigma_check.json",
+    "commit": "c8f4b4c7",
+    "commit_in_HEAD": true,
+    "git_tracked": true,
+    "git_clean": true,
+    "sha256": "c5ee751dab9b56f5cc6f4cb0c332ac3121bbdda01b3c45e24b682a0844302dcf"
+   },
+   "pilot_checks": {
+    "path": "data/SRP1/Results/P515S52/pilot_checks/r1/pilot_checks.json",
+    "git_tracked": true,
+    "git_clean": true,
+    "sha256": "23459939738323c5e4a6c256ddbf75ec8b8b493faf91038e8e64b1f3e9c3fa29",
+    "all_ok": true,
+    "failing": [],
+    "script_sha256_recorded": "edb7f3ee209037f267224d3eddff04d7aa6ff15aa3a9a0cfe772044b7712f52a",
+    "harness_sha256_recorded": "abf797989997535e610b614ce051848cfa780b5ead311cbe7dc169345bcedeb5",
+    "harness_sha256_now": "abf797989997535e610b614ce051848cfa780b5ead311cbe7dc169345bcedeb5",
+    "expect": "all_ok true"
+   }
+  },
+  "instance": {
+   "case_path": "data/SRP1/Results/P515S52/pilot_instance/SRP1__s52_pilot_2x2.json",
+   "case_sha256": "7ecff44a874892187d1dd2e3d5ed0664a2f90a4bfa4cdb820a4abcbbd828f949",
+   "existed_before": true,
+   "equals_w45_pilot_case_sha256": true,
+   "derive_base": "paper",
+   "derive_overrides": {
+    "num_market_scenarios": 2,
+    "num_operation_scenarios": 2
+   },
+   "changes_vs_source": [
+    {
+     "key": "Years",
+     "from": {
+      "2025": 5,
+      "2030": 5,
+      "2035": 5
+     },
+     "to": {
+      "2025": 3,
+      "2028": 3,
+      "2031": 3,
+      "2034": 3,
+      "2037": 3
+     }
+    },
+    {
+     "key": "NumMarketScenarios",
+     "from": 1,
+     "to": 2
+    },
+    {
+     "key": "TransmissionNetwork[case9].num_operation_scenarios",
+     "from": 1,
+     "to": 2
+    },
+    {
+     "key": "DistributionNetworks[case33_1].num_operation_scenarios",
+     "from": 1,
+     "to": 2
+    },
+    {
+     "key": "DistributionNetworks[case33_2].num_operation_scenarios",
+     "from": 1,
+     "to": 2
+    },
+    {
+     "key": "DistributionNetworks[case33_3].num_operation_scenarios",
+     "from": 1,
+     "to": 2
+    }
+   ],
+   "years": {
+    "2025": 3,
+    "2028": 3,
+    "2031": 3,
+    "2034": 3,
+    "2037": 3
+   },
+   "years_expected": true,
+   "source_case_path": "data/SRP1/SRP1.json",
+   "source_case_sha256": "61a794a7ce7a3fb983f2e92128eec446dd7dbb17ad75a3b3b1c5735f8bd4e4ef",
+   "derive_description": "the paper instance: 5 representative years (2025, 2028, 2031, 2034, 2037; each a 3-year block, sum 15) x 4 days x 5 market x 5 operation scenarios (25 combinations per block)"
+  }
+ },
+ "rule_eleven_asserted_before_run": {
+  "path_is_run_admm_arm": true,
+  "path_never_calls_run_s39_arm": true,
+  "run_s39_arm_is_the_one_with_the_hard_coded_sigma": true,
+  "derived_instance_installed_first": true,
+  "derived_instance_checksum_checked_in_child": true,
+  "premium_applied_in_config_hook": true,
+  "premium_threaded_by_production": true,
+  "sigma_in_state": true,
+  "sigma_calibration_recorded": true,
+  "sigma_assertion_is_production": true,
+  "capture_wired_before_post_certification": true,
+  "dispersion_production_function": true,
+  "dispersion_max_over_blocks_E_abs_d_sum_omega_d2": true,
+  "row18_charge_and_readback": true,
+  "settlement_split_parts": true,
+  "covariance_recomputed_independently": true,
+  "settlement_identity_reported": true,
+  "per_scenario_costs_production": true,
+  "per_scenario_costs_reconciled_to_block_recourse": true,
+  "per_scenario_interface_profiles_production": true,
+  "shared_ess_schedule_read_at_na_scenario": true,
+  "voltage_mismatch_reported": true,
+  "workbook_production_writer": true,
+  "workbook_gets_run_results": true,
+  "excel_dispersion_reads_na_copy": true,
+  "network_results_shared_ess_at_na": true,
+  "ess_dispatch_esso_capture": true,
+  "soh_trajectory_declared_ageing": true,
+  "penalty_table_component_levels": true,
+  "per_cycle_trajectory_written": true,
+  "record_carries_multiscenario_summary": true,
+  "record_rule_ten": true,
+  "hull_polish_gate": true,
+  "capture_error_exits_2": true,
+  "terminal_phase_serialized": true
+ },
+ "wave_info": {
+  "max_concurrent_observed": 2,
+  "timeline": [
+   {
+    "event": "start",
+    "label": "x0",
+    "pid": 9373,
+    "t": 1790197241.735129
+   },
+   {
+    "event": "start",
+    "label": "n7_4h_e1",
+    "pid": 9374,
+    "t": 1790197241.7380102
+   },
+   {
+    "event": "end",
+    "label": "x0",
+    "pid": 9373,
+    "t": 1790210797.643501,
+    "exit_code": 0
+   },
+   {
+    "event": "end",
+    "label": "n7_4h_e1",
+    "pid": 9374,
+    "t": 1790211889.7526882,
+    "exit_code": 0
+   }
+  ]
+ },
+ "parent_solve_profile_guard": {
+  "counts": {
+   "permitted_solve": 0,
+   "permitted_exec": 0,
+   "blocked_solve": 0,
+   "blocked_exec": 0
+  },
+  "verify_0_failures": []
+ },
+ "wall_clock_s": 14650.089262008667
+}
