@@ -27,8 +27,9 @@ Two capture phases, both production call sequences:
     - `update_interface_power_flow_variables` and the in-cycle `update_and_check_convergence` calls are not made
       (they only update consensus/dual VALUES from solve results);
     - pristine snapshot bases are not built (None is passed; they are clones used only for failure snapshots);
-    - row-18 flow Vars with no value (no init solve) are set to 0.0 before `_activate_row18_with_settlement` reads
-      them (recorded with counts when it happens).
+    - a Var read by `_activate_row18_with_settlement` (directly, or inside the `pg_adn`/`qg_adn` Expressions) that
+      has no value (no init solve) is set to 0.0 first (recorded with counts when it happens; W68 attempt r1 failed
+      on the draft's assumption that `pg_adn` is a Var).
 
 PER BLOCK the probe accounts EXACTLY for model Vars vs .nl columns:
     N_model = N_written + sum over the six unwritten categories
@@ -947,15 +948,29 @@ def run(args, state):
                 for d in dns[node_id].days:
                     blk = m[y][d]
                     if hasattr(blk, 'row18_alpha'):
+                        # `_activate_row18_with_settlement` reads pe.value(flow) - pe.value(expectation).
+                        # `pg_adn`/`qg_adn` are Expressions (W68 attempt r1 failed assuming Vars): only a
+                        # None-valued Var INSIDE them is set to 0.0, and only if the Expression cannot be
+                        # evaluated. Value-only; recorded with counts per Var family.
                         for fam_row in srp._ROW18_DEVIATION_FAMILIES:
-                            flow = getattr(blk, fam_row[3])
-                            for idx in flow:
-                                if flow[idx].value is None:
-                                    flow[idx].set_value(0.0)
-                                    none_valued[fam_row[3]] = none_valued.get(fam_row[3], 0) + 1
+                            for comp_name in (fam_row[3], fam_row[4]):
+                                comp = getattr(blk, comp_name)
+                                for idx in comp:
+                                    item = comp[idx]
+                                    if isinstance(item, pe.Var) or getattr(item, 'is_variable_type', lambda: False)():
+                                        if item.value is None:
+                                            item.set_value(0.0)
+                                            none_valued[comp_name] = none_valued.get(comp_name, 0) + 1
+                                    elif pe.value(item, exception=False) is None:
+                                        for v in identify_variables(item.expr, include_fixed=True):
+                                            if v.value is None:
+                                                v.set_value(0.0)
+                                                fam_v = v.parent_component().local_name
+                                                none_valued[fam_v] = none_valued.get(fam_v, 0) + 1
         if none_valued:
-            deviations.append({'value_only': 'row-18 flow Vars had no value (no init solve); set to 0.0 before '
-                                             '_activate_row18_with_settlement reads them', 'counts': none_valued})
+            deviations.append({'value_only': 'Vars read by _activate_row18_with_settlement (directly or inside the '
+                                             'pg_adn/qg_adn Expressions) had no value (no init solve); set to 0.0',
+                               'counts': none_valued})
         srp._prepare_distribution_objectives_for_admm(dns, dso_models)
         srp._prepare_transmission_objectives_for_admm(tn, tso_model)
         if a.objective_scale is None:
