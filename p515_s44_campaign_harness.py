@@ -180,6 +180,18 @@ scenario-free shared-ESS schedule; the interface-voltage mismatch; the sigma cal
 own operational-planning workbook (`SharedResourcesPlanning.write_operational_planning_results_to_excel`, with the
 run's own SolverResults and primal evolution). A capture error is recorded in the record and the child exits 2
 after writing it (the evaluation itself stands), as a post-certification error does.
+P5.15 Addendum 40 ruling 1 (W64, the alpha row): for the same derived-instance / premium evaluations, and ONLY for
+them, the child also (i) asserts `assert_alpha_row_capture_paths` before any solve; (ii) wraps six production
+functions pass-through for the run (`alpha_row_run_hooks`): at ACTIVATION (after the initialisation solve, before any
+ADMM-cycle solve) it writes `ACTIVATION_READBACK_FILE` (row 18 alpha / rows / pair state on every DSO block,
+penalty_gen_curtailment 0 and settlement weight 1 on every block) and the initialisation-identity record (cycle-0
+gross cost, float.hex, registered in `<campaign root>/init_identity/` and compared bitwise with every record of the
+same candidate), RAISING on any failure; and every cycle appends `per_cycle_response_record` to
+`PER_CYCLE_RESPONSE_FILE`, merged by cycle into `per_cycle_record.jsonl` (`PER_CYCLE_RESPONSE_FIELDS`); (iii) writes
+`RESPONSE_TERMINAL_FILE` on the terminal models right after the multi-scenario capture and before the workbook and
+any post-certification step (`response_terminal_capture`: the dual-based curtailment entries with the W53 audit's
+helpers, the W44 coordination record per DSO block, flexibility legs, the row 18 charge by leg, the P |d| form).
+Zero solves throughout. `evaluation_key` is unchanged; every other evaluation runs exactly as before.
 AFTER the run, in the child, inside `run_admm_arm`'s post_run_hook (same live
 models/state), `run_post_certification` does, only if the trajectory is
 certified under the spec's bar (else it records `status: skipped` + reason):
@@ -296,7 +308,10 @@ CHANNELS = ('v', 'pf', 'ess')
 POLL_S = 5.0
 HEARTBEAT_EVERY_S = 60.0
 
-PER_CYCLE_RECORD_FIELDS = (
+# The per-cycle fields read off production's trajectory rows (`run_admm_arm` cycle_trajectory). This is the tuple
+# that was `PER_CYCLE_RECORD_FIELDS` before W64, unchanged; `RECORD_TRAJECTORY_FIELDS` (below) is built from it, so
+# the rule-eleven trajectory checklist (every field must appear in production's source) is exactly as before.
+PER_CYCLE_TRAJECTORY_FIELDS = (
     'cycle', 'local_solves_ok', 'recourse', 'gross_operational_cost', 'terminal_salvage_value',
     'objective_change_abs', 'objective_tolerance', 'objective_change_ratio',
     'cycle_convergence', 'consecutive_converged_cycles', 'boyd_all_pass', 'boyd_stop',
@@ -306,6 +321,23 @@ PER_CYCLE_RECORD_FIELDS = (
     'rho_v_after', 'rho_pf_after', 'rho_ess_after', 'rho_v_action', 'rho_pf_action', 'rho_ess_action',
     'rho_freeze_active', 'efc_per_day_max',
 )
+# P5.15 Addendum 40 ruling 1 (W64): the per-cycle RESPONSE fields, captured by the harness itself every cycle
+# (`per_cycle_response_record`, zero solves, read off the cycle's own models and SolverResults) for derived-instance
+# / premium evaluations only, appended to `PER_CYCLE_RESPONSE_FILE` as each cycle completes (so a run that fails at
+# hour 9 of 12 leaves every completed cycle on disk) and merged into `per_cycle_record.jsonl` by cycle. Every other
+# evaluation writes `PER_CYCLE_TRAJECTORY_FIELDS` only, i.e. exactly its pre-W64 per-cycle record.
+PER_CYCLE_RESPONSE_FIELDS = (
+    'response_cycle', 'response_captured', 'response_capture_error',
+    'E_abs_d_p_mwh_weighted', 'E_abs_d_p_mwh_unweighted',
+    'sum_omega_d2_p_mw2h_weighted', 'sum_omega_d2_p_mw2h_unweighted',
+    'market_part_mw2h_weighted', 'operation_part_mw2h_weighted',
+    'market_part_mw2h_unweighted', 'operation_part_mw2h_unweighted',
+    'row18_charge_weighted', 'covariance_dso_weighted',
+    'curtailed_res_dso_mwh_weighted', 'curtailed_res_tso_mwh_weighted',
+    'max_abs_d_p_mw', 'n_non_optimal_block_terminations', 'non_optimal_blocks',
+    'cycle_wall_s', 'rss_bytes', 'ru_maxrss_bytes', 'response_capture_s',
+)
+PER_CYCLE_RECORD_FIELDS = PER_CYCLE_TRAJECTORY_FIELDS + PER_CYCLE_RESPONSE_FIELDS
 
 
 # ==============================================================================
@@ -1637,7 +1669,7 @@ def build_evaluation_record(*, spec, spec_path, spec_sha256, entry, report, comp
 # ==============================================================================
 #  rule eleven for the record: capture paths asserted BEFORE the run
 # ==============================================================================
-RECORD_TRAJECTORY_FIELDS = tuple(sorted(set(PER_CYCLE_RECORD_FIELDS) | {
+RECORD_TRAJECTORY_FIELDS = tuple(sorted(set(PER_CYCLE_TRAJECTORY_FIELDS) | {
     'boyd_v_primal_ratio', 'boyd_pf_primal_ratio', 'boyd_ess_primal_ratio', 'boyd_v_dual_ratio',
     'boyd_pf_dual_ratio', 'boyd_ess_dual_ratio', 'boyd_v_channel_pass', 'boyd_pf_channel_pass',
     'boyd_ess_channel_pass', 'cycle_convergence', 'consecutive_converged_cycles',
@@ -3121,6 +3153,869 @@ def write_multiscenario_terminal(planning, models, state, eval_dir, premium=None
             'runtime_s': time.time() - t0, 'sigma_calibration': payload['sigma_calibration'], **summary}
 
 
+# ==============================================================================
+#  P5.15 Addendum 40 ruling 1 (W64): the ALPHA-ROW capture. ZERO SOLVES throughout.
+#    * activation read-back and the initialisation identity, at the ADMM initialisation / activation point
+#      (after the initialisation solve, before any ADMM-cycle solve);
+#    * the per-cycle response record (`PER_CYCLE_RESPONSE_FIELDS`), every cycle;
+#    * the terminal dual-based curtailment capture and the per-block coordination state.
+#  Wired in `_child_real` for derived-instance / premium evaluations only (`capture_multiscenario`); every other
+#  evaluation runs exactly as before.
+# ==============================================================================
+RESPONSE_TERMINAL_FILE = 'response_terminal.json'
+PER_CYCLE_RESPONSE_FILE = 'per_cycle_response.jsonl'
+ACTIVATION_READBACK_FILE = 'activation_readback.json'
+INIT_IDENTITY_FILE = 'initialisation_identity.json'
+INIT_IDENTITY_DIR_NAME = 'init_identity'   # <campaign_root>/init_identity/<eval dir name>.json, one per evaluation
+# Committed diagnostic scripts whose DEFINITIONS the capture reuses BY IMPORT (never re-implemented): the W44
+# coordination record and the W53 curtailment audit's dual helpers. Both arm a SolveProfileGuard at import; it is
+# disarmed at once (`import_disarmed_diagnostic`, the p515_s51_2x2_limit_gate / single_block_ab precedent).
+COORDINATION_MODULE = 'p515_s51_2x2_limit_gate'
+CURTAILMENT_AUDIT_MODULE = 'p515_s53_curtailment_audit'
+DECOMPOSITION_MODULE = 'p515_s51_coordinated_decomposition'   # pure json / math, arms nothing
+# Sanity (reported here; the W64 smoke gate states its own threshold on it): stationarity of the two row-18 deviation
+# Vars of one index gives, whatever the sign convention of the row dual, |zL(d+) + zL(d-)| = 2 * omega_s * alpha *
+# pibar_t * baseMVA (the charge's coefficient
+# on each Var, in the units of the objective IPOPT solved: p58's rescaled objective = base + scale * AL, and the AL
+# terms do not contain d+/-), and |row dual| = |zL(d-) - zL(d+)| / 2.
+ROW18_ZL_IDENTITY_REL_TOL = 1e-4
+
+
+def import_disarmed_diagnostic(name):
+    """Import a committed diagnostic script whose import arms a `SolveProfileGuard` as `GUARD`, and disarm it at
+    once. Verifies that `OptSolver.solve` and `SystemCallSolver._execute_command` are exactly what they were before
+    the import (so no guard of that module stays armed on top of the caller's) and that the module's guard counted
+    nothing. A module already imported by this process is returned as is (it was disarmed then)."""
+    import importlib
+    from pyomo.opt.base.solvers import OptSolver
+    from pyomo.opt.solver.shellcmd import SystemCallSolver
+    if name in sys.modules:
+        return sys.modules[name]
+    before = (OptSolver.solve, SystemCallSolver._execute_command)
+    cwd = os.getcwd()
+    module = importlib.import_module(name)
+    os.chdir(cwd)   # the diagnostic scripts chdir to the repo root at import; the child already runs there
+    guard = getattr(module, 'GUARD', None)
+    if guard is not None:
+        guard.uninstall()
+    after = (OptSolver.solve, SystemCallSolver._execute_command)
+    if after != before:
+        raise RuntimeError(f'importing {name} left a solve guard armed (OptSolver.solve / _execute_command changed)')
+    if guard is not None and any(guard.counts.values()):
+        raise RuntimeError(f'the import-time guard of {name} counted: {guard.counts}')
+    return module
+
+
+def _f(value):
+    """A python float (or None) for JSON: pe.value and the network arrays may hand back numpy scalars."""
+    return None if value is None else float(value)
+
+
+def _block_list(planning):
+    tn = planning.transmission_network
+    blocks = [('TSO', None, tn, year, day) for year in tn.years for day in tn.days]
+    for node_id, dn in planning.distribution_networks.items():
+        blocks += [('DSO', node_id, dn, year, day) for year in dn.years for day in dn.days]
+    return blocks
+
+
+def _block_key(kind, node_id, year, day):
+    return f'DSO|{node_id}|{year}|{day}' if kind == 'DSO' else f'TSO|{year}|{day}'
+
+
+def _block_result(optimization_results, kind, node_id, year, day):
+    try:
+        return (optimization_results['tso'][year][day] if kind == 'TSO'
+                else optimization_results['dso'][node_id][year][day])
+    except (KeyError, TypeError, IndexError):
+        return None
+
+
+def _termination_record(result):
+    """The block's LAST solve as production's SolverResults report it (`result.solver` survives
+    `_release_solution_bookkeeping`); `succeeded` is production's own `solver_result_succeeded`."""
+    from helper_functions import solver_result_succeeded
+    if result is None or not hasattr(result, 'solver'):
+        return {'available': False, 'status': None, 'termination_condition': None, 'succeeded': False}
+    return {'available': True, 'status': str(result.solver.status),
+            'termination_condition': str(result.solver.termination_condition),
+            'succeeded': bool(solver_result_succeeded(result))}
+
+
+def _curtailed_block_mwh(model, network, params):
+    """sum_s omega_s x production's definitional RES curtailment at weight 1 (MWh per representative day):
+    `model_construction_helpers.gen_curtailment_definitional_value` -- the same term the curtailment penalty prices."""
+    import pyomo.environ as pe
+    import model_construction_helpers as MCH
+    total = 0.0
+    for s_m in model.scenarios_market:
+        for s_o in model.scenarios_operation:
+            total += _scenario_probability(network, s_m, s_o) * float(pe.value(
+                MCH.gen_curtailment_definitional_value(model, network, s_m, s_o, params, 1.0)))
+    return total
+
+
+def p_posthoc_block(per_scenario_d, probabilities, pibar_by_hour, include_q=True):
+    """THE P(alpha) FORMULA on one DSO block (frozen spec v24 `formulas.P_posthoc`), from captured data only:
+        P_b = sum_s omega_s sum_t pibar_t * (|d_p[s,t]| + |d_q[s,t]|)        (EUR per representative day)
+    with d_p / d_q the per-scenario deviations of production's `_get_local_interface_dispersion` (MW / MVAr, already
+    x baseMVA), omega_s the block's scenario probabilities and pibar_t the hourly probability-weighted mean price
+    (`model_construction_helpers.expected_market_price`, = row18_premium without a floor). The horizon value is
+    sum_b w_b P_b with w_b = admm_block_weight. At alpha > 0 it is the |d| form of charge / alpha (which prices
+    d+ + d- >= |d|; equal at an exact minimal split). `include_q=False` gives the P leg alone."""
+    total = 0.0
+    for key, series in per_scenario_d.items():
+        omega = probabilities[key]
+        for t, pibar in enumerate(pibar_by_hour):
+            dev = abs(series['d_p_mw'][t]) + (abs(series['d_q_mvar'][t]) if include_q else 0.0)
+            total += omega * pibar * dev
+    return total
+
+
+def per_cycle_response_record(planning, tso_model, dso_models, results):
+    """ONE CYCLE's response fields (`PER_CYCLE_RESPONSE_FIELDS`), read with `pe.value` off the cycle's own models
+    right after its Boyd residuals were computed, and its own SolverResults. Zero solves. Formulas:
+      E|d|, sum omega d^2, market / operation parts: `p515_s51_coordinated_decomposition.block_decomposition` on
+        production's per-scenario d (the W46 definitions), summed over DSO blocks unweighted (W44/W46 convention)
+        and weighted by `_get_admm_block_weight` (the Q weighting);
+      row 18 charge: w_b x `row18_deviation_charge` (production's `_get_local_interface_dispersion`);
+      covariance: w_b x production's settlement DEVIATION part (`_get_local_interface_settlement(part='deviation')`)
+        over the DSO blocks -- the price-deviation covariance the DSOs earn (negative = earned);
+      curtailed RES: w_b x `_curtailed_block_mwh`, DSO and TSO blocks separately;
+      max |d|: max over DSO blocks of production's max_abs_mw;
+      non-optimal terminations: blocks (TSO, DSO, ESSO) whose SolverResults fail production's
+        `solver_result_succeeded` this cycle."""
+    import pyomo.environ as pe  # noqa: F401
+    import shared_resources_planning as srp
+    import model_construction_helpers as MCH
+    DEC = import_disarmed_diagnostic(DECOMPOSITION_MODULE)
+    models = {'tso': tso_model, 'dso': dso_models}
+    dispersion = srp._get_operational_interface_dispersion(planning, models)
+    out = {name: 0.0 for name in (
+        'E_abs_d_p_mwh_weighted', 'E_abs_d_p_mwh_unweighted', 'sum_omega_d2_p_mw2h_weighted',
+        'sum_omega_d2_p_mw2h_unweighted', 'market_part_mw2h_weighted', 'operation_part_mw2h_weighted',
+        'market_part_mw2h_unweighted', 'operation_part_mw2h_unweighted', 'row18_charge_weighted',
+        'covariance_dso_weighted', 'curtailed_res_dso_mwh_weighted', 'curtailed_res_tso_mwh_weighted')}
+    max_abs = 0.0
+    for (kind, node_id, year, day), detail in dispersion.items():
+        dn = planning.distribution_networks[node_id]
+        network = dn.network[year][day]
+        model = dso_models[node_id][year][day]
+        weight = srp._get_admm_block_weight(dn, year, day)
+        out['covariance_dso_weighted'] += weight * float(srp._get_local_interface_settlement(model, part='deviation'))
+        out['curtailed_res_dso_mwh_weighted'] += weight * _curtailed_block_mwh(model, network, dn.params)
+        if detail is None:
+            continue
+        probs = {f'{s_m}_{s_o}': _scenario_probability(network, s_m, s_o)
+                 for s_m in model.scenarios_market for s_o in model.scenarios_operation}
+        d_by = {k: v['d_p_mw'] for k, v in detail['per_scenario'].items()}
+        pi = [[float(network.cost_energy_p[s_m][p]) for s_m in model.scenarios_market] for p in model.periods]
+        pibar = [float(MCH.expected_market_price(network, p)) for p in model.periods]
+        tot = DEC.block_decomposition(d_by, probs, pi, pibar)['totals']
+        for name, src in (('E_abs_d_p_mwh', 'E_abs_d'), ('sum_omega_d2_p_mw2h', 'sum_omega_d2'),
+                          ('market_part_mw2h', 'market_part'), ('operation_part_mw2h', 'operation_part')):
+            out[f'{name}_unweighted'] += tot[src]
+            out[f'{name}_weighted'] += weight * tot[src]
+        out['row18_charge_weighted'] += weight * detail['row18_charge']
+        max_abs = max(max_abs, detail['p']['max_abs_mw'])
+    tn = planning.transmission_network
+    for year in tn.years:
+        for day in tn.days:
+            out['curtailed_res_tso_mwh_weighted'] += (srp._get_admm_block_weight(tn, year, day) * _curtailed_block_mwh(
+                tso_model[year][day], tn.network[year][day], tn.params))
+    out['max_abs_d_p_mw'] = max_abs
+    non_optimal = []
+    for kind, node_id, _holder, year, day in _block_list(planning):
+        if not _termination_record(_block_result(results, kind, node_id, year, day))['succeeded']:
+            non_optimal.append(_block_key(kind, node_id, year, day))
+    for node_id in planning.shared_ess_data.active_distribution_network_nodes:
+        res = (results.get('esso') or {}).get(node_id) if isinstance(results, dict) else None
+        if not _termination_record(res)['succeeded']:
+            non_optimal.append(f'ESSO|{node_id}')
+    out['n_non_optimal_block_terminations'] = len(non_optimal)
+    out['non_optimal_blocks'] = non_optimal
+    return out
+
+
+def activation_readback(planning, tso_model, dso_models, alpha):
+    """At ACTIVATION (right after `_prepare_transmission_objectives_for_admm`, i.e. after the initialisation solve,
+    `_prepare_distribution_objectives_for_admm` -- which activates row 18 with the settlement weight -- and the TSO's
+    counterpart, and BEFORE any ADMM-cycle solve), on EVERY block:
+      DSO, alpha > 0: row 18 wired; `row18_alpha` == alpha exactly; every `row18_dev_{p,q}_def` row ACTIVE; no
+                      deviation Var of the pair fixed; the row count = 2 x n_scenarios x n_periods;
+      DSO, alpha = 0: row 18 ABSENT (no row18_alpha / rows / pair / charge / premium component);
+      every block (TSO and DSO): penalty_gen_curtailment == 0 and interface_settlement_weight == 1 exactly;
+      TSO: no row 18 structure (Addendum 38 (A)).
+    Returns the per-block evidence and `all_ok`."""
+    import pyomo.environ as pe
+    row18_components = ('row18_alpha', 'row18_premium', 'row18_dev_p_up', 'row18_dev_p_down', 'row18_dev_q_up',
+                        'row18_dev_q_down', 'row18_dev_p_def', 'row18_dev_q_def', 'row18_deviation_charge')
+    per_block, failing = {}, []
+    for kind, node_id, holder, year, day in _block_list(planning):
+        model = tso_model[year][day] if kind == 'TSO' else dso_models[node_id][year][day]
+        key = _block_key(kind, node_id, year, day)
+        present = [c for c in row18_components if hasattr(model, c)]
+        rec = {'penalty_gen_curtailment': _f(pe.value(model.penalty_gen_curtailment)),
+               'interface_settlement_weight': _f(pe.value(model.interface_settlement_weight)),
+               'row18_components_present': present}
+        rec['penalty_and_weight_ok'] = (rec['penalty_gen_curtailment'] == 0.0
+                                        and rec['interface_settlement_weight'] == 1.0)
+        if kind == 'TSO':
+            rec['row18_ok'] = not present
+        elif alpha > 0.0:
+            n_scen = len(model.scenarios_market) * len(model.scenarios_operation)
+            expected_rows = 2 * n_scen * len(model.periods)
+            wired = len(present) == len(row18_components)
+            rec['alpha_on_model'] = _f(pe.value(model.row18_alpha)) if hasattr(model, 'row18_alpha') else None
+            n_rows = n_active = n_fixed = 0
+            if wired:
+                for row_name, up_name, down_name in (('row18_dev_p_def', 'row18_dev_p_up', 'row18_dev_p_down'),
+                                                     ('row18_dev_q_def', 'row18_dev_q_up', 'row18_dev_q_down')):
+                    row, up, down = getattr(model, row_name), getattr(model, up_name), getattr(model, down_name)
+                    for index in row:
+                        n_rows += 1
+                        n_active += int(row[index].active)
+                        n_fixed += int(up[index].fixed) + int(down[index].fixed)
+            rec.update({'n_rows': n_rows, 'n_rows_active': n_active, 'n_pair_vars_fixed': n_fixed,
+                        'expected_rows': expected_rows})
+            rec['row18_ok'] = (wired and rec['alpha_on_model'] == alpha and n_rows == expected_rows
+                               and n_active == n_rows and n_fixed == 0)
+        else:
+            rec['row18_ok'] = not present
+        rec['ok'] = rec['penalty_and_weight_ok'] and rec['row18_ok']
+        if not rec['ok']:
+            failing.append(key)
+        per_block[key] = rec
+    n_dso = sum(1 for k in per_block if k.startswith('DSO|'))
+    expected_dso = sum(len(dn.years) * len(dn.days) for dn in planning.distribution_networks.values())
+    return {'alpha': alpha, 'point': ('after _prepare_distribution_objectives_for_admm and '
+                                      '_prepare_transmission_objectives_for_admm; before any ADMM-cycle solve'),
+            'n_blocks': len(per_block), 'n_dso_blocks': n_dso, 'expected_n_dso_blocks': expected_dso,
+            'failing_blocks': failing, 'all_ok': (not failing) and n_dso == expected_dso, 'per_block': per_block}
+
+
+INIT_IDENTITY_FIELDS = ('gross_operational_cost', 'gross_operational_cost_including_settlement',
+                        'interface_settlement_total', 'voltage_pin_total', 'terminal_salvage_value',
+                        'net_operational_recourse')
+
+
+def initialisation_identity_record(planning, tso_model, dso_models, esso_model):
+    """The cycle-0 (initialisation) cost: production's `_get_operational_recourse_components` on the models as the
+    initialisation solve left them, evaluated BEFORE `_prepare_distribution_objectives_for_admm` (row 18 still
+    structurally inactive, settlement weight 0, the build-time curtailment penalty) -- so for one candidate it is a
+    function of the initialisation solution only, which the Addendum 40 ruling 2 fix makes identical across alpha
+    (the .nl identity). Recorded with float.hex so equality is BITWISE."""
+    import shared_resources_planning as srp
+    rc = srp._get_operational_recourse_components(planning, {'tso': tso_model, 'dso': dso_models, 'esso': esso_model})
+    comps = {k: _f(rc.get(k)) for k in INIT_IDENTITY_FIELDS}
+    return {'definition': ('gross_operational_cost per shared_resources_planning._get_operational_recourse_components '
+                           'on the initialisation solution, before _prepare_distribution_objectives_for_admm'),
+            'gross_operational_cost': comps['gross_operational_cost'],
+            'gross_operational_cost_hex': float.hex(comps['gross_operational_cost']),
+            'components': comps,
+            'components_hex': {k: (float.hex(v) if v is not None else None) for k, v in comps.items()}}
+
+
+def register_initialisation_identity(record, campaign_root, eval_dir, label, candidate_key, derived_identity):
+    """Write this evaluation's initialisation record into `<campaign_root>/init_identity/<eval dir name>.json`
+    (atomic, write-once: written under a temporary name and hard-linked into place), then compare it BITWISE with
+    every record already there for the SAME candidate on the SAME instance (other evaluations of this campaign --
+    concurrent siblings included, since each writes before it reads -- and any reference record the launcher placed
+    there). Records of other candidates are listed and not compared. Returns the comparison; the caller refuses to
+    continue on a mismatch."""
+    directory = os.path.join(campaign_root, INIT_IDENTITY_DIR_NAME)
+    os.makedirs(directory, exist_ok=True)
+    name = f'{os.path.basename(os.path.normpath(eval_dir))}.json'
+    path = os.path.join(directory, name)
+    mine = {'label': label, 'eval_dir': os.path.relpath(eval_dir, REPO), 'candidate_key': candidate_key,
+            'derived_instance': derived_identity, 'record': record, 'utc': _utc(), 'pid': os.getpid()}
+    tmp = f'{path}.{os.getpid()}.tmp'
+    with open(tmp, 'x') as handle:
+        json.dump(mine, handle, indent=1)
+    try:
+        os.link(tmp, path)   # raises FileExistsError: write-once
+    finally:
+        os.remove(tmp)
+    compared, other_candidates = [], []
+    for fname in sorted(os.listdir(directory)):
+        if fname == name or not fname.endswith('.json'):
+            continue
+        with open(os.path.join(directory, fname)) as handle:
+            other = json.load(handle)
+        if other.get('candidate_key') != candidate_key or other.get('derived_instance') != derived_identity:
+            other_candidates.append({'file': fname, 'label': other.get('label'),
+                                     'candidate_key': other.get('candidate_key')})
+            continue
+        other_hex = (other.get('record') or {}).get('gross_operational_cost_hex')
+        compared.append({'file': fname, 'label': other.get('label'), 'gross_operational_cost_hex': other_hex,
+                         'equal': other_hex == record['gross_operational_cost_hex'],
+                         'components_equal': {k: (other.get('record') or {}).get('components_hex', {}).get(k) == v
+                                              for k, v in record['components_hex'].items()}})
+    mismatches = [c for c in compared if not c['equal']]
+    return {'path': os.path.relpath(path, REPO), 'gross_operational_cost': record['gross_operational_cost'],
+            'gross_operational_cost_hex': record['gross_operational_cost_hex'], 'n_compared': len(compared),
+            'compared': compared, 'other_candidates_not_compared': other_candidates, 'mismatches': mismatches,
+            'all_equal': not mismatches}
+
+
+class _AlphaRowHookControl:
+    def __init__(self):
+        self.closed = False
+        self.stash = {}
+
+    def close(self):
+        """Called by the post-run hook first thing: the run is over, so the wrappers pass through from here on (a
+        post-certification step that reached a wrapped function would otherwise be captured as a cycle)."""
+        self.closed = True
+
+
+def alpha_row_run_hooks(eval_dir, label, candidate_key, derived_identity, alpha, holder):
+    """Context manager (installed INSIDE the s38 / s39 capture hooks, so it wraps their wrappers and is removed
+    first): pass-through wrappers on six production functions of `shared_resources_planning`, each calling the
+    original unchanged --
+      create_transmission_network_model / create_shared_energy_storage_model: remember the planning object and the
+        initialisation TSO / ESSO models;
+      _prepare_distribution_objectives_for_admm: BEFORE it runs, the initialisation identity record;
+      _prepare_transmission_objectives_for_admm: AFTER it runs, the activation read-back (ACTIVATION_READBACK_FILE)
+        and the initialisation identity registered and compared (INIT_IDENTITY_FILE); either failing RAISES, so the
+        evaluation stops before its first ADMM-cycle solve;
+      get_admm_boyd_residual_metrics: remember the cycle's models (called once per cycle, after the ESSO solve);
+      _admm_local_solves_succeeded: its first call is the initialisation check (passed through); every later call
+        (once per cycle, right after the Boyd residuals) appends that cycle's `per_cycle_response_record` to
+        PER_CYCLE_RESPONSE_FILE. A per-cycle capture error is recorded in the line, never raised.
+    """
+    from contextlib import contextmanager
+    import resource as _resource
+    import shared_resources_planning as srp
+
+    names = ('create_transmission_network_model', 'create_shared_energy_storage_model',
+             '_prepare_distribution_objectives_for_admm', '_prepare_transmission_objectives_for_admm',
+             'get_admm_boyd_residual_metrics', '_admm_local_solves_succeeded')
+    campaign_root = os.path.dirname(os.path.dirname(os.path.abspath(eval_dir)))
+    sidecar = os.path.join(eval_dir, PER_CYCLE_RESPONSE_FILE)
+
+    @contextmanager
+    def _cm():
+        control = _AlphaRowHookControl()
+        st = control.stash
+        st.update({'planning': None, 'tso': None, 'esso': None, 'dso': None, 'boyd_calls': 0, 'local_calls': 0,
+                   'cycle_models': None, 't_last': None})
+        originals = {n: getattr(srp, n) for n in names}
+        try:
+            import psutil
+            proc = psutil.Process()
+        except Exception:  # noqa: BLE001 -- RSS then recorded as None
+            proc = None
+
+        def w_create_tso(planning_problem, *args, **kwargs):
+            out = originals['create_transmission_network_model'](planning_problem, *args, **kwargs)
+            if not control.closed:
+                st['planning'], st['tso'] = planning_problem, out[0]
+            return out
+
+        def w_create_esso(*args, **kwargs):
+            out = originals['create_shared_energy_storage_model'](*args, **kwargs)
+            if not control.closed:
+                st['esso'] = out[0]
+            return out
+
+        def w_prep_dso(distribution_networks, models):
+            if not control.closed:
+                st['dso'] = models
+                holder['initialisation_identity_record'] = initialisation_identity_record(
+                    st['planning'], st['tso'], models, st['esso'])
+            return originals['_prepare_distribution_objectives_for_admm'](distribution_networks, models)
+
+        def w_prep_tso(transmission_network, model):
+            out = originals['_prepare_transmission_objectives_for_admm'](transmission_network, model)
+            if control.closed:
+                return out
+            readback = activation_readback(st['planning'], model, st['dso'], alpha)
+            _write_once_json(os.path.join(eval_dir, ACTIVATION_READBACK_FILE), readback)
+            holder['activation_readback'] = {k: v for k, v in readback.items() if k != 'per_block'}
+            ident = register_initialisation_identity(holder['initialisation_identity_record'], campaign_root,
+                                                     eval_dir, label, candidate_key, derived_identity)
+            _write_once_json(os.path.join(eval_dir, INIT_IDENTITY_FILE),
+                             {'record': holder['initialisation_identity_record'], 'comparison': ident})
+            holder['initialisation_identity'] = ident
+            print(f"[S44-CHILD] activation read-back all_ok={readback['all_ok']} (failing {readback['failing_blocks']}); "
+                  f"initialisation gross {ident['gross_operational_cost']!r} ({ident['gross_operational_cost_hex']}) "
+                  f"compared with {ident['n_compared']} record(s), all_equal={ident['all_equal']}", flush=True)
+            if not readback['all_ok']:
+                raise RuntimeError(f"ACTIVATION READ-BACK FAILED before the first ADMM cycle: failing blocks "
+                                   f"{readback['failing_blocks']} (n_dso {readback['n_dso_blocks']} / expected "
+                                   f"{readback['expected_n_dso_blocks']})")
+            if not ident['all_equal']:
+                raise RuntimeError(f"INITIALISATION IDENTITY FAILED before the first ADMM cycle: this evaluation's "
+                                   f"initialisation gross cost {ident['gross_operational_cost_hex']} differs from "
+                                   f"{ident['mismatches']}")
+            st['t_last'] = time.time()
+            return out
+
+        def w_boyd(planning_problem, tso_model, dso_models, esso_model, consensus_vars, dual_vars, admm_parameters):
+            result = originals['get_admm_boyd_residual_metrics'](planning_problem, tso_model, dso_models, esso_model,
+                                                                 consensus_vars, dual_vars, admm_parameters)
+            if not control.closed:
+                st['boyd_calls'] += 1
+                st['cycle_models'] = (tso_model, dso_models)
+            return result
+
+        def w_local(planning_problem, results):
+            ok = originals['_admm_local_solves_succeeded'](planning_problem, results)
+            if control.closed:
+                return ok
+            n = st['local_calls']
+            st['local_calls'] += 1
+            if n == 0:
+                return ok   # the initialisation check, before activation
+            t_start = time.time()
+            rec = {'response_cycle': n, 'boyd_calls_so_far': st['boyd_calls'],
+                   'cycle_wall_s': (t_start - st['t_last']) if st['t_last'] is not None else None}
+            try:
+                if st['cycle_models'] is None or st['boyd_calls'] != n:
+                    raise RuntimeError(f"cycle bookkeeping: {st['boyd_calls']} Boyd calls at local-solve call {n}")
+                rec.update(per_cycle_response_record(planning_problem, st['cycle_models'][0], st['cycle_models'][1],
+                                                     results))
+                rec['response_captured'] = True
+                rec['response_capture_error'] = None
+            except Exception as error:  # noqa: BLE001 -- a capture defect must not destroy the run
+                rec['response_captured'] = False
+                rec['response_capture_error'] = f'{type(error).__name__}: {error}'
+            rec['response_capture_s'] = time.time() - t_start
+            rec['rss_bytes'] = proc.memory_info().rss if proc is not None else None
+            rec['ru_maxrss_bytes'] = _resource.getrusage(_resource.RUSAGE_SELF).ru_maxrss
+            with open(sidecar, 'a') as handle:
+                handle.write(json.dumps(rec, default=str) + '\n')
+                handle.flush()
+            st['t_last'] = time.time()
+            return ok
+
+        wrappers = {'create_transmission_network_model': w_create_tso,
+                    'create_shared_energy_storage_model': w_create_esso,
+                    '_prepare_distribution_objectives_for_admm': w_prep_dso,
+                    '_prepare_transmission_objectives_for_admm': w_prep_tso,
+                    'get_admm_boyd_residual_metrics': w_boyd, '_admm_local_solves_succeeded': w_local}
+        for n, w in wrappers.items():
+            setattr(srp, n, w)
+        try:
+            yield control
+        finally:
+            for n, original in originals.items():
+                setattr(srp, n, original)
+    return _cm()
+
+
+def read_per_cycle_response(eval_dir):
+    """{cycle: record} from PER_CYCLE_RESPONSE_FILE (empty when absent)."""
+    path = os.path.join(eval_dir, PER_CYCLE_RESPONSE_FILE)
+    out = {}
+    if os.path.isfile(path):
+        with open(path) as handle:
+            for line in handle:
+                if line.strip():
+                    rec = json.loads(line)
+                    out[int(rec['response_cycle'])] = rec
+    return out
+
+
+def _flexibility_block(model, network, params):
+    """Omega-weighted DSO flexibility legs (MWh per representative day): P up / P down / Q up / Q down over the
+    fl_reg loads -- the legs of production's `network._compute_flexibility_used` (up + down), which is recomputed
+    beside them as the reconciliation."""
+    import pyomo.environ as pe
+    import network as network_module
+    legs = {'p_up_mwh': 0.0, 'p_down_mwh': 0.0, 'q_up_mvarh': 0.0, 'q_down_mvarh': 0.0}
+    if params.fl_reg:
+        base = network.baseMVA
+        for s_m in model.scenarios_market:
+            for s_o in model.scenarios_operation:
+                omega = _scenario_probability(network, s_m, s_o)
+                for c in model.loads:
+                    if network.loads[c].fl_reg:
+                        for p in model.periods:
+                            legs['p_up_mwh'] += omega * float(pe.value(model.flex_p_up[c, s_m, s_o, p])) * base
+                            legs['p_down_mwh'] += omega * float(pe.value(model.flex_p_down[c, s_m, s_o, p])) * base
+                            legs['q_up_mvarh'] += omega * float(pe.value(model.flex_q_up[c, s_m, s_o, p])) * base
+                            legs['q_down_mvarh'] += omega * float(pe.value(model.flex_q_down[c, s_m, s_o, p])) * base
+    used = network_module._compute_flexibility_used(network, model, params)
+    legs['production_flexibility_used'] = {'p': _f(used['p']), 'q': _f(used['q'])}
+    legs['reconciliation_rel_diff_p'] = _rel_diff(legs['p_up_mwh'] + legs['p_down_mwh'], used['p'])
+    return legs
+
+
+def _row18_legs_block(model, network):
+    """The row 18 charge split into its P and Q legs (EUR per representative day), the same form as
+    `add_scenario_commitment_terms`, reconciled to `row18_deviation_charge`; plus the zL sanity identity
+    (ROW18_ZL_IDENTITY_REL_TOL, reported). None where row 18 is not wired."""
+    import pyomo.environ as pe
+    if not hasattr(model, 'row18_deviation_charge'):
+        return None
+    alpha = float(pe.value(model.row18_alpha))
+    base = network.baseMVA
+    legs = {'charge_p': 0.0, 'charge_q': 0.0}
+    worst_zl, worst_dual, n_checked, n_missing = 0.0, 0.0, 0, 0
+    n_le = {'n_le_1e-6': 0, 'n_le_1e-4': 0, 'n_le_1e-2': 0}
+    for s_m in model.scenarios_market:
+        for s_o in model.scenarios_operation:
+            omega = _scenario_probability(network, s_m, s_o)
+            for p in model.periods:
+                coef = omega * alpha * float(pe.value(model.row18_premium[p])) * base
+                legs['charge_p'] += coef * float(pe.value(model.row18_dev_p_up[s_m, s_o, p] + model.row18_dev_p_down[s_m, s_o, p]))
+                legs['charge_q'] += coef * float(pe.value(model.row18_dev_q_up[s_m, s_o, p] + model.row18_dev_q_down[s_m, s_o, p]))
+                for row_name, up_name, down_name in (('row18_dev_p_def', 'row18_dev_p_up', 'row18_dev_p_down'),
+                                                     ('row18_dev_q_def', 'row18_dev_q_up', 'row18_dev_q_down')):
+                    zl_up = model.ipopt_zL_out.get(getattr(model, up_name)[s_m, s_o, p])
+                    zl_dn = model.ipopt_zL_out.get(getattr(model, down_name)[s_m, s_o, p])
+                    lam = model.dual.get(getattr(model, row_name)[s_m, s_o, p])
+                    if zl_up is None or zl_dn is None or lam is None:
+                        n_missing += 1
+                        continue
+                    n_checked += 1
+                    scale = max(abs(2.0 * coef), 1e-12)
+                    # |.| of the sum: independent of the sign convention the suffix reports bound multipliers in
+                    rel_zl = abs(abs(zl_up + zl_dn) - 2.0 * coef) / scale
+                    worst_zl = max(worst_zl, rel_zl)
+                    worst_dual = max(worst_dual, abs(abs(lam) - abs(zl_dn - zl_up) / 2.0) / scale)
+                    for name, bound in (('n_le_1e-6', 1e-6), ('n_le_1e-4', 1e-4), ('n_le_1e-2', 1e-2)):
+                        n_le[name] += int(rel_zl <= bound)
+    model_charge = float(pe.value(model.row18_deviation_charge))
+    legs.update({'charge_model': model_charge,
+                 'legs_vs_model_rel_diff': _rel_diff(legs['charge_p'] + legs['charge_q'], model_charge),
+                 'zl_identity': {'n_checked': n_checked, 'n_missing_suffix_values': n_missing, **n_le,
+                                 'worst_rel_zl_sum_vs_2coef': worst_zl, 'worst_rel_abs_dual_vs_half_zl_diff': worst_dual,
+                                 'tol': ROW18_ZL_IDENTITY_REL_TOL,
+                                 'holds': bool(n_checked > 0 and worst_zl <= ROW18_ZL_IDENTITY_REL_TOL
+                                               and worst_dual <= ROW18_ZL_IDENTITY_REL_TOL)}})
+    return legs
+
+
+def _node_index_of_bus(network, bus_id):
+    for i, node in enumerate(network.nodes):
+        if node.bus_i == bus_id:
+            return i
+    return None
+
+
+def _curtailment_block(kind, node_id, year, day, model, network, params, weight, termination, CA):
+    """Per (network, hour, scenario) curtailed RES volume and its value at the scenario's market price, and the
+    DUAL-BASED entries of every curtaillable generator-hour-scenario above tolerance (the W53 audit's
+    `analyse_srp1_models` capture, generalized to many scenarios, with its helpers and tolerances BY IMPORT).
+    Units: MW per 1 h period = MWh; B = baseMVA; duals raw (the units of the objective IPOPT solved -- p58's rescaled
+    objective = base + scale x AL, base = sum_s omega_s cost_s in EUR per representative day) with the EUR/MWh
+    reading lmp = dual / (B x omega_s) beside them (sign as Pyomo's `dual` suffix returns it)."""
+    import math
+    import pyomo.environ as pe
+    base = network.baseMVA
+    tol = CA.TOL_FACTOR * base
+    gens = ([g for g in model.generators if network.generators[g].is_curtaillable()]
+            if (params.rg_curt and hasattr(model, 'pg_avail')) else [])
+    gbus = CA._gen_bus(model) if gens else {}
+    ref_bus = _node_index_of_bus(network, network.get_reference_node_id())
+    row18 = hasattr(model, 'row18_dev_p_def')
+    has_cap = hasattr(model, 'sg_capability')
+    key = _block_key(kind, node_id, year, day)
+    scenarios, entries, rows_by_hour = {}, [], {}
+    e_net = e_plus = priced = 0.0
+    for s_m in model.scenarios_market:
+        price = [float(network.cost_energy_p[s_m][p]) for p in model.periods]
+        for s_o in model.scenarios_operation:
+            omega = _scenario_probability(network, s_m, s_o)
+            v_net, v_plus = [0.0] * len(price), [0.0] * len(price)
+            for ti, t in enumerate(model.periods):
+                lmp_ref = None
+                for g in gens:
+                    var = model.pg[g, s_m, s_o, t]
+                    av = float(pe.value(model.pg_avail[g, s_o, t]))
+                    pg = float(pe.value(var))
+                    c = (av - pg) * base
+                    v_net[ti] += c
+                    v_plus[ti] += max(c, 0.0)
+                    if c <= tol:
+                        continue
+                    cap = model.sg_capability[g, s_m, s_o, t] if (has_cap and (g, s_m, s_o, t) in model.sg_capability) else None
+                    cap_slack = (float(pe.value(cap.upper) - pe.value(cap.body))) if cap is not None else None
+                    bus = gbus.get(g)
+                    lam_bus = model.dual.get(model.node_balance_p[bus, s_m, s_o, t]) if bus is not None else None
+                    if lmp_ref is None and ref_bus is not None:
+                        lmp_ref = model.dual.get(model.node_balance_p[ref_bus, s_m, s_o, t])
+                    entry = {
+                        'block': key, 'network': 'TSO' if kind == 'TSO' else f'DSO{node_id}', 'year': str(year),
+                        'day': str(day), 'scenario': f'{s_m}_{s_o}', 'omega': omega, 'hour': ti, 'gen': g,
+                        'bus_index': bus, 'c_mw': c, 'pg_mw': pg * base, 'pg_avail_mw': av * base,
+                        'qg_mvar': _f(pe.value(model.qg[g, s_m, s_o, t])) * base,
+                        'sg_avail_mva': _f(pe.value(model.sg_avail[g, s_o, t])) * base,
+                        'sg_mva': (math.sqrt(max(float(pe.value(model.sg_sqr[g, s_m, s_o, t])), 0.0)) * base
+                                   if hasattr(model, 'sg_sqr') else None),
+                        'sg_capability_slack_pu2': cap_slack,
+                        'sg_capability_dual_raw': _f(model.dual.get(cap)) if cap is not None else None,
+                        'class': ('capability_bound' if (cap is not None and cap_slack <= CA.CAP_SLACK_TOL)
+                                  else 'interior'),
+                        'pg_zU_raw': _f(model.ipopt_zU_out.get(var)),
+                        'price_scenario_eur_mwh': price[ti],
+                        'lmp_bus_dual_raw': _f(lam_bus), 'lmp_ref_bus_dual_raw': _f(lmp_ref),
+                        'lmp_bus_eur_mwh': (float(lam_bus) / (base * omega)) if lam_bus is not None else None,
+                        'lmp_ref_bus_eur_mwh': (float(lmp_ref) / (base * omega)) if lmp_ref is not None else None,
+                        'ref_bus_index': ref_bus, 'termination_last_solve': termination,
+                    }
+                    if kind == 'DSO':
+                        entry['d_p_mw'] = (float(pe.value(model.pg_adn[s_m, s_o, t]))
+                                           - float(pe.value(model.expected_interface_pf_p[t]))) * base
+                    if row18:
+                        idx = (s_m, s_o, t)
+                        entry.update({
+                            'd_up_mw': float(pe.value(model.row18_dev_p_up[idx])) * base,
+                            'd_down_mw': float(pe.value(model.row18_dev_p_down[idx])) * base,
+                            'row18_dev_p_def_dual_raw': _f(model.dual.get(model.row18_dev_p_def[idx])),
+                            'zL_d_up_raw': _f(model.ipopt_zL_out.get(model.row18_dev_p_up[idx])),
+                            'zL_d_down_raw': _f(model.ipopt_zL_out.get(model.row18_dev_p_down[idx])),
+                            'row18_premium_eur_mwh': float(pe.value(model.row18_premium[t])),
+                            'row18_alpha': float(pe.value(model.row18_alpha))})
+                    hour_key = f'{key}|{s_m}_{s_o}|{ti}'
+                    if hour_key not in rows_by_hour:
+                        rows = CA._network_hour_rows(model, s_m, s_o, t, ())
+                        for fam_rows in rows.values():
+                            for r in fam_rows:
+                                r.pop('is_transformer', None)   # W53 caveat: not computed here (no transformer set)
+                        rows_by_hour[hour_key] = rows
+                    entry['network_hour_rows_key'] = hour_key
+                    entry['voltage_bound_active'] = bool(rows_by_hour[hour_key]['voltage'])
+                    entry['branch_limit_active'] = bool(rows_by_hour[hour_key]['branch'])
+                    entries.append(entry)
+            priced_s = sum(pr * v for pr, v in zip(price, v_plus))
+            scenarios[f'{s_m}_{s_o}'] = {'omega': omega, 'V_net_mw': v_net, 'V_plus_mw': v_plus, 'price_eur_mwh': price,
+                                         'priced_V_plus_eur': priced_s}
+            e_net += omega * sum(v_net)
+            e_plus += omega * sum(v_plus)
+            priced += omega * priced_s
+    production = _curtailed_block_mwh(model, network, params)
+    block = {'kind': kind, 'node_id': node_id, 'year': str(year), 'day': str(day), 'admm_block_weight': weight,
+             'baseMVA': base, 'tol_mw': tol, 'curtaillable_gens': gens, 'E_net_mwh': e_net, 'E_plus_mwh': e_plus,
+             'priced_eur': priced, 'production_definitional_mwh': production,
+             'reconciliation_abs_diff_mwh': abs(e_net - production), 'scenarios': scenarios,
+             'termination_last_solve': termination}
+    return block, entries, rows_by_hour
+
+
+def response_terminal_capture(planning, models, optimization_results=None):
+    """W64, ZERO SOLVES, on the run's own TERMINAL models (before the workbook and any post-certification step):
+    (1) the dual-based curtailment capture, (2) the per-DSO-block coordination state (the W44 `coordination_record`,
+    BY IMPORT: dual_pf_p/q_req, rho_pf, the TSO request, pbar, the effective objective scale, lambda_AL, penalties,
+    settlement parts, per-scenario curtailment), (3) DSO flexibility legs, (4) the row 18 charge by leg (P / Q) with
+    the zL sanity identity, (5) the P(alpha) |d| form per block (`p_posthoc_block`), (6) the voltage pin and the
+    recourse components. Returns (payload, summary)."""
+    import shared_resources_planning as srp
+    LG = import_disarmed_diagnostic(COORDINATION_MODULE)
+    CA = import_disarmed_diagnostic(CURTAILMENT_AUDIT_MODULE)
+    admm = planning.params.admm
+    alpha = float(admm.interface_deviation_premium.get('alpha') or 0.0)
+    dispersion = srp._get_operational_interface_dispersion(planning, models)
+    rc = srp._get_operational_recourse_components(planning, models)
+    curtail_blocks, entries, rows_by_hour = {}, [], {}
+    coordination, flexibility, row18_legs, p_posthoc = {}, {}, {}, {}
+    tot = {'charge_p_weighted': 0.0, 'charge_q_weighted': 0.0, 'P_posthoc_weighted': 0.0,
+           'P_posthoc_p_leg_weighted': 0.0}
+    per_network = {}
+    zl = {'n_checked': 0, 'n_missing_suffix_values': 0, 'n_le_1e-6': 0, 'n_le_1e-4': 0, 'n_le_1e-2': 0,
+          'worst_rel_zl_sum_vs_2coef': 0.0, 'worst_rel_abs_dual_vs_half_zl_diff': 0.0}
+    for kind, node_id, holder, year, day in _block_list(planning):
+        model = models['tso'][year][day] if kind == 'TSO' else models['dso'][node_id][year][day]
+        network = holder.network[year][day]
+        weight = srp._get_admm_block_weight(holder, year, day)
+        key = _block_key(kind, node_id, year, day)
+        term = _termination_record(_block_result(optimization_results, kind, node_id, year, day))
+        blk, ents, rows = _curtailment_block(kind, node_id, year, day, model, network, holder.params, weight, term, CA)
+        curtail_blocks[key] = blk
+        entries += ents
+        rows_by_hour.update(rows)
+        net_name = 'TSO' if kind == 'TSO' else f'DSO{node_id}'
+        agg = per_network.setdefault(net_name, {'E_plus_mwh_weighted': 0.0, 'E_net_mwh_weighted': 0.0,
+                                                'priced_eur_weighted': 0.0, 'n_entries_above_tol': 0})
+        agg['E_plus_mwh_weighted'] += weight * blk['E_plus_mwh']
+        agg['E_net_mwh_weighted'] += weight * blk['E_net_mwh']
+        agg['priced_eur_weighted'] += weight * blk['priced_eur']
+        agg['n_entries_above_tol'] += len(ents)
+        if kind != 'DSO':
+            continue
+        coordination[key] = LG.coordination_record_or_error(model, network, holder.params, key)
+        coordination[key]['admm_block_weight'] = weight
+        coordination[key]['termination_last_solve'] = term
+        flexibility[key] = dict(_flexibility_block(model, network, holder.params), admm_block_weight=weight)
+        legs = _row18_legs_block(model, network)
+        row18_legs[key] = legs
+        if legs is not None:
+            tot['charge_p_weighted'] += weight * legs['charge_p']
+            tot['charge_q_weighted'] += weight * legs['charge_q']
+            for name in ('n_checked', 'n_missing_suffix_values', 'n_le_1e-6', 'n_le_1e-4', 'n_le_1e-2'):
+                zl[name] += legs['zl_identity'][name]
+            for name in ('worst_rel_zl_sum_vs_2coef', 'worst_rel_abs_dual_vs_half_zl_diff'):
+                zl[name] = max(zl[name], legs['zl_identity'][name])
+        detail = dispersion.get(('DSO', node_id, year, day))
+        if detail is not None:
+            import model_construction_helpers as MCH
+            probs = {f'{s_m}_{s_o}': _scenario_probability(network, s_m, s_o)
+                     for s_m in model.scenarios_market for s_o in model.scenarios_operation}
+            pibar = [float(MCH.expected_market_price(network, p)) for p in model.periods]
+            both = p_posthoc_block(detail['per_scenario'], probs, pibar, include_q=True)
+            p_only = p_posthoc_block(detail['per_scenario'], probs, pibar, include_q=False)
+            p_posthoc[key] = {'P_b': both, 'P_b_p_leg': p_only, 'admm_block_weight': weight}
+            tot['P_posthoc_weighted'] += weight * both
+            tot['P_posthoc_p_leg_weighted'] += weight * p_only
+    flex_tot = {}
+    for key, legs in flexibility.items():
+        node = key.split('|')[1]
+        agg = flex_tot.setdefault(f'DSO{node}', {k: 0.0 for k in ('p_up_mwh', 'p_down_mwh', 'q_up_mvarh',
+                                                                    'q_down_mvarh')})
+        for k in agg:
+            agg[k] += legs['admm_block_weight'] * legs[k]
+    charge_total = tot['charge_p_weighted'] + tot['charge_q_weighted']
+    zl['tol'] = ROW18_ZL_IDENTITY_REL_TOL
+    zl['holds'] = bool(zl['n_checked'] > 0 and zl['worst_rel_zl_sum_vs_2coef'] <= ROW18_ZL_IDENTITY_REL_TOL
+                       and zl['worst_rel_abs_dual_vs_half_zl_diff'] <= ROW18_ZL_IDENTITY_REL_TOL)
+    n_dso_entries = sum(1 for e in entries if e['network'] != 'TSO')
+    summary = {
+        'alpha_in_force': alpha,
+        'units': ('volumes MWh (MW x 1 h periods) per representative day per block; *_weighted x admm_block_weight '
+                  '(the Q weighting); money EUR'),
+        'n_curtailment_entries_above_tol': len(entries), 'n_entries_dso': n_dso_entries,
+        'n_entries_tso': len(entries) - n_dso_entries,
+        'n_entries_with_row18_fields': sum(1 for e in entries if 'row18_dev_p_def_dual_raw' in e),
+        'n_entries_with_bus_dual': sum(1 for e in entries if e.get('lmp_bus_dual_raw') is not None),
+        'n_network_hours_with_rows': len(rows_by_hour),
+        'curtailment_per_network': per_network,
+        'n_coordination_blocks': len(coordination),
+        'n_coordination_capture_errors': sum(1 for c in coordination.values() if 'capture_error' in c),
+        'flexibility_per_dso_weighted': flex_tot,
+        'row18_charge_p_weighted': tot['charge_p_weighted'], 'row18_charge_q_weighted': tot['charge_q_weighted'],
+        'row18_charge_weighted_legs_total': charge_total,
+        'row18_q_leg_share_of_charge': (tot['charge_q_weighted'] / charge_total) if charge_total else None,
+        'P_charge_over_alpha': (charge_total / alpha) if alpha > 0.0 else None,
+        'P_posthoc_weighted': tot['P_posthoc_weighted'], 'P_posthoc_p_leg_weighted': tot['P_posthoc_p_leg_weighted'],
+        'row18_zl_identity': zl,
+        'voltage_pin_total': _f(rc.get('voltage_pin_total')),
+        'recourse_components': {k: _f(rc.get(k)) for k in (
+            'gross_operational_cost', 'net_operational_recourse', 'terminal_salvage_value', 'voltage_pin_total',
+            'interface_settlement_total', 'interface_settlement_deviation_total', 'detector_penalty_total')},
+        'n_blocks_last_solve_not_succeeded': sum(1 for b in curtail_blocks.values()
+                                                 if not b['termination_last_solve']['succeeded']),
+    }
+    payload = {'schema': 'p515_s44_response_terminal_v1', 'summary': summary,
+               'curtailment_entries': entries, 'network_hour_rows': rows_by_hour,
+               'curtailment_by_block': curtail_blocks, 'coordination_by_dso_block': coordination,
+               'flexibility_by_dso_block': flexibility, 'row18_legs_by_dso_block': row18_legs,
+               'p_posthoc_by_dso_block': p_posthoc,
+               'constants': {'TOL_FACTOR': CA.TOL_FACTOR, 'CAP_SLACK_TOL': CA.CAP_SLACK_TOL, 'DUAL_TOL': CA.DUAL_TOL,
+                             'ROW_SLACK_TOL': CA.ROW_SLACK_TOL, 'ROW18_ZL_IDENTITY_REL_TOL': ROW18_ZL_IDENTITY_REL_TOL,
+                             'source': f'{CURTAILMENT_AUDIT_MODULE} (by import)'}}
+    return payload, summary
+
+
+def write_response_terminal(planning, models, eval_dir, optimization_results=None):
+    """Writes RESPONSE_TERMINAL_FILE (write-once) with its own cost: runtime, the process RSS before / after, the
+    process peak before / after (so the capture's memory is MEASURED, not assumed) and the file size."""
+    import resource as _resource
+    try:
+        import psutil
+        proc = psutil.Process()
+    except Exception:  # noqa: BLE001
+        proc = None
+    t0 = time.time()
+    rss0 = proc.memory_info().rss if proc is not None else None
+    peak0 = _resource.getrusage(_resource.RUSAGE_SELF).ru_maxrss
+    payload, summary = response_terminal_capture(planning, models, optimization_results=optimization_results)
+    rss1 = proc.memory_info().rss if proc is not None else None
+    peak1 = _resource.getrusage(_resource.RUSAGE_SELF).ru_maxrss
+    cost = {'runtime_s': time.time() - t0, 'rss_before_bytes': rss0, 'rss_after_bytes': rss1,
+            'ru_maxrss_before_bytes': peak0, 'ru_maxrss_after_bytes': peak1,
+            'ru_maxrss_units': 'bytes on macOS/BSD, kilobytes on Linux'}
+    payload['capture_cost'] = cost
+    path = os.path.join(eval_dir, RESPONSE_TERMINAL_FILE)
+    _write_once_json(path, payload)
+    cost['file_bytes'] = os.path.getsize(path)
+    return {'status': 'written', 'path': os.path.relpath(path, REPO), 'sha256': sha256_file(path),
+            'capture_cost': cost, **summary}
+
+
+def assert_alpha_row_capture_paths():
+    """RULE ELEVEN for the W64 capture, asserted on the code that will run, BEFORE any solve: every production
+    function the hooks wrap or read exists and is called where the hooks assume; the suffixes the dual capture reads
+    are declared on production models and survive `_release_solution_bookkeeping`; the diagnostic definitions reused
+    by import load (disarmed) and expose what is used; the harness wires the capture before the workbook and
+    post-certification. Raises AssertionError listing every missing path."""
+    import inspect
+    import shared_resources_planning as srp
+    import network as network_module
+    import p515_g_g1_g4_admm_gates as G
+    import p58_rescale as R
+    run_src = inspect.getsource(srp._run_operational_planning)
+    prep_dso_src = inspect.getsource(srp._prepare_distribution_objectives_for_admm)
+    prep_tso_src = inspect.getsource(srp._prepare_transmission_objectives_for_admm)
+    net_src = inspect.getsource(network_module)
+    child_src = inspect.getsource(_child_real)
+    # executable lines only (production's comment there names the suffixes it leaves untouched)
+    release_code = '\n'.join(ln for ln in inspect.getsource(network_module._release_solution_bookkeeping).splitlines()[1:]
+                             if ln.strip() and not ln.strip().startswith('#'))
+    LG = import_disarmed_diagnostic(COORDINATION_MODULE)
+    CA = import_disarmed_diagnostic(CURTAILMENT_AUDIT_MODULE)
+    DEC = import_disarmed_diagnostic(DECOMPOSITION_MODULE)
+    boyd_at = run_src.find('boyd_metrics = get_admm_boyd_residual_metrics(')
+    local_at = run_src.find('local_solves_ok = _admm_local_solves_succeeded(planning_problem, results)')
+    checks = {
+        **{f'production_fn_{n}': callable(getattr(srp, n, None)) for n in (
+            'create_transmission_network_model', 'create_shared_energy_storage_model',
+            '_prepare_distribution_objectives_for_admm', '_prepare_transmission_objectives_for_admm',
+            'get_admm_boyd_residual_metrics', '_admm_local_solves_succeeded', '_get_operational_interface_dispersion',
+            '_get_operational_recourse_components', '_get_local_interface_settlement', '_get_admm_block_weight',
+            '_activate_row18_with_settlement')},
+        'init_check_then_prepare_dso_then_prepare_tso': (
+            0 <= run_src.find('if not _admm_local_solves_succeeded(planning_problem, results):')
+            < run_src.find('_prepare_distribution_objectives_for_admm(distribution_networks, dso_models)')
+            < run_src.find('_prepare_transmission_objectives_for_admm(transmission_network, tso_model)')),
+        'tso_and_esso_built_before_prepare': (
+            0 <= run_src.find('create_transmission_network_model(')
+            < run_src.find('_prepare_distribution_objectives_for_admm(distribution_networks, dso_models)')
+            and 0 <= run_src.find('create_shared_energy_storage_model(')
+            < run_src.find('_prepare_distribution_objectives_for_admm(distribution_networks, dso_models)')),
+        'boyd_once_per_cycle_before_local_check': (run_src.count('get_admm_boyd_residual_metrics(') == 1
+                                                   and 0 <= boyd_at < local_at),
+        'local_check_called_exactly_twice': run_src.count('_admm_local_solves_succeeded(') == 2,
+        'row18_activated_in_prepare_dso': '_activate_row18_with_settlement(dso_model[year][day])' in prep_dso_src,
+        'prepare_dso_sets_weight_and_penalty': ('interface_settlement_weight.set_value(1.00)' in prep_dso_src
+                                                and 'penalty_gen_curtailment.set_value(0.00)' in prep_dso_src),
+        'prepare_tso_sets_weight_and_penalty': ('interface_settlement_weight.set_value(1.00)' in prep_tso_src
+                                                and 'penalty_gen_curtailment.set_value(0.00)' in prep_tso_src),
+        'model_declares_dual_and_bound_suffixes': ('model.dual = pe.Suffix(direction=pe.Suffix.IMPORT_EXPORT)' in net_src
+                                                   and 'model.ipopt_zL_out = pe.Suffix(direction=pe.Suffix.IMPORT)' in net_src
+                                                   and 'model.ipopt_zU_out = pe.Suffix(direction=pe.Suffix.IMPORT)' in net_src),
+        'release_bookkeeping_leaves_suffixes': all(t not in release_code for t in ('dual', 'ipopt_z', 'Suffix')),
+        'solved_objective_is_p58_rescaled': hasattr(R, 'RESCALED_OBJECTIVE') and 'patched_admm_objectives' in dir(R),
+        'coordination_record_by_import': callable(getattr(LG, 'coordination_record', None))
+                                         and callable(getattr(LG, 'coordination_record_or_error', None)),
+        'coordination_record_reads_duals_rho_request_pbar_scale': all(t in inspect.getsource(LG.coordination_record) for t in (
+            "'dual_pf_p_req'", "'rho_pf'", "'p_pf_req_mw'", "'pbar_mw'", "'admm_objective_scale'")),
+        'audit_helpers_by_import': all(callable(getattr(CA, n, None)) for n in ('_gen_bus', '_network_hour_rows',
+                                                                                 '_active_rows')),
+        'audit_constants_by_import': all(hasattr(CA, n) for n in ('TOL_FACTOR', 'CAP_SLACK_TOL', 'DUAL_TOL',
+                                                                  'ROW_SLACK_TOL')),
+        'decomposition_by_import': callable(getattr(DEC, 'block_decomposition', None)),
+        'post_run_hook_gets_optimization_results': "hook_kwargs['optimization_results'] = _results" in inspect.getsource(
+            G.run_admm_arm),
+        'p_posthoc_inputs_captured': all(t in inspect.getsource(multiscenario_terminal_capture) for t in (
+            "'per_scenario_d': detail['per_scenario']", "'pibar_by_hour'", "'admm_block_weight': weight")),
+        'p_posthoc_formula_defined': callable(p_posthoc_block),
+        'child_installs_alpha_row_hooks': 'alpha_row_run_hooks(' in child_src,
+        'child_closes_hooks_in_post_run_hook': 'run_hooks.close()' in child_src,
+        'child_writes_response_before_workbook_and_post_certification': (
+            0 <= child_src.find('write_response_terminal(') < child_src.find('write_operational_workbook(')
+            < child_src.find('run_post_certification(')),
+        'child_merges_per_cycle_response': 'read_per_cycle_response(eval_dir)' in child_src,
+        'child_response_capture_error_exits_2': "'response_terminal'" in child_src,
+    }
+    missing = sorted(k for k, v in checks.items() if not v)
+    if missing:
+        raise AssertionError(f'RULE ELEVEN (W64 alpha-row capture): capture paths missing: {missing}')
+    return checks
+
+
 TERMINAL_PHASE_LOCK_NAME = '.terminal_phase.lock'
 TERMINAL_PHASE_LOCK_POLL_S = 5.0
 TERMINAL_PHASE_LOCK_TIMEOUT_S = 45 * 60.0
@@ -3286,6 +4181,8 @@ def _child_real(args, spec, spec_path, entry, eval_dir, lock_content, env_caps, 
               f"{derived_installed['case_sha256_in_child']} scenario checksum "
               f"{derived_installed['scenario_checksum_in_child']}", flush=True)
     capture_multiscenario = derived is not None or premium is not None
+    # W64 (Addendum 40 ruling 1): the alpha-row capture -- rule eleven asserted here, before any solve.
+    alpha_row_checklist = assert_alpha_row_capture_paths() if capture_multiscenario else None
     label = spec['configuration']['arm_label']
     investment_map = investment_map_from_canonical(entry['canonical'])
     # Addendum 27 (W14): the candidate carries its own SINGLE cohort year. It must be one of
@@ -3306,12 +4203,17 @@ def _child_real(args, spec, spec_path, entry, eval_dir, lock_content, env_caps, 
         'exempt': os.path.join(eval_dir, f'ess_exempt_until_state_{label}.jsonl'),
     }
     for p in list(paths.values()) + [os.path.join(eval_dir, f) for f in (
-            POST_CERTIFICATION_FILE, HULL_BOUND_DETAIL_FILE, AA_SIDECAR_FILE, 'certified_models.pkl')]:
+            POST_CERTIFICATION_FILE, HULL_BOUND_DETAIL_FILE, AA_SIDECAR_FILE, 'certified_models.pkl',
+            RESPONSE_TERMINAL_FILE, PER_CYCLE_RESPONSE_FILE, ACTIVATION_READBACK_FILE, INIT_IDENTITY_FILE)]:
         if os.path.exists(p):
             raise RuntimeError(f'refusing to overwrite existing artifact: {p}')
+    hooks_ref = {}   # W64: the alpha-row hook control, closed by the post-run hook
 
     def post_run_hook(planning, sed, models, rows, report, out_dir, label, state=None, optimization_results=None,
                       primal_evolution=None):
+        run_hooks = hooks_ref.get('control')
+        if run_hooks is not None:   # W64: the run is over; the per-cycle / activation wrappers pass through from here
+            run_hooks.close()
         report['s34_recourse_jump_sidecar_path'] = os.path.relpath(paths['recourse_jump'], REPO)
         report['s34_ess_entry_stride_sidecar_path'] = os.path.relpath(paths['ess_stride'], REPO)
         report['s35ref_soh_floor_sidecar_path'] = os.path.relpath(paths['floor'], REPO)
@@ -3363,6 +4265,17 @@ def _child_real(args, spec, spec_path, entry, eval_dir, lock_content, env_caps, 
                 print(tb, file=sys.stderr, flush=True)
                 holder['multiscenario_terminal'] = {'status': 'error', 'error': f'{type(error).__name__}: {error}',
                                                     'traceback': tb}
+            try:   # W64: dual-based curtailment + coordination state, on the same terminal models, before the workbook
+                holder['response_terminal'] = write_response_terminal(planning, models, eval_dir,
+                                                                      optimization_results=optimization_results)
+            except Exception as error:  # noqa: BLE001 -- recorded loudly; the evaluation itself stands
+                tb = traceback.format_exc()
+                print(tb, file=sys.stderr, flush=True)
+                holder['response_terminal'] = {'status': 'error', 'error': f'{type(error).__name__}: {error}',
+                                               'traceback': tb}
+            print(f"[S44-CHILD] response terminal capture: {(holder['response_terminal'] or {}).get('status')} "
+                  f"(entries {(holder['response_terminal'] or {}).get('n_curtailment_entries_above_tol')}, "
+                  f"coordination blocks {(holder['response_terminal'] or {}).get('n_coordination_blocks')})", flush=True)
             try:
                 holder['operational_workbook'] = write_operational_workbook(
                     planning, models, optimization_results, primal_evolution, state, report.get('wall_clock_s'))
@@ -3399,9 +4312,16 @@ def _child_real(args, spec, spec_path, entry, eval_dir, lock_content, env_caps, 
                   f"reason={pc.get('skip_reason') or pc.get('error')}", flush=True)
 
     t0 = time.time()
+    from contextlib import nullcontext
+    derived_identity = derived_instance_identity(derived) if derived is not None else None
+    alpha_row_hooks = (alpha_row_run_hooks(eval_dir, entry['label'], entry['key'], derived_identity,
+                                           float((premium or {}).get('alpha') or 0.0), holder)
+                       if capture_multiscenario else nullcontext())
     with G.s38_pf_capture_hooks(paths['recourse_jump'], paths['ess_stride'], paths['floor'],
                                 paths['pf_stride'], floor_rows_by_node, stride=1), \
-         G.s39_exempt_until_capture_hooks(paths['exempt']):
+         G.s39_exempt_until_capture_hooks(paths['exempt']), \
+         alpha_row_hooks as hook_control:
+        hooks_ref['control'] = hook_control
         report, report_path = G.run_admm_arm(
             label, eval_dir, k_override=None, investment_map=investment_map,
             num_max_iters_override=int(spec['cap']), eval_id=ids['run'], apply_rho=False,
@@ -3418,9 +4338,17 @@ def _child_real(args, spec, spec_path, entry, eval_dir, lock_content, env_caps, 
     per_cycle_path = os.path.join(eval_dir, 'per_cycle_record.jsonl')
     if os.path.exists(per_cycle_path):
         raise RuntimeError(f'refusing to overwrite existing artifact: {per_cycle_path}')
+    # W64: derived-instance / premium evaluations merge the per-cycle RESPONSE record (by cycle) into the standard
+    # per-cycle record; every other evaluation writes exactly its pre-W64 fields.
+    response_by_cycle = read_per_cycle_response(eval_dir) if capture_multiscenario else {}
+    per_cycle_fields = PER_CYCLE_RECORD_FIELDS if capture_multiscenario else PER_CYCLE_TRAJECTORY_FIELDS
     with open(per_cycle_path, 'w') as handle:
         for r in rows:
-            handle.write(json.dumps({k: r.get(k) for k in PER_CYCLE_RECORD_FIELDS}, default=str) + '\n')
+            merged = dict(r)
+            if capture_multiscenario:
+                merged.update(response_by_cycle.get(int(r.get('cycle')), {'response_captured': False,
+                                                                          'response_capture_error': 'no response line'}))
+            handle.write(json.dumps({k: merged.get(k) for k in per_cycle_fields}, default=str) + '\n')
 
     with open(os.path.join(eval_dir, 'component_levels_terminal.json')) as handle:
         component_levels = json.load(handle)
@@ -3478,6 +4406,18 @@ def _child_real(args, spec, spec_path, entry, eval_dir, lock_content, env_caps, 
             'operational_workbook': holder.get('operational_workbook') or {'status': 'not_reached'},
             'terminal_phase_lock': holder.get('terminal_phase_lock'),
             'sigma_calibration': ms.get('sigma_calibration'),
+            # W64 (Addendum 40 ruling 1): the alpha-row capture
+            'alpha_row_capture_checklist_asserted_before_run': alpha_row_checklist,
+            'activation_readback': holder.get('activation_readback') or {'status': 'not_reached'},
+            'initialisation_identity': holder.get('initialisation_identity') or {'status': 'not_reached'},
+            'response_terminal': {k: v for k, v in (holder.get('response_terminal') or {'status': 'not_reached'}).items()
+                                  if k != 'traceback'},
+            'response_terminal_error_traceback': (holder.get('response_terminal') or {}).get('traceback'),
+            'per_cycle_response': {'path': os.path.relpath(os.path.join(eval_dir, PER_CYCLE_RESPONSE_FILE), REPO),
+                                   'n_lines': len(response_by_cycle), 'n_trajectory_rows': len(rows),
+                                   'n_captured': sum(1 for v in response_by_cycle.values()
+                                                     if v.get('response_captured')),
+                                   'cycles_match': sorted(response_by_cycle) == [int(r.get('cycle')) for r in rows]},
         })
     record = build_evaluation_record(
         spec=spec, spec_path=spec_path, spec_sha256=args.spec_sha256, entry=entry, report=report,
@@ -3519,7 +4459,8 @@ def _child_real(args, spec, spec_path, entry, eval_dir, lock_content, env_caps, 
           f"certified_cost={record['certified_cost']} bar={record['bar']['value']} "
           f"peak_rss={self_ru.ru_maxrss}")
     capture_error = capture_multiscenario and any(
-        (holder.get(k) or {}).get('status') != 'written' for k in ('multiscenario_terminal', 'operational_workbook'))
+        (holder.get(k) or {}).get('status') != 'written' for k in ('multiscenario_terminal', 'operational_workbook',
+                                                                   'response_terminal'))
     return {'post_certification_error': (holder.get('post_certification') or {}).get('status') == 'error',
             'multiscenario_capture_error': capture_error}
 
