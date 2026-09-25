@@ -1,6 +1,6 @@
 """
 P5.15 Addendum 46 (3 x 3 pair confirmed under production + the tight tail), Planner task W89 step 2 -- THE 3 x 3 PAIR:
-instance, memory probe, frozen stage spec v33 (predecessor v32 69449731), launcher, child smoke. BUILT AND FROZEN, NOT
+instance, memory probe, frozen stage spec v34 (predecessor v33 f0f7a4a4 <- v32 69449731), launcher, child smoke. BUILT AND FROZEN, NOT
 RUN IN W89.
 
 Authority: PLANNER_BRIEF_2026-09-13.md Addendum 40 ruling 3 (3 x 3 = the paper's multi-scenario instance), Addendum 44
@@ -44,24 +44,24 @@ MODES (repo root, canonical interpreter; attached, ALONE, both streams captured,
                                     the unit candidate (80 or 48 network blocks + 3 ESSO; `.optimize` intercepted), RSS
                                     after each stage, then the persist function's pickle into D (size, RSS transient;
                                     the file is deleted after measuring) -> <root>/memory_probe/memory_probe_<W>.json.
-  --freeze-spec                     ZERO SOLVES. Frozen stage spec v33 (write-once, named by its sha256; predecessor
+  --freeze-spec                     ZERO SOLVES. Frozen stage spec v34 (write-once, named by its sha256; predecessor
                                     v32): instance, cells, configuration, eval keys, pre-launch assertion, declared
                                     solve profile, gates, smoke gate, R reference, predictions, memory rule, estimates.
-  --stage {smoke,pair} --freeze     ZERO SOLVES. The campaign spec (fresh root) pinning v33; the pre-launch assertion
+  --stage {smoke,pair} --freeze     ZERO SOLVES. The campaign spec (fresh root) pinning v34; the pre-launch assertion
                                     on the FROZEN entries.
   --stage smoke --run --spec-sha256 S   NOT RUN IN W89. One x0 evaluation, cap 2, through H.evaluate; the smoke gate.
   --stage pair --run --spec-sha256 S    NOT RUN IN W89. Requires the smoke gate committed and PASS; memory preflight
-                                    (refusing); the two cells at the v33 concurrency (1: sequential); per-cell gates; value / R.
+                                    (refusing); the two cells at the stage-spec concurrency (1: sequential); per-cell gates; value / R.
 
-PER-CELL GATES (pair; both cells -- there is no other arm): G1 harness clean; G2 eval key == v33; G3 per-round append
+PER-CELL GATES (pair; both cells -- there is no other arm): G1 harness clean; G2 eval key == the stage spec's; G3 per-round append
 reconciles; G4 tail state check; G5 solve profile reconciled per event (83 per round); G6 floor records under v32
 (B = 80, the final accepted attempt per block of the terminal round); G7 append sealed; G8 certified -> models
-persisted iff v33 decided persist (sha256 recorded), absent otherwise; G9 ESS ageing read-back; G10 the alpha-row capture (multi-scenario terminal, response
+persisted iff the stage spec decided persist (sha256 recorded), absent otherwise; G9 ESS ageing read-back; G10 the alpha-row capture (multi-scenario terminal, response
 terminal and workbook written; multi-scenario checks pass; activation read-back all ok; per-cycle response on every
 cycle; derived-instance checksum and premium read back in the child; initialisation identity recorded); G11 the
 acceptance rule of v32 reproduces production's failure-event classification on every round.
 
-SMOKE GATE (x0, cap 2; declared in v33 before it runs): S1 exit 0, record written by the child, not_certified,
+SMOKE GATE (x0, cap 2; declared in the stage spec before it runs): S1 exit 0, record written by the child, not_certified,
 cycles_run 2; S2 append byte-identical to the end-of-run file; S3 tail checklist line 1 before any solve; S4 tail state
 check; S5 solve profile == 83 x 3 = 249 + retries, reconciled per event; S6 tail INACTIVE at cap 2; S7 every record
 passes v32's per-record predicate at production compl_inf_tol (no tail round); S8 append sealed; S9 post-certification
@@ -74,13 +74,13 @@ EXACT COMMANDS (repo root):
   set -o noclobber && /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python -u p515_s53_w89_3x3_campaign.py \\
       --memory-probe <W> --scratch <dir> > data/SRP1/Results/P515S53/w89_3x3/memory_probe_<W>_launch.log 2>&1
   set -o noclobber && /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python -u p515_s53_w89_3x3_campaign.py \\
-      --freeze-spec > data/SRP1/Results/P515S53/w89_3x3/freeze_spec_v33_launch.log 2>&1
+      --freeze-spec > data/SRP1/Results/P515S53/w89_3x3/freeze_spec_v34_launch.log 2>&1
   set -o noclobber && /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python -u p515_s53_w89_3x3_campaign.py \\
-      --stage <smoke|pair> --freeze > data/SRP1/Results/P515S53/w89_3x3/<smoke|pair>_freeze_launch.log 2>&1
+      --stage <smoke|pair> --freeze > data/SRP1/Results/P515S53/w89_3x3/<smoke|pair>_r2_freeze_launch.log 2>&1
   set -o noclobber && /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python -u p515_s53_w89_3x3_campaign.py \\
-      --stage smoke --run --spec-sha256 <sha> > data/SRP1/Results/P515S53/w89_3x3/smoke_launch.log 2>&1
+      --stage smoke --run --spec-sha256 <sha> > data/SRP1/Results/P515S53/w89_3x3/smoke_r2_launch.log 2>&1
   set -o noclobber && /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python -u p515_s53_w89_3x3_campaign.py \\
-      --stage pair --run --spec-sha256 <sha> > data/SRP1/Results/P515S53/w89_3x3/pair_launch.log 2>&1
+      --stage pair --run --spec-sha256 <sha> > data/SRP1/Results/P515S53/w89_3x3/pair_r2_launch.log 2>&1
 Exit codes (--run): smoke 0 PASS / 1 FAIL; pair 0 every gate holds and both cells certified, 2 a cell not certified
 (harness clean), 1 a gate / harness / guard / precondition failure.
 """
@@ -130,7 +130,15 @@ _P53 = os.path.join('data', 'SRP1', 'Results', 'P515S53')
 ROOT_REL = os.path.join(_P53, 'w89_3x3')
 SPEC_V32 = {'path': os.path.join(_P53, 'frozen_s53_spec_v32_69449731.json'),
             'sha256': '69449731af8b8c620ecac45627d7d9d10126a87dc7e0b05af125907bce764a28'}
-SPEC_V33_PREFIX = 'frozen_s53_spec_v33_'
+SPEC_V33 = {'path': os.path.join(_P53, 'frozen_s53_spec_v33_f0f7a4a4.json'),
+            'sha256': 'f0f7a4a43314d2634d0211ca3bdd1e9ae4f2ae232fecf5c210337404e977b9d9'}
+# v34 (predecessor ss, NOT edited): the stage spec this launcher freezes. ss pinned launcher revision fb73b9b0, whose
+# campaign freezes FAILED their own validation (two launcher bugs, nothing run): a post-certification request with
+# nothing enabled is resolved by the harness to None (the entry check, G8 and S9 expected a dict), and the pre-launch
+# assertion on a frozen spec demanded entries for labels the smoke spec does not hold. Fixed here; v34 re-derives
+# every v33 decision from the same committed inputs.
+SPEC_PREFIX = 'frozen_s53_spec_v34_'
+SPEC_VERSION = 34
 REEVAL_W89 = {'path': os.path.join(X.OUT_ROOT, X.OUT_FILE),
               'sha256': '722272014523583ed7b60cfe8f339e1bb050ddcab41ba9c510c2eadfd5496224'}
 
@@ -170,7 +178,7 @@ ESS_PARAMS_SHA256 = L.ESS_PARAMS_SHA256
 TAIL = {'enabled': True, 'compl_inf_tol': 1e-6}
 PREMIUM = {'alpha': 0.5, 'floor': None}
 # Post-certification: persist REQUESTED (Addenda 45 / 46; Planner W89), decided at --freeze-spec by the declared
-# memory rule (MEMORY_RULE_TEXT); the decided setting is v33 configuration.post_certification and every entry carries it.
+# memory rule (MEMORY_RULE_TEXT); the decided setting is the stage spec's configuration.post_certification and every entry carries it.
 POST_CERTIFICATION_REQUESTED = {'persist_certified_models': True, 'hull_polish': False}
 POST_CERTIFICATION_IF_PERSIST_FORBIDDEN = {'persist_certified_models': False, 'hull_polish': False}
 REQUIRED_CONSECUTIVE_CYCLES = 10
@@ -185,9 +193,22 @@ ALPHA_ROW_2X2_KEYS = {'x0': '7d53b6f21b686a44', 'n7_4h_e1': '711fce9aa74d6878'}
 ALPHA_ROW_PAIR1 = {'path': os.path.join(_P53, 'alpha_row', 'campaign_s53_alpha_row_v25', 'pair_1_results.json'),
                    'sha256': '300c2de33632afeb70e88da99e18749df47993c15ed857f8f1af302143b3aa4e'}
 STAGES = {
-    'smoke': {'campaign_id': 's53_w89_3x3_smoke', 'labels': ('x0',), 'cap': 2},
-    'pair': {'campaign_id': 's53_w89_3x3_pair', 'labels': ('x0', 'n7_4h_e1'), 'cap': 500},
-}   # concurrency: smoke 1; pair from v33 (the memory rule, decided at --freeze-spec from the probes)
+    'smoke': {'campaign_id': 's53_w89_3x3_smoke_r2', 'labels': ('x0',), 'cap': 2},
+    'pair': {'campaign_id': 's53_w89_3x3_pair_r2', 'labels': ('x0', 'n7_4h_e1'), 'cap': 500},
+}   # concurrency: smoke 1; pair from the stage spec (the memory rule, decided at --freeze-spec from the probes)
+# The r1 campaign freezes under v33 (launcher fb73b9b0): FAILED their own validation, never run; kept as evidence.
+SUPERSEDED_CAMPAIGN_FREEZES = {
+    'smoke': {'path': os.path.join(ROOT_REL, 'campaign_s53_w89_3x3_smoke',
+                                   'campaign_spec_s53_w89_3x3_smoke_4d2bf2f5.json'),
+              'sha256': '4d2bf2f52cdfd35345adcab171533a7ee15ce4349fed8882c39b8927783598dd',
+              'failing': ['spec check post_certification_as_v33', 'pre-launch assertion on the frozen spec']},
+    'pair': {'path': os.path.join(ROOT_REL, 'campaign_s53_w89_3x3_pair', 'campaign_spec_s53_w89_3x3_pair_82379368.json'),
+             'sha256': '82379368dde1d46ff0eda864a46720d008c3d0295bc7dbb8d14e0b70cf3b7fac',
+             'failing': ['spec check post_certification_as_v33']},
+    'reason': ('launcher bugs, caught by the launcher\'s own validation at freeze (exit 1): the harness resolves a '
+               'post-certification request with nothing enabled to None; the frozen-entry key check iterated the pair '
+               'labels on the one-label smoke spec'),
+}
 SMOKE_GATE_FILE = 'smoke_gate.json'
 SMOKE_MANIFEST_FILE = 'smoke_manifest_sha256.json'
 PAIR_RESULTS_FILE = 'campaign_results.json'
@@ -691,7 +712,7 @@ MEMORY_RULE_TEXT = (
     'SUSTAINED + k_tr x T_3x3), f_term = the 2 x 2 smoke\'s RSS at the start of its terminal capture / its production-state '
     'peak, T = a probe\'s pickle transient (ru_maxrss after the pickle - RSS before it), k_tr = max over the three W86 SRP1 '
     'cells of (child peak after persist - f_term x production-state peak) / T_srp1 (the real models carry solution '
-    'suffixes the zero-solve pickle lacks). Decisions, taken at --freeze-spec and recorded in v33: concurrency 2 iff 2 x '
+    'suffixes the zero-solve pickle lacks). Decisions, taken at --freeze-spec and recorded in the stage spec: concurrency 2 iff 2 x '
     'SUSTAINED <= hw.memsize (else 1); persist iff PERSIST_PEAK (x c) <= the BEST recorded availability (else '
     'persist_certified_models False -- the Planner\'s "unless the memory preflight forbids it"). Gate at --run (refusing): '
     'available (hw.memsize - (wired + anonymous + compressor-occupied) x page size, L.memory_preflight) >= smoke: SMOKE; '
@@ -754,18 +775,23 @@ def memory_model():
     return model, None
 
 
-def post_certification_decided(v33):
-    return dict(v33['configuration']['post_certification'])
+def post_certification_decided(ss):
+    return dict(ss['configuration']['post_certification'])
 
 
-def memory_preflight(stage, model, v33=None):
+def post_certification_resolved(ss, candidate_key_hex):
+    """The decided request as the harness resolves it into a spec entry (None when nothing is requested)."""
+    return H.resolve_post_certification(post_certification_decided(ss), candidate_key_hex)
+
+
+def memory_preflight(stage, model, ss=None):
     m = L.memory_preflight(1)
     if stage == 'smoke':
         required = model['smoke_bytes']
         concurrency = 1
     else:
-        concurrency = int(v33['configuration']['concurrency'])
-        persist = post_certification_decided(v33)['persist_certified_models']
+        concurrency = int(ss['configuration']['concurrency'])
+        persist = post_certification_decided(ss)['persist_certified_models']
         required = concurrency * (model['persist_peak_bytes'] if persist else model['sustained_bytes'])
     m = {**m, 'stage': stage, 'concurrency': concurrency, 'required_bytes': required, 'required_gib': required / GIB,
          'rule': MEMORY_RULE_TEXT, 'w86_rule_fields_superseded': ['required_bytes', 'required_gib', 'rule',
@@ -812,8 +838,9 @@ def pre_launch_assertion(derived, spec=None):
     the 2 x 2 alpha-row key of the same candidate (the pre-3x3 evaluation); (c) is absent from every committed campaign
     spec outside this launcher's two roots; and, for a frozen spec, its entry carries exactly the recomputed key. The
     smoke's x0 shares the pair's x0 key by design (same candidate x configuration; cap 2, never certified)."""
-    own = tuple(os.path.relpath(campaign_root(s), REPO) for s in STAGES)
+    own = (ROOT_REL,)   # every campaign root of this launcher (incl. the superseded r1 freezes, same keys by design)
     committed = L.committed_eval_keys(exclude_roots=own)
+    spec_labels = {e['label'] for e in (spec or {}).get('candidates') or []}
     alpha_pair1 = _load(ALPHA_ROW_PAIR1['path'])
     per = {}
     for label in STAGES['pair']['labels']:
@@ -835,8 +862,9 @@ def pre_launch_assertion(derived, spec=None):
             'absent_from_every_committed_spec_outside_w89': now not in committed,
             'committed_specs_holding_it_outside_w89': committed.get(now, []),
             'frozen_entry_eval_key': entries[0].get('eval_key') if entries else None,
-            'frozen_entry_equals_recomputed': (not entries) if spec is None else (
+            'frozen_entry_equals_recomputed': (not entries) if (spec is None or label not in spec_labels) else (
                 len(entries) == 1 and entries[0].get('eval_key') == now),
+            'label_in_frozen_spec': (label in spec_labels) if spec is not None else None,
         }
     holds = all(v['differs_from_pre_tail_3x3_key'] and v['declared_off_key_equals_pre_tail_key']
                 and v['alpha_row_2x2_key_prefix_as_pinned'] and v['differs_from_2x2_alpha_row_key']
@@ -847,7 +875,7 @@ def pre_launch_assertion(derived, spec=None):
 
 
 # ======================================================================================================================
-#  rule eleven: a capture path for every quantity v33 requires, asserted BEFORE any run
+#  rule eleven: a capture path for every quantity the stage spec requires, asserted BEFORE any run
 # ======================================================================================================================
 def launcher_checklist():
     child_src = inspect.getsource(H._child_real)
@@ -933,13 +961,16 @@ def sigma_check(rec):
     return ok, {'sigma_computed': comp, 'sigma_fixed': fixed, 'ratio': ratio, 'band': band}
 
 
-def post_certification_check(rec, eval_dir, v33):
-    """G8 under the v33 decision: certified -> status evaluated, and the pickle written with the record's sha256 iff
+def post_certification_check(rec, eval_dir, ss):
+    """G8 under the stage-spec decision: certified -> status evaluated, and the pickle written with the record's sha256 iff
     persist was decided, absent otherwise; not certified -> skipped, no pickle."""
     pc = rec.get('post_certification') or {}
     pkl = os.path.join(eval_dir, 'certified_models.pkl')
-    persist = post_certification_decided(v33)['persist_certified_models']
-    if rec.get('status') == 'certified':
+    persist = post_certification_decided(ss)['persist_certified_models']
+    requested = post_certification_resolved(ss, rec.get('candidate_key'))
+    if requested is None:   # nothing requested: no post-certification step at all, no pickle
+        ok = rec.get('post_certification') is None and not os.path.exists(pkl)
+    elif rec.get('status') == 'certified':
         if persist:
             ok = (pc.get('status') == 'evaluated' and os.path.isfile(pkl)
                   and (pc.get('persisted_models') or {}).get('sha256') == H.sha256_file(pkl))
@@ -951,7 +982,7 @@ def post_certification_check(rec, eval_dir, v33):
                 'pickle': ({'bytes': os.path.getsize(pkl), 'sha256': H.sha256_file(pkl)} if os.path.isfile(pkl) else None)}
 
 
-def cell_gates(entry, eval_dir, v33):
+def cell_gates(entry, eval_dir, ss):
     """The pair's per-cell gates G1-G11 (module docstring), files only."""
     rec_path = os.path.join(eval_dir, 'evaluation_record.json')
     rec = json.load(open(rec_path)) if os.path.isfile(rec_path) else {}
@@ -962,7 +993,7 @@ def cell_gates(entry, eval_dir, v33):
                                  and not os.path.exists(os.path.join(eval_dir, 'parent_barrier_record.json')))
     if not rec:
         return gates, detail, rec
-    gates['G2_eval_key'] = rec.get('eval_key') == v33['cells'][entry['label']]['eval_key'] == entry['eval_key']
+    gates['G2_eval_key'] = rec.get('eval_key') == ss['cells'][entry['label']]['eval_key'] == entry['eval_key']
     c, d = L.evaluation_checks(eval_dir, rec, entry['working_dir_ids']['run'])
     detail['w86_evaluation_checks'] = {'checks': c, 'detail': d,
                                        'note': ('W86 solve-profile and floor-record checks are SRP1-specific / v29 and '
@@ -975,7 +1006,7 @@ def cell_gates(entry, eval_dir, v33):
     gates['G6_floor_records_v32'] = g6['gate_pass']
     detail['G6'] = g6
     gates['G7_append_sealed'] = c.get('append_sealed_after_reconcile', False)
-    gates['G8_post_certification'], detail['G8'] = post_certification_check(rec, eval_dir, v33)
+    gates['G8_post_certification'], detail['G8'] = post_certification_check(rec, eval_dir, ss)
     gates['G9_ess_ageing_readback'] = c.get('ess_ageing_readback_all_match', False)
     gates['G10_alpha_row_capture'], detail['G10'] = alpha_row_capture_check(rec, eval_dir,
                                                                             require_compared=entry['label'] == 'x0')
@@ -985,7 +1016,7 @@ def cell_gates(entry, eval_dir, v33):
     return gates, detail, rec
 
 
-def smoke_gate_checks(entry, eval_dir, pair_x0_key):
+def smoke_gate_checks(entry, eval_dir, pair_x0_key, ss):
     rec_path = os.path.join(eval_dir, 'evaluation_record.json')
     rec = json.load(open(rec_path)) if os.path.isfile(rec_path) else {}
     exit_code = (int(open(os.path.join(eval_dir, 'exit_code.txt')).read().strip())
@@ -1031,7 +1062,7 @@ def smoke_gate_checks(entry, eval_dir, pair_x0_key):
                     'attempts': dict(sorted(Counter(r.get('attempt') for r in records).items()))}
     checks['S7_records_pass_v32_per_record_predicate_at_production_tol'] = bool(records) and not bad
     checks['S8_append_sealed'] = c.get('append_sealed_after_reconcile', False)
-    checks['S9_post_certification_skipped_uncertified'] = c.get('post_certification_skipped_uncertified', False)
+    checks['S9_post_certification_as_stage_spec'], detail['S9'] = post_certification_check(rec, eval_dir, ss)
     checks['S10_eval_key_equals_pair_x0'] = rec.get('eval_key') == entry['eval_key'] == pair_x0_key
     checks['S11_ess_ageing_readback'] = c.get('ess_ageing_readback_all_match', False)
     checks['S12_alpha_row_capture'], detail['S12'] = alpha_row_capture_check(rec, eval_dir)
@@ -1040,13 +1071,13 @@ def smoke_gate_checks(entry, eval_dir, pair_x0_key):
 
 
 # ======================================================================================================================
-#  v33
+#  the stage spec (v34)
 # ======================================================================================================================
 PER_ENTRY_GATES = {
     'applies_to': 'both pair cells (x0, n7_4h_e1); there is no other arm',
     'G1_harness_clean': 'child exit 0, evaluation_record.json written by the child (no parent barrier record), status '
                         'certified or not_certified',
-    'G2_eval_key': 'record eval_key == the v33 key == the frozen entry key',
+    'G2_eval_key': 'record eval_key == the stage-spec key == the frozen entry key',
     'G3_append_reconcile': 'W86 G3 verbatim (L.evaluation_checks append_reconciles_byte_identical)',
     'G4_tail_state_check': 'W86 G4 verbatim (convergence_depth_tail_state_check.match, enabled, 1e-6)',
     'G5_solve_profile_reconciled_per_event': ('reconciliation_supported, identity_holds, solves_per_cycle == 83, rounds '
@@ -1056,8 +1087,10 @@ PER_ENTRY_GATES = {
     'G6_floor_records_v32': ('frozen spec v32 G6_floor_records_v32 verbatim with B = 80 '
                              '(p515_s53_w89_g6_final_attempt_reeval.g6_v32_evaluate, by import)'),
     'G7_append_sealed': 'W86 G7 verbatim',
-    'G8_post_certification': ('certified -> status evaluated, and certified_models.pkl written with sha256 == the '
-                              'record\'s iff v33 decided persist (absent otherwise); not certified -> skipped, no pickle'),
+    'G8_post_certification': ('as the stage spec decided, resolved by H.resolve_post_certification: nothing requested '
+                              '(persist forbidden, no polish) -> the record carries no post-certification and no '
+                              'certified_models.pkl exists; persist requested -> certified: status evaluated and the '
+                              'pickle written with sha256 == the record\'s; not certified: skipped, no pickle'),
     'G9_ess_ageing_readback': 'W86 G9 verbatim (all_match before and after the run)',
     'G10_alpha_row_capture': ('multiscenario_terminal / operational_workbook / response_terminal status "written"; '
                               'multiscenario all_checks_pass; activation_readback all_ok; per_cycle_response n_lines == '
@@ -1083,7 +1116,8 @@ SMOKE_GATE = {k: v for k, v in {
     'S7': 'every record passes v32\'s per-record predicate with W empty (production compl_inf_tol: TSO case9 5e-4, DSO '
           'IPOPT default 1e-4; options list agrees; parse_reason None, or a ruling-2 tier-2 declaration)',
     'S8': 'W86 S8: last event sealed, no append write error',
-    'S9': 'post-certification requested (persist), trajectory uncertified -> skipped, no certified_models.pkl',
+    'S9': ('post-certification as the stage spec decided: nothing requested -> the record carries none and no '
+           'certified_models.pkl; persist requested -> uncertified at cap 2 -> skipped, no pickle'),
     'S10': 'record eval_key == the smoke entry key == the pair x0 key',
     'S11': 'ESS ageing read-back all_match before and after',
     'S12': 'G10 (the alpha-row capture) at cap 2',
@@ -1176,14 +1210,14 @@ def estimates(model, concurrency, persist):
     }
 
 
-def _find_v33():
-    hits = sorted(f for f in os.listdir(_abs(_P53)) if f.startswith(SPEC_V33_PREFIX) and f.endswith('.json'))
+def _find_stage_spec():
+    hits = sorted(f for f in os.listdir(_abs(_P53)) if f.startswith(SPEC_PREFIX) and f.endswith('.json'))
     if len(hits) != 1:
         return None, None
     rel = os.path.join(_P53, hits[0])
     sha = _sha(rel)
-    if hits[0] != f'{SPEC_V33_PREFIX}{sha[:8]}.json':
-        raise RuntimeError(f'v33 file name does not carry its sha256 prefix: {rel} {sha}')
+    if hits[0] != f'{SPEC_PREFIX}{sha[:8]}.json':
+        raise RuntimeError(f'v{SPEC_VERSION} file name does not carry its sha256 prefix: {rel} {sha}')
     return rel, sha
 
 
@@ -1209,7 +1243,7 @@ def _alpha_row_2x2_context():
             'cycles': {k: v.get('cycles_run') for k, v in q.items()}}
 
 
-def v33_content(inst, derived, model, concurrency, post_certification, pre, rule11):
+def stage_spec_content(inst, derived, model, concurrency, post_certification, pre, rule11):
     refs = _reference_R()
     cells = {label: {'nodes': {str(n): list(v) for n, v in CELLS[label].items()}, 'investment_year': YEAR,
                      'candidate_key': _key_of(label), 'eval_key': _eval_key(label, derived),
@@ -1217,14 +1251,24 @@ def v33_content(inst, derived, model, concurrency, post_certification, pre, rule
                      'alpha_row_2x2_key_same_candidate': pre['per_cell'][label]['alpha_row_2x2_key_same_candidate']}
              for label in STAGES['pair']['labels']}
     return {
-        'schema': 'p515_frozen_spec_v33', 'version': 33, 'stage': STAGE_TEXT,
+        'schema': f'p515_frozen_spec_v{SPEC_VERSION}', 'version': SPEC_VERSION, 'stage': STAGE_TEXT,
         'authority': ['Planner task W89 step 2 (build the 3 x 3 launcher and spec; DO NOT RUN)',
                       'PLANNER_BRIEF_2026-09-13.md Addendum 46 (3 x 3 pair under production + tight tail; R restated '
                       'against the SRP1 reference re-run under it; certified models persisted if memory allows)',
                       'Addendum 44 (prefix draw [1,2,3] x [1,2,3], R = 0.9331 recorded; band [0.93, 1.09])',
                       'Addendum 45 (persist certified models if memory allows)', 'Addendum 40 ruling 3'],
-        'predecessor': {'path': SPEC_V32['path'], 'sha256': _sha(SPEC_V32['path'])},
-        'predecessor_not_edited': 'v32 stays as frozen; v33 records the 3 x 3 pair it gates with G6 v32',
+        'predecessor': {'path': SPEC_V33['path'], 'sha256': _sha(SPEC_V33['path'])},
+        'predecessor_not_edited': ('v33 stays as frozen (its campaign freezes failed their own validation, launcher bugs, '
+                                   'nothing run); v34 re-derives every v33 decision from the same committed inputs with '
+                                   'the fixed launcher'),
+        'predecessor_chain': {'v33': SPEC_V33, 'v32': SPEC_V32, 'g6_gate_from': 'v32'},
+        'superseded_campaign_freezes_under_v33': SUPERSEDED_CAMPAIGN_FREEZES,
+        'changes_from_v33': ['post-certification resolved through H.resolve_post_certification (nothing requested -> '
+                             'None) in the entry check, G8 and S9',
+                             'the frozen-entry key check scoped to the labels a campaign spec holds; the committed-key '
+                             'scan excludes every root under ' + ROOT_REL,
+                             'campaign ids s53_w89_3x3_smoke_r2 / s53_w89_3x3_pair_r2',
+                             'launcher sha256 (v33 pinned fb73b9b0\'s)'],
         'instance': {'record': {'path': INSTANCE_RECORD_REL, 'sha256': _sha(INSTANCE_RECORD_REL)},
                      'case': {'path': INSTANCE_CASE_REL, 'sha256': derived['case_sha256']},
                      'derived_instance_declaration': derived, 'prefix_verification': inst['prefix_verification'],
@@ -1310,11 +1354,11 @@ def _common_checks():
 
 
 def freeze_spec(started):
-    tag = 'W89-V33'
+    tag = f'W89-V{SPEC_VERSION}'
     failures, ev = _common_checks()
-    existing = sorted(f for f in os.listdir(_abs(_P53)) if f.startswith(SPEC_V33_PREFIX))
+    existing = sorted(f for f in os.listdir(_abs(_P53)) if f.startswith(SPEC_PREFIX))
     if existing:
-        failures.append(f'v33 already exists (write-once): {existing}')
+        failures.append(f'v{SPEC_VERSION} already exists (write-once): {existing}')
     inst, derived = load_instance_record()
     if not inst.get('all_checks_pass'):
         failures.append(f"instance record checks do not all pass: {inst.get('checks')}")
@@ -1348,7 +1392,7 @@ def freeze_spec(started):
     if model['sustained_bytes'] > model['hw_memsize_bytes']:
         _log(f"[{tag} PRECONDITION FAILED] one 3 x 3 child exceeds physical memory: {model['sustained_gib']:.2f} GiB")
         _finish(1)
-    content = v33_content(inst, derived, model, concurrency, post_cert, pre, rule11)
+    content = stage_spec_content(inst, derived, model, concurrency, post_cert, pre, rule11)
     content['memory_at_freeze_non_gating'] = {
         **m_now, 'note': ('the momentary measure at freeze, recorded; the decisions use the BEST recorded availability; '
                           'the run-time preflight gates'),
@@ -1356,10 +1400,10 @@ def freeze_spec(started):
                            'pair': avail >= model['required_at_run_gib']['pair'] * GIB}}
     text = json.dumps(content, indent=1, sort_keys=True, default=H._json_default) + '\n'
     sha = hashlib.sha256(text.encode()).hexdigest()
-    rel = os.path.join(_P53, f'{SPEC_V33_PREFIX}{sha[:8]}.json')
+    rel = os.path.join(_P53, f'{SPEC_PREFIX}{sha[:8]}.json')
     _write_once_text(rel, text)
     if _sha(rel) != sha:
-        raise RuntimeError('v33 written bytes do not hash to the name')
+        raise RuntimeError(f'v{SPEC_VERSION} written bytes do not hash to the name')
     _log(f'[{tag}] {STAGE_TEXT}')
     _log(f'[{tag}] wrote {rel} sha256={sha} (predecessor {content["predecessor"]})')
     for label, c in content['cells'].items():
@@ -1376,27 +1420,27 @@ def freeze_spec(started):
     _finish(0, f'-- next: --stage smoke --freeze, --stage pair --freeze')
 
 
-def load_v33():
-    rel, sha = _find_v33()
+def load_stage_spec():
+    rel, sha = _find_stage_spec()
     if rel is None:
-        raise RuntimeError('frozen spec v33 not found')
+        raise RuntimeError(f'frozen stage spec v{SPEC_VERSION} not found')
     return rel, sha, _load(rel)
 
 
 # ======================================================================================================================
 #  campaign freeze / run
 # ======================================================================================================================
-def _stage_concurrency(stage, v33):
-    return 1 if stage == 'smoke' else int(v33['configuration']['concurrency'])
+def _stage_concurrency(stage, ss):
+    return 1 if stage == 'smoke' else int(ss['configuration']['concurrency'])
 
 
-def _entries(stage, v33):
+def _entries(stage, ss):
     return [(label, _nodes(label), {'investment_year': YEAR, 'interface_deviation_premium': dict(PREMIUM),
-                                    'post_certification': post_certification_decided(v33)})
+                                    'post_certification': post_certification_decided(ss)})
             for label in STAGES[stage]['labels']]
 
 
-def validate_spec(stage, spec, derived, v33_pin, v33):
+def validate_spec(stage, spec, derived, ss_pin, ss):
     cfg = spec['configuration']
     entries = spec['candidates']
     extra = spec.get('extra') or {}
@@ -1404,7 +1448,7 @@ def validate_spec(stage, spec, derived, v33_pin, v33):
     checks = {
         'campaign_id': spec.get('campaign_id') == st['campaign_id'],
         'entries_in_order': [e['label'] for e in entries] == list(st['labels']),
-        'cap': spec.get('cap') == st['cap'], 'concurrency': spec.get('concurrency') == _stage_concurrency(stage, v33),
+        'cap': spec.get('cap') == st['cap'], 'concurrency': spec.get('concurrency') == _stage_concurrency(stage, ss),
         'required_consecutive_cycles': spec.get('required_consecutive_cycles') == REQUIRED_CONSECUTIVE_CYCLES,
         'arm_label': cfg.get('arm_label') == ARM_LABEL, 'no_overrides': cfg.get('overrides') == {},
         'aa_declaration': cfg.get('case_file_anderson_acceleration') == CASE_FILE_AA,
@@ -1415,15 +1459,15 @@ def validate_spec(stage, spec, derived, v33_pin, v33):
         'tail_declared_enabled_1e-6': cfg.get('convergence_depth_tail') == TAIL,
         'no_model_variant': 'model_variant_label' not in spec and not any('model_variant' in e for e in entries),
         'no_flex_price_variant': 'flex_price_label' not in spec and not any('flex_price_multiplier' in e for e in entries),
-        'post_certification_as_v33': all(e.get('post_certification') == {**post_certification_decided(v33),
-                                                                          'reference': None} for e in entries),
-        'spec_v33_pinned': extra.get('spec_v33') == v33_pin,
+        'post_certification_as_stage_spec': all(e.get('post_certification') == post_certification_resolved(ss, e['key'])
+                                                for e in entries),
+        'stage_spec_pinned': extra.get('stage_spec') == ss_pin,
         'script_recorded': extra.get('campaign_script') == SCRIPT_NAME,
     }
     for e in entries:
         label = e['label']
         checks[f'{label}:canonical_key'] = e.get('key') == _key_of(label)
-        checks[f'{label}:eval_key_v33'] = e.get('eval_key') == v33['cells'][label]['eval_key'] == _eval_key(label, derived)
+        checks[f'{label}:eval_key_stage_spec'] = e.get('eval_key') == ss['cells'][label]['eval_key'] == _eval_key(label, derived)
         checks[f'{label}:premium'] = e.get('interface_deviation_premium') == PREMIUM
         checks[f'{label}:no_overrides'] = e.get('overrides') == {}
     return checks
@@ -1436,16 +1480,16 @@ def freeze(stage, started):
     more, ev = _common_checks()
     failures += more
     try:
-        v33_rel, v33_sha, v33 = load_v33()
-        failures += [f'v33 {k} False' for k, v in _git_state(v33_rel).items() if not v]
+        ss_rel, ss_sha, ss = load_stage_spec()
+        failures += [f'stage spec {k} False' for k, v in _git_state(ss_rel).items() if not v]
     except RuntimeError as error:
         failures.append(str(error))
-        v33 = None
+        ss = None
     inst, derived = load_instance_record()
-    if v33 is not None and v33['configuration']['derived_instance'] != derived:
-        failures.append('the instance record declaration differs from v33')
-    if v33 is not None and v33['launcher_sha256'] != H.sha256_file(os.path.abspath(__file__)):
-        failures.append('this launcher changed since v33 froze')
+    if ss is not None and ss['configuration']['derived_instance'] != derived:
+        failures.append('the instance record declaration differs from the stage spec')
+    if ss is not None and ss['launcher_sha256'] != H.sha256_file(os.path.abspath(__file__)):
+        failures.append('this launcher changed since the stage spec froze')
     try:
         rule11 = launcher_checklist()
     except AssertionError as error:
@@ -1459,10 +1503,10 @@ def freeze(stage, started):
             _log(f'[{tag} PRECONDITION FAILED] {f}')
         _finish(1)
     st = STAGES[stage]
-    v33_pin = {'path': v33_rel, 'sha256': v33_sha}
+    ss_pin = {'path': ss_rel, 'sha256': ss_sha}
     extra = {'campaign_script': SCRIPT_NAME, 'campaign_script_sha256': H.sha256_file(os.path.abspath(__file__)),
-             'stage': stage, 'stage_text': STAGE_TEXT, 'label': LABEL, 'spec_v33': v33_pin,
-             'expected_eval_keys': {label: v33['cells'][label]['eval_key'] for label in st['labels']},
+             'stage': stage, 'stage_text': STAGE_TEXT, 'label': LABEL, 'stage_spec': ss_pin,
+             'expected_eval_keys': {label: ss['cells'][label]['eval_key'] for label in st['labels']},
              'pre_launch_assertion_at_freeze': pre, 'objective_convention': OBJECTIVE_CONVENTION,
              'solve_claim': ('RECONCILED PER EVENT, NOT GUARD-VERIFIED: the child record solve_profile (83 x (cycles_run '
                              '+ 1) + retries attempted); this parent\'s permitted=() guards verify(0)'),
@@ -1471,17 +1515,17 @@ def freeze(stage, started):
         extra['smoke_gate_declared_before_run'] = SMOKE_GATE
         extra['declared_solves'] = {'base': 249, 'rule': '83 per round x (cap 2 + 1) + every retry attempted'}
     spec_path, spec_sha, spec = H.freeze_campaign_spec(
-        root, st['campaign_id'], _entries(stage, v33),
-        configuration={'name': v33['configuration']['name'], 'arm_label': ARM_LABEL, 'overrides': {},
+        root, st['campaign_id'], _entries(stage, ss),
+        configuration={'name': ss['configuration']['name'], 'arm_label': ARM_LABEL, 'overrides': {},
                        'case_file_anderson_acceleration': dict(CASE_FILE_AA),
                        'ess_ageing_baseline': copy.deepcopy(ESS_AGEING_BASELINE), 'ess_ageing_baseline_label': LABEL,
                        'derived_instance': derived, 'convergence_depth_tail': dict(TAIL),
                        'note': ('no overrides, no model variant, no flexibility-price variant; row 18 alpha 0.5 per '
-                                'entry; post-certification persist only; tail declared (spec v33)')},
-        cap=st['cap'], concurrency=_stage_concurrency(stage, v33),
-        authority=['PLANNER_BRIEF_2026-09-13.md Addendum 46', 'Planner task W89 step 2', v33_rel],
+                                'entry; post-certification as the stage spec decided; tail declared')},
+        cap=st['cap'], concurrency=_stage_concurrency(stage, ss),
+        authority=['PLANNER_BRIEF_2026-09-13.md Addendum 46', 'Planner task W89 step 2', ss_rel],
         required_consecutive_cycles=REQUIRED_CONSECUTIVE_CYCLES, extra=extra)
-    checks = validate_spec(stage, spec, derived, v33_pin, v33)
+    checks = validate_spec(stage, spec, derived, ss_pin, ss)
     pre_frozen = pre_launch_assertion(derived, spec)
     _log(f'[{tag}] {STAGE_TEXT}')
     _log(f'[{tag}] frozen campaign spec: {os.path.relpath(spec_path, REPO)} sha256={spec_sha}')
@@ -1492,7 +1536,7 @@ def freeze(stage, started):
     _log(f"[{tag}] pre-launch assertion on the FROZEN spec: holds={pre_frozen['holds']} "
          f"(committed keys scanned {pre_frozen['n_committed_keys_scanned']})")
     model, _err = memory_model()
-    m = memory_preflight(stage, model, v33)
+    m = memory_preflight(stage, model, ss)
     _log(f"[{tag}] memory at freeze (non-gating): {_memory_line(m)} -> would {'PASS' if m['pass'] else 'REFUSE'}")
     ok = all(checks.values()) and pre_frozen['holds']
     _finish(0 if ok else 1, f'freeze {"OK" if ok else "NOT OK"}; run with --stage {stage} --run --spec-sha256 {spec_sha}')
@@ -1520,9 +1564,9 @@ def _run_preconditions(stage, spec_sha256, tag):
         failures.append(f'campaign root must hold only its frozen spec; holds {sorted(os.listdir(root))}')
     more, _ev = _common_checks()
     failures += more
-    v33_rel, v33_sha, v33 = load_v33()
+    ss_rel, ss_sha, ss = load_stage_spec()
     inst, derived = load_instance_record()
-    checks = validate_spec(stage, spec, derived, {'path': v33_rel, 'sha256': v33_sha}, v33)
+    checks = validate_spec(stage, spec, derived, {'path': ss_rel, 'sha256': ss_sha}, ss)
     failures += [f'spec check failed: {k}' for k, v in checks.items() if not v]
     for what, pinned, now in (('harness', spec['harness']['sha256'], H.sha256_file(H.HARNESS_PATH)),
                               ('script', spec['extra'].get('campaign_script_sha256'),
@@ -1546,16 +1590,16 @@ def _run_preconditions(stage, spec_sha256, tag):
         failures.append(err)
         m = {'pass': False}
     else:
-        m = memory_preflight(stage, model, v33)
+        m = memory_preflight(stage, model, ss)
         _log(f"[{tag}] memory preflight: {_memory_line(m)} -> {'PASS' if m['pass'] else 'REFUSE'}")
         if not m['pass']:
             failures.append(f'memory preflight REFUSED: {_memory_line(m)}')
-    return root, spec_path, spec, v33_rel, v33_sha, v33, derived, pre, m, failures
+    return root, spec_path, spec, ss_rel, ss_sha, ss, derived, pre, m, failures
 
 
 def run_smoke(started, spec_sha256):
     tag = 'W89-SMOKE'
-    root, spec_path, spec, v33_rel, v33_sha, v33, derived, pre, mem, failures = _run_preconditions(
+    root, spec_path, spec, ss_rel, ss_sha, ss, derived, pre, mem, failures = _run_preconditions(
         'smoke', spec_sha256, tag)
     if failures:
         for f in failures:
@@ -1574,7 +1618,7 @@ def run_smoke(started, spec_sha256):
     finally:
         H.release_campaign_lock(expected_pid=os.getpid())
     try:
-        checks, detail, rec = smoke_gate_checks(entry, eval_dir, v33['cells']['x0']['eval_key'])
+        checks, detail, rec = smoke_gate_checks(entry, eval_dir, ss['cells']['x0']['eval_key'], ss)
     except Exception as error:  # noqa: BLE001 -- the gate FAILS, recorded
         checks, detail, rec = ({'smoke_checks_ran': False},
                                {'error': f'{type(error).__name__}: {error}', 'traceback': traceback.format_exc()}, {})
@@ -1585,7 +1629,7 @@ def run_smoke(started, spec_sha256):
         os.path.join(eval_dir, 'per_cycle_record.jsonl')) else []
     gate = {'stage': STAGE_TEXT, 'gate': 'W89 3 x 3 child smoke (x0, cap 2)', 'utc': _utc(),
             'git_head': H._git(['rev-parse', 'HEAD']), 'campaign_spec_path': os.path.relpath(spec_path, REPO),
-            'campaign_spec_sha256': spec_sha256, 'spec_v33': {'path': v33_rel, 'sha256': v33_sha},
+            'campaign_spec_sha256': spec_sha256, 'stage_spec': {'path': ss_rel, 'sha256': ss_sha},
             'eval_dir': os.path.relpath(eval_dir, REPO), 'checks': checks, 'pass': all(checks.values()),
             'failing': sorted(k for k, v in checks.items() if not v), 'detail': detail,
             'reported_not_gated': {'peak_rss': rec.get('peak_rss'), 'wall_time_s': rec.get('wall_time_s'),
@@ -1619,7 +1663,7 @@ def value_block(cells, refs, inst):
 
 def run_pair(started, spec_sha256):
     tag = 'W89-PAIR'
-    root, spec_path, spec, v33_rel, v33_sha, v33, derived, pre, mem, failures = _run_preconditions(
+    root, spec_path, spec, ss_rel, ss_sha, ss, derived, pre, mem, failures = _run_preconditions(
         'pair', spec_sha256, tag)
     smoke_rel = os.path.relpath(os.path.join(campaign_root('smoke'), SMOKE_GATE_FILE), REPO)
     st = _git_state(smoke_rel)
@@ -1652,7 +1696,7 @@ def run_pair(started, spec_sha256):
     for label in labels:
         eval_dir = os.path.join(root, 'evals', entries[label]['eval_dir'])
         try:
-            gates, detail, rec = cell_gates(entries[label], eval_dir, v33)
+            gates, detail, rec = cell_gates(entries[label], eval_dir, ss)
         except Exception as error:  # noqa: BLE001 -- recorded; the gates FAIL
             gates, detail, rec = {'cell_gates_ran': False}, {'error': f'{type(error).__name__}: {error}',
                                                              'traceback': traceback.format_exc()}, {}
@@ -1668,13 +1712,13 @@ def run_pair(started, spec_sha256):
                            'bar': (rec.get('bar') or {}).get('value'), 'gates': gates, 'gates_pass': all(gates.values()),
                            'gate_detail': detail, 'cell_quantities': cell,
                            'parent_view': (by_label.get(label) or {}).get('parent_view')}
-    refs = v33['reference_R']
+    refs = ss['reference_R']
     inst, _d = load_instance_record()
     value = value_block(cells_q, refs, inst)
     g = guards_verify()
     results = {'stage': STAGE_TEXT, 'utc': _utc(), 'git_head_at_run': H._git(['rev-parse', 'HEAD']),
                'campaign_spec_path': os.path.relpath(spec_path, REPO), 'campaign_spec_sha256': spec_sha256,
-               'spec_v33': {'path': v33_rel, 'sha256': v33_sha}, 'pre_launch_assertion': pre,
+               'stage_spec': {'path': ss_rel, 'sha256': ss_sha}, 'pre_launch_assertion': pre,
                'objective_convention': OBJECTIVE_CONVENTION, 'per_cell': per_cell,
                'all_gates_pass': all(per_cell[k]['gates_pass'] for k in labels), 'value_and_R': value,
                'reference_R': refs, 'smoke_gate': {'path': smoke_rel, 'sha256': _sha(smoke_rel)},
