@@ -1,0 +1,290 @@
+{
+ "authority": [
+  "PLANNER_BRIEF_2026-09-13.md Addendum 46 ruling 7",
+  "Planner task W86",
+  "data/SRP1/Results/P515S53/frozen_s53_spec_v28_c8b5a715.json"
+ ],
+ "bar_window_cycles": 10,
+ "campaign_id": "s53_w86_tail_smoke",
+ "candidates": [
+  {
+   "canonical": {
+    "investment_year": 2025,
+    "nodes": {
+     "5": [
+      0.96875,
+      3.875
+     ],
+     "7": [
+      0.96875,
+      3.875
+     ],
+     "9": [
+      0.96875,
+      3.875
+     ]
+    }
+   },
+   "effective_anderson_acceleration": {
+    "enabled": true,
+    "memory": 5,
+    "regularization": 1e-10,
+    "reject_policy": "keep_memory"
+   },
+   "eval_dir": "96c5aa50cc229cc1_c_star",
+   "eval_key": "96c5aa50cc229cc14f8bfd34de306b7cc79caf77ac28a09e0046ad3978c49772",
+   "key": "578636daa6d6360d6701764c73ddf795e53c2c37e511e21be1400024f8f6350c",
+   "label": "c_star",
+   "overrides": {},
+   "post_certification": {
+    "hull_polish": false,
+    "persist_certified_models": true,
+    "reference": null
+   },
+   "working_dir_ids": {
+    "precheck": "p515s44_s53_w86_tail_smoke_96c5aa50cc229cc1_precheck",
+    "run": "p515s44_s53_w86_tail_smoke_96c5aa50cc229cc1_run"
+   }
+  }
+ ],
+ "cap": 2,
+ "concurrency": 1,
+ "configuration": {
+  "apply_rho": false,
+  "arm_label": "s39_D",
+  "case_file": "data/SRP1/SRP1_params.json",
+  "case_file_anderson_acceleration": {
+   "enabled": true,
+   "memory": 5,
+   "regularization": 1e-10,
+   "reject_policy": "keep_memory"
+  },
+  "case_file_last_commit": "b5629311c092863c78cc508eaf34676382ac9f83",
+  "case_file_sha256": "dbfdb2a07d12bfedab5e66bf94b3df98e5ab0305616652b4083266476972006b",
+  "convergence_depth_tail": {
+   "compl_inf_tol": 1e-06,
+   "enabled": true
+  },
+  "ess_ageing_baseline": {
+   "calendar_life_years": 15,
+   "calendar_retention_per_year": 0.985,
+   "calibration": {
+    "cycles_n": 10000,
+    "eol_retention_r": 0.8,
+    "reference_dod_d": 0.8,
+    "status": "ACTIVE"
+   },
+   "cycle_life_nominal": 10000,
+   "depth_of_discharge_nominal": 0.8,
+   "minimum_soh": 0.7
+  },
+  "ess_ageing_baseline_label": "BASELINE (C2 + phi_cal 0.985 + soh_min 0.70)",
+  "ess_params_file": {
+   "last_commit": "2466401d429eeb43a680b36e32947878372c3cbf",
+   "path": "data/SRP1/SharedESS/SRP1_ESS_Params.json",
+   "sha256": "39106f934bf3edbf18f01a5ef1fadfefc2f7a518706e6c8fa6d962617a312706"
+  },
+  "full_diagnostics_in_rows": true,
+  "name": "BASELINE (C2 + phi_cal 0.985 + soh_min 0.70): the case file alone (AA keep_memory declared) with the ESS ageing parameters declared, the convergence-depth tight tail DECLARED ENABLED (compl_inf_tol 1e-6, certifying cycles only), post-certification: persist the certified TSO/DSO models only",
+  "note": "no overrides; no model variant; post-certification persist_certified_models only (no hull polish, no reference); num_max_iters := cap; tail per spec v28 (AA-off predicate, non-latching, ESSO untouched)",
+  "overrides": {}
+ },
+ "extra": {
+  "campaign_script": "p515_s53_w86_tail_recert_campaign.py",
+  "campaign_script_sha256": "812333ff36603c123c3e5909b0777de2c17af6971cebb396e854af5f186a55b2",
+  "declared_solves": {
+   "base": 153,
+   "rule": "51 per round x (cap 2 + 1) + every retry attempted, per event"
+  },
+  "expected_eval_keys": {
+   "c_star": "96c5aa50cc229cc14f8bfd34de306b7cc79caf77ac28a09e0046ad3978c49772"
+  },
+  "label": "BASELINE (C2 + phi_cal 0.985 + soh_min 0.70)",
+  "memory_at_freeze_non_gating": {
+   "available_bytes": 19823280128,
+   "available_gib": 18.461868286132812,
+   "budget_derivation": {
+    "budget": "3.5 GiB per child = the measured persist peak (3.23 GiB) + 0.27 GiB margin",
+    "s47_recert_c_star_child_peak_no_persist_bytes": 2577645568,
+    "s47_recert_unit_child_peak_no_persist_bytes": 2574581760,
+    "source": "data/SRP1/Results/P515S48/x0_capture/evals/d2c96b1480402a3b_x0/{evaluation_record,post_certification}.json and data/SRP1/Results/P515S47/campaign_s47_recert/evals/*/evaluation_record.json peak_rss",
+    "x0_capture_child_peak_with_persist_bytes": 3470491648,
+    "x0_capture_production_peak_before_persist_bytes": 2395537408
+   },
+   "concurrency": 1,
+   "free_plus_inactive_gib": 11.69598388671875,
+   "hw_memsize_bytes": 34359738368,
+   "missing_vm_stat_figures": [],
+   "non_reclaimable_gib": 13.538131713867188,
+   "page_size_bytes": 16384,
+   "pass": true,
+   "per_child_budget_gib": 3.5,
+   "required_bytes": 3758096384,
+   "required_gib": 3.5,
+   "rule": "hw.memsize - (wired + anonymous + compressor-occupied) x page size >= 1 x 3.5 GiB",
+   "rule_rationale": "non-reclaimable load = wired + anonymous + compressor-occupied pages; file-backed pages (active or inactive) are cache the kernel reclaims on demand, so free + inactive under-counts what new processes can obtain (free + inactive recorded alongside)",
+   "utc": "2026-09-25T16:03:14.891663+00:00",
+   "vm_stat_header": "Mach Virtual Memory Statistics: (page size of 16384 bytes)",
+   "vm_stat_pages": {
+    "anonymous_pages": 418448,
+    "pages_free": 29842,
+    "pages_inactive": 736666,
+    "pages_occupied_by_compressor": 312366,
+    "pages_wired_down": 156421
+   }
+  },
+  "memory_budget_derivation": {
+   "budget": "3.5 GiB per child = the measured persist peak (3.23 GiB) + 0.27 GiB margin",
+   "s47_recert_c_star_child_peak_no_persist_bytes": 2577645568,
+   "s47_recert_unit_child_peak_no_persist_bytes": 2574581760,
+   "source": "data/SRP1/Results/P515S48/x0_capture/evals/d2c96b1480402a3b_x0/{evaluation_record,post_certification}.json and data/SRP1/Results/P515S47/campaign_s47_recert/evals/*/evaluation_record.json peak_rss",
+   "x0_capture_child_peak_with_persist_bytes": 3470491648,
+   "x0_capture_production_peak_before_persist_bytes": 2395537408
+  },
+  "memory_preflight_rule": "hw.memsize - (wired + anonymous + compressor-occupied) x page size >= 1 x 3.5 GiB",
+  "memory_preflight_rule_rationale": "non-reclaimable load = wired + anonymous + compressor-occupied pages; file-backed pages (active or inactive) are cache the kernel reclaims on demand, so free + inactive under-counts what new processes can obtain (free + inactive recorded alongside)",
+  "objective_convention": "Q = certified_cost = gross_operational_cost (settlement excluded); salvage and net recourse reported beside it (equal to gross at the x0 cell)",
+  "pre_launch_assertion_at_freeze": {
+   "holds": true,
+   "per_cell": {
+    "c_star": {
+     "absent_from_every_committed_spec_outside_w86": true,
+     "committed_specs_holding_it_outside_w86": [],
+     "declared_off_key_equals_pre_tail": true,
+     "differs_from_pre_tail": true,
+     "expected": "96c5aa50cc229cc14f8bfd34de306b7cc79caf77ac28a09e0046ad3978c49772",
+     "frozen_entry_equals_expected": true,
+     "frozen_entry_eval_key": null,
+     "pre_tail_key": "070f833e1e318f8500f51a85c05993425e11081db6d17065e1e60463db26e6cb",
+     "recomputed_equals_expected": true,
+     "recomputed_now": "96c5aa50cc229cc14f8bfd34de306b7cc79caf77ac28a09e0046ad3978c49772",
+     "undeclared_key_equals_pre_tail": true
+    },
+    "n7_4h_e1": {
+     "absent_from_every_committed_spec_outside_w86": true,
+     "committed_specs_holding_it_outside_w86": [],
+     "declared_off_key_equals_pre_tail": true,
+     "differs_from_pre_tail": true,
+     "expected": "ca8927e75d628bd188cf74f9d81436cbb3e0be53f64e02d9876ebb271a21951d",
+     "frozen_entry_equals_expected": true,
+     "frozen_entry_eval_key": null,
+     "pre_tail_key": "bd504ecf5a288d447e53ef6f7e8090b017d15549b257aa095ff4f95890a06e42",
+     "recomputed_equals_expected": true,
+     "recomputed_now": "ca8927e75d628bd188cf74f9d81436cbb3e0be53f64e02d9876ebb271a21951d",
+     "undeclared_key_equals_pre_tail": true
+    },
+    "x0": {
+     "absent_from_every_committed_spec_outside_w86": true,
+     "committed_specs_holding_it_outside_w86": [],
+     "declared_off_key_equals_pre_tail": true,
+     "differs_from_every_pinned_x0_key": true,
+     "differs_from_pre_tail": true,
+     "expected": "5cfe69a615ae370835a5896eaa6899f1d9973b7adf649437c2ddd94d1d2836ee",
+     "frozen_entry_equals_expected": true,
+     "frozen_entry_eval_key": null,
+     "pinned_x0_keys": {
+      "a0_c7_x0": "7aa017f09989b56d17a1307d7ae2d9d86582e9666295ee9e25ef560ee32f975b",
+      "s48_x0_capture": "d2c96b1480402a3b61aca4abc188e41c6009eb582d8e6ccdd380e51651f996c7"
+     },
+     "pre_tail_key": "d2c96b1480402a3b61aca4abc188e41c6009eb582d8e6ccdd380e51651f996c7",
+     "recomputed_equals_expected": true,
+     "recomputed_now": "5cfe69a615ae370835a5896eaa6899f1d9973b7adf649437c2ddd94d1d2836ee",
+     "undeclared_key_equals_pre_tail": true
+    }
+   }
+  },
+  "references": {
+   "c_star": {
+    "Q_gross": 650912327.1956586,
+    "bar": 25146.48616361618,
+    "campaign": "s47_recert (spec 902f93aa)",
+    "candidate_key": "578636daa6d6360d6701764c73ddf795e53c2c37e511e21be1400024f8f6350c",
+    "certification_cycle": 87,
+    "cycles_run": 87,
+    "eval_dir": "data/SRP1/Results/P515S47/campaign_s47_recert/evals/070f833e1e318f85_c_star",
+    "eval_key": "070f833e1e318f8500f51a85c05993425e11081db6d17065e1e60463db26e6cb",
+    "files_git": {
+     "evaluation_record.json": {
+      "git_clean": true,
+      "git_tracked": true
+     },
+     "per_cycle_record.jsonl": {
+      "git_clean": true,
+      "git_tracked": true
+     }
+    },
+    "files_sha256": {
+     "evaluation_record.json": "6f1bace2e47c024520bf0ddfd35e86c5b9e5964eb3434c73d40365f92404f4bf",
+     "per_cycle_record.jsonl": "73d988d221f099b60cb19ab564f83f4998e22f651a38751f36c69b2dd51eaf3e"
+    },
+    "ok": true,
+    "peak_rss_child_bytes": 2577645568,
+    "rule_ten_terminal_step_over_threshold_production": 0.026940789592534445,
+    "solve_profile_observed": 4528,
+    "status": "certified",
+    "terminal_gross_step_abs": 1753.6139293909073,
+    "terminal_gross_step_over_threshold": 0.026940789592534445,
+    "terminal_objective_tolerance": 65091.4080809588,
+    "terminal_salvage_value": -1.9285001043605776e-34,
+    "wall_child_process_s": 2858.417144060135
+   }
+  },
+  "rule_eleven": {
+   "Q_gross": true,
+   "append_hooks_around_run": true,
+   "append_reconcile_then_seal": true,
+   "appender_created_before_run": true,
+   "bar": true,
+   "child_exits_2_on_capture_error": true,
+   "end_of_run_capture": true,
+   "ess_ageing_readback": true,
+   "failure_path_drains_the_round_in_flight": true,
+   "files_named_by_harness": true,
+   "per_cycle_trajectory_with_gross_and_tolerance": true,
+   "post_certification_persist": true,
+   "record_carries_tail_fields": true,
+   "rule_ten_ratio": true,
+   "solve_profile_per_event_in_record": true,
+   "status_cycles_cert_cycle": true,
+   "tail_checklist_before_run": true,
+   "tail_state_check": true
+  },
+  "smoke_gate_declared_before_run": "SMOKE GATE (declared here and in the smoke spec BEFORE the smoke runs; all must hold):\n  S1  child exit 0; evaluation_record.json written by the child (no parent barrier record); status not_certified\n      (cap 2); cycles_run 2;\n  S2  the per-round append file is written and reconciles: the record's `convergence_depth_per_round_append.ok` True\n      (appended file byte-identical to the end-of-run file, tail state rebuilt from the events == returned state), AND,\n      recomputed here, the two files byte-identical, their sha256 == the record's end-of-run sha256, rounds appended\n      [0, 1, 2], n appended == n end-of-run;\n  S3  the tail checklist is line 1 of the events file (event 'checklist', == the record's checklist, tail enabled,\n      declared {True, 1e-6}, pid == the child's) and was written BEFORE ANY SOLVE: its utc precedes the creation time\n      (st_birthtime) of every IPOPT output file in the run working dir (>= 1 file) and the first 'drained' event;\n  S4  `convergence_depth_tail_state_check.match` True (expected enabled True, in state True, tail value 1e-6);\n  S5  solve profile reconciled per event: reconciliation_supported, base_solves == 51 x 3 = 153 (DECLARED: 51 per round\n      x (cap 2 + 1)), identity_holds (observed == 153 + retries attempted), 0 blocked; network floor records ==\n      observed - 3 ESSO x 3 rounds;\n  S6  the tail is correctly INACTIVE at cap 2: 2 per-cycle tail records, none active, none acted, the AA-off predicate\n      False at the end of both cycles, restore at exit not acted; events: 'apply' x3 (cycles 1, 2, exit) all\n      inactive / not acted, 'next_state' x2 both False; no trajectory row with cycle_convergence True; no\n      \"Convergence-depth tail ON\" line in the child's stdout;\n  S7  the floor records are captured at PRODUCTION compl_inf_tol: every record's compl_inf_tol_in_force == its\n      network's production value from the tail baseline (TSO case9 5e-4 passed; DSO key absent -> IPOPT default\n      1e-4), parse_reason None, options_list_agrees True;\n  S8  the append was sealed after the reconciliation (last event 'sealed'), no append write error;\n  S9  post-certification: persist requested, trajectory uncertified -> status 'skipped', no certified_models.pkl;\n  S10 the entry's eval key is EXACTLY the expected tail-ON C* key 96c5aa50...; fresh campaign id / root / working dirs;\n  S11 ESS ageing read-back all_match before and after the run;\n  S12 this process solved nothing: PARENT_GUARD.verify(0) == [].\n  Reported, not gated: floor-status tally, records per round, peak RSS, wall.",
+  "solve_claim": "RECONCILED PER EVENT, NOT GUARD-VERIFIED: the child record solve_profile (the child's own in-window SolveProfileGuard(N.PERMITTED) count == 51 x (cycles_run + 1) + retries attempted); this parent's SolveProfileGuard(permitted=()) verify(0)",
+  "spec_v28": {
+   "git_clean": true,
+   "git_tracked": true,
+   "path": "data/SRP1/Results/P515S53/frozen_s53_spec_v28_c8b5a715.json",
+   "sha256": "c8b5a715083c47cdaa1d5af0f24259115682542d159a206365ccf7f76c50edde"
+  },
+  "stage": "smoke",
+  "stage_text": "P5.15 Addendum 46 ruling 7, W86 -- tight-tail SRP1 re-certification (C*, n7_4h_e1, x = 0) through the campaign harness, tail declared {enabled True, compl_inf_tol 1e-6}",
+  "w86_key_checks": {
+   "all_hold": true,
+   "git_clean": true,
+   "git_tracked": true,
+   "path": "data/SRP1/Results/P515S53/tight_tail_w86/key_fix_checks/checks_w86_key_r2.json",
+   "sha256": "894a92b255772fccba0f4f6f9fb309d2d37bd8f6eec98684295d4e48fc1aac57"
+  }
+ },
+ "frozen_utc": "2026-09-25T16:03:14.971366+00:00",
+ "git_head": "8a346bcc4c0496cdd251b35c2f48ded06dcaf285",
+ "harness": {
+  "path": "p515_s44_campaign_harness.py",
+  "sha256": "a04c835afdedc8a2556691894b01fdb102ac2be0733b47a626b5301ddce60b49"
+ },
+ "interpreter": "/Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python",
+ "nlp_solver_path_env": {
+  "NLP_SOLVER_PATH": "/usr/local/bin/ipopt",
+  "source": "environment"
+ },
+ "required_consecutive_cycles": 10,
+ "schema": "p515_s44_campaign_spec_v2",
+ "thread_caps": {
+  "MKL_NUM_THREADS": "1",
+  "NUMEXPR_NUM_THREADS": "1",
+  "OMP_NUM_THREADS": "1",
+  "OPENBLAS_NUM_THREADS": "1",
+  "VECLIB_MAXIMUM_THREADS": "1"
+ }
+}
