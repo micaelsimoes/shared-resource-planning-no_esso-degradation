@@ -1,7 +1,28 @@
 """
-P5.15 Addendum 48, Planner task W90 -- option (b) measured at zero solves on the 3 x 3 instance; frozen stage spec v35
-(predecessor v34 e1940b92, NOT edited); the TWO-ARM 3 x 3 smoke gate ((b) on vs (b) off) and the 3 x 3 pair under (b).
-BUILT AND FROZEN IN W90; THE SMOKE AND THE PAIR ARE NOT RUN IN W90 (the author reboots the Mac first).
+P5.15 Addendum 48, Planner tasks W90 and W91 -- option (b) measured at zero solves on the 3 x 3 instance; frozen stage
+spec v36 (W91; predecessor v35 8aa98dbf, NOT edited; v35's predecessor v34 e1940b92); the TWO-ARM 3 x 3 smoke gate ((b)
+on vs (b) off) and the 3 x 3 pair under (b). BUILT IN W90, CORRECTED IN W91 BEFORE ANY RUN; THE SMOKE AND THE PAIR ARE
+NOT RUN IN W90 / W91 (the author reboots the Mac first).
+
+W91 (Planner task W91, rulings on the W90 questions; every change made BEFORE any smoke or pair run, hence not post hoc):
+  * Q3 -- ONE MEASURE IN THE MARGIN RULE. Both terms of `persist iff g x P_on + T_persist <= 0.85 x A_post` are
+    phys_footprint (the W32 rule: "resident" means footprint). T_persist = the ON probe's footprint-sampled pickle
+    transient (8.37 GiB), stated as THE FOOTPRINT VALUE (v35 took the max over RSS and footprint measures -- the same
+    number, for the wrong reason). P_on = the (b)-on smoke child's FOOTPRINT PEAK, captured by this launcher (the parent
+    of the evaluation child): `ChildFootprintMonitor` reads the kernel's `ri_lifetime_max_phys_footprint`
+    (proc_pid_rusage, RUSAGE_INFO_V4 -- the footprint high-water mark, the footprint analogue of ru_maxrss) of the
+    child it identifies from the harness's launch.json (pid; parent pid == this process; command line holds --child and
+    the entry's eval key), and takes the FINAL value from the exited, not-yet-reaped child on the kqueue NOTE_EXIT event
+    (xnu keeps the exit rusage until the harness reaps; the harness polls os.wait4 every 5 s). No harness change: the
+    harness sha256, the eval keys and every harness-pinned quantity are untouched. The capture path is asserted before
+    any run by a zero-solve self-test (rule eleven). g (1.0344) is RSS-based (ru_maxrss of the 2 x 2 alpha-row pair /
+    smoke) and CANNOT be restated on a footprint basis: no committed harness run has a footprint record; it stays in
+    the rule as a dimensionless ratio, labelled RSS-based, with the break-even g and the verdict at g = 1 reported.
+  * Q4 -- G6 v36 closes the V5 vacuity hole: non-vacuity additionally requires >= ceil(0.9 x B) floor-testable
+    ACCEPTED final attempts in T (72 of 80 at 3 x 3, 44 of 48 at SRP1); the 10 % line is a JUDGMENT, not a derived
+    quantity. Self-tests: <= 10 % tier-2 finals passes (V12), > 10 % fails (V13), the all-tier-2 round fails (V5).
+  * the SRP1 hull-polish figure 3.09e-6 located and hash-recorded (P515S41/hull_polish/hull_polish_results.json).
+  * new campaign ids (s53_w91_3x3_*), smoke gate dir smoke_gate_v36; v35's two smoke freezes are superseded, never run.
 
 Authority: PLANNER_BRIEF_2026-09-13.md Addendum 48 (tight tail adopted; 3 x 3 pair on the Mac, now; option (b)
 `release_solution_bookkeeping` on, measured first at zero solves at 3 x 3; persistence only if the measured runtime peak
@@ -53,12 +74,12 @@ pickle transient was noisy in W89 (+5.27 committed, +6.56 in an earlier uncommit
 
 MODES (repo root, canonical interpreter; attached, ALONE, both streams captured, never detached):
   --b-probe {s53_3x3_off,s53_3x3_on,srp1_off} --scratch D   ZERO SOLVES. -> <root>/memory_probe_b/b_probe_<W>.json
-  --freeze-spec                     ZERO SOLVES. Frozen stage spec v35 (write-once, named by its sha256; predecessor v34).
+  --freeze-spec                     ZERO SOLVES. Frozen stage spec v36 (write-once, named by its sha256; predecessor v35).
   --stage smoke --freeze            ZERO SOLVES. The TWO smoke campaign specs (arms bon / boff; distinct campaign ids,
-                                    so distinct working dirs), pinning v35.
+                                    so distinct working dirs), pinning v36.
   --stage smoke --run --spec-sha256-bon A --spec-sha256-boff B   NOT RUN IN W90. After the reboot: the (b)-on arm, then
                                     the (b)-off arm (x0, cap 3, each through H.evaluate), sequential, alone; the smoke
-                                    gate S1-S17 and the persistence margin rule, recorded in <root>/smoke_gate/.
+                                    gate S1-S17 and the persistence margin rule, recorded in <root>/smoke_gate_v36/.
   --stage pair --freeze             NOT RUN IN W90. Requires the smoke gate committed, clean and PASS; post-certification
                                     as the smoke gate's margin-rule verdict.
   --stage pair --run --spec-sha256 S    NOT RUN IN W90. The two cells at concurrency 1 (sequential); gates G1-G12.
@@ -67,16 +88,16 @@ EXACT COMMANDS (repo root):
   set -o noclobber && /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python -u p515_s53_w90_3x3_campaign.py \\
       --b-probe <W> --scratch <dir outside the repo> > data/SRP1/Results/P515S53/w90_3x3/b_probe_<W>_launch.log 2>&1
   set -o noclobber && /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python -u p515_s53_w90_3x3_campaign.py \\
-      --freeze-spec > data/SRP1/Results/P515S53/w90_3x3/freeze_spec_v35_launch.log 2>&1
+      --freeze-spec > data/SRP1/Results/P515S53/w90_3x3/freeze_spec_v36_launch.log 2>&1
   set -o noclobber && /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python -u p515_s53_w90_3x3_campaign.py \\
-      --stage smoke --freeze > data/SRP1/Results/P515S53/w90_3x3/smoke_freeze_launch.log 2>&1
+      --stage smoke --freeze > data/SRP1/Results/P515S53/w90_3x3/smoke_freeze_v36_launch.log 2>&1
   set -o noclobber && /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python -u p515_s53_w90_3x3_campaign.py \\
       --stage smoke --run --spec-sha256-bon <A> --spec-sha256-boff <B> \\
-      > data/SRP1/Results/P515S53/w90_3x3/smoke_run_launch.log 2>&1
+      > data/SRP1/Results/P515S53/w90_3x3/smoke_run_v36_launch.log 2>&1
   set -o noclobber && /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python -u p515_s53_w90_3x3_campaign.py \\
-      --stage pair --freeze > data/SRP1/Results/P515S53/w90_3x3/pair_freeze_launch.log 2>&1
+      --stage pair --freeze > data/SRP1/Results/P515S53/w90_3x3/pair_freeze_v36_launch.log 2>&1
   set -o noclobber && /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python -u p515_s53_w90_3x3_campaign.py \\
-      --stage pair --run --spec-sha256 <S> > data/SRP1/Results/P515S53/w90_3x3/pair_run_launch.log 2>&1
+      --stage pair --run --spec-sha256 <S> > data/SRP1/Results/P515S53/w90_3x3/pair_run_v36_launch.log 2>&1
 Exit codes: probes / freezes 0 done, 1 precondition / guard failure; smoke --run 0 PASS / 1 FAIL; pair --run 0 every
 gate holds and both cells certified, 2 a cell not certified (harness clean), 1 a gate / harness / guard / precondition
 failure.
@@ -84,6 +105,7 @@ failure.
 
 import argparse
 import copy
+import ctypes
 import gc
 import hashlib
 import inspect
@@ -91,6 +113,7 @@ import json
 import math
 import os
 import resource
+import select
 import shutil
 import subprocess
 import sys
@@ -123,15 +146,26 @@ GUARD_NAMES = ('alpha_row_launcher', 'w86_launcher', 'w87', 'w88', 'w89_step1', 
 
 SCRIPT_NAME = os.path.basename(__file__)
 OWN_PROCESS_SUBSTRING = 'p515_s53_w90_3x3_campaign'
-STAGE_TEXT = ('P5.15 Addendum 48, W90 -- option (b) measured at zero solves on the 3 x 3 instance; stage spec v35; the '
-              'two-arm 3 x 3 smoke ((b) on vs off, bitwise, measuring the runtime peak directly) and the 3 x 3 pair '
+STAGE_TEXT = ('P5.15 Addendum 48, W90 / W91 -- option (b) measured at zero solves on the 3 x 3 instance; stage spec v36 '
+              '(W91: the margin rule on ONE measure, footprint; G6 v36 closes the tier-2 vacuity hole); the two-arm '
+              '3 x 3 smoke ((b) on vs off, bitwise, measuring the runtime footprint peak directly) and the 3 x 3 pair '
               '(x = 0 and the smallest node-7 unit, concurrency 1, (b) on, persistence by the margin rule)')
 _P53 = W9._P53
 ROOT_REL = os.path.join(_P53, 'w90_3x3')
 SPEC_V34 = {'path': os.path.join(_P53, 'frozen_s53_spec_v34_e1940b92.json'),
             'sha256': 'e1940b927759d70d5fddcb95edaa001c4ac13072e2f0f6f7629ad4592878bdb7'}
-SPEC_PREFIX = 'frozen_s53_spec_v35_'
-SPEC_VERSION = 35
+SPEC_V35 = {'path': os.path.join(_P53, 'frozen_s53_spec_v35_8aa98dbf.json'),
+            'sha256': '8aa98dbf91a23d8c1b4010ffa64ef7ffc85260217b3967f465a78db47e27edcc'}
+# the v35 smoke freezes (never run; superseded by v36 -- they pin the pre-W91 launcher sha256 and v35)
+V35_SMOKE_FREEZES = {
+    'smoke_bon': {'path': os.path.join(_P53, 'w90_3x3', 'campaign_s53_w90_3x3_smoke_bon',
+                                       'campaign_spec_s53_w90_3x3_smoke_bon_9c04300e.json'),
+                  'sha256': '9c04300e62ec082b8563cf81384b5d74e1df440f45940f2e812cd459568caecf'},
+    'smoke_boff': {'path': os.path.join(_P53, 'w90_3x3', 'campaign_s53_w90_3x3_smoke_boff',
+                                        'campaign_spec_s53_w90_3x3_smoke_boff_87e29e9e.json'),
+                   'sha256': '87e29e9e86225fb6a75d85db49e89a519c4828bb74907de7bd569c1d79dcb2b2'}}
+SPEC_PREFIX = 'frozen_s53_spec_v36_'
+SPEC_VERSION = 36
 GIB = 1 << 30
 MIB = 1 << 20
 
@@ -155,16 +189,16 @@ PEAK_SAMPLER_S = 0.02
 # ---- stages ----------------------------------------------------------------------------------------------------------
 SMOKE_CAP = 3
 STAGES = {
-    'smoke_bon': {'campaign_id': 's53_w90_3x3_smoke_bon', 'labels': ('x0',), 'cap': SMOKE_CAP,
+    'smoke_bon': {'campaign_id': 's53_w91_3x3_smoke_bon', 'labels': ('x0',), 'cap': SMOKE_CAP,
                   'release_solution_bookkeeping': True},
-    'smoke_boff': {'campaign_id': 's53_w90_3x3_smoke_boff', 'labels': ('x0',), 'cap': SMOKE_CAP,
+    'smoke_boff': {'campaign_id': 's53_w91_3x3_smoke_boff', 'labels': ('x0',), 'cap': SMOKE_CAP,
                    'release_solution_bookkeeping': False},
-    'pair': {'campaign_id': 's53_w90_3x3_pair', 'labels': ('x0', 'n7_4h_e1'), 'cap': 500,
+    'pair': {'campaign_id': 's53_w91_3x3_pair', 'labels': ('x0', 'n7_4h_e1'), 'cap': 500,
              'release_solution_bookkeeping': True},
 }
 SMOKE_ARMS = ('smoke_bon', 'smoke_boff')   # run order
 CONCURRENCY = 1
-SMOKE_GATE_DIR_REL = os.path.join(ROOT_REL, 'smoke_gate')
+SMOKE_GATE_DIR_REL = os.path.join(ROOT_REL, 'smoke_gate_v36')
 SMOKE_GATE_FILE = 'smoke_gate.json'
 SMOKE_MANIFEST_FILE = 'smoke_manifest_sha256.json'
 PAIR_RESULTS_FILE = 'campaign_results.json'
@@ -172,6 +206,14 @@ PAIR_MANIFEST_FILE = 'campaign_manifest_sha256.json'
 MARGIN = 0.85
 POST_CERT_NO_PERSIST = {'persist_certified_models': False, 'hull_polish': False}
 POST_CERT_PERSIST = {'persist_certified_models': True, 'hull_polish': False}
+# ---- the SRP1 hull-polish figure Addendum 48 cites (3.09e-6 relative); located and hash-recorded in W91 ----------------
+SRP1_HULL_POLISH = {
+    'path': os.path.join('data', 'SRP1', 'Results', 'P515S41', 'hull_polish', 'hull_polish_results.json'),
+    'sha256': '809e1c91a960fc22e746fe2966b86820063f72b47b7a2a2c653e7bd7f7c0ef57',
+    'manifest': os.path.join('data', 'SRP1', 'Results', 'P515S41', 'hull_polish', 'manifest_sha256.json'),
+    'commit': '2e6c5570', 'report': 'P5_15_S41_STEP3_CLOSED_REPORT.md (section 2.2)',
+    'spec': os.path.join('data', 'SRP1', 'Results', 'P515S41', 'frozen_s41_hull_aa_spec_v12_6e5a546f.json'),
+    'field': 'polish.gate.relative_pct (percent; / 100 = the relative figure)'}
 EXTRA_CLEAN_FILES = tuple(W9.EXTRA_CLEAN_FILES) + (SCRIPT_NAME, 'p515_s53_w89_3x3_campaign.py', 'network.py',
                                                    'helper_functions.py', 'solver_parameters.py',
                                                    'p515_s49_memory_profile.py', 'p515_s42_exact_fix_rerun.py')
@@ -294,6 +336,211 @@ class _PeakSampler:
         self._halt.set()
         self._thread.join(timeout=2)
         return False
+
+
+# ======================================================================================================================
+#  W91 -- the evaluation child's FOOTPRINT PEAK, captured by this launcher (the Planner's ruling on W90 question 3)
+# ======================================================================================================================
+FOOTPRINT_POLL_S = 1.0          # live-read interval (fallback value and reported trajectory maximum)
+FOOTPRINT_LAUNCH_POLL_S = 0.2   # wait for the harness's launch.json (written right after Popen; it holds the pid)
+FOOTPRINT_SELFTEST_BYTES = 256 * MIB
+RUSAGE_INFO_V4 = 4
+_RUSAGE_V4_FIELDS = (
+    'ri_user_time', 'ri_system_time', 'ri_pkg_idle_wkups', 'ri_interrupt_wkups', 'ri_pageins', 'ri_wired_size',
+    'ri_resident_size', 'ri_phys_footprint', 'ri_proc_start_abstime', 'ri_proc_exit_abstime', 'ri_child_user_time',
+    'ri_child_system_time', 'ri_child_pkg_idle_wkups', 'ri_child_interrupt_wkups', 'ri_child_pageins',
+    'ri_child_elapsed_abstime', 'ri_diskio_bytesread', 'ri_diskio_byteswritten', 'ri_cpu_time_qos_default',
+    'ri_cpu_time_qos_maintenance', 'ri_cpu_time_qos_background', 'ri_cpu_time_qos_utility', 'ri_cpu_time_qos_legacy',
+    'ri_cpu_time_qos_user_initiated', 'ri_cpu_time_qos_user_interactive', 'ri_billed_system_time',
+    'ri_serviced_system_time', 'ri_logical_writes', 'ri_lifetime_max_phys_footprint', 'ri_instructions', 'ri_cycles',
+    'ri_billed_energy', 'ri_serviced_energy', 'ri_interval_max_phys_footprint', 'ri_runnable_time')
+FOOTPRINT_MEASURE = (
+    'ri_lifetime_max_phys_footprint of the evaluation child (the harness\'s --child Python process; its IPOPT '
+    'subprocesses are NOT included -- the same scope as child_python_process_ru_maxrss), read by this launcher with '
+    'proc_pid_rusage(pid, RUSAGE_INFO_V4) (struct rusage_info_v4, macOS SDK sys/resource.h): the kernel-tracked '
+    'high-water mark of phys_footprint over the process lifetime -- the footprint analogue of ru_maxrss, so no sampling '
+    'gap. FINAL value = the read on the EXITED, NOT-YET-REAPED child (ri_proc_exit_abstime != 0), taken on the kqueue '
+    'EVFILT_PROC NOTE_EXIT event (xnu keeps the exit rusage until the harness reaps with os.wait4, which it polls every '
+    'POLL_S = 5 s); identity: pid from the harness\'s launch.json, parent pid == this launcher, command line holds '
+    '--child and the entry\'s eval key, ri_proc_start_abstime constant across reads (no pid reuse)')
+
+
+class _RUsageInfoV4(ctypes.Structure):
+    _fields_ = [('ri_uuid', ctypes.c_uint8 * 16)] + [(name, ctypes.c_uint64) for name in _RUSAGE_V4_FIELDS]
+
+
+def rusage_v4(pid):
+    """proc_pid_rusage(pid, RUSAGE_INFO_V4) through the committed S44 libproc handle; None if the pid is gone (reaped) or
+    unreadable. Works on a live process and on an exited, not-yet-reaped child."""
+    import p515_s44_scale_measurement as S44
+    if S44._LIBPROC is None:
+        return None
+    info = _RUsageInfoV4()
+    if S44._LIBPROC.proc_pid_rusage(int(pid), RUSAGE_INFO_V4, ctypes.byref(info)) != 0:
+        return None
+    return {k: int(getattr(info, k)) for k in ('ri_phys_footprint', 'ri_lifetime_max_phys_footprint',
+                                               'ri_interval_max_phys_footprint', 'ri_resident_size',
+                                               'ri_proc_start_abstime', 'ri_proc_exit_abstime')}
+
+
+class ChildFootprintMonitor(threading.Thread):
+    """The footprint peak of ONE evaluation child, from this launcher (the child's parent). Reads only; never waits
+    on, signals or reaps the child (the harness reaps it)."""
+
+    def __init__(self, launch_json_path, eval_key, poll_s=FOOTPRINT_POLL_S):
+        super().__init__(name=f'footprint-{str(eval_key)[:8]}', daemon=True)
+        self.launch_json_path, self.eval_key, self.poll_s = launch_json_path, eval_key, poll_s
+        self._halt = threading.Event()
+        self.result = {'measure': FOOTPRINT_MEASURE, 'launch_json': launch_json_path, 'eval_key': eval_key,
+                       'poll_s': poll_s, 'pid': None, 'identity': None, 'identity_verified': False,
+                       'registered_exit_event': False, 'n_live_reads': 0,
+                       'live_max_phys_footprint_sampled_bytes': None,
+                       'lifetime_max_phys_footprint_last_live_bytes': None, 'exit_event_received': False,
+                       'final_read_after_exit': False, 'exit_read': None, 'lifetime_max_phys_footprint_bytes': None,
+                       'capture_exact': False, 'errors': []}
+
+    def _identity(self, pid):
+        import psutil
+        try:
+            proc = psutil.Process(pid)
+            cmd = proc.cmdline()
+            ppid = proc.ppid()
+            return {'ppid': ppid, 'launcher_pid': os.getpid(), 'ppid_is_launcher': ppid == os.getpid(),
+                    'cmdline_has_child_flag': '--child' in cmd, 'cmdline_has_eval_key': self.eval_key in cmd}
+        except psutil.Error as error:
+            return {'error': f'{type(error).__name__}: {error}'}
+
+    def _live(self, info):
+        r = self.result
+        r['n_live_reads'] += 1
+        r['live_max_phys_footprint_sampled_bytes'] = max(r['live_max_phys_footprint_sampled_bytes'] or 0,
+                                                         info['ri_phys_footprint'])
+        r['lifetime_max_phys_footprint_last_live_bytes'] = info['ri_lifetime_max_phys_footprint']
+
+    def _final(self, info):
+        r = self.result
+        r['final_read_after_exit'] = True
+        r['exit_read'] = dict(info)
+        r['lifetime_max_phys_footprint_bytes'] = info['ri_lifetime_max_phys_footprint']
+
+    def run(self):
+        r = self.result
+        try:
+            pid = None
+            while pid is None:
+                try:
+                    with open(self.launch_json_path) as handle:
+                        pid = int(json.load(handle)['pid'])
+                except (OSError, ValueError, KeyError, TypeError):
+                    if self._halt.wait(FOOTPRINT_LAUNCH_POLL_S):
+                        r['errors'].append('halted before a readable launch.json appeared')
+                        return
+            r['pid'] = pid
+            first = rusage_v4(pid)
+            ident = self._identity(pid)
+            r['identity'] = ident
+            r['identity_verified'] = first is not None and all(
+                ident.get(k) is True for k in ('ppid_is_launcher', 'cmdline_has_child_flag', 'cmdline_has_eval_key'))
+            if not r['identity_verified']:
+                r['errors'].append('child identity not verified')
+                return
+            start = first['ri_proc_start_abstime']
+            kq = select.kqueue()
+            try:
+                kq.control([select.kevent(pid, filter=select.KQ_FILTER_PROC,
+                                          flags=select.KQ_EV_ADD | select.KQ_EV_ONESHOT,
+                                          fflags=select.KQ_NOTE_EXIT)], 0)
+                r['registered_exit_event'] = True
+                while True:
+                    info = rusage_v4(pid)
+                    if info is None or info['ri_proc_start_abstime'] != start:
+                        r['errors'].append('child gone before an exit read (reaped, or pid reused)')
+                        break
+                    if info['ri_proc_exit_abstime']:
+                        self._final(info)
+                        break
+                    self._live(info)
+                    if kq.control(None, 1, self.poll_s):
+                        r['exit_event_received'] = True
+                        z = rusage_v4(pid)
+                        if z is not None and z['ri_proc_start_abstime'] == start and z['ri_proc_exit_abstime']:
+                            self._final(z)
+                        else:
+                            r['errors'].append('exit event received but the child was already reaped')
+                        break
+                    if self._halt.is_set():
+                        r['errors'].append('halted while the child was alive')
+                        break
+            finally:
+                kq.close()
+        except Exception as error:  # noqa: BLE001 -- recorded; the capture is then not exact
+            r['errors'].append(f'{type(error).__name__}: {error}')
+        finally:
+            if r['lifetime_max_phys_footprint_bytes'] is None:
+                r['lifetime_max_phys_footprint_bytes'] = r['lifetime_max_phys_footprint_last_live_bytes']
+            r['capture_exact'] = bool(r['identity_verified'] and r['final_read_after_exit']
+                                      and isinstance(r['lifetime_max_phys_footprint_bytes'], int)
+                                      and r['lifetime_max_phys_footprint_bytes'] > 0)
+            if r['lifetime_max_phys_footprint_bytes'] is not None:
+                r['lifetime_max_phys_footprint_gib'] = r['lifetime_max_phys_footprint_bytes'] / GIB
+
+    def stop(self):
+        self._halt.set()
+        self.join(timeout=self.poll_s + 10)
+        self.result['thread_alive_after_stop'] = self.is_alive()
+        return self.result
+
+
+def footprint_capture_selftest():
+    """Rule eleven for P_on, ZERO SOLVES: the capture path exercised end to end on a real child process of this launcher
+    before any run. The child touches FOOTPRINT_SELFTEST_BYTES, frees them, sleeps, exits; the launch.json is written
+    after Popen as the harness writes it; the child is reaped by os.wait4 WNOHANG polling as the harness reaps. Expected:
+    identity verified, final read on the exited child, lifetime max >= the allocation (a freed peak is still counted).
+    Negative control: a monitor given a different eval key on the same child refuses (identity not verified)."""
+    marker = 'w91_fp_selftest_' + hashlib.sha256(f'{os.getpid()}_{time.time()}'.encode()).hexdigest()[:16]
+    code = ('import time\nb = bytearray(%d)\nfor k in range(0, len(b), 4096):\n    b[k] = 1\ndel b\ntime.sleep(2.0)\n'
+            % FOOTPRINT_SELFTEST_BYTES)
+    d = tempfile.mkdtemp(prefix='w91_fp_selftest_')
+    out = {'allocation_bytes': FOOTPRINT_SELFTEST_BYTES, 'reap_poll_s': 1.0}
+    try:
+        mon = ChildFootprintMonitor(os.path.join(d, 'launch.json'), marker, poll_s=0.5)
+        neg = ChildFootprintMonitor(os.path.join(d, 'launch.json'), marker + '_not_this_child', poll_s=0.5)
+        mon.start()
+        neg.start()
+        proc = subprocess.Popen([sys.executable, '-c', code, '--child', marker], stdin=subprocess.DEVNULL,
+                                stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        with open(os.path.join(d, 'launch.json'), 'x') as handle:
+            json.dump({'pid': proc.pid}, handle)
+        t0, reaped, status = time.time(), False, None
+        while not reaped and time.time() - t0 < 120:
+            time.sleep(1.0)
+            rp, status, _ru = os.wait4(proc.pid, os.WNOHANG)
+            reaped = rp == proc.pid
+        proc.returncode = os.waitstatus_to_exitcode(status) if reaped else None
+        res, nres = mon.stop(), neg.stop()
+        out.update({'monitor': res, 'negative_control': {k: nres[k] for k in ('identity', 'identity_verified',
+                                                                              'capture_exact', 'errors')},
+                    'child_exit_code': proc.returncode, 'reaped_by_wait4': reaped})
+        checks = {'reaped_by_wait4_exit_0': reaped and proc.returncode == 0,
+                  'identity_verified': res['identity_verified'] is True,
+                  'exit_event_registered': res['registered_exit_event'] is True,
+                  'final_read_after_exit': res['final_read_after_exit'] is True,
+                  'lifetime_max_ge_allocation': (res['lifetime_max_phys_footprint_bytes'] or 0)
+                  >= FOOTPRINT_SELFTEST_BYTES,
+                  'capture_exact': res['capture_exact'] is True,
+                  'monitor_threads_ended': not res.get('thread_alive_after_stop') and not nres.get(
+                      'thread_alive_after_stop'),
+                  'negative_control_refuses_other_eval_key': nres['identity_verified'] is False
+                  and nres['capture_exact'] is False}
+        out['checks'] = checks
+        out['all_hold'] = all(checks.values())
+    except Exception as error:  # noqa: BLE001 -- the self-test FAILS, recorded
+        out['error'] = f'{type(error).__name__}: {error}'
+        out['traceback'] = traceback.format_exc()
+        out['all_hold'] = False
+    finally:
+        shutil.rmtree(d, ignore_errors=True)
+    return out
 
 
 # ======================================================================================================================
@@ -729,14 +976,25 @@ ESTIMATE_FORMULAS = {
                      'saving_min]'),
     'smoke_peaks': ('SMOKE_off = the v34 SMOKE (build_3x3 x k_smoke, calibrated on the 2 x 2 cap-2 smoke; cap 3 adds '
                     'one cycle); SMOKE_on = SMOKE_off - saving'),
-    'persist_transient': ('T_persist = the MAX of every recorded 3 x 3 pickle transient: the ON probe\'s (sampled RSS, '
-                          'sampled footprint, the W89 ru_maxrss definition) and W89\'s (+5.269 GiB committed; +6.562 GiB '
-                          'reported in commit 5bc57277\'s message from an earlier uncommitted-revision run) -- the '
-                          'conservative choice, it can only err toward NOT persisting. The RSS-based figures understate '
-                          'the transient when the process is compressed during the pickle (the ON probe: footprint '
-                          '9.33 -> 12.50 GiB across the step while RSS fell), so the footprint-sampled one is the '
-                          'demand measure'),
+    'persist_transient': ('v36 (W91, the Planner ruling on W90 question 3): T_persist = the ON probe\'s FOOTPRINT-sampled '
+                          'pickle transient (peak sampled phys_footprint during the persist callable - phys_footprint '
+                          'before it, 20 ms sampler, (b)-on state) -- THE FOOTPRINT VALUE, because the margin rule is '
+                          'on ONE measure, footprint (W32: "resident" means footprint), and P_on is a footprint peak. '
+                          'v35 took the MAX over every recorded transient (RSS-sampled, footprint-sampled, the W89 '
+                          'ru_maxrss definition, W89\'s +5.269 / +6.562 GiB RSS-based figures); that max lands on the '
+                          'same number, but for the wrong reason (a max across units). The RSS-based transients are '
+                          'REPORTED, NOT USED (the ON probe: footprint 9.33 -> 12.50 GiB across the step while RSS '
+                          'fell -- compression). Limitation: a 20 ms sampled maximum is <= the true footprint maximum'),
     'persist_peak_on': 'PERSIST_on = SUSTAINED_on + T_persist (the transient on top of the peak: an upper bound)',
+    'g_basis': ('g = k_run / k_smoke of the committed v34 memory model = (max ru_maxrss child peak of the 2 x 2 alpha-row '
+                'pair 1, concurrency 2) / (ru_maxrss child peak of the 2 x 2 smoke r2, alone): RSS-BASED. It CANNOT be '
+                'restated on a footprint basis from committed evidence: the campaign harness has never captured a '
+                'footprint (p515_s44_campaign_harness.py holds no footprint read), and no committed file under '
+                'P515S53/alpha_row, P515S53/tight_tail_w86 or P515S53/w89_3x3 mentions a footprint; the committed '
+                'footprint records (P515S44 scale_measurement, P515S45, P515S49 memory_profile, the W90 probes) are '
+                'builds, single cycles or block-level operations, none a full certified run with its smoke prefix. '
+                'Used in the rule as a dimensionless ratio, labelled RSS-based; the margin rule reports the break-even '
+                'g and the verdict at g = 1'),
 }
 
 
@@ -796,7 +1054,11 @@ def memory_estimates(probes, v34_model):
     w89_committed = v34_model['probes']['s53_3x3']['pickle']['transient_over_rss_before_bytes']
     w89_uncommitted = 6.562 * GIB
     t_all = [v for v in t_on.values() if isinstance(v, (int, float))] + [w89_committed, w89_uncommitted]
-    t_persist = max(t_all)
+    t_max_v35 = max(t_all)
+    # v36: the FOOTPRINT value (the Planner ruling on W90 question 3), not the max over measures
+    t_persist = t_on['transient_footprint_sampled_bytes']
+    if not isinstance(t_persist, int):
+        raise RuntimeError('the ON probe carries no footprint-sampled pickle transient')
     persist_on = {'central_bytes': sustained_on['central_bytes'] + t_persist,
                   'high_bytes': sustained_on['high_bytes'] + t_persist}
     best = v34_model['best_available_observed_bytes']
@@ -816,7 +1078,16 @@ def memory_estimates(probes, v34_model):
         'persist_transient': {'on_probe_bytes': t_on, 'w89_committed_bytes': w89_committed,
                               'w89_uncommitted_reported_bytes': w89_uncommitted,
                               'w89_uncommitted_source': 'git commit 5bc57277 message (earlier uncommitted-revision run)',
-                              'T_persist_bytes': t_persist, 'T_persist_gib': t_persist / GIB},
+                              'T_persist_bytes': t_persist, 'T_persist_gib': t_persist / GIB,
+                              'T_persist_measure': ('phys_footprint: the ON probe\'s footprint-sampled pickle transient '
+                                                    '(pickle_step.transient_footprint_sampled_bytes)'),
+                              'reported_not_used_rss_based': {
+                                  'on_probe_rss_sampled_bytes': t_on['transient_rss_sampled_bytes'],
+                                  'on_probe_ru_maxrss_W89_definition_bytes':
+                                      t_on['transient_ru_maxrss_bytes_W89_definition'],
+                                  'w89_committed_bytes': w89_committed, 'w89_uncommitted_reported_bytes': w89_uncommitted},
+                              'v35_max_over_measures_bytes': t_max_v35,
+                              'v35_max_equals_the_footprint_value': t_max_v35 == t_persist},
         'persist_peak_on': persist_on, 'persist_peak_on_gib': gib(persist_on),
         'persist_peak_off_v34_gib': v34_model['persist_peak_gib'],
         'margin_rule_preview_against_best_recorded_availability': {
@@ -825,6 +1096,7 @@ def memory_estimates(probes, v34_model):
             'would_persist': persist_on['central_bytes'] <= MARGIN * best,
             'note': 'a PREVIEW only; the rule uses the smoke\'s measured peak and the post-reboot availability'},
         'g_growth_cap_to_full_run': v34_model['k_run'] / v34_model['k_smoke'],
+        'g_basis': 'RSS (ru_maxrss); cannot be restated on footprint (see formulas.g_basis)',
         'srp1_validation': {'real_pair': srp1.get('real_pair_validation'),
                             'setter_check_took_effect': {k: (srp1.get('setter_check_release_solution_bookkeeping') or {})
                                                          .get(k, {}).get('took_effect') for k in ('true', 'false')},
@@ -977,9 +1249,14 @@ G6_V35_SELF_TESTS = [
 ]
 
 
-def g6_v35_self_tests():
+def g6_v35_self_tests(tests=None, evaluator=None):
     """G6_V35_SELF_TESTS on the REAL C* records of the W86 tight-tail re-certification (deep copies), the v32 self-test
-    constructions (p515_s53_w89_g6_final_attempt_reeval.self_tests) re-stated here for the v35 non-vacuity."""
+    constructions (p515_s53_w89_g6_final_attempt_reeval.self_tests) re-stated here for the v35 non-vacuity.
+    W91: `tests` / `evaluator` default to the v35 list and evaluator (unchanged behaviour); v36 passes its own
+    (g6_v36_self_tests). V12 / V13 (v36 only): the first K terminal primaries (record order) replaced by tier-2
+    ladders, K = B - min_floor_testable(B) (passes) and K + 1 (fails)."""
+    tests = G6_V35_SELF_TESTS if tests is None else tests
+    evaluator = g6_v35_evaluate_records if evaluator is None else evaluator
     entries = X.W._cells_from_recert_spec()
     d = os.path.join(X.W.RECERT_ROOT, 'evals', entries['c_star']['eval_dir'])
     rec = X._load(os.path.join(d, 'evaluation_record.json'))
@@ -1064,12 +1341,17 @@ def g6_v35_self_tests():
             p = copy.deepcopy(tgt)
             p['exit'] = 'Converged to a point of local infeasibility. Problem may be infeasible.'
             return replace(pop, [(tgt, [p])])
+        if tid in ('V12', 'V13'):
+            k = sym['K_PASS'] if tid == 'V12' else sym['K_FAIL']
+            return replace(pop, [(p, ladder_into(p)) for p in tp_all[:k]])
         raise KeyError(tid)
 
+    sym = {'B': b, 'K_PASS': b - g6_min_floor_testable(b), 'K_FAIL': b - g6_min_floor_testable(b) + 1}
+
     out, ok = [], True
-    for t in G6_V35_SELF_TESTS:
+    for t in tests:
         pop = population(t['id'])
-        g = g6_v35_evaluate_records(pop, window, terminal, prod, b)
+        g = evaluator(pop, window, terminal, prod, b)
         nv_false = sorted(k for k, v in g['non_vacuity'].items() if k != 'holds' and not v)
         block_failures = sorted({f for bb in g['bad_blocks'] for f in bb['failures']})
         bad_rec_failures = sorted({f for x in g['bad_records'] for f in x['failures']})
@@ -1081,8 +1363,13 @@ def g6_v35_self_tests():
         if 'expect_bad_record_failures' in t:
             checks['bad_record_failures'] = all(f in bad_rec_failures for f in t['expect_bad_record_failures'])
         if 'expect_n_not_applicable' in t:
-            want = b if t['expect_n_not_applicable'] == 'B' else t['expect_n_not_applicable']
+            want = sym.get(t['expect_n_not_applicable'], t['expect_n_not_applicable'])
             checks['n_not_applicable'] = tr['n_judged_not_applicable'] == want
+        if 'expect_n_floor_testable' in t:
+            want = sym.get(t['expect_n_floor_testable'], t['expect_n_floor_testable'])
+            if isinstance(want, str) and want.startswith('B-'):
+                want = b - sym[want[2:]]
+            checks['n_floor_testable_accepted_final'] = g.get('n_floor_testable_accepted_final') == want
         if 'expect_n_applicable' in t:
             checks['n_applicable'] = tr['n_judged_applicable'] == t['expect_n_applicable']
         if 'expect_v32_pass' in t:
@@ -1093,12 +1380,119 @@ def g6_v35_self_tests():
                'observed_non_vacuity_false': nv_false,
                'observed_terminal': {k: tr[k] for k in ('n_blocks', 'n_judged', 'n_judged_applicable',
                                                         'n_judged_not_applicable', 'judged_attempt_labels')},
-               'observed_n_judged_accepted_final': g['n_judged_accepted_final'], 'checks': checks,
+               'observed_n_judged_accepted_final': g['n_judged_accepted_final'],
+               'observed_n_floor_testable_accepted_final': g.get('n_floor_testable_accepted_final'),
+               'observed_min_floor_testable': g.get('min_floor_testable_accepted_final'), 'checks': checks,
                'ok': all(checks.values())}
         ok = ok and res['ok']
         out.append(res)
     return {'base': {'cell': 'c_star (W86 tight-tail re-certification)', 'eval_dir': d, 'B': b, 'terminal': terminal,
-                     'window': sorted(window), 'found': found}, 'results': out}, ok
+                     'window': sorted(window), 'found': found, 'symbols': sym}, 'results': out}, ok
+
+
+# ======================================================================================================================
+#  G6 v36 (W91) -- the v35 gate plus a LOWER BOUND on floor-testable accepted final attempts in T (closes V5)
+#  (g6_v35_evaluate_records / G6_V35 / G6_V35_SELF_TESTS are kept: v35 names them; v36 builds on them, unchanged)
+# ======================================================================================================================
+G6_FLOOR_TESTABLE_FRACTION_NUM, G6_FLOOR_TESTABLE_FRACTION_DEN = 9, 10
+
+
+def g6_min_floor_testable(b):
+    """ceil(0.9 x B) in integer arithmetic: 72 at B = 80, 44 at B = 48."""
+    return -((-G6_FLOOR_TESTABLE_FRACTION_NUM * b) // G6_FLOOR_TESTABLE_FRACTION_DEN)
+
+
+G6_V36 = {
+    **{k: v for k, v in G6_V35.items() if k not in ('name', 'replaces', 'non_vacuity', 'passes_iff',
+                                                   'design_consequence_recorded', 'computation', 'timing')},
+    'name': 'G6_floor_records_v36',
+    'replaces': 'v35 G6_floor_records_v35 (never applied to any run: v35\'s smoke and pair never ran)',
+    'non_vacuity': ('v35 non-vacuity verbatim (v30 part; T holds exactly B blocks; one judged attempt per block of T; '
+                    'exactly B accepted judged final attempts in T) AND [v36] at least ceil(0.9 x B) FLOOR-TESTABLE '
+                    'ACCEPTED final attempts in T -- a block\'s final accepted attempt is floor-testable when the floor '
+                    'formula applies to it (p515_s53_w88_g6_floor_reeval.classify(final)[0]; a tier-2 adaptive-mu retry '
+                    'is not); computed as ceil(9 B / 10) in integer arithmetic: 72 of 80 at 3 x 3, 44 of 48 at SRP1'),
+    'min_floor_testable_accepted_final': {'rule': 'ceil(0.9 x B)', 'at_B_80': g6_min_floor_testable(80),
+                                          'at_B_48': g6_min_floor_testable(48)},
+    'ten_percent_line_is_a_judgment': (
+        'the 0.9 (equivalently: at most 10 % of T\'s blocks may end on a non-floor-testable final attempt) is a '
+        'JUDGMENT by the Planner (W91), NOT a derived quantity: no statistic of the evidence base produces it. It bounds '
+        'how much of the terminal round may escape the floor test before G6 is declared insufficiently tested'),
+    'tier2_terminal_blocks_RULING_with_tolerance': (
+        'tier-2 final attempts in T up to the tolerance (B - ceil(0.9 B): 8 at 3 x 3, 4 at SRP1) are counted and judged '
+        'on the conditions that apply (the v35 ruling); beyond it G6 FAILS as INSUFFICIENTLY TESTED (non-vacuity '
+        'component terminal_floor_testable_accepted_ge_min False)'),
+    'passes_iff': 'non_vacuity (v36) holds AND every record of P satisfies its predicate AND every block of T satisfies its',
+    'design_consequence_closed': ('v35 recorded that a terminal round whose every final accepted attempt was tier-2 '
+                                  'would pass with zero floor tests (its self-test V5 declared exactly that); v36 FAILS '
+                                  'that round (V5 re-declared); the hole was opened by the Planner\'s tier-2 ruling and '
+                                  'closed by the Planner\'s W91 ruling'),
+    'computation': ('p515_s53_w90_3x3_campaign.g6_v36_evaluate_records: g6_v35_evaluate_records (by call, unchanged) '
+                    'plus the floor-testable count over the final attempt of every block of T, the final attempt '
+                    'chosen by the committed v32 block rule (p515_s53_w89_g6_final_attempt_reeval.judge_block)'),
+    'timing': ('fixed in v36 BEFORE any 3 x 3 evaluation exists (v35 never ran): NOT post-hoc; Addendum 48 restates '
+               'that a gate\'s scope is fixed in the frozen spec before the run'),
+}
+
+
+def g6_v36_evaluate_records(records, window, terminal, prod, b):
+    g = g6_v35_evaluate_records(records, window, terminal, prod, b)
+    by_block = {}
+    for r in records:
+        if r.get('round') == terminal:
+            by_block.setdefault(X.block_of(r), []).append(r)
+    finals = [X.judge_block(v)[0] for v in by_block.values()]
+    n_ft = sum(1 for f in finals if X.accepted(f) and X.M88.classify(f)[0])
+    m = g6_min_floor_testable(b)
+    nv = dict(g['non_vacuity'])
+    nv.pop('holds', None)
+    nv['terminal_floor_testable_accepted_ge_min'] = n_ft >= m
+    nv['holds'] = all(nv.values())
+    out = dict(g)
+    out['gate_version'] = 'v36'
+    out['non_vacuity'] = nv
+    out['non_vacuity_v35_reported'] = g['non_vacuity']
+    out['n_floor_testable_accepted_final'] = n_ft
+    out['min_floor_testable_accepted_final'] = m
+    out['insufficiently_tested'] = n_ft < m
+    out['gate_pass'] = nv['holds'] and not g['bad_records'] and not g['bad_blocks']
+    out['gate_pass_v35_reported'] = g['gate_pass']
+    return out
+
+
+def g6_v36_evaluate(eval_dir, rec, b):
+    records, window, terminal, prod = X.cell_inputs(eval_dir, rec)
+    return X._ladders_json(g6_v36_evaluate_records(records, window, terminal, prod, b))
+
+
+_NV36 = 'terminal_floor_testable_accepted_ge_min'
+G6_V36_SELF_TESTS = []
+for _t in G6_V35_SELF_TESTS:
+    _t = copy.deepcopy(_t)
+    if _t['id'] == 'V4':
+        _t['expect_nv_false'] = _t['expect_nv_false'] + [_NV36]
+        _t['why'] = _t['why'] + ' (v36: also no floor-testable final attempt)'
+    if _t['id'] == 'V5':
+        _t.update({'expect_pass': False, 'expect_nv_false': [_NV36], 'expect_n_floor_testable': 0,
+                   'why': ('v36 (W91 ruling): the all-tier-2 terminal round -- zero floor tests -- now FAILS as '
+                           'insufficiently tested (v35 passed it; that consequence was recorded in v35)')})
+    G6_V36_SELF_TESTS.append(_t)
+G6_V36_SELF_TESTS += [
+    {'id': 'V12', 'transform': ('the first K = B - ceil(0.9 B) terminal primaries (record order) replaced by transplanted '
+                                'tier-2 ladders (as V5, K blocks): exactly ceil(0.9 B) floor-testable finals remain'),
+     'expect_pass': True, 'expect_bad_records': 0, 'expect_block_failures': [], 'expect_nv_false': [],
+     'expect_n_not_applicable': 'K_PASS', 'expect_n_floor_testable': 'B-K_PASS',
+     'why': '<= 10 % tier-2 final attempts: passes, the tier-2 finals counted and judged on the conditions that apply'},
+    {'id': 'V13', 'transform': 'as V12 with K + 1 blocks: ceil(0.9 B) - 1 floor-testable finals remain',
+     'expect_pass': False, 'expect_bad_records': 0, 'expect_block_failures': [], 'expect_nv_false': [_NV36],
+     'expect_n_not_applicable': 'K_FAIL', 'expect_n_floor_testable': 'B-K_FAIL',
+     'why': '> 10 % tier-2 final attempts: FAILS as insufficiently tested, and only through that component'},
+]
+del _t
+
+
+def g6_v36_self_tests():
+    return g6_v35_self_tests(G6_V36_SELF_TESTS, g6_v36_evaluate_records)
 
 
 # ======================================================================================================================
@@ -1290,9 +1684,11 @@ def pre_launch_assertion(derived, specs=()):
 
 
 def launcher_checklist():
-    """Rule eleven: every quantity v35 requires has a capture path, asserted before any run."""
+    """Rule eleven: every quantity v36 requires has a capture path, asserted before any run (W91: including P_on, the
+    footprint peak, by a zero-solve end-to-end self-test of the capture on a real child process)."""
     base = W9.launcher_checklist()
     child_src = inspect.getsource(H._child_real)
+    fp_selftest = footprint_capture_selftest()
     checks = {
         'b_option_reaches_the_child_and_is_recorded': (
             "'release_solution_bookkeeping_applied_in_child': holder.get('release_solution_bookkeeping_applied')"
@@ -1301,13 +1697,20 @@ def launcher_checklist():
         'child_peak_rss_recorded': "'child_python_process_ru_maxrss': self_ru.ru_maxrss" in child_src,
         'per_cycle_rss_captured': all(f in H.PER_CYCLE_RESPONSE_FIELDS for f in ('rss_bytes', 'ru_maxrss_bytes')),
         'g6_v35_uses_the_v32_block_rules': 'X.g6_v32_evaluate_records(' in inspect.getsource(g6_v35_evaluate_records),
+        'g6_v36_builds_on_v35': 'g6_v35_evaluate_records(' in inspect.getsource(g6_v36_evaluate_records),
         'bitwise_compare_defined': 'NON_DETERMINISTIC_CYCLE_FIELDS' in inspect.getsource(bitwise_compare),
         'margin_rule_defined': 'MARGIN *' in inspect.getsource(margin_rule),
+        'margin_rule_P_on_is_the_footprint_capture': "fp_on['lifetime_max_phys_footprint_bytes']"
+                                                     in inspect.getsource(margin_rule),
+        'smoke_run_monitors_every_arm': 'ChildFootprintMonitor(' in inspect.getsource(run_smoke),
+        'pair_run_monitors_every_cell': 'ChildFootprintMonitor(' in inspect.getsource(run_pair),
+        'footprint_capture_selftest_holds': fp_selftest['all_hold'],
     }
     missing = sorted(k for k, v in checks.items() if not v)
     if missing:
-        raise AssertionError(f'RULE ELEVEN (W90 launcher): capture paths missing: {missing}')
-    return {'w90_launcher': checks, 'w89_launcher': base}
+        raise AssertionError(f'RULE ELEVEN (W90/W91 launcher): capture paths missing: {missing}; footprint self-test '
+                             f'{fp_selftest}')
+    return {'w90_launcher': checks, 'footprint_capture_selftest': fp_selftest, 'w89_launcher': base}
 
 
 # ======================================================================================================================
@@ -1448,45 +1851,85 @@ def bitwise_compare(dir_on, dir_off, rec_on, rec_off):
 PERSISTENCE_MARGIN_RULE = {
     'rule': ('Addendum 48: persistence ONLY IF the measured runtime peak with persistence <= 0.85 x memory available '
              'after the reboot (>= 15 % headroom for a ~15 h run); the rule, not any prediction, decides'),
+    'governing_measure': ('v36 (W91, the Planner ruling on W90 question 3): FOOTPRINT (macOS phys_footprint) for BOTH '
+                          'memory terms, P_on and T_persist -- the W32 rule that "resident" means footprint. v35 mixed '
+                          'units (P_on = ru_maxrss, an RSS peak; T_persist = a footprint transient); on macOS the two '
+                          'diverge sharply under compression (the W90 (b)-off probe: RSS 9.97 vs footprint 13.28 GiB at '
+                          'the same moment), so the verdict depended on which was used'),
     'A_post': ('the available memory the smoke launch\'s preflight records BEFORE its first arm (L.memory_preflight: '
                'hw.memsize - (wired + anonymous + compressor-occupied) x page size, the vm_stat measure used by every '
                'committed launch) -- the smoke is the first launch after the author\'s reboot; recorded in '
                'smoke_gate.json provenance'),
-    'P_on': ('the (b)-ON smoke arm\'s child peak, measured directly on the 3 x 3 instance: evaluation_record '
-             'peak_rss.child_python_process_ru_maxrss (ru_maxrss of the evaluation process, bytes on macOS)'),
+    'P_on': ('the (b)-ON smoke arm\'s child FOOTPRINT PEAK, measured directly on the 3 x 3 instance by this launcher: '
+             'ChildFootprintMonitor.lifetime_max_phys_footprint_bytes with capture_exact True (FOOTPRINT_MEASURE: '
+             'ri_lifetime_max_phys_footprint of the evaluation child, final read on the exited, unreaped child). The '
+             'RSS peaks (peak_rss.child_python_process_ru_maxrss etc.) are REPORTED, NOT USED. If the capture is not '
+             'exact the rule is NOT evaluated (no fallback to RSS) and the pair cannot be frozen'),
     'g': ('the measured growth from a smoke to a full certified run: max child peak of the 2 x 2 alpha-row pair 1 / the '
-          '2 x 2 smoke r2 child peak (= k_run / k_smoke of the committed v34 memory model; both (b) off)'),
-    'T_persist': 'the stage spec\'s declared persistence transient (ITEM 1: the max of every recorded 3 x 3 transient)',
+          '2 x 2 smoke r2 child peak (= k_run / k_smoke of the committed v34 memory model; both (b) off) = 1.0344. '
+          'RSS-BASED (ru_maxrss) -- it CANNOT be restated on a footprint basis (no committed harness run carries a '
+          'footprint; search scope in item1_memory_measurement.estimates.formulas.g_basis); used as a dimensionless '
+          'ratio. Reported with it: g_break = (0.85 x A_post - T_persist) / P_on (the g at which the verdict flips) '
+          'and the verdict at g = 1 (the pair\'s x0 cell repeats the smoke\'s three cycles bit for bit, so its '
+          'footprint peak is not expected below P_on: g = 1 is the floor of a footprint g). A REFUSAL that holds at '
+          'g = 1 does not depend on g\'s basis; a PERSIST verdict rests on the RSS-based g and is flagged'),
+    'T_persist': ('the stage spec\'s declared persistence transient: the ON probe\'s FOOTPRINT-sampled pickle transient '
+                  '(8.37 GiB) -- the footprint value, not a max over measures'),
     'P_run': 'g x P_on (the pair\'s per-child peak without persistence)',
     'P_persist': 'P_run + T_persist (the runtime peak with persistence; the transient on top of the peak: an upper bound)',
-    'test': 'persist_certified_models = (P_persist <= 0.85 x A_post); hull_polish = False in every case',
+    'test': ('persist_certified_models = (P_persist <= 0.85 x A_post), P_persist = g x P_on(footprint) + '
+             'T_persist(footprint); hull_polish = False in every case'),
+    'A_post_note': ('A_post (vm_stat: hw.memsize - (wired + anonymous + compressor-occupied) x page size) counts the '
+                    'compressor at its COMPRESSED size while phys_footprint counts compressed pages at their logical '
+                    'size, so footprint demand <= 0.85 x A_post errs toward refusing'),
     'where_decided': ('computed and recorded by the smoke gate (smoke_gate.json margin_rule), read by --stage pair '
                       '--freeze into every pair entry\'s post_certification; the pair --run preflight then REFUSES '
                       'unless available >= P_persist (persist) or P_run (no persist) at its own launch'),
     'without_persistence': ('the hull polish is omitted at 3 x 3 and reported as such, with the SRP1 figure (3.09e-6 '
-                            'relative, below the band -- Addendum 48\'s statement; the terminal models are not kept); '
+                            'relative, below the band -- Addendum 48\'s statement; provenance in the stage spec\'s '
+                            'hull_polish_srp1_figure_provenance; the terminal models are not kept); '
                             'with persistence the pickle is kept and no polish runs in the child either (Addendum 46 '
                             'voided the polished convention; a polish, if ever wanted, runs post hoc from the pickle)'),
 }
 
 
-def margin_rule(ss, peak_on_bytes, available_post_reboot_bytes):
+def margin_rule(ss, fp_on, available_post_reboot_bytes, rss_peak_on_bytes=None):
+    """v36: ONE measure, footprint. `fp_on` = the (b)-on arm's ChildFootprintMonitor result; P_on is its
+    lifetime_max_phys_footprint_bytes, used ONLY when capture_exact (no fallback to RSS)."""
     est = ss['item1_memory_measurement']['estimates']
     g = est['g_growth_cap_to_full_run']
     t = est['persist_transient']['T_persist_bytes']
+    fp_on = fp_on or {}
+    peak_on_bytes = fp_on['lifetime_max_phys_footprint_bytes'] if fp_on.get('capture_exact') else None
+    base = {'definition': PERSISTENCE_MARGIN_RULE, 'measure': 'phys_footprint (P_on and T_persist)',
+            'P_on_capture': {k: fp_on.get(k) for k in ('capture_exact', 'identity_verified', 'final_read_after_exit',
+                                                       'lifetime_max_phys_footprint_bytes', 'errors')},
+            'rss_peak_on_reported_not_used_bytes': rss_peak_on_bytes, 'g': g,
+            'g_basis': 'RSS (ru_maxrss), dimensionless; cannot be restated on footprint', 'T_persist_bytes': t,
+            'T_persist_measure': 'phys_footprint (the ON probe\'s footprint-sampled pickle transient)'}
     if not (isinstance(peak_on_bytes, int) and isinstance(available_post_reboot_bytes, int)):
-        return {'evaluated': False, 'why': 'P_on or A_post missing', 'persist_certified_models': False,
-                'P_on_bytes': peak_on_bytes, 'A_post_bytes': available_post_reboot_bytes}
+        return {**base, 'evaluated': False,
+                'why': 'P_on (exact footprint capture) or A_post missing -- NO fallback to RSS; the pair cannot freeze',
+                'persist_certified_models': False, 'P_on_bytes': peak_on_bytes,
+                'A_post_bytes': available_post_reboot_bytes}
     p_run = g * peak_on_bytes
     p_persist = p_run + t
     threshold = MARGIN * available_post_reboot_bytes
     persist = p_persist <= threshold
-    return {'evaluated': True, 'definition': PERSISTENCE_MARGIN_RULE, 'P_on_bytes': peak_on_bytes, 'g': g,
-            'T_persist_bytes': t, 'P_run_bytes': p_run, 'P_persist_bytes': p_persist,
+    g_break = (threshold - t) / peak_on_bytes
+    at_g1 = peak_on_bytes + t <= threshold
+    return {**base, 'evaluated': True, 'P_on_bytes': peak_on_bytes,
+            'P_run_bytes': p_run, 'P_persist_bytes': p_persist,
             'A_post_bytes': available_post_reboot_bytes, 'threshold_bytes': threshold,
             'gib': {'P_on': peak_on_bytes / GIB, 'P_run': p_run / GIB, 'P_persist': p_persist / GIB,
-                    'A_post': available_post_reboot_bytes / GIB, 'threshold': threshold / GIB},
+                    'T_persist': t / GIB, 'A_post': available_post_reboot_bytes / GIB, 'threshold': threshold / GIB},
             'persist_certified_models': persist,
+            'g_break_even': g_break, 'persist_at_g_1': at_g1,
+            'verdict_independent_of_g_basis': (not persist) and (not at_g1),
+            'verdict_note': ('REFUSAL holds at g = 1 (the floor of a footprint g): independent of g\'s basis'
+                             if (not persist and not at_g1) else
+                             'the verdict depends on g (g_break_even between 1 and the RSS-based g, or a PERSIST '
+                             'verdict): it rests on the RSS-based g -- flagged for the Planner'),
             'post_certification_for_the_pair': dict(POST_CERT_PERSIST if persist else POST_CERT_NO_PERSIST),
             'required_pair_bytes': p_persist if persist else p_run}
 
@@ -1521,25 +1964,34 @@ SMOKE_GATE = {
             f'{list(NON_DETERMINISTIC_CYCLE_FIELDS)} -- per-cycle gross, recourse, objective change, every Boyd primal / '
             'dual residual ratio and channel pass, rho, the response record -- compared as JSON text (bit for bit); row '
             f'count == {SMOKE_CAP} on both; the initialisation identity\'s gross hex equal; cycles_run equal'),
-    'S17': ('the 3 x 3 runtime peak MEASURED DIRECTLY on both arms: child_python_process_ru_maxrss and '
-            'production_state_peak_rss_ru_maxrss present (ints) on both records'),
+    'S17': ('the 3 x 3 runtime peak MEASURED DIRECTLY on both arms: (i) child_python_process_ru_maxrss and '
+            'production_state_peak_rss_ru_maxrss present (ints) on both records (RSS; reported); (ii) [v36] the '
+            'FOOTPRINT peak captured EXACTLY on both arms by this launcher (ChildFootprintMonitor: identity verified, '
+            'final read of ri_lifetime_max_phys_footprint on the exited, unreaped child, int > 0) -- P_on of the margin '
+            'rule is the (b)-on value'),
     'pass_iff': 'every S1-S17 check holds on every arm; the margin-rule verdict is recorded, NOT part of PASS',
 }
-SMOKE_REPORTED = ('per arm: child and production-state peaks, per-cycle RSS / ru_maxrss, cycle wall; the measured (b) '
-                  'saving at runtime (child peak off - on, production peak off - on); floor-status tally, retries; the '
-                  'persistence margin rule (A_post, P_on, g, T_persist, P_run, P_persist, threshold, verdict)')
+SMOKE_REPORTED = ('per arm: child and production-state peaks (RSS), the child footprint peak (v36), per-cycle RSS / '
+                  'ru_maxrss, cycle wall; the measured (b) saving at runtime (child footprint peak off - on [v36], child '
+                  'RSS peak off - on, production peak off - on); floor-status tally, retries; the persistence margin '
+                  'rule (A_post, P_on (footprint), g (RSS-based), T_persist (footprint), P_run, P_persist, threshold, '
+                  'verdict, g_break_even, verdict at g = 1)')
 PER_ENTRY_GATES = {
     **{k: v for k, v in W9.PER_ENTRY_GATES.items() if k not in ('G6_floor_records_v32', 'G8_post_certification')},
     'applies_to': 'both pair cells (x0, n7_4h_e1); there is no other arm',
-    'G6_floor_records_v35': 'G6_V35 below (final scope; tier-2 ruling), B = 80',
+    'G6_floor_records_v36': ('G6_V36 below (final scope; tier-2 ruling with the W91 lower bound: >= ceil(0.9 B) = 72 '
+                             'floor-testable accepted final attempts in T), B = 80'),
     'G8_post_certification': ('as the pair campaign spec decided from the smoke gate\'s margin rule, resolved by '
                               'H.resolve_post_certification: nothing requested (no persist, no polish) -> no '
                               'post-certification in the record and no certified_models.pkl; persist -> certified: '
                               'status evaluated and the pickle written with sha256 == the record\'s; not certified: '
                               'skipped, no pickle'),
     'G12_b_in_force': 'as S15 for (b) on: declared True, took effect, read back True, calls == successful network solves',
-    'reported_with_G6': ('per cell: judged applicable / not applicable (tier-2) counts in T; a tier-2 final attempt in '
-                         'T is flagged for the Planner'),
+    'reported_with_G6': ('per cell: judged applicable / not applicable (tier-2) counts in T, the floor-testable '
+                         'accepted count against its minimum; a tier-2 final attempt in T is flagged for the Planner'),
+    'reported_not_gated_footprint': ('per cell: the child footprint peak (ChildFootprintMonitor, as S17 (ii)); x0\'s '
+                                     'peak / the smoke\'s P_on = the FIRST footprint-basis g (reported; it does not '
+                                     'revisit the persistence decision, which the smoke gate fixed)'),
 }
 
 
@@ -1597,7 +2049,44 @@ def predictions(est, inst, refs):
     }
 
 
-def stage_spec_content(inst, derived, probes, est, pre, rule11, plumbing, selftests, identity, v34):
+def hull_polish_srp1_figure():
+    """W91: the SRP1 hull-polish figure Addendum 48 cites (3.09e-6 relative), read from its committed artifact and
+    hash-checked (the file, its manifest entry, git state); the quantity it measures stated operationally."""
+    rel = SRP1_HULL_POLISH['path']
+    d = _load(rel)
+    g = d['polish']['gate']
+    man = _load(SRP1_HULL_POLISH['manifest'])
+    man_sha = next((v for k, v in man.items() if isinstance(v, str) and k.endswith('hull_polish_results.json')), None)
+    if man_sha is None and isinstance(man.get('files'), dict):
+        man_sha = next((v for k, v in man['files'].items() if k.endswith('hull_polish_results.json')), None)
+    rel_fig = g['relative_pct'] / 100.0
+    out = {
+        **SRP1_HULL_POLISH, 'sha256_now': _sha(rel), 'sha256_matches': _sha(rel) == SRP1_HULL_POLISH['sha256'],
+        'manifest_sha256_entry': man_sha, 'manifest_entry_matches': man_sha == SRP1_HULL_POLISH['sha256'],
+        **{f'git_{k}': v for k, v in _git_state(rel).items()},
+        'spec_git': _git_state(SRP1_HULL_POLISH['spec']),
+        'relative_pct': g['relative_pct'], 'relative': rel_fig, 'relative_rounded_3sf': float(f'{rel_fig:.3g}'),
+        'equals_3p09e-6_at_3sf': float(f'{rel_fig:.3g}') == 3.09e-6,
+        'quantity': ('|Delta| / certified cost, Delta = sum over the 48 SRP1 blocks of [f_i(polished) - f_i(certified)] '
+                     '(weighted base objectives: polish.gate.gate_quantity), denominator = certified '
+                     'gross_operational_cost (settlement-excluded: polish.gate.denominator); each coupling entry bounded '
+                     'to the closed interval of the agents\' achieved values at the certified cycle (spec v12)'),
+        'gate_quantity': g.get('gate_quantity'), 'denominator': g.get('denominator'),
+        'delta_sum_blocks': g.get('delta_sum_blocks'), 'certified_cost': g.get('certified_cost'),
+        'gate_pass': g.get('pass'), 'threshold_pct': g.get('threshold_pct'),
+        'instance': ('SRP1, the oracle arm D (%s) certified point: cycles_run %s (admm_converged_at_cycle %s), cost %r '
+                     '(reproduced bitwise in the run); the P5.15 Step 3.5 configuration of 2026-09-18 -- NOT the current '
+                     'production configuration (tight tail, row-18 premium alpha 0.5)'
+                     % (d.get('arm_label'), d.get('admm_cycles_run'), d.get('admm_converged_at_cycle'),
+                        d.get('admm_gross_operational_cost'))),
+    }
+    out['verified'] = bool(out['sha256_matches'] and out['manifest_entry_matches'] and out.get('git_git_tracked')
+                           and out.get('git_git_clean') and out['equals_3p09e-6_at_3sf'])
+    return out
+
+
+def stage_spec_content(inst, derived, probes, est, pre, rule11, plumbing, selftests, identity, v34, v35=None,
+                       hull=None):
     refs = W9._reference_R()
     cells = {}
     for label in STAGES['pair']['labels']:
@@ -1610,11 +2099,48 @@ def stage_spec_content(inst, derived, probes, est, pre, rule11, plumbing, selfte
     return {
         'schema': f'p515_frozen_spec_v{SPEC_VERSION}', 'version': SPEC_VERSION, 'stage': STAGE_TEXT,
         'authority': ['PLANNER_BRIEF_2026-09-13.md Addendum 48 (all items for the 3 x 3 pair)',
+                      'Planner task W91 (rulings on the W90 questions: Q1 cap 3 kept; Q2 A_post at the smoke launch; '
+                      'Q3 the margin rule on ONE measure, footprint; Q4 G6 lower bound on floor-testable finals; the '
+                      '3.09e-6 provenance)',
                       'Planner task W90 (item 1: the (b) measurement at zero solves; item 2: spec v35; the Planner '
                       'ruling on W89 question 4)', 'Addenda 44 / 46 (prefix draw, R, tail) through v34'],
-        'predecessor': {'path': SPEC_V34['path'], 'sha256': _sha(SPEC_V34['path'])},
-        'predecessor_not_edited': 'v34 stays as frozen; its r2 campaign specs (never run) are superseded by v35',
-        'predecessor_chain': {'v34': SPEC_V34, 'v33': W9.SPEC_V33, 'v32': W9.SPEC_V32},
+        'predecessor': {'path': SPEC_V35['path'], 'sha256': _sha(SPEC_V35['path'])},
+        'predecessor_not_edited': ('v35 stays as frozen; its two smoke campaign specs (never run) are superseded by v36; '
+                                   'v34 stays as frozen'),
+        'predecessor_chain': {'v35': SPEC_V35, 'v34': SPEC_V34, 'v33': W9.SPEC_V33, 'v32': W9.SPEC_V32},
+        'superseded_campaign_freezes_under_v35': {
+            **{arm: {**V35_SMOKE_FREEZES[arm], 'sha256_now': _sha(V35_SMOKE_FREEZES[arm]['path'])} for arm in SMOKE_ARMS},
+            'why': ('never run; they pin v35 and the pre-W91 launcher sha256 (the v36 margin rule, the footprint capture '
+                    'and G6 v36 changed the launcher); their campaign ids (s53_w90_3x3_smoke_*) are not reused')},
+        'changes_from_v35': [
+            'margin rule on ONE measure, FOOTPRINT, for both memory terms (Planner ruling W90 Q3): P_on = the (b)-on '
+            'smoke child\'s footprint peak (ChildFootprintMonitor, exact capture required, no fallback to RSS); '
+            'T_persist = 8.37 GiB stated as the footprint value (not as the max over measures); g = 1.0344 labelled '
+            'RSS-based (cannot be restated on footprint), with g_break_even and the verdict at g = 1 reported',
+            'S17 extended: the footprint peak captured exactly on both smoke arms; the footprint (b) saving at runtime '
+            'reported; the pair records each cell\'s footprint peak (reported, not gated)',
+            'rule eleven: a zero-solve end-to-end self-test of the footprint capture (real child process of the '
+            'launcher, reaped as the harness reaps) runs before every freeze and run and must hold',
+            'G6 v36 (Planner ruling W90 Q4): non-vacuity also requires >= ceil(0.9 B) floor-testable accepted final '
+            'attempts in T (72 of 80 at 3 x 3; 44 of 48 at SRP1); the 10 % line is a judgment; self-tests V5 (all '
+            'tier-2) now fails, V12 (<= 10 %) passes, V13 (> 10 %) fails',
+            'the SRP1 hull-polish figure 3.09e-6 located, hash-checked and its quantity stated '
+            '(hull_polish_srp1_figure_provenance)',
+            'new campaign ids s53_w91_3x3_{smoke_bon, smoke_boff, pair}; smoke gate dir smoke_gate_v36',
+            'no harness change (harness sha256 as in v35); eval keys carried over unchanged'],
+        'notes': {
+            'W90_finding_1_harness_hash_change': (
+                'the W90 option (b) plumbing changed p515_s44_campaign_harness.py, so the never-run W89 r2 campaign specs '
+                '(s53_w89_3x3_smoke_r2 aa690387, s53_w89_3x3_pair_r2 da629ab5, frozen under v34) pin a harness sha256 '
+                'that no longer matches and could not pass their own run preconditions; they were superseded by v35 '
+                'anyway (recorded as a note, Planner W91)'),
+            'Q1_cap': 'cap 3 kept (Planner W91: Addendum 48 specifies three cycles; the longer estimate is not a reason)',
+            'Q2_A_post': ('A_post = the smoke launch\'s preflight (after the reboot); the pair\'s own preflight re-checks at '
+                          'the pair launch (two measurements, Planner W91)'),
+            'smoke_arm_preflight_thresholds_unchanged': (
+                'the per-arm smoke preflight thresholds (bon: SMOKE_on high; boff: SMOKE_off) are the v35 ESTIMATES '
+                '(the v34 RSS-calibrated smoke model minus the footprint-measured (b) saving); they only gate whether an '
+                'arm starts, not the persistence decision; unchanged from v35')},
         'superseded_campaign_freezes_under_v34': {
             'smoke': os.path.join(W9.ROOT_REL, 'campaign_s53_w89_3x3_smoke_r2'),
             'pair': os.path.join(W9.ROOT_REL, 'campaign_s53_w89_3x3_pair_r2'),
@@ -1652,11 +2178,21 @@ def stage_spec_content(inst, derived, probes, est, pre, rule11, plumbing, selfte
             'per_cycle_response_capture': 'ON (harness: every derived-instance evaluation; asserted, rule eleven)',
             'floor_status_capture': 'ON (harness: every evaluation; asserted, rule eleven)'},
         'hull_polish_at_3x3': PERSISTENCE_MARGIN_RULE['without_persistence'],
+        'hull_polish_srp1_figure_provenance': hull,
         'persistence_margin_rule': PERSISTENCE_MARGIN_RULE,
+        'footprint_capture': {'measure': FOOTPRINT_MEASURE, 'poll_s': FOOTPRINT_POLL_S,
+                              'implementation': ('p515_s53_w90_3x3_campaign.ChildFootprintMonitor (a thread of this '
+                                                 'launcher, one per evaluation; started before H.evaluate, stopped '
+                                                 'after it); rusage_v4 through the committed S44 libproc handle'),
+                              'harness_changed': False,
+                              'self_test_at_freeze': (rule11 or {}).get('footprint_capture_selftest')},
         'cells': cells,
-        'eval_key_carry_over': {label: {'v34': cells[label]['v34_frozen_eval_key'], 'v35': cells[label]['eval_key'],
-                                        'equal': cells[label]['v34_frozen_eval_key'] == cells[label]['eval_key']}
+        'eval_key_carry_over': {label: {'v34': cells[label]['v34_frozen_eval_key'], 'v36': cells[label]['eval_key'],
+                                        'v35': ((v35 or {}).get('cells') or {}).get(label, {}).get('eval_key'),
+                                        'equal': (cells[label]['v34_frozen_eval_key'] == cells[label]['eval_key']
+                                                  == ((v35 or {}).get('cells') or {}).get(label, {}).get('eval_key'))}
                                 for label in cells},
+        'harness_sha256_equals_v35': H.sha256_file(H.HARNESS_PATH) == (v35 or {}).get('harness_sha256'),
         'release_solution_bookkeeping_and_evaluation_key': {
             'enters_evaluation_key': plumbing['enters_evaluation_key'],
             'evidence': ('H.evaluation_key has no such parameter and its source never names it; three scratch campaign '
@@ -1683,8 +2219,11 @@ def stage_spec_content(inst, derived, probes, est, pre, rule11, plumbing, selfte
                               'base': 83 * (SMOKE_CAP + 1)},
             'parent': 'this launcher: SolveProfileGuard(permitted=()) and every imported launcher guard verify(0)'},
         'per_entry_gates': PER_ENTRY_GATES,
-        'G6_V35': G6_V35, 'g6_post_hoc_record': G6_POST_HOC_RECORD,
-        'g6_v35_self_tests_declared': G6_V35_SELF_TESTS, 'g6_v35_self_test_results': selftests,
+        'G6_V36': G6_V36, 'G6_V35_as_frozen_in_v35': G6_V35,
+        'g6_post_hoc_record': {**G6_POST_HOC_RECORD,
+                               'v36_floor_testable_lower_bound': ('fixed BEFORE any 3 x 3 run (v35 never ran) -- NOT '
+                                                                  'post-hoc; Planner ruling on W90 question 4')},
+        'g6_v36_self_tests_declared': G6_V36_SELF_TESTS, 'g6_v36_self_test_results': selftests,
         'g6_v32_verbatim': _load(W9.SPEC_V32['path'])['per_entry_gates']['G6_floor_records_v32'],
         'acceptance_cross_check': X.ACCEPTANCE_CROSS_CHECK,
         'smoke_stages': {k: STAGES[k] for k in SMOKE_ARMS}, 'smoke_gate_declared_before_run': SMOKE_GATE,
@@ -1741,6 +2280,11 @@ def _common_checks():
     failures, ev = W9._common_checks()
     if _sha(SPEC_V34['path']) != SPEC_V34['sha256'] or not _committed_clean(SPEC_V34['path']):
         failures.append('v34 not as committed')
+    if _sha(SPEC_V35['path']) != SPEC_V35['sha256'] or not _committed_clean(SPEC_V35['path']):
+        failures.append('v35 not as committed')
+    for arm, f in V35_SMOKE_FREEZES.items():
+        if _sha(f['path']) != f['sha256'] or not _committed_clean(f['path']):
+            failures.append(f'the v35 {arm} freeze not as committed')
     if _sha(SRP1_B_GATE['path']) != SRP1_B_GATE['sha256'] or not _committed_clean(SRP1_B_GATE['path']):
         failures.append('the SRP1 (b) gate record not as committed')
     if _sha(W32_PROFILE) != W32_PROFILE_SHA256 or not _committed_clean(W32_PROFILE):
@@ -1755,13 +2299,14 @@ def _common_checks():
 
 
 def freeze_spec(started):
-    tag = f'W90-V{SPEC_VERSION}'
+    tag = f'W91-V{SPEC_VERSION}'
     failures, _ev = _common_checks()
     existing = sorted(f for f in os.listdir(_abs(_P53)) if f.startswith(SPEC_PREFIX))
     if existing:
         failures.append(f'v{SPEC_VERSION} already exists (write-once): {existing}')
     inst, derived = W9.load_instance_record()
     v34 = _load(SPEC_V34['path'])
+    v35 = _load(SPEC_V35['path'])
     probes, pf = load_probes()
     failures += pf
     v34_model, err = W9.memory_model()
@@ -1780,15 +2325,24 @@ def freeze_spec(started):
             _log(f'[{tag} PRECONDITION FAILED] {f}')
         _finish(1)
     plumbing = harness_b_plumbing_checks(derived)
-    selftests, st_ok = g6_v35_self_tests()
+    selftests, st_ok = g6_v36_self_tests()
     identity = solve_identity_recomputed()
     est = memory_estimates(probes, v34_model)
     val = est['srp1_validation']
+    hull = hull_polish_srp1_figure()
     problems = []
+    if not hull['verified']:
+        problems.append(f'the SRP1 hull-polish figure does not verify: {hull}')
+    if est['persist_transient']['T_persist_bytes'] != v35['item1_memory_measurement']['estimates']['persist_transient'][
+            'T_persist_bytes']:
+        problems.append('T_persist (footprint) differs from v35\'s value (expected the same number, now for the stated '
+                        'reason)')
+    if est['g_growth_cap_to_full_run'] != v35['item1_memory_measurement']['estimates']['g_growth_cap_to_full_run']:
+        problems.append('g differs from v35\'s')
     if not plumbing['all_hold']:
         problems.append(f"harness (b) plumbing checks fail: {[k for k, v in plumbing['checks'].items() if not v]}")
     if not st_ok:
-        problems.append(f"G6 v35 self-tests not as declared: {[r['id'] for r in selftests.get('results', []) if not r['ok']]}")
+        problems.append(f"G6 v36 self-tests not as declared: {[r['id'] for r in selftests.get('results', []) if not r['ok']]}")
     if not identity['all_recomputed_true']:
         problems.append('identity_holds does not recompute True on every reference-chain cell')
     if not (val['real_pair'] or {}).get('all_checks_pass'):
@@ -1803,7 +2357,10 @@ def freeze_spec(started):
         problems.append('the ON probe did not leave every block\'s bookkeeping empty')
     if (probes['s53_3x3_on']['data'].get('pickle_step') or {}).get('status') != 'measured':
         problems.append('the ON probe did not measure the pickle transient')
-    content = stage_spec_content(inst, derived, probes, est, pre, rule11, plumbing, selftests, identity, v34)
+    content = stage_spec_content(inst, derived, probes, est, pre, rule11, plumbing, selftests, identity, v34, v35=v35,
+                                 hull=hull)
+    if not content['harness_sha256_equals_v35']:
+        problems.append('the harness changed since v35 (W91 makes no harness change)')
     if not content['instance_equals_v34']:
         problems.append('the instance block differs from v34\'s')
     if not all(v['equal'] for v in content['eval_key_carry_over'].values()):
@@ -1833,8 +2390,19 @@ def freeze_spec(started):
          f"{est['route_W_gib']}")
     _log(f"[{tag}] peaks: smoke off {est['smoke_off_gib']:.2f} / on {est['smoke_on_gib']}; pair on "
          f"{est['sustained_on_gib']}; with persist {est['persist_peak_on_gib']} (T {est['persist_transient']['T_persist_gib']:.2f})")
-    _log(f"[{tag}] plumbing all_hold {plumbing['all_hold']} (enters key: {plumbing['enters_evaluation_key']}); G6 v35 "
+    _log(f"[{tag}] plumbing all_hold {plumbing['all_hold']} (enters key: {plumbing['enters_evaluation_key']}); G6 v36 "
          f"self-tests {st_ok}; identity recomputed all True {identity['all_recomputed_true']}; pre-launch {pre['holds']}")
+    for r in selftests['results']:
+        _log(f"[{tag}]   G6 v36 self-test {r['id']}: pass {r['observed_pass']} (expect {r['expect_pass']}); floor-testable "
+             f"{r['observed_n_floor_testable_accepted_final']} / min {r['observed_min_floor_testable']}; nv false "
+             f"{r['observed_non_vacuity_false']}; ok {r['ok']}")
+    fpt = rule11['footprint_capture_selftest']
+    _log(f"[{tag}] footprint capture self-test: all_hold {fpt['all_hold']} checks {fpt.get('checks')}; lifetime max "
+         f"{(fpt.get('monitor') or {}).get('lifetime_max_phys_footprint_bytes')} B for a {FOOTPRINT_SELFTEST_BYTES} B "
+         f"allocation")
+    _log(f"[{tag}] T_persist {est['persist_transient']['T_persist_gib']:.4f} GiB (footprint); g "
+         f"{est['g_growth_cap_to_full_run']:.6f} (RSS-based); SRP1 hull-polish figure {hull['relative']:.6e} "
+         f"(verified {hull['verified']}, {hull['path']} sha256 {hull['sha256_now']})")
     _finish(0, '-- next: --stage smoke --freeze')
 
 
@@ -2082,11 +2650,13 @@ def run_smoke(started, sha_on, sha_off):
         pf = _arm_preflight(required[arm], arm)
         _log(f"[{tag}] {arm}: preflight available {pf.get('available_gib')} GiB required {pf['required_gib']:.2f} GiB -> "
              f"{'PASS' if pf['pass'] else 'REFUSE'}")
-        batch, err = None, None
+        batch, err, fp = None, None, None
         if pf['pass']:
             lock = H.acquire_campaign_lock(a['spec']['campaign_id'], a['spec_sha256'])
             _log(f"[{tag}] {arm}: ONE cell {entry['label']} cap {a['spec']['cap']} release_solution_bookkeeping "
                  f"{entry.get('release_solution_bookkeeping')}; lock {lock}")
+            mon = ChildFootprintMonitor(os.path.join(eval_dir, 'launch.json'), entry['eval_key'])
+            mon.start()
             try:
                 ctx = H.CampaignContext(a['root'], a['spec_path'], a['spec_sha256'], a['spec'], log=_log)
                 H.evaluate.last_batch_info = {}
@@ -2096,7 +2666,10 @@ def run_smoke(started, sha_on, sha_off):
                 err = f'{type(error).__name__}: {error}'
                 print(traceback.format_exc(), file=sys.stderr, flush=True)
             finally:
+                fp = mon.stop()
                 H.release_campaign_lock(expected_pid=os.getpid())
+            _log(f"[{tag}] {arm}: child footprint peak {fp.get('lifetime_max_phys_footprint_bytes')} B "
+                 f"(exact {fp.get('capture_exact')}; errors {fp.get('errors')})")
         try:
             checks, detail, rec = smoke_arm_checks(arm, entry, eval_dir, ss)
         except Exception as error:  # noqa: BLE001 -- the gate FAILS, recorded
@@ -2112,7 +2685,7 @@ def run_smoke(started, sha_on, sha_off):
         per_arm[arm] = {'eval_dir': os.path.relpath(eval_dir, REPO), 'campaign_spec_path': os.path.relpath(
             a['spec_path'], REPO), 'campaign_spec_sha256': a['spec_sha256'], 'preflight': pf, 'evaluate_error': err,
                         'batch_info': batch, 'checks': checks, 'detail': detail, 'record': rec,
-                        'peak_rss': rec.get('peak_rss'), 'wall_time_s': rec.get('wall_time_s'),
+                        'peak_rss': rec.get('peak_rss'), 'footprint_peak': fp, 'wall_time_s': rec.get('wall_time_s'),
                         'cycle_wall_s': [r.get('cycle_wall_s') for r in rows],
                         'cycle_rss_bytes': [r.get('rss_bytes') for r in rows],
                         'cycle_ru_maxrss_bytes': [r.get('ru_maxrss_bytes') for r in rows]}
@@ -2129,17 +2702,24 @@ def run_smoke(started, sha_on, sha_off):
     peaks = {arm: {k: (per_arm[arm]['peak_rss'] or {}).get(k) for k in (
         'child_python_process_ru_maxrss', 'production_state_peak_rss_ru_maxrss')} for arm in SMOKE_ARMS}
     cross['S17_runtime_peak_measured_both_arms'] = all(isinstance(v, int) for p in peaks.values() for v in p.values())
+    fps = {arm: per_arm[arm]['footprint_peak'] or {} for arm in SMOKE_ARMS}
+    cross['S17_footprint_peak_captured_exactly_both_arms'] = all(f.get('capture_exact') for f in fps.values())
+    for arm in SMOKE_ARMS:
+        peaks[arm]['child_lifetime_max_phys_footprint'] = fps[arm].get('lifetime_max_phys_footprint_bytes')
     g = guards_verify()
     cross['S14_parent_guards_zero'] = _guards_ok(g)
-    mr = margin_rule(ss, peaks['smoke_bon']['child_python_process_ru_maxrss'], a_post.get('available_bytes'))
+    mr = margin_rule(ss, fps['smoke_bon'], a_post.get('available_bytes'),
+                     rss_peak_on_bytes=peaks['smoke_bon']['child_python_process_ru_maxrss'])
     saving_runtime = {k: ((peaks['smoke_boff'][k] - peaks['smoke_bon'][k])
                           if all(isinstance(peaks[a][k], int) for a in SMOKE_ARMS) else None)
-                      for k in ('child_python_process_ru_maxrss', 'production_state_peak_rss_ru_maxrss')}
+                      for k in ('child_lifetime_max_phys_footprint', 'child_python_process_ru_maxrss',
+                                'production_state_peak_rss_ru_maxrss')}
     all_checks = {f'{arm}:{k}': v for arm in SMOKE_ARMS for k, v in per_arm[arm]['checks'].items()}
     all_checks.update(cross)
     for arm in SMOKE_ARMS:
         per_arm[arm].pop('record', None)
-    gate = {'stage': STAGE_TEXT, 'gate': f'W90 two-arm 3 x 3 smoke (x0, cap {SMOKE_CAP}, (b) on vs off)', 'utc': _utc(),
+    gate = {'stage': STAGE_TEXT, 'gate': f'W90/W91 two-arm 3 x 3 smoke (x0, cap {SMOKE_CAP}, (b) on vs off; spec v36)',
+            'utc': _utc(),
             'git_head': H._git(['rev-parse', 'HEAD']), 'stage_spec': {'path': ss_rel, 'sha256': ss_sha},
             'A_post_memory_preflight_at_launch': a_post, 'per_arm': per_arm, 'cross_arm': cross,
             'cross_arm_detail': cross_detail, 'checks': all_checks, 'pass': all(all_checks.values()),
@@ -2189,8 +2769,8 @@ def cell_gates(entry, eval_dir, ss, request):
     gates['G4_tail_state_check'] = c.get('tail_state_check_matches', False)
     records = _read_jsonl(os.path.join(eval_dir, H.NETWORK_IPOPT_SOLVE_RECORDS_FILE))
     gates['G5_solve_profile_reconciled_per_event'], detail['G5'] = W9._solve_profile_check(rec, len(records))
-    g6 = g6_v35_evaluate(eval_dir, rec, W9.BLOCKS_PER_ROUND)
-    gates['G6_floor_records_v35'] = g6['gate_pass']
+    g6 = g6_v36_evaluate(eval_dir, rec, W9.BLOCKS_PER_ROUND)
+    gates['G6_floor_records_v36'] = g6['gate_pass']
     detail['G6'] = g6
     detail['G6_tier2_final_attempts_in_T_flag'] = g6['tier2_terminal_blocks_counted']['n_judged_not_applicable'] > 0
     gates['G7_append_sealed'] = c.get('append_sealed_after_reconcile', False)
@@ -2248,15 +2828,20 @@ def run_pair(started, spec_sha256):
     lock = H.acquire_campaign_lock(spec['campaign_id'], spec_sha256)
     _log(f"[{tag}] {STAGE_TEXT}; cells {labels} at concurrency {spec['concurrency']}; post_certification {request}; "
          f"lock {lock}")
+    entries = {e['label']: e for e in spec['candidates']}
+    monitors = {label: ChildFootprintMonitor(os.path.join(root, 'evals', entries[label]['eval_dir'], 'launch.json'),
+                                             entries[label]['eval_key']) for label in labels}
+    for mon in monitors.values():
+        mon.start()
     try:
         ctx = H.CampaignContext(root, spec_path, spec_sha256, spec, log=_log)
         H.evaluate.last_batch_info = {}
         records = H.evaluate(labels, ctx)
         batch = dict(getattr(H.evaluate, 'last_batch_info', {}) or {})
     finally:
+        footprints = {label: mon.stop() for label, mon in monitors.items()}
         H.release_campaign_lock(expected_pid=os.getpid())
     by_label = {(r or {}).get('candidate_label'): r for r in records}
-    entries = {e['label']: e for e in spec['candidates']}
     per_cell, cells_q = {}, {}
     for label in labels:
         eval_dir = os.path.join(root, 'evals', entries[label]['eval_dir'])
@@ -2275,10 +2860,19 @@ def run_pair(started, spec_sha256):
         per_cell[label] = {'status': rec.get('status'), 'cycles_run': rec.get('cycles_run'),
                            'certification_cycle': rec.get('certification_cycle'), 'Q': rec.get('certified_cost'),
                            'bar': (rec.get('bar') or {}).get('value'), 'peak_rss': rec.get('peak_rss'),
+                           'footprint_peak_reported_not_gated': footprints.get(label),
                            'gates': gates, 'gates_pass': all(gates.values()), 'gate_detail': detail,
                            'cell_quantities': cell, 'parent_view': (by_label.get(label) or {}).get('parent_view')}
     refs = ss['reference_R']
     value = W9.value_block(cells_q, refs, inst)
+    p_on = ((smoke.get('margin_rule') or {}).get('P_on_bytes'))
+    fx0 = footprints.get('x0') or {}
+    g_fp = {'x0_pair_footprint_peak_bytes': fx0.get('lifetime_max_phys_footprint_bytes'),
+            'x0_capture_exact': fx0.get('capture_exact'), 'smoke_P_on_bytes': p_on,
+            'g_footprint': ((fx0['lifetime_max_phys_footprint_bytes'] / p_on)
+                            if fx0.get('capture_exact') and isinstance(p_on, int) and p_on else None),
+            'g_rss_used_by_the_rule': (smoke.get('margin_rule') or {}).get('g'),
+            'note': 'reported, not gated; it does not revisit the persistence decision the smoke gate fixed'}
     g = guards_verify()
     results = {'stage': STAGE_TEXT, 'utc': _utc(), 'git_head_at_run': H._git(['rev-parse', 'HEAD']),
                'campaign_spec_path': os.path.relpath(spec_path, REPO), 'campaign_spec_sha256': spec_sha256,
@@ -2289,7 +2883,8 @@ def run_pair(started, spec_sha256):
                'post_certification_decided': request,
                'hull_polish_at_3x3': ss['hull_polish_at_3x3'],
                'solve_claim': 'RECONCILED PER EVENT in each child record (G5); parent guards verify(0)',
-               'guards': g, 'memory_preflight_at_run': mem, 'batch_info': batch, 'wall_clock_s': time.time() - started}
+               'guards': g, 'memory_preflight_at_run': mem, 'batch_info': batch,
+               'g_footprint_basis_first_measurement': g_fp, 'wall_clock_s': time.time() - started}
     H._write_once_json(os.path.join(root, PAIR_RESULTS_FILE), results)
     H._write_once_json(os.path.join(root, PAIR_MANIFEST_FILE), _manifest_of([root]))
     for label in labels:
