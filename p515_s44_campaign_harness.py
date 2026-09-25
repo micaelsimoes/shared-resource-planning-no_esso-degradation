@@ -355,10 +355,23 @@ def sha256_file(path):
     return h.hexdigest()
 
 
+def _json_default(obj):
+    """The `default=` hook of every artifact writer in this harness (P5.15 Addendum 44, W74). A numpy boolean is
+    written as a JSON boolean; everything else exactly as before (`str`). Before W74 the hook was `str` alone, so a
+    numpy boolean -- which is NOT a subclass of `bool`, unlike numpy.float64 of `float` -- was written as the STRING
+    "True"/"False": `hull_polish_full.gate.pass` on five of the six alpha-row cells (alpha > 0 makes the gate's
+    `relative` a numpy float, so its comparison is a numpy bool), which a strict `is True` reader misreads as a failure
+    and a truthiness reader misreads "False" as a pass. Detected by type identity so the parent needs no numpy import.
+    Not used by any hashing / key / spec-freeze serialization (those keep `default=str` or none, unchanged)."""
+    if type(obj).__module__ == 'numpy' and type(obj).__name__ in ('bool', 'bool_'):
+        return bool(obj)
+    return str(obj)
+
+
 def _atomic_write_json(path, obj):
     tmp = path + '.tmp'
     with open(tmp, 'w') as handle:
-        json.dump(obj, handle, indent=1, default=str)
+        json.dump(obj, handle, indent=1, default=_json_default)
     os.replace(tmp, path)
 
 
@@ -366,7 +379,7 @@ def _write_once_json(path, obj):
     if os.path.exists(path):
         raise RuntimeError(f'refusing to overwrite existing artifact: {path}')
     with open(path, 'w') as handle:
-        json.dump(obj, handle, indent=1, default=str)
+        json.dump(obj, handle, indent=1, default=_json_default)
 
 
 def _git(args):
@@ -1357,17 +1370,40 @@ def _flex_price_record_fields(entry):
     return out
 
 
-def evaluate(batch, ctx):
+HEARTBEAT_FILE = 'campaign_heartbeat.json'   # the untagged (pre-W74) campaign heartbeat, one shared file per root
+
+
+def heartbeat_file_name(heartbeat_tag=None):
+    """P5.15 Addendum 44 (W74): the campaign-heartbeat file name of one `evaluate()` call. Untagged -> the pre-W74
+    shared `campaign_heartbeat.json` (unchanged: a campaign run as ONE call keeps its exact file). Tagged ->
+    `campaign_heartbeat_<sanitized tag>.json`, one file per pair / wave, so a later launch in the same campaign root
+    can never overwrite an earlier launch's end state (in the alpha row, pair 3's launch overwrote pair 2's)."""
+    if heartbeat_tag is None:
+        return HEARTBEAT_FILE
+    return f'campaign_heartbeat_{_sanitize_id(heartbeat_tag)}.json'
+
+
+def evaluate(batch, ctx, heartbeat_tag=None):
     """STEP4_DFO_METHOD.md 2.7: `evaluate(batch: list[x]) -> list[record]`.
 
     `batch`: list of candidates ({node: (s, e)}) or evaluation labels (str),
     each present in the frozen campaign spec, no duplicates (a candidate listed
     under two configurations must be given by label). Returns the evaluation records in batch
-    order (a parent-synthesized barrier record when a child left none)."""
+    order (a parent-synthesized barrier record when a child left none).
+
+    `heartbeat_tag` (P5.15 Addendum 44, W74): None (default) writes the campaign heartbeat to the shared
+    `campaign_heartbeat.json` exactly as before. A campaign that calls `evaluate()` more than once on one root (pairs,
+    waves) passes a distinct tag per call, e.g. 'pair_2': the heartbeat then goes to `heartbeat_file_name(tag)`,
+    carries the tag, and is write-once per call -- the call refuses, before launching anything, if that file exists."""
     entries = [_spec_candidate(ctx, x) for x in batch]
     keys = [_entry_eval_key(e) for e in entries]
     if len(set(keys)) != len(keys):
         raise ValueError('duplicate evaluations in one batch')
+    heartbeat_path = os.path.join(ctx.campaign_root, heartbeat_file_name(heartbeat_tag))
+    heartbeat_extra = {} if heartbeat_tag is None else {'heartbeat_tag': heartbeat_tag}
+    if heartbeat_tag is not None and os.path.exists(heartbeat_path):
+        raise RuntimeError(f'per-wave campaign heartbeat already exists (write-once per tag, never reusable): '
+                           f'{heartbeat_path}')
     os.makedirs(ctx.evals_root, exist_ok=True)
     for entry in entries:
         eval_dir = os.path.join(ctx.evals_root, entry['eval_dir'])
@@ -1449,10 +1485,10 @@ def evaluate(batch, ctx):
                     hb = 'unreadable (being written)'
             status.append({'label': entry['label'], 'pid': pid, 'elapsed_s': time.time() - started,
                            'production_heartbeat': hb})
-        _atomic_write_json(os.path.join(ctx.campaign_root, 'campaign_heartbeat.json'), {
+        _atomic_write_json(heartbeat_path, {
             'utc': _utc(), 'parent_pid': os.getpid(), 'running': status,
             'pending': [entries[i]['label'] for i in pending],
-            'done': [entries[i]['label'] for i, r in enumerate(results) if r is not None]})
+            'done': [entries[i]['label'] for i, r in enumerate(results) if r is not None], **heartbeat_extra})
         ctx.log('[S44-HARNESS] heartbeat ' + '; '.join(
             f"{s['label']}: {s['elapsed_s']:.0f}s cycle="
             f"{s['production_heartbeat'].get('cycle') if isinstance(s['production_heartbeat'], dict) else None}"
@@ -1486,10 +1522,12 @@ def evaluate(batch, ctx):
             except ChildProcessError:
                 running.pop(pid, None)
         raise
-    _atomic_write_json(os.path.join(ctx.campaign_root, 'campaign_heartbeat.json'), {
+    _atomic_write_json(heartbeat_path, {
         'utc': _utc(), 'parent_pid': os.getpid(), 'running': [], 'pending': [],
-        'done': [e['label'] for e in entries]})
+        'done': [e['label'] for e in entries], **heartbeat_extra})
     evaluate.last_batch_info = {'max_concurrent_observed': max_concurrent_observed, 'timeline': timeline}
+    if heartbeat_tag is not None:
+        evaluate.last_batch_info['heartbeat_file'] = os.path.relpath(heartbeat_path, REPO)
     return results
 
 
@@ -3604,7 +3642,7 @@ def alpha_row_run_hooks(eval_dir, label, candidate_key, derived_identity, alpha,
             rec['rss_bytes'] = proc.memory_info().rss if proc is not None else None
             rec['ru_maxrss_bytes'] = _resource.getrusage(_resource.RUSAGE_SELF).ru_maxrss
             with open(sidecar, 'a') as handle:
-                handle.write(json.dumps(rec, default=str) + '\n')
+                handle.write(json.dumps(rec, default=_json_default) + '\n')
                 handle.flush()
             st['t_last'] = time.time()
             return ok
@@ -4138,7 +4176,7 @@ def _write_once_json_compact(path, obj):
     if os.path.exists(path):
         raise RuntimeError(f'refusing to overwrite existing artifact: {path}')
     with open(path, 'x') as handle:
-        json.dump(obj, handle, separators=(',', ':'), default=str)
+        json.dump(obj, handle, separators=(',', ':'), default=_json_default)
 
 
 def write_response_terminal(planning, models, eval_dir, optimization_results=None):
@@ -4165,7 +4203,7 @@ def write_response_terminal(planning, models, eval_dir, optimization_results=Non
     path = os.path.join(eval_dir, RESPONSE_TERMINAL_FILE)
     t_w = time.time()
     _write_once_json_compact(path, encode_response_payload(payload))
-    expected = json.loads(json.dumps(payload, default=str))
+    expected = json.loads(json.dumps(payload, default=_json_default))  # W74: the writer's own hook
     got = load_response_terminal(path)
     got['schema'] = expected['schema']   # the only intended difference: the layout's schema tag
     # canonical JSON text per section: exact (floats round-trip through repr) and NaN-safe (nan != nan in Python)
@@ -4613,7 +4651,7 @@ def _child_real(args, spec, spec_path, entry, eval_dir, lock_content, env_caps, 
             if capture_multiscenario:
                 merged.update(response_by_cycle.get(int(r.get('cycle')), {'response_captured': False,
                                                                           'response_capture_error': 'no response line'}))
-            handle.write(json.dumps({k: merged.get(k) for k in per_cycle_fields}, default=str) + '\n')
+            handle.write(json.dumps({k: merged.get(k) for k in per_cycle_fields}, default=_json_default) + '\n')
 
     with open(os.path.join(eval_dir, 'component_levels_terminal.json')) as handle:
         component_levels = json.load(handle)
