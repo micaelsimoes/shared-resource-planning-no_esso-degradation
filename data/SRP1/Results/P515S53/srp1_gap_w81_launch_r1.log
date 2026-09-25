@@ -1,0 +1,24 @@
+[W81] capture paths present for all 3 cells x 48 blocks
+[W81] x0 a0_c7:x0 K=132 ident=True solve-identity={'n_network_blocks': 48, 'n_esso_logs': 399, 'n_esso_ipopt_runs': 399, 'n_network_ipopt_runs': 6384, 'solve_profile_permitted_solve': 6783, 'expected': 6783, 'definition': 'permitted_solve == 48 x (K + 1) [network: init + K cycles, no polish] + IPOPT runs in every ESSO log (init + cycles); network runs also counted directly', 'network_runs_equal_48_x_K_plus_1': True, 'holds': True} recovery=0 w-xcheck=True | G_TSO=951.85 G_DSO=2435.10 G_total=3386.95 (upper 5698.74) units ratio [0.999876, 1.000135]
+[W81] unit a0_c7:n7_p0.25_e1.0 K=125 ident=True solve-identity={'n_network_blocks': 48, 'n_esso_logs': 378, 'n_esso_ipopt_runs': 378, 'n_network_ipopt_runs': 6048, 'solve_profile_permitted_solve': 6426, 'expected': 6426, 'definition': 'permitted_solve == 48 x (K + 1) [network: init + K cycles, no polish] + IPOPT runs in every ESSO log (init + cycles); network runs also counted directly', 'network_runs_equal_48_x_K_plus_1': True, 'holds': True} recovery=0 w-xcheck=True | G_TSO=1017.89 G_DSO=2448.30 G_total=3466.19 (upper 4853.87) units ratio [0.999739, 1.000289]
+[W81] unit_dup a1a:n7_4h_e1 K=125 ident=True solve-identity={'n_network_blocks': 48, 'n_esso_logs': 378, 'n_esso_ipopt_runs': 378, 'n_network_ipopt_runs': 6048, 'solve_profile_permitted_solve': 6426, 'expected': 6426, 'definition': 'permitted_solve == 48 x (K + 1) [network: init + K cycles, no polish] + IPOPT runs in every ESSO log (init + cycles); network runs also counted directly', 'network_runs_equal_48_x_K_plus_1': True, 'holds': True} recovery=0 w-xcheck=True | G_TSO=1017.89 G_DSO=2448.30 G_total=3466.19 (upper 4853.87) units ratio [0.999739, 1.000289]
+[W81] C10 control: terminal-rule diff 15078.913057791 (W74 15078.913057791275) -> True; last-solve diff 18790.220185672 (W73 18790.22018567154) -> True
+[W81] guard counts {'permitted_solve': 0, 'permitted_exec': 0, 'blocked_solve': 0, 'blocked_exec': 0} verify(0) []
+[W81] VERDICT SUB-RESOLUTION at SRP1: Delta G_total -79.24 EUR, bar-sum 20970.30, R = 0.0038 (upper variant 0.0403); Delta G / value = -0.0003
+[W81] TSO: x0 951.85 unit 1017.89 delta -66.03 (-0.0031 x bar-sum) | upper x0 1962.42 unit 1390.17 delta 572.26
+[W81] DSO: x0 2435.10 unit 2448.30 delta -13.21 (-0.0006 x bar-sum) | upper x0 3736.32 unit 3463.70 delta 272.62
+[W81] DSO5: x0 810.54 unit 810.54 delta 0.00 (0.0000 x bar-sum) | upper x0 1195.59 unit 1108.22 delta 87.37
+[W81] DSO7: x0 814.02 unit 827.23 delta -13.21 (-0.0006 x bar-sum) | upper x0 1190.02 unit 1135.22 delta 54.80
+[W81] DSO9: x0 810.54 unit 810.54 delta 0.00 (0.0000 x bar-sum) | upper x0 1350.71 unit 1220.26 delta 130.45
+[W81] total: x0 3386.95 unit 3466.19 delta -79.24 (-0.0038 x bar-sum) | upper x0 5698.74 unit 4853.87 delta 844.88
+[W81] P1_identification: expected True observed True -> CONFIRMED
+[W81] P2_units: expected True observed True -> CONFIRMED
+[W81] P3_x0_TSO_level: expected True observed True -> CONFIRMED
+[W81] P4_unit_TSO_scale: expected True observed True -> CONFIRMED
+[W81] P5_TSO_sign: expected True observed False -> REFUTED
+[W81] P6_DSO_similar: expected True observed True -> CONFIRMED
+[W81] P7_headline: expected True observed True -> CONFIRMED
+[W81] P8_upper_variant: expected True observed True -> CONFIRMED
+[W81] P9_duplicate: expected True observed True -> CONFIRMED
+[W81] P10_control: expected True observed True -> CONFIRMED
+[W81] wrote data/SRP1/Results/P515S53/srp1_gap_w81/srp1_gap_w81.json; wall 11.1s
