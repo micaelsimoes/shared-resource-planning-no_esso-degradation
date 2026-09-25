@@ -1,0 +1,1629 @@
+{
+ "schema": "p515_s44_evaluation_record_v2",
+ "campaign_id": "s53_w86_tail_recert",
+ "campaign_spec_path": "data/SRP1/Results/P515S53/tight_tail_w86/campaign_s53_w86_tail_recert/campaign_spec_s53_w86_tail_recert_ddd6cd44.json",
+ "campaign_spec_sha256": "ddd6cd4422b56f946eeeb427dff44ef572490bd34c606fad96eaf00fd4a84ec1",
+ "candidate_label": "c_star",
+ "candidate_canonical": {
+  "investment_year": 2025,
+  "nodes": {
+   "5": [
+    0.96875,
+    3.875
+   ],
+   "7": [
+    0.96875,
+    3.875
+   ],
+   "9": [
+    0.96875,
+    3.875
+   ]
+  }
+ },
+ "candidate_key": "578636daa6d6360d6701764c73ddf795e53c2c37e511e21be1400024f8f6350c",
+ "instance_note": "candidate_key = sha256 of the canonical candidate; identifies the problem instance",
+ "working_dir_ids": {
+  "precheck": "p515s44_s53_w86_tail_recert_96c5aa50cc229cc1_precheck",
+  "run": "p515s44_s53_w86_tail_recert_96c5aa50cc229cc1_run"
+ },
+ "eval_dir": "data/SRP1/Results/P515S53/tight_tail_w86/campaign_s53_w86_tail_recert/evals/96c5aa50cc229cc1_c_star",
+ "configuration": {
+  "apply_rho": false,
+  "arm_label": "s39_D",
+  "case_file": "data/SRP1/SRP1_params.json",
+  "case_file_anderson_acceleration": {
+   "enabled": true,
+   "memory": 5,
+   "regularization": 1e-10,
+   "reject_policy": "keep_memory"
+  },
+  "case_file_last_commit": "b5629311c092863c78cc508eaf34676382ac9f83",
+  "case_file_sha256": "dbfdb2a07d12bfedab5e66bf94b3df98e5ab0305616652b4083266476972006b",
+  "convergence_depth_tail": {
+   "compl_inf_tol": 1e-06,
+   "enabled": true
+  },
+  "ess_ageing_baseline": {
+   "calendar_life_years": 15,
+   "calendar_retention_per_year": 0.985,
+   "calibration": {
+    "cycles_n": 10000,
+    "eol_retention_r": 0.8,
+    "reference_dod_d": 0.8,
+    "status": "ACTIVE"
+   },
+   "cycle_life_nominal": 10000,
+   "depth_of_discharge_nominal": 0.8,
+   "minimum_soh": 0.7
+  },
+  "ess_ageing_baseline_label": "BASELINE (C2 + phi_cal 0.985 + soh_min 0.70)",
+  "ess_params_file": {
+   "last_commit": "2466401d429eeb43a680b36e32947878372c3cbf",
+   "path": "data/SRP1/SharedESS/SRP1_ESS_Params.json",
+   "sha256": "39106f934bf3edbf18f01a5ef1fadfefc2f7a518706e6c8fa6d962617a312706"
+  },
+  "full_diagnostics_in_rows": true,
+  "name": "BASELINE (C2 + phi_cal 0.985 + soh_min 0.70): the case file alone (AA keep_memory declared) with the ESS ageing parameters declared, the convergence-depth tight tail DECLARED ENABLED (compl_inf_tol 1e-6, certifying cycles only), post-certification: persist the certified TSO/DSO models only",
+  "note": "no overrides; no model variant; post-certification persist_certified_models only (no hull polish, no reference); num_max_iters := cap; tail per spec v28 (AA-off predicate, non-latching, ESSO untouched)",
+  "overrides": {}
+ },
+ "cap": 500,
+ "required_consecutive_cycles": 10,
+ "status": "certified",
+ "barrier": false,
+ "barrier_cause": null,
+ "objective_convention": "gross_operational_cost: settlement-EXCLUDED gross operational cost (the oracle cost convention); net_operational_recourse = gross minus terminal salvage credit",
+ "certified_cost": 650911546.2054665,
+ "terminal_gross_operational_cost": 650911546.2054665,
+ "terminal_net_operational_recourse": 650911546.2054665,
+ "bar": {
+  "definition": "max over the last 10 cycles of |gross_operational_cost[k] - gross_operational_cost[k-1]| (settlement-excluded gross cost; the predecessor of the first window row is taken from the full trajectory; a step is unavailable when cycle k-1 is absent or either gross value is None)",
+  "value": 25146.48616361618,
+  "n_cycles_in_window": 10,
+  "n_steps_available": 10,
+  "trajectory_cycles_contiguous_from_1": true,
+  "window": [
+   {
+    "cycle": 78,
+    "gross_operational_cost": 650985739.5905018,
+    "predecessor_cycle": 77,
+    "predecessor_gross_operational_cost": 651010886.0766654,
+    "gross_step_abs": 25146.48616361618
+   },
+   {
+    "cycle": 79,
+    "gross_operational_cost": 650972420.9290326,
+    "predecessor_cycle": 78,
+    "predecessor_gross_operational_cost": 650985739.5905018,
+    "gross_step_abs": 13318.661469221115
+   },
+   {
+    "cycle": 80,
+    "gross_operational_cost": 650960409.2998025,
+    "predecessor_cycle": 79,
+    "predecessor_gross_operational_cost": 650972420.9290326,
+    "gross_step_abs": 12011.62923002243
+   },
+   {
+    "cycle": 81,
+    "gross_operational_cost": 650948837.4360329,
+    "predecessor_cycle": 80,
+    "predecessor_gross_operational_cost": 650960409.2998025,
+    "gross_step_abs": 11571.86376965046
+   },
+   {
+    "cycle": 82,
+    "gross_operational_cost": 650938409.4390993,
+    "predecessor_cycle": 81,
+    "predecessor_gross_operational_cost": 650948837.4360329,
+    "gross_step_abs": 10427.996933579445
+   },
+   {
+    "cycle": 83,
+    "gross_operational_cost": 650929491.7092767,
+    "predecessor_cycle": 82,
+    "predecessor_gross_operational_cost": 650938409.4390993,
+    "gross_step_abs": 8917.72982263565
+   },
+   {
+    "cycle": 84,
+    "gross_operational_cost": 650922265.5522597,
+    "predecessor_cycle": 83,
+    "predecessor_gross_operational_cost": 650929491.7092767,
+    "gross_step_abs": 7226.157016992569
+   },
+   {
+    "cycle": 85,
+    "gross_operational_cost": 650916876.9460459,
+    "predecessor_cycle": 84,
+    "predecessor_gross_operational_cost": 650922265.5522597,
+    "gross_step_abs": 5388.60621380806
+   },
+   {
+    "cycle": 86,
+    "gross_operational_cost": 650913368.2050278,
+    "predecessor_cycle": 85,
+    "predecessor_gross_operational_cost": 650916876.9460459,
+    "gross_step_abs": 3508.7410180568695
+   },
+   {
+    "cycle": 87,
+    "gross_operational_cost": 650911546.2054665,
+    "predecessor_cycle": 86,
+    "predecessor_gross_operational_cost": 650913368.2050278,
+    "gross_step_abs": 1821.9995613098145
+   }
+  ]
+ },
+ "bar_net_recourse_step_reported": {
+  "definition": "max objective_change_abs over the last 10 cycles (production: |net_operational_recourse[k] - net_operational_recourse[k-1]|, shared_resources_planning.py:2849/2814; NET of the terminal salvage credit; reported, not the bar)",
+  "value": 25146.48616361618,
+  "n_cycles_in_window": 10,
+  "n_steps_available": 10,
+  "window": [
+   {
+    "cycle": 78,
+    "objective_change_abs": 25146.48616361618
+   },
+   {
+    "cycle": 79,
+    "objective_change_abs": 13318.661469221115
+   },
+   {
+    "cycle": 80,
+    "objective_change_abs": 12011.62923002243
+   },
+   {
+    "cycle": 81,
+    "objective_change_abs": 11571.86376965046
+   },
+   {
+    "cycle": 82,
+    "objective_change_abs": 10427.996933579445
+   },
+   {
+    "cycle": 83,
+    "objective_change_abs": 8917.72982263565
+   },
+   {
+    "cycle": 84,
+    "objective_change_abs": 7226.157016992569
+   },
+   {
+    "cycle": 85,
+    "objective_change_abs": 5388.60621380806
+   },
+   {
+    "cycle": 86,
+    "objective_change_abs": 3508.7410180568695
+   },
+   {
+    "cycle": 87,
+    "objective_change_abs": 1821.9995613098145
+   }
+  ]
+ },
+ "certification": {
+  "certified": true,
+  "certification_cycle": 87,
+  "cycles_run": 87,
+  "cap": 500,
+  "required_consecutive_cycles": 10,
+  "terminal_cycle_convergence": true,
+  "terminal_consecutive_converged_cycles": 10,
+  "local_solve_failures_total": 0
+ },
+ "certification_cycle": 87,
+ "cycles_run": 87,
+ "stopped_by_trajectory": {
+  "stopped_by": "boyd",
+  "converged_at_cycle": 78,
+  "stop_run_cycles": [
+   78,
+   79,
+   80,
+   81,
+   82,
+   83,
+   84,
+   85,
+   86,
+   87
+  ]
+ },
+ "first_pass_cycle_per_channel": {
+  "v": 44,
+  "pf": 78,
+  "ess": 70
+ },
+ "terminal_ratios_per_channel": {
+  "v": {
+   "primal": 0.0570070746175909,
+   "dual": 0.28406819725742466,
+   "max": 0.28406819725742466
+  },
+  "pf": {
+   "primal": 0.44344685375776816,
+   "dual": 0.6252084339743862,
+   "max": 0.6252084339743862
+  },
+  "ess": {
+   "primal": 0.6224859374695759,
+   "dual": 0.569002841590786,
+   "max": 0.6224859374695759
+  }
+ },
+ "rule_ten": {
+  "reported_not_gated": true,
+  "terminal_objective_change_abs": 1821.9995613098145,
+  "terminal_objective_tolerance": 65091.33682050279,
+  "terminal_step_over_threshold": 0.027991429432985805,
+  "boyd_terminal_ratio_max_per_channel": {
+   "v": 0.28406819725742466,
+   "pf": 0.6252084339743862,
+   "ess": 0.6224859374695759
+  }
+ },
+ "component_decomposition_totals_weighted": {
+  "generation_cost": 443903429.9249014,
+  "flexibility_cost_internal": 207021188.54302183,
+  "load_curtailment_cost": 0.0,
+  "res_curtailment_penalty": 0.0,
+  "ess_usage_cost": 0.0,
+  "flexibility_cost_tso_adn_interface_definitional": 0.0,
+  "voltage_slack": -12057.436066431364,
+  "node_balance_slack": 0.0,
+  "branch_flow_slack": 0.0,
+  "flexibility_p_day_balance_slack": -955.1307232116973,
+  "local_ess_day_balance_slack": 0.0,
+  "shared_ess_day_balance_slack": -59.69566739987164,
+  "detector_penalty_total": -13072.262457042929,
+  "ess_complementarity_bilinear_definitional": 5.509211904230797,
+  "orphan_flex_q_day_balance_slack_raw": 0.0,
+  "orphan_tso_adn_flex_p_day_balance_slack_raw": 0.0,
+  "orphan_flex_q_day_balance_penalty_at_PENALTY_FLEXIBILITY_definitional": 0.0,
+  "orphan_tso_adn_flex_p_day_balance_penalty_at_PENALTY_FLEXIBILITY_definitional": 0.0,
+  "res_curtailment_definitional_at_weight_1": 577.4599491441111
+ },
+ "recourse_components": {
+  "gross_operational_cost": 650911546.2054665,
+  "gross_operational_cost_including_settlement": 650937806.428046,
+  "interface_settlement_tso": -1132596382.771259,
+  "interface_settlement_dso": {
+   "5": 428546452.9249444,
+   "7": 311430772.0187762,
+   "9": 392645418.05011797
+  },
+  "interface_settlement_total": 26260.222579479218,
+  "interface_settlement_contracted_tso": -1132596382.771259,
+  "interface_settlement_contracted_dso": {
+   "5": 428546452.9249444,
+   "7": 311430772.0187762,
+   "9": 392645418.05011797
+  },
+  "interface_settlement_contracted_total": 26260.222579479218,
+  "interface_settlement_deviation_tso": 0.0,
+  "interface_settlement_deviation_dso": {
+   "5": 0.0,
+   "7": 0.0,
+   "9": 0.0
+  },
+  "interface_settlement_deviation_total": 0.0,
+  "interface_settlement_covariance_total": 0.0,
+  "interface_settlement_identity_residual": 26260.222579479218,
+  "voltage_pin_tso": 0.0,
+  "voltage_pin_dso": {
+   "5": 0.0,
+   "7": 0.0,
+   "9": 0.0
+  },
+  "voltage_pin_total": 0.0,
+  "terminal_salvage_value": -8.151445775622001e-35,
+  "net_operational_recourse": 650911546.2054665,
+  "detector_penalty_total": -13072.262457042929,
+  "detector_components": {
+   "voltage_slack": -12057.436066431364,
+   "node_balance_slack": 0.0,
+   "branch_flow_slack": 0.0,
+   "flexibility_p_day_balance_slack": -955.1307232116973,
+   "local_ess_day_balance_slack": 0.0,
+   "shared_ess_day_balance_slack": -59.69566739987164,
+   "detector_penalty_total": -13072.262457042929
+  },
+  "economic_recourse_all_D_excluded": 650924618.4679235,
+  "economic_recourse_voltage_excluded": 650923603.6415329
+ },
+ "settlement_remainder": {
+  "definition": "recourse_components.interface_settlement_total: T_TSO + sum(T_DSO), the non-cancelling interface settlement at the terminal point, excluded from the cost",
+  "value": 26260.222579479218
+ },
+ "storage_per_node": {
+  "5": {
+   "s_mva": 0.96875,
+   "e_mwh": 3.875,
+   "has_storage": true,
+   "efc_per_day_max": 1.0108214404107867,
+   "efc_per_day_per_cohort_year": {
+    "(0, 0)": 1.0108214404107867,
+    "(0, 1)": 0.8905358716511972,
+    "(0, 2)": 0.6518566069131748
+   },
+   "terminal_soh_per_active_cohort_year": {
+    "(0, 0)": 0.8807128232054436,
+    "(0, 1)": 0.780419054207135,
+    "(0, 2)": 0.6999999900000167
+   },
+   "terminal_soh_min_over_active_cohort_years": 0.6999999900000167,
+   "soh_floor_rows_active_at_terminal": [
+    "(0, 2)"
+   ],
+   "published_available_capacity_terminal": {
+    "2025": {
+     "s_available": 0.96875,
+     "e_available": 3.4127621899210943
+    },
+    "2030": {
+     "s_available": 0.96875,
+     "e_available": 3.024123835052648
+    },
+    "2035": {
+     "s_available": 0.96875,
+     "e_available": 2.712499961250064
+    }
+   },
+   "note_zero_node": null
+  },
+  "7": {
+   "s_mva": 0.96875,
+   "e_mwh": 3.875,
+   "has_storage": true,
+   "efc_per_day_max": 1.0099781417605986,
+   "efc_per_day_per_cohort_year": {
+    "(0, 0)": 1.0099781417605986,
+    "(0, 1)": 0.890804921588437,
+    "(0, 2)": 0.6524308556261141
+   },
+   "terminal_soh_per_active_cohort_year": {
+    "(0, 0)": 0.8807506310804899,
+    "(0, 1)": 0.780441867683279,
+    "(0, 2)": 0.699999990000017
+   },
+   "terminal_soh_min_over_active_cohort_years": 0.699999990000017,
+   "soh_floor_rows_active_at_terminal": [
+    "(0, 2)"
+   ],
+   "published_available_capacity_terminal": {
+    "2025": {
+     "s_available": 0.96875,
+     "e_available": 3.4129086954368986
+    },
+    "2030": {
+     "s_available": 0.96875,
+     "e_available": 3.024212237272706
+    },
+    "2035": {
+     "s_available": 0.96875,
+     "e_available": 2.7124999612500655
+    }
+   },
+   "note_zero_node": null
+  },
+  "9": {
+   "s_mva": 0.96875,
+   "e_mwh": 3.875,
+   "has_storage": true,
+   "efc_per_day_max": 1.0101560833330607,
+   "efc_per_day_per_cohort_year": {
+    "(0, 0)": 1.0101560833330607,
+    "(0, 1)": 0.8916935682910601,
+    "(0, 2)": 0.6513642673510288
+   },
+   "terminal_soh_per_active_cohort_year": {
+    "(0, 0)": 0.8807426532346021,
+    "(0, 1)": 0.7803994953092387,
+    "(0, 2)": 0.6999999900000169
+   },
+   "terminal_soh_min_over_active_cohort_years": 0.6999999900000169,
+   "soh_floor_rows_active_at_terminal": [
+    "(0, 2)"
+   ],
+   "published_available_capacity_terminal": {
+    "2025": {
+     "s_available": 0.96875,
+     "e_available": 3.412877781284083
+    },
+    "2030": {
+     "s_available": 0.96875,
+     "e_available": 3.0240480443232998
+    },
+    "2035": {
+     "s_available": 0.96875,
+     "e_available": 2.7124999612500655
+    }
+   },
+   "note_zero_node": null
+  }
+ },
+ "local_solve_failures": 0,
+ "network_failures_summary": {
+  "n_blocks": 37,
+  "classes": {
+   "recovered_tier1": 34,
+   "recovered_tier2": 3,
+   "unrecovered": 0,
+   "not_attempted": 0,
+   "indeterminate": 0,
+   "recovered": 37
+  },
+  "n_frozen_snapshots": 2,
+  "n_esso_recovery_events": 0,
+  "path": "data/SRP1/Results/P515S53/tight_tail_w86/campaign_s53_w86_tail_recert/evals/96c5aa50cc229cc1_c_star/network_failures_s39_D.jsonl"
+ },
+ "solve_profile": {
+  "observed": {
+   "permitted_solve": 4528,
+   "permitted_exec": 4528,
+   "blocked_solve": 0,
+   "blocked_exec": 0
+  },
+  "identity_holds": true,
+  "identity": "observed == base + sum over network-failure events of [recovery_attempted] + [tier2_attempted]; unsupported when an ESSO recovery event or an 'indeterminate' network event exists",
+  "derivation": "(1 + n_dso) * n_years * n_days + n_esso_nodes, per cycle, from the planning object",
+  "n_dso": 3,
+  "n_years": 3,
+  "n_days": 4,
+  "n_esso_nodes": 3,
+  "solves_per_cycle": 51,
+  "rounds": 88,
+  "rounds_note": "one initialization round + cycles_run ADMM cycles",
+  "base_solves": 4488,
+  "retry_solves_credited": 40,
+  "reconciliation_supported": true,
+  "expected_solves": 4528,
+  "recovered_only_identity": {
+   "expected": 4528,
+   "holds": true,
+   "note": "pre-W35 rule, REPORTED not gated: credits retries only to RECOVERED blocks, so an unrecovered block's attempts go uncounted (78a9b230)"
+  }
+ },
+ "wall_time_s": {
+  "child_process_s": 2955.205488920212,
+  "run_admm_arm_s": 2940.5417878627777,
+  "run_admm_arm_reported_wall_clock_s": 2928.3633501529694
+ },
+ "peak_rss": {
+  "units": "bytes on macOS/BSD, kilobytes on Linux (ru_maxrss)",
+  "child_python_process_ru_maxrss": 3469082624,
+  "production_state_peak_rss_ru_maxrss": 2381086720,
+  "solver_subprocesses_max_ru_maxrss": 55787520,
+  "semantics": "child_python_process = RUSAGE_SELF of the evaluation process at record time (the evaluation's own peak); production_state = the same measure taken by production at the end of run_operational_planning; solver_subprocesses = RUSAGE_CHILDREN max over the IPOPT executables this evaluation launched; when a post-certification step ran, child_python_process includes it (the ADMM run alone is production_state)"
+ },
+ "record_capture_checklist_asserted_before_run": {
+  "trajectory_field_boyd_all_pass": true,
+  "trajectory_field_boyd_ess_channel_pass": true,
+  "trajectory_field_boyd_ess_dual_ratio": true,
+  "trajectory_field_boyd_ess_primal_ratio": true,
+  "trajectory_field_boyd_pf_channel_pass": true,
+  "trajectory_field_boyd_pf_dual_ratio": true,
+  "trajectory_field_boyd_pf_primal_ratio": true,
+  "trajectory_field_boyd_stop": true,
+  "trajectory_field_boyd_v_channel_pass": true,
+  "trajectory_field_boyd_v_dual_ratio": true,
+  "trajectory_field_boyd_v_primal_ratio": true,
+  "trajectory_field_consecutive_converged_cycles": true,
+  "trajectory_field_cycle": true,
+  "trajectory_field_cycle_convergence": true,
+  "trajectory_field_efc_per_day_max": true,
+  "trajectory_field_gross_operational_cost": true,
+  "trajectory_field_local_solves_ok": true,
+  "trajectory_field_objective_change_abs": true,
+  "trajectory_field_objective_change_ratio": true,
+  "trajectory_field_objective_tolerance": true,
+  "trajectory_field_recourse": true,
+  "trajectory_field_rho_ess_action": true,
+  "trajectory_field_rho_ess_after": true,
+  "trajectory_field_rho_freeze_active": true,
+  "trajectory_field_rho_pf_action": true,
+  "trajectory_field_rho_pf_after": true,
+  "trajectory_field_rho_v_action": true,
+  "trajectory_field_rho_v_after": true,
+  "trajectory_field_terminal_salvage_value": true,
+  "esso_capture_attr_es_avg_ch_dch_per_unit": true,
+  "esso_capture_attr_es_soh_per_unit_cumul": true,
+  "esso_capture_attr_es_e_rated_per_unit": true,
+  "harness_fn_run_admm_arm": true,
+  "harness_fn_write_boyd_terminal_s35ref": true,
+  "harness_fn_s38_pf_capture_hooks": true,
+  "harness_fn_s39_exempt_until_capture_hooks": true,
+  "harness_fn__s35ref_terminal_floor_and_efc": true,
+  "harness_fn__derive_stopped_by_from_trajectory": true,
+  "harness_fn__identify_soh_floor_rows": true,
+  "evaluator_fn__certification_from_trajectory": true,
+  "evaluator_fn__first_pass_cycle": true,
+  "evaluator_fn__terminal_ratios": true,
+  "component_levels_recourse_key_interface_settlement_total": true,
+  "run_admm_arm_accepts_investment_map": true,
+  "run_admm_arm_post_run_hook_gets_state": true,
+  "production_state_has_peak_rss": true
+ },
+ "convergence_depth_tail_checklist_asserted_before_run": {
+  "checks": {
+   "production_default_tail_off": true,
+   "production_tail_helper_present": true,
+   "production_both_returns_carry_the_records": true,
+   "production_both_returns_carry_the_tail_state": true,
+   "production_records_drained_at_initialisation": true,
+   "production_records_drained_every_cycle": true,
+   "network_attempt_appends_a_record_after_the_solve": true,
+   "run_admm_arm_post_run_hook_gets_state": true
+  },
+  "declared": {
+   "enabled": true,
+   "compl_inf_tol": 1e-06
+  },
+  "tail_enabled_for_this_run": true,
+  "compl_inf_tol_tail": 1e-06,
+  "source": "campaign spec configuration.convergence_depth_tail",
+  "production_default": {
+   "enabled": false,
+   "compl_inf_tol": 1e-06
+  },
+  "persisted_files": [
+   "network_ipopt_solve_records.jsonl",
+   "convergence_depth_tail_state.json"
+  ]
+ },
+ "convergence_depth_tail_applied_in_child": {
+  "declared": {
+   "enabled": true,
+   "compl_inf_tol": 1e-06
+  },
+  "source": "campaign spec configuration.convergence_depth_tail",
+  "before": {
+   "enabled": false,
+   "compl_inf_tol": 1e-06
+  },
+  "after": {
+   "enabled": true,
+   "compl_inf_tol": 1e-06
+  },
+  "enabled_in_force": true,
+  "expected_enabled": true,
+  "dict_in_force_equals_declaration": true,
+  "ok": true
+ },
+ "convergence_depth_tail_state_check": {
+  "expected_enabled": true,
+  "enabled_in_state": true,
+  "expected_compl_inf_tol_tail": 1e-06,
+  "compl_inf_tol_tail_in_state": 1e-06,
+  "match": true,
+  "n_cycles_recorded": 87,
+  "cycles_tail_active": [
+   79,
+   80,
+   81,
+   82,
+   83,
+   84,
+   85,
+   86,
+   87
+  ],
+  "n_cycles_acted": 1,
+  "restore_at_exit_acted": true
+ },
+ "convergence_depth_capture": {
+  "status": "written",
+  "network_ipopt_solve_records_path": "data/SRP1/Results/P515S53/tight_tail_w86/campaign_s53_w86_tail_recert/evals/96c5aa50cc229cc1_c_star/network_ipopt_solve_records.jsonl",
+  "network_ipopt_solve_records_sha256": "38c800abc6659ddf719b249e0d9fc44f22b509d374a648dc6a1660b3d43d4e46",
+  "state_carried_records": true,
+  "n_records": 4264,
+  "records_per_round": {
+   "0": 48,
+   "1": 48,
+   "2": 48,
+   "3": 48,
+   "4": 50,
+   "5": 51,
+   "6": 48,
+   "7": 48,
+   "8": 49,
+   "9": 49,
+   "10": 49,
+   "11": 51,
+   "12": 48,
+   "13": 50,
+   "14": 49,
+   "15": 50,
+   "16": 48,
+   "17": 48,
+   "18": 48,
+   "19": 48,
+   "20": 48,
+   "21": 48,
+   "22": 51,
+   "23": 50,
+   "24": 48,
+   "25": 48,
+   "26": 48,
+   "27": 48,
+   "28": 48,
+   "29": 49,
+   "30": 48,
+   "31": 49,
+   "32": 48,
+   "33": 48,
+   "34": 50,
+   "35": 48,
+   "36": 48,
+   "37": 48,
+   "38": 48,
+   "39": 49,
+   "40": 49,
+   "41": 49,
+   "42": 48,
+   "43": 48,
+   "44": 48,
+   "45": 48,
+   "46": 48,
+   "47": 50,
+   "48": 48,
+   "49": 49,
+   "50": 48,
+   "51": 49,
+   "52": 49,
+   "53": 48,
+   "54": 48,
+   "55": 48,
+   "56": 48,
+   "57": 48,
+   "58": 48,
+   "59": 48,
+   "60": 48,
+   "61": 48,
+   "62": 49,
+   "63": 48,
+   "64": 48,
+   "65": 48,
+   "66": 49,
+   "67": 48,
+   "68": 49,
+   "69": 48,
+   "70": 49,
+   "71": 48,
+   "72": 48,
+   "73": 48,
+   "74": 48,
+   "75": 48,
+   "76": 48,
+   "77": 48,
+   "78": 49,
+   "79": 48,
+   "80": 48,
+   "81": 48,
+   "82": 49,
+   "83": 48,
+   "84": 49,
+   "85": 48,
+   "86": 48,
+   "87": 48
+  },
+  "floor_status_tally": {
+   "DSO|None": 3,
+   "DSO|above": 33,
+   "DSO|at": 3165,
+   "TSO|above": 14,
+   "TSO|at": 1049
+  },
+  "exit_tally": {
+   "Maximum Number of Iterations Exceeded.": 40,
+   "Optimal Solution Found.": 4216,
+   "Solved To Acceptable Level.": 8
+  },
+  "n_parse_problems": 3,
+  "stale_network_ipopt_solve_records_discarded": 0,
+  "convergence_depth_tail_state_path": "data/SRP1/Results/P515S53/tight_tail_w86/campaign_s53_w86_tail_recert/evals/96c5aa50cc229cc1_c_star/convergence_depth_tail_state.json",
+  "convergence_depth_tail_state_sha256": "28b3e54b2460b01526ecc6ff594eadbd88c08529d5c39072767a78dc9a0a58db",
+  "state_carried_tail_state": true
+ },
+ "convergence_depth_per_round_append": {
+  "records_append_path": "data/SRP1/Results/P515S53/tight_tail_w86/campaign_s53_w86_tail_recert/evals/96c5aa50cc229cc1_c_star/network_ipopt_solve_records_append.jsonl",
+  "records_append_sha256": "38c800abc6659ddf719b249e0d9fc44f22b509d374a648dc6a1660b3d43d4e46",
+  "end_of_run_records_sha256": "38c800abc6659ddf719b249e0d9fc44f22b509d374a648dc6a1660b3d43d4e46",
+  "n_records_appended": 4264,
+  "rounds_appended": [
+   0,
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   7,
+   8,
+   9,
+   10,
+   11,
+   12,
+   13,
+   14,
+   15,
+   16,
+   17,
+   18,
+   19,
+   20,
+   21,
+   22,
+   23,
+   24,
+   25,
+   26,
+   27,
+   28,
+   29,
+   30,
+   31,
+   32,
+   33,
+   34,
+   35,
+   36,
+   37,
+   38,
+   39,
+   40,
+   41,
+   42,
+   43,
+   44,
+   45,
+   46,
+   47,
+   48,
+   49,
+   50,
+   51,
+   52,
+   53,
+   54,
+   55,
+   56,
+   57,
+   58,
+   59,
+   60,
+   61,
+   62,
+   63,
+   64,
+   65,
+   66,
+   67,
+   68,
+   69,
+   70,
+   71,
+   72,
+   73,
+   74,
+   75,
+   76,
+   77,
+   78,
+   79,
+   80,
+   81,
+   82,
+   83,
+   84,
+   85,
+   86,
+   87
+  ],
+  "events_path": "data/SRP1/Results/P515S53/tight_tail_w86/campaign_s53_w86_tail_recert/evals/96c5aa50cc229cc1_c_star/convergence_depth_append_events.jsonl",
+  "records_append_byte_identical_to_end_of_run_file": true,
+  "tail_state_rebuilt_from_events_equals_returned_state": true,
+  "write_errors": [],
+  "ok": true
+ },
+ "eval_key": "96c5aa50cc229cc14f8bfd34de306b7cc79caf77ac28a09e0046ad3978c49772",
+ "evaluation_overrides_effective": {},
+ "post_certification_capture_checklist_asserted_before_run": {
+  "certification_fn": true,
+  "stopped_by_fn": true,
+  "hull_polish_fn": true,
+  "persist_fn": true,
+  "decomposition_fn_accepts_reference_dir": true,
+  "cost_band_constant_1_5e_4": true,
+  "reconciliation_tol_1_0": true,
+  "hull_gate_threshold_0_1_pct": true,
+  "aa_sidecar_fn": true,
+  "run_admm_arm_passes_state_to_hook": true
+ },
+ "post_certification": {
+  "status": "evaluated",
+  "evaluated": true,
+  "skip_reason": null,
+  "error": null,
+  "certified_cost": 650911546.2054665,
+  "gate_c_pass": null,
+  "persisted_models": {
+   "path": "data/SRP1/Results/P515S53/tight_tail_w86/campaign_s53_w86_tail_recert/evals/96c5aa50cc229cc1_c_star/certified_models.pkl",
+   "sha256": "c85fda30408d7e065f2dcc0b4d039d191f7b54ed8e23741a4d66d7fe5587dd68",
+   "size_bytes": 165704218
+  },
+  "hull_bound_detail_path": null,
+  "requested": {
+   "hull_polish": false,
+   "persist_certified_models": true,
+   "reference": null
+  },
+  "gate_b": null,
+  "gate_c": null,
+  "gate_d": null
+ },
+ "post_certification_path": "data/SRP1/Results/P515S53/tight_tail_w86/campaign_s53_w86_tail_recert/evals/96c5aa50cc229cc1_c_star/post_certification.json",
+ "aa_per_cycle": {
+  "path": "data/SRP1/Results/P515S53/tight_tail_w86/campaign_s53_w86_tail_recert/evals/96c5aa50cc229cc1_c_star/aa_per_cycle.jsonl",
+  "n_rows": 87,
+  "action_counts": {
+   "insufficient memory (m_k=0)": 9,
+   "accepted": 40,
+   "rejected (safeguard; memory retained)": 28,
+   "off (all channels within Boyd tolerance)": 10
+  },
+  "n_accepted": 40,
+  "n_rejected": 28,
+  "rejections_with_memory_retained": [
+   {
+    "cycle": 14,
+    "memory_size_before": 5,
+    "memory_size_after": 5,
+    "rho_changed_channels": []
+   },
+   {
+    "cycle": 15,
+    "memory_size_before": 5,
+    "memory_size_after": 5,
+    "rho_changed_channels": []
+   },
+   {
+    "cycle": 16,
+    "memory_size_before": 5,
+    "memory_size_after": 5,
+    "rho_changed_channels": []
+   },
+   {
+    "cycle": 17,
+    "memory_size_before": 5,
+    "memory_size_after": 5,
+    "rho_changed_channels": []
+   },
+   {
+    "cycle": 18,
+    "memory_size_before": 5,
+    "memory_size_after": 5,
+    "rho_changed_channels": []
+   },
+   {
+    "cycle": 19,
+    "memory_size_before": 5,
+    "memory_size_after": 5,
+    "rho_changed_channels": []
+   },
+   {
+    "cycle": 22,
+    "memory_size_before": 5,
+    "memory_size_after": 5,
+    "rho_changed_channels": []
+   },
+   {
+    "cycle": 25,
+    "memory_size_before": 5,
+    "memory_size_after": 5,
+    "rho_changed_channels": []
+   },
+   {
+    "cycle": 28,
+    "memory_size_before": 5,
+    "memory_size_after": 5,
+    "rho_changed_channels": []
+   },
+   {
+    "cycle": 37,
+    "memory_size_before": 1,
+    "memory_size_after": 2,
+    "rho_changed_channels": []
+   },
+   {
+    "cycle": 39,
+    "memory_size_before": 3,
+    "memory_size_after": 4,
+    "rho_changed_channels": []
+   },
+   {
+    "cycle": 40,
+    "memory_size_before": 4,
+    "memory_size_after": 5,
+    "rho_changed_channels": []
+   },
+   {
+    "cycle": 42,
+    "memory_size_before": 5,
+    "memory_size_after": 5,
+    "rho_changed_channels": []
+   },
+   {
+    "cycle": 43,
+    "memory_size_before": 5,
+    "memory_size_after": 5,
+    "rho_changed_channels": []
+   },
+   {
+    "cycle": 44,
+    "memory_size_before": 5,
+    "memory_size_after": 5,
+    "rho_changed_channels": []
+   },
+   {
+    "cycle": 45,
+    "memory_size_before": 5,
+    "memory_size_after": 5,
+    "rho_changed_channels": []
+   },
+   {
+    "cycle": 47,
+    "memory_size_before": 5,
+    "memory_size_after": 5,
+    "rho_changed_channels": []
+   },
+   {
+    "cycle": 48,
+    "memory_size_before": 5,
+    "memory_size_after": 5,
+    "rho_changed_channels": []
+   },
+   {
+    "cycle": 52,
+    "memory_size_before": 5,
+    "memory_size_after": 5,
+    "rho_changed_channels": []
+   },
+   {
+    "cycle": 53,
+    "memory_size_before": 5,
+    "memory_size_after": 5,
+    "rho_changed_channels": []
+   },
+   {
+    "cycle": 55,
+    "memory_size_before": 5,
+    "memory_size_after": 5,
+    "rho_changed_channels": []
+   },
+   {
+    "cycle": 58,
+    "memory_size_before": 5,
+    "memory_size_after": 5,
+    "rho_changed_channels": []
+   },
+   {
+    "cycle": 62,
+    "memory_size_before": 5,
+    "memory_size_after": 5,
+    "rho_changed_channels": []
+   },
+   {
+    "cycle": 63,
+    "memory_size_before": 5,
+    "memory_size_after": 5,
+    "rho_changed_channels": []
+   },
+   {
+    "cycle": 67,
+    "memory_size_before": 5,
+    "memory_size_after": 5,
+    "rho_changed_channels": []
+   },
+   {
+    "cycle": 70,
+    "memory_size_before": 5,
+    "memory_size_after": 5,
+    "rho_changed_channels": []
+   },
+   {
+    "cycle": 73,
+    "memory_size_before": 5,
+    "memory_size_after": 5,
+    "rho_changed_channels": []
+   },
+   {
+    "cycle": 74,
+    "memory_size_before": 5,
+    "memory_size_after": 5,
+    "rho_changed_channels": []
+   }
+  ],
+  "first_accept_cycle": 4,
+  "first_reject_cycle": 14
+ },
+ "configuration_checks_in_child": {
+  "rho_v_matches_D": true,
+  "rho_pf_matches_D": true,
+  "rho_ess_matches_D": true,
+  "tau_is_0": true,
+  "gamma_policy_tied_to_rho": true,
+  "balancing_exempt_until_matches_D": true,
+  "balancing_exempt_channels_empty": true,
+  "freeze_after_unchanged_cycles_is_10": true,
+  "freeze_backstop_cycle_is_200": true,
+  "minimum_consecutive_converged_cycles_matches_spec": true,
+  "shared_ess_initialization_is_standalone": true,
+  "num_max_iters_is_spec_cap": true,
+  "anderson_acceleration_case_file_matches_declaration": true,
+  "anderson_acceleration_case_file_memory_regularization_frozen": true,
+  "persistent_workers_off": true,
+  "parallel_execution_off": true
+ },
+ "overrides_applied_in_child": {},
+ "anderson_acceleration_effective_in_child": {
+  "enabled": true,
+  "memory": 5,
+  "regularization": 1e-10,
+  "reject_policy": "keep_memory"
+ },
+ "case_file_sha256_in_child": "dbfdb2a07d12bfedab5e66bf94b3df98e5ab0305616652b4083266476972006b",
+ "thread_caps_seen_by_child": {
+  "OMP_NUM_THREADS": "1",
+  "MKL_NUM_THREADS": "1",
+  "OPENBLAS_NUM_THREADS": "1",
+  "VECLIB_MAXIMUM_THREADS": "1",
+  "NUMEXPR_NUM_THREADS": "1"
+ },
+ "PYTHONHASHSEED_in_child": null,
+ "nlp_solver_path_in_child": "/usr/local/bin/ipopt",
+ "campaign_lock_seen_by_child": {
+  "pid": 35414,
+  "campaign_id": "s53_w86_tail_recert",
+  "campaign_spec_sha256": "ddd6cd4422b56f946eeeb427dff44ef572490bd34c606fad96eaf00fd4a84ec1",
+  "started_utc": "2026-09-25T16:34:09.419392+00:00"
+ },
+ "child_pid": 35451,
+ "parent_pid": 35414,
+ "report_path": "data/SRP1/Results/P515S53/tight_tail_w86/campaign_s53_w86_tail_recert/evals/96c5aa50cc229cc1_c_star/g_s39_D.json",
+ "per_cycle_record_path": "data/SRP1/Results/P515S53/tight_tail_w86/campaign_s53_w86_tail_recert/evals/96c5aa50cc229cc1_c_star/per_cycle_record.jsonl",
+ "ess_ageing_baseline": {
+  "calendar_life_years": 15,
+  "calendar_retention_per_year": 0.985,
+  "cycle_life_nominal": 10000,
+  "depth_of_discharge_nominal": 0.8,
+  "minimum_soh": 0.7,
+  "calibration": {
+   "status": "ACTIVE",
+   "cycles_n": 10000,
+   "reference_dod_d": 0.8,
+   "eol_retention_r": 0.8
+  }
+ },
+ "ess_ageing_baseline_label": "BASELINE (C2 + phi_cal 0.985 + soh_min 0.70)",
+ "ess_params_sha256_in_child": "39106f934bf3edbf18f01a5ef1fadfefc2f7a518706e6c8fa6d962617a312706",
+ "ess_ageing_verified_pre_run": {
+  "declared": {
+   "calendar_life_years": 15,
+   "calendar_retention_per_year": 0.985,
+   "cycle_life_nominal": 10000,
+   "depth_of_discharge_nominal": 0.8,
+   "minimum_soh": 0.7,
+   "calibration": {
+    "status": "ACTIVE",
+    "cycles_n": 10000,
+    "reference_dod_d": 0.8,
+    "eol_retention_r": 0.8
+   }
+  },
+  "loaded": {
+   "calendar_life_years": 15,
+   "cycle_life_nominal": 10000,
+   "depth_of_discharge_nominal": 0.8,
+   "minimum_soh": 0.7,
+   "calendar_retention_per_year": 0.985,
+   "calibration": {
+    "status": "ACTIVE",
+    "cycles_n": 10000,
+    "reference_dod_d": 0.8,
+    "eol_retention_r": 0.8
+   }
+  },
+  "file_used_by_production": "data/SRP1/SharedESS/SRP1_ESS_Params.json",
+  "file_sha256": "39106f934bf3edbf18f01a5ef1fadfefc2f7a518706e6c8fa6d962617a312706",
+  "pin": {
+   "last_commit": "2466401d429eeb43a680b36e32947878372c3cbf",
+   "path": "data/SRP1/SharedESS/SRP1_ESS_Params.json",
+   "sha256": "39106f934bf3edbf18f01a5ef1fadfefc2f7a518706e6c8fa6d962617a312706"
+  },
+  "k_production": 35851.3609417964,
+  "per_ess": [
+   {
+    "year": "2025",
+    "bus": 5,
+    "soh_min": 0.7,
+    "phi_cal": 0.985,
+    "cl_eff": 35851.3609417964
+   },
+   {
+    "year": "2025",
+    "bus": 7,
+    "soh_min": 0.7,
+    "phi_cal": 0.985,
+    "cl_eff": 35851.3609417964
+   },
+   {
+    "year": "2025",
+    "bus": 9,
+    "soh_min": 0.7,
+    "phi_cal": 0.985,
+    "cl_eff": 35851.3609417964
+   },
+   {
+    "year": "2030",
+    "bus": 5,
+    "soh_min": 0.7,
+    "phi_cal": 0.985,
+    "cl_eff": 35851.3609417964
+   },
+   {
+    "year": "2030",
+    "bus": 7,
+    "soh_min": 0.7,
+    "phi_cal": 0.985,
+    "cl_eff": 35851.3609417964
+   },
+   {
+    "year": "2030",
+    "bus": 9,
+    "soh_min": 0.7,
+    "phi_cal": 0.985,
+    "cl_eff": 35851.3609417964
+   },
+   {
+    "year": "2035",
+    "bus": 5,
+    "soh_min": 0.7,
+    "phi_cal": 0.985,
+    "cl_eff": 35851.3609417964
+   },
+   {
+    "year": "2035",
+    "bus": 7,
+    "soh_min": 0.7,
+    "phi_cal": 0.985,
+    "cl_eff": 35851.3609417964
+   },
+   {
+    "year": "2035",
+    "bus": 9,
+    "soh_min": 0.7,
+    "phi_cal": 0.985,
+    "cl_eff": 35851.3609417964
+   }
+  ],
+  "checks": {
+   "pin_path_is_ess_params_file": true,
+   "file_used_by_production_is_pinned_file": true,
+   "file_sha256_equals_pin": true,
+   "loaded_equals_declaration_types_included": true,
+   "every_ess_soh_min_is_declared": true,
+   "every_ess_phi_cal_is_declared": true,
+   "every_ess_cl_eff_is_production_k": true
+  },
+  "readback_pre_run": {
+   "expected": {
+    "k": 35851.3609417964,
+    "k_formula": "cycles_n * reference_dod_d / (-ln eol_retention_r) = 10000 * 0.8 / (-ln 0.8)",
+    "phi_cal_in_model": 0.985,
+    "floor_row_lower": 0.7,
+    "available_energy_soh_point": "end",
+    "ageing_enabled": true,
+    "d_row_form": "D * 2kE == 365 n avg"
+   },
+   "per_node": {
+    "5": {
+     "readback": {
+      "y_inv": 0,
+      "y0": 0,
+      "y1_available_row": 1,
+      "n_years_data": 5,
+      "d_row_form": "D * 2kE == 365 n avg",
+      "k": 35851.3609417964,
+      "n_years_from_d_row": 5.0,
+      "phi_cal_in_model": 0.985,
+      "soh_row_exp_form_ok": true,
+      "available_energy_soh_point": "end",
+      "available_row_probe": {
+       "soh_end": 0.9,
+       "soh_prev": 0.95,
+       "D": 0.2,
+       "X": 0.9,
+       "X_end": 0.9,
+       "X_mid_closed_form": 0.8277224476758176
+      },
+      "floor_row_lower": 0.7
+     },
+     "checks": {
+      "k": true,
+      "n_years_from_d_row_equals_data": true,
+      "phi_cal_in_model": true,
+      "d_row_form": true,
+      "available_energy_soh_point": true,
+      "soh_row_exp_form": true,
+      "floor_row_lower": true
+     }
+    },
+    "7": {
+     "readback": {
+      "y_inv": 0,
+      "y0": 0,
+      "y1_available_row": 1,
+      "n_years_data": 5,
+      "d_row_form": "D * 2kE == 365 n avg",
+      "k": 35851.3609417964,
+      "n_years_from_d_row": 5.0,
+      "phi_cal_in_model": 0.985,
+      "soh_row_exp_form_ok": true,
+      "available_energy_soh_point": "end",
+      "available_row_probe": {
+       "soh_end": 0.9,
+       "soh_prev": 0.95,
+       "D": 0.2,
+       "X": 0.9,
+       "X_end": 0.9,
+       "X_mid_closed_form": 0.8277224476758176
+      },
+      "floor_row_lower": 0.7
+     },
+     "checks": {
+      "k": true,
+      "n_years_from_d_row_equals_data": true,
+      "phi_cal_in_model": true,
+      "d_row_form": true,
+      "available_energy_soh_point": true,
+      "soh_row_exp_form": true,
+      "floor_row_lower": true
+     }
+    },
+    "9": {
+     "readback": {
+      "y_inv": 0,
+      "y0": 0,
+      "y1_available_row": 1,
+      "n_years_data": 5,
+      "d_row_form": "D * 2kE == 365 n avg",
+      "k": 35851.3609417964,
+      "n_years_from_d_row": 5.0,
+      "phi_cal_in_model": 0.985,
+      "soh_row_exp_form_ok": true,
+      "available_energy_soh_point": "end",
+      "available_row_probe": {
+       "soh_end": 0.9,
+       "soh_prev": 0.95,
+       "D": 0.2,
+       "X": 0.9,
+       "X_end": 0.9,
+       "X_mid_closed_form": 0.8277224476758176
+      },
+      "floor_row_lower": 0.7
+     },
+     "checks": {
+      "k": true,
+      "n_years_from_d_row_equals_data": true,
+      "phi_cal_in_model": true,
+      "d_row_form": true,
+      "available_energy_soh_point": true,
+      "soh_row_exp_form": true,
+      "floor_row_lower": true
+     }
+    }
+   },
+   "all_match": true,
+   "method": "numerical read-back from the built rows (model_variant_readback) against the declaration's closed forms; on probe models"
+  },
+  "floor_rows_identical_to_precheck": true
+ },
+ "ess_ageing_readback_terminal": {
+  "expected": {
+   "k": 35851.3609417964,
+   "k_formula": "cycles_n * reference_dod_d / (-ln eol_retention_r) = 10000 * 0.8 / (-ln 0.8)",
+   "phi_cal_in_model": 0.985,
+   "floor_row_lower": 0.7,
+   "available_energy_soh_point": "end",
+   "ageing_enabled": true,
+   "d_row_form": "D * 2kE == 365 n avg"
+  },
+  "per_node": {
+   "5": {
+    "readback": {
+     "y_inv": 0,
+     "y0": 0,
+     "y1_available_row": 1,
+     "n_years_data": 5,
+     "d_row_form": "D * 2kE == 365 n avg",
+     "k": 35851.3609417964,
+     "n_years_from_d_row": 5.0,
+     "phi_cal_in_model": 0.985,
+     "soh_row_exp_form_ok": true,
+     "available_energy_soh_point": "end",
+     "available_row_probe": {
+      "soh_end": 0.9,
+      "soh_prev": 0.95,
+      "D": 0.2,
+      "X": 0.9,
+      "X_end": 0.9,
+      "X_mid_closed_form": 0.8277224476758176
+     },
+     "floor_row_lower": 0.7
+    },
+    "checks": {
+     "k": true,
+     "n_years_from_d_row_equals_data": true,
+     "phi_cal_in_model": true,
+     "d_row_form": true,
+     "available_energy_soh_point": true,
+     "soh_row_exp_form": true,
+     "floor_row_lower": true
+    }
+   },
+   "7": {
+    "readback": {
+     "y_inv": 0,
+     "y0": 0,
+     "y1_available_row": 1,
+     "n_years_data": 5,
+     "d_row_form": "D * 2kE == 365 n avg",
+     "k": 35851.3609417964,
+     "n_years_from_d_row": 5.0,
+     "phi_cal_in_model": 0.985,
+     "soh_row_exp_form_ok": true,
+     "available_energy_soh_point": "end",
+     "available_row_probe": {
+      "soh_end": 0.9,
+      "soh_prev": 0.95,
+      "D": 0.2,
+      "X": 0.9,
+      "X_end": 0.9,
+      "X_mid_closed_form": 0.8277224476758176
+     },
+     "floor_row_lower": 0.7
+    },
+    "checks": {
+     "k": true,
+     "n_years_from_d_row_equals_data": true,
+     "phi_cal_in_model": true,
+     "d_row_form": true,
+     "available_energy_soh_point": true,
+     "soh_row_exp_form": true,
+     "floor_row_lower": true
+    }
+   },
+   "9": {
+    "readback": {
+     "y_inv": 0,
+     "y0": 0,
+     "y1_available_row": 1,
+     "n_years_data": 5,
+     "d_row_form": "D * 2kE == 365 n avg",
+     "k": 35851.3609417964,
+     "n_years_from_d_row": 5.0,
+     "phi_cal_in_model": 0.985,
+     "soh_row_exp_form_ok": true,
+     "available_energy_soh_point": "end",
+     "available_row_probe": {
+      "soh_end": 0.9,
+      "soh_prev": 0.95,
+      "D": 0.2,
+      "X": 0.9,
+      "X_end": 0.9,
+      "X_mid_closed_form": 0.8277224476758176
+     },
+     "floor_row_lower": 0.7
+    },
+    "checks": {
+     "k": true,
+     "n_years_from_d_row_equals_data": true,
+     "phi_cal_in_model": true,
+     "d_row_form": true,
+     "available_energy_soh_point": true,
+     "soh_row_exp_form": true,
+     "floor_row_lower": true
+    }
+   }
+  },
+  "all_match": true,
+  "method": "numerical read-back from the built rows (model_variant_readback) against the declaration's closed forms; on clones of the given models"
+ },
+ "ageing_trajectory_terminal": {
+  "available_energy_soh_point": "end",
+  "ageing_enabled": true,
+  "nodes": {
+   "5": {
+    "cells": [
+     {
+      "y_inv": 0,
+      "investment_year": "2025",
+      "y": 0,
+      "block_year": "2025",
+      "n_years": 5,
+      "e_rated": 3.875,
+      "avg_ch_dch": 7.833866163183597,
+      "efc_per_day": 1.0108214404107867,
+      "D": 0.051455483984124896,
+      "soh_prev_end": 1.0,
+      "soh_end": 0.8807128232054436,
+      "soh_used_for_available_energy": 0.8807128232054436,
+      "e_available": 3.4127621899210943,
+      "soh_mid_closed_form": 0.9384630111013665,
+      "phi_cal_in_model": 0.985,
+      "cl_eff": 35851.3609417964
+     },
+     {
+      "y_inv": 0,
+      "investment_year": "2025",
+      "y": 1,
+      "block_year": "2030",
+      "n_years": 5,
+      "e_rated": 3.875,
+      "avg_ch_dch": 6.901653005296779,
+      "efc_per_day": 0.8905358716511972,
+      "D": 0.045332392496952714,
+      "soh_prev_end": 0.8807128232054436,
+      "soh_end": 0.780419054207135,
+      "soh_used_for_available_energy": 0.7804190542071349,
+      "e_available": 3.024123835052648,
+      "soh_mid_closed_form": 0.8290507032227209,
+      "phi_cal_in_model": 0.985,
+      "cl_eff": 35851.3609417964
+     },
+     {
+      "y_inv": 0,
+      "investment_year": "2025",
+      "y": 2,
+      "block_year": "2035",
+      "n_years": 5,
+      "e_rated": 3.875,
+      "avg_ch_dch": 5.051888703577105,
+      "efc_per_day": 0.6518566069131748,
+      "D": 0.03318251459262274,
+      "soh_prev_end": 0.780419054207135,
+      "soh_end": 0.6999999900000167,
+      "soh_used_for_available_energy": 0.6999999900000166,
+      "e_available": 2.712499961250064,
+      "soh_mid_closed_form": 0.7391165876509719,
+      "phi_cal_in_model": 0.985,
+      "cl_eff": 35851.3609417964
+     }
+    ],
+    "salvage_value": 9.547042192868597e-36
+   },
+   "7": {
+    "cells": [
+     {
+      "y_inv": 0,
+      "investment_year": "2025",
+      "y": 0,
+      "block_year": "2025",
+      "n_years": 5,
+      "e_rated": 3.875,
+      "avg_ch_dch": 7.827330598644639,
+      "efc_per_day": 1.0099781417605986,
+      "D": 0.051412556184561246,
+      "soh_prev_end": 1.0,
+      "soh_end": 0.8807506310804899,
+      "soh_used_for_available_energy": 0.8807506310804899,
+      "e_available": 3.4129086954368986,
+      "soh_mid_closed_form": 0.9384831543935618,
+      "phi_cal_in_model": 0.985,
+      "cl_eff": 35851.3609417964
+     },
+     {
+      "y_inv": 0,
+      "investment_year": "2025",
+      "y": 1,
+      "block_year": "2030",
+      "n_years": 5,
+      "e_rated": 3.875,
+      "avg_ch_dch": 6.903738142310387,
+      "efc_per_day": 0.890804921588437,
+      "D": 0.04534608838248018,
+      "soh_prev_end": 0.8807506310804899,
+      "soh_end": 0.780441867683279,
+      "soh_used_for_available_energy": 0.780441867683279,
+      "e_available": 3.024212237272706,
+      "soh_mid_closed_form": 0.8290806157929903,
+      "phi_cal_in_model": 0.985,
+      "cl_eff": 35851.3609417964
+     },
+     {
+      "y_inv": 0,
+      "investment_year": "2025",
+      "y": 2,
+      "block_year": "2035",
+      "n_years": 5,
+      "e_rated": 3.875,
+      "avg_ch_dch": 5.056339131102384,
+      "efc_per_day": 0.6524308556261141,
+      "D": 0.03321174650665846,
+      "soh_prev_end": 0.780441867683279,
+      "soh_end": 0.699999990000017,
+      "soh_used_for_available_energy": 0.6999999900000169,
+      "e_available": 2.7124999612500655,
+      "soh_mid_closed_form": 0.7391273906261964,
+      "phi_cal_in_model": 0.985,
+      "cl_eff": 35851.3609417964
+     }
+    ],
+    "salvage_value": -9.053408598137006e-35
+   },
+   "9": {
+    "cells": [
+     {
+      "y_inv": 0,
+      "investment_year": "2025",
+      "y": 0,
+      "block_year": "2025",
+      "n_years": 5,
+      "e_rated": 3.875,
+      "avg_ch_dch": 7.828709645831221,
+      "efc_per_day": 1.0101560833330607,
+      "D": 0.05142161423316004,
+      "soh_prev_end": 1.0,
+      "soh_end": 0.8807426532346021,
+      "soh_used_for_available_energy": 0.8807426532346021,
+      "e_available": 3.412877781284083,
+      "soh_mid_closed_form": 0.9384789039901761,
+      "phi_cal_in_model": 0.985,
+      "cl_eff": 35851.3609417964
+     },
+     {
+      "y_inv": 0,
+      "investment_year": "2025",
+      "y": 1,
+      "block_year": "2030",
+      "n_years": 5,
+      "e_rated": 3.875,
+      "avg_ch_dch": 6.910625154255715,
+      "efc_per_day": 0.8916935682910601,
+      "D": 0.04539132460754064,
+      "soh_prev_end": 0.8807426532346021,
+      "soh_end": 0.7803994953092387,
+      "soh_used_for_available_energy": 0.7803994953092387,
+      "e_available": 3.0240480443232998,
+      "soh_mid_closed_form": 0.8290543541177523,
+      "phi_cal_in_model": 0.985,
+      "cl_eff": 35851.3609417964
+     },
+     {
+      "y_inv": 0,
+      "investment_year": "2025",
+      "y": 2,
+      "block_year": "2035",
+      "n_years": 5,
+      "e_rated": 3.875,
+      "avg_ch_dch": 5.048073071970474,
+      "efc_per_day": 0.6513642673510288,
+      "D": 0.03315745223299921,
+      "soh_prev_end": 0.7803994953092387,
+      "soh_end": 0.6999999900000169,
+      "soh_used_for_available_energy": 0.6999999900000169,
+      "e_available": 2.7124999612500655,
+      "soh_mid_closed_form": 0.7391073257061421,
+      "phi_cal_in_model": 0.985,
+      "cl_eff": 35851.3609417964
+     }
+    ],
+    "salvage_value": -5.27413967718548e-37
+   }
+  }
+ }
+}
