@@ -192,6 +192,23 @@ same candidate), RAISING on any failure; and every cycle appends `per_cycle_resp
 any post-certification step (`response_terminal_capture`: the dual-based curtailment entries with the W53 audit's
 helpers, the W44 coordination record per DSO block, flexibility legs, the row 18 charge by leg, the P |d| form).
 Zero solves throughout. `evaluation_key` is unchanged; every other evaluation runs exactly as before.
+P5.15 Addendum 46 ruling 7 (W84, Planner rulings Q2 / Q3 on W83): EVERY evaluation now persists, in its eval dir, the
+per-attempt IPOPT floor-status records production returns in `state['network_ipopt_solve_records']`
+(`NETWORK_IPOPT_SOLVE_RECORDS_FILE`: one JSON line per TSO / DSO IPOPT attempt, `round` 0 = initialisation, k = cycle
+k) and the convergence-depth tail state `state['convergence_depth_tail']` (`CONVERGENCE_DEPTH_TAIL_STATE_FILE`),
+written FIRST in the post-run hook (before any terminal step) by `persist_convergence_depth_capture` and summarised
+in the record. The tail stays OFF by default (`admm_parameters.ADMMParameters.convergence_depth_tail`); a launcher
+enables it ONLY by declaring `configuration.convergence_depth_tail` = {'enabled': bool, 'compl_inf_tol': float} in
+its frozen spec (`validate_convergence_depth_tail`; written into the spec only when declared, so undeclared specs
+keep their exact format). Rule eleven for it: the child asserts BEFORE the run that the capture path exists and
+records whether the tail is enabled for THIS run (`assert_convergence_depth_tail_capture`, in every record, error
+records included); the configuration hook applies a declaration, reads it back and REFUSES before any solve when the
+tail in force differs from the declaration -- in particular when it is on without one
+(`apply_convergence_depth_tail_declaration`); after the run the tail state production returns must agree with the
+declaration (`convergence_depth_tail_state_check`), else the record says so and the child exits 2. Zero solves.
+The declaration does NOT enter `evaluation_key` (unchanged, Planner ruling Q2): a tail-enabled evaluation of a
+candidate carries the same eval key as its tail-off evaluation under the same other declarations; the two are told
+apart by campaign id / root and by the record's `configuration.convergence_depth_tail` and checklist.
 AFTER the run, in the child, inside `run_admm_arm`'s post_run_hook (same live
 models/state), `run_post_certification` does, only if the trajectory is
 certified under the spec's bar (else it records `status: skipped` + reason):
@@ -274,6 +291,12 @@ DERIVED_INSTANCE_DATA_DIR_REL = os.path.join('data', 'SRP1')  # the scale harnes
 INTERFACE_DEVIATION_PREMIUM_KEYS = frozenset({'alpha', 'floor'})
 MULTISCENARIO_TERMINAL_FILE = 'multiscenario_terminal.json'
 MULTISCENARIO_IDENTITY_REL_TOL = 1e-9   # declared before any run: relative tolerance of the zero-solve identities
+# P5.15 Addendum 46 ruling 7 (W84): the convergence-depth tail declaration and the per-evaluation floor-status capture
+# (see the module docstring). Absent declaration -> production's default (tail OFF); the files are written for EVERY
+# evaluation.
+CONVERGENCE_DEPTH_TAIL_KEYS = frozenset({'enabled', 'compl_inf_tol'})
+NETWORK_IPOPT_SOLVE_RECORDS_FILE = 'network_ipopt_solve_records.jsonl'
+CONVERGENCE_DEPTH_TAIL_STATE_FILE = 'convergence_depth_tail_state.json'
 # P5.15 Addendum 34 (W33): a uniform multiplier m on the DSO flexibility-price profile `cost_flex` (see
 # `validate_flex_price_multiplier` / `apply_flex_price_multiplier`). Absent or 1.0 = today's price; it enters the
 # eval key ONLY when present and != 1.0, so every key frozen before W33 is byte-identical.
@@ -655,6 +678,25 @@ def validate_interface_deviation_premium(value):
     return {'alpha': float(alpha), 'floor': None if floor is None else float(floor)}
 
 
+def validate_convergence_depth_tail(value):
+    """P5.15 Addendum 46 ruling 7 (W84): the convergence-depth tail declaration of a campaign spec's
+    `configuration`. None = not declared (production's default, `ADMMParameters.convergence_depth_tail`: OFF).
+    Otherwise EXACTLY {'enabled': bool, 'compl_inf_tol': positive finite float} -- a bool or an int is refused as the
+    tolerance, as production's `_capture_convergence_depth_tail_baseline` refuses a non-float. Returns a new dict.
+    No model import (parent side). Never part of `evaluation_key`."""
+    if value is None:
+        return None
+    if not isinstance(value, dict) or set(value) != CONVERGENCE_DEPTH_TAIL_KEYS:
+        raise ValueError(f'convergence_depth_tail must be a dict with exactly {sorted(CONVERGENCE_DEPTH_TAIL_KEYS)}, '
+                         f'got {value!r}')
+    enabled, tol = value['enabled'], value['compl_inf_tol']
+    if not isinstance(enabled, bool):
+        raise ValueError(f'convergence_depth_tail.enabled must be a bool, got {enabled!r}')
+    if not isinstance(tol, float) or tol != tol or tol in (float('inf'), float('-inf')) or not tol > 0.0:
+        raise ValueError(f'convergence_depth_tail.compl_inf_tol must be a positive finite float, got {tol!r}')
+    return {'enabled': enabled, 'compl_inf_tol': tol}
+
+
 def _ess_number(value, name, allow_none=False):
     if value is None and allow_none:
         return None
@@ -957,6 +999,9 @@ def freeze_campaign_spec(campaign_root, campaign_id, candidates, configuration, 
     file must hash to its `case_sha256`, refused otherwise) and an entry's options `interface_deviation_premium`
     (`validate_interface_deviation_premium`); both enter the eval key and are recorded (spec
     `configuration.derived_instance`, entry `interface_deviation_premium`) only when given.
+    P5.15 Addendum 46 ruling 7 (W84): `configuration` may carry `convergence_depth_tail`
+    (`validate_convergence_depth_tail`) -- how a launcher enables the tail; recorded in the spec's configuration only
+    when declared and NOT part of the eval key.
     One entry = one EVALUATION: its `eval_key` (`evaluation_key`) identifies
     candidate x configuration; labels and eval keys must be unique (the same
     candidate may appear under two configurations)."""
@@ -990,6 +1035,8 @@ def freeze_campaign_spec(campaign_root, campaign_id, candidates, configuration, 
         if got != derived['case_sha256']:
             raise ValueError(f"derived_instance: {derived['case_path']} sha256 {got} != declared "
                              f"{derived['case_sha256']}")
+    # W84 (Addendum 46 ruling 7): optional convergence-depth tail declaration (None = not declared = production OFF).
+    tail = validate_convergence_depth_tail(configuration.get('convergence_depth_tail'))
     cand_entries, seen_labels, seen_keys = [], set(), set()
     any_model_variant = False
     any_flex_price = False
@@ -1082,6 +1129,8 @@ def freeze_campaign_spec(campaign_root, campaign_id, candidates, configuration, 
         spec['configuration']['ess_params_file'] = ess_params_pin
     if derived is not None:  # W47: only when declared, so undeclared specs keep their exact format
         spec['configuration']['derived_instance'] = derived
+    if tail is not None:  # W84: only when declared, so undeclared specs keep their exact format
+        spec['configuration']['convergence_depth_tail'] = tail
     if any_model_variant:  # W20: a campaign holding a model variant says so at the top level
         spec['model_variant_label'] = MODEL_VARIANT_LABEL
     if any_flex_price:  # W33: a campaign holding a flexibility-price variant says so at the top level
@@ -1750,6 +1799,82 @@ def assert_record_capture_paths():
     return checks
 
 
+def assert_convergence_depth_tail_capture(spec):
+    """P5.15 Addendum 46 ruling 7 (W84, Planner ruling Q3): rule eleven for the per-solve floor status and the tail,
+    asserted in the child BEFORE the run for EVERY evaluation. Fails fast (AssertionError) if production has no
+    capture path for the records / tail state, if production's default is not OFF, or if `run_admm_arm` does not
+    hand the returned state to the post-run hook. Returns the checklist, which RECORDS whether the tail is enabled for
+    this run (`tail_enabled_for_this_run`: True iff the spec declares it with enabled True) -- so a run is never
+    ambiguous about its own configuration, and a forgotten enable shows as False instead of passing silently."""
+    import inspect
+    import network as NET
+    import shared_resources_planning as srp
+    import p515_g_g1_g4_admm_gates as G
+    from admm_parameters import ADMMParameters
+    declared = validate_convergence_depth_tail(spec['configuration'].get('convergence_depth_tail'))
+    production_default = dict(ADMMParameters().convergence_depth_tail)
+    run_src = inspect.getsource(srp._run_operational_planning)
+    attempt_src = inspect.getsource(NET._run_smopf_solver_attempt)
+    checks = {
+        'production_default_tail_off': production_default.get('enabled') is False,
+        'production_tail_helper_present': callable(getattr(srp, 'convergence_depth_tail_enabled', None)),
+        'production_both_returns_carry_the_records': (
+            run_src.count("'network_ipopt_solve_records': network_ipopt_solve_records,") == 2),
+        'production_both_returns_carry_the_tail_state': (
+            run_src.count("'convergence_depth_tail': convergence_depth_tail_state,") == 2),
+        'production_records_drained_at_initialisation': (
+            'network_ipopt_solve_records.extend(_drain_network_ipopt_solve_records(planning_problem, 0))' in run_src),
+        'production_records_drained_every_cycle': (
+            'network_ipopt_solve_records.extend(_drain_network_ipopt_solve_records(planning_problem, iter))'
+            in run_src),
+        'network_attempt_appends_a_record_after_the_solve': (
+            0 <= attempt_src.find('result = solver.solve(model') < attempt_src.find('_append_ipopt_solve_record(')),
+        'run_admm_arm_post_run_hook_gets_state': ("'state' in inspect.signature(post_run_hook)"
+                                                  in inspect.getsource(G.run_admm_arm)),
+    }
+    missing = sorted(k for k, v in checks.items() if not v)
+    if missing:
+        raise AssertionError(f'RULE ELEVEN (W84): convergence-depth capture paths missing: {missing}')
+    return {
+        'checks': checks,
+        'declared': declared,
+        'tail_enabled_for_this_run': bool(declared is not None and declared['enabled']),
+        'compl_inf_tol_tail': declared['compl_inf_tol'] if declared is not None and declared['enabled'] else None,
+        'source': ('campaign spec configuration.convergence_depth_tail' if declared is not None
+                   else 'not declared -> production default (ADMMParameters.convergence_depth_tail, OFF)'),
+        'production_default': production_default,
+        'persisted_files': [NETWORK_IPOPT_SOLVE_RECORDS_FILE, CONVERGENCE_DEPTH_TAIL_STATE_FILE],
+    }
+
+
+def apply_convergence_depth_tail_declaration(admm, declared):
+    """W84: called by the configuration hook (before any model is built or solved). A declaration is written to
+    `admm.convergence_depth_tail` (a new dict) and read back; without one nothing is written. Either way the tail in
+    force (`shared_resources_planning.convergence_depth_tail_enabled`) must equal the declaration's `enabled`
+    (undeclared -> False) and, when declared, the dict in force must equal the declaration; otherwise RuntimeError."""
+    import copy
+    import shared_resources_planning as srp
+    declared = validate_convergence_depth_tail(declared)
+    before = copy.deepcopy(getattr(admm, 'convergence_depth_tail', None))
+    if declared is not None:
+        admm.convergence_depth_tail = dict(declared)
+    after = copy.deepcopy(getattr(admm, 'convergence_depth_tail', None))
+    enabled_in_force = srp.convergence_depth_tail_enabled(admm)
+    expected_enabled = bool(declared is not None and declared['enabled'])
+    applied = {
+        'declared': declared,
+        'source': ('campaign spec configuration.convergence_depth_tail' if declared is not None
+                   else 'not declared -> production default (ADMMParameters.convergence_depth_tail)'),
+        'before': before, 'after': after,
+        'enabled_in_force': enabled_in_force, 'expected_enabled': expected_enabled,
+        'dict_in_force_equals_declaration': (after == declared) if declared is not None else None,
+    }
+    applied['ok'] = enabled_in_force is expected_enabled and (declared is None or after == declared)
+    if not applied['ok']:
+        raise RuntimeError(f'convergence-depth tail in force does not match the declaration (W84): {applied}')
+    return applied
+
+
 # ==============================================================================
 #  the child (one evaluation)
 # ==============================================================================
@@ -2408,6 +2533,8 @@ def _config_hook_factory(spec, holder, overrides=None, model_variant=None, inves
     # model variant, read back from probe ESSO models) before any solve; undeclared specs: nothing changes.
     ess_ageing = validate_ess_ageing_baseline(spec['configuration'].get('ess_ageing_baseline'))
     ess_params_pin = spec['configuration'].get('ess_params_file')
+    # W84 (Addendum 46 ruling 7): the convergence-depth tail declaration (None = not declared = production OFF).
+    tail_declared = validate_convergence_depth_tail(spec['configuration'].get('convergence_depth_tail'))
 
     def hook(planning, sed, candidate, report):
         a = planning.params.admm
@@ -2461,6 +2588,10 @@ def _config_hook_factory(spec, holder, overrides=None, model_variant=None, inves
         holder['configuration_checks'] = checks
         holder['overrides_applied'] = applied
         holder['anderson_acceleration_effective'] = dict(a.anderson_acceleration)
+        # W84: the tail is enabled ONLY by a declaration; declared or not, what is in force is recorded, and a tail in
+        # force that differs from the declaration (e.g. on without one) raises here, before any solve.
+        holder['convergence_depth_tail_applied'] = apply_convergence_depth_tail_declaration(a, tail_declared)
+        report['rule_eleven_checklist']['w84_convergence_depth_tail'] = holder['convergence_depth_tail_applied']
         if derived is not None:  # W47: the planning object IS the declared derived instance
             got = (getattr(planning, 'scenario_metadata', None) or {}).get('combined_scenario_checksum')
             derived_checks = {'planning_scenario_checksum_equals_declaration': got == derived['scenario_checksum'],
@@ -4412,6 +4543,82 @@ def write_operational_workbook(planning, models, optimization_results, primal_ev
             'point': 'terminal models of the run, BEFORE any post-certification step'}
 
 
+# ==============================================================================
+#  P5.15 Addendum 46 ruling 7 (W84, Planner ruling Q2): per-solve floor status and the tail state, EVERY evaluation
+# ==============================================================================
+def persist_convergence_depth_capture(state, eval_dir):
+    """Writes (write-once) `NETWORK_IPOPT_SOLVE_RECORDS_FILE` -- production's `state['network_ipopt_solve_records']`,
+    one JSON line per record, in production's order, unmodified -- and `CONVERGENCE_DEPTH_TAIL_STATE_FILE` --
+    production's `state['convergence_depth_tail']` as one JSON document (null when the state carries none). Zero
+    solves; the returned summary goes into the record. `load_network_ipopt_solve_records` /
+    `load_convergence_depth_tail_state` read them back."""
+    from collections import Counter
+    st = state or {}
+    records = st.get('network_ipopt_solve_records')
+    tail_state = st.get('convergence_depth_tail')
+    records_path = os.path.join(eval_dir, NETWORK_IPOPT_SOLVE_RECORDS_FILE)
+    tail_path = os.path.join(eval_dir, CONVERGENCE_DEPTH_TAIL_STATE_FILE)
+    for path in (records_path, tail_path):
+        if os.path.exists(path):
+            raise RuntimeError(f'refusing to overwrite existing artifact: {path}')
+    with open(records_path, 'w') as handle:
+        for record in (records or []):
+            handle.write(json.dumps(record, default=_json_default) + '\n')
+    _write_once_json(tail_path, tail_state)
+    recs = list(records or [])
+    return {
+        'status': 'written',
+        'network_ipopt_solve_records_path': os.path.relpath(records_path, REPO),
+        'network_ipopt_solve_records_sha256': sha256_file(records_path),
+        'state_carried_records': records is not None,
+        'n_records': len(recs),
+        'records_per_round': {str(k): v for k, v in sorted(Counter(r.get('round') for r in recs).items(),
+                                                            key=lambda kv: (kv[0] is None, kv[0] or 0))},
+        'floor_status_tally': dict(sorted(Counter(
+            f"{'TSO' if r.get('agent') == 'TSO' else 'DSO'}|{r.get('floor_status')}" for r in recs).items())),
+        'exit_tally': dict(sorted(Counter(str(r.get('exit')) for r in recs).items())),
+        'n_parse_problems': sum(1 for r in recs if r.get('parse_reason') is not None),
+        'stale_network_ipopt_solve_records_discarded': st.get('stale_network_ipopt_solve_records_discarded'),
+        'convergence_depth_tail_state_path': os.path.relpath(tail_path, REPO),
+        'convergence_depth_tail_state_sha256': sha256_file(tail_path),
+        'state_carried_tail_state': tail_state is not None,
+    }
+
+
+def load_network_ipopt_solve_records(path):
+    with open(path) as handle:
+        return [json.loads(line) for line in handle if line.strip()]
+
+
+def load_convergence_depth_tail_state(path):
+    with open(path) as handle:
+        return json.load(handle)
+
+
+def convergence_depth_tail_state_check(checklist, state):
+    """W84: the tail state production RETURNED must agree with what the child asserted before the run
+    (`assert_convergence_depth_tail_capture`): `enabled` identical, and when enabled the tail value identical to the
+    declaration. `match` False -> recorded, and the child exits 2 after writing its record."""
+    tail_state = (state or {}).get('convergence_depth_tail')
+    tail_state = tail_state if isinstance(tail_state, dict) else {}
+    expected = bool(checklist['tail_enabled_for_this_run'])
+    enabled_in_state = tail_state.get('enabled')
+    per_cycle = tail_state.get('per_cycle') or []
+    match = enabled_in_state is expected
+    if expected:
+        match = match and tail_state.get('compl_inf_tol_tail') == checklist['compl_inf_tol_tail']
+    return {
+        'expected_enabled': expected, 'enabled_in_state': enabled_in_state,
+        'expected_compl_inf_tol_tail': checklist['compl_inf_tol_tail'],
+        'compl_inf_tol_tail_in_state': tail_state.get('compl_inf_tol_tail'),
+        'match': match,
+        'n_cycles_recorded': len(per_cycle),
+        'cycles_tail_active': [p.get('cycle') for p in per_cycle if p.get('active')],
+        'n_cycles_acted': sum(1 for p in per_cycle if p.get('acted')),
+        'restore_at_exit_acted': (tail_state.get('restore_at_exit') or {}).get('acted'),
+    }
+
+
 def _child_real(args, spec, spec_path, entry, eval_dir, lock_content, env_caps, started, progress=None):
     """`progress` (Addendum 27, W5): a dict the caller (`main_child`) owns; filled with
     `case_file_sha256_in_child` and the configuration-hook `holder` as soon as each is
@@ -4425,6 +4632,11 @@ def _child_real(args, spec, spec_path, entry, eval_dir, lock_content, env_caps, 
     holder = {}
     progress['holder'] = holder
     capture_checklist = assert_record_capture_paths()
+    # W84 (Addendum 46 ruling 7, Q3): whether THIS run has the convergence-depth tail, asserted and recorded up front.
+    tail_checklist = assert_convergence_depth_tail_capture(spec)
+    progress['convergence_depth_tail_checklist'] = tail_checklist
+    print(f"[S44-CHILD] convergence-depth tail enabled for this run: {tail_checklist['tail_enabled_for_this_run']} "
+          f"({tail_checklist['source']}; declared {tail_checklist['declared']})", flush=True)
     eff_overrides = validate_overrides(entry['overrides'] if 'overrides' in entry
                                        else (spec['configuration'].get('overrides') or {}))
     # Addendum 27 item 1: with a declared case-file AA dict, AA is on iff the effective (declaration +
@@ -4507,7 +4719,8 @@ def _child_real(args, spec, spec_path, entry, eval_dir, lock_content, env_caps, 
     }
     for p in list(paths.values()) + [os.path.join(eval_dir, f) for f in (
             POST_CERTIFICATION_FILE, HULL_BOUND_DETAIL_FILE, AA_SIDECAR_FILE, 'certified_models.pkl',
-            RESPONSE_TERMINAL_FILE, PER_CYCLE_RESPONSE_FILE, ACTIVATION_READBACK_FILE, INIT_IDENTITY_FILE)]:
+            RESPONSE_TERMINAL_FILE, PER_CYCLE_RESPONSE_FILE, ACTIVATION_READBACK_FILE, INIT_IDENTITY_FILE,
+            NETWORK_IPOPT_SOLVE_RECORDS_FILE, CONVERGENCE_DEPTH_TAIL_STATE_FILE)]:
         if os.path.exists(p):
             raise RuntimeError(f'refusing to overwrite existing artifact: {p}')
     hooks_ref = {}   # W64: the alpha-row hook control, closed by the post-run hook
@@ -4517,6 +4730,15 @@ def _child_real(args, spec, spec_path, entry, eval_dir, lock_content, env_caps, 
         run_hooks = hooks_ref.get('control')
         if run_hooks is not None:   # W64: the run is over; the per-cycle / activation wrappers pass through from here
             run_hooks.close()
+        # W84 (Addendum 46 ruling 7, Q2): per-solve floor status + tail state, persisted FIRST, for every evaluation.
+        try:
+            holder['convergence_depth_capture'] = persist_convergence_depth_capture(state, eval_dir)
+        except Exception as error:  # noqa: BLE001 -- recorded loudly; the child exits 2 after writing its record
+            tb = traceback.format_exc()
+            print(tb, file=sys.stderr, flush=True)
+            holder['convergence_depth_capture'] = {'status': 'error', 'error': f'{type(error).__name__}: {error}',
+                                                   'traceback': tb}
+        holder['convergence_depth_tail_state_check'] = convergence_depth_tail_state_check(tail_checklist, state)
         report['s34_recourse_jump_sidecar_path'] = os.path.relpath(paths['recourse_jump'], REPO)
         report['s34_ess_entry_stride_sidecar_path'] = os.path.relpath(paths['ess_stride'], REPO)
         report['s35ref_soh_floor_sidecar_path'] = os.path.relpath(paths['floor'], REPO)
@@ -4729,6 +4951,11 @@ def _child_real(args, spec, spec_path, entry, eval_dir, lock_content, env_caps, 
         published_caps=holder.get('published_caps'), peak_rss=peak_rss, wall=wall, eval_dir=eval_dir,
         extra={
             'record_capture_checklist_asserted_before_run': capture_checklist,
+            # W84 (Addendum 46 ruling 7): tail declaration / in force / returned, and the persisted floor-status capture
+            'convergence_depth_tail_checklist_asserted_before_run': tail_checklist,
+            'convergence_depth_tail_applied_in_child': holder.get('convergence_depth_tail_applied'),
+            'convergence_depth_tail_state_check': holder.get('convergence_depth_tail_state_check'),
+            'convergence_depth_capture': (holder.get('convergence_depth_capture') or {'status': 'not_reached'}),
             'eval_key': _entry_eval_key(entry),
             'evaluation_overrides_effective': eff_overrides,
             'post_certification_capture_checklist_asserted_before_run': post_checklist,
@@ -4764,8 +4991,12 @@ def _child_real(args, spec, spec_path, entry, eval_dir, lock_content, env_caps, 
     capture_error = capture_multiscenario and any(
         (holder.get(k) or {}).get('status') != 'written' for k in ('multiscenario_terminal', 'operational_workbook',
                                                                    'response_terminal'))
+    convergence_depth_error = (
+        (holder.get('convergence_depth_capture') or {}).get('status') != 'written'
+        or not (holder.get('convergence_depth_tail_state_check') or {}).get('match'))
     return {'post_certification_error': (holder.get('post_certification') or {}).get('status') == 'error',
-            'multiscenario_capture_error': capture_error}
+            'multiscenario_capture_error': capture_error,
+            'convergence_depth_capture_error': convergence_depth_error}
 
 
 def main_child(argv):
@@ -4806,6 +5037,10 @@ def main_child(argv):
                 print('[S44-CHILD] multi-scenario terminal capture / workbook FAILED (recorded in '
                       'evaluation_record.json); exiting 2', file=sys.stderr, flush=True)
                 sys.exit(2)
+            if outcome and outcome.get('convergence_depth_capture_error'):  # W84
+                print('[S44-CHILD] convergence-depth capture FAILED or the returned tail state does not match the '
+                      'declaration (recorded in evaluation_record.json); exiting 2', file=sys.stderr, flush=True)
+                sys.exit(2)
     except SystemExit:
         raise
     except BaseException as error:  # noqa: BLE001 -- recorded as a barrier with its cause, then exit 1
@@ -4824,6 +5059,9 @@ def main_child(argv):
                 'anderson_acceleration_effective_in_child': (
                     (progress.get('holder') or {}).get('anderson_acceleration_effective')),
                 'case_file_sha256_in_child': progress.get('case_file_sha256_in_child'),
+                # W84: whether the tail was enabled for this run, on every path (None when the failure came first).
+                'convergence_depth_tail_checklist_asserted_before_run': progress.get(
+                    'convergence_depth_tail_checklist'),
                 # W20: a model-variant entry's record carries the variant and its label on every path.
                 **({'model_variant': entry['model_variant'], 'model_variant_label': MODEL_VARIANT_LABEL,
                     'model_variant_applied_in_child': (progress.get('holder') or {}).get('model_variant_applied')}
