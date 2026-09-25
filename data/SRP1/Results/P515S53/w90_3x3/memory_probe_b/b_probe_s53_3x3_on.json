@@ -1,0 +1,4530 @@
+{
+ "schema": "p515_s53_w90_b_probe_v1",
+ "stage": "P5.15 Addendum 48, W90 -- option (b) measured at zero solves on the 3 x 3 instance; stage spec v35; the two-arm 3 x 3 smoke ((b) on vs off, bitwise, measuring the runtime peak directly) and the 3 x 3 pair (x = 0 and the smallest node-7 unit, concurrency 1, (b) on, persistence by the margin rule)",
+ "which": "s53_3x3_on",
+ "instance": "s53_3x3",
+ "arm": "on",
+ "release_solution_bookkeeping": true,
+ "utc": "2026-09-25T21:01:00.570104+00:00",
+ "git_head": "75b1aef54f8640b32cb43bd6f6b35dea01ff8d8e",
+ "script_sha256": "7e80dc4b1a4cc17f3404477a5bbdf6c9aeb06564d19af9ac1937b967196a0146",
+ "harness_sha256": "252996a170c30bba69e9d09778a89186683dfbaf715652415c8493abe5e1bc92",
+ "case_path": "data/SRP1/Results/P515S53/w89_3x3/instance/SRP1__s53_3x3.json",
+ "case_sha256": "2a64e3c5bd06c30c8a015207f41b69257b001094cbd4b185a84394a6765c5871",
+ "candidate": "n7_4h_e1 (node 7: 0.25 MVA / 1.0 MWh, 2025) -- the W89 probe candidate",
+ "premium_in_force": {
+  "alpha": 0.5,
+  "floor": null
+ },
+ "interceptor_calls": {
+  "dso": 3,
+  "tso": 1,
+  "esso_init": 1
+ },
+ "method": "zero-solve reproduction of the bookkeeping objects: NL write (legacy writer call path) -> synthetic IPOPT .sol (real layout; zL on finite lower bounds, zU on finite upper bounds with unequal bounds) -> Pyomo sol reader with the model IMPORT suffixes -> OptSolver.solve load_solutions=False tail -> production model.solutions.load_from -> production replace_warm_start_suffix (zL, zU) -> [ON arm] production network._release_solution_bookkeeping",
+ "limitations": [
+  "values are synthetic (duals 1e-6, primal 0.5, multipliers +/-1e-6): the STRUCTURE of the objects is reproduced, not the numbers; object sizes do not depend on the values (one float per entry either way)",
+  "the IPOPT process and its workspace, pristine snapshot clones, AA memory, the terminal capture / workbook and the post-certification step are NOT reproduced: they are (b)-independent, so they do not enter the saving, but they do enter the runtime peak, which the smoke measures directly",
+  "what a release returns to the OS is allocator-dependent; the saving is measured as the difference of the post-load memory of two fresh processes, each net of its own post-build level, not as an RSS drop",
+  "one measurement per arm, no repeats; build-level noise between the two processes is removed by netting",
+  "the pickle transient is sampled at 20 ms; W89 found this quantity noisy (+5.27 GiB committed, +6.56 GiB in an earlier uncommitted run)"
+ ],
+ "build_wall_s": 76.0806291103363,
+ "loop_wall_s": 112.86217093467712,
+ "marks": [
+  {
+   "stage": "start (launcher, harness and production modules imported)",
+   "t_s": 0.0,
+   "rss_bytes": 223707136,
+   "footprint_bytes": 181126056,
+   "ru_maxrss_bytes": 223707136
+  },
+  {
+   "stage": "planning read (production reader)",
+   "t_s": 12.747,
+   "rss_bytes": 454737920,
+   "footprint_bytes": 286475440,
+   "ru_maxrss_bytes": 454737920
+  },
+  {
+   "stage": "ADMM models built (the W89 probe build; network blocks + 3 ESSO)",
+   "t_s": 88.828,
+   "rss_bytes": 7439040512,
+   "footprint_bytes": 7274190920,
+   "ru_maxrss_bytes": 7439040512
+  },
+  {
+   "stage": "all 80 network blocks loaded (bookkeeping RELEASED after each load)",
+   "t_s": 201.69,
+   "rss_bytes": 10232627200,
+   "footprint_bytes": 10004144384,
+   "ru_maxrss_bytes": 10280058880
+  },
+  {
+   "stage": "after gc.collect()",
+   "t_s": 210.428,
+   "rss_bytes": 10211098624,
+   "footprint_bytes": 10015367424,
+   "ru_maxrss_bytes": 10280058880
+  },
+  {
+   "stage": "certified-model pickle written, measured and deleted",
+   "t_s": 308.923,
+   "rss_bytes": 9177563136,
+   "footprint_bytes": 13421228200,
+   "ru_maxrss_bytes": 13184417792
+  }
+ ],
+ "memory_available_at_start": {
+  "utc": "2026-09-25T20:55:51.652177+00:00",
+  "vm_stat_header": "Mach Virtual Memory Statistics: (page size of 16384 bytes)",
+  "page_size_bytes": 16384,
+  "vm_stat_pages": {
+   "pages_free": 574648,
+   "pages_inactive": 538128,
+   "pages_wired_down": 194808,
+   "anonymous_pages": 207614,
+   "pages_occupied_by_compressor": 420589
+  },
+  "hw_memsize_bytes": 34359738368,
+  "concurrency": 1,
+  "required_bytes": 3758096384,
+  "required_gib": 3.5,
+  "per_child_budget_gib": 3.5,
+  "rule": "hw.memsize - (wired + anonymous + compressor-occupied) x page size >= 1 x 3.5 GiB",
+  "rule_rationale": "non-reclaimable load = wired + anonymous + compressor-occupied pages; file-backed pages (active or inactive) are cache the kernel reclaims on demand, so free + inactive under-counts what new processes can obtain (free + inactive recorded alongside)",
+  "budget_derivation": {
+   "x0_capture_child_peak_with_persist_bytes": 3470491648,
+   "x0_capture_production_peak_before_persist_bytes": 2395537408,
+   "s47_recert_c_star_child_peak_no_persist_bytes": 2577645568,
+   "s47_recert_unit_child_peak_no_persist_bytes": 2574581760,
+   "source": "data/SRP1/Results/P515S48/x0_capture/evals/d2c96b1480402a3b_x0/{evaluation_record,post_certification}.json and data/SRP1/Results/P515S47/campaign_s47_recert/evals/*/evaluation_record.json peak_rss",
+   "budget": "3.5 GiB per child = the measured persist peak (3.23 GiB) + 0.27 GiB margin"
+  },
+  "missing_vm_stat_figures": [],
+  "non_reclaimable_gib": 12.558151245117188,
+  "available_bytes": 20875526144,
+  "available_gib": 19.441848754882812,
+  "free_plus_inactive_gib": 16.9796142578125,
+  "pass": true
+ },
+ "models_built": {
+  "stage": "ADMM models built (the W89 probe build; network blocks + 3 ESSO)",
+  "t_s": 88.828,
+  "rss_bytes": 7439040512,
+  "footprint_bytes": 7274190920,
+  "ru_maxrss_bytes": 7439040512
+ },
+ "all_loaded": {
+  "stage": "all 80 network blocks loaded (bookkeeping RELEASED after each load)",
+  "t_s": 201.69,
+  "rss_bytes": 10232627200,
+  "footprint_bytes": 10004144384,
+  "ru_maxrss_bytes": 10280058880
+ },
+ "after_gc": {
+  "stage": "after gc.collect()",
+  "t_s": 210.428,
+  "rss_bytes": 10211098624,
+  "footprint_bytes": 10015367424,
+  "ru_maxrss_bytes": 10280058880
+ },
+ "growth_over_built_bytes": {
+  "rss_bytes": 2793586688,
+  "footprint_bytes": 2729953464
+ },
+ "growth_over_built_after_gc_bytes": {
+  "rss_bytes": 2772058112,
+  "footprint_bytes": 2741176504
+ },
+ "totals": {
+  "n_blocks": 80,
+  "n_tso_blocks": 20,
+  "n_dso_blocks": 60,
+  "sum_nl_vars": 5290640,
+  "sum_nl_cons": 4481233,
+  "sum_model_solution_entries": 10061553,
+  "sum_zL": 4322000,
+  "sum_zU": 4173302,
+  "all_results_succeeded": true,
+  "all_released": true,
+  "none_released": null,
+  "after_release_all_empty": true
+ },
+ "per_block": [
+  {
+   "i": 0,
+   "agent": "TSO",
+   "node": null,
+   "network": "case9",
+   "year": "2025",
+   "day": "Spring",
+   "n_nl_vars": 17426,
+   "n_nl_cons": 21784,
+   "bound_types": {
+    "0": 12236,
+    "2": 144,
+    "3": 4128,
+    "4": 918
+   },
+   "n_zL": 13298,
+   "n_zU": 12236,
+   "nl_bytes": 2552234,
+   "sol_bytes": 497883,
+   "import_suffixes": [
+    "ipopt_zL_out",
+    "ipopt_zU_out",
+    "dual"
+   ],
+   "solver_result_succeeded": true,
+   "model_solution_entries_before_release": {
+    "objective": 0,
+    "variable": 27026,
+    "constraint": 21784,
+    "problem": 0
+   },
+   "result_solution_entries_before_release": {
+    "variable": 17426,
+    "constraint": 21784,
+    "objective": 0,
+    "problem": 0
+   },
+   "suffix_lengths": {
+    "dual": 21784,
+    "ipopt_zL_out": 13298,
+    "ipopt_zU_out": 12236,
+    "ipopt_zL_in": 13298,
+    "ipopt_zU_in": 12236
+   },
+   "released": true,
+   "after_release": {
+    "model_solutions_n": 0,
+    "result_solution_n": 0
+   },
+   "wall_s": 0.388,
+   "rss_after_bytes": 7491551232,
+   "footprint_after_bytes": 7326734456
+  },
+  {
+   "i": 1,
+   "agent": "TSO",
+   "node": null,
+   "network": "case9",
+   "year": "2025",
+   "day": "Summer",
+   "n_nl_vars": 17426,
+   "n_nl_cons": 21784,
+   "bound_types": {
+    "0": 12236,
+    "2": 144,
+    "3": 4128,
+    "4": 918
+   },
+   "n_zL": 13298,
+   "n_zU": 12236,
+   "nl_bytes": 2552117,
+   "sol_bytes": 497883,
+   "import_suffixes": [
+    "ipopt_zL_out",
+    "ipopt_zU_out",
+    "dual"
+   ],
+   "solver_result_succeeded": true,
+   "model_solution_entries_before_release": {
+    "objective": 0,
+    "variable": 27026,
+    "constraint": 21784,
+    "problem": 0
+   },
+   "result_solution_entries_before_release": {
+    "variable": 17426,
+    "constraint": 21784,
+    "objective": 0,
+    "problem": 0
+   },
+   "suffix_lengths": {
+    "dual": 21784,
+    "ipopt_zL_out": 13298,
+    "ipopt_zU_out": 12236,
+    "ipopt_zL_in": 13298,
+    "ipopt_zU_in": 12236
+   },
+   "released": true,
+   "after_release": {
+    "model_solutions_n": 0,
+    "result_solution_n": 0
+   },
+   "wall_s": 0.386,
+   "rss_after_bytes": 7509229568,
+   "footprint_after_bytes": 7344412792
+  },
+  {
+   "i": 2,
+   "agent": "TSO",
+   "node": null,
+   "network": "case9",
+   "year": "2025",
+   "day": "Autumn",
+   "n_nl_vars": 17426,
+   "n_nl_cons": 21460,
+   "bound_types": {
+    "0": 12020,
+    "2": 144,
+    "3": 4128,
+    "4": 1134
+   },
+   "n_zL": 13298,
+   "n_zU": 12020,
+   "nl_bytes": 2521479,
+   "sol_bytes": 493239,
+   "import_suffixes": [
+    "ipopt_zL_out",
+    "ipopt_zU_out",
+    "dual"
+   ],
+   "solver_result_succeeded": true,
+   "model_solution_entries_before_release": {
+    "objective": 0,
+    "variable": 27026,
+    "constraint": 21460,
+    "problem": 0
+   },
+   "result_solution_entries_before_release": {
+    "variable": 17426,
+    "constraint": 21460,
+    "objective": 0,
+    "problem": 0
+   },
+   "suffix_lengths": {
+    "dual": 21460,
+    "ipopt_zL_out": 13298,
+    "ipopt_zU_out": 12020,
+    "ipopt_zL_in": 13298,
+    "ipopt_zU_in": 12020
+   },
+   "released": true,
+   "after_release": {
+    "model_solutions_n": 0,
+    "result_solution_n": 0
+   },
+   "wall_s": 0.374,
+   "rss_after_bytes": 7526105088,
+   "footprint_after_bytes": 7361288312
+  },
+  {
+   "i": 3,
+   "agent": "TSO",
+   "node": null,
+   "network": "case9",
+   "year": "2025",
+   "day": "Winter",
+   "n_nl_vars": 17426,
+   "n_nl_cons": 21460,
+   "bound_types": {
+    "0": 12020,
+    "2": 144,
+    "3": 4128,
+    "4": 1134
+   },
+   "n_zL": 13298,
+   "n_zU": 12020,
+   "nl_bytes": 2521623,
+   "sol_bytes": 493239,
+   "import_suffixes": [
+    "ipopt_zL_out",
+    "ipopt_zU_out",
+    "dual"
+   ],
+   "solver_result_succeeded": true,
+   "model_solution_entries_before_release": {
+    "objective": 0,
+    "variable": 27026,
+    "constraint": 21460,
+    "problem": 0
+   },
+   "result_solution_entries_before_release": {
+    "variable": 17426,
+    "constraint": 21460,
+    "objective": 0,
+    "problem": 0
+   },
+   "suffix_lengths": {
+    "dual": 21460,
+    "ipopt_zL_out": 13298,
+    "ipopt_zU_out": 12020,
+    "ipopt_zL_in": 13298,
+    "ipopt_zU_in": 12020
+   },
+   "released": true,
+   "after_release": {
+    "model_solutions_n": 0,
+    "result_solution_n": 0
+   },
+   "wall_s": 0.377,
+   "rss_after_bytes": 7540883456,
+   "footprint_after_bytes": 7376083088
+  },
+  {
+   "i": 4,
+   "agent": "TSO",
+   "node": null,
+   "network": "case9",
+   "year": "2028",
+   "day": "Spring",
+   "n_nl_vars": 17426,
+   "n_nl_cons": 21784,
+   "bound_types": {
+    "0": 12236,
+    "2": 144,
+    "3": 4128,
+    "4": 918
+   },
+   "n_zL": 13298,
+   "n_zU": 12236,
+   "nl_bytes": 2552180,
+   "sol_bytes": 497883,
+   "import_suffixes": [
+    "ipopt_zL_out",
+    "ipopt_zU_out",
+    "dual"
+   ],
+   "solver_result_succeeded": true,
+   "model_solution_entries_before_release": {
+    "objective": 0,
+    "variable": 27026,
+    "constraint": 21784,
+    "problem": 0
+   },
+   "result_solution_entries_before_release": {
+    "variable": 17426,
+    "constraint": 21784,
+    "objective": 0,
+    "problem": 0
+   },
+   "suffix_lengths": {
+    "dual": 21784,
+    "ipopt_zL_out": 13298,
+    "ipopt_zU_out": 12236,
+    "ipopt_zL_in": 13298,
+    "ipopt_zU_in": 12236
+   },
+   "released": true,
+   "after_release": {
+    "model_solutions_n": 0,
+    "result_solution_n": 0
+   },
+   "wall_s": 0.381,
+   "rss_after_bytes": 7554301952,
+   "footprint_after_bytes": 7389517992
+  },
+  {
+   "i": 5,
+   "agent": "TSO",
+   "node": null,
+   "network": "case9",
+   "year": "2028",
+   "day": "Summer",
+   "n_nl_vars": 17426,
+   "n_nl_cons": 21784,
+   "bound_types": {
+    "0": 12236,
+    "2": 144,
+    "3": 4128,
+    "4": 918
+   },
+   "n_zL": 13298,
+   "n_zU": 12236,
+   "nl_bytes": 2552084,
+   "sol_bytes": 497883,
+   "import_suffixes": [
+    "ipopt_zL_out",
+    "ipopt_zU_out",
+    "dual"
+   ],
+   "solver_result_succeeded": true,
+   "model_solution_entries_before_release": {
+    "objective": 0,
+    "variable": 27026,
+    "constraint": 21784,
+    "problem": 0
+   },
+   "result_solution_entries_before_release": {
+    "variable": 17426,
+    "constraint": 21784,
+    "objective": 0,
+    "problem": 0
+   },
+   "suffix_lengths": {
+    "dual": 21784,
+    "ipopt_zL_out": 13298,
+    "ipopt_zU_out": 12236,
+    "ipopt_zL_in": 13298,
+    "ipopt_zU_in": 12236
+   },
+   "released": true,
+   "after_release": {
+    "model_solutions_n": 0,
+    "result_solution_n": 0
+   },
+   "wall_s": 0.384,
+   "rss_after_bytes": 7566884864,
+   "footprint_after_bytes": 7402100904
+  },
+  {
+   "i": 6,
+   "agent": "TSO",
+   "node": null,
+   "network": "case9",
+   "year": "2028",
+   "day": "Autumn",
+   "n_nl_vars": 17426,
+   "n_nl_cons": 21460,
+   "bound_types": {
+    "0": 12020,
+    "2": 144,
+    "3": 4128,
+    "4": 1134
+   },
+   "n_zL": 13298,
+   "n_zU": 12020,
+   "nl_bytes": 2521716,
+   "sol_bytes": 493239,
+   "import_suffixes": [
+    "ipopt_zL_out",
+    "ipopt_zU_out",
+    "dual"
+   ],
+   "solver_result_succeeded": true,
+   "model_solution_entries_before_release": {
+    "objective": 0,
+    "variable": 27026,
+    "constraint": 21460,
+    "problem": 0
+   },
+   "result_solution_entries_before_release": {
+    "variable": 17426,
+    "constraint": 21460,
+    "objective": 0,
+    "problem": 0
+   },
+   "suffix_lengths": {
+    "dual": 21460,
+    "ipopt_zL_out": 13298,
+    "ipopt_zU_out": 12020,
+    "ipopt_zL_in": 13298,
+    "ipopt_zU_in": 12020
+   },
+   "released": true,
+   "after_release": {
+    "model_solutions_n": 0,
+    "result_solution_n": 0
+   },
+   "wall_s": 0.379,
+   "rss_after_bytes": 7580499968,
+   "footprint_after_bytes": 7415716008
+  },
+  {
+   "i": 7,
+   "agent": "TSO",
+   "node": null,
+   "network": "case9",
+   "year": "2028",
+   "day": "Winter",
+   "n_nl_vars": 17426,
+   "n_nl_cons": 21460,
+   "bound_types": {
+    "0": 12020,
+    "2": 144,
+    "3": 4128,
+    "4": 1134
+   },
+   "n_zL": 13298,
+   "n_zU": 12020,
+   "nl_bytes": 2521710,
+   "sol_bytes": 493239,
+   "import_suffixes": [
+    "ipopt_zL_out",
+    "ipopt_zU_out",
+    "dual"
+   ],
+   "solver_result_succeeded": true,
+   "model_solution_entries_before_release": {
+    "objective": 0,
+    "variable": 27026,
+    "constraint": 21460,
+    "problem": 0
+   },
+   "result_solution_entries_before_release": {
+    "variable": 17426,
+    "constraint": 21460,
+    "objective": 0,
+    "problem": 0
+   },
+   "suffix_lengths": {
+    "dual": 21460,
+    "ipopt_zL_out": 13298,
+    "ipopt_zU_out": 12020,
+    "ipopt_zL_in": 13298,
+    "ipopt_zU_in": 12020
+   },
+   "released": true,
+   "after_release": {
+    "model_solutions_n": 0,
+    "result_solution_n": 0
+   },
+   "wall_s": 0.388,
+   "rss_after_bytes": 7592902656,
+   "footprint_after_bytes": 7422564520
+  },
+  {
+   "i": 8,
+   "agent": "TSO",
+   "node": null,
+   "network": "case9",
+   "year": "2031",
+   "day": "Spring",
+   "n_nl_vars": 17426,
+   "n_nl_cons": 21784,
+   "bound_types": {
+    "0": 12236,
+    "2": 144,
+    "3": 4128,
+    "4": 918
+   },
+   "n_zL": 13298,
+   "n_zU": 12236,
+   "nl_bytes": 2547800,
+   "sol_bytes": 497883,
+   "import_suffixes": [
+    "ipopt_zL_out",
+    "ipopt_zU_out",
+    "dual"
+   ],
+   "solver_result_succeeded": true,
+   "model_solution_entries_before_release": {
+    "objective": 0,
+    "variable": 27026,
+    "constraint": 21784,
+    "problem": 0
+   },
+   "result_solution_entries_before_release": {
+    "variable": 17426,
+    "constraint": 21784,
+    "objective": 0,
+    "problem": 0
+   },
+   "suffix_lengths": {
+    "dual": 21784,
+    "ipopt_zL_out": 13298,
+    "ipopt_zU_out": 12236,
+    "ipopt_zL_in": 13298,
+    "ipopt_zU_in": 12236
+   },
+   "released": true,
+   "after_release": {
+    "model_solutions_n": 0,
+    "result_solution_n": 0
+   },
+   "wall_s": 8.189,
+   "rss_after_bytes": 7601766400,
+   "footprint_after_bytes": 7430363304
+  },
+  {
+   "i": 9,
+   "agent": "TSO",
+   "node": null,
+   "network": "case9",
+   "year": "2031",
+   "day": "Summer",
+   "n_nl_vars": 17426,
+   "n_nl_cons": 21775,
+   "bound_types": {
+    "0": 12230,
+    "2": 144,
+    "3": 4128,
+    "4": 924
+   },
+   "n_zL": 13298,
+   "n_zU": 12230,
+   "nl_bytes": 2546979,
+   "sol_bytes": 497754,
+   "import_suffixes": [
+    "ipopt_zL_out",
+    "ipopt_zU_out",
+    "dual"
+   ],
+   "solver_result_succeeded": true,
+   "model_solution_entries_before_release": {
+    "objective": 0,
+    "variable": 27026,
+    "constraint": 21775,
+    "problem": 0
+   },
+   "result_solution_entries_before_release": {
+    "variable": 17426,
+    "constraint": 21775,
+    "objective": 0,
+    "problem": 0
+   },
+   "suffix_lengths": {
+    "dual": 21775,
+    "ipopt_zL_out": 13298,
+    "ipopt_zU_out": 12230,
+    "ipopt_zL_in": 13298,
+    "ipopt_zU_in": 12230
+   },
+   "released": true,
+   "after_release": {
+    "model_solutions_n": 0,
+    "result_solution_n": 0
+   },
+   "wall_s": 0.375,
+   "rss_after_bytes": 7618576384,
+   "footprint_after_bytes": 7438686400
+  },
+  {
+   "i": 10,
+   "agent": "TSO",
+   "node": null,
+   "network": "case9",
+   "year": "2031",
+   "day": "Autumn",
+   "n_nl_vars": 17426,
+   "n_nl_cons": 21460,
+   "bound_types": {
+    "0": 12020,
+    "2": 144,
+    "3": 4128,
+    "4": 1134
+   },
+   "n_zL": 13298,
+   "n_zU": 12020,
+   "nl_bytes": 2518164,
+   "sol_bytes": 493239,
+   "import_suffixes": [
+    "ipopt_zL_out",
+    "ipopt_zU_out",
+    "dual"
+   ],
+   "solver_result_succeeded": true,
+   "model_solution_entries_before_release": {
+    "objective": 0,
+    "variable": 27026,
+    "constraint": 21460,
+    "problem": 0
+   },
+   "result_solution_entries_before_release": {
+    "variable": 17426,
+    "constraint": 21460,
+    "objective": 0,
+    "problem": 0
+   },
+   "suffix_lengths": {
+    "dual": 21460,
+    "ipopt_zL_out": 13298,
+    "ipopt_zU_out": 12020,
+    "ipopt_zL_in": 13298,
+    "ipopt_zU_in": 12020
+   },
+   "released": true,
+   "after_release": {
+    "model_solutions_n": 0,
+    "result_solution_n": 0
+   },
+   "wall_s": 0.376,
+   "rss_after_bytes": 7627309056,
+   "footprint_after_bytes": 7447419072
+  },
+  {
+   "i": 11,
+   "agent": "TSO",
+   "node": null,
+   "network": "case9",
+   "year": "2031",
+   "day": "Winter",
+   "n_nl_vars": 17426,
+   "n_nl_cons": 21460,
+   "bound_types": {
+    "0": 12020,
+    "2": 144,
+    "3": 4128,
+    "4": 1134
+   },
+   "n_zL": 13298,
+   "n_zU": 12020,
+   "nl_bytes": 2518341,
+   "sol_bytes": 493239,
+   "import_suffixes": [
+    "ipopt_zL_out",
+    "ipopt_zU_out",
+    "dual"
+   ],
+   "solver_result_succeeded": true,
+   "model_solution_entries_before_release": {
+    "objective": 0,
+    "variable": 27026,
+    "constraint": 21460,
+    "problem": 0
+   },
+   "result_solution_entries_before_release": {
+    "variable": 17426,
+    "constraint": 21460,
+    "objective": 0,
+    "problem": 0
+   },
+   "suffix_lengths": {
+    "dual": 21460,
+    "ipopt_zL_out": 13298,
+    "ipopt_zU_out": 12020,
+    "ipopt_zL_in": 13298,
+    "ipopt_zU_in": 12020
+   },
+   "released": true,
+   "after_release": {
+    "model_solutions_n": 0,
+    "result_solution_n": 0
+   },
+   "wall_s": 0.379,
+   "rss_after_bytes": 7634255872,
+   "footprint_after_bytes": 7450155200
+  },
+  {
+   "i": 12,
+   "agent": "TSO",
+   "node": null,
+   "network": "case9",
+   "year": "2034",
+   "day": "Spring",
+   "n_nl_vars": 17426,
+   "n_nl_cons": 21784,
+   "bound_types": {
+    "0": 12236,
+    "2": 144,
+    "3": 4128,
+    "4": 918
+   },
+   "n_zL": 13298,
+   "n_zU": 12236,
+   "nl_bytes": 2547842,
+   "sol_bytes": 497883,
+   "import_suffixes": [
+    "ipopt_zL_out",
+    "ipopt_zU_out",
+    "dual"
+   ],
+   "solver_result_succeeded": true,
+   "model_solution_entries_before_release": {
+    "objective": 0,
+    "variable": 27026,
+    "constraint": 21784,
+    "problem": 0
+   },
+   "result_solution_entries_before_release": {
+    "variable": 17426,
+    "constraint": 21784,
+    "objective": 0,
+    "problem": 0
+   },
+   "suffix_lengths": {
+    "dual": 21784,
+    "ipopt_zL_out": 13298,
+    "ipopt_zU_out": 12236,
+    "ipopt_zL_in": 13298,
+    "ipopt_zU_in": 12236
+   },
+   "released": true,
+   "after_release": {
+    "model_solutions_n": 0,
+    "result_solution_n": 0
+   },
+   "wall_s": 0.386,
+   "rss_after_bytes": 7640875008,
+   "footprint_after_bytes": 7456774336
+  },
+  {
+   "i": 13,
+   "agent": "TSO",
+   "node": null,
+   "network": "case9",
+   "year": "2034",
+   "day": "Summer",
+   "n_nl_vars": 17426,
+   "n_nl_cons": 21784,
+   "bound_types": {
+    "0": 12236,
+    "2": 144,
+    "3": 4128,
+    "4": 918
+   },
+   "n_zL": 13298,
+   "n_zU": 12236,
+   "nl_bytes": 2547911,
+   "sol_bytes": 497883,
+   "import_suffixes": [
+    "ipopt_zL_out",
+    "ipopt_zU_out",
+    "dual"
+   ],
+   "solver_result_succeeded": true,
+   "model_solution_entries_before_release": {
+    "objective": 0,
+    "variable": 27026,
+    "constraint": 21784,
+    "problem": 0
+   },
+   "result_solution_entries_before_release": {
+    "variable": 17426,
+    "constraint": 21784,
+    "objective": 0,
+    "problem": 0
+   },
+   "suffix_lengths": {
+    "dual": 21784,
+    "ipopt_zL_out": 13298,
+    "ipopt_zU_out": 12236,
+    "ipopt_zL_in": 13298,
+    "ipopt_zU_in": 12236
+   },
+   "released": true,
+   "after_release": {
+    "model_solutions_n": 0,
+    "result_solution_n": 0
+   },
+   "wall_s": 0.385,
+   "rss_after_bytes": 7649099776,
+   "footprint_after_bytes": 7464982720
+  },
+  {
+   "i": 14,
+   "agent": "TSO",
+   "node": null,
+   "network": "case9",
+   "year": "2034",
+   "day": "Autumn",
+   "n_nl_vars": 17426,
+   "n_nl_cons": 21460,
+   "bound_types": {
+    "0": 12020,
+    "2": 144,
+    "3": 4128,
+    "4": 1134
+   },
+   "n_zL": 13298,
+   "n_zU": 12020,
+   "nl_bytes": 2517942,
+   "sol_bytes": 493239,
+   "import_suffixes": [
+    "ipopt_zL_out",
+    "ipopt_zU_out",
+    "dual"
+   ],
+   "solver_result_succeeded": true,
+   "model_solution_entries_before_release": {
+    "objective": 0,
+    "variable": 27026,
+    "constraint": 21460,
+    "problem": 0
+   },
+   "result_solution_entries_before_release": {
+    "variable": 17426,
+    "constraint": 21460,
+    "objective": 0,
+    "problem": 0
+   },
+   "suffix_lengths": {
+    "dual": 21460,
+    "ipopt_zL_out": 13298,
+    "ipopt_zU_out": 12020,
+    "ipopt_zL_in": 13298,
+    "ipopt_zU_in": 12020
+   },
+   "released": true,
+   "after_release": {
+    "model_solutions_n": 0,
+    "result_solution_n": 0
+   },
+   "wall_s": 0.381,
+   "rss_after_bytes": 7662305280,
+   "footprint_after_bytes": 7478188224
+  },
+  {
+   "i": 15,
+   "agent": "TSO",
+   "node": null,
+   "network": "case9",
+   "year": "2034",
+   "day": "Winter",
+   "n_nl_vars": 17426,
+   "n_nl_cons": 21460,
+   "bound_types": {
+    "0": 12020,
+    "2": 144,
+    "3": 4128,
+    "4": 1134
+   },
+   "n_zL": 13298,
+   "n_zU": 12020,
+   "nl_bytes": 2518473,
+   "sol_bytes": 493239,
+   "import_suffixes": [
+    "ipopt_zL_out",
+    "ipopt_zU_out",
+    "dual"
+   ],
+   "solver_result_succeeded": true,
+   "model_solution_entries_before_release": {
+    "objective": 0,
+    "variable": 27026,
+    "constraint": 21460,
+    "problem": 0
+   },
+   "result_solution_entries_before_release": {
+    "variable": 17426,
+    "constraint": 21460,
+    "objective": 0,
+    "problem": 0
+   },
+   "suffix_lengths": {
+    "dual": 21460,
+    "ipopt_zL_out": 13298,
+    "ipopt_zU_out": 12020,
+    "ipopt_zL_in": 13298,
+    "ipopt_zU_in": 12020
+   },
+   "released": true,
+   "after_release": {
+    "model_solutions_n": 0,
+    "result_solution_n": 0
+   },
+   "wall_s": 0.386,
+   "rss_after_bytes": 7669071872,
+   "footprint_after_bytes": 7484971224
+  },
+  {
+   "i": 16,
+   "agent": "TSO",
+   "node": null,
+   "network": "case9",
+   "year": "2037",
+   "day": "Spring",
+   "n_nl_vars": 17426,
+   "n_nl_cons": 21784,
+   "bound_types": {
+    "0": 12236,
+    "2": 144,
+    "3": 4128,
+    "4": 918
+   },
+   "n_zL": 13298,
+   "n_zU": 12236,
+   "nl_bytes": 2547491,
+   "sol_bytes": 497883,
+   "import_suffixes": [
+    "ipopt_zL_out",
+    "ipopt_zU_out",
+    "dual"
+   ],
+   "solver_result_succeeded": true,
+   "model_solution_entries_before_release": {
+    "objective": 0,
+    "variable": 27026,
+    "constraint": 21784,
+    "problem": 0
+   },
+   "result_solution_entries_before_release": {
+    "variable": 17426,
+    "constraint": 21784,
+    "objective": 0,
+    "problem": 0
+   },
+   "suffix_lengths": {
+    "dual": 21784,
+    "ipopt_zL_out": 13298,
+    "ipopt_zU_out": 12236,
+    "ipopt_zL_in": 13298,
+    "ipopt_zU_in": 12236
+   },
+   "released": true,
+   "after_release": {
+    "model_solutions_n": 0,
+    "result_solution_n": 0
+   },
+   "wall_s": 0.385,
+   "rss_after_bytes": 7675756544,
+   "footprint_after_bytes": 7491655896
+  },
+  {
+   "i": 17,
+   "agent": "TSO",
+   "node": null,
+   "network": "case9",
+   "year": "2037",
+   "day": "Summer",
+   "n_nl_vars": 17426,
+   "n_nl_cons": 21775,
+   "bound_types": {
+    "0": 12230,
+    "2": 144,
+    "3": 4128,
+    "4": 924
+   },
+   "n_zL": 13298,
+   "n_zU": 12230,
+   "nl_bytes": 2546760,
+   "sol_bytes": 497754,
+   "import_suffixes": [
+    "ipopt_zL_out",
+    "ipopt_zU_out",
+    "dual"
+   ],
+   "solver_result_succeeded": true,
+   "model_solution_entries_before_release": {
+    "objective": 0,
+    "variable": 27026,
+    "constraint": 21775,
+    "problem": 0
+   },
+   "result_solution_entries_before_release": {
+    "variable": 17426,
+    "constraint": 21775,
+    "objective": 0,
+    "problem": 0
+   },
+   "suffix_lengths": {
+    "dual": 21775,
+    "ipopt_zL_out": 13298,
+    "ipopt_zU_out": 12230,
+    "ipopt_zL_in": 13298,
+    "ipopt_zU_in": 12230
+   },
+   "released": true,
+   "after_release": {
+    "model_solutions_n": 0,
+    "result_solution_n": 0
+   },
+   "wall_s": 0.381,
+   "rss_after_bytes": 7687208960,
+   "footprint_after_bytes": 7503108312
+  },
+  {
+   "i": 18,
+   "agent": "TSO",
+   "node": null,
+   "network": "case9",
+   "year": "2037",
+   "day": "Autumn",
+   "n_nl_vars": 17426,
+   "n_nl_cons": 21460,
+   "bound_types": {
+    "0": 12020,
+    "2": 144,
+    "3": 4128,
+    "4": 1134
+   },
+   "n_zL": 13298,
+   "n_zU": 12020,
+   "nl_bytes": 2518023,
+   "sol_bytes": 493239,
+   "import_suffixes": [
+    "ipopt_zL_out",
+    "ipopt_zU_out",
+    "dual"
+   ],
+   "solver_result_succeeded": true,
+   "model_solution_entries_before_release": {
+    "objective": 0,
+    "variable": 27026,
+    "constraint": 21460,
+    "problem": 0
+   },
+   "result_solution_entries_before_release": {
+    "variable": 17426,
+    "constraint": 21460,
+    "objective": 0,
+    "problem": 0
+   },
+   "suffix_lengths": {
+    "dual": 21460,
+    "ipopt_zL_out": 13298,
+    "ipopt_zU_out": 12020,
+    "ipopt_zL_in": 13298,
+    "ipopt_zU_in": 12020
+   },
+   "released": true,
+   "after_release": {
+    "model_solutions_n": 0,
+    "result_solution_n": 0
+   },
+   "wall_s": 0.383,
+   "rss_after_bytes": 7691730944,
+   "footprint_after_bytes": 7498258648
+  },
+  {
+   "i": 19,
+   "agent": "TSO",
+   "node": null,
+   "network": "case9",
+   "year": "2037",
+   "day": "Winter",
+   "n_nl_vars": 17426,
+   "n_nl_cons": 21460,
+   "bound_types": {
+    "0": 12020,
+    "2": 144,
+    "3": 4128,
+    "4": 1134
+   },
+   "n_zL": 13298,
+   "n_zU": 12020,
+   "nl_bytes": 2518023,
+   "sol_bytes": 493239,
+   "import_suffixes": [
+    "ipopt_zL_out",
+    "ipopt_zU_out",
+    "dual"
+   ],
+   "solver_result_succeeded": true,
+   "model_solution_entries_before_release": {
+    "objective": 0,
+    "variable": 27026,
+    "constraint": 21460,
+    "problem": 0
+   },
+   "result_solution_entries_before_release": {
+    "variable": 17426,
+    "constraint": 21460,
+    "objective": 0,
+    "problem": 0
+   },
+   "suffix_lengths": {
+    "dual": 21460,
+    "ipopt_zL_out": 13298,
+    "ipopt_zU_out": 12020,
+    "ipopt_zL_in": 13298,
+    "ipopt_zU_in": 12020
+   },
+   "released": true,
+   "after_release": {
+    "model_solutions_n": 0,
+    "result_solution_n": 0
+   },
+   "wall_s": 0.381,
+   "rss_after_bytes": 7700840448,
+   "footprint_after_bytes": 7507368152
+  },
+  {
+   "i": 20,
+   "agent": "DSO",
+   "node": 5,
+   "network": "case33_1",
+   "year": "2025",
+   "day": "Spring",
+   "n_nl_vars": 82296,
+   "n_nl_cons": 67455,
+   "bound_types": {
+    "0": 65538,
+    "2": 1104,
+    "3": 14736,
+    "4": 918
+   },
+   "n_zL": 67560,
+   "n_zU": 65538,
+   "nl_bytes": 10606320,
+   "sol_bytes": 2374568,
+   "import_suffixes": [
+    "ipopt_zL_out",
+    "ipopt_zU_out",
+    "dual"
+   ],
+   "solver_result_succeeded": true,
+   "model_solution_entries_before_release": {
+    "objective": 0,
+    "variable": 84450,
+    "constraint": 67455,
+    "problem": 0
+   },
+   "result_solution_entries_before_release": {
+    "variable": 82296,
+    "constraint": 67455,
+    "objective": 0,
+    "problem": 0
+   },
+   "suffix_lengths": {
+    "dual": 67455,
+    "ipopt_zL_out": 67560,
+    "ipopt_zU_out": 65538,
+    "ipopt_zL_in": 67560,
+    "ipopt_zU_in": 65538
+   },
+   "released": true,
+   "after_release": {
+    "model_solutions_n": 0,
+    "result_solution_n": 0
+   },
+   "wall_s": 1.438,
+   "rss_after_bytes": 7797669888,
+   "footprint_after_bytes": 7557683536
+  },
+  {
+   "i": 21,
+   "agent": "DSO",
+   "node": 5,
+   "network": "case33_1",
+   "year": "2025",
+   "day": "Summer",
+   "n_nl_vars": 82296,
+   "n_nl_cons": 67455,
+   "bound_types": {
+    "0": 65538,
+    "2": 1104,
+    "3": 14736,
+    "4": 918
+   },
+   "n_zL": 67560,
+   "n_zU": 65538,
+   "nl_bytes": 10604583,
+   "sol_bytes": 2374568,
+   "import_suffixes": [
+    "ipopt_zL_out",
+    "ipopt_zU_out",
+    "dual"
+   ],
+   "solver_result_succeeded": true,
+   "model_solution_entries_before_release": {
+    "objective": 0,
+    "variable": 84450,
+    "constraint": 67455,
+    "problem": 0
+   },
+   "result_solution_entries_before_release": {
+    "variable": 82296,
+    "constraint": 67455,
+    "objective": 0,
+    "problem": 0
+   },
+   "suffix_lengths": {
+    "dual": 67455,
+    "ipopt_zL_out": 67560,
+    "ipopt_zU_out": 65538,
+    "ipopt_zL_in": 67560,
+    "ipopt_zU_in": 65538
+   },
+   "released": true,
+   "after_release": {
+    "model_solutions_n": 0,
+    "result_solution_n": 0
+   },
+   "wall_s": 1.445,
+   "rss_after_bytes": 7884013568,
+   "footprint_after_bytes": 7601150336
+  },
+  {
+   "i": 22,
+   "agent": "DSO",
+   "node": 5,
+   "network": "case33_1",
+   "year": "2025",
+   "day": "Autumn",
+   "n_nl_vars": 82296,
+   "n_nl_cons": 67131,
+   "bound_types": {
+    "0": 65322,
+    "2": 1104,
+    "3": 14736,
+    "4": 1134
+   },
+   "n_zL": 67560,
+   "n_zU": 65322,
+   "nl_bytes": 10572911,
+   "sol_bytes": 2369816,
+   "import_suffixes": [
+    "ipopt_zL_out",
+    "ipopt_zU_out",
+    "dual"
+   ],
+   "solver_result_succeeded": true,
+   "model_solution_entries_before_release": {
+    "objective": 0,
+    "variable": 84450,
+    "constraint": 67131,
+    "problem": 0
+   },
+   "result_solution_entries_before_release": {
+    "variable": 82296,
+    "constraint": 67131,
+    "objective": 0,
+    "problem": 0
+   },
+   "suffix_lengths": {
+    "dual": 67131,
+    "ipopt_zL_out": 67560,
+    "ipopt_zU_out": 65322,
+    "ipopt_zL_in": 67560,
+    "ipopt_zU_in": 65322
+   },
+   "released": true,
+   "after_release": {
+    "model_solutions_n": 0,
+    "result_solution_n": 0
+   },
+   "wall_s": 1.433,
+   "rss_after_bytes": 7943356416,
+   "footprint_after_bytes": 7640209840
+  },
+  {
+   "i": 23,
+   "agent": "DSO",
+   "node": 5,
+   "network": "case33_1",
+   "year": "2025",
+   "day": "Winter",
+   "n_nl_vars": 82296,
+   "n_nl_cons": 67131,
+   "bound_types": {
+    "0": 65322,
+    "2": 1104,
+    "3": 14736,
+    "4": 1134
+   },
+   "n_zL": 67560,
+   "n_zU": 65322,
+   "nl_bytes": 10581617,
+   "sol_bytes": 2369816,
+   "import_suffixes": [
+    "ipopt_zL_out",
+    "ipopt_zU_out",
+    "dual"
+   ],
+   "solver_result_succeeded": true,
+   "model_solution_entries_before_release": {
+    "objective": 0,
+    "variable": 84450,
+    "constraint": 67131,
+    "problem": 0
+   },
+   "result_solution_entries_before_release": {
+    "variable": 82296,
+    "constraint": 67131,
+    "objective": 0,
+    "problem": 0
+   },
+   "suffix_lengths": {
+    "dual": 67131,
+    "ipopt_zL_out": 67560,
+    "ipopt_zU_out": 65322,
+    "ipopt_zL_in": 67560,
+    "ipopt_zU_in": 65322
+   },
+   "released": true,
+   "after_release": {
+    "model_solutions_n": 0,
+    "result_solution_n": 0
+   },
+   "wall_s": 1.418,
+   "rss_after_bytes": 7993835520,
+   "footprint_after_bytes": 7669569992
+  },
+  {
+   "i": 24,
+   "agent": "DSO",
+   "node": 5,
+   "network": "case33_1",
+   "year": "2028",
+   "day": "Spring",
+   "n_nl_vars": 82296,
+   "n_nl_cons": 67455,
+   "bound_types": {
+    "0": 65538,
+    "2": 1104,
+    "3": 14736,
+    "4": 918
+   },
+   "n_zL": 67560,
+   "n_zU": 65538,
+   "nl_bytes": 10606977,
+   "sol_bytes": 2374568,
+   "import_suffixes": [
+    "ipopt_zL_out",
+    "ipopt_zU_out",
+    "dual"
+   ],
+   "solver_result_succeeded": true,
+   "model_solution_entries_before_release": {
+    "objective": 0,
+    "variable": 84450,
+    "constraint": 67455,
+    "problem": 0
+   },
+   "result_solution_entries_before_release": {
+    "variable": 82296,
+    "constraint": 67455,
+    "objective": 0,
+    "problem": 0
+   },
+   "suffix_lengths": {
+    "dual": 67455,
+    "ipopt_zL_out": 67560,
+    "ipopt_zU_out": 65538,
+    "ipopt_zL_in": 67560,
+    "ipopt_zU_in": 65538
+   },
+   "released": true,
+   "after_release": {
+    "model_solutions_n": 0,
+    "result_solution_n": 0
+   },
+   "wall_s": 1.443,
+   "rss_after_bytes": 8068628480,
+   "footprint_after_bytes": 7704992272
+  },
+  {
+   "i": 25,
+   "agent": "DSO",
+   "node": 5,
+   "network": "case33_1",
+   "year": "2028",
+   "day": "Summer",
+   "n_nl_vars": 82296,
+   "n_nl_cons": 67455,
+   "bound_types": {
+    "0": 65538,
+    "2": 1104,
+    "3": 14736,
+    "4": 918
+   },
+   "n_zL": 67560,
+   "n_zU": 65538,
+   "nl_bytes": 10604178,
+   "sol_bytes": 2374568,
+   "import_suffixes": [
+    "ipopt_zL_out",
+    "ipopt_zU_out",
+    "dual"
+   ],
+   "solver_result_succeeded": true,
+   "model_solution_entries_before_release": {
+    "objective": 0,
+    "variable": 84450,
+    "constraint": 67455,
+    "problem": 0
+   },
+   "result_solution_entries_before_release": {
+    "variable": 82296,
+    "constraint": 67455,
+    "objective": 0,
+    "problem": 0
+   },
+   "suffix_lengths": {
+    "dual": 67455,
+    "ipopt_zL_out": 67560,
+    "ipopt_zU_out": 65538,
+    "ipopt_zL_in": 67560,
+    "ipopt_zU_in": 65538
+   },
+   "released": true,
+   "after_release": {
+    "model_solutions_n": 0,
+    "result_solution_n": 0
+   },
+   "wall_s": 1.456,
+   "rss_after_bytes": 8153645056,
+   "footprint_after_bytes": 7755258456
+  },
+  {
+   "i": 26,
+   "agent": "DSO",
+   "node": 5,
+   "network": "case33_1",
+   "year": "2028",
+   "day": "Autumn",
+   "n_nl_vars": 82296,
+   "n_nl_cons": 67131,
+   "bound_types": {
+    "0": 65322,
+    "2": 1104,
+    "3": 14736,
+    "4": 1134
+   },
+   "n_zL": 67560,
+   "n_zU": 65322,
+   "nl_bytes": 10570973,
+   "sol_bytes": 2369816,
+   "import_suffixes": [
+    "ipopt_zL_out",
+    "ipopt_zU_out",
+    "dual"
+   ],
+   "solver_result_succeeded": true,
+   "model_solution_entries_before_release": {
+    "objective": 0,
+    "variable": 84450,
+    "constraint": 67131,
+    "problem": 0
+   },
+   "result_solution_entries_before_release": {
+    "variable": 82296,
+    "constraint": 67131,
+    "objective": 0,
+    "problem": 0
+   },
+   "suffix_lengths": {
+    "dual": 67131,
+    "ipopt_zL_out": 67560,
+    "ipopt_zU_out": 65322,
+    "ipopt_zL_in": 67560,
+    "ipopt_zU_in": 65322
+   },
+   "released": true,
+   "after_release": {
+    "model_solutions_n": 0,
+    "result_solution_n": 0
+   },
+   "wall_s": 1.434,
+   "rss_after_bytes": 8190722048,
+   "footprint_after_bytes": 7774804592
+  },
+  {
+   "i": 27,
+   "agent": "DSO",
+   "node": 5,
+   "network": "case33_1",
+   "year": "2028",
+   "day": "Winter",
+   "n_nl_vars": 82296,
+   "n_nl_cons": 67131,
+   "bound_types": {
+    "0": 65322,
+    "2": 1104,
+    "3": 14736,
+    "4": 1134
+   },
+   "n_zL": 67560,
+   "n_zU": 65322,
+   "nl_bytes": 10577330,
+   "sol_bytes": 2369816,
+   "import_suffixes": [
+    "ipopt_zL_out",
+    "ipopt_zU_out",
+    "dual"
+   ],
+   "solver_result_succeeded": true,
+   "model_solution_entries_before_release": {
+    "objective": 0,
+    "variable": 84450,
+    "constraint": 67131,
+    "problem": 0
+   },
+   "result_solution_entries_before_release": {
+    "variable": 82296,
+    "constraint": 67131,
+    "objective": 0,
+    "problem": 0
+   },
+   "suffix_lengths": {
+    "dual": 67131,
+    "ipopt_zL_out": 67560,
+    "ipopt_zU_out": 65322,
+    "ipopt_zL_in": 67560,
+    "ipopt_zU_in": 65322
+   },
+   "released": true,
+   "after_release": {
+    "model_solutions_n": 0,
+    "result_solution_n": 0
+   },
+   "wall_s": 1.427,
+   "rss_after_bytes": 8221638656,
+   "footprint_after_bytes": 7800445552
+  },
+  {
+   "i": 28,
+   "agent": "DSO",
+   "node": 5,
+   "network": "case33_1",
+   "year": "2031",
+   "day": "Spring",
+   "n_nl_vars": 82296,
+   "n_nl_cons": 67455,
+   "bound_types": {
+    "0": 65538,
+    "2": 1104,
+    "3": 14736,
+    "4": 918
+   },
+   "n_zL": 67560,
+   "n_zU": 65538,
+   "nl_bytes": 10598910,
+   "sol_bytes": 2374568,
+   "import_suffixes": [
+    "ipopt_zL_out",
+    "ipopt_zU_out",
+    "dual"
+   ],
+   "solver_result_succeeded": true,
+   "model_solution_entries_before_release": {
+    "objective": 0,
+    "variable": 84450,
+    "constraint": 67455,
+    "problem": 0
+   },
+   "result_solution_entries_before_release": {
+    "variable": 82296,
+    "constraint": 67455,
+    "objective": 0,
+    "problem": 0
+   },
+   "suffix_lengths": {
+    "dual": 67455,
+    "ipopt_zL_out": 67560,
+    "ipopt_zU_out": 65538,
+    "ipopt_zL_in": 67560,
+    "ipopt_zU_in": 65538
+   },
+   "released": true,
+   "after_release": {
+    "model_solutions_n": 0,
+    "result_solution_n": 0
+   },
+   "wall_s": 1.429,
+   "rss_after_bytes": 8289878016,
+   "footprint_after_bytes": 7829822112
+  },
+  {
+   "i": 29,
+   "agent": "DSO",
+   "node": 5,
+   "network": "case33_1",
+   "year": "2031",
+   "day": "Summer",
+   "n_nl_vars": 82296,
+   "n_nl_cons": 67455,
+   "bound_types": {
+    "0": 65538,
+    "2": 1104,
+    "3": 14736,
+    "4": 918
+   },
+   "n_zL": 67560,
+   "n_zU": 65538,
+   "nl_bytes": 10597983,
+   "sol_bytes": 2374568,
+   "import_suffixes": [
+    "ipopt_zL_out",
+    "ipopt_zU_out",
+    "dual"
+   ],
+   "solver_result_succeeded": true,
+   "model_solution_entries_before_release": {
+    "objective": 0,
+    "variable": 84450,
+    "constraint": 67455,
+    "problem": 0
+   },
+   "result_solution_entries_before_release": {
+    "variable": 82296,
+    "constraint": 67455,
+    "objective": 0,
+    "problem": 0
+   },
+   "suffix_lengths": {
+    "dual": 67455,
+    "ipopt_zL_out": 67560,
+    "ipopt_zU_out": 65538,
+    "ipopt_zL_in": 67560,
+    "ipopt_zU_in": 65538
+   },
+   "released": true,
+   "after_release": {
+    "model_solutions_n": 0,
+    "result_solution_n": 0
+   },
+   "wall_s": 1.44,
+   "rss_after_bytes": 8350318592,
+   "footprint_after_bytes": 7847926480
+  },
+  {
+   "i": 30,
+   "agent": "DSO",
+   "node": 5,
+   "network": "case33_1",
+   "year": "2031",
+   "day": "Autumn",
+   "n_nl_vars": 82296,
+   "n_nl_cons": 67131,
+   "bound_types": {
+    "0": 65322,
+    "2": 1104,
+    "3": 14736,
+    "4": 1134
+   },
+   "n_zL": 67560,
+   "n_zU": 65322,
+   "nl_bytes": 10565570,
+   "sol_bytes": 2369816,
+   "import_suffixes": [
+    "ipopt_zL_out",
+    "ipopt_zU_out",
+    "dual"
+   ],
+   "solver_result_succeeded": true,
+   "model_solution_entries_before_release": {
+    "objective": 0,
+    "variable": 84450,
+    "constraint": 67131,
+    "problem": 0
+   },
+   "result_solution_entries_before_release": {
+    "variable": 82296,
+    "constraint": 67131,
+    "objective": 0,
+    "problem": 0
+   },
+   "suffix_lengths": {
+    "dual": 67131,
+    "ipopt_zL_out": 67560,
+    "ipopt_zU_out": 65322,
+    "ipopt_zL_in": 67560,
+    "ipopt_zU_in": 65322
+   },
+   "released": true,
+   "after_release": {
+    "model_solutions_n": 0,
+    "result_solution_n": 0
+   },
+   "wall_s": 1.444,
+   "rss_after_bytes": 8427126784,
+   "footprint_after_bytes": 7894833944
+  },
+  {
+   "i": 31,
+   "agent": "DSO",
+   "node": 5,
+   "network": "case33_1",
+   "year": "2031",
+   "day": "Winter",
+   "n_nl_vars": 82296,
+   "n_nl_cons": 67131,
+   "bound_types": {
+    "0": 65322,
+    "2": 1104,
+    "3": 14736,
+    "4": 1134
+   },
+   "n_zL": 67560,
+   "n_zU": 65322,
+   "nl_bytes": 10571396,
+   "sol_bytes": 2369816,
+   "import_suffixes": [
+    "ipopt_zL_out",
+    "ipopt_zU_out",
+    "dual"
+   ],
+   "solver_result_succeeded": true,
+   "model_solution_entries_before_release": {
+    "objective": 0,
+    "variable": 84450,
+    "constraint": 67131,
+    "problem": 0
+   },
+   "result_solution_entries_before_release": {
+    "variable": 82296,
+    "constraint": 67131,
+    "objective": 0,
+    "problem": 0
+   },
+   "suffix_lengths": {
+    "dual": 67131,
+    "ipopt_zL_out": 67560,
+    "ipopt_zU_out": 65322,
+    "ipopt_zL_in": 67560,
+    "ipopt_zU_in": 65322
+   },
+   "released": true,
+   "after_release": {
+    "model_solutions_n": 0,
+    "result_solution_n": 0
+   },
+   "wall_s": 1.427,
+   "rss_after_bytes": 8454963200,
+   "footprint_after_bytes": 7913773872
+  },
+  {
+   "i": 32,
+   "agent": "DSO",
+   "node": 5,
+   "network": "case33_1",
+   "year": "2034",
+   "day": "Spring",
+   "n_nl_vars": 82296,
+   "n_nl_cons": 67455,
+   "bound_types": {
+    "0": 65538,
+    "2": 1104,
+    "3": 14736,
+    "4": 918
+   },
+   "n_zL": 67560,
+   "n_zU": 65538,
+   "nl_bytes": 10598961,
+   "sol_bytes": 2374568,
+   "import_suffixes": [
+    "ipopt_zL_out",
+    "ipopt_zU_out",
+    "dual"
+   ],
+   "solver_result_succeeded": true,
+   "model_solution_entries_before_release": {
+    "objective": 0,
+    "variable": 84450,
+    "constraint": 67455,
+    "problem": 0
+   },
+   "result_solution_entries_before_release": {
+    "variable": 82296,
+    "constraint": 67455,
+    "objective": 0,
+    "problem": 0
+   },
+   "suffix_lengths": {
+    "dual": 67455,
+    "ipopt_zL_out": 67560,
+    "ipopt_zU_out": 65538,
+    "ipopt_zL_in": 67560,
+    "ipopt_zU_in": 65538
+   },
+   "released": true,
+   "after_release": {
+    "model_solutions_n": 0,
+    "result_solution_n": 0
+   },
+   "wall_s": 1.463,
+   "rss_after_bytes": 8509816832,
+   "footprint_after_bytes": 7944477488
+  },
+  {
+   "i": 33,
+   "agent": "DSO",
+   "node": 5,
+   "network": "case33_1",
+   "year": "2034",
+   "day": "Summer",
+   "n_nl_vars": 82296,
+   "n_nl_cons": 67455,
+   "bound_types": {
+    "0": 65538,
+    "2": 1104,
+    "3": 14736,
+    "4": 918
+   },
+   "n_zL": 67560,
+   "n_zU": 65538,
+   "nl_bytes": 10595460,
+   "sol_bytes": 2374568,
+   "import_suffixes": [
+    "ipopt_zL_out",
+    "ipopt_zU_out",
+    "dual"
+   ],
+   "solver_result_succeeded": true,
+   "model_solution_entries_before_release": {
+    "objective": 0,
+    "variable": 84450,
+    "constraint": 67455,
+    "problem": 0
+   },
+   "result_solution_entries_before_release": {
+    "variable": 82296,
+    "constraint": 67455,
+    "objective": 0,
+    "problem": 0
+   },
+   "suffix_lengths": {
+    "dual": 67455,
+    "ipopt_zL_out": 67560,
+    "ipopt_zU_out": 65538,
+    "ipopt_zL_in": 67560,
+    "ipopt_zU_in": 65538
+   },
+   "released": true,
+   "after_release": {
+    "model_solutions_n": 0,
+    "result_solution_n": 0
+   },
+   "wall_s": 1.45,
+   "rss_after_bytes": 8557510656,
+   "footprint_after_bytes": 7992138592
+  },
+  {
+   "i": 34,
+   "agent": "DSO",
+   "node": 5,
+   "network": "case33_1",
+   "year": "2034",
+   "day": "Autumn",
+   "n_nl_vars": 82296,
+   "n_nl_cons": 67131,
+   "bound_types": {
+    "0": 65322,
+    "2": 1104,
+    "3": 14736,
+    "4": 1134
+   },
+   "n_zL": 67560,
+   "n_zU": 65322,
+   "nl_bytes": 10567028,
+   "sol_bytes": 2369816,
+   "import_suffixes": [
+    "ipopt_zL_out",
+    "ipopt_zU_out",
+    "dual"
+   ],
+   "solver_result_succeeded": true,
+   "model_solution_entries_before_release": {
+    "objective": 0,
+    "variable": 84450,
+    "constraint": 67131,
+    "problem": 0
+   },
+   "result_solution_entries_before_release": {
+    "variable": 82296,
+    "constraint": 67131,
+    "objective": 0,
+    "problem": 0
+   },
+   "suffix_lengths": {
+    "dual": 67131,
+    "ipopt_zL_out": 67560,
+    "ipopt_zU_out": 65322,
+    "ipopt_zL_in": 67560,
+    "ipopt_zU_in": 65322
+   },
+   "released": true,
+   "after_release": {
+    "model_solutions_n": 0,
+    "result_solution_n": 0
+   },
+   "wall_s": 1.445,
+   "rss_after_bytes": 8583593984,
+   "footprint_after_bytes": 8009751416
+  },
+  {
+   "i": 35,
+   "agent": "DSO",
+   "node": 5,
+   "network": "case33_1",
+   "year": "2034",
+   "day": "Winter",
+   "n_nl_vars": 82296,
+   "n_nl_cons": 67122,
+   "bound_types": {
+    "0": 65316,
+    "2": 1104,
+    "3": 14736,
+    "4": 1140
+   },
+   "n_zL": 67560,
+   "n_zU": 65316,
+   "nl_bytes": 10569204,
+   "sol_bytes": 2369684,
+   "import_suffixes": [
+    "ipopt_zL_out",
+    "ipopt_zU_out",
+    "dual"
+   ],
+   "solver_result_succeeded": true,
+   "model_solution_entries_before_release": {
+    "objective": 0,
+    "variable": 84450,
+    "constraint": 67122,
+    "problem": 0
+   },
+   "result_solution_entries_before_release": {
+    "variable": 82296,
+    "constraint": 67122,
+    "objective": 0,
+    "problem": 0
+   },
+   "suffix_lengths": {
+    "dual": 67122,
+    "ipopt_zL_out": 67560,
+    "ipopt_zU_out": 65316,
+    "ipopt_zL_in": 67560,
+    "ipopt_zU_in": 65316
+   },
+   "released": true,
+   "after_release": {
+    "model_solutions_n": 0,
+    "result_solution_n": 0
+   },
+   "wall_s": 1.453,
+   "rss_after_bytes": 8615739392,
+   "footprint_after_bytes": 8041847696
+  },
+  {
+   "i": 36,
+   "agent": "DSO",
+   "node": 5,
+   "network": "case33_1",
+   "year": "2037",
+   "day": "Spring",
+   "n_nl_vars": 82296,
+   "n_nl_cons": 67455,
+   "bound_types": {
+    "0": 65538,
+    "2": 1104,
+    "3": 14736,
+    "4": 918
+   },
+   "n_zL": 67560,
+   "n_zU": 65538,
+   "nl_bytes": 10595151,
+   "sol_bytes": 2374568,
+   "import_suffixes": [
+    "ipopt_zL_out",
+    "ipopt_zU_out",
+    "dual"
+   ],
+   "solver_result_succeeded": true,
+   "model_solution_entries_before_release": {
+    "objective": 0,
+    "variable": 84450,
+    "constraint": 67455,
+    "problem": 0
+   },
+   "result_solution_entries_before_release": {
+    "variable": 82296,
+    "constraint": 67455,
+    "objective": 0,
+    "problem": 0
+   },
+   "suffix_lengths": {
+    "dual": 67455,
+    "ipopt_zL_out": 67560,
+    "ipopt_zU_out": 65538,
+    "ipopt_zL_in": 67560,
+    "ipopt_zU_in": 65538
+   },
+   "released": true,
+   "after_release": {
+    "model_solutions_n": 0,
+    "result_solution_n": 0
+   },
+   "wall_s": 1.442,
+   "rss_after_bytes": 8615723008,
+   "footprint_after_bytes": 8078449600
+  },
+  {
+   "i": 37,
+   "agent": "DSO",
+   "node": 5,
+   "network": "case33_1",
+   "year": "2037",
+   "day": "Summer",
+   "n_nl_vars": 82296,
+   "n_nl_cons": 67455,
+   "bound_types": {
+    "0": 65538,
+    "2": 1104,
+    "3": 14736,
+    "4": 918
+   },
+   "n_zL": 67560,
+   "n_zU": 65538,
+   "nl_bytes": 10590960,
+   "sol_bytes": 2374568,
+   "import_suffixes": [
+    "ipopt_zL_out",
+    "ipopt_zU_out",
+    "dual"
+   ],
+   "solver_result_succeeded": true,
+   "model_solution_entries_before_release": {
+    "objective": 0,
+    "variable": 84450,
+    "constraint": 67455,
+    "problem": 0
+   },
+   "result_solution_entries_before_release": {
+    "variable": 82296,
+    "constraint": 67455,
+    "objective": 0,
+    "problem": 0
+   },
+   "suffix_lengths": {
+    "dual": 67455,
+    "ipopt_zL_out": 67560,
+    "ipopt_zU_out": 65538,
+    "ipopt_zL_in": 67560,
+    "ipopt_zU_in": 65538
+   },
+   "released": true,
+   "after_release": {
+    "model_solutions_n": 0,
+    "result_solution_n": 0
+   },
+   "wall_s": 1.442,
+   "rss_after_bytes": 8571109376,
+   "footprint_after_bytes": 8131009472
+  },
+  {
+   "i": 38,
+   "agent": "DSO",
+   "node": 5,
+   "network": "case33_1",
+   "year": "2037",
+   "day": "Autumn",
+   "n_nl_vars": 82296,
+   "n_nl_cons": 67131,
+   "bound_types": {
+    "0": 65322,
+    "2": 1104,
+    "3": 14736,
+    "4": 1134
+   },
+   "n_zL": 67560,
+   "n_zU": 65322,
+   "nl_bytes": 10562852,
+   "sol_bytes": 2369816,
+   "import_suffixes": [
+    "ipopt_zL_out",
+    "ipopt_zU_out",
+    "dual"
+   ],
+   "solver_result_succeeded": true,
+   "model_solution_entries_before_release": {
+    "objective": 0,
+    "variable": 84450,
+    "constraint": 67131,
+    "problem": 0
+   },
+   "result_solution_entries_before_release": {
+    "variable": 82296,
+    "constraint": 67131,
+    "objective": 0,
+    "problem": 0
+   },
+   "suffix_lengths": {
+    "dual": 67131,
+    "ipopt_zL_out": 67560,
+    "ipopt_zU_out": 65322,
+    "ipopt_zL_in": 67560,
+    "ipopt_zU_in": 65322
+   },
+   "released": true,
+   "after_release": {
+    "model_solutions_n": 0,
+    "result_solution_n": 0
+   },
+   "wall_s": 1.485,
+   "rss_after_bytes": 8585035776,
+   "footprint_after_bytes": 8203934704
+  },
+  {
+   "i": 39,
+   "agent": "DSO",
+   "node": 5,
+   "network": "case33_1",
+   "year": "2037",
+   "day": "Winter",
+   "n_nl_vars": 82296,
+   "n_nl_cons": 67131,
+   "bound_types": {
+    "0": 65322,
+    "2": 1104,
+    "3": 14736,
+    "4": 1134
+   },
+   "n_zL": 67560,
+   "n_zU": 65322,
+   "nl_bytes": 10567217,
+   "sol_bytes": 2369816,
+   "import_suffixes": [
+    "ipopt_zL_out",
+    "ipopt_zU_out",
+    "dual"
+   ],
+   "solver_result_succeeded": true,
+   "model_solution_entries_before_release": {
+    "objective": 0,
+    "variable": 84450,
+    "constraint": 67131,
+    "problem": 0
+   },
+   "result_solution_entries_before_release": {
+    "variable": 82296,
+    "constraint": 67131,
+    "objective": 0,
+    "problem": 0
+   },
+   "suffix_lengths": {
+    "dual": 67131,
+    "ipopt_zL_out": 67560,
+    "ipopt_zU_out": 65322,
+    "ipopt_zL_in": 67560,
+    "ipopt_zU_in": 65322
+   },
+   "released": true,
+   "after_release": {
+    "model_solutions_n": 0,
+    "result_solution_n": 0
+   },
+   "wall_s": 1.467,
+   "rss_after_bytes": 8553431040,
+   "footprint_after_bytes": 8244632608
+  },
+  {
+   "i": 40,
+   "agent": "DSO",
+   "node": 7,
+   "network": "case33_2",
+   "year": "2025",
+   "day": "Spring",
+   "n_nl_vars": 82514,
+   "n_nl_cons": 67963,
+   "bound_types": {
+    "0": 65750,
+    "2": 1176,
+    "3": 14832,
+    "4": 756
+   },
+   "n_zL": 67682,
+   "n_zU": 65750,
+   "nl_bytes": 10657019,
+   "sol_bytes": 2382804,
+   "import_suffixes": [
+    "ipopt_zL_out",
+    "ipopt_zU_out",
+    "dual"
+   ],
+   "solver_result_succeeded": true,
+   "model_solution_entries_before_release": {
+    "objective": 0,
+    "variable": 83090,
+    "constraint": 67963,
+    "problem": 0
+   },
+   "result_solution_entries_before_release": {
+    "variable": 82514,
+    "constraint": 67963,
+    "objective": 0,
+    "problem": 0
+   },
+   "suffix_lengths": {
+    "dual": 67963,
+    "ipopt_zL_out": 67682,
+    "ipopt_zU_out": 65750,
+    "ipopt_zL_in": 67682,
+    "ipopt_zU_in": 65750
+   },
+   "released": true,
+   "after_release": {
+    "model_solutions_n": 0,
+    "result_solution_n": 0
+   },
+   "wall_s": 1.461,
+   "rss_after_bytes": 8501641216,
+   "footprint_after_bytes": 8293735480
+  },
+  {
+   "i": 41,
+   "agent": "DSO",
+   "node": 7,
+   "network": "case33_2",
+   "year": "2025",
+   "day": "Summer",
+   "n_nl_vars": 82514,
+   "n_nl_cons": 67963,
+   "bound_types": {
+    "0": 65750,
+    "2": 1176,
+    "3": 14832,
+    "4": 756
+   },
+   "n_zL": 67682,
+   "n_zU": 65750,
+   "nl_bytes": 10655865,
+   "sol_bytes": 2382804,
+   "import_suffixes": [
+    "ipopt_zL_out",
+    "ipopt_zU_out",
+    "dual"
+   ],
+   "solver_result_succeeded": true,
+   "model_solution_entries_before_release": {
+    "objective": 0,
+    "variable": 83090,
+    "constraint": 67963,
+    "problem": 0
+   },
+   "result_solution_entries_before_release": {
+    "variable": 82514,
+    "constraint": 67963,
+    "objective": 0,
+    "problem": 0
+   },
+   "suffix_lengths": {
+    "dual": 67963,
+    "ipopt_zL_out": 67682,
+    "ipopt_zU_out": 65750,
+    "ipopt_zL_in": 67682,
+    "ipopt_zU_in": 65750
+   },
+   "released": true,
+   "after_release": {
+    "model_solutions_n": 0,
+    "result_solution_n": 0
+   },
+   "wall_s": 1.466,
+   "rss_after_bytes": 8475492352,
+   "footprint_after_bytes": 8360369256
+  },
+  {
+   "i": 42,
+   "agent": "DSO",
+   "node": 7,
+   "network": "case33_2",
+   "year": "2025",
+   "day": "Autumn",
+   "n_nl_vars": 82514,
+   "n_nl_cons": 67747,
+   "bound_types": {
+    "0": 65606,
+    "2": 1176,
+    "3": 14832,
+    "4": 900
+   },
+   "n_zL": 67682,
+   "n_zU": 65606,
+   "nl_bytes": 10634342,
+   "sol_bytes": 2379636,
+   "import_suffixes": [
+    "ipopt_zL_out",
+    "ipopt_zU_out",
+    "dual"
+   ],
+   "solver_result_succeeded": true,
+   "model_solution_entries_before_release": {
+    "objective": 0,
+    "variable": 83090,
+    "constraint": 67747,
+    "problem": 0
+   },
+   "result_solution_entries_before_release": {
+    "variable": 82514,
+    "constraint": 67747,
+    "objective": 0,
+    "problem": 0
+   },
+   "suffix_lengths": {
+    "dual": 67747,
+    "ipopt_zL_out": 67682,
+    "ipopt_zU_out": 65606,
+    "ipopt_zL_in": 67682,
+    "ipopt_zU_in": 65606
+   },
+   "released": true,
+   "after_release": {
+    "model_solutions_n": 0,
+    "result_solution_n": 0
+   },
+   "wall_s": 1.48,
+   "rss_after_bytes": 8369127424,
+   "footprint_after_bytes": 8470404200
+  },
+  {
+   "i": 43,
+   "agent": "DSO",
+   "node": 7,
+   "network": "case33_2",
+   "year": "2025",
+   "day": "Winter",
+   "n_nl_vars": 82514,
+   "n_nl_cons": 67747,
+   "bound_types": {
+    "0": 65606,
+    "2": 1176,
+    "3": 14832,
+    "4": 900
+   },
+   "n_zL": 67682,
+   "n_zU": 65606,
+   "nl_bytes": 10642899,
+   "sol_bytes": 2379636,
+   "import_suffixes": [
+    "ipopt_zL_out",
+    "ipopt_zU_out",
+    "dual"
+   ],
+   "solver_result_succeeded": true,
+   "model_solution_entries_before_release": {
+    "objective": 0,
+    "variable": 83090,
+    "constraint": 67747,
+    "problem": 0
+   },
+   "result_solution_entries_before_release": {
+    "variable": 82514,
+    "constraint": 67747,
+    "objective": 0,
+    "problem": 0
+   },
+   "suffix_lengths": {
+    "dual": 67747,
+    "ipopt_zL_out": 67682,
+    "ipopt_zU_out": 65606,
+    "ipopt_zL_in": 67682,
+    "ipopt_zU_in": 65606
+   },
+   "released": true,
+   "after_release": {
+    "model_solutions_n": 0,
+    "result_solution_n": 0
+   },
+   "wall_s": 1.475,
+   "rss_after_bytes": 8332886016,
+   "footprint_after_bytes": 8570559640
+  },
+  {
+   "i": 44,
+   "agent": "DSO",
+   "node": 7,
+   "network": "case33_2",
+   "year": "2028",
+   "day": "Spring",
+   "n_nl_vars": 82514,
+   "n_nl_cons": 67963,
+   "bound_types": {
+    "0": 65750,
+    "2": 1176,
+    "3": 14832,
+    "4": 756
+   },
+   "n_zL": 67682,
+   "n_zU": 65750,
+   "nl_bytes": 10657507,
+   "sol_bytes": 2382804,
+   "import_suffixes": [
+    "ipopt_zL_out",
+    "ipopt_zU_out",
+    "dual"
+   ],
+   "solver_result_succeeded": true,
+   "model_solution_entries_before_release": {
+    "objective": 0,
+    "variable": 83090,
+    "constraint": 67963,
+    "problem": 0
+   },
+   "result_solution_entries_before_release": {
+    "variable": 82514,
+    "constraint": 67963,
+    "objective": 0,
+    "problem": 0
+   },
+   "suffix_lengths": {
+    "dual": 67963,
+    "ipopt_zL_out": 67682,
+    "ipopt_zU_out": 65750,
+    "ipopt_zL_in": 67682,
+    "ipopt_zU_in": 65750
+   },
+   "released": true,
+   "after_release": {
+    "model_solutions_n": 0,
+    "result_solution_n": 0
+   },
+   "wall_s": 1.447,
+   "rss_after_bytes": 8379318272,
+   "footprint_after_bytes": 8616205512
+  },
+  {
+   "i": 45,
+   "agent": "DSO",
+   "node": 7,
+   "network": "case33_2",
+   "year": "2028",
+   "day": "Summer",
+   "n_nl_vars": 82514,
+   "n_nl_cons": 67963,
+   "bound_types": {
+    "0": 65750,
+    "2": 1176,
+    "3": 14832,
+    "4": 756
+   },
+   "n_zL": 67682,
+   "n_zU": 65750,
+   "nl_bytes": 10655805,
+   "sol_bytes": 2382804,
+   "import_suffixes": [
+    "ipopt_zL_out",
+    "ipopt_zU_out",
+    "dual"
+   ],
+   "solver_result_succeeded": true,
+   "model_solution_entries_before_release": {
+    "objective": 0,
+    "variable": 83090,
+    "constraint": 67963,
+    "problem": 0
+   },
+   "result_solution_entries_before_release": {
+    "variable": 82514,
+    "constraint": 67963,
+    "objective": 0,
+    "problem": 0
+   },
+   "suffix_lengths": {
+    "dual": 67963,
+    "ipopt_zL_out": 67682,
+    "ipopt_zU_out": 65750,
+    "ipopt_zL_in": 67682,
+    "ipopt_zU_in": 65750
+   },
+   "released": true,
+   "after_release": {
+    "model_solutions_n": 0,
+    "result_solution_n": 0
+   },
+   "wall_s": 1.444,
+   "rss_after_bytes": 8442036224,
+   "footprint_after_bytes": 8671943928
+  },
+  {
+   "i": 46,
+   "agent": "DSO",
+   "node": 7,
+   "network": "case33_2",
+   "year": "2028",
+   "day": "Autumn",
+   "n_nl_vars": 82514,
+   "n_nl_cons": 67747,
+   "bound_types": {
+    "0": 65606,
+    "2": 1176,
+    "3": 14832,
+    "4": 900
+   },
+   "n_zL": 67682,
+   "n_zU": 65606,
+   "nl_bytes": 10632198,
+   "sol_bytes": 2379636,
+   "import_suffixes": [
+    "ipopt_zL_out",
+    "ipopt_zU_out",
+    "dual"
+   ],
+   "solver_result_succeeded": true,
+   "model_solution_entries_before_release": {
+    "objective": 0,
+    "variable": 83090,
+    "constraint": 67747,
+    "problem": 0
+   },
+   "result_solution_entries_before_release": {
+    "variable": 82514,
+    "constraint": 67747,
+    "objective": 0,
+    "problem": 0
+   },
+   "suffix_lengths": {
+    "dual": 67747,
+    "ipopt_zL_out": 67682,
+    "ipopt_zU_out": 65606,
+    "ipopt_zL_in": 67682,
+    "ipopt_zU_in": 65606
+   },
+   "released": true,
+   "after_release": {
+    "model_solutions_n": 0,
+    "result_solution_n": 0
+   },
+   "wall_s": 1.459,
+   "rss_after_bytes": 8449998848,
+   "footprint_after_bytes": 8710216952
+  },
+  {
+   "i": 47,
+   "agent": "DSO",
+   "node": 7,
+   "network": "case33_2",
+   "year": "2028",
+   "day": "Winter",
+   "n_nl_vars": 82514,
+   "n_nl_cons": 67747,
+   "bound_types": {
+    "0": 65606,
+    "2": 1176,
+    "3": 14832,
+    "4": 900
+   },
+   "n_zL": 67682,
+   "n_zU": 65606,
+   "nl_bytes": 10638136,
+   "sol_bytes": 2379636,
+   "import_suffixes": [
+    "ipopt_zL_out",
+    "ipopt_zU_out",
+    "dual"
+   ],
+   "solver_result_succeeded": true,
+   "model_solution_entries_before_release": {
+    "objective": 0,
+    "variable": 83090,
+    "constraint": 67747,
+    "problem": 0
+   },
+   "result_solution_entries_before_release": {
+    "variable": 82514,
+    "constraint": 67747,
+    "objective": 0,
+    "problem": 0
+   },
+   "suffix_lengths": {
+    "dual": 67747,
+    "ipopt_zL_out": 67682,
+    "ipopt_zU_out": 65606,
+    "ipopt_zL_in": 67682,
+    "ipopt_zU_in": 65606
+   },
+   "released": true,
+   "after_release": {
+    "model_solutions_n": 0,
+    "result_solution_n": 0
+   },
+   "wall_s": 1.453,
+   "rss_after_bytes": 8370847744,
+   "footprint_after_bytes": 8768462096
+  },
+  {
+   "i": 48,
+   "agent": "DSO",
+   "node": 7,
+   "network": "case33_2",
+   "year": "2031",
+   "day": "Spring",
+   "n_nl_vars": 82514,
+   "n_nl_cons": 67963,
+   "bound_types": {
+    "0": 65750,
+    "2": 1176,
+    "3": 14832,
+    "4": 756
+   },
+   "n_zL": 67682,
+   "n_zU": 65750,
+   "nl_bytes": 10653103,
+   "sol_bytes": 2382804,
+   "import_suffixes": [
+    "ipopt_zL_out",
+    "ipopt_zU_out",
+    "dual"
+   ],
+   "solver_result_succeeded": true,
+   "model_solution_entries_before_release": {
+    "objective": 0,
+    "variable": 83090,
+    "constraint": 67963,
+    "problem": 0
+   },
+   "result_solution_entries_before_release": {
+    "variable": 82514,
+    "constraint": 67963,
+    "objective": 0,
+    "problem": 0
+   },
+   "suffix_lengths": {
+    "dual": 67963,
+    "ipopt_zL_out": 67682,
+    "ipopt_zU_out": 65750,
+    "ipopt_zL_in": 67682,
+    "ipopt_zU_in": 65750
+   },
+   "released": true,
+   "after_release": {
+    "model_solutions_n": 0,
+    "result_solution_n": 0
+   },
+   "wall_s": 1.48,
+   "rss_after_bytes": 8372027392,
+   "footprint_after_bytes": 8810503464
+  },
+  {
+   "i": 49,
+   "agent": "DSO",
+   "node": 7,
+   "network": "case33_2",
+   "year": "2031",
+   "day": "Summer",
+   "n_nl_vars": 82514,
+   "n_nl_cons": 67963,
+   "bound_types": {
+    "0": 65750,
+    "2": 1176,
+    "3": 14832,
+    "4": 756
+   },
+   "n_zL": 67682,
+   "n_zU": 65750,
+   "nl_bytes": 10652875,
+   "sol_bytes": 2382804,
+   "import_suffixes": [
+    "ipopt_zL_out",
+    "ipopt_zU_out",
+    "dual"
+   ],
+   "solver_result_succeeded": true,
+   "model_solution_entries_before_release": {
+    "objective": 0,
+    "variable": 83090,
+    "constraint": 67963,
+    "problem": 0
+   },
+   "result_solution_entries_before_release": {
+    "variable": 82514,
+    "constraint": 67963,
+    "objective": 0,
+    "problem": 0
+   },
+   "suffix_lengths": {
+    "dual": 67963,
+    "ipopt_zL_out": 67682,
+    "ipopt_zU_out": 65750,
+    "ipopt_zL_in": 67682,
+    "ipopt_zU_in": 65750
+   },
+   "released": true,
+   "after_release": {
+    "model_solutions_n": 0,
+    "result_solution_n": 0
+   },
+   "wall_s": 1.465,
+   "rss_after_bytes": 8329216000,
+   "footprint_after_bytes": 8857263472
+  },
+  {
+   "i": 50,
+   "agent": "DSO",
+   "node": 7,
+   "network": "case33_2",
+   "year": "2031",
+   "day": "Autumn",
+   "n_nl_vars": 82514,
+   "n_nl_cons": 67747,
+   "bound_types": {
+    "0": 65606,
+    "2": 1176,
+    "3": 14832,
+    "4": 900
+   },
+   "n_zL": 67682,
+   "n_zU": 65606,
+   "nl_bytes": 10629126,
+   "sol_bytes": 2379636,
+   "import_suffixes": [
+    "ipopt_zL_out",
+    "ipopt_zU_out",
+    "dual"
+   ],
+   "solver_result_succeeded": true,
+   "model_solution_entries_before_release": {
+    "objective": 0,
+    "variable": 83090,
+    "constraint": 67747,
+    "problem": 0
+   },
+   "result_solution_entries_before_release": {
+    "variable": 82514,
+    "constraint": 67747,
+    "objective": 0,
+    "problem": 0
+   },
+   "suffix_lengths": {
+    "dual": 67747,
+    "ipopt_zL_out": 67682,
+    "ipopt_zU_out": 65606,
+    "ipopt_zL_in": 67682,
+    "ipopt_zU_in": 65606
+   },
+   "released": true,
+   "after_release": {
+    "model_solutions_n": 0,
+    "result_solution_n": 0
+   },
+   "wall_s": 1.467,
+   "rss_after_bytes": 8295596032,
+   "footprint_after_bytes": 8898764192
+  },
+  {
+   "i": 51,
+   "agent": "DSO",
+   "node": 7,
+   "network": "case33_2",
+   "year": "2031",
+   "day": "Winter",
+   "n_nl_vars": 82514,
+   "n_nl_cons": 67747,
+   "bound_types": {
+    "0": 65606,
+    "2": 1176,
+    "3": 14832,
+    "4": 900
+   },
+   "n_zL": 67682,
+   "n_zU": 65606,
+   "nl_bytes": 10634829,
+   "sol_bytes": 2379636,
+   "import_suffixes": [
+    "ipopt_zL_out",
+    "ipopt_zU_out",
+    "dual"
+   ],
+   "solver_result_succeeded": true,
+   "model_solution_entries_before_release": {
+    "objective": 0,
+    "variable": 83090,
+    "constraint": 67747,
+    "problem": 0
+   },
+   "result_solution_entries_before_release": {
+    "variable": 82514,
+    "constraint": 67747,
+    "objective": 0,
+    "problem": 0
+   },
+   "suffix_lengths": {
+    "dual": 67747,
+    "ipopt_zL_out": 67682,
+    "ipopt_zU_out": 65606,
+    "ipopt_zL_in": 67682,
+    "ipopt_zU_in": 65606
+   },
+   "released": true,
+   "after_release": {
+    "model_solutions_n": 0,
+    "result_solution_n": 0
+   },
+   "wall_s": 1.516,
+   "rss_after_bytes": 8277753856,
+   "footprint_after_bytes": 8932580768
+  },
+  {
+   "i": 52,
+   "agent": "DSO",
+   "node": 7,
+   "network": "case33_2",
+   "year": "2034",
+   "day": "Spring",
+   "n_nl_vars": 82514,
+   "n_nl_cons": 67963,
+   "bound_types": {
+    "0": 65750,
+    "2": 1176,
+    "3": 14832,
+    "4": 756
+   },
+   "n_zL": 67682,
+   "n_zU": 65750,
+   "nl_bytes": 10652895,
+   "sol_bytes": 2382804,
+   "import_suffixes": [
+    "ipopt_zL_out",
+    "ipopt_zU_out",
+    "dual"
+   ],
+   "solver_result_succeeded": true,
+   "model_solution_entries_before_release": {
+    "objective": 0,
+    "variable": 83090,
+    "constraint": 67963,
+    "problem": 0
+   },
+   "result_solution_entries_before_release": {
+    "variable": 82514,
+    "constraint": 67963,
+    "objective": 0,
+    "problem": 0
+   },
+   "suffix_lengths": {
+    "dual": 67963,
+    "ipopt_zL_out": 67682,
+    "ipopt_zU_out": 65750,
+    "ipopt_zL_in": 67682,
+    "ipopt_zU_in": 65750
+   },
+   "released": true,
+   "after_release": {
+    "model_solutions_n": 0,
+    "result_solution_n": 0
+   },
+   "wall_s": 1.462,
+   "rss_after_bytes": 8260714496,
+   "footprint_after_bytes": 8970034640
+  },
+  {
+   "i": 53,
+   "agent": "DSO",
+   "node": 7,
+   "network": "case33_2",
+   "year": "2034",
+   "day": "Summer",
+   "n_nl_vars": 82514,
+   "n_nl_cons": 67963,
+   "bound_types": {
+    "0": 65750,
+    "2": 1176,
+    "3": 14832,
+    "4": 756
+   },
+   "n_zL": 67682,
+   "n_zU": 65750,
+   "nl_bytes": 10650457,
+   "sol_bytes": 2382804,
+   "import_suffixes": [
+    "ipopt_zL_out",
+    "ipopt_zU_out",
+    "dual"
+   ],
+   "solver_result_succeeded": true,
+   "model_solution_entries_before_release": {
+    "objective": 0,
+    "variable": 83090,
+    "constraint": 67963,
+    "problem": 0
+   },
+   "result_solution_entries_before_release": {
+    "variable": 82514,
+    "constraint": 67963,
+    "objective": 0,
+    "problem": 0
+   },
+   "suffix_lengths": {
+    "dual": 67963,
+    "ipopt_zL_out": 67682,
+    "ipopt_zU_out": 65750,
+    "ipopt_zL_in": 67682,
+    "ipopt_zU_in": 65750
+   },
+   "released": true,
+   "after_release": {
+    "model_solutions_n": 0,
+    "result_solution_n": 0
+   },
+   "wall_s": 1.475,
+   "rss_after_bytes": 8251293696,
+   "footprint_after_bytes": 8994086376
+  },
+  {
+   "i": 54,
+   "agent": "DSO",
+   "node": 7,
+   "network": "case33_2",
+   "year": "2034",
+   "day": "Autumn",
+   "n_nl_vars": 82514,
+   "n_nl_cons": 67747,
+   "bound_types": {
+    "0": 65606,
+    "2": 1176,
+    "3": 14832,
+    "4": 900
+   },
+   "n_zL": 67682,
+   "n_zU": 65606,
+   "nl_bytes": 10630810,
+   "sol_bytes": 2379636,
+   "import_suffixes": [
+    "ipopt_zL_out",
+    "ipopt_zU_out",
+    "dual"
+   ],
+   "solver_result_succeeded": true,
+   "model_solution_entries_before_release": {
+    "objective": 0,
+    "variable": 83090,
+    "constraint": 67747,
+    "problem": 0
+   },
+   "result_solution_entries_before_release": {
+    "variable": 82514,
+    "constraint": 67747,
+    "objective": 0,
+    "problem": 0
+   },
+   "suffix_lengths": {
+    "dual": 67747,
+    "ipopt_zL_out": 67682,
+    "ipopt_zU_out": 65606,
+    "ipopt_zL_in": 67682,
+    "ipopt_zU_in": 65606
+   },
+   "released": true,
+   "after_release": {
+    "model_solutions_n": 0,
+    "result_solution_n": 0
+   },
+   "wall_s": 1.467,
+   "rss_after_bytes": 8235155456,
+   "footprint_after_bytes": 9034358272
+  },
+  {
+   "i": 55,
+   "agent": "DSO",
+   "node": 7,
+   "network": "case33_2",
+   "year": "2034",
+   "day": "Winter",
+   "n_nl_vars": 82514,
+   "n_nl_cons": 67747,
+   "bound_types": {
+    "0": 65606,
+    "2": 1176,
+    "3": 14832,
+    "4": 900
+   },
+   "n_zL": 67682,
+   "n_zU": 65606,
+   "nl_bytes": 10633854,
+   "sol_bytes": 2379636,
+   "import_suffixes": [
+    "ipopt_zL_out",
+    "ipopt_zU_out",
+    "dual"
+   ],
+   "solver_result_succeeded": true,
+   "model_solution_entries_before_release": {
+    "objective": 0,
+    "variable": 83090,
+    "constraint": 67747,
+    "problem": 0
+   },
+   "result_solution_entries_before_release": {
+    "variable": 82514,
+    "constraint": 67747,
+    "objective": 0,
+    "problem": 0
+   },
+   "suffix_lengths": {
+    "dual": 67747,
+    "ipopt_zL_out": 67682,
+    "ipopt_zU_out": 65606,
+    "ipopt_zL_in": 67682,
+    "ipopt_zU_in": 65606
+   },
+   "released": true,
+   "after_release": {
+    "model_solutions_n": 0,
+    "result_solution_n": 0
+   },
+   "wall_s": 1.47,
+   "rss_after_bytes": 8130805760,
+   "footprint_after_bytes": 9068109360
+  },
+  {
+   "i": 56,
+   "agent": "DSO",
+   "node": 7,
+   "network": "case33_2",
+   "year": "2037",
+   "day": "Spring",
+   "n_nl_vars": 82514,
+   "n_nl_cons": 67963,
+   "bound_types": {
+    "0": 65750,
+    "2": 1176,
+    "3": 14832,
+    "4": 756
+   },
+   "n_zL": 67682,
+   "n_zU": 65750,
+   "nl_bytes": 10652520,
+   "sol_bytes": 2382804,
+   "import_suffixes": [
+    "ipopt_zL_out",
+    "ipopt_zU_out",
+    "dual"
+   ],
+   "solver_result_succeeded": true,
+   "model_solution_entries_before_release": {
+    "objective": 0,
+    "variable": 83090,
+    "constraint": 67963,
+    "problem": 0
+   },
+   "result_solution_entries_before_release": {
+    "variable": 82514,
+    "constraint": 67963,
+    "objective": 0,
+    "problem": 0
+   },
+   "suffix_lengths": {
+    "dual": 67963,
+    "ipopt_zL_out": 67682,
+    "ipopt_zU_out": 65750,
+    "ipopt_zL_in": 67682,
+    "ipopt_zU_in": 65750
+   },
+   "released": true,
+   "after_release": {
+    "model_solutions_n": 0,
+    "result_solution_n": 0
+   },
+   "wall_s": 1.465,
+   "rss_after_bytes": 8072495104,
+   "footprint_after_bytes": 9094651440
+  },
+  {
+   "i": 57,
+   "agent": "DSO",
+   "node": 7,
+   "network": "case33_2",
+   "year": "2037",
+   "day": "Summer",
+   "n_nl_vars": 82514,
+   "n_nl_cons": 67963,
+   "bound_types": {
+    "0": 65750,
+    "2": 1176,
+    "3": 14832,
+    "4": 756
+   },
+   "n_zL": 67682,
+   "n_zU": 65750,
+   "nl_bytes": 10649122,
+   "sol_bytes": 2382804,
+   "import_suffixes": [
+    "ipopt_zL_out",
+    "ipopt_zU_out",
+    "dual"
+   ],
+   "solver_result_succeeded": true,
+   "model_solution_entries_before_release": {
+    "objective": 0,
+    "variable": 83090,
+    "constraint": 67963,
+    "problem": 0
+   },
+   "result_solution_entries_before_release": {
+    "variable": 82514,
+    "constraint": 67963,
+    "objective": 0,
+    "problem": 0
+   },
+   "suffix_lengths": {
+    "dual": 67963,
+    "ipopt_zL_out": 67682,
+    "ipopt_zU_out": 65750,
+    "ipopt_zL_in": 67682,
+    "ipopt_zU_in": 65750
+   },
+   "released": true,
+   "after_release": {
+    "model_solutions_n": 0,
+    "result_solution_n": 0
+   },
+   "wall_s": 1.47,
+   "rss_after_bytes": 8015495168,
+   "footprint_after_bytes": 9126993504
+  },
+  {
+   "i": 58,
+   "agent": "DSO",
+   "node": 7,
+   "network": "case33_2",
+   "year": "2037",
+   "day": "Autumn",
+   "n_nl_vars": 82514,
+   "n_nl_cons": 67747,
+   "bound_types": {
+    "0": 65606,
+    "2": 1176,
+    "3": 14832,
+    "4": 900
+   },
+   "n_zL": 67682,
+   "n_zU": 65606,
+   "nl_bytes": 10629178,
+   "sol_bytes": 2379636,
+   "import_suffixes": [
+    "ipopt_zL_out",
+    "ipopt_zU_out",
+    "dual"
+   ],
+   "solver_result_succeeded": true,
+   "model_solution_entries_before_release": {
+    "objective": 0,
+    "variable": 83090,
+    "constraint": 67747,
+    "problem": 0
+   },
+   "result_solution_entries_before_release": {
+    "variable": 82514,
+    "constraint": 67747,
+    "objective": 0,
+    "problem": 0
+   },
+   "suffix_lengths": {
+    "dual": 67747,
+    "ipopt_zL_out": 67682,
+    "ipopt_zU_out": 65606,
+    "ipopt_zL_in": 67682,
+    "ipopt_zU_in": 65606
+   },
+   "released": true,
+   "after_release": {
+    "model_solutions_n": 0,
+    "result_solution_n": 0
+   },
+   "wall_s": 1.483,
+   "rss_after_bytes": 7976747008,
+   "footprint_after_bytes": 9164578424
+  },
+  {
+   "i": 59,
+   "agent": "DSO",
+   "node": 7,
+   "network": "case33_2",
+   "year": "2037",
+   "day": "Winter",
+   "n_nl_vars": 82514,
+   "n_nl_cons": 67747,
+   "bound_types": {
+    "0": 65606,
+    "2": 1176,
+    "3": 14832,
+    "4": 900
+   },
+   "n_zL": 67682,
+   "n_zU": 65606,
+   "nl_bytes": 10633237,
+   "sol_bytes": 2379636,
+   "import_suffixes": [
+    "ipopt_zL_out",
+    "ipopt_zU_out",
+    "dual"
+   ],
+   "solver_result_succeeded": true,
+   "model_solution_entries_before_release": {
+    "objective": 0,
+    "variable": 83090,
+    "constraint": 67747,
+    "problem": 0
+   },
+   "result_solution_entries_before_release": {
+    "variable": 82514,
+    "constraint": 67747,
+    "objective": 0,
+    "problem": 0
+   },
+   "suffix_lengths": {
+    "dual": 67747,
+    "ipopt_zL_out": 67682,
+    "ipopt_zU_out": 65606,
+    "ipopt_zL_in": 67682,
+    "ipopt_zU_in": 65606
+   },
+   "released": true,
+   "after_release": {
+    "model_solutions_n": 0,
+    "result_solution_n": 0
+   },
+   "wall_s": 1.46,
+   "rss_after_bytes": 7915798528,
+   "footprint_after_bytes": 9222626984
+  },
+  {
+   "i": 60,
+   "agent": "DSO",
+   "node": 9,
+   "network": "case33_3",
+   "year": "2025",
+   "day": "Spring",
+   "n_nl_vars": 82296,
+   "n_nl_cons": 67455,
+   "bound_types": {
+    "0": 65538,
+    "2": 1104,
+    "3": 14736,
+    "4": 918
+   },
+   "n_zL": 67560,
+   "n_zU": 65538,
+   "nl_bytes": 10600704,
+   "sol_bytes": 2374568,
+   "import_suffixes": [
+    "ipopt_zL_out",
+    "ipopt_zU_out",
+    "dual"
+   ],
+   "solver_result_succeeded": true,
+   "model_solution_entries_before_release": {
+    "objective": 0,
+    "variable": 84450,
+    "constraint": 67455,
+    "problem": 0
+   },
+   "result_solution_entries_before_release": {
+    "variable": 82296,
+    "constraint": 67455,
+    "objective": 0,
+    "problem": 0
+   },
+   "suffix_lengths": {
+    "dual": 67455,
+    "ipopt_zL_out": 67560,
+    "ipopt_zU_out": 65538,
+    "ipopt_zL_in": 67560,
+    "ipopt_zU_in": 65538
+   },
+   "released": true,
+   "after_release": {
+    "model_solutions_n": 0,
+    "result_solution_n": 0
+   },
+   "wall_s": 1.465,
+   "rss_after_bytes": 7961329664,
+   "footprint_after_bytes": 9254641320
+  },
+  {
+   "i": 61,
+   "agent": "DSO",
+   "node": 9,
+   "network": "case33_3",
+   "year": "2025",
+   "day": "Summer",
+   "n_nl_vars": 82296,
+   "n_nl_cons": 67455,
+   "bound_types": {
+    "0": 65538,
+    "2": 1104,
+    "3": 14736,
+    "4": 918
+   },
+   "n_zL": 67560,
+   "n_zU": 65538,
+   "nl_bytes": 10599849,
+   "sol_bytes": 2374568,
+   "import_suffixes": [
+    "ipopt_zL_out",
+    "ipopt_zU_out",
+    "dual"
+   ],
+   "solver_result_succeeded": true,
+   "model_solution_entries_before_release": {
+    "objective": 0,
+    "variable": 84450,
+    "constraint": 67455,
+    "problem": 0
+   },
+   "result_solution_entries_before_release": {
+    "variable": 82296,
+    "constraint": 67455,
+    "objective": 0,
+    "problem": 0
+   },
+   "suffix_lengths": {
+    "dual": 67455,
+    "ipopt_zL_out": 67560,
+    "ipopt_zU_out": 65538,
+    "ipopt_zL_in": 67560,
+    "ipopt_zU_in": 65538
+   },
+   "released": true,
+   "after_release": {
+    "model_solutions_n": 0,
+    "result_solution_n": 0
+   },
+   "wall_s": 1.475,
+   "rss_after_bytes": 7920009216,
+   "footprint_after_bytes": 9303137984
+  },
+  {
+   "i": 62,
+   "agent": "DSO",
+   "node": 9,
+   "network": "case33_3",
+   "year": "2025",
+   "day": "Autumn",
+   "n_nl_vars": 82296,
+   "n_nl_cons": 67131,
+   "bound_types": {
+    "0": 65322,
+    "2": 1104,
+    "3": 14736,
+    "4": 1134
+   },
+   "n_zL": 67560,
+   "n_zU": 65322,
+   "nl_bytes": 10568159,
+   "sol_bytes": 2369816,
+   "import_suffixes": [
+    "ipopt_zL_out",
+    "ipopt_zU_out",
+    "dual"
+   ],
+   "solver_result_succeeded": true,
+   "model_solution_entries_before_release": {
+    "objective": 0,
+    "variable": 84450,
+    "constraint": 67131,
+    "problem": 0
+   },
+   "result_solution_entries_before_release": {
+    "variable": 82296,
+    "constraint": 67131,
+    "objective": 0,
+    "problem": 0
+   },
+   "suffix_lengths": {
+    "dual": 67131,
+    "ipopt_zL_out": 67560,
+    "ipopt_zU_out": 65322,
+    "ipopt_zL_in": 67560,
+    "ipopt_zU_in": 65322
+   },
+   "released": true,
+   "after_release": {
+    "model_solutions_n": 0,
+    "result_solution_n": 0
+   },
+   "wall_s": 1.447,
+   "rss_after_bytes": 7834468352,
+   "footprint_after_bytes": 9367445232
+  },
+  {
+   "i": 63,
+   "agent": "DSO",
+   "node": 9,
+   "network": "case33_3",
+   "year": "2025",
+   "day": "Winter",
+   "n_nl_vars": 82296,
+   "n_nl_cons": 67131,
+   "bound_types": {
+    "0": 65322,
+    "2": 1104,
+    "3": 14736,
+    "4": 1134
+   },
+   "n_zL": 67560,
+   "n_zU": 65322,
+   "nl_bytes": 10576517,
+   "sol_bytes": 2369816,
+   "import_suffixes": [
+    "ipopt_zL_out",
+    "ipopt_zU_out",
+    "dual"
+   ],
+   "solver_result_succeeded": true,
+   "model_solution_entries_before_release": {
+    "objective": 0,
+    "variable": 84450,
+    "constraint": 67131,
+    "problem": 0
+   },
+   "result_solution_entries_before_release": {
+    "variable": 82296,
+    "constraint": 67131,
+    "objective": 0,
+    "problem": 0
+   },
+   "suffix_lengths": {
+    "dual": 67131,
+    "ipopt_zL_out": 67560,
+    "ipopt_zU_out": 65322,
+    "ipopt_zL_in": 67560,
+    "ipopt_zU_in": 65322
+   },
+   "released": true,
+   "after_release": {
+    "model_solutions_n": 0,
+    "result_solution_n": 0
+   },
+   "wall_s": 1.544,
+   "rss_after_bytes": 7660322816,
+   "footprint_after_bytes": 9416187656
+  },
+  {
+   "i": 64,
+   "agent": "DSO",
+   "node": 9,
+   "network": "case33_3",
+   "year": "2028",
+   "day": "Spring",
+   "n_nl_vars": 82296,
+   "n_nl_cons": 67455,
+   "bound_types": {
+    "0": 65538,
+    "2": 1104,
+    "3": 14736,
+    "4": 918
+   },
+   "n_zL": 67560,
+   "n_zU": 65538,
+   "nl_bytes": 10601049,
+   "sol_bytes": 2374568,
+   "import_suffixes": [
+    "ipopt_zL_out",
+    "ipopt_zU_out",
+    "dual"
+   ],
+   "solver_result_succeeded": true,
+   "model_solution_entries_before_release": {
+    "objective": 0,
+    "variable": 84450,
+    "constraint": 67455,
+    "problem": 0
+   },
+   "result_solution_entries_before_release": {
+    "variable": 82296,
+    "constraint": 67455,
+    "objective": 0,
+    "problem": 0
+   },
+   "suffix_lengths": {
+    "dual": 67455,
+    "ipopt_zL_out": 67560,
+    "ipopt_zU_out": 65538,
+    "ipopt_zL_in": 67560,
+    "ipopt_zU_in": 65538
+   },
+   "released": true,
+   "after_release": {
+    "model_solutions_n": 0,
+    "result_solution_n": 0
+   },
+   "wall_s": 1.524,
+   "rss_after_bytes": 6990282752,
+   "footprint_after_bytes": 9454395192
+  },
+  {
+   "i": 65,
+   "agent": "DSO",
+   "node": 9,
+   "network": "case33_3",
+   "year": "2028",
+   "day": "Summer",
+   "n_nl_vars": 82296,
+   "n_nl_cons": 67455,
+   "bound_types": {
+    "0": 65538,
+    "2": 1104,
+    "3": 14736,
+    "4": 918
+   },
+   "n_zL": 67560,
+   "n_zU": 65538,
+   "nl_bytes": 10599315,
+   "sol_bytes": 2374568,
+   "import_suffixes": [
+    "ipopt_zL_out",
+    "ipopt_zU_out",
+    "dual"
+   ],
+   "solver_result_succeeded": true,
+   "model_solution_entries_before_release": {
+    "objective": 0,
+    "variable": 84450,
+    "constraint": 67455,
+    "problem": 0
+   },
+   "result_solution_entries_before_release": {
+    "variable": 82296,
+    "constraint": 67455,
+    "objective": 0,
+    "problem": 0
+   },
+   "suffix_lengths": {
+    "dual": 67455,
+    "ipopt_zL_out": 67560,
+    "ipopt_zU_out": 65538,
+    "ipopt_zL_in": 67560,
+    "ipopt_zU_in": 65538
+   },
+   "released": true,
+   "after_release": {
+    "model_solutions_n": 0,
+    "result_solution_n": 0
+   },
+   "wall_s": 1.463,
+   "rss_after_bytes": 6731513856,
+   "footprint_after_bytes": 9485967160
+  },
+  {
+   "i": 66,
+   "agent": "DSO",
+   "node": 9,
+   "network": "case33_3",
+   "year": "2028",
+   "day": "Autumn",
+   "n_nl_vars": 82296,
+   "n_nl_cons": 67131,
+   "bound_types": {
+    "0": 65322,
+    "2": 1104,
+    "3": 14736,
+    "4": 1134
+   },
+   "n_zL": 67560,
+   "n_zU": 65322,
+   "nl_bytes": 10566098,
+   "sol_bytes": 2369816,
+   "import_suffixes": [
+    "ipopt_zL_out",
+    "ipopt_zU_out",
+    "dual"
+   ],
+   "solver_result_succeeded": true,
+   "model_solution_entries_before_release": {
+    "objective": 0,
+    "variable": 84450,
+    "constraint": 67131,
+    "problem": 0
+   },
+   "result_solution_entries_before_release": {
+    "variable": 82296,
+    "constraint": 67131,
+    "objective": 0,
+    "problem": 0
+   },
+   "suffix_lengths": {
+    "dual": 67131,
+    "ipopt_zL_out": 67560,
+    "ipopt_zU_out": 65322,
+    "ipopt_zL_in": 67560,
+    "ipopt_zU_in": 65322
+   },
+   "released": true,
+   "after_release": {
+    "model_solutions_n": 0,
+    "result_solution_n": 0
+   },
+   "wall_s": 1.481,
+   "rss_after_bytes": 6764937216,
+   "footprint_after_bytes": 9516425064
+  },
+  {
+   "i": 67,
+   "agent": "DSO",
+   "node": 9,
+   "network": "case33_3",
+   "year": "2028",
+   "day": "Winter",
+   "n_nl_vars": 82296,
+   "n_nl_cons": 67131,
+   "bound_types": {
+    "0": 65322,
+    "2": 1104,
+    "3": 14736,
+    "4": 1134
+   },
+   "n_zL": 67560,
+   "n_zU": 65322,
+   "nl_bytes": 10572248,
+   "sol_bytes": 2369816,
+   "import_suffixes": [
+    "ipopt_zL_out",
+    "ipopt_zU_out",
+    "dual"
+   ],
+   "solver_result_succeeded": true,
+   "model_solution_entries_before_release": {
+    "objective": 0,
+    "variable": 84450,
+    "constraint": 67131,
+    "problem": 0
+   },
+   "result_solution_entries_before_release": {
+    "variable": 82296,
+    "constraint": 67131,
+    "objective": 0,
+    "problem": 0
+   },
+   "suffix_lengths": {
+    "dual": 67131,
+    "ipopt_zL_out": 67560,
+    "ipopt_zU_out": 65322,
+    "ipopt_zL_in": 67560,
+    "ipopt_zU_in": 65322
+   },
+   "released": true,
+   "after_release": {
+    "model_solutions_n": 0,
+    "result_solution_n": 0
+   },
+   "wall_s": 1.485,
+   "rss_after_bytes": 6919208960,
+   "footprint_after_bytes": 9573982080
+  },
+  {
+   "i": 68,
+   "agent": "DSO",
+   "node": 9,
+   "network": "case33_3",
+   "year": "2031",
+   "day": "Spring",
+   "n_nl_vars": 82296,
+   "n_nl_cons": 67455,
+   "bound_types": {
+    "0": 65538,
+    "2": 1104,
+    "3": 14736,
+    "4": 918
+   },
+   "n_zL": 67560,
+   "n_zU": 65538,
+   "nl_bytes": 10593045,
+   "sol_bytes": 2374568,
+   "import_suffixes": [
+    "ipopt_zL_out",
+    "ipopt_zU_out",
+    "dual"
+   ],
+   "solver_result_succeeded": true,
+   "model_solution_entries_before_release": {
+    "objective": 0,
+    "variable": 84450,
+    "constraint": 67455,
+    "problem": 0
+   },
+   "result_solution_entries_before_release": {
+    "variable": 82296,
+    "constraint": 67455,
+    "objective": 0,
+    "problem": 0
+   },
+   "suffix_lengths": {
+    "dual": 67455,
+    "ipopt_zL_out": 67560,
+    "ipopt_zU_out": 65538,
+    "ipopt_zL_in": 67560,
+    "ipopt_zU_in": 65538
+   },
+   "released": true,
+   "after_release": {
+    "model_solutions_n": 0,
+    "result_solution_n": 0
+   },
+   "wall_s": 10.838,
+   "rss_after_bytes": 9626517504,
+   "footprint_after_bytes": 9593659288
+  },
+  {
+   "i": 69,
+   "agent": "DSO",
+   "node": 9,
+   "network": "case33_3",
+   "year": "2031",
+   "day": "Summer",
+   "n_nl_vars": 82296,
+   "n_nl_cons": 67455,
+   "bound_types": {
+    "0": 65538,
+    "2": 1104,
+    "3": 14736,
+    "4": 918
+   },
+   "n_zL": 67560,
+   "n_zU": 65538,
+   "nl_bytes": 10592961,
+   "sol_bytes": 2374568,
+   "import_suffixes": [
+    "ipopt_zL_out",
+    "ipopt_zU_out",
+    "dual"
+   ],
+   "solver_result_succeeded": true,
+   "model_solution_entries_before_release": {
+    "objective": 0,
+    "variable": 84450,
+    "constraint": 67455,
+    "problem": 0
+   },
+   "result_solution_entries_before_release": {
+    "variable": 82296,
+    "constraint": 67455,
+    "objective": 0,
+    "problem": 0
+   },
+   "suffix_lengths": {
+    "dual": 67455,
+    "ipopt_zL_out": 67560,
+    "ipopt_zU_out": 65538,
+    "ipopt_zL_in": 67560,
+    "ipopt_zU_in": 65538
+   },
+   "released": true,
+   "after_release": {
+    "model_solutions_n": 0,
+    "result_solution_n": 0
+   },
+   "wall_s": 1.455,
+   "rss_after_bytes": 9681944576,
+   "footprint_after_bytes": 9601179544
+  },
+  {
+   "i": 70,
+   "agent": "DSO",
+   "node": 9,
+   "network": "case33_3",
+   "year": "2031",
+   "day": "Autumn",
+   "n_nl_vars": 82296,
+   "n_nl_cons": 67131,
+   "bound_types": {
+    "0": 65322,
+    "2": 1104,
+    "3": 14736,
+    "4": 1134
+   },
+   "n_zL": 67560,
+   "n_zU": 65322,
+   "nl_bytes": 10560284,
+   "sol_bytes": 2369816,
+   "import_suffixes": [
+    "ipopt_zL_out",
+    "ipopt_zU_out",
+    "dual"
+   ],
+   "solver_result_succeeded": true,
+   "model_solution_entries_before_release": {
+    "objective": 0,
+    "variable": 84450,
+    "constraint": 67131,
+    "problem": 0
+   },
+   "result_solution_entries_before_release": {
+    "variable": 82296,
+    "constraint": 67131,
+    "objective": 0,
+    "problem": 0
+   },
+   "suffix_lengths": {
+    "dual": 67131,
+    "ipopt_zL_out": 67560,
+    "ipopt_zU_out": 65322,
+    "ipopt_zL_in": 67560,
+    "ipopt_zU_in": 65322
+   },
+   "released": true,
+   "after_release": {
+    "model_solutions_n": 0,
+    "result_solution_n": 0
+   },
+   "wall_s": 1.46,
+   "rss_after_bytes": 9729245184,
+   "footprint_after_bytes": 9642074080
+  },
+  {
+   "i": 71,
+   "agent": "DSO",
+   "node": 9,
+   "network": "case33_3",
+   "year": "2031",
+   "day": "Winter",
+   "n_nl_vars": 82296,
+   "n_nl_cons": 67131,
+   "bound_types": {
+    "0": 65322,
+    "2": 1104,
+    "3": 14736,
+    "4": 1134
+   },
+   "n_zL": 67560,
+   "n_zU": 65322,
+   "nl_bytes": 10566356,
+   "sol_bytes": 2369816,
+   "import_suffixes": [
+    "ipopt_zL_out",
+    "ipopt_zU_out",
+    "dual"
+   ],
+   "solver_result_succeeded": true,
+   "model_solution_entries_before_release": {
+    "objective": 0,
+    "variable": 84450,
+    "constraint": 67131,
+    "problem": 0
+   },
+   "result_solution_entries_before_release": {
+    "variable": 82296,
+    "constraint": 67131,
+    "objective": 0,
+    "problem": 0
+   },
+   "suffix_lengths": {
+    "dual": 67131,
+    "ipopt_zL_out": 67560,
+    "ipopt_zU_out": 65322,
+    "ipopt_zL_in": 67560,
+    "ipopt_zU_in": 65322
+   },
+   "released": true,
+   "after_release": {
+    "model_solutions_n": 0,
+    "result_solution_n": 0
+   },
+   "wall_s": 1.464,
+   "rss_after_bytes": 9782640640,
+   "footprint_after_bytes": 9693339640
+  },
+  {
+   "i": 72,
+   "agent": "DSO",
+   "node": 9,
+   "network": "case33_3",
+   "year": "2034",
+   "day": "Spring",
+   "n_nl_vars": 82296,
+   "n_nl_cons": 67455,
+   "bound_types": {
+    "0": 65538,
+    "2": 1104,
+    "3": 14736,
+    "4": 918
+   },
+   "n_zL": 67560,
+   "n_zU": 65538,
+   "nl_bytes": 10593237,
+   "sol_bytes": 2374568,
+   "import_suffixes": [
+    "ipopt_zL_out",
+    "ipopt_zU_out",
+    "dual"
+   ],
+   "solver_result_succeeded": true,
+   "model_solution_entries_before_release": {
+    "objective": 0,
+    "variable": 84450,
+    "constraint": 67455,
+    "problem": 0
+   },
+   "result_solution_entries_before_release": {
+    "variable": 82296,
+    "constraint": 67455,
+    "objective": 0,
+    "problem": 0
+   },
+   "suffix_lengths": {
+    "dual": 67455,
+    "ipopt_zL_out": 67560,
+    "ipopt_zU_out": 65538,
+    "ipopt_zL_in": 67560,
+    "ipopt_zU_in": 65538
+   },
+   "released": true,
+   "after_release": {
+    "model_solutions_n": 0,
+    "result_solution_n": 0
+   },
+   "wall_s": 1.46,
+   "rss_after_bytes": 9840017408,
+   "footprint_after_bytes": 9749504040
+  },
+  {
+   "i": 73,
+   "agent": "DSO",
+   "node": 9,
+   "network": "case33_3",
+   "year": "2034",
+   "day": "Summer",
+   "n_nl_vars": 82296,
+   "n_nl_cons": 67455,
+   "bound_types": {
+    "0": 65538,
+    "2": 1104,
+    "3": 14736,
+    "4": 918
+   },
+   "n_zL": 67560,
+   "n_zU": 65538,
+   "nl_bytes": 10590831,
+   "sol_bytes": 2374568,
+   "import_suffixes": [
+    "ipopt_zL_out",
+    "ipopt_zU_out",
+    "dual"
+   ],
+   "solver_result_succeeded": true,
+   "model_solution_entries_before_release": {
+    "objective": 0,
+    "variable": 84450,
+    "constraint": 67455,
+    "problem": 0
+   },
+   "result_solution_entries_before_release": {
+    "variable": 82296,
+    "constraint": 67455,
+    "objective": 0,
+    "problem": 0
+   },
+   "suffix_lengths": {
+    "dual": 67455,
+    "ipopt_zL_out": 67560,
+    "ipopt_zU_out": 65538,
+    "ipopt_zL_in": 67560,
+    "ipopt_zU_in": 65538
+   },
+   "released": true,
+   "after_release": {
+    "model_solutions_n": 0,
+    "result_solution_n": 0
+   },
+   "wall_s": 1.463,
+   "rss_after_bytes": 9892462592,
+   "footprint_after_bytes": 9775800360
+  },
+  {
+   "i": 74,
+   "agent": "DSO",
+   "node": 9,
+   "network": "case33_3",
+   "year": "2034",
+   "day": "Autumn",
+   "n_nl_vars": 82296,
+   "n_nl_cons": 67131,
+   "bound_types": {
+    "0": 65322,
+    "2": 1104,
+    "3": 14736,
+    "4": 1134
+   },
+   "n_zL": 67560,
+   "n_zU": 65322,
+   "nl_bytes": 10561793,
+   "sol_bytes": 2369816,
+   "import_suffixes": [
+    "ipopt_zL_out",
+    "ipopt_zU_out",
+    "dual"
+   ],
+   "solver_result_succeeded": true,
+   "model_solution_entries_before_release": {
+    "objective": 0,
+    "variable": 84450,
+    "constraint": 67131,
+    "problem": 0
+   },
+   "result_solution_entries_before_release": {
+    "variable": 82296,
+    "constraint": 67131,
+    "objective": 0,
+    "problem": 0
+   },
+   "suffix_lengths": {
+    "dual": 67131,
+    "ipopt_zL_out": 67560,
+    "ipopt_zU_out": 65322,
+    "ipopt_zL_in": 67560,
+    "ipopt_zU_in": 65322
+   },
+   "released": true,
+   "after_release": {
+    "model_solutions_n": 0,
+    "result_solution_n": 0
+   },
+   "wall_s": 1.449,
+   "rss_after_bytes": 9948135424,
+   "footprint_after_bytes": 9813581888
+  },
+  {
+   "i": 75,
+   "agent": "DSO",
+   "node": 9,
+   "network": "case33_3",
+   "year": "2034",
+   "day": "Winter",
+   "n_nl_vars": 82296,
+   "n_nl_cons": 67131,
+   "bound_types": {
+    "0": 65322,
+    "2": 1104,
+    "3": 14736,
+    "4": 1134
+   },
+   "n_zL": 67560,
+   "n_zU": 65322,
+   "nl_bytes": 10564784,
+   "sol_bytes": 2369816,
+   "import_suffixes": [
+    "ipopt_zL_out",
+    "ipopt_zU_out",
+    "dual"
+   ],
+   "solver_result_succeeded": true,
+   "model_solution_entries_before_release": {
+    "objective": 0,
+    "variable": 84450,
+    "constraint": 67131,
+    "problem": 0
+   },
+   "result_solution_entries_before_release": {
+    "variable": 82296,
+    "constraint": 67131,
+    "objective": 0,
+    "problem": 0
+   },
+   "suffix_lengths": {
+    "dual": 67131,
+    "ipopt_zL_out": 67560,
+    "ipopt_zU_out": 65322,
+    "ipopt_zL_in": 67560,
+    "ipopt_zU_in": 65322
+   },
+   "released": true,
+   "after_release": {
+    "model_solutions_n": 0,
+    "result_solution_n": 0
+   },
+   "wall_s": 1.459,
+   "rss_after_bytes": 10002169856,
+   "footprint_after_bytes": 9867173976
+  },
+  {
+   "i": 76,
+   "agent": "DSO",
+   "node": 9,
+   "network": "case33_3",
+   "year": "2037",
+   "day": "Spring",
+   "n_nl_vars": 82296,
+   "n_nl_cons": 67455,
+   "bound_types": {
+    "0": 65538,
+    "2": 1104,
+    "3": 14736,
+    "4": 918
+   },
+   "n_zL": 67560,
+   "n_zU": 65538,
+   "nl_bytes": 10595958,
+   "sol_bytes": 2374568,
+   "import_suffixes": [
+    "ipopt_zL_out",
+    "ipopt_zU_out",
+    "dual"
+   ],
+   "solver_result_succeeded": true,
+   "model_solution_entries_before_release": {
+    "objective": 0,
+    "variable": 84450,
+    "constraint": 67455,
+    "problem": 0
+   },
+   "result_solution_entries_before_release": {
+    "variable": 82296,
+    "constraint": 67455,
+    "objective": 0,
+    "problem": 0
+   },
+   "suffix_lengths": {
+    "dual": 67455,
+    "ipopt_zL_out": 67560,
+    "ipopt_zU_out": 65538,
+    "ipopt_zL_in": 67560,
+    "ipopt_zU_in": 65538
+   },
+   "released": true,
+   "after_release": {
+    "model_solutions_n": 0,
+    "result_solution_n": 0
+   },
+   "wall_s": 1.452,
+   "rss_after_bytes": 10034266112,
+   "footprint_after_bytes": 9887211632
+  },
+  {
+   "i": 77,
+   "agent": "DSO",
+   "node": 9,
+   "network": "case33_3",
+   "year": "2037",
+   "day": "Summer",
+   "n_nl_vars": 82296,
+   "n_nl_cons": 67455,
+   "bound_types": {
+    "0": 65538,
+    "2": 1104,
+    "3": 14736,
+    "4": 918
+   },
+   "n_zL": 67560,
+   "n_zU": 65538,
+   "nl_bytes": 10592784,
+   "sol_bytes": 2374568,
+   "import_suffixes": [
+    "ipopt_zL_out",
+    "ipopt_zU_out",
+    "dual"
+   ],
+   "solver_result_succeeded": true,
+   "model_solution_entries_before_release": {
+    "objective": 0,
+    "variable": 84450,
+    "constraint": 67455,
+    "problem": 0
+   },
+   "result_solution_entries_before_release": {
+    "variable": 82296,
+    "constraint": 67455,
+    "objective": 0,
+    "problem": 0
+   },
+   "suffix_lengths": {
+    "dual": 67455,
+    "ipopt_zL_out": 67560,
+    "ipopt_zU_out": 65538,
+    "ipopt_zL_in": 67560,
+    "ipopt_zU_in": 65538
+   },
+   "released": true,
+   "after_release": {
+    "model_solutions_n": 0,
+    "result_solution_n": 0
+   },
+   "wall_s": 1.536,
+   "rss_after_bytes": 10114695168,
+   "footprint_after_bytes": 9920798904
+  },
+  {
+   "i": 78,
+   "agent": "DSO",
+   "node": 9,
+   "network": "case33_3",
+   "year": "2037",
+   "day": "Autumn",
+   "n_nl_vars": 82296,
+   "n_nl_cons": 67131,
+   "bound_types": {
+    "0": 65322,
+    "2": 1104,
+    "3": 14736,
+    "4": 1134
+   },
+   "n_zL": 67560,
+   "n_zU": 65322,
+   "nl_bytes": 10562975,
+   "sol_bytes": 2369816,
+   "import_suffixes": [
+    "ipopt_zL_out",
+    "ipopt_zU_out",
+    "dual"
+   ],
+   "solver_result_succeeded": true,
+   "model_solution_entries_before_release": {
+    "objective": 0,
+    "variable": 84450,
+    "constraint": 67131,
+    "problem": 0
+   },
+   "result_solution_entries_before_release": {
+    "variable": 82296,
+    "constraint": 67131,
+    "objective": 0,
+    "problem": 0
+   },
+   "suffix_lengths": {
+    "dual": 67131,
+    "ipopt_zL_out": 67560,
+    "ipopt_zU_out": 65322,
+    "ipopt_zL_in": 67560,
+    "ipopt_zU_in": 65322
+   },
+   "released": true,
+   "after_release": {
+    "model_solutions_n": 0,
+    "result_solution_n": 0
+   },
+   "wall_s": 1.449,
+   "rss_after_bytes": 10184065024,
+   "footprint_after_bytes": 9973211368
+  },
+  {
+   "i": 79,
+   "agent": "DSO",
+   "node": 9,
+   "network": "case33_3",
+   "year": "2037",
+   "day": "Winter",
+   "n_nl_vars": 82296,
+   "n_nl_cons": 67131,
+   "bound_types": {
+    "0": 65322,
+    "2": 1104,
+    "3": 14736,
+    "4": 1134
+   },
+   "n_zL": 67560,
+   "n_zU": 65322,
+   "nl_bytes": 10566866,
+   "sol_bytes": 2369816,
+   "import_suffixes": [
+    "ipopt_zL_out",
+    "ipopt_zU_out",
+    "dual"
+   ],
+   "solver_result_succeeded": true,
+   "model_solution_entries_before_release": {
+    "objective": 0,
+    "variable": 84450,
+    "constraint": 67131,
+    "problem": 0
+   },
+   "result_solution_entries_before_release": {
+    "variable": 82296,
+    "constraint": 67131,
+    "objective": 0,
+    "problem": 0
+   },
+   "suffix_lengths": {
+    "dual": 67131,
+    "ipopt_zL_out": 67560,
+    "ipopt_zU_out": 65322,
+    "ipopt_zL_in": 67560,
+    "ipopt_zU_in": 65322
+   },
+   "released": true,
+   "after_release": {
+    "model_solutions_n": 0,
+    "result_solution_n": 0
+   },
+   "wall_s": 1.449,
+   "rss_after_bytes": 10232627200,
+   "footprint_after_bytes": 10004144384
+  }
+ ],
+ "attribution_w32_walk": null,
+ "pickle_step": {
+  "status": "measured",
+  "callable": "p515_s42_exact_fix_rerun._persist_certified_models (tso + dso)",
+  "size_bytes": 1821081595,
+  "wall_s": 98.36018991470337,
+  "before": {
+   "rss_bytes": 10211098624,
+   "footprint_bytes": 10015383808,
+   "ru_maxrss_bytes": 10280058880
+  },
+  "after": {
+   "rss_bytes": 9177219072,
+   "footprint_bytes": 13421228200,
+   "ru_maxrss_bytes": 13184417792
+  },
+  "memory_preflight_before": {
+   "utc": "2026-09-25T20:59:22.202219+00:00",
+   "vm_stat_header": "Mach Virtual Memory Statistics: (page size of 16384 bytes)",
+   "page_size_bytes": 16384,
+   "vm_stat_pages": {
+    "pages_free": 4283,
+    "pages_inactive": 684909,
+    "pages_wired_down": 186586,
+    "anonymous_pages": 754853,
+    "pages_occupied_by_compressor": 447945
+   },
+   "hw_memsize_bytes": 34359738368,
+   "concurrency": 1,
+   "required_bytes": 3758096384,
+   "required_gib": 3.5,
+   "per_child_budget_gib": 3.5,
+   "rule": "hw.memsize - (wired + anonymous + compressor-occupied) x page size >= 1 x 3.5 GiB",
+   "rule_rationale": "non-reclaimable load = wired + anonymous + compressor-occupied pages; file-backed pages (active or inactive) are cache the kernel reclaims on demand, so free + inactive under-counts what new processes can obtain (free + inactive recorded alongside)",
+   "budget_derivation": {
+    "x0_capture_child_peak_with_persist_bytes": 3470491648,
+    "x0_capture_production_peak_before_persist_bytes": 2395537408,
+    "s47_recert_c_star_child_peak_no_persist_bytes": 2577645568,
+    "s47_recert_unit_child_peak_no_persist_bytes": 2574581760,
+    "source": "data/SRP1/Results/P515S48/x0_capture/evals/d2c96b1480402a3b_x0/{evaluation_record,post_certification}.json and data/SRP1/Results/P515S47/campaign_s47_recert/evals/*/evaluation_record.json peak_rss",
+    "budget": "3.5 GiB per child = the measured persist peak (3.23 GiB) + 0.27 GiB margin"
+   },
+   "missing_vm_stat_figures": [],
+   "non_reclaimable_gib": 21.2003173828125,
+   "available_bytes": 11596070912,
+   "available_gib": 10.7996826171875,
+   "free_plus_inactive_gib": 10.5162353515625,
+   "pass": true
+  },
+  "sampler": {
+   "peak_rss_bytes": 12771377152,
+   "peak_footprint_bytes": 19005357248,
+   "n_samples": 2599,
+   "period_s": 0.02
+  },
+  "transient_rss_sampled_bytes": 2560278528,
+  "transient_footprint_sampled_bytes": 8989973440,
+  "transient_ru_maxrss_bytes_W89_definition": 2973319168,
+  "ru_maxrss_before_exceeds_rss_before": true,
+  "retained_rss_bytes": -1033879552,
+  "file": "written to scratch, measured, DELETED (never in the repository)"
+ },
+ "real_pair_validation": null,
+ "committed_w32_attribution_for_comparison": null,
+ "setter_check_release_solution_bookkeeping": null,
+ "read_redirected_to": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/bprobe_3x3_on/w89_bprobe_s53_3x3_on_6tjng5cb",
+ "nl_scratch_dir": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/bprobe_3x3_on/w90_nl_s53_3x3_on_6yo5rx16",
+ "solve_claim": "ZERO SOLVES, guard-verified (every armed permitted=() guard verify(0))",
+ "guards": {
+  "alpha_row_launcher": {
+   "counts": {
+    "permitted_solve": 0,
+    "permitted_exec": 0,
+    "blocked_solve": 0,
+    "blocked_exec": 0
+   },
+   "verify_0_failures": []
+  },
+  "w86_launcher": {
+   "counts": {
+    "permitted_solve": 0,
+    "permitted_exec": 0,
+    "blocked_solve": 0,
+    "blocked_exec": 0
+   },
+   "verify_0_failures": []
+  },
+  "w87": {
+   "counts": {
+    "permitted_solve": 0,
+    "permitted_exec": 0,
+    "blocked_solve": 0,
+    "blocked_exec": 0
+   },
+   "verify_0_failures": []
+  },
+  "w88": {
+   "counts": {
+    "permitted_solve": 0,
+    "permitted_exec": 0,
+    "blocked_solve": 0,
+    "blocked_exec": 0
+   },
+   "verify_0_failures": []
+  },
+  "w89_step1": {
+   "counts": {
+    "permitted_solve": 0,
+    "permitted_exec": 0,
+    "blocked_solve": 0,
+    "blocked_exec": 0
+   },
+   "verify_0_failures": []
+  },
+  "w89_3x3_launcher": {
+   "counts": {
+    "permitted_solve": 0,
+    "permitted_exec": 0,
+    "blocked_solve": 0,
+    "blocked_exec": 0
+   },
+   "verify_0_failures": []
+  },
+  "w90_3x3_parent": {
+   "counts": {
+    "permitted_solve": 0,
+    "permitted_exec": 0,
+    "blocked_solve": 0,
+    "blocked_exec": 0
+   },
+   "verify_0_failures": []
+  }
+ },
+ "wall_s": 310.94240283966064
+}

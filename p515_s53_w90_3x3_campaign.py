@@ -718,8 +718,12 @@ ESTIMATE_FORMULAS = {
     'route_W_saving': ('Route W (the committed W32 object walk applied to the 3 x 3 blocks themselves, by import): the '
                        'OFF probe\'s total freeable container bytes (ModelSolution + the SolverResults\' additional '
                        'containers; floats excluded, they are shared with Var values and suffixes)'),
-    'saving_estimate': ('central = Route A footprint (after gc); uncertainty = [min, max] over Route A (rss / footprint, '
-                        'with / without gc), Route B [low, high] and Route W'),
+    'saving_estimate': ('central = Route A footprint (after gc); uncertainty = [min, max] over Route A FOOTPRINT (with / '
+                        'without gc), Route B [low, high] and Route W. Route A RSS is REPORTED, NOT USED: the OFF probe '
+                        'was compressed by macOS (footprint 13.28 GiB vs RSS 9.97 GiB at its all-loaded mark), and the '
+                        'committed W32 reading rule (67dd7d71) is that "resident" = phys_footprint because RSS '
+                        'understates demand under compression. POST-HOC NOTE: this exclusion was decided AFTER the '
+                        'probes ran (the launcher at 75b1aef5 that ran them included RSS in the range)'),
     'sustained_on': ('SUSTAINED_on = SUSTAINED_off - saving, SUSTAINED_off = the v34 memory model (build_3x3 x k_run; '
                      'range low = build_3x3 x k_run_srp1_low); range = [SUSTAINED_low - saving_max, SUSTAINED_off - '
                      'saving_min]'),
@@ -728,7 +732,10 @@ ESTIMATE_FORMULAS = {
     'persist_transient': ('T_persist = the MAX of every recorded 3 x 3 pickle transient: the ON probe\'s (sampled RSS, '
                           'sampled footprint, the W89 ru_maxrss definition) and W89\'s (+5.269 GiB committed; +6.562 GiB '
                           'reported in commit 5bc57277\'s message from an earlier uncommitted-revision run) -- the '
-                          'conservative choice, it can only err toward NOT persisting'),
+                          'conservative choice, it can only err toward NOT persisting. The RSS-based figures understate '
+                          'the transient when the process is compressed during the pickle (the ON probe: footprint '
+                          '9.33 -> 12.50 GiB across the step while RSS fell), so the footprint-sampled one is the '
+                          'demand measure'),
     'persist_peak_on': 'PERSIST_on = SUSTAINED_on + T_persist (the transient on top of the peak: an upper bound)',
 }
 
@@ -767,11 +774,16 @@ def memory_estimates(probes, v34_model):
                'low_bytes': entries * min(c.values()) * min(r.values()),
                'high_bytes': entries * max(c.values()) * 1.0}
     route_w = (off.get('attribution_w32_walk') or {}).get('total_freeable_container_bytes')
-    candidates = list(route_a.values()) + [route_b['low_bytes'], route_b['high_bytes']] + ([route_w] if route_w else [])
+    candidates = ([route_a['footprint_bytes'], route_a['footprint_bytes_after_gc'], route_b['low_bytes'],
+                   route_b['high_bytes']] + ([route_w] if route_w else []))
     central = route_a['footprint_bytes_after_gc']
+    compression_evidence = {w: {k: p[k] for k in ('rss_bytes', 'footprint_bytes')}
+                            for w, p in (('off_all_loaded', off['all_loaded']), ('on_all_loaded', on['all_loaded']))}
     saving = {'central_bytes': central, 'min_bytes': min(candidates), 'max_bytes': max(candidates),
               'central_gib': central / GIB, 'range_gib': [min(candidates) / GIB, max(candidates) / GIB],
-              'per_child_prediction_addendum_48_gib': 3.0}
+              'per_child_prediction_addendum_48_gib': 3.0,
+              'route_A_rss_reported_not_used_gib': {k: v / GIB for k, v in route_a.items() if k.startswith('rss')},
+              'compression_evidence_bytes': compression_evidence}
     sus, sus_low = v34_model['sustained_bytes'], v34_model['sustained_range_gib'][0] * GIB
     sustained_on = {'central_bytes': sus - central, 'low_bytes': sus_low - saving['max_bytes'],
                     'high_bytes': sus - saving['min_bytes']}
