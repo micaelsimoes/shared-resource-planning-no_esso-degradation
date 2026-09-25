@@ -1,0 +1,1043 @@
+{
+ "alpha_row_2x2_context": {
+  "bar_sum_2x2": 16551.504955768585,
+  "cycles": {
+   "n7_4h_e1_a0p50": 67,
+   "x0_a0p50": 74
+  },
+  "source": {
+   "path": "data/SRP1/Results/P515S53/alpha_row/campaign_s53_alpha_row_v25/pair_1_results.json",
+   "sha256": "300c2de33632afeb70e88da99e18749df47993c15ed857f8f1af302143b3aa4e"
+  },
+  "value_2x2": 267548.82340943813
+ },
+ "authority": [
+  "Planner task W89 step 2 (build the 3 x 3 launcher and spec; DO NOT RUN)",
+  "PLANNER_BRIEF_2026-09-13.md Addendum 46 (3 x 3 pair under production + tight tail; R restated against the SRP1 reference re-run under it; certified models persisted if memory allows)",
+  "Addendum 44 (prefix draw [1,2,3] x [1,2,3], R = 0.9331 recorded; band [0.93, 1.09])",
+  "Addendum 45 (persist certified models if memory allows)",
+  "Addendum 40 ruling 3"
+ ],
+ "cells": {
+  "n7_4h_e1": {
+   "alpha_row_2x2_key_same_candidate": "711fce9aa74d687892b994e332472c7d59745ef74ce9030abc12d54a9aaf83b4",
+   "candidate_key": "db77e1549af855bcb3521950c634db55fe6c155ab2de591b0441b5f2bf4b369a",
+   "eval_key": "c82522f470b35b58399bfe47ebd45612a95641ae308128de5d1c3c08ad5408a1",
+   "investment_year": 2025,
+   "nodes": {
+    "5": [
+     0.0,
+     0.0
+    ],
+    "7": [
+     0.25,
+     1.0
+    ],
+    "9": [
+     0.0,
+     0.0
+    ]
+   },
+   "pre_tail_3x3_key": "08cbcdcefb78bc9ce27c27c00dfe1ff84895f47992e0be0d8f02e8e4f5ff0481"
+  },
+  "x0": {
+   "alpha_row_2x2_key_same_candidate": "7d53b6f21b686a44db69f0901e03c870d14e15d00bfaaa6a5379822890918a94",
+   "candidate_key": "8435c71859ddde68e7ae5818b4ff91c03b4171791bcfaa70edcc3ddb52bacb57",
+   "eval_key": "f6e9cd53fdbb8ee8c80388a13d723c49de5b18173bcfa5c7351cbe0d9e5000d4",
+   "investment_year": 2025,
+   "nodes": {
+    "5": [
+     0.0,
+     0.0
+    ],
+    "7": [
+     0.0,
+     0.0
+    ],
+    "9": [
+     0.0,
+     0.0
+    ]
+   },
+   "pre_tail_3x3_key": "19ad04f2e9c14c51de8a886195ec583a73d6916730fcbdbde512610dbf3c9857"
+  }
+ },
+ "configuration": {
+  "arm_label": "s39_D",
+  "cap": 500,
+  "case_file_anderson_acceleration": {
+   "enabled": true,
+   "memory": 5,
+   "regularization": 1e-10,
+   "reject_policy": "keep_memory"
+  },
+  "case_file_sha256": "dbfdb2a07d12bfedab5e66bf94b3df98e5ab0305616652b4083266476972006b",
+  "concurrency": 1,
+  "convergence_depth_tail": {
+   "compl_inf_tol": 1e-06,
+   "enabled": true
+  },
+  "derived_instance": {
+   "case_path": "data/SRP1/Results/P515S53/w89_3x3/instance/SRP1__s53_3x3.json",
+   "case_sha256": "2a64e3c5bd06c30c8a015207f41b69257b001094cbd4b185a84394a6765c5871",
+   "changes_vs_source": [
+    {
+     "from": {
+      "2025": 5,
+      "2030": 5,
+      "2035": 5
+     },
+     "key": "Years",
+     "to": {
+      "2025": 3,
+      "2028": 3,
+      "2031": 3,
+      "2034": 3,
+      "2037": 3
+     }
+    },
+    {
+     "from": 1,
+     "key": "NumMarketScenarios",
+     "to": 3
+    },
+    {
+     "from": 1,
+     "key": "TransmissionNetwork[case9].num_operation_scenarios",
+     "to": 3
+    },
+    {
+     "from": 1,
+     "key": "DistributionNetworks[case33_1].num_operation_scenarios",
+     "to": 3
+    },
+    {
+     "from": 1,
+     "key": "DistributionNetworks[case33_2].num_operation_scenarios",
+     "to": 3
+    },
+    {
+     "from": 1,
+     "key": "DistributionNetworks[case33_3].num_operation_scenarios",
+     "to": 3
+    }
+   ],
+   "instance_label": "s53_3x3",
+   "scenario_checksum": "0248a5c8710bdbdf047523ca036bd2f4639546aebf18fd08391a64b340a3b193",
+   "source_case_path": "data/SRP1/SRP1.json",
+   "source_case_sha256": "61a794a7ce7a3fb983f2e92128eec446dd7dbb17ad75a3b3b1c5735f8bd4e4ef"
+  },
+  "ess_ageing_baseline": {
+   "calendar_life_years": 15,
+   "calendar_retention_per_year": 0.985,
+   "calibration": {
+    "cycles_n": 10000,
+    "eol_retention_r": 0.8,
+    "reference_dod_d": 0.8,
+    "status": "ACTIVE"
+   },
+   "cycle_life_nominal": 10000,
+   "depth_of_discharge_nominal": 0.8,
+   "minimum_soh": 0.7
+  },
+  "ess_ageing_baseline_label": "BASELINE (C2 + phi_cal 0.985 + soh_min 0.70)",
+  "ess_params_file_sha256": "39106f934bf3edbf18f01a5ef1fadfefc2f7a518706e6c8fa6d962617a312706",
+  "floor_status_capture": "ON (harness: every evaluation; asserted, rule eleven)",
+  "interface_deviation_premium": {
+   "alpha": 0.5,
+   "floor": null
+  },
+  "name": "BASELINE (C2 + phi_cal 0.985 + soh_min 0.70); the 3 x 3 prefix-draw instance s53_3x3; row 18 premium alpha 0.5 (no floor); case-file AA declared; the convergence-depth tail DECLARED {True, 1e-6}; post-certification: persist the certified TSO/DSO models",
+  "overrides": {},
+  "per_cycle_response_capture": "ON (harness: every derived-instance evaluation; asserted, rule eleven)",
+  "post_certification": {
+   "hull_polish": false,
+   "persist_certified_models": false
+  },
+  "post_certification_decision": {
+   "concurrency": 1,
+   "concurrency_reason": "2 x SUSTAINED = 44.30 GiB > hw.memsize 32.00 GiB",
+   "persist_certified_models": false,
+   "persist_reason": "1 x PERSIST_PEAK = 27.21 GiB > best recorded availability 23.87 GiB",
+   "requested_by_planner": {
+    "hull_polish": false,
+    "persist_certified_models": true
+   }
+  },
+  "post_certification_rationale": "persist REQUESTED per Addenda 45 / 46 (the alpha row's missing terminal models made Addendum 45 ruling 5 unexecutable) and decided by the declared memory rule (\"unless the memory preflight forbids it\"); no hull polish: Addendum 46 voided the polished-convention proposal",
+  "post_certification_requested": {
+   "hull_polish": false,
+   "persist_certified_models": true
+  },
+  "required_consecutive_cycles": 10
+ },
+ "declared_solve_profile": {
+  "pair_per_cell": {
+   "at_75_cycles": 6308,
+   "rule": "83 x (cycles_run + 1) + every retry attempted (per event), 83 = (1 + 3) x 5 x 4 + 3 ESSO; cycles_run <= 500; the post-certification persist solves nothing",
+   "verification": "RECONCILED PER EVENT in the child record; NOT guard-verified"
+  },
+  "parent": "this launcher: SolveProfileGuard(permitted=()) and every imported launcher guard verify(0)",
+  "smoke": {
+   "base": 249,
+   "rule": "83 x (2 + 1) = 249 + every retry attempted"
+  }
+ },
+ "estimates": {
+  "cycle_time": {
+   "inputs_measured": {
+    "2x2": "~190 s/cycle at 80 x 4 (alpha row pair 1: 184.5 / 214.9 s, concurrency 2)",
+    "SRP1": "32 s/cycle at 48 x 1",
+    "paper": "42.3 min/cycle at 80 x 25 (one cycle, concurrency 1)"
+   },
+   "linear_s": 752.8571428571429,
+   "note": "the smoke measures the 3 x 3 cycle time before the pair runs",
+   "power_law_exponent_2x2_to_paper": 1.4002826834567519,
+   "power_law_s": 607.0014002072497,
+   "range_min": [
+    10.116690003454162,
+    12.547619047619047
+   ],
+   "units_3x3": 720
+  },
+  "disk": {
+   "per_cell_certified_models_pkl_gb": 0.0,
+   "per_cell_eval_dir_gb": "~0.5-0.65 (2 x 2 alpha row 0.22-0.29 GB, capture files scale ~x2.25 with the scenario count)",
+   "per_cell_oracle_working_dir_gb": "~1.5-2.5 (2 x 2 0.78-0.99 GB of IPOPT logs; x ~2 per solve)",
+   "pickle_if_persisted_gb": 2.2753745150191533,
+   "total_pair_gb": "~2 x (0.6 + pickle + 2.5) -- see per-cell figures; the machine has ~425 GB free; only the eval dirs minus the pickles are committed"
+  },
+  "memory": {
+   "best_available_observed_gib": 23.865447998046875,
+   "decision": {
+    "concurrency": 1,
+    "concurrency_reason": "2 x SUSTAINED = 44.30 GiB > hw.memsize 32.00 GiB",
+    "persist_certified_models": false,
+    "persist_reason": "1 x PERSIST_PEAK = 27.21 GiB > best recorded availability 23.87 GiB",
+    "requested_by_planner": {
+     "hull_polish": false,
+     "persist_certified_models": true
+    }
+   },
+   "f_term": 0.8118782628824844,
+   "k_run": 3.1979901588335324,
+   "k_run_srp1_low": 2.5602032293986636,
+   "k_smoke": 3.0915011396939107,
+   "k_tr": 1.75108756162168,
+   "persist_peak_gib": 27.209937336653432,
+   "required_at_run_gib": {
+    "pair": 22.149849013622497,
+    "smoke": 21.412287114303922
+   },
+   "smoke_gib": 21.412287114303922,
+   "sustained_gib": 22.149849013622497,
+   "sustained_range_gib": [
+    17.73242322798561,
+    22.149849013622497
+   ]
+  },
+  "smoke_wall_min": [
+   35.35007001036249,
+   47.64285714285714
+  ],
+  "wall_pair_h": {
+   "central_h": [
+    25.291725008635407,
+    31.36904761904762
+   ],
+   "concurrency": 1
+  },
+  "wall_per_evaluation_h": {
+   "central_cycles": 75,
+   "central_h": [
+    12.645862504317703,
+    15.68452380952381
+   ],
+   "cycles_assumed": [
+    60,
+    95
+   ],
+   "plus_terminal_phase_min": "~15-30 (capture, workbook, pickle; serialized by the lock)",
+   "range_h": [
+    10.116690003454163,
+    19.867063492063494
+   ]
+  }
+ },
+ "frozen_utc": "2026-09-25T19:59:43.809823+00:00",
+ "g6_v32_verbatim": {
+  "B_blocks_per_round": "B = (1 + n_dso) x n_years x n_days of the instance = the number of network blocks solved per round (SRP1: 48; the 3 x 3 instance: 80); stated operationally, not as a literal",
+  "accepted": "r.exit in ['Optimal Solution Found.', 'Solved To Acceptable Level.'] -- the two IPOPT exits whose AMPL solve_result_num (0, 1) Pyomo's .sol reader maps to SolverStatus.ok + TerminationCondition.optimal, i.e. what helper_functions.solver_result_succeeded accepts; any other exit string, or none, is NOT accepted",
+  "applicability_unchanged_from_v31": "a record is NOT APPLICABLE iff its parse_reason, split on \"; \" (the parser's join), holds a component starting \"monotone mu-floor formula not applicable:\" -- the declaration network.parse_ipopt_attempt_segment makes when the attempt passes mu_strategy / barrier_tol_factor / mu_target / mu_min. Every other record is APPLICABLE. residual_reasons = the parse_reason components other than that declaration.",
+  "block": "b(r) = (r.round, r.network, r.year, r.day)",
+  "design_consequence_recorded": "non-vacuity requires >= B judged APPLICABLE attempts in T, so with exactly B blocks EVERY block's final attempt must be applicable: a block of T whose final accepted attempt is a tier-2 retry (mu_strategy adaptive; floor formula not applicable) makes G6 FAIL through non-vacuity -- its terminal solve cannot be shown at the floor. Ruling 2 still passes the record itself (it is judged on the conditions that apply). Self-test T6 declares exactly this outcome. None of the three SRP1 cells has a non-primary record in T (W88 reported tallies); stated here so the rule is not discovered later",
+  "final_accepted_attempt": "the final attempt of the block, when it is accepted; a block whose final attempt is not accepted has NO accepted attempt",
+  "final_attempt": "the LAST attempt of the block's ladder (the attempt whose result production keeps)",
+  "floor_status_definition": "the persisted field, computed by the production parser: \"at\" iff |mu_final / mu_floor - 1| <= 1e-3, mu_floor = min(tol, compl_inf_tol * obj_scaling) / 11. Recomputed from the persisted mu_over_floor and REPORTED (agreement), not gated.",
+  "ladder": "production's retry ladder (network.py _run_smopf): primary -> recovery (tier 1) -> recovery_tier2. A block's attempts, ordered by that ladder, must be EXACTLY a prefix of (primary, recovery, recovery_tier2): one attempt per label, no gap, no unknown label; otherwise the block fails \"ladder_malformed\"",
+  "name": "G6_floor_records_v32",
+  "non_vacuity": "v30 verbatim (P non-empty; every round of W u {T} holds exactly B primary-attempt records and >= B records) AND T holds exactly B blocks AND every block of T has exactly one judged attempt AND the judged applicable attempts of T number >= B [v32; replaces v31's \">= 48 applicable records in T\", which counted superseded attempts too]",
+  "not_judged": "floor status of superseded attempts in T and of every record outside T (reported); exit status of records outside T (reported); pre-tail records (reported evidence, as in v30)",
+  "passes_iff": "non_vacuity holds AND every record of P satisfies its predicate AND every block of T satisfies its",
+  "population_unchanged_from_v30": "P(cell) = { r in <eval_dir>/network_ipopt_solve_records.jsonl : r.round in W u {T} }, W = { p.cycle : p in convergence_depth_tail_state.json per_cycle, p.active is True }, T = evaluation_record.cycles_run; every attempt (primary, recovery, recovery_tier2)",
+  "predicate_every_record_of_P": "v31's per-record predicate WITHOUT its terminal floor clause, on EVERY record of P (superseded attempts included): applicable -> compl_inf_tol_in_force == 1e-6 in W else production, options_list_agrees, parse_reason None; not applicable (ruling 2) -> the same tolerance / options conditions, no residual parse reason, declared class recovery_tier2 / adaptive [v31 verbatim]",
+  "predicate_terminal_block": "for EVERY block of T: ladder well formed; no superseded attempt accepted (production retries only an attempt that did not succeed); the final attempt accepted (\"no_accepted_attempt\" otherwise); and, if the final attempt is APPLICABLE, its floor_status == \"at\" (\"final_accepted_attempt_floor_not_at\" otherwise). A NOT applicable final attempt (tier-2, adaptive mu) has its floor test recorded NOT APPLICABLE and counted -- see non-vacuity [RULING, new]",
+  "replaces": "v31 per_entry_gates.G6_floor_records_v31",
+  "scope_limit": "the ruling-2 path (a not-applicable tier-2 record inside W u {T}) is exercised ONLY by self-tests (T1-T6): none of the three SRP1 cells has a tier-2 retry in W or T (their tier-2 records are C* rounds 11 / 13 / 23, pre-tail)",
+  "superseded_attempts": "every other attempt of the block (a primary or a tier-1 attempt later retried)",
+  "superseded_in_T": "counted and reported (attempt, exit, floor_status, mu_over_floor), never judged on floor status"
+ },
+ "git_head_at_freeze": "5bc5727751e883ee15ecb29dac23e2a7f828a7c0",
+ "harness_sha256": "a04c835afdedc8a2556691894b01fdb102ac2be0733b47a626b5301ddce60b49",
+ "instance": {
+  "case": {
+   "path": "data/SRP1/Results/P515S53/w89_3x3/instance/SRP1__s53_3x3.json",
+   "sha256": "2a64e3c5bd06c30c8a015207f41b69257b001094cbd4b185a84394a6765c5871"
+  },
+  "checks": {
+   "B_equals_80": true,
+   "changes_only_scenario_counts_and_years": true,
+   "dso_tso_blocks": true,
+   "no_premium_floor_needed": true,
+   "paper_case_rederives_byte_identical": true,
+   "paper_read_checksum_equals_committed": true,
+   "prefix_holds_on_realized_arrays": true,
+   "probabilities_one_third": true,
+   "scenario_checksum_differs_from_5x5": true,
+   "solves_per_cycle_83": true,
+   "years_as_paper": true
+  },
+  "derived_instance_declaration": {
+   "case_path": "data/SRP1/Results/P515S53/w89_3x3/instance/SRP1__s53_3x3.json",
+   "case_sha256": "2a64e3c5bd06c30c8a015207f41b69257b001094cbd4b185a84394a6765c5871",
+   "changes_vs_source": [
+    {
+     "from": {
+      "2025": 5,
+      "2030": 5,
+      "2035": 5
+     },
+     "key": "Years",
+     "to": {
+      "2025": 3,
+      "2028": 3,
+      "2031": 3,
+      "2034": 3,
+      "2037": 3
+     }
+    },
+    {
+     "from": 1,
+     "key": "NumMarketScenarios",
+     "to": 3
+    },
+    {
+     "from": 1,
+     "key": "TransmissionNetwork[case9].num_operation_scenarios",
+     "to": 3
+    },
+    {
+     "from": 1,
+     "key": "DistributionNetworks[case33_1].num_operation_scenarios",
+     "to": 3
+    },
+    {
+     "from": 1,
+     "key": "DistributionNetworks[case33_2].num_operation_scenarios",
+     "to": 3
+    },
+    {
+     "from": 1,
+     "key": "DistributionNetworks[case33_3].num_operation_scenarios",
+     "to": 3
+    }
+   ],
+   "instance_label": "s53_3x3",
+   "scenario_checksum": "0248a5c8710bdbdf047523ca036bd2f4639546aebf18fd08391a64b340a3b193",
+   "source_case_path": "data/SRP1/SRP1.json",
+   "source_case_sha256": "61a794a7ce7a3fb983f2e92128eec446dd7dbb17ad75a3b3b1c5735f8bd4e4ef"
+  },
+  "facts": {
+   "B_blocks_per_round": 80,
+   "block_weights_tso": {
+    "2025|Autumn": 273.0,
+    "2025|Spring": 276.0,
+    "2025|Summer": 273.0,
+    "2025|Winter": 273.0,
+    "2028|Autumn": 257.2539973313431,
+    "2028|Spring": 260.08096433498423,
+    "2028|Summer": 257.2539973313431,
+    "2028|Winter": 257.2539973313431,
+    "2031|Autumn": 242.4161873368304,
+    "2031|Spring": 245.080101483389,
+    "2031|Summer": 242.4161873368304,
+    "2031|Winter": 242.4161873368304,
+    "2034|Autumn": 228.4341875832357,
+    "2034|Spring": 230.94445338085367,
+    "2034|Summer": 228.4341875832357,
+    "2034|Winter": 228.4341875832357,
+    "2037|Autumn": 215.25863693379213,
+    "2037|Spring": 217.62411646053712,
+    "2037|Summer": 215.25863693379213,
+    "2037|Winter": 215.25863693379213
+   },
+   "declared_solve_profile_per_cycle": 83,
+   "expected_block_counts": {
+    "dso_blocks": 60,
+    "esso_models": 3,
+    "network_blocks": 80,
+    "solves_per_cycle": 83,
+    "tso_blocks": 20
+   },
+   "investment_cost": {
+    "n7_4h_e1": {
+     "I_x_eur_master_expression": 317957.0085035586,
+     "I_x_eur_p56a_transcription": 317957.0085035586,
+     "candidate_key": "db77e1549af855bcb3521950c634db55fe6c155ab2de591b0441b5f2bf4b369a",
+     "case_file_budget_eur": 1000000.0
+    },
+    "x0": {
+     "I_x_eur_master_expression": 0.0,
+     "I_x_eur_p56a_transcription": 0.0,
+     "candidate_key": "8435c71859ddde68e7ae5818b4ff91c03b4171791bcfaa70edcc3ddb52bacb57",
+     "case_file_budget_eur": 1000000.0
+    }
+   },
+   "investment_cost_note": "production master expression on THIS instance (no solve); scenario-free, so it equals the 2 x 2 instance's (same years)",
+   "median_block_weight_production": 242.4161873368304,
+   "min_hourly_mean_price": 8.835305263705715,
+   "n_dso_blocks": 60,
+   "n_tso_blocks": 20,
+   "num_market_scenarios": 3,
+   "num_operation_scenarios_per_network": {
+    "DSO5": 3,
+    "DSO7": 3,
+    "DSO9": 3,
+    "TSO": 3
+   },
+   "planning_dimensions": {
+    "active_distribution_network_nodes": [
+     5,
+     7,
+     9
+    ],
+    "days": {
+     "Autumn": 91,
+     "Spring": 92,
+     "Summer": 91,
+     "Winter": 91
+    },
+    "num_instants": 24,
+    "num_market_scenarios": 3,
+    "num_operation_scenarios": {
+     "case33_1": 3,
+     "case33_2": 3,
+     "case33_3": 3,
+     "case9": 3
+    },
+    "random_seed": 2026,
+    "scenario_metadata": {
+     "combined_scenario_checksum": "0248a5c8710bdbdf047523ca036bd2f4639546aebf18fd08391a64b340a3b193",
+     "deterministic_scenarios": true,
+     "market_scenario_checksum": "bf2869084ed4bf59f6b1b5bd875e7ef5b2a6e7c764f7a160ebb3bdb2684d7904",
+     "operational_scenario_checksum": "4497bf25605b718972fc96cd6bb723eb6cbd9045e793f8b96a420e0fafb001c2",
+     "random_seed": 2026
+    },
+    "years": {
+     "2025": 3,
+     "2028": 3,
+     "2031": 3,
+     "2034": 3,
+     "2037": 3
+    }
+   },
+   "premium_floor_needed": false,
+   "scenario_checksum": "0248a5c8710bdbdf047523ca036bd2f4639546aebf18fd08391a64b340a3b193"
+  },
+  "prefix_draw": {
+   "R_r2_rounds_to_recorded": true,
+   "R_recorded": 0.9331,
+   "market": [
+    1,
+    2,
+    3
+   ],
+   "operation": [
+    1,
+    2,
+    3
+   ],
+   "selection_rank_of_subset": 4,
+   "selection_row_for_subset": {
+    "R_gn": 0.9111032979671895,
+    "R_r2": 0.933141801512231,
+    "R_u": 0.9317134866483382,
+    "abs_diff_u_to_target": 0.4283531963870928,
+    "spread_r2": 90.53144561322347,
+    "spread_u": 91.29940620053189,
+    "subset": [
+     1,
+     2,
+     3
+    ]
+   },
+   "selection_selected": [
+    2,
+    3,
+    4
+   ],
+   "selection_source": {
+    "path": "data/SRP1/Results/P515S53/selection_3x3/selection_3x3.json",
+    "sha256": "291be9c798d7914a8d5962871aa266e3e88d9a6f01ef8cbaa9a69101605cdd12"
+   },
+   "w52_index_level_check": {
+    "first_failures": [],
+    "implication": "market prefix 40/40, operation prefix 10620/10620. If all true, a case derived with NumMarketScenarios = 3 and num_operation_scenarios = 3 (the p515_s44_scale_measurement.derive_case route used for the 2 x 2 pilot) holds exactly indices [1, 2, 3] in both dimensions, NOT the selected market [2, 3, 4] x operation [4, 5, 1]. Indices [1, 2, 3] rank 4 of 10 on the market rule (spread_u 91.2994, R_r2 0.9331). Realizing the selected set needs a selection mechanism the derive route does not have.",
+    "market_prefix_true": 40,
+    "market_seeds_checked": 40,
+    "note": "index-level only, dummy frame of the pool size; seeds recomputed with production's derive_random_seed and the labels of _read_market_data_from_file and _update_network_with_operational_data (network.random_seed read from the production objects). Checks whether DataFrame.sample(n=3) is the first 3 rows of DataFrame.sample(n=5) for the same seed. No seed depends on the scenario count.",
+    "operation_prefix_true": 10620,
+    "operation_seeds_checked": 10620
+   }
+  },
+  "prefix_verification": {
+   "arrays_per_family": {
+    "cost_energy_p": 80,
+    "cost_flex": 80,
+    "gen.pg": 480,
+    "gen.qg": 480,
+    "load.flex_p_down": 1980,
+    "load.flex_p_up": 1980,
+    "load.pd": 1980,
+    "load.qd": 1980
+   },
+   "definition": "for every network block of the 3 x 3 read: every realized scenario array (market energy and flexibility prices; per load pd, qd, flexibility active-power up / down; per generator pg, qg), as float64 bytes, equals the first 3 scenario rows of the same array in the 5 x 5 read",
+   "mismatches_first": [],
+   "n_arrays_compared": 9040,
+   "n_blocks": 80,
+   "n_mismatches": 0,
+   "prefix_holds": true,
+   "probabilities_3x3_all_one_third": true,
+   "probabilities_sample": {
+    "TSO|2025|Spring": {
+     "market": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ],
+     "operation": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ]
+    },
+    "TSO|2025|Summer": {
+     "market": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ],
+     "operation": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ]
+    }
+   },
+   "realized_subset_market": [
+    1,
+    2,
+    3
+   ],
+   "realized_subset_operation": [
+    1,
+    2,
+    3
+   ],
+   "same_networks_years_days": true
+  },
+  "record": {
+   "path": "data/SRP1/Results/P515S53/w89_3x3/instance/instance_record.json",
+   "sha256": "a47dc358edc1a69279ddd1965a587efc2906eb6c770d336cb9c8f34227f910ea"
+  }
+ },
+ "launcher_sha256": "efab5da1ee67d4c3fa5df3e990e192aa99c8fca9e921f578cfc8c5bbb9a1cf2d",
+ "memory_at_freeze_non_gating": {
+  "available_bytes": 20106510336,
+  "available_gib": 18.72564697265625,
+  "budget_derivation": {
+   "budget": "3.5 GiB per child = the measured persist peak (3.23 GiB) + 0.27 GiB margin",
+   "s47_recert_c_star_child_peak_no_persist_bytes": 2577645568,
+   "s47_recert_unit_child_peak_no_persist_bytes": 2574581760,
+   "source": "data/SRP1/Results/P515S48/x0_capture/evals/d2c96b1480402a3b_x0/{evaluation_record,post_certification}.json and data/SRP1/Results/P515S47/campaign_s47_recert/evals/*/evaluation_record.json peak_rss",
+   "x0_capture_child_peak_with_persist_bytes": 3470491648,
+   "x0_capture_production_peak_before_persist_bytes": 2395537408
+  },
+  "concurrency": 1,
+  "free_plus_inactive_gib": 14.064163208007812,
+  "hw_memsize_bytes": 34359738368,
+  "missing_vm_stat_figures": [],
+  "non_reclaimable_gib": 13.27435302734375,
+  "note": "the momentary measure at freeze, recorded; the decisions use the BEST recorded availability; the run-time preflight gates",
+  "page_size_bytes": 16384,
+  "pass": true,
+  "per_child_budget_gib": 3.5,
+  "required_bytes": 3758096384,
+  "required_gib": 3.5,
+  "rule": "hw.memsize - (wired + anonymous + compressor-occupied) x page size >= 1 x 3.5 GiB",
+  "rule_rationale": "non-reclaimable load = wired + anonymous + compressor-occupied pages; file-backed pages (active or inactive) are cache the kernel reclaims on demand, so free + inactive under-counts what new processes can obtain (free + inactive recorded alongside)",
+  "utc": "2026-09-25T19:59:43.794805+00:00",
+  "vm_stat_header": "Mach Virtual Memory Statistics: (page size of 16384 bytes)",
+  "vm_stat_pages": {
+   "anonymous_pages": 307809,
+   "pages_free": 443576,
+   "pages_inactive": 478133,
+   "pages_occupied_by_compressor": 366968,
+   "pages_wired_down": 195171
+  },
+  "would_pass_now": {
+   "pair": false,
+   "smoke": false
+  }
+ },
+ "memory_model": {
+  "best_available_observed_bytes": 25625329664,
+  "best_available_observed_gib": 23.865447998046875,
+  "decision": {
+   "concurrency": 1,
+   "concurrency_reason": "2 x SUSTAINED = 44.30 GiB > hw.memsize 32.00 GiB",
+   "persist_certified_models": false,
+   "persist_reason": "1 x PERSIST_PEAK = 27.21 GiB > best recorded availability 23.87 GiB",
+   "requested_by_planner": {
+    "hull_polish": false,
+    "persist_certified_models": true
+   }
+  },
+  "f_term": 0.8118782628824844,
+  "hw_memsize_bytes": 34359738368,
+  "k_run": 3.1979901588335324,
+  "k_run_srp1_low": 2.5602032293986636,
+  "k_smoke": 3.0915011396939107,
+  "k_tr": 1.75108756162168,
+  "persist_peak_bytes": 29216447746.78396,
+  "persist_peak_gib": 27.209937336653432,
+  "pickle_3x3_estimate_bytes": 2275374515.019153,
+  "pickle_3x3_zero_solve_bytes": 1430334949,
+  "probes": {
+   "s52_pilot_2x2": {
+    "build_wall_s": 37.20543694496155,
+    "models_built_rss_bytes": 3622699008,
+    "models_increment_over_read_bytes": 3157409792,
+    "n_network_blocks_built": 80,
+    "path": "data/SRP1/Results/P515S53/w89_3x3/memory_probe/memory_probe_s52_pilot_2x2.json",
+    "pickle": {
+     "file": "written to scratch, measured, DELETED (never in the repository)",
+     "retained_after_bytes": 1949368320,
+     "rss_before_bytes": 3622699008,
+     "ru_maxrss_after_bytes": 8177057792,
+     "size_bytes": 647143111,
+     "transient_over_rss_before_bytes": 4554358784,
+     "wall_s": 41.0215539932251
+    },
+    "scenario_combinations": 4,
+    "sha256": "61b694abfe25ad84065cfc0768383e41d38bc75dda578ca876b1300d08a2d6d1"
+   },
+   "s53_3x3": {
+    "build_wall_s": 76.6831967830658,
+    "models_built_rss_bytes": 7436926976,
+    "models_increment_over_read_bytes": 6959104000,
+    "n_network_blocks_built": 80,
+    "path": "data/SRP1/Results/P515S53/w89_3x3/memory_probe/memory_probe_s53_3x3.json",
+    "pickle": {
+     "file": "written to scratch, measured, DELETED (never in the repository)",
+     "retained_after_bytes": 1331625984,
+     "rss_before_bytes": 7436926976,
+     "ru_maxrss_after_bytes": 13094764544,
+     "size_bytes": 1430334949,
+     "transient_over_rss_before_bytes": 5657837568,
+     "wall_s": 114.31874823570251
+    },
+    "scenario_combinations": 9,
+    "sha256": "c8561dfc50d5f5c6831513b288551801b0d8d972cc9f055934c2d80928f5a81d"
+   },
+   "srp1": {
+    "build_wall_s": 6.3847479820251465,
+    "models_built_rss_bytes": 941621248,
+    "models_increment_over_read_bytes": 482672640,
+    "n_network_blocks_built": 48,
+    "path": "data/SRP1/Results/P515S53/w89_3x3/memory_probe/memory_probe_srp1.json",
+    "pickle": {
+     "file": "written to scratch, measured, DELETED (never in the repository)",
+     "retained_after_bytes": 875167744,
+     "rss_before_bytes": 941621248,
+     "ru_maxrss_after_bytes": 1818886144,
+     "size_bytes": 104164186,
+     "transient_over_rss_before_bytes": 877264896,
+     "wall_s": 6.090414762496948
+    },
+    "scenario_combinations": 1,
+    "sha256": "51a97352a77b4383d8b50b1f620b11d7ec5f0a552df7ff436f7c7591d0dbfce5"
+   }
+  },
+  "required_at_run_gib": {
+   "pair": 22.149849013622497,
+   "smoke": 21.412287114303922
+  },
+  "rule": "Measured inputs: the models-built RSS of the UNIT candidate on SRP1, the 2 x 2 and the 3 x 3 instance (the three zero-solve probes, one code path); the committed runtime peaks (RUNTIME_PEAKS); the recorded availability at every committed multi-child launch (AVAILABILITY_OBSERVED). Derived: SUSTAINED (per-child peak, no persist) = build_3x3 x k_run, k_run = max 2 x 2 alpha-row pair-1 child peak / build_2x2; SMOKE = build_3x3 x k_smoke, k_smoke = the 2 x 2 smoke r2 child peak (alone, cap 2) / build_2x2; PERSIST_PEAK (per-child peak with persist) = max(SUSTAINED, f_term x SUSTAINED + k_tr x T_3x3), f_term = the 2 x 2 smoke's RSS at the start of its terminal capture / its production-state peak, T = a probe's pickle transient (ru_maxrss after the pickle - RSS before it), k_tr = max over the three W86 SRP1 cells of (child peak after persist - f_term x production-state peak) / T_srp1 (the real models carry solution suffixes the zero-solve pickle lacks). Decisions, taken at --freeze-spec and recorded in v33: concurrency 2 iff 2 x SUSTAINED <= hw.memsize (else 1); persist iff PERSIST_PEAK (x c) <= the BEST recorded availability (else persist_certified_models False -- the Planner's \"unless the memory preflight forbids it\"). Gate at --run (refusing): available (hw.memsize - (wired + anonymous + compressor-occupied) x page size, L.memory_preflight) >= smoke: SMOKE; pair: c x (PERSIST_PEAK if persist else SUSTAINED). RSS is pressure-dependent on macOS (compressed pages leave RSS): the 2 x 2 pair ran two children at concurrency 2 under pressure; the smoke r2 ran alone -- both enter.",
+  "runtime_peaks_measured": {
+   "availability_observed": [
+    {
+     "available_bytes": 24583405568,
+     "available_gib": 22.89508056640625,
+     "concurrency_running": 2,
+     "source": "data/SRP1/Results/P515S53/alpha_row/campaign_s53_alpha_row_v25/pair_1_results.json",
+     "utc": "2026-09-24T16:29:35.052883+00:00"
+    },
+    {
+     "available_bytes": 23657054208,
+     "available_gib": 22.0323486328125,
+     "concurrency_running": 2,
+     "source": "data/SRP1/Results/P515S53/alpha_row/campaign_s53_alpha_row_v25/pair_2_results.json",
+     "utc": "2026-09-24T22:25:57.661150+00:00"
+    },
+    {
+     "available_bytes": 25625329664,
+     "available_gib": 23.865447998046875,
+     "concurrency_running": 2,
+     "source": "data/SRP1/Results/P515S53/alpha_row/campaign_s53_alpha_row_v25/pair_3_results.json",
+     "utc": "2026-09-25T02:19:26.877335+00:00"
+    },
+    {
+     "available_bytes": 19502612480,
+     "available_gib": 18.163223266601562,
+     "concurrency_running": 3,
+     "source": "data/SRP1/Results/P515S53/tight_tail_w86/campaign_s53_w86_tail_recert/campaign_results.json",
+     "utc": "2026-09-25T16:34:09.366080+00:00"
+    }
+   ],
+   "s52_pilot_2x2_alpha_row_pair1": {
+    "n7_4h_e1_a0p50": 11585355776,
+    "x0_a0p50": 10890100736
+   },
+   "s52_pilot_2x2_smoke_r2": {
+    "child_peak": 11199578112,
+    "production_state_peak": 10758193152,
+    "rss_at_terminal_capture_start": 8734343168
+   },
+   "srp1_w86": {
+    "c_star": {
+     "child_after_persist": 3469082624,
+     "pickle_bytes": 165704218,
+     "production_state_before_persist": 2381086720
+    },
+    "n7_4h_e1": {
+     "child_after_persist": 3493396480,
+     "pickle_bytes": 164685717,
+     "production_state_before_persist": 2410741760
+    },
+    "x0": {
+     "child_after_persist": 3470000128,
+     "pickle_bytes": 164176479,
+     "production_state_before_persist": 2391687168
+    }
+   }
+  },
+  "smoke_bytes": 22991268222.12439,
+  "smoke_gib": 21.412287114303922,
+  "sustained_bytes": 23783219281.21162,
+  "sustained_gib": 22.149849013622497,
+  "sustained_range_gib": [
+   17.73242322798561,
+   22.149849013622497
+  ]
+ },
+ "memory_rule": "Measured inputs: the models-built RSS of the UNIT candidate on SRP1, the 2 x 2 and the 3 x 3 instance (the three zero-solve probes, one code path); the committed runtime peaks (RUNTIME_PEAKS); the recorded availability at every committed multi-child launch (AVAILABILITY_OBSERVED). Derived: SUSTAINED (per-child peak, no persist) = build_3x3 x k_run, k_run = max 2 x 2 alpha-row pair-1 child peak / build_2x2; SMOKE = build_3x3 x k_smoke, k_smoke = the 2 x 2 smoke r2 child peak (alone, cap 2) / build_2x2; PERSIST_PEAK (per-child peak with persist) = max(SUSTAINED, f_term x SUSTAINED + k_tr x T_3x3), f_term = the 2 x 2 smoke's RSS at the start of its terminal capture / its production-state peak, T = a probe's pickle transient (ru_maxrss after the pickle - RSS before it), k_tr = max over the three W86 SRP1 cells of (child peak after persist - f_term x production-state peak) / T_srp1 (the real models carry solution suffixes the zero-solve pickle lacks). Decisions, taken at --freeze-spec and recorded in v33: concurrency 2 iff 2 x SUSTAINED <= hw.memsize (else 1); persist iff PERSIST_PEAK (x c) <= the BEST recorded availability (else persist_certified_models False -- the Planner's \"unless the memory preflight forbids it\"). Gate at --run (refusing): available (hw.memsize - (wired + anonymous + compressor-occupied) x page size, L.memory_preflight) >= smoke: SMOKE; pair: c x (PERSIST_PEAK if persist else SUSTAINED). RSS is pressure-dependent on macOS (compressed pages leave RSS): the 2 x 2 pair ran two children at concurrency 2 under pressure; the smoke r2 ran alone -- both enter.",
+ "not_permitted": [
+  "no change to the ADMM formulation, the certification criterion, the AA predicate, the tail or any solver option",
+  "no committed artifact modified or re-run onto; fresh campaign ids / roots / working dirs",
+  "no screen / nohup / &; attached, alone, both streams captured"
+ ],
+ "objective_convention": "Q(x) = certified_cost = gross_operational_cost (_get_operational_recourse_components: the CONTRACTED interface settlement and the solver-only interface-voltage pin excluded; the row 18 charge and the price-deviation covariance -- the settlement DEVIATION part -- included, Addendum 38 (C)); value = Q(0) - Q(x); F = I + Q; terminal salvage and net_operational_recourse = gross - salvage reported, excluded.",
+ "per_entry_gates": {
+  "G10_alpha_row_capture": "multiscenario_terminal / operational_workbook / response_terminal status \"written\"; multiscenario all_checks_pass; activation_readback all_ok; per_cycle_response n_lines == n_trajectory_rows == n_captured == cycles_run and cycles_match; the child's scenario checksum == the declared one; premium took effect at alpha 0.5; initialisation identity recorded and bitwise equal to every record of the same candidate in the root (x0: compared with >= 1 -- the smoke's x0 initialisation record, placed as reference before the run, the alpha-row precedent); the alpha-row capture checklist asserted before the run; the terminal files present",
+  "G11_acceptance_cross_check": "v32 ACCEPTANCE_CROSS_CHECK on this cell: 0 mismatches, every round",
+  "G1_harness_clean": "child exit 0, evaluation_record.json written by the child (no parent barrier record), status certified or not_certified",
+  "G2_eval_key": "record eval_key == the v33 key == the frozen entry key",
+  "G3_append_reconcile": "W86 G3 verbatim (L.evaluation_checks append_reconciles_byte_identical)",
+  "G4_tail_state_check": "W86 G4 verbatim (convergence_depth_tail_state_check.match, enabled, 1e-6)",
+  "G5_solve_profile_reconciled_per_event": "reconciliation_supported, identity_holds, solves_per_cycle == 83, rounds == cycles_run + 1, base == 83 x rounds, observed == expected (base + retries attempted), 0 blocked; network floor records == observed - 3 x rounds",
+  "G6_floor_records_v32": "frozen spec v32 G6_floor_records_v32 verbatim with B = 80 (p515_s53_w89_g6_final_attempt_reeval.g6_v32_evaluate, by import)",
+  "G7_append_sealed": "W86 G7 verbatim",
+  "G8_post_certification": "certified -> status evaluated, and certified_models.pkl written with sha256 == the record's iff v33 decided persist (absent otherwise); not certified -> skipped, no pickle",
+  "G9_ess_ageing_readback": "W86 G9 verbatim (all_match before and after the run)",
+  "applies_to": "both pair cells (x0, n7_4h_e1); there is no other arm",
+  "fallback": "NOT APPLICABLE: there is no prior 3 x 3 evaluation to move; a cell that fails to certify or fails a gate is reported as such (exit 2 / 1) and the Planner decides"
+ },
+ "pre_launch_assertion": {
+  "excluded_roots": [
+   "data/SRP1/Results/P515S53/w89_3x3/campaign_s53_w89_3x3_smoke",
+   "data/SRP1/Results/P515S53/w89_3x3/campaign_s53_w89_3x3_pair"
+  ],
+  "holds": true,
+  "n_committed_keys_scanned": 3521,
+  "per_cell": {
+   "n7_4h_e1": {
+    "absent_from_every_committed_spec_outside_w89": true,
+    "alpha_row_2x2_key_prefix_as_pinned": true,
+    "alpha_row_2x2_key_same_candidate": "711fce9aa74d687892b994e332472c7d59745ef74ce9030abc12d54a9aaf83b4",
+    "candidate_key": "db77e1549af855bcb3521950c634db55fe6c155ab2de591b0441b5f2bf4b369a",
+    "committed_specs_holding_it_outside_w89": [],
+    "declared_off_key_equals_pre_tail_key": true,
+    "differs_from_2x2_alpha_row_key": true,
+    "differs_from_pre_tail_3x3_key": true,
+    "eval_key": "c82522f470b35b58399bfe47ebd45612a95641ae308128de5d1c3c08ad5408a1",
+    "frozen_entry_equals_recomputed": true,
+    "frozen_entry_eval_key": null,
+    "pre_tail_3x3_key": "08cbcdcefb78bc9ce27c27c00dfe1ff84895f47992e0be0d8f02e8e4f5ff0481",
+    "pre_tail_3x3_key_in_committed_specs": []
+   },
+   "x0": {
+    "absent_from_every_committed_spec_outside_w89": true,
+    "alpha_row_2x2_key_prefix_as_pinned": true,
+    "alpha_row_2x2_key_same_candidate": "7d53b6f21b686a44db69f0901e03c870d14e15d00bfaaa6a5379822890918a94",
+    "candidate_key": "8435c71859ddde68e7ae5818b4ff91c03b4171791bcfaa70edcc3ddb52bacb57",
+    "committed_specs_holding_it_outside_w89": [],
+    "declared_off_key_equals_pre_tail_key": true,
+    "differs_from_2x2_alpha_row_key": true,
+    "differs_from_pre_tail_3x3_key": true,
+    "eval_key": "f6e9cd53fdbb8ee8c80388a13d723c49de5b18173bcfa5c7351cbe0d9e5000d4",
+    "frozen_entry_equals_recomputed": true,
+    "frozen_entry_eval_key": null,
+    "pre_tail_3x3_key": "19ad04f2e9c14c51de8a886195ec583a73d6916730fcbdbde512610dbf3c9857",
+    "pre_tail_3x3_key_in_committed_specs": []
+   }
+  }
+ },
+ "predecessor": {
+  "path": "data/SRP1/Results/P515S53/frozen_s53_spec_v32_69449731.json",
+  "sha256": "69449731af8b8c620ecac45627d7d9d10126a87dc7e0b05af125907bce764a28"
+ },
+ "predecessor_not_edited": "v32 stays as frozen; v33 records the 3 x 3 pair it gates with G6 v32",
+ "predictions_recorded_before_any_3x3_run": {
+  "P1_mean_profile_R": "R = 0.9331 (W52 R_r2 of [1, 2, 3]) is the first-order price-spread prediction for this draw; recorded beside the band, not a second test",
+  "P1_ratio_band": "ratio in [0.93, 1.09] (Addendum 44 band, restated against 259,375.33; the reference moved by -52.44 = -2.0e-4 relative, 1/760 of the 2 x 2 resolution, so the band is not re-derived)",
+  "P1_resolution_caveat": "at 2 x 2 the ratio's resolution was 0.152; a 3 x 3 point inside the band confirms nothing sharper than \"not distinguishable\". The 3 x 3 resolution is reported as hypot((bar_x0 + bar_unit) / R_SRP1_tail, value x bar_sum_SRP1 / R_SRP1_tail^2), the alpha-row formula",
+  "R_definition": "ratio = value_3x3 / R_SRP1_tail, value_3x3 = Q(x0) - Q(n7_4h_e1) on this instance (Q = certified_cost, gross, settlement excluded), R_SRP1_tail = the SRP1 x0 - unit value re-run under the tight tail (W86; reeval_w89.json R_tail)",
+  "R_reference": {
+   "Q_unit_tail": 653599356.2420883,
+   "Q_x0_tail": 653858731.5686293,
+   "R_SRP1_pre_tail_superseded": 259427.76775527,
+   "R_SRP1_tail": 259375.32654094696,
+   "bar_caveat": "bar_tail == bar_ref bitwise on both SRP1 cells (W88 caveat: the two-run bar is not an independent measure); used here as the SRP1 side of the ratio resolution only",
+   "bar_sum_SRP1_tail": 34734.63290083408,
+   "bar_unit_tail": 25104.654562950134,
+   "bar_x0_tail": 9629.97833788395,
+   "objective_convention": "gross_operational_cost (settlement excluded)",
+   "source": {
+    "path": "data/SRP1/Results/P515S53/g6_final_attempt_w89/reeval_w89.json",
+    "sha256": "722272014523583ed7b60cfe8f339e1bb050ddcab41ba9c510c2eadfd5496224"
+   }
+  },
+  "W1_worker_point": "ratio ~ 0.97 (68 % interval [0.90, 1.05]): the 2 x 2 value 267,548.82 (ratio 1.0315 against 259,375.33) carried the 15,066 incomplete-convergence excess the Addendum 46 decomposition attributed to fifteen x0 TSO solves stopping above their mu floor; with the tight tail that excess should vanish (~252,480, ratio ~0.973), and the mean-profile argument puts the price part at 0.933 x SRP1",
+  "W2_value_minus_I_negative": "value - I < 0 and determinate (|value - I| > bar_x0 + bar_unit) at 3 x 3, I = 317957.01",
+  "W3_certifies": "both cells certify within cap 500 (0.85); certification cycle 60-95 (2 x 2 alpha row 55-74, SRP1 87-132; the tail adds ~0-3 cycles)",
+  "W4_gates": "every per-cell gate holds on both cells; G6 v32 terminal round 80 blocks, all judged attempts primary and \"at\"; the tail active on the last ~9 cycles",
+  "W5_retries": "retry solves per cell 0-10 (2 x 2 unit 4, x0 0; SRP1 C* 40)",
+  "W6_rule_ten": "terminal gross step / objective tolerance < 0.25 on both cells (2 x 2 alpha row <= 0.066)",
+  "W7_sigma": "sigma_computed / sigma_fixed in [0.49, 0.61] (2 x 2 0.498, paper 5 x 5 0.597), inside production's [1/3, 3] band -- the smoke measures it first",
+  "W8_wall_memory_disk": "as the estimates below",
+  "author_expert_verbatim": {
+   "addendum_44": "3 x 3 confirmed with production's prefix draw [1,2,3] x [1,2,3] and R = 0.9331 recorded (reproducibility over a 0.6 % refinement); 3 x 3 prediction band [0.93, 1.09] recorded with the resolution caveat",
+   "report_section_10": "R(3x3) in [0.93, 1.09], centred on the 2 x 2 result of 1.031, on the mean-profile argument; value - I remains negative at 3 x 3 under the baseline flexibility price, determinate at >= 2 x the four-cell bar; cycle time ~ 9 min, ~16 h per evaluation"
+  },
+  "recorded": "BEFORE any 3 x 3 evaluation exists; NOT a blind test of the instance facts (the Worker ran the instance freeze and the memory probes, whose results are recorded in this spec, before writing the predictions) but blind to every 3 x 3 ADMM quantity: no 3 x 3 solve has ever run"
+ },
+ "reference_R": {
+  "Q_unit_tail": 653599356.2420883,
+  "Q_x0_tail": 653858731.5686293,
+  "R_SRP1_pre_tail_superseded": 259427.76775527,
+  "R_SRP1_tail": 259375.32654094696,
+  "bar_caveat": "bar_tail == bar_ref bitwise on both SRP1 cells (W88 caveat: the two-run bar is not an independent measure); used here as the SRP1 side of the ratio resolution only",
+  "bar_sum_SRP1_tail": 34734.63290083408,
+  "bar_unit_tail": 25104.654562950134,
+  "bar_x0_tail": 9629.97833788395,
+  "objective_convention": "gross_operational_cost (settlement excluded)",
+  "source": {
+   "path": "data/SRP1/Results/P515S53/g6_final_attempt_w89/reeval_w89.json",
+   "sha256": "722272014523583ed7b60cfe8f339e1bb050ddcab41ba9c510c2eadfd5496224"
+  }
+ },
+ "rule_eleven": {
+  "alpha_row_launcher": {
+   "C_A_monotonicity_in_row": true,
+   "P0_posthoc_formula_applied_in_cell": true,
+   "P0_posthoc_inputs_captured": true,
+   "P_charge_in_cell": true,
+   "Q_certified_cost": true,
+   "charge_weighted_captured": true,
+   "coordination_in_capture": true,
+   "covariance_in_cell": true,
+   "curtailment_in_capture": true,
+   "dispersion_metrics_in_cell": true,
+   "envelope_in_row": true,
+   "flexibility_in_capture": true,
+   "g13_bound_formula_defined": true,
+   "g13_bound_in_cell": true,
+   "g13_eps_beta_uses_exit_and_options": true,
+   "path_is_run_admm_arm": true,
+   "per_cycle_response_fields": true,
+   "post_certification_in_cell": true,
+   "q_leg_share_in_capture": true,
+   "response_read_through_decoder_in_cell": true,
+   "row18_duals_in_capture": true,
+   "rule_ten_in_cell": true,
+   "split_by_w46_definitions": true,
+   "unit_value_in_row": true,
+   "voltage_pin_total_captured": true
+  },
+  "harness_alpha_row": {
+   "audit_constants_by_import": true,
+   "audit_helpers_by_import": true,
+   "boyd_once_per_cycle_before_local_check": true,
+   "child_closes_hooks_in_post_run_hook": true,
+   "child_installs_alpha_row_hooks": true,
+   "child_merges_per_cycle_response": true,
+   "child_response_capture_error_exits_2": true,
+   "child_writes_response_before_workbook_and_post_certification": true,
+   "compact_writer_with_roundtrip": true,
+   "coordination_record_by_import": true,
+   "coordination_record_reads_duals_rho_request_pbar_scale": true,
+   "decomposition_by_import": true,
+   "init_check_then_prepare_dso_then_prepare_tso": true,
+   "ipopt_options_in_force_captured": true,
+   "local_check_called_exactly_twice": true,
+   "model_declares_dual_and_bound_suffixes": true,
+   "no_entry_cap_in_encoder": true,
+   "p_posthoc_formula_defined": true,
+   "p_posthoc_inputs_captured": true,
+   "post_run_hook_gets_optimization_results": true,
+   "prepare_dso_sets_weight_and_penalty": true,
+   "prepare_tso_sets_weight_and_penalty": true,
+   "primal_split_captured_per_dso_block": true,
+   "primal_split_terms": true,
+   "production_fn__activate_row18_with_settlement": true,
+   "production_fn__admm_local_solves_succeeded": true,
+   "production_fn__get_admm_block_weight": true,
+   "production_fn__get_local_interface_settlement": true,
+   "production_fn__get_operational_interface_dispersion": true,
+   "production_fn__get_operational_recourse_components": true,
+   "production_fn__prepare_distribution_objectives_for_admm": true,
+   "production_fn__prepare_transmission_objectives_for_admm": true,
+   "production_fn_create_shared_energy_storage_model": true,
+   "production_fn_create_transmission_network_model": true,
+   "production_fn_get_admm_boyd_residual_metrics": true,
+   "release_bookkeeping_leaves_suffixes": true,
+   "row18_activated_in_prepare_dso": true,
+   "solved_objective_is_p58_rescaled": true,
+   "termination_record_carries_ipopt_exit": true,
+   "tso_and_esso_built_before_prepare": true
+  },
+  "harness_record": {
+   "component_levels_recourse_key_interface_settlement_total": true,
+   "esso_capture_attr_es_avg_ch_dch_per_unit": true,
+   "esso_capture_attr_es_e_rated_per_unit": true,
+   "esso_capture_attr_es_soh_per_unit_cumul": true,
+   "evaluator_fn__certification_from_trajectory": true,
+   "evaluator_fn__first_pass_cycle": true,
+   "evaluator_fn__terminal_ratios": true,
+   "harness_fn__derive_stopped_by_from_trajectory": true,
+   "harness_fn__identify_soh_floor_rows": true,
+   "harness_fn__s35ref_terminal_floor_and_efc": true,
+   "harness_fn_run_admm_arm": true,
+   "harness_fn_s38_pf_capture_hooks": true,
+   "harness_fn_s39_exempt_until_capture_hooks": true,
+   "harness_fn_write_boyd_terminal_s35ref": true,
+   "production_state_has_peak_rss": true,
+   "run_admm_arm_accepts_investment_map": true,
+   "run_admm_arm_post_run_hook_gets_state": true,
+   "trajectory_field_boyd_all_pass": true,
+   "trajectory_field_boyd_ess_channel_pass": true,
+   "trajectory_field_boyd_ess_dual_ratio": true,
+   "trajectory_field_boyd_ess_primal_ratio": true,
+   "trajectory_field_boyd_pf_channel_pass": true,
+   "trajectory_field_boyd_pf_dual_ratio": true,
+   "trajectory_field_boyd_pf_primal_ratio": true,
+   "trajectory_field_boyd_stop": true,
+   "trajectory_field_boyd_v_channel_pass": true,
+   "trajectory_field_boyd_v_dual_ratio": true,
+   "trajectory_field_boyd_v_primal_ratio": true,
+   "trajectory_field_consecutive_converged_cycles": true,
+   "trajectory_field_cycle": true,
+   "trajectory_field_cycle_convergence": true,
+   "trajectory_field_efc_per_day_max": true,
+   "trajectory_field_gross_operational_cost": true,
+   "trajectory_field_local_solves_ok": true,
+   "trajectory_field_objective_change_abs": true,
+   "trajectory_field_objective_change_ratio": true,
+   "trajectory_field_objective_tolerance": true,
+   "trajectory_field_recourse": true,
+   "trajectory_field_rho_ess_action": true,
+   "trajectory_field_rho_ess_after": true,
+   "trajectory_field_rho_freeze_active": true,
+   "trajectory_field_rho_pf_action": true,
+   "trajectory_field_rho_pf_after": true,
+   "trajectory_field_rho_v_action": true,
+   "trajectory_field_rho_v_after": true,
+   "trajectory_field_terminal_salvage_value": true
+  },
+  "launcher": {
+   "acceptance_cross_check_defined": true,
+   "alpha_row_capture_on_for_derived_instance": true,
+   "cell_formulas_alpha_row": true,
+   "derived_instance_installed_before_anything": true,
+   "floor_status_capture_every_evaluation": true,
+   "g6_v32_block_rules": true,
+   "per_cycle_response_merged_into_per_cycle_record": true,
+   "post_certification_persist_in_terminal_phase_under_lock": true,
+   "tail_declaration_read_from_spec": true
+  },
+  "w86_launcher": {
+   "Q_gross": true,
+   "append_hooks_around_run": true,
+   "append_reconcile_then_seal": true,
+   "appender_created_before_run": true,
+   "bar": true,
+   "child_exits_2_on_capture_error": true,
+   "end_of_run_capture": true,
+   "ess_ageing_readback": true,
+   "failure_path_drains_the_round_in_flight": true,
+   "files_named_by_harness": true,
+   "per_cycle_trajectory_with_gross_and_tolerance": true,
+   "post_certification_persist": true,
+   "record_carries_tail_fields": true,
+   "rule_ten_ratio": true,
+   "solve_profile_per_event_in_record": true,
+   "status_cycles_cert_cycle": true,
+   "tail_checklist_before_run": true,
+   "tail_state_check": true
+  }
+ },
+ "schema": "p515_frozen_spec_v33",
+ "smoke_gate_declared_before_run": {
+  "S1": "child exit 0; record written by the child; status not_certified; cycles_run 2",
+  "S10": "record eval_key == the smoke entry key == the pair x0 key",
+  "S11": "ESS ageing read-back all_match before and after",
+  "S12": "G10 (the alpha-row capture) at cap 2",
+  "S13": "sigma_calibration: sigma_computed / sigma_fixed inside production's band [1/3, 3]",
+  "S14": "every parent guard verify(0) == []",
+  "S2": "W86 S2: append file byte-identical to the end-of-run file, sha256 == the record's, rounds 0..2",
+  "S3": "W86 S3: the tail checklist is line 1 of the events file, written before any IPOPT output file and drain",
+  "S4": "W86 S4: tail state check match (enabled, 1e-6)",
+  "S5": "solve profile reconciled per event: base 83 x 3 = 249, observed == 249 + retries attempted, 0 blocked, network records == observed - 9",
+  "S6": "W86 S6: the tail INACTIVE at cap 2 (no active / acted cycle, apply x3 inactive, next_state [False, False], no cycle_convergence row, no \"Convergence-depth tail ON\" line)",
+  "S7": "every record passes v32's per-record predicate with W empty (production compl_inf_tol: TSO case9 5e-4, DSO IPOPT default 1e-4; options list agrees; parse_reason None, or a ruling-2 tier-2 declaration)",
+  "S8": "W86 S8: last event sealed, no append write error",
+  "S9": "post-certification requested (persist), trajectory uncertified -> skipped, no certified_models.pkl"
+ },
+ "smoke_reported_not_gated": "peak RSS (child ru_maxrss, production state), wall per cycle (child), records per round, floor-status tally, exits, retries -- the first measured 3 x 3 cycle time and RSS, fed back into the pair estimate",
+ "smoke_required_before_pair": "the pair --run REFUSES unless the smoke gate is committed, clean and PASS: the derived instance + premium + tail + persist combination has never run in one child (the alpha row predates the tail; W86 was SRP1)",
+ "stage": "P5.15 Addendum 46, W89 step 2 -- the 3 x 3 pair (x = 0 and the smallest node-7 unit) on the prefix-draw 3 x 3 instance under production + the tight tail {True, 1e-6}; certified-model persistence and concurrency decided by the declared memory rule",
+ "value_definition": "value = Q(x0) - Q(n7_4h_e1) on this instance; resolution = bar_x0 + bar_unit (each the max gross step over the last 10 cycles); |value| or |value - I| <= resolution is INDETERMINATE (the bar bounds stopping slack only); ratio = value / R_SRP1_tail; rule ten (terminal step / threshold) reported for both cells",
+ "version": 33,
+ "w89_step1_sha256": "d1d543bf3c38098921765b6c18b9b9b64600932985211364f150b8b24595565e"
+}
