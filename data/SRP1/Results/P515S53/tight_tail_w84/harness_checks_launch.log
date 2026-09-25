@@ -1,0 +1,30 @@
+14:15:28 [W84-checks] P5.15 Addendum 46 ruling 7, W84 items 2-3 -- campaign harness: per-evaluation floor-status / tail-state persistence (Q2) and the tail-enabled checklist assertion (Q3); evaluation_key unchanged
+14:15:28 [W84-checks] git HEAD 84e45402a803578ae85f151e239547016000c005; guard armed permitted=() (zero solves)
+14:15:28 [W84-checks] K1/K2 evaluation_key source and diff hunks vs eb8cf81f
+14:15:30 [W84-checks]     hunks 18; K1 True; K2 True
+14:15:30 [W84-checks] K3 every committed campaign spec entry, keys recomputed by the live harness
+14:15:30 [W84-checks]     specs 50, entries 7016, mismatches 0
+14:15:30 [W84-checks] K4 freeze reproduction of s47_recert (scratch)
+14:15:31 [W84-checks]     undeclared True; declared True; drift []
+14:15:31 [W84-checks] building the planning object (G._construct_arm_planning, no solve)
+14:15:42 [W84-checks] R persistence round-trip
+14:15:42 [W84-checks]     r1 True r2 True r3 True r4 True r5 True
+14:15:42 [W84-checks] C checklist assertion, both states
+14:15:42 [W84-checks]     c1 True c2 True c3 True c4 True
+14:15:43 [W84-checks]    K1_no_diff_hunk_in_evaluation_key_or_its_helpers: True
+14:15:43 [W84-checks]    K2_key_function_sources_identical_to_base: True
+14:15:43 [W84-checks]    K3_every_committed_eval_key_recomputed_equal: True
+14:15:43 [W84-checks]    K4a_undeclared_freeze_reproduces_s47_recert: True
+14:15:43 [W84-checks]    K4b_declared_freeze_adds_only_the_declaration: True
+14:15:43 [W84-checks]    R1_production_made_records_roundtrip: True
+14:15:43 [W84-checks]    R2_committed_w83_records_roundtrip_byte_identical: True
+14:15:43 [W84-checks]    R3_tail_off_state_roundtrip: True
+14:15:43 [W84-checks]    R4_write_once: True
+14:15:43 [W84-checks]    R5_summary_is_a_recount: True
+14:15:43 [W84-checks]    C1_checklist_records_enabled_and_disabled_and_fires: True
+14:15:43 [W84-checks]    C2_hook_applies_reads_back_and_refuses: True
+14:15:43 [W84-checks]    C3_post_run_state_check_both_states: True
+14:15:43 [W84-checks]    C4_wiring: True
+14:15:43 [W84-checks] K4 consequence: the tail declaration is NOT in evaluation_key: a tail-enabled C* evaluation under the s47_recert declarations has eval_key 070f833e1e318f8500f51a85c05993425e11081db6d17065e1e60463db26e6cb -- the committed s47_recert C* eval_key
+14:15:43 [W84-checks] ALL_HOLD=True  (wall 14.9 s)
+14:15:43 [W84-checks] GUARD {'permitted_solve': 0, 'permitted_exec': 0, 'blocked_solve': 0, 'blocked_exec': 0}; verify(0) -> []
