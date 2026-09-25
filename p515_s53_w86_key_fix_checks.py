@@ -34,16 +34,20 @@ CHECKS (all must hold):
      from every committed spec; OFF with another tolerance (1e-7) also == undeclared; ON sensitive to compl_inf_tol;
      invalid declarations (ON or OFF) still refused by `evaluation_key`;
   K5 production: with enabled False no tail function is reached -- `_run_operational_planning` guards every call of
-     `_capture_convergence_depth_tail_baseline`, `_apply_convergence_depth_tail`, `_convergence_depth_tail_next_state`
-     behind `convergence_depth_tail_on` (source check), and `convergence_depth_tail_enabled` returns False for a
-     declared-off dict (called).
+     `_capture_convergence_depth_tail_baseline` (1), `_apply_convergence_depth_tail` (2),
+     `_convergence_depth_tail_next_state` (1) inside the body of an `if convergence_depth_tail_on:` (AST ancestry), and
+     `convergence_depth_tail_enabled` returns False for a declared-off dict (called).
+
+r1 (committed d55cbe0d, script sha256 f809bd90...) FAILED K5 only, by a CHECKER bug: its line scan took the sibling
+`if persistent_pool is not None:` header for the block enclosing the baseline call. r2 = the AST check above; every
+other check unchanged; outputs under new names.
 
 EXACT LAUNCH COMMAND (repo root; attached, both streams captured):
     set -o noclobber && /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python -u \\
         p515_s53_w86_key_fix_checks.py --scratch-dir <an EMPTY directory outside the repository> \\
-        > data/SRP1/Results/P515S53/tight_tail_w86/key_fix_checks_launch.log 2>&1
-OUTPUT (write-once): data/SRP1/Results/P515S53/tight_tail_w86/key_fix_checks/{checks_w86_key.json,
-checks_w86_key_manifest_sha256.json}. Exit 0 when every check holds, 1 otherwise.
+        > data/SRP1/Results/P515S53/tight_tail_w86/key_fix_checks_r2_launch.log 2>&1
+OUTPUT (write-once): data/SRP1/Results/P515S53/tight_tail_w86/key_fix_checks/{checks_w86_key_r2.json,
+checks_w86_key_r2_manifest_sha256.json}. Exit 0 when every check holds, 1 otherwise.
 """
 
 import argparse
@@ -77,8 +81,9 @@ BASE_COMMIT = '4f8a1dea'   # HEAD when W86 started
 HARNESS = 'p515_s44_campaign_harness.py'
 S53 = os.path.join('data', 'SRP1', 'Results', 'P515S53')
 OUT = os.path.join(S53, 'tight_tail_w86', 'key_fix_checks')
-CHECKS_JSON = os.path.join(OUT, 'checks_w86_key.json')
-CHECKS_MANIFEST = os.path.join(OUT, 'checks_w86_key_manifest_sha256.json')
+# r2 names: r1 (checks_w86_key.json, key_fix_checks_launch.log; committed d55cbe0d) is never written again
+CHECKS_JSON = os.path.join(OUT, 'checks_w86_key_r2.json')
+CHECKS_MANIFEST = os.path.join(OUT, 'checks_w86_key_r2_manifest_sha256.json')
 W85_CHECKS = os.path.join(S53, 'tight_tail_w85', 'harness_checks', 'checks_w85.json')
 W85_MANIFEST = os.path.join(S53, 'tight_tail_w85', 'harness_checks', 'checks_w85_manifest_sha256.json')
 PRODUCTION_FILES = W85.PRODUCTION_FILES
@@ -207,36 +212,44 @@ def check_k4(all_committed_keys, w85_pairs):
 
 
 def check_k5():
+    """r2: AST ancestry (r1's line scan took a SIBLING `if` header for the enclosing block). Every call of the three tail
+    functions in `_run_operational_planning` must lie in the BODY (not the else) of an `if convergence_depth_tail_on:`."""
+    import textwrap
     import shared_resources_planning as srp
     src = inspect.getsource(srp._run_operational_planning)
-    lines = src.splitlines()
-    guarded = {}
-    for fn in ('_capture_convergence_depth_tail_baseline(', '_apply_convergence_depth_tail(',
-               '_convergence_depth_tail_next_state('):
-        idx = [i for i, line in enumerate(lines) if fn in line and not line.strip().startswith('#')]
-        per_call = []
-        for i in idx:
-            indent = len(lines[i]) - len(lines[i].lstrip())
-            j = i - 1
-            guard_line = None
-            while j >= 0:   # the nearest enclosing `if` at a smaller indent
-                lj = lines[j]
-                ind = len(lj) - len(lj.lstrip())
-                if lj.strip() and ind < indent and lj.strip().startswith(('if ', 'for ', 'while ', 'with ', 'try',
-                                                                          'def ', 'else', 'elif ')):
-                    guard_line = lj.strip()
-                    break
-                j -= 1
-            per_call.append({'line': lines[i].strip(), 'enclosing': guard_line,
-                             'guarded_by_tail_on': guard_line == 'if convergence_depth_tail_on:'})
-        guarded[fn.rstrip('(')] = per_call
+    tree = ast.parse(textwrap.dedent(src))
+    parents = {}
+    for node in ast.walk(tree):
+        for child in ast.iter_child_nodes(node):
+            parents[child] = node
+
+    def in_tail_on_body(node):
+        child, parent = node, parents.get(node)
+        while parent is not None:
+            if (isinstance(parent, ast.If) and isinstance(parent.test, ast.Name)
+                    and parent.test.id == 'convergence_depth_tail_on' and child in parent.body):
+                return True
+            child, parent = parent, parents.get(parent)
+        return False
+
+    names = ('_capture_convergence_depth_tail_baseline', '_apply_convergence_depth_tail',
+             '_convergence_depth_tail_next_state')
+    guarded = {name: [] for name in names}
+    for node in ast.walk(tree):
+        if isinstance(node, ast.Call) and isinstance(node.func, ast.Name) and node.func.id in names:
+            guarded[node.func.id].append({'lineno_in_function': node.lineno,
+                                          'guarded_by_tail_on': in_tail_on_body(node)})
     on_flag = 'convergence_depth_tail_on = convergence_depth_tail_state[\'enabled\']' in src
     state_line = ("convergence_depth_tail_state = {'enabled': convergence_depth_tail_enabled(admm_parameters)}" in src)
     enabled_off = srp.convergence_depth_tail_enabled(type('A', (), {'convergence_depth_tail': dict(DECLARED_OFF)})())
     enabled_on = srp.convergence_depth_tail_enabled(type('A', (), {'convergence_depth_tail': dict(DECLARED_ON)})())
+    n_calls = {name: len(v) for name, v in guarded.items()}
     holds = (on_flag and state_line and enabled_off is False and enabled_on is True
-             and all(c and all(x['guarded_by_tail_on'] for x in c) for c in guarded.values()))
-    return {'calls': guarded, 'tail_on_flag_from_state': on_flag, 'state_from_convergence_depth_tail_enabled': state_line,
+             and n_calls == {names[0]: 1, names[1]: 2, names[2]: 1}
+             and all(x['guarded_by_tail_on'] for v in guarded.values() for x in v))
+    return {'method': 'AST: each call must be in the body of an `if convergence_depth_tail_on:` ancestor',
+            'calls': guarded, 'n_calls': n_calls, 'expected_n_calls': {names[0]: 1, names[1]: 2, names[2]: 1},
+            'tail_on_flag_from_state': on_flag, 'state_from_convergence_depth_tail_enabled': state_line,
             'convergence_depth_tail_enabled_declared_off': enabled_off,
             'convergence_depth_tail_enabled_declared_on': enabled_on, 'k5_holds': holds}
 
