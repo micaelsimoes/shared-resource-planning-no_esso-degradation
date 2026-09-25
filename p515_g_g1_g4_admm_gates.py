@@ -209,10 +209,24 @@ def _require_fresh_output_root(path):
             f'refusing to start: output root already exists (no overwrite, no reuse): {path}')
 
 
+def _json_default(obj):
+    """The `default=` hook of every artifact writer in this module (P5.15 W76; the pattern of W74's
+    `p515_s44_campaign_harness._json_default`). A numpy boolean is written as a JSON boolean; everything else exactly as
+    before (`str`). Before W76 the hook was `str` alone, so a numpy boolean -- which is NOT a subclass of `bool`, unlike
+    numpy.float64 of `float` -- was written as the STRING "True"/"False" (`objective_convergence` in g_<label>.json,
+    `determinate_at_gt_error_bar` in boyd_terminal.json; W75 audit), which a strict `is True` reader misreads as a
+    failure and a truthiness reader misreads "False" as a pass. Detected by type identity so no numpy import is needed.
+    No `default=` serialization in this module feeds a hash (the one hashed JSON, `_hash_consensus_ess_z`, passes no
+    `default=`); committed artifacts written before W76 keep their string values."""
+    if type(obj).__module__ == 'numpy' and type(obj).__name__ in ('bool', 'bool_'):
+        return bool(obj)
+    return str(obj)
+
+
 def _atomic_write_json(path, obj):
     tmp = f'{path}.tmp{os.getpid()}'
     with open(tmp, 'w') as handle:
-        json.dump(obj, handle, indent=1, default=str)
+        json.dump(obj, handle, indent=1, default=_json_default)
     os.replace(tmp, path)
 
 
@@ -449,7 +463,7 @@ def _capture_esso_solve(sed, models, node_diag, esso_capture_dir, cycle_label, h
         _refuse_overwrite(path)
         with open(path, 'w') as handle:
             for rec in records:
-                handle.write(json.dumps(rec, default=str) + '\n')
+                handle.write(json.dumps(rec, default=_json_default) + '\n')
 
         max_ratio, n_periods, argmax, measured = SED._complementarity_ratio_for_model(model)
         counts = {}
@@ -861,7 +875,7 @@ def _scan_and_write_network_failures(hook_state, planning_problem):
                 row = dict(record)
                 if record_type is not None:
                     row['record_type'] = record_type
-                handle.write(json.dumps(row, default=str) + '\n')
+                handle.write(json.dumps(row, default=_json_default) + '\n')
         os.replace(tmp, path)
 
     _atomic_jsonl(failures_path, blocks)
@@ -900,7 +914,7 @@ def esso_capture_hooks(planning, hook_state):
             sed, models, by_node, hook_state['esso_capture_dir'], cycle_label, hook_state)
         with open(hook_state['leak_path'], 'a') as handle:
             for rec in leak_records:
-                handle.write(json.dumps(rec, default=str) + '\n')
+                handle.write(json.dumps(rec, default=_json_default) + '\n')
         hook_state['esso_solves_so_far'] = len(sed.esso_complementarity_diagnostics)
 
         total_recovery = list(sed.solver_recovery_diagnostics)
@@ -1428,7 +1442,7 @@ def run_admm_arm(label, out_dir, k_override=None, investment_map=None,
     path = os.path.join(out_dir, f'g_{label}.json')
     _refuse_overwrite(path)
     with open(path, 'w') as handle:
-        json.dump(report, handle, indent=1, default=str)
+        json.dump(report, handle, indent=1, default=_json_default)
 
     efc_all = [v['efc_per_day_max'] for v in report['esso_capture'].values() if v['efc_per_day_max']]
     print(f"[P5.15-G {label}] recourse={report['recourse']} "
@@ -1857,7 +1871,7 @@ def write_component_levels_terminal(planning, sed, models, rows, report, out_dir
     path = os.path.join(out_dir, 'component_levels_terminal.json')
     _refuse_overwrite(path)
     with open(path, 'w') as handle:
-        json.dump(payload, handle, indent=1, default=str)
+        json.dump(payload, handle, indent=1, default=_json_default)
     print(f'[S31 Part 3] component_levels_terminal.json written: {path}')
     return path
 
@@ -2071,7 +2085,7 @@ def write_interface_settlement_detail_s31c(planning, sed, models, rows, report, 
     path = os.path.join(out_dir, 'interface_settlement_detail_s31c.json')
     _refuse_overwrite(path)
     with open(path, 'w') as handle:
-        json.dump(payload, handle, indent=1, default=str)
+        json.dump(payload, handle, indent=1, default=_json_default)
     print(f'[S31C Part 3] interface_settlement_detail_s31c.json written: {path}')
     return path
 
@@ -2349,7 +2363,7 @@ def write_boyd_terminal_s32(planning, sed, models, rows, report, out_dir, label)
     path = os.path.join(out_dir, 'boyd_terminal.json')
     _refuse_overwrite(path)
     with open(path, 'w') as handle:
-        json.dump(payload, handle, indent=1, default=str)
+        json.dump(payload, handle, indent=1, default=_json_default)
     print(f'[S32] boyd_terminal.json written: {path}')
     return path
 
@@ -2625,7 +2639,7 @@ def write_interface_voltage_terminal(planning, models, out_dir, label, cycle=Non
     path = os.path.join(out_dir, 'interface_voltage_terminal.json')
     _refuse_overwrite(path)
     with open(path, 'w') as handle:
-        json.dump(payload, handle, indent=1, default=str)
+        json.dump(payload, handle, indent=1, default=_json_default)
     print(f'[S33E2] interface_voltage_terminal.json written: {path}')
     return path
 
@@ -2725,7 +2739,7 @@ def write_boyd_terminal_s33e2(planning, sed, models, rows, report, out_dir, labe
     path = os.path.join(out_dir, 'boyd_terminal.json')
     _refuse_overwrite(path)
     with open(path, 'w') as handle:
-        json.dump(payload, handle, indent=1, default=str)
+        json.dump(payload, handle, indent=1, default=_json_default)
     print(f'[S33E2] boyd_terminal.json written: {path}')
     return path
 
@@ -3000,7 +3014,7 @@ def s34_capture_hooks(recourse_jump_path, ess_stride_path, stride=1):
             state['previous_objective_component_blocks'] = current_obj_blocks
 
         with open(recourse_jump_path, 'a') as handle:
-            handle.write(json.dumps(entry, default=str) + '\n')
+            handle.write(json.dumps(entry, default=_json_default) + '\n')
 
         # ---- (2) per-entry ESS z/x on the recorded stride, + EFC/day/node ----
         if (cycle - 1) % max(int(stride), 1) == 0:
@@ -3033,7 +3047,7 @@ def s34_capture_hooks(recourse_jump_path, ess_stride_path, stride=1):
                 handle.write(json.dumps(
                     {'cycle': cycle, 'stride': stride, 'entries': ess_entries,
                      'efc_per_day_per_node': efc_per_node},
-                    default=str) + '\n')
+                    default=_json_default) + '\n')
 
         return real_fn(planning_problem, tso_model, dso_models, esso_model, consensus_vars, dual_vars, admm_parameters)
 
@@ -3227,7 +3241,7 @@ def write_boyd_terminal_s34(planning, sed, models, rows, report, out_dir, label)
     path = os.path.join(out_dir, 'boyd_terminal.json')
     _refuse_overwrite(path)
     with open(path, 'w') as handle:
-        json.dump(payload, handle, indent=1, default=str)
+        json.dump(payload, handle, indent=1, default=_json_default)
     print(f'[S34] boyd_terminal.json written: {path}')
     return path
 
@@ -3613,7 +3627,7 @@ def s35ref_capture_hooks(recourse_jump_path, ess_stride_path, floor_sidecar_path
                         "_duals_for_keys uses elsewhere in this harness"
                     ),
                     'entries': floor_entries,
-                }, default=str) + '\n')
+                }, default=_json_default) + '\n')
             return result
 
         srp.get_admm_boyd_residual_metrics = wrapper2
@@ -3861,7 +3875,7 @@ def write_boyd_terminal_s35ref(planning, sed, models, rows, report, out_dir, lab
     path = os.path.join(out_dir, 'boyd_terminal.json')
     _refuse_overwrite(path)
     with open(path, 'w') as handle:
-        json.dump(payload, handle, indent=1, default=str)
+        json.dump(payload, handle, indent=1, default=_json_default)
     print(f'[S35REF] boyd_terminal.json written: {path}')
     return path
 
@@ -4444,7 +4458,7 @@ def write_boyd_terminal_s35pt(planning, sed, models, rows, report, out_dir, labe
     path = os.path.join(out_dir, 'boyd_terminal.json')
     _refuse_overwrite(path)
     with open(path, 'w') as handle:
-        json.dump(payload, handle, indent=1, default=str)
+        json.dump(payload, handle, indent=1, default=_json_default)
     print(f'[S35PT] boyd_terminal.json written: {path}')
     return path
 
@@ -4558,7 +4572,7 @@ def s35ref_replay_cycle0_lmp_hooks(cycle0_lmp_path, node_ids=(5, 7, 9)):
                     'docstring: model.dual.get(constraint), NO sign flip; LMP [$/MWh] = '
                     'dual_pu / network.baseMVA; UNSCALED objective at construction.'
                 ),
-            }, handle, default=str)
+            }, handle, default=_json_default)
         state['written'] = True
 
     def w_tso(planning_problem, consensus_vars, total_capacity):
@@ -4639,7 +4653,7 @@ def write_terminal_storage_duals_s35ref_replay(planning, sed, models, rows, repo
     path = os.path.join(out_dir, f'terminal_storage_duals_{label}.json')
     _refuse_overwrite(path)
     with open(path, 'w') as handle:
-        json.dump({'lambda_per_agent': duals_out, 'x_per_agent': x_out, 'z': z_out}, handle, default=str)
+        json.dump({'lambda_per_agent': duals_out, 'x_per_agent': x_out, 'z': z_out}, handle, default=_json_default)
     report['s35ref_replay_terminal_storage_duals_path'] = os.path.relpath(path, REPO)
 
 
@@ -5367,7 +5381,7 @@ def s38_pf_capture_hooks(recourse_jump_path, ess_stride_path, floor_sidecar_path
                     'production_boyd_pf_r': production_r, 'production_boyd_pf_s': production_s,
                     'rel_err_r': rel_err_r, 'rel_err_s': rel_err_s, 'identity_holds': identity_holds,
                     'entries': entries,
-                }, default=str) + '\n')
+                }, default=_json_default) + '\n')
 
             return result
 
@@ -5965,7 +5979,7 @@ def s39_exempt_until_capture_hooks(exempt_until_state_path):
                 'consecutive_cycles': cfg['consecutive_cycles'],
             }
         with open(exempt_until_state_path, 'a') as handle:
-            handle.write(json.dumps({'cycle': iter, 'channels': channels_entry}, default=str) + '\n')
+            handle.write(json.dumps({'cycle': iter, 'channels': channels_entry}, default=_json_default) + '\n')
         return result
 
     srp._update_admm_penalties = wrapper
@@ -6965,7 +6979,7 @@ if __name__ == '__main__':
         identity_path = os.path.join(OUT_S35REF_REPLAY, 'bitwise_identity_check_vs_run1.json')
         _refuse_overwrite(identity_path)
         with open(identity_path, 'w') as handle:
-            json.dump(identity_check, handle, indent=1, default=str)
+            json.dump(identity_check, handle, indent=1, default=_json_default)
         print(f'[S35REF_REPLAY] bitwise identity vs run 1: {identity_check}')
         print(f'[S35REF_REPLAY] wrote: {identity_path}')
     elif gate == 's37_rho0p01':
