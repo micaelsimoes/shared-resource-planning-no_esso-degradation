@@ -209,6 +209,10 @@ declaration (`convergence_depth_tail_state_check`), else the record says so and 
 W84 kept the declaration out of `evaluation_key`; W85 (Planner ruling Q1 on W84) puts it IN, only when declared
 (enabled True or False): a tail-declared evaluation never shares a key -- hence never a cache hit -- with a pre-tail
 evaluation of the same candidate, and every undeclared key is byte-identical to its pre-W85 value.
+W86 (Planner ruling Q1 on W85, the W33 flex-multiplier precedent): only a declaration that CHANGES THE COMPUTATION
+enters the key -- enabled True (`convergence_depth_tail_in_key`). A declared-OFF tail runs exactly what production's
+default runs (none of the tail functions is called, its `compl_inf_tol` is never read), so it shares the UNDECLARED
+key and may reuse a cached undeclared evaluation; every declared-ON key is unchanged from W85.
 W85 (Planner ruling Q3 on W84): the same capture is also APPENDED PER ROUND while the run is in progress
 (`ConvergenceDepthAppender`, `convergence_depth_append_hooks`: `NETWORK_IPOPT_SOLVE_RECORDS_APPEND_FILE` and
 `CONVERGENCE_DEPTH_APPEND_EVENTS_FILE`, fsync'd after every write, the tail checklist as the events file's first line
@@ -695,7 +699,8 @@ def validate_convergence_depth_tail(value):
     `configuration`. None = not declared (production's default, `ADMMParameters.convergence_depth_tail`: OFF).
     Otherwise EXACTLY {'enabled': bool, 'compl_inf_tol': positive finite float} -- a bool or an int is refused as the
     tolerance, as production's `_capture_convergence_depth_tail_baseline` refuses a non-float. Returns a new dict.
-    No model import (parent side). W85: a declaration (enabled True or False) enters `evaluation_key`; None does not."""
+    No model import (parent side). W86: only an ENABLED declaration enters `evaluation_key`
+    (`convergence_depth_tail_in_key`); None and enabled False do not."""
     if value is None:
         return None
     if not isinstance(value, dict) or set(value) != CONVERGENCE_DEPTH_TAIL_KEYS:
@@ -707,6 +712,15 @@ def validate_convergence_depth_tail(value):
     if not isinstance(tol, float) or tol != tol or tol in (float('inf'), float('-inf')) or not tol > 0.0:
         raise ValueError(f'convergence_depth_tail.compl_inf_tol must be a positive finite float, got {tol!r}')
     return {'enabled': enabled, 'compl_inf_tol': tol}
+
+
+def convergence_depth_tail_in_key(value):
+    """W86 (Planner ruling Q1 on W85; the W33 precedent `flex_price_multiplier_in_key`): the tail declaration as it
+    enters the eval key -- None when absent OR declared with enabled False (production's default: no tail function
+    is called and `compl_inf_tol` is never read, so the computation is the undeclared one), else the validated
+    declaration. Validation is applied in both cases, so an invalid declaration is still refused."""
+    out = validate_convergence_depth_tail(value)
+    return None if (out is None or not out['enabled']) else out
 
 
 def _ess_number(value, name, allow_none=False):
@@ -817,20 +831,21 @@ def evaluation_key(candidate_key_hex, overrides, case_file_aa=None, model_varian
     only when != 1.0) plus 'derived_instance' (its identity keys: label, case sha256, scenario checksum) and/or
     'interface_deviation_premium' -- never the bare candidate key, so one candidate on two instances, or under two
     premiums, never shares a key. Both None returns exactly what the formulas above return.
-    P5.15 Addendum 46 ruling 7 (W85, Planner ruling Q1 on W84): with a DECLARED `convergence_depth_tail`
-    (`validate_convergence_depth_tail`; enabled True OR False -- any declaration), the key is sha256 of
+    P5.15 Addendum 46 ruling 7 (W85, Planner ruling Q1 on W84; W86, Planner ruling Q1 on W85): with a DECLARED AND
+    ENABLED `convergence_depth_tail` (`convergence_depth_tail_in_key`; a declared-OFF tail changes nothing in
+    production and returns exactly what an undeclared one returns -- the W33 m == 1.0 rule), the key is sha256 of
     {candidate_key, overrides} plus every declared item the rules above would hash ('effective_anderson_acceleration',
     'model_variant', 'ess_ageing_baseline', 'flex_price_multiplier' -- only when != 1.0 --, 'derived_instance' identity,
     'interface_deviation_premium') plus 'convergence_depth_tail' (the validated declaration) -- never the bare candidate
-    key, so a tail-declared evaluation can never share a key (hence a cache hit) with a pre-tail one.
-    `convergence_depth_tail=None` returns exactly what the formulas above return."""
+    key, so a tail-enabled evaluation can never share a key (hence a cache hit) with a pre-tail one.
+    `convergence_depth_tail=None` or enabled False returns exactly what the formulas above return."""
     model_variant = validate_model_variant(model_variant)
     ess_ageing_baseline = validate_ess_ageing_baseline(ess_ageing_baseline)
     flex_m = flex_price_multiplier_in_key(flex_price_multiplier)
     derived_instance = validate_derived_instance(derived_instance)
     premium = validate_interface_deviation_premium(interface_deviation_premium)
-    tail = validate_convergence_depth_tail(convergence_depth_tail)
-    if tail is not None:  # W85: only when declared, so every undeclared key is byte-identical
+    tail = convergence_depth_tail_in_key(convergence_depth_tail)
+    if tail is not None:  # W86: only when declared ENABLED, so every undeclared / declared-off key is byte-identical
         payload = {'candidate_key': candidate_key_hex, 'overrides': overrides or {}}
         if case_file_aa is not None:
             payload['effective_anderson_acceleration'] = effective_anderson_acceleration(case_file_aa, overrides)
@@ -1040,7 +1055,8 @@ def freeze_campaign_spec(campaign_root, campaign_id, candidates, configuration, 
     P5.15 Addendum 46 ruling 7 (W84): `configuration` may carry `convergence_depth_tail`
     (`validate_convergence_depth_tail`) -- how a launcher enables the tail; recorded in the spec's configuration only
     when declared. W85 (Planner ruling Q1 on W84): a declaration enters every entry's eval key (`evaluation_key`);
-    without one every key is byte-identical to the pre-W85 key.
+    without one every key is byte-identical to the pre-W85 key. W86 (Planner ruling Q1 on W85): only an ENABLED
+    declaration enters it; a declared-OFF tail gives the undeclared key (it is still recorded in the configuration).
     One entry = one EVALUATION: its `eval_key` (`evaluation_key`) identifies
     candidate x configuration; labels and eval keys must be unique (the same
     candidate may appear under two configurations)."""

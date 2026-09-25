@@ -1,0 +1,26 @@
+15:39:10 [W86-key] P5.15 Addendum 46 ruling 7, W86 step 1 -- evaluation_key: a declared-OFF convergence-depth tail shares the undeclared key (Planner ruling Q1 on W85, the W33 precedent); declared-ON keys unchanged
+15:39:10 [W86-key] git HEAD 4f8a1dea1fd6d1b9bfca9bed2d025be1bf38f627; guard armed permitted=() (zero solves)
+15:39:10 [W86-key] committed W85 checks data/SRP1/Results/P515S53/tight_tail_w85/harness_checks/checks_w85.json: sha256 matches its manifest True
+15:39:10 [W86-key] K1 harness diff vs 4f8a1dea
+15:39:10 [W86-key]     changed ['evaluation_key', 'freeze_campaign_spec', 'validate_convergence_depth_tail'] added ['convergence_depth_tail_in_key'] removed [] docstring-only {'validate_convergence_depth_tail': True, 'freeze_campaign_spec': True} ek-code-up-to-the-call True -> True
+15:39:10 [W86-key] K2 every committed campaign spec entry, keys recomputed by the live harness (W85 check_k2 by import)
+15:39:10 [W86-key]     specs 50, entries 7016, mismatches 0, specs declaring a tail 0 -> True
+15:39:10 [W86-key] K3 freeze reproduction of s47_recert (scratch): undeclared / declared on / declared off
+15:39:12 [W86-key]     a True b True c True
+15:39:12 [W86-key] K4 the three cells
+15:39:12 [W86-key]     c_star: undeclared 070f833e1e318f8500f51a85c05993425e11081db6d17065e1e60463db26e6cb (committed 070f833e1e318f85) | declared OFF 070f833e1e318f8500f51a85c05993425e11081db6d17065e1e60463db26e6cb (W85: 2dec3f8e02e4b395) | declared ON 96c5aa50cc229cc14f8bfd34de306b7cc79caf77ac28a09e0046ad3978c49772 (W85: 96c5aa50cc229cc1)
+15:39:12 [W86-key]     unit: undeclared bd504ecf5a288d447e53ef6f7e8090b017d15549b257aa095ff4f95890a06e42 (committed bd504ecf5a288d44) | declared OFF bd504ecf5a288d447e53ef6f7e8090b017d15549b257aa095ff4f95890a06e42 (W85: c5b51b766334796f) | declared ON ca8927e75d628bd188cf74f9d81436cbb3e0be53f64e02d9876ebb271a21951d (W85: ca8927e75d628bd1)
+15:39:12 [W86-key]     x0: undeclared d2c96b1480402a3b61aca4abc188e41c6009eb582d8e6ccdd380e51651f996c7 (committed d2c96b1480402a3b) | declared OFF d2c96b1480402a3b61aca4abc188e41c6009eb582d8e6ccdd380e51651f996c7 (W85: 88dfbe4cb04bd39f) | declared ON 5cfe69a615ae370835a5896eaa6899f1d9973b7adf649437c2ddd94d1d2836ee (W85: 5cfe69a615ae3708)
+15:39:12 [W86-key]     refused: {'on_int_tol': 'ValueError: convergence_depth_tail.compl_inf_tol must be a positive finite float, got 1', 'off_int_tol': 'ValueError: convergence_depth_tail.compl_inf_tol must be a positive finite float, got 1', 'off_negative_tol': 'ValueError: convergence_depth_tail.compl_inf_tol must be a positive finite float, got -1e-06', 'extra_key': "ValueError: convergence_depth_tail must be a dict with exactly ['compl_inf_tol', 'enabled'], got {'enabled': False, 'compl_inf_tol': 1e-06, 'x': 1}", 'not_a_dict': "ValueError: convergence_depth_tail must be a dict with exactly ['compl_inf_tol', 'enabled'], got False", 'string_enabled': "ValueError: convergence_depth_tail.enabled must be a bool, got 'no'"} -> True
+15:39:12 [W86-key] K5 production: declared-off reaches no tail function
+15:39:12 [W86-key]     False
+15:39:12 [W86-key]    W85_checks_artifact_hash_verified: True
+15:39:12 [W86-key]    K1_only_the_key_branch_changed: True
+15:39:12 [W86-key]    K2_every_committed_eval_key_recomputed_equal_7016: True
+15:39:12 [W86-key]    K3a_undeclared_freeze_reproduces_s47_recert: True
+15:39:12 [W86-key]    K3b_declared_on_keys_unchanged_from_w85: True
+15:39:12 [W86-key]    K3c_declared_off_freeze_candidates_identical_to_committed: True
+15:39:12 [W86-key]    K4_three_cells_off_equals_undeclared_on_unchanged: True
+15:39:12 [W86-key]    K5_production_declared_off_is_the_undeclared_computation: False
+15:39:12 [W86-key] ALL_HOLD=False  (wall 2.7 s)
+15:39:12 [W86-key] GUARD {'permitted_solve': 0, 'permitted_exec': 0, 'blocked_solve': 0, 'blocked_exec': 0}; verify(0) -> []
