@@ -315,6 +315,24 @@ class ADMMParameters:
             'source': 'default',
         }
 
+        # P5.15 Addendum 46 ruling 7 (PLANNER_BRIEF_2026-09-13.md; frozen spec
+        # `data/SRP1/Results/P515S53/frozen_s53_spec_v28_*.json`): the convergence-
+        # depth "tight tail". When enabled, `_run_operational_planning` sets IPOPT
+        # `compl_inf_tol` to `compl_inf_tol` below on EVERY TSO and DSO network
+        # solver-option holder for each ADMM cycle that FOLLOWS a cycle in which the
+        # Anderson-acceleration-off predicate held (all channels inside their Boyd
+        # tolerances and every local solve successful -- the same condition that
+        # counts toward the certificate), and restores the production value
+        # otherwise; the ESSO is never touched. See
+        # `shared_resources_planning._apply_convergence_depth_tail`. DEFAULT OFF
+        # (`enabled: False`): no holder is ever read or written and every cycle is
+        # byte-for-byte the existing one. Not wired to any case-file key; set
+        # programmatically only, exactly like `persistent_workers` above.
+        self.convergence_depth_tail = {
+            'enabled': False,
+            'compl_inf_tol': 1e-6,
+        }
+
     def read_parameters_from_file(self, params_data):
         _read_parameters_from_file(self, params_data)
 

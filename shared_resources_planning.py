@@ -2810,6 +2810,11 @@ def _run_operational_planning(planning_problem, candidate_solution, initial_stat
     from_warm_start = initial_state is not None
     primal_evolution = list()
     admm_diagnostics = list()
+    # P5.15 Addendum 46 ruling 7: per-attempt IPOPT floor-status records of THIS call's network solves, drained per
+    # round (0 = initialisation, k = cycle k). Records left over from solves outside this call are discarded here.
+    stale_network_ipopt_solve_records = len(_drain_network_ipopt_solve_records(planning_problem, None))
+    network_ipopt_solve_records = list()
+    convergence_depth_tail_state = {'enabled': convergence_depth_tail_enabled(admm_parameters)}
     continuing_same_candidate = (
         initial_state is not None
         and initial_state.get('candidate_solution') == candidate_solution
@@ -2874,6 +2879,7 @@ def _run_operational_planning(planning_problem, candidate_solution, initial_stat
         esso_model, results['esso'] = create_shared_energy_storage_model(
             shared_ess_data, consensus_vars, candidate_solution['investment']
         )
+        network_ipopt_solve_records.extend(_drain_network_ipopt_solve_records(planning_problem, 0))
 
         if not _admm_local_solves_succeeded(planning_problem, results):
             print(
@@ -2902,6 +2908,9 @@ def _run_operational_planning(planning_problem, candidate_solution, initial_stat
                 'admm_diagnostics': admm_diagnostics,
                 'solver_recovery_diagnostics': deepcopy(shared_ess_data.solver_recovery_diagnostics),
                 'initialization_failed': True,
+                'network_ipopt_solve_records': network_ipopt_solve_records,
+                'stale_network_ipopt_solve_records_discarded': stale_network_ipopt_solve_records,
+                'convergence_depth_tail': convergence_depth_tail_state,
             }
             return (
                 False,
@@ -3032,6 +3041,24 @@ def _run_operational_planning(planning_problem, candidate_solution, initial_stat
             reject_policy=aa_settings.get('reject_policy', admm_anderson_acceleration.DEFAULT_REJECT_POLICY),
         )
 
+    # P5.15 Addendum 46 ruling 7: the convergence-depth tail, DEFAULT OFF (see
+    # `_apply_convergence_depth_tail`). With the flag off none of the tail functions is called and no solver
+    # option is read or written. The tail starts OFF: no AA-off predicate precedes this call's cycle 1.
+    convergence_depth_tail_on = convergence_depth_tail_state['enabled']
+    convergence_depth_tail_active_next = False
+    if convergence_depth_tail_on:
+        if persistent_pool is not None:
+            # Worker processes hold their own copies of the solver-option holders; the tail could not reach them.
+            persistent_pool.shutdown()
+            raise ValueError('convergence_depth_tail is not supported together with persistent_workers.')
+        convergence_depth_tail_state.update(
+            compl_inf_tol_tail=admm_parameters.convergence_depth_tail['compl_inf_tol'],
+            option=CONVERGENCE_DEPTH_TAIL_OPTION,
+            baseline=_capture_convergence_depth_tail_baseline(planning_problem, admm_parameters),
+            per_cycle=[],
+            restore_at_exit=None,
+        )
+
     # ------------------------------------------------------------------------------------------------------------------
     # ADMM -- Main cycle
     # ------------------------------------------------------------------------------------------------------------------
@@ -3043,6 +3070,19 @@ def _run_operational_planning(planning_problem, candidate_solution, initial_stat
         print_memory_usage(f"\t - ADMM Iteration {iter} Start", debug_flag)
 
         iter_start = time.time()
+
+        # P5.15 Addendum 46 ruling 7: this cycle's network solver options -- tight iff the AA-off predicate held
+        # at the end of the previous cycle; otherwise the production value (untouched unless a tight cycle
+        # preceded). No-op with the flag off.
+        if convergence_depth_tail_on:
+            tail_cycle_record = _apply_convergence_depth_tail(
+                planning_problem, admm_parameters, convergence_depth_tail_active_next,
+                convergence_depth_tail_state['baseline'], iter)
+            convergence_depth_tail_state['per_cycle'].append(tail_cycle_record)
+            if tail_cycle_record['active']:
+                print(f'[INFO]\t\t - Convergence-depth tail ON for cycle {iter}: '
+                      f'{CONVERGENCE_DEPTH_TAIL_OPTION}={convergence_depth_tail_state["compl_inf_tol_tail"]:g} '
+                      f'on every TSO/DSO solve.')
 
         # P5.15 Step 3.7: snapshot w_k = (z_k, u_k) BEFORE this cycle's
         # DSO->TSO->ESSO solves mutate consensus_vars/dual_vars, using the
@@ -3348,6 +3388,15 @@ def _run_operational_planning(planning_problem, candidate_solution, initial_stat
         else:
             consecutive_converged_cycles = 0
         convergence = (consecutive_converged_cycles >= admm_parameters.minimum_consecutive_converged_cycles)
+
+        # P5.15 Addendum 46 ruling 7: the next cycle's tail state is `cycle_convergence` -- the AA-off predicate
+        # (see `_convergence_depth_tail_next_state`); and this cycle's per-attempt IPOPT floor-status records.
+        if convergence_depth_tail_on:
+            convergence_depth_tail_active_next = _convergence_depth_tail_next_state(
+                cycle_convergence, aa_enabled, aa_record)
+            convergence_depth_tail_state['per_cycle'][-1]['aa_off_predicate_end_of_cycle'] = (
+                convergence_depth_tail_active_next)
+        network_ipopt_solve_records.extend(_drain_network_ipopt_solve_records(planning_problem, iter))
 
         objective_change_ratio = (
             (objective_change_abs / objective_tolerance)
@@ -3671,6 +3720,12 @@ def _run_operational_planning(planning_problem, candidate_solution, initial_stat
     if not convergence:
         print(f'[WARNING] \t - ADMM did NOT converge in {admm_parameters.num_max_iters} iterations!')
 
+    # P5.15 Addendum 46 ruling 7: the tail applies only to the certifying cycles -- every holder back to its
+    # production value on loop exit (writes nothing if the last cycle was not tight).
+    if convergence_depth_tail_on:
+        convergence_depth_tail_state['restore_at_exit'] = _apply_convergence_depth_tail(
+            planning_problem, admm_parameters, False, convergence_depth_tail_state['baseline'], None)
+
     # P5.15 Addendum 22 item (2): clean shutdown on the loop's ordinary exit
     # path (break-on-convergence or iteration exhaustion). The exception
     # path is covered by the per-dispatch try/except above (belt-and-braces
@@ -3720,6 +3775,9 @@ def _run_operational_planning(planning_problem, candidate_solution, initial_stat
         'admm_diagnostics': admm_diagnostics,
         'solver_recovery_diagnostics': deepcopy(shared_ess_data.solver_recovery_diagnostics),
         'initialization_failed': False,
+        'network_ipopt_solve_records': network_ipopt_solve_records,
+        'stale_network_ipopt_solve_records_discarded': stale_network_ipopt_solve_records,
+        'convergence_depth_tail': convergence_depth_tail_state,
         'peak_rss_ru_maxrss': peak_rss_ru_maxrss,
         'peak_rss_platform_units': 'bytes on macOS/BSD, kilobytes on Linux (Python resource module, RUSAGE_SELF.ru_maxrss)',
     }
@@ -7331,6 +7389,151 @@ def _anderson_acceleration_cycle_step(aa_state, aa_layout, consensus_vars, dual_
     if record['action'] == 'accepted':
         admm_anderson_acceleration.write_back_w(aa_layout, w_next, consensus_vars, dual_vars, rho_channel)
     return record
+
+
+# ======================================================================================================================
+#  P5.15 Addendum 46 ruling 7 -- the convergence-depth "tight tail"
+#
+#  Authority: PLANNER_BRIEF_2026-09-13.md Addendum 46 ("compl_inf_tol 1e-4 -> 1e-6 only in the certifying cycles,
+#  switched by the same all-channels-inside-tolerance condition that turns AA off; everything before the tail
+#  bitwise unchanged; per-solve floor status reported for every cell from now on"); Planner task W83 ruling on the
+#  1e-4 / 5e-4 wording (implement the intent: 1e-6 on ALL network solves in the certifying cycles); frozen spec
+#  data/SRP1/Results/P515S53/frozen_s53_spec_v28_*.json.
+#
+#  THE SWITCH IS THE AA-OFF PREDICATE, NOT A NEW ONE. At the end of each cycle the loop computes
+#  `boyd_all_pass = boyd_metrics['all_boyd_pass']` and `cycle_convergence = boyd_all_pass and local_solves_ok`;
+#  `_anderson_acceleration_cycle_step` hands the SAME `boyd_metrics['all_boyd_pass']` to
+#  `AndersonAccelerationState.step`, which is called only when `local_solves_ok` and returns the action
+#  `CONVERGENCE_DEPTH_TAIL_AA_OFF_ACTION` exactly when it holds. So `cycle_convergence` IS "AA is off this cycle"
+#  (and is also the condition that advances the certificate counter). The tail reads `cycle_convergence` itself
+#  (`_convergence_depth_tail_next_state`) and, with AA enabled, raises if AA's own record disagrees -- the two
+#  cannot diverge silently.
+#
+#  TIMING (non-latching, mirroring AA): the predicate is known only after a cycle's solves, so it governs the NEXT
+#  cycle -- the tail is ON for cycle k+1 iff the predicate held at the end of cycle k. The first cycle of any
+#  converged streak therefore runs at production tolerance and cycles 2..N of the streak (N = the certificate's
+#  consecutive-cycle requirement) run tight; if the streak breaks, the next cycle runs at production tolerance
+#  again. Each call of `_run_operational_planning` starts with the tail OFF (no predicate precedes its cycle 1, as
+#  for AA, whose state is also rebuilt per call). At loop exit every holder is restored to its production value,
+#  so nothing after the certifying cycles (polish, a later call) inherits the tight value.
+#
+#  WHAT IS TOUCHED: only the `compl_inf_tol` key of `solver_params.options` of the TSO holder and of each DSO
+#  holder (`NetworkData.params.solver_params`, the dict every `_create_smopf_solver` call merges first). Retry
+#  tiers inherit it: `_create_smopf_solver` applies the retry `option_overrides` AFTER `solver_params.options`, and
+#  the baseline capture REFUSES to start if any holder's `recovery_options` carries `compl_inf_tol` (it would
+#  override the tail on the retry). The ESSO is not a network solve and is never touched. With the tail disabled
+#  (`ADMMParameters.convergence_depth_tail['enabled']` False, the default) none of these functions is called.
+# ======================================================================================================================
+CONVERGENCE_DEPTH_TAIL_OPTION = 'compl_inf_tol'
+# `admm_anderson_acceleration.AndersonAccelerationState.step`'s action string for the all-channels-inside-tolerance
+# branch (that module is not edited; the zero-solve checks assert this literal against the live `step`).
+CONVERGENCE_DEPTH_TAIL_AA_OFF_ACTION = 'off (all channels within Boyd tolerance)'
+
+
+def convergence_depth_tail_enabled(admm_parameters):
+    settings = getattr(admm_parameters, 'convergence_depth_tail', None)
+    if not settings:
+        return False
+    return bool(settings.get('enabled', False))
+
+
+def _convergence_depth_tail_holders(planning_problem):
+    """(label, NetworkData) for the TSO and every DSO -- the network solver-option holders. Never the ESSO."""
+    holders = [('TSO', planning_problem.transmission_network)]
+    for node_id, distribution_network in planning_problem.distribution_networks.items():
+        holders.append((f'DSO{node_id}', distribution_network))
+    return holders
+
+
+def _capture_convergence_depth_tail_baseline(planning_problem, admm_parameters):
+    """The production state of `compl_inf_tol` on every holder, captured once before cycle 1. Refuses (raises) if
+    the tail value is not a positive float, or if any holder's `recovery_options` sets `compl_inf_tol` (the retry
+    tiers would then override the tail)."""
+    tail_value = admm_parameters.convergence_depth_tail.get('compl_inf_tol')
+    if not isinstance(tail_value, float) or not tail_value > 0.0:
+        raise ValueError(f'convergence_depth_tail.compl_inf_tol must be a positive float; got {tail_value!r}.')
+    baseline = {}
+    for label, network_data in _convergence_depth_tail_holders(planning_problem):
+        solver_params = network_data.params.solver_params
+        if CONVERGENCE_DEPTH_TAIL_OPTION in (solver_params.recovery_options or {}):
+            raise ValueError(
+                f'convergence-depth tail: {label} ({network_data.name}) recovery_options sets '
+                f'{CONVERGENCE_DEPTH_TAIL_OPTION!r}; the retry tiers would override the tail value.')
+        options = solver_params.options
+        baseline[label] = {
+            'network': network_data.name,
+            'options_is_none': options is None,
+            'has_key': options is not None and CONVERGENCE_DEPTH_TAIL_OPTION in options,
+            'value': options.get(CONVERGENCE_DEPTH_TAIL_OPTION) if options is not None else None,
+        }
+    return baseline
+
+
+def _apply_convergence_depth_tail(planning_problem, admm_parameters, active, baseline, cycle):
+    """Put every holder in the state for this cycle: `active` -> `compl_inf_tol` = the tail value; not `active` ->
+    the production state captured in `baseline` (value restored, or the key removed where production had none).
+    A holder already in the required state is NOT written at all (`acted` stays False), so with the predicate never
+    having held, no option is ever touched. Returns the per-cycle record."""
+    tail_value = admm_parameters.convergence_depth_tail['compl_inf_tol']
+    record = {'cycle': cycle, 'active': bool(active), 'acted': False, 'holders': {}}
+    for label, network_data in _convergence_depth_tail_holders(planning_problem):
+        solver_params = network_data.params.solver_params
+        production = baseline[label]
+        before = (solver_params.options.get(CONVERGENCE_DEPTH_TAIL_OPTION)
+                  if solver_params.options is not None else None)
+        wrote = False
+        if active:
+            if solver_params.options is None:
+                solver_params.options = dict()
+            if solver_params.options.get(CONVERGENCE_DEPTH_TAIL_OPTION) != tail_value:
+                solver_params.options[CONVERGENCE_DEPTH_TAIL_OPTION] = tail_value
+                wrote = True
+        elif solver_params.options is not None:
+            if production['has_key']:
+                if solver_params.options.get(CONVERGENCE_DEPTH_TAIL_OPTION) != production['value']:
+                    solver_params.options[CONVERGENCE_DEPTH_TAIL_OPTION] = production['value']
+                    wrote = True
+            elif CONVERGENCE_DEPTH_TAIL_OPTION in solver_params.options:
+                del solver_params.options[CONVERGENCE_DEPTH_TAIL_OPTION]
+                wrote = True
+                if production['options_is_none'] and not solver_params.options:
+                    solver_params.options = None
+        after = (solver_params.options.get(CONVERGENCE_DEPTH_TAIL_OPTION)
+                 if solver_params.options is not None else None)
+        record['holders'][label] = {'network': network_data.name, 'before': before, 'after': after, 'wrote': wrote}
+        record['acted'] = record['acted'] or wrote
+    return record
+
+
+def _convergence_depth_tail_next_state(cycle_convergence, aa_enabled, aa_record):
+    """The tail state for the NEXT cycle: `cycle_convergence` (= boyd_metrics['all_boyd_pass'] and every local solve
+    succeeded) -- the AA-off predicate itself, read, not re-derived. With AA enabled, AA's own record for this cycle
+    must say 'off' exactly when it holds; a disagreement raises."""
+    next_active = bool(cycle_convergence)
+    if aa_enabled:
+        aa_off = aa_record is not None and aa_record.get('action') == CONVERGENCE_DEPTH_TAIL_AA_OFF_ACTION
+        if aa_off != next_active:
+            raise RuntimeError(
+                'convergence-depth tail: the AA-off predicate and the tail switch disagree '
+                f"(cycle_convergence={cycle_convergence!r}, AA action={(aa_record or {}).get('action')!r}).")
+    return next_active
+
+
+def _drain_network_ipopt_solve_records(planning_problem, round_index):
+    """Moves every per-attempt IPOPT floor-status record (network.py `_append_ipopt_solve_record`) out of the TSO
+    and DSO `Network` objects, tagged with the agent and the ADMM round (0 = initialisation, k = cycle k)."""
+    drained = []
+    for label, network_data in _convergence_depth_tail_holders(planning_problem):
+        for year in network_data.years:
+            for day in network_data.days:
+                network = network_data.network[year][day]
+                records = getattr(network, 'ipopt_solve_records', None)
+                while records:
+                    record = records.popleft()
+                    record['agent'] = label
+                    record['round'] = round_index
+                    drained.append(record)
+    return drained
 
 
 def check_admm_convergence(planning_problem, consensus_vars, residual_metrics, params, debug_flag=False):

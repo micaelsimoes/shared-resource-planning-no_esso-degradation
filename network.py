@@ -1,3 +1,6 @@
+import re
+import sys
+from collections import deque
 import pandas as pd
 from functools import partial
 import pyomo.opt as po
@@ -46,6 +49,8 @@ class Network:
         self.cost_energy_p = list()
         self.cost_flex = list()
         self.active_distribution_network_nodes = list()
+        # P5.15 Addendum 46 ruling 7: per-attempt IPOPT floor-status records (see `_append_ipopt_solve_record`).
+        self.ipopt_solve_records = deque(maxlen=IPOPT_SOLVE_RECORDS_MAXLEN)
 
     def build_model(self, params):
         return _build_model(self, params)
@@ -601,13 +606,165 @@ def _create_smopf_solver(network, model, params, from_warm_start=False, option_o
     return solver, solver_log_path, solve_context
 
 
+# ======================================================================================================================
+#   P5.15 Addendum 46 ruling 7 -- per-solve IPOPT floor status (capture only; changes no solver input)
+# ======================================================================================================================
+# "Per-solve floor status reported for every cell from now on" (PLANNER_BRIEF_2026-09-13.md Addendum 46; frozen
+# spec data/SRP1/Results/P515S53/frozen_s53_spec_v28_*.json). Every TSO/DSO IPOPT attempt (primary, tier-1
+# recovery, tier-2 recovery) appends ONE record to its `Network` object's `ipopt_solve_records` deque; the ADMM
+# loop (`shared_resources_planning._drain_network_ipopt_solve_records`) drains it once per round into the run
+# state. The record is read from THIS attempt's own bytes of the (appended, `file_append yes`) IPOPT output file --
+# the byte range the attempt wrote, [size before the solve, size after] -- so no attribution heuristic over the
+# whole log is involved. Nothing here is read by the solver or by the ADMM iteration: the capture cannot change a
+# solve. A parse problem is RECORDED (`parse_reason`), never raised, so a diagnostic cannot abort a campaign;
+# harnesses assert completeness.
+#
+# Formulas (the W81/W82 conventions, validated there against committed figures):
+#   compl_inf_tol_in_force = the value passed to IPOPT (solver.options) or, when absent, IPOPT's default 1e-4
+#   tol_in_force           = the value passed, or IPOPT's default 1e-8
+#   obj_scaling_factor     = FIRST 'objective scaling factor = S' line of the attempt (restoration phases print more)
+#   mu_final               = LAST 'Current barrier parameter mu = X' line of the attempt
+#   mu_floor               = min(tol, compl_inf_tol * S) / (barrier_tol_factor + 1), barrier_tol_factor = 10
+#                            (IPOPT 3.14.18 IpMonotoneMuUpdate: Min(tol, apply_obj_scaling(compl_inf_tol)) /
+#                            (barrier_tol_factor + 1)); NOT applied (None, reason recorded) when the attempt passes
+#                            mu_strategy / barrier_tol_factor / mu_target / mu_min (tier 2 passes mu_strategy adaptive)
+#   floor_status           = 'at' iff |mu_final / mu_floor - 1| <= 1e-3; 'above' iff > 1 + 1e-3; 'below' otherwise
+IPOPT_DEFAULT_COMPL_INF_TOL = 1e-4
+IPOPT_DEFAULT_TOL = 1e-8
+IPOPT_DEFAULT_BARRIER_TOL_FACTOR = 10.0
+IPOPT_FLOOR_STATUS_RTOL = 1e-3
+IPOPT_MU_FLOOR_FORMULA_BLOCKERS = ('mu_strategy', 'barrier_tol_factor', 'mu_target', 'mu_min')
+# Bounded: the ADMM loop drains every round (at most 3 attempts per block per round); a caller that never drains
+# keeps only the most recent records instead of growing without bound.
+IPOPT_SOLVE_RECORDS_MAXLEN = 64
+_IPOPT_BANNER = 'This is Ipopt version'
+_IPOPT_OPTIONS_HEADER = 'List of options:'
+_IPOPT_OBJ_SCALING_RE = re.compile(r'objective scaling factor = (\S+)')
+_IPOPT_MU_RE = re.compile(r'Current barrier parameter mu = (\S+)')
+_IPOPT_ITERATIONS_RE = re.compile(r'Number of Iterations\.+: (\d+)')
+_IPOPT_EXIT_RE = re.compile(r'EXIT: (.*)')
+
+
+def _ipopt_log_size(log_path):
+    if not log_path:
+        return None
+    try:
+        return os.path.getsize(log_path)
+    except OSError:
+        return 0
+
+
+def _ipopt_logged_option(options_block, name):
+    """Merge-aware read of one entry of IPOPT's printed options list: an entry may share its physical line with a
+    preceding over-long `output_file` entry (IPOPT PrintList Snprintf(buffer, 255) drops that entry's newline; spec
+    v27 formulas.option_list_parsing), so the name is matched at a line start OR after whitespace."""
+    match = re.search(rf'(?:^|(?<=\s)){re.escape(name)} = (\S+)', options_block, re.M)
+    return match.group(1) if match else None
+
+
+def parse_ipopt_attempt_segment(text, passed_options):
+    """The floor-status fields of ONE IPOPT attempt, from the text that attempt wrote to its output file and the
+    options dict actually passed to the solver. Pure function (no I/O) so it can be validated on committed logs."""
+    record = {
+        'compl_inf_tol_passed': None, 'compl_inf_tol_in_force': None, 'compl_inf_tol_logged': None,
+        'tol_in_force': None, 'mu_strategy_passed': None, 'options_list_agrees': None,
+        'obj_scaling_factor': None, 'mu_final': None, 'mu_floor': None, 'mu_over_floor': None,
+        'floor_status': None, 'iterations': None, 'exit': None, 'parse_reason': None,
+    }
+    passed = dict(passed_options or {})
+    cit_passed = passed.get('compl_inf_tol')
+    record['compl_inf_tol_passed'] = float(cit_passed) if cit_passed is not None else None
+    cit = float(cit_passed) if cit_passed is not None else IPOPT_DEFAULT_COMPL_INF_TOL
+    record['compl_inf_tol_in_force'] = cit
+    tol = float(passed['tol']) if passed.get('tol') is not None else IPOPT_DEFAULT_TOL
+    record['tol_in_force'] = tol
+    record['mu_strategy_passed'] = passed.get('mu_strategy')
+
+    reasons = []
+    n_banners = text.count(_IPOPT_BANNER)
+    if n_banners != 1:
+        reasons.append(f'attempt segment holds {n_banners} IPOPT banners (expected 1)')
+    banner_at = text.find(_IPOPT_BANNER)
+    options_at = text.find(_IPOPT_OPTIONS_HEADER)
+    if 0 <= options_at and (banner_at < 0 or options_at < banner_at):
+        block = text[options_at:banner_at if banner_at >= 0 else len(text)]
+        logged = _ipopt_logged_option(block, 'compl_inf_tol')
+        record['compl_inf_tol_logged'] = float(logged) if logged is not None else None
+        record['options_list_agrees'] = record['compl_inf_tol_logged'] == record['compl_inf_tol_passed']
+    else:
+        reasons.append('no IPOPT options list precedes the banner in the attempt segment')
+
+    scale = _IPOPT_OBJ_SCALING_RE.search(text)
+    record['obj_scaling_factor'] = float(scale.group(1)) if scale else None
+    mus = _IPOPT_MU_RE.findall(text)
+    record['mu_final'] = float(mus[-1]) if mus else None
+    iterations = _IPOPT_ITERATIONS_RE.search(text)
+    record['iterations'] = int(iterations.group(1)) if iterations else None
+    exits = _IPOPT_EXIT_RE.findall(text)
+    record['exit'] = exits[-1].strip() if exits else None
+    if record['obj_scaling_factor'] is None:
+        reasons.append("no 'objective scaling factor' line (needs file_print_level >= 6)")
+    if record['mu_final'] is None:
+        reasons.append("no 'Current barrier parameter mu' line (needs file_print_level >= 6)")
+
+    blockers = [key for key in IPOPT_MU_FLOOR_FORMULA_BLOCKERS if passed.get(key) is not None]
+    if blockers:
+        reasons.append(f'monotone mu-floor formula not applicable: {blockers} passed')
+    elif record['obj_scaling_factor'] is not None and record['mu_final'] is not None:
+        floor = min(tol, cit * record['obj_scaling_factor']) / (IPOPT_DEFAULT_BARRIER_TOL_FACTOR + 1.0)
+        ratio = record['mu_final'] / floor
+        record['mu_floor'] = floor
+        record['mu_over_floor'] = ratio
+        if abs(ratio - 1.0) <= IPOPT_FLOOR_STATUS_RTOL:
+            record['floor_status'] = 'at'
+        elif ratio > 1.0:
+            record['floor_status'] = 'above'
+        else:
+            record['floor_status'] = 'below'
+    record['parse_reason'] = '; '.join(reasons) if reasons else None
+    return record
+
+
+def _append_ipopt_solve_record(network, params, solver, solver_log_path, log_offset, log_suffix, from_warm_start):
+    if params.solver_params.solver.lower() != 'ipopt':
+        return
+    records = getattr(network, 'ipopt_solve_records', None)
+    if records is None:
+        # Networks built (or unpickled) before this attribute existed.
+        records = deque(maxlen=IPOPT_SOLVE_RECORDS_MAXLEN)
+        network.ipopt_solve_records = records
+    record = {'network': network.name, 'year': network.year, 'day': network.day,
+              'attempt': log_suffix or 'primary', 'warm_start': bool(from_warm_start),
+              'log_path': sys.intern(solver_log_path) if solver_log_path else None,
+              'log_bytes': None}
+    try:
+        passed = dict(solver.options)
+        if not solver_log_path:
+            fields = parse_ipopt_attempt_segment('', passed)
+            fields['parse_reason'] = 'no IPOPT output_file configured'
+        else:
+            end = _ipopt_log_size(solver_log_path)
+            record['log_bytes'] = [log_offset, end]
+            with open(solver_log_path, 'r', errors='replace') as handle:
+                handle.seek(log_offset or 0)
+                text = handle.read()
+            fields = parse_ipopt_attempt_segment(text, passed)
+        record.update(fields)
+    except Exception as error:  # noqa: BLE001 -- a diagnostic must never abort a run; the reason is recorded
+        record['parse_reason'] = f'capture failed: {type(error).__name__}: {error}'
+    records.append(record)
+
+
 def _run_smopf_solver_attempt(network, model, params, from_warm_start=False, option_overrides=None, log_suffix=None):
     solver, solver_log_path, solve_context = _create_smopf_solver(network, model, params, from_warm_start=from_warm_start, option_overrides=option_overrides, log_suffix=log_suffix)
+    # P5.15 Addendum 46 ruling 7: the attempt's own byte range of its output file (capture only, see above).
+    log_offset = _ipopt_log_size(solver_log_path)
     result = None
     try:
         result = solver.solve(model, tee=params.solver_params.verbose, load_solutions=False)
     except (ValueError, RuntimeError) as error:
         print(f'[WARNING] Solver execution failed for network {solve_context}: {error}')
+    _append_ipopt_solve_record(network, params, solver, solver_log_path, log_offset, log_suffix, from_warm_start)
     return result, solver_log_path
 
 
