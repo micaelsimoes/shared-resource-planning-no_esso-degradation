@@ -99,42 +99,42 @@ Row 18 was inconsistently active at the ADMM initialisation solve, where the int
 3. **`hull_polish_full.gate.pass` is the string `"True"`** on five of six cells, boolean on one. A strict `is True` reader would silently misread them as failures.
 4. **`row18_gate_addendum.json`** records six checks as `false` because the committed S51G gate writes it while the counter is installed. Non-gating; both gating evaluations returned 21/21. A fix was attempted and abandoned (the arm-named eval directory cannot be redirected); caveat recorded beside the artifact.
 
-## 8a. A new hazard: the compared cells are not scaling-matched (`5fc92a8d`)
+## 8a. The barrier-gap question: CLOSED, sub-resolution everywhere (`d98e39f2`, `590c298f`)
 
-**Reported first at 1.14× resolution; corrected by W74 to 0.91× — now INDETERMINATE. The mismatch is real; its estimated effect on value is not established.**
+**There is no scaling artefact.** The finding reported here first at 1.14× resolution is resolved: it was driven by **incomplete convergence**, and it is sub-resolution on every pair measured.
 
-The unit cell's 20 terminal TSO solves used an IPOPT objective scaling factor of **0.001**, against **0.0047–0.0071** on every x = 0 cell; final μ was **4.545e-8** against a median of **1.845e-6**, i.e. barrier offsets about **40× smaller**. The probable cause is structural: the unit's TSO problem carries **388 more complementarity pairs** (the storage variables), and IPOPT's gradient-based scaling responds to the changed problem.
+| pair | ΔG (x0 − unit, EUR of Q) | bar-sum | **R** |
+|---|---|---|---|
+| SRP1 Phase A | −79.24 | 20,970.30 | **0.0038** |
+| SRP1 C2 baseline (the pair governing every R figure) | −79.24 | 34,734.63 | **0.0023** |
+| 2×2 complete (TSO + DSO) | 15,065.96 | 16,551.50 | **0.9102** |
 
-Interior-point methods approach the optimum from inside, so each Q carries an upward barrier-gap bias of order (pairs × μ / objective scale). Those biases differ between the two cells being subtracted:
+**Pre-registered decomposition of the 2×2 figure** (ΔG = pair count + scaling + above-floor excess, frozen before the harness was written):
 
-| cell | barrier-gap estimate (TSO blocks) |
-|---|---|
-| x0 at α = 0.5 | 22,450 |
-| unit at α = 0.5 | 3,660 |
-| **difference (W73, first estimate)** | 18,790 — 1.14× resolution |
-| **difference (W74, CORRECTED)** | **15,079 — 0.91× resolution: INDETERMINATE** |
+| component | value | share |
+|---|---|---|
+| **incomplete convergence** | **+15,143.67** | **100.5 %** |
+| scaling | 0.00 | 0 % |
+| structural pair count | −77.71 | — |
 
-**Correction (W74, `88d82d9d`).** W73's parser took the **last** solve in each IPOPT log — the hull polish, not the terminal ADMM solve it assumed. The polish adds 360 complementarity pairs per TSO block and 120 per DSO block, and μ differs on 5–9 of 20 TSO blocks. On the terminal ADMM solves the difference is **15,079**, i.e. **0.91× the two-cell resolution** (16,551.50) — so by this programme's own rule the estimated effect is **below its own error bar and indeterminate**.
+Had every solve reached its μ floor, the 2×2 difference would be **−77.71 (R = 0.0047)** — the same order and sign as SRP1.
 
-**What survives the correction.** The scaling mismatch itself is confirmed: the objective scaling factor is **identical on both solves in all 480 blocks**, so 0.001 for the unit against 0.0047–0.0071 for x = 0 stands, as does the μ difference. What is now indeterminate is the **estimated effect on value**, not the mismatch.
+**Mechanism.** The floor is min(tol, compl_inf_tol·s)/11. Below the tol cap, n·μ/s reduces to n·compl_inf_tol/11, **independent of s** — so the scaling factor cancels once a solve reaches its floor. **15 of 20** x0 TSO solves at 2×2 stopped at μ = 1.8449e-6, 5.7–8.6× their floors, at 0.52–0.98 of `compl_inf_tol` after only 10–21 iterations; the unit's 20 of 20 and all 120 DSO solves reached theirs. Across everything examined, **337 of 352** terminal solves are at the floor, the 15 being the only exceptions.
 
-**What it would mean if it holds.** `value = Q(0) − Q(unit)` inherits the *difference* of the two biases, so on the corrected estimate the measured value would overstate the true value by about 15,079 — putting it near 252,500 and R near 0.973 — but at 0.91× resolution that is **indeterminate**, making it a candidate explanation rather than an established one. **It is therefore a coherent alternative explanation for the value increase attributed in §4 to the initialisation fix**, and it is consistent with that change already being indeterminate at 0.72× the four-cell bar.
+**Three explanations were entertained and two are now excluded.** (i) *Scaling artefact* — excluded: scaling contributes exactly 0.00, and the pin test (below) showed matched scaling cannot remove the between-cell difference anyway. (ii) *Structural pair-count difference* — real but negligible at −77.71. (iii) *Incomplete convergence* — supported, at 100.5 % of the figure.
 
-**What survives regardless.** The sign and magnitude of `value` (267,549 ± 15,079 remains overwhelmingly positive), and **`value − I` stays negative** — the storage does not pay — at roughly 1.7–3.7× resolution rather than 2.73×.
+**Residual, untested.** Whether the larger scaling factor is what *caused* those 15 solves to stop early is not established; testing it would need solves. That is the only route by which scaling could still enter the 2×2 figure indirectly.
 
-**What it casts doubt on.** Every `value = Q(0) − Q(x)` in this programme subtracts a no-storage cell from a storage cell, which differ in variable count and so potentially in scaling. This may be **systematic across the programme**, not specific to this pair.
+**Scope.** These are order-of-magnitude estimates of the barrier gap (pairs × μ / objective scale), not measured changes in Q; the formula, derivation and limitations are preserved in the artifacts. The identification rule (terminal solve = K+1, polish excluded) is validated by reproducing W74's corrected 15,078.91 and, when deliberately mis-read as the last solve, W73's original 18,790.22.
 
-**Scope of the claim, stated honestly.** It is an order-of-magnitude estimate of the **augmented TSO objective**, not a measured change in Q; DSO blocks were not examined; and the link from the IPOPT logs to the terminal cycle rests on a last-match rule over logs that sit outside any campaign manifest (hashed at read time into the W73 manifest).
+### The scaling pin test (Addendum 45 item 1): FALLBACK_PURE_C
 
-**Feasibility of the ordered re-measurement (W74).** Addendum 44 ruling 5 specifies a fixed-configuration polish on the existing certified cells with **no new ADMM runs**. That **cannot be executed as worded**: `certified_models.pkl` is absent in all six cells (`persist_certified_models: False`, per the W48 memory ruling). What survives is two **cycle-7** FrozenSMOPF snapshots per cell — not terminal — and the ESSO terminal models, which the polish never re-solves. Two options, both for the author:
+`nlp_scaling_method = user-scaling` **does** pin the effective factor — confirmed on all 144 segments of the decisive arm and on all 8 pinned arms. But:
 
-- **(a)** re-run the cells with persistence, gated by a bitwise-reproduction check — but **no full-run bitwise reproduction has ever been demonstrated on the 2×2 instance** (searched: commit log, the `s52_pilot_repro_nopersist` artifacts, the init-identity check — all 2-cycle or initialisation-only), so that gate may not pass;
-- **(b)** polish rebuilt models under the committed hull from a start that is **not** the certified point — cheap, but a different experiment from the one ruled.
+- **C2 fails at every value.** The n7u/x0 TSO median iteration ratio is 2.25 at baseline and **2.13, 2.23, 2.13, 2.25** at obj_scaling_factor 0.001/0.002/0.003/0.005. Pinning one factor does not make the two cells solve alike: **the difference is structural**, the unit's TSO problem carrying 388 more complementarity pairs.
+- **C3 fails at every value** (inertia-regularisation totals above bound; x0 TSO 167/177/177/158 against a baseline of 117).
 
-With the corrected 0.91×, option (a)'s cost may no longer be proportionate to the question.
-
-**Pinned-configuration hazard, if the polish does run.** A user `obj_scaling_factor` is **multiplied** with IPOPT's gradient-based factor, so pinning it alone does not pin the effective scale — `nlp_scaling_method` must also be none or user-scaling. `acceptable_tol` 1e-4 with `acceptable_iter` 5 can terminate a `tol` 1e-8 solve at "acceptable level", and some DSO polish solves already hit the hard-coded `max_iter` 500 and succeed only on retry, which a tighter tolerance will worsen. Solve count: 80 blocks × 6 cells = **480 primary**, ceiling 1,440 with retries; the α row itself used 562.
-
+The fallback is therefore **overdetermined** — it does not depend on C3's strictness, because C2 fails independently everywhere. **Gradient-based scaling is retained; Addendum 45 item 2 (the reference re-run) is void.**
 
 ## 8b. Curtailment classification, corrected (`5fc92a8d`)
 
