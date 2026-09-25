@@ -874,18 +874,30 @@ def build_spec(cal_rel, cal_sha, cal_manifest_sha):
                                    'is REFUTED (0.8)'),
                 'P5_material': '|dQ| < bar_ref on each cell -- NOT material, no fallback (0.75)',
                 'P6_R': 'R = Q(0) - Q(unit) changes by less than the two-cell bar-sum 34,734.63 (0.9)',
-                'P7_acceptable_exits': ('some tight-cycle solves exit "Solved To Acceptable Level" (acceptable_iter 5, '
-                                        'acceptable_tol 1e-4, acceptable_compl_inf_tol 1e-2 are unchanged by the ruling) '
-                                        'and stop above the tight floor; see the calibration\'s acceptable-run '
-                                        'histogram; probability that >= 1 tight solve per cell does: 0.6'),
-                'P8_iterations': 'median iterations of tight-cycle solves +2 to +10 over the reference\'s same cycles (0.6)',
+                'P7_acceptable_exits': ('some tight-cycle solves could exit "Solved To Acceptable Level" above the '
+                                        'tight floor, because acceptable_iter 5 / acceptable_tol 1e-4 / '
+                                        'acceptable_compl_inf_tol 1e-2 are unchanged by the ruling. The calibration '
+                                        'shows every one of the 432 reference solves of cycles 79-87 exiting with a '
+                                        'trailing acceptable run of only 0-2 iterates (counter 0-1 at the optimal '
+                                        'exit), and the tail needs ONE further barrier update (mu^1.5 undershoots the '
+                                        'tight floor: TSO 4.5e-8 -> 9.1e-11, DSO 9.1e-9 -> 9.1e-11) plus a few Newton '
+                                        'steps, so an acceptable exit needs >= 4 more consecutive acceptable iterates. '
+                                        'Probability that >= 1 tight solve in a cell exits acceptable: 0.35'),
+                'P8_iterations': ('median iterations of tight-cycle solves +1 to +6 over the reference\'s same cycles '
+                                  '(reference medians: TSO 30, DSO 44) (0.6)'),
+                'P10_retries': ('network retries in the tight cycles at most twice the reference\'s in the same '
+                                'window (the reference already has 2 DSO max_iter primaries in cycles 79-87, recovered) '
+                                '(0.7); every retry attempt in a tight cycle passes 1e-6 (certain by construction; '
+                                'the per-attempt record shows it)'),
                 'P9_2x2': ('at 2x2 (NOT run in this task) the fifteen x0 TSO early stops, which ended "Optimal" with '
                            'unscaled complementarity ~2.6e-4 against 5e-4, can no longer stop there; each either '
                            'reaches the tight floor or exits acceptable -- the author\'s "would reach the floor" is '
                            'CONFIRMED only for the former; probability all fifteen reach the floor: 0.5'),
             },
             'seen_before_these_predictions': [
-                'calibration_w83.json (this spec\'s calibration_zero_solve; its summary is embedded above)',
+                'calibration_w83.json and calibrate_launch.log (this spec\'s calibration_zero_solve, run at '
+                'a51ad9ba; its summary is embedded above) -- seen BEFORE P7, P8 and P10 were written; P1-P6 and P9 '
+                'were written before it',
                 'W81/W82 committed outputs (SRP1 G, 2x2 early stops and their exits/complementarity)',
                 's47_recert campaign_results.json (Q and bars of C* and the unit), W82 x0 pin (Q(0), bar)',
                 'the committed r2 gate outputs and the committed C* trajectory (predicate on cycles 78-87)'],
