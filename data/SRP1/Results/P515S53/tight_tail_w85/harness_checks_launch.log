@@ -1,0 +1,52 @@
+15:00:10 [W85-checks] P5.15 Addendum 46 ruling 7, W85 -- campaign harness: the declared convergence-depth tail enters evaluation_key (Q1); the floor-status records and tail events appended per round (Q3, W84 finding 2)
+15:00:10 [W85-checks] git HEAD 4726fc3244cb2629a563cb6812ab265e03601ce9; guard armed permitted=() (zero solves)
+15:00:10 [W85-checks] K1 evaluation_key diff vs 4726fc32
+15:00:10 [W85-checks]     only evaluation_key code changed True; removed lines True; added 28
+15:00:10 [W85-checks] K2 every committed campaign spec entry, keys recomputed by the live harness
+15:00:11 [W85-checks]     specs 50, entries 7016, mismatches 0, specs declaring a tail 0
+15:00:11 [W85-checks] K3 freeze reproduction of s47_recert (scratch): undeclared / declared on / declared off
+15:00:12 [W85-checks]     a True b True c True d True
+15:00:12 [W85-checks] K4/K5 the three pairs
+15:00:12 [W85-checks]     c_star: undeclared 070f833e1e318f8500f51a85c05993425e11081db6d17065e1e60463db26e6cb (committed 070f833e1e318f85) -> declared on 96c5aa50cc229cc14f8bfd34de306b7cc79caf77ac28a09e0046ad3978c49772
+15:00:12 [W85-checks]     unit: undeclared bd504ecf5a288d447e53ef6f7e8090b017d15549b257aa095ff4f95890a06e42 (committed bd504ecf5a288d44) -> declared on ca8927e75d628bd188cf74f9d81436cbb3e0be53f64e02d9876ebb271a21951d
+15:00:12 [W85-checks]     x0: undeclared d2c96b1480402a3b61aca4abc188e41c6009eb582d8e6ccdd380e51651f996c7 (committed d2c96b1480402a3b) -> declared on 5cfe69a615ae370835a5896eaa6899f1d9973b7adf649437c2ddd94d1d2836ee
+15:00:12 [W85-checks] building the planning object (G._construct_arm_planning, no solve)
+15:00:23 [W85-checks] A1/A2/A3/A5 per-round append on the real planning object
+Traceback (most recent call last):
+  File "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/p515_s44_campaign_harness.py", line 4720, in on_drain
+    self.append_round(round_index, records)
+  File "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/p515_s44_campaign_harness.py", line 4698, in append_round
+    self._append_lines(self.records_path,
+  File "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/p515_s44_campaign_harness.py", line 4688, in _append_lines
+    with open(path, 'a') as handle:
+         ^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w85_official/a1b_eval/no_such_dir/records.jsonl'
+
+15:00:23 [W85-checks]     a1 True a1b True a2 True a3 True a5 True
+15:00:23 [W85-checks] A3b the real main_child exception path (in-process, scratch root and lock)
+15:00:23 [W85-checks]     a3b True (exit 1)
+15:00:23 [W85-checks] A4 killed child (SIGKILL) and the parent barrier record
+15:00:25 [W85-checks]     a4 True (exit -9, recovered 96)
+15:00:25 [W85-checks]     a6 True
+15:00:25 [W85-checks] C retained behaviour (W84 checks on the live harness)
+15:00:25 [W85-checks]     c True (r {'r1': True, 'r2': True, 'r3': True, 'r4': True, 'r5': True}; c1 True c2 True c3 True c4 True)
+15:00:25 [W85-checks]    K1_only_evaluation_key_code_changed: True
+15:00:25 [W85-checks]    K1_diff_removes_only_signature_and_docstring_tail: True
+15:00:25 [W85-checks]    K2_every_committed_eval_key_recomputed_equal_7016: True
+15:00:25 [W85-checks]    K3a_undeclared_freeze_reproduces_s47_recert: True
+15:00:25 [W85-checks]    K3b_declared_on_changes_exactly_the_key_fields: True
+15:00:25 [W85-checks]    K3c_declared_off_changes_exactly_the_key_fields: True
+15:00:25 [W85-checks]    K3d_on_and_off_keys_differ: True
+15:00:25 [W85-checks]    K4_three_pairs: True
+15:00:25 [W85-checks]    K5_key_properties: True
+15:00:25 [W85-checks]    A1_completed_run_append_byte_identical: True
+15:00:25 [W85-checks]    A1b_append_write_error_does_not_reach_the_run: True
+15:00:25 [W85-checks]    A2_tail_off_run: True
+15:00:25 [W85-checks]    A3_exception_in_flight_recovered: True
+15:00:25 [W85-checks]    A3b_main_child_exception_path: True
+15:00:25 [W85-checks]    A4_killed_child_and_parent_barrier: True
+15:00:25 [W85-checks]    A5_seal: True
+15:00:25 [W85-checks]    A6_wiring: True
+15:00:25 [W85-checks]    C_retained_roundtrip_checklist_default_reference: True
+15:00:25 [W85-checks] ALL_HOLD=True  (wall 14.4 s)
+15:00:25 [W85-checks] GUARD {'permitted_solve': 0, 'permitted_exec': 0, 'blocked_solve': 0, 'blocked_exec': 0}; verify(0) -> []
