@@ -206,9 +206,17 @@ records included); the configuration hook applies a declaration, reads it back a
 tail in force differs from the declaration -- in particular when it is on without one
 (`apply_convergence_depth_tail_declaration`); after the run the tail state production returns must agree with the
 declaration (`convergence_depth_tail_state_check`), else the record says so and the child exits 2. Zero solves.
-The declaration does NOT enter `evaluation_key` (unchanged, Planner ruling Q2): a tail-enabled evaluation of a
-candidate carries the same eval key as its tail-off evaluation under the same other declarations; the two are told
-apart by campaign id / root and by the record's `configuration.convergence_depth_tail` and checklist.
+W84 kept the declaration out of `evaluation_key`; W85 (Planner ruling Q1 on W84) puts it IN, only when declared
+(enabled True or False): a tail-declared evaluation never shares a key -- hence never a cache hit -- with a pre-tail
+evaluation of the same candidate, and every undeclared key is byte-identical to its pre-W85 value.
+W85 (Planner ruling Q3 on W84): the same capture is also APPENDED PER ROUND while the run is in progress
+(`ConvergenceDepthAppender`, `convergence_depth_append_hooks`: `NETWORK_IPOPT_SOLVE_RECORDS_APPEND_FILE` and
+`CONVERGENCE_DEPTH_APPEND_EVENTS_FILE`, fsync'd after every write, the tail checklist as the events file's first line
+before any solve), so a child that raises keeps every completed round plus the round in flight (drained on the
+exception path), and a killed child keeps every completed round; both failure records -- the child's and the
+parent-synthesised one -- carry `recover_convergence_depth_append`. On a completed run the appended records file must
+be byte-identical to the end-of-run file and the tail state rebuilt from the events must equal the returned state
+(`reconcile`), else the child exits 2 after writing its record.
 AFTER the run, in the child, inside `run_admm_arm`'s post_run_hook (same live
 models/state), `run_post_certification` does, only if the trajectory is
 certified under the spec's bar (else it records `status: skipped` + reason):
@@ -248,6 +256,7 @@ import subprocess
 import sys
 import time
 import traceback
+from contextlib import contextmanager
 from datetime import datetime, timezone
 
 REPO = os.path.dirname(os.path.abspath(__file__))
@@ -297,6 +306,9 @@ MULTISCENARIO_IDENTITY_REL_TOL = 1e-9   # declared before any run: relative tole
 CONVERGENCE_DEPTH_TAIL_KEYS = frozenset({'enabled', 'compl_inf_tol'})
 NETWORK_IPOPT_SOLVE_RECORDS_FILE = 'network_ipopt_solve_records.jsonl'
 CONVERGENCE_DEPTH_TAIL_STATE_FILE = 'convergence_depth_tail_state.json'
+# W85 (Planner ruling Q3 on W84): the same capture appended per round, fsync'd, so a failed / killed child keeps it
+NETWORK_IPOPT_SOLVE_RECORDS_APPEND_FILE = 'network_ipopt_solve_records_append.jsonl'
+CONVERGENCE_DEPTH_APPEND_EVENTS_FILE = 'convergence_depth_append_events.jsonl'
 # P5.15 Addendum 34 (W33): a uniform multiplier m on the DSO flexibility-price profile `cost_flex` (see
 # `validate_flex_price_multiplier` / `apply_flex_price_multiplier`). Absent or 1.0 = today's price; it enters the
 # eval key ONLY when present and != 1.0, so every key frozen before W33 is byte-identical.
@@ -683,7 +695,7 @@ def validate_convergence_depth_tail(value):
     `configuration`. None = not declared (production's default, `ADMMParameters.convergence_depth_tail`: OFF).
     Otherwise EXACTLY {'enabled': bool, 'compl_inf_tol': positive finite float} -- a bool or an int is refused as the
     tolerance, as production's `_capture_convergence_depth_tail_baseline` refuses a non-float. Returns a new dict.
-    No model import (parent side). Never part of `evaluation_key`."""
+    No model import (parent side). W85: a declaration (enabled True or False) enters `evaluation_key`; None does not."""
     if value is None:
         return None
     if not isinstance(value, dict) or set(value) != CONVERGENCE_DEPTH_TAIL_KEYS:
@@ -774,7 +786,8 @@ def load_ess_ageing_parameters(path):
 
 
 def evaluation_key(candidate_key_hex, overrides, case_file_aa=None, model_variant=None, ess_ageing_baseline=None,
-                   flex_price_multiplier=None, derived_instance=None, interface_deviation_premium=None):
+                   flex_price_multiplier=None, derived_instance=None, interface_deviation_premium=None,
+                   convergence_depth_tail=None):
     """Identity of one EVALUATION (candidate x configuration). The case-file
     configuration (no overrides) keeps the candidate key itself, so a D
     evaluation's directory name is `<candidate key16>_<label>` as in s44_gate;
@@ -803,12 +816,37 @@ def evaluation_key(candidate_key_hex, overrides, case_file_aa=None, model_varian
     ('effective_anderson_acceleration', 'model_variant', 'ess_ageing_baseline', 'flex_price_multiplier' -- the last
     only when != 1.0) plus 'derived_instance' (its identity keys: label, case sha256, scenario checksum) and/or
     'interface_deviation_premium' -- never the bare candidate key, so one candidate on two instances, or under two
-    premiums, never shares a key. Both None returns exactly what the formulas above return."""
+    premiums, never shares a key. Both None returns exactly what the formulas above return.
+    P5.15 Addendum 46 ruling 7 (W85, Planner ruling Q1 on W84): with a DECLARED `convergence_depth_tail`
+    (`validate_convergence_depth_tail`; enabled True OR False -- any declaration), the key is sha256 of
+    {candidate_key, overrides} plus every declared item the rules above would hash ('effective_anderson_acceleration',
+    'model_variant', 'ess_ageing_baseline', 'flex_price_multiplier' -- only when != 1.0 --, 'derived_instance' identity,
+    'interface_deviation_premium') plus 'convergence_depth_tail' (the validated declaration) -- never the bare candidate
+    key, so a tail-declared evaluation can never share a key (hence a cache hit) with a pre-tail one.
+    `convergence_depth_tail=None` returns exactly what the formulas above return."""
     model_variant = validate_model_variant(model_variant)
     ess_ageing_baseline = validate_ess_ageing_baseline(ess_ageing_baseline)
     flex_m = flex_price_multiplier_in_key(flex_price_multiplier)
     derived_instance = validate_derived_instance(derived_instance)
     premium = validate_interface_deviation_premium(interface_deviation_premium)
+    tail = validate_convergence_depth_tail(convergence_depth_tail)
+    if tail is not None:  # W85: only when declared, so every undeclared key is byte-identical
+        payload = {'candidate_key': candidate_key_hex, 'overrides': overrides or {}}
+        if case_file_aa is not None:
+            payload['effective_anderson_acceleration'] = effective_anderson_acceleration(case_file_aa, overrides)
+        if model_variant is not None:
+            payload['model_variant'] = model_variant
+        if ess_ageing_baseline is not None:
+            payload['ess_ageing_baseline'] = ess_ageing_baseline
+        if flex_m is not None:
+            payload['flex_price_multiplier'] = flex_m
+        if derived_instance is not None:
+            payload['derived_instance'] = derived_instance_identity(derived_instance)
+        if premium is not None:
+            payload['interface_deviation_premium'] = premium
+        payload['convergence_depth_tail'] = tail
+        text = json.dumps(payload, sort_keys=True, separators=(',', ':'))
+        return hashlib.sha256(text.encode()).hexdigest()
     if derived_instance is not None or premium is not None:
         payload = {'candidate_key': candidate_key_hex, 'overrides': overrides or {}}
         if case_file_aa is not None:
@@ -1001,7 +1039,8 @@ def freeze_campaign_spec(campaign_root, campaign_id, candidates, configuration, 
     `configuration.derived_instance`, entry `interface_deviation_premium`) only when given.
     P5.15 Addendum 46 ruling 7 (W84): `configuration` may carry `convergence_depth_tail`
     (`validate_convergence_depth_tail`) -- how a launcher enables the tail; recorded in the spec's configuration only
-    when declared and NOT part of the eval key.
+    when declared. W85 (Planner ruling Q1 on W84): a declaration enters every entry's eval key (`evaluation_key`);
+    without one every key is byte-identical to the pre-W85 key.
     One entry = one EVALUATION: its `eval_key` (`evaluation_key`) identifies
     candidate x configuration; labels and eval keys must be unique (the same
     candidate may appear under two configurations)."""
@@ -1059,7 +1098,8 @@ def freeze_campaign_spec(campaign_root, campaign_id, candidates, configuration, 
         premium = validate_interface_deviation_premium(options.get('interface_deviation_premium'))
         ekey = evaluation_key(key, eff_overrides, case_file_aa=case_file_aa, model_variant=model_variant,
                               ess_ageing_baseline=ess_ageing, flex_price_multiplier=flex_m,
-                              derived_instance=derived, interface_deviation_premium=premium)
+                              derived_instance=derived, interface_deviation_premium=premium,
+                              convergence_depth_tail=tail)
         if label in seen_labels or ekey in seen_keys:
             raise ValueError(f'duplicate evaluation label or key (candidate x configuration): {label} / {ekey[:16]}')
         seen_labels.add(label)
@@ -1385,6 +1425,10 @@ def _barrier_record_for_missing(ctx, entry, eval_dir, exit_code):
         # Addendum 27 (W5): same schema as a child record; the parent cannot know the child's values.
         'anderson_acceleration_effective_in_child': None,
         'case_file_sha256_in_child': None,
+        # W85: the tail as the spec declares it (None = undeclared = production OFF), and what the child's per-round
+        # append preserved up to its death -- its tail checklist included, when it got that far (else None).
+        'convergence_depth_tail_declared_in_spec': ctx.spec['configuration'].get('convergence_depth_tail'),
+        'convergence_depth_per_round_append_recovered': recover_convergence_depth_append(eval_dir),
         # W20: a model-variant entry's record carries the variant and its label on every path.
         **({'model_variant': entry['model_variant'], 'model_variant_label': MODEL_VARIANT_LABEL}
            if entry.get('model_variant') is not None else {}),
@@ -4595,6 +4639,269 @@ def load_convergence_depth_tail_state(path):
         return json.load(handle)
 
 
+# ==============================================================================
+#  P5.15 Addendum 46 ruling 7 (W85, Planner ruling Q3 on W84): the same capture APPENDED PER ROUND, so a child that
+#  raises or is killed mid-run keeps every completed round's records (the end-of-run write above is unchanged)
+# ==============================================================================
+class ConvergenceDepthAppender:
+    """Per-round, append-only, fsync'd copy of the convergence-depth capture of ONE evaluation (W85).
+
+    Two files in the eval dir, both opened in append mode and flushed + fsync'd after every write:
+      - `NETWORK_IPOPT_SOLVE_RECORDS_APPEND_FILE`: every record production's `_drain_network_ipopt_solve_records`
+        returns for a round (0 = initialisation, k = cycle k), serialized EXACTLY as `persist_convergence_depth_capture`
+        serializes `state['network_ipopt_solve_records']` (same `json.dumps(record, default=_json_default)` line, same
+        order). Production drains nothing else into that list, so on a completed run this file is BYTE-IDENTICAL to
+        the end-of-run `NETWORK_IPOPT_SOLVE_RECORDS_FILE` -- which `reconcile` checks (sha256) and records.
+      - `CONVERGENCE_DEPTH_APPEND_EVENTS_FILE`: line 1 = the child's rule-eleven tail checklist (written before any
+        solve); then one line per production tail event -- 'baseline' (`_capture_convergence_depth_tail_baseline`),
+        'apply' (`_apply_convergence_depth_tail`: a cycle's record, or the restore at exit when cycle is None),
+        'next_state' (`_convergence_depth_tail_next_state`: the AA-off predicate production stores into that cycle's
+        record) -- and a 'drained' checkpoint per round (round, n_records, records-file size after the round).
+        `reconstruct_convergence_depth_tail_state` rebuilds production's `state['convergence_depth_tail']` from it;
+        `reconcile` checks it equals the state production returned.
+    The production functions are wrapped (call-through, result returned unchanged, exceptions passed through) only
+    inside `convergence_depth_append_hooks`; nothing is written for production's stale-record discard (round None),
+    which production does not keep either. After `seal()` (called once the end-of-run write is reconciled) the
+    wrappers write nothing more. `drain_on_failure` is the exception path: records still in the Network objects of
+    the round in flight are drained (production's function, called directly) and appended. Zero solves."""
+
+    def __init__(self, eval_dir, checklist):
+        self.eval_dir = eval_dir
+        self.records_path = os.path.join(eval_dir, NETWORK_IPOPT_SOLVE_RECORDS_APPEND_FILE)
+        self.events_path = os.path.join(eval_dir, CONVERGENCE_DEPTH_APPEND_EVENTS_FILE)
+        for path in (self.records_path, self.events_path):
+            if os.path.exists(path):
+                raise RuntimeError(f'refusing to overwrite existing artifact: {path}')
+        self.planning = None
+        self.original_drain = None
+        self.last_round = None
+        self.rounds = []
+        self.n_records = 0
+        self.sealed = False
+        self.drains_after_seal = 0
+        self.failure_drain = None
+        self.write_errors = []
+        self._event({'event': 'checklist', 'utc': _utc(), 'pid': os.getpid(), 'checklist': checklist})
+
+    @staticmethod
+    def _append_lines(path, lines):
+        with open(path, 'a') as handle:
+            for line in lines:
+                handle.write(line)
+            handle.flush()
+            os.fsync(handle.fileno())
+
+    def _event(self, event):
+        self._append_lines(self.events_path, [json.dumps(event, default=_json_default) + '\n'])
+
+    def append_round(self, round_index, records, event='drained'):
+        self._append_lines(self.records_path,
+                           [json.dumps(record, default=_json_default) + '\n' for record in records])
+        self.n_records += len(records)
+        self.rounds.append(round_index)
+        self._event({'event': event, 'round': round_index, 'n_records': len(records),
+                     'records_file_bytes': os.path.getsize(self.records_path), 'utc': _utc()})
+
+    def _write_error(self, where, error):
+        """A capture write must never change the run: the error is recorded (and printed), the run goes on, and
+        `reconcile` then fails (the child exits 2 after writing its record)."""
+        self.write_errors.append({'where': where, 'error': f'{type(error).__name__}: {error}', 'utc': _utc()})
+        print(traceback.format_exc(), file=sys.stderr, flush=True)
+
+    def on_drain(self, planning_problem, round_index, records):
+        self.planning = planning_problem
+        if round_index is None:
+            return  # production's stale-record discard: not kept by production, not kept here
+        self.last_round = round_index
+        if self.sealed:
+            self.drains_after_seal += 1
+            return
+        try:
+            self.append_round(round_index, records)
+        except Exception as error:  # noqa: BLE001 -- see _write_error
+            self._write_error(f'drain round {round_index}', error)
+
+    def on_tail_event(self, event, **payload):
+        if self.sealed:
+            return
+        try:
+            self._event({'event': event, **payload})
+        except Exception as error:  # noqa: BLE001 -- see _write_error
+            self._write_error(f'tail event {event}', error)
+
+    def drain_on_failure(self, reason):
+        """Exception path (the child is failing): drain the round in flight -- 0 if no round was drained yet, else
+        the last drained round + 1 (inferred: a failure after the last cycle's drain gives that round number with 0
+        records) -- with production's own drain function, and append it. Never raises."""
+        try:
+            if self.sealed:
+                self.failure_drain = {'status': 'skipped', 'why': 'sealed: the end-of-run write was reconciled'}
+            elif self.planning is None or self.original_drain is None:
+                self.failure_drain = {'status': 'skipped',
+                                      'why': 'production never drained (the failure preceded the ADMM run)'}
+            else:
+                round_in_flight = 0 if self.last_round is None else self.last_round + 1
+                records = self.original_drain(self.planning, round_in_flight)
+                self.append_round(round_in_flight, records, event='drained_at_failure')
+                self.failure_drain = {'status': 'drained', 'round_in_flight': round_in_flight,
+                                      'n_records': len(records), 'reason': reason,
+                                      'write_errors_during_run': list(self.write_errors)}
+        except Exception as error:  # noqa: BLE001 -- the failure record must still be written
+            self.failure_drain = {'status': 'error', 'error': f'{type(error).__name__}: {error}'}
+        return self.failure_drain
+
+    def reconcile(self, capture_summary, state):
+        """After the end-of-run write: the appended records file must be byte-identical (sha256) to the end-of-run
+        records file, and the tail state rebuilt from the events must equal (after JSON round-trip) the tail state
+        production returned. `ok` False -> recorded; the child exits 2 after writing its record."""
+        tail_state = (state or {}).get('convergence_depth_tail')
+        append_sha = sha256_file(self.records_path) if os.path.exists(self.records_path) else None
+        rebuilt = reconstruct_convergence_depth_tail_state(load_convergence_depth_append_events(self.events_path)[0])
+        returned = json.loads(json.dumps(tail_state, default=_json_default)) if tail_state is not None else None
+        out = {
+            'records_append_path': os.path.relpath(self.records_path, REPO),
+            'records_append_sha256': append_sha,
+            'end_of_run_records_sha256': (capture_summary or {}).get('network_ipopt_solve_records_sha256'),
+            'n_records_appended': self.n_records, 'rounds_appended': list(self.rounds),
+            'events_path': os.path.relpath(self.events_path, REPO),
+            'records_append_byte_identical_to_end_of_run_file': (
+                append_sha is not None
+                and append_sha == (capture_summary or {}).get('network_ipopt_solve_records_sha256')),
+            'tail_state_rebuilt_from_events_equals_returned_state': rebuilt == returned,
+            'write_errors': list(self.write_errors),
+        }
+        out['ok'] = ((capture_summary or {}).get('status') == 'written' and not self.write_errors
+                     and out['records_append_byte_identical_to_end_of_run_file']
+                     and out['tail_state_rebuilt_from_events_equals_returned_state'])
+        if not out['tail_state_rebuilt_from_events_equals_returned_state']:
+            out['tail_state_rebuilt'] = rebuilt
+        return out
+
+    def seal(self):
+        self.sealed = True
+        self._event({'event': 'sealed', 'utc': _utc(), 'n_records': self.n_records, 'rounds': list(self.rounds)})
+
+
+@contextmanager
+def convergence_depth_append_hooks(appender):
+    """W85: wraps production's `_drain_network_ipopt_solve_records`, `_capture_convergence_depth_tail_baseline`,
+    `_apply_convergence_depth_tail` and `_convergence_depth_tail_next_state` (module globals of
+    `shared_resources_planning`, resolved at call time by `_run_operational_planning`) so each result is appended by
+    `appender` as it is produced, then returned UNCHANGED. Restored on exit, even on error."""
+    import shared_resources_planning as srp
+    names = ('_drain_network_ipopt_solve_records', '_capture_convergence_depth_tail_baseline',
+             '_apply_convergence_depth_tail', '_convergence_depth_tail_next_state')
+    originals = {name: getattr(srp, name) for name in names}
+    appender.original_drain = originals['_drain_network_ipopt_solve_records']
+
+    def drain(planning_problem, round_index):
+        records = originals['_drain_network_ipopt_solve_records'](planning_problem, round_index)
+        appender.on_drain(planning_problem, round_index, records)
+        return records
+
+    def baseline(planning_problem, admm_parameters):
+        result = originals['_capture_convergence_depth_tail_baseline'](planning_problem, admm_parameters)
+        appender.on_tail_event('baseline', baseline=result, option=srp.CONVERGENCE_DEPTH_TAIL_OPTION,
+                               declaration_in_force=dict(admm_parameters.convergence_depth_tail))
+        return result
+
+    def apply(planning_problem, admm_parameters, active, baseline_state, cycle):
+        result = originals['_apply_convergence_depth_tail'](planning_problem, admm_parameters, active,
+                                                             baseline_state, cycle)
+        appender.on_tail_event('apply', cycle=cycle, record=result)
+        return result
+
+    def next_state(cycle_convergence, aa_enabled, aa_record):
+        result = originals['_convergence_depth_tail_next_state'](cycle_convergence, aa_enabled, aa_record)
+        appender.on_tail_event('next_state', value=result)
+        return result
+
+    wrappers = {'_drain_network_ipopt_solve_records': drain, '_capture_convergence_depth_tail_baseline': baseline,
+                '_apply_convergence_depth_tail': apply, '_convergence_depth_tail_next_state': next_state}
+    for name, fn in wrappers.items():
+        setattr(srp, name, fn)
+    try:
+        yield appender
+    finally:
+        for name, fn in originals.items():
+            setattr(srp, name, fn)
+
+
+def _load_jsonl_tolerant(path):
+    """(complete JSON lines, n lines that did not parse -- e.g. a last line cut by a kill mid-write)."""
+    rows, bad = [], 0
+    if not os.path.exists(path):
+        return rows, bad
+    with open(path) as handle:
+        for line in handle:
+            if not line.strip():
+                continue
+            try:
+                rows.append(json.loads(line))
+            except ValueError:
+                bad += 1
+    return rows, bad
+
+
+def load_convergence_depth_append_events(path):
+    return _load_jsonl_tolerant(path)
+
+
+def reconstruct_convergence_depth_tail_state(events):
+    """Production's `state['convergence_depth_tail']` rebuilt from the append events (the assembly
+    `_run_operational_planning` does): {'enabled': False} without a 'baseline' event; otherwise enabled, the tail value
+    and option, the baseline, per_cycle = the 'apply' records of cycles 1..k, each followed by its 'next_state' value
+    as 'aa_off_predicate_end_of_cycle', and restore_at_exit = the 'apply' record with cycle None (None if not
+    reached). None if no event at all. For a run that failed this is the state up to the failure."""
+    if not events:
+        return None
+    base = next((e for e in events if e.get('event') == 'baseline'), None)
+    if base is None:
+        return {'enabled': False}
+    state = {'enabled': True, 'compl_inf_tol_tail': base['declaration_in_force']['compl_inf_tol'],
+             'option': base['option'], 'baseline': base['baseline'], 'per_cycle': [], 'restore_at_exit': None}
+    for e in events:
+        if e.get('event') == 'apply':
+            if e.get('cycle') is None:
+                state['restore_at_exit'] = e['record']
+            else:
+                state['per_cycle'].append(dict(e['record']))
+        elif e.get('event') == 'next_state' and state['per_cycle']:
+            state['per_cycle'][-1]['aa_off_predicate_end_of_cycle'] = e['value']
+    return state
+
+
+def recover_convergence_depth_append(eval_dir):
+    """What the per-round append preserved for an evaluation, read from its files alone (parent side, no model
+    import) -- for a failure record. None when the child never created the files."""
+    records_path = os.path.join(eval_dir, NETWORK_IPOPT_SOLVE_RECORDS_APPEND_FILE)
+    events_path = os.path.join(eval_dir, CONVERGENCE_DEPTH_APPEND_EVENTS_FILE)
+    if not os.path.exists(records_path) and not os.path.exists(events_path):
+        return None
+    from collections import Counter
+    records, bad_records = _load_jsonl_tolerant(records_path)
+    events, bad_events = _load_jsonl_tolerant(events_path)
+    header = events[0] if events and events[0].get('event') == 'checklist' else None
+    drains = [e for e in events if e.get('event') in ('drained', 'drained_at_failure')]
+    return {
+        'records_append_path': os.path.relpath(records_path, REPO),
+        'records_append_sha256': sha256_file(records_path) if os.path.exists(records_path) else None,
+        'n_records': len(records), 'n_unparsable_record_lines': bad_records,
+        'records_per_round': {str(k): v for k, v in sorted(Counter(r.get('round') for r in records).items(),
+                                                            key=lambda kv: (kv[0] is None, kv[0] or 0))},
+        'rounds_drained': [e.get('round') for e in drains if e.get('event') == 'drained'],
+        'round_drained_at_failure': next((e.get('round') for e in drains if e.get('event') == 'drained_at_failure'),
+                                         None),
+        'floor_status_tally': dict(sorted(Counter(
+            f"{'TSO' if r.get('agent') == 'TSO' else 'DSO'}|{r.get('floor_status')}" for r in records).items())),
+        'events_path': os.path.relpath(events_path, REPO), 'n_events': len(events),
+        'n_unparsable_event_lines': bad_events,
+        'sealed': any(e.get('event') == 'sealed' for e in events),
+        'tail_checklist_from_child': (header or {}).get('checklist'),
+        'tail_state_rebuilt': reconstruct_convergence_depth_tail_state(events),
+    }
+
+
 def convergence_depth_tail_state_check(checklist, state):
     """W84: the tail state production RETURNED must agree with what the child asserted before the run
     (`assert_convergence_depth_tail_capture`): `enabled` identical, and when enabled the tail value identical to the
@@ -4720,9 +5027,13 @@ def _child_real(args, spec, spec_path, entry, eval_dir, lock_content, env_caps, 
     for p in list(paths.values()) + [os.path.join(eval_dir, f) for f in (
             POST_CERTIFICATION_FILE, HULL_BOUND_DETAIL_FILE, AA_SIDECAR_FILE, 'certified_models.pkl',
             RESPONSE_TERMINAL_FILE, PER_CYCLE_RESPONSE_FILE, ACTIVATION_READBACK_FILE, INIT_IDENTITY_FILE,
+            NETWORK_IPOPT_SOLVE_RECORDS_APPEND_FILE, CONVERGENCE_DEPTH_APPEND_EVENTS_FILE,
             NETWORK_IPOPT_SOLVE_RECORDS_FILE, CONVERGENCE_DEPTH_TAIL_STATE_FILE)]:
         if os.path.exists(p):
             raise RuntimeError(f'refusing to overwrite existing artifact: {p}')
+    # W85 (Planner ruling Q3 on W84): the per-round append; its first line is the tail checklist, before any solve.
+    appender = ConvergenceDepthAppender(eval_dir, tail_checklist)
+    progress['convergence_depth_appender'] = appender
     hooks_ref = {}   # W64: the alpha-row hook control, closed by the post-run hook
 
     def post_run_hook(planning, sed, models, rows, report, out_dir, label, state=None, optimization_results=None,
@@ -4739,6 +5050,15 @@ def _child_real(args, spec, spec_path, entry, eval_dir, lock_content, env_caps, 
             holder['convergence_depth_capture'] = {'status': 'error', 'error': f'{type(error).__name__}: {error}',
                                                    'traceback': tb}
         holder['convergence_depth_tail_state_check'] = convergence_depth_tail_state_check(tail_checklist, state)
+        # W85: the per-round append must reproduce the end-of-run write exactly; then it is sealed.
+        try:
+            holder['convergence_depth_append'] = appender.reconcile(holder['convergence_depth_capture'], state)
+        except Exception as error:  # noqa: BLE001 -- recorded loudly; the child exits 2 after writing its record
+            tb = traceback.format_exc()
+            print(tb, file=sys.stderr, flush=True)
+            holder['convergence_depth_append'] = {'ok': False, 'error': f'{type(error).__name__}: {error}',
+                                                  'traceback': tb}
+        appender.seal()
         report['s34_recourse_jump_sidecar_path'] = os.path.relpath(paths['recourse_jump'], REPO)
         report['s34_ess_entry_stride_sidecar_path'] = os.path.relpath(paths['ess_stride'], REPO)
         report['s35ref_soh_floor_sidecar_path'] = os.path.relpath(paths['floor'], REPO)
@@ -4845,6 +5165,7 @@ def _child_real(args, spec, spec_path, entry, eval_dir, lock_content, env_caps, 
     with G.s38_pf_capture_hooks(paths['recourse_jump'], paths['ess_stride'], paths['floor'],
                                 paths['pf_stride'], floor_rows_by_node, stride=1), \
          G.s39_exempt_until_capture_hooks(paths['exempt']), \
+         convergence_depth_append_hooks(appender), \
          alpha_row_hooks as hook_control:
         hooks_ref['control'] = hook_control
         report, report_path = G.run_admm_arm(
@@ -4956,6 +5277,8 @@ def _child_real(args, spec, spec_path, entry, eval_dir, lock_content, env_caps, 
             'convergence_depth_tail_applied_in_child': holder.get('convergence_depth_tail_applied'),
             'convergence_depth_tail_state_check': holder.get('convergence_depth_tail_state_check'),
             'convergence_depth_capture': (holder.get('convergence_depth_capture') or {'status': 'not_reached'}),
+            'convergence_depth_per_round_append': (holder.get('convergence_depth_append')
+                                                   or {'ok': False, 'status': 'not_reached'}),
             'eval_key': _entry_eval_key(entry),
             'evaluation_overrides_effective': eff_overrides,
             'post_certification_capture_checklist_asserted_before_run': post_checklist,
@@ -4993,7 +5316,8 @@ def _child_real(args, spec, spec_path, entry, eval_dir, lock_content, env_caps, 
                                                                    'response_terminal'))
     convergence_depth_error = (
         (holder.get('convergence_depth_capture') or {}).get('status') != 'written'
-        or not (holder.get('convergence_depth_tail_state_check') or {}).get('match'))
+        or not (holder.get('convergence_depth_tail_state_check') or {}).get('match')
+        or not (holder.get('convergence_depth_append') or {}).get('ok'))
     return {'post_certification_error': (holder.get('post_certification') or {}).get('status') == 'error',
             'multiscenario_capture_error': capture_error,
             'convergence_depth_capture_error': convergence_depth_error}
@@ -5046,6 +5370,10 @@ def main_child(argv):
     except BaseException as error:  # noqa: BLE001 -- recorded as a barrier with its cause, then exit 1
         tb = traceback.format_exc()
         print(tb, file=sys.stderr)
+        # W85: the round in flight is drained and appended before the record is written (never raises).
+        appender = progress.get('convergence_depth_appender')
+        failure_drain = (appender.drain_on_failure(f'{type(error).__name__}: {error}') if appender is not None
+                         else {'status': 'skipped', 'why': 'no appender (the failure preceded it)'})
         record_path = os.path.join(eval_dir, 'evaluation_record.json')
         if not os.path.exists(record_path):
             _write_once_json(record_path, {
@@ -5062,6 +5390,9 @@ def main_child(argv):
                 # W84: whether the tail was enabled for this run, on every path (None when the failure came first).
                 'convergence_depth_tail_checklist_asserted_before_run': progress.get(
                     'convergence_depth_tail_checklist'),
+                # W85: what the per-round append preserved up to the failure (None when the failure preceded it).
+                'convergence_depth_failure_drain': failure_drain,
+                'convergence_depth_per_round_append_recovered': recover_convergence_depth_append(eval_dir),
                 # W20: a model-variant entry's record carries the variant and its label on every path.
                 **({'model_variant': entry['model_variant'], 'model_variant_label': MODEL_VARIANT_LABEL,
                     'model_variant_applied_in_child': (progress.get('holder') or {}).get('model_variant_applied')}
