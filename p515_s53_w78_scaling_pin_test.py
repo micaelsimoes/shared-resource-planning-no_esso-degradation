@@ -73,6 +73,28 @@ EXACT LAUNCH COMMANDS (repo root; attached, ALONE, both streams captured; never 
         > data/SRP1/Results/P515S53/scaling_pin_w78/launch_logs/analyse.log 2>&1
 OUTPUT (write-once): data/SRP1/Results/P515S53/scaling_pin_w78/{arms/<ARM>/{arm/, arm_result.json,
 manifest_sha256.json}, analysis/{analysis.json, analysis.md, manifest_sha256.json}, launch_logs/}
+
+v27 (Planner task W80) -- SUPERSEDES THE v26 CRITERIA, NEVER THE DATA
+----------------------------------------------------------------------
+The decisive arm (s53w78_x0_us0p001) ran under v26 and STOPPED on two parser/criterion defects (commit 0b0f397b):
+(1) C0 required exactly one 'objective scaling factor' line, but a restoration phase prints another; (2) IPOPT's
+PrintList Snprintf(buffer, 255, ...) drops the newline after a >= 204-character output_file entry, so the next option
+shares its physical line and the one-entry-per-line parser missed it (C0b). v27 (predecessor v26 2a08430c, not
+edited) changes exactly: C0 (every factor line == v, at least one; no gradient-based line; every x/c/d line 'No ...';
+line and restoration-entry counts recorded as evidence), the matching baseline record, and a merge-aware options
+parser. `evaluate_c0_c0b_v27` is the single evaluator for --arm and --reevaluate-v27.
+  --freeze-spec-v27     ZERO SOLVES (blocking guard + W10 guard verify(0)). Writes frozen_s53_spec_v27_<sha8>.json.
+  --reevaluate-v27 ARM  ZERO SOLVES (SolveProfileGuard(permitted=()) armed; verify(0) exactly). Only for an arm that
+                        ran under v26; re-hashes its committed manifest, re-parses its IPOPT logs, applies v27, writes
+                        scaling_pin_w78/v27_reeval/<ARM>/{arm_reeval_v27.json, manifest_sha256.json}.
+  --arm / --analyse     as above, under spec v27; --arm refuses an arm that already ran under v26; --analyse takes
+                        that arm's C0/C0b/stats from its v27 re-evaluation.
+    set -o noclobber && /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python -u \\
+        p515_s53_w78_scaling_pin_test.py --freeze-spec-v27 \\
+        > data/SRP1/Results/P515S53/scaling_pin_w78/launch_logs/freeze_v27.log 2>&1
+    set -o noclobber && /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python -u \\
+        p515_s53_w78_scaling_pin_test.py --reevaluate-v27 s53w78_x0_us0p001 \\
+        > data/SRP1/Results/P515S53/scaling_pin_w78/launch_logs/reeval_v27_s53w78_x0_us0p001.log 2>&1
 """
 
 import argparse
@@ -117,6 +139,23 @@ LAUNCH_LOGS_REL = os.path.join(OUT_REL, 'launch_logs')
 SPEC_V25 = {'path': os.path.join(_P53, 'frozen_s53_spec_v25_407a4b33.json'),
             'sha256': '407a4b330ba1ac40039f6f94a3616ffde2d7246c5fb6754114f69083eb21dcde'}
 SPEC_V26_PREFIX = 'frozen_s53_spec_v26_'
+# v27 (W80): predecessor v26 pinned; the decisive arm's v26 run evidence (commit 0b0f397b) pinned for the zero-solve
+# re-evaluation; re-evaluations are written to a fresh tree (nothing under arms/<ARM>/ is touched).
+SPEC_V26 = {'path': os.path.join(_P53, 'frozen_s53_spec_v26_2a08430c.json'),
+            'sha256': '2a08430ccdf5de0ce1853be1d4c2ca7832cf39e1db3c6c068dadf5e58010b587'}
+SPEC_V27_PREFIX = 'frozen_s53_spec_v27_'
+REEVAL_REL = os.path.join(OUT_REL, 'v27_reeval')
+V26_RUN_ARMS = {
+    's53w78_x0_us0p001': {
+        'commit': '0b0f397b',
+        'arm_result': {'path': os.path.join(OUT_REL, 'arms', 's53w78_x0_us0p001', 'arm_result.json'),
+                       'sha256': '3a7af70b1f61e31711e48bac219cf3d54bd2a37a5eda236383d27b0b86b3e604'},
+        'manifest': {'path': os.path.join(OUT_REL, 'arms', 's53w78_x0_us0p001', 'manifest_sha256.json'),
+                     'sha256': 'bf5fd29c9c4e4c086c2113a6ce22607ddd577360da01a0f513bf1a41834fe43f'},
+        'launch_manifest': {'path': os.path.join(LAUNCH_LOGS_REL, 's53w78_x0_us0p001_launch_manifest_sha256.json'),
+                            'sha256': 'c8bc838250d8a010010aa3796a230eb2251cbf99da7f2ceba4e7202ef6fa75cd'},
+    },
+}
 
 # ---- the instance: two cells, committed canonical forms ----------------------------------------------------------
 CELLS = {
@@ -224,7 +263,48 @@ def _write_once(path, payload):
 # ======================================================================================================================
 _ITER_HEADER = re.compile(r'^iter\s+objective\s+inf_pr\s+inf_du\s+lg\(mu\)\s+\|\|d\|\|\s+lg\(rg\)')
 _ITER_LINE = re.compile(r'^\s*(\d+)(r?)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\d+)')
-_OPTION_LINE = re.compile(r'^\s*(\S+) = (.*?)\s+(\d+)\s*$')
+_OPTION_LINE = re.compile(r'^\s*(\S+) = (.*?)\s+(\d+)\s*$')   # v26 one-entry-per-line form; unwired in v27, kept
+
+# v27 (W80): the options list is MERGE-AWARE. IPOPT 3.14.18 OptionsList::PrintList formats every entry as
+#     char buffer[256]; Snprintf(buffer, 255, "%40s = %-20s %6d\n", name, value, counter);
+# so at most 254 characters of an entry survive. An entry whose value has n >= 20 characters needs n + 51 with its
+# newline: n >= 204 loses the NEWLINE (the next entry is printed on the same physical line), n >= 205 also loses the
+# counter digit, n >= 212 also loses the tail of the value. Only output_file (an absolute path of 198-220 characters
+# in this test) is that long. Each physical line of the options block is therefore split at every '<name> = '
+# entry start (a name at the line start or after the %40s padding), and the counter is read only if it survived.
+_OPTION_ENTRY_START = re.compile(r'(?:^|(?<=\s))([A-Za-z][A-Za-z0-9_.]*) = ')
+_OPTION_VALUE_COUNTER = re.compile(r'^(.*?)\s+(\d+)\s*$')
+_SCALING_EVENT = re.compile(r'^(?:Scaling parameter for objective function = (\S+)|objective scaling factor = (\S+))\s*$',
+                            flags=re.M)
+
+
+def _parse_options_block(lines):
+    """v27 merge-aware parse of one segment's 'List of options' block. Returns (options, evidence)."""
+    options, physical, merged, no_counter, duplicates = {}, 0, 0, [], []
+    for line in lines[:80]:
+        if 'This program contains Ipopt' in line or line.startswith('*****'):
+            break
+        starts = list(_OPTION_ENTRY_START.finditer(line))
+        if not starts:
+            continue
+        physical += 1
+        if len(starts) > 1:
+            merged += 1
+        for i, m in enumerate(starts):
+            end = starts[i + 1].start(1) if i + 1 < len(starts) else len(line)
+            raw = line[m.end():end]
+            vc = _OPTION_VALUE_COUNTER.match(raw)
+            if vc:
+                entry = {'value': vc.group(1).strip(), 'times_used': int(vc.group(2))}
+            else:
+                entry = {'value': raw.strip(), 'times_used': None}
+                no_counter.append(m.group(1))
+            if m.group(1) in options:
+                duplicates.append(m.group(1))
+            options[m.group(1)] = entry
+    return options, {'n_option_entries': len(options), 'n_option_physical_lines': physical,
+                     'n_merged_option_physical_lines': merged, 'option_entries_without_counter': no_counter,
+                     'duplicate_option_entries': duplicates}
 
 
 def _num_or_str(text):
@@ -246,13 +326,7 @@ def parse_ipopt_log(path):
     segments = []
     for index, seg in enumerate(chunks[1:]):
         lines = seg.splitlines()
-        options = {}
-        for line in lines[:80]:
-            if 'This program contains Ipopt' in line or line.startswith('*****'):
-                break
-            m = _OPTION_LINE.match(line)
-            if m and m.group(1) != 'Name':
-                options[m.group(1)] = {'value': m.group(2).strip(), 'times_used': int(m.group(3))}
+        options, option_parse = _parse_options_block(lines)                       # v27: merge-aware
         iters = []
         for i, line in enumerate(lines):
             if _ITER_HEADER.match(line) and i + 1 < len(lines):
@@ -284,6 +358,12 @@ def parse_ipopt_log(path):
             'segment_index': index,
             'n_banners': seg.count('This is Ipopt version'),
             'options': options,
+            'option_parse': option_parse,
+            'scaling_events': [['gradient', m.group(1)] if m.group(1) is not None else ['effective', m.group(2)]
+                               for m in _SCALING_EVENT.finditer(seg)],
+            'x_scaling_all': re.findall(r'(?m)^((?:No )?x scaling provided)\s*$', seg),
+            'c_scaling_all': re.findall(r'(?m)^((?:No )?c scaling provided)\s*$', seg),
+            'd_scaling_all': re.findall(r'(?m)^((?:No )?d scaling provided)\s*$', seg),
             'objective_scaling_factor_lines': eff_lines,
             'gradient_based_objective_scaling_lines': grad_lines,
             'x_scaling': first(r'(?m)^(No x scaling provided|x scaling provided)\s*$'),
@@ -384,6 +464,9 @@ def parse_run_logs(logs_dir, years, days, n_rounds=3, primary_only=False):
                     for s in segs:
                         if s['n_banners'] != 1:
                             anomalies.append(f"{path} segment {s['segment_index']}: {s['n_banners']} banners")
+                        if s['option_parse']['duplicate_option_entries']:
+                            anomalies.append(f"{path} segment {s['segment_index']}: option listed twice "
+                                             f"{s['option_parse']['duplicate_option_entries']}")
                         s.update({'network': net, 'family': fam, 'year': str(year), 'day': str(day),
                                   'attempt': attempt, 'log': os.path.relpath(path, REPO),
                                   'round': s['segment_index'] if attempt == 'primary' else None})
@@ -519,6 +602,154 @@ CRITERIA = {
 }
 
 
+# ---- v27 (Planner task W80, rulings Q1-Q3 on the W78 STOP): C0 restated, baseline record restated, parser
+# merge-aware. NOTHING ELSE in the criteria changes (spec_v27_content asserts it against the committed v26). -------
+C0_V27 = {
+    'applies_to': 'pinned arms (value v)',
+    'holds_iff': [
+        "every network solve segment (primary + recovery + tier-2 logs) has options nlp_scaling_method = "
+        "'user-scaling' and obj_scaling_factor == v (each times_used >= 1) -- options parsed merge-aware "
+        "(formulas.option_list_parsing)",
+        "EVERY 'objective scaling factor = S' line in the segment has float(S) == v and S == format(v, 'g'), and "
+        "AT LEAST ONE such line is present (restoration phases print further lines; they are not counted against "
+        'anything)',
+        "no 'Scaling parameter for objective function' line in the segment (the gradient-based factor is not "
+        'computed)',
+        "every 'x/c/d scaling provided' line in the segment reads 'No x scaling provided' / 'No c scaling "
+        "provided' / 'No d scaling provided', and at least one of each is present",
+        'number of network segments == GUARD network-solve count, every primary block log holds exactly 3 '
+        'segments, and no parse anomaly (one banner per segment, no option listed twice)',
+    ],
+    'evidence_not_gated': 'per segment and in aggregate: the number of objective-scaling-factor lines and the '
+                          'number of restoration entries (and the segments where lines != 1 + entries); the '
+                          'options-list physical/merged line counts and entries whose counter was truncated',
+    'on_failure': 'exit 2, STOP: no value is chosen; report to the Planner',
+    'baseline_arms': {
+        'kind': 'record (exit status of the arm, not a selection criterion)',
+        'holds_iff': [
+            "no user-scaling line: the options list carries neither 'nlp_scaling_method' nor "
+            "'obj_scaling_factor' (merge-aware parse)",
+            "AT LEAST ONE 'Scaling parameter for objective function = G' line in the segment",
+            "every such line is IMMEDIATELY followed (next scaling line of the segment) by an 'objective scaling "
+            "factor = E' line with |float(E) / float(G) - 1| <= 1e-5 (E is printed %g, 6 significant digits; G %e, "
+            '7); further objective-scaling-factor lines (restoration phases, printed without a gradient-based line) '
+            'are recorded, not counted against anything',
+            'segment count, 3 segments per primary log and no parse anomaly, as for pinned arms',
+        ],
+        'recorded': 'x/c/d scaling lines (distinct), the effective and gradient-based factors (distinct)',
+    },
+}
+
+FORMULAS_V27_ADDED = {
+    'option_list_parsing': (
+        "MERGE-AWARE (v27). IPOPT 3.14.18 OptionsList::PrintList writes each entry with char buffer[256]; "
+        "Snprintf(buffer, 255, \"%40s = %-20s %6d\\n\", name, value, counter), so at most 254 characters of an entry "
+        'survive. With a value of n >= 20 characters the entry needs n + 51 characters including its newline: '
+        'n >= 204 drops the NEWLINE and the next option is printed on the same physical line; n >= 205 also drops '
+        "the counter digit; n >= 212 also drops the tail of the value. Only 'output_file' (the absolute log path, "
+        '198-220 characters across the arms and retry logs of this test) reaches that length; in the decisive arm '
+        "the DSO path is 204 characters and 'slack_bound_frac' shares its line. Parse: within the options block "
+        "(up to the IPOPT banner), each physical line is split at every '<name> = ' entry start (name at the line "
+        "start or after whitespace, regex (?:^|(?<=\\s))([A-Za-z][A-Za-z0-9_.]*) = ); the text up to the next entry "
+        "start is 'value  counter' when it matches ^(.*?)\\s+(\\d+)\\s*$, else the (possibly truncated) value with "
+        'times_used None. Recorded per segment: entries, physical lines, merged lines, entries without counter, '
+        'duplicated entries (an anomaly)'),
+    'scaling_events': "the ordered sequence of 'Scaling parameter for objective function = G' (gradient) and "
+                      "'objective scaling factor = E' (effective) lines of a segment, each on its own line",
+    'x_c_d_scaling_all': "every '(No )?x|c|d scaling provided' line of a segment (restoration phases print them again)",
+}
+
+
+def evaluate_c0_c0b_v27(records, value, pin_record, network_solves_guard, log_files, anomalies):
+    """v27 C0 (pinned arms) or baseline record, and C0b (unchanged criterion, merge-aware options). Formulas and
+    criteria: spec v27 criteria.C0_decisive_effective_factor / C0b_tolerances_unchanged, formulas."""
+    net_to_tag = {p['network_name']: tag for tag, p in pin_record['per_network'].items()}
+    c0_fail, c0b_fail = [], []
+    lines_vs_entries, off_relation = {}, []
+    merged_segments, no_counter_names, restoration_eff = 0, {}, []
+    for r in records:
+        opts = r['options']
+        where = f"{r['log']}#{r['segment_index']}"
+        events = r['scaling_events']
+        eff = [t for k, t in events if k == 'effective']
+        grad = [t for k, t in events if k == 'gradient']
+        key = f"lines={len(eff)}|restoration_entries={r['n_restoration_entries']}"
+        lines_vs_entries[key] = lines_vs_entries.get(key, 0) + 1
+        if len(eff) != 1 + r['n_restoration_entries']:
+            off_relation.append(f"{where}: {len(eff)} lines, {r['n_restoration_entries']} restoration entries")
+        op = r['option_parse']
+        merged_segments += 1 if op['n_merged_option_physical_lines'] else 0
+        for n in op['option_entries_without_counter']:
+            no_counter_names[n] = no_counter_names.get(n, 0) + 1
+        if value is not None:
+            nsm, osf = opts.get('nlp_scaling_method'), opts.get('obj_scaling_factor')
+            if not (nsm and nsm['value'] == 'user-scaling' and (nsm['times_used'] or 0) >= 1):
+                c0_fail.append(f'{where}: nlp_scaling_method {nsm}')
+            if not (osf and _values_equal(value, osf['value']) and (osf['times_used'] or 0) >= 1):
+                c0_fail.append(f'{where}: obj_scaling_factor {osf}')
+            if not eff:
+                c0_fail.append(f'{where}: no objective scaling factor line')
+            bad = [t for t in eff if not (float(t) == value and t == format(value, 'g'))]
+            if bad:
+                c0_fail.append(f'{where}: objective scaling factor lines != {format(value, "g")}: {bad}')
+            if grad:
+                c0_fail.append(f'{where}: gradient-based line present {grad}')
+            for axis in ('x', 'c', 'd'):
+                seen = r[f'{axis}_scaling_all']
+                if not seen or any(t != f'No {axis} scaling provided' for t in seen):
+                    c0_fail.append(f'{where}: {axis} scaling lines {seen}')
+        else:
+            if any(k in opts for k in SCALING_KEYS):
+                c0_fail.append(f'{where}: baseline arm carries a scaling option (user-scaling line)')
+            if not grad:
+                c0_fail.append(f'{where}: no gradient-based line')
+            for i, (kind, text) in enumerate(events):
+                if kind != 'gradient':
+                    continue
+                nxt = events[i + 1] if i + 1 < len(events) else None
+                if not (nxt and nxt[0] == 'effective' and float(text) > 0
+                        and abs(float(nxt[1]) / float(text) - 1.0) <= 1e-5):
+                    c0_fail.append(f'{where}: gradient-based {text} not followed by an equal effective line ({nxt})')
+            paired = {i + 1 for i, (kind, _t) in enumerate(events) if kind == 'gradient'}
+            restoration_eff += [t for i, (kind, t) in enumerate(events) if kind == 'effective' and i not in paired]
+        pn = pin_record['per_network'][net_to_tag[r['network']]]
+        retry = None
+        if r['attempt'] != 'primary':
+            retry = {k: v for k, v in (pn['recovery_options'] or {}).items() if k != 'hessian_approximation'}
+        exp = _expected_options(pn['options_before'], retry=retry, tier2=r['attempt'] == 'recovery_tier2')
+        logged = {k: v['value'] for k, v in opts.items() if k in PROTECTED_OPTION_KEYS}
+        if set(exp) != set(logged) or not all(_values_equal(exp[k], logged[k]) for k in exp):
+            c0b_fail.append(f'{where}: protected options {logged} != expected {exp}')
+    n_primary_logs = sum(1 for f in log_files if not f.endswith('_recovery.log') and not f.endswith('_tier2.log'))
+    count_ok = (network_solves_guard is not None and len(records) == network_solves_guard
+                and n_primary_logs == 48 and not anomalies)
+    c0 = {'criterion_version': 'v27', 'applies': value is not None,
+          'kind': 'C0 (pinned)' if value is not None else 'baseline record',
+          'n_network_segments_parsed': len(records),
+          'n_network_solves_in_guard': network_solves_guard, 'segment_count_equals_guard': count_ok,
+          'n_primary_logs': n_primary_logs, 'anomalies': anomalies,
+          'n_failures': len(c0_fail), 'failures_first': c0_fail[:50],
+          'holds': count_ok and not c0_fail,
+          'effective_factor_distinct': sorted({t for r in records for k, t in r['scaling_events'] if k == 'effective'}),
+          'gradient_line_distinct': sorted({t for r in records for k, t in r['scaling_events'] if k == 'gradient'}),
+          'x_c_d_scaling_distinct': sorted({f"{r['x_scaling']} | {r['c_scaling']} | {r['d_scaling']}"
+                                            for r in records}),
+          'x_c_d_scaling_all_distinct': sorted({t for r in records for a in ('x', 'c', 'd')
+                                                for t in r[f'{a}_scaling_all']}),
+          'evidence_not_gated': {
+              'n_effective_lines_total': sum(1 for r in records for k, _t in r['scaling_events'] if k == 'effective'),
+              'n_gradient_lines_total': sum(1 for r in records for k, _t in r['scaling_events'] if k == 'gradient'),
+              'n_restoration_entries_total': sum(r['n_restoration_entries'] for r in records),
+              'segments_by_lines_and_restoration_entries': lines_vs_entries,
+              'segments_where_lines_ne_1_plus_restoration_entries': off_relation,
+              'baseline_unpaired_effective_lines_distinct': sorted(set(restoration_eff)),
+              'n_segments_with_merged_option_lines': merged_segments,
+              'option_entries_without_counter': no_counter_names}}
+    c0b = {'criterion_version': 'v26 criterion, v27 merge-aware options', 'n_failures': len(c0b_fail),
+           'failures_first': c0b_fail[:50], 'holds': not c0b_fail}
+    return c0, c0b
+
+
 def spec_v26_content(calibration):
     return {
         'schema': 'p515_frozen_spec_v26',
@@ -619,6 +850,312 @@ def find_spec_v26():
         return rel, sha, json.load(handle)
 
 
+def find_spec_v27():
+    d = _abs(_P53)
+    names = sorted(f for f in os.listdir(d) if f.startswith(SPEC_V27_PREFIX))
+    if len(names) != 1:
+        raise RuntimeError(f'expected exactly one frozen spec v27, found {names}')
+    rel = os.path.join(_P53, names[0])
+    sha = _sha(rel)
+    if not names[0].endswith(f'{sha[:8]}.json'):
+        raise RuntimeError(f'{rel} does not hash to its name ({sha})')
+    with open(_abs(rel)) as handle:
+        return rel, sha, json.load(handle)
+
+
+V27_CHANGED_TOP_LEVEL = ('schema', 'version', 'authority', 'predecessor', 'predecessor_not_edited', 'harness',
+                         'criteria', 'formulas', 'run_order', 'run_order_note', 'frozen_utc', 'git_head_at_freeze')
+
+
+def spec_v27_content(v26):
+    content = copy.deepcopy(v26)
+    content['schema'] = 'p515_frozen_spec_v27'
+    content['version'] = 27
+    content['authority'] = list(v26['authority']) + [
+        'Planner task W80: rulings Q1 (spec v27 scoped to the two W78 defects), Q2 (zero-solve re-evaluation of '
+        'the decisive arm, no re-run), Q3 (commit the v26 arm evidence first)']
+    content['predecessor'] = {'path': SPEC_V26['path'], 'sha256': SPEC_V26['sha256']}
+    content['predecessor_not_edited'] = ('v26 stays as frozen. Its formal outcome on the decisive arm, STOP (C0 and '
+                                         'C0b FAIL), stays on the record as a failed outcome (commit 0b0f397b); v27 '
+                                         'supersedes the CRITERIA, never the data')
+    content['harness'] = {'path': os.path.basename(__file__), 'sha256_at_freeze': _sha(__file__),
+                          'commit_at_freeze': _git(['log', '-1', '--format=%H', '--', os.path.basename(__file__)])}
+    content['criteria']['C0_decisive_effective_factor'] = copy.deepcopy(C0_V27)
+    for k, v in FORMULAS_V27_ADDED.items():
+        if k in content['formulas']:
+            raise RuntimeError(f'formula key {k} already in v26')
+        content['formulas'][k] = v
+    content['run_order'] = (['--reevaluate-v27 ' + DECISIVE_FIRST_ARM]
+                            + [n for n in ARMS if n not in V26_RUN_ARMS] + ['--analyse'])
+    content['run_order_note'] = ('the decisive arm is NOT re-run (ruling Q2): its v26 run is re-evaluated under v27 '
+                                 'with zero solves; only if C0 and C0b then hold do the remaining nine arms run, one '
+                                 'per process, then --analyse')
+    content.pop('frozen_utc', None)
+    content.pop('git_head_at_freeze', None)
+    content['v27_changes'] = [
+        'C0 restated: EVERY objective-scaling-factor line equals v and at least one is present (was: exactly one '
+        'line); every x/c/d scaling line reads No ... and at least one of each is present (was: a prediction only); '
+        'line count and restoration-entry count recorded as evidence, not as a gate',
+        'baseline-arm record restated to match: no user-scaling line, at least one gradient-based line, each '
+        'gradient-based line immediately followed by an equal effective line (printed precision); restoration-'
+        'phase effective lines recorded, not counted (was: exactly one line of each, equal as floats)',
+        'options-list parser made merge-aware (formulas.option_list_parsing): IPOPT PrintList Snprintf(buffer, 255) '
+        'truncation merges the entry after a long output_file onto its physical line',
+        'procedural consequence of ruling Q2 only: run_order (decisive arm re-evaluated, not re-run)',
+        'nothing else: C0b, C1, C2, C3, the selection rule, the outcomes, formulas (except the added keys), '
+        'configuration, arms, eval ids, the solve profile, calibration and the v26 predictions are carried over '
+        'verbatim (asserted against the committed v26 at freeze)',
+    ]
+    ev = V26_RUN_ARMS[DECISIVE_FIRST_ARM]
+    content['v26_decisive_arm_evidence'] = {
+        'arm': DECISIVE_FIRST_ARM, 'commit': ev['commit'],
+        'arm_result': {'path': ev['arm_result']['path'], 'sha256': ev['arm_result']['sha256']},
+        'manifest': {'path': ev['manifest']['path'], 'sha256': ev['manifest']['sha256']},
+        'launch_manifest': {'path': ev['launch_manifest']['path'], 'sha256': ev['launch_manifest']['sha256']},
+        'v26_outcome': 'STOP: C0 failed on 1 segment (optim_log_case33_2_2030_Winter.log#2 printed two objective '
+                       'scaling factor lines, 0.001 and 0.001, the second in its restoration phase); C0b failed on '
+                       '108 segments (slack_bound_frac merged onto the output_file line)',
+        'run_level_facts': 'guard exact 153/153, blocked 0, pin read back on TSO + 3 DSO holders, 144 network '
+                           'segments == 144 guard network solves, 0 network-failure blocks, ESSO options unchanged',
+        'reevaluation': 'zero solves: SolveProfileGuard(permitted=()) armed for the process and verify(0) exactly '
+                        '(and the W10 bounded guard verify(0)); every file of the committed arm manifest re-hashed '
+                        'and equal before parsing; output to a fresh write-once tree ' + REEVAL_REL,
+    }
+    content['predictions_v27_recorded_before_reevaluation'] = {
+        'basis': 'P9-P12 are derived from the committed v26 arm_result of the decisive arm (per-segment line '
+                 'lists, restoration entries and the 108 C0b failures), not independent tests of the IPOPT '
+                 'behaviour; P13-P15 concern arms not yet run',
+        'P9_reeval_C0': 'C0 HOLDS on the decisive arm: 144 segments == 144 guard network solves; 145 objective '
+                        'scaling factor lines, all 0.001; 0 gradient-based lines; every x/c/d line No ...; lines == '
+                        '1 + restoration entries on all 144 segments (1 restoration entry, DSO7)',
+        'P10_reeval_C0b': 'C0b HOLDS on 144/144: the 108 v26 failures are exactly the 3 DSO families x 36 segments '
+                          'whose slack_bound_frac shared the output_file line; the merge-aware parse recovers it; '
+                          '108 segments carry one merged physical line, 36 (TSO) none; no entry without counter '
+                          '(DSO path 204 characters: newline lost, counter intact)',
+        'P11_reeval_v26_fields_identical': 'every non-option per-solve field (iterations, exit, mu, KKT, '
+                                           'regularisation, restoration) and the family statistics equal the v26 '
+                                           'arm_result exactly',
+        'P12_parser_regimes_remaining_arms': 'x0 pinned arms as the decisive arm (DSO 204: merged, counter intact); '
+                                             'n7u pinned arms DSO 205: merged AND output_file without counter on 108 '
+                                             'segments; baseline arms (TSO/DSO paths 198/201 x0, 199/202 n7u) no '
+                                             'merged line; any retry log (207-220): output_file without counter',
+        'P13_remaining_arms_C0_C0b': 'C0 (or the baseline record) and C0b hold on all nine remaining arms; guard '
+                                     'exact on each',
+        'P14_C2_TSO_at_0p001': 'the n7u / x0 TSO median ratio at 0.001 is >= 1.6 (x0 TSO at 0.001 median 24 == its '
+                               'gradient-based calibration median at 0.002, so the factor change did not move x0; '
+                               'the n7u TSO factor is 0.001 in both regimes) -- probability ~0.65; P8 then fails',
+        'P15_outcome_forecast': 'NO_VALUE_MEETS_C2 ~0.55; RECOMMEND(v) ~0.25 (most likely 0.001); FALLBACK_PURE_C '
+                                '~0.15; STOP ~0.05. v26 P7 stands as frozen and is scored as recorded',
+    }
+    # nothing else changes: assert against the committed v26
+    unchanged = []
+    for k in v26:
+        if k in V27_CHANGED_TOP_LEVEL:
+            continue
+        if content.get(k) != v26[k]:
+            raise RuntimeError(f'v27 changed top-level key {k} beyond the declared scope')
+        unchanged.append(k)
+    for k in v26['criteria']:
+        if k != 'C0_decisive_effective_factor' and content['criteria'][k] != v26['criteria'][k]:
+            raise RuntimeError(f'v27 changed criterion {k}')
+    for k in v26['formulas']:
+        if content['formulas'][k] != v26['formulas'][k]:
+            raise RuntimeError(f'v27 changed formula {k}')
+    content['unchanged_from_v26_asserted_at_freeze'] = {
+        'top_level_keys': unchanged,
+        'criteria': [k for k in v26['criteria'] if k != 'C0_decisive_effective_factor'],
+        'formulas': list(v26['formulas'])}
+    return content
+
+
+def _blocking_guard(label):
+    from p513_solve_profile_guard import SolveProfileGuard
+    return SolveProfileGuard((), label=label).install()
+
+
+def freeze_spec_v27(started):
+    blocking = _blocking_guard('P5.15 W80 spec v27 freeze -- zero solves')
+    failures = []
+    for pin in (SPEC_V26, V26_RUN_ARMS[DECISIVE_FIRST_ARM]['arm_result'],
+                V26_RUN_ARMS[DECISIVE_FIRST_ARM]['manifest'], V26_RUN_ARMS[DECISIVE_FIRST_ARM]['launch_manifest']):
+        got = _sha(pin['path'])
+        tracked, clean = _git_tracked_clean(pin['path'])
+        if got != pin['sha256'] or not (tracked and clean):
+            failures.append(f"{pin['path']} not as pinned: sha {got} tracked {tracked} clean {clean}")
+    tracked, clean = _git_tracked_clean(os.path.basename(__file__))
+    if not (tracked and clean):
+        failures.append(f'harness must be committed and clean before the freeze (tracked {tracked} clean {clean})')
+    existing = [f for f in os.listdir(_abs(_P53)) if f.startswith(SPEC_V27_PREFIX)]
+    if existing:
+        failures.append(f'spec v27 already frozen (write-once): {existing}')
+    if os.path.exists(_abs(REEVAL_REL)):
+        failures.append(f'{REEVAL_REL} exists: the freeze must precede every re-evaluation')
+    if failures:
+        for f in failures:
+            _log(f'[FREEZE v27 PRECONDITION FAILED] {f}')
+        return 1
+    with open(_abs(SPEC_V26['path'])) as handle:
+        v26 = json.load(handle)
+    content = spec_v27_content(v26)
+    content['frozen_utc'] = _utc()
+    content['git_head_at_freeze'] = _git(['rev-parse', 'HEAD'])
+    text = json.dumps(content, indent=1, default=_json_default) + '\n'
+    sha = hashlib.sha256(text.encode()).hexdigest()
+    rel = os.path.join(_P53, f'{SPEC_V27_PREFIX}{sha[:8]}.json')
+    with open(_abs(rel), 'x') as handle:
+        handle.write(text)
+    check_rel, check_sha, _ = find_spec_v27()
+    failures = blocking.verify(0) + GUARD.verify(0)
+    _log(f'frozen spec v27: {rel} sha256={sha} (predecessor v26 {SPEC_V26["sha256"]}); re-read {check_sha == sha}; '
+         f'unchanged-from-v26 asserted {content["unchanged_from_v26_asserted_at_freeze"]["top_level_keys"]}; '
+         f'blocking guard {dict(blocking.counts)} + W10 guard {dict(GUARD.counts)} verify(0) = {failures}; wall '
+         f'{time.time() - started:.1f}s')
+    return 0 if not failures and check_sha == sha else 1
+
+
+PER_SOLVE_V26_FIELDS = ('attempt', 'c_scaling', 'd_scaling', 'day', 'exit', 'family', 'final_kkt_scaled',
+                        'final_kkt_unscaled', 'final_mu', 'gradient_based_objective_scaling_lines', 'iterations', 'log',
+                        'n_banners', 'n_factorizations_with_delta_x_positive', 'n_iter_lines',
+                        'n_iterations_with_inertia_regularisation', 'n_restoration_entries',
+                        'n_restoration_iterations', 'network', 'objective_scaling_factor_lines', 'round',
+                        'segment_index', 'x_scaling', 'year')
+
+
+def _per_solve_records_out(records):
+    return [{k: v for k, v in r.items() if k != 'options'} | {
+        'options_logged': {k: v['value'] for k, v in r['options'].items() if k != 'output_file'}} for r in records]
+
+
+def reevaluate_v27(arm, started):
+    """ZERO SOLVES. Re-evaluate an arm that ran under spec v26 (committed evidence) under the v27 C0 / baseline
+    record, C0b and the merge-aware parser. Nothing is re-run; the arm's committed files are not touched."""
+    blocking = _blocking_guard('P5.15 W80 v27 zero-solve re-evaluation -- zero solves')
+    if arm not in V26_RUN_ARMS:
+        raise SystemExit(f'{arm} did not run under v26; --reevaluate-v27 applies only to {sorted(V26_RUN_ARMS)}')
+    import p56a_oracle as O
+    spec_rel, spec_sha, spec = find_spec_v27()
+    ev = V26_RUN_ARMS[arm]
+    out_root = _abs(os.path.join(REEVAL_REL, arm))
+    _log(f'{STAGE}')
+    _log(f'v27 ZERO-SOLVE RE-EVALUATION of {arm}; spec {spec_rel} ({spec_sha}); HEAD {_git(["rev-parse", "HEAD"])}')
+    failures = []
+    if spec['harness']['sha256_at_freeze'] != _sha(__file__):
+        failures.append('harness differs from the one spec v27 was frozen with')
+    if _git_tracked_clean(spec_rel) != (True, True):
+        failures.append(f'{spec_rel} not tracked and clean')
+    pinned = spec['v26_decisive_arm_evidence']
+    for which in ('arm_result', 'manifest', 'launch_manifest'):
+        pin = pinned[which]
+        got = _sha(pin['path'])
+        if got != pin['sha256'] or _git_tracked_clean(pin['path']) != (True, True):
+            failures.append(f"{pin['path']}: sha {got} != pinned {pin['sha256']} or not tracked and clean")
+    if os.path.exists(out_root):
+        failures.append(f'output exists (write-once): {out_root}')
+    if failures:
+        for f in failures:
+            _log(f'[PRECONDITION FAILED] {f}')
+        return 1
+    with open(_abs(pinned['arm_result']['path'])) as handle:
+        v26r = json.load(handle)
+    with open(_abs(pinned['manifest']['path'])) as handle:
+        manifest_v26 = json.load(handle)
+    rehash = {p: (_sha(p) if os.path.isfile(_abs(p)) else None) for p in manifest_v26}
+    mismatched = sorted(p for p, h in manifest_v26.items() if rehash[p] != h)
+    _log(f'committed arm manifest re-hashed: {len(manifest_v26)} entries, mismatched {mismatched}')
+    if mismatched:
+        return 1
+    if v26r['arm'] != arm or v26r['frozen_spec']['sha256'] != SPEC_V26['sha256']:
+        _log('[PRECONDITION FAILED] arm_result is not this arm under v26')
+        return 1
+    value, ids = v26r['value'], v26r['instance']['eval_ids']
+    with open(W10.CASE_JSON) as handle:
+        case = json.load(handle)
+    years, days = sorted(case['Years']), sorted(case['Days'])
+    logs_dir = os.path.join(O.WORK_DIR, ids['run'], 'logs')
+    pin_record = v26r['pin_record']
+    records, log_files, anomalies = parse_run_logs(logs_dir, years, days)
+    all_dirs = {d for p in pin_record['per_network'].values() for d in p['logs_dirs']}
+    if all_dirs != {logs_dir}:
+        anomalies.append(f'network logs_dirs {sorted(all_dirs)} != {logs_dir}')
+    not_in_manifest = sorted(p for p, h in log_files.items() if manifest_v26.get(p) != h)
+    if not_in_manifest:
+        anomalies.append(f'parsed logs not in the committed manifest at the same hash: {not_in_manifest}')
+    network_solves_guard = v26r['solve_profile']['network_solves']
+    c0, c0b = evaluate_c0_c0b_v27(records, value, pin_record, network_solves_guard, log_files, anomalies)
+    stats = family_stats(records)
+    # P11: the parser change must alter nothing but the options
+    new_by_key = {(r['log'], r['segment_index']): r for r in records}
+    field_diffs = []
+    for old in v26r['per_solve_records']:
+        new = new_by_key.get((old['log'], old['segment_index']))
+        if new is None:
+            field_diffs.append(f"{old['log']}#{old['segment_index']}: missing in re-parse")
+            continue
+        for k in PER_SOLVE_V26_FIELDS:
+            if old.get(k) != new.get(k):
+                field_diffs.append(f"{old['log']}#{old['segment_index']}: {k} {old.get(k)} != {new.get(k)}")
+    if len(v26r['per_solve_records']) != len(records):
+        field_diffs.append(f"record count {len(v26r['per_solve_records'])} != {len(records)}")
+    stats_equal = json.loads(json.dumps(stats, default=_json_default)) == v26r['family_stats']
+    options_recovered = {}
+    for old in v26r['per_solve_records']:
+        new = new_by_key.get((old['log'], old['segment_index']))
+        if new is None:
+            continue
+        gained = sorted(set(new['options']) - set(old['options_logged']) - {'output_file'})
+        lost = sorted(set(old['options_logged']) - set(new['options']))
+        if gained or lost:
+            key = f'gained {gained} lost {lost}'
+            options_recovered[key] = options_recovered.get(key, 0) + 1
+    guard_failures = blocking.verify(0) + GUARD.verify(0)
+    result = {
+        'schema': SCHEMA + '_reeval_v27', 'stage': STAGE, 'authority': AUTHORITY + ['Planner task W80 ruling Q2'],
+        'timestamp_utc': _utc(), 'git_head_at_run': _git(['rev-parse', 'HEAD']),
+        'script': os.path.basename(__file__), 'script_sha256': _sha(__file__),
+        'frozen_spec': {'path': spec_rel, 'sha256': spec_sha},
+        'arm': arm, 'cell': v26r['cell'], 'value': value, 'instance': v26r['instance'],
+        'source_run': {'spec': v26r['frozen_spec'], 'arm_result': pinned['arm_result'],
+                       'manifest': pinned['manifest'], 'launch_manifest': pinned['launch_manifest'],
+                       'commit': pinned['commit'], 'script_sha256_at_run': v26r['script_sha256'],
+                       'git_head_at_run': v26r['git_head_at_run'],
+                       'manifest_rehashed_entries': len(manifest_v26), 'manifest_mismatched': mismatched},
+        'zero_solve': {'blocking_guard': 'SolveProfileGuard(permitted=()) armed for the process',
+                       'blocking_guard_counts': dict(blocking.counts), 'w10_guard_counts': dict(GUARD.counts),
+                       'verify_0_failures': guard_failures},
+        'C0_decisive': c0, 'C0b_tolerances_unchanged': c0b,
+        'v26_consistency': {'non_option_per_solve_fields_identical': not field_diffs,
+                            'field_differences_first': field_diffs[:50],
+                            'family_stats_identical': stats_equal,
+                            'options_gained_or_lost_vs_v26_parse': options_recovered},
+        'family_stats': stats,
+        'retry_segments': [{k: r[k] for k in ('network', 'year', 'day', 'attempt', 'iterations', 'exit')}
+                           for r in records if r['attempt'] != 'primary'],
+        'per_solve_records': _per_solve_records_out(records),
+        'ipopt_logs_sha256': log_files,
+        'wall_clock_s': time.time() - started,
+    }
+    os.makedirs(out_root, exist_ok=False)
+    path = os.path.join(out_root, 'arm_reeval_v27.json')
+    _write_once(path, result)
+    _write_once(os.path.join(out_root, 'manifest_sha256.json'),
+                {os.path.relpath(path, REPO): _sha(path)} | log_files)
+    _log(f"C0 v27 ({c0['kind']}): holds {c0['holds']}; segments {c0['n_network_segments_parsed']} vs guard network "
+         f"solves {c0['n_network_solves_in_guard']}; effective {c0['effective_factor_distinct']}; gradient "
+         f"{c0['gradient_line_distinct']}; x|c|d all {c0['x_c_d_scaling_all_distinct']}; failures {c0['n_failures']} "
+         f"{c0['failures_first'][:3]}")
+    _log(f"C0 evidence (not gated): {c0['evidence_not_gated']}")
+    _log(f"C0b: holds {c0b['holds']} ({c0b['n_failures']} failures) {c0b['failures_first'][:2]}")
+    _log(f"v26 consistency: non-option fields identical {not field_diffs} {field_diffs[:3]}; family stats identical "
+         f"{stats_equal}; options gained/lost vs the v26 parse {options_recovered}")
+    _log(f'guards verify(0) = {guard_failures}; wrote {os.path.relpath(path, REPO)}; wall {time.time() - started:.1f}s')
+    if guard_failures:
+        return 1
+    if not c0['holds']:
+        _log('STOP: C0 (v27) FAILS on the decisive arm')
+        return 2
+    return 0 if (c0b['holds'] and not field_diffs and stats_equal) else 1
+
+
 def freeze_spec(started):
     failures = []
     got = _sha(SPEC_V25['path'])
@@ -698,7 +1235,9 @@ def run_one_arm(arm, started):
     if arm not in ARMS:
         raise SystemExit(f'undeclared arm {arm}; declared: {sorted(ARMS)}')
     cell, value = ARMS[arm]['cell'], ARMS[arm]['value']
-    spec_rel, spec_sha, spec = find_spec_v26()
+    if arm in V26_RUN_ARMS:
+        raise SystemExit(f'{arm} already ran under spec v26 (committed); v27 evaluates it by --reevaluate-v27 only')
+    spec_rel, spec_sha, spec = find_spec_v27()
     out_root = _abs(os.path.join(OUT_REL, 'arms', arm))
     arm_dir = os.path.join(out_root, 'arm')
     _log(f'{STAGE}')
@@ -857,51 +1396,9 @@ def run_one_arm(arm, started):
     records, log_files, anomalies = parse_run_logs(logs_dir, years, days)
     if all_dirs != {logs_dir}:
         anomalies.append(f'network logs_dirs {sorted(all_dirs)} != {logs_dir}')
-    net_to_tag = {p['network_name']: tag for tag, p in pin_record['per_network'].items()}
 
-    # C0 (pinned) / baseline record, and C0b
-    c0_fail, c0b_fail = [], []
-    for r in records:
-        opts = r['options']
-        where = f"{r['log']}#{r['segment_index']}"
-        if value is not None:
-            nsm, osf = opts.get('nlp_scaling_method'), opts.get('obj_scaling_factor')
-            if not (nsm and nsm['value'] == 'user-scaling' and nsm['times_used'] >= 1):
-                c0_fail.append(f'{where}: nlp_scaling_method {nsm}')
-            if not (osf and _values_equal(value, osf['value']) and osf['times_used'] >= 1):
-                c0_fail.append(f'{where}: obj_scaling_factor {osf}')
-            eff = r['objective_scaling_factor_lines']
-            if not (len(eff) == 1 and float(eff[0]) == value and eff[0] == format(value, 'g')):
-                c0_fail.append(f'{where}: objective scaling factor lines {eff}')
-            if r['gradient_based_objective_scaling_lines']:
-                c0_fail.append(f"{where}: gradient-based line present {r['gradient_based_objective_scaling_lines']}")
-        else:
-            if any(k in opts for k in SCALING_KEYS):
-                c0_fail.append(f'{where}: baseline arm carries a scaling option')
-            eff, grad = r['objective_scaling_factor_lines'], r['gradient_based_objective_scaling_lines']
-            if not (len(eff) == 1 and len(grad) == 1 and float(eff[0]) == float(grad[0])):
-                c0_fail.append(f'{where}: baseline effective {eff} != gradient-based {grad}')
-        pn = pin_record['per_network'][net_to_tag[r['network']]]
-        retry = None
-        if r['attempt'] != 'primary':
-            retry = {k: v for k, v in (pn['recovery_options'] or {}).items() if k != 'hessian_approximation'}
-        exp = _expected_options(pn['options_before'], retry=retry, tier2=r['attempt'] == 'recovery_tier2')
-        logged = {k: v['value'] for k, v in opts.items() if k in PROTECTED_OPTION_KEYS}
-        if set(exp) != set(logged) or not all(_values_equal(exp[k], logged[k]) for k in exp):
-            c0b_fail.append(f'{where}: protected options {logged} != expected {exp}')
-    n_primary_logs = sum(1 for f in log_files if not f.endswith('_recovery.log') and not f.endswith('_tier2.log'))
-    count_ok = (network_solves_guard is not None and len(records) == network_solves_guard
-                and n_primary_logs == 48 and not anomalies)
-    c0 = {'applies': value is not None, 'n_network_segments_parsed': len(records),
-          'n_network_solves_in_guard': network_solves_guard, 'segment_count_equals_guard': count_ok,
-          'n_primary_logs': n_primary_logs, 'anomalies': anomalies,
-          'n_failures': len(c0_fail), 'failures_first': c0_fail[:50],
-          'holds': count_ok and not c0_fail,
-          'effective_factor_distinct': sorted({x for r in records for x in r['objective_scaling_factor_lines']}),
-          'gradient_line_distinct': sorted({x for r in records for x in r['gradient_based_objective_scaling_lines']}),
-          'x_c_d_scaling_distinct': sorted({f"{r['x_scaling']} | {r['c_scaling']} | {r['d_scaling']}"
-                                            for r in records})}
-    c0b = {'n_failures': len(c0b_fail), 'failures_first': c0b_fail[:50], 'holds': not c0b_fail}
+    # C0 (pinned) / baseline record, and C0b -- v27 (evaluate_c0_c0b_v27; the v26 inline form is superseded)
+    c0, c0b = evaluate_c0_c0b_v27(records, value, pin_record, network_solves_guard, log_files, anomalies)
     stats = family_stats(records)
     retries = [r for r in records if r['attempt'] != 'primary']
     classes = (summary['network_failures_summary'] or {}).get('classes') or {}
@@ -957,10 +1454,11 @@ def run_one_arm(arm, started):
         manifest.setdefault(rel, _sha(rel))
     _write_once(os.path.join(out_root, 'manifest_sha256.json'), manifest)
 
-    _log(f"C0 ({'pinned' if value is not None else 'baseline record'}): holds {c0['holds']}; segments "
+    _log(f"C0 v27 ({c0['kind']}): holds {c0['holds']}; segments "
          f"{c0['n_network_segments_parsed']} vs guard network solves {c0['n_network_solves_in_guard']}; effective "
          f"factors {c0['effective_factor_distinct']}; gradient lines {c0['gradient_line_distinct']}; x|c|d "
          f"{c0['x_c_d_scaling_distinct']}; failures {c0['n_failures']} {c0['failures_first'][:3]}")
+    _log(f"C0 evidence (not gated): {c0['evidence_not_gated']}")
     _log(f"C0b tolerances unchanged: {c0b['holds']} ({c0b['n_failures']} failures) {c0b['failures_first'][:2]}")
     for fam in FAMILIES:
         s = stats[fam]
@@ -993,7 +1491,7 @@ def _within(a, b, abs_floor, ratio_hi):
 
 
 def analyse(started):
-    spec_rel, spec_sha, spec = find_spec_v26()
+    spec_rel, spec_sha, spec = find_spec_v27()                                   # v27 (W80)
     results = {}
     for name in ARMS:
         path = _abs(os.path.join(OUT_REL, 'arms', name, 'arm_result.json'))
@@ -1003,7 +1501,26 @@ def analyse(started):
         with open(path) as handle:
             results[name] = json.load(handle)
         results[name]['_sha256'] = _sha(path)
-        if results[name]['frozen_spec']['sha256'] != spec_sha:
+        if name in V26_RUN_ARMS:
+            # ran under v26 (committed); C0 / C0b / stats / records come from its v27 zero-solve re-evaluation
+            if results[name]['_sha256'] != V26_RUN_ARMS[name]['arm_result']['sha256']:
+                _log(f'[ANALYSE] {name}: committed v26 arm_result changed')
+                return 1
+            rpath = _abs(os.path.join(REEVAL_REL, name, 'arm_reeval_v27.json'))
+            if not os.path.isfile(rpath):
+                _log(f'[ANALYSE] missing v27 re-evaluation of {name}')
+                return 1
+            with open(rpath) as handle:
+                reeval = json.load(handle)
+            if reeval['frozen_spec']['sha256'] != spec_sha:
+                _log(f'[ANALYSE] {name}: re-evaluation under a different spec')
+                return 1
+            for k in ('C0_decisive', 'C0b_tolerances_unchanged', 'family_stats', 'retry_segments',
+                      'per_solve_records'):
+                results[name][k] = reeval[k]
+            results[name]['_evaluated_by'] = {'v27_reevaluation': os.path.relpath(rpath, REPO),
+                                              'sha256': _sha(rpath)}
+        elif results[name]['frozen_spec']['sha256'] != spec_sha:
             _log(f'[ANALYSE] {name} ran under a different spec')
             return 1
     arm_of = {(a['cell'], a['value']): n for n, a in ARMS.items()}
@@ -1096,7 +1613,10 @@ def analyse(started):
         else:
             outcome, chosen = 'NO_VALUE_MEETS_C2', None
     arms_table = {n: {'cell': ARMS[n]['cell'], 'value': ARMS[n]['value'],
+                      'evaluated_by': results[n].get('_evaluated_by', 'arm_result (run under v27)'),
                       'C0_holds': results[n]['C0_decisive']['holds'],
+                      'C0_kind': results[n]['C0_decisive'].get('kind'),
+                      'C0_evidence_not_gated': results[n]['C0_decisive'].get('evidence_not_gated'),
                       'C0b_holds': results[n]['C0b_tolerances_unchanged']['holds'],
                       'effective_factor_distinct': results[n]['C0_decisive']['effective_factor_distinct'],
                       'x_c_d_scaling_distinct': results[n]['C0_decisive']['x_c_d_scaling_distinct'],
@@ -1109,12 +1629,21 @@ def analyse(started):
                       'gross_operational_cost_after_2_cycles': results[n]['arm_summary']['gross_operational_cost'],
                       'family_stats': fs[n], 'arm_result_sha256': results[n]['_sha256']}
                   for n in ARMS}
+    # prediction evidence (P5): median iterations by value, per cell and family, and whether non-decreasing in v
+    p5 = {}
+    for c in CELLS:
+        for f in FAMILIES:
+            seq = [(v, fs[arm_of[(c, v)]][f]['iterations_median']) for v in PIN_VALUES]
+            p5[f'{c}|{f}'] = {'median_by_value': {format(v, 'g'): m for v, m in seq},
+                              'non_decreasing': all(a[1] <= b[1] for a, b in zip(seq, seq[1:]))}
     payload = {'schema': SCHEMA + '_analysis', 'stage': STAGE, 'timestamp_utc': _utc(),
                'git_head_at_run': _git(['rev-parse', 'HEAD']), 'script_sha256': _sha(__file__),
-               'frozen_spec': {'path': spec_rel, 'sha256': spec_sha}, 'criteria': CRITERIA,
+               'frozen_spec': {'path': spec_rel, 'sha256': spec_sha}, 'criteria': spec['criteria'],
                'arms': arms_table, 'baseline_C2_reference': baseline_c2, 'per_value': per_value,
                'outcome': outcome, 'recommended_obj_scaling_factor': chosen,
-               'predictions': spec['predictions_recorded_before_run']}
+               'predictions': spec['predictions_recorded_before_run'],
+               'predictions_v27': spec['predictions_v27_recorded_before_reevaluation'],
+               'prediction_evidence': {'P5_median_iterations_by_value': p5}}
     out = _abs(os.path.join(OUT_REL, 'analysis'))
     os.makedirs(out, exist_ok=False)
     _write_once(os.path.join(out, 'analysis.json'), payload)
@@ -1133,12 +1662,18 @@ def main():
     parser = argparse.ArgumentParser(description=STAGE)
     group = parser.add_mutually_exclusive_group(required=True)
     group.add_argument('--freeze-spec', action='store_true')
+    group.add_argument('--freeze-spec-v27', action='store_true')
+    group.add_argument('--reevaluate-v27', metavar='ARM')
     group.add_argument('--arm')
     group.add_argument('--analyse', action='store_true')
     args = parser.parse_args()
     started = time.time()
     if args.freeze_spec:
         return freeze_spec(started)
+    if args.freeze_spec_v27:
+        return freeze_spec_v27(started)
+    if args.reevaluate_v27:
+        return reevaluate_v27(args.reevaluate_v27, started)
     if args.analyse:
         return analyse(started)
     return run_one_arm(args.arm, started)
