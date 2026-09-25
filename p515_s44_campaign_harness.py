@@ -294,7 +294,8 @@ POST_CERTIFICATION_KEYS = frozenset({'persist_certified_models', 'hull_polish', 
 # Addendum 27 (W14): 'investment_year' is the SINGLE cohort year this evaluation's candidate is
 # placed at; omitted => INVESTMENT_YEAR (2025), so every spec frozen before W14 is unchanged.
 EVALUATION_OPTION_KEYS = frozenset({'overrides', 'post_certification', 'investment_year', 'model_variant',
-                                    'flex_price_multiplier', 'interface_deviation_premium'})
+                                    'flex_price_multiplier', 'interface_deviation_premium',
+                                    'release_solution_bookkeeping'})
 # P5.15 Addendum 39 (W47): a DERIVED INSTANCE (see the module docstring) and row 18's premium. The identity keys
 # of a derived instance enter the eval key; the other keys are provenance. Absent -> nothing changes.
 DERIVED_INSTANCE_KEYS = frozenset({'instance_label', 'case_path', 'case_sha256', 'scenario_checksum',
@@ -723,6 +724,56 @@ def convergence_depth_tail_in_key(value):
     return None if (out is None or not out['enabled']) else out
 
 
+def validate_release_solution_bookkeeping(value):
+    """P5.15 Addendum 48 (W90): an entry's `release_solution_bookkeeping` option -- option (b), production's
+    `SolverParameters.release_solution_bookkeeping` (network.py `_release_solution_bookkeeping`, P5.15 Addendum 29 W32).
+    None = not declared: nothing is applied and the entry / record keep their exact pre-W90 format (production's
+    default, False, stays in force). Otherwise a bool, applied in the child by the config hook through
+    `p515_s44_scale_measurement.set_release_solution_bookkeeping` (the setter the committed SRP1 (b) bitwise gate,
+    P515S49/memory_fix_gate, used; it reads the switch back and raises if it did not take effect).
+    It NEVER enters `evaluation_key`: the switch drops only Pyomo's solution copies after the values and suffixes are
+    loaded (a memory-only change; the SRP1 gate reproduced the committed C* trajectory bitwise with it on), so an
+    evaluation with it on or off is the same candidate x configuration -- Addendum 48 carries the frozen 3 x 3 keys
+    over. A campaign that compares the two settings must therefore use two campaign ids (the working-dir ids differ by
+    campaign id, `eval_ids`)."""
+    if value is None:
+        return None
+    if not isinstance(value, bool):
+        raise ValueError(f'release_solution_bookkeeping must be a bool, got {value!r}')
+    return value
+
+
+class _ReleaseBookkeepingCallCounter:
+    """P5.15 Addendum 48 (W90): counts production's `network._release_solution_bookkeeping` calls during a run -- a
+    pass-through wrapper installed on the module attribute (which `network._run_smopf` looks up at call time); restored
+    on exit; the count goes to `holder['release_solution_bookkeeping_calls']`. Installed only for an entry that declares
+    the option."""
+
+    def __init__(self, holder):
+        self.holder = holder
+        self.calls = 0
+        self._module = None
+        self._original = None
+
+    def __enter__(self):
+        import network as network_module
+        self._module = network_module
+        self._original = network_module._release_solution_bookkeeping
+        original = self._original
+
+        def counted(model, result):
+            self.calls += 1
+            return original(model, result)
+
+        network_module._release_solution_bookkeeping = counted
+        return self
+
+    def __exit__(self, *exc):
+        self._module._release_solution_bookkeeping = self._original
+        self.holder['release_solution_bookkeeping_calls'] = self.calls
+        return False
+
+
 def _ess_number(value, name, allow_none=False):
     if value is None and allow_none:
         return None
@@ -1057,6 +1108,8 @@ def freeze_campaign_spec(campaign_root, campaign_id, candidates, configuration, 
     when declared. W85 (Planner ruling Q1 on W84): a declaration enters every entry's eval key (`evaluation_key`);
     without one every key is byte-identical to the pre-W85 key. W86 (Planner ruling Q1 on W85): only an ENABLED
     declaration enters it; a declared-OFF tail gives the undeclared key (it is still recorded in the configuration).
+    P5.15 Addendum 48 (W90): an entry's options may carry `release_solution_bookkeeping` (a bool,
+    `validate_release_solution_bookkeeping`); recorded in the entry only when given; it NEVER enters the eval key.
     One entry = one EVALUATION: its `eval_key` (`evaluation_key`) identifies
     candidate x configuration; labels and eval keys must be unique (the same
     candidate may appear under two configurations)."""
@@ -1112,6 +1165,7 @@ def freeze_campaign_spec(campaign_root, campaign_id, candidates, configuration, 
         model_variant = validate_model_variant(options.get('model_variant'))
         flex_m = validate_flex_price_multiplier(options.get('flex_price_multiplier'))
         premium = validate_interface_deviation_premium(options.get('interface_deviation_premium'))
+        release_bk = validate_release_solution_bookkeeping(options.get('release_solution_bookkeeping'))  # W90: not keyed
         ekey = evaluation_key(key, eff_overrides, case_file_aa=case_file_aa, model_variant=model_variant,
                               ess_ageing_baseline=ess_ageing, flex_price_multiplier=flex_m,
                               derived_instance=derived, interface_deviation_premium=premium,
@@ -1138,6 +1192,8 @@ def freeze_campaign_spec(campaign_root, campaign_id, candidates, configuration, 
                 any_flex_price = True
         if premium is not None:  # W47: only when given, so every other entry keeps its exact format
             cand_entry['interface_deviation_premium'] = premium
+        if release_bk is not None:  # W90: only when given, so every other entry keeps its exact format
+            cand_entry['release_solution_bookkeeping'] = release_bk
         cand_entries.append(cand_entry)
     os.makedirs(campaign_root, exist_ok=True)  # only after every validation above has passed
     try:
@@ -1457,6 +1513,9 @@ def _barrier_record_for_missing(ctx, entry, eval_dir, exit_code):
         **(_flex_price_record_fields(entry) if 'flex_price_multiplier' in entry else {}),
         # W47: a derived-instance spec / premium entry carries its declaration on every path.
         **_derived_record_fields(ctx.spec, entry),
+        # W90: an entry declaring option (b) carries it on every path.
+        **({'release_solution_bookkeeping': entry['release_solution_bookkeeping']}
+           if 'release_solution_bookkeeping' in entry else {}),
     }
 
 
@@ -2548,7 +2607,8 @@ def flex_price_readback_run_models(dso_models, planning, original, m):
 
 
 def _config_hook_factory(spec, holder, overrides=None, model_variant=None, investment_year=INVESTMENT_YEAR,
-                         expected_floor_rows=None, flex_price_multiplier=None, interface_deviation_premium=None):
+                         expected_floor_rows=None, flex_price_multiplier=None, interface_deviation_premium=None,
+                         release_solution_bookkeeping=None):
     """pre_solve_hook: verify the case file carries the D oracle configuration
     (same checks as `p515_s43_aa_run._aa_on_pre_solve_hook`), then apply the
     evaluation's overrides (`overrides`; default = the campaign-level
@@ -2578,11 +2638,16 @@ def _config_hook_factory(spec, holder, overrides=None, model_variant=None, inves
     premium enters (`_run_operational_planning` threads it to the DSO builders) -- and verified to have taken
     effect; the run's own DSO models are read back post-run (`multiscenario_terminal_capture`). With a declared
     `derived_instance` the planning object's combined scenario checksum is checked against the declaration.
-    Without them (None) nothing changes."""
+    Without them (None) nothing changes.
+    P5.15 Addendum 48 (W90): with `release_solution_bookkeeping` (a bool), after everything above, the switch is set on
+    the TSO's and every DSO's solver parameters by `p515_s44_scale_measurement.set_release_solution_bookkeeping` (reads
+    it back; raises if it did not take effect) -- the order of the SRP1 (b) gate (applied after the inner hook). It
+    changes no model. Without it (None) nothing changes."""
     import p515_g_g1_g4_admm_gates as G
     model_variant = validate_model_variant(model_variant)
     flex_price_multiplier = validate_flex_price_multiplier(flex_price_multiplier)
     premium = validate_interface_deviation_premium(interface_deviation_premium)
+    release_bk = validate_release_solution_bookkeeping(release_solution_bookkeeping)
     derived = validate_derived_instance(spec['configuration'].get('derived_instance'))
     if overrides is None:
         overrides = spec['configuration'].get('overrides') or {}
@@ -2729,6 +2794,11 @@ def _config_hook_factory(spec, holder, overrides=None, model_variant=None, inves
                 'checks': applied_fp['checks'], 'readback_all_match': applied_fp['readback_pre_run']['all_match'],
                 'n_flex_coefficients': applied_fp['readback_pre_run']['n_flex_coefficients'],
                 'max_rel_dev': applied_fp['readback_pre_run']['max_rel_dev']}
+        if release_bk is not None:  # W90: after everything above (it changes no model); read back, raises if not in force
+            import p515_s44_scale_measurement as S44
+            applied_bk = S44.set_release_solution_bookkeeping(planning, release_bk)
+            holder['release_solution_bookkeeping_applied'] = applied_bk
+            report['rule_eleven_checklist']['w90_release_solution_bookkeeping'] = applied_bk
     return hook
 
 
@@ -5011,6 +5081,8 @@ def _child_real(args, spec, spec_path, entry, eval_dir, lock_content, env_caps, 
     # `instance_investment_years` and the floor-row precheck read it -- and a premium entry is validated.
     derived = validate_derived_instance(spec['configuration'].get('derived_instance'))
     premium = validate_interface_deviation_premium(entry.get('interface_deviation_premium'))
+    # W90 (Addendum 48): option (b), only when the entry declares it (never keyed).
+    release_bk = validate_release_solution_bookkeeping(entry.get('release_solution_bookkeeping'))
     derived_installed = None
     if derived is not None:
         derived_installed = install_derived_instance(derived, eval_dir)
@@ -5178,10 +5250,12 @@ def _child_real(args, spec, spec_path, entry, eval_dir, lock_content, env_caps, 
     alpha_row_hooks = (alpha_row_run_hooks(eval_dir, entry['label'], entry['key'], derived_identity,
                                            float((premium or {}).get('alpha') or 0.0), holder)
                        if capture_multiscenario else nullcontext())
+    release_counter = _ReleaseBookkeepingCallCounter(holder) if release_bk is not None else nullcontext()  # W90
     with G.s38_pf_capture_hooks(paths['recourse_jump'], paths['ess_stride'], paths['floor'],
                                 paths['pf_stride'], floor_rows_by_node, stride=1), \
          G.s39_exempt_until_capture_hooks(paths['exempt']), \
          convergence_depth_append_hooks(appender), \
+         release_counter, \
          alpha_row_hooks as hook_control:
         hooks_ref['control'] = hook_control
         report, report_path = G.run_admm_arm(
@@ -5192,7 +5266,8 @@ def _child_real(args, spec, spec_path, entry, eval_dir, lock_content, env_caps, 
                                                 investment_year=investment_year,
                                                 expected_floor_rows=floor_rows_by_node,
                                                 flex_price_multiplier=flex_m,
-                                                interface_deviation_premium=premium),
+                                                interface_deviation_premium=premium,
+                                                release_solution_bookkeeping=release_bk),
             investment_year=investment_year)
     run_wall = time.time() - t0
 
@@ -5280,6 +5355,12 @@ def _child_real(args, spec, spec_path, entry, eval_dir, lock_content, env_caps, 
                                    'n_captured': sum(1 for v in response_by_cycle.values()
                                                      if v.get('response_captured')),
                                    'cycles_match': sorted(response_by_cycle) == [int(r.get('cycle')) for r in rows]},
+        })
+    if release_bk is not None:  # W90: only for entries declaring option (b), so every other record keeps its format
+        variant_extra.update({
+            'release_solution_bookkeeping': release_bk,
+            'release_solution_bookkeeping_applied_in_child': holder.get('release_solution_bookkeeping_applied'),
+            'release_solution_bookkeeping_calls': holder.get('release_solution_bookkeeping_calls'),
         })
     record = build_evaluation_record(
         spec=spec, spec_path=spec_path, spec_sha256=args.spec_sha256, entry=entry, report=report,
@@ -5429,6 +5510,11 @@ def main_child(argv):
                     'interface_deviation_premium_applied_in_child': (
                         (progress.get('holder') or {}).get('interface_deviation_premium_applied'))}
                    if _derived_record_fields(spec, entry) else {}),
+                # W90: an entry declaring option (b) carries it and what was applied, on every path.
+                **({'release_solution_bookkeeping': entry['release_solution_bookkeeping'],
+                    'release_solution_bookkeeping_applied_in_child': (
+                        (progress.get('holder') or {}).get('release_solution_bookkeeping_applied'))}
+                   if 'release_solution_bookkeeping' in entry else {}),
             })
         sys.exit(1)
 
