@@ -21,6 +21,19 @@
 - [ ] **▶ ACTIVE — 3×3 pair, RUNNING** — campaign `s53_w91_3x3_pair`, spec `231558f0`; launched **2026-09-26 10:20:56 UTC**; preflight 20.36 GiB available vs 19.17 required (PASS; thin margin — compressor refilled to 5.07 GiB after the smoke; the (b)-off smoke arm ran at ~95 % of available and completed correctly). Sequential, concurrency 1: x0 then n7_4h_e1; nothing else runs on the Mac. Est. **~9.2 h/cell, ~18.4 h pair** (range 13.4–24.6 h; no-decay bound 19.8–31.0 h). Log `w90_3x3/pair_run_v36_launch.log`
 - [x] **Advisor: uncoordinated-benchmark definition** — delivered 2026-09-26 during the pair (read-only, no compute). Recommends a **two-arm decomposition** (U-passive, U-price-taker), a hard-fixed TSO interface replacing the 9e10 tracking term, costing via `_get_operational_recourse_components` with the curtailment penalty reset to 0, and a new production function beside the existing one. **Awaiting author/expert ruling** (formulation-level choice). Runs only after the pair (one-run rule); ~120 SRP1 solves.
 - [ ] **Stop for review** after the pair — R restated against **259,375.33**; R = 0.9331 recorded
+
+## Addendum 49 order — uncoordinated benchmark (three arms, fixed interface, common Q)
+
+- [x] **18.25 % coordination benefit WITHDRAWN** (measured on the transfer-payment recourse Addendum 11 retired)
+- [ ] **▶ ACTIVE (during the pair) — code + tests WRITTEN, nothing executed** — not even tests that build a model (pair holds ≈ 22 of 24 GiB). Static checks only.
+- [ ] *after the pair review:* λ_t vs π_t zero-solve look from the certified x = 0 cell → recorded as the prediction (Advisor's "inside the band" beside it as the competing prediction)
+- [ ] Common-Q gate — new evaluation function reproduces the certified x = 0 `gross_operational_cost` from its persisted models (bitwise, or explained to the last digit)
+- [ ] 24-solve penalty-vs-fixed TSO check — reported, not gating
+- [ ] Three arms (passive, price-taker, coordinated) × three starts (cold, warm-from-certified, perturbed) — band measured on the arms
+- [ ] Consistency re-evaluation — DN at the TN's actual interface voltage; one sequential pass if a DN limit is violated
+- [ ] Report — claim = **min(passive, price-taker) − coordinated**; decomposition beside it
+- [ ] Second Advisor note — 3×3 convention (after the pair)
+- **Open for the author:** the tie-breaker's "production value" is 0 (coordinated ADMM subproblems) or 1 €/MWh (build default); carried as a declared parameter until ruled.
 - [ ] 42(1) linear-solver benchmark / 42(3) persistent-worker timing — idle time, after review
 - [ ] Step 5 SRP1 rows
 
