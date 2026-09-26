@@ -17,7 +17,8 @@
   - (b)-on cycle walls 10.74 / 11.42 / 6.93 min (mean 9.70; prediction 10.1–12.5)
   - **persistence REFUSED**: P_persist 27.54 > 0.85·A_post 20.75 (also refused at g = 1) → hull polish omitted at 3×3
 - [x] **Pair spec freeze** — `231558f0`, commit `b5fc49a5` — x0 `f6e9cd53` + n7_4h_e1 `c82522f4`; concurrency 1; (b) on; tail {True, 1e-6}; cap 500; persistence off; preflight 19.17 GiB (g × P_on, footprint)
-- [ ] **▶ ACTIVE — 3×3 pair** (sequential, concurrency 1; x0 then unit; nothing else runs on the Mac) — revised est. **~9.2 h/cell, ~18.4 h pair** (range 13.4–24.6 h; no-decay bound 19.8–31.0 h); log `w90_3x3/pair_run_v36_launch.log`
+- [x] **Pre-launch commit** — `c2362883` (TASKS.md, CLAUDE.md, STEP4_DFO_METHOD.md, PLANNER_BRIEF_2026-09-13.md)
+- [ ] **▶ ACTIVE — 3×3 pair, RUNNING** — campaign `s53_w91_3x3_pair`, spec `231558f0`; launched **2026-09-26 10:20:56 UTC**; preflight 20.36 GiB available vs 19.17 required (PASS; thin margin — compressor refilled to 5.07 GiB after the smoke; the (b)-off smoke arm ran at ~95 % of available and completed correctly). Sequential, concurrency 1: x0 then n7_4h_e1; nothing else runs on the Mac. Est. **~9.2 h/cell, ~18.4 h pair** (range 13.4–24.6 h; no-decay bound 19.8–31.0 h). Log `w90_3x3/pair_run_v36_launch.log`
 - [ ] Advisor: uncoordinated-benchmark definition — during the pair, no compute
 - [ ] **Stop for review** after the pair — R restated against **259,375.33**; R = 0.9331 recorded
 - [ ] 42(1) linear-solver benchmark / 42(3) persistent-worker timing — idle time, after review
