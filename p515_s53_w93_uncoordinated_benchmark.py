@@ -2,7 +2,9 @@
 P5.15 Addendum 49 (Planner task W93) -- the UNCOORDINATED BENCHMARK harness.
 
 WRITTEN DURING THE 3x3 PAIR; NOTHING HERE HAS BEEN RUN (Addendum 49 "Timing": the Worker writes the function and its
-tests during the pair and runs nothing). Static checks only at W93 (py_compile, AST).
+tests during the pair and runs nothing). Static checks only at W93 (py_compile, AST). W94 (Planner rulings on the W93
+report): the coupling check's fixed side gains the interface-voltage pin; the lambda_t channel-scaling correction and
+the min-over-starts note are recorded. Static checks only at W94 as well.
 
 Authority: PLANNER_BRIEF_2026-09-13.md Addendum 49 (rulings 1-3, the consistency convention, the resolution rule, the
 timing, and the 2026-09-26 clarification on the tie-breaker and on lambda_t recovery); TASKS.md "Addendum 49 order";
@@ -35,9 +37,19 @@ STAGES, IN THE ADDENDUM 49 ORDER, EACH ITS OWN ATTACHED PROCESS WITH AN EXACT DE
                               persisted models must reproduce the certified recourse components BITWISE; negative
                               control and discrimination: evaluation tie-breaker 1 must be refused under
                               require_unchanged and, repriced, must differ by exactly the curtailment it prices.
- 3. tso-coupling-check        24 solves (2 couplings x 12 TSO blocks). Ruling 2's penalty-vs-fixed check at the SAME
-                              targets = the certified coordinated DSO schedule: TN cost, interface residual, IPOPT
-                              iterations, dual infeasibility (scaled/unscaled) at termination. Reported, not gating.
+ 3. tso-coupling-check        24 solves (2 couplings x 12 TSO blocks: 12 fixed + 12 penalty). Ruling 2's penalty-vs-
+                              fixed check at the SAME targets = the certified coordinated DSO schedule: TN cost,
+                              interface residual (P, Q, V), IPOPT iterations, dual infeasibility (scaled/unscaled) at
+                              termination. Reported, not gating. THE CHECK'S FIXED SIDE PINS THE INTERFACE VOLTAGE (W94)
+                              to the SAME target the penalty tracks (targets['v_kv'] / TN base kV), because production's
+                              _add_tso_scenario_tracking_penalty tracks P, Q AND V: with P/Q fixed and V free the two
+                              sides would be different problems and a TN-cost difference could come from the voltage
+                              freedom instead of the scaling hazard the check measures. With the pin both sides are
+                              the penalty's limit problem (P = P_req, Q = Q_req, V = V_req), so any difference is
+                              numerical. The pin is CHECK-ONLY: the TSO ARM (stage 4) fixes P/Q and leaves V within its
+                              normal bounds (ruling 2). Fixed rows per fixed-side block: 3 x 3 ADNs x 24 h = 216 (the
+                              arm's: 2 x 3 x 24 = 144). Declared: uncoordinated_benchmark.
+                              COUPLING_CHECK_FIXED_SIDE_VOLTAGE_PIN, recorded in the output.
  4. arm --arm A --start S     48 solves (36 DSO + 12 TSO), then the consistency re-evaluation 36 solves -> 84; if the
                               declared trigger fires, the one sequential pass adds 48 -> 132. A in {passive,
                               price_taker}, S in {cold, warm_from_certified, perturbed}: six runs.
@@ -45,6 +57,14 @@ STAGES, IN THE ADDENDUM 49 ORDER, EACH ITS OWN ATTACHED PROCESS WITH AN EXACT DE
                               consistency step (declared: the variant exists to measure the interface schedule's
                               value-independence against the ruled 1 EUR/MWh cold run).
  6. report                    ZERO solves. Reads 1-5; claim = min(passive, price-taker) - coordinated with the bands.
+                              Each arm's Q is the MINIMUM over its three starts: CONSERVATIVE AGAINST THE COORDINATION
+                              CLAIM -- the uncoordinated side gets its best local optimum of three, the coordinated side
+                              is one certified cell (Planner ruling, W94). Recorded as Q_MIN_OVER_STARTS_NOTE.
+
+LAMBDA_t UNITS (stage 1; LAMBDA_CHANNEL_SCALING): Addendum 49's clarification says to undo "sigma, S_ref, D5". On the
+interface-P channel only sigma (through admm_objective_scale = sigma / block weight) and the interface rating apply;
+S_ref and D5 act ONLY on the shared-ESS channel. Accepted by the Planner as a correction to that wording (W94); the
+production source lines are cited in LAMBDA_CHANNEL_SCALING and in uncoordinated_benchmark.interface_price_terms.
 
 Every solve stage arms `SolveProfileGuard(permitted=(('uncoordinated_benchmark.py', '_solve_block'),))` BEFORE any
 production import and checks the cumulative count EXACTLY at every phase boundary (too few fails as loudly as too
@@ -164,7 +184,40 @@ CONSISTENCY_TOL = {'hard_tol_pu2': 1e-6, 'soft_excess_tol_pu2': 1e-6, 'thermal_t
 NEGATIVE_CONTROL_EXPLAINED_ABS_TOL_EUR = 1e-5     # (Q at tie-breaker 1) - (Q at 0) - priced curtailment, ~100 ulp
 COORDINATED_REPRODUCIBILITY_BAND_REL = 1.1e-4     # Addendum 49 "Resolution": the coordinated cell's band (0.011 %)
 SRP1_DECLARED = {'dso_solves_per_arm': 36, 'tso_solves_per_arm': 12, 'arm_solves': 48, 'reevaluation_solves': 36,
-                 'sequential_pass_solves': 48, 'coupling_check_solves': 24}
+                 'sequential_pass_solves': 48, 'coupling_check_solves': 24,
+                 'coupling_check_fixed_side_solves': 12, 'coupling_check_penalty_side_solves': 12,
+                 # fixed rows per TSO block = row families x 3 ADNs x 24 h (W94: the check's fixed side adds V)
+                 'tso_arm_fixed_rows_per_block': 2 * 3 * 24,
+                 'coupling_check_fixed_side_fixed_rows_per_block': 3 * 3 * 24,
+                 'coupling_check_penalty_side_fixed_rows_per_block': 0}
+# W94 (Planner ruling on W93 item 6): recorded in the docstring and every output.
+Q_MIN_OVER_STARTS_NOTE = (
+    "each uncoordinated arm's Q is the MINIMUM over its three starts (cold, warm_from_certified, perturbed); this is "
+    'CONSERVATIVE AGAINST THE COORDINATION CLAIM: the uncoordinated side gets its best local optimum of three, while '
+    'the coordinated side is one certified cell (W86 5cfe69a615ae3708_x0, not re-run)')
+# W94: the lambda_t conversion on the interface-P channel (Planner-accepted correction to the Addendum 49 wording).
+LAMBDA_CHANNEL_SCALING = {
+    'addendum_49_wording': 'undo sigma, S_ref, D5 when converting lambda_t to EUR/MWh',
+    'correction': ('on the interface-P channel only sigma (through admm_objective_scale = sigma / block weight) and the '
+                   'interface rating apply; S_ref (shared_ess_reference_rating_mva) and D5 (the ESSO AL scale, '
+                   'al_scale_esso) act ONLY on the shared-ESS channel and are therefore not undone'),
+    'accepted_by': 'Planner, task W94 (correction to the Addendum 49 clarification wording)',
+    'source': {
+        'file': 'shared_resources_planning.py', 'at_commit': 'a8c58da0',
+        'sigma_tso': 'update_transmission_model_to_admm L5137-5142: effective_scale = objective_scale / block_weight; '
+                     'obj = copy(objective.expr) / effective_scale',
+        'rating_tso': 'update_transmission_model_to_admm L5156-5157: constraint_p_req/q_req = (E - z) / '
+                      'interface_transf_rating',
+        'sref_tso': 'update_transmission_model_to_admm L5179: _admm_shared_ess_reference_mva(params) only in the '
+                    'shared-ESS loop (shared_ess_rating)',
+        'sigma_dso': 'update_distribution_models_to_admm L5402-5407 (same as TSO)',
+        'rating_dso': 'update_distribution_models_to_admm L5428-5429 (same as TSO)',
+        'sref_dso': 'update_distribution_models_to_admm L5410-5415: only in shared_ess_rating (ESS channel)',
+        'd5': ('update_shared_energy_storage_model_to_admm L5486 (admm_esso_al_scale = al_scale_esso) and L5515-5518 '
+               '(multiplies ONLY the ESSO AL terms); al_scale_esso is never passed to the TSO/DSO updates'),
+        'implemented_in': 'uncoordinated_benchmark.interface_price_terms (docstring carries the same citation)',
+    },
+}
 ARM_RUN_IDS = [f'arm_{a}_{s}' for a in ('passive', 'price_taker')
                for s in ('cold', 'warm_from_certified', 'perturbed')]
 VARIANT_RUN_IDS = ['passive_tie_breaker_0p1', 'passive_tie_breaker_10']
@@ -357,6 +410,8 @@ def provenance(extra=None):
         'tie_breaker': TIE_BREAKER,
         'arm_network_compl_inf_tol': ARM_NETWORK_COMPL_INF_TOL,
         'perturbation': PERTURBATION,
+        'q_min_over_starts_note': Q_MIN_OVER_STARTS_NOTE,
+        'lambda_channel_scaling': LAMBDA_CHANNEL_SCALING,
         'tolerances': {'lambda_neq_pi_eur': LAMBDA_NEQ_PI_TOL_EUR, 'units_check': UNITS_CHECK_TOL,
                        'consistency': CONSISTENCY_TOL,
                        'negative_control_explained_abs_eur': NEGATIVE_CONTROL_EXPLAINED_ABS_TOL_EUR},
@@ -918,6 +973,10 @@ def stage_tso_coupling_check(run_dir, run_id):
     gc.collect()
     declared = 2 * UB.declared_solve_count(planning)['tso']
     checks['declared_equals_srp1_literal'] = declared == SRP1_DECLARED['coupling_check_solves']
+    checks['check_fixed_side_pins_voltage_declared'] = UB.COUPLING_CHECK_FIXED_SIDE_PIN_INTERFACE_VOLTAGE is True
+    checks['tso_arm_does_not_pin_voltage_declared'] = UB.TSO_ARM_PIN_INTERFACE_VOLTAGE is False
+    checks['voltage_target_capture_path_v_kv_present'] = all(
+        len(targets[n][y][d]['v_kv']) == 24 for n in targets for y in targets[n] for d in targets[n][y])
     _assert_checklist(checks, 'tso-coupling-check (before any solve)')
     _check_guard(0, 'tso-coupling-check before solves')
     sink = SolveSink(run_dir)
@@ -942,9 +1001,19 @@ def stage_tso_coupling_check(run_dir, run_id):
         'capture_path_checklist': checks, 'solver_options': solver_options, 'ipopt_logs_dir': logs_dir,
         'targets': 'the certified coordinated DSO schedule (W86 persisted DSO models: expected_interface_pf_p/q, '
                    'expected_interface_vmag), the SAME for both couplings',
-        'tracking_penalty_note': ("production's _add_tso_scenario_tracking_penalty tracks V as well as P and Q "
-                                  '(its voltage term pulls the TN interface voltage to the DSO voltage); the fixed '
-                                  'coupling pins P and Q only and leaves V within its normal bounds'),
+        'fixed_side_voltage_pin': UB.COUPLING_CHECK_FIXED_SIDE_VOLTAGE_PIN,
+        'tracking_penalty_note': ("production's _add_tso_scenario_tracking_penalty tracks V as well as P and Q; the "
+                                  "check's fixed side therefore pins P, Q AND V at the same targets (W94), so the two "
+                                  'sides are the same mathematical problem and any difference is numerical. The TSO '
+                                  'ARM (stage 4) is NOT pinned: P/Q fixed, V within its normal bounds (ruling 2)'),
+        'voltage_pin_records': {c: out[c]['voltage_pin'] for c in out},
+        'declared_fixed_rows_per_block': {
+            UB.TSO_COUPLING_FIXED: SRP1_DECLARED['coupling_check_fixed_side_fixed_rows_per_block'],
+            UB.TSO_COUPLING_TRACKING_PENALTY: SRP1_DECLARED['coupling_check_penalty_side_fixed_rows_per_block']},
+        'fixed_rows_match_declared': {
+            c: all(r['fixed_rows'] == SRP1_DECLARED[k] for r in out[c]['structure'].values())
+            for c, k in ((UB.TSO_COUPLING_FIXED, 'coupling_check_fixed_side_fixed_rows_per_block'),
+                         (UB.TSO_COUPLING_TRACKING_PENALTY, 'coupling_check_penalty_side_fixed_rows_per_block'))},
         'per_block': per_block, 'tn_cost_weighted_totals': totals,
         'fixed_minus_penalty_tn_cost_weighted': totals[UB.TSO_COUPLING_FIXED] - totals[UB.TSO_COUPLING_TRACKING_PENALTY],
         'structure': {c: out[c]['structure'] for c in out},
@@ -1142,6 +1211,7 @@ def stage_report(run_dir):
         larger_band = max(per_arm[best_arm]['multimodality_band_eur'], band_coord)
         claim = {
             'computed': True, 'objective_convention': 'gross_operational_cost, settlement excluded',
+            'q_min_over_starts_note': Q_MIN_OVER_STARTS_NOTE,
             'best_uncoordinated_arm': best_arm,
             'benefit_eur': benefit, 'benefit_relative': benefit / q_coord,
             'bands_eur': {'best_arm_multimodality': per_arm[best_arm]['multimodality_band_eur'],
@@ -1190,6 +1260,7 @@ def stage_report(run_dir):
         'tso_coupling_check': None if coupling is None else {
             'tn_cost_weighted_totals': coupling['tn_cost_weighted_totals'],
             'fixed_minus_penalty_tn_cost_weighted': coupling['fixed_minus_penalty_tn_cost_weighted'],
+            'fixed_side_voltage_pin': coupling.get('fixed_side_voltage_pin'),
             'solve_summary': coupling['solve_summary']},
         'per_arm': per_arm, 'claim': claim, 'passive_tie_breaker_value_independence': value_independence,
         'consistency': consistency,

@@ -3,7 +3,7 @@ P5.15 Addendum 49 (Planner task W93) -- CHECKS (tests) for the uncoordinated ben
 and the harness `p515_s53_w93_uncoordinated_benchmark.py`.
 
 WRITTEN DURING THE 3x3 PAIR; NOT RUN (Addendum 49 "Timing": "runs nothing -- not even tests that build a model").
-Static checks only at W93. `pytest` is not installed in the canonical environment, so these follow the repository's
+Static checks only at W93 and at W94 (W94 added the coupling-check voltage-pin test below). `pytest` is not installed in the canonical environment, so these follow the repository's
 self-running `*_checks.py` convention: each check returns {'name', 'passed', 'detail'}; the group passes iff every
 check passes; results are written once to data/SRP1/Results/P515S53/w93_uncoordinated/checks_<group>/checks.json.
 
@@ -18,7 +18,11 @@ GROUPS (one per process; each arms its own SolveProfileGuard before any producti
                count.
   srp1-zero    ZERO solves (guard permitted=()). SRP1 + the W86 persisted x = 0 models: passive / price-taker DSO arms
                and fixed / tracking-penalty TSO arms pass the structural check against the certified blocks with the
-               declared arithmetic; negative controls: production's own `update_distribution_models_to_admm` applied
+               declared arithmetic; (W94) the 24-solve check's FIXED side carries the interface-voltage pin on every
+               block (72 rows, 216 fixed rows in all) at exactly the penalty's V target -- the penalty side's voltage
+               term is exactly 0 at the pinned voltages -- while the penalty side and the TSO ARM carry none (144
+               fixed rows), with negative controls (a pin planted on the arm FAILS the structural check; a pin under
+               the tracking coupling is refused; moving targets on a pinned model is refused); negative controls: production's own `update_distribution_models_to_admm` applied
                to an arm (the real unremoved consensus) and a planted consensus row both FAIL it; the common-Q
                evaluation reproduces the certified gross BITWISE; a wrong configuration (evaluation tie-breaker 1) is
                refused and, repriced, FAILS the gate by exactly the curtailment it prices; the consistency detector
@@ -39,6 +43,7 @@ Exit 0 = every check passed; 1 = a check failed; 2 = refused (precondition).
 """
 
 import argparse
+import inspect
 import os
 import sys
 import tempfile
@@ -405,10 +410,13 @@ def srp1_zero_checks(srp, UB, O, pe):
         out = {}
         ok = True
         for coupling in (UB.TSO_COUPLING_FIXED, UB.TSO_COUPLING_TRACKING_PENALTY):
-            tso, build = UB.build_tso_arm_model(planning, cand_tc, targets, curtailment_penalty=0.0, coupling=coupling)
+            # the ARM's TSO build (fixed: TSO_ARM_PIN_INTERFACE_VOLTAGE = False) and the unpinned tracking build
+            tso, build = UB.build_tso_arm_model(planning, cand_tc, targets, curtailment_penalty=0.0, coupling=coupling,
+                                                pin_interface_voltage=UB.TSO_ARM_PIN_INTERFACE_VOLTAGE)
             recs = UB.check_arm_structures(planning, {'tso': tso}, reference, tso_build_record=build,
                                            tso_coupling=coupling)
-            expected_rows = 2 * 3 * 24 if coupling == UB.TSO_COUPLING_FIXED else 0
+            expected_rows = (BENCH.SRP1_DECLARED['tso_arm_fixed_rows_per_block'] if coupling == UB.TSO_COUPLING_FIXED
+                             else 0)
             ok = ok and len(recs) == 12 and all(r['fixed_rows'] == expected_rows for r in recs.values())
             if coupling == UB.TSO_COUPLING_TRACKING_PENALTY:
                 block = tso[DETAIL_YEAR][DETAIL_DAY]
@@ -416,6 +424,79 @@ def srp1_zero_checks(srp, UB, O, pe):
             out[coupling] = next(iter(recs.values()))['arithmetic']
         return ok, out
     results.append(_check('srp1_tso_fixed_and_tracking_structures_pass', tso_structures))
+
+    def coupling_check_voltage_pin():
+        # W94: the 24-solve check's fixed side must carry the interface-voltage pin; the TSO arm must not.
+        declared = BENCH.SRP1_DECLARED
+        detail = {}
+        ok = (UB.COUPLING_CHECK_FIXED_SIDE_PIN_INTERFACE_VOLTAGE is True and UB.TSO_ARM_PIN_INTERFACE_VOLTAGE is False)
+        # (a) the check's two sides, built by the check's own builder (zero solves)
+        check = UB.build_tso_coupling_check_models(planning, candidate, targets, tso_curtailment_penalty=0.0,
+                                                   reference_structure=reference)
+        fixed, penalty = check[UB.TSO_COUPLING_FIXED], check[UB.TSO_COUPLING_TRACKING_PENALTY]
+        ok = ok and fixed['build']['interface_voltage_pinned'] is True
+        ok = ok and penalty['build']['interface_voltage_pinned'] is False
+        ok = ok and len(fixed['voltage_pin']) == 12 and all(
+            e['present'] and e['n_active_rows'] == 3 * 24 and e['max_abs_target_minus_tracked_v_pu'] == 0.0
+            for e in fixed['voltage_pin'].values())
+        ok = ok and all(r['fixed_rows'] == declared['coupling_check_fixed_side_fixed_rows_per_block']
+                        and r['interface_voltage_pinned'] is True for r in fixed['structure'].values())
+        ok = ok and all(not e['present'] and e['n_active_rows'] == 0 for e in penalty['voltage_pin'].values())
+        ok = ok and all(r['fixed_rows'] == declared['coupling_check_penalty_side_fixed_rows_per_block']
+                        for r in penalty['structure'].values())
+        detail['fixed_side_arithmetic'] = next(iter(fixed['structure'].values()))['arithmetic']
+        # (b) SAME target as the penalty: at the pinned voltages the penalty side's voltage term is exactly 0
+        tn = planning.transmission_network
+        network = tn.network[DETAIL_YEAR][DETAIL_DAY]
+        f_block = fixed['model'][DETAIL_YEAR][DETAIL_DAY]
+        p_block = penalty['model'][DETAIL_YEAR][DETAIL_DAY]
+        v_param = getattr(f_block, UB.FIXED_INTERFACE_V_TARGET)
+        for dn, node_id in enumerate(tn.active_distribution_network_nodes):
+            idx = network.get_node_idx(node_id)
+            for s_m in p_block.scenarios_market:
+                for s_o in p_block.scenarios_operation:
+                    for p in p_block.periods:
+                        p_block.vmag[idx, s_m, s_o, p].value = pe.value(v_param[dn, p])
+        tracking_v = pe.value(p_block.scenario_tracking_voltage)
+        ok = ok and tracking_v == 0.0
+        detail['penalty_voltage_term_at_pinned_voltages'] = tracking_v
+        # (c) the TSO ARM: its own declared build carries no pin, and the arm function passes the arm constant
+        arm_tso, arm_build = UB.build_tso_arm_model(planning, cand_tc, targets, curtailment_penalty=0.0,
+                                                    coupling=UB.TSO_COUPLING_FIXED,
+                                                    pin_interface_voltage=UB.TSO_ARM_PIN_INTERFACE_VOLTAGE)
+        arm_recs = UB.check_arm_structures(planning, {'tso': arm_tso}, reference, tso_build_record=arm_build,
+                                           tso_coupling=UB.TSO_COUPLING_FIXED)
+        arm_pin = UB.coupling_check_voltage_pin(planning, arm_tso, targets)
+        ok = ok and arm_build['interface_voltage_pinned'] is False
+        ok = ok and all(not e['present'] and e['n_active_rows'] == 0 for e in arm_pin.values())
+        ok = ok and all(r['fixed_rows'] == declared['tso_arm_fixed_rows_per_block'] for r in arm_recs.values())
+        arm_src = inspect.getsource(UB.run_operational_planning_uncoordinated)
+        ok = ok and 'pin_interface_voltage=TSO_ARM_PIN_INTERFACE_VOLTAGE' in arm_src
+        # (d) negative controls
+        refused_tracking, det_tracking = _expect_raises(
+            ValueError, lambda: UB.build_tso_arm_model(planning, cand_tc, targets, curtailment_penalty=0.0,
+                                                       coupling=UB.TSO_COUPLING_TRACKING_PENALTY,
+                                                       pin_interface_voltage=True),
+            'interface-voltage pin is defined only for')
+        refused_move, det_move = _expect_raises(
+            ValueError, lambda: UB.set_tso_interface_targets(planning, fixed['model'], targets),
+            'does not move the interface-voltage pin')
+        a_block = arm_tso[DETAIL_YEAR][DETAIL_DAY]
+        a_block.add_component(UB.FIXED_INTERFACE_V_TARGET, pe.Param(
+            a_block.active_distribution_networks, a_block.periods, mutable=True, domain=pe.Reals, initialize=1.0))
+        a_block.add_component(UB.FIXED_INTERFACE_V_ROW, pe.Constraint(
+            a_block.active_distribution_networks, a_block.periods, rule=UB._fixed_interface_v_rule))
+        planted_fails, det_planted = _expect_raises(
+            UB.StructuralCheckError,
+            lambda: UB.check_arm_structures(planning, {'tso': arm_tso}, reference, tso_build_record=arm_build,
+                                            tso_coupling=UB.TSO_COUPLING_FIXED),
+            f"undeclared Constraint component '{UB.FIXED_INTERFACE_V_ROW}'")
+        ok = ok and refused_tracking and refused_move and planted_fails
+        detail.update({'arm_first_arithmetic': next(iter(arm_recs.values()))['arithmetic'],
+                       'NEGATIVE_pin_under_tracking': det_tracking, 'NEGATIVE_move_targets_on_pinned': det_move,
+                       'NEGATIVE_pin_planted_on_arm': det_planted})
+        return ok, detail
+    results.append(_check('srp1_coupling_check_fixed_side_pins_voltage_and_tso_arm_does_not', coupling_check_voltage_pin))
 
     def negative_real_consensus():
         dso, build = UB.build_dso_arm_models(planning, cand_tc, arm=UB.ARM_PRICE_TAKER, curtailment_penalty=0.0)
@@ -540,7 +621,8 @@ def srp1_solve_checks(srp, UB, O, pe, run_dir):
 
     def one_fixed_tso_block():
         tso, build = UB.build_tso_arm_model(planning, candidate['total_capacity'], targets, curtailment_penalty=0.0,
-                                            coupling=UB.TSO_COUPLING_FIXED)
+                                            coupling=UB.TSO_COUPLING_FIXED,
+                                            pin_interface_voltage=UB.TSO_ARM_PIN_INTERFACE_VOLTAGE)
         UB.check_arm_structures(planning, {'tso': tso}, reference, tso_build_record=build,
                                 tso_coupling=UB.TSO_COUPLING_FIXED)
         tn = planning.transmission_network

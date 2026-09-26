@@ -39,6 +39,17 @@ WHAT EACH ARM IS (x = 0 on SRP1; every arm is built from the production construc
         Interface voltage bounded by the normal bounds, never fixed. NO tracking penalty.
       - 'tracking_penalty' (the 24-solve check only): the same block, no fixed rows, with production's own
         `_add_tso_scenario_tracking_penalty` (9e10 weight; V, P and Q tracked) at the same targets.
+    THE 24-SOLVE CHECK'S FIXED SIDE (W94, Planner ruling on W93 item 3) is 'fixed_interface' PLUS a voltage pin:
+    `expected_interface_vmag[dn,t] == uncoord_interface_v_target[dn,t]` (a third family of rows on a mutable Param),
+    the target being EXACTLY the one the penalty tracks (`_tso_interface_vmag_targets_pu`: targets['v_kv'] / the TN
+    node base kV -- the same helper builds the penalty's `interface_vmag`). Reason: the penalty tracks P, Q AND V, so
+    a fixed side pinning P and Q only would leave V free and the two sides would be DIFFERENT problems; a TN-cost
+    difference could then come from the voltage freedom rather than from the scaling hazard the check exists to
+    measure (Addendum 49 ruling 2). With the pin, the penalty's limit (P = P_req, Q = Q_req, V = V_req; single
+    scenario, so E[vmag_adn] = vmag_adn) IS the fixed side, and any difference in TN cost, interface residual,
+    iteration count or dual infeasibility is numerical. Declared as `COUPLING_CHECK_FIXED_SIDE_PIN_INTERFACE_VOLTAGE`.
+    THE TSO ARM ITSELF IS NOT PINNED (`TSO_ARM_PIN_INTERFACE_VOLTAGE = False`): ruling 2's arm has interface P/Q fixed
+    and the voltage within its normal bounds.
   * The coordinated arm is the certified x = 0 cell, not re-run.
 
 STRUCTURAL CHECK (ruling 3), run at build time on every block and raising `StructuralCheckError`: against the
@@ -146,6 +157,25 @@ FIXED_INTERFACE_P_TARGET = 'uncoord_interface_p_target'
 FIXED_INTERFACE_Q_TARGET = 'uncoord_interface_q_target'
 FIXED_INTERFACE_P_ROW = 'uncoord_interface_p_fixed'
 FIXED_INTERFACE_Q_ROW = 'uncoord_interface_q_fixed'
+# W94: the interface-voltage pin -- used ONLY by the fixed side of the 24-solve coupling check (see the module
+# docstring). The arm never carries it.
+FIXED_INTERFACE_V_TARGET = 'uncoord_interface_v_target'
+FIXED_INTERFACE_V_ROW = 'uncoord_interface_v_fixed'
+TSO_ARM_PIN_INTERFACE_VOLTAGE = False                    # ruling 2: the arm's interface voltage is within its bounds
+COUPLING_CHECK_FIXED_SIDE_PIN_INTERFACE_VOLTAGE = True   # W94: the check's fixed side = the penalty's limit problem
+COUPLING_CHECK_FIXED_SIDE_VOLTAGE_PIN = {
+    'pin_interface_voltage': COUPLING_CHECK_FIXED_SIDE_PIN_INTERFACE_VOLTAGE,
+    'applies_to': "the 'fixed_interface' side of the 24-solve TSO coupling check ONLY; the TSO arm is unpinned "
+                  f'(TSO_ARM_PIN_INTERFACE_VOLTAGE = {TSO_ARM_PIN_INTERFACE_VOLTAGE})',
+    'row': f'{FIXED_INTERFACE_V_ROW}: expected_interface_vmag[dn,t] == {FIXED_INTERFACE_V_TARGET}[dn,t] (mutable Param)',
+    'target': "targets['v_kv'][t] / TN node base kV (_tso_interface_vmag_targets_pu) -- the SAME values production's "
+              '_add_tso_scenario_tracking_penalty receives as interface_vmag on the tracking-penalty side',
+    'why': "production's _add_tso_scenario_tracking_penalty tracks P, Q AND V; pinning P and Q only would leave V "
+           'free on the fixed side, so a TN-cost difference could come from the voltage freedom rather than from the '
+           'scaling hazard the check measures (Addendum 49 ruling 2). With the pin both sides are the same '
+           'mathematical problem (the penalty\'s limit P = P_req, Q = Q_req, V = V_req); any difference is numerical',
+    'authority': 'Planner task W94 (ruling on W93 item 3)',
+}
 TRACKING_PENALTY_COMPONENTS = ('scenario_tracking_weight', 'scenario_tracking_voltage',
                                'scenario_tracking_interface_power', 'scenario_tracking_penalty')
 
@@ -371,13 +401,33 @@ def _fixed_interface_q_rule(m, dn, p):
     return m.expected_interface_pf_q[dn, p] == getattr(m, FIXED_INTERFACE_Q_TARGET)[dn, p]
 
 
+def _fixed_interface_v_rule(m, dn, p):
+    return m.expected_interface_vmag[dn, p] == getattr(m, FIXED_INTERFACE_V_TARGET)[dn, p]
+
+
+def _tso_interface_vmag_targets_pu(network, adn_nodes, interface_targets, year, day):
+    """{ADN node id: [V target, TN p.u.] per period} = targets['v_kv'] / the TN node base kV. The ONE source of the
+    voltage target for both the tracking penalty's `interface_vmag` and the check's fixed-side voltage pin (W94)."""
+    out = {}
+    for node_id in adn_nodes:
+        v_base_tn = network.get_node_base_kv(node_id)
+        out[node_id] = [float(v) / v_base_tn for v in interface_targets[node_id][year][day]['v_kv']]
+    return out
+
+
 def build_tso_arm_model(planning_problem, candidate_total_capacity, interface_targets, *, curtailment_penalty,
-                        coupling):
+                        coupling, pin_interface_voltage):
     """The TSO blocks, built and configured, NOT solved. `interface_targets[node][year][day]` holds 'p_mw', 'q_mvar'
-    (lists over periods) and 'v_kv' (used only by the tracking-penalty coupling). `curtailment_penalty` is the
-    declared DECISION tie-breaker; no default. Returns (tso_model, build_record)."""
+    (lists over periods) and 'v_kv' (used by the tracking-penalty coupling and by the voltage pin). `curtailment_penalty`
+    is the declared DECISION tie-breaker; no default. `pin_interface_voltage` (no default; W94): True adds the
+    interface-voltage pin rows -- permitted ONLY with 'fixed_interface' and used ONLY by the 24-solve check's fixed
+    side; the arm passes TSO_ARM_PIN_INTERFACE_VOLTAGE (False). Returns (tso_model, build_record)."""
     if coupling not in TSO_COUPLINGS:
         raise ValueError(f'unknown TSO coupling {coupling!r}; expected one of {TSO_COUPLINGS}')
+    if not isinstance(pin_interface_voltage, bool):
+        raise ValueError(f'pin_interface_voltage must be a declared bool; got {pin_interface_voltage!r}')
+    if pin_interface_voltage and coupling != TSO_COUPLING_FIXED:
+        raise ValueError(f'the interface-voltage pin is defined only for {TSO_COUPLING_FIXED!r}; got {coupling!r}')
     if curtailment_penalty is None or not math.isfinite(float(curtailment_penalty)) or curtailment_penalty < 0.0:
         raise ValueError(f'curtailment_penalty must be a declared finite value >= 0; got {curtailment_penalty!r}')
     require_single_scenario(planning_problem)
@@ -386,7 +436,8 @@ def build_tso_arm_model(planning_problem, candidate_total_capacity, interface_ta
     transmission_network.update_data_with_candidate_solution(candidate_total_capacity)
     tso_model = transmission_network.build_model()
     transmission_network.update_model_with_candidate_solution(tso_model, candidate_total_capacity)
-    record = {'coupling': coupling, 'decision_curtailment_penalty': float(curtailment_penalty), 'blocks': {}}
+    record = {'coupling': coupling, 'decision_curtailment_penalty': float(curtailment_penalty),
+              'interface_voltage_pinned': pin_interface_voltage, 'blocks': {}}
     adn_nodes = list(transmission_network.active_distribution_network_nodes)
 
     for year in transmission_network.years:
@@ -458,9 +509,22 @@ def build_tso_arm_model(planning_problem, candidate_total_capacity, interface_ta
                     block.active_distribution_networks, block.periods, rule=_fixed_interface_p_rule))
                 block.add_component(FIXED_INTERFACE_Q_ROW, pe.Constraint(
                     block.active_distribution_networks, block.periods, rule=_fixed_interface_q_rule))
+            n_row_families = 0
+            if coupling == TSO_COUPLING_FIXED:
+                n_row_families = 3 if pin_interface_voltage else 2
+            if pin_interface_voltage:
+                v_targets = _tso_interface_vmag_targets_pu(network, adn_nodes, interface_targets, year, day)
+                v_target = {(dn, p): v_targets[adn_nodes[dn]][p]
+                            for dn in block.active_distribution_networks for p in block.periods}
+                block.add_component(FIXED_INTERFACE_V_TARGET, pe.Param(
+                    block.active_distribution_networks, block.periods, mutable=True, domain=pe.Reals,
+                    initialize=v_target))
+                block.add_component(FIXED_INTERFACE_V_ROW, pe.Constraint(
+                    block.active_distribution_networks, block.periods, rule=_fixed_interface_v_rule))
             record['blocks'][block_label('TSO', None, year, day)] = {
-                'n_fixed_rows_expected': (2 * len(block.active_distribution_networks) * len(block.periods)
-                                          if coupling == TSO_COUPLING_FIXED else 0)}
+                'n_fixed_rows_expected': (n_row_families * len(block.active_distribution_networks)
+                                          * len(block.periods)),
+                'interface_voltage_pinned': pin_interface_voltage}
 
     srp._prepare_transmission_objectives_for_admm(transmission_network, tso_model)
     for year in transmission_network.years:
@@ -471,11 +535,10 @@ def build_tso_arm_model(planning_problem, candidate_total_capacity, interface_ta
         for year in transmission_network.years:
             for day in transmission_network.days:
                 network = transmission_network.network[year][day]
-                year_day_vmag, year_day_pf = {}, {}
+                year_day_vmag = _tso_interface_vmag_targets_pu(network, adn_nodes, interface_targets, year, day)
+                year_day_pf = {}
                 for node_id in adn_nodes:
                     targets = interface_targets[node_id][year][day]
-                    v_base_tn = network.get_node_base_kv(node_id)
-                    year_day_vmag[node_id] = [float(v) / v_base_tn for v in targets['v_kv']]
                     year_day_pf[node_id] = {'p': [float(v) for v in targets['p_mw']],
                                             'q': [float(v) for v in targets['q_mvar']]}
                 srp._add_tso_scenario_tracking_penalty(tso_model[year][day], network, adn_nodes, year_day_vmag,
@@ -485,7 +548,8 @@ def build_tso_arm_model(planning_problem, candidate_total_capacity, interface_ta
 
 def set_tso_interface_targets(planning_problem, tso_model, interface_targets):
     """Moves the fixed-interface targets (mutable Params) and the fixed `pc`/`qc` to a new DSO schedule, with no
-    rebuild. Returns the largest absolute target change in MW / MVAr."""
+    rebuild. Returns the largest absolute target change in MW / MVAr. Refuses a voltage-pinned model (the coupling
+    check's fixed side): it would move P/Q and silently leave the voltage pin behind."""
     transmission_network = planning_problem.transmission_network
     adn_nodes = list(transmission_network.active_distribution_network_nodes)
     largest = 0.0
@@ -493,6 +557,9 @@ def set_tso_interface_targets(planning_problem, tso_model, interface_targets):
         for day in transmission_network.days:
             network = transmission_network.network[year][day]
             block = tso_model[year][day]
+            if hasattr(block, FIXED_INTERFACE_V_TARGET):
+                raise ValueError(f'{block_label("TSO", None, year, day)}: set_tso_interface_targets does not move the '
+                                 'interface-voltage pin (coupling-check fixed side only)')
             s_base = network.baseMVA
             p_param = getattr(block, FIXED_INTERFACE_P_TARGET)
             q_param = getattr(block, FIXED_INTERFACE_Q_TARGET)
@@ -728,9 +795,16 @@ def check_arm_structures(planning_problem, arm_models, reference_structure, *, d
                     records[label] = rec
     if arm_models.get('tso') is not None:
         tn = planning_problem.transmission_network
+        pinned = (tso_build_record or {}).get('interface_voltage_pinned')
+        if not isinstance(pinned, bool):
+            raise StructuralCheckError(f'no declared interface_voltage_pinned in the TSO build record (got {pinned!r})')
+        if pinned and tso_coupling != TSO_COUPLING_FIXED:
+            raise StructuralCheckError(f'interface voltage pinned under coupling {tso_coupling!r}')
         if tso_coupling == TSO_COUPLING_FIXED:
             fixed_rows = (FIXED_INTERFACE_P_TARGET, FIXED_INTERFACE_Q_TARGET, FIXED_INTERFACE_P_ROW,
                           FIXED_INTERFACE_Q_ROW)
+            if pinned:
+                fixed_rows += (FIXED_INTERFACE_V_TARGET, FIXED_INTERFACE_V_ROW)
             extra = ()
         elif tso_coupling == TSO_COUPLING_TRACKING_PENALTY:
             fixed_rows = ()
@@ -747,6 +821,7 @@ def check_arm_structures(planning_problem, arm_models, reference_structure, *, d
                 records[label] = check_arm_block_structure(
                     block, reference_structure[label], label=label, fixed_row_components=fixed_rows,
                     expected_fixed_rows=expected, extra_components=extra)
+                records[label]['interface_voltage_pinned'] = pinned
     return records
 
 
@@ -978,7 +1053,8 @@ def run_operational_planning_uncoordinated(planning_problem, candidate_solution,
 
     tso_model, tso_build = build_tso_arm_model(planning_problem, candidate_total_capacity, dso_schedule,
                                                curtailment_penalty=tso_curtailment_penalty,
-                                               coupling=TSO_COUPLING_FIXED)
+                                               coupling=TSO_COUPLING_FIXED,
+                                               pin_interface_voltage=TSO_ARM_PIN_INTERFACE_VOLTAGE)
     structure.update(check_arm_structures(planning_problem, {'tso': tso_model}, reference_structure,
                                           tso_build_record=tso_build, tso_coupling=TSO_COUPLING_FIXED))
     start_records.update(apply_start(planning_problem, _partial_models(planning_problem, tso_model=tso_model),
@@ -998,22 +1074,78 @@ def run_operational_planning_uncoordinated(planning_problem, candidate_solution,
     }
 
 
-def run_tso_interface_coupling_check(planning_problem, candidate_solution, interface_targets, *,
-                                     tso_curtailment_penalty, reference_structure, record_callback=None):
-    """Ruling 2's 24-solve check: the TSO arm under 'fixed_interface' and under 'tracking_penalty' at the SAME targets
-    (2 x |years| x |days| solves). Returns both models, per-block metrics and the structural records."""
+def coupling_check_voltage_pin(planning_problem, tso_model, interface_targets):
+    """Zero solves. Per TSO block: whether the interface-voltage pin rows exist, how many are active, and the largest
+    |pin target - the tracking penalty's V target| (both from `_tso_interface_vmag_targets_pu`, so 0.0 exactly when
+    present)."""
+    tn = planning_problem.transmission_network
+    adn_nodes = list(tn.active_distribution_network_nodes)
+    out = {}
+    for year in tn.years:
+        for day in tn.days:
+            block = tso_model[year][day]
+            row = block.component(FIXED_INTERFACE_V_ROW)
+            param = block.component(FIXED_INTERFACE_V_TARGET)
+            entry = {'present': row is not None and param is not None,
+                     'n_active_rows': 0 if row is None else sum(1 for c in row.values() if c.active),
+                     'n_rows_expected_if_pinned': len(adn_nodes) * len(block.periods),
+                     'max_abs_target_minus_tracked_v_pu': None}
+            if param is not None:
+                tracked = _tso_interface_vmag_targets_pu(tn.network[year][day], adn_nodes, interface_targets,
+                                                         year, day)
+                entry['max_abs_target_minus_tracked_v_pu'] = max(
+                    abs(pe.value(param[dn, p]) - tracked[node_id][p])
+                    for dn, node_id in enumerate(adn_nodes) for p in block.periods)
+            out[block_label('TSO', None, year, day)] = entry
+    return out
+
+
+def build_tso_coupling_check_models(planning_problem, candidate_solution, interface_targets, *,
+                                    tso_curtailment_penalty, reference_structure):
+    """Zero solves. The two sides of ruling 2's check, built, structurally checked, NOT solved: 'fixed_interface'
+    with the interface-voltage pin (COUPLING_CHECK_FIXED_SIDE_PIN_INTERFACE_VOLTAGE -- the check's fixed side only;
+    see the module docstring) and 'tracking_penalty' (unpinned). Raises StructuralCheckError unless the fixed side
+    carries the pin on every block, at exactly the penalty's V target, and the penalty side carries none.
+    Returns {coupling: {'model', 'build', 'structure', 'voltage_pin'}}."""
     require_single_scenario(planning_problem)
+    pin_by_coupling = {TSO_COUPLING_FIXED: COUPLING_CHECK_FIXED_SIDE_PIN_INTERFACE_VOLTAGE,
+                       TSO_COUPLING_TRACKING_PENALTY: False}
     out = {}
     for coupling in (TSO_COUPLING_FIXED, TSO_COUPLING_TRACKING_PENALTY):
         tso_model, build = build_tso_arm_model(planning_problem, candidate_solution['total_capacity'],
                                                interface_targets, curtailment_penalty=tso_curtailment_penalty,
-                                               coupling=coupling)
+                                               coupling=coupling, pin_interface_voltage=pin_by_coupling[coupling])
         structure = check_arm_structures(planning_problem, {'tso': tso_model}, reference_structure,
                                          tso_build_record=build, tso_coupling=coupling)
-        results = solve_tso_model(planning_problem, tso_model, phase=f'coupling_check:{coupling}',
-                                  record_callback=record_callback)
-        out[coupling] = {'model': tso_model, 'results': results, 'build': build, 'structure': structure,
-                         'metrics': tso_block_metrics(planning_problem, tso_model, interface_targets)}
+        pin = coupling_check_voltage_pin(planning_problem, tso_model, interface_targets)
+        for label, entry in pin.items():
+            if pin_by_coupling[coupling]:
+                ok = (entry['present'] and entry['n_active_rows'] == entry['n_rows_expected_if_pinned']
+                      and entry['max_abs_target_minus_tracked_v_pu'] == 0.0)
+            else:
+                ok = not entry['present'] and entry['n_active_rows'] == 0
+            if not ok:
+                raise StructuralCheckError(f'coupling check {coupling!r} {label}: interface-voltage pin '
+                                           f'{"missing or wrong" if pin_by_coupling[coupling] else "unexpected"} '
+                                           f'({entry})')
+        out[coupling] = {'model': tso_model, 'build': build, 'structure': structure, 'voltage_pin': pin}
+    return out
+
+
+def run_tso_interface_coupling_check(planning_problem, candidate_solution, interface_targets, *,
+                                     tso_curtailment_penalty, reference_structure, record_callback=None):
+    """Ruling 2's 24-solve check: 'fixed_interface' WITH the interface-voltage pin (W94; the check's fixed side
+    only) against 'tracking_penalty' at the SAME targets (2 x |years| x |days| solves). Both sides are built and
+    checked (`build_tso_coupling_check_models`) BEFORE the first solve. Returns both models, per-block metrics, the
+    structural records and the voltage-pin records."""
+    out = build_tso_coupling_check_models(planning_problem, candidate_solution, interface_targets,
+                                          tso_curtailment_penalty=tso_curtailment_penalty,
+                                          reference_structure=reference_structure)
+    for coupling in (TSO_COUPLING_FIXED, TSO_COUPLING_TRACKING_PENALTY):
+        tso_model = out[coupling]['model']
+        out[coupling]['results'] = solve_tso_model(planning_problem, tso_model, phase=f'coupling_check:{coupling}',
+                                                   record_callback=record_callback)
+        out[coupling]['metrics'] = tso_block_metrics(planning_problem, tso_model, interface_targets)
     return out
 
 
@@ -1435,7 +1567,14 @@ def interface_price_terms(planning_problem, certified_models):
     AL term is normalised by), m = 1 when the active objective is `p58_rescaled_admm_objective` (already in EUR) and
     eff when it is `admm_objective` (divided by eff). The interface-P channel is scaled by sigma (through eff) and the
     interface rating only; S_ref (shared_ess_reference_rating_mva) and D5 (the ESSO AL scale) enter the ESS channel
-    only (update_*_model_to_admm) and are therefore not undone here. Signs are derived (stationarity of the
+    only (update_*_model_to_admm) and are therefore not undone here. This CORRECTS the wording of Addendum 49's
+    clarification ("undo sigma, S_ref, D5"; accepted by the Planner in W94). Source, shared_resources_planning.py at
+    a8c58da0: update_transmission_model_to_admm -- effective_scale = objective_scale / block_weight and the objective
+    divided by it (L5137-5142), interface P/Q AL terms divided by interface_transf_rating (L5156-5157), S_ref only in
+    the shared-ESS loop's shared_ess_rating (L5179); update_distribution_models_to_admm -- the same (L5402-5407,
+    L5428-5429), S_ref only in shared_ess_rating (L5410-5415); D5 = al_scale_esso, stored as admm_esso_al_scale and
+    multiplying ONLY the ESSO's AL terms in update_shared_energy_storage_model_to_admm (L5486, L5515-5518), never
+    passed to the TSO/DSO updates. Signs are derived (stationarity of the
     expected-interface Vars and of interface_delta_p) and are CHECKED against the two independent nodal duals by the
     harness's units check; this function asserts nothing."""
     tn = planning_problem.transmission_network
