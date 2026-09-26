@@ -19,8 +19,10 @@
 - [x] **Pair spec freeze** — `231558f0`, commit `b5fc49a5` — x0 `f6e9cd53` + n7_4h_e1 `c82522f4`; concurrency 1; (b) on; tail {True, 1e-6}; cap 500; persistence off; preflight 19.17 GiB (g × P_on, footprint)
 - [x] **Pre-launch commit** — `c2362883` (TASKS.md, CLAUDE.md, STEP4_DFO_METHOD.md, PLANNER_BRIEF_2026-09-13.md)
 - [ ] **▶ ACTIVE — 3×3 pair, RUNNING** — campaign `s53_w91_3x3_pair`, spec `231558f0`; launched **2026-09-26 10:20:56 UTC**; preflight 20.36 GiB available vs 19.17 required (PASS; thin margin — compressor refilled to 5.07 GiB after the smoke; the (b)-off smoke arm ran at ~95 % of available and completed correctly). Sequential, concurrency 1: x0 then n7_4h_e1; nothing else runs on the Mac. Est. **~9.2 h/cell, ~18.4 h pair** (range 13.4–24.6 h; no-decay bound 19.8–31.0 h). Log `w90_3x3/pair_run_v36_launch.log`
-- [x] **Advisor: uncoordinated-benchmark definition** — delivered 2026-09-26 during the pair (read-only, no compute). Recommends a **two-arm decomposition** (U-passive, U-price-taker), a hard-fixed TSO interface replacing the 9e10 tracking term, costing via `_get_operational_recourse_components` with the curtailment penalty reset to 0, and a new production function beside the existing one. **Awaiting author/expert ruling** (formulation-level choice). Runs only after the pair (one-run rule); ~120 SRP1 solves.
+- [x] **Advisor: uncoordinated-benchmark definition** — delivered 2026-09-26 during the pair (read-only, no compute). Recommends a **two-arm decomposition** (U-passive, U-price-taker), a hard-fixed TSO interface replacing the 9e10 tracking term, costing via `_get_operational_recourse_components` with the curtailment penalty reset to 0, and a new production function beside the existing one. **Ruled in Addendum 49** (three arms; claim = min(passive, price-taker) − coordinated) — see the Addendum 49 order below.
 - [ ] **Stop for review** after the pair — R restated against **259,375.33**; R = 0.9331 recorded
+- [ ] 42(1) linear-solver benchmark / 42(3) persistent-worker timing — idle time, after review
+- [ ] Step 5 SRP1 rows
 
 ## Addendum 49 order — uncoordinated benchmark (three arms, fixed interface, common Q)
 
@@ -36,9 +38,7 @@
 - [ ] Report — claim = **min(passive, price-taker) − coordinated**; decomposition beside it
 - [ ] Second Advisor note — 3×3 convention (after the pair)
 - **Tie-breaker — RULED (Add. 49 clarification, 2026-09-26):** *evaluation* Q uses **0 in every arm** (the certified value; the common-Q gate fixes it). *Decision* objectives: **0** for price-taker and coordinated; **1 €/MWh for the passive arm only** — the minimum-curtailment selection rule in an otherwise empty objective. Verify value-independence by re-solving passive at **0.1 and 10 €/MWh** and reporting the interface-schedule difference (expected within solver tolerance). Report curtailed energy per arm.
-- **λ_t recovery — RULED:** read **both** the interface-P consensus-dual Param from the W86 x = 0 persisted models **and** the TN interface-bus power-balance dual from the suffixes; undo the ADMM scaling (σ, S_ref, D5) to €/MWh. **Units check first:** reproduce Addendum 32's bus-7 marginal cost = DSO flexibility shadow price before the λ_t vs π_t table is used as a prediction.
-- [ ] 42(1) linear-solver benchmark / 42(3) persistent-worker timing — idle time, after review
-- [ ] Step 5 SRP1 rows
+- **λ_t recovery — RULED:** read **both** the interface-P consensus-dual Param from the W86 x = 0 persisted models **and** the TN interface-bus power-balance dual from the suffixes; undo the ADMM scaling to €/MWh — on the interface-P channel only **σ and the interface rating** apply (S_ref, D5 are ESS-channel only; correction above). **Units check first:** reproduce Addendum 32's bus-7 marginal cost = DSO flexibility shadow price before the λ_t vs π_t table is used as a prediction.
 
 ## Carried from earlier addenda (closed)
 
