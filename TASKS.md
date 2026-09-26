@@ -18,11 +18,24 @@
   - **persistence REFUSED**: P_persist 27.54 > 0.85·A_post 20.75 (also refused at g = 1) → hull polish omitted at 3×3
 - [x] **Pair spec freeze** — `231558f0`, commit `b5fc49a5` — x0 `f6e9cd53` + n7_4h_e1 `c82522f4`; concurrency 1; (b) on; tail {True, 1e-6}; cap 500; persistence off; preflight 19.17 GiB (g × P_on, footprint)
 - [x] **Pre-launch commit** — `c2362883` (TASKS.md, CLAUDE.md, STEP4_DFO_METHOD.md, PLANNER_BRIEF_2026-09-13.md)
-- [ ] **▶ ACTIVE — 3×3 pair, RUNNING** — campaign `s53_w91_3x3_pair`, spec `231558f0`; launched **2026-09-26 10:20:56 UTC**; preflight 20.36 GiB available vs 19.17 required (PASS; thin margin — compressor refilled to 5.07 GiB after the smoke; the (b)-off smoke arm ran at ~95 % of available and completed correctly). Sequential, concurrency 1: x0 then n7_4h_e1; nothing else runs on the Mac. Est. **~9.2 h/cell, ~18.4 h pair** (range 13.4–24.6 h; no-decay bound 19.8–31.0 h). Log `w90_3x3/pair_run_v36_launch.log`
+- [x] **3×3 x = 0 CERTIFIED** — 2026-09-26 18:16:32 UTC, cycle 72, wall 28,536 s; **Q = 842,832,534.76** (gross, settlement excluded), bar 13,954.38; tail active cycles 64–72. **Prediction refuted:** 80/80 terminal solves at the μ floor predicted, 1/80 actual (all Optimal exits; μ fell 33×; floor fell 100–500×). **Objective still descending at certification:** −1,009 → −4,006 €/cycle over cycles 66–72.
+- [ ] **▶ ACTIVE — 3×3 node-7 unit, RUNNING** (launched 18:16:37 UTC)
+- [ ] ~~3×3 pair, RUNNING~~ (see the two lines above) — campaign `s53_w91_3x3_pair`, spec `231558f0`; launched **2026-09-26 10:20:56 UTC**; preflight 20.36 GiB available vs 19.17 required (PASS; thin margin — compressor refilled to 5.07 GiB after the smoke; the (b)-off smoke arm ran at ~95 % of available and completed correctly). Sequential, concurrency 1: x0 then n7_4h_e1; nothing else runs on the Mac. Est. **~9.2 h/cell, ~18.4 h pair** (range 13.4–24.6 h; no-decay bound 19.8–31.0 h). Log `w90_3x3/pair_run_v36_launch.log`
 - [x] **Advisor: uncoordinated-benchmark definition** — delivered 2026-09-26 during the pair (read-only, no compute). Recommends a **two-arm decomposition** (U-passive, U-price-taker), a hard-fixed TSO interface replacing the 9e10 tracking term, costing via `_get_operational_recourse_components` with the curtailment penalty reset to 0, and a new production function beside the existing one. **Ruled in Addendum 49** (three arms; claim = min(passive, price-taker) − coordinated) — see the Addendum 49 order below.
 - [ ] **Stop for review** after the pair — R restated against **259,375.33**; R = 0.9331 recorded
 - [ ] 42(1) linear-solver benchmark / 42(3) persistent-worker timing — idle time, after review
 - [ ] Step 5 SRP1 rows
+
+## Addendum 50 order — G6 failure benign; objective not settled at certification
+
+- [x] **Stop and report** on the refuted floor prediction — correct per the stopping conditions; node-7 continues; **no rule changes mid-pair**
+- [x] **G6: option (a)** — recorded as FAILED (1/80 at floor vs ≥ 72/80) with its mechanism, **not re-scoped**. The floor is IPOPT's `mu_min` clamp, not a target. Future G6 (frozen before the next run): depth = `Optimal Solution Found` under the tail tolerances; μ/floor reported, not gated. **Prediction for node-7:** G6 fails likewise (≤ 3/80 at floor, median μ/floor ≈ 3)
+- [x] **Certified Q stands "certified on residuals"; its ± bar claim does NOT** (the bar bounds stopping slack, not a path still descending)
+- [ ] **▶ ACTIVE — W95: x = 0 diagnostics from RECORDS ONLY** (no model loading while node-7 runs): rule ten; G6 verification (μ/floor ∈ (1, 5] for all 80; four terminal error metrics vs tail tolerances); diagnostics (i)–(v) cycles 63–72; H_row18 / H_B / H_C
+- [ ] Node-7 certifies → same diagnostics for node-7, then both cells compared; rule ten for node-7
+- [ ] **Continuation** of each cell, up to 30 cycles, one at a time, behind a **bitwise identity gate** on the terminal cycle (else a separately labelled run); stop at |ΔQ| < 500 €/cycle for 3 cycles. **Prediction:** a hump, peak within ~5 cycles; 20–60 k€ remaining descent per cell; inter-cell difference < 10 k€. **If steps still rise after 10 cycles or the total exceeds 100 k€: H_C likely, and no 3×3 result is used** before a settling criterion exists
+- [ ] Report value and R **three ways**: at certification; after continuation; with the drift as explicit uncertainty
+- [ ] Settling criterion for future specs — **Advisor review after the continuation data**, not before
 
 ## Addendum 49 order — uncoordinated benchmark (three arms, fixed interface, common Q)
 
