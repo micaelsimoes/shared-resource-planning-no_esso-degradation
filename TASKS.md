@@ -1,0 +1,31 @@
+# TASKS — current order
+
+**Authority:** `PLANNER_BRIEF_2026-09-13.md` Addendum 48 (2026-09-25).
+**Objective convention on every value:** Q = certified `gross_operational_cost`, settlement excluded.
+**Updated at every transition; read first when resuming.**
+
+## Addendum 48 order
+
+- [x] **(b) zero-solve measurement** — `release_solution_bookkeeping` saving ≈ 3.98 GiB/child predicted (range 2.92–3.98); does not enter `evaluation_key` — commit `9db1c45b` (W90)
+- [x] **Spec v35 freeze** — `8aa98dbf`, commit `60c9b7b1` — *superseded by v36* (margin rule mixed RSS with footprint; G6 V5 vacuity hole)
+- [x] **Spec v36 freeze** — `14bbddc7`, predecessor v35 `8aa98dbf`; commits `eac9c6c7` (launcher), `d46f2d8c` (spec) — footprint-consistent persistence margin rule; G6 ≥ ⌈0.9·B⌉ floor-testable finals; 3.09e-6 provenanced to `P515S41/hull_polish` (sha `809e1c91`, Step 3.5 config caveat)
+- [x] **Smoke campaign specs** — bon `6e8fe1f3` ((b) on), boff `b99acdc0` ((b) off); commit `28c56a6f`
+- [x] **Reboot** (author) — booted 2026-09-25 22:33; OneDrive quit, project excluded from Spotlight; **A_post = 24.41 GiB**
+- [x] **Two-arm smoke gate — PASS** — run ids `s53_w91_3x3_smoke_bon` / `s53_w91_3x3_smoke_boff`; evidence commit `56b98c13`
+  - S16 per-cycle gross + residuals bitwise identical (b) on vs off: **True**; S17 footprint captured exactly both arms: **True**; per-arm S1–S15 14/14 both arms
+  - footprint peaks: (b) on **18.53 GiB**, (b) off 23.13 GiB → saving **4.60 GiB** (both predictions missed high: W90 2.92–3.98, Add. 48 ~3); walls 2,454 s / 3,139 s — the difference is in the terminal workbook write (236 s vs 887 s), **not** the ADMM cycles (644/685/416 s vs 668/690/421 s)
+  - (b)-on cycle walls 10.74 / 11.42 / 6.93 min (mean 9.70; prediction 10.1–12.5)
+  - **persistence REFUSED**: P_persist 27.54 > 0.85·A_post 20.75 (also refused at g = 1) → hull polish omitted at 3×3
+- [x] **Pair spec freeze** — `231558f0`, commit `b5fc49a5` — x0 `f6e9cd53` + n7_4h_e1 `c82522f4`; concurrency 1; (b) on; tail {True, 1e-6}; cap 500; persistence off; preflight 19.17 GiB (g × P_on, footprint)
+- [ ] **▶ ACTIVE — 3×3 pair** (sequential, concurrency 1; x0 then unit; nothing else runs on the Mac) — revised est. **~9.2 h/cell, ~18.4 h pair** (range 13.4–24.6 h; no-decay bound 19.8–31.0 h); log `w90_3x3/pair_run_v36_launch.log`
+- [ ] Advisor: uncoordinated-benchmark definition — during the pair, no compute
+- [ ] **Stop for review** after the pair — R restated against **259,375.33**; R = 0.9331 recorded
+- [ ] 42(1) linear-solver benchmark / 42(3) persistent-worker timing — idle time, after review
+- [ ] Step 5 SRP1 rows
+
+## Carried from earlier addenda (closed)
+
+- [x] Tight tail adopted (Add. 46 r7 / 48) — new SRP1 reference **R = 259,375.33** (ΔR = −52.44); re-cert evidence `0a4bf784`
+- [x] G6 final scope written into the spec (v30, v32 recorded as POST-HOC; v35 tier-2 and v36 V5 fixes made before any run)
+- [x] `identity_holds` on `s47_recert` recomputed True under the current formula (v35)
+- [x] Bar caveat recorded: `bar_tail = bar_ref` bitwise — the two-run bar is not independent

@@ -13,13 +13,17 @@ Do not infer the current investigation stage from this file.
 
 For current state, read:
 
-1. `REVISION_CONTEXT.md`
-2. `LOCAL_NLP_STABILITY_PLAN.md`
-3. the latest relevant stage reports
-4. `EXPERT_REVIEW.md` when relevant
+1. `TASKS.md` — the current order as a ticked checklist; where the work sits now
+2. `REVISION_CONTEXT.md` — the current-state summary
+3. `PLANNER_BRIEF_2026-09-13.md` — the author's and expert's decision record; its addenda
+   are authoritative over earlier sections and over other documents where they conflict
+4. `STEP4_DFO_METHOD.md` — the planning-method definition
+5. the latest `P5_15_*_REPORT.md` handoff report
 
-`REVISION_CONTEXT.md` is the repository-wide source of truth.
-The current sections of that document supersede older historical sections.
+`REVISION_CONTEXT.md` is the repository-wide current-state summary; its current sections
+supersede older historical sections. `LOCAL_NLP_STABILITY_PLAN.md`, `EXPERT_REVIEW.md`,
+`COWORK_HANDOFF.md` and `WORKER_REPORT*.md` are historical: consult them only when a current
+question points there.
 
 ## Agent workflow
 
@@ -35,6 +39,44 @@ Role-specific instructions are under:
 
 Production-code changes should normally be performed only by Worker after
 Planner authorization.
+
+## Stopping conditions
+
+Keep going, without asking, while the next step is inside the current order of the latest
+addendum of `PLANNER_BRIEF_2026-09-13.md` and inside the frozen spec: measurements, gates,
+smoke runs, zero-solve looks, report and state-file updates, Advisor consultations, Worker
+tasks that touch no production path outside the spec, and launches the order already names.
+
+Stop and report — with what is needed from the reader first — when:
+
+- an author-level parameter is at stake: budget, cost file, ageing calibration, α, siting,
+  routes, scenario draws, discount rate, horizon, machine allocation (the author decides);
+- a change to the mathematical formulation, the certification rule, the objective convention,
+  a gate's scope, or a production configuration outside the frozen spec is proposed (the
+  expert rules);
+- a recorded prediction fails and the addendum names no fallback, or the named fallback would
+  itself change the configuration;
+- a run not named in the current order would be launched, or any run expected to exceed 4 h;
+- before anything destructive or irreversible: overwriting or deleting a cited artifact,
+  rewriting a reference, deleting a symbol, any git operation beyond staging by filename and
+  committing;
+- the review point the current order names is reached ("stop for review after …").
+
+Actions only the author can perform (a reboot, credentials, hardware) are requested as
+actions, not framed as decisions; the run is held at the point that needs them.
+
+Do not stop for choices the spec or an addendum already makes, nor for questions the brief
+marks closed, void or withdrawn: cite the addendum and move on, unless a new measurement
+contradicts it.
+
+Permission prompts stay on for destructive commands; no role runs with prompts bypassed.
+
+## Task checklist
+
+`TASKS.md` at the repository root holds the current order as a checklist: one line per step,
+ticked with the commit hash or run id when done, the active step marked. The Planner updates
+it at every transition and reads it first when resuming; it survives context summarization
+where the conversation does not. It is committed by filename with the state it records.
 
 ## Runtime environment
 
@@ -170,6 +212,11 @@ incidents behind each rule are in `REVISION_CONTEXT.md`, section
 
 ## Reporting conventions
 
+- Lead with what the reader must act on. A handoff report opens with `Decisions needed`
+  (numbered, with options, cost and recommendation) and `Blocked on the author`; a Worker
+  report opens with `Blocked on Planner`. Then `Changed` (commits by hash, spec version,
+  configuration), `Found` (each recorded prediction stated against its outcome) and
+  `Not confirmed` (what could not be verified, and where you looked).
 - State the objective convention on every table. `gross_operational_cost` and
   `net_operational_recourse` differ by exactly the terminal salvage credit — 3,448.87 on the
   X22 warm-adaptive cell, which is why its table reads 827,738,663 (gross) where C1's reads
