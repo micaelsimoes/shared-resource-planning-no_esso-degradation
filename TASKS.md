@@ -33,7 +33,8 @@
 - [ ] Consistency re-evaluation — DN at the TN's actual interface voltage; one sequential pass if a DN limit is violated
 - [ ] Report — claim = **min(passive, price-taker) − coordinated**; decomposition beside it
 - [ ] Second Advisor note — 3×3 convention (after the pair)
-- **Open for the author:** the tie-breaker's "production value" is 0 (coordinated ADMM subproblems) or 1 €/MWh (build default); carried as a declared parameter until ruled.
+- **Tie-breaker — RULED (Add. 49 clarification, 2026-09-26):** *evaluation* Q uses **0 in every arm** (the certified value; the common-Q gate fixes it). *Decision* objectives: **0** for price-taker and coordinated; **1 €/MWh for the passive arm only** — the minimum-curtailment selection rule in an otherwise empty objective. Verify value-independence by re-solving passive at **0.1 and 10 €/MWh** and reporting the interface-schedule difference (expected within solver tolerance). Report curtailed energy per arm.
+- **λ_t recovery — RULED:** read **both** the interface-P consensus-dual Param from the W86 x = 0 persisted models **and** the TN interface-bus power-balance dual from the suffixes; undo the ADMM scaling (σ, S_ref, D5) to €/MWh. **Units check first:** reproduce Addendum 32's bus-7 marginal cost = DSO flexibility shadow price before the λ_t vs π_t table is used as a prediction.
 - [ ] 42(1) linear-solver benchmark / 42(3) persistent-worker timing — idle time, after review
 - [ ] Step 5 SRP1 rows
 
