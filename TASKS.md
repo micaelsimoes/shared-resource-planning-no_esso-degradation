@@ -25,7 +25,9 @@
 ## Addendum 49 order — uncoordinated benchmark (three arms, fixed interface, common Q)
 
 - [x] **18.25 % coordination benefit WITHDRAWN** (measured on the transfer-payment recourse Addendum 11 retired)
-- [ ] **▶ ACTIVE (during the pair) — code + tests WRITTEN, nothing executed** — not even tests that build a model (pair holds ≈ 22 of 24 GiB). Static checks only.
+- [x] **Code + tests WRITTEN, nothing executed** — commit `a8c58da0` (W93): new module `uncoordinated_benchmark.py` (kept out of `shared_resources_planning.py` so the pair's second cell imports unchanged code), harness `p515_s53_w93_uncoordinated_benchmark.py`, checks script. Certified x = 0 cell **did curtail** (589.18 € at weight 1), so the common-Q gate can discriminate tie-breaker 0 from 1. Arm Q = minimum over 3 starts — **conservative against the coordination claim**.
+- [ ] **▶ ACTIVE (during the pair) — W94: fix the confounded 24-solve check** (fixed side must also pin interface voltage to the penalty's target, so both sides are the same problem) — write only
+- **Correction to Add. 49 wording:** on the interface-P channel only σ and the interface rating scale λ_t; S_ref and D5 act on the ESS channel only (W93, from source).
 - [ ] *after the pair review:* λ_t vs π_t zero-solve look from the certified x = 0 cell → recorded as the prediction (Advisor's "inside the band" beside it as the competing prediction)
 - [ ] Common-Q gate — new evaluation function reproduces the certified x = 0 `gross_operational_cost` from its persisted models (bitwise, or explained to the last digit)
 - [ ] 24-solve penalty-vs-fixed TSO check — reported, not gating
