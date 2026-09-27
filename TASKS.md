@@ -1,14 +1,30 @@
 # TASKS — current order
 
-**Authority:** `PLANNER_BRIEF_2026-09-13.md` Addendum 52 (2026-09-27); earlier orders below for record.
+**Authority:** `PLANNER_BRIEF_2026-09-13.md` Addendum 53 (2026-09-27); earlier orders below for record.
 **Objective convention on every value:** Q = certified `gross_operational_cost`, settlement excluded.
 **Updated at every transition; read first when resuming.**
 
-## Addendum 52 order — pair closed; gate-result hygiene; SRP1 benchmark
+## Addendum 53 order — criterion adopted; SRP1 references continued first
+
+- [x] **Ruling 1 — criterion adopted** (Advisor's refined form + monotone branch): after Boyd pass, ≥ 2 sign changes of ΔQ; successive swings not growing; range of Q over one full period ≤ τ; no fit in the decision. **Monotone branch:** no sign change within 2× the longest period seen on the instance → certify when steps decreasing and range over that window ≤ τ. **δR = 0.07 → τ = 4,539 € per cell.** Add. 52's 10-cycle candidate withdrawn. δR ≈ 0.035 (τ ≈ 2.3 k€) recorded, not ordered
+- [x] **Ruling 3 — "ratio resolution 0.1405" retired**; resolution statements derive from τ and measured settling
+- [x] Add. 51's "SRP1 settled at certification" **withdrawn**; Add. 52's "SRP1 statements unchanged" falls with it. **All SRP1 numbers ON HOLD** until the continuation reports
+- [ ] **▶ W100 review** (gate-result writer + boolean-typing test) — Worker still running
+- [ ] **▶ Advisor — stop-rule operationalisation** (design review before the harness is built, no compute): the criterion as an exact algorithm (k0, sign-change counting, swing test, window, monotone branch incl. "longest period seen on the instance", cap), replayed on the recorded trajectories
+- [ ] **▶ Advisor — AA-off design note** (no compute): on the continuation data, would AA-off at residuals within 10× tolerance let the transient decay before the window opens and shorten certified runs under the new criterion? Not adopted now
+- [ ] **Records:** per-period interface consensus duals (λ_t per node) into the default per-cycle records — write-only, proven by the continuation's bitwise replay
+- [ ] **Spec v39** (addendum says "v38"; v38 is `8bc0ffa6`, so v39 with v38 as predecessor): criterion as the stop rule; cap 100 cycles past certification; predictions below recorded
+- [ ] **SRP1 three-reference continuation** — x = 0, unit, C\*, one at a time, attached: bitwise replay to certification (tight-tail re-cert `0a4bf784`: x0 132, unit 112, C\* 87), then continue under the certifying regime until the criterion certifies or 100 cycles. ≈ 3.5 h total
+  - **Expert's predictions (recorded):** settled slack per cell ∈ [5, 25] k€; |ΔV| ≤ 20 k€ (sign margin value − I ≈ −59 k€ survives); three slacks alike within ≈ 5 k€ (common-mode). **If |ΔV| > 40 k€ the SRP1 sign conclusion is reopened**
+- [ ] **Stop for review** — settled-vs-certified per cell; **triage list**: every SRP1 difference the manuscript reports (Phase A ladders, break-even, ageing ×1.126, flexibility ladder, α row) with margin < 3× the largest settled slack → "pending", with its margin; re-settling campaign **sized, not launched** (≈ 1.2 h/cell; > 10 cells → VM's first job after the equivalence gate)
+- [ ] Benchmark arms (uncoordinated; minutes) — per the Order line, after the review (Ruling 4's "as soon as W100 is reviewed" read against Ruling 2's "before anything else that solves"); **coordinated arm reported only as the settled x = 0 value**
+- [ ] Step 5 SRP1 rows
+
+## Addendum 52 order — pair closed; gate-result hygiene; SRP1 benchmark *(superseded in part by Addendum 53)*
 
 - [x] Pair closed, results accepted (`58ff8d88`); expert's D_x0 prediction recorded as missed; both Planner self-corrections accepted. Manuscript paragraph: *"certified on residuals at cycle 72; a 16-cycle continuation showed a damped oscillation settling 6.2 k€ (7 × 10⁻⁶) below the certified value, within the 14.0 k€ certification bar."*
 - [x] CLAUDE.md: two rules added — *a defect fixed twice is fixed at the writer, not at the caller*; *a fit is validated only on points it did not use*
-- [ ] **▶ W100 — gate-result hygiene** (Worker, code + test, zero solves): one shared writer for gate results refusing string-typed flags; every gate writer (campaign harness, G1–G4 gates, W98 hooks, SRP1 benchmark harness) migrated; repository-wide boolean-typing test over gate-result JSON with a hash-pinned list of historical string-flag artifacts; negative controls (planted new string flag; changed hash of a listed artifact)
+- [ ] **W100 — gate-result hygiene** (Worker, code + test, zero solves): one shared writer for gate results refusing string-typed flags; every gate writer (campaign harness, G1–G4 gates, W98 hooks, SRP1 benchmark harness) migrated; repository-wide boolean-typing test over gate-result JSON with a hash-pinned list of historical string-flag artifacts; negative controls (planted new string flag; changed hash of a listed artifact)
 - [x] **Advisor — settling criterion** (in parallel, no compute): envelope-based (range of Q over ≥ one oscillation period, or a damped-fit amplitude validated out of sample), not step-based; threshold tied to the value resolution; replayed on cycles 72–88; mechanism test of the Spring/TSO oscillation (λ_t near DSO flexibility shadow price in RES-covered Spring hours) against the per-block records. **Adopted into the spec before any further multi-scenario cell, Mac or VM**
   - Review delivered (read-only). **Reject the 10-cycle candidate:** 3×3 node-7 has E10(69) = 6,639 € with growing steps (−362 … −1,688), so it would certify mid-descent; E20(69) = 37,531 refuses (verified by Planner). Proposed: full-period window W = max(20, ⌈1.1·P̂⌉), range E_W ≤ τ (τ an a-priori spec constant), envelope not growing, a one-sign-window decay clause; fits diagnostic only. Replay on 3×3 x = 0: certifies at 92 (+20 cycles). **Mechanism:** the λ_t clause cannot be tested from records (no per-period dual captured); Spring TSO generation cost and DSO flexibility cost move **in phase** with smooth second differences — against a marginal switch; reading: an under-damped ADMM mode exposed at AA-off (plausible, not shown)
   - **New finding — SRP1 reference cells not settled at certification** (verified by Planner on the tight-tail re-cert `0a4bf784`): unit cell certified at 112 on a **rising flank** (steps +884, +2,385, +3,640; E10 29,156); x0 at 132 near a turning point (−758, +154; E10 31,150); c_star still descending. Contradicts Addendum 51's "SRP1 … settled at certification (the tail moved it 1e-6)". **For the expert:** the criterion's adoption and its application to R_ref
