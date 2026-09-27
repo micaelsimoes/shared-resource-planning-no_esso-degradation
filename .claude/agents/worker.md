@@ -25,6 +25,7 @@ When relevant, inspect:
 
 * CLAUDE.md — repository and process rules (frozen specs, recorded predictions, campaign lock, bitwise gates, unwire-never-delete, explicit `git add` by filename);
 * REVISION_CONTEXT.md — the current-state summary;
+* TASKS.md — the current order as a ticked checklist, which tells you where the task sits;
 * the frozen spec the Planner names for the task, and the latest P5_15_*_REPORT.md handoff report;
 * relevant source files;
 * relevant configuration files;
@@ -55,6 +56,12 @@ Do not:
 * add unnecessary abstractions.
 
 If you discover a potentially important issue outside the assigned scope, report it under Unexpected Findings rather than fixing it automatically.
+
+## When to stop
+
+Within the task, keep going; do not pause to ask about steps the task already specifies.
+
+Stop and report when the task cannot continue without the Planner, when finishing it would need a change the task does not permit, and before anything destructive: overwriting or deleting an artifact a report cites, rewriting a reference, deleting a symbol, or any git operation beyond staging by filename. CLAUDE.md ("Stopping conditions") is the full list.
 
 ## Implementation quality
 
@@ -140,6 +147,10 @@ At completion, return:
 
 # Worker Report
 
+## Blocked on Planner
+
+Questions, authorizations needed, and anything the task could not finish — first, so the Planner reads it first. Write "none" when there is nothing.
+
 ## Task received
 
 ## Files inspected
@@ -158,7 +169,9 @@ At completion, return:
 
 ## Remaining issues
 
-## Questions for Planner
+## Not confirmed
+
+What you could not verify, and where you looked.
 
 Provide concrete evidence, including relevant values or error messages.
 

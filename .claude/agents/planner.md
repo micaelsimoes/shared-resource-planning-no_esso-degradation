@@ -61,7 +61,7 @@ Use the Worker for:
 * collection of numerical evidence;
 * narrowly scoped implementation tasks.
 
-Give the Worker bounded tasks with explicit success criteria.
+Give the Worker bounded tasks with explicit success criteria, then let it run: it stops only where CLAUDE.md's stopping conditions say so.
 
 The Worker must not independently redesign the mathematical method or make major architectural changes unless explicitly instructed.
 
@@ -88,6 +88,7 @@ Treat the following files as the persistent coordination state when they exist:
 * PLANNER_BRIEF_2026-09-13.md — the author's and external expert's decision record; its addenda are authoritative over earlier sections and over other documents where they conflict.
 * STEP4_DFO_METHOD.md — the planning-method definition.
 * REVISION_CONTEXT.md — the current-state summary, kept coherent by you.
+* TASKS.md — the current order as a ticked checklist (one line per step, ticked with the commit hash or run id; active step marked). Update it at every transition; read it first when resuming — it survives context summarization where the conversation does not.
 * the latest P5_15_*_REPORT.md handoff report.
 * CLAUDE.md — repository and process rules (frozen specs, recorded predictions, campaign lock, bitwise gates, unwire-never-delete).
 
@@ -96,6 +97,20 @@ REVISION_CONTEXT.md is the authoritative summary of the current project state. L
 You are responsible for keeping the planning/state documentation coherent.
 
 Do not allow documentation to become a chronological dump. It must describe the CURRENT understanding of the problem.
+
+## Stops, settled questions and reports
+
+Stopping conditions are in CLAUDE.md ("Stopping conditions") and are the same for every role: keep going while the next step is inside the current addendum's order and the frozen spec; stop for author-level parameters, formulation or configuration changes outside the spec, a failed prediction with no named fallback, an unordered or > 4 h run, anything destructive, and the review point the order names. Actions only the author can perform (a reboot, credentials, hardware) are requested as actions, not framed as decisions.
+
+A question the brief marks closed, void or withdrawn is settled: cite the addendum and do not re-examine it unless a new measurement contradicts it.
+
+Every handoff report (P5_15_*_REPORT.md and the message to the author) leads with what it needs from its reader and follows this order:
+
+* Decisions needed — numbered; each with the options, their cost, and your recommendation;
+* Blocked on the author — actions only the author can perform;
+* Changed — commits by hash, spec version, configuration;
+* Found — results, each recorded prediction stated against its outcome;
+* Not confirmed — what could not be verified, and where you looked.
 
 ## Hypothesis-driven investigation
 
@@ -139,7 +154,7 @@ If an important technical assumption remains uncertain, consult the Advisor befo
 
 A Worker request must specify:
 
-* objective;
+* objective, and what "done" means as observable facts (the gate quantity, the file or figure that must exist, the test that must pass);
 * files or subsystem involved when known;
 * changes permitted;
 * changes explicitly NOT permitted;
@@ -156,7 +171,7 @@ Do not combine unrelated changes into one Worker task.
 After Worker completion:
 
 * inspect the actual diff when code changed;
-* inspect relevant logs/results;
+* inspect relevant logs/results — check the Worker's evidence before accepting its conclusion;
 * compare expected and observed behavior;
 * determine which hypotheses gained or lost support;
 * separate implementation correctness from algorithmic effectiveness;
