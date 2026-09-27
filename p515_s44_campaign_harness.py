@@ -221,6 +221,12 @@ exception path), and a killed child keeps every completed round; both failure re
 parent-synthesised one -- carry `recover_convergence_depth_append`. On a completed run the appended records file must
 be byte-identical to the end-of-run file and the tail state rebuilt from the events must equal the returned state
 (`reconcile`), else the child exits 2 after writing its record.
+P5.15 Addendum 51 (W98, the post-certification continuation): an entry may carry `certification_continuation`
+(`validate_certification_continuation`, implemented by `p515_s53_w98_continuation_hooks`): the child asserts its
+preconditions before any solve and enters `continuation_hooks` FIRST (innermost wrappers): the certification rule is
+disabled, the certifying regime (AA off, tight tail on, rho frozen) is held for every cycle after the declared N, an
+early-stop rule ends the loop through production's own exit test, and every block's recourse is recorded every cycle.
+It enters the eval key; entries without it keep their exact keys, format and behaviour.
 AFTER the run, in the child, inside `run_admm_arm`'s post_run_hook (same live
 models/state), `run_post_certification` does, only if the trajectory is
 certified under the spec's bar (else it records `status: skipped` + reason):
@@ -295,7 +301,7 @@ POST_CERTIFICATION_KEYS = frozenset({'persist_certified_models', 'hull_polish', 
 # placed at; omitted => INVESTMENT_YEAR (2025), so every spec frozen before W14 is unchanged.
 EVALUATION_OPTION_KEYS = frozenset({'overrides', 'post_certification', 'investment_year', 'model_variant',
                                     'flex_price_multiplier', 'interface_deviation_premium',
-                                    'release_solution_bookkeeping'})
+                                    'release_solution_bookkeeping', 'certification_continuation'})
 # P5.15 Addendum 39 (W47): a DERIVED INSTANCE (see the module docstring) and row 18's premium. The identity keys
 # of a derived instance enter the eval key; the other keys are provenance. Absent -> nothing changes.
 DERIVED_INSTANCE_KEYS = frozenset({'instance_label', 'case_path', 'case_sha256', 'scenario_checksum',
@@ -850,9 +856,21 @@ def load_ess_ageing_parameters(path):
     return ess_ageing_parameters_as_loaded(params.ageing)
 
 
+def validate_certification_continuation(value):
+    """P5.15 Addendum 51 (W98): an entry's `certification_continuation` option -- the post-certification continuation
+    (certification rule disabled, regime held after cycle N, early stop), validated by the hooks module that
+    implements it (`p515_s53_w98_continuation_hooks.validate_certification_continuation`; stdlib-only at import, so the
+    parent stays free of model code). None = not declared: nothing is installed and every key / entry / record keeps its
+    exact pre-W98 format."""
+    if value is None:
+        return None
+    import p515_s53_w98_continuation_hooks as W98C
+    return W98C.validate_certification_continuation(value)
+
+
 def evaluation_key(candidate_key_hex, overrides, case_file_aa=None, model_variant=None, ess_ageing_baseline=None,
                    flex_price_multiplier=None, derived_instance=None, interface_deviation_premium=None,
-                   convergence_depth_tail=None):
+                   convergence_depth_tail=None, certification_continuation=None):
     """Identity of one EVALUATION (candidate x configuration). The case-file
     configuration (no overrides) keeps the candidate key itself, so a D
     evaluation's directory name is `<candidate key16>_<label>` as in s44_gate;
@@ -889,7 +907,22 @@ def evaluation_key(candidate_key_hex, overrides, case_file_aa=None, model_varian
     'model_variant', 'ess_ageing_baseline', 'flex_price_multiplier' -- only when != 1.0 --, 'derived_instance' identity,
     'interface_deviation_premium') plus 'convergence_depth_tail' (the validated declaration) -- never the bare candidate
     key, so a tail-enabled evaluation can never share a key (hence a cache hit) with a pre-tail one.
-    `convergence_depth_tail=None` or enabled False returns exactly what the formulas above return."""
+    `convergence_depth_tail=None` or enabled False returns exactly what the formulas above return.
+    P5.15 Addendum 51 (W98): with a declared `certification_continuation` (validated), the key is sha256 of
+    {'base_evaluation_key': <the key every rule above gives for the same arguments>, 'certification_continuation': <the
+    validated declaration>} -- never the base key, so a continuation evaluation can never share a key (hence a cache
+    hit, an eval dir or a working dir) with the certified evaluation it replays. The cap and the certificate length are
+    spec-level and enter no key; the continuation declaration is what separates the two. `certification_continuation=
+    None` returns exactly what the formulas above return, so every pre-W98 key is byte-identical."""
+    if certification_continuation is not None:
+        base = evaluation_key(candidate_key_hex, overrides, case_file_aa=case_file_aa, model_variant=model_variant,
+                              ess_ageing_baseline=ess_ageing_baseline, flex_price_multiplier=flex_price_multiplier,
+                              derived_instance=derived_instance, interface_deviation_premium=interface_deviation_premium,
+                              convergence_depth_tail=convergence_depth_tail)
+        payload = {'base_evaluation_key': base,
+                   'certification_continuation': validate_certification_continuation(certification_continuation)}
+        text = json.dumps(payload, sort_keys=True, separators=(',', ':'))
+        return hashlib.sha256(text.encode()).hexdigest()
     model_variant = validate_model_variant(model_variant)
     ess_ageing_baseline = validate_ess_ageing_baseline(ess_ageing_baseline)
     flex_m = flex_price_multiplier_in_key(flex_price_multiplier)
@@ -1110,6 +1143,9 @@ def freeze_campaign_spec(campaign_root, campaign_id, candidates, configuration, 
     declaration enters it; a declared-OFF tail gives the undeclared key (it is still recorded in the configuration).
     P5.15 Addendum 48 (W90): an entry's options may carry `release_solution_bookkeeping` (a bool,
     `validate_release_solution_bookkeeping`); recorded in the entry only when given; it NEVER enters the eval key.
+    P5.15 Addendum 51 (W98): an entry's options may carry `certification_continuation`
+    (`validate_certification_continuation`); recorded in the entry only when given; it ENTERS the eval key
+    (`evaluation_key`), so a continuation never shares a key with the evaluation it continues.
     One entry = one EVALUATION: its `eval_key` (`evaluation_key`) identifies
     candidate x configuration; labels and eval keys must be unique (the same
     candidate may appear under two configurations)."""
@@ -1166,10 +1202,11 @@ def freeze_campaign_spec(campaign_root, campaign_id, candidates, configuration, 
         flex_m = validate_flex_price_multiplier(options.get('flex_price_multiplier'))
         premium = validate_interface_deviation_premium(options.get('interface_deviation_premium'))
         release_bk = validate_release_solution_bookkeeping(options.get('release_solution_bookkeeping'))  # W90: not keyed
+        continuation = validate_certification_continuation(options.get('certification_continuation'))  # W98: keyed
         ekey = evaluation_key(key, eff_overrides, case_file_aa=case_file_aa, model_variant=model_variant,
                               ess_ageing_baseline=ess_ageing, flex_price_multiplier=flex_m,
                               derived_instance=derived, interface_deviation_premium=premium,
-                              convergence_depth_tail=tail)
+                              convergence_depth_tail=tail, certification_continuation=continuation)
         if label in seen_labels or ekey in seen_keys:
             raise ValueError(f'duplicate evaluation label or key (candidate x configuration): {label} / {ekey[:16]}')
         seen_labels.add(label)
@@ -1194,6 +1231,8 @@ def freeze_campaign_spec(campaign_root, campaign_id, candidates, configuration, 
             cand_entry['interface_deviation_premium'] = premium
         if release_bk is not None:  # W90: only when given, so every other entry keeps its exact format
             cand_entry['release_solution_bookkeeping'] = release_bk
+        if continuation is not None:  # W98: only when given, so every other entry keeps its exact format
+            cand_entry['certification_continuation'] = continuation
         cand_entries.append(cand_entry)
     os.makedirs(campaign_root, exist_ok=True)  # only after every validation above has passed
     try:
@@ -5083,6 +5122,15 @@ def _child_real(args, spec, spec_path, entry, eval_dir, lock_content, env_caps, 
     premium = validate_interface_deviation_premium(entry.get('interface_deviation_premium'))
     # W90 (Addendum 48): option (b), only when the entry declares it (never keyed).
     release_bk = validate_release_solution_bookkeeping(entry.get('release_solution_bookkeeping'))
+    # W98 (Addendum 51): the certification continuation, only when the entry declares it (it enters the eval key);
+    # its preconditions (cap = N + continuation cycles, tail and AA on, production signatures, the replay reference's
+    # hash) are asserted here, before any solve.
+    continuation = validate_certification_continuation(entry.get('certification_continuation'))
+    continuation_checklist = None
+    if continuation is not None:
+        import p515_s53_w98_continuation_hooks as W98C
+        continuation_checklist = W98C.assert_continuation_preconditions(continuation, spec, tail_checklist, aa_on)
+        progress['certification_continuation_checklist'] = continuation_checklist
     derived_installed = None
     if derived is not None:
         derived_installed = install_derived_instance(derived, eval_dir)
@@ -5251,7 +5299,12 @@ def _child_real(args, spec, spec_path, entry, eval_dir, lock_content, env_caps, 
                                            float((premium or {}).get('alpha') or 0.0), holder)
                        if capture_multiscenario else nullcontext())
     release_counter = _ReleaseBookkeepingCallCounter(holder) if release_bk is not None else nullcontext()  # W90
-    with G.s38_pf_capture_hooks(paths['recourse_jump'], paths['ess_stride'], paths['floor'],
+    # W98: entered FIRST, so its wrappers sit directly on production and every capture hook below wraps them (the tail
+    # appender and the s39 penalty sidecar record the held values).
+    continuation_cm = (W98C.continuation_hooks(eval_dir, continuation, holder, int(spec['cap']))
+                       if continuation is not None else nullcontext())
+    with continuation_cm, \
+         G.s38_pf_capture_hooks(paths['recourse_jump'], paths['ess_stride'], paths['floor'],
                                 paths['pf_stride'], floor_rows_by_node, stride=1), \
          G.s39_exempt_until_capture_hooks(paths['exempt']), \
          convergence_depth_append_hooks(appender), \
@@ -5362,6 +5415,12 @@ def _child_real(args, spec, spec_path, entry, eval_dir, lock_content, env_caps, 
             'release_solution_bookkeeping_applied_in_child': holder.get('release_solution_bookkeeping_applied'),
             'release_solution_bookkeeping_calls': holder.get('release_solution_bookkeeping_calls'),
         })
+    if continuation is not None:  # W98: only for entries declaring the continuation, so every other record keeps its format
+        variant_extra.update({
+            'certification_continuation': continuation,
+            'certification_continuation_checklist_asserted_before_run': continuation_checklist,
+            'certification_continuation_summary': holder.get('certification_continuation'),
+        })
     record = build_evaluation_record(
         spec=spec, spec_path=spec_path, spec_sha256=args.spec_sha256, entry=entry, report=report,
         component_levels=component_levels,
@@ -5415,9 +5474,11 @@ def _child_real(args, spec, spec_path, entry, eval_dir, lock_content, env_caps, 
         (holder.get('convergence_depth_capture') or {}).get('status') != 'written'
         or not (holder.get('convergence_depth_tail_state_check') or {}).get('match')
         or not (holder.get('convergence_depth_append') or {}).get('ok'))
+    continuation_error = continuation is not None and not (holder.get('certification_continuation') or {}).get('ok')
     return {'post_certification_error': (holder.get('post_certification') or {}).get('status') == 'error',
             'multiscenario_capture_error': capture_error,
-            'convergence_depth_capture_error': convergence_depth_error}
+            'convergence_depth_capture_error': convergence_depth_error,
+            'certification_continuation_error': continuation_error}
 
 
 def main_child(argv):
@@ -5461,6 +5522,10 @@ def main_child(argv):
             if outcome and outcome.get('convergence_depth_capture_error'):  # W84
                 print('[S44-CHILD] convergence-depth capture FAILED or the returned tail state does not match the '
                       'declaration (recorded in evaluation_record.json); exiting 2', file=sys.stderr, flush=True)
+                sys.exit(2)
+            if outcome and outcome.get('certification_continuation_error'):  # W98
+                print('[S44-CHILD] certification continuation summary not ok (recorded in evaluation_record.json); '
+                      'exiting 2', file=sys.stderr, flush=True)
                 sys.exit(2)
     except SystemExit:
         raise
@@ -5515,6 +5580,13 @@ def main_child(argv):
                     'release_solution_bookkeeping_applied_in_child': (
                         (progress.get('holder') or {}).get('release_solution_bookkeeping_applied'))}
                    if 'release_solution_bookkeeping' in entry else {}),
+                # W98: an entry declaring the continuation carries it, its checklist and its summary, on every path.
+                **({'certification_continuation': entry['certification_continuation'],
+                    'certification_continuation_checklist_asserted_before_run': progress.get(
+                        'certification_continuation_checklist'),
+                    'certification_continuation_summary': (progress.get('holder') or {}).get(
+                        'certification_continuation')}
+                   if 'certification_continuation' in entry else {}),
             })
         sys.exit(1)
 
