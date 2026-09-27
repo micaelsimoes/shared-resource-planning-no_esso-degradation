@@ -1,0 +1,1019 @@
+{
+ "addendum_51_stage_1_and_analysis_verbatim": {
+  "analysis": "**Analysis:** fit the post-certification steps to a geometric sequence; report the ratio and the extrapolated remaining descent D = step/(1 \u2212 ratio) with the fit's validity (increasing steps \u2192 no extrapolation).",
+  "stage_1": "**Stage 1: x = 0** \u2014 re-run under the identical spec to certification, **checked bitwise against the 72 recorded cycles** (this replay is also the instance's reproducibility measurement for the manuscript; a divergence at cycle k is reported with its magnitude and the run is then labelled separately, still informative), then continue **30 cycles** with the certification rule disabled and the certifying regime unchanged (tail on, AA off, \u03c1 frozen) \u2014 a separately labelled run under spec v37. Stop early at |\u0394Q| < 500 \u20ac/cycle for 3 cycles."
+ },
+ "authority": [
+  "PLANNER_BRIEF_2026-09-13.md Addendum 51 (working tree, uncommitted at freeze; sha256 in verbatim_text)",
+  "Planner task W98",
+  "P5_15_ADDENDUM48_50_3X3_REPORT.md",
+  "W97 diagnostics b736e4e5"
+ ],
+ "certification_rule": {
+  "after_N": "disabled; the run ends at the early stop or at the cap (102)",
+  "through_N": "evaluated exactly as production (consecutive Boyd-pass cycles; production's per-cycle count is untouched and recorded); the loop is not allowed to EXIT on it: the certificate length is raised to 10**9 at the tail baseline, before cycle 1 (so a divergent replay that certifies early still continues). Its only reads are the exit test, the raw row's required_consecutive_cycles and the INFO print (asserted before any solve); it feeds no computed quantity. The loop exit restores 10"
+ },
+ "code_sha256": {
+  "p515_s44_campaign_harness.py": "f7bcfac6677457d46ba588df86d57ac22327be4038a94d0d4943bbb048b995f2",
+  "p515_s53_w89_3x3_campaign.py": "2fe976849522a10a6ebf876459b1c4397789374c4928862f6874a3eeeddc5a5d",
+  "p515_s53_w90_3x3_campaign.py": "3b9ad1fb0bbcf8872a6a79e8c800994f7296f0415ef93d112287b869386a9b2c",
+  "p515_s53_w95_x0_drift_diagnostics.py": "6530eb22a807ea74652ed85fb4d15d4e5a230b624c6db45ff15d40f45ebd9e68",
+  "p515_s53_w98_continuation_campaign.py": "c27230a95a693d20c53bfeebb5505765a2f37877383a21cf2c136096fbe7c3ee",
+  "p515_s53_w98_continuation_checks.py": "25edfd17fae83832b4c3f46812a24018c8905d2b399201814f5fd39321f35172",
+  "p515_s53_w98_continuation_hooks.py": "9920f7d6d569fc78c2e4c638c619ccf3f2a09ccbac137833802de61b99717680"
+ },
+ "code_since_certified_run": {
+  "certified_run_freeze_commit": "56b98c13b4529694236a8d1a5100fb4088e93d2c",
+  "changed_py": [
+   {
+    "path": "p515_s44_campaign_harness.py",
+    "status": "M"
+   },
+   {
+    "path": "p515_s53_w93_uncoordinated_benchmark.py",
+    "status": "A"
+   },
+   {
+    "path": "p515_s53_w93_uncoordinated_benchmark_checks.py",
+    "status": "A"
+   },
+   {
+    "path": "p515_s53_w95_x0_drift_diagnostics.py",
+    "status": "A"
+   },
+   {
+    "path": "p515_s53_w96_n7_drift_diagnostics.py",
+    "status": "A"
+   },
+   {
+    "path": "p515_s53_w97_consolidated_diagnostics.py",
+    "status": "A"
+   },
+   {
+    "path": "p515_s53_w98_continuation_campaign.py",
+    "status": "A"
+   },
+   {
+    "path": "p515_s53_w98_continuation_checks.py",
+    "status": "A"
+   },
+   {
+    "path": "p515_s53_w98_continuation_hooks.py",
+    "status": "A"
+   },
+   {
+    "path": "uncoordinated_benchmark.py",
+    "status": "A"
+   }
+  ],
+  "head": "62776e3f8c72a2c51da665bb91107f9f38ce9cd1",
+  "not_allowed": [],
+  "ok": true,
+  "uncommitted_tracked_py": [],
+  "uncoordinated_benchmark_not_imported_by_the_run_path": true
+ },
+ "competing_outcomes_verbatim": "**Competing outcomes and what each means:** (H1) hump then geometric decay \u2192 AA-off transient plus a slow mode; the settling criterion is a step bound at the end of the window; (H2) near-constant steps through cycle 102 (ratio \u2248 1) \u2192 the residual tolerances are too loose for this instance; the certified Q's are reported as upper bounds and the criterion must be objective-based (or \u03b5_rel tightened) before any further 3 \u00d7 3 result is used; (H3) growing steps or a jump \u2192 basin transition; Advisor review before anything else.",
+ "early_stop_rule": {
+  "consecutive_cycles": 3,
+  "mechanism": "the certificate length is set to 0 on that cycle, so production's own exit test ends the loop at its end (production's only exit besides the cap); otherwise the run ends at the cap, cycle 102",
+  "no_action_through_N": "the rule is not evaluated for cycle <= 72 (proved by check C5)",
+  "rule": "for cycle k > 72: s_k = Q_k - Q_(k-1) (gross); the run stops at the end of the first cycle k at which |s_j| < 500.0 EUR for the 3 consecutive post-certification cycles j = k-2, k-1, k (the earliest possible stop is k = 75); a step >= 500 EUR resets the count; a cycle whose local solves failed has no Q, resets the count, and makes the next step unavailable",
+  "threshold_eur": 500.0
+ },
+ "expected_wall_time": {
+  "basis": "the certified x = 0 cell's own per-cycle walls (per_cycle_record cycle_wall_s) and child wall",
+  "cap_102_h": 11.036891948337908,
+  "cap_102_s": 39732.81101401647,
+  "earliest_early_stop_cycle_75_s": 29623.11837585767,
+  "earliest_early_stop_h": 8.228643993293797,
+  "init_and_terminal_overhead_s": 707.3304738998413,
+  "not_included": "the all-block capture per cycle (two production read functions, the same the recourse-jump sidecar already calls every cycle; not measured) and any retry beyond the certified run's own; the replay repeats the certified run's retries if bitwise",
+  "replay_cycles_1_72_s": 27792.488719940186,
+  "tail_cycle_mean_s_cycles_64_72": 374.4330606725481
+ },
+ "expert_predictions_verbatim": "**Expert's predictions, recorded:** replay bitwise through cycle 72; steps peak within a few cycles of certification and then decay geometrically with ratio 0.80\u20130.95; D_x0 = 20\u201360 k\u20ac; stage 2 triggered; R_settled \u2265 0.80.",
+ "frozen_utc": "2026-09-27T07:08:06.819069+00:00",
+ "g6_v37": {
+  "operational": "terminal round T = the run's last cycle; per block (80): attempts ordered by the ladder (primary, recovery, recovery_tier2), the FINAL attempt is the accepted one (no superseded attempt accepted, ladder well formed); its exit is exactly \"Optimal Solution Found.\"; compl_inf_tol in force = the tail value 1e-6; its four terminal error metrics (parsed from its own IPOPT log byte range, W95's parser by import) within the tolerances in force: scaled overall NLP error <= tol, unscaled dual infeasibility <= dual_inf_tol, constraint violation <= constr_viol_tol, complementarity <= compl_inf_tol (IPOPT defaults when not listed). Gate: 80 blocks and every block passes. mu_final / mu_floor and floor_status REPORTED per solve, NEVER gated.",
+  "self_tests_on_committed_data": {
+   "n7_round_69": {
+    "expect_pass": false,
+    "failing_blocks": [
+     {
+      "block": [
+       "case33_2",
+       2034,
+       "Autumn"
+      ],
+      "failures": [
+       "final_exit_not_optimal: 'Solved To Acceptable Level.'",
+       "error_metrics_outside_tolerance: ['complementarity_unscaled_le_compl_inf_tol']"
+      ]
+     }
+    ],
+    "mu_over_floor_reported_not_gated": {
+     "max": 27.56493915648068,
+     "min": 0.9999999999999999,
+     "n": 80,
+     "n_at_floor": 39
+    },
+    "n_blocks": 80,
+    "observed_pass": false,
+    "ok": true,
+    "segment_sha256_by_block": {
+     "case33_1|2025|Autumn": "23b47411234b3e75d45fa4e8af41431e09af2ed8cd33766236cc115a38767c04",
+     "case33_1|2025|Spring": "d2623177e76b2a2f1a9b83431f6bcbb73d7189b438849daf4f7922d936eb5aa2",
+     "case33_1|2025|Summer": "a3a4b19943e38771c36831f3bd1533fe4da35d76955270dac37d79d92c850d1d",
+     "case33_1|2025|Winter": "f0f57160a4d2d862fa10d2258677a7a630448dedff3947eb9077774e8844c050",
+     "case33_1|2028|Autumn": "4c104fc1e1070e6ba084e7dbcba73d300fd4af8587a3e3bfda4b5cc4a147f79d",
+     "case33_1|2028|Spring": "a555d8310256460ee3456103e1e264fcd746b7d35f482d54694d3b7b0908588c",
+     "case33_1|2028|Summer": "635ac8bb319ebe7f9c3310f05d1808461a7f3836ded526d3857b03cb16a087e2",
+     "case33_1|2028|Winter": "03e9b50fc24ec979222532207d9a9182ee49de39a0af5e9459e10ed3bdc3170a",
+     "case33_1|2031|Autumn": "460ee270c142797b28ca01d6e6c881e345d432cbfce0941600c8af6d0143bdf1",
+     "case33_1|2031|Spring": "47be38d5289127abcf6eafa06b4f3d543ce08644ee14f2316cc10b589e7b1879",
+     "case33_1|2031|Summer": "f134c4577cb344ee53568db3e7d3d93287917446110cc1f2bed96b02c42f2dec",
+     "case33_1|2031|Winter": "aadabd711d1fc2f01900da951b9e5f6fc9e5337e0d4c04acf693399a4fa6395f",
+     "case33_1|2034|Autumn": "b14f718045754f7f66ba61c2ccd2a7859f7c0c434f8704c509c0974207ce95a7",
+     "case33_1|2034|Spring": "20b640234a25e1fc1bad523e55cd6545d96d6f0ac117d4c14138d1615b817417",
+     "case33_1|2034|Summer": "2c2f2cf7b447296514f2b12a71e067e9cf82bd7778c1a9125d63ca7186204770",
+     "case33_1|2034|Winter": "357c0ab08cbcd8c563e778954310d30cb1d5ee51f396a985527e5750b528a40f",
+     "case33_1|2037|Autumn": "cf680c52e96b3378e1deaf854fd080dec001ebdae3830371bbd6bc8322ab6146",
+     "case33_1|2037|Spring": "458aa6d1e469c9eed86e955a5fe6ff6c991f5e2a204cefe90764fa5b97bfb86f",
+     "case33_1|2037|Summer": "baea3039611738577bf3e96694fc0e65de9d0d02d59c5f7052289efdff6e1e93",
+     "case33_1|2037|Winter": "c08886b21c6055db735156a0b0e4ea6cf8539d676a2160a7367e4f01e98e20a5",
+     "case33_2|2025|Autumn": "a0c963f72bff6fa1bd7e6d5ff55215fc92033ba639665e3cfae49852e4fc4d62",
+     "case33_2|2025|Spring": "552f395471074a41706b7efb4ed98717fa83ae0fde00122557fb6c0277b83a61",
+     "case33_2|2025|Summer": "9c6e50eb378019a80956da80e6ce787d06ccaba9c79f6c648b5cf8871a361a7f",
+     "case33_2|2025|Winter": "fc1ab62bab79c113bc3fac3c04ca7968c1be2411828328d9f303dbe33c4c8c1b",
+     "case33_2|2028|Autumn": "1d17ca6e78e1b06594fda8c0de9cfb84b899ca53eb7d2cd2d934902f59bc5fd9",
+     "case33_2|2028|Spring": "5bb85c6f0d0571556abad9afe3c6c3e0943cd41b4567998f5f1275834891338d",
+     "case33_2|2028|Summer": "740dbdbb3775499dd33ccedb9e9587c3573ed973afc0a57649ea13b7a369de9e",
+     "case33_2|2028|Winter": "f13dda37f4ef42d73ddeab2c8321f3afd7ad10260ddd45a6885ecfd89e9a1f8c",
+     "case33_2|2031|Autumn": "85ea3f78476765b889605f1e03506811738012cf60dc6f773dc6e4b84844c333",
+     "case33_2|2031|Spring": "2445e24e21a965af86b03d6a213f1db6b2e1ce0ea17acea96988eb28c32ee5dd",
+     "case33_2|2031|Summer": "25209ddd1968c29b40a7626fae9658a64bb55660f21ad7415275b6fe82131f43",
+     "case33_2|2031|Winter": "23d604d3bda441b2dd6befb0e59102c059b3f8710dde4e34c89cb543ab541e50",
+     "case33_2|2034|Autumn": "e12edb0dfdc8daa49838a309d5ae8b3891d74b4b8da73cab84c0dd29d8e579cb",
+     "case33_2|2034|Spring": "a2193d23fcc6704c101b64535e9535addd775627af50901135ac28ec259d5f41",
+     "case33_2|2034|Summer": "c1f1b1f34f9f48841dba1cd7fa42856b3e0adc922685b03e802d30f41ed7d839",
+     "case33_2|2034|Winter": "ccab0840c2692031bfb87d5e3796162efa9e8af7c0c57c7bb49dc442d3e24577",
+     "case33_2|2037|Autumn": "ec07dab8e540f07a47e7b8d10c0a1d00443fb421d3bca252165894df00768f68",
+     "case33_2|2037|Spring": "1ce6ff5dee2b80edbe16a2e27eb64a8bd397771456e22a64ae4533a85335083a",
+     "case33_2|2037|Summer": "c358e17572cb07eff29a5503ee71923429fcd1bc19207c6ffeaef274b1bfca77",
+     "case33_2|2037|Winter": "807115099c30ca35a1133a291cf96db16743a4b3fdfaad3accdc1fb10890e971",
+     "case33_3|2025|Autumn": "c126646c66a0db44abf7c11ffb09e16ae83eed88f1c6e2c90fc8a3ee0b63fd9f",
+     "case33_3|2025|Spring": "c1573f70463a23749b017c9b8fdd5356daf7b2db830c273f88112395630d4d89",
+     "case33_3|2025|Summer": "3daa1438523b5cb94f001620c42bb0dfa1b44fba4bc55353f3d42e23b78a5311",
+     "case33_3|2025|Winter": "00c2922855949f79143f03679f08f445431f7884d7246f0ae99c936c043d7ecd",
+     "case33_3|2028|Autumn": "0a42eab9173c7aba0168a640be8e4543543883b2db9fbc653c0d53c13cfe499f",
+     "case33_3|2028|Spring": "6376a543a368252326abfcb4981afa2b1b668a49995decdae03383943150d13b",
+     "case33_3|2028|Summer": "6f08ea6868f4df1be992a064bb0e02a12279092718b77e682f0bd50ead1595f1",
+     "case33_3|2028|Winter": "5e0dc60e46da534666d62728ffd2e26e019737878a35e693951e51b647c80e13",
+     "case33_3|2031|Autumn": "6c7786633ed06f13604ef0907a2f3528521fd34c08eaa4a02df2cb9a147b50e7",
+     "case33_3|2031|Spring": "77f737d27b9c3f68c05da8dec77673b8343042dfb17b7da387bd2c67f7e5fc4e",
+     "case33_3|2031|Summer": "f11860a59910736b312619c78589f3b68e04724ac7f41171b8492363c0e0e78c",
+     "case33_3|2031|Winter": "78fa33e8ceeb0edd7914503968097eb91e0cc4bbc3f9565ab9879e333dccfef4",
+     "case33_3|2034|Autumn": "244fa36d2cf4433340b2168c91fbbf0ac8e2914efbdffe622cf7785f15979fa3",
+     "case33_3|2034|Spring": "dad9dd0a49b01b53535c23644e4a67835311ca0650cdb442131d4fa41a61df78",
+     "case33_3|2034|Summer": "d7da2f4a538b7f595f3b1cbaf2e4b65c0534c17c354c912e59b320b6e669b5fb",
+     "case33_3|2034|Winter": "2aa3cbe5ff268539ec55e91f69c14aed6ed1810aca4b06d2432e0b1907222a97",
+     "case33_3|2037|Autumn": "0169633fc3722fe9a0bda5b9d989a8a02164038511ad0f6dc13260daabffa073",
+     "case33_3|2037|Spring": "8c6a655b209843f2d766cb163fef8a11e15dcf71440804be6c14ce0b862e5e86",
+     "case33_3|2037|Summer": "47494511b577790065da20314bd4069b0ce735262ba1deb970212777a5a11d03",
+     "case33_3|2037|Winter": "26d368a628dca29414708070d72235639997c6e8d7c2dd050e41ddf87b941b9e",
+     "case9|2025|Autumn": "2de656a261390d0036947125e70a23b3dcf8e26351b2deb84b32c1105de83274",
+     "case9|2025|Spring": "e5df2ddc39e5f9474da2f0e54943b9261335b101d3f79eb231be85adf3ecf455",
+     "case9|2025|Summer": "f0502ab41dc2ae189536556c632c327c26098a4af6b42340f5d2118522b3a620",
+     "case9|2025|Winter": "d982583412ead635ea9e6b507e099842719aa81f26f42b071acca200804b0f52",
+     "case9|2028|Autumn": "7b8e56e92ab864d9744011dbfcc47189b9652ea58aa7f7dfc6fe63d7ea4e2e9a",
+     "case9|2028|Spring": "8a8bec0201b65fb0b243c878ce02261e87a0b5dccf9b5d23535bb6089ab0e394",
+     "case9|2028|Summer": "694ebeccede01136be8c3b325210a9316c0cbd48e5be11ea36e8c8a5dc7bb640",
+     "case9|2028|Winter": "8fa7ff5b668a8036cc5865d2a1624f40bc460255acd6183a344a834dcb7c18c9",
+     "case9|2031|Autumn": "ff1ee737863a15af1f2b2feff1266eb01f0c17865edb31ebf554a8f9db1314c8",
+     "case9|2031|Spring": "a35f8013614b2f45466c208b42c4821e95804f0be51b24b2784158505e884fc2",
+     "case9|2031|Summer": "1440101b875396e9c85d2bc41f5e7a5dd3743123bc3dd9af23ff8490820bfff2",
+     "case9|2031|Winter": "701619c724bb1b96d237dc3a7990aa1b40e1d23ad2349a18fac4712718fd1853",
+     "case9|2034|Autumn": "095dbbb7d2f65e24d12e1cd4e8a28e741d1aa12d275edb9dba031b6c9ca2f35b",
+     "case9|2034|Spring": "c6fd71a117bc36e3dbd6812689dd90ccab462ec85d58c9642642e8363dfbac92",
+     "case9|2034|Summer": "ce1853b4f849c317d1e3313ad222cee92b5063fc7743f3b961b13c4580590b02",
+     "case9|2034|Winter": "42f34ebc291a2e72871885e2f8b1f4e6a641a5f041c5b9189bbd5009580a8fcf",
+     "case9|2037|Autumn": "f4b11dbd808ccc77eb62ac7305b70c653f2d041cb210ba662f8dbe632ffb4bc3",
+     "case9|2037|Spring": "832988bba9c74fc4a3a42a2ed0d6f9390329a70c46098fff641cffcc5b7f6ef3",
+     "case9|2037|Summer": "88b29e0eb8a8220a3214c52bfd1313e55079afa2d0b4186d0c207b5c7f9aee69",
+     "case9|2037|Winter": "45992b1ddbb72d0618b6b60003b21c38d17fdc6a089faab9e72e18ac6933b60d"
+    },
+    "worst_metric_over_tolerance": {
+     "complementarity_over_compl_inf_tol": 2.927280929110144,
+     "constraint_violation_over_constr_viol_tol": 0.05881246009309393,
+     "dual_infeasibility_over_dual_inf_tol": 0.00100609765963531,
+     "overall_nlp_error_over_tol": 0.905487893671779
+    }
+   },
+   "x0_round_72": {
+    "expect_pass": true,
+    "failing_blocks": [],
+    "mu_over_floor_reported_not_gated": {
+     "max": 5.85352234737715,
+     "min": 0.9999999914694951,
+     "n": 80,
+     "n_at_floor": 1
+    },
+    "n_blocks": 80,
+    "observed_pass": true,
+    "ok": true,
+    "segment_sha256_by_block": {
+     "case33_1|2025|Autumn": "c1829129a73aeaba7288e411eb380b6c967ede9d1b1c7028afaad1b020b82782",
+     "case33_1|2025|Spring": "069ebe829c149c9808694b6a6b9fa979ec2446bfcbbedc1800cf2520b1987bc4",
+     "case33_1|2025|Summer": "da7b0e499ecd136c1418a78aee2951fb9b883bb941018e40a7bcb26cf2beb21b",
+     "case33_1|2025|Winter": "7662a913315a062a3ed2477ac468166ddeb5a43c9d9d60bef8a0abfced560e27",
+     "case33_1|2028|Autumn": "dbc02765c78959d0cb99d5080fc9a91e61933308f2b9355e590ba581e45a1ff4",
+     "case33_1|2028|Spring": "1b1639aa400081149ddd08fe2c73209749dcacb3ad3db529e23107b7e278b7ab",
+     "case33_1|2028|Summer": "a5fee717fa8a5d11f42bb8d58d69580f6e072c52323e4f5655c7be9773d60a90",
+     "case33_1|2028|Winter": "3da8f2a5f895cc562a12814a091be24eff99b4ba6344108a411c662188d93712",
+     "case33_1|2031|Autumn": "d0d559d66dc771c166d89408fef6065241acd12edd5f5e2228afac150cca9036",
+     "case33_1|2031|Spring": "113ad98d5a04d887a23d0433d3b833038f7f58801c3b6c98c20c8b2d28e79ec3",
+     "case33_1|2031|Summer": "e39595aeee0b8257ba9a9b541bc9d0999f48dd1b19bf0744f3c7c6c5489d0edd",
+     "case33_1|2031|Winter": "983dc3b89480403cf917c925ba695f5505e2cd70ac7f282b9070156a9f68b205",
+     "case33_1|2034|Autumn": "a8cea4ef77cf846c31d29538a500263f4335fe3cc6a87cb137bd2c3b1625ab8f",
+     "case33_1|2034|Spring": "f10f5f01fd308a4a05c7aa403b0d5fce4bcd998da4288c0650a637a15aaf92cb",
+     "case33_1|2034|Summer": "d844a5b2f53a148169fcbacdf6d4211e8fc27b0c50dc63fdde2d6d32353ebc20",
+     "case33_1|2034|Winter": "9e6ad1ab9bc1ed4950087e3c7504b828dac71cb8288c660fdc9d710d976f9c32",
+     "case33_1|2037|Autumn": "cbf8aac2ff90bf4bea9812d11883a2e3a9e6b8b6504a92f5b3fbd8ed83ebd4f9",
+     "case33_1|2037|Spring": "9f79bc903b61bfd1b083c7856e8cd4e4ba7a059fd25a42af18e5c29ed3b9c377",
+     "case33_1|2037|Summer": "b60a344c552236ed48fd5fb3f5d65f3623560a8487d7525020d32e3bacda63fc",
+     "case33_1|2037|Winter": "4e5ee7359757d23fd2b5b59906a391df4f99a91b8d6afb06b439a93ef00e42a8",
+     "case33_2|2025|Autumn": "59f748c2f4afb6997a5f95cea8024a85926d6e96d20012cf4a5540fbce7dfa91",
+     "case33_2|2025|Spring": "5f13b8cd68493304f15678b7ab5db399f130e61b330b64dcf716d436c535377e",
+     "case33_2|2025|Summer": "6b5d5107cf2d47f546c1af888f19e5d4933481846c107b4577de010d5ec085dd",
+     "case33_2|2025|Winter": "b86c5e6a63bb658408b595b00641e85eb8b27c4e9e58e21b74a8dbbb76921133",
+     "case33_2|2028|Autumn": "158d2c6e02d0965f99ac0cef221418646b39e173440d5e7e48c5c41e1f689ba3",
+     "case33_2|2028|Spring": "e13578bc37fff6d564b388d87774d3c07d777c9a8a9f98365fcd19b10b51584e",
+     "case33_2|2028|Summer": "b7eb3be99e9b509e24a80b9156db1ceb2ddd41fb190c0db9bf209129988ab4c2",
+     "case33_2|2028|Winter": "7b2c8a0073d8217e8ed296fc037525b6c7ffbd74b0f2682dd63205b05bf15d41",
+     "case33_2|2031|Autumn": "e0cb0ba23eb90d145c1019b453cafd9cf492e6e6900883bf8dc94c3f6e390b84",
+     "case33_2|2031|Spring": "3b8f4f7c139bd9e89a37be3b15e836945d8991df3ba066dc45cbbc86aaf140b1",
+     "case33_2|2031|Summer": "26c5ca305853088aaf99fbe01f556349f578fa554a57022604fe658cb9653acf",
+     "case33_2|2031|Winter": "07a07fef33f8bbee1b39c4c1dd54b17e53e7d2f05c8ca64cafe9c57fbeaaad71",
+     "case33_2|2034|Autumn": "0f616a986f92f52b0c0de15d34e7072627e661b2e08f7cf14d022de44ce788bf",
+     "case33_2|2034|Spring": "4d383f6a5c3af7302c9834ef0f24d3e2afe9b9d75dd5a400a459bfbcc06af9ef",
+     "case33_2|2034|Summer": "c1c8cf7b043dc365b5e61bf77a85ee83df0f8506fe487cadf764b8823994c697",
+     "case33_2|2034|Winter": "51a9cc970c9429f8e0a48cf41b41f90cf78ab858a991205cd793e9be0537565c",
+     "case33_2|2037|Autumn": "69eaac3d231feea183dd58b9a93919c596df46c1982674e9d2767930add8b22c",
+     "case33_2|2037|Spring": "141bbae8c8dd8741b65a09eafbb03e479b9c4baab203dbede00a28e98ab3bea1",
+     "case33_2|2037|Summer": "8794b292de0eb6d3d75f504e63e46d5d649b4956aaf37204abdc981b9a78e427",
+     "case33_2|2037|Winter": "18aa224c6f06c62d56f3a58a356dd630e6eaaa91f8f26952694114692fe5cc9e",
+     "case33_3|2025|Autumn": "0163ee2ce82adb35e8bb1b5cd657d6744e32e5823d4833cc35f0b745abb1444f",
+     "case33_3|2025|Spring": "7ca1920110f46e4265e4baaa9e7b93a0d75326b70ed854fe58347c6accf66153",
+     "case33_3|2025|Summer": "ec99ac216fc6dfc31859c5e8daec7ddef59707f90103e87f0d5bc370536bd5c9",
+     "case33_3|2025|Winter": "96b2032941c5962345cabb03b122931d6f32b7f21371d3f2d6bd9dc9af8efd26",
+     "case33_3|2028|Autumn": "8e185fcb38c5f69e7bf31cb5d6ecbe3a20404fd73096888a518c0f78a8bcad4d",
+     "case33_3|2028|Spring": "3e923b1d6a1414c944754543fe3b3297d5d1fa8121ddb7a80cf2ea39b57783a3",
+     "case33_3|2028|Summer": "710f5fa3aae6954ac0cb5247ad011b069a7a864fdd6ba38ee66771410487866e",
+     "case33_3|2028|Winter": "0e356a08f13c3cec87a025f7c4f3ebb493e050db8c4e0f7633677b9ed0f2a3fc",
+     "case33_3|2031|Autumn": "3641712d4b54594681520cce3a7f9bd1a01d9659aa0a751dfedbc52c89b6eef3",
+     "case33_3|2031|Spring": "202dda48e7c84a5d801bccb9cfaa9a2f70103b79c2089bdcb7bb8de4aea93a0b",
+     "case33_3|2031|Summer": "862963644919f6dbda904c1ae7dbe2433c632e3e4a8f71a956aa0237c796ea68",
+     "case33_3|2031|Winter": "1cf5b279c011dda54a295ab2477e8a67699c7f8ca77c8cf735499aa55c3d28b1",
+     "case33_3|2034|Autumn": "529e5b57f6ee128f297919e97dd7ae57b7a1201a2265e80983665a47aee1116d",
+     "case33_3|2034|Spring": "d31776957485ed650ae4bab8ad4a2f30a1a0e39e80320dc3606bcd4edb463036",
+     "case33_3|2034|Summer": "a1df8beee157bc71baf8e1356e3e46fd2c88391122af2a7b3641c9acb05af308",
+     "case33_3|2034|Winter": "e3f70c275704bd84cdfddca9c89feff2b7a13ba956ba5def3feaea578685f633",
+     "case33_3|2037|Autumn": "622577820a91171500a28ba1f93686505c0907cbb6c9e967f56ca7c83ef79f3e",
+     "case33_3|2037|Spring": "8c0155c9d3786f855cc41ff410569ddb65c2a0af5ced543df8c40e27a0104978",
+     "case33_3|2037|Summer": "7b085b2700cc32f1d5708d6719d50efb252cc10c5c89c15c34dea12c614167dd",
+     "case33_3|2037|Winter": "b7b165a195df1f5d1718483b7ea5c15fd1138fee0cff8dc358ee00ddbbaa8c58",
+     "case9|2025|Autumn": "f9ce4726e0d80c4630f63d3d2820452aa17460b3c91463d355b47e415c82f7c7",
+     "case9|2025|Spring": "9b092177b61e6309c1c23e256c8151b2626924eaa1b974258680d27afe8486f2",
+     "case9|2025|Summer": "fe7c3078d64da714e8529e9d56cbc0fe124653fd9076bd1ade130f6fa5488b09",
+     "case9|2025|Winter": "f908796b9fa7ccc6bb82f7adb765a47e470c3b773b2ebaf8cbd3546b18c36de6",
+     "case9|2028|Autumn": "5b2de057c3624bd561c1475366a5f919858a0dabdcb42bb3ec8e282843982c9f",
+     "case9|2028|Spring": "712537d58bb53fdf3325bbf6c9d0fcd60c30f9a7aedb10fc40dce8be0b1fe249",
+     "case9|2028|Summer": "5cd09ec526be13cb7040fd1f1a791e741cf387617b042268013041bee9f518d9",
+     "case9|2028|Winter": "c22cf6fdcb345bf16ff65ba653107d9f7888e2aa62ddbb4299e4736be67b41c8",
+     "case9|2031|Autumn": "f73312485c93f4da5b8b07a893c72cd190061c2f18293921a5df6d7a641cd08d",
+     "case9|2031|Spring": "8c0e4c9df4633786e6c94e1cceafe01829a7edab9de5068db8d0ff7aad5f88a0",
+     "case9|2031|Summer": "13b1c11cfc23f916fb22d18caae318a99f16bd392bf38dbbdb7e2cab4ea0c49d",
+     "case9|2031|Winter": "b9d863124a8986c89516406e04d4ec47fff28069f6e3bf0effde5b108ba24c23",
+     "case9|2034|Autumn": "318d6735bebfa14d49206cb7d84bda68ec1b353bf54875f423ba831c706010e5",
+     "case9|2034|Spring": "3db1ff29d33db1071ce549541bf8d788018efc908d711315fb6e8e5a0ab20a8b",
+     "case9|2034|Summer": "599f094c04bf3519a5f8cde099225e90de39a75bcf1f00b901ea443722d3605b",
+     "case9|2034|Winter": "7960aae1f9e2020a2af989450a3bd3fb1347f508cc37791edd9220286405fc18",
+     "case9|2037|Autumn": "7e98385ff83bdc6d580e23a332776ab2bdddb9f53929d08380ded695fbc5385d",
+     "case9|2037|Spring": "3c7302e7c27a96127b351e476906103e9e3ad7eb2b85950921fbab5ae69b3351",
+     "case9|2037|Summer": "0e3b40e78f68e2de3ea35dceae468449016a6bac63e76f07ee952cb89c15b216",
+     "case9|2037|Winter": "4b7f3966290f3562ff4142778942201823e102570b4e3c934a5584de33b1f156"
+    },
+    "worst_metric_over_tolerance": {
+     "complementarity_over_compl_inf_tol": 0.8969951132978035,
+     "constraint_violation_over_constr_viol_tol": 0.0009868555833625337,
+     "dual_infeasibility_over_dual_inf_tol": 0.0011289545817982564,
+     "overall_nlp_error_over_tol": 0.8863900993976451
+    }
+   }
+  },
+  "verbatim": "**G6 for future specs \u2014 adopted as the Planner states it:** `Optimal Solution Found` plus the four error metrics within the tail tolerances for the final accepted attempt; \u03bc/floor reported per solve, never gated \u2014 the floor test measured scaling, not depth. Frozen into v37."
+ },
+ "gates": {
+  "G1-G5, G7, G9-G12": "as the pair (W90 cell_gates), G10 without the identity reference (the replay gate owns it)",
+  "G13": "the holds: inert through 72 (every flag False), held after 72 (AA off, tail on, rho = the cycle-72 values), certificate length 10**9",
+  "G14": "all-block capture: one line per successful cycle, 81 blocks, reconciling to net recourse",
+  "G15": "stopping consistent: early stop at k with the streak complete, or the cap",
+  "G6": "v37 as above (replaces v36's floor test)",
+  "G8": "persistence off: no post-certification, no pickle",
+  "applies_to": "the one stage-1 entry",
+  "post_run_evaluator_self_tests": {
+   "replay_init_hex_changed": {
+    "ok": true,
+    "status": "diverged_at_cycle_0"
+   },
+   "replay_one_ulp_at_40": {
+    "magnitude": {
+     "fields_differing": [
+      "gross_operational_cost"
+     ],
+     "gross_difference_run_minus_recorded": 1.1920928955078125e-07,
+     "max_relative_difference": 1.414380896572465e-16,
+     "relative_difference_by_field": {
+      "gross_operational_cost": 1.414380896572465e-16
+     }
+    },
+    "ok": true,
+    "status": "diverged_at_cycle_40"
+   },
+   "replay_self_identity": {
+    "ok": true,
+    "status": "bitwise_through_N"
+   },
+   "synthetic_early_stop_at_75": {
+    "block_capture": {
+     "all_blocks_every_line": true,
+     "every_line_reconciles_to_net": true,
+     "one_line_per_successful_cycle": true
+    },
+    "expect_hold_checks_pass": true,
+    "hold_checks": {
+     "aa_held_off_after_N": true,
+     "certificate_length_disabled": true,
+     "no_hold_acted_through_N": true,
+     "one_line_per_cycle_contiguous": true,
+     "rho_frozen_after_N_at_cycle_N_values": true,
+     "summary_ok": true,
+     "tail_held_on_after_N": true
+    },
+    "ok": true,
+    "stopping": {
+     "cycle": 75,
+     "cycles_run": 75,
+     "stopped_by": "early_stop"
+    }
+   },
+   "synthetic_tampered_hold_flag": {
+    "block_capture": {
+     "all_blocks_every_line": true,
+     "every_line_reconciles_to_net": true,
+     "one_line_per_successful_cycle": true
+    },
+    "expect_hold_checks_pass": false,
+    "hold_checks": {
+     "aa_held_off_after_N": true,
+     "certificate_length_disabled": true,
+     "no_hold_acted_through_N": false,
+     "one_line_per_cycle_contiguous": true,
+     "rho_frozen_after_N_at_cycle_N_values": true,
+     "summary_ok": true,
+     "tail_held_on_after_N": true
+    },
+    "ok": true,
+    "stopping": {
+     "cycle": 75,
+     "cycles_run": 75,
+     "stopped_by": "early_stop"
+    }
+   }
+  },
+  "replay_gate": "not a pass/fail gate: it sets the run's label (bitwise vs separately labelled)"
+ },
+ "git_head": "62776e3f8c72a2c51da665bb91107f9f38ce9cd1",
+ "inertness_proof": {
+  "checks_script": "p515_s53_w98_continuation_checks.py",
+  "committed_output": {
+   "all_hold": true,
+   "code_sha256_at_check": {
+    "admm_anderson_acceleration.py": "24cf3bea9b07725ae15029dd0d9d81ed46ab8e75ecf1c9141a4b0afc6be2659e",
+    "p515_s44_campaign_harness.py": "f7bcfac6677457d46ba588df86d57ac22327be4038a94d0d4943bbb048b995f2",
+    "p515_s53_w98_continuation_checks.py": "25edfd17fae83832b4c3f46812a24018c8905d2b399201814f5fd39321f35172",
+    "p515_s53_w98_continuation_hooks.py": "9920f7d6d569fc78c2e4c638c619ccf3f2a09ccbac137833802de61b99717680",
+    "shared_resources_planning.py": "0610d745a41c86c71dae9e776f0dc8e38c7099f73128a3d2c2e8f861ab9fc9c0"
+   },
+   "committed_clean": true,
+   "guard_verify_0_failures": [],
+   "inertness_proof": {
+    "AA": {
+     "acts_after_N": true,
+     "inert_through_N": true
+    },
+    "rho": {
+     "acts_after_N": true,
+     "inert_through_N": true
+    },
+    "tail": {
+     "acts_after_N": true,
+     "inert_through_N": true
+    }
+   },
+   "manifest": "data/SRP1/Results/P515S53/w98_continuation/zero_solve_checks/w98_zero_solve_checks_r2_manifest_sha256.json",
+   "path": "data/SRP1/Results/P515S53/w98_continuation/zero_solve_checks/w98_zero_solve_checks_r2.json",
+   "sha256": "ec018e2bf2017225a5aca03bf193377b0ad9f6abe868bbe1c8af0f3e5ec14c73"
+  },
+  "inline_rerun_at_freeze": {
+   "all_hold": true,
+   "inertness_proof": {
+    "AA": {
+     "acts_after_N": true,
+     "inert_through_N": true
+    },
+    "rho": {
+     "acts_after_N": true,
+     "inert_through_N": true
+    },
+    "tail": {
+     "acts_after_N": true,
+     "inert_through_N": true
+    }
+   },
+   "per_check_holds": {
+    "C1_aa_hold_standin": true,
+    "C2_aa_hold_real_production": true,
+    "C3_tail_hold_real_production": true,
+    "C4_rho_hold_real_production": true,
+    "C5_certificate_disabled_and_early_stop": true,
+    "C6_layering_real_install": true,
+    "C7_keys": true,
+    "C8_preconditions_and_validator": true
+   }
+  },
+  "rerun_before_launch": "the --run mode re-runs every check and refuses unless all hold"
+ },
+ "instance_and_certified_cell": {
+  "Q": 842832534.7623764,
+  "bar": 13954.375690460205,
+  "campaign_id": "s53_w91_3x3_pair",
+  "campaign_results": {
+   "path": "data/SRP1/Results/P515S53/w90_3x3/campaign_s53_w91_3x3_pair/campaign_results.json",
+   "sha256": "587d3f1afb658e8a501d34b51bb8b269dd0c229391c1a26469f01001a8aad566"
+  },
+  "campaign_spec": {
+   "path": "data/SRP1/Results/P515S53/w90_3x3/campaign_s53_w91_3x3_pair/campaign_spec_s53_w91_3x3_pair_231558f0.json",
+   "sha256": "231558f0705797327c10d8e0e82ff878e19ed3a4620766bd5b113995bb920e99"
+  },
+  "candidate": {
+   "investment_year": 2025,
+   "nodes": {
+    "5": [
+     0.0,
+     0.0
+    ],
+    "7": [
+     0.0,
+     0.0
+    ],
+    "9": [
+     0.0,
+     0.0
+    ]
+   }
+  },
+  "candidate_key": "8435c71859ddde68e7ae5818b4ff91c03b4171791bcfaa70edcc3ddb52bacb57",
+  "certification_cycle": 72,
+  "eval_dir": "data/SRP1/Results/P515S53/w90_3x3/campaign_s53_w91_3x3_pair/evals/f6e9cd53fdbb8ee8_x0",
+  "eval_key": "f6e9cd53fdbb8ee8c80388a13d723c49de5b18173bcfa5c7351cbe0d9e5000d4",
+  "evaluation_record": {
+   "path": "data/SRP1/Results/P515S53/w90_3x3/campaign_s53_w91_3x3_pair/evals/f6e9cd53fdbb8ee8_x0/evaluation_record.json",
+   "sha256": "61bd5232e645112b05ad66f5683ff72760937098410dd9a1d34df728ee029d80"
+  },
+  "g_trajectory": {
+   "path": "data/SRP1/Results/P515S53/w90_3x3/campaign_s53_w91_3x3_pair/evals/f6e9cd53fdbb8ee8_x0/g_s39_D.json",
+   "sha256": "6ea6003e4cd1505fb67e2e13cb0f6a08d41e583c29f95db2eeb18fd292aa0c4a"
+  },
+  "initialisation_identity": {
+   "path": "data/SRP1/Results/P515S53/w90_3x3/campaign_s53_w91_3x3_pair/evals/f6e9cd53fdbb8ee8_x0/initialisation_identity.json",
+   "sha256": "f5451e1d0d4767d16ad8decddc9015ff89b9255ddafb9c0e4cf904a20ded1b10"
+  },
+  "label": "x0",
+  "node7_cell_reference": {
+   "Q": 842595839.5131028,
+   "bar": 4010.5701702833176,
+   "certification_cycle": 69,
+   "eval_dir": "data/SRP1/Results/P515S53/w90_3x3/campaign_s53_w91_3x3_pair/evals/c82522f470b35b58_n7_4h_e1",
+   "eval_key": "c82522f470b35b58399bfe47ebd45612a95641ae308128de5d1c3c08ad5408a1"
+  },
+  "per_cycle_record": {
+   "path": "data/SRP1/Results/P515S53/w90_3x3/campaign_s53_w91_3x3_pair/evals/f6e9cd53fdbb8ee8_x0/per_cycle_record.jsonl",
+   "sha256": "3f0908014805cbd2e0af558cdca2d1cc07842efc55202db727539c0f9812fe80"
+  },
+  "value_and_R": {
+   "I_eur": 317957.0085035586,
+   "R_at_certification": 0.9125588483309005,
+   "R_ref": 259375.33,
+   "V_eur": 236695.2492736578,
+   "bar_sum_resolution_eur": 17964.945860743523,
+   "source": "data/SRP1/Results/P515S53/w90_3x3/campaign_s53_w91_3x3_pair/campaign_results.json value_and_R"
+  },
+  "x0_footprint_peak_bytes": 20517044400
+ },
+ "instrumentation": {
+  "all_blocks_every_cycle": "recourse_blocks_all.jsonl: every block of production's _get_operational_recourse_block_components (80 network blocks + SALVAGE) and every objective component of _get_operational_objective_component_blocks, every cycle, with the deltas against the previous cycle -- the recourse-jump sidecar keeps only the top 10 (W96). This recovers Addendum 50 item (i) IN FULL for the historical window 63-72 (via the replay) and for the continuation",
+  "continuation_cycle_record": "continuation_cycle_record.jsonl: per cycle the hold state (natural and held values), gross, step, early-stop streak, certificate length in force, the live replay comparison"
+ },
+ "labelling_and_identity": {
+  "evaluation_key_analysis": "the cap and the certificate length (minimum_consecutive_converged_cycles / spec required_consecutive_cycles) are spec-level and do NOT enter evaluation_key: without a keyed declaration the continuation would carry the certified key f6e9cd53 exactly. W98 adds the entry option certification_continuation, which DOES enter the key: key = sha256({base_evaluation_key, certification_continuation}); every key without it is byte-identical (C7: 7,032 committed entries)",
+  "keys": {
+   "base_key_without_continuation": "f6e9cd53fdbb8ee8c80388a13d723c49de5b18173bcfa5c7351cbe0d9e5000d4",
+   "continuation_key": "25b92ae0f1f2c02eea9b3811f16edf210479e461e653f474bd23d451ff7bf3e3"
+  },
+  "label": "CONTINUATION RUN (W98, spec v37) -- NOT a certification: certification rule disabled; regime held after cycle N (AA off, tight tail on, rho frozen)",
+  "pre_launch_assertion_at_freeze": {
+   "base_key_without_continuation": "f6e9cd53fdbb8ee8c80388a13d723c49de5b18173bcfa5c7351cbe0d9e5000d4",
+   "certified_working_dir_ids": {
+    "precheck": "p515s44_s53_w91_3x3_pair_f6e9cd53fdbb8ee8_precheck",
+    "run": "p515s44_s53_w91_3x3_pair_f6e9cd53fdbb8ee8_run"
+   },
+   "continuation_key": "25b92ae0f1f2c02eea9b3811f16edf210479e461e653f474bd23d451ff7bf3e3",
+   "eval_dir_name": "25b92ae0f1f2c02e_x0_cont",
+   "excluded_roots": [
+    "data/SRP1/Results/P515S53/w98_continuation"
+   ],
+   "holds": true,
+   "n_committed_keys_scanned": 3523,
+   "parts": {
+    "base_key_equals_certified_key": true,
+    "campaign_root_differs_from_certified": true,
+    "certified_eval_dir_untouched_by_this_campaign": true,
+    "continuation_key_absent_from_committed_specs": true,
+    "continuation_key_differs_from_certified_key": true,
+    "eval_dir_name_differs_from_certified": true,
+    "working_dir_ids_differ_from_certified": true,
+    "working_dirs_absent": true
+   },
+   "working_dir_ids": {
+    "precheck": "p515s44_s53_w98_x0_continuation_r2_25b92ae0f1f2c02e_precheck",
+    "run": "p515s44_s53_w98_x0_continuation_r2_25b92ae0f1f2c02e_run"
+   }
+  }
+ },
+ "launch_command_template": "cd /Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation && set -o noclobber && NLP_SOLVER_PATH=/usr/local/bin/ipopt /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python -u p515_s53_w98_continuation_campaign.py --run --spec-sha256 <campaign spec sha256> > data/SRP1/Results/P515S53/w98_continuation/stage1_run_v38_launch.log 2>&1",
+ "memory_preflight": {
+  "basis": "the pair's own preflight requirement (g x P_on, footprint; spec 231558f0 required_pair_bytes); the certified x = 0 child's measured footprint peak was 20,517,044,400 B (19.108 GiB), below it; per-cycle RSS was flat from cycle 7 (ru_maxrss 15.12-15.16 GiB), so 30 more cycles are not expected to raise the peak (not measured)",
+  "measured_at_freeze_non_gating": {
+   "available_bytes": 20741783552,
+   "available_gib": 19.317291259765625,
+   "budget_derivation": {
+    "budget": "3.5 GiB per child = the measured persist peak (3.23 GiB) + 0.27 GiB margin",
+    "s47_recert_c_star_child_peak_no_persist_bytes": 2577645568,
+    "s47_recert_unit_child_peak_no_persist_bytes": 2574581760,
+    "source": "data/SRP1/Results/P515S48/x0_capture/evals/d2c96b1480402a3b_x0/{evaluation_record,post_certification}.json and data/SRP1/Results/P515S47/campaign_s47_recert/evals/*/evaluation_record.json peak_rss",
+    "x0_capture_child_peak_with_persist_bytes": 3470491648,
+    "x0_capture_production_peak_before_persist_bytes": 2395537408
+   },
+   "concurrency": 1,
+   "free_plus_inactive_gib": 17.296356201171875,
+   "hw_memsize_bytes": 34359738368,
+   "missing_vm_stat_figures": [],
+   "non_reclaimable_gib": 12.682708740234375,
+   "page_size_bytes": 16384,
+   "pass": true,
+   "per_child_budget_gib": 3.5,
+   "required_bytes": 3758096384,
+   "required_gib": 3.5,
+   "rule": "hw.memsize - (wired + anonymous + compressor-occupied) x page size >= 1 x 3.5 GiB",
+   "rule_rationale": "non-reclaimable load = wired + anonymous + compressor-occupied pages; file-backed pages (active or inactive) are cache the kernel reclaims on demand, so free + inactive under-counts what new processes can obtain (free + inactive recorded alongside)",
+   "utc": "2026-09-27T07:08:06.815165+00:00",
+   "vm_stat_header": "Mach Virtual Memory Statistics: (page size of 16384 bytes)",
+   "vm_stat_pages": {
+    "anonymous_pages": 407251,
+    "pages_free": 471308,
+    "pages_inactive": 662226,
+    "pages_occupied_by_compressor": 287688,
+    "pages_wired_down": 136235
+   }
+  },
+  "persistence": "OFF (the v36 margin rule refused it; no certified_models.pkl)",
+  "required_bytes": 20584120351.275146,
+  "required_gib": 19.170455961744437,
+  "rule": "available (hw.memsize - wired - anonymous - compressor-occupied) >= required, measured at --run"
+ },
+ "objective_convention": "Q = gross_operational_cost, settlement EXCLUDED (terminal salvage 0 at x = 0, so gross = net here); every value in this spec and in the run's results is on this convention",
+ "post_N_hold": {
+  "AA_off": "production's own AA step is called with all_boyd_pass forced True on a copy: its \"off\" branch, no extrapolation, no write-back; asserted per cycle",
+  "N": 72,
+  "acts_for": "cycle > 72 only; inert for cycle <= 72",
+  "inseparability": "W97 established that AA-off and tail-on coincide by construction (tail on at AA-off + 1). This run holds BOTH and cannot separate them: the continuation discriminates by the SHAPE of the post-certification steps (hump then geometric decay, constant, or growing / a jump), not by separating AA from the tail.",
+  "mechanism": "harness-side: pass-through wrappers on six production functions, installed first in the child (p515_s53_w98_continuation_hooks); NO production module is edited",
+  "rho_frozen": "production's penalty update is called with allow_update=False for cycle > 72 (its scaling loop, the only place rho / gamma are written, does not run); rho and gamma before == after asserted exactly; at x = 0 all three channels are already frozen from cycle 63 (W97), so the hold changes nothing on a bitwise replay and guarantees it on a divergent one",
+  "tail_on": "the tail is applied ON at the top of every cycle > 72 and the end-of-cycle next-state returns True (production's AA-off == predicate check is bypassed only there, because the AA hold makes AA off by construction; the natural predicate is recorded)"
+ },
+ "predecessor": {
+  "path": "data/SRP1/Results/P515S53/frozen_s53_spec_v37_774d083f.json",
+  "sha256": "774d083f6b609068ba3e547a67fc9520d94b6f830670354ec0553a0ecc8deb19",
+  "version": 37
+ },
+ "predecessor_chain": {
+  "v36": {
+   "path": "data/SRP1/Results/P515S53/frozen_s53_spec_v36_14bbddc7.json",
+   "sha256": "14bbddc7593c6ee3ee56854b12cb146d6770a27953e3f36bd88c3e0417c40110"
+  },
+  "v37": {
+   "path": "data/SRP1/Results/P515S53/frozen_s53_spec_v37_774d083f.json",
+   "sha256": "774d083f6b609068ba3e547a67fc9520d94b6f830670354ec0553a0ecc8deb19"
+  }
+ },
+ "production_sha256": {
+  "admm_anderson_acceleration.py": "24cf3bea9b07725ae15029dd0d9d81ed46ab8e75ecf1c9141a4b0afc6be2659e",
+  "admm_parameters.py": "40d0e972dcadfb4de099a0203682ba2e93badc62d9ae989f87be40b1ce3b75fa",
+  "admm_persistent_workers.py": "39dcbd267bb224e65197ca427952b08d45d3bbe98785b73fd55148c0979e1125",
+  "data/SRP1/SRP1_params.json": "dbfdb2a07d12bfedab5e66bf94b3df98e5ab0305616652b4083266476972006b",
+  "model_construction_helpers.py": "a20a224f11008de8c0206484583b00253677267d616e1051bb1583791ed47f64",
+  "network.py": "18acaa84af7a043898a7b831223b4eab1d91f9bcf2c199f49beecfeb3bf91fb4",
+  "network_data.py": "2938bc4bd4ecc74f42aa90d347cdc1162eebcefaba15bc87b8281a798d457d6b",
+  "p514_n_instrumented_cstar.py": "62df39d41fec0ee48b320f6ade9eb1be4132203dcdbd100b90d1fc545d1d43c2",
+  "p515_g_g1_g4_admm_gates.py": "e147a34f1be39119196845059eaa77b581148f6f191cc3197cd9275c4b0ad5aa",
+  "p515_s39_evaluate.py": "2dd5b31f29aadb84dfcaf7b9e112fdda570bf20f78154b19d49914ba3a8a28c4",
+  "p515_s40_clone_capture_preflight.py": "30e33d0a7803c2a958bbf7da617dba277a8fe15888078e37aa451feba09a3652",
+  "p515_s40_cost_decomposition.py": "2fb70a404ca7b41969fc84908e564acc8d1c1fbd68c3e7ffb5dcdd19877222ad",
+  "p515_s40_polish_gap.py": "026a4d80037e9d03fbb8505986ab5a74a0b1eb08fc9c5b4ebf5494dce4556cf4",
+  "p515_s41_hull_polish.py": "e76c5921ecd1057dceb8fa8e097e960247a51d3e09f13d78ae95dec727385d5d",
+  "p515_s42_exact_fix_rerun.py": "de83af2ff01c48861995d70314a6565cf3e4c6ab8c2b32fc748fdc829c9e930a",
+  "p515_s43_aa_flagoff_gate.py": "22ef58b84bdd109d39e2cbf78d2e69e7302ccd0aadae2c90dcb9f6341d9472d3",
+  "p515_s43_aa_run.py": "34fd36a469d92186b6f982a529f9f8c68d6bd9d73157a4f75698c71597073aa8",
+  "p56a_oracle.py": "699d571a2d69b14fd89024c535fa8b3ffa0625aa647f1714060dcc9cf6fa2f11",
+  "shared_energy_storage_data.py": "9acd095fb5e50e9b64c253600ae05ebb8e6463fd7a999d3a90f96ee82f037796",
+  "shared_resources_planning.py": "0610d745a41c86c71dae9e776f0dc8e38c7099f73128a3d2c2e8f861ab9fc9c0"
+ },
+ "replay_gate": {
+  "also": "this replay is the instance's reproducibility measurement for the manuscript (Addendum 51)",
+  "cycles": [
+   1,
+   72
+  ],
+  "fields": "EVERY field of per_cycle_record.jsonl except cycle_wall_s, rss_bytes, ru_maxrss_bytes, response_capture_s (wall-clock, RSS and capture timing) -- i.e. per-cycle gross, net, salvage, objective change and tolerance, every Boyd primal / dual ratio and channel pass, all_boyd_pass, cycle_convergence, consecutive_converged_cycles, rho after / action / freeze, EFC, and the row-18 response fields; plus the initialisation (cycle 0) gross hex",
+  "live_check_in_child": "non-gating: the child compares each cycle's gross hex with the reference as it runs and prints it (continuation_cycle_record.jsonl, [W98-CONTINUATION] lines)",
+  "on_divergence": "record k (0 = initialisation) and the magnitude (the gross difference at k, the largest relative difference over the differing numeric fields), RELABEL the run (\"SEPARATELY LABELLED RUN: the replay diverged at cycle k\"), and CONTINUE -- the run is not stopped; the post-72 hold stays keyed to cycle N = 72, the recorded certification cycle, not re-derived from the replay",
+  "reference": {
+   "path": "data/SRP1/Results/P515S53/w90_3x3/campaign_s53_w91_3x3_pair/evals/f6e9cd53fdbb8ee8_x0/per_cycle_record.jsonl",
+   "sha256": "3f0908014805cbd2e0af558cdca2d1cc07842efc55202db727539c0f9812fe80"
+  },
+  "reported_not_gated": "the raw trajectory rows (g_s39_D.json) cycles 1..72, excluding required_consecutive_cycles, which records the raised certificate length by design",
+  "tolerance": "bitwise (JSON text of each field; floats by shortest repr, i.e. bit for bit -- the W90 S16 rule)"
+ },
+ "run": {
+  "N": 72,
+  "campaign_id": "s53_w98_x0_continuation_r2",
+  "campaign_root": "data/SRP1/Results/P515S53/w98_continuation/campaign_s53_w98_x0_continuation_r2",
+  "cap": 102,
+  "captures": "per-cycle state (per_cycle_record + g trajectory + the continuation cycle record), per-attempt IPOPT floor records (network_ipopt_solve_records*), the per-cycle response capture and the terminal captures ON, as for the pair; persistence OFF (the v36 margin rule refused it)",
+  "concurrency": 1,
+  "configuration": {
+   "arm_label": "s39_D",
+   "case_file_anderson_acceleration": {
+    "enabled": true,
+    "memory": 5,
+    "regularization": 1e-10,
+    "reject_policy": "keep_memory"
+   },
+   "convergence_depth_tail": {
+    "compl_inf_tol": 1e-06,
+    "enabled": true
+   },
+   "derived_instance": {
+    "case_path": "data/SRP1/Results/P515S53/w89_3x3/instance/SRP1__s53_3x3.json",
+    "case_sha256": "2a64e3c5bd06c30c8a015207f41b69257b001094cbd4b185a84394a6765c5871",
+    "changes_vs_source": [
+     {
+      "from": {
+       "2025": 5,
+       "2030": 5,
+       "2035": 5
+      },
+      "key": "Years",
+      "to": {
+       "2025": 3,
+       "2028": 3,
+       "2031": 3,
+       "2034": 3,
+       "2037": 3
+      }
+     },
+     {
+      "from": 1,
+      "key": "NumMarketScenarios",
+      "to": 3
+     },
+     {
+      "from": 1,
+      "key": "TransmissionNetwork[case9].num_operation_scenarios",
+      "to": 3
+     },
+     {
+      "from": 1,
+      "key": "DistributionNetworks[case33_1].num_operation_scenarios",
+      "to": 3
+     },
+     {
+      "from": 1,
+      "key": "DistributionNetworks[case33_2].num_operation_scenarios",
+      "to": 3
+     },
+     {
+      "from": 1,
+      "key": "DistributionNetworks[case33_3].num_operation_scenarios",
+      "to": 3
+     }
+    ],
+    "instance_label": "s53_3x3",
+    "scenario_checksum": "0248a5c8710bdbdf047523ca036bd2f4639546aebf18fd08391a64b340a3b193",
+    "source_case_path": "data/SRP1/SRP1.json",
+    "source_case_sha256": "61a794a7ce7a3fb983f2e92128eec446dd7dbb17ad75a3b3b1c5735f8bd4e4ef"
+   },
+   "ess_ageing_baseline": {
+    "calendar_life_years": 15,
+    "calendar_retention_per_year": 0.985,
+    "calibration": {
+     "cycles_n": 10000,
+     "eol_retention_r": 0.8,
+     "reference_dod_d": 0.8,
+     "status": "ACTIVE"
+    },
+    "cycle_life_nominal": 10000,
+    "depth_of_discharge_nominal": 0.8,
+    "minimum_soh": 0.7
+   },
+   "ess_ageing_baseline_label": "BASELINE (C2 + phi_cal 0.985 + soh_min 0.70)",
+   "name": "W98 CONTINUATION of the certified 3 x 3 x = 0 cell -- BASELINE (C2 + phi_cal 0.985 + soh_min 0.70); the 3 x 3 prefix-draw instance s53_3x3; row 18 premium alpha 0.5 (no floor); case-file AA declared; the convergence-depth tail DECLARED {True, 1e-6}; option (b) release_solution_bookkeeping ON; concurrency 1; persistence by the margin rule; no hull polish",
+   "note": "the certified cell's configuration (spec 231558f0) unchanged; the entry adds certification_continuation (keyed); cap N + 30; persistence off; option (b) on",
+   "overrides": {}
+  },
+  "configuration_identity": "identical to the certified cell (spec 231558f0): case file, derived instance, AA declaration, ESS ageing baseline and params file, tail {True, 1e-6}, premium alpha 0.5, option (b) on, persistence OFF, thread caps, interpreter, solver path; checked field by field at --freeze and at --run (validate_campaign_spec). The harness differs from the certified run's (252996a1) by the W98 option only; C7 proves every committed key unchanged under it",
+  "continuation_cycles": 30,
+  "entry_label": "x0_cont",
+  "entry_options": {
+   "certification_continuation": {
+    "continuation_cycles": 30,
+    "early_stop": {
+     "abs_gross_step_below_eur": 500.0,
+     "consecutive_cycles": 3
+    },
+    "hold_after_cycle": 72,
+    "label": "CONTINUATION RUN (W98, spec v37) -- NOT a certification: certification rule disabled; regime held after cycle N (AA off, tight tail on, rho frozen)",
+    "record_all_blocks": true,
+    "replay_reference": {
+     "n_cycles": 72,
+     "per_cycle_record": "data/SRP1/Results/P515S53/w90_3x3/campaign_s53_w91_3x3_pair/evals/f6e9cd53fdbb8ee8_x0/per_cycle_record.jsonl",
+     "sha256": "3f0908014805cbd2e0af558cdca2d1cc07842efc55202db727539c0f9812fe80"
+    }
+   },
+   "interface_deviation_premium": {
+    "alpha": 0.5,
+    "floor": null
+   },
+   "investment_year": 2025,
+   "release_solution_bookkeeping": true
+  },
+  "one_run_rule": "stands (Addendum 51): nothing else runs on the Mac while stage 1 runs; the SRP1 benchmark arms only with measured headroom >= 3 GiB above the continuation's peak, the author's call",
+  "stage": "stage 1 (x = 0) only; stage 2 (the storage cell) only by the decision rule below"
+ },
+ "schema": "p515_s53_stage_spec_v38",
+ "settling_analysis": {
+  "definition": {
+   "D_extrap": "r d_K / (1 - r), valid fit only: Addendum 51's D = step / (1 - ratio) with step = the FIRST UNMEASURED step, r d_K (d_K = the measured last step), so D_extrap is the geometric tail beyond the run and D_measured + D_extrap does not count d_K twice. The fitted-endpoint variant r d_hat_K / (1 - r) is reported, not deciding.",
+   "D_measured": "Q_N - Q_K of THIS run (its own cycle-N value; equal to the certified Q when the replay is bitwise)",
+   "D_x0": "D_measured + D_extrap when the fit is valid; otherwise D_measured, flagged as a LOWER BOUND",
+   "Q": "gross_operational_cost per cycle (settlement excluded), the run's own per_cycle_record.jsonl",
+   "R_settled": "stage 2 run: R_settled = (V - D_x0 + D_unit) / R_ref, D_unit the storage cell's D from stage 2 (not computable in stage 1); stage 2 not run: the range above",
+   "classification_worker_operationalisation_frozen_before_the_run": {
+    "H1": "not H3 / H2, a valid fit with r < 0.95",
+    "H2": "not H3, a fit window of >= 4 descending steps with 0.95 <= r <= 1.05",
+    "H3": "a jump -- any post-N step with |s_k| > the certified bar 13954.375690460205 -- or growing steps: r > 1.05, or the peak within the last three steps without an early stop",
+    "precedence": "H3 > H2 > H1 > settled_by_early_stop > unclassified",
+    "settled_by_early_stop": "none of the above and the early-stop rule ended the run (steps below 500 EUR)",
+    "unclassified": "otherwise (reported with the step series)"
+   },
+   "fit": "ordinary least squares of ln d_k on (k - k_peak) over the fit window; r = exp(slope); the fitted step at K, d_hat_K = exp(intercept + slope (K - k_peak)), reported",
+   "fit_window": "k = k_peak .. K (the peak and every later step). Justification: a geometric law describes a monotone decay; the rise to the peak is the transient (the AA-off swing, H1) that no geometric law describes, and including it biases the ratio upward. W97 found the step increments at cycle 72 had shrunk to -147 (steps -3,858 then -4,006), so the peak is expected within a cycle or two of certification; starting at the peak, not at N+1, keeps the fit on the decaying part whatever that turns out to be. All post-N steps are fitted too, REPORTED, never deciding.",
+   "peak": "k_peak = the first k in N+1..K maximising d_k",
+   "prediction_scoring_worker_operationalisation_frozen_before_the_run": {
+    "D_x0_20_60_k": "20000 <= D_x0 <= 60000 (on the stated basis)",
+    "R_settled_ge_0.80": "stage 2 not run: (V - D_x0)/R_ref >= 0.80; stage 2 run: pending its D_unit",
+    "geometric_decay_ratio_0.80_0.95": "valid fit and 0.8 <= r <= 0.95",
+    "peak_within_a_few_cycles": "k_peak <= N + 5 (Addendum 50: \"peak within ~ 5 cycles\")",
+    "replay_bitwise_through_72": "the replay gate reads bitwise_through_N",
+    "stage_2_triggered": "the stage-2 decision is \"run\""
+   },
+   "resolution_of_D_measured": "|s_K| (the terminal step: the stopping slack of this run, CLAUDE.md rule \"report a difference with its resolution\")",
+   "stage_2_decision": "valid fit: stage 2 runs iff D_x0 > bar_sum (17,964.945860743523). Invalid fit: if D_measured alone exceeds bar_sum, stage 2 runs (the lower bound already does); else if the early-stop rule ended the run, D_x0 = D_measured and stage 2 runs iff D_x0 > bar_sum (the run met the settling rule; no extrapolation is claimed); else the decision is UNDETERMINED and goes to the Planner (a lower bound below the resolution with steps that do not decay is H2 / H3 territory, which Addendum 51 sends to review). When stage 2 does not run: R is reported as the range [(V - D_x0)/R_ref, V/R_ref] (V = 236,695.2492736578, R_ref = 259,375.33), the storage cell's descent bounded above by D_x0.",
+   "steps": "s_k = Q_k - Q_(k-1) for k = N+1 .. K (K = the run's last cycle; a step is unavailable if either Q is None); descent d_k = -s_k (positive while Q falls)",
+   "validity": {
+    "V1": "at least 4 steps in the fit window (the peak plus three after it)",
+    "V2": "every step in the fit window is a descent (d_k > 0)",
+    "V3": "r < 1",
+    "rule": "valid iff V1 and V2 and V3; otherwise NO extrapolation (\"increasing steps -> no extrapolation\": a peak within the last three steps fails V1, a rising fit fails V3)"
+   }
+  },
+  "implementation": "p515_s53_w98_continuation_campaign.py:settling_analysis (pure function of the per-cycle Q)",
+  "self_tests_on_synthetic_series": {
+   "H1_decay_r0.85_cap": {
+    "D_measured": 26463.179744005203,
+    "D_x0": 26666.666666846835,
+    "classification": "H1",
+    "k_peak": 73,
+    "ok": true,
+    "r": 0.8500000000132987,
+    "stage_2": {
+     "D_x0": 26666.666666846835,
+     "R_range_if_not_run": null,
+     "R_ref": 259375.33,
+     "V": 236695.2492736578,
+     "bar_sum": 17964.945860743523,
+     "basis": "measured_plus_extrapolated",
+     "decision": "run"
+    },
+    "valid": true
+   },
+   "H1_hump_then_decay": {
+    "D_measured": 36104.275060892105,
+    "D_x0": 36401.900999853286,
+    "classification": "H1",
+    "k_peak": 74,
+    "ok": true,
+    "r": 0.850815150393047,
+    "stage_2": {
+     "D_x0": 36401.900999853286,
+     "R_range_if_not_run": null,
+     "R_ref": 259375.33,
+     "V": 236695.2492736578,
+     "bar_sum": 17964.945860743523,
+     "basis": "measured_plus_extrapolated",
+     "decision": "run"
+    },
+    "valid": true
+   },
+   "H2_flat_steps": {
+    "D_measured": 118276.13094723225,
+    "D_x0": 3999999.999515343,
+    "classification": "H2",
+    "k_peak": 73,
+    "ok": true,
+    "r": 0.9989999999998901,
+    "stage_2": {
+     "D_x0": 3999999.999515343,
+     "R_range_if_not_run": null,
+     "R_ref": 259375.33,
+     "V": 236695.2492736578,
+     "bar_sum": 17964.945860743523,
+     "basis": "measured_plus_extrapolated",
+     "decision": "run"
+    },
+    "valid": true
+   },
+   "H3_growing": {
+    "D_measured": 66438.84750294685,
+    "D_x0": 66438.84750294685,
+    "classification": "H3",
+    "k_peak": 102,
+    "ok": true,
+    "r": null,
+    "stage_2": {
+     "D_x0": 66438.84750294685,
+     "R_range_if_not_run": null,
+     "R_ref": 259375.33,
+     "V": 236695.2492736578,
+     "bar_sum": 17964.945860743523,
+     "basis": "measured_lower_bound_already_exceeds_resolution",
+     "decision": "run"
+    },
+    "valid": false
+   },
+   "H3_jump": {
+    "D_measured": 28300.0,
+    "D_x0": 29069.01945646114,
+    "classification": "H3",
+    "k_peak": 74,
+    "ok": true,
+    "r": 0.49012741893948997,
+    "stage_2": {
+     "D_x0": 29069.01945646114,
+     "R_range_if_not_run": null,
+     "R_ref": 259375.33,
+     "V": 236695.2492736578,
+     "bar_sum": 17964.945860743523,
+     "basis": "measured_plus_extrapolated",
+     "decision": "run"
+    },
+    "valid": true
+   },
+   "early_stop_noisy_signs": {
+    "D_measured": 900.0,
+    "D_x0": 900.0,
+    "classification": "settled_by_early_stop",
+    "k_peak": 73,
+    "ok": true,
+    "r": null,
+    "stage_2": {
+     "D_x0": 900.0,
+     "R_range_if_not_run": [
+      0.9090889610575447,
+      0.9125588361609326
+     ],
+     "R_ref": 259375.33,
+     "V": 236695.2492736578,
+     "bar_sum": 17964.945860743523,
+     "basis": "measured_early_stop_no_extrapolation",
+     "decision": "do_not_run"
+    },
+    "valid": false
+   },
+   "early_stop_small_do_not_run": {
+    "D_measured": 2400.0,
+    "D_x0": 2846.5051966703463,
+    "classification": "H1",
+    "k_peak": 73,
+    "ok": true,
+    "r": 0.6906444046698357,
+    "stage_2": {
+     "D_x0": 2846.5051966703463,
+     "R_range_if_not_run": [
+      0.9015843722569432,
+      0.9125588361609326
+     ],
+     "R_ref": 259375.33,
+     "V": 236695.2492736578,
+     "bar_sum": 17964.945860743523,
+     "basis": "measured_plus_extrapolated",
+     "decision": "do_not_run"
+    },
+    "valid": true
+   }
+  }
+ },
+ "solve_profile_declared": {
+  "child": "RECONCILED PER EVENT (G5), as the pair: 83 x (cycles_run + 1) + every retry attempted (80 network blocks + 3 ESSO per round; round 0 = initialisation); cycles_run in [75, 102] -> base 6,308 to 8,549",
+  "parent": "never solves: every launcher guard permitted=(), verify(0)"
+ },
+ "solver": {
+  "certified_cell_child_path": "/usr/local/bin/ipopt",
+  "expected": "/usr/local/bin/ipopt",
+  "ok": true,
+  "resolved": {
+   "NLP_SOLVER_PATH": "/usr/local/bin/ipopt",
+   "source": "environment"
+  },
+  "sha256": "b316abbe38cd851d9a9a87a6a1a1714a4334304c9539df1976d2f7101360ff05"
+ },
+ "stage_2_decision_rule": {
+  "constants": {
+   "I_eur": 317957.0085035586,
+   "R_at_certification": 0.9125588483309005,
+   "R_ref": 259375.33,
+   "V_eur": 236695.2492736578,
+   "bar_sum_resolution_eur": 17964.945860743523,
+   "source": "data/SRP1/Results/P515S53/w90_3x3/campaign_s53_w91_3x3_pair/campaign_results.json value_and_R"
+  },
+  "operational": "valid fit: stage 2 runs iff D_x0 > bar_sum (17,964.945860743523). Invalid fit: if D_measured alone exceeds bar_sum, stage 2 runs (the lower bound already does); else if the early-stop rule ended the run, D_x0 = D_measured and stage 2 runs iff D_x0 > bar_sum (the run met the settling rule; no extrapolation is claimed); else the decision is UNDETERMINED and goes to the Planner (a lower bound below the resolution with steps that do not decay is H2 / H3 territory, which Addendum 51 sends to review). When stage 2 does not run: R is reported as the range [(V - D_x0)/R_ref, V/R_ref] (V = 236,695.2492736578, R_ref = 259,375.33), the storage cell's descent bounded above by D_x0.",
+  "verbatim_addendum_51": "**Stage 2 decision rule, recorded now:** the storage cell's continuation runs if D_x0 (measured plus extrapolated) exceeds the value's resolution (bar-sum \u2248 18 k\u20ac); otherwise R is reported as the range [(V \u2212 D_x0)/R_ref, V/R_ref] with the storage cell's descent bounded above by D_x0.",
+  "verbatim_planner_task_w98": "the storage cell's continuation runs if D_x0 (measured plus extrapolated) exceeds the value's resolution \u2014 the bar-sum, 17,964.945860743523 \u2014 otherwise R is reported as the range [(V \u2212 D_x0)/R_ref, V/R_ref] with V = 236,695.2492736578 and R_ref = 259,375.33."
+ },
+ "stage_text": "P5.15 Addendum 51, W98 -- stage 1 of the post-certification continuation (route A): x = 0 replayed under the certifying configuration (bitwise gate against the 72 recorded cycles), then up to 30 further cycles with the certification rule disabled and the certifying regime held (AA off, tight tail on, rho frozen); early stop at |dQ| < 500 EUR for 3 cycles; every block recorded every cycle",
+ "supersedes_before_any_run": {
+  "campaign_spec_s53_w98_x0_continuation": {
+   "path": "data/SRP1/Results/P515S53/w98_continuation/campaign_s53_w98_x0_continuation/campaign_spec_s53_w98_x0_continuation_92fa0957.json",
+   "sha256": "92fa0957cc044b5866827d9a808821ff7b64e0b32a568ef38804c594191a3a0f"
+  },
+  "reason": "never run. A dry run of the --run preconditions (zero solves) found that the r1 checks' C7 required the continuation key to be absent from EVERY committed campaign spec -- falsified by the committed stage-1 campaign spec itself -- so --run would always refuse. Fixed in the checks module (r2: the W98 stage root excluded, as in the pre-launch assertion; continuation entries handled separately in the key regression); v37 pins r1, hence v38. Same declaration, same eval key 25b92ae0, new campaign id.",
+  "stage_spec_v37": {
+   "path": "data/SRP1/Results/P515S53/frozen_s53_spec_v37_774d083f.json",
+   "sha256": "774d083f6b609068ba3e547a67fc9520d94b6f830670354ec0553a0ecc8deb19"
+  },
+  "zero_solve_checks_r1": {
+   "path": "data/SRP1/Results/P515S53/w98_continuation/zero_solve_checks/w98_zero_solve_checks.json",
+   "sha256": "6be52863de2315c382ccd0881878364ed5b877affeb88dd8c92ffc82d7a4911f"
+  }
+ },
+ "verbatim_text": {
+  "all_found": true,
+  "brief": "PLANNER_BRIEF_2026-09-13.md",
+  "brief_git_state": {
+   "git_clean": false,
+   "git_tracked": true
+  },
+  "brief_sha256_at_freeze": "2b52baab1752069ff3f7d571e3362dea4aae2de8b821a8efdca86911e5605755",
+  "found_whitespace_normalised": {
+   "analysis": true,
+   "competing_outcomes": true,
+   "expert_predictions": true,
+   "g6": true,
+   "stage_1": true,
+   "stage_2_decision_rule": true
+  },
+  "note": "Addendum 51 is in the working tree of the brief, NOT committed, at freeze (the Planner's file; left unstaged per the task); the quotes are therefore fixed here verbatim, with the brief's sha256 at freeze"
+ },
+ "version": 38
+}
