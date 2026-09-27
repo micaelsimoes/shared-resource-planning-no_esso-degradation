@@ -32,6 +32,20 @@
 - [ ] 42(1) linear-solver benchmark / 42(3) persistent-worker timing — idle time, after review
 - [ ] Step 5 SRP1 rows
 
+## Addendum 51 order — continuation by replay (route A, staged)
+
+- [x] Results accepted: **x = 0 optimal under the baseline at both instances**; value − I = −81,262 (4.5×), drift-robust
+- [x] **Addendum 50's tail-transient explanation WITHDRAWN** (the fall began before the tail on both cells); H_row18 as a cause of the drift falls with it. **Live candidate:** an **AA-off transient** — tail-on and AA-off coincide by design
+- [x] **G6 restated** (adopted): `Optimal` + the four error metrics within the tail tolerances for the final accepted attempt; μ/floor reported per solve, **never gated**
+- [ ] **▶ ACTIVE — W97: diagnostics report, records only** — Add. 50 items (i)–(v) for both cells, **plus ρ history and AA state around cycles 55–72** on each cell; or the omission stated
+- [ ] Spec **v37** frozen with predictions: G6 as restated; certification rule disabled after cycle 72; certifying regime held (tail on, AA off, ρ frozen); bitwise replay gate against the 72 recorded cycles
+- [ ] **Stage 1 — x = 0** (≈ 11 h): replay checked **bitwise** against the 72 recorded cycles (also the instance's **reproducibility** measurement; a divergence at cycle k is reported with its magnitude and the run relabelled), then **30 cycles**; early stop at |ΔQ| < 500 €/cycle for 3 cycles
+- [ ] Geometric fit of the post-certification steps → ratio r and **D = step / (1 − r)**, with validity (increasing steps → no extrapolation)
+- [ ] **Stage 2 — storage cell** (≈ 12 h) **only if D_x0 > the value's resolution (≈ 18 k€)**; otherwise R reported as the range [(V − D_x0)/R_ref, V/R_ref]
+- [ ] Pair report — value, **R three ways**, reproducibility, settling → **stop for review**
+- **Expert's predictions (recorded):** replay bitwise through 72; hump then geometric decay, **ratio 0.80–0.95**; **D_x0 = 20–60 k€**; stage 2 triggered; **R_settled ≥ 0.80**. Competing: **H1** hump + decay (AA-off transient + slow mode) → step bound at window end; **H2** constant steps (ratio ≈ 1) → residual tolerances too loose, certified Q's are upper bounds, criterion must be objective-based; **H3** growing steps or a jump → basin transition, Advisor review first
+- **One-run rule stands.** SRP1 benchmark arms beside the continuation only with measured headroom ≥ 3 GiB above its peak — author's call
+
 ## Addendum 50 order — G6 failure benign; objective not settled at certification
 
 - [x] **Stop and report** on the refuted floor prediction — correct per the stopping conditions; node-7 continues; **no rule changes mid-pair**
@@ -44,7 +58,7 @@
   - **The drift PREDATES the tail:** same DSO7 blocks, same signs, over cycles 53–62; ‖Δz‖ smooth across cycle 64. The 63–65 swing coincides with **AA switching off** at 63. Reading: objective converges more slowly than the residuals; certification fired at 63 (PF dual ratio first < 1). Awaiting expert reading.
   - **Evidence base not yet committed:** the x = 0 eval records are hashed in W95's manifest but not committed — to be committed with the pair evidence after node-7 finishes.
 - [x] **W96:** pair evidence (in `47a54c89`, record in `c2d4b4ce`'s message); node-7 diagnostics `c2d4b4ce`. **Drift predates the tail on node-7 too** (from cycle 50; tail at 61). Floor status set by objective scaling S, not depth. **Terminal state NOT restorable** — and persisted models would not have sufficed (production continuation resets AA, tail and iteration count)
-- [ ] **▶ STOPPED FOR REVIEW** — report `P5_15_ADDENDUM48_50_3X3_REPORT.md`. **Decisions pending:** (1) continuation route — A replay-and-continue ≈ 22.8 h (recommended) / C none; (2) G6 floor criterion → Optimal + four terminal metrics
+- [x] **Review report** `P5_15_ADDENDUM48_50_3X3_REPORT.md` (`0e703e20`) — accepted in Addendum 51
 - [ ] **Continuation** of each cell, up to 30 cycles, one at a time, behind a **bitwise identity gate** on the terminal cycle (else a separately labelled run); stop at |ΔQ| < 500 €/cycle for 3 cycles. **Prediction:** a hump, peak within ~5 cycles; 20–60 k€ remaining descent per cell; inter-cell difference < 10 k€. **If steps still rise after 10 cycles or the total exceeds 100 k€: H_C likely, and no 3×3 result is used** before a settling criterion exists
 - [ ] Report value and R **three ways**: at certification; after continuation; with the drift as explicit uncertainty
 - [ ] Settling criterion for future specs — **Advisor review after the continuation data**, not before
