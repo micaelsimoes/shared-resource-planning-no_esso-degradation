@@ -227,6 +227,17 @@ preconditions before any solve and enters `continuation_hooks` FIRST (innermost 
 disabled, the certifying regime (AA off, tight tail on, rho frozen) is held for every cycle after the declared N, an
 early-stop rule ends the loop through production's own exit test, and every block's recourse is recorded every cycle.
 It enters the eval key; entries without it keep their exact keys, format and behaviour.
+P5.15 Addendum 53 (W101, the SRP1 settling continuation): an entry may carry `settling_continuation`
+(`validate_settling_continuation`, implemented by `p515_s53_w101_settling_continuation_hooks`): the child asserts its
+capture checklist before any solve and enters `settling_continuation_hooks` FIRST (innermost wrappers): cycles 1..N are
+gated bitwise, cycle by cycle, against the certified reference's committed per-cycle record and the run ABORTS on the
+first difference; the certification rule is disabled; the certifying regime (AA off, tight tail on, rho frozen) is held
+for every cycle after N; the settling stop rule (`settling_criterion`, a pure function of Q and boyd) is the only exit
+before the cap N + 100 (no early stop). It enters the eval key; entries without it keep their exact keys and format.
+W101 (Addendum 53 "Records"): EVERY evaluation also writes the per-cycle interface consensus duals (lambda_t per
+interface node, year, day and period, TSO and DSO copies, P and Q) with their scaling metadata to
+`interface_dual_capture.INTERFACE_DUAL_FILE` (`interface_dual_capture_hooks`; write-only, a separate sidecar so
+`per_cycle_record.jsonl` is unchanged); the record carries its summary as `interface_dual_capture`.
 AFTER the run, in the child, inside `run_admm_arm`'s post_run_hook (same live
 models/state), `run_post_certification` does, only if the trajectory is
 certified under the spec's bar (else it records `status: skipped` + reason):
@@ -303,7 +314,8 @@ POST_CERTIFICATION_KEYS = frozenset({'persist_certified_models', 'hull_polish', 
 # placed at; omitted => INVESTMENT_YEAR (2025), so every spec frozen before W14 is unchanged.
 EVALUATION_OPTION_KEYS = frozenset({'overrides', 'post_certification', 'investment_year', 'model_variant',
                                     'flex_price_multiplier', 'interface_deviation_premium',
-                                    'release_solution_bookkeeping', 'certification_continuation'})
+                                    'release_solution_bookkeeping', 'certification_continuation',
+                                    'settling_continuation'})
 # P5.15 Addendum 39 (W47): a DERIVED INSTANCE (see the module docstring) and row 18's premium. The identity keys
 # of a derived instance enter the eval key; the other keys are provenance. Absent -> nothing changes.
 DERIVED_INSTANCE_KEYS = frozenset({'instance_label', 'case_path', 'case_sha256', 'scenario_checksum',
@@ -875,9 +887,20 @@ def validate_certification_continuation(value):
     return W98C.validate_certification_continuation(value)
 
 
+def validate_settling_continuation(value):
+    """P5.15 Addendum 53 (W101): an entry's `settling_continuation` option -- the SRP1 settling continuation (bitwise
+    replay to N with abort on divergence, regime held after N, the settling stop rule), validated by the hooks module
+    that implements it (`p515_s53_w101_settling_continuation_hooks.validate_settling_continuation`; stdlib-only at
+    import). None = not declared: nothing is installed and every key / entry / record keeps its exact format."""
+    if value is None:
+        return None
+    import p515_s53_w101_settling_continuation_hooks as W101C
+    return W101C.validate_settling_continuation(value)
+
+
 def evaluation_key(candidate_key_hex, overrides, case_file_aa=None, model_variant=None, ess_ageing_baseline=None,
                    flex_price_multiplier=None, derived_instance=None, interface_deviation_premium=None,
-                   convergence_depth_tail=None, certification_continuation=None):
+                   convergence_depth_tail=None, certification_continuation=None, settling_continuation=None):
     """Identity of one EVALUATION (candidate x configuration). The case-file
     configuration (no overrides) keeps the candidate key itself, so a D
     evaluation's directory name is `<candidate key16>_<label>` as in s44_gate;
@@ -920,7 +943,23 @@ def evaluation_key(candidate_key_hex, overrides, case_file_aa=None, model_varian
     validated declaration>} -- never the base key, so a continuation evaluation can never share a key (hence a cache
     hit, an eval dir or a working dir) with the certified evaluation it replays. The cap and the certificate length are
     spec-level and enter no key; the continuation declaration is what separates the two. `certification_continuation=
-    None` returns exactly what the formulas above return, so every pre-W98 key is byte-identical."""
+    None` returns exactly what the formulas above return, so every pre-W98 key is byte-identical.
+    P5.15 Addendum 53 (W101): with a declared `settling_continuation` (validated; never together with a
+    `certification_continuation`), the key is sha256 of {'base_evaluation_key': <the key every rule above gives for the
+    same arguments>, 'settling_continuation': <the validated declaration>} -- never the base key.
+    `settling_continuation=None` returns exactly what the formulas above return, so every pre-W101 key is
+    byte-identical."""
+    if settling_continuation is not None:
+        if certification_continuation is not None:
+            raise ValueError('an entry may declare certification_continuation OR settling_continuation, not both')
+        base = evaluation_key(candidate_key_hex, overrides, case_file_aa=case_file_aa, model_variant=model_variant,
+                              ess_ageing_baseline=ess_ageing_baseline, flex_price_multiplier=flex_price_multiplier,
+                              derived_instance=derived_instance, interface_deviation_premium=interface_deviation_premium,
+                              convergence_depth_tail=convergence_depth_tail)
+        payload = {'base_evaluation_key': base,
+                   'settling_continuation': validate_settling_continuation(settling_continuation)}
+        text = json.dumps(payload, sort_keys=True, separators=(',', ':'))
+        return hashlib.sha256(text.encode()).hexdigest()
     if certification_continuation is not None:
         base = evaluation_key(candidate_key_hex, overrides, case_file_aa=case_file_aa, model_variant=model_variant,
                               ess_ageing_baseline=ess_ageing_baseline, flex_price_multiplier=flex_price_multiplier,
@@ -1153,6 +1192,8 @@ def freeze_campaign_spec(campaign_root, campaign_id, candidates, configuration, 
     P5.15 Addendum 51 (W98): an entry's options may carry `certification_continuation`
     (`validate_certification_continuation`); recorded in the entry only when given; it ENTERS the eval key
     (`evaluation_key`), so a continuation never shares a key with the evaluation it continues.
+    P5.15 Addendum 53 (W101): an entry's options may carry `settling_continuation` (`validate_settling_continuation`);
+    recorded in the entry only when given; it ENTERS the eval key.
     One entry = one EVALUATION: its `eval_key` (`evaluation_key`) identifies
     candidate x configuration; labels and eval keys must be unique (the same
     candidate may appear under two configurations)."""
@@ -1210,10 +1251,12 @@ def freeze_campaign_spec(campaign_root, campaign_id, candidates, configuration, 
         premium = validate_interface_deviation_premium(options.get('interface_deviation_premium'))
         release_bk = validate_release_solution_bookkeeping(options.get('release_solution_bookkeeping'))  # W90: not keyed
         continuation = validate_certification_continuation(options.get('certification_continuation'))  # W98: keyed
+        settling = validate_settling_continuation(options.get('settling_continuation'))  # W101: keyed
         ekey = evaluation_key(key, eff_overrides, case_file_aa=case_file_aa, model_variant=model_variant,
                               ess_ageing_baseline=ess_ageing, flex_price_multiplier=flex_m,
                               derived_instance=derived, interface_deviation_premium=premium,
-                              convergence_depth_tail=tail, certification_continuation=continuation)
+                              convergence_depth_tail=tail, certification_continuation=continuation,
+                              settling_continuation=settling)
         if label in seen_labels or ekey in seen_keys:
             raise ValueError(f'duplicate evaluation label or key (candidate x configuration): {label} / {ekey[:16]}')
         seen_labels.add(label)
@@ -1240,6 +1283,8 @@ def freeze_campaign_spec(campaign_root, campaign_id, candidates, configuration, 
             cand_entry['release_solution_bookkeeping'] = release_bk
         if continuation is not None:  # W98: only when given, so every other entry keeps its exact format
             cand_entry['certification_continuation'] = continuation
+        if settling is not None:  # W101: only when given, so every other entry keeps its exact format
+            cand_entry['settling_continuation'] = settling
         cand_entries.append(cand_entry)
     os.makedirs(campaign_root, exist_ok=True)  # only after every validation above has passed
     try:
@@ -1400,6 +1445,9 @@ PRODUCTION_FILES_TO_CHECK_CLEAN = (
     # Addendum 25 item 2: imported by the post-certification step / AA sidecar
     'p515_s41_hull_polish.py', 'p515_s42_exact_fix_rerun.py', 'p515_s43_aa_run.py',
     'p515_s40_cost_decomposition.py',
+    # W101 (Addendum 53): the gate-result writer (W100) and the per-cycle interface-dual capture, both imported by
+    # every child
+    'gate_result_io.py', 'interface_dual_capture.py',
 )
 FORBIDDEN_LIVE_PROCESS_SUBSTRINGS = ('p515_g_g1_g4_admm_gates.py', 'p515_s4')
 
@@ -5138,6 +5186,21 @@ def _child_real(args, spec, spec_path, entry, eval_dir, lock_content, env_caps, 
         import p515_s53_w98_continuation_hooks as W98C
         continuation_checklist = W98C.assert_continuation_preconditions(continuation, spec, tail_checklist, aa_on)
         progress['certification_continuation_checklist'] = continuation_checklist
+    # W101 (Addendum 53): the settling continuation, only when the entry declares it (it enters the eval key); its
+    # capture checklist (a)-(f), (h) is asserted here, before any solve (fail fast).
+    settling = validate_settling_continuation(entry.get('settling_continuation'))
+    settling_checklist = None
+    if settling is not None:
+        if continuation is not None:
+            raise RuntimeError('an entry may declare certification_continuation OR settling_continuation, not both')
+        import p515_s53_w101_settling_continuation_hooks as W101C
+        settling_checklist = W101C.assert_settling_preconditions(settling, spec, tail_checklist, aa_on)
+        progress['settling_continuation_checklist'] = settling_checklist
+    # W101 (Addendum 53 "Records"): the per-cycle interface consensus duals, for EVERY evaluation (write-only); the
+    # capture path is asserted here, before any solve.
+    import interface_dual_capture as IDC
+    interface_dual_checklist = IDC.assert_capture_path()
+    progress['interface_dual_capture_checklist'] = interface_dual_checklist
     derived_installed = None
     if derived is not None:
         derived_installed = install_derived_instance(derived, eval_dir)
@@ -5181,6 +5244,9 @@ def _child_real(args, spec, spec_path, entry, eval_dir, lock_content, env_caps, 
 
     def post_run_hook(planning, sed, models, rows, report, out_dir, label, state=None, optimization_results=None,
                       primal_evolution=None):
+        dual_capture = hooks_ref.get('interface_dual_capture')
+        if dual_capture is not None:   # W101: the run is over; later Boyd calls (none in production) are not cycles
+            dual_capture.close()
         run_hooks = hooks_ref.get('control')
         if run_hooks is not None:   # W64: the run is over; the per-cycle / activation wrappers pass through from here
             run_hooks.close()
@@ -5310,7 +5376,12 @@ def _child_real(args, spec, spec_path, entry, eval_dir, lock_content, env_caps, 
     # appender and the s39 penalty sidecar record the held values).
     continuation_cm = (W98C.continuation_hooks(eval_dir, continuation, holder, int(spec['cap']))
                        if continuation is not None else nullcontext())
+    # W101: likewise entered first (mutually exclusive with W98's), then the interface-dual capture (every evaluation).
+    settling_cm = (W101C.settling_continuation_hooks(eval_dir, settling, holder, int(spec['cap']))
+                   if settling is not None else nullcontext())
     with continuation_cm, \
+         settling_cm, \
+         IDC.interface_dual_capture_hooks(eval_dir, holder) as dual_capture, \
          G.s38_pf_capture_hooks(paths['recourse_jump'], paths['ess_stride'], paths['floor'],
                                 paths['pf_stride'], floor_rows_by_node, stride=1), \
          G.s39_exempt_until_capture_hooks(paths['exempt']), \
@@ -5318,6 +5389,7 @@ def _child_real(args, spec, spec_path, entry, eval_dir, lock_content, env_caps, 
          release_counter, \
          alpha_row_hooks as hook_control:
         hooks_ref['control'] = hook_control
+        hooks_ref['interface_dual_capture'] = dual_capture
         report, report_path = G.run_admm_arm(
             label, eval_dir, k_override=None, investment_map=investment_map,
             num_max_iters_override=int(spec['cap']), eval_id=ids['run'], apply_rho=False,
@@ -5428,6 +5500,12 @@ def _child_real(args, spec, spec_path, entry, eval_dir, lock_content, env_caps, 
             'certification_continuation_checklist_asserted_before_run': continuation_checklist,
             'certification_continuation_summary': holder.get('certification_continuation'),
         })
+    if settling is not None:  # W101: only for entries declaring the settling continuation
+        variant_extra.update({
+            'settling_continuation': settling,
+            'settling_continuation_checklist_asserted_before_run': settling_checklist,
+            'settling_continuation_summary': holder.get('settling_continuation'),
+        })
     record = build_evaluation_record(
         spec=spec, spec_path=spec_path, spec_sha256=args.spec_sha256, entry=entry, report=report,
         component_levels=component_levels,
@@ -5460,6 +5538,9 @@ def _child_real(args, spec, spec_path, entry, eval_dir, lock_content, env_caps, 
             'child_pid': os.getpid(), 'parent_pid': os.getppid(),
             'report_path': os.path.relpath(report_path, REPO),
             'per_cycle_record_path': os.path.relpath(per_cycle_path, REPO),
+            # W101 (Addendum 53 "Records"): the per-cycle interface consensus duals, every evaluation
+            'interface_dual_capture_checklist_asserted_before_run': interface_dual_checklist,
+            'interface_dual_capture': holder.get('interface_dual_capture') or {'ok': False, 'status': 'not_reached'},
             **variant_extra,
         })
     _write_once_json(os.path.join(eval_dir, 'evaluation_record.json'), record)
@@ -5482,10 +5563,14 @@ def _child_real(args, spec, spec_path, entry, eval_dir, lock_content, env_caps, 
         or not (holder.get('convergence_depth_tail_state_check') or {}).get('match')
         or not (holder.get('convergence_depth_append') or {}).get('ok'))
     continuation_error = continuation is not None and not (holder.get('certification_continuation') or {}).get('ok')
+    settling_error = settling is not None and not (holder.get('settling_continuation') or {}).get('ok')
+    interface_dual_error = not (holder.get('interface_dual_capture') or {}).get('ok')
     return {'post_certification_error': (holder.get('post_certification') or {}).get('status') == 'error',
             'multiscenario_capture_error': capture_error,
             'convergence_depth_capture_error': convergence_depth_error,
-            'certification_continuation_error': continuation_error}
+            'certification_continuation_error': continuation_error,
+            'settling_continuation_error': settling_error,
+            'interface_dual_capture_error': interface_dual_error}
 
 
 def main_child(argv):
@@ -5533,6 +5618,14 @@ def main_child(argv):
             if outcome and outcome.get('certification_continuation_error'):  # W98
                 print('[S44-CHILD] certification continuation summary not ok (recorded in evaluation_record.json); '
                       'exiting 2', file=sys.stderr, flush=True)
+                sys.exit(2)
+            if outcome and outcome.get('settling_continuation_error'):  # W101
+                print('[S44-CHILD] settling continuation summary not ok (recorded in evaluation_record.json); '
+                      'exiting 2', file=sys.stderr, flush=True)
+                sys.exit(2)
+            if outcome and outcome.get('interface_dual_capture_error'):  # W101
+                print('[S44-CHILD] interface-dual capture not ok (recorded in evaluation_record.json); exiting 2',
+                      file=sys.stderr, flush=True)
                 sys.exit(2)
     except SystemExit:
         raise
@@ -5594,6 +5687,17 @@ def main_child(argv):
                     'certification_continuation_summary': (progress.get('holder') or {}).get(
                         'certification_continuation')}
                    if 'certification_continuation' in entry else {}),
+                # W101: an entry declaring the settling continuation carries it, its checklist and its summary (with
+                # the replay divergence, if that is what aborted the cell), on every path.
+                **({'settling_continuation': entry['settling_continuation'],
+                    'settling_continuation_checklist_asserted_before_run': progress.get(
+                        'settling_continuation_checklist'),
+                    'settling_continuation_summary': (progress.get('holder') or {}).get('settling_continuation')}
+                   if 'settling_continuation' in entry else {}),
+                # W101: the interface-dual capture checklist and summary, on every path (None when not reached).
+                'interface_dual_capture_checklist_asserted_before_run': progress.get(
+                    'interface_dual_capture_checklist'),
+                'interface_dual_capture': (progress.get('holder') or {}).get('interface_dual_capture'),
             })
         sys.exit(1)
 
