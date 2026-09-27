@@ -1,7 +1,15 @@
 """
 P5.15 Addendum 51, Planner task W98 -- STAGE 1 of the post-certification continuation (route A, x = 0): frozen stage
-spec v37 (predecessor v36 14bbddc7, NOT edited), the stage-1 campaign freeze, and the stage-1 run. BUILT AND FROZEN IN
-W98; THE RUN IS NOT LAUNCHED IN W98 (the Planner launches it).
+spec v38 (predecessor v37 774d083f, superseded before any run, NOT edited; v37's predecessor v36 14bbddc7), the stage-1
+campaign freeze, and the stage-1 run. BUILT AND FROZEN IN W98; THE RUN IS NOT LAUNCHED IN W98 (the Planner launches it).
+
+WHY v38 (W98, before any run). v37 (774d083f) and its campaign spec s53_w98_x0_continuation (92fa0957) were frozen and
+committed, then the --run preconditions were dry-run (zero solves): the zero-solve checks' C7 required the continuation
+key to be absent from EVERY committed campaign spec, which the committed stage-1 campaign spec itself falsifies, so the
+checks re-run by --run could never hold and the run could never start. The checks module (r2) now excludes the W98
+stage root, exactly as the pre-launch assertion does, and handles entries that declare the continuation separately in
+the key regression; v37 pins the r1 module, so v37 and 92fa0957 are superseded (kept, never run) and every v37 content
+item carries over to v38 unchanged in substance. The spec's content is re-derived at freeze from the same inputs.
 
 Authority: PLANNER_BRIEF_2026-09-13.md Addendum 51 (route A staged; G6 restated; the expert's predictions and the
 competing outcomes H1 / H2 / H3; the stage-2 decision rule); Planner task W98; P5_15_ADDENDUM48_50_3X3_REPORT.md; the
@@ -15,9 +23,9 @@ disabled, the certifying regime HELD for every cycle > 72 (AA off, tail on, rho 
 when |dQ| < 500 EUR for 3 consecutive post-certification cycles, every block's recourse recorded every cycle.
 
 MODES (repo root, canonical interpreter; attached, ALONE, both streams captured, never detached):
-  --freeze-spec                 ZERO SOLVES. v37 (write-once, named by its sha256): re-runs the W98 zero-solve checks
+  --freeze-spec                 ZERO SOLVES. v38 (write-once, named by its sha256): re-runs the W98 zero-solve checks
                                 inline and pins their committed output; G6 v37 and settling-analysis self-tests.
-  --freeze                      ZERO SOLVES. The stage-1 campaign spec (s53_w98_x0_continuation), pinning v37; the
+  --freeze                      ZERO SOLVES. The stage-1 campaign spec (s53_w98_x0_continuation_r2), pinning v38; the
                                 pre-launch key / collision assertion on the frozen spec.
   --run --spec-sha256 S         THE RUN (NOT RUN IN W98). Preconditions (the zero-solve checks re-run, the pre-launch
                                 assertion, the memory preflight, the solver path), H.evaluate on the one entry, then the
@@ -75,9 +83,26 @@ _P53 = W9._P53
 ROOT_REL = os.path.join(_P53, 'w98_continuation')
 SPEC_V36 = {'path': os.path.join(_P53, 'frozen_s53_spec_v36_14bbddc7.json'),
             'sha256': '14bbddc7593c6ee3ee56854b12cb146d6770a27953e3f36bd88c3e0417c40110'}
-SPEC_PREFIX = 'frozen_s53_spec_v37_'
-SPEC_VERSION = 37
-CAMPAIGN_ID = 's53_w98_x0_continuation'
+SPEC_V37 = {'path': os.path.join(_P53, 'frozen_s53_spec_v37_774d083f.json'),
+            'sha256': '774d083f6b609068ba3e547a67fc9520d94b6f830670354ec0553a0ecc8deb19'}
+SPEC_PREFIX = 'frozen_s53_spec_v38_'
+SPEC_VERSION = 38
+CAMPAIGN_ID = 's53_w98_x0_continuation_r2'
+SUPERSEDED = {
+    'stage_spec_v37': SPEC_V37,
+    'campaign_spec_s53_w98_x0_continuation': {
+        'path': os.path.join(_P53, 'w98_continuation', 'campaign_s53_w98_x0_continuation',
+                             'campaign_spec_s53_w98_x0_continuation_92fa0957.json'),
+        'sha256': '92fa0957cc044b5866827d9a808821ff7b64e0b32a568ef38804c594191a3a0f'},
+    'zero_solve_checks_r1': {'path': os.path.join(_P53, 'w98_continuation', 'zero_solve_checks',
+                                                  'w98_zero_solve_checks.json'),
+                             'sha256': '6be52863de2315c382ccd0881878364ed5b877affeb88dd8c92ffc82d7a4911f'},
+    'reason': ('never run. A dry run of the --run preconditions (zero solves) found that the r1 checks\' C7 required '
+               'the continuation key to be absent from EVERY committed campaign spec -- falsified by the committed '
+               'stage-1 campaign spec itself -- so --run would always refuse. Fixed in the checks module (r2: the W98 '
+               'stage root excluded, as in the pre-launch assertion; continuation entries handled separately in the '
+               'key regression); v37 pins r1, hence v38. Same declaration, same eval key 25b92ae0, new campaign id.'),
+}
 ENTRY_LABEL = 'x0_cont'
 CAP = C.STAGE1_N + C.STAGE1_CONTINUATION_CYCLES
 CONCURRENCY = 1
@@ -254,7 +279,10 @@ def _pins_ok():
                       ('certified evaluation record', CERTIFIED['evaluation_record']),
                       ('certified g trajectory', CERTIFIED['g_trajectory']),
                       ('certified initialisation identity', CERTIFIED['initialisation_identity']),
-                      ('spec v36', SPEC_V36), ('W97 diagnostics', W97)):
+                      ('spec v36', SPEC_V36), ('W97 diagnostics', W97),
+                      ('superseded v37', SUPERSEDED['stage_spec_v37']),
+                      ('superseded campaign spec 92fa0957', SUPERSEDED['campaign_spec_s53_w98_x0_continuation']),
+                      ('superseded checks r1', SUPERSEDED['zero_solve_checks_r1'])):
         if _sha(pin['path']) != pin['sha256'] or not _committed_clean(pin['path']):
             failures.append(f'{name} not as committed: {pin["path"]}')
     return failures
@@ -1013,7 +1041,7 @@ def post_run_evaluator_self_tests():
 
 
 # ======================================================================================================================
-#  the stage spec v37
+#  the stage spec (v38; v37 superseded before any run)
 # ======================================================================================================================
 def wall_time_estimate():
     rows = _read_jsonl(_abs(CERTIFIED['per_cycle_record']['path']))
@@ -1050,7 +1078,7 @@ def launch_command(spec_sha=None):
     return ('cd /Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation && set -o noclobber && '
             f'NLP_SOLVER_PATH={SOLVER_PATH} /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python -u '
             f'{SCRIPT_NAME} --run --spec-sha256 {spec_sha or "<campaign spec sha256>"} '
-            f'> {os.path.join(ROOT_REL, "stage1_run_v37_launch.log")} 2>&1')
+            f'> {os.path.join(ROOT_REL, "stage1_run_v38_launch.log")} 2>&1')
 
 
 def code_since_certified_run():
@@ -1091,8 +1119,10 @@ def stage_spec_content(checks_inline, checks_file, g6_tests, settle_tests, verb,
     production = {rel: _sha(rel) for rel in H.PRODUCTION_FILES_TO_CHECK_CLEAN if os.path.isfile(_abs(rel))
                   and rel != os.path.relpath(H.HARNESS_PATH, REPO)}
     return {
-        'schema': 'p515_s53_stage_spec_v37', 'version': SPEC_VERSION, 'stage_text': STAGE_TEXT,
-        'predecessor': {'version': 36, **SPEC_V36},
+        'schema': 'p515_s53_stage_spec_v38', 'version': SPEC_VERSION, 'stage_text': STAGE_TEXT,
+        'predecessor': {'version': 37, **SPEC_V37},
+        'predecessor_chain': {'v37': SPEC_V37, 'v36': SPEC_V36},
+        'supersedes_before_any_run': SUPERSEDED,
         'authority': [f'{BRIEF} Addendum 51 (working tree, uncommitted at freeze; sha256 in verbatim_text)',
                       'Planner task W98', 'P5_15_ADDENDUM48_50_3X3_REPORT.md', f"W97 diagnostics {W97['commit']}"],
         'frozen_utc': _utc(), 'git_head': H._git(['rev-parse', 'HEAD']),
@@ -1348,7 +1378,7 @@ def freeze_spec(started):
     if _sha(rel) != sha:
         raise RuntimeError(f'v{SPEC_VERSION} written bytes do not hash to the name')
     _log(f'[{tag}] {STAGE_TEXT}')
-    _log(f"[{tag}] wrote {rel} sha256={sha} (predecessor v36 {SPEC_V36['sha256']})")
+    _log(f"[{tag}] wrote {rel} sha256={sha} (predecessor v37 {SPEC_V37['sha256']}; v36 {SPEC_V36['sha256']})")
     _log(f"[{tag}] inertness proof (inline): {json.dumps(checks_inline['inertness_proof'])}")
     _log(f"[{tag}] checks per id: { {k: v['holds'] for k, v in checks_inline['checks'].items()} }")
     _log(f"[{tag}] G6 v37 self-tests: { {k: (v.get('observed_pass'), v['ok']) for k, v in g6_tests.items()} }")
@@ -1374,9 +1404,9 @@ def freeze(started):
     try:
         ss_rel, ss_sha, ss = load_stage_spec()
         if not _committed_clean(ss_rel):
-            failures.append('the stage spec v37 is not committed / clean')
+            failures.append(f'the stage spec v{SPEC_VERSION} is not committed / clean')
         if ss['code_sha256'] != {rel: _sha(rel) for rel in ss['code_sha256']}:
-            failures.append('the launcher / hooks / checks / harness changed since v37 froze')
+            failures.append(f'the launcher / hooks / checks / harness changed since v{SPEC_VERSION} froze')
     except RuntimeError as error:
         failures.append(str(error))
         ss = None
@@ -1418,9 +1448,9 @@ def run(started, spec_sha256):
     failures, _ev = _common_checks()
     ss_rel, ss_sha, ss = load_stage_spec()
     if not _committed_clean(ss_rel):
-        failures.append('stage spec v37 not committed / clean')
+        failures.append(f'stage spec v{SPEC_VERSION} not committed / clean')
     if ss['code_sha256'] != {rel: _sha(rel) for rel in ss['code_sha256']}:
-        failures.append('the launcher / hooks / checks / harness changed since v37 froze')
+        failures.append(f'the launcher / hooks / checks / harness changed since v{SPEC_VERSION} froze')
     root = campaign_root()
     spec_path, spec = H.load_frozen_spec(root, spec_sha256)
     failures += [f for f in H.check_campaign_preconditions(root, extra_clean_files=EXTRA_CLEAN_FILES)

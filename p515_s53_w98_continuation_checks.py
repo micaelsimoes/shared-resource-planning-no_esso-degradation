@@ -26,16 +26,18 @@ regime drift):
   C6  layering, REAL install: `continuation_hooks` entered first and the harness's `convergence_depth_append_hooks`
       on top (the order `_child_real` uses) -> the appender records the HELD tail value; every production function is
       restored on exit; `_child_real` enters `continuation_cm` first (source).
-  C7  keys: for EVERY entry of every committed campaign spec the modified harness's key (no declaration) equals the
-      pre-W98 harness's (252996a1, loaded from git) on the same arguments; the certified pair's keys reproduce
-      byte-identically; the continuation key follows its declared formula, differs from the certified cell's key and
-      appears in no committed campaign spec.
+  C7  keys: for EVERY entry of every committed campaign spec WITHOUT the continuation declaration the modified
+      harness's key equals the pre-W98 harness's (252996a1, loaded from git) on the same arguments; for every entry
+      WITH it (only under the W98 stage root), its base key (declaration removed) equals the pre-W98 key and its frozen
+      key equals the continuation formula; the certified pair's keys reproduce byte-identically; the continuation key
+      follows its declared formula, differs from the certified cell's key and appears in no committed campaign spec
+      OUTSIDE the W98 stage root (r2; r1 had no root exclusion -- see OUT_FILE).
   C8  preconditions (`assert_continuation_preconditions`) hold for the stage-1 spec shape and refuse three negative
       controls; the declaration validator refuses malformed declarations.
 
 Run (repo root, canonical interpreter, attached, both streams captured):
   set -o noclobber && /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python -u p515_s53_w98_continuation_checks.py \\
-      > data/SRP1/Results/P515S53/w98_continuation/zero_solve_checks_launch.log 2>&1
+      > data/SRP1/Results/P515S53/w98_continuation/zero_solve_checks_r2_launch.log 2>&1
 """
 import contextlib
 import copy
@@ -63,9 +65,14 @@ GUARD = SolveProfileGuard(permitted=(), label='P5.15 W98 continuation zero-solve
 import p515_s44_campaign_harness as H  # noqa: E402
 import p515_s53_w98_continuation_hooks as C  # noqa: E402
 
-OUT_DIR_REL = os.path.join('data', 'SRP1', 'Results', 'P515S53', 'w98_continuation', 'zero_solve_checks')
-OUT_FILE = 'w98_zero_solve_checks.json'
-OUT_MANIFEST = 'w98_zero_solve_checks_manifest_sha256.json'
+W98_ROOT_REL = os.path.join('data', 'SRP1', 'Results', 'P515S53', 'w98_continuation')
+OUT_DIR_REL = os.path.join(W98_ROOT_REL, 'zero_solve_checks')
+# r2 (W98, before any run): the r1 output (w98_zero_solve_checks.json, 6be52863, pinned by the superseded v37) is kept;
+# r1's C7 required the continuation key to be absent from EVERY committed spec, which the committed stage-1 campaign
+# spec itself falsifies -- so the --run re-run of the checks could never hold. r2 excludes the W98 stage root (the
+# pre-launch assertion's own rule) and treats entries that declare the continuation separately in the key regression.
+OUT_FILE = 'w98_zero_solve_checks_r2.json'
+OUT_MANIFEST = 'w98_zero_solve_checks_r2_manifest_sha256.json'
 PAIR_KEYS = {'x0': 'f6e9cd53fdbb8ee8c80388a13d723c49de5b18173bcfa5c7351cbe0d9e5000d4',
              'n7_4h_e1': 'c82522f470b35b58399bfe47ebd45612a95641ae308128de5d1c3c08ad5408a1'}
 PAIR_SPEC_REL = os.path.join('data', 'SRP1', 'Results', 'P515S53', 'w90_3x3', 'campaign_s53_w91_3x3_pair',
@@ -648,8 +655,8 @@ def check_c7_keys():
                                                   'certification_continuation': decl},
                                                  sort_keys=True, separators=(',', ':')).encode()).hexdigest()
     committed = {}
-    n_specs = n_entries = n_old_new_equal = n_with_eval_key = n_frozen_equal = 0
-    old_new_mismatch, frozen_mismatch, errors = [], [], []
+    n_specs = n_entries = n_old_new_equal = n_with_eval_key = n_frozen_equal = n_cont = n_cont_ok = 0
+    old_new_mismatch, frozen_mismatch, errors, cont_bad = [], [], [], []
     for rel in sorted(p for p in H._git(['ls-files', 'data/*campaign_spec_*.json']).splitlines() if p.strip()):
         spec = json.load(open(os.path.join(REPO, rel)))
         n_specs += 1
@@ -658,8 +665,21 @@ def check_c7_keys():
             committed.setdefault(H._entry_eval_key(e), []).append(rel)
             try:
                 new, old = _recompute_entry_key(spec, e), _recompute_entry_key(spec, e, module=pre)
+                base_new = _recompute_entry_key(spec, {k: v for k, v in e.items() if k != 'certification_continuation'})
             except Exception as error:  # noqa: BLE001 -- recorded; both harnesses must agree on raising too
                 errors.append({'spec': rel, 'label': e.get('label'), 'error': f'{type(error).__name__}: {error}'})
+                continue
+            if 'certification_continuation' in e:
+                n_cont += 1
+                formula = hashlib.sha256(json.dumps(
+                    {'base_evaluation_key': old,
+                     'certification_continuation': C.validate_certification_continuation(e['certification_continuation'])},
+                    sort_keys=True, separators=(',', ':')).encode()).hexdigest()
+                ok_c = (rel.startswith(W98_ROOT_REL + os.sep) and base_new == old and new == formula
+                        and e.get('eval_key') == new)
+                n_cont_ok += int(ok_c)
+                if not ok_c:
+                    cont_bad.append({'spec': rel, 'label': e.get('label')})
                 continue
             if new == old:
                 n_old_new_equal += 1
@@ -672,19 +692,25 @@ def check_c7_keys():
                 else:
                     frozen_mismatch.append({'spec': rel, 'label': e.get('label'), 'frozen': e['eval_key'][:16],
                                             'recomputed': new[:16]})
+    holding = committed.get(cont_key, [])
+    outside = [r for r in holding if not r.startswith(W98_ROOT_REL + os.sep)]
     return {'id': 'C7_keys', 'pre_w98_harness': {**PRE_W98_HARNESS, 'sha256_loaded': pre_sha},
             'default_off_regression': {'committed_specs_scanned': n_specs, 'committed_entries_scanned': n_entries,
+                                       'entries_without_continuation': n_entries - n_cont,
                                        'new_equals_pre_w98': n_old_new_equal, 'mismatches': old_new_mismatch,
                                        'errors': errors},
+            'continuation_entries': {'n': n_cont, 'all_under_w98_root_base_key_eq_pre_w98_and_formula': n_cont_ok,
+                                     'bad': cont_bad},
             'pair_keys_recomputed_byte_identical': pair_ok, 'pair_keys_now': pair_now,
             'continuation_key_x0': cont_key, 'continuation_key_equals_declared_formula': cont_key == expected_formula,
             'continuation_key_differs_from_certified_key': cont_key != PAIR_KEYS['x0'],
-            'continuation_key_absent_from_committed_specs': cont_key not in committed,
+            'continuation_key_committed_specs_holding_it': holding,
+            'continuation_key_absent_from_committed_specs_outside_w98_root': not outside,
             'frozen_key_rebuild_reported': {'entries_with_eval_key': n_with_eval_key, 'rebuilt_equal': n_frozen_equal,
                                             'not_rebuilt_from_spec_alone': frozen_mismatch},
-            'holds': (pair_ok and cont_key == expected_formula and cont_key != PAIR_KEYS['x0']
-                      and cont_key not in committed and not old_new_mismatch and not errors
-                      and n_old_new_equal == n_entries)}
+            'holds': (pair_ok and cont_key == expected_formula and cont_key != PAIR_KEYS['x0'] and not outside
+                      and not old_new_mismatch and not errors and not cont_bad
+                      and n_old_new_equal == n_entries - n_cont and n_cont_ok == n_cont)}
 
 
 # ======================================================================================================================
