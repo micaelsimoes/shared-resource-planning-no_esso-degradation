@@ -1,0 +1,2055 @@
+{
+ "stage": "P5.15 Addendum 52 W100 -- gate-result hygiene: one shared writer, string flags refused, repository-wide test",
+ "utc": "2026-09-27T19:17:13.881772+00:00",
+ "git_head": "5f96e8e8a91367e59fc0cbfd9d870566e9b4485c",
+ "script": "p515_s53_w100_gate_writer_checks.py",
+ "script_sha256": "e6e58e3dfe8c2571982bacb2685c3a6c9e345c26dab5b7af7dff365e836e062d",
+ "interpreter": "/Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python",
+ "module_sha256": {
+  "gate_result_io.py": "26cadaa5c3105f9adb879ece756ef6d659b374f647a7756030efe80a2df6d07d",
+  "p515_gate_result_bool_typing_test.py": "dbd6f92b772a5816ab929cef66e7132aaec0adc96c6ac55bc6ec0bf651652e76",
+  "gate_result_bool_typing_historical.json": "5230b3fa67e35c2603afdbd5fe5cc3c63e66c87ea23c4a90c7d99f65794bc05f",
+  "p515_s44_campaign_harness.py": "63e06859c7f7786faae8109a52041176b402905085b9864d3c651e6ee67f9fb3",
+  "p515_g_g1_g4_admm_gates.py": "6f4631e10a2f8a7786390c0f96e45332706779ae9cdf6a87ddd716d9ad9ad346",
+  "p515_s53_w98_continuation_hooks.py": "eb0ef724daacb2d5107c12db2d32ef4cb4546ff634c6e4957be897e2c0582fb4",
+  "p515_s53_w93_uncoordinated_benchmark.py": "a445b4dd9606a4a9323f37a03be2ff803b767431f10beb51f95a9a576078a2d6"
+ },
+ "checks": {
+  "C0": {
+   "id": "C0_no_campaign",
+   "lock_files_present": {
+    ".p515_s44_campaign.lock": false,
+    ".p515_g_gate.lock": false,
+    ".p515_s53_w93_benchmark.lock": false
+   },
+   "live_processes": [],
+   "holds": true
+  },
+  "C1": {
+   "id": "C1_writer_behaviour",
+   "a_hook_equivalence": [
+    {
+     "value": "bool:np.True_",
+     "json_default_eq_H": true,
+     "json_default_eq_G": true,
+     "json_default_item_eq_BENCH": true,
+     "text_eq_H": true,
+     "text_eq_BENCH": true
+    },
+    {
+     "value": "bool:np.False_",
+     "json_default_eq_H": true,
+     "json_default_eq_G": true,
+     "json_default_item_eq_BENCH": true,
+     "text_eq_H": true,
+     "text_eq_BENCH": true
+    },
+    {
+     "value": "float16:np.float16(1.5)",
+     "json_default_eq_H": true,
+     "json_default_eq_G": true,
+     "json_default_item_eq_BENCH": true,
+     "text_eq_H": true,
+     "text_eq_BENCH": true
+    },
+    {
+     "value": "float32:np.float32(0.1)",
+     "json_default_eq_H": true,
+     "json_default_eq_G": true,
+     "json_default_item_eq_BENCH": true,
+     "text_eq_H": true,
+     "text_eq_BENCH": true
+    },
+    {
+     "value": "float64:np.float64(0.1)",
+     "text_eq_H": true,
+     "text_eq_BENCH": true
+    },
+    {
+     "value": "int8:np.int8(-3)",
+     "json_default_eq_H": true,
+     "json_default_eq_G": true,
+     "json_default_item_eq_BENCH": true,
+     "text_eq_H": true,
+     "text_eq_BENCH": true
+    },
+    {
+     "value": "int32:np.int32(7)",
+     "json_default_eq_H": true,
+     "json_default_eq_G": true,
+     "json_default_item_eq_BENCH": true,
+     "text_eq_H": true,
+     "text_eq_BENCH": true
+    },
+    {
+     "value": "int64:np.int64(1099511627776)",
+     "json_default_eq_H": true,
+     "json_default_eq_G": true,
+     "json_default_item_eq_BENCH": true,
+     "text_eq_H": true,
+     "text_eq_BENCH": true
+    },
+    {
+     "value": "uint8:np.uint8(200)",
+     "json_default_eq_H": true,
+     "json_default_eq_G": true,
+     "json_default_item_eq_BENCH": true,
+     "text_eq_H": true,
+     "text_eq_BENCH": true
+    },
+    {
+     "value": "ndarray:array([1., 2.])",
+     "json_default_eq_H": true,
+     "json_default_eq_G": true,
+     "json_default_item_eq_BENCH": true,
+     "text_eq_H": true,
+     "text_eq_BENCH": true
+    },
+    {
+     "value": "ndarray:array(3.5)",
+     "json_default_eq_H": true,
+     "json_default_eq_G": true,
+     "json_default_item_eq_BENCH": true,
+     "text_eq_H": true,
+     "text_eq_BENCH": true
+    },
+    {
+     "value": "ndarray:array([ True])",
+     "json_default_eq_H": true,
+     "json_default_eq_G": true,
+     "json_default_item_eq_BENCH": true,
+     "text_eq_H": true,
+     "text_eq_BENCH": true
+    },
+    {
+     "value": "set:{1, 2}",
+     "json_default_eq_H": true,
+     "json_default_eq_G": true,
+     "json_default_item_eq_BENCH": true,
+     "text_eq_H": true,
+     "text_eq_BENCH": true
+    },
+    {
+     "value": "frozenset:frozenset({'a'})",
+     "json_default_eq_H": true,
+     "json_default_eq_G": true,
+     "json_default_item_eq_BENCH": true,
+     "text_eq_H": true,
+     "text_eq_BENCH": true
+    },
+    {
+     "value": "PosixPath:PosixPath('a/b')",
+     "json_default_eq_H": true,
+     "json_default_eq_G": true,
+     "json_default_item_eq_BENCH": true,
+     "text_eq_H": true,
+     "text_eq_BENCH": true
+    },
+    {
+     "value": "datetime:datetime.datetime(2026, 9, 27, 12, 0)",
+     "json_default_eq_H": true,
+     "json_default_eq_G": true,
+     "json_default_item_eq_BENCH": true,
+     "text_eq_H": true,
+     "text_eq_BENCH": true
+    },
+    {
+     "value": "date:datetime.date(2026, 9, 27)",
+     "json_default_eq_H": true,
+     "json_default_eq_G": true,
+     "json_default_item_eq_BENCH": true,
+     "text_eq_H": true,
+     "text_eq_BENCH": true
+    },
+    {
+     "value": "Decimal:Decimal('1.10')",
+     "json_default_eq_H": true,
+     "json_default_eq_G": true,
+     "json_default_item_eq_BENCH": true,
+     "text_eq_H": true,
+     "text_eq_BENCH": true
+    },
+    {
+     "value": "complex:(1+2j)",
+     "json_default_eq_H": true,
+     "json_default_eq_G": true,
+     "json_default_item_eq_BENCH": true,
+     "text_eq_H": true,
+     "text_eq_BENCH": true
+    },
+    {
+     "value": "bytes:b'xy'",
+     "json_default_eq_H": true,
+     "json_default_eq_G": true,
+     "json_default_item_eq_BENCH": true,
+     "text_eq_H": true,
+     "text_eq_BENCH": true
+    },
+    {
+     "value": "_Obj:<__main__._Obj object at 0x11a3ac290>",
+     "json_default_eq_H": true,
+     "json_default_eq_G": true,
+     "json_default_item_eq_BENCH": true,
+     "text_eq_H": true,
+     "text_eq_BENCH": true
+    },
+    {
+     "value": "NoneType:None",
+     "text_eq_H": true,
+     "text_eq_BENCH": true
+    },
+    {
+     "value": "int:1",
+     "text_eq_H": true,
+     "text_eq_BENCH": true
+    },
+    {
+     "value": "float:1.5",
+     "text_eq_H": true,
+     "text_eq_BENCH": true
+    },
+    {
+     "value": "str:'text'",
+     "text_eq_H": true,
+     "text_eq_BENCH": true
+    },
+    {
+     "value": "bool:True",
+     "text_eq_H": true,
+     "text_eq_BENCH": true
+    },
+    {
+     "value": "list:[np.int64(1), (np.float32(2.0),)]",
+     "text_eq_H": true,
+     "text_eq_BENCH": true
+    },
+    {
+     "value": "dict:{'k': np.int64(5)}",
+     "text_eq_H": true,
+     "text_eq_BENCH": true
+    }
+   ],
+   "b_refusal_matrix": [
+    {
+     "spelling": "'True'",
+     "expected_refused": true,
+     "refused": {
+      "top": true,
+      "dict_value": true,
+      "list_element": true,
+      "tuple_element": true,
+      "deep": true,
+      "via_default_hook": true,
+      "via_item_hook_set": true,
+      "as_key_only": false
+     }
+    },
+    {
+     "spelling": "'False'",
+     "expected_refused": true,
+     "refused": {
+      "top": true,
+      "dict_value": true,
+      "list_element": true,
+      "tuple_element": true,
+      "deep": true,
+      "via_default_hook": true,
+      "via_item_hook_set": true,
+      "as_key_only": false
+     }
+    },
+    {
+     "spelling": "'true'",
+     "expected_refused": true,
+     "refused": {
+      "top": true,
+      "dict_value": true,
+      "list_element": true,
+      "tuple_element": true,
+      "deep": true,
+      "via_default_hook": true,
+      "via_item_hook_set": true,
+      "as_key_only": false
+     }
+    },
+    {
+     "spelling": "'false'",
+     "expected_refused": true,
+     "refused": {
+      "top": true,
+      "dict_value": true,
+      "list_element": true,
+      "tuple_element": true,
+      "deep": true,
+      "via_default_hook": true,
+      "via_item_hook_set": true,
+      "as_key_only": false
+     }
+    },
+    {
+     "spelling": "'TRUE'",
+     "expected_refused": true,
+     "refused": {
+      "top": true,
+      "dict_value": true,
+      "list_element": true,
+      "tuple_element": true,
+      "deep": true,
+      "via_default_hook": true,
+      "via_item_hook_set": true,
+      "as_key_only": false
+     }
+    },
+    {
+     "spelling": "'FaLsE'",
+     "expected_refused": true,
+     "refused": {
+      "top": true,
+      "dict_value": true,
+      "list_element": true,
+      "tuple_element": true,
+      "deep": true,
+      "via_default_hook": true,
+      "via_item_hook_set": true,
+      "as_key_only": false
+     }
+    },
+    {
+     "spelling": "' True'",
+     "expected_refused": true,
+     "refused": {
+      "top": true,
+      "dict_value": true,
+      "list_element": true,
+      "tuple_element": true,
+      "deep": true,
+      "via_default_hook": true,
+      "via_item_hook_set": true,
+      "as_key_only": false
+     }
+    },
+    {
+     "spelling": "'False\\n'",
+     "expected_refused": true,
+     "refused": {
+      "top": true,
+      "dict_value": true,
+      "list_element": true,
+      "tuple_element": true,
+      "deep": true,
+      "via_default_hook": true,
+      "via_item_hook_set": true,
+      "as_key_only": false
+     }
+    },
+    {
+     "spelling": "'\\tfalse '",
+     "expected_refused": true,
+     "refused": {
+      "top": true,
+      "dict_value": true,
+      "list_element": true,
+      "tuple_element": true,
+      "deep": true,
+      "via_default_hook": true,
+      "via_item_hook_set": true,
+      "as_key_only": false
+     }
+    },
+    {
+     "spelling": "'True\\xa0'",
+     "expected_refused": true,
+     "refused": {
+      "top": true,
+      "dict_value": true,
+      "list_element": true,
+      "tuple_element": true,
+      "deep": true,
+      "via_default_hook": true,
+      "via_item_hook_set": true,
+      "as_key_only": false
+     }
+    },
+    {
+     "spelling": "'Truex'",
+     "expected_refused": false,
+     "refused": {
+      "top": false,
+      "dict_value": false,
+      "list_element": false,
+      "tuple_element": false,
+      "deep": false,
+      "via_default_hook": false,
+      "via_item_hook_set": false,
+      "as_key_only": false
+     }
+    },
+    {
+     "spelling": "'untrue'",
+     "expected_refused": false,
+     "refused": {
+      "top": false,
+      "dict_value": false,
+      "list_element": false,
+      "tuple_element": false,
+      "deep": false,
+      "via_default_hook": false,
+      "via_item_hook_set": false,
+      "as_key_only": false
+     }
+    },
+    {
+     "spelling": "\"'True'\"",
+     "expected_refused": false,
+     "refused": {
+      "top": false,
+      "dict_value": false,
+      "list_element": false,
+      "tuple_element": false,
+      "deep": false,
+      "via_default_hook": false,
+      "via_item_hook_set": false,
+      "as_key_only": false
+     }
+    },
+    {
+     "spelling": "'yes'",
+     "expected_refused": false,
+     "refused": {
+      "top": false,
+      "dict_value": false,
+      "list_element": false,
+      "tuple_element": false,
+      "deep": false,
+      "via_default_hook": false,
+      "via_item_hook_set": false,
+      "as_key_only": false
+     }
+    },
+    {
+     "spelling": "'1'",
+     "expected_refused": false,
+     "refused": {
+      "top": false,
+      "dict_value": false,
+      "list_element": false,
+      "tuple_element": false,
+      "deep": false,
+      "via_default_hook": false,
+      "via_item_hook_set": false,
+      "as_key_only": false
+     }
+    },
+    {
+     "spelling": "'T'",
+     "expected_refused": false,
+     "refused": {
+      "top": false,
+      "dict_value": false,
+      "list_element": false,
+      "tuple_element": false,
+      "deep": false,
+      "via_default_hook": false,
+      "via_item_hook_set": false,
+      "as_key_only": false
+     }
+    },
+    {
+     "spelling": "''",
+     "expected_refused": false,
+     "refused": {
+      "top": false,
+      "dict_value": false,
+      "list_element": false,
+      "tuple_element": false,
+      "deep": false,
+      "via_default_hook": false,
+      "via_item_hook_set": false,
+      "as_key_only": false
+     }
+    },
+    {
+     "spelling": "'True False'",
+     "expected_refused": false,
+     "refused": {
+      "top": false,
+      "dict_value": false,
+      "list_element": false,
+      "tuple_element": false,
+      "deep": false,
+      "via_default_hook": false,
+      "via_item_hook_set": false,
+      "as_key_only": false
+     }
+    },
+    {
+     "spelling": "'none'",
+     "expected_refused": false,
+     "refused": {
+      "top": false,
+      "dict_value": false,
+      "list_element": false,
+      "tuple_element": false,
+      "deep": false,
+      "via_default_hook": false,
+      "via_item_hook_set": false,
+      "as_key_only": false
+     }
+    },
+    {
+     "spelling": "'None'",
+     "expected_refused": false,
+     "refused": {
+      "top": false,
+      "dict_value": false,
+      "list_element": false,
+      "tuple_element": false,
+      "deep": false,
+      "via_default_hook": false,
+      "via_item_hook_set": false,
+      "as_key_only": false
+     }
+    }
+   ],
+   "c_nothing_written": {
+    "raised": true,
+    "flags_reported": [
+     [
+      "$.reconciles_to_net",
+      "reconciles_to_net",
+      "'True'"
+     ]
+    ],
+    "stringio_after": "''",
+    "file_bytes_after": 0
+   },
+   "d_numpy_bools_written_as_booleans": {
+    "json_default": {
+     "objective_convergence_is_True": true,
+     "determinate_is_False": true,
+     "pass_is_True": true,
+     "reconciles_is_True": true
+    },
+    "json_default_item": {
+     "objective_convergence_is_True": true,
+     "determinate_is_False": true,
+     "pass_is_True": true,
+     "reconciles_is_True": true
+    }
+   },
+   "e_defect_default_str": {
+    "old_json_dumps_text": "{\"reconciles_to_net\": \"True\"}",
+    "old_writes_string": true,
+    "grio_with_default_str_refuses": true
+   },
+   "holds_parts": {
+    "a": true,
+    "b": true,
+    "c": true,
+    "d": true,
+    "e": true
+   },
+   "holds": true
+  },
+  "C2": {
+   "id": "C2_byte_identity",
+   "a_synthetic": {
+    "harness_gates/indent1": {
+     "identical": true,
+     "bytes": 534,
+     "sha256": "7d7d27d08a7d8f6366f7fc9788ee23d1a9fd54ffe60d35dedd67ff0b404e5c4d"
+    },
+    "hooks_old_str/indent1": {
+     "identical": true,
+     "bytes": 534,
+     "sha256": "7d7d27d08a7d8f6366f7fc9788ee23d1a9fd54ffe60d35dedd67ff0b404e5c4d"
+    },
+    "harness_gates/compact": {
+     "identical": true,
+     "bytes": 359,
+     "sha256": "41c39512b3d7d742d1cd7b18fdc425b7406e0b9120c512ad8ec2cacc53464888"
+    },
+    "hooks_old_str/compact": {
+     "identical": true,
+     "bytes": 359,
+     "sha256": "41c39512b3d7d742d1cd7b18fdc425b7406e0b9120c512ad8ec2cacc53464888"
+    },
+    "harness_gates/jsonl": {
+     "identical": true,
+     "bytes": 405,
+     "sha256": "3c5146bb1f95b894ae4cac0b539bdf956e71d630b274e3da8205bbc934755aa2"
+    },
+    "hooks_old_str/jsonl": {
+     "identical": true,
+     "bytes": 405,
+     "sha256": "3c5146bb1f95b894ae4cac0b539bdf956e71d630b274e3da8205bbc934755aa2"
+    },
+    "benchmark/indent1_sorted": {
+     "identical": true,
+     "bytes": 534,
+     "sha256": "018cfbeb7fccf33cd3952b2f36b06a4ea08dcfc4038f92bc7ae8be418aa2fcb9"
+    },
+    "benchmark/jsonl_sorted": {
+     "identical": true,
+     "bytes": 388,
+     "sha256": "d07b4bfc776f5a5ecfb0872b4501c3d6186c31c48ee8bec1f1a657ea4667be3e"
+    }
+   },
+   "b_committed_artifacts": [
+    {
+     "path": "data/SRP1/Results/P515S53/w98_continuation/campaign_s53_w98_x0_continuation_r2/evals/25b92ae0f1f2c02e_x0_cont/evaluation_record.json",
+     "writer": "harness._write_once_json",
+     "form": "json{\"indent\": 1}",
+     "tracked": true,
+     "sha256": "f26a7df0736c5df6cb2064cc2149e1e80a0ffe3f5c166364e8a947d3e3fe8e10",
+     "old_reproduces_committed_bytes": true,
+     "new_equals_old": true,
+     "bytes": 62898,
+     "ok": true
+    },
+    {
+     "path": "data/SRP1/Results/P515S53/w98_continuation/campaign_s53_w98_x0_continuation_r2/evals/25b92ae0f1f2c02e_x0_cont/convergence_depth_tail_state.json",
+     "writer": "harness._write_once_json",
+     "form": "json{\"indent\": 1}",
+     "tracked": true,
+     "sha256": "24428bde16043e729895213d87591c8e1258792adf4a8f3f395f3f1c8c3453ea",
+     "old_reproduces_committed_bytes": true,
+     "new_equals_old": true,
+     "bytes": 50992,
+     "ok": true
+    },
+    {
+     "path": "data/SRP1/Results/P515S53/w98_continuation/campaign_s53_w98_x0_continuation_r2/evals/25b92ae0f1f2c02e_x0_cont/response_terminal.json",
+     "writer": "harness._write_once_json_compact",
+     "form": "json{\"separators\": [\",\", \":\"]}",
+     "tracked": true,
+     "sha256": "16ad48f57ca2f820f4459a6164c363283f5c9a2d7373bc91c9433d1a2847890b",
+     "old_reproduces_committed_bytes": true,
+     "new_equals_old": true,
+     "bytes": 6358331,
+     "ok": true
+    },
+    {
+     "path": "data/SRP1/Results/P515S53/w98_continuation/campaign_s53_w98_x0_continuation_r2/evals/25b92ae0f1f2c02e_x0_cont/per_cycle_record.jsonl",
+     "writer": "harness._child_real",
+     "form": "jsonl{}",
+     "tracked": true,
+     "sha256": "6679fad0059adc259462537af8b17b95623a37bfc3f06030d37a38fac896279a",
+     "lines": 88,
+     "flag_free_lines": 88,
+     "old_reproduces_committed_line": 88,
+     "new_equals_old": 88,
+     "string_flag_lines": 0,
+     "string_flag_lines_old_exact_new_booleans": 0,
+     "ok": true
+    },
+    {
+     "path": "data/SRP1/Results/P515S53/w98_continuation/campaign_s53_w98_x0_continuation_r2/evals/25b92ae0f1f2c02e_x0_cont/per_cycle_response.jsonl",
+     "writer": "harness.alpha_row_run_hooks (response sidecar)",
+     "form": "jsonl{}",
+     "tracked": true,
+     "sha256": "cccd578754146d6248cae423e2c32fb4d721e1b1042b6e59809c7265f84bbc3d",
+     "lines": 88,
+     "flag_free_lines": 88,
+     "old_reproduces_committed_line": 88,
+     "new_equals_old": 88,
+     "string_flag_lines": 0,
+     "string_flag_lines_old_exact_new_booleans": 0,
+     "ok": true
+    },
+    {
+     "path": "data/SRP1/Results/P515S53/w98_continuation/campaign_s53_w98_x0_continuation_r2/evals/25b92ae0f1f2c02e_x0_cont/network_ipopt_solve_records.jsonl",
+     "writer": "harness.persist_convergence_depth_capture",
+     "form": "jsonl{}",
+     "tracked": true,
+     "sha256": "c7a190caea39da112e67334e12ae4acc0c1544a654b90d18e3bfbe84f4534546",
+     "lines": 7120,
+     "flag_free_lines": 7120,
+     "old_reproduces_committed_line": 7120,
+     "new_equals_old": 7120,
+     "string_flag_lines": 0,
+     "string_flag_lines_old_exact_new_booleans": 0,
+     "ok": true
+    },
+    {
+     "path": "data/SRP1/Results/P515S53/w98_continuation/campaign_s53_w98_x0_continuation_r2/evals/25b92ae0f1f2c02e_x0_cont/network_ipopt_solve_records_append.jsonl",
+     "writer": "harness.ConvergenceDepthAppender",
+     "form": "jsonl{}",
+     "tracked": true,
+     "sha256": "c7a190caea39da112e67334e12ae4acc0c1544a654b90d18e3bfbe84f4534546",
+     "lines": 7120,
+     "flag_free_lines": 7120,
+     "old_reproduces_committed_line": 7120,
+     "new_equals_old": 7120,
+     "string_flag_lines": 0,
+     "string_flag_lines_old_exact_new_booleans": 0,
+     "ok": true
+    },
+    {
+     "path": "data/SRP1/Results/P515S53/w98_continuation/campaign_s53_w98_x0_continuation_r2/evals/25b92ae0f1f2c02e_x0_cont/convergence_depth_append_events.jsonl",
+     "writer": "harness.ConvergenceDepthAppender",
+     "form": "jsonl{}",
+     "tracked": true,
+     "sha256": "62f450021aabe0ba9681af763fe8871ab657df1910c7f8c3d62fddc216d8deda",
+     "lines": 269,
+     "flag_free_lines": 269,
+     "old_reproduces_committed_line": 269,
+     "new_equals_old": 269,
+     "string_flag_lines": 0,
+     "string_flag_lines_old_exact_new_booleans": 0,
+     "ok": true
+    },
+    {
+     "path": "data/SRP1/Results/P515S53/w98_continuation/campaign_s53_w98_x0_continuation_r2/evals/25b92ae0f1f2c02e_x0_cont/g_s39_D.json",
+     "writer": "gates (g_<label>.json)",
+     "form": "json{\"indent\": 1}",
+     "tracked": true,
+     "sha256": "4abffa94c26937cdaf431ca696f17cfb1dd8a039b7430a4ece48d02a07454266",
+     "old_reproduces_committed_bytes": true,
+     "new_equals_old": true,
+     "bytes": 1084962,
+     "ok": true
+    },
+    {
+     "path": "data/SRP1/Results/P515S53/w98_continuation/campaign_s53_w98_x0_continuation_r2/evals/25b92ae0f1f2c02e_x0_cont/boyd_terminal.json",
+     "writer": "gates (boyd_terminal.json)",
+     "form": "json{\"indent\": 1}",
+     "tracked": true,
+     "sha256": "51b3c84d4ac85cfcbb032eaf4bc0389ca94392e069d54acdebe3686bdc777bbd",
+     "old_reproduces_committed_bytes": true,
+     "new_equals_old": true,
+     "bytes": 104102,
+     "ok": true
+    },
+    {
+     "path": "data/SRP1/Results/P515S53/w98_continuation/campaign_s53_w98_x0_continuation_r2/evals/25b92ae0f1f2c02e_x0_cont/component_levels_terminal.json",
+     "writer": "gates (component_levels_terminal.json)",
+     "form": "json{\"indent\": 1}",
+     "tracked": true,
+     "sha256": "bdfb1b64ffbc27591e35a4001d31ed55f6ff2b5b4e7a60db2d8bc542177f8531",
+     "old_reproduces_committed_bytes": true,
+     "new_equals_old": true,
+     "bytes": 167532,
+     "ok": true
+    },
+    {
+     "path": "data/SRP1/Results/P515S53/w98_continuation/campaign_s53_w98_x0_continuation_r2/evals/25b92ae0f1f2c02e_x0_cont/interface_settlement_detail_s31c.json",
+     "writer": "gates (s31c settlement)",
+     "form": "json{\"indent\": 1}",
+     "tracked": true,
+     "sha256": "5aac74fd67b53661f60a4280ccc631530c5671dbe391243df91b1e264d84d578",
+     "old_reproduces_committed_bytes": true,
+     "new_equals_old": true,
+     "bytes": 3626659,
+     "ok": true
+    },
+    {
+     "path": "data/SRP1/Results/P515S53/w98_continuation/campaign_s53_w98_x0_continuation_r2/evals/25b92ae0f1f2c02e_x0_cont/interface_voltage_terminal.json",
+     "writer": "gates (s33e2 voltage)",
+     "form": "json{\"indent\": 1}",
+     "tracked": true,
+     "sha256": "a1c5f2d5481df184df628cb934ed686948d691f1c1cc3d1611ff3ca937861c71",
+     "old_reproduces_committed_bytes": true,
+     "new_equals_old": true,
+     "bytes": 392593,
+     "ok": true
+    },
+    {
+     "path": "data/SRP1/Results/P515S53/w98_continuation/campaign_s53_w98_x0_continuation_r2/evals/25b92ae0f1f2c02e_x0_cont/recourse_jump_sidecar_baseline.jsonl",
+     "writer": "gates (recourse jump sidecar)",
+     "form": "jsonl{}",
+     "tracked": true,
+     "sha256": "d91a49b4a70fc0abd98d526d718e36ea22df8cd1b96c4d48114e6aa8c55d3aac",
+     "lines": 88,
+     "flag_free_lines": 88,
+     "old_reproduces_committed_line": 88,
+     "new_equals_old": 88,
+     "string_flag_lines": 0,
+     "string_flag_lines_old_exact_new_booleans": 0,
+     "ok": true
+    },
+    {
+     "path": "data/SRP1/Results/P515S53/w98_continuation/campaign_s53_w98_x0_continuation_r2/evals/25b92ae0f1f2c02e_x0_cont/ess_entry_stride_baseline.jsonl",
+     "writer": "gates (ESS stride)",
+     "form": "jsonl{}",
+     "tracked": false,
+     "sha256": "fe52c063e7b8efeb693c31e3907db55ced5c7b73a32e4a8d2d5d7a22777b9592",
+     "lines": 88,
+     "flag_free_lines": 88,
+     "old_reproduces_committed_line": 88,
+     "new_equals_old": 88,
+     "string_flag_lines": 0,
+     "string_flag_lines_old_exact_new_booleans": 0,
+     "ok": true
+    },
+    {
+     "path": "data/SRP1/Results/P515S53/w98_continuation/campaign_s53_w98_x0_continuation_r2/evals/25b92ae0f1f2c02e_x0_cont/soh_floor_sidecar_baseline.jsonl",
+     "writer": "gates (SOH floor sidecar)",
+     "form": "jsonl{}",
+     "tracked": true,
+     "sha256": "35110c1e4cb6402966cce12b80c72074955a2f4a767faf6b6c7e25aceed78fee",
+     "lines": 88,
+     "flag_free_lines": 88,
+     "old_reproduces_committed_line": 88,
+     "new_equals_old": 88,
+     "string_flag_lines": 0,
+     "string_flag_lines_old_exact_new_booleans": 0,
+     "ok": true
+    },
+    {
+     "path": "data/SRP1/Results/P515S53/w98_continuation/campaign_s53_w98_x0_continuation_r2/evals/25b92ae0f1f2c02e_x0_cont/pf_entry_stride_s39_D.jsonl",
+     "writer": "gates (PF stride)",
+     "form": "jsonl{}",
+     "tracked": false,
+     "sha256": "53c396b54756240190bab37fdef75b1a882f0eeb683670896ea27297f44a674a",
+     "lines": 88,
+     "flag_free_lines": 88,
+     "old_reproduces_committed_line": 88,
+     "new_equals_old": 88,
+     "string_flag_lines": 0,
+     "string_flag_lines_old_exact_new_booleans": 0,
+     "ok": true
+    },
+    {
+     "path": "data/SRP1/Results/P515S53/w98_continuation/campaign_s53_w98_x0_continuation_r2/evals/25b92ae0f1f2c02e_x0_cont/ess_exempt_until_state_s39_D.jsonl",
+     "writer": "gates (exempt-until state)",
+     "form": "jsonl{}",
+     "tracked": true,
+     "sha256": "c3cfc4e847d52aa385d348dd156f1e227d2226995a3fd2742f1b6f9fd7431a60",
+     "lines": 88,
+     "flag_free_lines": 88,
+     "old_reproduces_committed_line": 88,
+     "new_equals_old": 88,
+     "string_flag_lines": 0,
+     "string_flag_lines_old_exact_new_booleans": 0,
+     "ok": true
+    },
+    {
+     "path": "data/SRP1/Results/P515S53/w98_continuation/campaign_s53_w98_x0_continuation_r2/evals/25b92ae0f1f2c02e_x0_cont/leak_classification_s39_D.jsonl",
+     "writer": "gates (leak classification)",
+     "form": "jsonl{}",
+     "tracked": true,
+     "sha256": "1dae6c36faa43c7cf4164bcefdfe1d2293bc572b03e736d0c8ce597f7af864d3",
+     "lines": 267,
+     "flag_free_lines": 267,
+     "old_reproduces_committed_line": 267,
+     "new_equals_old": 267,
+     "string_flag_lines": 0,
+     "string_flag_lines_old_exact_new_booleans": 0,
+     "ok": true
+    },
+    {
+     "path": "data/SRP1/Results/P515S53/w90_3x3/campaign_s53_w91_3x3_pair/evals/f6e9cd53fdbb8ee8_x0/evaluation_record.json",
+     "writer": "harness._write_once_json",
+     "form": "json{\"indent\": 1}",
+     "tracked": true,
+     "sha256": "61bd5232e645112b05ad66f5683ff72760937098410dd9a1d34df728ee029d80",
+     "old_reproduces_committed_bytes": true,
+     "new_equals_old": true,
+     "bytes": 59598,
+     "ok": true
+    },
+    {
+     "path": "data/SRP1/Results/P515S53/w90_3x3/campaign_s53_w91_3x3_pair/evals/f6e9cd53fdbb8ee8_x0/convergence_depth_tail_state.json",
+     "writer": "harness._write_once_json",
+     "form": "json{\"indent\": 1}",
+     "tracked": true,
+     "sha256": "0015cd7bd66f4a9dfbdba328a06f6b001398fcfe6164b1ac39da134ecd5d7d12",
+     "old_reproduces_committed_bytes": true,
+     "new_equals_old": true,
+     "bytes": 41888,
+     "ok": true
+    },
+    {
+     "path": "data/SRP1/Results/P515S53/w90_3x3/campaign_s53_w91_3x3_pair/evals/f6e9cd53fdbb8ee8_x0/response_terminal.json",
+     "writer": "harness._write_once_json_compact",
+     "form": "json{\"separators\": [\",\", \":\"]}",
+     "tracked": true,
+     "sha256": "ebe10c1d798c0afd64449f6e6696ebcf2e0faa5586e81a8d1c0ea74533bf42a9",
+     "old_reproduces_committed_bytes": true,
+     "new_equals_old": true,
+     "bytes": 6353652,
+     "ok": true
+    },
+    {
+     "path": "data/SRP1/Results/P515S53/w90_3x3/campaign_s53_w91_3x3_pair/evals/f6e9cd53fdbb8ee8_x0/per_cycle_record.jsonl",
+     "writer": "harness._child_real",
+     "form": "jsonl{}",
+     "tracked": true,
+     "sha256": "3f0908014805cbd2e0af558cdca2d1cc07842efc55202db727539c0f9812fe80",
+     "lines": 72,
+     "flag_free_lines": 72,
+     "old_reproduces_committed_line": 72,
+     "new_equals_old": 72,
+     "string_flag_lines": 0,
+     "string_flag_lines_old_exact_new_booleans": 0,
+     "ok": true
+    },
+    {
+     "path": "data/SRP1/Results/P515S53/w90_3x3/campaign_s53_w91_3x3_pair/evals/f6e9cd53fdbb8ee8_x0/per_cycle_response.jsonl",
+     "writer": "harness.alpha_row_run_hooks (response sidecar)",
+     "form": "jsonl{}",
+     "tracked": true,
+     "sha256": "e0e27378905fbefd375a95381fa04d4eba8fa1c25c8ebf3ca93cae404763f697",
+     "lines": 72,
+     "flag_free_lines": 72,
+     "old_reproduces_committed_line": 72,
+     "new_equals_old": 72,
+     "string_flag_lines": 0,
+     "string_flag_lines_old_exact_new_booleans": 0,
+     "ok": true
+    },
+    {
+     "path": "data/SRP1/Results/P515S53/w90_3x3/campaign_s53_w91_3x3_pair/evals/f6e9cd53fdbb8ee8_x0/network_ipopt_solve_records.jsonl",
+     "writer": "harness.persist_convergence_depth_capture",
+     "form": "jsonl{}",
+     "tracked": true,
+     "sha256": "4cb3f58f647f94feff46e07ae259e677fb89116c9a521b9bacf099fdff036d82",
+     "lines": 5840,
+     "flag_free_lines": 5840,
+     "old_reproduces_committed_line": 5840,
+     "new_equals_old": 5840,
+     "string_flag_lines": 0,
+     "string_flag_lines_old_exact_new_booleans": 0,
+     "ok": true
+    },
+    {
+     "path": "data/SRP1/Results/P515S53/w90_3x3/campaign_s53_w91_3x3_pair/evals/f6e9cd53fdbb8ee8_x0/network_ipopt_solve_records_append.jsonl",
+     "writer": "harness.ConvergenceDepthAppender",
+     "form": "jsonl{}",
+     "tracked": true,
+     "sha256": "4cb3f58f647f94feff46e07ae259e677fb89116c9a521b9bacf099fdff036d82",
+     "lines": 5840,
+     "flag_free_lines": 5840,
+     "old_reproduces_committed_line": 5840,
+     "new_equals_old": 5840,
+     "string_flag_lines": 0,
+     "string_flag_lines_old_exact_new_booleans": 0,
+     "ok": true
+    },
+    {
+     "path": "data/SRP1/Results/P515S53/w90_3x3/campaign_s53_w91_3x3_pair/evals/f6e9cd53fdbb8ee8_x0/convergence_depth_append_events.jsonl",
+     "writer": "harness.ConvergenceDepthAppender",
+     "form": "jsonl{}",
+     "tracked": true,
+     "sha256": "d0cdb9390a303247b9ec7ed2e538a2fd537ffee4a0348d76893fecc7c56f4d62",
+     "lines": 221,
+     "flag_free_lines": 221,
+     "old_reproduces_committed_line": 221,
+     "new_equals_old": 221,
+     "string_flag_lines": 0,
+     "string_flag_lines_old_exact_new_booleans": 0,
+     "ok": true
+    },
+    {
+     "path": "data/SRP1/Results/P515S53/w90_3x3/campaign_s53_w91_3x3_pair/evals/f6e9cd53fdbb8ee8_x0/g_s39_D.json",
+     "writer": "gates (g_<label>.json)",
+     "form": "json{\"indent\": 1}",
+     "tracked": true,
+     "sha256": "6ea6003e4cd1505fb67e2e13cb0f6a08d41e583c29f95db2eeb18fd292aa0c4a",
+     "old_reproduces_committed_bytes": true,
+     "new_equals_old": true,
+     "bytes": 887179,
+     "ok": true
+    },
+    {
+     "path": "data/SRP1/Results/P515S53/w90_3x3/campaign_s53_w91_3x3_pair/evals/f6e9cd53fdbb8ee8_x0/boyd_terminal.json",
+     "writer": "gates (boyd_terminal.json)",
+     "form": "json{\"indent\": 1}",
+     "tracked": true,
+     "sha256": "9e6470b9fa013d24526897aa7eb576d257c67bc917a84513ac4595875b185ef5",
+     "old_reproduces_committed_bytes": true,
+     "new_equals_old": true,
+     "bytes": 89202,
+     "ok": true
+    },
+    {
+     "path": "data/SRP1/Results/P515S53/w90_3x3/campaign_s53_w91_3x3_pair/evals/f6e9cd53fdbb8ee8_x0/component_levels_terminal.json",
+     "writer": "gates (component_levels_terminal.json)",
+     "form": "json{\"indent\": 1}",
+     "tracked": true,
+     "sha256": "1d8cd231f5692f8dd9850eeb4cfdc835cb3637e04bd310dd1fd6083989e9d18a",
+     "old_reproduces_committed_bytes": true,
+     "new_equals_old": true,
+     "bytes": 167506,
+     "ok": true
+    },
+    {
+     "path": "data/SRP1/Results/P515S53/w90_3x3/campaign_s53_w91_3x3_pair/evals/f6e9cd53fdbb8ee8_x0/interface_settlement_detail_s31c.json",
+     "writer": "gates (s31c settlement)",
+     "form": "json{\"indent\": 1}",
+     "tracked": true,
+     "sha256": "ae27b121fdd165fbf2d3b29fe8cf63804684473f35cd5fc40a7c265a9233e271",
+     "old_reproduces_committed_bytes": true,
+     "new_equals_old": true,
+     "bytes": 3626002,
+     "ok": true
+    },
+    {
+     "path": "data/SRP1/Results/P515S53/w90_3x3/campaign_s53_w91_3x3_pair/evals/f6e9cd53fdbb8ee8_x0/interface_voltage_terminal.json",
+     "writer": "gates (s33e2 voltage)",
+     "form": "json{\"indent\": 1}",
+     "tracked": true,
+     "sha256": "3ec6da910dd2190a86a384345dc1a47c3a82af658ac7e8ec7d1922de2c89eba7",
+     "old_reproduces_committed_bytes": true,
+     "new_equals_old": true,
+     "bytes": 392625,
+     "ok": true
+    },
+    {
+     "path": "data/SRP1/Results/P515S53/w90_3x3/campaign_s53_w91_3x3_pair/evals/f6e9cd53fdbb8ee8_x0/recourse_jump_sidecar_baseline.jsonl",
+     "writer": "gates (recourse jump sidecar)",
+     "form": "jsonl{}",
+     "tracked": true,
+     "sha256": "110ca037256155169ec8d77682280bddf7449b3d3c7e09ee6d9b7b52d1d733e1",
+     "lines": 72,
+     "flag_free_lines": 72,
+     "old_reproduces_committed_line": 72,
+     "new_equals_old": 72,
+     "string_flag_lines": 0,
+     "string_flag_lines_old_exact_new_booleans": 0,
+     "ok": true
+    },
+    {
+     "path": "data/SRP1/Results/P515S53/w90_3x3/campaign_s53_w91_3x3_pair/evals/f6e9cd53fdbb8ee8_x0/ess_entry_stride_baseline.jsonl",
+     "writer": "gates (ESS stride)",
+     "form": "jsonl{}",
+     "tracked": false,
+     "sha256": "98d4bf0e6e25de621eac40bbf1c7b65caca992a26e46c668d86862ab2da12432",
+     "lines": 72,
+     "flag_free_lines": 72,
+     "old_reproduces_committed_line": 72,
+     "new_equals_old": 72,
+     "string_flag_lines": 0,
+     "string_flag_lines_old_exact_new_booleans": 0,
+     "ok": true
+    },
+    {
+     "path": "data/SRP1/Results/P515S53/w90_3x3/campaign_s53_w91_3x3_pair/evals/f6e9cd53fdbb8ee8_x0/soh_floor_sidecar_baseline.jsonl",
+     "writer": "gates (SOH floor sidecar)",
+     "form": "jsonl{}",
+     "tracked": true,
+     "sha256": "f9bdf1b9585708fe387906121074921fa78400d504a206a10f066a94183fbf6a",
+     "lines": 72,
+     "flag_free_lines": 72,
+     "old_reproduces_committed_line": 72,
+     "new_equals_old": 72,
+     "string_flag_lines": 0,
+     "string_flag_lines_old_exact_new_booleans": 0,
+     "ok": true
+    },
+    {
+     "path": "data/SRP1/Results/P515S53/w90_3x3/campaign_s53_w91_3x3_pair/evals/f6e9cd53fdbb8ee8_x0/pf_entry_stride_s39_D.jsonl",
+     "writer": "gates (PF stride)",
+     "form": "jsonl{}",
+     "tracked": false,
+     "sha256": "5a65a426911dd952f8b404084b0cbb5072e460888112345d89f7d103e65ea8e6",
+     "lines": 72,
+     "flag_free_lines": 72,
+     "old_reproduces_committed_line": 72,
+     "new_equals_old": 72,
+     "string_flag_lines": 0,
+     "string_flag_lines_old_exact_new_booleans": 0,
+     "ok": true
+    },
+    {
+     "path": "data/SRP1/Results/P515S53/w90_3x3/campaign_s53_w91_3x3_pair/evals/f6e9cd53fdbb8ee8_x0/ess_exempt_until_state_s39_D.jsonl",
+     "writer": "gates (exempt-until state)",
+     "form": "jsonl{}",
+     "tracked": true,
+     "sha256": "37df312cb030d9d26f93298131dfe4c8eb8e2460eaeb16c063075dae9d8245dc",
+     "lines": 72,
+     "flag_free_lines": 72,
+     "old_reproduces_committed_line": 72,
+     "new_equals_old": 72,
+     "string_flag_lines": 0,
+     "string_flag_lines_old_exact_new_booleans": 0,
+     "ok": true
+    },
+    {
+     "path": "data/SRP1/Results/P515S53/w90_3x3/campaign_s53_w91_3x3_pair/evals/f6e9cd53fdbb8ee8_x0/leak_classification_s39_D.jsonl",
+     "writer": "gates (leak classification)",
+     "form": "jsonl{}",
+     "tracked": true,
+     "sha256": "26fb3b16f66cf5354c9bdb01b772f303c2f055295267ef18cc7f1c03e87b5b62",
+     "lines": 219,
+     "flag_free_lines": 219,
+     "old_reproduces_committed_line": 219,
+     "new_equals_old": 219,
+     "string_flag_lines": 0,
+     "string_flag_lines_old_exact_new_booleans": 0,
+     "ok": true
+    },
+    {
+     "path": "data/SRP1/Results/P515S53/w98_continuation/campaign_s53_w98_x0_continuation_r2/evals/25b92ae0f1f2c02e_x0_cont/continuation_cycle_record.jsonl",
+     "writer": "hooks.ContinuationState._write",
+     "form": "jsonl{}",
+     "tracked": true,
+     "sha256": "d879551ec50c463245d332e84a61a87dbb1f9fff402eeb8a1c9885e6e14b92a6",
+     "lines": 88,
+     "flag_free_lines": 72,
+     "old_reproduces_committed_line": 72,
+     "new_equals_old": 72,
+     "string_flag_lines": 16,
+     "string_flag_lines_old_exact_new_booleans": 16,
+     "ok": true
+    },
+    {
+     "path": "data/SRP1/Results/P515S53/w98_continuation/campaign_s53_w98_x0_continuation_r2/evals/25b92ae0f1f2c02e_x0_cont/recourse_blocks_all.jsonl",
+     "writer": "hooks.ContinuationState._write",
+     "form": "jsonl{}",
+     "tracked": true,
+     "sha256": "c68406e179734cca497208449a12695a45fc5b7b60d9bd8aec6e0277e172aae9",
+     "lines": 88,
+     "flag_free_lines": 0,
+     "old_reproduces_committed_line": 0,
+     "new_equals_old": 0,
+     "string_flag_lines": 88,
+     "string_flag_lines_old_exact_new_booleans": 88,
+     "ok": true
+    },
+    {
+     "path": "data/SRP1/Results/P515S53/w98_continuation/campaign_s53_w98_x0_continuation_r2/campaign_results.json",
+     "writer": "harness._write_once_json (W98 launcher)",
+     "form": "json{\"indent\": 1}",
+     "tracked": true,
+     "sha256": "b0d58764b07d9654e7c99595d54f84b9e8677639594d47ceb66198f091d3b1e7",
+     "old_reproduces_committed_bytes": true,
+     "new_equals_old": true,
+     "bytes": 297948,
+     "ok": true
+    }
+   ],
+   "c_hooks_defect_lines": [
+    {
+     "path": "data/SRP1/Results/P515S53/w98_continuation/campaign_s53_w98_x0_continuation_r2/evals/25b92ae0f1f2c02e_x0_cont/continuation_cycle_record.jsonl",
+     "lines": 88,
+     "string_flag_lines": 16,
+     "string_flag_lines_old_exact_new_booleans": 16
+    },
+    {
+     "path": "data/SRP1/Results/P515S53/w98_continuation/campaign_s53_w98_x0_continuation_r2/evals/25b92ae0f1f2c02e_x0_cont/recourse_blocks_all.jsonl",
+     "lines": 88,
+     "string_flag_lines": 88,
+     "string_flag_lines_old_exact_new_booleans": 88
+    }
+   ],
+   "holds_parts": {
+    "a": true,
+    "b": true,
+    "c": true
+   },
+   "holds": true
+  },
+  "C3": {
+   "id": "C3_confined_change",
+   "files": {
+    "p515_s44_campaign_harness.py": {
+     "pre_commit": "58ff8d88",
+     "pre_sha256": "f7bcfac6677457d46ba588df86d57ac22327be4038a94d0d4943bbb048b995f2",
+     "new_sha256": "63e06859c7f7786faae8109a52041176b402905085b9864d3c651e6ee67f9fb3",
+     "sites_migrated_in_ast": 8,
+     "sites_declared": 8,
+     "added_import_removed": 1,
+     "ast_identical_after_migration": true,
+     "grio_calls_in_new_file": [
+      [
+       427,
+       "_atomic_write_json",
+       "dump",
+       "GRIO.json_default"
+      ],
+      [
+       435,
+       "_write_once_json",
+       "dump",
+       "GRIO.json_default"
+      ],
+      [
+       4486,
+       "_write_once_json_compact",
+       "dump",
+       "GRIO.json_default"
+      ],
+      [
+       4742,
+       "persist_convergence_depth_capture",
+       "dumps",
+       "GRIO.json_default"
+      ],
+      [
+       4827,
+       "ConvergenceDepthAppender._event",
+       "dumps",
+       "GRIO.json_default"
+      ],
+      [
+       4831,
+       "ConvergenceDepthAppender.append_round",
+       "dumps",
+       "GRIO.json_default"
+      ],
+      [
+       5348,
+       "_child_real",
+       "dumps",
+       "GRIO.json_default"
+      ],
+      [
+       3952,
+       "alpha_row_run_hooks._cm.w_local",
+       "dumps",
+       "GRIO.json_default"
+      ]
+     ],
+     "json_calls_left": {
+      "ConvergenceDepthAppender.reconcile": [
+       4892
+      ],
+      "_flex_price_objective_summary": [
+       2450,
+       2452
+      ],
+      "acquire_campaign_lock": [
+       1351
+      ],
+      "acquire_terminal_phase_lock": [
+       4656
+      ],
+      "candidate_key": [
+       492
+      ],
+      "encode_curtailment_entries": [
+       4407
+      ],
+      "ess_ageing_canonical_text": [
+       843
+      ],
+      "evaluation_key": [
+       1005,
+       931,
+       954,
+       970,
+       981,
+       991,
+       997,
+       1000
+      ],
+      "freeze_campaign_spec": [
+       1296
+      ],
+      "register_initialisation_identity": [
+       3798
+      ],
+      "validate_derived_instance": [
+       683
+      ],
+      "write_response_terminal": [
+       4513,
+       4518,
+       4518
+      ]
+     },
+     "json_calls_left_match_declared_table": true,
+     "not_migrated_reasons": {
+      "ConvergenceDepthAppender.reconcile": "in-memory round trip compared with the rebuilt tail state",
+      "_flex_price_objective_summary": "hash: sha256 of objective term lists",
+      "acquire_campaign_lock": "lock file content",
+      "acquire_terminal_phase_lock": "lock file content",
+      "candidate_key": "hash: candidate key (sha256 of canonical JSON)",
+      "encode_curtailment_entries": "in-memory grouping signature (not written)",
+      "ess_ageing_canonical_text": "hash input: canonical text compared / keyed",
+      "evaluation_key": "hash: evaluation key payloads",
+      "freeze_campaign_spec": "hash: frozen campaign spec text, sha8 in its name",
+      "register_initialisation_identity": "identity record, no default= hook (a numpy value raises, cannot stringify); compared across sibling evaluations",
+      "validate_derived_instance": "in-memory deep copy (json round trip)",
+      "write_response_terminal": "in-memory: the round-trip VERIFICATION of the written file (expected text and comparison)"
+     },
+     "changed_top_level": [
+      "ConvergenceDepthAppender",
+      "_atomic_write_json",
+      "_child_real",
+      "_write_once_json",
+      "_write_once_json_compact",
+      "alpha_row_run_hooks",
+      "persist_convergence_depth_capture"
+     ],
+     "added_top_level": [],
+     "removed_top_level": [],
+     "key_functions_unchanged": true,
+     "retained_default_hook_unchanged": true,
+     "holds": true
+    },
+    "p515_g_g1_g4_admm_gates.py": {
+     "pre_commit": "58ff8d88",
+     "pre_sha256": "e147a34f1be39119196845059eaa77b581148f6f191cc3197cd9275c4b0ad5aa",
+     "new_sha256": "6f4631e10a2f8a7786390c0f96e45332706779ae9cdf6a87ddd716d9ad9ad346",
+     "sites_migrated_in_ast": 21,
+     "sites_declared": 21,
+     "added_import_removed": 1,
+     "ast_identical_after_migration": true,
+     "grio_calls_in_new_file": [
+      [
+       233,
+       "_atomic_write_json",
+       "dump",
+       "GRIO.json_default"
+      ],
+      [
+       1449,
+       "run_admm_arm",
+       "dump",
+       "GRIO.json_default"
+      ],
+      [
+       1878,
+       "write_component_levels_terminal",
+       "dump",
+       "GRIO.json_default"
+      ],
+      [
+       2092,
+       "write_interface_settlement_detail_s31c",
+       "dump",
+       "GRIO.json_default"
+      ],
+      [
+       2370,
+       "write_boyd_terminal_s32",
+       "dump",
+       "GRIO.json_default"
+      ],
+      [
+       2646,
+       "write_interface_voltage_terminal",
+       "dump",
+       "GRIO.json_default"
+      ],
+      [
+       2746,
+       "write_boyd_terminal_s33e2",
+       "dump",
+       "GRIO.json_default"
+      ],
+      [
+       3248,
+       "write_boyd_terminal_s34",
+       "dump",
+       "GRIO.json_default"
+      ],
+      [
+       3882,
+       "write_boyd_terminal_s35ref",
+       "dump",
+       "GRIO.json_default"
+      ],
+      [
+       4465,
+       "write_boyd_terminal_s35pt",
+       "dump",
+       "GRIO.json_default"
+      ],
+      [
+       4660,
+       "write_terminal_storage_duals_s35ref_replay",
+       "dump",
+       "GRIO.json_default"
+      ],
+      [
+       4570,
+       "s35ref_replay_cycle0_lmp_hooks._maybe_write",
+       "dump",
+       "GRIO.json_default"
+      ],
+      [
+       3021,
+       "s34_capture_hooks.wrapper",
+       "dumps",
+       "GRIO.json_default"
+      ],
+      [
+       5986,
+       "s39_exempt_until_capture_hooks.wrapper",
+       "dumps",
+       "GRIO.json_default"
+      ],
+      [
+       470,
+       "_capture_esso_solve",
+       "dumps",
+       "GRIO.json_default"
+      ],
+      [
+       882,
+       "_scan_and_write_network_failures._atomic_jsonl",
+       "dumps",
+       "GRIO.json_default"
+      ],
+      [
+       921,
+       "esso_capture_hooks._after_round",
+       "dumps",
+       "GRIO.json_default"
+      ],
+      [
+       3051,
+       "s34_capture_hooks.wrapper",
+       "dumps",
+       "GRIO.json_default"
+      ],
+      [
+       3624,
+       "s35ref_capture_hooks.wrapper2",
+       "dumps",
+       "GRIO.json_default"
+      ],
+      [
+       5382,
+       "s38_pf_capture_hooks.wrapper3",
+       "dumps",
+       "GRIO.json_default"
+      ],
+      [
+       6986,
+       "<module>",
+       "dump",
+       "GRIO.json_default"
+      ]
+     ],
+     "json_calls_left": {
+      "_hash_consensus_ess_z": [
+       3951
+      ]
+     },
+     "json_calls_left_match_declared_table": true,
+     "not_migrated_reasons": {
+      "_hash_consensus_ess_z": "hash: consensus ESS z digest"
+     },
+     "changed_top_level": [
+      "_atomic_write_json",
+      "_capture_esso_solve",
+      "_scan_and_write_network_failures",
+      "esso_capture_hooks",
+      "run_admm_arm",
+      "s34_capture_hooks",
+      "s35ref_capture_hooks",
+      "s35ref_replay_cycle0_lmp_hooks",
+      "s38_pf_capture_hooks",
+      "s39_exempt_until_capture_hooks",
+      "write_boyd_terminal_s32",
+      "write_boyd_terminal_s33e2",
+      "write_boyd_terminal_s34",
+      "write_boyd_terminal_s35pt",
+      "write_boyd_terminal_s35ref",
+      "write_component_levels_terminal",
+      "write_interface_settlement_detail_s31c",
+      "write_interface_voltage_terminal",
+      "write_terminal_storage_duals_s35ref_replay"
+     ],
+     "added_top_level": [],
+     "removed_top_level": [],
+     "key_functions_unchanged": true,
+     "retained_default_hook_unchanged": true,
+     "holds": true
+    },
+    "p515_s53_w98_continuation_hooks.py": {
+     "pre_commit": "58ff8d88",
+     "pre_sha256": "9920f7d6d569fc78c2e4c638c619ccf3f2a09ccbac137833802de61b99717680",
+     "new_sha256": "eb0ef724daacb2d5107c12db2d32ef4cb4546ff634c6e4957be897e2c0582fb4",
+     "sites_migrated_in_ast": 1,
+     "sites_declared": 1,
+     "added_import_removed": 1,
+     "ast_identical_after_migration": true,
+     "grio_calls_in_new_file": [
+      [
+       274,
+       "ContinuationState._write",
+       "dumps",
+       "GRIO.json_default"
+      ]
+     ],
+     "json_calls_left": {},
+     "json_calls_left_match_declared_table": true,
+     "not_migrated_reasons": {},
+     "changed_top_level": [
+      "ContinuationState"
+     ],
+     "added_top_level": [],
+     "removed_top_level": [],
+     "key_functions_unchanged": true,
+     "retained_default_hook_unchanged": null,
+     "holds": true
+    },
+    "p515_s53_w93_uncoordinated_benchmark.py": {
+     "pre_commit": "58ff8d88",
+     "pre_sha256": "e65dc3ec82462d0ab639944f7b1dd1118bc44b37fcab420842c151922cbb3698",
+     "new_sha256": "a445b4dd9606a4a9323f37a03be2ff803b767431f10beb51f95a9a576078a2d6",
+     "sites_migrated_in_ast": 2,
+     "sites_declared": 2,
+     "added_import_removed": 1,
+     "ast_identical_after_migration": true,
+     "grio_calls_in_new_file": [
+      [
+       263,
+       "_write_json_once",
+       "dump",
+       "GRIO.json_default_item"
+      ],
+      [
+       269,
+       "_append_jsonl",
+       "dumps",
+       "GRIO.json_default_item"
+      ]
+     ],
+     "json_calls_left": {
+      "acquire_lock": [
+       380
+      ]
+     },
+     "json_calls_left_match_declared_table": true,
+     "not_migrated_reasons": {
+      "acquire_lock": "lock file content"
+     },
+     "changed_top_level": [
+      "_append_jsonl",
+      "_write_json_once"
+     ],
+     "added_top_level": [],
+     "removed_top_level": [],
+     "key_functions_unchanged": true,
+     "retained_default_hook_unchanged": true,
+     "holds": true
+    }
+   },
+   "holds": true
+  },
+  "C4": {
+   "id": "C4_evaluation_key",
+   "committed_specs": 63,
+   "entries": 7034,
+   "new_equals_pre_w100": 7034,
+   "mismatches_vs_pre_w100": [],
+   "errors": [],
+   "entries_with_frozen_eval_key": 7013,
+   "recomputed_equals_frozen": 7013,
+   "not_rebuilt_from_spec_alone_reported": [],
+   "key_function_source_identical": {
+    "evaluation_key": true,
+    "candidate_key": true,
+    "canonical_candidate": true,
+    "ess_ageing_canonical_text": true,
+    "freeze_campaign_spec": true,
+    "_json_default": true,
+    "_entry_eval_key": true,
+    "eval_dir_name": true,
+    "eval_ids": true
+   },
+   "named_cells": {
+    "campaign_spec_s53_w91_3x3_pair_231558f0.json:x0": {
+     "frozen": "f6e9cd53fdbb8ee8c80388a13d723c49de5b18173bcfa5c7351cbe0d9e5000d4",
+     "recomputed": "f6e9cd53fdbb8ee8c80388a13d723c49de5b18173bcfa5c7351cbe0d9e5000d4"
+    },
+    "campaign_spec_s53_w91_3x3_pair_231558f0.json:n7_4h_e1": {
+     "frozen": "c82522f470b35b58399bfe47ebd45612a95641ae308128de5d1c3c08ad5408a1",
+     "recomputed": "c82522f470b35b58399bfe47ebd45612a95641ae308128de5d1c3c08ad5408a1"
+    },
+    "campaign_spec_s53_w98_x0_continuation_r2_c2b02e21.json:x0_cont": {
+     "frozen": "25b92ae0f1f2c02eea9b3811f16edf210479e461e653f474bd23d451ff7bf3e3",
+     "recomputed": "25b92ae0f1f2c02eea9b3811f16edf210479e461e653f474bd23d451ff7bf3e3"
+    }
+   },
+   "holds": true
+  },
+  "C5": {
+   "id": "C5_hash_pins",
+   "a_pins_of_modified_files": {
+    "p515_s44_campaign_harness.py": {
+     "pre_sha256": "f7bcfac6677457d46ba588df86d57ac22327be4038a94d0d4943bbb048b995f2",
+     "pre_blob_resolves_from_git": true,
+     "committed_files_naming_pre_sha256": [
+      "data/SRP1/Results/P515S53/frozen_s53_spec_v37_774d083f.json",
+      "data/SRP1/Results/P515S53/frozen_s53_spec_v38_8bc0ffa6.json",
+      "data/SRP1/Results/P515S53/w98_continuation/campaign_s53_w98_x0_continuation/campaign_spec_s53_w98_x0_continuation_92fa0957.json",
+      "data/SRP1/Results/P515S53/w98_continuation/campaign_s53_w98_x0_continuation_r2/campaign_spec_s53_w98_x0_continuation_r2_c2b02e21.json",
+      "data/SRP1/Results/P515S53/w98_continuation/freeze_spec_v38_launch.log",
+      "data/SRP1/Results/P515S53/w98_continuation/zero_solve_checks/w98_zero_solve_checks.json",
+      "data/SRP1/Results/P515S53/w98_continuation/zero_solve_checks/w98_zero_solve_checks_r2.json"
+     ],
+     "current_sha256": "63e06859c7f7786faae8109a52041176b402905085b9864d3c651e6ee67f9fb3"
+    },
+    "p515_g_g1_g4_admm_gates.py": {
+     "pre_sha256": "e147a34f1be39119196845059eaa77b581148f6f191cc3197cd9275c4b0ad5aa",
+     "pre_blob_resolves_from_git": true,
+     "committed_files_naming_pre_sha256": [
+      "data/SRP1/Results/P515S53/frozen_s53_spec_v37_774d083f.json",
+      "data/SRP1/Results/P515S53/frozen_s53_spec_v38_8bc0ffa6.json",
+      "data/SRP1/Results/P515S53/gates_json_default_w76/gates_json_default_w76_checks.json",
+      "data/SRP1/Results/P515S53/gates_json_default_w76/gates_json_default_w76_manifest_sha256.json",
+      "data/SRP1/Results/P515S53/scaling_pin_w78/launch_logs/s53w78_x0_us0p001_launch_manifest_sha256.json",
+      "data/SRP1/Results/P515S53/scaling_pin_w78/launch_logs/w80_launch_manifest_sha256.json",
+      "data/SRP1/Results/P515S53/stringified_bool_audit_w75/CAVEAT_W76_stale_gates_module_citations.md",
+      "data/SRP1/Results/P515S53/tight_tail_w83/srp1_bitwise_gate/gate.json",
+      "data/SRP1/Results/P515S53/tight_tail_w83/srp1_bitwise_gate/w51_gate_addendum.json",
+      "data/SRP1/Results/P515S53/tight_tail_w84/srp1_bitwise_gate/gate.json",
+      "data/SRP1/Results/P515S53/tight_tail_w84/srp1_bitwise_gate/w51_gate_addendum.json"
+     ],
+     "current_sha256": "6f4631e10a2f8a7786390c0f96e45332706779ae9cdf6a87ddd716d9ad9ad346"
+    },
+    "p515_s53_w98_continuation_hooks.py": {
+     "pre_sha256": "9920f7d6d569fc78c2e4c638c619ccf3f2a09ccbac137833802de61b99717680",
+     "pre_blob_resolves_from_git": true,
+     "committed_files_naming_pre_sha256": [
+      "data/SRP1/Results/P515S53/frozen_s53_spec_v37_774d083f.json",
+      "data/SRP1/Results/P515S53/frozen_s53_spec_v38_8bc0ffa6.json",
+      "data/SRP1/Results/P515S53/w98_continuation/freeze_spec_v38_launch.log",
+      "data/SRP1/Results/P515S53/w98_continuation/zero_solve_checks/w98_zero_solve_checks.json",
+      "data/SRP1/Results/P515S53/w98_continuation/zero_solve_checks/w98_zero_solve_checks_r2.json",
+      "data/SRP1/Results/P515S53/w99_stage1_posthoc/manifest_sha256.json"
+     ],
+     "current_sha256": "eb0ef724daacb2d5107c12db2d32ef4cb4546ff634c6e4957be897e2c0582fb4"
+    },
+    "p515_s53_w93_uncoordinated_benchmark.py": {
+     "pre_sha256": "e65dc3ec82462d0ab639944f7b1dd1118bc44b37fcab420842c151922cbb3698",
+     "pre_blob_resolves_from_git": true,
+     "committed_files_naming_pre_sha256": [],
+     "current_sha256": "a445b4dd9606a4a9323f37a03be2ff803b767431f10beb51f95a9a576078a2d6"
+    }
+   },
+   "b_getsource_refs_to_changed_functions": [
+    {
+     "file": "p515_s45_a0_campaign.py",
+     "line": 325,
+     "target": "p515_s44_campaign_harness.py:_child_real",
+     "text": "child_src = inspect.getsource(H._child_real)"
+    },
+    {
+     "file": "p515_s45_a1_campaign.py",
+     "line": 981,
+     "target": "p515_s44_campaign_harness.py:_child_real",
+     "text": "child_src = inspect.getsource(H._child_real)"
+    },
+    {
+     "file": "p515_s45_snapshot_off_failure_gate.py",
+     "line": 255,
+     "target": "p515_g_g1_g4_admm_gates.py:run_admm_arm",
+     "text": "src_arm = inspect.getsource(G.run_admm_arm)"
+    },
+    {
+     "file": "p515_s45_snapshot_off_two_cycle_gate.py",
+     "line": 460,
+     "target": "p515_g_g1_g4_admm_gates.py:run_admm_arm",
+     "text": "\"'recovered_tier1'\" in inspect.getsource(G.run_admm_arm))"
+    },
+    {
+     "file": "p515_s45_snapshot_off_two_cycle_gate.py",
+     "line": 461,
+     "target": "p515_g_g1_g4_admm_gates.py:run_admm_arm",
+     "text": "checks['report_field_solve_profile_observed'] = \"'solve_profile'\" in inspect.getsource(G.run_admm_arm)"
+    },
+    {
+     "file": "p515_s45_year_support_checks.py",
+     "line": 525,
+     "target": "p515_s44_campaign_harness.py:_child_real",
+     "text": "src = '\\n'.join(line for line in inspect.getsource(H._child_real).splitlines()"
+    },
+    {
+     "file": "p515_s46_ageing_campaign.py",
+     "line": 384,
+     "target": "p515_s44_campaign_harness.py:_child_real",
+     "text": "child_src = inspect.getsource(H._child_real)"
+    },
+    {
+     "file": "p515_s47_baseline_campaign.py",
+     "line": 454,
+     "target": "p515_s44_campaign_harness.py:_child_real",
+     "text": "child_src = inspect.getsource(H._child_real)"
+    },
+    {
+     "file": "p515_s47_phase_b_record.py",
+     "line": 1098,
+     "target": "p515_s44_campaign_harness.py:_child_real",
+     "text": "child_src = inspect.getsource(H._child_real)"
+    },
+    {
+     "file": "p515_s48_x0_capture_campaign.py",
+     "line": 270,
+     "target": "p515_s44_campaign_harness.py:_child_real",
+     "text": "child_src = inspect.getsource(H._child_real)"
+    },
+    {
+     "file": "p515_s49_flex_ladder_campaign.py",
+     "line": 568,
+     "target": "p515_s44_campaign_harness.py:_child_real",
+     "text": "child_src = inspect.getsource(H._child_real)"
+    },
+    {
+     "file": "p515_s52_pilot_campaign.py",
+     "line": 637,
+     "target": "p515_s44_campaign_harness.py:_child_real",
+     "text": "child_src = inspect.getsource(H._child_real)"
+    },
+    {
+     "file": "p515_s53_alpha_row_campaign.py",
+     "line": 1632,
+     "target": "p515_s44_campaign_harness.py:_child_real",
+     "text": "child_src = inspect.getsource(H._child_real)"
+    },
+    {
+     "file": "p515_s53_alpha_row_campaign.py",
+     "line": 1860,
+     "target": "p515_s44_campaign_harness.py:_child_real",
+     "text": "'child_reads_no_other_campaign_root': 'P515S52' not in inspect.getsource(H._child_real),"
+    },
+    {
+     "file": "p515_s53_alpha_row_campaign.py",
+     "line": 2738,
+     "target": "p515_s44_campaign_harness.py:_child_real",
+     "text": "child_src = inspect.getsource(H._child_real)"
+    },
+    {
+     "file": "p515_s53_w84_harness_capture_checks.py",
+     "line": 577,
+     "target": "p515_s44_campaign_harness.py:_child_real",
+     "text": "child = inspect.getsource(H._child_real)"
+    },
+    {
+     "file": "p515_s53_w85_harness_checks.py",
+     "line": 765,
+     "target": "p515_s44_campaign_harness.py:_child_real",
+     "text": "child = inspect.getsource(H._child_real)"
+    },
+    {
+     "file": "p515_s53_w86_tail_recert_campaign.py",
+     "line": 376,
+     "target": "p515_s44_campaign_harness.py:_child_real",
+     "text": "child_src = inspect.getsource(H._child_real)"
+    },
+    {
+     "file": "p515_s53_w89_3x3_campaign.py",
+     "line": 881,
+     "target": "p515_s44_campaign_harness.py:_child_real",
+     "text": "child_src = inspect.getsource(H._child_real)"
+    },
+    {
+     "file": "p515_s53_w98_continuation_checks.py",
+     "line": 574,
+     "target": "p515_s44_campaign_harness.py:_child_real",
+     "text": "child_src = inspect.getsource(H._child_real)"
+    }
+   ],
+   "b_changed_top_level": {
+    "p515_s44_campaign_harness.py": [
+     "ConvergenceDepthAppender",
+     "_atomic_write_json",
+     "_child_real",
+     "_write_once_json",
+     "_write_once_json_compact",
+     "alpha_row_run_hooks",
+     "persist_convergence_depth_capture"
+    ],
+    "p515_g_g1_g4_admm_gates.py": [
+     "_atomic_write_json",
+     "_capture_esso_solve",
+     "_scan_and_write_network_failures",
+     "esso_capture_hooks",
+     "run_admm_arm",
+     "s34_capture_hooks",
+     "s35ref_capture_hooks",
+     "s35ref_replay_cycle0_lmp_hooks",
+     "s38_pf_capture_hooks",
+     "s39_exempt_until_capture_hooks",
+     "write_boyd_terminal_s32",
+     "write_boyd_terminal_s33e2",
+     "write_boyd_terminal_s34",
+     "write_boyd_terminal_s35pt",
+     "write_boyd_terminal_s35ref",
+     "write_component_levels_terminal",
+     "write_interface_settlement_detail_s31c",
+     "write_interface_voltage_terminal",
+     "write_terminal_storage_duals_s35ref_replay"
+    ],
+    "p515_s53_w98_continuation_hooks.py": [
+     "ContinuationState"
+    ],
+    "p515_s53_w93_uncoordinated_benchmark.py": [
+     "_append_jsonl",
+     "_write_json_once"
+    ]
+   },
+   "c_hash_feeding_rederived": {
+    "data/SRP1/Results/P515S53/frozen_s53_spec_v38_8bc0ffa6.json": {
+     "bytes_identical": true,
+     "sha8": "8bc0ffa6",
+     "name_sha8": "8bc0ffa6"
+    },
+    "data/SRP1/Results/P515S53/w98_continuation/campaign_s53_w98_x0_continuation_r2/campaign_spec_s53_w98_x0_continuation_r2_c2b02e21.json": {
+     "bytes_identical": true,
+     "sha8": "c2b02e21",
+     "name_sha8": "c2b02e21"
+    },
+    "data/SRP1/Results/P515S53/w90_3x3/campaign_s53_w91_3x3_pair/campaign_spec_s53_w91_3x3_pair_231558f0.json": {
+     "bytes_identical": true,
+     "sha8": "231558f0",
+     "name_sha8": "231558f0"
+    }
+   },
+   "holds_parts": {
+    "a_pre_blobs_resolve": true,
+    "c_rederived": true
+   },
+   "holds": true
+  },
+  "C6": {
+   "id": "C6_repository_test",
+   "pass_before": {
+    "exit": 0,
+    "verdict": "PASS",
+    "result": "data/SRP1/Results/P515S53/w100_gate_writer_r2/test_pass_before.json",
+    "scope": {
+     "root": "data",
+     "suffixes": [
+      ".json",
+      ".jsonl"
+     ],
+     "files": 87464,
+     "tracked_files": 7854,
+     "candidates": 395,
+     "files_with_unparsed_lines": 0
+    },
+    "known_historical_matched": 97,
+    "listed_untracked_absent": []
+   },
+   "negative_control_planted": {
+    "planted": "data/SRP1/Results/P515S53/w100_gate_writer_r2/negative_control_planted/planted_string_flag.json",
+    "planted_sha256": "5c4d4fb5e85e6c3e01c0f74369356f0da15f551c1f68542555834775d36b6d86",
+    "written_with": "json.dump(payload, default=str)",
+    "exit": 1,
+    "verdict": "FAIL",
+    "result": "data/SRP1/Results/P515S53/w100_gate_writer_r2/test_negative_control_planted.json",
+    "F1": [
+     {
+      "path": "data/SRP1/Results/P515S53/w100_gate_writer_r2/negative_control_planted/planted_string_flag.json",
+      "tracked": false,
+      "sha256": "5c4d4fb5e85e6c3e01c0f74369356f0da15f551c1f68542555834775d36b6d86",
+      "fields": {
+       "objective_convergence": {
+        "False": 1
+       },
+       "pass": {
+        "True": 1
+       },
+       "reconciles_to_net": {
+        "True": 1
+       }
+      },
+      "examples": [
+       [
+        "$.reconciles_to_net",
+        "reconciles_to_net",
+        "'True'"
+       ],
+       [
+        "$.objective_convergence",
+        "objective_convergence",
+        "'False'"
+       ],
+       [
+        "$.nested.pass",
+        "pass",
+        "'True'"
+       ]
+      ]
+     }
+    ],
+    "other_failure_counts": {
+     "F2_hash_changed": 0,
+     "F3_listed_tracked_missing": 0,
+     "F4_registry_inconsistent": 0,
+     "F5_registry_invalid": 0
+    },
+    "planted_removed_after": true
+   },
+   "negative_control_hash_changed": {
+    "entry": "data/SRP1/Results/P515S53/w98_continuation/campaign_s53_w98_x0_continuation_r2/evals/25b92ae0f1f2c02e_x0_cont/recourse_blocks_all.jsonl",
+    "pinned_sha256": "c68406e179734cca497208449a12695a45fc5b7b60d9bd8aec6e0277e172aae9",
+    "perturbed_sha256_in_copy": "c68406e179734cca497208449a12695a45fc5b7b60d9bd8aec6e0277e172aae0",
+    "artifact_sha256_now": "c68406e179734cca497208449a12695a45fc5b7b60d9bd8aec6e0277e172aae9",
+    "exit": 1,
+    "verdict": "FAIL",
+    "result": "data/SRP1/Results/P515S53/w100_gate_writer_r2/test_negative_control_hash_changed.json",
+    "F2": [
+     {
+      "path": "data/SRP1/Results/P515S53/w98_continuation/campaign_s53_w98_x0_continuation_r2/evals/25b92ae0f1f2c02e_x0_cont/recourse_blocks_all.jsonl",
+      "pinned_sha256": "c68406e179734cca497208449a12695a45fc5b7b60d9bd8aec6e0277e172aae0",
+      "sha256": "c68406e179734cca497208449a12695a45fc5b7b60d9bd8aec6e0277e172aae9",
+      "string_flags_now": {
+       "reconciles_to_net": {
+        "True": 88
+       }
+      }
+     }
+    ],
+    "other_failure_counts": {
+     "F1_new_string_flag": 0,
+     "F3_listed_tracked_missing": 0,
+     "F4_registry_inconsistent": 0,
+     "F5_registry_invalid": 0
+    }
+   },
+   "pass_after": {
+    "exit": 0,
+    "verdict": "PASS",
+    "result": "data/SRP1/Results/P515S53/w100_gate_writer_r2/test_pass_after.json"
+   },
+   "holds_parts": {
+    "pass_before": true,
+    "nc1_planted_fails": true,
+    "nc2_hash_changed_fails": true,
+    "pass_after": true
+   },
+   "holds": true
+  },
+  "C7": {
+   "id": "C7_families_detected",
+   "fields_on_list": {
+    "warm_start": {
+     "files": 2,
+     "values": 7
+    },
+    "<index-key>": {
+     "files": 33,
+     "values": 204237
+    },
+    "cancels_to_rounding": {
+     "files": 1,
+     "values": 1
+    },
+    "pass": {
+     "files": 9,
+     "values": 10
+    },
+    "reconciles": {
+     "files": 1,
+     "values": 1
+    },
+    "sum_matches_residual_formula": {
+     "files": 1,
+     "values": 2
+    },
+    "overall_pass_1e-9_relative": {
+     "files": 1,
+     "values": 1
+    },
+    "passes_1e-9_relative": {
+     "files": 1,
+     "values": 2
+    },
+    "enabled": {
+     "files": 1,
+     "values": 1
+    },
+    "'ESSO, Operational Planning'": {
+     "files": 2,
+     "values": 12
+    },
+    "from_warm_start": {
+     "files": 2,
+     "values": 4
+    },
+    "objective_convergence": {
+     "files": 31,
+     "values": 517
+    },
+    "determinate_at_gt_error_bar": {
+     "files": 23,
+     "values": 53
+    },
+    "full_gate_pass": {
+     "files": 1,
+     "values": 5
+    },
+    "example": {
+     "files": 1,
+     "values": 2
+    },
+    "literal": {
+     "files": 1,
+     "values": 17
+    },
+    "pre_values": {
+     "files": 1,
+     "values": 42
+    },
+    "flag_false": {
+     "files": 13,
+     "values": 13
+    },
+    "flag_true": {
+     "files": 13,
+     "values": 13
+    },
+    "list": {
+     "files": 13,
+     "values": 26
+    },
+    "fail_case": {
+     "files": 1,
+     "values": 1
+    },
+    "gate_pass_raw": {
+     "files": 1,
+     "values": 1
+    },
+    "step_qualifies": {
+     "files": 1,
+     "values": 16
+    },
+    "reconciles_to_net": {
+     "files": 1,
+     "values": 88
+    },
+    "flag_value": {
+     "files": 1,
+     "values": 88
+    }
+   },
+   "families": {
+    "objective_convergence": "g_<label>.json cycle_trajectory (gates, pre-W76)",
+    "determinate_at_gt_error_bar": "boyd_terminal.json (gates, pre-W76)",
+    "pass": "post_certification.json hull_polish_full.gate.pass (harness, pre-W74)",
+    "reconciles_to_net": "recourse_blocks_all.jsonl (W98 hooks, G14)"
+   },
+   "post_certification_entries": [
+    "data/SRP1/Results/P515S52/campaign_s52_pilot_nopersist/evals/711fce9aa74d6878_n7_4h_e1/post_certification.json",
+    "data/SRP1/Results/P515S52/campaign_s52_pilot_nopersist/evals/7d53b6f21b686a44_x0/post_certification.json",
+    "data/SRP1/Results/P515S53/alpha_row/campaign_s53_alpha_row_v25/evals/1bb2d63a07273887_x0_a1p00/post_certification.json",
+    "data/SRP1/Results/P515S53/alpha_row/campaign_s53_alpha_row_v25/evals/62b46280a65f7744_x0_a0p25/post_certification.json",
+    "data/SRP1/Results/P515S53/alpha_row/campaign_s53_alpha_row_v25/evals/711fce9aa74d6878_n7_4h_e1_a0p50/post_certification.json",
+    "data/SRP1/Results/P515S53/alpha_row/campaign_s53_alpha_row_v25/evals/7516903c91153a29_x0_a0p10/post_certification.json",
+    "data/SRP1/Results/P515S53/alpha_row/campaign_s53_alpha_row_v25/evals/7d53b6f21b686a44_x0_a0p50/post_certification.json"
+   ],
+   "holds": true
+  }
+ },
+ "summary": {
+  "C0": true,
+  "C1": true,
+  "C2": true,
+  "C3": true,
+  "C4": true,
+  "C5": true,
+  "C6": true,
+  "C7": true
+ },
+ "guard": {
+  "counts": {
+   "permitted_solve": 0,
+   "permitted_exec": 0,
+   "blocked_solve": 0,
+   "blocked_exec": 0
+  },
+  "verify_0_failures": []
+ },
+ "wall_s": 258.29921674728394
+}
