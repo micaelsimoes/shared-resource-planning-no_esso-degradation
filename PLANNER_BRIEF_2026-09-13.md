@@ -2235,6 +2235,109 @@ certify, adopt the larger ρ_ess. Report cycles, EFC trajectory, step sizes, fai
   by the rule → pair report (value, R three ways, reproducibility, settling) → **stop for review**.
   Then the SRP1 benchmark (Addendum 49 order) and Step 5 rows.
 
+# Addendum 52 — 3 × 3 pair closed; settling criterion to the Advisor; gate-result hygiene (2026-09-27)
+
+- **Pair closed; results accepted** (`P5_15_ADDENDUM51_CONTINUATION_REPORT.md`, `58ff8d88`).
+  Replay **bitwise 72/72** — the multi-scenario instance's reproducibility statement. After
+  certification the objective **oscillated and settled**: 4,492 € further fall under the frozen
+  rule, settled value 6,235 € below the certified one by the post-hoc fit (range 5.1–6.3 k€,
+  ≈ 7 × 10⁻⁶ relative). Stage 2 not triggered (threshold 17,965 €). **R ∈ [0.888, 0.913]**,
+  indistinguishable from the recorded 0.9331 — the mean-profile prediction holds. **x = 0 optimal
+  under the baseline at both instances.**
+- **Expert's predictions against outcomes:** replay bitwise — held; transient then settling — held
+  in kind, but the shape was a damped oscillation, not a hump with geometric decay; **D_x0 = 20–60 k€
+  — missed by an order of magnitude** (measured 4.5–6.3 k€); stage 2 triggered — missed;
+  R_settled ≥ 0.80 — held trivially. The accelerating steps of cycles 66–72 were one half-swing of
+  an oscillation, not the onset of a slide, and I read them as the latter. The corollary I stated in
+  Addendum 50 — that the bar could not bound the remaining descent — was true as a matter of
+  construction and false as a matter of fact here: 6.2 k€ settled inside the 14.0 k€ bar. The
+  standing statement is the narrow one: the bar bounds stopping slack once the objective has
+  settled; on this cell it did, and the continuation is what shows it.
+- **Settling criterion → Advisor review (Addendum 50's item), now with data and a constraint.** A
+  step bound is phase-dependent on an oscillating objective (the 500 € rule stopped at a turning
+  point and admits a ≈ 1,464 € swing). The criterion must bound the **envelope**: the range of Q
+  over a window at least one oscillation period long (period read from cycles 72–88), or the
+  amplitude of a damped-oscillation fit validated on points it did not use. Candidate: certify when
+  the 10-cycle range of Q ≤ a fraction of the value resolution the campaign targets, in addition to
+  the Boyd residuals. The review also takes the mechanism question: the oscillation lives mainly in
+  Spring and the TSO — a marginal-resource switch at the interface (λ_t near the DSO flexibility
+  shadow price in RES-covered Spring hours) is the candidate to test against the per-block records,
+  and the criterion must be robust to it. No compute; runs in parallel with the benchmark; adopted
+  into the spec before any further multi-scenario cell, Mac or VM.
+- **Gate-result hygiene — adopted, before the SRP1 benchmark runs.** One shared writer for gate
+  results; string-typed flags refused at write; a repository-wide test that loads every gate-result
+  JSON under the results tree and asserts boolean typing, so the next recurrence fails a test, not a
+  run. Rule into CLAUDE.md: a defect fixed twice is fixed at the writer, not at the caller. Second
+  rule from the same report, also into CLAUDE.md: **a fit is validated only on points it did not
+  use.** Both Planner self-corrections accepted as stated.
+- **Manuscript.** Multi-scenario instance: x = 0 optimal (determinate at 4.5×; drift-robust);
+  value ratio 0.89–0.91 (certified to settled) against 0.933 predicted from the mean-profile
+  spread; reproducibility bitwise over 72 cycles; certification paragraph: "certified on residuals
+  at cycle 72; a 16-cycle continuation showed a damped oscillation settling 6.2 k€ (7 × 10⁻⁶) below
+  the certified value, within the 14.0 k€ certification bar." SRP1 statements unchanged.
+- **Order:** gate-writer + type test (Worker, code + test, minutes) → SRP1 benchmark per Addendum 49
+  (λ_t vs π_t look → common-Q gate → 24-solve check → three arms × three starts → consistency
+  re-evaluation → report) → Step 5 rows. Advisor settling review in parallel. Stop for review after
+  the benchmark report.
+
+# Addendum 53 — settling criterion adopted (δR = 0.07); SRP1 references not settled: continuation first (2026-09-27)
+
+- **Ruling 1 — certification rule for multi-scenario cells: the Advisor's refined criterion,
+  adopted**, on top of the Boyd residuals: after the residuals pass, at least two sign changes of the
+  objective step (the period is measured, not assumed); successive swings not growing; the range of
+  Q over one full period ≤ τ; no fit in the decision. **Add a monotone branch:** if no sign change
+  occurs within 2× the longest period seen on the instance, certify when the steps are decreasing
+  and the range over that window ≤ τ. **δR = 0.07 → τ = δR·V_SRP1/4 = 4,539 € per cell.** Rationale:
+  the manuscript claims R to ± 0.035, which is the band already measured at 3 × 3 and makes the
+  statement "0.89–0.91 against 0.933 predicted, at the resolution" honest; resolving the 0.03 gap to
+  the prediction would need δR ≈ 0.035 (τ ≈ 2.3 k€) — a VM-scale refinement, recorded, not
+  ordered. Cost accepted: ≈ 3–4 h more per 3 × 3 cell. Addendum 52's 10-cycle candidate is
+  withdrawn (it certifies node-7 mid-descent).
+- **Ruling 2 — the SRP1 references first, before anything else that solves.** The finding that
+  matters most in this note: on all three SRP1 references the residuals first pass at the cycle
+  AA switches off, and Q then falls 38–53 k€ below every earlier trough; x = 0 was certified at the
+  bottom of that fall, the unit cell on the rebound. **The SRP1 value (259,375 €) therefore carries
+  an unquantified settling band, and the SRP1 sign margin — value − I ≈ −59 k€ — is of the same
+  order.** "x = 0 optimal at SRP1" is not safe until this is measured; at 3 × 3 it is (−81 k€ against
+  a measured 6 k€ slack). **Order:** continuation of **all three references** (x = 0, unit, C\*) as at
+  3 × 3 — bitwise replay to certification, then continue under the certifying regime until the new
+  criterion certifies or 100 cycles, ≈ 3.5 h in total — under spec v38 with the criterion as the
+  stop rule. **Expert's predictions:** settled slacks per cell within [5, 25] k€; the value's
+  settled change |ΔV| ≤ 20 k€, so the sign margin survives; the three slacks alike to within
+  ≈ 5 k€ (the certification rule fires at the same phase of the same transient, and the clean
+  affinity across dozens of SRP1 cells argues the slack is mostly common-mode). **If |ΔV| > 40 k€
+  the SRP1 sign conclusion is reopened.** Then **triage:** every SRP1 difference the manuscript
+  reports (Phase A ladders, break-even, ageing ×1.126, flexibility ladder, α row) whose margin is
+  below 3× the largest settled slack among the three references is flagged "pending" and listed
+  with its margin; a re-settling campaign (continuations of the flagged cells, ≈ 1.2 h each on the
+  Mac) is sized, and if it exceeds ten cells it is the VM's first job after the equivalence gate.
+- **Ruling 3 — the "ratio resolution 0.1405" is retired.** It measured the largest step at the
+  start of the window, i.e. stopping slack, not settling; every resolution statement from here
+  derives from τ and measured settling.
+- **Ruling 4 — benchmark.** The uncoordinated arms (minutes) run as soon as W100 is reviewed; the
+  coordinated arm is reported only after the x = 0 continuation, as a settled value, not a 31 k€
+  band. Nothing else changes in Addendum 49.
+- **Records.** The per-period interface consensus duals (λ_t per node) join the default per-cycle
+  records from now on — a write-only change; the mechanism question could not be tested for want
+  of them.
+- **Corrections accepted; ownership.** Addendum 51's "SRP1 settled at certification" is withdrawn —
+  the expert inferred settling from the tail's small total effect, which says nothing about the
+  AA-off transient; Addendum 52's "SRP1 statements unchanged" falls with it, pending the
+  continuation. The Planner's own correction stands: the objective converges at 0.892/cycle, faster
+  than the slowest residual (0.975); the residual criterion stops the iteration while Q is still
+  ≈ 20 k€ from its limit because the window opens exactly when AA switches off and the plain-ADMM
+  transient begins.
+- **Design note for the Advisor, no compute:** the certification window coincides with the AA-off
+  transient by construction. On the continuation data, evaluate whether switching AA off earlier
+  (residuals within 10× tolerance) would let the transient decay before the window opens and
+  shorten certified runs under the new criterion. Not adopted now.
+- **Manuscript.** 3 × 3 conclusions unaffected. **All SRP1 numbers on hold** until the
+  three-reference continuation reports — one working day at most. The certification paragraph
+  gains, for both instances, the settled-versus-certified figure and the criterion statement.
+- **Order:** W100 review → spec v38 (criterion; predictions) → SRP1 three-reference continuation
+  → **stop for review** (triage and any re-settling campaign are sized, not launched) → benchmark
+  arms → Step 5 rows.
+
 ## Update obligations
 
 At the end of Step 1 the Planner rewrites the "CURRENT SOURCE OF TRUTH" head of
