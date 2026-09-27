@@ -110,6 +110,7 @@ if REPO not in sys.path:
 os.chdir(REPO)
 
 import p515_s44_campaign_harness as H  # noqa: E402 -- standard library only at import (no model code)
+import gate_result_io as GRIO  # noqa: E402 -- W100 (Addendum 52): the one gate-result writer; stdlib only
 
 # ======================================================================================================================
 #  FROZEN CONFIGURATION (declared before any run; recorded in every artifact)
@@ -242,6 +243,8 @@ def _abs(rel):
     return os.path.join(REPO, rel)
 
 
+# W100 (Addendum 52): UNWIRED, RETAINED. `_write_json_once` / `_append_jsonl` now go through `gate_result_io` with
+# GRIO.json_default_item (this function's behaviour verbatim) plus the string-flag refusal. Unwire, never delete.
 def _json_default(o):
     if isinstance(o, (set, frozenset, tuple)):
         return list(o)
@@ -257,13 +260,13 @@ def _write_json_once(path, payload):
     if os.path.exists(path):
         raise RuntimeError(f'refusing to overwrite {path}')
     with open(path, 'x') as handle:
-        json.dump(payload, handle, indent=1, sort_keys=True, default=_json_default)
+        GRIO.dump(payload, handle, indent=1, sort_keys=True, default=GRIO.json_default_item)
     return path
 
 
 def _append_jsonl(path, record):
     with open(path, 'a') as handle:
-        handle.write(json.dumps(record, sort_keys=True, default=_json_default) + '\n')
+        handle.write(GRIO.dumps(record, sort_keys=True, default=GRIO.json_default_item) + '\n')
         handle.flush()
         os.fsync(handle.fileno())
 

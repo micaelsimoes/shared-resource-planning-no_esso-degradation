@@ -66,6 +66,8 @@ import os
 import time
 from contextlib import contextmanager
 
+import gate_result_io as GRIO  # W100 (Addendum 52): the one gate-result writer (stdlib only; refuses string flags)
+
 SCHEMA = 'p515_s53_w98_certification_continuation_v1'
 LABEL = ('CONTINUATION RUN (W98, spec v37) -- NOT a certification: certification rule disabled; regime held after '
          'cycle N (AA off, tight tail on, rho frozen)')
@@ -269,7 +271,7 @@ class ContinuationState:
             self.sink.append((fname, obj))
             return
         with open(os.path.join(self.eval_dir, fname), 'a') as handle:
-            handle.write(json.dumps(obj, default=str) + '\n')
+            handle.write(GRIO.dumps(obj, default=GRIO.json_default) + '\n')
             handle.flush()
             os.fsync(handle.fileno())
 

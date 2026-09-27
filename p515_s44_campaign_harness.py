@@ -273,6 +273,8 @@ REPO = os.path.dirname(os.path.abspath(__file__))
 if REPO not in sys.path:
     sys.path.insert(0, REPO)
 
+import gate_result_io as GRIO  # noqa: E402 -- W100 (Addendum 52): the one gate-result writer; stdlib only
+
 HARNESS_PATH = os.path.abspath(__file__)
 PYTHON = sys.executable
 CAMPAIGN_LOCK_PATH = os.path.join(REPO, '.p515_s44_campaign.lock')
@@ -401,6 +403,11 @@ def sha256_file(path):
     return h.hexdigest()
 
 
+# W100 (Addendum 52): this harness's artifact WRITERS now go through `gate_result_io` (GRIO.dump / GRIO.dumps with
+# GRIO.json_default, this function's behaviour verbatim, plus the string-flag refusal). `_json_default` is RETAINED
+# UNCHANGED because it still feeds hashes and in-memory round trips: the frozen-spec serializations of the W86 / W87 /
+# W88 / W89 / W90 / W98 launchers (`json.dumps(content, ..., default=H._json_default)`, hashed into the spec name) and
+# the two `json.loads(json.dumps(..., default=_json_default))` round trips below. Do not edit it.
 def _json_default(obj):
     """The `default=` hook of every artifact writer in this harness (P5.15 Addendum 44, W74). A numpy boolean is
     written as a JSON boolean; everything else exactly as before (`str`). Before W74 the hook was `str` alone, so a
@@ -417,7 +424,7 @@ def _json_default(obj):
 def _atomic_write_json(path, obj):
     tmp = path + '.tmp'
     with open(tmp, 'w') as handle:
-        json.dump(obj, handle, indent=1, default=_json_default)
+        GRIO.dump(obj, handle, indent=1, default=GRIO.json_default)
     os.replace(tmp, path)
 
 
@@ -425,7 +432,7 @@ def _write_once_json(path, obj):
     if os.path.exists(path):
         raise RuntimeError(f'refusing to overwrite existing artifact: {path}')
     with open(path, 'w') as handle:
-        json.dump(obj, handle, indent=1, default=_json_default)
+        GRIO.dump(obj, handle, indent=1, default=GRIO.json_default)
 
 
 def _git(args):
@@ -3942,7 +3949,7 @@ def alpha_row_run_hooks(eval_dir, label, candidate_key, derived_identity, alpha,
             rec['rss_bytes'] = proc.memory_info().rss if proc is not None else None
             rec['ru_maxrss_bytes'] = _resource.getrusage(_resource.RUSAGE_SELF).ru_maxrss
             with open(sidecar, 'a') as handle:
-                handle.write(json.dumps(rec, default=_json_default) + '\n')
+                handle.write(GRIO.dumps(rec, default=GRIO.json_default) + '\n')
                 handle.flush()
             st['t_last'] = time.time()
             return ok
@@ -4476,7 +4483,7 @@ def _write_once_json_compact(path, obj):
     if os.path.exists(path):
         raise RuntimeError(f'refusing to overwrite existing artifact: {path}')
     with open(path, 'x') as handle:
-        json.dump(obj, handle, separators=(',', ':'), default=_json_default)
+        GRIO.dump(obj, handle, separators=(',', ':'), default=GRIO.json_default)
 
 
 def write_response_terminal(planning, models, eval_dir, optimization_results=None):
@@ -4732,7 +4739,7 @@ def persist_convergence_depth_capture(state, eval_dir):
             raise RuntimeError(f'refusing to overwrite existing artifact: {path}')
     with open(records_path, 'w') as handle:
         for record in (records or []):
-            handle.write(json.dumps(record, default=_json_default) + '\n')
+            handle.write(GRIO.dumps(record, default=GRIO.json_default) + '\n')
     _write_once_json(tail_path, tail_state)
     recs = list(records or [])
     return {
@@ -4817,11 +4824,11 @@ class ConvergenceDepthAppender:
             os.fsync(handle.fileno())
 
     def _event(self, event):
-        self._append_lines(self.events_path, [json.dumps(event, default=_json_default) + '\n'])
+        self._append_lines(self.events_path, [GRIO.dumps(event, default=GRIO.json_default) + '\n'])
 
     def append_round(self, round_index, records, event='drained'):
         self._append_lines(self.records_path,
-                           [json.dumps(record, default=_json_default) + '\n' for record in records])
+                           [GRIO.dumps(record, default=GRIO.json_default) + '\n' for record in records])
         self.n_records += len(records)
         self.rounds.append(round_index)
         self._event({'event': event, 'round': round_index, 'n_records': len(records),
@@ -5338,7 +5345,7 @@ def _child_real(args, spec, spec_path, entry, eval_dir, lock_content, env_caps, 
             if capture_multiscenario:
                 merged.update(response_by_cycle.get(int(r.get('cycle')), {'response_captured': False,
                                                                           'response_capture_error': 'no response line'}))
-            handle.write(json.dumps({k: merged.get(k) for k in per_cycle_fields}, default=_json_default) + '\n')
+            handle.write(GRIO.dumps({k: merged.get(k) for k in per_cycle_fields}, default=GRIO.json_default) + '\n')
 
     with open(os.path.join(eval_dir, 'component_levels_terminal.json')) as handle:
         component_levels = json.load(handle)

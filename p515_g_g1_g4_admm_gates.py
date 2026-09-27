@@ -76,6 +76,7 @@ REPO = os.path.dirname(os.path.abspath(__file__))
 if REPO not in sys.path:
     sys.path.insert(0, REPO)
 
+import gate_result_io as GRIO  # noqa: E402 -- W100 (Addendum 52): the one gate-result writer
 import p512_a_cold_rescaled_convergence as A  # noqa: E402
 import p514_n_instrumented_cstar as N  # noqa: E402
 import p514_l_capacity_ladder as L  # noqa: E402
@@ -209,6 +210,9 @@ def _require_fresh_output_root(path):
             f'refusing to start: output root already exists (no overwrite, no reuse): {path}')
 
 
+# W100 (Addendum 52): UNWIRED, RETAINED. Every writer of this module now goes through `gate_result_io` (GRIO.dump /
+# GRIO.dumps with GRIO.json_default -- this function's behaviour verbatim -- plus the string-flag refusal). Kept (unwire,
+# never delete): `p515_s53_w76_gates_json_default_checks.py` resolves `G._json_default` by name.
 def _json_default(obj):
     """The `default=` hook of every artifact writer in this module (P5.15 W76; the pattern of W74's
     `p515_s44_campaign_harness._json_default`). A numpy boolean is written as a JSON boolean; everything else exactly as
@@ -226,7 +230,7 @@ def _json_default(obj):
 def _atomic_write_json(path, obj):
     tmp = f'{path}.tmp{os.getpid()}'
     with open(tmp, 'w') as handle:
-        json.dump(obj, handle, indent=1, default=_json_default)
+        GRIO.dump(obj, handle, indent=1, default=GRIO.json_default)
     os.replace(tmp, path)
 
 
@@ -463,7 +467,7 @@ def _capture_esso_solve(sed, models, node_diag, esso_capture_dir, cycle_label, h
         _refuse_overwrite(path)
         with open(path, 'w') as handle:
             for rec in records:
-                handle.write(json.dumps(rec, default=_json_default) + '\n')
+                handle.write(GRIO.dumps(rec, default=GRIO.json_default) + '\n')
 
         max_ratio, n_periods, argmax, measured = SED._complementarity_ratio_for_model(model)
         counts = {}
@@ -875,7 +879,7 @@ def _scan_and_write_network_failures(hook_state, planning_problem):
                 row = dict(record)
                 if record_type is not None:
                     row['record_type'] = record_type
-                handle.write(json.dumps(row, default=_json_default) + '\n')
+                handle.write(GRIO.dumps(row, default=GRIO.json_default) + '\n')
         os.replace(tmp, path)
 
     _atomic_jsonl(failures_path, blocks)
@@ -914,7 +918,7 @@ def esso_capture_hooks(planning, hook_state):
             sed, models, by_node, hook_state['esso_capture_dir'], cycle_label, hook_state)
         with open(hook_state['leak_path'], 'a') as handle:
             for rec in leak_records:
-                handle.write(json.dumps(rec, default=_json_default) + '\n')
+                handle.write(GRIO.dumps(rec, default=GRIO.json_default) + '\n')
         hook_state['esso_solves_so_far'] = len(sed.esso_complementarity_diagnostics)
 
         total_recovery = list(sed.solver_recovery_diagnostics)
@@ -1442,7 +1446,7 @@ def run_admm_arm(label, out_dir, k_override=None, investment_map=None,
     path = os.path.join(out_dir, f'g_{label}.json')
     _refuse_overwrite(path)
     with open(path, 'w') as handle:
-        json.dump(report, handle, indent=1, default=_json_default)
+        GRIO.dump(report, handle, indent=1, default=GRIO.json_default)
 
     efc_all = [v['efc_per_day_max'] for v in report['esso_capture'].values() if v['efc_per_day_max']]
     print(f"[P5.15-G {label}] recourse={report['recourse']} "
@@ -1871,7 +1875,7 @@ def write_component_levels_terminal(planning, sed, models, rows, report, out_dir
     path = os.path.join(out_dir, 'component_levels_terminal.json')
     _refuse_overwrite(path)
     with open(path, 'w') as handle:
-        json.dump(payload, handle, indent=1, default=_json_default)
+        GRIO.dump(payload, handle, indent=1, default=GRIO.json_default)
     print(f'[S31 Part 3] component_levels_terminal.json written: {path}')
     return path
 
@@ -2085,7 +2089,7 @@ def write_interface_settlement_detail_s31c(planning, sed, models, rows, report, 
     path = os.path.join(out_dir, 'interface_settlement_detail_s31c.json')
     _refuse_overwrite(path)
     with open(path, 'w') as handle:
-        json.dump(payload, handle, indent=1, default=_json_default)
+        GRIO.dump(payload, handle, indent=1, default=GRIO.json_default)
     print(f'[S31C Part 3] interface_settlement_detail_s31c.json written: {path}')
     return path
 
@@ -2363,7 +2367,7 @@ def write_boyd_terminal_s32(planning, sed, models, rows, report, out_dir, label)
     path = os.path.join(out_dir, 'boyd_terminal.json')
     _refuse_overwrite(path)
     with open(path, 'w') as handle:
-        json.dump(payload, handle, indent=1, default=_json_default)
+        GRIO.dump(payload, handle, indent=1, default=GRIO.json_default)
     print(f'[S32] boyd_terminal.json written: {path}')
     return path
 
@@ -2639,7 +2643,7 @@ def write_interface_voltage_terminal(planning, models, out_dir, label, cycle=Non
     path = os.path.join(out_dir, 'interface_voltage_terminal.json')
     _refuse_overwrite(path)
     with open(path, 'w') as handle:
-        json.dump(payload, handle, indent=1, default=_json_default)
+        GRIO.dump(payload, handle, indent=1, default=GRIO.json_default)
     print(f'[S33E2] interface_voltage_terminal.json written: {path}')
     return path
 
@@ -2739,7 +2743,7 @@ def write_boyd_terminal_s33e2(planning, sed, models, rows, report, out_dir, labe
     path = os.path.join(out_dir, 'boyd_terminal.json')
     _refuse_overwrite(path)
     with open(path, 'w') as handle:
-        json.dump(payload, handle, indent=1, default=_json_default)
+        GRIO.dump(payload, handle, indent=1, default=GRIO.json_default)
     print(f'[S33E2] boyd_terminal.json written: {path}')
     return path
 
@@ -3014,7 +3018,7 @@ def s34_capture_hooks(recourse_jump_path, ess_stride_path, stride=1):
             state['previous_objective_component_blocks'] = current_obj_blocks
 
         with open(recourse_jump_path, 'a') as handle:
-            handle.write(json.dumps(entry, default=_json_default) + '\n')
+            handle.write(GRIO.dumps(entry, default=GRIO.json_default) + '\n')
 
         # ---- (2) per-entry ESS z/x on the recorded stride, + EFC/day/node ----
         if (cycle - 1) % max(int(stride), 1) == 0:
@@ -3044,10 +3048,10 @@ def s34_capture_hooks(recourse_jump_path, ess_stride_path, stride=1):
                         values.append(avg / (2.0 * rated))
                 efc_per_node[str(node_id)] = max(values) if values else None
             with open(ess_stride_path, 'a') as handle:
-                handle.write(json.dumps(
+                handle.write(GRIO.dumps(
                     {'cycle': cycle, 'stride': stride, 'entries': ess_entries,
                      'efc_per_day_per_node': efc_per_node},
-                    default=_json_default) + '\n')
+                    default=GRIO.json_default) + '\n')
 
         return real_fn(planning_problem, tso_model, dso_models, esso_model, consensus_vars, dual_vars, admm_parameters)
 
@@ -3241,7 +3245,7 @@ def write_boyd_terminal_s34(planning, sed, models, rows, report, out_dir, label)
     path = os.path.join(out_dir, 'boyd_terminal.json')
     _refuse_overwrite(path)
     with open(path, 'w') as handle:
-        json.dump(payload, handle, indent=1, default=_json_default)
+        GRIO.dump(payload, handle, indent=1, default=GRIO.json_default)
     print(f'[S34] boyd_terminal.json written: {path}')
     return path
 
@@ -3617,7 +3621,7 @@ def s35ref_capture_hooks(recourse_jump_path, ess_stride_path, floor_sidecar_path
                         'efc_per_day': efc_per_day,
                     })
             with open(floor_sidecar_path, 'a') as handle:
-                handle.write(json.dumps({
+                handle.write(GRIO.dumps({
                     'cycle': cycle,
                     'dual_sign_convention': (
                         "model.dual.get(con) as returned by Pyomo (Suffix "
@@ -3627,7 +3631,7 @@ def s35ref_capture_hooks(recourse_jump_path, ess_stride_path, floor_sidecar_path
                         "_duals_for_keys uses elsewhere in this harness"
                     ),
                     'entries': floor_entries,
-                }, default=_json_default) + '\n')
+                }, default=GRIO.json_default) + '\n')
             return result
 
         srp.get_admm_boyd_residual_metrics = wrapper2
@@ -3875,7 +3879,7 @@ def write_boyd_terminal_s35ref(planning, sed, models, rows, report, out_dir, lab
     path = os.path.join(out_dir, 'boyd_terminal.json')
     _refuse_overwrite(path)
     with open(path, 'w') as handle:
-        json.dump(payload, handle, indent=1, default=_json_default)
+        GRIO.dump(payload, handle, indent=1, default=GRIO.json_default)
     print(f'[S35REF] boyd_terminal.json written: {path}')
     return path
 
@@ -4458,7 +4462,7 @@ def write_boyd_terminal_s35pt(planning, sed, models, rows, report, out_dir, labe
     path = os.path.join(out_dir, 'boyd_terminal.json')
     _refuse_overwrite(path)
     with open(path, 'w') as handle:
-        json.dump(payload, handle, indent=1, default=_json_default)
+        GRIO.dump(payload, handle, indent=1, default=GRIO.json_default)
     print(f'[S35PT] boyd_terminal.json written: {path}')
     return path
 
@@ -4563,7 +4567,7 @@ def s35ref_replay_cycle0_lmp_hooks(cycle0_lmp_path, node_ids=(5, 7, 9)):
         dso_duals, dso_base_mva = C0.capture_dso_reference_node_balance_duals(
             state['dso_models'], state['distribution_networks'], node_ids)
         with open(cycle0_lmp_path, 'w') as handle:
-            json.dump({
+            GRIO.dump({
                 'tso_node_balance_duals_pu': tso_duals,
                 'dso_reference_node_balance_duals_pu': dso_duals,
                 'dso_base_mva': dso_base_mva,
@@ -4572,7 +4576,7 @@ def s35ref_replay_cycle0_lmp_hooks(cycle0_lmp_path, node_ids=(5, 7, 9)):
                     'docstring: model.dual.get(constraint), NO sign flip; LMP [$/MWh] = '
                     'dual_pu / network.baseMVA; UNSCALED objective at construction.'
                 ),
-            }, handle, default=_json_default)
+            }, handle, default=GRIO.json_default)
         state['written'] = True
 
     def w_tso(planning_problem, consensus_vars, total_capacity):
@@ -4653,7 +4657,7 @@ def write_terminal_storage_duals_s35ref_replay(planning, sed, models, rows, repo
     path = os.path.join(out_dir, f'terminal_storage_duals_{label}.json')
     _refuse_overwrite(path)
     with open(path, 'w') as handle:
-        json.dump({'lambda_per_agent': duals_out, 'x_per_agent': x_out, 'z': z_out}, handle, default=_json_default)
+        GRIO.dump({'lambda_per_agent': duals_out, 'x_per_agent': x_out, 'z': z_out}, handle, default=GRIO.json_default)
     report['s35ref_replay_terminal_storage_duals_path'] = os.path.relpath(path, REPO)
 
 
@@ -5375,13 +5379,13 @@ def s38_pf_capture_hooks(recourse_jump_path, ess_stride_path, floor_sidecar_path
                     f'rel_err={rel_err_s})')
 
             with open(pf_stride_path, 'a') as handle:
-                handle.write(json.dumps({
+                handle.write(GRIO.dumps({
                     'cycle': cycle, 'stride': stride,
                     'reconstructed_r': reconstructed_r, 'reconstructed_s': reconstructed_s,
                     'production_boyd_pf_r': production_r, 'production_boyd_pf_s': production_s,
                     'rel_err_r': rel_err_r, 'rel_err_s': rel_err_s, 'identity_holds': identity_holds,
                     'entries': entries,
-                }, default=_json_default) + '\n')
+                }, default=GRIO.json_default) + '\n')
 
             return result
 
@@ -5979,7 +5983,7 @@ def s39_exempt_until_capture_hooks(exempt_until_state_path):
                 'consecutive_cycles': cfg['consecutive_cycles'],
             }
         with open(exempt_until_state_path, 'a') as handle:
-            handle.write(json.dumps({'cycle': iter, 'channels': channels_entry}, default=_json_default) + '\n')
+            handle.write(GRIO.dumps({'cycle': iter, 'channels': channels_entry}, default=GRIO.json_default) + '\n')
         return result
 
     srp._update_admm_penalties = wrapper
@@ -6979,7 +6983,7 @@ if __name__ == '__main__':
         identity_path = os.path.join(OUT_S35REF_REPLAY, 'bitwise_identity_check_vs_run1.json')
         _refuse_overwrite(identity_path)
         with open(identity_path, 'w') as handle:
-            json.dump(identity_check, handle, indent=1, default=_json_default)
+            GRIO.dump(identity_check, handle, indent=1, default=GRIO.json_default)
         print(f'[S35REF_REPLAY] bitwise identity vs run 1: {identity_check}')
         print(f'[S35REF_REPLAY] wrote: {identity_path}')
     elif gate == 's37_rho0p01':
