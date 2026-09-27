@@ -1,0 +1,1857 @@
+{
+ "authority": [
+  "PLANNER_BRIEF_2026-09-13.md Addendum 53 (committed 4a80c3e2)",
+  "TASKS.md Addendum 53 order (Advisor algorithm adopted)",
+  "Planner task W101",
+  "P5_15_ADDENDUM52_SETTLING_REVIEW_NOTE.md option 1(a)"
+ ],
+ "capture_checklist_asserted_before_any_solve": {
+  "a": "boyd_metrics['all_boyd_pass'] exists; the AA wrapper installed with AA enabled",
+  "b": "source order _anderson_acceleration_cycle_step( < _get_operational_recourse_components( < convergence test",
+  "c": "no early_stop in the declaration; certificate length written only by disable / restore / settling",
+  "d": "CAP == N + 100",
+  "e": "the replay reference hashes and holds exactly 1..N",
+  "f": "every constant with its formula and the P_MAX function name",
+  "g": "tests 1-12 + the 2(b) replay (checks)",
+  "h": "the lambda_t capture path",
+  "i": "the per-cycle line fields (G18, post-run)",
+  "j": "production counters in per_cycle_record (G20)",
+  "k": "post-run replay of the pure function (G17)"
+ },
+ "cell_order": [
+  "x0",
+  "n7_4h_e1",
+  "c_star"
+ ],
+ "cells": {
+  "c_star": {
+   "N": 87,
+   "Q_N_recorded": 650911546.2054665,
+   "campaign_id": "s53_w101_srp1_cont_c_star",
+   "campaign_root": "data/SRP1/Results/P515S53/w101_srp1_continuation/campaign_s53_w101_srp1_cont_c_star",
+   "candidate_key": "578636daa6d6360d6701764c73ddf795e53c2c37e511e21be1400024f8f6350c",
+   "canonical": {
+    "investment_year": 2025,
+    "nodes": {
+     "5": [
+      0.96875,
+      3.875
+     ],
+     "7": [
+      0.96875,
+      3.875
+     ],
+     "9": [
+      0.96875,
+      3.875
+     ]
+    }
+   },
+   "cap": 187,
+   "declaration": {
+    "abort_on_replay_divergence": true,
+    "cap_after_hold": 100,
+    "cell": "c_star",
+    "hold_after_cycle": 87,
+    "label": "SETTLING CONTINUATION RUN (W101, spec v39) -- replay of a certified SRP1 reference gated bitwise through cycle N (abort on divergence), then the certifying regime held (AA off, tight tail on, rho frozen) until the settling stop rule certifies or the cap N + 100",
+    "record_all_blocks": true,
+    "replay_reference": {
+     "n_cycles": 87,
+     "per_cycle_record": "data/SRP1/Results/P515S53/tight_tail_w86/campaign_s53_w86_tail_recert/evals/96c5aa50cc229cc1_c_star/per_cycle_record.jsonl",
+     "sha256": "dd580b247b7f917638af6393fdbdebdbf96d37a0e520342849fb7d11975deeb8"
+    },
+    "settling_rule": {
+     "eps0": 45.39068275,
+     "function": "settling_criterion.SettlingRule",
+     "k_excl": 3,
+     "l_mono": 44,
+     "module": "settling_criterion",
+     "p_max": 22,
+     "p_max_function": "settling_criterion.p_max_from_records",
+     "tau": 4539.0682750000005,
+     "w_factor": 1.1,
+     "w_min": 20
+    }
+   },
+   "keys": {
+    "base_key_without_continuation": "96c5aa50cc229cc14f8bfd34de306b7cc79caf77ac28a09e0046ad3978c49772",
+    "continuation_key": "4bf36c151fd106139782939724c6d888585cdb78e0dbff6516d2cea36a42d5a1"
+   },
+   "launch_command_template": "cd /Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation && set -o noclobber && NLP_SOLVER_PATH=/usr/local/bin/ipopt /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python -u p515_s53_w101_srp1_continuation_campaign.py --run --cell c_star --spec-sha256 <campaign spec sha256 of c_star> > data/SRP1/Results/P515S53/w101_srp1_continuation/run_c_star_v39_launch.log 2>&1",
+   "pre_launch_assertion_at_freeze": {
+    "base_key_without_continuation": "96c5aa50cc229cc14f8bfd34de306b7cc79caf77ac28a09e0046ad3978c49772",
+    "continuation_key": "4bf36c151fd106139782939724c6d888585cdb78e0dbff6516d2cea36a42d5a1",
+    "eval_dir_name": "4bf36c151fd10613_c_star",
+    "excluded_roots": [
+     "data/SRP1/Results/P515S53/w101_srp1_continuation"
+    ],
+    "holds": true,
+    "n_committed_keys_scanned": 3524,
+    "parts": {
+     "base_key_equals_recert_key": true,
+     "campaign_root_differs_from_recert": true,
+     "continuation_key_absent_from_committed_specs_outside_w101_root": true,
+     "continuation_key_differs_from_recert_key": true,
+     "eval_dir_name_differs_from_recert": true,
+     "working_dir_ids_differ_from_recert": true,
+     "working_dirs_absent": true
+    },
+    "recert_working_dir_ids": {
+     "precheck": "p515s44_s53_w86_tail_recert_96c5aa50cc229cc1_precheck",
+     "run": "p515s44_s53_w86_tail_recert_96c5aa50cc229cc1_run"
+    },
+    "working_dir_ids": {
+     "precheck": "p515s44_s53_w101_srp1_cont_c_star_4bf36c151fd10613_precheck",
+     "run": "p515s44_s53_w101_srp1_cont_c_star_4bf36c151fd10613_run"
+    }
+   },
+   "recert_eval_key": "96c5aa50cc229cc14f8bfd34de306b7cc79caf77ac28a09e0046ad3978c49772",
+   "replay_reference": {
+    "n_cycles": 87,
+    "per_cycle_record": "data/SRP1/Results/P515S53/tight_tail_w86/campaign_s53_w86_tail_recert/evals/96c5aa50cc229cc1_c_star/per_cycle_record.jsonl",
+    "sha256": "dd580b247b7f917638af6393fdbdebdbf96d37a0e520342849fb7d11975deeb8"
+   }
+  },
+  "n7_4h_e1": {
+   "N": 112,
+   "Q_N_recorded": 653599356.2420883,
+   "campaign_id": "s53_w101_srp1_cont_n7_4h_e1",
+   "campaign_root": "data/SRP1/Results/P515S53/w101_srp1_continuation/campaign_s53_w101_srp1_cont_n7_4h_e1",
+   "candidate_key": "db77e1549af855bcb3521950c634db55fe6c155ab2de591b0441b5f2bf4b369a",
+   "canonical": {
+    "investment_year": 2025,
+    "nodes": {
+     "5": [
+      0.0,
+      0.0
+     ],
+     "7": [
+      0.25,
+      1.0
+     ],
+     "9": [
+      0.0,
+      0.0
+     ]
+    }
+   },
+   "cap": 212,
+   "declaration": {
+    "abort_on_replay_divergence": true,
+    "cap_after_hold": 100,
+    "cell": "n7_4h_e1",
+    "hold_after_cycle": 112,
+    "label": "SETTLING CONTINUATION RUN (W101, spec v39) -- replay of a certified SRP1 reference gated bitwise through cycle N (abort on divergence), then the certifying regime held (AA off, tight tail on, rho frozen) until the settling stop rule certifies or the cap N + 100",
+    "record_all_blocks": true,
+    "replay_reference": {
+     "n_cycles": 112,
+     "per_cycle_record": "data/SRP1/Results/P515S53/tight_tail_w86/campaign_s53_w86_tail_recert/evals/ca8927e75d628bd1_n7_4h_e1/per_cycle_record.jsonl",
+     "sha256": "b5875bbe9908cc3dfd14add7afb168622698b5d6ff500d50acb1117962d58d1f"
+    },
+    "settling_rule": {
+     "eps0": 45.39068275,
+     "function": "settling_criterion.SettlingRule",
+     "k_excl": 3,
+     "l_mono": 44,
+     "module": "settling_criterion",
+     "p_max": 22,
+     "p_max_function": "settling_criterion.p_max_from_records",
+     "tau": 4539.0682750000005,
+     "w_factor": 1.1,
+     "w_min": 20
+    }
+   },
+   "keys": {
+    "base_key_without_continuation": "ca8927e75d628bd188cf74f9d81436cbb3e0be53f64e02d9876ebb271a21951d",
+    "continuation_key": "3f084f2ffaeef2b78c9c6930d7f2134e66b61fbbefecef19a5ce0db8b1e9d153"
+   },
+   "launch_command_template": "cd /Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation && set -o noclobber && NLP_SOLVER_PATH=/usr/local/bin/ipopt /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python -u p515_s53_w101_srp1_continuation_campaign.py --run --cell n7_4h_e1 --spec-sha256 <campaign spec sha256 of n7_4h_e1> > data/SRP1/Results/P515S53/w101_srp1_continuation/run_n7_4h_e1_v39_launch.log 2>&1",
+   "pre_launch_assertion_at_freeze": {
+    "base_key_without_continuation": "ca8927e75d628bd188cf74f9d81436cbb3e0be53f64e02d9876ebb271a21951d",
+    "continuation_key": "3f084f2ffaeef2b78c9c6930d7f2134e66b61fbbefecef19a5ce0db8b1e9d153",
+    "eval_dir_name": "3f084f2ffaeef2b7_n7_4h_e1",
+    "excluded_roots": [
+     "data/SRP1/Results/P515S53/w101_srp1_continuation"
+    ],
+    "holds": true,
+    "n_committed_keys_scanned": 3524,
+    "parts": {
+     "base_key_equals_recert_key": true,
+     "campaign_root_differs_from_recert": true,
+     "continuation_key_absent_from_committed_specs_outside_w101_root": true,
+     "continuation_key_differs_from_recert_key": true,
+     "eval_dir_name_differs_from_recert": true,
+     "working_dir_ids_differ_from_recert": true,
+     "working_dirs_absent": true
+    },
+    "recert_working_dir_ids": {
+     "precheck": "p515s44_s53_w86_tail_recert_ca8927e75d628bd1_precheck",
+     "run": "p515s44_s53_w86_tail_recert_ca8927e75d628bd1_run"
+    },
+    "working_dir_ids": {
+     "precheck": "p515s44_s53_w101_srp1_cont_n7_4h_e1_3f084f2ffaeef2b7_precheck",
+     "run": "p515s44_s53_w101_srp1_cont_n7_4h_e1_3f084f2ffaeef2b7_run"
+    }
+   },
+   "recert_eval_key": "ca8927e75d628bd188cf74f9d81436cbb3e0be53f64e02d9876ebb271a21951d",
+   "replay_reference": {
+    "n_cycles": 112,
+    "per_cycle_record": "data/SRP1/Results/P515S53/tight_tail_w86/campaign_s53_w86_tail_recert/evals/ca8927e75d628bd1_n7_4h_e1/per_cycle_record.jsonl",
+    "sha256": "b5875bbe9908cc3dfd14add7afb168622698b5d6ff500d50acb1117962d58d1f"
+   }
+  },
+  "x0": {
+   "N": 132,
+   "Q_N_recorded": 653858731.5686293,
+   "campaign_id": "s53_w101_srp1_cont_x0",
+   "campaign_root": "data/SRP1/Results/P515S53/w101_srp1_continuation/campaign_s53_w101_srp1_cont_x0",
+   "candidate_key": "8435c71859ddde68e7ae5818b4ff91c03b4171791bcfaa70edcc3ddb52bacb57",
+   "canonical": {
+    "investment_year": 2025,
+    "nodes": {
+     "5": [
+      0.0,
+      0.0
+     ],
+     "7": [
+      0.0,
+      0.0
+     ],
+     "9": [
+      0.0,
+      0.0
+     ]
+    }
+   },
+   "cap": 232,
+   "declaration": {
+    "abort_on_replay_divergence": true,
+    "cap_after_hold": 100,
+    "cell": "x0",
+    "hold_after_cycle": 132,
+    "label": "SETTLING CONTINUATION RUN (W101, spec v39) -- replay of a certified SRP1 reference gated bitwise through cycle N (abort on divergence), then the certifying regime held (AA off, tight tail on, rho frozen) until the settling stop rule certifies or the cap N + 100",
+    "record_all_blocks": true,
+    "replay_reference": {
+     "n_cycles": 132,
+     "per_cycle_record": "data/SRP1/Results/P515S53/tight_tail_w86/campaign_s53_w86_tail_recert/evals/5cfe69a615ae3708_x0/per_cycle_record.jsonl",
+     "sha256": "bd7e47057ee618486fed0a385e8f784ecfd0089e77d5da2aaef13e89fed2f4a2"
+    },
+    "settling_rule": {
+     "eps0": 45.39068275,
+     "function": "settling_criterion.SettlingRule",
+     "k_excl": 3,
+     "l_mono": 44,
+     "module": "settling_criterion",
+     "p_max": 22,
+     "p_max_function": "settling_criterion.p_max_from_records",
+     "tau": 4539.0682750000005,
+     "w_factor": 1.1,
+     "w_min": 20
+    }
+   },
+   "keys": {
+    "base_key_without_continuation": "5cfe69a615ae370835a5896eaa6899f1d9973b7adf649437c2ddd94d1d2836ee",
+    "continuation_key": "d110bd1a5977df1e811a1b3963afc565de6daa65f76dcc096ead3fdc70b08546"
+   },
+   "launch_command_template": "cd /Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation && set -o noclobber && NLP_SOLVER_PATH=/usr/local/bin/ipopt /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python -u p515_s53_w101_srp1_continuation_campaign.py --run --cell x0 --spec-sha256 <campaign spec sha256 of x0> > data/SRP1/Results/P515S53/w101_srp1_continuation/run_x0_v39_launch.log 2>&1",
+   "pre_launch_assertion_at_freeze": {
+    "base_key_without_continuation": "5cfe69a615ae370835a5896eaa6899f1d9973b7adf649437c2ddd94d1d2836ee",
+    "continuation_key": "d110bd1a5977df1e811a1b3963afc565de6daa65f76dcc096ead3fdc70b08546",
+    "eval_dir_name": "d110bd1a5977df1e_x0",
+    "excluded_roots": [
+     "data/SRP1/Results/P515S53/w101_srp1_continuation"
+    ],
+    "holds": true,
+    "n_committed_keys_scanned": 3524,
+    "parts": {
+     "base_key_equals_recert_key": true,
+     "campaign_root_differs_from_recert": true,
+     "continuation_key_absent_from_committed_specs_outside_w101_root": true,
+     "continuation_key_differs_from_recert_key": true,
+     "eval_dir_name_differs_from_recert": true,
+     "working_dir_ids_differ_from_recert": true,
+     "working_dirs_absent": true
+    },
+    "recert_working_dir_ids": {
+     "precheck": "p515s44_s53_w86_tail_recert_5cfe69a615ae3708_precheck",
+     "run": "p515s44_s53_w86_tail_recert_5cfe69a615ae3708_run"
+    },
+    "working_dir_ids": {
+     "precheck": "p515s44_s53_w101_srp1_cont_x0_d110bd1a5977df1e_precheck",
+     "run": "p515s44_s53_w101_srp1_cont_x0_d110bd1a5977df1e_run"
+    }
+   },
+   "recert_eval_key": "5cfe69a615ae370835a5896eaa6899f1d9973b7adf649437c2ddd94d1d2836ee",
+   "replay_reference": {
+    "n_cycles": 132,
+    "per_cycle_record": "data/SRP1/Results/P515S53/tight_tail_w86/campaign_s53_w86_tail_recert/evals/5cfe69a615ae3708_x0/per_cycle_record.jsonl",
+    "sha256": "bd7e47057ee618486fed0a385e8f784ecfd0089e77d5da2aaef13e89fed2f4a2"
+   }
+  }
+ },
+ "code_sha256": {
+  "gate_result_io.py": "26cadaa5c3105f9adb879ece756ef6d659b374f647a7756030efe80a2df6d07d",
+  "interface_dual_capture.py": "e4223ac25fa488970ec195b4c3bb6b1171faa3aeba4824e0d6ee6482ab58f55c",
+  "p515_g_g1_g4_admm_gates.py": "6f4631e10a2f8a7786390c0f96e45332706779ae9cdf6a87ddd716d9ad9ad346",
+  "p515_gate_result_bool_typing_test.py": "dbd6f92b772a5816ab929cef66e7132aaec0adc96c6ac55bc6ec0bf651652e76",
+  "p515_s44_campaign_harness.py": "3ad624cd74f9a832037d20d2480adb9b03d559aee1c5d9675dc8aeb6c3b9d8a2",
+  "p515_s53_w101_continuation_checks.py": "8f786a21a70f7363451e1f1261aaad5a0ae8b3075c74fd3785f06a5db953cd6a",
+  "p515_s53_w101_settling_continuation_hooks.py": "05004cf8b475c940ef1d30a225bcad20e257f02c0d34bb5034ee4975d6625f6b",
+  "p515_s53_w101_srp1_continuation_campaign.py": "1ad7a7c8127681b93f1a2191f48cc6bf4f0dec846026163c567782693038ed64",
+  "p515_s53_w86_tail_recert_campaign.py": "812333ff36603c123c3e5909b0777de2c17af6971cebb396e854af5f186a55b2",
+  "p515_s53_w89_3x3_campaign.py": "2fe976849522a10a6ebf876459b1c4397789374c4928862f6874a3eeeddc5a5d",
+  "p515_s53_w89_g6_final_attempt_reeval.py": "d1d543bf3c38098921765b6c18b9b9b64600932985211364f150b8b24595565e",
+  "p515_s53_w90_3x3_campaign.py": "3b9ad1fb0bbcf8872a6a79e8c800994f7296f0415ef93d112287b869386a9b2c",
+  "p515_s53_w95_x0_drift_diagnostics.py": "6530eb22a807ea74652ed85fb4d15d4e5a230b624c6db45ff15d40f45ebd9e68",
+  "p515_s53_w98_continuation_campaign.py": "c27230a95a693d20c53bfeebb5505765a2f37877383a21cf2c136096fbe7c3ee",
+  "p515_s53_w98_continuation_checks.py": "25edfd17fae83832b4c3f46812a24018c8905d2b399201814f5fd39321f35172",
+  "p515_s53_w98_continuation_hooks.py": "eb0ef724daacb2d5107c12db2d32ef4cb4546ff634c6e4957be897e2c0582fb4",
+  "settling_criterion.py": "fbe5550b34a4062feed82476e1959b5e4e2786cb13ca61728bfa1803ba75f65f"
+ },
+ "code_since_recert_run": {
+  "changed_py": [
+   {
+    "path": "gate_result_io.py",
+    "status": "A"
+   },
+   {
+    "path": "interface_dual_capture.py",
+    "status": "A"
+   },
+   {
+    "path": "p515_g_g1_g4_admm_gates.py",
+    "status": "M"
+   },
+   {
+    "path": "p515_gate_result_bool_typing_test.py",
+    "status": "A"
+   },
+   {
+    "path": "p515_s44_campaign_harness.py",
+    "status": "M"
+   },
+   {
+    "path": "p515_s53_w100_gate_writer_checks.py",
+    "status": "A"
+   },
+   {
+    "path": "p515_s53_w101_continuation_checks.py",
+    "status": "A"
+   },
+   {
+    "path": "p515_s53_w101_settling_continuation_hooks.py",
+    "status": "A"
+   },
+   {
+    "path": "p515_s53_w101_srp1_continuation_campaign.py",
+    "status": "A"
+   },
+   {
+    "path": "p515_s53_w87_g6_rescope_reeval.py",
+    "status": "A"
+   },
+   {
+    "path": "p515_s53_w88_g6_floor_reeval.py",
+    "status": "A"
+   },
+   {
+    "path": "p515_s53_w89_3x3_campaign.py",
+    "status": "A"
+   },
+   {
+    "path": "p515_s53_w89_g6_final_attempt_reeval.py",
+    "status": "A"
+   },
+   {
+    "path": "p515_s53_w90_3x3_campaign.py",
+    "status": "A"
+   },
+   {
+    "path": "p515_s53_w93_uncoordinated_benchmark.py",
+    "status": "A"
+   },
+   {
+    "path": "p515_s53_w93_uncoordinated_benchmark_checks.py",
+    "status": "A"
+   },
+   {
+    "path": "p515_s53_w95_x0_drift_diagnostics.py",
+    "status": "A"
+   },
+   {
+    "path": "p515_s53_w96_n7_drift_diagnostics.py",
+    "status": "A"
+   },
+   {
+    "path": "p515_s53_w97_consolidated_diagnostics.py",
+    "status": "A"
+   },
+   {
+    "path": "p515_s53_w98_continuation_campaign.py",
+    "status": "A"
+   },
+   {
+    "path": "p515_s53_w98_continuation_checks.py",
+    "status": "A"
+   },
+   {
+    "path": "p515_s53_w98_continuation_hooks.py",
+    "status": "A"
+   },
+   {
+    "path": "p515_s53_w99_stage1_posthoc_analysis.py",
+    "status": "A"
+   },
+   {
+    "path": "settling_criterion.py",
+    "status": "A"
+   },
+   {
+    "path": "uncoordinated_benchmark.py",
+    "status": "A"
+   }
+  ],
+  "head": "07589e40c5f6d95f193712455a1d29e5357cb159",
+  "modified_py": [
+   "p515_g_g1_g4_admm_gates.py",
+   "p515_s44_campaign_harness.py"
+  ],
+  "note": "the harness changed (W98 option, W100 writer, W101 option + lambda_t capture) and the gates module (W100 writer migration, byte-identical output); production unchanged",
+  "ok": true,
+  "production_changed": [],
+  "recert_run_commit": "31a37efb",
+  "uncommitted_tracked_py": []
+ },
+ "configuration": {
+  "checked_field_by_field": "validate_campaign_spec at --freeze and at --run",
+  "concurrency": 1,
+  "identical_to_recert": {
+   "arm_label": "s39_D",
+   "case_file_anderson_acceleration": {
+    "enabled": true,
+    "memory": 5,
+    "regularization": 1e-10,
+    "reject_policy": "keep_memory"
+   },
+   "convergence_depth_tail": {
+    "compl_inf_tol": 1e-06,
+    "enabled": true
+   },
+   "ess_ageing_baseline": {
+    "calendar_life_years": 15,
+    "calendar_retention_per_year": 0.985,
+    "calibration": {
+     "cycles_n": 10000,
+     "eol_retention_r": 0.8,
+     "reference_dod_d": 0.8,
+     "status": "ACTIVE"
+    },
+    "cycle_life_nominal": 10000,
+    "depth_of_discharge_nominal": 0.8,
+    "minimum_soh": 0.7
+   },
+   "ess_ageing_baseline_label": "BASELINE (C2 + phi_cal 0.985 + soh_min 0.70)",
+   "name": "W101 SETTLING CONTINUATION of an SRP1 tight-tail reference -- BASELINE (C2 + phi_cal 0.985 + soh_min 0.70): the case file alone (AA keep_memory declared) with the ESS ageing parameters declared, the convergence-depth tight tail DECLARED ENABLED (compl_inf_tol 1e-6, certifying cycles only), post-certification: persist the certified TSO/DSO models only",
+   "note": "the recert configuration (spec ddd6cd44) unchanged; the entry adds settling_continuation (keyed); cap N + 100; persist_certified_models as the recert; no option (b) (the recert declared none); concurrency 1",
+   "overrides": {}
+  },
+  "option_b_release_solution_bookkeeping": "absent, as in the recert (never keyed)",
+  "persistence": "persist_certified_models True, hull_polish False, no reference (as the recert)"
+ },
+ "expected_wall_time": {
+  "basis": "the recert's own per-cycle walls (\"[INFO] - Iteration k: X s\", child_stdout.log) at concurrency 3, and its child wall; a continuation cycle = the mean of the recert's last 12 cycles; not included: the all-block and lambda_t captures per cycle (pure reads; not measured) and the effect of concurrency 1 (expected faster)",
+  "campaign_replays_only_h": 2.720735598007838,
+  "campaign_worst_case_all_caps_h": 5.067587449859689,
+  "per_cell": {
+   "c_star": {
+    "N": 87,
+    "init_terminal_persist_overhead_s": 62.965488920211556,
+    "mean_cycle_s": 33.24413793103449,
+    "mean_last12_s": 31.1525,
+    "recert_cycles": 87,
+    "replay_s_at_recert_concurrency_3": 2892.2400000000002,
+    "worst_case_cap_h": 1.68623763581117,
+    "worst_case_cap_s": 6070.455488920212,
+    "worst_case_cycles": 187
+   },
+   "n7_4h_e1": {
+    "N": 112,
+    "init_terminal_persist_overhead_s": 59.762881965638826,
+    "mean_cycle_s": 28.993571428571414,
+    "mean_last12_s": 28.165833333333328,
+    "recert_cycles": 112,
+    "replay_s_at_recert_concurrency_3": 3247.2799999999984,
+    "worst_case_cap_h": 1.7010072820274915,
+    "worst_case_cap_s": 6123.626215298969,
+    "worst_case_cycles": 212
+   },
+   "x0": {
+    "N": 132,
+    "init_terminal_persist_overhead_s": 55.46978194236635,
+    "mean_cycle_s": 26.340378787878798,
+    "mean_last12_s": 25.168333333333337,
+    "recert_cycles": 132,
+    "replay_s_at_recert_concurrency_3": 3476.930000000001,
+    "worst_case_cap_h": 1.680342532021028,
+    "worst_case_cap_s": 6049.233115275701,
+    "worst_case_cycles": 232
+   }
+  },
+  "task_statement": "about 25-30 s/cycle; x0 <= 232 cycles ~ 1.9 h; campaign 4.4-5.3 h if every cell caps"
+ },
+ "frozen_utc": "2026-09-27T20:16:09.465520+00:00",
+ "gates": {
+  "G1-G5, G7, G9, G11": "as the recert / W98 (W86 evaluation_checks; solve profile 51 x (cycles + 1) + retries)",
+  "G13": "holds inert through N, held after N; certificate length 10**9 except 0 on the settling cycle",
+  "G14": "all-block capture",
+  "G15": "stopping consistent (settling k* == cycles_run, or the cap uncertified)",
+  "G16": "lambda_t sidecar complete (header + one captured line per cycle, 36 x 24)",
+  "G17": "post-run replay of the pure rule reproduces the in-cycle decision and every per-cycle record; never certifies at k <= N",
+  "G18": "the per-cycle line fields (i)",
+  "G19": "replay 1..N bitwise every field",
+  "G20": "production counters in the per-cycle record",
+  "G6": "v37 (Optimal Solution Found + four metrics within the tail tolerances, final accepted attempt; B = 48)",
+  "G8": "persistence as the recert (persist iff the harness's residual certificate holds on the last row)",
+  "applies_to": "every cell (one entry per campaign)",
+  "post_run_evaluator_self_tests": {
+   "c_star:pass": {
+    "decision": 129,
+    "expect_all_pass": true,
+    "gates": {
+     "blocks": true,
+     "hold": true,
+     "lambda": true,
+     "line_fields": true,
+     "replay_full": true,
+     "settling_replay": true,
+     "stopping": true
+    },
+    "ok": true,
+    "report_on_synthetic": {
+     "A": [],
+     "P_hat": null,
+     "Q_cert_new_Q_k_star": 650909570.1504968,
+     "Q_cert_old_Q_N": 650911546.2054665,
+     "T": [],
+     "W": 44,
+     "band": [
+      650909570.1504968,
+      650913368.2050278
+     ],
+     "band_width": 3798.054530978203,
+     "branch": "monotone",
+     "k0": 78,
+     "k_star": 129,
+     "range_over_tau": 0.8367476100540044,
+     "report_only": {
+      "c_A_last_over_1_minus_c": null,
+      "c_last_swing_ratio": null,
+      "mid_band_minus_Q_N": -77.0277042388916
+     },
+     "s_determinate_vs_band": false,
+     "s_resolution_band_width": 3798.054530978203,
+     "s_signed": -1976.0549696683884,
+     "settled_slack_abs_s": 1976.0549696683884,
+     "status": "certified",
+     "window": [
+      86,
+      129
+     ]
+    }
+   },
+   "c_star:tampered_decision_k_star": {
+    "decision": 128,
+    "expect_all_pass": false,
+    "gates": {
+     "blocks": true,
+     "hold": true,
+     "lambda": true,
+     "line_fields": true,
+     "replay_full": true,
+     "settling_replay": false,
+     "stopping": false
+    },
+    "ok": true,
+    "report_on_synthetic": null
+   },
+   "c_star:tampered_hold_flag": {
+    "decision": 129,
+    "expect_all_pass": false,
+    "gates": {
+     "blocks": true,
+     "hold": false,
+     "lambda": true,
+     "line_fields": true,
+     "replay_full": true,
+     "settling_replay": true,
+     "stopping": true
+    },
+    "ok": true,
+    "report_on_synthetic": null
+   },
+   "c_star:tampered_replay_row_objective_change": {
+    "decision": 129,
+    "expect_all_pass": false,
+    "gates": {
+     "blocks": true,
+     "hold": true,
+     "lambda": true,
+     "line_fields": true,
+     "replay_full": false,
+     "settling_replay": true,
+     "stopping": true
+    },
+    "ok": true,
+    "report_on_synthetic": null
+   },
+   "n7_4h_e1:pass": {
+    "decision": 155,
+    "expect_all_pass": true,
+    "gates": {
+     "blocks": true,
+     "hold": true,
+     "lambda": true,
+     "line_fields": true,
+     "replay_full": true,
+     "settling_replay": true,
+     "stopping": true
+    },
+    "ok": true,
+    "report_on_synthetic": {
+     "A": [],
+     "P_hat": null,
+     "Q_cert_new_Q_k_star": 653601334.691561,
+     "Q_cert_old_Q_N": 653599356.2420883,
+     "T": [
+      [
+       109,
+       "min",
+       653592447.0485184
+      ]
+     ],
+     "W": 44,
+     "band": [
+      653599356.2420883,
+      653601334.691561
+     ],
+     "band_width": 1978.4494726657867,
+     "branch": "monotone",
+     "k0": 103,
+     "k_star": 155,
+     "range_over_tau": 0.43587127419135074,
+     "report_only": {
+      "c_A_last_over_1_minus_c": null,
+      "c_last_swing_ratio": null,
+      "mid_band_minus_Q_N": 989.2247363328934
+     },
+     "s_determinate_vs_band": false,
+     "s_resolution_band_width": 1978.4494726657867,
+     "s_signed": 1978.4494726657867,
+     "settled_slack_abs_s": 1978.4494726657867,
+     "status": "certified",
+     "window": [
+      112,
+      155
+     ]
+    }
+   },
+   "n7_4h_e1:tampered_decision_k_star": {
+    "decision": 154,
+    "expect_all_pass": false,
+    "gates": {
+     "blocks": true,
+     "hold": true,
+     "lambda": true,
+     "line_fields": true,
+     "replay_full": true,
+     "settling_replay": false,
+     "stopping": false
+    },
+    "ok": true,
+    "report_on_synthetic": null
+   },
+   "n7_4h_e1:tampered_hold_flag": {
+    "decision": 155,
+    "expect_all_pass": false,
+    "gates": {
+     "blocks": true,
+     "hold": false,
+     "lambda": true,
+     "line_fields": true,
+     "replay_full": true,
+     "settling_replay": true,
+     "stopping": true
+    },
+    "ok": true,
+    "report_on_synthetic": null
+   },
+   "n7_4h_e1:tampered_replay_row_objective_change": {
+    "decision": 155,
+    "expect_all_pass": false,
+    "gates": {
+     "blocks": true,
+     "hold": true,
+     "lambda": true,
+     "line_fields": true,
+     "replay_full": false,
+     "settling_replay": true,
+     "stopping": true
+    },
+    "ok": true,
+    "report_on_synthetic": null
+   },
+   "score_predictions_synthetic": {
+    "case1": {
+     "advisor_H_b": {
+      "only_monotone_fired": false,
+      "per_cell": {
+       "c_star": {
+        "Q_end_minus_Q_N": 41000.0,
+        "boyd_lapses_after_N": null,
+        "branch": null,
+        "in_plateau_band_38k_53k": true,
+        "monotone": false,
+        "pf_primal_after_N_max": null
+       },
+       "n7_4h_e1": {
+        "Q_end_minus_Q_N": -9000.0,
+        "boyd_lapses_after_N": null,
+        "branch": "monotone",
+        "in_plateau_band_38k_53k": false,
+        "monotone": true,
+        "pf_primal_after_N_max": null
+       },
+       "x0": {
+        "Q_end_minus_Q_N": -12000.0,
+        "boyd_lapses_after_N": null,
+        "branch": "oscillatory",
+        "in_plateau_band_38k_53k": false,
+        "monotone": false,
+        "pf_primal_after_N_max": null
+       }
+      },
+      "s_x0_negative": true
+     },
+     "advisor_projections": {
+      "c_star": {
+       "earliest_possible": 106,
+       "inside": false,
+       "k_star": null,
+       "projected": [
+        121,
+        131
+       ]
+      },
+      "n7_4h_e1": {
+       "earliest_possible": 127,
+       "inside": false,
+       "k_star": 160,
+       "projected": [
+        141,
+        151
+       ]
+      },
+      "x0": {
+       "earliest_possible": 148,
+       "inside": true,
+       "k_star": 165,
+       "projected": [
+        162,
+        173
+       ]
+      }
+     },
+     "expert_P1": {
+      "c_star": {
+       "band_width": 6000.0,
+       "s": 41000.0,
+       "verdict": "not_scoreable_uncertified"
+      },
+      "n7_4h_e1": {
+       "abs_s": 9000.0,
+       "band_width": 2500.0,
+       "inside": true,
+       "verdict": "held"
+      },
+      "x0": {
+       "abs_s": 12000.0,
+       "band_width": 3000.0,
+       "inside": true,
+       "verdict": "held"
+      }
+     },
+     "expert_P2": {
+      "I": 317957.0085035586,
+      "V_new": 256375.32654094696,
+      "V_new_minus_I": -61581.68196261162,
+      "V_new_minus_I_determinate": true,
+      "V_new_minus_I_resolution": 5500.0,
+      "V_old": 259375.32654094696,
+      "abs_dV": 3000.0,
+      "dV": -3000.0,
+      "reopen_rule_indeterminate": false,
+      "reopen_rule_triggered": false,
+      "resolution": 5500.0,
+      "verdict": "held"
+     },
+     "expert_P3": {
+      "verdict": "not_scoreable_uncertified"
+     }
+    },
+    "case2_P3": {
+     "argmax": "c_star",
+     "argmin": "x0",
+     "pre_declared_likely_indeterminate": true,
+     "resolution": 4000.0,
+     "spread": 4000.0,
+     "verdict": "indeterminate"
+    },
+    "ok": true
+   },
+   "x0:pass": {
+    "decision": 176,
+    "expect_all_pass": true,
+    "gates": {
+     "blocks": true,
+     "hold": true,
+     "lambda": true,
+     "line_fields": true,
+     "replay_full": true,
+     "settling_replay": true,
+     "stopping": true
+    },
+    "ok": true,
+    "report_on_synthetic": {
+     "A": [],
+     "P_hat": null,
+     "Q_cert_new_Q_k_star": 653860712.1731547,
+     "Q_cert_old_Q_N": 653858731.5686293,
+     "T": [
+      [
+       131,
+       "min",
+       653858577.1796229
+      ]
+     ],
+     "W": 44,
+     "band": [
+      653858931.5686293,
+      653860712.1731547
+     ],
+     "band_width": 1780.6045254468918,
+     "branch": "monotone",
+     "k0": 123,
+     "k_star": 176,
+     "range_over_tau": 0.39228414678272083,
+     "report_only": {
+      "c_A_last_over_1_minus_c": null,
+      "c_last_swing_ratio": null,
+      "mid_band_minus_Q_N": 1090.3022627830505
+     },
+     "s_determinate_vs_band": true,
+     "s_resolution_band_width": 1780.6045254468918,
+     "s_signed": 1980.6045254468918,
+     "settled_slack_abs_s": 1980.6045254468918,
+     "status": "certified",
+     "window": [
+      133,
+      176
+     ]
+    }
+   },
+   "x0:tampered_decision_k_star": {
+    "decision": 175,
+    "expect_all_pass": false,
+    "gates": {
+     "blocks": true,
+     "hold": true,
+     "lambda": true,
+     "line_fields": true,
+     "replay_full": true,
+     "settling_replay": false,
+     "stopping": false
+    },
+    "ok": true,
+    "report_on_synthetic": null
+   },
+   "x0:tampered_hold_flag": {
+    "decision": 176,
+    "expect_all_pass": false,
+    "gates": {
+     "blocks": true,
+     "hold": false,
+     "lambda": true,
+     "line_fields": true,
+     "replay_full": true,
+     "settling_replay": true,
+     "stopping": true
+    },
+    "ok": true,
+    "report_on_synthetic": null
+   },
+   "x0:tampered_replay_row_objective_change": {
+    "decision": 176,
+    "expect_all_pass": false,
+    "gates": {
+     "blocks": true,
+     "hold": true,
+     "lambda": true,
+     "line_fields": true,
+     "replay_full": false,
+     "settling_replay": true,
+     "stopping": true
+    },
+    "ok": true,
+    "report_on_synthetic": null
+   }
+  }
+ },
+ "git_head": "07589e40c5f6d95f193712455a1d29e5357cb159",
+ "holds_after_N": {
+  "AA": "off -- production's own 'off' branch via all_boyd_pass forced True on a copy, every cycle > N, even when Boyd lapses (AA is non-latching in production)",
+  "boyd_lapse_behaviour": "a lapse (or failed cycle) resets k0 strictly in the rule and is recorded; the holds continue; only the rule or the cap ends the run",
+  "rho": "frozen (allow_update False; before == after asserted)",
+  "tail": "on (applied True at the top of every cycle > N; next-state True)"
+ },
+ "labelling_and_identity": {
+  "evaluation_key": "sha256({base_evaluation_key, settling_continuation}); every key without the declaration byte-identical to the pre-W101 harness (checks K: all committed entries)",
+  "label": "SETTLING CONTINUATION RUN (W101, spec v39) -- replay of a certified SRP1 reference gated bitwise through cycle N (abort on divergence), then the certifying regime held (AA off, tight tail on, rho frozen) until the settling stop rule certifies or the cap N + 100"
+ },
+ "launch_commands_templates": {
+  "c_star": "cd /Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation && set -o noclobber && NLP_SOLVER_PATH=/usr/local/bin/ipopt /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python -u p515_s53_w101_srp1_continuation_campaign.py --run --cell c_star --spec-sha256 <campaign spec sha256 of c_star> > data/SRP1/Results/P515S53/w101_srp1_continuation/run_c_star_v39_launch.log 2>&1",
+  "n7_4h_e1": "cd /Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation && set -o noclobber && NLP_SOLVER_PATH=/usr/local/bin/ipopt /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python -u p515_s53_w101_srp1_continuation_campaign.py --run --cell n7_4h_e1 --spec-sha256 <campaign spec sha256 of n7_4h_e1> > data/SRP1/Results/P515S53/w101_srp1_continuation/run_n7_4h_e1_v39_launch.log 2>&1",
+  "x0": "cd /Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation && set -o noclobber && NLP_SOLVER_PATH=/usr/local/bin/ipopt /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python -u p515_s53_w101_srp1_continuation_campaign.py --run --cell x0 --spec-sha256 <campaign spec sha256 of x0> > data/SRP1/Results/P515S53/w101_srp1_continuation/run_x0_v39_launch.log 2>&1"
+ },
+ "memory_preflight": {
+  "measured_at_freeze_non_gating": {
+   "available_bytes": 19310493696,
+   "available_gib": 17.984298706054688,
+   "budget_derivation": {
+    "budget": "3.5 GiB per child = the measured persist peak (3.23 GiB) + 0.27 GiB margin",
+    "s47_recert_c_star_child_peak_no_persist_bytes": 2577645568,
+    "s47_recert_unit_child_peak_no_persist_bytes": 2574581760,
+    "source": "data/SRP1/Results/P515S48/x0_capture/evals/d2c96b1480402a3b_x0/{evaluation_record,post_certification}.json and data/SRP1/Results/P515S47/campaign_s47_recert/evals/*/evaluation_record.json peak_rss",
+    "x0_capture_child_peak_with_persist_bytes": 3470491648,
+    "x0_capture_production_peak_before_persist_bytes": 2395537408
+   },
+   "concurrency": 1,
+   "free_plus_inactive_gib": 13.604827880859375,
+   "hw_memsize_bytes": 34359738368,
+   "missing_vm_stat_figures": [],
+   "non_reclaimable_gib": 14.015701293945312,
+   "page_size_bytes": 16384,
+   "pass": true,
+   "per_child_budget_gib": 3.5,
+   "required_bytes": 3758096384,
+   "required_gib": 3.5,
+   "rule": "hw.memsize - (wired + anonymous + compressor-occupied) x page size >= 1 x 3.5 GiB",
+   "rule_rationale": "non-reclaimable load = wired + anonymous + compressor-occupied pages; file-backed pages (active or inactive) are cache the kernel reclaims on demand, so free + inactive under-counts what new processes can obtain (free + inactive recorded alongside)",
+   "utc": "2026-09-27T20:16:09.457893+00:00",
+   "vm_stat_header": "Mach Virtual Memory Statistics: (page size of 16384 bytes)",
+   "vm_stat_pages": {
+    "anonymous_pages": 468352,
+    "pages_free": 4523,
+    "pages_inactive": 887083,
+    "pages_occupied_by_compressor": 314537,
+    "pages_wired_down": 135644
+   }
+  },
+  "rule": "W86 rule at concurrency 1: available >= 3.5 GiB (per-child budget incl. persist)"
+ },
+ "note_on_version": "Addendum 53 says \"under spec v38\"; v38 (8bc0ffa6) is the W98 3 x 3 stage-1 spec, so this is v39 with v38 as its predecessor (TASKS.md)",
+ "objective_convention": "Q = gross_operational_cost, settlement EXCLUDED; net_operational_recourse and the terminal salvage reported beside it; every value in this spec and in the runs' results is on this convention",
+ "pins_note": "post-W100 (ed5ba42a) module hashes, incl. gate_result_io.py and the W101 modules",
+ "predecessor": {
+  "path": "data/SRP1/Results/P515S53/frozen_s53_spec_v38_8bc0ffa6.json",
+  "sha256": "8bc0ffa688e3e95e83f31b3895c0689e347d6305d7f673899ab795c70b881103",
+  "version": 38
+ },
+ "predictions_recorded_before_any_run": {
+  "advisor_competing_H_b": {
+   "plateau_warning": "pf_primal creeps back and Boyd lapses; Q returns toward the pre-k0 band (+38 to +53 k EUR above Q_N)",
+   "scored_by": "H-b holds for a cell if it certifies on the monotone branch; s_x0 < 0 checked on x0; plateau: the number of Boyd lapses after N, the largest pf_primal ratio after N, and whether Q at k* / the cap lies in [Q_N + 38,000, Q_N + 53,000]",
+   "statement": "the post-k0 regime settles MONOTONICALLY to a lower limit: only the monotone branch can fire (earliest k0 + 46) and s_x0 < 0"
+  },
+  "advisor_projections_labelled_projections": {
+   "campaign_wall_h": [
+    3.0,
+    3.8
+   ],
+   "earliest_possible_from_records": {
+    "c_star": 106,
+    "n7_4h_e1": 127,
+    "x0": 148
+   },
+   "k_star": {
+    "c_star": [
+     121,
+     131
+    ],
+    "n7_4h_e1": [
+     141,
+     151
+    ],
+    "x0": [
+     162,
+     173
+    ]
+   },
+   "per_cell_worst_h": 1.9,
+   "worst_case_all_caps_h": [
+    4.4,
+    5.3
+   ]
+  },
+  "expert_P1": {
+   "hi": 25000.0,
+   "indeterminate_if": "a boundary (5,000 or 25,000) lies within band_i of |s_i|",
+   "lo": 5000.0,
+   "statement": "5,000 <= |s_i| <= 25,000 for each cell"
+  },
+  "expert_P2": {
+   "also_reported": "V_new - I, V_new = V_SRP1 + dV, I = the unit's investment cost (verified at freeze)",
+   "bound": 20000.0,
+   "indeterminate_if": "| |dV| - bound | <= resolution",
+   "reopen_bound": 40000.0,
+   "reopen_rule": "if |dV| > 40,000 the SRP1 sign conclusion is REOPENED",
+   "statement": "|dV| <= 20,000, dV = s_x0 - s_unit, resolution band_x0 + band_unit"
+  },
+  "expert_P3": {
+   "bound": 5000.0,
+   "indeterminate_if": "| spread - bound | <= resolution",
+   "pre_declared": "P3 sits AT the resolution (2 tau = 9,078 >= 5,000) and is LIKELY INDETERMINATE; recorded as such before any run",
+   "resolution": "band of the argmax cell + band of the argmin cell (each <= tau when certified: up to 2 tau)",
+   "statement": "spread = max(s_i) - min(s_i) <= ~5,000"
+  }
+ },
+ "production_sha256_post_ed5ba42a": {
+  "admm_anderson_acceleration.py": "24cf3bea9b07725ae15029dd0d9d81ed46ab8e75ecf1c9141a4b0afc6be2659e",
+  "admm_parameters.py": "40d0e972dcadfb4de099a0203682ba2e93badc62d9ae989f87be40b1ce3b75fa",
+  "admm_persistent_workers.py": "39dcbd267bb224e65197ca427952b08d45d3bbe98785b73fd55148c0979e1125",
+  "data/SRP1/SRP1_params.json": "dbfdb2a07d12bfedab5e66bf94b3df98e5ab0305616652b4083266476972006b",
+  "gate_result_io.py": "26cadaa5c3105f9adb879ece756ef6d659b374f647a7756030efe80a2df6d07d",
+  "interface_dual_capture.py": "e4223ac25fa488970ec195b4c3bb6b1171faa3aeba4824e0d6ee6482ab58f55c",
+  "model_construction_helpers.py": "a20a224f11008de8c0206484583b00253677267d616e1051bb1583791ed47f64",
+  "network.py": "18acaa84af7a043898a7b831223b4eab1d91f9bcf2c199f49beecfeb3bf91fb4",
+  "network_data.py": "2938bc4bd4ecc74f42aa90d347cdc1162eebcefaba15bc87b8281a798d457d6b",
+  "p514_n_instrumented_cstar.py": "62df39d41fec0ee48b320f6ade9eb1be4132203dcdbd100b90d1fc545d1d43c2",
+  "p515_g_g1_g4_admm_gates.py": "6f4631e10a2f8a7786390c0f96e45332706779ae9cdf6a87ddd716d9ad9ad346",
+  "p515_s39_evaluate.py": "2dd5b31f29aadb84dfcaf7b9e112fdda570bf20f78154b19d49914ba3a8a28c4",
+  "p515_s40_clone_capture_preflight.py": "30e33d0a7803c2a958bbf7da617dba277a8fe15888078e37aa451feba09a3652",
+  "p515_s40_cost_decomposition.py": "2fb70a404ca7b41969fc84908e564acc8d1c1fbd68c3e7ffb5dcdd19877222ad",
+  "p515_s40_polish_gap.py": "026a4d80037e9d03fbb8505986ab5a74a0b1eb08fc9c5b4ebf5494dce4556cf4",
+  "p515_s41_hull_polish.py": "e76c5921ecd1057dceb8fa8e097e960247a51d3e09f13d78ae95dec727385d5d",
+  "p515_s42_exact_fix_rerun.py": "de83af2ff01c48861995d70314a6565cf3e4c6ab8c2b32fc748fdc829c9e930a",
+  "p515_s43_aa_flagoff_gate.py": "22ef58b84bdd109d39e2cbf78d2e69e7302ccd0aadae2c90dcb9f6341d9472d3",
+  "p515_s43_aa_run.py": "34fd36a469d92186b6f982a529f9f8c68d6bd9d73157a4f75698c71597073aa8",
+  "p515_s44_campaign_harness.py": "3ad624cd74f9a832037d20d2480adb9b03d559aee1c5d9675dc8aeb6c3b9d8a2",
+  "p56a_oracle.py": "699d571a2d69b14fd89024c535fa8b3ffa0625aa647f1714060dcc9cf6fa2f11",
+  "shared_energy_storage_data.py": "9acd095fb5e50e9b64c253600ae05ebb8e6463fd7a999d3a90f96ee82f037796",
+  "shared_resources_planning.py": "0610d745a41c86c71dae9e776f0dc8e38c7099f73128a3d2c2e8f861ab9fc9c0"
+ },
+ "recert": {
+  "campaign_id": "s53_w86_tail_recert",
+  "campaign_manifest": {
+   "path": "data/SRP1/Results/P515S53/tight_tail_w86/campaign_s53_w86_tail_recert/campaign_manifest_sha256.json",
+   "sha256": "83f8dab9997d239b671490331941edf285c16b0cf49179390c9eb35bd1cc0009"
+  },
+  "campaign_results": {
+   "path": "data/SRP1/Results/P515S53/tight_tail_w86/campaign_s53_w86_tail_recert/campaign_results.json",
+   "sha256": "361402fed03c16c65e1502a587d0e21d279b79f83faeadea7b41a1c99b756480"
+  },
+  "campaign_spec": {
+   "path": "data/SRP1/Results/P515S53/tight_tail_w86/campaign_s53_w86_tail_recert/campaign_spec_s53_w86_tail_recert_ddd6cd44.json",
+   "sha256": "ddd6cd4422b56f946eeeb427dff44ef572490bd34c606fad96eaf00fd4a84ec1"
+  },
+  "evidence_commit": "0a4bf784",
+  "root": "data/SRP1/Results/P515S53/tight_tail_w86/campaign_s53_w86_tail_recert",
+  "run_git": "31a37efb"
+ },
+ "records": {
+  "continuation_line_fields_i": [
+   "cycle",
+   "phase",
+   "gross",
+   "gross_hex",
+   "net_operational_recourse",
+   "terminal_salvage_value",
+   "boyd_k",
+   "local_solves_ok",
+   "boyd_ratios",
+   "boyd_pf_primal_ratio",
+   "settling",
+   "holds",
+   "replay_equal",
+   "certificate_length_in_force_at_cycle_end",
+   "t_start_s",
+   "t_end_s",
+   "settling.k0",
+   "settling.eligible",
+   "settling.dQ",
+   "settling.s_k",
+   "settling.sign_change",
+   "settling.turning_point",
+   "settling.len_T",
+   "settling.A",
+   "settling.P_hat",
+   "settling.W",
+   "settling.window",
+   "settling.range",
+   "settling.range_over_tau",
+   "settling.certA",
+   "settling.certA_parts",
+   "settling.certB",
+   "settling.certB_parts",
+   "settling.decision",
+   "settling.reasons",
+   "boyd_ratios (all six boyd_*_ratio; pf_primal first-class)",
+   "blocks_captured"
+  ],
+  "lambda_t": "interface_duals_per_cycle.jsonl (every evaluation, harness default): lambda_pf_{p,q}_{tso,dso} per (node, year, day) x 24 periods, read after the cycle's dual updates (before AA), header with the scaling metadata (rating, base MVA, admm_objective_scale, sigma); not converted",
+  "per_block_dQ": "recourse_blocks_all.jsonl: 48 network blocks + SALVAGE, with deltas, every cycle (as W98)",
+  "production_counters": "consecutive_converged_cycles and boyd_all_pass stay in per_cycle_record.jsonl (j)"
+ },
+ "replay_gate": {
+  "expected": "bitwise: production unchanged since the recert's run commit 31a37efb (code_since_recert_run); the harness changes are writer-only / keyed options",
+  "in_cycle": "every cycle k <= N, at the end of the cycle (after production's EFC read): the fields cycle, local_solves_ok, recourse, gross_operational_cost, terminal_salvage_value, cycle_convergence, consecutive_converged_cycles, boyd_all_pass, boyd_stop, boyd_v_primal_ratio, boyd_v_dual_ratio, boyd_v_channel_pass, boyd_pf_primal_ratio, boyd_pf_dual_ratio, boyd_pf_channel_pass, boyd_ess_primal_ratio, boyd_ess_dual_ratio, boyd_ess_channel_pass, rho_v_after, rho_pf_after, rho_ess_after, rho_v_action, rho_pf_action, rho_ess_action, rho_freeze_active, efc_per_day_max compared as JSON text with the recert's committed row k; the FIRST difference writes the cycle line with the cycle and magnitude (fields, gross difference, largest relative difference) and ABORTS the cell (no relabelled continuation)",
+  "post_run": "every field of per_cycle_record.jsonl rows 1..N bitwise (G19), adding objective_change_abs, objective_tolerance, objective_change_ratio",
+  "reference_hashes": {
+   "c_star": "dd580b247b7f917638af6393fdbdebdbf96d37a0e520342849fb7d11975deeb8",
+   "n7_4h_e1": "b5875bbe9908cc3dfd14add7afb168622698b5d6ff500d50acb1117962d58d1f",
+   "x0": "bd7e47057ee618486fed0a385e8f784ecfd0089e77d5da2aaef13e89fed2f4a2"
+  }
+ },
+ "report_definitions": {
+  "A": "half-swings",
+  "P_hat": "T[-1].t - T[-3].t",
+  "Q_cert_new": "Q_k* (the settling certification cycle)",
+  "Q_cert_old": "Q_N (the recorded certification cycle's gross_operational_cost; bitwise the recert's by the replay)",
+  "T": "turning points [(t, kind, Q_t)]",
+  "W": "max(20, ceil(1.1 P_hat)) (monotone: L_MONO)",
+  "band": "[min, max] Q over the certifying window (uncertified: over the last max(W_MIN, ceil(W_FACTOR P_hat)) cycles, or the last W_MIN cycles without P_hat)",
+  "band_width": "max - min of the band",
+  "branch": "oscillatory | monotone",
+  "k0": "the rule's k0 at k*",
+  "k_star": "the cycle at which the settling rule certified (None when uncertified at the cap)",
+  "objective_convention": "gross_operational_cost (settlement excluded); net and salvage reported beside",
+  "range_over_tau": "range of the certifying window / TAU",
+  "report_only": {
+   "c": "A[-1] / A[-2]",
+   "c_A_over_1_minus_c": "c A[-1] / (1 - c) (c < 1 only)",
+   "mid_band_minus_Q_N": "(band_lo + band_hi) / 2 - Q_N"
+  },
+  "s": "s = Q_k* - Q_N (signed; resolution = band_width); uncertified: Q_cap - Q_N, flagged",
+  "settled_slack": "|s|",
+  "terminal_step_to_threshold": "|dQ_last| / EPS0 and range_over_tau at k*; production's rule ten (objective_change_abs / objective_tolerance) of the last cycle, reported"
+ },
+ "schema": "p515_s53_stage_spec_v39",
+ "solve_profile_declared": {
+  "child": "RECONCILED PER EVENT (G5): 51 x (cycles_run + 1) + every retry attempted; cycles_run in [N + 1, N + 100]",
+  "parent": "never solves: every launcher guard permitted=(), verify(0)"
+ },
+ "solver": {
+  "expected": "/usr/local/bin/ipopt",
+  "ok": true,
+  "recert_x0_child_path": "/usr/local/bin/ipopt",
+  "resolved": {
+   "NLP_SOLVER_PATH": "/usr/local/bin/ipopt",
+   "source": "environment"
+  },
+  "sha256": "b316abbe38cd851d9a9a87a6a1a1714a4334304c9539df1976d2f7101360ff05"
+ },
+ "stage_text": "P5.15 Addendum 53, W101 -- SRP1 three-reference settling continuation: each tight-tail reference replayed under its certifying configuration (bitwise gate per cycle against the recorded 1..N, abort on the first divergence), then the certifying regime held (AA off, tight tail on, rho frozen) until the settling stop rule certifies or the cap N + 100; lambda_t, all blocks and pf_primal recorded every cycle",
+ "stop_rule": {
+  "Q_k": "gross_operational_cost from the recourse wrapper; None when any local solve failed",
+  "algorithm": "The settling stop rule for multi-scenario certification continuations (P5.15 Addendum 53, Ruling 1; W101).\n\nA PURE function of two per-cycle sequences: Q_k (`gross_operational_cost`, None when any local solve failed) and\nboyd_k (`all_boyd_pass` AND `local_solves_ok`, from THIS cycle's `boyd_metrics`). Stdlib only; no I/O; no model code.\nThe algorithm is the Advisor's operationalisation adopted by the Planner (TASKS.md, Addendum 53 order), implemented\nverbatim; the step numbers below are the algorithm's.\n\nCONSTANTS (each with its formula; `constants()` returns them with the formulas for the spec):\n  TAU      = DELTA_R * R_REF / 4 = 0.07 * 259,375.33 / 4 = 4,539.068275 EUR   (Addendum 53 Ruling 1; tau = dR V_SRP1 / 4)\n  EPS0     = TAU / 100 = 45.39068275 EUR   (a step that cannot accumulate tau within the 100-cycle cap)\n  K_EXCL   = 3                               (the first K_EXCL cycles after k0 never enter the sign state)\n  W_MIN    = 20;  W_FACTOR = 1.1             (oscillatory window W = max(W_MIN, ceil(W_FACTOR * P_hat)))\n  P_MAX    = a SPEC constant: the longest interval between same-kind turning points found by `turning_points` (this\n             module; same sign definition, same EPS0 floor) over cycles 1..N of the three SRP1 reference records;\n             computed by `p_max_from_records` at freeze and passed in (never a literal here)\n  L_MONO   = 2 * P_MAX                       (monotone window length)\n  CAP      = N + 100 per cell                (passed in)\n\nTHE ALGORITHM, for k = 1..CAP after Q_k and boyd_k are known (`SettlingRule.observe`):\n  1. Q_k None or not boyd_k: record a lapse event if k0 was set; k0 = None; reset sign_prev, j_prev, j_change, T, A;\n     continue.\n  2. k0 None: k0 = k; reset the state.\n  3. k < k0 + K_EXCL: continue.\n  4. dQ_k = Q_k - Q_(k-1); s_k = 0 if |dQ_k| < EPS0 else sign(dQ_k).\n  5. s_k == 0: no update. sign_prev None: sign_prev = s_k, j_prev = k. s_k == sign_prev: j_prev = k. Otherwise a SIGN\n     CHANGE: t = argmax Q over [j_prev .. k-1] if sign_prev = +1 else argmin (ties -> the earliest cycle); append\n     (t, kind, Q_t) to T; if len(T) >= 2 append |Q_t - Q_(T[-2].t)| to A; sign_prev = s_k; j_prev = k; j_change = k.\n  6. k <= N: continue (the replay: state accumulates, no decision is taken).\n  7. certA (oscillatory): len(T) >= 3; A[i+1] <= A[i] for ALL consecutive pairs; with P_hat = T[-1].t - T[-3].t and\n     W = max(W_MIN, ceil(W_FACTOR P_hat)): k - W + 1 >= k0 and range(Q over [k-W+1 .. k]) <= TAU.\n  8. certB (monotone), only if not certA; lo = k - L_MONO + 1: lo >= k0 + K_EXCL; j_change None or j_change < lo;\n     range(Q over [lo .. k]) <= TAU; max |dQ| over [lo .. k] < EPS0 (stationary) OR mean |dQ| over the second half of\n     [lo .. k] < mean over the first half (strictly decreasing).\n  9. certA or certB: certify at k* = k (branch oscillatory / monotone); the caller ends the run at the end of THIS cycle.\n 10. k == CAP (not certified): an 'uncertified' record with every failing reason (FAILING_REASONS); band = [min, max] Q\n     over the last max(W_MIN, ceil(W_FACTOR P_hat)) cycles, or the last W_MIN cycles if there is no P_hat.\n\nREADINGS ADOPTED BY THE PLANNER (READINGS, recorded in the spec): window max(20, ceil(1.1 P_hat)) (option 1(a));\nswings compared over ALL consecutive pairs with <=; a Boyd lapse resets k0 strictly; the monotone branch uses\nhalf-window means plus the stationary sub-case; P_MAX is a spec constant computed from the SRP1 records; \"successive\nswings not growing\" needs two half-swings, so certification effectively requires THREE turning points (stricter than\nthe ruling's \"at least two sign changes\"). The literal two-sign-change reading is computed REPORT-ONLY\n(`literal_two_sign_change_report`) and never decides.\n\nNumbers: dQ is a float difference of two floats (as production's own objective change); ranges are max - min over\nthe window's Q values; every comparison is exactly as written above (<=, <, >=).\n",
+  "boyd_k": "boyd_metrics['all_boyd_pass'] AND local_solves_ok, from THIS cycle's boyd_metrics as the AA wrapper receives it (production updates consecutive_converged_cycles after the recourse wrapper)",
+  "class": "settling_criterion.SettlingRule",
+  "constants": {
+   "CAP": {
+    "formula": "CAP = N + CAP_AFTER_N, CAP_AFTER_N = 100",
+    "value": "N + 100 per cell"
+   },
+   "DELTA_R": {
+    "formula": "Addendum 53 Ruling 1: dR = 0.07",
+    "value": 0.07
+   },
+   "EPS0": {
+    "formula": "EPS0 = TAU / 100 (a step that cannot accumulate TAU within the cap)",
+    "value": 45.39068275
+   },
+   "K_EXCL": {
+    "formula": "K_EXCL = 3",
+    "value": 3
+   },
+   "L_MONO": {
+    "formula": "L_MONO = 2 * P_MAX",
+    "value": 44
+   },
+   "P_MAX": {
+    "formula": "longest interval between same-kind turning points, settling_criterion.turning_points over cycles 1..N of the three SRP1 reference records (settling_criterion.p_max_from_records)",
+    "value": 22
+   },
+   "R_REF": {
+    "formula": "V_SRP1 = R_ref = 259,375.33 (tight-tail SRP1 value, Addendum 48)",
+    "value": 259375.33
+   },
+   "TAU": {
+    "formula": "TAU = DELTA_R * R_REF / 4 = 0.07 * 259375.33 / 4",
+    "value": 4539.0682750000005
+   },
+   "W_FACTOR": {
+    "formula": "W_FACTOR = 1.1",
+    "value": 1.1
+   },
+   "W_MIN": {
+    "formula": "W_MIN = 20",
+    "value": 20
+   }
+  },
+  "early_stop": "ABSENT (asserted: validator refuses the key; checklist (c))",
+  "failing_reasons": [
+   "insufficient_turning_points",
+   "swings_growing",
+   "range_above_tau",
+   "window_outside_run",
+   "monotone_window_not_reached",
+   "monotone_not_decreasing"
+  ],
+  "literal_two_sign_change_reading": "settling_criterion.literal_two_sign_change_report -- REPORT-ONLY",
+  "mechanism": "decision in the recourse wrapper (before production's convergence test); certification sets the certificate length to 0 -> production's own exit test ends the loop at the end of THIS cycle (W98's mechanism); the decision record is written (settling_decision.json)",
+  "module": "settling_criterion",
+  "only_exit_before_cap": true,
+  "p_max": {
+   "advisor_hand_derived": 22,
+   "advisor_without_floor": 25,
+   "cycles": "1..N of each",
+   "detail": {
+    "srp1_c_star": {
+     "N": 87,
+     "longest": {
+      "from": 22,
+      "interval": 20,
+      "kind": "max",
+      "to": 42
+     },
+     "n_turning_points": 12,
+     "same_kind_intervals": [
+      {
+       "from": 16,
+       "interval": 18,
+       "kind": "min",
+       "to": 34
+      },
+      {
+       "from": 22,
+       "interval": 20,
+       "kind": "max",
+       "to": 42
+      },
+      {
+       "from": 34,
+       "interval": 16,
+       "kind": "min",
+       "to": 50
+      },
+      {
+       "from": 42,
+       "interval": 11,
+       "kind": "max",
+       "to": 53
+      },
+      {
+       "from": 50,
+       "interval": 8,
+       "kind": "min",
+       "to": 58
+      },
+      {
+       "from": 53,
+       "interval": 12,
+       "kind": "max",
+       "to": 65
+      },
+      {
+       "from": 58,
+       "interval": 13,
+       "kind": "min",
+       "to": 71
+      },
+      {
+       "from": 65,
+       "interval": 7,
+       "kind": "max",
+       "to": 72
+      },
+      {
+       "from": 71,
+       "interval": 2,
+       "kind": "min",
+       "to": 73
+      },
+      {
+       "from": 72,
+       "interval": 4,
+       "kind": "max",
+       "to": 76
+      }
+     ],
+     "turning_points": [
+      [
+       16,
+       "min",
+       650376794.2146859
+      ],
+      [
+       22,
+       "max",
+       651886850.1516315
+      ],
+      [
+       34,
+       "min",
+       651102757.1398776
+      ],
+      [
+       42,
+       "max",
+       651369854.8674196
+      ],
+      [
+       50,
+       "min",
+       651038863.2771404
+      ],
+      [
+       53,
+       "max",
+       651053709.7892964
+      ],
+      [
+       58,
+       "min",
+       651009413.2771225
+      ],
+      [
+       65,
+       "max",
+       651066655.30715
+      ],
+      [
+       71,
+       "min",
+       651002670.6153281
+      ],
+      [
+       72,
+       "max",
+       651005067.165648
+      ],
+      [
+       73,
+       "min",
+       651004008.7652249
+      ],
+      [
+       76,
+       "max",
+       651013850.2319262
+      ]
+     ]
+    },
+    "srp1_n7_4h_e1": {
+     "N": 112,
+     "longest": {
+      "from": 52,
+      "interval": 18,
+      "kind": "min",
+      "to": 70
+     },
+     "n_turning_points": 15,
+     "same_kind_intervals": [
+      {
+       "from": 16,
+       "interval": 14,
+       "kind": "min",
+       "to": 30
+      },
+      {
+       "from": 22,
+       "interval": 15,
+       "kind": "max",
+       "to": 37
+      },
+      {
+       "from": 30,
+       "interval": 16,
+       "kind": "min",
+       "to": 46
+      },
+      {
+       "from": 37,
+       "interval": 10,
+       "kind": "max",
+       "to": 47
+      },
+      {
+       "from": 46,
+       "interval": 6,
+       "kind": "min",
+       "to": 52
+      },
+      {
+       "from": 47,
+       "interval": 15,
+       "kind": "max",
+       "to": 62
+      },
+      {
+       "from": 52,
+       "interval": 18,
+       "kind": "min",
+       "to": 70
+      },
+      {
+       "from": 62,
+       "interval": 15,
+       "kind": "max",
+       "to": 77
+      },
+      {
+       "from": 70,
+       "interval": 16,
+       "kind": "min",
+       "to": 86
+      },
+      {
+       "from": 77,
+       "interval": 17,
+       "kind": "max",
+       "to": 94
+      },
+      {
+       "from": 86,
+       "interval": 14,
+       "kind": "min",
+       "to": 100
+      },
+      {
+       "from": 94,
+       "interval": 7,
+       "kind": "max",
+       "to": 101
+      },
+      {
+       "from": 100,
+       "interval": 9,
+       "kind": "min",
+       "to": 109
+      }
+     ],
+     "turning_points": [
+      [
+       16,
+       "min",
+       651729697.7477009
+      ],
+      [
+       22,
+       "max",
+       655000958.4914243
+      ],
+      [
+       30,
+       "min",
+       653643355.9190822
+      ],
+      [
+       37,
+       "max",
+       653975381.2373328
+      ],
+      [
+       46,
+       "min",
+       653764975.470335
+      ],
+      [
+       47,
+       "max",
+       653768825.985451
+      ],
+      [
+       52,
+       "min",
+       653678040.3326192
+      ],
+      [
+       62,
+       "max",
+       653763693.0069628
+      ],
+      [
+       70,
+       "min",
+       653636322.2289145
+      ],
+      [
+       77,
+       "max",
+       653719936.9449277
+      ],
+      [
+       86,
+       "min",
+       653645738.24192
+      ],
+      [
+       94,
+       "max",
+       653707701.1447241
+      ],
+      [
+       100,
+       "min",
+       653642338.3503776
+      ],
+      [
+       101,
+       "max",
+       653654807.8947945
+      ],
+      [
+       109,
+       "min",
+       653592447.0485184
+      ]
+     ]
+    },
+    "srp1_x0": {
+     "N": 132,
+     "longest": {
+      "from": 31,
+      "interval": 22,
+      "kind": "min",
+      "to": 53
+     },
+     "n_turning_points": 19,
+     "same_kind_intervals": [
+      {
+       "from": 16,
+       "interval": 15,
+       "kind": "min",
+       "to": 31
+      },
+      {
+       "from": 22,
+       "interval": 14,
+       "kind": "max",
+       "to": 36
+      },
+      {
+       "from": 31,
+       "interval": 22,
+       "kind": "min",
+       "to": 53
+      },
+      {
+       "from": 36,
+       "interval": 21,
+       "kind": "max",
+       "to": 57
+      },
+      {
+       "from": 53,
+       "interval": 5,
+       "kind": "min",
+       "to": 58
+      },
+      {
+       "from": 57,
+       "interval": 4,
+       "kind": "max",
+       "to": 61
+      },
+      {
+       "from": 58,
+       "interval": 11,
+       "kind": "min",
+       "to": 69
+      },
+      {
+       "from": 61,
+       "interval": 9,
+       "kind": "max",
+       "to": 70
+      },
+      {
+       "from": 69,
+       "interval": 2,
+       "kind": "min",
+       "to": 71
+      },
+      {
+       "from": 70,
+       "interval": 8,
+       "kind": "max",
+       "to": 78
+      },
+      {
+       "from": 71,
+       "interval": 15,
+       "kind": "min",
+       "to": 86
+      },
+      {
+       "from": 78,
+       "interval": 15,
+       "kind": "max",
+       "to": 93
+      },
+      {
+       "from": 86,
+       "interval": 14,
+       "kind": "min",
+       "to": 100
+      },
+      {
+       "from": 93,
+       "interval": 18,
+       "kind": "max",
+       "to": 111
+      },
+      {
+       "from": 100,
+       "interval": 18,
+       "kind": "min",
+       "to": 118
+      },
+      {
+       "from": 111,
+       "interval": 8,
+       "kind": "max",
+       "to": 119
+      },
+      {
+       "from": 118,
+       "interval": 13,
+       "kind": "min",
+       "to": 131
+      }
+     ],
+     "turning_points": [
+      [
+       16,
+       "min",
+       651824185.7125702
+      ],
+      [
+       22,
+       "max",
+       655406693.7204118
+      ],
+      [
+       31,
+       "min",
+       653916298.057385
+      ],
+      [
+       36,
+       "max",
+       654166706.8396015
+      ],
+      [
+       53,
+       "min",
+       653894879.3721485
+      ],
+      [
+       57,
+       "max",
+       653988316.3662548
+      ],
+      [
+       58,
+       "min",
+       653988135.5851328
+      ],
+      [
+       61,
+       "max",
+       654012350.8993615
+      ],
+      [
+       69,
+       "min",
+       653866725.3479277
+      ],
+      [
+       70,
+       "max",
+       653873287.9318922
+      ],
+      [
+       71,
+       "min",
+       653872302.3913697
+      ],
+      [
+       78,
+       "max",
+       653962625.7153621
+      ],
+      [
+       86,
+       "min",
+       653896504.6265173
+      ],
+      [
+       93,
+       "max",
+       653952092.149203
+      ],
+      [
+       100,
+       "min",
+       653897747.04818
+      ],
+      [
+       111,
+       "max",
+       653937198.5938728
+      ],
+      [
+       118,
+       "min",
+       653901018.5325534
+      ],
+      [
+       119,
+       "max",
+       653907921.191361
+      ],
+      [
+       131,
+       "min",
+       653858577.1796229
+      ]
+     ]
+    }
+   },
+   "function": "settling_criterion.p_max_from_records",
+   "records": [
+    "data/SRP1/Results/P515S53/tight_tail_w86/campaign_s53_w86_tail_recert/evals/5cfe69a615ae3708_x0/per_cycle_record.jsonl",
+    "data/SRP1/Results/P515S53/tight_tail_w86/campaign_s53_w86_tail_recert/evals/ca8927e75d628bd1_n7_4h_e1/per_cycle_record.jsonl",
+    "data/SRP1/Results/P515S53/tight_tail_w86/campaign_s53_w86_tail_recert/evals/96c5aa50cc229cc1_c_star/per_cycle_record.jsonl"
+   ],
+   "this_function_without_floor": {
+    "srp1_c_star": 20,
+    "srp1_n7_4h_e1": 18,
+    "srp1_x0": 22
+   },
+   "value": 22
+  },
+  "readings_adopted_by_the_planner": {
+   "boyd_lapse": "a Boyd lapse (or a failed local solve) resets k0 strictly: T, A and the sign state are cleared",
+   "monotone_branch": "half-window means of |dQ| over [lo .. k] (second half strictly below the first), plus the stationary sub-case max |dQ| < EPS0",
+   "p_max": "P_MAX is a spec constant computed from the SRP1 reference records (turning_points, cycles 1..N)",
+   "swings": "successive half-swings compared over ALL consecutive pairs of A since k0, with <= (A[i+1] <= A[i])",
+   "three_turning_points": "\"successive swings not growing\" needs two half-swings, so certification effectively requires three turning points -- stricter than the ruling's \"at least two sign changes\"; the literal two-sign-change reading is computed report-only and never decides",
+   "window": "W = max(W_MIN, ceil(W_FACTOR * P_hat)) = max(20, ceil(1.1 P_hat)), per option 1(a)"
+  },
+  "v38_settling_analysis": "not used (no fit enters any decision)"
+ },
+ "values": {
+  "I": {
+   "I_srp1_master_expression": 317957.0085035586,
+   "I_srp1_p56a_transcription": 317957.0085035586,
+   "abs_difference_to_cited": 0.0,
+   "candidate_key": "db77e1549af855bcb3521950c634db55fe6c155ab2de591b0441b5f2bf4b369a",
+   "cited": {
+    "cited": [
+     {
+      "path": "P5_15_ADDENDUM28_AGEING_REPORT.md",
+      "sha256": "a90dd1548d45571996304fbec320d66707be92954064cf028262cfa5921c4d17",
+      "text": "I(x) = 317,957 at the smallest node-7 4 h unit (0.25 MVA / 1.0 MWh, 2025, candidate `db77e154...`)"
+     },
+     {
+      "field": "value_and_R.I_eur",
+      "path": "data/SRP1/Results/P515S53/w90_3x3/campaign_s53_w91_3x3_pair/campaign_results.json",
+      "source": "p515_s53_w89_3x3_campaign.instance facts: pe.value(master.investment_cost), 3 x 3",
+      "value": 317957.0085035586
+     }
+    ],
+    "rounded": 317957.01,
+    "value_eur": 317957.0085035586
+   },
+   "equals_cited_bitwise": true
+  },
+  "R_ref_rounded": 259375.33,
+  "V_SRP1": 259375.32654094696
+ },
+ "verbatim_text": {
+  "check": {
+   "all_found": true,
+   "brief": "PLANNER_BRIEF_2026-09-13.md",
+   "brief_git_state": {
+    "git_clean": true,
+    "git_tracked": true
+   },
+   "brief_sha256_at_freeze": "7e4e12a0f5d33a6f906cecd172d733fcc9b8718c3ac3466f5d13df05201b7f34",
+   "found_whitespace_normalised": {
+    "expert_predictions": true,
+    "records": true,
+    "reopen_rule": true,
+    "ruling_1_criterion": true,
+    "ruling_1_tau": true
+   }
+  },
+  "quotes": {
+   "expert_predictions": "**Expert's predictions:** settled slacks per cell within [5, 25] k\u20ac; the value's settled change |\u0394V| \u2264 20 k\u20ac, so the sign margin survives; the three slacks alike to within \u2248 5 k\u20ac",
+   "records": "**Records.** The per-period interface consensus duals (\u03bb_t per node) join the default per-cycle records from now on \u2014 a write-only change",
+   "reopen_rule": "**If |\u0394V| > 40 k\u20ac the SRP1 sign conclusion is reopened.**",
+   "ruling_1_criterion": "after the residuals pass, at least two sign changes of the objective step (the period is measured, not assumed); successive swings not growing; the range of Q over one full period \u2264 \u03c4; no fit in the decision. **Add a monotone branch:** if no sign change occurs within 2\u00d7 the longest period seen on the instance, certify when the steps are decreasing and the range over that window \u2264 \u03c4.",
+   "ruling_1_tau": "**\u03b4R = 0.07 \u2192 \u03c4 = \u03b4R\u00b7V_SRP1/4 = 4,539 \u20ac per cell.**"
+  }
+ },
+ "version": 39,
+ "zero_solve_checks": {
+  "committed_output": {
+   "all_hold": true,
+   "code_sha256_at_check": {
+    "admm_anderson_acceleration.py": "24cf3bea9b07725ae15029dd0d9d81ed46ab8e75ecf1c9141a4b0afc6be2659e",
+    "gate_result_io.py": "26cadaa5c3105f9adb879ece756ef6d659b374f647a7756030efe80a2df6d07d",
+    "interface_dual_capture.py": "e4223ac25fa488970ec195b4c3bb6b1171faa3aeba4824e0d6ee6482ab58f55c",
+    "p515_s44_campaign_harness.py": "3ad624cd74f9a832037d20d2480adb9b03d559aee1c5d9675dc8aeb6c3b9d8a2",
+    "p515_s53_w101_continuation_checks.py": "8f786a21a70f7363451e1f1261aaad5a0ae8b3075c74fd3785f06a5db953cd6a",
+    "p515_s53_w101_settling_continuation_hooks.py": "05004cf8b475c940ef1d30a225bcad20e257f02c0d34bb5034ee4975d6625f6b",
+    "p515_s53_w98_continuation_checks.py": "25edfd17fae83832b4c3f46812a24018c8905d2b399201814f5fd39321f35172",
+    "settling_criterion.py": "fbe5550b34a4062feed82476e1959b5e4e2786cb13ca61728bfa1803ba75f65f",
+    "shared_resources_planning.py": "0610d745a41c86c71dae9e776f0dc8e38c7099f73128a3d2c2e8f861ab9fc9c0"
+   },
+   "committed_clean": true,
+   "guards_verify_0_failures": {
+    "w101_checks": [],
+    "w98_checks_imported": []
+   },
+   "manifest": "data/SRP1/Results/P515S53/w101_srp1_continuation/zero_solve_checks/w101_zero_solve_checks_manifest_sha256.json",
+   "p_max": 22,
+   "path": "data/SRP1/Results/P515S53/w101_srp1_continuation/zero_solve_checks/w101_zero_solve_checks.json",
+   "sha256": "67ac04a597c5770f79245b48763f725c7f4a5b95f9a00c4ed31059140a90bc50"
+  },
+  "inline_rerun_at_freeze": {
+   "all_hold": true,
+   "per_section": {
+    "H": true,
+    "K": true,
+    "L": true,
+    "P": true,
+    "R": true,
+    "T": true
+   }
+  },
+  "rerun_before_launch": "the --run mode re-runs every check and refuses unless all hold",
+  "script": "p515_s53_w101_continuation_checks.py"
+ },
+ "zero_solve_smoke": "no zero-solve path exercises _child_real end to end (it builds and solves); the wiring is exercised zero-solve by checks H5 / H6 (real wrappers, real install, recorded values); THE FIRST REAL CYCLE OF THE x0 LAUNCH IS THE SMOKE (its in-cycle replay gate at cycle 1)"
+}
