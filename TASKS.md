@@ -1,8 +1,18 @@
 # TASKS — current order
 
-**Authority:** `PLANNER_BRIEF_2026-09-13.md` Addendum 48 (2026-09-25).
+**Authority:** `PLANNER_BRIEF_2026-09-13.md` Addendum 52 (2026-09-27); earlier orders below for record.
 **Objective convention on every value:** Q = certified `gross_operational_cost`, settlement excluded.
 **Updated at every transition; read first when resuming.**
+
+## Addendum 52 order — pair closed; gate-result hygiene; SRP1 benchmark
+
+- [x] Pair closed, results accepted (`58ff8d88`); expert's D_x0 prediction recorded as missed; both Planner self-corrections accepted. Manuscript paragraph: *"certified on residuals at cycle 72; a 16-cycle continuation showed a damped oscillation settling 6.2 k€ (7 × 10⁻⁶) below the certified value, within the 14.0 k€ certification bar."*
+- [x] CLAUDE.md: two rules added — *a defect fixed twice is fixed at the writer, not at the caller*; *a fit is validated only on points it did not use*
+- [ ] **▶ W100 — gate-result hygiene** (Worker, code + test, zero solves): one shared writer for gate results refusing string-typed flags; every gate writer (campaign harness, G1–G4 gates, W98 hooks, SRP1 benchmark harness) migrated; repository-wide boolean-typing test over gate-result JSON with a hash-pinned list of historical string-flag artifacts; negative controls (planted new string flag; changed hash of a listed artifact)
+- [ ] **▶ Advisor — settling criterion** (in parallel, no compute): envelope-based (range of Q over ≥ one oscillation period, or a damped-fit amplitude validated out of sample), not step-based; threshold tied to the value resolution; replayed on cycles 72–88; mechanism test of the Spring/TSO oscillation (λ_t near DSO flexibility shadow price in RES-covered Spring hours) against the per-block records. **Adopted into the spec before any further multi-scenario cell, Mac or VM**
+- [ ] SRP1 benchmark per Addendum 49, in its recorded order (steps in the Addendum 49 section below): λ_t vs π_t look → common-Q gate → 24-solve check → three arms × three starts → consistency re-evaluation → benchmark report (curtailed energy per arm beside 589.18, same weighting, raw MWh alongside)
+- [ ] **Stop for review** after the benchmark report
+- [ ] Step 5 SRP1 rows
 
 ## Addendum 48 order
 
@@ -28,7 +38,7 @@
   - **Persistence was OFF:** only ESSO models saved, no network `certified_models.pkl` → the continuation's bitwise gate is likely unmeetable
   - *Pair campaign (both cells):* campaign `s53_w91_3x3_pair`, spec `231558f0`; launched **2026-09-26 10:20:56 UTC**; preflight 20.36 GiB available vs 19.17 required (PASS; thin margin — compressor refilled to 5.07 GiB after the smoke; the (b)-off smoke arm ran at ~95 % of available and completed correctly). Sequential, concurrency 1: x0 then n7_4h_e1; nothing else runs on the Mac. Est. **~9.2 h/cell, ~18.4 h pair** (range 13.4–24.6 h; no-decay bound 19.8–31.0 h). Log `w90_3x3/pair_run_v36_launch.log`
 - [x] **Advisor: uncoordinated-benchmark definition** — delivered 2026-09-26 during the pair (read-only, no compute). Recommends a **two-arm decomposition** (U-passive, U-price-taker), a hard-fixed TSO interface replacing the 9e10 tracking term, costing via `_get_operational_recourse_components` with the curtailment penalty reset to 0, and a new production function beside the existing one. **Ruled in Addendum 49** (three arms; claim = min(passive, price-taker) − coordinated) — see the Addendum 49 order below.
-- [ ] **Stop for review** after the pair — R restated against **259,375.33**; R = 0.9331 recorded
+- [x] **Stop for review** after the pair (ruled Add. 51) — R restated against **259,375.33**; R = 0.9331 recorded
 - [ ] 42(1) linear-solver benchmark / 42(3) persistent-worker timing — idle time, after review
 - [ ] Step 5 SRP1 rows
 
@@ -46,7 +56,7 @@
   - **Per-block ΔQ (Add. 50 item i), all 80 blocks:** two superimposed motions. A **one-directional redistribution** (56/80 blocks keep one sign over 73–88, 92.5 % of movement, nearly cancelling) — W95's DSO7 lead blocks belong here but carry only 0.098 of the oscillation. The **oscillation is carried by Spring (0.818) and the TSO (0.847)**, spread over ~30 blocks — **not** the W95 set
   - **Predictions:** replay bitwise TRUE; peak ≤ 77 TRUE; geometric 0.80–0.95 FALSE (oscillatory — though the envelope contracts 0.892/cycle, inside the band); D_x0 20–60 k€ FALSE; stage 2 FALSE; R ≥ 0.80 TRUE. **H1/H2/H3: none fits** — an underdamped oscillation that settles
 - [x] **Continuation report** `P5_15_ADDENDUM51_CONTINUATION_REPORT.md`
-- [ ] **▶ STOPPED FOR REVIEW** — decisions: (1) the settling criterion (early stop unsound under oscillation) → the ordered Advisor review; (2) fix the stringified-boolean defect class structurally before the SRP1 benchmark
+- [x] **Stopped for review — ruled in Addendum 52** — decisions: (1) the settling criterion (early stop unsound under oscillation) → the ordered Advisor review; (2) fix the stringified-boolean defect class structurally before the SRP1 benchmark
 - [ ] **Stage 1 — x = 0** (≈ 11 h): replay checked **bitwise** against the 72 recorded cycles (also the instance's **reproducibility** measurement; a divergence at cycle k is reported with its magnitude and the run relabelled), then **30 cycles**; early stop at |ΔQ| < 500 €/cycle for 3 cycles
 - [ ] Geometric fit of the post-certification steps → ratio r and **D = step / (1 − r)**, with validity (increasing steps → no extrapolation)
 - [x] **Stage 2 — NOT RUN** by the frozen rule (D_x0 4,492 < 17,965); R reported as the range [(V − D_x0)/R_ref, V/R_ref] = **[0.895, 0.913]**

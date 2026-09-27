@@ -197,6 +197,20 @@ incidents behind each rule are in `REVISION_CONTEXT.md`, section
   a stdout-only launch left G1's first failure as a 0-byte log with no traceback; and a run
   detached with `screen -dmS` survived the task that owned it.
 
+- Fix a defect twice and you fix it at the writer, not at the caller. When a defect class
+  recurs, the second fix goes where every caller passes through — a shared writer that refuses
+  the bad value, and a repository-wide test that fails on it — so the next recurrence fails a
+  test, not a run. Numpy booleans serialised through `json.dumps(default=str)` became the text
+  `"True"`; W74–W76 patched two writers, and W98's new hooks wrote the same string, failing G14
+  on every line of the 3×3 continuation because the gate checks `is True`. Gate results are
+  now written only through the shared writer (Addendum 52).
+- Validate a fit only on points it did not use. Agreement with the points a fit was fitted to
+  is not a prediction; a model with k parameters passes through k points by construction.
+  Report the held-out error beside the estimate. In the 3×3 continuation the Planner reported a
+  three-extremum oscillation fit as predicting "the third extremum within 15 €" — circular —
+  and its limit (−7,281 €) was wrong; the damped-cosine fit on cycles 72–84, checked on
+  85–88 (errors 48–107 €), gave −6,235 € (Addendum 52).
+
 ## Stage templates
 
 - **Scope a gate per arm.** A gate that compares every arm against a control reference is
