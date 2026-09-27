@@ -45,11 +45,11 @@
 - [x] **W99:** stage-1 evidence `4689475e` (363/363 and 354/354 manifests; 347 IPOPT logs hash-recorded); post-hoc analyses `3fd1c15b`
   - **Per-block ΔQ (Add. 50 item i), all 80 blocks:** two superimposed motions. A **one-directional redistribution** (56/80 blocks keep one sign over 73–88, 92.5 % of movement, nearly cancelling) — W95's DSO7 lead blocks belong here but carry only 0.098 of the oscillation. The **oscillation is carried by Spring (0.818) and the TSO (0.847)**, spread over ~30 blocks — **not** the W95 set
   - **Predictions:** replay bitwise TRUE; peak ≤ 77 TRUE; geometric 0.80–0.95 FALSE (oscillatory — though the envelope contracts 0.892/cycle, inside the band); D_x0 20–60 k€ FALSE; stage 2 FALSE; R ≥ 0.80 TRUE. **H1/H2/H3: none fits** — an underdamped oscillation that settles
-- [ ] **▶ ACTIVE — pair report**, then **stop for review**
+- [x] **Continuation report** `P5_15_ADDENDUM51_CONTINUATION_REPORT.md`
+- [ ] **▶ STOPPED FOR REVIEW** — decisions: (1) the settling criterion (early stop unsound under oscillation) → the ordered Advisor review; (2) fix the stringified-boolean defect class structurally before the SRP1 benchmark
 - [ ] **Stage 1 — x = 0** (≈ 11 h): replay checked **bitwise** against the 72 recorded cycles (also the instance's **reproducibility** measurement; a divergence at cycle k is reported with its magnitude and the run relabelled), then **30 cycles**; early stop at |ΔQ| < 500 €/cycle for 3 cycles
 - [ ] Geometric fit of the post-certification steps → ratio r and **D = step / (1 − r)**, with validity (increasing steps → no extrapolation)
 - [x] **Stage 2 — NOT RUN** by the frozen rule (D_x0 4,492 < 17,965); R reported as the range [(V − D_x0)/R_ref, V/R_ref] = **[0.895, 0.913]**
-- [ ] Pair report — value, **R three ways**, reproducibility, settling → **stop for review**
 - **Expert's predictions (recorded):** replay bitwise through 72; hump then geometric decay, **ratio 0.80–0.95**; **D_x0 = 20–60 k€**; stage 2 triggered; **R_settled ≥ 0.80**. Competing: **H1** hump + decay (AA-off transient + slow mode) → step bound at window end; **H2** constant steps (ratio ≈ 1) → residual tolerances too loose, certified Q's are upper bounds, criterion must be objective-based; **H3** growing steps or a jump → basin transition, Advisor review first
 - **One-run rule stands.** SRP1 benchmark arms beside the continuation only with measured headroom ≥ 3 GiB above its peak — author's call
 
