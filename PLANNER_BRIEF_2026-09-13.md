@@ -2031,6 +2031,210 @@ certify, adopt the larger ρ_ess. Report cycles, EFC trajectory, step sizes, fai
 - **Order:** (b) zero-solve measurement → reboot → two-arm smoke gate → 3 × 3 pair (sequential) →
   **stop for review**. Then 42(1)/(3) idle measurements → Step 5 rows.
 
+# Addendum 49 — uncoordinated benchmark: three-arm definition, fixed interface, common Q (2026-09-26)
+
+- **Ruling 1 — three arms, adopted, with the claim anchored differently.** Arms at x = 0 on SRP1:
+  **passive** (production DSO block with all flexibility fixed at zero, substation voltage at the
+  setpoint, curtailment only for feasibility); **price-taker** (production DSO block with the
+  consensus terms removed — λ = 0, ρ = 0 — so the DSO sees exactly the price its local objective
+  carries in production and nothing else, at the setpoint voltage); **coordinated** = the certified
+  x = 0 cell. Each arm is the production subproblem with coupling removed, not a re-implementation.
+  Decomposition reported as the Advisor defines it, **but the paper's claim is "coordination beats
+  the best uncoordinated arrangement": benefit = min(passive, price-taker) − coordinated.** The
+  sign of passive − price-taker is not guaranteed: in the hours where the TN's interface marginal
+  value λ_t is below the price the DSO sees (RES-covered hours — Addendum 32's mechanism, conventional
+  at zero), a price-taker activates downward flexibility the system does not need, and its system
+  cost can exceed the passive arm's. If that happens it is a finding (a misaligned tariff is worse
+  than passivity), not an error. **Mechanism to state in the paper:** coordination proper is the
+  value of pricing DN flexibility at λ_t rather than at the wholesale price; it lives where
+  λ_t ≠ π_t — congested or voltage-constrained interfaces, and RES-covered hours. **Zero-solve look
+  first:** from the certified x = 0 cell, tabulate λ_t (interface-P consensus dual) against π_t per
+  node and hour; the hours with λ_t ≠ π_t and c_flex < π_t bound coordination proper from above.
+  Recorded as the prediction before any arm runs; the Advisor's "inside the band" expectation
+  stands beside it as the competing prediction.
+- **Ruling 2 — hard-fixed interface loads, adopted; the penalty goes.** A 9 × 10¹⁰ tracking penalty
+  dominates IPOPT's gradient-based objective scaling and can leave the TN's economic gradient below
+  the dual-infeasibility tolerance — an "optimal" flag over an unresolved dispatch, biasing the
+  benchmark upward. The TSO arm is the production TSO block with interface P and Q fixed to the DSO
+  arm's schedule as (mutable) Params, consensus terms removed, voltages within their normal
+  bounds — the exact limit of the penalty, well scaled. The 24-solve check (penalty vs fixed at the
+  same targets: TN cost, interface residual, iteration count, dual infeasibility at termination)
+  runs and is reported; it decides whether the hazard was live, not whether the ruling holds.
+- **Ruling 3 — new production function beside the old, adopted.** The existing path stays unwired
+  and untouched (SRP1 bitwise gate); the new one is built from the production model constructors
+  with a check that each arm's model has the coordinated block's variable and constraint counts
+  minus the removed consensus rows plus the fixed rows. **Common-Q gate before any arm is
+  reported:** the new evaluation function applied to the certified x = 0 cell's persisted terminal
+  models must reproduce its certified gross_operational_cost (bitwise, or the difference explained
+  to the last digit) — the log-derived-quantity rule applied to the evaluation function. The
+  tie-breaker Param is set to its production value in every arm; the arms differ only in decision
+  objectives and coupling.
+- **Consistency convention (SRP1).** TN voltages bounded, not fixed at the setpoint. After the two
+  solves, re-evaluate each DN at the TN's actual interface voltage with the DSO's decisions fixed:
+  report max |ΔV| at nodes 5/7/9 per hour and any DN voltage or thermal violation. If a DN limit is
+  violated, one sequential pass (DSO re-solved at the actual voltage → TSO re-solved) defines the
+  arm's cost, and the pass's effect is reported. The band is widened by what is measured, never
+  softened.
+- **Resolution, measured on the arms themselves.** Each arm solved from three starts (production
+  cold; warm from the certified coordinated solution; perturbed); the spread is the arm's
+  multimodality band, reported next to the coordinated cell's reproducibility band (0.011%) and
+  the DSO band re-measured in Step 5's certification statistics. The C3-era 0.3% is not used as a
+  number. A difference is claimed only above the larger band.
+- **Manuscript:** the 18.25% coordination benefit is **withdrawn now**, not after the measurement —
+  it was measured on the transfer-payment recourse Addendum 11 retired. The replacement is the
+  three-arm table with bands; if coordination proper is inside the band on SRP1, the paper says so
+  and places the coordination claim where λ_t ≠ π_t (the multi-scenario instance under row 18, and
+  any stressed variant the author chooses later — author's call, with the SRP1 numbers in hand).
+- **Timing.** Nothing solves before the pair finishes; the Worker may write the new function and
+  its tests during the pair and runs nothing — not even tests that build a model (the pair holds
+  ≈ 22 of 24 GiB). Order after the pair review: λ_t vs π_t look → common-Q gate → 24-solve check →
+  three arms × three starts → consistency re-evaluation → report. The 3 × 3 convention: second
+  Advisor note after the pair, as proposed.
+- **Clarification (2026-09-26) — the tie-breaker has two roles, and "its production value" meant
+  the evaluation.** *Evaluation Q:* tie-breaker **0** in every arm — the value the certified
+  coordinated Q was computed with (the ADMM subproblems zero it), so the common-Q gate on the
+  x = 0 cell fixes it by construction; if that cell curtailed nothing the gate cannot discriminate
+  0 from 1 and the rule stands by principle. *Decision objectives:* **0** for the price-taker (the
+  production subproblem with coupling removed; curtailment is already costed through the interface
+  price) and for the coordinated arm (production). **1 €/MWh (the build default) for the passive
+  arm only,** because with flexibility fixed at zero and no price the passive DSO's objective would
+  be empty — a pure feasibility problem whose curtailment, and therefore whose interface schedule
+  and TN cost, IPOPT would pick arbitrarily. As the sole objective term the tie-breaker is the
+  minimum-curtailment selection rule and its value is immaterial to the arg-min; verify by
+  re-solving the passive arm at 0.1 and 10 €/MWh and reporting the interface schedule difference
+  (expected: within solver tolerance; any residual is the non-unique distribution of curtailment
+  among units, which the three-start band already covers). Report curtailed energy per arm.
+- **λ_t recovery.** Two independent sources, both to be read and compared: the consensus dual for
+  the interface-P channel, which enters the DSO and TSO subproblems as a (mutable) Param and is
+  therefore readable from the persisted terminal models of the W86 x = 0 cell; and the TN nodal
+  dual at the interface bus (IPOPT constraint dual of the TN power balance, in the models'
+  suffixes). At certification they agree up to the ADMM scaling — on the interface-P channel
+  **σ and the interface rating only** (S_ref and D5 act on the ESS channel alone; Planner's
+  correction from source, 2026-09-26) — which must be undone to €/MWh before comparison with
+  π_t; the check that the units are right is reproducing
+  Addendum 32's known figure — the bus-7 marginal cost equal to the DSO flexibility shadow price
+  — before the table drives any prediction (the log-derived-quantity rule).
+
+# Addendum 50 — 3 × 3 x = 0 certified; G6 failure benign; objective not settled at certification (2026-09-26)
+
+- **Stop was correct; the running node-7 cell continues.** A failed prediction with no named
+  fallback is a stop; stopping the cell would destroy the data that decides the finding. The
+  certification rule is not changed mid-pair.
+- **Ruling 1 — G6: option (a).** Recorded as failed (1/80 at the μ floor against ≥ 72/80), with
+  its mechanism, and **not re-scoped** for this pair. **Expert's premise, owned:** G6 encoded "at
+  the μ floor" as the depth criterion because SRP1 sat there 192/192 under production tolerance;
+  but the floor is IPOPT's `mu_min` — a lower **clamp** derived from `compl_inf_tol`, not a target.
+  IPOPT terminates when the four error metrics meet their tolerances, and a solve that does so one
+  monotone μ-update above the clamp (μ/floor ≈ 3, inside the (1, 5] band a 0.2 decrease factor
+  implies) is converged by the only definition that matters. Under the tail the clamp fell
+  100–500× while the solves went 33× deeper; "above the floor" is the floor moving. **Verify from
+  logs, zero solves:** μ/floor ∈ (1, 5] for all 80 (any > 5 breaks the one-update hypothesis for
+  that solve); the four terminal error metrics against the tail tolerances for the final accepted
+  attempt. **Prediction for node-7:** G6 as frozen fails likewise (≤ 3/80 at floor, median μ/floor
+  ≈ 3). **G6 for future specs**, frozen before the next run: depth = `Optimal Solution Found` under
+  the tail tolerances for the final accepted attempt in the tail window and terminal round;
+  μ_terminal/μ_floor reported per solve, not gated.
+- **G6 does not explain the drift.** The μ-level effect of a 1e-4 → 1e-6 tolerance change was
+  ≈ 700 € in total at SRP1; the residual 1–5× floor variation is far below that. A descent of
+  4,000 €/cycle and accelerating is **ADMM-level movement**: after the tolerance switch the fixed
+  point of the inexact-solve map shifted and the iteration is moving toward the new one — or
+  moving between basins. Two findings, one cause of exposure: by construction the tail fires when
+  the channels enter tolerance and the 10-cycle window starts at once, so the tail's transient
+  sits **inside** the certification window; at SRP1 the transient was small enough not to matter.
+- **Ruling 2 — the certified Q stands as "certified on residuals", its ± bar claim does not.**
+  Steps of −1,009 … −4,006 € over cycles 66–72, each larger than the last, mean the bar (largest
+  step in the window, 13,954 €) does not bound the remaining descent — the CLAUDE.md refinement
+  applies verbatim: the bar bounds stopping slack, not a path still descending. Rule ten
+  (terminal-step-to-threshold) is computed now for x = 0 and for node-7 at certification.
+- **Diagnostics from records, zero solves, both cells once node-7 certifies** (x = 0 may start
+  now — records only, no model loading while the cell runs): (i) per-block decomposition of ΔQ per
+  cycle 63–72 — uniform across blocks (barrier creep, H_B) vs concentrated in a few DSO blocks
+  (basin transition, H_C); (ii) per-cycle movement of the consensus variables and duals per
+  channel; (iii) primal/dual residual margins inside the window as fractions of tolerance;
+  (iv) **the row-18 terms per cycle — Σω|d| and the premium (H_row18):** the d⁺/d⁻ split is an
+  L1 kink, degenerate for an interior method, and the tighter tolerance resolves the DSO's
+  scenario deviations, moving p̄ and hence the TSO — a 3 × 3-specific mechanism absent at SRP1
+  (d ≡ 0) that would explain why the 3 × 3 tail effect is 20× SRP1's; (v) local-solve iteration
+  counts and μ per cycle. **Predictions:** H_row18 — the premium and deviation terms account for
+  most of ΔQ and the DSO blocks with the largest ΔQ have the largest deviation changes;
+  H_B — uniform, decreasing ΔQ across blocks; H_C — a few DSO blocks with large ΔQ and longer
+  solves.
+- **Ruling 3 — post-certification continuation, after the pair and the diagnostics.** Each cell
+  continued from its terminal state for up to 30 cycles (≈ 3.3 h each, one at a time), after a
+  **bitwise identity gate**: the terminal cycle re-run from the recorded state reproduces its Q
+  bitwise; if the state is not restorable bitwise, the continuation is a separately labelled run.
+  Stop when |ΔQ| < 500 €/cycle for 3 consecutive cycles or at 30 cycles. Report the total
+  post-certification descent per cell and its effect on the value. **Expert's prediction:** a
+  hump — steps peak within ≈ 5 cycles and decay; total remaining descent 20–60 k€ per cell;
+  inter-cell difference < 10 k€, inside R's resolution. If the steps are still increasing after
+  10 cycles or the total exceeds 100 k€, H_C is likely and no 3 × 3 result is used before the
+  certification design gains a settling criterion. This is a measurement of the stopping slack
+  the bar failed to bound, not a re-certification; the certified Q's are unchanged.
+- **Reporting.** The value and R are reported three ways: at certification; after continuation;
+  and with the drift as an explicit uncertainty. The manuscript's certification paragraph for the
+  multi-scenario instance says "certified on residuals at cycle N; the objective settled within
+  X € over M further cycles." **Future specs** (frozen before any further 3 × 3 cell, Advisor
+  review first, informed by the continuation data): a settling criterion in the certification
+  window — non-increasing objective steps over the last five cycles, or a restart of the 10-cycle
+  count at tail engagement — is proposed, not yet adopted.
+
+# Addendum 51 — 3 × 3 pair certified; continuation by replay (route A, staged); G6 restated (2026-09-27)
+
+- **Results accepted.** At 3 × 3 the smallest unit does not pay: value − I = −81,262 €, determinate
+  at 4.5×; **x = 0 optimal under the baseline at both instances** — and the drift can only widen
+  this (x = 0 falls 2–2.8× faster than the storage cell, so a continued fall shrinks the value).
+  R = 0.9126 at certification against the recorded 0.9331: indistinguishable at the resolution.
+  159/160 final solves converged by IPOPT's definition; the one "Acceptable Level" exit (compl
+  2.93× tolerance) is reported with its cell, block and retry history, not acted on.
+- **Expert's explanation withdrawn.** Addendum 50 attributed the descent to the tail's transient
+  inside the certification window; on both cells the fall began before the tail engaged, so the
+  attribution fails and H_row18 as a cause of the *drift* falls with it. What stands: the objective
+  converges more slowly than the Boyd residuals on this instance, and the bar does not bound the
+  remaining descent. Note that tail-on and AA-off coincide by design (cycle 63 on x = 0), so an
+  AA-off transient — plain ADMM correcting extrapolated duals — remains a candidate for the
+  accelerating steps in the window; the continuation discriminates it.
+- **Ruling — route A, staged; B rejected (memory rule, production changes); C rejected** because the
+  paper's certification claim for the multi-scenario instance needs the settling behaviour
+  quantified, not only stated, and the settling criterion for every further multi-scenario run
+  (VM included) needs this data. **Stage 1: x = 0** — re-run under the identical spec to
+  certification, **checked bitwise against the 72 recorded cycles** (this replay is also the
+  instance's reproducibility measurement for the manuscript; a divergence at cycle k is reported
+  with its magnitude and the run is then labelled separately, still informative), then continue
+  **30 cycles** with the certification rule disabled and the certifying regime unchanged (tail on,
+  AA off, ρ frozen) — a separately labelled run under spec v37. Stop early at |ΔQ| < 500 €/cycle for
+  3 cycles. **Analysis:** fit the post-certification steps to a geometric sequence; report the
+  ratio and the extrapolated remaining descent D = step/(1 − ratio) with the fit's validity
+  (increasing steps → no extrapolation). **Stage 2 decision rule, recorded now:** the storage
+  cell's continuation runs if D_x0 (measured plus extrapolated) exceeds the value's resolution
+  (bar-sum ≈ 18 k€); otherwise R is reported as the range [(V − D_x0)/R_ref, V/R_ref] with the
+  storage cell's descent bounded above by D_x0. ≈ 11 h for stage 1; ≈ 12 h more if stage 2 runs.
+- **Expert's predictions, recorded:** replay bitwise through cycle 72; steps peak within a few
+  cycles of certification and then decay geometrically with ratio 0.80–0.95; D_x0 = 20–60 k€;
+  stage 2 triggered; R_settled ≥ 0.80. **Competing outcomes and what each means:** (H1) hump then
+  geometric decay → AA-off transient plus a slow mode; the settling criterion is a step bound at
+  the end of the window; (H2) near-constant steps through cycle 102 (ratio ≈ 1) → the residual
+  tolerances are too loose for this instance; the certified Q's are reported as upper bounds and
+  the criterion must be objective-based (or ε_rel tightened) before any further 3 × 3 result is
+  used; (H3) growing steps or a jump → basin transition; Advisor review before anything else.
+- **Diagnostics owed.** Addendum 50's records-only items (i)–(v) — per-block ΔQ decomposition,
+  consensus and dual movement per channel, residual margins, row-18 terms per cycle, iteration
+  counts and μ — are reported for both cells before stage 1 launches, or the omission is stated.
+  Add the ρ history and the AA state around cycles 55–72 on each cell.
+- **G6 for future specs — adopted as the Planner states it:** `Optimal Solution Found` plus the four
+  error metrics within the tail tolerances for the final accepted attempt; μ/floor reported per
+  solve, never gated — the floor test measured scaling, not depth. Frozen into v37.
+- **Manuscript.** Multi-scenario instance: x = 0 optimal (determinate at 4.5×, drift-robust);
+  R reported at certification and settled (or as a range); certification paragraph carries the
+  replay reproducibility result and the settling statement "certified on residuals at cycle N; the
+  objective descended a further X € over M cycles (ratio r)". The SRP1 certification statement is
+  unaffected (its objective was settled at certification: the tail moved it 1e-6 in total).
+- **One-run rule.** Stands unless the author rules otherwise: the SRP1 benchmark arms (≈ 1 GB,
+  minutes) could run beside the continuation only with measured headroom ≥ 3 GiB above the
+  continuation's peak — the author's call, since the rule is his.
+- **Order:** diagnostics report (records only) → spec v37 frozen with predictions → stage 1 → stage 2
+  by the rule → pair report (value, R three ways, reproducibility, settling) → **stop for review**.
+  Then the SRP1 benchmark (Addendum 49 order) and Step 5 rows.
+
 ## Update obligations
 
 At the end of Step 1 the Planner rewrites the "CURRENT SOURCE OF TRUTH" head of
