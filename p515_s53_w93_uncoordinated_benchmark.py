@@ -14,10 +14,20 @@ is untouched, its source sha256 pin re-checked below).
 
 INSTANCE (recorded in every artifact): x = 0 on SRP1, candidate key 8435c71859ddde68e7ae5818b4ff91c03b4171791bcfaa70edcc3ddb52bacb57
 (sha256 of the canonical candidate {5: [0, 0], 7: [0, 0], 9: [0, 0]} at 2025, `p515_s44_campaign_harness.candidate_key`).
-COORDINATED ARM = the W86 tight-tail re-certification cell `5cfe69a615ae3708_x0` (campaign s53_w86_tail_recert, spec
-ddd6cd44, certified at cycle 132, gross_operational_cost 653,858,731.5686293), whose terminal models were persisted
-(`post_certification.requested.persist_certified_models: true`; certified_models.pkl sha256 d816bb4b..., ESSO
-esso_models_s39_D.pkl sha256 15f38409..., both in the committed child manifest). It is NOT re-run.
+COORDINATED ARM (W106, Addendum 54 Ruling 3) = the SETTLED x = 0 cell `d110bd1a5977df1e_x0` (campaign
+s53_w101_srp1_cont_x0, spec d1d5c3bc under stage spec v39 8a612429; evidence commit e4b5c992): bitwise replay through the
+W86 certificate (cycle 132), then certified by the settling rule at k* = 181, Q181 = gross_operational_cost
+653,873,702.1876609 (`settling_decision.json` Q_k_star = evaluation_record certified_cost). Its terminal (cycle-181) models
+were persisted (certified_models.pkl sha256 99ab1070..., ESSO esso_models_s39_D.pkl sha256 118487e1..., both hash-recorded
+in the committed campaign and child manifests). It is NOT re-run. Constant: `COORDINATED` (= `SETTLED`).
+W86 (UNWIRED, RETAINED; W106): W93/W94 were written against the W86 tight-tail re-certification cell
+`5cfe69a615ae3708_x0` (campaign s53_w86_tail_recert, spec ddd6cd44, certified at cycle 132, gross_operational_cost
+653,858,731.5686293; certified_models.pkl sha256 d816bb4b..., ESSO 15f38409...). Addendum 53 found that cell unsettled
+(certified at the trough of the post-AA fall); Addendum 54 Ruling 3 moved every coordinated-side input -- the common-Q
+reference, the lambda_t models, the coupling check's pinned targets, the warm start, the coordinated curtailment figure
+-- to the settled cycle-181 models. The `W86` constant and `_load_w86_models` are kept, unwired and unused (unwire,
+never delete); `COORDINATED_PREVIOUS_REFERENCE` carries the W86 figures for REPORTING beside the settled ones only.
+Nothing ran under W93/W94 (their output root `w93_uncoordinated` was never created).
 
 OBJECTIVE CONVENTION ON EVERY OUTPUT: Q = gross_operational_cost, settlement EXCLUDED (production
 `_get_operational_recourse_components`), every block priced for the evaluation with production's ADMM-subproblem
@@ -30,11 +40,19 @@ STAGES, IN THE ADDENDUM 49 ORDER, EACH ITS OWN ATTACHED PROCESS WITH AN EXACT DE
                               W31's committed per-hour lmp/y0/pi/lambda_E (dn_plateau.json, d68c814d) to 1e-9 EUR/MWh,
                               and the consensus-dual Params (undone: sigma via admm_objective_scale, interface rating,
                               B) must agree with the nodal duals to the KKT tolerance -- Addendum 32's "bus-7 marginal
-                              cost = DSO flexibility shadow price" figure. Then the lambda_t vs pi_t table on the W86
-                              models, per node and hour, flagging |lambda_t - pi_t| > 0.05 EUR/MWh AND c_flex < pi_t.
-                              The table is marked usable as the prediction only if the units check passes.
- 2. common-q-gate             ZERO solves. `evaluate_common_q` (evaluation tie-breaker 0, require_unchanged) on the W86
-                              persisted models must reproduce the certified recourse components BITWISE; negative
+                              cost = DSO flexibility shadow price" figure. Then the lambda_t vs pi_t table on the
+                              SETTLED cycle-181 models, per node and hour, flagging |lambda_t - pi_t| > 0.05 EUR/MWh AND
+                              c_flex < pi_t. THIRD SOURCE (W106): the lambda_t sidecar `interface_duals_per_cycle.jsonl`
+                              of the settled cell (`lambda_sidecar_cross_check`): row k*-1 = 180 divided by s_base must
+                              equal the persisted consensus-dual Params BITWISE (the sidecar holds the dual the NEXT
+                              cycle's solve uses; AA not accepted at 180/181), and row k* = 181, converted to EUR/MWh by
+                              the same interface-P scaling, must agree with the Param-derived lambda_dso_full within
+                              the consensus tolerance. The table is marked usable as the prediction only if the units
+                              check passes, the settled identities hold AND the sidecar cross-check passes.
+ 2. common-q-gate             ZERO solves. `evaluate_common_q` (evaluation tie-breaker 0, require_unchanged) on the
+                              SETTLED persisted models must reproduce the settled recourse components BITWISE -- the
+                              reference is Q181 = 653,873,702.1876609 (settling_decision.json Q_k_star, equal to the
+                              evaluation record's certified_cost and recourse gross, checked before loading); negative
                               control and discrimination: evaluation tie-breaker 1 must be refused under
                               require_unchanged and, repriced, must differ by exactly the curtailment it prices.
  3. tso-coupling-check        24 solves (2 couplings x 12 TSO blocks: 12 fixed + 12 penalty). Ruling 2's penalty-vs-
@@ -56,7 +74,11 @@ STAGES, IN THE ADDENDUM 49 ORDER, EACH ITS OWN ATTACHED PROCESS WITH AN EXACT DE
  5. passive-tie-breaker --value V   48 solves (passive, cold, DSO decision tie-breaker V in {0.1, 10}); no
                               consistency step (declared: the variant exists to measure the interface schedule's
                               value-independence against the ruled 1 EUR/MWh cold run).
- 6. report                    ZERO solves. Reads 1-5; claim = min(passive, price-taker) - coordinated with the bands.
+ 6. report                    ZERO solves. Reads 1-5; claim = min(passive, price-taker) - coordinated with the bands;
+                              curtailment table (author requirement): every arm and start on the coordinated figure's
+                              weighting (EUR at 1 EUR/MWh, block-weighted) with raw MWh (day-weighted and per
+                              representative day) alongside, beside the settled coordinated figure (record and
+                              recomputed from the models by stage 2) and the W86 cycle-132 figure 589.18 (reported).
                               Each arm's Q is the MINIMUM over its three starts: CONSERVATIVE AGAINST THE COORDINATION
                               CLAIM -- the uncoordinated side gets its best local optimum of three, the coordinated side
                               is one certified cell (Planner ruling, W94). Recorded as Q_MIN_OVER_STARTS_NOTE.
@@ -71,23 +93,28 @@ production import and checks the cumulative count EXACTLY at every phase boundar
 many; a production retry tier raises the count and fails it). Zero-solve stages arm `permitted=()`. Each run refuses
 unless: no campaign / legacy lock, no forbidden live process (the p515_s4* campaign children, any other p515_s53_*
 stage -- the 3x3 pair launcher included), production and these files clean in git, its output directory absent
-(write-once), and its own lock acquired. Per-solve records are appended (flushed, fsynced) to per_solve_record.jsonl
-as they happen, phase checkpoints to phase_checkpoints.jsonl, so a failure is diagnosable. Capture-path checklists
-are asserted before any solve.
+(write-once), its own lock acquired, and (W106) the frozen benchmark spec binds: the highest-version
+`frozen_s53_benchmark_spec_v<N>_<hash8>.json` under the output root has a content sha256 starting with its <hash8>,
+and its `code_sha256_binding` equals the sha256 of every listed file on disk and its coordinated models sha equals
+`COORDINATED` (`frozen_spec_binding_failures`). Per-solve records are appended (flushed, fsynced) to
+per_solve_record.jsonl as they happen, phase checkpoints to phase_checkpoints.jsonl, so a failure is diagnosable.
+Capture-path checklists are asserted before any solve.
 
-EXACT COMMANDS (repo root; attached, ALONE, one at a time, both streams captured; never detached):
-    mkdir -p data/SRP1/Results/P515S53/w93_uncoordinated/launch_logs
-    set -o noclobber && /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python -u p515_s53_w93_uncoordinated_benchmark.py --stage lambda-look > data/SRP1/Results/P515S53/w93_uncoordinated/launch_logs/lambda_look.log 2>&1
-    set -o noclobber && /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python -u p515_s53_w93_uncoordinated_benchmark.py --stage common-q-gate > data/SRP1/Results/P515S53/w93_uncoordinated/launch_logs/common_q_gate.log 2>&1
-    set -o noclobber && /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python -u p515_s53_w93_uncoordinated_benchmark.py --stage tso-coupling-check > data/SRP1/Results/P515S53/w93_uncoordinated/launch_logs/tso_coupling_check.log 2>&1
-    set -o noclobber && /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python -u p515_s53_w93_uncoordinated_benchmark.py --stage arm --arm passive --start cold > data/SRP1/Results/P515S53/w93_uncoordinated/launch_logs/arm_passive_cold.log 2>&1
+EXACT COMMANDS (W106; repo root; attached, ALONE, one at a time, both streams captured; never detached; the frozen
+benchmark spec under the output root lists the same commands with the declared solve counts):
+    mkdir -p data/SRP1/Results/P515S53/w106_uncoordinated_settled/launch_logs
+    set -o noclobber && /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python -u p515_s53_w93_uncoordinated_benchmark.py --stage lambda-look > data/SRP1/Results/P515S53/w106_uncoordinated_settled/launch_logs/lambda_look.log 2>&1
+    set -o noclobber && /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python -u p515_s53_w93_uncoordinated_benchmark.py --stage common-q-gate > data/SRP1/Results/P515S53/w106_uncoordinated_settled/launch_logs/common_q_gate.log 2>&1
+    set -o noclobber && /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python -u p515_s53_w93_uncoordinated_benchmark.py --stage tso-coupling-check > data/SRP1/Results/P515S53/w106_uncoordinated_settled/launch_logs/tso_coupling_check.log 2>&1
+    set -o noclobber && /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python -u p515_s53_w93_uncoordinated_benchmark.py --stage arm --arm passive --start cold > data/SRP1/Results/P515S53/w106_uncoordinated_settled/launch_logs/arm_passive_cold.log 2>&1
       (and --arm passive --start warm_from_certified | perturbed; --arm price_taker --start cold | warm_from_certified | perturbed; log name arm_<arm>_<start>.log)
-    set -o noclobber && /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python -u p515_s53_w93_uncoordinated_benchmark.py --stage passive-tie-breaker --value 0.1 > data/SRP1/Results/P515S53/w93_uncoordinated/launch_logs/passive_tie_breaker_0p1.log 2>&1
-    set -o noclobber && /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python -u p515_s53_w93_uncoordinated_benchmark.py --stage passive-tie-breaker --value 10 > data/SRP1/Results/P515S53/w93_uncoordinated/launch_logs/passive_tie_breaker_10.log 2>&1
-    set -o noclobber && /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python -u p515_s53_w93_uncoordinated_benchmark.py --stage report > data/SRP1/Results/P515S53/w93_uncoordinated/launch_logs/report.log 2>&1
-OUTPUT (write-once): data/SRP1/Results/P515S53/w93_uncoordinated/<run_id>/ with <run_id>.json, per_solve_record.jsonl
-(solve stages), phase_checkpoints.jsonl, manifest_sha256.json. Exit 0 = completed with every gate of the stage
-passed; 1 = a gate failed or a solve failed; 2 = refused before doing anything (precondition).
+    set -o noclobber && /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python -u p515_s53_w93_uncoordinated_benchmark.py --stage passive-tie-breaker --value 0.1 > data/SRP1/Results/P515S53/w106_uncoordinated_settled/launch_logs/passive_tie_breaker_0p1.log 2>&1
+    set -o noclobber && /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python -u p515_s53_w93_uncoordinated_benchmark.py --stage passive-tie-breaker --value 10 > data/SRP1/Results/P515S53/w106_uncoordinated_settled/launch_logs/passive_tie_breaker_10.log 2>&1
+    set -o noclobber && /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python -u p515_s53_w93_uncoordinated_benchmark.py --stage report > data/SRP1/Results/P515S53/w106_uncoordinated_settled/launch_logs/report.log 2>&1
+OUTPUT (write-once): data/SRP1/Results/P515S53/w106_uncoordinated_settled/<run_id>/ with <run_id>.json,
+per_solve_record.jsonl (solve stages), phase_checkpoints.jsonl, manifest_sha256.json. Exit 0 = completed with every
+gate of the stage passed; 1 = a gate failed or a solve failed; 2 = refused before doing anything (precondition).
+(W93/W94's commands named data/SRP1/Results/P515S53/w93_uncoordinated/; that root was never created and is unwired.)
 """
 
 import argparse
@@ -120,18 +147,81 @@ AUTHORITY = [
     'PLANNER_BRIEF_2026-09-13.md Addendum 49 (rulings 1-3, consistency convention, resolution, timing)',
     'PLANNER_BRIEF_2026-09-13.md Addendum 49 clarification 2026-09-26 (tie-breaker roles; lambda_t recovery)',
     'TASKS.md Addendum 49 order', 'Planner task W93',
+    'PLANNER_BRIEF_2026-09-13.md Addendum 53 Ruling 4 (coordinated arm reported only as the settled x = 0 value)',
+    'PLANNER_BRIEF_2026-09-13.md Addendum 54 Ruling 3 (common-Q gate and lambda_t look on the settled cycle-181 x = 0 '
+    'models; the gate reference is the settled value)', 'Planner task W106',
 ]
 SCRIPT_NAME = os.path.basename(__file__)
-OUT_ROOT_REL = os.path.join('data', 'SRP1', 'Results', 'P515S53', 'w93_uncoordinated')
+# W106 (Addendum 54 Ruling 3): the settled benchmark's output root (new; the frozen benchmark spec lives here too).
+OUT_ROOT_REL = os.path.join('data', 'SRP1', 'Results', 'P515S53', 'w106_uncoordinated_settled')
+# W106: UNWIRED, RETAINED -- the W93/W94 output root (never created: nothing ran there). Unwire, never delete.
+_W93_OUT_ROOT_REL = os.path.join('data', 'SRP1', 'Results', 'P515S53', 'w93_uncoordinated')
+FROZEN_SPEC_GLOB = 'frozen_s53_benchmark_spec_v*_*.json'   # W106: the frozen benchmark spec, under OUT_ROOT_REL
 LOCK_PATH = os.path.join(REPO, '.p515_s53_w93_benchmark.lock')
 EXTRA_FORBIDDEN_PROCESS_SUBSTRINGS = ('p515_s53_', 'p515_s44_campaign_harness', 'p515_s4', 'p515_g_g1_g4_admm_gates')
 EXTRA_CLEAN_FILES = ('uncoordinated_benchmark.py', 'p515_s53_w93_uncoordinated_benchmark.py',
                      'p515_s53_w93_uncoordinated_benchmark_checks.py', 'p58_rescale.py', 'p513_solve_profile_guard.py',
                      'p515_s53_srp1_bitwise_gate.py')
-EVAL_ID_PREFIX = 'p515s53w93_'   # isolated IPOPT log dir: p56a_oracle.WORK_DIR/<EVAL_ID_PREFIX><run_id>/logs
+EVAL_ID_PREFIX = 'p515s53w106_'  # isolated IPOPT log dir: p56a_oracle.WORK_DIR/<EVAL_ID_PREFIX><run_id>/logs
+# W106: UNWIRED, RETAINED -- the W93/W94 IPOPT log-dir prefix (no directory with it exists: nothing ran).
+_W93_EVAL_ID_PREFIX = 'p515s53w93_'
 
 X0 = {'label': 'x0', 'nodes': {5: (0.0, 0.0), 7: (0.0, 0.0), 9: (0.0, 0.0)}, 'investment_year': 2025,
       'candidate_key': '8435c71859ddde68e7ae5818b4ff91c03b4171791bcfaa70edcc3ddb52bacb57'}
+# ---------------------------------------------------------------------------------------------------------------------
+# W106 (Addendum 54 Ruling 3): THE COORDINATED CELL = the settled cycle-181 x = 0 models. Every coordinated-side input
+# (common-Q reference, lambda_t models + sidecar, the coupling check's pinned targets, the warm start, the coordinated
+# curtailment figure) reads COORDINATED. The sha256 pins are the ones hash-recorded in the committed campaign manifest
+# (evidence commit e4b5c992) and child manifest; `common_capture_checklist` re-verifies them against both manifests,
+# and the campaign manifest's blob at e4b5c992 against the working file, before any model is loaded.
+# ---------------------------------------------------------------------------------------------------------------------
+_SETTLED_CAMPAIGN = os.path.join('data', 'SRP1', 'Results', 'P515S53', 'w101_srp1_continuation',
+                                 'campaign_s53_w101_srp1_cont_x0')
+_SETTLED_EVAL = os.path.join(_SETTLED_CAMPAIGN, 'evals', 'd110bd1a5977df1e_x0')
+SETTLED = {
+    'description': ('W102 settled SRP1 x = 0 cell (settling continuation of the W86 re-certification: bitwise replay '
+                    'through cycle 132, then certified by the settling rule at k* = 181; terminal models persisted)'),
+    'campaign_spec_sha256': 'd1d5c3bcbdc261d297282382ce4a54263a811059d17230613a1765ee915ebd33',
+    'stage_spec': {'path': os.path.join('data', 'SRP1', 'Results', 'P515S53', 'frozen_s53_spec_v39_8a612429.json'),
+                   'version': 39},
+    'eval_key': 'd110bd1a5977df1e811a1b3963afc565de6daa65f76dcc096ead3fdc70b08546',
+    'evidence_commit': 'e4b5c9928d96b413c77039c377e5f7a82a6549f5',
+    'eval_dir': _SETTLED_EVAL,
+    'evaluation_record': os.path.join(_SETTLED_EVAL, 'evaluation_record.json'),
+    'post_certification': os.path.join(_SETTLED_EVAL, 'post_certification.json'),
+    'child_manifest': os.path.join(_SETTLED_EVAL, 'child_manifest_sha256.json'),
+    'campaign_manifest': os.path.join(_SETTLED_CAMPAIGN, 'campaign_manifest_sha256.json'),
+    'settling_decision': os.path.join(_SETTLED_EVAL, 'settling_decision.json'),
+    'certified_models': {'path': os.path.join(_SETTLED_EVAL, 'certified_models.pkl'),
+                         'sha256': '99ab1070b0e61cc7818975ce898069d2060d2668bae67c166b58913e9923c33a'},
+    'esso_models': {'path': os.path.join(_SETTLED_EVAL, 'esso_models_s39_D.pkl'),
+                    'sha256': '118487e1853bbad176f324b1173df8c4198cb6c7709c25d7dce9f94ce4c199fa'},
+    'pf_entry_stride': {'path': os.path.join(_SETTLED_EVAL, 'pf_entry_stride_s39_D.jsonl'),
+                        'sha256': 'f71147584175a42f7c503e905e8e519841424b5a89bf33724dfce753769f498a'},
+    'interface_duals': {'path': os.path.join(_SETTLED_EVAL, 'interface_duals_per_cycle.jsonl'),
+                        'sha256': '10c986c79eebe9e6d84bbd9c3978b802b2760c00399cb427125a0b797b41e8cb'},
+    # the common-Q reference (Addendum 54 Ruling 3: "the reference Q for the gate is the settled value")
+    'certified_gross': 653873702.1876609,
+    'certified_gross_source': ('settling_decision.json Q_k_star; equal (bitwise, checked) to evaluation_record '
+                               'certified_cost, recourse_components.gross_operational_cost and post_certification '
+                               'certified_cost'),
+    'certification_cycle': 181,
+    'certification_rule': ('settling criterion of stage spec v39 (Boyd residuals + three turning points, swings not '
+                           'growing, one-period range <= tau = 4,539.07 EUR); branch oscillatory; band width 4,209.17'),
+    # the coordinated curtailment figure at cycle 181 (component_decomposition_totals_weighted of the record)
+    'res_curtailment_definitional_at_weight_1': 589.425936658749,
+}
+COORDINATED = SETTLED
+# W106: REPORTED ONLY (never an input) -- the W86 cycle-132 figures, stated beside the settled ones.
+COORDINATED_PREVIOUS_REFERENCE = {
+    'cell': 'W86 5cfe69a615ae3708_x0 (campaign s53_w86_tail_recert, spec ddd6cd44) -- UNWIRED',
+    'certification_cycle': 132, 'certified_gross': 653858731.5686293,
+    'res_curtailment_definitional_at_weight_1': 589.1778397145646,
+    'source': ('committed W86 evaluation_record.json (certified_cost; component_decomposition_totals_weighted.'
+               'res_curtailment_definitional_at_weight_1)'),
+}
+# W106: UNWIRED, RETAINED -- the W93/W94 coordinated cell (Addendum 54 Ruling 3 moved every input to COORDINATED).
+# Kept so the W93/W94 record stays readable and the unwired check can name it. Unwire, never delete.
 _W86_EVAL = os.path.join('data', 'SRP1', 'Results', 'P515S53', 'tight_tail_w86', 'campaign_s53_w86_tail_recert',
                          'evals', '5cfe69a615ae3708_x0')
 W86 = {
@@ -195,7 +285,8 @@ SRP1_DECLARED = {'dso_solves_per_arm': 36, 'tso_solves_per_arm': 12, 'arm_solves
 Q_MIN_OVER_STARTS_NOTE = (
     "each uncoordinated arm's Q is the MINIMUM over its three starts (cold, warm_from_certified, perturbed); this is "
     'CONSERVATIVE AGAINST THE COORDINATION CLAIM: the uncoordinated side gets its best local optimum of three, while '
-    'the coordinated side is one certified cell (W86 5cfe69a615ae3708_x0, not re-run)')
+    'the coordinated side is one certified cell (W106: the settled cycle-181 cell d110bd1a5977df1e_x0, not re-run; '
+    'W94 named the W86 cell 5cfe69a615ae3708_x0, now unwired)')
 # W94: the lambda_t conversion on the interface-P channel (Planner-accepted correction to the Addendum 49 wording).
 LAMBDA_CHANNEL_SCALING = {
     'addendum_49_wording': 'undo sigma, S_ref, D5 when converting lambda_t to EUR/MWh',
@@ -223,6 +314,35 @@ ARM_RUN_IDS = [f'arm_{a}_{s}' for a in ('passive', 'price_taker')
                for s in ('cold', 'warm_from_certified', 'perturbed')]
 VARIANT_RUN_IDS = ['passive_tie_breaker_0p1', 'passive_tie_breaker_10']
 PERMITTED_SOLVE_SITE = (('uncoordinated_benchmark.py', '_solve_block'),)
+# W106: the files whose sha256 the frozen benchmark spec binds (a stage refuses when any differs from the spec).
+FROZEN_SPEC_BOUND_FILES = (
+    'p515_s53_w93_uncoordinated_benchmark.py', 'p515_s53_w93_uncoordinated_benchmark_checks.py',
+    'uncoordinated_benchmark.py', 'shared_resources_planning.py', 'model_construction_helpers.py', 'network.py',
+    'network_data.py', 'shared_energy_storage_data.py', 'helper_functions.py', 'definitions.py', 'p56a_oracle.py',
+    'p58_rescale.py', 'p513_solve_profile_guard.py', 'gate_result_io.py', 'interface_dual_capture.py')
+# W106: every quantity the report needs, the stage output that carries it and the key path inside it (rule eleven:
+# asserted before any stage runs by the W106 zero-solve checks, and again by the report stage when it reads them).
+REPORT_CAPTURE_PATHS = {
+    'lambda_t_units_check_s48': ('lambda_look', ('units_check_s48', 'passed')),
+    'lambda_t_identities_coordinated': ('lambda_look', ('identities_coordinated', 'passed')),
+    'lambda_t_sidecar_cross_check': ('lambda_look', ('lambda_sidecar_cross_check', 'passed')),
+    'lambda_t_prediction_usable': ('lambda_look', ('prediction_usable',)),
+    'lambda_t_vs_pi_t_summary': ('lambda_look', ('summary_coordinated',)),
+    'common_q_gate_status': ('common_q_gate', ('status',)),
+    'common_q_reference_q181': ('common_q_gate', ('gate', 'gross_certified')),
+    'coordinated_curtailment_recomputed': ('common_q_gate', ('evaluation_at_0', 'curtailment', 'totals')),
+    'coordinated_curtailment_record': ('common_q_gate', ('negative_controls',
+                                                         'certified_record_res_curtailment_definitional_at_weight_1')),
+    'coupling_check_tn_cost_totals': ('tso_coupling_check', ('tn_cost_weighted_totals',)),
+    'coupling_check_solve_summary': ('tso_coupling_check', ('solve_summary',)),
+    'arm_cost': ('arm_*', ('arm_cost', 'gross_operational_cost')),
+    'arm_curtailment_totals': ('arm_*', ('phase_A', 'evaluation', 'curtailment', 'totals')),
+    'arm_consistency_max_abs_dv': ('arm_*', ('phase_B_consistency', 'max_abs_dv_dn_pu')),
+    'arm_consistency_trigger': ('arm_*', ('phase_B_consistency', 'reevaluation', 'trigger_sequential_pass')),
+    'variant_dso_interface_schedule': ('passive_tie_breaker_*', ('phase_A', 'dso_interface_schedule')),
+    'variant_cost': ('passive_tie_breaker_*', ('arm_cost', 'gross_operational_cost')),
+    'variant_curtailment_totals': ('passive_tie_breaker_*', ('phase_A', 'evaluation', 'curtailment', 'totals')),
+}
 
 _GUARD = None
 _LOG_T0 = time.time()
@@ -371,6 +491,55 @@ def check_preconditions(run_dir):
             failures.append(f'a forbidden process appears to be alive: {line.strip()}')
     if os.path.exists(LOCK_PATH):
         failures.append(f'W93 lock exists: {LOCK_PATH}')
+    failures.extend(frozen_spec_binding_failures())
+    return failures
+
+
+def _latest_frozen_spec():
+    """(path, version, hash8) of the highest-version frozen benchmark spec under the output root, or None."""
+    import glob
+    best = None
+    for path in glob.glob(os.path.join(_abs(OUT_ROOT_REL), FROZEN_SPEC_GLOB)):
+        match = re.fullmatch(r'frozen_s53_benchmark_spec_v(\d+)_([0-9a-f]{8})\.json', os.path.basename(path))
+        if match and (best is None or int(match.group(1)) > best[1]):
+            best = (path, int(match.group(1)), match.group(2))
+    return best
+
+
+def _frozen_spec_identity():
+    latest = _latest_frozen_spec()
+    if latest is None:
+        return None
+    return {'path': os.path.relpath(latest[0], REPO), 'version': latest[1], 'sha256': H.sha256_file(latest[0])}
+
+
+def frozen_spec_binding_failures():
+    """W106: a stage runs only under its frozen spec -- the highest-version spec exists, its content sha256 starts
+    with the <hash8> in its name, every bound file's sha256 on disk equals the spec's pin, and the spec's coordinated
+    models / reference Q equal COORDINATED."""
+    latest = _latest_frozen_spec()
+    if latest is None:
+        return [f'no frozen benchmark spec {FROZEN_SPEC_GLOB} under {OUT_ROOT_REL}']
+    path, _version, hash8 = latest
+    failures = []
+    sha = H.sha256_file(path)
+    if not sha.startswith(hash8):
+        failures.append(f'frozen spec {path}: content sha256 {sha} does not start with its name hash {hash8}')
+    with open(path) as handle:
+        spec = json.load(handle)
+    pins = spec.get('code_sha256_binding') or {}
+    if sorted(pins) != sorted(FROZEN_SPEC_BOUND_FILES):
+        failures.append(f'frozen spec binds {sorted(pins)} != FROZEN_SPEC_BOUND_FILES {sorted(FROZEN_SPEC_BOUND_FILES)}')
+    for name, pinned in pins.items():
+        got = H.sha256_file(_abs(name))
+        if got != pinned:
+            failures.append(f'{name}: sha256 {got} != frozen spec pin {pinned}')
+    coordinated = spec.get('coordinated') or {}
+    if (coordinated.get('certified_models') or {}).get('sha256') != COORDINATED['certified_models']['sha256']:
+        failures.append('frozen spec coordinated certified_models sha256 != COORDINATED')
+    reference = coordinated.get('reference_q') or {}
+    if reference.get('hex') != float(COORDINATED['certified_gross']).hex():
+        failures.append('frozen spec coordinated reference Q != COORDINATED certified_gross')
     return failures
 
 
@@ -405,7 +574,10 @@ def provenance(extra=None):
         'instance': {'problem': 'SRP1', 'label': X0['label'], 'canonical_candidate': canonical,
                      'candidate_key': key, 'candidate_key_declared': X0['candidate_key'],
                      'candidate_key_matches': key == X0['candidate_key']},
-        'coordinated_cell': {k: v for k, v in W86.items() if k not in ('description',)},
+        'coordinated_cell': {k: v for k, v in COORDINATED.items() if k not in ('description',)},
+        'coordinated_cell_description': COORDINATED['description'],
+        'coordinated_previous_reference_reported_only': COORDINATED_PREVIOUS_REFERENCE,
+        'frozen_benchmark_spec': _frozen_spec_identity(),
         'objective_convention': ('Q = gross_operational_cost, settlement EXCLUDED (production '
                                  '_get_operational_recourse_components); every block priced for the evaluation with '
                                  "production's ADMM-subproblem pricing and the curtailment tie-breaker at the "
@@ -434,25 +606,60 @@ def common_capture_checklist(srp, UB, R, planning=None):
     checks = {}
     canonical, key = x0_candidate_key()
     checks['instance_candidate_key_is_x0'] = key == X0['candidate_key']
-    for name in ('evaluation_record', 'post_certification', 'child_manifest'):
-        checks[f'w86_{name}_git_tracked_and_clean'] = _git_tracked_clean(W86[name])
-    record = _load_json(W86['evaluation_record'])
-    manifest = _load_json(W86['child_manifest'])
-    post = _load_json(W86['post_certification'])
-    checks['w86_record_candidate_key_is_x0'] = record.get('candidate_key') == X0['candidate_key']
-    checks['w86_record_eval_key'] = record.get('eval_key') == W86['eval_key']
-    checks['w86_record_campaign_spec'] = record.get('campaign_spec_sha256') == W86['campaign_spec_sha256']
-    checks['w86_record_certified'] = record.get('status') == 'certified'
-    checks['w86_record_certification_cycle'] = record.get('certification_cycle') == W86['certification_cycle']
-    checks['w86_record_certified_gross_is_declared'] = record.get('certified_cost') == W86['certified_gross']
-    checks['w86_record_recourse_components_present'] = isinstance(record.get('recourse_components'), dict)
-    checks['w86_persist_requested'] = (post.get('requested') or {}).get('persist_certified_models') is True
-    checks['w86_persisted_sha_in_post_certification'] = ((post.get('persisted_models') or {}).get('sha256')
-                                                          == W86['certified_models']['sha256'])
-    for name in ('certified_models', 'esso_models', 'pf_entry_stride'):
-        checks[f'w86_{name}_sha_in_child_manifest'] = manifest.get(W86[name]['path']) == W86[name]['sha256']
-    checks['w86_evaluation_record_sha_in_child_manifest'] = (manifest.get(W86['evaluation_record'])
-                                                             == H.sha256_file(_abs(W86['evaluation_record'])))
+    # W106: every entry below reads COORDINATED (the settled cycle-181 cell); W93/W94 read W86 here (unwired).
+    cell = COORDINATED
+    for name in ('evaluation_record', 'post_certification', 'child_manifest', 'campaign_manifest',
+                 'settling_decision', 'interface_duals'):
+        rel = cell[name]['path'] if isinstance(cell[name], dict) else cell[name]
+        checks[f'coordinated_{name}_git_tracked_and_clean'] = _git_tracked_clean(rel)
+    record = _load_json(cell['evaluation_record'])
+    manifest = _load_json(cell['child_manifest'])
+    campaign_manifest = _load_json(cell['campaign_manifest'])
+    post = _load_json(cell['post_certification'])
+    decision = _load_json(cell['settling_decision'])
+    q_ref = float(cell['certified_gross'])
+    checks['coordinated_record_candidate_key_is_x0'] = record.get('candidate_key') == X0['candidate_key']
+    checks['coordinated_record_eval_key'] = record.get('eval_key') == cell['eval_key']
+    checks['coordinated_record_campaign_spec'] = record.get('campaign_spec_sha256') == cell['campaign_spec_sha256']
+    checks['coordinated_record_certified'] = record.get('status') == 'certified'
+    checks['coordinated_record_certification_cycle'] = record.get('certification_cycle') == cell['certification_cycle']
+    checks['coordinated_record_certified_gross_is_declared'] = (
+        float(record.get('certified_cost')).hex() == q_ref.hex())
+    checks['coordinated_record_recourse_components_present'] = isinstance(record.get('recourse_components'), dict)
+    checks['coordinated_record_recourse_gross_is_declared'] = (
+        float((record.get('recourse_components') or {}).get('gross_operational_cost')).hex() == q_ref.hex())
+    # the reference Q's source (Addendum 54 Ruling 3): the settling decision's Q_k*, at k* = the certification cycle
+    checks['coordinated_settling_decision_certified'] = decision.get('status') == 'certified'
+    checks['coordinated_settling_decision_k_star_is_certification_cycle'] = (
+        decision.get('k_star') == cell['certification_cycle'])
+    checks['coordinated_settling_decision_q_k_star_is_reference_q_bitwise'] = (
+        float(decision.get('Q_k_star')).hex() == q_ref.hex())
+    checks['coordinated_post_certification_cycle'] = (
+        (post.get('certification') or {}).get('certification_cycle') == cell['certification_cycle'])
+    checks['coordinated_post_certification_cost_is_reference_q_bitwise'] = (
+        float(post.get('certified_cost')).hex() == q_ref.hex())
+    checks['coordinated_record_curtailment_figure_is_declared'] = (
+        (record.get('component_decomposition_totals_weighted') or {}).get(
+            'res_curtailment_definitional_at_weight_1') == cell['res_curtailment_definitional_at_weight_1'])
+    checks['coordinated_persist_requested'] = (post.get('requested') or {}).get('persist_certified_models') is True
+    checks['coordinated_persisted_sha_in_post_certification'] = (
+        (post.get('persisted_models') or {}).get('sha256') == cell['certified_models']['sha256'])
+    for name in ('certified_models', 'esso_models', 'pf_entry_stride', 'interface_duals'):
+        checks[f'coordinated_{name}_sha_in_child_manifest'] = manifest.get(cell[name]['path']) == cell[name]['sha256']
+        checks[f'coordinated_{name}_sha_in_campaign_manifest'] = (campaign_manifest.get(cell[name]['path'])
+                                                                  == cell[name]['sha256'])
+    for name in ('evaluation_record', 'settling_decision', 'post_certification'):
+        disk = H.sha256_file(_abs(cell[name]))
+        checks[f'coordinated_{name}_sha_in_child_manifest'] = manifest.get(cell[name]) == disk
+        checks[f'coordinated_{name}_sha_in_campaign_manifest'] = campaign_manifest.get(cell[name]) == disk
+    # the campaign manifest the pins come from is the one committed in the evidence commit (blob == working file)
+    try:
+        blob = subprocess.run(['git', 'show', f"{cell['evidence_commit']}:{cell['campaign_manifest']}"], cwd=REPO,
+                              capture_output=True, check=True).stdout
+        checks['coordinated_campaign_manifest_equals_evidence_commit_blob'] = (
+            hashlib.sha256(blob).hexdigest() == H.sha256_file(_abs(cell['campaign_manifest'])))
+    except subprocess.CalledProcessError:
+        checks['coordinated_campaign_manifest_equals_evidence_commit_blob'] = False
     # the retired path is untouched (its pin, read as text from the committed bitwise gate -- not imported: that
     # module arms its own guard at import)
     gate_text = open(_abs(BITWISE_GATE_SCRIPT)).read()
@@ -780,9 +987,10 @@ def summarise_flags(rows, planning):
 
 
 def pf_capture_cross_check(rows):
-    """Third, informational source: the per-cycle capture's lambda_dso at the certification cycle (the dual after
-    that cycle's update) against the Param the last DSO solve used (dual before it)."""
-    path = _verified_path(W86['pf_entry_stride'])
+    """Fourth, informational source (W106: was the third under W93): the per-cycle capture's lambda_dso at the
+    certification cycle (the dual after that cycle's update) against the Param the last DSO solve used (dual before
+    it). Reads the COORDINATED (settled) cell's stride file."""
+    path = _verified_path(COORDINATED['pf_entry_stride'])
     last = json.loads(_read_last_line(path))
     by_key = {}
     for e in last.get('entries', []):
@@ -801,9 +1009,94 @@ def pf_capture_cross_check(rows):
         worst_eur = max(worst_eur, abs(eur))
         n += 1
     return {'cycle': last.get('cycle'), 'n_compared': n, 'max_abs_param_units': worst_raw,
-            'max_abs_eur_per_mwh': worst_eur, 'certification_cycle_declared': W86['certification_cycle'],
+            'max_abs_eur_per_mwh': worst_eur, 'certification_cycle_declared': COORDINATED['certification_cycle'],
             'note': 'informational: the capture holds the dual AFTER the cycle update, the Param the dual the last '
                     'DSO solve used; they differ by one dual step'}
+
+
+SIDECAR_ALIGNMENT_NOTE = (
+    "interface_dual_capture: the sidecar row of cycle n holds dual_vars['pf'][agent]['current'] after cycle n's dual "
+    "updates and before the AA step; 'The dual_vars value is the model Param dual_pf_p_req of the NEXT cycle's solve'. "
+    'The persisted models are the cycle-k* models, so their Param = sidecar row k*-1 / s_base, bitwise (AA not accepted '
+    'at k*-1 or k*: aa_per_cycle.jsonl). Row k* is the dual AFTER the last update = one dual step past the Param: '
+    'converted by the same interface-P scaling (sigma via admm_objective_scale, the interface rating, B) it is the '
+    'lambda_t the next cycle would price at, compared with the Param-derived lambda_dso_full (the Param plus the '
+    'current AL gradient term) within the consensus tolerance')
+
+
+def lambda_sidecar_cross_check(rows):
+    """W106 (Addendum 54 Ruling 3 order): the THIRD lambda_t source -- the settled cell's per-cycle sidecar
+    `interface_duals_per_cycle.jsonl` (sha-verified; read with production's `interface_dual_capture.read_sidecar`),
+    rows k*-1 and k*, against the consensus-dual Params of the persisted cycle-k* models (`rows` from
+    `uncoordinated_benchmark.interface_price_terms` on those models). Zero solves; pure reads."""
+    import interface_dual_capture as IDC
+    k = int(COORDINATED['certification_cycle'])
+    header, lines = IDC.read_sidecar(_verified_path(COORDINATED['interface_duals']))
+    out = {'certification_cycle': k, 'rows_used': [k - 1, k], 'alignment_note': SIDECAR_ALIGNMENT_NOTE,
+           'tolerance_lambda_eur_per_mwh': UNITS_CHECK_TOL['consensus_eur'],
+           'header_schema': None if header is None else header.get('schema')}
+    missing = [c for c in (k - 1, k) if c not in lines or lines[c].get('captured') is not True]
+    if header is None or missing:
+        out.update({'passed': False, 'reason': f'sidecar header present {header is not None}; rows missing or '
+                                               f'not captured {missing}'})
+        return out
+    index = {(int(b[0]), str(b[1]), str(b[2])): i for i, b in enumerate(header['blocks'])}
+    meta = {(int(m['node_id']), str(m['year']), str(m['day'])): m for m in header['metadata']['per_block']}
+    prev, last = lines[k - 1], lines[k]
+    n = n_bitwise_dso = n_bitwise_tso = 0
+    worst = {'align_dso_param_units': 0.0, 'align_tso_param_units': 0.0, 'metadata_scaling_abs': 0.0,
+             'k_dso_vs_lambda_dso_full': 0.0, 'k_dso_vs_lambda_dso_linear': 0.0, 'k_tso_vs_lambda_tso_full': 0.0,
+             'k_tso_vs_lambda_tso_linear': 0.0, 'k_dso_vs_k_tso': 0.0, 'k_dso_vs_y0_dn_ref': 0.0,
+             'k_tso_vs_lmp_tn_bus_delta_interior': 0.0}
+    per_row = []
+    for r in rows:
+        key = (int(r['node_id']), str(r['year']), str(r['day']))
+        if key not in index or key not in meta:
+            out.update({'passed': False, 'reason': f'block {key} absent from the sidecar header'})
+            return out
+        b, p, raw, m = index[key], int(r['period']), r['raw'], meta[key]
+        s_dso, s_tso = float(m['dso_base_mva']), float(m['tso_base_mva'])
+        for got, want in ((s_dso, raw['B_dn']), (s_tso, raw['B_tn']), (float(m['interface_rating_mva']),
+                                                                       raw['rating_mva']),
+                          (float(m['admm_objective_scale_dso']), raw['eff_dso']),
+                          (float(m['admm_objective_scale_tso']), raw['eff_tso'])):
+            worst['metadata_scaling_abs'] = max(worst['metadata_scaling_abs'], abs(got - want))
+        a_dso = float(prev['lambda_pf_p_dso'][b][p]) / s_dso
+        a_tso = float(prev['lambda_pf_p_tso'][b][p]) / s_tso
+        n_bitwise_dso += int(a_dso.hex() == float(raw['dual_pf_p_req_dso']).hex())
+        n_bitwise_tso += int(a_tso.hex() == float(raw['dual_pf_p_req_tso']).hex())
+        worst['align_dso_param_units'] = max(worst['align_dso_param_units'], abs(a_dso - raw['dual_pf_p_req_dso']))
+        worst['align_tso_param_units'] = max(worst['align_tso_param_units'], abs(a_tso - raw['dual_pf_p_req_tso']))
+        r_pu_dn, r_pu_tn = raw['rating_mva'] / raw['B_dn'], raw['rating_mva'] / raw['B_tn']
+        lam_k_dso = r['pi'] + raw['eff_dso'] * (float(last['lambda_pf_p_dso'][b][p]) / s_dso) / r_pu_dn / raw['B_dn']
+        lam_k_tso = r['pi'] - raw['eff_tso'] * (float(last['lambda_pf_p_tso'][b][p]) / s_tso) / r_pu_tn / raw['B_tn']
+        for name, x, y in (('k_dso_vs_lambda_dso_full', lam_k_dso, r['lambda_dso_full']),
+                           ('k_dso_vs_lambda_dso_linear', lam_k_dso, r['lambda_dso_linear']),
+                           ('k_tso_vs_lambda_tso_full', lam_k_tso, r['lambda_tso_full']),
+                           ('k_tso_vs_lambda_tso_linear', lam_k_tso, r['lambda_tso_linear']),
+                           ('k_dso_vs_k_tso', lam_k_dso, lam_k_tso),
+                           ('k_dso_vs_y0_dn_ref', lam_k_dso, r['y0_dn_ref'])):
+            if y is not None:
+                worst[name] = max(worst[name], abs(x - y))
+        if r['lmp_tn_bus'] is not None and r['tso_interface_delta_interior']:
+            worst['k_tso_vs_lmp_tn_bus_delta_interior'] = max(worst['k_tso_vs_lmp_tn_bus_delta_interior'],
+                                                              abs(lam_k_tso - r['lmp_tn_bus']))
+        per_row.append({'node_id': r['node_id'], 'year': r['year'], 'day': r['day'], 'hour': r['hour'],
+                        'lambda_sidecar_k_dso': lam_k_dso, 'lambda_sidecar_k_tso': lam_k_tso})
+        n += 1
+    alignment_bitwise = n_bitwise_dso == n and n_bitwise_tso == n
+    agrees = worst['k_dso_vs_lambda_dso_full'] <= UNITS_CHECK_TOL['consensus_eur']
+    out.update({
+        'n_rows': n, 'n_alignment_bitwise_dso': n_bitwise_dso, 'n_alignment_bitwise_tso': n_bitwise_tso,
+        'alignment_row_k_minus_1_bitwise_to_param': bool(alignment_bitwise),
+        'row_k_agrees_with_lambda_dso_full_within_tolerance': bool(agrees),
+        'max_abs': worst, 'per_row_lambda_sidecar_k': per_row,
+        'passed': bool(n == 864 and alignment_bitwise and agrees and worst['metadata_scaling_abs'] == 0.0),
+        'pass_rule': ('864 rows; row k*-1 / s_base == the persisted Params BITWISE on both sides; row k* lambda_dso '
+                      '(EUR/MWh) within the consensus tolerance of the Param-derived lambda_dso_full; the header '
+                      'scaling metadata (rating, both B, both admm_objective_scale) equal to the models\' exactly'),
+    })
+    return out
 
 
 def stage_lambda_look(run_dir):
@@ -830,20 +1123,24 @@ def stage_lambda_look(run_dir):
          f"{ {k: (v['max_abs_eur_per_mwh'], v['passed']) for k, v in units['items'].items()} }")
     _checkpoint(run_dir, {'phase': 'units_check', 'passed': units['passed']})
 
-    w86_models = _load_pickle_verified(W86['certified_models'])
-    w86_checks = _model_capture_checks(w86_models, 'w86')
-    _assert_checklist(w86_checks, 'lambda-look W86 models')
-    rows = UB.interface_price_terms(planning, w86_models)
-    del w86_models
+    # W106: the settled cycle-181 models (Addendum 54 Ruling 3); W93/W94 loaded the W86 models here (unwired)
+    coordinated_models = _load_pickle_verified(COORDINATED['certified_models'])
+    coordinated_checks = _model_capture_checks(coordinated_models, 'coordinated')
+    _assert_checklist(coordinated_checks, 'lambda-look coordinated (settled) models')
+    rows = UB.interface_price_terms(planning, coordinated_models)
+    del coordinated_models
     gc.collect()
-    identities_w86 = units_check_identities_only(rows)
+    identities_coordinated = units_check_identities_only(rows)
+    sidecar = lambda_sidecar_cross_check(rows)
+    _log(f"sidecar cross-check (third source, cycles {sidecar['rows_used']}): "
+         f"{'PASS' if sidecar['passed'] else 'FAIL'} {sidecar.get('max_abs')}")
     capture = pf_capture_cross_check(rows)
     flagged = flag_rows(rows)
     summary = summarise_flags(rows, planning)
     guard = _check_guard(0, 'lambda-look end')
     result = provenance({
         'run': 'lambda_look', 'solve_profile_guard': guard,
-        'capture_path_checklist': {**checks, **s48_checks, **w86_checks},
+        'capture_path_checklist': {**checks, **s48_checks, **coordinated_checks},
         'definitions': {
             'lambda_t': 'lambda_dso_full: pi_t + eff_dso * [dual_pf_p_req + rho_pf (E - z)/r_pu] / (r_pu * B_dn) -- '
                         'the interface price the DSO faced at the certified point (uncoordinated_benchmark.'
@@ -851,27 +1148,32 @@ def stage_lambda_look(run_dir):
             'lambda_neq_pi': f'|lambda_t - pi_t| > {LAMBDA_NEQ_PI_TOL_EUR} EUR/MWh',
             'coordination_proper_hour': 'lambda_neq_pi AND c_flex_t < pi_t (Addendum 49 ruling 1: these hours '
                                         'bound coordination proper from above)',
-            'lambda_sources': ['consensus-dual Param dual_pf_p_req (DSO and TSO sides, persisted models)',
+            'lambda_sources': ['consensus-dual Param dual_pf_p_req (DSO and TSO sides, persisted settled models)',
                                'TN interface-bus power-balance dual (TSO dual suffix)',
                                'DN reference-bus power-balance dual (DSO dual suffix, W31 y0)',
+                               'lambda_t sidecar interface_duals_per_cycle.jsonl rows k*-1 and k* (W106 third source)',
                                'per-cycle capture pf_entry_stride lambda_dso (informational)'],
         },
         'units_check_s48': units,
-        'identities_w86': identities_w86,
-        'pf_capture_cross_check_w86': capture,
-        'prediction_usable': bool(units['passed'] and identities_w86['passed']),
+        'identities_coordinated': identities_coordinated,
+        'lambda_sidecar_cross_check': sidecar,
+        'pf_capture_cross_check_coordinated': capture,
+        'prediction_usable': bool(units['passed'] and identities_coordinated['passed'] and sidecar['passed']),
         'prediction_usable_rule': 'the table drives a prediction only if the S48 units check reproduces Addendum '
-                                  '32 (W28/W31) and the W86 identities hold (Addendum 49 clarification)',
-        'summary_w86': summary,
-        'coordination_proper_hours_w86': flagged,
-        'table_w86': rows,
+                                  '32 (W28/W31), the identities hold on the settled models (Addendum 49 '
+                                  'clarification) and the lambda_t sidecar cross-check passes (W106: "cross-check all '
+                                  'three")',
+        'summary_coordinated': summary,
+        'coordination_proper_hours_coordinated': flagged,
+        'table_coordinated': rows,
     })
     _write_json_once(os.path.join(run_dir, 'lambda_look.json'), result)
     return 0 if result['prediction_usable'] else 1
 
 
 def units_check_identities_only(rows):
-    """The two Param-vs-dual identities and the consensus agreement on the W86 rows (no committed figures)."""
+    """The two Param-vs-dual identities and the consensus agreement on the coordinated (W106: settled) rows (no
+    committed figures)."""
     tol = UNITS_CHECK_TOL
     dso = [abs(r['lambda_dso_full'] - r['y0_dn_ref']) for r in rows if r['y0_dn_ref'] is not None]
     tso = [abs(r['lambda_tso_full'] - r['lmp_tn_bus']) for r in rows
@@ -889,9 +1191,18 @@ def units_check_identities_only(rows):
 # ======================================================================================================================
 #  stage 2 -- common-Q gate (zero solves)
 # ======================================================================================================================
+# W106: UNWIRED, RETAINED -- the W93/W94 loader of the W86 models; no stage and no check calls it (asserted by the
+# W106 zero-solve checks). Unwire, never delete.
 def _load_w86_models():
     payload = _load_pickle_verified(W86['certified_models'])
     esso = _load_pickle_verified(W86['esso_models'])
+    return {'tso': payload['tso'], 'dso': payload['dso'], 'esso': esso}
+
+
+def _load_coordinated_models():
+    """W106: the coordinated cell's persisted terminal models (the settled cycle-181 x = 0 cell), sha-verified."""
+    payload = _load_pickle_verified(COORDINATED['certified_models'])
+    esso = _load_pickle_verified(COORDINATED['esso_models'])
     return {'tso': payload['tso'], 'dso': payload['dso'], 'esso': esso}
 
 
@@ -900,10 +1211,10 @@ def stage_common_q_gate(run_dir):
     planning = O.load_baseline()['planning']
     checks = common_capture_checklist(srp, UB, R, planning)
     _assert_checklist(checks, 'common-q-gate (before loading models)')
-    record = _load_json(W86['evaluation_record'])
-    models = _load_w86_models()
-    checks_m = _model_capture_checks(models, 'w86', need_duals=False)
-    _assert_checklist(checks_m, 'common-q-gate W86 models')
+    record = _load_json(COORDINATED['evaluation_record'])
+    models = _load_coordinated_models()
+    checks_m = _model_capture_checks(models, 'coordinated', need_duals=False)
+    _assert_checklist(checks_m, 'common-q-gate coordinated (settled) models')
 
     ev0 = UB.evaluate_common_q(planning, models, evaluation_curtailment_penalty=TIE_BREAKER['evaluation'],
                                require_unchanged=True)
@@ -943,11 +1254,19 @@ def stage_common_q_gate(run_dir):
                  'principle (Addendum 49 clarification)'),
     }
     negative_ok = refused and (not discriminates or (not gate1['passed'] and negative['explained_to_tolerance']))
+    # W106: the reference is the settled value (Addendum 54 Ruling 3) -- stated and compared explicitly
+    q_ref = float(COORDINATED['certified_gross'])
+    reference_q = {'value': q_ref, 'hex': q_ref.hex(), 'source': COORDINATED['certified_gross_source'],
+                   'certification_cycle': COORDINATED['certification_cycle'],
+                   'evaluated_equals_reference_bitwise': float(ev0['gross_operational_cost']).hex() == q_ref.hex(),
+                   'evaluated_minus_reference_eur': float(ev0['gross_operational_cost']) - q_ref,
+                   'previous_reference_reported_only': COORDINATED_PREVIOUS_REFERENCE}
     guard = _check_guard(0, 'common-q-gate end')
-    status = 'PASS' if (gate['passed'] and idempotent and negative_ok) else 'FAIL'
+    status = ('PASS' if (gate['passed'] and reference_q['evaluated_equals_reference_bitwise'] and idempotent
+                         and negative_ok) else 'FAIL')
     result = provenance({
         'run': 'common_q_gate', 'status': status, 'solve_profile_guard': guard,
-        'capture_path_checklist': {**checks, **checks_m},
+        'capture_path_checklist': {**checks, **checks_m}, 'reference_q': reference_q,
         'gate': gate, 'idempotent_repeat_bitwise': idempotent, 'negative_controls': negative,
         'evaluation_at_0': {k: ev0[k] for k in ('objective_convention', 'evaluation_curtailment_penalty',
                                                 'gross_operational_cost', 'gross_operational_cost_hex',
@@ -967,8 +1286,9 @@ def stage_tso_coupling_check(run_dir, run_id):
     solver_options = apply_arm_solver_options(srp, planning)
     candidate = _x0_candidate(srp, planning)
     checks = common_capture_checklist(srp, UB, R, planning)
-    certified = _load_pickle_verified(W86['certified_models'])
-    checks.update(_model_capture_checks(certified, 'w86', need_duals=False))
+    # W106: the pinned targets (P, Q and the V pin) come from the settled cycle-181 point (W93/W94: W86, unwired)
+    certified = _load_pickle_verified(COORDINATED['certified_models'])
+    checks.update(_model_capture_checks(certified, 'coordinated', need_duals=False))
     reference = UB.coordinated_reference_structure(planning, certified)
     targets = UB.get_dso_interface_schedule(planning, certified['dso'])
     certified_tso_metrics = UB.tso_block_metrics(planning, certified['tso'], targets)
@@ -1002,8 +1322,9 @@ def stage_tso_coupling_check(run_dir, run_id):
     result = provenance({
         'run': run_id, 'solve_profile_guard': guard, 'declared_solves': declared,
         'capture_path_checklist': checks, 'solver_options': solver_options, 'ipopt_logs_dir': logs_dir,
-        'targets': 'the certified coordinated DSO schedule (W86 persisted DSO models: expected_interface_pf_p/q, '
-                   'expected_interface_vmag), the SAME for both couplings',
+        'targets': 'the coordinated DSO schedule at the settled cycle-181 point (W106; persisted DSO models of '
+                   'd110bd1a5977df1e_x0: expected_interface_pf_p/q, expected_interface_vmag), the SAME for both '
+                   'couplings',
         'fixed_side_voltage_pin': UB.COUPLING_CHECK_FIXED_SIDE_VOLTAGE_PIN,
         'tracking_penalty_note': ("production's _add_tso_scenario_tracking_penalty tracks V as well as P and Q; the "
                                   "check's fixed side therefore pins P, Q AND V at the same targets (W94), so the two "
@@ -1036,9 +1357,10 @@ def stage_arm(run_dir, run_id, *, arm, start, dso_tie_breaker, consistency):
     solver_options = apply_arm_solver_options(srp, planning)
     candidate = _x0_candidate(srp, planning)
     checks = common_capture_checklist(srp, UB, R, planning)
-    certified = _load_pickle_verified(W86['certified_models'])
-    esso = _load_pickle_verified(W86['esso_models'])
-    checks.update(_model_capture_checks(certified, 'w86', need_duals=False))
+    # W106: the warm-from-certified start and the reference structure are the settled cycle-181 point (W93: W86)
+    certified = _load_pickle_verified(COORDINATED['certified_models'])
+    esso = _load_pickle_verified(COORDINATED['esso_models'])
+    checks.update(_model_capture_checks(certified, 'coordinated', need_duals=False))
     reference = UB.coordinated_reference_structure(planning, certified)
     warm = UB.extract_model_values(planning, certified) if start != UB.START_COLD else None
     coordinated_schedule = UB.get_dso_interface_schedule(planning, certified['dso'])
@@ -1187,7 +1509,7 @@ def stage_report(run_dir):
     missing = [k for k, v in list(arms.items()) + list(variants.items()) if v is None]
     missing += [k for k, v in (('common_q_gate', gate), ('lambda_look', look), ('tso_coupling_check', coupling))
                 if v is None]
-    q_coord = W86['certified_gross']
+    q_coord = COORDINATED['certified_gross']       # W106: the settled Q181 (Addendum 53 Ruling 4; W93: W86 Q132)
     band_coord = COORDINATED_REPRODUCIBILITY_BAND_REL * q_coord
     per_arm = {}
     for arm in ('passive', 'price_taker'):
@@ -1252,14 +1574,24 @@ def stage_report(run_dir):
                                 'trigger_sequential_pass'),
                             'pass_effect_eur': (rec.get('phase_C_sequential_pass') or {}).get('effect_on_q_eur')}
                    for run_id, rec in arms.items() if rec is not None}
+    curtailment = curtailment_table(gate, arms, variants)
+    capture = report_capture_check({'lambda_look': look, 'common_q_gate': gate, 'tso_coupling_check': coupling,
+                                    **arms, **variants})
     guard = _check_guard(0, 'report end')
     result = provenance({
         'run': 'report', 'solve_profile_guard': guard, 'missing_inputs': missing,
-        'coordinated': {'q': q_coord, 'source': 'W86 certified cell (not re-run)',
-                        'reproducibility_band_eur': band_coord},
+        'report_capture_check': capture,
+        'coordinated': {'q': q_coord, 'q_hex': float(q_coord).hex(),
+                        'source': ('settled cycle-181 x = 0 cell d110bd1a5977df1e_x0 (not re-run; Addendum 53 Ruling 4 '
+                                   '/ Addendum 54 Ruling 3): ' + COORDINATED['certified_gross_source']),
+                        'reproducibility_band_eur': band_coord,
+                        'settling_band_width_eur_reported_only': _load_json(COORDINATED['settling_decision']).get(
+                            'band_width'),
+                        'previous_reference_reported_only': COORDINATED_PREVIOUS_REFERENCE},
+        'curtailment_table': curtailment,
         'common_q_gate_status': None if gate is None else gate.get('status'),
         'lambda_look_prediction_usable': None if look is None else look.get('prediction_usable'),
-        'lambda_look_summary': None if look is None else look.get('summary_w86'),
+        'lambda_look_summary': None if look is None else look.get('summary_coordinated'),
         'tso_coupling_check': None if coupling is None else {
             'tn_cost_weighted_totals': coupling['tn_cost_weighted_totals'],
             'fixed_minus_penalty_tn_cost_weighted': coupling['fixed_minus_penalty_tn_cost_weighted'],
@@ -1269,7 +1601,64 @@ def stage_report(run_dir):
         'consistency': consistency,
     })
     _write_json_once(os.path.join(run_dir, 'report.json'), result)
-    return 0 if claim.get('computed') else 1
+    return 0 if (claim.get('computed') and capture['all_present']) else 1
+
+
+def _curtailment_row(totals):
+    """One curtailment row from `uncoordinated_benchmark.curtailment_report` totals ({'TSO': .., 'DSO': ..})."""
+    return {'eur_at_1_block_weighted': totals['TSO']['eur_at_1_block_weighted'] + totals['DSO']['eur_at_1_block_weighted'],
+            'mwh_day_weighted': totals['TSO']['mwh_day_weighted'] + totals['DSO']['mwh_day_weighted'],
+            'mwh_rep_day_sum': totals['TSO']['mwh_rep_day_sum'] + totals['DSO']['mwh_rep_day_sum'],
+            'by_agent': totals}
+
+
+def curtailment_table(gate, arms, variants):
+    """W106 (TASKS.md Addendum 49, author requirement): curtailed energy per arm and start on the SAME weighting as
+    the coordinated figure -- EUR at 1 EUR/MWh, block-weighted (years x days x discount), the convention of
+    res_curtailment_definitional_at_weight_1 -- with raw MWh alongside (day-weighted years x days, undiscounted; and
+    the plain sum over representative days). The coordinated row: the settled cycle-181 record figure, the same
+    quantity recomputed from the persisted models by the common-Q gate (evaluation tie-breaker 0), and the W86
+    cycle-132 record figure (589.18, reported only)."""
+    coordinated = {'settled_cycle_181_record_eur_at_1_block_weighted':
+                   COORDINATED['res_curtailment_definitional_at_weight_1'],
+                   'previous_cycle_132_record_eur_at_1_block_weighted_reported_only':
+                   COORDINATED_PREVIOUS_REFERENCE['res_curtailment_definitional_at_weight_1'],
+                   'settled_cycle_181_recomputed_from_models': None}
+    if gate is not None:
+        coordinated['settled_cycle_181_recomputed_from_models'] = _curtailment_row(
+            gate['evaluation_at_0']['curtailment']['totals'])
+    rows = {}
+    for run_id, rec in list(arms.items()) + list(variants.items()):
+        if rec is not None:
+            rows[run_id] = _curtailment_row(rec['phase_A']['evaluation']['curtailment']['totals'])
+    return {'weighting': ('eur_at_1_block_weighted = res_curtailment_definitional_at_weight_1 convention (EUR at 1 '
+                          'EUR/MWh, block-weighted: years x days x discount), i.e. weighted MWh-equivalent; raw: '
+                          'mwh_day_weighted (years x days, undiscounted) and mwh_rep_day_sum'),
+            'coordinated': coordinated, 'arms_and_variants_phase_A': rows}
+
+
+def _dig(obj, path):
+    for key in path:
+        if not isinstance(obj, dict) or key not in obj:
+            return False, None
+        obj = obj[key]
+    return True, obj
+
+
+def report_capture_check(outputs):
+    """Every REPORT_CAPTURE_PATHS quantity present in the loaded stage outputs (`None` output = stage missing)."""
+    present, absent = {}, []
+    for quantity, (source, path) in REPORT_CAPTURE_PATHS.items():
+        if source.endswith('*'):
+            ids = [k for k in outputs if k.startswith(source[:-1])]
+        else:
+            ids = [source]
+        for run_id in ids:
+            ok, _value = _dig(outputs.get(run_id), path)
+            present[f'{quantity}@{run_id}'] = ok
+            if not ok:
+                absent.append(f'{quantity}@{run_id}')
+    return {'n_checked': len(present), 'absent': absent, 'all_present': not absent}
 
 
 def _keys_to_str(schedule):

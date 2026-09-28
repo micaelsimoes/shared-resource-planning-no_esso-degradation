@@ -5,7 +5,7 @@ and the harness `p515_s53_w93_uncoordinated_benchmark.py`.
 WRITTEN DURING THE 3x3 PAIR; NOT RUN (Addendum 49 "Timing": "runs nothing -- not even tests that build a model").
 Static checks only at W93 and at W94 (W94 added the coupling-check voltage-pin test below). `pytest` is not installed in the canonical environment, so these follow the repository's
 self-running `*_checks.py` convention: each check returns {'name', 'passed', 'detail'}; the group passes iff every
-check passes; results are written once to data/SRP1/Results/P515S53/w93_uncoordinated/checks_<group>/checks.json.
+check passes; results are written once to <BENCH.OUT_ROOT_REL>/checks_<group>/checks.json (W106: w106_uncoordinated_settled).
 
 GROUPS (one per process; each arms its own SolveProfileGuard before any production import)
   unit         ZERO solves, no SRP1 data. Synthetic Pyomo blocks: the structural check passes on a correct arm and
@@ -16,7 +16,8 @@ GROUPS (one per process; each arms its own SolveProfileGuard before any producti
                PLANTED hard voltage violation, a planted thermal violation, and a soft violation only when it exceeds
                the arm's own slack; the IPOPT final-summary parser; the single-scenario refusal; the declared solve
                count.
-  srp1-zero    ZERO solves (guard permitted=()). SRP1 + the W86 persisted x = 0 models: passive / price-taker DSO arms
+  srp1-zero    ZERO solves (guard permitted=()). SRP1 + the coordinated cell's persisted x = 0 models (W106: the settled
+               cycle-181 models, BENCH.COORDINATED; W93/W94: the W86 models, unwired): passive / price-taker DSO arms
                and fixed / tracking-penalty TSO arms pass the structural check against the certified blocks with the
                declared arithmetic; (W94) the 24-solve check's FIXED side carries the interface-voltage pin on every
                block (72 rows, 216 fixed rows in all) at exactly the penalty's V target -- the penalty side's voltage
@@ -34,11 +35,12 @@ GROUPS (one per process; each arms its own SolveProfileGuard before any producti
                its interface flow and triggers nothing; (ii) ONE fixed-interface TSO block (2030 Spring) at the
                certified DSO schedule solves with an interface residual <= 1e-6 MW.
 
-EXACT COMMANDS (repo root; attached, alone, both streams; after the pair and its review):
-    mkdir -p data/SRP1/Results/P515S53/w93_uncoordinated/launch_logs
-    set -o noclobber && /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python -u p515_s53_w93_uncoordinated_benchmark_checks.py --group unit > data/SRP1/Results/P515S53/w93_uncoordinated/launch_logs/checks_unit.log 2>&1
-    set -o noclobber && /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python -u p515_s53_w93_uncoordinated_benchmark_checks.py --group srp1-zero > data/SRP1/Results/P515S53/w93_uncoordinated/launch_logs/checks_srp1_zero.log 2>&1
-    set -o noclobber && /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python -u p515_s53_w93_uncoordinated_benchmark_checks.py --group srp1-solves > data/SRP1/Results/P515S53/w93_uncoordinated/launch_logs/checks_srp1_solves.log 2>&1
+EXACT COMMANDS (W106: output root data/SRP1/Results/P515S53/w106_uncoordinated_settled, BENCH.OUT_ROOT_REL; repo root;
+attached, alone, both streams; the W93 root w93_uncoordinated was never created and is unwired):
+    mkdir -p data/SRP1/Results/P515S53/w106_uncoordinated_settled/launch_logs
+    set -o noclobber && /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python -u p515_s53_w93_uncoordinated_benchmark_checks.py --group unit > data/SRP1/Results/P515S53/w106_uncoordinated_settled/launch_logs/checks_unit.log 2>&1
+    set -o noclobber && /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python -u p515_s53_w93_uncoordinated_benchmark_checks.py --group srp1-zero > data/SRP1/Results/P515S53/w106_uncoordinated_settled/launch_logs/checks_srp1_zero.log 2>&1
+    set -o noclobber && /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python -u p515_s53_w93_uncoordinated_benchmark_checks.py --group srp1-solves > data/SRP1/Results/P515S53/w106_uncoordinated_settled/launch_logs/checks_srp1_solves.log 2>&1
 Exit 0 = every check passed; 1 = a check failed; 2 = refused (precondition).
 """
 
@@ -207,11 +209,12 @@ def unit_checks(UB, pe):
 
     def gate_bitwise():
         import math
-        certified = {'gross_operational_cost': 653858731.5686293, 'interface_settlement_dso': {'5': 1.0, '7': 2.0}}
-        same = {'gross_operational_cost': 653858731.5686293,
-                'recourse_components': {'gross_operational_cost': 653858731.5686293,
+        q_ref = BENCH.COORDINATED['certified_gross']      # W106: the settled Q181 (W93: the W86 Q132 literal)
+        certified = {'gross_operational_cost': q_ref, 'interface_settlement_dso': {'5': 1.0, '7': 2.0}}
+        same = {'gross_operational_cost': q_ref,
+                'recourse_components': {'gross_operational_cost': q_ref,
                                         'interface_settlement_dso': {5: 1.0, 7: 2.0}}}
-        one_ulp = math.nextafter(653858731.5686293, math.inf)
+        one_ulp = math.nextafter(q_ref, math.inf)
         off = {'gross_operational_cost': one_ulp,
                'recourse_components': {'gross_operational_cost': one_ulp, 'interface_settlement_dso': {5: 1.0, 7: 2.0}}}
         g_same = UB.common_q_gate(same, certified)
@@ -358,14 +361,14 @@ def unit_checks(UB, pe):
 
 
 # ======================================================================================================================
-#  srp1-zero group -- SRP1 + the W86 persisted models, zero solves
+#  srp1-zero group -- SRP1 + the coordinated (W106: settled cycle-181) persisted models, zero solves
 # ======================================================================================================================
 def srp1_zero_checks(srp, UB, O, pe):
     results = []
     planning = deepcopy(O.load_baseline()['planning'])     # builders mutate network data: a private copy
     candidate = BENCH._x0_candidate(srp, planning)
-    record = BENCH._load_json(BENCH.W86['evaluation_record'])
-    models = BENCH._load_w86_models()
+    record = BENCH._load_json(BENCH.COORDINATED['evaluation_record'])     # W106 (W93: BENCH.W86, unwired)
+    models = BENCH._load_coordinated_models()                           # W106 (W93: _load_w86_models, unwired)
     reference = UB.coordinated_reference_structure(planning, models)
     targets = UB.get_dso_interface_schedule(planning, models['dso'])
     cand_tc = candidate['total_capacity']
@@ -595,7 +598,7 @@ def srp1_solve_checks(srp, UB, O, pe, run_dir):
     planning, logs_dir = BENCH._new_planning(O, 'checks_srp1_solves')
     solver_options = BENCH.apply_arm_solver_options(srp, planning)
     candidate = BENCH._x0_candidate(srp, planning)
-    models = BENCH._load_w86_models()
+    models = BENCH._load_coordinated_models()                           # W106 (W93: _load_w86_models, unwired)
     reference = UB.coordinated_reference_structure(planning, models)
     targets = UB.get_dso_interface_schedule(planning, models['dso'])
     sink = BENCH.SolveSink(run_dir)
