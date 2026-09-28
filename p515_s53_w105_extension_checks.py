@@ -29,13 +29,23 @@ WHAT IS CHECKED
   K   keys: for EVERY entry of every committed campaign spec the W105 harness's key equals the pre-W105 harness's
       (ab0bcbc9 = HEAD at the start of W105, sha256 pinned, loaded from git), continuations passed through; the
       extension key follows the declared formula, its base key equals the recert c_star eval key, and it appears in no
-      committed spec.
+      committed campaign spec OUTSIDE ITS OWN ROOT (W108: the W105 stage root, excluded exactly as the launcher's
+      pre_launch_assertion excludes it; the campaign roots live under it); negative controls: a planted committed-
+      looking spec outside the root, and one in a sibling directory sharing the root's name prefix, are both refused;
+      positive control: the campaign's own committed spec (a planted one in the r2 campaign root, and the committed
+      v40 spec, superseded before any run) is accepted.
   P   `assert_extension_preconditions` holds for the declaration and refuses negative controls; the validator refuses
       an `early_stop` key and malformed declarations.
 
+W108 (r2, before any run). The r1 module (committed 49342e8c; output zero_solve_checks/w105_zero_solve_checks.json
+9688a018, pinned by v40 9bc1779d) required the extension key to be absent from EVERY committed campaign spec; W105's
+own committed campaign spec (1a9f1f24, commit 4461e077) carries it, so the checks the --run mode re-runs could never
+hold (W107's launch was refused with zero solves). r2 excludes the W105 stage root, as the pre-launch assertion does,
+and writes to a NEW directory (zero_solve_checks_r2); the r1 output is kept, never overwritten.
+
 Run (repo root, canonical interpreter, attached, both streams captured):
   set -o noclobber && /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python -u p515_s53_w105_extension_checks.py \\
-      > data/SRP1/Results/P515S53/w105_c_star_extension/zero_solve_checks_launch.log 2>&1
+      > data/SRP1/Results/P515S53/w105_c_star_extension/zero_solve_checks_r2_launch.log 2>&1
 """
 import contextlib
 import copy
@@ -73,9 +83,20 @@ import p515_s53_w98_continuation_checks as K98  # noqa: E402 -- its stand-in hel
 
 GUARDS = (('w105_checks', GUARD), ('w98_checks_imported', K98.GUARD))
 W105_ROOT_REL = os.path.join('data', 'SRP1', 'Results', 'P515S53', 'w105_c_star_extension')
-OUT_DIR_REL = os.path.join(W105_ROOT_REL, 'zero_solve_checks')
-OUT_FILE = 'w105_zero_solve_checks.json'
-OUT_MANIFEST = 'w105_zero_solve_checks_manifest_sha256.json'
+# r2 (W108): a NEW output directory and file names; r1 (zero_solve_checks/w105_zero_solve_checks.json, 9688a018,
+# pinned by the superseded v40) is kept and never written to.
+OUT_DIR_REL = os.path.join(W105_ROOT_REL, 'zero_solve_checks_r2')
+OUT_FILE = 'w105_zero_solve_checks_r2.json'
+OUT_MANIFEST = 'w105_zero_solve_checks_r2_manifest_sha256.json'
+# W108: the extension campaign (r2 id and root; the v40 root campaign_s53_w105_c_star_ext is write-once and superseded)
+# and the roots excluded from the key-absence rule -- the W105 stage root, EXACTLY the launcher's pre_launch_assertion
+# rule (L.committed_eval_keys(exclude_roots=(ROOT_REL,)), ROOT_REL = W105_ROOT_REL): a spec is inside a root iff its
+# path starts with root + os.sep.
+EXT_CAMPAIGN_ID = 's53_w105_c_star_ext_r2'
+EXT_CAMPAIGN_ROOT_REL = os.path.join(W105_ROOT_REL, f'campaign_{EXT_CAMPAIGN_ID}')
+V40_CAMPAIGN_SPEC_REL = os.path.join(W105_ROOT_REL, 'campaign_s53_w105_c_star_ext',
+                                     'campaign_spec_s53_w105_c_star_ext_1a9f1f24.json')
+KEY_EXCLUDED_ROOTS = (W105_ROOT_REL,)
 PRE_W105_HARNESS = {'commit': 'ab0bcbc9', 'sha256': '3ad624cd74f9a832037d20d2480adb9b03d559aee1c5d9675dc8aeb6c3b9d8a2'}
 W104_MANIFEST_REL = os.path.join(E.W104_ROOT, 'campaign_manifest_sha256.json')
 W104_TSO_DSO_PKL_REL = os.path.join(E.W104_EVAL_DIR, 'certified_models.pkl')
@@ -1061,17 +1082,28 @@ def extension_key():
             'differs_from_recert': ext != e['eval_key'], 'differs_from_w104': ext != E.W104['eval_key']}
 
 
+def _key_holders(scanned, key):
+    """The spec paths among `scanned` = [(rel, spec)] with an entry whose eval key (H._entry_eval_key) is `key`."""
+    return sorted({rel for rel, spec in scanned for e in spec.get('candidates') or [] if H._entry_eval_key(e) == key})
+
+
+def _outside_roots(rels, exclude_roots=KEY_EXCLUDED_ROOTS):
+    """The paths of `rels` outside every root of `exclude_roots` (the pre-launch assertion's rule: a path is inside a
+    root iff it starts with root + os.sep)."""
+    return [r for r in rels if not any(r.startswith(root + os.sep) for root in exclude_roots)]
+
+
 def tests_K():
     pre, pre_sha = _harness_pre_w105()
     n_specs = n_entries = n_equal = n_equal_committed = n_with_eval_key = 0
     mismatch, errors, committed_diff = [], [], []
-    committed = {}
+    scanned = []
     for rel in sorted(p for p in H._git(['ls-files', 'data/*campaign_spec_*.json']).splitlines() if p.strip()):
         spec = json.load(open(_abs(rel)))
         n_specs += 1
+        scanned.append((rel, spec))
         for e in spec.get('candidates') or []:
             n_entries += 1
-            committed.setdefault(H._entry_eval_key(e), []).append(rel)
             try:
                 args, kw = _key_args(spec, e)
                 new, old = H.evaluation_key(*args, **kw), pre.evaluation_key(*args, **kw)
@@ -1089,17 +1121,61 @@ def tests_K():
                 else:
                     committed_diff.append({'spec': rel, 'label': e.get('label')})
     ext = extension_key()
-    outside = committed.get(ext['extension_key'], [])
-    holds = (not mismatch and not errors and n_equal == n_entries and ext['base_equals_recert'] and ext['formula_holds']
-             and ext['differs_from_recert'] and ext['differs_from_w104'] and not outside)
-    return {'holds': holds, 'pre_w105_harness': {**PRE_W105_HARNESS, 'sha256_loaded': pre_sha},
+    key = ext['extension_key']
+    holding = _key_holders(scanned, key)
+    outside = _outside_roots(holding)
+    # ---- controls (W108): planted committed-looking specs run through the same holder scan and the same root rule ---
+    def planted(rel):
+        return (rel, {'campaign_id': 'w108_planted_control', 'candidates': [{'label': 'planted', 'key': '0' * 64,
+                                                                             'eval_key': key}]})
+    planted_outside_rel = os.path.join('data', 'SRP1', 'Results', 'P515S53', 'w108_planted_negative_control',
+                                       'campaign_planted', 'campaign_spec_planted_00000000.json')
+    planted_sibling_rel = os.path.join(W105_ROOT_REL + '_planted_sibling', 'campaign_planted',
+                                       'campaign_spec_planted_00000000.json')
+    planted_own_rel = os.path.join(EXT_CAMPAIGN_ROOT_REL, f'campaign_spec_{EXT_CAMPAIGN_ID}_00000000.json')
+    ctl_outside = _outside_roots(_key_holders(scanned + [planted(planted_outside_rel)], key))
+    ctl_sibling = _outside_roots(_key_holders(scanned + [planted(planted_sibling_rel)], key))
+    ctl_own_holders = _key_holders(scanned + [planted(planted_own_rel)], key)
+    ctl_own = _outside_roots(ctl_own_holders)
+    controls = {
+        'i_planted_outside_root_refused': {'planted': planted_outside_rel, 'outside_found': ctl_outside,
+                                           'refused': planted_outside_rel in ctl_outside},
+        'i_planted_sibling_prefix_refused': {'planted': planted_sibling_rel, 'outside_found': ctl_sibling,
+                                             'refused': planted_sibling_rel in ctl_sibling},
+        'ii_own_campaign_spec_accepted': {'planted': planted_own_rel, 'holders': ctl_own_holders,
+                                          'outside_found': ctl_own,
+                                          'accepted': planted_own_rel in ctl_own_holders and planted_own_rel not in ctl_own},
+        'ii_v40_campaign_spec_accepted': {'path': V40_CAMPAIGN_SPEC_REL,
+                                          'committed_and_holds_the_key': V40_CAMPAIGN_SPEC_REL in holding,
+                                          'accepted': V40_CAMPAIGN_SPEC_REL not in outside},
+    }
+    parts = {
+        'key_regression_no_mismatch': not mismatch,
+        'key_regression_no_errors': not errors,
+        'key_regression_every_entry_equal': n_equal == n_entries,
+        'extension_base_equals_recert': ext['base_equals_recert'],
+        'extension_formula_holds': ext['formula_holds'],
+        'extension_differs_from_recert': ext['differs_from_recert'],
+        'extension_differs_from_w104': ext['differs_from_w104'],
+        'extension_key_absent_from_committed_specs_outside_own_root': not outside,
+        'own_campaign_root_inside_excluded_root': not _outside_roots([planted_own_rel]),
+        'control_i_planted_outside_root_refused': controls['i_planted_outside_root_refused']['refused'],
+        'control_i_planted_sibling_prefix_refused': controls['i_planted_sibling_prefix_refused']['refused'],
+        'control_ii_own_campaign_spec_accepted': controls['ii_own_campaign_spec_accepted']['accepted'],
+        'control_ii_v40_campaign_spec_accepted': controls['ii_v40_campaign_spec_accepted']['accepted'],
+    }
+    holds = all(v is True for v in parts.values())
+    return {'holds': holds, 'parts': parts, 'pre_w105_harness': {**PRE_W105_HARNESS, 'sha256_loaded': pre_sha},
             'committed_specs_scanned': n_specs, 'committed_entries_scanned': n_entries,
             'entries_new_equals_pre_w105': n_equal, 'mismatches': mismatch, 'errors': errors,
             'entries_carrying_eval_key': n_with_eval_key,
             'entries_recomputed_equal_committed_eval_key_REPORTED': n_equal_committed,
             'entries_recomputed_differing_from_committed_eval_key_first20_REPORTED': committed_diff[:20],
             'n_entries_recomputed_differing_from_committed_eval_key_REPORTED': len(committed_diff),
-            'extension_key': ext, 'extension_key_in_committed_specs': outside}
+            'extension_key': ext, 'key_excluded_roots': list(KEY_EXCLUDED_ROOTS),
+            'own_campaign_root': EXT_CAMPAIGN_ROOT_REL,
+            'extension_key_in_committed_specs_all_REPORTED': holding,
+            'extension_key_in_committed_specs_outside_own_root': outside, 'controls': controls}
 
 
 # ======================================================================================================================
@@ -1195,6 +1271,7 @@ def main():
     code_pins = {rel: H.sha256_file(_abs(rel)) for rel in CODE_PINNED_BY_CHECKS}
     guards = {name: {'counts': dict(g.counts), 'verify_0_failures': g.verify(0)} for name, g in GUARDS}
     doc = {'schema': 'p515_s53_w105_zero_solve_checks_v1', 'task': 'W105 (PLANNER_BRIEF_2026-09-13.md Addendum 54)',
+           'revision': 'r2 (Planner task W108: K excludes the W105 stage root, as pre_launch_assertion does)',
            'started_utc': started, 'finished_utc': _utc(), 'git_head': H._git(['rev-parse', 'HEAD']),
            'code_sha256': code_pins, 'guards': guards, **res}
     path = os.path.join(out_dir, OUT_FILE)

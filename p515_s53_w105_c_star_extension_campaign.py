@@ -1,7 +1,19 @@
 """
-P5.15 Addendum 54 Ruling 1, Planner task W105 -- the C* SETTLING EXTENSION diagnostic: frozen stage spec v40
-(predecessor v39 8a612429, NOT edited), the campaign freeze, the run, and the zero-solve summary / scorer.
-BUILT AND FROZEN IN W105; NO RUN IS LAUNCHED IN W105 (the Planner launches).
+P5.15 Addendum 54 Ruling 1, Planner task W105 -- the C* SETTLING EXTENSION diagnostic: frozen stage spec v41
+(predecessor v40 9bc1779d, superseded before any run, NOT edited; v40's predecessor v39 8a612429), the campaign freeze,
+the run, and the zero-solve summary / scorer. BUILT AND FROZEN IN W105, RE-FROZEN IN W108; NO RUN IS LAUNCHED BY THE
+WORKER (the Planner launches).
+
+WHY v41 (Planner task W108, before any run). v40 (9bc1779d) and its campaign spec s53_w105_c_star_ext (1a9f1f24,
+commit 4461e077) were frozen and committed; W107's launch was then refused at the preconditions with zero solves
+(run_c_star_ext_v40_launch.log, 53f01ba7): the zero-solve checks' K required the extension key 8864266d to be absent
+from EVERY committed campaign spec, which the committed campaign spec 1a9f1f24 itself falsifies, so the checks the
+--run mode re-runs could never hold. The checks module (r2) now excludes the W105 stage root, exactly as
+pre_launch_assertion does; a refusal now logs the failing sections and items; --preconditions-only runs every --run
+precondition and stops before the campaign lock and the child. v40 pins the r1 module, so v40, 1a9f1f24 and the r1
+checks output are superseded (kept, never run); v41 carries every v40 content item unchanged except the code pins,
+the defect note and what the new campaign root / id and the new checks output imply. Same declaration, same eval key
+8864266d, new campaign id s53_w105_c_star_ext_r2.
 
 Authority: PLANNER_BRIEF_2026-09-13.md Addendum 54 Ruling 1 (option (a): the 100-cycle diagnostic extension; H_ess-flat;
 "Record per cycle"; the predictions; the outcomes); TASKS.md Addendum 54 order (W105); Planner task W105 (the operational
@@ -16,14 +28,18 @@ FIXED length of 287 cycles (cap 287; nothing ends the run earlier), the settling
 per-cycle creep captures (Q by block and component, ESS schedule movement, all six Boyd residuals).
 
 MODES (repo root, canonical interpreter; attached, ALONE, both streams captured, never detached):
-  --freeze-spec                   ZERO SOLVES. v40 (write-once, named by its sha256): re-runs the W105 zero-solve checks
+  --freeze-spec                   ZERO SOLVES. v41 (write-once, named by its sha256): re-runs the W105 zero-solve checks
                                   inline and pins their committed output; the scorer and post-run evaluator self-tests;
                                   the pre-launch assertion; the W104 reference slopes; the wall estimate.
-  --freeze                        ZERO SOLVES. The campaign spec (s53_w105_c_star_ext), pinning v40; the pre-launch
+  --freeze                        ZERO SOLVES. The campaign spec (s53_w105_c_star_ext_r2), pinning v41; the pre-launch
                                   assertion on the frozen spec; the exact launch command.
   --run --spec-sha256 S           THE RUN (NOT RUN IN W105). Preconditions (the zero-solve checks re-run, the pre-launch
                                   assertion, the memory preflight, the solver path, the run-lock), H.evaluate on the one
                                   entry, the gates, the diagnostic report (predictions scored); results + manifest.
+  --run --spec-sha256 S --preconditions-only
+                                  ZERO SOLVES (W108). Every --run precondition above, in the same order and with the
+                                  same code; then STOPS before the campaign lock and the child (no lock, no evaluation,
+                                  nothing written but the log). Exit 0 iff every precondition holds.
   --summarize                     ZERO SOLVES. Re-scores the committed results with the frozen scorer.
 
 Exit codes: 0 done / every gate holds; 1 a gate / harness / guard / precondition failure (a replay divergence aborts
@@ -84,10 +100,47 @@ STAGE_TEXT = ('P5.15 Addendum 54 Ruling 1, W105 -- C* settling extension diagnos
               'sum |dp_ess| per node and side, all six Boyd residuals')
 _P53 = os.path.join('data', 'SRP1', 'Results', 'P515S53')
 ROOT_REL = K.W105_ROOT_REL
-SPEC_PREFIX = 'frozen_s53_spec_v40_'
-SPEC_VERSION = 40
+SPEC_PREFIX = 'frozen_s53_spec_v41_'
+SPEC_VERSION = 41
 SPEC_V39 = {'path': os.path.join(_P53, 'frozen_s53_spec_v39_8a612429.json'),
             'sha256': '8a61242924cee1690c0d9f9f25a0ef6bdc90a519d089415898b44d5983e4c756'}
+SPEC_V40 = {'path': os.path.join(_P53, 'frozen_s53_spec_v40_9bc1779d.json'),
+            'sha256': '9bc1779da9a44fddc99308701185f62b5d58a29b82577473a750b8f6f0b68785'}
+# W108: superseded before any run (kept, never edited, never run); each re-verified committed and unchanged
+SUPERSEDED = {
+    'stage_spec_v40': SPEC_V40,
+    'campaign_spec_s53_w105_c_star_ext': {'path': K.V40_CAMPAIGN_SPEC_REL,
+                                          'sha256': '1a9f1f24233f6fe9905a40fc185e09898aa6b2f237566636fe5fb7da261cc8c2'},
+    'zero_solve_checks_r1': {'path': os.path.join(ROOT_REL, 'zero_solve_checks', 'w105_zero_solve_checks.json'),
+                             'sha256': '9688a018dae16cf57cfe06ce87dafacaae9a027d82057ad32c7904b2774b159a'},
+    'refused_v40_launch_log': {'path': os.path.join(ROOT_REL, 'run_c_star_ext_v40_launch.log'),
+                               'sha256': '53f01ba73608627451a87b59eb4f3b276bc86ae1998c474d4643f024aec3529d'},
+}
+DEFECT_NOTE = {
+    'task': 'Planner task W108 (W107 launch refused with zero solves)',
+    'defect': ('p515_s53_w105_extension_checks.py tests_K (r1, 49342e8c) required the extension eval key 8864266d to '
+               'appear in NO committed campaign spec; W105 then committed its own campaign spec 1a9f1f24 (4461e077), '
+               'which carries it, so K failed and the --run inline checks (_run_checks_inline) refused every launch. '
+               'Reproduced zero-solve in W108: K the only failing section; the only holder the v40 campaign spec'),
+    'fix': ('tests_K (r2) excludes the W105 stage root, exactly as pre_launch_assertion does '
+            '(L.committed_eval_keys(exclude_roots=(ROOT_REL,))): the key must appear in no committed campaign spec '
+            'outside its own root; negative controls (a planted spec outside the root; a planted spec in a sibling '
+            'directory sharing the root name prefix) refused; positive controls (a planted spec in the r2 campaign '
+            'root; the committed v40 campaign spec) accepted. Everything else in K unchanged'),
+    'logging': ('a failing _run_checks_inline now logs the failing sections and, within each, the failing items '
+                '(_failing_check_items; logging only)'),
+    'preconditions_only_mode': ('--run --spec-sha256 S --preconditions-only: every --run precondition, then a stop '
+                                'before the campaign lock and the child (zero solves); added in W108 because the '
+                                'launcher had no dry-run mode'),
+    'unchanged': ('the declaration, the eval key 8864266d, the cell, the configuration, the holds, cap 287, the '
+                  'captures, the definitions, the predictions, the scorer, the gates'),
+    'changed': ('schema / version / predecessor; the code pins; the campaign id and root (s53_w105_c_star_ext_r2; the '
+                'v40 root is write-once) and what derives from them (working-dir ids, launch command, log name); the '
+                'committed zero-solve checks output (r2) and its pre-launch / inline results; freeze-time records (git '
+                'head, UTC, code_since_w104_launch, memory, the measured capture overhead and the wall estimate '
+                'derived from it)'),
+    'superseded_before_any_run': SUPERSEDED,
+}
 W104_PINS = {
     'campaign_spec': {'path': os.path.join(E.W104_ROOT, 'campaign_spec_s53_w101_srp1_cont_c_star_1a7483ef.json'),
                       'sha256': '1a7483ef17ef8e6054bc18c42fc9a0dd219ff93217f6a7ad6bb9a1130b45c7ea'},
@@ -96,7 +149,7 @@ W104_PINS = {
     'campaign_manifest': {'path': os.path.join(E.W104_ROOT, 'campaign_manifest_sha256.json'),
                           'sha256': '5b8a7a5edd3d0b1a099ec5c1cc7e2ed5906e54a6889f403ca021326a49c12fe9'},
 }
-CAMPAIGN_ID = 's53_w105_c_star_ext'
+CAMPAIGN_ID = K.EXT_CAMPAIGN_ID  # W108: s53_w105_c_star_ext_r2 (the v40 id's root is write-once)
 CELL = E.CELL
 CONCURRENCY = 1
 RESULTS_FILE = 'campaign_results.json'
@@ -410,7 +463,8 @@ def code_since_w104():
 
 def _w104_pins_ok():
     failures = []
-    for name, pin in list(W104_PINS.items()) + [('spec v39', SPEC_V39)]:
+    for name, pin in list(W104_PINS.items()) + [('spec v39', SPEC_V39)] + [(f'superseded {k}', v)
+                                                                             for k, v in SUPERSEDED.items()]:
         if _sha(pin['path']) != pin['sha256'] or not _committed_clean(pin['path']):
             failures.append(f'{name} not as committed: {pin["path"]}')
     manifest = _load(W104_PINS['campaign_manifest']['path'])
@@ -999,13 +1053,13 @@ def post_run_evaluator_self_tests():
 
 
 # ======================================================================================================================
-#  the stage spec v40
+#  the stage spec v41 (v40 superseded before any run)
 # ======================================================================================================================
 def launch_command(spec_sha=None):
     return ('cd /Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation && set -o noclobber && '
             f'NLP_SOLVER_PATH={SOLVER_PATH} {PYTHON} -u {SCRIPT_NAME} --run '
             f'--spec-sha256 {spec_sha or "<campaign spec sha256>"} '
-            f'> {os.path.join(ROOT_REL, "run_c_star_ext_v40_launch.log")} 2>&1')
+            f'> {os.path.join(ROOT_REL, "run_c_star_ext_v41_launch.log")} 2>&1')
 
 
 def _checks_file_state():
@@ -1025,13 +1079,48 @@ def _run_checks_inline():
         return K.run_all_checks()
 
 
+def _failing_check_items(checks):
+    """W108 (logging only): {failing section: [failing items]} of a `_run_checks_inline` result. Items: a section
+    error; `parts` entries not True; `tests` entries whose holds / ok is not True; top-level entries that are False or
+    carry a holds / ok that is not True."""
+    out = {}
+    for sid, sec in ((checks or {}).get('sections') or {}).items():
+        if (sec or {}).get('holds') is True:
+            continue
+        r = (sec or {}).get('result')
+        items = []
+        if not isinstance(r, dict):
+            out[sid] = [f'result is {type(r).__name__}']
+            continue
+        if 'error' in r:
+            items.append(f"error: {r['error']}")
+        for k, v in (r.get('parts') or {}).items():
+            if v is not True:
+                items.append(f'parts.{k}')
+        for k, v in (r.get('tests') or {}).items():
+            if isinstance(v, dict) and v.get('holds', v.get('ok')) is not True:
+                items.append(f'tests.{k}')
+        for k, v in r.items():
+            if k in ('holds', 'parts', 'tests', 'error'):
+                continue
+            if v is False or (isinstance(v, dict) and ('holds' in v or 'ok' in v)
+                              and v.get('holds', v.get('ok')) is not True):
+                items.append(k)
+        out[sid] = items or ['holds is not True (no itemised field)']
+    return out
+
+
+def _checks_failure_message(checks):
+    return f'the zero-solve checks do not all hold now -- failing sections and items: {_failing_check_items(checks)}'
+
+
 def stage_spec_content(checks_inline, checks_file, post_tests, scorer_tests, verb, solver, pre, code_since, mem,
                        ref_slopes, wall):
     code = {rel: _sha(rel) for rel in CODE_PINNED}
     production = {rel: _sha(rel) for rel in H.PRODUCTION_FILES_TO_CHECK_CLEAN if os.path.isfile(_abs(rel))}
     return {
-        'schema': 'p515_s53_stage_spec_v40', 'version': SPEC_VERSION, 'stage_text': STAGE_TEXT,
-        'predecessor': {'version': 39, **SPEC_V39},
+        'schema': 'p515_s53_stage_spec_v41', 'version': SPEC_VERSION, 'stage_text': STAGE_TEXT,
+        'predecessor': {'version': 40, **SPEC_V40}, 'defect_note': DEFECT_NOTE,
         'authority': [f'{BRIEF} Addendum 54 Ruling 1 (committed 271e9325)', 'TASKS.md Addendum 54 order (W105)',
                       'Planner task W105'],
         'frozen_utc': _utc(), 'git_head': H._git(['rev-parse', 'HEAD']),
@@ -1185,7 +1274,8 @@ def freeze_spec(started):
         failures.append(f'production changed since W104\'s launch: {code_since}')
     checks_inline = _run_checks_inline()
     if not checks_inline['all_hold']:
-        failures.append('inline re-run of the zero-solve checks fails')
+        failures.append('inline re-run of the zero-solve checks fails -- failing sections and items: '
+                        f'{_failing_check_items(checks_inline)}')
     post_tests, post_ok = post_run_evaluator_self_tests()
     if not post_ok:
         failures.append(f'post-run evaluator self-tests fail: {[k for k, v in post_tests.items() if not v.get("ok")]}')
@@ -1218,7 +1308,7 @@ def freeze_spec(started):
     if _sha(rel) != sha:
         raise RuntimeError(f'v{SPEC_VERSION} written bytes do not hash to the name')
     _log(f'[{tag}] {STAGE_TEXT}')
-    _log(f"[{tag}] wrote {rel} sha256={sha} (predecessor v39 {SPEC_V39['sha256']})")
+    _log(f"[{tag}] wrote {rel} sha256={sha} (predecessor v40 {SPEC_V40['sha256']})")
     _log(f"[{tag}] checks per section: { {k: v['holds'] for k, v in checks_inline['sections'].items()} }")
     _log(f"[{tag}] post-run evaluator self-tests: { {k: v.get('ok') for k, v in post_tests.items()} }")
     _log(f"[{tag}] scorer self-tests: { {k: v.get('ok') for k, v in scorer_tests.items()} }")
@@ -1255,10 +1345,12 @@ def freeze(started):
              'stage_spec': ss_pin, 'label': E.LABEL, 'cell': CELL, 'w104': W104_PINS,
              'w104_eval_key': w104_entry()['eval_key'], 'recert_eval_key': recert_entry()['eval_key'],
              'expected_eval_key': pre['extension_key'], 'objective_convention': ss['objective_convention'],
-             'solve_claim': ss['solve_profile_declared'], 'pre_launch_assertion_at_freeze': pre}
+             'solve_claim': ss['solve_profile_declared'], 'pre_launch_assertion_at_freeze': pre,
+             'supersedes_before_any_run': SUPERSEDED}
     spec_path, spec_sha, spec = H.freeze_campaign_spec(
         campaign_root(), CAMPAIGN_ID, entries(), configuration=configuration(), cap=E.CAP, concurrency=CONCURRENCY,
-        authority=[f'{BRIEF} Addendum 54 Ruling 1', 'Planner task W105', ss_rel], required_consecutive_cycles=10,
+        authority=[f'{BRIEF} Addendum 54 Ruling 1', 'Planner task W105', 'Planner task W108', ss_rel],
+        required_consecutive_cycles=10,
         extra=extra)
     checks = validate_campaign_spec(spec, ss_pin)
     pre_frozen = pre_launch_assertion(spec)
@@ -1279,8 +1371,8 @@ def _campaign_spec_path():
     return os.path.join(root, hits[0]) if len(hits) == 1 else None
 
 
-def run(started, spec_sha256):
-    tag = 'W105-RUN'
+def run(started, spec_sha256, preconditions_only=False):
+    tag = 'W105-RUN-PRECONDITIONS-ONLY' if preconditions_only else 'W105-RUN'
     failures = _common_checks()
     ss_rel, ss_sha, ss = load_stage_spec()
     if not _committed_clean(ss_rel):
@@ -1304,7 +1396,7 @@ def run(started, spec_sha256):
             failures.append(f'{what} sha256 differs from the frozen spec')
     checks_inline = _run_checks_inline()
     if not checks_inline['all_hold']:
-        failures.append('the zero-solve checks do not all hold now')
+        failures.append(_checks_failure_message(checks_inline))
     pre = pre_launch_assertion(spec)
     if not pre['holds']:
         failures.append(f'pre-launch assertion fails on the frozen spec: {pre["parts"]}')
@@ -1321,6 +1413,14 @@ def run(started, spec_sha256):
             _log(f'[{tag} PRECONDITION FAILED] {fl}')
         _finish(1)
     entry = spec['candidates'][0]
+    if preconditions_only:
+        # W108: stop here -- before the campaign lock, the evaluation and the child (zero solves, nothing written)
+        _log(f"[{tag}] every precondition holds: campaign spec {os.path.relpath(spec_path, REPO)} sha256={spec_sha256}; "
+             f"stage spec {ss_rel} sha256={ss_sha}; checks per section "
+             f"{ {k: v['holds'] for k, v in checks_inline['sections'].items()} }; pre-launch parts {pre['parts']}; "
+             f"eval_key {entry['eval_key']}; solver {solver['resolved'].get('NLP_SOLVER_PATH')} sha256={solver['sha256']}")
+        _log(f'[{tag}] STOPPED before the campaign lock and the child (no lock taken, no evaluation, zero solves)')
+        _finish(0, 'preconditions-only OK')
     lock = H.acquire_campaign_lock(spec['campaign_id'], spec_sha256)
     _log(f"[{tag}] {STAGE_TEXT}; cell {CELL} eval_key {entry['eval_key']}; cap {spec['cap']}; lock {lock}")
     try:
@@ -1397,7 +1497,11 @@ def main():
     mode.add_argument('--run', action='store_true')
     mode.add_argument('--summarize', action='store_true')
     parser.add_argument('--spec-sha256', default=None)
+    parser.add_argument('--preconditions-only', action='store_true',
+                        help='with --run: every --run precondition, then stop before the lock and the child')
     args = parser.parse_args()
+    if args.preconditions_only and not args.run:
+        parser.error('--preconditions-only requires --run')
     started = time.time()
     try:
         if args.freeze_spec:
@@ -1409,7 +1513,7 @@ def main():
         else:
             if not args.spec_sha256:
                 parser.error('--run requires --spec-sha256')
-            run(started, args.spec_sha256)
+            run(started, args.spec_sha256, preconditions_only=args.preconditions_only)
     except SystemExit:
         raise
     except BaseException:
