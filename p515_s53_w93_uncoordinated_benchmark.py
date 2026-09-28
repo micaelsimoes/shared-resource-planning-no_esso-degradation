@@ -49,6 +49,11 @@ STAGES, IN THE ADDENDUM 49 ORDER, EACH ITS OWN ATTACHED PROCESS WITH AN EXACT DE
                               the same interface-P scaling, must agree with the Param-derived lambda_dso_full within
                               the consensus tolerance. The table is marked usable as the prediction only if the units
                               check passes, the settled identities hold AND the sidecar cross-check passes.
+                              W111 (Addendum 55, option (a); benchmark spec v2): the DSO-vs-TSO consensus item
+                              `lambda_dso_vs_lambda_tso` is gated on the SETTLED models (inside the settled identities,
+                              0.05 EUR/MWh, unchanged), not on S48, where it is reported only (0.0583 at the S48 point,
+                              0.026 settled: a settling datum). The table flags the candidate lambda != pi hour node 7 /
+                              2030 Summer / hour 6 (CANDIDATE_LAMBDA_NEQ_PI_HOURS). Rule: `prediction_usable`.
  2. common-q-gate             ZERO solves. `evaluate_common_q` (evaluation tie-breaker 0, require_unchanged) on the
                               SETTLED persisted models must reproduce the settled recourse components BITWISE -- the
                               reference is Q181 = 653,873,702.1876609 (settling_decision.json Q_k_star, equal to the
@@ -79,6 +84,9 @@ STAGES, IN THE ADDENDUM 49 ORDER, EACH ITS OWN ATTACHED PROCESS WITH AN EXACT DE
                               weighting (EUR at 1 EUR/MWh, block-weighted) with raw MWh (day-weighted and per
                               representative day) alongside, beside the settled coordinated figure (record and
                               recomputed from the models by stage 2) and the W86 cycle-132 figure 589.18 (reported).
+                              W111 (Addendum 55; W109): each row also gives the NET (production's definitional figure,
+                              the primary), the POSITIVE PART (c > 0) and the NEGATIVE PART (c < 0), TSO and DSO apart,
+                              captured by stages 2 and 4/5 (`curtailment_signed_parts`); helper, model and Q unchanged.
                               Each arm's Q is the MINIMUM over its three starts: CONSERVATIVE AGAINST THE COORDINATION
                               CLAIM -- the uncoordinated side gets its best local optimum of three, the coordinated side
                               is one certified cell (Planner ruling, W94). Recorded as Q_MIN_OVER_STARTS_NOTE.
@@ -150,6 +158,9 @@ AUTHORITY = [
     'PLANNER_BRIEF_2026-09-13.md Addendum 53 Ruling 4 (coordinated arm reported only as the settled x = 0 value)',
     'PLANNER_BRIEF_2026-09-13.md Addendum 54 Ruling 3 (common-Q gate and lambda_t look on the settled cycle-181 x = 0 '
     'models; the gate reference is the settled value)', 'Planner task W106',
+    'PLANNER_BRIEF_2026-09-13.md Addendum 55 (option (a): the lambda consensus item gated on the settled cycle-181 '
+    'models, tolerance 0.05 unchanged; candidate lambda != pi hour; signed curtailment reporting after W109 f6e3533f)',
+    'Planner task W111 (benchmark spec v2)',
 ]
 SCRIPT_NAME = os.path.basename(__file__)
 # W106 (Addendum 54 Ruling 3): the settled benchmark's output root (new; the frozen benchmark spec lives here too).
@@ -271,6 +282,18 @@ LAMBDA_NEQ_PI_TOL_EUR = 0.05                      # |lambda_t - pi_t| above whic
 UNITS_CHECK_TOL = {'repro_eur': 1e-9,             # reproduction of committed W28/W31 figures (W31 W25_REPRO_TOL)
                    'kkt_eur': 1e-3,               # Param-derived lambda vs the nodal dual (W31 KKT_TOL_EUR)
                    'consensus_eur': 0.05}         # DSO-side vs TSO-side lambda (W31 CONSENSUS_TOL_EUR)
+# W111 (Addendum 55, option (a)): the consensus item `lambda_dso_vs_lambda_tso` is a CONSENSUS-AGREEMENT quantity, not
+# a units quantity; it is gated on the SETTLED cycle-181 models (`units_check_identities_only`, tolerance
+# UNITS_CHECK_TOL['consensus_eur'] = 0.05, unchanged) and no longer on the S48 point, where `units_check` still computes
+# it but reports it as informational (not gating). Benchmark spec v2 records the scope.
+UNITS_CHECK_S48_CONSENSUS_GATING = False
+# W111 (Addendum 55): the S48 row that failed the consensus item under spec v1 (0.0583 > 0.05; W106 checks 1ba8ae36),
+# kept as a CANDIDATE lambda != pi hour for the mechanism table; the lambda look flags it in its table. `hour` is the
+# table's 1-based `hour` field (= period + 1).
+CANDIDATE_LAMBDA_NEQ_PI_HOURS = (
+    {'node_id': 7, 'year': '2030', 'day': 'Summer', 'hour': 6,
+     'source': ('Addendum 55: the row of the S48 consensus item 0.0583 > 0.05 (W106 C4, spec v1); 0.026 on the '
+                'settled cycle-181 models; candidate lambda != pi hour for the mechanism table')},)
 CONSISTENCY_TOL = {'hard_tol_pu2': 1e-6, 'soft_excess_tol_pu2': 1e-6, 'thermal_tol_pu2': 1e-6}
 NEGATIVE_CONTROL_EXPLAINED_ABS_TOL_EUR = 1e-5     # (Q at tie-breaker 1) - (Q at 0) - priced curtailment, ~100 ulp
 COORDINATED_REPRODUCIBILITY_BAND_REL = 1.1e-4     # Addendum 49 "Resolution": the coordinated cell's band (0.011 %)
@@ -342,6 +365,11 @@ REPORT_CAPTURE_PATHS = {
     'variant_dso_interface_schedule': ('passive_tie_breaker_*', ('phase_A', 'dso_interface_schedule')),
     'variant_cost': ('passive_tie_breaker_*', ('arm_cost', 'gross_operational_cost')),
     'variant_curtailment_totals': ('passive_tie_breaker_*', ('phase_A', 'evaluation', 'curtailment', 'totals')),
+    # W111 (Addendum 55): the candidate lambda != pi hour, and the signed curtailment parts (net / positive / negative)
+    'lambda_t_candidate_hours_addendum_55': ('lambda_look', ('candidate_lambda_neq_pi_hours_addendum_55',)),
+    'coordinated_curtailment_signed_parts': ('common_q_gate', ('curtailment_signed_parts', 'totals')),
+    'arm_curtailment_signed_parts': ('arm_*', ('phase_A', 'curtailment_signed_parts', 'totals')),
+    'variant_curtailment_signed_parts': ('passive_tie_breaker_*', ('phase_A', 'curtailment_signed_parts', 'totals')),
 }
 
 _GUARD = None
@@ -873,14 +901,26 @@ def _schedule_difference(a, b):
 # ======================================================================================================================
 #  stage 1 -- lambda_t vs pi_t (zero solves)
 # ======================================================================================================================
-def units_check(rows, x0a, dnp):
-    """Reproduction of W28/W31's committed figures from the S48 models, and the Param-vs-dual identities."""
+def _row_address(r):
+    return {'node_id': int(r['node_id']), 'year': str(r['year']), 'day': str(r['day']), 'hour': int(r['hour']),
+            'period': int(r['period'])}
+
+
+def units_check(rows, x0a, dnp, include_consensus=UNITS_CHECK_S48_CONSENSUS_GATING):
+    """Reproduction of W28/W31's committed figures from the S48 models, and the Param-vs-dual identities.
+
+    W111 (Addendum 55, option (a)): the consensus item `lambda_dso_vs_lambda_tso` is gated on the settled models
+    (`units_check_identities_only`), not here. It is still computed on the S48 rows and returned under
+    `consensus_s48_informational` (not gating), with the address of every row above the tolerance.
+    `include_consensus=True` restores the spec-v1 scope (the item inside `items` and `passed`): used ONLY as the
+    negative control of the W111 checks."""
     tol = UNITS_CHECK_TOL
     worst = {'lmp7_vs_w28': 0.0, 'pi_tn_vs_w28': 0.0, 'pi_vs_w31': 0.0, 'lmp_vs_w31': 0.0, 'y0_vs_w31': 0.0,
              'lambdaE_vs_w31': 0.0, 'lambda_dso_full_vs_y0': 0.0, 'lambda_tso_full_vs_lmp_delta_interior': 0.0,
              'lambda_dso_vs_lambda_tso': 0.0}
     counts = {k: 0 for k in worst}
     missing = []
+    argmax_consensus, consensus_above = None, []
     w31_hours = {}
     for key, block in dnp['task_a']['blocks'].items():
         for h in block['hours']:
@@ -919,8 +959,12 @@ def units_check(rows, x0a, dnp):
             worst['lambda_tso_full_vs_lmp_delta_interior'] = max(
                 worst['lambda_tso_full_vs_lmp_delta_interior'], abs(r['lambda_tso_full'] - r['lmp_tn_bus']))
             counts['lambda_tso_full_vs_lmp_delta_interior'] += 1
-        worst['lambda_dso_vs_lambda_tso'] = max(worst['lambda_dso_vs_lambda_tso'],
-                                                abs(r['lambda_dso_full'] - r['lambda_tso_full']))
+        consensus = abs(r['lambda_dso_full'] - r['lambda_tso_full'])
+        if consensus > worst['lambda_dso_vs_lambda_tso'] or argmax_consensus is None:
+            argmax_consensus = r
+        if consensus > tol['consensus_eur']:
+            consensus_above.append({**_row_address(r), 'abs_lambda_dso_minus_lambda_tso_eur_per_mwh': consensus})
+        worst['lambda_dso_vs_lambda_tso'] = max(worst['lambda_dso_vs_lambda_tso'], consensus)
         counts['lambda_dso_vs_lambda_tso'] += 1
     limits = {'lmp7_vs_w28': tol['repro_eur'], 'pi_tn_vs_w28': tol['repro_eur'], 'pi_vs_w31': tol['repro_eur'],
               'lmp_vs_w31': tol['repro_eur'], 'y0_vs_w31': tol['repro_eur'], 'lambdaE_vs_w31': tol['kkt_eur'],
@@ -934,7 +978,19 @@ def units_check(rows, x0a, dnp):
                     'passed': worst[name] <= limits[name] and counts[name] > 0
                     and (expected_counts.get(name) is None or counts[name] == expected_counts[name])}
              for name in worst}
+    # W111 (Addendum 55, option (a)): the consensus item leaves the gating items unless the v1 scope is requested
+    consensus_item = items['lambda_dso_vs_lambda_tso'] if include_consensus else items.pop('lambda_dso_vs_lambda_tso')
+    consensus_informational = {
+        **consensus_item, 'gating_here': bool(include_consensus),
+        'within_limit': consensus_item['passed'],
+        'argmax_row': None if argmax_consensus is None else _row_address(argmax_consensus),
+        'n_rows_above_limit': len(consensus_above), 'rows_above_limit': consensus_above[:50],
+        'scope': ('Addendum 55 option (a): gated on the settled cycle-181 models (identities_coordinated, same '
+                  '0.05 EUR/MWh); computed here on the S48 point for the record only (settling datum)')}
+    consensus_informational.pop('passed')
     return {'items': items, 'missing': missing[:50], 'n_missing': len(missing),
+            'consensus_s48_informational': consensus_informational,
+            'consensus_item_gating_here': bool(include_consensus),
             'passed': all(i['passed'] for i in items.values()) and not missing,
             'what_it_reproduces': ("Addendum 32 Q4 (W28 dd0a86b3, W31 d68c814d): the TSO bus-7 marginal cost and the "
                                    "DN interface price, which W31 showed equal the DSO flexibility shadow price "
@@ -960,6 +1016,52 @@ def flag_rows(rows):
             flagged.append({k: r[k] for k in ('node_id', 'year', 'day', 'hour', 'pi', 'c_flex', 'lambda_t',
                                               'lambda_minus_pi', 'lmp_tn_bus', 'y0_dn_ref')})
     return flagged
+
+
+def _matches_candidate(r, candidate):
+    return (int(r['node_id']) == int(candidate['node_id']) and str(r['year']) == str(candidate['year'])
+            and str(r['day']) == str(candidate['day']) and int(r['hour']) == int(candidate['hour']))
+
+
+def candidate_hour_counts(rows):
+    """W111: how many table rows each declared candidate address matches (must be exactly 1 each)."""
+    return [sum(1 for r in rows if _matches_candidate(r, c)) for c in CANDIDATE_LAMBDA_NEQ_PI_HOURS]
+
+
+def flag_candidate_hours(rows):
+    """W111 (Addendum 55): mark the declared candidate lambda != pi hour(s) in the table (per-row key
+    `candidate_lambda_neq_pi_hour_addendum_55`) and return them with their lambda / pi figures. Call after
+    `flag_rows` (it reads lambda_neq_pi, cflex_lt_pi, coordination_proper_hour)."""
+    out = []
+    for r in rows:
+        match = [c for c in CANDIDATE_LAMBDA_NEQ_PI_HOURS if _matches_candidate(r, c)]
+        r['candidate_lambda_neq_pi_hour_addendum_55'] = bool(match)
+        if match:
+            out.append({**_row_address(r), 'source': match[0]['source'],
+                        **{k: r[k] for k in ('pi', 'c_flex', 'lambda_t', 'lambda_minus_pi', 'lambda_neq_pi',
+                                             'cflex_lt_pi', 'coordination_proper_hour', 'lambda_dso_full',
+                                             'lambda_dso_linear', 'lambda_tso_full', 'lmp_tn_bus', 'y0_dn_ref',
+                                             'lambda_neq_pi_by_source')},
+                        'abs_lambda_dso_minus_lambda_tso_eur_per_mwh': abs(r['lambda_dso_full'] - r['lambda_tso_full'])})
+    return {'declared': [dict(c) for c in CANDIDATE_LAMBDA_NEQ_PI_HOURS], 'rows': out,
+            'n_matched_per_declared': candidate_hour_counts(rows)}
+
+
+def prediction_usable(units, identities, sidecar):
+    """W111 (Addendum 55, option (a)): the lambda table drives a prediction only if the S48 units check passes (units
+    items only), the settled identities pass (including the consensus item at 0.05 EUR/MWh) and the sidecar
+    cross-check passes."""
+    return bool(units['passed'] and identities['passed'] and 'lambda_dso_vs_lambda_tso' in identities['items']
+                and sidecar['passed'])
+
+
+PREDICTION_USABLE_RULE = (
+    'W111 / benchmark spec v2 (Addendum 55, option (a)): the table drives a prediction only if (1) the S48 units check '
+    'passes on its UNITS items only (W28/W31 reproduction to 1e-9 EUR/MWh; the Param-vs-dual identities to 1e-3), '
+    '(2) the identities hold on the settled cycle-181 models INCLUDING the DSO-vs-TSO consensus item '
+    'lambda_dso_vs_lambda_tso at 0.05 EUR/MWh (tolerance unchanged), and (3) the lambda_t sidecar cross-check passes. '
+    'The consensus item is still computed on the S48 point and reported (units_check_s48.consensus_s48_informational), '
+    'not gating')
 
 
 def summarise_flags(rows, planning):
@@ -1118,9 +1220,11 @@ def stage_lambda_look(run_dir):
     rows_s48 = UB.interface_price_terms(planning, s48_models)
     del s48_models
     gc.collect()
-    units = units_check(rows_s48, x0a, dnp)
+    # W111 (Addendum 55, option (a)): units items only; the consensus item is gated on the settled models below
+    units = units_check(rows_s48, x0a, dnp, include_consensus=UNITS_CHECK_S48_CONSENSUS_GATING)
     _log(f"units check: {'PASS' if units['passed'] else 'FAIL'} "
-         f"{ {k: (v['max_abs_eur_per_mwh'], v['passed']) for k, v in units['items'].items()} }")
+         f"{ {k: (v['max_abs_eur_per_mwh'], v['passed']) for k, v in units['items'].items()} }; S48 consensus "
+         f"(informational) {units['consensus_s48_informational']['max_abs_eur_per_mwh']!r}")
     _checkpoint(run_dir, {'phase': 'units_check', 'passed': units['passed']})
 
     # W106: the settled cycle-181 models (Addendum 54 Ruling 3); W93/W94 loaded the W86 models here (unwired)
@@ -1130,12 +1234,16 @@ def stage_lambda_look(run_dir):
     rows = UB.interface_price_terms(planning, coordinated_models)
     del coordinated_models
     gc.collect()
+    # W111 (Addendum 55): the candidate lambda != pi hour must address exactly one table row (capture path)
+    _assert_checklist({f'candidate_hour_{i}_matches_exactly_one_row': n == 1
+                       for i, n in enumerate(candidate_hour_counts(rows))}, 'lambda-look candidate hours')
     identities_coordinated = units_check_identities_only(rows)
     sidecar = lambda_sidecar_cross_check(rows)
     _log(f"sidecar cross-check (third source, cycles {sidecar['rows_used']}): "
          f"{'PASS' if sidecar['passed'] else 'FAIL'} {sidecar.get('max_abs')}")
     capture = pf_capture_cross_check(rows)
     flagged = flag_rows(rows)
+    candidates = flag_candidate_hours(rows)
     summary = summarise_flags(rows, planning)
     guard = _check_guard(0, 'lambda-look end')
     result = provenance({
@@ -1158,11 +1266,11 @@ def stage_lambda_look(run_dir):
         'identities_coordinated': identities_coordinated,
         'lambda_sidecar_cross_check': sidecar,
         'pf_capture_cross_check_coordinated': capture,
-        'prediction_usable': bool(units['passed'] and identities_coordinated['passed'] and sidecar['passed']),
-        'prediction_usable_rule': 'the table drives a prediction only if the S48 units check reproduces Addendum '
-                                  '32 (W28/W31), the identities hold on the settled models (Addendum 49 '
-                                  'clarification) and the lambda_t sidecar cross-check passes (W106: "cross-check all '
-                                  'three")',
+        # W111 (Addendum 55, option (a)): the rule is `prediction_usable` (W106's inline rule, re-scoped: the
+        # consensus item gates on the settled models, inside identities_coordinated, at 0.05 EUR/MWh)
+        'prediction_usable': prediction_usable(units, identities_coordinated, sidecar),
+        'prediction_usable_rule': PREDICTION_USABLE_RULE,
+        'candidate_lambda_neq_pi_hours_addendum_55': candidates,
         'summary_coordinated': summary,
         'coordination_proper_hours_coordinated': flagged,
         'table_coordinated': rows,
@@ -1224,6 +1332,8 @@ def stage_common_q_gate(run_dir):
     ev0_again = UB.evaluate_common_q(planning, models, evaluation_curtailment_penalty=TIE_BREAKER['evaluation'],
                                      require_unchanged=True)
     idempotent = ev0_again['gross_operational_cost_hex'] == ev0['gross_operational_cost_hex']
+    # W111 (Addendum 55): net / positive / negative curtailment on the settled models (net = ev0's helper figure)
+    signed = curtailment_signed_parts(planning, models, ev0['curtailment'])
 
     # negative control 1: a deliberately wrong configuration is REFUSED under require_unchanged
     refused, refusal_text = False, None
@@ -1272,6 +1382,7 @@ def stage_common_q_gate(run_dir):
                                                 'gross_operational_cost', 'gross_operational_cost_hex',
                                                 'pricing_changed_by_evaluation', 'curtailment')},
         'evaluation_at_1_gross': ev1['gross_operational_cost'],
+        'curtailment_signed_parts': signed,
     })
     _write_json_once(os.path.join(run_dir, 'common_q_gate.json'), result)
     return 0 if status == 'PASS' else 1
@@ -1401,6 +1512,8 @@ def stage_arm(run_dir, run_id, *, arm, start, dso_tie_breaker, consistency):
         'structure': arm_out['structure'], 'build': {k: _compact_build(v) for k, v in arm_out['build'].items()},
         'start_records': arm_out['start_records'],
         'phase_A': {'evaluation': _compact_evaluation(evaluation),
+                    # W111 (Addendum 55): net / positive / negative curtailment (net = the evaluation's helper figure)
+                    'curtailment_signed_parts': curtailment_signed_parts(planning, models, evaluation['curtailment']),
                     'dso_interface_schedule': arm_out['dso_interface_schedule'],
                     'tso_interface_schedule': arm_out['tso_interface_schedule'],
                     'tso_vs_dso_schedule_max_abs': _schedule_difference_tso_dso(arm_out),
@@ -1592,6 +1705,8 @@ def stage_report(run_dir):
         'common_q_gate_status': None if gate is None else gate.get('status'),
         'lambda_look_prediction_usable': None if look is None else look.get('prediction_usable'),
         'lambda_look_summary': None if look is None else look.get('summary_coordinated'),
+        'lambda_look_candidate_hours_addendum_55': (None if look is None
+                                                    else look.get('candidate_lambda_neq_pi_hours_addendum_55')),
         'tso_coupling_check': None if coupling is None else {
             'tn_cost_weighted_totals': coupling['tn_cost_weighted_totals'],
             'fixed_minus_penalty_tn_cost_weighted': coupling['fixed_minus_penalty_tn_cost_weighted'],
@@ -1612,28 +1727,136 @@ def _curtailment_row(totals):
             'by_agent': totals}
 
 
+CURTAILMENT_PARTS = ('net', 'positive_part', 'negative_part')
+CURTAILMENT_FIELDS = ('eur_at_1_block_weighted', 'mwh_day_weighted', 'mwh_rep_day_sum')
+CURTAILMENT_SIGNED_PARTS_DEFINITION = (
+    'W111 (Addendum 55; W109 f6e3533f: the negative entries are the model, not the helper). Per entry (curtaillable '
+    'generator g, scenarios s_m/s_o, period p) c = baseMVA x (pg_avail[g,s_o,p] - pg[g,s_m,s_o,p]) [MWh per '
+    'representative day], the exact term of model_construction_helpers.gen_curtailment_definitional_value (weight 1; '
+    'zero when params.rg_curt is off); block value = sum over scenarios of omega x sum over entries. NET = production\'s '
+    'definitional quantity, taken from uncoordinated_benchmark.curtailment_report UNCHANGED (the primary figure; '
+    'frozen); POSITIVE PART = entries with c > 0 only; NEGATIVE PART = entries with c < 0 only; each on the same '
+    'weightings as the net (EUR at 1 EUR/MWh block-weighted = years x days x discount; raw MWh day-weighted = years x '
+    'days, undiscounted; and the plain sum over representative days), TSO and DSO separately. The helper, the model and '
+    'Q are unchanged; which figure the manuscript uses is pending the author')
+
+
+def curtailment_signed_parts(planning, models, helper):
+    """W111 (Addendum 55): the net / positive / negative parts of the definitional RES curtailment, per agent, on the
+    `helper` weights (`helper` = the `uncoordinated_benchmark.curtailment_report` of the SAME models, whose per-block
+    net is the primary and is reconciled against the per-entry sum here). Zero solves; pure reads."""
+    import pyomo.environ as pe
+    import uncoordinated_benchmark as UB
+    totals = {agent: {part: {f: 0.0 for f in CURTAILMENT_FIELDS} for part in CURTAILMENT_PARTS}
+              for agent in ('TSO', 'DSO')}
+    net_from_entries = {agent: {f: 0.0 for f in CURTAILMENT_FIELDS} for agent in ('TSO', 'DSO')}
+    counts = {agent: {'n_entries': 0, 'n_positive': 0, 'n_negative': 0, 'n_zero': 0, 'min_c_mwh': None,
+                      'max_c_mwh': None} for agent in ('TSO', 'DSO')}
+    per_block, worst_block, missing = {}, 0.0, []
+    for kind, node_id, year, day, network_data, network, block in UB.iter_network_blocks(planning, models):
+        label = UB.block_label(kind, node_id, year, day)
+        if label not in helper['per_block']:
+            missing.append(label)
+            continue
+        base = network.baseMVA
+        entries_b = pos_b = neg_b = 0.0
+        if network_data.params.rg_curt:
+            for s_m in block.scenarios_market:
+                for s_o in block.scenarios_operation:
+                    omega = network.prob_market_scenarios[s_m] * network.prob_operation_scenarios[s_o]
+                    scenario_total = 0.0
+                    for g in block.generators:
+                        if not network.generators[g].is_curtaillable():
+                            continue
+                        for p in block.periods:
+                            c = base * (float(pe.value(block.pg_avail[g, s_o, p])) - float(pe.value(block.pg[g, s_m, s_o, p])))
+                            scenario_total += c
+                            k = counts[kind]
+                            k['n_entries'] += 1
+                            k['min_c_mwh'] = c if k['min_c_mwh'] is None else min(k['min_c_mwh'], c)
+                            k['max_c_mwh'] = c if k['max_c_mwh'] is None else max(k['max_c_mwh'], c)
+                            if c > 0.0:
+                                pos_b += omega * c
+                                k['n_positive'] += 1
+                            elif c < 0.0:
+                                neg_b += omega * c
+                                k['n_negative'] += 1
+                            else:
+                                k['n_zero'] += 1
+                    entries_b += omega * scenario_total
+        h = helper['per_block'][label]
+        net_b = float(h['mwh_rep_day'])
+        weights = {'eur_at_1_block_weighted': float(h['block_weight']), 'mwh_day_weighted': float(h['day_weight']),
+                   'mwh_rep_day_sum': 1.0}
+        for f, w in weights.items():
+            totals[kind]['net'][f] += w * net_b
+            totals[kind]['positive_part'][f] += w * pos_b
+            totals[kind]['negative_part'][f] += w * neg_b
+            net_from_entries[kind][f] += w * entries_b
+        worst_block = max(worst_block, abs(entries_b - net_b), abs(pos_b + neg_b - net_b))
+        per_block[label] = {'net_mwh_rep_day': net_b, 'positive_part_mwh_rep_day': pos_b,
+                            'negative_part_mwh_rep_day': neg_b, 'entries_sum_mwh_rep_day': entries_b,
+                            'block_weight': weights['eur_at_1_block_weighted'],
+                            'day_weight': weights['mwh_day_weighted']}
+    if missing or len(per_block) != len(helper['per_block']):
+        raise RuntimeError(f'curtailment_signed_parts: blocks missing from the helper report {missing[:5]}; '
+                           f'{len(per_block)} blocks vs {len(helper["per_block"])} in the helper')
+    residual = {agent: {f: (totals[agent]['positive_part'][f] + totals[agent]['negative_part'][f]
+                            - totals[agent]['net'][f]) for f in CURTAILMENT_FIELDS} for agent in totals}
+    return {'definition': CURTAILMENT_SIGNED_PARTS_DEFINITION, 'primary': 'net', 'totals': totals,
+            'net_from_entries': net_from_entries, 'counts': counts,
+            'reconciliation': {'max_abs_block_mwh_rep_day_entries_or_parts_minus_helper_net': worst_block,
+                               'positive_plus_negative_minus_net': residual},
+            'per_block': per_block}
+
+
+def _curtailment_signed_row(signed):
+    """One signed-parts row (net primary, positive part, negative part; each total and by agent) or None."""
+    if signed is None:
+        return None
+    out = {'primary': 'net'}
+    for part in CURTAILMENT_PARTS:
+        by_agent = {agent: dict(signed['totals'][agent][part]) for agent in ('TSO', 'DSO')}
+        out[part] = {**{f: by_agent['TSO'][f] + by_agent['DSO'][f] for f in CURTAILMENT_FIELDS},
+                     'by_agent': by_agent}
+    return out
+
+
 def curtailment_table(gate, arms, variants):
     """W106 (TASKS.md Addendum 49, author requirement): curtailed energy per arm and start on the SAME weighting as
     the coordinated figure -- EUR at 1 EUR/MWh, block-weighted (years x days x discount), the convention of
     res_curtailment_definitional_at_weight_1 -- with raw MWh alongside (day-weighted years x days, undiscounted; and
     the plain sum over representative days). The coordinated row: the settled cycle-181 record figure, the same
     quantity recomputed from the persisted models by the common-Q gate (evaluation tie-breaker 0), and the W86
-    cycle-132 record figure (589.18, reported only)."""
+    cycle-132 record figure (589.18, reported only).
+    W111 (Addendum 55; W109): every row also carries `signed_parts` -- the NET (production's definitional quantity,
+    the primary, frozen), the POSITIVE PART (entries with c > 0) and the NEGATIVE PART (entries with c < 0), TSO and
+    DSO separately, on the same weightings (`curtailment_signed_parts`). The coordinated signed parts are the common-Q
+    gate's `curtailment_signed_parts` on the settled models; a stage output without them gives None (and the report's
+    capture check lists it absent)."""
     coordinated = {'settled_cycle_181_record_eur_at_1_block_weighted':
                    COORDINATED['res_curtailment_definitional_at_weight_1'],
                    'previous_cycle_132_record_eur_at_1_block_weighted_reported_only':
                    COORDINATED_PREVIOUS_REFERENCE['res_curtailment_definitional_at_weight_1'],
-                   'settled_cycle_181_recomputed_from_models': None}
+                   'settled_cycle_181_recomputed_from_models': None,
+                   'settled_cycle_181_signed_parts_from_models': None}
     if gate is not None:
         coordinated['settled_cycle_181_recomputed_from_models'] = _curtailment_row(
             gate['evaluation_at_0']['curtailment']['totals'])
+        coordinated['settled_cycle_181_signed_parts_from_models'] = _curtailment_signed_row(
+            gate.get('curtailment_signed_parts'))
     rows = {}
     for run_id, rec in list(arms.items()) + list(variants.items()):
         if rec is not None:
             rows[run_id] = _curtailment_row(rec['phase_A']['evaluation']['curtailment']['totals'])
+            rows[run_id]['signed_parts'] = _curtailment_signed_row(rec['phase_A'].get('curtailment_signed_parts'))
     return {'weighting': ('eur_at_1_block_weighted = res_curtailment_definitional_at_weight_1 convention (EUR at 1 '
                           'EUR/MWh, block-weighted: years x days x discount), i.e. weighted MWh-equivalent; raw: '
                           'mwh_day_weighted (years x days, undiscounted) and mwh_rep_day_sum'),
+            'signed_parts_definition': CURTAILMENT_SIGNED_PARTS_DEFINITION,
+            'convention_status': ('net is the primary (production definitional quantity, frozen); positive and '
+                                  'negative parts reported beside it; the convention is pending the author (W109, '
+                                  'TASKS.md Addendum 55)'),
             'coordinated': coordinated, 'arms_and_variants_phase_A': rows}
 
 
