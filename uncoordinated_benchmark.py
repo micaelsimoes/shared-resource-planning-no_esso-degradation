@@ -75,6 +75,13 @@ handed to the caller's `record_callback` BEFORE any failure is raised.
 
 Single-scenario only (SRP1). Above one scenario the fixed-interface rows would pin an expectation the per-scenario
 DSO flows do not follow; `require_single_scenario` raises rather than generalise untested.
+
+W116 (PLANNER_BRIEF_2026-09-13.md Addendum 57 Decision 1(b); benchmark spec v3): the NO-REVERSE-FLOW arms. With
+`no_reverse_flow=True` (`build_dso_arm_models`, `run_operational_planning_uncoordinated`) every DSO arm block carries
+the row family NO_REVERSE_FLOW_ROW, pg_adn[s_m, s_o, p] >= 0 (import only; sign and source lines at the constant),
+declared per block in the build record and counted by the structural check; the consistency re-evaluation deactivates
+it with the other DN limit rows and evaluates it as a hard limit. Default False = the spec-v2 arm, unchanged. The TSO
+arm (`build_tso_arm_model`) is not touched.
 """
 
 import math
@@ -181,6 +188,28 @@ TRACKING_PENALTY_COMPONENTS = ('scenario_tracking_weight', 'scenario_tracking_vo
 
 FLEXIBILITY_VAR_FAMILIES = ('flex_p_up', 'flex_p_down', 'flex_q_up', 'flex_q_down')
 PASSIVE_TRIVIAL_ROW_FAMILIES = ('flex_energy_balance_p', 'flex_energy_balance_q', 'flex_energy_balance_s')
+
+# W116 (Addendum 57 Decision 1(b)): the NO-REVERSE-FLOW rule of an uncoordinated DSO arm -- the connection-agreement
+# rule "import only" at the interface. One ROW per (market scenario, operation scenario, period) of every DSO arm
+# block, on production's own per-scenario DSO interface expression:
+#     uncoord_no_reverse_flow[s_m, s_o, p]:   pg_adn[s_m, s_o, p] >= 0
+# pg_adn (network.py L444, `model.pg_adn = pe.Expression(...)`, DSO blocks only) is
+# `model_construction_helpers.interface_pf_p_distribution_def` (L1287-1297): pg[ref_gen, s_m, s_o, p] minus the
+# scenario-free shared-ESS net power at the reference bus -- the DN reference generator is the upstream grid, and a
+# generator INJECTS into its bus (compute_node_gen, L1425-1433; the load convention of compute_node_load L1402-1419), so
+# pg_adn > 0 is power flowing from the TN INTO the DN (IMPORT) and pg_adn < 0 is REVERSE flow (export to the TN). The
+# same sign is the DSO's settlement convention (`interface_energy_settlement`, L1729-1756: the DSO block pays
+# +pi_t * baseMVA * pg_adn, the cost of importing) and the TSO copy's (`interface_pf_p_transmission_def`, L1241-1262:
+# pc_adn = the TN's LOAD at the ADN bus; the consensus pairs E[pg_adn] with E[pc_adn] through expected_interface_pf_p,
+# `dn_interface_expected_pf_p_def` L2416-2424 / `tn_interface_expected_pf_p_def` L2473-2475). The expected-interface
+# Var the TSO arm is fixed to, expected_interface_pf_p[p] = E_s[pg_adn[s, p]], therefore inherits the bound.
+# A ROW (not a Var bound) because pg_adn is an Expression. Only `build_dso_arm_models(no_reverse_flow=True)` adds it;
+# the coordinated path, production and the TSO arm never carry it. Declared rows per block = |S_m| x |S_o| x |P|,
+# counted by the structural check. In the consistency re-evaluation the row is deactivated like the voltage and
+# thermal limit rows (the reference generator is freed there) and EVALUATED afterwards as a hard DN limit
+# (`consistency_violations`, kind 'no_reverse_flow', excess in p.u. under the same key as the reference-generator
+# bounds), so a violation at the TN's actual voltage triggers the declared sequential pass.
+NO_REVERSE_FLOW_ROW = 'uncoord_no_reverse_flow'
 
 # Pricing Params `_prepare_*_objectives_for_admm` may set, plus the tie-breaker: the set `evaluate_common_q` snapshots
 # and restores.
@@ -304,19 +333,31 @@ def _has_free_variable(expr):
 # ======================================================================================================================
 #  builders (no solve anywhere in this section)
 # ======================================================================================================================
-def build_dso_arm_models(planning_problem, candidate_total_capacity, *, arm, curtailment_penalty):
+def _no_reverse_flow_rule(m, s_m, s_o, p):
+    """W116 (Addendum 57): import only -- production's DSO interface expression pg_adn >= 0 (see NO_REVERSE_FLOW_ROW)."""
+    return m.pg_adn[s_m, s_o, p] >= 0.0
+
+
+def build_dso_arm_models(planning_problem, candidate_total_capacity, *, arm, curtailment_penalty,
+                         no_reverse_flow=False):
     """Every DSO block of one arm, built and configured, NOT solved. `curtailment_penalty` (EUR/MWh) is the declared
     DECISION value of the tie-breaker `penalty_gen_curtailment`; it has no default -- the caller states it.
+    `no_reverse_flow` (W116, Addendum 57): True adds the NO_REVERSE_FLOW_ROW family (pg_adn >= 0 in every scenario and
+    period) to every block and declares its row count in the build record; the default False keeps the build of every
+    earlier caller (spec v2 arms, W114/W115) unchanged.
 
     Returns (dso_models, build_record)."""
     if arm not in DSO_ARMS:
         raise ValueError(f'unknown DSO arm {arm!r}; expected one of {DSO_ARMS}')
     if curtailment_penalty is None or not math.isfinite(float(curtailment_penalty)) or curtailment_penalty < 0.0:
         raise ValueError(f'curtailment_penalty must be a declared finite value >= 0; got {curtailment_penalty!r}')
+    if not isinstance(no_reverse_flow, bool):
+        raise ValueError(f'no_reverse_flow must be a declared bool; got {no_reverse_flow!r}')
     require_single_scenario(planning_problem)
     distribution_networks = planning_problem.distribution_networks
     dso_models = {}
-    record = {'arm': arm, 'decision_curtailment_penalty': float(curtailment_penalty), 'blocks': {}}
+    record = {'arm': arm, 'decision_curtailment_penalty': float(curtailment_penalty),
+              'no_reverse_flow': no_reverse_flow, 'blocks': {}}
     for node_id in sorted(distribution_networks):
         distribution_network = distribution_networks[node_id]
         distribution_network.update_data_with_candidate_solution(candidate_total_capacity)
@@ -361,6 +402,11 @@ def build_dso_arm_models(planning_problem, candidate_total_capacity, *, arm, cur
                 block.penalty_gen_curtailment.set_value(float(curtailment_penalty))
                 block_record = {'newly_fixed_flexibility_vars': [], 'trivial_rows_deactivated': [],
                                 'trivial_row_max_violation': 0.0}
+                if no_reverse_flow:
+                    block.add_component(NO_REVERSE_FLOW_ROW, pe.Constraint(
+                        block.scenarios_market, block.scenarios_operation, block.periods, rule=_no_reverse_flow_rule))
+                    block_record['no_reverse_flow_rows_expected'] = (
+                        len(block.scenarios_market) * len(block.scenarios_operation) * len(block.periods))
                 if arm == ARM_PASSIVE:
                     fixed_names = []
                     for family in FLEXIBILITY_VAR_FAMILIES:
@@ -782,11 +828,16 @@ def check_arm_structures(planning_problem, arm_models, reference_structure, *, d
                     label = block_label('DSO', node_id, year, day)
                     block = arm_models['dso'][node_id][year][day]
                     built = (dso_build_record or {}).get('blocks', {}).get(label, {})
+                    # W116: the no-reverse-flow rows are the DSO arm's declared added rows (0 when not built)
+                    nrf_rows = int(built.get('no_reverse_flow_rows_expected', 0))
                     rec = check_arm_block_structure(
                         block, reference_structure[label], label=label,
                         expected_newly_fixed=built.get('newly_fixed_flexibility_vars', ()),
                         trivial_rows_deactivated=built.get('trivial_rows_deactivated', ()),
-                        trivial_row_families=PASSIVE_TRIVIAL_ROW_FAMILIES)
+                        trivial_row_families=PASSIVE_TRIVIAL_ROW_FAMILIES,
+                        fixed_row_components=(NO_REVERSE_FLOW_ROW,) if nrf_rows else (),
+                        expected_fixed_rows=nrf_rows)
+                    rec['no_reverse_flow_rows'] = nrf_rows
                     pin = dso_interface_voltage_pin(block, dn.network[year][day])
                     if not pin['pinned']:
                         raise StructuralCheckError(f'{label}: the DSO interface voltage is not pinned at the setpoint '
@@ -1020,7 +1071,7 @@ def solve_tso_model(planning_problem, tso_model, *, phase, record_callback=None)
 # ======================================================================================================================
 def run_operational_planning_uncoordinated(planning_problem, candidate_solution, *, arm, dso_curtailment_penalty,
                                            tso_curtailment_penalty, reference_structure, start, warm_values=None,
-                                           perturbation=None, record_callback=None):
+                                           perturbation=None, record_callback=None, no_reverse_flow=False):
     """One uncoordinated arm: the DSOs solve their production subproblem with the coupling removed (at the substation
     setpoint voltage), then the TSO solves its production subproblem with the interface P/Q hard-fixed (mutable
     Params) to the DSOs' schedule. Exactly `declared_solve_count(planning_problem)['total']` solves when every block
@@ -1035,6 +1086,9 @@ def run_operational_planning_uncoordinated(planning_problem, candidate_solution,
       start                    'cold' | 'warm_from_certified' | 'perturbed' (the latter two need `warm_values`
                                = `extract_model_values(planning, certified_models)`; 'perturbed' also needs
                                `perturbation` = {'seed': int, 'delta': float})
+      no_reverse_flow          W116 (Addendum 57 Decision 1(b)): True = the DSO arm carries NO_REVERSE_FLOW_ROW
+                               (import only); the default False is the spec-v2 arm, unchanged. The TSO arm is the same
+                               either way.
     Returns {'models', 'results', 'dso_interface_schedule', 'tso_interface_schedule', 'build', 'structure',
     'start_records', 'declared_solves'}; `record_callback(record)` receives every per-solve record as it happens."""
     require_single_scenario(planning_problem)
@@ -1042,7 +1096,8 @@ def run_operational_planning_uncoordinated(planning_problem, candidate_solution,
     declared = declared_solve_count(planning_problem)
 
     dso_models, dso_build = build_dso_arm_models(planning_problem, candidate_total_capacity, arm=arm,
-                                                 curtailment_penalty=dso_curtailment_penalty)
+                                                 curtailment_penalty=dso_curtailment_penalty,
+                                                 no_reverse_flow=no_reverse_flow)
     structure = check_arm_structures(planning_problem, {'dso': dso_models}, reference_structure,
                                      dso_build_record=dso_build)
     start_records = apply_start(planning_problem, _partial_models(planning_problem, dso_models=dso_models),
@@ -1421,6 +1476,13 @@ def build_consistency_reevaluation_block(dso_block, network, *, v_actual_dn_pu):
             continue
         for con_data in component.values():
             con_data.deactivate()
+    # W116: a no-reverse-flow arm's rows are a DN limit on the (freed) reference generator -- deactivated here and
+    # evaluated by `consistency_violations` (absent on every other arm: nothing changes there)
+    nrf_component = getattr(m, NO_REVERSE_FLOW_ROW, None)
+    if nrf_component is not None:
+        for con_data in nrf_component.values():
+            con_data.deactivate()
+        record['relaxed_row_families'].append(NO_REVERSE_FLOW_ROW)
     worst = 0.0
     for con_data in list(m.component_data_objects(pe.Constraint, active=True, descend_into=True)):
         if not _has_free_variable(con_data.body):
@@ -1480,6 +1542,15 @@ def consistency_violations(reeval_block, record, arm_block, *, hard_tol, soft_ex
         if excess > 0.0:
             hard.append({'var': name, 'kind': 'reference_generator_bound', 'value_pu': value, 'bounds': [lb, ub],
                          'excess_pu2': excess})
+    # W116: the no-reverse-flow rows (present only on a no-reverse-flow arm), a hard DN limit [p.u.; recorded under the
+    # same key as the reference-generator bounds]
+    nrf_component = getattr(reeval_block, NO_REVERSE_FLOW_ROW, None)
+    if nrf_component is not None:
+        for con_data in nrf_component.values():
+            violation = constraint_violation(con_data)
+            if violation is not None and violation > 0.0:
+                hard.append({'row': con_data.name, 'kind': 'no_reverse_flow', 'pg_adn_pu': float(pe.value(con_data.body)),
+                             'excess_pu2': violation})
     max_hard = max((h['excess_pu2'] for h in hard), default=0.0)
     max_soft_excess = max((s['soft_excess_pu2'] for s in soft), default=0.0)
     max_thermal = max((t['violation_pu2'] for t in thermal), default=0.0)
