@@ -12,7 +12,7 @@
 - [ ] **▶ W116 — benchmark spec v3** (sweep + NRF arms + reverse-flow count; build, zero-solve checks, freeze)
 - [ ] **▶ W117 — triage recomputed from records** under the Add. 57 determinacy rule (zero solves): per-cell gross and Q_cc margins; how many cells move
 - [ ] Benchmark arms under v3 (minutes) → benchmark report (curtailment per arm, net + parts, raw MWh; reverse-flow count)
-- [ ] Campaign spec (criterion + gap clause + amended monotone branch; 10 cells; predictions recorded)
+- [ ] **▶ W118 — campaign build + spec** (criterion v2: gap clause \|t_sum\| ≤ τ/2, monotone amended \|dQ\|·60 ≤ τ, P_MAX 30 / L 60; 10 cells; gates through k0; holds; predictions) — building in parallel, no launch
 - [ ] F2 challenger → the other nine cells, one at a time
 - [ ] **Stop for review** — benchmark report; settled differences in gross and Q_cc; recomputed triage
 
