@@ -1,8 +1,13 @@
 """
 P5.15 Addendum 57 (Decisions 2 and 3) and Addendum 54 Ruling 2, Planner task W118 -- the SRP1 RE-SETTLING CAMPAIGN (ten
-cells): the frozen stage spec `frozen_s53_resettle_spec_v1_<sha8>.json` (a new spec series; the stage series it builds on
+cells): the frozen stage spec `frozen_s53_resettle_spec_v2_<sha8>.json` (a new spec series; the stage series it builds on
 is v41 fcea4b38 / v39 8a612429, recorded as its basis), the ten per-cell campaign freezes, the per-cell run, and the
 zero-solve summary with the frozen difference formulas. BUILT AND FROZEN IN W118; NO RUN IS LAUNCHED BY THE WORKER.
+
+WHY v2 (W118, before any run). v1 (d902a85c) and its ten campaign specs (7a6637d8) were frozen and committed; the
+checks' K then refused the campaign's OWN committed entries (see DEFECT_NOTE), so the launch could never have passed its
+inline checks. r2 fixes K (own-root exclusion with a formula check); v2 re-freezes with new campaign ids
+(s53_w118_resettle_r2_<cell>); every declaration and eval key is unchanged; v1 and its specs are kept, never run.
 
 Authority: PLANNER_BRIEF_2026-09-13.md Addendum 57 (Decision 2: the gap clause |t_sum| <= tau/2, the amended monotone
 branch |last step| x L <= tau with L = 60, P_MAX and L instance-measured; Decision 3: the 2030 / 2035 year-ladder cells as
@@ -92,16 +97,63 @@ STAGE_TEXT = ('P5.15 Addendum 57, W118 -- SRP1 re-settling campaign (10 cells) u
               'per-cycle t_sum and Q_cc')
 _P53 = os.path.join('data', 'SRP1', 'Results', 'P515S53')
 ROOT_REL = K.W118_ROOT_REL
-SPEC_PREFIX = 'frozen_s53_resettle_spec_v1_'
+SPEC_PREFIX = 'frozen_s53_resettle_spec_v2_'
 SPEC_SERIES = 'frozen_s53_resettle_spec'
-SPEC_VERSION = 1
+SPEC_VERSION = 2
+SPEC_V1 = {'path': os.path.join('data', 'SRP1', 'Results', 'P515S53', 'w118_resettle',
+                                'frozen_s53_resettle_spec_v1_d902a85c.json'),
+           'sha256': 'd902a85c867eb77526201ea19dd241165d89ecdafe39c95e2342e82ecba223f2'}
+# W118 r2: superseded before any run (kept, never edited, never run); each re-verified committed and unchanged
+SUPERSEDED = {
+    'stage_spec_v1': SPEC_V1,
+    'campaign_spec_v1_f2_challenger': {'path': 'data/SRP1/Results/P515S53/w118_resettle/campaign_s53_w118_resettle_f2_challenger/campaign_spec_s53_w118_resettle_f2_challenger_cba02da3.json',
+        'sha256': 'cba02da366c5fe35dfb015104496d06b09eda5a55da9beef982ed5468929dc62'},
+    'campaign_spec_v1_f2_incumbent': {'path': 'data/SRP1/Results/P515S53/w118_resettle/campaign_s53_w118_resettle_f2_incumbent/campaign_spec_s53_w118_resettle_f2_incumbent_54d27495.json',
+        'sha256': '54d2749594220feb48311e70350bc4b974992c2d18d4ed729094693221549ba1'},
+    'campaign_spec_v1_pb_y2025_n5': {'path': 'data/SRP1/Results/P515S53/w118_resettle/campaign_s53_w118_resettle_pb_y2025_n5/campaign_spec_s53_w118_resettle_pb_y2025_n5_8d44dce9.json',
+        'sha256': '8d44dce9e64680c6ba0b17470551824d0ce0582a14e6771172e07434a6d656aa'},
+    'campaign_spec_v1_pb_y2025_n7': {'path': 'data/SRP1/Results/P515S53/w118_resettle/campaign_s53_w118_resettle_pb_y2025_n7/campaign_spec_s53_w118_resettle_pb_y2025_n7_2a2905ee.json',
+        'sha256': '2a2905ee6d7d4b5be8a695104a1a7edc21cf37d3071ffc6d062004db0da60943'},
+    'campaign_spec_v1_pb_y2025_n9': {'path': 'data/SRP1/Results/P515S53/w118_resettle/campaign_s53_w118_resettle_pb_y2025_n9/campaign_spec_s53_w118_resettle_pb_y2025_n9_a0b422bd.json',
+        'sha256': 'a0b422bd1d0cfbbaee3cc139d77bda40cbf7945a7ea67f7c019b421668dcfc67'},
+    'campaign_spec_v1_pb_y2030_n5': {'path': 'data/SRP1/Results/P515S53/w118_resettle/campaign_s53_w118_resettle_pb_y2030_n5/campaign_spec_s53_w118_resettle_pb_y2030_n5_452eaa92.json',
+        'sha256': '452eaa9245a3c5b46acfabc92e70a7b5a2f902ca340e949a05105a868cc564c8'},
+    'campaign_spec_v1_pb_y2030_n7': {'path': 'data/SRP1/Results/P515S53/w118_resettle/campaign_s53_w118_resettle_pb_y2030_n7/campaign_spec_s53_w118_resettle_pb_y2030_n7_e55827e7.json',
+        'sha256': 'e55827e7ed02ed488dbbe7f3fcd1fccc10a4804288e8819acf7641bc6454d2e3'},
+    'campaign_spec_v1_pb_y2030_n9': {'path': 'data/SRP1/Results/P515S53/w118_resettle/campaign_s53_w118_resettle_pb_y2030_n9/campaign_spec_s53_w118_resettle_pb_y2030_n9_e2eea692.json',
+        'sha256': 'e2eea6929dd643f01d4a1c90b5080fa5288f211ea6d3295aed2ba7f3e93071d3'},
+    'campaign_spec_v1_yl_y2030': {'path': 'data/SRP1/Results/P515S53/w118_resettle/campaign_s53_w118_resettle_yl_y2030/campaign_spec_s53_w118_resettle_yl_y2030_5b7962bd.json',
+        'sha256': '5b7962bdd2a4c6f19a8f7f33cacb43359a63b76bc5bc260e9215f4a7020c0a78'},
+    'campaign_spec_v1_yl_y2035': {'path': 'data/SRP1/Results/P515S53/w118_resettle/campaign_s53_w118_resettle_yl_y2035/campaign_spec_s53_w118_resettle_yl_y2035_61e6d23d.json',
+        'sha256': '61e6d23d2aba6fd3eb1ef6c92b4e3e84d157daf64e10085865ecf34f3d6f1951'},
+    'zero_solve_checks_r1': {'path': os.path.join('data', 'SRP1', 'Results', 'P515S53', 'w118_resettle',
+                                                  'zero_solve_checks', 'w118_zero_solve_checks.json'),
+                             'sha256': '083207d85eab343db961804434d3a6a93f1f249dbc633816759fb5d1473e0d42'},
+}
+DEFECT_NOTE = {
+    'defect': ('p515_s53_w118_resettle_checks.py tests_K (r1, e2c1ac09) raised on ANY committed campaign-spec entry '
+               'declaring settling_resettle; the ten v1 campaign specs (7a6637d8) carry it, so K failed once they were '
+               'committed and the --run / --preconditions-only inline re-run of the checks would have refused every '
+               'launch (the W107 defect class; the Addendum 55 rule: a pre-run check that scans committed artefacts '
+               'excludes the run own). Found by the Worker in scratch before any dry run (zero solves)'),
+    'fix': ('tests_K (r2) accepts an entry declaring settling_resettle only inside the W118 stage root and only if its '
+            'frozen eval key equals sha256({pre-W118 base key, validated declaration}); a planted entry outside the root '
+            'is refused, a planted one inside accepted; everything else in K unchanged; the r2 output is written to a '
+            'NEW directory (zero_solve_checks_r2)'),
+    'unchanged': ('the declarations and hence every eval key, the hooks, the criterion v2, the cells, the configuration, '
+                  'the definitions, the predictions, the gates'),
+    'changed': ('schema / version / predecessor; the code pins (the checks module, this launcher); the campaign ids and '
+                'roots (s53_w118_resettle_r2_<cell>; the v1 roots are write-once) and what derives from them '
+                '(working-dir ids, launch commands, log names); the committed checks output (r2); freeze-time records'),
+    'superseded_before_any_run': SUPERSEDED,
+}
 BASIS_SPECS = {
     'stage_spec_v41': {'path': os.path.join(_P53, 'frozen_s53_spec_v41_fcea4b38.json'),
                        'sha256': 'fcea4b3837205b7134d308d200299f14f7cb1187ef43db5f1233091138004b99'},
     'stage_spec_v39': {'path': os.path.join(_P53, 'frozen_s53_spec_v39_8a612429.json'),
                        'sha256': '8a61242924cee1690c0d9f9f25a0ef6bdc90a519d089415898b44d5983e4c756'},
 }
-CAMPAIGN_IDS = {cell: f's53_w118_resettle_{cell}' for cell in R.CELL_ORDER}
+CAMPAIGN_IDS = {cell: f'{K.CAMPAIGN_ID_PREFIX}{cell}' for cell in R.CELL_ORDER}   # r2 (the v1 roots are write-once)
 CONCURRENCY = 1
 RESULTS_FILE = 'campaign_results.json'
 MANIFEST_FILE = 'campaign_manifest_sha256.json'
@@ -1106,7 +1158,7 @@ def post_run_evaluator_self_tests():
 #  the stage spec
 # ======================================================================================================================
 def launch_command(cell, spec_sha=None, preconditions_only=False):
-    log = f"run_{cell}_launch.log" if not preconditions_only else f"run_{cell}_preconditions_only.log"
+    log = f"run_{cell}_v2_launch.log" if not preconditions_only else f"run_{cell}_v2_preconditions_only.log"
     return ('cd /Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation && set -o noclobber && '
             f'NLP_SOLVER_PATH={SOLVER_PATH} {PYTHON} -u {SCRIPT_NAME} --run --cell {cell} '
             f'--spec-sha256 {spec_sha or "<campaign spec sha256 of " + cell + ">"}'
@@ -1161,7 +1213,7 @@ def verbatim_check():
 
 
 def _basis_ok():
-    return [f'{n} not as committed: {p["path"]}' for n, p in BASIS_SPECS.items()
+    return [f'{n} not as committed: {p["path"]}' for n, p in list(BASIS_SPECS.items()) + list(SUPERSEDED.items())
             if _sha(p['path']) != p['sha256'] or not _committed_clean(p['path'])]
 
 
@@ -1203,12 +1255,14 @@ def stage_spec_content(checks_inline, checks_file, post_tests, verb, solver, pre
             'configuration': configuration(cell), 'keys': expected_keys(cell),
             'pre_launch_assertion_at_freeze': pres[cell], 'launch_command_template': launch_command(cell)}
     return {
-        'schema': 'p515_s53_resettle_spec_v1', 'series': SPEC_SERIES, 'version': SPEC_VERSION, 'stage_text': STAGE_TEXT,
-        'predecessor': {'in_this_series': None,
+        'schema': 'p515_s53_resettle_spec_v2', 'series': SPEC_SERIES, 'version': SPEC_VERSION, 'stage_text': STAGE_TEXT,
+        'predecessor': {'in_this_series': {'version': 1, **SPEC_V1,
+                                           'status': 'superseded before any run (kept, not edited, never run)'},
                         'note': ('a NEW spec series (Worker choice, W118): the stage-spec series v39 / v41 pins '
                                  'settling_criterion.py version 1 and single-cell stages; this campaign freezes the '
                                  'criterion version 2 and ten cells. It builds on:'),
                         'basis_specs': BASIS_SPECS},
+        'defect_note': DEFECT_NOTE,
         'authority': [f'{BRIEF} Addendum 57 Decisions 2 and 3 (committed 8120f6d1)', f'{BRIEF} Addendum 54 Ruling 2',
                       'P5_15_ADDENDUM54_56_CONSOLIDATED_NOTE.md Decision 3 and "Design otherwise"',
                       'TASKS.md Advisor eight-cell design review', 'Planner task W118'],
@@ -1445,7 +1499,7 @@ def freeze(started):
              f"pre-launch on the frozen spec holds={pre_frozen['holds']}")
         _log(f'[{tag}]   LAUNCH: {launch_command(cell, spec_sha)}')
     _log(f"[{tag}]   DRY RUN (F2 challenger): run the LAUNCH line above for f2_challenger with --preconditions-only "
-         f"and log run_f2_challenger_preconditions_only.log")
+         f"and log run_f2_challenger_v2_preconditions_only.log")
     _finish(0 if all_ok else 1, f'freeze {"OK" if all_ok else "NOT OK"}')
 
 

@@ -34,7 +34,9 @@ WHAT IS CHECKED
       fingerprint and the consensus dict unchanged); H7-H9 the AA / tail / rho holds with REAL production functions;
       H10 the real install layering; H11 the certificate length written only by disable / restore / rule end.
   K   keys: for EVERY entry of every committed campaign spec the W118 harness's key equals the pre-W118 harness's
-      (49342e8c, sha256 pinned, loaded from git); the ten re-settling keys follow the declared formula and appear in no
+      (49342e8c, sha256 pinned, loaded from git) -- except the campaign's OWN entries declaring settling_resettle, which
+      are accepted only inside the W118 stage root and only if their frozen key follows the formula (r2: r1 refused them,
+      so the launch could never pass its inline checks); the ten re-settling keys follow the declared formula and appear in no
       committed campaign spec OUTSIDE THE W118 STAGE ROOT (the rule "a pre-run check that scans committed artefacts
       excludes the run's own"); negative controls (a planted spec outside the root; one in a sibling directory sharing
       the root's name prefix) refused; positive control (a planted spec in a W118 campaign root) accepted.
@@ -45,7 +47,7 @@ WHAT IS CHECKED
 
 Run (repo root, canonical interpreter, attached, both streams captured):
   set -o noclobber && /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python -u p515_s53_w118_resettle_checks.py \\
-      > data/SRP1/Results/P515S53/w118_resettle/zero_solve_checks_launch.log 2>&1
+      > data/SRP1/Results/P515S53/w118_resettle/zero_solve_checks_r2_launch.log 2>&1
 """
 import contextlib
 import copy
@@ -99,10 +101,15 @@ GUARDS = _dedupe((('w118_checks', GUARD), ('w105_checks_imported', K105.GUARD), 
                   ('w98_checks_imported', K98.GUARD), ('w112_imported', W112._GUARD)))
 _P53 = os.path.join('data', 'SRP1', 'Results', 'P515S53')
 W118_ROOT_REL = os.path.join(_P53, 'w118_resettle')
-OUT_DIR_REL = os.path.join(W118_ROOT_REL, 'zero_solve_checks')
-OUT_FILE = 'w118_zero_solve_checks.json'
-OUT_MANIFEST = 'w118_zero_solve_checks_manifest_sha256.json'
-TYPING_OUT = 'w118_bool_typing_test.json'
+# r2 (before any run): r1 (zero_solve_checks/w118_zero_solve_checks.json, 083207d8, pinned by the superseded stage spec
+# v1 d902a85c) refused the campaign's own committed specs in K; r2 writes to a NEW directory, r1 is kept, never written.
+OUT_DIR_REL = os.path.join(W118_ROOT_REL, 'zero_solve_checks_r2')
+OUT_FILE = 'w118_zero_solve_checks_r2.json'
+OUT_MANIFEST = 'w118_zero_solve_checks_r2_manifest_sha256.json'
+TYPING_OUT = 'w118_bool_typing_test_r2.json'
+R1_OUTPUT = {'path': os.path.join(W118_ROOT_REL, 'zero_solve_checks', 'w118_zero_solve_checks.json'),
+             'sha256': '083207d85eab343db961804434d3a6a93f1f249dbc633816759fb5d1473e0d42'}
+CAMPAIGN_ID_PREFIX = 's53_w118_resettle_r2_'
 KEY_EXCLUDED_ROOTS = (W118_ROOT_REL,)
 PRE_W118_HARNESS = {'commit': '49342e8c', 'sha256': '68a9265afe71d374a3058cee24ad1d614d71c6d10d5c4cb69bfc32cd78637b82'}
 # settling_criterion.py (version 1) as pinned by the frozen stage specs v39 (8a612429) and v41 (fcea4b38)
@@ -1101,8 +1108,8 @@ def _outside_roots(rels, exclude_roots=KEY_EXCLUDED_ROOTS):
 
 def tests_K():
     pre, pre_sha = _harness_pre_w118()
-    n_specs = n_entries = n_equal = 0
-    mismatch, errors = [], []
+    n_specs = n_entries = n_equal = n_resettle = n_resettle_ok = 0
+    mismatch, errors, resettle_bad = [], [], []
     scanned = []
     for rel in sorted(p for p in H._git(['ls-files', 'data/*campaign_spec_*.json']).splitlines() if p.strip()):
         spec = json.load(open(_abs(rel)))
@@ -1111,9 +1118,24 @@ def tests_K():
         for e in spec.get('candidates') or []:
             n_entries += 1
             try:
-                if 'settling_resettle' in e:
-                    raise RuntimeError('a committed entry declares settling_resettle (not expected before the freeze)')
                 args, kw = _key_args(spec, e)
+                if 'settling_resettle' in e:
+                    # W118 r2: the campaign's OWN committed specs (the rule: a pre-run check that scans committed
+                    # artefacts excludes the run's own) -- accepted only inside the W118 stage root, and only if the
+                    # frozen eval key follows the declared formula over the PRE-W118 base key
+                    n_resettle += 1
+                    decl = R.validate_settling_resettle(e['settling_resettle'])
+                    formula = hashlib.sha256(json.dumps({'base_evaluation_key': pre.evaluation_key(*args, **kw),
+                                                         'settling_resettle': decl}, sort_keys=True,
+                                                        separators=(',', ':')).encode()).hexdigest()
+                    now = H.evaluation_key(*args, settling_resettle=decl, **kw)
+                    inside = rel.startswith(W118_ROOT_REL + os.sep)
+                    if inside and now == formula == H._entry_eval_key(e):
+                        n_resettle_ok += 1
+                    else:
+                        resettle_bad.append({'spec': rel, 'label': e.get('label'), 'inside_own_root': inside,
+                                             'formula_equals_frozen': formula == H._entry_eval_key(e)})
+                    continue
                 new, old = H.evaluation_key(*args, **kw), pre.evaluation_key(*args, **kw)
             except Exception as error:  # noqa: BLE001
                 errors.append({'spec': rel, 'label': e.get('label'), 'error': f'{type(error).__name__}: {error}'})
@@ -1134,15 +1156,31 @@ def tests_K():
                                        'campaign_spec_planted_00000000.json')
     planted_sibling_rel = os.path.join(W118_ROOT_REL + '_planted_sibling', 'campaign_planted',
                                        'campaign_spec_planted_00000000.json')
-    planted_own_rel = os.path.join(W118_ROOT_REL, 'campaign_s53_w118_resettle_f2_challenger',
-                                   'campaign_spec_s53_w118_resettle_f2_challenger_00000000.json')
+    planted_own_rel = os.path.join(W118_ROOT_REL, f'campaign_{CAMPAIGN_ID_PREFIX}f2_challenger',
+                                   f'campaign_spec_{CAMPAIGN_ID_PREFIX}f2_challenger_00000000.json')
     ctl_outside = _outside_roots(_key_holders(scanned + [planted(planted_outside_rel)], probe))
     ctl_sibling = _outside_roots(_key_holders(scanned + [planted(planted_sibling_rel)], probe))
     own_holders = _key_holders(scanned + [planted(planted_own_rel)], probe)
     ctl_own = _outside_roots(own_holders)
+    # r2 control: a committed-looking spec OUTSIDE the root carrying a settling_resettle entry is refused by the same
+    # entry rule (planted, scanned by the same code path)
+    def _entry_rule(rel, e):
+        args, kw = _key_args({'configuration': configuration_for('f2_challenger')}, e)
+        decl = R.validate_settling_resettle(e['settling_resettle'])
+        formula = hashlib.sha256(json.dumps({'base_evaluation_key': pre.evaluation_key(*args, **kw),
+                                             'settling_resettle': decl}, sort_keys=True,
+                                            separators=(',', ':')).encode()).hexdigest()
+        return rel.startswith(W118_ROOT_REL + os.sep) and formula == H._entry_eval_key(e)
+    ce = next((e for rel_, spec_ in scanned for e in spec_.get('candidates') or []
+               if e.get('label') == 'f2_challenger' and 'settling_resettle' in e), None)
+    ctl_entry_outside = (_entry_rule(planted_outside_rel, ce) is False) if ce else None
+    ctl_entry_inside = (_entry_rule(planted_own_rel, ce) is True) if ce else None
     parts = {
         'key_regression_no_mismatch': not mismatch, 'key_regression_no_errors': not errors,
-        'key_regression_every_entry_equal': n_equal == n_entries and n_entries > 0,
+        'key_regression_every_entry_equal': n_equal == n_entries - n_resettle and n_entries > 0,
+        'own_resettle_entries_inside_root_follow_the_formula': n_resettle_ok == n_resettle and not resettle_bad,
+        'control_resettle_entry_outside_root_refused': ctl_entry_outside in (True, None),
+        'control_resettle_entry_inside_root_accepted': ctl_entry_inside in (True, None),
         'resettle_formula_holds_every_cell': all(v['formula_holds'] for v in keys.values()),
         'resettle_base_equals_pre_w118_every_cell': all(v['base_equals_pre_w118'] for v in keys.values()),
         'resettle_keys_differ_from_originals': all(v['differs_from_original'] for v in keys.values()),
@@ -1155,6 +1193,8 @@ def tests_K():
     return {'holds': all(v is True for v in parts.values()), 'parts': parts,
             'pre_w118_harness': {**PRE_W118_HARNESS, 'sha256_loaded': pre_sha},
             'committed_specs_scanned': n_specs, 'committed_entries_scanned': n_entries, 'entries_equal': n_equal,
+            'own_resettle_entries': {'n': n_resettle, 'ok': n_resettle_ok, 'bad': resettle_bad[:20],
+                                     'controls_run': ce is not None},
             'mismatches': mismatch[:20], 'errors': errors[:20], 'resettle_keys': keys,
             'resettle_keys_in_committed_specs_all_REPORTED': holders, 'key_excluded_roots': list(KEY_EXCLUDED_ROOTS),
             'controls': {'planted_outside': {'rel': planted_outside_rel, 'outside_found': ctl_outside},
