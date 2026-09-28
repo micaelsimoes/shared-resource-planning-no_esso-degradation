@@ -1,0 +1,977 @@
+{
+ "arm_network_compl_inf_tol": 1e-06,
+ "authority": [
+  "PLANNER_BRIEF_2026-09-13.md Addendum 49 (rulings 1-3, consistency convention, resolution, timing)",
+  "PLANNER_BRIEF_2026-09-13.md Addendum 49 clarification 2026-09-26 (tie-breaker roles; lambda_t recovery)",
+  "TASKS.md Addendum 49 order",
+  "Planner task W93",
+  "PLANNER_BRIEF_2026-09-13.md Addendum 53 Ruling 4 (coordinated arm reported only as the settled x = 0 value)",
+  "PLANNER_BRIEF_2026-09-13.md Addendum 54 Ruling 3 (common-Q gate and lambda_t look on the settled cycle-181 x = 0 models; the gate reference is the settled value)",
+  "Planner task W106",
+  "PLANNER_BRIEF_2026-09-13.md Addendum 55 (option (a): the lambda consensus item gated on the settled cycle-181 models, tolerance 0.05 unchanged; candidate lambda != pi hour; signed curtailment reporting after W109 f6e3533f)",
+  "Planner task W111 (benchmark spec v2)",
+  "PLANNER_BRIEF_2026-09-13.md Addendum 56 (curtailment reporting: net primary, positive / negative parts, raw MWh)",
+  "PLANNER_BRIEF_2026-09-13.md Addendum 57 Decision 1 ((a) sweep, report-only; (b) no-reverse-flow arms, claim vs the best NRF arm; zero-solve reverse-flow count of the coordinated Q181 solution)",
+  "TASKS.md Addendum 57 order (W116)",
+  "Planner task W116 (benchmark spec v3)",
+  "Planner task W119 (benchmark spec v4: per-block exact solve accounting of the NRF arm and tie-breaker stages; Planner predictions and rulings recorded)"
+ ],
+ "coordinated_cell": {
+  "campaign_manifest": "data/SRP1/Results/P515S53/w101_srp1_continuation/campaign_s53_w101_srp1_cont_x0/campaign_manifest_sha256.json",
+  "campaign_spec_sha256": "d1d5c3bcbdc261d297282382ce4a54263a811059d17230613a1765ee915ebd33",
+  "certification_cycle": 181,
+  "certification_rule": "settling criterion of stage spec v39 (Boyd residuals + three turning points, swings not growing, one-period range <= tau = 4,539.07 EUR); branch oscillatory; band width 4,209.17",
+  "certified_gross": 653873702.1876609,
+  "certified_gross_source": "settling_decision.json Q_k_star; equal (bitwise, checked) to evaluation_record certified_cost, recourse_components.gross_operational_cost and post_certification certified_cost",
+  "certified_models": {
+   "path": "data/SRP1/Results/P515S53/w101_srp1_continuation/campaign_s53_w101_srp1_cont_x0/evals/d110bd1a5977df1e_x0/certified_models.pkl",
+   "sha256": "99ab1070b0e61cc7818975ce898069d2060d2668bae67c166b58913e9923c33a"
+  },
+  "child_manifest": "data/SRP1/Results/P515S53/w101_srp1_continuation/campaign_s53_w101_srp1_cont_x0/evals/d110bd1a5977df1e_x0/child_manifest_sha256.json",
+  "esso_models": {
+   "path": "data/SRP1/Results/P515S53/w101_srp1_continuation/campaign_s53_w101_srp1_cont_x0/evals/d110bd1a5977df1e_x0/esso_models_s39_D.pkl",
+   "sha256": "118487e1853bbad176f324b1173df8c4198cb6c7709c25d7dce9f94ce4c199fa"
+  },
+  "eval_dir": "data/SRP1/Results/P515S53/w101_srp1_continuation/campaign_s53_w101_srp1_cont_x0/evals/d110bd1a5977df1e_x0",
+  "eval_key": "d110bd1a5977df1e811a1b3963afc565de6daa65f76dcc096ead3fdc70b08546",
+  "evaluation_record": "data/SRP1/Results/P515S53/w101_srp1_continuation/campaign_s53_w101_srp1_cont_x0/evals/d110bd1a5977df1e_x0/evaluation_record.json",
+  "evidence_commit": "e4b5c9928d96b413c77039c377e5f7a82a6549f5",
+  "interface_duals": {
+   "path": "data/SRP1/Results/P515S53/w101_srp1_continuation/campaign_s53_w101_srp1_cont_x0/evals/d110bd1a5977df1e_x0/interface_duals_per_cycle.jsonl",
+   "sha256": "10c986c79eebe9e6d84bbd9c3978b802b2760c00399cb427125a0b797b41e8cb"
+  },
+  "pf_entry_stride": {
+   "path": "data/SRP1/Results/P515S53/w101_srp1_continuation/campaign_s53_w101_srp1_cont_x0/evals/d110bd1a5977df1e_x0/pf_entry_stride_s39_D.jsonl",
+   "sha256": "f71147584175a42f7c503e905e8e519841424b5a89bf33724dfce753769f498a"
+  },
+  "post_certification": "data/SRP1/Results/P515S53/w101_srp1_continuation/campaign_s53_w101_srp1_cont_x0/evals/d110bd1a5977df1e_x0/post_certification.json",
+  "res_curtailment_definitional_at_weight_1": 589.425936658749,
+  "settling_decision": "data/SRP1/Results/P515S53/w101_srp1_continuation/campaign_s53_w101_srp1_cont_x0/evals/d110bd1a5977df1e_x0/settling_decision.json",
+  "stage_spec": {
+   "path": "data/SRP1/Results/P515S53/frozen_s53_spec_v39_8a612429.json",
+   "version": 39
+  }
+ },
+ "error": "InfeasibleConstraintException: model contains a trivially infeasible variable 'e[0,0,0,0]' (fixed value 1.1000000042330327 outside bounds [0.9999, 1.0001]).",
+ "frozen_benchmark_spec": {
+  "path": "data/SRP1/Results/P515S53/w116_benchmark_nrf/frozen_s53_benchmark_spec_v4_a50ed4c3.json",
+  "sha256": "a50ed4c35a4cd06593e34a49ec8d84943626e479ab3517fef764a45b8dea1af7",
+  "version": 4
+ },
+ "git_head": "067bc18f635543e476984512222f3d412ccf1b22",
+ "instance": {
+  "candidate_key": "8435c71859ddde68e7ae5818b4ff91c03b4171791bcfaa70edcc3ddb52bacb57",
+  "candidate_key_declared": "8435c71859ddde68e7ae5818b4ff91c03b4171791bcfaa70edcc3ddb52bacb57",
+  "candidate_key_matches": true,
+  "canonical_candidate": {
+   "investment_year": 2025,
+   "nodes": {
+    "5": [
+     0.0,
+     0.0
+    ],
+    "7": [
+     0.0,
+     0.0
+    ],
+    "9": [
+     0.0,
+     0.0
+    ]
+   }
+  },
+  "label": "x0",
+  "problem": "SRP1"
+ },
+ "interpreter": "/Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python",
+ "module_sha256": {
+  "definitions.py": "7e5719af129df111db1b403feeffe0b566d0b7f2e72915829e16bf143a9321af",
+  "gate_result_io.py": "26cadaa5c3105f9adb879ece756ef6d659b374f647a7756030efe80a2df6d07d",
+  "helper_functions.py": "808c60a08b8e157381f28e0c1da5741b0efd39e35f36dd531f88b84deebce1e2",
+  "interface_dual_capture.py": "e4223ac25fa488970ec195b4c3bb6b1171faa3aeba4824e0d6ee6482ab58f55c",
+  "model_construction_helpers.py": "a20a224f11008de8c0206484583b00253677267d616e1051bb1583791ed47f64",
+  "network.py": "18acaa84af7a043898a7b831223b4eab1d91f9bcf2c199f49beecfeb3bf91fb4",
+  "network_data.py": "2938bc4bd4ecc74f42aa90d347cdc1162eebcefaba15bc87b8281a798d457d6b",
+  "p513_solve_profile_guard.py": "9921682e5b825e0b76551b78c4765bfe039bccc414d727520f2c22b6f192a5ab",
+  "p515_s53_w114_passive_infeasibility.py": "16d5a9ed81762c621dad94e3f154dfafad0fb47b5500110e3ffeda885d8d265c",
+  "p515_s53_w116_benchmark_nrf.py": "32fe78cac0e8e39c1de05de13e83776a8fbb939f65c0b60bfcb82f29996ca565",
+  "p515_s53_w93_uncoordinated_benchmark.py": "342b89cea9058e1b26453fb61bf1830ce7dd9186a3d96f3cf4103f5668f2b071",
+  "p515_s53_w93_uncoordinated_benchmark_checks.py": "c34e14301b518bdd814ca356c2809e4003f32d37ecf2d7ce616b3ac5b1d3e43f",
+  "p56a_oracle.py": "699d571a2d69b14fd89024c535fa8b3ffa0625aa647f1714060dcc9cf6fa2f11",
+  "p58_rescale.py": "2c9d4f2a7125d4103da0d9cc7bba6d600bf97a3f03805d32955738d71b537cf0",
+  "shared_energy_storage_data.py": "9acd095fb5e50e9b64c253600ae05ebb8e6463fd7a999d3a90f96ee82f037796",
+  "shared_resources_planning.py": "0610d745a41c86c71dae9e776f0dc8e38c7099f73128a3d2c2e8f861ab9fc9c0",
+  "uncoordinated_benchmark.py": "b608873b8b483ecfb6066172e0a5292c7010bcd0660cd97fe5d8588e5b1ab13a"
+ },
+ "nlp_solver_path": {
+  "NLP_SOLVER_PATH": "/usr/local/bin/ipopt",
+  "source": "environment"
+ },
+ "no_reverse_flow_definition": {
+  "arm_economies": {
+   "passive": "flexibility fixed at 0; decision tie-breaker 1 EUR/MWh (minimum curtailment the sole term); value-independence at 0.1 and 10",
+   "price_taker": "production local pricing (settlement weight 1), decision tie-breaker 0, under the bound"
+  },
+  "authority": "Addendum 57 Decision 1(b)",
+  "bounded_quantity": "pg_adn[s_m, s_o, p], production's per-scenario DSO interface expression (network.py L444; model_construction_helpers.interface_pf_p_distribution_def L1287-1297 = pg[ref_gen, s_m, s_o, p] - the scenario-free shared-ESS net power at the reference bus); a ROW because pg_adn is an Expression; expected_interface_pf_p[p] = E_s[pg_adn] (the Var the TSO arm is fixed to) inherits the bound",
+  "consistency_reevaluation": "deactivated with the voltage / thermal limit rows (the reference generator is freed there) and evaluated as a hard DN limit (kind no_reverse_flow, excess p.u., under hard_tol) -- a violation at the TN's actual voltage triggers the declared sequential pass, in which the DSO re-solves WITH the rows at that voltage",
+  "not_in": "the coordinated path, production, and the TSO arm (unchanged: interface P/Q fixed, voltages bounded)",
+  "row": "uncoordinated_benchmark.NO_REVERSE_FLOW_ROW = uncoord_no_reverse_flow[s_m, s_o, p]: pg_adn[s_m, s_o, p] >= 0",
+  "sign": "pg_adn > 0 = power from the TN INTO the DN (import); < 0 = reverse flow (export). Source: the DN reference generator is the upstream grid and a generator injects into its bus (compute_node_gen L1425-1433, load convention compute_node_load L1402-1419); the DSO settlement pays +pi_t baseMVA pg_adn (interface_energy_settlement L1729-1756, the cost of importing); the TSO copy pc_adn is the TN load at the ADN bus (interface_pf_p_transmission_def L1241-1262) and the consensus pairs E[pg_adn] with E[pc_adn] (dn_/tn_interface_expected_pf_p_def L2416-2424 / L2473-2475). Checked from the Q181 models by the W116 zero-solve checks (TN energy balance: sum pg_TN - sum pc_adn = TN losses >= 0 every hour)",
+  "where": "every DSO arm block (3 DNs x 3 years x 4 days), every market / operation scenario, every period; 24 rows per block at SRP1; declared per block in the build record and counted by the structural check"
+ },
+ "objective_convention": "Q = gross_operational_cost, settlement EXCLUDED (production _get_operational_recourse_components); every block priced for the evaluation with production's ADMM-subproblem pricing and the curtailment tie-breaker at the EVALUATION value 0; salvage reported separately",
+ "perturbation": {
+  "delta": 0.05,
+  "seed": 20260926
+ },
+ "q_min_over_starts_note": "each uncoordinated arm's Q is the MINIMUM over its three starts (cold, warm_from_certified, perturbed); this is CONSERVATIVE AGAINST THE COORDINATION CLAIM: the uncoordinated side gets its best local optimum of three, while the coordinated side is one certified cell (W106: the settled cycle-181 cell d110bd1a5977df1e_x0, not re-run; W94 named the W86 cell 5cfe69a615ae3708_x0, now unwired)",
+ "record": null,
+ "run": "nrf_arm_passive_cold",
+ "script": "p515_s53_w116_benchmark_nrf.py",
+ "script_sha256": "32fe78cac0e8e39c1de05de13e83776a8fbb939f65c0b60bfcb82f29996ca565",
+ "solve_accounting": {
+  "attempts_attributed_total": 48,
+  "blocks_declared_total": 48,
+  "by_kind": {
+   "DSO": {
+    "launches": 36,
+    "n_blocks": 36,
+    "n_retried": 0
+   },
+   "TSO": {
+    "launches": 12,
+    "n_blocks": 12,
+    "n_retried": 0
+   }
+  },
+  "declared_upper_bound": 396,
+  "ledger": [
+   {
+    "attempt_tiers": [
+     "primary"
+    ],
+    "attempts_recorded": 1,
+    "block": "DSO|5|2025|Spring",
+    "cumulative": 1,
+    "guard_delta_exec": 1,
+    "guard_delta_solve": 1,
+    "guard_verified": true,
+    "kind": "DSO",
+    "phase": "A_nrf_arm",
+    "record_phase": "passive:cold:dso",
+    "sequence": 1,
+    "succeeded": true
+   },
+   {
+    "attempt_tiers": [
+     "primary"
+    ],
+    "attempts_recorded": 1,
+    "block": "DSO|5|2025|Summer",
+    "cumulative": 2,
+    "guard_delta_exec": 1,
+    "guard_delta_solve": 1,
+    "guard_verified": true,
+    "kind": "DSO",
+    "phase": "A_nrf_arm",
+    "record_phase": "passive:cold:dso",
+    "sequence": 2,
+    "succeeded": true
+   },
+   {
+    "attempt_tiers": [
+     "primary"
+    ],
+    "attempts_recorded": 1,
+    "block": "DSO|5|2025|Autumn",
+    "cumulative": 3,
+    "guard_delta_exec": 1,
+    "guard_delta_solve": 1,
+    "guard_verified": true,
+    "kind": "DSO",
+    "phase": "A_nrf_arm",
+    "record_phase": "passive:cold:dso",
+    "sequence": 3,
+    "succeeded": true
+   },
+   {
+    "attempt_tiers": [
+     "primary"
+    ],
+    "attempts_recorded": 1,
+    "block": "DSO|5|2025|Winter",
+    "cumulative": 4,
+    "guard_delta_exec": 1,
+    "guard_delta_solve": 1,
+    "guard_verified": true,
+    "kind": "DSO",
+    "phase": "A_nrf_arm",
+    "record_phase": "passive:cold:dso",
+    "sequence": 4,
+    "succeeded": true
+   },
+   {
+    "attempt_tiers": [
+     "primary"
+    ],
+    "attempts_recorded": 1,
+    "block": "DSO|5|2030|Spring",
+    "cumulative": 5,
+    "guard_delta_exec": 1,
+    "guard_delta_solve": 1,
+    "guard_verified": true,
+    "kind": "DSO",
+    "phase": "A_nrf_arm",
+    "record_phase": "passive:cold:dso",
+    "sequence": 5,
+    "succeeded": true
+   },
+   {
+    "attempt_tiers": [
+     "primary"
+    ],
+    "attempts_recorded": 1,
+    "block": "DSO|5|2030|Summer",
+    "cumulative": 6,
+    "guard_delta_exec": 1,
+    "guard_delta_solve": 1,
+    "guard_verified": true,
+    "kind": "DSO",
+    "phase": "A_nrf_arm",
+    "record_phase": "passive:cold:dso",
+    "sequence": 6,
+    "succeeded": true
+   },
+   {
+    "attempt_tiers": [
+     "primary"
+    ],
+    "attempts_recorded": 1,
+    "block": "DSO|5|2030|Autumn",
+    "cumulative": 7,
+    "guard_delta_exec": 1,
+    "guard_delta_solve": 1,
+    "guard_verified": true,
+    "kind": "DSO",
+    "phase": "A_nrf_arm",
+    "record_phase": "passive:cold:dso",
+    "sequence": 7,
+    "succeeded": true
+   },
+   {
+    "attempt_tiers": [
+     "primary"
+    ],
+    "attempts_recorded": 1,
+    "block": "DSO|5|2030|Winter",
+    "cumulative": 8,
+    "guard_delta_exec": 1,
+    "guard_delta_solve": 1,
+    "guard_verified": true,
+    "kind": "DSO",
+    "phase": "A_nrf_arm",
+    "record_phase": "passive:cold:dso",
+    "sequence": 8,
+    "succeeded": true
+   },
+   {
+    "attempt_tiers": [
+     "primary"
+    ],
+    "attempts_recorded": 1,
+    "block": "DSO|5|2035|Spring",
+    "cumulative": 9,
+    "guard_delta_exec": 1,
+    "guard_delta_solve": 1,
+    "guard_verified": true,
+    "kind": "DSO",
+    "phase": "A_nrf_arm",
+    "record_phase": "passive:cold:dso",
+    "sequence": 9,
+    "succeeded": true
+   },
+   {
+    "attempt_tiers": [
+     "primary"
+    ],
+    "attempts_recorded": 1,
+    "block": "DSO|5|2035|Summer",
+    "cumulative": 10,
+    "guard_delta_exec": 1,
+    "guard_delta_solve": 1,
+    "guard_verified": true,
+    "kind": "DSO",
+    "phase": "A_nrf_arm",
+    "record_phase": "passive:cold:dso",
+    "sequence": 10,
+    "succeeded": true
+   },
+   {
+    "attempt_tiers": [
+     "primary"
+    ],
+    "attempts_recorded": 1,
+    "block": "DSO|5|2035|Autumn",
+    "cumulative": 11,
+    "guard_delta_exec": 1,
+    "guard_delta_solve": 1,
+    "guard_verified": true,
+    "kind": "DSO",
+    "phase": "A_nrf_arm",
+    "record_phase": "passive:cold:dso",
+    "sequence": 11,
+    "succeeded": true
+   },
+   {
+    "attempt_tiers": [
+     "primary"
+    ],
+    "attempts_recorded": 1,
+    "block": "DSO|5|2035|Winter",
+    "cumulative": 12,
+    "guard_delta_exec": 1,
+    "guard_delta_solve": 1,
+    "guard_verified": true,
+    "kind": "DSO",
+    "phase": "A_nrf_arm",
+    "record_phase": "passive:cold:dso",
+    "sequence": 12,
+    "succeeded": true
+   },
+   {
+    "attempt_tiers": [
+     "primary"
+    ],
+    "attempts_recorded": 1,
+    "block": "DSO|7|2025|Spring",
+    "cumulative": 13,
+    "guard_delta_exec": 1,
+    "guard_delta_solve": 1,
+    "guard_verified": true,
+    "kind": "DSO",
+    "phase": "A_nrf_arm",
+    "record_phase": "passive:cold:dso",
+    "sequence": 13,
+    "succeeded": true
+   },
+   {
+    "attempt_tiers": [
+     "primary"
+    ],
+    "attempts_recorded": 1,
+    "block": "DSO|7|2025|Summer",
+    "cumulative": 14,
+    "guard_delta_exec": 1,
+    "guard_delta_solve": 1,
+    "guard_verified": true,
+    "kind": "DSO",
+    "phase": "A_nrf_arm",
+    "record_phase": "passive:cold:dso",
+    "sequence": 14,
+    "succeeded": true
+   },
+   {
+    "attempt_tiers": [
+     "primary"
+    ],
+    "attempts_recorded": 1,
+    "block": "DSO|7|2025|Autumn",
+    "cumulative": 15,
+    "guard_delta_exec": 1,
+    "guard_delta_solve": 1,
+    "guard_verified": true,
+    "kind": "DSO",
+    "phase": "A_nrf_arm",
+    "record_phase": "passive:cold:dso",
+    "sequence": 15,
+    "succeeded": true
+   },
+   {
+    "attempt_tiers": [
+     "primary"
+    ],
+    "attempts_recorded": 1,
+    "block": "DSO|7|2025|Winter",
+    "cumulative": 16,
+    "guard_delta_exec": 1,
+    "guard_delta_solve": 1,
+    "guard_verified": true,
+    "kind": "DSO",
+    "phase": "A_nrf_arm",
+    "record_phase": "passive:cold:dso",
+    "sequence": 16,
+    "succeeded": true
+   },
+   {
+    "attempt_tiers": [
+     "primary"
+    ],
+    "attempts_recorded": 1,
+    "block": "DSO|7|2030|Spring",
+    "cumulative": 17,
+    "guard_delta_exec": 1,
+    "guard_delta_solve": 1,
+    "guard_verified": true,
+    "kind": "DSO",
+    "phase": "A_nrf_arm",
+    "record_phase": "passive:cold:dso",
+    "sequence": 17,
+    "succeeded": true
+   },
+   {
+    "attempt_tiers": [
+     "primary"
+    ],
+    "attempts_recorded": 1,
+    "block": "DSO|7|2030|Summer",
+    "cumulative": 18,
+    "guard_delta_exec": 1,
+    "guard_delta_solve": 1,
+    "guard_verified": true,
+    "kind": "DSO",
+    "phase": "A_nrf_arm",
+    "record_phase": "passive:cold:dso",
+    "sequence": 18,
+    "succeeded": true
+   },
+   {
+    "attempt_tiers": [
+     "primary"
+    ],
+    "attempts_recorded": 1,
+    "block": "DSO|7|2030|Autumn",
+    "cumulative": 19,
+    "guard_delta_exec": 1,
+    "guard_delta_solve": 1,
+    "guard_verified": true,
+    "kind": "DSO",
+    "phase": "A_nrf_arm",
+    "record_phase": "passive:cold:dso",
+    "sequence": 19,
+    "succeeded": true
+   },
+   {
+    "attempt_tiers": [
+     "primary"
+    ],
+    "attempts_recorded": 1,
+    "block": "DSO|7|2030|Winter",
+    "cumulative": 20,
+    "guard_delta_exec": 1,
+    "guard_delta_solve": 1,
+    "guard_verified": true,
+    "kind": "DSO",
+    "phase": "A_nrf_arm",
+    "record_phase": "passive:cold:dso",
+    "sequence": 20,
+    "succeeded": true
+   },
+   {
+    "attempt_tiers": [
+     "primary"
+    ],
+    "attempts_recorded": 1,
+    "block": "DSO|7|2035|Spring",
+    "cumulative": 21,
+    "guard_delta_exec": 1,
+    "guard_delta_solve": 1,
+    "guard_verified": true,
+    "kind": "DSO",
+    "phase": "A_nrf_arm",
+    "record_phase": "passive:cold:dso",
+    "sequence": 21,
+    "succeeded": true
+   },
+   {
+    "attempt_tiers": [
+     "primary"
+    ],
+    "attempts_recorded": 1,
+    "block": "DSO|7|2035|Summer",
+    "cumulative": 22,
+    "guard_delta_exec": 1,
+    "guard_delta_solve": 1,
+    "guard_verified": true,
+    "kind": "DSO",
+    "phase": "A_nrf_arm",
+    "record_phase": "passive:cold:dso",
+    "sequence": 22,
+    "succeeded": true
+   },
+   {
+    "attempt_tiers": [
+     "primary"
+    ],
+    "attempts_recorded": 1,
+    "block": "DSO|7|2035|Autumn",
+    "cumulative": 23,
+    "guard_delta_exec": 1,
+    "guard_delta_solve": 1,
+    "guard_verified": true,
+    "kind": "DSO",
+    "phase": "A_nrf_arm",
+    "record_phase": "passive:cold:dso",
+    "sequence": 23,
+    "succeeded": true
+   },
+   {
+    "attempt_tiers": [
+     "primary"
+    ],
+    "attempts_recorded": 1,
+    "block": "DSO|7|2035|Winter",
+    "cumulative": 24,
+    "guard_delta_exec": 1,
+    "guard_delta_solve": 1,
+    "guard_verified": true,
+    "kind": "DSO",
+    "phase": "A_nrf_arm",
+    "record_phase": "passive:cold:dso",
+    "sequence": 24,
+    "succeeded": true
+   },
+   {
+    "attempt_tiers": [
+     "primary"
+    ],
+    "attempts_recorded": 1,
+    "block": "DSO|9|2025|Spring",
+    "cumulative": 25,
+    "guard_delta_exec": 1,
+    "guard_delta_solve": 1,
+    "guard_verified": true,
+    "kind": "DSO",
+    "phase": "A_nrf_arm",
+    "record_phase": "passive:cold:dso",
+    "sequence": 25,
+    "succeeded": true
+   },
+   {
+    "attempt_tiers": [
+     "primary"
+    ],
+    "attempts_recorded": 1,
+    "block": "DSO|9|2025|Summer",
+    "cumulative": 26,
+    "guard_delta_exec": 1,
+    "guard_delta_solve": 1,
+    "guard_verified": true,
+    "kind": "DSO",
+    "phase": "A_nrf_arm",
+    "record_phase": "passive:cold:dso",
+    "sequence": 26,
+    "succeeded": true
+   },
+   {
+    "attempt_tiers": [
+     "primary"
+    ],
+    "attempts_recorded": 1,
+    "block": "DSO|9|2025|Autumn",
+    "cumulative": 27,
+    "guard_delta_exec": 1,
+    "guard_delta_solve": 1,
+    "guard_verified": true,
+    "kind": "DSO",
+    "phase": "A_nrf_arm",
+    "record_phase": "passive:cold:dso",
+    "sequence": 27,
+    "succeeded": true
+   },
+   {
+    "attempt_tiers": [
+     "primary"
+    ],
+    "attempts_recorded": 1,
+    "block": "DSO|9|2025|Winter",
+    "cumulative": 28,
+    "guard_delta_exec": 1,
+    "guard_delta_solve": 1,
+    "guard_verified": true,
+    "kind": "DSO",
+    "phase": "A_nrf_arm",
+    "record_phase": "passive:cold:dso",
+    "sequence": 28,
+    "succeeded": true
+   },
+   {
+    "attempt_tiers": [
+     "primary"
+    ],
+    "attempts_recorded": 1,
+    "block": "DSO|9|2030|Spring",
+    "cumulative": 29,
+    "guard_delta_exec": 1,
+    "guard_delta_solve": 1,
+    "guard_verified": true,
+    "kind": "DSO",
+    "phase": "A_nrf_arm",
+    "record_phase": "passive:cold:dso",
+    "sequence": 29,
+    "succeeded": true
+   },
+   {
+    "attempt_tiers": [
+     "primary"
+    ],
+    "attempts_recorded": 1,
+    "block": "DSO|9|2030|Summer",
+    "cumulative": 30,
+    "guard_delta_exec": 1,
+    "guard_delta_solve": 1,
+    "guard_verified": true,
+    "kind": "DSO",
+    "phase": "A_nrf_arm",
+    "record_phase": "passive:cold:dso",
+    "sequence": 30,
+    "succeeded": true
+   },
+   {
+    "attempt_tiers": [
+     "primary"
+    ],
+    "attempts_recorded": 1,
+    "block": "DSO|9|2030|Autumn",
+    "cumulative": 31,
+    "guard_delta_exec": 1,
+    "guard_delta_solve": 1,
+    "guard_verified": true,
+    "kind": "DSO",
+    "phase": "A_nrf_arm",
+    "record_phase": "passive:cold:dso",
+    "sequence": 31,
+    "succeeded": true
+   },
+   {
+    "attempt_tiers": [
+     "primary"
+    ],
+    "attempts_recorded": 1,
+    "block": "DSO|9|2030|Winter",
+    "cumulative": 32,
+    "guard_delta_exec": 1,
+    "guard_delta_solve": 1,
+    "guard_verified": true,
+    "kind": "DSO",
+    "phase": "A_nrf_arm",
+    "record_phase": "passive:cold:dso",
+    "sequence": 32,
+    "succeeded": true
+   },
+   {
+    "attempt_tiers": [
+     "primary"
+    ],
+    "attempts_recorded": 1,
+    "block": "DSO|9|2035|Spring",
+    "cumulative": 33,
+    "guard_delta_exec": 1,
+    "guard_delta_solve": 1,
+    "guard_verified": true,
+    "kind": "DSO",
+    "phase": "A_nrf_arm",
+    "record_phase": "passive:cold:dso",
+    "sequence": 33,
+    "succeeded": true
+   },
+   {
+    "attempt_tiers": [
+     "primary"
+    ],
+    "attempts_recorded": 1,
+    "block": "DSO|9|2035|Summer",
+    "cumulative": 34,
+    "guard_delta_exec": 1,
+    "guard_delta_solve": 1,
+    "guard_verified": true,
+    "kind": "DSO",
+    "phase": "A_nrf_arm",
+    "record_phase": "passive:cold:dso",
+    "sequence": 34,
+    "succeeded": true
+   },
+   {
+    "attempt_tiers": [
+     "primary"
+    ],
+    "attempts_recorded": 1,
+    "block": "DSO|9|2035|Autumn",
+    "cumulative": 35,
+    "guard_delta_exec": 1,
+    "guard_delta_solve": 1,
+    "guard_verified": true,
+    "kind": "DSO",
+    "phase": "A_nrf_arm",
+    "record_phase": "passive:cold:dso",
+    "sequence": 35,
+    "succeeded": true
+   },
+   {
+    "attempt_tiers": [
+     "primary"
+    ],
+    "attempts_recorded": 1,
+    "block": "DSO|9|2035|Winter",
+    "cumulative": 36,
+    "guard_delta_exec": 1,
+    "guard_delta_solve": 1,
+    "guard_verified": true,
+    "kind": "DSO",
+    "phase": "A_nrf_arm",
+    "record_phase": "passive:cold:dso",
+    "sequence": 36,
+    "succeeded": true
+   },
+   {
+    "attempt_tiers": [
+     "primary"
+    ],
+    "attempts_recorded": 1,
+    "block": "TSO|-|2025|Spring",
+    "cumulative": 37,
+    "guard_delta_exec": 1,
+    "guard_delta_solve": 1,
+    "guard_verified": true,
+    "kind": "TSO",
+    "phase": "A_nrf_arm",
+    "record_phase": "passive:cold:tso",
+    "sequence": 37,
+    "succeeded": true
+   },
+   {
+    "attempt_tiers": [
+     "primary"
+    ],
+    "attempts_recorded": 1,
+    "block": "TSO|-|2025|Summer",
+    "cumulative": 38,
+    "guard_delta_exec": 1,
+    "guard_delta_solve": 1,
+    "guard_verified": true,
+    "kind": "TSO",
+    "phase": "A_nrf_arm",
+    "record_phase": "passive:cold:tso",
+    "sequence": 38,
+    "succeeded": true
+   },
+   {
+    "attempt_tiers": [
+     "primary"
+    ],
+    "attempts_recorded": 1,
+    "block": "TSO|-|2025|Autumn",
+    "cumulative": 39,
+    "guard_delta_exec": 1,
+    "guard_delta_solve": 1,
+    "guard_verified": true,
+    "kind": "TSO",
+    "phase": "A_nrf_arm",
+    "record_phase": "passive:cold:tso",
+    "sequence": 39,
+    "succeeded": true
+   },
+   {
+    "attempt_tiers": [
+     "primary"
+    ],
+    "attempts_recorded": 1,
+    "block": "TSO|-|2025|Winter",
+    "cumulative": 40,
+    "guard_delta_exec": 1,
+    "guard_delta_solve": 1,
+    "guard_verified": true,
+    "kind": "TSO",
+    "phase": "A_nrf_arm",
+    "record_phase": "passive:cold:tso",
+    "sequence": 40,
+    "succeeded": true
+   },
+   {
+    "attempt_tiers": [
+     "primary"
+    ],
+    "attempts_recorded": 1,
+    "block": "TSO|-|2030|Spring",
+    "cumulative": 41,
+    "guard_delta_exec": 1,
+    "guard_delta_solve": 1,
+    "guard_verified": true,
+    "kind": "TSO",
+    "phase": "A_nrf_arm",
+    "record_phase": "passive:cold:tso",
+    "sequence": 41,
+    "succeeded": true
+   },
+   {
+    "attempt_tiers": [
+     "primary"
+    ],
+    "attempts_recorded": 1,
+    "block": "TSO|-|2030|Summer",
+    "cumulative": 42,
+    "guard_delta_exec": 1,
+    "guard_delta_solve": 1,
+    "guard_verified": true,
+    "kind": "TSO",
+    "phase": "A_nrf_arm",
+    "record_phase": "passive:cold:tso",
+    "sequence": 42,
+    "succeeded": true
+   },
+   {
+    "attempt_tiers": [
+     "primary"
+    ],
+    "attempts_recorded": 1,
+    "block": "TSO|-|2030|Autumn",
+    "cumulative": 43,
+    "guard_delta_exec": 1,
+    "guard_delta_solve": 1,
+    "guard_verified": true,
+    "kind": "TSO",
+    "phase": "A_nrf_arm",
+    "record_phase": "passive:cold:tso",
+    "sequence": 43,
+    "succeeded": true
+   },
+   {
+    "attempt_tiers": [
+     "primary"
+    ],
+    "attempts_recorded": 1,
+    "block": "TSO|-|2030|Winter",
+    "cumulative": 44,
+    "guard_delta_exec": 1,
+    "guard_delta_solve": 1,
+    "guard_verified": true,
+    "kind": "TSO",
+    "phase": "A_nrf_arm",
+    "record_phase": "passive:cold:tso",
+    "sequence": 44,
+    "succeeded": true
+   },
+   {
+    "attempt_tiers": [
+     "primary"
+    ],
+    "attempts_recorded": 1,
+    "block": "TSO|-|2035|Spring",
+    "cumulative": 45,
+    "guard_delta_exec": 1,
+    "guard_delta_solve": 1,
+    "guard_verified": true,
+    "kind": "TSO",
+    "phase": "A_nrf_arm",
+    "record_phase": "passive:cold:tso",
+    "sequence": 45,
+    "succeeded": true
+   },
+   {
+    "attempt_tiers": [
+     "primary"
+    ],
+    "attempts_recorded": 1,
+    "block": "TSO|-|2035|Summer",
+    "cumulative": 46,
+    "guard_delta_exec": 1,
+    "guard_delta_solve": 1,
+    "guard_verified": true,
+    "kind": "TSO",
+    "phase": "A_nrf_arm",
+    "record_phase": "passive:cold:tso",
+    "sequence": 46,
+    "succeeded": true
+   },
+   {
+    "attempt_tiers": [
+     "primary"
+    ],
+    "attempts_recorded": 1,
+    "block": "TSO|-|2035|Autumn",
+    "cumulative": 47,
+    "guard_delta_exec": 1,
+    "guard_delta_solve": 1,
+    "guard_verified": true,
+    "kind": "TSO",
+    "phase": "A_nrf_arm",
+    "record_phase": "passive:cold:tso",
+    "sequence": 47,
+    "succeeded": true
+   },
+   {
+    "attempt_tiers": [
+     "primary"
+    ],
+    "attempts_recorded": 1,
+    "block": "TSO|-|2035|Winter",
+    "cumulative": 48,
+    "guard_delta_exec": 1,
+    "guard_delta_solve": 1,
+    "guard_verified": true,
+    "kind": "TSO",
+    "phase": "A_nrf_arm",
+    "record_phase": "passive:cold:tso",
+    "sequence": 48,
+    "succeeded": true
+   }
+  ],
+  "observed_total": 48,
+  "open_phase": "B_consistency_reevaluation",
+  "phases": [
+   {
+    "attempts_attributed": 48,
+    "cumulative_after": 48,
+    "guard": {
+     "counts": {
+      "blocked_exec": 0,
+      "blocked_solve": 0,
+      "permitted_exec": 48,
+      "permitted_solve": 48
+     },
+     "expected": 48,
+     "verified": true,
+     "where": "closing phase A_nrf_arm (guard == sum of attributed attempts)"
+    },
+    "n_blocks_declared": 48,
+    "n_blocks_settled": 48,
+    "n_retried_blocks": 0,
+    "phase": "A_nrf_arm",
+    "retried_blocks": {}
+   }
+  ],
+  "rule": "W119 (spec v4): exact per declared block -- every record attributed to one declared block of the open phase and its attempts to the tiers primary / recovery / recovery_tier2 in order (1..3); guard delta == attributed attempts per block; cumulative verified exactly after every block; a phase closes only with every declared block settled once and the guard == the sum of attributed attempts; total <= upper bound",
+  "within_upper_bound": true
+ },
+ "solve_profile_guard_counts": {
+  "blocked_exec": 0,
+  "blocked_solve": 0,
+  "permitted_exec": 48,
+  "permitted_solve": 49
+ },
+ "stage": "P5.15 Addendum 57 W116 -- uncoordinated benchmark spec v3: no-reverse-flow arms, the feasibility sweep of the unconstrained arms, the coordinated reverse-flow count; spec v4 (W119): per-block exact solve accounting of the NRF arm and tie-breaker stages",
+ "tie_breaker": {
+  "authority": "Addendum 49 clarification 2026-09-26",
+  "decision": {
+   "passive_dso": 1.0,
+   "price_taker_dso": 0.0,
+   "tso": 0.0
+  },
+  "evaluation": 0.0,
+  "passive_value_independence_variants": [
+   0.1,
+   10.0
+  ]
+ },
+ "tolerances": {
+  "consistency": {
+   "hard_tol_pu2": 1e-06,
+   "soft_excess_tol_pu2": 1e-06,
+   "thermal_tol_pu2": 1e-06
+  },
+  "reverse_flow_material_tol_pu": 1e-06,
+  "sweep_accept_threshold_pu": 1e-06
+ },
+ "traceback": "Traceback (most recent call last):\n  File \"/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/p515_s53_w116_benchmark_nrf.py\", line 1404, in main\n    code = stage_nrf_arm(run_dir, run_id, arm=args.arm, start=args.start,\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/p515_s53_w116_benchmark_nrf.py\", line 569, in stage_nrf_arm\n    reeval = UB.reevaluate_dso_at_actual_voltage(planning, arm_out['models']['dso'], mismatch['v_actual_dn_pu'],\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/uncoordinated_benchmark.py\", line 1580, in reevaluate_dso_at_actual_voltage\n    _result, solve_record = _solve_block(planning_problem, dn, network, clone, kind='DSO',\n                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/uncoordinated_benchmark.py\", line 1017, in _solve_block\n    result = network.run_smopf(block, network_data.params, from_warm_start=False, print_header=True)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/network.py\", line 67, in run_smopf\n    return _run_smopf(self, model, params, from_warm_start=from_warm_start)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/network.py\", line 949, in _run_smopf\n    primary_result, primary_log_path = _run_smopf_solver_attempt(network, model, params, from_warm_start=from_warm_start)\n                                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/network.py\", line 764, in _run_smopf_solver_attempt\n    result = solver.solve(model, tee=params.solver_params.verbose, load_solutions=False)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/p513_solve_profile_guard.py\", line 64, in guarded_solve\n    return guard._original_solve(solver_self, *args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/micaelsimoes/miniconda3/envs/opf_env_py311/lib/python3.11/site-packages/pyomo/opt/base/solvers.py\", line 624, in solve\n    self._presolve(*args, **kwds)\n  File \"/Users/micaelsimoes/miniconda3/envs/opf_env_py311/lib/python3.11/site-packages/pyomo/opt/solver/shellcmd.py\", line 223, in _presolve\n    OptSolver._presolve(self, *args, **kwds)\n  File \"/Users/micaelsimoes/miniconda3/envs/opf_env_py311/lib/python3.11/site-packages/pyomo/opt/base/solvers.py\", line 730, in _presolve\n    self._convert_problem(\n  File \"/Users/micaelsimoes/miniconda3/envs/opf_env_py311/lib/python3.11/site-packages/pyomo/opt/base/solvers.py\", line 782, in _convert_problem\n    return convert_problem(\n           ^^^^^^^^^^^^^^^^\n  File \"/Users/micaelsimoes/miniconda3/envs/opf_env_py311/lib/python3.11/site-packages/pyomo/opt/base/convert.py\", line 97, in convert_problem\n    problem_files, symbol_map = converter.apply(*tmp, **tmpkw)\n                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/micaelsimoes/miniconda3/envs/opf_env_py311/lib/python3.11/site-packages/pyomo/solvers/plugins/converter/model.py\", line 184, in apply\n    (problem_filename, symbol_map_id) = instance.write(\n                                        ^^^^^^^^^^^^^^^\n  File \"/Users/micaelsimoes/miniconda3/envs/opf_env_py311/lib/python3.11/site-packages/pyomo/core/base/block.py\", line 2009, in write\n    (filename, smap) = problem_writer(self, filename, solver_capability, io_options)\n                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/micaelsimoes/miniconda3/envs/opf_env_py311/lib/python3.11/site-packages/pyomo/repn/plugins/nl_writer.py\", line 317, in __call__\n    info = self.write(model, FILE, ROWFILE, COLFILE, config=config)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/micaelsimoes/miniconda3/envs/opf_env_py311/lib/python3.11/site-packages/pyomo/repn/plugins/nl_writer.py\", line 374, in write\n    return impl.write(model)\n           ^^^^^^^^^^^^^^^^^\n  File \"/Users/micaelsimoes/miniconda3/envs/opf_env_py311/lib/python3.11/site-packages/pyomo/repn/plugins/nl_writer.py\", line 689, in write\n    expr_info = visitor.walk_expression((body, con, 0, scale))\n                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/micaelsimoes/miniconda3/envs/opf_env_py311/lib/python3.11/site-packages/pyomo/core/expr/visitor.py\", line 276, in walk_expression\n    result = self._process_node(root, RECURSION_LIMIT)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/micaelsimoes/miniconda3/envs/opf_env_py311/lib/python3.11/site-packages/pyomo/core/expr/visitor.py\", line 429, in _process_node_bex\n    data.append(self._process_node(child, recursion_limit))\n                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/micaelsimoes/miniconda3/envs/opf_env_py311/lib/python3.11/site-packages/pyomo/core/expr/visitor.py\", line 429, in _process_node_bex\n    data.append(self._process_node(child, recursion_limit))\n                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/micaelsimoes/miniconda3/envs/opf_env_py311/lib/python3.11/site-packages/pyomo/core/expr/visitor.py\", line 429, in _process_node_bex\n    data.append(self._process_node(child, recursion_limit))\n                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/micaelsimoes/miniconda3/envs/opf_env_py311/lib/python3.11/site-packages/pyomo/core/expr/visitor.py\", line 422, in _process_node_bex\n    tmp = self.beforeChild(node, child, child_idx)\n          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/micaelsimoes/miniconda3/envs/opf_env_py311/lib/python3.11/site-packages/pyomo/repn/ampl.py\", line 1157, in beforeChild\n    return _before_child_handlers[child.__class__](self, child)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/micaelsimoes/miniconda3/envs/opf_env_py311/lib/python3.11/site-packages/pyomo/repn/ampl.py\", line 959, in _before_var\n    visitor.cache_fixed_var(_id, child)\n  File \"/Users/micaelsimoes/miniconda3/envs/opf_env_py311/lib/python3.11/site-packages/pyomo/repn/ampl.py\", line 1127, in cache_fixed_var\n    raise InfeasibleConstraintException(\npyomo.common.errors.InfeasibleConstraintException: model contains a trivially infeasible variable 'e[0,0,0,0]' (fixed value 1.1000000042330327 outside bounds [0.9999, 1.0001]).\n",
+ "utc": "2026-09-28T17:31:08.414852+00:00"
+}
