@@ -1174,10 +1174,75 @@ def v6_typing_test(out_dir):
     return res
 
 
+# evaluation_key's configuration-level arguments and where a campaign spec keeps them (W106 / W111's reading); every
+# other argument after (candidate_key_hex, overrides) is an ENTRY-level key of the same name
+EVAL_KEY_CONFIG_ARGS = {'case_file_aa': 'case_file_anderson_acceleration', 'ess_ageing_baseline': 'ess_ageing_baseline',
+                        'derived_instance': 'derived_instance', 'convergence_depth_tail': 'convergence_depth_tail'}
+
+
+def _recompute_keys_signature(module, specs):
+    """`evaluation_key` of `module` recomputed for every entry of every committed campaign spec with its FULL current
+    argument list, read from the signature: the configuration-level arguments as W106/W111 read them, every other one
+    from the entry by name (W118 added `settling_resettle` after W111 was written)."""
+    params = list(inspect.signature(module.evaluation_key).parameters)[2:]
+    n = n_equal = 0
+    mismatch, errors = [], []
+    for rel in specs:
+        spec = json.load(open(_abs(rel)))
+        cfg = spec.get('configuration') or {}
+        for e in spec.get('candidates') or []:
+            n += 1
+            overrides = e.get('overrides') if 'overrides' in e else (cfg.get('overrides') or {})
+            kw = {name: (cfg.get(EVAL_KEY_CONFIG_ARGS[name]) if name in EVAL_KEY_CONFIG_ARGS else e.get(name))
+                  for name in params}
+            try:
+                key = module.evaluation_key(e['key'], overrides, **kw)
+            except Exception as error:  # noqa: BLE001
+                errors.append({'spec': rel, 'label': e.get('label'), 'error': f'{type(error).__name__}: {error}'})
+                continue
+            if key == H._entry_eval_key(e):
+                n_equal += 1
+            else:
+                mismatch.append({'spec': rel, 'label': e.get('label'), 'recomputed': key[:16],
+                                 'frozen': H._entry_eval_key(e)[:16]})
+    return {'arguments': params, 'entries': n, 'recomputed_equals_frozen': n_equal, 'mismatches': mismatch[:20],
+            'errors': errors[:20], 'holds': n > 0 and n_equal == n and not mismatch and not errors}
+
+
 def v7_eval_keys(w106_c6):
-    res = W111.c6_eval_keys_all_arguments(w106_c6)
-    res['id'] = 'V7_committed_eval_keys_unchanged'
-    return res
+    """Committed eval keys unchanged, under evaluation_key's full current signature, at HEAD and in the working tree.
+    W111's C6 (argument list fixed at W111) is kept INFORMATIONAL: its misses must be exactly the committed entries
+    carrying an argument it does not pass (W118's `settling_resettle`)."""
+    specs = [p for p in _git(['ls-files', 'data/*campaign_spec_*.json']).splitlines() if p.strip()]
+    head_module, head_sha = W106._harness_from_git('HEAD')
+    at_head = _recompute_keys_signature(head_module, specs)
+    in_tree = _recompute_keys_signature(H, specs)
+    try:
+        w111 = W111.c6_eval_keys_all_arguments(w106_c6)
+    except Exception as error:  # noqa: BLE001
+        w111 = {'passed': False, 'error': f'{type(error).__name__}: {error}'}
+    with_resettle = sorted((rel, e.get('label'), H._entry_eval_key(e)[:16]) for rel in specs
+                           for e in json.load(open(_abs(rel))).get('candidates') or []
+                           if e.get('settling_resettle') is not None)
+    w111_misses = sorted((m['spec'], m['label'], m['frozen'])
+                         for m in ((w111.get('harness_at_head') or {}).get('mismatches') or []))
+    resettle_set = set(with_resettle)
+    w111_explained = w111.get('passed') is True or (
+        bool(w111_misses) and set(w111_misses) <= resettle_set
+        and len(w111_misses) == min(20, len(with_resettle))           # W111 lists at most 20 mismatches
+        and not ((w111.get('harness_at_head') or {}).get('errors')))
+    disk = _sha('p515_s44_campaign_harness.py')
+    return {'id': 'V7_committed_eval_keys_unchanged',
+            'passed': bool(at_head['holds'] and in_tree['holds'] and w111_explained),
+            'committed_specs': len(specs), 'evaluation_key_signature': str(inspect.signature(H.evaluation_key)),
+            'harness_at_head': {'sha256': head_sha, **at_head},
+            'harness_working_tree': {'sha256': disk, 'differs_from_head': disk != head_sha,
+                                     'git_status': _git(['status', '--porcelain', '--',
+                                                         'p515_s44_campaign_harness.py']), **in_tree},
+            'entries_with_settling_resettle': [list(x) for x in with_resettle],
+            'w111_c6_informational': {'passed': w111.get('passed'), 'n_mismatches_listed': len(w111_misses),
+                                      'misses_are_exactly_the_settling_resettle_entries': w111_explained},
+            'w116_modifies_harness': False}
 
 
 def v8_spec_binding():
