@@ -43,7 +43,13 @@ MODE --checks (default): write-once under data/SRP1/Results/P515S53/w106_uncoord
 COMMANDS (repo root, canonical interpreter, attached, both streams, noclobber):
   set -o noclobber && /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python -u p515_s53_w111_benchmark_spec_v2.py --freeze-spec > data/SRP1/Results/P515S53/w106_uncoordinated_settled/launch_logs/w111_freeze_spec_v2.log 2>&1
   set -o noclobber && /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python -u p515_s53_w111_benchmark_spec_v2.py --checks > data/SRP1/Results/P515S53/w106_uncoordinated_settled/launch_logs/w111_zero_solve_checks.log 2>&1
+  (r2, after run r1 failed only on W106's C6 coverage gap -- see C6 below; r1's output and log are kept):
+  set -o noclobber && /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python -u p515_s53_w111_benchmark_spec_v2.py --checks --output-suffix _r2 > data/SRP1/Results/P515S53/w106_uncoordinated_settled/launch_logs/w111_zero_solve_checks_r2.log 2>&1
 Exit 0 = done / all checks pass; 1 = a check failed; 2 = refused.
+
+C6 (from r2): W106's C6 predates W105's `settling_extension` argument to `evaluation_key` (49342e8c) and misses the two
+committed C* extension entries (frozen 8864266d, recomputed as the base 96c5aa50). It is recorded as informational;
+the gating C6 passes the full argument list and verifies that W106's misses are exactly the settling-extension entries.
 """
 
 import argparse
@@ -537,13 +543,77 @@ def c10_spec_diff():
             'not_identical_top_keys_outside_declared_set': sorted(k for k, v in identical.items() if not v)}
 
 
-def run_checks():
-    out_dir = _abs(CHECKS_DIR_REL)
+def _recompute_keys_all_arguments(module, specs):
+    """W106's `_recompute_keys` plus the `settling_extension` argument W105 (49342e8c) added to `evaluation_key`
+    after W106 was written; every other argument read exactly as W106 reads it."""
+    n = n_equal = 0
+    mismatch, errors = [], []
+    for rel in specs:
+        spec = json.load(open(_abs(rel)))
+        cfg = spec.get('configuration') or {}
+        for e in spec.get('candidates') or []:
+            n += 1
+            overrides = e.get('overrides') if 'overrides' in e else (cfg.get('overrides') or {})
+            kw = dict(case_file_aa=cfg.get('case_file_anderson_acceleration'), model_variant=e.get('model_variant'),
+                      ess_ageing_baseline=cfg.get('ess_ageing_baseline'),
+                      flex_price_multiplier=e.get('flex_price_multiplier'),
+                      derived_instance=cfg.get('derived_instance'),
+                      interface_deviation_premium=e.get('interface_deviation_premium'),
+                      convergence_depth_tail=cfg.get('convergence_depth_tail'),
+                      certification_continuation=e.get('certification_continuation'),
+                      settling_continuation=e.get('settling_continuation'),
+                      settling_extension=e.get('settling_extension'))
+            try:
+                key = module.evaluation_key(e['key'], overrides, **kw)
+            except Exception as error:  # noqa: BLE001
+                errors.append({'spec': rel, 'label': e.get('label'), 'error': f'{type(error).__name__}: {error}'})
+                continue
+            if key == H._entry_eval_key(e):
+                n_equal += 1
+            else:
+                mismatch.append({'spec': rel, 'label': e.get('label'), 'recomputed': key[:16],
+                                 'frozen': H._entry_eval_key(e)[:16]})
+    return {'entries': n, 'recomputed_equals_frozen': n_equal, 'mismatches': mismatch[:20], 'errors': errors[:20],
+            'holds': n > 0 and n_equal == n and not mismatch and not errors}
+
+
+def c6_eval_keys_all_arguments(w106_c6):
+    """C6 as W106 runs it, with `evaluation_key`'s full current argument list (the W105 `settling_extension`
+    argument included), at HEAD and in the working tree; and the explanation of W106's version's misses verified:
+    they are exactly the committed entries carrying `settling_extension`."""
+    specs = [p for p in _git(['ls-files', 'data/*campaign_spec_*.json']).splitlines() if p.strip()]
+    head_module, head_sha = W106._harness_from_git('HEAD')
+    at_head = _recompute_keys_all_arguments(head_module, specs)
+    in_tree = _recompute_keys_all_arguments(H, specs)
+    with_extension = []
+    for rel in specs:
+        for e in json.load(open(_abs(rel))).get('candidates') or []:
+            if e.get('settling_extension') is not None:
+                with_extension.append({'spec': rel, 'label': e.get('label'), 'frozen': H._entry_eval_key(e)[:16]})
+    w106_misses = sorted((m['spec'], m['label'], m['frozen'])
+                         for m in (w106_c6.get('harness_at_head') or {}).get('mismatches') or [])
+    explained = w106_misses == sorted((m['spec'], m['label'], m['frozen']) for m in with_extension)
+    signature = str(inspect.signature(H.evaluation_key))
+    disk = _sha('p515_s44_campaign_harness.py')
+    return {'id': 'C6_committed_eval_keys_unchanged_all_arguments',
+            'passed': bool(at_head['holds'] and in_tree['holds'] and explained),
+            'committed_specs': len(specs), 'evaluation_key_signature': signature,
+            'harness_at_head': {'sha256': head_sha, **at_head},
+            'harness_working_tree': {'sha256': disk, 'differs_from_head': disk != head_sha,
+                                     'git_status': _git(['status', '--porcelain', '--',
+                                                         'p515_s44_campaign_harness.py']), **in_tree},
+            'entries_with_settling_extension': with_extension,
+            'w106_c6_misses_are_exactly_the_settling_extension_entries': explained,
+            'w111_modifies_harness': False}
+
+
+def run_checks(suffix=''):
+    out_dir = _abs(CHECKS_DIR_REL + suffix)
     if os.path.exists(out_dir):
         print(f'REFUSING: output exists (write-once): {out_dir}', flush=True)
         return 2
     os.makedirs(out_dir)
-    results, timings = [], {}
+    results, timings, extra = [], {}, {}
 
     def record(fn, *args):
         try:
@@ -565,7 +635,18 @@ def run_checks():
         c7['w111_note'] = 'FAIL: the binding spec is not v2'
         _log('C7: the binding spec is not v2 -> FAIL')
     record(W106.c8_production_unchanged)
-    record(W106.c6_eval_keys)
+    # W106's C6 as written is kept as INFORMATIONAL (not gating): it predates W105's `settling_extension` argument to
+    # `evaluation_key` and so cannot reproduce the two committed C* extension entries (checks run r1, the first run,
+    # failed on exactly those). The gating C6 passes the full argument list and verifies that explanation.
+    try:
+        w106_c6 = W106.c6_eval_keys()
+    except Exception as error:  # noqa: BLE001
+        traceback.print_exc()
+        w106_c6 = {'id': 'C6_committed_eval_keys_unchanged', 'passed': False,
+                   'error': f'{type(error).__name__}: {error}'}
+    extra['C6_w106_as_written_informational'] = w106_c6
+    _log(f"C6 as W106 wrote it (informational): {'PASS' if w106_c6.get('passed') is True else 'FAIL'}")
+    record(c6_eval_keys_all_arguments, w106_c6)
     record(c10_spec_diff)
     import shared_resources_planning as srp          # production imports only after the guards (armed at import)
     import uncoordinated_benchmark as UB
@@ -624,7 +705,7 @@ def run_checks():
                                        'counts_w111': dict(_GUARD.counts), 'counts_w106_import': dict(W106._GUARD.counts)},
                'passed': bool(passed), 'n_checks': len(results),
                'failed': [r.get('id') for r in results if r.get('passed') is not True],
-               'timings_s': timings, 'results': results}
+               'timings_s': timings, 'results': results, 'output_suffix': suffix, **extra}
     with open(os.path.join(out_dir, 'w111_zero_solve_checks.json'), 'x') as handle:
         GRIO.dump(payload, handle, indent=1, sort_keys=True, default=GRIO.json_default_item)
     manifest = {}
@@ -643,9 +724,11 @@ def main(argv=None):
     group = parser.add_mutually_exclusive_group()
     group.add_argument('--freeze-spec', action='store_true')
     group.add_argument('--checks', action='store_true')
+    parser.add_argument('--output-suffix', default='', choices=('', '_r2'),
+                        help='checks output directory suffix (write-once; r1 = no suffix is kept as evidence)')
     args = parser.parse_args(argv)
     try:
-        return freeze_spec() if args.freeze_spec else run_checks()
+        return freeze_spec() if args.freeze_spec else run_checks(args.output_suffix)
     finally:
         W106._GUARD.uninstall()
         _GUARD.uninstall()
