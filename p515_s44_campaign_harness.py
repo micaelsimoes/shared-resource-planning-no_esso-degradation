@@ -245,6 +245,14 @@ two continuations above): the child asserts its capture checklist before any sol
 records (abort on the first difference), the W104 holds engage after cycle 87, the loop runs to the fixed cap 287, the
 settling rule is evaluated report-only, and per-cycle Q-by-block-and-component, ESS schedule movement and the full
 Boyd residuals are written (write-only). It enters the eval key; entries without it keep their exact keys and format.
+P5.15 Addendum 57 (W118, the SRP1 re-settling campaign): an entry may carry `settling_resettle`
+(`validate_settling_resettle`, implemented by `p515_s53_w118_resettle_hooks`; mutually exclusive with the three options
+above): the child asserts its capture checklist before any solve and enters `settling_resettle_hooks` FIRST (innermost
+wrappers): a gated cell is replayed bitwise against its original record through its first residual pass k0 (abort on
+the first difference); the certifying regime (AA off, tight tail on, rho frozen) is held after the run's k0; the
+settling stop rule v2 (`settling_criterion_v2`: gap clause, amended monotone branch) is the only exit before the cap;
+the W105 captures plus the per-cycle priced interface gap t_sum are written (write-only). It enters the eval key;
+entries without it keep their exact keys and format.
 AFTER the run, in the child, inside `run_admm_arm`'s post_run_hook (same live
 models/state), `run_post_certification` does, only if the trajectory is
 certified under the spec's bar (else it records `status: skipped` + reason):
@@ -322,7 +330,7 @@ POST_CERTIFICATION_KEYS = frozenset({'persist_certified_models', 'hull_polish', 
 EVALUATION_OPTION_KEYS = frozenset({'overrides', 'post_certification', 'investment_year', 'model_variant',
                                     'flex_price_multiplier', 'interface_deviation_premium',
                                     'release_solution_bookkeeping', 'certification_continuation',
-                                    'settling_continuation', 'settling_extension'})
+                                    'settling_continuation', 'settling_extension', 'settling_resettle'})
 # P5.15 Addendum 39 (W47): a DERIVED INSTANCE (see the module docstring) and row 18's premium. The identity keys
 # of a derived instance enter the eval key; the other keys are provenance. Absent -> nothing changes.
 DERIVED_INSTANCE_KEYS = frozenset({'instance_label', 'case_path', 'case_sha256', 'scenario_checksum',
@@ -917,10 +925,22 @@ def validate_settling_extension(value):
     return W105C.validate_settling_extension(value)
 
 
+def validate_settling_resettle(value):
+    """P5.15 Addendum 57 (W118): an entry's `settling_resettle` option -- the SRP1 re-settling campaign cell (bitwise
+    replay through the first residual pass for a gated cell, holds after it, the settling stop rule v2 with the gap
+    clause, the W105 captures plus t_sum), validated by the hooks module that implements it
+    (`p515_s53_w118_resettle_hooks.validate_settling_resettle`; stdlib-only at import). None = not declared: nothing is
+    installed and every key / entry / record keeps its exact format."""
+    if value is None:
+        return None
+    import p515_s53_w118_resettle_hooks as W118C
+    return W118C.validate_settling_resettle(value)
+
+
 def evaluation_key(candidate_key_hex, overrides, case_file_aa=None, model_variant=None, ess_ageing_baseline=None,
                    flex_price_multiplier=None, derived_instance=None, interface_deviation_premium=None,
                    convergence_depth_tail=None, certification_continuation=None, settling_continuation=None,
-                   settling_extension=None):
+                   settling_extension=None, settling_resettle=None):
     """Identity of one EVALUATION (candidate x configuration). The case-file
     configuration (no overrides) keeps the candidate key itself, so a D
     evaluation's directory name is `<candidate key16>_<label>` as in s44_gate;
@@ -972,7 +992,21 @@ def evaluation_key(candidate_key_hex, overrides, case_file_aa=None, model_varian
     P5.15 Addendum 54 (W105): with a declared `settling_extension` (validated; never together with either continuation),
     the key is sha256 of {'base_evaluation_key': <the key every rule above gives for the same arguments>,
     'settling_extension': <the validated declaration>} -- never the base key. `settling_extension=None` returns exactly
-    what the formulas above return, so every pre-W105 key is byte-identical."""
+    what the formulas above return, so every pre-W105 key is byte-identical.
+    P5.15 Addendum 57 (W118): with a declared `settling_resettle` (validated; never together with any of the three
+    options above), the key is sha256 of {'base_evaluation_key': <the key every rule above gives for the same
+    arguments>, 'settling_resettle': <the validated declaration>} -- never the base key. `settling_resettle=None`
+    returns exactly what the formulas above return, so every pre-W118 key is byte-identical."""
+    if settling_resettle is not None:
+        if certification_continuation is not None or settling_continuation is not None or settling_extension is not None:
+            raise ValueError('an entry may declare settling_resettle OR a continuation / extension, not several')
+        base = evaluation_key(candidate_key_hex, overrides, case_file_aa=case_file_aa, model_variant=model_variant,
+                              ess_ageing_baseline=ess_ageing_baseline, flex_price_multiplier=flex_price_multiplier,
+                              derived_instance=derived_instance, interface_deviation_premium=interface_deviation_premium,
+                              convergence_depth_tail=convergence_depth_tail)
+        payload = {'base_evaluation_key': base, 'settling_resettle': validate_settling_resettle(settling_resettle)}
+        text = json.dumps(payload, sort_keys=True, separators=(',', ':'))
+        return hashlib.sha256(text.encode()).hexdigest()
     if settling_extension is not None:
         if certification_continuation is not None or settling_continuation is not None:
             raise ValueError('an entry may declare settling_extension OR a continuation, not both')
@@ -1230,6 +1264,8 @@ def freeze_campaign_spec(campaign_root, campaign_id, candidates, configuration, 
     recorded in the entry only when given; it ENTERS the eval key.
     P5.15 Addendum 54 (W105): an entry's options may carry `settling_extension` (`validate_settling_extension`);
     recorded in the entry only when given; it ENTERS the eval key.
+    P5.15 Addendum 57 (W118): an entry's options may carry `settling_resettle` (`validate_settling_resettle`);
+    recorded in the entry only when given; it ENTERS the eval key.
     One entry = one EVALUATION: its `eval_key` (`evaluation_key`) identifies
     candidate x configuration; labels and eval keys must be unique (the same
     candidate may appear under two configurations)."""
@@ -1289,11 +1325,13 @@ def freeze_campaign_spec(campaign_root, campaign_id, candidates, configuration, 
         continuation = validate_certification_continuation(options.get('certification_continuation'))  # W98: keyed
         settling = validate_settling_continuation(options.get('settling_continuation'))  # W101: keyed
         extension = validate_settling_extension(options.get('settling_extension'))  # W105: keyed
+        resettle = validate_settling_resettle(options.get('settling_resettle'))  # W118: keyed
         ekey = evaluation_key(key, eff_overrides, case_file_aa=case_file_aa, model_variant=model_variant,
                               ess_ageing_baseline=ess_ageing, flex_price_multiplier=flex_m,
                               derived_instance=derived, interface_deviation_premium=premium,
                               convergence_depth_tail=tail, certification_continuation=continuation,
-                              settling_continuation=settling, settling_extension=extension)
+                              settling_continuation=settling, settling_extension=extension,
+                              settling_resettle=resettle)
         if label in seen_labels or ekey in seen_keys:
             raise ValueError(f'duplicate evaluation label or key (candidate x configuration): {label} / {ekey[:16]}')
         seen_labels.add(label)
@@ -1324,6 +1362,8 @@ def freeze_campaign_spec(campaign_root, campaign_id, candidates, configuration, 
             cand_entry['settling_continuation'] = settling
         if extension is not None:  # W105: only when given, so every other entry keeps its exact format
             cand_entry['settling_extension'] = extension
+        if resettle is not None:  # W118: only when given, so every other entry keeps its exact format
+            cand_entry['settling_resettle'] = resettle
         cand_entries.append(cand_entry)
     os.makedirs(campaign_root, exist_ok=True)  # only after every validation above has passed
     try:
@@ -5245,6 +5285,16 @@ def _child_real(args, spec, spec_path, entry, eval_dir, lock_content, env_caps, 
         import p515_s53_w105_settling_extension_hooks as W105C
         extension_checklist = W105C.assert_extension_preconditions(extension, spec, tail_checklist, aa_on)
         progress['settling_extension_checklist'] = extension_checklist
+    # W118 (Addendum 57): the SRP1 re-settling cell, only when the entry declares it (it enters the eval key); its
+    # capture checklist is asserted here, before any solve (fail fast).
+    resettle = validate_settling_resettle(entry.get('settling_resettle'))
+    resettle_checklist = None
+    if resettle is not None:
+        if continuation is not None or settling is not None or extension is not None:
+            raise RuntimeError('an entry may declare settling_resettle OR a continuation / extension, not several')
+        import p515_s53_w118_resettle_hooks as W118C
+        resettle_checklist = W118C.assert_resettle_preconditions(resettle, spec, tail_checklist, aa_on)
+        progress['settling_resettle_checklist'] = resettle_checklist
     # W101 (Addendum 53 "Records"): the per-cycle interface consensus duals, for EVERY evaluation (write-only); the
     # capture path is asserted here, before any solve.
     import interface_dual_capture as IDC
@@ -5431,9 +5481,13 @@ def _child_real(args, spec, spec_path, entry, eval_dir, lock_content, env_caps, 
     # W105: likewise entered first (mutually exclusive with both continuations).
     extension_cm = (W105C.settling_extension_hooks(eval_dir, extension, holder, int(spec['cap']))
                     if extension is not None else nullcontext())
+    # W118: likewise entered first (mutually exclusive with the three above).
+    resettle_cm = (W118C.settling_resettle_hooks(eval_dir, resettle, holder, int(spec['cap']))
+                   if resettle is not None else nullcontext())
     with continuation_cm, \
          settling_cm, \
          extension_cm, \
+         resettle_cm, \
          IDC.interface_dual_capture_hooks(eval_dir, holder) as dual_capture, \
          G.s38_pf_capture_hooks(paths['recourse_jump'], paths['ess_stride'], paths['floor'],
                                 paths['pf_stride'], floor_rows_by_node, stride=1), \
@@ -5565,6 +5619,12 @@ def _child_real(args, spec, spec_path, entry, eval_dir, lock_content, env_caps, 
             'settling_extension_checklist_asserted_before_run': extension_checklist,
             'settling_extension_summary': holder.get('settling_extension'),
         })
+    if resettle is not None:  # W118: only for entries declaring the re-settling cell
+        variant_extra.update({
+            'settling_resettle': resettle,
+            'settling_resettle_checklist_asserted_before_run': resettle_checklist,
+            'settling_resettle_summary': holder.get('settling_resettle'),
+        })
     record = build_evaluation_record(
         spec=spec, spec_path=spec_path, spec_sha256=args.spec_sha256, entry=entry, report=report,
         component_levels=component_levels,
@@ -5624,6 +5684,7 @@ def _child_real(args, spec, spec_path, entry, eval_dir, lock_content, env_caps, 
     continuation_error = continuation is not None and not (holder.get('certification_continuation') or {}).get('ok')
     settling_error = settling is not None and not (holder.get('settling_continuation') or {}).get('ok')
     extension_error = extension is not None and not (holder.get('settling_extension') or {}).get('ok')
+    resettle_error = resettle is not None and not (holder.get('settling_resettle') or {}).get('ok')
     interface_dual_error = not (holder.get('interface_dual_capture') or {}).get('ok')
     return {'post_certification_error': (holder.get('post_certification') or {}).get('status') == 'error',
             'multiscenario_capture_error': capture_error,
@@ -5631,6 +5692,7 @@ def _child_real(args, spec, spec_path, entry, eval_dir, lock_content, env_caps, 
             'certification_continuation_error': continuation_error,
             'settling_continuation_error': settling_error,
             'settling_extension_error': extension_error,
+            'settling_resettle_error': resettle_error,
             'interface_dual_capture_error': interface_dual_error}
 
 
@@ -5686,6 +5748,10 @@ def main_child(argv):
                 sys.exit(2)
             if outcome and outcome.get('settling_extension_error'):  # W105
                 print('[S44-CHILD] settling extension summary not ok (recorded in evaluation_record.json); '
+                      'exiting 2', file=sys.stderr, flush=True)
+                sys.exit(2)
+            if outcome and outcome.get('settling_resettle_error'):  # W118
+                print('[S44-CHILD] settling re-settle summary not ok (recorded in evaluation_record.json); '
                       'exiting 2', file=sys.stderr, flush=True)
                 sys.exit(2)
             if outcome and outcome.get('interface_dual_capture_error'):  # W101
@@ -5765,6 +5831,12 @@ def main_child(argv):
                     'settling_extension_checklist_asserted_before_run': progress.get('settling_extension_checklist'),
                     'settling_extension_summary': (progress.get('holder') or {}).get('settling_extension')}
                    if 'settling_extension' in entry else {}),
+                # W118: an entry declaring the re-settling cell carries it, its checklist and its summary (with the
+                # replay divergence, if that is what aborted the cell), on every path.
+                **({'settling_resettle': entry['settling_resettle'],
+                    'settling_resettle_checklist_asserted_before_run': progress.get('settling_resettle_checklist'),
+                    'settling_resettle_summary': (progress.get('holder') or {}).get('settling_resettle')}
+                   if 'settling_resettle' in entry else {}),
                 # W101: the interface-dual capture checklist and summary, on every path (None when not reached).
                 'interface_dual_capture_checklist_asserted_before_run': progress.get(
                     'interface_dual_capture_checklist'),
