@@ -2338,6 +2338,62 @@ certify, adopt the larger ρ_ess. Report cycles, EFC trajectory, step sizes, fai
   → **stop for review** (triage and any re-settling campaign are sized, not launched) → benchmark
   arms → Step 5 rows.
 
+# Addendum 54 — SRP1 value survives settled; C\* creep diagnostic; re-settling campaign under one configuration (2026-09-28)
+
+- **Results accepted** (`P5_15_ADDENDUM53_SRP1_CONTINUATION_REPORT.md`, `ebe34021`). Replays
+  bitwise 3/3. x = 0 settles +14,971 € (± 4.2 k€) above its old certificate, the unit +20,806 €
+  (± 4.4 k€); **V_SRP1 = 253,540 €** (was 259,375); **value − I = −64,417 €, determinate at 7.5× — x = 0
+  optimal at SRP1 under the baseline.** New certification cycles 181 and 172 (were 132 and 112).
+  **3 × 3 R restated against the settled reference: [0.909, 0.934] against 0.9331 predicted** — the
+  mean-profile prediction is confirmed within resolution; the 0.03 gap was the unsettled reference.
+  Predictions: P1 held (x = 0), indeterminate (unit); P2 held; **P3 missed narrowly on the two
+  scoreable cells** (slacks 5.8 k€ apart, against "within 5 k€") — the common-mode argument was
+  right in substance and optimistic in degree. The Advisor's period projection (20 cycles) missed:
+  the SRP1 period is 29–30; the period is instance-specific and the criterion measures it.
+- **Criterion wording fixed.** "Two sign changes" and "range over one full period" were
+  inconsistent: two turning points bound a half-period; a full period needs three. **The
+  three-turning-point reading is the criterion.** The Planner confirms in the report whether it
+  was in v38 before the run; if it was applied after, the report states both readings' certification
+  cycles and the frozen one stands as the certificate, with the stricter one reported.
+- **Ruling 1 — C\*: option (a), 100-cycle diagnostic extension (≈ 2.7 h), with a hypothesis to test.**
+  A steady −265 €/cycle with no decay and a slowly rising pf_primal is not a settling iteration; it is
+  a creep along a nearly flat direction. **H_ess-flat:** the ESSO carries no economic term (ε-throughput
+  regularizer only), so with substantial storage the ESS schedule is determined only through consensus
+  and the augmented Lagrangian is nearly flat along re-timings of that schedule; ADMM discovers the
+  residual arbitrage slowly. x = 0 (no ESS) and the unit (small ESS) settle; C\* (the corner plan)
+  creeps. **Record per cycle:** per-block ΔQ (TSO, DSO, ESSO), Σ|Δp_ess| per node, the channel
+  whose primal residual is rising. **Predictions:** the creep sits in TSO generation cost with ESS
+  schedules still moving (Σ|Δp_ess| not decaying) and the rising residual is the ESS channel; the
+  rate stays within a factor 2 of −265 €/cycle over 100 cycles. **Outcomes:** confirmed → the
+  certification rule gains a **creep branch** ("residual-certified; objective drifting at r €/cycle;
+  settled value unbounded"), and the manuscript's storage cells carry a drift band, with a
+  formulation note that an economic tie-breaker in the ESSO would remove the flat direction
+  (author's decision; not for this revision unless a decision hinges on a creeping cell);
+  refuted (creep in DSO blocks, or decays, or the residual leaves tolerance) → Advisor review before
+  the campaign is sized.
+- **Ruling 2 — re-settling campaign: re-run, not pin.** The flagged cells are **re-run under the
+  current production configuration** (tight tail + new criterion), so every manuscript SRP1 number
+  shares one configuration; gate per cell: the trajectory is bitwise identical to the original run
+  up to the first tail cycle (the tail re-certification showed this holds). All differences are
+  restated against the **settled** references. **Phase-mismatched cells first:** the six Phase B
+  neighbours, the 2030 cell and the F2 certificate (≈ 8 cells, ≈ 14 h on the Mac) — those stopped
+  mid-descent against x = 0 at its trough, so settling can shrink their margins. The threshold
+  (3× the largest settled slack; 62.4 k€ provisional) is finalised after C\*. The remaining cells
+  (≈ 25–34) go to the VM if it is online within the week, else the Mac continues — **author's
+  machine-time call.**
+- **Ruling 3 — benchmark on the settled models:** the common-Q gate and the λ_t vs π_t look use the
+  cycle-181 x = 0 models; the reference Q for the gate is the settled value. The uncoordinated arms
+  (≈ 1 h with the look and the gate) run **between the C\* diagnostic and the campaign**, so Step 5's
+  benchmark is in hand early.
+- **Housekeeping:** the truncated message on `279c732b` stays; history is not rewritten.
+- **Manuscript.** SRP1: settled value 253,540 €; x = 0 optimal (−64.4 k€, 7.5×). Multi-scenario:
+  R ∈ [0.909, 0.934] against 0.933 predicted from the mean-profile spread — confirmed within
+  resolution. Certification paragraph: the criterion (Boyd residuals + three turning points, swings
+  not growing, one-period range ≤ τ = 4,539 €), the cycles under it, and the settled-minus-certified
+  figures for both instances. Every other SRP1 number remains on hold pending its re-run.
+- **Order:** C\* diagnostic → benchmark look + common-Q gate + arms → phase-mismatched 8 cells →
+  **stop for review** (campaign threshold final; VM decision; benchmark report).
+
 ## Update obligations
 
 At the end of Step 1 the Planner rewrites the "CURRENT SOURCE OF TRUTH" head of

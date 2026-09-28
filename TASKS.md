@@ -1,8 +1,21 @@
 # TASKS — current order
 
-**Authority:** `PLANNER_BRIEF_2026-09-13.md` Addendum 53 (2026-09-27); earlier orders below for record.
+**Authority:** `PLANNER_BRIEF_2026-09-13.md` Addendum 54 (2026-09-28); earlier orders below for record.
 **Objective convention on every value:** Q = certified `gross_operational_cost`, settlement excluded.
 **Updated at every transition; read first when resuming.**
+
+## Addendum 54 order — C\* creep diagnostic → benchmark on settled models → 8 phase-mismatched re-runs
+
+- [x] Results accepted: **V_SRP1 = 253,540**; value − I −64,417 (7.5×) — x = 0 optimal at SRP1, settled; **3×3 R ∈ [0.909, 0.934]** vs 0.9331 — confirmed within resolution. P3 scored **missed narrowly** (5.8 k€ vs "within 5 k€") by the expert. All other SRP1 numbers ON HOLD pending re-run
+- [x] **Criterion = three-turning-point reading.** Confirmed frozen **before** the runs: in v39 `8a612429` (commit `4ca1573d`, 2026-09-27 20:17 UTC; x0 launched after), key `readings_adopted_by_the_planner.three_turning_points`; literal reading report-only. Both readings' cycles: x0 181/181, unit 172/172, C\* none/132 — the frozen (three-turning-point) one is the certificate
+- [x] `279c732b` stays as is (no history rewrite)
+- [ ] **▶ W105 — C\* diagnostic extension: build + spec v40** (no launch): bitwise replay through 187 against `82dcebb7`, then exactly 100 more cycles under the same holds; rule evaluated report-only; per cycle: per-block ΔQ (TSO/DSO/ESSO), Σ\|Δp_ess\| per node, all six residual ratios + raw residuals
+  - **H_ess-flat (expert):** the ESSO has no economic term → augmented Lagrangian nearly flat along ESS re-timings → slow creep with substantial storage. **Predictions:** creep in **TSO generation cost**; Σ\|Δp_ess\| **not decaying**; the **rising residual is the ESS channel**; rate within ×2 of −265 €/cycle over 100 cycles. Confirmed → **creep branch** for the rule (expert) + drift band on storage cells; refuted (creep in DSO blocks, decays, or residual leaves tolerance) → **Advisor review before the campaign is sized**
+- [ ] **▶ W106 — benchmark re-pointed to the settled cycle-181 x0 models: build + spec** (no launch): common-Q gate reference = **Q181 = 653,873,702.19**; λ_t look on the same models (+ the λ_t sidecar at 181 as a third source)
+- [ ] Launch C\* extension (≈ 2.2–2.7 h)
+- [ ] Benchmark: λ_t vs π_t look → common-Q gate → 24-solve check → three arms × three starts (+ passive at 0.1 / 10) → consistency re-evaluation (Add. 49 unchanged otherwise)
+- [ ] **8 phase-mismatched cells re-run** under the current configuration (tight tail + criterion); gate: **bitwise identical to the original run up to the first tail cycle**; differences restated against the **settled** references. Cells: Phase B `a30a9faf`, `d7030f59`, `4a852725`, `d0c1f160`, `1bff3ed2`, `10c73abd`; year-2030 `549476cd`; F2 certificate (challenger `e28de4ac`; its reference, the F2 incumbent `5ca4f86c`, is also needed to restate the difference — reading to be recorded at spec time). ≈ 14 h
+- [ ] **Stop for review** — C\* verdict; benchmark report; final campaign threshold; VM decision (remaining ≈ 25–34 cells: VM if online within the week, else Mac — author)
 
 ## Addendum 53 order — criterion adopted; SRP1 references continued first
 
@@ -20,7 +33,7 @@
 - [x] **Frozen scorer** `62bdeafe`: P1 x0 held / unit indeterminate / c_star not scoreable; **P2 held** (ΔV −5,836, res 8,561); **V_SRP1 settled 253,539.62; value − I −64,417 (determinate 7.5×) — x = 0 optimal at SRP1, settled**; P3 not scoreable; Advisor k* projections all missed late (period 29–30, not 20). 3×3 R restated **[0.909, 0.934]** vs 0.9331
 - [x] **Triage inventory** (Advisor, read-only; Planner spot-checked 5 cells): **33 cells** below 62,419 € (3 × 20,806; provisional while c_star unsettled), 42 at 75 k → > 10 → VM's first job after the equivalence gate. Highest risk: phase-mismatched pairs (Phase B 6 cells all mid-descent vs x0 at trough; year-2030 M; F2 certificate challenger M)
 - [x] **Review report** `P5_15_ADDENDUM53_SRP1_CONTINUATION_REPORT.md`
-- [ ] **▶ STOPPED FOR REVIEW** — decisions: (1) C\* extension (v40, ≈ 2.7 h) vs accept uncertified; (2) re-settling: old-tail continuation vs tight-tail re-run, and order by phase mismatch; (3) benchmark common-Q gate and λ_t look on the settled cycle-181 x0 models; (4) leave `279c732b`'s truncated message
+- [x] **Stopped for review — ruled in Addendum 54** — decisions: (1) C\* extension (v40, ≈ 2.7 h) vs accept uncertified; (2) re-settling: old-tail continuation vs tight-tail re-run, and order by phase mismatch; (3) benchmark common-Q gate and λ_t look on the settled cycle-181 x0 models; (4) leave `279c732b`'s truncated message
 - [x] **Advisor — AA-off design note** (no compute) — **reject as stated.** A 10× predicate would fire at cycle ≈ 30 on all five cells. The slow Q mode **pre-exists k0** (3×3 x0 half-swings 61 → 63 → 29 k€ before and after; SRP1 x0 undamped ±20–27 k€ over 63–118): the residual test admits a state with large slow-mode error, and AA only gets there sooner. At 3×3: net −13 to +5 cycles (a wash; projection). **At SRP1: pf_primal plateaued 25–55 cycles at 2.8–4.5 under plain (rejected-AA) cycles, contracting 0.99–1.00/cycle, broken only by accepted AA steps** → plain ADMM from cycle 32 projected > 200 cycles or never. Proposed diagnostic, sized not ordered: SRP1 x0 replay to 32, then ≤ 100 plain cycles (≈ 1 h)
   - **Warning for the continuation:** post-k0 SRP1 x0 pf_primal creeps up (0.06 at 126 → 0.24 at 131); c\* flat at 0.42–0.44. If the plain map's attractor is the plateau, Q may rise back toward the pre-k0 band and residuals may leave tolerance → **v39 must record pf_primal per cycle and define the Boyd-lapse behaviour; the Advisor's competing prediction is recorded beside the expert's**
 - [x] **Records (in W101):** per-period interface consensus duals (λ_t per node) into the default per-cycle records — write-only, proven by the continuation's bitwise replay
