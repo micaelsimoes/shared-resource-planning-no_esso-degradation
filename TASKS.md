@@ -1,8 +1,20 @@
 # TASKS — current order
 
-**Authority:** `PLANNER_BRIEF_2026-09-13.md` Addendum 56 (2026-09-28); Addendum 54 order continues; earlier orders below for record.
+**Authority:** `PLANNER_BRIEF_2026-09-13.md` Addendum 57 (2026-09-28); earlier orders below for record.
 **Objective convention on every value:** Q = certified `gross_operational_cost`, settlement excluded.
 **Updated at every transition; read first when resuming.**
+
+## Addendum 57 order — NRF benchmark arms; gap clause; campaign on the Mac now
+
+- [x] **Decision 1 ruled: (a) + (b)** in benchmark spec v3 — arms were mis-defined (the TN is a pure transit network: only loads are the 3 interfaces; CONV Pmin 0; RES curtailable to 0). (a) **sweep**: continue each arm past failing blocks, report-only, per block/hour TN accept/deficit → "without any interface rule the TN cannot accept the DNs' exchange in n of 12 blocks (h hours)". (b) **every uncoordinated arm under a no-reverse-flow constraint p_int ≥ 0 at each interface**; DN curtails under its own arm economy; TSO arm unchanged; claim vs the **best NRF arm**. **Zero-solve count of reverse-flow interface-hours in the coordinated Q181 solution** beside it. (c) TN sink rejected. λ-look results stand
+- [x] **Decision 2 ruled:** certification gains **\|t_sum\| ≤ τ/2 = 2,270 €**; t_sum per cycle; differences in gross **and** Q_cc; verdicts on gross for certified cells. **Old certificates (not re-run): determinate only if margin > 3 × max(20.8 k€, \|t_sum\| of the cell) in both gross and Q_cc**, else pending — Planner recomputes the triage from records. **Monotone branch amended** (campaign spec): steps decreasing **and \|last step\| × L ≤ τ, L = 60**. C\* manuscript statement adopted. H_ess-flat scored as reported
+- [x] **Decision 3 ruled:** 2030 + 2035 year-ladder cells = **first C2 evaluations** (no gate; +1 cell → **10 cells**), lattice-legality check (E/P ≤ 4; nearest legal plan if not, stated); **same holds** after the first residual pass; **F2 challenger first**, uncertified form frozen (the 6,338 € margin < 2τ → "within resolution" accepted). **Machine time: Mac, now (author)**
+- [ ] **▶ W116 — benchmark spec v3** (sweep + NRF arms + reverse-flow count; build, zero-solve checks, freeze)
+- [ ] **▶ W117 — triage recomputed from records** under the Add. 57 determinacy rule (zero solves): per-cell gross and Q_cc margins; how many cells move
+- [ ] Benchmark arms under v3 (minutes) → benchmark report (curtailment per arm, net + parts, raw MWh; reverse-flow count)
+- [ ] Campaign spec (criterion + gap clause + amended monotone branch; 10 cells; predictions recorded)
+- [ ] F2 challenger → the other nine cells, one at a time
+- [ ] **Stop for review** — benchmark report; settled differences in gross and Q_cc; recomputed triage
 
 ## Addendum 54 order — C\* creep diagnostic → benchmark on settled models → 8 phase-mismatched re-runs
 

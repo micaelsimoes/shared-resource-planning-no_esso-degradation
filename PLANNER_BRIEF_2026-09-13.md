@@ -2454,6 +2454,66 @@ certify, adopt the larger ρ_ess. Report cycles, EFC trajectory, step sizes, fai
 - **Order unchanged.** C\* extension running; spec v2 code edits only until it finishes; then the λ
   look, common-Q gate and arms; then the eight cells; stop for review.
 
+# Addendum 57 — benchmark arms redefined under a no-reverse-flow rule; consensus-gap clause; campaign rulings (2026-09-28)
+
+Rulings on `P5_15_ADDENDUM54_56_CONSOLIDATED_NOTE.md` (`ce96d492`).
+
+- **Decision 1 — the arms were mis-defined by the expert, not mis-built.** Verified against
+  `data/SRP1/case9/case9_2025.json` and `case9_2035.json`: the TN's only loads are the three interface
+  loads at buses 5, 7, 9 (`fl_reg` 1); generators are three CONV at Pmin 0 (250/300/270 MW) plus wind
+  and PV (132 MW in 2025, 245 MW in 2035), all curtailable to zero. The TN is a pure transit network:
+  if the DNs net-export in aggregate beyond ≈ 4 MW of losses, no TN operating point exists, whatever
+  the generation. Addendum 49's arms let an uncoordinated DN export into a network that cannot
+  absorb it, which is a definition error; the coordinated solution resolves the same surplus by
+  curtailing DN RES (hence its 166–209 MW imports at the hours where the passive DN exports).
+  **Ruling: (a) and (b), both, in benchmark spec v3.** (a) The sweep: continue each arm past failing
+  blocks, report-only, and record per block and hour whether the TN can accept the DN schedule and by
+  how much not — the manuscript's qualitative statement, "without any interface rule the TN cannot
+  accept the DNs' exchange in n of 12 blocks (h hours)". (b) The recourse, in its static form:
+  **every uncoordinated arm carries a no-reverse-flow constraint at each interface** (p_int ≥ 0,
+  import only) — the connection-agreement rule that is today's practice and the only interface rule a
+  DSO can apply without coordination. The DN then curtails under its own arm economy (passive:
+  minimum curtailment as the sole term; price-taker: its own objective under the bound); the TSO arm
+  is unchanged (fixed interface P/Q, voltages bounded). The benchmark measures **dynamic coordination
+  against a static interface limit**, and the claim is against the best NRF arm. Report beside it,
+  zero-solve from the Q181 models, the number of interface-hours with reverse flow in the coordinated
+  solution — if any, part of the measured benefit is the value of allowing reverse flow, and the
+  paper says so. (c), a TN sink, is an instance change and is **not** recommended for this revision.
+  The λ-look results stand as recorded (λ ≠ π on 848/864 rows; proper in 807/864 hours; common-Q gate
+  bitwise).
+- **Decision 2 — the consensus gap: (b), a gap clause, plus (a) for old certificates.** The
+  priced interface gap t_sum is a first-order inconsistency in Q itself (energy appearing or vanishing
+  at the interface at price π), and the settled references show it closes with settling (23.8 k€ →
+  143 €; 34.1 k€ → 663 €). **Certification gains the clause |t_sum| ≤ τ/2** (2,270 €) on top of the
+  settling rule; the settled references satisfy it, old certificates do not, and C\* (gap growing
+  6.9 → 15.6 k€ with pf rising) is correctly never certified. t_sum recorded per cycle; every restated
+  difference reported in gross and Q_cc; verdicts on gross for certified cells (consistent to τ/2 by
+  construction). **Old certificates not re-run:** report gross, Q_cc and t_sum; a difference is
+  determinate only if its margin exceeds 3 × max(20.8 k€, |t_sum| of the cell) in both gross and Q_cc
+  terms, else pending — the Planner recomputes the triage list under this rule from records (zero
+  solves) and reports how many cells move. (c), a creep branch on gross, rejected as the note says.
+  **Monotone branch amended** for the campaign spec: steps decreasing over the window **and**
+  |last step| × L ≤ τ, with L = 60 (2× the longest period measured on the instance) — a linear
+  remaining-descent bound, no fit; C\* at 111 €/cycle fails it, as it should. The references'
+  certificates are untouched (oscillation branch). P_MAX and L are instance-measured quantities
+  recorded in each spec. **C\* manuscript statement adopted as proposed.** H_ess-flat scored as
+  reported: the flat direction is real, the ESS channel was the wrong residual to name (expert's
+  P_c).
+- **Decision 3 — campaign:** (a) the 2030 and 2035 year-ladder cells are **first C2 evaluations**,
+  no bitwise gate, both years so the ladder is one configuration (+1 cell); the Planner confirms
+  each plan is legal on the current lattice (E/P ≤ 4) and substitutes the nearest legal plan, stated,
+  if not. (b) **Same holds as the references** after the first residual pass (AA off, tail on,
+  ρ frozen), for parity. (c) **F2 challenger first**, uncertified reporting form frozen in advance;
+  note that with τ = 4,539 € the F2 pair's 6,338 € margin is below 2τ, so the settled verdict on
+  that neighbour will be "within resolution" — acceptable: the F2 result is the demonstration that
+  storage pays at ×2 and a two-node plan emerges, not that plan's optimality against a neighbour at
+  6 k€. Design otherwise as the note states. **Machine time: the expert recommends the Mac, now
+  (≈ 14–17 h); the VM is not online — author's call.**
+- **Order:** benchmark spec v3 (sweep + NRF arms + reverse-flow count) → arms (minutes) → campaign
+  spec (criterion with gap clause and amended monotone branch; predictions) → F2 challenger → the
+  rest of the nine (ten) cells → **stop for review** with the benchmark report, the settled
+  differences in gross and Q_cc, and the recomputed triage.
+
 ## Update obligations
 
 At the end of Step 1 the Planner rewrites the "CURRENT SOURCE OF TRUTH" head of
