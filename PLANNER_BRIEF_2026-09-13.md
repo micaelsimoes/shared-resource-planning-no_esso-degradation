@@ -2423,6 +2423,37 @@ certify, adopt the larger ρ_ess. Report cycles, EFC trajectory, step sizes, fai
 - **Order unchanged:** C\* diagnostic (v41) → curtailment look → benchmark spec v2 → λ look + common-Q
   gate + arms → phase-mismatched 8 cells → stop for review.
 
+# Addendum 56 — the RES bound slack: kept for this revision; curtailment reporting convention (2026-09-28)
+
+- **Finding accepted** (W109, `f6e3533f`): RES output is bounded by availability **+ 1e-5 pu**
+  (`model_construction_helpers.py:188`); with curtailment unweighted, output sits at that edge, most
+  visibly at dawn and dusk. Every entry is inside the declared band; the −19.24 € (TSO) and −42.67 €
+  (DSO) totals are 1,332 such entries times probabilities and block weights of 373–460. The helper is
+  production's own term and matches production bit for bit on 48/48 blocks; W53 had measured the
+  same thing on the old models. **Expert's premise in Addendum 55 withdrawn:** "three orders above
+  bound relaxation" compared an aggregate against a per-entry tolerance. Compare like with like.
+- **Ruling — the slack stays for this revision.** Removing it is a model change: every certified
+  number would need re-certification, including the 3 × 3 pair and its continuation (≈ 35 h) and the
+  settled SRP1 references, and R would otherwise compare two different models. What it buys is
+  ≈ 1.2 × 10⁻⁵ of absolute Q (the −7.9 k€ first-order free-energy estimate) that is **common-mode
+  across cells** — the slack is exploited fully wherever energy has positive marginal value, with or
+  without storage — so every reported difference is unaffected to second order. **Scheduled for the
+  post-revision formulation cleanup**, together with the ESSO economic tie-breaker if H_ess-flat is
+  confirmed. Technical note for that cleanup: the slack is unnecessary with IPOPT — lb = ub is handled
+  by `fixed_variable_treatment = make_parameter`, and the replay design's mutable bounds write lb = ub
+  to the NL file cleanly; before removal, clamp any negative availability in the data at zero, since
+  guarding against that is the one legitimate reason such a slack is ever added. The author owns the
+  line; the decision not to touch it now is the expert's.
+- **Reporting convention.** Repository and benchmark tables: **net, production's definition, is the
+  frozen primary**, with the positive and negative parts and raw MWh beside it on the same weighting
+  (as W111 already builds them). **Manuscript:** curtailed energy is the **positive part**, in MWh,
+  and the model description carries one sentence: RES output is bounded by availability with a
+  1e-5 pu numerical slack; the resulting over-production totals ≈ 62 MWh-equivalent over the horizon
+  (≈ 10⁻⁵ of renewable energy) and is reported separately. The −7.9 k€ common-mode effect on Q goes
+  in the reproducibility note, not the results.
+- **Order unchanged.** C\* extension running; spec v2 code edits only until it finishes; then the λ
+  look, common-Q gate and arms; then the eight cells; stop for review.
+
 ## Update obligations
 
 At the end of Step 1 the Planner rewrites the "CURRENT SOURCE OF TRUTH" head of
