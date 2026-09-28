@@ -41,11 +41,22 @@ STAGES (each its own attached process; output write-once under data/SRP1/Results
                              1 <= attempts <= 3, and exactly 1 for an E3 launch; the cumulative total is verified exactly
                              after every block (too few fails as loudly as too many). A DSO block that fails every tier
                              ends the sweep (no DSO schedule exists to test).
-  nrf-arm --arm A --start S  The NRF arm: 48 solves (36 DSO + 12 TSO), then the consistency re-evaluation 36 -> 84; the
-                             declared sequential pass adds 48 -> 132 if triggered. Counts exact at every phase boundary as
-                             under spec v2 (a production retry raises the count and fails the stage -- v2's convention,
-                             kept). A in {passive, price_taker}, S in {cold, warm_from_certified, perturbed}.
-  nrf-passive-tie-breaker --value V   48 solves (passive NRF, cold, DSO tie-breaker V in {0.1, 10}); no consistency step.
+  nrf-arm --arm A --start S  The NRF arm: 48 block solves (36 DSO + 12 TSO), then the consistency re-evaluation 36 -> 84;
+                             the declared sequential pass adds 48 -> 132 if triggered. A in {passive, price_taker}, S in
+                             {cold, warm_from_certified, perturbed}.
+                             SOLVE ACCOUNTING (spec v4, Planner task W119 -- replaces v3's phase-exact rule, under which a
+                             production retry failed the stage): EXACT PER DECLARED BLOCK (`DeclaredBlockAccount`, the
+                             sweep's `BlockSolveAccount` scheme). Each phase declares its blocks (A: the 36 DSO + 12 TSO
+                             labels, B: the 36 DSO labels, C: 36 + 12); every per-solve record production hands back is
+                             attributed to one declared, not-yet-settled block of the open phase, its attempts to the tiers
+                             primary / recovery / recovery_tier2 in that order (1..3), each attempt's network, year and day
+                             to that block's; the armed guard's delta since the previous record must equal the attributed
+                             attempts, and the cumulative total is verified exactly after every block. A phase closes only
+                             if every declared block was settled exactly once and the guard equals the sum of the
+                             attributed attempts. A retried block is therefore that block's retries; an unattributed or
+                             excess solve, or a count short of the declared blocks, still raises.
+  nrf-passive-tie-breaker --value V   48 block solves (passive NRF, cold, DSO tie-breaker V in {0.1, 10}); no
+                             consistency step; the same per-block accounting (one phase, 48 declared blocks).
   report                     ZERO solves. claim = min(passive_NRF, price_taker_NRF) - Q181 with the decomposition and the
                              bands; curtailment per arm (net primary, positive / negative parts, raw MWh); the sweep's
                              "the TN cannot accept the DNs' exchange in n of 12 blocks (h hours)" per arm; the coordinated
@@ -58,9 +69,10 @@ Guards: `SolveProfileGuard` armed BEFORE any production import; permitted sites:
 report (). W114's module installs its own guard at import; the sweep imports it AFTER arming its own and uninstalls
 W114's at once (LIFO), recording that. Each run refuses unless: no campaign / legacy / W93 / W116 lock, no forbidden live
 process (the p515_s4* campaign children, the G1-G4 gates, any other p515_s53_* process), production and these files clean
-in git, its output directory absent, its IPOPT log dir absent, and the frozen spec v3 binds (`frozen_spec_binding_failures`).
+in git, its output directory absent, its IPOPT log dir absent, and the frozen spec binds (`frozen_spec_binding_failures`;
+version >= FROZEN_SPEC_MIN_VERSION = 4 since W119: v3 47b37d6e no longer binds a stage).
 
-COMMANDS: the frozen spec v3 lists them (attached, alone, one at a time, both streams to a new log, noclobber):
+COMMANDS: the frozen spec (v4) lists them (attached, alone, one at a time, both streams to a new log, noclobber):
     mkdir -p data/SRP1/Results/P515S53/w116_benchmark_nrf/launch_logs
     set -o noclobber && /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python -u p515_s53_w116_benchmark_nrf.py --stage sweep --arm passive > data/SRP1/Results/P515S53/w116_benchmark_nrf/launch_logs/sweep_passive_cold.log 2>&1
     ... (--stage sweep --arm price_taker; --stage nrf-arm --arm A --start S; --stage nrf-passive-tie-breaker --value V;
@@ -92,19 +104,22 @@ import p515_s53_w93_uncoordinated_benchmark as BENCH  # noqa: E402 -- stdlib + H
 #  FROZEN CONFIGURATION (declared before any run; recorded in every artifact and in the frozen spec v3)
 # ======================================================================================================================
 STAGE = ('P5.15 Addendum 57 W116 -- uncoordinated benchmark spec v3: no-reverse-flow arms, the feasibility sweep of the '
-         'unconstrained arms, the coordinated reverse-flow count')
+         'unconstrained arms, the coordinated reverse-flow count; spec v4 (W119): per-block exact solve accounting of '
+         'the NRF arm and tie-breaker stages')
 AUTHORITY = BENCH.AUTHORITY + [
     'PLANNER_BRIEF_2026-09-13.md Addendum 56 (curtailment reporting: net primary, positive / negative parts, raw MWh)',
     'PLANNER_BRIEF_2026-09-13.md Addendum 57 Decision 1 ((a) sweep, report-only; (b) no-reverse-flow arms, claim vs the '
     'best NRF arm; zero-solve reverse-flow count of the coordinated Q181 solution)',
-    'TASKS.md Addendum 57 order (W116)', 'Planner task W116 (benchmark spec v3)']
+    'TASKS.md Addendum 57 order (W116)', 'Planner task W116 (benchmark spec v3)',
+    'Planner task W119 (benchmark spec v4: per-block exact solve accounting of the NRF arm and tie-breaker stages; '
+    'Planner predictions and rulings recorded)']
 SCRIPT_NAME = os.path.basename(__file__)
 OUT_ROOT_REL = os.path.join('data', 'SRP1', 'Results', 'P515S53', 'w116_benchmark_nrf')
 LAUNCH_LOGS_REL = os.path.join(OUT_ROOT_REL, 'launch_logs')
 CHECKS_DIR_REL = os.path.join(OUT_ROOT_REL, 'w116_zero_solve_checks')
 REVERSE_FLOW_OUTPUT_REL = os.path.join(CHECKS_DIR_REL, 'reverse_flow_count_q181.json')
 FROZEN_SPEC_GLOB = 'frozen_s53_benchmark_spec_v*_*.json'
-FROZEN_SPEC_MIN_VERSION = 3
+FROZEN_SPEC_MIN_VERSION = 4           # W119: spec v4 (v3 47b37d6e superseded before any stage ran under it)
 LOCK_PATH = os.path.join(REPO, '.p515_s53_w116_benchmark.lock')
 EVAL_ID_PREFIX = 'p515s53w116_'       # isolated IPOPT log dir: p56a_oracle.WORK_DIR/<EVAL_ID_PREFIX><run_id>/logs
 W114_SCRIPT = 'p515_s53_w114_passive_infeasibility.py'
@@ -149,6 +164,9 @@ PERMITTED_SWEEP_SITES = (('uncoordinated_benchmark.py', '_solve_block'), (W114_S
 
 # production's attempts per network solve: primary, recovery (tier 1), tier 2 (network._run_smopf)
 MAX_ATTEMPTS_PER_NETWORK_SOLVE = 3
+# W119: the attempt tiers in production's order -- the `attempt` field of each record network._append_ipopt_solve_record
+# writes (`log_suffix or 'primary'`; network._run_smopf passes log_suffix 'recovery' then 'recovery_tier2')
+ATTEMPT_TIERS = ('primary', 'recovery', 'recovery_tier2')
 E3_LAUNCHES_PER_FAILING_BLOCK = 1
 E3_VARIANT_LABEL = 'E3_interface_P_elastic_Q_hard'
 E3_ROWS = ('uncoord_interface_p_fixed',)
@@ -197,6 +215,7 @@ NRF_DEFINITION = {
 }
 
 _GUARD = None
+_ACCOUNT = None      # W119: the NRF stage's DeclaredBlockAccount (its ledger goes into failure.json)
 _LOG_T0 = time.time()
 
 
@@ -265,8 +284,8 @@ def _frozen_spec_identity():
 
 
 def frozen_spec_binding_failures(root_rel=None):
-    """A v3 stage runs only under its frozen spec: the highest-version spec under the v3 output root exists, has
-    version >= 3, content sha256 starting with its <hash8>, names this output root, binds exactly
+    """A stage runs only under its frozen spec: the highest-version spec under the v3 output root exists, has
+    version >= FROZEN_SPEC_MIN_VERSION (4), content sha256 starting with its <hash8>, names this output root, binds exactly
     FROZEN_SPEC_BOUND_FILES at their on-disk sha256, and carries the COORDINATED models / reference Q."""
     latest = _latest_frozen_spec(root_rel)
     if latest is None:
@@ -476,20 +495,32 @@ def stage_nrf_arm(run_dir, run_id, *, arm, start, dso_tie_breaker, consistency):
     checks['esso_salvage_is_zero_at_x0'] = planning.shared_ess_data.get_salvage_value(esso) == 0.0
     checks['tie_breaker_decision_declared'] = dso_tie_breaker is not None
     checks['no_reverse_flow_row_declared_in_module'] = getattr(UB, 'NO_REVERSE_FLOW_ROW', None) == 'uncoord_no_reverse_flow'
+    # W119 (spec v4): the declared blocks of every phase, for the per-block exact accounting
+    block_networks = declared_block_networks(UB, planning)
+    dso_labels = [label for label in block_networks if label.startswith('DSO|')]
+    tso_labels = [label for label in block_networks if label.startswith('TSO|')]
+    checks['declared_blocks_equal_declared_solve_count'] = (len(dso_labels) == declared['dso']
+                                                            and len(tso_labels) == declared['tso']
+                                                            and len(block_networks) == declared['total'])
+    upper = MAX_ATTEMPTS_PER_NETWORK_SOLVE * (declared['total']
+                                              + ((declared['dso'] + declared['total']) if consistency else 0))
     BENCH._assert_checklist(checks, f'{run_id} (before any solve)')
     _check_guard(0, f'{run_id} before solves')
-    sink = BENCH.SolveSink(run_dir)
-    expected = 0
+    solve_sink = BENCH.SolveSink(run_dir)
+    account = DeclaredBlockAccount(_GUARD, upper, block_networks)
+    sink = account.recorder(solve_sink)      # every record: persisted, then attributed to its declared block
+    global _ACCOUNT
+    _ACCOUNT = account
     phases = []
 
     # phase A -- the NRF arm
+    account.open_phase('A_nrf_arm', dso_labels + tso_labels, (f'{arm}:{start}:dso', f'{arm}:{start}:tso'))
     arm_out = UB.run_operational_planning_uncoordinated(
         planning, candidate, arm=arm, dso_curtailment_penalty=dso_tie_breaker,
         tso_curtailment_penalty=BENCH.TIE_BREAKER['decision']['tso'], reference_structure=reference, start=start,
         warm_values=warm, perturbation=BENCH.PERTURBATION if start == UB.START_PERTURBED else None,
         record_callback=sink, no_reverse_flow=True)
-    expected += declared['total']
-    phases.append(_check_guard(expected, f'{run_id} phase A (NRF arm)'))
+    phases.append(account.close_phase('A_nrf_arm'))
     nrf_blocks = {label: rec.get('no_reverse_flow_rows') for label, rec in arm_out['structure'].items()
                   if label.startswith('DSO|')}
     if arm_out['build']['dso'].get('no_reverse_flow') is not True or any(
@@ -500,7 +531,7 @@ def stage_nrf_arm(run_dir, run_id, *, arm, start, dso_tie_breaker, consistency):
                                       require_unchanged=False)
     nrf_held = reverse_flow_count(planning, models)
     BENCH._checkpoint(run_dir, {'phase': 'A', 'gross_operational_cost': evaluation['gross_operational_cost'],
-                                'solves': expected, 'guard': dict(_GUARD.counts),
+                                'solves': account.cumulative, 'guard': dict(_GUARD.counts),
                                 'reverse_entries_strict': nrf_held['totals']['strict']['count'],
                                 'min_p_int_mw': (nrf_held['min_entry'] or {}).get('p_int_mw')})
     _log(f"{run_id}: phase A Q = {evaluation['gross_operational_cost']!r}; NRF check: min p_int "
@@ -512,7 +543,10 @@ def stage_nrf_arm(run_dir, run_id, *, arm, start, dso_tie_breaker, consistency):
         'evaluation_tie_breaker': BENCH.TIE_BREAKER['evaluation'],
         'capture_path_checklist': checks, 'solver_options': solver_options, 'ipopt_logs_dir': logs_dir,
         'declared_solves': {'arm': declared, 'reevaluation': declared['dso'] if consistency else 0,
-                            'sequential_pass_if_triggered': declared['total'] if consistency else 0},
+                            'sequential_pass_if_triggered': declared['total'] if consistency else 0,
+                            'unit': 'declared BLOCKS (W119 / spec v4); launches = the sum of the attempts attributed '
+                                    'per block (1..3 each), see solve_accounting',
+                            'launch_upper_bound': upper},
         'structure': arm_out['structure'], 'build': {k: BENCH._compact_build(v) for k, v in arm_out['build'].items()},
         'start_records': arm_out['start_records'],
         'phase_A': {'evaluation': BENCH._compact_evaluation(evaluation),
@@ -524,21 +558,21 @@ def stage_nrf_arm(run_dir, run_id, *, arm, start, dso_tie_breaker, consistency):
                     'tso_vs_dso_schedule_max_abs': BENCH._schedule_difference_tso_dso(arm_out),
                     'dso_schedule_vs_coordinated_max_abs': BENCH._schedule_difference(
                         arm_out['dso_interface_schedule'], coordinated_schedule),
-                    'solve_summary': sink.summary(f'{arm}:{start}')},
+                    'solve_summary': solve_sink.summary(f'{arm}:{start}')},
     }
     arm_cost = evaluation['gross_operational_cost']
     arm_cost_source = 'phase_A'
 
     if consistency:
         mismatch = UB.interface_voltage_mismatch(planning, arm_out['models']['tso'], arm_out['models']['dso'])
+        account.open_phase('B_consistency_reevaluation', dso_labels, ('consistency:reevaluation',))
         reeval = UB.reevaluate_dso_at_actual_voltage(planning, arm_out['models']['dso'], mismatch['v_actual_dn_pu'],
                                                      tolerances=BENCH.CONSISTENCY_TOL, record_callback=sink)
-        expected += declared['dso']
-        phases.append(_check_guard(expected, f'{run_id} phase B (consistency re-evaluation)'))
+        phases.append(account.close_phase('B_consistency_reevaluation'))
         nrf_violations = [h for b in reeval['blocks'].values() for h in b['violations']['hard']
                           if h.get('kind') == 'no_reverse_flow']
         BENCH._checkpoint(run_dir, {'phase': 'B', 'trigger': reeval['trigger_sequential_pass'],
-                                    'max_abs_dv_dn_pu': mismatch['max_abs_dv_dn_pu'], 'solves': expected,
+                                    'max_abs_dv_dn_pu': mismatch['max_abs_dv_dn_pu'], 'solves': account.cumulative,
                                     'n_no_reverse_flow_violations': len(nrf_violations)})
         result['phase_B_consistency'] = {
             'max_abs_dv_dn_pu': mismatch['max_abs_dv_dn_pu'],
@@ -550,23 +584,24 @@ def stage_nrf_arm(run_dir, run_id, *, arm, start, dso_tie_breaker, consistency):
                 'max_excess_pu': max((h['excess_pu2'] for h in nrf_violations), default=0.0)},
             'trigger_rule': ('v2\'s rule (any hard > hard_tol, any thermal > thermal_tol, any soft excess > '
                              'soft_excess_tol); W116: the no-reverse-flow rows are evaluated as hard DN limits'),
-            'solve_summary': sink.summary('consistency:'),
+            'solve_summary': solve_sink.summary('consistency:'),
         }
         if reeval['trigger_sequential_pass']:
             shift = UB.pin_dso_interface_voltage(planning, arm_out['models']['dso'], mismatch['v_actual_dn_pu'])
+            account.open_phase('C_sequential_pass', dso_labels + tso_labels,
+                               ('sequential_pass:dso', 'sequential_pass:tso'))
             UB.solve_dso_models(planning, arm_out['models']['dso'], phase='sequential_pass:dso', record_callback=sink)
             new_schedule = UB.get_dso_interface_schedule(planning, arm_out['models']['dso'])
             moved = UB.set_tso_interface_targets(planning, arm_out['models']['tso'], new_schedule)
             UB.solve_tso_model(planning, arm_out['models']['tso'], phase='sequential_pass:tso', record_callback=sink)
-            expected += declared['total']
-            phases.append(_check_guard(expected, f'{run_id} phase C (sequential pass)'))
+            phases.append(account.close_phase('C_sequential_pass'))
             evaluation_c = UB.evaluate_common_q(planning, models,
                                                 evaluation_curtailment_penalty=BENCH.TIE_BREAKER['evaluation'],
                                                 require_unchanged=False)
             mismatch_c = UB.interface_voltage_mismatch(planning, arm_out['models']['tso'], arm_out['models']['dso'])
             nrf_held_c = reverse_flow_count(planning, models)
             BENCH._checkpoint(run_dir, {'phase': 'C', 'gross_operational_cost': evaluation_c['gross_operational_cost'],
-                                        'solves': expected,
+                                        'solves': account.cumulative,
                                         'reverse_entries_strict': nrf_held_c['totals']['strict']['count']})
             result['phase_C_sequential_pass'] = {
                 'dso_voltage_shift_max_pu': shift, 'tso_target_move_max': moved,
@@ -577,15 +612,21 @@ def stage_nrf_arm(run_dir, run_id, *, arm, start, dso_tie_breaker, consistency):
                 'effect_on_q_eur': evaluation_c['gross_operational_cost'] - evaluation['gross_operational_cost'],
                 'max_abs_dv_dn_pu_after_pass': mismatch_c['max_abs_dv_dn_pu'],
                 'dso_interface_schedule': new_schedule,
-                'solve_summary': sink.summary('sequential_pass:'),
+                'solve_summary': solve_sink.summary('sequential_pass:'),
             }
             arm_cost = evaluation_c['gross_operational_cost']
             arm_cost_source = 'phase_C_sequential_pass'
     result['arm_cost'] = {'gross_operational_cost': arm_cost, 'source': arm_cost_source,
                           'objective_convention': evaluation['objective_convention'],
                           'curtailment_rows_are_phase_A': True}
-    result['solve_profile_guard'] = {'phases': phases, 'final': _check_guard(expected, f'{run_id} end')}
-    result['solve_summary_all'] = sink.summary()
+    accounting = account.summary()
+    if (accounting['open_phase'] is not None or accounting['attempts_attributed_total'] != account.cumulative
+            or sum(row['attempts_recorded'] for row in account.ledger) != account.cumulative):
+        raise RuntimeError(f'{run_id}: solve accounting does not close: open phase {accounting["open_phase"]}, '
+                           f'attributed {accounting["attempts_attributed_total"]}, cumulative {account.cumulative}')
+    result['solve_accounting'] = accounting
+    result['solve_profile_guard'] = {'phases': phases, 'final': _check_guard(account.cumulative, f'{run_id} end')}
+    result['solve_summary_all'] = solve_sink.summary()
     BENCH._write_json_once(os.path.join(run_dir, f'{run_id}.json'), provenance(result))
     return 0
 
@@ -682,6 +723,134 @@ class BlockSolveAccount:
                 'rule': ('exact per block: guard delta == production-recorded attempts (1..3 per network solve; '
                          'exactly 1 per E3); cumulative verified exactly after every block; total <= upper bound'),
                 'ledger': self.ledger}
+
+
+class DeclaredBlockAccount(BlockSolveAccount):
+    """W119 (benchmark spec v4): exact PER-BLOCK accounting for stages whose block solves happen inside production-side
+    loops (the NRF arm and tie-breaker stages), on the sweep's `BlockSolveAccount` scheme. Every phase declares its
+    blocks; each per-solve record (handed to `recorder(...)` by `uncoordinated_benchmark._solve_block` BEFORE any
+    failure is raised) is attributed to one declared, not-yet-settled block of the open phase, with a declared record
+    phase, and its attempts to the tiers ATTEMPT_TIERS[:n] in order (1 <= n <= MAX_ATTEMPTS_PER_NETWORK_SOLVE), each
+    attempt's network name, year and day equal to the block's; the guard's delta (solves and launches) since the
+    previous record must equal n and the cumulative is verified exactly after every block (`_settle`). `close_phase`
+    raises unless every declared block was settled exactly once and the guard equals the sum of the attributed
+    attempts. RAISES on: a record outside an open phase or for an undeclared / already-settled block (unattributed), a
+    guard delta above the attempts (an unattributed solve before the record) or below them, tiers out of order or above
+    three, a wrong network, a phase closed short of its declared blocks, a solve after the last record of a phase
+    (guard above the attributed sum at close), a cumulative above `upper_bound`."""
+
+    def __init__(self, guard, upper_bound, block_networks):
+        super().__init__(guard, upper_bound)
+        self.block_networks = dict(block_networks)      # label -> (network name, year str, day str)
+        self.phases = []
+        self._open = None
+        self._mark = None
+
+    def open_phase(self, name, labels, record_phases):
+        if self._open is not None:
+            raise RuntimeError(f"solve accounting: phase {name} opened while {self._open['name']} is open")
+        labels = list(labels)
+        undeclared = [label for label in labels if label not in self.block_networks]
+        if not labels or len(set(labels)) != len(labels) or undeclared:
+            raise RuntimeError(f'solve accounting: phase {name} declares an empty, repeated or unknown block list '
+                               f'(unknown {undeclared[:3]})')
+        _check_guard(self.cumulative, f'opening phase {name} (nothing unattributed before it)')
+        self._open = {'name': name, 'declared': labels, 'record_phases': tuple(record_phases), 'settled': {},
+                      'cumulative_at_open': self.cumulative}
+        self._mark = self._snap()
+
+    def settle_record(self, record):
+        phase = self._open
+        label = record.get('block')
+        if phase is None:
+            raise RuntimeError(f'solve accounting: UNATTRIBUTED solve record {label} outside any declared phase')
+        if label not in phase['declared']:
+            raise RuntimeError(f"solve accounting: UNATTRIBUTED solve record {label}: not a declared block of phase "
+                               f"{phase['name']}")
+        if label in phase['settled']:
+            raise RuntimeError(f"solve accounting: block {label} solved twice in phase {phase['name']}")
+        if record.get('phase') not in phase['record_phases']:
+            raise RuntimeError(f"solve accounting: {label} record phase {record.get('phase')!r} not in the declared "
+                               f"{phase['record_phases']} of phase {phase['name']}")
+        n_attempts = int(record['n_attempts'])
+        attempts = record.get('attempts') or []
+        tiers = [a.get('attempt') for a in attempts]
+        if len(attempts) != n_attempts or tiers != list(ATTEMPT_TIERS[:n_attempts]):
+            raise RuntimeError(f'solve accounting: {label} attempts {tiers} (n_attempts {n_attempts}) are not the '
+                               f'tiers {list(ATTEMPT_TIERS[:max(n_attempts, 0)])} in order')
+        network_name, year, day = self.block_networks[label]
+        foreign = [(a.get('network'), a.get('year'), a.get('day')) for a in attempts
+                   if (a.get('network'), str(a.get('year')), str(a.get('day'))) != (network_name, year, day)]
+        if foreign:
+            raise RuntimeError(f'solve accounting: {label} carries attempts of another network {foreign[:3]} '
+                               f'(expected {network_name} {year} {day})')
+        row = self._settle(self._mark, n_attempts, label=label, kind=record.get('kind'), low=1,
+                           high=MAX_ATTEMPTS_PER_NETWORK_SOLVE)
+        row.update({'phase': phase['name'], 'record_phase': record.get('phase'), 'attempt_tiers': tiers,
+                    'succeeded': record.get('succeeded')})
+        phase['settled'][label] = n_attempts
+        self._mark = self._snap()
+        return row
+
+    def recorder(self, persist):
+        """The record callback handed to production: `persist(record)` first (the record survives an accounting
+        failure), then `settle_record(record)`."""
+        def sink(record):
+            persist(record)
+            self.settle_record(record)
+        return sink
+
+    def close_phase(self, name):
+        phase = self._open
+        if phase is None or phase['name'] != name:
+            raise RuntimeError(f"solve accounting: close_phase({name}) but the open phase is "
+                               f"{None if phase is None else phase['name']}")
+        missing = [label for label in phase['declared'] if label not in phase['settled']]
+        if missing:
+            raise RuntimeError(f"solve accounting: phase {name} SHORT of its declared blocks: "
+                               f"{len(phase['settled'])} of {len(phase['declared'])} settled; missing {missing[:5]}")
+        attributed = sum(phase['settled'].values())
+        if self.cumulative - phase['cumulative_at_open'] != attributed:
+            raise RuntimeError(f'solve accounting: phase {name} cumulative moved '
+                               f"{self.cumulative - phase['cumulative_at_open']} != attributed {attributed}")
+        check = _check_guard(self.cumulative, f'closing phase {name} (guard == sum of attributed attempts)')
+        summary = {'phase': name, 'n_blocks_declared': len(phase['declared']),
+                   'n_blocks_settled': len(phase['settled']), 'attempts_attributed': attributed,
+                   'n_retried_blocks': sum(1 for n in phase['settled'].values() if n > 1),
+                   'retried_blocks': {label: n for label, n in phase['settled'].items() if n > 1},
+                   'cumulative_after': self.cumulative, 'guard': check}
+        self.phases.append(summary)
+        self._open = None
+        self._mark = None
+        return summary
+
+    def summary(self):
+        out = super().summary()
+        out.update({'phases': self.phases, 'open_phase': None if self._open is None else self._open['name'],
+                    'blocks_declared_total': sum(p['n_blocks_declared'] for p in self.phases),
+                    'attempts_attributed_total': sum(p['attempts_attributed'] for p in self.phases),
+                    'rule': ('W119 (spec v4): exact per declared block -- every record attributed to one declared '
+                             'block of the open phase and its attempts to the tiers primary / recovery / '
+                             'recovery_tier2 in order (1..3); guard delta == attributed attempts per block; cumulative '
+                             'verified exactly after every block; a phase closes only with every declared block '
+                             'settled once and the guard == the sum of attributed attempts; total <= upper bound')})
+        return out
+
+
+def declared_block_networks(UB, planning):
+    """label -> (network name, year, day) of every DSO block (sorted DN, year, day) then every TSO block, the order and
+    labels of `uncoordinated_benchmark.solve_dso_models` / `solve_tso_model`."""
+    out = {}
+    for node_id in sorted(planning.distribution_networks):
+        dn = planning.distribution_networks[node_id]
+        for year in dn.years:
+            for day in dn.days:
+                out[UB.block_label('DSO', node_id, year, day)] = (dn.network[year][day].name, str(year), str(day))
+    tn = planning.transmission_network
+    for year in tn.years:
+        for day in tn.days:
+            out[UB.block_label('TSO', None, year, day)] = (tn.network[year][day].name, str(year), str(day))
+    return out
 
 
 def installed_solve_guard():
@@ -994,7 +1163,47 @@ def _score_predictions(spec, per_arm, claim, sweeps, nrf_failed):
                                            'h': rec['sweep']['n_hours_tn_cannot_accept'],
                                            'failing_blocks': rec['sweep']['failing_blocks']}
             for arm, rec in sweeps.items()}}
+    planner = (spec or {}).get('predictions_recorded_before_any_run_v4')
+    if planner is not None:
+        out['planner_predictions_w119'] = _score_planner_predictions_w119(planner, per_arm, claim, sweeps, nrf_failed)
     out['scoring_note'] = 'outcomes stated beside the frozen predictions; the Planner scores the reasoned ones'
+    return out
+
+
+def _score_planner_predictions_w119(planner, per_arm, claim, sweeps, nrf_failed):
+    """W119: the Planner predictions frozen in spec v4 (key predictions_recorded_before_any_run_v4), each stated against
+    its outcome. Mechanical outcomes only: claim sign (benefit > 0), sweep n in the closed range with the certain block
+    among the failing blocks, NRF feasibility as scored under v3."""
+    out = {'label': planner.get('label')}
+    sign = planner.get('nrf_claim')
+    if sign is not None:
+        benefit = claim.get('benefit_eur') if claim.get('computed') else None
+        out['nrf_claim'] = {'prediction': sign, 'benefit_eur': benefit,
+                            'verdict': claim.get('verdict'), 'determinate': claim.get('determinate'),
+                            'outcome': 'not scoreable' if benefit is None else ('held' if benefit > 0.0 else 'failed')}
+    sweep = planner.get('sweep_n_of_12_unconstrained_arms_cold')
+    if sweep is not None:
+        rows = {}
+        for arm in ('passive', 'price_taker'):
+            pred, rec = sweep.get(arm) or {}, sweeps.get(arm)
+            if rec is None or not pred:
+                rows[arm] = {'prediction': pred, 'outcome': 'not scoreable'}
+                continue
+            n = rec['sweep']['n_blocks_tn_cannot_accept']
+            low, high = pred['n_range']
+            certain = pred['certain_block']
+            in_range = low <= n <= high
+            certain_seen = certain in rec['sweep']['failing_blocks']
+            rows[arm] = {'prediction': pred, 'n': n, 'h': rec['sweep']['n_hours_tn_cannot_accept'],
+                         'failing_blocks': rec['sweep']['failing_blocks'], 'n_in_range': in_range,
+                         'certain_block_failing': certain_seen,
+                         'outcome': 'held' if (in_range and certain_seen) else 'failed'}
+        out['sweep_n_of_12_unconstrained_arms_cold'] = rows
+    feas = planner.get('nrf_arms_feasible_at_every_tso_block')
+    if feas is not None:
+        out['nrf_arms_feasible_at_every_tso_block'] = {
+            'prediction': feas, 'nrf_runs_failed': nrf_failed,
+            'outcome': 'held' if not nrf_failed and len(per_arm) == 2 else ('failed' if nrf_failed else 'not scoreable')}
     return out
 
 
@@ -1205,7 +1414,8 @@ def main(argv=None):
             BENCH._write_json_once(os.path.join(run_dir, 'failure.json'), provenance({
                 'run': run_id, 'error': f'{type(error).__name__}: {error}', 'traceback': traceback.format_exc(),
                 'solve_profile_guard_counts': dict(_GUARD.counts) if _GUARD is not None else None,
-                'record': getattr(error, 'record', None)}))
+                'record': getattr(error, 'record', None),
+                'solve_accounting': _ACCOUNT.summary() if _ACCOUNT is not None else None}))
             code = 1
         BENCH._write_manifest(run_dir)
         _log(f'{run_id}: exit {code}; guard counts {dict(_GUARD.counts)}')
