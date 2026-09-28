@@ -1,0 +1,13 @@
+[2026-09-28T15:09:57.011658+00:00] preregistration verified: data/SRP1/Results/P515S53/w112_consensus_gap/w112_preregistration_v1_ba384b28.json sha256 ba384b28935037d06f8ebb6132d60654b788de3edde0c03a708eed36f6b38090
+[2026-09-28T15:09:57.270609+00:00] 22 inputs verified against their campaign manifests
+Traceback (most recent call last):
+  File "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/p515_s53_w112_consensus_gap.py", line 637, in <module>
+    sys.exit(manifest() if '--manifest' in sys.argv else run())
+                                                         ^^^^^
+  File "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/p515_s53_w112_consensus_gap.py", line 423, in run
+    pi_c, w_c = _price_weight(details[c])
+                ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/p515_s53_w112_consensus_gap.py", line 165, in _price_weight
+    if dd['n_market_scenarios'] != 1 or dd['n_operation_scenarios'] != 1:
+       ~~^^^^^^^^^^^^^^^^^^^^^^
+KeyError: 'n_market_scenarios'
