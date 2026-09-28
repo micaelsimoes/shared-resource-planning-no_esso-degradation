@@ -243,7 +243,9 @@ def curtailment_signed_parts_record():
 
 
 def build_spec_v2(v1):
-    fresh = W106.build_spec(2)                  # W106's builder on the current code: the identity check
+    # W106's builder on the current code: the identity check. Compared as written (JSON round trip through the same
+    # writer v1 was frozen with), since the builder returns tuples where the frozen file holds lists.
+    fresh = json.loads(GRIO.dumps(W106.build_spec(2), indent=1, sort_keys=True))
     mismatched = [k for k in V1_REBUILT_IDENTICAL_KEYS if fresh.get(k) != v1.get(k)]
     if mismatched:
         raise RuntimeError(f'current code does not rebuild v1 for keys {mismatched}; refusing to freeze')
