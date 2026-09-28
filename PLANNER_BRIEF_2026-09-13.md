@@ -2394,6 +2394,35 @@ certify, adopt the larger ρ_ess. Report cycles, EFC trajectory, step sizes, fai
 - **Order:** C\* diagnostic → benchmark look + common-Q gate + arms → phase-mismatched 8 cells →
   **stop for review** (campaign threshold final; VM decision; benchmark report).
 
+# Addendum 55 — benchmark gate C4 scope; negative curtailment in the shared helper (2026-09-28)
+
+- **Ruling — option (a).** The failing C4 row (node 7, 2030 Summer, hour 6: DSO-side and TSO-side λ
+  0.058 apart against 0.05) is a **consensus-agreement** quantity, not a units quantity: units errors
+  are systematic factors and every true units item reproduces to ≈ 1e-13. The S48 point is the old
+  cycle-132 certificate, which Addenda 50–54 established was residual-certified but unsettled, so an
+  incomplete dual agreement there is expected, and the same item passes at 0.026 on the settled
+  cycle-181 models. Moving the item to the settled models is the scope Addendum 54 already gave the
+  look; it is not a tolerance widened after the fact. **Tolerance stays 0.05 €/MWh.** Benchmark spec
+  v2, zero solves. Record the 0.058 → 0.026 tightening as a settling datum, and keep the row's
+  address: node 7, Summer, hour 6 is a candidate λ ≠ π hour for the mechanism table.
+- **The −19.24 € TSO curtailment is investigated before any arm is reported** — bounded to records,
+  ≤ 30 min. A negative curtailment is sign-impossible; at 1 €/MWh it is ≈ 19 MWh block-weighted,
+  three or more orders above anything IPOPT's bound relaxation could produce, so it is either an
+  availability-profile mismatch in the helper (wrong scenario, hour or scaling field) or a TN RES
+  unit whose model bound is not its availability. Identify the block, unit and hours and the
+  mechanism. If the helper is wrong, fix it and **re-run the common-Q gate**; if the model bound is
+  the cause, it is in production's certified Q as well — report it, do not change the model. A
+  sign-impossible value in a helper every arm shares is exactly what the log-derived-quantity rule
+  exists for.
+- **Launcher self-collision (C\* refusal):** the W108 fix, the v41 re-freeze identical but for code
+  pins, per-check refusal logging and the dry-run to solver start are approved as stated. Pattern
+  to note in CLAUDE.md alongside the gate-writer rule: **a pre-run check that scans committed
+  artefacts excludes the run's own.** The look's usability rule, the frozen W93 settings and the
+  curtailment figures (589.43 at cycle 181 vs 589.18 at 132; 660.65 MWh raw) are accepted as
+  confirmed.
+- **Order unchanged:** C\* diagnostic (v41) → curtailment look → benchmark spec v2 → λ look + common-Q
+  gate + arms → phase-mismatched 8 cells → stop for review.
+
 ## Update obligations
 
 At the end of Step 1 the Planner rewrites the "CURRENT SOURCE OF TRUTH" head of

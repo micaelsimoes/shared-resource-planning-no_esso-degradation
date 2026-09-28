@@ -204,6 +204,13 @@ incidents behind each rule are in `REVISION_CONTEXT.md`, section
   `"True"`; W74–W76 patched two writers, and W98's new hooks wrote the same string, failing G14
   on every line of the 3×3 continuation because the gate checks `is True`. Gate results are
   now written only through the shared writer (Addendum 52).
+- A pre-run check that scans committed artefacts excludes the run's own. A collision or
+  uniqueness check over committed specs, keys or outputs must exclude the campaign root it is
+  about to launch, or it will match the artefact the freeze itself committed. W105's `tests_K`
+  required the C\* extension's eval key to appear in no committed campaign spec; W105 then
+  committed that very spec, and the launcher refused on every attempt, with zero solves — while
+  the sibling `pre_launch_assertion` already excluded its own root. Refusals must also log which
+  check failed, not only that one did (Addendum 55).
 - Validate a fit only on points it did not use. Agreement with the points a fit was fitted to
   is not a prediction; a model with k parameters passes through k points by construction.
   Report the held-out error beside the estimate. In the 3×3 continuation the Planner reported a
