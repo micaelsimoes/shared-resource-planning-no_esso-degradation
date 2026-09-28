@@ -1415,13 +1415,22 @@ def build_consistency_reevaluation_block(dso_block, network, *, v_actual_dn_pu):
     (e = V, f = 0), the voltage and thermal limit rows DEACTIVATED (evaluated afterwards by
     `consistency_violations`), node-voltage and reference-generator bounds RELAXED (their original bounds recorded),
     and every row left without a free variable deactivated with its residual recorded. The result is the DN power
-    flow at the actual voltage. Returns (clone, record)."""
+    flow at the actual voltage. Returns (clone, record).
+    W121 (benchmark spec v5; defect found by W120): the fixed reference-bus e and f are made ADMISSIBLE at the fixed
+    value -- their bounds are cleared (and recorded under 'reference_voltage_setpoint_bounds_cleared') before they are
+    fixed, as the loop below does for the unfixed e/f. Those bounds are the DSO's voltage SETPOINT, not a physical DN
+    limit: model_construction_helpers.e_bounds gives the DN reference bus vg +/- SMALL_TOLERANCE (vg = 1.0 on SRP1:
+    [0.9999, 1.0001]) and f_bounds +/- EQUALITY_TOLERANCE. Kept, the fixed e at a TN voltage outside that band made
+    Pyomo's NL writer raise InfeasibleConstraintException before any IPOPT launch. The reference bus's PHYSICAL limits
+    (vmag_sqr_bounds: node.v_min^2, node.v_max^2, hard at a BUS_REF node) are unchanged: recorded in
+    'original_vmag_sqr_bounds' like every bus and checked afterwards by `consistency_violations` (hard)."""
     m = dso_block.clone()
     ref_idx = network.get_node_idx(network.get_reference_node_id())
     ref_gen = network.get_reference_gen_idx()
     record = {'n_decisions_fixed': 0, 'n_slacks_zeroed': 0, 'original_vmag_sqr_bounds': {},
               'original_ref_gen_bounds': {}, 'relaxed_row_families': list(VOLTAGE_LIMIT_ROWS + THERMAL_LIMIT_ROWS),
-              'trivial_rows_deactivated': 0, 'trivial_row_max_violation': 0.0}
+              'trivial_rows_deactivated': 0, 'trivial_row_max_violation': 0.0,
+              'reference_voltage_setpoint_bounds_cleared': {}}
     for family in DSO_DECISION_VAR_FAMILIES:
         component = getattr(m, family, None)
         if component is None:
@@ -1452,8 +1461,13 @@ def build_consistency_reevaluation_block(dso_block, network, *, v_actual_dn_pu):
     for s_m in m.scenarios_market:
         for s_o in m.scenarios_operation:
             for p in m.periods:
-                m.e[ref_idx, s_m, s_o, p].fix(float(v_actual_dn_pu[p]), skip_validation=True)
-                m.f[ref_idx, s_m, s_o, p].fix(0.0, skip_validation=True)
+                # W121: the setpoint bounds cleared (recorded) so the fixed value is admissible; value unchanged
+                for var_data, value in ((m.e[ref_idx, s_m, s_o, p], float(v_actual_dn_pu[p])),
+                                        (m.f[ref_idx, s_m, s_o, p], 0.0)):
+                    record['reference_voltage_setpoint_bounds_cleared'][var_data.name] = (var_data.lb, var_data.ub)
+                    var_data.setlb(None)
+                    var_data.setub(None)
+                    var_data.fix(value, skip_validation=True)
                 for var_data in (m.pg[ref_gen, s_m, s_o, p], m.qg[ref_gen, s_m, s_o, p]):
                     record['original_ref_gen_bounds'][var_data.name] = (var_data.lb, var_data.ub)
                     var_data.setlb(None)

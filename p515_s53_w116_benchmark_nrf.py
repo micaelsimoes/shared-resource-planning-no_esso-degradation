@@ -70,13 +70,23 @@ report (). W114's module installs its own guard at import; the sweep imports it 
 W114's at once (LIFO), recording that. Each run refuses unless: no campaign / legacy / W93 / W116 lock, no forbidden live
 process (the p515_s4* campaign children, the G1-G4 gates, any other p515_s53_* process), production and these files clean
 in git, its output directory absent, its IPOPT log dir absent, and the frozen spec binds (`frozen_spec_binding_failures`;
-version >= FROZEN_SPEC_MIN_VERSION = 4 since W119: v3 47b37d6e no longer binds a stage).
+version >= FROZEN_SPEC_MIN_VERSION = 5 since W121: v4 a50ed4c3 no longer binds a stage).
 
-COMMANDS: the frozen spec (v4) lists them (attached, alone, one at a time, both streams to a new log, noclobber):
-    mkdir -p data/SRP1/Results/P515S53/w116_benchmark_nrf/launch_logs
-    set -o noclobber && /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python -u p515_s53_w116_benchmark_nrf.py --stage sweep --arm passive > data/SRP1/Results/P515S53/w116_benchmark_nrf/launch_logs/sweep_passive_cold.log 2>&1
-    ... (--stage sweep --arm price_taker; --stage nrf-arm --arm A --start S; --stage nrf-passive-tie-breaker --value V;
-         --stage report; log name = <run_id>.log)
+SPEC v5 (Planner task W121, after W120 4858b3a5 stopped at nrf_arm_passive_cold phase B on a code defect in
+`uncoordinated_benchmark.build_consistency_reevaluation_block`, fixed in W121): the six NRF arm stages and the two
+tie-breakers run under NEW run ids with the suffix RUN_ID_SUFFIX_V5 = '_r2' (`nrf_arm_passive_cold` and its IPOPT log
+dir p515s53w116_nrf_arm_passive_cold are consumed; CONSUMED_RUNS_V4). The two sweeps are DONE (W120) and are NOT re-run:
+the report reads their committed results sha-verified (SWEEPS_DONE_W120). The report run id is unchanged (report_v3: the
+v3 report format; it has never run). Accounting (W121): a solve that ENTERED the guard and died before production
+produced a record (W120: guard solve 49 / exec 48 against 48 attributed -- the NL writer raised inside OptSolver.solve)
+is reported explicitly as "entered but aborted before record" (`DeclaredBlockAccount.aborted_entry`, in the summary and
+in failure.json), and every later record, phase open or phase close raises on it; it is never absorbed.
+
+COMMANDS: the frozen spec (v5: remaining_stage_commands_v5) lists them (attached, alone, one at a time, both streams
+to a new log, noclobber), e.g.
+    set -o noclobber && /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python -u p515_s53_w116_benchmark_nrf.py --stage nrf-arm --arm passive --start cold > data/SRP1/Results/P515S53/w116_benchmark_nrf/launch_logs/nrf_arm_passive_cold_r2.log 2>&1
+    ... (--stage nrf-arm --arm A --start S; --stage nrf-passive-tie-breaker --value V; --stage report; log name =
+         <run_id>.log; the sweeps --stage sweep --arm A are DONE under v4 and not re-run)
 Exit 0 = completed with every gate of the stage passed; 1 = a gate or a solve failed; 2 = refused (precondition).
 """
 
@@ -105,21 +115,25 @@ import p515_s53_w93_uncoordinated_benchmark as BENCH  # noqa: E402 -- stdlib + H
 # ======================================================================================================================
 STAGE = ('P5.15 Addendum 57 W116 -- uncoordinated benchmark spec v3: no-reverse-flow arms, the feasibility sweep of the '
          'unconstrained arms, the coordinated reverse-flow count; spec v4 (W119): per-block exact solve accounting of '
-         'the NRF arm and tie-breaker stages')
+         'the NRF arm and tie-breaker stages; spec v5 (W121): the consistency re-evaluation admits the fixed reference '
+         'voltage (setpoint bounds cleared), NRF arms and tie-breakers under _r2 run ids, the sweeps carried from W120')
 AUTHORITY = BENCH.AUTHORITY + [
     'PLANNER_BRIEF_2026-09-13.md Addendum 56 (curtailment reporting: net primary, positive / negative parts, raw MWh)',
     'PLANNER_BRIEF_2026-09-13.md Addendum 57 Decision 1 ((a) sweep, report-only; (b) no-reverse-flow arms, claim vs the '
     'best NRF arm; zero-solve reverse-flow count of the coordinated Q181 solution)',
     'TASKS.md Addendum 57 order (W116)', 'Planner task W116 (benchmark spec v3)',
     'Planner task W119 (benchmark spec v4: per-block exact solve accounting of the NRF arm and tie-breaker stages; '
-    'Planner predictions and rulings recorded)']
+    'Planner predictions and rulings recorded)',
+    'Planner task W121 (benchmark spec v5: consistency re-evaluation defect found by W120 fixed -- the DN reference-bus '
+    'setpoint band is not a physical limit; _r2 run ids; the W120 sweeps carried by reference and sha; aborted solve '
+    'entries reported)']
 SCRIPT_NAME = os.path.basename(__file__)
 OUT_ROOT_REL = os.path.join('data', 'SRP1', 'Results', 'P515S53', 'w116_benchmark_nrf')
 LAUNCH_LOGS_REL = os.path.join(OUT_ROOT_REL, 'launch_logs')
 CHECKS_DIR_REL = os.path.join(OUT_ROOT_REL, 'w116_zero_solve_checks')
 REVERSE_FLOW_OUTPUT_REL = os.path.join(CHECKS_DIR_REL, 'reverse_flow_count_q181.json')
 FROZEN_SPEC_GLOB = 'frozen_s53_benchmark_spec_v*_*.json'
-FROZEN_SPEC_MIN_VERSION = 4           # W119: spec v4 (v3 47b37d6e superseded before any stage ran under it)
+FROZEN_SPEC_MIN_VERSION = 5           # W121: spec v5 (v4 a50ed4c3 superseded after W120 stopped on a code defect)
 LOCK_PATH = os.path.join(REPO, '.p515_s53_w116_benchmark.lock')
 EVAL_ID_PREFIX = 'p515s53w116_'       # isolated IPOPT log dir: p56a_oracle.WORK_DIR/<EVAL_ID_PREFIX><run_id>/logs
 W114_SCRIPT = 'p515_s53_w114_passive_infeasibility.py'
@@ -154,11 +168,43 @@ W113_COLD = {
                                 'sha256': '9777d0b8f245390fec6db971a96cf00f453eb5178e19e1272c156a3ed417e809'}},
 }
 
-NRF_ARM_RUN_IDS = [f'nrf_arm_{a}_{s}' for a in ('passive', 'price_taker')
+# W121 (spec v5): every NRF arm and tie-breaker stage runs under a NEW run id (suffix '_r2'); the v4 ids are not reused
+RUN_ID_SUFFIX_V5 = '_r2'
+NRF_ARM_RUN_IDS = [f'nrf_arm_{a}_{s}{RUN_ID_SUFFIX_V5}' for a in ('passive', 'price_taker')
                    for s in ('cold', 'warm_from_certified', 'perturbed')]
-NRF_VARIANT_RUN_IDS = ['nrf_passive_tie_breaker_0p1', 'nrf_passive_tie_breaker_10']
+NRF_VARIANT_RUN_IDS = [f'nrf_passive_tie_breaker_0p1{RUN_ID_SUFFIX_V5}', f'nrf_passive_tie_breaker_10{RUN_ID_SUFFIX_V5}']
 SWEEP_RUN_IDS = ['sweep_passive_cold', 'sweep_price_taker_cold']
 REPORT_RUN_ID = 'report_v3'
+# W120 (commit 4858b3a5, spec v4): the two sweeps ran to completion (exit 0) and are NOT re-run; the report reads their
+# committed results, sha256 as in w120_evidence_manifest_sha256.json
+W120_COMMIT = '4858b3a57d041b88627b2892302acb39a8550a41'
+SWEEPS_DONE_W120 = {
+    run_id: {'result': {'path': os.path.join(OUT_ROOT_REL, run_id, f'{run_id}.json'), 'sha256': sha_result},
+             'per_solve_record': {'path': os.path.join(OUT_ROOT_REL, run_id, 'per_solve_record.jsonl'),
+                                  'sha256': sha_records},
+             'manifest': {'path': os.path.join(OUT_ROOT_REL, run_id, 'manifest_sha256.json'), 'sha256': sha_manifest},
+             'committed_in': W120_COMMIT}
+    for run_id, sha_result, sha_records, sha_manifest in (
+        ('sweep_passive_cold', 'e89fe20e99210e8477185f7962a15fff8e54f234e0b3207ef737231c7f730b9f',
+         '7706f2617270c58f3f5f5073dc2208c36f2f9d5a97a4673b2995b2e4a953ca22',
+         'cf1c853bb5efb5286f2c3a4f115fc33d42528f13e2d34e2462b9435928ea60bd'),
+        ('sweep_price_taker_cold', 'd84d3237fdeb5627e1df2f75599beb4c60456b1fcd2ab4bde66dd47d768bf785',
+         '8e9dde57aeffb56c7776d5ecaea1a0369f43012ab37d8be6265bcfbfadb171d2',
+         'd9128db8be8eb9601cef38d228c261a697ed4f855db71dc2ec2472b4ab13c782'))}
+# W120: the v4 run id consumed by the stopped stage (its run directory and IPOPT log dir exist and are kept as evidence)
+CONSUMED_RUNS_V4 = {
+    'nrf_arm_passive_cold': {
+        'failure': {'path': os.path.join(OUT_ROOT_REL, 'nrf_arm_passive_cold', 'failure.json'),
+                    'sha256': '0d28d7903f05fb867021be7ec6f8d46b020b68cb53fc8b76d7c50a5bc1d0a7b5'},
+        'per_solve_record': {'path': os.path.join(OUT_ROOT_REL, 'nrf_arm_passive_cold', 'per_solve_record.jsonl'),
+                             'sha256': 'a2c08ae977053d8187ee335bca96d32619511ef9855e35c1a4f10a598bbca21e'},
+        'ipopt_log_dir_eval_id': 'p515s53w116_nrf_arm_passive_cold',
+        'ipopt_logs_hash_record': {'path': os.path.join(OUT_ROOT_REL, 'w120_ipopt_logs_hash_record_sha256.json'),
+                                   'sha256': '66f9c76ad2fc0f63c0823d0af691bbf1aa520de056e2260871144135f40bd285'},
+        'committed_in': W120_COMMIT, 'replaced_by': f'nrf_arm_passive_cold{RUN_ID_SUFFIX_V5}',
+        'reason': ('stopped in phase B: the re-evaluation clone fixed the DN reference e at the TN voltage 1.1 p.u. '
+                   'outside its unrelaxed setpoint bounds [0.9999, 1.0001]; Pyomo NL writer '
+                   'InfeasibleConstraintException before any IPOPT launch (code defect, fixed in W121)')}}
 PERMITTED_ARM_SITES = (('uncoordinated_benchmark.py', '_solve_block'),)
 PERMITTED_SWEEP_SITES = (('uncoordinated_benchmark.py', '_solve_block'), (W114_SCRIPT, 'elastic_solve'))
 
@@ -168,6 +214,8 @@ MAX_ATTEMPTS_PER_NETWORK_SOLVE = 3
 # writes (`log_suffix or 'primary'`; network._run_smopf passes log_suffix 'recovery' then 'recovery_tier2')
 ATTEMPT_TIERS = ('primary', 'recovery', 'recovery_tier2')
 E3_LAUNCHES_PER_FAILING_BLOCK = 1
+# W121: how an accounting ledger names a solve that entered the guard and died before production produced a record
+ABORTED_ENTRY_STATUS = 'entered but aborted before record'
 E3_VARIANT_LABEL = 'E3_interface_P_elastic_Q_hard'
 E3_ROWS = ('uncoord_interface_p_fixed',)
 SRP1_DECLARED_V3 = {
@@ -737,7 +785,11 @@ class DeclaredBlockAccount(BlockSolveAccount):
     attempts. RAISES on: a record outside an open phase or for an undeclared / already-settled block (unattributed), a
     guard delta above the attempts (an unattributed solve before the record) or below them, tiers out of order or above
     three, a wrong network, a phase closed short of its declared blocks, a solve after the last record of a phase
-    (guard above the attributed sum at close), a cumulative above `upper_bound`."""
+    (guard above the attributed sum at close), a cumulative above `upper_bound`.
+    W121: a solve that ENTERED the guard and died before production produced a record (W120: the Pyomo NL writer raised
+    inside OptSolver.solve -- guard solve 49 / exec 48 against 48 attributed) is reported explicitly by
+    `aborted_entry()` as "entered but aborted before record" (in `summary()`, hence in failure.json); a later record, a
+    phase open or a phase close raises on it with that text. It is never absorbed."""
 
     def __init__(self, guard, upper_bound, block_networks):
         super().__init__(guard, upper_bound)
@@ -754,6 +806,10 @@ class DeclaredBlockAccount(BlockSolveAccount):
         if not labels or len(set(labels)) != len(labels) or undeclared:
             raise RuntimeError(f'solve accounting: phase {name} declares an empty, repeated or unknown block list '
                                f'(unknown {undeclared[:3]})')
+        aborted = self.aborted_entry()
+        if aborted is not None:
+            raise RuntimeError(f'SolveProfileGuard / solve accounting: phase {name} opened with {aborted["status"]}: '
+                               f'{aborted}')
         _check_guard(self.cumulative, f'opening phase {name} (nothing unattributed before it)')
         self._open = {'name': name, 'declared': labels, 'record_phases': tuple(record_phases), 'settled': {},
                       'cumulative_at_open': self.cumulative}
@@ -784,6 +840,12 @@ class DeclaredBlockAccount(BlockSolveAccount):
         if foreign:
             raise RuntimeError(f'solve accounting: {label} carries attempts of another network {foreign[:3]} '
                                f'(expected {network_name} {year} {day})')
+        solves, execs = self._snap()
+        excess = (solves - self._mark[0]) - n_attempts
+        if excess > 0:
+            raise RuntimeError(f'solve accounting FAILED at {label}: guard delta solve {solves - self._mark[0]} / exec '
+                               f'{execs - self._mark[1]} above the recorded attempts {n_attempts}: {excess} solve(s) '
+                               f'{ABORTED_ENTRY_STATUS} (or unattributed) before this record -- not absorbed')
         row = self._settle(self._mark, n_attempts, label=label, kind=record.get('kind'), low=1,
                            high=MAX_ATTEMPTS_PER_NETWORK_SOLVE)
         row.update({'phase': phase['name'], 'record_phase': record.get('phase'), 'attempt_tiers': tiers,
@@ -791,6 +853,29 @@ class DeclaredBlockAccount(BlockSolveAccount):
         phase['settled'][label] = n_attempts
         self._mark = self._snap()
         return row
+
+    def aborted_entry(self):
+        """W121: the solves that ENTERED the guard since the last attributed record of the open phase (or since the
+        last phase closed) with no record: None when the guard equals the attributed count, else a dict reported as
+        ABORTED_ENTRY_STATUS -- solves entered, process launches, the phase and the declared block in progress (the
+        first declared block of the open phase not yet settled; production solves in the declared order). W120's case
+        is 1 solve entered and 0 launched: the Pyomo NL writer raised inside OptSolver.solve before any IPOPT launch,
+        so no record exists."""
+        solves, execs = self._snap()
+        base = self._mark if self._open is not None else (self.cumulative, self.cumulative)
+        d_solve, d_exec = solves - base[0], execs - base[1]
+        if d_solve == 0 and d_exec == 0:
+            return None
+        phase = self._open
+        in_progress = None if phase is None else next(
+            (label for label in phase['declared'] if label not in phase['settled']), None)
+        return {'status': ABORTED_ENTRY_STATUS, 'solves_entered': d_solve, 'process_launches': d_exec,
+                'launched': d_exec > 0,
+                'where': ('before any process launch (e.g. in the Pyomo NL writer, as in W120)' if d_exec == 0 else
+                          'after a process launch, before production produced a record'),
+                'phase': None if phase is None else phase['name'], 'block_in_progress': in_progress,
+                'attributed_cumulative': self.cumulative, 'guard_counts': dict(self.guard.counts),
+                'absorbed': False}
 
     def recorder(self, persist):
         """The record callback handed to production: `persist(record)` first (the record survives an accounting
@@ -805,6 +890,10 @@ class DeclaredBlockAccount(BlockSolveAccount):
         if phase is None or phase['name'] != name:
             raise RuntimeError(f"solve accounting: close_phase({name}) but the open phase is "
                                f"{None if phase is None else phase['name']}")
+        aborted = self.aborted_entry()
+        if aborted is not None:
+            raise RuntimeError(f'SolveProfileGuard / solve accounting: phase {name} closing with {aborted["status"]}: '
+                               f'{aborted}')
         missing = [label for label in phase['declared'] if label not in phase['settled']]
         if missing:
             raise RuntimeError(f"solve accounting: phase {name} SHORT of its declared blocks: "
@@ -827,6 +916,7 @@ class DeclaredBlockAccount(BlockSolveAccount):
     def summary(self):
         out = super().summary()
         out.update({'phases': self.phases, 'open_phase': None if self._open is None else self._open['name'],
+                    'entered_but_aborted_before_record': self.aborted_entry(),
                     'blocks_declared_total': sum(p['n_blocks_declared'] for p in self.phases),
                     'attempts_attributed_total': sum(p['attempts_attributed'] for p in self.phases),
                     'rule': ('W119 (spec v4): exact per declared block -- every record attributed to one declared '
@@ -1224,7 +1314,8 @@ def stage_report(run_dir):
     gate, look, coupling = v2['common_q_gate'], v2['lambda_look'], v2['tso_coupling_check']
     arms = {run_id: load(run_id) for run_id in NRF_ARM_RUN_IDS}
     variants = {run_id: load(run_id) for run_id in NRF_VARIANT_RUN_IDS}
-    sweeps = {run_id: load(run_id) for run_id in SWEEP_RUN_IDS}
+    # W121: the sweeps are W120's committed results, sha-verified (raises on a mismatch); never re-run
+    sweeps = {run_id: _load_verified_json(SWEEPS_DONE_W120[run_id]['result']) for run_id in SWEEP_RUN_IDS}
     reverse = None
     reverse_path = _abs(REVERSE_FLOW_OUTPUT_REL)
     if os.path.exists(reverse_path):
@@ -1238,15 +1329,16 @@ def stage_report(run_dir):
     band_coord = BENCH.COORDINATED_REPRODUCIBILITY_BAND_REL * q_coord
     per_arm = {}
     for arm in ('passive', 'price_taker'):
-        costs = {s: arms[f'nrf_arm_{arm}_{s}']['arm_cost']['gross_operational_cost']
-                 for s in ('cold', 'warm_from_certified', 'perturbed') if arms.get(f'nrf_arm_{arm}_{s}') is not None}
+        costs = {s: arms[f'nrf_arm_{arm}_{s}{RUN_ID_SUFFIX_V5}']['arm_cost']['gross_operational_cost']
+                 for s in ('cold', 'warm_from_certified', 'perturbed')
+                 if arms.get(f'nrf_arm_{arm}_{s}{RUN_ID_SUFFIX_V5}') is not None}
         if costs:
             best_start = min(costs, key=costs.get)
             per_arm[arm] = {'q_by_start': costs, 'q_best': costs[best_start], 'best_start': best_start,
                             'multimodality_band_eur': max(costs.values()) - min(costs.values()),
                             'n_starts': len(costs),
-                            'arm_cost_source_by_start': {s: arms[f'nrf_arm_{arm}_{s}']['arm_cost']['source']
-                                                         for s in costs}}
+                            'arm_cost_source_by_start': {
+                                s: arms[f'nrf_arm_{arm}_{s}{RUN_ID_SUFFIX_V5}']['arm_cost']['source'] for s in costs}}
     if gate is None or gate.get('status') != 'PASS':
         claim = {'computed': False, 'reason': 'common-Q gate (spec v2, read-only) has not PASSED'}
     elif len(per_arm) == 2 and all(p['n_starts'] == 3 for p in per_arm.values()):
@@ -1278,7 +1370,7 @@ def stage_report(run_dir):
     else:
         claim = {'computed': False, 'reason': f'NRF arm runs missing or failed: missing {missing}; failed {nrf_failed}'}
     value_independence = {}
-    base = arms.get('nrf_arm_passive_cold')
+    base = arms.get(f'nrf_arm_passive_cold{RUN_ID_SUFFIX_V5}')
     for run_id, rec in variants.items():
         if base is None or rec is None:
             continue
@@ -1319,6 +1411,8 @@ def stage_report(run_dir):
     guard = _check_guard(0, 'report end')
     result = provenance({
         'run': REPORT_RUN_ID, 'solve_profile_guard': guard, 'missing_inputs': missing, 'failed_runs': nrf_failed,
+        'sweeps_read_from_w120': {run_id: dict(entry) for run_id, entry in SWEEPS_DONE_W120.items()},
+        'consumed_runs_v4': CONSUMED_RUNS_V4,
         'report_capture_check': capture,
         'v2_inputs_read_only': {name: {**entry, 'committed_in': V2_STAGE_OUTPUTS_COMMITTED_IN}
                                 for name, entry in V2_STAGE_OUTPUTS.items()},
@@ -1352,9 +1446,9 @@ def _run_id(args):
     if args.stage == 'sweep':
         return f'sweep_{args.arm}_cold'
     if args.stage == 'nrf-arm':
-        return f'nrf_arm_{args.arm}_{args.start}'
+        return f'nrf_arm_{args.arm}_{args.start}{RUN_ID_SUFFIX_V5}'
     if args.stage == 'nrf-passive-tie-breaker':
-        return 'nrf_passive_tie_breaker_' + {0.1: '0p1', 10.0: '10'}[args.value]
+        return 'nrf_passive_tie_breaker_' + {0.1: '0p1', 10.0: '10'}[args.value] + RUN_ID_SUFFIX_V5
     if args.stage == 'report':
         return REPORT_RUN_ID
     raise ValueError(args.stage)
@@ -1415,7 +1509,11 @@ def main(argv=None):
                 'run': run_id, 'error': f'{type(error).__name__}: {error}', 'traceback': traceback.format_exc(),
                 'solve_profile_guard_counts': dict(_GUARD.counts) if _GUARD is not None else None,
                 'record': getattr(error, 'record', None),
-                'solve_accounting': _ACCOUNT.summary() if _ACCOUNT is not None else None}))
+                'solve_accounting': _ACCOUNT.summary() if _ACCOUNT is not None else None,
+                'solve_accounting_entered_but_aborted_before_record': (_ACCOUNT.aborted_entry()
+                                                                       if _ACCOUNT is not None else None)}))
+            if _ACCOUNT is not None and _ACCOUNT.aborted_entry() is not None:
+                _log(f'{run_id}: solve accounting: {_ACCOUNT.aborted_entry()}')
             code = 1
         BENCH._write_manifest(run_dir)
         _log(f'{run_id}: exit {code}; guard counts {dict(_GUARD.counts)}')
