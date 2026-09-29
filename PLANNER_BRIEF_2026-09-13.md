@@ -2514,6 +2514,60 @@ Rulings on `P5_15_ADDENDUM54_56_CONSOLIDATED_NOTE.md` (`ce96d492`).
   rest of the nine (ten) cells → **stop for review** with the benchmark report, the settled
   differences in gross and Q_cc, and the recomputed triage.
 
+# Addendum 58 — coordination benefit measured; F2 dead zone; year ladder is convention-dependent (2026-09-29)
+
+Rulings on `P5_15_ADDENDUM57_BENCHMARK_AND_RESETTLE_REPORT.md` (`5612b8f1`).
+
+- **Benchmark accepted; the claim as the manuscript states it.** Coordination beats the best static
+  no-reverse-flow arrangement by **+90.9 M€ (13.9 %)**, determinate, like-for-like reviewed: +70.2 M€ of
+  TSO conventional energy (0.81 TWh of TN renewables the uncoordinated DSOs leave curtailed by
+  mis-timing their demand against the hours when TN renewables are free) and +20.7 M€ of DN flexibility;
+  the 4 reverse-flow interface-hours in the coordinated solution (of 864) mean the benefit is not the
+  value of allowing reverse flow, and the paper says so. Without any interface rule the TN cannot accept
+  the DSOs' exchange in 1/12 blocks (passive) and 8/12 (price-taker). **Interpretation sentence,
+  mandatory:** the benefit is the value of dispatching DN flexibility against the TN's marginal value
+  λ_t rather than the wholesale price π_t; coordination — or a locational real-time signal computed by
+  the TSO, which is coordination by another name — delivers it, a static rule with wholesale exposure
+  does not. This pre-empts the "a tariff would do that" objection with the mechanism rather than a
+  denial. **Predictions:** the expert's (Addendum 49: proper coordination resolvable and positive,
+  living where λ_t ≠ π_t) held; the Advisor's "inside the band" missed; nobody predicted the size.
+  **Both arms are tabulated**, not only the best; and **the two blocks where coordination does not
+  hold are reported with their magnitude against the DSO multimodality band**: within the band →
+  stated as such; beyond it → the coordinated point in that block is a worse local optimum of the
+  joint problem than the static arm's, the certified Q(x = 0) is an upper bound there, and the paper
+  says so as a limitation (a warm-started re-solve from the arm's point is a post-review check, not
+  now). The 18.25 % figure is replaced, not restored: different recourse, different definition.
+- **Ruling 1 — F2 pair: report as is.** The gap clause refused a settled objective because of a
+  **dual dead zone** in one TSO hour: storage discharge drives the TN's conventional output to its
+  lower bound while DN flexibility is marginal, so the interface dual is set-valued (λ ∈ [0, c_flex])
+  and consensus converges at the pace of a degenerate dual — a known ADMM property, not a defect, and
+  ≈ 500 cycles is not worth buying. Report both F2 cells as "objective settled; interface-consensus
+  gap unresolved (degenerate dual, documented)", with margins in gross and Q_cc; the F2 conclusion
+  (storage pays at ×2; a two-node plan emerges) stands if the +102 k€ margin exceeds 3 × max(gap,
+  slack) in both terms, with the caveat stated. Manuscript limitations paragraph: when the TN's
+  marginal cost is degenerate, the interface dual is set-valued and certification reports the case.
+  The post-revision tie-breaker (ESSO economic term, Addendum 56's cleanup) removes the dead zone.
+- **Ruling 2 — pb_y2025_n5 accepted, flagged.** An "Acceptable" IPOPT exit meets the acceptable
+  tolerances, so its objective slack is bounded and far below the 51 k€ margin. **Future specs:** a
+  certifying cycle requires `Optimal Solution Found` on every block; a non-Optimal accepted solve
+  makes the cycle non-certifying (retry, or the count restarts).
+- **Ruling 3 — the year ladder is convention-dependent, and the paper says so.** Gross (the frozen
+  convention, no salvage) has 2035 worse than 2030 by +42.5 k€, determinate; net of salvage the
+  difference is −2.3 k€, within resolution. The mechanism is the convention: without salvage a later
+  investment pays full cost for life left unused at the horizon. **Primary stays gross** (author's
+  earlier decision, Addendum 25 era); the year-ladder row carries the net-of-salvage figure beside it
+  and one sentence: the investment-year comparison in this instance is decided by the salvage
+  convention, not by operation. Whether the ladder stays in the baseline tables is the author's
+  call; x = 0 optimal does not depend on it.
+- **Machine time (author).** 37 cells, ≈ 50–60 h on the Mac; the VM is not available. Expert's
+  recommendation: run them, in **manuscript-priority order** so the paper can be drafted on settled
+  numbers as they land — Phase A ladders (the affine slope) → flexibility ladder (break-even ×2) →
+  ageing → the remainder — then the Step 5 rows (≈ 10 cells). Step 6 drafting proceeds in parallel
+  on the settled results already in hand (benchmark, 3 × 3, references, Phase B, year ladder).
+- **Order:** author's machine-time ruling → campaign in priority order, reports at each claim's
+  completion (no stop between claims unless a prediction fails) → Step 5 rows → **stop for review**
+  before Step 6 tables are frozen.
+
 ## Update obligations
 
 At the end of Step 1 the Planner rewrites the "CURRENT SOURCE OF TRUTH" head of
