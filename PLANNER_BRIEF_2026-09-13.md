@@ -2567,6 +2567,20 @@ Rulings on `P5_15_ADDENDUM57_BENCHMARK_AND_RESETTLE_REPORT.md` (`5612b8f1`).
 - **Order:** author's machine-time ruling → campaign in priority order, reports at each claim's
   completion (no stop between claims unless a prediction fails) → Step 5 rows → **stop for review**
   before Step 6 tables are frozen.
+- **Supplement (2026-09-29) — ageing arms at minimum SoH 0.70, option (b), overriding the Planner's
+  (a).** The baseline is C2 with the 0.70 floor, and the floor already binds in 2035 under the
+  baseline itself; a harsher calibration binding it earlier is the same physics, not a confound —
+  the unit reaches end-of-life sooner, and that is what the row is meant to show. Reproducing the
+  arms at 0.50 would make the ageing row the one row in the table that is not a one-parameter
+  perturbation of the baseline, against Ruling 2's purpose (one configuration), and would let the
+  harsher arms cycle a battery the baseline declares dead. Salvage is reporting-only and does not
+  touch gross. The row reports, per arm, the year the floor binds (if any) beside the value; the
+  ageing statements measured at 0.50 (Addendum 30 era) are restated under the new row, and the
+  soh_min row of Step 5 (floor varied at C2) is the row that isolates the floor. **Prediction:**
+  the arms where the floor binds show a smaller value change per unit of cycle life than the
+  0.50-based elasticity implied, since end-of-life caps the value before cycle life does.
+  **pb_y2025_n5: re-run under the new rule at the end of the priority queue** (≈ 1.5 h), so every
+  Phase B certificate has the same strength and the flag leaves the table.
 
 ## Update obligations
 
