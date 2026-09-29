@@ -253,6 +253,12 @@ the first difference); the certifying regime (AA off, tight tail on, rho frozen)
 settling stop rule v2 (`settling_criterion_v2`: gap clause, amended monotone branch) is the only exit before the cap;
 the W105 captures plus the per-cycle priced interface gap t_sum are written (write-only). It enters the eval key;
 entries without it keep their exact keys and format.
+P5.15 Addendum 58 (W132, the v3 re-settling campaign): a `settling_resettle` declaration carrying the v3 schema
+dispatches (`resettle_hooks_module`) to `p515_s53_w132_resettle_v3_hooks` -- W118's hooks with the settling rule v3
+(`settling_criterion_v3`: a non-Optimal accepted solve is a lapse) and a ninth pass-through wrapper recording the IPOPT
+exit of every block (TSO, DSO, ESSO) of every cycle; W118 declarations keep the W118 hooks and their exact keys. For any
+record carrying a re-settling summary, `status` follows the settling decision (`_apply_settling_resettle_status`; the
+W123 / W125 'status=certified' label defect on uncertified runs), production's trajectory view kept beside it.
 AFTER the run, in the child, inside `run_admm_arm`'s post_run_hook (same live
 models/state), `run_post_certification` does, only if the trajectory is
 certified under the spec's bar (else it records `status: skipped` + reason):
@@ -933,8 +939,19 @@ def validate_settling_resettle(value):
     installed and every key / entry / record keeps its exact format."""
     if value is None:
         return None
+    return resettle_hooks_module(value).validate_settling_resettle(value)
+
+
+def resettle_hooks_module(value):
+    """P5.15 Addendum 58 (W132): the hooks module that implements a `settling_resettle` declaration -- a declaration
+    carrying the v3 schema (`p515_s53_w132_resettle_v3_hooks.DECLARATION_SCHEMA`: settling rule v3 and the per-block
+    IPOPT exit capture) dispatches to `p515_s53_w132_resettle_v3_hooks`; every other declaration (W118's, which carries
+    no schema key) to `p515_s53_w118_resettle_hooks`, exactly as before W132. Stdlib-only at import."""
+    import p515_s53_w132_resettle_v3_hooks as W132C
+    if W132C.is_v3_declaration(value):
+        return W132C
     import p515_s53_w118_resettle_hooks as W118C
-    return W118C.validate_settling_resettle(value)
+    return W118C
 
 
 def evaluation_key(candidate_key_hex, overrides, case_file_aa=None, model_variant=None, ess_ageing_baseline=None,
@@ -2042,6 +2059,31 @@ def build_evaluation_record(*, spec, spec_path, spec_sha256, entry, report, comp
     }
     if extra:
         record.update(extra)
+    _apply_settling_resettle_status(record)
+    return record
+
+
+def _apply_settling_resettle_status(record):
+    """P5.15 Addendum 58 (W132; the W123 / W125 label defect, fixed at the writer): a re-settling run (W118 or W132; the
+    record carries `settling_resettle_summary`) ends by its SETTLING RULE, not by production's certificate length, yet
+    production's trajectory bookkeeping (10 consecutive converged cycles at the last row) labelled an uncertified-at-cap
+    run 'certified'. For such a record, `status` / `barrier` / `barrier_cause` / `certified_cost` follow the settling
+    decision; production's trajectory view is kept verbatim in `status_production_trajectory` (and `certification`,
+    unchanged). Every record without the summary is returned exactly as before."""
+    summ = record.get('settling_resettle_summary')
+    if not isinstance(summ, dict):
+        return record
+    decision = summ.get('settling_status')
+    settled = decision == 'certified'
+    record['status_production_trajectory'] = {k: record.get(k) for k in ('status', 'barrier', 'barrier_cause',
+                                                                         'certified_cost', 'certification_cycle')}
+    record['status_source'] = ('the settling rule of the re-settling run (settling_resettle_summary.settling_status = '
+                               f'{decision!r}); production trajectory view in status_production_trajectory')
+    record['status'] = 'certified' if settled else 'not_certified'
+    record['barrier'] = not settled
+    record['barrier_cause'] = None if settled else f'settling rule: {decision or "no decision"} (stopped_by ' \
+                                                   f'{summ.get("stopped_by")!r})'
+    record['certified_cost'] = record.get('terminal_gross_operational_cost') if settled else None
     return record
 
 
@@ -5292,7 +5334,7 @@ def _child_real(args, spec, spec_path, entry, eval_dir, lock_content, env_caps, 
     if resettle is not None:
         if continuation is not None or settling is not None or extension is not None:
             raise RuntimeError('an entry may declare settling_resettle OR a continuation / extension, not several')
-        import p515_s53_w118_resettle_hooks as W118C
+        W118C = resettle_hooks_module(resettle)  # W132: a v3 declaration dispatches to the v3 hooks module
         resettle_checklist = W118C.assert_resettle_preconditions(resettle, spec, tail_checklist, aa_on)
         progress['settling_resettle_checklist'] = resettle_checklist
     # W101 (Addendum 53 "Records"): the per-cycle interface consensus duals, for EVERY evaluation (write-only); the
