@@ -2582,6 +2582,35 @@ Rulings on `P5_15_ADDENDUM57_BENCHMARK_AND_RESETTLE_REPORT.md` (`5612b8f1`).
   **pb_y2025_n5: re-run under the new rule at the end of the priority queue** (≈ 1.5 h), so every
   Phase B certificate has the same strength and the flag leaves the table.
 
+# Addendum 59 — the non-Optimal rule: reading (γ) (2026-09-30)
+
+- **Ruling: (γ).** The rule exists so that the certificate's *evidence* is clean: no cycle whose data
+  enter the certification test at the certifying cycle may carry a non-Optimal accepted solve on any
+  block. Precisely, in spec v4: the **certifying window** is the span of cycles the test reads at the
+  certifying cycle — the three turning points and the period between them for the range test, and
+  the preceding swing for "swings not growing" — and every cycle in it must be all-Optimal; the
+  gap clause and residuals are evaluated at the certifying cycle as before. **No reset** of the
+  count: an Acceptable exit outside the window is history the clean window re-establishes over;
+  (α) lets one marginal block veto a cell forever, which is a property of the solver's tolerance
+  at that block, not of the ADMM's convergence. (δ) is rejected because a recovery jump inside the
+  window is a solver artefact the range test would then be measuring. The retry tier is not touched
+  (solve path unchanged). pb_y2025_n5's original certificate stays excluded under (γ) — the
+  Acceptable cycle sat inside its window — and its queued re-run stands.
+- **Report the recurring block.** Three Acceptable exits on the same DSO block on cell 1 say that
+  block is marginal at the tight tail in some cycles; record which block and hours, per cell, for
+  the reproducibility note. If the same block recurs across cells, that is a finding for the
+  post-revision cleanup (a scaling or bound issue at that block), not a reason to change the rule
+  now.
+- **v4 re-freeze as the Planner proposes:** reading (γ); gate G8 persistence follows production's
+  certificate, not the settling label; W135's router patch in the same freeze so the ageing and pb
+  cells need no second one. **Cell 1 re-run** under v4 rather than re-read from v3 records —
+  1.5 h buys a certificate whose frozen spec names its rule, and the trajectory to cycle 173 is
+  predicted bitwise identical (record that prediction). Cell 1's settled figures (band 1,978 €, gap
+  closed, s = +18.7 k€) are accepted; the ≈ 58 k€ provisional B margin landing in the Planner's
+  formula-based range settles that discriminating prediction against the Advisor's.
+- **Order:** v4 freeze → cell 1 re-run → resume in priority order (≈ 57 h v3 cells, 9 h ageing and
+  pb) → Step 5 rows → stop for review before Step 6 tables are frozen.
+
 ## Update obligations
 
 At the end of Step 1 the Planner rewrites the "CURRENT SOURCE OF TRUTH" head of
