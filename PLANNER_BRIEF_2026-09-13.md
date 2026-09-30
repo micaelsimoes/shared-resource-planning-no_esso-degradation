@@ -2610,6 +2610,20 @@ Rulings on `P5_15_ADDENDUM57_BENCHMARK_AND_RESETTLE_REPORT.md` (`5612b8f1`).
   formula-based range settles that discriminating prediction against the Advisor's.
 - **Order:** v4 freeze → cell 1 re-run → resume in priority order (≈ 57 h v3 cells, 9 h ageing and
   pb) → Step 5 rows → stop for review before Step 6 tables are frozen.
+- **Supplement (2026-09-30) — the certifying window is reading (a).** Addendum 59 mis-described the
+  test: it reads the last W cycles at k\*, not a three-turning-point span plus a preceding swing, so
+  the enumeration reached back past the evidence and re-created the α veto it had just ruled out
+  (cell 1 vetoed to its cap by Acceptable cycles 120–141; pb_y2025_n9 losing a certificate it earned).
+  **The principle stands and decides:** the certifying window is **exactly the set of cycles the
+  certification test reads at k\*, as implemented** — on the current implementation the last W
+  cycles, with the turning-point count, the swing comparison, the range and the gap clause all read
+  inside it. Spec v4 states W and asserts that no sub-test reads outside it; if a future
+  implementation reads further back, the window is the union of what is read, by this principle, not
+  a new ruling. Under (a): cell 1 certifies at 173 (the endorsed prediction), pb_y2025_n9 keeps 174,
+  pb_y2025_n5 stays excluded, the other ten keep k\*. **DSO7 2025 Winter** is the Acceptable block on
+  both affected cells: named in the reproducibility note; post-revision cleanup item (Addendum 59).
+- **Order unchanged:** v4 freeze (criterion v4 with (a), G8 fix, W135 patch, v4 branch) → cell 1
+  re-run → priority order (≈ 66 h) → Step 5 rows → stop for review before Step 6 tables are frozen.
 
 ## Update obligations
 
