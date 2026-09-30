@@ -484,7 +484,7 @@ def tests_H():
                    and s['summary_ok'] and s['in_cycle_rule_equals_pure_replay'] and s['exit_capture_complete']
                    and s['clean_capture_complete'] and s['exits_51_every_line'] and s['clean_51_every_line']
                    and s['non_clean_cycles'] == [] and s['certificate_length_after'] == 10
-                   and s['lines'] == s['k_star'] == s['creep_lines'] and s['decision_version'] == 5
+                   and s['lines'] == s['k_star'] == s['creep_lines'] and s['decision_version'] == 6
                    and s['holds_through_first_pass'] == [K132.HOLDS_OFF] and s['holds_after_first_pass'] == [K132.HOLDS_ON]
                    and s['t_sum_every_line'] and not s['capture_errors'])
     s.pop('summary')
