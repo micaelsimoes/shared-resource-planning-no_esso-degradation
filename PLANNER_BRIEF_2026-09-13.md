@@ -2651,6 +2651,39 @@ Rulings on `P5_15_ADDENDUM57_BENCHMARK_AND_RESETTLE_REPORT.md` (`5612b8f1`).
 - **Order:** v5 freeze → cell 3 re-run → break-even-fit cells (≈ 11 h) → remainder in priority order
   → Step 5 rows → stop for review before Step 6 tables are frozen.
 
+# Addendum 61 — swing noise floor; what τ bounds; window reads enumerated (2026-09-30)
+
+Rulings on `P5_15_ADDENDUM60_SWING_TEST_NOTE.md` (`ef0c3390`).
+
+- **1. Swing noise floor τ/10 (≈ 454 €), adopted.** A three-cycle blip left swings of 226 € and 125 €
+  in d_c52e1670's history, and the all-pairs "not growing" test then fails against every normal
+  swing forever — a test comparing noise to signal. Swings below τ/10 are not swings of the
+  oscillation being measured and are excluded from the growth comparison; replayed on every
+  committed record this changes no certificate and certifies d_c52e1670 at 150. The last-pair test
+  is rejected as weaker (it forgets an earlier growth trend). **Consistency refinement, to replay
+  before adoption:** the same floor applied to the turning-point count (a sign change producing a
+  swing below τ/10 is not a turning point). If that replay changes no certificate, v6 carries both;
+  if it changes any, v6 carries the swing floor only and the inconsistency is recorded for the
+  cleanup. The break-even prediction failed on its first cell for a rule reason, not a solver one —
+  recorded as failed under v5.
+- **2. What τ bounds — stated, with a determinacy floor.** Two continued cells moved 0.74–0.88 τ
+  after the rule certified them: inside the δR = 0.07 budget (each cell ≤ τ), at its edge. The
+  manuscript says so with the measured figures rather than claiming τ as an assumption: "cells
+  continued past certification moved at most 0.9 τ." **Determinacy rule for differences between
+  certified cells: margin ≥ max(3 × the larger bar, 2τ)** — the 2τ floor (≈ 9.1 k€) is the honest
+  consequence of cells moving up to τ each; it changes no verdict to date (B margins 43–61 k€; F2
+  already within resolution). No margin added to δR: the 3 × 3 R band came from settled
+  continuations, not from τ.
+- **3. Window reads enumerated per certificate** — accepted as the record for the Addendum 59
+  supplement: the window is the union of what the test reads, and v4/v5 list those reads per
+  certificate rather than asserting a bound the implementation cannot.
+- **Accepted as reported:** cell 3 certified at 148, bitwise as predicted; certificates to date;
+  reproducibility note items (DSO7 2025 Winter ≈ 2.5×, clean under 10×; TSO 2035 Spring recoveries,
+  non-clean).
+- **Order:** v6 freeze (swing floor; turning-point floor if invariant on replay; determinacy floor
+  in the report stage) → eight remaining break-even-fit cells (≈ 11 h) → remainder in priority
+  order → Step 5 rows → stop for review before Step 6 tables are frozen.
+
 ## Update obligations
 
 At the end of Step 1 the Planner rewrites the "CURRENT SOURCE OF TRUTH" head of
