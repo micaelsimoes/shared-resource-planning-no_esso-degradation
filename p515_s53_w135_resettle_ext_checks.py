@@ -1,10 +1,13 @@
 """
 P5.15 Addendum 58 Supplement, Planner task W135 -- ZERO-SOLVE checks for the re-settling EXTENSION (ageing E, six
-model-variant arms at minimum SoH 0.70, and pb_y2025_n5 under the settling rule v3; 7 cells).
+model-variant arms at minimum SoH 0.70, and pb_y2025_n5 under the settling rule v4; 7 cells).
 
-WRITTEN IN W135, RUN LATER: only after W132's cell #38 has its results committed AND the prepared router edit
-(`p515_s53_w135_harness_router.patch`) has been applied -- a separate task. Run before that, sections S (W132 #38) and
-D / K / H (the dispatch) fail, which is the intended behaviour.
+WRITTEN IN W135; RE-TARGETED AND RUN IN W137 (Addendum 59 and its Supplement): the extension is frozen against the v4
+campaign (settling_criterion_v4 for its 7 cells; the E cells' launch gate is the v4 campaign's cell #38 committed).
+The prepared router edit was applied in W137 (router commit 1), and the v4 branch after it (router commit 2); section D
+expects both. Section S holds BEFORE the v4 #38 has run: it requires the v4 stage spec frozen, committed and naming
+l_195156fa last, and REPORTS #38's state; the LAUNCHER keeps refusing every cell until #38's results and manifest are
+committed (p515_s53_w135_resettle_ext_campaign._hard_preconditions, --run only).
 
 A `SolveProfileGuard(permitted=())` is armed at import for the whole run and verified at exactly 0 (the W132 checks
 module, imported for its helpers, arms its own and the modules it imports arm theirs; every guard is verified at 0).
@@ -12,8 +15,8 @@ NOTHING IS SOLVED. Section M BUILDS ESSO models (production's `_build_subproblem
 configuration hook) on fresh SRP1 planning objects -- builds, never solves; H6 / H8 read a fresh planning object.
 
 WHAT IS CHECKED
-  V   the stop rule v3 as W132 validated it (`p515_s53_w132_resettle_v3_checks.tests_V`, reused unchanged): W135 uses
-      settling_criterion_v3 exactly as the 38 W132 cells do.
+  V   the stop rule v4 as W137 validated it (`p515_s53_w137_resettle_v4_checks.tests_V`, reused unchanged): W135 uses
+      settling_criterion_v4 exactly as the 38 v4 cells do.
   O   the seven cells: the original record (PROVENANCE for the E arms, the replay reference for pb) committed, in its
       campaign manifest, sha as pinned; the original spec entry; the original configuration's base key reproduces the
       original eval key; every E arm on the unit candidate db77e154...; the six arm variants against W20's committed
@@ -23,14 +26,16 @@ WHAT IS CHECKED
       (ageing_mechanism.json b5eca2a2) committed; the settled unit 3f084f2f: k* 172, first residual pass 103, holds from
       113 and -- the zero-solve evidence behind the C2_calfade consistency check -- its NATURAL regime on 104..112 is
       already the held regime (AA off by production, tail active passed, rho frozen, every cycle a residual pass).
-  S   W132's cell #38 (l_195156fa) results and manifest committed and clean, no W132 / W135 launcher alive; no
-      uncommitted change to a file this run uses; production changes since each original's git head (report).
+  S   the v4 stage spec frozen, committed and naming l_195156fa last (the v4 campaign's #38 results / manifest state
+      REPORTED, not required: the launcher refuses the cells until they are committed); no W137 / W135 / W132 / W118
+      launcher alive; no uncommitted change to a file this run uses; production changes since each original (report).
   H   the hooks through W132's REAL nine wrappers (reused) with W135 declarations and stand-in production: H1 pb gated
       with its ORIGINAL values bitwise through k0 = 110, then a synthetic continuation that certifies; H2 a one-ulp
       divergence at cycle 40 aborts; H3 an E cell (ungated) certifies; H4 an E cell creeps to its dynamic rule cap
-      k0_run + 109; H5 a non-Optimal ESSO exit is a lapse; H6 the REAL install with the PATCHED harness dispatch (W135
-      -> this extension, W132 -> v3, W118 -> W118) and the child's order; H7 the summary carries this schema; H8-H11
-      W132's real-production tests of the SAME wrappers (exit wrapper, AA / tail / rho holds), reused.
+      k0_run + 109; H5 a non-Optimal ESSO exit is NOT a lapse (v4): outside the certifying window it does not block,
+      inside it vetoes; H6 the REAL install with the harness dispatch (W135 -> this extension, v4 -> W137, W132 -> v3,
+      W118 -> W118) and the child's order; H7 the summary carries this schema on the v4 state; H8-H11 the real-
+      production tests of the SAME wrappers (W132's exit wrapper; the AA / tail / rho holds on the v4 state), reused.
   M   per arm, ON FRESHLY BUILT MODELS: the campaign child's own configuration hook (`_config_hook_factory`, with the
       campaign configuration: case-file AA, the ESS ageing baseline declared and pinned, the tail) applies the arm and
       reads it back from probe models; ESSO models built as production builds them are read back on clones; THE G9
@@ -39,17 +44,19 @@ WHAT IS CHECKED
       C2_calfade = the baseline: its freshly built ESSO models are IDENTICAL (every constraint, variable, parameter,
       expression, objective and the cohort bookkeeping) to the baseline path's (no variant, ESS ageing readback).
   K   keys: every entry of every committed campaign spec keys identically under this harness and the pre-W135 harness
-      (9fd91ded, sha256 pinned, from git), W118 and W132 settling_resettle entries included, except the campaign's OWN
-      W135 entries, accepted only inside the W135 stage root and only if their frozen key follows the formula over the
-      pre-W135 base key; the 7 keys follow the formula, are distinct, differ from every original and every W132 / W118
-      key, and appear in no committed spec outside the own root (the rule: a pre-run scan excludes the run's own);
+      (9fd91ded, sha256 pinned, from git), W118 and W132 settling_resettle entries included, except the OWN entries of
+      the two campaigns the router adds (W137): the W135 entries, accepted only inside the W135 stage root, and the v4
+      entries, accepted only inside the v4 stage root, each only if its frozen key follows the formula over the
+      pre-W135 base key; the 7 keys follow the formula, are distinct, differ from every original and every W132 / v4 /
+      W118 key, and appear in no committed spec outside the own root (the rule: a pre-run scan excludes the run's own);
       planted controls (outside refused; sibling-prefix refused; own accepted); the pre-W135 harness refuses a W135
       declaration.
   P   `assert_resettle_preconditions` holds for every cell with its cap and spec-like entry; negative controls (cap,
       tail off, AA off, variant swapped, floor overridden, label missing) refused; the validator refuses malformed
       declarations.
-  D   the harness is EXACTLY the pre-W135 harness plus the prepared patch (3 added lines in `resettle_hooks_module`,
-      no line removed, every existing branch identical); its sha256 is the pinned post-patch sha256.
+  D   the harness is EXACTLY the pre-W135 harness plus the prepared patch (3 added lines in `resettle_hooks_module`)
+      plus W137's v4 branch (3 more lines after it), no line removed, every existing branch identical; its sha256 is the
+      pinned post-v4 sha256 (the post-patch sha256 861d6070 was the intermediate state, router commit 1).
   X   the pure readers on committed records: the floor year of the settled unit 3f084f2f at k* 172 is 2035; an S46
       0.50-era record has no active floor row; the trajectory equality reproduces 3f084f2f against itself through 172
       and finds a planted one-ulp difference.
@@ -92,7 +99,9 @@ import p515_s53_w135_resettle_ext_hooks as W  # noqa: E402
 import p515_s53_w132_resettle_v3_hooks as V  # noqa: E402
 import p515_s53_w118_resettle_hooks as R  # noqa: E402
 import p515_s53_w132_resettle_v3_checks as K132  # noqa: E402 -- the v3 suite and helpers (arms its own guard)
-import settling_criterion_v3 as SC3  # noqa: E402
+import p515_s53_w137_resettle_v4_hooks as V4  # noqa: E402
+import p515_s53_w137_resettle_v4_checks as K137  # noqa: E402 -- the v4 suite and helpers (arms its own guard)
+import settling_criterion_v4 as SC4  # noqa: E402
 import p515_s46_variant_checks as M46V  # noqa: E402 -- W20's variant definitions and model fingerprint (arms its own guard)
 
 K118, K105, K98 = K132.K118, K132.K105, K132.K98
@@ -107,7 +116,8 @@ def _dedupe(pairs):
     return tuple(out)
 
 
-GUARDS = _dedupe((('w135_checks', GUARD),) + tuple(K132.GUARDS) + (('s46_variant_checks_imported', M46V.GUARD),))
+GUARDS = _dedupe((('w135_checks', GUARD),) + tuple(K137.GUARDS) + tuple(K132.GUARDS)
+                 + (('s46_variant_checks_imported', M46V.GUARD),))
 _P53 = os.path.join('data', 'SRP1', 'Results', 'P515S53')
 W135_ROOT_REL = os.path.join(_P53, 'w135_resettle_ext')
 OUT_DIR_REL = os.path.join(W135_ROOT_REL, 'zero_solve_checks')
@@ -116,10 +126,13 @@ OUT_MANIFEST = 'w135_zero_solve_checks_manifest_sha256.json'
 TYPING_OUT = 'w135_bool_typing_test.json'
 CAMPAIGN_ID_PREFIX = 's53_w135_resettle_ext_'
 KEY_EXCLUDED_ROOTS = (W135_ROOT_REL,)
+V4_ROOT_REL = W.V4_ROOT_REL
 # The harness pinned by the W132 stage spec 139d1e62 (last changed by 9fd91ded) -- the harness BEFORE the router edit
 PRE_W135_HARNESS = {'commit': '9fd91ded', 'sha256': 'bf0a757c0d36da406c5388f2af4f36aed84e6baa4f569f3658e3218b449a5c6a'}
 PATCH_REL = 'p515_s53_w135_harness_router.patch'
 HARNESS_POST_PATCH_SHA256 = '861d6070c107d9f4930ca3b6961945d99440d77a7d43b75631adee14ecc0442d'
+HARNESS_POST_V4_SHA256 = K137.HARNESS_POST_V4_SHA256   # W137: the post-patch harness plus the v4 branch
+V4_BRANCH_LINES = K137.V4_BRANCH_LINES
 UNIT_SETTLED_EVAL_DIR = os.path.join(_P53, 'w101_srp1_continuation', 'campaign_s53_w101_srp1_cont_n7_4h_e1', 'evals',
                                      '3f084f2ffaeef2b7_n7_4h_e1')
 UNIT_SETTLED = {'per_cycle_record_sha256': 'fd8aad17f8a8a40e1ca73a2af2d5edeeee83e2d3265f2bdad8c38c68fb41b324',
@@ -207,11 +220,11 @@ def spec_like(cell, decl=None, entry_overrides=None, config_overrides=None, cap=
 
 
 # ======================================================================================================================
-#  V -- the stop rule v3 (W132's suite, reused)
+#  V -- the stop rule v4 (W137's suite, reused)
 # ======================================================================================================================
 def tests_V():
-    r = K132.tests_V()
-    return {'holds': r['holds'] is True, 'source': 'p515_s53_w132_resettle_v3_checks.tests_V (reused unchanged)',
+    r = K137.tests_V()
+    return {'holds': r['holds'] is True, 'source': 'p515_s53_w137_resettle_v4_checks.tests_V (reused unchanged)',
             'tests': {k: v.get('ok') for k, v in r['tests'].items()}}
 
 
@@ -373,10 +386,10 @@ def tests_O():
 
 
 # ======================================================================================================================
-#  S -- W132 #38 committed; production since the originals
+#  S -- the v4 stage spec frozen (the v4 #38 reported); production since the originals
 # ======================================================================================================================
-OWN_PROCESS_SUBSTRINGS = ('p515_s53_w132_resettle_v3_campaign', 'p515_s53_w135_resettle_ext_campaign',
-                          'p515_s53_w118_resettle_campaign')
+OWN_PROCESS_SUBSTRINGS = ('p515_s53_w137_resettle_v4_campaign', 'p515_s53_w132_resettle_v3_campaign',
+                          'p515_s53_w135_resettle_ext_campaign', 'p515_s53_w118_resettle_campaign')
 
 
 def _launchers_alive():
@@ -390,16 +403,27 @@ def _launchers_alive():
     return hits
 
 
-def w132_done():
-    """W132's last cell (#38, l_195156fa) has its results and manifest committed and clean; the W132 stage spec is the
-    pinned 139d1e62 and names that cell last."""
-    res_rel, man_rel = W.w132_last_cell_files_rel()
-    ss_ok = os.path.isfile(_abs(W.W132_STAGE_SPEC_REL)) and _sha(W.W132_STAGE_SPEC_REL) == W.W132_STAGE_SPEC_SHA256
-    last = json.load(open(_abs(W.W132_STAGE_SPEC_REL)))['cell_order'][-1] if ss_ok else None
-    parts = {'w132_stage_spec_as_pinned': ss_ok, 'w132_last_cell_is_l_195156fa': last == W.W132_LAST_CELL,
-             'w132_38_results_committed_clean': os.path.isfile(_abs(res_rel)) and _clean(res_rel),
-             'w132_38_manifest_committed_clean': os.path.isfile(_abs(man_rel)) and _clean(man_rel)}
-    return all(parts.values()), {'parts': parts, 'results': res_rel, 'manifest': man_rel}
+def v4_spec_state():
+    """The v4 stage spec (found by its series prefix; its name carries its sha256) is committed clean and names
+    l_195156fa as its last cell. (ok, detail)."""
+    rel, sha = W.v4_stage_spec_rel()
+    doc = json.load(open(_abs(rel))) if rel else {}
+    parts = {'v4_stage_spec_found_named_by_its_sha256': rel is not None,
+             'v4_stage_spec_committed_clean': bool(rel) and _clean(rel),
+             'v4_stage_spec_series_version_4': doc.get('series') == 'frozen_s53_resettle_spec' and doc.get('version') == 4,
+             'v4_last_cell_is_l_195156fa': (doc.get('cell_order') or [None])[-1] == W.V4_LAST_CELL}
+    return all(parts.values()), {'parts': parts, 'path': rel, 'sha256': sha}
+
+
+def v4_done():
+    """The v4 campaign's last cell (#38, l_195156fa) has its results and manifest committed and clean, and the v4 stage
+    spec is frozen as v4_spec_state requires. The LAUNCH gate of this extension (the launcher requires it for --run)."""
+    spec_ok, sd = v4_spec_state()
+    res_rel, man_rel = W.v4_last_cell_files_rel()
+    parts = {'v4_stage_spec': spec_ok,
+             'v4_38_results_committed_clean': os.path.isfile(_abs(res_rel)) and _clean(res_rel),
+             'v4_38_manifest_committed_clean': os.path.isfile(_abs(man_rel)) and _clean(man_rel)}
+    return all(parts.values()), {'parts': parts, 'results': res_rel, 'manifest': man_rel, 'v4_stage_spec': sd}
 
 
 def production_since_originals(used_files=()):
@@ -420,12 +444,18 @@ def production_since_originals(used_files=()):
 
 
 def tests_S():
-    done, d = w132_done()
+    """Holds BEFORE the v4 #38 has run (W137): the v4 stage spec must be frozen; #38's state is REPORTED -- the launcher
+    (--run) refuses the cells until it is committed (`v4_done`, the launch gate)."""
+    spec_ok, sd = v4_spec_state()
+    done, d = v4_done()
     alive = _launchers_alive()
     prov = production_since_originals(CODE_PINNED_BY_CHECKS)
-    parts = {'w132_cell_38_committed': done, 'no_w132_w135_w118_launcher_alive': not alive,
+    parts = {'v4_stage_spec_frozen_committed_names_l_195156fa_last': spec_ok,
+             'no_w137_w135_w132_w118_launcher_alive': not alive,
              'no_uncommitted_change_to_a_file_this_run_uses': prov['ok']}
-    return {'holds': all(parts.values()), 'parts': parts, 'w132_38': d, 'launchers_alive': alive, 'production': prov}
+    return {'holds': all(parts.values()), 'parts': parts, 'v4_stage_spec': sd,
+            'v4_38_committed_REPORTED_launch_gate_only': {'done': done, **d}, 'launchers_alive': alive,
+            'production': prov}
 
 
 # ======================================================================================================================
@@ -471,7 +501,7 @@ def drive(cell, variant='certify', first_pass_at=50, nonopt=None):
                                               for n in K118.NODES}
     raised = None
     template = g_rows.get(n_old) if gated else json.load(open(_abs(os.path.join(
-        W.original_eval_dir('pb_y2025_n5_v3'), 'g_s39_D.json'))))['cycle_trajectory'][-1]
+        W.original_eval_dir('pb_y2025_n5_v4'), 'g_s39_D.json'))))['cycle_trajectory'][-1]
     pen_hold = K118._frozen_pen(g_rows[c_info['k0']] if gated else template)
     try:
         local_script.append(True)
@@ -549,7 +579,7 @@ def _h_layering(srp):
     stub = K98._AppenderStub()
     holder = {}
     scratch = tempfile.mkdtemp(prefix='w135_layering_')
-    cell = 'pb_y2025_n5_v3'
+    cell = 'pb_y2025_n5_v4'
     n = W.CELLS[cell]['k0']
     pp = K98._fake_holders()
     admm = SimpleNamespace(convergence_depth_tail={'enabled': True, 'compl_inf_tol': 1e-6},
@@ -593,6 +623,9 @@ def _h_layering(srp):
         'w135_to_w135': H.resettle_hooks_module(W.declaration_for(cell)) is W,
         'w135_e_cell_to_w135': H.resettle_hooks_module(W.declaration_for('e_c2')) is W,
         'w132_to_w132': H.resettle_hooks_module(V.declaration_for(w132_cell)) is V,
+        'v4_to_w137': H.resettle_hooks_module(V4.declaration_for(w132_cell)) is V4,
+        'harness_validates_v4': H.validate_settling_resettle(V4.declaration_for(w132_cell))
+        == V4.declaration_for(w132_cell),
         'w118_to_w118': H.resettle_hooks_module(R.declaration_for(w118_cell)) is R,
         'harness_validates_w135': H.validate_settling_resettle(W.declaration_for(cell)) == W.declaration_for(cell),
         'harness_validates_w132_unchanged': H.validate_settling_resettle(V.declaration_for(w132_cell))
@@ -614,9 +647,9 @@ def _h_layering(srp):
 def tests_H():
     import shared_resources_planning as srp
     res = {}
-    cell = 'pb_y2025_n5_v3'
+    cell = 'pb_y2025_n5_v4'
     c = W.CELLS[cell]
-    s = K132._drive_summary(drive(cell, 'certify'))
+    s = K137._drive_summary(drive(cell, 'certify'))
     s['ok'] = bool(s['raised'] is None and s['replay_bitwise_through'] == c['k0'] and s['first_pass'] == c['k0']
                    and s['first_k0_v2'] == c['k0'] and s['n_lapses'] == 1 + len(c['original_lapses_after_k0'])
                    and s['n_overlap'] == c['N_old'] - c['k0'] and s['overlap_all_zero']
@@ -630,14 +663,14 @@ def tests_H():
                    and s['t_sum_every_line'] and not s['capture_errors'])
     s.pop('summary')
     res['H1_pb_original_values_bitwise_through_k0_then_certify'] = {'holds': s['ok'], 'detail': s}
-    s = K132._drive_summary(drive(cell, 'ulp_at_40'))
+    s = K137._drive_summary(drive(cell, 'ulp_at_40'))
     s.pop('summary')
     s['ok'] = bool(s['raised'] and 'REPLAY DIVERGED at cycle 40' in s['raised'] and s['lines'] == 40
                    and (s['first_divergence'] or {}).get('fields_differing') == ['gross_operational_cost']
                    and s['replay_bitwise_through'] == 39 and not s['summary_ok']
                    and s['stopped_by'] == 'replay_divergence_abort')
     res['H2_pb_one_ulp_at_40_aborts'] = {'holds': s['ok'], 'detail': s}
-    s = K132._drive_summary(drive('e_c2_calfade', 'certify', first_pass_at=103))
+    s = K137._drive_summary(drive('e_c2_calfade', 'certify', first_pass_at=103))
     summ3 = s.pop('summary')
     s['ok'] = bool(s['raised'] is None and s['status'] == 'certified' and s['first_pass'] == 103 and s['summary_ok']
                    and s['in_cycle_rule_equals_pure_replay'] and s['stopped_by'] == 'settling_rule'
@@ -645,31 +678,38 @@ def tests_H():
                    and s['holds_through_first_pass'] == [K132.HOLDS_OFF] and s['holds_after_first_pass'] == [K132.HOLDS_ON]
                    and summ3.get('schema') == W.SCHEMA and summ3.get('arm') == 'C2_calfade')
     res['H3_e_cell_ungated_certifies'] = {'holds': s['ok'], 'detail': s}
-    s = K132._drive_summary(drive('e_c3_unit', 'creep', first_pass_at=60))
+    s = K137._drive_summary(drive('e_c3_unit', 'creep', first_pass_at=60))
     s.pop('summary')
     s['ok'] = bool(s['raised'] is None and s['status'] == 'uncertified' and s['stopped_by'] == 'rule_cap'
                    and s['last_cycle'] == 60 + W.CAP_AFTER_K0 == s['rule_cap'] and s['first_pass'] == 60
                    and s['summary_ok'] and s['in_cycle_rule_equals_pure_replay'] and s['n_overlap'] == 0)
     res['H4_e_cell_dynamic_rule_cap'] = {'holds': s['ok'], 'detail': s}
-    base = K132._drive_summary(drive('e_c4', 'certify', first_pass_at=100))
-    # k0 = 100 (ungated: the first residual pass); the non-Optimal cycle 18 cycles later, inside the certifying span
-    # (W_MIN = 20), as W132's H3 placed it (N_old + 20 = its k0 + 18)
-    s = K132._drive_summary(drive('e_c4', 'certify', first_pass_at=100, nonopt={118: ('ESSO|7',)}))
-    s5 = {k: v for k, v in s.items() if k != 'summary'}
-    s5['ok'] = bool(s['raised'] is None and s['status'] == 'certified' and s['n_lapses'] == 1
-                    and s['lapse_causes'][-1] == ['non_optimal'] and s['non_optimal_cycles'] == [118]
-                    and s['k_star'] > base['k_star'] and s['in_cycle_rule_equals_pure_replay'] and s['summary_ok'])
+    base = K137._drive_summary(drive('e_c4', 'certify', first_pass_at=100))
+    # v4 (W137): a non-Optimal ESSO exit is NOT a lapse. Just before the certifying window of the all-Optimal run it does
+    # not block (same k*); inside the window (k* - 1) it vetoes at k* (no lapse either), certification later or the cap
+    lo = base['window'][0]
+    s = K137._drive_summary(drive('e_c4', 'certify', first_pass_at=100, nonopt={lo - 1: ('ESSO|7',)}))
+    s_in = K137._drive_summary(drive('e_c4', 'certify', first_pass_at=100, nonopt={base['k_star'] - 1: ('ESSO|7',)}))
+    s5 = {'outside_window': {k: v for k, v in s.items() if k != 'summary'},
+          'inside_window': {k: v for k, v in s_in.items() if k != 'summary'}}
+    s5['ok'] = bool(s['raised'] is None and s['status'] == 'certified' and s['n_lapses'] == base['n_lapses']
+                    and s['non_optimal_cycles'] == [lo - 1] and s['k_star'] == base['k_star'] and s['n_vetoes'] == 0
+                    and s['in_cycle_rule_equals_pure_replay'] and s['summary_ok']
+                    and s_in['raised'] is None and s_in['n_lapses'] == base['n_lapses'] and s_in['n_vetoes'] >= 1
+                    and s_in['vetoes'][0]['cycle'] == base['k_star'] and s_in['in_cycle_rule_equals_pure_replay']
+                    and s_in['summary_ok'] and (s_in['status'] != 'certified' or s_in['k_star'] > base['k_star']))
     s5['k_star_all_optimal'] = base['k_star']
-    res['H5_e_cell_non_optimal_esso_exit_is_a_lapse'] = {'holds': s5['ok'], 'detail': s5}
+    res['H5_e_cell_non_optimal_esso_exit_is_not_a_lapse_v4'] = {'holds': s5['ok'], 'detail': s5}
     res['H6_layering_real_install_patched_dispatch'] = _h_layering(srp)
     st = W.ResettleStateW135(W.declaration_for('e_no_ageing'), None, W.spec_cap('e_no_ageing'), reference={}, sink=[])
     summ = st.summary()
     res['H7_summary_schema_is_w135'] = {'holds': summ.get('schema') == W.SCHEMA and summ.get('arm') == 'no_ageing'
-                                        and isinstance(st, V.ResettleStateV3), 'schema': summ.get('schema')}
+                                        and isinstance(st, V4.ResettleStateV4) and summ.get('criterion_version') == 4,
+                                        'schema': summ.get('schema')}
     for name, fn in (('H8_w132_exit_wrapper_on_real_production_reused', K132._h_exit_real),
-                     ('H9_aa_hold_real_production_reused', lambda: K132._h_real_v3(srp, 'aa')),
-                     ('H10_tail_hold_real_production_reused', lambda: K132._h_real_v3(srp, 'tail')),
-                     ('H11_rho_hold_real_production_reused', lambda: K132._h_real_v3(srp, 'rho'))):
+                     ('H9_aa_hold_real_production_reused', lambda: K137._h_real_v4(srp, 'aa')),
+                     ('H10_tail_hold_real_production_reused', lambda: K137._h_real_v4(srp, 'tail')),
+                     ('H11_rho_hold_real_production_reused', lambda: K137._h_real_v4(srp, 'rho'))):
         try:
             res[name] = fn()
         except Exception as error:  # noqa: BLE001
@@ -874,7 +914,8 @@ def _pre_refuses_w135(pre):
 def tests_K():
     pre, pre_sha, _src = _harness_pre_w135()
     n_specs = n_entries = n_equal = n_own = n_own_ok = n_w118 = n_w132 = n_frozen_equal = 0
-    mismatch, errors, own_bad = [], [], []
+    n_v4 = n_v4_ok = 0
+    mismatch, errors, own_bad, v4_bad = [], [], [], []
     scanned = []
     all_keys = set()
     for rel in sorted(p for p in H._git(['ls-files', 'data/*campaign_spec_*.json']).splitlines() if p.strip()):
@@ -901,6 +942,23 @@ def tests_K():
                         own_bad.append({'spec': rel, 'label': e.get('label'), 'inside_own_root': inside,
                                         'formula_equals_frozen': formula == H._entry_eval_key(e)})
                     continue
+                if V4.is_v4_declaration(rs):
+                    # W137: the v4 campaign's OWN entries (the second route the router adds; the pre-W135 harness cannot
+                    # key them): accepted only inside the v4 stage root, and only if the frozen key follows the formula
+                    # over the pre-W135 base key (the rule: a pre-run scan excludes the run's own, applied per root)
+                    n_v4 += 1
+                    decl = V4.validate_settling_resettle(rs)
+                    formula = hashlib.sha256(json.dumps({'base_evaluation_key': pre.evaluation_key(*args, **kw),
+                                                         'settling_resettle': decl}, sort_keys=True,
+                                                        separators=(',', ':')).encode()).hexdigest()
+                    now = H.evaluation_key(*args, settling_resettle=decl, **kw)
+                    inside = rel.startswith(V4_ROOT_REL + os.sep)
+                    if inside and now == formula == H._entry_eval_key(e):
+                        n_v4_ok += 1
+                    else:
+                        v4_bad.append({'spec': rel, 'label': e.get('label'), 'inside_v4_root': inside,
+                                       'formula_equals_frozen': formula == H._entry_eval_key(e)})
+                    continue
                 if V.is_v3_declaration(rs):
                     n_w132 += 1
                 elif rs is not None:
@@ -917,6 +975,7 @@ def tests_K():
             else:
                 mismatch.append({'spec': rel, 'label': e.get('label'), 'new': new[:16], 'old': old[:16]})
     keys = resettle_keys(pre)
+    v4_keys = {v['resettle_key'] for v in K137.resettle_keys().values()}
     holders = {cell: _key_holders(scanned, v['resettle_key']) for cell, v in keys.items()}
     outside = {cell: _outside_roots(h) for cell, h in holders.items()}
     probe = keys[W.CELL_ORDER[0]]['resettle_key']
@@ -938,16 +997,18 @@ def tests_K():
     mine = {v['resettle_key'] for v in keys.values()}
     parts = {
         'key_regression_no_mismatch': not mismatch, 'key_regression_no_errors': not errors,
-        'key_regression_every_entry_equal': n_equal == n_entries - n_own and n_entries > 0,
+        'key_regression_every_other_entry_equal': n_equal == n_entries - n_own - n_v4 and n_entries > 0,
         'w118_resettle_entries_scanned_and_equal': n_w118 >= 10,
         'w132_resettle_entries_scanned_and_equal': n_w132 >= 38,
         'own_w135_entries_inside_root_follow_the_formula': n_own_ok == n_own and not own_bad,
+        'v4_entries_inside_the_v4_root_follow_the_formula': n_v4_ok == n_v4 and not v4_bad,
         'resettle_formula_holds_every_cell': all(v['formula_holds'] for v in keys.values()),
         'resettle_base_equals_pre_w135_every_cell': all(v['base_equals_pre_w135'] for v in keys.values()),
         'base_key_carries_the_variant_for_e_cells_only': all(v['base_carries_the_variant'] for v in keys.values()),
         'resettle_keys_differ_from_originals': all(v['differs_from_original'] for v in keys.values()),
         'resettle_keys_distinct': len(mine) == len(keys) == 7,
         'resettle_keys_differ_from_every_w132_key': not (mine & w132_keys) and len(w132_keys) == 38,
+        'resettle_keys_differ_from_every_v4_key': not (mine & v4_keys) and len(v4_keys) == 38,
         'resettle_keys_absent_from_committed_specs_outside_own_root': not any(outside.values()),
         'control_planted_outside_root_refused': planted_outside_rel in ctl_outside,
         'control_planted_sibling_prefix_refused': planted_sibling_rel in ctl_sibling,
@@ -960,6 +1021,7 @@ def tests_K():
             'entries_whose_frozen_eval_key_equals_the_recomputed_REPORTED': n_frozen_equal,
             'w118_resettle_entries': n_w118, 'w132_resettle_entries': n_w132,
             'own_w135_entries': {'n': n_own, 'ok': n_own_ok, 'bad': own_bad[:20]},
+            'v4_entries': {'n': n_v4, 'ok': n_v4_ok, 'bad': v4_bad[:20], 'root': V4_ROOT_REL},
             'mismatches': mismatch[:20], 'errors': errors[:20], 'resettle_keys': keys,
             'resettle_keys_in_committed_specs_all_REPORTED': holders, 'key_excluded_roots': list(KEY_EXCLUDED_ROOTS),
             'controls': {'planted_outside': {'rel': planted_outside_rel, 'outside_found': ctl_outside},
@@ -1011,6 +1073,9 @@ def tests_P():
                'unknown_cell': dict(decl, cell='x0'),
                'no_schema': {k: v for k, v in decl.items() if k != 'schema'},
                'w132_schema': dict(decl, schema=V.DECLARATION_SCHEMA),
+               'v4_schema': dict(decl, schema=V4.DECLARATION_SCHEMA),
+               'rule_v3': dict(decl, settling_rule=V.settling_rule_declaration()),
+               'reset_on_non_optimal': dict(decl, settling_rule=dict(rule, reset_on_non_optimal=True)),
                'p_max_22': dict(decl, settling_rule=dict(rule, p_max=22, l_mono=44)),
                'rule_v2': dict(decl, settling_rule=dict(rule, module='settling_criterion_v2', version=2)),
                'retry_tier': dict(decl, settling_rule=dict(rule, retry_tier='tier1')),
@@ -1074,11 +1139,18 @@ def _patch_blocks(patch_text):
 
 
 def tests_D():
+    """W137: the harness is the pre-W135 harness plus the prepared patch (router commit 1, sha 861d6070) plus the v4
+    branch inserted right after the W135 branch (router commit 2), and nothing else."""
     _pre, pre_sha, pre_src = _harness_pre_w135()
     patch_text = open(_abs(PATCH_REL)).read()
     old_block, new_block, added, removed = _patch_blocks(patch_text)
     pre_text = pre_src.decode()
     patched = pre_text.replace(old_block, new_block) if pre_text.count(old_block) == 1 else None
+    w135_branch_end = '    if W135C.is_w135_declaration(value):\n        return W135C\n'
+    v4_text = ''.join(ln + '\n' for ln in V4_BRANCH_LINES)
+    patched_v4 = (patched.replace(w135_branch_end, w135_branch_end + v4_text)
+                  if patched is not None and patched.count(w135_branch_end) == 1 else None)
+    patched_sha = hashlib.sha256(patched.encode()).hexdigest() if patched is not None else None
     now_text = open(H.HARNESS_PATH).read()
     now_sha = H.sha256_file(H.HARNESS_PATH)
     fn_src = inspect.getsource(H.resettle_hooks_module)
@@ -1087,15 +1159,18 @@ def tests_D():
         'patch_committed_clean': _clean(PATCH_REL),
         'patch_is_three_added_lines_no_removal': added == 3 and removed == 0,
         'patch_context_found_once_in_the_pre_w135_harness': patched is not None,
-        'harness_now_equals_pre_w135_plus_the_patch_exactly': patched is not None and patched == now_text,
-        'harness_sha256_is_the_pinned_post_patch_sha256': now_sha == HARNESS_POST_PATCH_SHA256,
+        'pre_w135_plus_the_patch_hashes_to_the_pinned_post_patch_sha256': patched_sha == HARNESS_POST_PATCH_SHA256,
+        'harness_now_equals_pre_w135_plus_the_patch_plus_the_v4_branch_exactly': (patched_v4 is not None
+                                                                                  and patched_v4 == now_text),
+        'harness_sha256_is_the_pinned_post_v4_sha256': now_sha == HARNESS_POST_V4_SHA256,
         'harness_committed_clean': _clean('p515_s44_campaign_harness.py'),
-        'router_w132_branch_first_then_w135_then_w118': (
+        'router_w132_then_w135_then_v4_then_w118': (
             0 <= fn_src.find('W132C.is_v3_declaration(value)') < fn_src.find('W135C.is_w135_declaration(value)')
-            < fn_src.find('import p515_s53_w118_resettle_hooks as W118C')),
+            < fn_src.find('W137C.is_v4_declaration(value)') < fn_src.find('import p515_s53_w118_resettle_hooks as W118C')),
     }
     return {'holds': all(parts.values()), 'parts': parts, 'harness_sha256_now': now_sha,
-            'patch_sha256': _sha(PATCH_REL), 'n_added': added, 'n_removed': removed}
+            'harness_sha256_pre_w135_plus_patch': patched_sha, 'patch_sha256': _sha(PATCH_REL), 'n_added': added,
+            'n_removed': removed, 'v4_branch_lines': list(V4_BRANCH_LINES)}
 
 
 # ======================================================================================================================
@@ -1135,6 +1210,8 @@ SECTIONS = (('V', tests_V), ('O', tests_O), ('S', tests_S), ('H', tests_H), ('M'
             ('P', tests_P), ('D', tests_D), ('X', tests_X))
 
 CODE_PINNED_BY_CHECKS = (os.path.basename(__file__), 'p515_s53_w135_resettle_ext_hooks.py', PATCH_REL,
+                         'p515_s53_w137_resettle_v4_hooks.py', 'p515_s53_w137_resettle_v4_checks.py',
+                         'settling_criterion_v4.py',
                          'p515_s53_w132_resettle_v3_hooks.py', 'p515_s53_w132_resettle_v3_checks.py',
                          'settling_criterion_v3.py', 'settling_criterion_v2.py', 'settling_criterion.py',
                          'p515_s53_w118_resettle_hooks.py', 'p515_s53_w118_resettle_checks.py',
@@ -1160,7 +1237,7 @@ def run_all_checks(sections=SECTIONS):
         r_ok = r.get('holds') is True
         out[sid] = {'holds': r_ok, 'wall_s': time.time() - t0, 'result': r}
         ok = ok and r_ok
-    return {'all_hold': ok, 'p_max': W.P_MAX, 'constants': SC3.constants(W.P_MAX), 'readings': SC3.READINGS,
+    return {'all_hold': ok, 'p_max': W.P_MAX, 'constants': SC4.constants(W.P_MAX), 'readings': SC4.READINGS,
             'sections': out}
 
 
@@ -1191,7 +1268,8 @@ def main():
     guards = {name: {'counts': dict(g.counts), 'verify_0_failures': g.verify(0)} for name, g in GUARDS}
     doc = {'schema': 'p515_s53_w135_zero_solve_checks_v1',
            'task': ('W135 (PLANNER_BRIEF_2026-09-13.md Addendum 58 Supplement; TASKS.md Addendum 58: the ageing arms at '
-                    'minimum SoH 0.70, option (b); pb_y2025_n5 re-run under v3 at the end of the queue)'),
+                    'minimum SoH 0.70, option (b); pb_y2025_n5 re-run at the end of the queue), re-targeted to criterion '
+                    'v4 and run in W137 (Addendum 59 and its Supplement)'),
            'started_utc': started, 'finished_utc': _utc(), 'git_head': H._git(['rev-parse', 'HEAD']),
            'code_sha256': code_pins, 'guards': guards, 'W_bool_typing_test': typing, **res,
            'all_hold_including_typing_test': bool(res['all_hold'] and typing['pass'])}

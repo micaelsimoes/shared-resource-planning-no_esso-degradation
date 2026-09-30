@@ -1,62 +1,71 @@
 """
 P5.15 Addendum 58 Supplement, Planner task W135 -- the RE-SETTLING EXTENSION hooks: claim group 3 (ageing E, six
 model-variant arms on the current ESS parameters file, minimum SoH 0.70 NOT overridden) and the pb_y2025_n5 re-run
-under the settling rule v3 (7 cells). BUILT IN NEW FILES ONLY: no file pinned by the W132 stage spec
+under the settling rule v4 (7 cells). BUILT IN NEW FILES ONLY: no file pinned by the W132 stage spec
 `frozen_s53_resettle_spec_v3_139d1e62.json` is edited.
 
-WHAT THIS MODULE IS. The W132 v3 re-settling machinery, REUSED BY IMPORT (`p515_s53_w132_resettle_v3_hooks`, pinned by
-139d1e62, not edited): its state (`ResettleStateV3`, subclassed here only to stamp this schema on the summary), its v3
-rule adapter (`HookedRuleV3`), its nine pass-through wrappers (`make_wrappers`: W118's eight + the IPOPT-exit wrapper),
-its replay-reference loader and its exit-capture source facts. What is NEW here is only the cell table (7 cells), the
+W137 (Addendum 59 and its Supplement): FROZEN AGAINST THE v4 CAMPAIGN. The rule is settling_criterion_v4 (reading
+gamma: no reset on a non-Optimal cycle; certification vetoed while a non-Optimal cycle lies in the last W cycles the test
+reads), exactly as the 38 v4 cells use it: the declaration carries the v4 rule declaration and the state is the v4 state
+(`p515_s53_w137_resettle_v4_hooks.ResettleStateV4`, subclassed here). The E cells' launch gate is the v4 campaign's
+cell #38 (l_195156fa) committed (the Phase B cell was renamed from its W135 label '..._v3' to pb_y2025_n5_v4:
+its identifier names its rule).
+
+WHAT THIS MODULE IS. The W132 re-settling machinery, REUSED BY IMPORT (`p515_s53_w132_resettle_v3_hooks`, pinned by
+139d1e62, not edited) through the v4 hooks (`p515_s53_w137_resettle_v4_hooks`): the v4 state (on W132's constructor and
+exit capture; subclassed here only to stamp this schema on the summary), the v4 rule adapter (`HookedRuleV4`), W132's
+nine pass-through wrappers (`make_wrappers`: W118's eight + the IPOPT-exit wrapper), its replay-reference loader and its
+exit-capture source facts. What is NEW here is only the cell table (7 cells), the
 declaration schema that routes those cells to this module, the preconditions checklist restated for them, and three
 pure post-run readers (the G9 replacement for a model-variant entry, the floor-year reading, the trajectory equality
 used by the C2_calfade consistency check).
 
-ROUTING. The harness dispatches a `settling_resettle` declaration on its `schema` (`resettle_hooks_module`). A
-declaration carrying THIS schema reaches this module ONLY after the prepared one-branch router edit
-(`p515_s53_w135_harness_router.patch`) is applied -- a separate task, after W132 cell #38 has its results committed.
-Until then the harness (pinned bf0a757c by 139d1e62) refuses this declaration (its W118 validator does not know the
-schema), so nothing here can run by accident.
+ROUTING. The harness dispatches a `settling_resettle` declaration on its `schema` (`resettle_hooks_module`). The
+prepared one-branch router edit (`p515_s53_w135_harness_router.patch`) was applied in W137 (router commit 1 of 2,
+harness 861d6070), so a declaration carrying THIS schema reaches this module; the launcher refuses the cells until the
+v4 campaign's cell #38 has its results committed.
 
-THE CELLS (launch order = CELL_ORDER; after W132's #38):
+THE CELLS (launch order = CELL_ORDER; after the v4 campaign's #38):
   E (ungated, first evaluations under the current configuration + the arm's `model_variant`; dynamic cap
-     min(k0_run + 109, 300); criterion v3 reading alpha), candidate db77e154... (node 7, 0.25 MVA / 1.0 MWh, 2025):
+     min(k0_run + 109, 300); criterion v4), candidate db77e154... (node 7, 0.25 MVA / 1.0 MWh, 2025):
        e_c3_unit     {eol 0.50, phi 1.0,   'end', on}      the C3 unit (the reference arm of every x C3 ratio)
        e_c2          {eol 0.80, phi 1.0,   'end', on}
        e_c4          {eol 0.70, phi 1.0,   'end', on}
        e_c2_calfade  {eol 0.80, phi 0.985, 'end', on}      == the current file's own ageing law (the baseline)
        e_c3_midblock {eol 0.50, phi 1.0,   'mid', on}
        e_no_ageing   {eol 0.50, phi 1.0,   'end', off}
-  pb_y2025_n5_v3 (gated bitwise against its ORIGINAL S47 record 4a852725 through k0 = 110; fixed cap N_old + 100 = 219;
-     criterion v3). A NEW eval key and campaign root; the W118 v2 run (ca29c5e8, Addendum 58 Ruling 2: accepted,
+  pb_y2025_n5_v4 (gated bitwise against its ORIGINAL S47 record 4a852725 through k0 = 110; fixed cap N_old + 100 = 219;
+     criterion v4). A NEW eval key and campaign root; the W118 v2 run (ca29c5e8, Addendum 58 Ruling 2: accepted,
      flagged) stays as it is.
 The key formula is unchanged: the base key already carries `model_variant` (harness `evaluation_key`), the resettle key
 wraps the base key with this declaration.
 
-Zero solves: nothing here solves or builds a model. Stdlib (+ the W132 / W118 / W105 / W101 hooks modules, themselves
-stdlib-only at import) at import: the harness parent imports it for keys.
+Zero solves: nothing here solves or builds a model. Stdlib (+ the W137 / W132 / W118 / W105 / W101 hooks modules,
+themselves stdlib-only at import) at import: the harness parent imports it for keys.
 """
 import copy
+import hashlib
 import inspect
 import json
 import math
 import os
 from contextlib import contextmanager
 
-import settling_criterion_v3 as SC3
 import p515_s53_w101_settling_continuation_hooks as C101
 import p515_s53_w105_settling_extension_hooks as E105
 import p515_s53_w118_resettle_hooks as R
 import p515_s53_w132_resettle_v3_hooks as V
+import p515_s53_w137_resettle_v4_hooks as V4
 
 SCHEMA = 'p515_s53_w135_settling_resettle_ext_v1'
 DECLARATION_SCHEMA = SCHEMA         # the declaration's 'schema' key: the (patched) harness dispatches on it
 OPTION_NAME = V.OPTION_NAME         # 'settling_resettle'
-LABEL = ('SRP1 RE-SETTLING EXTENSION v3 (W135, frozen_s53_resettle_ext_spec) -- current production configuration (C2 '
-         'ageing file with minimum SoH 0.70, tight tail); ageing E arms as MODEL VARIANTS of the ageing law (ungated '
+LABEL = ('SRP1 RE-SETTLING EXTENSION v4 (W135 / W137, frozen_s53_resettle_ext_spec) -- current production '
+         'configuration (C2 ageing file with minimum SoH 0.70, tight tail); ageing E arms as MODEL VARIANTS of the ageing law (ungated '
          'first evaluations); pb_y2025_n5 replayed bitwise against its original record through its first residual pass '
          'k0 (abort on divergence); the certifying regime held after the run\'s first residual pass (AA off, tight tail '
-         'on, rho frozen); settling rule v3 (reading alpha; reading gamma report-only) until it certifies or the cap; '
+         'on, rho frozen); settling rule v4 (reading gamma: no reset on a non-Optimal accepted solve; certification '
+         'vetoed while a non-Optimal cycle lies in the last W cycles the test reads) until it certifies or the cap; '
          'W105 captures, t_sum, and the IPOPT exit of every block of every cycle')
 P_MAX = V.P_MAX
 L_MONO = V.L_MONO
@@ -64,7 +73,7 @@ CAP_AFTER_N_OLD = V.CAP_AFTER_N_OLD     # 100
 CAP_AFTER_K0 = V.CAP_AFTER_K0           # 109
 CAP_CEILING = V.UNGATED_CAP_CEILING     # 300 (production's case-file num_max_iters)
 N_TSO_BLOCKS, N_DSO_BLOCKS, N_ESSO = V.N_TSO_BLOCKS, V.N_DSO_BLOCKS, V.N_ESSO
-OPTIMAL = V.OPTIMAL
+OPTIMAL = V4.OPTIMAL
 WRAPPED = V.WRAPPED
 CYCLE_FILE = V.CYCLE_FILE
 BLOCKS_FILE = V.BLOCKS_FILE
@@ -115,7 +124,7 @@ _S46 = os.path.join(_RES, 'P515S46', 'campaign_s46_ageing')
 _S47PB = os.path.join(_RES, 'P515S47', 'campaign_s47_phase_b')
 _S46_SPEC = 'campaign_spec_s46_ageing_6544c17e.json'
 # The original (0.50-era) records are PROVENANCE only for the E cells (ungated first evaluations: nothing is replayed
-# against them); for pb_y2025_n5_v3 the original is the replay reference.
+# against them); for pb_y2025_n5_v4 the original is the replay reference.
 CELLS = {
     'e_c3_unit': {'item': 'E', 'arm': 'C3_unit', 'gated': False, 'orig_root': _S45A1A,
         'orig_spec': 'campaign_spec_s45_a1a_c71f52ee.json', 'orig_campaign_id': 's45_a1a',
@@ -156,7 +165,7 @@ CELLS = {
         'orig_model_variant': 'no_ageing', 'orig_cycles': 118, 'N_old': None, 'k0': None,
         'original_lapses_after_k0': None, 'cap_ceiling': CAP_CEILING,
         'per_cycle_record_sha256': '19de84ca2bb4fc308cbe13344805246c0b66ab858801737b8519cc407385c0ce'},
-    'pb_y2025_n5_v3': {'item': 'C', 'arm': None, 'gated': True, 'orig_root': _S47PB,
+    'pb_y2025_n5_v4': {'item': 'C', 'arm': None, 'gated': True, 'orig_root': _S47PB,
         'orig_spec': 'campaign_spec_s47_phase_b_8cfa264e.json', 'orig_campaign_id': 's47_phase_b',
         'orig_eval_key': '4a8527254a85b9cca48e1eb872b35ed9f3d5209f84002e2c255516b8af5b304a',
         'orig_eval_dir': '4a8527254a85b9cc_y2025__n5_p0_25_e0_5', 'orig_label': 'y2025__n5_p0.25_e0.5',
@@ -170,24 +179,40 @@ CELLS = {
                                     'solve at 167) stays as it is: Addendum 58 Ruling 2, accepted, flagged')}},
 }
 # Launch order (Planner task W135): C3 unit first (every x C3 ratio needs it), then C2, C4, C2_calfade, C3_midblock,
-# no_ageing, then pb_y2025_n5_v3 -- all AFTER W132's cell #38.
-CELL_ORDER = ('e_c3_unit', 'e_c2', 'e_c4', 'e_c2_calfade', 'e_c3_midblock', 'e_no_ageing', 'pb_y2025_n5_v3')
+# no_ageing, then pb_y2025_n5_v4 -- all AFTER the v4 campaign's cell #38 (W137; W135 had W132's).
+CELL_ORDER = ('e_c3_unit', 'e_c2', 'e_c4', 'e_c2_calfade', 'e_c3_midblock', 'e_no_ageing', 'pb_y2025_n5_v4')
 E_CELLS = tuple(c for c in CELL_ORDER if CELLS[c]['item'] == 'E')
 GATED_CELLS = tuple(c for c in CELL_ORDER if CELLS[c]['gated'])
 UNGATED_CELLS = tuple(c for c in CELL_ORDER if not CELLS[c]['gated'])
 GROUP_OF_ITEM = {'E': 3, 'C': 4}
 CELL_OF_ARM = {CELLS[c]['arm']: c for c in E_CELLS}
 
-# ---- W132's last cell: this extension starts only after its results are committed (Planner task W135) ----------------
-W132_ROOT_REL = os.path.join(_RES, 'P515S53', 'w132_resettle_v3')
-W132_STAGE_SPEC_REL = os.path.join(W132_ROOT_REL, 'frozen_s53_resettle_spec_v3_139d1e62.json')
-W132_STAGE_SPEC_SHA256 = '139d1e62339248df16b6fbf8019de9fb8569285f658b7fa7b1cd1ed71d060136'
-W132_LAST_CELL = 'l_195156fa'
-W132_CAMPAIGN_ID_PREFIX = 's53_w132_resettle_v3_'
+# ---- the v4 campaign's last cell: the cells start only after its results are committed (W135; W137: keyed to v4) -----
+# The v4 stage spec is found by its series prefix (its file name carries its sha256 prefix, checked): this module is on
+# the v4 cells' own dispatch path, so it cannot pin the v4 spec's hash (the v4 spec pins this module); the extension's
+# own frozen spec records the v4 stage spec's path and sha256.
+V4_ROOT_REL = os.path.join(_RES, 'P515S53', 'w137_resettle_v4')
+V4_STAGE_SPEC_PREFIX = 'frozen_s53_resettle_spec_v4_'
+V4_LAST_CELL = 'l_195156fa'
+V4_CAMPAIGN_ID_PREFIX = 's53_w137_resettle_v4_'
 
 
-def w132_last_cell_files_rel():
-    root = os.path.join(W132_ROOT_REL, f'campaign_{W132_CAMPAIGN_ID_PREFIX}{W132_LAST_CELL}')
+def v4_stage_spec_rel():
+    """(rel, sha256) of the ONE frozen v4 stage spec in the v4 root whose file name carries its own sha256 prefix;
+    (None, None) when there is none, more than one, or the name does not carry the hash."""
+    root = os.path.join(REPO, V4_ROOT_REL)
+    hits = sorted(f for f in os.listdir(root) if f.startswith(V4_STAGE_SPEC_PREFIX) and f.endswith('.json')) \
+        if os.path.isdir(root) else []
+    if len(hits) != 1:
+        return None, None
+    rel = os.path.join(V4_ROOT_REL, hits[0])
+    with open(os.path.join(REPO, rel), 'rb') as handle:
+        sha = hashlib.sha256(handle.read()).hexdigest()
+    return (rel, sha) if hits[0] == f'{V4_STAGE_SPEC_PREFIX}{sha[:8]}.json' else (None, None)
+
+
+def v4_last_cell_files_rel():
+    root = os.path.join(V4_ROOT_REL, f'campaign_{V4_CAMPAIGN_ID_PREFIX}{V4_LAST_CELL}')
     return (os.path.join(root, 'campaign_results.json'), os.path.join(root, 'campaign_manifest_sha256.json'))
 
 
@@ -236,7 +261,7 @@ def declaration_for(cell):
         'holds_after': ('the run first residual pass k0_run (version-2 definition): AA off, tight tail on, rho frozen '
                         'for every later cycle'),
         'cap_rule': cap_rule(cell),
-        'settling_rule': V.settling_rule_declaration(),
+        'settling_rule': V4.settling_rule_declaration(),
         'record_all_blocks': True,
         'captures': {'q_decomposition': True, 'ess_schedule_movement': True, 'boyd_full': True, 't_sum': True,
                      'ipopt_exit_by_block': True, 'soh_floor_sidecar': True,
@@ -337,9 +362,9 @@ def spec_entry_checks(decl, spec):
 
 def assert_resettle_preconditions(decl, spec, tail_checklist, aa_on):
     """The capture checklist, BEFORE any solve (child; and the parent's copy): W132's items restated for a W135 cell
-    (the spec cap is the cell's and within its ceiling; the rule constants are settling_criterion_v3's), the signatures
-    of the nine wrapped functions, W105's capture paths, the t_sum source facts, the exit-capture facts (W132's own
-    function), the W118 state attributes carried by the reused v3 state, and the W135 entry checks
+    (the spec cap is the cell's and within its ceiling; the rule is the v4 declaration with settling_criterion_v4's
+    constants), the signatures of the nine wrapped functions, W105's capture paths, the t_sum source facts, the
+    exit-capture facts (W132's own function), the W118 state attributes carried by the v4 state, and the W135 entry checks
     (`spec_entry_checks`). Raises on any failure; returns the checklist."""
     import shared_resources_planning as srp
     import admm_anderson_acceleration as aam
@@ -369,12 +394,7 @@ def assert_resettle_preconditions(decl, spec, tail_checklist, aa_on):
             == sorted(C101.CERTIFICATE_LENGTH_READS)),
         'd_spec_cap_equals_the_cell_cap_within_its_ceiling': (cap == spec_cap(cell) and cap <= cr['ceiling']
                                                               and cr['ceiling'] == CELLS[cell]['cap_ceiling']),
-        'f_rule_is_the_w132_v3_declaration': rule == V.settling_rule_declaration(),
-        'f_rule_constants_equal_settling_criterion_v3': (rule['tau'] == SC3.TAU and rule['eps0'] == SC3.TAU / 100.0
-                                                         and rule['gap_bound'] == SC3.TAU / 2.0
-                                                         and rule['p_max'] == 30 and rule['l_mono'] == 60
-                                                         and rule['version'] == 3 and rule['retry_tier'] is None),
-        'f_rule_class_callable': callable(getattr(SC3, 'SettlingRuleV3', None)),
+        **V4.rule_declaration_checks(rule),
         'tail_enabled_for_this_run': bool((tail_checklist or {}).get('tail_enabled_for_this_run')),
         'aa_off_literal_is_production': (srp.CONVERGENCE_DEPTH_TAIL_AA_OFF_ACTION == R.AA_OFF_ACTION
                                          and repr(R.AA_OFF_ACTION)[1:-1] in step_src),
@@ -385,8 +405,8 @@ def assert_resettle_preconditions(decl, spec, tail_checklist, aa_on):
             loop_src.count('_get_admm_efc_per_day_max(esso_model)') == 1
             and 0 <= loop_src.find('= _update_admm_penalties(') < loop_src.find('_get_admm_efc_per_day_max(esso_model)')
             < loop_src.find('admm_diagnostics.append({')),
-        'state_carries_every_w118_state_attribute': V._state_attribute_superset(),
-        'state_class_is_the_w132_v3_state': issubclass(ResettleStateW135, V.ResettleStateV3),
+        'state_carries_every_w118_state_attribute': V4._state_attribute_superset(),
+        'state_class_is_the_w137_v4_state': issubclass(ResettleStateW135, V4.ResettleStateV4),
     }
     for name, expected in PRODUCTION_SIGNATURES.items():
         fn = getattr(srp, name, None)
@@ -417,16 +437,16 @@ def assert_resettle_preconditions(decl, spec, tail_checklist, aa_on):
 
 
 # ======================================================================================================================
-#  the state (W132's, reused) and the install
+#  the state (the v4 state on W132's, reused) and the install
 # ======================================================================================================================
-class ResettleStateW135(V.ResettleStateV3):
-    """W132's v3 state, reused as is (constructor, rule adapter, exit capture, summary); only the summary's schema
-    names this extension, so a record says which declaration schema produced it."""
+class ResettleStateW135(V4.ResettleStateV4):
+    """The v4 state, reused as is (W132's constructor and exit capture, the v4 rule adapter, the v4 summary); only the
+    summary's schema names this extension, so a record says which declaration schema produced it."""
 
     def summary(self):
         s = super().summary()
         s['schema'] = SCHEMA
-        s['state_class'] = ('p515_s53_w132_resettle_v3_hooks.ResettleStateV3 (reused by import; the summary schema '
+        s['state_class'] = ('p515_s53_w137_resettle_v4_hooks.ResettleStateV4 (reused by import; the summary schema '
                             'stamped by p515_s53_w135_resettle_ext_hooks.ResettleStateW135)')
         s['arm'] = self.decl.get('arm')
         s['model_variant_declared'] = self.decl.get('model_variant')
@@ -435,7 +455,8 @@ class ResettleStateW135(V.ResettleStateV3):
 
 @contextmanager
 def settling_resettle_hooks(eval_dir, decl, holder, cap):
-    """Install W132's nine wrappers for the run (the harness enters this FIRST, so these wrap production directly and
+    """Install W132's nine wrappers on the v4 state for the run (the harness enters this FIRST, so these wrap production
+    directly and
     every harness capture hook wraps them). Restores every production function on exit, even on error;
     `holder[SUMMARY_KEY]` gets the summary. Mirrors `V.settling_resettle_hooks` with this module's declaration."""
     import shared_resources_planning as srp

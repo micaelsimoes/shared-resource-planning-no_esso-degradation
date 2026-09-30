@@ -1,30 +1,32 @@
 """
 P5.15 Addendum 58 Supplement, Planner task W135 -- the RE-SETTLING EXTENSION: claim group 3 (ageing E: six
 model-variant arms of the ageing law on the current ESS parameters file 39106f93, minimum SoH 0.70 NOT overridden, at
-the unit db77e154...) and the pb_y2025_n5 re-run under the settling rule v3 (7 cells). The 7 per-cell campaign
-freezes, the frozen stage spec `frozen_s53_resettle_ext_spec_v1_<sha8>.json` (it EXTENDS the W132 stage spec v3
-139d1e62, which stays in force for its 38 cells), the per-cell run (one cell per call, launch order enforced, AFTER
-W132's cell #38), and the zero-solve scorer for item E and the Phase B cell. BUILT IN W135; NOTHING IS RUN, FROZEN OR
-CHECKED IN W135.
+the unit db77e154...) and the pb_y2025_n5 re-run under the settling rule v4 (7 cells). The 7 per-cell campaign
+freezes, the frozen stage spec `frozen_s53_resettle_ext_spec_v1_<sha8>.json` (it EXTENDS the v4 stage spec
+frozen_s53_resettle_spec_v4, which is in force for its 38 cells), the per-cell run (one cell per call, launch order
+enforced, AFTER the v4 campaign's cell #38), and the zero-solve scorer for item E and the Phase B cell. BUILT IN W135;
+RE-TARGETED TO CRITERION v4, CHECKED AND FROZEN IN W137 (Addendum 59: "W135's router patch in the same freeze"); NOTHING
+IS RUN.
 
 Authority: PLANNER_BRIEF_2026-09-13.md Addendum 58 and its Supplement (2026-09-29: ageing arms at minimum SoH 0.70,
 option (b); per arm the year the floor binds beside the value; the 0.50-era ageing statements restated; the expert's
 prediction; pb_y2025_n5 re-run under the new rule at the end of the priority queue); TASKS.md Addendum 58 section;
 W134 (arm definitions, key, G9 replacement, floor-year capture, walls) as transcribed in Planner task W135; W132
-(spec 139d1e62: criterion v3, the machinery reused here).
+(spec 139d1e62: the machinery reused here); W137 (Addendum 59 and its Supplement: criterion v4, the v4 campaign).
 
-ORDER OF USE (Planner task W135, option (a): a deferred harness edit):
-  1. after W132 cell #38 (l_195156fa) has its results committed: apply `p515_s53_w135_harness_router.patch` (one
-     branch in `resettle_hooks_module`), commit;
-  2. run the zero-solve checks (`p515_s53_w135_resettle_ext_checks.py`), commit the output;
-  3. --freeze-cells, commit; --freeze-spec, commit; --run --cell e_c3_unit ... --preconditions-only (the dry run).
-Every mode below except --summarize refuses unless W132's #38 results and manifest are committed and the harness is
-exactly the pre-W135 harness plus the patch.
+ORDER OF USE (W137, Addendum 59: the router patch in the v4 freeze):
+  1. the prepared `p515_s53_w135_harness_router.patch` applied (router commit 1), then the v4 branch (router commit 2);
+  2. the zero-solve checks (`p515_s53_w135_resettle_ext_checks.py`) run, output committed;
+  3. --freeze-cells, commit; --freeze-spec, commit (both need the v4 stage spec frozen and committed, NOT the v4 #38);
+  4. --run: every cell REFUSES until the v4 campaign's cell #38 (l_195156fa) has its results and manifest committed
+     (`_hard_preconditions(..., require_v4_38=True)`); the dry run on e_c3_unit refuses on exactly that until then.
+Every mode except --summarize refuses unless the harness is the pre-W135 harness plus the patch plus the v4 branch and
+the v4 stage spec is frozen; --run also refuses until the v4 #38 is committed.
 
 THE CELLS (`p515_s53_w135_resettle_ext_hooks.CELLS`, launch order CELL_ORDER):
   #1 e_c3_unit  #2 e_c2  #3 e_c4  #4 e_c2_calfade  #5 e_c3_midblock  #6 e_no_ageing   (item E, ungated, cap
-     min(k0_run + 109, 300), criterion v3 reading alpha; the current configuration + the arm's model_variant)
-  #7 pb_y2025_n5_v3 (item C, gated bitwise against 4a852725 through k0 = 110, cap 219; a NEW eval key and root; the
+     min(k0_run + 109, 300), criterion v4; the current configuration + the arm's model_variant)
+  #7 pb_y2025_n5_v4 (item C, gated bitwise against 4a852725 through k0 = 110, cap 219; a NEW eval key and root; the
      W118 v2 run stays as it is)
 
 MODES (repo root, canonical interpreter; attached, ALONE, both streams captured, never detached):
@@ -33,7 +35,7 @@ MODES (repo root, canonical interpreter; attached, ALONE, both streams captured,
                                         committed campaign specs, the code, the checks output, the references, the
                                         predictions, and holds the EXACT launch command of every cell.
   --run --cell C --spec-sha256 S        THE RUN OF ONE CELL. Launch order enforced (every earlier W135 cell has
-                                        results; W132 #38 committed). Preconditions (the stage spec pins S for C; the
+                                        results; the v4 #38 committed). Preconditions (the stage spec pins S for C; the
                                         zero-solve checks re-run inline except section M, which is in the committed
                                         output; the pre-launch assertion; the parent-side capture checklist; memory;
                                         solver; own-process check), then H.evaluate on the one entry, the gates, the
@@ -77,7 +79,9 @@ import p515_s53_w132_resettle_v3_campaign as L132  # noqa: E402 -- generic gates
 import p515_s53_w135_resettle_ext_checks as K  # noqa: E402 -- the zero-solve checks (arms its guard)
 import p515_s53_w135_resettle_ext_hooks as W  # noqa: E402
 import p515_s46_ageing_mechanism as M46A  # noqa: E402 -- the committed AE formula `pv` (arms its own guard)
-import settling_criterion_v3 as SC3  # noqa: E402
+import p515_s53_w137_resettle_v4_campaign as L137  # noqa: E402 -- the v4 gates (arms its guards)
+import p515_s53_w137_resettle_v4_hooks as V4  # noqa: E402
+import settling_criterion_v4 as SC4  # noqa: E402
 import gate_result_io as GRIO  # noqa: E402
 
 H, L, X, W9, W98L, W101L, L118, W131 = L132.H, L132.L, L132.X, L132.W9, L132.W98L, L132.W101L, L132.L118, L132.W131
@@ -94,16 +98,18 @@ def _dedupe_guards(pairs):
     return tuple(out)
 
 
-GUARDS = _dedupe_guards(tuple(K.GUARDS) + tuple(L132.GUARDS)
+GUARDS = _dedupe_guards(tuple(K.GUARDS) + tuple(L137.GUARDS) + tuple(L132.GUARDS)
                         + (('s46_ageing_mechanism_imported', M46A.GUARD), ('w135_parent', PARENT_GUARD)))
 
 SCRIPT_NAME = os.path.basename(__file__)
-OWN_PROCESS_SUBSTRINGS = ('p515_s53_w135_resettle_ext_campaign',) + L132.OWN_PROCESS_SUBSTRINGS
+OWN_PROCESS_SUBSTRINGS = ('p515_s53_w135_resettle_ext_campaign', 'p515_s53_w137_resettle_v4_campaign') \
+    + L132.OWN_PROCESS_SUBSTRINGS
 STAGE_TEXT = ('P5.15 Addendum 58 Supplement, W135 -- re-settling extension (7 cells): the ageing E arms as model '
               'variants of the ageing law on the current ESS parameters file (minimum SoH 0.70, not overridden), '
               'ungated first evaluations at the unit; pb_y2025_n5 replayed bitwise against its original record through '
               'k0 = 110; the certifying regime held after the run\'s first residual pass (AA off, tight tail on, rho '
-              'frozen); settling rule v3 (reading alpha; reading gamma report-only) until it certifies or the cap; W105 '
+              'frozen); settling rule v4 (no reset on a non-Optimal accepted solve; certification vetoed while a '
+              'non-Optimal cycle lies in the last W cycles the test reads) until it certifies or the cap; W105 '
               'captures, t_sum, Q_cc, the IPOPT exit of every block, the SoH-floor sidecar and the terminal ageing '
               'trajectory')
 _P53 = os.path.join('data', 'SRP1', 'Results', 'P515S53')
@@ -111,9 +117,16 @@ ROOT_REL = K.W135_ROOT_REL
 SPEC_PREFIX = 'frozen_s53_resettle_ext_spec_v1_'
 SPEC_SERIES = 'frozen_s53_resettle_ext_spec'
 SPEC_VERSION = 1
-EXTENDS = {'path': W.W132_STAGE_SPEC_REL, 'sha256': W.W132_STAGE_SPEC_SHA256,
-           'relation': ('extends: the W132 stage spec v3 stays in force, unchanged, for its 38 cells; this series holds '
-                        'the 7 cells W132 could not route (W134) and reuses its criterion v3, hooks and scorer')}
+EXTENDS_RELATION = ('extends: the v4 stage spec (frozen_s53_resettle_spec_v4) is in force, unchanged, for its 38 cells; '
+                    'this series holds the 7 cells that spec does not (the ageing E arms and pb_y2025_n5, W134) and '
+                    'reuses its criterion v4, the v4 state and W132\'s wrappers and scorer')
+
+
+def extends():
+    """The extended v4 stage spec: found by its series prefix (W.v4_stage_spec_rel: the one file in the v4 root whose
+    name carries its own sha256 prefix); None path when it is not frozen yet."""
+    rel, sha = W.v4_stage_spec_rel()
+    return {'path': rel, 'sha256': sha, 'relation': EXTENDS_RELATION}
 CAMPAIGN_IDS = {cell: f'{K.CAMPAIGN_ID_PREFIX}{cell}' for cell in W.CELL_ORDER}
 CONCURRENCY = 1
 RESULTS_FILE = 'campaign_results.json'
@@ -126,11 +139,13 @@ SOLVER_PATH = L132.SOLVER_PATH
 PYTHON = L132.PYTHON
 N_NETWORK_BLOCKS = 48
 EXTRA_CLEAN_FILES = tuple(dict.fromkeys((SCRIPT_NAME, 'p515_s53_w135_resettle_ext_hooks.py',
+                                         'p515_s53_w137_resettle_v4_campaign.py',
                                          'p515_s53_w135_resettle_ext_checks.py', K.PATCH_REL,
                                          'p515_s46_ageing_mechanism.py', 'p515_s46_variant_checks.py')
                                         + tuple(L132.EXTRA_CLEAN_FILES)))
 CODE_PINNED = tuple(dict.fromkeys(K.CODE_PINNED_BY_CHECKS + (
-    SCRIPT_NAME, 'p515_s53_w132_resettle_v3_campaign.py', 'p515_s53_w118_resettle_campaign.py',
+    SCRIPT_NAME, 'p515_s53_w137_resettle_v4_campaign.py', 'p515_s53_w132_resettle_v3_campaign.py',
+    'p515_s53_w118_resettle_campaign.py',
     'p515_s53_w131_prefreeze_diagnostics.py', 'p515_s53_w101_srp1_continuation_campaign.py',
     'p515_s53_w98_continuation_campaign.py', 'p515_s53_w98_continuation_hooks.py',
     'p515_s53_w86_tail_recert_campaign.py', 'p515_s53_w89_g6_final_attempt_reeval.py', 'p515_s46_ageing_mechanism.py')))
@@ -151,6 +166,10 @@ VERBATIM = {
     (BRIEF, 'ruling2_future_specs'): L132.VERBATIM[(BRIEF, 'ruling2_future_specs')],
     (TASKS, 'ageing_ruled'): '**Ageing arms RULED (Add. 58 supplement): option (b), minimum SoH 0.70**',
     (TASKS, 'pb_end_of_queue'): '**pb_y2025_n5: re-run under v3 at the END of the priority queue**',
+    (BRIEF, 'a59_router_in_the_v4_freeze'): ("W135's router patch in the same freeze so the ageing and pb cells need no "
+                                             "second one"),
+    (BRIEF, 'a59_order'): ('v4 freeze → cell 1 re-run → resume in priority order (≈ 57 h v3 cells, 9 h ageing and '
+                           'pb)'),
     (A28_REPORT, 'title_sign'): 'the ageing convention does not decide the sign',
     (A28_REPORT, 'none_pays'): 'Under none of them does the smallest unit pay determinately',
     (A28_REPORT, 'floor_050'): 'soh_min is 0.50 in every variant, and no floor row was active.',
@@ -308,8 +327,9 @@ PREDICTIONS = {
             'production, tail passed active, rho frozen, every cycle a residual pass; checks O), and the AA hold '
             'passes a copy of production\'s Boyd metrics with all_boyd_pass already True -- so the holds change no value '
             'there; from 113 both runs hold',
-            'STOP: settling rule v3 here, v1 in W101; the rule reads the trajectory, it does not change it. W131 / '
-            'checks R: v3 alpha on the unit\'s record certifies at 172, and the dynamic cap min(103 + 109, 300) = 212 '
+            'STOP: settling rule v4 here (W137), v1 in W101; the rule reads the trajectory, it does not change it. W137 '
+            'checks R: v4 on the unit\'s record (no non-Optimal cycle, W131) certifies at 172, and the dynamic cap '
+            'min(103 + 109, 300) = 212 '
             'equals W101\'s N + 100 = 212',
             'SALVAGE: the health basis NORMALIZED_ABOVE_MINIMUM_SOH reads soh_min 0.70 from the file in both paths; '
             'salvage is reporting-only and outside gross (Addendum 58 Supplement)',
@@ -557,14 +577,16 @@ def parent_capture_checklist(cell, spec):
 
 
 def harness_routed():
-    """The harness is the pre-W135 harness plus the prepared patch (sha256 pinned) and routes a W135 declaration here."""
+    """The harness is the pre-W135 harness plus the prepared patch plus the v4 branch (W137; sha256 pinned) and routes a
+    W135 declaration here."""
     sha = H.sha256_file(H.HARNESS_PATH)
     try:
         routed = H.resettle_hooks_module(W.declaration_for(W.CELL_ORDER[0])) is W
     except Exception:  # noqa: BLE001
         routed = False
-    return {'ok': bool(sha == K.HARNESS_POST_PATCH_SHA256 and routed), 'harness_sha256': sha,
-            'expected_post_patch_sha256': K.HARNESS_POST_PATCH_SHA256, 'routes_w135_declarations_here': routed}
+    return {'ok': bool(sha == K.HARNESS_POST_V4_SHA256 and routed), 'harness_sha256': sha,
+            'expected_post_v4_sha256': K.HARNESS_POST_V4_SHA256,
+            'post_patch_sha256_router_commit_1': K.HARNESS_POST_PATCH_SHA256, 'routes_w135_declarations_here': routed}
 
 
 # ======================================================================================================================
@@ -747,11 +769,11 @@ def stopping_check(cell, rec, eval_dir):
 
 
 def settling_replay_check(cell, eval_dir):
-    """The pure rule v3 replayed on the run's per_cycle_record (Q, boyd) with the in-cycle t_sum and all_optimal_k
-    reproduces every in-cycle rule record and the decision (W132's G17 on the W135 declaration)."""
+    """The pure rule v4 replayed on the run's per_cycle_record (Q, boyd) with the in-cycle t_sum and all_optimal_k
+    reproduces every in-cycle rule record and the decision (W137's G17 on the W135 declaration)."""
     rows = _read_jsonl(os.path.join(eval_dir, 'per_cycle_record.jsonl'))
     lines = {x['cycle']: x for x in _read_jsonl(os.path.join(eval_dir, W.CYCLE_FILE))}
-    rule = K.K132.pure_rule(W.declaration_for(cell))
+    rule = K.K137.pure_rule(W.declaration_for(cell))
     pure = []
     for r in rows:
         ln = lines.get(r['cycle']) or {}
@@ -761,12 +783,10 @@ def settling_replay_check(cell, eval_dir):
     in_cycle = [(lines.get(r['cycle']) or {}).get('settling') for r in rows]
     dec = _decision(eval_dir) or {}
     pd = rule.decision or {}
-    keys = ('status', 'k_star', 'branch', 'k0', 'N', 'T', 'A', 'P_hat', 'W', 'window', 'band', 'band_width', 'k_cap',
-            'reasons', 'range', 't_sum_k_star', 'gap_refusals', 'drift_rate_mean_dQ_last_25', 'dQ_cc_rate_mean_last_25',
-            'version', 'first_k0_alpha', 'non_optimal_cycles', 'lapse_events', 'gamma_report_only')
+    keys = L137.DECISION_KEYS_REPLAYED
     parts = {'every_cycle_record_reproduced': [K._jt(a) for a in in_cycle] == [K._jt(b) for b in pure],
              'decision_reproduced': bool(dec) and all(K._jt(dec.get(k)) == K._jt(pd.get(k)) for k in keys),
-             'decision_file_present': bool(dec), 'decision_is_version_3': dec.get('version') == 3}
+             'decision_file_present': bool(dec), 'decision_is_version_4': dec.get('version') == 4}
     return all(parts.values()), {'parts': parts}
 
 
@@ -878,10 +898,12 @@ def c2_calfade_consistency(eval_dir):
 
 
 GATE_SCOPE = {
-    'G9_ess_ageing_readback': 'pb_y2025_n5_v3 only (no model variant: the harness reads the ESS ageing baseline back)',
+    'G8_persistence_on_production_certificate': ('every cell: persistence follows status_production_trajectory '
+                                                 '(Addendum 59; W137)'),
+    'G9_ess_ageing_readback': 'pb_y2025_n5_v4 only (no model variant: the harness reads the ESS ageing baseline back)',
     'G9v_variant_readback_and_floor': ('the six E cells only: the G9 REPLACEMENT (W.variant_readback_gate; the harness '
                                        'does not compute the ESS-ageing readback for a variant entry)'),
-    'G19_replay_bitwise_1_k0_every_field': 'pb_y2025_n5_v3 only (the E cells have no replay reference: SKIPPED)',
+    'G19_replay_bitwise_1_k0_every_field': 'pb_y2025_n5_v4 only (the E cells have no replay reference: SKIPPED)',
     'G23_overlap_recorded': 'pb: k0+1..N_old recorded; E: none (asserted empty)',
     'G26_floor_sidecar_end_cycle': 'every cell (E: node 7 cohort 2025, the floor year; pb: node 5, report-only)',
     'G27_ageing_trajectory_terminal': 'the six E cells only',
@@ -918,7 +940,8 @@ def cell_gates(cell, entry, eval_dir):
     gates['G6_v37_optimal_and_four_metrics'] = g6['gate_pass']
     detail['G6_v37'] = g6
     gates['G7_append_sealed'] = ch.get('append_sealed_after_reconcile', False)
-    gates['G8_persistence_as_w101'], detail['G8'] = W101L.persistence_check(rec, eval_dir)
+    gates['G8_persistence_on_production_certificate'], detail['G8'] = V4.persistence_check_production_certificate(
+        rec, eval_dir)
     if c['arm'] is None:
         gates['G9_ess_ageing_readback'] = ch.get('ess_ageing_readback_all_match', False)
     else:
@@ -932,8 +955,8 @@ def cell_gates(cell, entry, eval_dir):
     gates['G14_all_block_capture'], detail['G14'] = W101L.block_capture(eval_dir, rec, rows)
     gates['G15_stopping_consistent'], detail['G15'] = stopping_check(cell, rec, eval_dir)
     gates['G16_lambda_sidecar_complete'], detail['G16'] = W101L.lambda_sidecar_check(eval_dir, rec)
-    gates['G17_rule_v3_replay_reproduces_in_cycle'], detail['G17'] = settling_replay_check(cell, eval_dir)
-    gates['G18_line_fields_every_cycle'], detail['G18'] = L132.line_fields_check(eval_dir)
+    gates['G17_rule_v4_replay_reproduces_in_cycle'], detail['G17'] = settling_replay_check(cell, eval_dir)
+    gates['G18_line_fields_every_cycle'], detail['G18'] = L137.line_fields_check(eval_dir)
     if c['gated']:
         rg = replay_gate_full(cell, eval_dir)
         gates['G19_replay_bitwise_1_k0_every_field'] = rg['bitwise_through_k0']
@@ -992,7 +1015,7 @@ def cell_report(cell, eval_dir, rec):
     rep = {'cell': cell, 'item': c['item'], 'arm': c['arm'], 'claim_group': W.GROUP_OF_ITEM[c['item']],
            'gated': c['gated'], 'eval_key': rec.get('eval_key'), 'candidate_key': rec.get('candidate_key'),
            'candidate_canonical': rec.get('candidate_canonical'), 'original_eval_key': c['orig_eval_key'],
-           'k0_run': fp, 'first_k0_v2': summ.get('first_k0_v2'), 'first_k0_alpha': summ.get('first_k0_alpha'),
+           'k0_run': fp, 'first_k0_v2': summ.get('first_k0_v2'), 'criterion_version': dec.get('version'),
            'k0_original': c['k0'] if c['gated'] else None, 'N_old': c['N_old'] if c['gated'] else None,
            'rule_cap': dec.get('cap'), 'cap_ceiling': c['cap_ceiling'], 'cycles_run': rec.get('cycles_run'),
            'status': dec.get('status'), 'record_status': rec.get('status'), 'k_star': dec.get('k_star'),
@@ -1004,9 +1027,11 @@ def cell_report(cell, eval_dir, rec):
            'terminal_salvage_value_end': (rows.get(end) or {}).get('terminal_salvage_value'),
            'T': dec.get('T'), 'A': dec.get('A'), 'P_hat': dec.get('P_hat'),
            'lapse_events': dec.get('lapse_events'), 'gap_refusals': dec.get('gap_refusals'),
-           'non_optimal_cycles': dec.get('non_optimal_cycles'), 'gamma_report_only': dec.get('gamma_report_only'),
+           'non_optimal_cycles': dec.get('non_optimal_cycles'), 'W': dec.get('W'), 'window': dec.get('window'),
+           'vetoes': dec.get('vetoes'), 'n_vetoes': dec.get('n_vetoes'),
+           'window_all_optimal': dec.get('window_all_optimal'), 'out_of_window_reads': dec.get('out_of_window_reads'),
            'terminal_step_abs': abs(steps[-1]) if steps else None,
-           'terminal_step_over_EPS0': (abs(steps[-1]) / SC3.EPS0) if steps else None,
+           'terminal_step_over_EPS0': (abs(steps[-1]) / SC4.EPS0) if steps else None,
            'rule_ten_last_cycle': ((rows[last]['objective_change_abs'] / rows[last]['objective_tolerance'])
                                    if rows[last].get('objective_change_abs') is not None
                                    and rows[last].get('objective_tolerance') else None),
@@ -1338,11 +1363,12 @@ def post_run_evaluator_self_tests():
     built by the REAL wrappers with W135 declarations, tampered negative controls; the G9 replacement, the floor-year
     reader and the C2_calfade evaluator on synthetic / committed inputs; W132's scorer self-tests (reused)."""
     out = {}
-    cases = (('pb_y2025_n5_v3', 'pass', None, True), ('pb_y2025_n5_v3', 'tampered_row_40', 'tamper_row_40', False),
-             ('pb_y2025_n5_v3', 'tampered_t_sum_30', 'tamper_t_sum_30', False),
-             ('pb_y2025_n5_v3', 'tampered_hold_flag', 'tamper_hold_flag', False),
-             ('pb_y2025_n5_v3', 'tampered_decision', 'tamper_decision', False),
-             ('e_c2', 'non_optimal_lapse', 'nonopt', True), ('e_c2', 'tampered_exit_flag', 'tamper_exit', False),
+    cases = (('pb_y2025_n5_v4', 'pass', None, True), ('pb_y2025_n5_v4', 'tampered_row_40', 'tamper_row_40', False),
+             ('pb_y2025_n5_v4', 'tampered_t_sum_30', 'tamper_t_sum_30', False),
+             ('pb_y2025_n5_v4', 'tampered_hold_flag', 'tamper_hold_flag', False),
+             ('pb_y2025_n5_v4', 'tampered_decision', 'tamper_decision', False),
+             ('e_c2', 'non_optimal_exit_is_not_a_lapse', 'nonopt', True),
+             ('e_c2', 'tampered_exit_flag', 'tamper_exit', False),
              ('e_c3_unit', 'ungated_rule_cap', 'creep', True))
     for cell, name, variant, expect in cases:
         tmp = tempfile.mkdtemp(prefix='w135_selftest_')
@@ -1352,7 +1378,7 @@ def post_run_evaluator_self_tests():
             h_ok, _h = hold_checks(cell, tmp, rec)
             s_ok, _s = stopping_check(cell, rec, tmp)
             k_ok, _k = settling_replay_check(cell, tmp)
-            f_ok, _f = L132.line_fields_check(tmp)
+            f_ok, _f = L137.line_fields_check(tmp)
             c_ok, _c = L118.creep_capture_check(tmp, rec, rows)
             t_ok, t_d = L118.t_sum_check(tmp, os.path.relpath(os.path.join(tmp, 'pf_entry_stride_s39_D.jsonl'), REPO),
                                          os.path.relpath(os.path.join(tmp, 'interface_settlement_detail_s31c.json'),
@@ -1379,7 +1405,7 @@ def post_run_evaluator_self_tests():
             out[name] = {'ok': bool(ok), 'gates': allg, 'expect_all_pass': expect,
                          'report_on_synthetic': ({k: rep.get(k) for k in ('status', 'k_star', 'branch', 'band_width',
                                                                           's_signed', 't_sum_end', 'k0_run',
-                                                                          'first_k0_alpha', 'non_optimal_cycles',
+                                                                          'n_vetoes', 'non_optimal_cycles',
                                                                           'label', 'arm')} if rep else None)}
         except Exception as error:  # noqa: BLE001
             out[name] = {'ok': False, 'error': f'{type(error).__name__}: {error}', 'traceback': traceback.format_exc()}
@@ -1487,7 +1513,7 @@ def item_e_scorer_self_tests():
 
 
 # ======================================================================================================================
-#  checks state, verbatim, W132 #38
+#  checks state, verbatim, the v4 spec and its #38
 # ======================================================================================================================
 def _checks_file_state():
     rel = os.path.join(K.OUT_DIR_REL, K.OUT_FILE)
@@ -1515,27 +1541,38 @@ def verbatim_check():
             'found_whitespace_normalised': found, 'all_found': all(found.values())}
 
 
-def _hard_preconditions(tag):
-    """Refuse at once (before any key is computed) unless W132's #38 is committed and the harness routes a W135
-    declaration here: without the router edit every W135 key computation raises in the harness's W118 validator."""
-    done, d = K.w132_done()
+def _hard_preconditions(tag, require_v4_38):
+    """Refuse at once (before any key is computed) unless the harness routes a W135 declaration here and the v4 stage
+    spec is frozen and committed; with `require_v4_38` (--run, the preconditions-only dry run included) ALSO unless the
+    v4 campaign's cell #38 (l_195156fa) has its results and manifest committed -- THE LAUNCH GATE (W137: the freeze
+    modes do not need #38, the launcher does)."""
+    spec_ok, sd = K.v4_spec_state()
+    done, d = K.v4_done()
     hr = harness_routed()
-    if done and hr['ok']:
+    if hr['ok'] and spec_ok and (done or not require_v4_38):
         return
-    if not done:
-        _log(f'[{tag} PRECONDITION FAILED] W132 cell #38 ({W.W132_LAST_CELL}) results / manifest not committed: '
-             f'{d["parts"]}')
+    if not spec_ok:
+        _log(f'[{tag} PRECONDITION FAILED] the v4 stage spec is not frozen / committed / naming l_195156fa last: '
+             f'{sd["parts"]}')
+    if require_v4_38 and not done:
+        _log(f'[{tag} PRECONDITION FAILED] the v4 campaign cell #38 ({W.V4_LAST_CELL}) results / manifest not committed '
+             f'(the launch gate of this extension): {d["parts"]}')
     if not hr['ok']:
-        _log(f'[{tag} PRECONDITION FAILED] the harness is not the pre-W135 harness + {K.PATCH_REL}, or does not route '
-             f'a W135 declaration here: {hr}')
+        _log(f'[{tag} PRECONDITION FAILED] the harness is not the pre-W135 harness + {K.PATCH_REL} + the v4 branch, or '
+             f'does not route a W135 declaration here: {hr}')
     _finish(1)
 
 
-def _common_checks():
+def _common_checks(require_v4_38):
     failures = []
-    done, d = K.w132_done()
-    if not done:
-        failures.append(f'W132 cell #38 ({W.W132_LAST_CELL}) results / manifest not committed: {d["parts"]}')
+    spec_ok, sd = K.v4_spec_state()
+    if not spec_ok:
+        failures.append(f'the v4 stage spec is not frozen / committed / naming l_195156fa last: {sd["parts"]}')
+    if require_v4_38:
+        done, d = K.v4_done()
+        if not done:
+            failures.append(f'the v4 campaign cell #38 ({W.V4_LAST_CELL}) results / manifest not committed: '
+                            f'{d["parts"]}')
     hr = harness_routed()
     if not hr['ok']:
         failures.append(f'the harness is not the pre-W135 harness + the router patch, or does not route here: {hr}')
@@ -1546,15 +1583,15 @@ def _common_checks():
         rel = W.reference_path(cell)
         if _sha(rel) != W.CELLS[cell]['per_cycle_record_sha256'] or not _committed_clean(rel):
             failures.append(f'{cell} original record not as committed: {rel}')
-    for rel in (EXTENDS['path'], W117['path'], AGEING_MECHANISM['path'], L132.W118_SUMMARY,
-                os.path.join(UNIT_REF_EVAL_DIR, 'per_cycle_record.jsonl'), A28_REPORT, A30_REPORT):
+    ext = extends()
+    for rel in tuple(r for r in (ext['path'],) if r) + (W117['path'], AGEING_MECHANISM['path'], L132.W118_SUMMARY,
+                                                          os.path.join(UNIT_REF_EVAL_DIR, 'per_cycle_record.jsonl'),
+                                                          A28_REPORT, A30_REPORT):
         if not _committed_clean(rel):
             failures.append(f'{rel} not committed / clean')
-    if _sha(EXTENDS['path']) != EXTENDS['sha256']:
-        failures.append('the W132 stage spec is not the pinned 139d1e62')
     others = _own_process_alive()
     if others:
-        failures.append(f'another copy of a W135 / W132 / W118 / W105 / W101 / W98 launcher is alive: {others}')
+        failures.append(f'another copy of a W137 / W135 / W132 / W118 / W105 / W101 / W98 launcher is alive: {others}')
     return failures
 
 
@@ -1574,8 +1611,8 @@ def _checks_output_ok(failures):
 # ======================================================================================================================
 def freeze_cells(started):
     tag = 'W135-FREEZE-CELLS'
-    _hard_preconditions(tag)
-    failures = _common_checks()
+    _hard_preconditions(tag, require_v4_38=False)
+    failures = _common_checks(require_v4_38=False)
     cf = _checks_output_ok(failures)
     checks_inline = _run_checks_inline()
     if not checks_inline['all_hold']:
@@ -1602,7 +1639,7 @@ def freeze_cells(started):
         extra = {'campaign_script': SCRIPT_NAME, 'campaign_script_sha256': _sha(SCRIPT_NAME), 'stage_text': STAGE_TEXT,
                  'stage_spec': ('frozen_s53_resettle_ext_spec_v1 (frozen AFTER this campaign spec) pins this spec by '
                                 'its sha256 and holds the exact launch command'),
-                 'extends': EXTENDS, 'label': W.LABEL, 'cell': cell, 'item': c['item'], 'arm': c['arm'],
+                 'extends': extends(), 'label': W.LABEL, 'cell': cell, 'item': c['item'], 'arm': c['arm'],
                  'model_variant': W.arm_variant(cell), 'claim_group': W.GROUP_OF_ITEM[c['item']],
                  'original': {'campaign_id': c['orig_campaign_id'], 'eval_key': c['orig_eval_key'],
                               'eval_dir': W.original_eval_dir(cell), 'role': ('replay reference (gated through k0)'
@@ -1617,7 +1654,8 @@ def freeze_cells(started):
             campaign_root(cell), CAMPAIGN_IDS[cell], entries(cell), configuration=configuration(cell),
             cap=W.spec_cap(cell), concurrency=CONCURRENCY,
             authority=[f'{BRIEF} Addendum 58 Supplement', f'{BRIEF} Addendum 58', 'Planner task W135 (W134 findings)',
-                       f'{W.W132_STAGE_SPEC_REL} (extended)'], required_consecutive_cycles=10, extra=extra)
+                       f'{BRIEF} Addendum 59 and its Supplement', 'Planner task W137',
+                       f'{extends()["path"]} (extended)'], required_consecutive_cycles=10, extra=extra)
         checks = validate_campaign_spec(cell, spec)
         pre_frozen = pre_launch_assertion(cell, spec)
         cap_ok, _cap = parent_capture_checklist(cell, spec)
@@ -1703,32 +1741,37 @@ def stage_spec_content(checks_inline, cf, post_tests, verb, solver, prov, mem, w
             'expected_wall_time': wall['per_cell'][cell]}
     return {
         'schema': 'p515_s53_resettle_ext_spec_v1', 'series': SPEC_SERIES, 'version': SPEC_VERSION,
-        'stage_text': STAGE_TEXT, 'extends': EXTENDS, 'predecessor': None,
-        'predecessor_note': ('first version of this series; it EXTENDS (does not replace) the W132 stage spec v3 '
-                             '139d1e62, whose sha256 is recorded in `extends`'),
-        'authority': [f'{BRIEF} Addendum 58 Supplement (ageing arms at 0.70, option (b); pb re-run)',
+        'stage_text': STAGE_TEXT, 'extends': extends(), 'predecessor': None,
+        'predecessor_note': ('first version of this series; it EXTENDS (does not replace) the v4 stage spec '
+                             'frozen_s53_resettle_spec_v4, whose path and sha256 are recorded in `extends` (W137; the '
+                             'code was built in W135 against v3 139d1e62 and re-targeted to v4 before this freeze)'),
+        'authority': [f'{BRIEF} Addendum 59 and its Supplement (criterion v4; W135 router patch in the v4 freeze)',
+                      f'{BRIEF} Addendum 58 Supplement (ageing arms at 0.70, option (b); pb re-run)',
                       f'{BRIEF} Addendum 58 (Rulings 1-3; order)', 'TASKS.md Addendum 58 section',
                       'W134 (arm definitions, key, G9 replacement, floor-year capture, walls), as transcribed in '
-                      'Planner task W135', 'Planner task W135'],
+                      'Planner task W135', 'Planner task W135', 'Planner task W137'],
         'frozen_utc': _utc(), 'git_head': H._git(['rev-parse', 'HEAD']),
         'objective_convention': DEFINITIONS['objective_convention'],
         'pins': {'code_sha256': code, 'production_sha256': production, 'solver': solver,
                  'harness': {'pre_w135': K.PRE_W135_HARNESS, 'post_patch_sha256': K.HARNESS_POST_PATCH_SHA256,
-                             'patch': {'path': K.PATCH_REL, 'sha256': _sha(K.PATCH_REL)}},
+                             'post_v4_branch_sha256': K.HARNESS_POST_V4_SHA256,
+                             'patch': {'path': K.PATCH_REL, 'sha256': _sha(K.PATCH_REL)},
+                             'v4_branch_lines': list(K.V4_BRANCH_LINES)},
                  'zero_solve_checks_output': {'path': cf['path'], 'sha256': cf['sha256'], 'manifest': cf['manifest']},
                  'w117': {'path': W117['path'], 'sha256': W117['sha256']},
                  'ageing_mechanism': {**AGEING_MECHANISM},
                  'references_inputs_sha256': ref_inputs,
                  'unit_reference_3f084f2f': {'eval_dir': UNIT_REF_EVAL_DIR,
                                              'per_cycle_record_sha256': K.UNIT_SETTLED['per_cycle_record_sha256']},
-                 'w132_cell_38': dict(zip(('results', 'manifest'), W.w132_last_cell_files_rel())),
+                 'v4_cell_38_launch_gate': dict(zip(('results', 'manifest'), W.v4_last_cell_files_rel())),
                  'ess_params_file': {'path': W.ESS_PARAMS_REL, 'sha256': W.ESS_PARAMS_SHA256},
                  'campaign_specs': {c: {'path': specs[c]['path'], 'sha256': specs[c]['sha256']} for c in W.CELL_ORDER}},
         'production_since_originals': prov,
         'cells': cells, 'cell_order': list(W.CELL_ORDER),
         'launch_order': {'order': list(W.CELL_ORDER),
-                         'enforced': ('W132 #38 results committed, then every earlier W135 cell has results before '
-                                      '--run'), 'one_cell_per_call': True},
+                         'enforced': ('the v4 campaign #38 results committed (the launch gate; --run refuses '
+                                      'before), then every earlier W135 cell has results before --run'),
+                         'one_cell_per_call': True},
         'launch_commands': {c: cells[c]['launch_command'] for c in W.CELL_ORDER},
         'summarize_commands_at_the_completion_points': {p['after_cell']: summarize_command(p['after_cell'])
                                                         for p in points['report_points']},
@@ -1740,9 +1783,10 @@ def stage_spec_content(checks_inline, cf, post_tests, verb, solver, prov, mem, w
                           'persistence': 'persist_certified_models True, hull_polish False, no reference',
                           'concurrency': CONCURRENCY, 'option_b_release_solution_bookkeeping': 'absent',
                           'checked_field_by_field': 'validate_campaign_spec at --freeze-cells, --freeze-spec and --run'},
-        'stop_rule': {'module': 'settling_criterion_v3', 'class': 'settling_criterion_v3.SettlingRuleV3',
-                      'version': SC3.VERSION, 'constants': SC3.constants(W.P_MAX), 'readings': SC3.READINGS,
-                      'as_w132': 'the W132 declaration settling_rule (V.settling_rule_declaration()), unchanged',
+        'stop_rule': {'module': 'settling_criterion_v4', 'class': 'settling_criterion_v4.SettlingRuleV4',
+                      'version': SC4.VERSION, 'constants': SC4.constants(W.P_MAX), 'readings': SC4.READINGS,
+                      'sub_test_reads': SC4.SUB_TEST_READS,
+                      'as_v4': 'the v4 declaration settling_rule (V4.settling_rule_declaration()), unchanged',
                       'caps': {'E (ungated)': 'min(k0_run + 109, 300) (dynamic)', 'pb (gated)': 'N_old + 100 = 219'}},
         'replay_gate': {'applies_to': list(W.GATED_CELLS), 'skipped_for': list(W.UNGATED_CELLS),
                         'as_w132': 'in-cycle bitwise through k0 (abort on the first difference); G19 post-run'},
@@ -1763,7 +1807,8 @@ def stage_spec_content(checks_inline, cf, post_tests, verb, solver, prov, mem, w
                    'functions': ['score_item_e', 'resolve_weighted', 'epsilon_050_references', 'cell_report',
                                  'L132.score_claim', 'L132.resolve', 'L132.view_from_report', 'reference_views']},
         'predictions_recorded_before_any_run': PREDICTIONS,
-        'gates': {'as_w132': 'G1-G8, G11, G13-G18, G20-G25 as W132 (cell-keyed ones restated for the W135 table)',
+        'gates': {'as_w132': ('G1-G7, G11, G13-G16, G20-G25 as W132 (cell-keyed ones restated for the W135 table); '
+                              'G8 on production\'s certificate, G17 / G18 on the v4 rule records (as W137)'),
                   'G9': 'pb only (ESS ageing readback)', 'G9v': 'E only: the G9 replacement',
                   'G19': 'pb only', 'G26': 'floor sidecar at the end cycle', 'G27': 'E: terminal ageing trajectory',
                   'G28': 'e_c2_calfade: reproduces 3f084f2f through 172 (exit 3 on failure)', 'scope': GATE_SCOPE,
@@ -1780,9 +1825,9 @@ def stage_spec_content(checks_inline, cf, post_tests, verb, solver, prov, mem, w
                                                       'settling_resettle (W135 declaration)}); no key formula change; '
                                                       'every other key byte-identical to the pre-W135 harness (checks '
                                                       'K)')},
-        'harness_change': ('p515_s44_campaign_harness.py: ONE branch in resettle_hooks_module (the prepared patch, '
-                           'applied after W132 #38): a W135 declaration dispatches to '
-                           'p515_s53_w135_resettle_ext_hooks; every existing branch identical (checks D)'),
+        'harness_change': ('p515_s44_campaign_harness.py: the prepared patch (router commit 1, W137): a W135 '
+                           'declaration dispatches to p515_s53_w135_resettle_ext_hooks; then the v4 branch (router '
+                           'commit 2); every existing branch identical (checks D)'),
         'memory_preflight': {'rule': 'W86 rule at concurrency 1', 'measured_at_freeze_non_gating': mem},
         'solve_profile_declared': {'parent': 'never solves: every launcher guard permitted=(), verify(0)',
                                    'child': 'RECONCILED PER EVENT (G5): 51 x (cycles_run + 1) + every retry attempted'},
@@ -1802,8 +1847,8 @@ def stage_spec_content(checks_inline, cf, post_tests, verb, solver, prov, mem, w
 
 def freeze_spec(started):
     tag = 'W135-SPEC'
-    _hard_preconditions(tag)
-    failures = _common_checks()
+    _hard_preconditions(tag, require_v4_38=False)
+    failures = _common_checks(require_v4_38=False)
     os.makedirs(_abs(ROOT_REL), exist_ok=True)
     existing = sorted(f for f in os.listdir(_abs(ROOT_REL)) if f.startswith(SPEC_PREFIX))
     if existing:
@@ -1854,7 +1899,7 @@ def freeze_spec(started):
     if _sha(rel) != sha:
         raise RuntimeError('the stage spec\'s written bytes do not hash to its name')
     _log(f'[{tag}] {STAGE_TEXT}')
-    _log(f'[{tag}] wrote {rel} sha256={sha} (extends W132 v3 {EXTENDS["sha256"][:8]})')
+    _log(f'[{tag}] wrote {rel} sha256={sha} (extends the v4 stage spec {(extends()["sha256"] or "")[:8]})')
     _log(f"[{tag}] checks per section: { {k: v['holds'] for k, v in checks_inline['sections'].items()} }")
     _log(f"[{tag}] post-run evaluator / scorer self-tests: { {k: v.get('ok') for k, v in post_tests.items()} }")
     _log(f'[{tag}] claims scored: {dataset["n_claims"]} (skipped {dataset["skipped_not_in_the_set"]})')
@@ -1874,8 +1919,8 @@ def freeze_spec(started):
 # ======================================================================================================================
 def run(started, cell, spec_sha256, preconditions_only=False):
     tag = f'W135-RUN-{cell}' + ('-PRECONDITIONS-ONLY' if preconditions_only else '')
-    _hard_preconditions(tag)
-    failures = _common_checks()
+    _hard_preconditions(tag, require_v4_38=True)     # THE LAUNCH GATE: the v4 #38 committed
+    failures = _common_checks(require_v4_38=True)
     ss_rel, ss_sha, ss = load_stage_spec()
     if not _committed_clean(ss_rel):
         failures.append('the stage spec is not committed / clean')
@@ -1931,7 +1976,7 @@ def run(started, cell, spec_sha256, preconditions_only=False):
     if preconditions_only:
         _log(f"[{tag}] every precondition holds: campaign spec {os.path.relpath(spec_path, REPO)} sha256={spec_sha256} "
              f"(pinned by the stage spec {ss_rel} sha256={ss_sha}); launch index {idx + 1} of {len(W.CELL_ORDER)}; "
-             f"W132 #38 committed; harness routed ({harness_routed()['harness_sha256'][:8]}); checks per section "
+             f"the v4 #38 committed; harness routed ({harness_routed()['harness_sha256'][:8]}); checks per section "
              f"{({k: v['holds'] for k, v in checks_inline['sections'].items()})}; pre-launch parts {pre['parts']}; parent "
              f"capture checklist {len(cap_checks)} items all True; eval_key {entry['eval_key']}; cap {spec['cap']}; "
              f"model_variant {entry.get('model_variant')}; solver {solver['resolved'].get('NLP_SOLVER_PATH')} "
@@ -1984,7 +2029,7 @@ def run(started, cell, spec_sha256, preconditions_only=False):
         _log(f"[{tag}] REPLAY DIVERGED -- cell ABORTED: {summ['replay_first_divergence']}")
     _log(f"[{tag}] gates {gates}")
     if isinstance(report, dict) and 'error' not in report:
-        _log(f"[{tag}] settling v3: status {report.get('status')} k* {report.get('k_star')} branch {report.get('branch')} "
+        _log(f"[{tag}] settling v4: status {report.get('status')} k* {report.get('k_star')} branch {report.get('branch')} "
              f"band_width {report.get('band_width')} Q_end {report.get('Q_end')} t_sum(end) {report.get('t_sum_end')} "
              f"k0_run {report.get('k0_run')} non-Optimal cycles {report.get('non_optimal_cycles')} cycles "
              f"{report.get('cycles_run')} floor_year {report.get('floor_year')} AE {report.get('AE')} record status "
