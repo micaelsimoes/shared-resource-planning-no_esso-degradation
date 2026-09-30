@@ -776,7 +776,20 @@ def tests_M():
             _p, sed, _cand, holder, report, models, eid = _built(G, SED, M46V, cell, run_tag, scratch, mv, floor_rows)
             ids.append(eid)
             fresh = H.model_variant_readback_models(models, sed, mv, W.UNIT_YEAR, clone=True)
-            floor_fresh, _counts = G._identify_soh_floor_rows(models)
+            # W137 (r2): the floor-row identity is the one the harness's OWN configuration hook computes on its probe
+            # models (built before the candidate is applied, exactly as a run's preflight and s35ref capture identify
+            # them) against the precheck rows -- recorded in the hook's rule-eleven checklist. r1 called
+            # G._identify_soh_floor_rows on the candidate-applied models, which no run path does: at the unit's
+            # zero-capacity nodes (5, 9) the floor row's SoH variable is fixed, and the helper raised. That call is kept
+            # REPORT-ONLY below (its outcome recorded, not gating).
+            w20 = (report.get('rule_eleven_checklist') or {}).get('w20_model_variant') or {}
+            floor_probe_ok = w20.get('floor_rows_identical_to_baseline_probe') is True
+            try:
+                floor_on_candidate_models, _counts = G._identify_soh_floor_rows(models)
+                floor_on_candidate_models_note = {'identified': True,
+                                                  'equal_to_precheck': floor_on_candidate_models == floor_rows}
+            except RuntimeError as error:
+                floor_on_candidate_models_note = {'identified': False, 'error': str(error)[:300]}
             rec = _synthetic_record(mv, holder, fresh)
             ok, det = W.variant_readback_gate(rec, decl)
             negatives = {}
@@ -797,11 +810,12 @@ def tests_M():
             bad = copy.deepcopy(rec)
             bad['ess_params_sha256_in_child'] = '0' * 64
             negatives['file_sha_mismatch_refused'] = not W.variant_readback_gate(bad, decl)[0]
-            arms[cell] = {'ok': bool(ok and all(negatives.values()) and floor_fresh == floor_rows),
+            arms[cell] = {'ok': bool(ok and all(negatives.values()) and floor_probe_ok),
                           'g9_replacement_holds': ok, 'g9_parts_failing': sorted(k for k, v in det['parts'].items()
                                                                                   if v is not True),
                           'negative_controls': negatives,
-                          'floor_rows_fresh_equal_the_baseline_precheck': floor_fresh == floor_rows,
+                          'floor_rows_hook_probe_equal_the_precheck': floor_probe_ok,
+                          'floor_identification_on_candidate_models_REPORT_ONLY': floor_on_candidate_models_note,
                           'closed_form': det.get('closed_form'),
                           'readback_node7_pre_run': (rec['model_variant_readback_pre_run'] or {}).get(
                               'per_node', {}).get('7', {}).get('readback'),
