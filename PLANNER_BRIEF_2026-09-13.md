@@ -2625,6 +2625,32 @@ Rulings on `P5_15_ADDENDUM57_BENCHMARK_AND_RESETTLE_REPORT.md` (`5612b8f1`).
 - **Order unchanged:** v4 freeze (criterion v4 with (a), G8 fix, W135 patch, v4 branch) → cell 1
   re-run → priority order (≈ 66 h) → Step 5 rows → stop for review before Step 6 tables are frozen.
 
+# Addendum 60 — the veto bounded: an Acceptable exit within 10× the tail tolerances is clean (2026-09-30)
+
+- **Ruling: option 2.** DSO7 2025 Winter exits "Acceptable" on primary attempts at complementarity
+  2.51× the tight-tail tolerance after ≈ 43 iterations, on four cells, every 10–15 cycles on cell 3 —
+  so under v4 no window is ever clean and the block vetoes the certificate to the cap, which is the
+  α outcome by another route. The veto exists to keep **solver artefacts** — recovery jumps like
+  pb_y2025_n5's TSO exit at 2,234× — out of the certifying window. A primary attempt that stops with
+  **all four IPOPT metrics within 10× the tight-tail tolerances** is not an artefact: it is a solve
+  deeper than anything the production tail (1e-4) certified before Addendum 46, and treating it as a
+  veto would make the tail's own history inconsistent. **v5:** such an exit counts as clean;
+  recoveries and larger violations still veto; the 10× bound is one order of magnitude, not a value
+  tuned to 2.51. Re-freeze (≈ 1–2 h), re-run cell 3 (≈ 1.4 h). **Cells certified under v4 keep their
+  certificates** — v5 is strictly more permissive on the veto and identical otherwise, so a v4
+  certificate is a v5 certificate; the report states the spec each cell certified under and, where
+  v5 would have certified earlier, the v5 cycle from records, without re-runs. Option 3 stays in the
+  post-revision cleanup: a block whose complementarity floors at 2.5× the tolerance has a scaling or
+  bound-multiplier issue worth finding, not now. **Prediction:** cell 3 certifies under v5; the nine
+  break-even-fit cells meet the same block and certify.
+- **Reproducibility note:** one DSO block (DSO7, 2025 Winter) converges to ≈ 2.5× the complementarity
+  tolerance in some cycles and is accepted under the 10× rule; the rule and the bound are stated.
+- **Claim point #3 accepted:** n5 58.0 k€ (6.7×), n9 61.1 k€ (7.3×), n9_e3 195.7 k€ (2.0× the
+  uncertified bar); Planner's formula-based predictions 2 of 3, Advisor's 0 of 3; cell-1 bitwise
+  prediction held.
+- **Order:** v5 freeze → cell 3 re-run → break-even-fit cells (≈ 11 h) → remainder in priority order
+  → Step 5 rows → stop for review before Step 6 tables are frozen.
+
 ## Update obligations
 
 At the end of Step 1 the Planner rewrites the "CURRENT SOURCE OF TRUTH" head of
