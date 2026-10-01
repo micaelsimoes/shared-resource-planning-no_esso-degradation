@@ -1,0 +1,1303 @@
+{
+ "I_linearity_report_only": {
+  "n7_2h_e1": {
+   "E": 1.0,
+   "P": 0.5,
+   "canonical_P_E": [
+    0.5,
+    1.0
+   ],
+   "canonical_equals_ep": true,
+   "energy_minus_e_cost_E": 0.0,
+   "power_minus_p_cost_P": 0.0
+  },
+  "n7_2h_e2": {
+   "E": 2.0,
+   "P": 1.0,
+   "canonical_P_E": [
+    1.0,
+    2.0
+   ],
+   "canonical_equals_ep": true,
+   "energy_minus_e_cost_E": 0.0,
+   "power_minus_p_cost_P": 0.0
+  },
+  "n7_2h_e3": {
+   "E": 3.0,
+   "P": 1.5,
+   "canonical_P_E": [
+    1.5,
+    3.0
+   ],
+   "canonical_equals_ep": true,
+   "energy_minus_e_cost_E": 0.0,
+   "power_minus_p_cost_P": 0.0
+  },
+  "n7_2h_e4": {
+   "E": 4.0,
+   "P": 2.0,
+   "canonical_P_E": [
+    2.0,
+    4.0
+   ],
+   "canonical_equals_ep": true,
+   "energy_minus_e_cost_E": 0.0,
+   "power_minus_p_cost_P": 0.0
+  },
+  "n7_2h_e5": {
+   "E": 5.0,
+   "P": 2.5,
+   "canonical_P_E": [
+    2.5,
+    5.0
+   ],
+   "canonical_equals_ep": true,
+   "energy_minus_e_cost_E": 0.0,
+   "power_minus_p_cost_P": 0.0
+  },
+  "n7_4h_e1": {
+   "E": 1.0,
+   "P": 0.25,
+   "canonical_P_E": [
+    0.25,
+    1.0
+   ],
+   "canonical_equals_ep": true,
+   "energy_minus_e_cost_E": 0.0,
+   "power_minus_p_cost_P": 0.0
+  },
+  "n7_4h_e2": {
+   "E": 2.0,
+   "P": 0.5,
+   "canonical_P_E": [
+    0.5,
+    2.0
+   ],
+   "canonical_equals_ep": true,
+   "energy_minus_e_cost_E": 0.0,
+   "power_minus_p_cost_P": 0.0
+  },
+  "n7_4h_e3": {
+   "E": 3.0,
+   "P": 0.75,
+   "canonical_P_E": [
+    0.75,
+    3.0
+   ],
+   "canonical_equals_ep": true,
+   "energy_minus_e_cost_E": 0.0,
+   "power_minus_p_cost_P": 0.0
+  },
+  "n7_4h_e4": {
+   "E": 4.0,
+   "P": 1.0,
+   "canonical_P_E": [
+    1.0,
+    4.0
+   ],
+   "canonical_equals_ep": true,
+   "energy_minus_e_cost_E": 0.0,
+   "power_minus_p_cost_P": 0.0
+  },
+  "n7_4h_e5": {
+   "E": 5.0,
+   "P": 1.25,
+   "canonical_P_E": [
+    1.25,
+    5.0
+   ],
+   "canonical_equals_ep": true,
+   "energy_minus_e_cost_E": 0.0,
+   "power_minus_p_cost_P": 0.0
+  }
+ },
+ "authority": "PLANNER_BRIEF_2026-09-13.md Addendum 62 item 3 (determinacy floor: Addendum 61 ruling 2)",
+ "code_sha256": {
+  "gate_result_io.py": "26cadaa5c3105f9adb879ece756ef6d659b374f647a7756030efe80a2df6d07d",
+  "p515_s53_w132_resettle_v3_campaign.py": "995edabb9f70fcaceebcd135536bf2700bcca7b35a7018a42480aec3df271b07",
+  "p515_s53_w142_resettle_v6_campaign.py": "d7c236b61c151c2a2cf6a924711b275cf7a413c4c5e28ebb0d8a592f1f573110",
+  "settling_criterion_v6.py": "53f477118d51f5fd843190c0da920f1647618ef41f6a1973988653b10eb66e2d"
+ },
+ "constants": {
+  "SLOPE_AGREEMENT_BOUND": 0.05,
+  "TAU": 4539.0682750000005,
+  "TWO_TAU": 9078.136550000001,
+  "e_cost_eur_per_MWh": 253877.6774385931,
+  "labels": [
+   "n7_2h_e1",
+   "n7_4h_e1",
+   "n7_2h_e2",
+   "n7_4h_e2",
+   "n7_2h_e3",
+   "n7_4h_e3",
+   "n7_2h_e4",
+   "n7_4h_e4",
+   "n7_2h_e5",
+   "n7_4h_e5"
+  ],
+  "p_cost_eur_per_MVA": 256317.32425986166
+ },
+ "definition": "P5.15 Addendum 62 item 3, Planner task W145 -- THE BANDED BREAK-EVEN FIT SCORER (pre-registered).\nZERO SOLVES, NO MODEL LOADS.\n\nCommitted BEFORE any of the five remaining D-cell results (d_d3709599, d_a12d95a2, d_f759dd48, d_c7fee8be, d_9246ed01)\nexist, so the formula is fixed before the data it scores. `--score` refuses to run unless this file is committed clean.\n\nGUARDS. An armed `SolveProfileGuard(permitted=())` is installed BEFORE any other project import and verified at exactly\n0 at the end, together with every imported module's own zero-permit guard; `pickle.load` / `pickle.loads` are blocked\nfor the whole run (W141's pattern) and their call counts verified at 0. Only JSON / JSONL records are read.\n\nTHE FIT IS W132's, CALLED, NOT COPIED. Every fit below is `p515_s53_w132_resettle_v3_campaign.d_fit` (the function the\nv3 / v6 summarizers use, which reproduces the committed Phase A fit `baseline_tables.json` node7_fit within 1e-6):\n    value_i = Q(0) - Q(x_i);  value = a + b E + c P, OLS (np.linalg.lstsq);  SE = sqrt(diag(sigma^2 (X^T X)^-1)),\n    sigma^2 = RSS / (n - 3);  e* = b + c/4 - p_cost/4 (the marginal-4h break-even, EUR/MWh);\n    se_e* = sqrt(se_b^2 + (se_c/4)^2);  margin = e_cost - e*;\n    stopping-slack bound (Addendum 61, report-only) = sum_i |w_i| band_i + |sum_i w_i| band_0, w = row b + row c / 4 of\n    (X^T X)^-1 X^T, band_0 = the band of Q(0).\n`d_fit` reads its point set from the module global `D_FIT_NODE7_LABELS`; a fit on a SUBSET (the certified-only fit)\nrebinds that global for the duration of the call only (`_point_set`, restored in `finally`, asserted restored) -- the\ncode that fits is W132's line for line. p_cost = I_new_power(n7_4h_e1) / 0.25, e_cost = I_new_energy(n7_4h_e1) / 1.0\nfrom the W2 table (as in W132).\n\nINPUTS PER POINT: label (n7_{2h,4h}_e{1..5}; E, P from `L132._ep_of`), Q (gross_operational_cost, settlement EXCLUDED),\nQ_cc (= Q + t_sum, report-only), I (W2 table I_new_eur, power / energy split; recorded, report-only check that it is\nlinear in the unit costs), status. A CERTIFIED point carries its band width. An UNCERTIFIED point carries Q at its cap\nand its uncertified bar = 3 x max(|gap|, |slack|), computed by `L132.resolve` (the formula's single home) on the cell's\nscorer view. Q(0) must be certified.\n\nOUTPUT 1 -- CERTIFIED-ONLY FIT: `d_fit` on the certified points only (n_c >= 4 and rank 3, else 'undefined'): a, b, c,\nSE, e*, se_e*, margin to cost, slack bound (bands of the certified points and of Q(0)).\n\nOUTPUT 2 -- BANDED FIT WITH EVERY POINT: each uncertified point j enters as the INTERVAL\n    Q_j in [Q_cap_j - h_j, Q_cap_j + h_j],   h_j = bar_j + 2 TAU,   2 TAU = SC6.DETERMINACY_TAU_MULTIPLE * SC6.TAU\n    (= 9,078.14 EUR; Addendum 61's determinacy floor).\nOLS coefficients are linear in the data, so over the box of intervals each of b, c, b + c/4, e*, margin attains its min\nand max at a vertex: ALL 2^k vertices (k = number of uncertified points, k <= 12) are fitted with `d_fit` and the exact\nmin / max (and the vertex attaining each) reported. Cross-check: e*_max - e*_mid = sum_j |w_j| h_j (w from the midpoint\nfit's own slack-bound weights). Also the fit at the interval MIDPOINTS (Q = Q_cap, i.e. every point at face value; Q_cc\nbeside, report-only) with its slack bound twice: certified bands only (uncertified bands 0), and extended (uncertified\n'bands' = h_j, which adds exactly half the e* range).\n\nOUTPUT 3 -- PREDICTION (expert, Addendum 62): \"the two fits agree on the slope within 5 %\":\n    rel_mid = |b_banded_mid - b_certified| / |b_certified| <= 0.05  -> held, else failed.\n    THE SLOPE is the fit's energy coefficient b (EUR/MWh) -- Worker operationalisation, for Planner confirmation; the\n    same ratio for the marginal-4h slope b + c/4 (= e* + p_cost/4) is reported beside, report-only.\n    Extremes reported: |b_min - b_cert| / |b_cert| and |b_max - b_cert| / |b_cert| (and whether 5 % holds over the whole\n    interval, report-only). With no uncertified point the prediction is vacuous (rel_mid = 0) and is so labelled.\n\nOUTPUT 4 -- CONCLUSION CHECK: the break-even stays below the energy cost under both fits across the whole interval:\n    e*_certified < e_cost  AND  max over the box of e*_banded < e_cost.\n\nReport-only beside: per point, the certified-only fit's prediction and whether it lies inside each uncertified point's\ninterval.\n\nMODES (attached, alone, both streams captured; output files opened 'x', never overwritten):\n  --self-test   synthetic / committed-old-value self-tests only -> data/SRP1/Results/P515S53/w145_banded_fit_selftest/\n  --score       claim point #12 (after d_9246ed01): self-tests, then the fit on the committed v6 records ->\n                data/SRP1/Results/P515S53/w145_banded_fit/\n    mkdir -p data/SRP1/Results/P515S53/w145_banded_fit && set -o noclobber && \\\n    /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python -u p515_s53_w145_banded_breakeven_fit.py --score \\\n        > data/SRP1/Results/P515S53/w145_banded_fit/launch.log 2>&1\nInputs of --score (committed, sha256 recorded; the pins of stage spec v6 96c23404 checked as its summarizer checks them):\n  Q(0) = settled x0 d110bd1a (Q181) and n7_4h_e1 = settled unit 3f084f2f (Q172), via `L132.reference_views`;\n  n7_4h_e2 = d_c52e1670 v6 from records (ab289125), via `L142.decided_reports`;\n  the other eight = the v6 cell runs `w142_resettle_v6/campaign_s53_w142_resettle_v6_<cell>/campaign_results.json`.\nExit: 0 = self-tests pass, guards 0, prediction held and conclusion holds; 3 = the 5 % prediction failed or the\nconclusion check failed (results written); 1 = harness fault / self-test failure / precondition (nothing written).\n",
+ "exit_code": 0,
+ "git_head": "9b8fb1246e7ef1619fb4c61aab95e51ed863e710",
+ "guards": {
+  "alpha_row_launcher": {
+   "counts": {
+    "blocked_exec": 0,
+    "blocked_solve": 0,
+    "permitted_exec": 0,
+    "permitted_solve": 0
+   },
+   "verify_0_failures": []
+  },
+  "w101_checks_imported": {
+   "counts": {
+    "blocked_exec": 0,
+    "blocked_solve": 0,
+    "permitted_exec": 0,
+    "permitted_solve": 0
+   },
+   "verify_0_failures": []
+  },
+  "w101_parent": {
+   "counts": {
+    "blocked_exec": 0,
+    "blocked_solve": 0,
+    "permitted_exec": 0,
+    "permitted_solve": 0
+   },
+   "verify_0_failures": []
+  },
+  "w105_checks_imported": {
+   "counts": {
+    "blocked_exec": 0,
+    "blocked_solve": 0,
+    "permitted_exec": 0,
+    "permitted_solve": 0
+   },
+   "verify_0_failures": []
+  },
+  "w112_imported": {
+   "counts": {
+    "blocked_exec": 0,
+    "blocked_solve": 0,
+    "permitted_exec": 0,
+    "permitted_solve": 0
+   },
+   "verify_0_failures": []
+  },
+  "w118_checks": {
+   "counts": {
+    "blocked_exec": 0,
+    "blocked_solve": 0,
+    "permitted_exec": 0,
+    "permitted_solve": 0
+   },
+   "verify_0_failures": []
+  },
+  "w118_parent": {
+   "counts": {
+    "blocked_exec": 0,
+    "blocked_solve": 0,
+    "permitted_exec": 0,
+    "permitted_solve": 0
+   },
+   "verify_0_failures": []
+  },
+  "w131_imported": {
+   "counts": {
+    "blocked_exec": 0,
+    "blocked_solve": 0,
+    "permitted_exec": 0,
+    "permitted_solve": 0
+   },
+   "verify_0_failures": []
+  },
+  "w132_checks": {
+   "counts": {
+    "blocked_exec": 0,
+    "blocked_solve": 0,
+    "permitted_exec": 0,
+    "permitted_solve": 0
+   },
+   "verify_0_failures": []
+  },
+  "w132_parent": {
+   "counts": {
+    "blocked_exec": 0,
+    "blocked_solve": 0,
+    "permitted_exec": 0,
+    "permitted_solve": 0
+   },
+   "verify_0_failures": []
+  },
+  "w137_checks": {
+   "counts": {
+    "blocked_exec": 0,
+    "blocked_solve": 0,
+    "permitted_exec": 0,
+    "permitted_solve": 0
+   },
+   "verify_0_failures": []
+  },
+  "w137_parent": {
+   "counts": {
+    "blocked_exec": 0,
+    "blocked_solve": 0,
+    "permitted_exec": 0,
+    "permitted_solve": 0
+   },
+   "verify_0_failures": []
+  },
+  "w137_ra_imported": {
+   "counts": {
+    "blocked_exec": 0,
+    "blocked_solve": 0,
+    "permitted_exec": 0,
+    "permitted_solve": 0
+   },
+   "verify_0_failures": []
+  },
+  "w139_checks": {
+   "counts": {
+    "blocked_exec": 0,
+    "blocked_solve": 0,
+    "permitted_exec": 0,
+    "permitted_solve": 0
+   },
+   "verify_0_failures": []
+  },
+  "w139_parent": {
+   "counts": {
+    "blocked_exec": 0,
+    "blocked_solve": 0,
+    "permitted_exec": 0,
+    "permitted_solve": 0
+   },
+   "verify_0_failures": []
+  },
+  "w139_v5_from_records": {
+   "counts": {
+    "blocked_exec": 0,
+    "blocked_solve": 0,
+    "permitted_exec": 0,
+    "permitted_solve": 0
+   },
+   "verify_0_failures": []
+  },
+  "w141_swing_variants": {
+   "counts": {
+    "blocked_exec": 0,
+    "blocked_solve": 0,
+    "permitted_exec": 0,
+    "permitted_solve": 0
+   },
+   "verify_0_failures": []
+  },
+  "w142_checks": {
+   "counts": {
+    "blocked_exec": 0,
+    "blocked_solve": 0,
+    "permitted_exec": 0,
+    "permitted_solve": 0
+   },
+   "verify_0_failures": []
+  },
+  "w142_parent": {
+   "counts": {
+    "blocked_exec": 0,
+    "blocked_solve": 0,
+    "permitted_exec": 0,
+    "permitted_solve": 0
+   },
+   "verify_0_failures": []
+  },
+  "w145_banded_fit": {
+   "counts": {
+    "blocked_exec": 0,
+    "blocked_solve": 0,
+    "permitted_exec": 0,
+    "permitted_solve": 0
+   },
+   "verify_0_failures": []
+  },
+  "w86_launcher": {
+   "counts": {
+    "blocked_exec": 0,
+    "blocked_solve": 0,
+    "permitted_exec": 0,
+    "permitted_solve": 0
+   },
+   "verify_0_failures": []
+  },
+  "w87": {
+   "counts": {
+    "blocked_exec": 0,
+    "blocked_solve": 0,
+    "permitted_exec": 0,
+    "permitted_solve": 0
+   },
+   "verify_0_failures": []
+  },
+  "w88": {
+   "counts": {
+    "blocked_exec": 0,
+    "blocked_solve": 0,
+    "permitted_exec": 0,
+    "permitted_solve": 0
+   },
+   "verify_0_failures": []
+  },
+  "w89_3x3_launcher": {
+   "counts": {
+    "blocked_exec": 0,
+    "blocked_solve": 0,
+    "permitted_exec": 0,
+    "permitted_solve": 0
+   },
+   "verify_0_failures": []
+  },
+  "w89_step1": {
+   "counts": {
+    "blocked_exec": 0,
+    "blocked_solve": 0,
+    "permitted_exec": 0,
+    "permitted_solve": 0
+   },
+   "verify_0_failures": []
+  },
+  "w90_3x3_parent": {
+   "counts": {
+    "blocked_exec": 0,
+    "blocked_solve": 0,
+    "permitted_exec": 0,
+    "permitted_solve": 0
+   },
+   "verify_0_failures": []
+  },
+  "w98_checks_imported": {
+   "counts": {
+    "blocked_exec": 0,
+    "blocked_solve": 0,
+    "permitted_exec": 0,
+    "permitted_solve": 0
+   },
+   "verify_0_failures": []
+  },
+  "w98_parent": {
+   "counts": {
+    "blocked_exec": 0,
+    "blocked_solve": 0,
+    "permitted_exec": 0,
+    "permitted_solve": 0
+   },
+   "verify_0_failures": []
+  }
+ },
+ "inputs_sha256": {
+  "data/SRP1/Results/P515S45/investment_cost/investment_cost_results.json": "28152120f5c7acc57655d40871f764a5e797b93428f5a9f87b7eed55fbe4790b",
+  "data/SRP1/Results/P515S47/baseline_tables/baseline_tables.json": "3497777da52d6742331501cf363751a739da7cff6fb004a3399ef176bc0e00e8",
+  "data/SRP1/Results/P515S53/w101_srp1_continuation/campaign_s53_w101_srp1_cont_n7_4h_e1/evals/3f084f2ffaeef2b7_n7_4h_e1/interface_settlement_detail_s31c.json": "81a94f88f3542ac64e983741a66124e839dd825bebf905b8639261f12f297ad0",
+  "data/SRP1/Results/P515S53/w101_srp1_continuation/campaign_s53_w101_srp1_cont_n7_4h_e1/evals/3f084f2ffaeef2b7_n7_4h_e1/per_cycle_record.jsonl": "fd8aad17f8a8a40e1ca73a2af2d5edeeee83e2d3265f2bdad8c38c68fb41b324",
+  "data/SRP1/Results/P515S53/w101_srp1_continuation/campaign_s53_w101_srp1_cont_n7_4h_e1/evals/3f084f2ffaeef2b7_n7_4h_e1/settling_decision.json": "566904472876b800e65f79c47eea7da3f7b1a8d8addf409374322126220d6ec9",
+  "data/SRP1/Results/P515S53/w101_srp1_continuation/campaign_s53_w101_srp1_cont_x0/evals/d110bd1a5977df1e_x0/interface_settlement_detail_s31c.json": "ec59332e8eb3bfce8a7586f52c965078ac3641bf87888c499ac9275981e44403",
+  "data/SRP1/Results/P515S53/w101_srp1_continuation/campaign_s53_w101_srp1_cont_x0/evals/d110bd1a5977df1e_x0/per_cycle_record.jsonl": "bf38d5a54938e597c6508c6a64c9f8ee6a84aac14f897a556b939fc409d840dc",
+  "data/SRP1/Results/P515S53/w101_srp1_continuation/campaign_s53_w101_srp1_cont_x0/evals/d110bd1a5977df1e_x0/settling_decision.json": "6c559f2fc39a79dcd54e9339541fb09b599f87689c26a489a8e7e77b17e80be6",
+  "data/SRP1/Results/P515S53/w117_triage_recompute/w117_triage_recompute.json": "e91fd86cf3615eed238dcb35cce6700edf396e9a8f1ad89f710415b313cf0333",
+  "data/SRP1/Results/P515S53/w118_resettle/w118_resettle_summary.json": "34df1c15e27f37951d7e09c8bb43c91f75dc1d6a8bfa9faef196432964c56aa5",
+  "data/SRP1/Results/P515S53/w137_resettle_v4/campaign_s53_w137_resettle_v4_b_0dd237f0/campaign_results.json": "bb666a32a9d56ae9cf744c43e4000481639d231c0d071fa8dc3e490016a29e9d",
+  "data/SRP1/Results/P515S53/w137_resettle_v4/campaign_s53_w137_resettle_v4_b_2a0ba8b2/campaign_results.json": "e691084e8630679439dcf8827e54c0a52af689de0d05a6f6333f980249f8631a",
+  "data/SRP1/Results/P515S53/w139_resettle_v5/campaign_s53_w139_resettle_v5_b_4649234b/campaign_results.json": "064425d49cd2871bada9e0d17d84c4784c3cdec509a19af9654144f146ad7054",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_d_3632b0ae/campaign_results.json": "8fccec3b1ffdafc3461d6be92cd359d9d1b62e52832991d71e2a2f97ced448c1",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_d_36686489/campaign_results.json": "3e3beea44e03e20b7f9f356bc83794315824f33b950e367ca32aa473afbb2e57",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_d_4a82a64a/campaign_results.json": "9c8afacae5fa1c992b3999d910c3eedc7762e8a03750fa6895d781d178430f8c",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_d_9246ed01/campaign_results.json": "f399a818411d845f7e14f2ebef0e62ca36d863c43237c808f28e6a04ada60863",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_d_a12d95a2/campaign_results.json": "24745232af56e1b737cb546c375c9ccd98d67eea29e6b2bf081ee104820f01b5",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_d_c7fee8be/campaign_results.json": "669c6745c30067c99331fd2edc8cbf4d4b55412d28ee3adc2a5022282c1a0910",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_d_d3709599/campaign_results.json": "761b2a40b65cbf59d7d6a5b8c8f69f5b7f5b0edec40a768efc1a5acf9aa85fab",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_d_f759dd48/campaign_results.json": "37eb2a7a53bef638f46aaf98ab2c3c6228a4d7637fe2f04b82c7422bb8ebb0d8",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/frozen_s53_resettle_spec_v6_96c23404.json": "96c234045f15fa4f18ba7149b3b4a39c749f256657d436064c320b04d546e041",
+  "data/SRP1/Results/P515S53/w142_resettle_v6/v6_from_records/d_c52e1670_v6_from_records_certificate.json": "c96e3588d38a5abba3349620fed5d446748e89d97a9da92a657e7933e6c6c87f"
+ },
+ "objective_convention": "Q = gross_operational_cost, settlement EXCLUDED (EUR); value = Q(0) - Q(x); Q_cc = Q + t_sum, report-only",
+ "pickle_guard": {
+  "counts": {
+   "w141_imported": {
+    "load": 0,
+    "loads": 0
+   },
+   "w145": {
+    "load": 0,
+    "loads": 0
+   }
+  },
+  "ok": true,
+  "pickle_load_and_loads_blocked": true
+ },
+ "points": {
+  "n7_2h_e1": {
+   "Q": 653605744.2783804,
+   "Q_cc": 653606276.056154,
+   "band": 3915.5008870363235,
+   "gap": null,
+   "slack": null,
+   "status": "certified",
+   "t": 531.7777736562239
+  },
+  "n7_2h_e2": {
+   "Q": 653341339.3098621,
+   "Q_cc": 653341802.2112147,
+   "band": 5316.470354437828,
+   "gap": 462.9013525260397,
+   "slack": 8078.616846084595,
+   "status": "uncertified",
+   "t": 462.9013525260397
+  },
+  "n7_2h_e3": {
+   "Q": 653089276.8755138,
+   "Q_cc": 653090043.3301392,
+   "band": 6802.544095993042,
+   "gap": 766.4546254186604,
+   "slack": 13793.420052528381,
+   "status": "uncertified",
+   "t": 766.4546254186604
+  },
+  "n7_2h_e4": {
+   "Q": 652839972.8377864,
+   "Q_cc": 652842074.1373391,
+   "band": 4465.541307926178,
+   "gap": null,
+   "slack": null,
+   "status": "certified",
+   "t": 2101.2995527307917
+  },
+  "n7_2h_e5": {
+   "Q": 652580074.7776817,
+   "Q_cc": 652580922.1343696,
+   "band": 4473.180083036423,
+   "gap": null,
+   "slack": null,
+   "status": "certified",
+   "t": 847.3566878695777
+  },
+  "n7_4h_e1": {
+   "Q": 653620162.5657823,
+   "Q_cc": 653620825.5628884,
+   "band": 4351.407173395157,
+   "gap": null,
+   "slack": null,
+   "status": "certified",
+   "t": 662.9971060752869
+  },
+  "n7_4h_e2": {
+   "Q": 653373327.8473792,
+   "Q_cc": 653374643.9908336,
+   "band": 4459.583585500717,
+   "gap": null,
+   "slack": null,
+   "status": "certified",
+   "t": 1316.1434544128035
+  },
+  "n7_4h_e3": {
+   "Q": 653128121.8599801,
+   "Q_cc": 653129122.2983811,
+   "band": 3277.3021116256714,
+   "gap": null,
+   "slack": null,
+   "status": "certified",
+   "t": 1000.4384009988056
+  },
+  "n7_4h_e4": {
+   "Q": 652875825.8056884,
+   "Q_cc": 652876669.0190145,
+   "band": 4523.715281248093,
+   "gap": null,
+   "slack": null,
+   "status": "certified",
+   "t": 843.213326043616
+  },
+  "n7_4h_e5": {
+   "Q": 652631160.9395072,
+   "Q_cc": 652632243.1719455,
+   "band": 6076.278797388077,
+   "gap": 1082.2324382210093,
+   "slack": 7973.221109390259,
+   "status": "uncertified",
+   "t": 1082.2324382210093
+  }
+ },
+ "provenance": {
+  "n7_2h_e1": {
+   "I": {
+    "I_new_energy_eur": 253877.6774385931,
+    "I_new_eur": 382036.339568524,
+    "I_new_power_eur": 128158.66212993083,
+    "canonical_node7_P_E": [
+     0.5,
+     1.0
+    ],
+    "w2_candidate_key": "3993aebc641d4dadd34f6c27ac7061fb620724dd9eb8ca0e368ce3e70d578489"
+   },
+   "band_width": 3915.5008870363235,
+   "candidate_key": "3993aebc641d4dadd34f6c27ac7061fb620724dd9eb8ca0e368ce3e70d578489",
+   "cell": "d_d3709599",
+   "certifying_spec": {
+    "series": "frozen_s53_resettle_spec",
+    "version": 6
+   },
+   "cycles_run": 175,
+   "eval_key": "64408baeee0990b9acc7bfc665fbc988f78527f7175233714570d69abb909fcd",
+   "k_cap": null,
+   "k_star": 175,
+   "label": null,
+   "record": "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_d_d3709599/campaign_results.json",
+   "source": "d_d3709599: v6 cell run"
+  },
+  "n7_2h_e2": {
+   "I": {
+    "I_new_energy_eur": 507755.3548771862,
+    "I_new_eur": 764072.679137048,
+    "I_new_power_eur": 256317.32425986166,
+    "canonical_node7_P_E": [
+     1.0,
+     2.0
+    ],
+    "w2_candidate_key": "423e5a7f623eb10621b4930e7dfe4874a962e9d3a2ad33b188b2bdef74711c5d"
+   },
+   "band_width": 5316.470354437828,
+   "candidate_key": "423e5a7f623eb10621b4930e7dfe4874a962e9d3a2ad33b188b2bdef74711c5d",
+   "cell": "d_a12d95a2",
+   "certifying_spec": null,
+   "cycles_run": 203,
+   "eval_key": "9bc66d9ed4863f397b51c787e7be6ffaeb5c3456610570bc41cfb3335ae9f417",
+   "k_cap": 203,
+   "k_star": null,
+   "label": "uncertified at the cap",
+   "record": "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_d_a12d95a2/campaign_results.json",
+   "source": "d_a12d95a2: v6 cell run"
+  },
+  "n7_2h_e3": {
+   "I": {
+    "I_new_energy_eur": 761633.0323157792,
+    "I_new_eur": 1146109.018705572,
+    "I_new_power_eur": 384475.9863897925,
+    "canonical_node7_P_E": [
+     1.5,
+     3.0
+    ],
+    "w2_candidate_key": "2cd1de8249cfca8da7573d91c62f9ade6c603ba78a0c53558a1b128c04e62292"
+   },
+   "band_width": 6802.544095993042,
+   "candidate_key": "2cd1de8249cfca8da7573d91c62f9ade6c603ba78a0c53558a1b128c04e62292",
+   "cell": "d_f759dd48",
+   "certifying_spec": null,
+   "cycles_run": 198,
+   "eval_key": "5f1b1aa621d3450a16635264b853efdc367345f28fca00a5ce275352d71b4033",
+   "k_cap": 198,
+   "k_star": null,
+   "label": "uncertified at the cap",
+   "record": "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_d_f759dd48/campaign_results.json",
+   "source": "d_f759dd48: v6 cell run"
+  },
+  "n7_2h_e4": {
+   "I": {
+    "I_new_energy_eur": 1015510.7097543724,
+    "I_new_eur": 1528145.358274096,
+    "I_new_power_eur": 512634.6485197233,
+    "canonical_node7_P_E": [
+     2.0,
+     4.0
+    ],
+    "w2_candidate_key": "7048a00e13045688423a24099e3154de507dad90390b8a3967413dc5056f106c"
+   },
+   "band_width": 4465.541307926178,
+   "candidate_key": "7048a00e13045688423a24099e3154de507dad90390b8a3967413dc5056f106c",
+   "cell": "d_c7fee8be",
+   "certifying_spec": {
+    "series": "frozen_s53_resettle_spec",
+    "version": 6
+   },
+   "cycles_run": 145,
+   "eval_key": "aa0b99f57c75682afb1ff37f46fb430e38ff30f21d0b674ba4a1348c164fe8bf",
+   "k_cap": null,
+   "k_star": 145,
+   "label": null,
+   "record": "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_d_c7fee8be/campaign_results.json",
+   "source": "d_c7fee8be: v6 cell run"
+  },
+  "n7_2h_e5": {
+   "I": {
+    "I_new_energy_eur": 1269388.3871929655,
+    "I_new_eur": 1910181.6978426196,
+    "I_new_power_eur": 640793.3106496541,
+    "canonical_node7_P_E": [
+     2.5,
+     5.0
+    ],
+    "w2_candidate_key": "354b38814b9c1147c2dfc0c5e93102dc165b4b0e52ab11657002f77ea1f67ca7"
+   },
+   "band_width": 4473.180083036423,
+   "candidate_key": "354b38814b9c1147c2dfc0c5e93102dc165b4b0e52ab11657002f77ea1f67ca7",
+   "cell": "d_9246ed01",
+   "certifying_spec": {
+    "series": "frozen_s53_resettle_spec",
+    "version": 6
+   },
+   "cycles_run": 138,
+   "eval_key": "579a1370d1e916a745fd8816dafdab2835c6a1753a194e954f78714fdf53f097",
+   "k_cap": null,
+   "k_star": 138,
+   "label": null,
+   "record": "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_d_9246ed01/campaign_results.json",
+   "source": "d_9246ed01: v6 cell run"
+  },
+  "n7_4h_e1": {
+   "I": {
+    "I_new_energy_eur": 253877.6774385931,
+    "I_new_eur": 317957.0085035586,
+    "I_new_power_eur": 64079.331064965416,
+    "canonical_node7_P_E": [
+     0.25,
+     1.0
+    ],
+    "w2_candidate_key": "db77e1549af855bcb3521950c634db55fe6c155ab2de591b0441b5f2bf4b369a"
+   },
+   "k_star": 172,
+   "source": "reference bd504ecf: unit settled (W101 3f084f2f, certified at 172)"
+  },
+  "n7_4h_e2": {
+   "I": {
+    "I_new_energy_eur": 507755.3548771862,
+    "I_new_eur": 635914.0170071172,
+    "I_new_power_eur": 128158.66212993083,
+    "canonical_node7_P_E": [
+     0.5,
+     2.0
+    ],
+    "w2_candidate_key": "cc4eb5df385852e67c612ab21d74526d90a2c66f5c7c934889ce4f67731c4ffe"
+   },
+   "band_width": 4459.583585500717,
+   "candidate_key": null,
+   "cell": "d_c52e1670",
+   "certifying_spec": {
+    "certificate_record": "data/SRP1/Results/P515S53/w142_resettle_v6/v6_from_records/d_c52e1670_v6_from_records_certificate.json",
+    "mode": "v6 from records",
+    "series": "frozen_s53_resettle_spec",
+    "source_run_stage_spec": "frozen_s53_resettle_spec_v5_ab32ffc9",
+    "version": 6
+   },
+   "cycles_run": null,
+   "eval_key": null,
+   "k_cap": null,
+   "k_star": 150,
+   "label": "v6 from records",
+   "record": "data/SRP1/Results/P515S53/w142_resettle_v6/v6_from_records/d_c52e1670_v6_from_records_certificate.json",
+   "source": "d_c52e1670: decided before v6 (certified under v6 FROM RECORDS)"
+  },
+  "n7_4h_e3": {
+   "I": {
+    "I_new_energy_eur": 761633.0323157792,
+    "I_new_eur": 953871.0255106756,
+    "I_new_power_eur": 192237.99319489626,
+    "canonical_node7_P_E": [
+     0.75,
+     3.0
+    ],
+    "w2_candidate_key": "fb21d822e145ba68c8c65c3fbb9793ddfcb038df172f0f2f08956998c8d81aac"
+   },
+   "band_width": 3277.3021116256714,
+   "candidate_key": "fb21d822e145ba68c8c65c3fbb9793ddfcb038df172f0f2f08956998c8d81aac",
+   "cell": "d_4a82a64a",
+   "certifying_spec": {
+    "series": "frozen_s53_resettle_spec",
+    "version": 6
+   },
+   "cycles_run": 142,
+   "eval_key": "14b00a04ffbcfd3335e199ecda1fb32241fefe2822273cc43a76525b8ec368c2",
+   "k_cap": null,
+   "k_star": 142,
+   "label": null,
+   "record": "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_d_4a82a64a/campaign_results.json",
+   "source": "d_4a82a64a: v6 cell run"
+  },
+  "n7_4h_e4": {
+   "I": {
+    "I_new_energy_eur": 1015510.7097543724,
+    "I_new_eur": 1271828.0340142343,
+    "I_new_power_eur": 256317.32425986166,
+    "canonical_node7_P_E": [
+     1.0,
+     4.0
+    ],
+    "w2_candidate_key": "11725e45371a0c7fbd6553b61784bdcd628dedbceb4df0547b11ff2538c32321"
+   },
+   "band_width": 4523.715281248093,
+   "candidate_key": "11725e45371a0c7fbd6553b61784bdcd628dedbceb4df0547b11ff2538c32321",
+   "cell": "d_3632b0ae",
+   "certifying_spec": {
+    "series": "frozen_s53_resettle_spec",
+    "version": 6
+   },
+   "cycles_run": 153,
+   "eval_key": "1fe57699ce791ef6f35f1eb38ffa8865236c0caea88c1d638775e04a9b48bf96",
+   "k_cap": null,
+   "k_star": 153,
+   "label": null,
+   "record": "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_d_3632b0ae/campaign_results.json",
+   "source": "d_3632b0ae: v6 cell run"
+  },
+  "n7_4h_e5": {
+   "I": {
+    "I_new_energy_eur": 1269388.3871929655,
+    "I_new_eur": 1589785.0425177924,
+    "I_new_power_eur": 320396.65532482706,
+    "canonical_node7_P_E": [
+     1.25,
+     5.0
+    ],
+    "w2_candidate_key": "cab98853bb31f72fbdfc273a6d84b2ba8edbf5d451ec1cebb2529a1c6aaaf823"
+   },
+   "band_width": 6076.278797388077,
+   "candidate_key": "cab98853bb31f72fbdfc273a6d84b2ba8edbf5d451ec1cebb2529a1c6aaaf823",
+   "cell": "d_36686489",
+   "certifying_spec": null,
+   "cycles_run": 191,
+   "eval_key": "4de61708589e6e2611aad952e124d583183b2b5f18bff1fb7e9fe1a8c7ebe53b",
+   "k_cap": 191,
+   "k_star": null,
+   "label": "uncertified at the cap",
+   "record": "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_d_36686489/campaign_results.json",
+   "source": "d_36686489: v6 cell run"
+  }
+ },
+ "q0_reference": {
+  "Q": 653873702.1876609,
+  "Q_cc": 653873844.7159548,
+  "band": 4209.1713362932205,
+  "k_star": 181,
+  "name": "x0 settled (W101 d110bd1a, certified at 181)",
+  "ref": "7aa017f0",
+  "status": "certified"
+ },
+ "result": {
+  "banded_fit": {
+   "breakeven_range": [
+    173486.04470342206,
+    190380.49727313226
+   ],
+   "closed_form_crosscheck": {
+    "enum_max_minus_mid": 8447.226284855162,
+    "max_abs_diff": 1.2150849215686321e-08,
+    "mid_minus_enum_min": 8447.226284855045,
+    "sum_abs_w_h": 8447.226284867196
+   },
+   "margin_to_cost_range": [
+    63497.18016546083,
+    80391.63273517104
+   ],
+   "midpoint_fit": {
+    "Q_cc_report_only": {
+     "a": 10546.174054414707,
+     "b_per_MWh": 235120.92850441128,
+     "breakeven_marginal_4h_energy_cost": 181813.50080815086,
+     "c_per_MVA": 43087.6134748199,
+     "margin_to_energy_cost_per_MWh": 72064.17663044223
+    },
+    "a": 10969.862747657253,
+    "b_per_MWh": 235216.72938832492,
+    "breakeven_marginal_4h_energy_cost": 181933.2709882771,
+    "c_per_MVA": 43183.49065967041,
+    "labels": [
+     "n7_2h_e1",
+     "n7_4h_e1",
+     "n7_2h_e2",
+     "n7_4h_e2",
+     "n7_2h_e3",
+     "n7_4h_e3",
+     "n7_2h_e4",
+     "n7_4h_e4",
+     "n7_2h_e5",
+     "n7_4h_e5"
+    ],
+    "margin_to_energy_cost_per_MWh": 71944.40645031599,
+    "marginal_4h_slope_b_plus_c_over_4": 246012.60205324253,
+    "n": 10,
+    "residual_max_abs": 7776.065614818246,
+    "residual_rms": 3640.3187868249584,
+    "se_a_b_c": [
+     3226.7977222762215,
+     1579.7125030676077,
+     3318.822619547377
+    ],
+    "se_breakeven_independent_terms_approx": 1784.3494798103127,
+    "slack_bound_certified_bands_only": 1749.5747172225624,
+    "slack_bound_extended_with_interval_half_widths": 10196.801002089762,
+    "slack_bound_weights": {
+     "n7_2h_e1": -0.10909090909090913,
+     "n7_2h_e2": -0.06818181818181819,
+     "n7_2h_e3": -0.027272727272727268,
+     "n7_2h_e4": 0.013636363636363696,
+     "n7_2h_e5": 0.05454545454545463,
+     "n7_4h_e1": -0.09090909090909094,
+     "n7_4h_e2": -0.03181818181818183,
+     "n7_4h_e3": 0.027272727272727268,
+     "n7_4h_e4": 0.08636363636363642,
+     "n7_4h_e5": 0.14545454545454556
+    }
+   },
+   "n_vertices_enumerated": 8,
+   "range_over_the_box": {
+    "b_per_MWh": {
+     "argmax_vertex": {
+      "n7_2h_e2": "Q_cap + h",
+      "n7_2h_e3": "Q_cap + h",
+      "n7_4h_e5": "Q_cap - h"
+     },
+     "argmin_vertex": {
+      "n7_2h_e2": "Q_cap - h",
+      "n7_2h_e3": "Q_cap - h",
+      "n7_4h_e5": "Q_cap + h"
+     },
+     "max": 250627.44955844578,
+     "min": 219806.00921820418
+    },
+    "breakeven_marginal_4h_energy_cost": {
+     "argmax_vertex": {
+      "n7_2h_e2": "Q_cap + h",
+      "n7_2h_e3": "Q_cap + h",
+      "n7_4h_e5": "Q_cap - h"
+     },
+     "argmin_vertex": {
+      "n7_2h_e2": "Q_cap - h",
+      "n7_2h_e3": "Q_cap - h",
+      "n7_4h_e5": "Q_cap + h"
+     },
+     "max": 190380.49727313226,
+     "min": 173486.04470342206
+    },
+    "c_per_MVA": {
+     "argmax_vertex": {
+      "n7_2h_e2": "Q_cap - h",
+      "n7_2h_e3": "Q_cap - h",
+      "n7_4h_e5": "Q_cap + h"
+     },
+     "argmin_vertex": {
+      "n7_2h_e2": "Q_cap + h",
+      "n7_2h_e3": "Q_cap + h",
+      "n7_4h_e5": "Q_cap - h"
+     },
+     "max": 71037.46620073321,
+     "min": 15329.51511860764
+    },
+    "margin_to_energy_cost_per_MWh": {
+     "argmax_vertex": {
+      "n7_2h_e2": "Q_cap - h",
+      "n7_2h_e3": "Q_cap - h",
+      "n7_4h_e5": "Q_cap + h"
+     },
+     "argmin_vertex": {
+      "n7_2h_e2": "Q_cap + h",
+      "n7_2h_e3": "Q_cap + h",
+      "n7_4h_e5": "Q_cap - h"
+     },
+     "max": 80391.63273517104,
+     "min": 63497.18016546083
+    },
+    "marginal_4h_slope_b_plus_c_over_4": {
+     "argmax_vertex": {
+      "n7_2h_e2": "Q_cap + h",
+      "n7_2h_e3": "Q_cap + h",
+      "n7_4h_e5": "Q_cap - h"
+     },
+     "argmin_vertex": {
+      "n7_2h_e2": "Q_cap - h",
+      "n7_2h_e3": "Q_cap - h",
+      "n7_4h_e5": "Q_cap + h"
+     },
+     "max": 254459.8283380977,
+     "min": 237565.3757683875
+    }
+   },
+   "slope_range_b": [
+    219806.00921820418,
+    250627.44955844578
+   ]
+  },
+  "certified": [
+   "n7_2h_e1",
+   "n7_4h_e1",
+   "n7_4h_e2",
+   "n7_4h_e3",
+   "n7_2h_e4",
+   "n7_4h_e4",
+   "n7_2h_e5"
+  ],
+  "certified_only_fit": {
+   "Q_cc_report_only": {
+    "a": 7319.3388623218225,
+    "b_per_MWh": 236595.28145008622,
+    "breakeven_marginal_4h_energy_cost": 182623.9107739593,
+    "c_per_MVA": 40431.84155535395,
+    "margin_to_energy_cost_per_MWh": 71253.76666463379
+   },
+   "a": 7910.617515228104,
+   "b_per_MWh": 236611.76198810874,
+   "breakeven_marginal_4h_energy_cost": 182701.62354245037,
+   "c_per_MVA": 40676.77047722819,
+   "labels": [
+    "n7_2h_e1",
+    "n7_4h_e1",
+    "n7_4h_e2",
+    "n7_4h_e3",
+    "n7_2h_e4",
+    "n7_4h_e4",
+    "n7_2h_e5"
+   ],
+   "margin_to_energy_cost_per_MWh": 71176.05389614272,
+   "marginal_4h_slope_b_plus_c_over_4": 246780.9546074158,
+   "n": 7,
+   "residual_max_abs": 3097.1445385875995,
+   "residual_rms": 2145.0519486857656,
+   "se_a_b_c": [
+    2502.5606068000593,
+    1554.237796427662,
+    2875.914645252115
+   ],
+   "se_breakeven_independent_terms_approx": 1712.4793263767565,
+   "slack_bound_report_only": 3066.429502953127,
+   "slack_bound_weights": {
+    "n7_2h_e1": -0.1975308641975307,
+    "n7_2h_e4": -0.012345679012345678,
+    "n7_2h_e5": 0.04938271604938263,
+    "n7_4h_e1": -0.13950617283950606,
+    "n7_4h_e2": -0.01975308641975307,
+    "n7_4h_e3": 0.09999999999999995,
+    "n7_4h_e4": 0.219753086419753
+   }
+  },
+  "conclusion_breakeven_below_energy_cost": {
+   "e_cost": 253877.6774385931,
+   "e_star_banded_max_over_box": 190380.49727313226,
+   "e_star_banded_mid": 181933.2709882771,
+   "e_star_certified_only": 182701.62354245037,
+   "holds": true,
+   "holds_banded_whole_interval": true,
+   "holds_certified_only": true,
+   "min_margin_banded": 63497.18016546083,
+   "min_margin_certified_only": 71176.05389614272
+  },
+  "e_cost": 253877.6774385931,
+  "intervals": {
+   "n7_2h_e2": {
+    "Q_cap": 653341339.3098621,
+    "Q_hi": 653374653.2969503,
+    "Q_lo": 653308025.3227739,
+    "bar": 24235.850538253784,
+    "gap": 462.9013525260397,
+    "half_width": 33313.98708825379,
+    "slack": 8078.616846084595,
+    "two_tau": 9078.136550000001
+   },
+   "n7_2h_e3": {
+    "Q_cap": 653089276.8755138,
+    "Q_hi": 653139735.2722213,
+    "Q_lo": 653038818.4788063,
+    "bar": 41380.260157585144,
+    "gap": 766.4546254186604,
+    "half_width": 50458.39670758515,
+    "slack": 13793.420052528381,
+    "two_tau": 9078.136550000001
+   },
+   "n7_4h_e5": {
+    "Q_cap": 652631160.9395072,
+    "Q_hi": 652664158.7393854,
+    "Q_lo": 652598163.1396291,
+    "bar": 23919.663328170776,
+    "gap": 1082.2324382210093,
+    "half_width": 32997.79987817078,
+    "slack": 7973.221109390259,
+    "two_tau": 9078.136550000001
+   }
+  },
+  "n_points": 10,
+  "p_cost": 256317.32425986166,
+  "per_point_vs_certified_only_fit_report_only": {
+   "n7_2h_e1": {
+    "E": 1.0,
+    "P": 0.5,
+    "residual": 3097.1445385875995,
+    "status": "certified",
+    "value": 267957.90928053856,
+    "value_hat": 264860.76474195096
+   },
+   "n7_2h_e2": {
+    "E": 2.0,
+    "P": 1.0,
+    "Q_cap_minus_Q_hat_over_half_width": -0.31674280842259767,
+    "Q_hat_inside_interval": true,
+    "residual": 10551.965830121888,
+    "status": "uncertified",
+    "value": 532362.8777987957,
+    "value_hat": 521810.9119686738
+   },
+   "n7_2h_e3": {
+    "E": 3.0,
+    "P": 1.5,
+    "Q_cap_minus_Q_hat_over_half_width": -0.11225590429609787,
+    "Q_hat_inside_interval": true,
+    "residual": 5664.252951743896,
+    "status": "uncertified",
+    "value": 784425.3121471405,
+    "value_hat": 778761.0591953966
+   },
+   "n7_2h_e4": {
+    "E": 4.0,
+    "P": 2.0,
+    "residual": -1981.8565476229414,
+    "status": "certified",
+    "value": 1033729.3498744965,
+    "value_hat": 1035711.2064221194
+   },
+   "n7_2h_e5": {
+    "E": 5.0,
+    "P": 2.5,
+    "residual": 966.0563303821255,
+    "status": "certified",
+    "value": 1293627.4099792242,
+    "value_hat": 1292661.353648842
+   },
+   "n7_4h_e1": {
+    "E": 1.0,
+    "P": 0.25,
+    "residual": -1151.950244019943,
+    "status": "certified",
+    "value": 253539.62187862396,
+    "value_hat": 254691.5721226439
+   },
+   "n7_4h_e2": {
+    "E": 2.0,
+    "P": 0.5,
+    "residual": -1098.1864483347745,
+    "status": "certified",
+    "value": 500374.34028172493,
+    "value_hat": 501472.5267300597
+   },
+   "n7_4h_e3": {
+    "E": 3.0,
+    "P": 0.75,
+    "residual": -2673.153656649287,
+    "status": "certified",
+    "value": 745580.3276808262,
+    "value_hat": 748253.4813374755
+   },
+   "n7_4h_e4": {
+    "E": 4.0,
+    "P": 1.0,
+    "residual": 2841.946027660044,
+    "status": "certified",
+    "value": 997876.3819725513,
+    "value_hat": 995034.4359448913
+   },
+   "n7_4h_e5": {
+    "E": 5.0,
+    "P": 1.25,
+    "Q_cap_minus_Q_hat_over_half_width": -0.021997151449008295,
+    "Q_hat_inside_interval": true,
+    "residual": 725.85760137951,
+    "status": "uncertified",
+    "value": 1242541.2481536865,
+    "value_hat": 1241815.390552307
+   }
+  },
+  "prediction_slope_within_5pct": {
+   "b_banded_max": 250627.44955844578,
+   "b_banded_mid": 235216.72938832492,
+   "b_banded_min": 219806.00921820418,
+   "b_certified": 236611.76198810874,
+   "bound": 0.05,
+   "held": true,
+   "holds_over_the_whole_interval_report_only": false,
+   "marginal_4h_slope_report_only": {
+    "banded_mid": 246012.60205324253,
+    "certified": 246780.9546074158,
+    "rel_at_max": 0.031116152147549654,
+    "rel_at_min": 0.03734315256900049,
+    "rel_mid": 0.0031135002107256535
+   },
+   "rel_at_b_max": 0.05923495709837708,
+   "rel_at_b_min": 0.07102670056930288,
+   "rel_mid": 0.005895871735463142,
+   "scorable": true,
+   "slope_definition": "the slope = the fit coefficient b (EUR/MWh) of value = a + b E + c P (Worker operationalisation, for Planner confirmation); the marginal-4h slope b + c/4 is reported beside, report-only",
+   "statement": "expert, Addendum 62: the certified-only and banded fits agree on the slope within 5 %",
+   "vacuous_no_uncertified_point": false
+  },
+  "q0": {
+   "Q": 653873702.1876609,
+   "Q_cc": 653873844.7159548,
+   "band": 4209.1713362932205
+  },
+  "two_tau": 9078.136550000001,
+  "uncertified": [
+   "n7_2h_e2",
+   "n7_2h_e3",
+   "n7_4h_e5"
+  ]
+ },
+ "schema": "p515_s53_w145_banded_breakeven_fit_v1",
+ "script": {
+  "committed_clean": true,
+  "last_commit": "88cf71632654179d4d9235ea563e034fb918f7d8",
+  "path": "p515_s53_w145_banded_breakeven_fit.py",
+  "sha256": "e35445d75d34fc25b6b147ac4b61597f98198e9346452f391a0b2db92afdc486"
+ },
+ "self_tests": {
+  "S0_bar_and_two_tau": {
+   "bar": 23919.663328170776,
+   "ok": true,
+   "two_tau": 9078.136550000001,
+   "undefined_slack_gives_None": true
+  },
+  "S1_reproduces_committed_phase_a_fit": {
+   "bitwise_equal_to_direct_d_fit_call": true,
+   "breakeven": 182231.10847760626,
+   "certified_only_equals_midpoint_bitwise": true,
+   "committed_breakeven": 182231.10847760626,
+   "committed_se": 2591.348770765749,
+   "diffs_vs_committed": {
+    "a": 0.0,
+    "b": 0.0,
+    "breakeven": 0.0,
+    "c": 0.0,
+    "residual_max_abs": 0.0,
+    "residual_rms": 0.0,
+    "se_a": 0.0,
+    "se_b": 0.0,
+    "se_breakeven": 0.0,
+    "se_c": 0.0
+   },
+   "margin_to_cost": 71646.56896098683,
+   "ok": true,
+   "se_breakeven": 2591.348770765749,
+   "w117_sha256": "e91fd86cf3615eed238dcb35cce6700edf396e9a8f1ad89f710415b313cf0333"
+  },
+  "S2_interval_brackets_midpoint": {
+   "ok": true,
+   "one_point": {
+    "b_mid": 233135.6450237866,
+    "b_range": [
+     225336.16505259462,
+     240935.1249949787
+    ],
+    "brackets_strictly": true,
+    "breakeven_range": [
+     177431.4284953343,
+     187030.7884598783
+    ],
+    "certified_only_n": 9,
+    "closed_form_max_abs_diff": 7.412381819449365e-09,
+    "half_width": 32997.79987817078,
+    "n_vertices": 2
+   },
+   "two_points": {
+    "b_range": [
+     223857.04478941683,
+     242414.2452581564
+    ],
+    "brackets_strictly": true,
+    "certified_only_n": 8,
+    "closed_form_max_abs_diff": 8.717506716493517e-09,
+    "n_vertices": 4
+   }
+  },
+  "S3_five_percent_check_planted": {
+   "ok": true,
+   "planted_+0.04": {
+    "b_banded_mid": 242319.9999999893,
+    "b_certified": 233000.0,
+    "expected_held": true,
+    "held": true,
+    "rel_at_b_max": 0.04951352127575163,
+    "rel_at_b_min": 0.03048647872415619,
+    "rel_mid": 0.03999999999995403
+   },
+   "planted_+0.06": {
+    "b_banded_mid": 246979.99999999788,
+    "b_certified": 233000.0,
+    "expected_held": false,
+    "held": false,
+    "rel_at_b_max": 0.0695135212757881,
+    "rel_at_b_min": 0.050486478724194164,
+    "rel_mid": 0.05999999999999088
+   },
+   "planted_-0.04": {
+    "b_banded_mid": 223680.0000000109,
+    "b_certified": 233000.0,
+    "expected_held": true,
+    "held": true,
+    "rel_at_b_max": 0.03048647872415569,
+    "rel_at_b_min": 0.04951352127575088,
+    "rel_mid": 0.039999999999953156
+   },
+   "planted_-0.06": {
+    "b_banded_mid": 219020.00000000227,
+    "b_certified": 233000.0,
+    "expected_held": false,
+    "held": false,
+    "rel_at_b_max": 0.050486478724192665,
+    "rel_at_b_min": 0.0695135212757881,
+    "rel_mid": 0.059999999999990256
+   },
+   "v_j_db_dy": 0.23636363636363633
+  },
+  "S4_conclusion_check_planted": {
+   "big": {
+    "e_cost": 253877.6774385931,
+    "e_star_banded_max_over_box": 289768.6816903767,
+    "e_star_banded_mid": 182095.66893503472,
+    "e_star_certified_only": 182095.6689350346,
+    "holds": false,
+    "holds_banded_whole_interval": false,
+    "holds_certified_only": true,
+    "min_margin_banded": -35891.00425178363,
+    "min_margin_certified_only": 71782.00850355849
+   },
+   "e_star_true": 182095.6689350346,
+   "ok": true,
+   "planted_half_width": 740251.9626929464,
+   "small": {
+    "e_cost": 253877.6774385931,
+    "e_star_banded_max_over_box": 183459.7615241182,
+    "e_star_banded_mid": 182095.66893503472,
+    "e_star_certified_only": 182095.6689350346,
+    "holds": true,
+    "holds_banded_whole_interval": true,
+    "holds_certified_only": true,
+    "min_margin_banded": 70417.9159144749,
+    "min_margin_certified_only": 71782.00850355849
+   },
+   "w_j": 0.14545454545454556
+  },
+  "S5_degenerate_certified_design": {
+   "certified_only_fit": {
+    "n": 5,
+    "reason": "n < 4 or rank(X) < 3",
+    "undefined": true
+   },
+   "n_vertices": 32,
+   "ok": true
+  },
+  "S6_point_set_restored": {
+   "ok": true
+  },
+  "all_ok": true
+ },
+ "slope_definition": "the slope = the fit coefficient b (EUR/MWh) of value = a + b E + c P (Worker operationalisation, for Planner confirmation); the marginal-4h slope b + c/4 is reported beside, report-only",
+ "stage": "W145-SCORE",
+ "stage_spec": {
+  "path": "data/SRP1/Results/P515S53/w142_resettle_v6/frozen_s53_resettle_spec_v6_96c23404.json",
+  "sha256": "96c234045f15fa4f18ba7149b3b4a39c749f256657d436064c320b04d546e041"
+ },
+ "utc": "2026-10-01T22:49:13.073078+00:00",
+ "wall_s": 0.3238508701324463
+}
