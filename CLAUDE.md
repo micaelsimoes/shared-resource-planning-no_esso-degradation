@@ -55,7 +55,12 @@ Stop and report — with what is needed from the reader first — when:
   a gate's scope, or a production configuration outside the frozen spec is proposed (the
   expert rules);
 - a recorded prediction fails and the addendum names no fallback, or the named fallback would
-  itself change the configuration;
+  itself change the configuration. A **certification-status** prediction ("the cell certifies")
+  has a fallback by construction — the uncertified reporting form — so its failure is recorded
+  and the campaign carries on (Addendum 62). Campaigns stop only on a harness fault, a gate
+  failure other than G6/G27, or a failed **margin or sign** prediction, including the case
+  where the uncertified form leaves a manuscript claim indeterminate (margin below
+  max(3 × larger bar, 2τ));
 - a run not named in the current order would be launched, or any run expected to exceed 4 h;
 - before anything destructive or irreversible: overwriting or deleting a cited artifact,
   rewriting a reference, deleting a symbol, any git operation beyond staging by filename and

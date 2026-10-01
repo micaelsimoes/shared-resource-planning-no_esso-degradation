@@ -2684,6 +2684,35 @@ Rulings on `P5_15_ADDENDUM60_SWING_TEST_NOTE.md` (`ef0c3390`).
   in the report stage) → eight remaining break-even-fit cells (≈ 11 h) → remainder in priority
   order → Step 5 rows → stop for review before Step 6 tables are frozen.
 
+# Addendum 62 — the 5 MWh cell stays uncertified; stop conditions narrowed; break-even fit with bands (2026-10-01)
+
+Rulings on `P5_15_ADDENDUM61_D_CELL_NOTE.md` (`c9b9d189`). All three Planner recommendations adopted.
+
+- **1. v6 stands; d_36686489 is recorded uncertified.** The refusal is the right verdict: the cell
+  was still sliding at −85 €/cycle at its cap after five TSO recovery exits, and the principled patch
+  (excluding swings that span a non-clean cycle) certifies it only by leaving nothing to compare,
+  after which it moves −1.01 τ — breaking the manuscript's "≤ 0.9 τ" statement. A rule that certifies
+  by running out of evidence is not a rule. **Mechanism to record:** this is the largest storage cell,
+  and repeated TSO recoveries after the residual pass are what Addendum 58's dead zone looks like at
+  baseline price — storage discharge driving the TN's conventional output to its lower bound while DN
+  flexibility is marginal, so the interface dual is set-valued. The limitations paragraph gains "the
+  degenerate case appears with large storage" and names this cell. d_3632b0ae's certificate at
+  0.997 τ stays flagged.
+- **2. Stop conditions narrowed — into CLAUDE.md.** A certification-status prediction ("certifies")
+  has a fallback by construction: the uncertified reporting form, which already decides large
+  margins. Its failure is recorded and the campaign carries on. The campaign stops only on a harness
+  fault, a gate failure other than G6/G27, or a failed **margin or sign** prediction — which includes
+  the case where the uncertified form leaves a manuscript claim indeterminate (margin below
+  max(3 × larger bar, 2τ)). Three of the last four stops were "certifies" predictions failing with no
+  consequence for any verdict; that is a day of Mac time.
+- **3. Break-even fit with bands.** The affine fit includes the uncertified point as an **interval**
+  (its uncertified bar plus the 2τ floor), the slope is reported with the min/max over that interval
+  and the break-even as a range; the certified-only fit is shown beside it. The conclusion must hold
+  under both fits — it does, at ≈ 72 k€/MWh margin to cost against any plausible shift. Prediction
+  on record: both fits agree on the slope within 5 %.
+- **Order:** remaining five D cells (≈ 7 h) → claim point #12 → remainder in priority order → Step 5
+  rows → stop for review before Step 6 tables are frozen. No further stops on certification status.
+
 ## Update obligations
 
 At the end of Step 1 the Planner rewrites the "CURRENT SOURCE OF TRUTH" head of
