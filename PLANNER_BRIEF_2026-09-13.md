@@ -2713,6 +2713,34 @@ Rulings on `P5_15_ADDENDUM61_D_CELL_NOTE.md` (`c9b9d189`). All three Planner rec
 - **Order:** remaining five D cells (≈ 7 h) → claim point #12 → remainder in priority order → Step 5
   rows → stop for review before Step 6 tables are frozen. No further stops on certification status.
 
+# Addendum 63 — flexibility ladder at m = 1.5: (a) + (c); stops that idle the machine (2026-10-02)
+
+Rulings on `P5_15_ADDENDUM62_H_CLAIM_STOP_NOTE.md` (`53cd9e57`).
+
+- **Decision 1 — (a) and (c), as the Planner recommends; (b) rejected.** At m = 1.5 the unit's
+  value − I is −14.45 k€ against an 18.75 k€ bar: the sign is not resolved and the report says so in
+  the frozen uncertified form, with the cause stated — a settled cost refused only by a consensus
+  gap holding at ≈ −2.5 k€ against the τ/2 limit of 2.27 k€, the F2 pattern at a quarter of the size.
+  (b) would scrape through at 1.01× on Q_cc, which is a rule changed to rescue a claim; running
+  longer buys nothing because the gap is not moving. **(c) restates the ladder as a crossing:** the
+  unit pays at m = 2 (+46.3 k€, determinate at 3.77×, prediction held); at m = 1.5 the sign is
+  unresolved; under monotonicity of value − I in m the break-even multiplier lies **at or below
+  ≈ 1.75** (linear interpolation from the lower edge of the m = 1.5 bar), nominally 1.62, with the
+  lower end of the bracket open — the m = 1.5 bar admits a positive value, so "at most 1.75" is the
+  only bound the data supports. **Monotonicity is justified, not assumed:** by the envelope theorem
+  on both optima, d(value)/dm equals the base-price-weighted flexibility that storage displaces,
+  which is non-negative; the manuscript carries that sentence. **Optional, author's machine time:**
+  one cell at m = 1.75 (≈ 1.5 h, after the I and J cells) brackets the crossing from the other side
+  and would turn "at most 1.75" into an interval; recommended if the ladder is a headline row.
+  Prediction scored: sign held, size missed low, determinacy missed. Interface prices of
+  h_f9eae48f are read zero-solve for the dead-zone table.
+- **Decision 2 — the I and J cells restart now**, with the author's go-ahead; they do not depend on
+  this claim. **Rule into CLAUDE.md:** a stop raised for a reporting ruling does not idle the machine
+  when the queued cells are independent of the ruling — the stop applies to decisions that change
+  what runs next, and the report is written while the queue proceeds.
+- **Order:** I and J cells → claim point after J (≈ 5–6 h) → remainder → optional m = 1.75 → Step 5
+  rows → stop for review before Step 6 tables are frozen.
+
 ## Update obligations
 
 At the end of Step 1 the Planner rewrites the "CURRENT SOURCE OF TRUTH" head of

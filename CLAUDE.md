@@ -67,6 +67,10 @@ Stop and report — with what is needed from the reader first — when:
   committing;
 - the review point the current order names is reached ("stop for review after …").
 
+A stop raised for a **reporting** ruling does not idle the machine when the queued cells are
+independent of the ruling: the stop applies to decisions that change what runs next, and the report
+is written while the queue proceeds (Addendum 63).
+
 Actions only the author can perform (a reboot, credentials, hardware) are requested as
 actions, not framed as decisions; the run is held at the point that needs them.
 
