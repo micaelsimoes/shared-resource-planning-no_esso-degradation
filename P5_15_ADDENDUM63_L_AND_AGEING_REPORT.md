@@ -130,3 +130,37 @@ uneconomic at SRP1. This matches the 0.50-era reading, now on settled numbers.
 - **TSO 2035 Spring** recurs as the block whose non-clean recoveries veto, reset or block certification, now on
   `pb_y2025_n5_v6` as well. Its cause is not investigated; it belongs to the post-revision cleanup.
 - The soh_min plumbing has not been designed. The "one evaluation" scope is read from the brief's Step 5 list.
+
+## Supplement: Step 5 zero-solve rows (W153, `48e76c9f`; zero solves, guards at 0)
+
+**Discount row** (settled unit `3f084f2f` against x = 0 `d110bd1a`; gross; the rate stays at 2 %, not tuned):
+
+| rate | value | value / I | value − I | determinacy |
+|---|---|---|---|---|
+| 0 % | 277,120 | 0.872 | −40,837 | determinate (2.6×) |
+| **2 %** | **253,540** | **0.797** | **−64,417** | determinate (4.9×) |
+| 5 % | 225,232 | 0.708 | −92,725 | determinate (7.1×) |
+| 8 % | 203,367 | 0.640 | −114,590 | determinate (8.8×) |
+
+- **Discount rate:** no rate makes the unit pay. The rate cannot decide the sign, as Addendum 30 stated.
+- **Captured spread:** 59.0 € per MWh-cycle, inside the expert's 55–60 expectation (Addendum 28: **held**). That is
+  0.60 of the market's top-4 h spread.
+- **Comparing with the pre-settling row:** that row also differs in ageing configuration (C3, soh_min 0.50), so the
+  difference is not a settling effect alone. 2035 carries the change: per-year value 85.4 k against 101.2 k, because
+  the 0.70 floor binds there (EFC/day 0.64).
+
+**Salvage add-back** (60 claims; 52 net verdicts computed with the committed scorer and validated on the 8 recorded
+G rows):
+- **No sign changes** between gross and net, and all 12 L neighbour differences stay positive.
+- **One verdict changes:** F2 incumbent vs `l_0ee93aca` goes from within the bar (gross) to determinate (net).
+  That is in the certificate's favour.
+
+**Certification statistics** (42 cells: 34 v6 + 7 extension + `d_c52e1670`):
+- **Outcomes:** 32 certified (24 oscillatory, 8 monotone). 10 uncertified: 5 by the gap clause, 2 by lapse resets,
+  3 by the growth test.
+- **Timing:** k\* − k0 has median 63.5 (range 21–89).
+- **Stopping point:** range/τ at k\* has median 0.86. Six certificates are at ≥ 0.95 τ.
+- **Non-clean cycles:** all 21 after the first residual pass are TSO events; none is DSO or ESSO. Wall time is
+  25.6 s per cycle (median).
+- **New for Decision 1 of the I/J/C/G report:** a second certificate, `d_4a82a64a` (turning point 108), also has a
+  non-clean cycle among its turning points, like `j_a11d7966`. The post-revision rule question covers both.
