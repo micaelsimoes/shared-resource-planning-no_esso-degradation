@@ -1,0 +1,5073 @@
+{
+ "stage": "P5.15 Addendum 61, W142 -- the W135 re-settling extension re-frozen against v6 (7 cells): the ageing E arms as model variants of the ageing law on the current ESS parameters file (minimum SoH 0.70, not overridden), ungated first evaluations at the unit; pb_y2025_n5 replayed bitwise against its original record through k0 = 110; the certifying regime held after the run's first residual pass (AA off, tight tail on, rho frozen); settling rule v6 (v5 -- certification vetoed while a NON-CLEAN cycle lies in the last W cycles the test reads; clean = Optimal, or Acceptable on the primary attempt with all four IPOPT metrics within 10x the tail tolerances -- with the swing noise floor tau/10) until it certifies or the cap; W105 captures, t_sum, Q_cc, the IPOPT exit, final attempt tier and final metrics of every block, the SoH-floor sidecar and the terminal ageing trajectory",
+ "utc": "2026-10-04T08:27:23.021204+00:00",
+ "after_cell": "pb_y2025_n5_v6",
+ "after_cell_index_1_based": 7,
+ "stage_spec": {
+  "path": "data/SRP1/Results/P515S53/w142_resettle_ext_v6/frozen_s53_resettle_ext_spec_v3_84775dc4.json",
+  "sha256": "84775dc41428ba6a6b504c86de728f3d2b44d19354c977c18d3b33f197c76ee6"
+ },
+ "objective_convention": "Q = gross_operational_cost, settlement EXCLUDED (primary; Addendum 58 Ruling 3); Q_net = net_operational_recourse = Q - terminal salvage credit, reported BESIDE gross on every G row and on any claim stated net; t_sum = the priced interface-consensus gap sum w * pi * (p_DSO - p_TSO) (EUR); Q_cc = Q + t_sum, a FIRST-ORDER consensus-consistent DIAGNOSTIC",
+ "reports": {
+  "e_c3_unit": {
+   "cell": "e_c3_unit",
+   "item": "E",
+   "arm": "C3_unit",
+   "claim_group": 3,
+   "gated": false,
+   "eval_key": "409740fb51f27cabd81e08d1f2c4b435873ab5ad2a1e20e544177e3ec8dc9fed",
+   "candidate_key": "db77e1549af855bcb3521950c634db55fe6c155ab2de591b0441b5f2bf4b369a",
+   "candidate_canonical": {
+    "investment_year": 2025,
+    "nodes": {
+     "5": [
+      0.0,
+      0.0
+     ],
+     "7": [
+      0.25,
+      1.0
+     ],
+     "9": [
+      0.0,
+      0.0
+     ]
+    }
+   },
+   "original_eval_key": "7eb1ce62c2509f54201191ed7220a7e25f06ca8830cb73e5afe2a14101a76b20",
+   "k0_run": 104,
+   "first_k0_v2": 104,
+   "criterion_version": 6,
+   "k0_original": null,
+   "N_old": null,
+   "rule_cap": 213,
+   "cap_ceiling": 300,
+   "cycles_run": 160,
+   "status": "certified",
+   "record_status": "certified",
+   "k_star": 160,
+   "end_cycle": 160,
+   "branch": "oscillatory",
+   "band": [
+    653627573.9306895,
+    653631853.9375899
+   ],
+   "band_width": 4280.006900429726,
+   "range_over_tau": 0.942926310230424,
+   "Q_k_star": 653629491.834701,
+   "t_sum_k_star": 222.73610642764373,
+   "Q_cc_k_star": 653629714.5708073,
+   "Q_end": 653629491.834701,
+   "t_sum_end": 222.73610642764373,
+   "Q_cc_end": 653629714.5708073,
+   "Q_net_end": 653629491.834701,
+   "terminal_salvage_value_end": 0.0,
+   "T": [
+    [
+     125,
+     "max",
+     653634320.839494
+    ],
+    [
+     139,
+     "min",
+     653627573.9306895
+    ],
+    [
+     153,
+     "max",
+     653630073.0288345
+    ]
+   ],
+   "A": [
+    6746.908804535866,
+    2499.098145008087
+   ],
+   "P_hat": 28,
+   "lapse_events": [],
+   "gap_refusals": [],
+   "non_clean_cycles": [],
+   "non_optimal_cycles": [],
+   "acceptable_clean_exits": [],
+   "W": 31,
+   "window": [
+    130,
+    160
+   ],
+   "vetoes": [],
+   "n_vetoes": 0,
+   "swing_floor": {
+    "F": 453.9068275000001,
+    "carries": [
+     "A_growth_test_floor",
+     "B_turning_point_floor"
+    ],
+    "growth_test_floor": 453.9068275000001,
+    "turning_point_floor": 453.9068275000001
+   },
+   "turning_point_floor_rejections": [],
+   "window_all_clean": true,
+   "out_of_window_reads": {
+    "W": 31,
+    "any_non_clean_read_outside_window": false,
+    "any_out_of_window_read": true,
+    "branch": "oscillatory",
+    "enumeration": "settling_criterion_v6.SUB_TEST_READS",
+    "k": 160,
+    "k0": 104,
+    "non_clean_cycles_read_outside_window": [],
+    "non_clean_turning_points_outside_window": [],
+    "reads": {
+     "P_hat": {
+      "P_hat": 28,
+      "positions": [
+       {
+        "Q_t": 653634320.839494,
+        "kind": "max",
+        "non_clean": false,
+        "outside_window": true,
+        "t": 125
+       },
+       {
+        "Q_t": 653630073.0288345,
+        "kind": "max",
+        "non_clean": false,
+        "outside_window": false,
+        "t": 153
+       }
+      ],
+      "positions_outside_window": [
+       {
+        "Q_t": 653634320.839494,
+        "kind": "max",
+        "non_clean": false,
+        "outside_window": true,
+        "t": 125
+       }
+      ],
+      "reads": "T[-1].t - T[-3].t"
+     },
+     "k0_no_boyd_lapse_span": {
+      "any_non_clean_outside_window": false,
+      "cycles": [
+       104,
+       160
+      ],
+      "non_clean_cycles_outside_window": [],
+      "outside_window": [
+       104,
+       129
+      ],
+      "reads": "boyd_k and Q not None (no lapse since k0)"
+     },
+     "sign_state_Q_span": {
+      "any_non_clean_outside_window": false,
+      "cycles": [
+       106,
+       160
+      ],
+      "non_clean_cycles_outside_window": [],
+      "outside_window": [
+       106,
+       129
+      ],
+      "reads": "Q (every step dQ_c, c >= k0 + K_EXCL, and the extremum search locating each turning point)"
+     },
+     "swings_excluded_below_growth_floor": {
+      "excluded_swing_indices": [],
+      "pairs_compared": [
+       [
+        0,
+        1
+       ]
+      ],
+      "reads": "(A): the swings < GROWTH_TEST_FLOOR excluded from the comparison"
+     },
+     "swings_non_increasing_all_pairs": {
+      "pairs_with_an_endpoint_outside_window": [
+       [
+        125,
+        139
+       ]
+      ],
+      "reads": "A[i] = |Q_T[i+1] - Q_T[i]| for every consecutive pair since k0",
+      "turning_points_outside_window": [
+       {
+        "Q_t": 653634320.839494,
+        "kind": "max",
+        "non_clean": false,
+        "outside_window": true,
+        "t": 125
+       }
+      ],
+      "turning_points_read": [
+       {
+        "Q_t": 653634320.839494,
+        "kind": "max",
+        "non_clean": false,
+        "outside_window": true,
+        "t": 125
+       },
+       {
+        "Q_t": 653627573.9306895,
+        "kind": "min",
+        "non_clean": false,
+        "outside_window": false,
+        "t": 139
+       },
+       {
+        "Q_t": 653630073.0288345,
+        "kind": "max",
+        "non_clean": false,
+        "outside_window": false,
+        "t": 153
+       }
+      ]
+     },
+     "turning_point_count": {
+      "n_turning_points": 3,
+      "reads": "len(T) >= 3",
+      "turning_points_outside_window": [
+       {
+        "Q_t": 653634320.839494,
+        "kind": "max",
+        "non_clean": false,
+        "outside_window": true,
+        "t": 125
+       }
+      ]
+     },
+     "turning_point_floor": {
+      "reads": "the (B) rejections since k0: the candidate, the swing it closed, the point un-registered",
+      "rejections_outside_window": [],
+      "rejections_since_k0": []
+     }
+    },
+    "turning_points_outside_window": [
+     125
+    ],
+    "window": [
+     130,
+     160
+    ],
+    "window_all_clean": true
+   },
+   "terminal_step_abs": 114.7140930891037,
+   "terminal_step_over_EPS0": 2.5272607975720236,
+   "rule_ten_last_cycle": 0.0017550320845287504,
+   "boyd_lapses_after_k0": 0,
+   "pf_primal_slope_last_50": -0.003955168745389704,
+   "pf_primal_slope_window": [
+    111,
+    160
+   ],
+   "objective_convention": "Q = gross_operational_cost, settlement EXCLUDED (primary; Addendum 58 Ruling 3); Q_net = net_operational_recourse = Q - terminal salvage credit, reported BESIDE gross on every G row and on any claim stated net; t_sum = the priced interface-consensus gap sum w * pi * (p_DSO - p_TSO) (EUR); Q_cc = Q + t_sum, a FIRST-ORDER consensus-consistent DIAGNOSTIC",
+   "floor_reading": {
+    "cycle": 160,
+    "node": 7,
+    "cohort_year": 2025,
+    "floor_year": 2035,
+    "active_block_years": [
+     2035
+    ],
+    "per_block": [
+     {
+      "block_year": 2025,
+      "soh_end": 0.8711559899030661,
+      "soh_min": 0.7,
+      "active": false,
+      "dual": 5.31146646125251e-10,
+      "efc_per_day": 0.8723157162946573
+     },
+     {
+      "block_year": 2030,
+      "soh_end": 0.7697523510160877,
+      "soh_min": 0.7,
+      "active": false,
+      "dual": 1.3033111162629487e-09,
+      "efc_per_day": 0.7826266453898096
+     },
+     {
+      "block_year": 2035,
+      "soh_end": 0.6999999900001259,
+      "soh_min": 0.7,
+      "active": true,
+      "dual": 721.5702687590646,
+      "efc_per_day": 0.6007209520226151
+     }
+    ],
+    "rule": "first block year whose node-7 floor row (cohort 2025) is active at the cycle; active = |SoH - soh_min| <= 1e-6 (the s35ref capture)"
+   },
+   "floor_year": 2035,
+   "model_variant": {
+    "eol_retention_r": 0.5,
+    "calendar_retention_per_year": 1.0,
+    "available_energy_soh_point": "end",
+    "ageing_enabled": true
+   },
+   "ageing_series": {
+    "soh_used": [
+     0.8711559899030661,
+     0.7697523510160877,
+     0.6999999900001259
+    ],
+    "soh_end": [
+     0.8711559899030661,
+     0.7697523510160877,
+     0.6999999900001259
+    ],
+    "efc_per_day": [
+     0.8723157162946573,
+     0.7826266453898096,
+     0.6007209520226151
+    ],
+    "block_years": [
+     "2025",
+     "2030",
+     "2035"
+    ],
+    "phi_cal_in_model": [
+     1.0,
+     1.0,
+     1.0
+    ],
+    "cl_eff": [
+     11541.560327111707,
+     11541.560327111707,
+     11541.560327111707
+    ],
+    "salvage_value_node7": 0.0,
+    "available_energy_soh_point": "end",
+    "ageing_enabled": true
+   },
+   "ageing_series_ok": true,
+   "closed_form": {
+    "k": 11541.560327111707,
+    "k_if_enabled": 11541.560327111707,
+    "phi_cal_in_model": 1.0,
+    "available_energy_soh_point": "end",
+    "ageing_enabled": true,
+    "d_row_form": "D * 2kE == 365 n avg",
+    "formula": "k = N * D / (-ln R) = 10000 * 0.8 / (-ln 0.5)"
+   },
+   "AE": 0.785959660612483,
+   "EFC": 0.7607868700235757,
+   "view": {
+    "status": "certified",
+    "Q": 653629491.834701,
+    "t": 222.73610642764373,
+    "Q_cc": 653629714.5708073,
+    "Q_net": 653629491.834701,
+    "salvage": 0.0,
+    "band": 4280.006900429726,
+    "gated": false,
+    "gap": null,
+    "slack": null,
+    "gap_refused": null,
+    "label": null
+   }
+  },
+  "e_c2": {
+   "cell": "e_c2",
+   "item": "E",
+   "arm": "C2",
+   "claim_group": 3,
+   "gated": false,
+   "eval_key": "ba969ad21c1831ab4e881a768fda1f678441ebbe6ee46aca414b1bf483450038",
+   "candidate_key": "db77e1549af855bcb3521950c634db55fe6c155ab2de591b0441b5f2bf4b369a",
+   "candidate_canonical": {
+    "investment_year": 2025,
+    "nodes": {
+     "5": [
+      0.0,
+      0.0
+     ],
+     "7": [
+      0.25,
+      1.0
+     ],
+     "9": [
+      0.0,
+      0.0
+     ]
+    }
+   },
+   "original_eval_key": "c6b53015fcf65e248bcf936d7e4fd9f61f1e09ebd8f78b7e4dda55d6736e7b78",
+   "k0_run": 111,
+   "first_k0_v2": 111,
+   "criterion_version": 6,
+   "k0_original": null,
+   "N_old": null,
+   "rule_cap": 220,
+   "cap_ceiling": 300,
+   "cycles_run": 172,
+   "status": "certified",
+   "record_status": "certified",
+   "k_star": 172,
+   "end_cycle": 172,
+   "branch": "oscillatory",
+   "band": [
+    653585333.870327,
+    653589433.6405231
+   ],
+   "band_width": 4099.770196080208,
+   "range_over_tau": 0.9032184465390548,
+   "Q_k_star": 653587352.4153233,
+   "t_sum_k_star": 429.6346047334476,
+   "Q_cc_k_star": 653587782.049928,
+   "Q_end": 653587352.4153233,
+   "t_sum_end": 429.6346047334476,
+   "Q_cc_end": 653587782.049928,
+   "Q_net_end": 653587352.4153233,
+   "terminal_salvage_value_end": -2.498334423338841e-50,
+   "T": [
+    [
+     122,
+     "min",
+     653573078.7487795
+    ],
+    [
+     135,
+     "max",
+     653593330.7695086
+    ],
+    [
+     149,
+     "min",
+     653585333.870327
+    ],
+    [
+     164,
+     "max",
+     653588020.6594126
+    ]
+   ],
+   "A": [
+    20252.02072906494,
+    7996.899181604385,
+    2686.789085626602
+   ],
+   "P_hat": 29,
+   "lapse_events": [],
+   "gap_refusals": [],
+   "non_clean_cycles": [
+    30
+   ],
+   "non_optimal_cycles": [
+    30
+   ],
+   "acceptable_clean_exits": [],
+   "W": 32,
+   "window": [
+    141,
+    172
+   ],
+   "vetoes": [],
+   "n_vetoes": 0,
+   "swing_floor": {
+    "F": 453.9068275000001,
+    "carries": [
+     "A_growth_test_floor",
+     "B_turning_point_floor"
+    ],
+    "growth_test_floor": 453.9068275000001,
+    "turning_point_floor": 453.9068275000001
+   },
+   "turning_point_floor_rejections": [],
+   "window_all_clean": true,
+   "out_of_window_reads": {
+    "W": 32,
+    "any_non_clean_read_outside_window": false,
+    "any_out_of_window_read": true,
+    "branch": "oscillatory",
+    "enumeration": "settling_criterion_v6.SUB_TEST_READS",
+    "k": 172,
+    "k0": 111,
+    "non_clean_cycles_read_outside_window": [],
+    "non_clean_turning_points_outside_window": [],
+    "reads": {
+     "P_hat": {
+      "P_hat": 29,
+      "positions": [
+       {
+        "Q_t": 653593330.7695086,
+        "kind": "max",
+        "non_clean": false,
+        "outside_window": true,
+        "t": 135
+       },
+       {
+        "Q_t": 653588020.6594126,
+        "kind": "max",
+        "non_clean": false,
+        "outside_window": false,
+        "t": 164
+       }
+      ],
+      "positions_outside_window": [
+       {
+        "Q_t": 653593330.7695086,
+        "kind": "max",
+        "non_clean": false,
+        "outside_window": true,
+        "t": 135
+       }
+      ],
+      "reads": "T[-1].t - T[-3].t"
+     },
+     "k0_no_boyd_lapse_span": {
+      "any_non_clean_outside_window": false,
+      "cycles": [
+       111,
+       172
+      ],
+      "non_clean_cycles_outside_window": [],
+      "outside_window": [
+       111,
+       140
+      ],
+      "reads": "boyd_k and Q not None (no lapse since k0)"
+     },
+     "sign_state_Q_span": {
+      "any_non_clean_outside_window": false,
+      "cycles": [
+       113,
+       172
+      ],
+      "non_clean_cycles_outside_window": [],
+      "outside_window": [
+       113,
+       140
+      ],
+      "reads": "Q (every step dQ_c, c >= k0 + K_EXCL, and the extremum search locating each turning point)"
+     },
+     "swings_excluded_below_growth_floor": {
+      "excluded_swing_indices": [],
+      "pairs_compared": [
+       [
+        0,
+        1
+       ],
+       [
+        1,
+        2
+       ]
+      ],
+      "reads": "(A): the swings < GROWTH_TEST_FLOOR excluded from the comparison"
+     },
+     "swings_non_increasing_all_pairs": {
+      "pairs_with_an_endpoint_outside_window": [
+       [
+        122,
+        135
+       ],
+       [
+        135,
+        149
+       ]
+      ],
+      "reads": "A[i] = |Q_T[i+1] - Q_T[i]| for every consecutive pair since k0",
+      "turning_points_outside_window": [
+       {
+        "Q_t": 653573078.7487795,
+        "kind": "min",
+        "non_clean": false,
+        "outside_window": true,
+        "t": 122
+       },
+       {
+        "Q_t": 653593330.7695086,
+        "kind": "max",
+        "non_clean": false,
+        "outside_window": true,
+        "t": 135
+       }
+      ],
+      "turning_points_read": [
+       {
+        "Q_t": 653573078.7487795,
+        "kind": "min",
+        "non_clean": false,
+        "outside_window": true,
+        "t": 122
+       },
+       {
+        "Q_t": 653593330.7695086,
+        "kind": "max",
+        "non_clean": false,
+        "outside_window": true,
+        "t": 135
+       },
+       {
+        "Q_t": 653585333.870327,
+        "kind": "min",
+        "non_clean": false,
+        "outside_window": false,
+        "t": 149
+       },
+       {
+        "Q_t": 653588020.6594126,
+        "kind": "max",
+        "non_clean": false,
+        "outside_window": false,
+        "t": 164
+       }
+      ]
+     },
+     "turning_point_count": {
+      "n_turning_points": 4,
+      "reads": "len(T) >= 3",
+      "turning_points_outside_window": [
+       {
+        "Q_t": 653573078.7487795,
+        "kind": "min",
+        "non_clean": false,
+        "outside_window": true,
+        "t": 122
+       },
+       {
+        "Q_t": 653593330.7695086,
+        "kind": "max",
+        "non_clean": false,
+        "outside_window": true,
+        "t": 135
+       }
+      ]
+     },
+     "turning_point_floor": {
+      "reads": "the (B) rejections since k0: the candidate, the swing it closed, the point un-registered",
+      "rejections_outside_window": [],
+      "rejections_since_k0": []
+     }
+    },
+    "turning_points_outside_window": [
+     122,
+     135
+    ],
+    "window": [
+     141,
+     172
+    ],
+    "window_all_clean": true
+   },
+   "terminal_step_abs": 99.05429244041443,
+   "terminal_step_over_EPS0": 2.1822604649059705,
+   "rule_ten_last_cycle": 0.0015155476473375853,
+   "boyd_lapses_after_k0": 0,
+   "pf_primal_slope_last_50": -0.0028980746445418206,
+   "pf_primal_slope_window": [
+    123,
+    172
+   ],
+   "objective_convention": "Q = gross_operational_cost, settlement EXCLUDED (primary; Addendum 58 Ruling 3); Q_net = net_operational_recourse = Q - terminal salvage credit, reported BESIDE gross on every G row and on any claim stated net; t_sum = the priced interface-consensus gap sum w * pi * (p_DSO - p_TSO) (EUR); Q_cc = Q + t_sum, a FIRST-ORDER consensus-consistent DIAGNOSTIC",
+   "floor_reading": {
+    "cycle": 172,
+    "node": 7,
+    "cohort_year": 2025,
+    "floor_year": null,
+    "active_block_years": [],
+    "per_block": [
+     {
+      "block_year": 2025,
+      "soh_end": 0.9380030849719375,
+      "soh_min": 0.7,
+      "active": false,
+      "dual": 3.8196509407893454e-10,
+      "efc_per_day": 1.257293302157809
+     },
+     {
+      "block_year": 2030,
+      "soh_end": 0.8811742831741955,
+      "soh_min": 0.7,
+      "active": false,
+      "dual": 5.017760781357441e-10,
+      "efc_per_day": 1.2277432579789627
+     },
+     {
+      "block_year": 2035,
+      "soh_end": 0.8353013022253688,
+      "soh_min": 0.7,
+      "active": false,
+      "dual": 6.719001217629302e-10,
+      "efc_per_day": 1.0502568746107048
+     }
+    ],
+    "rule": "first block year whose node-7 floor row (cohort 2025) is active at the cycle; active = |SoH - soh_min| <= 1e-6 (the s35ref capture)"
+   },
+   "floor_year": null,
+   "model_variant": {
+    "eol_retention_r": 0.8,
+    "calendar_retention_per_year": 1.0,
+    "available_energy_soh_point": "end",
+    "ageing_enabled": true
+   },
+   "ageing_series": {
+    "soh_used": [
+     0.9380030849719375,
+     0.8811742831741955,
+     0.8353013022253688
+    ],
+    "soh_end": [
+     0.9380030849719375,
+     0.8811742831741955,
+     0.8353013022253688
+    ],
+    "efc_per_day": [
+     1.257293302157809,
+     1.2277432579789627,
+     1.0502568746107048
+    ],
+    "block_years": [
+     "2025",
+     "2030",
+     "2035"
+    ],
+    "phi_cal_in_model": [
+     1.0,
+     1.0,
+     1.0
+    ],
+    "cl_eff": [
+     35851.3609417964,
+     35851.3609417964,
+     35851.3609417964
+    ],
+    "salvage_value_node7": -2.498334423338841e-50,
+    "available_energy_soh_point": "end",
+    "ageing_enabled": true
+   },
+   "ageing_series_ok": true,
+   "closed_form": {
+    "k": 35851.3609417964,
+    "k_if_enabled": 35851.3609417964,
+    "phi_cal_in_model": 1.0,
+    "available_energy_soh_point": "end",
+    "ageing_enabled": true,
+    "d_row_form": "D * 2kE == 365 n avg",
+    "formula": "k = N * D / (-ln R) = 10000 * 0.8 / (-ln 0.8)"
+   },
+   "AE": 0.8882162577808105,
+   "EFC": 1.185172736729178,
+   "view": {
+    "status": "certified",
+    "Q": 653587352.4153233,
+    "t": 429.6346047334476,
+    "Q_cc": 653587782.049928,
+    "Q_net": 653587352.4153233,
+    "salvage": -2.498334423338841e-50,
+    "band": 4099.770196080208,
+    "gated": false,
+    "gap": null,
+    "slack": null,
+    "gap_refused": null,
+    "label": null
+   }
+  },
+  "e_c4": {
+   "cell": "e_c4",
+   "item": "E",
+   "arm": "C4",
+   "claim_group": 3,
+   "gated": false,
+   "eval_key": "c59d7006b4b9c0a297e687de73a9100121248f0dc052307eac8349e155888e0c",
+   "candidate_key": "db77e1549af855bcb3521950c634db55fe6c155ab2de591b0441b5f2bf4b369a",
+   "candidate_canonical": {
+    "investment_year": 2025,
+    "nodes": {
+     "5": [
+      0.0,
+      0.0
+     ],
+     "7": [
+      0.25,
+      1.0
+     ],
+     "9": [
+      0.0,
+      0.0
+     ]
+    }
+   },
+   "original_eval_key": "65a5da775d1ff5b270518f9a90734bbf6e3894c98510f0af16dc81f3346f6850",
+   "k0_run": 110,
+   "first_k0_v2": 110,
+   "criterion_version": 6,
+   "k0_original": null,
+   "N_old": null,
+   "rule_cap": 219,
+   "cap_ceiling": 300,
+   "cycles_run": 173,
+   "status": "certified",
+   "record_status": "certified",
+   "k_star": 173,
+   "end_cycle": 173,
+   "branch": "oscillatory",
+   "band": [
+    653598294.0650737,
+    653602095.5646274
+   ],
+   "band_width": 3801.49955368042,
+   "range_over_tau": 0.837506581387657,
+   "Q_k_star": 653600941.8744973,
+   "t_sum_k_star": 667.2738431384587,
+   "Q_cc_k_star": 653601609.1483405,
+   "Q_end": 653600941.8744973,
+   "t_sum_end": 667.2738431384587,
+   "Q_cc_end": 653601609.1483405,
+   "Q_net_end": 653600941.8744973,
+   "terminal_salvage_value_end": 4.996668846677682e-51,
+   "T": [
+    [
+     121,
+     "min",
+     653579300.5424402
+    ],
+    [
+     134,
+     "max",
+     653609102.6703761
+    ],
+    [
+     148,
+     "min",
+     653598294.0650737
+    ],
+    [
+     163,
+     "max",
+     653602095.5646274
+    ]
+   ],
+   "A": [
+    29802.127935886383,
+    10808.605302333832,
+    3801.49955368042
+   ],
+   "P_hat": 29,
+   "lapse_events": [],
+   "gap_refusals": [],
+   "non_clean_cycles": [],
+   "non_optimal_cycles": [],
+   "acceptable_clean_exits": [],
+   "W": 32,
+   "window": [
+    142,
+    173
+   ],
+   "vetoes": [],
+   "n_vetoes": 0,
+   "swing_floor": {
+    "F": 453.9068275000001,
+    "carries": [
+     "A_growth_test_floor",
+     "B_turning_point_floor"
+    ],
+    "growth_test_floor": 453.9068275000001,
+    "turning_point_floor": 453.9068275000001
+   },
+   "turning_point_floor_rejections": [],
+   "window_all_clean": true,
+   "out_of_window_reads": {
+    "W": 32,
+    "any_non_clean_read_outside_window": false,
+    "any_out_of_window_read": true,
+    "branch": "oscillatory",
+    "enumeration": "settling_criterion_v6.SUB_TEST_READS",
+    "k": 173,
+    "k0": 110,
+    "non_clean_cycles_read_outside_window": [],
+    "non_clean_turning_points_outside_window": [],
+    "reads": {
+     "P_hat": {
+      "P_hat": 29,
+      "positions": [
+       {
+        "Q_t": 653609102.6703761,
+        "kind": "max",
+        "non_clean": false,
+        "outside_window": true,
+        "t": 134
+       },
+       {
+        "Q_t": 653602095.5646274,
+        "kind": "max",
+        "non_clean": false,
+        "outside_window": false,
+        "t": 163
+       }
+      ],
+      "positions_outside_window": [
+       {
+        "Q_t": 653609102.6703761,
+        "kind": "max",
+        "non_clean": false,
+        "outside_window": true,
+        "t": 134
+       }
+      ],
+      "reads": "T[-1].t - T[-3].t"
+     },
+     "k0_no_boyd_lapse_span": {
+      "any_non_clean_outside_window": false,
+      "cycles": [
+       110,
+       173
+      ],
+      "non_clean_cycles_outside_window": [],
+      "outside_window": [
+       110,
+       141
+      ],
+      "reads": "boyd_k and Q not None (no lapse since k0)"
+     },
+     "sign_state_Q_span": {
+      "any_non_clean_outside_window": false,
+      "cycles": [
+       112,
+       173
+      ],
+      "non_clean_cycles_outside_window": [],
+      "outside_window": [
+       112,
+       141
+      ],
+      "reads": "Q (every step dQ_c, c >= k0 + K_EXCL, and the extremum search locating each turning point)"
+     },
+     "swings_excluded_below_growth_floor": {
+      "excluded_swing_indices": [],
+      "pairs_compared": [
+       [
+        0,
+        1
+       ],
+       [
+        1,
+        2
+       ]
+      ],
+      "reads": "(A): the swings < GROWTH_TEST_FLOOR excluded from the comparison"
+     },
+     "swings_non_increasing_all_pairs": {
+      "pairs_with_an_endpoint_outside_window": [
+       [
+        121,
+        134
+       ],
+       [
+        134,
+        148
+       ]
+      ],
+      "reads": "A[i] = |Q_T[i+1] - Q_T[i]| for every consecutive pair since k0",
+      "turning_points_outside_window": [
+       {
+        "Q_t": 653579300.5424402,
+        "kind": "min",
+        "non_clean": false,
+        "outside_window": true,
+        "t": 121
+       },
+       {
+        "Q_t": 653609102.6703761,
+        "kind": "max",
+        "non_clean": false,
+        "outside_window": true,
+        "t": 134
+       }
+      ],
+      "turning_points_read": [
+       {
+        "Q_t": 653579300.5424402,
+        "kind": "min",
+        "non_clean": false,
+        "outside_window": true,
+        "t": 121
+       },
+       {
+        "Q_t": 653609102.6703761,
+        "kind": "max",
+        "non_clean": false,
+        "outside_window": true,
+        "t": 134
+       },
+       {
+        "Q_t": 653598294.0650737,
+        "kind": "min",
+        "non_clean": false,
+        "outside_window": false,
+        "t": 148
+       },
+       {
+        "Q_t": 653602095.5646274,
+        "kind": "max",
+        "non_clean": false,
+        "outside_window": false,
+        "t": 163
+       }
+      ]
+     },
+     "turning_point_count": {
+      "n_turning_points": 4,
+      "reads": "len(T) >= 3",
+      "turning_points_outside_window": [
+       {
+        "Q_t": 653579300.5424402,
+        "kind": "min",
+        "non_clean": false,
+        "outside_window": true,
+        "t": 121
+       },
+       {
+        "Q_t": 653609102.6703761,
+        "kind": "max",
+        "non_clean": false,
+        "outside_window": true,
+        "t": 134
+       }
+      ]
+     },
+     "turning_point_floor": {
+      "reads": "the (B) rejections since k0: the candidate, the swing it closed, the point un-registered",
+      "rejections_outside_window": [],
+      "rejections_since_k0": []
+     }
+    },
+    "turning_points_outside_window": [
+     121,
+     134
+    ],
+    "window": [
+     142,
+     173
+    ],
+    "window_all_clean": true
+   },
+   "terminal_step_abs": 122.48401212692261,
+   "terminal_step_over_EPS0": 2.69843951899848,
+   "rule_ten_last_cycle": 0.0018739873419137884,
+   "boyd_lapses_after_k0": 0,
+   "pf_primal_slope_last_50": -0.0028099397499773515,
+   "pf_primal_slope_window": [
+    124,
+    173
+   ],
+   "objective_convention": "Q = gross_operational_cost, settlement EXCLUDED (primary; Addendum 58 Ruling 3); Q_net = net_operational_recourse = Q - terminal salvage credit, reported BESIDE gross on every G row and on any claim stated net; t_sum = the priced interface-consensus gap sum w * pi * (p_DSO - p_TSO) (EUR); Q_cc = Q + t_sum, a FIRST-ORDER consensus-consistent DIAGNOSTIC",
+   "floor_reading": {
+    "cycle": 173,
+    "node": 7,
+    "cohort_year": 2025,
+    "floor_year": null,
+    "active_block_years": [],
+    "per_block": [
+     {
+      "block_year": 2025,
+      "soh_end": 0.9051772130755708,
+      "soh_min": 0.7,
+      "active": false,
+      "dual": 4.4307503081857584e-10,
+      "efc_per_day": 1.2243930080342302
+     },
+     {
+      "block_year": 2030,
+      "soh_end": 0.8233810299416632,
+      "soh_min": 0.7,
+      "active": false,
+      "dual": 7.36814823044805e-10,
+      "efc_per_day": 1.1640134794843553
+     },
+     {
+      "block_year": 2035,
+      "soh_end": 0.7601540048150595,
+      "soh_min": 0.7,
+      "active": false,
+      "dual": 1.511271320954943e-09,
+      "efc_per_day": 0.9819526170286197
+     }
+    ],
+    "rule": "first block year whose node-7 floor row (cohort 2025) is active at the cycle; active = |SoH - soh_min| <= 1e-6 (the s35ref capture)"
+   },
+   "floor_year": null,
+   "model_variant": {
+    "eol_retention_r": 0.7,
+    "calendar_retention_per_year": 1.0,
+    "available_energy_soh_point": "end",
+    "ageing_enabled": true
+   },
+   "ageing_series": {
+    "soh_used": [
+     0.9051772130755708,
+     0.8233810299416632,
+     0.7601540048150595
+    ],
+    "soh_end": [
+     0.9051772130755708,
+     0.8233810299416632,
+     0.7601540048150595
+    ],
+    "efc_per_day": [
+     1.2243930080342302,
+     1.1640134794843553,
+     0.9819526170286197
+    ],
+    "block_years": [
+     "2025",
+     "2030",
+     "2035"
+    ],
+    "phi_cal_in_model": [
+     1.0,
+     1.0,
+     1.0
+    ],
+    "cl_eff": [
+     22429.38601645703,
+     22429.38601645703,
+     22429.38601645703
+    ],
+    "salvage_value_node7": 4.996668846677682e-51,
+    "available_energy_soh_point": "end",
+    "ageing_enabled": true
+   },
+   "ageing_series_ok": true,
+   "closed_form": {
+    "k": 22429.38601645703,
+    "k_if_enabled": 22429.38601645703,
+    "phi_cal_in_model": 1.0,
+    "available_energy_soh_point": "end",
+    "ageing_enabled": true,
+    "d_row_form": "D * 2kE == 365 n avg",
+    "formula": "k = N * D / (-ln R) = 10000 * 0.8 / (-ln 0.7)"
+   },
+   "AE": 0.8343594349551451,
+   "EFC": 1.1313754719801936,
+   "view": {
+    "status": "certified",
+    "Q": 653600941.8744973,
+    "t": 667.2738431384587,
+    "Q_cc": 653601609.1483405,
+    "Q_net": 653600941.8744973,
+    "salvage": 4.996668846677682e-51,
+    "band": 3801.49955368042,
+    "gated": false,
+    "gap": null,
+    "slack": null,
+    "gap_refused": null,
+    "label": null
+   }
+  },
+  "e_c2_calfade": {
+   "cell": "e_c2_calfade",
+   "item": "E",
+   "arm": "C2_calfade",
+   "claim_group": 3,
+   "gated": false,
+   "eval_key": "bbd82994a7ddff9484d385761133695f600b35452acb0e5e75e1777be8b903d2",
+   "candidate_key": "db77e1549af855bcb3521950c634db55fe6c155ab2de591b0441b5f2bf4b369a",
+   "candidate_canonical": {
+    "investment_year": 2025,
+    "nodes": {
+     "5": [
+      0.0,
+      0.0
+     ],
+     "7": [
+      0.25,
+      1.0
+     ],
+     "9": [
+      0.0,
+      0.0
+     ]
+    }
+   },
+   "original_eval_key": "98e2857016a16d1c09aea36acb06929baed718ffc7c01ca53de1e24d4f3e9cfd",
+   "k0_run": 103,
+   "first_k0_v2": 103,
+   "criterion_version": 6,
+   "k0_original": null,
+   "N_old": null,
+   "rule_cap": 212,
+   "cap_ceiling": 300,
+   "cycles_run": 172,
+   "status": "certified",
+   "record_status": "certified",
+   "k_star": 172,
+   "end_cycle": 172,
+   "branch": "oscillatory",
+   "band": [
+    653617725.4720572,
+    653622076.8792306
+   ],
+   "band_width": 4351.407173395157,
+   "range_over_tau": 0.9586564708360014,
+   "Q_k_star": 653620162.5657823,
+   "t_sum_k_star": 662.9971061576365,
+   "Q_cc_k_star": 653620825.5628885,
+   "Q_end": 653620162.5657823,
+   "t_sum_end": 662.9971061576365,
+   "Q_cc_end": 653620825.5628885,
+   "Q_net_end": 653620162.5657823,
+   "terminal_salvage_value_end": 0.0,
+   "T": [
+    [
+     109,
+     "min",
+     653592447.0485184
+    ],
+    [
+     122,
+     "max",
+     653632960.7588202
+    ],
+    [
+     135,
+     "min",
+     653615765.7166984
+    ],
+    [
+     150,
+     "max",
+     653622076.8792306
+    ],
+    [
+     165,
+     "min",
+     653619694.8486986
+    ]
+   ],
+   "A": [
+    40513.71030175686,
+    17195.042121767998,
+    6311.16253221035,
+    2382.030532002449
+   ],
+   "P_hat": 30,
+   "lapse_events": [],
+   "gap_refusals": [],
+   "non_clean_cycles": [],
+   "non_optimal_cycles": [],
+   "acceptable_clean_exits": [],
+   "W": 33,
+   "window": [
+    140,
+    172
+   ],
+   "vetoes": [],
+   "n_vetoes": 0,
+   "swing_floor": {
+    "F": 453.9068275000001,
+    "carries": [
+     "A_growth_test_floor",
+     "B_turning_point_floor"
+    ],
+    "growth_test_floor": 453.9068275000001,
+    "turning_point_floor": 453.9068275000001
+   },
+   "turning_point_floor_rejections": [],
+   "window_all_clean": true,
+   "out_of_window_reads": {
+    "W": 33,
+    "any_non_clean_read_outside_window": false,
+    "any_out_of_window_read": true,
+    "branch": "oscillatory",
+    "enumeration": "settling_criterion_v6.SUB_TEST_READS",
+    "k": 172,
+    "k0": 103,
+    "non_clean_cycles_read_outside_window": [],
+    "non_clean_turning_points_outside_window": [],
+    "reads": {
+     "P_hat": {
+      "P_hat": 30,
+      "positions": [
+       {
+        "Q_t": 653615765.7166984,
+        "kind": "min",
+        "non_clean": false,
+        "outside_window": true,
+        "t": 135
+       },
+       {
+        "Q_t": 653619694.8486986,
+        "kind": "min",
+        "non_clean": false,
+        "outside_window": false,
+        "t": 165
+       }
+      ],
+      "positions_outside_window": [
+       {
+        "Q_t": 653615765.7166984,
+        "kind": "min",
+        "non_clean": false,
+        "outside_window": true,
+        "t": 135
+       }
+      ],
+      "reads": "T[-1].t - T[-3].t"
+     },
+     "k0_no_boyd_lapse_span": {
+      "any_non_clean_outside_window": false,
+      "cycles": [
+       103,
+       172
+      ],
+      "non_clean_cycles_outside_window": [],
+      "outside_window": [
+       103,
+       139
+      ],
+      "reads": "boyd_k and Q not None (no lapse since k0)"
+     },
+     "sign_state_Q_span": {
+      "any_non_clean_outside_window": false,
+      "cycles": [
+       105,
+       172
+      ],
+      "non_clean_cycles_outside_window": [],
+      "outside_window": [
+       105,
+       139
+      ],
+      "reads": "Q (every step dQ_c, c >= k0 + K_EXCL, and the extremum search locating each turning point)"
+     },
+     "swings_excluded_below_growth_floor": {
+      "excluded_swing_indices": [],
+      "pairs_compared": [
+       [
+        0,
+        1
+       ],
+       [
+        1,
+        2
+       ],
+       [
+        2,
+        3
+       ]
+      ],
+      "reads": "(A): the swings < GROWTH_TEST_FLOOR excluded from the comparison"
+     },
+     "swings_non_increasing_all_pairs": {
+      "pairs_with_an_endpoint_outside_window": [
+       [
+        109,
+        122
+       ],
+       [
+        122,
+        135
+       ],
+       [
+        135,
+        150
+       ]
+      ],
+      "reads": "A[i] = |Q_T[i+1] - Q_T[i]| for every consecutive pair since k0",
+      "turning_points_outside_window": [
+       {
+        "Q_t": 653592447.0485184,
+        "kind": "min",
+        "non_clean": false,
+        "outside_window": true,
+        "t": 109
+       },
+       {
+        "Q_t": 653632960.7588202,
+        "kind": "max",
+        "non_clean": false,
+        "outside_window": true,
+        "t": 122
+       },
+       {
+        "Q_t": 653615765.7166984,
+        "kind": "min",
+        "non_clean": false,
+        "outside_window": true,
+        "t": 135
+       }
+      ],
+      "turning_points_read": [
+       {
+        "Q_t": 653592447.0485184,
+        "kind": "min",
+        "non_clean": false,
+        "outside_window": true,
+        "t": 109
+       },
+       {
+        "Q_t": 653632960.7588202,
+        "kind": "max",
+        "non_clean": false,
+        "outside_window": true,
+        "t": 122
+       },
+       {
+        "Q_t": 653615765.7166984,
+        "kind": "min",
+        "non_clean": false,
+        "outside_window": true,
+        "t": 135
+       },
+       {
+        "Q_t": 653622076.8792306,
+        "kind": "max",
+        "non_clean": false,
+        "outside_window": false,
+        "t": 150
+       },
+       {
+        "Q_t": 653619694.8486986,
+        "kind": "min",
+        "non_clean": false,
+        "outside_window": false,
+        "t": 165
+       }
+      ]
+     },
+     "turning_point_count": {
+      "n_turning_points": 5,
+      "reads": "len(T) >= 3",
+      "turning_points_outside_window": [
+       {
+        "Q_t": 653592447.0485184,
+        "kind": "min",
+        "non_clean": false,
+        "outside_window": true,
+        "t": 109
+       },
+       {
+        "Q_t": 653632960.7588202,
+        "kind": "max",
+        "non_clean": false,
+        "outside_window": true,
+        "t": 122
+       },
+       {
+        "Q_t": 653615765.7166984,
+        "kind": "min",
+        "non_clean": false,
+        "outside_window": true,
+        "t": 135
+       }
+      ]
+     },
+     "turning_point_floor": {
+      "reads": "the (B) rejections since k0: the candidate, the swing it closed, the point un-registered",
+      "rejections_outside_window": [],
+      "rejections_since_k0": []
+     }
+    },
+    "turning_points_outside_window": [
+     109,
+     122,
+     135
+    ],
+    "window": [
+     140,
+     172
+    ],
+    "window_all_clean": true
+   },
+   "terminal_step_abs": 92.98060584068298,
+   "terminal_step_over_EPS0": 2.048451360663505,
+   "rule_ten_last_cycle": 0.0014225480051852765,
+   "boyd_lapses_after_k0": 0,
+   "pf_primal_slope_last_50": -0.0024700626366305958,
+   "pf_primal_slope_window": [
+    123,
+    172
+   ],
+   "objective_convention": "Q = gross_operational_cost, settlement EXCLUDED (primary; Addendum 58 Ruling 3); Q_net = net_operational_recourse = Q - terminal salvage credit, reported BESIDE gross on every G row and on any claim stated net; t_sum = the priced interface-consensus gap sum w * pi * (p_DSO - p_TSO) (EUR); Q_cc = Q + t_sum, a FIRST-ORDER consensus-consistent DIAGNOSTIC",
+   "floor_reading": {
+    "cycle": 172,
+    "node": 7,
+    "cohort_year": 2025,
+    "floor_year": 2035,
+    "active_block_years": [
+     2035
+    ],
+    "per_block": [
+     {
+      "block_year": 2025,
+      "soh_end": 0.8804577542392256,
+      "soh_min": 0.7,
+      "active": false,
+      "dual": 5.037684426593231e-10,
+      "efc_per_day": 1.0165116593513808
+     },
+     {
+      "block_year": 2030,
+      "soh_end": 0.7798174939987235,
+      "soh_min": 0.7,
+      "active": false,
+      "dual": 1.1389609270314628e-09,
+      "efc_per_day": 0.8999938673104734
+     },
+     {
+      "block_year": 2035,
+      "soh_end": 0.6999999900000561,
+      "soh_min": 0.7,
+      "active": true,
+      "dual": 1618.5694498358935,
+      "efc_per_day": 0.6367083923121929
+     }
+    ],
+    "rule": "first block year whose node-7 floor row (cohort 2025) is active at the cycle; active = |SoH - soh_min| <= 1e-6 (the s35ref capture)"
+   },
+   "floor_year": 2035,
+   "model_variant": {
+    "eol_retention_r": 0.8,
+    "calendar_retention_per_year": 0.985,
+    "available_energy_soh_point": "end",
+    "ageing_enabled": true
+   },
+   "ageing_series": {
+    "soh_used": [
+     0.8804577542392256,
+     0.7798174939987235,
+     0.6999999900000561
+    ],
+    "soh_end": [
+     0.8804577542392256,
+     0.7798174939987235,
+     0.6999999900000561
+    ],
+    "efc_per_day": [
+     1.0165116593513808,
+     0.8999938673104734,
+     0.6367083923121929
+    ],
+    "block_years": [
+     "2025",
+     "2030",
+     "2035"
+    ],
+    "phi_cal_in_model": [
+     0.985,
+     0.985,
+     0.985
+    ],
+    "cl_eff": [
+     35851.3609417964,
+     35851.3609417964,
+     35851.3609417964
+    ],
+    "salvage_value_node7": 0.0,
+    "available_energy_soh_point": "end",
+    "ageing_enabled": true
+   },
+   "ageing_series_ok": true,
+   "closed_form": {
+    "k": 35851.3609417964,
+    "k_if_enabled": 35851.3609417964,
+    "phi_cal_in_model": 0.985,
+    "available_energy_soh_point": "end",
+    "ageing_enabled": true,
+    "d_row_form": "D * 2kE == 365 n avg",
+    "formula": "k = N * D / (-ln R) = 10000 * 0.8 / (-ln 0.8)"
+   },
+   "AE": 0.7927159115133644,
+   "EFC": 0.8635062982587755,
+   "view": {
+    "status": "certified",
+    "Q": 653620162.5657823,
+    "t": 662.9971061576365,
+    "Q_cc": 653620825.5628885,
+    "Q_net": 653620162.5657823,
+    "salvage": 0.0,
+    "band": 4351.407173395157,
+    "gated": false,
+    "gap": null,
+    "slack": null,
+    "gap_refused": null,
+    "label": null
+   }
+  },
+  "e_c3_midblock": {
+   "cell": "e_c3_midblock",
+   "item": "E",
+   "arm": "C3_midblock",
+   "claim_group": 3,
+   "gated": false,
+   "eval_key": "8b1eace91df86cd5ca54e7e5332f516ab1048c17b22db9f871fc6f015c016e39",
+   "candidate_key": "db77e1549af855bcb3521950c634db55fe6c155ab2de591b0441b5f2bf4b369a",
+   "candidate_canonical": {
+    "investment_year": 2025,
+    "nodes": {
+     "5": [
+      0.0,
+      0.0
+     ],
+     "7": [
+      0.25,
+      1.0
+     ],
+     "9": [
+      0.0,
+      0.0
+     ]
+    }
+   },
+   "original_eval_key": "ed4a1acc7059784d03b2847e7639bfae00e80ee0a8487520a9e532fbdbf3967a",
+   "k0_run": 104,
+   "first_k0_v2": 104,
+   "criterion_version": 6,
+   "k0_original": null,
+   "N_old": null,
+   "rule_cap": 213,
+   "cap_ceiling": 300,
+   "cycles_run": 174,
+   "status": "certified",
+   "record_status": "certified",
+   "k_star": 174,
+   "end_cycle": 174,
+   "branch": "oscillatory",
+   "band": [
+    653619928.7735684,
+    653624217.9339094
+   ],
+   "band_width": 4289.160341024399,
+   "range_over_tau": 0.9449429004291411,
+   "Q_k_star": 653621637.0564654,
+   "t_sum_k_star": 308.8873457444045,
+   "Q_cc_k_star": 653621945.9438112,
+   "Q_end": 653621637.0564654,
+   "t_sum_end": 308.8873457444045,
+   "Q_cc_end": 653621945.9438112,
+   "Q_net_end": 653621637.0564654,
+   "terminal_salvage_value_end": 0.0,
+   "T": [
+    [
+     123,
+     "max",
+     653639864.0406024
+    ],
+    [
+     135,
+     "min",
+     653614378.6733282
+    ],
+    [
+     150,
+     "max",
+     653624217.9339094
+    ],
+    [
+     165,
+     "min",
+     653620664.0905482
+    ]
+   ],
+   "A": [
+    25485.367274284363,
+    9839.26058125496,
+    3553.843361258507
+   ],
+   "P_hat": 30,
+   "lapse_events": [
+    {
+     "boyd_k": false,
+     "cycle": 105,
+     "k0_before": 104,
+     "q_is_none": false
+    }
+   ],
+   "gap_refusals": [],
+   "non_clean_cycles": [],
+   "non_optimal_cycles": [],
+   "acceptable_clean_exits": [],
+   "W": 33,
+   "window": [
+    142,
+    174
+   ],
+   "vetoes": [],
+   "n_vetoes": 0,
+   "swing_floor": {
+    "F": 453.9068275000001,
+    "carries": [
+     "A_growth_test_floor",
+     "B_turning_point_floor"
+    ],
+    "growth_test_floor": 453.9068275000001,
+    "turning_point_floor": 453.9068275000001
+   },
+   "turning_point_floor_rejections": [],
+   "window_all_clean": true,
+   "out_of_window_reads": {
+    "W": 33,
+    "any_non_clean_read_outside_window": false,
+    "any_out_of_window_read": true,
+    "branch": "oscillatory",
+    "enumeration": "settling_criterion_v6.SUB_TEST_READS",
+    "k": 174,
+    "k0": 110,
+    "non_clean_cycles_read_outside_window": [],
+    "non_clean_turning_points_outside_window": [],
+    "reads": {
+     "P_hat": {
+      "P_hat": 30,
+      "positions": [
+       {
+        "Q_t": 653614378.6733282,
+        "kind": "min",
+        "non_clean": false,
+        "outside_window": true,
+        "t": 135
+       },
+       {
+        "Q_t": 653620664.0905482,
+        "kind": "min",
+        "non_clean": false,
+        "outside_window": false,
+        "t": 165
+       }
+      ],
+      "positions_outside_window": [
+       {
+        "Q_t": 653614378.6733282,
+        "kind": "min",
+        "non_clean": false,
+        "outside_window": true,
+        "t": 135
+       }
+      ],
+      "reads": "T[-1].t - T[-3].t"
+     },
+     "k0_no_boyd_lapse_span": {
+      "any_non_clean_outside_window": false,
+      "cycles": [
+       110,
+       174
+      ],
+      "non_clean_cycles_outside_window": [],
+      "outside_window": [
+       110,
+       141
+      ],
+      "reads": "boyd_k and Q not None (no lapse since k0)"
+     },
+     "sign_state_Q_span": {
+      "any_non_clean_outside_window": false,
+      "cycles": [
+       112,
+       174
+      ],
+      "non_clean_cycles_outside_window": [],
+      "outside_window": [
+       112,
+       141
+      ],
+      "reads": "Q (every step dQ_c, c >= k0 + K_EXCL, and the extremum search locating each turning point)"
+     },
+     "swings_excluded_below_growth_floor": {
+      "excluded_swing_indices": [],
+      "pairs_compared": [
+       [
+        0,
+        1
+       ],
+       [
+        1,
+        2
+       ]
+      ],
+      "reads": "(A): the swings < GROWTH_TEST_FLOOR excluded from the comparison"
+     },
+     "swings_non_increasing_all_pairs": {
+      "pairs_with_an_endpoint_outside_window": [
+       [
+        123,
+        135
+       ],
+       [
+        135,
+        150
+       ]
+      ],
+      "reads": "A[i] = |Q_T[i+1] - Q_T[i]| for every consecutive pair since k0",
+      "turning_points_outside_window": [
+       {
+        "Q_t": 653639864.0406024,
+        "kind": "max",
+        "non_clean": false,
+        "outside_window": true,
+        "t": 123
+       },
+       {
+        "Q_t": 653614378.6733282,
+        "kind": "min",
+        "non_clean": false,
+        "outside_window": true,
+        "t": 135
+       }
+      ],
+      "turning_points_read": [
+       {
+        "Q_t": 653639864.0406024,
+        "kind": "max",
+        "non_clean": false,
+        "outside_window": true,
+        "t": 123
+       },
+       {
+        "Q_t": 653614378.6733282,
+        "kind": "min",
+        "non_clean": false,
+        "outside_window": true,
+        "t": 135
+       },
+       {
+        "Q_t": 653624217.9339094,
+        "kind": "max",
+        "non_clean": false,
+        "outside_window": false,
+        "t": 150
+       },
+       {
+        "Q_t": 653620664.0905482,
+        "kind": "min",
+        "non_clean": false,
+        "outside_window": false,
+        "t": 165
+       }
+      ]
+     },
+     "turning_point_count": {
+      "n_turning_points": 4,
+      "reads": "len(T) >= 3",
+      "turning_points_outside_window": [
+       {
+        "Q_t": 653639864.0406024,
+        "kind": "max",
+        "non_clean": false,
+        "outside_window": true,
+        "t": 123
+       },
+       {
+        "Q_t": 653614378.6733282,
+        "kind": "min",
+        "non_clean": false,
+        "outside_window": true,
+        "t": 135
+       }
+      ]
+     },
+     "turning_point_floor": {
+      "reads": "the (B) rejections since k0: the candidate, the swing it closed, the point un-registered",
+      "rejections_outside_window": [],
+      "rejections_since_k0": []
+     }
+    },
+    "turning_points_outside_window": [
+     123,
+     135
+    ],
+    "window": [
+     142,
+     174
+    ],
+    "window_all_clean": true
+   },
+   "terminal_step_abs": 141.63580465316772,
+   "terminal_step_over_EPS0": 3.1203717607258885,
+   "rule_ten_last_cycle": 0.002166938739834465,
+   "boyd_lapses_after_k0": 5,
+   "pf_primal_slope_last_50": -0.003137581665184079,
+   "pf_primal_slope_window": [
+    125,
+    174
+   ],
+   "objective_convention": "Q = gross_operational_cost, settlement EXCLUDED (primary; Addendum 58 Ruling 3); Q_net = net_operational_recourse = Q - terminal salvage credit, reported BESIDE gross on every G row and on any claim stated net; t_sum = the priced interface-consensus gap sum w * pi * (p_DSO - p_TSO) (EUR); Q_cc = Q + t_sum, a FIRST-ORDER consensus-consistent DIAGNOSTIC",
+   "floor_reading": {
+    "cycle": 174,
+    "node": 7,
+    "cohort_year": 2025,
+    "floor_year": 2035,
+    "active_block_years": [
+     2035
+    ],
+    "per_block": [
+     {
+      "block_year": 2025,
+      "soh_end": 0.8713727599264979,
+      "soh_min": 0.7,
+      "active": false,
+      "dual": 5.3047479570211e-10,
+      "efc_per_day": 0.8707422736108024
+     },
+     {
+      "block_year": 2030,
+      "soh_end": 0.7706911613460842,
+      "soh_min": 0.7,
+      "active": false,
+      "dual": 1.2860025504362421e-09,
+      "efc_per_day": 0.7764916961321185
+     },
+     {
+      "block_year": 2035,
+      "soh_end": 0.6999999900001058,
+      "soh_min": 0.7,
+      "active": true,
+      "dual": 858.7390490063301,
+      "efc_per_day": 0.6084293439643429
+     }
+    ],
+    "rule": "first block year whose node-7 floor row (cohort 2025) is active at the cycle; active = |SoH - soh_min| <= 1e-6 (the s35ref capture)"
+   },
+   "floor_year": 2035,
+   "model_variant": {
+    "eol_retention_r": 0.5,
+    "calendar_retention_per_year": 1.0,
+    "available_energy_soh_point": "mid",
+    "ageing_enabled": true
+   },
+   "ageing_series": {
+    "soh_used": [
+     0.9334734918177902,
+     0.8194872081448833,
+     0.7344956128088369
+    ],
+    "soh_end": [
+     0.8713727599264979,
+     0.7706911613460842,
+     0.6999999900001058
+    ],
+    "efc_per_day": [
+     0.8707422736108024,
+     0.7764916961321185,
+     0.6084293439643429
+    ],
+    "block_years": [
+     "2025",
+     "2030",
+     "2035"
+    ],
+    "phi_cal_in_model": [
+     1.0,
+     1.0,
+     1.0
+    ],
+    "cl_eff": [
+     11541.560327111707,
+     11541.560327111707,
+     11541.560327111707
+    ],
+    "salvage_value_node7": 0.0,
+    "available_energy_soh_point": "mid",
+    "ageing_enabled": true
+   },
+   "ageing_series_ok": true,
+   "closed_form": {
+    "k": 11541.560327111707,
+    "k_if_enabled": 11541.560327111707,
+    "phi_cal_in_model": 1.0,
+    "available_energy_soh_point": "mid",
+    "ageing_enabled": true,
+    "d_row_form": "D * 2kE == 365 n avg",
+    "formula": "k = N * D / (-ln R) = 10000 * 0.8 / (-ln 0.5)"
+   },
+   "AE": 0.835724291205944,
+   "EFC": 0.7604910279050363,
+   "view": {
+    "status": "certified",
+    "Q": 653621637.0564654,
+    "t": 308.8873457444045,
+    "Q_cc": 653621945.9438112,
+    "Q_net": 653621637.0564654,
+    "salvage": 0.0,
+    "band": 4289.160341024399,
+    "gated": false,
+    "gap": null,
+    "slack": null,
+    "gap_refused": null,
+    "label": null
+   }
+  },
+  "e_no_ageing": {
+   "cell": "e_no_ageing",
+   "item": "E",
+   "arm": "no_ageing",
+   "claim_group": 3,
+   "gated": false,
+   "eval_key": "1b10e9e161523f46b9e4c0a2b6f7400ae1d2b2d7a42ef311e0d4726a7effd7e0",
+   "candidate_key": "db77e1549af855bcb3521950c634db55fe6c155ab2de591b0441b5f2bf4b369a",
+   "candidate_canonical": {
+    "investment_year": 2025,
+    "nodes": {
+     "5": [
+      0.0,
+      0.0
+     ],
+     "7": [
+      0.25,
+      1.0
+     ],
+     "9": [
+      0.0,
+      0.0
+     ]
+    }
+   },
+   "original_eval_key": "06f092d164f1381936520acd48d0b8ac4ec8c739adbd32557e7158a46c1276e1",
+   "k0_run": 107,
+   "first_k0_v2": 107,
+   "criterion_version": 6,
+   "k0_original": null,
+   "N_old": null,
+   "rule_cap": 216,
+   "cap_ceiling": 300,
+   "cycles_run": 177,
+   "status": "certified",
+   "record_status": "certified",
+   "k_star": 177,
+   "end_cycle": 177,
+   "branch": "oscillatory",
+   "band": [
+    653557250.1554997,
+    653561536.3900373
+   ],
+   "band_width": 4286.234537601471,
+   "range_over_tau": 0.9442983180510697,
+   "Q_k_star": 653559885.7170684,
+   "t_sum_k_star": 907.4071066317858,
+   "Q_cc_k_star": 653560793.1241751,
+   "Q_end": 653559885.7170684,
+   "t_sum_end": 907.4071066317858,
+   "Q_cc_end": 653560793.1241751,
+   "Q_net_end": 653559885.7170684,
+   "terminal_salvage_value_end": 6.844681569997464e-38,
+   "T": [
+    [
+     117,
+     "min",
+     653528840.8028545
+    ],
+    [
+     129,
+     "max",
+     653573101.5573769
+    ],
+    [
+     143,
+     "min",
+     653556094.009798
+    ],
+    [
+     157,
+     "max",
+     653561536.3900373
+    ],
+    [
+     172,
+     "min",
+     653559656.1544698
+    ]
+   ],
+   "A": [
+    44260.75452232361,
+    17007.547578811646,
+    5442.380239248276,
+    1880.2355674505234
+   ],
+   "P_hat": 29,
+   "lapse_events": [
+    {
+     "boyd_k": false,
+     "cycle": 108,
+     "k0_before": 107,
+     "q_is_none": false
+    }
+   ],
+   "gap_refusals": [],
+   "non_clean_cycles": [],
+   "non_optimal_cycles": [],
+   "acceptable_clean_exits": [],
+   "W": 32,
+   "window": [
+    146,
+    177
+   ],
+   "vetoes": [],
+   "n_vetoes": 0,
+   "swing_floor": {
+    "F": 453.9068275000001,
+    "carries": [
+     "A_growth_test_floor",
+     "B_turning_point_floor"
+    ],
+    "growth_test_floor": 453.9068275000001,
+    "turning_point_floor": 453.9068275000001
+   },
+   "turning_point_floor_rejections": [],
+   "window_all_clean": true,
+   "out_of_window_reads": {
+    "W": 32,
+    "any_non_clean_read_outside_window": false,
+    "any_out_of_window_read": true,
+    "branch": "oscillatory",
+    "enumeration": "settling_criterion_v6.SUB_TEST_READS",
+    "k": 177,
+    "k0": 112,
+    "non_clean_cycles_read_outside_window": [],
+    "non_clean_turning_points_outside_window": [],
+    "reads": {
+     "P_hat": {
+      "P_hat": 29,
+      "positions": [
+       {
+        "Q_t": 653556094.009798,
+        "kind": "min",
+        "non_clean": false,
+        "outside_window": true,
+        "t": 143
+       },
+       {
+        "Q_t": 653559656.1544698,
+        "kind": "min",
+        "non_clean": false,
+        "outside_window": false,
+        "t": 172
+       }
+      ],
+      "positions_outside_window": [
+       {
+        "Q_t": 653556094.009798,
+        "kind": "min",
+        "non_clean": false,
+        "outside_window": true,
+        "t": 143
+       }
+      ],
+      "reads": "T[-1].t - T[-3].t"
+     },
+     "k0_no_boyd_lapse_span": {
+      "any_non_clean_outside_window": false,
+      "cycles": [
+       112,
+       177
+      ],
+      "non_clean_cycles_outside_window": [],
+      "outside_window": [
+       112,
+       145
+      ],
+      "reads": "boyd_k and Q not None (no lapse since k0)"
+     },
+     "sign_state_Q_span": {
+      "any_non_clean_outside_window": false,
+      "cycles": [
+       114,
+       177
+      ],
+      "non_clean_cycles_outside_window": [],
+      "outside_window": [
+       114,
+       145
+      ],
+      "reads": "Q (every step dQ_c, c >= k0 + K_EXCL, and the extremum search locating each turning point)"
+     },
+     "swings_excluded_below_growth_floor": {
+      "excluded_swing_indices": [],
+      "pairs_compared": [
+       [
+        0,
+        1
+       ],
+       [
+        1,
+        2
+       ],
+       [
+        2,
+        3
+       ]
+      ],
+      "reads": "(A): the swings < GROWTH_TEST_FLOOR excluded from the comparison"
+     },
+     "swings_non_increasing_all_pairs": {
+      "pairs_with_an_endpoint_outside_window": [
+       [
+        117,
+        129
+       ],
+       [
+        129,
+        143
+       ],
+       [
+        143,
+        157
+       ]
+      ],
+      "reads": "A[i] = |Q_T[i+1] - Q_T[i]| for every consecutive pair since k0",
+      "turning_points_outside_window": [
+       {
+        "Q_t": 653528840.8028545,
+        "kind": "min",
+        "non_clean": false,
+        "outside_window": true,
+        "t": 117
+       },
+       {
+        "Q_t": 653573101.5573769,
+        "kind": "max",
+        "non_clean": false,
+        "outside_window": true,
+        "t": 129
+       },
+       {
+        "Q_t": 653556094.009798,
+        "kind": "min",
+        "non_clean": false,
+        "outside_window": true,
+        "t": 143
+       }
+      ],
+      "turning_points_read": [
+       {
+        "Q_t": 653528840.8028545,
+        "kind": "min",
+        "non_clean": false,
+        "outside_window": true,
+        "t": 117
+       },
+       {
+        "Q_t": 653573101.5573769,
+        "kind": "max",
+        "non_clean": false,
+        "outside_window": true,
+        "t": 129
+       },
+       {
+        "Q_t": 653556094.009798,
+        "kind": "min",
+        "non_clean": false,
+        "outside_window": true,
+        "t": 143
+       },
+       {
+        "Q_t": 653561536.3900373,
+        "kind": "max",
+        "non_clean": false,
+        "outside_window": false,
+        "t": 157
+       },
+       {
+        "Q_t": 653559656.1544698,
+        "kind": "min",
+        "non_clean": false,
+        "outside_window": false,
+        "t": 172
+       }
+      ]
+     },
+     "turning_point_count": {
+      "n_turning_points": 5,
+      "reads": "len(T) >= 3",
+      "turning_points_outside_window": [
+       {
+        "Q_t": 653528840.8028545,
+        "kind": "min",
+        "non_clean": false,
+        "outside_window": true,
+        "t": 117
+       },
+       {
+        "Q_t": 653573101.5573769,
+        "kind": "max",
+        "non_clean": false,
+        "outside_window": true,
+        "t": 129
+       },
+       {
+        "Q_t": 653556094.009798,
+        "kind": "min",
+        "non_clean": false,
+        "outside_window": true,
+        "t": 143
+       }
+      ]
+     },
+     "turning_point_floor": {
+      "reads": "the (B) rejections since k0: the candidate, the swing it closed, the point un-registered",
+      "rejections_outside_window": [],
+      "rejections_since_k0": []
+     }
+    },
+    "turning_points_outside_window": [
+     117,
+     129,
+     143
+    ],
+    "window": [
+     146,
+     177
+    ],
+    "window_all_clean": true
+   },
+   "terminal_step_abs": 81.22279345989227,
+   "terminal_step_over_EPS0": 1.7894155482799445,
+   "rule_ten_last_cycle": 0.0012427750728730357,
+   "boyd_lapses_after_k0": 4,
+   "pf_primal_slope_last_50": -0.0029930344610891897,
+   "pf_primal_slope_window": [
+    128,
+    177
+   ],
+   "objective_convention": "Q = gross_operational_cost, settlement EXCLUDED (primary; Addendum 58 Ruling 3); Q_net = net_operational_recourse = Q - terminal salvage credit, reported BESIDE gross on every G row and on any claim stated net; t_sum = the priced interface-consensus gap sum w * pi * (p_DSO - p_TSO) (EUR); Q_cc = Q + t_sum, a FIRST-ORDER consensus-consistent DIAGNOSTIC",
+   "floor_reading": {
+    "cycle": 177,
+    "node": 7,
+    "cohort_year": 2025,
+    "floor_year": null,
+    "active_block_years": [],
+    "per_block": [
+     {
+      "block_year": 2025,
+      "soh_end": 1.0,
+      "soh_min": 0.7,
+      "active": false,
+      "dual": 3.0302938383838415e-10,
+      "efc_per_day": 1.3143536086816303
+     },
+     {
+      "block_year": 2030,
+      "soh_end": 1.0,
+      "soh_min": 0.7,
+      "active": false,
+      "dual": 3.0302938383838415e-10,
+      "efc_per_day": 1.3536959546750318
+     },
+     {
+      "block_year": 2035,
+      "soh_end": 1.0,
+      "soh_min": 0.7,
+      "active": false,
+      "dual": 3.0302938383838415e-10,
+      "efc_per_day": 1.201276999468912
+     }
+    ],
+    "rule": "first block year whose node-7 floor row (cohort 2025) is active at the cycle; active = |SoH - soh_min| <= 1e-6 (the s35ref capture)"
+   },
+   "floor_year": null,
+   "model_variant": {
+    "eol_retention_r": 0.5,
+    "calendar_retention_per_year": 1.0,
+    "available_energy_soh_point": "end",
+    "ageing_enabled": false
+   },
+   "ageing_series": {
+    "soh_used": [
+     1.0,
+     1.0,
+     1.0
+    ],
+    "soh_end": [
+     1.0,
+     1.0,
+     1.0
+    ],
+    "efc_per_day": [
+     1.3143536086816303,
+     1.3536959546750318,
+     1.201276999468912
+    ],
+    "block_years": [
+     "2025",
+     "2030",
+     "2035"
+    ],
+    "phi_cal_in_model": [
+     1.0,
+     1.0,
+     1.0
+    ],
+    "cl_eff": [
+     11541.560327111707,
+     11541.560327111707,
+     11541.560327111707
+    ],
+    "salvage_value_node7": 6.844681569997464e-38,
+    "available_energy_soh_point": "end",
+    "ageing_enabled": false
+   },
+   "ageing_series_ok": true,
+   "closed_form": {
+    "k": null,
+    "k_if_enabled": 11541.560327111707,
+    "phi_cal_in_model": 1.0,
+    "available_energy_soh_point": "end",
+    "ageing_enabled": false,
+    "d_row_form": "D == 0",
+    "formula": "k = N * D / (-ln R) = 10000 * 0.8 / (-ln 0.5)"
+   },
+   "AE": 1.0,
+   "EFC": 1.29339727288686,
+   "view": {
+    "status": "certified",
+    "Q": 653559885.7170684,
+    "t": 907.4071066317858,
+    "Q_cc": 653560793.1241751,
+    "Q_net": 653559885.7170684,
+    "salvage": 6.844681569997464e-38,
+    "band": 4286.234537601471,
+    "gated": false,
+    "gap": null,
+    "slack": null,
+    "gap_refused": null,
+    "label": null
+   }
+  },
+  "pb_y2025_n5_v6": {
+   "cell": "pb_y2025_n5_v6",
+   "item": "C",
+   "arm": null,
+   "claim_group": 4,
+   "gated": true,
+   "eval_key": "be95e57603437a0692818d82eda1b7221ed414b1924443ccb2f45affb51f80ad",
+   "candidate_key": "33031c083b68c6556f4c4a0f7683de83fb9995d73b98814e44bac374d5fc803c",
+   "candidate_canonical": {
+    "investment_year": 2025,
+    "nodes": {
+     "5": [
+      0.25,
+      0.5
+     ],
+     "7": [
+      0.0,
+      0.0
+     ],
+     "9": [
+      0.0,
+      0.0
+     ]
+    }
+   },
+   "original_eval_key": "4a8527254a85b9cca48e1eb872b35ed9f3d5209f84002e2c255516b8af5b304a",
+   "k0_run": 110,
+   "first_k0_v2": 110,
+   "criterion_version": 6,
+   "k0_original": 110,
+   "N_old": 119,
+   "rule_cap": 219,
+   "cap_ceiling": 300,
+   "cycles_run": 199,
+   "status": "certified",
+   "record_status": "certified",
+   "k_star": 199,
+   "end_cycle": 199,
+   "branch": "oscillatory",
+   "band": [
+    653732096.0943565,
+    653732812.9135617
+   ],
+   "band_width": 716.8192051649094,
+   "range_over_tau": 0.15792210245282315,
+   "Q_k_star": 653732376.7483528,
+   "t_sum_k_star": 248.28444732587155,
+   "Q_cc_k_star": 653732625.0328001,
+   "Q_end": 653732376.7483528,
+   "t_sum_end": 248.28444732587155,
+   "Q_cc_end": 653732625.0328001,
+   "Q_net_end": 653732376.7483528,
+   "terminal_salvage_value_end": 0.0,
+   "T": [
+    [
+     119,
+     "min",
+     653710770.7396618
+    ],
+    [
+     133,
+     "max",
+     653741943.2813642
+    ],
+    [
+     147,
+     "min",
+     653729685.9275218
+    ],
+    [
+     161,
+     "max",
+     653734194.5570776
+    ],
+    [
+     176,
+     "min",
+     653732096.0943565
+    ]
+   ],
+   "A": [
+    31172.541702389717,
+    12257.353842377663,
+    4508.629555821419,
+    2098.4627211093903
+   ],
+   "P_hat": 29,
+   "lapse_events": [],
+   "gap_refusals": [],
+   "non_clean_cycles": [
+    167
+   ],
+   "non_optimal_cycles": [
+    167
+   ],
+   "acceptable_clean_exits": [],
+   "W": 32,
+   "window": [
+    168,
+    199
+   ],
+   "vetoes": [
+    {
+     "branches": [
+      {
+       "W": 21,
+       "branch": "oscillatory",
+       "non_clean_in_window": [
+        167
+       ],
+       "window": [
+        147,
+        167
+       ]
+      }
+     ],
+     "cycle": 167,
+     "k0": 110
+    },
+    {
+     "branches": [
+      {
+       "W": 31,
+       "branch": "oscillatory",
+       "non_clean_in_window": [
+        167
+       ],
+       "window": [
+        141,
+        171
+       ]
+      }
+     ],
+     "cycle": 171,
+     "k0": 110
+    },
+    {
+     "branches": [
+      {
+       "W": 31,
+       "branch": "oscillatory",
+       "non_clean_in_window": [
+        167
+       ],
+       "window": [
+        142,
+        172
+       ]
+      }
+     ],
+     "cycle": 172,
+     "k0": 110
+    },
+    {
+     "branches": [
+      {
+       "W": 31,
+       "branch": "oscillatory",
+       "non_clean_in_window": [
+        167
+       ],
+       "window": [
+        143,
+        173
+       ]
+      }
+     ],
+     "cycle": 173,
+     "k0": 110
+    },
+    {
+     "branches": [
+      {
+       "W": 31,
+       "branch": "oscillatory",
+       "non_clean_in_window": [
+        167
+       ],
+       "window": [
+        144,
+        174
+       ]
+      }
+     ],
+     "cycle": 174,
+     "k0": 110
+    },
+    {
+     "branches": [
+      {
+       "W": 31,
+       "branch": "oscillatory",
+       "non_clean_in_window": [
+        167
+       ],
+       "window": [
+        145,
+        175
+       ]
+      }
+     ],
+     "cycle": 175,
+     "k0": 110
+    },
+    {
+     "branches": [
+      {
+       "W": 31,
+       "branch": "oscillatory",
+       "non_clean_in_window": [
+        167
+       ],
+       "window": [
+        146,
+        176
+       ]
+      }
+     ],
+     "cycle": 176,
+     "k0": 110
+    },
+    {
+     "branches": [
+      {
+       "W": 31,
+       "branch": "oscillatory",
+       "non_clean_in_window": [
+        167
+       ],
+       "window": [
+        147,
+        177
+       ]
+      }
+     ],
+     "cycle": 177,
+     "k0": 110
+    },
+    {
+     "branches": [
+      {
+       "W": 31,
+       "branch": "oscillatory",
+       "non_clean_in_window": [
+        167
+       ],
+       "window": [
+        148,
+        178
+       ]
+      }
+     ],
+     "cycle": 178,
+     "k0": 110
+    },
+    {
+     "branches": [
+      {
+       "W": 31,
+       "branch": "oscillatory",
+       "non_clean_in_window": [
+        167
+       ],
+       "window": [
+        149,
+        179
+       ]
+      }
+     ],
+     "cycle": 179,
+     "k0": 110
+    },
+    {
+     "branches": [
+      {
+       "W": 32,
+       "branch": "oscillatory",
+       "non_clean_in_window": [
+        167
+       ],
+       "window": [
+        149,
+        180
+       ]
+      }
+     ],
+     "cycle": 180,
+     "k0": 110
+    },
+    {
+     "branches": [
+      {
+       "W": 32,
+       "branch": "oscillatory",
+       "non_clean_in_window": [
+        167
+       ],
+       "window": [
+        150,
+        181
+       ]
+      }
+     ],
+     "cycle": 181,
+     "k0": 110
+    },
+    {
+     "branches": [
+      {
+       "W": 32,
+       "branch": "oscillatory",
+       "non_clean_in_window": [
+        167
+       ],
+       "window": [
+        151,
+        182
+       ]
+      }
+     ],
+     "cycle": 182,
+     "k0": 110
+    },
+    {
+     "branches": [
+      {
+       "W": 32,
+       "branch": "oscillatory",
+       "non_clean_in_window": [
+        167
+       ],
+       "window": [
+        152,
+        183
+       ]
+      }
+     ],
+     "cycle": 183,
+     "k0": 110
+    },
+    {
+     "branches": [
+      {
+       "W": 32,
+       "branch": "oscillatory",
+       "non_clean_in_window": [
+        167
+       ],
+       "window": [
+        153,
+        184
+       ]
+      }
+     ],
+     "cycle": 184,
+     "k0": 110
+    },
+    {
+     "branches": [
+      {
+       "W": 32,
+       "branch": "oscillatory",
+       "non_clean_in_window": [
+        167
+       ],
+       "window": [
+        154,
+        185
+       ]
+      }
+     ],
+     "cycle": 185,
+     "k0": 110
+    },
+    {
+     "branches": [
+      {
+       "W": 32,
+       "branch": "oscillatory",
+       "non_clean_in_window": [
+        167
+       ],
+       "window": [
+        155,
+        186
+       ]
+      }
+     ],
+     "cycle": 186,
+     "k0": 110
+    },
+    {
+     "branches": [
+      {
+       "W": 32,
+       "branch": "oscillatory",
+       "non_clean_in_window": [
+        167
+       ],
+       "window": [
+        156,
+        187
+       ]
+      }
+     ],
+     "cycle": 187,
+     "k0": 110
+    },
+    {
+     "branches": [
+      {
+       "W": 32,
+       "branch": "oscillatory",
+       "non_clean_in_window": [
+        167
+       ],
+       "window": [
+        157,
+        188
+       ]
+      }
+     ],
+     "cycle": 188,
+     "k0": 110
+    },
+    {
+     "branches": [
+      {
+       "W": 32,
+       "branch": "oscillatory",
+       "non_clean_in_window": [
+        167
+       ],
+       "window": [
+        158,
+        189
+       ]
+      }
+     ],
+     "cycle": 189,
+     "k0": 110
+    },
+    {
+     "branches": [
+      {
+       "W": 32,
+       "branch": "oscillatory",
+       "non_clean_in_window": [
+        167
+       ],
+       "window": [
+        159,
+        190
+       ]
+      }
+     ],
+     "cycle": 190,
+     "k0": 110
+    },
+    {
+     "branches": [
+      {
+       "W": 32,
+       "branch": "oscillatory",
+       "non_clean_in_window": [
+        167
+       ],
+       "window": [
+        160,
+        191
+       ]
+      }
+     ],
+     "cycle": 191,
+     "k0": 110
+    },
+    {
+     "branches": [
+      {
+       "W": 32,
+       "branch": "oscillatory",
+       "non_clean_in_window": [
+        167
+       ],
+       "window": [
+        161,
+        192
+       ]
+      }
+     ],
+     "cycle": 192,
+     "k0": 110
+    },
+    {
+     "branches": [
+      {
+       "W": 32,
+       "branch": "oscillatory",
+       "non_clean_in_window": [
+        167
+       ],
+       "window": [
+        162,
+        193
+       ]
+      }
+     ],
+     "cycle": 193,
+     "k0": 110
+    },
+    {
+     "branches": [
+      {
+       "W": 32,
+       "branch": "oscillatory",
+       "non_clean_in_window": [
+        167
+       ],
+       "window": [
+        163,
+        194
+       ]
+      }
+     ],
+     "cycle": 194,
+     "k0": 110
+    },
+    {
+     "branches": [
+      {
+       "W": 32,
+       "branch": "oscillatory",
+       "non_clean_in_window": [
+        167
+       ],
+       "window": [
+        164,
+        195
+       ]
+      }
+     ],
+     "cycle": 195,
+     "k0": 110
+    },
+    {
+     "branches": [
+      {
+       "W": 32,
+       "branch": "oscillatory",
+       "non_clean_in_window": [
+        167
+       ],
+       "window": [
+        165,
+        196
+       ]
+      }
+     ],
+     "cycle": 196,
+     "k0": 110
+    },
+    {
+     "branches": [
+      {
+       "W": 32,
+       "branch": "oscillatory",
+       "non_clean_in_window": [
+        167
+       ],
+       "window": [
+        166,
+        197
+       ]
+      }
+     ],
+     "cycle": 197,
+     "k0": 110
+    },
+    {
+     "branches": [
+      {
+       "W": 32,
+       "branch": "oscillatory",
+       "non_clean_in_window": [
+        167
+       ],
+       "window": [
+        167,
+        198
+       ]
+      }
+     ],
+     "cycle": 198,
+     "k0": 110
+    }
+   ],
+   "n_vetoes": 29,
+   "swing_floor": {
+    "F": 453.9068275000001,
+    "carries": [
+     "A_growth_test_floor",
+     "B_turning_point_floor"
+    ],
+    "growth_test_floor": 453.9068275000001,
+    "turning_point_floor": 453.9068275000001
+   },
+   "turning_point_floor_rejections": [
+    {
+     "candidate": [
+      167,
+      "max",
+      653733946.832507
+     ],
+     "closed_swing": 439.298327088356,
+     "cycle": 168,
+     "popped": [
+      166,
+      "min",
+      653733507.5341799
+     ]
+    }
+   ],
+   "window_all_clean": true,
+   "out_of_window_reads": {
+    "W": 32,
+    "any_non_clean_read_outside_window": true,
+    "any_out_of_window_read": true,
+    "branch": "oscillatory",
+    "enumeration": "settling_criterion_v6.SUB_TEST_READS",
+    "k": 199,
+    "k0": 110,
+    "non_clean_cycles_read_outside_window": [
+     167
+    ],
+    "non_clean_turning_points_outside_window": [],
+    "reads": {
+     "P_hat": {
+      "P_hat": 29,
+      "positions": [
+       {
+        "Q_t": 653729685.9275218,
+        "kind": "min",
+        "non_clean": false,
+        "outside_window": true,
+        "t": 147
+       },
+       {
+        "Q_t": 653732096.0943565,
+        "kind": "min",
+        "non_clean": false,
+        "outside_window": false,
+        "t": 176
+       }
+      ],
+      "positions_outside_window": [
+       {
+        "Q_t": 653729685.9275218,
+        "kind": "min",
+        "non_clean": false,
+        "outside_window": true,
+        "t": 147
+       }
+      ],
+      "reads": "T[-1].t - T[-3].t"
+     },
+     "k0_no_boyd_lapse_span": {
+      "any_non_clean_outside_window": true,
+      "cycles": [
+       110,
+       199
+      ],
+      "non_clean_cycles_outside_window": [
+       167
+      ],
+      "outside_window": [
+       110,
+       167
+      ],
+      "reads": "boyd_k and Q not None (no lapse since k0)"
+     },
+     "sign_state_Q_span": {
+      "any_non_clean_outside_window": true,
+      "cycles": [
+       112,
+       199
+      ],
+      "non_clean_cycles_outside_window": [
+       167
+      ],
+      "outside_window": [
+       112,
+       167
+      ],
+      "reads": "Q (every step dQ_c, c >= k0 + K_EXCL, and the extremum search locating each turning point)"
+     },
+     "swings_excluded_below_growth_floor": {
+      "excluded_swing_indices": [],
+      "pairs_compared": [
+       [
+        0,
+        1
+       ],
+       [
+        1,
+        2
+       ],
+       [
+        2,
+        3
+       ]
+      ],
+      "reads": "(A): the swings < GROWTH_TEST_FLOOR excluded from the comparison"
+     },
+     "swings_non_increasing_all_pairs": {
+      "pairs_with_an_endpoint_outside_window": [
+       [
+        119,
+        133
+       ],
+       [
+        133,
+        147
+       ],
+       [
+        147,
+        161
+       ],
+       [
+        161,
+        176
+       ]
+      ],
+      "reads": "A[i] = |Q_T[i+1] - Q_T[i]| for every consecutive pair since k0",
+      "turning_points_outside_window": [
+       {
+        "Q_t": 653710770.7396618,
+        "kind": "min",
+        "non_clean": false,
+        "outside_window": true,
+        "t": 119
+       },
+       {
+        "Q_t": 653741943.2813642,
+        "kind": "max",
+        "non_clean": false,
+        "outside_window": true,
+        "t": 133
+       },
+       {
+        "Q_t": 653729685.9275218,
+        "kind": "min",
+        "non_clean": false,
+        "outside_window": true,
+        "t": 147
+       },
+       {
+        "Q_t": 653734194.5570776,
+        "kind": "max",
+        "non_clean": false,
+        "outside_window": true,
+        "t": 161
+       }
+      ],
+      "turning_points_read": [
+       {
+        "Q_t": 653710770.7396618,
+        "kind": "min",
+        "non_clean": false,
+        "outside_window": true,
+        "t": 119
+       },
+       {
+        "Q_t": 653741943.2813642,
+        "kind": "max",
+        "non_clean": false,
+        "outside_window": true,
+        "t": 133
+       },
+       {
+        "Q_t": 653729685.9275218,
+        "kind": "min",
+        "non_clean": false,
+        "outside_window": true,
+        "t": 147
+       },
+       {
+        "Q_t": 653734194.5570776,
+        "kind": "max",
+        "non_clean": false,
+        "outside_window": true,
+        "t": 161
+       },
+       {
+        "Q_t": 653732096.0943565,
+        "kind": "min",
+        "non_clean": false,
+        "outside_window": false,
+        "t": 176
+       }
+      ]
+     },
+     "turning_point_count": {
+      "n_turning_points": 5,
+      "reads": "len(T) >= 3",
+      "turning_points_outside_window": [
+       {
+        "Q_t": 653710770.7396618,
+        "kind": "min",
+        "non_clean": false,
+        "outside_window": true,
+        "t": 119
+       },
+       {
+        "Q_t": 653741943.2813642,
+        "kind": "max",
+        "non_clean": false,
+        "outside_window": true,
+        "t": 133
+       },
+       {
+        "Q_t": 653729685.9275218,
+        "kind": "min",
+        "non_clean": false,
+        "outside_window": true,
+        "t": 147
+       },
+       {
+        "Q_t": 653734194.5570776,
+        "kind": "max",
+        "non_clean": false,
+        "outside_window": true,
+        "t": 161
+       }
+      ]
+     },
+     "turning_point_floor": {
+      "reads": "the (B) rejections since k0: the candidate, the swing it closed, the point un-registered",
+      "rejections_outside_window": [],
+      "rejections_since_k0": [
+       {
+        "candidate": [
+         167,
+         "max",
+         653733946.832507
+        ],
+        "closed_swing": 439.298327088356,
+        "cycle": 168,
+        "popped": [
+         166,
+         "min",
+         653733507.5341799
+        ]
+       }
+      ]
+     }
+    },
+    "turning_points_outside_window": [
+     119,
+     133,
+     147,
+     161
+    ],
+    "window": [
+     168,
+     199
+    ],
+    "window_all_clean": true
+   },
+   "terminal_step_abs": 11.53931999206543,
+   "terminal_step_over_EPS0": 0.2542222168285281,
+   "rule_ten_last_cycle": 0.00017651443316088605,
+   "boyd_lapses_after_k0": 0,
+   "pf_primal_slope_last_50": -0.0005162310236895886,
+   "pf_primal_slope_window": [
+    150,
+    199
+   ],
+   "objective_convention": "Q = gross_operational_cost, settlement EXCLUDED (primary; Addendum 58 Ruling 3); Q_net = net_operational_recourse = Q - terminal salvage credit, reported BESIDE gross on every G row and on any claim stated net; t_sum = the priced interface-consensus gap sum w * pi * (p_DSO - p_TSO) (EUR); Q_cc = Q + t_sum, a FIRST-ORDER consensus-consistent DIAGNOSTIC",
+   "Q_N_old": 653711463.530828,
+   "s_signed": 20913.217524766922,
+   "overlap": [
+    {
+     "cycle": 111,
+     "Q_old": 653755815.6997988,
+     "Q_new": 653754831.0431606,
+     "Q_new_minus_Q_old": -984.6566382646561,
+     "relative": -1.5061535432929978e-06
+    },
+    {
+     "cycle": 112,
+     "Q_old": 653745933.5104828,
+     "Q_new": 653745492.8258185,
+     "Q_new_minus_Q_old": -440.68466424942017,
+     "relative": -6.740916335540829e-07
+    },
+    {
+     "cycle": 113,
+     "Q_old": 653736799.651068,
+     "Q_new": 653736460.6054647,
+     "Q_new_minus_Q_old": -339.0456032752991,
+     "relative": -5.186270735504942e-07
+    },
+    {
+     "cycle": 114,
+     "Q_old": 653728732.284343,
+     "Q_new": 653728400.0951812,
+     "Q_new_minus_Q_old": -332.18916177749634,
+     "relative": -5.081452678647277e-07
+    },
+    {
+     "cycle": 115,
+     "Q_old": 653722057.5404117,
+     "Q_new": 653721680.1339341,
+     "Q_new_minus_Q_old": -377.40647757053375,
+     "relative": -5.773194788477873e-07
+    },
+    {
+     "cycle": 116,
+     "Q_old": 653717064.4380058,
+     "Q_new": 653716635.8871331,
+     "Q_new_minus_Q_old": -428.5508726835251,
+     "relative": -6.555601742658288e-07
+    },
+    {
+     "cycle": 117,
+     "Q_old": 653713699.8799467,
+     "Q_new": 653713196.4468321,
+     "Q_new_minus_Q_old": -503.4331146478653,
+     "relative": -7.70112535105689e-07
+    },
+    {
+     "cycle": 118,
+     "Q_old": 653711874.7054828,
+     "Q_new": 653711279.7428728,
+     "Q_new_minus_Q_old": -594.9626100063324,
+     "relative": -9.101297269142942e-07
+    },
+    {
+     "cycle": 119,
+     "Q_old": 653711463.530828,
+     "Q_new": 653710770.7396618,
+     "Q_new_minus_Q_old": -692.7911661863327,
+     "relative": -1.0597812717623573e-06
+    }
+   ],
+   "overlap_at_N_old": {
+    "cycle": 119,
+    "Q_old": 653711463.530828,
+    "Q_new": 653710770.7396618,
+    "Q_new_minus_Q_old": -692.7911661863327,
+    "relative": -1.0597812717623573e-06
+   },
+   "replay_bitwise_through": 110,
+   "replay_first_divergence": null,
+   "floor_reading": {
+    "cycle": 199,
+    "node": 5,
+    "cohort_year": 2025,
+    "floor_year": 2035,
+    "active_block_years": [
+     2035
+    ],
+    "per_block": [
+     {
+      "block_year": 2025,
+      "soh_end": 0.8813599913147866,
+      "soh_min": 0.7,
+      "active": false,
+      "dual": 5.012622704968545e-10,
+      "efc_per_day": 0.9963914497427409
+     },
+     {
+      "block_year": 2030,
+      "soh_end": 0.7832403996044665,
+      "soh_min": 0.7,
+      "active": false,
+      "dual": 1.092125995871039e-09,
+      "efc_per_day": 0.834075478672995
+     },
+     {
+      "block_year": 2035,
+      "soh_end": 0.6999999900000593,
+      "soh_min": 0.7,
+      "active": true,
+      "dual": 1530.8377986557741,
+      "efc_per_day": 0.7227469905582284
+     }
+    ],
+    "rule": "first block year whose node-7 floor row (cohort 2025) is active at the cycle; active = |SoH - soh_min| <= 1e-6 (the s35ref capture)"
+   },
+   "floor_year": 2035,
+   "view": {
+    "status": "certified",
+    "Q": 653732376.7483528,
+    "t": 248.28444732587155,
+    "Q_cc": 653732625.0328001,
+    "Q_net": 653732376.7483528,
+    "salvage": 0.0,
+    "band": 716.8192051649094,
+    "gated": true,
+    "gap": null,
+    "slack": null,
+    "gap_refused": null,
+    "label": null
+   }
+  }
+ },
+ "references": {
+  "7aa017f0": {
+   "status": "certified",
+   "Q": 653873702.1876609,
+   "t": 142.52829384803772,
+   "Q_cc": 653873844.7159548,
+   "Q_net": 653873702.1876609,
+   "salvage": 0.0,
+   "band": 4209.1713362932205,
+   "gated": true,
+   "gap": null,
+   "slack": null,
+   "k_star": 181,
+   "name": "x0 settled (W101 d110bd1a, certified at 181)"
+  },
+  "bd504ecf": {
+   "status": "certified",
+   "Q": 653620162.5657823,
+   "t": 662.9971060752869,
+   "Q_cc": 653620825.5628884,
+   "Q_net": 653620162.5657823,
+   "salvage": 0.0,
+   "band": 4351.407173395157,
+   "gated": true,
+   "gap": null,
+   "slack": null,
+   "k_star": 172,
+   "name": "unit settled (W101 3f084f2f, certified at 172)"
+  },
+  "5ca4f86c": {
+   "status": "uncertified",
+   "Q": 809794028.6601353,
+   "t": -9234.424422092314,
+   "Q_cc": 809784794.2357131,
+   "Q_net": 809754985.4478167,
+   "salvage": 39043.21231857333,
+   "band": 398.1944086551666,
+   "gated": true,
+   "gap": 9234.424422092314,
+   "slack": 1461.4875311851501,
+   "k_cap": 281,
+   "name": "F2 incumbent (W118 r2 f2_incumbent, uncertified at 281, gap clause)",
+   "gap_refused": true,
+   "label": "objective settled; interface-consensus gap unresolved (degenerate dual)"
+  },
+  "e28de4ac": {
+   "status": "uncertified",
+   "Q": 809787921.0212257,
+   "t": -9300.126188592561,
+   "Q_cc": 809778620.895037,
+   "Q_net": 809749577.5123798,
+   "salvage": 38343.50884592057,
+   "band": 1219.023425579071,
+   "gated": true,
+   "gap": 9300.126188592561,
+   "slack": 997.838485956192,
+   "k_cap": 261,
+   "name": "F2 challenger (W118 r2 f2_challenger, uncertified at 261, gap clause)",
+   "gap_refused": true,
+   "label": "objective settled; interface-consensus gap unresolved (degenerate dual)"
+  }
+ },
+ "item_E": {
+  "claims": {
+   "E:C3_unit_value_minus_I": {
+    "claim_id": "E:C3_unit_value_minus_I",
+    "item": "E",
+    "statement": "C3 unit does not pay: value - I < 0",
+    "form": "value",
+    "claim_type": "threshold",
+    "net_of_salvage": false,
+    "ref": {
+     "status": "certified",
+     "Q": 653873702.1876609,
+     "t": 142.52829384803772,
+     "Q_cc": 653873844.7159548,
+     "Q_net": 653873702.1876609,
+     "salvage": 0.0,
+     "band": 4209.1713362932205,
+     "gap": null,
+     "slack": null
+    },
+    "other": {
+     "status": "certified",
+     "Q": 653629491.834701,
+     "t": 222.73610642764373,
+     "Q_cc": 653629714.5708073,
+     "Q_net": 653629491.834701,
+     "salvage": 0.0,
+     "band": 4280.006900429726,
+     "gap": null,
+     "slack": null
+    },
+    "I_ref": 0.0,
+    "I_other": 317957.0085035586,
+    "objective_convention_primary": "gross (settlement excluded)",
+    "d_Q": -73746.65554356808,
+    "d_Qcc": -73826.86335611576,
+    "d_Qcc_minus_d_Q": -80.20781254768372,
+    "sign_same_in_Q_and_Qcc": true,
+    "gross": {
+     "rule": "certified_pair_determinacy_floor_v6",
+     "rule_text": "Addendum 61 ruling 2: a difference between CERTIFIED cells is determinate iff |margin| >= max(3 x the larger of the two band widths, 2 TAU); Q_cc beside, report-only, on the same threshold; a difference involving an uncertified cell keeps the uncertified form (3 x max(|gap|, |slack|), both terms) unchanged",
+     "bars": [
+      4209.1713362932205,
+      4280.006900429726
+     ],
+     "larger_bar": 4280.006900429726,
+     "three_x_larger_bar": 12840.020701289177,
+     "two_tau": 9078.136550000001,
+     "threshold": 12840.020701289177,
+     "binding_term": "3 x larger bar",
+     "margin_Q": 73746.65554356808,
+     "margin_Qcc": 73826.86335611576,
+     "verdict": "determinate",
+     "verdict_Qcc_report_only": "determinate",
+     "margin_over_threshold": 5.74349973876317,
+     "superseded_rule_report_only": {
+      "rule": "settled_vs_settled",
+      "resolution": 8489.178236722946,
+      "verdict": "determinate",
+      "margin_over_resolution": 8.687137139440754
+     }
+    },
+    "verdict": "determinate",
+    "d_primary": -73746.65554356808,
+    "sign_primary_positive": false,
+    "gross_superseded_report_only": {
+     "rule": "settled_vs_settled",
+     "resolution": 8489.178236722946,
+     "verdict": "determinate",
+     "verdict_Qcc_report_only": "determinate",
+     "margin_over_resolution": 8.687137139440754
+    },
+    "verdict_superseded_rule_report_only": "determinate",
+    "verdict_changed_by_v6": false,
+    "scorer": "v6 (p515_s53_w142_determinacy.score_claim_v6)"
+   },
+   "E:n7_4h_e1_C2:value_minus_I": {
+    "claim_id": "E:n7_4h_e1_C2:value_minus_I",
+    "item": "E",
+    "statement": "ageing variant n7_4h_e1_C2: sign of value - I",
+    "form": "value",
+    "claim_type": "threshold",
+    "net_of_salvage": false,
+    "ref": {
+     "status": "certified",
+     "Q": 653873702.1876609,
+     "t": 142.52829384803772,
+     "Q_cc": 653873844.7159548,
+     "Q_net": 653873702.1876609,
+     "salvage": 0.0,
+     "band": 4209.1713362932205,
+     "gap": null,
+     "slack": null
+    },
+    "other": {
+     "status": "certified",
+     "Q": 653587352.4153233,
+     "t": 429.6346047334476,
+     "Q_cc": 653587782.049928,
+     "Q_net": 653587352.4153233,
+     "salvage": -2.498334423338841e-50,
+     "band": 4099.770196080208,
+     "gap": null,
+     "slack": null
+    },
+    "I_ref": 0.0,
+    "I_other": 317957.0085035586,
+    "objective_convention_primary": "gross (settlement excluded)",
+    "d_Q": -31607.236165883485,
+    "d_Qcc": -31894.342476727907,
+    "d_Qcc_minus_d_Q": -287.1063108444214,
+    "sign_same_in_Q_and_Qcc": true,
+    "gross": {
+     "rule": "certified_pair_determinacy_floor_v6",
+     "rule_text": "Addendum 61 ruling 2: a difference between CERTIFIED cells is determinate iff |margin| >= max(3 x the larger of the two band widths, 2 TAU); Q_cc beside, report-only, on the same threshold; a difference involving an uncertified cell keeps the uncertified form (3 x max(|gap|, |slack|), both terms) unchanged",
+     "bars": [
+      4209.1713362932205,
+      4099.770196080208
+     ],
+     "larger_bar": 4209.1713362932205,
+     "three_x_larger_bar": 12627.514008879662,
+     "two_tau": 9078.136550000001,
+     "threshold": 12627.514008879662,
+     "binding_term": "3 x larger bar",
+     "margin_Q": 31607.236165883485,
+     "margin_Qcc": 31894.342476727907,
+     "verdict": "determinate",
+     "verdict_Qcc_report_only": "determinate",
+     "margin_over_threshold": 2.503045028788508,
+     "superseded_rule_report_only": {
+      "rule": "settled_vs_settled",
+      "resolution": 8308.941532373428,
+      "verdict": "determinate",
+      "margin_over_resolution": 3.804002717161371
+     }
+    },
+    "verdict": "determinate",
+    "d_primary": -31607.236165883485,
+    "sign_primary_positive": false,
+    "gross_superseded_report_only": {
+     "rule": "settled_vs_settled",
+     "resolution": 8308.941532373428,
+     "verdict": "determinate",
+     "verdict_Qcc_report_only": "determinate",
+     "margin_over_resolution": 3.804002717161371
+    },
+    "verdict_superseded_rule_report_only": "determinate",
+    "verdict_changed_by_v6": false,
+    "scorer": "v6 (p515_s53_w142_determinacy.score_claim_v6)"
+   },
+   "E:n7_4h_e1_C2:vs_C3": {
+    "claim_id": "E:n7_4h_e1_C2:vs_C3",
+    "item": "E",
+    "statement": "ageing variant n7_4h_e1_C2 vs the C3 unit: sign of value(variant) - value(C3)",
+    "form": "value",
+    "claim_type": "sign",
+    "net_of_salvage": false,
+    "ref": {
+     "status": "certified",
+     "Q": 653629491.834701,
+     "t": 222.73610642764373,
+     "Q_cc": 653629714.5708073,
+     "Q_net": 653629491.834701,
+     "salvage": 0.0,
+     "band": 4280.006900429726,
+     "gap": null,
+     "slack": null
+    },
+    "other": {
+     "status": "certified",
+     "Q": 653587352.4153233,
+     "t": 429.6346047334476,
+     "Q_cc": 653587782.049928,
+     "Q_net": 653587352.4153233,
+     "salvage": -2.498334423338841e-50,
+     "band": 4099.770196080208,
+     "gap": null,
+     "slack": null
+    },
+    "I_ref": 0.0,
+    "I_other": 0.0,
+    "objective_convention_primary": "gross (settlement excluded)",
+    "d_Q": 42139.41937768459,
+    "d_Qcc": 41932.520879387856,
+    "d_Qcc_minus_d_Q": -206.89849829673767,
+    "sign_same_in_Q_and_Qcc": true,
+    "gross": {
+     "rule": "certified_pair_determinacy_floor_v6",
+     "rule_text": "Addendum 61 ruling 2: a difference between CERTIFIED cells is determinate iff |margin| >= max(3 x the larger of the two band widths, 2 TAU); Q_cc beside, report-only, on the same threshold; a difference involving an uncertified cell keeps the uncertified form (3 x max(|gap|, |slack|), both terms) unchanged",
+     "bars": [
+      4280.006900429726,
+      4099.770196080208
+     ],
+     "larger_bar": 4280.006900429726,
+     "three_x_larger_bar": 12840.020701289177,
+     "two_tau": 9078.136550000001,
+     "threshold": 12840.020701289177,
+     "binding_term": "3 x larger bar",
+     "margin_Q": 42139.41937768459,
+     "margin_Qcc": 41932.520879387856,
+     "verdict": "determinate",
+     "verdict_Qcc_report_only": "determinate",
+     "margin_over_threshold": 3.2818809531556026,
+     "superseded_rule_report_only": {
+      "rule": "settled_vs_settled",
+      "resolution": 8379.777096509933,
+      "verdict": "determinate",
+      "margin_over_resolution": 5.028704092288458
+     }
+    },
+    "verdict": "determinate",
+    "d_primary": 42139.41937768459,
+    "sign_primary_positive": true,
+    "gross_superseded_report_only": {
+     "rule": "settled_vs_settled",
+     "resolution": 8379.777096509933,
+     "verdict": "determinate",
+     "verdict_Qcc_report_only": "determinate",
+     "margin_over_resolution": 5.028704092288458
+    },
+    "verdict_superseded_rule_report_only": "determinate",
+    "verdict_changed_by_v6": false,
+    "scorer": "v6 (p515_s53_w142_determinacy.score_claim_v6)"
+   },
+   "E:n7_4h_e1_C4:value_minus_I": {
+    "claim_id": "E:n7_4h_e1_C4:value_minus_I",
+    "item": "E",
+    "statement": "ageing variant n7_4h_e1_C4: sign of value - I",
+    "form": "value",
+    "claim_type": "threshold",
+    "net_of_salvage": false,
+    "ref": {
+     "status": "certified",
+     "Q": 653873702.1876609,
+     "t": 142.52829384803772,
+     "Q_cc": 653873844.7159548,
+     "Q_net": 653873702.1876609,
+     "salvage": 0.0,
+     "band": 4209.1713362932205,
+     "gap": null,
+     "slack": null
+    },
+    "other": {
+     "status": "certified",
+     "Q": 653600941.8744973,
+     "t": 667.2738431384587,
+     "Q_cc": 653601609.1483405,
+     "Q_net": 653600941.8744973,
+     "salvage": 4.996668846677682e-51,
+     "band": 3801.49955368042,
+     "gap": null,
+     "slack": null
+    },
+    "I_ref": 0.0,
+    "I_other": 317957.0085035586,
+    "objective_convention_primary": "gross (settlement excluded)",
+    "d_Q": -45196.695339920465,
+    "d_Qcc": -45721.44088924164,
+    "d_Qcc_minus_d_Q": -524.7455493211746,
+    "sign_same_in_Q_and_Qcc": true,
+    "gross": {
+     "rule": "certified_pair_determinacy_floor_v6",
+     "rule_text": "Addendum 61 ruling 2: a difference between CERTIFIED cells is determinate iff |margin| >= max(3 x the larger of the two band widths, 2 TAU); Q_cc beside, report-only, on the same threshold; a difference involving an uncertified cell keeps the uncertified form (3 x max(|gap|, |slack|), both terms) unchanged",
+     "bars": [
+      4209.1713362932205,
+      3801.49955368042
+     ],
+     "larger_bar": 4209.1713362932205,
+     "three_x_larger_bar": 12627.514008879662,
+     "two_tau": 9078.136550000001,
+     "threshold": 12627.514008879662,
+     "binding_term": "3 x larger bar",
+     "margin_Q": 45196.695339920465,
+     "margin_Qcc": 45721.44088924164,
+     "verdict": "determinate",
+     "verdict_Qcc_report_only": "determinate",
+     "margin_over_threshold": 3.5792235358549727,
+     "superseded_rule_report_only": {
+      "rule": "settled_vs_settled",
+      "resolution": 8010.67088997364,
+      "verdict": "determinate",
+      "margin_over_resolution": 5.642061190716223
+     }
+    },
+    "verdict": "determinate",
+    "d_primary": -45196.695339920465,
+    "sign_primary_positive": false,
+    "gross_superseded_report_only": {
+     "rule": "settled_vs_settled",
+     "resolution": 8010.67088997364,
+     "verdict": "determinate",
+     "verdict_Qcc_report_only": "determinate",
+     "margin_over_resolution": 5.642061190716223
+    },
+    "verdict_superseded_rule_report_only": "determinate",
+    "verdict_changed_by_v6": false,
+    "scorer": "v6 (p515_s53_w142_determinacy.score_claim_v6)"
+   },
+   "E:n7_4h_e1_C4:vs_C3": {
+    "claim_id": "E:n7_4h_e1_C4:vs_C3",
+    "item": "E",
+    "statement": "ageing variant n7_4h_e1_C4 vs the C3 unit: sign of value(variant) - value(C3)",
+    "form": "value",
+    "claim_type": "sign",
+    "net_of_salvage": false,
+    "ref": {
+     "status": "certified",
+     "Q": 653629491.834701,
+     "t": 222.73610642764373,
+     "Q_cc": 653629714.5708073,
+     "Q_net": 653629491.834701,
+     "salvage": 0.0,
+     "band": 4280.006900429726,
+     "gap": null,
+     "slack": null
+    },
+    "other": {
+     "status": "certified",
+     "Q": 653600941.8744973,
+     "t": 667.2738431384587,
+     "Q_cc": 653601609.1483405,
+     "Q_net": 653600941.8744973,
+     "salvage": 4.996668846677682e-51,
+     "band": 3801.49955368042,
+     "gap": null,
+     "slack": null
+    },
+    "I_ref": 0.0,
+    "I_other": 0.0,
+    "objective_convention_primary": "gross (settlement excluded)",
+    "d_Q": 28549.960203647614,
+    "d_Qcc": 28105.422466874123,
+    "d_Qcc_minus_d_Q": -444.5377367734909,
+    "sign_same_in_Q_and_Qcc": true,
+    "gross": {
+     "rule": "certified_pair_determinacy_floor_v6",
+     "rule_text": "Addendum 61 ruling 2: a difference between CERTIFIED cells is determinate iff |margin| >= max(3 x the larger of the two band widths, 2 TAU); Q_cc beside, report-only, on the same threshold; a difference involving an uncertified cell keeps the uncertified form (3 x max(|gap|, |slack|), both terms) unchanged",
+     "bars": [
+      4280.006900429726,
+      3801.49955368042
+     ],
+     "larger_bar": 4280.006900429726,
+     "three_x_larger_bar": 12840.020701289177,
+     "two_tau": 9078.136550000001,
+     "threshold": 12840.020701289177,
+     "binding_term": "3 x larger bar",
+     "margin_Q": 28549.960203647614,
+     "margin_Qcc": 28105.422466874123,
+     "verdict": "determinate",
+     "verdict_Qcc_report_only": "determinate",
+     "margin_over_threshold": 2.2235135649571895,
+     "superseded_rule_report_only": {
+      "rule": "settled_vs_settled",
+      "resolution": 8081.506454110146,
+      "verdict": "determinate",
+      "margin_over_resolution": 3.5327522616934233
+     }
+    },
+    "verdict": "determinate",
+    "d_primary": 28549.960203647614,
+    "sign_primary_positive": true,
+    "gross_superseded_report_only": {
+     "rule": "settled_vs_settled",
+     "resolution": 8081.506454110146,
+     "verdict": "determinate",
+     "verdict_Qcc_report_only": "determinate",
+     "margin_over_resolution": 3.5327522616934233
+    },
+    "verdict_superseded_rule_report_only": "determinate",
+    "verdict_changed_by_v6": false,
+    "scorer": "v6 (p515_s53_w142_determinacy.score_claim_v6)"
+   },
+   "E:n7_4h_e1_C2_calfade:value_minus_I": {
+    "claim_id": "E:n7_4h_e1_C2_calfade:value_minus_I",
+    "item": "E",
+    "statement": "ageing variant n7_4h_e1_C2_calfade: sign of value - I",
+    "form": "value",
+    "claim_type": "threshold",
+    "net_of_salvage": false,
+    "ref": {
+     "status": "certified",
+     "Q": 653873702.1876609,
+     "t": 142.52829384803772,
+     "Q_cc": 653873844.7159548,
+     "Q_net": 653873702.1876609,
+     "salvage": 0.0,
+     "band": 4209.1713362932205,
+     "gap": null,
+     "slack": null
+    },
+    "other": {
+     "status": "certified",
+     "Q": 653620162.5657823,
+     "t": 662.9971061576365,
+     "Q_cc": 653620825.5628885,
+     "Q_net": 653620162.5657823,
+     "salvage": 0.0,
+     "band": 4351.407173395157,
+     "gap": null,
+     "slack": null
+    },
+    "I_ref": 0.0,
+    "I_other": 317957.0085035586,
+    "objective_convention_primary": "gross (settlement excluded)",
+    "d_Q": -64417.38662493462,
+    "d_Qcc": -64937.855437281076,
+    "d_Qcc_minus_d_Q": -520.4688123464584,
+    "sign_same_in_Q_and_Qcc": true,
+    "gross": {
+     "rule": "certified_pair_determinacy_floor_v6",
+     "rule_text": "Addendum 61 ruling 2: a difference between CERTIFIED cells is determinate iff |margin| >= max(3 x the larger of the two band widths, 2 TAU); Q_cc beside, report-only, on the same threshold; a difference involving an uncertified cell keeps the uncertified form (3 x max(|gap|, |slack|), both terms) unchanged",
+     "bars": [
+      4209.1713362932205,
+      4351.407173395157
+     ],
+     "larger_bar": 4351.407173395157,
+     "three_x_larger_bar": 13054.22152018547,
+     "two_tau": 9078.136550000001,
+     "threshold": 13054.22152018547,
+     "binding_term": "3 x larger bar",
+     "margin_Q": 64417.38662493462,
+     "margin_Qcc": 64937.855437281076,
+     "verdict": "determinate",
+     "verdict_Qcc_report_only": "determinate",
+     "margin_over_threshold": 4.93460192362504,
+     "superseded_rule_report_only": {
+      "rule": "settled_vs_settled",
+      "resolution": 8560.578509688377,
+      "verdict": "determinate",
+      "margin_over_resolution": 7.524887080006412
+     }
+    },
+    "verdict": "determinate",
+    "d_primary": -64417.38662493462,
+    "sign_primary_positive": false,
+    "gross_superseded_report_only": {
+     "rule": "settled_vs_settled",
+     "resolution": 8560.578509688377,
+     "verdict": "determinate",
+     "verdict_Qcc_report_only": "determinate",
+     "margin_over_resolution": 7.524887080006412
+    },
+    "verdict_superseded_rule_report_only": "determinate",
+    "verdict_changed_by_v6": false,
+    "scorer": "v6 (p515_s53_w142_determinacy.score_claim_v6)"
+   },
+   "E:n7_4h_e1_C2_calfade:vs_C3": {
+    "claim_id": "E:n7_4h_e1_C2_calfade:vs_C3",
+    "item": "E",
+    "statement": "ageing variant n7_4h_e1_C2_calfade vs the C3 unit: sign of value(variant) - value(C3)",
+    "form": "value",
+    "claim_type": "sign",
+    "net_of_salvage": false,
+    "ref": {
+     "status": "certified",
+     "Q": 653629491.834701,
+     "t": 222.73610642764373,
+     "Q_cc": 653629714.5708073,
+     "Q_net": 653629491.834701,
+     "salvage": 0.0,
+     "band": 4280.006900429726,
+     "gap": null,
+     "slack": null
+    },
+    "other": {
+     "status": "certified",
+     "Q": 653620162.5657823,
+     "t": 662.9971061576365,
+     "Q_cc": 653620825.5628885,
+     "Q_net": 653620162.5657823,
+     "salvage": 0.0,
+     "band": 4351.407173395157,
+     "gap": null,
+     "slack": null
+    },
+    "I_ref": 0.0,
+    "I_other": 0.0,
+    "objective_convention_primary": "gross (settlement excluded)",
+    "d_Q": 9329.268918633461,
+    "d_Qcc": 8889.007918834686,
+    "d_Qcc_minus_d_Q": -440.2609997987747,
+    "sign_same_in_Q_and_Qcc": true,
+    "gross": {
+     "rule": "certified_pair_determinacy_floor_v6",
+     "rule_text": "Addendum 61 ruling 2: a difference between CERTIFIED cells is determinate iff |margin| >= max(3 x the larger of the two band widths, 2 TAU); Q_cc beside, report-only, on the same threshold; a difference involving an uncertified cell keeps the uncertified form (3 x max(|gap|, |slack|), both terms) unchanged",
+     "bars": [
+      4280.006900429726,
+      4351.407173395157
+     ],
+     "larger_bar": 4351.407173395157,
+     "three_x_larger_bar": 13054.22152018547,
+     "two_tau": 9078.136550000001,
+     "threshold": 13054.22152018547,
+     "binding_term": "3 x larger bar",
+     "margin_Q": 9329.268918633461,
+     "margin_Qcc": 8889.007918834686,
+     "verdict": "within resolution",
+     "verdict_Qcc_report_only": "within resolution",
+     "margin_over_threshold": 0.7146553246555382,
+     "superseded_rule_report_only": {
+      "rule": "settled_vs_settled",
+      "resolution": 8631.414073824883,
+      "verdict": "determinate",
+      "margin_over_resolution": 1.0808505812419371
+     }
+    },
+    "verdict": "within resolution",
+    "d_primary": 9329.268918633461,
+    "sign_primary_positive": true,
+    "gross_superseded_report_only": {
+     "rule": "settled_vs_settled",
+     "resolution": 8631.414073824883,
+     "verdict": "determinate",
+     "verdict_Qcc_report_only": "determinate",
+     "margin_over_resolution": 1.0808505812419371
+    },
+    "verdict_superseded_rule_report_only": "determinate",
+    "verdict_changed_by_v6": true,
+    "scorer": "v6 (p515_s53_w142_determinacy.score_claim_v6)"
+   },
+   "E:n7_4h_e1_C3_midblock:value_minus_I": {
+    "claim_id": "E:n7_4h_e1_C3_midblock:value_minus_I",
+    "item": "E",
+    "statement": "ageing variant n7_4h_e1_C3_midblock: sign of value - I",
+    "form": "value",
+    "claim_type": "threshold",
+    "net_of_salvage": false,
+    "ref": {
+     "status": "certified",
+     "Q": 653873702.1876609,
+     "t": 142.52829384803772,
+     "Q_cc": 653873844.7159548,
+     "Q_net": 653873702.1876609,
+     "salvage": 0.0,
+     "band": 4209.1713362932205,
+     "gap": null,
+     "slack": null
+    },
+    "other": {
+     "status": "certified",
+     "Q": 653621637.0564654,
+     "t": 308.8873457444045,
+     "Q_cc": 653621945.9438112,
+     "Q_net": 653621637.0564654,
+     "salvage": 0.0,
+     "band": 4289.160341024399,
+     "gap": null,
+     "slack": null
+    },
+    "I_ref": 0.0,
+    "I_other": 317957.0085035586,
+    "objective_convention_primary": "gross (settlement excluded)",
+    "d_Q": -65891.87730801338,
+    "d_Qcc": -66058.23635995621,
+    "d_Qcc_minus_d_Q": -166.35905194282532,
+    "sign_same_in_Q_and_Qcc": true,
+    "gross": {
+     "rule": "certified_pair_determinacy_floor_v6",
+     "rule_text": "Addendum 61 ruling 2: a difference between CERTIFIED cells is determinate iff |margin| >= max(3 x the larger of the two band widths, 2 TAU); Q_cc beside, report-only, on the same threshold; a difference involving an uncertified cell keeps the uncertified form (3 x max(|gap|, |slack|), both terms) unchanged",
+     "bars": [
+      4209.1713362932205,
+      4289.160341024399
+     ],
+     "larger_bar": 4289.160341024399,
+     "three_x_larger_bar": 12867.481023073196,
+     "two_tau": 9078.136550000001,
+     "threshold": 12867.481023073196,
+     "binding_term": "3 x larger bar",
+     "margin_Q": 65891.87730801338,
+     "margin_Qcc": 66058.23635995621,
+     "verdict": "determinate",
+     "verdict_Qcc_report_only": "determinate",
+     "margin_over_threshold": 5.12080625491967,
+     "superseded_rule_report_only": {
+      "rule": "settled_vs_settled",
+      "resolution": 8498.33167731762,
+      "verdict": "determinate",
+      "margin_over_resolution": 7.753507371791735
+     }
+    },
+    "verdict": "determinate",
+    "d_primary": -65891.87730801338,
+    "sign_primary_positive": false,
+    "gross_superseded_report_only": {
+     "rule": "settled_vs_settled",
+     "resolution": 8498.33167731762,
+     "verdict": "determinate",
+     "verdict_Qcc_report_only": "determinate",
+     "margin_over_resolution": 7.753507371791735
+    },
+    "verdict_superseded_rule_report_only": "determinate",
+    "verdict_changed_by_v6": false,
+    "scorer": "v6 (p515_s53_w142_determinacy.score_claim_v6)"
+   },
+   "E:n7_4h_e1_C3_midblock:vs_C3": {
+    "claim_id": "E:n7_4h_e1_C3_midblock:vs_C3",
+    "item": "E",
+    "statement": "ageing variant n7_4h_e1_C3_midblock vs the C3 unit: sign of value(variant) - value(C3)",
+    "form": "value",
+    "claim_type": "sign",
+    "net_of_salvage": false,
+    "ref": {
+     "status": "certified",
+     "Q": 653629491.834701,
+     "t": 222.73610642764373,
+     "Q_cc": 653629714.5708073,
+     "Q_net": 653629491.834701,
+     "salvage": 0.0,
+     "band": 4280.006900429726,
+     "gap": null,
+     "slack": null
+    },
+    "other": {
+     "status": "certified",
+     "Q": 653621637.0564654,
+     "t": 308.8873457444045,
+     "Q_cc": 653621945.9438112,
+     "Q_net": 653621637.0564654,
+     "salvage": 0.0,
+     "band": 4289.160341024399,
+     "gap": null,
+     "slack": null
+    },
+    "I_ref": 0.0,
+    "I_other": 0.0,
+    "objective_convention_primary": "gross (settlement excluded)",
+    "d_Q": 7854.778235554695,
+    "d_Qcc": 7768.6269961595535,
+    "d_Qcc_minus_d_Q": -86.1512393951416,
+    "sign_same_in_Q_and_Qcc": true,
+    "gross": {
+     "rule": "certified_pair_determinacy_floor_v6",
+     "rule_text": "Addendum 61 ruling 2: a difference between CERTIFIED cells is determinate iff |margin| >= max(3 x the larger of the two band widths, 2 TAU); Q_cc beside, report-only, on the same threshold; a difference involving an uncertified cell keeps the uncertified form (3 x max(|gap|, |slack|), both terms) unchanged",
+     "bars": [
+      4280.006900429726,
+      4289.160341024399
+     ],
+     "larger_bar": 4289.160341024399,
+     "three_x_larger_bar": 12867.481023073196,
+     "two_tau": 9078.136550000001,
+     "threshold": 12867.481023073196,
+     "binding_term": "3 x larger bar",
+     "margin_Q": 7854.778235554695,
+     "margin_Qcc": 7768.6269961595535,
+     "verdict": "within resolution",
+     "verdict_Qcc_report_only": "within resolution",
+     "margin_over_threshold": 0.6104363566940552,
+     "superseded_rule_report_only": {
+      "rule": "settled_vs_settled",
+      "resolution": 8569.167241454124,
+      "verdict": "within resolution",
+      "margin_over_resolution": 0.9166326218441032
+     }
+    },
+    "verdict": "within resolution",
+    "d_primary": 7854.778235554695,
+    "sign_primary_positive": true,
+    "gross_superseded_report_only": {
+     "rule": "settled_vs_settled",
+     "resolution": 8569.167241454124,
+     "verdict": "within resolution",
+     "verdict_Qcc_report_only": "within resolution",
+     "margin_over_resolution": 0.9166326218441032
+    },
+    "verdict_superseded_rule_report_only": "within resolution",
+    "verdict_changed_by_v6": false,
+    "scorer": "v6 (p515_s53_w142_determinacy.score_claim_v6)"
+   },
+   "E:n7_4h_e1_no_ageing:value_minus_I": {
+    "claim_id": "E:n7_4h_e1_no_ageing:value_minus_I",
+    "item": "E",
+    "statement": "ageing variant n7_4h_e1_no_ageing: sign of value - I",
+    "form": "value",
+    "claim_type": "threshold",
+    "net_of_salvage": false,
+    "ref": {
+     "status": "certified",
+     "Q": 653873702.1876609,
+     "t": 142.52829384803772,
+     "Q_cc": 653873844.7159548,
+     "Q_net": 653873702.1876609,
+     "salvage": 0.0,
+     "band": 4209.1713362932205,
+     "gap": null,
+     "slack": null
+    },
+    "other": {
+     "status": "certified",
+     "Q": 653559885.7170684,
+     "t": 907.4071066317858,
+     "Q_cc": 653560793.1241751,
+     "Q_net": 653559885.7170684,
+     "salvage": 6.844681569997464e-38,
+     "band": 4286.234537601471,
+     "gap": null,
+     "slack": null
+    },
+    "I_ref": 0.0,
+    "I_other": 317957.0085035586,
+    "objective_convention_primary": "gross (settlement excluded)",
+    "d_Q": -4140.5379110598005,
+    "d_Qcc": -4905.4167238497175,
+    "d_Qcc_minus_d_Q": -764.878812789917,
+    "sign_same_in_Q_and_Qcc": true,
+    "gross": {
+     "rule": "certified_pair_determinacy_floor_v6",
+     "rule_text": "Addendum 61 ruling 2: a difference between CERTIFIED cells is determinate iff |margin| >= max(3 x the larger of the two band widths, 2 TAU); Q_cc beside, report-only, on the same threshold; a difference involving an uncertified cell keeps the uncertified form (3 x max(|gap|, |slack|), both terms) unchanged",
+     "bars": [
+      4209.1713362932205,
+      4286.234537601471
+     ],
+     "larger_bar": 4286.234537601471,
+     "three_x_larger_bar": 12858.703612804413,
+     "two_tau": 9078.136550000001,
+     "threshold": 12858.703612804413,
+     "binding_term": "3 x larger bar",
+     "margin_Q": 4140.5379110598005,
+     "margin_Qcc": 4905.4167238497175,
+     "verdict": "within resolution",
+     "verdict_Qcc_report_only": "within resolution",
+     "margin_over_threshold": 0.3220027489347172,
+     "superseded_rule_report_only": {
+      "rule": "settled_vs_settled",
+      "resolution": 8495.405873894691,
+      "verdict": "within resolution",
+      "margin_over_resolution": 0.48738553195947354
+     }
+    },
+    "verdict": "within resolution",
+    "d_primary": -4140.5379110598005,
+    "sign_primary_positive": false,
+    "gross_superseded_report_only": {
+     "rule": "settled_vs_settled",
+     "resolution": 8495.405873894691,
+     "verdict": "within resolution",
+     "verdict_Qcc_report_only": "within resolution",
+     "margin_over_resolution": 0.48738553195947354
+    },
+    "verdict_superseded_rule_report_only": "within resolution",
+    "verdict_changed_by_v6": false,
+    "scorer": "v6 (p515_s53_w142_determinacy.score_claim_v6)"
+   },
+   "E:n7_4h_e1_no_ageing:vs_C3": {
+    "claim_id": "E:n7_4h_e1_no_ageing:vs_C3",
+    "item": "E",
+    "statement": "ageing variant n7_4h_e1_no_ageing vs the C3 unit: sign of value(variant) - value(C3)",
+    "form": "value",
+    "claim_type": "sign",
+    "net_of_salvage": false,
+    "ref": {
+     "status": "certified",
+     "Q": 653629491.834701,
+     "t": 222.73610642764373,
+     "Q_cc": 653629714.5708073,
+     "Q_net": 653629491.834701,
+     "salvage": 0.0,
+     "band": 4280.006900429726,
+     "gap": null,
+     "slack": null
+    },
+    "other": {
+     "status": "certified",
+     "Q": 653559885.7170684,
+     "t": 907.4071066317858,
+     "Q_cc": 653560793.1241751,
+     "Q_net": 653559885.7170684,
+     "salvage": 6.844681569997464e-38,
+     "band": 4286.234537601471,
+     "gap": null,
+     "slack": null
+    },
+    "I_ref": 0.0,
+    "I_other": 0.0,
+    "objective_convention_primary": "gross (settlement excluded)",
+    "d_Q": 69606.11763250828,
+    "d_Qcc": 68921.44663226604,
+    "d_Qcc_minus_d_Q": -684.6710002422333,
+    "sign_same_in_Q_and_Qcc": true,
+    "gross": {
+     "rule": "certified_pair_determinacy_floor_v6",
+     "rule_text": "Addendum 61 ruling 2: a difference between CERTIFIED cells is determinate iff |margin| >= max(3 x the larger of the two band widths, 2 TAU); Q_cc beside, report-only, on the same threshold; a difference involving an uncertified cell keeps the uncertified form (3 x max(|gap|, |slack|), both terms) unchanged",
+     "bars": [
+      4280.006900429726,
+      4286.234537601471
+     ],
+     "larger_bar": 4286.234537601471,
+     "three_x_larger_bar": 12858.703612804413,
+     "two_tau": 9078.136550000001,
+     "threshold": 12858.703612804413,
+     "binding_term": "3 x larger bar",
+     "margin_Q": 69606.11763250828,
+     "margin_Qcc": 68921.44663226604,
+     "verdict": "determinate",
+     "verdict_Qcc_report_only": "determinate",
+     "margin_over_threshold": 5.413152035263963,
+     "superseded_rule_report_only": {
+      "rule": "settled_vs_settled",
+      "resolution": 8566.241438031197,
+      "verdict": "determinate",
+      "margin_over_resolution": 8.125631075897628
+     }
+    },
+    "verdict": "determinate",
+    "d_primary": 69606.11763250828,
+    "sign_primary_positive": true,
+    "gross_superseded_report_only": {
+     "rule": "settled_vs_settled",
+     "resolution": 8566.241438031197,
+     "verdict": "determinate",
+     "verdict_Qcc_report_only": "determinate",
+     "margin_over_resolution": 8.125631075897628
+    },
+    "verdict_superseded_rule_report_only": "determinate",
+    "verdict_changed_by_v6": false,
+    "scorer": "v6 (p515_s53_w142_determinacy.score_claim_v6)"
+   }
+  },
+  "per_arm": {
+   "C3_unit": {
+    "cell": "e_c3_unit",
+    "status": "certified",
+    "Q": 653629491.834701,
+    "value": 244210.3529599905,
+    "value_Qcc": 244130.14514744282,
+    "I": 317957.0085035586,
+    "value_minus_I": -73746.65554356808,
+    "I_over_value": 1.301980053874498,
+    "floor_year": 2035,
+    "AE": 0.785959660612483,
+    "EFC": 0.7607868700235757,
+    "k": 11541.560327111707,
+    "band": 4280.006900429726,
+    "value_minus_I_claim": {
+     "verdict": "determinate",
+     "d_primary": -73746.65554356808
+    },
+    "value_minus_I_sign": "-",
+    "x_C3": 1.0
+   },
+   "C2": {
+    "cell": "e_c2",
+    "status": "certified",
+    "Q": 653587352.4153233,
+    "value": 286349.7723376751,
+    "value_Qcc": 286062.6660268307,
+    "I": 317957.0085035586,
+    "value_minus_I": -31607.236165883485,
+    "I_over_value": 1.1103798194349914,
+    "floor_year": null,
+    "AE": 0.8882162577808105,
+    "EFC": 1.185172736729178,
+    "k": 35851.3609417964,
+    "band": 4099.770196080208,
+    "value_minus_I_claim": {
+     "verdict": "determinate",
+     "d_primary": -31607.236165883485
+    },
+    "value_minus_I_sign": "-",
+    "x_C3": 1.1725537794238738,
+    "vs_C3_claim": {
+     "verdict": "determinate",
+     "d_primary": 42139.41937768459,
+     "gross": {
+      "rule": "certified_pair_determinacy_floor_v6",
+      "rule_text": "Addendum 61 ruling 2: a difference between CERTIFIED cells is determinate iff |margin| >= max(3 x the larger of the two band widths, 2 TAU); Q_cc beside, report-only, on the same threshold; a difference involving an uncertified cell keeps the uncertified form (3 x max(|gap|, |slack|), both terms) unchanged",
+      "bars": [
+       4280.006900429726,
+       4099.770196080208
+      ],
+      "larger_bar": 4280.006900429726,
+      "three_x_larger_bar": 12840.020701289177,
+      "two_tau": 9078.136550000001,
+      "threshold": 12840.020701289177,
+      "binding_term": "3 x larger bar",
+      "margin_Q": 42139.41937768459,
+      "margin_Qcc": 41932.520879387856,
+      "verdict": "determinate",
+      "verdict_Qcc_report_only": "determinate",
+      "margin_over_threshold": 3.2818809531556026,
+      "superseded_rule_report_only": {
+       "rule": "settled_vs_settled",
+       "resolution": 8379.777096509933,
+       "verdict": "determinate",
+       "margin_over_resolution": 5.028704092288458
+      }
+     }
+    },
+    "vs_C3_resolvable": true,
+    "eps_AE": 1.3014829232393959
+   },
+   "C4": {
+    "cell": "e_c4",
+    "status": "certified",
+    "Q": 653600941.8744973,
+    "value": 272760.3131636381,
+    "value_Qcc": 272235.56761431694,
+    "I": 317957.0085035586,
+    "value_minus_I": -45196.695339920465,
+    "I_over_value": 1.1657011418402554,
+    "floor_year": null,
+    "AE": 0.8343594349551451,
+    "EFC": 1.1313754719801936,
+    "k": 22429.38601645703,
+    "band": 3801.49955368042,
+    "value_minus_I_claim": {
+     "verdict": "determinate",
+     "d_primary": -45196.695339920465
+    },
+    "value_minus_I_sign": "-",
+    "x_C3": 1.1169072476150306,
+    "vs_C3_claim": {
+     "verdict": "determinate",
+     "d_primary": 28549.960203647614,
+     "gross": {
+      "rule": "certified_pair_determinacy_floor_v6",
+      "rule_text": "Addendum 61 ruling 2: a difference between CERTIFIED cells is determinate iff |margin| >= max(3 x the larger of the two band widths, 2 TAU); Q_cc beside, report-only, on the same threshold; a difference involving an uncertified cell keeps the uncertified form (3 x max(|gap|, |slack|), both terms) unchanged",
+      "bars": [
+       4280.006900429726,
+       3801.49955368042
+      ],
+      "larger_bar": 4280.006900429726,
+      "three_x_larger_bar": 12840.020701289177,
+      "two_tau": 9078.136550000001,
+      "threshold": 12840.020701289177,
+      "binding_term": "3 x larger bar",
+      "margin_Q": 28549.960203647614,
+      "margin_Qcc": 28105.422466874123,
+      "verdict": "determinate",
+      "verdict_Qcc_report_only": "determinate",
+      "margin_over_threshold": 2.2235135649571895,
+      "superseded_rule_report_only": {
+       "rule": "settled_vs_settled",
+       "resolution": 8081.506454110146,
+       "verdict": "determinate",
+       "margin_over_resolution": 3.5327522616934233
+      }
+     }
+    },
+    "vs_C3_resolvable": true,
+    "eps_AE": 1.8501617567908457
+   },
+   "C2_calfade": {
+    "cell": "e_c2_calfade",
+    "status": "certified",
+    "Q": 653620162.5657823,
+    "value": 253539.62187862396,
+    "value_Qcc": 253019.1530662775,
+    "I": 317957.0085035586,
+    "value_minus_I": -64417.38662493462,
+    "I_over_value": 1.2540722674729432,
+    "floor_year": 2035,
+    "AE": 0.7927159115133644,
+    "EFC": 0.8635062982587755,
+    "k": 35851.3609417964,
+    "band": 4351.407173395157,
+    "value_minus_I_claim": {
+     "verdict": "determinate",
+     "d_primary": -64417.38662493462
+    },
+    "value_minus_I_sign": "-",
+    "x_C3": 1.0382017748451553,
+    "vs_C3_claim": {
+     "verdict": "within resolution",
+     "d_primary": 9329.268918633461,
+     "gross": {
+      "rule": "certified_pair_determinacy_floor_v6",
+      "rule_text": "Addendum 61 ruling 2: a difference between CERTIFIED cells is determinate iff |margin| >= max(3 x the larger of the two band widths, 2 TAU); Q_cc beside, report-only, on the same threshold; a difference involving an uncertified cell keeps the uncertified form (3 x max(|gap|, |slack|), both terms) unchanged",
+      "bars": [
+       4280.006900429726,
+       4351.407173395157
+      ],
+      "larger_bar": 4351.407173395157,
+      "three_x_larger_bar": 13054.22152018547,
+      "two_tau": 9078.136550000001,
+      "threshold": 13054.22152018547,
+      "binding_term": "3 x larger bar",
+      "margin_Q": 9329.268918633461,
+      "margin_Qcc": 8889.007918834686,
+      "verdict": "within resolution",
+      "verdict_Qcc_report_only": "within resolution",
+      "margin_over_threshold": 0.7146553246555382,
+      "superseded_rule_report_only": {
+       "rule": "settled_vs_settled",
+       "resolution": 8631.414073824883,
+       "verdict": "determinate",
+       "margin_over_resolution": 1.0808505812419371
+      }
+     }
+    },
+    "vs_C3_resolvable": false,
+    "eps_AE": 4.379975652485347
+   },
+   "C3_midblock": {
+    "cell": "e_c3_midblock",
+    "status": "certified",
+    "Q": 653621637.0564654,
+    "value": 252065.1311955452,
+    "value_Qcc": 251898.77214360237,
+    "I": 317957.0085035586,
+    "value_minus_I": -65891.87730801338,
+    "I_over_value": 1.2614081408066564,
+    "floor_year": 2035,
+    "AE": 0.835724291205944,
+    "EFC": 0.7604910279050363,
+    "k": 11541.560327111707,
+    "band": 4289.160341024399,
+    "value_minus_I_claim": {
+     "verdict": "determinate",
+     "d_primary": -65891.87730801338
+    },
+    "value_minus_I_sign": "-",
+    "x_C3": 1.0321639854344813,
+    "vs_C3_claim": {
+     "verdict": "within resolution",
+     "d_primary": 7854.778235554695,
+     "gross": {
+      "rule": "certified_pair_determinacy_floor_v6",
+      "rule_text": "Addendum 61 ruling 2: a difference between CERTIFIED cells is determinate iff |margin| >= max(3 x the larger of the two band widths, 2 TAU); Q_cc beside, report-only, on the same threshold; a difference involving an uncertified cell keeps the uncertified form (3 x max(|gap|, |slack|), both terms) unchanged",
+      "bars": [
+       4280.006900429726,
+       4289.160341024399
+      ],
+      "larger_bar": 4289.160341024399,
+      "three_x_larger_bar": 12867.481023073196,
+      "two_tau": 9078.136550000001,
+      "threshold": 12867.481023073196,
+      "binding_term": "3 x larger bar",
+      "margin_Q": 7854.778235554695,
+      "margin_Qcc": 7768.6269961595535,
+      "verdict": "within resolution",
+      "verdict_Qcc_report_only": "within resolution",
+      "margin_over_threshold": 0.6104363566940552,
+      "superseded_rule_report_only": {
+       "rule": "settled_vs_settled",
+       "resolution": 8569.167241454124,
+       "verdict": "within resolution",
+       "margin_over_resolution": 0.9166326218441032
+      }
+     }
+    },
+    "vs_C3_resolvable": false,
+    "eps_AE": 0.5156516714379894
+   },
+   "no_ageing": {
+    "cell": "e_no_ageing",
+    "status": "certified",
+    "Q": 653559885.7170684,
+    "value": 313816.4705924988,
+    "value_Qcc": 313051.59177970886,
+    "I": 317957.0085035586,
+    "value_minus_I": -4140.5379110598005,
+    "I_over_value": 1.0131941382912193,
+    "floor_year": null,
+    "AE": 1.0,
+    "EFC": 1.29339727288686,
+    "k": 11541.560327111707,
+    "band": 4286.234537601471,
+    "value_minus_I_claim": {
+     "verdict": "within resolution",
+     "d_primary": -4140.5379110598005
+    },
+    "value_minus_I_sign": "0",
+    "x_C3": 1.285025252978984,
+    "vs_C3_claim": {
+     "verdict": "determinate",
+     "d_primary": 69606.11763250828,
+     "gross": {
+      "rule": "certified_pair_determinacy_floor_v6",
+      "rule_text": "Addendum 61 ruling 2: a difference between CERTIFIED cells is determinate iff |margin| >= max(3 x the larger of the two band widths, 2 TAU); Q_cc beside, report-only, on the same threshold; a difference involving an uncertified cell keeps the uncertified form (3 x max(|gap|, |slack|), both terms) unchanged",
+      "bars": [
+       4280.006900429726,
+       4286.234537601471
+      ],
+      "larger_bar": 4286.234537601471,
+      "three_x_larger_bar": 12858.703612804413,
+      "two_tau": 9078.136550000001,
+      "threshold": 12858.703612804413,
+      "binding_term": "3 x larger bar",
+      "margin_Q": 69606.11763250828,
+      "margin_Qcc": 68921.44663226604,
+      "verdict": "determinate",
+      "verdict_Qcc_report_only": "determinate",
+      "margin_over_threshold": 5.413152035263963,
+      "superseded_rule_report_only": {
+       "rule": "settled_vs_settled",
+       "resolution": 8566.241438031197,
+       "verdict": "determinate",
+       "margin_over_resolution": 8.125631075897628
+      }
+     }
+    },
+    "vs_C3_resolvable": true,
+    "eps_AE": 1.0412230344783022
+   }
+  },
+  "statements": {
+   "S1_x_c3_multipliers": {
+    "C2": {
+     "x_C3_070": 1.1725537794238738,
+     "x_C3_050": 1.1262968471070447,
+     "vs_C3_verdict_070": "determinate"
+    },
+    "C4": {
+     "x_C3_070": 1.1169072476150306,
+     "x_C3_050": 1.0578515011683378,
+     "vs_C3_verdict_070": "determinate"
+    },
+    "C2_calfade": {
+     "x_C3_070": 1.0382017748451553,
+     "x_C3_050": 1.0456705641476973,
+     "vs_C3_verdict_070": "within resolution"
+    },
+    "C3_midblock": {
+     "x_C3_070": 1.0321639854344813,
+     "x_C3_050": 1.0088070324422678,
+     "vs_C3_verdict_070": "within resolution"
+    },
+    "no_ageing": {
+     "x_C3_070": 1.285025252978984,
+     "x_C3_050": 1.2163206678070575,
+     "vs_C3_verdict_070": "determinate"
+    }
+   },
+   "S2_I_over_value_sensitivity_band": {
+    "C3_unit": {
+     "I_over_value_070": 1.301980053874498,
+     "I_over_value_050": 1.2144686578040267,
+     "value_minus_I_verdict_070": "determinate"
+    },
+    "C2": {
+     "I_over_value_070": 1.1103798194349914,
+     "I_over_value_050": 1.078284699920324,
+     "value_minus_I_verdict_070": "determinate"
+    },
+    "C4": {
+     "I_over_value_070": 1.1657011418402554,
+     "I_over_value_050": 1.148052119283958,
+     "value_minus_I_verdict_070": "determinate"
+    },
+    "C2_calfade": {
+     "I_over_value_070": 1.2540722674729432,
+     "I_over_value_050": 1.1614256912681795,
+     "value_minus_I_verdict_070": "determinate"
+    },
+    "C3_midblock": {
+     "I_over_value_070": 1.2614081408066564,
+     "I_over_value_050": 1.203866169394025,
+     "value_minus_I_verdict_070": "determinate"
+    },
+    "no_ageing": {
+     "I_over_value_070": 1.0131941382912193,
+     "I_over_value_050": 0.9984773669871367,
+     "value_minus_I_verdict_070": "within resolution"
+    }
+   },
+   "S3_convention_does_not_decide_the_sign": {
+    "signs_value_minus_I": {
+     "C3_unit": "-",
+     "C2": "-",
+     "C4": "-",
+     "C2_calfade": "-",
+     "C3_midblock": "-",
+     "no_ageing": "0"
+    },
+    "complete": true,
+    "holds_restated_no_arm_pays_determinately": true,
+    "convention_decides_the_sign_plus_and_minus_present": false
+   },
+   "S4_break_even_needs_no_ageing_at_all": {
+    "no_ageing_value_minus_I_sign": "0",
+    "aged_signs": {
+     "C3_unit": "-",
+     "C2": "-",
+     "C4": "-",
+     "C2_calfade": "-",
+     "C3_midblock": "-"
+    },
+    "no_ageing_within_resolution": true,
+    "no_aged_arm_positive": true
+   },
+   "S5_elasticity_to_available_energy": {
+    "eps_AE_070": {
+     "C2": 1.3014829232393959,
+     "C4": 1.8501617567908457,
+     "C2_calfade": 4.379975652485347,
+     "C3_midblock": 0.5156516714379894,
+     "no_ageing": 1.0412230344783022
+    },
+    "resolvable_070": {
+     "C2": true,
+     "C4": true,
+     "C2_calfade": false,
+     "C3_midblock": false,
+     "no_ageing": true
+    },
+    "band_over_resolvable_070": [
+     1.0412230344783022,
+     1.8501617567908457
+    ],
+    "eps_AE_050": {
+     "C2": 0.6005243309458448,
+     "C4": 0.4132607018916576,
+     "C2_calfade": 0.6757370557796795,
+     "C3_midblock": 0.13000447119227676,
+     "no_ageing": 0.6198441005274611
+    }
+   },
+   "S6_midblock_x1009": {
+    "x_C3_070": 1.0321639854344813,
+    "x_C3_050": 1.0088070324422678,
+    "vs_C3_verdict_070": "within resolution"
+   },
+   "S7_floor_year_per_arm": {
+    "C3_unit": {
+     "floor_year_070": 2035,
+     "floor_050": "no floor row active (soh_min 0.50)"
+    },
+    "C2": {
+     "floor_year_070": null,
+     "floor_050": "no floor row active (soh_min 0.50)"
+    },
+    "C4": {
+     "floor_year_070": null,
+     "floor_050": "no floor row active (soh_min 0.50)"
+    },
+    "C2_calfade": {
+     "floor_year_070": 2035,
+     "floor_050": "no floor row active (soh_min 0.50)"
+    },
+    "C3_midblock": {
+     "floor_year_070": 2035,
+     "floor_050": "no floor row active (soh_min 0.50)"
+    },
+    "no_ageing": {
+     "floor_year_070": null,
+     "floor_050": "no floor row active (soh_min 0.50)"
+    }
+   }
+  },
+  "expert_prediction": {
+   "C2": {
+    "scored": false,
+    "floor_year": null,
+    "reason": "the floor does not bind for this arm: not scored",
+    "eps_k_050": 0.10493407849518059,
+    "eps_k_070": 0.14044493231990493,
+    "ln_k_ratio": 1.1334270661778514,
+    "rho": 1.1262968471070447,
+    "value_threshold_implied_by_eps050": 275053.35056973586,
+    "value_070": 286349.7723376751,
+    "d_Q": -11296.421767890453,
+    "d_Qcc": -11099.653263524175,
+    "resolution": {
+     "rule": "settled (weighted sum of the bands)",
+     "resolution": 9451.933542337783,
+     "verdict": "determinate",
+     "verdict_Qcc_report_only": "determinate",
+     "margin_over_resolution": 1.1951440112534335
+    },
+    "holds": null,
+    "verdict": "not scored"
+   },
+   "C4": {
+    "scored": false,
+    "floor_year": null,
+    "reason": "the floor does not bind for this arm: not scored",
+    "eps_k_050": 0.08464551950610603,
+    "eps_k_070": 0.16640663061446168,
+    "ln_k_ratio": 0.6644175125770586,
+    "rho": 1.0578515011683378,
+    "value_threshold_implied_by_eps050": 258338.2884795756,
+    "value_070": 272760.3131636381,
+    "d_Q": -14422.024684123695,
+    "d_Qcc": -13982.127089679241,
+    "resolution": {
+     "rule": "settled (weighted sum of the bands)",
+     "resolution": 8572.618158790152,
+     "verdict": "determinate",
+     "verdict_Qcc_report_only": "determinate",
+     "margin_over_resolution": 1.682336063147255
+    },
+    "holds": null,
+    "verdict": "not scored"
+   },
+   "C2_calfade": {
+    "scored": true,
+    "floor_year": 2035,
+    "reason": null,
+    "eps_k_050": 0.039401183486078656,
+    "eps_k_070": 0.033076811970491726,
+    "ln_k_ratio": 1.1334270661778514,
+    "rho": 1.0456705641476973,
+    "value_threshold_implied_by_eps050": 255363.57755038154,
+    "value_070": 253539.62187862396,
+    "d_Q": 1823.955671761185,
+    "d_Qcc": 2260.553535465151,
+    "resolution": {
+     "rule": "settled (weighted sum of the bands)",
+     "resolution": 9019.119633046374,
+     "verdict": "within resolution",
+     "verdict_Qcc_report_only": "within resolution",
+     "margin_over_resolution": 0.20223211865137555
+    },
+    "holds": true,
+    "verdict": "within resolution"
+   }
+  },
+  "epsilon_050_references_recomputed": {
+   "C2": 0.10493407849518059,
+   "C4": 0.08464551950610603,
+   "C2_calfade": 0.039401183486078656
+  },
+  "Q0": 653873702.1876609,
+  "Q0_cc": 653873844.7159548,
+  "I_unit": 317957.0085035586
+ },
+ "phase_b_claim": [
+  {
+   "claim_id": "C:y2025__n5_p0.25_e0.5",
+   "item": "C",
+   "statement": "Phase B certificate at x = 0: F(y2025__n5_p0.25_e0.5) - F(0) > 0",
+   "form": "F",
+   "claim_type": "sign",
+   "net_of_salvage": false,
+   "ref": {
+    "status": "certified",
+    "Q": 653873702.1876609,
+    "t": 142.52829384803772,
+    "Q_cc": 653873844.7159548,
+    "Q_net": 653873702.1876609,
+    "salvage": 0.0,
+    "band": 4209.1713362932205,
+    "gap": null,
+    "slack": null
+   },
+   "other": {
+    "status": "certified",
+    "Q": 653732376.7483528,
+    "t": 248.28444732587155,
+    "Q_cc": 653732625.0328001,
+    "Q_net": 653732376.7483528,
+    "salvage": 0.0,
+    "band": 716.8192051649094,
+    "gap": null,
+    "slack": null
+   },
+   "I_ref": 0.0,
+   "I_other": 191018.16978426196,
+   "objective_convention_primary": "gross (settlement excluded)",
+   "d_Q": 49692.730476140976,
+   "d_Qcc": 49798.48662960529,
+   "d_Qcc_minus_d_Q": 105.75615346431732,
+   "sign_same_in_Q_and_Qcc": true,
+   "gross": {
+    "rule": "certified_pair_determinacy_floor_v6",
+    "rule_text": "Addendum 61 ruling 2: a difference between CERTIFIED cells is determinate iff |margin| >= max(3 x the larger of the two band widths, 2 TAU); Q_cc beside, report-only, on the same threshold; a difference involving an uncertified cell keeps the uncertified form (3 x max(|gap|, |slack|), both terms) unchanged",
+    "bars": [
+     4209.1713362932205,
+     716.8192051649094
+    ],
+    "larger_bar": 4209.1713362932205,
+    "three_x_larger_bar": 12627.514008879662,
+    "two_tau": 9078.136550000001,
+    "threshold": 12627.514008879662,
+    "binding_term": "3 x larger bar",
+    "margin_Q": 49692.730476140976,
+    "margin_Qcc": 49798.48662960529,
+    "verdict": "determinate",
+    "verdict_Qcc_report_only": "determinate",
+    "margin_over_threshold": 3.935274230636139,
+    "superseded_rule_report_only": {
+     "rule": "settled_vs_settled",
+     "resolution": 4925.99054145813,
+     "verdict": "determinate",
+     "margin_over_resolution": 10.08786558924889
+    }
+   },
+   "verdict": "determinate",
+   "d_primary": 49692.730476140976,
+   "sign_primary_positive": true,
+   "gross_superseded_report_only": {
+    "rule": "settled_vs_settled",
+    "resolution": 4925.99054145813,
+    "verdict": "determinate",
+    "verdict_Qcc_report_only": "determinate",
+    "margin_over_resolution": 10.08786558924889
+   },
+   "verdict_superseded_rule_report_only": "determinate",
+   "verdict_changed_by_v6": false,
+   "scorer": "v6 (p515_s53_w142_determinacy.score_claim_v6)"
+  }
+ ],
+ "claims_complete": [
+  "C:y2025__n5_p0.25_e0.5",
+  "E:C3_unit_value_minus_I",
+  "E:n7_4h_e1_C2:value_minus_I",
+  "E:n7_4h_e1_C2:vs_C3",
+  "E:n7_4h_e1_C2_calfade:value_minus_I",
+  "E:n7_4h_e1_C2_calfade:vs_C3",
+  "E:n7_4h_e1_C3_midblock:value_minus_I",
+  "E:n7_4h_e1_C3_midblock:vs_C3",
+  "E:n7_4h_e1_C4:value_minus_I",
+  "E:n7_4h_e1_C4:vs_C3",
+  "E:n7_4h_e1_no_ageing:value_minus_I",
+  "E:n7_4h_e1_no_ageing:vs_C3"
+ ],
+ "restated_statements_definitions": {
+  "S1_x_c3_multipliers": {
+   "statement_050": "x C3 measured (value_a / value_C3): C2 1.126, C4 1.058, C2 + phi_cal 0.985 1.046, C3 with mid-block health 1.009, no ageing 1.216 (A28 table); rounded 1.13 / 1.06 / 1.05 / 1.01 / 1.22 (A30 manuscript item 1)",
+   "source": [
+    "P5_15_ADDENDUM28_AGEING_REPORT.md section 2 table (82bda45a)",
+    "P5_15_ADDENDUM30_PHASE_B_REPORT.md section 6 item 1 (d04caba7)",
+    "ageing_mechanism.json b5eca2a2 table[].value_over_C3"
+   ],
+   "restated_as": "value_a / value_C3unit at 0.70, value = Q(0) - Q (gross; Q_cc beside); the vs_C3 claim of the arm (W117 E:<arm>:vs_C3, W132 resolution rule) says whether the ratio differs from 1 determinately"
+  },
+  "S2_I_over_value_sensitivity_band": {
+   "statement_050": "the smallest unit needs x1.21 more value (C3-era, I / value_C3); under C2 x1.08; under no ageing it breaks even",
+   "source": [
+    "P5_15_ADDENDUM30_PHASE_B_REPORT.md section 6 item 1",
+    "P5_15_ADDENDUM28_AGEING_REPORT.md section 5 question 3",
+    "ageing_mechanism.json b5eca2a2 (value_eur) with I = 317,957.0085 (W117 I_other of the unit)"
+   ],
+   "restated_as": "I / value_a per arm at 0.70; beside it the arm's value - I claim verdict"
+  },
+  "S3_convention_does_not_decide_the_sign": {
+   "statement_050": "the ageing convention does not decide the sign: under none of the variants does the smallest unit pay determinately",
+   "source": [
+    "P5_15_ADDENDUM28_AGEING_REPORT.md title and section 1 item 1"
+   ],
+   "restated_as": "W117's 11 E claims scored on W132's resolution rule; per arm the sign of value - I read as + (determinate positive), - (determinate negative), 0 (within resolution / indeterminate). The statement HOLDS (restated) iff no arm is + (A28's sentence); \"the convention decides the sign\" iff one arm is + and another - (reported beside). Worker operationalisation, FOR PLANNER CONFIRMATION"
+  },
+  "S4_break_even_needs_no_ageing_at_all": {
+   "statement_050": "Break-even needs no ageing at all. Value then equals I within 485 EUR. Any physical fade leaves the smallest unit negative or indeterminate.",
+   "source": [
+    "P5_15_ADDENDUM28_AGEING_REPORT.md section 2, readings"
+   ],
+   "restated_as": "no_ageing: value - I within resolution (0); every aged arm (C3 unit, C2, C4, C2_calfade, C3_midblock): - or 0, never +. Both components reported"
+  },
+  "S5_elasticity_to_available_energy": {
+   "statement_050": "value is sub-proportional to available energy: elasticity ln(value ratio) / ln(AE ratio) 0.60 (C2) - 0.62 (no ageing) over the two resolvable variants; approx 0.6 at fixed power",
+   "source": [
+    "P5_15_ADDENDUM28_AGEING_REPORT.md section 2 mechanism table",
+    "P5_15_ADDENDUM30_PHASE_B_REPORT.md section 6 item 2",
+    "ageing_mechanism.json b5eca2a2 formulas.elasticity; p515_s46_ageing_mechanism.py"
+   ],
+   "restated_as": "eps_AE_a = ln(value_a / value_C3) / ln(AE_a / AE_C3) at 0.70 (AE by the committed formula); an arm is resolvable iff its vs_C3 claim is determinate (A28's asterisk rule restated)"
+  },
+  "S6_midblock_x1009": {
+   "statement_050": "the mid-block variant moves almost nothing (x1.009, against the Advisor's ~9 % estimate)",
+   "source": [
+    "P5_15_ADDENDUM28_AGEING_REPORT.md section 2, readings",
+    "ageing_mechanism.json b5eca2a2 (C3_midblock value_over_C3)"
+   ],
+   "restated_as": "value_C3midblock / value_C3unit at 0.70 with the E:n7_4h_e1_C3_midblock:vs_C3 verdict"
+  },
+  "S7_floor_year_per_arm": {
+   "statement_050": "soh_min is 0.50 in every variant, and no floor row was active (A28); under the baseline the 0.70 floor binds in the 2035 block at every point (A30)",
+   "source": [
+    "P5_15_ADDENDUM28_AGEING_REPORT.md section 2 (Floor)",
+    "P5_15_ADDENDUM30_PHASE_B_REPORT.md section 1 item 2"
+   ],
+   "restated_as": "per arm the floor year (definitions.per_cell.floor_year) beside the value"
+  }
+ },
+ "definitions": {
+  "objective_convention": "Q = gross_operational_cost, settlement EXCLUDED (primary; Addendum 58 Ruling 3); Q_net = net_operational_recourse = Q - terminal salvage credit, reported BESIDE gross on every G row and on any claim stated net; t_sum = the priced interface-consensus gap sum w * pi * (p_DSO - p_TSO) (EUR); Q_cc = Q + t_sum, a FIRST-ORDER consensus-consistent DIAGNOSTIC",
+  "per_cell": {
+   "end_cycle": "k* (certified) or the cap (uncertified); every per-cell value below is read at the end cycle",
+   "k_star": "the cycle the settling rule v3 (reading alpha) certified; None when uncertified at its cap",
+   "first_k0_v2": "the run's first residual pass under the version-2 definition (holds and dynamic cap keyed on it)",
+   "first_k0_alpha": "the first k0 of the reading-alpha rule",
+   "band": "[min, max] Q over the certifying window (uncertified: over the last L = 60 cycles)",
+   "s": "gated cells: s = Q(end) - Q_N_old (Q_N_old = the ORIGINAL record's last cycle); ungated: undefined",
+   "Q_net": "net_operational_recourse of the end cycle (per_cycle_record recourse)",
+   "non_optimal_cycles": "cycles whose all_optimal_k is False (every block's final exit; ESSO included)",
+   "gamma_report_only": "reading gamma's decision (report-only)",
+   "terminal_step_to_threshold": "|dQ_last| / EPS0; range / tau at k* (certified); production's rule ten (objective_change_abs / objective_tolerance) of the last row (CLAUDE.md)",
+   "pf_primal_slope_last_50": "OLS slope of boyd_pf_primal_ratio on the cycle over the last 50 cycles ending at the end cycle (per_cycle_record; report-only)",
+   "arm": "the E arm (W134 arm definitions table); None for pb",
+   "model_variant": "the arm's model_variant, applied in the child and read back (G9 replacement)",
+   "floor_year": "W.floor_year_reading at the end cycle (k* or the cap): the first block year whose node-7 floor row (cohort 2025) is active in soh_floor_sidecar_baseline.jsonl (active = |SoH - soh_min| <= 1e-6); None when no floor row is active",
+   "AE": "p515_s46_ageing_mechanism.pv(SoH_used per block): sum_y w_y SoH_used[y] / sum_y w_y, w_y = 1 / 1.02**(y - 2025); SoH_used = soh_used_for_available_energy of node 7, cohort 2025, from the record's ageing_trajectory_terminal",
+   "EFC": "p515_s46_ageing_mechanism.pv(efc_per_day per block), the same source"
+  },
+  "uncertified_form": {
+   "frozen_v2_form": "band [min, max] over the last L = 60 cycles; drift rate = mean dQ over the last 25; dQ_cc rate = mean (dQ + dt_sum) over the same cycles; t_sum and Q_cc at the cap; reasons",
+   "gap_refused_cell": "a cell uncertified at its cap with at least one gap-clause refusal (decision gap_refusals non-empty) -- Addendum 58 Ruling 1, generalised",
+   "gap_refused_label": "objective settled; interface-consensus gap unresolved (degenerate dual)",
+   "gap_refused_carries": "the label; the pf-primal slope over the last 50 cycles; t_by_node at the cap; the drift rate; the dQ_cc rate; gap = |t_sum at the cap|; slack = |s| (gated)",
+   "determinacy_rule": "a difference involving an uncertified cell is DETERMINATE iff its margin exceeds BAR = 3 x max(|gap_u|, |slack_u|) over the uncertified cell(s) u of the difference in BOTH gross and Q_cc terms (Addendum 58 Ruling 1; as W130 applied it: 3 x max(9,234.42, 1,461.49) = 27,703.27); margin_Qcc = |d_Qcc| if sign(d_Qcc) == sign(d_Q), else -|d_Qcc|; an ungated uncertified cell has no slack -> INDETERMINATE (slack undefined)"
+  },
+  "claims": {
+   "source": "W117 claims (w117_triage_recompute.json, 3b2e76de): the 11 item-E claims and the Phase B claim C:y2025__n5_p0.25_e0.5, each with its W117 definition (form, I_ref, I_other, net_of_salvage); the cells are this campaign's (the original eval keys mapped to the W135 cells) and the settled x0 reference (d110bd1a for 7aa017f0)",
+   "form_F": "d = [Q(o) + I(o) - SV(o)] - [Q(r) + I(r) - SV(r)], SV = salvage only for the net figure",
+   "form_value": "d = [Q(r) - Q(o)] - [I(o) - I(r)] (value - I; delta-value - delta-I)",
+   "d_Qcc": "the same with every Q replaced by Q_cc = Q + t_sum",
+   "net_beside": "d_net: the F form with Q_net (G rows: primary per the claim's own convention, the other beside)",
+   "resolution_settled_vs_settled": "both cells certified (settled): resolution = band_r + band_o (the sum of the two band widths); determinate iff |d| > resolution (gross verdict; Q_cc beside, report-only)",
+   "resolution_with_an_uncertified_cell": "the determinacy rule of the uncertified form (above)",
+   "verdict_words": "determinate | within resolution | indeterminate (slack undefined) | not scored (a cell has no result yet)"
+  },
+  "value": "value_a = Q(0) - Q_a, Q(0) = the settled x0 Q181 (d110bd1a); value_Qcc likewise with Q_cc = Q + t_sum",
+  "weighted_resolution": "UNCHANGED in v6 (Addendum 61 rules differences between two certified cells; its extension to this weighted three-cell difference is not ruled -- recorded for the Planner). Worker generalisation of W132's rule to a difference sum_i c_i Q_i over three cells (the expert prediction): all certified -> resolution = sum_i |c_i| band_i (W132's sum of the two band widths when |c_i| = 1), gross verdict, Q_cc beside; any uncertified ungated cell -> indeterminate (slack undefined); an uncertified gated cell -> bar = 3 x max(|c_i| gap_i, |c_i| slack_i) over the uncertified cells, both terms (W132's form when |c_i| = 1). FOR PLANNER CONFIRMATION"
+ },
+ "predictions": {
+  "expert_addendum58_supplement": {
+   "statement": "the arms where the floor binds show a smaller value change per unit of cycle life than the 0.50-based elasticity implied, since end-of-life caps the value before cycle life does",
+   "source": "PLANNER_BRIEF_2026-09-13.md Addendum 58 Supplement (2026-09-29), expert",
+   "operationalisation": "as the Planner accepted it (task W135): eps_k,a = ln(v_a / v_C3) / ln(k_a / k_C3), k = N * D / (-ln R) (N, D the file's calibration), for the aged arms whose k differs from C3: C2, C4, C2_calfade; v = value (gross; Q_cc beside). For each such arm WHOSE FLOOR BINDS (floor_year not None), the prediction HOLDS iff eps_k^0.70 < eps_k^0.50; an arm whose floor does not bind is not scored",
+   "references_050": {
+    "C2": 0.105,
+    "C4": 0.085,
+    "C2_calfade": 0.039,
+    "source": "ageing_mechanism.json b5eca2a2: ln(value_over_C3) / ln(k_a / k_C3), k_C3 = 11,541.56, k_C2 = 35,851.36, k_C4 = 22,429.3 (recomputed at every freeze and checked to round to these)"
+   },
+   "determinacy": "W132's resolution rule on the difference, generalised (definitions.weighted_resolution): eps^0.70 < eps^0.50 <=> d = rho_a (Q0 - Q_C3) - (Q0 - Q_a) > 0 with rho_a = (k_a / k_C3)**eps^0.50 (ln(k_a / k_C3) > 0 for all three arms); d = Q_a - rho_a Q_C3 - (1 - rho_a) Q0, coefficients (1, -rho_a, -(1 - rho_a)) on (arm, C3 unit, x0)",
+   "weak_testability": "the 0.50 references are themselves PENDING under W117: every E:<arm>:vs_C3 difference at 0.50 was within its resolution (W117 verdict_R1 \"pending\" on all 5 vs_C3 claims; A28 marks C4, C2_calfade and mid-block \"not resolvable\"), so eps^0.50 has no resolved value and the comparison is weakly testable; recorded, not a reason to skip the score"
+  },
+  "c2_calfade_consistency_planner": {
+   "statement": "on the current file C2_calfade IS the baseline (C2 calibration 0.80, phi_cal 0.985, 'end', on, soh_min 0.70): its run must reproduce the settled unit 3f084f2f's trajectory bitwise through that run's certifying cycle 172, or explain the first difference. This validates the variant plumbing",
+   "source": "Planner task W135",
+   "criterion": "Q (per_cycle_record gross_operational_cost) at every cycle 1..172 equals 3f084f2f's EXACTLY (W.trajectory_equality, JSON text of the float); every other shared per_cycle_record field compared the same way, report-only; gate G28 (e_c2_calfade only); a failure stops the campaign for the Planner (exit 3)",
+   "expected_equality_reasoning": [
+    "MODEL: apply_model_variant writes eol 0.80 and phi 0.985 -- the values the file already loads -- and re-applies production's EnergyStorageAgeingParameters.apply_to, which recomputes cl_eff = k from the same (N, D, R) floats: every ESS constant bit-identical; the two switches are set to their defaults ('end', True); soh_min is not a variant key. Checks M assert the freshly built ESSO models of the variant path and the baseline path are identical row by row (zero solves) before any run",
+    "CONFIGURATION HOOK: the baseline path builds one probe set for the ESS-ageing readback; the variant path builds one probe set for the variant readback (the ESS-ageing readback is skipped); both discard the probes. No run model is touched",
+    "IDENTITY: the eval key, eval dir and working-dir ids differ (the base key carries the variant; the resettle key wraps it) -- names only; W118 / W132 replayed originals bitwise under new keys",
+    "HOLDS: the W101 unit run held from 113 (its N = 112); this run holds from k0_run + 1 = 104 if its first residual pass is 103. On 104..112 the unit's natural regime already was the held regime (AA off by production, tail passed active, rho frozen, every cycle a residual pass; checks O), and the AA hold passes a copy of production's Boyd metrics with all_boyd_pass already True -- so the holds change no value there; from 113 both runs hold",
+    "STOP: settling rule v6 here (W142), v1 in W101; the rule reads the trajectory, it does not change it. W142 v6 from records (w142_v6_from_records.json): v6 on the unit's record (no non-clean cycle) certifies at 172, and the dynamic cap min(103 + 109, 300) = 212 equals W101's N + 100 = 212",
+    "SALVAGE: the health basis NORMALIZED_ABOVE_MINIMUM_SOH reads soh_min 0.70 from the file in both paths; salvage is reporting-only and outside gross (Addendum 58 Supplement)",
+    "WHERE A DIFFERENCE MUST ARISE if one appears: (i) at cycle 104..112 with a hold_changed_value flag in the cycle line (the held regime differing from the natural one) -- a hold effect, not the variant; (ii) at cycle 1 with an identical model -- nondeterminism or a working-dir effect (then the W118 precedent is contradicted); (iii) at cycle 1 with a model difference -- impossible if checks M held; the diagnosis is recorded beside the first difference (G28 detail)"
+   ]
+  },
+  "advisor_secondary": {
+   "statement": null,
+   "note": "NONE EXISTS: no Advisor prediction for the ageing arms at 0.70 or for the pb re-run was transcribed (TASKS.md Addendum 58 section and the brief's Addendum 58 Supplement searched); its absence is recorded",
+   "source": "Planner task W135 (\"Advisor secondary: none exists. Record its absence\")"
+  },
+  "walls": {
+   "statement": "E approx 7.7 h expected, 9.8 h worst (6 cells); pb approx 1.2 h",
+   "source": "W134, as transcribed in Planner task W135 (this spec's own estimate is expected_wall_time)"
+  },
+  "per_claim_numeric_predictions": {
+   "statement": null,
+   "note": "NONE transcribed for the E claims or the pb claim beyond the expert's and the Planner's above (Planner task W135 names no other)",
+   "source": "Worker search record (W135)"
+  }
+ },
+ "c2_calfade_consistency": {
+  "reproduced": true,
+  "field": "gross_operational_cost",
+  "through": 172,
+  "first_difference": null,
+  "first_difference_any_shared_field_report_only": null,
+  "diagnosis": null,
+  "run_last_cycle": 172,
+  "run_Q_last": 653620162.5657823,
+  "unit_Q_172": 653620162.5657823,
+  "reference": {
+   "eval_dir": "data/SRP1/Results/P515S53/w101_srp1_continuation/campaign_s53_w101_srp1_cont_n7_4h_e1/evals/3f084f2ffaeef2b7_n7_4h_e1",
+   "per_cycle_record_sha256": "fd8aad17f8a8a40e1ca73a2af2d5edeeee83e2d3265f2bdad8c38c68fb41b324"
+  }
+ },
+ "inputs_sha256": {
+  "data/SRP1/Results/P515S53/w142_resettle_ext_v6/campaign_s53_w142_resettle_ext_v6_e_c3_unit/campaign_results.json": "032d82bfb4792521a8c250eca520ae3485d0eb2fc4919ca4e2027fbd55d7f18e",
+  "data/SRP1/Results/P515S53/w142_resettle_ext_v6/campaign_s53_w142_resettle_ext_v6_e_c2/campaign_results.json": "9ddf2659ba61d6e956ae2a2183dd6b36fc5e62ab9518570248ee4d665510cba0",
+  "data/SRP1/Results/P515S53/w142_resettle_ext_v6/campaign_s53_w142_resettle_ext_v6_e_c4/campaign_results.json": "dbe441118990072d01bc81b40facce60f122ab3b678b69aa8a16377caff7064c",
+  "data/SRP1/Results/P515S53/w142_resettle_ext_v6/campaign_s53_w142_resettle_ext_v6_e_c2_calfade/campaign_results.json": "850206a2a57e26f22ba787266aa9c37edb76894e8a3aa956c819f35104cf2b34",
+  "data/SRP1/Results/P515S53/w142_resettle_ext_v6/campaign_s53_w142_resettle_ext_v6_e_c3_midblock/campaign_results.json": "5466aa4a7e312c6f12c0ec9fb6acb80087a189e7dd96e2f7abd0bdf648fd534f",
+  "data/SRP1/Results/P515S53/w142_resettle_ext_v6/campaign_s53_w142_resettle_ext_v6_e_no_ageing/campaign_results.json": "a1ed9ffa0735ef1cc7a5e0183e0eeff96e3f030c0de88a9832888d9d5041e13e",
+  "data/SRP1/Results/P515S53/w142_resettle_ext_v6/campaign_s53_w142_resettle_ext_v6_pb_y2025_n5_v6/campaign_results.json": "4550cbcb47da679daaffefaf9878e1b2ccfd6ff4bf1ad4d674a09f539d128aeb",
+  "data/SRP1/Results/P515S53/w101_srp1_continuation/campaign_s53_w101_srp1_cont_x0/evals/d110bd1a5977df1e_x0/settling_decision.json": "6c559f2fc39a79dcd54e9339541fb09b599f87689c26a489a8e7e77b17e80be6",
+  "data/SRP1/Results/P515S53/w101_srp1_continuation/campaign_s53_w101_srp1_cont_x0/evals/d110bd1a5977df1e_x0/per_cycle_record.jsonl": "bf38d5a54938e597c6508c6a64c9f8ee6a84aac14f897a556b939fc409d840dc",
+  "data/SRP1/Results/P515S53/w101_srp1_continuation/campaign_s53_w101_srp1_cont_x0/evals/d110bd1a5977df1e_x0/interface_settlement_detail_s31c.json": "ec59332e8eb3bfce8a7586f52c965078ac3641bf87888c499ac9275981e44403",
+  "data/SRP1/Results/P515S53/w101_srp1_continuation/campaign_s53_w101_srp1_cont_n7_4h_e1/evals/3f084f2ffaeef2b7_n7_4h_e1/settling_decision.json": "566904472876b800e65f79c47eea7da3f7b1a8d8addf409374322126220d6ec9",
+  "data/SRP1/Results/P515S53/w101_srp1_continuation/campaign_s53_w101_srp1_cont_n7_4h_e1/evals/3f084f2ffaeef2b7_n7_4h_e1/per_cycle_record.jsonl": "fd8aad17f8a8a40e1ca73a2af2d5edeeee83e2d3265f2bdad8c38c68fb41b324",
+  "data/SRP1/Results/P515S53/w101_srp1_continuation/campaign_s53_w101_srp1_cont_n7_4h_e1/evals/3f084f2ffaeef2b7_n7_4h_e1/interface_settlement_detail_s31c.json": "81a94f88f3542ac64e983741a66124e839dd825bebf905b8639261f12f297ad0",
+  "data/SRP1/Results/P515S53/w118_resettle/w118_resettle_summary.json": "34df1c15e27f37951d7e09c8bb43c91f75dc1d6a8bfa9faef196432964c56aa5",
+  "data/SRP1/Results/P515S46/ageing_mechanism/ageing_mechanism.json": "b5eca2a238bb4383dfda026bdf675a3878feba9235c8eabef66d02c7bf6d1a1f"
+ }
+}
