@@ -142,7 +142,7 @@ uneconomic at SRP1. This matches the 0.50-era reading, now on settled numbers.
 | 5 % | 225,232 | 0.708 | −92,725 | determinate (7.1×) |
 | 8 % | 203,367 | 0.640 | −114,590 | determinate (8.8×) |
 
-- **Discount rate:** no rate makes the unit pay. The rate cannot decide the sign, as Addendum 30 stated.
+- **Discount rate:** no rate makes the unit pay. The rate cannot decide the sign, as Addendum 28 stated.
 - **Captured spread:** 59.0 € per MWh-cycle, inside the expert's 55–60 expectation (Addendum 28: **held**). That is
   0.60 of the market's top-4 h spread.
 - **Comparing with the pre-settling row:** that row also differs in ageing configuration (C3, soh_min 0.50), so the
