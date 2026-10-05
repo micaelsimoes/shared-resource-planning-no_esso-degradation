@@ -66,7 +66,8 @@
 ## Addendum 64 order — two cells, net-of-salvage check, Step 6 package
 
 - [ ] **▶ Advisor — design check**: m = 1.75 pair (unit + x = 0 at m 1.75: value needs both — the handback said "one cell", a Planner error) and the soh_min 0.50 variant key (new files; bitwise gate C2_calfade at 0.70 = 3f084f2f through 172); predictions
-- [ ] **▶ W154 — net-of-salvage scorer reproduces 3 more recorded rows** from different claim families (zero-solve) before any net figure enters a table
+- [x] **W154 — stopped at search (nothing built):** recorded net differences exist **only in the G (year-ladder) family** (8 v6 G rows; W118 year ladder in prose at 0.1 €; 20 Phase A A1b G:*:net rows in w117_triage_recompute.json) — the "three families" condition cannot be met literally (scoped search: tracked md/py/json on this branch, specs, summaries, reports; other branches not content-searched). **For the expert at the Step 6 review**
+- [ ] **▶ W154b — substitute validation** (zero-solve): per-family form check on gross for all 60 claims (W153 code path reproduces recorded gross d_Q + verdict) + per-cell salvage identity + the 20 A1b G net rows at full precision + W118 at prose precision; net figures enter tables labelled accordingly, pending the expert
 - [ ] W155 — build + freeze the new extension spec (new files only); dry run; predictions recorded before the run
 - [ ] W156 — run the m = 1.75 pair and the soh_min 0.50 cell (attached, one at a time)
 - [ ] Step 6 package: (i) results tables gross + net beside, bars, multiples, status; (ii) certification paragraph; (iii) limitations; (iv) reproducibility note; (v) prediction scorecard; (vi) response-to-reviewers map (R3.6 rows; the 18.25 % figure's replacement stated)
