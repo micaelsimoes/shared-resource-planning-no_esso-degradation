@@ -41,7 +41,8 @@ WHAT IS CHECKED
 
 Run (repo root, canonical interpreter, attached, alone, both streams captured):
   set -o noclobber && /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python -u p515_s53_w155_a64_checks.py \\
-      > data/SRP1/Results/P515S53/w155_a64_cells/zero_solve_checks_launch.log 2>&1
+      > data/SRP1/Results/P515S53/w155_a64_cells/zero_solve_checks_r2_launch.log 2>&1
+(r1 wrote w155_zero_solve_checks.json, commit 985c1558, superseded -- see SUPERSEDED_CHECKS_OUTPUT.)
 """
 import pickle
 
@@ -116,10 +117,18 @@ GUARDS = _dedupe((('w155_checks', GUARD),) + tuple(KX.GUARDS) + tuple(K142.GUARD
 _P53 = os.path.join('data', 'SRP1', 'Results', 'P515S53')
 ROOT_REL = os.path.join(_P53, 'w155_a64_cells')
 OUT_DIR_REL = os.path.join(ROOT_REL, 'zero_solve_checks')
-OUT_FILE = 'w155_zero_solve_checks.json'
-OUT_MANIFEST = 'w155_zero_solve_checks_manifest_sha256.json'
-TYPING_OUT = 'w155_bool_typing_test.json'
-CAMPAIGN_ID_PREFIX = 's53_w155_a64_'
+# r2 (W155): the r1 output (w155_zero_solve_checks.json, aa153f50, commit 985c1558) and the r1 campaign specs
+# (campaign ids s53_w155_a64_<cell>, commit 39859d1b) stay committed, unchanged and superseded: r1's section K counted
+# the committed W155 entries in the regression total without comparing them (a checks defect that refused the stage-spec
+# freeze once the r1 specs were committed). r2 compares them by the formula inside the own root and writes new names.
+OUT_FILE = 'w155_zero_solve_checks_r2.json'
+OUT_MANIFEST = 'w155_zero_solve_checks_r2_manifest_sha256.json'
+TYPING_OUT = 'w155_bool_typing_test_r2.json'
+CAMPAIGN_ID_PREFIX = 's53_w155_a64_r2_'
+SUPERSEDED_CAMPAIGN_ID_PREFIX = 's53_w155_a64_'
+SUPERSEDED_CHECKS_OUTPUT = {'path': os.path.join(ROOT_REL, 'zero_solve_checks', 'w155_zero_solve_checks.json'),
+                            'sha256': 'aa153f50a1b55dadf971a7f0f6fc63f200aab6b9107403761546c2d384b23e2b',
+                            'commit': '985c1558'}
 KEY_EXCLUDED_ROOTS = (ROOT_REL,)
 # the harness before W155 (pinned by the v6 and extension-v6 stage specs 96c23404 / 84775dc4; last changed by 7914860f,
 # W142's router commit)
@@ -866,6 +875,7 @@ def tests_K():
     pre, pre_sha, _src = _harness_pre_w155()
     n_specs = n_entries = n_equal = 0
     mismatch, errors, scanned = [], [], []
+    own = {'n': 0, 'ok': 0, 'bad': []}
     for rel in sorted(p for p in H._git(['ls-files', 'data/*campaign_spec_*.json']).splitlines() if p.strip()):
         spec = json.load(open(_abs(rel)))
         n_specs += 1
@@ -876,6 +886,18 @@ def tests_K():
                 args, kw = K132._key_args(spec, e)
                 rs = e.get('settling_resettle')
                 if M.is_w155_declaration(rs):
+                    own['n'] += 1
+                    decl = M.validate_settling_resettle(rs)
+                    formula = hashlib.sha256(json.dumps({'base_evaluation_key': pre.evaluation_key(*args, **kw),
+                                                         'settling_resettle': decl}, sort_keys=True,
+                                                        separators=(',', ':')).encode()).hexdigest()
+                    now = H.evaluation_key(*args, settling_resettle=decl, **kw)
+                    inside = rel.startswith(ROOT_REL + os.sep)
+                    if inside and now == formula == H._entry_eval_key(e):
+                        own['ok'] += 1
+                    else:
+                        own['bad'].append({'spec': rel, 'label': e.get('label'), 'inside_own_root': inside,
+                                           'formula_equals_frozen': formula == H._entry_eval_key(e)})
                     continue
                 new = H.evaluation_key(*args, settling_resettle=rs, **kw)
                 old = pre.evaluation_key(*args, settling_resettle=rs, **kw)
@@ -920,7 +942,8 @@ def tests_K():
     all_keys = {v['resettle_key'] for v in keys.values()}
     parts = {
         'key_regression_no_mismatch': not mismatch, 'key_regression_no_errors': not errors,
-        'key_regression_every_entry_equal': n_equal == n_entries and n_entries > 0,
+        'key_regression_every_other_entry_equal': n_equal == n_entries - own['n'] and n_entries > 0,
+        'own_w155_entries_inside_the_own_root_follow_the_formula': own['ok'] == own['n'] and not own['bad'],
         'w155_formula_holds_every_cell': all(v['formula_holds'] for v in keys.values()),
         'w155_base_equals_pre_w155_every_cell': all(v['base_equals_pre_w155'] for v in keys.values()),
         'w155_keys_distinct': len(all_keys) == len(keys) == 4,
@@ -942,6 +965,7 @@ def tests_K():
     return {'holds': all(v is True for v in parts.values()), 'parts': parts,
             'pre_w155_harness': {**PRE_W155_HARNESS, 'sha256_loaded': pre_sha},
             'committed_specs_scanned': n_specs, 'committed_entries_scanned': n_entries, 'entries_equal': n_equal,
+            'own_w155_entries': {'n': own['n'], 'ok': own['ok'], 'bad': own['bad'][:20]},
             'mismatches': mismatch[:20], 'errors': errors[:20], 'resettle_keys': keys,
             'extension_v6_keys': ext_keys, 'v6_h_keys': v6_h_keys, 'w155_keys_in_committed_specs_all_REPORTED': holders,
             'controls': ctl, 'control_own': {'rel': own_rel, 'holders': own_holders}}
@@ -1059,7 +1083,11 @@ def main():
     code_pins = {rel: H.sha256_file(_abs(rel)) for rel in CODE_PINNED_BY_CHECKS}
     guards = guards_report()
     pickle_ok = PICKLE_COUNTS == {'load': 0, 'loads': 0}
-    doc = {'schema': 'p515_s53_w155_zero_solve_checks_v1',
+    doc = {'schema': 'p515_s53_w155_zero_solve_checks_v1', 'revision': 'r2',
+           'supersedes': dict(SUPERSEDED_CHECKS_OUTPUT, reason=(
+               'r1 section K counted the committed W155 entries in the regression total without comparing them; once '
+               'the r1 campaign specs were committed the inline re-run refused the stage-spec freeze '
+               '(key_regression_every_entry_equal). r2 compares every W155 entry by the formula inside the own root')),
            'task': 'W155 (PLANNER_BRIEF_2026-09-13.md Addendum 64)',
            'started_utc': started, 'finished_utc': _utc(), 'git_head': H._git(['rev-parse', 'HEAD']),
            'code_sha256': code_pins, 'guards': guards, 'pickle_guard': dict(PICKLE_COUNTS),

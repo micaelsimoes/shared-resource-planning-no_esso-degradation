@@ -111,6 +111,31 @@ PREDECESSOR = {'series': 'frozen_s53_resettle_ext_spec', 'version': 3, 'path': K
                           'unchanged; this spec is the first of a new series for the Addendum 64 cells (the v6 rule, the '
                           'v6 state and the extension readers reused by import)')}
 CAMPAIGN_IDS = {cell: f'{K.CAMPAIGN_ID_PREFIX}{cell}' for cell in M.CELL_ORDER}
+# r1 (superseded before any stage spec was frozen; committed 39859d1b, never run): its campaign specs stay committed and
+# unchanged under their own roots; they carry the SAME eval keys as r2 (same candidate x configuration x declaration) and
+# differ only in campaign id, working-dir ids and pinned code. Reason: the r1 checks (985c1558) section K counted the
+# committed W155 entries without comparing them, so the inline re-run refused the stage-spec freeze.
+SUPERSEDED_R1 = {
+    'reason': ('r1 checks section K defect: once the r1 campaign specs were committed, key_regression_every_entry_equal '
+               'failed in the inline re-run at --freeze-spec (W155-SPEC PRECONDITION FAILED, freeze_spec_launch.log); '
+               'the checks were fixed (own W155 entries compared by the formula inside the own root) and everything '
+               'downstream re-frozen under r2 names; nothing was overwritten or deleted'),
+    'checks_output': K.SUPERSEDED_CHECKS_OUTPUT,
+    'campaign_specs': {
+        'g070_neutrality': {'path': os.path.join(ROOT_REL, 'campaign_s53_w155_a64_g070_neutrality',
+                                                 'campaign_spec_s53_w155_a64_g070_neutrality_444dad64.json'),
+                            'sha256': '444dad647adb73fe688a8ca1fb8eadbcc5f503c440b1c15fce6dc5d6520ffa8e'},
+        'h_x0_m175': {'path': os.path.join(ROOT_REL, 'campaign_s53_w155_a64_h_x0_m175',
+                                           'campaign_spec_s53_w155_a64_h_x0_m175_001b3991.json'),
+                      'sha256': '001b399183cbc0828199009c5e2449aa35d7e981126c59d0765b7cc10eccf0af'},
+        'h_unit_m175': {'path': os.path.join(ROOT_REL, 'campaign_s53_w155_a64_h_unit_m175',
+                                             'campaign_spec_s53_w155_a64_h_unit_m175_fbd0a9a0.json'),
+                        'sha256': 'fbd0a9a04a60a551ca218c11cc0f7e65b30d959794169334bcd7f4fb09553061'},
+        'e_soh050': {'path': os.path.join(ROOT_REL, 'campaign_s53_w155_a64_e_soh050',
+                                          'campaign_spec_s53_w155_a64_e_soh050_140c6bba.json'),
+                     'sha256': '140c6bba6bd490dbab69b037a462589ae717aca77718f7172b7abb9629c24808'}},
+    'commits': {'checks_output': '985c1558', 'campaign_specs': '39859d1b'},
+    'status': 'superseded, never run; never to be launched (this launcher only knows the r2 campaign ids)'}
 CONCURRENCY = 1
 RESULTS_FILE = 'campaign_results.json'
 MANIFEST_FILE = 'campaign_manifest_sha256.json'
@@ -1012,6 +1037,10 @@ def _common_checks():
             failures.append(f'references: {rel} not committed / clean')
     if _sha(os.path.join(UNIT_REF_EVAL_DIR, 'per_cycle_record.jsonl')) != M.UNIT_REF['per_cycle_record_sha256']:
         failures.append('references: the 3f084f2f per_cycle_record does not hash to its pin')
+    for c, pin in SUPERSEDED_R1['campaign_specs'].items():
+        if not (os.path.isfile(_abs(pin['path'])) and _sha(pin['path']) == pin['sha256'] and _committed_clean(pin['path'])
+                and sorted(os.listdir(os.path.dirname(_abs(pin['path'])))) == [os.path.basename(pin['path'])]):
+            failures.append(f'superseded_r1: {c} r1 campaign spec not as committed, or its root holds more: {pin}')
     others = _own_process_alive()
     if others:
         failures.append(f'concurrency: another copy of a W155 / W142 / W139 / W137 / W135 / W132 / W118 launcher is '
@@ -1162,7 +1191,7 @@ def stage_spec_content(checks_inline, cf, post_tests, solver, prov, mem, wall, s
             'expected_wall_time': wall['per_cell'][cell]}
     return {
         'schema': 'p515_s53_a64_cells_spec_v1', 'series': SPEC_SERIES, 'version': SPEC_VERSION,
-        'stage_text': STAGE_TEXT, 'predecessor': PREDECESSOR,
+        'stage_text': STAGE_TEXT, 'predecessor': PREDECESSOR, 'superseded_r1_before_this_freeze': SUPERSEDED_R1,
         'authority': [f'{BRIEF} Addendum 64 (run the m = 1.75 cell; the soh_min 0.50 row: variant key in new files, '
                       'Advisor design check, bitwise gate against the settled C2_calfade unit through 172, frozen spec)',
                       'Planner task W155 (the Advisor\'s design check H1-H3; section M; the predictions)',
