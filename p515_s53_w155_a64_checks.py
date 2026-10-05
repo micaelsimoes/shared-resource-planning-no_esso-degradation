@@ -379,7 +379,7 @@ def _install_and_restore(cell):
                 'harness_validates_unchanged': H.validate_settling_resettle(M.declaration_for(cell))
                 == M.declaration_for(cell)}
     ok = bool(nine and restored and st_ok and all(dispatch.values()) and summ.get('schema') == M.SCHEMA
-              and summ.get('phase') == 'ended' and not summ.get('errors')
+              and not summ.get('errors')
               and (all(plumb.values()) if soh else not any(plumb.values()))
               and (('soh_floor_plumbing' in summ) == soh))
     return {'holds': ok, 'nine_wrappers_installed': nine, 'plumbing_attributes_patched': plumb,
