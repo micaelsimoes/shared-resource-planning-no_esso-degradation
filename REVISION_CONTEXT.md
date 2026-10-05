@@ -13,14 +13,83 @@ Act as a technical planner and mathematical-programming reviewer for the shared 
 
 Read this file first. When checking the mathematical formulation, also consult `simoes_2026_revisions.pdf` where relevant and inspect the current implementation before proposing changes. Prefer reviewer-driven implementation and validation plans before production edits.
 
-This file is the repository-wide source of context. **As of 2026-09-18 the active
-authority is `PLANNER_BRIEF_2026-09-13.md` with its Addenda 1–23**; it supersedes
+This file is the repository-wide source of context. **As of 2026-10-05 the active
+authority is `PLANNER_BRIEF_2026-09-13.md` with its Addenda 1–64**; it supersedes
 `COWORK_HANDOFF.md` and the P5.12-R scope formerly governed by
 `LOCAL_NLP_STABILITY_PLAN.md`, which is retained as a historical record.
 
 ---
 
-# CURRENT SOURCE OF TRUTH — 2026-09-18 (P5.15 Step 3 CLOSED; the ADMM oracle is fixed)
+# CURRENT SOURCE OF TRUTH — 2026-10-05 (SRP1 re-settling complete; Step 6 package under review)
+
+Authority: `PLANNER_BRIEF_2026-09-13.md` Addenda 52–64. The latest handoff is `P5_15_STEP6_PACKAGE.md` (`54c7f899`),
+with tables `data/SRP1/Results/P515S53/w157_step6_tables_a64/` (`b913ea94`). The current order is in `TASKS.md`
+(Addendum 64 section): **stopped for review**. The author and the expert review the tables before manuscript text is
+written. Sections below this one are history for their topics. Where they conflict with this section, this section
+governs.
+
+## Certification (frozen: criterion v6, stage spec `96c23404`, extension `84775dc4`, A64 spec `44a2dce8`)
+
+**The certification rule.** A cell certifies at the first cycle where all of these hold:
+- Boyd residuals pass, after which the holds apply: AA off, tight tail on (compl 1e-6), ρ frozen;
+- ≥ 3 turning points since the first residual pass;
+- swings are not growing (swing floor τ/10);
+- the range over the last W cycles is ≤ τ = 4,539.07 €;
+- the gap clause holds: |t_sum| ≤ τ/2;
+- every cycle in the window is clean (reading γ / window (a)). Clean means Optimal, or Acceptable on a primary
+  attempt within 10× the tail tolerances.
+
+There is also a monotone branch (L = 60, |step|·60 ≤ τ).
+
+**Differences between cells.**
+- Determinate between certified cells iff the margin is ≥ max(3 × larger band, 2τ).
+- Uncertified form: bar 3·max(|gap|, |slack|).
+
+## Results (gross, settlement excluded; net beside, validated by form + salvage identity, W154b)
+
+- **The campaign:** 46 SRP1 cells (42 + the 4 Addendum 64 cells): 36 certified, 10 uncertified (5 gap clause /
+  dual dead zone, 2 lapse resets, 3 growth test). Every non-clean cycle after the first residual pass is a TSO
+  recovery; 2035 Spring recurs.
+- **Headline:** x = 0 optimal at SRP1. The unit's value − I is −64,417 (4.93×). The coordination benefit against the
+  best no-reverse-flow arm is +90.9 M€ (13.9 %), which replaces the withdrawn 18.25 %.
+- **Break-even (node 7, slope b + c/4):** 171.3–192.6 k€/MWh. The margin to energy cost is ≥ 61.3 k€/MWh
+  (conservative: `d_4a82a64a` treated as an interval).
+- **Flexibility ladder (1 MWh unit):**
+  - m = 1.5: −14.5 k, within the uncertified bar;
+  - m = 1.75: +14.2 k (1.32×);
+  - m = 2: +46.3 k (3.77×).
+
+  Break-even lies between 1.5 and 1.75.
+- **Energy ladder at m = 2:** every step is determinate.
+- **Ageing at soh_min 0.70:** no aged arm pays (−31.6 to −73.7 k). Without ageing the unit is at break-even (−4.1 k,
+  within resolution).
+- **soh_min 0.50:** +4.9 k against 0.70, within resolution. Value − I at 0.50 is −59.5 k, determinate.
+- **Other claims:**
+  - the F2 certificate holds (12/12 neighbours positive);
+  - x = 0 wins on every C and G row;
+  - every Phase B certificate is determinate;
+  - value − I is negative and determinate at every discount rate.
+
+## Open for the review (`P5_15_STEP6_PACKAGE.md` Decisions 1–4)
+
+1. Substitute net-of-salvage validation: no recorded net rows exist outside the G family.
+2. The ≥ 0.95 τ certificate count is ten.
+3. `d_36686489` is attributed to TSO recoveries, not the dead zone.
+4. Four items have no source.
+
+The post-revision rule question is recorded: "a non-clean cycle cannot be a turning point" (`j_a11d7966`,
+`d_4a82a64a`).
+
+**Post-revision cleanup:**
+- the TSO recoveries (2035 Spring, 2030 Autumn and Winter, 2035 Summer);
+- DSO5 2035 Winter and DSO7 2025 Winter Acceptable exits.
+
+**Machine-local:** `BASH_MAX_TIMEOUT_MS` = 14,400,000 in `.claude/settings.local.json` lets attached runs exceed the
+tool's 2 h limit.
+
+---
+
+# HISTORICAL (was current 2026-09-18) — 2026-09-18 (P5.15 Step 3 CLOSED; the ADMM oracle is fixed)
 
 Supersedes every earlier "current" section for the ADMM configuration and the Step 3 results. Authority:
 `PLANNER_BRIEF_2026-09-13.md` Addenda 1–23. Closing evidence: `P5_15_S39_ORACLE_REPORT.md`,
