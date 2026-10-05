@@ -2741,6 +2741,64 @@ Rulings on `P5_15_ADDENDUM62_H_CLAIM_STOP_NOTE.md` (`53cd9e57`).
 - **Order:** I and J cells → claim point after J (≈ 5–6 h) → remainder → optional m = 1.75 → Step 5
   rows → stop for review before Step 6 tables are frozen.
 
+# Addendum 64 — campaign complete; rulings on the consolidated handback; Step 6 package (2026-10-05)
+
+Rulings on `P5_15_ADDENDUM63_CONSOLIDATED_HANDBACK.md` (`0a56ba88`). Campaign: 42 cells, 32 settled;
+60 claims, 50 determinate; no recorded sign prediction failed.
+
+- **Author's decisions, expert's recommendation: run both.** (1) The m = 1.75 cell (≈ 1.5 h): the
+  flexibility ladder is a headline row — "storage pays at ×2; break-even between 1.5 and 1.75" is a
+  sentence a referee can use, "at or below 1.75" is not. (2) The soh_min 0.50 row (plumbing + ≈ 1.5 h):
+  it is the one Step 5 row that needs a solve, it isolates the floor the ageing row shows binding in
+  2035, and the design is bounded — variant key in new files, Advisor design check, bitwise gate
+  against the settled C2_calfade unit through 172, frozen spec. Together ≈ half a day; the Mac is idle.
+- **3. Slope: b + c/4**, the 4 h marginal slope the break-even price is built from. The 5 % prediction
+  is scored at the midpoints and held on both readings (0.59 %, 0.31 %); the worst corners (7.1 %,
+  3.7 %) are the intervals' sensitivity and are reported as such, not as the prediction's test.
+- **4. Certificates on a non-clean turning point: keep, flag, uncertified form beside** — the veto's
+  window was defined as the cycles the test reads, and these turning points sit outside it, so the
+  certificates are valid under the frozen rule; no verdict depends on them (J 4 MWh at 11.1× when
+  treated as unsettled; break-even margin 61.3 k€/MWh instead of 63.5). **The manuscript uses the
+  conservative figures** (61.3 k€/MWh; J at its uncertified bar) so that nothing rests on the flag.
+  Post-revision rule question, recorded: "a non-clean cycle cannot be a turning point" — the mirror of
+  d_c52e1670, where a blip blocked a certificate.
+- **5. The determinacy floor changed one verdict — expert's Addendum 61 prediction failed on it.**
+  E:C2_calfade vs C3 (+9,329 €, 0.71× threshold) is reported within resolution; S1 restated "within
+  resolution of C3 at a 0.70 floor". Recorded as the prediction's failure, not re-litigated.
+- **6. Ageing restated at the 0.70 floor:** ε_AE 1.04–1.85 (was ≈ 0.6 at 0.50); the expert's
+  floor-binding prediction — point estimate held on C2_calfade, within resolution (0.20×); on C2 and
+  C4 the floor never binds and ε_k rises determinately — scored **"consistent in direction, not
+  resolved at this precision"**, S5 restated. The late-life-tail reading of why the floor raises ε_AE
+  stays a hypothesis in the limitations, not a result.
+- **7. Dead-zone table:** (a) l_0ee93aca entered by its signature with the cause stated (two TSO
+  recoveries reset the rule before the gap clause); (b) h_f9eae48f's TSO-lever column report-only,
+  labelled post hoc.
+- **Before the tables freeze:** the net-of-salvage scorer, validated on 8 of 60 rows, reproduces three
+  more recorded rows from records, zero-solve — chosen from different claim families — before any
+  net figure enters a table. The TSO recoveries' cause (2035 Spring and three other blocks) goes to
+  the post-revision cleanup with the logs preserved, as the handback says.
+- **Results the manuscript carries** (gross primary; net beside where ruled): the handback's table
+  stands, with two sentences the expert wants verbatim: *without ageing the unit is at break-even
+  (−4.1 k€, within resolution); with the baseline calibration and the 0.70 floor it loses 31.6–73.7 k€
+  across the aged arms, determinately* — the degradation-aware framing in one line — and the
+  coordination interpretation sentence of Addendum 58.
+- **Step 6 package, after the two cells:** the Planner assembles (i) the results tables, gross primary
+  and net beside, with bars, multiples and certification status per cell; (ii) the certification
+  paragraph — Boyd residuals, the settling criterion with three turning points, swing floor τ/10,
+  range ≤ τ = 4,539 €, gap clause τ/2, the 10× clean-exit rule and the non-Optimal window rule, the
+  measured post-certification movement (≤ 0.9 τ), bitwise replays, and the uncertified form; (iii) the
+  limitations paragraph — the dual dead zone with large storage and high flexibility price, the TSO
+  recoveries, the RES bound slack with its ≈ 62 MWh-equivalent, the monotone-branch caveat; (iv) the
+  reproducibility note — bitwise 72/72 at 3 × 3, 3/3 and every gated cell at SRP1, the Acceptable
+  blocks, the machine and solver provenance; (v) the prediction scorecard as supplementary material;
+  (vi) a response-to-reviewers map from each reviewer item (R3.6 rows included) to the table or
+  paragraph that answers it, with the 18.25 % figure's replacement stated explicitly. **Stop for
+  review** with the package; the author and the expert review the tables before the manuscript text
+  is written.
+- **Housekeeping.** The brief is edited only by the expert and synced to the repository; the Planner
+  commits it but never edits it. The "file changed on disk" was the Addendum 63 sync landing after
+  the Planner's commit; if it was the handback instead, the author diffs it before forwarding.
+
 ## Update obligations
 
 At the end of Step 1 the Planner rewrites the "CURRENT SOURCE OF TRUTH" head of
