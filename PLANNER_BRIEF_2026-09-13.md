@@ -2799,6 +2799,71 @@ Rulings on `P5_15_ADDENDUM63_CONSOLIDATED_HANDBACK.md` (`0a56ba88`). Campaign: 4
   commits it but never edits it. The "file changed on disk" was the Addendum 63 sync landing after
   the Planner's commit; if it was the handback instead, the author diffs it before forwarding.
 
+# Addendum 65 — Step 6 package reviewed; tables freeze after five closing reads (2026-10-06)
+
+Review of `P5_15_STEP6_PACKAGE.md` (`54c7f899`) and tables `w157_step6_tables_a64` (`b913ea94`). The expert
+read the package in full. **Verdict: accepted, with the rulings and closing reads below; the tables freeze
+once the reads are in.** The two Addendum 64 cells landed as predicted: the unit pays at m = 1.75
+(+14.2 k€, 1.32×) so the break-even sits between 1.5 and 1.75; the 0.50 floor adds +4.9 k€, within
+resolution, and the unit still loses 59.5 k€ determinately — the floor is not what makes storage
+uneconomic at SRP1.
+
+- **1. Net-of-salvage validation: substitute accepted.** Net differs from gross by the salvage term
+  alone; the form reproduces all 60 gross results bitwise, the identity Q − salvage − Q_net = 0 holds on
+  all 50 cell records, and the 20 independent G rows match to 5 × 10⁻⁸ €. The label "validated by form +
+  salvage identity" stays on every non-G net figure. Net remains secondary.
+- **2. The ≥ 0.95 τ count: ten**, the Planner's scope — every certificate the tables use, superseded
+  certificates excluded, bitwise twins counted once. The certification paragraph says: "ten of the
+  certificates the tables use stop within 5 % of τ; the rule bounds each cell's stopping error at
+  about τ, not well inside it." `i_5a6a88b4` (monotone, 0.939) is flagged in T2 beside them.
+- **3. `d_36686489`: corrected attribution accepted, and the expert's Addendum 62 mechanism is
+  withdrawn for this cell.** The records show a small positive gap (+1.1 k€) and a growth-test failure
+  after five TSO recoveries — not the dead zone. The limitations paragraph states the recoveries.
+- **4. Unsourced items — three become sourced by cheap reads, one by a sentence:**
+  - *Threading.* Read the launch environment the v6 `launch_commands` imply and the current shell for
+    `OMP_NUM_THREADS`; record "unset (OpenMP default)" or the value. Note in the reproducibility
+    paragraph that HSL_MA97 is designed for bit-compatible results independent of the thread count
+    (Hogg & Scott, HSL_MA97 report, 2013) — the Planner confirms the statement against the HSL
+    documentation in the author's `coinhsl-2023.11.17` archive before it is written — which is why the
+    bitwise replays hold regardless of the setting.
+  - *Linear solver banner.* The campaign's IPOPT logs are preserved on disk though not committed: read
+    one v6 banner for "running with linear solver ma97" (and one ESSO log for ma57) and record file, hash
+    and line, zero-solve. The P5.12-R banner is then corroboration, not the source.
+  - *Python, Pyomo, macOS at campaign time.* Read them now from the same machine and environment and
+    verify the environment is unchanged since the campaign (`conda-meta/history` timestamps, no entries
+    after the last v6 launch); record "read 2026-10-06; environment unchanged since the campaign".
+  - *Re-optimised plan per ageing arm.* Not run, and a sentence suffices: under every aged arm the unit —
+    the smallest lattice point — loses determinately, and Phase A measured the value as affine in size
+    with slope below cost, so x = 0 is the optimal plan under each aged arm provided that affinity
+    holds under the arm (stated as the assumption); under no ageing the unit is at break-even within
+    resolution and the plan is indeterminate at this precision. R3.6 is answered with the fixed-plan
+    rows plus this sentence.
+  - *Remaining drift of the monotone certificates at L = 60.* Stays unsourced and is stated as such;
+    seven of eight have range/τ ≤ 0.171 and are not at issue.
+- **Closing reads before the freeze (zero-solve):** (a) confirm from T2's "certifying spec" column that
+  every cell the manuscript tables use was certified under the current configuration or is a settled
+  reference — if any old-configuration certificate remains in a manuscript figure, name it and state
+  its configuration in the reproducibility note; (b) T6 for the manuscript shows **both** uncoordinated
+  arms, not only the best (Addendum 58); (c) the banner, threading and version reads above.
+- **Sentences accepted** as proposed for the m = 1.75 and soh_min rows (with "≈ 1.63 by linear
+  interpolation" in the first), and the two verbatim sentences confirmed in place. The two non-H1
+  benchmark blocks being positive beyond the band means Addendum 58's upper-bound limitation is not
+  triggered — no sentence needed, as the package says.
+- **Scorecard:** accepted as supplementary material in full, the expert's misses included (#2–4, #8,
+  #29, #30 in part, #45 unresolved). It is the paper's honest record of how the numbers were reached.
+- **Division of labour for Step 6 writing.** The Planner exports T1–T10 manuscript-ready (CSV and LaTeX;
+  k€ to one decimal, €/MWh to the nearest 10, multiples to two decimals) with the four draft paragraphs
+  and the reviewer map; the author writes the manuscript and the response letter; the expert reviews
+  the methods, certification and limitations text once drafted. **Main-text set (expert's suggestion,
+  author decides):** headline x = 0 at SRP1; break-even fit; flexibility ladder 1.5/1.75/2; R3.6 ageing
+  rows; year ladder gross and net; discount; benchmark with both arms and the mechanism sentence; the
+  3 × 3 instance (x = 0 optimal, R ∈ [0.909, 0.934]). **Supplementary:** Phase B, C/G, L (F2),
+  certification statistics, dead-zone table, scorecard.
+- **Order:** closing reads → tables frozen (hash recorded) → manuscript-ready export → the author
+  drafts → expert review of methods text. The Mac has no queued run; the post-revision cleanup list
+  (RES slack, ESSO tie-breaker, DSO7/DSO5 Acceptable blocks, TSO recoveries, non-clean turning points,
+  monotone drift at L = 60) is carried in TASKS.md as a separate section.
+
 ## Update obligations
 
 At the end of Step 1 the Planner rewrites the "CURRENT SOURCE OF TRUTH" head of

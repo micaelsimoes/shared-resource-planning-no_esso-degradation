@@ -63,6 +63,23 @@
 - [x] **Consolidated handback** `P5_15_ADDENDUM63_CONSOLIDATED_HANDBACK.md` — author Decisions 1–2 (m = 1.75; soh_min 0.50 row), expert Decisions 3–7 (slope reading; non-clean turning-point certificates j_a11d7966 + d_4a82a64a; floor-changed verdict; ageing restatement; dead-zone table)
 - [x] **RULED (Addendum 64)** — author: run m = 1.75 and the soh_min 0.50 row; expert: slope b + c/4 (scored at midpoints, corners = interval sensitivity); non-clean-turning-point certificates kept + flagged, manuscript uses 61.3 k€/MWh and J 4 MWh at its uncertified bar; E:C2_calfade vs C3 within resolution (A61 prediction failed, recorded); ageing "consistent in direction, not resolved", S5 restated, late-life-tail reading stays a hypothesis; dead-zone table 7(a)/(b)
 
+## Addendum 65 order — closing reads, tables freeze, manuscript-ready export
+
+- [x] **RULED (Addendum 65):** (1) net substitute accepted, label stays, net secondary; (2) ≥ 0.95 τ count = ten, with the addendum sentence; i_5a6a88b4 (0.939, monotone) flagged beside in T2; (3) d_36686489: recoveries, not the dead zone — the A62 mechanism withdrawn for this cell; (4) unsourced items: threading / banners / versions by cheap reads, R3.6 re-optimised plan by the addendum sentence, monotone drift at L = 60 stays unsourced; sentences for m 1.75 (with "≈ 1.63 by linear interpolation") and soh_min accepted; scorecard accepted in full
+- [ ] **▶ W159 — closing reads (zero-solve):** (a) T2 certifying-spec column — every manuscript cell current-configuration or a settled reference; (b) T6 shows both arms; (c) OMP_NUM_THREADS (v6 launch env + current shell), one v6 IPOPT banner (ma97) and one ESSO banner (ma57) with file/hash/line, Python/Pyomo/macOS now + conda-meta/history unchanged since the last v6 launch, HSL_MA97 bit-compatibility statement checked against the coinhsl-2023.11.17 documentation
+- [ ] Tables frozen with a recorded hash
+- [ ] Manuscript-ready export: T1–T10 CSV + LaTeX (k€ 1 dp, €/MWh nearest 10, multiples 2 dp) + the four paragraphs + reviewer map; main-text / supplementary split as the expert suggests (author decides)
+- [ ] Then: the author drafts; expert reviews methods / certification / limitations text
+
+## Post-revision cleanup (carried; not in the current order)
+
+- [ ] RES bound slack (10⁻⁵ pu; ≈ 62 MWh-equivalent, ≈ −7.9 k€ first-order)
+- [ ] ESSO tie-breaker
+- [ ] DSO7 2025 Winter and DSO5 2035 Winter Acceptable exits on primary attempts
+- [ ] TSO recoveries ending Acceptable (2035 Spring recurring; 2030 Autumn/Winter, 2035 Summer, 2025 Spring, 2035 Winter) — logs preserved
+- [ ] Rule question: a non-clean cycle cannot be a turning point (j_a11d7966, d_4a82a64a; mirror of d_c52e1670)
+- [ ] Monotone-branch remaining drift at L = 60 (unmeasured)
+
 ## Addendum 64 order — two cells, net-of-salvage check, Step 6 package
 
 - [x] **Advisor — design check** (read-only): x = 0 at m 1.75 **required** (Q(0) rises 90.4 M€ / 66.7 M€ per half-unit of m — interpolation impossible); both ungated E-shaped first evaluations. soh_min enters only the 18 floor-row lower bounds (+ salvage constants; salvage = 0 for the 2025 cohort); x = 0 unaffected. **H1:** one router branch needed (W135 precedent); **H2:** floor-row identity check (harness ~3003) must pass by equality — update the shared floor_rows dict, never bypass; **H3:** sidecar reads soh_min from that dict (false 0.7 otherwise). **The 0.70 gate is a neutrality gate** (identity value) — the proof that 0.50 takes is section M (M1–M6) + divergence at cycle 1. Predictions: A value − I +15 k [+8, +22], P(determinate) ≈ 0.35–0.45, fallback sentence pre-registered; B Δvalue +12 k [+4, +22], more likely within resolution (thr 13,054), floor never binds, 2035 EFC 0.88 [0.80, 1.00]. Walls 5–7 h total, no run > 4 h. **Planner: all six recommendations adopted**
@@ -73,7 +90,7 @@
 - [x] **W158/W158b — e_soh050 closed out** (W158 also ended on an API 529; launched once by W156): `5fb81cc4`, summarize `52d416cb`. Certified k* 184 (0.916 τ); G30 diverges at cycle 1, > τ/10 at 4; sidecar soh_min 0.5 on every line; floor never binds. **Δvalue +4,916.67 within resolution (0.38×); value − I −59,500.72 determinate (4.71×). Prediction B HELD** (lower edge of [+4, +22]); EFC/day 1.19/1.10/0.91 inside every range
 - [x] **W157 — Step 6 package drafted** (zero-solve): builder `4c89daf8`, tables `864679b2` (T1–T10, A64 rows PENDING), draft `P5_15_STEP6_PACKAGE_DRAFT.md` `6880a573`. Conservative break-even via W145 functions: e* 171,309–192,557, **margin ≥ 61,320 €/MWh**; J 4 MWh 11.12× at its uncertified bar. **Planner rulings:** (1) the ≥ 0.95 τ count covers every certificate the tables use, superseded ones excluded and bitwise twins counted once (adds b_2a0ba8b2, b_4649234b, the unit 3f084f2f = e_c2_calfade, pb_y2030_n7, pb_y2025_n7); (2) certified-only fit n = 6 shown beside, manuscript figure from the banded range; (3) Phase B re-scored under v6 accepted (same verdicts). **For the review:** d_36686489 carries t_sum +1,082 (not the dead-zone fingerprint; it failed the growth test on TSO recoveries) — the A62 limitations wording attributing it to the dead zone should be checked
 - [x] **Step 6 package** `P5_15_STEP6_PACKAGE.md` — tables `b913ea94` (A64 rows filled); decisions for the review: (1) substitute net validation; (2) ≥ 0.95 τ count = 10; (3) d_36686489 attribution corrected (recoveries, not dead zone); (4) four items with no source
-- [ ] **■ STOPPED FOR REVIEW with the Step 6 package** (author + expert review the tables before the manuscript text)
+- [x] **Stopped for review with the Step 6 package — RULED (Addendum 65): accepted**
 - [x] **W149 — h_f9eae48f interface prices** — `241e299c` (zero solves, guards 0; terminal pkl read under armed guard, sha-verified, per the W127 precedent). Gap all in **2035 Spring** (n5 55 %, n9 31 %, n7 14 %; hours 1–8, 20–24), frozen MW gaps with linearly drifting prices (F2 signature, smaller). Verdict **partially reproduced**: TN at Pmin on 24/24 entries but **also in the x = 0 control** (not storage-driven, unlike F2); DN flex interior, not at the zero kink. Discriminator vs control: TSO cheapest lever = shared ESS (0–9 €/pu vs generator 6.8–16.3 k€/pu) — post-hoc, report-only column; to the Step 6 review. Note: 2035 Spring is also the recurring TSO-recovery block
 - [ ] Optional m = 1.75 H cell (≈ 1.5 h) — author's machine-time call; ask at the J claim point
 - [ ] Remainder in priority order: C, G, L → ageing E + pb_y2025_n5 → Step 5 rows → **stop for review before the Step 6 tables are frozen**
