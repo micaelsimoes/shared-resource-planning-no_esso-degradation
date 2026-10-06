@@ -230,7 +230,7 @@ cells):
 |---|---|
 | Uncertified, by cause | gap clause: `h_f9eae48f`, `j_5f3cccb4`, `l_45aa25a6`, `l_7c455554`, `l_b2251bc5`; lapse reset: `d_a12d95a2`, `l_0ee93aca`; growth test: `d_36686489`, `d_f759dd48`, `j_f3aa335e` |
 | k\* | min 138, q1 156.75, median 174, q3 198.25, max 400 |
-| k\* − k₀ | min 21, median 63.5, max 89 |
+| k\* − N (first residual pass) | min 21, median 65, max 89 (W153 `k_star_minus_N`); measured from k₀ at decision (reset by lapses on `e_c3_midblock`, `e_no_ageing`): median 63.5 |
 | range/τ at k\* | min 0.012, median 0.860, max 0.997 |
 | Cells at range/τ ≥ 0.95 (W153 set) | 6: `d_3632b0ae`, `d_c7fee8be`, `d_9246ed01`, `c_6597a79d`, `e_c2_calfade`, `d_c52e1670` |
 | Terminal step / EPS0 (certified) | median 1.72, max 10.42; 22 of the 32 certified cells above 1 (25 of all 42) |
