@@ -2864,6 +2864,51 @@ uneconomic at SRP1.
   (RES slack, ESSO tie-breaker, DSO7/DSO5 Acceptable blocks, TSO recoveries, non-clean turning points,
   monotone drift at L = 60) is carried in TASKS.md as a separate section.
 
+# Addendum 66 — tables frozen; expert's review of the methods paragraphs (2026-10-07)
+
+Frozen tables `frozen_step6_tables_v1_590088fe.json` (sha256 `590088fe…`), export W160, paragraph check
+W161 (`2a1d7f92`: 163/164 figures match the tables, the 164th checked against W153). **The drafting set is
+accepted.** The certification-statistics relabel (65 from the first residual pass; 63.5 from the restart
+after a lapse) is correct and stays.
+
+- **Two wording rulings.** (1) *Reproducibility:* the recorded statement — one thread everywhere, set and
+  logged per evaluation, HSL built without OpenMP so MA97 ran serially — replaces the MA97
+  bit-compatibility sentence; the expert's claim was not confirmable from the archive and its citation
+  was imprecise, so it is withdrawn and the recorded fact is used. (2) *Ageing:* "≈ 0.6" in Addendum 65
+  is corrected to the records' **0.41–0.62** on the three comparable arms at 0.50.
+- **Methods review of `paragraphs_v2.md` — edits the Planner applies as v3 so the author integrates
+  clean text.** General: strip every internal reference from manuscript prose — addendum and decision
+  numbers, W-numbers, cell identifiers (`d_36686489` → "the 5 MWh evaluation"), "re-settled", C\* →
+  "the reference corner plan"; identifiers stay in the supplementary tables with a key.
+  *Certification paragraph:* (a) "every local NLP must solve successfully" → "every local NLP returns a
+  clean solution (defined below)"; (b) **replace** "Because the objective converges more slowly than the
+  residuals" — the Planner's own correction in Addendum 53 stands — with "Passing the residual test does
+  not imply that the objective has settled: on the reference evaluations the objective moved by a
+  further 15–21 k€ after the residuals first passed"; (c) "penalty frozen" → "the ADMM penalty
+  parameters ρ frozen"; (d) define P̂ (the period measured between the first and third turning points)
+  and P_max (the longest period measured on the instance, 30 cycles); (e) τ: "τ = δR·V/4, with δR = 0.07
+  and V the settled SRP1 value of the reference unit, so that a ratio of two values — four evaluations,
+  each in error by at most τ — is resolved to δR"; (f) "Ten of the N certificates the tables use" with N
+  filled; (g) **define the settling slack** of an uncertified evaluation exactly as the scorer computes
+  it (the objective's movement from its old certificate, or from the first residual pass where no old
+  certificate exists — the Planner states which); (h) "42 re-settled SRP1 cells" → "42 SRP1 evaluations
+  run under this rule"; "four cells added under Addendum 64" → "four further evaluations".
+  *Limitations:* (i) "sits at a kink" → "is at zero activation, where its cost is non-smooth"; define λ
+  as the interface price (the consensus dual); (j) drop "(Decision 3)"; (k) "frozen near 0.69" → "the
+  power-flow primal residual, as a fraction of its tolerance, stuck near 0.69"; (l) give the recovery
+  count: "21 cycles in 10 evaluations, all in transmission blocks"; (m) the hypothesis paragraph keeps its
+  bracket label in the draft and loses it in the manuscript, where the sentence "This is read as …
+  has not been measured" already marks it. *Reproducibility:* accepted as v2; add the version lines
+  (IPOPT 3.14.18 with MA97/MA57 from the campaign banners, Python 3.11.11, Pyomo 6.9.5, macOS and the
+  M2 Max 32 GB machine) in one sentence, with "read on 2026-10-06 from the unchanged environment" in
+  the supplementary note rather than the main text.
+- **Reviewer map and scorecard:** accepted; the map's "editorial" rows are the author's to write.
+- **From here:** the author drafts the manuscript and response letter from the export and v3
+  paragraphs; the expert reviews the drafted methods, results and limitations sections and the
+  response letter's technical answers when the author sends them; the Planner stands by for figure
+  checks against the frozen tables (every number in the manuscript traced to a frozen-table cell or a
+  named record, as W161 did for the paragraphs). No run is queued; the cleanup list is in TASKS.md.
+
 ## Update obligations
 
 At the end of Step 1 the Planner rewrites the "CURRENT SOURCE OF TRUTH" head of
