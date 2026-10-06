@@ -128,7 +128,7 @@ they carry recorded net values.
 1. Flexibility ladder: *the unit pays at a flexibility price 1.75 and 2 times the base price (+14.2 k€ and +46.3 k€,
    determinate) and breaks even between 1.5 and 1.75 (≈ 1.63 by linear interpolation)*.
 2. Minimum SoH: *lowering the end-of-life floor from 0.70 to 0.50 releases cycling in every year (EFC/day +0.18,
-   +0.20, +0.27) but adds only +4.9 k€, within resolution; the unit still loses 59.5 k€ determinately, so the floor
+   +0.20, +0.27; 0.70 per-year EFC from W153 `48e76c9f`) but adds only +4.9 k€, within resolution; the unit still loses 59.5 k€ determinately, so the floor
    is not what makes storage uneconomic at SRP1*.
 
 ### The two sentences Addendum 64 requires verbatim
@@ -186,7 +186,7 @@ they carry recorded net values.
 >
 > Across the 42 re-settled SRP1 cells, 32 certified (24 oscillatory, 8 monotone). The 10 uncertified cells divide as
 > follows: 5 refused by the gap clause, 2 reset by residual lapses, 3 failed by the growth test. The median
-> certification cycle was 174, and certification came a median 63.5 cycles after the first residual pass (range 21–89).
+> certification cycle was 174, and certification came a median 65 cycles after the first residual pass (range 21–89).
 > The median range/τ at certification was 0.86. The four cells added under Addendum 64 all certified.
 
 ### Sources for each element of the paragraph
@@ -232,7 +232,7 @@ cells):
 | k\* − k₀ | min 21, median 63.5, max 89 |
 | range/τ at k\* | min 0.012, median 0.860, max 0.997 |
 | Cells at range/τ ≥ 0.95 (W153 set) | 6: `d_3632b0ae`, `d_c7fee8be`, `d_9246ed01`, `c_6597a79d`, `e_c2_calfade`, `d_c52e1670` |
-| Terminal step / EPS0 (certified) | median 1.72, max 10.42; 25 of 42 cells above 1 |
+| Terminal step / EPS0 (certified) | median 1.72, max 10.42; 22 of the 32 certified cells above 1 (25 of all 42) |
 | Vetoes | 46, in 2 cells (`d_f759dd48` 17, `pb_y2025_n5_v6` 29) |
 | Non-clean cycles after N | 21 cycles in 10 cells, **all TSO** |
 | Acceptable-clean events after N | 119, **all DSO** |
@@ -290,7 +290,7 @@ Source: T2, and W153 `certificates_with_a_turning_point_at_a_non_clean_cycle`.
 > window L = 44).
 >
 > **[Hypothesis, not a result]** The 0.70 SoH floor raises the elasticity of value to available energy (ε_AE 1.04–1.85
-> against ≈ 0.6 at 0.50). This is read as a late-life tail effect: the floor removes the low-SoH years whose throughput
+> against 0.41–0.62 for the same three resolvable arms at 0.50). This is read as a late-life tail effect: the floor removes the low-SoH years whose throughput
 > is least valuable. The decomposition that would show it has not been measured.
 
 ### Sources for the limitations paragraph
@@ -310,10 +310,10 @@ Source: T2, and W153 `certificates_with_a_turning_point_at_a_non_clean_cycle`.
   | F2 incumbent | −9,234.42 |
   | F2 challenger | −9,300.13 |
 
-- Node shares (n5 / n7 / n9) are 55 / 14 / 31 % in each of the six m = 2 cells of T9 that carry a per-node record
-  (`j_5f3cccb4` and the five L cells). The F2 references carry none in the summary.
+- Node shares (n5 / n7 / n9) are 55 / 14 / 31 % in each of the five m = 2 cells of T9 that carry a per-node record
+  (`j_5f3cccb4` and four L cells). The F2 references carry none in the summary.
 - pf_primal last 0.6819–0.6999.
-- The m = 1.5 cell `h_f9eae48f` has the same split at −2,481.75. W149 `241e299c` calls it "partially reproduced". The
+- The m = 1.5 cell `h_f9eae48f` has about the same split (55 / 14.5 / 31 %) at −2,481.75. W149 `241e299c` calls it "partially reproduced". The
   TSO-lever column is report-only and post hoc (ruling 7b).
 - `l_0ee93aca` is entered by its signature, with the cause stated: two TSO recoveries, lapse resets at 218 and 222
   (ruling 7a).
