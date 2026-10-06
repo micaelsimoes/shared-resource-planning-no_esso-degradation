@@ -1,0 +1,49 @@
+08:42:44 [W161] script p515_s53_w161_paragraphs_v2.py sha256 b91de7f244418950c2cb7dcf6f8694d1917dfcbf1093224ab377df38bf282880 committed clean True; W160 script committed clean True; frozen JSON 590088fe verified; package blobs e3437284 c9b8acde, 34ddd323 34d382d0
+08:42:44 [W161] reproduce W160: paragraphs.md byte-equal True; figure checks equal the 158 stored True (158 checks)
+08:42:44 [W161] paragraphs_v2.md: 6 slices paragraphs 148-262, paragraphs 266-373, paragraphs 377-430, map 518-611, sentences 126-144, scorecard 434-514; package blocks verbatim True; non-package comment lines 12
+08:42:44 [W161] W160 checks verbatim on v2 text: 158 checks, fragment not found ['C13', 'C14', 'C15', 'C27', 'C28', 'C29', 'L5b', 'L11', 'L15', 'L16'] (each replaced)
+08:42:44 [W161] figure check v2: 164 checks (148 W160 unchanged + 16 W161 replacement/new), 163 match, 0 MISMATCH [], 1 no table counterpart ['S2a'], 0 approximate; fragments all found True
+08:42:44 [W161]   S2a [W160 check, unchanged] no table counterpart: written '+0.18', table None (T10 carries EFC/day at 0.50 only; the 0.70 per-year EFC/day (W153) is not in T1-T10)
+08:42:44 [W161]   C13 [W161 replacement] match: written '65', table '65' (T2: median of k* − k0, where T2 k0 = k0_run = the first residual pass N) -- v2 writes 65 = the T2 median of k* − k0_run (k0_run = the first residual pass N); W160 note: W153 gives 63.5 for k* − k0 at decision
+08:42:44 [W161]   C14 [W161 replacement] match: written '21', table '21' (T2 min k* − k0)
+08:42:44 [W161]   C15 [W161 replacement] match: written '89', table '89' (T2 max k* − k0)
+08:42:44 [W161]   C27 [W161 replacement] match: written '1.72', table '1.72' (T2 terminal step / EPS0, certified)
+08:42:44 [W161]   C28 [W161 replacement] match: written '10.42', table '10.42' (T2, certified)
+08:42:44 [W161]   C29 [W161 replacement] match: written '22', table '22' (T2 terminal step / EPS0 > 1, the 32 certified cells) -- W160 C29 counted all 42 cells (25) and noted 22 over the certified cells
+08:42:44 [W161]   C29b [W161 new figure (with the replacement of C29)] match: written '32', table '32' (T2 certified cells (certification_stats_included))
+08:42:44 [W161]   C29c [W161 new figure (with the replacement of C29)] match: written '25', table '25' (T2 terminal step / EPS0 > 1, all 42 cells (the W160 C29 value))
+08:42:44 [W161]   C29d [W161 new figure (with the replacement of C29)] match: written '42', table '42' (T2 cells with certification_stats_included)
+08:42:44 [W161]   L5b [W161 replacement] match: written '5', table '5' (T9: m = 2 cells with a per-node record) -- T9 carries j_5f3cccb4, l_45aa25a6, l_7c455554, l_b2251bc5, l_0ee93aca
+08:42:44 [W161]   L5c [W161 new figure (with the replacement of L5b)] match: written '4', table '4' (T9: L cells among the m = 2 cells with a per-node record) -- j_5f3cccb4 in the set: True
+08:42:44 [W161]   L11a [W161 new figure (with the replacement of L11)] match: written '0.41', table '0.41' (T8 ε_AE (0.50, superseded), min over the resolvable arms (eps_AE_resolvable_070 true)) -- arms C2 0.6005, C4 0.4133, no_ageing 0.6198
+08:42:44 [W161]   L11b [W161 new figure (with the replacement of L11)] match: written '0.62', table '0.62' (T8 ε_AE (0.50, superseded), max over the resolvable arms)
+08:42:44 [W161]   L11c [W161 new figure (with the replacement of L11)] match: written 'three', table 'three' (T8 count of resolvable arms (the arms of the 0.70 band 1.04–1.85))
+08:42:44 [W161]   L15 [W161 replacement] match: written '−2,481.75', table '-2481.75' (T9 h_f9eae48f)
+08:42:44 [W161]   L16 [W161 replacement] match: written '55/14.5/31', table '55/14.5/31' (T9 h_f9eae48f shares n5/n7/n9, % at the written precision (55 / 14.5 / 31)) -- "about the same split" as the m = 2 cells (55/14/31)
+08:42:44 [W161]   S2a beside (not counted) 2025: written +0.18, T10 1.1919 − W153 1.0165 = 0.18 match
+08:42:44 [W161]   S2a beside (not counted) 2030: written +0.20, T10 1.0999 − W153 0.9000 = 0.20 match
+08:42:44 [W161]   S2a beside (not counted) 2035: written +0.27, T10 0.9092 − W153 0.6367 = 0.27 match
+08:42:44 [W161]   S2a source sentence found: True
+08:42:44 [W161]   OBSERVATION (uncovered, not counted): | k\* − k₀ | min 21, median 63.5, max 89 | found True; T2 median 65.0, W153 at decision 63.5
+08:42:44 [W161]   self-test C13: W160 MISMATCH '65.0' / W161 MISMATCH '65.0' -> True
+08:42:44 [W161]   self-test C14: W160 match '21' / W161 match '21' -> True
+08:42:44 [W161]   self-test C15: W160 match '89' / W161 match '89' -> True
+08:42:44 [W161]   self-test C27: W160 match '1.72' / W161 match '1.72' -> True
+08:42:44 [W161]   self-test C28: W160 match '10.42' / W161 match '10.42' -> True
+08:42:44 [W161]   self-test C29: W160 match '25' / W161 match '25' -> True
+08:42:44 [W161]   self-test L5b: W160 MISMATCH '5' / W161 MISMATCH '5' -> True
+08:42:44 [W161]   self-test L15: W160 match '-2481.75' / W161 match '-2481.75' -> True
+08:42:44 [W161]   self-test L16: W160 MISMATCH '55/15/31' / W161 MISMATCH '55/15/31' -> True
+08:42:44 [W161] check w160_paragraphs_md_reproduced_byte_equal: True
+08:42:44 [W161] check w160_figure_checks_reproduced_equal_to_frozen_json: True
+08:42:44 [W161] check paragraphs_v2_package_blocks_verbatim: True
+08:42:44 [W161] check paragraphs_v2_slices_found: True
+08:42:44 [W161] check every_gone_w160_fragment_covered_by_a_replacement: True
+08:42:44 [W161] check no_replacement_for_a_w160_check_still_found: True
+08:42:44 [W161] check every_v2_fragment_found: True
+08:42:44 [W161] check evaluator_self_test_reproduces_w160_on_v1: True
+08:42:44 [W161] check replication_of_w160_sets: True
+08:42:44 [W161] check w160_package_commit_restored: True
+08:42:44 [W161] check s2a_source_sentence_and_fragments_found: True
+08:42:44 [W161] wrote data/SRP1/Results/P515S53/w160_step6_frozen/export/paragraphs_v2.md 73b42c49, data/SRP1/Results/P515S53/w160_step6_frozen/export/README_v2_note.md 70b98cf9, data/SRP1/Results/P515S53/w160_step6_frozen/export/w161_paragraph_figure_check_v2.json c5c4d7cc, data/SRP1/Results/P515S53/w160_step6_frozen/export/w161_manifest_sha256.json fd59c7a1
+08:42:44 [W161] guards [('w161_paragraphs_v2', 0, 0, []), ('w160_step6_freeze_export', 0, 0, []), ('w157_step6_tables', 0, 0, []), ('w145_banded_fit', 0, 0, []), ('w142_checks', 0, 0, []), ('w139_checks', 0, 0, []), ('w137_checks', 0, 0, []), ('w132_checks', 0, 0, []), ('w118_checks', 0, 0, []), ('w105_checks_imported', 0, 0, []), ('w101_checks_imported', 0, 0, []), ('w98_checks_imported', 0, 0, []), ('w112_imported', 0, 0, []), ('w141_swing_variants', 0, 0, []), ('w139_v5_from_records', 0, 0, []), ('w131_imported', 0, 0, []), ('w137_ra_imported', 0, 0, []), ('alpha_row_launcher', 0, 0, []), ('w86_launcher', 0, 0, []), ('w87', 0, 0, []), ('w88', 0, 0, []), ('w89_step1', 0, 0, []), ('w89_3x3_launcher', 0, 0, []), ('w90_3x3_parent', 0, 0, []), ('w98_parent', 0, 0, []), ('w101_parent', 0, 0, []), ('w118_parent', 0, 0, []), ('w132_parent', 0, 0, []), ('w137_parent', 0, 0, []), ('w139_parent', 0, 0, []), ('w142_parent', 0, 0, [])]; pickle ok True; exit 0; wall 0.4 s
