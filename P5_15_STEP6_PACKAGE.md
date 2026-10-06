@@ -128,8 +128,9 @@ they carry recorded net values.
 1. Flexibility ladder: *the unit pays at a flexibility price 1.75 and 2 times the base price (+14.2 k€ and +46.3 k€,
    determinate) and breaks even between 1.5 and 1.75 (≈ 1.63 by linear interpolation)*.
 2. Minimum SoH: *lowering the end-of-life floor from 0.70 to 0.50 releases cycling in every year (EFC/day +0.18,
-   +0.20, +0.27; 0.70 per-year EFC from W153 `48e76c9f`) but adds only +4.9 k€, within resolution; the unit still loses 59.5 k€ determinately, so the floor
+   +0.20, +0.27) but adds only +4.9 k€, within resolution; the unit still loses 59.5 k€ determinately, so the floor
    is not what makes storage uneconomic at SRP1*.
+   Source of the EFC/day differences: T10 (0.50) against W153 `48e76c9f` (0.70 per-year EFC).
 
 ### The two sentences Addendum 64 requires verbatim
 
