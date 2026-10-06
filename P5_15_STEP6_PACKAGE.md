@@ -22,48 +22,22 @@ campaign stops here for review:** the author and the expert review the tables be
   - with an uncertified cell: 3·max(|gap|, |slack|) (Addendum 58);
   - "×" is |margin| / threshold.
 
-## Decisions needed (for the review)
+## Status after Addendum 65
 
-**1. The net-of-salvage validation (expert).** Addendum 64 asked the scorer to reproduce three more recorded net rows
-from different claim families. **No such rows exist.** A search of this branch's tracked scripts, artefacts, specs,
-summaries and reports (other branches not content-searched; W154) found recorded net differences only in the
-year-ladder (G) family. The substitute evidence (W154b `cd8fd8a8`, zero solves):
-- **(a) Form check:** the scorer's form, applied to gross, reproduces all 60 recorded gross results and verdicts
-  **bitwise**, across 11 families. Net differs from gross only by the salvage term, to within 9 × 10⁻⁸ €.
-- **(b) Per-cell identity:** Q − salvage − Q_net = 0 on all 50 cell records.
-- **(c) Independent G rows:** the 20 Phase A G net rows are reproduced to 5 × 10⁻⁸ €, with their original verdicts.
+**Accepted.** Rulings applied in the text below:
+1. the net substitute is accepted; the label stays; net is secondary;
+2. ten certificates at ≥ 0.95 τ, with the addendum's sentence; `i_5a6a88b4` flagged beside;
+3. `d_36686489` attributed to TSO recoveries; the Addendum 62 mechanism is withdrawn for this cell;
+4. threading, banners and versions sourced by the closing reads (W159 `62749030`); R3.6 answered by the addendum's
+   sentence; the monotone drift at L = 60 stays unsourced.
 
-Every non-G net figure in T1 is labelled "validated by form + salvage identity". **Recommendation:** accept the
-substitute. The alternative is to keep net figures out of the tables except for the G rows.
-
-**2. The count of certificates at ≥ 0.95 τ (expert; Planner's reading applied).** The count runs over every certificate
-the tables use. Superseded certificates are excluded, and bitwise twins are counted once (the settled unit
-`3f084f2f` = `e_c2_calfade` = `g070_neutrality`). That gives **ten**:
-
-| group | cells | range/τ |
-|---|---|---|
-| W153's six | `d_3632b0ae`, `d_9246ed01`, `c_6597a79d`, `d_c7fee8be`, `d_c52e1670`, the unit | 0.997 / 0.985 / 0.984 / 0.984 / 0.982 / 0.959 |
-| B cells | `b_2a0ba8b2`, `b_4649234b` | 0.970 / 0.989 |
-| W118 Phase B | `pb_y2030_n7`, `pb_y2025_n7` | 0.994 / 0.974 |
-
-The handback's "six" was scoped to W153's 42 cells. **Confirm the scope**, or name another.
-
-**3. `d_36686489` in the limitations paragraph (expert).** Addendum 62 recorded the 5 MWh cell's failure to certify as
-the dual dead zone at the baseline price. The records do not show the dead-zone fingerprint:
-- its consensus gap at the cap is **+1,082 €**, small and of the opposite sign to the dead-zone cells' −8.8 to −9.4 k€;
-- it was not refused by the gap clause;
-- it failed the growth test after five non-clean TSO recoveries.
-
-The draft below states the cause as the recoveries, not the dead zone. **Recommendation:** accept the corrected
-attribution.
-
-**4. Items with no source (expert; reported, not decided).**
-- the remaining drift of the eight monotone certificates at L = 60;
-- the threading setting of the v6 campaign;
-- a re-optimised-plan comparison per ageing arm;
-- the Python, Pyomo and macOS versions at campaign time.
-
-They are stated as such in (iii), (iv) and (vi).
+**One wording point for the expert.** Addendum 65 asked for a sentence that HSL_MA97 gives bit-compatible results
+independent of the thread count (Hogg & Scott), confirmed against the author's `coinhsl-2023.11.17` archive.
+- **The archive holds no documentation.** It has source code and licences only.
+- **The statement exists only in the HSL website specification** (v2.8.1, Section 1). There it carries a caveat
+  that it depends on the BLAS library, and it cites Hogg & Scott 2011 (RAL-TR-2011-024), not 2013.
+- **It is not needed.** Every evaluation ran with one thread, and the installed HSL library has no OpenMP. The
+  reproducibility paragraph therefore states serial execution as recorded, and cites no HSL claim.
 
 ## Blocked on the author
 
@@ -149,10 +123,10 @@ they carry recorded net values.
 | Discount rate | value − I negative and determinate at 0 / 2 / 5 / 8 %: −40,837.32 / −64,417.39 / −92,724.89 / −114,590.38 (2.57× / 4.93× / 7.10× / 8.78×) | T7; W153 `48e76c9f` |
 | Salvage convention | 0 sign changes in 60 claims; 1 verdict change (the L row above) | W153 `w153_salvage_addback.json` totals |
 
-### Two sentences the Planner proposes for the new rows (for the review)
+### Two sentences for the new rows (accepted, Addendum 65)
 
 1. Flexibility ladder: *the unit pays at a flexibility price 1.75 and 2 times the base price (+14.2 k€ and +46.3 k€,
-   determinate) and breaks even between 1.5 and 1.75*.
+   determinate) and breaks even between 1.5 and 1.75 (≈ 1.63 by linear interpolation)*.
 2. Minimum SoH: *lowering the end-of-life floor from 0.70 to 0.50 releases cycling in every year (EFC/day +0.18,
    +0.20, +0.27) but adds only +4.9 k€, within resolution; the unit still loses 59.5 k€ determinately, so the floor
    is not what makes storage uneconomic at SRP1*.
@@ -198,8 +172,8 @@ they carry recorded net values.
 > τ is set from the value resolution the paper claims: δR = 0.07 of the SRP1 storage value, split over the four cells
 > of a ratio.
 >
-> **What τ bounds.** τ bounds each cell's stopping error, not more. Cells continued past certification moved at most
-> 0.9 τ.
+> **What τ bounds.** Ten of the certificates the tables use stop within 5 % of τ; the rule bounds each cell's
+> stopping error at about τ, not well inside it. Cells continued past certification moved at most 0.9 τ.
 >
 > **Replays.** Every gated cell replayed its original run bitwise up to k₀.
 >
@@ -380,7 +354,8 @@ Source: T2, and W153 `certificates_with_a_turning_point_at_a_non_clean_cycle`.
 - Both figures are for L = 44. The current window is L = 60 (Addendum 57); the remaining drift at L = 60 is not
   measured.
 - The 8 monotone certificates of this campaign are listed in T2. Seven are L cells with range/τ 0.012–0.171.
-  **`i_5a6a88b4` has 0.939.**
+  **`i_5a6a88b4` has 0.939** (flagged in T2 beside the ten, Addendum 65). The remaining drift of the monotone
+  certificates at L = 60 is not measured; seven of the eight have range/τ ≤ 0.171 and are not at issue.
 - **[SOURCE NOT FOUND: the remaining drift of the 8 monotone certificates at L = 60; searched the W153 certification
   statistics, the v6 summary reports, `TASKS.md`]**
 
@@ -400,7 +375,10 @@ Source: T2, and W153 `certificates_with_a_turning_point_at_a_non_clean_cycle`.
 
 ## (iv) Reproducibility note — draft text and sources
 
-> **Determinism.** All results were produced on one machine with one solver build, one evaluation at a time. Replaying a run reproduces its trajectory bitwise:
+> **Determinism.** All results were produced on one machine with one solver build, one evaluation at a time, and
+> single-threaded: the harness sets OMP, MKL, OpenBLAS, vecLib and NumExpr to one thread in every evaluation's
+> environment and records it per evaluation, and the installed HSL library is built without OpenMP, so MA97 ran
+> serially. Replaying a run reproduces its trajectory bitwise:
 > - the 3 × 3 multi-scenario x = 0 cell replayed its 72 recorded cycles bitwise (72/72);
 > - the three SRP1 reference continuations replayed bitwise to their certification cycles (3/3);
 > - every gated re-settled cell replayed its original record bitwise up to its first residual pass before continuing.
@@ -423,6 +401,11 @@ Source: T2, and W153 `certificates_with_a_turning_point_at_a_non_clean_cycle`.
 | Neutrality gate G28 | `e_c2_calfade` reproduced the settled unit 3f084f2f bitwise through 172 | extension summary `c2_calfade_consistency` (`184229bb`) |
 | Common offsets | tail −1.04 to −1.20 × 10⁻⁶ relative on 3/3 references; RES slack ≈ −7.85 k€ first-order (TSO −2,373.97 + DSO −5,474.11 priced negative parts) | Addendum 48; W109 `f6e3533f` (`TASKS.md` line 131) |
 
+**One old-configuration figure remains (Addendum 65 read (a)).** T8's column "ε_AE (0.50, superseded)" comes from the
+0.50-era ageing batch (`P515S46/ageing_mechanism.json`, `b5eca2a2`): C3 calibration, soh_min 0.50, E/P up to 10 h for
+the C3 point and Q(0), no tight tail. It is shown only as the superseded comparator. Every other figure in T1–T10 is
+from a current-configuration certificate or a settled reference (61 evaluations traced, W159).
+
 **The Acceptable blocks:**
 - Clean Acceptable events after N in this campaign (W153 `48e76c9f`):
   - DSO5 2035 Winter: 109 events;
@@ -436,14 +419,14 @@ Source: T2, and W153 `certificates_with_a_turning_point_at_a_non_clean_cycle`.
 
 | item | value | source |
 |---|---|---|
-| IPOPT | **3.14.18**, binary `/usr/local/bin/ipopt` ("as every log banner states") | v6 zero-solve checks `w142_zero_solve_checks.json` `clean_rule.tolerance_sources.ipopt_defaults` (committed with spec v6); every v6 launch command sets `NLP_SOLVER_PATH=/usr/local/bin/ipopt` (spec `96c23404` `launch_commands`); benchmark `report_v3.json` `nlp_solver_path` = `/usr/local/bin/ipopt` (source `.env`) |
-| Linear solver | **MA97** for the TSO/DSO network NLPs; **MA57** for the ESSO | `data/SRP1/case9/case9_params.json:40` and `case33_{1,2,3}_params.json:40` (`"linear_solver": "ma97"`); `data/SRP1/SharedESS/SRP1_ESS_Params.json:37` (`"ma57"`); also `WORKER_REPORT_S40_PERSISTENT_WORKERS.md:28`, `P5_15_0_REPORT.md:46`. **Not confirmed from a log banner of this campaign:** its IPOPT logs are hash-recorded, not committed. The banner "Ipopt version 3.14.18, running with linear solver ma97" is in the committed P5.12-R log `data/SRP1/Results/P512R/evals/cold/logs/optim_log_case9_2025_Summer.log` (an earlier stage) |
-| Interpreter | `/Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python` | v6 spec `launch_commands`; benchmark `report_v3.json` `interpreter` |
-| Python | 3.11.11 (conda-forge, Clang 18.1.8) | `w95_x0_drift` … `w99_stage1_posthoc` manifests (`python_version`). These record earlier stages; not in the v6 campaign records |
-| Pyomo | 6.9.5 | `row18_structural/nl_probe/r{1,2}/nl_probe.json`, `nl_varcount_w66/.../run_outcome.json`. Earlier stages; not in the v6 campaign records |
-| Machine | Mac Studio, hostname `Micaels-Mac-Studio.local`, macOS 26.6.2, arm64; memory 34,359,738,368 bytes (32 GiB) | host: `P5_11_STABILIZED_ORACLE_CONSOLIDATION_REPORT.md` §1 (an earlier stage; **the macOS version at campaign time is not recorded** in the v6 records); memory: v6 spec `memory_preflight.measured_at_freeze_non_gating.hw_memsize_bytes` |
+| IPOPT | **3.14.18** (aarch64-apple-darwin24.5.0, ASL 20241111), `/usr/local/bin/ipopt`, sha `b316abbe…` = the v6 spec pin; mtime 2025-07-09 | W159 `62749030` (`w159_closing_reads.json`); v6 spec `96c23404` |
+| Linear solver | **MA97** (network NLPs), **MA57** (ESSO), from the campaign's own preserved logs: `…/p515s44_s53_w142_resettle_v6_d_4a82a64a_14b00a04ffbcfd33_run/logs/optim_log_case9_2025_Summer.log` line 26 (sha `f451d4af…`) "This is Ipopt version 3.14.18, running with linear solver ma97."; `optim_log_esso_node5_cycle001.txt` line 8 (sha `830ff5a9…`) "… ma57."; e_soh050 likewise. All 495 logs of d_4a82a64a: 6,887 ma97 / 429 ma57 banners. Hashes match the committed launch manifests. P5.12-R banner = corroboration | W159 `62749030` |
+| HSL library | `/usr/local/lib/libcoinhsl.2.dylib` (sha `230fffdd…`, v5.5.0) = the copy in the author's `ipopt3.14.18hsl5.5.0arm64` package; no OpenMP link or symbols; MA97 source lines consistent with CoinHSL 2023.11.17 (v2.8.1), not proven | W159 `62749030` |
+| Interpreter | `/Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python` | v6 spec `launch_commands` |
+| Python / Pyomo / macOS | 3.11.11 (conda-forge, Clang 18.1.8) / 6.9.5 / macOS 27.0 (26A428), arm64 — **read 2026-10-06; environment unchanged since the campaign** (conda-meta/history: one entry, creation 2026-09-09; 0 environment files modified in the window 2026-09-30T21:25Z – 2026-10-05T13:42Z; last macOS update 2026-09-18, before the window) | W159 `62749030` |
+| Machine | Mac Studio (arm64), 32 GiB | v6 spec `memory_preflight` |
 | Concurrency | 1 (one evaluation at a time) | v6 spec `configuration.concurrency` |
-| Threading | **[SOURCE NOT FOUND: an `OMP_NUM_THREADS` or MA97 thread setting in the v6 campaign records; searched the v6 spec keys, `TASKS.md`; Addendum 18 states single-threaded workers for the persistent-worker path, which this campaign does not record using]** | — |
+| Threading | **1** for OMP / MKL / OpenBLAS / vecLib / NumExpr in every evaluation the tables use (harness `THREAD_CAP_ENV`, `p515_s44_campaign_harness.py:320`, enforced at :2233; recorded per cell in `launch.json` and the evaluation record); current shell: unset | W159 `62749030` |
 
 ---
 
@@ -581,8 +564,10 @@ to which §2 points for R1.2(v).
 - The verbatim sentence for these rows is sentence 1 in (i).
 - The comparisons are fixed-plan re-evaluations of the unit (node 7, 0.25 MVA / 1 MWh). Re-optimized plans per arm
   are not in the package.
-- **[SOURCE NOT FOUND: a re-optimized-plan comparison per ageing arm; searched `TASKS.md`, Addenda 58–64, the
-  extension summary]**
+- **Re-optimised plan per arm (Addendum 65 sentence):** under every aged arm the unit — the smallest lattice point —
+  loses determinately, and Phase A measured the value as affine in size with slope below cost, so x = 0 is the optimal
+  plan under each aged arm provided that affinity holds under the arm (an assumption); under no ageing the unit is at
+  break-even within resolution and the plan is indeterminate at this precision.
 
 ### Economics and the first reviewer
 
@@ -628,17 +613,24 @@ paper reports no positive storage share of the benefit in the baseline.
 
 ## Not confirmed
 
-The items without a source, and the rulings that were ambiguous to apply (assembled from the W157 draft; Decisions 2 and 4
-above carry the ones that need the review).
+Remaining items, after Addendum 65.
 
-### SOURCE NOT FOUND (scope searched is stated with each)
+### Still without a source
 
-1. **Remaining drift of the 8 monotone certificates at L = 60.** Searched W153, the v6 summary, `TASKS.md`. See (iii).
-2. **Threading of the v6 campaign** (`OMP_NUM_THREADS` / MA97 threads). Searched the v6 spec keys, `TASKS.md`. See
-   (iv).
-3. **A re-optimized-plan comparison per ageing arm (R3.6).** Searched `TASKS.md`, Addenda 58–64, the extension summary.
-4. **Python, Pyomo and macOS versions at campaign time.** Not in the v6 records. The values in (iv) come from earlier
-   stages and are labelled as such.
+1. **Remaining drift of the 8 monotone certificates at L = 60.** Searched W153, the v6 summary, `TASKS.md`. It stays
+   unsourced by ruling; seven of the eight have range/τ ≤ 0.171.
+
+Threading, the linear-solver banners and the software versions are now sourced (W159 `62749030`; see (iv)). The
+R3.6 re-optimised-plan question is answered by the Addendum 65 sentence in (vi).
+
+### Also from the closing reads
+
+- **The F2 pair's run records read `status: certified` at their caps (281 / 261).** That is the run's residual
+  certificate. The settling rule (W118 r2) classifies the pair as uncertified, refused by the gap clause, and the
+  tables use the settling-rule status. Not reconciled field by field (W159).
+- **T6's Markdown lacks** the passive arm's Q by start, the decomposition, the NRF definition, the consistency
+  violations, the failing sweep blocks and the curtailment table. These are in `report_v3.json` (`8d42dfb8`); the
+  export adds them.
 
 ### Rulings that were ambiguous to apply
 
