@@ -74,7 +74,8 @@
 ## Addendum 66 order — methods review as paragraphs_v3; then stand by
 
 - [x] **paragraphs_v3.md written by the Planner** (prose only; internal references stripped; definitions per the code: P̂ = T[−1] − T[−3]; P_max 30; slack = Q(cap) − Q at the earlier certificate cycle, undefined → indeterminate where none; λ = consensus dual; N = 46 certificates (49 in the registry − 2 twins − 1 superseded)). **Wording point for the expert:** τ uses V = 259,375.33 (the tight-tail reference at freeze, settling_criterion R_REF), not the settled 253,539.62 — Addendum 66 (e) said "settled"; v3 states the frozen value
-- [ ] **▶ W162 — figure check of paragraphs_v3.md** against the frozen tables (590088fe) and named records
+- [x] **W162 — figure check of v3** `a8e4d01c` / `d1f3e186`: 111 match, 2 mismatch (RES slack 7.8 not 7.9 k€; tail tolerance 5e-4 → 1e-6 in the TSO, 1e-4 in the DSOs), 2 approximate, 4 wording-vs-code findings (15–21 k€ anchored at the old residual certificate, not k0; clause 5 vetoes only the window; the residual test requires successful, not clean, solves; ≈ 3 τ is an estimate) → **paragraphs_v4.md** by the Planner. **Expert wording points:** A66 (a) "clean" and (b) "after the residuals first passed" do not match the code/records — v4 states what the code does
+- [ ] **▶ W163 — figure check of paragraphs_v4.md**
 - [ ] Stand by: figure checks on the author's manuscript draft (every number traced to a frozen-table cell or a named record). Nothing queued
 - [ ] Then: the author drafts; expert reviews methods / certification / limitations text
 
