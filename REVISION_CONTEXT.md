@@ -13,20 +13,37 @@ Act as a technical planner and mathematical-programming reviewer for the shared 
 
 Read this file first. When checking the mathematical formulation, also consult `simoes_2026_revisions.pdf` where relevant and inspect the current implementation before proposing changes. Prefer reviewer-driven implementation and validation plans before production edits.
 
-This file is the repository-wide source of context. **As of 2026-10-05 the active
-authority is `PLANNER_BRIEF_2026-09-13.md` with its Addenda 1–64**; it supersedes
+This file is the repository-wide source of context. **As of 2026-10-07 the active
+authority is `PLANNER_BRIEF_2026-09-13.md` with its Addenda 1–67**; it supersedes
 `COWORK_HANDOFF.md` and the P5.12-R scope formerly governed by
 `LOCAL_NLP_STABILITY_PLAN.md`, which is retained as a historical record.
 
 ---
 
-# CURRENT SOURCE OF TRUTH — 2026-10-05 (SRP1 re-settling complete; Step 6 package under review)
+# CURRENT SOURCE OF TRUTH — 2026-10-07 (tables frozen; methods text accepted; manuscript revision under way)
 
-Authority: `PLANNER_BRIEF_2026-09-13.md` Addenda 52–64. The latest handoff is `P5_15_STEP6_PACKAGE.md` (`54c7f899`),
-with tables `data/SRP1/Results/P515S53/w157_step6_tables_a64/` (`b913ea94`). The current order is in `TASKS.md`
-(Addendum 64 section): **stopped for review**. The author and the expert review the tables before manuscript text is
-written. Sections below this one are history for their topics. Where they conflict with this section, this section
-governs.
+Authority: `PLANNER_BRIEF_2026-09-13.md` Addenda 52–67. Tables FROZEN: `frozen_step6_tables_v1_590088fe.json` (W160).
+Methods text: `export/paragraphs_v5.md` (Addendum 67). Expert's revision plan: `STEP6_REVISION_MAP.md`. Latest handoff:
+`P5_15_STEP6_SUPPORT_REPORT.md` (W164–W167, zero-solve). Current order: `TASKS.md` (Step 6 support section) —
+**stopped for review** on its Decisions 1–7. Sections below this one are history for their topics; where they conflict
+with this section, this section governs.
+
+## Manuscript facts established from code and case files (W164–W167)
+
+- **Two horizons.** SRP1: 2025/2030/2035, 5-year blocks, one scenario. 3 × 3: 2025/2028/2031/2034/2037, 3-year blocks,
+  3 market × 3 operation scenarios (`SRP1__s53_3x3.json`). Map §B §3 describes only the first.
+- **Investment cost.** `SRP1_ESS.xlsx` (`7ce1d1ab` = HEAD) has three trajectories weighted 0.35/0.55/0.10; I(x) is
+  their expectation (2025: 253,877.68 €/MWh, 256,317.32 €/MVA). The energy row is 1.25× the submitted file's (÷4 h,
+  not ÷5).
+- **Storage in the multi-scenario instance.** One schedule per block, common to all market × operation scenarios
+  (hard non-anticipativity by aliasing); deviations on the network side; row 18 is a DSO-side interface premium and
+  does not touch the storage; daily SoC closure is soft (5 % + 10⁻⁵, penalised in Q).
+- **§2.3 / Appendix A as printed differ from the code** in 38 of 68 audited items (`P5_15_W166_EQUATION_CODE_AUDIT.md`);
+  the rewrite must follow that audit, not the printed equations.
+- **x = 0 reference `ref:7aa017f0`** (anchor of every T1 B row) was certified by settling rule v1 (W101); its status
+  under v6 is unevaluated (report Decision 4).
+- Number checker: `p515_s53_w164_manuscript_number_check.py` — re-run each round with new declarations into
+  `w164_manuscript_check/overleaf_<commit>/`.
 
 ## Certification (frozen: criterion v6, stage spec `96c23404`, extension `84775dc4`, A64 spec `44a2dce8`)
 
@@ -70,12 +87,10 @@ There is also a monotone branch (L = 60, |step|·60 ≤ τ).
   - every Phase B certificate is determinate;
   - value − I is negative and determinate at every discount rate.
 
-## Open for the review (`P5_15_STEP6_PACKAGE.md` Decisions 1–4)
+## Step 6 package decisions — ruled (Addenda 65–67)
 
-1. Substitute net-of-salvage validation: no recorded net rows exist outside the G family.
-2. The ≥ 0.95 τ certificate count is ten.
-3. `d_36686489` is attributed to TSO recoveries, not the dead zone.
-4. Four items have no source.
+Net substitute, the ≥ 0.95 τ count of ten, `d_36686489`, and the unsourced items were ruled in Addendum 65; the methods
+text in Addenda 66–67.
 
 The post-revision rule question is recorded: "a non-clean cycle cannot be a turning point" (`j_a11d7966`,
 `d_4a82a64a`).

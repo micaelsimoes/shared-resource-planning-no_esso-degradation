@@ -9,11 +9,12 @@
 
 Manuscript clone `manuscript/6a67305f25e8348fb71380c3/` pulled at Overleaf `6191c6c` (main.tex = submitted text, 2,101 lines; response_to_reviewers_draft.tex added).
 
-- [ ] **▶ W164** — W163 number checker extended to `manuscript/*.tex` (main, highlights, cover letter, response letter)
-- [ ] **▶ W165** — map §D figures 1–5 from frozen JSON `590088fe` + named records, deterministic PDF, under `w160_step6_frozen/export/figures/`
-- [ ] **▶ W166** — equation-vs-code audit §2.3 + Appendix A; question (5): storage schedule common vs per operation scenario within a block (letter R3.3)
-- [ ] **▶ W167** — nomenclature audit; year-dependent tables for 2025/2030/2035 from the case files; question (4): `SRP1_ESS.xlsx` at `7ce1d1ab` — single expected cost trajectory or probability-weighted scenarios (§3.1)
-- [ ] Planner review of W164–W167; report `P5_15_STEP6_SUPPORT_REPORT.md`; commit; push the branch
+- [x] **W164** — number checker for `manuscript/*.tex` — `77fcf136` / `b005ac7f`: letter 86 match, **1 MISMATCH** (l. 256 'the one result'), 1 no record ('single machine'); cover letter 2/2; highlights 0 numbers; main.tex 610 submitted-version figures (by map line), 105 match, 2 no counterpart (l. 1058 SoH 60/80 %); letter findings F1–F8
+- [x] **W165** — figures 1–5 — `bcd0e5d9` / `3d0dadbc`: deterministic PDFs (rendered twice, equal), fig 4 panel 2 = `h_f9eae48f` by fixed rule; fig 4(a) x = 0 reference certified by settling rule **v1** (W101), not v6 → Decision 4; fig 5 split from W130
+- [x] **W166** — `e7b9a938`: 68 rows (22 match / 38 differ / 8 not implemented); **(5): one storage schedule common to all 9 market × operation scenarios (hard NA by aliasing); row 18 = DSO interface premium only**; found: **3 × 3 horizon = 2025/2028/2031/2034/2037 (3-year blocks)**
+- [x] **W167** — `4523cd3d` / `5cf26940`: **(4): three cost trajectories weighted 0.35/0.55/0.10, I(x) = expectation (map premise wrong)**; energy row ×1.25 vs the submitted file (÷4 not ÷5); 5 input tables regenerated; nomenclature lists (i) 0 (ii) 89 (iv) 18 Benders symbols
+- [x] Planner review of W164–W167; report `P5_15_STEP6_SUPPORT_REPORT.md` (Decisions 1–7: R3.3 wording; two horizons in §3; §3.1 costs; x = 0 reference v6 replay; letter wording points; l. 1058; fig 1 panel b); branch pushed
+- [ ] **▶ Stopped for review:** author/expert on Decisions 1–7; author supplies reviewers' comment documents and the submitted source for latexdiff
 - [ ] Then stand by for the author's draft rounds (map §E)
 
 ## Addendum 58 order — remaining cells in manuscript-priority order; Step 5 rows; stop before Step 6 tables freeze
