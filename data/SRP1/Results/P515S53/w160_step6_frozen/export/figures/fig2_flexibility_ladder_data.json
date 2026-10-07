@@ -1,0 +1,484 @@
+{
+ "caption_values": [],
+ "checks": {
+  "CHECK:headline_V_minus_I_settled.ref_is_x0": {
+   "detail": {
+    "investment_year": 2025,
+    "nodes": {
+     "5": [
+      0.0,
+      0.0
+     ],
+     "7": [
+      0.0,
+      0.0
+     ],
+     "9": [
+      0.0,
+      0.0
+     ]
+    }
+   },
+   "ok": true
+  },
+  "H:m1.5:value_minus_I.ref_is_x0": {
+   "detail": {
+    "investment_year": 2025,
+    "nodes": {
+     "5": [
+      0.0,
+      0.0
+     ],
+     "7": [
+      0.0,
+      0.0
+     ],
+     "9": [
+      0.0,
+      0.0
+     ]
+    }
+   },
+   "ok": true
+  },
+  "H:m1.75:value_minus_I.ref_is_x0": {
+   "detail": {
+    "investment_year": 2025,
+    "nodes": {
+     "5": [
+      0.0,
+      0.0
+     ],
+     "7": [
+      0.0,
+      0.0
+     ],
+     "9": [
+      0.0,
+      0.0
+     ]
+    }
+   },
+   "ok": true
+  },
+  "H:m2:value_minus_I.ref_is_x0": {
+   "detail": {
+    "investment_year": 2025,
+    "nodes": {
+     "5": [
+      0.0,
+      0.0
+     ],
+     "7": [
+      0.0,
+      0.0
+     ],
+     "9": [
+      0.0,
+      0.0
+     ]
+    }
+   },
+   "ok": true
+  },
+  "determinate_iff_abs_over_threshold": {
+   "detail": [
+    [
+     "CHECK:headline_V_minus_I_settled",
+     "determinate"
+    ],
+    [
+     "H:m1.5:value_minus_I",
+     "within the uncertified bar"
+    ],
+    [
+     "H:m1.75:value_minus_I",
+     "determinate"
+    ],
+    [
+     "H:m2:value_minus_I",
+     "determinate"
+    ]
+   ],
+   "ok": true
+  },
+  "multipliers_strictly_increasing": {
+   "detail": [
+    1.0,
+    1.5,
+    1.75,
+    2.0
+   ],
+   "ok": true
+  },
+  "one_unit_on_every_rung": {
+   "detail": [
+    "node 7, 0.25 MVA / 1 MWh, 2025"
+   ],
+   "ok": true
+  }
+ },
+ "computed": [],
+ "figure": "fig2_flexibility_ladder",
+ "height_mm": 62.0,
+ "layout_choices": [
+  "single column (90 mm); x = flexibility-price multiplier, y = value - I of the unit with the claim's threshold (certified pair) or uncertified bar as +/- error bar",
+  "x-limits [min m - 0.12, max m + 0.25] (room for the value labels; layout)",
+  "x-limits [min m - 0.12, max m + 0.25] (room for the value labels; layout)"
+ ],
+ "objective_convention": "Objective convention: Q = gross operational cost (gross_operational_cost), settlement excluded; value = Q(0) - Q(x); I = investment cost.",
+ "pdf": {
+  "determinism": "generated twice in this run; sha256 equal",
+  "font_file": {
+   "family": "Arial",
+   "path": "/System/Library/Fonts/Supplemental/Arial.ttf",
+   "sha256": "525979822591a3447cfc49d943d6f7683508e25543407871c0ed8fed05fd2bd9"
+  },
+  "fonts": {
+   "base_fonts": [
+    "GOFYPY+ArialMT"
+   ],
+   "has_creation_date": false,
+   "has_mod_date": false,
+   "n_FontFile": 0,
+   "n_FontFile2": 1,
+   "n_FontFile3": 0,
+   "type3": 0
+  },
+  "metadata": {
+   "CreationDate": null,
+   "Creator": "p515_s53_w165_step6_figures.py",
+   "ModDate": null,
+   "Producer": "Matplotlib pdf backend"
+  },
+  "sha256": "7d15f6970e26db9df7e912b96d8db23c5b446ca48a99716a9127ffc089bf3b98"
+ },
+ "preview_png": {
+  "dpi": 200,
+  "note": "preview for review, not a deliverable",
+  "sha256": "710784478b722d73100e644c3352bd17fa991e9242325ddd58b44ac4a8a20376"
+ },
+ "values": [
+  {
+   "name": "harness_default_multiplier",
+   "rounding": "plotted at full precision",
+   "source": {
+    "json_path": "line(s) [1062]: m_flex_price_multiplier = flex_price_multiplier if not None else <default>",
+    "path": "p515_s53_w142_resettle_v6_campaign.py",
+    "sha256": "d7c236b61c151c2a2cf6a924711b275cf7a413c4c5e28ebb0d8a592f1f573110"
+   },
+   "unit": "x base price",
+   "value": 1.0
+  },
+  {
+   "name": "CHECK:headline_V_minus_I_settled.ref_cell.ref:7aa017f0.flex_price_multiplier",
+   "rounding": "plotted at full precision",
+   "source": {
+    "json_path": "candidates[0].flex_price_multiplier absent -> the harness default (p515_s53_w142_resettle_v6_campaign.py)",
+    "path": "data/SRP1/Results/P515S53/w101_srp1_continuation/campaign_s53_w101_srp1_cont_x0/campaign_spec_s53_w101_srp1_cont_x0_d1d5c3bc.json",
+    "sha256": "d1d5c3bcbdc261d297282382ce4a54263a811059d17230613a1765ee915ebd33"
+   },
+   "unit": "x base price",
+   "value": 1.0
+  },
+  {
+   "name": "CHECK:headline_V_minus_I_settled.other_cell.ref:bd504ecf.flex_price_multiplier",
+   "rounding": "plotted at full precision",
+   "source": {
+    "json_path": "candidates[0].flex_price_multiplier absent -> the harness default (p515_s53_w142_resettle_v6_campaign.py)",
+    "path": "data/SRP1/Results/P515S53/w101_srp1_continuation/campaign_s53_w101_srp1_cont_n7_4h_e1/campaign_spec_s53_w101_srp1_cont_n7_4h_e1_434f46fc.json",
+    "sha256": "434f46fcb5f13f8e252078b004fdc314e420a0eb6a574d8d8da2d7433a2e1744"
+   },
+   "unit": "x base price",
+   "value": 1.0
+  },
+  {
+   "name": "CHECK:headline_V_minus_I_settled.value_minus_I",
+   "rounding": "plotted at full precision; annotated k EUR 1 dp",
+   "source": {
+    "json_path": "tables.claims[59].d_gross",
+    "path": "data/SRP1/Results/P515S53/w160_step6_frozen/frozen_step6_tables_v1_590088fe.json",
+    "sha256": "590088fe6b364c265c97998c5491edea7ca70baad0dbe2ba5150273656d9b6f4"
+   },
+   "unit": "EUR",
+   "value": -64417.38662493462
+  },
+  {
+   "name": "CHECK:headline_V_minus_I_settled.threshold_or_bar",
+   "rounding": "plotted at full precision (+/- error bar)",
+   "source": {
+    "json_path": "tables.claims[59].gross_threshold_or_bar",
+    "path": "data/SRP1/Results/P515S53/w160_step6_frozen/frozen_step6_tables_v1_590088fe.json",
+    "sha256": "590088fe6b364c265c97998c5491edea7ca70baad0dbe2ba5150273656d9b6f4"
+   },
+   "unit": "EUR",
+   "value": 13054.22152018547
+  },
+  {
+   "name": "CHECK:headline_V_minus_I_settled.rule",
+   "rounding": "as recorded",
+   "source": {
+    "json_path": "tables.claims[59].gross_rule",
+    "path": "data/SRP1/Results/P515S53/w160_step6_frozen/frozen_step6_tables_v1_590088fe.json",
+    "sha256": "590088fe6b364c265c97998c5491edea7ca70baad0dbe2ba5150273656d9b6f4"
+   },
+   "unit": "text",
+   "value": "max(3 x larger bar, 2 tau)"
+  },
+  {
+   "name": "CHECK:headline_V_minus_I_settled.verdict",
+   "rounding": "as recorded",
+   "source": {
+    "json_path": "tables.claims[59].gross_verdict",
+    "path": "data/SRP1/Results/P515S53/w160_step6_frozen/frozen_step6_tables_v1_590088fe.json",
+    "sha256": "590088fe6b364c265c97998c5491edea7ca70baad0dbe2ba5150273656d9b6f4"
+   },
+   "unit": "text",
+   "value": "determinate"
+  },
+  {
+   "name": "CHECK:headline_V_minus_I_settled.multiple",
+   "rounding": "caption 2 dp",
+   "source": {
+    "json_path": "tables.claims[59].gross_multiple",
+    "path": "data/SRP1/Results/P515S53/w160_step6_frozen/frozen_step6_tables_v1_590088fe.json",
+    "sha256": "590088fe6b364c265c97998c5491edea7ca70baad0dbe2ba5150273656d9b6f4"
+   },
+   "unit": "x",
+   "value": 4.93460192362504
+  },
+  {
+   "name": "H:m1.5:value_minus_I.ref_cell.h_aa8a76d7.flex_price_multiplier",
+   "rounding": "plotted at full precision",
+   "source": {
+    "json_path": "candidates[0].flex_price_multiplier",
+    "path": "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_h_aa8a76d7/campaign_spec_s53_w142_resettle_v6_h_aa8a76d7_3cd71274.json",
+    "sha256": "3cd712746f16ec85a4894ab77c8c399c01d50389770b60f54c27fce6da5a0b10"
+   },
+   "unit": "x base price",
+   "value": 1.5
+  },
+  {
+   "name": "H:m1.5:value_minus_I.other_cell.h_f9eae48f.flex_price_multiplier",
+   "rounding": "plotted at full precision",
+   "source": {
+    "json_path": "candidates[0].flex_price_multiplier",
+    "path": "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_h_f9eae48f/campaign_spec_s53_w142_resettle_v6_h_f9eae48f_606c5556.json",
+    "sha256": "606c5556fbdf72192205d60c43a3083647ccf83572bdfdd4ac34014abb87f218"
+   },
+   "unit": "x base price",
+   "value": 1.5
+  },
+  {
+   "name": "H:m1.5:value_minus_I.value_minus_I",
+   "rounding": "plotted at full precision; annotated k EUR 1 dp",
+   "source": {
+    "json_path": "tables.claims[24].d_gross",
+    "path": "data/SRP1/Results/P515S53/w160_step6_frozen/frozen_step6_tables_v1_590088fe.json",
+    "sha256": "590088fe6b364c265c97998c5491edea7ca70baad0dbe2ba5150273656d9b6f4"
+   },
+   "unit": "EUR",
+   "value": -14450.275072219316
+  },
+  {
+   "name": "H:m1.5:value_minus_I.threshold_or_bar",
+   "rounding": "plotted at full precision (+/- error bar)",
+   "source": {
+    "json_path": "tables.claims[24].gross_threshold_or_bar",
+    "path": "data/SRP1/Results/P515S53/w160_step6_frozen/frozen_step6_tables_v1_590088fe.json",
+    "sha256": "590088fe6b364c265c97998c5491edea7ca70baad0dbe2ba5150273656d9b6f4"
+   },
+   "unit": "EUR",
+   "value": 18751.08193874359
+  },
+  {
+   "name": "H:m1.5:value_minus_I.rule",
+   "rounding": "as recorded",
+   "source": {
+    "json_path": "tables.claims[24].gross_rule",
+    "path": "data/SRP1/Results/P515S53/w160_step6_frozen/frozen_step6_tables_v1_590088fe.json",
+    "sha256": "590088fe6b364c265c97998c5491edea7ca70baad0dbe2ba5150273656d9b6f4"
+   },
+   "unit": "text",
+   "value": "uncertified form"
+  },
+  {
+   "name": "H:m1.5:value_minus_I.verdict",
+   "rounding": "as recorded",
+   "source": {
+    "json_path": "tables.claims[24].gross_verdict",
+    "path": "data/SRP1/Results/P515S53/w160_step6_frozen/frozen_step6_tables_v1_590088fe.json",
+    "sha256": "590088fe6b364c265c97998c5491edea7ca70baad0dbe2ba5150273656d9b6f4"
+   },
+   "unit": "text",
+   "value": "within the uncertified bar"
+  },
+  {
+   "name": "H:m1.5:value_minus_I.multiple",
+   "rounding": "caption 2 dp",
+   "source": {
+    "json_path": "tables.claims[24].gross_multiple",
+    "path": "data/SRP1/Results/P515S53/w160_step6_frozen/frozen_step6_tables_v1_590088fe.json",
+    "sha256": "590088fe6b364c265c97998c5491edea7ca70baad0dbe2ba5150273656d9b6f4"
+   },
+   "unit": "x",
+   "value": 0.7706368688177975
+  },
+  {
+   "name": "H:m1.75:value_minus_I.ref_cell.h_x0_m175.flex_price_multiplier",
+   "rounding": "plotted at full precision",
+   "source": {
+    "json_path": "candidates[0].flex_price_multiplier",
+    "path": "data/SRP1/Results/P515S53/w155_a64_cells/campaign_s53_w155_a64_r2_h_x0_m175/campaign_spec_s53_w155_a64_r2_h_x0_m175_c4852b1b.json",
+    "sha256": "c4852b1b6787c91b589d9d35ce032c5bc1da89f5266f5ea1b176e600a5c3222b"
+   },
+   "unit": "x base price",
+   "value": 1.75
+  },
+  {
+   "name": "H:m1.75:value_minus_I.other_cell.h_unit_m175.flex_price_multiplier",
+   "rounding": "plotted at full precision",
+   "source": {
+    "json_path": "candidates[0].flex_price_multiplier",
+    "path": "data/SRP1/Results/P515S53/w155_a64_cells/campaign_s53_w155_a64_r2_h_unit_m175/campaign_spec_s53_w155_a64_r2_h_unit_m175_eb85d0f4.json",
+    "sha256": "eb85d0f4c16ed917e91a155da686ae49c809ccc88dfbd729a7603bb7dfc4dad6"
+   },
+   "unit": "x base price",
+   "value": 1.75
+  },
+  {
+   "name": "H:m1.75:value_minus_I.value_minus_I",
+   "rounding": "plotted at full precision; annotated k EUR 1 dp",
+   "source": {
+    "json_path": "tables.a64.rows[0].d_gross",
+    "path": "data/SRP1/Results/P515S53/w160_step6_frozen/frozen_step6_tables_v1_590088fe.json",
+    "sha256": "590088fe6b364c265c97998c5491edea7ca70baad0dbe2ba5150273656d9b6f4"
+   },
+   "unit": "EUR",
+   "value": 14249.16143846279
+  },
+  {
+   "name": "H:m1.75:value_minus_I.threshold_or_bar",
+   "rounding": "plotted at full precision (+/- error bar)",
+   "source": {
+    "json_path": "tables.a64.rows[0].gross_threshold_or_bar",
+    "path": "data/SRP1/Results/P515S53/w160_step6_frozen/frozen_step6_tables_v1_590088fe.json",
+    "sha256": "590088fe6b364c265c97998c5491edea7ca70baad0dbe2ba5150273656d9b6f4"
+   },
+   "unit": "EUR",
+   "value": 10775.399337887764
+  },
+  {
+   "name": "H:m1.75:value_minus_I.rule",
+   "rounding": "as recorded",
+   "source": {
+    "json_path": "tables.a64.rows[0].gross_rule",
+    "path": "data/SRP1/Results/P515S53/w160_step6_frozen/frozen_step6_tables_v1_590088fe.json",
+    "sha256": "590088fe6b364c265c97998c5491edea7ca70baad0dbe2ba5150273656d9b6f4"
+   },
+   "unit": "text",
+   "value": "max(3 x larger bar, 2 tau)"
+  },
+  {
+   "name": "H:m1.75:value_minus_I.verdict",
+   "rounding": "as recorded",
+   "source": {
+    "json_path": "tables.a64.rows[0].gross_verdict",
+    "path": "data/SRP1/Results/P515S53/w160_step6_frozen/frozen_step6_tables_v1_590088fe.json",
+    "sha256": "590088fe6b364c265c97998c5491edea7ca70baad0dbe2ba5150273656d9b6f4"
+   },
+   "unit": "text",
+   "value": "determinate"
+  },
+  {
+   "name": "H:m1.75:value_minus_I.multiple",
+   "rounding": "caption 2 dp",
+   "source": {
+    "json_path": "tables.a64.rows[0].gross_multiple",
+    "path": "data/SRP1/Results/P515S53/w160_step6_frozen/frozen_step6_tables_v1_590088fe.json",
+    "sha256": "590088fe6b364c265c97998c5491edea7ca70baad0dbe2ba5150273656d9b6f4"
+   },
+   "unit": "x",
+   "value": 1.3223789663516978
+  },
+  {
+   "name": "H:m2:value_minus_I.ref_cell.h_50dea31c.flex_price_multiplier",
+   "rounding": "plotted at full precision",
+   "source": {
+    "json_path": "candidates[0].flex_price_multiplier",
+    "path": "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_h_50dea31c/campaign_spec_s53_w142_resettle_v6_h_50dea31c_9dd35d71.json",
+    "sha256": "9dd35d71eea9f206e3acaa7b8e65afd0e70d3b46f01feaa62fb2bacbbc36b782"
+   },
+   "unit": "x base price",
+   "value": 2.0
+  },
+  {
+   "name": "H:m2:value_minus_I.other_cell.h_74eda68d.flex_price_multiplier",
+   "rounding": "plotted at full precision",
+   "source": {
+    "json_path": "candidates[0].flex_price_multiplier",
+    "path": "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_h_74eda68d/campaign_spec_s53_w142_resettle_v6_h_74eda68d_63ca1061.json",
+    "sha256": "63ca1061295f572e7bece04dfb4eb5891ce2aa05dcde6990d7c9916297d0162d"
+   },
+   "unit": "x base price",
+   "value": 2.0
+  },
+  {
+   "name": "H:m2:value_minus_I.value_minus_I",
+   "rounding": "plotted at full precision; annotated k EUR 1 dp",
+   "source": {
+    "json_path": "tables.claims[25].d_gross",
+    "path": "data/SRP1/Results/P515S53/w160_step6_frozen/frozen_step6_tables_v1_590088fe.json",
+    "sha256": "590088fe6b364c265c97998c5491edea7ca70baad0dbe2ba5150273656d9b6f4"
+   },
+   "unit": "EUR",
+   "value": 46285.46235704189
+  },
+  {
+   "name": "H:m2:value_minus_I.threshold_or_bar",
+   "rounding": "plotted at full precision (+/- error bar)",
+   "source": {
+    "json_path": "tables.claims[25].gross_threshold_or_bar",
+    "path": "data/SRP1/Results/P515S53/w160_step6_frozen/frozen_step6_tables_v1_590088fe.json",
+    "sha256": "590088fe6b364c265c97998c5491edea7ca70baad0dbe2ba5150273656d9b6f4"
+   },
+   "unit": "EUR",
+   "value": 12272.190994977951
+  },
+  {
+   "name": "H:m2:value_minus_I.rule",
+   "rounding": "as recorded",
+   "source": {
+    "json_path": "tables.claims[25].gross_rule",
+    "path": "data/SRP1/Results/P515S53/w160_step6_frozen/frozen_step6_tables_v1_590088fe.json",
+    "sha256": "590088fe6b364c265c97998c5491edea7ca70baad0dbe2ba5150273656d9b6f4"
+   },
+   "unit": "text",
+   "value": "max(3 x larger bar, 2 tau)"
+  },
+  {
+   "name": "H:m2:value_minus_I.verdict",
+   "rounding": "as recorded",
+   "source": {
+    "json_path": "tables.claims[25].gross_verdict",
+    "path": "data/SRP1/Results/P515S53/w160_step6_frozen/frozen_step6_tables_v1_590088fe.json",
+    "sha256": "590088fe6b364c265c97998c5491edea7ca70baad0dbe2ba5150273656d9b6f4"
+   },
+   "unit": "text",
+   "value": "determinate"
+  },
+  {
+   "name": "H:m2:value_minus_I.multiple",
+   "rounding": "caption 2 dp",
+   "source": {
+    "json_path": "tables.claims[25].gross_multiple",
+    "path": "data/SRP1/Results/P515S53/w160_step6_frozen/frozen_step6_tables_v1_590088fe.json",
+    "sha256": "590088fe6b364c265c97998c5491edea7ca70baad0dbe2ba5150273656d9b6f4"
+   },
+   "unit": "x",
+   "value": 3.771572849215182
+  }
+ ],
+ "width": "single",
+ "width_mm": 90.0
+}
