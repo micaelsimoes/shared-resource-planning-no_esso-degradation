@@ -1,8 +1,20 @@
 # TASKS — current order
 
-**Authority:** `PLANNER_BRIEF_2026-09-13.md` Addendum 62 (2026-10-01); Addendum 58 order continues; earlier orders below for record.
+**Authority:** `PLANNER_BRIEF_2026-09-13.md` Addendum 67 (2026-10-08) and the author's Step 6 request of 2026-10-07 (`STEP6_REVISION_MAP.md` §§D–E); earlier orders below for record.
 **Objective convention on every value:** Q = certified `gross_operational_cost`, settlement excluded.
 **Updated at every transition; read first when resuming.**
+
+
+## Step 6 support — author's request 2026-10-07 (zero-solve; nothing else runs)
+
+Manuscript clone `manuscript/6a67305f25e8348fb71380c3/` pulled at Overleaf `6191c6c` (main.tex = submitted text, 2,101 lines; response_to_reviewers_draft.tex added).
+
+- [ ] **▶ W164** — W163 number checker extended to `manuscript/*.tex` (main, highlights, cover letter, response letter)
+- [ ] **▶ W165** — map §D figures 1–5 from frozen JSON `590088fe` + named records, deterministic PDF, under `w160_step6_frozen/export/figures/`
+- [ ] **▶ W166** — equation-vs-code audit §2.3 + Appendix A; question (5): storage schedule common vs per operation scenario within a block (letter R3.3)
+- [ ] **▶ W167** — nomenclature audit; year-dependent tables for 2025/2030/2035 from the case files; question (4): `SRP1_ESS.xlsx` at `7ce1d1ab` — single expected cost trajectory or probability-weighted scenarios (§3.1)
+- [ ] Planner review of W164–W167; report `P5_15_STEP6_SUPPORT_REPORT.md`; commit; push the branch
+- [ ] Then stand by for the author's draft rounds (map §E)
 
 ## Addendum 58 order — remaining cells in manuscript-priority order; Step 5 rows; stop before Step 6 tables freeze
 

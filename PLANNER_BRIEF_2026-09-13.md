@@ -2909,6 +2909,30 @@ after a lapse) is correct and stays.
   checks against the frozen tables (every number in the manuscript traced to a frozen-table cell or a
   named record, as W161 did for the paragraphs). No run is queued; the cleanup list is in TASKS.md.
 
+# Addendum 67 — methods paragraphs final (v5); three departures from the expert's edits accepted (2026-10-08)
+
+`paragraphs_v5.md` (`097421f8`); figure check W163 on v4 (`ff66c75f`), 116/116; v5 adds three wording
+changes so the text says what the code does, and one recorded figure (tail offset 1.0–1.2 × 10⁻⁶).
+**Accepted as the manuscript's methods text.** The three departures are the Planner correcting the
+expert against code and records, and each is right:
+
+- **τ uses V = 259,375.33**, the reference value in force when the criterion was adopted and frozen into
+  every spec (0.07 × 259,375.33 / 4 = 4,539.07 €), not the later settled value — the expert's edit named
+  the wrong V. The text says τ was fixed from the reference then in force and kept frozen; the 2.3 %
+  difference to the settled value is immaterial and is not re-derived.
+- **"Successful", not "clean", for the residual test:** the test accepts any exit the modelling layer
+  accepts as optimal, IPOPT's acceptable level included; cleanliness is the certification rule's
+  separate decision. Two concepts, two words.
+- **The 15–21 k€ movement is anchored at the earlier residual-based certificates**, ten cycles after
+  the first residual pass, not at the pass itself — the sentence reads "after their residual-based
+  certification".
+- **"One machine"** has no host field in the evaluation records and stands on the author's attestation,
+  supported by the identical interpreter path and memory size recorded in every run; the
+  reproducibility note says so in those words.
+- **From here:** the author drafts; the expert reviews the drafted methods, results, limitations and the
+  response letter's technical answers; the Planner traces every manuscript number to a frozen-table cell
+  or named record. The programme's decision record closes at this addendum until the draft arrives.
+
 ## Update obligations
 
 At the end of Step 1 the Planner rewrites the "CURRENT SOURCE OF TRUTH" head of
