@@ -1,0 +1,8090 @@
+{
+ "normalisation": "identity key = base + \"^{label}\" + \"_{label}\". Font wrappers (\\text, \\mathrm, \\textrm, \\mathit, \\operatorname) removed; bold (\\boldsymbol, \\mathbf, \\bm) removed; \\textcolor transparent; \\mathcal{X} -> cal(X); \\mathbb -> excluded; decorations kept in the base (hat(S); widehat=hat, overline=bar, widetilde=tilde). Superscript: whitespace and braces removed, iteration markers removed (\"(l)\", \"(k)\", \"(\\ell)\" and +-1, nested \"^k\"/\"^{k+1}\"/\"^{\\ell}\", comma items k, l, \\ell, k+-1, l+-1, \\ell+-1 and digit strings such as 0 or 1 (LB^0, \\hat{x}^1: iteration counters)); \\max -> max. Subscript: dropped (index) unless it starts with an upper-case letter (\\Omega_C) or is all digits (y_0). Letter runs split into single letters except SoH, SoC, LB, UB, CL, DSO, TSO, ESSO, NPV, EFC, DoD. An atom is an INDEX (reported separately, not as an undefined symbol) when its base is one of the letters this manuscript uses as indices or counters (c d e g i j k l m n o s t y, \\ell), it is not bold, has no superscript label and no subscript at all; so x, u, f, h, r are symbols and g_i, x_{ij} are symbols. A label subscript (\\Omega_C) is not scanned for atoms; an index subscript is. Scripts are also scanned: every subscript, and a superscript that is an expression (contains + - _ ( \\times \\cdot after iteration markers are removed), contribute their own atoms (e.g. y^{Inv}, y_0 inside indices).",
+ "nomenclature_lines": [
+  185,
+  267
+ ],
+ "nomenclature_entries": [
+  {
+   "line": 196,
+   "lines": [
+    196
+   ],
+   "group": "Sets",
+   "tex": "$E^S$",
+   "raw": "E^{S}",
+   "key": "E^{S}",
+   "iteration_only_sup": false,
+   "blue": false,
+   "description": "Set of shared ESSs"
+  },
+  {
+   "line": 197,
+   "lines": [
+    197
+   ],
+   "group": "Sets",
+   "tex": "$Y$",
+   "raw": "Y",
+   "key": "Y",
+   "iteration_only_sup": false,
+   "blue": false,
+   "description": "Set of representative years"
+  },
+  {
+   "line": 198,
+   "lines": [
+    198
+   ],
+   "group": "Sets",
+   "tex": "$D$",
+   "raw": "D",
+   "key": "D",
+   "iteration_only_sup": false,
+   "blue": false,
+   "description": "Set of representative days"
+  },
+  {
+   "line": 199,
+   "lines": [
+    199
+   ],
+   "group": "Sets",
+   "tex": "$T$",
+   "raw": "T",
+   "key": "T",
+   "iteration_only_sup": false,
+   "blue": false,
+   "description": "Set of intra-day time instants"
+  },
+  {
+   "line": 200,
+   "lines": [
+    200
+   ],
+   "group": "Sets",
+   "tex": "$\\Omega_C$",
+   "raw": "Omega_{C}",
+   "key": "Omega_{C}",
+   "iteration_only_sup": false,
+   "blue": false,
+   "description": "Set of investment-cost scenarios"
+  },
+  {
+   "line": 201,
+   "lines": [
+    201
+   ],
+   "group": "Sets",
+   "tex": "\\textcolor{blue}{$\\Omega_O$}",
+   "raw": "Omega_{O}",
+   "key": "Omega_{O}",
+   "iteration_only_sup": false,
+   "blue": true,
+   "description": "Set of operational scenarios"
+  },
+  {
+   "line": 202,
+   "lines": [
+    202
+   ],
+   "group": "Sets",
+   "tex": "$L^B$",
+   "raw": "L^{B}",
+   "key": "L^{B}",
+   "iteration_only_sup": false,
+   "blue": false,
+   "description": "Set of Benders' iterations"
+  },
+  {
+   "line": 205,
+   "lines": [
+    205
+   ],
+   "group": "Parameters",
+   "tex": "$\\omega_c$",
+   "raw": "omega_{c}",
+   "key": "omega",
+   "iteration_only_sup": false,
+   "blue": false,
+   "description": "Probability of investment-cost scenario $c \\in \\Omega_C$"
+  },
+  {
+   "line": 206,
+   "lines": [
+    206
+   ],
+   "group": "Parameters",
+   "tex": "\\textcolor{blue}{$\\omega_o$}",
+   "raw": "omega_{o}",
+   "key": "omega",
+   "iteration_only_sup": false,
+   "blue": true,
+   "description": "Probability of operation scenario $o \\in \\Omega_O$"
+  },
+  {
+   "line": 207,
+   "lines": [
+    207,
+    208
+   ],
+   "group": "Parameters",
+   "tex": "$c^{\\text{Inv,S}}_{y,c}$",
+   "raw": "c^{\\text{Inv,S}}_{y,c}",
+   "key": "c^{Inv,S}",
+   "iteration_only_sup": false,
+   "blue": false,
+   "description": "Unit investment cost of converter power rating in year $y$ and investment scenario $c$"
+  },
+  {
+   "line": 209,
+   "lines": [
+    209,
+    210
+   ],
+   "group": "Parameters",
+   "tex": "$c^{\\text{Inv,E}}_{y,c}$",
+   "raw": "c^{\\text{Inv,E}}_{y,c}",
+   "key": "c^{Inv,E}",
+   "iteration_only_sup": false,
+   "blue": false,
+   "description": "Unit investment cost of energy capacity in year $y$ and investment scenario $c$"
+  },
+  {
+   "line": 211,
+   "lines": [
+    211
+   ],
+   "group": "Parameters",
+   "tex": "$T^\\text{Cal}_{e,y}$",
+   "raw": "T^{\\text{Cal}}_{e,y}",
+   "key": "T^{Cal}",
+   "iteration_only_sup": false,
+   "blue": false,
+   "description": "Calendar lifetime of ESS $e$ installed in year $y$"
+  },
+  {
+   "line": 212,
+   "lines": [
+    212
+   ],
+   "group": "Parameters",
+   "tex": "$E^{\\text{Max}}_{e,y}$",
+   "raw": "E^{\\text{Max}}_{e,y}",
+   "key": "E^{Max}",
+   "iteration_only_sup": false,
+   "blue": false,
+   "description": "Maximum installable energy capacity of unit $e$ in year $y$"
+  },
+  {
+   "line": 213,
+   "lines": [
+    213
+   ],
+   "group": "Parameters",
+   "tex": "$\\phi^{\\text{Min}}_e$",
+   "raw": "phi^{\\text{Min}}_{e}",
+   "key": "phi^{Min}",
+   "iteration_only_sup": false,
+   "blue": false,
+   "description": "Minimum admissible energy-to-power ratio of unit $e$ in year $y$"
+  },
+  {
+   "line": 214,
+   "lines": [
+    214
+   ],
+   "group": "Parameters",
+   "tex": "$\\phi^{\\text{Max}}_e$",
+   "raw": "phi^{\\text{Max}}_{e}",
+   "key": "phi^{Max}",
+   "iteration_only_sup": false,
+   "blue": false,
+   "description": "Maximum admissible energy-to-power ratio of unit $e$ in year $y$"
+  },
+  {
+   "line": 215,
+   "lines": [
+    215
+   ],
+   "group": "Parameters",
+   "tex": "$c^{\\text{Inv}}$",
+   "raw": "c^{\\text{Inv}}",
+   "key": "c^{Inv}",
+   "iteration_only_sup": false,
+   "blue": false,
+   "description": "Total investment budget"
+  },
+  {
+   "line": 216,
+   "lines": [
+    216
+   ],
+   "group": "Parameters",
+   "tex": "$\\alpha^{\\text{Down}}$",
+   "raw": "alpha^{\\text{Down}}",
+   "key": "alpha^{Down}",
+   "iteration_only_sup": false,
+   "blue": false,
+   "description": "Lower bound on the Benders underestimator"
+  },
+  {
+   "line": 217,
+   "lines": [
+    217
+   ],
+   "group": "Parameters",
+   "tex": "$SoH_{e,y}^{\\text{min}}$",
+   "raw": "SoH^{\\text{min}}_{e,y}",
+   "key": "SoH^{min}",
+   "iteration_only_sup": false,
+   "blue": false,
+   "description": "Minimum admissible SoH of unit $e$ in year $y$"
+  },
+  {
+   "line": 218,
+   "lines": [
+    218
+   ],
+   "group": "Parameters",
+   "tex": "$D_d$",
+   "raw": "D_{d}",
+   "key": "D",
+   "iteration_only_sup": false,
+   "blue": false,
+   "description": "Number of calendar days represented by $d \\in D$"
+  },
+  {
+   "line": 219,
+   "lines": [
+    219
+   ],
+   "group": "Parameters",
+   "tex": "$Y_y$",
+   "raw": "Y_{y}",
+   "key": "Y",
+   "iteration_only_sup": false,
+   "blue": false,
+   "description": "Number of calendar years represented by $y \\in Y$"
+  },
+  {
+   "line": 220,
+   "lines": [
+    220
+   ],
+   "group": "Parameters",
+   "tex": "$\\mathrm{CL}^\\text{Nom}_e$",
+   "raw": "CL^{\\text{Nom}}_{e}",
+   "key": "CL^{Nom}",
+   "iteration_only_sup": false,
+   "blue": false,
+   "description": "Nominal cycle life of unit $e \\in E^S$"
+  },
+  {
+   "line": 221,
+   "lines": [
+    221
+   ],
+   "group": "Parameters",
+   "tex": "$r$",
+   "raw": "r",
+   "key": "r",
+   "iteration_only_sup": false,
+   "blue": false,
+   "description": "Discount rate"
+  },
+  {
+   "line": 234,
+   "lines": [
+    234,
+    235
+   ],
+   "group": "Variables",
+   "tex": "\\textcolor{blue}{$S^{\\mathrm{Inv}(l)}_{e,y}$}",
+   "raw": "S^{\\mathrm{Inv}(l)}_{e,y}",
+   "key": "S^{Inv}",
+   "iteration_only_sup": false,
+   "blue": true,
+   "description": "Investment in converter power rating of ESS $e$ in year $y$ at planning iteration $l$"
+  },
+  {
+   "line": 236,
+   "lines": [
+    236,
+    237
+   ],
+   "group": "Variables",
+   "tex": "\\textcolor{blue}{$E^{\\mathrm{Inv}(l)}_{e,y}$}",
+   "raw": "E^{\\mathrm{Inv}(l)}_{e,y}",
+   "key": "E^{Inv}",
+   "iteration_only_sup": false,
+   "blue": true,
+   "description": "Investment in energy capacity of ESS $e$ in year $y$ at planning iteration $l$"
+  },
+  {
+   "line": 238,
+   "lines": [
+    238,
+    239
+   ],
+   "group": "Variables",
+   "tex": "$S^{\\text{Rated}}_{e,y^\\text{Inv},y}$",
+   "raw": "S^{\\text{Rated}}_{e,y^\\text{Inv},y}",
+   "key": "S^{Rated}",
+   "iteration_only_sup": false,
+   "blue": false,
+   "description": "Rated power of unit $e$ installed in year $y^\\text{Inv}$ and operated in year $y$"
+  },
+  {
+   "line": 240,
+   "lines": [
+    240,
+    241
+   ],
+   "group": "Variables",
+   "tex": "$E^{\\text{Rated}}_{e,y^\\text{Inv},y}$",
+   "raw": "E^{\\text{Rated}}_{e,y^\\text{Inv},y}",
+   "key": "E^{Rated}",
+   "iteration_only_sup": false,
+   "blue": false,
+   "description": "Available energy capacity of unit $e$ installed in year $y^\\text{Inv}$ and operated in year $y$"
+  },
+  {
+   "line": 242,
+   "lines": [
+    242,
+    243
+   ],
+   "group": "Variables",
+   "tex": "$S^{\\text{Av,Unit}}_{e,y^\\text{Inv},y}$",
+   "raw": "S^{\\text{Av,Unit}}_{e,y^\\text{Inv},y}",
+   "key": "S^{Av,Unit}",
+   "iteration_only_sup": false,
+   "blue": false,
+   "description": "Available power of unit $e$ installed in year $y^\\text{Inv}$ and operated in year $y$"
+  },
+  {
+   "line": 244,
+   "lines": [
+    244,
+    245
+   ],
+   "group": "Variables",
+   "tex": "$E^{\\text{Av,Unit}}_{e,y^\\text{Inv},y}$",
+   "raw": "E^{\\text{Av,Unit}}_{e,y^\\text{Inv},y}",
+   "key": "E^{Av,Unit}",
+   "iteration_only_sup": false,
+   "blue": false,
+   "description": "Available energy capacity of unit $e$ installed in year $y^\\text{Inv}$ and operated in year $y$"
+  },
+  {
+   "line": 246,
+   "lines": [
+    246
+   ],
+   "group": "Variables",
+   "tex": "$SoH_{e,y^\\text{Inv},y}$",
+   "raw": "SoH_{e,y^\\text{Inv},y}",
+   "key": "SoH",
+   "iteration_only_sup": false,
+   "blue": false,
+   "description": "SoH of unit $e$ installed in year $y^\\text{Inv}$ and operated in year $y$"
+  },
+  {
+   "line": 247,
+   "lines": [
+    247,
+    248
+   ],
+   "group": "Variables",
+   "tex": "$\\delta_{e,y^\\text{Inv},y}$",
+   "raw": "delta_{e,y^\\text{Inv},y}",
+   "key": "delta",
+   "iteration_only_sup": false,
+   "blue": false,
+   "description": "Average equivalent daily degradation rate of unit $e$ installed in year $y^\\text{Inv}$ and operated in year $y$"
+  },
+  {
+   "line": 249,
+   "lines": [
+    249,
+    250
+   ],
+   "group": "Variables",
+   "tex": "$S^\\text{Ch}_{e,y^\\text{Inv},y,d,t}$",
+   "raw": "S^{\\text{Ch}}_{e,y^\\text{Inv},y,d,t}",
+   "key": "S^{Ch}",
+   "iteration_only_sup": false,
+   "blue": false,
+   "description": "Charging apparent power of unit $e$, installed in year $y^\\text{Inv}$ and operated in year $y$, representative day $d$, time instant $t$"
+  },
+  {
+   "line": 251,
+   "lines": [
+    251,
+    252
+   ],
+   "group": "Variables",
+   "tex": "$S^\\text{Dch}_{e,y^\\text{Inv},y,d,t}$",
+   "raw": "S^{\\text{Dch}}_{e,y^\\text{Inv},y,d,t}",
+   "key": "S^{Dch}",
+   "iteration_only_sup": false,
+   "blue": false,
+   "description": "Discharging apparent power of unit $e$, installed in year $y^\\text{Inv}$ and operated in year $y$, representative day $d$, time instant $t$"
+  },
+  {
+   "line": 253,
+   "lines": [
+    253,
+    254,
+    255
+   ],
+   "group": "Variables",
+   "tex": "$P^{\\text{Net}}_{e,y,d,t}$",
+   "raw": "P^{\\text{Net}}_{e,y,d,t}",
+   "key": "P^{Net}",
+   "iteration_only_sup": false,
+   "blue": false,
+   "description": "Net active power request to unit $e$ in year $y$, representative day $d$, and time instant $t$, issued by the SOs participating in the coordination procedure"
+  },
+  {
+   "line": 256,
+   "lines": [
+    256,
+    257,
+    258
+   ],
+   "group": "Variables",
+   "tex": "$Q^{\\text{Net}}_{e,y,d,t}$",
+   "raw": "Q^{\\text{Net}}_{e,y,d,t}",
+   "key": "Q^{Net}",
+   "iteration_only_sup": false,
+   "blue": false,
+   "description": "Net reactive power request to unit $e$ in year $y$, representative day $d$, and time instant $t$, issued by the SOs participating in the coordination procedure"
+  }
+ ],
+ "counts": {
+  "nomenclature_entries": 34,
+  "distinct_nomenclature_keys": 31,
+  "body_atoms": 1370,
+  "distinct_body_keys": 136,
+  "distinct_body_symbol_keys": 124,
+  "i_defined_not_used": 0,
+  "ii_used_not_defined_all": 105,
+  "ii_used_not_defined_by_category": {
+   "symbol": 89,
+   "index": 12,
+   "decorated variant of a defined symbol": 4
+  },
+  "iii_duplicate_nomenclature_keys": 3,
+  "iii_index_subscript_overloads_of_defined_keys": 6,
+  "iii_declared_overloads": 12,
+  "iii_declared_conflicts": 5,
+  "iii_same_description_different_keys": 1,
+  "symbols_only_inside_algorithm1": 25,
+  "iv_benders_keys_with_occurrences": 18,
+  "v_required_items": 19,
+  "v_required_used_in_paragraphs_v5": 16
+ },
+ "i_defined_not_used": [],
+ "ii_used_not_defined": [
+  {
+   "key": "cal(X)",
+   "category": "symbol",
+   "first_line": 334,
+   "first_section": "subsection Planning--Operation Decomposition Architecture",
+   "n_occurrences": 1,
+   "lines": [
+    334
+   ],
+   "raw_forms": [
+    "cal(X)"
+   ],
+   "iteration_only_seen": false
+  },
+  {
+   "key": "c",
+   "category": "index",
+   "first_line": 336,
+   "first_section": "subsection Planning--Operation Decomposition Architecture",
+   "n_occurrences": 22,
+   "lines": [
+    336,
+    337,
+    375,
+    427,
+    428,
+    430,
+    432,
+    559,
+    560,
+    562,
+    565,
+    575,
+    621,
+    639,
+    640,
+    642,
+    644,
+    956,
+    960
+   ],
+   "raw_forms": [
+    "c"
+   ],
+   "iteration_only_seen": false
+  },
+  {
+   "key": "C^{Inv}",
+   "category": "symbol",
+   "first_line": 337,
+   "first_section": "subsection Planning--Operation Decomposition Architecture",
+   "n_occurrences": 5,
+   "lines": [
+    337,
+    364,
+    416,
+    424,
+    512
+   ],
+   "raw_forms": [
+    "C^{\\mathrm{Inv}}",
+    "C^{\\mathrm{Inv}}_{c}",
+    "C^{\\text{Inv}}_{e,y^\\text{Inv}}"
+   ],
+   "iteration_only_seen": false
+  },
+  {
+   "key": "x",
+   "category": "symbol",
+   "first_line": 337,
+   "first_section": "subsection Planning--Operation Decomposition Architecture",
+   "n_occurrences": 15,
+   "lines": [
+    337,
+    339,
+    341,
+    352,
+    353,
+    363,
+    378,
+    383,
+    407,
+    414,
+    416,
+    424,
+    1712,
+    1713
+   ],
+   "raw_forms": [
+    "bold x",
+    "x",
+    "x_{ij}"
+   ],
+   "iteration_only_seen": false
+  },
+  {
+   "key": "Q",
+   "category": "symbol",
+   "first_line": 339,
+   "first_section": "subsection Planning--Operation Decomposition Architecture",
+   "n_occurrences": 2,
+   "lines": [
+    339,
+    352
+   ],
+   "raw_forms": [
+    "Q"
+   ],
+   "iteration_only_seen": false
+  },
+  {
+   "key": "C^{Salvage}",
+   "category": "symbol",
+   "first_line": 341,
+   "first_section": "subsection Planning--Operation Decomposition Architecture",
+   "n_occurrences": 2,
+   "lines": [
+    341,
+    363
+   ],
+   "raw_forms": [
+    "C^{\\text{Salvage}}"
+   ],
+   "iteration_only_seen": false
+  },
+  {
+   "key": "o",
+   "category": "index",
+   "first_line": 352,
+   "first_section": "subsection Planning--Operation Decomposition Architecture",
+   "n_occurrences": 17,
+   "lines": [
+    352,
+    353,
+    377,
+    379,
+    383,
+    477,
+    478,
+    479,
+    733
+   ],
+   "raw_forms": [
+    "o"
+   ],
+   "iteration_only_seen": false
+  },
+  {
+   "key": "C^{Op}",
+   "category": "symbol",
+   "first_line": 352,
+   "first_section": "subsection Planning--Operation Decomposition Architecture",
+   "n_occurrences": 1,
+   "lines": [
+    352
+   ],
+   "raw_forms": [
+    "C^{\\mathrm{Op}}_{o}"
+   ],
+   "iteration_only_seen": false
+  },
+  {
+   "key": "u",
+   "category": "symbol",
+   "first_line": 352,
+   "first_section": "subsection Planning--Operation Decomposition Architecture",
+   "n_occurrences": 4,
+   "lines": [
+    352,
+    353,
+    379,
+    383
+   ],
+   "raw_forms": [
+    "bold u_{o}"
+   ],
+   "iteration_only_seen": false
+  },
+  {
+   "key": "cal(U)",
+   "category": "symbol",
+   "first_line": 353,
+   "first_section": "subsection Planning--Operation Decomposition Architecture",
+   "n_occurrences": 1,
+   "lines": [
+    353
+   ],
+   "raw_forms": [
+    "cal(U)_{o}"
+   ],
+   "iteration_only_seen": false
+  },
+  {
+   "key": "e",
+   "category": "index",
+   "first_line": 363,
+   "first_section": "subsection Planning--Operation Decomposition Architecture",
+   "n_occurrences": 234,
+   "lines": [
+    363,
+    364,
+    365,
+    366,
+    407,
+    408,
+    425,
+    430,
+    432,
+    483,
+    491,
+    492,
+    494,
+    496,
+    499,
+    500,
+    502,
+    504,
+    557,
+    563,
+    566,
+    576,
+    581,
+    585,
+    591,
+    598,
+    599,
+    600,
+    605,
+    608,
+    612,
+    616,
+    620,
+    621,
+    622,
+    628,
+    639,
+    642,
+    644,
+    658,
+    691,
+    692,
+    694,
+    695,
+    701,
+    708,
+    709,
+    711,
+    712,
+    737,
+    740,
+    744,
+    749,
+    750,
+    752,
+    755,
+    759,
+    764,
+    766,
+    769,
+    773,
+    776,
+    779,
+    783,
+    788,
+    789,
+    792,
+    795,
+    796,
+    797,
+    801,
+    803,
+    806,
+    810,
+    812,
+    820,
+    824,
+    827,
+    833,
+    835,
+    838,
+    842,
+    844,
+    847,
+    854,
+    859,
+    861,
+    864,
+    865,
+    867,
+    869,
+    874,
+    877,
+    878,
+    879,
+    883,
+    889,
+    891,
+    892,
+    893,
+    894,
+    896,
+    897,
+    1085,
+    1089,
+    1117,
+    1304,
+    1305,
+    1307,
+    1308,
+    1325,
+    1328,
+    1344,
+    1345,
+    1361,
+    1516,
+    1517,
+    1518,
+    1545,
+    1546,
+    1547,
+    1558,
+    1559,
+    1560,
+    1564,
+    1565,
+    1566,
+    1573,
+    1576,
+    1577,
+    1580,
+    1585,
+    1586,
+    1589,
+    1594
+   ],
+   "raw_forms": [
+    "e"
+   ],
+   "iteration_only_seen": false
+  },
+  {
+   "key": "E",
+   "category": "symbol",
+   "first_line": 363,
+   "first_section": "subsection Planning--Operation Decomposition Architecture",
+   "n_occurrences": 2,
+   "lines": [
+    363,
+    1528
+   ],
+   "raw_forms": [
+    "E"
+   ],
+   "iteration_only_seen": false
+  },
+  {
+   "key": "y^{Inv}",
+   "category": "symbol",
+   "first_line": 363,
+   "first_section": "subsection Planning--Operation Decomposition Architecture",
+   "n_occurrences": 89,
+   "lines": [
+    363,
+    364,
+    365,
+    366,
+    585,
+    591,
+    599,
+    752,
+    755,
+    759,
+    764,
+    769,
+    773,
+    776,
+    779,
+    783,
+    788,
+    789,
+    792,
+    795,
+    796,
+    797,
+    801,
+    803,
+    806,
+    810,
+    812,
+    820,
+    824,
+    827,
+    833,
+    835,
+    838,
+    842,
+    844,
+    847,
+    854,
+    859,
+    865,
+    867,
+    869,
+    896,
+    897
+   ],
+   "raw_forms": [
+    "y^{\\text{Inv}}"
+   ],
+   "iteration_only_seen": false
+  },
+  {
+   "key": "y^{End}",
+   "category": "symbol",
+   "first_line": 364,
+   "first_section": "subsection Planning--Operation Decomposition Architecture",
+   "n_occurrences": 2,
+   "lines": [
+    364,
+    366
+   ],
+   "raw_forms": [
+    "y^{\\text{End}}"
+   ],
+   "iteration_only_seen": false
+  },
+  {
+   "key": "y_{0}",
+   "category": "symbol",
+   "first_line": 364,
+   "first_section": "subsection Planning--Operation Decomposition Architecture",
+   "n_occurrences": 8,
+   "lines": [
+    364,
+    560,
+    585,
+    591,
+    640,
+    769,
+    773,
+    865
+   ],
+   "raw_forms": [
+    "y_{0}"
+   ],
+   "iteration_only_seen": false
+  },
+  {
+   "key": "T^{Rem}",
+   "category": "symbol",
+   "first_line": 365,
+   "first_section": "subsection Planning--Operation Decomposition Architecture",
+   "n_occurrences": 1,
+   "lines": [
+    365
+   ],
+   "raw_forms": [
+    "T^{\\text{Rem}}_{e,y^\\text{Inv}}"
+   ],
+   "iteration_only_seen": false
+  },
+  {
+   "key": "cal(E)",
+   "category": "symbol",
+   "first_line": 402,
+   "first_section": "subsection Planning--Operation Decomposition Architecture",
+   "n_occurrences": 2,
+   "lines": [
+    402,
+    425
+   ],
+   "raw_forms": [
+    "cal(E)"
+   ],
+   "iteration_only_seen": false
+  },
+  {
+   "key": "cal(Y)",
+   "category": "symbol",
+   "first_line": 402,
+   "first_section": "subsection Planning--Operation Decomposition Architecture",
+   "n_occurrences": 4,
+   "lines": [
+    402,
+    426,
+    443,
+    473
+   ],
+   "raw_forms": [
+    "cal(Y)"
+   ],
+   "iteration_only_seen": false
+  },
+  {
+   "key": "cal(D)",
+   "category": "symbol",
+   "first_line": 402,
+   "first_section": "subsection Planning--Operation Decomposition Architecture",
+   "n_occurrences": 3,
+   "lines": [
+    402,
+    443,
+    474
+   ],
+   "raw_forms": [
+    "cal(D)"
+   ],
+   "iteration_only_seen": false
+  },
+  {
+   "key": "cal(C)",
+   "category": "symbol",
+   "first_line": 402,
+   "first_section": "subsection Planning--Operation Decomposition Architecture",
+   "n_occurrences": 2,
+   "lines": [
+    402,
+    427
+   ],
+   "raw_forms": [
+    "cal(C)"
+   ],
+   "iteration_only_seen": false
+  },
+  {
+   "key": "Omega_{M}",
+   "category": "symbol",
+   "first_line": 402,
+   "first_section": "subsection Planning--Operation Decomposition Architecture",
+   "n_occurrences": 2,
+   "lines": [
+    402,
+    476
+   ],
+   "raw_forms": [
+    "Omega_{M}"
+   ],
+   "iteration_only_seen": false
+  },
+  {
+   "key": "y",
+   "category": "index",
+   "first_line": 407,
+   "first_section": "subsection Planning--Operation Decomposition Architecture",
+   "n_occurrences": 239,
+   "lines": [
+    407,
+    408,
+    426,
+    428,
+    430,
+    432,
+    443,
+    473,
+    475,
+    479,
+    483,
+    491,
+    492,
+    494,
+    496,
+    499,
+    500,
+    502,
+    504,
+    558,
+    560,
+    562,
+    563,
+    565,
+    566,
+    575,
+    576,
+    581,
+    585,
+    591,
+    598,
+    600,
+    605,
+    608,
+    612,
+    616,
+    620,
+    621,
+    622,
+    639,
+    640,
+    642,
+    644,
+    658,
+    689,
+    691,
+    692,
+    694,
+    695,
+    700,
+    701,
+    706,
+    708,
+    709,
+    711,
+    712,
+    737,
+    740,
+    744,
+    749,
+    750,
+    752,
+    755,
+    759,
+    764,
+    766,
+    769,
+    773,
+    776,
+    779,
+    783,
+    788,
+    789,
+    792,
+    795,
+    796,
+    797,
+    801,
+    803,
+    806,
+    810,
+    812,
+    820,
+    821,
+    824,
+    827,
+    832,
+    835,
+    838,
+    844,
+    847,
+    854,
+    859,
+    861,
+    864,
+    865,
+    867,
+    869,
+    874,
+    877,
+    878,
+    879,
+    883,
+    889,
+    891,
+    892,
+    893,
+    894,
+    896,
+    897,
+    956,
+    960,
+    1085,
+    1089,
+    1117,
+    1304,
+    1305,
+    1307,
+    1308,
+    1325,
+    1328,
+    1344,
+    1345,
+    1361,
+    1516,
+    1517,
+    1545,
+    1546,
+    1547,
+    1558,
+    1559,
+    1560,
+    1564,
+    1565,
+    1566,
+    1573,
+    1576,
+    1577,
+    1580,
+    1585,
+    1586,
+    1589,
+    1594
+   ],
+   "raw_forms": [
+    "y",
+    "y^{(k)}"
+   ],
+   "iteration_only_seen": true
+  },
+  {
+   "key": "alpha",
+   "category": "symbol",
+   "first_line": 414,
+   "first_section": "subsection Planning--Operation Decomposition Architecture",
+   "n_occurrences": 7,
+   "lines": [
+    414,
+    416,
+    488,
+    569,
+    577,
+    689,
+    718
+   ],
+   "raw_forms": [
+    "alpha",
+    "alpha^{(l)}"
+   ],
+   "iteration_only_seen": true
+  },
+  {
+   "key": "gamma",
+   "category": "symbol",
+   "first_line": 428,
+   "first_section": "subsection Planning--Operation Decomposition Architecture",
+   "n_occurrences": 2,
+   "lines": [
+    428,
+    475
+   ],
+   "raw_forms": [
+    "gamma_{y}"
+   ],
+   "iteration_only_seen": false
+  },
+  {
+   "key": "c^{S}",
+   "category": "symbol",
+   "first_line": 430,
+   "first_section": "subsection Planning--Operation Decomposition Architecture",
+   "n_occurrences": 1,
+   "lines": [
+    430
+   ],
+   "raw_forms": [
+    "c^{S}_{y,c}"
+   ],
+   "iteration_only_seen": false
+  },
+  {
+   "key": "c^{E}",
+   "category": "symbol",
+   "first_line": 432,
+   "first_section": "subsection Planning--Operation Decomposition Architecture",
+   "n_occurrences": 1,
+   "lines": [
+    432
+   ],
+   "raw_forms": [
+    "c^{E}_{y,c}"
+   ],
+   "iteration_only_seen": false
+  },
+  {
+   "key": "ell",
+   "category": "index",
+   "first_line": 436,
+   "first_section": "subsection Planning--Operation Decomposition Architecture",
+   "n_occurrences": 4,
+   "lines": [
+    436,
+    439,
+    535
+   ],
+   "raw_forms": [
+    "ell"
+   ],
+   "iteration_only_seen": false
+  },
+  {
+   "key": "LB",
+   "category": "symbol",
+   "first_line": 436,
+   "first_section": "subsection Planning--Operation Decomposition Architecture",
+   "n_occurrences": 4,
+   "lines": [
+    436,
+    519,
+    525,
+    531
+   ],
+   "raw_forms": [
+    "LB^{0}",
+    "LB^{\\ell}"
+   ],
+   "iteration_only_seen": true
+  },
+  {
+   "key": "UB",
+   "category": "symbol",
+   "first_line": 436,
+   "first_section": "subsection Planning--Operation Decomposition Architecture",
+   "n_occurrences": 6,
+   "lines": [
+    436,
+    510,
+    511,
+    525,
+    526,
+    531
+   ],
+   "raw_forms": [
+    "UB^{0}",
+    "UB^{\\ell-1}",
+    "UB^{\\ell}"
+   ],
+   "iteration_only_seen": true
+  },
+  {
+   "key": "hat(x)",
+   "category": "symbol",
+   "first_line": 437,
+   "first_section": "subsection Planning--Operation Decomposition Architecture",
+   "n_occurrences": 5,
+   "lines": [
+    437,
+    440,
+    479,
+    512,
+    520
+   ],
+   "raw_forms": [
+    "hat(x)^{1}",
+    "hat(x)^{\\ell+1}",
+    "hat(x)^{\\ell}"
+   ],
+   "iteration_only_seen": true
+  },
+  {
+   "key": "ell^{max}",
+   "category": "symbol",
+   "first_line": 439,
+   "first_section": "subsection Planning--Operation Decomposition Architecture",
+   "n_occurrences": 1,
+   "lines": [
+    439
+   ],
+   "raw_forms": [
+    "ell^{\\max}"
+   ],
+   "iteration_only_seen": false
+  },
+  {
+   "key": "d",
+   "category": "index",
+   "first_line": 443,
+   "first_section": "subsection Planning--Operation Decomposition Architecture",
+   "n_occurrences": 75,
+   "lines": [
+    443,
+    474,
+    475,
+    479,
+    807,
+    808,
+    810,
+    812,
+    818,
+    820,
+    821,
+    844,
+    847,
+    854,
+    859,
+    861,
+    864,
+    867,
+    869,
+    874,
+    877,
+    878,
+    879,
+    883,
+    896,
+    897,
+    1516,
+    1517,
+    1545,
+    1546,
+    1547,
+    1558,
+    1559,
+    1560,
+    1564,
+    1565,
+    1566,
+    1573,
+    1576,
+    1577,
+    1580,
+    1585,
+    1586,
+    1589,
+    1594
+   ],
+   "raw_forms": [
+    "d"
+   ],
+   "iteration_only_seen": false
+  },
+  {
+   "key": "r^{max}",
+   "category": "symbol",
+   "first_line": 448,
+   "first_section": "subsection Planning--Operation Decomposition Architecture",
+   "n_occurrences": 1,
+   "lines": [
+    448
+   ],
+   "raw_forms": [
+    "r^{\\max}"
+   ],
+   "iteration_only_seen": false
+  },
+  {
+   "key": "hat(Q)",
+   "category": "symbol",
+   "first_line": 472,
+   "first_section": "subsection Planning--Operation Decomposition Architecture",
+   "n_occurrences": 3,
+   "lines": [
+    472,
+    489,
+    512
+   ],
+   "raw_forms": [
+    "hat(Q)^{\\ell}"
+   ],
+   "iteration_only_seen": true
+  },
+  {
+   "key": "N",
+   "category": "symbol",
+   "first_line": 475,
+   "first_section": "subsection Planning--Operation Decomposition Architecture",
+   "n_occurrences": 1,
+   "lines": [
+    475
+   ],
+   "raw_forms": [
+    "N_{y}"
+   ],
+   "iteration_only_seen": false
+  },
+  {
+   "key": "W",
+   "category": "symbol",
+   "first_line": 475,
+   "first_section": "subsection Planning--Operation Decomposition Architecture",
+   "n_occurrences": 1,
+   "lines": [
+    475
+   ],
+   "raw_forms": [
+    "W_{d}"
+   ],
+   "iteration_only_seen": false
+  },
+  {
+   "key": "m",
+   "category": "index",
+   "first_line": 476,
+   "first_section": "subsection Planning--Operation Decomposition Architecture",
+   "n_occurrences": 3,
+   "lines": [
+    476,
+    478,
+    479
+   ],
+   "raw_forms": [
+    "m"
+   ],
+   "iteration_only_seen": false
+  },
+  {
+   "key": "pi",
+   "category": "symbol",
+   "first_line": 478,
+   "first_section": "subsection Planning--Operation Decomposition Architecture",
+   "n_occurrences": 2,
+   "lines": [
+    478
+   ],
+   "raw_forms": [
+    "pi_{m}",
+    "pi_{o}"
+   ],
+   "iteration_only_seen": false
+  },
+  {
+   "key": "Phi",
+   "category": "symbol",
+   "first_line": 479,
+   "first_section": "subsection Planning--Operation Decomposition Architecture",
+   "n_occurrences": 1,
+   "lines": [
+    479
+   ],
+   "raw_forms": [
+    "Phi_{y,d,m,o}"
+   ],
+   "iteration_only_seen": false
+  },
+  {
+   "key": "g^{S}",
+   "category": "symbol",
+   "first_line": 483,
+   "first_section": "subsection Planning--Operation Decomposition Architecture",
+   "n_occurrences": 2,
+   "lines": [
+    483,
+    492
+   ],
+   "raw_forms": [
+    "g^{S,\\ell}_{e,y}"
+   ],
+   "iteration_only_seen": false
+  },
+  {
+   "key": "g^{E}",
+   "category": "symbol",
+   "first_line": 483,
+   "first_section": "subsection Planning--Operation Decomposition Architecture",
+   "n_occurrences": 2,
+   "lines": [
+    483,
+    500
+   ],
+   "raw_forms": [
+    "g^{E,\\ell}_{e,y}"
+   ],
+   "iteration_only_seen": false
+  },
+  {
+   "key": "hat(S)^{Rated}",
+   "category": "decorated variant of a defined symbol",
+   "first_line": 496,
+   "first_section": "subsection Planning--Operation Decomposition Architecture",
+   "n_occurrences": 1,
+   "lines": [
+    496
+   ],
+   "raw_forms": [
+    "hat(S)^{\\mathrm{Rated},\\ell}_{e,y}"
+   ],
+   "iteration_only_seen": false
+  },
+  {
+   "key": "hat(E)^{Rated}",
+   "category": "decorated variant of a defined symbol",
+   "first_line": 504,
+   "first_section": "subsection Planning--Operation Decomposition Architecture",
+   "n_occurrences": 1,
+   "lines": [
+    504
+   ],
+   "raw_forms": [
+    "hat(E)^{\\mathrm{Rated},\\ell}_{e,y}"
+   ],
+   "iteration_only_seen": false
+  },
+  {
+   "key": "gap",
+   "category": "symbol",
+   "first_line": 524,
+   "first_section": "subsection Planning--Operation Decomposition Architecture",
+   "n_occurrences": 2,
+   "lines": [
+    524,
+    529
+   ],
+   "raw_forms": [
+    "gap^{\\ell}"
+   ],
+   "iteration_only_seen": true
+  },
+  {
+   "key": "epsilon^{rel}",
+   "category": "symbol",
+   "first_line": 529,
+   "first_section": "subsection Planning--Operation Decomposition Architecture",
+   "n_occurrences": 1,
+   "lines": [
+    529
+   ],
+   "raw_forms": [
+    "epsilon^{\\mathrm{rel}}"
+   ],
+   "iteration_only_seen": false
+  },
+  {
+   "key": "epsilon^{abs}",
+   "category": "symbol",
+   "first_line": 531,
+   "first_section": "subsection Planning--Operation Decomposition Architecture",
+   "n_occurrences": 1,
+   "lines": [
+    531
+   ],
+   "raw_forms": [
+    "epsilon^{\\mathrm{abs}}"
+   ],
+   "iteration_only_seen": false
+  },
+  {
+   "key": "l",
+   "category": "index",
+   "first_line": 581,
+   "first_section": "subsubsection Total Rated Power and Energy Capacity",
+   "n_occurrences": 6,
+   "lines": [
+    581,
+    598,
+    605,
+    616,
+    686,
+    703
+   ],
+   "raw_forms": [
+    "l"
+   ],
+   "iteration_only_seen": false
+  },
+  {
+   "key": "k",
+   "category": "index",
+   "first_line": 686,
+   "first_section": "subsubsection Benders' Cuts",
+   "n_occurrences": 13,
+   "lines": [
+    686,
+    700,
+    703,
+    1436,
+    1437,
+    1498,
+    1545,
+    1547,
+    1570,
+    1573,
+    1596
+   ],
+   "raw_forms": [
+    "k"
+   ],
+   "iteration_only_seen": false
+  },
+  {
+   "key": "mu^{S}",
+   "category": "symbol",
+   "first_line": 692,
+   "first_section": "subsubsection Benders' Cuts",
+   "n_occurrences": 3,
+   "lines": [
+    692,
+    701,
+    709
+   ],
+   "raw_forms": [
+    "mu^{S(k)}_{e,y}"
+   ],
+   "iteration_only_seen": false
+  },
+  {
+   "key": "mu^{E}",
+   "category": "symbol",
+   "first_line": 695,
+   "first_section": "subsubsection Benders' Cuts",
+   "n_occurrences": 3,
+   "lines": [
+    695,
+    701,
+    712
+   ],
+   "raw_forms": [
+    "mu^{E(k)}_{e,y}"
+   ],
+   "iteration_only_seen": false
+  },
+  {
+   "key": "hat(S)^{Inv}",
+   "category": "decorated variant of a defined symbol",
+   "first_line": 740,
+   "first_section": "subsubsection Shared ESS Mathematical Formulation",
+   "n_occurrences": 2,
+   "lines": [
+    740,
+    749
+   ],
+   "raw_forms": [
+    "hat(S)^{\\text{Inv}}_{e,y}"
+   ],
+   "iteration_only_seen": false
+  },
+  {
+   "key": "S^{Up}",
+   "category": "symbol",
+   "first_line": 740,
+   "first_section": "subsubsection Shared ESS Mathematical Formulation",
+   "n_occurrences": 3,
+   "lines": [
+    740,
+    750,
+    891
+   ],
+   "raw_forms": [
+    "S^{\\text{Up}}_{e,y}"
+   ],
+   "iteration_only_seen": false
+  },
+  {
+   "key": "S^{Down}",
+   "category": "symbol",
+   "first_line": 740,
+   "first_section": "subsubsection Shared ESS Mathematical Formulation",
+   "n_occurrences": 3,
+   "lines": [
+    740,
+    750,
+    892
+   ],
+   "raw_forms": [
+    "S^{\\text{Down}}_{e,y}"
+   ],
+   "iteration_only_seen": false
+  },
+  {
+   "key": "hat(E)^{Inv}",
+   "category": "decorated variant of a defined symbol",
+   "first_line": 744,
+   "first_section": "subsubsection Shared ESS Mathematical Formulation",
+   "n_occurrences": 2,
+   "lines": [
+    744,
+    749
+   ],
+   "raw_forms": [
+    "hat(E)^{\\text{Inv}}_{e,y}"
+   ],
+   "iteration_only_seen": false
+  },
+  {
+   "key": "E^{Up}",
+   "category": "symbol",
+   "first_line": 744,
+   "first_section": "subsubsection Shared ESS Mathematical Formulation",
+   "n_occurrences": 3,
+   "lines": [
+    744,
+    750,
+    893
+   ],
+   "raw_forms": [
+    "E^{\\text{Up}}_{e,y}"
+   ],
+   "iteration_only_seen": false
+  },
+  {
+   "key": "E^{Down}",
+   "category": "symbol",
+   "first_line": 744,
+   "first_section": "subsubsection Shared ESS Mathematical Formulation",
+   "n_occurrences": 3,
+   "lines": [
+    744,
+    750,
+    894
+   ],
+   "raw_forms": [
+    "E^{\\text{Down}}_{e,y}"
+   ],
+   "iteration_only_seen": false
+  },
+  {
+   "key": "S^{Rated,Unit}",
+   "category": "symbol",
+   "first_line": 755,
+   "first_section": "subsubsection Shared ESS Mathematical Formulation",
+   "n_occurrences": 4,
+   "lines": [
+    755,
+    764,
+    769,
+    779
+   ],
+   "raw_forms": [
+    "S^{\\text{Rated,Unit}}_{e,y^\\text{Inv},y}"
+   ],
+   "iteration_only_seen": false
+  },
+  {
+   "key": "E^{Rated,Unit}",
+   "category": "symbol",
+   "first_line": 759,
+   "first_section": "subsubsection Shared ESS Mathematical Formulation",
+   "n_occurrences": 5,
+   "lines": [
+    759,
+    764,
+    773,
+    783,
+    797
+   ],
+   "raw_forms": [
+    "E^{\\text{Rated,Unit}}_{e,y^\\text{Inv},y}"
+   ],
+   "iteration_only_seen": false
+  },
+  {
+   "key": "E^{Ch,Dch}",
+   "category": "symbol",
+   "first_line": 796,
+   "first_section": "subsubsection Shared ESS Mathematical Formulation",
+   "n_occurrences": 3,
+   "lines": [
+    796,
+    801,
+    806
+   ],
+   "raw_forms": [
+    "E^{\\text{Ch,Dch}}_{e,y^\\text{Inv},y}"
+   ],
+   "iteration_only_seen": false
+  },
+  {
+   "key": "t",
+   "category": "index",
+   "first_line": 807,
+   "first_section": "subsubsection Shared ESS Mathematical Formulation",
+   "n_occurrences": 100,
+   "lines": [
+    807,
+    808,
+    810,
+    812,
+    819,
+    820,
+    844,
+    847,
+    854,
+    859,
+    861,
+    864,
+    867,
+    869,
+    874,
+    877,
+    878,
+    879,
+    883,
+    896,
+    897,
+    1426,
+    1432,
+    1443,
+    1444,
+    1445,
+    1446,
+    1447,
+    1451,
+    1452,
+    1453,
+    1454,
+    1455,
+    1465,
+    1466,
+    1467,
+    1468,
+    1469,
+    1473,
+    1474,
+    1475,
+    1476,
+    1477,
+    1486,
+    1487,
+    1491,
+    1492,
+    1516,
+    1517,
+    1518,
+    1545,
+    1546,
+    1547,
+    1558,
+    1559,
+    1560,
+    1564,
+    1565,
+    1566,
+    1573,
+    1576,
+    1577,
+    1580,
+    1585,
+    1586,
+    1589,
+    1594
+   ],
+   "raw_forms": [
+    "t"
+   ],
+   "iteration_only_seen": false
+  },
+  {
+   "key": "Delta",
+   "category": "symbol",
+   "first_line": 808,
+   "first_section": "subsubsection Shared ESS Mathematical Formulation",
+   "n_occurrences": 2,
+   "lines": [
+    808,
+    819
+   ],
+   "raw_forms": [
+    "Delta"
+   ],
+   "iteration_only_seen": false
+  },
+  {
+   "key": "S^{S,Comp}",
+   "category": "symbol",
+   "first_line": 854,
+   "first_section": "subsubsection Shared ESS Mathematical Formulation",
+   "n_occurrences": 3,
+   "lines": [
+    854,
+    859,
+    897
+   ],
+   "raw_forms": [
+    "S^{\\text{S,Comp}}_{e,y^\\text{Inv},y,d,t}"
+   ],
+   "iteration_only_seen": false
+  },
+  {
+   "key": "S^{Net}",
+   "category": "symbol",
+   "first_line": 864,
+   "first_section": "subsubsection Shared ESS Mathematical Formulation",
+   "n_occurrences": 2,
+   "lines": [
+    864,
+    877
+   ],
+   "raw_forms": [
+    "S^{\\text{Net}}_{e,y,d,t}"
+   ],
+   "iteration_only_seen": false
+  },
+  {
+   "key": "E^{Av}",
+   "category": "symbol",
+   "first_line": 1117,
+   "first_section": "subsection Degradation and Available Energy Capacity",
+   "n_occurrences": 4,
+   "lines": [
+    1117,
+    1325,
+    1328,
+    1361
+   ],
+   "raw_forms": [
+    "E^{\\text{Av}}_{e,y}"
+   ],
+   "iteration_only_seen": false
+  },
+  {
+   "key": "i",
+   "category": "index",
+   "first_line": 1424,
+   "first_section": "subsection Updated Algorithm",
+   "n_occurrences": 54,
+   "lines": [
+    1424,
+    1425,
+    1426,
+    1427,
+    1432,
+    1441,
+    1442,
+    1443,
+    1444,
+    1445,
+    1446,
+    1447,
+    1449,
+    1450,
+    1451,
+    1452,
+    1453,
+    1454,
+    1455,
+    1465,
+    1466,
+    1467,
+    1468,
+    1469,
+    1473,
+    1474,
+    1475,
+    1476,
+    1477,
+    1486,
+    1487,
+    1491,
+    1492,
+    1677,
+    1678,
+    1712,
+    1713
+   ],
+   "raw_forms": [
+    "i"
+   ],
+   "iteration_only_seen": false
+  },
+  {
+   "key": "N^{I}",
+   "category": "symbol",
+   "first_line": 1424,
+   "first_section": "subsection Updated Algorithm",
+   "n_occurrences": 2,
+   "lines": [
+    1424,
+    1441
+   ],
+   "raw_forms": [
+    "N^{I}"
+   ],
+   "iteration_only_seen": false
+  },
+  {
+   "key": "V",
+   "category": "symbol",
+   "first_line": 1426,
+   "first_section": "subsection Updated Algorithm",
+   "n_occurrences": 1,
+   "lines": [
+    1426
+   ],
+   "raw_forms": [
+    "V_{i,t}"
+   ],
+   "iteration_only_seen": false
+  },
+  {
+   "key": "V^{I}",
+   "category": "symbol",
+   "first_line": 1432,
+   "first_section": "subsection Updated Algorithm",
+   "n_occurrences": 1,
+   "lines": [
+    1432
+   ],
+   "raw_forms": [
+    "V^{I,0}_{i,t}"
+   ],
+   "iteration_only_seen": false
+  },
+  {
+   "key": "P^{I}",
+   "category": "symbol",
+   "first_line": 1432,
+   "first_section": "subsection Updated Algorithm",
+   "n_occurrences": 1,
+   "lines": [
+    1432
+   ],
+   "raw_forms": [
+    "P^{I,0}_{i,t}"
+   ],
+   "iteration_only_seen": false
+  },
+  {
+   "key": "Q^{I}",
+   "category": "symbol",
+   "first_line": 1432,
+   "first_section": "subsection Updated Algorithm",
+   "n_occurrences": 1,
+   "lines": [
+    1432
+   ],
+   "raw_forms": [
+    "Q^{I,0}_{i,t}"
+   ],
+   "iteration_only_seen": false
+  },
+  {
+   "key": "k^{max}",
+   "category": "symbol",
+   "first_line": 1437,
+   "first_section": "subsection Updated Algorithm",
+   "n_occurrences": 1,
+   "lines": [
+    1437
+   ],
+   "raw_forms": [
+    "k^{\\text{max}}"
+   ],
+   "iteration_only_seen": false
+  },
+  {
+   "key": "hat(V)^{I}",
+   "category": "symbol",
+   "first_line": 1443,
+   "first_section": "subsection Updated Algorithm",
+   "n_occurrences": 2,
+   "lines": [
+    1443,
+    1465
+   ],
+   "raw_forms": [
+    "hat(V)^{I^k}_{i,t}"
+   ],
+   "iteration_only_seen": false
+  },
+  {
+   "key": "hat(P)^{I}",
+   "category": "symbol",
+   "first_line": 1444,
+   "first_section": "subsection Updated Algorithm",
+   "n_occurrences": 2,
+   "lines": [
+    1444,
+    1466
+   ],
+   "raw_forms": [
+    "hat(P)^{I^k}_{i,t}"
+   ],
+   "iteration_only_seen": false
+  },
+  {
+   "key": "hat(Q)^{I}",
+   "category": "symbol",
+   "first_line": 1445,
+   "first_section": "subsection Updated Algorithm",
+   "n_occurrences": 2,
+   "lines": [
+    1445,
+    1467
+   ],
+   "raw_forms": [
+    "hat(Q)^{I^k}_{i,t}"
+   ],
+   "iteration_only_seen": false
+  },
+  {
+   "key": "hat(P)^{E}",
+   "category": "symbol",
+   "first_line": 1446,
+   "first_section": "subsection Updated Algorithm",
+   "n_occurrences": 9,
+   "lines": [
+    1446,
+    1468,
+    1486,
+    1516,
+    1546,
+    1558,
+    1559,
+    1560,
+    1580
+   ],
+   "raw_forms": [
+    "hat(P)^{E^k}_{e, y, d, t}",
+    "hat(P)^{E^k}_{e,y,d,t}",
+    "hat(P)^{E^k}_{i,t}",
+    "hat(P)^{E^{k+1}}_{e,y,d,t}"
+   ],
+   "iteration_only_seen": false
+  },
+  {
+   "key": "hat(Q)^{E}",
+   "category": "symbol",
+   "first_line": 1447,
+   "first_section": "subsection Updated Algorithm",
+   "n_occurrences": 9,
+   "lines": [
+    1447,
+    1469,
+    1487,
+    1517,
+    1546,
+    1564,
+    1565,
+    1566,
+    1589
+   ],
+   "raw_forms": [
+    "hat(Q)^{E^k}_{e, y, d, t}",
+    "hat(Q)^{E^k}_{e,y,d,t}",
+    "hat(Q)^{E^k}_{i,t}",
+    "hat(Q)^{E^{k+1}}_{e,y,d,t}"
+   ],
+   "iteration_only_seen": false
+  },
+  {
+   "key": "pi^{I,V}",
+   "category": "symbol",
+   "first_line": 1451,
+   "first_section": "subsection Updated Algorithm",
+   "n_occurrences": 2,
+   "lines": [
+    1451,
+    1473
+   ],
+   "raw_forms": [
+    "pi^{I,V^k}_{i,t}"
+   ],
+   "iteration_only_seen": false
+  },
+  {
+   "key": "pi^{I,P}",
+   "category": "symbol",
+   "first_line": 1452,
+   "first_section": "subsection Updated Algorithm",
+   "n_occurrences": 2,
+   "lines": [
+    1452,
+    1474
+   ],
+   "raw_forms": [
+    "pi^{I,P^k}_{i,t}"
+   ],
+   "iteration_only_seen": false
+  },
+  {
+   "key": "pi^{I,Q}",
+   "category": "symbol",
+   "first_line": 1453,
+   "first_section": "subsection Updated Algorithm",
+   "n_occurrences": 2,
+   "lines": [
+    1453,
+    1475
+   ],
+   "raw_forms": [
+    "pi^{I,Q^k}_{i,t}"
+   ],
+   "iteration_only_seen": false
+  },
+  {
+   "key": "pi^{E,P}",
+   "category": "symbol",
+   "first_line": 1454,
+   "first_section": "subsection Updated Algorithm",
+   "n_occurrences": 10,
+   "lines": [
+    1454,
+    1476,
+    1491,
+    1516,
+    1547,
+    1558,
+    1559,
+    1576,
+    1577,
+    1594
+   ],
+   "raw_forms": [
+    "pi^{E,P^k}_{i,t}",
+    "pi^{{E,P}^k}_{e, y, d, t}",
+    "pi^{{E,P}^k}_{e,y,d,t}",
+    "pi^{{E,P}^{k+1}}_{e,y,d,t}",
+    "pi^{{E,P}^{k}}_{e,y,d,t}"
+   ],
+   "iteration_only_seen": false
+  },
+  {
+   "key": "pi^{E,Q}",
+   "category": "symbol",
+   "first_line": 1455,
+   "first_section": "subsection Updated Algorithm",
+   "n_occurrences": 10,
+   "lines": [
+    1455,
+    1477,
+    1492,
+    1517,
+    1547,
+    1564,
+    1565,
+    1585,
+    1586,
+    1594
+   ],
+   "raw_forms": [
+    "pi^{E,Q^k}_{i,t}",
+    "pi^{{E,Q}^k}_{e, y, d, t}",
+    "pi^{{E,Q}^k}_{e,y,d,t}",
+    "pi^{{E,Q}^{k+1}}_{e,y,d,t}",
+    "pi^{{E,Q}^{k}}_{e,y,d,t}"
+   ],
+   "iteration_only_seen": false
+  },
+  {
+   "key": "f",
+   "category": "symbol",
+   "first_line": 1515,
+   "first_section": "subsection ADMM Implementation",
+   "n_occurrences": 2,
+   "lines": [
+    1515,
+    1537
+   ],
+   "raw_forms": [
+    "f"
+   ],
+   "iteration_only_seen": false
+  },
+  {
+   "key": "X",
+   "category": "symbol",
+   "first_line": 1515,
+   "first_section": "subsection ADMM Implementation",
+   "n_occurrences": 4,
+   "lines": [
+    1515,
+    1518,
+    1533,
+    1537
+   ],
+   "raw_forms": [
+    "X"
+   ],
+   "iteration_only_seen": false
+  },
+  {
+   "key": "cal(L)^{E,P}",
+   "category": "symbol",
+   "first_line": 1516,
+   "first_section": "subsection ADMM Implementation",
+   "n_occurrences": 3,
+   "lines": [
+    1516,
+    1541,
+    1558
+   ],
+   "raw_forms": [
+    "cal(L)^{E,P}"
+   ],
+   "iteration_only_seen": false
+  },
+  {
+   "key": "P^{E}",
+   "category": "symbol",
+   "first_line": 1516,
+   "first_section": "subsection ADMM Implementation",
+   "n_occurrences": 7,
+   "lines": [
+    1516,
+    1518,
+    1545,
+    1558,
+    1559,
+    1560,
+    1580
+   ],
+   "raw_forms": [
+    "P^{E^k}_{e, y, d, t}",
+    "P^{E^k}_{e,t}",
+    "P^{E^k}_{e,y,d,t}",
+    "P^{E^{k+1}}_{e,y,d,t}"
+   ],
+   "iteration_only_seen": false
+  },
+  {
+   "key": "cal(L)^{E,Q}",
+   "category": "symbol",
+   "first_line": 1517,
+   "first_section": "subsection ADMM Implementation",
+   "n_occurrences": 3,
+   "lines": [
+    1517,
+    1541,
+    1564
+   ],
+   "raw_forms": [
+    "cal(L)^{E,Q}"
+   ],
+   "iteration_only_seen": false
+  },
+  {
+   "key": "Q^{E}",
+   "category": "symbol",
+   "first_line": 1517,
+   "first_section": "subsection ADMM Implementation",
+   "n_occurrences": 7,
+   "lines": [
+    1517,
+    1518,
+    1545,
+    1564,
+    1565,
+    1566,
+    1589
+   ],
+   "raw_forms": [
+    "Q^{E^k}_{e, y, d, t}",
+    "Q^{E^k}_{e,t}",
+    "Q^{E^k}_{e,y,d,t}",
+    "Q^{E^{k+1}}_{e,y,d,t}"
+   ],
+   "iteration_only_seen": false
+  },
+  {
+   "key": "h",
+   "category": "symbol",
+   "first_line": 1518,
+   "first_section": "subsection ADMM Implementation",
+   "n_occurrences": 2,
+   "lines": [
+    1518,
+    1551
+   ],
+   "raw_forms": [
+    "h"
+   ],
+   "iteration_only_seen": false
+  },
+  {
+   "key": "K",
+   "category": "symbol",
+   "first_line": 1532,
+   "first_section": "subsection ADMM Implementation",
+   "n_occurrences": 7,
+   "lines": [
+    1532,
+    1545,
+    1547,
+    1570,
+    1573,
+    1596
+   ],
+   "raw_forms": [
+    "K"
+   ],
+   "iteration_only_seen": false
+  },
+  {
+   "key": "rho^{E,P}",
+   "category": "symbol",
+   "first_line": 1560,
+   "first_section": "subsection ADMM Implementation",
+   "n_occurrences": 5,
+   "lines": [
+    1560,
+    1570,
+    1578,
+    1599
+   ],
+   "raw_forms": [
+    "rho^{{E,P}^k}",
+    "rho^{{E,P}^{k+1}}",
+    "rho^{{E,P}^{k}}"
+   ],
+   "iteration_only_seen": false
+  },
+  {
+   "key": "rho^{E,Q}",
+   "category": "symbol",
+   "first_line": 1566,
+   "first_section": "subsection ADMM Implementation",
+   "n_occurrences": 5,
+   "lines": [
+    1566,
+    1570,
+    1587,
+    1603
+   ],
+   "raw_forms": [
+    "rho^{{E,Q}^k}",
+    "rho^{{E,Q}^{k+1}}",
+    "rho^{{E,Q}^{k}}"
+   ],
+   "iteration_only_seen": false
+  },
+  {
+   "key": "r^{E,P}",
+   "category": "symbol",
+   "first_line": 1599,
+   "first_section": "subsection ADMM Implementation",
+   "n_occurrences": 2,
+   "lines": [
+    1599,
+    1607
+   ],
+   "raw_forms": [
+    "r^{E,P}"
+   ],
+   "iteration_only_seen": false
+  },
+  {
+   "key": "r^{E,Q}",
+   "category": "symbol",
+   "first_line": 1603,
+   "first_section": "subsection ADMM Implementation",
+   "n_occurrences": 2,
+   "lines": [
+    1603,
+    1607
+   ],
+   "raw_forms": [
+    "r^{E,Q}"
+   ],
+   "iteration_only_seen": false
+  },
+  {
+   "key": "g",
+   "category": "symbol",
+   "first_line": 1677,
+   "first_section": "Appendix: section Distribution Networks",
+   "n_occurrences": 7,
+   "lines": [
+    1677,
+    1678,
+    1771
+   ],
+   "raw_forms": [
+    "g",
+    "g_{i}"
+   ],
+   "iteration_only_seen": false
+  },
+  {
+   "key": "b",
+   "category": "symbol",
+   "first_line": 1677,
+   "first_section": "Appendix: section Distribution Networks",
+   "n_occurrences": 2,
+   "lines": [
+    1677,
+    1678
+   ],
+   "raw_forms": [
+    "b_{i}"
+   ],
+   "iteration_only_seen": false
+  },
+  {
+   "key": "V^{Base}",
+   "category": "symbol",
+   "first_line": 1677,
+   "first_section": "Appendix: section Distribution Networks",
+   "n_occurrences": 2,
+   "lines": [
+    1677,
+    1678
+   ],
+   "raw_forms": [
+    "V^{\\text{Base}}_{i}"
+   ],
+   "iteration_only_seen": false
+  },
+  {
+   "key": "V^{max}",
+   "category": "symbol",
+   "first_line": 1677,
+   "first_section": "Appendix: section Distribution Networks",
+   "n_occurrences": 2,
+   "lines": [
+    1677,
+    1678
+   ],
+   "raw_forms": [
+    "V^{\\text{max}}_{i}"
+   ],
+   "iteration_only_seen": false
+  },
+  {
+   "key": "V^{min}",
+   "category": "symbol",
+   "first_line": 1677,
+   "first_section": "Appendix: section Distribution Networks",
+   "n_occurrences": 2,
+   "lines": [
+    1677,
+    1678
+   ],
+   "raw_forms": [
+    "V^{\\text{min}}_{i}"
+   ],
+   "iteration_only_seen": false
+  },
+  {
+   "key": "j",
+   "category": "index",
+   "first_line": 1712,
+   "first_section": "Appendix: section Distribution Networks",
+   "n_occurrences": 8,
+   "lines": [
+    1712,
+    1713
+   ],
+   "raw_forms": [
+    "j"
+   ],
+   "iteration_only_seen": false
+  },
+  {
+   "key": "b^{Sh}",
+   "category": "symbol",
+   "first_line": 1712,
+   "first_section": "Appendix: section Distribution Networks",
+   "n_occurrences": 2,
+   "lines": [
+    1712,
+    1713
+   ],
+   "raw_forms": [
+    "b^{\\text{Sh}}_{ij}"
+   ],
+   "iteration_only_seen": false
+  },
+  {
+   "key": "P^{G,max}",
+   "category": "symbol",
+   "first_line": 1771,
+   "first_section": "Appendix: section Distribution Networks",
+   "n_occurrences": 1,
+   "lines": [
+    1771
+   ],
+   "raw_forms": [
+    "P^{G,\\text{max}}_{g}"
+   ],
+   "iteration_only_seen": false
+  },
+  {
+   "key": "P^{G,min}",
+   "category": "symbol",
+   "first_line": 1771,
+   "first_section": "Appendix: section Distribution Networks",
+   "n_occurrences": 1,
+   "lines": [
+    1771
+   ],
+   "raw_forms": [
+    "P^{G,\\text{min}}_{g}"
+   ],
+   "iteration_only_seen": false
+  },
+  {
+   "key": "Q^{G,max}",
+   "category": "symbol",
+   "first_line": 1771,
+   "first_section": "Appendix: section Distribution Networks",
+   "n_occurrences": 1,
+   "lines": [
+    1771
+   ],
+   "raw_forms": [
+    "Q^{G,\\text{max}}_{g}"
+   ],
+   "iteration_only_seen": false
+  },
+  {
+   "key": "Q^{G,min}",
+   "category": "symbol",
+   "first_line": 1771,
+   "first_section": "Appendix: section Distribution Networks",
+   "n_occurrences": 1,
+   "lines": [
+    1771
+   ],
+   "raw_forms": [
+    "Q^{G,\\text{min}}_{g}"
+   ],
+   "iteration_only_seen": false
+  },
+  {
+   "key": "V^{S}",
+   "category": "symbol",
+   "first_line": 1771,
+   "first_section": "Appendix: section Distribution Networks",
+   "n_occurrences": 1,
+   "lines": [
+    1771
+   ],
+   "raw_forms": [
+    "V^{S}_{g}"
+   ],
+   "iteration_only_seen": false
+  }
+ ],
+ "iii_duplicate_nomenclature_keys": [
+  {
+   "key": "Y",
+   "entries": [
+    {
+     "line": 197,
+     "tex": "$Y$",
+     "description": "Set of representative years"
+    },
+    {
+     "line": 219,
+     "tex": "$Y_y$",
+     "description": "Number of calendar years represented by $y \\in Y$"
+    }
+   ]
+  },
+  {
+   "key": "D",
+   "entries": [
+    {
+     "line": 198,
+     "tex": "$D$",
+     "description": "Set of representative days"
+    },
+    {
+     "line": 218,
+     "tex": "$D_d$",
+     "description": "Number of calendar days represented by $d \\in D$"
+    }
+   ]
+  },
+  {
+   "key": "omega",
+   "entries": [
+    {
+     "line": 205,
+     "tex": "$\\omega_c$",
+     "description": "Probability of investment-cost scenario $c \\in \\Omega_C$"
+    },
+    {
+     "line": 206,
+     "tex": "\\textcolor{blue}{$\\omega_o$}",
+     "description": "Probability of operation scenario $o \\in \\Omega_O$"
+    }
+   ]
+  }
+ ],
+ "iii_index_subscript_overloads": [
+  {
+   "key": "Y",
+   "subscript_forms": [
+    "",
+    "y"
+   ],
+   "forms": {
+    "Y": [
+     363,
+     558,
+     581,
+     605,
+     616,
+     639,
+     691,
+     694,
+     708,
+     711,
+     737,
+     752
+    ],
+    "Y_{y}": [
+     827,
+     832
+    ]
+   }
+  },
+  {
+   "key": "r",
+   "subscript_forms": [
+    "",
+    "ij"
+   ],
+   "forms": {
+    "r": [
+     364,
+     448,
+     560,
+     640
+    ],
+    "r_{ij}": [
+     1712,
+     1713
+    ]
+   }
+  },
+  {
+   "key": "T^{Cal}",
+   "subscript_forms": [
+    "",
+    "e,y"
+   ],
+   "forms": {
+    "T^{\\text{Cal}}_{e,y^\\text{Inv}}": [
+     365,
+     752,
+     776,
+     792,
+     803,
+     824,
+     835,
+     844
+    ],
+    "T^{\\text{Cal}}_{e,y}": [
+     585,
+     591,
+     600,
+     769,
+     773,
+     865
+    ]
+   }
+  },
+  {
+   "key": "S^{Inv}",
+   "subscript_forms": [
+    "",
+    "e,y"
+   ],
+   "forms": {
+    "S^{\\mathrm{Inv}(l)}_{e,y}": [
+     563
+    ],
+    "S^{\\mathrm{Inv}}_{e,y}": [
+     407,
+     430
+    ],
+    "S^{\\text{Inv}(k)}_{e,y}": [
+     692,
+     709
+    ],
+    "S^{\\text{Inv}(l)}_{e,y^\\text{Inv}}": [
+     585,
+     599
+    ],
+    "S^{\\text{Inv}(l)}_{e,y}": [
+     576,
+     620,
+     622,
+     642,
+     658,
+     692,
+     709
+    ],
+    "S^{\\text{Inv}}_{e,y^\\text{Inv}}": [
+     755
+    ],
+    "S^{\\text{Inv}}_{e,y}": [
+     740,
+     1085,
+     1304,
+     1307,
+     1344
+    ]
+   }
+  },
+  {
+   "key": "E^{Inv}",
+   "subscript_forms": [
+    "",
+    "e,y",
+    "e,y,c"
+   ],
+   "forms": {
+    "E^{\\mathrm{Inv}(l)}_{e,y}": [
+     566
+    ],
+    "E^{\\mathrm{Inv}}_{e,y}": [
+     407,
+     432
+    ],
+    "E^{\\text{Inv}(k)}_{e,y}": [
+     695,
+     712
+    ],
+    "E^{\\text{Inv}(l)}_{e,y,c}": [
+     621
+    ],
+    "E^{\\text{Inv}(l)}_{e,y^\\text{Inv}}": [
+     591,
+     599
+    ],
+    "E^{\\text{Inv}(l)}_{e,y}": [
+     576,
+     644,
+     658,
+     695,
+     712
+    ],
+    "E^{\\text{Inv}}_{e,y^\\text{Inv}}": [
+     759
+    ],
+    "E^{\\text{Inv}}_{e,y}": [
+     744,
+     1089,
+     1305,
+     1308,
+     1345
+    ]
+   }
+  },
+  {
+   "key": "D",
+   "subscript_forms": [
+    "",
+    "d"
+   ],
+   "forms": {
+    "D": [
+     807,
+     844,
+     861,
+     874,
+     896,
+     1516,
+     1517,
+     1530,
+     1545,
+     1547,
+     1573
+    ],
+    "D_{d}": [
+     808,
+     818,
+     821
+    ]
+   }
+  }
+ ],
+ "iii_declared_overloads_verified": [
+  {
+   "key": "D",
+   "note": "D and D_d share the base letter; D_d is a count, D a set (both defined in the nomenclature)",
+   "uses": [
+    {
+     "meaning": "set of representative days (nomenclature)",
+     "raw_regex": "^D$",
+     "body_lines": [
+      807,
+      844,
+      861,
+      874,
+      896,
+      1516,
+      1517,
+      1530,
+      1545,
+      1547,
+      1573
+     ],
+     "nomenclature_lines": [
+      198
+     ]
+    },
+    {
+     "meaning": "number of calendar days represented by d, D_d (nomenclature)",
+     "raw_regex": "^D_\\{d\\}$",
+     "body_lines": [
+      808,
+      818,
+      821
+     ],
+     "nomenclature_lines": [
+      218
+     ]
+    }
+   ]
+  },
+  {
+   "key": "Y",
+   "note": "same pattern as D / D_d",
+   "uses": [
+    {
+     "meaning": "set of representative years (nomenclature)",
+     "raw_regex": "^Y$",
+     "body_lines": [
+      363,
+      558,
+      581,
+      605,
+      616,
+      639,
+      691,
+      694,
+      708,
+      711,
+      737,
+      752,
+      766,
+      776,
+      792,
+      803,
+      824,
+      835,
+      844,
+      861,
+      874,
+      889,
+      896,
+      1516,
+      1517,
+      1529,
+      1545,
+      1547,
+      1573
+     ],
+     "nomenclature_lines": [
+      197
+     ]
+    },
+    {
+     "meaning": "number of calendar years represented by y, Y_y (nomenclature)",
+     "raw_regex": "^Y_\\{y\\}$",
+     "body_lines": [
+      827,
+      832
+     ],
+     "nomenclature_lines": [
+      219
+     ]
+    }
+   ]
+  },
+  {
+   "key": "y",
+   "note": "y^{(k)} reuses the year letter for a recourse value; removed with the Benders cuts",
+   "uses": [
+    {
+     "meaning": "representative year (index)",
+     "raw_regex": "^y$",
+     "body_lines": [
+      407,
+      408,
+      426,
+      428,
+      430,
+      432,
+      443,
+      473,
+      475,
+      479,
+      483,
+      491,
+      492,
+      494,
+      496,
+      499,
+      500,
+      502,
+      504,
+      558,
+      560,
+      562,
+      563,
+      565,
+      566,
+      575,
+      576,
+      581,
+      585,
+      591,
+      598,
+      600,
+      605,
+      608,
+      612,
+      616,
+      620,
+      621,
+      622,
+      639,
+      640,
+      642,
+      644,
+      658,
+      691,
+      692,
+      694,
+      695,
+      701,
+      708,
+      709,
+      711,
+      712,
+      737,
+      740,
+      744,
+      749,
+      750,
+      752,
+      755,
+      759,
+      764,
+      766,
+      769,
+      773,
+      776,
+      779,
+      783,
+      788,
+      789,
+      792,
+      795,
+      796,
+      797,
+      801,
+      803,
+      806,
+      810,
+      812,
+      820,
+      821,
+      824,
+      827,
+      832,
+      835,
+      838,
+      844,
+      847,
+      854,
+      859,
+      861,
+      864,
+      865,
+      867,
+      869,
+      874,
+      877,
+      878,
+      879,
+      883,
+      889,
+      891,
+      892,
+      893,
+      894,
+      896,
+      897,
+      956,
+      960,
+      1085,
+      1089,
+      1117,
+      1304,
+      1305,
+      1307,
+      1308,
+      1325,
+      1328,
+      1344,
+      1345,
+      1361,
+      1516,
+      1517,
+      1545,
+      1546,
+      1547,
+      1558,
+      1559,
+      1560,
+      1564,
+      1565,
+      1566,
+      1573,
+      1576,
+      1577,
+      1580,
+      1585,
+      1586,
+      1589,
+      1594
+     ],
+     "nomenclature_lines": []
+    },
+    {
+     "meaning": "subproblem objective value at iteration k, y^{(k)} (Benders cuts)",
+     "raw_regex": "^y\\^\\{\\(k\\)\\}$",
+     "body_lines": [
+      689,
+      700,
+      706
+     ],
+     "nomenclature_lines": []
+    }
+   ]
+  },
+  {
+   "key": "r",
+   "note": "r carries four meanings; only the discount rate is in the nomenclature",
+   "uses": [
+    {
+     "meaning": "discount rate (nomenclature; (1+r)^(y-y0))",
+     "raw_regex": "^r$",
+     "body_lines": [
+      364,
+      560,
+      640
+     ],
+     "nomenclature_lines": [
+      221
+     ]
+    },
+    {
+     "meaning": "ADMM loop counter \"r = 1 to r^max\" (Algorithm 1)",
+     "raw_regex": "^r(\\^\\{\\\\max\\})?$",
+     "body_lines": [
+      448
+     ],
+     "nomenclature_lines": []
+    },
+    {
+     "meaning": "penalty update rate r^{E,P}, r^{E,Q} (Appendix A)",
+     "raw_regex": "^r\\^\\{E,[PQ]\\}$",
+     "body_lines": [
+      1599,
+      1603,
+      1607
+     ],
+     "nomenclature_lines": []
+    },
+    {
+     "meaning": "branch resistance r_ij (Appendix D branch table)",
+     "raw_regex": "^r_\\{ij\\}$",
+     "body_lines": [
+      1712,
+      1713
+     ],
+     "nomenclature_lines": []
+    }
+   ]
+  },
+  {
+   "key": "x",
+   "note": "x is undefined in the nomenclature in both meanings",
+   "uses": [
+    {
+     "meaning": "first-stage investment vector x (bold in eq. 1, plain in Algorithm 1)",
+     "raw_regex": "^(bold )?x$",
+     "body_lines": [
+      337,
+      339,
+      341,
+      352,
+      353,
+      363,
+      378,
+      383,
+      407,
+      414,
+      416,
+      424
+     ],
+     "nomenclature_lines": []
+    },
+    {
+     "meaning": "branch reactance x_ij (Appendix D branch table)",
+     "raw_regex": "^x_\\{ij\\}$",
+     "body_lines": [
+      1712,
+      1713
+     ],
+     "nomenclature_lines": []
+    }
+   ]
+  },
+  {
+   "key": "g",
+   "note": "three meanings of g; none in the nomenclature",
+   "uses": [
+    {
+     "meaning": "generator index g (Appendix D generator table)",
+     "raw_regex": "^g$",
+     "body_lines": [
+      1771
+     ],
+     "nomenclature_lines": []
+    },
+    {
+     "meaning": "bus conductance g_i (Appendix D bus table)",
+     "raw_regex": "^g_\\{i\\}$",
+     "body_lines": [
+      1677,
+      1678
+     ],
+     "nomenclature_lines": []
+    },
+    {
+     "meaning": "cut sensitivities g^{S,ell}, g^{E,ell} (Algorithm 1)",
+     "raw_regex": "^g\\^\\{[SE],",
+     "body_lines": [
+      483,
+      492,
+      500
+     ],
+     "nomenclature_lines": []
+    }
+   ]
+  },
+  {
+   "key": "pi",
+   "note": "the nomenclature uses omega for probabilities; paragraphs_v5 uses pi_t for the wholesale price",
+   "uses": [
+    {
+     "meaning": "scenario probabilities pi_m pi_o in Algorithm 1",
+     "raw_regex": "^pi_\\{[mo]\\}$",
+     "body_lines": [
+      478
+     ],
+     "nomenclature_lines": []
+    },
+    {
+     "meaning": "ADMM dual variables pi^{I,V}, pi^{E,P}, ... (Appendix A)",
+     "raw_regex": "^pi\\^\\{.*\\}",
+     "body_lines": [
+      1451,
+      1452,
+      1453,
+      1454,
+      1455,
+      1473,
+      1474,
+      1475,
+      1476,
+      1477,
+      1491,
+      1492,
+      1516,
+      1517,
+      1547,
+      1558,
+      1559,
+      1564,
+      1565,
+      1576,
+      1577,
+      1585,
+      1586,
+      1594
+     ],
+     "nomenclature_lines": []
+    }
+   ]
+  },
+  {
+   "key": "E",
+   "note": "E is both a set name and the energy-capacity letter",
+   "uses": [
+    {
+     "meaning": "set E with E^S subset of E (Appendix A list; salvage sum e in E)",
+     "raw_regex": "^E$",
+     "body_lines": [
+      363,
+      1528
+     ],
+     "nomenclature_lines": []
+    },
+    {
+     "meaning": "set of shared ESSs E^S (nomenclature)",
+     "raw_regex": "^E\\^\\{S\\}$",
+     "body_lines": [
+      557,
+      581,
+      605,
+      616,
+      639,
+      691,
+      694,
+      708,
+      711,
+      737,
+      752,
+      766,
+      776,
+      792,
+      803,
+      824,
+      835,
+      844,
+      861,
+      874,
+      889,
+      896,
+      1516,
+      1517,
+      1528,
+      1545,
+      1573
+     ],
+     "nomenclature_lines": [
+      196
+     ]
+    },
+    {
+     "meaning": "energy variables E^{Inv}, E^{Rated}, ... (nomenclature)",
+     "raw_regex": "^E\\^\\{\\\\(?:text|mathrm)\\{(?:Inv|Rated)",
+     "body_lines": [
+      407,
+      408,
+      432,
+      502,
+      566,
+      576,
+      591,
+      598,
+      599,
+      608,
+      621,
+      644,
+      658,
+      695,
+      712,
+      744,
+      759,
+      764,
+      773,
+      783,
+      797,
+      1089,
+      1305,
+      1308,
+      1345
+     ],
+     "nomenclature_lines": [
+      236,
+      240
+     ]
+    }
+   ]
+  },
+  {
+   "key": "C^{Inv} / c^{Inv}",
+   "note": "the budget (lower-case c) and the investment-cost function (upper-case C) differ only by case",
+   "uses": [
+    {
+     "meaning": "total investment budget c^{Inv} (nomenclature)",
+     "raw_regex": "^c\\^\\{\\\\text\\{Inv\\}\\}$",
+     "body_lines": [
+      646,
+      650
+     ],
+     "nomenclature_lines": [
+      215
+     ]
+    },
+    {
+     "meaning": "investment cost C^{Inv}(x), C_c^{Inv} (eq. 1, Algorithm 1, salvage)",
+     "raw_regex": "^C(?:_\\{c\\})?\\^\\{\\\\(?:mathrm|text)\\{Inv\\}\\}",
+     "body_lines": [
+      337,
+      364,
+      416,
+      424,
+      512
+     ],
+     "nomenclature_lines": []
+    }
+   ]
+  },
+  {
+   "key": "epsilon^{rel} / epsilon^{abs}",
+   "note": "paragraphs_v5 uses eps_abs = 1e-5 / eps_rel = 1e-4 for the ADMM residual test (different quantity)",
+   "uses": [
+    {
+     "meaning": "Benders gap tolerances in Algorithm 1",
+     "raw_regex": "^epsilon\\^\\{\\\\mathrm\\{(?:rel|abs)\\}\\}$",
+     "body_lines": [
+      529,
+      531
+     ],
+     "nomenclature_lines": []
+    }
+   ]
+  },
+  {
+   "key": "hat(P)",
+   "note": "paragraphs_v5 uses P-hat for the measured objective period",
+   "uses": [
+    {
+     "meaning": "local copy of the SO request, P-hat^{E^k}, P-hat^{I^k} (Appendix A)",
+     "raw_regex": "^hat\\(P\\)",
+     "body_lines": [
+      1444,
+      1446,
+      1466,
+      1468,
+      1486,
+      1516,
+      1546,
+      1558,
+      1559,
+      1560,
+      1580
+     ],
+     "nomenclature_lines": []
+    }
+   ]
+  },
+  {
+   "key": "S^{Rated}",
+   "note": "the branch-table header reuses S^Rated with branch indices",
+   "uses": [
+    {
+     "meaning": "rated power of the shared ESS (nomenclature, eqs.)",
+     "raw_regex": "^S\\^\\{\\\\(?:text|mathrm)\\{Rated[^}]*\\}[^_]*(_\\{(?!ij\\}).*)?$",
+     "body_lines": [
+      408,
+      494,
+      585,
+      598,
+      755,
+      764,
+      769,
+      779,
+      1559,
+      1560,
+      1565,
+      1566
+     ],
+     "nomenclature_lines": [
+      238
+     ]
+    },
+    {
+     "meaning": "branch rating S^Rated_ij (Appendix D branch table)",
+     "raw_regex": "^S\\^\\{\\\\text\\{Rated\\}\\}_\\{ij\\}$",
+     "body_lines": [
+      1712,
+      1713
+     ],
+     "nomenclature_lines": []
+    }
+   ]
+  }
+ ],
+ "iii_declared_conflicts_verified": [
+  {
+   "id": "S_Rated_meaning",
+   "finding": "nomenclature defines S^{Rated}_{e,y^Inv,y} as the rated power of the unit installed in y^Inv (per unit); the body uses S^{Rated}_{e,y} for the TOTAL rated power and S^{Rated,Unit}_{e,y^Inv,y} (not in the nomenclature) for the per-unit quantity",
+   "evidence": [
+    {
+     "line": 238,
+     "must_contain": "$S^{\\text{Rated}}_{e,y^\\text{Inv},y}$   & Rated power of unit $e$ installed",
+     "found": true,
+     "line_text": "$S^{\\text{Rated}}_{e,y^\\text{Inv},y}$   & Rated power of unit $e$ installed in year $y^\\text{Inv}$ \\\\"
+    },
+    {
+     "line": 769,
+     "must_contain": "S^{\\text{Rated}}_{e,y} = \\sum",
+     "found": true,
+     "line_text": "S^{\\text{Rated}}_{e,y} = \\sum_{y^\\text{Inv}=\\max(y-T^\\text{Cal}_{e,y},\\,y_0)}^{y} S^{\\text{Rated,Unit}}_{e,y^\\text{Inv},y}"
+    },
+    {
+     "line": 769,
+     "must_contain": "S^{\\text{Rated,Unit}}_{e,y^\\text{Inv},y}",
+     "found": true,
+     "line_text": "S^{\\text{Rated}}_{e,y} = \\sum_{y^\\text{Inv}=\\max(y-T^\\text{Cal}_{e,y},\\,y_0)}^{y} S^{\\text{Rated,Unit}}_{e,y^\\text{Inv},y}"
+    }
+   ]
+  },
+  {
+   "id": "E_Rated_meaning",
+   "finding": "nomenclature defines E^{Rated}_{e,y^Inv,y} as the AVAILABLE energy capacity of the unit (the same description as E^{Av,Unit}, l. 244); the body uses E^{Rated}_{e,y} for the TOTAL rated energy and E^{Av,Unit} for the available (SoH-scaled) energy",
+   "evidence": [
+    {
+     "line": 240,
+     "must_contain": "$E^{\\text{Rated}}_{e,y^\\text{Inv},y}$ & Available energy capacity of unit",
+     "found": true,
+     "line_text": "$E^{\\text{Rated}}_{e,y^\\text{Inv},y}$ & Available energy capacity of unit $e$ installed in year $y^\\text{Inv}$\\\\"
+    },
+    {
+     "line": 244,
+     "must_contain": "$E^{\\text{Av,Unit}}_{e,y^\\text{Inv},y}$ & Available energy capacity of unit",
+     "found": true,
+     "line_text": "$E^{\\text{Av,Unit}}_{e,y^\\text{Inv},y}$ & Available energy capacity of unit $e$ installed in year $y^\\text{Inv}$\\\\"
+    },
+    {
+     "line": 773,
+     "must_contain": "E^{\\text{Rated}}_{e,y} = \\sum",
+     "found": true,
+     "line_text": "E^{\\text{Rated}}_{e,y} = \\sum_{y^\\text{Inv}=\\max(y-T^\\text{Cal}_{e,y},\\,y_0)}^{y} E^{\\text{Rated,Unit}}_{e,y^\\text{Inv},y}"
+    }
+   ]
+  },
+  {
+   "id": "E_Inv_scenario_index",
+   "finding": "the energy-to-power constraint writes E^{Inv(l)}_{e,y,c} with an investment-cost-scenario index c, while the plan is stated to be scenario-independent (S^{Inv(l)}_{e,y} on the same line)",
+   "evidence": [
+    {
+     "line": 621,
+     "must_contain": "E^{\\text{Inv}(l)}_{e,y,c}",
+     "found": true,
+     "line_text": "E^{\\text{Inv}(l)}_{e,y,c} \\leq"
+    }
+   ]
+  },
+  {
+   "id": "phi_year_index",
+   "finding": "phi^{Min}_e / phi^{Max}_e carry only the unit index but are described \"of unit e in year y\"",
+   "evidence": [
+    {
+     "line": 213,
+     "must_contain": "$\\phi^{\\text{Min}}_e$ & Minimum admissible energy-to-power ratio of unit $e$ in year $y$",
+     "found": true,
+     "line_text": "$\\phi^{\\text{Min}}_e$ & Minimum admissible energy-to-power ratio of unit $e$ in year $y$ \\\\"
+    },
+    {
+     "line": 214,
+     "must_contain": "$\\phi^{\\text{Max}}_e$ & Maximum admissible energy-to-power ratio of unit $e$ in year $y$",
+     "found": true,
+     "line_text": "$\\phi^{\\text{Max}}_e$ & Maximum admissible energy-to-power ratio of unit $e$ in year $y$ \\\\"
+    }
+   ]
+  },
+  {
+   "id": "SoH_min_index",
+   "finding": "nomenclature SoH^{min}_{e,y} \"in year y\"; the body uses SoH^{min}_{e,y^Inv} \"for unit e installed in year y^Inv\"",
+   "evidence": [
+    {
+     "line": 217,
+     "must_contain": "$SoH_{e,y}^{\\text{min}}$ & Minimum admissible SoH of unit $e$ in year $y$",
+     "found": true,
+     "line_text": "$SoH_{e,y}^{\\text{min}}$ & Minimum admissible SoH of unit $e$ in year $y$ \\\\"
+    },
+    {
+     "line": 842,
+     "must_contain": "$SoH_{e,y^\\text{Inv}}^{\\text{min}}$ denotes the minimum admissible SoH for unit $e$ installed in year $y^\\text{Inv}$",
+     "found": true,
+     "line_text": "where $SoH_{e,y^\\text{Inv}}^{\\text{min}}$ denotes the minimum admissible SoH for unit $e$ installed in year $y^\\text{Inv}$."
+    }
+   ]
+  }
+ ],
+ "iii_same_description_different_keys": [
+  {
+   "description": "Available energy capacity of unit $e$ installed in year $y^\\text{Inv}$ and operated in year $y$",
+   "entries": [
+    {
+     "line": 240,
+     "key": "E^{Rated}",
+     "tex": "$E^{\\text{Rated}}_{e,y^\\text{Inv},y}$"
+    },
+    {
+     "line": 244,
+     "key": "E^{Av,Unit}",
+     "tex": "$E^{\\text{Av,Unit}}_{e,y^\\text{Inv},y}$"
+    }
+   ]
+  }
+ ],
+ "iii_body_local_definitions_of_nomenclature_keys": [
+  {
+   "key": "Omega_{C}",
+   "line": 374,
+   "body_text": "\\Omega_C the investment cost trajectories",
+   "nomenclature": [
+    "Set of investment-cost scenarios"
+   ]
+  },
+  {
+   "key": "omega",
+   "line": 375,
+   "body_text": "\\omega_c the probability of cost trajectory",
+   "nomenclature": [
+    "Probability of investment-cost scenario $c \\in \\Omega_C$",
+    "Probability of operation scenario $o \\in \\Omega_O$"
+   ]
+  },
+  {
+   "key": "Omega_{O}",
+   "line": 376,
+   "body_text": "\\Omega_O the operational scenarios",
+   "nomenclature": [
+    "Set of operational scenarios"
+   ]
+  },
+  {
+   "key": "omega",
+   "line": 377,
+   "body_text": "\\omega_o the probability of operational scenario",
+   "nomenclature": [
+    "Probability of investment-cost scenario $c \\in \\Omega_C$",
+    "Probability of operation scenario $o \\in \\Omega_O$"
+   ]
+  },
+  {
+   "key": "c^{Inv,E}",
+   "line": 575,
+   "body_text": "c^{\\text{Inv,E}}_{y,c} the scenario-dependent unit investment costs of converter power rating and energy capacity",
+   "nomenclature": [
+    "Unit investment cost of energy capacity in year $y$ and investment scenario $c$"
+   ]
+  },
+  {
+   "key": "E^{Inv}",
+   "line": 576,
+   "body_text": "E^{\\text{Inv}(l)}_{e,y} the corresponding investment decisions}",
+   "nomenclature": [
+    "Investment in energy capacity of ESS $e$ in year $y$ at planning iteration $l$"
+   ]
+  },
+  {
+   "key": "E^{Rated}",
+   "line": 598,
+   "body_text": "E^{\\text{Rated}(l)}_{e,y} the total rated power and energy capacity available at node",
+   "nomenclature": [
+    "Available energy capacity of unit $e$ installed in year $y^\\text{Inv}$ and operated in year $y$"
+   ]
+  },
+  {
+   "key": "E^{Inv}",
+   "line": 599,
+   "body_text": "E^{\\text{Inv}(l)}_{e,y^\\text{Inv}} the incremental power and energy capacity investments made in year",
+   "nomenclature": [
+    "Investment in energy capacity of ESS $e$ in year $y$ at planning iteration $l$"
+   ]
+  },
+  {
+   "key": "T^{Cal}",
+   "line": 600,
+   "body_text": "T^\\text{Cal}_{e,y} the calendar lifetime of the corresponding installation",
+   "nomenclature": [
+    "Calendar lifetime of ESS $e$ installed in year $y$"
+   ]
+  },
+  {
+   "key": "E^{Max}",
+   "line": 612,
+   "body_text": "E^{\\text{Max}}_{e,y} the maximum installable capacity for ESS",
+   "nomenclature": [
+    "Maximum installable energy capacity of unit $e$ in year $y$"
+   ]
+  },
+  {
+   "key": "phi^{Max}",
+   "line": 628,
+   "body_text": "\\phi^{\\text{Max}}_e the minimum and maximum admissible energy-to-power ratios for shared ESS",
+   "nomenclature": [
+    "Maximum admissible energy-to-power ratio of unit $e$ in year $y$"
+   ]
+  },
+  {
+   "key": "c^{Inv}",
+   "line": 650,
+   "body_text": "c^{\\text{Inv}} the total investment budget allocated to shared ESSs",
+   "nomenclature": [
+    "Total investment budget"
+   ]
+  },
+  {
+   "key": "alpha^{Down}",
+   "line": 722,
+   "body_text": "\\alpha^{\\text{Down}} a predefined lower bound ensuring numerical stability",
+   "nomenclature": [
+    "Lower bound on the Benders underestimator"
+   ]
+  },
+  {
+   "key": "E^{Av,Unit}",
+   "line": 788,
+   "body_text": "E^{\\text{Av,Unit}}_{e,y^\\text{Inv},y} the available rated power and energy capacity, respectively, of unit",
+   "nomenclature": [
+    "Available energy capacity of unit $e$ installed in year $y^\\text{Inv}$ and operated in year $y$"
+   ]
+  },
+  {
+   "key": "SoH",
+   "line": 789,
+   "body_text": "SoH_{e,y^\\text{Inv},y} \\in [0,1] the corresponding SoH",
+   "nomenclature": [
+    "SoH of unit $e$ installed in year $y^\\text{Inv}$ and operated in year $y$"
+   ]
+  },
+  {
+   "key": "CL^{Nom}",
+   "line": 801,
+   "body_text": "\\mathrm{CL}^\\text{Nom}_e its nominal cycle life",
+   "nomenclature": [
+    "Nominal cycle life of unit $e \\in E^S$"
+   ]
+  },
+  {
+   "key": "D",
+   "line": 818,
+   "body_text": "D_d the number of calendar days represented by representative day",
+   "nomenclature": [
+    "Set of representative days",
+    "Number of calendar days represented by $d \\in D$"
+   ]
+  },
+  {
+   "key": "S^{Dch}",
+   "line": 820,
+   "body_text": "S^\\text{Dch}_{e,y^\\text{Inv},y,d,t} the charging and discharging apparent powers, respectively",
+   "nomenclature": [
+    "Discharging apparent power of unit $e$, installed in year $y^\\text{Inv}$ and operated in year $y$, representative day $d$, time instant $t$"
+   ]
+  },
+  {
+   "key": "Y",
+   "line": 832,
+   "body_text": "Y_y the number of years represented by representative year",
+   "nomenclature": [
+    "Set of representative years",
+    "Number of calendar years represented by $y \\in Y$"
+   ]
+  },
+  {
+   "key": "SoH^{min}",
+   "line": 842,
+   "body_text": "SoH_{e,y^\\text{Inv}}^{\\text{min}} the minimum admissible SoH for unit",
+   "nomenclature": [
+    "Minimum admissible SoH of unit $e$ in year $y$"
+   ]
+  },
+  {
+   "key": "Q^{Net}",
+   "line": 883,
+   "body_text": "Q^{\\text{Net}}_{e,y,d,t} the net active and reactive power requests, respectively, issued by the SOs participating",
+   "nomenclature": [
+    "Net reactive power request to unit $e$ in year $y$, representative day $d$, and time instant $t$, issued by the SOs participating in the coordination procedure"
+   ]
+  },
+  {
+   "key": "E^{S}",
+   "line": 1528,
+   "body_text": "E^S \\subseteq E set of shared ESSs installed at TN--DN interface nodes",
+   "nomenclature": [
+    "Set of shared ESSs"
+   ]
+  },
+  {
+   "key": "Y",
+   "line": 1529,
+   "body_text": "Y set of representative years in the planning horizon",
+   "nomenclature": [
+    "Set of representative years",
+    "Number of calendar years represented by $y \\in Y$"
+   ]
+  },
+  {
+   "key": "D",
+   "line": 1530,
+   "body_text": "D set of representative days",
+   "nomenclature": [
+    "Set of representative days",
+    "Number of calendar days represented by $d \\in D$"
+   ]
+  },
+  {
+   "key": "T",
+   "line": 1531,
+   "body_text": "T set of intra-day time periods",
+   "nomenclature": [
+    "Set of intra-day time instants"
+   ]
+  }
+ ],
+ "algorithm1_lines": [
+  397,
+  540
+ ],
+ "symbols_only_inside_algorithm1": [
+  "LB",
+  "N",
+  "Omega_{M}",
+  "Phi",
+  "UB",
+  "W",
+  "c^{E}",
+  "c^{S}",
+  "cal(C)",
+  "cal(D)",
+  "cal(E)",
+  "cal(Y)",
+  "ell^{max}",
+  "epsilon^{abs}",
+  "epsilon^{rel}",
+  "g^{E}",
+  "g^{S}",
+  "gamma",
+  "gap",
+  "hat(E)^{Rated}",
+  "hat(Q)",
+  "hat(S)^{Rated}",
+  "hat(x)",
+  "pi",
+  "r^{max}"
+ ],
+ "iv_benders_symbols": [
+  {
+   "key": "L^{B}",
+   "meaning": "set of Benders iterations (nomenclature l. 202)",
+   "nomenclature_lines": [
+    202
+   ],
+   "body_lines": [
+    581,
+    605,
+    616
+   ],
+   "raw_forms": [
+    "L^{B}"
+   ],
+   "n_occurrences": 3
+  },
+  {
+   "key": "alpha^{Down}",
+   "meaning": "lower bound on the Benders underestimator",
+   "nomenclature_lines": [
+    216
+   ],
+   "body_lines": [
+    718,
+    722
+   ],
+   "raw_forms": [
+    "alpha^{\\text{Down}}"
+   ],
+   "n_occurrences": 2
+  },
+  {
+   "key": "alpha",
+   "meaning": "Benders underestimator alpha^(l) / alpha in the LP master of Algorithm 1",
+   "nomenclature_lines": [],
+   "body_lines": [
+    414,
+    416,
+    488,
+    569,
+    577,
+    689,
+    718
+   ],
+   "raw_forms": [
+    "alpha",
+    "alpha^{(l)}"
+   ],
+   "n_occurrences": 7
+  },
+  {
+   "key": "mu^{S}",
+   "meaning": "optimality / feasibility cut multiplier (power), mu^{S(k)}",
+   "nomenclature_lines": [],
+   "body_lines": [
+    692,
+    701,
+    709
+   ],
+   "raw_forms": [
+    "mu^{S(k)}_{e,y}"
+   ],
+   "n_occurrences": 3
+  },
+  {
+   "key": "mu^{E}",
+   "meaning": "optimality / feasibility cut multiplier (energy), mu^{E(k)}",
+   "nomenclature_lines": [],
+   "body_lines": [
+    695,
+    701,
+    712
+   ],
+   "raw_forms": [
+    "mu^{E(k)}_{e,y}"
+   ],
+   "n_occurrences": 3
+  },
+  {
+   "key": "g^{S}",
+   "meaning": "cut sensitivity g^{S,ell} in Algorithm 1",
+   "nomenclature_lines": [],
+   "body_lines": [
+    483,
+    492
+   ],
+   "raw_forms": [
+    "g^{S,\\ell}_{e,y}"
+   ],
+   "n_occurrences": 2
+  },
+  {
+   "key": "g^{E}",
+   "meaning": "cut sensitivity g^{E,ell} in Algorithm 1",
+   "nomenclature_lines": [],
+   "body_lines": [
+    483,
+    500
+   ],
+   "raw_forms": [
+    "g^{E,\\ell}_{e,y}"
+   ],
+   "n_occurrences": 2
+  },
+  {
+   "key": "LB",
+   "meaning": "Benders lower bound LB^ell",
+   "nomenclature_lines": [],
+   "body_lines": [
+    436,
+    519,
+    525,
+    531
+   ],
+   "raw_forms": [
+    "LB^{0}",
+    "LB^{\\ell}"
+   ],
+   "n_occurrences": 4
+  },
+  {
+   "key": "UB",
+   "meaning": "Benders upper bound UB^ell",
+   "nomenclature_lines": [],
+   "body_lines": [
+    436,
+    510,
+    511,
+    525,
+    526,
+    531
+   ],
+   "raw_forms": [
+    "UB^{0}",
+    "UB^{\\ell-1}",
+    "UB^{\\ell}"
+   ],
+   "n_occurrences": 6
+  },
+  {
+   "key": "gap",
+   "meaning": "Benders relative gap gap^ell",
+   "nomenclature_lines": [],
+   "body_lines": [
+    524,
+    529
+   ],
+   "raw_forms": [
+    "gap^{\\ell}"
+   ],
+   "n_occurrences": 2
+  },
+  {
+   "key": "hat(Q)",
+   "meaning": "recourse value at the Benders iterate, Q-hat^ell",
+   "nomenclature_lines": [],
+   "body_lines": [
+    472,
+    489,
+    512
+   ],
+   "raw_forms": [
+    "hat(Q)^{\\ell}"
+   ],
+   "n_occurrences": 3
+  },
+  {
+   "key": "hat(x)",
+   "meaning": "Benders iterate x-hat^ell",
+   "nomenclature_lines": [],
+   "body_lines": [
+    437,
+    440,
+    479,
+    512,
+    520
+   ],
+   "raw_forms": [
+    "hat(x)^{1}",
+    "hat(x)^{\\ell+1}",
+    "hat(x)^{\\ell}"
+   ],
+   "n_occurrences": 5
+  },
+  {
+   "key": "hat(S)^{Rated}",
+   "meaning": "cut expansion point S-hat^{Rated,ell}",
+   "nomenclature_lines": [],
+   "body_lines": [
+    496
+   ],
+   "raw_forms": [
+    "hat(S)^{\\mathrm{Rated},\\ell}_{e,y}"
+   ],
+   "n_occurrences": 1
+  },
+  {
+   "key": "hat(E)^{Rated}",
+   "meaning": "cut expansion point E-hat^{Rated,ell}",
+   "nomenclature_lines": [],
+   "body_lines": [
+    504
+   ],
+   "raw_forms": [
+    "hat(E)^{\\mathrm{Rated},\\ell}_{e,y}"
+   ],
+   "n_occurrences": 1
+  },
+  {
+   "key": "ell",
+   "meaning": "Benders iteration counter ell (Algorithm 1)",
+   "nomenclature_lines": [],
+   "body_lines": [
+    436,
+    439,
+    535
+   ],
+   "raw_forms": [
+    "ell"
+   ],
+   "n_occurrences": 4
+  },
+  {
+   "key": "ell^{max}",
+   "meaning": "Benders iteration cap ell^max",
+   "nomenclature_lines": [],
+   "body_lines": [
+    439
+   ],
+   "raw_forms": [
+    "ell^{\\max}"
+   ],
+   "n_occurrences": 1
+  },
+  {
+   "key": "epsilon^{rel}",
+   "meaning": "Benders gap tolerance (Algorithm 1)",
+   "nomenclature_lines": [],
+   "body_lines": [
+    529
+   ],
+   "raw_forms": [
+    "epsilon^{\\mathrm{rel}}"
+   ],
+   "n_occurrences": 1
+  },
+  {
+   "key": "epsilon^{abs}",
+   "meaning": "Benders gap tolerance (Algorithm 1)",
+   "nomenclature_lines": [],
+   "body_lines": [
+    531
+   ],
+   "raw_forms": [
+    "epsilon^{\\mathrm{abs}}"
+   ],
+   "n_occurrences": 1
+  }
+ ],
+ "iv_benders_raw_patterns": {
+  "iteration superscript (l) on investment / rated variables (planning iteration of the Benders master)": {
+   "regex": "\\((?:l|k)\\)",
+   "by_key": {
+    "E^{Inv}": [
+     566,
+     576,
+     591,
+     599,
+     621,
+     644,
+     658,
+     695,
+     712
+    ],
+    "E^{Rated}": [
+     591,
+     598,
+     608
+    ],
+    "S^{Inv}": [
+     563,
+     576,
+     585,
+     599,
+     620,
+     622,
+     642,
+     658,
+     692,
+     709
+    ],
+    "S^{Rated}": [
+     585,
+     598
+    ],
+    "alpha": [
+     569,
+     577,
+     689,
+     718
+    ],
+    "mu^{E}": [
+     695,
+     701,
+     712
+    ],
+    "mu^{S}": [
+     692,
+     701,
+     709
+    ],
+    "y": [
+     689,
+     700,
+     706
+    ]
+   },
+   "nomenclature_lines": [
+    234,
+    236
+   ]
+  },
+  "y^{(k)} -- subproblem objective value at Benders iteration k (cut constant)": {
+   "regex": "y\\^\\{\\(k\\)\\}",
+   "by_key": {
+    "y": [
+     689,
+     700,
+     706
+    ]
+   },
+   "nomenclature_lines": []
+  }
+ },
+ "iv_benders_word_lines": [
+  {
+   "line": 142,
+   "section": "front matter",
+   "text": "To preserve tractability, the framework combines Benders' decomposition for long-term planning with an Alternating Direction Method of Multipliers (ADMM)-based decentralized coordination mechanism for"
+  },
+  {
+   "line": 161,
+   "section": "front matter",
+   "text": "\\item Benders' decomposition and ADMM enable scalable planning with decentralized AC-feasible operation"
+  },
+  {
+   "line": 172,
+   "section": "front matter",
+   "text": "Benders' decomposition \\sep"
+  },
+  {
+   "line": 202,
+   "section": "subsection Sets and Parameters",
+   "text": "$L^B$       & Set of Benders' iterations\\\\"
+  },
+  {
+   "line": 216,
+   "section": "subsection Sets and Parameters",
+   "text": "$\\alpha^{\\text{Down}}$ & Lower bound on the Benders underestimator \\\\"
+  },
+  {
+   "line": 299,
+   "section": "section Introduction",
+   "text": "\\item A decomposition-based solution strategy that combines Benders' decomposition at the planning level with an ADMM-based decentralized coordination mechanism for AC-feasible TSO--DSO operation."
+  },
+  {
+   "line": 323,
+   "section": "section Shared ESS Planning Framework",
+   "text": "The integrated model is solved through a nested planning–operation decomposition. The outer master problem updates the first-stage investment plan using a Benders-type procedure, whereas the operation"
+  },
+  {
+   "line": 394,
+   "section": "subsection Planning--Operation Decomposition Architecture",
+   "text": "The two layers are coupled through the ESS investment variables. Benders' decomposition iteratively updates these variables until convergence between strategic planning and operational performance is "
+  },
+  {
+   "line": 398,
+   "section": "subsection Planning--Operation Decomposition Architecture",
+   "text": "\\caption{Benders-type shared-ESS planning with ADMM-based operational recourse}"
+  },
+  {
+   "line": 420,
+   "section": "subsection Planning--Operation Decomposition Architecture",
+   "text": "energy-to-power-ratio, and accumulated Benders-type cuts\\;"
+  },
+  {
+   "line": 486,
+   "section": "subsection Planning--Operation Decomposition Architecture",
+   "text": "Add the optimality cut:"
+  },
+  {
+   "line": 515,
+   "section": "subsection Planning--Operation Decomposition Architecture",
+   "text": "Retain the incumbent upper bound and add a feasibility-recovery cut\\;"
+  },
+  {
+   "line": 577,
+   "section": "subsubsection Objective Function",
+   "text": "$\\alpha^{(l)}$ is an auxiliary variable representing the Benders underestimator of the operational cost term."
+  },
+  {
+   "line": 605,
+   "section": "subsubsection Maximum Installable Capacity",
+   "text": "Each shared ESS is subject to an upper bound on installable energy capacity, reflecting physical, spatial, or technical constraints at the corresponding TN--DN interface substation ($\\forall e \\in E^S"
+  },
+  {
+   "line": 684,
+   "section": "subsubsection Benders' Cuts",
+   "text": "\\subsubsection{Benders' Cuts}"
+  },
+  {
+   "line": 686,
+   "section": "subsubsection Benders' Cuts",
+   "text": "The Benders' decomposition procedure iteratively refines the master problem by adding cuts derived from the operational evaluation of candidate investment plans. When the operational subproblem is fea"
+  },
+  {
+   "line": 715,
+   "section": "subsubsection Benders' Cuts",
+   "text": "Finally, to prevent numerical instability during the initial iterations, the underestimator is bounded from below as:"
+  },
+  {
+   "line": 722,
+   "section": "subsubsection Benders' Cuts",
+   "text": "where $\\alpha^{\\text{Down}}$ is a predefined lower bound ensuring numerical stability."
+  },
+  {
+   "line": 1131,
+   "section": "subsection Computational Performance",
+   "text": "Figure~\\ref{fig:cs3_results_convergence_characteristic} shows the convergence behavior of the proposed planning algorithm through the evolution of the upper and lower bounds of the objective function,"
+  },
+  {
+   "line": 1136,
+   "section": "subsection Computational Performance",
+   "text": "\\caption{Convergence of the Benders decomposition algorithm.}"
+  },
+  {
+   "line": 1140,
+   "section": "subsection Computational Performance",
+   "text": "The algorithm converges in four Benders iterations to a relative optimality gap of 0.50\\%, with a total runtime of 30\\,560~s."
+  }
+ ],
+ "v_required_symbols": [
+  {
+   "id": "lattice_unit_power",
+   "what": "lattice unit size 0.25 MVA",
+   "paragraphs_v5_used": false,
+   "paragraphs_v5_hits": [],
+   "main_tex_text_hits": [],
+   "main_tex_related_symbol_lines": {},
+   "main_tex_related_symbol_in_nomenclature": {},
+   "step4_dfo_notation": "P_{n,y} \\in 0.25\\,\\mathbb{Z}_{\\ge 0} MVA (STEP4_DFO_METHOD.md 1.1)"
+  },
+  {
+   "id": "lattice_unit_energy",
+   "what": "lattice unit size 0.5 MWh",
+   "paragraphs_v5_used": false,
+   "paragraphs_v5_hits": [],
+   "main_tex_text_hits": [],
+   "main_tex_related_symbol_lines": {},
+   "main_tex_related_symbol_in_nomenclature": {},
+   "step4_dfo_notation": "E_{n,y} \\in 0.5\\,\\mathbb{Z}_{\\ge 0} MWh (STEP4_DFO_METHOD.md 1.1)"
+  },
+  {
+   "id": "duration_bounds",
+   "what": "duration (E/P) bounds 2-4 h",
+   "paragraphs_v5_used": false,
+   "paragraphs_v5_hits": [],
+   "main_tex_text_hits": [
+    {
+     "line": 213,
+     "pattern": "energy-to-power",
+     "text": "$\\phi^{\\text{Min}}_e$ & Minimum admissible energy-to-power ratio of unit $e$ in year $y$ \\\\"
+    },
+    {
+     "line": 214,
+     "pattern": "energy-to-power",
+     "text": "$\\phi^{\\text{Max}}_e$ & Maximum admissible energy-to-power ratio of unit $e$ in year $y$ \\\\"
+    },
+    {
+     "line": 420,
+     "pattern": "energy-to-power",
+     "text": "energy-to-power-ratio, and accumulated Benders-type cuts\\;"
+    },
+    {
+     "line": 616,
+     "pattern": "energy-to-power",
+     "text": "\\textcolor{blue}{Battery-based ESSs are characterized by technology- and application-specific energy-to-power ratios, enforced through the following constraint "
+    },
+    {
+     "line": 628,
+     "pattern": "energy-to-power",
+     "text": "$\\phi^{\\text{Min}}_e$ and $\\phi^{\\text{Max}}_e$ denote the minimum and maximum admissible energy-to-power ratios for shared ESS $e$."
+    },
+    {
+     "line": 629,
+     "pattern": "2~h",
+     "text": "These bounds constrain storage duration according to the selected technology and use case. Typical values for utility-scale lithium-ion batteries range from 2~h"
+    },
+    {
+     "line": 629,
+     "pattern": "10~h",
+     "text": "These bounds constrain storage duration according to the selected technology and use case. Typical values for utility-scale lithium-ion batteries range from 2~h"
+    },
+    {
+     "line": 1125,
+     "pattern": "2~h",
+     "text": "Table~\\ref{tab:cs3_shared_ess_specs} also shows that the selected ESS adopts the minimum admissible energy-to-power ratio of 2~h. This suggests that the most va"
+    },
+    {
+     "line": 1125,
+     "pattern": "energy-to-power",
+     "text": "Table~\\ref{tab:cs3_shared_ess_specs} also shows that the selected ESS adopts the minimum admissible energy-to-power ratio of 2~h. This suggests that the most va"
+    }
+   ],
+   "main_tex_related_symbol_lines": {
+    "phi^{Min}": [
+     620,
+     628
+    ],
+    "phi^{Max}": [
+     622,
+     628
+    ]
+   },
+   "main_tex_related_symbol_in_nomenclature": {
+    "phi^{Min}": [
+     213
+    ],
+    "phi^{Max}": [
+     214
+    ]
+   },
+   "step4_dfo_notation": "2 h <= E/P <= 4 h (STEP4_DFO_METHOD.md header)"
+  },
+  {
+   "id": "tau",
+   "what": "certification threshold tau",
+   "paragraphs_v5_used": true,
+   "paragraphs_v5_hits": [
+    {
+     "line": 27,
+     "pattern": "τ",
+     "in_manuscript_scope": true,
+     "context": "gs are not growing. Swings smaller than τ/10 = 453.91 € are treated as noise: the"
+    },
+    {
+     "line": 29,
+     "pattern": "τ",
+     "in_manuscript_scope": true,
+     "context": "W = max(20, ⌈1.1 P̂⌉) cycles is at most τ. Here P̂ is the period"
+    },
+    {
+     "line": 31,
+     "pattern": "τ",
+     "in_manuscript_scope": true,
+     "context": "rface-consensus gap satisfies |t_sum| ≤ τ/2 = 2,269.53 €;"
+    },
+    {
+     "line": 40,
+     "pattern": "τ",
+     "in_manuscript_scope": true,
+     "context": "> - a window range of at most τ;"
+    },
+    {
+     "line": 41,
+     "pattern": "τ",
+     "in_manuscript_scope": true,
+     "context": "> - |last step| × 60 ≤ τ, a linear bound on the remaining descen"
+    },
+    {
+     "line": 43,
+     "pattern": "τ",
+     "in_manuscript_scope": true,
+     "context": "> **The threshold.** τ = δR·V/4, with δR = 0.07 and V = 259,37"
+    },
+    {
+     "line": 45,
+     "pattern": "τ",
+     "in_manuscript_scope": true,
+     "context": "> most τ, so the ratio is resolved to δR. This g"
+    },
+    {
+     "line": 45,
+     "pattern": "τ",
+     "in_manuscript_scope": true,
+     "context": "the ratio is resolved to δR. This gives τ = 4,539.07 €."
+    },
+    {
+     "line": 47,
+     "pattern": "τ",
+     "in_manuscript_scope": true,
+     "context": "> **What τ bounds.** Ten of the 46 certificates th"
+    },
+    {
+     "line": 47,
+     "pattern": "τ",
+     "in_manuscript_scope": true,
+     "context": "cates the tables use stop within 5 % of τ. The rule therefore bounds each"
+    },
+    {
+     "line": 48,
+     "pattern": "τ",
+     "in_manuscript_scope": true,
+     "context": "> evaluation's stopping error at about τ, not well inside it. Evaluations contin"
+    },
+    {
+     "line": 49,
+     "pattern": "τ",
+     "in_manuscript_scope": true,
+     "context": "> moved by at most 0.9 τ."
+    },
+    {
+     "line": 63,
+     "pattern": "τ",
+     "in_manuscript_scope": true,
+     "context": "> it exceeds max(3 × the larger band, 2τ)."
+    },
+    {
+     "line": 68,
+     "pattern": "τ",
+     "in_manuscript_scope": true,
+     "context": "al pass (range 21–89). The median range/τ at certification was 0.86. The four fur"
+    },
+    {
+     "line": 95,
+     "pattern": "τ",
+     "in_manuscript_scope": true,
+     "context": "ndow can certify with drift left beyond τ: ≈ 3 τ is estimated for the reference"
+    },
+    {
+     "line": 95,
+     "pattern": "τ",
+     "in_manuscript_scope": true,
+     "context": "n certify with drift left beyond τ: ≈ 3 τ is estimated for the reference"
+    }
+   ],
+   "main_tex_text_hits": [],
+   "main_tex_related_symbol_lines": {
+    "tau": []
+   },
+   "main_tex_related_symbol_in_nomenclature": {
+    "tau": []
+   },
+   "step4_dfo_notation": null
+  },
+  {
+   "id": "k0",
+   "what": "first residual pass k0",
+   "paragraphs_v5_used": true,
+   "paragraphs_v5_hits": [
+    {
+     "line": 20,
+     "pattern": "k₀",
+     "in_manuscript_scope": true,
+     "context": "fied them. From the first residual pass k₀ onwards the regime is"
+    },
+    {
+     "line": 25,
+     "pattern": "k₀",
+     "in_manuscript_scope": true,
+     "context": "st three turning points (extrema) since k₀, so that its period is measured rather"
+    },
+    {
+     "line": 34,
+     "pattern": "k₀",
+     "in_manuscript_scope": true,
+     "context": "nd the absence of residual lapses since k₀"
+    },
+    {
+     "line": 51,
+     "pattern": "k₀",
+     "in_manuscript_scope": true,
+     "context": "cord replayed that record bitwise up to k₀."
+    }
+   ],
+   "main_tex_text_hits": [],
+   "main_tex_related_symbol_lines": {
+    "k": [
+     686,
+     700,
+     703,
+     1436,
+     1437,
+     1498,
+     1545,
+     1547,
+     1570,
+     1573,
+     1596
+    ]
+   },
+   "main_tex_related_symbol_in_nomenclature": {
+    "k": []
+   },
+   "step4_dfo_notation": null
+  },
+  {
+   "id": "kstar",
+   "what": "certification cycle k*",
+   "paragraphs_v5_used": true,
+   "paragraphs_v5_hits": [
+    {
+     "line": 22,
+     "pattern": "k\\\\\\*",
+     "in_manuscript_scope": true,
+     "context": "luation is certified at the first cycle k\\* at which all of the"
+    }
+   ],
+   "main_tex_text_hits": [],
+   "main_tex_related_symbol_lines": {
+    "k": [
+     686,
+     700,
+     703,
+     1436,
+     1437,
+     1498,
+     1545,
+     1547,
+     1570,
+     1573,
+     1596
+    ]
+   },
+   "main_tex_related_symbol_in_nomenclature": {
+    "k": []
+   },
+   "step4_dfo_notation": null
+  },
+  {
+   "id": "window_W",
+   "what": "settling window length W = max(20, ceil(1.1 P-hat))",
+   "paragraphs_v5_used": true,
+   "paragraphs_v5_hits": [
+    {
+     "line": 29,
+     "pattern": "\\bW\\b",
+     "in_manuscript_scope": true,
+     "context": "he range of the objective over the last W = max(20, ⌈1.1 P̂⌉) cycles is at most τ"
+    }
+   ],
+   "main_tex_text_hits": [],
+   "main_tex_related_symbol_lines": {
+    "W": [
+     475
+    ]
+   },
+   "main_tex_related_symbol_in_nomenclature": {
+    "W": []
+   },
+   "step4_dfo_notation": null
+  },
+  {
+   "id": "period_Phat",
+   "what": "measured period P-hat",
+   "paragraphs_v5_used": true,
+   "paragraphs_v5_hits": [
+    {
+     "line": 29,
+     "pattern": "P̂",
+     "in_manuscript_scope": true,
+     "context": "bjective over the last W = max(20, ⌈1.1 P̂⌉) cycles is at most τ. Here P̂ is the p"
+    },
+    {
+     "line": 29,
+     "pattern": "P̂",
+     "in_manuscript_scope": true,
+     "context": "20, ⌈1.1 P̂⌉) cycles is at most τ. Here P̂ is the period"
+    }
+   ],
+   "main_tex_text_hits": [],
+   "main_tex_related_symbol_lines": {
+    "hat(P)": [],
+    "hat(P)^{E}": [
+     1446,
+     1468,
+     1486,
+     1516,
+     1546,
+     1558,
+     1559,
+     1560,
+     1580
+    ],
+    "hat(P)^{I}": [
+     1444,
+     1466
+    ]
+   },
+   "main_tex_related_symbol_in_nomenclature": {
+    "hat(P)": [],
+    "hat(P)^{E}": [],
+    "hat(P)^{I}": []
+   },
+   "step4_dfo_notation": null
+  },
+  {
+   "id": "period_Pmax",
+   "what": "longest measured period P_max",
+   "paragraphs_v5_used": true,
+   "paragraphs_v5_hits": [
+    {
+     "line": 7,
+     "pattern": "P_max",
+     "in_manuscript_scope": false,
+     "context": "more slowly\" sentence replaced; P-hat, P_max, lambda and the settling slack defined"
+    },
+    {
+     "line": 37,
+     "pattern": "P_max",
+     "in_manuscript_scope": true,
+     "context": "on that shows no turning point within 2 P_max = 60 cycles, where P_max = 30"
+    },
+    {
+     "line": 37,
+     "pattern": "P_max",
+     "in_manuscript_scope": true,
+     "context": "point within 2 P_max = 60 cycles, where P_max = 30"
+    }
+   ],
+   "main_tex_text_hits": [],
+   "main_tex_related_symbol_lines": {
+    "P^{max}": [],
+    "P^{G,max}": [
+     1771
+    ]
+   },
+   "main_tex_related_symbol_in_nomenclature": {
+    "P^{max}": [],
+    "P^{G,max}": []
+   },
+   "step4_dfo_notation": null
+  },
+  {
+   "id": "t_sum",
+   "what": "priced interface-consensus gap t_sum",
+   "paragraphs_v5_used": true,
+   "paragraphs_v5_hits": [
+    {
+     "line": 31,
+     "pattern": "t_sum",
+     "in_manuscript_scope": true,
+     "context": "iced interface-consensus gap satisfies |t_sum| ≤ τ/2 = 2,269.53 €;"
+    },
+    {
+     "line": 56,
+     "pattern": "t_sum",
+     "in_manuscript_scope": true,
+     "context": "> - its consensus gap |t_sum| at the cap;"
+    }
+   ],
+   "main_tex_text_hits": [],
+   "main_tex_related_symbol_lines": {
+    "t": [
+     807,
+     808,
+     810,
+     812,
+     819,
+     820,
+     844,
+     847,
+     854,
+     859,
+     861,
+     864,
+     867,
+     869,
+     874,
+     877,
+     878,
+     879,
+     883,
+     896,
+     897,
+     1426,
+     1432,
+     1443,
+     1444,
+     1445,
+     1446,
+     1447,
+     1451,
+     1452,
+     1453,
+     1454,
+     1455,
+     1465,
+     1466,
+     1467,
+     1468,
+     1469,
+     1473,
+     1474,
+     1475,
+     1476,
+     1477,
+     1486,
+     1487,
+     1491,
+     1492,
+     1516,
+     1517,
+     1518,
+     1545,
+     1546,
+     1547,
+     1558,
+     1559,
+     1560,
+     1564,
+     1565,
+     1566,
+     1573,
+     1576,
+     1577,
+     1580,
+     1585,
+     1586,
+     1589,
+     1594
+    ]
+   },
+   "main_tex_related_symbol_in_nomenclature": {
+    "t": []
+   },
+   "step4_dfo_notation": null
+  },
+  {
+   "id": "deltaR",
+   "what": "ratio resolution delta-R",
+   "paragraphs_v5_used": true,
+   "paragraphs_v5_hits": [
+    {
+     "line": 43,
+     "pattern": "δR",
+     "in_manuscript_scope": true,
+     "context": "> **The threshold.** τ = δR·V/4, with δR = 0.07 and V = 259,375.33"
+    },
+    {
+     "line": 43,
+     "pattern": "δR",
+     "in_manuscript_scope": true,
+     "context": "> **The threshold.** τ = δR·V/4, with δR = 0.07 and V = 259,375.33 €, the SRP1 v"
+    },
+    {
+     "line": 45,
+     "pattern": "δR",
+     "in_manuscript_scope": true,
+     "context": "> most τ, so the ratio is resolved to δR. This gives τ = 4,539.07 €."
+    }
+   ],
+   "main_tex_text_hits": [],
+   "main_tex_related_symbol_lines": {
+    "delta": [
+     795,
+     827
+    ]
+   },
+   "main_tex_related_symbol_in_nomenclature": {
+    "delta": [
+     247
+    ]
+   },
+   "step4_dfo_notation": null
+  },
+  {
+   "id": "V_unit_value",
+   "what": "reference unit value V (in tau = deltaR V / 4)",
+   "paragraphs_v5_used": true,
+   "paragraphs_v5_hits": [
+    {
+     "line": 43,
+     "pattern": "\\bV\\b",
+     "in_manuscript_scope": true,
+     "context": "> **The threshold.** τ = δR·V/4, with δR = 0.07 and V = 259,375.33 €,"
+    },
+    {
+     "line": 43,
+     "pattern": "\\bV\\b",
+     "in_manuscript_scope": true,
+     "context": "shold.** τ = δR·V/4, with δR = 0.07 and V = 259,375.33 €, the SRP1 value of the r"
+    }
+   ],
+   "main_tex_text_hits": [],
+   "main_tex_related_symbol_lines": {
+    "V": [
+     1426
+    ],
+    "V^{I}": [
+     1432
+    ],
+    "hat(V)^{I}": [
+     1443,
+     1465
+    ],
+    "V^{Base}": [
+     1677,
+     1678
+    ],
+    "V^{max}": [
+     1677,
+     1678
+    ],
+    "V^{min}": [
+     1677,
+     1678
+    ],
+    "V^{S}": [
+     1771
+    ]
+   },
+   "main_tex_related_symbol_in_nomenclature": {
+    "V": [],
+    "V^{I}": [],
+    "hat(V)^{I}": [],
+    "V^{Base}": [],
+    "V^{max}": [],
+    "V^{min}": [],
+    "V^{S}": []
+   },
+   "step4_dfo_notation": null
+  },
+  {
+   "id": "eps_abs_rel",
+   "what": "Boyd residual tolerances eps_abs, eps_rel",
+   "paragraphs_v5_used": true,
+   "paragraphs_v5_hits": [
+    {
+     "line": 15,
+     "pattern": "ε_abs",
+     "in_manuscript_scope": true,
+     "context": "ive test [Boyd et al. 2011, §3.3], with ε_abs = 10⁻⁵ and"
+    },
+    {
+     "line": 16,
+     "pattern": "ε_rel",
+     "in_manuscript_scope": true,
+     "context": "> ε_rel = 10⁻⁴. Every local NLP must also solve"
+    }
+   ],
+   "main_tex_text_hits": [],
+   "main_tex_related_symbol_lines": {
+    "epsilon^{abs}": [
+     531
+    ],
+    "epsilon^{rel}": [
+     529
+    ]
+   },
+   "main_tex_related_symbol_in_nomenclature": {
+    "epsilon^{abs}": [],
+    "epsilon^{rel}": []
+   },
+   "step4_dfo_notation": null
+  },
+  {
+   "id": "rho",
+   "what": "ADMM penalty rho (frozen from k0)",
+   "paragraphs_v5_used": true,
+   "paragraphs_v5_hits": [
+    {
+     "line": 22,
+     "pattern": "ρ",
+     "in_manuscript_scope": true,
+     "context": "> and the ADMM penalty parameters ρ frozen. An evaluation is certified at t"
+    }
+   ],
+   "main_tex_text_hits": [],
+   "main_tex_related_symbol_lines": {
+    "rho^{E,P}": [
+     1560,
+     1570,
+     1578,
+     1599
+    ],
+    "rho^{E,Q}": [
+     1566,
+     1570,
+     1587,
+     1603
+    ]
+   },
+   "main_tex_related_symbol_in_nomenclature": {
+    "rho^{E,P}": [],
+    "rho^{E,Q}": []
+   },
+   "step4_dfo_notation": null
+  },
+  {
+   "id": "lambda",
+   "what": "interface price lambda (consensus dual of the interface power), lambda_t",
+   "paragraphs_v5_used": true,
+   "paragraphs_v5_hits": [
+    {
+     "line": 75,
+     "pattern": "λ",
+     "in_manuscript_scope": true,
+     "context": "> non-smooth. The interface price λ (the consensus dual of the interface po"
+    },
+    {
+     "line": 75,
+     "pattern": "λ",
+     "in_manuscript_scope": true,
+     "context": "he interface power) is then set-valued, λ ∈ [0, c_flex], and"
+    },
+    {
+     "line": 144,
+     "pattern": "λ",
+     "in_manuscript_scope": true,
+     "context": "ibility against the TN's marginal value λ_t rather than"
+    }
+   ],
+   "main_tex_text_hits": [],
+   "main_tex_related_symbol_lines": {
+    "lambda": [],
+    "pi^{I,P}": [
+     1452,
+     1474
+    ]
+   },
+   "main_tex_related_symbol_in_nomenclature": {
+    "lambda": [],
+    "pi^{I,P}": []
+   },
+   "step4_dfo_notation": null
+  },
+  {
+   "id": "pi_t",
+   "what": "wholesale price pi_t",
+   "paragraphs_v5_used": true,
+   "paragraphs_v5_hits": [
+    {
+     "line": 145,
+     "pattern": "π_t",
+     "in_manuscript_scope": true,
+     "context": "the wholesale price π_t; coordination — or a locational real-ti"
+    }
+   ],
+   "main_tex_text_hits": [],
+   "main_tex_related_symbol_lines": {
+    "pi": [
+     478
+    ]
+   },
+   "main_tex_related_symbol_in_nomenclature": {
+    "pi": []
+   },
+   "step4_dfo_notation": null
+  },
+  {
+   "id": "c_flex",
+   "what": "flexibility price c_flex",
+   "paragraphs_v5_used": true,
+   "paragraphs_v5_hits": [
+    {
+     "line": 75,
+     "pattern": "c_flex",
+     "in_manuscript_scope": true,
+     "context": "face power) is then set-valued, λ ∈ [0, c_flex], and"
+    }
+   ],
+   "main_tex_text_hits": [],
+   "main_tex_related_symbol_lines": {},
+   "main_tex_related_symbol_in_nomenclature": {},
+   "step4_dfo_notation": null
+  },
+  {
+   "id": "L_window",
+   "what": "earlier window L = 44",
+   "paragraphs_v5_used": true,
+   "paragraphs_v5_hits": [
+    {
+     "line": 96,
+     "pattern": "\\bL = 44",
+     "in_manuscript_scope": true,
+     "context": "easured half-life at the earlier window L = 44."
+    }
+   ],
+   "main_tex_text_hits": [],
+   "main_tex_related_symbol_lines": {
+    "L^{B}": [
+     581,
+     605,
+     616
+    ],
+    "cal(L)^{E,P}": [
+     1516,
+     1541,
+     1558
+    ],
+    "cal(L)^{E,Q}": [
+     1517,
+     1541,
+     1564
+    ]
+   },
+   "main_tex_related_symbol_in_nomenclature": {
+    "L^{B}": [
+     202
+    ],
+    "cal(L)^{E,P}": [],
+    "cal(L)^{E,Q}": []
+   },
+   "step4_dfo_notation": null
+  },
+  {
+   "id": "eps_AE",
+   "what": "elasticity of value to available energy eps_AE",
+   "paragraphs_v5_used": true,
+   "paragraphs_v5_hits": [
+    {
+     "line": 98,
+     "pattern": "ε_AE",
+     "in_manuscript_scope": true,
+     "context": "lasticity of value to available energy (ε_AE 1.04–1.85,"
+    }
+   ],
+   "main_tex_text_hits": [],
+   "main_tex_related_symbol_lines": {},
+   "main_tex_related_symbol_in_nomenclature": {},
+   "step4_dfo_notation": null
+  }
+ ],
+ "unknown_latex_commands_in_math": [],
+ "body_symbol_index": {
+  "CL^{Nom}": {
+   "key": "CL^{Nom}",
+   "category": "symbol",
+   "lines": [
+    797,
+    801
+   ],
+   "raw_forms": [
+    "CL^{\\text{Nom}}_{e}"
+   ],
+   "iteration_only": false,
+   "bold_seen": false,
+   "first_line": 797,
+   "n_occurrences": 2,
+   "first_section": "subsubsection Shared ESS Mathematical Formulation"
+  },
+  "C^{Inv}": {
+   "key": "C^{Inv}",
+   "category": "symbol",
+   "lines": [
+    337,
+    364,
+    416,
+    424,
+    512
+   ],
+   "raw_forms": [
+    "C^{\\mathrm{Inv}}",
+    "C^{\\mathrm{Inv}}_{c}",
+    "C^{\\text{Inv}}_{e,y^\\text{Inv}}"
+   ],
+   "iteration_only": false,
+   "bold_seen": false,
+   "first_line": 337,
+   "n_occurrences": 5,
+   "first_section": "subsection Planning--Operation Decomposition Architecture"
+  },
+  "C^{Op}": {
+   "key": "C^{Op}",
+   "category": "symbol",
+   "lines": [
+    352
+   ],
+   "raw_forms": [
+    "C^{\\mathrm{Op}}_{o}"
+   ],
+   "iteration_only": false,
+   "bold_seen": false,
+   "first_line": 352,
+   "n_occurrences": 1,
+   "first_section": "subsection Planning--Operation Decomposition Architecture"
+  },
+  "C^{Salvage}": {
+   "key": "C^{Salvage}",
+   "category": "symbol",
+   "lines": [
+    341,
+    363
+   ],
+   "raw_forms": [
+    "C^{\\text{Salvage}}"
+   ],
+   "iteration_only": false,
+   "bold_seen": false,
+   "first_line": 341,
+   "n_occurrences": 2,
+   "first_section": "subsection Planning--Operation Decomposition Architecture"
+  },
+  "D": {
+   "key": "D",
+   "category": "symbol",
+   "lines": [
+    807,
+    808,
+    818,
+    821,
+    844,
+    861,
+    874,
+    896,
+    1516,
+    1517,
+    1530,
+    1545,
+    1547,
+    1573
+   ],
+   "raw_forms": [
+    "D",
+    "D_{d}"
+   ],
+   "iteration_only": false,
+   "bold_seen": false,
+   "first_line": 807,
+   "n_occurrences": 14,
+   "first_section": "subsubsection Shared ESS Mathematical Formulation"
+  },
+  "Delta": {
+   "key": "Delta",
+   "category": "symbol",
+   "lines": [
+    808,
+    819
+   ],
+   "raw_forms": [
+    "Delta"
+   ],
+   "iteration_only": false,
+   "bold_seen": false,
+   "first_line": 808,
+   "n_occurrences": 2,
+   "first_section": "subsubsection Shared ESS Mathematical Formulation"
+  },
+  "E": {
+   "key": "E",
+   "category": "symbol",
+   "lines": [
+    363,
+    1528
+   ],
+   "raw_forms": [
+    "E"
+   ],
+   "iteration_only": false,
+   "bold_seen": false,
+   "first_line": 363,
+   "n_occurrences": 2,
+   "first_section": "subsection Planning--Operation Decomposition Architecture"
+  },
+  "E^{Av,Unit}": {
+   "key": "E^{Av,Unit}",
+   "category": "symbol",
+   "lines": [
+    783,
+    788
+   ],
+   "raw_forms": [
+    "E^{\\text{Av,Unit}}_{e,y^\\text{Inv},y}"
+   ],
+   "iteration_only": false,
+   "bold_seen": false,
+   "first_line": 783,
+   "n_occurrences": 2,
+   "first_section": "subsubsection Shared ESS Mathematical Formulation"
+  },
+  "E^{Av}": {
+   "key": "E^{Av}",
+   "category": "symbol",
+   "lines": [
+    1117,
+    1325,
+    1328,
+    1361
+   ],
+   "raw_forms": [
+    "E^{\\text{Av}}_{e,y}"
+   ],
+   "iteration_only": false,
+   "bold_seen": false,
+   "first_line": 1117,
+   "n_occurrences": 4,
+   "first_section": "subsection Degradation and Available Energy Capacity"
+  },
+  "E^{Ch,Dch}": {
+   "key": "E^{Ch,Dch}",
+   "category": "symbol",
+   "lines": [
+    796,
+    801,
+    806
+   ],
+   "raw_forms": [
+    "E^{\\text{Ch,Dch}}_{e,y^\\text{Inv},y}"
+   ],
+   "iteration_only": false,
+   "bold_seen": false,
+   "first_line": 796,
+   "n_occurrences": 3,
+   "first_section": "subsubsection Shared ESS Mathematical Formulation"
+  },
+  "E^{Down}": {
+   "key": "E^{Down}",
+   "category": "symbol",
+   "lines": [
+    744,
+    750,
+    894
+   ],
+   "raw_forms": [
+    "E^{\\text{Down}}_{e,y}"
+   ],
+   "iteration_only": false,
+   "bold_seen": false,
+   "first_line": 744,
+   "n_occurrences": 3,
+   "first_section": "subsubsection Shared ESS Mathematical Formulation"
+  },
+  "E^{Inv}": {
+   "key": "E^{Inv}",
+   "category": "symbol",
+   "lines": [
+    407,
+    432,
+    566,
+    576,
+    591,
+    599,
+    621,
+    644,
+    658,
+    695,
+    712,
+    744,
+    759,
+    1089,
+    1305,
+    1308,
+    1345
+   ],
+   "raw_forms": [
+    "E^{\\mathrm{Inv}(l)}_{e,y}",
+    "E^{\\mathrm{Inv}}_{e,y}",
+    "E^{\\text{Inv}(k)}_{e,y}",
+    "E^{\\text{Inv}(l)}_{e,y,c}",
+    "E^{\\text{Inv}(l)}_{e,y^\\text{Inv}}",
+    "E^{\\text{Inv}(l)}_{e,y}",
+    "E^{\\text{Inv}}_{e,y^\\text{Inv}}",
+    "E^{\\text{Inv}}_{e,y}"
+   ],
+   "iteration_only": false,
+   "bold_seen": false,
+   "first_line": 407,
+   "n_occurrences": 19,
+   "first_section": "subsection Planning--Operation Decomposition Architecture"
+  },
+  "E^{Max}": {
+   "key": "E^{Max}",
+   "category": "symbol",
+   "lines": [
+    608,
+    612
+   ],
+   "raw_forms": [
+    "E^{\\text{Max}}_{e,y}"
+   ],
+   "iteration_only": false,
+   "bold_seen": false,
+   "first_line": 608,
+   "n_occurrences": 2,
+   "first_section": "subsubsection Maximum Installable Capacity"
+  },
+  "E^{Rated,Unit}": {
+   "key": "E^{Rated,Unit}",
+   "category": "symbol",
+   "lines": [
+    759,
+    764,
+    773,
+    783,
+    797
+   ],
+   "raw_forms": [
+    "E^{\\text{Rated,Unit}}_{e,y^\\text{Inv},y}"
+   ],
+   "iteration_only": false,
+   "bold_seen": false,
+   "first_line": 759,
+   "n_occurrences": 5,
+   "first_section": "subsubsection Shared ESS Mathematical Formulation"
+  },
+  "E^{Rated}": {
+   "key": "E^{Rated}",
+   "category": "symbol",
+   "lines": [
+    408,
+    502,
+    591,
+    598,
+    608,
+    773
+   ],
+   "raw_forms": [
+    "E^{\\mathrm{Rated}}_{e,y}",
+    "E^{\\text{Rated}(l)}_{e,y}",
+    "E^{\\text{Rated}}_{e,y}"
+   ],
+   "iteration_only": false,
+   "bold_seen": false,
+   "first_line": 408,
+   "n_occurrences": 6,
+   "first_section": "subsection Planning--Operation Decomposition Architecture"
+  },
+  "E^{S}": {
+   "key": "E^{S}",
+   "category": "symbol",
+   "lines": [
+    557,
+    581,
+    605,
+    616,
+    639,
+    691,
+    694,
+    708,
+    711,
+    737,
+    752,
+    766,
+    776,
+    792,
+    803,
+    824,
+    835,
+    844,
+    861,
+    874,
+    889,
+    896,
+    1516,
+    1517,
+    1528,
+    1545,
+    1573
+   ],
+   "raw_forms": [
+    "E^{S}"
+   ],
+   "iteration_only": false,
+   "bold_seen": false,
+   "first_line": 557,
+   "n_occurrences": 27,
+   "first_section": "subsubsection Objective Function"
+  },
+  "E^{Up}": {
+   "key": "E^{Up}",
+   "category": "symbol",
+   "lines": [
+    744,
+    750,
+    893
+   ],
+   "raw_forms": [
+    "E^{\\text{Up}}_{e,y}"
+   ],
+   "iteration_only": false,
+   "bold_seen": false,
+   "first_line": 744,
+   "n_occurrences": 3,
+   "first_section": "subsubsection Shared ESS Mathematical Formulation"
+  },
+  "K": {
+   "key": "K",
+   "category": "symbol",
+   "lines": [
+    1532,
+    1545,
+    1547,
+    1570,
+    1573,
+    1596
+   ],
+   "raw_forms": [
+    "K"
+   ],
+   "iteration_only": false,
+   "bold_seen": false,
+   "first_line": 1532,
+   "n_occurrences": 7,
+   "first_section": "subsection ADMM Implementation"
+  },
+  "LB": {
+   "key": "LB",
+   "category": "symbol",
+   "lines": [
+    436,
+    519,
+    525,
+    531
+   ],
+   "raw_forms": [
+    "LB^{0}",
+    "LB^{\\ell}"
+   ],
+   "iteration_only": true,
+   "bold_seen": false,
+   "first_line": 436,
+   "n_occurrences": 4,
+   "first_section": "subsection Planning--Operation Decomposition Architecture"
+  },
+  "L^{B}": {
+   "key": "L^{B}",
+   "category": "symbol",
+   "lines": [
+    581,
+    605,
+    616
+   ],
+   "raw_forms": [
+    "L^{B}"
+   ],
+   "iteration_only": false,
+   "bold_seen": false,
+   "first_line": 581,
+   "n_occurrences": 3,
+   "first_section": "subsubsection Total Rated Power and Energy Capacity"
+  },
+  "N": {
+   "key": "N",
+   "category": "symbol",
+   "lines": [
+    475
+   ],
+   "raw_forms": [
+    "N_{y}"
+   ],
+   "iteration_only": false,
+   "bold_seen": false,
+   "first_line": 475,
+   "n_occurrences": 1,
+   "first_section": "subsection Planning--Operation Decomposition Architecture"
+  },
+  "N^{I}": {
+   "key": "N^{I}",
+   "category": "symbol",
+   "lines": [
+    1424,
+    1441
+   ],
+   "raw_forms": [
+    "N^{I}"
+   ],
+   "iteration_only": false,
+   "bold_seen": false,
+   "first_line": 1424,
+   "n_occurrences": 2,
+   "first_section": "subsection Updated Algorithm"
+  },
+  "Omega_{C}": {
+   "key": "Omega_{C}",
+   "category": "symbol",
+   "lines": [
+    336,
+    374,
+    559,
+    639
+   ],
+   "raw_forms": [
+    "Omega_{C}"
+   ],
+   "iteration_only": false,
+   "bold_seen": false,
+   "first_line": 336,
+   "n_occurrences": 4,
+   "first_section": "subsection Planning--Operation Decomposition Architecture"
+  },
+  "Omega_{M}": {
+   "key": "Omega_{M}",
+   "category": "symbol",
+   "lines": [
+    402,
+    476
+   ],
+   "raw_forms": [
+    "Omega_{M}"
+   ],
+   "iteration_only": false,
+   "bold_seen": false,
+   "first_line": 402,
+   "n_occurrences": 2,
+   "first_section": "subsection Planning--Operation Decomposition Architecture"
+  },
+  "Omega_{O}": {
+   "key": "Omega_{O}",
+   "category": "symbol",
+   "lines": [
+    352,
+    353,
+    376,
+    402,
+    477,
+    733
+   ],
+   "raw_forms": [
+    "Omega_{O}"
+   ],
+   "iteration_only": false,
+   "bold_seen": false,
+   "first_line": 352,
+   "n_occurrences": 7,
+   "first_section": "subsection Planning--Operation Decomposition Architecture"
+  },
+  "P^{E}": {
+   "key": "P^{E}",
+   "category": "symbol",
+   "lines": [
+    1516,
+    1518,
+    1545,
+    1558,
+    1559,
+    1560,
+    1580
+   ],
+   "raw_forms": [
+    "P^{E^k}_{e, y, d, t}",
+    "P^{E^k}_{e,t}",
+    "P^{E^k}_{e,y,d,t}",
+    "P^{E^{k+1}}_{e,y,d,t}"
+   ],
+   "iteration_only": false,
+   "bold_seen": false,
+   "first_line": 1516,
+   "n_occurrences": 7,
+   "first_section": "subsection ADMM Implementation"
+  },
+  "P^{G,max}": {
+   "key": "P^{G,max}",
+   "category": "symbol",
+   "lines": [
+    1771
+   ],
+   "raw_forms": [
+    "P^{G,\\text{max}}_{g}"
+   ],
+   "iteration_only": false,
+   "bold_seen": false,
+   "first_line": 1771,
+   "n_occurrences": 1,
+   "first_section": "Appendix: section Distribution Networks"
+  },
+  "P^{G,min}": {
+   "key": "P^{G,min}",
+   "category": "symbol",
+   "lines": [
+    1771
+   ],
+   "raw_forms": [
+    "P^{G,\\text{min}}_{g}"
+   ],
+   "iteration_only": false,
+   "bold_seen": false,
+   "first_line": 1771,
+   "n_occurrences": 1,
+   "first_section": "Appendix: section Distribution Networks"
+  },
+  "P^{I}": {
+   "key": "P^{I}",
+   "category": "symbol",
+   "lines": [
+    1432
+   ],
+   "raw_forms": [
+    "P^{I,0}_{i,t}"
+   ],
+   "iteration_only": false,
+   "bold_seen": false,
+   "first_line": 1432,
+   "n_occurrences": 1,
+   "first_section": "subsection Updated Algorithm"
+  },
+  "P^{Net}": {
+   "key": "P^{Net}",
+   "category": "symbol",
+   "lines": [
+    878,
+    883
+   ],
+   "raw_forms": [
+    "P^{\\text{Net}}_{e,y,d,t}"
+   ],
+   "iteration_only": false,
+   "bold_seen": false,
+   "first_line": 878,
+   "n_occurrences": 2,
+   "first_section": "subsubsection Shared ESS Mathematical Formulation"
+  },
+  "Phi": {
+   "key": "Phi",
+   "category": "symbol",
+   "lines": [
+    479
+   ],
+   "raw_forms": [
+    "Phi_{y,d,m,o}"
+   ],
+   "iteration_only": false,
+   "bold_seen": false,
+   "first_line": 479,
+   "n_occurrences": 1,
+   "first_section": "subsection Planning--Operation Decomposition Architecture"
+  },
+  "Q": {
+   "key": "Q",
+   "category": "symbol",
+   "lines": [
+    339,
+    352
+   ],
+   "raw_forms": [
+    "Q"
+   ],
+   "iteration_only": false,
+   "bold_seen": false,
+   "first_line": 339,
+   "n_occurrences": 2,
+   "first_section": "subsection Planning--Operation Decomposition Architecture"
+  },
+  "Q^{E}": {
+   "key": "Q^{E}",
+   "category": "symbol",
+   "lines": [
+    1517,
+    1518,
+    1545,
+    1564,
+    1565,
+    1566,
+    1589
+   ],
+   "raw_forms": [
+    "Q^{E^k}_{e, y, d, t}",
+    "Q^{E^k}_{e,t}",
+    "Q^{E^k}_{e,y,d,t}",
+    "Q^{E^{k+1}}_{e,y,d,t}"
+   ],
+   "iteration_only": false,
+   "bold_seen": false,
+   "first_line": 1517,
+   "n_occurrences": 7,
+   "first_section": "subsection ADMM Implementation"
+  },
+  "Q^{G,max}": {
+   "key": "Q^{G,max}",
+   "category": "symbol",
+   "lines": [
+    1771
+   ],
+   "raw_forms": [
+    "Q^{G,\\text{max}}_{g}"
+   ],
+   "iteration_only": false,
+   "bold_seen": false,
+   "first_line": 1771,
+   "n_occurrences": 1,
+   "first_section": "Appendix: section Distribution Networks"
+  },
+  "Q^{G,min}": {
+   "key": "Q^{G,min}",
+   "category": "symbol",
+   "lines": [
+    1771
+   ],
+   "raw_forms": [
+    "Q^{G,\\text{min}}_{g}"
+   ],
+   "iteration_only": false,
+   "bold_seen": false,
+   "first_line": 1771,
+   "n_occurrences": 1,
+   "first_section": "Appendix: section Distribution Networks"
+  },
+  "Q^{I}": {
+   "key": "Q^{I}",
+   "category": "symbol",
+   "lines": [
+    1432
+   ],
+   "raw_forms": [
+    "Q^{I,0}_{i,t}"
+   ],
+   "iteration_only": false,
+   "bold_seen": false,
+   "first_line": 1432,
+   "n_occurrences": 1,
+   "first_section": "subsection Updated Algorithm"
+  },
+  "Q^{Net}": {
+   "key": "Q^{Net}",
+   "category": "symbol",
+   "lines": [
+    879,
+    883
+   ],
+   "raw_forms": [
+    "Q^{\\text{Net}}_{e,y,d,t}"
+   ],
+   "iteration_only": false,
+   "bold_seen": false,
+   "first_line": 879,
+   "n_occurrences": 2,
+   "first_section": "subsubsection Shared ESS Mathematical Formulation"
+  },
+  "S^{Av,Unit}": {
+   "key": "S^{Av,Unit}",
+   "category": "symbol",
+   "lines": [
+    779,
+    788
+   ],
+   "raw_forms": [
+    "S^{\\text{Av,Unit}}_{e,y^\\text{Inv},y}"
+   ],
+   "iteration_only": false,
+   "bold_seen": false,
+   "first_line": 779,
+   "n_occurrences": 2,
+   "first_section": "subsubsection Shared ESS Mathematical Formulation"
+  },
+  "S^{Ch}": {
+   "key": "S^{Ch}",
+   "category": "symbol",
+   "lines": [
+    810,
+    820,
+    847,
+    854,
+    867
+   ],
+   "raw_forms": [
+    "S^{\\text{Ch}}_{e,y^\\text{Inv},y,d,t}"
+   ],
+   "iteration_only": false,
+   "bold_seen": false,
+   "first_line": 810,
+   "n_occurrences": 5,
+   "first_section": "subsubsection Shared ESS Mathematical Formulation"
+  },
+  "S^{Dch}": {
+   "key": "S^{Dch}",
+   "category": "symbol",
+   "lines": [
+    812,
+    820,
+    847,
+    854,
+    869
+   ],
+   "raw_forms": [
+    "S^{\\text{Dch}}_{e,y^\\text{Inv},y,d,t}"
+   ],
+   "iteration_only": false,
+   "bold_seen": false,
+   "first_line": 812,
+   "n_occurrences": 5,
+   "first_section": "subsubsection Shared ESS Mathematical Formulation"
+  },
+  "S^{Down}": {
+   "key": "S^{Down}",
+   "category": "symbol",
+   "lines": [
+    740,
+    750,
+    892
+   ],
+   "raw_forms": [
+    "S^{\\text{Down}}_{e,y}"
+   ],
+   "iteration_only": false,
+   "bold_seen": false,
+   "first_line": 740,
+   "n_occurrences": 3,
+   "first_section": "subsubsection Shared ESS Mathematical Formulation"
+  },
+  "S^{Inv}": {
+   "key": "S^{Inv}",
+   "category": "symbol",
+   "lines": [
+    407,
+    430,
+    563,
+    576,
+    585,
+    599,
+    620,
+    622,
+    642,
+    658,
+    692,
+    709,
+    740,
+    755,
+    1085,
+    1304,
+    1307,
+    1344
+   ],
+   "raw_forms": [
+    "S^{\\mathrm{Inv}(l)}_{e,y}",
+    "S^{\\mathrm{Inv}}_{e,y}",
+    "S^{\\text{Inv}(k)}_{e,y}",
+    "S^{\\text{Inv}(l)}_{e,y^\\text{Inv}}",
+    "S^{\\text{Inv}(l)}_{e,y}",
+    "S^{\\text{Inv}}_{e,y^\\text{Inv}}",
+    "S^{\\text{Inv}}_{e,y}"
+   ],
+   "iteration_only": false,
+   "bold_seen": false,
+   "first_line": 407,
+   "n_occurrences": 20,
+   "first_section": "subsection Planning--Operation Decomposition Architecture"
+  },
+  "S^{Net}": {
+   "key": "S^{Net}",
+   "category": "symbol",
+   "lines": [
+    864,
+    877
+   ],
+   "raw_forms": [
+    "S^{\\text{Net}}_{e,y,d,t}"
+   ],
+   "iteration_only": false,
+   "bold_seen": false,
+   "first_line": 864,
+   "n_occurrences": 2,
+   "first_section": "subsubsection Shared ESS Mathematical Formulation"
+  },
+  "S^{Rated,Unit}": {
+   "key": "S^{Rated,Unit}",
+   "category": "symbol",
+   "lines": [
+    755,
+    764,
+    769,
+    779
+   ],
+   "raw_forms": [
+    "S^{\\text{Rated,Unit}}_{e,y^\\text{Inv},y}"
+   ],
+   "iteration_only": false,
+   "bold_seen": false,
+   "first_line": 755,
+   "n_occurrences": 4,
+   "first_section": "subsubsection Shared ESS Mathematical Formulation"
+  },
+  "S^{Rated}": {
+   "key": "S^{Rated}",
+   "category": "symbol",
+   "lines": [
+    408,
+    494,
+    585,
+    598,
+    769,
+    1559,
+    1560,
+    1565,
+    1566,
+    1712,
+    1713
+   ],
+   "raw_forms": [
+    "S^{\\mathrm{Rated}}_{e,y}",
+    "S^{\\text{Rated}(l)}_{e,y}",
+    "S^{\\text{Rated}}_{e,y}",
+    "S^{\\text{Rated}}_{ij}"
+   ],
+   "iteration_only": false,
+   "bold_seen": false,
+   "first_line": 408,
+   "n_occurrences": 11,
+   "first_section": "subsection Planning--Operation Decomposition Architecture"
+  },
+  "S^{S,Comp}": {
+   "key": "S^{S,Comp}",
+   "category": "symbol",
+   "lines": [
+    854,
+    859,
+    897
+   ],
+   "raw_forms": [
+    "S^{\\text{S,Comp}}_{e,y^\\text{Inv},y,d,t}"
+   ],
+   "iteration_only": false,
+   "bold_seen": false,
+   "first_line": 854,
+   "n_occurrences": 3,
+   "first_section": "subsubsection Shared ESS Mathematical Formulation"
+  },
+  "S^{Up}": {
+   "key": "S^{Up}",
+   "category": "symbol",
+   "lines": [
+    740,
+    750,
+    891
+   ],
+   "raw_forms": [
+    "S^{\\text{Up}}_{e,y}"
+   ],
+   "iteration_only": false,
+   "bold_seen": false,
+   "first_line": 740,
+   "n_occurrences": 3,
+   "first_section": "subsubsection Shared ESS Mathematical Formulation"
+  },
+  "SoH": {
+   "key": "SoH",
+   "category": "symbol",
+   "lines": [
+    366,
+    783,
+    789,
+    827,
+    833,
+    838
+   ],
+   "raw_forms": [
+    "SoH_{e,y^\\text{Inv},y - 1}",
+    "SoH_{e,y^\\text{Inv},y^\\text{End}}",
+    "SoH_{e,y^\\text{Inv},y^\\text{Inv}-1}",
+    "SoH_{e,y^\\text{Inv},y}"
+   ],
+   "iteration_only": false,
+   "bold_seen": false,
+   "first_line": 366,
+   "n_occurrences": 7,
+   "first_section": "subsection Planning--Operation Decomposition Architecture"
+  },
+  "SoH^{min}": {
+   "key": "SoH^{min}",
+   "category": "symbol",
+   "lines": [
+    838,
+    842
+   ],
+   "raw_forms": [
+    "SoH^{\\text{min}}_{e,y^\\text{Inv}}"
+   ],
+   "iteration_only": false,
+   "bold_seen": false,
+   "first_line": 838,
+   "n_occurrences": 2,
+   "first_section": "subsubsection Shared ESS Mathematical Formulation"
+  },
+  "T": {
+   "key": "T",
+   "category": "symbol",
+   "lines": [
+    807,
+    844,
+    861,
+    874,
+    896,
+    1516,
+    1517,
+    1531,
+    1545,
+    1547,
+    1573
+   ],
+   "raw_forms": [
+    "T"
+   ],
+   "iteration_only": false,
+   "bold_seen": false,
+   "first_line": 807,
+   "n_occurrences": 11,
+   "first_section": "subsubsection Shared ESS Mathematical Formulation"
+  },
+  "T^{Cal}": {
+   "key": "T^{Cal}",
+   "category": "symbol",
+   "lines": [
+    365,
+    585,
+    591,
+    600,
+    752,
+    769,
+    773,
+    776,
+    792,
+    803,
+    824,
+    835,
+    844,
+    865
+   ],
+   "raw_forms": [
+    "T^{\\text{Cal}}_{e,y^\\text{Inv}}",
+    "T^{\\text{Cal}}_{e,y}"
+   ],
+   "iteration_only": false,
+   "bold_seen": false,
+   "first_line": 365,
+   "n_occurrences": 14,
+   "first_section": "subsection Planning--Operation Decomposition Architecture"
+  },
+  "T^{Rem}": {
+   "key": "T^{Rem}",
+   "category": "symbol",
+   "lines": [
+    365
+   ],
+   "raw_forms": [
+    "T^{\\text{Rem}}_{e,y^\\text{Inv}}"
+   ],
+   "iteration_only": false,
+   "bold_seen": false,
+   "first_line": 365,
+   "n_occurrences": 1,
+   "first_section": "subsection Planning--Operation Decomposition Architecture"
+  },
+  "UB": {
+   "key": "UB",
+   "category": "symbol",
+   "lines": [
+    436,
+    510,
+    511,
+    525,
+    526,
+    531
+   ],
+   "raw_forms": [
+    "UB^{0}",
+    "UB^{\\ell-1}",
+    "UB^{\\ell}"
+   ],
+   "iteration_only": true,
+   "bold_seen": false,
+   "first_line": 436,
+   "n_occurrences": 6,
+   "first_section": "subsection Planning--Operation Decomposition Architecture"
+  },
+  "V": {
+   "key": "V",
+   "category": "symbol",
+   "lines": [
+    1426
+   ],
+   "raw_forms": [
+    "V_{i,t}"
+   ],
+   "iteration_only": false,
+   "bold_seen": false,
+   "first_line": 1426,
+   "n_occurrences": 1,
+   "first_section": "subsection Updated Algorithm"
+  },
+  "V^{Base}": {
+   "key": "V^{Base}",
+   "category": "symbol",
+   "lines": [
+    1677,
+    1678
+   ],
+   "raw_forms": [
+    "V^{\\text{Base}}_{i}"
+   ],
+   "iteration_only": false,
+   "bold_seen": false,
+   "first_line": 1677,
+   "n_occurrences": 2,
+   "first_section": "Appendix: section Distribution Networks"
+  },
+  "V^{I}": {
+   "key": "V^{I}",
+   "category": "symbol",
+   "lines": [
+    1432
+   ],
+   "raw_forms": [
+    "V^{I,0}_{i,t}"
+   ],
+   "iteration_only": false,
+   "bold_seen": false,
+   "first_line": 1432,
+   "n_occurrences": 1,
+   "first_section": "subsection Updated Algorithm"
+  },
+  "V^{S}": {
+   "key": "V^{S}",
+   "category": "symbol",
+   "lines": [
+    1771
+   ],
+   "raw_forms": [
+    "V^{S}_{g}"
+   ],
+   "iteration_only": false,
+   "bold_seen": false,
+   "first_line": 1771,
+   "n_occurrences": 1,
+   "first_section": "Appendix: section Distribution Networks"
+  },
+  "V^{max}": {
+   "key": "V^{max}",
+   "category": "symbol",
+   "lines": [
+    1677,
+    1678
+   ],
+   "raw_forms": [
+    "V^{\\text{max}}_{i}"
+   ],
+   "iteration_only": false,
+   "bold_seen": false,
+   "first_line": 1677,
+   "n_occurrences": 2,
+   "first_section": "Appendix: section Distribution Networks"
+  },
+  "V^{min}": {
+   "key": "V^{min}",
+   "category": "symbol",
+   "lines": [
+    1677,
+    1678
+   ],
+   "raw_forms": [
+    "V^{\\text{min}}_{i}"
+   ],
+   "iteration_only": false,
+   "bold_seen": false,
+   "first_line": 1677,
+   "n_occurrences": 2,
+   "first_section": "Appendix: section Distribution Networks"
+  },
+  "W": {
+   "key": "W",
+   "category": "symbol",
+   "lines": [
+    475
+   ],
+   "raw_forms": [
+    "W_{d}"
+   ],
+   "iteration_only": false,
+   "bold_seen": false,
+   "first_line": 475,
+   "n_occurrences": 1,
+   "first_section": "subsection Planning--Operation Decomposition Architecture"
+  },
+  "X": {
+   "key": "X",
+   "category": "symbol",
+   "lines": [
+    1515,
+    1518,
+    1533,
+    1537
+   ],
+   "raw_forms": [
+    "X"
+   ],
+   "iteration_only": false,
+   "bold_seen": false,
+   "first_line": 1515,
+   "n_occurrences": 4,
+   "first_section": "subsection ADMM Implementation"
+  },
+  "Y": {
+   "key": "Y",
+   "category": "symbol",
+   "lines": [
+    363,
+    558,
+    581,
+    605,
+    616,
+    639,
+    691,
+    694,
+    708,
+    711,
+    737,
+    752,
+    766,
+    776,
+    792,
+    803,
+    824,
+    827,
+    832,
+    835,
+    844,
+    861,
+    874,
+    889,
+    896,
+    1516,
+    1517,
+    1529,
+    1545,
+    1547,
+    1573
+   ],
+   "raw_forms": [
+    "Y",
+    "Y_{y}"
+   ],
+   "iteration_only": false,
+   "bold_seen": false,
+   "first_line": 363,
+   "n_occurrences": 32,
+   "first_section": "subsection Planning--Operation Decomposition Architecture"
+  },
+  "alpha": {
+   "key": "alpha",
+   "category": "symbol",
+   "lines": [
+    414,
+    416,
+    488,
+    569,
+    577,
+    689,
+    718
+   ],
+   "raw_forms": [
+    "alpha",
+    "alpha^{(l)}"
+   ],
+   "iteration_only": true,
+   "bold_seen": false,
+   "first_line": 414,
+   "n_occurrences": 7,
+   "first_section": "subsection Planning--Operation Decomposition Architecture"
+  },
+  "alpha^{Down}": {
+   "key": "alpha^{Down}",
+   "category": "symbol",
+   "lines": [
+    718,
+    722
+   ],
+   "raw_forms": [
+    "alpha^{\\text{Down}}"
+   ],
+   "iteration_only": false,
+   "bold_seen": false,
+   "first_line": 718,
+   "n_occurrences": 2,
+   "first_section": "subsubsection Benders' Cuts"
+  },
+  "b": {
+   "key": "b",
+   "category": "symbol",
+   "lines": [
+    1677,
+    1678
+   ],
+   "raw_forms": [
+    "b_{i}"
+   ],
+   "iteration_only": false,
+   "bold_seen": false,
+   "first_line": 1677,
+   "n_occurrences": 2,
+   "first_section": "Appendix: section Distribution Networks"
+  },
+  "b^{Sh}": {
+   "key": "b^{Sh}",
+   "category": "symbol",
+   "lines": [
+    1712,
+    1713
+   ],
+   "raw_forms": [
+    "b^{\\text{Sh}}_{ij}"
+   ],
+   "iteration_only": false,
+   "bold_seen": false,
+   "first_line": 1712,
+   "n_occurrences": 2,
+   "first_section": "Appendix: section Distribution Networks"
+  },
+  "c": {
+   "key": "c",
+   "category": "index",
+   "lines": [
+    336,
+    337,
+    375,
+    427,
+    428,
+    430,
+    432,
+    559,
+    560,
+    562,
+    565,
+    575,
+    621,
+    639,
+    640,
+    642,
+    644,
+    956,
+    960
+   ],
+   "raw_forms": [
+    "c"
+   ],
+   "iteration_only": false,
+   "bold_seen": false,
+   "first_line": 336,
+   "n_occurrences": 22,
+   "first_section": "subsection Planning--Operation Decomposition Architecture"
+  },
+  "c^{E}": {
+   "key": "c^{E}",
+   "category": "symbol",
+   "lines": [
+    432
+   ],
+   "raw_forms": [
+    "c^{E}_{y,c}"
+   ],
+   "iteration_only": false,
+   "bold_seen": false,
+   "first_line": 432,
+   "n_occurrences": 1,
+   "first_section": "subsection Planning--Operation Decomposition Architecture"
+  },
+  "c^{Inv,E}": {
+   "key": "c^{Inv,E}",
+   "category": "symbol",
+   "lines": [
+    565,
+    575,
+    644,
+    960
+   ],
+   "raw_forms": [
+    "c^{\\mathrm{Inv,E}}_{y,c}",
+    "c^{\\text{Inv,E}}_{y,c}"
+   ],
+   "iteration_only": false,
+   "bold_seen": false,
+   "first_line": 565,
+   "n_occurrences": 4,
+   "first_section": "subsubsection Objective Function"
+  },
+  "c^{Inv,S}": {
+   "key": "c^{Inv,S}",
+   "category": "symbol",
+   "lines": [
+    562,
+    575,
+    642,
+    956
+   ],
+   "raw_forms": [
+    "c^{\\mathrm{Inv,S}}_{y,c}",
+    "c^{\\text{Inv,S}}_{y,c}"
+   ],
+   "iteration_only": false,
+   "bold_seen": false,
+   "first_line": 562,
+   "n_occurrences": 4,
+   "first_section": "subsubsection Objective Function"
+  },
+  "c^{Inv}": {
+   "key": "c^{Inv}",
+   "category": "symbol",
+   "lines": [
+    646,
+    650
+   ],
+   "raw_forms": [
+    "c^{\\text{Inv}}"
+   ],
+   "iteration_only": false,
+   "bold_seen": false,
+   "first_line": 646,
+   "n_occurrences": 2,
+   "first_section": "subsubsection Expected Discounted Investment-Expenditure Limit"
+  },
+  "c^{S}": {
+   "key": "c^{S}",
+   "category": "symbol",
+   "lines": [
+    430
+   ],
+   "raw_forms": [
+    "c^{S}_{y,c}"
+   ],
+   "iteration_only": false,
+   "bold_seen": false,
+   "first_line": 430,
+   "n_occurrences": 1,
+   "first_section": "subsection Planning--Operation Decomposition Architecture"
+  },
+  "cal(C)": {
+   "key": "cal(C)",
+   "category": "symbol",
+   "lines": [
+    402,
+    427
+   ],
+   "raw_forms": [
+    "cal(C)"
+   ],
+   "iteration_only": false,
+   "bold_seen": false,
+   "first_line": 402,
+   "n_occurrences": 2,
+   "first_section": "subsection Planning--Operation Decomposition Architecture"
+  },
+  "cal(D)": {
+   "key": "cal(D)",
+   "category": "symbol",
+   "lines": [
+    402,
+    443,
+    474
+   ],
+   "raw_forms": [
+    "cal(D)"
+   ],
+   "iteration_only": false,
+   "bold_seen": false,
+   "first_line": 402,
+   "n_occurrences": 3,
+   "first_section": "subsection Planning--Operation Decomposition Architecture"
+  },
+  "cal(E)": {
+   "key": "cal(E)",
+   "category": "symbol",
+   "lines": [
+    402,
+    425
+   ],
+   "raw_forms": [
+    "cal(E)"
+   ],
+   "iteration_only": false,
+   "bold_seen": false,
+   "first_line": 402,
+   "n_occurrences": 2,
+   "first_section": "subsection Planning--Operation Decomposition Architecture"
+  },
+  "cal(L)^{E,P}": {
+   "key": "cal(L)^{E,P}",
+   "category": "symbol",
+   "lines": [
+    1516,
+    1541,
+    1558
+   ],
+   "raw_forms": [
+    "cal(L)^{E,P}"
+   ],
+   "iteration_only": false,
+   "bold_seen": false,
+   "first_line": 1516,
+   "n_occurrences": 3,
+   "first_section": "subsection ADMM Implementation"
+  },
+  "cal(L)^{E,Q}": {
+   "key": "cal(L)^{E,Q}",
+   "category": "symbol",
+   "lines": [
+    1517,
+    1541,
+    1564
+   ],
+   "raw_forms": [
+    "cal(L)^{E,Q}"
+   ],
+   "iteration_only": false,
+   "bold_seen": false,
+   "first_line": 1517,
+   "n_occurrences": 3,
+   "first_section": "subsection ADMM Implementation"
+  },
+  "cal(U)": {
+   "key": "cal(U)",
+   "category": "symbol",
+   "lines": [
+    353
+   ],
+   "raw_forms": [
+    "cal(U)_{o}"
+   ],
+   "iteration_only": false,
+   "bold_seen": false,
+   "first_line": 353,
+   "n_occurrences": 1,
+   "first_section": "subsection Planning--Operation Decomposition Architecture"
+  },
+  "cal(X)": {
+   "key": "cal(X)",
+   "category": "symbol",
+   "lines": [
+    334
+   ],
+   "raw_forms": [
+    "cal(X)"
+   ],
+   "iteration_only": false,
+   "bold_seen": false,
+   "first_line": 334,
+   "n_occurrences": 1,
+   "first_section": "subsection Planning--Operation Decomposition Architecture"
+  },
+  "cal(Y)": {
+   "key": "cal(Y)",
+   "category": "symbol",
+   "lines": [
+    402,
+    426,
+    443,
+    473
+   ],
+   "raw_forms": [
+    "cal(Y)"
+   ],
+   "iteration_only": false,
+   "bold_seen": false,
+   "first_line": 402,
+   "n_occurrences": 4,
+   "first_section": "subsection Planning--Operation Decomposition Architecture"
+  },
+  "d": {
+   "key": "d",
+   "category": "index",
+   "lines": [
+    443,
+    474,
+    475,
+    479,
+    807,
+    808,
+    810,
+    812,
+    818,
+    820,
+    821,
+    844,
+    847,
+    854,
+    859,
+    861,
+    864,
+    867,
+    869,
+    874,
+    877,
+    878,
+    879,
+    883,
+    896,
+    897,
+    1516,
+    1517,
+    1545,
+    1546,
+    1547,
+    1558,
+    1559,
+    1560,
+    1564,
+    1565,
+    1566,
+    1573,
+    1576,
+    1577,
+    1580,
+    1585,
+    1586,
+    1589,
+    1594
+   ],
+   "raw_forms": [
+    "d"
+   ],
+   "iteration_only": false,
+   "bold_seen": false,
+   "first_line": 443,
+   "n_occurrences": 75,
+   "first_section": "subsection Planning--Operation Decomposition Architecture"
+  },
+  "delta": {
+   "key": "delta",
+   "category": "symbol",
+   "lines": [
+    795,
+    827
+   ],
+   "raw_forms": [
+    "delta_{e,y^\\text{Inv},y}"
+   ],
+   "iteration_only": false,
+   "bold_seen": false,
+   "first_line": 795,
+   "n_occurrences": 2,
+   "first_section": "subsubsection Shared ESS Mathematical Formulation"
+  },
+  "e": {
+   "key": "e",
+   "category": "index",
+   "lines": [
+    363,
+    364,
+    365,
+    366,
+    407,
+    408,
+    425,
+    430,
+    432,
+    483,
+    491,
+    492,
+    494,
+    496,
+    499,
+    500,
+    502,
+    504,
+    557,
+    563,
+    566,
+    576,
+    581,
+    585,
+    591,
+    598,
+    599,
+    600,
+    605,
+    608,
+    612,
+    616,
+    620,
+    621,
+    622,
+    628,
+    639,
+    642,
+    644,
+    658,
+    691,
+    692,
+    694,
+    695,
+    701,
+    708,
+    709,
+    711,
+    712,
+    737,
+    740,
+    744,
+    749,
+    750,
+    752,
+    755,
+    759,
+    764,
+    766,
+    769,
+    773,
+    776,
+    779,
+    783,
+    788,
+    789,
+    792,
+    795,
+    796,
+    797,
+    801,
+    803,
+    806,
+    810,
+    812,
+    820,
+    824,
+    827,
+    833,
+    835,
+    838,
+    842,
+    844,
+    847,
+    854,
+    859,
+    861,
+    864,
+    865,
+    867,
+    869,
+    874,
+    877,
+    878,
+    879,
+    883,
+    889,
+    891,
+    892,
+    893,
+    894,
+    896,
+    897,
+    1085,
+    1089,
+    1117,
+    1304,
+    1305,
+    1307,
+    1308,
+    1325,
+    1328,
+    1344,
+    1345,
+    1361,
+    1516,
+    1517,
+    1518,
+    1545,
+    1546,
+    1547,
+    1558,
+    1559,
+    1560,
+    1564,
+    1565,
+    1566,
+    1573,
+    1576,
+    1577,
+    1580,
+    1585,
+    1586,
+    1589,
+    1594
+   ],
+   "raw_forms": [
+    "e"
+   ],
+   "iteration_only": false,
+   "bold_seen": false,
+   "first_line": 363,
+   "n_occurrences": 234,
+   "first_section": "subsection Planning--Operation Decomposition Architecture"
+  },
+  "ell": {
+   "key": "ell",
+   "category": "index",
+   "lines": [
+    436,
+    439,
+    535
+   ],
+   "raw_forms": [
+    "ell"
+   ],
+   "iteration_only": false,
+   "bold_seen": false,
+   "first_line": 436,
+   "n_occurrences": 4,
+   "first_section": "subsection Planning--Operation Decomposition Architecture"
+  },
+  "ell^{max}": {
+   "key": "ell^{max}",
+   "category": "symbol",
+   "lines": [
+    439
+   ],
+   "raw_forms": [
+    "ell^{\\max}"
+   ],
+   "iteration_only": false,
+   "bold_seen": false,
+   "first_line": 439,
+   "n_occurrences": 1,
+   "first_section": "subsection Planning--Operation Decomposition Architecture"
+  },
+  "epsilon^{abs}": {
+   "key": "epsilon^{abs}",
+   "category": "symbol",
+   "lines": [
+    531
+   ],
+   "raw_forms": [
+    "epsilon^{\\mathrm{abs}}"
+   ],
+   "iteration_only": false,
+   "bold_seen": false,
+   "first_line": 531,
+   "n_occurrences": 1,
+   "first_section": "subsection Planning--Operation Decomposition Architecture"
+  },
+  "epsilon^{rel}": {
+   "key": "epsilon^{rel}",
+   "category": "symbol",
+   "lines": [
+    529
+   ],
+   "raw_forms": [
+    "epsilon^{\\mathrm{rel}}"
+   ],
+   "iteration_only": false,
+   "bold_seen": false,
+   "first_line": 529,
+   "n_occurrences": 1,
+   "first_section": "subsection Planning--Operation Decomposition Architecture"
+  },
+  "f": {
+   "key": "f",
+   "category": "symbol",
+   "lines": [
+    1515,
+    1537
+   ],
+   "raw_forms": [
+    "f"
+   ],
+   "iteration_only": false,
+   "bold_seen": false,
+   "first_line": 1515,
+   "n_occurrences": 2,
+   "first_section": "subsection ADMM Implementation"
+  },
+  "g": {
+   "key": "g",
+   "category": "symbol",
+   "lines": [
+    1677,
+    1678,
+    1771
+   ],
+   "raw_forms": [
+    "g",
+    "g_{i}"
+   ],
+   "iteration_only": false,
+   "bold_seen": false,
+   "first_line": 1677,
+   "n_occurrences": 7,
+   "first_section": "Appendix: section Distribution Networks"
+  },
+  "g^{E}": {
+   "key": "g^{E}",
+   "category": "symbol",
+   "lines": [
+    483,
+    500
+   ],
+   "raw_forms": [
+    "g^{E,\\ell}_{e,y}"
+   ],
+   "iteration_only": false,
+   "bold_seen": false,
+   "first_line": 483,
+   "n_occurrences": 2,
+   "first_section": "subsection Planning--Operation Decomposition Architecture"
+  },
+  "g^{S}": {
+   "key": "g^{S}",
+   "category": "symbol",
+   "lines": [
+    483,
+    492
+   ],
+   "raw_forms": [
+    "g^{S,\\ell}_{e,y}"
+   ],
+   "iteration_only": false,
+   "bold_seen": false,
+   "first_line": 483,
+   "n_occurrences": 2,
+   "first_section": "subsection Planning--Operation Decomposition Architecture"
+  },
+  "gamma": {
+   "key": "gamma",
+   "category": "symbol",
+   "lines": [
+    428,
+    475
+   ],
+   "raw_forms": [
+    "gamma_{y}"
+   ],
+   "iteration_only": false,
+   "bold_seen": false,
+   "first_line": 428,
+   "n_occurrences": 2,
+   "first_section": "subsection Planning--Operation Decomposition Architecture"
+  },
+  "gap": {
+   "key": "gap",
+   "category": "symbol",
+   "lines": [
+    524,
+    529
+   ],
+   "raw_forms": [
+    "gap^{\\ell}"
+   ],
+   "iteration_only": true,
+   "bold_seen": false,
+   "first_line": 524,
+   "n_occurrences": 2,
+   "first_section": "subsection Planning--Operation Decomposition Architecture"
+  },
+  "h": {
+   "key": "h",
+   "category": "symbol",
+   "lines": [
+    1518,
+    1551
+   ],
+   "raw_forms": [
+    "h"
+   ],
+   "iteration_only": false,
+   "bold_seen": false,
+   "first_line": 1518,
+   "n_occurrences": 2,
+   "first_section": "subsection ADMM Implementation"
+  },
+  "hat(E)^{Inv}": {
+   "key": "hat(E)^{Inv}",
+   "category": "symbol",
+   "lines": [
+    744,
+    749
+   ],
+   "raw_forms": [
+    "hat(E)^{\\text{Inv}}_{e,y}"
+   ],
+   "iteration_only": false,
+   "bold_seen": false,
+   "first_line": 744,
+   "n_occurrences": 2,
+   "first_section": "subsubsection Shared ESS Mathematical Formulation"
+  },
+  "hat(E)^{Rated}": {
+   "key": "hat(E)^{Rated}",
+   "category": "symbol",
+   "lines": [
+    504
+   ],
+   "raw_forms": [
+    "hat(E)^{\\mathrm{Rated},\\ell}_{e,y}"
+   ],
+   "iteration_only": false,
+   "bold_seen": false,
+   "first_line": 504,
+   "n_occurrences": 1,
+   "first_section": "subsection Planning--Operation Decomposition Architecture"
+  },
+  "hat(P)^{E}": {
+   "key": "hat(P)^{E}",
+   "category": "symbol",
+   "lines": [
+    1446,
+    1468,
+    1486,
+    1516,
+    1546,
+    1558,
+    1559,
+    1560,
+    1580
+   ],
+   "raw_forms": [
+    "hat(P)^{E^k}_{e, y, d, t}",
+    "hat(P)^{E^k}_{e,y,d,t}",
+    "hat(P)^{E^k}_{i,t}",
+    "hat(P)^{E^{k+1}}_{e,y,d,t}"
+   ],
+   "iteration_only": false,
+   "bold_seen": false,
+   "first_line": 1446,
+   "n_occurrences": 9,
+   "first_section": "subsection Updated Algorithm"
+  },
+  "hat(P)^{I}": {
+   "key": "hat(P)^{I}",
+   "category": "symbol",
+   "lines": [
+    1444,
+    1466
+   ],
+   "raw_forms": [
+    "hat(P)^{I^k}_{i,t}"
+   ],
+   "iteration_only": false,
+   "bold_seen": false,
+   "first_line": 1444,
+   "n_occurrences": 2,
+   "first_section": "subsection Updated Algorithm"
+  },
+  "hat(Q)": {
+   "key": "hat(Q)",
+   "category": "symbol",
+   "lines": [
+    472,
+    489,
+    512
+   ],
+   "raw_forms": [
+    "hat(Q)^{\\ell}"
+   ],
+   "iteration_only": true,
+   "bold_seen": false,
+   "first_line": 472,
+   "n_occurrences": 3,
+   "first_section": "subsection Planning--Operation Decomposition Architecture"
+  },
+  "hat(Q)^{E}": {
+   "key": "hat(Q)^{E}",
+   "category": "symbol",
+   "lines": [
+    1447,
+    1469,
+    1487,
+    1517,
+    1546,
+    1564,
+    1565,
+    1566,
+    1589
+   ],
+   "raw_forms": [
+    "hat(Q)^{E^k}_{e, y, d, t}",
+    "hat(Q)^{E^k}_{e,y,d,t}",
+    "hat(Q)^{E^k}_{i,t}",
+    "hat(Q)^{E^{k+1}}_{e,y,d,t}"
+   ],
+   "iteration_only": false,
+   "bold_seen": false,
+   "first_line": 1447,
+   "n_occurrences": 9,
+   "first_section": "subsection Updated Algorithm"
+  },
+  "hat(Q)^{I}": {
+   "key": "hat(Q)^{I}",
+   "category": "symbol",
+   "lines": [
+    1445,
+    1467
+   ],
+   "raw_forms": [
+    "hat(Q)^{I^k}_{i,t}"
+   ],
+   "iteration_only": false,
+   "bold_seen": false,
+   "first_line": 1445,
+   "n_occurrences": 2,
+   "first_section": "subsection Updated Algorithm"
+  },
+  "hat(S)^{Inv}": {
+   "key": "hat(S)^{Inv}",
+   "category": "symbol",
+   "lines": [
+    740,
+    749
+   ],
+   "raw_forms": [
+    "hat(S)^{\\text{Inv}}_{e,y}"
+   ],
+   "iteration_only": false,
+   "bold_seen": false,
+   "first_line": 740,
+   "n_occurrences": 2,
+   "first_section": "subsubsection Shared ESS Mathematical Formulation"
+  },
+  "hat(S)^{Rated}": {
+   "key": "hat(S)^{Rated}",
+   "category": "symbol",
+   "lines": [
+    496
+   ],
+   "raw_forms": [
+    "hat(S)^{\\mathrm{Rated},\\ell}_{e,y}"
+   ],
+   "iteration_only": false,
+   "bold_seen": false,
+   "first_line": 496,
+   "n_occurrences": 1,
+   "first_section": "subsection Planning--Operation Decomposition Architecture"
+  },
+  "hat(V)^{I}": {
+   "key": "hat(V)^{I}",
+   "category": "symbol",
+   "lines": [
+    1443,
+    1465
+   ],
+   "raw_forms": [
+    "hat(V)^{I^k}_{i,t}"
+   ],
+   "iteration_only": false,
+   "bold_seen": false,
+   "first_line": 1443,
+   "n_occurrences": 2,
+   "first_section": "subsection Updated Algorithm"
+  },
+  "hat(x)": {
+   "key": "hat(x)",
+   "category": "symbol",
+   "lines": [
+    437,
+    440,
+    479,
+    512,
+    520
+   ],
+   "raw_forms": [
+    "hat(x)^{1}",
+    "hat(x)^{\\ell+1}",
+    "hat(x)^{\\ell}"
+   ],
+   "iteration_only": true,
+   "bold_seen": false,
+   "first_line": 437,
+   "n_occurrences": 5,
+   "first_section": "subsection Planning--Operation Decomposition Architecture"
+  },
+  "i": {
+   "key": "i",
+   "category": "index",
+   "lines": [
+    1424,
+    1425,
+    1426,
+    1427,
+    1432,
+    1441,
+    1442,
+    1443,
+    1444,
+    1445,
+    1446,
+    1447,
+    1449,
+    1450,
+    1451,
+    1452,
+    1453,
+    1454,
+    1455,
+    1465,
+    1466,
+    1467,
+    1468,
+    1469,
+    1473,
+    1474,
+    1475,
+    1476,
+    1477,
+    1486,
+    1487,
+    1491,
+    1492,
+    1677,
+    1678,
+    1712,
+    1713
+   ],
+   "raw_forms": [
+    "i"
+   ],
+   "iteration_only": false,
+   "bold_seen": false,
+   "first_line": 1424,
+   "n_occurrences": 54,
+   "first_section": "subsection Updated Algorithm"
+  },
+  "j": {
+   "key": "j",
+   "category": "index",
+   "lines": [
+    1712,
+    1713
+   ],
+   "raw_forms": [
+    "j"
+   ],
+   "iteration_only": false,
+   "bold_seen": false,
+   "first_line": 1712,
+   "n_occurrences": 8,
+   "first_section": "Appendix: section Distribution Networks"
+  },
+  "k": {
+   "key": "k",
+   "category": "index",
+   "lines": [
+    686,
+    700,
+    703,
+    1436,
+    1437,
+    1498,
+    1545,
+    1547,
+    1570,
+    1573,
+    1596
+   ],
+   "raw_forms": [
+    "k"
+   ],
+   "iteration_only": false,
+   "bold_seen": false,
+   "first_line": 686,
+   "n_occurrences": 13,
+   "first_section": "subsubsection Benders' Cuts"
+  },
+  "k^{max}": {
+   "key": "k^{max}",
+   "category": "symbol",
+   "lines": [
+    1437
+   ],
+   "raw_forms": [
+    "k^{\\text{max}}"
+   ],
+   "iteration_only": false,
+   "bold_seen": false,
+   "first_line": 1437,
+   "n_occurrences": 1,
+   "first_section": "subsection Updated Algorithm"
+  },
+  "l": {
+   "key": "l",
+   "category": "index",
+   "lines": [
+    581,
+    598,
+    605,
+    616,
+    686,
+    703
+   ],
+   "raw_forms": [
+    "l"
+   ],
+   "iteration_only": false,
+   "bold_seen": false,
+   "first_line": 581,
+   "n_occurrences": 6,
+   "first_section": "subsubsection Total Rated Power and Energy Capacity"
+  },
+  "m": {
+   "key": "m",
+   "category": "index",
+   "lines": [
+    476,
+    478,
+    479
+   ],
+   "raw_forms": [
+    "m"
+   ],
+   "iteration_only": false,
+   "bold_seen": false,
+   "first_line": 476,
+   "n_occurrences": 3,
+   "first_section": "subsection Planning--Operation Decomposition Architecture"
+  },
+  "mu^{E}": {
+   "key": "mu^{E}",
+   "category": "symbol",
+   "lines": [
+    695,
+    701,
+    712
+   ],
+   "raw_forms": [
+    "mu^{E(k)}_{e,y}"
+   ],
+   "iteration_only": false,
+   "bold_seen": false,
+   "first_line": 695,
+   "n_occurrences": 3,
+   "first_section": "subsubsection Benders' Cuts"
+  },
+  "mu^{S}": {
+   "key": "mu^{S}",
+   "category": "symbol",
+   "lines": [
+    692,
+    701,
+    709
+   ],
+   "raw_forms": [
+    "mu^{S(k)}_{e,y}"
+   ],
+   "iteration_only": false,
+   "bold_seen": false,
+   "first_line": 692,
+   "n_occurrences": 3,
+   "first_section": "subsubsection Benders' Cuts"
+  },
+  "o": {
+   "key": "o",
+   "category": "index",
+   "lines": [
+    352,
+    353,
+    377,
+    379,
+    383,
+    477,
+    478,
+    479,
+    733
+   ],
+   "raw_forms": [
+    "o"
+   ],
+   "iteration_only": false,
+   "bold_seen": false,
+   "first_line": 352,
+   "n_occurrences": 17,
+   "first_section": "subsection Planning--Operation Decomposition Architecture"
+  },
+  "omega": {
+   "key": "omega",
+   "category": "symbol",
+   "lines": [
+    337,
+    352,
+    375,
+    377,
+    428,
+    560,
+    640
+   ],
+   "raw_forms": [
+    "omega_{c}",
+    "omega_{o}"
+   ],
+   "iteration_only": false,
+   "bold_seen": false,
+   "first_line": 337,
+   "n_occurrences": 7,
+   "first_section": "subsection Planning--Operation Decomposition Architecture"
+  },
+  "phi^{Max}": {
+   "key": "phi^{Max}",
+   "category": "symbol",
+   "lines": [
+    622,
+    628
+   ],
+   "raw_forms": [
+    "phi^{\\text{Max}}_{e}"
+   ],
+   "iteration_only": false,
+   "bold_seen": false,
+   "first_line": 622,
+   "n_occurrences": 2,
+   "first_section": "subsubsection Energy-to-Power Capacity Ratio"
+  },
+  "phi^{Min}": {
+   "key": "phi^{Min}",
+   "category": "symbol",
+   "lines": [
+    620,
+    628
+   ],
+   "raw_forms": [
+    "phi^{\\text{Min}}_{e}"
+   ],
+   "iteration_only": false,
+   "bold_seen": false,
+   "first_line": 620,
+   "n_occurrences": 2,
+   "first_section": "subsubsection Energy-to-Power Capacity Ratio"
+  },
+  "pi": {
+   "key": "pi",
+   "category": "symbol",
+   "lines": [
+    478
+   ],
+   "raw_forms": [
+    "pi_{m}",
+    "pi_{o}"
+   ],
+   "iteration_only": false,
+   "bold_seen": false,
+   "first_line": 478,
+   "n_occurrences": 2,
+   "first_section": "subsection Planning--Operation Decomposition Architecture"
+  },
+  "pi^{E,P}": {
+   "key": "pi^{E,P}",
+   "category": "symbol",
+   "lines": [
+    1454,
+    1476,
+    1491,
+    1516,
+    1547,
+    1558,
+    1559,
+    1576,
+    1577,
+    1594
+   ],
+   "raw_forms": [
+    "pi^{E,P^k}_{i,t}",
+    "pi^{{E,P}^k}_{e, y, d, t}",
+    "pi^{{E,P}^k}_{e,y,d,t}",
+    "pi^{{E,P}^{k+1}}_{e,y,d,t}",
+    "pi^{{E,P}^{k}}_{e,y,d,t}"
+   ],
+   "iteration_only": false,
+   "bold_seen": false,
+   "first_line": 1454,
+   "n_occurrences": 10,
+   "first_section": "subsection Updated Algorithm"
+  },
+  "pi^{E,Q}": {
+   "key": "pi^{E,Q}",
+   "category": "symbol",
+   "lines": [
+    1455,
+    1477,
+    1492,
+    1517,
+    1547,
+    1564,
+    1565,
+    1585,
+    1586,
+    1594
+   ],
+   "raw_forms": [
+    "pi^{E,Q^k}_{i,t}",
+    "pi^{{E,Q}^k}_{e, y, d, t}",
+    "pi^{{E,Q}^k}_{e,y,d,t}",
+    "pi^{{E,Q}^{k+1}}_{e,y,d,t}",
+    "pi^{{E,Q}^{k}}_{e,y,d,t}"
+   ],
+   "iteration_only": false,
+   "bold_seen": false,
+   "first_line": 1455,
+   "n_occurrences": 10,
+   "first_section": "subsection Updated Algorithm"
+  },
+  "pi^{I,P}": {
+   "key": "pi^{I,P}",
+   "category": "symbol",
+   "lines": [
+    1452,
+    1474
+   ],
+   "raw_forms": [
+    "pi^{I,P^k}_{i,t}"
+   ],
+   "iteration_only": false,
+   "bold_seen": false,
+   "first_line": 1452,
+   "n_occurrences": 2,
+   "first_section": "subsection Updated Algorithm"
+  },
+  "pi^{I,Q}": {
+   "key": "pi^{I,Q}",
+   "category": "symbol",
+   "lines": [
+    1453,
+    1475
+   ],
+   "raw_forms": [
+    "pi^{I,Q^k}_{i,t}"
+   ],
+   "iteration_only": false,
+   "bold_seen": false,
+   "first_line": 1453,
+   "n_occurrences": 2,
+   "first_section": "subsection Updated Algorithm"
+  },
+  "pi^{I,V}": {
+   "key": "pi^{I,V}",
+   "category": "symbol",
+   "lines": [
+    1451,
+    1473
+   ],
+   "raw_forms": [
+    "pi^{I,V^k}_{i,t}"
+   ],
+   "iteration_only": false,
+   "bold_seen": false,
+   "first_line": 1451,
+   "n_occurrences": 2,
+   "first_section": "subsection Updated Algorithm"
+  },
+  "r": {
+   "key": "r",
+   "category": "symbol",
+   "lines": [
+    364,
+    448,
+    560,
+    640,
+    1712,
+    1713
+   ],
+   "raw_forms": [
+    "r",
+    "r_{ij}"
+   ],
+   "iteration_only": false,
+   "bold_seen": false,
+   "first_line": 364,
+   "n_occurrences": 6,
+   "first_section": "subsection Planning--Operation Decomposition Architecture"
+  },
+  "r^{E,P}": {
+   "key": "r^{E,P}",
+   "category": "symbol",
+   "lines": [
+    1599,
+    1607
+   ],
+   "raw_forms": [
+    "r^{E,P}"
+   ],
+   "iteration_only": false,
+   "bold_seen": false,
+   "first_line": 1599,
+   "n_occurrences": 2,
+   "first_section": "subsection ADMM Implementation"
+  },
+  "r^{E,Q}": {
+   "key": "r^{E,Q}",
+   "category": "symbol",
+   "lines": [
+    1603,
+    1607
+   ],
+   "raw_forms": [
+    "r^{E,Q}"
+   ],
+   "iteration_only": false,
+   "bold_seen": false,
+   "first_line": 1603,
+   "n_occurrences": 2,
+   "first_section": "subsection ADMM Implementation"
+  },
+  "r^{max}": {
+   "key": "r^{max}",
+   "category": "symbol",
+   "lines": [
+    448
+   ],
+   "raw_forms": [
+    "r^{\\max}"
+   ],
+   "iteration_only": false,
+   "bold_seen": false,
+   "first_line": 448,
+   "n_occurrences": 1,
+   "first_section": "subsection Planning--Operation Decomposition Architecture"
+  },
+  "rho^{E,P}": {
+   "key": "rho^{E,P}",
+   "category": "symbol",
+   "lines": [
+    1560,
+    1570,
+    1578,
+    1599
+   ],
+   "raw_forms": [
+    "rho^{{E,P}^k}",
+    "rho^{{E,P}^{k+1}}",
+    "rho^{{E,P}^{k}}"
+   ],
+   "iteration_only": false,
+   "bold_seen": false,
+   "first_line": 1560,
+   "n_occurrences": 5,
+   "first_section": "subsection ADMM Implementation"
+  },
+  "rho^{E,Q}": {
+   "key": "rho^{E,Q}",
+   "category": "symbol",
+   "lines": [
+    1566,
+    1570,
+    1587,
+    1603
+   ],
+   "raw_forms": [
+    "rho^{{E,Q}^k}",
+    "rho^{{E,Q}^{k+1}}",
+    "rho^{{E,Q}^{k}}"
+   ],
+   "iteration_only": false,
+   "bold_seen": false,
+   "first_line": 1566,
+   "n_occurrences": 5,
+   "first_section": "subsection ADMM Implementation"
+  },
+  "t": {
+   "key": "t",
+   "category": "index",
+   "lines": [
+    807,
+    808,
+    810,
+    812,
+    819,
+    820,
+    844,
+    847,
+    854,
+    859,
+    861,
+    864,
+    867,
+    869,
+    874,
+    877,
+    878,
+    879,
+    883,
+    896,
+    897,
+    1426,
+    1432,
+    1443,
+    1444,
+    1445,
+    1446,
+    1447,
+    1451,
+    1452,
+    1453,
+    1454,
+    1455,
+    1465,
+    1466,
+    1467,
+    1468,
+    1469,
+    1473,
+    1474,
+    1475,
+    1476,
+    1477,
+    1486,
+    1487,
+    1491,
+    1492,
+    1516,
+    1517,
+    1518,
+    1545,
+    1546,
+    1547,
+    1558,
+    1559,
+    1560,
+    1564,
+    1565,
+    1566,
+    1573,
+    1576,
+    1577,
+    1580,
+    1585,
+    1586,
+    1589,
+    1594
+   ],
+   "raw_forms": [
+    "t"
+   ],
+   "iteration_only": false,
+   "bold_seen": false,
+   "first_line": 807,
+   "n_occurrences": 100,
+   "first_section": "subsubsection Shared ESS Mathematical Formulation"
+  },
+  "u": {
+   "key": "u",
+   "category": "symbol",
+   "lines": [
+    352,
+    353,
+    379,
+    383
+   ],
+   "raw_forms": [
+    "bold u_{o}"
+   ],
+   "iteration_only": false,
+   "bold_seen": true,
+   "first_line": 352,
+   "n_occurrences": 4,
+   "first_section": "subsection Planning--Operation Decomposition Architecture"
+  },
+  "x": {
+   "key": "x",
+   "category": "symbol",
+   "lines": [
+    337,
+    339,
+    341,
+    352,
+    353,
+    363,
+    378,
+    383,
+    407,
+    414,
+    416,
+    424,
+    1712,
+    1713
+   ],
+   "raw_forms": [
+    "bold x",
+    "x",
+    "x_{ij}"
+   ],
+   "iteration_only": false,
+   "bold_seen": true,
+   "first_line": 337,
+   "n_occurrences": 15,
+   "first_section": "subsection Planning--Operation Decomposition Architecture"
+  },
+  "y": {
+   "key": "y",
+   "category": "index",
+   "lines": [
+    407,
+    408,
+    426,
+    428,
+    430,
+    432,
+    443,
+    473,
+    475,
+    479,
+    483,
+    491,
+    492,
+    494,
+    496,
+    499,
+    500,
+    502,
+    504,
+    558,
+    560,
+    562,
+    563,
+    565,
+    566,
+    575,
+    576,
+    581,
+    585,
+    591,
+    598,
+    600,
+    605,
+    608,
+    612,
+    616,
+    620,
+    621,
+    622,
+    639,
+    640,
+    642,
+    644,
+    658,
+    689,
+    691,
+    692,
+    694,
+    695,
+    700,
+    701,
+    706,
+    708,
+    709,
+    711,
+    712,
+    737,
+    740,
+    744,
+    749,
+    750,
+    752,
+    755,
+    759,
+    764,
+    766,
+    769,
+    773,
+    776,
+    779,
+    783,
+    788,
+    789,
+    792,
+    795,
+    796,
+    797,
+    801,
+    803,
+    806,
+    810,
+    812,
+    820,
+    821,
+    824,
+    827,
+    832,
+    835,
+    838,
+    844,
+    847,
+    854,
+    859,
+    861,
+    864,
+    865,
+    867,
+    869,
+    874,
+    877,
+    878,
+    879,
+    883,
+    889,
+    891,
+    892,
+    893,
+    894,
+    896,
+    897,
+    956,
+    960,
+    1085,
+    1089,
+    1117,
+    1304,
+    1305,
+    1307,
+    1308,
+    1325,
+    1328,
+    1344,
+    1345,
+    1361,
+    1516,
+    1517,
+    1545,
+    1546,
+    1547,
+    1558,
+    1559,
+    1560,
+    1564,
+    1565,
+    1566,
+    1573,
+    1576,
+    1577,
+    1580,
+    1585,
+    1586,
+    1589,
+    1594
+   ],
+   "raw_forms": [
+    "y",
+    "y^{(k)}"
+   ],
+   "iteration_only": true,
+   "bold_seen": false,
+   "first_line": 407,
+   "n_occurrences": 239,
+   "first_section": "subsection Planning--Operation Decomposition Architecture"
+  },
+  "y^{End}": {
+   "key": "y^{End}",
+   "category": "symbol",
+   "lines": [
+    364,
+    366
+   ],
+   "raw_forms": [
+    "y^{\\text{End}}"
+   ],
+   "iteration_only": false,
+   "bold_seen": false,
+   "first_line": 364,
+   "n_occurrences": 2,
+   "first_section": "subsection Planning--Operation Decomposition Architecture"
+  },
+  "y^{Inv}": {
+   "key": "y^{Inv}",
+   "category": "symbol",
+   "lines": [
+    363,
+    364,
+    365,
+    366,
+    585,
+    591,
+    599,
+    752,
+    755,
+    759,
+    764,
+    769,
+    773,
+    776,
+    779,
+    783,
+    788,
+    789,
+    792,
+    795,
+    796,
+    797,
+    801,
+    803,
+    806,
+    810,
+    812,
+    820,
+    824,
+    827,
+    833,
+    835,
+    838,
+    842,
+    844,
+    847,
+    854,
+    859,
+    865,
+    867,
+    869,
+    896,
+    897
+   ],
+   "raw_forms": [
+    "y^{\\text{Inv}}"
+   ],
+   "iteration_only": false,
+   "bold_seen": false,
+   "first_line": 363,
+   "n_occurrences": 89,
+   "first_section": "subsection Planning--Operation Decomposition Architecture"
+  },
+  "y_{0}": {
+   "key": "y_{0}",
+   "category": "symbol",
+   "lines": [
+    364,
+    560,
+    585,
+    591,
+    640,
+    769,
+    773,
+    865
+   ],
+   "raw_forms": [
+    "y_{0}"
+   ],
+   "iteration_only": false,
+   "bold_seen": false,
+   "first_line": 364,
+   "n_occurrences": 8,
+   "first_section": "subsection Planning--Operation Decomposition Architecture"
+  }
+ }
+}
