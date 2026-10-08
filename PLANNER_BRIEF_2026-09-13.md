@@ -3021,3 +3021,125 @@ to the repository from the Air checkout (`manuscript_review/`, `manuscript_submi
 the seed (author).
 
 **Next order:** `STEP6_ROUND1_CORRECTIONS.md` §C (W168–W171). Predictions recorded there. Nothing else runs.
+
+# Addendum 69 — rulings on `P5_15_ADDENDUM68_ROUND1_REPORT.md` (W168–W171); errata to Addendum 68 (2026-10-08)
+
+Order complete; accepted. Predictions: W168 held (v6 certifies the x = 0 reference at 181, range/τ 0.927, ΔQ = 0);
+W169 held on the reading ruled below; W171 **failed** (two H rows in §2.3, five in §2.1 and three in §2.2 that the
+prediction did not cover). The failures are the expert's, recorded here with their cause: §2.2.7 was drafted from
+`paragraphs_v2` plus the Addendum 66 edits instead of from the accepted v5 (Addendum 67), so two definitions the Planner
+had corrected regressed; "never binds" in Decision 5 came from the expert's misreading of the Figure 3 caption; Algorithm
+1 was written from `STEP4_DFO_METHOD.md` rather than from the three search campaigns' code. Corrections:
+`STEP6_ROUND2_CORRECTIONS.md`.
+
+**Errata to Addendum 68.** Decision 5: the end-of-life floor binds in 2035 under the baseline (C2_calfade), C3_unit
+and C3_midblock, and not within the horizon under C2 and C4 (T8 `floor_year_070`; figure 3); the letter's R3.6 and
+the §4.3 text say so (round 2, D.1). The §3.5 parameter list: the recovery options (acceptable_tol 1e-4, acceptable_iter
+1) are set for the TSO only; the DSOs run without them.
+
+**Decisions (the report's 1–9).**
+
+1. **Floor** — as the Planner states; erratum above; letter D.1.
+2. **l. 639** — the Planner's sentence adopted (round 2, B.3): every certificate was decided, or re-decided from its
+   committed record, under the rule and certifies at the cycle reported; in evaluations continued from an earlier run
+   the holds began at that run's stopping cycle. `ref:bd504ecf` needs no new replay (W142 re-decided it at 172).
+3. **P̂ and the settling slack** — the v5 definitions restored verbatim (round 2, B.2–B.3): P̂ spans the three most
+   recent turning points; the slack is the movement between the earlier, residual-based certificate and the cap. The
+   M-impact clauses of T2-4–T2-6 (τ/100 sign floor, three excluded cycles, lapse reset, the monotone branch's
+   no-sign-change window and half-window test, gap clause and clean veto on the monotone window, the gap-corrected
+   condition and the largest-over-the-pair rule for uncertified bars, "at least" for the threshold) are printed too: a
+   referee re-deriving the rule must get the rule.
+4. **Algorithm 1 — rewritten to the search as run, and the claims reduced to the recorded certificates** (round 2,
+   A.1–A.4). Decision vector: one (S, E) per node and one investment year common to all nodes, n = 7; per-node timing
+   and staging not searched (stated; the master admits them). Two variants named: A (n + 1 OrthoMADS directions,
+   infeasible rejected, full admissible unit box at Δ = 1, cap 30, stop for review beyond) for s47 and s51; B (2n
+   directions snapped to the unit frame, Δ = 1 throughout, completion to n + 1) for s53. Acceptance as run: production
+   exit (ten consecutive passing cycles, cap 500) and the margin max(bar_x + bar_inc, σ_Q), σ_Q = 18,449.66 €; every
+   evaluation in a reported comparison re-settled afterwards on the final code under v6, comparisons at
+   max{3b, 2τ}. Certificates as recorded: at x = 0 all fourteen admissible unit neighbours evaluated (the full box; no
+   positive spanning set exists at the boundary); at the F2 plan the final poll's neighbours, which do not positively
+   span, and the plan is reported as better than each evaluated neighbour (seven determinately, five within
+   resolution), **not** as a mesh-local optimum. The MADS convergence theory is cited as the framework's property, not
+   as a result of these runs. The recourse equation of §2.1 is written as the within-block two-stage problem with the
+   scenario-free u⁰ (storage schedule, TSO interface exchange, DSO committed import). The three search campaigns ran on
+   earlier code states, gated inert at SRP1 by the bitwise gates the brief records; §4.7 says so.
+5. **§2.3** — T3-1 and T3-2 fixed (round 2, C.1, C.6): consensus on the net active and reactive power only, each model
+   with its own split; the commitment expectation and deviations run over market × operation pairs and vanish only with
+   a single scenario. The L rows T3-3 (consumption sign in both copies), T3-5 (pre-day state), T3-6 (penalty in each
+   network copy), T3-9, T3-11 fixed with them.
+6. **W169 scoring** — "at the lower bound to solver tolerance": held at every current certificate (the superseded
+   `pb_y2025_n5` certificate is outside the tables under Addenda 58/59). The two printed sentences adopted (C.3, C.5);
+   the min(P^Ch, P^Dch) detector is stated as recorded, not enforced, with its maximum (3.6 × 10⁻⁵ of the rating).
+   Coverage for `d_c52e1670` accepted as scoped.
+7. **The 0.933 prediction** — cited as recorded: the price-spread prediction for the draw that was run, a ratio of
+   discount-weighted average 4 h spreads over the two instances' horizons (90.53/97.02); 0.915 on the totals basis
+   given beside it; both inside the measured [0.909, 0.934]; neither isolates the scenario effect (Decision 2 of
+   Addendum 68). Not replaced after the run.
+8. **Letter** — R3.5's clause on the 0.5 %/2 % sentence dropped (the reviewers never saw that text); the second half
+   of B.6 applied; the cost-file correction named in "Further changes"; the stray `"` removed; R1.5 and "Figure 15"
+   wait for the PDF the reviewers read, which the author adds to `manuscript_submitted/`.
+9. **Housekeeping** — k(C4) = 22,429; §3.5 and §4.7 remain forward references until written; TN generation priced at
+   the scenario market price stated in §3; Q's component list completed (market-priced TN generation, DN flexibility,
+   load curtailment at its price, the closure and feasibility slack penalties at their solver bound, RES curtailment
+   uncosted and reported as energy — round 2, B.5); the per-element σ captures stay hash-recorded.
+
+**Also from W171b, adopted:** the 3 × 3 sentence of §2.2.7 says that only the reference evaluation was continued and
+that the band is on the ratio (B.3); the search's cache is keyed on candidate and configuration (A.2).
+
+**Next order:** `STEP6_ROUND2_CORRECTIONS.md` §E (W172 Appendix A audit and the DN interface ratings; W173 the two §2.1
+CONFIRM points and the neighbour counts; W174 re-check after the round-2 paste). Predictions: W173 — the x = 0 count
+is 14 and the F2 poll-set count is 12, with 17 the number of evaluated box points; W172 — at most three H rows in
+Appendix A, none in the z-update, the dual updates or the residual-balancing rule.
+
+# Addendum 70 — rulings on `P5_15_ADDENDUM69_ROUND2_REPORT.md` (W172–W173); §3.5–3.6 drafted (2026-10-08)
+
+W172 (Appendix A audit, 141 statements: 120 consistent, 1 H, 3 M, 17 L; the DN interface ratings read) and W173 (the
+§2.1 CONFIRM points and the neighbour counts) accepted. Addendum 69 and the round-2 file were not in the repository
+when the order ran (the author's commit on the Air had not been made); the predictions are scored here from the
+report. **W172 prediction** ("at most three H rows; none in the z-update, the dual updates or the residual-balancing
+rule"): held on the count (one H row, in A.6) and on the equations; the *sentence* calling the z-update "the minimiser
+of the sum of the three agents' storage terms" was imprecise (M), which the prediction did not cover. **W173
+prediction** ("x = 0 count 14; F2 poll set 12; 17 evaluated box points"): 14 held, 17 held, **12 failed** — the final
+poll had ten points, and the twelve `l_` cells of Addendum 63 include one that is not a box neighbour. Corrections:
+`STEP6_ROUND3_CORRECTIONS.md`.
+
+**Decisions (the report's 1–7).**
+
+1. **A.6 (H)** — the Planner's sentence adopted: at one scenario the commitment charge and the voltage regularisation
+   are not constructed; the interface settlement stays in every local objective at full weight and is excluded from
+   the reported cost as a transfer (A.1 of round 3).
+2. **The three M rows** — fixed: the expectation over market × operation pairs (A.2a); the z-update sentence
+   (unit weights; κ^E scales the agent's local problem only, A.2b); the end-of-cycle order AA step → balancing →
+   memory clear → exit (A.2c). **The 17 L rows** — all taken (A.3 d–s): Gauss–Seidel on the interface channels only;
+   the sum over blocks equals Q after the stated exclusions; κ^E's meaning; ℒ defined and κ^E shown in §2.3.5's
+   objective; per-agent copies on failure; the continuation case in the ρ, AA and tail holds; the √3 in s_E and which
+   duals enter ‖λ‖; the cap in "stopped by the rule"; the AA iterate on the interface channels; the tail as a declared
+   option restoring each operator's own tolerance; the retry triggers and two tiers; the initialisation order
+   (conversion first, storage duals at zero, one dual-ascent step on the interface); the gap recorded by the harness;
+   the TSO's fixed initialisation exchange and the bounded adjustment.
+3. **Recovery settings** — per agent, in §3.6: TSO acceptable_tol 1e-4 / acceptable_iter 1; DSOs a cold restart at
+   their primary settings; storage agent 1e-9 / 1; tier 2 adds the adaptive barrier strategy; triggers maxIterations,
+   infeasible, solver error. Addendum 68's list corrected accordingly (erratum).
+4. **Interface ratings** — R^I = 2.0 / 1.0 / 1.5 p.u. (200 / 100 / 150 MVA) at nodes 5 / 7 / 9, into §3.6; the IEEE-33
+   branch table's branch 1 corrected per ADN (author; round 3, C.3).
+5. **F2 sentence** — the Planner's counts adopted verbatim (round 3, B.d): seventeen of 61 admissible unit neighbours
+   evaluated (ten in the final poll, seven earlier), none determinately better; of the thirteen re-evaluated, better
+   than twelve (seven determinately, five within resolution) and within resolution of the thirteenth. x = 0: fourteen.
+6. **Algorithm 1** — Δ₀ = 4 stated and listed as an input; the loop as run (at most 60 polls; a poll refused only when
+   its new points would exceed N^max − N); variant B's completion adds the whole admissible unit box under the cap of
+   30; and the sentence that in variant A every rounded poll direction was inadmissible at every poll, so every
+   evaluated point came from the unit-neighbour completion (round 3, B.a–d).
+7. **§3.5 and §3.6 written** (round 3, C.4–C.5): "Shared Energy Storage Parameters" (η, SoC window and initial state,
+   closure slack and price, complementarity tolerance, calendar life, ε^E and c^σ, the lattice and budget; the ageing
+   calibration table with the seven arms as run, k(C3) = 11,542, k(C4) = 22,429, φ 0.985, floor 0.70 / 0.50, the
+   SoH evaluation point) and "Evaluation and Certification Settings" (solver versions and options per agent, the
+   retry policy, σ, S^ref, R^I, κ^E, ρ₀, balancing, Boyd tolerances, AA, production exit and caps, α and the voltage
+   weight, τ and P_max, the search's Δ₀, budgets, completion cap and σ_Q, and the two static arrangements of the
+   benchmark). §2's "Section 3.4"/"3.5" references become \ref{sec:case_ess_params} / \ref{sec:case_settings}. Also:
+   §3.1 states that I(x) is the probability-weighted sum, equal to the cost at the expected trajectory, and names the
+   ÷4 correction; §3.3 states that TN generation is priced at the scenario's wholesale price; the two red paragraphs at
+   the end of §3.4 go.
+
+**Next order:** `STEP6_ROUND3_CORRECTIONS.md` §D (W174 after the author confirms rounds 2 and 3 are in Overleaf; W175
+the CONFIRM points of §3.5–3.6). Predictions: W174 — no H row remains in §2 or Appendix A, and every §3.5–3.6 value
+matches its source; W175 — the benchmark paragraph needs one wording change at most (the passive arm's tie-breaker).
