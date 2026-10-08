@@ -22,10 +22,10 @@ authority is `PLANNER_BRIEF_2026-09-13.md` with its Addenda 1–67**; it superse
 
 # CURRENT SOURCE OF TRUTH — 2026-10-07 (tables frozen; methods text accepted; manuscript revision under way)
 
-Authority: `PLANNER_BRIEF_2026-09-13.md` Addenda 52–67. Tables FROZEN: `frozen_step6_tables_v1_590088fe.json` (W160).
+Authority: `PLANNER_BRIEF_2026-09-13.md` Addenda 52–68; `STEP6_ROUND1_CORRECTIONS.md`. Tables FROZEN: `frozen_step6_tables_v1_590088fe.json` (W160).
 Methods text: `export/paragraphs_v5.md` (Addendum 67). Expert's revision plan: `STEP6_REVISION_MAP.md`. Latest handoff:
-`P5_15_STEP6_SUPPORT_REPORT.md` (W164–W167, zero-solve). Current order: `TASKS.md` (Step 6 support section) —
-**stopped for review** on its Decisions 1–7. Sections below this one are history for their topics; where they conflict
+`P5_15_ADDENDUM68_ROUND1_REPORT.md` (W168–W171, zero-solve). Current order: `TASKS.md` (Addendum 68 section) —
+**stopped for review** on its Decisions 1–9. Sections below this one are history for their topics; where they conflict
 with this section, this section governs.
 
 ## Manuscript facts established from code and case files (W164–W167)
@@ -42,6 +42,17 @@ with this section, this section governs.
   the rewrite must follow that audit, not the printed equations.
 - **x = 0 reference `ref:7aa017f0`** (anchor of every T1 B row) was certified by settling rule v1 (W101); its status
   under v6 is unevaluated (report Decision 4).
+- **Every table certificate re-decided under v6** from records (W142 `w142_v6_from_records.json`; W168 for x = 0):
+  same cycle in every case (x = 0 181, unit 172, Phase B, year ladder, b_*); `pb_y2025_n5` stays excluded. In
+  evaluations continued from an earlier run the holds began at that run's stopping cycle, not k0 + 1.
+- **Slacks at the certified point (W169):** closure and ESSO P-net slacks sit at IPOPT's relaxed lower bound
+  (−1e-8 p.u. per variable) at every current certificate; the min(pch, pdch) ESSO check is recorded, not enforced
+  (≤ 3.6e-5 S).
+- **Search as run ≠ Algorithm 1 as printed** (W171b T1-1…T1-5): 7 variables (P, E per node + one common year);
+  n + 1 poll (s47/s51) with completion at every unit poll; search evaluations at the production exit with σ_Q
+  acceptance; F2 certificate is not a positive-spanning-set certificate.
+- **0.933 (3 × 3 R prediction)** = price-only ratio of discount-weighted average spreads, 3 × 3 horizon over SRP1
+  horizon; on totals 0.915 (W170).
 - Number checker: `p515_s53_w164_manuscript_number_check.py` — re-run each round with new declarations into
   `w164_manuscript_check/overleaf_<commit>/`.
 

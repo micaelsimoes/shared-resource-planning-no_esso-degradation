@@ -9,12 +9,13 @@
 
 Clone pulled at Overleaf `42794d4` (main.tex 2,092 lines, sha256 7effd898; §A correction A.1 present at l. 654 — §2 corrections in Overleaf). Predictions (expert): W168 certifies under v6 at k ∈ [174, 195], range ≤ τ, |ΔQ| ≤ 0.93 τ; W169 both slacks ≤ 10⁻⁶ relative at every certified point; W171 no H-impact row left in §2.3.
 
-- [ ] **▶ W168** — v6 replay of the settling decision of `ref:7aa017f0` on its W101 per-cycle record (stop and report if the record ends before v6 decides)
-- [ ] **▶ W169** — max closure slack (MWh, fraction of E^Av) and max ESSO P-net slack at the certified point, every T1–T11 evaluation; which records carry them
-- [ ] **▶ W170** — how the 0.933 3 × 3 prediction was computed (profiles, horizon), three lines
-- [ ] **▶ W171a** — number check at Overleaf `42794d4` (W164 logic, declarations v2; reviewer quotations against `manuscript_review/Reviewers Comments.docx`)
-- [ ] **▶ W171b** — audit of revised §2 (l. 315–901 + `% [CONFIRM — W16x]`) against the code, W166 form, differing rows only; replaces the W166 §2.3 table
-- [ ] Planner review; report; commit; push
+- [x] **W168** — `ff42f1e7` / `96037a16`: v6 certifies at **181** (window [150,181], range/τ 0.927, ΔQ = 0) — prediction **HELD**; holds formally from 133 (not k0+1 = 124)
+- [x] **W169** — `2412edd4` / `73dbfa63`: σ at relaxed lower bound 46/46 (HELD); closure at lower bound at every current certificate (signed reading), superseded pb_y2025_n5 +5e-6 E^Av; absolute reading fails on bound residue (scoring → expert)
+- [x] **W170** — `f45b0b17`: price-only average-spread ratio, 3 × 3 horizon over SRP1 horizon (mix); totals basis 0.915
+- [x] **W171a** — `a379b481` / `5cb84658`: main 146 match / 3 MISMATCH (poll, P̂); letter 89 / 2 MISMATCH (R3.5 0.5 %/2 %); quotations 29/31 verbatim, 62/62 numbers; **R3.6 'floor never binds' contradicts T8**
+- [x] **W171b** — `6fbd0dcf`: H rows §2.1 5 / §2.2 3 / §2.3 **2** — prediction **FAILED** (wording); A.1–A.8 present
+- [x] Planner review; report `P5_15_ADDENDUM68_ROUND1_REPORT.md` (Decisions 1–9)
+- [ ] **▶ Stopped for review:** expert on Decisions 1–7 (R3.6 vs T8; l. 639 rule scope; P̂ / slack regression; §2.1 search-as-run; §2.3 T3-1/T3-2; slack scoring; 0.933 wording); author on 8–9; push from PyCharm if the CLI push fails
 
 ## Step 6 support — author's request 2026-10-07 (zero-solve; nothing else runs)
 
