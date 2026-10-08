@@ -1,9 +1,20 @@
 # TASKS — current order
 
-**Authority:** `PLANNER_BRIEF_2026-09-13.md` Addendum 67 (2026-10-08) and the author's Step 6 request of 2026-10-07 (`STEP6_REVISION_MAP.md` §§D–E); earlier orders below for record.
+**Authority:** `PLANNER_BRIEF_2026-09-13.md` Addendum 68 (2026-10-07) and `STEP6_ROUND1_CORRECTIONS.md` §C; earlier orders below for record.
 **Objective convention on every value:** Q = certified `gross_operational_cost`, settlement excluded.
 **Updated at every transition; read first when resuming.**
 
+
+## Addendum 68 order — `STEP6_ROUND1_CORRECTIONS.md` §C (zero-solve; nothing else runs)
+
+Clone pulled at Overleaf `42794d4` (main.tex 2,092 lines, sha256 7effd898; §A correction A.1 present at l. 654 — §2 corrections in Overleaf). Predictions (expert): W168 certifies under v6 at k ∈ [174, 195], range ≤ τ, |ΔQ| ≤ 0.93 τ; W169 both slacks ≤ 10⁻⁶ relative at every certified point; W171 no H-impact row left in §2.3.
+
+- [ ] **▶ W168** — v6 replay of the settling decision of `ref:7aa017f0` on its W101 per-cycle record (stop and report if the record ends before v6 decides)
+- [ ] **▶ W169** — max closure slack (MWh, fraction of E^Av) and max ESSO P-net slack at the certified point, every T1–T11 evaluation; which records carry them
+- [ ] **▶ W170** — how the 0.933 3 × 3 prediction was computed (profiles, horizon), three lines
+- [ ] **▶ W171a** — number check at Overleaf `42794d4` (W164 logic, declarations v2; reviewer quotations against `manuscript_review/Reviewers Comments.docx`)
+- [ ] **▶ W171b** — audit of revised §2 (l. 315–901 + `% [CONFIRM — W16x]`) against the code, W166 form, differing rows only; replaces the W166 §2.3 table
+- [ ] Planner review; report; commit; push
 
 ## Step 6 support — author's request 2026-10-07 (zero-solve; nothing else runs)
 
@@ -14,7 +25,7 @@ Manuscript clone `manuscript/6a67305f25e8348fb71380c3/` pulled at Overleaf `6191
 - [x] **W166** — `e7b9a938`: 68 rows (22 match / 38 differ / 8 not implemented); **(5): one storage schedule common to all 9 market × operation scenarios (hard NA by aliasing); row 18 = DSO interface premium only**; found: **3 × 3 horizon = 2025/2028/2031/2034/2037 (3-year blocks)**
 - [x] **W167** — `4523cd3d` / `5cf26940`: **(4): three cost trajectories weighted 0.35/0.55/0.10, I(x) = expectation (map premise wrong)**; energy row ×1.25 vs the submitted file (÷4 not ÷5); 5 input tables regenerated; nomenclature lists (i) 0 (ii) 89 (iv) 18 Benders symbols
 - [x] Planner review of W164–W167; report `P5_15_STEP6_SUPPORT_REPORT.md` (Decisions 1–7: R3.3 wording; two horizons in §3; §3.1 costs; x = 0 reference v6 replay; letter wording points; l. 1058; fig 1 panel b); branch pushed
-- [ ] **▶ Stopped for review:** author/expert on Decisions 1–7; author supplies reviewers' comment documents and the submitted source for latexdiff
+- [x] **RULED (Addendum 68, `1b6edbe4`):** Decisions 1–7 as recommended; §2 corrections `STEP6_ROUND1_CORRECTIONS.md` §A pasted in Overleaf; reviewers' documents + `manuscript_submitted/` committed
 - [ ] Then stand by for the author's draft rounds (map §E)
 
 ## Addendum 58 order — remaining cells in manuscript-priority order; Step 5 rows; stop before Step 6 tables freeze
