@@ -3255,3 +3255,33 @@ l. 1126; replace the literal references — l. 415 "Section~4" → `Section~\ref
 l. 1116 "(Section~4.4)" → `(Subsection~\ref{subsec:res_coordination})`; compile (expect only the `[AUTHOR — write]`
 slots empty); then write 4.1–4.6 into the slots and edit 4.9. No old §4 label is referenced outside §4 except
 `sec:results`, which is kept.
+
+# Addendum 74 — rulings on W176a (`P5_15_W176A_ROUND4_LINES.md`) and W176b (number check at `8b76423`) (2026-10-08)
+
+Accepted. W176a: every round-4 edit present (14 of 14, plus l. 858), every old wording gone, no H or M row; the
+round-4 lines resolve Addendum 71's H, W174b's NEW-1 and NEW-3 and the two "elsewhere" rows. W176b: zero MISMATCH in
+`main.tex` and the letter (388 match, 12 approximate), the twelve approximates unchanged, the 559 submitted-version
+figures untouched (all in §4–§5 and Appendix E, to be rewritten); 9 new declarations, all matched except one named
+setting.
+
+**Predictions.** W176(a) "no M or H row": **held**. W176(a) "any L row already on the final-pass list": **failed as
+scored** — two new L rows, both in the expert's own round-4 wording: R4-1 (l. 445, "each is described by its recorded
+certificate": s51 stopped for review and has no certificate) and R4-2 (l. 639, "the coarser resolution rule": σ_Q is
+coarser than the certified-pair threshold but finer than the uncertified-form bars of every F2 comparison). Both are
+corrected in `STEP6_ROUND5_CORRECTIONS.md`, not deferred. W176(b): zero MISMATCH **held**, same twelve approximates
+**held**, "submitted-version count reduced only where §3.5–3.6 replaced submitted text" **held vacuously** (no
+reduction occurred; §3.5–3.6 held no submitted-version figure).
+
+**Decisions.** (1) R4-1 and R4-2 rewritten (round 5, items 1–2). (2) "ATB" dropped from §3.5: the bib entry is NREL's
+"Utility-Scale Battery Storage, 2024" and no input names the ATB; "the NREL utility-scale battery category" is what
+the record supports (item 3). (3) The consistency-pass sentence states what the runs did: every DN block was re-solved
+once at the TN interface voltage (36 of 36 in each of the six runs; the code's trigger is global), so "where a DN
+limit is violated" goes (item 4; W176a unexpected finding 2). (4) Literal "Section 4" references: eight, mapped in
+round 5 onto the §4 labels of Addendum 73; this supersedes the five of Addendum 73. (5) The note under l. 639 ("every
+cell it proposed was re-evaluated") is read as the incumbents, as l. 445 says; no change. (6) The letter's R2.8
+in-text placeholder and the `\rchanges{}` bracket placeholders are the author's, at the letter's final pass, with the
+§4 labels now available. (7) The IPOPT acceptable-exit return code and the ATB page remain unverified; neither is
+claimed by the text.
+
+**Order.** Round 5 is applied with the §4 paste; W177(a) runs now on `section4_expert_draft.tex` (Addendum 73);
+W177(b) at the HEAD where §4 and round 5 are in. No new prediction beyond Addendum 73's.
