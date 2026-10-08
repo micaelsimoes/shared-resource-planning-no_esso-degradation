@@ -3143,3 +3143,44 @@ poll had ten points, and the twelve `l_` cells of Addendum 63 include one that i
 **Next order:** `STEP6_ROUND3_CORRECTIONS.md` §D (W174 after the author confirms rounds 2 and 3 are in Overleaf; W175
 the CONFIRM points of §3.5–3.6). Predictions: W174 — no H row remains in §2 or Appendix A, and every §3.5–3.6 value
 matches its source; W175 — the benchmark paragraph needs one wording change at most (the passive arm's tie-breaker).
+
+# Addendum 71 — rulings on `P5_15_ADDENDUM70_ROUND3_REPORT.md` (W174a/b, W175); §2, §3.1, §3.5–3.6 and Appendix A closed for the revision (2026-10-08)
+
+Accepted. W174a: no wrong number anywhere in the manuscript, the letter, the cover letter or the highlights (380 match,
+12 approximate by printed rounding; letter 97 match, 62 quotation numbers verified). W174b: all ten W171b H rows and
+W172's A6-1 resolved; every round-2 and round-3 block present. W175: the mid-block SoH point, the no-ageing arm and the
+benchmark definitions confirmed.
+
+**Predictions.** W174 (values match their sources): **held**. W174 (no H row left in §2 or Appendix A): **failed** — the
+Planner's rating of l. 647 is adopted: after "this threshold", "accepts a poll point … only by a determinate margin"
+reads as the §2.2.7 rule and restates the claim W171b T1-4 had found false; the sentence was a round-1 leftover that
+round 2 did not update. W175 (one wording change at most): **failed on count** — the tie-breaker and common-Q sentence
+was predicted; the consistency pass (each DN re-solved once at the TN's interface voltage, then the TSO again), under
+which every reported arm value stands and which moved the passive starts by −44.0/−69.8/−69.8 k€ and the price-taker
+by +234 €, was not; the 13.9 % claim is unaffected.
+
+**Decisions (the report's 1–8), all as recommended; corrections in `STEP6_ROUND4_CORRECTIONS.md`.** (1) The two
+passages lost in the round-3 paste restored verbatim — the AA-off clause (the expert's step-11 instruction quoted the
+clause without its lead-in) and Algorithm 2's `k ← k + 1` (the A.2(c) block did not say the line after it stays).
+(2) l. 647 rewritten: the search accepted by its own resolution rule; every proposed cell re-evaluated under the §2.2.7
+rule before being reported. (3) l. 449: two runs stopped on a failed unit poll, one for review at the completion cap;
+"at every evaluated poll". (4) "One frozen configuration" scoped to the reported certified evaluations in §3.6 and in
+Appendix A; the searches ran earlier code states without the tail, their incumbents re-evaluated under the final one.
+(5) The benchmark paragraph takes the Worker's two sentences, plus "at the plan without shared storage, at the
+single-scenario instance". (6) l. 756 and l. 866 → `sec:case_ess_params` (the round-3 mapping rule was too blunt).
+(7) **Chemistry — author's decision:** "lithium iron phosphate" stays only with sources for the 10,000-cycle
+statement, the 8,000-cycle datasheet (EVE MB31) and the calendar retention; otherwise "lithium-ion" with the NREL ATB
+category, in §3.5, the abstract and the letter's R1.2(iv). The expert's recommendation is the first, since the EVE
+datasheet is LFP and the retention and counts are LFP-typical, but the text must not name a chemistry the inputs do not
+record. (8) The nineteen L rows: the four "damaged in the paste" ones (NEW-5, NEW-6, NEW-9, NEW-10 — three of them in
+the expert's own round-3 text) and the two "elsewhere" ones fixed now; the hold-origin, window-bound and indexing rows
+listed for the whole-paper read. The C4 row of the ageing table gets a footnote: entered as 10,000 cycles at 0.80 DoD,
+the same product Nδ, which is all the calibration uses. Ten answered CONFIRM comments deleted.
+
+**Status.** With round 4 applied, §2, §3.1, §3.5–3.6 and Appendix A are closed for this revision; what remains for them
+is the final-pass list (notation and index points) and the nomenclature. Next writing: the author's §3 data
+figures and §3.3–3.4 text; then §4 from the frozen tables and the W165 figures (map round 2), where the expert drafts
+§4.7 and the limitations paragraph from `paragraphs_v5` and the author drafts 4.1–4.6 with the export's rounding; then
+§1, §5, front matter and the appendices B–E (round 3). The Planner stands by for the number check at each round's
+close; no run is queued. Still open on the author: the PDF the reviewers read (figure numbering in R1.5 and "Figure
+15"); the datasheet citations.
