@@ -1,9 +1,18 @@
 # TASKS — current order
 
-**Authority:** `PLANNER_BRIEF_2026-09-13.md` Addendum 68 (2026-10-07) and `STEP6_ROUND1_CORRECTIONS.md` §C; earlier orders below for record.
+**Authority:** `PLANNER_BRIEF_2026-09-13.md` Addendum 69 and `STEP6_ROUND2_CORRECTIONS.md` (author's order 2026-10-08; **both not yet in the repository** — requested); earlier orders below for record.
 **Objective convention on every value:** Q = certified `gross_operational_cost`, settlement excluded.
 **Updated at every transition; read first when resuming.**
 
+
+## Addendum 69 order — round 2 checks (zero-solve; nothing else runs)
+
+Clone pulled at Overleaf `407f8df` (main.tex 2,169 lines, sha256 9891057c; Appendix A pasted, l. 1404–1679, `% [CONFIRM — W172]` ×6, `% [CONFIRM — W173]` ×2).
+
+- [ ] **▶ W172** — audit of Appendix A at `407f8df` against the code (W166/W171b form) incl. its six `% [CONFIRM — W172]` comments; interface ratings R^I_i of the three DNs for §3.5
+- [ ] **▶ W173** — §2.1 `% [CONFIRM — W173]`: Δ_0 and the frame rule of s47/s51; the neighbour counts to print for x = 0 and the F2 plan (poll set vs all evaluated box points; one number each, definition in a clause)
+- [ ] W174 — **held:** after the author confirms the round-2 corrections are in Overleaf (and commits `STEP6_ROUND2_CORRECTIONS.md`): number check at that HEAD; re-audit §2.1–2.3 for the W171b rows only
+- [ ] Planner review; report; commit; push
 
 ## Addendum 68 order — `STEP6_ROUND1_CORRECTIONS.md` §C (zero-solve; nothing else runs)
 
@@ -15,7 +24,7 @@ Clone pulled at Overleaf `42794d4` (main.tex 2,092 lines, sha256 7effd898; §A c
 - [x] **W171a** — `a379b481` / `5cb84658`: main 146 match / 3 MISMATCH (poll, P̂); letter 89 / 2 MISMATCH (R3.5 0.5 %/2 %); quotations 29/31 verbatim, 62/62 numbers; **R3.6 'floor never binds' contradicts T8**
 - [x] **W171b** — `6fbd0dcf`: H rows §2.1 5 / §2.2 3 / §2.3 **2** — prediction **FAILED** (wording); A.1–A.8 present
 - [x] Planner review; report `P5_15_ADDENDUM68_ROUND1_REPORT.md` (Decisions 1–9)
-- [ ] **▶ Stopped for review:** expert on Decisions 1–7 (R3.6 vs T8; l. 639 rule scope; P̂ / slack regression; §2.1 search-as-run; §2.3 T3-1/T3-2; slack scoring; 0.933 wording); author on 8–9; push from PyCharm if the CLI push fails
+- [x] Reviewed (Addendum 69): expert on Decisions 1–7 (R3.6 vs T8; l. 639 rule scope; P̂ / slack regression; §2.1 search-as-run; §2.3 T3-1/T3-2; slack scoring; 0.933 wording); author on 8–9; push from PyCharm if the CLI push fails
 
 ## Step 6 support — author's request 2026-10-07 (zero-solve; nothing else runs)
 
