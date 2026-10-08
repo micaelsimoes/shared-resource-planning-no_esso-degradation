@@ -1,9 +1,18 @@
 # TASKS — current order
 
-**Authority:** `PLANNER_BRIEF_2026-09-13.md` Addendum 69 and `STEP6_ROUND2_CORRECTIONS.md` (author's order 2026-10-08; **both not yet in the repository** — requested); earlier orders below for record.
+**Authority:** `PLANNER_BRIEF_2026-09-13.md` Addendum 70 and `STEP6_ROUND3_CORRECTIONS.md` §D; earlier orders below for record.
 **Objective convention on every value:** Q = certified `gross_operational_cost`, settlement excluded.
 **Updated at every transition; read first when resuming.**
 
+
+## Addendum 70 order — `STEP6_ROUND3_CORRECTIONS.md` §D (zero-solve; nothing else runs)
+
+Clone pulled at Overleaf `260bd83` (main.tex 2,209 lines, sha256 cb237b2d…; round-3 markers present: F2 "seventeen", A.6 "not constructed", Δ₀ = 4, §3.5 l. 1066, §3.6 l. 1105). Predictions (expert): W174 — no H row remains in §2 or Appendix A, and every §3.5–3.6 value matches its source; W175 — the benchmark paragraph needs one wording change at most (the passive arm's tie-breaker).
+
+- [ ] **▶ W174a** — number check at `260bd83` (declarations v3) + every §3.5–3.6 value against code, specs and case files, one by one
+- [ ] **▶ W174b** — re-audit §2.1–2.3 (W171b rows only) and Appendix A (W172 rows only); presence of round-2 / round-3 corrections
+- [ ] **▶ W175** — `% [CONFIRM — W175]` comments in §3.5–3.6 (mid-block SoH point, no-ageing arm, chemistry, benchmark arm definitions)
+- [ ] Planner review; report; commit; push
 
 ## Addendum 69 order — round 2 checks (zero-solve; nothing else runs)
 
@@ -11,9 +20,9 @@ Clone pulled at Overleaf `407f8df` (main.tex 2,169 lines, sha256 9891057c; Appen
 
 - [x] **W172** — `86f75a4f`: 141 checked, 21 rows (H 1: A6-1 settlement does not vanish at one scenario; M 3; L 17); CONFIRM 5 confirmed, l. 1592 (e) recovery TSO-only; **R^I = 2.0 / 1.0 / 1.5 p.u. (200/100/150 MVA)**; branch table prints 200 MVA for all ADNs
 - [x] **W173** — `1d13858a`: Δ₀ = 4, double/halve, floor 1; variant A evaluated only completion points; x = 0 **14** (full box) correct; F2 **17** evaluated of 61 (13 re-evaluated: better than 12, within resolution of e28de4ac); l. 443 sentence wrong
-- [ ] W174 — **held:** after the author confirms the round-2 corrections are in Overleaf (and commits `STEP6_ROUND2_CORRECTIONS.md`): number check at that HEAD; re-audit §2.1–2.3 for the W171b rows only
+- [x] W174 — moved to the Addendum 70 order
 - [x] Planner review; report `P5_15_ADDENDUM69_ROUND2_REPORT.md` (Decisions 1–7)
-- [ ] **▶ Waiting on the author:** commit/push Addendum 69 + `STEP6_ROUND2_CORRECTIONS.md`; confirm round-2 corrections in Overleaf → W174
+- [x] Ruled (Addenda 69–70, `8d7b90f9`); W172 prediction held on count, W173 '12' failed (scored in Addendum 70)
 
 ## Addendum 68 order — `STEP6_ROUND1_CORRECTIONS.md` §C (zero-solve; nothing else runs)
 
