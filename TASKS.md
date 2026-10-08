@@ -1,18 +1,25 @@
 # TASKS — current order
 
-**Authority:** `PLANNER_BRIEF_2026-09-13.md` Addendum 72 and `STEP6_ROUND4_CORRECTIONS.md`; earlier orders below for record.
+**Authority:** `PLANNER_BRIEF_2026-09-13.md` Addendum 73 (W177 order; §4 frame `section4_expert_draft.tex`); earlier orders below for record.
 **Objective convention on every value:** Q = certified `gross_operational_cost`, settlement excluded.
 **Updated at every transition; read first when resuming.**
 
+
+## Addendum 73 order — W177 (zero-solve)
+
+§4 frame `section4_expert_draft.tex` (repo root, `4f941b29`). Predictions (expert): W177(a) zero MISMATCH in the nine composed tables and five captions; the salvage equation needs one correction among its four points; the four other structural CONFIRMs (S/E, I/J keys, F2 plan, 16 cycles) hold. W177(b) scored when ordered.
+
+- [ ] **▶ W177a** — every `[CONFIRM — W177]` of `section4_expert_draft.tex` against code/records; every number of the nine tables and five captions against the frozen JSON → `P5_15_ADDENDUM73_W177A_REPORT.md`
+- [ ] W177b — **held:** when the author's 4.1–4.6 text is in Overleaf: number check + audit of §4 as pasted (W174b rating) at that HEAD
 
 ## Addendum 72 order — W176 (zero-solve), then stand by
 
 Clone pulled at Overleaf `8b76423` (main.tex 2,156 lines, sha256 7aa9e105…; l. 858 → `sec:case_ess_params` confirmed). Predictions (expert): W176(a) no M or H row among the round-4 lines, any L row already on the round-4 final-pass list; W176(b) zero MISMATCH in main.tex and the letter, the same twelve approximates as W174a, submitted-version count reduced only where §3.5–3.6 replaced submitted text.
 
-- [ ] **▶ W176a** — round-4 lines re-check (14 edits + l. 858), W174b rating; literal "Section~4.x" in §2–§3; no `[CONFIRM` left
-- [ ] **▶ W176b** — number check at `8b76423` (W174a script lineage, declarations v4)
-- [ ] Planner review; report `P5_15_ADDENDUM72_ROUND4_REPORT.md`; commit; push
-- [ ] Stand by: number check at each writing round's close
+- [x] **W176a** — `a46d1dd8`: 14 edits + l. 858 present; H 0 / M 0 / L 2 (R4-1 s51 has no certificate; R4-2 'coarser') — prediction: no-M/H HELD, 'L rows listed' FAILED; 8 'Section 4.x' literals; no [CONFIRM; letter l. 174 [AUTHOR: placeholder
+- [x] **W176b** — `de7b55db` / `9b8ad153`: 0 MISMATCH (main, letter), same 12 approximates — HELD; submitted-version 559 → 559 (premise of the reduction clause wrong); 'ATB' unsourced
+- [x] Planner review; report `P5_15_ADDENDUM72_ROUND4_REPORT.md` (Decisions 1–5)
+- [x] Stand-by superseded by Addendum 73 (W177)
 
 ## Addendum 70 order — `STEP6_ROUND3_CORRECTIONS.md` §D (zero-solve; nothing else runs)
 

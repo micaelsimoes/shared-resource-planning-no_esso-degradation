@@ -22,10 +22,10 @@ authority is `PLANNER_BRIEF_2026-09-13.md` with its Addenda 1–67**; it superse
 
 # CURRENT SOURCE OF TRUTH — 2026-10-07 (tables frozen; methods text accepted; manuscript revision under way)
 
-Authority: `PLANNER_BRIEF_2026-09-13.md` Addenda 52–70; `STEP6_ROUND1/2/3_CORRECTIONS.md`. Tables FROZEN: `frozen_step6_tables_v1_590088fe.json` (W160).
+Authority: `PLANNER_BRIEF_2026-09-13.md` Addenda 52–73; `STEP6_ROUND1…4_CORRECTIONS.md`. Tables FROZEN: `frozen_step6_tables_v1_590088fe.json` (W160).
 Methods text: `export/paragraphs_v5.md` (Addendum 67). Expert's revision plan: `STEP6_REVISION_MAP.md`. Latest handoff:
-`P5_15_ADDENDUM70_ROUND3_REPORT.md` (W174a/b, W175, zero-solve; earlier rounds: `P5_15_ADDENDUM69_ROUND2_REPORT.md`,
-`P5_15_ADDENDUM68_ROUND1_REPORT.md`). Current order: `TASKS.md` (Addendum 70 section) — **stopped for review**. Sections below this one are history for their topics; where they conflict
+`P5_15_ADDENDUM72_ROUND4_REPORT.md` (W176, zero-solve; earlier rounds: Addendum 68–70 reports). Current order:
+`TASKS.md` (Addendum 73 section) — W177(a) on the §4 frame `section4_expert_draft.tex`; W177(b) after the author's §4 text. Sections below this one are history for their topics; where they conflict
 with this section, this section governs.
 
 ## Manuscript facts established from code and case files (W164–W167)
@@ -58,10 +58,10 @@ with this section, this section governs.
 - **Variant A search (s47, s51):** Δ₀ = 4, double/halve, floor 1; every evaluated point came from the unit-neighbour
   completion (all rounded directions inadmissible). F2: 17 of 61 box neighbours evaluated; of 13 re-evaluated, better
   than 12, within resolution of `ref:e28de4ac` (W173).
-- **Manuscript state at Overleaf `260bd83`:** §2, Appendix A, §3.1–3.6 revised; 0 number MISMATCH (W174a); no H row
-  on W174b's rating; §4–§5 and Appendix E still the submitted text (559 submitted-version figures). Benchmark values
+- **Manuscript state at Overleaf `8b76423`:** §2, §3.1, §3.5–3.6 and Appendix A closed for the revision (Addendum 71);
+  0 number MISMATCH (W176b); no H/M row (W176a; 2 new L rows R4-1, R4-2); §4–§5 and Appendix E still the submitted text (559 submitted-version figures). Benchmark values
   are post consistency-pass (Addendum 49); LFP is not named in any input file.
-- Number checker: `p515_s53_w174_manuscript_number_check.py (latest; W164 → W171 → W174 lineage)` — re-run each round with new declarations into
+- Number checker: `p515_s53_w176_manuscript_number_check.py (latest; W164 → W171 → W174 → W176 lineage)` — re-run each round with new declarations into
   `w164_manuscript_check/overleaf_<commit>/`.
 
 ## Certification (frozen: criterion v6, stage spec `96c23404`, extension `84775dc4`, A64 spec `44a2dce8`)
