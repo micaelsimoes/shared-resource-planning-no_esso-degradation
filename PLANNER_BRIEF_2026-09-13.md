@@ -3212,3 +3212,46 @@ production, spec, case or frozen file changes. Then stand by for the number chec
 **Predictions.** W176(a): no M or H row among the round-4 lines; any L row is already on the final-pass list of
 `STEP6_ROUND4_CORRECTIONS.md`. W176(b): zero MISMATCH in `main.tex` and the letter, with the same twelve approximates as
 W174a (printed roundings) and the submitted-version count reduced only where §3.5–3.6 text replaced submitted text.
+
+# Addendum 73 — §4 frame delivered (`section4_expert_draft.tex`); W177 order (2026-10-08)
+
+**What the file is.** The expert's frame for Section 4, replacing `main.tex` l. 1126–1445 (from `\section{Results}` to
+the line before the CONCLUSIONS banner). It carries: the section preamble with the salvage credit (eqs.
+`salvage_credit`, `salvage_remaining_life`, from Part D.2, still `[CONFIRM — W177]`); nine subsections in the
+revision-map order (4.1 baseline, 4.2 break-even, 4.3 degradation, 4.4 coordination, 4.5 multi-scenario, 4.6
+investment year and discount, 4.7 certification statistics and computational performance, 4.8 limitations, 4.9 key
+insights); nine tables composed from the frozen T1–T11 rows with every number copied from the W160 `.tex` export at
+its printed rounding and the source rows named in a comment under each table; the five W165 figures with captions
+adapted from `captions.md`; the expert's text in full for the preamble, 4.7, 4.8 and a proposed 4.9; and, for 4.1–4.6,
+an `[AUTHOR — write]` slot per subsection listing the facts, the accepted sentences to use verbatim (paragraphs_v5
+sentences 1–4) and the claims not to make. The main/supplementary split is the export README's: T1 (all claims), T2,
+T5, T6 (all starts), T9, T10, the full statistics and the scorecard go to Appendix E in round 3; the author decides.
+The file compiles (article wrapper; no error, no overfull box).
+
+**Expert's own choices to be aware of.** (1) "The reference unit" for the 0.25 MVA / 1 MWh plan at node 7, not "the
+smallest unit": the lattice admits 0.25 MVA / 0.5 MWh and that plan is evaluated (T1 C row, 49.7 k€); the letter's
+"smallest unit" is listed for its final pass. (2) The S column of the value-ladder table is E over the duration
+(the cell names carry duration and E); marked for W177. (3) The energy ladder at m = 2 is labelled node 7, 4 h from
+the candidate keys shared with the B cells; marked for W177. (4) The F2 plan is described as 2030, node 5
+0.25 MVA / 0.5 MWh and node 7 1 MVA / 3 MWh, read from the L-row names; marked for W177. (5) The benchmark table prints
+the best start's own curtailment (807.6 / 0.6 price-taker; 781.7 / 201.2 passive). (6) The 3 × 3 "16 cycles" of the
+post-hoc continuation is from the brief's record, marked for W177. (7) "41 new recourse evaluations (14, 20, 7)" is
+W173's realized use, summed; marked. (8) "0 sign changes in 60 claims" (salvage) is the map's W153 line; marked.
+
+**W177 order (zero solves), in two parts.** (a) Now, on `section4_expert_draft.tex` at the repository root: check
+every `[CONFIRM — W177]` point against code or records (the salvage equation (a)–(d) against
+`_get_terminal_salvage_value_*`; the S/E/duration of the B and C cells; the I/J candidate keys; the F2 plan; the 16
+cycles; the 41; the W153 sign-change line; the 2025 cohort's zero salvage) and check every number of the nine composed
+tables and the five captions against the frozen JSON; report as `P5_15_ADDENDUM73_W177A_REPORT.md`. (b) When the
+author's 4.1–4.6 text is in Overleaf: the number check and an audit of §4 as pasted (every statement rated as in
+W174b), at that HEAD. **Predictions.** W177(a): zero MISMATCH in the composed tables and captions; the salvage
+equation needs one correction among its four points; the four other structural CONFIRMs (S/E, I/J keys, F2 plan,
+16 cycles) hold. W177(b): scored when ordered.
+
+**Author's steps.** Overleaf: upload the five PDFs from `export/figures/`; delete l. 1126–1445; paste the file at
+l. 1126; replace the literal references — l. 415 "Section~4" → `Section~\ref{sec:results}`, l. 445 "Section~4.7" →
+`Section~\ref{sec:case_settings}` (σ_Q is stated there), l. 631 "Section~4.5" →
+`Subsection~\ref{subsec:res_multiscenario}`, l. 1066 "Section~4.3" → `Subsection~\ref{subsec:res_degradation}`,
+l. 1116 "(Section~4.4)" → `(Subsection~\ref{subsec:res_coordination})`; compile (expect only the `[AUTHOR — write]`
+slots empty); then write 4.1–4.6 into the slots and edit 4.9. No old §4 label is referenced outside §4 except
+`sec:results`, which is kept.
