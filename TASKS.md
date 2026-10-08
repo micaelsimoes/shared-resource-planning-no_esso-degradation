@@ -9,10 +9,11 @@
 
 Clone pulled at Overleaf `407f8df` (main.tex 2,169 lines, sha256 9891057c; Appendix A pasted, l. 1404–1679, `% [CONFIRM — W172]` ×6, `% [CONFIRM — W173]` ×2).
 
-- [ ] **▶ W172** — audit of Appendix A at `407f8df` against the code (W166/W171b form) incl. its six `% [CONFIRM — W172]` comments; interface ratings R^I_i of the three DNs for §3.5
-- [ ] **▶ W173** — §2.1 `% [CONFIRM — W173]`: Δ_0 and the frame rule of s47/s51; the neighbour counts to print for x = 0 and the F2 plan (poll set vs all evaluated box points; one number each, definition in a clause)
+- [x] **W172** — `86f75a4f`: 141 checked, 21 rows (H 1: A6-1 settlement does not vanish at one scenario; M 3; L 17); CONFIRM 5 confirmed, l. 1592 (e) recovery TSO-only; **R^I = 2.0 / 1.0 / 1.5 p.u. (200/100/150 MVA)**; branch table prints 200 MVA for all ADNs
+- [x] **W173** — `1d13858a`: Δ₀ = 4, double/halve, floor 1; variant A evaluated only completion points; x = 0 **14** (full box) correct; F2 **17** evaluated of 61 (13 re-evaluated: better than 12, within resolution of e28de4ac); l. 443 sentence wrong
 - [ ] W174 — **held:** after the author confirms the round-2 corrections are in Overleaf (and commits `STEP6_ROUND2_CORRECTIONS.md`): number check at that HEAD; re-audit §2.1–2.3 for the W171b rows only
-- [ ] Planner review; report; commit; push
+- [x] Planner review; report `P5_15_ADDENDUM69_ROUND2_REPORT.md` (Decisions 1–7)
+- [ ] **▶ Waiting on the author:** commit/push Addendum 69 + `STEP6_ROUND2_CORRECTIONS.md`; confirm round-2 corrections in Overleaf → W174
 
 ## Addendum 68 order — `STEP6_ROUND1_CORRECTIONS.md` §C (zero-solve; nothing else runs)
 

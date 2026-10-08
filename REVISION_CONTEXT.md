@@ -24,8 +24,8 @@ authority is `PLANNER_BRIEF_2026-09-13.md` with its Addenda 1–67**; it superse
 
 Authority: `PLANNER_BRIEF_2026-09-13.md` Addenda 52–68; `STEP6_ROUND1_CORRECTIONS.md`. Tables FROZEN: `frozen_step6_tables_v1_590088fe.json` (W160).
 Methods text: `export/paragraphs_v5.md` (Addendum 67). Expert's revision plan: `STEP6_REVISION_MAP.md`. Latest handoff:
-`P5_15_ADDENDUM68_ROUND1_REPORT.md` (W168–W171, zero-solve). Current order: `TASKS.md` (Addendum 68 section) —
-**stopped for review** on its Decisions 1–9. Sections below this one are history for their topics; where they conflict
+`P5_15_ADDENDUM69_ROUND2_REPORT.md` (W172–W173, zero-solve; round 1: `P5_15_ADDENDUM68_ROUND1_REPORT.md`). Current order:
+`TASKS.md` (Addendum 69 section) — W174 held for the author. Sections below this one are history for their topics; where they conflict
 with this section, this section governs.
 
 ## Manuscript facts established from code and case files (W164–W167)
@@ -53,6 +53,11 @@ with this section, this section governs.
   acceptance; F2 certificate is not a positive-spanning-set certificate.
 - **0.933 (3 × 3 R prediction)** = price-only ratio of discount-weighted average spreads, 3 × 3 horizon over SRP1
   horizon; on totals 0.915 (W170).
+- **DN interface ratings R^I** = 2.0 / 1.0 / 1.5 p.u. (200 / 100 / 150 MVA; nodes 5 / 7 / 9), fixed across years (W172).
+- **The interface settlement is in every ADMM local objective, single scenario included** (weight 1), excluded from Q.
+- **Variant A search (s47, s51):** Δ₀ = 4, double/halve, floor 1; every evaluated point came from the unit-neighbour
+  completion (all rounded directions inadmissible). F2: 17 of 61 box neighbours evaluated; of 13 re-evaluated, better
+  than 12, within resolution of `ref:e28de4ac` (W173).
 - Number checker: `p515_s53_w164_manuscript_number_check.py` — re-run each round with new declarations into
   `w164_manuscript_check/overleaf_<commit>/`.
 
