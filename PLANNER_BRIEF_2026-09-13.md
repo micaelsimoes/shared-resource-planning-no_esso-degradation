@@ -3184,3 +3184,31 @@ figures and §3.3–3.4 text; then §4 from the frozen tables and the W165 figur
 §1, §5, front matter and the appendices B–E (round 3). The Planner stands by for the number check at each round's
 close; no run is queued. Still open on the author: the PDF the reviewers read (figure numbering in R1.5 and "Figure
 15"); the datasheet citations.
+
+# Addendum 72 — round 4 verified in Overleaf (`c71ca2e`); one leftover; W176 order (2026-10-08)
+
+**Verification (expert, by diff of the collapsed-whitespace blocks against `main.tex` at Overleaf HEAD `c71ca2e`,
+2,156 lines).** Thirteen of the fourteen round-4 edits are in verbatim, including the two restorations (the AA-off
+clause at A.4 and Algorithm 2's `k ← k + 1`, now at l. 1655); every old wording is gone; no `[CONFIRM` and no
+`[AUTHOR]` comment remains. **Leftover:** item 4 was applied at its first site only — l. 748 (η, SoC, ε^Cl, c^Cl, ε^C)
+now points to `sec:case_ess_params`, but l. 858 ("The values of $c^{\sigma}$ and $\varepsilon^{\text{E}}$ are given in
+Section~\ref{sec:case_settings}") still points to §3.6; it becomes `\ref{sec:case_ess_params}`. The α reference
+(l. 899) and the Appendix A recovery-settings reference (l. 1605) correctly stay on `sec:case_settings`.
+
+**Chemistry (Addendum 71 item 7): the author took the second option.** §3.5 l. 1062 reads "utility-scale lithium-ion
+battery (the NREL ATB utility-scale battery category~\cite{nrel_ess_costs})", the abstract (l. 143) says "utility-scale
+lithium-ion battery storage", and the letter's R1.2(iv) now reads "the reference technology is utility-scale
+lithium-ion battery storage; the cycling calibrations are datasheet readings (Section~3.5)". No chemistry is named
+anywhere that the inputs do not record. The ageing table's rows remain "datasheet" statements without a named
+datasheet; whether to cite the sheets behind the 10,000- and 8,000-cycle counts is the author's call at the final
+pass, and the "Section~4.3" literal in the §3.5 ageing paragraph is on the final-pass list with the others.
+
+**W176 order (zero solves; after the l. 858 fix is in Overleaf, at that HEAD).** (a) Re-check the round-4 lines only
+against the records: the fourteen edits of `STEP6_ROUND4_CORRECTIONS.md` and the l. 858 reference, each rated as in
+W174b; (b) re-run the number check (W174a's script) at that HEAD; (c) list the literal "Section~4.x" references
+remaining in §2–§3 and confirm no `[CONFIRM` comment remains. Report as `P5_15_ADDENDUM72_ROUND4_REPORT.md`; no
+production, spec, case or frozen file changes. Then stand by for the number check at each writing round's close.
+
+**Predictions.** W176(a): no M or H row among the round-4 lines; any L row is already on the final-pass list of
+`STEP6_ROUND4_CORRECTIONS.md`. W176(b): zero MISMATCH in `main.tex` and the letter, with the same twelve approximates as
+W174a (printed roundings) and the submitted-version count reduced only where §3.5–3.6 text replaced submitted text.
