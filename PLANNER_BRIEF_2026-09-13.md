@@ -2939,3 +2939,85 @@ At the end of Step 1 the Planner rewrites the "CURRENT SOURCE OF TRUTH" head of
 `REVISION_CONTEXT.md` to reflect: the withdrawal of the `C*` feasibility-boundary claim, the
 warm-start mechanism, the reformulated ESSO, and the reopened numerical programme. Historical
 sections are not rewritten. `COWORK_HANDOFF.md` is marked superseded by this brief.
+
+# Addendum 68 — rulings on `P5_15_STEP6_SUPPORT_REPORT.md` (W164–W167); §2 corrected to the code (2026-10-07)
+
+Support order complete: number checker W164 (86/86 letter numbers match; one wording mismatch), figures 1–5 W165
+(deterministic PDFs, captions drafted), equation-vs-code audit W166 (68 rows on the **submitted** §2.3/Appendix A at
+Overleaf `6191c6c`: 22 match, 38 differ, 8 retired), nomenclature and year tables W167. **Accepted.** The audit was run
+on the old text by construction (the order pinned `6191c6c`); the revised §2 pasted since (Parts A–D of
+`section2_expert_draft.tex`) is corrected here to what the audit found, in `STEP6_ROUND1_CORRECTIONS.md` §A, and is
+re-audited as W171 once pasted.
+
+**Decisions (the report's 1–7).**
+
+1. **R3.3 wording — (a).** The schedule is one per block, common to all market × operation scenarios, in all three
+   agents; non-anticipativity is hard (aliasing), the priced term is the DSO-side interface premium (row 18) and never
+   touches the storage; the closure is soft (slack ≤ 0.05 E^Av + 1e-5, penalised 1e3 €/MWh inside Q). The letter's
+   R3.3 is rewritten from the Worker's plain statement (`STEP6_ROUND1_CORRECTIONS.md` B.1); the CONFIRM comment goes.
+   The same facts enter §2.3.3 and §2.3.6 (corrections A.3, A.6).
+2. **Two horizons — (a).** SRP1: 2025/2030/2035, five-year blocks. The 3 × 3: 2025/2028/2031/2034/2037, three-year
+   blocks. §3 states both, the T11 caption states the 3 × 3 horizon, §4.5 says the ratio R compares the instances as
+   run (scenario set and block length both differ) and does not isolate the scenario effect; the letter's R1.2 adds
+   "run on a finer five-block horizon" (B.6). No re-run. W170 records how the 0.933 prediction was computed, so that
+   §4.5 can say what it was a prediction of.
+3. **§3.1 — as recommended.** Three trajectories at 0.35/0.55/0.10; I(x) is their expectation (linear in the costs);
+   the 2025 expectations are 256,317.32 €/MVA and 253,877.68 €/MWh. The table is replaced by W167's 2025/2030/2035
+   fragment (energy row ×1.25 against the submitted file, which divided the 4 h cost by 5). §3.1 says I(x) is the
+   expectation; the letter's "Further changes" names the correction (÷4 h, not ÷5).
+4. **Figure 4(a), the x = 0 reference — (b).** The reference `ref:7aa017f0` (k* 181) was certified under settling rule
+   v1; the paper describes v6. W168 replays the v6 decision on its committed per-cycle record (zero-solve). Rulings in
+   advance: the frozen tables are **not** re-frozen on the outcome — if v6 certifies at k*' ≠ 181 the certified value
+   differs by less than the band (0.93 τ) and the caption and §4.7 state both cycles; if the record ends before v6 can
+   decide, the Planner stops and reports, and a bounded continuation (≤ 60 cycles) is a separate ruling; if v6
+   refuses on the record, T1's B rows carry a footnote and §4.7 says under which rule the anchor was certified. The
+   caption keeps both facts in every case. **Prediction:** certifies under v6 at a cycle in [174, 195], window range
+   ≤ τ, value within 0.93 τ of the tabulated one.
+5. **Letter wording — all seven fixed** (B.2–B.9): "the other comparison that depends on the convention"; the Phase B
+   neighbour named (two-node plan at the doubled flexibility price); T8 has no terminal-AE column → PV-weighted
+   available energy, and the floor never binds within the horizon; R3.6's calibration sentence rewritten with all five
+   aged arms in order; "48 blocks" → 48 network blocks plus three storage agents; R1.5 → Figure 1 of the revised
+   manuscript; R2.8 stays a status note until the references are in. "Revision 1" / "first reply" are consistent.
+   "Single machine" stands on the author's attestation (Addendum 67).
+6. **main.tex l. 1058 (60 %/80 % floors "are evaluated") — removed** in the §3.4 rewrite, with the 0.5 %/2 %
+   calendar sentence (map §B).
+7. **Figure 1 panel (b) — kept.** Both fits use all ten points; the 2 h panel shows the reader the same fit on the
+   other duration.
+
+**§2 corrections from the audit (`STEP6_ROUND1_CORRECTIONS.md` §A; the author pastes, W171 verifies).** The audit's
+H-impact findings that the pasted §2 had not yet absorbed: scenarios are joint within one block model, not instantiated
+per scenario (A.1); available energy uses the end-of-block SoH, and the agent publishes the degraded capacities to the
+networks every cycle — the path by which degradation reaches operation (A.2); the network storage model has the
+active-sum limit p^ch + p^dch ≤ S, the capability circle, the relaxed normalised complementarity (1e-4), the 0.10–0.90
+window, the 0.5 E^Av initial state and the soft closure with its penalty inside Q (A.3); the agent's net power carries a
+penalised slack pair (1e3) and the pro-rata allocation acts on the net power, vacuous for every single-cohort plan in
+the tables (A.4); the agent's objective is the slack penalty + ε-throughput (1e-5) + AL terms, excluded from Q, with the
+circle on (P^Net, Q^Net) (A.5); the deviation part of the settlement is inside Q and the contracted part is not, the
+voltage pin is solver-only (A.6, A.7); the 3 × 3 cells were stopped by the production exit (ten consecutive passing
+cycles) and continued, not by the settling holds — §2.2.7 and §3.5 say which instance used which rule, and T11 is a band
+(A.7). Notation: n_w for the window (W is taken), 𝒱 for the reference value (V is voltage); the cohort window written
+half-open (A.8). Parameters for §3.5, as found in force: η 0.97/0.96; SoC 0.10–0.90, initial 0.5; closure slack
+0.05 E^Av + 1e-5 at 1e3 €/MWh; complementarity 1e-4; ε 1e-5; c^σ 1e3; S_ref 2.5 MVA (normalisation 2 S_ref = 5 MVA);
+ρ initial v 0.0077 / pf 0.198 / ess 0.01; balancing ratio 5 (pf decrease 3), ×/÷1.5, clamp [1e-4, 1e4], per-channel
+freeze after 10 unchanged cycles, backstop 200, ESS exempt until its dual ratio < 1 on 5 cycles; Boyd 1e-5/1e-4; ten
+consecutive cycles; caps 3 × 3 500, SRP1 gated N_old + 100 / ungated min(k0 + 109, 300); σ = 93,635,360;
+κ_ESSO = σ / median w_b (227,210.997 SRP1; 386,258.694 3 × 3); w_b = Y_y D_d 1.02^{−(y−y0)}; AA type-II memory 5,
+Tikhonov 1e-10, ratchet safeguard, `keep_memory`, cleared on ρ change and on a solve failure, off when every channel
+passes; tail compl_inf_tol 1e-6 (TSO production 5e-4, DSO 1e-4); ESSO IPOPT tol 1e-10 / acceptable 1e-9, MA57; networks
+tol 1e-5 / acceptable 1e-4, MA97, max_iter 500, recovery acceptable_tol 1e-4 / acceptable_iter 1; proximal γ = 0; row 18
+α = 0.5; voltage pin 9e4 solver-only; baseMVA 100.
+
+**Appendix A.** The audit's A4–A35 rows describe a different algorithm from the printed one (three-agent global-variable
+consensus with a z-update and per-agent duals; normalisation 1/(2 S_ref); κ_ESSO; one ρ per channel under residual
+balancing; convergence checked once per cycle after the ESSO; targets = z; interface channels on the expected interface
+normalised by the DN interface rating, V unnormalised; the TSO proximal term at γ = 0; the publication of available
+capacities). The expert drafts Appendix A from the audit's "Implemented but not in the text" list, in the same form as
+§2; it is audited after it is pasted (round 3).
+
+**Blocked on the author, resolved by order:** the reviewers' comment document and `manuscript_submitted/` are committed
+to the repository from the Air checkout (`manuscript_review/`, `manuscript_submitted/`; `manuscript/` added to
+`.gitignore`), so W164 can check the quotations and `latexdiff` has its base. The 15 year-indexed figures stay
+2025-only; the l. 1642 sentence is corrected to say that later years are drawn by the same generator with the year in
+the seed (author).
+
+**Next order:** `STEP6_ROUND1_CORRECTIONS.md` §C (W168–W171). Predictions recorded there. Nothing else runs.

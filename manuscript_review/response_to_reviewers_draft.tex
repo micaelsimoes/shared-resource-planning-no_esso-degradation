@@ -1,0 +1,366 @@
+% Response to reviewers — DRAFT for the author (expert's skeleton, 2026-10-06).
+% Quote every reviewer comment verbatim where [COMMENT: ...] appears; the paraphrases there are the
+% expert's and must not go to the journal. Section and table references point to the revised manuscript
+% as mapped in STEP6_REVISION_MAP.md; fix them to the final numbering before submission.
+% Every number below is in the frozen tables (590088fe) or a named record; the Planner's figure check
+% must run on this file as on the manuscript.
+
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{xcolor}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage{eurosym}
+
+\newcommand{\rcomment}[1]{\par\medskip\noindent\textbf{Comment.} \textit{#1}\par\smallskip}
+\newcommand{\rresponse}[1]{\noindent\textbf{Response.} #1\par\smallskip}
+\newcommand{\rchanges}[1]{\noindent\textbf{Changes.} \textcolor{blue}{#1}\par\medskip}
+
+\title{Response to the Reviewers\\
+\large Degradation-Aware Planning of Shared Battery Energy Storage Systems for Coordinated Transmission and Distribution System Operation\\
+\normalsize Manuscript JES-D-[number]; revision 1}
+\author{Micael Sim\~oes, Jo\~ao Pe\c{c}as Lopes, Filipe Joel Soares}
+\date{}
+
+\begin{document}
+\maketitle
+
+\section*{To the Editor and the Reviewers}
+
+We thank the Editor and the three Reviewers for a careful reading and for comments that, taken
+together, changed how this work is done. The revised manuscript marks every changed passage in blue.
+Before the item-by-item responses, two points apply to the whole revision.
+
+\paragraph{Why the results changed in kind.}
+Reviewers 2 and 3 pointed out that the Benders-type cuts of the submitted version are not valid for a
+nonconvex operational recourse, that the reported sensitivities were local multipliers, and that the
+0.50\,\% gap was a stopping tolerance rather than an optimality certificate. We agree with all of this. In
+the revision we replaced the cut-based master problem by a derivative-free search over a granular
+siting--sizing--timing lattice (Section~2.2), in which each candidate plan is evaluated by the
+coordinated TSO--DSO recourse and the evaluation is accepted only when an explicit stopping and
+certification rule holds (Section~2.2.7). We also corrected the investment-cost input file, adopted a
+datasheet-based cycling calibration with calendar fade and an end-of-life floor (Section~3.4), and
+retired a transfer-payment term from the recourse objective that the submitted results had included. Under
+the revised method and inputs, the baseline instance supports no shared-storage investment: the smallest
+admissible unit loses 64.4~k\euro{} over the horizon, determinately, and the paper now reports the
+conditions under which investment does pay (Section~4.2) and the role of degradation in that outcome
+(Section~4.3). The 18.25\,\% operating-cost reduction of the submitted version is therefore not restored;
+it is replaced by a differently defined quantity, the value of coordination against the best static
+no-reverse-flow interface arrangement, 90.9~M\euro{} (13.9\,\%), with its mechanism stated
+(Section~4.4). We consider the revised paper stronger for it, and we have tried to make every number it
+reports traceable and to state the resolution at which each difference is claimed.
+
+\paragraph{What we did not do, and why.}
+Two requests were not met in full. We did not attribute degradation separately to the TSO and the DSO
+(Reviewer~1): the shared ESS follows a jointly determined schedule and no unique attribution exists; a
+marginal or Shapley-type allocation is identified as future work. We did not re-optimize the investment
+plan under every ageing calibration (Reviewer~3, degradation-neutral benchmark): under every aged
+calibration the smallest admissible unit loses determinately, and the value is measured to be affine in
+storage size with a slope below cost, so the optimal plan under each aged calibration is no investment
+provided that affinity holds under the calibration, which we state as the assumption; under the
+no-ageing calibration the unit is at break-even within resolution and the plan is indeterminate at the
+precision of this study. The largest instance of the submitted version (five representative years,
+twenty-five scenarios) could not be evaluated under the certification rule within the memory available
+and is stated as future work; the multi-scenario results are given on a $3\times3$ scenario instance
+(Section~4.5).
+
+% =====================================================================================================
+\section*{Reviewer 1}
+
+\subsection*{R1.2 --- Uncertainty, system size, and the date and basis of the reported benefits}
+\rcomment{Regarding the Abstract, the following are relevant:
+    \begin{enumerate}[label=(\roman*)]
+        \item The Authors could tell the reader a little more about the ``uncertainty''. Some elaboration on the investment-cost uncertainty will be very useful. Is it to do with cost of money (interest rate) being uncertain over the planning period in question?
+        \item The size of the test systems on which the framework is evaluated could also be indicated explicitly in the Abstract.
+        \item The lines below could also be improved: ``Relative to uncoordinated operation, coordinated operation with shared ESSs reduces operating costs by up to 18.25\% and RES curtailment by up to 92.16\% in the later years of the planning horizon, while eliminating voltage violations.'' Does 18.25\% refer to annual operating cost reduction? What does 92.16\% in the later years of the planning horizon mean? 8th year, 10th year, 13th year or 14th year? Some clarification could be useful.
+        \item What type of battery ESS is the reference? This could also come out in the Abstract.
+        \item The battery ESS is shared by both the Transmission and Distribution Systems. How does the transmission system impact degradation? How does the distribution system impact degradation? What level of degradation could we attribute to the transmission system and what level to the distribution one?
+        \item Improving the Abstract taking into consideration the above points will bring significant clarity.
+    \end{enumerate}
+}
+\rresponse{On (i): the investment-cost uncertainty is uncertainty about future technology cost --- alternative
+trajectories of the unit cost of storage over the horizon --- not about the cost of capital; the cost of
+capital is treated separately through the discount-rate sensitivity requested in R1.4. Operational
+uncertainty is represented through scenarios of load, RES generation and market prices (Section~3), and
+the abstract now says both. On (iv): the reference technology is utility-scale lithium iron phosphate
+(LFP) battery storage; the cycling calibrations are taken from LFP datasheets (Section~3.4) and the
+abstract names the chemistry. The revised results are given on the
+single-scenario instance and on a $3\times3$ market$\times$operation scenario instance; on the latter the
+planning conclusion is unchanged and the storage value is 0.909--0.934 of its single-scenario value,
+against 0.933 predicted from the mean-profile price spread (Section~4.5). The test system (IEEE 9-bus
+transmission network with three IEEE 33-bus distribution networks, 108 buses) is unchanged; its size
+limits the generality of the conclusions and we say so. Every benefit is now stated with its basis: the
+objective convention (gross operational cost, settlement excluded), the horizon (three representative
+years standing for five-year blocks), the comparison it is drawn from, and the resolution at which the
+difference is claimed (Section~2.2.7 and the captions of Tables~[T1, T6]).
+On sub-item (v), the attribution of degradation to the TSO and the DSO, we respectfully maintain the
+position of our first reply: the shared ESS follows a jointly determined schedule and no unique
+attribution exists; this is now stated explicitly (Section~4.3), and a marginal allocation is listed as
+future work.}
+\rchanges{Section~3 (instance as run; scenario structure); Section~4.5 (multi-scenario instance);
+Section~4.3 last paragraph (attribution); captions of the results tables (basis and resolution).}
+
+\subsection*{R1.4 --- Uncertainty and discount-rate sensitivity}
+\rcomment{
+Several uncertainties will accompany the evolution of energy systems, namely: Government Policies; Fuel Costs; Cost of Capital; Technology maturation; Demand growth; and infrastructure retirements.
+\begin{enumerate}[label=(\roman*)]
+    \item It could be good for this type of Paper to elaborate a little more on the above factors.
+    \item Additionally, could some sensitivity analysis be useful - so far as cost of capital is concerned?
+\end{enumerate}
+}
+
+\rresponse{On (i): the introduction now has a paragraph on these sources of uncertainty --- policy, fuel and
+market prices, cost of capital, technology maturation, demand growth and infrastructure retirements ---
+stating which are represented in this work (technology cost, demand and RES trajectories, operational
+scenarios) and which are outside its scope (policy changes, retirements, cost-of-capital uncertainty as a
+stochastic variable), the latter identified as future work. On (ii): a discount-rate sensitivity was added
+at a fixed plan: at 0, 2, 5 and 8\,\% the smallest unit's
+value minus investment is $-40.8$, $-64.4$, $-92.7$ and $-114.6$~k\euro{} respectively, negative and
+determinate at every rate (Table~[T7]). The production rate remains 2\,\%. The per-year operating costs do
+not depend on the rate; only the present-value weights do, which is why the sensitivity is exact at a
+fixed plan.}
+\rchanges{Section~4.6; Table~[T7].}
+
+\subsection*{R1.5 --- Figure 2}
+\rcomment{Figure 2 could be improved in size for clarity.}
+\rresponse{The framework figure was redrawn at a larger size and with fewer elements, and it now reflects
+the revised solution architecture (a derivative-free search driving certified recourse evaluations; no
+cuts).}
+\rchanges{Figure~2 and the graphical abstract.}
+
+% =====================================================================================================
+\section*{Reviewer 2}
+
+\subsection*{R2.1 and R2.9 --- Not a true bi-level problem; scenario-averaged investment decisions}
+\rcomment{
+The claimed ``bi-level'' formulation is not clearly a bilevel optimization problem. The manuscript states that the upper level determines siting, sizing, and staged investment decisions while the lower level evaluates coordinated operation, and then says Benders decomposition is used between the two levels . However, the formulation does not present a conventional bilevel program with a lower-level objective, lower-level feasible set, and upper-level constraints depending on the lower-level optimizer. It reads more like a two-stage stochastic planning model with operational recourse solved by decomposition. The authors should explicitly clarify whether this is a true Stackelberg/bilevel problem, a two-stage stochastic program, or a decomposition of a single-level planning-operation model.\\
+The scenario treatment is conceptually problematic. The master problem defines scenario-dependent investments, then computes probability-weighted expected investment variables and passes those expected values to the subproblem . This creates a physical ambiguity: an expected battery size is not necessarily an implementable investment policy. If investment-cost uncertainty is resolved before investment, the timing of uncertainty resolution must be specified. If not, nonanticipativity constraints are required. The current averaging procedure may mix mutually exclusive scenario-specific decisions into one artificial operational plan.
+}
+\rresponse{We agree. The problem is a two-stage stochastic program with operational recourse: the first
+stage selects one scenario-independent multi-year plan; the second stage evaluates it under
+scenario-dependent coordinated operation. The bi-level vocabulary has been removed throughout, and the
+investment plan is a single vector common to all scenarios in every evaluation (Section~2.1), so it is
+nonanticipative by construction; the investment-cost uncertainty enters the first-stage objective as the
+probability-weighted expected cost of that single plan, and no scenario-specific investment is averaged.
+All results were recomputed under the revised formulation and method; none of the submitted numbers is
+reused.}
+\rchanges{Title of Section~2.1; Sections~1, 2.1, 2.2, 5; abstract; highlights; keywords.}
+
+\subsection*{R2.2 --- No complete outer-loop algorithm}
+\rcomment{The interaction between ADMM, Benders decomposition, and the "bilevel" structure is not sufficiently explained. The paper says the master problem passes expected investment decisions to the operational subproblem, and the subproblem returns operational costs and sensitivities for Benders cuts . But the manuscript does not give a complete outer-loop algorithm showing exactly when ADMM is called, how many operational subproblems are solved per Benders iteration, how operational scenarios are aggregated, and how the resulting sensitivities are converted into Benders cuts. This is a central methodological gap.}
+\rresponse{Algorithm~1 now states the outer loop exactly as implemented: the lattice (0.25~MVA and
+0.5~MWh units, duration between 2 and 4~h, investment year), the poll and frame-size rules of the mesh
+adaptive direct search, the completion rule, the evaluation cache, and how each recourse evaluation
+aggregates scenarios, representative days and years with discounting. One recourse evaluation is made per
+candidate plan; within an evaluation, every ADMM cycle solves one local problem per network block (three
+representative years $\times$ four representative days $\times$ four agents at the single-scenario
+instance, 48 blocks, with the scenarios inside each block), and the evaluation ends when the certification
+rule of Section~2.2.7 holds. The number of candidates evaluated and of cycles per evaluation is
+reported (Section~4.7).}
+\rchanges{Section~2.2 and Algorithm~1; Section~4.7.}
+
+\subsection*{R2.3, R2.4, R2.7 --- Validity of the cuts; sensitivities; feasibility cuts}
+\rcomment{
+The Benders cuts are not mathematically justified. The paper presents an optimality cut using sensitivities with respect to the power and energy investment variables . Classical Benders decomposition requires strong duality or a valid subgradient of the recourse function. Here, the lower-level problem includes nonlinear AC power flow, ADMM coordination, degradation equations, and complementarity/relaxed complementarity constraints. These are nonconvex. The authors do not prove that the reported "sensitivities" are valid subgradients of the true operational recourse function. Without this, the Benders cuts may be heuristic rather than valid.\\
+The source of the sensitivity coefficients is unclear. The cuts use coefficients denoted as sensitivities, but the paper does not explain whether they are obtained from NLP dual variables, ADMM multipliers, finite differences, solver sensitivities, or an adjoint calculation . This is not a minor omission. If the lower problem is solved by ADMM and nonlinear programming, local dual multipliers are not automatically valid Benders multipliers. The paper should define the sensitivity calculation rigorously.\\
+The feasibility cuts are not valid as written. The authors introduce penalized slack variables to preserve subproblem feasibility and then use their activation to generate cuts that discourage similar investment solutions . This is not equivalent to a standard Benders feasibility cut unless derived from a proper infeasibility certificate, such as a Farkas dual ray in a convex setting. Penalized slacks can identify that a trial solution is problematic, but they do not by themselves generate a mathematically valid feasibility cut.
+}
+\rresponse{We agree that the cuts were not valid for a nonconvex recourse and that the sensitivities were
+local multipliers of a fixed-interface solve. Rather than repair the cuts, we removed them: the master
+problem is now a derivative-free search (Section~2.2), and no gradient or multiplier information from
+the recourse is used. Feasibility cuts are no longer needed because every lattice point is evaluated
+directly; every candidate evaluated in this study was feasible. The method claims no optimality
+certificate; what it certifies is each evaluation (Section~2.2.7), and every planning statement in the
+paper is a pairwise comparison of certified evaluations with a stated determinacy threshold.}
+\rchanges{Section~2.2 (former 2.2.7 ``Benders' cuts'' removed; new 2.2.7 ``Recourse evaluation and
+certification''); Section~4.7.}
+
+\subsection*{R2.5 and R2.6 --- ADMM convergence and the adaptive penalty}
+\rcomment{
+The ADMM convergence claim is weak for the stated problem class. The operational layer is based on consensus ADMM, with TSO, DSO, and shared ESS updates . However, ADMM has standard convergence guarantees mainly under convexity and appropriate regularity assumptions. The paper's operational model includes AC-feasible network constraints and nonconvex ESS constraints. The authors provide pseudocode, but not a convergence theorem, residual definitions, stopping tolerances, penalty initialization, failure handling, or evidence that ADMM converges reliably across all Benders iterations and scenarios.\\
+The adaptive ADMM penalty update is not justified. The appendix states that ADMM penalty coefficients are updated adaptively to improve convergence . But the update rule appears user-defined and multiplicative. The manuscript does not report the selected update rates, the residual-balancing logic, or sensitivity of results to those parameters. In a nonconvex ADMM setting, arbitrary penalty growth can materially change convergence behavior and even the solution obtained.
+}
+\rresponse{No convergence theorem is available for sequential nonconvex consensus ADMM of this kind, and we
+now say so. What the paper offers instead is (i) the stopping rule: Boyd's absolute-plus-relative
+residual test on every consensus channel, followed by a settling criterion on the objective --- three
+measured turning points, non-growing swings above a noise floor, a range bound $\tau$ over a window at
+least one period long, a bound on the priced interface-consensus gap, and clean local solves inside the
+window (Section~2.2.7); (ii) the residual-balancing penalty update, frozen once the residuals first pass,
+with the schedule stated (Appendix~A); and (iii) the empirical record: 42 evaluations under the rule, 32
+certified, the 10 uncertified by cause, the certification-cycle statistics, the measured
+post-certification movement ($\le 0.9\,\tau$ on continued cells), and bitwise replays of every gated
+evaluation (Section~4.7; Table~[T2]). The uncertified evaluations are reported in a dedicated form and
+the limitations section explains the mechanism behind most of them (a set-valued interface dual when
+storage discharge drives transmission conventional output to its lower bound). On the penalty: the
+initial values of $\rho$ per consensus channel, the residual-balancing rule and its factors, the two-phase
+schedule of the storage channel and the freeze rule are all stated in Appendix~A; the configuration was
+selected on a reference instance before the campaign and then frozen, and no parameter was adjusted in
+the light of a result. On failure handling: a local solve that does not return an optimal point is retried
+under a documented sequence of solver settings, and a cycle is counted as certification evidence only if
+every block is clean (Section~2.2.7). On sensitivity to the penalty schedule: the certification bounds the
+stopping error of each evaluation, not the basin the nonconvex recourse converges to; a different
+schedule could in principle reach a different local solution. We therefore report, where it was measured,
+the spread across independent starts (the three-start bands of the benchmark arms, Table~[T6]) and we
+state this limitation explicitly.}
+\rchanges{Section~2.2.7; Section~4.7; Appendix~A; Section~[limitations]; Table~[T2].}
+
+\subsection*{R2.8 --- Additional references}
+\rcomment{The literature review must include foundational references supporting the proposed Benders-ADMM-bilevel solution methodology. e.g. 10.1016/j.est.2024.114911; 10.1109/ISGTEUROPE62998.2024.10863557; 10.1016/j.apenergy.2022.120569}
+\rresponse{The three references were added to the literature review of Section~1, each where its subject
+matter applies and without presenting them as foundations of the present algorithm, which uses neither
+cuts nor a bilevel structure. [AUTHOR: one clause per reference saying what it contributes and where it is
+cited. Status: 10.1016/j.est.2024.114911 added to the literature review of Section~1;
+10.1109/ISGTEUROPE62998.2024.10863557 and 10.1016/j.apenergy.2022.120569 not yet added.]}
+\rchanges{Section~1; bibliography.}
+
+\subsection*{R2.10 --- Apparent-energy throughput is not cell degradation}
+\rcomment{
+The degradation model is too simplified for the strength of the claims. The paper models cycling-induced degradation as proportional to apparent-energy throughput and inversely proportional to nominal cycle life . This assumes that active and reactive power utilization can be combined into apparent-power throughput and mapped directly to battery capacity loss. That is physically questionable: reactive-power provision stresses the converter and may create losses, but it is not equivalent to electrochemical charge/discharge throughput in the same way as active energy cycling. The authors need to justify this model or separate cell degradation from converter thermal utilization.
+}
+\rresponse{We agree. Degradation is now driven by active cell-side energy,
+$\eta_{\mathrm{ch}} p_{\mathrm{ch}} + p_{\mathrm{dch}}/\eta_{\mathrm{dch}}$, with the converter rating
+entering only through the $P$--$Q$--$S$ capability inequality; reactive provision does not age the cells.
+Equations~[21]--[28] were rewritten accordingly and checked against the implementation.}
+\rchanges{Section~2.3; Nomenclature.}
+
+\subsection*{R2.11 and R2.12 --- Sign and direction of power; SOC dynamics}
+\rcomment{
+The ESS active/reactive/apparent power relationship is unclear and potentially physically inconsistent. The manuscript defines net apparent power from charge/discharge apparent powers and then relates it to active and reactive requests through a squared relation . This loses sign information and does not explain how charging/discharging direction is determined from active power while reactive power is simultaneously provided. The formulation should explicitly distinguish active energy exchange, reactive power support, converter apparent-power limit, SOC dynamics, and degradation-driving active throughput.\\
+The shared ESS formulation does not visibly contain standard SOC dynamics. In the presented shared ESS formulation, the key equations shown concern investment, rated capacity, available capacity, degradation, complementarity, and apparent-power aggregation . The paper should explicitly state where SOC balance, initial/final SOC constraints, charging/discharging efficiencies, energy-capacity constraints, and power limits are enforced. If these are hidden inside the TSO/DSO models, the paper must show the coupling clearly. Otherwise, the ESS operation model is incomplete.
+}
+\rresponse{The state-of-charge recursion with charging and discharging efficiencies, the energy limits, the
+daily closure condition and the $P$--$Q$--$S$ capability inequality are now printed, and the sign
+convention is stated once: charging and discharging are separate non-negative variables whose difference
+is the active-power exchange, reactive power is a separate converter variable, and the capability
+inequality bounds their combination. The paper now also says where each constraint is enforced: the SOC
+dynamics, energy limits and capability inequality sit in the TSO and DSO network models for every
+representative day and scenario; the shared-ESS agent holds the degradation chain, the available-energy
+update across representative years and the aggregate cell-side throughput; and the consensus channel on
+the storage schedule couples the two (Section~2.3 and Appendix~A).}
+\rchanges{Section~2.3, equations~[SOC block].}
+
+% =====================================================================================================
+\section*{Reviewer 3}
+
+\subsection*{R3.1 --- Salvage value; SOC limits}
+\rcomment{
+Regarding the master-problem objective in Section 2.2.1, Eq.(1):the full capital cost of each ESS investment is included, whereas no terminal or salvage value is assigned to the remaining asset at the end of the planning horizon. This is particularly problematic because the staged-investment formulation permits capacity additions in 2034 and 2037, while all ESS units are assumed to have a 15-year calendar lifetime. Hence, late-stage investments would retain substantial useful life and usable capacity beyond 2037, but are treated as having zero terminal value. This formulation systematically penalizes late investments and may artificially drive the reported result that the entire budget is invested in the initial year. The authors should incorporate a discounted salvage-value term based on the remaining lifetime and/or terminal SoH and reassess its impact on investment timing and sizing.The maximum and minimum charging states of the battery SOC constraint proposed in Section 2.4 are inconsistent with the maximum and minimum charging states set in Table 2 in Section 4.1. Please unify.
+}
+\rresponse{The operational recourse does not internalize terminal value, and we state this. Salvage is
+computed as a post-evaluated credit from terminal state of health and remaining calendar life and is
+reported beside every gross figure (``net'' columns of Tables~[T1, T4]). It changes no sign in the 60
+reported comparisons and one verdict (a Phase~B neighbour becomes determinate in the certificate's
+favour). The investment-year comparison is the one result that depends on the convention --- 2035 is
+worse than 2030 in gross terms (+42.5~k\euro{}, determinate) and indistinguishable net of salvage
+($-2.3$~k\euro{}, within resolution) --- and the paper says so (Section~4.6). The SOC limits are now
+consistent with Table~[2] and printed with the SOC recursion.}
+\rchanges{Sections~2.2.1, 2.3, 4.6; Tables~[T1, T4].}
+
+\subsection*{R3.2 --- The 0.50\,\% gap is not an optimality certificate}
+\rcomment{
+Regarding the Benders optimality cut in Section 2.2.7, Eq. (11), and the convergence claim in Section 4.3:the operational subproblem is inherently nonconvex because it includes nonlinear AC power-flow constraints, the nonlinear SoH transition, charging-discharging complementarity in Eqs. (26)-(27), and the apparent-power equality in Eq. (29). However, the manuscript does not establish that the reported sensitivity coefficients constitute valid global subgradients of the operational value function, nor that the ADMM-based subproblem is solved to global optimality. Consequently, Eq. (11) is not demonstrated to provide a valid global lower-bounding cut, and the upper/lower bounds and 0.50\% optimality gap reported in Fig. 3 cannot presently be interpreted as a rigorous optimality certificate. The authors should provide the required convexity, strong-duality, and cut-validity arguments, or explicitly characterize the proposed scheme as a heuristic decomposition method with only local convergence guarantees.The explanation of Figure 15 in Section 4.4 is not a direct conclusion. Please explain the differences between each subgraph in conjunction with the modifications made to Figure 15, rather than directly elaborating on the resulting data.
+}
+\rresponse{Agreed, and removed. The method is described as a nested decomposition with no optimality
+certificate; what is certified is each recourse evaluation, and each reported difference carries the
+threshold above which it is called determinate (Section~2.2.7). The resolution is set by
+$\tau = \delta_R V/4$ with $\delta_R = 0.07$ of the single-scenario storage value, so that a ratio of
+two values is resolved to $\delta_R$. On Figure~15 of the submitted version: the figure and its discussion
+belonged to the superseded results and were removed; each results figure of the revision is discussed by
+what differs between its panels rather than by restating its values.}
+\rchanges{Section~2.2.7; Section~4.7 (replaces the former ``Computational performance''); Section~4.}
+
+\subsection*{R3.3 --- SOC dynamics}
+\rcomment{
+Regarding Eqs. (21)-(31) in Section 2.3.2 and Appendix A.2: the manuscript describes the evolution of SoH and degradation-adjusted available energy capacity, but does not explicitly formulate the state-of-charge variable, inter-temporal energy balance, charging/discharging efficiencies, SOC limits, or initial and terminal SOC conditions. Appendix A.2 represents the ESS physical constraints only through the generic function h(.), which is insufficient to verify whether these essential constraints are actually enforced. Consequently, the inter-temporal energy feasibility of the reported charging and discharging schedules cannot be established, and the formulation may permit cumulative discharge beyond the physically available stored energy. The authors should provide the complete SOC formulation and clarify how energy-state continuity is treated across time intervals, representative days, and operating scenarios.
+}
+\rresponse{The equations the reviewer refers to belong to the shared-ESS agent, whose role is the
+degradation chain: capacity fade by cycling is driven by the cell-side charging and discharging
+throughput, so no state of charge is needed there and none appears. The state of charge itself is a
+variable of the TSO and DSO network models, where the storage is dispatched, and the complete formulation
+is now printed (see R2.11--R2.12). On continuity: the SOC recursion runs over the hours of each
+representative day with a daily closure condition (the day ends at its initial state), so no energy is
+carried between representative days; the storage schedule within a block is common to the operation
+scenarios of that block (it is a day-ahead commitment, with scenario deviations on the network side
+priced by the non-anticipativity term of Section~2.3); and continuity across representative years is
+carried by the state-of-health chain, which maps the realized cell-side throughput of each year into the
+available energy of the next. Cumulative discharge beyond the stored energy is therefore excluded by the
+energy limits and the closure condition in every day and scenario.}
+% [CONFIRM against code before submission: that the storage schedule is common to the operation scenarios
+% within a block. If it is per scenario, replace that clause by "the SOC recursion is enforced for every
+% operation scenario of the block".]
+\rchanges{Section~2.3.}
+
+\subsection*{R3.4 --- Apparent-energy throughput}
+\rcomment{
+Regarding the degradation formulation in Section 2.3.2, Eqs. (22)-(23):the manuscript quantifies battery cycling degradation using apparent-energy throughput, thereby treating reactive-power provision as equivalent battery-cell charge/discharge throughput. However, cell capacity degradation is primarily driven by DC-side active-energy throughput, SOC variation, depth of discharge, and C-rate. Reactive-power provision mainly increases the AC-side current, losses, and thermal stress of the power conversion system (PCS), thereby contributing to the current- and temperature-induced aging of PCS power semiconductor devices, DC-link capacitors, and related components, rather than directly representing electrochemical cycling of the battery cells. This assumption may substantially overestimate cell degradation when the ESS provides significant reactive support and may consequently distort the optimal operating and sizing decisions. The authors should provide experimental or literature-based validation for this apparent-energy degradation proxy, or separately model battery-cell cycling degradation and PCS current/thermal aging.
+}
+\rresponse{See R2.10.}
+\rchanges{Section~2.3.}
+
+\subsection*{R3.5 --- Calendar ageing}
+\rcomment{
+Regarding the degradation model in Section 2.3.2, Eqs. (22)-(25), and the 15-year planning horizon defined in Section 3:the manuscript considers only throughput-induced cycling degradation while completely neglecting calendar aging. Cycling degradation and calendar degradation are the two most fundamental and important mechanisms governing long-term battery capacity loss. Even under limited cycling or standby operation, batteries continue to age as a function of elapsed time, temperature, and sustained SOC level. Over a 15-year planning horizon, omitting calendar aging may substantially underestimate capacity loss and lifetime consumption, thereby overstating the long-term availability and economic value of the shared ESS. The SoH model should therefore incorporate both calendar and cycling degradation, and their impacts on investment timing, sizing, and degradation trajectories should be assessed through sensitivity analysis.
+}
+\rresponse{Calendar ageing is included as an annual retention factor of 0.985 in the baseline calibration
+(C2 with calendar fade); the calibration without calendar fade (C2) is the sensitivity. Their values
+differ materially: the smallest unit loses 31.6~k\euro{} without calendar fade and 64.4~k\euro{} with it,
+both determinate (Table~[T8]). The sentence of the submitted version announcing 0.5\,\% and 2\,\% cases
+that had not been run was removed.}
+\rchanges{Section~3.4; Section~4.3; Table~[T8].}
+
+\subsection*{R3.6 --- A degradation-neutral benchmark}
+\rcomment{
+Regarding insight (iii) in Section 4.6 and the related statements in Section 5:the manuscript claims that explicitly accounting for degradation prevents the overvaluation of shared ESS capacity and leads to more credible long-term investment decisions. However, no controlled comparison between degradation-aware and degradation-neutral planning cases is provided. The reported SoH trajectories and temporal-discretization sensitivity merely demonstrate that degradation is calculated; they do not establish that degradation materially changes ESS siting, sizing, investment timing, or economic valuation. A no-degradation benchmark should therefore be added, with quantitative comparisons of installed capacity, investment timing, life-cycle cost, operating benefits, and terminal available capacity.
+}
+\rresponse{This is the experiment that decides the paper's thesis, and we thank the reviewer for asking for
+it. At a fixed plan (the smallest admissible unit at node~7), the value minus investment is: without
+ageing $-4.1$~k\euro{} (within resolution, i.e.\ break-even); cycling only $-31.6$~k\euro{}; cycling and
+calendar (the baseline) $-64.4$~k\euro{}; harsher calibrations $-73.7$ and $-45.2$~k\euro{}; all
+determinate except the first (Table~[T8]). Lowering the end-of-life floor from 0.70 to 0.50 changes the
+value by $+4.9$~k\euro{}, within resolution, so the floor is not what makes storage uneconomic here
+(Table~[T10]). On installed capacity and timing: under every aged calibration the optimal plan is no
+investment (the smallest admissible unit loses determinately and the value is affine in size with a slope
+below cost); under the no-ageing calibration the plan is indeterminate at this precision. On terminal
+available capacity: Table~[T8] gives, per calibration, the year in which the end-of-life floor binds and
+the terminal available-energy fraction, together with the equivalent full cycles per day. The comparisons
+are fixed-plan re-evaluations; the reason a re-optimized plan per calibration is not needed is given above
+(``What we did not do'').}
+\rchanges{Section~4.3; Tables~[T8, T10]; Figure~[ageing arms].}
+
+\subsection*{R3.7 and R3.8 --- NPV aggregation; ``annual'' wording}
+\rcomment{
+Fig. 3 reports the Benders objective in , whereas Table 8 provides only average daily operating costs for each representative year and the total investment budget is limited to million. However, the manuscript does not explain how these daily operating costs are converted into a planning-horizon NPV through representative-day weights, operating-scenario probabilities, representative-year expansion factors, and discounting, or how they are incorporated into the Benders variable . Consequently, the magnitude of the objective values, the economic consistency of the reported upper and lower bounds, and the claimed 0.50\% optimality gap cannot be independently verified. The authors should provide the complete annualization and discounting formulation for operating costs and explicitly define its relationship with .\\
+Regarding the representative-day setting in Section 3 and the results reported in Table 8 of Section 4.4.1:the manuscript uses only four seasonal representative days for each representative year, yet presents the resulting weighted averages as "annual results." This terminology may misleadingly suggest that a full-year chronological simulation has been performed. In fact, these values are annualized estimates derived from a limited set of representative days and their assigned weights, and therefore cannot capture continuous annual operation, extreme events, or inter-day SOC dynamics. The authors should consistently describe these values as "representative-day-based annual weighted estimates," explicitly report the associated weights and annualization procedure, and avoid treating them as equivalent to results from an 8760-hour chronological simulation.
+}
+\rresponse{The present-value aggregation is printed: one discount factor per representative year applied to
+the five years of its block, representative-day weights, and scenario probabilities; the investment is
+paid in 2025 and not discounted. ``Annual'' quantities are now called representative-day-weighted annual
+estimates.}
+\rchanges{Section~2.2.1 (equation); Section~3; wording throughout Section~4.}
+
+% =====================================================================================================
+\section*{Further changes not prompted by a specific comment}
+
+\begin{itemize}[leftmargin=*]
+  \item The planning-horizon discretization sensitivity of the submitted version was removed: it was not
+    reproduced under the revised method. The five-year block discretization is stated as a modelling
+    choice and listed among the limitations.
+  \item The uncoordinated benchmark was redefined. The submitted comparison let distribution networks
+    export into a transmission network that has no load of its own; the revised benchmark gives the
+    uncoordinated arrangements a no-reverse-flow interface rule --- today's connection practice --- and
+    reports, separately, that without any interface rule the transmission network cannot accept the
+    distribution exchange in 1 of 12 (passive) and 8 of 12 (price-responsive) representative blocks
+    (Section~4.4).
+  \item The limitations section is new: set-valued interface duals with large storage and high
+    flexibility prices; transmission solver recoveries; a $10^{-5}$~p.u.\ renewable bound slack and its
+    aggregate; the monotone branch of the settling rule.
+  \item A reproducibility note is new: single machine, single thread, bitwise replays, solver and library
+    versions.
+  \item The prediction record of the revision (49 predictions, with outcomes) is provided as
+    supplementary material.
+\end{itemize}
+
+\end{document}

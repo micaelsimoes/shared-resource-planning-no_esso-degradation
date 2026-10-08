@@ -1,0 +1,704 @@
+% =====================================================================================================
+% section2_expert_draft.tex — expert's draft of the formal pieces of Section 2 (2026-10-07)
+%
+% Three pieces, each a PASTE block for main.tex (line numbers refer to the Overleaf clone at 6cb4492):
+%   PART A — Algorithm 1 (the master search as implemented) and the coupling paragraph.
+%            Replaces lines 394 and 397–540; also gives replacement text for 2.2.1 (l. 550–577),
+%            the lattice statement for 2.2.2–2.2.5 and the coupling paragraph 2.2.6 (l. 656–659).
+%   PART B — new Subsection 2.2.7 "Recourse evaluation and certification".
+%            Replaces 2.2.7 "Benders' Cuts" (l. 684–722) entirely.
+%   PART C — Subsection 2.3 equation block: storage in the network models, cell-side throughput and the
+%            degradation chain in the shared-ESS agent, the agent's objective, and the multi-scenario
+%            commitment term. Replaces l. 735–906 (2.3.2 and the red note). The intro paragraphs of 2.3
+%            (l. 724–733) are the author's; two sentences to change there are given at the top of Part C.
+%
+% Conventions: revised text is wrapped in \textcolor{blue}{...} as in the manuscript. Comments marked
+% [CONFIRM] are points the Planner's equation-vs-code audit must settle before the text is final; they
+% are LaTeX comments and do not print. Numbers are the frozen ones (tables v1, 590088fe).
+% Nothing here is a result; results text belongs to Section 4.
+% =====================================================================================================
+
+
+% =====================================================================================================
+% PART A — master search (Algorithm 1) and coupling
+% =====================================================================================================
+
+% ---- A.1 Replaces line 394 ("The two layers are coupled through the ESS investment variables. Benders'
+% ---- decomposition iteratively updates ...") -----------------------------------------------------------
+
+\textcolor{blue}{The two layers are coupled through the investment plan $\boldsymbol{x}$ only. The master layer
+is a derivative-free search over the lattice of admissible plans: it uses the value $Q(\boldsymbol{x})$ returned
+by the recourse and nothing else. No gradient, dual multiplier or cut is passed upward, because
+$Q(\boldsymbol{x})$ is the value of a certified consensus point of a nonconvex problem (Subsection~2.2.7) and is
+neither convex nor smooth in $\boldsymbol{x}$; the cut-based master of an earlier version of this work was
+abandoned for that reason. To represent long-term storage ageing without sacrificing decomposition across
+SOs, the operational layer includes a dedicated \textit{shared ESS agent} that tracks State-of-Health (SoH) and
+the resulting evolution of available energy capacity. This preserves decomposition of the TSO and DSO
+subproblems across representative years while maintaining intertemporal consistency of ESS degradation over
+the planning horizon.}
+
+% ---- A.2 Replaces the algorithm environment, lines 397–540 -------------------------------------------
+% Notation: Delta^S = 0.25 MVA, Delta^E = 0.5 MWh (lattice units); n = number of lattice coordinates;
+% Delta^p = poll size in lattice units; F(x) = I(x) + Q(x). Values of the parameters are given in Section 3.5.
+
+\begin{algorithm}[htbp!]
+    \caption{\textcolor{blue}{Derivative-free shared-ESS planning search (mesh adaptive direct search on the
+    investment lattice) with certified ADMM recourse evaluations}}
+    \label{alg:shared_ess_planning_mads}
+    \DontPrintSemicolon
+
+    \KwIn{Candidate nodes $E^S$; representative years $Y$, days $D$ and scenarios $\Omega_M$, $\Omega_O$ with
+    probabilities; lattice units $\Delta^S$ (MVA) and $\Delta^E$ (MWh); duration bounds
+    $\phi^{\text{Min}}, \phi^{\text{Max}}$; capacity limit $E^{\text{Max}}_{e,y}$; budget $c^{\text{Inv}}$;
+    initial poll size $\Delta^p_0$; evaluation budget $N^{\max}$; certification parameters of
+    Subsection~2.2.7; direction seed.}
+    \KwOut{Incumbent plan $\boldsymbol{x}^{\star}$, its certified value $F(\boldsymbol{x}^{\star})$, the poll history
+    and the evaluated neighbourhood with determinacy verdicts.}
+
+    \tcp{Admissible set, enforced in closed form before any evaluation}
+    $\mathcal{X} = \{\boldsymbol{x} = (S^{\text{Inv}}_{e,y}, E^{\text{Inv}}_{e,y})_{e \in E^S, y \in Y}:
+    S^{\text{Inv}}_{e,y} \in \Delta^S \mathbb{Z}_{\ge 0},\ E^{\text{Inv}}_{e,y} \in \Delta^E \mathbb{Z}_{\ge 0},$
+    \eqref{eq:master_duration}--\eqref{eq:master_budget}$\}$\;
+    Scale: $\boldsymbol{z} = \mathrm{diag}(\Delta^S, \Delta^E, \ldots)^{-1}\boldsymbol{x}$, so that $\mathcal{X}$ is a
+    subset of $\mathbb{Z}^{n}$ and the finest mesh is the lattice itself\;
+    Cache $\mathcal{C} \gets \emptyset$ (one certified evaluation per canonical plan; a cache hit is never
+    re-evaluated)\;
+
+    \tcp{Initial search step: a designed set of lattice points (single-node ladders, combinations, staging)}
+    Evaluate the designed set with Algorithm~\ref{alg:operational_planning_degradation} and the certification
+    rule; add the records to $\mathcal{C}$\;
+    $\boldsymbol{x}^{\text{inc}} \gets \arg\min_{\mathcal{C}} F$; $\Delta^p \gets \Delta^p_0$; $N \gets |\mathcal{C}|$\;
+
+    \While{$N \le N^{\max}$}{
+        \tcp{Poll step}
+        Generate the $2n$ OrthoMADS directions $\pm \boldsymbol{v}_1, \ldots, \pm \boldsymbol{v}_n$ from the next
+        Halton point of the recorded sequence\;
+        Poll set $\mathcal{P} \gets \{\boldsymbol{z}^{\text{inc}} + \Delta^p \boldsymbol{v}\}$, each point rounded to the
+        lattice and, if it violates \eqref{eq:master_duration}--\eqref{eq:master_budget}, snapped to the
+        nearest admissible lattice point; drop duplicates and cached points\;
+        \If{$|\mathcal{P}| < n + 1$}{
+            Add to $\mathcal{P}$ the admissible lattice points within one unit step of $\boldsymbol{z}^{\text{inc}}$ in
+            the $\infty$-norm (completion set), up to the stated cap\;
+        }
+        Evaluate every point of $\mathcal{P}$ (full poll, in batches of the available concurrent slots); an
+        evaluation that does not certify, or whose storage agent is infeasible (SoH floor), is recorded with
+        its cause and assigned $F = +\infty$ (extreme barrier); add the records to $\mathcal{C}$;
+        $N \gets N + |\mathcal{P}|$\;
+        \eIf{some $\boldsymbol{x} \in \mathcal{P}$ has $F(\boldsymbol{x}) < F(\boldsymbol{x}^{\text{inc}})$ by a
+        determinate margin (Subsection~2.2.7)}{
+            $\boldsymbol{x}^{\text{inc}} \gets$ the best such point; $\Delta^p \gets 2\Delta^p$\;
+        }{
+            \lIf{$\Delta^p = 1$}{\textbf{terminate}: $\boldsymbol{x}^{\text{inc}}$ is mesh-locally optimal on the lattice}
+            $\Delta^p \gets \Delta^p / 2$\;
+        }
+    }
+    \Return{$\boldsymbol{x}^{\star} = \boldsymbol{x}^{\text{inc}}$, $F(\boldsymbol{x}^{\star})$, the poll history, and the
+    neighbourhood table of $\mathcal{C}$}\;
+\end{algorithm}
+
+% [CONFIRM — Planner, against p56a_oracle and the campaign launcher]
+%  (a) the poll-size rule (double on a determinate success, halve on failure, floor 1) and the completion-set
+%      cap (30) as run; (b) that "improvement" in the launcher is the determinacy rule of 2.2.7 and not a raw
+%      comparison; (c) the Phase B variable form actually searched (single-cohort (S_e, E_e, y_e) per node,
+%      with staging probed at the incumbent) — if so, add one sentence after the algorithm saying the
+%      campaign searched that restriction of the lattice; (d) the number of evaluations and the seed, for 4.7.
+
+% ---- A.3 Paragraph after the algorithm (new) ------------------------------------------------------------
+
+\textcolor{blue}{Algorithm~\ref{alg:shared_ess_planning_mads} is a mesh adaptive direct search (MADS) on
+granular variables~\cite{audet_dennis_2006,abramson_orthomads_2009,audet_granular_2019}. Every candidate is a
+point of the investment lattice: converter power in multiples of $\Delta^S$, energy in multiples of
+$\Delta^E$, within the duration, capacity and budget constraints of Subsection~2.2, which are enforced in closed
+form before any evaluation. Each evaluation is one complete run of the operational recourse
+(Algorithm~\ref{alg:operational_planning_degradation}, \ref{app:admm_updated_algorithm}), from a cold start and
+under one frozen configuration, so that $Q(\boldsymbol{x})$ is a deterministic function of $\boldsymbol{x}$ and the
+cache is exact. The search terminates when the poll at unit poll size fails, that is, when a positive spanning
+set of lattice neighbours of the incumbent has been evaluated and none improves it by a determinate margin, or
+when the evaluation budget is exhausted, in which case the incumbent is reported with the poll size reached.
+The method therefore claims mesh-local optimality on the lattice at the stated resolution, and no global
+optimality gap: the convergence theory of MADS applies to $F$ as a function on the lattice with the extreme
+barrier and does not require continuity of $Q$, which is why a direct search was preferred to gradient- or
+cut-based masters for this recourse.}
+
+% [CONFIRM] bibliography keys: add to bibliography.bib —
+%   audet_dennis_2006: C. Audet, J.E. Dennis Jr., "Mesh adaptive direct search algorithms for constrained
+%     optimization", SIAM J. Optim. 17(1) 188–217, 2006.
+%   abramson_orthomads_2009: M.A. Abramson, C. Audet, J.E. Dennis Jr., S. Le Digabel, "OrthoMADS: a
+%     deterministic MADS instance with orthogonal directions", SIAM J. Optim. 20(2) 948–966, 2009.
+%   audet_granular_2019: C. Audet, S. Le Digabel, C. Tribes, "The mesh adaptive direct search algorithm for
+%     granular and discrete variables", SIAM J. Optim. 29(2) 1164–1189, 2019.
+
+% ---- A.4 Replaces 2.2.1 "Objective Function", lines 550–577 ----------------------------------------------
+
+\textcolor{blue}{The master problem minimizes the expected discounted investment cost plus the certified
+expected operating cost of the plan:}
+
+\textcolor{blue}{
+    \begin{equation}
+        \begin{aligned}
+            \min_{\boldsymbol{x} \in \mathcal{X}} \; F(\boldsymbol{x}) &= I(\boldsymbol{x}) + Q(\boldsymbol{x}), \\
+            I(\boldsymbol{x}) &=
+            \sum_{e\in E^S} \sum_{y\in Y} \sum_{c\in\Omega_C}
+            \frac{\omega_c}{(1+r)^{y-y_0}}
+            \left(
+                c^{\mathrm{Inv,S}}_{y,c} S^{\mathrm{Inv}}_{e,y}
+                +
+                c^{\mathrm{Inv,E}}_{y,c} E^{\mathrm{Inv}}_{e,y}
+            \right)
+        \end{aligned}
+        \label{eq:master_objective}
+    \end{equation}
+}
+
+\noindent
+\textcolor{blue}{where $c^{\text{Inv,S}}_{y,c}$ and $c^{\text{Inv,E}}_{y,c}$ are the unit investment costs of
+converter power rating and energy capacity under cost trajectory $c$, $S^{\text{Inv}}_{e,y}$ and
+$E^{\text{Inv}}_{e,y}$ are the investment decisions, and $Q(\boldsymbol{x})$ is the expected discounted operating
+cost of the plan returned by the recourse (Subsection~2.2.7). $I(\boldsymbol{x})$ is closed-form and cheap; every
+evaluation cost is in $Q(\boldsymbol{x})$. The terminal (salvage) value of the installed assets is not part of
+$F(\boldsymbol{x})$: operation does not internalize it, and it is reported beside every figure as a post-evaluated
+credit computed from the terminal SoH and the remaining calendar life (Section~4).}
+
+% [AUTHOR] 2.1, eq. (1) and the red salvage equation: make the sign a credit and state that it is reported,
+% not optimized (the reviewers' R3.1 answer); the discount exponent should be y^End - y_0 with y^End the end
+% of the last block.
+
+% ---- A.5 Lattice statement for 2.2.2–2.2.5 (one sentence to add after the E/P constraint, l. 629; and the
+% ---- labels the algorithm refers to) ----------------------------------------------------------------------
+% Remove every "(l)" superscript and every "\forall l \in L^B" in 2.2.2–2.2.5: the plan is a point, not an
+% iterate. Give the duration constraint the label \label{eq:master_duration} and the budget constraint the
+% label \label{eq:master_budget}. Then add after line 629:
+
+\textcolor{blue}{Investments are sized in commercial units: $S^{\text{Inv}}_{e,y}$ is a non-negative integer
+multiple of $\Delta^S$ and $E^{\text{Inv}}_{e,y}$ of $\Delta^E$, and $S^{\text{Inv}}_{e,y} = 0$ implies
+$E^{\text{Inv}}_{e,y} = 0$. The values used in the case study are $\Delta^S = 0.25$~MVA and
+$\Delta^E = 0.5$~MWh with $\phi^{\text{Min}} = 2$~h and $\phi^{\text{Max}} = 4$~h (Section~3).}
+
+% ---- A.6 Replaces 2.2.6 coupling paragraph, lines 656–659 ------------------------------------------------
+
+\textcolor{blue}{For each candidate plan, the scenario-independent investment decisions $S^{\text{Inv}}_{e,y}$
+and $E^{\text{Inv}}_{e,y}$ are passed to the operational recourse as fixed parameters; no probability-weighted
+averaging of mutually exclusive physical ESS capacities is performed. The recourse returns the certified
+value $Q(\boldsymbol{x})$ and its certification record; nothing else flows upward.}
+
+
+% =====================================================================================================
+% PART B — new Subsection 2.2.7
+% =====================================================================================================
+% Replaces \subsubsection{Benders' Cuts} and its three equations (l. 684–722).
+
+\subsubsection{\textcolor{blue}{Recourse Evaluation and Certification}}
+\label{subsubsec:certification}
+
+\textcolor{blue}{The recourse value of a plan is the expected discounted operating cost of the coupled system
+over the horizon,}
+
+\textcolor{blue}{
+    \begin{equation}
+        Q(\boldsymbol{x}) =
+        \sum_{y \in Y} \frac{Y_y}{(1+r)^{y-y_0}}
+        \sum_{d \in D} D_d
+        \sum_{m \in \Omega_M} \sum_{o \in \Omega_O} \omega_m \, \omega_o \,
+        C^{\text{Op}}_{y,d,m,o}(\boldsymbol{x})
+        \label{eq:recourse_value}
+    \end{equation}
+}
+
+\noindent
+\textcolor{blue}{where $C^{\text{Op}}_{y,d,m,o}$ is the daily operating cost of representative day $d$ of
+representative year $y$ under market scenario $m$ and operation scenario $o$ at the consensus point
+reached by the coordination procedure of \ref{app:admm_updated}: generation cost in the TN, activated
+flexibility and curtailment in the DNs, and, in the multi-scenario instance, the commitment-deviation
+charge of Subsection~2.3. Settlement flows between operators are transfers and are excluded from
+$Q(\boldsymbol{x})$; they are reported separately. Each representative year stands for a block of $Y_y$
+calendar years and is discounted at its representative year.}
+
+% [CONFIRM] discount convention against shared_resources_planning.py (block weight Y_y at the representative
+% year's discount factor — the "block-discounting approximation"); and the list of C^Op components against
+% the penalty classification table (economic terms only).
+
+\textcolor{blue}{\paragraph{Stopping and certification.} Each recourse evaluation runs the consensus ADMM of
+\ref{app:admm_updated} until the primal and dual residuals of every consensus channel pass the absolute-plus-
+relative test of Boyd et al.~\cite{boyd_admm_2011}, with $\varepsilon_{\text{abs}} = 10^{-5}$ and
+$\varepsilon_{\text{rel}} = 10^{-4}$, in a cycle in which every local NLP solve is successful. Passing the
+residual test does not imply that the objective has settled: on the reference evaluations of the case study the
+objective moved by a further 15--21~k\euro{} after their residual-based certification. The residual pass at
+cycle $k_0$ therefore only opens the certifying regime, which is then held fixed: acceleration off, the
+tight interior-point tail on, and the penalty parameters $\rho$ frozen (\ref{app:admm_updated}). An
+evaluation is certified at the first cycle $k^{\star} > k_0$ at which all of the following hold:}
+
+\textcolor{blue}{
+\begin{enumerate}
+    \item the objective has shown at least three turning points since $k_0$, so that its period $\hat{P}$
+    (measured between the first and third turning points) is measured rather than assumed;
+    \item the successive half-swings of the objective are not growing; swings smaller than $\tau/10$ are
+    treated as noise and are neither compared nor counted as turning points;
+    \item the range of the objective over the last $W = \max\{20, \lceil 1.1\,\hat{P} \rceil\}$ cycles is at
+    most $\tau$;
+    \item the priced interface-consensus gap --- the value of the residual mismatch between the operators'
+    interface schedules at the interface price --- is at most $\tau/2$ in absolute value;
+    \item every cycle in that window was solved cleanly. A local solve is clean when it ends at the solver's
+    optimal status, or at its acceptable status on a primary attempt with all four termination metrics within
+    ten times the tight-tail tolerances.
+\end{enumerate}
+}
+
+\textcolor{blue}{An objective that descends without oscillating is certified by a monotone branch when, over a
+window of $2P_{\max}$ cycles with $P_{\max}$ the longest period measured on the instance, its steps are
+decreasing, its range is at most $\tau$, and $|\text{last step}| \times 2P_{\max} \le \tau$, a linear bound on
+the remaining descent that uses no fit. An evaluation that satisfies neither branch within its cycle cap is
+reported as uncertified, with the objective's movement since the residual pass (its settling slack) and its
+consensus gap.}
+
+\textcolor{blue}{\paragraph{Resolution.} The threshold $\tau$ is set from the value resolution the paper claims:
+$\tau = \delta_R V / 4$ with $\delta_R = 0.07$ and $V$ the storage value of the reference unit in force when the
+rule was adopted ($V = 259{,}375.33$~\euro{}, hence $\tau = 4{,}539.07$~\euro{}; it was then kept frozen), so
+that a ratio of two values --- four evaluations, each in error by at most $\tau$ --- is resolved to
+$\delta_R$. The rule bounds the stopping error of each evaluation at about $\tau$, not well inside it: on the
+case study ten of the certificates in use stop within 5\,\% of $\tau$, and evaluations continued past
+certification moved by at most $0.9\,\tau$ (Section~4.7).}
+
+\textcolor{blue}{\paragraph{Determinacy.} A difference between two certified evaluations is called determinate
+when it exceeds $\max\{3\,b, 2\tau\}$, where $b$ is the larger of the two certification bands (the range of
+the objective over the certifying window). A difference involving an uncertified evaluation is determinate
+only if it exceeds three times the larger of that evaluation's consensus gap and settling slack. Every
+planning statement in this paper is a pairwise comparison of evaluations with this threshold stated, and the
+master search of Algorithm~\ref{alg:shared_ess_planning_mads} accepts a poll point as an improvement only by a
+determinate margin; smaller differences are ties, reported as ``within resolution''. What is certified is
+each evaluation, not the plan: the method claims no optimality certificate for the nonconvex recourse, and
+the bands, gaps and slacks of every evaluation used in a reported comparison are tabulated in~\ref{app:results}.}
+
+% [CONFIRM] (a) the settling slack definition as the scorer computes it (movement from the old certificate, or
+% from the first residual pass where none exists) — Addendum 66(g); (b) "ten of the N certificates" — N for 4.7;
+% (c) boyd_admm_2011 key exists in bibliography.bib (Boyd, Parikh, Chu, Peleato, Eckstein, Found. Trends ML
+% 3(1), 2011; §3.3 for the stopping test, §3.4.1 for residual balancing).
+
+
+% =====================================================================================================
+% PART C — Subsection 2.3 equation block
+% =====================================================================================================
+% Two sentences of the author's 2.3 intro (l. 727 and l. 731) to change:
+%   l. 727  "In this formulation, inter-year coupling arises exclusively from ESS degradation and is enforced
+%           through the shared ESS subproblem."  → keep.
+%   l. 731  add after "...across representative years.":
+\textcolor{blue}{The storage schedule itself --- charging, discharging and reactive power in every hour --- is a
+consensus variable between the operators' network models and the shared-ESS agent: the network models carry
+the state-of-charge dynamics and the converter limits, and the agent carries the ageing chain that links the
+representative years. The two views are reconciled by the ADMM consensus channel on the storage schedule
+(\ref{app:admm_updated}).}
+
+% ---- C.1 Replaces \subsubsection{Shared ESS Mathematical Formulation} (l. 735) and l. 737–790 -----------
+
+\subsubsection{\textcolor{blue}{Installed and Available Capacity}}
+
+\textcolor{blue}{The investment plan is a fixed parameter of the recourse. Each investment made at node $e$
+in year $y^{\text{Inv}}$ forms a cohort that contributes its rated power and energy for its calendar
+lifetime ($\forall e \in E^S$, $\forall y^\text{Inv} \in Y$, $\forall y \in [y^\text{Inv};~y^\text{Inv}+T^\text{Cal}_{e,y^\text{Inv}}]$):}
+
+\textcolor{blue}{
+    \begin{equation}
+        S^{\text{Rated,Unit}}_{e,y^\text{Inv},y} = \hat{S}^{\text{Inv}}_{e,y^\text{Inv}}, \qquad
+        E^{\text{Rated,Unit}}_{e,y^\text{Inv},y} = \hat{E}^{\text{Inv}}_{e,y^\text{Inv}}
+        \label{eq:cohort_rated}
+    \end{equation}
+}
+
+\textcolor{blue}{The available power of a cohort equals its rating, while its available energy is reduced by
+its state of health at the start of the representative year ($\forall e$, $y^\text{Inv}$, $y$ as above):}
+
+\textcolor{blue}{
+    \begin{equation}
+        S^{\text{Av,Unit}}_{e,y^\text{Inv},y} = S^{\text{Rated,Unit}}_{e,y^\text{Inv},y}, \qquad
+        E^{\text{Av,Unit}}_{e,y^\text{Inv},y} = E^{\text{Rated,Unit}}_{e,y^\text{Inv},y}\, SoH_{e,y^\text{Inv},y-1}
+        \label{eq:cohort_available}
+    \end{equation}
+}
+
+% [CONFIRM] which SoH enters year y's available energy in the baseline: the start-of-block value SoH_{y-1}
+% (written here; the mid-block evaluation point is the C3_midblock sensitivity arm) — check
+% _configure_esso_cohort_state / get_updated_capacities.
+
+\textcolor{blue}{and the capacities seen by the network models in year $y$ are the sums over the cohorts
+alive in that year ($\forall e \in E^S$, $\forall y \in Y$):}
+
+\textcolor{blue}{
+    \begin{equation}
+        S^{\text{Av}}_{e,y} = \sum_{y^\text{Inv}=\max(y-T^\text{Cal}_{e,y},\,y_0)}^{y} S^{\text{Av,Unit}}_{e,y^\text{Inv},y},
+        \qquad
+        E^{\text{Av}}_{e,y} = \sum_{y^\text{Inv}=\max(y-T^\text{Cal}_{e,y},\,y_0)}^{y} E^{\text{Av,Unit}}_{e,y^\text{Inv},y}
+        \label{eq:available_capacity}
+    \end{equation}
+}
+
+% ---- C.2 New: storage operation in the network models (answers R2.11, R2.12, R3.1, R3.3) ----------------
+
+\subsubsection{\textcolor{blue}{Storage Operation in the Network Models}}
+
+\textcolor{blue}{In every network model in which the shared ESS at node $e$ appears, its operation in
+representative year $y$, day $d$ and hour $t$ is described by a charging power $P^{\text{Ch}}_{e,y,d,t} \ge 0$,
+a discharging power $P^{\text{Dch}}_{e,y,d,t} \ge 0$, a reactive power $Q^{\text{E}}_{e,y,d,t}$ and a stored
+energy $E^{\text{SoC}}_{e,y,d,t}$. The net active-power injection at the node is
+$P^{\text{E}}_{e,y,d,t} = P^{\text{Dch}}_{e,y,d,t} - P^{\text{Ch}}_{e,y,d,t}$ (positive when discharging), and
+the stored energy follows ($\forall e \in E^S$, $\forall y \in Y$, $\forall d \in D$, $\forall t \in T$):}
+
+\textcolor{blue}{
+    \begin{equation}
+        E^{\text{SoC}}_{e,y,d,t} = E^{\text{SoC}}_{e,y,d,t-1}
+        + \Delta t \left( \eta^{\text{Ch}}_e P^{\text{Ch}}_{e,y,d,t} - \frac{P^{\text{Dch}}_{e,y,d,t}}{\eta^{\text{Dch}}_e} \right)
+        \label{eq:soc_recursion}
+    \end{equation}
+}
+
+\textcolor{blue}{
+    \begin{equation}
+        SoC^{\text{Min}}_e \, E^{\text{Av}}_{e,y} \le E^{\text{SoC}}_{e,y,d,t} \le SoC^{\text{Max}}_e \, E^{\text{Av}}_{e,y}
+        \label{eq:soc_limits}
+    \end{equation}
+}
+
+\textcolor{blue}{
+    \begin{equation}
+        E^{\text{SoC}}_{e,y,d,t_0} = E^{\text{SoC}}_{e,y,d,|T|} = SoC^{0}_e \, E^{\text{Av}}_{e,y}
+        \label{eq:soc_closure}
+    \end{equation}
+}
+
+\textcolor{blue}{
+    \begin{equation}
+        P^{\text{Ch}}_{e,y,d,t} \le S^{\text{Av}}_{e,y}, \qquad
+        P^{\text{Dch}}_{e,y,d,t} \le S^{\text{Av}}_{e,y}, \qquad
+        \left(P^{\text{E}}_{e,y,d,t}\right)^2 + \left(Q^{\text{E}}_{e,y,d,t}\right)^2 \le \left(S^{\text{Av}}_{e,y}\right)^2
+        \label{eq:converter_capability}
+    \end{equation}
+}
+
+\textcolor{blue}{
+    \begin{equation}
+        P^{\text{Ch}}_{e,y,d,t} \, P^{\text{Dch}}_{e,y,d,t} = 0
+        \label{eq:network_complementarity}
+    \end{equation}
+}
+
+\noindent
+\textcolor{blue}{where $\eta^{\text{Ch}}_e$ and $\eta^{\text{Dch}}_e$ are the charging and discharging
+efficiencies, $SoC^{\text{Min}}_e$, $SoC^{\text{Max}}_e$ and $SoC^{0}_e$ the minimum, maximum and initial states
+of charge as fractions of the available energy, and $\Delta t$ the hour length. Equation~\eqref{eq:soc_closure}
+closes every representative day on its initial state, so no energy is carried between representative days and
+cumulative discharge beyond the stored energy is excluded in every day and scenario by
+\eqref{eq:soc_recursion}--\eqref{eq:soc_closure}. Reactive power is a converter quantity: it is limited with
+the active power by the capability circle in \eqref{eq:converter_capability} and has no effect on the stored
+energy or on ageing. The complementarity condition \eqref{eq:network_complementarity} is kept in the network
+models in its relaxed, penalized form as in~\cite{simoes_2023}. In the multi-scenario instance the storage
+schedule of a block is a single scenario-independent variable referenced by every operation scenario's
+balance equations --- a day-ahead commitment --- so that the schedule the agent ages is the one every
+scenario runs (Subsection~2.3.4).}
+
+% [CONFIRM] against sess_soc_rule and the network ESS block: (a) the closure form (fixed initial value SoC^0,
+% or free-but-equal first and last states); (b) whether the capability circle is on net P or on P^Ch and P^Dch
+% separately; (c) the relaxed complementarity form and its penalty; (d) that the same block is instantiated in
+% the TSO and in the DSO model of node e (consensus copies). Values of eta, SoC^Min/Max/0 go to Section 3.
+
+% ---- C.3 Replaces l. 792–842 (degradation) ---------------------------------------------------------------
+
+\subsubsection{\textcolor{blue}{Degradation Chain of the Shared-ESS Agent}}
+
+\textcolor{blue}{The shared-ESS agent holds the consensus copy of the storage schedule and ages the cohorts
+with it. Its schedule is allocated to the cohorts alive at node $e$ in proportion to their rated energy --- a
+homogeneous-fleet approximation, in which all cohorts at a node cycle at the same depth ($\forall e$,
+$y^\text{Inv}$, $y$, $d$, $t$):}
+
+\textcolor{blue}{
+    \begin{equation}
+        P^{\text{Ch}}_{e,y^\text{Inv},y,d,t} = \frac{E^{\text{Rated,Unit}}_{e,y^\text{Inv},y}}{\sum_{y'} E^{\text{Rated,Unit}}_{e,y',y}}\, P^{\text{Ch}}_{e,y,d,t},
+        \qquad
+        P^{\text{Dch}}_{e,y^\text{Inv},y,d,t} = \frac{E^{\text{Rated,Unit}}_{e,y^\text{Inv},y}}{\sum_{y'} E^{\text{Rated,Unit}}_{e,y',y}}\, P^{\text{Dch}}_{e,y,d,t}
+        \label{eq:cohort_allocation}
+    \end{equation}
+}
+
+% [CONFIRM] H3 rule: the code allocates pnet_agg pro rata and lets the agent's own pch/pdch realize it; written
+% here on P^Ch and P^Dch separately, which is equivalent once complementarity holds. Keep whichever the audit
+% says the code does.
+
+\textcolor{blue}{Ageing is driven by the energy that crosses the cells, not by the apparent power at the
+converter: the average daily cell-side throughput of a cohort in representative year $y$ is}
+
+\textcolor{blue}{
+    \begin{equation}
+        \bar{E}^{\text{Cell}}_{e,y^\text{Inv},y} =
+        \sum_{d \in D} \frac{D_d}{365} \sum_{t \in T} \Delta t
+        \left(
+            \eta^{\text{Ch}}_e P^{\text{Ch}}_{e,y^\text{Inv},y,d,t}
+            +
+            \frac{P^{\text{Dch}}_{e,y^\text{Inv},y,d,t}}{\eta^{\text{Dch}}_e}
+        \right)
+        \label{eq:cell_throughput}
+    \end{equation}
+}
+
+\textcolor{blue}{and the fractional cycling loss accumulated over the $Y_y$ calendar years of the block is}
+
+\textcolor{blue}{
+    \begin{equation}
+        D_{e,y^\text{Inv},y} =
+        \frac{365 \, Y_y \, \bar{E}^{\text{Cell}}_{e,y^\text{Inv},y}}
+             {2 \, k_e \, E^{\text{Rated,Unit}}_{e,y^\text{Inv},y}}
+        \label{eq:cycling_loss}
+    \end{equation}
+}
+
+\noindent
+\textcolor{blue}{where $k_e$ is the effective cycle life of the technology: $2 E^{\text{Rated,Unit}}$ is the
+throughput of one full cycle, so $D$ counts equivalent full cycles against $k_e$. The state of health then
+follows a continuous-compounding chain with a calendar retention factor $\phi^{\text{Cal}}_e$ per calendar
+year ($\forall e$, $y^\text{Inv}$, $y$):}
+
+\textcolor{blue}{
+    \begin{equation}
+        SoH_{e,y^\text{Inv},y} = SoH_{e,y^\text{Inv},y-1} \, \exp\!\left(-D_{e,y^\text{Inv},y}\right)
+        \left(\phi^{\text{Cal}}_e\right)^{Y_y},
+        \qquad SoH_{e,y^\text{Inv},y^\text{Inv}-1} = 1
+        \label{eq:soh_chain}
+    \end{equation}
+}
+
+\textcolor{blue}{
+    \begin{equation}
+        SoH_{e,y^\text{Inv},y} \ge SoH^{\text{Min}}_e
+        \label{eq:soh_floor}
+    \end{equation}
+}
+
+\textcolor{blue}{The constant $k_e$ is calibrated from a datasheet statement of $N^{\text{DS}}$ cycles at depth of
+discharge $\delta^{\text{DS}}$ to a retention $R^{\text{DS}}$ of the rated capacity: with
+\eqref{eq:cycling_loss}--\eqref{eq:soh_chain} and no calendar term, those cycles give
+$SoH = \exp(-\delta^{\text{DS}} N^{\text{DS}} / k_e) = R^{\text{DS}}$, hence}
+
+\textcolor{blue}{
+    \begin{equation}
+        k_e = \frac{\delta^{\text{DS}} N^{\text{DS}}}{-\ln R^{\text{DS}}}
+        \label{eq:cycle_life_calibration}
+    \end{equation}
+}
+
+\noindent
+\textcolor{blue}{The calibrations used, the calendar retention and the end-of-life floor $SoH^{\text{Min}}_e$ are
+given in Section~3.4. The floor is the only intertemporal trade-off enforced in operation: no explicit
+cycling cost is charged, because a shared asset that has been paid for carries no operating cost of its own;
+degradation is tracked and propagated, and its economic effect appears through the available energy of later
+years and through the floor. Equations \eqref{eq:cycling_loss}--\eqref{eq:soh_floor} are linear in $D$ and
+$SoH$ for a fixed schedule, and \eqref{eq:soh_chain} is the only nonlinear row of the agent.}
+
+% [CONFIRM] (a) the row D*(2*cl_eff*E_rated) == 365*num_years*avg_ch_dch and the exp(-D)*phi^num_years chain
+% as in shared_energy_storage_data.py; (b) that avg_ch_dch is cell-side (eta_ch*pch + pdch/eta_dch) and not
+% terminal-side — Addendum/action plan record says cell-side; (c) num_years = block length of the
+% representative year (equal 5-year blocks); (d) Section 3.4 values: C2 (10,000, 0.80, 0.80) → k = 35,851;
+% C4 (8,000, 1.0, 0.70) → k = 22,430; phi_cal = 0.985; SoH_min = 0.70 (0.50 as a sensitivity row).
+
+% ---- C.4 Replaces l. 844–900 (complementarity, net apparent power, objective) ---------------------------
+
+\subsubsection{\textcolor{blue}{Objective of the Shared-ESS Agent}}
+
+\textcolor{blue}{The agent has no economic objective. Within the coordination procedure it minimizes the
+augmented-Lagrangian terms of the storage consensus channel (\ref{app:admm_updated_implementation}) plus a
+small linear regularization of throughput,}
+
+\textcolor{blue}{
+    \begin{equation}
+        \begin{aligned}
+            \min \;
+            & \varepsilon^{\text{E}} \sum_{e \in E^S} \sum_{y^\text{Inv} \in Y} \sum_{y \in Y} \sum_{d \in D} \sum_{t \in T}
+            \left( P^{\text{Ch}}_{e,y^\text{Inv},y,d,t} + P^{\text{Dch}}_{e,y^\text{Inv},y,d,t} \right) \\
+            & + \sum_{e \in E^S} \sum_{y \in Y} \sum_{d \in D} \sum_{t \in T}
+            \left( \mathcal{L}^{E,P}_{e,y,d,t} + \mathcal{L}^{E,Q}_{e,y,d,t} \right)
+        \end{aligned}
+        \label{eq:esso_objective}
+    \end{equation}
+}
+
+\noindent
+\textcolor{blue}{subject to \eqref{eq:cohort_rated}--\eqref{eq:available_capacity},
+\eqref{eq:cohort_allocation}--\eqref{eq:soh_floor}, $0 \le P^{\text{Ch}}_{e,y^\text{Inv},y,d,t},\,
+P^{\text{Dch}}_{e,y^\text{Inv},y,d,t} \le S^{\text{Rated,Unit}}_{e,y^\text{Inv},y}$ and the converter capability
+inequality of \eqref{eq:converter_capability} on the aggregate schedule. The regularization weight
+$\varepsilon^{\text{E}}$ is small enough to be below the resolution of Subsection~2.2.7 and serves one purpose:
+with a linear, strictly positive price on $P^{\text{Ch}} + P^{\text{Dch}}$, simultaneous charging and discharging
+is never optimal, so complementarity in the agent follows from the problem structure and needs no
+nonconvex constraint. The maximum residual $\min\{P^{\text{Ch}}, P^{\text{Dch}}\}$ is checked after every solve
+and reported. The earlier investment-fixing slacks and the apparent-power aggregation are retired:
+investments are parameters, and reactive power enters only through the capability circle.}
+
+% [CONFIRM] (a) the value of EPS_ESSO_THROUGHPUT and its normalization (same units as the AL terms, which are
+% normalized by the rating) — for Section 3.5; (b) whether the agent's capability circle is written on the
+% aggregate or per cohort; (c) the post-solve detector threshold (1e-6 * s_max).
+
+% ---- C.5 Replaces the red note (l. 905–906): the multi-scenario commitment term ------------------------
+
+\subsubsection{\textcolor{blue}{Day-Ahead Commitment under Operation Scenarios}}
+\label{subsubsec:commitment}
+
+\textcolor{blue}{In the multi-scenario instance each operation scenario $o$ is instantiated inside every network
+block with its own load and RES realization, while the interface schedule committed to the TSO is
+scenario-independent by construction in the TSO model and may be deviated from in the DSO model. Each DSO
+carries a day-ahead expectation of its interface flow and is charged for deviating from it. With
+$P^{\text{I}}_{i,o,t}$ the interface active power of DSO $i$ in scenario $o$ and hour $t$ (likewise
+$Q^{\text{I}}$), the expectation and the deviations are ($\forall i$, $o$, $t$):}
+
+\textcolor{blue}{
+    \begin{equation}
+        \bar{P}^{\text{I}}_{i,t} = \sum_{o \in \Omega_O} \omega_o P^{\text{I}}_{i,o,t}, \qquad
+        P^{\text{I}}_{i,o,t} - \bar{P}^{\text{I}}_{i,t} = d^{+}_{i,o,t} - d^{-}_{i,o,t}, \qquad d^{\pm}_{i,o,t} \ge 0
+        \label{eq:commitment_deviation}
+    \end{equation}
+}
+
+\textcolor{blue}{and the charge added to the DSO's objective, and hence to $C^{\text{Op}}$ in
+\eqref{eq:recourse_value}, is}
+
+\textcolor{blue}{
+    \begin{equation}
+        \sum_{o \in \Omega_O} \sum_{t \in T} \omega_o \, \alpha \, \bar{\pi}_t
+        \left( d^{+}_{i,o,t} + d^{-}_{i,o,t} \right)
+        \label{eq:commitment_charge}
+    \end{equation}
+}
+
+\noindent
+\textcolor{blue}{where $\bar{\pi}_t$ is the probability-weighted wholesale price of the hour over the market
+scenarios and $\alpha$ an imbalance premium, so that a deviation is priced at a fraction $\alpha$ of the energy
+price of the hour in which it occurs. The same term is written on the reactive interface flow with the same
+price, as a stated assumption. The TSO operates on the committed schedule and carries no deviation term; the
+interface voltage carries none either, being a physical state rather than a commitment. The storage schedule
+is not deviated from: it is one scenario-free variable per hour in every block
+(Subsection~2.3.2), so the committed schedule is the one that ages the cells. At a single operation scenario
+\eqref{eq:commitment_deviation}--\eqref{eq:commitment_charge} vanish identically, and the single-scenario
+instance is unaffected by them. The value of $\alpha$ is given in Section~3.5.}
+
+% [CONFIRM] (a) alpha = 0.50 in the 3x3 campaign; (b) the expectation \bar P is a variable of the DSO block
+% (its own day-ahead expectation), never the incoming consensus value; (c) the Q term uses the same alpha*pi;
+% (d) label numbers: "Subsection 2.3.2" above refers to the "Storage Operation in the Network Models"
+% subsubsection — fix to the final numbering.
+
+% ---- C.6 Sentence to add to the degradation-attribution paragraph (l. 902), unchanged otherwise -----------
+% Keep the blue paragraph at l. 902 as it is; it answers R1.2(v).
+
+% =====================================================================================================
+% NOMENCLATURE — symbols to add (Sets and Parameters / Variables tables); remove L^B, alpha^Down, alpha^(l),
+% every "(l)" superscript, S^Ch/S^Dch (apparent charging/discharging), S^Net, P^Net/Q^Net, CL^Nom, delta_{e,y^Inv,y}.
+%   Omega_M, omega_m            set of market scenarios and probability
+%   Delta^S, Delta^E            lattice units of converter power (MVA) and energy (MWh)
+%   Delta^p                     poll size of the master search, in lattice units
+%   N^max                       evaluation budget of the master search
+%   F(x), I(x), Q(x)            total, investment and certified operating cost of plan x
+%   C^Op_{y,d,m,o}              daily operating cost of block (y,d) in scenario (m,o)
+%   eps_abs, eps_rel            ADMM residual tolerances
+%   k_0, k^*                    first residual pass; certification cycle
+%   \hat P, P_max, W            measured period; longest period on the instance; certifying window
+%   tau, delta_R                certification threshold; claimed value resolution
+%   eta^Ch_e, eta^Dch_e         charging and discharging efficiencies
+%   SoC^Min_e, SoC^Max_e, SoC^0_e   state-of-charge limits and initial state (fractions of available energy)
+%   E^SoC_{e,y,d,t}             stored energy
+%   P^Ch, P^Dch, Q^E, P^E       charging, discharging, reactive and net active power of the shared ESS
+%   S^Av_{e,y}, E^Av_{e,y}      available power and energy at node e in year y
+%   \bar E^Cell                 average daily cell-side throughput of a cohort
+%   D_{e,y^Inv,y}               fractional cycling loss of a cohort over block y
+%   k_e                         effective cycle life; N^DS, delta^DS, R^DS the datasheet calibration triple
+%   phi^Cal_e                   calendar retention factor per year
+%   SoH^Min_e                   end-of-life floor
+%   eps^E                       throughput regularization weight of the agent
+%   alpha, \bar pi_t            imbalance premium; expected hourly wholesale price
+%   d^+, d^-                    positive and negative interface deviations from the day-ahead expectation
+% =====================================================================================================
+
+
+% =====================================================================================================
+% PART D — §2.1, equations (1)–(2) and the salvage block (added 2026-10-07 after the author's agreement)
+% Replaces, in the clone as pulled on 2026-10-07: from "\textcolor{blue}{The shared ESS planning problem
+% can be generically written as:}" through the closing "}" of the blue "Here:" itemize (the red "and:" and
+% the red salvage equation go). The paragraph "The absence of a scenario index..." that follows stays.
+% =====================================================================================================
+
+\textcolor{blue}{The shared ESS planning problem can be generically written as:}
+
+\begin{equation}
+    \textcolor{blue}{
+        \min_{\boldsymbol{x}\in\mathcal{X}}
+        \left\{
+            I(\boldsymbol{x}) + Q(\boldsymbol{x})
+        \right\}
+    }
+    \label{eq:two_stage_planning_problem}
+\end{equation}
+
+\noindent
+\textcolor{blue}{where $I(\boldsymbol{x})$ is the expected discounted investment cost of the plan over the
+investment-cost trajectories,}
+
+\begin{equation}
+    \textcolor{blue}{
+        I(\boldsymbol{x}) = \sum_{c\in\Omega_C} \omega_c\, C_c^{\mathrm{Inv}}(\boldsymbol{x})
+    }
+    \label{eq:investment_cost_generic}
+\end{equation}
+
+\noindent
+\textcolor{blue}{and $Q(\boldsymbol{x})$, the recourse function, is the expected operating cost of the plan under
+coordinated TSO--DSO operation:}
+
+\begin{subequations}
+    \begin{align}
+        \textcolor{blue}{Q(\boldsymbol{x})} &= \textcolor{blue}{\min_{\{\boldsymbol{u}_o\}_{o\in\Omega_O}} \sum_{o\in\Omega_O} \omega_o\, C_o^{\mathrm{Op}} \left(\boldsymbol{x}, \boldsymbol{u}_o \right)}\\
+        \textcolor{blue}{\text{s.t.}} & \textcolor{blue}{\quad \boldsymbol{u}_o \in \mathcal{U}_o(\boldsymbol{x}), \quad \forall o\in\Omega_O}
+    \end{align}
+    \label{eq:operational_recourse_function}
+\end{subequations}
+
+\noindent
+\textcolor{blue}{
+    Here:
+    \begin{itemize}
+        \item $\mathcal{X}$ is the set of admissible plans (Subsection~\ref{subsec:master});
+        \item $\Omega_C$ contains the investment-cost trajectories and $\omega_c$ is the probability of trajectory $c$;
+        \item $\Omega_O$ contains the operating scenarios and $\omega_o$ is the probability of scenario $o$; in the
+        multi-scenario instance a scenario is a pair of a market scenario $m \in \Omega_M$ and an operation scenario
+        of load and RES generation, with probability $\omega_m \omega_o$, and the expansion of $Q(\boldsymbol{x})$
+        over representative years, days and scenarios is given in Subsection~\ref{subsubsec:certification};
+        \item $\boldsymbol{x}$ contains the scenario-independent investment decisions;
+        \item $\boldsymbol{u}_o$ contains the operational variables for scenario $o$.
+    \end{itemize}
+}
+
+\textcolor{blue}{The terminal value of the assets installed within the horizon is not part of
+\eqref{eq:two_stage_planning_problem}: operation does not internalize it, and every planning result is
+reported both gross and net of a salvage credit computed after the evaluation from the terminal state of
+health and the remaining calendar life of each installation (Section~4).}
+
+% ---- D.2 For Section 4, where the net columns are introduced (not in §2): the salvage credit ---------------
+% Sign is a credit: net = gross − C^Salvage. [CONFIRM] against _get_terminal_salvage_value_*: (a) y^End is the
+% end of the last block (2035 + Y_y) or the last representative year; (b) the SoH used is the terminal SoH of
+% the last block; (c) whether the cohort's investment cost is the expected (probability-weighted) one.
+
+\textcolor{blue}{
+    \begin{equation}
+        C^\text{Salvage}(\boldsymbol{x}) =
+        \sum_{e \in E^S} \sum_{y^\text{Inv} \in Y}
+        \frac{I_{e,y^\text{Inv}}}{(1+r)^{\,y^\text{End}-y_0}}
+        \;\frac{T^\text{Rem}_{e,y^\text{Inv}}}{T^\text{Cal}_{e,y^\text{Inv}}}
+        \; SoH_{e,y^\text{Inv},y^\text{End}}
+        \label{eq:salvage_credit}
+    \end{equation}
+}
+
+\textcolor{blue}{
+    \begin{equation}
+        T^\text{Rem}_{e,y^\text{Inv}} = \max\left\{0,\; y^\text{Inv} + T^\text{Cal}_{e,y^\text{Inv}} - y^\text{End}\right\}
+        \label{eq:salvage_remaining_life}
+    \end{equation}
+}
+
+\noindent
+\textcolor{blue}{where $I_{e,y^\text{Inv}} = \sum_{c \in \Omega_C} \omega_c \big( c^{\text{Inv,S}}_{y^\text{Inv},c}
+S^{\text{Inv}}_{e,y^\text{Inv}} + c^{\text{Inv,E}}_{y^\text{Inv},c} E^{\text{Inv}}_{e,y^\text{Inv}} \big)$ is the
+expected undiscounted cost of the cohort, $y^\text{End}$ the end of the planning horizon, $T^\text{Rem}$ its
+remaining calendar life at $y^\text{End}$, and $SoH_{e,y^\text{Inv},y^\text{End}}$ its terminal state of health.
+The credit is reported, not optimized: the recourse does not see it, and a plan is never selected for it.}
