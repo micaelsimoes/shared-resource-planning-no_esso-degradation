@@ -1,0 +1,2209 @@
+{
+ "stage": "P5.15 Addendum 70 W175 -- the CONFIRM comments of manuscript sections 3.5 and 3.6 (mid-block SoH point, no-ageing arm, chemistry, benchmark arm definitions)",
+ "script": "p515_s53_w175_confirm_3_5_3_6.py",
+ "script_sha256": "02092c5d7bc298962416920acbe0742c7c01f00b6ca2385163ba9a517781d100",
+ "git_HEAD": "a8eb9b692229467dd12cf208591092351727a60a",
+ "interpreter": "/Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python",
+ "started_utc": "2026-10-08T14:50:14.221434+00:00",
+ "finished_utc": "2026-10-08T14:50:15.761286+00:00",
+ "objective_convention": "Q = gross_operational_cost, settlement excluded (production _get_operational_recourse_components); benchmark arms evaluated at curtailment tie-breaker 0; salvage not subtracted",
+ "instances": {
+  "ageing_arms": {
+   "candidate_key": "db77e1549af855bcb3521950c634db55fe6c155ab2de591b0441b5f2bf4b369a",
+   "canonical": {
+    "investment_year": 2025,
+    "nodes": {
+     "5": [
+      0.0,
+      0.0
+     ],
+     "7": [
+      0.25,
+      1.0
+     ],
+     "9": [
+      0.0,
+      0.0
+     ]
+    }
+   }
+  },
+  "benchmark": {
+   "candidate_key": "8435c71859ddde68e7ae5818b4ff91c03b4171791bcfaa70edcc3ddb52bacb57",
+   "candidate_key_declared": "8435c71859ddde68e7ae5818b4ff91c03b4171791bcfaa70edcc3ddb52bacb57",
+   "candidate_key_matches": true,
+   "canonical_candidate": {
+    "investment_year": 2025,
+    "nodes": {
+     "5": [
+      0.0,
+      0.0
+     ],
+     "7": [
+      0.0,
+      0.0
+     ],
+     "9": [
+      0.0,
+      0.0
+     ]
+    }
+   },
+   "label": "x0",
+   "problem": "SRP1"
+  }
+ },
+ "manuscript": {
+  "clone": "manuscript/6a67305f25e8348fb71380c3",
+  "head": "260bd83",
+  "main_tex_sha256": "cb237b2d129e689a94dd50abec9a9cca739567ef97a486ec012a901f0e04b6df",
+  "locations": {
+   "sec_3_5_heading": [
+    1066
+   ],
+   "sec_3_6_heading": [
+    1105
+   ],
+   "lfp_sentence": [
+    1070
+   ],
+   "ageing_sensitivities_sentence": [
+    1074
+   ],
+   "table_caption_soh_point": [
+    1081
+   ],
+   "table_row_midblock": [
+    1090
+   ],
+   "table_row_no_ageing": [
+    1092
+   ],
+   "confirm_w175_1": [
+    1101
+   ],
+   "benchmark_paragraph_start": [
+    1138
+   ],
+   "benchmark_paragraph_end": [
+    1143
+   ],
+   "confirm_w175_2": [
+    1144
+   ],
+   "sec2_available_energy_sentence": [
+    679
+   ],
+   "sec2_soh_chain": [
+    818
+   ]
+  },
+  "quotes": {
+   "benchmark_paragraph": {
+    "lines": [
+     1138,
+     1143
+    ],
+    "text": "\\textcolor{blue}{The value of coordination (Section~4.4) is measured against two static arrangements of the same\nsystem, each evaluated at the same plan and under a no-reverse-flow rule at every interface: a passive arrangement, in\nwhich the DNs activate no flexibility and curtail renewable generation only as the rule requires, and a price-taker\narrangement, in which each DSO dispatches its network against the wholesale price alone. In both, the TSO then\ndispatches the TN with the interface exchanges fixed at the DNs' schedules. Each arrangement is reported as the best\nof three solver starts.}"
+   },
+   "confirm_w175_1": {
+    "lines": [
+     1101,
+     1103
+    ],
+    "text": "% [CONFIRM \u2014 W175] the mid-block SoH point: SoH_{y-1} e^{-D/2} phi^{Y/2} (shared_energy_storage_data.py:625-626); the\n% \"no ageing\" arm's implementation (k -> infinity and phi = 1, floor inactive); LFP named as the chemistry in the\n% ESS file."
+   },
+   "confirm_w175_2": {
+    "lines": [
+     1144,
+     1147
+    ],
+    "text": "% [CONFIRM \u2014 W175] the benchmark paragraph against uncoordinated_benchmark.py and Addenda 49/57/58: the passive arm's\n% tie-breaker (1 EUR/MWh minimum-curtailment term), the price-taker arm's definition (lambda = 0, rho = 0 \u2014 dispatch at\n% the market price), the TSO arm with interface P/Q as fixed parameters and bounded voltages, the three-start rule, and\n% that the comparison uses the common evaluation Q (tie-breaker 0)."
+   },
+   "lfp_sentence": {
+    "line": 1070,
+    "text": "The shared ESS is a utility-scale lithium iron phosphate battery with charging and discharging efficiencies $\\eta^{\\text{Ch}} = 0.97$ and $\\eta^{\\text{Dch}} = 0.96$, a usable state-of-charge window of 10--90\\,\\% of the available energy ($SoC^{\\text{Min}} = 0.10$, $SoC^{\\text{Max}} = 0.90$) and a daily initial state of 50\\,\\% ($SoC^{0} = 0.50$); the daily closure slack is bounded by $\\varepsilon^{\\text{Cl}} = 0.05$ of the available energy (plus a numerical allowance of $10^{-5}$~p.u.) and priced at  $c^{\\text{Cl}} = 10^{3}$~\\euro/MWh, the network complementarity tolerance is $\\varepsilon^{\\text{C}} = 10^{-4}$, and the calendar lifetime is $T^{\\text{Cal}} = 15$~years. The agent's regularisation weight is $\\varepsilon^{\\text{E}} = 10^{-5}$ and its slack penalty $c^{\\sigma} = 10^{3}$. Capacities are sized on the lattice $\\Delta^S = 0.25$~MVA, $\\Delta^E = 0.5$~MWh with durations between 2 and 4~h, at most 5~MWh per node and a budget of 1~M\\euro."
+   },
+   "table_caption_soh_point": {
+    "line": 1081,
+    "text": "that sets a block's available energy (end of block, or its midpoint).}}"
+   },
+   "table_row_midblock": {
+    "line": 1090,
+    "text": "Retention 50\\,\\%, mid-block   & (10\\,000, 0.80, 0.50) & 11\\,542 & 1.000 & mid & 0.70 \\\\"
+   },
+   "table_row_no_ageing": {
+    "line": 1092,
+    "text": "No ageing                     & ---                   & $\\infty$ & 1.000 & --- & --- \\\\"
+   },
+   "ageing_sensitivities_sentence": {
+    "line": 1074,
+    "text": "Ageing is calibrated from datasheet cycle-life statements through \\eqref{eq:cycle_life_calibration}; Table~\\ref{tab:ageing_calibrations} lists the calibrations used. The baseline reads the datasheet count of 10{,}000 cycles at 80\\,\\% depth of discharge as cycles to 80\\,\\% retention ($k = 35{,}851$) and adds a calendar retention of $\\phi^{\\text{Cal}} = 0.985$ per year (80\\,\\% retention over the 15-year calendar life without cycling); the end-of-life floor is $SoH^{\\text{Min}} = 0.70$. The other rows are the sensitivities of Section~4.3: the same count without calendar fade; the same count read as cycles to 50\\,\\% retention, evaluated at the end of the block or at its midpoint; a second datasheet of 8{,}000 full cycles to 70\\,\\% retention; no ageing; and the baseline with a 0.50 floor."
+   },
+   "sec2_available_energy_sentence": {
+    "line": 679,
+    "text": "\\textcolor{blue}{The available power of a cohort equals its rating, while its available energy is reduced by its state of health at the end of the representative year --- a conservative convention; the mid-block evaluation point is a sensitivity in Section~4 ($\\forall e$, $y^\\text{Inv}$, $y$ as above):}"
+   },
+   "sec_3_5_formula_lines_outside_comments": []
+  }
+ },
+ "ageing": {
+  "spec": {
+   "path": "data/SRP1/Results/P515S53/w142_resettle_ext_v6/frozen_s53_resettle_ext_spec_v3_84775dc4.json",
+   "sha256": "84775dc41428ba6a6b504c86de728f3d2b44d19354c977c18d3b33f197c76ee6",
+   "git_head": "13825451206ae9d2a313668c1c2eb17239d93892",
+   "arms": {
+    "C2": {
+     "ageing_enabled": true,
+     "available_energy_soh_point": "end",
+     "calendar_retention_per_year": 1.0,
+     "eol_retention_r": 0.8
+    },
+    "C2_calfade": {
+     "ageing_enabled": true,
+     "available_energy_soh_point": "end",
+     "calendar_retention_per_year": 0.985,
+     "eol_retention_r": 0.8
+    },
+    "C3_midblock": {
+     "ageing_enabled": true,
+     "available_energy_soh_point": "mid",
+     "calendar_retention_per_year": 1.0,
+     "eol_retention_r": 0.5
+    },
+    "C3_unit": {
+     "ageing_enabled": true,
+     "available_energy_soh_point": "end",
+     "calendar_retention_per_year": 1.0,
+     "eol_retention_r": 0.5
+    },
+    "C4": {
+     "ageing_enabled": true,
+     "available_energy_soh_point": "end",
+     "calendar_retention_per_year": 1.0,
+     "eol_retention_r": 0.7
+    },
+    "no_ageing": {
+     "ageing_enabled": false,
+     "available_energy_soh_point": "end",
+     "calendar_retention_per_year": 1.0,
+     "eol_retention_r": 0.5
+    }
+   },
+   "k_closed_form_by_arm": {
+    "C2": 35851.3609417964,
+    "C2_calfade": 35851.3609417964,
+    "C3_midblock": 11541.560327111707,
+    "C3_unit": 11541.560327111707,
+    "C4": 22429.38601645703,
+    "no_ageing": 11541.560327111707
+   },
+   "floor_row_lower_expected": 0.7,
+   "cells": {
+    "e_c2": {
+     "ageing_enabled": true,
+     "available_energy_soh_point": "end",
+     "calendar_retention_per_year": 1.0,
+     "eol_retention_r": 0.8
+    },
+    "e_c2_calfade": {
+     "ageing_enabled": true,
+     "available_energy_soh_point": "end",
+     "calendar_retention_per_year": 0.985,
+     "eol_retention_r": 0.8
+    },
+    "e_c3_midblock": {
+     "ageing_enabled": true,
+     "available_energy_soh_point": "mid",
+     "calendar_retention_per_year": 1.0,
+     "eol_retention_r": 0.5
+    },
+    "e_c3_unit": {
+     "ageing_enabled": true,
+     "available_energy_soh_point": "end",
+     "calendar_retention_per_year": 1.0,
+     "eol_retention_r": 0.5
+    },
+    "e_c4": {
+     "ageing_enabled": true,
+     "available_energy_soh_point": "end",
+     "calendar_retention_per_year": 1.0,
+     "eol_retention_r": 0.7
+    },
+    "e_no_ageing": {
+     "ageing_enabled": false,
+     "available_energy_soh_point": "end",
+     "calendar_retention_per_year": 1.0,
+     "eol_retention_r": 0.5
+    },
+    "pb_y2025_n5_v6": null
+   },
+   "cell_order": [
+    "e_c3_unit",
+    "e_c2",
+    "e_c4",
+    "e_c2_calfade",
+    "e_c3_midblock",
+    "e_no_ageing",
+    "pb_y2025_n5_v6"
+   ]
+  },
+  "e_no_ageing": {
+   "path": "data/SRP1/Results/P515S53/w142_resettle_ext_v6/campaign_s53_w142_resettle_ext_v6_e_no_ageing/evals/1b10e9e161523f46_e_no_ageing/evaluation_record.json",
+   "status": "certified",
+   "certified_cost_gross": 653559885.7170684,
+   "candidate_key": "db77e1549af855bcb3521950c634db55fe6c155ab2de591b0441b5f2bf4b369a",
+   "candidate_canonical": {
+    "investment_year": 2025,
+    "nodes": {
+     "5": [
+      0.0,
+      0.0
+     ],
+     "7": [
+      0.25,
+      1.0
+     ],
+     "9": [
+      0.0,
+      0.0
+     ]
+    }
+   },
+   "model_variant": {
+    "eol_retention_r": 0.5,
+    "calendar_retention_per_year": 1.0,
+    "available_energy_soh_point": "end",
+    "ageing_enabled": false
+   },
+   "minimum_soh_in_configuration": 0.7,
+   "model_variant_readback_pre_run": {
+    "all_match": true,
+    "expected": {
+     "k": null,
+     "k_formula": "cycles_n * reference_dod_d / (-ln eol_retention_r) = 10000 * 0.8 / (-ln 0.5)",
+     "phi_cal_in_model": 1.0,
+     "available_energy_soh_point": "end",
+     "ageing_enabled": false,
+     "d_row_form": "D == 0"
+    },
+    "per_node_readback": {
+     "5": {
+      "y_inv": 0,
+      "y0": 0,
+      "y1_available_row": 1,
+      "n_years_data": 5,
+      "d_row_form": "D == 0",
+      "k": null,
+      "n_years_from_d_row": null,
+      "phi_cal_in_model": 1.0,
+      "soh_row_exp_form_ok": true,
+      "available_energy_soh_point": "end",
+      "available_row_probe": {
+       "soh_end": 0.9,
+       "soh_prev": 0.95,
+       "D": 0.2,
+       "X": 0.9,
+       "X_end": 0.9,
+       "X_mid_closed_form": 0.8595955471341615
+      },
+      "floor_row_lower": 0.7
+     },
+     "7": {
+      "y_inv": 0,
+      "y0": 0,
+      "y1_available_row": 1,
+      "n_years_data": 5,
+      "d_row_form": "D == 0",
+      "k": null,
+      "n_years_from_d_row": null,
+      "phi_cal_in_model": 1.0,
+      "soh_row_exp_form_ok": true,
+      "available_energy_soh_point": "end",
+      "available_row_probe": {
+       "soh_end": 0.9,
+       "soh_prev": 0.95,
+       "D": 0.2,
+       "X": 0.9,
+       "X_end": 0.9,
+       "X_mid_closed_form": 0.8595955471341615
+      },
+      "floor_row_lower": 0.7
+     },
+     "9": {
+      "y_inv": 0,
+      "y0": 0,
+      "y1_available_row": 1,
+      "n_years_data": 5,
+      "d_row_form": "D == 0",
+      "k": null,
+      "n_years_from_d_row": null,
+      "phi_cal_in_model": 1.0,
+      "soh_row_exp_form_ok": true,
+      "available_energy_soh_point": "end",
+      "available_row_probe": {
+       "soh_end": 0.9,
+       "soh_prev": 0.95,
+       "D": 0.2,
+       "X": 0.9,
+       "X_end": 0.9,
+       "X_mid_closed_form": 0.8595955471341615
+      },
+      "floor_row_lower": 0.7
+     }
+    },
+    "per_node_checks": {
+     "5": {
+      "k": true,
+      "n_years_from_d_row_equals_data": true,
+      "phi_cal_in_model": true,
+      "d_row_form": true,
+      "available_energy_soh_point": true,
+      "soh_row_exp_form": true
+     },
+     "7": {
+      "k": true,
+      "n_years_from_d_row_equals_data": true,
+      "phi_cal_in_model": true,
+      "d_row_form": true,
+      "available_energy_soh_point": true,
+      "soh_row_exp_form": true
+     },
+     "9": {
+      "k": true,
+      "n_years_from_d_row_equals_data": true,
+      "phi_cal_in_model": true,
+      "d_row_form": true,
+      "available_energy_soh_point": true,
+      "soh_row_exp_form": true
+     }
+    }
+   },
+   "model_variant_readback_terminal": {
+    "all_match": true,
+    "expected": {
+     "k": null,
+     "k_formula": "cycles_n * reference_dod_d / (-ln eol_retention_r) = 10000 * 0.8 / (-ln 0.5)",
+     "phi_cal_in_model": 1.0,
+     "available_energy_soh_point": "end",
+     "ageing_enabled": false,
+     "d_row_form": "D == 0"
+    },
+    "per_node_readback": {
+     "5": {
+      "y_inv": 0,
+      "y0": 0,
+      "y1_available_row": 1,
+      "n_years_data": 5,
+      "d_row_form": "D == 0",
+      "k": null,
+      "n_years_from_d_row": null,
+      "phi_cal_in_model": 1.0,
+      "soh_row_exp_form_ok": true,
+      "available_energy_soh_point": "end",
+      "available_row_probe": {
+       "soh_end": 0.9,
+       "soh_prev": 0.95,
+       "D": 0.2,
+       "X": 0.9,
+       "X_end": 0.9,
+       "X_mid_closed_form": 0.8595955471341615
+      },
+      "floor_row_lower": 0.7
+     },
+     "7": {
+      "y_inv": 0,
+      "y0": 0,
+      "y1_available_row": 1,
+      "n_years_data": 5,
+      "d_row_form": "D == 0",
+      "k": null,
+      "n_years_from_d_row": null,
+      "phi_cal_in_model": 1.0,
+      "soh_row_exp_form_ok": true,
+      "available_energy_soh_point": "end",
+      "available_row_probe": {
+       "soh_end": 0.9,
+       "soh_prev": 0.95,
+       "D": 0.2,
+       "X": 0.9,
+       "X_end": 0.9,
+       "X_mid_closed_form": 0.8595955471341615
+      },
+      "floor_row_lower": 0.7
+     },
+     "9": {
+      "y_inv": 0,
+      "y0": 0,
+      "y1_available_row": 1,
+      "n_years_data": 5,
+      "d_row_form": "D == 0",
+      "k": null,
+      "n_years_from_d_row": null,
+      "phi_cal_in_model": 1.0,
+      "soh_row_exp_form_ok": true,
+      "available_energy_soh_point": "end",
+      "available_row_probe": {
+       "soh_end": 0.9,
+       "soh_prev": 0.95,
+       "D": 0.2,
+       "X": 0.9,
+       "X_end": 0.9,
+       "X_mid_closed_form": 0.8595955471341615
+      },
+      "floor_row_lower": 0.7
+     }
+    },
+    "per_node_checks": {
+     "5": {
+      "k": true,
+      "n_years_from_d_row_equals_data": true,
+      "phi_cal_in_model": true,
+      "d_row_form": true,
+      "available_energy_soh_point": true,
+      "soh_row_exp_form": true
+     },
+     "7": {
+      "k": true,
+      "n_years_from_d_row_equals_data": true,
+      "phi_cal_in_model": true,
+      "d_row_form": true,
+      "available_energy_soh_point": true,
+      "soh_row_exp_form": true
+     },
+     "9": {
+      "k": true,
+      "n_years_from_d_row_equals_data": true,
+      "phi_cal_in_model": true,
+      "d_row_form": true,
+      "available_energy_soh_point": true,
+      "soh_row_exp_form": true
+     }
+    }
+   },
+   "terminal_soh": {
+    "5": {
+     "per_active_cohort_year": {},
+     "min": null,
+     "floor_rows_active_at_terminal": []
+    },
+    "7": {
+     "per_active_cohort_year": {
+      "(0, 0)": 1.0,
+      "(0, 1)": 1.0,
+      "(0, 2)": 1.0
+     },
+     "min": 1.0,
+     "floor_rows_active_at_terminal": []
+    },
+    "9": {
+     "per_active_cohort_year": {},
+     "min": null,
+     "floor_rows_active_at_terminal": []
+    }
+   }
+  },
+  "e_c3_midblock": {
+   "path": "data/SRP1/Results/P515S53/w142_resettle_ext_v6/campaign_s53_w142_resettle_ext_v6_e_c3_midblock/evals/8b1eace91df86cd5_e_c3_midblock/evaluation_record.json",
+   "status": "certified",
+   "certified_cost_gross": 653621637.0564654,
+   "candidate_key": "db77e1549af855bcb3521950c634db55fe6c155ab2de591b0441b5f2bf4b369a",
+   "candidate_canonical": {
+    "investment_year": 2025,
+    "nodes": {
+     "5": [
+      0.0,
+      0.0
+     ],
+     "7": [
+      0.25,
+      1.0
+     ],
+     "9": [
+      0.0,
+      0.0
+     ]
+    }
+   },
+   "model_variant": {
+    "eol_retention_r": 0.5,
+    "calendar_retention_per_year": 1.0,
+    "available_energy_soh_point": "mid",
+    "ageing_enabled": true
+   },
+   "minimum_soh_in_configuration": 0.7,
+   "model_variant_readback_pre_run": {
+    "all_match": true,
+    "expected": {
+     "k": 11541.560327111707,
+     "k_formula": "cycles_n * reference_dod_d / (-ln eol_retention_r) = 10000 * 0.8 / (-ln 0.5)",
+     "phi_cal_in_model": 1.0,
+     "available_energy_soh_point": "mid",
+     "ageing_enabled": true,
+     "d_row_form": "D * 2kE == 365 n avg"
+    },
+    "per_node_readback": {
+     "5": {
+      "y_inv": 0,
+      "y0": 0,
+      "y1_available_row": 1,
+      "n_years_data": 5,
+      "d_row_form": "D * 2kE == 365 n avg",
+      "k": 11541.560327111707,
+      "n_years_from_d_row": 5.0,
+      "phi_cal_in_model": 1.0,
+      "soh_row_exp_form_ok": true,
+      "available_energy_soh_point": "mid",
+      "available_row_probe": {
+       "soh_end": 0.9,
+       "soh_prev": 0.95,
+       "D": 0.2,
+       "X": 0.8595955471341615,
+       "X_end": 0.9,
+       "X_mid_closed_form": 0.8595955471341615
+      },
+      "floor_row_lower": 0.7
+     },
+     "7": {
+      "y_inv": 0,
+      "y0": 0,
+      "y1_available_row": 1,
+      "n_years_data": 5,
+      "d_row_form": "D * 2kE == 365 n avg",
+      "k": 11541.560327111707,
+      "n_years_from_d_row": 5.0,
+      "phi_cal_in_model": 1.0,
+      "soh_row_exp_form_ok": true,
+      "available_energy_soh_point": "mid",
+      "available_row_probe": {
+       "soh_end": 0.9,
+       "soh_prev": 0.95,
+       "D": 0.2,
+       "X": 0.8595955471341615,
+       "X_end": 0.9,
+       "X_mid_closed_form": 0.8595955471341615
+      },
+      "floor_row_lower": 0.7
+     },
+     "9": {
+      "y_inv": 0,
+      "y0": 0,
+      "y1_available_row": 1,
+      "n_years_data": 5,
+      "d_row_form": "D * 2kE == 365 n avg",
+      "k": 11541.560327111707,
+      "n_years_from_d_row": 5.0,
+      "phi_cal_in_model": 1.0,
+      "soh_row_exp_form_ok": true,
+      "available_energy_soh_point": "mid",
+      "available_row_probe": {
+       "soh_end": 0.9,
+       "soh_prev": 0.95,
+       "D": 0.2,
+       "X": 0.8595955471341615,
+       "X_end": 0.9,
+       "X_mid_closed_form": 0.8595955471341615
+      },
+      "floor_row_lower": 0.7
+     }
+    },
+    "per_node_checks": {
+     "5": {
+      "k": true,
+      "n_years_from_d_row_equals_data": true,
+      "phi_cal_in_model": true,
+      "d_row_form": true,
+      "available_energy_soh_point": true,
+      "soh_row_exp_form": true
+     },
+     "7": {
+      "k": true,
+      "n_years_from_d_row_equals_data": true,
+      "phi_cal_in_model": true,
+      "d_row_form": true,
+      "available_energy_soh_point": true,
+      "soh_row_exp_form": true
+     },
+     "9": {
+      "k": true,
+      "n_years_from_d_row_equals_data": true,
+      "phi_cal_in_model": true,
+      "d_row_form": true,
+      "available_energy_soh_point": true,
+      "soh_row_exp_form": true
+     }
+    }
+   },
+   "model_variant_readback_terminal": {
+    "all_match": true,
+    "expected": {
+     "k": 11541.560327111707,
+     "k_formula": "cycles_n * reference_dod_d / (-ln eol_retention_r) = 10000 * 0.8 / (-ln 0.5)",
+     "phi_cal_in_model": 1.0,
+     "available_energy_soh_point": "mid",
+     "ageing_enabled": true,
+     "d_row_form": "D * 2kE == 365 n avg"
+    },
+    "per_node_readback": {
+     "5": {
+      "y_inv": 0,
+      "y0": 0,
+      "y1_available_row": 1,
+      "n_years_data": 5,
+      "d_row_form": "D * 2kE == 365 n avg",
+      "k": 11541.560327111707,
+      "n_years_from_d_row": 5.0,
+      "phi_cal_in_model": 1.0,
+      "soh_row_exp_form_ok": true,
+      "available_energy_soh_point": "mid",
+      "available_row_probe": {
+       "soh_end": 0.9,
+       "soh_prev": 0.95,
+       "D": 0.2,
+       "X": 0.8595955471341615,
+       "X_end": 0.9,
+       "X_mid_closed_form": 0.8595955471341615
+      },
+      "floor_row_lower": 0.7
+     },
+     "7": {
+      "y_inv": 0,
+      "y0": 0,
+      "y1_available_row": 1,
+      "n_years_data": 5,
+      "d_row_form": "D * 2kE == 365 n avg",
+      "k": 11541.560327111707,
+      "n_years_from_d_row": 5.0,
+      "phi_cal_in_model": 1.0,
+      "soh_row_exp_form_ok": true,
+      "available_energy_soh_point": "mid",
+      "available_row_probe": {
+       "soh_end": 0.9,
+       "soh_prev": 0.95,
+       "D": 0.2,
+       "X": 0.8595955471341615,
+       "X_end": 0.9,
+       "X_mid_closed_form": 0.8595955471341615
+      },
+      "floor_row_lower": 0.7
+     },
+     "9": {
+      "y_inv": 0,
+      "y0": 0,
+      "y1_available_row": 1,
+      "n_years_data": 5,
+      "d_row_form": "D * 2kE == 365 n avg",
+      "k": 11541.560327111707,
+      "n_years_from_d_row": 5.0,
+      "phi_cal_in_model": 1.0,
+      "soh_row_exp_form_ok": true,
+      "available_energy_soh_point": "mid",
+      "available_row_probe": {
+       "soh_end": 0.9,
+       "soh_prev": 0.95,
+       "D": 0.2,
+       "X": 0.8595955471341615,
+       "X_end": 0.9,
+       "X_mid_closed_form": 0.8595955471341615
+      },
+      "floor_row_lower": 0.7
+     }
+    },
+    "per_node_checks": {
+     "5": {
+      "k": true,
+      "n_years_from_d_row_equals_data": true,
+      "phi_cal_in_model": true,
+      "d_row_form": true,
+      "available_energy_soh_point": true,
+      "soh_row_exp_form": true
+     },
+     "7": {
+      "k": true,
+      "n_years_from_d_row_equals_data": true,
+      "phi_cal_in_model": true,
+      "d_row_form": true,
+      "available_energy_soh_point": true,
+      "soh_row_exp_form": true
+     },
+     "9": {
+      "k": true,
+      "n_years_from_d_row_equals_data": true,
+      "phi_cal_in_model": true,
+      "d_row_form": true,
+      "available_energy_soh_point": true,
+      "soh_row_exp_form": true
+     }
+    }
+   },
+   "terminal_soh": {
+    "5": {
+     "per_active_cohort_year": {},
+     "min": null,
+     "floor_rows_active_at_terminal": []
+    },
+    "7": {
+     "per_active_cohort_year": {
+      "(0, 0)": 0.8713727599264979,
+      "(0, 1)": 0.7706911613460842,
+      "(0, 2)": 0.6999999900001058
+     },
+     "min": 0.6999999900001058,
+     "floor_rows_active_at_terminal": [
+      "(0, 2)"
+     ]
+    },
+    "9": {
+     "per_active_cohort_year": {},
+     "min": null,
+     "floor_rows_active_at_terminal": []
+    }
+   }
+  },
+  "frozen_T8_rows": [
+   {
+    "AE": 0.835724291205944,
+    "EFC": 0.7604910279050363,
+    "I": 317957.0085035586,
+    "arm": "C3_midblock",
+    "cell": "e_c3_midblock",
+    "eps_AE_050_superseded": 0.13000447119227676,
+    "eps_AE_070": 0.5156516714379894,
+    "eps_AE_resolvable_070": false,
+    "floor_year_070": 2035,
+    "k": 11541.560327111707,
+    "status": "certified",
+    "value": 252065.1311955452,
+    "value_minus_I": -65891.87730801338,
+    "verdict": "determinate"
+   },
+   {
+    "AE": 1.0,
+    "EFC": 1.29339727288686,
+    "I": 317957.0085035586,
+    "arm": "no_ageing",
+    "cell": "e_no_ageing",
+    "eps_AE_050_superseded": 0.6198441005274611,
+    "eps_AE_070": 1.0412230344783022,
+    "eps_AE_resolvable_070": true,
+    "floor_year_070": null,
+    "k": 11541.560327111707,
+    "status": "certified",
+    "value": 313816.4705924988,
+    "value_minus_I": -4140.5379110598005,
+    "verdict": "within resolution"
+   }
+  ]
+ },
+ "chemistry": {
+  "xlsx": {
+   "path": "data/SRP1/SharedESS/SRP1_ESS.xlsx",
+   "sheets": {
+    "Scenarios": 5,
+    "Conversion rate": 6,
+    "Cost breakdown NREL": 18,
+    "Investment Cost NREL, USD": 128,
+    "Investment Cost NREL, EUR": 128,
+    "Investment Cost, Power": 180,
+    "Investment Cost, Energy": 144
+   },
+   "hits": [
+    {
+     "sheet": "Cost breakdown NREL",
+     "cell": "A2",
+     "value": "Li-Ion Battery cabinet"
+    }
+   ],
+   "cells_scanned": 609,
+   "document_properties": {
+    "title": null,
+    "subject": null,
+    "description": null,
+    "keywords": null,
+    "category": null,
+    "creator": "Micael Filipe Sim\u00f5es"
+   }
+  },
+  "json": {
+   "data/SRP1/SharedESS/SRP1_ESS_Params.json": [],
+   "data/SRP1/SRP1.json": [],
+   "data/SRP1/SRP1_params.json": [],
+   "data/SRP1/case33_1/case33_1_params.json": [],
+   "data/SRP1/case33_2/case33_2_params.json": [],
+   "data/SRP1/case33_3/case33_3_params.json": [],
+   "data/SRP1/case9/case9_params.json": []
+  },
+  "git_grep": {
+   "outside_results": {
+    "scope": "git grep -n -i -I over the TRACKED tree at HEAD (working tree), excluding data/SRP1/Results; patterns LFP | iron phosphate | LiFePO | MB31 (case-insensitive)",
+    "hits": [
+     "P5_15_ADDENDUM32_34_REPORT.md:81:**Q1 \u2014 citations.** Spec v17 is frozen and is **not** edited in place; the successor spec v18 carries the citations block, marked *proposed by the expert, author to confirm*: EVE MB31 314 Ah (8,000 cycles to 70 % \u2192 k = 22,430, C4's k exactly, and the 0.70 floor), Hit",
+     "PLANNER_BRIEF_2026-09-13.md:1240:  (\u03c6_cal = 1.0); an LFP calendar fade of \u2248 1.5 %/year (\u03c6_cal \u2248 0.985, \u2248 0.80 after 15 years)",
+     "PLANNER_BRIEF_2026-09-13.md:1384:- **Q1 \u2014 citations (expert's proposal; author confirms).** Datasheets found: EVE MB31 314 Ah LFP",
+     "PLANNER_BRIEF_2026-09-13.md:1390:  Calendar fade \u03c6 = 0.985 (0.80 at the 15-year calendar life): a model assumption, cited to LFP",
+     "STEP6_REVISION_MAP.md:129:  k = 35,851), C3_unit (EoL retention 0.50), C4 (EVE MB31: 8,000 cycles to 0.70, k = 22,430),",
+     "STEP6_ROUND3_CORRECTIONS.md:189:\\textcolor{blue}{The shared ESS is a utility-scale lithium iron phosphate battery with charging and discharging",
+     "STEP6_ROUND3_CORRECTIONS.md:230:% the brief: LFP calendar-ageing studies; the EVE MB31 datasheet for the 8,000-cycle row).",
+     "STEP6_ROUND3_CORRECTIONS.md:232:% \"no ageing\" arm's implementation (k -> infinity and phi = 1, floor inactive); LFP named as the chemistry in the",
+     "manuscript_review/response_to_reviewers_draft.tex:88:the abstract now says both. On (iv): the reference technology is utility-scale lithium iron phosphate",
+     "manuscript_review/response_to_reviewers_draft.tex:89:(LFP) battery storage; the cycling calibrations are taken from LFP datasheets (Section~3.4) and the",
+     "p515_s53_w164_manuscript_number_check.py:1175:                    'calendar lifetimes exceeding 20 years for LFP cells', [('1', 0), ('14', 0), ('15', 0), ('20', 0)],",
+     "p515_s53_w164_manuscript_number_check.py:1181:                        unch('literature value', 'reported LFP calendar lifetimes (literature claim in a sentence '"
+    ]
+   },
+   "results_tree_files": {
+    "scope": "git grep -l (files only) over the tracked data/SRP1/Results tree, same patterns",
+    "files": [
+     "data/SRP1/Results/P515S48/frozen_s48_spec_v18_8bda2a0a.json",
+     "data/SRP1/Results/P515S53/w164_manuscript_check/overleaf_6191c6c/w164_manuscript_number_check.json",
+     "data/SRP1/Results/P515S53/w171_manuscript_check/overleaf_42794d4/w171_manuscript_number_check.json"
+    ]
+   }
+  }
+ },
+ "benchmark": {
+  "spec": {
+   "path": "data/SRP1/Results/P515S53/w116_benchmark_nrf/frozen_s53_benchmark_spec_v5_bca69f97.json",
+   "sha256": "bca69f97a6e60e92e3a7dc51d6bdc9f71fe463c50a840952d9d6fc78bac7d2c6",
+   "git_head": "9098d4cd1d36a6f6f18b8bbd1647821162f45794",
+   "tie_breaker": {
+    "authority": "Addendum 49 clarification 2026-09-26",
+    "decision": {
+     "passive_dso": 1.0,
+     "price_taker_dso": 0.0,
+     "tso": 0.0
+    },
+    "evaluation": 0.0,
+    "passive_value_independence_variants": [
+     0.1,
+     10.0
+    ]
+   },
+   "objective_convention": "Q = gross_operational_cost, settlement EXCLUDED (production _get_operational_recourse_components); evaluation tie-breaker 0 in every arm; salvage reported separately",
+   "arm_economies": {
+    "passive": "flexibility fixed at 0; decision tie-breaker 1 EUR/MWh (minimum curtailment the sole term); value-independence at 0.1 and 10",
+    "price_taker": "production local pricing (settlement weight 1), decision tie-breaker 0, under the bound"
+   },
+   "no_reverse_flow_row": "uncoordinated_benchmark.NO_REVERSE_FLOW_ROW = uncoord_no_reverse_flow[s_m, s_o, p]: pg_adn[s_m, s_o, p] >= 0",
+   "no_reverse_flow_not_in": "the coordinated path, production, and the TSO arm (unchanged: interface P/Q fixed, voltages bounded)",
+   "consistency_convention": "Addendum 49: TN voltages bounded; each DN re-evaluated at the TN's actual interface voltage with the DSO decisions fixed (phase B, 36 solves per arm run); max |dV| at nodes 5/7/9 per hour and any DN violation reported; one sequential pass (48 solves) defines the arm cost if a DN limit is violated",
+   "consistency_convention_v3": "v2's convention, plus: the NRF rows are deactivated in the re-evaluation clone (with the voltage / thermal rows; the reference generator is freed there) and evaluated as hard DN limits (kind no_reverse_flow, excess p.u., hard_tol); a violation triggers the one sequential pass, in which the DSO re-solves with the rows at the TN's actual voltage",
+   "claim_q_arm": "each uncoordinated arm's Q is the MINIMUM over its three starts (cold, warm_from_certified, perturbed); this is CONSERVATIVE AGAINST THE COORDINATION CLAIM: the uncoordinated side gets its best local optimum of three, while the coordinated side is one certified cell (W106: the settled cycle-181 cell d110bd1a5977df1e_x0, not re-run; W94 named the W86 cell 5cfe69a615ae3708_x0, now unwired)",
+   "claim_gate_first": "no arm is reported unless the common-Q gate PASSED -- v2's gate output (PASS_BITWISE, read-only, sha-verified)",
+   "instance": {
+    "candidate": {
+     "5": [
+      0.0,
+      0.0
+     ],
+     "7": [
+      0.0,
+      0.0
+     ],
+     "9": [
+      0.0,
+      0.0
+     ]
+    },
+    "candidate_key": "8435c71859ddde68e7ae5818b4ff91c03b4171791bcfaa70edcc3ddb52bacb57",
+    "investment_year": 2025,
+    "label": "x0",
+    "problem": "SRP1"
+   }
+  },
+  "report_v3": {
+   "path": "data/SRP1/Results/P515S53/w116_benchmark_nrf/report_v3/report_v3.json",
+   "sha256": "bf6dbf7247a922020c58e7b9502f63539c0bbf048447c3e33bbbf202c152694a",
+   "tie_breaker": {
+    "authority": "Addendum 49 clarification 2026-09-26",
+    "decision": {
+     "passive_dso": 1.0,
+     "price_taker_dso": 0.0,
+     "tso": 0.0
+    },
+    "evaluation": 0.0,
+    "passive_value_independence_variants": [
+     0.1,
+     10.0
+    ]
+   },
+   "common_q_gate_status_v2": "PASS",
+   "claim": {
+    "benefit_eur": 90896608.39950395,
+    "benefit_relative": 0.13901248527871937,
+    "definition": "benefit = min(Q_passive_NRF, Q_price_taker_NRF) - Q181 (Addendum 57 Decision 1(b))",
+    "determinate": true,
+    "best_uncoordinated_arm": "price_taker_NRF",
+    "objective_convention": "gross_operational_cost, settlement excluded",
+    "measures": "dynamic coordination against a static interface limit (no reverse flow)"
+   },
+   "passive_tie_breaker_value_independence_nrf": {
+    "nrf_passive_tie_breaker_0p1_r2": {
+     "dso_tie_breaker": 0.1,
+     "interface_schedule_max_abs_difference_vs_1": {
+      "p_mw": 7.338433814396694e-06,
+      "q_mvar": 88.89776927279992,
+      "v_kv": 1.992982561205281e-06
+     },
+     "q_difference_vs_1_eur": -25725.083622694016
+    },
+    "nrf_passive_tie_breaker_10_r2": {
+     "dso_tie_breaker": 10.0,
+     "interface_schedule_max_abs_difference_vs_1": {
+      "p_mw": 3.667316093469708e-06,
+      "q_mvar": 88.8978185717572,
+      "v_kv": 3.3682905495879822e-06
+     },
+     "q_difference_vs_1_eur": -18437.772189736366
+    }
+   },
+   "instance": {
+    "candidate_key": "8435c71859ddde68e7ae5818b4ff91c03b4171791bcfaa70edcc3ddb52bacb57",
+    "candidate_key_declared": "8435c71859ddde68e7ae5818b4ff91c03b4171791bcfaa70edcc3ddb52bacb57",
+    "candidate_key_matches": true,
+    "canonical_candidate": {
+     "investment_year": 2025,
+     "nodes": {
+      "5": [
+       0.0,
+       0.0
+      ],
+      "7": [
+       0.0,
+       0.0
+      ],
+      "9": [
+       0.0,
+       0.0
+      ]
+     }
+    },
+    "label": "x0",
+    "problem": "SRP1"
+   }
+  },
+  "common_q_gate": {
+   "path": "data/SRP1/Results/P515S53/w106_uncoordinated_settled/common_q_gate/common_q_gate.json",
+   "sha256": "8e1a60f6c7e6e4b9e421004782b031a6813930a1a615f7d8a3e5b89bd9767f5e",
+   "status": "PASS_BITWISE",
+   "passed": true,
+   "gross_evaluated": 653873702.1876609,
+   "gross_certified": 653873702.1876609,
+   "difference": 0.0,
+   "n_fields_bitwise_equal": 22,
+   "n_fields": 22,
+   "evaluation_curtailment_penalty": 0.0
+  },
+  "nrf_runs": {
+   "nrf_arm_passive_cold_r2": {
+    "path": "data/SRP1/Results/P515S53/w116_benchmark_nrf/nrf_arm_passive_cold_r2/nrf_arm_passive_cold_r2.json",
+    "sha256": "6dd2b7a359d4e604a6ee0b519d0dba8b5b31264b13f6f5af4c2ef91afdae6281",
+    "arm": "passive",
+    "start": "cold",
+    "no_reverse_flow": true,
+    "decision_tie_breaker": {
+     "dso": 1.0,
+     "tso": 0.0
+    },
+    "evaluation_tie_breaker": 0.0,
+    "phase_A_gross": 895119758.5132563,
+    "phase_B_max_abs_dv_dn_pu": 0.10000002956607389,
+    "phase_B_trigger_sequential_pass": true,
+    "phase_B_nrf_violations_at_actual_voltage": {
+     "max_excess_pu": 0.0061828062637474136,
+     "n": 29
+    },
+    "phase_C_gross": 895075723.4620011,
+    "phase_C_effect_on_q_eur": -44035.051255226135,
+    "phase_C_max_abs_dv_dn_pu_after_pass": 0.04930151842787131,
+    "arm_cost": {
+     "curtailment_rows_are_phase_A": true,
+     "gross_operational_cost": 895075723.4620011,
+     "source": "phase_C_sequential_pass"
+    },
+    "instance": {
+     "candidate_key": "8435c71859ddde68e7ae5818b4ff91c03b4171791bcfaa70edcc3ddb52bacb57",
+     "candidate_key_declared": "8435c71859ddde68e7ae5818b4ff91c03b4171791bcfaa70edcc3ddb52bacb57",
+     "candidate_key_matches": true,
+     "canonical_candidate": {
+      "investment_year": 2025,
+      "nodes": {
+       "5": [
+        0.0,
+        0.0
+       ],
+       "7": [
+        0.0,
+        0.0
+       ],
+       "9": [
+        0.0,
+        0.0
+       ]
+      }
+     },
+     "label": "x0",
+     "problem": "SRP1"
+    }
+   },
+   "nrf_arm_passive_warm_from_certified_r2": {
+    "path": "data/SRP1/Results/P515S53/w116_benchmark_nrf/nrf_arm_passive_warm_from_certified_r2/nrf_arm_passive_warm_from_certified_r2.json",
+    "sha256": "17332cc7ae14bedee86c309f0102c6a1c15bc8d3e2fd64a7a425f3afcb18c7ad",
+    "arm": "passive",
+    "start": "warm_from_certified",
+    "no_reverse_flow": true,
+    "decision_tie_breaker": {
+     "dso": 1.0,
+     "tso": 0.0
+    },
+    "evaluation_tie_breaker": 0.0,
+    "phase_A_gross": 895119758.7236784,
+    "phase_B_max_abs_dv_dn_pu": 0.10000002956607504,
+    "phase_B_trigger_sequential_pass": true,
+    "phase_B_nrf_violations_at_actual_voltage": {
+     "max_excess_pu": 0.006182806263830751,
+     "n": 29
+    },
+    "phase_C_gross": 895049918.5052519,
+    "phase_C_effect_on_q_eur": -69840.21842646599,
+    "phase_C_max_abs_dv_dn_pu_after_pass": 0.04930151983338581,
+    "arm_cost": {
+     "curtailment_rows_are_phase_A": true,
+     "gross_operational_cost": 895049918.5052519,
+     "source": "phase_C_sequential_pass"
+    },
+    "instance": {
+     "candidate_key": "8435c71859ddde68e7ae5818b4ff91c03b4171791bcfaa70edcc3ddb52bacb57",
+     "candidate_key_declared": "8435c71859ddde68e7ae5818b4ff91c03b4171791bcfaa70edcc3ddb52bacb57",
+     "candidate_key_matches": true,
+     "canonical_candidate": {
+      "investment_year": 2025,
+      "nodes": {
+       "5": [
+        0.0,
+        0.0
+       ],
+       "7": [
+        0.0,
+        0.0
+       ],
+       "9": [
+        0.0,
+        0.0
+       ]
+      }
+     },
+     "label": "x0",
+     "problem": "SRP1"
+    }
+   },
+   "nrf_arm_passive_perturbed_r2": {
+    "path": "data/SRP1/Results/P515S53/w116_benchmark_nrf/nrf_arm_passive_perturbed_r2/nrf_arm_passive_perturbed_r2.json",
+    "sha256": "d702e0a0f1efffec7a46e95e2f1949e7697cd392d5f84857a948f7060e46e287",
+    "arm": "passive",
+    "start": "perturbed",
+    "no_reverse_flow": true,
+    "decision_tie_breaker": {
+     "dso": 1.0,
+     "tso": 0.0
+    },
+    "evaluation_tie_breaker": 0.0,
+    "phase_A_gross": 895119758.7130497,
+    "phase_B_max_abs_dv_dn_pu": 0.1000000296319714,
+    "phase_B_trigger_sequential_pass": true,
+    "phase_B_nrf_violations_at_actual_voltage": {
+     "max_excess_pu": 0.006182806267273288,
+     "n": 29
+    },
+    "phase_C_gross": 895049918.4715933,
+    "phase_C_effect_on_q_eur": -69840.24145638943,
+    "phase_C_max_abs_dv_dn_pu_after_pass": 0.049301521921581354,
+    "arm_cost": {
+     "curtailment_rows_are_phase_A": true,
+     "gross_operational_cost": 895049918.4715933,
+     "source": "phase_C_sequential_pass"
+    },
+    "instance": {
+     "candidate_key": "8435c71859ddde68e7ae5818b4ff91c03b4171791bcfaa70edcc3ddb52bacb57",
+     "candidate_key_declared": "8435c71859ddde68e7ae5818b4ff91c03b4171791bcfaa70edcc3ddb52bacb57",
+     "candidate_key_matches": true,
+     "canonical_candidate": {
+      "investment_year": 2025,
+      "nodes": {
+       "5": [
+        0.0,
+        0.0
+       ],
+       "7": [
+        0.0,
+        0.0
+       ],
+       "9": [
+        0.0,
+        0.0
+       ]
+      }
+     },
+     "label": "x0",
+     "problem": "SRP1"
+    }
+   },
+   "nrf_arm_price_taker_cold_r2": {
+    "path": "data/SRP1/Results/P515S53/w116_benchmark_nrf/nrf_arm_price_taker_cold_r2/nrf_arm_price_taker_cold_r2.json",
+    "sha256": "b6b34331bed8335c69dab2e684bffa42652ccce391905ce095aaa555d1998c99",
+    "arm": "price_taker",
+    "start": "cold",
+    "no_reverse_flow": true,
+    "decision_tie_breaker": {
+     "dso": 0.0,
+     "tso": 0.0
+    },
+    "evaluation_tie_breaker": 0.0,
+    "phase_A_gross": 744770076.4953755,
+    "phase_B_max_abs_dv_dn_pu": 0.09999995374876437,
+    "phase_B_trigger_sequential_pass": true,
+    "phase_B_nrf_violations_at_actual_voltage": {
+     "max_excess_pu": 0.00032080599379107066,
+     "n": 70
+    },
+    "phase_C_gross": 744770310.5914063,
+    "phase_C_effect_on_q_eur": 234.09603083133698,
+    "phase_C_max_abs_dv_dn_pu_after_pass": 0.00010095272356189209,
+    "arm_cost": {
+     "curtailment_rows_are_phase_A": true,
+     "gross_operational_cost": 744770310.5914063,
+     "source": "phase_C_sequential_pass"
+    },
+    "instance": {
+     "candidate_key": "8435c71859ddde68e7ae5818b4ff91c03b4171791bcfaa70edcc3ddb52bacb57",
+     "candidate_key_declared": "8435c71859ddde68e7ae5818b4ff91c03b4171791bcfaa70edcc3ddb52bacb57",
+     "candidate_key_matches": true,
+     "canonical_candidate": {
+      "investment_year": 2025,
+      "nodes": {
+       "5": [
+        0.0,
+        0.0
+       ],
+       "7": [
+        0.0,
+        0.0
+       ],
+       "9": [
+        0.0,
+        0.0
+       ]
+      }
+     },
+     "label": "x0",
+     "problem": "SRP1"
+    }
+   },
+   "nrf_arm_price_taker_warm_from_certified_r2": {
+    "path": "data/SRP1/Results/P515S53/w116_benchmark_nrf/nrf_arm_price_taker_warm_from_certified_r2/nrf_arm_price_taker_warm_from_certified_r2.json",
+    "sha256": "b0362c511c8c490bc4f90f8680c62bd6cdf03ab20cf6f19587e65c703ab87c2b",
+    "arm": "price_taker",
+    "start": "warm_from_certified",
+    "no_reverse_flow": true,
+    "decision_tie_breaker": {
+     "dso": 0.0,
+     "tso": 0.0
+    },
+    "evaluation_tie_breaker": 0.0,
+    "phase_A_gross": 744770076.6440353,
+    "phase_B_max_abs_dv_dn_pu": 0.09999995076162047,
+    "phase_B_trigger_sequential_pass": true,
+    "phase_B_nrf_violations_at_actual_voltage": {
+     "max_excess_pu": 0.00032069483681473367,
+     "n": 70
+    },
+    "phase_C_gross": 744770310.5871649,
+    "phase_C_effect_on_q_eur": 233.94312953948975,
+    "phase_C_max_abs_dv_dn_pu_after_pass": 0.00010095085322706402,
+    "arm_cost": {
+     "curtailment_rows_are_phase_A": true,
+     "gross_operational_cost": 744770310.5871649,
+     "source": "phase_C_sequential_pass"
+    },
+    "instance": {
+     "candidate_key": "8435c71859ddde68e7ae5818b4ff91c03b4171791bcfaa70edcc3ddb52bacb57",
+     "candidate_key_declared": "8435c71859ddde68e7ae5818b4ff91c03b4171791bcfaa70edcc3ddb52bacb57",
+     "candidate_key_matches": true,
+     "canonical_candidate": {
+      "investment_year": 2025,
+      "nodes": {
+       "5": [
+        0.0,
+        0.0
+       ],
+       "7": [
+        0.0,
+        0.0
+       ],
+       "9": [
+        0.0,
+        0.0
+       ]
+      }
+     },
+     "label": "x0",
+     "problem": "SRP1"
+    }
+   },
+   "nrf_arm_price_taker_perturbed_r2": {
+    "path": "data/SRP1/Results/P515S53/w116_benchmark_nrf/nrf_arm_price_taker_perturbed_r2/nrf_arm_price_taker_perturbed_r2.json",
+    "sha256": "d3e2194a3180c2159425e6e25f324d1a336a2f12c93d7a627f3c5f2c1ad50892",
+    "arm": "price_taker",
+    "start": "perturbed",
+    "no_reverse_flow": true,
+    "decision_tie_breaker": {
+     "dso": 0.0,
+     "tso": 0.0
+    },
+    "evaluation_tie_breaker": 0.0,
+    "phase_A_gross": 744770076.1131489,
+    "phase_B_max_abs_dv_dn_pu": 0.09999995375216558,
+    "phase_B_trigger_sequential_pass": true,
+    "phase_B_nrf_violations_at_actual_voltage": {
+     "max_excess_pu": 0.0003208352961690999,
+     "n": 70
+    },
+    "phase_C_gross": 744770310.5913205,
+    "phase_C_effect_on_q_eur": 234.47817158699036,
+    "phase_C_max_abs_dv_dn_pu_after_pass": 0.00010095470859042784,
+    "arm_cost": {
+     "curtailment_rows_are_phase_A": true,
+     "gross_operational_cost": 744770310.5913205,
+     "source": "phase_C_sequential_pass"
+    },
+    "instance": {
+     "candidate_key": "8435c71859ddde68e7ae5818b4ff91c03b4171791bcfaa70edcc3ddb52bacb57",
+     "candidate_key_declared": "8435c71859ddde68e7ae5818b4ff91c03b4171791bcfaa70edcc3ddb52bacb57",
+     "candidate_key_matches": true,
+     "canonical_candidate": {
+      "investment_year": 2025,
+      "nodes": {
+       "5": [
+        0.0,
+        0.0
+       ],
+       "7": [
+        0.0,
+        0.0
+       ],
+       "9": [
+        0.0,
+        0.0
+       ]
+      }
+     },
+     "label": "x0",
+     "problem": "SRP1"
+    }
+   }
+  },
+  "per_arm": {
+   "passive": {
+    "q_by_start": {
+     "cold": 895075723.4620011,
+     "warm_from_certified": 895049918.5052519,
+     "perturbed": 895049918.4715933
+    },
+    "best_start": "perturbed",
+    "q_best": 895049918.4715933,
+    "band": 25804.990407824516,
+    "sources": [
+     "phase_C_sequential_pass"
+    ],
+    "all_triggered": true
+   },
+   "price_taker": {
+    "q_by_start": {
+     "cold": 744770310.5914063,
+     "warm_from_certified": 744770310.5871649,
+     "perturbed": 744770310.5913205
+    },
+    "best_start": "warm_from_certified",
+    "q_best": 744770310.5871649,
+    "band": 0.004241466522216797,
+    "sources": [
+     "phase_C_sequential_pass"
+    ],
+    "all_triggered": true
+   }
+  },
+  "passive_with_vs_without_rule": {
+   "what": "passive DSO DECISION objective value per block (EUR per representative day; the 1 EUR/MWh minimum-curtailment term is its only economic term: settlement weight 0, flexibility fixed at 0, l_curt false) -- without the no-reverse-flow rule (W120 sweep_passive_cold, spec-v2 arm, cold) and with it (nrf_arm_passive_cold_r2, phase A and the sequential pass)",
+   "sources": {
+    "data/SRP1/Results/P515S53/w116_benchmark_nrf/sweep_passive_cold/per_solve_record.jsonl": "7706f2617270c58f3f5f5073dc2208c36f2f9d5a97a4673b2995b2e4a953ca22",
+    "data/SRP1/Results/P515S53/w116_benchmark_nrf/nrf_arm_passive_cold_r2/per_solve_record.jsonl": "5fe6351556a77db892fe277a4bd8d51b2aabb8d2ab897580816af249a6ed77aa"
+   },
+   "unconstrained_min": -0.8377557003160979,
+   "unconstrained_max": -0.8328223309843813,
+   "blocks_with_nrf_objective_above_1_eur": [
+    {
+     "block": "DSO|5|2035|Summer",
+     "unconstrained_obj_eur_rep_day": -0.8361797463049621,
+     "nrf_phase_A_obj_eur_rep_day": 25.773141904865213,
+     "nrf_seq_pass_obj_eur_rep_day": 25.773141905057546
+    },
+    {
+     "block": "DSO|9|2025|Summer",
+     "unconstrained_obj_eur_rep_day": -0.8350194197673582,
+     "nrf_phase_A_obj_eur_rep_day": 60.89438955968303,
+     "nrf_seq_pass_obj_eur_rep_day": 60.928341931952595
+    },
+    {
+     "block": "DSO|9|2030|Summer",
+     "unconstrained_obj_eur_rep_day": -0.8353926758224907,
+     "nrf_phase_A_obj_eur_rep_day": 75.41661105861928,
+     "nrf_seq_pass_obj_eur_rep_day": 75.41661105854736
+    },
+    {
+     "block": "DSO|9|2035|Spring",
+     "unconstrained_obj_eur_rep_day": -0.8328223309843813,
+     "nrf_phase_A_obj_eur_rep_day": 58.64238973558164,
+     "nrf_seq_pass_obj_eur_rep_day": 58.642389735500025
+    },
+    {
+     "block": "DSO|9|2035|Summer",
+     "unconstrained_obj_eur_rep_day": -0.8350361623506182,
+     "nrf_phase_A_obj_eur_rep_day": 216.7325126508666,
+     "nrf_seq_pass_obj_eur_rep_day": 210.34359943368824
+    }
+   ],
+   "n_blocks": 36,
+   "rows": [
+    {
+     "block": "DSO|5|2025|Autumn",
+     "unconstrained_obj_eur_rep_day": -0.8366228381356718,
+     "nrf_phase_A_obj_eur_rep_day": -0.8366228381441446,
+     "nrf_seq_pass_obj_eur_rep_day": -0.8366228381449281
+    },
+    {
+     "block": "DSO|5|2025|Spring",
+     "unconstrained_obj_eur_rep_day": -0.8347401386143687,
+     "nrf_phase_A_obj_eur_rep_day": -0.8347401386252619,
+     "nrf_seq_pass_obj_eur_rep_day": -0.8347401386260513
+    },
+    {
+     "block": "DSO|5|2025|Summer",
+     "unconstrained_obj_eur_rep_day": -0.8372261498515647,
+     "nrf_phase_A_obj_eur_rep_day": -0.8372261498635141,
+     "nrf_seq_pass_obj_eur_rep_day": -0.8372261498557951
+    },
+    {
+     "block": "DSO|5|2025|Winter",
+     "unconstrained_obj_eur_rep_day": -0.8377557003160979,
+     "nrf_phase_A_obj_eur_rep_day": -0.8377557003246312,
+     "nrf_seq_pass_obj_eur_rep_day": -0.837755700325447
+    },
+    {
+     "block": "DSO|5|2030|Autumn",
+     "unconstrained_obj_eur_rep_day": -0.8363824897889012,
+     "nrf_phase_A_obj_eur_rep_day": -0.836382489765883,
+     "nrf_seq_pass_obj_eur_rep_day": -0.836382489788887
+    },
+    {
+     "block": "DSO|5|2030|Spring",
+     "unconstrained_obj_eur_rep_day": -0.8337618713237614,
+     "nrf_phase_A_obj_eur_rep_day": -0.8337618713363265,
+     "nrf_seq_pass_obj_eur_rep_day": -0.833761871337087
+    },
+    {
+     "block": "DSO|5|2030|Summer",
+     "unconstrained_obj_eur_rep_day": -0.8361486058371895,
+     "nrf_phase_A_obj_eur_rep_day": -0.8361486058580879,
+     "nrf_seq_pass_obj_eur_rep_day": -0.83614860585795
+    },
+    {
+     "block": "DSO|5|2030|Winter",
+     "unconstrained_obj_eur_rep_day": -0.8369647653997155,
+     "nrf_phase_A_obj_eur_rep_day": -0.836964765408244,
+     "nrf_seq_pass_obj_eur_rep_day": -0.8369647654098228
+    },
+    {
+     "block": "DSO|5|2035|Autumn",
+     "unconstrained_obj_eur_rep_day": -0.8339696795764747,
+     "nrf_phase_A_obj_eur_rep_day": -0.8339696795867501,
+     "nrf_seq_pass_obj_eur_rep_day": -0.8339696795872511
+    },
+    {
+     "block": "DSO|5|2035|Spring",
+     "unconstrained_obj_eur_rep_day": -0.8332066351001282,
+     "nrf_phase_A_obj_eur_rep_day": -0.8332066356146816,
+     "nrf_seq_pass_obj_eur_rep_day": -0.8332066356164529
+    },
+    {
+     "block": "DSO|5|2035|Summer",
+     "unconstrained_obj_eur_rep_day": -0.8361797463049621,
+     "nrf_phase_A_obj_eur_rep_day": 25.773141904865213,
+     "nrf_seq_pass_obj_eur_rep_day": 25.773141905057546
+    },
+    {
+     "block": "DSO|5|2035|Winter",
+     "unconstrained_obj_eur_rep_day": -0.8361906851972665,
+     "nrf_phase_A_obj_eur_rep_day": -0.8361906852066878,
+     "nrf_seq_pass_obj_eur_rep_day": -0.8361906852072146
+    },
+    {
+     "block": "DSO|7|2025|Autumn",
+     "unconstrained_obj_eur_rep_day": -0.8347449700512277,
+     "nrf_phase_A_obj_eur_rep_day": -0.8347449700707223,
+     "nrf_seq_pass_obj_eur_rep_day": -0.8347449700716969
+    },
+    {
+     "block": "DSO|7|2025|Spring",
+     "unconstrained_obj_eur_rep_day": -0.834387202213401,
+     "nrf_phase_A_obj_eur_rep_day": -0.8343872022256644,
+     "nrf_seq_pass_obj_eur_rep_day": -0.834387202226538
+    },
+    {
+     "block": "DSO|7|2025|Summer",
+     "unconstrained_obj_eur_rep_day": -0.8358980262111597,
+     "nrf_phase_A_obj_eur_rep_day": -0.8358980262228245,
+     "nrf_seq_pass_obj_eur_rep_day": -0.8358980262236292
+    },
+    {
+     "block": "DSO|7|2025|Winter",
+     "unconstrained_obj_eur_rep_day": -0.8364275482552267,
+     "nrf_phase_A_obj_eur_rep_day": -0.8364275482698748,
+     "nrf_seq_pass_obj_eur_rep_day": -0.8364275482708029
+    },
+    {
+     "block": "DSO|7|2030|Autumn",
+     "unconstrained_obj_eur_rep_day": -0.8347350444562368,
+     "nrf_phase_A_obj_eur_rep_day": -0.8347350444749353,
+     "nrf_seq_pass_obj_eur_rep_day": -0.8347350444755589
+    },
+    {
+     "block": "DSO|7|2030|Spring",
+     "unconstrained_obj_eur_rep_day": -0.8339683085277141,
+     "nrf_phase_A_obj_eur_rep_day": -0.8339683085408252,
+     "nrf_seq_pass_obj_eur_rep_day": -0.8339683085416495
+    },
+    {
+     "block": "DSO|7|2030|Summer",
+     "unconstrained_obj_eur_rep_day": -0.8352887304070704,
+     "nrf_phase_A_obj_eur_rep_day": -0.8352887304183265,
+     "nrf_seq_pass_obj_eur_rep_day": -0.8352887304168614
+    },
+    {
+     "block": "DSO|7|2030|Winter",
+     "unconstrained_obj_eur_rep_day": -0.8358603204488904,
+     "nrf_phase_A_obj_eur_rep_day": -0.8358603204710416,
+     "nrf_seq_pass_obj_eur_rep_day": -0.8358603204719343
+    },
+    {
+     "block": "DSO|7|2035|Autumn",
+     "unconstrained_obj_eur_rep_day": -0.8339407113232568,
+     "nrf_phase_A_obj_eur_rep_day": -0.833940711338532,
+     "nrf_seq_pass_obj_eur_rep_day": -0.8339407113391595
+    },
+    {
+     "block": "DSO|7|2035|Spring",
+     "unconstrained_obj_eur_rep_day": -0.8330722138303761,
+     "nrf_phase_A_obj_eur_rep_day": -0.8330722138437534,
+     "nrf_seq_pass_obj_eur_rep_day": -0.8330722138442509
+    },
+    {
+     "block": "DSO|7|2035|Summer",
+     "unconstrained_obj_eur_rep_day": -0.8353528251467321,
+     "nrf_phase_A_obj_eur_rep_day": -0.8353528251601858,
+     "nrf_seq_pass_obj_eur_rep_day": -0.8353528251607314
+    },
+    {
+     "block": "DSO|7|2035|Winter",
+     "unconstrained_obj_eur_rep_day": -0.8351521060236722,
+     "nrf_phase_A_obj_eur_rep_day": -0.8351521060420618,
+     "nrf_seq_pass_obj_eur_rep_day": -0.8351521060426714
+    },
+    {
+     "block": "DSO|9|2025|Autumn",
+     "unconstrained_obj_eur_rep_day": -0.8339759907514039,
+     "nrf_phase_A_obj_eur_rep_day": -0.8339759907601696,
+     "nrf_seq_pass_obj_eur_rep_day": -0.83397599076108
+    },
+    {
+     "block": "DSO|9|2025|Spring",
+     "unconstrained_obj_eur_rep_day": -0.8332615314816905,
+     "nrf_phase_A_obj_eur_rep_day": -0.833261531515988,
+     "nrf_seq_pass_obj_eur_rep_day": -0.8332615315170113
+    },
+    {
+     "block": "DSO|9|2025|Summer",
+     "unconstrained_obj_eur_rep_day": -0.8350194197673582,
+     "nrf_phase_A_obj_eur_rep_day": 60.89438955968303,
+     "nrf_seq_pass_obj_eur_rep_day": 60.928341931952595
+    },
+    {
+     "block": "DSO|9|2025|Winter",
+     "unconstrained_obj_eur_rep_day": -0.8362344336181602,
+     "nrf_phase_A_obj_eur_rep_day": -0.8362344336258758,
+     "nrf_seq_pass_obj_eur_rep_day": -0.8362344336267583
+    },
+    {
+     "block": "DSO|9|2030|Autumn",
+     "unconstrained_obj_eur_rep_day": -0.8336455512027694,
+     "nrf_phase_A_obj_eur_rep_day": -0.8336455512155914,
+     "nrf_seq_pass_obj_eur_rep_day": -0.8336455512162134
+    },
+    {
+     "block": "DSO|9|2030|Spring",
+     "unconstrained_obj_eur_rep_day": -0.8331488791003533,
+     "nrf_phase_A_obj_eur_rep_day": -0.8331488791300039,
+     "nrf_seq_pass_obj_eur_rep_day": -0.8331488791309754
+    },
+    {
+     "block": "DSO|9|2030|Summer",
+     "unconstrained_obj_eur_rep_day": -0.8353926758224907,
+     "nrf_phase_A_obj_eur_rep_day": 75.41661105861928,
+     "nrf_seq_pass_obj_eur_rep_day": 75.41661105854736
+    },
+    {
+     "block": "DSO|9|2030|Winter",
+     "unconstrained_obj_eur_rep_day": -0.8363997800788936,
+     "nrf_phase_A_obj_eur_rep_day": -0.8363997800895365,
+     "nrf_seq_pass_obj_eur_rep_day": -0.8363997800903218
+    },
+    {
+     "block": "DSO|9|2035|Autumn",
+     "unconstrained_obj_eur_rep_day": -0.8332313369794375,
+     "nrf_phase_A_obj_eur_rep_day": -0.8332313369909164,
+     "nrf_seq_pass_obj_eur_rep_day": -0.8332313369915056
+    },
+    {
+     "block": "DSO|9|2035|Spring",
+     "unconstrained_obj_eur_rep_day": -0.8328223309843813,
+     "nrf_phase_A_obj_eur_rep_day": 58.64238973558164,
+     "nrf_seq_pass_obj_eur_rep_day": 58.642389735500025
+    },
+    {
+     "block": "DSO|9|2035|Summer",
+     "unconstrained_obj_eur_rep_day": -0.8350361623506182,
+     "nrf_phase_A_obj_eur_rep_day": 216.7325126508666,
+     "nrf_seq_pass_obj_eur_rep_day": 210.34359943368824
+    },
+    {
+     "block": "DSO|9|2035|Winter",
+     "unconstrained_obj_eur_rep_day": -0.8358831790482265,
+     "nrf_phase_A_obj_eur_rep_day": -0.8358831790598309,
+     "nrf_seq_pass_obj_eur_rep_day": -0.8358831790603952
+    }
+   ]
+  },
+  "frozen_T6": {
+   "arms": {
+    "passive": {
+     "Q_best": 895049918.4715933,
+     "best_start": "perturbed",
+     "multimodality_band": 25804.990407824516
+    },
+    "price_taker": {
+     "Q_best": 744770310.5871649,
+     "best_start": "warm_from_certified",
+     "multimodality_band": 0.004241466522216797
+    }
+   },
+   "benefit": 90896608.39950395,
+   "benefit_relative": 0.13901248527871937,
+   "coordinated_Q": 653873702.1876609,
+   "definition": "benefit = min(Q_passive_NRF, Q_price_taker_NRF) - Q181 (Addendum 57 Decision 1(b))",
+   "objective_convention": "Q = gross_operational_cost, settlement EXCLUDED (production _get_operational_recourse_components); every block priced for the evaluation with production's ADMM-subproblem pricing and the curtailment tie-breaker at the EVALUATION value 0; salvage reported separately",
+   "instance": {
+    "candidate_key": "8435c71859ddde68e7ae5818b4ff91c03b4171791bcfaa70edcc3ddb52bacb57",
+    "candidate_key_declared": "8435c71859ddde68e7ae5818b4ff91c03b4171791bcfaa70edcc3ddb52bacb57",
+    "candidate_key_matches": true,
+    "canonical_candidate": {
+     "investment_year": 2025,
+     "nodes": {
+      "5": [
+       0.0,
+       0.0
+      ],
+      "7": [
+       0.0,
+       0.0
+      ],
+      "9": [
+       0.0,
+       0.0
+      ]
+     }
+    },
+    "label": "x0",
+    "problem": "SRP1"
+   }
+  }
+ },
+ "code_identity": {
+  "benchmark_binding_vs_head": {
+   "definitions.py": {
+    "bound": "7e5719af129df111db1b403feeffe0b566d0b7f2e72915829e16bf143a9321af",
+    "head": "7e5719af129df111db1b403feeffe0b566d0b7f2e72915829e16bf143a9321af",
+    "equal": true
+   },
+   "gate_result_io.py": {
+    "bound": "26cadaa5c3105f9adb879ece756ef6d659b374f647a7756030efe80a2df6d07d",
+    "head": "26cadaa5c3105f9adb879ece756ef6d659b374f647a7756030efe80a2df6d07d",
+    "equal": true
+   },
+   "helper_functions.py": {
+    "bound": "808c60a08b8e157381f28e0c1da5741b0efd39e35f36dd531f88b84deebce1e2",
+    "head": "808c60a08b8e157381f28e0c1da5741b0efd39e35f36dd531f88b84deebce1e2",
+    "equal": true
+   },
+   "interface_dual_capture.py": {
+    "bound": "e4223ac25fa488970ec195b4c3bb6b1171faa3aeba4824e0d6ee6482ab58f55c",
+    "head": "e4223ac25fa488970ec195b4c3bb6b1171faa3aeba4824e0d6ee6482ab58f55c",
+    "equal": true
+   },
+   "model_construction_helpers.py": {
+    "bound": "a20a224f11008de8c0206484583b00253677267d616e1051bb1583791ed47f64",
+    "head": "a20a224f11008de8c0206484583b00253677267d616e1051bb1583791ed47f64",
+    "equal": true
+   },
+   "network.py": {
+    "bound": "18acaa84af7a043898a7b831223b4eab1d91f9bcf2c199f49beecfeb3bf91fb4",
+    "head": "18acaa84af7a043898a7b831223b4eab1d91f9bcf2c199f49beecfeb3bf91fb4",
+    "equal": true
+   },
+   "network_data.py": {
+    "bound": "2938bc4bd4ecc74f42aa90d347cdc1162eebcefaba15bc87b8281a798d457d6b",
+    "head": "2938bc4bd4ecc74f42aa90d347cdc1162eebcefaba15bc87b8281a798d457d6b",
+    "equal": true
+   },
+   "p513_solve_profile_guard.py": {
+    "bound": "9921682e5b825e0b76551b78c4765bfe039bccc414d727520f2c22b6f192a5ab",
+    "head": "9921682e5b825e0b76551b78c4765bfe039bccc414d727520f2c22b6f192a5ab",
+    "equal": true
+   },
+   "p515_s53_w114_passive_infeasibility.py": {
+    "bound": "16d5a9ed81762c621dad94e3f154dfafad0fb47b5500110e3ffeda885d8d265c",
+    "head": "16d5a9ed81762c621dad94e3f154dfafad0fb47b5500110e3ffeda885d8d265c",
+    "equal": true
+   },
+   "p515_s53_w116_benchmark_nrf.py": {
+    "bound": "5dd3214ca7d65380cd8138d05a20949336893790da27166a22801d8b6ca65e43",
+    "head": "5dd3214ca7d65380cd8138d05a20949336893790da27166a22801d8b6ca65e43",
+    "equal": true
+   },
+   "p515_s53_w93_uncoordinated_benchmark.py": {
+    "bound": "342b89cea9058e1b26453fb61bf1830ce7dd9186a3d96f3cf4103f5668f2b071",
+    "head": "342b89cea9058e1b26453fb61bf1830ce7dd9186a3d96f3cf4103f5668f2b071",
+    "equal": true
+   },
+   "p515_s53_w93_uncoordinated_benchmark_checks.py": {
+    "bound": "c34e14301b518bdd814ca356c2809e4003f32d37ecf2d7ce616b3ac5b1d3e43f",
+    "head": "c34e14301b518bdd814ca356c2809e4003f32d37ecf2d7ce616b3ac5b1d3e43f",
+    "equal": true
+   },
+   "p56a_oracle.py": {
+    "bound": "699d571a2d69b14fd89024c535fa8b3ffa0625aa647f1714060dcc9cf6fa2f11",
+    "head": "699d571a2d69b14fd89024c535fa8b3ffa0625aa647f1714060dcc9cf6fa2f11",
+    "equal": true
+   },
+   "p58_rescale.py": {
+    "bound": "2c9d4f2a7125d4103da0d9cc7bba6d600bf97a3f03805d32955738d71b537cf0",
+    "head": "2c9d4f2a7125d4103da0d9cc7bba6d600bf97a3f03805d32955738d71b537cf0",
+    "equal": true
+   },
+   "shared_energy_storage_data.py": {
+    "bound": "9acd095fb5e50e9b64c253600ae05ebb8e6463fd7a999d3a90f96ee82f037796",
+    "head": "9acd095fb5e50e9b64c253600ae05ebb8e6463fd7a999d3a90f96ee82f037796",
+    "equal": true
+   },
+   "shared_resources_planning.py": {
+    "bound": "0610d745a41c86c71dae9e776f0dc8e38c7099f73128a3d2c2e8f861ab9fc9c0",
+    "head": "0610d745a41c86c71dae9e776f0dc8e38c7099f73128a3d2c2e8f861ab9fc9c0",
+    "equal": true
+   },
+   "uncoordinated_benchmark.py": {
+    "bound": "45d1c09db9b687040d57c8b01c1d092f3b53aa120f0e3229d998c435d261e31a",
+    "head": "45d1c09db9b687040d57c8b01c1d092f3b53aa120f0e3229d998c435d261e31a",
+    "equal": true
+   }
+  },
+  "ess_code_diff_since_ext_spec_git_head": "(none)",
+  "ess_xlsx_blob": {
+   "HEAD": "8a7e374445de4ccd9e5a07248967388fd804b552",
+   "7ce1d1ab": "8a7e374445de4ccd9e5a07248967388fd804b552"
+  }
+ },
+ "code_locations": [
+  {
+   "tag": "mid_soh_formula",
+   "file": "shared_energy_storage_data.py",
+   "lines": [
+    625
+   ],
+   "needle": "soh_mid = prev_soh * pe.exp(-model.es_D_per_unit[y_inv, y] / 2.00) * (phi_cal ** (num_years / 2.00))"
+  },
+  {
+   "tag": "mid_available_energy_row",
+   "file": "shared_energy_storage_data.py",
+   "lines": [
+    626
+   ],
+   "needle": "model.available_e_capacity_unit.add(model.es_e_available_per_unit[y_inv, y] == model.es_e_rated_per_unit[y_inv, y] * soh_mid)"
+  },
+  {
+   "tag": "end_available_energy_row",
+   "file": "shared_energy_storage_data.py",
+   "lines": [
+    628
+   ],
+   "needle": "model.available_e_capacity_unit.add(model.es_e_available_per_unit[y_inv, y] == model.es_e_rated_per_unit[y_inv, y] * model.es_soh_per_unit_cumul[y_inv, y])"
+  },
+  {
+   "tag": "prev_soh_end_of_y-1",
+   "file": "shared_energy_storage_data.py",
+   "lines": [
+    624,
+    716
+   ],
+   "needle": "prev_soh = model.es_soh_per_unit_cumul[y_inv, y - 1]"
+  },
+  {
+   "tag": "soh_point_switch",
+   "file": "shared_energy_storage_data.py",
+   "lines": [
+    606,
+    885
+   ],
+   "needle": "if soh_point == 'mid':"
+  },
+  {
+   "tag": "mid_phi",
+   "file": "shared_energy_storage_data.py",
+   "lines": [
+    612
+   ],
+   "needle": "phi_cal = shared_energy_storage.phi_cal if ageing_enabled else 1.00"
+  },
+  {
+   "tag": "end_soh_chain_row",
+   "file": "shared_energy_storage_data.py",
+   "lines": [
+    724
+   ],
+   "needle": "== prev_soh * pe.exp(-model.es_D_per_unit[y_inv, y]) * (phi_cal ** num_years))"
+  },
+  {
+   "tag": "soh_floor_row_on_end_soh",
+   "file": "shared_energy_storage_data.py",
+   "lines": [
+    732
+   ],
+   "needle": "model.es_soh_per_unit_cumul[y_inv, y] >= shared_energy_storage.soh_min)"
+  },
+  {
+   "tag": "salvage_uses_end_soh",
+   "file": "shared_energy_storage_data.py",
+   "lines": [
+    889
+   ],
+   "needle": "e_available = e_rated * model.es_soh_per_unit_cumul[y_inv, terminal_year_idx]"
+  },
+  {
+   "tag": "docstring_mid",
+   "file": "shared_energy_storage_data.py",
+   "lines": [
+    1546
+   ],
+   "needle": "SoH_mid_y = SoH_{y-1} * exp(-D_y / 2) * phi**(n / 2)."
+  },
+  {
+   "tag": "docstring_geometric_mean",
+   "file": "shared_energy_storage_data.py",
+   "lines": [
+    1549
+   ],
+   "needle": "that curve at t = n / 2, which is also the GEOMETRIC mean of the block's"
+  },
+  {
+   "tag": "block_E_av_sum_over_cohorts",
+   "file": "shared_energy_storage_data.py",
+   "lines": [
+    279
+   ],
+   "needle": "e_available += pe.value(model.es_e_available_per_unit[y_inv, year_idx])"
+  },
+  {
+   "tag": "E_av_to_network_models",
+   "file": "shared_resources_planning.py",
+   "lines": [
+    6076,
+    6410,
+    6620
+   ],
+   "needle": "model[year][day].shared_es_e_rated_fixed[shared_ess_idx].set_value(sess_estimated_capacity[year]['e_available'] / s_base)"
+  },
+  {
+   "tag": "available_capacity_read",
+   "file": "shared_resources_planning.py",
+   "lines": [
+    234,
+    256
+   ],
+   "needle": "shared_ess_capacity = self.shared_ess_data.get_available_capacity("
+  },
+  {
+   "tag": "no_ageing_phi_1_comment",
+   "file": "shared_energy_storage_data.py",
+   "lines": [
+    684
+   ],
+   "needle": "# P5.15 Addenda 28-29 (task W20): ageing off -- no calendar loss."
+  },
+  {
+   "tag": "no_ageing_D_eq_0_row",
+   "file": "shared_energy_storage_data.py",
+   "lines": [
+    711
+   ],
+   "needle": "model.es_D_per_unit[y_inv, y] == 0.00)"
+  },
+  {
+   "tag": "no_ageing_no_infinite_k",
+   "file": "shared_energy_storage_data.py",
+   "lines": [
+    707
+   ],
+   "needle": "# \"infinite k\"). Same row family and position, so the"
+  },
+  {
+   "tag": "no_ageing_floor_kept",
+   "file": "shared_energy_storage_data.py",
+   "lines": [
+    1555
+   ],
+   "needle": "E_rated. The soh_min floor row is kept (trivially satisfied)."
+  },
+  {
+   "tag": "apply_model_variant",
+   "file": "p515_s44_campaign_harness.py",
+   "lines": [
+    2302
+   ],
+   "needle": "def apply_model_variant(sed, model_variant):"
+  },
+  {
+   "tag": "variant_expected_d_row",
+   "file": "p515_s44_campaign_harness.py",
+   "lines": [
+    2282
+   ],
+   "needle": "'d_row_form': 'D * 2kE == 365 n avg' if enabled else 'D == 0'}"
+  },
+  {
+   "tag": "variant_expected_phi",
+   "file": "p515_s44_campaign_harness.py",
+   "lines": [
+    2279
+   ],
+   "needle": "'phi_cal_in_model': model_variant['calendar_retention_per_year'] if enabled else 1.0,"
+  },
+  {
+   "tag": "passive_doc_flex_fixed",
+   "file": "uncoordinated_benchmark.py",
+   "lines": [
+    21
+   ],
+   "needle": "every flexibility Var"
+  },
+  {
+   "tag": "passive_doc_tie_breaker",
+   "file": "uncoordinated_benchmark.py",
+   "lines": [
+    25
+   ],
+   "needle": "minimum-curtailment selection rule in an otherwise empty objective)."
+  },
+  {
+   "tag": "passive_flex_fixed_code",
+   "file": "uncoordinated_benchmark.py",
+   "lines": [
+    418,
+    1459
+   ],
+   "needle": "var_data.fix(0.0)"
+  },
+  {
+   "tag": "decision_tie_breaker_set",
+   "file": "uncoordinated_benchmark.py",
+   "lines": [
+    402
+   ],
+   "needle": "block.penalty_gen_curtailment.set_value(float(curtailment_penalty))"
+  },
+  {
+   "tag": "price_taker_doc",
+   "file": "uncoordinated_benchmark.py",
+   "lines": [
+    28
+   ],
+   "needle": "-- lambda = 0, rho = 0 because the augmented-Lagrangian terms are never built;"
+  },
+  {
+   "tag": "price_taker_pricing_code",
+   "file": "uncoordinated_benchmark.py",
+   "lines": [
+    395
+   ],
+   "needle": "srp._prepare_distribution_objectives_for_admm(distribution_networks, dso_models)"
+  },
+  {
+   "tag": "no_reverse_flow_row",
+   "file": "uncoordinated_benchmark.py",
+   "lines": [
+    338
+   ],
+   "needle": "return m.pg_adn[s_m, s_o, p] >= 0.0"
+  },
+  {
+   "tag": "tso_p_fixed_row",
+   "file": "uncoordinated_benchmark.py",
+   "lines": [
+    443
+   ],
+   "needle": "return m.expected_interface_pf_p[dn, p] == getattr(m, FIXED_INTERFACE_P_TARGET)[dn, p]"
+  },
+  {
+   "tag": "tso_q_fixed_row",
+   "file": "uncoordinated_benchmark.py",
+   "lines": [
+    447
+   ],
+   "needle": "return m.expected_interface_pf_q[dn, p] == getattr(m, FIXED_INTERFACE_Q_TARGET)[dn, p]"
+  },
+  {
+   "tag": "tso_voltage_unpinned",
+   "file": "uncoordinated_benchmark.py",
+   "lines": [
+    171
+   ],
+   "needle": "TSO_ARM_PIN_INTERFACE_VOLTAGE = False                    # ruling 2: the arm's interface voltage is within its bounds"
+  },
+  {
+   "tag": "tso_arm_call_unpinned",
+   "file": "uncoordinated_benchmark.py",
+   "lines": [
+    1112
+   ],
+   "needle": "pin_interface_voltage=TSO_ARM_PIN_INTERFACE_VOLTAGE)"
+  },
+  {
+   "tag": "three_starts",
+   "file": "uncoordinated_benchmark.py",
+   "lines": [
+    132
+   ],
+   "needle": "STARTS = (START_COLD, START_WARM, START_PERTURBED)"
+  },
+  {
+   "tag": "evaluation_tie_breaker_set",
+   "file": "uncoordinated_benchmark.py",
+   "lines": [
+    1310
+   ],
+   "needle": "block.penalty_gen_curtailment.set_value(float(evaluation_curtailment_penalty))"
+  },
+  {
+   "tag": "common_q_production_components",
+   "file": "uncoordinated_benchmark.py",
+   "lines": [
+    1323
+   ],
+   "needle": "components = srp._get_operational_recourse_components(planning_problem, models)"
+  },
+  {
+   "tag": "arm_sequence_doc",
+   "file": "uncoordinated_benchmark.py",
+   "lines": [
+    1076
+   ],
+   "needle": "setpoint voltage), then the TSO solves its production subproblem with the interface P/Q hard-fixed (mutable"
+  },
+  {
+   "tag": "seq_pass_dso_at_tn_voltage",
+   "file": "p515_s53_w116_benchmark_nrf.py",
+   "lines": [
+    638
+   ],
+   "needle": "shift = UB.pin_dso_interface_voltage(planning, arm_out['models']['dso'], mismatch['v_actual_dn_pu'])"
+  },
+  {
+   "tag": "seq_pass_tso_resolve",
+   "file": "p515_s53_w116_benchmark_nrf.py",
+   "lines": [
+    644
+   ],
+   "needle": "UB.solve_tso_model(planning, arm_out['models']['tso'], phase='sequential_pass:tso', record_callback=sink)"
+  },
+  {
+   "tag": "arm_cost_after_pass",
+   "file": "p515_s53_w116_benchmark_nrf.py",
+   "lines": [
+    666
+   ],
+   "needle": "arm_cost_source = 'phase_C_sequential_pass'"
+  },
+  {
+   "tag": "best_of_three",
+   "file": "p515_s53_w116_benchmark_nrf.py",
+   "lines": [
+    1336
+   ],
+   "needle": "best_start = min(costs, key=costs.get)"
+  },
+  {
+   "tag": "dso_settlement_weight_1",
+   "file": "shared_resources_planning.py",
+   "lines": [
+    5340
+   ],
+   "needle": "dso_model[year][day].interface_settlement_weight.set_value(1.00)"
+  },
+  {
+   "tag": "dso_admm_tie_breaker_0",
+   "file": "shared_resources_planning.py",
+   "lines": [
+    5332
+   ],
+   "needle": "dso_model[year][day].penalty_gen_curtailment.set_value(0.00)"
+  },
+  {
+   "tag": "dso_settlement_at_pi",
+   "file": "model_construction_helpers.py",
+   "lines": [
+    1755
+   ],
+   "needle": "settlement += probability * c_p[p] * network.baseMVA * model.pg_adn[s_m, s_o, p]"
+  },
+  {
+   "tag": "settlement_weight_build_default_0",
+   "file": "model_construction_helpers.py",
+   "lines": [
+    1701
+   ],
+   "needle": "model.interface_settlement_weight = pe.Param(initialize=0.00, mutable=True)"
+  },
+  {
+   "tag": "tie_breaker_build_default",
+   "file": "model_construction_helpers.py",
+   "lines": [
+    1660,
+    1664
+   ],
+   "needle": "model.penalty_gen_curtailment = pe.Param(initialize=PENALTY_GENERATION_CURTAILMENT, mutable=True)"
+  },
+  {
+   "tag": "tie_breaker_value",
+   "file": "definitions.py",
+   "lines": [
+    59
+   ],
+   "needle": "PENALTY_GENERATION_CURTAILMENT = 1e0"
+  }
+ ],
+ "integrity": {
+  "failures": [],
+  "inputs_sha256": {
+   "manuscript/6a67305f25e8348fb71380c3/main.tex": "cb237b2d129e689a94dd50abec9a9cca739567ef97a486ec012a901f0e04b6df",
+   "data/SRP1/Results/P515S53/w142_resettle_ext_v6/frozen_s53_resettle_ext_spec_v3_84775dc4.json": "84775dc41428ba6a6b504c86de728f3d2b44d19354c977c18d3b33f197c76ee6",
+   "data/SRP1/Results/P515S53/w160_step6_frozen/frozen_step6_tables_v1_590088fe.json": "590088fe6b364c265c97998c5491edea7ca70baad0dbe2ba5150273656d9b6f4",
+   "data/SRP1/Results/P515S53/w116_benchmark_nrf/frozen_s53_benchmark_spec_v5_bca69f97.json": "bca69f97a6e60e92e3a7dc51d6bdc9f71fe463c50a840952d9d6fc78bac7d2c6",
+   "data/SRP1/Results/P515S53/w116_benchmark_nrf/report_v3/report_v3.json": "bf6dbf7247a922020c58e7b9502f63539c0bbf048447c3e33bbbf202c152694a",
+   "data/SRP1/Results/P515S53/w106_uncoordinated_settled/common_q_gate/common_q_gate.json": "8e1a60f6c7e6e4b9e421004782b031a6813930a1a615f7d8a3e5b89bd9767f5e",
+   "data/SRP1/Results/P515S53/w116_benchmark_nrf/sweep_passive_cold/per_solve_record.jsonl": "7706f2617270c58f3f5f5073dc2208c36f2f9d5a97a4673b2995b2e4a953ca22",
+   "data/SRP1/Results/P515S53/w116_benchmark_nrf/nrf_arm_passive_cold_r2/per_solve_record.jsonl": "5fe6351556a77db892fe277a4bd8d51b2aabb8d2ab897580816af249a6ed77aa",
+   "data/SRP1/SharedESS/SRP1_ESS.xlsx": "e17bd5887e1d0738005ae17c3144593527081c9a0776e19cfaa50aafefe39cd6",
+   "data/SRP1/SharedESS/SRP1_ESS_Params.json": "39106f934bf3edbf18f01a5ef1fadfefc2f7a518706e6c8fa6d962617a312706",
+   "data/SRP1/Results/P515S53/w142_resettle_ext_v6/campaign_s53_w142_resettle_ext_v6_e_no_ageing/evals/1b10e9e161523f46_e_no_ageing/evaluation_record.json": "f06339219628ef849b7470946aa54795841bcdee663c800b40efb7a7eb0ddbf7",
+   "data/SRP1/Results/P515S53/w142_resettle_ext_v6/campaign_s53_w142_resettle_ext_v6_e_c3_midblock/evals/8b1eace91df86cd5_e_c3_midblock/evaluation_record.json": "16fc7771311e55cc38e6112dffe183d57c8cdc22cb71ecd82c1a8f18ed323238",
+   "data/SRP1/Results/P515S53/w116_benchmark_nrf/nrf_arm_passive_cold_r2/nrf_arm_passive_cold_r2.json": "6dd2b7a359d4e604a6ee0b519d0dba8b5b31264b13f6f5af4c2ef91afdae6281",
+   "data/SRP1/Results/P515S53/w116_benchmark_nrf/nrf_arm_passive_warm_from_certified_r2/nrf_arm_passive_warm_from_certified_r2.json": "17332cc7ae14bedee86c309f0102c6a1c15bc8d3e2fd64a7a425f3afcb18c7ad",
+   "data/SRP1/Results/P515S53/w116_benchmark_nrf/nrf_arm_passive_perturbed_r2/nrf_arm_passive_perturbed_r2.json": "d702e0a0f1efffec7a46e95e2f1949e7697cd392d5f84857a948f7060e46e287",
+   "data/SRP1/Results/P515S53/w116_benchmark_nrf/nrf_arm_price_taker_cold_r2/nrf_arm_price_taker_cold_r2.json": "b6b34331bed8335c69dab2e684bffa42652ccce391905ce095aaa555d1998c99",
+   "data/SRP1/Results/P515S53/w116_benchmark_nrf/nrf_arm_price_taker_warm_from_certified_r2/nrf_arm_price_taker_warm_from_certified_r2.json": "b0362c511c8c490bc4f90f8680c62bd6cdf03ab20cf6f19587e65c703ab87c2b",
+   "data/SRP1/Results/P515S53/w116_benchmark_nrf/nrf_arm_price_taker_perturbed_r2/nrf_arm_price_taker_perturbed_r2.json": "d3e2194a3180c2159425e6e25f324d1a336a2f12c93d7a627f3c5f2c1ad50892",
+   "data/SRP1/SRP1.json": "61a794a7ce7a3fb983f2e92128eec446dd7dbb17ad75a3b3b1c5735f8bd4e4ef",
+   "data/SRP1/SRP1_params.json": "dbfdb2a07d12bfedab5e66bf94b3df98e5ab0305616652b4083266476972006b",
+   "data/SRP1/case33_1/case33_1_params.json": "8e9e5a536fd1ef2bca5694274a68795d1099884ef23f2134e7db7d3a58c80b8e",
+   "data/SRP1/case33_2/case33_2_params.json": "31b5fedf87b96724dc5676566fd87f1c21dc02ecfb8d2bd9fdf280a9b7be35ff",
+   "data/SRP1/case33_3/case33_3_params.json": "a19bd5b9d18a26deff44dc62a351f2e6c193012c3f7075d12cade4f230760c49",
+   "data/SRP1/case9/case9_params.json": "f3eff0502c606a9076af19969ec3705c2e6204fa4d9172a218345e986dbbf4ab",
+   "definitions.py": "7e5719af129df111db1b403feeffe0b566d0b7f2e72915829e16bf143a9321af",
+   "model_construction_helpers.py": "a20a224f11008de8c0206484583b00253677267d616e1051bb1583791ed47f64",
+   "p515_s44_campaign_harness.py": "9c6bda1969eca917c7875c1e4a84ab004a3b55edf52ad87179e12c816bbb7f21",
+   "p515_s53_w116_benchmark_nrf.py": "5dd3214ca7d65380cd8138d05a20949336893790da27166a22801d8b6ca65e43",
+   "shared_energy_storage_data.py": "9acd095fb5e50e9b64c253600ae05ebb8e6463fd7a999d3a90f96ee82f037796",
+   "shared_resources_planning.py": "0610d745a41c86c71dae9e776f0dc8e38c7099f73128a3d2c2e8f861ab9fc9c0",
+   "uncoordinated_benchmark.py": "45d1c09db9b687040d57c8b01c1d092f3b53aa120f0e3229d998c435d261e31a",
+   "p513_solve_profile_guard.py": "9921682e5b825e0b76551b78c4765bfe039bccc414d727520f2c22b6f192a5ab"
+  },
+  "tracked_clean": {
+   "data/SRP1/Results/P515S53/w142_resettle_ext_v6/frozen_s53_resettle_ext_spec_v3_84775dc4.json": {
+    "git_tracked": true,
+    "git_clean": true
+   },
+   "data/SRP1/Results/P515S53/w160_step6_frozen/frozen_step6_tables_v1_590088fe.json": {
+    "git_tracked": true,
+    "git_clean": true
+   },
+   "data/SRP1/Results/P515S53/w116_benchmark_nrf/frozen_s53_benchmark_spec_v5_bca69f97.json": {
+    "git_tracked": true,
+    "git_clean": true
+   },
+   "data/SRP1/Results/P515S53/w116_benchmark_nrf/report_v3/report_v3.json": {
+    "git_tracked": true,
+    "git_clean": true
+   },
+   "data/SRP1/Results/P515S53/w106_uncoordinated_settled/common_q_gate/common_q_gate.json": {
+    "git_tracked": true,
+    "git_clean": true
+   },
+   "data/SRP1/Results/P515S53/w116_benchmark_nrf/sweep_passive_cold/per_solve_record.jsonl": {
+    "git_tracked": true,
+    "git_clean": true
+   },
+   "data/SRP1/Results/P515S53/w116_benchmark_nrf/nrf_arm_passive_cold_r2/per_solve_record.jsonl": {
+    "git_tracked": true,
+    "git_clean": true
+   },
+   "data/SRP1/SharedESS/SRP1_ESS.xlsx": {
+    "git_tracked": true,
+    "git_clean": true
+   },
+   "data/SRP1/SharedESS/SRP1_ESS_Params.json": {
+    "git_tracked": true,
+    "git_clean": true
+   },
+   "data/SRP1/Results/P515S53/w142_resettle_ext_v6/campaign_s53_w142_resettle_ext_v6_e_no_ageing/evals/1b10e9e161523f46_e_no_ageing/evaluation_record.json": {
+    "git_tracked": true,
+    "git_clean": true
+   },
+   "data/SRP1/Results/P515S53/w142_resettle_ext_v6/campaign_s53_w142_resettle_ext_v6_e_c3_midblock/evals/8b1eace91df86cd5_e_c3_midblock/evaluation_record.json": {
+    "git_tracked": true,
+    "git_clean": true
+   }
+  }
+ },
+ "guards": {
+  "own": {
+   "label": "P5.15 W175 CONFIRM 3.5/3.6 (never solves)",
+   "counts": {
+    "permitted_solve": 0,
+    "permitted_exec": 0,
+    "blocked_solve": 0,
+    "blocked_exec": 0
+   },
+   "verify_0_failures": []
+  },
+  "pickle_counts": {
+   "load": 0,
+   "loads": 0
+  }
+ }
+}
