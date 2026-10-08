@@ -9,10 +9,11 @@
 
 Clone pulled at Overleaf `260bd83` (main.tex 2,209 lines, sha256 cb237b2d…; round-3 markers present: F2 "seventeen", A.6 "not constructed", Δ₀ = 4, §3.5 l. 1066, §3.6 l. 1105). Predictions (expert): W174 — no H row remains in §2 or Appendix A, and every §3.5–3.6 value matches its source; W175 — the benchmark paragraph needs one wording change at most (the passive arm's tie-breaker).
 
-- [ ] **▶ W174a** — number check at `260bd83` (declarations v3) + every §3.5–3.6 value against code, specs and case files, one by one
-- [ ] **▶ W174b** — re-audit §2.1–2.3 (W171b rows only) and Appendix A (W172 rows only); presence of round-2 / round-3 corrections
-- [ ] **▶ W175** — `% [CONFIRM — W175]` comments in §3.5–3.6 (mid-block SoH point, no-ageing arm, chemistry, benchmark arm definitions)
-- [ ] Planner review; report; commit; push
+- [x] **W174a** — `bb3830fb` / `b4f93d7b`: 0 MISMATCH in every file; §3.5–3.6 141 values 129 match / 12 approximate (rounding) / 0 mismatch — prediction **HELD**; chemistry unsourced; wrong refs l. 756/866
+- [x] **W174b** — `02aa735f`: all prior H rows resolved; H 0 / M 3 / L 19 (Worker rating) — prediction held on W174b's rating, fails on the Planner's (l. 647 → H); paste deleted the AA-off clause and k ← k+1
+- [x] **W175** — `f7d165b7`: SoH point and no-ageing confirmed; LFP not in any input file; benchmark needs **two** wording changes (tie-breaker + common Q; the Addendum 49 consistency pass) — prediction **FAILED** on count
+- [x] Planner review; report `P5_15_ADDENDUM70_ROUND3_REPORT.md` (Decisions 1–8)
+- [ ] **▶ Stopped for review:** expert on 2–5; author on 1, 6–8 and the reviewers' PDF
 
 ## Addendum 69 order — round 2 checks (zero-solve; nothing else runs)
 

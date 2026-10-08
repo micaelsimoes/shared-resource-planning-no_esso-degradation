@@ -22,10 +22,10 @@ authority is `PLANNER_BRIEF_2026-09-13.md` with its Addenda 1–67**; it superse
 
 # CURRENT SOURCE OF TRUTH — 2026-10-07 (tables frozen; methods text accepted; manuscript revision under way)
 
-Authority: `PLANNER_BRIEF_2026-09-13.md` Addenda 52–68; `STEP6_ROUND1_CORRECTIONS.md`. Tables FROZEN: `frozen_step6_tables_v1_590088fe.json` (W160).
+Authority: `PLANNER_BRIEF_2026-09-13.md` Addenda 52–70; `STEP6_ROUND1/2/3_CORRECTIONS.md`. Tables FROZEN: `frozen_step6_tables_v1_590088fe.json` (W160).
 Methods text: `export/paragraphs_v5.md` (Addendum 67). Expert's revision plan: `STEP6_REVISION_MAP.md`. Latest handoff:
-`P5_15_ADDENDUM69_ROUND2_REPORT.md` (W172–W173, zero-solve; round 1: `P5_15_ADDENDUM68_ROUND1_REPORT.md`). Current order:
-`TASKS.md` (Addendum 69 section) — W174 held for the author. Sections below this one are history for their topics; where they conflict
+`P5_15_ADDENDUM70_ROUND3_REPORT.md` (W174a/b, W175, zero-solve; earlier rounds: `P5_15_ADDENDUM69_ROUND2_REPORT.md`,
+`P5_15_ADDENDUM68_ROUND1_REPORT.md`). Current order: `TASKS.md` (Addendum 70 section) — **stopped for review**. Sections below this one are history for their topics; where they conflict
 with this section, this section governs.
 
 ## Manuscript facts established from code and case files (W164–W167)
@@ -58,7 +58,10 @@ with this section, this section governs.
 - **Variant A search (s47, s51):** Δ₀ = 4, double/halve, floor 1; every evaluated point came from the unit-neighbour
   completion (all rounded directions inadmissible). F2: 17 of 61 box neighbours evaluated; of 13 re-evaluated, better
   than 12, within resolution of `ref:e28de4ac` (W173).
-- Number checker: `p515_s53_w164_manuscript_number_check.py` — re-run each round with new declarations into
+- **Manuscript state at Overleaf `260bd83`:** §2, Appendix A, §3.1–3.6 revised; 0 number MISMATCH (W174a); no H row
+  on W174b's rating; §4–§5 and Appendix E still the submitted text (559 submitted-version figures). Benchmark values
+  are post consistency-pass (Addendum 49); LFP is not named in any input file.
+- Number checker: `p515_s53_w174_manuscript_number_check.py (latest; W164 → W171 → W174 lineage)` — re-run each round with new declarations into
   `w164_manuscript_check/overleaf_<commit>/`.
 
 ## Certification (frozen: criterion v6, stage spec `96c23404`, extension `84775dc4`, A64 spec `44a2dce8`)
