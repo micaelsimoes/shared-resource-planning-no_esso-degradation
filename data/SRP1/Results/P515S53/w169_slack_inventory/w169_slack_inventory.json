@@ -1,0 +1,483 @@
+{
+ "stage": "P5.15 Addendum 68 order, W169 (zero solves, no model loads)",
+ "script": "p515_s53_w169_slack_inventory.py",
+ "git_HEAD": "2412edd4b15fdf4d38aebbcbeb732c3419ae97e0",
+ "frozen_tables": {
+  "path": "data/SRP1/Results/P515S53/w160_step6_frozen/frozen_step6_tables_v1_590088fe.json",
+  "sha256": "590088fe6b364c265c97998c5491edea7ca70baad0dbe2ba5150273656d9b6f4"
+ },
+ "manuscript_comments": {
+  "clone": "manuscript/6a67305f25e8348fb71380c3",
+  "clone_head": "42794d4",
+  "main_tex_sha256": "7effd8983df50bdce94e1bc2de07d95d79098d82ce6e0fa201ce711b515230b7",
+  "lines": {
+   "747": {
+    "what": "closure",
+    "text": "% [CONFIRM — W169] whether the closure slack was active in any reported evaluation; if it never was, add: \"The closure\n% slack was inactive in every evaluation reported in this paper.\""
+   },
+   "857": {
+    "what": "sigma",
+    "text": "% [CONFIRM — W169] the slack pair sigma inactive at every certified point; the post-solve min(pch, pdch) detector in the\n% production path (Addendum 3 remedy (h))."
+   }
+  }
+ },
+ "definitions": {
+  "closure slack": "s+ / s- = slack_shared_es_soc_final_up / _down (network block models; scenario-free copy)",
+  "closure level per block": "component_levels_terminal.json blocks[b].unweighted.shared_ess_day_balance_slack / PENALTY_SHARED_ESS_BALANCE = sum over the block's units of (s+ + s-) in MWh",
+  "closure relative": "(s+ + s-) / E^Av(unit, year); TSO blocks: per-unit bound (sum + (n_active - 1) x 2 x 1e-06 MWh) / smallest active E^Av; E^Av = published e_available",
+  "sigma": "sigma+ / sigma- = slack_es_pnet_up / _down (ESSO, per node and (y, d, t), MW)",
+  "sigma relative": "(sigma+ + sigma-) / S(e, y), S = the cohort converter rating s_max (MVA)",
+  "threshold": "1e-06 (the prediction's \"1e-6 relative\")",
+  "signed reading": "max relative <= 1e-6 (the slack sum may be negative: IPOPT bound relaxation)",
+  "absolute reading": "max |relative| <= 1e-6",
+  "point": "certified: k*; uncertified: terminal (frozen end_cycle); T11: certification cycle; w98: continuation terminal; arms: arm evaluation"
+ },
+ "n_cells": 70,
+ "n_certified_points": 51,
+ "prediction": {
+  "statement": "both slacks are zero to solver tolerance (<= 1e-6 relative) at every certified point (expert, Addendum 68)",
+  "rows": [
+   {
+    "quantity": "closure (s+ + s-) / E^Av",
+    "reading": "signed",
+    "n_certified_points": 51,
+    "n_scored": 45,
+    "source": "committed component_levels_terminal.json at P",
+    "n_pass": 44,
+    "n_fail": 1,
+    "max_relative": 5.039052500543942e-06,
+    "argmax_cell": "pb_y2025_n5",
+    "failing_cells": [
+     "pb_y2025_n5 (superseded certificate)"
+    ],
+    "unscored_cells": [
+     "d_c52e1670",
+     "h_50dea31c",
+     "h_aa8a76d7",
+     "ref:7aa017f0",
+     "h_x0_m175",
+     "t11_3x3_x0"
+    ]
+   },
+   {
+    "quantity": "closure (s+ + s-) / E^Av",
+    "reading": "absolute",
+    "n_certified_points": 51,
+    "n_scored": 45,
+    "source": "committed component_levels_terminal.json at P",
+    "n_pass": 10,
+    "n_fail": 35,
+    "max_relative": 5.713766288954261e-06,
+    "argmax_cell": "c_156ce2d1",
+    "failing_cells": [
+     "b_0dd237f0",
+     "b_2a0ba8b2",
+     "c_156ce2d1",
+     "c_6597a79d",
+     "d_d3709599",
+     "e_c2",
+     "e_c2_calfade",
+     "e_c3_midblock",
+     "e_c3_unit",
+     "e_c4",
+     "e_no_ageing",
+     "g_37b5c499",
+     "g_47dce43c",
+     "g_48749148",
+     "g_9abf31d4",
+     "h_74eda68d",
+     "i_5a6a88b4",
+     "l_195156fa",
+     "l_2ab0ce2d",
+     "l_7db09f6c",
+     "l_df1a5525",
+     "pb_y2025_n5_v6",
+     "ref:bd504ecf",
+     "e_soh050",
+     "g070_neutrality",
+     "h_unit_m175",
+     "pb_y2025_n5 (superseded certificate)",
+     "pb_y2025_n7",
+     "pb_y2025_n9",
+     "pb_y2030_n5",
+     "pb_y2030_n7",
+     "pb_y2030_n9",
+     "yl_y2030",
+     "yl_y2035",
+     "t11_3x3_unit"
+    ],
+    "unscored_cells": [
+     "d_c52e1670",
+     "h_50dea31c",
+     "h_aa8a76d7",
+     "ref:7aa017f0",
+     "h_x0_m175",
+     "t11_3x3_x0"
+    ]
+   },
+   {
+    "quantity": "sigma (sigma+ + sigma-) / S",
+    "reading": "signed",
+    "n_certified_points": 51,
+    "n_scored": 46,
+    "source": "UNCOMMITTED esso_capture file at P (per element)",
+    "n_pass": 46,
+    "n_fail": 0,
+    "max_relative": -7.99992726605501e-09,
+    "argmax_cell": "d_9246ed01",
+    "failing_cells": [],
+    "unscored_cells": [
+     "h_50dea31c",
+     "h_aa8a76d7",
+     "ref:7aa017f0",
+     "h_x0_m175",
+     "t11_3x3_x0"
+    ]
+   },
+   {
+    "quantity": "sigma (sigma+ + sigma-) / S",
+    "reading": "absolute",
+    "n_certified_points": 51,
+    "n_scored": 46,
+    "source": "UNCOMMITTED esso_capture file at P (per element)",
+    "n_pass": 46,
+    "n_fail": 0,
+    "max_relative": 7.999927272727274e-08,
+    "argmax_cell": "c_6597a79d",
+    "failing_cells": [],
+    "unscored_cells": [
+     "h_50dea31c",
+     "h_aa8a76d7",
+     "ref:7aa017f0",
+     "h_x0_m175",
+     "t11_3x3_x0"
+    ]
+   },
+   {
+    "quantity": "sigma (sigma+ + sigma-) / S",
+    "reading": "signed, committed bound",
+    "n_certified_points": 51,
+    "n_scored": 45,
+    "source": "committed D3 sum at P -> per-element upper bound (relaxed-bound floor) / min active S",
+    "n_pass": 45,
+    "n_fail": 0,
+    "max_relative": -7.937162476536798e-09,
+    "argmax_cell": "d_9246ed01",
+    "failing_cells": [],
+    "unscored_cells": [
+     "d_c52e1670",
+     "h_50dea31c",
+     "h_aa8a76d7",
+     "ref:7aa017f0",
+     "h_x0_m175",
+     "t11_3x3_x0"
+    ]
+   }
+  ],
+  "outcome_text": "closure scored at 45 / 51 certified points (committed), sigma per element at 46 / 51 (uncommitted esso_capture), sigma by the committed sum bound at 45 / 51. SIGNED reading: FAILS at closure (s+ + s-) / E^Av: ['pb_y2025_n5 (superseded certificate)']. ABSOLUTE reading: closure (s+ + s-) / E^Av: 10 pass / 35 fail (max 5.714e-06 at c_156ce2d1); sigma (sigma+ + sigma-) / S: 46 pass / 0 fail (max 8.000e-08 at c_6597a79d). Certified points with no active unit (x = 0; relative closure undefined, absolute level reported): ['h_50dea31c', 'h_aa8a76d7', 'ref:7aa017f0', 'h_x0_m175', 't11_3x3_x0']; every block without an active unit is exactly 0.0 in every scored cell: True."
+ },
+ "closure_activity_all_evaluations": {
+  "n_admm_evaluations": 64,
+  "n_carried_at_point": 63,
+  "cells_above_threshold_signed": [
+   "pb_y2025_n5"
+  ],
+  "cells_with_any_positive_block": [
+   "pb_y2025_n5"
+  ],
+  "max_positive_block_level_mwh": 1.7636683499952684e-06,
+  "t6_arms_total_exactly_zero": true,
+  "cells_above_threshold_signed_excluding_superseded": [],
+  "max_relative_signed_excluding_superseded": [
+   -4.492971552096154e-07,
+   "j_5f3cccb4"
+  ],
+  "above_threshold_detail": {
+   "pb_y2025_n5": {
+    "superseded": true,
+    "block": "TSO|2035|Spring",
+    "relative": 5.039052500543942e-06,
+    "s_mwh": 1.7636683499952684e-06,
+    "solve_at_point": {
+     "block": "TSO|2035|Spring",
+     "primary_termination": "maxIterations",
+     "termination": "recovered",
+     "class": "recovered_tier1"
+    }
+   }
+  },
+  "every_negative_level_within_relaxed_bound_floor": true,
+  "sigma_every_element_within_relaxed_bound_floor": true
+ },
+ "records_carrying": {
+  "closure at P (exact, s+ + s- per block)": "component_levels_terminal.json (committed) blocks.*.unweighted.shared_ess_day_balance_slack -- only when its cycles_run == P",
+  "closure (signed s+ - s- per unit, terminal)": "results/*.xlsx \"Relaxation Slacks TSO, DSOs\" -- only where a workbook exists (uncommitted)",
+  "closure, weighted total": "evaluation_record.json component_decomposition_totals_weighted.shared_ess_day_balance_slack (committed; total over blocks)",
+  "closure NOT carried": "per-cycle records (recourse_blocks_all.jsonl, creep_diagnostic_per_cycle.jsonl) carry only slack_penalties = voltage + flexibility + closure summed; ess_schedule_per_cycle.jsonl (uncommitted) carries pch / pdch, not s+-",
+  "sigma per element at P": "esso_capture/<label>/node<n>_cycle<P>.jsonl (UNCOMMITTED; active cohort-periods only)",
+  "sigma sum at P": "component_levels_terminal.json esso_feasibility_violation_D3 (committed; sum over every node and (y, d, t)) -- only when cycles_run == P",
+  "sigma, every node, terminal": "results/*.xlsx \"Slacks operation, aggregated\" (uncommitted; where present)",
+  "pickles (never read)": "certified_models.pkl (persisted models at post_certification.json certification_cycle), esso_models_<label>.pkl (terminal ESSO models), results/FrozenSMOPF/*.pkl (fixtures)"
+ },
+ "detector": {
+  "exists in the production path": "yes -- see code_locations: `_get_esso_complementarity_diagnostics` is called in the production ESSO solve routine after every successful ESSO solve (node_id set, solver ipopt) and its result appended to the sink wired by SharedEnergyStorageData.optimize; persistent workers were off in every scored run (g record), so this sequential path is the one that ran",
+  "what it measures": "complementarity_ratio_max = max over active cohort-periods of min(pch, pdch) / s_max (plus the barrier-identity estimate of spurious throughput); it is LOGGED and RECORDED; no production code compares it with a threshold (scope: configuration_evidence.detector_consumers_search)",
+  "recorded per evaluation": "g_<label>.json esso_complementarity_diagnostics_by_round (committed) and leak_classification_<label>.jsonl (committed), per ESSO solve and cycle; child_stdout.log lines \"[INFO] Shared ESS complementarity diagnostics\"",
+  "outcomes at P": "per cell in cells/<cell>.json detector.per_node_at_point; max over cells in the table above",
+  "max ratio at P over certified points": 3.6321744275336843e-05,
+  "argmax cell": "e_c2"
+ },
+ "code_locations": [
+  {
+   "location": "network.py:407",
+   "needle": "model.slack_shared_es_soc_final_up = pe.Var(",
+   "what": "closure slack s+ declared (e, s_m, s_o)"
+  },
+  {
+   "location": "network.py:408",
+   "needle": "model.slack_shared_es_soc_final_down = pe.Var(",
+   "what": "closure slack s- declared"
+  },
+  {
+   "location": "model_construction_helpers.py:983",
+   "needle": "def sess_soc_final_rule(",
+   "what": "closure row"
+  },
+  {
+   "location": "model_construction_helpers.py:990",
+   "needle": "return m.shared_es_soc[e, s_m0, s_o0, final_p] == final_soc + m.slack_shared_es_soc_final_up[e, s_m0, s_o0]",
+   "what": "closure row with the slack pair: SoC_T = 0.5 E + s+ - s- (scenario-free copy)"
+  },
+  {
+   "location": "model_construction_helpers.py:987",
+   "needle": "final_soc = m.shared_es_e_rated_fixed[e] * ENERGY_STORAGE_RELATIVE_INIT_SOC",
+   "what": "closure target 0.5 E (E = the published capacity Param)"
+  },
+  {
+   "location": "model_construction_helpers.py:846",
+   "needle": "def sess_row_is_duplicate(",
+   "what": "non-first scenario pairs skipped"
+  },
+  {
+   "location": "model_construction_helpers.py:410",
+   "needle": "ESS_DAY_BALANCE_SLACK_FRACTION = 0.05",
+   "what": "closure slack bound fraction"
+  },
+  {
+   "location": "model_construction_helpers.py:1166",
+   "needle": "slack_ub = 0.0 if inactive else e_capacity * ESS_DAY_BALANCE_SLACK_FRACTION + EQUALITY_TOLERANCE",
+   "what": "closure slack upper bound, re-applied per candidate ([0, 0] when inactive)"
+  },
+  {
+   "location": "model_construction_helpers.py:2333",
+   "needle": "def shared_ess_day_balance_slack_penalty(",
+   "what": "closure penalty"
+  },
+  {
+   "location": "model_construction_helpers.py:2341",
+   "needle": "total += base * PENALTY_SHARED_ESS_BALANCE * (model.slack_shared_es_soc_final_up[e, s_m0, s_o0]",
+   "what": "closure penalty baseMVA * 1e3 * (s+ + s-)"
+  },
+  {
+   "location": "definitions.py:58",
+   "needle": "PENALTY_SHARED_ESS_BALANCE = 1e3",
+   "what": "closure penalty weight (EUR/MWh)"
+  },
+  {
+   "location": "definitions.py:63",
+   "needle": "PENALTY_ESSO_SLACK = 1e3",
+   "what": "ESSO P-net slack penalty weight"
+  },
+  {
+   "location": "definitions.py:90",
+   "needle": "EQUALITY_TOLERANCE = 1e-5",
+   "what": "closure slack bound offset (p.u.)"
+  },
+  {
+   "location": "shared_resources_planning.py:771",
+   "needle": "components['shared_ess_day_balance_slack'] += probability * pe.value(shared_ess_day_balance_slack_penalty(",
+   "what": "per-block closure level (the field component_levels_terminal.json records)"
+  },
+  {
+   "location": "shared_energy_storage_data.py:460",
+   "needle": "model.slack_es_pnet_up = pe.Var(model.years, model.days, model.periods, domain=pe.NonNegativeReals",
+   "what": "ESSO P-net slack sigma+ declared (y, d, t)"
+  },
+  {
+   "location": "shared_energy_storage_data.py:461",
+   "needle": "model.slack_es_pnet_down = pe.Var(model.years, model.days, model.periods, domain=pe.NonNegativeReals",
+   "what": "ESSO P-net slack sigma- declared"
+  },
+  {
+   "location": "shared_energy_storage_data.py:782",
+   "needle": "model.energy_storage_operation_agg.add(model.es_pnet[y, d, p] == agg_pnet + model.slack_es_pnet_up[y, d, p]",
+   "what": "P-net row: es_pnet = sum_cohorts(pch - pdch) + sigma+ - sigma-"
+  },
+  {
+   "location": "shared_energy_storage_data.py:829",
+   "needle": "slack_penalty += PENALTY_ESSO_SLACK * (model.slack_es_pnet_up[y_inv, d, p] + model.slack_es_pnet_down[y_inv, d, p])",
+   "what": "sigma penalty in the ESSO objective"
+  },
+  {
+   "location": "shared_energy_storage_data.py:127",
+   "needle": "def get_feasibility_violation(self, models):",
+   "what": "sum of sigma over nodes and (y, d, t) (component_levels_terminal esso_feasibility_violation_D3)"
+  },
+  {
+   "location": "shared_energy_storage_data.py:1082",
+   "needle": "ESSO_TOL_OVERRIDES = {'tol': 1e-10, 'acceptable_tol': 1e-9}",
+   "what": "Addendum 3 remedy (h) tolerance override (tightened by Addendum 8)"
+  },
+  {
+   "location": "shared_energy_storage_data.py:1981",
+   "needle": "def _complementarity_ratio_for_model(model):",
+   "what": "min(pch, pdch) / s_max detector (ratio form)"
+  },
+  {
+   "location": "shared_energy_storage_data.py:2095",
+   "needle": "def _get_esso_complementarity_diagnostics(model, node_id, log_path):",
+   "what": "per-solve detector + barrier-identity estimate"
+  },
+  {
+   "location": "shared_energy_storage_data.py:1378",
+   "needle": "complementarity_diagnostics = _get_esso_complementarity_diagnostics(",
+   "what": "detector CALLED after every successful ESSO solve (production ESSO solve path)"
+  },
+  {
+   "location": "shared_energy_storage_data.py:1384",
+   "needle": "complementarity_diagnostics_sink.append(complementarity_diagnostics)",
+   "what": "detector outcome appended to the sink the campaign harness records"
+  },
+  {
+   "location": "shared_energy_storage_data.py:109",
+   "needle": "complementarity_diagnostics_sink=self.esso_complementarity_diagnostics,",
+   "what": "sink wired by the production ESSO optimize entry point"
+  },
+  {
+   "location": "p515_g_g1_g4_admm_gates.py:1804",
+   "needle": "def write_component_levels_terminal(planning, sed, models, rows, report, out_dir, label):",
+   "what": "writer of component_levels_terminal.json (from the final models)"
+  },
+  {
+   "location": "p515_g_g1_g4_admm_gates.py:1854",
+   "needle": "'esso_feasibility_violation_D3': esso_feasibility_violation,",
+   "what": "esso_feasibility_violation_D3 written"
+  },
+  {
+   "location": "p515_g_g1_g4_admm_gates.py:458",
+   "needle": "'slack_pnet_up': slack_pnet_up, 'slack_pnet_down': slack_pnet_down,",
+   "what": "esso_capture per-element sigma written"
+  },
+  {
+   "location": "p515_g_g1_g4_admm_gates.py:380",
+   "needle": "def _capture_esso_solve(sed, models, node_diag, esso_capture_dir, cycle_label, hook_state):",
+   "what": "esso_capture writer (active cohort-periods only)"
+  },
+  {
+   "location": "model_construction_helpers.py:1067",
+   "needle": "def shared_ess_capacity_is_inactive(s_capacity, e_capacity):",
+   "what": "zero-capacity test (used here, in p.u., to decide which units are active)"
+  },
+  {
+   "location": "definitions.py:93",
+   "needle": "SHARED_ESS_ZERO_CAPACITY_TOLERANCE = 1e-10",
+   "what": "its tolerance (p.u.)"
+  }
+ ],
+ "configuration_evidence": {
+  "ess_params": {
+   "path": "data/SRP1/SharedESS/SRP1_ESS_Params.json",
+   "slacks": true,
+   "sha256": "39106f934bf3edbf18f01a5ef1fadfefc2f7a518706e6c8fa6d962617a312706",
+   "clean_vs_HEAD": true
+  },
+  "network_params": {
+   "data/SRP1/case9/case9_params.json": {
+    "slacks.shared_ess": {
+     "complementarity": false,
+     "day_balance": true
+    },
+    "shared_ess_model": "BILINEAR_RELAXATION",
+    "clean_vs_HEAD": true
+   },
+   "data/SRP1/case33_1/case33_1_params.json": {
+    "slacks.shared_ess": {
+     "complementarity": false,
+     "day_balance": true
+    },
+    "shared_ess_model": "BILINEAR_RELAXATION",
+    "clean_vs_HEAD": true
+   },
+   "data/SRP1/case33_2/case33_2_params.json": {
+    "slacks.shared_ess": {
+     "complementarity": false,
+     "day_balance": true
+    },
+    "shared_ess_model": "BILINEAR_RELAXATION",
+    "clean_vs_HEAD": true
+   },
+   "data/SRP1/case33_3/case33_3_params.json": {
+    "slacks.shared_ess": {
+     "complementarity": false,
+     "day_balance": true
+    },
+    "shared_ess_model": "BILINEAR_RELAXATION",
+    "clean_vs_HEAD": true
+   }
+  },
+  "baseMVA": {
+   "data/SRP1/case9/case9_2025.json": 100.0,
+   "data/SRP1/case33_1/case33_1_2025.json": 100.0,
+   "data/SRP1/case33_2/case33_2_2025.json": 100.0,
+   "data/SRP1/case33_3/case33_3_2025.json": 100.0
+  },
+  "bound_relaxation_prior_art": {
+   "path": "data/SRP1/Results/P515S48/negative_penalty_check/negative_penalty_check.json",
+   "sha256": "5407b2d00ab640958b6965cafee41bbfec221c36e6f0855592b1611f1b7ae3ad",
+   "IPOPT_bound_relax_factor_default": null,
+   "verdict": null
+  },
+  "probabilities_3x3_all_one_third": true,
+  "bound_relax_search": {
+   "scope": "git grep -l over tracked *.py, data/SRP1/*.json and data/SRP1/*/*.json (case and parameter files) for \"bound_relax_factor\" / \"honor_original_bounds\"",
+   "hits": [
+    "p515_s44_campaign_harness.py",
+    "p515_s48_negative_penalty_check.py",
+    "p515_s49_flex_pq_split.py",
+    "p515_s53_alpha_row_campaign.py",
+    "p515_s53_w121_benchmark_spec_v5.py",
+    "p515_s53_w169_slack_inventory.py",
+    "p515_s53_w78_scaling_pin_test.py"
+   ]
+  },
+  "detector_consumers_search": {
+   "scope": "git grep -n over tracked *.py outside the p<digit>* harnesses and data/ for \"esso_complementarity_diagnostics\" / \"complementarity_ratio_max\" / \"get_complementarity_violation_ratio\"",
+   "hits": [
+    "admm_persistent_workers.py:917:            self.shared_ess_data.esso_complementarity_diagnostics.extend(",
+    "shared_energy_storage_data.py:56:        # `_get_esso_complementarity_diagnostics`.",
+    "shared_energy_storage_data.py:57:        self.esso_complementarity_diagnostics = list()",
+    "shared_energy_storage_data.py:109:                complementarity_diagnostics_sink=self.esso_complementarity_diagnostics,",
+    "shared_energy_storage_data.py:246:    def get_complementarity_violation_ratio(self, models):",
+    "shared_energy_storage_data.py:249:        return _get_complementarity_violation_ratio(self, models)",
+    "shared_energy_storage_data.py:513:    # which `_get_esso_complementarity_diagnostics` computes and logs for every",
+    "shared_energy_storage_data.py:516:    # `get_complementarity_violation_ratio`.",
+    "shared_energy_storage_data.py:534:    # `get_complementarity_violation_ratio` (ratio form) / the post-solve",
+    "shared_energy_storage_data.py:1118:            # (`esso_complementarity_diagnostics`) a directory listing, not a",
+    "shared_energy_storage_data.py:1378:            complementarity_diagnostics = _get_esso_complementarity_diagnostics(",
+    "shared_energy_storage_data.py:1382:                  f'{_format_esso_complementarity_diagnostics(complementarity_diagnostics)}')",
+    "shared_energy_storage_data.py:1982:    \"\"\"Single-model helper behind `_get_complementarity_violation_ratio`",
+    "shared_energy_storage_data.py:2032:def _get_complementarity_violation_ratio(shared_ess_data, models):",
+    "shared_energy_storage_data.py:2095:def _get_esso_complementarity_diagnostics(model, node_id, log_path):",
+    "shared_energy_storage_data.py:2120:        'complementarity_ratio_max': max_ratio,",
+    "shared_energy_storage_data.py:2132:def _format_esso_complementarity_diagnostics(diagnostics):",
+    "shared_energy_storage_data.py:2141:        f'ratio_max={_fmt(diagnostics[\"complementarity_ratio_max\"])}',"
+   ],
+   "reading": "definition, call after each ESSO solve, log line, sink append, sink wiring, the persistent-worker sink extend; no hit compares the value with a threshold or branches on it"
+  }
+ },
+ "manuscript_sentences": {
+  "l. 747 (closure)": "The strict sentence is NOT supported at 1e-6 of E^Av: s+ + s- exceeds 1e-6 x E^Av at ['pb_y2025_n5'] (largest 5.039e-06 x E^Av = 1.764e-06 MWh, at pb_y2025_n5). A sentence the evidence supports: 'The closure slack was at most 1.8e-06 MWh (5e-06 of the available energy) in every evaluation reported in this paper.' Detail: {\"pb_y2025_n5\": {\"superseded\": true, \"block\": \"TSO|2035|Spring\", \"relative\": 5.039052500543942e-06, \"s_mwh\": 1.7636683499952684e-06, \"solve_at_point\": {\"block\": \"TSO|2035|Spring\", \"primary_termination\": \"maxIterations\", \"termination\": \"recovered\", \"class\": \"recovered_tier1\"}}}. Excluding superseded certificates: no block exceeds 1e-6 x E^Av (signed max -4.493e-07 at j_5f3cccb4), and the strict sentence holds for every evaluation the tables use as a current certificate. Every negative block level is at or above the solver's relaxed-bound floor: True. [Scope: 63 of 64 ADMM evaluations carried at their point by a committed record (component_levels_terminal.json); not carried at the point: ['d_c52e1670']; the six T6 arms are at x = 0, every closure pair bounded [0, 0], recorded weighted total exactly 0.0: True.]",
+  "l. 857 (sigma)": "The slack pair sigma was inactive at every certified point: sigma+ + sigma- stood at its lower bound to solver tolerance (signed maximum -8.000e-09, absolute maximum 8.000e-08 of the converter rating). The post-solve check of min(P^Ch, P^Dch) / S runs after every ESSO solve in the production path and its value is recorded for every solve. [Scope: per-element sigma from UNCOMMITTED esso_capture files at 46 of 51 certified points (the rest have no active unit: x = 0); the committed record carries only the sum over all elements (esso_feasibility_violation_D3), which bounds every element at the same level under the relaxed-bound floor.]"
+ },
+ "integrity_failures": []
+}
