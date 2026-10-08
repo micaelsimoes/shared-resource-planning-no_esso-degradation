@@ -1,9 +1,18 @@
 # TASKS — current order
 
-**Authority:** `PLANNER_BRIEF_2026-09-13.md` Addendum 70 and `STEP6_ROUND3_CORRECTIONS.md` §D; earlier orders below for record.
+**Authority:** `PLANNER_BRIEF_2026-09-13.md` Addendum 72 and `STEP6_ROUND4_CORRECTIONS.md`; earlier orders below for record.
 **Objective convention on every value:** Q = certified `gross_operational_cost`, settlement excluded.
 **Updated at every transition; read first when resuming.**
 
+
+## Addendum 72 order — W176 (zero-solve), then stand by
+
+Clone pulled at Overleaf `8b76423` (main.tex 2,156 lines, sha256 7aa9e105…; l. 858 → `sec:case_ess_params` confirmed). Predictions (expert): W176(a) no M or H row among the round-4 lines, any L row already on the round-4 final-pass list; W176(b) zero MISMATCH in main.tex and the letter, the same twelve approximates as W174a, submitted-version count reduced only where §3.5–3.6 replaced submitted text.
+
+- [ ] **▶ W176a** — round-4 lines re-check (14 edits + l. 858), W174b rating; literal "Section~4.x" in §2–§3; no `[CONFIRM` left
+- [ ] **▶ W176b** — number check at `8b76423` (W174a script lineage, declarations v4)
+- [ ] Planner review; report `P5_15_ADDENDUM72_ROUND4_REPORT.md`; commit; push
+- [ ] Stand by: number check at each writing round's close
 
 ## Addendum 70 order — `STEP6_ROUND3_CORRECTIONS.md` §D (zero-solve; nothing else runs)
 
@@ -13,7 +22,7 @@ Clone pulled at Overleaf `260bd83` (main.tex 2,209 lines, sha256 cb237b2d…; ro
 - [x] **W174b** — `02aa735f`: all prior H rows resolved; H 0 / M 3 / L 19 (Worker rating) — prediction held on W174b's rating, fails on the Planner's (l. 647 → H); paste deleted the AA-off clause and k ← k+1
 - [x] **W175** — `f7d165b7`: SoH point and no-ageing confirmed; LFP not in any input file; benchmark needs **two** wording changes (tie-breaker + common Q; the Addendum 49 consistency pass) — prediction **FAILED** on count
 - [x] Planner review; report `P5_15_ADDENDUM70_ROUND3_REPORT.md` (Decisions 1–8)
-- [ ] **▶ Stopped for review:** expert on 2–5; author on 1, 6–8 and the reviewers' PDF
+- [x] Ruled (Addenda 71–72, `af2cd321`, `00cf4c9f`): W174 no-H prediction failed on the Planner's rating (adopted); W175 failed on count; round 4 written
 
 ## Addendum 69 order — round 2 checks (zero-solve; nothing else runs)
 
