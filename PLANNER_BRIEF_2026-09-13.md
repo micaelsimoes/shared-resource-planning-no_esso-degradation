@@ -3285,3 +3285,32 @@ claimed by the text.
 
 **Order.** Round 5 is applied with the §4 paste; W177(a) runs now on `section4_expert_draft.tex` (Addendum 73);
 W177(b) at the HEAD where §4 and round 5 are in. No new prediction beyond Addendum 73's.
+
+# Addendum 75 — §4 frame verified in Overleaf (`e6e58e8`); figure numbering settled from the submitted source (2026-10-08)
+
+**§4 paste.** `main.tex` at Overleaf `e6e58e8` (2,310 lines) carries `section4_expert_draft.tex` verbatim at
+l. 1127–1602 (comments stripped, the blocks are identical; the seven `[AUTHOR — write]` slots and nine
+`[CONFIRM — W177]` comments intact; the old §4 gone; the seams to §3.6 and §5 clean); the five figure PDFs are in the
+clone; the l. 635 reference now points to `subsec:res_certification`. The 26 remaining `tab:cs3_`/`fig:cs3_` labels
+are §3's and Appendix E's own (round 3).
+
+**Figure numbering (closes W171a G3/G4 as far as the source allows).** `manuscript_submitted/main.tex` has 18 figure
+environments: 1 framework, 2 test-system diagram, 3 convergence, 4 voltage, 5 operational costs, 6 RES generation
+(two sub-panels), 7 curtailment, then B.8 (market prices), C.9 (TN RES) and D.10–D.18 (ADN profiles; elsarticle's
+`\appendix` prefixes the section letter and does not reset the counter). The reviewers' comments (docx): Reviewer 1
+"(5) Figure 2 could be improved in size for clarity"; Reviewer 3 "The explanation of Figure 15 in Section 4.4 is not a
+direct conclusion. Please explain the differences between each subgraph…". No figure 15 exists in §4.4 of the source
+(its figures are 4–7), so the reviewer's number comes from the PDF they were served, which the author can confirm in
+the submission system; the section is unambiguous. **Rulings for the letter (author to confirm):** R1.5 answers the
+test-system diagram, Figure 2 in the source, which the revision has already redrawn as two panels (TN and DN) at a
+larger scale — the current reply, about the framework figure, answers the wrong figure unless the served PDF numbered
+the graphical abstract as Figure 1; proposed: "The test-system diagram (Figure~2) was redrawn as two panels, the
+transmission network and the distribution-network template, each at a larger scale; the framework figure
+(Figure~1) was also redrawn, with fewer elements, to reflect the revised architecture." R3.2's "Figure~15" sentence
+avoids the number: "On the figure of Section~4.4 the reviewer refers to as Figure~15: the results figures of that
+section belonged to the superseded results and were removed; each results figure of the revision is discussed by what
+differs between its panels rather than by restating its values." Letter line numbers at its final pass.
+
+**Next.** The author writes 4.1–4.6 into the slots and edits 4.9; W177(a) on the frame is pending; W177(b) when §4 is
+complete. The expert composes Appendix E (T1, T2, T5, T6 all starts, T9, T10, the full certification statistics and
+the scorecard) from the export for round 3 meanwhile.

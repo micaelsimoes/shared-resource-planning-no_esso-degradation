@@ -1,0 +1,188 @@
+% ====================================================================================================================
+% SECTION 4 — the nine tables refit for the elsarticle text width (390 pt) with centred value columns (2026-10-09).
+% Replace each table in Overleaf by its label: select from "\begin{table}[htbp!]" to "\end{table}" and paste the block
+% with the same \label. Numbers unchanged from section4_expert_draft.tex (frozen tables, W160 rounding). Verdict
+% columns are dropped where every row is determinate (stated in the caption) and footnote marks carry the exceptions.
+% ====================================================================================================================
+
+% ---- tab:res_value_ladder (4.1) -----------------------------------------------------------------------------------
+\begin{table}[htbp!]
+    \centering
+    \caption{\textcolor{blue}{Candidate plans against the plan without storage at the single-scenario instance (base flexibility price; investment year 2025 unless stated). $F(\boldsymbol{x}) - F(\boldsymbol{0}) = I(\boldsymbol{x}) - \text{value}$, gross; threshold $\max\{3 \times \text{larger band}, 2\tau\}$ between certified evaluations, or the uncertified bar $3 \max\{|t_{\text{sum}}|, |s|\}$ where the plan's evaluation is uncertified ($^{u}$); $\times$: difference over threshold or bar. Every difference is determinate. $^{f}$: flagged certificate (a turning point on a non-clean cycle); in the uncertified form beside, bar 70.7~k\euro, $2.94\times$. Net of the salvage credit the 2025 differences are unchanged; the 2030 plan's is 84.0~k\euro{} ($6.27\times$).}}
+    \label{tab:res_value_ladder}
+    \scriptsize\setlength{\tabcolsep}{3pt}
+    \begin{tabular}{l c c c c c c}
+        \toprule
+        Node(s) & $S^{\text{Inv}}$ (MVA) & $E^{\text{Inv}}$ (MWh) & Dur.\ (h) & $F(\boldsymbol{x}) - F(\boldsymbol{0})$ (k\euro) & Thr.\ or bar (k\euro) & $\times$ \\
+        \midrule
+        5                 & 0.25 & 0.5 & 2 & 49.7  & 12.6 & 3.94  \\
+        5                 & 0.25 & 1   & 4 & 58.0  & 13.2 & 4.39  \\
+        7 (reference)     & 0.25 & 1   & 4 & 64.4  & 13.1 & 4.93  \\
+        7                 & 0.5  & 2   & 4 & 135.5 & 13.4 & 10.13 \\
+        7$^{f}$           & 0.75 & 3   & 4 & 208.3 & 12.6 & 16.49 \\
+        7                 & 1    & 4   & 4 & 274.0 & 13.6 & 20.19 \\
+        7$^{u}$           & 1.25 & 5   & 4 & 347.2 & 23.9 & 14.52 \\
+        7                 & 0.5  & 1   & 2 & 114.1 & 12.6 & 9.03  \\
+        7$^{u}$           & 1    & 2   & 2 & 231.7 & 24.2 & 9.56  \\
+        7$^{u}$           & 1.5  & 3   & 2 & 361.7 & 41.4 & 8.74  \\
+        7                 & 2    & 4   & 2 & 494.4 & 13.4 & 36.91 \\
+        7                 & 2.5  & 5   & 2 & 616.6 & 13.4 & 45.94 \\
+        9                 & 0.25 & 1   & 4 & 61.1  & 12.6 & 4.84  \\
+        9                 & 0.75 & 3   & 4 & 199.1 & 13.5 & 14.78 \\
+        5 and 9           & 0.25 each & 0.5 each & 2 & 102.1 & 12.6 & 8.09 \\
+        5 and 7 (2030)    & 0.25 each & 0.5 each & 2 & 93.9  & 13.4 & 7.00 \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+% ---- tab:res_breakeven (4.2) --------------------------------------------------------------------------------------
+\begin{table}[htbp!]
+    \centering
+    \caption{\textcolor{blue}{Break-even energy cost at node 7 from the affine fit value $= a + bE + cP$; $e^{*} = b + c/4 - p/4$ with the power cost $p = 256{,}320$~\euro/MVA; energy cost 253{,}880~\euro/MWh. Ranges are over every corner of the intervals of the uncertified evaluations. The slope $b + c/4$ of the two fits agrees within 0.47\,\% (reported) and 0.31\,\% (flagged certificate kept) at the interval midpoints.}}
+    \label{tab:res_breakeven}
+    \scriptsize\setlength{\tabcolsep}{3pt}
+    \begin{tabular}{l c c c c c}
+        \toprule
+        Fit & Intervals & $n$ certified & $e^{*}$ certified-only & $e^{*}$ banded & Margin \\
+            &           &               & (\euro/MWh)            & (\euro/MWh)    & (\euro/MWh) \\
+        \midrule
+        Reported                 & 4 & 6 & 183{,}080 & 171{,}310--192{,}560 & 61{,}320--82{,}570 \\
+        Flagged certificate kept & 3 & 7 & 182{,}700 & 173{,}490--190{,}380 & 63{,}500--80{,}390 \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+% ---- tab:res_flex_ladder (4.2) ------------------------------------------------------------------------------------
+\begin{table}[htbp!]
+    \centering
+    \caption{\textcolor{blue}{The reference unit under the flexibility-price ladder (node 7, 0.25~MVA / 1~MWh, 2025; both evaluations of each row at the same multiplier $m$). Threshold between certified evaluations, or the uncertified bar where the unit's evaluation is uncertified ($^{u}$).}}
+    \label{tab:res_flex_ladder}
+    \scriptsize\setlength{\tabcolsep}{5pt}
+    \begin{tabular}{c c c c l}
+        \toprule
+        $m$ & Value $- I$ (k\euro) & Thr.\ or bar (k\euro) & $\times$ & Verdict \\
+        \midrule
+        1.00       & $-$64.4 & 13.1 & 4.93 & determinate \\
+        1.50$^{u}$ & $-$14.5 & 18.8 & 0.77 & within the uncertified bar \\
+        1.75       & 14.2    & 10.8 & 1.32 & determinate \\
+        2.00       & 46.3    & 12.3 & 3.77 & determinate \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+% ---- tab:res_energy_ladder_m2 (4.2) -------------------------------------------------------------------------------
+\begin{table}[htbp!]
+    \centering
+    \caption{\textcolor{blue}{Energy ladder at twice the base flexibility price (node 7, 4~h plans, 2025): value minus investment cost of each plan, and the increment from the previous size. Threshold between certified evaluations, or the uncertified bar where an evaluation is uncertified ($^{u}$); every difference is determinate. $^{f}$: flagged certificate (in the uncertified form beside: 15.9~k\euro, $11.12\times$ for the plan; 27.7~k\euro, $1.55\times$ and 26.5~k\euro, $1.95\times$ for the increments around it).}}
+    \label{tab:res_energy_ladder_m2}
+    \scriptsize\setlength{\tabcolsep}{4pt}
+    \begin{tabular}{c c c c c c c}
+        \toprule
+        $E^{\text{Inv}}$ (MWh) & Value $- I$ (k\euro) & Thr.\ or bar (k\euro) & $\times$ & Increment (k\euro) & Thr.\ or bar (k\euro) & $\times$ \\
+        \midrule
+        1         & 46.3  & 12.3 & 3.77  & ---  & ---  & ---  \\
+        2         & 92.8  & 12.8 & 7.26  & 46.5 & 12.8 & 3.64 \\
+        3$^{u}$   & 133.8 & 27.7 & 4.83  & 41.0 & 27.7 & 1.48 \\
+        4$^{f}$   & 176.6 & 9.7  & 18.14 & 42.8 & 27.7 & 1.55 \\
+        5$^{u}$   & 228.4 & 26.5 & 8.60  & 51.8 & 26.5 & 1.95 \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+% ---- tab:res_ageing (4.3) -----------------------------------------------------------------------------------------
+\begin{table}[htbp!]
+    \centering
+    \caption{\textcolor{blue}{The reference unit (node 7, 0.25~MVA / 1~MWh, 2025) under the ageing calibrations of Table~\ref{tab:ageing_calibrations}, the plan held fixed. Value $= Q(\boldsymbol{0}) - Q(\text{unit})$ under the same arm; $I = 318.0$~k\euro; threshold $\max\{3 \times \text{larger band}, 2\tau\}$; every difference is determinate except without ageing ($^{w}$, within resolution). Floor: the first year in which the 0.70 state-of-health floor binds; $AE$: PV-weighted available-energy fraction; EFC: equivalent full cycles per day, PV-weighted. The last row changes the floor only.}}
+    \label{tab:res_ageing}
+    \scriptsize\setlength{\tabcolsep}{3pt}
+    \begin{tabular}{l c c c c c c c}
+        \toprule
+        Calibration & Value (k\euro) & Value $- I$ (k\euro) & Thr.\ (k\euro) & $\times$ & Floor & $AE$ & EFC/day \\
+        \midrule
+        Baseline (cycling + calendar)   & 253.5 & $-$64.4 & 13.1 & 4.93 & 2035  & 0.793 & 0.86 \\
+        Cycling only                    & 286.3 & $-$31.6 & 12.6 & 2.50 & never & 0.888 & 1.19 \\
+        Retention 50\,\%                & 244.2 & $-$73.7 & 12.8 & 5.74 & 2035  & 0.786 & 0.76 \\
+        Retention 50\,\%, mid-block     & 252.1 & $-$65.9 & 12.9 & 5.12 & 2035  & 0.836 & 0.76 \\
+        Datasheet 8\,000 cycles         & 272.8 & $-$45.2 & 12.6 & 3.58 & never & 0.834 & 1.13 \\
+        No ageing$^{w}$                 & 313.8 & $-$4.1  & 12.9 & 0.32 & never & 1.000 & 1.29 \\
+        Baseline, 0.50 floor            & ---   & $-$59.5 & 12.6 & 4.71 & never & ---   & --- \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+% ---- tab:res_benchmark (4.4) --------------------------------------------------------------------------------------
+\begin{table}[htbp!]
+    \centering
+    \caption{\textcolor{blue}{Static no-reverse-flow (NRF) arrangements against coordinated operation at the plan without storage. Each arrangement is the best of three solver starts; in parentheses, the reproducibility band of the coordinated evaluation and the spread of each arrangement over its starts. $\Delta Q$: cost above coordinated operation (k\euro{} and \% of it). Curtailment: day-weighted, over the horizon. Gross operational cost, settlement excluded.}}
+    \label{tab:res_benchmark}
+    \footnotesize\setlength{\tabcolsep}{3pt}
+    \begin{tabular}{l c c c c}
+        \toprule
+        Arrangement & $Q$ (k\euro) & $\Delta Q$ (k\euro, \%) & TN curt.\ (GWh) & DN curt.\ (GWh) \\
+        \midrule
+        Coordinated     & 653\,873.7 (71.9) & ---                & ---   & ---   \\
+        Price-taker NRF & 744\,770.3 (0.0)  & 90\,896.6 (13.9)   & 807.6 & 0.6   \\
+        Passive NRF     & 895\,049.9 (25.8) & 241\,176.2 (36.9)  & 781.7 & 201.2 \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+% ---- tab:res_multiscenario (4.5) ----------------------------------------------------------------------------------
+\begin{table}[htbp!]
+    \centering
+    \caption{\textcolor{blue}{The $3 \times 3$ multi-scenario instance: the reference unit (node 7, 0.25~MVA / 1~MWh, 2025) against the plan without storage, and the ratio $R$ of its value to the settled single-scenario value. The multi-scenario evaluations stopped by the production exit; $D$ is the post-hoc settled descent of the $\boldsymbol{x} = \boldsymbol{0}$ evaluation continued past it. Gross operational cost, settlement excluded.}}
+    \label{tab:res_multiscenario}
+    \scriptsize\setlength{\tabcolsep}{4pt}
+    \begin{tabular}{l c l}
+        \toprule
+        Quantity & Value & Note \\
+        \midrule
+        Value $Q(\boldsymbol{0}) - Q(\text{unit})$ at certification (cycle 72) & 236.7~k\euro & recorded \\
+        Investment cost $I$                                                  & 318.0~k\euro & recorded \\
+        Value $- I$                                                          & $-$81.3~k\euro & determinate \\
+        Resolution of the value                                              & 18.0~k\euro  & $|{\rm value} - I| / {\rm resolution} = 4.52$ \\
+        Post-hoc settled descent $D$ of the $\boldsymbol{x} = \boldsymbol{0}$ evaluation & 6.2~k\euro & damped-cosine fit \\
+        Settled single-scenario value of the unit                           & 253.5~k\euro & Table~\ref{tab:res_ageing}, baseline \\
+        $R$ at certification (upper end)                                     & 0.934 & $V / V^{\text{single}}$ \\
+        $R$ after the settled descent (lower end)                            & 0.909 & $(V - D) / V^{\text{single}}$ \\
+        $R$ predicted from the mean-profile price spread                     & 0.9331 & recorded before the run \\
+        Replay of the $\boldsymbol{x} = \boldsymbol{0}$ evaluation           & 72 / 72 cycles & bitwise \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+% ---- tab:res_year_ladder (4.6) ------------------------------------------------------------------------------------
+\begin{table}[htbp!]
+    \centering
+    \caption{\textcolor{blue}{Investment year of the reference unit (node 7, 0.25~MVA / 1~MWh): cost against the plan without storage, $M = I + Q(\boldsymbol{x}) - Q(\boldsymbol{0})$, gross and net of the salvage credit \eqref{eq:salvage_credit}. The 2035 $-$ 2030 difference is determinate gross ($3.46\times$ its threshold of 12.3~k\euro) and within resolution net ($0.19\times$).}}
+    \label{tab:res_year_ladder}
+    \scriptsize\setlength{\tabcolsep}{5pt}
+    \begin{tabular}{l c c c}
+        \toprule
+        Investment year & $M$ gross (k\euro) & Salvage (k\euro) & $M$ net (k\euro) \\
+        \midrule
+        2025 (reference) & 64.4  & 0.0  & 64.4 \\
+        2030             & 68.5  & 11.8 & 56.7 \\
+        2035             & 111.0 & 56.5 & 54.5 \\
+        2035 $-$ 2030    & 42.5  & ---  & $-$2.3 \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+% ---- tab:res_discount (4.6) ---------------------------------------------------------------------------------------
+\begin{table}[htbp!]
+    \centering
+    \caption{\textcolor{blue}{Discount rate: the reference unit (node 7, 0.25~MVA / 1~MWh, 2025) against the plan without storage; one discount factor per representative year applied to the five years of its block, $I$ paid in 2025; every difference is determinate. Gross operational cost, settlement excluded.}}
+    \label{tab:res_discount}
+    \scriptsize\setlength{\tabcolsep}{5pt}
+    \begin{tabular}{c c c c c c}
+        \toprule
+        Rate (\%) & Value (k\euro) & $I$ (k\euro) & Value $- I$ (k\euro) & Threshold (k\euro) & $\times$ \\
+        \midrule
+        0 & 277.1 & 318.0 & $-$40.8  & 15.9 & 2.57 \\
+        2 & 253.5 & 318.0 & $-$64.4  & 13.1 & 4.93 \\
+        5 & 225.2 & 318.0 & $-$92.7  & 13.1 & 7.10 \\
+        8 & 203.4 & 318.0 & $-$114.6 & 13.1 & 8.78 \\
+        \bottomrule
+    \end{tabular}
+\end{table}
