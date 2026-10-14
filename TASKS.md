@@ -14,10 +14,11 @@ Clone pulled at Overleaf `51a6fb5` (≥ `6ff8f3c`; main.tex 2,312 lines, sha256 
 - [x] **W177b-2 @51a6fb5** — `99fdfabb`: H 2 (§4.5 no 3 × 3 search; §4.6 one verdict among 60) / M 4 / L 3
 - [x] **W177b-3 @51a6fb5** — `be583a4d`: rule complete (M 2); settings 40/41; 0 undefined refs; π_t, s unused
 - [x] **Amendment to Addendum 76** (`f4f58d10`): §3 opening M1; letter v2 (Parts 1–2 + numbered pointers). Overleaf moved to **`e10c104`** (17 commits after `51a6fb5`; ≥ `bfc5009`); letter in Overleaf = `manuscript_review/response_to_reviewers_v2.tex`
-- [ ] **▶ W177b-1′ @e10c104** — Parts 0–1 re-run + letter numbers + §3 opening numbers
-- [ ] **▶ W177b-2′ @e10c104** — Part 2 re-run (prior rows' status) + letter claims + §3 opening CONFIRM (scenario of the single-scenario instance; prefix draw [1,2,3] × [1,2,3])
-- [ ] **▶ W177b-3′ @e10c104** — Part 3 re-run + letter numbered pointers vs static numbering + change-log checklist items (fig:investment_lattice, fourteen-neighbour sentence, §3.6 run settings, refs to subsubsec:certification)
-- [ ] Planner review; report `P5_15_W177B_REPORT.md`; commit; push
+- [x] **W177b-1′ @e10c104** — `f78836a9` / `87fecf8a`: table cells 0 MISMATCH; derived 16/16; 'two verdicts' MISMATCH (manuscript + letter R3.1)
+- [x] **W177b-2′ @e10c104** — `559ef967`: both H rows unchanged; letter H 1 (R3.1) + 5 M (absent text; M2 not applied) + R1.4 'exact'; §3 opening confirmed
+- [x] **W177b-3′ @e10c104** — `87db6a83`: 0 undefined refs (HELD); π_t, s unused (count HELD); letter pointers 130/16/5 (16 = nomenclature longtables step the table counter); lattice figure exact
+- [x] Planner review; report `P5_15_W177B_REPORT.md` (Decisions 1–6)
+- [ ] **▶ Stopped for review** (Part 2 predictions failed, no fallback): expert on 1–4, 6; author on 5–6; push from PyCharm
 
 ## Addendum 73 order — W177 (zero-solve)
 
