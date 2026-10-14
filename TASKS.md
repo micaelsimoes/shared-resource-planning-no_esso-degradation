@@ -1,9 +1,18 @@
 # TASKS — current order
 
-**Authority:** `PLANNER_BRIEF_2026-09-13.md` Addendum 76 (W177(b) order) and `manuscript_review/W177B_CHANGE_LOG.md`; earlier orders below for record.
+**Authority:** `PLANNER_BRIEF_2026-09-13.md` Addendum 77 (W178 order); earlier orders below for record.
 **Objective convention on every value:** Q = certified `gross_operational_cost`, settlement excluded.
 **Updated at every transition; read first when resuming.**
 
+
+## Addendum 77 order — W178 (zero-solve)
+
+Clone pulled at Overleaf **`9fd19e7`** (after `820ee1b`; main.tex 2,511 lines, sha256 d18384d6…, byte-identical to `manuscript_review/main_820ee1b_fixed.tex`; letter = `response_to_reviewers_v4.tex`). Predictions (expert): (a) network storage block and cohort equations hold against code, at most one M row (closure-slack or power-limit wording); (b) all applied; (d) 0 pointer MISMATCH.
+
+- [ ] **▶ W178a** — (a) §2.1–§2.3 as rewritten after `e10c104` vs code (eqs. 7–9, 14–19, 20–28; A.2 constraint list), W174b rating
+- [ ] **▶ W178b** — (b) A1–A20, B1–B4 applied as worded; Parts 1–2 re-scored on the rows they address; (c) 0.50-floor row AE / EFC/day from W155
+- [ ] **▶ W178c** — (d) letter v4: Parts 1–2 on the changed replies; numbered pointers vs static numbering (and the expert's compile numbers, ruling 5)
+- [ ] Planner review; report `P5_15_W178_REPORT.md`; commit; push
 
 ## Addendum 76 order — W177(b) (zero-solve)
 
@@ -18,7 +27,7 @@ Clone pulled at Overleaf `51a6fb5` (≥ `6ff8f3c`; main.tex 2,312 lines, sha256 
 - [x] **W177b-2′ @e10c104** — `559ef967`: both H rows unchanged; letter H 1 (R3.1) + 5 M (absent text; M2 not applied) + R1.4 'exact'; §3 opening confirmed
 - [x] **W177b-3′ @e10c104** — `87db6a83`: 0 undefined refs (HELD); π_t, s unused (count HELD); letter pointers 130/16/5 (16 = nomenclature longtables step the table counter); lattice figure exact
 - [x] Planner review; report `P5_15_W177B_REPORT.md` (Decisions 1–6)
-- [ ] **▶ Stopped for review** (Part 2 predictions failed, no fallback): expert on 1–4, 6; author on 5–6; push from PyCharm
+- [x] Ruled (Addendum 77, `de304b2a`): all six decisions as recommended; fixes A1–A20, B1–B4; letter v4
 
 ## Addendum 73 order — W177 (zero-solve)
 
