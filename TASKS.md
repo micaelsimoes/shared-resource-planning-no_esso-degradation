@@ -1,16 +1,26 @@
 # TASKS — current order
 
-**Authority:** `PLANNER_BRIEF_2026-09-13.md` Addendum 73 (W177 order; §4 frame `section4_expert_draft.tex`); earlier orders below for record.
+**Authority:** `PLANNER_BRIEF_2026-09-13.md` Addendum 76 (W177(b) order) and `manuscript_review/W177B_CHANGE_LOG.md`; earlier orders below for record.
 **Objective convention on every value:** Q = certified `gross_operational_cost`, settlement excluded.
 **Updated at every transition; read first when resuming.**
 
+
+## Addendum 76 order — W177(b) (zero-solve)
+
+Clone pulled at Overleaf `51a6fb5` (≥ `6ff8f3c`; main.tex 2,312 lines, sha256 61fe630c…; `51a6fb5` deletes 19 lines of main.tex against `6ff8f3c`). Predictions (expert): Part 1 zero MISMATCH in numbers carried from the tables, derived numbers hold; Part 2 (c) is two verdict changes, nothing contradicted; Part 3 no undefined reference, at least one nomenclature symbol defined but unused after the moves.
+
+- [x] **Part 4** — W160 export copied unchanged to `manuscript_review/export_W160/` (`829e92e5`; MANIFEST.md with per-file sha256)
+- [ ] **▶ W177b-1** — Part 0 (W177a findings still carried) + Part 1 (every number of abstract, highlights, §4.1–4.7, table notes, captions, Conclusions; derived numbers with arithmetic)
+- [ ] **▶ W177b-2** — Part 2 (every claim of §4.1–4.6 and the Conclusions, W174b rating; named items (a)–(e))
+- [ ] **▶ W177b-3** — Part 3 (Appendix A Certification Rule vs v6 and §2.2.7; settings vs specs; A.2 f_E and constraints vs code; nomenclature; fig3_ageing_arms_v2 vs T8; refs/labels)
+- [ ] Planner review; report `P5_15_W177B_REPORT.md`; commit; push
 
 ## Addendum 73 order — W177 (zero-solve)
 
 §4 frame `section4_expert_draft.tex` (repo root, `4f941b29`). Predictions (expert): W177(a) zero MISMATCH in the nine composed tables and five captions; the salvage equation needs one correction among its four points; the four other structural CONFIRMs (S/E, I/J keys, F2 plan, 16 cycles) hold. W177(b) scored when ordered.
 
 - [ ] **▶ W177a** — every `[CONFIRM — W177]` of `section4_expert_draft.tex` against code/records; every number of the nine tables and five captions against the frozen JSON → `P5_15_ADDENDUM73_W177A_REPORT.md`
-- [ ] W177b — **held:** when the author's 4.1–4.6 text is in Overleaf: number check + audit of §4 as pasted (W174b rating) at that HEAD
+- [x] W177b — moved to the Addendum 76 order
 
 ## Addendum 72 order — W176 (zero-solve), then stand by
 
