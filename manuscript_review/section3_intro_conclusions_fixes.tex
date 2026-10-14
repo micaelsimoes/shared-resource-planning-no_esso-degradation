@@ -1,0 +1,45 @@
+% =====================================================================================================================
+% MANUSCRIPT FIXES the revised letter relies on (2026-10-14). Three places; all small.
+% =====================================================================================================================
+
+% ---------------------------------------------------------------------------------------------------------------------
+% M1 -- Section 3 opening ("Case Study", before 3.1). The opening still describes the SUBMITTED instance: "five years
+% (2025, 2028, 2031, 2034, and 2037)" and "five load/RES scenarios combined with five market-price scenarios, 25
+% operating scenarios", and two reference cases ("uncoordinated operation"; "coordinated operation without shared
+% ESSs"). None of this was run in the revision; the letter (R1.2) says Section 3 now gives the instance as run.
+%
+% (a) In the first paragraph, keep everything up to "...connection points of the three ADNs." and replace the two
+%     sentences that follow ("The 15-year planning horizon is represented by five years ... RES generation.") by:
+\textcolor{blue}{
+    The 15-year planning horizon is represented in two instances. The single-scenario instance, on which the planning results of Section~\ref{sec:results} are obtained, uses three representative years, 2025, 2030 and 2035, each standing for a five-year block, with one market scenario and one operation scenario of load and RES generation. The multi-scenario instance (Subsection~\ref{subsec:res_multiscenario}) uses five representative years, 2025, 2028, 2031, 2034 and 2037, each standing for a three-year block, with three market scenarios and three operation scenarios, nine operating scenarios per representative day. In both instances each year is represented by four seasonal representative days.
+}
+% [CONFIRM — W177] which scenario the single-scenario instance carries (Addendum 31: "SRP1's scenario = paper scenario 1
+% in 2025") and that the 3x3 is the prefix draw [1,2,3] x [1,2,3]; if confirmed, the text may name them ("the first
+% market and operation scenarios"; "the first three of each").
+%
+% (b) Second paragraph: replace its first two sentences ("Three ESS investment-cost scenarios are considered at the
+%     planning level. At the operational level, five load/RES scenarios ... 25 operating scenarios per representative
+%     day.") by the one sentence below; the rest of the paragraph (budget, 5.00 MWh, 15 years, 2.00 %) stays.
+\textcolor{blue}{Three ESS investment-cost trajectories are considered at the planning level (Subsection~3.1).}
+%
+% (c) Replace "To isolate the value of coordinated operation ... \begin{itemize} ... \end{itemize}" (the two reference
+%     cases of the submitted version) by:
+\textcolor{blue}{
+    Two comparisons are used throughout Section~\ref{sec:results}. Every candidate plan is compared with the plan without shared storage, $\boldsymbol{x} = \boldsymbol{0}$, under coordinated operation, which isolates the value of the storage investment; and coordinated operation at the plan without storage is compared with two static arrangements of the same system under a no-reverse-flow interface rule (Subsection~\ref{sec:case_settings}), which isolates the value of coordination.
+}
+
+% ---------------------------------------------------------------------------------------------------------------------
+% M2 -- Introduction, the paragraph "To address this gap, ..." (l. 343). Its last sentence ends "...market prices%;" --
+% the "%" comments out the rest of the line, so the sentence has no full stop, and the clause the letter's R1.4 relies on
+% (which uncertainties are outside the formulation) is not printed. Replace
+%     "and through operational scenarios of load, RES generation and market prices%; demand growth ... left to future work."
+% by (shortened):
+    and through operational scenarios of load, RES generation and market prices; demand growth and RES capacity follow predefined trajectories, while policy changes, infrastructure retirements and the cost of capital as a stochastic quantity are outside the present formulation and left to future work.
+
+% ---------------------------------------------------------------------------------------------------------------------
+% M3 -- Conclusions, last paragraph. The letter (opening and R1.2) says a marginal allocation of degradation between the
+% operators is listed as future work; the paper does not say so yet. Replace
+%     "Future work will also extend the framework to other shared flexibility resources and to richer representations of
+%      degradation and uncertainty."
+% by:
+    Future work will also extend the framework to other shared flexibility resources, to richer representations of degradation and uncertainty, and to an allocation of the degradation of a shared asset among the operators that use it.

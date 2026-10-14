@@ -3360,3 +3360,12 @@ redrawn by the expert from Table `tab:res_ageing` (`fig3_ageing_arms_v2.pdf`; th
 **Report** as `P5_15_W177B_REPORT.md`; commit and push it with the export. **Predictions.** Part 1: zero MISMATCH in
 numbers carried from the tables; the derived numbers hold. Part 2: (c) is two verdict changes; nothing contradicted.
 Part 3: no undefined reference; at least one nomenclature symbol defined but no longer used after the moves.
+
+**Amendment to Addendum 76 (2026-10-14, same day).** Two items join W177(b). (1) §3 opening: it still described the
+submitted instance (five years 2025–2037, 5 × 5 scenarios); the expert's fix states both instances as run
+(`manuscript_review/section3_intro_conclusions_fixes.tex`, M1, with a `[CONFIRM — W177]` on which scenario the
+single-scenario instance carries and on the 3 × 3 prefix draw [1,2,3] × [1,2,3]) — check it at the HEAD you audit.
+(2) The letter: `manuscript_review/response_to_reviewers_v2.tex` (final-pass draft: section, table, figure and
+equation numbers from a compile of `6ff8f3c`; "reference unit" throughout; R3.6's "optimal plan" claim aligned with
+§4.8; R1.5 and R3.2 per Addendum 75) — run Part 1 and Part 2 on it as on the manuscript, and check every numbered
+pointer (Section/Table/Figure/Eq./Appendix) against the compiled manuscript at the HEAD you audit.

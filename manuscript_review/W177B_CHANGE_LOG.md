@@ -83,6 +83,28 @@ Kept by the expert during the author's whole-document read (2026-10-09 onward); 
   "92.16", "Benders", "voltage violation" or "non-wire" in the text (one "bi-level" in the literature review, correct).
   Open: §4.9 Key Insights now overlaps the conclusions (author to shorten or drop); F5 declined.
 
+- Proposed (2026-10-14): delete §4.9 Key Insights (duplicated by Conclusions v2; no \ref to `subsec:res_insights`; the
+  letter's R3.6 points to §4.3); keep its one unique point by adding "on an operating cost of 654 M€" to the
+  Conclusions' implications paragraph.
+- Letter final pass, R3.6 reply: "the smallest admissible unit at node 7" → the reference unit (0.25 MVA / 1 MWh, node 7);
+  "under every aged calibration the optimal plan is no investment" overclaims — align with §4.8 (inferred from the
+  determinate loss and the affine ladders; the search was not rerun per calibration); calibration names to Table
+  `tab:res_ageing` (datasheet 8,000 cycles; retention 50 %; retention 50 %, mid-block).
+- W177(b) ordered in Addendum 76 (Planner brief), incl. Part 4: push the W160 export for Appendix E.
+
+- Letter final pass (expert draft `response_to_reviewers_v2.tex`, 2026-10-14; numbers from a compile of `6ff8f3c`:
+  Fig. 1 framework, 2 search, 3 test system, 4 lattice, 5–9 results; Tables 1 costs, 6 calibrations, 7–15 results;
+  Eq. (11) Q(x), (15)–(19) SOC, (20)–(26) agent/degradation, (29)–(30) salvage; App. A.5 rule, A.8 settings):
+  "reference unit" throughout; R3.6 "optimal plan" → inference per §4.8; R1.5/R3.2 per Addendum 75; R3.3 §2.3.6 → 2.3.5;
+  R3.5 code names (C2) → table names; R2.2 search evaluations end at the production exit; R3.7 investment discounted
+  from installation year; R2.8 \cite → [7]–[9] (the letter has no bibliography); "price-responsive" → "price-taker";
+  further-changes bullets for Appendix A moves, Figs. 2 and 4, highlights/keywords; all [T…] placeholders filled.
+- Manuscript fixes the letter relies on (`section3_intro_conclusions_fixes.tex`): M1 §3 opening still described the
+  submitted instance (2025–2037 five years, 5 × 5 scenarios, two old reference cases) → both instances as run;
+  M2 Introduction l. 343: "%" had commented out the uncertainty clause R1.4 relies on and left the sentence without a
+  full stop → restored, shortened; M3 Conclusions: attribution of degradation added to future work (letter says so).
+- Addendum 76 amended: §3 opening and the letter join W177(b).
+
 ## For the Planner to check
 - Conclusions v2: every number against §4 and the frozen tables.
 - §4.6 salvage count: placeholder said "one verdict changes category" (F2 neighbour), letter R3.1 says two (F2 neighbour
