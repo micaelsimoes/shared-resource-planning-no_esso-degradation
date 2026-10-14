@@ -1,0 +1,63 @@
+[read] production data reads (SRP1, 3 x 3) ...
+{
+ "integrity": {
+  "clone_head_matches_declared": true,
+  "clone_tex_unmodified": true,
+  "main_tex_sha256_matches_declared": true,
+  "main_tex_lines_match_declared": true,
+  "letter_sha256_matches_declared": true,
+  "frozen_sha256_matches": true,
+  "prior_checks_sha256_matches": true,
+  "case_3x3_sha256_matches": true,
+  "srp1_case_sha256_matches": true,
+  "old_main_tex_sha256_matches": true,
+  "letter_equals_manuscript_review_v2": true,
+  "every_prior_row_old_line_as_declared": true,
+  "every_letter_fragment_found_once": true,
+  "every_main_fragment_found_once": true,
+  "every_code_citation_as_expected": true,
+  "every_cited_file_equals_HEAD": true,
+  "reads_stopped_at_declared_point": true,
+  "no_model_construction_call": true,
+  "no_record_read_error": true,
+  "frozen_unchanged_at_end": true,
+  "main_tex_unchanged_at_end": true,
+  "no_tracked_file_changed": true
+ },
+ "guards": {
+  "solve_profile_guard": {
+   "label": "P5.15 W177b-2' checks (never solves)",
+   "counts": {
+    "permitted_solve": 0,
+    "permitted_exec": 0,
+    "blocked_solve": 0,
+    "blocked_exec": 0
+   },
+   "verify_0_failures": []
+  },
+  "pickle": {
+   "load": 0,
+   "loads": 0
+  }
+ },
+ "ok": true
+}
+diff: 52 hunks; in old 1140-1563: ['@@ -1561 +1593,2 @@']; old 1140-1560 == new 1172-1592: True
+  flag_1148: old [1148] -> new [1180]
+  4.2-1: old [1284] -> new [1316]
+  4.2-2: old [1284] -> new [1316]
+  4.3-1: old [1360] -> new [1392]
+  4.5-1: old [1407] -> new [1439]
+  4.6-1: old [1467] -> new [1499]
+  4.6-2: old [1488] -> new [1520]
+  C-1: old [1549] -> new [1581]
+  C-2: old [1553] -> new [1585]
+  C-3: old [1557] -> new [1589]
+  item_a: old [1176] -> new [1208]
+  item_b: old [1284] -> new [1316]
+confirm: years srp1 [2025, 2030, 2035], 3x3 [2025, 2028, 2031, 2034, 2037]; 2025 arrays 1784 {'cost_energy_p': 4, 'cost_flex': 4, 'gen.pg': 96, 'gen.qg': 96, 'load.flex_p_down': 396, 'load.flex_p_up': 396, 'load.pd': 396, 'load.qd': 396}; patterns {'(True, False, False)': 1664, 'degenerate_rows_equal': 120}; mismatches 0; seeds equal True
+affinity n7_4h: slope 247550.5 vs I/MWh 317957.0; max |resid| 2402.1 (0.26 x 2tau)
+affinity n7_2h: slope 255270.5 vs I/MWh 382036.3; max |resid| 5212.9 (0.57 x 2tau)
+main presence probes: {'abstract_lithium': False, 'intro_out_of_scope': False, 'five_by_five_future': False, 'rep_day_weighted': False, 'appE_claims_table': False}
+record statuses: {'certified': 234, 'not_certified': 22, 'stub': 18} infeasib: 0
+exit 0

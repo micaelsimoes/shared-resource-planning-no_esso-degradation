@@ -1,0 +1,1915 @@
+{
+ "affinity": {
+  "n7_2h": {
+   "E_MWh": [
+    1.0,
+    2.0,
+    3.0,
+    4.0,
+    5.0
+   ],
+   "I_eur": [
+    382036.339568524,
+    764072.679137048,
+    1146109.018705572,
+    1528145.358274096,
+    1910181.6978426196
+   ],
+   "V_eur": [
+    267957.9092805668,
+    532362.8777988522,
+    784425.312147106,
+    1033729.3498744902,
+    1293627.4099792459
+   ],
+   "increments_eur": [
+    264404.9685182854,
+    252062.43434825388,
+    249304.03772738413,
+    259898.06010475568
+   ],
+   "intercept_eur": 16608.92977415328,
+   "investment_per_MWh_eur": 382036.339568524,
+   "max_abs_residual_eur": 5212.853330099606,
+   "max_abs_residual_over_2tau": 0.5742204163077025,
+   "residuals_eur": [
+    -3921.5678408861277,
+    5212.853330099606,
+    2004.7403310539667,
+    -3961.769288861542,
+    665.7434685945045
+   ],
+   "slope_below_cost": true,
+   "slope_eur_per_MWh": 255270.5473472996
+  },
+  "n7_4h": {
+   "E_MWh": [
+    1.0,
+    2.0,
+    3.0,
+    4.0,
+    5.0
+   ],
+   "I_eur": [
+    317957.0085035586,
+    635914.0170071172,
+    953871.0255106756,
+    1271828.0340142343,
+    1589785.0425177924
+   ],
+   "V_eur": [
+    253539.6218786263,
+    500374.3402817296,
+    745580.327680833,
+    997876.3819725607,
+    1242541.2481536977
+   ],
+   "increments_eur": [
+    246834.7184031033,
+    245205.98739910347,
+    252296.0542917276,
+    244664.86618113704
+   ],
+   "intercept_eur": 5330.795721197268,
+   "investment_per_MWh_eur": 317957.0085035586,
+   "max_abs_residual_eur": 2402.0563126563793,
+   "max_abs_residual_over_2tau": 0.2645978485302473,
+   "residuals_eur": [
+    658.2967333316337,
+    -57.51428766245954,
+    -2402.0563126563793,
+    2343.468554973835,
+    -542.1946879865136
+   ],
+   "slope_below_cost": true,
+   "slope_eur_per_MWh": 247550.5294240974
+  }
+ },
+ "code_citations": {
+  "block_seed": {
+   "blob_HEAD": "12b239e01f723f3320812f81f4d610e45eb4fd59",
+   "blob_worktree": "12b239e01f723f3320812f81f4d610e45eb4fd59",
+   "expected_hits": 1,
+   "file": "network_data.py",
+   "hits_as_expected": true,
+   "lines": [
+    190
+   ],
+   "needle": "network_planning.network[year][day].random_seed = derive_random_seed(network_planning.random_seed, 'realization', int(year), str(day))",
+   "tracked": true,
+   "worktree_equals_HEAD": true
+  },
+  "block_weight": {
+   "blob_HEAD": "050bc411715e630d46bbba8f12a28a81c5c70ad7",
+   "blob_worktree": "050bc411715e630d46bbba8f12a28a81c5c70ad7",
+   "expected_hits": 1,
+   "file": "shared_resources_planning.py",
+   "hits_as_expected": true,
+   "lines": [
+    3870
+   ],
+   "needle": "def _get_admm_block_weight(network_data, year, day):",
+   "tracked": true,
+   "worktree_equals_HEAD": true
+  },
+  "block_weight_disc": {
+   "blob_HEAD": "050bc411715e630d46bbba8f12a28a81c5c70ad7",
+   "blob_worktree": "050bc411715e630d46bbba8f12a28a81c5c70ad7",
+   "expected_hits": 1,
+   "file": "shared_resources_planning.py",
+   "hits_as_expected": true,
+   "lines": [
+    3872
+   ],
+   "needle": "annualization = 1.0 / ((1.0 + network_data.discount_factor) ** (int(year) - int(years[0])))",
+   "tracked": true,
+   "worktree_equals_HEAD": true
+  },
+  "case9_loads": {
+   "blob_HEAD": "31e83a9bf6d4eec4f3599513151dfdc1d63dcc93",
+   "blob_worktree": "31e83a9bf6d4eec4f3599513151dfdc1d63dcc93",
+   "expected_hits": 1,
+   "file": "data/SRP1/case9/case9_2025.json",
+   "hits_as_expected": true,
+   "lines": [
+    25
+   ],
+   "needle": "\"loads\"",
+   "tracked": true,
+   "worktree_equals_HEAD": true
+  },
+  "derive_seed": {
+   "blob_HEAD": "8c23f978f5f66dd7dca024eb94c799d4df633b3e",
+   "blob_worktree": "8c23f978f5f66dd7dca024eb94c799d4df633b3e",
+   "expected_hits": 1,
+   "file": "helper_functions.py",
+   "hits_as_expected": true,
+   "lines": [
+    37
+   ],
+   "needle": "def derive_random_seed(base_seed, *labels):",
+   "tracked": true,
+   "worktree_equals_HEAD": true
+  },
+  "dso_seed": {
+   "blob_HEAD": "050bc411715e630d46bbba8f12a28a81c5c70ad7",
+   "blob_worktree": "050bc411715e630d46bbba8f12a28a81c5c70ad7",
+   "expected_hits": 1,
+   "file": "shared_resources_planning.py",
+   "hits_as_expected": true,
+   "lines": [
+    8906
+   ],
+   "needle": "distribution_network.random_seed = derive_random_seed(",
+   "tracked": true,
+   "worktree_equals_HEAD": true
+  },
+  "e_available": {
+   "blob_HEAD": "ff4162c2348a5b075d225bd3f2d63a57dae0508e",
+   "blob_worktree": "ff4162c2348a5b075d225bd3f2d63a57dae0508e",
+   "expected_hits": 1,
+   "file": "shared_energy_storage_data.py",
+   "hits_as_expected": true,
+   "lines": [
+    628
+   ],
+   "needle": "model.available_e_capacity_unit.add(model.es_e_available_per_unit[y_inv, y] == model.es_e_rated_per_unit[y_inv, y] * model.es_soh_per_unit_cumul[y_inv, y])",
+   "tracked": true,
+   "worktree_equals_HEAD": true
+  },
+  "gen_sample": {
+   "blob_HEAD": "ffa61728b2bc449d4aa14a055c4ffbe4683f898e",
+   "blob_worktree": "ffa61728b2bc449d4aa14a055c4ffbe4683f898e",
+   "expected_hits": 1,
+   "file": "network.py",
+   "hits_as_expected": true,
+   "lines": [
+    1469
+   ],
+   "needle": "pg = np.array(synthetic_profiles['generation'][network.day][gen_type]['pg'].sample(",
+   "tracked": true,
+   "worktree_equals_HEAD": true
+  },
+  "initial_year": {
+   "blob_HEAD": "12b239e01f723f3320812f81f4d610e45eb4fd59",
+   "blob_worktree": "12b239e01f723f3320812f81f4d610e45eb4fd59",
+   "expected_hits": 1,
+   "file": "network_data.py",
+   "hits_as_expected": true,
+   "lines": [
+    160
+   ],
+   "needle": "base_data['initial_year'] = list(network_planning.years)[0]",
+   "tracked": true,
+   "worktree_equals_HEAD": true
+  },
+  "load_sample": {
+   "blob_HEAD": "ffa61728b2bc449d4aa14a055c4ffbe4683f898e",
+   "blob_worktree": "ffa61728b2bc449d4aa14a055c4ffbe4683f898e",
+   "expected_hits": 1,
+   "file": "network.py",
+   "hits_as_expected": true,
+   "lines": [
+    1427
+   ],
+   "needle": "pc = np.array(synthetic_profiles['consumption'][network.day][load_id]['pc'].sample(",
+   "tracked": true,
+   "worktree_equals_HEAD": true
+  },
+  "market_pool": {
+   "blob_HEAD": "050bc411715e630d46bbba8f12a28a81c5c70ad7",
+   "blob_worktree": "050bc411715e630d46bbba8f12a28a81c5c70ad7",
+   "expected_hits": 1,
+   "file": "shared_resources_planning.py",
+   "hits_as_expected": true,
+   "lines": [
+    9115
+   ],
+   "needle": "random_seed=derive_random_seed(market_seed, 'synthetic_profiles'),",
+   "tracked": true,
+   "worktree_equals_HEAD": true
+  },
+  "market_prob": {
+   "blob_HEAD": "050bc411715e630d46bbba8f12a28a81c5c70ad7",
+   "blob_worktree": "050bc411715e630d46bbba8f12a28a81c5c70ad7",
+   "expected_hits": 1,
+   "file": "shared_resources_planning.py",
+   "hits_as_expected": true,
+   "lines": [
+    9126
+   ],
+   "needle": "planning_problem.prob_market_scenarios[year] = [(1 / planning_problem.num_market_scenarios)] * planning_problem.num_market_scenarios",
+   "tracked": true,
+   "worktree_equals_HEAD": true
+  },
+  "market_sample": {
+   "blob_HEAD": "050bc411715e630d46bbba8f12a28a81c5c70ad7",
+   "blob_worktree": "050bc411715e630d46bbba8f12a28a81c5c70ad7",
+   "expected_hits": 1,
+   "file": "shared_resources_planning.py",
+   "hits_as_expected": true,
+   "lines": [
+    9135
+   ],
+   "needle": "energy_selected_profiles = synthetic_profiles['energy'][day].sample(",
+   "tracked": true,
+   "worktree_equals_HEAD": true
+  },
+  "market_sample_seed": {
+   "blob_HEAD": "050bc411715e630d46bbba8f12a28a81c5c70ad7",
+   "blob_worktree": "050bc411715e630d46bbba8f12a28a81c5c70ad7",
+   "expected_hits": 1,
+   "file": "shared_resources_planning.py",
+   "hits_as_expected": true,
+   "lines": [
+    9137
+   ],
+   "needle": "random_state=derive_random_seed(market_seed, 'selection', 'energy', year, str(day)),",
+   "tracked": true,
+   "worktree_equals_HEAD": true
+  },
+  "market_seed": {
+   "blob_HEAD": "050bc411715e630d46bbba8f12a28a81c5c70ad7",
+   "blob_worktree": "050bc411715e630d46bbba8f12a28a81c5c70ad7",
+   "expected_hits": 1,
+   "file": "shared_resources_planning.py",
+   "hits_as_expected": true,
+   "lines": [
+    9112
+   ],
+   "needle": "market_seed = derive_random_seed(planning_problem.random_seed, 'market')",
+   "tracked": true,
+   "worktree_equals_HEAD": true
+  },
+  "net_e_available": {
+   "blob_HEAD": "0d6caa30df0bffed4d7bbb5faf7fc63322f188df",
+   "blob_worktree": "0d6caa30df0bffed4d7bbb5faf7fc63322f188df",
+   "expected_hits": 1,
+   "file": "admm_persistent_workers.py",
+   "hits_as_expected": true,
+   "lines": [
+    334
+   ],
+   "needle": "model_yd.shared_es_e_rated_fixed[shared_ess_idx].set_value(sess_capacity_year['e_available'] / s_base)",
+   "tracked": true,
+   "worktree_equals_HEAD": true
+  },
+  "net_pool": {
+   "blob_HEAD": "12b239e01f723f3320812f81f4d610e45eb4fd59",
+   "blob_worktree": "12b239e01f723f3320812f81f4d610e45eb4fd59",
+   "expected_hits": 1,
+   "file": "network_data.py",
+   "hits_as_expected": true,
+   "lines": [
+    167
+   ],
+   "needle": "random_seed=derive_random_seed(network_planning.random_seed, 'synthetic_profiles'),",
+   "tracked": true,
+   "worktree_equals_HEAD": true
+  },
+  "oper_prob": {
+   "blob_HEAD": "12b239e01f723f3320812f81f4d610e45eb4fd59",
+   "blob_worktree": "12b239e01f723f3320812f81f4d610e45eb4fd59",
+   "expected_hits": 1,
+   "file": "network_data.py",
+   "hits_as_expected": true,
+   "lines": [
+    191
+   ],
+   "needle": "network_planning.network[year][day].prob_operation_scenarios = [(1 / network_planning.num_oper_scenarios)] * network_planning.num_oper_scenarios",
+   "tracked": true,
+   "worktree_equals_HEAD": true
+  },
+  "read_nmarket": {
+   "blob_HEAD": "050bc411715e630d46bbba8f12a28a81c5c70ad7",
+   "blob_worktree": "050bc411715e630d46bbba8f12a28a81c5c70ad7",
+   "expected_hits": 1,
+   "file": "shared_resources_planning.py",
+   "hits_as_expected": true,
+   "lines": [
+    8877
+   ],
+   "needle": "planning_problem.num_market_scenarios = planning_data['NumMarketScenarios']",
+   "tracked": true,
+   "worktree_equals_HEAD": true
+  },
+  "row18_dev": {
+   "blob_HEAD": "5b0de5fca140e4cb0ff6eb2c169e9ecb91749b74",
+   "blob_worktree": "5b0de5fca140e4cb0ff6eb2c169e9ecb91749b74",
+   "expected_hits": 1,
+   "file": "model_construction_helpers.py",
+   "hits_as_expected": true,
+   "lines": [
+    1866
+   ],
+   "needle": "return (m.pg_adn[s_m, s_o, p] - m.expected_interface_pf_p[p]",
+   "tracked": true,
+   "worktree_equals_HEAD": true
+  },
+  "row18_price": {
+   "blob_HEAD": "5b0de5fca140e4cb0ff6eb2c169e9ecb91749b74",
+   "blob_worktree": "5b0de5fca140e4cb0ff6eb2c169e9ecb91749b74",
+   "expected_hits": 1,
+   "file": "model_construction_helpers.py",
+   "hits_as_expected": true,
+   "lines": [
+    1957
+   ],
+   "needle": "pibar = expected_market_price(network, p)",
+   "tracked": true,
+   "worktree_equals_HEAD": true
+  },
+  "soc_final": {
+   "blob_HEAD": "5b0de5fca140e4cb0ff6eb2c169e9ecb91749b74",
+   "blob_worktree": "5b0de5fca140e4cb0ff6eb2c169e9ecb91749b74",
+   "expected_hits": 1,
+   "file": "model_construction_helpers.py",
+   "hits_as_expected": true,
+   "lines": [
+    987
+   ],
+   "needle": "final_soc = m.shared_es_e_rated_fixed[e] * ENERGY_STORAGE_RELATIVE_INIT_SOC",
+   "tracked": true,
+   "worktree_equals_HEAD": true
+  },
+  "soc_init": {
+   "blob_HEAD": "5b0de5fca140e4cb0ff6eb2c169e9ecb91749b74",
+   "blob_worktree": "5b0de5fca140e4cb0ff6eb2c169e9ecb91749b74",
+   "expected_hits": 1,
+   "file": "model_construction_helpers.py",
+   "hits_as_expected": true,
+   "lines": [
+    973
+   ],
+   "needle": "soc_prev = m.shared_es_e_rated_fixed[e] * ENERGY_STORAGE_RELATIVE_INIT_SOC",
+   "tracked": true,
+   "worktree_equals_HEAD": true
+  },
+  "soc_slack_bound": {
+   "blob_HEAD": "5b0de5fca140e4cb0ff6eb2c169e9ecb91749b74",
+   "blob_worktree": "5b0de5fca140e4cb0ff6eb2c169e9ecb91749b74",
+   "expected_hits": 1,
+   "file": "model_construction_helpers.py",
+   "hits_as_expected": true,
+   "lines": [
+    1166
+   ],
+   "needle": "slack_ub = 0.0 if inactive else e_capacity * ESS_DAY_BALANCE_SLACK_FRACTION + EQUALITY_TOLERANCE",
+   "tracked": true,
+   "worktree_equals_HEAD": true
+  },
+  "soc_slack_fraction": {
+   "blob_HEAD": "5b0de5fca140e4cb0ff6eb2c169e9ecb91749b74",
+   "blob_worktree": "5b0de5fca140e4cb0ff6eb2c169e9ecb91749b74",
+   "expected_hits": 1,
+   "file": "model_construction_helpers.py",
+   "hits_as_expected": true,
+   "lines": [
+    410
+   ],
+   "needle": "ESS_DAY_BALANCE_SLACK_FRACTION = 0.05",
+   "tracked": true,
+   "worktree_equals_HEAD": true
+  },
+  "soh_chain": {
+   "blob_HEAD": "ff4162c2348a5b075d225bd3f2d63a57dae0508e",
+   "blob_worktree": "ff4162c2348a5b075d225bd3f2d63a57dae0508e",
+   "expected_hits": 1,
+   "file": "shared_energy_storage_data.py",
+   "hits_as_expected": true,
+   "lines": [
+    724
+   ],
+   "needle": "== prev_soh * pe.exp(-model.es_D_per_unit[y_inv, y]) * (phi_cal ** num_years))",
+   "tracked": true,
+   "worktree_equals_HEAD": true
+  },
+  "srp1_nmarket": {
+   "blob_HEAD": "9a6d7373c8335777c14c24c05e18d43e2fe45d0b",
+   "blob_worktree": "9a6d7373c8335777c14c24c05e18d43e2fe45d0b",
+   "expected_hits": 1,
+   "file": "data/SRP1/SRP1.json",
+   "hits_as_expected": true,
+   "lines": [
+    17
+   ],
+   "needle": "\"NumMarketScenarios\": 1",
+   "tracked": true,
+   "worktree_equals_HEAD": true
+  },
+  "srp1_noper": {
+   "blob_HEAD": "9a6d7373c8335777c14c24c05e18d43e2fe45d0b",
+   "blob_worktree": "9a6d7373c8335777c14c24c05e18d43e2fe45d0b",
+   "expected_hits": 4,
+   "file": "data/SRP1/SRP1.json",
+   "hits_as_expected": true,
+   "lines": [
+    24,
+    32,
+    40,
+    49
+   ],
+   "needle": "\"num_operation_scenarios\": 1",
+   "tracked": true,
+   "worktree_equals_HEAD": true
+  },
+  "srp1_seed": {
+   "blob_HEAD": "9a6d7373c8335777c14c24c05e18d43e2fe45d0b",
+   "blob_worktree": "9a6d7373c8335777c14c24c05e18d43e2fe45d0b",
+   "expected_hits": 1,
+   "file": "data/SRP1/SRP1.json",
+   "hits_as_expected": true,
+   "lines": [
+    14
+   ],
+   "needle": "\"RandomSeed\": 2026",
+   "tracked": true,
+   "worktree_equals_HEAD": true
+  },
+  "srp1_years": {
+   "blob_HEAD": "9a6d7373c8335777c14c24c05e18d43e2fe45d0b",
+   "blob_worktree": "9a6d7373c8335777c14c24c05e18d43e2fe45d0b",
+   "expected_hits": 1,
+   "file": "data/SRP1/SRP1.json",
+   "hits_as_expected": true,
+   "lines": [
+    4
+   ],
+   "needle": "\"2030\": 5",
+   "tracked": true,
+   "worktree_equals_HEAD": true
+  },
+  "throughput": {
+   "blob_HEAD": "ff4162c2348a5b075d225bd3f2d63a57dae0508e",
+   "blob_worktree": "ff4162c2348a5b075d225bd3f2d63a57dae0508e",
+   "expected_hits": 1,
+   "file": "shared_energy_storage_data.py",
+   "hits_as_expected": true,
+   "lines": [
+    665
+   ],
+   "needle": "avg_ch_dch += (num_days / 365.00) * (eff_ch * pch * dt + pdch * dt / eff_dch)",
+   "tracked": true,
+   "worktree_equals_HEAD": true
+  },
+  "tn_loads_are_adn": {
+   "blob_HEAD": "5b0de5fca140e4cb0ff6eb2c169e9ecb91749b74",
+   "blob_worktree": "5b0de5fca140e4cb0ff6eb2c169e9ecb91749b74",
+   "expected_hits": 1,
+   "file": "model_construction_helpers.py",
+   "hits_as_expected": true,
+   "lines": [
+    2027
+   ],
+   "needle": "return network.is_transmission and load.bus in network.active_distribution_network_nodes",
+   "tracked": true,
+   "worktree_equals_HEAD": true
+  },
+  "tso_seed": {
+   "blob_HEAD": "050bc411715e630d46bbba8f12a28a81c5c70ad7",
+   "blob_worktree": "050bc411715e630d46bbba8f12a28a81c5c70ad7",
+   "expected_hits": 1,
+   "file": "shared_resources_planning.py",
+   "hits_as_expected": true,
+   "lines": [
+    8950
+   ],
+   "needle": "transmission_network.random_seed = derive_random_seed(",
+   "tracked": true,
+   "worktree_equals_HEAD": true
+  },
+  "x3_nmarket": {
+   "blob_HEAD": "dd8dd781cb48bb4e29f4d335aff34a2d67e535bd",
+   "blob_worktree": "dd8dd781cb48bb4e29f4d335aff34a2d67e535bd",
+   "expected_hits": 1,
+   "file": "data/SRP1/Results/P515S53/w89_3x3/instance/SRP1__s53_3x3.json",
+   "hits_as_expected": true,
+   "lines": [
+    19
+   ],
+   "needle": "\"NumMarketScenarios\": 3",
+   "tracked": true,
+   "worktree_equals_HEAD": true
+  },
+  "x3_noper": {
+   "blob_HEAD": "dd8dd781cb48bb4e29f4d335aff34a2d67e535bd",
+   "blob_worktree": "dd8dd781cb48bb4e29f4d335aff34a2d67e535bd",
+   "expected_hits": 4,
+   "file": "data/SRP1/Results/P515S53/w89_3x3/instance/SRP1__s53_3x3.json",
+   "hits_as_expected": true,
+   "lines": [
+    26,
+    34,
+    42,
+    51
+   ],
+   "needle": "\"num_operation_scenarios\": 3",
+   "tracked": true,
+   "worktree_equals_HEAD": true
+  },
+  "x3_seed": {
+   "blob_HEAD": "dd8dd781cb48bb4e29f4d335aff34a2d67e535bd",
+   "blob_worktree": "dd8dd781cb48bb4e29f4d335aff34a2d67e535bd",
+   "expected_hits": 1,
+   "file": "data/SRP1/Results/P515S53/w89_3x3/instance/SRP1__s53_3x3.json",
+   "hits_as_expected": true,
+   "lines": [
+    16
+   ],
+   "needle": "\"RandomSeed\": 2026",
+   "tracked": true,
+   "worktree_equals_HEAD": true
+  }
+ },
+ "confirm": {
+  "blockers": {
+   "blocked_calls": [],
+   "declared_stops": 2,
+   "stop_hits": 2,
+   "stop_target": "SharedEnergyStorageData.read_parameters_from_file",
+   "targets": [
+    "Network.build_model",
+    "NetworkData.build_model",
+    "SharedEnergyStorageData.build_subproblem",
+    "SharedEnergyStorageData.build_master_problem"
+   ]
+  },
+  "common_years": [
+   2025
+  ],
+  "comparison_2025": {
+   "arrays_per_family": {
+    "cost_energy_p": 4,
+    "cost_flex": 4,
+    "gen.pg": 96,
+    "gen.qg": 96,
+    "load.flex_p_down": 396,
+    "load.flex_p_up": 396,
+    "load.pd": 396,
+    "load.qd": 396
+   },
+   "block_seeds": [
+    {
+     "block": "TSO|2025|Spring",
+     "equal": true,
+     "n_oper_3x3": 3,
+     "n_oper_srp1": 1,
+     "pm_srp1": [
+      1.0
+     ],
+     "po_srp1": [
+      1.0
+     ],
+     "seed_3x3": 3321255724,
+     "seed_srp1": 3321255724
+    },
+    {
+     "block": "TSO|2025|Summer",
+     "equal": true,
+     "n_oper_3x3": 3,
+     "n_oper_srp1": 1,
+     "pm_srp1": [
+      1.0
+     ],
+     "po_srp1": [
+      1.0
+     ],
+     "seed_3x3": 2372237395,
+     "seed_srp1": 2372237395
+    },
+    {
+     "block": "TSO|2025|Autumn",
+     "equal": true,
+     "n_oper_3x3": 3,
+     "n_oper_srp1": 1,
+     "pm_srp1": [
+      1.0
+     ],
+     "po_srp1": [
+      1.0
+     ],
+     "seed_3x3": 81047456,
+     "seed_srp1": 81047456
+    },
+    {
+     "block": "TSO|2025|Winter",
+     "equal": true,
+     "n_oper_3x3": 3,
+     "n_oper_srp1": 1,
+     "pm_srp1": [
+      1.0
+     ],
+     "po_srp1": [
+      1.0
+     ],
+     "seed_3x3": 939186399,
+     "seed_srp1": 939186399
+    },
+    {
+     "block": "DSO5|2025|Spring",
+     "equal": true,
+     "n_oper_3x3": 3,
+     "n_oper_srp1": 1,
+     "pm_srp1": [
+      1.0
+     ],
+     "po_srp1": [
+      1.0
+     ],
+     "seed_3x3": 1317138891,
+     "seed_srp1": 1317138891
+    },
+    {
+     "block": "DSO5|2025|Summer",
+     "equal": true,
+     "n_oper_3x3": 3,
+     "n_oper_srp1": 1,
+     "pm_srp1": [
+      1.0
+     ],
+     "po_srp1": [
+      1.0
+     ],
+     "seed_3x3": 3505102024,
+     "seed_srp1": 3505102024
+    },
+    {
+     "block": "DSO5|2025|Autumn",
+     "equal": true,
+     "n_oper_3x3": 3,
+     "n_oper_srp1": 1,
+     "pm_srp1": [
+      1.0
+     ],
+     "po_srp1": [
+      1.0
+     ],
+     "seed_3x3": 4130197244,
+     "seed_srp1": 4130197244
+    },
+    {
+     "block": "DSO5|2025|Winter",
+     "equal": true,
+     "n_oper_3x3": 3,
+     "n_oper_srp1": 1,
+     "pm_srp1": [
+      1.0
+     ],
+     "po_srp1": [
+      1.0
+     ],
+     "seed_3x3": 2939345048,
+     "seed_srp1": 2939345048
+    },
+    {
+     "block": "DSO7|2025|Spring",
+     "equal": true,
+     "n_oper_3x3": 3,
+     "n_oper_srp1": 1,
+     "pm_srp1": [
+      1.0
+     ],
+     "po_srp1": [
+      1.0
+     ],
+     "seed_3x3": 676521148,
+     "seed_srp1": 676521148
+    },
+    {
+     "block": "DSO7|2025|Summer",
+     "equal": true,
+     "n_oper_3x3": 3,
+     "n_oper_srp1": 1,
+     "pm_srp1": [
+      1.0
+     ],
+     "po_srp1": [
+      1.0
+     ],
+     "seed_3x3": 1284722695,
+     "seed_srp1": 1284722695
+    },
+    {
+     "block": "DSO7|2025|Autumn",
+     "equal": true,
+     "n_oper_3x3": 3,
+     "n_oper_srp1": 1,
+     "pm_srp1": [
+      1.0
+     ],
+     "po_srp1": [
+      1.0
+     ],
+     "seed_3x3": 1562924242,
+     "seed_srp1": 1562924242
+    },
+    {
+     "block": "DSO7|2025|Winter",
+     "equal": true,
+     "n_oper_3x3": 3,
+     "n_oper_srp1": 1,
+     "pm_srp1": [
+      1.0
+     ],
+     "po_srp1": [
+      1.0
+     ],
+     "seed_3x3": 2903511323,
+     "seed_srp1": 2903511323
+    },
+    {
+     "block": "DSO9|2025|Spring",
+     "equal": true,
+     "n_oper_3x3": 3,
+     "n_oper_srp1": 1,
+     "pm_srp1": [
+      1.0
+     ],
+     "po_srp1": [
+      1.0
+     ],
+     "seed_3x3": 2731270319,
+     "seed_srp1": 2731270319
+    },
+    {
+     "block": "DSO9|2025|Summer",
+     "equal": true,
+     "n_oper_3x3": 3,
+     "n_oper_srp1": 1,
+     "pm_srp1": [
+      1.0
+     ],
+     "po_srp1": [
+      1.0
+     ],
+     "seed_3x3": 1145999740,
+     "seed_srp1": 1145999740
+    },
+    {
+     "block": "DSO9|2025|Autumn",
+     "equal": true,
+     "n_oper_3x3": 3,
+     "n_oper_srp1": 1,
+     "pm_srp1": [
+      1.0
+     ],
+     "po_srp1": [
+      1.0
+     ],
+     "seed_3x3": 3305449744,
+     "seed_srp1": 3305449744
+    },
+    {
+     "block": "DSO9|2025|Winter",
+     "equal": true,
+     "n_oper_3x3": 3,
+     "n_oper_srp1": 1,
+     "pm_srp1": [
+      1.0
+     ],
+     "po_srp1": [
+      1.0
+     ],
+     "seed_3x3": 4018435140,
+     "seed_srp1": 4018435140
+    }
+   ],
+   "block_seeds_equal_all": true,
+   "definition": "for every 2025 block of SRP1 (market prices per day; TSO + 3 DSOs x 4 days: per load pd, qd, flexibility up / down; per generator pg, qg): the single SRP1 row, as float64 bytes, against each of the three scenario rows of the same array in the 3 x 3 read",
+   "mismatches_first": [],
+   "n_arrays_compared": 1784,
+   "n_mismatches": 0,
+   "pattern_counts": {
+    "(True, False, False)": 1664,
+    "degenerate_rows_equal": 120
+   },
+   "srp1_equals_3x3_row1_everywhere": true
+  },
+  "note_other_years": "SRP1 2030 / 2035 are not years of the 3 x 3 instance (2025 / 2028 / 2031 / 2034 / 2037); each SRP1 block draws its own row with its year-dependent seed",
+  "reads": {
+   "s53_3x3": {
+    "case": "data/SRP1/Results/P515S53/w89_3x3/instance/SRP1__s53_3x3.json",
+    "case_sha256": "2a64e3c5bd06c30c8a015207f41b69257b001094cbd4b185a84394a6765c5871",
+    "market_scenario_checksum": "bf2869084ed4bf59f6b1b5bd875e7ef5b2a6e7c764f7a160ebb3bdb2684d7904",
+    "num_market_scenarios": 3,
+    "random_seed": 2026,
+    "scenario_checksum": "0248a5c8710bdbdf047523ca036bd2f4639546aebf18fd08391a64b340a3b193",
+    "stopped_at_declared_point": true,
+    "years": {
+     "2025": 3,
+     "2028": 3,
+     "2031": 3,
+     "2034": 3,
+     "2037": 3
+    }
+   },
+   "srp1": {
+    "case": "data/SRP1/SRP1.json",
+    "case_sha256": "61a794a7ce7a3fb983f2e92128eec446dd7dbb17ad75a3b3b1c5735f8bd4e4ef",
+    "market_scenario_checksum": "a8c958289c1e0bdaaf0df36ce56fb4da6734621bf34be7711babcae94d79d907",
+    "num_market_scenarios": 1,
+    "random_seed": 2026,
+    "scenario_checksum": "5a02b77ccbbbbbb869de92958a3851d095624711abc2dbfc0157466064410358",
+    "stopped_at_declared_point": true,
+    "years": {
+     "2025": 5,
+     "2030": 5,
+     "2035": 5
+    }
+   }
+  },
+  "srp1_years_without_3x3_counterpart": [
+   2030,
+   2035
+  ],
+  "years_3x3": [
+   2025,
+   2028,
+   2031,
+   2034,
+   2037
+  ],
+  "years_srp1": [
+   2025,
+   2030,
+   2035
+  ]
+ },
+ "diff": {
+  "hunks": [
+   "@@ -57,0 +58,2 @@",
+   "@@ -139,4 +141,9 @@",
+   "@@ -185,0 +193 @@",
+   "@@ -188,2 +196 @@",
+   "@@ -191 +198,3 @@",
+   "@@ -195 +204,6 @@",
+   "@@ -198 +212 @@",
+   "@@ -201,0 +216 @@",
+   "@@ -202,0 +218 @@",
+   "@@ -206,3 +222,2 @@",
+   "@@ -209,0 +225 @@",
+   "@@ -212,2 +228 @@",
+   "@@ -215 +230,3 @@",
+   "@@ -219 +236,6 @@",
+   "@@ -221,0 +244 @@",
+   "@@ -227,3 +250,3 @@",
+   "@@ -233 +256 @@",
+   "@@ -235 +258 @@",
+   "@@ -247 +270 @@",
+   "@@ -258 +281 @@",
+   "@@ -261,3 +284,2 @@",
+   "@@ -264,0 +287 @@",
+   "@@ -267,2 +290 @@",
+   "@@ -270 +292,3 @@",
+   "@@ -274 +298,6 @@",
+   "@@ -278 +307,3 @@",
+   "@@ -282 +313 @@",
+   "@@ -288,4 +319,4 @@",
+   "@@ -293 +324 @@",
+   "@@ -304 +335 @@",
+   "@@ -307 +337,0 @@",
+   "@@ -310,3 +340,2 @@",
+   "@@ -321 +350 @@",
+   "@@ -326 +355 @@",
+   "@@ -335 +364,3 @@",
+   "@@ -341 +372 @@",
+   "@@ -343 +374,2 @@",
+   "@@ -350 +382 @@",
+   "@@ -385 +417 @@",
+   "@@ -402 +434 @@",
+   "@@ -406,2 +438,11 @@",
+   "@@ -414,13 +455,4 @@",
+   "@@ -434 +466 @@",
+   "@@ -439,6 +471,2 @@",
+   "@@ -450 +478 @@",
+   "@@ -489,7 +517,3 @@",
+   "@@ -507 +531 @@",
+   "@@ -931 +955,8 @@",
+   "@@ -953 +984,4 @@",
+   "@@ -955,5 +989,3 @@",
+   "@@ -1561 +1593,2 @@",
+   "@@ -1741 +1774 @@"
+  ],
+  "hunks_in_old_1140_1563": [
+   "@@ -1561 +1593,2 @@"
+  ],
+  "n_hunks": 52,
+  "old_1140_1560_equals_new_1172_1592": true,
+  "prior_rows": [
+   {
+    "fragment": "Every reported number is a certified recourse evaluation or a difference between two of them",
+    "id": "flag_1148",
+    "new_lines_e10c104": [
+     1180
+    ],
+    "offset": 32,
+    "old_line_declared": 1148,
+    "old_lines_51a6fb5": [
+     1148
+    ],
+    "old_matches_declared": true,
+    "present_once_at_e10c104": true
+   },
+   {
+    "fragment": "the value of every evaluated 4~h configuration at node~7 exceeds its investment cost",
+    "id": "4.2-1",
+    "new_lines_e10c104": [
+     1316
+    ],
+    "offset": 32,
+    "old_line_declared": 1284,
+    "old_lines_51a6fb5": [
+     1284
+    ],
+    "old_matches_declared": true,
+    "present_once_at_e10c104": true
+   },
+   {
+    "fragment": "The returned plan is determinately better than seven of them and within resolution of the other six.",
+    "id": "4.2-2",
+    "new_lines_e10c104": [
+     1316
+    ],
+    "offset": 32,
+    "old_line_declared": 1284,
+    "old_lines_51a6fb5": [
+     1284
+    ],
+    "old_matches_declared": true,
+    "present_once_at_e10c104": true
+   },
+   {
+    "fragment": "The negative investment margin persists across the tested ageing calibrations and both floor settings.",
+    "id": "4.3-1",
+    "new_lines_e10c104": [
+     1392
+    ],
+    "offset": 32,
+    "old_line_declared": 1360,
+    "old_lines_51a6fb5": [
+     1360
+    ],
+    "old_matches_declared": true,
+    "present_once_at_e10c104": true
+   },
+   {
+    "fragment": "The planning search again returned the plan without shared storage",
+    "id": "4.5-1",
+    "new_lines_e10c104": [
+     1439
+    ],
+    "offset": 32,
+    "old_line_declared": 1407,
+    "old_lines_51a6fb5": [
+     1407
+    ],
+    "old_matches_declared": true,
+    "present_once_at_e10c104": true
+   },
+   {
+    "fragment": "so a higher rate lowers the value of the unit, from 277.1~k\\euro{} undiscounted to 203.4~k\\euro{} at 8\\,\\%. The unit does not pay at any rate between 0 and 8\\,\\%:",
+    "id": "4.6-1",
+    "new_lines_e10c104": [
+     1499
+    ],
+    "offset": 32,
+    "old_line_declared": 1467,
+    "old_lines_51a6fb5": [
+     1467
+    ],
+    "old_matches_declared": true,
+    "present_once_at_e10c104": true
+   },
+   {
+    "fragment": "Across the 60 pairwise comparisons reported in this section, applying the salvage credit changes no sign. It changes two verdicts: the investment-year comparison above",
+    "id": "4.6-2",
+    "new_lines_e10c104": [
+     1520
+    ],
+    "offset": 32,
+    "old_line_declared": 1488,
+    "old_lines_51a6fb5": [
+     1488
+    ],
+    "old_matches_declared": true,
+    "present_once_at_e10c104": true
+   },
+   {
+    "fragment": "each evaluation is certified by an explicit stopping rule",
+    "id": "C-1",
+    "new_lines_e10c104": [
+     1581
+    ],
+    "offset": 32,
+    "old_line_declared": 1549,
+    "old_lines_51a6fb5": [
+     1549
+    ],
+    "old_matches_declared": true,
+    "present_once_at_e10c104": true
+   },
+   {
+    "fragment": "every other evaluated plan, from 0.5 to 5~MWh and at one or two nodes, also loses determinately",
+    "id": "C-2",
+    "new_lines_e10c104": [
+     1585
+    ],
+    "offset": 32,
+    "old_line_declared": 1553,
+    "old_lines_51a6fb5": [
+     1553
+    ],
+    "old_matches_declared": true,
+    "present_once_at_e10c104": true
+   },
+   {
+    "fragment": "the value of shared storage cannot be assessed apart from its ageing or from the coordination of the operators who share it",
+    "id": "C-3",
+    "new_lines_e10c104": [
+     1589
+    ],
+    "offset": 32,
+    "old_line_declared": 1557,
+    "old_lines_51a6fb5": [
+     1557
+    ],
+    "old_matches_declared": true,
+    "present_once_at_e10c104": true
+   },
+   {
+    "fragment": "All fourteen admissible unit neighbours of this plan were evaluated, and none reduced the total discounted cost beyond the search resolution.",
+    "id": "item_a",
+    "new_lines_e10c104": [
+     1208
+    ],
+    "offset": 32,
+    "old_line_declared": 1176,
+    "old_lines_51a6fb5": [
+     1176
+    ],
+    "old_matches_declared": true,
+    "present_once_at_e10c104": true
+   },
+   {
+    "fragment": "only seventeen of its sixty-one admissible unit neighbours were evaluated",
+    "id": "item_b",
+    "new_lines_e10c104": [
+     1316
+    ],
+    "offset": 32,
+    "old_line_declared": 1284,
+    "old_lines_51a6fb5": [
+     1284
+    ],
+    "old_matches_declared": true,
+    "present_once_at_e10c104": true
+   }
+  ]
+ },
+ "finished_utc": "2026-10-14T14:22:14.069631+00:00",
+ "guards": {
+  "pickle": {
+   "load": 0,
+   "loads": 0
+  },
+  "solve_profile_guard": {
+   "counts": {
+    "blocked_exec": 0,
+    "blocked_solve": 0,
+    "permitted_exec": 0,
+    "permitted_solve": 0
+   },
+   "label": "P5.15 W177b-2' checks (never solves)",
+   "verify_0_failures": []
+  }
+ },
+ "identity": {
+  "case_3x3_sha256_matches": true,
+  "clone_head": "e10c104",
+  "clone_head_matches_declared": true,
+  "clone_tex_dirty": [],
+  "clone_tex_unmodified": true,
+  "frozen_sha256_matches": true,
+  "letter_equals_manuscript_review_v2": true,
+  "letter_sha256": "bc270fe2cf4b44f7e9547e17ccd85ecd94b56e8f99dd717486d9cf863c20a642",
+  "letter_sha256_matches_declared": true,
+  "main_tex_lines": 2345,
+  "main_tex_lines_match_declared": true,
+  "main_tex_sha256": "1b532035abc65a7f8a08cea6304ac14fcd4ec2e6da553b9a1f250a0b09b5ba1b",
+  "main_tex_sha256_matches_declared": true,
+  "old_main_tex_sha256": "61fe630cc427d622a855e127f33f96d4be1a7362fe23552b87d2d54318a39346",
+  "old_main_tex_sha256_matches": true,
+  "prior_checks_sha256_matches": true,
+  "srp1_case_sha256_matches": true
+ },
+ "integrity": {
+  "case_3x3_sha256_matches": true,
+  "clone_head_matches_declared": true,
+  "clone_tex_unmodified": true,
+  "every_cited_file_equals_HEAD": true,
+  "every_code_citation_as_expected": true,
+  "every_letter_fragment_found_once": true,
+  "every_main_fragment_found_once": true,
+  "every_prior_row_old_line_as_declared": true,
+  "frozen_sha256_matches": true,
+  "frozen_unchanged_at_end": true,
+  "letter_equals_manuscript_review_v2": true,
+  "letter_sha256_matches_declared": true,
+  "main_tex_lines_match_declared": true,
+  "main_tex_sha256_matches_declared": true,
+  "main_tex_unchanged_at_end": true,
+  "no_model_construction_call": true,
+  "no_record_read_error": true,
+  "no_tracked_file_changed": true,
+  "old_main_tex_sha256_matches": true,
+  "prior_checks_sha256_matches": true,
+  "reads_stopped_at_declared_point": true,
+  "srp1_case_sha256_matches": true
+ },
+ "letter": {
+  "fragments": [
+   {
+    "found_once": true,
+    "fragment": "coordinated TSO--DSO recourse under an explicit stopping and certification rule",
+    "id": "open_each_candidate",
+    "lines": [
+     43
+    ]
+   },
+   {
+    "found_once": true,
+    "fragment": "as does every other plan",
+    "id": "open_every_other",
+    "lines": [
+     48
+    ]
+   },
+   {
+    "found_once": true,
+    "fragment": "at the baseline calibration the value is measured to be affine in storage size with a slope below cost",
+    "id": "open_affine",
+    "lines": [
+     58
+    ]
+   },
+   {
+    "found_once": true,
+    "fragment": "provided that this affinity holds under it, which we state as an assumption (Section~4.8)",
+    "id": "open_assumption",
+    "lines": [
+     58
+    ]
+   },
+   {
+    "found_once": true,
+    "fragment": "could not be evaluated under the certification rule within the memory available and is stated as future work",
+    "id": "open_5x5",
+    "lines": [
+     58
+    ]
+   },
+   {
+    "found_once": true,
+    "fragment": "a marginal or Shapley-type allocation is identified as future work",
+    "id": "open_shapley",
+    "lines": [
+     58
+    ]
+   },
+   {
+    "found_once": true,
+    "fragment": "the abstract names the chemistry",
+    "id": "r12_chem",
+    "lines": [
+     77
+    ]
+   },
+   {
+    "found_once": true,
+    "fragment": "the planning conclusion is unchanged",
+    "id": "r12_conclusion",
+    "lines": [
+     78
+    ]
+   },
+   {
+    "found_once": true,
+    "fragment": "and the abstract now states it",
+    "id": "r12_abstract_size",
+    "lines": [
+     79
+    ]
+   },
+   {
+    "found_once": true,
+    "fragment": "a marginal allocation is listed as future work (Section~5)",
+    "id": "r12_marginal",
+    "lines": [
+     82
+    ]
+   },
+   {
+    "found_once": true,
+    "fragment": "(Section~2.3.4, last paragraph, and Section~4.8)",
+    "id": "r12_attr_where",
+    "lines": [
+     82
+    ]
+   },
+   {
+    "found_once": true,
+    "fragment": "the introduction now states which of these sources of uncertainty are represented in this work",
+    "id": "r14_intro",
+    "lines": [
+     97
+    ]
+   },
+   {
+    "found_once": true,
+    "fragment": "The per-year operating costs do not depend on the rate; only the present-value weights do, which is why the sensitivity is exact at a fixed plan.",
+    "id": "r14_exact",
+    "lines": [
+     97
+    ]
+   },
+   {
+    "found_once": true,
+    "fragment": "was redrawn as two panels",
+    "id": "r15_two_panels",
+    "lines": [
+     102
+    ]
+   },
+   {
+    "found_once": true,
+    "fragment": "or, for the evaluations behind the reported comparisons, when the certification rule of Section~2.2.7",
+    "id": "r22_stop",
+    "lines": [
+     125
+    ]
+   },
+   {
+    "found_once": true,
+    "fragment": "48 blocks",
+    "id": "r22_blocks",
+    "lines": [
+     125
+    ]
+   },
+   {
+    "found_once": true,
+    "fragment": "every candidate evaluated in this study was feasible",
+    "id": "r23_feasible",
+    "lines": [
+     137
+    ]
+   },
+   {
+    "found_once": true,
+    "fragment": "what it certifies is each evaluation (Section~2.2.7), and every planning statement in the paper is a pairwise comparison of certified evaluations with a stated determinacy threshold",
+    "id": "r23_certifies",
+    "lines": [
+     137
+    ]
+   },
+   {
+    "found_once": true,
+    "fragment": "the limitations section explains the mechanism behind most of them",
+    "id": "r25_most",
+    "lines": [
+     161
+    ]
+   },
+   {
+    "found_once": true,
+    "fragment": "frozen once the residuals first pass",
+    "id": "r25_freeze",
+    "lines": [
+     156
+    ]
+   },
+   {
+    "found_once": true,
+    "fragment": "no parameter was adjusted in",
+    "id": "r25_noadjust",
+    "lines": [
+     165
+    ]
+   },
+   {
+    "found_once": true,
+    "fragment": "$\\le 0.9\\,\\tau$ on continued cells",
+    "id": "r25_post",
+    "lines": [
+     159
+    ]
+   },
+   {
+    "found_once": true,
+    "fragment": "(Section~4.7 and Appendix~E)",
+    "id": "r25_appE",
+    "lines": [
+     160
+    ]
+   },
+   {
+    "found_once": true,
+    "fragment": "It changes no sign in the 60 reported comparisons and two verdicts",
+    "id": "r31_sixty",
+    "lines": [
+     221
+    ]
+   },
+   {
+    "found_once": true,
+    "fragment": "the full claims table of Appendix~E",
+    "id": "r31_appE",
+    "lines": [
+     220
+    ]
+   },
+   {
+    "found_once": true,
+    "fragment": "$\\tau = \\delta_R V/4$ with $\\delta_R = 0.07$ of the single-scenario storage value",
+    "id": "r32_tau",
+    "lines": [
+     231
+    ]
+   },
+   {
+    "found_once": true,
+    "fragment": "each results figure of the revision is discussed by",
+    "id": "r32_fig",
+    "lines": [
+     233
+    ]
+   },
+   {
+    "found_once": true,
+    "fragment": "so no state of charge is needed there and none appears",
+    "id": "r33_no_soc",
+    "lines": [
+     241
+    ]
+   },
+   {
+    "found_once": true,
+    "fragment": "its deviation from the DSO's own expected import being charged at a premium on the hour's expected market price",
+    "id": "r33_premium",
+    "lines": [
+     241
+    ]
+   },
+   {
+    "found_once": true,
+    "fragment": "closes there up to a penalised slack bounded by a small fraction of the available energy",
+    "id": "r33_closure",
+    "lines": [
+     241
+    ]
+   },
+   {
+    "found_once": true,
+    "fragment": "into the available energy of that year and the next",
+    "id": "r33_chain",
+    "lines": [
+     241
+    ]
+   },
+   {
+    "found_once": true,
+    "fragment": "this is stated as an inference, the search was not rerun per calibration (Section~4.8)",
+    "id": "r36_inference",
+    "lines": [
+     264
+    ]
+   },
+   {
+    "found_once": true,
+    "fragment": "one discount factor per representative year applied to",
+    "id": "r37_discount",
+    "lines": [
+     272
+    ]
+   },
+   {
+    "found_once": true,
+    "fragment": "discounted from their installation year (Section~2.2.1)",
+    "id": "r37_inv",
+    "lines": [
+     274
+    ]
+   },
+   {
+    "found_once": true,
+    "fragment": "representative-day-weighted annual",
+    "id": "r37_annual",
+    "lines": [
+     274
+    ]
+   },
+   {
+    "found_once": true,
+    "fragment": "a transmission network that has no load of its own",
+    "id": "fc_noload",
+    "lines": [
+     283
+    ]
+   },
+   {
+    "found_once": true,
+    "fragment": "49 predictions, with outcomes",
+    "id": "fc_49",
+    "lines": [
+     286
+    ]
+   },
+   {
+    "found_once": true,
+    "fragment": "single machine, single thread, bitwise replays, solver and library versions",
+    "id": "fc_single_thread",
+    "lines": [
+     285
+    ]
+   }
+  ],
+  "reference_unit_lines": [
+   47,
+   58,
+   97,
+   256,
+   263,
+   264
+  ],
+  "smallest_lines": []
+ },
+ "main_fragments": {
+  "appendix_E_first_line": 2218,
+  "fragments": [
+   {
+    "found_once": true,
+    "fragment": "The 15-year planning horizon is represented in two instances.",
+    "id": "s3_two_instances",
+    "lines": [
+     957
+    ]
+   },
+   {
+    "found_once": true,
+    "fragment": "uses three representative years, 2025, 2030 and 2035, each standing for a five-year block, with one market scenario and one operation scenario of load and RES generation",
+    "id": "s3_single",
+    "lines": [
+     957
+    ]
+   },
+   {
+    "found_once": true,
+    "fragment": "uses five representative years, 2025, 2028, 2031, 2034 and 2037, each standing for a three-year block, with three market scenarios and three operation scenarios, nine operating scenarios per representative day",
+    "id": "s3_multi",
+    "lines": [
+     957
+    ]
+   },
+   {
+    "found_once": true,
+    "fragment": "In both instances each year is represented by four seasonal representative days.",
+    "id": "s3_days",
+    "lines": [
+     957
+    ]
+   },
+   {
+    "found_once": true,
+    "fragment": "the case-study search considers a single installation year common to all selected shared ESSs, with one capacity installation per node",
+    "id": "s3_single_year",
+    "lines": [
+     961
+    ]
+   },
+   {
+    "found_once": true,
+    "fragment": "Three ESS investment-cost trajectories are considered at the planning level (Subsection~3.1).",
+    "id": "s3_trajectories",
+    "lines": [
+     985
+    ]
+   },
+   {
+    "found_once": true,
+    "fragment": "The total investment budget for shared ESS deployment is set to 1~M\\euro, and the maximum installable energy capacity at each interface node is limited to 5.00~MWh.",
+    "id": "s3_budget",
+    "lines": [
+     987
+    ]
+   },
+   {
+    "found_once": true,
+    "fragment": "Every candidate plan is compared with the plan without shared storage",
+    "id": "s3_two_comparisons",
+    "lines": [
+     990
+    ]
+   },
+   {
+    "found_once": true,
+    "fragment": "and to an allocation of the degradation of a shared asset among the operators that use it.",
+    "id": "concl_future_alloc",
+    "lines": [
+     1594
+    ]
+   },
+   {
+    "found_once": true,
+    "fragment": "the plan without storage is the search's answer under each of them, but this was not run",
+    "id": "lim_inference",
+    "lines": [
+     1571
+    ]
+   },
+   {
+    "found_once": true,
+    "fragment": "the attribution of degradation to the transmission and distribution operators is not unique",
+    "id": "lim_attribution",
+    "lines": [
+     1571
+    ]
+   },
+   {
+    "found_once": true,
+    "fragment": "cannot be uniquely attributed to either the TSO or the DSOs",
+    "id": "s234_attribution",
+    "lines": [
+     908
+    ]
+   },
+   {
+    "found_once": true,
+    "fragment": "Evaluations continued past a certificate under this rule moved by at most $0.9\\tau$.",
+    "id": "s47_post_cert",
+    "lines": [
+     1533
+    ]
+   },
+   {
+    "found_once": true,
+    "fragment": "5 refused by the gap clause, 2 reset by residual lapses, 3 failed by the growth test",
+    "id": "s47_causes",
+    "lines": [
+     1533
+    ]
+   },
+   {
+    "found_once": true,
+    "fragment": "under one frozen configuration",
+    "id": "s36_frozen_cfg",
+    "lines": [
+     1158
+    ]
+   },
+   {
+    "found_once": true,
+    "fragment": "all $\\rho_g$ are frozen from the cycle after the first residual pass",
+    "id": "a3_freeze",
+    "lines": [
+     1743
+    ]
+   },
+   {
+    "found_once": true,
+    "fragment": "The single-scenario evaluations of this paper were stopped by the certification rule",
+    "id": "a_prodexit_scope",
+    "lines": [
+     1751
+    ]
+   },
+   {
+    "found_once": true,
+    "fragment": "These evaluations were stopped by the production exit of the coordination procedure",
+    "id": "s45_prodexit",
+    "lines": [
+     1439
+    ]
+   },
+   {
+    "found_once": true,
+    "fragment": "Uncertainty is represented through alternative trajectories of future ESS investment costs and operational scenarios of load, RES generation and market prices.",
+    "id": "intro_uncertainty",
+    "lines": [
+     375
+    ]
+   },
+   {
+    "found_once": true,
+    "fragment": "The reference unit, comprising 0.25~MVA a",
+    "id": "res_ref_unit_def",
+    "lines": [
+     1209
+    ]
+   },
+   {
+    "found_once": true,
+    "fragment": "the value of the reference unit in force when the rule was adopted",
+    "id": "s36_ref_unit_first",
+    "lines": [
+     1162
+    ]
+   },
+   {
+    "found_once": true,
+    "fragment": "\\label{tab:cs3_results_summary_years_days}",
+    "id": "appE_submitted_table",
+    "lines": [
+     2327
+    ]
+   },
+   {
+    "found_once": true,
+    "fragment": "IEEE 9-bus TN and ADN connection points.",
+    "id": "test_system_panel_a",
+    "lines": [
+     973
+    ]
+   },
+   {
+    "found_once": true,
+    "fragment": "IEEE 33-bus topology adopted for each ADN.",
+    "id": "test_system_panel_b",
+    "lines": [
+     977
+    ]
+   },
+   {
+    "found_once": true,
+    "fragment": "\\begin{graphicalabstract}",
+    "id": "graphical_abstract",
+    "lines": [
+     157
+    ]
+   }
+  ],
+  "presence_probes": [
+   {
+    "any_present": false,
+    "hits": {
+     "LFP": [],
+     "Li-ion": [],
+     "lithium": []
+    },
+    "id": "abstract_lithium",
+    "needles": [
+     "lithium",
+     "Li-ion",
+     "LFP"
+    ],
+    "scope": "abstract"
+   },
+   {
+    "any_present": false,
+    "hits": {
+     "infrastructure retirement": [],
+     "outside the present formulation": [],
+     "policy change": []
+    },
+    "id": "intro_out_of_scope",
+    "needles": [
+     "outside the present formulation",
+     "infrastructure retirement",
+     "policy change"
+    ],
+    "scope": "all"
+   },
+   {
+    "any_present": false,
+    "hits": {
+     "25 operating": [],
+     "5 \\times 5": [],
+     "5\\times5": [],
+     "five market": [],
+     "twenty-five": []
+    },
+    "id": "five_by_five_future",
+    "needles": [
+     "5 \\times 5",
+     "5\\times5",
+     "twenty-five",
+     "five market",
+     "25 operating"
+    ],
+    "scope": "all"
+   },
+   {
+    "any_present": false,
+    "hits": {
+     "representative-day weighted": [],
+     "representative-day-weighted": []
+    },
+    "id": "rep_day_weighted",
+    "needles": [
+     "representative-day-weighted",
+     "representative-day weighted"
+    ],
+    "scope": "all"
+   },
+   {
+    "any_present": false,
+    "hits": {
+     "claims": [],
+     "consensus gap": [],
+     "settling slack": []
+    },
+    "id": "appE_claims_table",
+    "needles": [
+     "claims",
+     "consensus gap",
+     "settling slack"
+    ],
+    "scope": "appendixE"
+   }
+  ]
+ },
+ "objective_convention": "Q = gross_operational_cost, settlement EXCLUDED (the frozen primary, Addendum 58 Ruling 3); Q_net = net_operational_recourse = Q - terminal salvage credit (beside); Q_cc = Q + t_sum (first-order consensus-consistent diagnostic, REPORT-ONLY); value = Q(0) - Q(x); F = Q + I; EUR",
+ "post_git_status_tracked_changes": [],
+ "prefix_records": {
+  "w22_correspondence_finding": {
+   "finding": "Same year ([2025]): paper profiles identical (max|diff| <= 1e-09) to SRP1 per day: {'2025/Spring': ['s1'], '2025/Summer': ['s1'], '2025/Autumn': ['s1'], '2025/Winter': ['s1']}. Growth-normalized, SRP1 (year/day) identical to paper (year/scenario): {'2025/Spring': ['2025/s1', '2031/s3'], '2025/Summer': ['2025/s1'], '2025/Autumn': ['2025/s1'], '2025/Winter': ['2025/s1'], '2030/Spring': ['2025/s1', '2031/s3'], '2030/Summer': [], '2030/Autumn': [], '2030/Winter': [], '2035/Spring': [], '2035/Summer': [], '2035/Autumn': [], '2035/Winter': []}. Scenario labels are per (year, day) block draws, not trajectories across blocks (each block selects its rows with its own seed).",
+   "path": "data/SRP1/Results/P515S47/market_spreads/market_spreads.json",
+   "sample_prefix_market_n1_of_n5": {
+    "Autumn": true,
+    "Spring": true,
+    "Summer": true,
+    "Winter": true
+   },
+   "sha256": "e0806dc14feb77ffc62895308e82822910eb0c54dd008859040b79064b143957"
+  },
+  "w52_prefix_check": {
+   "market_prefix_true": 40,
+   "market_seeds_checked": 40,
+   "operation_prefix_true": 10620,
+   "operation_seeds_checked": 10620,
+   "path": "data/SRP1/Results/P515S53/selection_3x3/selection_3x3.json",
+   "sha256": "291be9c798d7914a8d5962871aa266e3e88d9a6f01ef8cbaa9a69101605cdd12"
+  },
+  "w89_instance_record": {
+   "n_arrays_compared": 9040,
+   "n_mismatches": 0,
+   "path": "data/SRP1/Results/P515S53/w89_3x3/instance/instance_record.json",
+   "prefix_draw": {
+    "R_recorded": 0.9331,
+    "market": [
+     1,
+     2,
+     3
+    ],
+    "operation": [
+     1,
+     2,
+     3
+    ]
+   },
+   "prefix_holds": true,
+   "realized_subset_market": [
+    1,
+    2,
+    3
+   ],
+   "realized_subset_operation": [
+    1,
+    2,
+    3
+   ],
+   "sha256": "a47dc358edc1a69279ddd1965a587efc2906eb6c770d336cb9c8f34227f910ea"
+  }
+ },
+ "record_statuses": {
+  "barrier_counts": {
+   "False | None": 253,
+   "True | cap reached without certification": 8,
+   "True | settling rule: uncertified (stopped_by 'cap')": 13
+  },
+  "n_read_errors": 0,
+  "n_records": 274,
+  "records_with_infeasib_in_status_or_barrier_cause": [],
+  "status_counts": {
+   "certified": 234,
+   "not_certified": 22,
+   "stub": 18
+  }
+ },
+ "repo_head_at_run": "dbe927139d0cf6edc88434be20c9d4b10c228aca",
+ "stage": "P5.15 W177b-2' (Addendum 76 Part 2 at e10c104 + Amendment: Section 3 opening CONFIRM, letter claims)",
+ "started_utc": "2026-10-14T14:21:43.850460+00:00",
+ "uncertified": {
+  "export_T2_rows": 61,
+  "export_T2_status_cause": {
+   "certified | ": 49,
+   "uncertified | gap clause": 7,
+   "uncertified | growth test": 2,
+   "uncertified | growth test after five TSO recoveries (not the dual dead zone; Addendum 65)": 1,
+   "uncertified | lapse reset": 2
+  },
+  "export_T9_rows": [
+   {
+    "cause": "gap clause",
+    "cell": "h_f9eae48f",
+    "pf_primal last": "0.027",
+    "t_sum at cap (k\u20ac)": "-2.5"
+   },
+   {
+    "cause": "gap clause",
+    "cell": "j_5f3cccb4",
+    "pf_primal last": "0.682",
+    "t_sum at cap (k\u20ac)": "-8.8"
+   },
+   {
+    "cause": "gap clause",
+    "cell": "l_45aa25a6",
+    "pf_primal last": "0.690",
+    "t_sum at cap (k\u20ac)": "-9.2"
+   },
+   {
+    "cause": "gap clause",
+    "cell": "l_7c455554",
+    "pf_primal last": "0.690",
+    "t_sum at cap (k\u20ac)": "-9.2"
+   },
+   {
+    "cause": "gap clause",
+    "cell": "l_b2251bc5",
+    "pf_primal last": "0.700",
+    "t_sum at cap (k\u20ac)": "-9.4"
+   },
+   {
+    "cause": "lapse reset",
+    "cell": "l_0ee93aca",
+    "pf_primal last": "0.692",
+    "t_sum at cap (k\u20ac)": "-9.3"
+   },
+   {
+    "cause": "growth test after five TSO recoveries (not the dual dead zone; Addendum 65)",
+    "cell": "d_36686489",
+    "pf_primal last": "0.012",
+    "t_sum at cap (k\u20ac)": "1.1"
+   },
+   {
+    "cause": "gap clause",
+    "cell": "ref:5ca4f86c",
+    "pf_primal last": "",
+    "t_sum at cap (k\u20ac)": "-9.2"
+   },
+   {
+    "cause": "gap clause",
+    "cell": "ref:e28de4ac",
+    "pf_primal last": "",
+    "t_sum at cap (k\u20ac)": "-9.3"
+   }
+  ],
+  "frozen_cells_uncertified_labels": {
+   "objective settled; interface-consensus gap unresolved (degenerate dual)": 7,
+   "uncertified at the cap": 5
+  }
+ },
+ "w153_discount_method": {
+  "path": "data/SRP1/Results/P515S53/w153_step5_rows/w153_discount_row.json",
+  "sha256": "e6fc02edc2fa63c25dfc3dc6e99f9e1dc3d652558ad1905b09dc88d8b18457a7"
+ }
+}
