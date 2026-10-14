@@ -10,9 +10,13 @@
 Clone pulled at Overleaf `51a6fb5` (≥ `6ff8f3c`; main.tex 2,312 lines, sha256 61fe630c…; `51a6fb5` deletes 19 lines of main.tex against `6ff8f3c`). Predictions (expert): Part 1 zero MISMATCH in numbers carried from the tables, derived numbers hold; Part 2 (c) is two verdict changes, nothing contradicted; Part 3 no undefined reference, at least one nomenclature symbol defined but unused after the moves.
 
 - [x] **Part 4** — W160 export copied unchanged to `manuscript_review/export_W160/` (`829e92e5`; MANIFEST.md with per-file sha256)
-- [ ] **▶ W177b-1** — Part 0 (W177a findings still carried) + Part 1 (every number of abstract, highlights, §4.1–4.7, table notes, captions, Conclusions; derived numbers with arithmetic)
-- [ ] **▶ W177b-2** — Part 2 (every claim of §4.1–4.6 and the Conclusions, W174b rating; named items (a)–(e))
-- [ ] **▶ W177b-3** — Part 3 (Appendix A Certification Rule vs v6 and §2.2.7; settings vs specs; A.2 f_E and constraints vs code; nomenclature; fig3_ageing_arms_v2 vs T8; refs/labels)
+- [x] **W177b-1 @51a6fb5** — `404e9181` / `128b99e6`: table cells 0 MISMATCH; derived 16/16; 1 MISMATCH (§4.6 'two verdicts')
+- [x] **W177b-2 @51a6fb5** — `99fdfabb`: H 2 (§4.5 no 3 × 3 search; §4.6 one verdict among 60) / M 4 / L 3
+- [x] **W177b-3 @51a6fb5** — `be583a4d`: rule complete (M 2); settings 40/41; 0 undefined refs; π_t, s unused
+- [x] **Amendment to Addendum 76** (`f4f58d10`): §3 opening M1; letter v2 (Parts 1–2 + numbered pointers). Overleaf moved to **`e10c104`** (17 commits after `51a6fb5`; ≥ `bfc5009`); letter in Overleaf = `manuscript_review/response_to_reviewers_v2.tex`
+- [ ] **▶ W177b-1′ @e10c104** — Parts 0–1 re-run + letter numbers + §3 opening numbers
+- [ ] **▶ W177b-2′ @e10c104** — Part 2 re-run (prior rows' status) + letter claims + §3 opening CONFIRM (scenario of the single-scenario instance; prefix draw [1,2,3] × [1,2,3])
+- [ ] **▶ W177b-3′ @e10c104** — Part 3 re-run + letter numbered pointers vs static numbering + change-log checklist items (fig:investment_lattice, fourteen-neighbour sentence, §3.6 run settings, refs to subsubsec:certification)
 - [ ] Planner review; report `P5_15_W177B_REPORT.md`; commit; push
 
 ## Addendum 73 order — W177 (zero-solve)
