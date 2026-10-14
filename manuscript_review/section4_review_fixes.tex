@@ -1,0 +1,89 @@
+% =====================================================================================================================
+% SECTION 4 (author's text, Overleaf 3ad9ae8) -- expert check against the frozen facts, 2026-10-13
+% Every number in 4.1-4.5 was checked against the placeholder fact lists and the tables: all correct.
+% Fixes below, in the order they appear in the file.
+% =====================================================================================================================
+
+% ---------------------------------------------------------------------------------------------------------------------
+% F1 -- Highlighting. The new paragraphs of 4.1-4.6 are in black; every other revised passage of the manuscript is in
+%       \textcolor{blue}{...}. Wrap each new paragraph (4.1: 2, 4.2: 3, 4.3: 2, 4.4: 3, 4.5: 2) the same way.
+
+% ---------------------------------------------------------------------------------------------------------------------
+% F2 -- 4.2, first paragraph: "$e^{}$" appears twice (empty superscript); it must be "$e^{*}$".
+
+% ---------------------------------------------------------------------------------------------------------------------
+% F3 -- 4.4, first paragraph: "defined in Section~\ref{sec:case_studies}" -> "defined in Section~\ref{sec:case_settings}"
+%       (the arrangements are defined in 3.6, not in the Section 3 opening).
+
+% ---------------------------------------------------------------------------------------------------------------------
+% F4 -- 4.4, last paragraph: "the storage investments evaluated in Subsection~\ref{subsec:res_breakeven} do not recover
+%       their investment costs" -> "...evaluated in Subsection~\ref{subsec:res_baseline}...". In 4.2 they DO recover
+%       them (1.75x and 2x the flexibility price).
+
+% ---------------------------------------------------------------------------------------------------------------------
+% F5 -- 4.4, second paragraph: append after "...rather than with the wholesale price alone." The clause on a
+%       locational signal was part of the accepted mechanism sentence; it answers the obvious objection that a price
+%       signal would do the same.
+    A locational real-time signal computed by the TSO could deliver the same benefit, but computing that signal is itself a form of coordination; a static rule with exposure to the wholesale price does not deliver it.
+
+% ---------------------------------------------------------------------------------------------------------------------
+% F6 -- 4.5 / 4.6. The two multi-scenario paragraphs were pasted under 4.6 ("Investment Year and Discount Rate"),
+%       replacing that subsection's placeholder, and 4.5 holds only the blue production-exit sentence.
+%       (a) In 4.5, replace the blue block "The multi-scenario instance was evaluated under the production exit ..."
+%           by the two paragraphs below (your text; changes: Table reference res_year_ladder -> res_multiscenario;
+%           "operational stopping criterion" -> "production exit", the name used in 3.6 and Appendix A; "7--9,\%" ->
+%           "7--9\,\%"). The table can stay where it is, after the second paragraph or between them.
+%       (b) Delete both paragraphs from 4.6 (the one before Table res_year_ladder and the one after Table res_discount).
+%       (c) Optional, for the same reason: in Table res_multiscenario, "at operational stopping (cycle 72)" ->
+%           "at the production exit (cycle 72)", twice.
+\textcolor{blue}{
+    The multi-scenario instance combines three market scenarios with three load and renewable-generation scenarios over five representative three-year blocks. The planning search again returned the plan without shared storage, $\boldsymbol{x}=\boldsymbol{0}$. As reported in Table~\ref{tab:res_multiscenario}, the reference unit provides an estimated discounted operational value of 236.7~k\euro{} against an investment cost of 318.0~k\euro{}. The resulting shortfall of 81.3~k\euro{} is 4.52 times the reported resolution of 18.0~k\euro{}, supporting the same economic conclusion as the single-scenario instance. These evaluations were stopped by the production exit of the coordination procedure (ten consecutive cycles passing the residual test with every local solve successful; Section~\ref{sec:case_settings}), rather than by the certification rule of Subsection~\ref{subsubsec:certification}.
+}
+
+\textcolor{blue}{
+    To assess the sensitivity of the storage-value comparison to this stopping criterion, the evaluation of the plan without storage was continued beyond its stopping point. A subsequent fit to the objective trajectory estimated a further cost decrease of 6.2~k\euro{}. Accounting for this decrease changes the ratio of the reference unit's multi-scenario value to its settled single-scenario value from 0.934 to 0.909. The resulting range therefore reflects the estimated remaining movement of the no-storage evaluation; it is not a certification interval based on $\tau$. The ratio of 0.9331 estimated before the run from the mean-profile price spread lies within this range. Overall, the reference unit's estimated value is approximately 7--9\,\% lower in the multi-scenario instance, while its investment margin remains negative.
+    This difference characterises the two evaluated instances and should not be attributed solely to scenario uncertainty, since their temporal discretisation and commitment-cost treatment also differ.
+}
+
+% ---------------------------------------------------------------------------------------------------------------------
+% F7 -- 4.6 "Investment Year and Discount Rate": new text, from the placeholder facts (now deleted from the file).
+%       Paragraph 1 goes before Table res_year_ladder, paragraph 2 between the two tables, paragraph 3 after
+%       Table res_discount. Optional retitle: "Investment Year, Discount Rate and Salvage".
+\textcolor{blue}{
+    Deferring the reference unit does not make it pay (Table~\ref{tab:res_year_ladder}). Against the plan without storage, the unit installed in 2030 increases the total cost by 68.5~k\euro{} and the unit installed in 2035 by 111.0~k\euro{}. A later installation shortens the part of the horizon over which the unit operates, while the terminal salvage credit returns its remaining calendar life: 11.8~k\euro{} for the 2030 unit and 56.5~k\euro{} for the 2035 unit. The gross difference between the two deferral years, 42.5~k\euro{}, is determinate (3.46 times its threshold of 12.3~k\euro{}); net of salvage it is $-2.3$~k\euro{}, within resolution (0.19 times). In this instance, the choice between deferral years is therefore decided by the salvage convention rather than by operation; net of salvage, the unit costs 54.5--64.4~k\euro{} more than the plan without storage in every investment year.
+}
+% [CONFIRM — W177] G rows of the frozen T1 (not tabulated in the paper until Appendix E is rebuilt): node 7,
+% 0.5 MVA / 1 MWh, 2030 99.0 gross / 88.3 net, 2035 139.7 / 85.1; 0.5 MVA / 2 MWh, 2030 137.4 / 113.1, 2035 223.6 / 109.1,
+% all determinate -- "the same holds for larger plans" can be added once Appendix E carries these rows.
+
+\textcolor{blue}{
+    The conclusion is also robust to the discount rate (Table~\ref{tab:res_discount}). The investment is paid in 2025 and the operational savings accrue over the horizon, so a higher rate lowers the value of the unit, from 277.1~k\euro{} undiscounted to 203.4~k\euro{} at 8\,\%. The unit does not pay at any rate between 0 and 8\,\%: its shortfall grows from 40.8~k\euro{} (2.57 times its threshold) to 114.6~k\euro{} (8.78 times), and every difference is determinate. Even without discounting, its operational savings over the horizon fall short of its investment cost.
+}
+
+\textcolor{blue}{
+    Across the 60 pairwise comparisons reported in this section, applying the salvage credit changes no sign. It changes two verdicts: the investment-year comparison above, and the comparison of the plan returned at twice the base flexibility price with one of its unit neighbours, which is within the uncertified bar in gross terms (0.95 times) and determinate net of salvage (1.22 times), in the returned plan's favour.
+}
+% [CONFIRM — W177] W153 totals: "0 sign changes in 60 claims"; neighbour y2030__n5_p0.25_e0.5__n7_p1_e3, 0.95x gross /
+% 1.22x net. NOTE for the Planner: the 4.6 placeholder said "one verdict changes category" (the F2 neighbour); the letter
+% (R3.1) says two (F2 neighbour + investment year). 2035-2030 is 3.46x gross and 0.19x net, so it also changes category
+% if it is among the 60 -- confirm the count and whether the investment-year pair is one of the 60.
+
+% ---------------------------------------------------------------------------------------------------------------------
+% F8 -- Figure fig:res_ageing (fig3_ageing_arms.pdf) labels its rows with code names (no_ageing, C2, C2_calfade,
+%       C3_unit, C3_midblock, C4) and shows "never" for no ageing where the table says "n/a". Replacement:
+%       fig3_ageing_arms_v2.pdf (same numbers, same style, rows named and ordered as in Table res_ageing). Upload it to
+%       Overleaf and change the \includegraphics file name; the caption stays as is.
+
+% =====================================================================================================================
+% OPTIONAL -- additions that the frozen facts support; your call.
+% =====================================================================================================================
+% O1 -- 4.2, after "...below the baseline energy cost of 253{,}880~\euro/MWh.": a reader-friendly version of the margin
+%       (derived: 1 - 192.56/253.88 = 24.2 %, 1 - 171.31/253.88 = 32.5 %):
+    In relative terms, the energy cost would have to fall by 24--33\,\% for the 4~h configurations at node~7 to pay.
+% O2 -- 4.2, two-node plan: after "...and none was determinately better than the returned plan." add
+    The returned plan is determinately better than seven of them and within resolution of the other six.
+%       (frozen: of the thirteen, better than twelve -- seven determinately, five within resolution -- and within
+%       resolution of the thirteenth; "better" is not used for within-resolution differences, which the paper calls ties)
+% O3 -- 4.3, end of the first paragraph: the aged calibrations are not all resolved from one another, which says the
+%       finding rests on ageing being represented rather than on one calibration:
+    The aged calibrations are not all resolved from one another: the baseline and the 50\,\% retention calibration differ by 9.3~k\euro{}, within resolution, whereas cycling only and the datasheet calibration are determinately better than the latter (by 42.1 and 28.5~k\euro{}).
