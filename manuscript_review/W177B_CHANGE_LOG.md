@@ -105,6 +105,23 @@ Kept by the expert during the author's whole-document read (2026-10-09 onward); 
   full stop → restored, shortened; M3 Conclusions: attribution of degradation added to future work (letter says so).
 - Addendum 76 amended: §3 opening and the letter join W177(b).
 
+- W177(b) received (`4bef2b2c`, audited Overleaf `e10c104`; Part 4 export `829e92e5` under `export_W160/`). Author
+  continued editing to `9a697cc` (§2.1–2.3 rewritten, Q* vs Q, nomenclature longtables, abstract, introduction).
+  Expert rulings: Addendum 77. Fixes: `w177b_fixes.tex` (A1–A20 from the report; B1–B4 new in §2.1–2.3: duplicate
+  eq:available_power/capacity labels, eq:cohort_rated dropped → undefined ref in A.2, wrong ref to the energy product,
+  completion-cap stop missing). Letter v3 (`response_to_reviewers_v3.tex`): one salvage verdict; 3×3 wording; R1.4
+  re-weighting; R3.7 no annual figures; equation numbers from a compile with all fixes applied.
+
+- Reconciled with Overleaf `54246b7` (author had applied A1, A2 counters, A2a, A2b): remaining A2c–A20 and B1–B4
+  applied by the expert to a copy of `54246b7` → `main_54246b7_fixed.tex` (+ `main_54246b7_fixes.diff`, 25 hunks);
+  also the Table 13 note for A9 and the two resolved [CONFIRM] comments removed. Compile: 0 errors, 0 undefined,
+  0 duplicate labels; numbering identical to the letter v3's.
+
+- Overleaf `820ee1b` (author applied the fixes with line-break refinements; B4 declined; letter not yet replaced).
+  Four slips → `main_820ee1b_fixed.tex` (4 hunks): §2.3.2 heading restored; label `eq:cohort_rated` on the S equation,
+  `eq:cohort_rated_energy` on the E one; nomenclature row C^Op_{y,d,m,o} restored beside C^Op_s; §2.3.4 sentence
+  completed. Letter v4 = v3 with equation numbers +1 after (13) (split equation). Compile: 0 errors, 0 undefined.
+
 ## For the Planner to check
 - Conclusions v2: every number against §4 and the frozen tables.
 - §4.6 salvage count: placeholder said "one verdict changes category" (F2 neighbour), letter R3.1 says two (F2 neighbour

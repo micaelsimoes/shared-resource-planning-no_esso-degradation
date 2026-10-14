@@ -3369,3 +3369,65 @@ single-scenario instance carries and on the 3 × 3 prefix draw [1,2,3] × [1,2,3
 equation numbers from a compile of `6ff8f3c`; "reference unit" throughout; R3.6's "optimal plan" claim aligned with
 §4.8; R1.5 and R3.2 per Addendum 75) — run Part 1 and Part 2 on it as on the manuscript, and check every numbered
 pointer (Section/Table/Figure/Eq./Appendix) against the compiled manuscript at the HEAD you audit.
+
+# Addendum 77 — rulings on W177(b) (`4bef2b2c`, Overleaf `e10c104`); the manuscript at `9a697cc`; W178 order (2026-10-14)
+
+**Received.** Parts 0–4 at `e10c104` and the export (`829e92e5`). The number check is clean where it matters: 0 MISMATCH
+in 388 table tokens, 16/16 derived numbers; no undefined reference at `e10c104`. The failures are wording, and the
+report is right on each. **Expert's error, recorded:** "the search returned x = 0" at the 3 × 3 instance came from the
+expert's own slot facts (Addendum 73, after Addendum 64's "x = 0 optimal" for the 3 × 3); no search was run there.
+
+**Rulings (the report's decisions 1–6).** The manuscript and letter edits are in
+`manuscript_review/w177b_fixes.tex` (A1–A20, B1–B4) and the letter `manuscript_review/response_to_reviewers_v4.tex` (v3 with the equation numbers of Overleaf `820ee1b` + the four follow-up fixes below).
+1. **Salvage count — one verdict among the 60; accepted as recommended.** §4.6 and R3.1 now say: no sign and one verdict
+   among the 60 (the F2 neighbour, 0.95× → 1.22×); the 2035 − 2030 pair is outside the 60 and changes verdict (and
+   sign) net of salvage (A13; letter L1).
+2. **3 × 3 "planning search" — accepted.** §4.5: "The planning search was not repeated at this instance; the reference
+   unit was evaluated against the plan without storage" (A11); R1.2 says the reference unit again loses (L2).
+3. **Letter text absent from the paper — the paper is completed, not the letter trimmed, except one.** Abstract names
+   lithium-ion (A1); the introduction's uncertainty-scope sentence is restored (A3; the author had dropped it again);
+   §2.2.7 opens with "no convergence guarantee" (A4); §4.8 states that the 5 × 5 set could not be evaluated within the
+   memory available (A15). R3.7/3.8 is trimmed instead: the paper has no annual figures (L4). The two Appendix E
+   pointers stand; the expert composes Appendix E from the export now.
+4. **R1.4 "exact" — accepted.** Letter and §4.6: the 0/5/8 % rows re-weight the 2 % evaluations; exact at x = 0,
+   first-order at the unit plan (A12, L3).
+5. **Table numbers — accepted:** `\addtocounter{table}{-1}` after each nomenclature `longtable` (A2). Verified by a
+   compile in the expert's container (demo graphics): Tables 1–15 restored. **Equations did move** after `e10c104`
+   (the author added eight numbered equations in §2.2–2.3); the letter v4 carries the numbers of the author's version
+   (`820ee1b`, cohort-rating equation split in two) with the follow-up fixes: Q(x) (13); cohort ratings (14)–(15);
+   SOC block (20)–(28), SOC limits (22); agent and degradation (29)–(35); salvage (38)–(39).
+6. **Carried rows.** Salvage equation: the coded form is printed (energy cost only; health factor normalised above
+   SoH^Min), with a where-clause saying the converter is not credited (A8). A-1: three cases named in A.3, A.5 and §3.6
+   (fresh; the three reference continuations; re-runs on an earlier record, replayed to k₀ and capped at N_old + 100)
+   (A6, A17, A19). A-3: the gap is priced at the expected wholesale price, block-weighted, on active power (A4, A19).
+   Conclusions: the three M rows rewritten (A16). §4 preamble: status wording (A7). J 4 MWh row at its uncertified bar
+   per Addendum 64 ruling 4 (A9). 0.50-floor row: value 258.5 k€ (= 318.0 − 59.5); AE and EFC/day from W155 (W178 c).
+   Nomenclature: π_t row → π̄_t; s dropped from the t_sum row; C^Op_s added (A2). Stale pointers to A.5/A.8 (A11, A14,
+   A18, A20). Cache-seeding clause rewritten from the report's (2b) reading (A6). Hard-coded "Subsection 3.1" (A5).
+
+**New since `e10c104` (expert's static and compiled check of `9a697cc`).** The author rewrote §2.1–2.3. Found:
+§2.3.2 printed `eq:available_power`/`eq:available_capacity` twice (duplicate labels) and dropped `eq:cohort_rated`,
+leaving S^{Rated,Unit}/E^{Rated,Unit} undefined and Appendix A.2's `\eqref{eq:cohort_rated}` undefined (B1, a clean
+§2.3.2); §2.3.4 cited `eq:cohort_available` for the energy product (B2); §2.1 omitted the completion-cap stop (B3);
+the leader–follower sentence is commented again (B4, optional). With all fixes applied the expert's compile has 0
+errors, 0 undefined references, 0 duplicate labels.
+
+**W178 order (zero solves), when the author has applied the fixes; state the Overleaf HEAD.**
+- (a) **§2.1–§2.3 as rewritten after `e10c104`, against the code:** the active-cohort set and rated sums (eqs. 7–9),
+  the cohort and available-capacity equations (14–19), the network storage block (20–28: net power, SoC recursion,
+  limits, initial state, closure and its slack bound, the P^Ch + P^Dch ≤ S^Av limit, the capability circle,
+  complementarity), and the agent's constraint list in A.2; every statement rated as in W174b.
+- (b) **A1–A20 and B1–B4 applied as worded;** Part 1 and Part 2 re-scored at the new HEAD on the rows they address.
+- (c) **The 0.50-floor row:** AE and EFC/day (PV-weighted, as the other rows) from the W155 record.
+- (d) **The letter v4** (`response_to_reviewers_v4.tex`, once in Overleaf): Parts 1–2 on its changed replies (R1.2,
+  R1.4, R2.2, R2.5, R2.10–12, R3.1, R3.7–8) and its numbered pointers against the manuscript (static is fine; the
+  expert's compile numbers are in ruling 5).
+**Follow-up at Overleaf `820ee1b` (author's application of the fixes, 2026-10-14 evening).** Applied with
+stylistic line breaks; B4 declined (author's choice). Four slips fixed by the expert on a copy
+(`manuscript_review/main_820ee1b_fixed.tex`, 4 hunks): the §2.3.2 heading had been dropped (sections 2.3.2–2.3.5
+renumbered, against the letter); the cohort-rating equation was split in two with the label on the second (the A.2
+range would have skipped S); the nomenclature lost the daily C^Op_{y,d,m,o} row when C^Op_s was added; §2.3.4's
+"nonlinear rows" sentence was cut mid-way. Audit W178 at the HEAD that carries these.
+**Report** `P5_15_W178_REPORT.md`. **Predictions:** (a) the network storage block and the cohort equations hold
+against code; at most one M row, in the wording of the closure slack or of the power limit; (b) all applied; (d)
+0 pointer MISMATCH.
