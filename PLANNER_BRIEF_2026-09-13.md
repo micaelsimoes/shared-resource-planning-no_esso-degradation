@@ -3314,3 +3314,49 @@ differs between its panels rather than by restating its values." Letter line num
 **Next.** The author writes 4.1–4.6 into the slots and edits 4.9; W177(a) on the frame is pending; W177(b) when §4 is
 complete. The expert composes Appendix E (T1, T2, T5, T6 all starts, T9, T10, the full certification statistics and
 the scorecard) from the export for round 3 meanwhile.
+
+# Addendum 76 — W177(b) order: the revised manuscript at Overleaf `6ff8f3c`; Appendix E inputs (2026-10-14)
+
+**What changed since Addendum 75.** The author's whole-document read (2026-10-09 to 10-13) moved and rewrote text in
+§2, §3.6, §4, §5 and Appendix A; every change, with the expert's corrections and the Overleaf commits, is listed in
+`manuscript_review/W177B_CHANGE_LOG.md` (committed with this addendum). In short: §2.2.7 keeps the recourse value,
+a concise certification paragraph, resolution and determinacy, and the full rule v6 moved to new Appendix A subsection
+"Certification Rule" (`app:admm_updated_certification`); §3.6 is "Planning and Certification Settings", and the solver
+and ADMM settings moved to Appendix A "Solver and Coordination Settings" (`app:admm_updated_settings`); §2.3.5 (agent
+objective) moved to Appendix A.2 as f_E; the author wrote §4.1–4.6 (the `[AUTHOR — write]` slots are gone; their fact
+lists are in Overleaf git at `cfee0ba`); conclusions, highlights and keywords were rewritten; Fig. `fig:res_ageing` was
+redrawn by the expert from Table `tab:res_ageing` (`fig3_ageing_arms_v2.pdf`; the W165 PDF carried code labels).
+
+**W177(b) order (zero solves).** Pull the Overleaf clone; work at `6ff8f3c` or later and state the HEAD.
+- **Part 0 — W177(a).** If `P5_15_ADDENDUM73_W177A_REPORT.md` exists, attach it and say which of its findings the
+  pasted text still carries. If it does not, run its checks now: the `[CONFIRM — W177]` comments are in `main.tex`
+  (salvage equation (a)–(d); F2 plan; the 16 cycles; the 41 evaluations; W153 line; G rows).
+- **Part 1 — numbers.** Every number in the abstract, the highlights, §4.1–4.7 prose, table notes and captions, and
+  the Conclusions against the frozen JSON (`590088fe`) and the W160 export; MATCH / MISMATCH / DERIVED (with the
+  arithmetic) per number. Derived numbers to check explicitly: "24–33 %" (§4.2), "7–9 %" (§4.5 and conclusions),
+  "90.9 M€", "654 M€" if present, the O3 differences 9.3 / 42.1 / 28.5 k€ (§4.3).
+- **Part 2 — statements.** Every claim of §4.1–4.6 and the Conclusions rated as in W174b. Name in the report:
+  (a) §4.1 "all fourteen admissible unit neighbours … none reduced the total discounted cost beyond the search
+  resolution"; (b) §4.2 the F2 plan: 17 of 61 neighbours evaluated, 13 re-evaluated, "determinately better than seven
+  and within resolution of the other six"; (c) §4.6 salvage: the number of comparisons (60), sign changes (0) and
+  verdict changes — the slot said one (the F2 neighbour), the letter (R3.1) says two (F2 neighbour and 2035 − 2030):
+  give the count and the list, and whether the 2035 − 2030 pair is among the 60; (d) Conclusions "every other
+  evaluated plan, from 0.5 to 5 MWh and at one or two nodes, also loses determinately"; (e) §4.5 "the planning search
+  again returned x = 0" at the multi-scenario instance.
+- **Part 3 — structure.** (a) Appendix A "Certification Rule": every clause of rule v6 present (holds and k₀ reset,
+  C1–C5, the noise/counting sentence, M1–M3, uncertified form), and the §2.2.7 summary consistent with it;
+  (b) Appendix A "Solver and Coordination Settings" + §3.6: every setting of the frozen configuration present once,
+  values against the campaign specs; (c) Appendix A.2: f_E (`eq:esso_objective`: slack penalty + ε^E throughput) and
+  the agent's constraint list against the code; (d) nomenclature: symbols defined but unused, used but undefined;
+  (e) `fig3_ageing_arms_v2.pdf`: values, thresholds and binding years against T8, and the row mapping (C2 = cycling
+  only, C2_calfade = baseline, C3_unit = retention 50 %, C3_midblock = retention 50 % mid-block, C4 = datasheet
+  8,000 cycles); (f) undefined references and duplicate labels (the expert's static check found none at `6ff8f3c`).
+- **Part 4 — Appendix E inputs.** Appendix E still holds the submitted results table, while §2.2.7 promises the
+  bands, gaps and slacks of every evaluation used in a reported comparison. Commit and push the W160 export (the
+  `.tex`/CSV of T1, T2, T5, T6 with all starts, T9, T10, the full certification statistics and the scorecard, and the
+  export README) under `manuscript_review/export_W160/`, unchanged, with the frozen-JSON hash in the README. The expert
+  composes Appendix E from it (Addendum 73); §4.7's clause breakdown and reproducibility paragraph move there with it.
+
+**Report** as `P5_15_W177B_REPORT.md`; commit and push it with the export. **Predictions.** Part 1: zero MISMATCH in
+numbers carried from the tables; the derived numbers hold. Part 2: (c) is two verdict changes; nothing contradicted.
+Part 3: no undefined reference; at least one nomenclature symbol defined but no longer used after the moves.
