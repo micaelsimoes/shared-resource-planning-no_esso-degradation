@@ -9,10 +9,11 @@
 
 Clone pulled at Overleaf **`9fd19e7`** (after `820ee1b`; main.tex 2,511 lines, sha256 d18384d6…, byte-identical to `manuscript_review/main_820ee1b_fixed.tex`; letter = `response_to_reviewers_v4.tex`). Predictions (expert): (a) network storage block and cohort equations hold against code, at most one M row (closure-slack or power-limit wording); (b) all applied; (d) 0 pointer MISMATCH.
 
-- [ ] **▶ W178a** — (a) §2.1–§2.3 as rewritten after `e10c104` vs code (eqs. 7–9, 14–19, 20–28; A.2 constraint list), W174b rating
-- [ ] **▶ W178b** — (b) A1–A20, B1–B4 applied as worded; Parts 1–2 re-scored on the rows they address; (c) 0.50-floor row AE / EFC/day from W155
-- [ ] **▶ W178c** — (d) letter v4: Parts 1–2 on the changed replies; numbered pointers vs static numbering (and the expert's compile numbers, ruling 5)
-- [ ] Planner review; report `P5_15_W178_REPORT.md`; commit; push
+- [x] **W178a** — `4504ebf4`: 42 changed statements, 40 match, L 2 (eq. 7 years vs blocks; l. 755 'Appendix Appendix') — prediction HELD
+- [x] **W178b** — `e894e109` / `2542da63`: A1–A20, B1–B3 applied (20 verbatim, 3 with changes), B4 declined — HELD; 0 MISMATCH over addressed lines; salvage reproduces yl cells exactly; (c) AE 0.778, EFC/day 1.08 (not yet printed)
+- [x] **W178c** — `45e04e6c` / `6680e6f4`: pointers 151 match / 5 submitted / 0 mismatch — HELD; R3.7/8 M 2 (annual figures; day weights unstated)
+- [x] Planner review; report `P5_15_W178_REPORT.md` (Decisions 1–5; all predictions held)
+- [ ] **▶ Stand by** for the next round (Appendix E composition; author's final-pass items); push from PyCharm
 
 ## Addendum 76 order — W177(b) (zero-solve)
 
