@@ -1,0 +1,51 @@
+W178a checks: manuscript 9fd19e7 sha256 d18384d6 lines 2511 identical-to-review-copy True
+scope {'section2': [403, 1098], 'appendix_A2': [1792, 1866]}; changed hunks: section2 44 (228 lines), appendix_A2 0 (0 lines)
+section 2 numbered equations (number, labels, lines, changed):
+  (1) ['eq:two_stage_planning_problem'] l. 419-427 changed=False
+  (2) ['eq:investment_cost_generic'] l. 432-437 changed=False
+  (3) ['eq:operational_recourse_function'] l. 442-457 changed=False
+  (4) ['eq:master_objective'] l. 540-543 changed=True
+  (5) ['eq:master_objective_value'] l. 547-550 changed=True
+  (6) [] l. 558-565 changed=False
+  (7) ['eq:active_cohorts'] l. 584-594 changed=True
+  (8) ['eq:master_rated_s'] l. 604-610 changed=True
+  (9) [] l. 614-619 changed=True
+  (10) [] l. 638-640 changed=False
+  (11) ['eq:master_duration'] l. 654-659 changed=False
+  (12) ['eq:master_budget'] l. 677-680 changed=True
+  (13) ['eq:recourse_value'] l. 707-714 changed=False
+  (14) ['eq:cohort_rated'] l. 774-777 changed=True
+  (15) ['eq:cohort_rated_energy'] l. 781-784 changed=True
+  (16) ['eq:cohort_available'] l. 792-795 changed=True
+  (17) ['eq:cohort_available_energy'] l. 799-802 changed=True
+  (18) ['eq:available_power'] l. 810-813 changed=True
+  (19) ['eq:available_capacity'] l. 817-820 changed=True
+  (20) ['eq:storage_net_active_power'] l. 837-844 changed=True
+  (21) ['eq:soc_recursion'] l. 852-856 changed=False
+  (22) ['eq:soc_limits'] l. 869-874 changed=True
+  (23) ['eq:soc_initial'] l. 887-892 changed=True
+  (24) ['eq:soc_closure'] l. 900-906 changed=True
+  (25) ['eq:soc_closure_slack'] l. 914-918 changed=True
+  (26) ['eq:storage_active_power_limit'] l. 931-936 changed=True
+  (27) ['eq:converter_capability'] l. 944-949 changed=True
+  (28) ['eq:network_complementarity'] l. 959-962 changed=False
+  (29) ['eq:esso_net_power'] l. 975-979 changed=False
+  (30) ['eq:cohort_allocation'] l. 985-990 changed=False
+  (31) ['eq:cell_throughput'] l. 997-1006 changed=False
+  (32) ['eq:cycling_loss'] l. 1012-1017 changed=False
+  (33) ['eq:soh_chain'] l. 1024-1029 changed=False
+  (34) ['eq:soh_floor'] l. 1033-1036 changed=False
+  (35) ['eq:cycle_life_calibration'] l. 1042-1045 changed=False
+  (36) ['eq:commitment_deviation'] l. 1071-1075 changed=False
+  (37) ['eq:commitment_charge'] l. 1084-1088 changed=False
+expert numbers vs static: {"eq:recourse_value": {"expert": "13", "static": "13", "match": true}, "eq:cohort_rated": {"expert": "14", "static": "14", "match": true}, "eq:cohort_rated_energy": {"expert": "15", "static": "15", "match": true}, "eq:storage_net_active_power": {"expert": "20", "static": "20", "match": true}, "eq:soc_limits": {"expert": "22", "static": "22", "match": true}, "eq:network_complementarity": {"expert": "28", "static": "28", "match": true}, "eq:esso_net_power": {"expert": "29", "static": "29", "match": true}, "eq:cycle_life_calibration": {"expert": "35", "static": "35", "match": true}}
+labels 121 (121 distinct); duplicates []; undefined refs (whole document) []
+  section2: 49 refs, undefined [], duplicate labels defined here []
+  appendix_A2: 9 refs, undefined [], duplicate labels defined here []
+A.2 range ['eq:cohort_rated', 'eq:available_capacity']: ['14', '15', '16', '17', '18', '19'] [['eq:cohort_rated'], ['eq:cohort_rated_energy'], ['eq:cohort_available'], ['eq:cohort_available_energy'], ['eq:available_power'], ['eq:available_capacity']]
+A.2 range ['eq:esso_net_power', 'eq:soh_floor']: ['29', '30', '31', '32', '33', '34'] [['eq:esso_net_power'], ['eq:cohort_allocation'], ['eq:cell_throughput'], ['eq:cycling_loss'], ['eq:soh_chain'], ['eq:soh_floor']]
+code identity: 46 campaign results, 46 distinct heads, 0 changed; control {'head': '353e094b', 'last_line': ' 5 files changed, 1507 insertions(+), 84 deletions(-)'}
+anchors: 90 found
+active cohort sets identical: {'data/SRP1/SRP1.json': True, 'data/SRP1/Results/P515S53/w89_3x3/instance/SRP1__s53_3x3.json': True}
+guards: {'solve_profile_guard': {'label': 'P5.15 W178a section-2 checks (never solves)', 'counts': {'permitted_solve': 0, 'permitted_exec': 0, 'blocked_solve': 0, 'blocked_exec': 0}, 'verify_0_failures': []}, 'pickle_counts': {'load': 0, 'loads': 0}, 'production_modules_imported': []}
+output data/SRP1/Results/P515S53/w178a_section2/w178a_checks.json sha256 23891983a6abac8d7975349b7ddade4451e9f2bdb0f2b058d60fc21fec1a38a0
