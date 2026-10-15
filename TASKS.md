@@ -1,9 +1,18 @@
 # TASKS — current order
 
-**Authority:** `PLANNER_BRIEF_2026-09-13.md` Addendum 77 (W178 order); earlier orders below for record.
+**Authority:** `PLANNER_BRIEF_2026-09-13.md` Addendum 78 (W179 order); earlier orders below for record.
 **Objective convention on every value:** Q = certified `gross_operational_cost`, settlement excluded.
 **Updated at every transition; read first when resuming.**
 
+
+## Addendum 78 order — W179 (zero-solve)
+
+Clone pulled at Overleaf **`48099ab`** (main.tex 2,717 lines, sha256 28008ab0…, byte-identical to `manuscript_review/main_e926fb7_appE.tex`; letter 6ecd0ee7… = `response_to_reviewers_v6.tex`). Predictions (expert): (a) 0 MISMATCH in table entries, at most two of (i)–(ix) corrected, most likely (v) and (vi); (b) 0 pointer MISMATCH; (c) all W178 rows addressed close; (d) the six missing points have zero closure slack → 51/51; (e) §4.8 Scope needs "under the certification rule" or "at the search resolution".
+
+- [ ] **▶ W179a** — (a) Appendix E Tables E.20–E.24 and prose vs frozen JSON; interpretations (i)–(ix)
+- [ ] **▶ W179b** — (b) §4.6/§4.7/§4.8 and letter R2.2, R3.1, Further-changes bullets, letter v6 pointers; (c) G1–G12 + letter v5 re-score of W178 rows
+- [ ] **▶ W179c** — (d) closure slack at the six certified points W169 did not score; (e) §4.8 Scope and §2.2.7 Determinacy statements
+- [ ] Planner review; report `P5_15_W179_REPORT.md`; commit; push
 
 ## Addendum 77 order — W178 (zero-solve)
 
@@ -13,7 +22,7 @@ Clone pulled at Overleaf **`9fd19e7`** (after `820ee1b`; main.tex 2,511 lines, s
 - [x] **W178b** — `e894e109` / `2542da63`: A1–A20, B1–B3 applied (20 verbatim, 3 with changes), B4 declined — HELD; 0 MISMATCH over addressed lines; salvage reproduces yl cells exactly; (c) AE 0.778, EFC/day 1.08 (not yet printed)
 - [x] **W178c** — `45e04e6c` / `6680e6f4`: pointers 151 match / 5 submitted / 0 mismatch — HELD; R3.7/8 M 2 (annual figures; day weights unstated)
 - [x] Planner review; report `P5_15_W178_REPORT.md` (Decisions 1–5; all predictions held)
-- [ ] **▶ Stand by** for the next round (Appendix E composition; author's final-pass items); push from PyCharm
+- [x] Ruled (Addendum 78, `3e403572`): G1–G12 + letter v5 applied at `e926fb7`; Appendix E composed; letter v6
 
 ## Addendum 76 order — W177(b) (zero-solve)
 
