@@ -24,8 +24,11 @@ authority is `PLANNER_BRIEF_2026-09-13.md` with its Addenda 1–67**; it superse
 
 Authority: `PLANNER_BRIEF_2026-09-13.md` Addenda 52–78; `STEP6_ROUND1…4_CORRECTIONS.md`. Tables FROZEN: `frozen_step6_tables_v1_590088fe.json` (W160).
 Methods text: `export/paragraphs_v5.md` (Addendum 67). Expert's revision plan: `STEP6_REVISION_MAP.md`. Latest handoff:
-`P5_15_ADDENDUM72_ROUND4_REPORT.md` (W176, zero-solve; earlier rounds: Addendum 68–70 reports). Current order: `TASKS.md` (Addendum 78 section) — W179 done at Overleaf `48099ab` (`P5_15_W179_REPORT.md`);
-**stopped for review**.
+`P5_15_W179_REPORT.md` (W179 at Overleaf `48099ab`, zero-solve). Current order: `TASKS.md` (Addendum 79 section) — expert's
+round-6 rulings received 2026-10-15 (all six W179 decisions taken as recommended; row 16 kept as "superseded"); W180
+(zero-solve) ordered at the Overleaf HEAD carrying `main_48099ab_round6.tex` and letter v7. Overleaf is at `e5322f8`.
+**W180 is blocked on the author committing the round-6 delivery** (Addendum 79, `STEP6_ROUND6_CORRECTIONS.md`,
+`manuscript_review/` files).
 
 ## Manuscript facts established from code and case files (W164–W167)
 
@@ -60,6 +63,11 @@ Methods text: `export/paragraphs_v5.md` (Addendum 67). Expert's revision plan: `
 - **Manuscript state at Overleaf `8b76423`:** §2, §3.1, §3.5–3.6 and Appendix A closed for the revision (Addendum 71);
   0 number MISMATCH (W176b); no H/M row (W176a; 2 new L rows R4-1, R4-2); §4–§5 and Appendix E still the submitted text (559 submitted-version figures). Benchmark values
   are post consistency-pass (Addendum 49); LFP is not named in any input file.
+- **Round 6 (expert rulings on W179):** E.21 row 16 relabelled "superseded^s" (Rule "---"; not decided under v6),
+  §4.7 and §2.3.3 scoped to the certificates used in a reported comparison, with row 16's closure figure quoted; the
+  46-certificate count is unchanged. §2.3.3: the slacks are at the lower bound within the bound relaxation; at x = 0 the
+  closure row is not built. Appendix E wording fixed (E.3–E.6, intro); §4.8 Scope / §2.2.7 qualifiers; C-1, R14-2 reworded.
+  W169 erratum: the closure is in `ess_complementarity_penalties`, per cycle in `creep_diagnostic_per_cycle.jsonl`.
 - **Manuscript at Overleaf `48099ab` (W179):** Appendix E composed and 0 MISMATCH against the frozen tables (1,623
   entries); letter v6 pointers 0 mismatch. Open: E.21 row 16 (`pb_y2025_n5`, superseded W118 v2 certificate; not
   decided under v6; closure slack +5e-6 E^Av) contradicts §4.7 and §2.3.3 as worded; §2.2.7 Determinacy and §4.8

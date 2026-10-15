@@ -1,8 +1,21 @@
 # TASKS — current order
 
-**Authority:** `PLANNER_BRIEF_2026-09-13.md` Addendum 78 (W179 order); earlier orders below for record.
+**Authority:** expert round-6 rulings on W179 (Addendum 79, W180 order; received 2026-10-15, not yet in the brief); earlier orders below for record.
 **Objective convention on every value:** Q = certified `gross_operational_cost`, settlement excluded.
 **Updated at every transition; read first when resuming.**
+
+
+## Addendum 79 order — W180 (zero-solve)
+
+Rulings on W179 decisions 1–6 all taken as recommended. Row 16 kept, relabelled "superseded^s" (Rule "---"). §2.3.3, §4.7, §4.8, §2.2.7 scoped. C-1 and R14-2 reworded. Round 6 = `STEP6_ROUND6_CORRECTIONS.md`, `manuscript_review/main_48099ab_round6.tex` (+ `.diff`, 16 hunks), `response_to_reviewers_v7.tex` (+ `letter_v6_v7.diff`), patched `gen_appE.py` / `verify_appE.py`, and the regenerated `appendixE_evaluation_record.tex`. Overleaf fetched at **`e5322f8`** (after `48099ab`; main.tex 2,710 lines, sha256 b3282295…; carries `subsubsec:capacity`, 0 CONFIRM). Not yet verified against `main_48099ab_round6.tex`. Predictions (expert): (a) the regenerated block equals main.tex bitwise; 0 MISMATCH in 1,623 entries, exactly two changed (row 16 Status, Rule); all five prose sentences MATCH; (b) 0 further rows with an earlier-rule certificate and no v6 decision; (c) 0 pointer MISMATCH, all eight re-scored rows close, 0 CONFIRM, 0 prefixes; (d) §2.3.3 holds at 52 of 52 points.
+
+- [ ] **▶ Blocked on the author:** commit the round-6 delivery (Addendum 79 in the brief; `STEP6_ROUND6_CORRECTIONS.md`; the `manuscript_review/` files above). None of it is in the repository or on origin at `8a08309f`.
+- [ ] **W180a** — Appendix E regenerated (`gen_appE.py`, `verify_appE.py` at the HEAD); W179a entry check re-run to a new output path; E.3/E.4/E.5/E.6/intro sentences rated against §A.10 sources
+- [ ] **W180b** — row 16: no other E.21 "record" row with an earlier-rule certificate and no v6 decision
+- [ ] **W180c** — §A.1–A.9 and letter v7 verbatim; 165-pointer check; re-score C-1, R14-2, C47-1, C48-1, R22-b, FC-2c, G12 follow-on, A.3 prefix; 0 `[CONFIRM`, 0 `~\ref{app:` prefixes
+- [ ] **W180d** — §2.3.3 re-rated against W179c (50 + 2 T11 points; row 16 figure; x = 0 row not built)
+- [ ] Planner review; report `P5_15_W180_REPORT.md`; commit and push
+- [ ] Then (expert's order): `latexdiff` against `manuscript_submitted/`, cover letter, submission
 
 
 ## Addendum 78 order — W179 (zero-solve)
@@ -13,7 +26,7 @@ Clone pulled at Overleaf **`48099ab`** (main.tex 2,717 lines, sha256 28008ab0…
 - [x] **W179b** — `5b7ffcbc` / `8662ca72`: pointers 160/5/0 (HELD); W178 rows 18 closed, 2 narrowed L (C-1, R14-2) — (c) FAILED; prefix l. 1899
 - [x] **W179c** — `3994ac64`: closure 50/51 (row 16 pb_y2025_n5 positive) — (d) FAILED on count; (e) HELD; §2.2.7 needs a qualifier
 - [x] Planner review; report `P5_15_W179_REPORT.md` (Decisions 1–6)
-- [ ] **▶ Stopped for review** (three predictions failed, no fallback): expert on 1–5 (row 16 ruling first); author on 6; push from PyCharm
+- [x] Stopped for review → expert round-6 rulings received 2026-10-15 (Addendum 79 order above); push done (branch level with origin)
 
 ## Addendum 77 order — W178 (zero-solve)
 
