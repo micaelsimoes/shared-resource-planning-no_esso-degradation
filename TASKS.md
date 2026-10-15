@@ -9,10 +9,11 @@
 
 Clone pulled at Overleaf **`48099ab`** (main.tex 2,717 lines, sha256 28008ab0…, byte-identical to `manuscript_review/main_e926fb7_appE.tex`; letter 6ecd0ee7… = `response_to_reviewers_v6.tex`). Predictions (expert): (a) 0 MISMATCH in table entries, at most two of (i)–(ix) corrected, most likely (v) and (vi); (b) 0 pointer MISMATCH; (c) all W178 rows addressed close; (d) the six missing points have zero closure slack → 51/51; (e) §4.8 Scope needs "under the certification rule" or "at the search resolution".
 
-- [ ] **▶ W179a** — (a) Appendix E Tables E.20–E.24 and prose vs frozen JSON; interpretations (i)–(ix)
-- [ ] **▶ W179b** — (b) §4.6/§4.7/§4.8 and letter R2.2, R3.1, Further-changes bullets, letter v6 pointers; (c) G1–G12 + letter v5 re-score of W178 rows
-- [ ] **▶ W179c** — (d) closure slack at the six certified points W169 did not score; (e) §4.8 Scope and §2.2.7 Determinacy statements
-- [ ] Planner review; report `P5_15_W179_REPORT.md`; commit; push
+- [x] **W179a** — `dd74d033` / `522b5d26`: 1,623 entries, 0 MISMATCH (HELD); prose 3 MISMATCH (wording); (i)–(ix): 3 corrected (v, vii, viii) — FAILED
+- [x] **W179b** — `5b7ffcbc` / `8662ca72`: pointers 160/5/0 (HELD); W178 rows 18 closed, 2 narrowed L (C-1, R14-2) — (c) FAILED; prefix l. 1899
+- [x] **W179c** — `3994ac64`: closure 50/51 (row 16 pb_y2025_n5 positive) — (d) FAILED on count; (e) HELD; §2.2.7 needs a qualifier
+- [x] Planner review; report `P5_15_W179_REPORT.md` (Decisions 1–6)
+- [ ] **▶ Stopped for review** (three predictions failed, no fallback): expert on 1–5 (row 16 ruling first); author on 6; push from PyCharm
 
 ## Addendum 77 order — W178 (zero-solve)
 
