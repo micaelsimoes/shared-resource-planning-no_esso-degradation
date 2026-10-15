@@ -22,9 +22,10 @@ authority is `PLANNER_BRIEF_2026-09-13.md` with its Addenda 1–67**; it superse
 
 # CURRENT SOURCE OF TRUTH — 2026-10-07 (tables frozen; methods text accepted; manuscript revision under way)
 
-Authority: `PLANNER_BRIEF_2026-09-13.md` Addenda 52–77; `STEP6_ROUND1…4_CORRECTIONS.md`. Tables FROZEN: `frozen_step6_tables_v1_590088fe.json` (W160).
+Authority: `PLANNER_BRIEF_2026-09-13.md` Addenda 52–78; `STEP6_ROUND1…4_CORRECTIONS.md`. Tables FROZEN: `frozen_step6_tables_v1_590088fe.json` (W160).
 Methods text: `export/paragraphs_v5.md` (Addendum 67). Expert's revision plan: `STEP6_REVISION_MAP.md`. Latest handoff:
-`P5_15_ADDENDUM72_ROUND4_REPORT.md` (W176, zero-solve; earlier rounds: Addendum 68–70 reports). Current order: `TASKS.md` (Addendum 77 section) — W178 done at Overleaf `9fd19e7` (`P5_15_W178_REPORT.md`); standing by.
+`P5_15_ADDENDUM72_ROUND4_REPORT.md` (W176, zero-solve; earlier rounds: Addendum 68–70 reports). Current order: `TASKS.md` (Addendum 78 section) — W179 done at Overleaf `48099ab` (`P5_15_W179_REPORT.md`);
+**stopped for review**.
 
 ## Manuscript facts established from code and case files (W164–W167)
 
@@ -59,6 +60,10 @@ Methods text: `export/paragraphs_v5.md` (Addendum 67). Expert's revision plan: `
 - **Manuscript state at Overleaf `8b76423`:** §2, §3.1, §3.5–3.6 and Appendix A closed for the revision (Addendum 71);
   0 number MISMATCH (W176b); no H/M row (W176a; 2 new L rows R4-1, R4-2); §4–§5 and Appendix E still the submitted text (559 submitted-version figures). Benchmark values
   are post consistency-pass (Addendum 49); LFP is not named in any input file.
+- **Manuscript at Overleaf `48099ab` (W179):** Appendix E composed and 0 MISMATCH against the frozen tables (1,623
+  entries); letter v6 pointers 0 mismatch. Open: E.21 row 16 (`pb_y2025_n5`, superseded W118 v2 certificate; not
+  decided under v6; closure slack +5e-6 E^Av) contradicts §4.7 and §2.3.3 as worded; §2.2.7 Determinacy and §4.8
+  Scope need qualifiers; E.6 "two continued evaluations" is three.
 - **Manuscript at Overleaf `9fd19e7` (W178):** all W177(b) H rows resolved; §2.1–2.3 match the code (L 2); A1–A20,
   B1–B3 applied; 0 number MISMATCH on addressed lines; letter v4 pointers 0 mismatch. Open: Appendix E to compose;
   0.50-floor AE 0.778 / EFC 1.08 to print; two appendix pointers print "Appendix" twice; letter R3.7/8 (annual
