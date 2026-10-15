@@ -3507,3 +3507,79 @@ blank in T2 and print "—"; (ix) k₀ = 123 for x = 0 (Fig. 9) is not in T2 —
 corrected, most likely (v) and (vi); (b) 0 pointer MISMATCH; (c) all W178 rows addressed close; (d) the six missing
 points also have zero closure slack within tolerance, so the claim holds at 51 of 51; (e) the §4.8 Scope wording needs
 "under the certification rule" or "at the search resolution" for the six search-only neighbours.
+
+# Addendum 79 — rulings on W179 (`43c72e06`, Overleaf `48099ab`); round 6 corrections; W180 order (2026-10-15)
+
+**Received.** `P5_15_W179_REPORT.md` with W179a (Appendix E vs `590088fe`), W179b (text and letter; G1–G12 and
+letter v5) and W179c (closure slack; two scope statements). Zero solves, guards armed and verified at 0, pickle
+blocked; mutation-tested checks (a), negative control (b). Overleaf `48099ab` verified: `main.tex` =
+`main_e926fb7_appE.tex`, letter = v6 (md5 by the expert, sha256 by the Planner).
+
+**Predictions of Addendum 78 against outcomes.** (a) 0 MISMATCH in table entries — **held** (1,623 entries: 1,443
+frozen MATCH, 180 non-frozen agree with their named sources); "at most two of (i)–(ix) corrected, likely (v), (vi)" —
+**failed**: (v), (vii), (viii) corrected, (vi) confirmed. (b) 0 pointer MISMATCH — **held** (165: 160 MATCH, 5
+SUBMITTED). (c) all W178 rows close — **failed**: 18 of 20, C-1 and R14-2 narrowed but still L. (d) 51 of 51 —
+**failed on the count**: the six missing points hold (five x = 0 cells exactly 0 by construction; `d_c52e1670` at
+k* = 150 at the relaxed bound, from the committed per-cycle record), but E.21 row 16 (`pb_y2025_n5`, the superseded
+W118 v2 certificate, now reported) carries a positive closure sum of +1.76 × 10⁻⁶ MWh, so 50 of 51. (e) §4.8 Scope
+qualifier — **held** (8 under the rule, 3.40–8.09×; 6 search-only, 3.47–7.17× the search resolution). Three
+failures, all wording or count; no run depends on them (CLAUDE.md stop rule satisfied by this ruling).
+
+**Rulings (the report's decisions 1–6).**
+1. **Row 16: kept, relabelled (option a).** Status "superseded^s", Rule "---", its cycle, range and band shown; the
+   `^s` legend says it was certified under an earlier version of the rule and is not decided under the rule of A.5
+   within its recorded cycles. §4.7 scoped to "every certificate used in a reported comparison", with one sentence
+   recording the superseded certificate; §2.3.3 scoped likewise and quoting row 16's figure. The E.22 note (51.3 k€,
+   3.79×) stays as a recorded fact. The 46-certificate count is unchanged (49 T2-certified cells − 16 − two twins).
+2. **§2.3.3 closure sentence** rewritten in W179c's form (a): at the lower bound to within the solver's bound
+   relaxation (10⁻⁶ MWh per slack) at every certificate used in a comparison and at both multi-scenario evaluations;
+   row 16's sum 1.8 × 10⁻⁶ MWh, 5 × 10⁻⁶ of E^Av; "without storage the closure row is not built" replaces "within
+   solver tolerance" at x = 0. W169 erratum (closure lives in `ess_complementarity_penalties`, carried per cycle by
+   `creep_diagnostic_per_cycle.jsonl`) recorded; nothing W169 scored changes.
+3. **Appendix E wording**, all taken: E.4 restated in the three phases of `p515_s53_w116_benchmark_nrf.py` (count
+   in the re-evaluation with the NRF rows off, in network-hours of 864; consistency = Q(pass) − Q(first phase);
+   E.23's Q after the pass, curtailment before it); E.6 "three evaluations continued, 12, 14 and 3, 0.004τ / 0.74τ /
+   0.78–0.88τ"; E.6 replays "through the stopping cycles of the residual-based runs they continue, 132, 112 and 87";
+   intro "ratios to two decimals, except the residual ratio of Table E.24, to three"; E.3 "its own resolution (σ_Q,
+   or the sum of the two bars where larger)" plus a sentence on the six search-only neighbours (3.47–7.17×, earlier
+   code state, production exit); E.5 and §4.8 note that the split and residual were not recorded for 40 and 41.
+4. **Qualifiers**, as recommended: §4.8 Scope "worse, determinately for the eight re-evaluated under the
+   certification rule (Table E.22) and beyond the search resolution for the other six"; §2.2.7 Determinacy "every
+   single-scenario evaluation used in a reported comparison … ; the multi-scenario evaluations … Table 13" and
+   "every incumbent it proposed"; §4.7 closing sentence likewise (search evaluations by count, 3 × 3 pair in Table
+   13). Accepted L residues: discount-rate thresholds (in Table 15, not E.21) and the benchmark's 71.9 k€ band (E.23
+   note).
+5. **C-1 and R14-2** reworded to what the text holds: conclusions "with the remaining movement of the plan without
+   storage estimated from a continued run … the search's own evaluations at the search resolution"; letter R1.4
+   "Fuel costs are not represented separately: … priced at the wholesale energy price of the scenario (Section 3.3),
+   so fuel-cost uncertainty enters only through the market-price scenarios." Letter R2.2 "every evaluation behind a
+   reported comparison", R2.5 "every evaluation repeated from an earlier record (Appendix E.6)", Appendix E bullet
+   "every single-scenario recourse evaluation those comparisons use".
+6. **Small items**: A.3 l. 1899 prefix dropped; §2.2.6 l. 697 "held fixed in the operational subproblem, where they
+   enter as the parameters Ŝ^Inv, Ê^Inv of Subsection 2.3.2" (new label `subsubsec:capacity`); the four
+   `[CONFIRM — W179]` comments removed (0 CONFIRM comments remain; the `% [AUTHOR]` citation note stays).
+
+**Round 6 delivered (expert, 2026-10-15).** `STEP6_ROUND6_CORRECTIONS.md` (repo root);
+`manuscript_review/main_48099ab_round6.tex` (+ `.diff`, 16 hunks), `response_to_reviewers_v7.tex`
+(+ `letter_v6_v7.diff`, 5 hunks), `gen_appE.py` and `verify_appE.py` patched (33 PASS), `appendixE_evaluation_record.tex`
+regenerated. Compile: 0 errors, 0 undefined, 0 multiply-defined; every label number identical to `48099ab`, one label
+added; the generator reproduced the committed appendix bitwise before the patch and the new block equals its output.
+
+**W180 order (zero solves), at the Overleaf HEAD that carries `main_48099ab_round6.tex` and letter v7; state the HEAD
+and verify `main.tex` byte-identical to that file.**
+- (a) **Appendix E regenerated:** run `gen_appE.py` and `verify_appE.py` from `export_W160/` at the HEAD; the block
+  in `main.tex` must equal the generator's output; re-run the W179a entry check (only row 16's Status and Rule may
+  differ from `48099ab`); rate the E.3, E.4, E.5, E.6 and intro sentences of round 6 against the sources named in
+  `STEP6_ROUND6_CORRECTIONS.md` §A.10 (W173 item2.x0.rows; `p515_s53_w116_benchmark_nrf.py` phases; W163 N25, N49).
+- (b) **Row 16:** confirm that no other E.21 row prints a certificate issued under an earlier rule version without a
+  v6 decision on its record (every "record" row has a v6-from-records certificate or is a reference continuation).
+- (c) **The ten main-text edits** (§A.1–A.9) and **letter v7** (§B): verbatim at the HEAD; letter pointer check
+  (165 pointers; "Appendix E.6" new); re-score C-1, R14-2, C47-1, C48-1, R22-b, FC-2c, the G12 follow-on and the
+  A.3 prefix; 0 `[CONFIRM` and 0 `<word>~\ref{app:` at the HEAD.
+- (d) **§2.3.3 as reworded:** re-rate against W179c (50 current certificates + 2 T11 points at the bound; row 16's
+  figure; x = 0 row not built).
+- **Report** `P5_15_W180_REPORT.md`; commit and push; nothing else runs.
+**Predictions (expert):** (a) the regenerated block equals `main.tex` bitwise and 0 MISMATCH in 1,623 entries with
+exactly two entries changed (row 16 Status, Rule); all five prose sentences MATCH; (b) 0 further such rows; (c) 0
+pointer MISMATCH and all eight re-scored rows close, 0 CONFIRM, 0 prefixes; (d) the sentence holds at 52 of 52
+points. After W180: `latexdiff` against `manuscript_submitted/`, the cover letter, submission.

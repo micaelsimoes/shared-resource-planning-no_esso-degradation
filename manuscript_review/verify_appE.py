@@ -47,7 +47,9 @@ certall=[c for c,r in T2.items() if r['status']=='certified']; ok(len(certall)-3
 ok(T2['i_5a6a88b4']['range/τ']=='0.94' and ID['i_5a6a88b4']==36,'36 at 0.94 monotone')
 nc=[(c,int(T2[c]['non-clean cycles after N'])) for c in s42 if T2[c]['non-clean cycles after N'] not in ('','0')]
 ok(sum(n for _,n in nc)==21 and len(nc)==10,f'21 cycles in 10 evaluations {nc}')
-ok(ID['b_4649234b']==14 and ID['d_c52e1670']==3,'continued 14, 3')
+ok(ID['b_2a0ba8b2']==12 and ID['b_4649234b']==14 and ID['d_c52e1670']==3,'continued 12, 14, 3')
+ok(g.status(T2['pb_y2025_n5'])=='superseded' and g.rule_col('pb_y2025_n5',T2['pb_y2025_n5'])=='---','row 16 printed as superseded, rule ---')
+ok(ID['ref:7aa017f0']==1 and ID['ref:bd504ecf']==2,'references 1, 2 (replay 132, 112; C* 87 not tabulated)')
 # E.5
 fp=[T9[c] for c in ['j_5f3cccb4','l_45aa25a6','l_7c455554','l_b2251bc5','l_0ee93aca','ref:5ca4f86c','ref:e28de4ac']]
 gaps=[float(r['t_sum at cap (k€)']) for r in fp]; ok((min(gaps),max(gaps))==(-9.4,-8.8),'gap -8.8..-9.4')

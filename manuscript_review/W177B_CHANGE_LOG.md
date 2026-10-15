@@ -142,6 +142,25 @@ Kept by the expert during the author's whole-document read (2026-10-09 onward); 
   0 errors, 0 undefined; numbering outside Appendix E unchanged. Closes LM-9, 4.6-2, R3.7(a) subject to W179.
 - Still open: W179 (Addendum 78) — Appendix E audit against `590088fe`, the nine interpretations, closure-slack
   inventory 45 → 51 of 51 (§2.3.3), the §4.8 Scope wording for the six search-only neighbours of x = 0.
+- W179 received (`43c72e06`, audited Overleaf `48099ab` = `main_e926fb7_appE.tex` + letter v6; zero solves). Held: 0 table
+  MISMATCH (1,623 entries), 0 letter pointer MISMATCH, §4.8 Scope qualifier. Failed: three of (i)–(ix) corrected
+  (v, vii, viii); 18 of 20 W178 rows closed (C-1, R14-2 narrowed L); closure slack 50 of 51 — E.21 row 16
+  (`pb_y2025_n5`, the superseded W118 v2 certificate) has a positive closure sum +1.76e-6 MWh and is "not decided"
+  under v6. Rulings: Addendum 79 (expert, 2026-10-15; new account).
+- Round 6 delivered (expert, 2026-10-15; `STEP6_ROUND6_CORRECTIONS.md`): `main_48099ab_round6.tex` (+ `.diff`, 16
+  hunks), letter v7 (+ `letter_v6_v7.diff`, 5 hunks), `gen_appE.py` / `verify_appE.py` patched (33 PASS),
+  `appendixE_evaluation_record.tex` regenerated. Row 16 kept, relabelled "superseded", Rule "---"; §2.3.3 closure
+  sentence at the bound within the solver's bound relaxation, row 16's figure quoted, x = 0 "row not built"; §4.7
+  "every certificate used in a reported comparison" + superseded sentence; §2.2.7 Determinacy "single-scenario" +
+  Table 13, "every incumbent"; §4.7 closing and §4.8 "wherever the split was recorded"; §4.8 Scope "determinately for
+  the eight … beyond the search resolution for the other six"; A.3 l. 1899 prefix; §2.2.6 Ŝ/Ê wording (+ label
+  `subsubsec:capacity`); conclusions C-1; Appendix E: E.4 three phases (count in network-hours of 864), E.6 three
+  continued (12, 14, 3), replays through 132/112/87, intro three-decimal residual, E.3 resolution + six search-only
+  neighbours (3.47–7.17×), E.5 rows 40/41 unrecorded; four CONFIRM comments removed. Letter v7: R1.4 fuel via the
+  wholesale price, not "the introduction states"; R2.2, R2.5, Appendix E bullet scoped. Compile 0 errors, 0
+  undefined; every label number unchanged, one label added.
+- Still open: W180 (Addendum 79) — re-check of round 6 at the next Overleaf HEAD; then `latexdiff` vs
+  `manuscript_submitted/`, cover letter, submission. The `% [AUTHOR]` datasheet-citation note under Table 6 stays.
 
 ## For the Planner to check
 - Conclusions v2: every number against §4 and the frozen tables.
