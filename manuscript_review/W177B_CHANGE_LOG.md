@@ -122,6 +122,18 @@ Kept by the expert during the author's whole-document read (2026-10-09 onward); 
   `eq:cohort_rated_energy` on the E one; nomenclature row C^Op_{y,d,m,o} restored beside C^Op_s; §2.3.4 sentence
   completed. Letter v4 = v3 with equation numbers +1 after (13) (split equation). Compile: 0 errors, 0 undefined.
 
+- W178 received (`5a7d663e`, audited Overleaf `9fd19e7` = `main_820ee1b_fixed.tex`; letter = v4). All predictions held:
+  §2.1–2.3 storage block and cohort equations match code (0 M); A1–A20/B1–B3 applied; 151/156 letter pointers MATCH,
+  0 MISMATCH. Expert follow-up (`main_9fd19e7_fixed.tex`, 14 hunks; letter v5): G1–G2 "Appendix Appendix" /
+  "Section Appendix" prefixes; G3 0.50-floor row AE 0.778, EFC/day 1.08 (W155); G4 day weights 92/91/91/91 in §3;
+  G5 conclusions stopping status incl. production exit (C-1); G6 holds "from the cycle after" the stopping cycle (A-1);
+  G7 4.2-1; G8 4.3-1; G9 S3-12; G10 §4.8 local-solution limitation (letter LL-8); G11 two resolved CONFIRM comments
+  removed; G12 nomenclature Ŝ/Ê. Letter v5: R1.4 fuel via wholesale price (§3.3) + A.1 pointer; R2.10 converter
+  limits (26)–(28); R2.3 §2.2.6; LM-3 "inference"; LL-8 pointer §4.8. Numbering unchanged.
+- Applied (2026-10-15): Overleaf `e926fb7` main.tex byte-identical to `main_9fd19e7_fixed.tex`; `response_to_reviewers_draft.tex` byte-identical to v5. `e926fb7` is the commit the next order (W179) audits.
+- Still open: Appendix E (LM-9, 4.6-2, R3.7(a)) — expert composes from `export_W160`; closure-slack claim (§2.3.3)
+  rests on 45 of 51 certified points (W169) — complete in the next order.
+
 ## For the Planner to check
 - Conclusions v2: every number against §4 and the frozen tables.
 - §4.6 salvage count: placeholder said "one verdict changes category" (F2 neighbour), letter R3.1 says two (F2 neighbour
