@@ -1,0 +1,57 @@
+--- main.tex (Overleaf e5322f8)
++++ main_e5322f8_round7.tex
+@@ -966,7 +966,7 @@
+ 
+ \textcolor{blue}{
+     The operating parameters are specified in Section~\ref{sec:case_ess_params}.
+-    At every certificate used in a reported comparison, and at both multi-scenario evaluations, both daily closure slacks sat at their lower bound to within the solver's bound relaxation ($10^{-6}$~MWh per slack); in the superseded evaluation~16 of Table~\ref{tab:appE_evaluations} their sum reached $1.8 \times 10^{-6}$~MWh, $5 \times 10^{-6}$ of the available energy. Without storage the closure row is not built.
++    At every certificate used in a reported comparison, and at both multi-scenario evaluations, both daily closure slacks sat at their lower bound to within the solver's bound relaxation ($10^{-6}$~MWh per slack); in the superseded evaluation~16 of Table~\ref{tab:appE_evaluations} their sum reached $1.8 \times 10^{-6}$~MWh, $5 \times 10^{-6}$ of the available energy. Without storage the closure row is deactivated and its slacks are fixed at zero.
+ }
+ 
+ \subsubsection{\textcolor{blue}{Degradation Chain of the Shared-ESS Agent}}
+@@ -1304,6 +1304,8 @@
+     \end{tabular}
+     \label{tab:ageing_calibrations}
+ \end{table}
++% [AUTHOR] datasheet citations for the two cycle-life statements (10,000 cycles at 0.80 DoD; 8,000 full cycles, EVE MB31) and for the
++% calendar retention 0.985/yr are still to be added before submission (round 4 item 6; Addendum 80).
+ 
+ \subsection{\textcolor{blue}{Planning and Certification Settings}}
+ \label{sec:case_settings}
+@@ -1616,7 +1618,7 @@
+         \toprule
+         Quantity & Value & Note \\
+         \midrule    
+-        Value $Q(\boldsymbol{0}) - Q(\text{unit})$ at operational stopping (cycle 72) & 236.7~k\euro & recorded \\
++        Value $Q(\boldsymbol{0}) - Q(\text{unit})$ at operational stopping (cycle 72 for the plan without storage, 69 for the unit) & 236.7~k\euro & recorded \\
+         Investment cost $I$                                                  & 318.0~k\euro & recorded \\
+         Value $- I$                                                          & $-$81.3~k\euro & determinate \\
+         Resolution of the value                                              & 18.0~k\euro  & $|{\rm value} - I| / {\rm resolution} = 4.52$ \\
+@@ -2378,7 +2380,8 @@
+ % The label app:results is kept, so every \ref to it resolves unchanged. All table entries are generated from the W160
+ % export (frozen_step6_tables_v1_590088fe.json via export_W160/*.csv) by gen_appE.py; none is typed by hand.
+ % Audited against the frozen JSON by W179a (0 MISMATCH in 1,623 table entries; P5_15_W179A_APPENDIX_E.md). Round 6
+-% (Addendum 79): row 16 relabelled, E.3/E.4/E.5/E.6 prose corrected; the four W179 check comments closed.
++% (Addendum 79): row 16 relabelled, E.3/E.4/E.5/E.6 prose corrected; the four W179 check comments closed. Round 7
++% (Addendum 80): E.4 second phase and the E.21 note on evaluations 40 and 41.
+ % =====================================================================================================================
+ \clearpage
+ \section{\textcolor{blue}{Evaluation Record}}
+@@ -2577,7 +2580,7 @@
+ 60 & 7: 0.25/1 & 2025 & baseline, 0.50 floor & cert., osc. & 112 & 184 & 0.92 & 4.2 & --- & --- & --- & --- & run \\
+ 61 & 7: 0.25/1 & 2025 & baseline, 0.70 floor & cert., osc.$^{t}$ & 103 & 172 & 0.96 & 4.4 & --- & --- & --- & --- & run \\
+ \midrule
+-\multicolumn{14}{@{}p{\linewidth}@{}}{\textit{Note:} Evaluations~1, 2, 40 and~41 continue earlier runs; their first residual passes are not tabulated (for evaluation~1, $k_0 = 123$, Fig.~\ref{fig:res_q_cycle}). Evaluation~16 is the first certificate of the 2025 node-5 neighbour; it rested on a cycle with a local solve that did not end optimal, and the neighbour was re-run (evaluation~15).}\\
++\multicolumn{14}{@{}p{\linewidth}@{}}{\textit{Note:} Evaluations~1 and~2 continue earlier runs, and evaluations~40 and~41 are re-decided from the records of earlier runs; their first residual passes are not tabulated (for evaluation~1, $k_0 = 123$, Fig.~\ref{fig:res_q_cycle}). Evaluation~16 is the first certificate of the 2025 node-5 neighbour; it rested on a cycle with a local solve that did not end optimal, and the neighbour was re-run (evaluation~15).}\\
+ \end{longtable}}
+ \end{landscape}
+ 
+@@ -2618,7 +2621,7 @@
+ \label{app:results_benchmark}
+ 
+ \textcolor{blue}{
+-    Each static no-reverse-flow arrangement of Subsection~\ref{subsec:res_coordination} was solved from three starts (Table~\ref{tab:appE_benchmark}); the best is reported in Table~\ref{tab:res_benchmark}, and the spread over the starts is its band. Each arrangement is solved in three phases (Section~\ref{sec:case_settings}): the distribution networks' dispatch and the transmission network's dispatch against it, from which the curtailment columns are taken; a re-solve of each distribution network at the transmission network's interface voltage with its no-reverse-flow rows switched off, in which the exceedance columns count the network-hours (of 864: three networks, twelve blocks, 24~h) whose interface flow exceeds the no-reverse-flow limit and give the largest exceedance; and the consistency pass, a re-solve of each distribution network at that voltage with the rows on, followed by the transmission network's dispatch, whose cost is the $Q$ of Table~\ref{tab:appE_benchmark}. The consistency column is the change of $Q$ from the first phase to the pass.
++    Each static no-reverse-flow arrangement of Subsection~\ref{subsec:res_coordination} was solved from three starts (Table~\ref{tab:appE_benchmark}); the best is reported in Table~\ref{tab:res_benchmark}, and the spread over the starts is its band. Each arrangement is solved in three phases (Section~\ref{sec:case_settings}): the distribution networks' dispatch and the transmission network's dispatch against it, from which the curtailment columns are taken; a re-evaluation of each distribution network at the transmission network's interface voltage, with its decisions held at the first phase and its voltage, thermal and no-reverse-flow rows switched off, in which the exceedance columns count the network-hours (of 864: three networks, twelve blocks, 24~h) whose interface flow exceeds the no-reverse-flow limit and give the largest exceedance; and the consistency pass, a re-solve of each distribution network at that voltage with the rows on, followed by the transmission network's dispatch, whose cost is the $Q$ of Table~\ref{tab:appE_benchmark}. The consistency column is the change of $Q$ from the first phase to the pass.
+ }
+ 
+ \begin{table}[htbp!]
