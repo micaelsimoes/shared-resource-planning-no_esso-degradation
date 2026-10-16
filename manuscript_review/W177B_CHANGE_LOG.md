@@ -159,8 +159,22 @@ Kept by the expert during the author's whole-document read (2026-10-09 onward); 
   neighbours (3.47–7.17×), E.5 rows 40/41 unrecorded; four CONFIRM comments removed. Letter v7: R1.4 fuel via the
   wholesale price, not "the introduction states"; R2.2, R2.5, Appendix E bullet scoped. Compile 0 errors, 0
   undefined; every label number unchanged, one label added.
-- Still open: W180 (Addendum 79) — re-check of round 6 at the next Overleaf HEAD; then `latexdiff` vs
-  `manuscript_submitted/`, cover letter, submission. The `% [AUTHOR]` datasheet-citation note under Table 6 stays.
+- Overleaf `e5322f8` (author): `main.tex` = `main_48099ab_round6.tex`, letter = v7 (md5 by the expert; sha256 and cmp by
+  the Planner). Repo: round-6 files committed in `c831ea46` (message stale: says Addendum 78) and `465da61a`.
+- W180 received (`a1ab9e99`; zero solves). Held: Appendix E regenerated bitwise, 0 MISMATCH in 1,623, 2 cells changed,
+  5/5 prose; row 16 the only superseded certificate; 0 pointer MISMATCH, 0 CONFIRM, 0 prefixes. Failed: R22-b still L
+  (R2.2 lacks "single-scenario"); closure count is 50 of 50, not 52 (T11 pair double-counted by the expert). Also:
+  "closure row is not built" → built then deactivated; Table 13 "cycle 72" (unit stopped at 69); E.4 phase B omits
+  fixed DN decisions and voltage/thermal rows off; E.21 note on rows 40/41; the `% [AUTHOR]` ageing-citation note
+  was never in `main.tex` and §3.5 carries no datasheet citations. Rulings: Addendum 80.
+- Round 7 delivered (expert, 2026-10-16; `STEP6_ROUND7_CORRECTIONS.md`): `main_e5322f8_round7.tex` (+ `.diff`, 6
+  hunks), letter v8 (+ `letter_v7_v8.diff`, 2 hunks: R2.2 "single-scenario"), `gen_appE.py` patched (E.4 second
+  phase; E.21 note), `appendixE_evaluation_record.tex` regenerated, `verify_appE.py` unchanged (33 PASS). §2.3.3
+  "deactivated and its slacks are fixed at zero"; Table 13 "(cycle 72 for the plan without storage, 69 for the
+  unit)"; `% [AUTHOR]` citation reminder restored under Table 6. Compile 0 errors, 0 undefined; label numbers
+  identical to `e5322f8`. Accepted L: 0.004τ, search-only neighbours' bands, W153 cause rule for rows 39/41.
+- Still open: W181 (Addendum 80, short check); **the three ageing citations under §3.5 (author, before submission)**;
+  then `latexdiff` vs `manuscript_submitted/`, cover letter, submission.
 
 ## For the Planner to check
 - Conclusions v2: every number against §4 and the frozen tables.

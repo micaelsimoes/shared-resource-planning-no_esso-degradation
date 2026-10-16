@@ -275,7 +275,8 @@ P(r"""% ========================================================================
 % The label app:results is kept, so every \ref to it resolves unchanged. All table entries are generated from the W160
 % export (frozen_step6_tables_v1_590088fe.json via export_W160/*.csv) by gen_appE.py; none is typed by hand.
 % Audited against the frozen JSON by W179a (0 MISMATCH in 1,623 table entries; P5_15_W179A_APPENDIX_E.md). Round 6
-% (Addendum 79): row 16 relabelled, E.3/E.4/E.5/E.6 prose corrected; the four W179 check comments closed.
+% (Addendum 79): row 16 relabelled, E.3/E.4/E.5/E.6 prose corrected; the four W179 check comments closed. Round 7
+% (Addendum 80): E.4 second phase and the E.21 note on evaluations 40 and 41.
 % =====================================================================================================================
 \clearpage
 \section{\textcolor{blue}{Evaluation Record}}
@@ -357,7 +358,7 @@ for gi, (title, rows) in enumerate(G):
     for c, plan, year, cond in rows:
         P(e2_row(c, plan, year, cond))
 P(r'\midrule')
-P(r'\multicolumn{14}{@{}p{\linewidth}@{}}{\textit{Note:} Evaluations~1, 2, 40 and~41 continue earlier runs; their first residual passes are not tabulated (for evaluation~1, $k_0 = 123$, Fig.~\ref{fig:res_q_cycle}). Evaluation~16 is the first certificate of the 2025 node-5 neighbour; it rested on a cycle with a local solve that did not end optimal, and the neighbour was re-run (evaluation~15).}\\')
+P(r'\multicolumn{14}{@{}p{\linewidth}@{}}{\textit{Note:} Evaluations~1 and~2 continue earlier runs, and evaluations~40 and~41 are re-decided from the records of earlier runs; their first residual passes are not tabulated (for evaluation~1, $k_0 = 123$, Fig.~\ref{fig:res_q_cycle}). Evaluation~16 is the first certificate of the 2025 node-5 neighbour; it rested on a cycle with a local solve that did not end optimal, and the neighbour was re-run (evaluation~15).}\\')
 P(r'\end{longtable}}')
 P(r'\end{landscape}')
 
@@ -405,7 +406,7 @@ P(r"""
 \label{app:results_benchmark}
 
 \textcolor{blue}{
-    Each static no-reverse-flow arrangement of Subsection~\ref{subsec:res_coordination} was solved from three starts (Table~\ref{tab:appE_benchmark}); the best is reported in Table~\ref{tab:res_benchmark}, and the spread over the starts is its band. Each arrangement is solved in three phases (Section~\ref{sec:case_settings}): the distribution networks' dispatch and the transmission network's dispatch against it, from which the curtailment columns are taken; a re-solve of each distribution network at the transmission network's interface voltage with its no-reverse-flow rows switched off, in which the exceedance columns count the network-hours (of 864: three networks, twelve blocks, 24~h) whose interface flow exceeds the no-reverse-flow limit and give the largest exceedance; and the consistency pass, a re-solve of each distribution network at that voltage with the rows on, followed by the transmission network's dispatch, whose cost is the $Q$ of Table~\ref{tab:appE_benchmark}. The consistency column is the change of $Q$ from the first phase to the pass.
+    Each static no-reverse-flow arrangement of Subsection~\ref{subsec:res_coordination} was solved from three starts (Table~\ref{tab:appE_benchmark}); the best is reported in Table~\ref{tab:res_benchmark}, and the spread over the starts is its band. Each arrangement is solved in three phases (Section~\ref{sec:case_settings}): the distribution networks' dispatch and the transmission network's dispatch against it, from which the curtailment columns are taken; a re-evaluation of each distribution network at the transmission network's interface voltage, with its decisions held at the first phase and its voltage, thermal and no-reverse-flow rows switched off, in which the exceedance columns count the network-hours (of 864: three networks, twelve blocks, 24~h) whose interface flow exceeds the no-reverse-flow limit and give the largest exceedance; and the consistency pass, a re-solve of each distribution network at that voltage with the rows on, followed by the transmission network's dispatch, whose cost is the $Q$ of Table~\ref{tab:appE_benchmark}. The consistency column is the change of $Q$ from the first phase to the pass.
 }
 
 \begin{table}[htbp!]

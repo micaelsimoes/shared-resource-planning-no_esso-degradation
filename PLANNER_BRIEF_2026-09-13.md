@@ -3583,3 +3583,52 @@ and verify `main.tex` byte-identical to that file.**
 exactly two entries changed (row 16 Status, Rule); all five prose sentences MATCH; (b) 0 further such rows; (c) 0
 pointer MISMATCH and all eight re-scored rows close, 0 CONFIRM, 0 prefixes; (d) the sentence holds at 52 of 52
 points. After W180: `latexdiff` against `manuscript_submitted/`, the cover letter, submission.
+
+# Addendum 80 — rulings on W180 (`a1ab9e99`, Overleaf `e5322f8`); round 7; W181 order (2026-10-16)
+
+**Received.** `P5_15_W180_REPORT.md` with W180a–d; zero solves (guard 0, pickle 0). Overleaf `e5322f8`: `main.tex`
+byte-identical to `main_48099ab_round6.tex`, letter to v7; the clone diff equals the expert's two diffs line for line.
+
+**Predictions of Addendum 79 against outcomes.** (a) regenerated block bitwise, 33 PASS, 0 MISMATCH in 1,623 entries,
+exactly two cells changed, five prose sentences MATCH — **held**; (b) row 16 the only superseded certificate —
+**held**; (c) 0 pointer MISMATCH, 0 CONFIRM, 0 prefixes — **held**; "all eight re-scored rows close" — **failed**
+(7 of 8; R22-b still L: the 3 × 3 pair fits neither of R2.2's classes); (d) 52 of 52 — **failed on the count**: the
+sentence holds at 50 of 50 (48 current E.21 certificates + the 2 multi-scenario points; W179c's 51 already included
+the T11 pair, so the expert double-counted it). Both failures are wording or count; no number or run depends on
+them. W180d also tightened W179c's distance-to-bound figure (≤ 3.76 × 10⁻¹⁰ MWh over the 44; not in the manuscript).
+
+**Rulings.**
+1. **R2.2:** option (b) — "every single-scenario evaluation behind a reported comparison" (letter v8).
+2. **§2.3.3:** "Without storage the closure row is deactivated and its slacks are fixed at zero" (rests on the code
+   only; the NL-writer wording is not used).
+3. **Ageing citations (author).** The `% [AUTHOR]` note was never in `main.tex` (it lived in the round-3 paste and
+   was dropped), and §3.5 cites only `nrel_ess_costs`; the two datasheet cycle-life statements and the 0.985/yr
+   calendar retention have **no source in the manuscript**. The comment is restored under Table 6 as a reminder.
+   Blocked on the author: add the citations (round 4 item 6 names the EVE MB31 datasheet for the 8,000-cycle row;
+   a source for the 10,000-cycle row; an LFP calendar-ageing study) before submission, and tell the expert which, so
+   the letter's R3.4/R3.5 replies can name them.
+4. **Wording residues:** Table 13 "(cycle 72 for the plan without storage, 69 for the unit)"; E.4 second phase
+   "re-evaluation … with its decisions held at the first phase and its voltage, thermal and no-reverse-flow rows
+   switched off"; E.21 note "evaluations 40 and 41 are re-decided from the records of earlier runs". Accepted as L:
+   0.004τ to three decimals; the six search-only neighbours' bands; the W153 cause rule for rows 39 and 41.
+5. **Check scope:** W181 is the short check the Planner proposed, not a re-audit.
+
+**Round 7 delivered (expert, 2026-10-16).** `STEP6_ROUND7_CORRECTIONS.md` (repo root); `manuscript_review/
+main_e5322f8_round7.tex` (+ `.diff`, 6 hunks: §2.3.3, the `[AUTHOR]` comment, Table 13, the generator's header
+comment, the E.21 note, E.4), `response_to_reviewers_v8.tex` (+ `letter_v7_v8.diff`, 2 hunks), `gen_appE.py`
+patched, `appendixE_evaluation_record.tex` regenerated, `verify_appE.py` unchanged (33 PASS). Compile 0 errors, 0
+undefined, 0 multiply-defined; every label number identical to `e5322f8`.
+
+**W181 order (zero solves), at the Overleaf HEAD that carries `main_e5322f8_round7.tex` and letter v8; state the
+HEAD.** (a) `main.tex` byte-identical to `main_e5322f8_round7.tex`, letter to v8; the clone diff `e5322f8 → HEAD`
+equals `main_e5322f8_round7.diff` + `letter_v7_v8.diff`. (b) Appendix E regenerated bitwise from the patched
+`gen_appE.py`; `verify_appE.py` 33 PASS; the W180a entry check re-run (0 MISMATCH; 0 cells changed — only the E.4
+paragraph and the E.21 note differ). (c) Re-rate the five touched sentences (§2.3.3 against the three code lines;
+Table 13 against `campaign_results.json`; E.4 against the W116 harness phase B; the E.21 note against W180b/W163
+N49; R2.2) and close R22-b. (d) Report whether the three ageing citations are present under §3.5 at the HEAD
+(expected absent unless the author has added them; if present, name the keys). Report `P5_15_W181_REPORT.md`;
+commit and push; nothing else runs.
+**Predictions (expert):** (a) identical and the diffs equal; (b) bitwise, 33 PASS, 0 MISMATCH, 0 cells changed; (c)
+all five MATCH and R22-b closes; (d) absent, or present with three keys. **After W181:** the `latexdiff` against
+`manuscript_submitted/` (expert, in the container, demo graphics), the cover letter, and submission once the
+citations are in.
