@@ -58,7 +58,7 @@ F = I + Q. No objective value is computed here. The values quoted are the manusc
 
 ## Changed
 
-- `<commit>` (this commit): `p515_s53_w180c_text_letter.py` (sha256 `52dfd0f2…`), this report, and the output directory
+- `e924814f`: `p515_s53_w180c_text_letter.py` (sha256 `52dfd0f2…`), this report, and the output directory
   `data/SRP1/Results/P515S53/w180c_text_letter/` (write-once; the post-run manifest lists every file):
 
   | file | sha256 |
