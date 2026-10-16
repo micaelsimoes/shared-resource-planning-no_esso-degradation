@@ -24,11 +24,9 @@ authority is `PLANNER_BRIEF_2026-09-13.md` with its Addenda 1–67**; it superse
 
 Authority: `PLANNER_BRIEF_2026-09-13.md` Addenda 52–78; `STEP6_ROUND1…4_CORRECTIONS.md`. Tables FROZEN: `frozen_step6_tables_v1_590088fe.json` (W160).
 Methods text: `export/paragraphs_v5.md` (Addendum 67). Expert's revision plan: `STEP6_REVISION_MAP.md`. Latest handoff:
-`P5_15_W179_REPORT.md` (W179 at Overleaf `48099ab`, zero-solve). Current order: `TASKS.md` (Addendum 79 section) — expert's
-round-6 rulings received 2026-10-15 (all six W179 decisions taken as recommended; row 16 kept as "superseded"); W180
-(zero-solve) ordered at the Overleaf HEAD carrying `main_48099ab_round6.tex` and letter v7. Overleaf is at `e5322f8`.
-**W180 is blocked on the author committing the round-6 delivery** (Addendum 79, `STEP6_ROUND6_CORRECTIONS.md`,
-`manuscript_review/` files).
+`P5_15_W180_REPORT.md` (W180 at Overleaf `e5322f8` = `main_48099ab_round6.tex` + letter v7, zero-solve). Current order:
+`TASKS.md` (Addendum 79 section) — W180 done; **stopped for review** (R2.2 wording, "not built", `[AUTHOR]` citations,
+Table 13 "cycle 72"); then latexdiff, cover letter, submission.
 
 ## Manuscript facts established from code and case files (W164–W167)
 
@@ -63,6 +61,11 @@ round-6 rulings received 2026-10-15 (all six W179 decisions taken as recommended
 - **Manuscript state at Overleaf `8b76423`:** §2, §3.1, §3.5–3.6 and Appendix A closed for the revision (Addendum 71);
   0 number MISMATCH (W176b); no H/M row (W176a; 2 new L rows R4-1, R4-2); §4–§5 and Appendix E still the submitted text (559 submitted-version figures). Benchmark values
   are post consistency-pass (Addendum 49); LFP is not named in any input file.
+- **Manuscript at Overleaf `e5322f8` (W180):** round 6 applied verbatim; Appendix E = generator output bitwise, 0 MISMATCH
+  in 1,623 entries; row 16 the only superseded certificate; letter v7 pointers 0 mismatch; §2.3.3 holds at 50 of 50
+  points (48 E.21 + 2 T11). Open, all L: R2.2 lacks "single-scenario"; "closure row is not built" (it is deactivated,
+  slacks fixed); Table 13 l. 1619 "cycle 72" (unit stopped at 69); the `% [AUTHOR]` ageing-citation note is not in
+  main.tex.
 - **Round 6 (expert rulings on W179):** E.21 row 16 relabelled "superseded^s" (Rule "---"; not decided under v6),
   §4.7 and §2.3.3 scoped to the certificates used in a reported comparison, with row 16's closure figure quoted; the
   46-certificate count is unchanged. §2.3.3: the slacks are at the lower bound within the bound relaxation; at x = 0 the

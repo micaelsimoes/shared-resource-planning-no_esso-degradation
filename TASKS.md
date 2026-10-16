@@ -1,20 +1,21 @@
 # TASKS — current order
 
-**Authority:** expert round-6 rulings on W179 (Addendum 79, W180 order; received 2026-10-15, not yet in the brief); earlier orders below for record.
+**Authority:** `PLANNER_BRIEF_2026-09-13.md` Addendum 79 (W180 order; committed in `c831ea46`); earlier orders below for record.
 **Objective convention on every value:** Q = certified `gross_operational_cost`, settlement excluded.
 **Updated at every transition; read first when resuming.**
 
 
 ## Addendum 79 order — W180 (zero-solve)
 
-Rulings on W179 decisions 1–6 all taken as recommended. Row 16 kept, relabelled "superseded^s" (Rule "---"). §2.3.3, §4.7, §4.8, §2.2.7 scoped. C-1 and R14-2 reworded. Round 6 = `STEP6_ROUND6_CORRECTIONS.md`, `manuscript_review/main_48099ab_round6.tex` (+ `.diff`, 16 hunks), `response_to_reviewers_v7.tex` (+ `letter_v6_v7.diff`), patched `gen_appE.py` / `verify_appE.py`, and the regenerated `appendixE_evaluation_record.tex`. Overleaf fetched at **`e5322f8`** (after `48099ab`; main.tex 2,710 lines, sha256 b3282295…; carries `subsubsec:capacity`, 0 CONFIRM). Not yet verified against `main_48099ab_round6.tex`. Predictions (expert): (a) the regenerated block equals main.tex bitwise; 0 MISMATCH in 1,623 entries, exactly two changed (row 16 Status, Rule); all five prose sentences MATCH; (b) 0 further rows with an earlier-rule certificate and no v6 decision; (c) 0 pointer MISMATCH, all eight re-scored rows close, 0 CONFIRM, 0 prefixes; (d) §2.3.3 holds at 52 of 52 points.
+Rulings on W179 decisions 1–6 all taken as recommended. Row 16 kept, relabelled "superseded^s" (Rule "---"). §2.3.3, §4.7, §4.8, §2.2.7 scoped. C-1 and R14-2 reworded. Round 6 = `STEP6_ROUND6_CORRECTIONS.md`, `manuscript_review/main_48099ab_round6.tex` (+ `.diff`, 16 hunks), `response_to_reviewers_v7.tex` (+ `letter_v6_v7.diff`), patched `gen_appE.py` / `verify_appE.py`, and the regenerated `appendixE_evaluation_record.tex`. Clone pulled (ff) at Overleaf **`e5322f8`** (2026-10-15 16:56 UTC; after `48099ab`; main.tex 2,710 lines, sha256 b3282295…, **byte-identical to `manuscript_review/main_48099ab_round6.tex`**; letter 34a5754b… = `response_to_reviewers_v7.tex`, cmp). Predictions (expert): (a) the regenerated block equals main.tex bitwise; 0 MISMATCH in 1,623 entries, exactly two changed (row 16 Status, Rule); all five prose sentences MATCH; (b) 0 further rows with an earlier-rule certificate and no v6 decision; (c) 0 pointer MISMATCH, all eight re-scored rows close, 0 CONFIRM, 0 prefixes; (d) §2.3.3 holds at 52 of 52 points.
 
-- [ ] **▶ Blocked on the author:** commit the round-6 delivery (Addendum 79 in the brief; `STEP6_ROUND6_CORRECTIONS.md`; the `manuscript_review/` files above). None of it is in the repository or on origin at `8a08309f`.
-- [ ] **W180a** — Appendix E regenerated (`gen_appE.py`, `verify_appE.py` at the HEAD); W179a entry check re-run to a new output path; E.3/E.4/E.5/E.6/intro sentences rated against §A.10 sources
-- [ ] **W180b** — row 16: no other E.21 "record" row with an earlier-rule certificate and no v6 decision
-- [ ] **W180c** — §A.1–A.9 and letter v7 verbatim; 165-pointer check; re-score C-1, R14-2, C47-1, C48-1, R22-b, FC-2c, G12 follow-on, A.3 prefix; 0 `[CONFIRM`, 0 `~\ref{app:` prefixes
-- [ ] **W180d** — §2.3.3 re-rated against W179c (50 + 2 T11 points; row 16 figure; x = 0 row not built)
-- [ ] Planner review; report `P5_15_W180_REPORT.md`; commit and push
+- [x] Round-6 delivery committed by the author — `c831ea46` (Addendum 79, patched `gen_appE.py` / `verify_appE.py`, regenerated appendix; message says "Addendum 78") and `465da61a` (round-6 main, letter v7, diffs, `STEP6_ROUND6_CORRECTIONS.md`)
+- [x] **W180a** — `7b6ba5fe` / `995f0628`: block = main.tex l. 2375–2694 bitwise; verify 33 PASS; 1,623 entries 0 MISMATCH; exactly 2 cells changed (row 16 Status, Rule); prose 5/5 — all HELD
+- [x] **W180b** — `6520188b`: flagged rows = {16} only — HELD (rows 40/41 record-uncertified, gloss L)
+- [x] **W180c** — `e924814f` / `b4920f5c`: A.1–A.9 and letter v7 verbatim; pointers 160/5/0 (HELD); rows 7/8 close, R22-b still L — FAILED; 0 CONFIRM, 0 prefixes (HELD); `[AUTHOR]` note absent
+- [x] **W180d** — `d1e6ee19`: holds at 50/50 (48 E.21 + 2 T11; expert's 52 double-counts T11) — FAILED on count; "not built" L (row deactivated)
+- [x] Planner review; report `P5_15_W180_REPORT.md` (Decisions 1–5)
+- [ ] **▶ Stopped for review** (two predictions failed, no fallback): expert on 1, 2, 4 (R2.2 "single-scenario"; "not built"; Table 13 "cycle 72" vs 69 and E.4/E.21-note wording); author on 3 (ageing-table citations)
 - [ ] Then (expert's order): `latexdiff` against `manuscript_submitted/`, cover letter, submission
 
 
