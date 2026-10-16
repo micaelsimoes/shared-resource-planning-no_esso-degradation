@@ -1,9 +1,18 @@
 # TASKS — current order
 
-**Authority:** `PLANNER_BRIEF_2026-09-13.md` Addendum 79 (W180 order; committed in `c831ea46`); earlier orders below for record.
+**Authority:** `PLANNER_BRIEF_2026-09-13.md` Addendum 80 (W181 order; committed in `fc2fad77`/`2e3ec946`); earlier orders below for record.
 **Objective convention on every value:** Q = certified `gross_operational_cost`, settlement excluded.
 **Updated at every transition; read first when resuming.**
 
+
+## Addendum 80 order — W181 (zero-solve; short check, not a re-audit)
+
+Rulings: R2.2 "single-scenario" (letter v8); §2.3.3 "deactivated and its slacks are fixed at zero"; Table 13 "cycle 72 … 69"; E.4 phase B; E.21 note 40/41; `% [AUTHOR]` restored under Table 6. Author must still add the three ageing citations. Round 7 = `STEP6_ROUND7_CORRECTIONS.md`, `main_e5322f8_round7.tex` (+ `.diff`, 6 hunks), `response_to_reviewers_v8.tex` (+ `letter_v7_v8.diff`, 2 hunks), patched `gen_appE.py`, regenerated appendix. Clone pulled (ff) at Overleaf **`cd57efc`** (2026-10-16 13:23 UTC; main.tex 2,713 lines, sha256 ff7b045e…, **byte-identical to `main_e5322f8_round7.tex`**; letter 06cc2460… = v8, cmp). Predictions (expert): (a) identical, and the diffs equal; (b) regenerated bitwise, 33 PASS, 0 MISMATCH, 0 cells changed; (c) all five touched sentences MATCH and R22-b closes; (d) citations absent, or present with three keys.
+
+- [x] **W181a** — `ed6490c6` / `4bcc2463`: identical, diffs equal (6 + 2 hunks); Appendix E bitwise (l. 2377–2697), 33 PASS, 0 MISMATCH in 1,623, 0 of 1,637 cells changed — all HELD
+- [x] **W181b** — `0692c852`: five sentences MATCH, R22-b closed (HELD); ageing citations absent (HELD); 0 CONFIRM, 1 AUTHOR (l. 1307)
+- [x] Planner review; report `P5_15_W181_REPORT.md` (no decisions; every prediction held)
+- [ ] **▶ Order complete; waiting on** the author (three ageing citations, then tell the expert the keys) and the expert (`latexdiff` against `manuscript_submitted/`, cover letter); then submission
 
 ## Addendum 79 order — W180 (zero-solve)
 
@@ -15,7 +24,7 @@ Rulings on W179 decisions 1–6 all taken as recommended. Row 16 kept, relabelle
 - [x] **W180c** — `e924814f` / `b4920f5c`: A.1–A.9 and letter v7 verbatim; pointers 160/5/0 (HELD); rows 7/8 close, R22-b still L — FAILED; 0 CONFIRM, 0 prefixes (HELD); `[AUTHOR]` note absent
 - [x] **W180d** — `d1e6ee19`: holds at 50/50 (48 E.21 + 2 T11; expert's 52 double-counts T11) — FAILED on count; "not built" L (row deactivated)
 - [x] Planner review; report `P5_15_W180_REPORT.md` (Decisions 1–5)
-- [ ] **▶ Stopped for review** (two predictions failed, no fallback): expert on 1, 2, 4 (R2.2 "single-scenario"; "not built"; Table 13 "cycle 72" vs 69 and E.4/E.21-note wording); author on 3 (ageing-table citations)
+- [x] Stopped for review → expert rulings received 2026-10-16 (Addendum 80): expert on 1, 2, 4 (R2.2 "single-scenario"; "not built"; Table 13 "cycle 72" vs 69 and E.4/E.21-note wording); author on 3 (ageing-table citations)
 - [ ] Then (expert's order): `latexdiff` against `manuscript_submitted/`, cover letter, submission
 
 
