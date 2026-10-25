@@ -1,0 +1,380 @@
+--- main.tex (Overleaf edd7a63)
++++ main_edd7a63_round8.tex
+@@ -142,7 +142,7 @@
+     \emergencystretch=2em
+     \textcolor{blue}{
+         Shared Energy Storage Systems (ESSs) installed at transmission--distribution interface nodes can support both Transmission System Operators (TSOs) and Distribution System Operators (DSOs). Their planning must account for coordinated operation under uncertainty and battery degradation.
+-        This paper proposes a two-stage stochastic framework for shared battery ESS siting, sizing and installation timing under investment-cost uncertainty. A derivative-free search explores discrete investment plans, and an Alternating Direction Method of Multipliers (ADMM)-based coordination procedure evaluates their operation under load, renewable-generation and market-price uncertainty. Battery degradation links storage dispatch with available energy capacity over the planning horizon, and numerical acceptance criteria assess the stability of operating-cost comparisons.
++        This paper proposes a degradation-aware framework for the siting, sizing and installation year of shared lithium-ion battery ESSs, formulated as a two-stage stochastic program in which one scenario-independent plan is evaluated under coordinated operation; uncertainty in future converter and battery investment costs enters as probability-weighted cost trajectories. A derivative-free search explores discrete investment plans in a single operating scenario, an Alternating Direction Method of Multipliers (ADMM)-based coordination procedure evaluates their operation, and fixed plans are then re-evaluated under load, renewable-generation and market-price scenarios. Battery degradation links storage dispatch with available energy capacity over the planning horizon, and numerical acceptance criteria assess the stability of operating-cost comparisons.
+         The framework is evaluated on an integrated 108-bus transmission--distribution test system over a 15-year horizon. Without shared storage, coordination reduces discounted operating costs by 12.2\% relative to a price-taker benchmark that prohibits reverse active-power flow from distribution to transmission. Under the baseline assumptions, none of the evaluated storage plans recovers its investment cost. For a fixed reference 0.25~MVA/1~MWh unit, baseline ageing yields an investment shortfall of 64.4~k\euro{}, while the margin without ageing is within numerical resolution of break-even. The unit achieves positive investment margins at 1.75 and 2 times the base flexibility price. Its estimated margin remains negative in the $3 \times 3$ multi-scenario evaluation.
+     }
+     \par
+@@ -160,7 +160,7 @@
+ 
+ 
+ \begin{highlights}
+-    \item A stochastic framework plans shared storage at transmission--distribution interfaces
++    \item A two-stage framework plans shared lithium-ion storage at TN--DN interface nodes
+     \item Battery degradation links storage dispatch with long-term available capacity
+     \item No evaluated storage plan recovers its investment cost under baseline assumptions
+     \item Reference unit margins are positive at 1.75 and 2 times the base flexibility price
+@@ -384,10 +384,10 @@
+ 
+ The main contributions of this paper are as follows:
+ \begin{itemize}
+-    \item \textcolor{blue}{A two-stage stochastic planning framework for shared ESS deployment at TN--DN interface nodes that determines a multi-year investment plan and evaluates it against scenario-dependent coordinated TSO--DSO operation.}
++    \item \textcolor{blue}{A two-stage stochastic planning framework for shared ESS deployment at TN--DN interface nodes, in which one scenario-independent investment plan is evaluated against coordinated TSO--DSO operation; in this study the planning searches run on a single operating scenario and fixed plans are evaluated under market and operation scenarios.}
+     \item \textcolor{blue}{A degradation-aware shared ESS formulation that internalizes cycling- and calendar-induced capacity loss, calibrated from datasheet cycle-life statements and bounded by an end-of-life floor, and preserves the intertemporal consistency of available storage capacity.}
+     \item \textcolor{blue}{A nested solution strategy combining a derivative-free investment search with ADMM-based decentralized operational evaluation, together with explicit numerical acceptance criteria for assessing the resolution of planning comparisons.}
+-    \item \textcolor{blue}{A case study on an integrated 108-bus system that quantifies the value of coordination against static interface practice, the break-even conditions for shared storage in energy cost and flexibility price, and the role of degradation in the investment decision.}
++    \item \textcolor{blue}{A case study on an integrated 108-bus system that quantifies the value of coordination against static interface practice, the break-even conditions for shared storage in energy cost and flexibility price, and the effect of degradation on storage value and available capacity.}
+ \end{itemize}
+ 
+ %The results show that coordinated planning and operation with shared ESSs yield substantial system-wide benefits, including lower operating costs, improved RES integration, and mitigation of voltage violations observed under uncoordinated operation. They also show that explicitly representing degradation materially affects ESS valuation and long-term investment outcomes, while planning-horizon discretization can influence degradation trajectories and, consequently, ESS siting and sizing decisions.
+@@ -721,7 +721,7 @@
+ \noindent
+ \textcolor{blue}{
+     where 
+-    $C^{\text{Op}}_{y,d,m,o}(\boldsymbol{x})$ is the evaluated daily operating cost for representative year $y$, day $d$, market scenario $m$ and operation scenario $o$. It includes TN generation costs, activated DN flexibility, load curtailment, and penalties on storage energy-closure and network-feasibility slacks. In the multi-scenario instance, it also includes the commitment charge and the deviation component of interface settlement (Subsection~\ref{subsubsec:commitment}).
++    $C^{\text{Op}}_{y,d,m,o}(\boldsymbol{x})$ is the evaluated daily operating cost for representative year $y$, day $d$, market scenario $m$ and operation scenario $o$. It includes TN generation costs, activated DN flexibility, and penalties on storage energy-closure and network-feasibility slacks. In the multi-scenario instance, it also includes the commitment charge and the deviation component of interface settlement (Subsection~\ref{subsubsec:commitment}).
+ }
+ 
+ \textcolor{blue}{
+@@ -1254,6 +1254,7 @@
+ \textcolor{blue}{
+     Table~\ref{tab:res_capacity_summary} summarizes the installed wind and solar PV capacities in the TN and the three ADNs for the single-scenario configuration. In the multi-scenario configuration, the 2025 capacities also apply in 2028, the 2030 capacities apply in 2031 and 2034, and the 2035 capacities apply in 2037. 
+     Generator locations and individual capacities are provided in~\ref{app:tn_description} and~\ref{app:dns_description}.
++    Conventional generation in the TN is priced at the wholesale energy price of the scenario; no separate generator cost curves are used.
+ }
+ 
+ \begin{table}[htbp!]
+@@ -1287,7 +1288,7 @@
+ }
+ 
+ \textcolor{blue}{
+-    Each ADN contains 32 Flexible Loads (FLs), representing downstream lower-voltage networks. The static and flexible components of demand grow annually by 1.25\% and 3.00\%, respectively. Flexible demand is allocated among loads according to the FL ratios in Table~\ref{tab:cs1_ieee33_loads}.
++    Each ADN contains 32 Flexible Loads (FLs), representing downstream lower-voltage networks. In each ADN the static and flexible components of demand grow annually by 1.25\% and 3.00\%, respectively; in the TN they grow by 1.00\% and 2.50\%. Flexible demand is allocated among loads according to the FL ratios in Table~\ref{tab:cs1_ieee33_loads}.
+     Seasonal RES generation profiles for 2025 are provided in~\ref{app:tn_description} for the TN, while the corresponding RES generation, load and flexibility profiles for the ADNs are provided in~\ref{app:dns_description}.
+ }
+ 
+@@ -1313,7 +1314,7 @@
+ 
+ \begin{table}[htbp!]
+     \centering
+-    \caption{Battery ageing calibrations for the baseline and sensitivity analyses.}
++    \caption{\textcolor{blue}{Battery ageing calibrations for the baseline and sensitivity analyses.}}
+     \footnotesize\setlength{\tabcolsep}{4pt}
+     \begin{tabular}{l c r c c c}
+         \toprule
+@@ -1343,11 +1344,12 @@
+     Certified operational evaluations use the common solver and coordination settings specified in~\ref{app:admm_updated_settings}.
+     The multi-scenario configuration uses a commitment premium of $\alpha = 0.5$ (Subsection~\ref{subsubsec:commitment}).
+     The numerical acceptance parameters and planning-search settings are provided in~\ref{app:results_statistics}.
++    Five single-node plans at node~7 evaluated in 2025, the 4~h rungs of 4 and 5~MWh and the 2~h rungs of 3, 4 and 5~MWh, cost 1.15--1.91~M\euro{} and exceed the 1~M\euro{} budget: they are valuation probes outside the admissible set, used in the capacity ladders and the break-even fit of Subsection~\ref{subsec:res_breakeven} and marked $^{b}$ in the tables; no returned plan and no certified comparator of a planning statement is among them.
+ }
+ 
+ \textcolor{blue}{
+     The value of coordination is assessed in the single-scenario configuration without shared storage. Two static arrangements are considered, both prohibiting reverse active-power flow from each DN to the TN. In the passive arrangement, DN flexibility is not activated and renewable generation is curtailed as required by the interface restriction. In the price-taker arrangement, each DSO dispatches its network against wholesale energy prices. In both arrangements, the TSO dispatches the TN with the DN interface schedules fixed.
+-    All arrangements are evaluated using the same cost function $Q$, excluding interface settlement. For each static arrangement, the lowest cost from three solver starts is reported. The evaluation procedure and voltage-consistency checks are detailed in~\ref{app:results_benchmark}.
++    All arrangements are evaluated using the same cost function $Q$, excluding the contracted interface settlement. For each static arrangement, the lowest cost from three solver starts is reported. The evaluation procedure and voltage-consistency checks are detailed in~\ref{app:results_benchmark}.
+ }
+ 
+ % ====================================================================================================================
+@@ -1376,8 +1378,8 @@
+ 
+ \begin{table}[htbp!]
+     \centering
+-    \caption{Discounted cost increases for selected storage
+-    plans under the single-scenario baseline.}
++    \caption{\textcolor{blue}{Discounted cost increases for selected storage
++    plans under the single-scenario baseline.}}
+     \label{tab:res_value_ladder}
+     \footnotesize
+     \setlength{\tabcolsep}{4pt}
+@@ -1401,11 +1403,11 @@
+     \par\smallskip
+     \begin{minipage}{\linewidth}
+         \footnotesize\raggedright
+-        \textit{Note:}
++        \textcolor{blue}{\textit{Note:}
+         Ratings and capacities are specified per node. Investments are made in 2025 unless stated otherwise.
+         Cost increase is $F(\boldsymbol{x})-F(\boldsymbol{0})$, excluding terminal salvage credits.
+         All listed evaluations are certified, and all cost increases are determinate. Thresholds follow Subsection~\ref{subsubsec:certification}.
+-        The complete baseline comparison record, including uncertified and flagged evaluations, is provided in Table~\ref{tab:appE_claims}(a).
++        The complete baseline comparison record, including uncertified and flagged evaluations, is provided in Table~\ref{tab:appE_claims}(a).}
+     \end{minipage}
+ \end{table}
+ 
+@@ -1422,13 +1424,13 @@
+ \textcolor{blue}{
+     Figure~\ref{fig:res_breakeven} and Table~\ref{tab:res_breakeven} examine the marginal break-even energy-capacity cost at node~7.
+     An affine fit, $\text{value}=a+bE+cP$, is obtained from the evaluated 2~h and 4~h configurations, where $P$ denotes converter rating. For 4~h configurations, the marginal threshold is $e^{*}=b+c/4-p/4$, with converter cost fixed at $p=256{,}320$~\euro/MVA. The six certified evaluations give $e^{*}=183{,}080$~\euro/MWh.
+-    Including all ten evaluations, with uncertified and flagged evaluations represented by intervals, gives 171{,}310--192{,}560~\euro/MWh. Reaching this range would require a 24--33\% reduction from the baseline energy-capacity cost of 253{,}880~\euro/MWh. These estimates describe the marginal value of added capacity within the fitted range.
++    Including all ten evaluations, with uncertified and flagged evaluations represented by intervals, gives 171{,}310--192{,}560~\euro/MWh. Reaching this range would require a 24--33\% reduction from the baseline energy-capacity cost of 253{,}880~\euro/MWh. These estimates describe the marginal value of added capacity within the fitted range; five of the ten evaluated configurations (4 and 5~MWh at 4~h; 3, 4 and 5~MWh at 2~h) exceed the investment budget and enter the fit as valuation probes (Section~\ref{sec:case_settings}), so the fit describes marginal value, not an admissible plan.
+ }
+ 
+ \begin{figure}[htbp!]
+     \centering
+     \includegraphics[width=1.00\textwidth]{fig1_breakeven.pdf}
+-    \caption{\textcolor{blue}{Storage investment margins at node~7 in 2025 for (a) 4~h and (b) 2~h configurations, and (c) fitted marginal break-even energy costs against the baseline cost. Circles: certified evaluations; squares: uncertified evaluations; diamond: flagged certificate treated as an interval. Thick bars show uncertified comparison bars; thin bars add $2\tau$ and define the fitting intervals. Lines show the certified-only and interval-midpoint fits.}}
++    \caption{\textcolor{blue}{Storage investment margins at node~7 in 2025 for (a) 4~h and (b) 2~h configurations, and (c) fitted marginal break-even energy costs against the baseline cost. Circles: certified evaluations; squares: uncertified evaluations; diamond: flagged certificate treated as an interval. Thick bars show uncertified comparison bars; thin bars add $2\tau$ and define the fitting intervals. Lines show the certified-only and interval-midpoint fits. Configurations above the 1~M\euro{} budget (4 and 5~MWh at 4~h; 3--5~MWh at 2~h) are valuation probes outside the admissible set.}}
+     \label{fig:res_breakeven}
+ \end{figure}
+ 
+@@ -1464,12 +1466,12 @@
+ \end{figure}
+ 
+ \textcolor{blue}{
+-    At twice the base flexibility price, all five evaluated 4~h configurations at node~7, installed in 2025, have positive investment margins (Table~\ref{tab:res_energy_ladder_m2}). Each additional 1~MWh yields a determinate increase in margin of 41.0--51.8~k\euro{}.
++    At twice the base flexibility price, all five evaluated 4~h configurations at node~7, installed in 2025, have positive investment margins (Table~\ref{tab:res_energy_ladder_m2}); the 4 and 5~MWh configurations exceed the budget and are valuation probes. Each additional 1~MWh yields a determinate increase in margin of 41.0--51.8~k\euro{}.
+ }
+ 
+ \begin{table}[htbp!]
+     \centering
+-    \caption{Investment margins and incremental gains for 4~h storage at node~7 in 2025, at twice the base flexibility price.}
++    \caption{\textcolor{blue}{Investment margins and incremental gains for 4~h storage at node~7 in 2025, at twice the base flexibility price.}}
+     \label{tab:res_energy_ladder_m2}
+     \footnotesize
+     \setlength{\tabcolsep}{4pt}
+@@ -1484,22 +1486,23 @@
+         1       & 46.3  & 12.3 & ---  & ---  \\
+         2       & 92.8  & 12.8 & 46.5 & 12.8 \\
+         3$^{u}$ & 133.8 & 27.7 & 41.0 & 27.7 \\
+-        4$^{f}$ & 176.6 & 15.9 & 42.8 & 27.7 \\
+-        5$^{u}$ & 228.4 & 26.5 & 51.8 & 26.5 \\
++        4$^{f,b}$ & 176.6 & 15.9 & 42.8 & 27.7 \\
++        5$^{u,b}$ & 228.4 & 26.5 & 51.8 & 26.5 \\
+         \bottomrule
+     \end{tabular}
+     \par\smallskip
+     \begin{minipage}{\linewidth}
+         \footnotesize\raggedright
+-        \textit{Note:}
++        \textcolor{blue}{\textit{Note:}
+         Increment denotes the change in investment margin
+         relative to the preceding capacity.
+         $^{u}$: uncertified evaluation.
+         $^{f}$: flagged certificate, assessed using the
+         uncertified comparison rule.
++        $^{b}$: investment above the 1~M\euro{} budget (valuation probe, Section~\ref{sec:case_settings}).
+         All listed margins and increments are determinate.
+         Detailed comparisons are provided in
+-        Table~\ref{tab:appE_claims}(b).
++        Table~\ref{tab:appE_claims}(b).}
+     \end{minipage}
+ \end{table}
+ 
+@@ -1528,8 +1531,8 @@
+ 
+ \begin{table}[htbp!]
+     \centering
+-    \caption{Investment margins and operating indicators
+-    of the reference unit under alternative ageing calibrations.}
++    \caption{\textcolor{blue}{Investment margins and operating indicators
++    of the reference unit under alternative ageing calibrations.}}
+     \label{tab:res_ageing}
+     \footnotesize
+     \setlength{\tabcolsep}{3pt}
+@@ -1562,15 +1565,15 @@
+     \par\smallskip
+     \begin{minipage}{\linewidth}
+         \footnotesize\raggedright
+-        \textit{Note:} $I=318.0$~k\euro{}. $^{w}$: margin within numerical resolution; all other margins are determinate.
++        \textcolor{blue}{\textit{Note:} $I=318.0$~k\euro{}. $^{w}$: margin within numerical resolution; all other margins are determinate.
+         Thresholds follow Subsection~\ref{subsubsec:certification}. Binding year denotes the first representative year in which the state-of-health floor binds. The floor is 0.70, except in the final row, where it is 0.50. 
+         ``Never'' indicates an inactive floor throughout the horizon; n/a: not applicable.
+-        $AE$ is the present-value-weighted available-energy fraction; EFC/day denotes equivalent full cycles per day.
++        $AE$ is the present-value-weighted available-energy fraction; EFC/day denotes equivalent full cycles per day.}
+     \end{minipage}
+ \end{table}
+ 
+ \textcolor{blue}{
+-    The operational results also distinguish the effect of degradation from that of the imposed end-of-life floor. The 0.70 floor first binds in 2035 under the baseline calibration and both variants of the 50\% retention calibration, but remains inactive throughout the horizon under the cycling-only and 8{,}000-cycle datasheet calibrations. Lowering the baseline floor from 0.70 to 0.50 increases cycling by 0.18, 0.20 and 0.27 equivalent full cycles per day in 2025, 2030 and 2035, respectively. Nevertheless, the resulting increase in storage value is only 4.9~k\euro{}, within numerical resolution, and the unit still incurs a determinate shortfall of 59.5~k\euro{}. Thus, relaxing the end-of-life floor permits greater utilisation but does not restore the economic viability of the reference unit under the baseline assumptions. The negative investment margin persists across the tested ageing calibrations, and under the baseline calibration at both floor settings.
++    The operational results also distinguish the effect of degradation from that of the imposed end-of-life floor. In the single-scenario configuration the 0.70 floor first binds in 2035 under the baseline calibration and both variants of the 50\% retention calibration, but remains inactive throughout the horizon under the cycling-only and 8{,}000-cycle datasheet calibrations; in the multi-scenario evaluation of Subsection~\ref{subsec:res_multiscenario}, with its three-year blocks, the baseline floor binds in 2037. Lowering the baseline floor from 0.70 to 0.50 increases cycling by 0.18, 0.20 and 0.27 equivalent full cycles per day in 2025, 2030 and 2035, respectively. Nevertheless, the resulting increase in storage value is only 4.9~k\euro{}, within numerical resolution, and the unit still incurs a determinate shortfall of 59.5~k\euro{}. Thus, relaxing the end-of-life floor permits greater utilisation but does not restore the economic viability of the reference unit under the baseline assumptions. The negative investment margin persists across the tested ageing calibrations, and under the baseline calibration at both floor settings.
+ }
+ 
+ % --------------------------------------------------------------------------------------------------------------------
+@@ -1579,7 +1582,7 @@
+ 
+ \textcolor{blue}{
+     Figure~\ref{fig:res_benchmark} and Table~\ref{tab:res_benchmark} compare coordinated operation with the passive and price-taker arrangements defined in Section~\ref{sec:case_settings}. Both static arrangements prohibit reverse active-power flow from each DN to the TN. 
+-    All three arrangements are evaluated without shared storage using the same cost function $Q$, excluding interface settlement.
++    All three arrangements are evaluated without shared storage using the same cost function $Q$, excluding the contracted interface settlement.
+     The price-taker and passive arrangements incur 13.9\% and 36.9\% higher discounted operating costs than coordinated operation, respectively.
+     Coordination provides operating savings of 90.9~M\euro{} relative to the price-taker arrangement, the less costly static benchmark.
+ }
+@@ -1616,7 +1619,7 @@
+     \caption{\textcolor{blue}{Comparison of operating costs without shared storage:
+     (a) costs under coordinated, price-taker and passive operation;
+     (b) contributions of TN generation and DN flexibility costs to the cost difference between the price-taker and coordinated arrangements.
+-    Interface settlement is excluded.}}
++    The contracted interface settlement is excluded.}}
+     \label{fig:res_benchmark}
+ \end{figure}
+ 
+@@ -1633,7 +1636,7 @@
+ \label{subsec:res_multiscenario}
+ 
+ \textcolor{blue}{
+-    The reference unit and the plan without storage were evaluated for all nine combinations of three market scenarios and three load and renewable-generation scenarios, using five representative three-year blocks. The planning search was not repeated. As shown in Table~\ref{tab:res_multiscenario}, the reference unit provides estimated discounted operating savings of 236.7~k\euro{} against an investment cost of 318.0~k\euro{}. The resulting shortfall of 81.3~k\euro{} exceeds the reported numerical resolution of 18.0~k\euro{}. These evaluations used the residual-based stopping criterion described in Appendix~\ref{app:admm_updated_stopping} and were not certified under the rule of Subsection~\ref{subsubsec:certification}.
++    The reference unit and the plan without storage were evaluated for all nine combinations of three market scenarios and three load and renewable-generation scenarios, using five representative three-year blocks. The planning search was not repeated. In this configuration the operating cost $Q$ includes the deviation component of the interface settlement and the commitment premium of Subsection~\ref{subsubsec:commitment} (together about 3\,\% of $Q$ at the plan without storage); the contracted settlement is excluded, as in the single-scenario configuration. As shown in Table~\ref{tab:res_multiscenario}, the reference unit provides estimated discounted operating savings of 236.7~k\euro{} against an investment cost of 318.0~k\euro{}. The resulting shortfall of 81.3~k\euro{} exceeds the reported numerical resolution of 18.0~k\euro{}. These evaluations used the residual-based stopping criterion described in Appendix~\ref{app:admm_updated_stopping} and were not certified under the rule of Subsection~\ref{subsubsec:certification}.
+ }
+ 
+ \textcolor{blue}{
+@@ -1829,7 +1832,7 @@
+ }
+ 
+ \textcolor{blue}{
+-    Three families of consensus variables couple the agents. On the interface of DN $i$: the voltage $V^{\text{I}}_{i,y,d,t}$ and the active and reactive power exchanges $P^{\text{I}}_{i,y,d,t}$, $Q^{\text{I}}_{i,y,d,t}$, shared by the TSO and DSO~$i$; in the multi-scenario instance these are the \emph{expected} interface quantities, $\sum_{s \in \Omega_M \times \Omega_O} \omega_s P^{\text{I}}_{i,s,t}$, of Subsection~\ref{subsubsec:commitment}. On each shared ESS: the active and reactive power $P^{\text{E}}_{e,y,d,t}$, $Q^{\text{E}}_{e,y,d,t}$, shared by the TSO, the DSO of node $e$ and the storage agent through a global variable $z_{e,y,d,t} = (z^{P}, z^{Q})$. Each agent $a$ keeps its own copy $x_a$ of every consensus variable it shares and a dual variable $\lambda_a$ for it; the storage channel carries one copy and one dual per agent (three of each), the interface channels one per side.
++    Three families of consensus variables couple the agents. On the interface of DN $i$: the voltage $V^{\text{I}}_{i,y,d,t}$ and the active and reactive power exchanges $P^{\text{I}}_{i,y,d,t}$, $Q^{\text{I}}_{i,y,d,t}$, shared by the TSO and DSO~$i$ ($P^{\text{I}}$ is positive from the TN to DN~$i$ and is the DN's import at the interface net of the co-located shared ESS, whose schedule has its own channel); in the multi-scenario instance these are the \emph{expected} interface quantities, $\sum_{s \in \Omega_M \times \Omega_O} \omega_s P^{\text{I}}_{i,s,t}$, of Subsection~\ref{subsubsec:commitment}. On each shared ESS: the active and reactive power $P^{\text{E}}_{e,y,d,t}$, $Q^{\text{E}}_{e,y,d,t}$, shared by the TSO, the DSO of node $e$ and the storage agent through a global variable $z_{e,y,d,t} = (z^{P}, z^{Q})$. Each agent $a$ keeps its own copy $x_a$ of every consensus variable it shares and a dual variable $\lambda_a$ for it; the storage channel carries one copy and one dual per agent (three of each), the interface channels one per side.
+ }
+ 
+ \textcolor{blue}{
+@@ -2557,14 +2560,16 @@
+ % export (frozen_step6_tables_v1_590088fe.json via export_W160/*.csv) by gen_appE.py; none is typed by hand.
+ % Audited against the frozen JSON by W179a (0 MISMATCH in 1,623 table entries; P5_15_W179A_APPENDIX_E.md). Round 6
+ % (Addendum 79): row 16 relabelled, E.3/E.4/E.5/E.6 prose corrected; the four W179 check comments closed. Round 7
+-% (Addendum 80): E.4 second phase and the E.21 note on evaluations 40 and 41.
++% (Addendum 80): E.4 second phase and the E.21 note on evaluations 40 and 41. Round 8 (Addendum 83/84): the author's six
++% hand-edited hunks of edd7a63 ported (E.1 salvage credit, lattice figure in E.4, E.5 and E.7 prose); 'contracted interface
++% settlement excluded'; ^b marks the seven 2025 evaluations above the 1 M EUR budget.
+ % =====================================================================================================================
+ \clearpage
+ \section{\textcolor{blue}{Evaluation Record}}
+ \label{app:results}
+ 
+ \textcolor{blue}{
+-    This appendix gives the record behind the comparisons of Section~\ref{sec:results}: every pairwise comparison (Table~\ref{tab:appE_claims}); every recourse evaluation those comparisons use, with its stopping status, band, gap and slack (Table~\ref{tab:appE_evaluations}); the neighbours of the plan without storage re-evaluated under the certification rule (Table~\ref{tab:appE_neighbours}); the solver starts of the static arrangements (Table~\ref{tab:appE_benchmark}); and the evaluations refused by the gap clause (Table~\ref{tab:appE_gap}). It closes with the certification statistics and the reproducibility record. The multi-scenario evaluations, stopped by the production exit rather than certified, are reported in Table~\ref{tab:res_multiscenario}. All entries are generated from the archived evaluation records. Throughout, $Q$ is the gross operational cost, settlement excluded; the net form subtracts the terminal salvage credit~\eqref{eq:salvage_credit}; the value of a plan is $Q(\boldsymbol{0}) - Q(\boldsymbol{x})$ under the same flexibility price; $F = I + Q$; and $\tau = 4{,}539.07$~\euro{}. Plans are written node: converter rating (MVA) / energy capacity (MWh). Amounts are rounded to 0.1~k\euro{} and ratios to two decimals, except the residual ratio of Table~\ref{tab:appE_gap}, given to three.
++    This appendix gives the record behind the comparisons of Section~\ref{sec:results}: every pairwise comparison (Table~\ref{tab:appE_claims}); every recourse evaluation those comparisons use, with its stopping status, band, gap and slack (Table~\ref{tab:appE_evaluations}); the neighbours of the plan without storage re-evaluated under the certification rule (Table~\ref{tab:appE_neighbours}); the solver starts of the static arrangements (Table~\ref{tab:appE_benchmark}); and the evaluations refused by the gap clause (Table~\ref{tab:appE_gap}). It closes with the certification statistics and the reproducibility record. The multi-scenario evaluations, stopped by the production exit rather than certified, are reported in Table~\ref{tab:res_multiscenario}. All entries are generated from the archived evaluation records. Throughout, $Q$ is the gross operational cost, contracted interface settlement excluded; the net form subtracts the terminal salvage credit~\eqref{eq:salvage_credit}; the value of a plan is $Q(\boldsymbol{0}) - Q(\boldsymbol{x})$ under the same flexibility price; $F = I + Q$; and $\tau = 4{,}539.07$~\euro{}. Plans are written node: converter rating (MVA) / energy capacity (MWh). Amounts are rounded to 0.1~k\euro{} and ratios to two decimals, except the residual ratio of Table~\ref{tab:appE_gap}, given to three.
+ }
+ 
+ \subsection{\textcolor{blue}{Terminal Salvage Credit}}
+@@ -2593,7 +2598,7 @@
+ 
+ \noindent
+ \textcolor{blue}{
+-    where $\bar{c}^{\text{Inv,E}}_{y^\text{Inv}} = \sum_{c \in \Omega_C} \omega_c\, c^{\text{Inv,E}}_{y^\text{Inv},c}$ is the expected undiscounted energy cost per MWh in the installation year, $y^\text{End}$ the end of the planning horizon, $T^\text{Rem}$ the remaining calendar life of the cohort at $y^\text{End}$ and $SoH_{e,y^\text{Inv},y^\text{End}}$ its terminal state of health. The credit returns the energy part of the cohort's cost in proportion to its remaining calendar life and to its state of health above the end-of-life floor; the converter is not credited. 
++    where $\bar{c}^{\text{Inv,E}}_{y^\text{Inv}} = \sum_{c \in \Omega_C} \omega_c\, c^{\text{Inv,E}}_{y^\text{Inv},c}$ is the expected undiscounted energy cost per MWh in the installation year, $y^\text{End} = y_0 + \sum_{y} Y_y = 2040$ the end of the planning horizon (1~January 2040, in both configurations), $T^\text{Rem}$ the remaining calendar life of the cohort at $y^\text{End}$ and $SoH_{e,y^\text{Inv},y^\text{End}}$ its terminal state of health, the end-of-block state of health of the last representative block (2035, or 2037 in the multi-scenario configuration). The credit returns the energy part of the cohort's cost in proportion to its remaining calendar life and to its state of health above the end-of-life floor; the converter is not credited. 
+     The credit is reported, not optimized: the recourse does not see it, no plan is selected for it, and the net value is $Q(\boldsymbol{0}) - Q(\boldsymbol{x}) + C^\text{Salvage}(\boldsymbol{x})$.
+ }
+ 
+@@ -2606,7 +2611,7 @@
+ 
+ {\scriptsize\setlength{\tabcolsep}{3pt}
+ \begin{longtable}{@{}r >{\raggedright\arraybackslash}p{0.265\textwidth} c r r r c r r c@{}}
+-\caption{\textcolor{blue}{Every pairwise comparison of the record. Eval.: the two evaluations of Table~\ref{tab:appE_evaluations} (reference / other); $^{u}$ uncertified; $^{f}$ flagged certificate. Thr.: the determinacy threshold, or the uncertified bar where an uncertified evaluation is involved; $\times$: $|\Delta|$ divided by it. det.: determinate; w.r.: within resolution; w.b.: within the uncertified bar. Net: net of the terminal salvage credit, against the same threshold or bar. Gross operational cost, settlement excluded.}}
++\caption{\textcolor{blue}{Every pairwise comparison of the record. Eval.: the two evaluations of Table~\ref{tab:appE_evaluations} (reference / other); $^{u}$ uncertified; $^{f}$ flagged certificate. Thr.: the determinacy threshold, or the uncertified bar where an uncertified evaluation is involved; $\times$: $|\Delta|$ divided by it. det.: determinate; w.r.: within resolution; w.b.: within the uncertified bar. Net: net of the terminal salvage credit, against the same threshold or bar. Gross operational cost, contracted interface settlement excluded. $^{b}$: investment above the 1~M\euro{} budget, a valuation probe outside the admissible set (Section~\ref{sec:case_settings}).}}
+ \label{tab:appE_claims}\\
+ \toprule
+  & & & \multicolumn{4}{c}{Gross} & \multicolumn{3}{c}{Net of salvage} \\
+@@ -2625,13 +2630,13 @@
+ 1 & 7: 0.25/1 (reference unit) & 1 / 2 & 64.4 & 13.1 & 4.93 & det. & 64.4 & 4.93 & det. \\
+ 2 & 7: 0.5/2 & 1 / 3 & 135.5 & 13.4 & 10.13 & det. & 135.5 & 10.13 & det. \\
+ 3 & 7: 0.75/3 & 1 / 4$^{f}$ & 208.3 & 12.6 & 16.49 & det. & 208.3 & 16.49 & det. \\
+-4 & 7: 1/4 & 1 / 5 & 274.0 & 13.6 & 20.19 & det. & 274.0 & 20.19 & det. \\
+-5 & 7: 1.25/5 & 1 / 6$^{u}$ & 347.2 & 23.9 & 14.52 & det. & 347.2 & 14.52 & det. \\
++4 & 7: 1/4$^{b}$ & 1 / 5 & 274.0 & 13.6 & 20.19 & det. & 274.0 & 20.19 & det. \\
++5 & 7: 1.25/5$^{b}$ & 1 / 6$^{u}$ & 347.2 & 23.9 & 14.52 & det. & 347.2 & 14.52 & det. \\
+ 6 & 7: 0.5/1 & 1 / 7 & 114.1 & 12.6 & 9.03 & det. & 114.1 & 9.03 & det. \\
+ 7 & 7: 1/2 & 1 / 8$^{u}$ & 231.7 & 24.2 & 9.56 & det. & 231.7 & 9.56 & det. \\
+-8 & 7: 1.5/3 & 1 / 9$^{u}$ & 361.7 & 41.4 & 8.74 & det. & 361.7 & 8.74 & det. \\
+-9 & 7: 2/4 & 1 / 10 & 494.4 & 13.4 & 36.91 & det. & 494.4 & 36.91 & det. \\
+-10 & 7: 2.5/5 & 1 / 11 & 616.6 & 13.4 & 45.94 & det. & 616.6 & 45.94 & det. \\
++8 & 7: 1.5/3$^{b}$ & 1 / 9$^{u}$ & 361.7 & 41.4 & 8.74 & det. & 361.7 & 8.74 & det. \\
++9 & 7: 2/4$^{b}$ & 1 / 10 & 494.4 & 13.4 & 36.91 & det. & 494.4 & 36.91 & det. \\
++10 & 7: 2.5/5$^{b}$ & 1 / 11 & 616.6 & 13.4 & 45.94 & det. & 616.6 & 45.94 & det. \\
+ 11 & 5: 0.25/1 & 1 / 12 & 58.0 & 13.2 & 4.39 & det. & 58.0 & 4.39 & det. \\
+ 12 & 9: 0.25/1 & 1 / 13 & 61.1 & 12.6 & 4.84 & det. & 61.1 & 4.84 & det. \\
+ 13 & 9: 0.75/3 & 1 / 14 & 199.1 & 13.5 & 14.78 & det. & 199.1 & 14.78 & det. \\
+@@ -2649,12 +2654,12 @@
+ 23 & 7: 0.25/1, $m=2$ & 34 / 35 & 46.3 & 12.3 & 3.77 & det. & 46.3 & 3.77 & det. \\
+ 24 & 7: 0.5/2, $m=2$ & 34 / 36 & 92.8 & 12.8 & 7.26 & det. & 92.8 & 7.26 & det. \\
+ 25 & 7: 0.75/3, $m=2$ & 34 / 37$^{u}$ & 133.8 & 27.7 & 4.83 & det. & 133.8 & 4.83 & det. \\
+-26 & 7: 1/4, $m=2$ & 34 / 38$^{f}$ & 176.6 & 9.7 & 18.14 & det. & 176.6 & 18.14 & det. \\
+-27 & 7: 1.25/5, $m=2$ & 34 / 39$^{u}$ & 228.4 & 26.5 & 8.60 & det. & 228.4 & 8.60 & det. \\
++26 & 7: 1/4$^{b}$, $m=2$ & 34 / 38$^{f}$ & 176.6 & 9.7 & 18.14 & det. & 176.6 & 18.14 & det. \\
++27 & 7: 1.25/5$^{b}$, $m=2$ & 34 / 39$^{u}$ & 228.4 & 26.5 & 8.60 & det. & 228.4 & 8.60 & det. \\
+ 28 & 7: 0.25/1 $\to$ 0.5/2, $m=2$$^{\Delta}$ & 35 / 36 & 46.5 & 12.8 & 3.64 & det. & 46.5 & 3.64 & det. \\
+ 29 & 7: 0.5/2 $\to$ 0.75/3, $m=2$$^{\Delta}$ & 36 / 37$^{u}$ & 41.0 & 27.7 & 1.48 & det. & 41.0 & 1.48 & det. \\
+-30 & 7: 0.75/3 $\to$ 1/4, $m=2$$^{\Delta}$ & 37$^{u}$ / 38$^{f}$ & 42.8 & 27.7 & 1.55 & det. & 42.8 & 1.55 & det. \\
+-31 & 7: 1/4 $\to$ 1.25/5, $m=2$$^{\Delta}$ & 38$^{f}$ / 39$^{u}$ & 51.8 & 26.5 & 1.95 & det. & 51.8 & 1.95 & det. \\
++30 & 7: 0.75/3 $\to$ 1/4$^{b}$, $m=2$$^{\Delta}$ & 37$^{u}$ / 38$^{f}$ & 42.8 & 27.7 & 1.55 & det. & 42.8 & 1.55 & det. \\
++31 & 7: 1/4$^{b}$ $\to$ 1.25/5$^{b}$, $m=2$$^{\Delta}$ & 38$^{f}$ / 39$^{u}$ & 51.8 & 26.5 & 1.95 & det. & 51.8 & 1.95 & det. \\
+ \midrule
+ \multicolumn{10}{@{}p{\dimexpr\linewidth\relax}@{}}{\textit{(c) Twice the base flexibility price, 2030 unless stated: neighbours against the plan returned by the search (5: 0.25/0.5; 7: 1/3.5, evaluation~40), $\Delta = F(\text{neighbour}) - F(\text{returned plan})$; positive: the returned plan costs less}}\\[1pt]
+ 32 & 7: 0.75/3, 2025 & 40$^{u}$ / 37$^{u}$ & 94.3 & 27.7 & 3.41 & det. & 133.4 & 4.81 & det. \\
+@@ -2700,7 +2705,7 @@
+ \begin{landscape}
+ {\scriptsize\setlength{\tabcolsep}{3pt}
+ \begin{longtable}{@{}r >{\raggedright\arraybackslash}p{4.6cm} c l l r r r r r r r r l@{}}
+-\caption{\textcolor{blue}{Recourse evaluations. Plan: node: MVA/MWh. Condition: flexibility-price multiplier $m$ (base: $m = 1$) or ageing calibration. Status: certified on the oscillatory (osc.) or monotone (mon.) branch, the cause that left the evaluation uncertified (gap clause, lapse reset, growth test), or superseded. $k_0$: first residual pass; $k^{*}$/end: certification cycle, or the cycle at which an uncertified evaluation stopped. Range: window range over $\tau$. Band, and the magnitudes of the gap and slack, in k\euro{}. N.c.: non-clean cycles after $k_0$. Replay: last cycle replayed bitwise. Rule: applied in the run, or to the committed record. $^{f}$: flagged certificate (a turning point at a non-clean cycle); $^{t}$: bitwise twin of evaluation~2; $^{s}$: superseded by evaluation~15; certified under an earlier version of the rule, whose cycle, range and band are shown, and not decided under the rule of \ref{app:admm_updated_certification} within its recorded cycles. ---: not applicable or not tabulated.}}
++\caption{\textcolor{blue}{Recourse evaluations. Plan: node: MVA/MWh. Condition: flexibility-price multiplier $m$ (base: $m = 1$) or ageing calibration. Status: certified on the oscillatory (osc.) or monotone (mon.) branch, the cause that left the evaluation uncertified (gap clause, lapse reset, growth test), or superseded. $k_0$: first residual pass; $k^{*}$/end: certification cycle, or the cycle at which an uncertified evaluation stopped. Range: window range over $\tau$. Band, and the magnitudes of the gap and slack, in k\euro{}. N.c.: non-clean cycles after $k_0$. Replay: last cycle replayed bitwise. Rule: applied in the run, or to the committed record. $^{f}$: flagged certificate (a turning point at a non-clean cycle); $^{t}$: bitwise twin of evaluation~2; $^{b}$: investment above the 1~M\euro{} budget (valuation probe outside the admissible set); $^{s}$: superseded by evaluation~15; certified under an earlier version of the rule, whose cycle, range and band are shown, and not decided under the rule of \ref{app:admm_updated_certification} within its recorded cycles. ---: not applicable or not tabulated.}}
+ \label{tab:appE_evaluations}\\
+ \toprule
+ No. & Plan & Year & Condition & Status & $k_0$ & $k^{*}$/end & Range/$\tau$ & Band & Gap & Slack & N.c. & Replay & Rule \\
+@@ -2718,13 +2723,13 @@
+ 2 & 7: 0.25/1 & 2025 & base & cert. & --- & 172 & 0.96 & 4.4 & --- & --- & --- & --- & record \\
+ 3 & 7: 0.5/2 & 2025 & base & cert., osc. & 89 & 150 & 0.98 & 4.5 & --- & --- & 1 & --- & record \\
+ 4 & 7: 0.75/3 & 2025 & base & cert., osc.$^{f}$ & 88 & 142 & 0.72 & 3.3 & --- & --- & 1 & 88 & run \\
+-5 & 7: 1/4 & 2025 & base & cert., osc. & 86 & 153 & 1.00 & 4.5 & --- & --- & 0 & 86 & run \\
+-6 & 7: 1.25/5 & 2025 & base & growth test & 82 & 191 & --- & --- & 1.1 & 8.0 & 5 & 82 & run \\
++5 & 7: 1/4$^{b}$ & 2025 & base & cert., osc. & 86 & 153 & 1.00 & 4.5 & --- & --- & 0 & 86 & run \\
++6 & 7: 1.25/5$^{b}$ & 2025 & base & growth test & 82 & 191 & --- & --- & 1.1 & 8.0 & 5 & 82 & run \\
+ 7 & 7: 0.5/1 & 2025 & base & cert., osc. & 104 & 175 & 0.86 & 3.9 & --- & --- & 0 & 104 & run \\
+ 8 & 7: 1/2 & 2025 & base & lapse reset & 94 & 203 & --- & --- & 0.5 & 8.1 & 2 & 94 & run \\
+-9 & 7: 1.5/3 & 2025 & base & growth test & 89 & 198 & --- & --- & 0.8 & 13.8 & 6 & 89 & run \\
+-10 & 7: 2/4 & 2025 & base & cert., osc. & 83 & 145 & 0.98 & 4.5 & --- & --- & 0 & 83 & run \\
+-11 & 7: 2.5/5 & 2025 & base & cert., osc. & 83 & 138 & 0.99 & 4.5 & --- & --- & 0 & 83 & run \\
++9 & 7: 1.5/3$^{b}$ & 2025 & base & growth test & 89 & 198 & --- & --- & 0.8 & 13.8 & 6 & 89 & run \\
++10 & 7: 2/4$^{b}$ & 2025 & base & cert., osc. & 83 & 145 & 0.98 & 4.5 & --- & --- & 0 & 83 & run \\
++11 & 7: 2.5/5$^{b}$ & 2025 & base & cert., osc. & 83 & 138 & 0.99 & 4.5 & --- & --- & 0 & 83 & run \\
+ 12 & 5: 0.25/1 & 2025 & base & cert., osc. & 104 & 173 & 0.97 & 4.4 & --- & --- & --- & 104 & record \\
+ 13 & 9: 0.25/1 & 2025 & base & cert., osc. & 103 & 173 & 0.92 & 4.2 & --- & --- & --- & 103 & record \\
+ 14 & 9: 0.75/3 & 2025 & base & cert., osc. & 84 & 148 & 0.99 & 4.5 & --- & --- & --- & 84 & record \\
+@@ -2757,8 +2762,8 @@
+ 35 & 7: 0.25/1 & 2025 & $m=2$ & cert., osc. & 123 & 150 & 0.90 & 4.1 & --- & --- & 0 & 123 & run \\
+ 36 & 7: 0.5/2 & 2025 & $m=2$ & cert., mon. & 135 & 198 & 0.94 & 4.3 & --- & --- & 0 & 135 & run \\
+ 37 & 7: 0.75/3 & 2025 & $m=2$ & growth test & 151 & 260 & --- & --- & 0.3 & 9.2 & 1 & 151 & run \\
+-38 & 7: 1/4 & 2025 & $m=2$ & cert., osc.$^{f}$ & 127 & 158 & 0.71 & 3.2 & --- & --- & 1 & 127 & run \\
+-39 & 7: 1.25/5 & 2025 & $m=2$ & gap clause & 159 & 270 & --- & --- & 8.8 & 6.2 & 1 & 159 & run \\
++38 & 7: 1/4$^{b}$ & 2025 & $m=2$ & cert., osc.$^{f}$ & 127 & 158 & 0.71 & 3.2 & --- & --- & 1 & 127 & run \\
++39 & 7: 1.25/5$^{b}$ & 2025 & $m=2$ & gap clause & 159 & 270 & --- & --- & 8.8 & 6.2 & 1 & 159 & run \\
+ \midrule
+ \multicolumn{14}{@{}l}{\textit{(e) Twice the base flexibility price: the plan returned by the search and its neighbours (Subsection~\ref{subsec:res_breakeven})}}\\[1pt]
+ 40 & 5: 0.25/0.5; 7: 1/3.5 & 2030 & $m=2$ & gap clause & --- & 281 & --- & --- & 9.2 & 1.5 & --- & 172 & record \\
+@@ -2800,7 +2805,7 @@
+ \begin{figure}[htbp!]
+     \centering
+     \includegraphics[width=0.75\textwidth]{fig_lattice_case.pdf}
+-    \caption{Admissible single-node investment plans for installation in 2025 under the baseline constraints. The investment budget is shared across all nodes.}
++    \caption{\textcolor{blue}{Admissible single-node investment plans for installation in 2025 under the baseline constraints. The investment budget is shared across all nodes.}}
+     \label{fig:investment_lattice}
+ \end{figure}
+ 
+@@ -2810,7 +2815,7 @@
+ 
+ \begin{table}[htbp!]
+     \centering
+-    \caption{\textcolor{blue}{Neighbours of the plan without storage re-evaluated under the certification rule: the smallest unit (0.25~MVA / 0.5~MWh) at the nodes listed. $\Delta = F(\boldsymbol{x}) - F(\boldsymbol{0})$, gross operational cost, settlement excluded; every difference is determinate.}}
++    \caption{\textcolor{blue}{Neighbours of the plan without storage re-evaluated under the certification rule: the smallest unit (0.25~MVA / 0.5~MWh) at the nodes listed. $\Delta = F(\boldsymbol{x}) - F(\boldsymbol{0})$, gross operational cost, contracted interface settlement excluded; every difference is determinate.}}
+     \label{tab:appE_neighbours}
+     \scriptsize\setlength{\tabcolsep}{5pt}
+     \begin{tabular}{l c c r r r}
+@@ -2850,7 +2855,7 @@
+ 
+ \begin{table}[htbp!]
+     \centering
+-    \caption{\textcolor{blue}{Static no-reverse-flow (NRF) arrangements at the plan without storage, by solver start. Cold: default start; perturbed: perturbed start; warm: started from the certified coordinated evaluation. $Q$: gross operational cost, settlement excluded, after the consistency pass. Curtailment: day-weighted, over the horizon, from the first phase (before the pass).}}
++    \caption{\textcolor{blue}{Static no-reverse-flow (NRF) arrangements at the plan without storage, by solver start. Cold: default start; perturbed: perturbed start; warm: started from the certified coordinated evaluation. $Q$: gross operational cost, contracted interface settlement excluded, after the consistency pass. Curtailment: day-weighted, over the horizon, from the first phase (before the pass).}}
+     \label{tab:appE_benchmark}
+     \scriptsize\setlength{\tabcolsep}{4pt}
+     \begin{tabular}{l l r r r r r r}
+@@ -2916,7 +2921,7 @@
+ }
+ 
+ \textcolor{blue}{
+-    Certification (Subsection~\ref{subsubsec:certification}) uses $\delta_R = 0.07$ on the reference value $\mathcal{V} = 259{,}375.33$~\euro{}, the value of the reference unit in force when the rule was adopted, hence $\tau = 4{,}539.07$~\euro{}, kept frozen thereafter, and $P_{\max} = 30$ cycles;
++    The acceptance tolerance~\eqref{eq:acceptance_tolerance} uses $\delta_R = 0.07$ on the reference value $\mathcal{V} = 259{,}375.33$~\euro{}, the value of the reference unit in force when the rule was adopted, hence $\tau = 4{,}539.07$~\euro{}, kept frozen thereafter, and $P_{\max} = 30$ cycles;
+     an evaluation continued from, or re-run on, an earlier record is capped 100 cycles after that record's stopping cycle, a fresh one at $\min\{k_0 + 109, 300\}$. The planning search (Algorithm~\ref{alg:shared_ess_planning_mads}) used $\Delta_0 = 4$ lattice units, budgets of 20 new evaluations for the two variant-A searches and 60 for the variant-B certificate, a completion cap of 30 points, and the measured resolution $\sigma_Q = 18{,}449.66$~\euro{} of the recourse.
+     The search evaluations ran under the production exit (ten consecutive passing cycles, cap 500 cycles); variant B polled at unit size throughout; a run was stopped for review when a completion set exceeded the cap or when two barrier points occurred in one poll or three in all, and ran at most 60 polls; the cache of the baseline search was seeded with the single-node ladders of the initial design, including ladder points over the budget, and the caches of the two searches under the doubled flexibility price with the certified evaluations at that price, which for the variant-B run include multi-node plans installed in 2030.
+ }
