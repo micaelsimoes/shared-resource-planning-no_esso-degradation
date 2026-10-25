@@ -212,5 +212,25 @@ Kept by the expert during the author's whole-document read (2026-10-09 onward); 
   `cover_letter_v2.tex` (revision account; E1–E3 paragraph bracketed), `gen_appE.py` (six edd7a63 hunks ported +
   round-8 edits), `appendixE_evaluation_record.tex`. Compile 0 errors, 0 undefined; label numbers identical to
   `edd7a63`; 76 pages. W183h check ordered.
-- Still open: W183a–h; W184–W187 runs; round 9 (results text, letter R2.5/R2.6/R3.6, cover-letter paragraph, marked
-  copy); author's call on the prediction-record bullet (letter l. 286).
+- Round 8 on Overleaf `a87e195` (author, 2026-10-26); repo `22e19b56` (the four tracked files) + `bd3a9f35` (the nine
+  new files, after the expert found them unstaged). Expert verified the four Overleaf files byte-identical to the
+  deliverables (main 39f6fd86…, letter v10 2aeb33b2…, highlights v3 4cedd45c…, cover letter v2 88eee8ce…).
+- W183 received (`ca56713c`; production `6f43479e`, harness `c34ebdc5`, E1 launcher `320d503c`; 153 solves, all in the
+  two-cycle gate). Held: G0 identical at x = 0; NRF-off NL identity 696/696 (on: 864 rows per copy); 7 seed keys (+1
+  G0 alias). Failed as frozen: the two-cycle gate, one item — 22 W64 record keys absent in the W48 reference and null
+  in the arm, 29 shared keys bitwise equal, per-cycle record byte-identical to the W83 arm. Unpredicted: variant B
+  refuses the first poll for every storage seed at k = 0 (6–7 distinct points; completion 31/34/61 > cap 30). E6
+  exported (declared day 2025 Spring, 40,181.22 € = 15.8 % of 253,539.62 €; panel (b) in €). W183h not run.
+  Rulings: Addendum 85 — gate read as field-list drift (zero-solve comparator vs the W83 arm; standing rule
+  `GATE_PASS_RULED`; W48 reference kept; sequential-builder scope accepted); E1 poll rule **B+** (when the completion
+  would exceed the cap, advance the Halton index up to 10 times until n + 1 distinct feasible points; else as frozen;
+  both arms, every poll, declared before any E1 solve; launcher-owned loop, F2 module unedited); A7 barrier rule
+  confirmed; spec v1 declarations (batch seeds unit/n7 0.5/2 × A/N; cross-evaluations and E3/E2 under the ext-v6
+  certified protocol; screen 14 + x = 0 at 1× = 15; NRF tolerance 1e-3 MW; G0 pointer `ca195bd3`); E6 € measure and
+  the three guarded reads accepted; W185 no longer waits for the §4.4 text; counts E3 1, E2 8, E1 ≤ 75, screen 15,
+  ≈ 81 h serial. W183g ordered (comparator run, launcher v2 + dry-run gate, fixed-plan launcher, spec v1 freeze,
+  W183h); W184 (E3) and W185 (E2) authorized conditionally on W183g's gates, no further addendum. Plan amended
+  (`STEP7_SIMULATION_PLAN_2026-10-25.md` §12, v2.2).
+- Still open: W183g (+ W183h); W184–W187 runs; round 9 (results text incl. the one-sentence B+ statement, the E6
+  figure, letter R2.5/R2.6/R3.6, cover-letter paragraph, marked copy); author's call on the prediction-record bullet
+  (letter l. 286).

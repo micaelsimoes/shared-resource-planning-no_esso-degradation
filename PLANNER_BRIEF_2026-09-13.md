@@ -3907,3 +3907,187 @@ legend). (e) Numbers in the 21 main-text edits against the frozen JSON and the n
 W182g). (f) 0 `[CONFIRM`, 0 `<word>~\ref{app:`; blue present on the 23 A5 lines. Report `P5_15_W183H_ROUND8.md`
 (part of W183's report or separate); commit and push. **Predictions:** (a)–(c) as stated; (d) 0 remaining; (e)
 0 MISMATCH; (f) hold.
+
+# Addendum 85 — rulings on W183 (`ca56713c`; production `6f43479e`, harness `c34ebdc5`, E1 launcher `320d503c`); the two-cycle gate read as field-list drift; E1 poll rule B+; spec v1 declarations; W183g order; W184/W185 authorized conditionally (2026-10-26)
+
+**Received.** `P5_15_W183_REPORT.md` with parts 0, a–f and e (reports `P5_15_W183_0_NL_REFERENCE.md`,
+`…W183A_OPTIONS.md`, `…W183B_E1_LAUNCHER.md`, `…W183C_NRF.md`, `…W183D_G0.md`, `…W183E_E6_EXPORT.md`,
+`…W183F_BITWISE_GATE.md`). Solves 153, all in the two-cycle gate, declared and verified by the armed guard; every other
+part built under `SolveProfileGuard(permitted=())` at 0 or built nothing; pickle loads 115 (W183c gate 1) + 3 (W183e).
+The chain is stopped at W184 on two findings: the two-cycle gate returned `GATE_PASS=False` as frozen, and the E1
+launcher's dry run showed that variant B refuses the first poll for every storage seed. Neither needs a solve to rule.
+Overleaf is at `a87e195` with round 8 (the expert verified the four files byte-identical to the round-8 deliverables:
+`main.tex` 39f6fd86…, letter v10 2aeb33b2…, highlights v3 4cedd45c…, cover letter v2 88eee8ce…; repo `bd3a9f35`);
+W183h has not run (W183 did not read Overleaf) and is re-ordered below unchanged.
+
+**Predictions against outcomes (Addendum 83).** G0 identical at x = 0 — **held** (W183-0 before the change, W183d on
+the final head: ESSO NL identical per node; network NL and component digests identical on 48 sequential + 36 parallel
+blocks; the unit at 2× differs N vs A only in the six degradation rows). The NRF-off NL identity — **held** (696/696
+blocks; option on: 864 rows per copy, all active, nothing else differs). The two-cycle gate passes — **failed as
+frozen** on one item of twelve files, read in ruling 1 as field-list drift (not a code effect). The E1 dry run yields
+7 distinct seed keys — **held** (7 + the G0 alias x = 0 under N). Unpredicted finding, recorded: at k = 0 the snapped
+2n poll of each storage seed has 6–7 distinct feasible points, so the frozen completion (31, 34, 61 box points) is
+refused by the cap of 30 — a property of the lattice, computed without a solve (W183b's table, `w183b_e1_dryrun.json`
+`first_poll_if_each_seed_were_the_incumbent`, k = 0…9 per seed).
+
+**Rulings.**
+
+1. **Two-cycle bitwise gate: field-list drift; (b′) now, (c) as the standing rule; the W48 reference stays.** The
+   44 "genuine" diffs are the 22 `PER_CYCLE_RESPONSE_FIELDS` keys that W64 (`70950e8c`) added to the per-cycle record
+   after the W48 reference arm was written: absent there, `null` in the new arm on both rows; the 29 shared trajectory
+   keys are bitwise equal; the new arm's `per_cycle_record.jsonl` is byte-identical (`f8506905…`) to the post-W64
+   W83 arm's; the other 11 compared files have 0 genuine diffs, Q = 740,922,817.2425401 equals W48's, 153/153 solves,
+   57/57 presence. Nothing in the W183 code changes is visible in the ADMM trajectory.
+   - (b′) **Zero-solve:** run the gate's own comparator (`W10.classify`, the gate's file set and tolerances) on the
+     committed W183f arm (`P515S55/w183f_srp1_bitwise_gate/arm/`) against the committed W83 arm
+     (`P515S53/tight_tail_w83/srp1_bitwise_gate/arm/`) as the whole-arm reference, files hash-checked against the
+     W83 manifest first. Output to a new write-once directory `P515S55/w183f_srp1_bitwise_gate_vs_w83/`; the gate's
+     own outputs and verdict are not edited. **Prediction:** 0 genuine diffs on all 12 files; provenance diffs ≤ 3,
+     all under `rule_eleven_checklist` (`w10_arm`, `w183a_nrf_option`, `w84_convergence_depth_tail`).
+   - (c) **Standing comparator rule (from this addendum on):** a key absent in the reference record and `null` or
+     absent in the new arm is `field_list_drift`, listed by key, never `genuine`, provided every key shared by the
+     two records is bitwise equal; a key present in both with different values stays `genuine`. Implemented in the
+     wrapper layer (`p515_s55_w183f_bitwise_gate.py` v2 or a successor): the committed gate
+     `p515_s53_srp1_bitwise_gate.py` and its frozen verdict `GATE_PASS` are not edited; the wrapper records both
+     `GATE_PASS` (as frozen) and `GATE_PASS_RULED` (this rule) with the drift keys. The W48 arm remains the
+     whole-arm reference (older than the tail and than W64; its 29 keys are the trajectory).
+   - The identical W83 failure (`eb8cf81f`, never ruled) is settled retroactively by the same reading; recorded here,
+     no re-run.
+   - **Reading of W183f:** passed under rule (c) once (b′) returns 0 genuine diffs; the CLAUDE.md stop on W184 is
+     lifted on that result (W183g (a) reports it before anything solves).
+   - **Scope ("at both DSO builders").** Accepted as the Planner read it: the solve-bearing gate covers the sequential
+     builder, the only one the configuration runs (`ParallelExecution: false`, pinned in spec v1); the parallel
+     builder is covered by W183c's zero-solve NL + component identity (36 parallel blocks × 8 configurations within
+     the 696/696). Recorded as a limit: no solve-bearing gate covers the parallel builder, which is not on the
+     campaign path; a run that turned `ParallelExecution` on would need its own gate.
+
+2. **E1 poll rule — B+: variant B with a direction-index advance where the frozen rule would refuse.** Facts: the
+   completion of a one-node incumbent at the unit (31 feasible box points), of 7: 0.5/2 (34) and of the historical
+   incumbent (61) exceeds the cap of 30 and the arm budget N^max = 30; at k = 0 every storage seed has 6–7 distinct
+   feasible points after snapping (7 for the historical incumbent, 6 for the two single-node seeds), so the frozen
+   rule stops every storage incumbent at poll 0; the unit reaches 8 distinct points at k = 2 only, 7: 0.5/2 at k = 2
+   (9) and k = 3 (8), the historical incumbent at every k except 0 and 8; x = 0 has 3–5 distinct points at every k
+   and a completion of 14, which runs. Rejected: (a) a seeds-only E1 (it answers R3.6's planning question not at
+   all, and the cross-evaluations would compare seeds, not searched plans); (b) a cap of 61 (one poll of 61 × 0.75 h
+   ≈ 46 h per arm exhausts the budget for a one-step full-box certificate); (c) a per-seed hand-picked start (as the
+   Planner says).
+   - **Ruled, declared here before any E1 solve, identical in both arms and at every poll:** when fewer than n + 1 = 8
+     distinct feasible poll points remain after rounding and snapping, (i) if the completion of the incumbent has
+     ≤ 30 feasible points it is used, as frozen; (ii) if it has more than 30, the Halton index advances by one and the
+     2n directions are re-drawn, rounded and snapped, at most 10 consecutive indices, and the first index with at
+     least n + 1 distinct feasible points is polled — the skipped indices and their snap tables are written into the
+     poll record; (iii) if no index in the window yields n + 1 points, `STOP_FOR_REVIEW_completion_cap` as frozen.
+     Everything else is the frozen variant B of Addendum 39 ruling 1 / spec v23: 2n = 14 OrthoMADS directions, the
+     rounding, `SNAP_RULE`, Δ = 1 at every poll, acceptance of a poll point only above max{bar_x + bar_inc, σ_Q =
+     18,449.66 €}, the A7 barrier rule, ≤ 30 new evaluations per arm, ≤ 10 launched polls, the index continuing from
+     the last polled index + 1. Start index k₀ = 0 (t = 17) in both arms. The rule reads the snap table only — it
+     carries no objective value, so it is a design declaration, not an outcome choice; the geometry table that
+     motivates it is computable before any solve and is committed (W183b). The paper states the rule in one sentence
+     where E1 is reported (round 9) with the reason (the completion of a one- or two-node incumbent exceeds the cap
+     and the budget). The certificate scope stays as frozen: a terminal poll failure is "poll failure over the
+     recorded poll set at unit mesh" with the spanning test recorded; it is a full-box certificate only when the
+     completion was used; the E1 report states the scope per arm.
+   - **Implementation:** the E1 launcher owns its poll loop (`run_continuation_e1`, a copy of `C.run_continuation`
+     with the advance step (ii) inserted before the cap refusal); `C.build_poll` (pure) is imported unchanged; the
+     committed `p515_s53_f2_certificate.py` is not edited; the poll record gains `halton_indices_skipped` and
+     `advance_rule`. **Gate (zero-solve dry run, W183g (b)):** with the advance disabled, the launcher's loop
+     reproduces the imported loop's poll-0 decision for each of the 8 seed-as-incumbent cases (refusal for the six
+     storage cases, the 14-point completion for x = 0) with bitwise-equal poll records; with the advance enabled it
+     polls the unit at k = 2 (8 points), 7: 0.5/2 at k = 2 (9), the historical incumbent at k = 1 (8), x = 0 at k = 0
+     (completion 14) — these follow from W183b's committed table and are checks, not hypotheses; W183b's k = 0…9
+     table is reproduced; the A7 rule and every other decision path are unchanged.
+
+3. **Barrier stop rule: A7 confirmed** (stop for review after 2 new barrier evaluations in one poll or 3 overall); plan
+   §9's "stop for review on a barrier point" is read as A7; every barrier point is reported with its cause.
+
+4. **Spec v1 declarations (W183b items 3–6; report decision 3).** (i) Halton start k₀ = 0 per arm, under ruling 2.
+   (ii) Arm A declares no `model_variant` (the baseline by absence; keys equal to E.21 rows 35 and 40), arm N declares
+   the variant and its label; every entry carries `flex_price_multiplier` = 2.0 and its label — confirmed. (iii) No
+   post-certification on seed and search entries (production exit, cap 500, 10 cycles) — confirmed. (iv) The batch
+   gate re-runs **unit_A_2x, unit_N_2x, n7_05_2_A_2x, n7_05_2_N_2x** (the two node-7 plans under both models — the
+   plan's "four node-7 seeds") as one 4-slot batch under `P515S55/e1_2x_batch4` (root-scoped cache, never seeding an
+   arm), compared with the serial records on the gated per-cycle fields (`PER_CYCLE_TRAJECTORY_FIELDS`, W101/W142
+   replay method), peak RSS recorded; bitwise identity authorizes 4 slots for the search batches, otherwise serial.
+   (v) The G0 pointer for `--freeze`/`--run` is `P515S55/w183_nl_post_w183c_off/w183_nl_digest.json.gz` `ca195bd3…`
+   with `w183d_g0/g0.json` `8cef45d6…` — confirmed. (vi) Cross-evaluations: x_A and x_N under A and under N (4; 2 if
+   x_A = x_N), certified protocol = the ext-v6 `settling_resettle` v6 declaration as in spec `10f4aa7a` on the final
+   code, phase `cross` under `P515S55/e1_2x`; a returned plan that is a seed is still re-evaluated under the certified
+   protocol. (vii) The 1× screen: the 14 admissible unit neighbours of x = 0 under N at 1× **plus x = 0 at 1× on the
+   final code** (production exit; evaluated once, the alias for N by G0, as in E1) = **15 evaluations** under
+   `P515S55/e1_screen_1x`; compared by max{bar sum, σ_Q}; E.21 row 1 (the committed certified value of x = 0 at 1×) and row 54
+   (the reference unit under N) reported beside as fixed-plan data, never as the comparator. (viii) E3: x = 0, 1×,
+   `nrf_option` True (key and label), certified protocol as (vi), root `P515S55/e3_cnrf`, one evaluation. (ix) E2
+   stage 1: {x = 0, reference unit} × {1×, 2×} × {`rho0_scale` 0.5, 2.0} = 8, certified protocol, root
+   `P515S55/e2_rho`. (x) NRF binding tolerance 1e-3 MW — confirmed; E3 reports both measures (binding hours by the
+   expected-value rule; per block the minimum row body and the count of rows within tolerance), states that at one
+   scenario they coincide, and gives the per-node minima. (xi) W183g builds the thin fixed-plan launcher (precedent
+   ext v6: `freeze_campaign_spec` + `evaluate`, pins, write-once roots, the capture checklist asserted before each run)
+   for (vi)–(ix).
+
+5. **Harness points (decision 4): both kept.** The `previous_iter.ess` guard under a declared `rho0_scale` is correct
+   (the case file has it off). The `w183a_nrf_option` checklist entry in undeclared records is accepted; it is a
+   provenance field, which ruling 1 (c) already treats as such in comparisons.
+
+6. **E6 (decision 5).** Panel (b) uses the cost measure (€): per-block change against x = 0 of the TN conventional cost
+   and of the DN flexibility cost, from `component_levels_terminal.json`; the caption says cost, not volume; no further
+   pickle read. The supporting node-7 schedule for all 12 blocks stays. The three guarded loads are accepted as
+   recorded; from now on a guarded-read authorization means as many guarded reads as the task needs, each logged with
+   its run, so trial reads need no separate authorization. The declared day 2025 Spring (40,181.22 €, 15.8 % of
+   253,539.62 €, determinate by 118×) is adopted; the figure is drawn by the expert in round 9 from `e6_export.json`
+   (zero-solve); the 2035 Spring oscillation (block range 4.25–4.34 k€ over the certification windows) is noted for
+   §4.7/E.7, no action.
+
+7. **Runtime coverage of the "not confirmed" items.** NRF rows through the ADMM cycles: E3's terminal capture runs on
+   the run's own terminal models, which are the last cycle's models, so 864 active rows per copy at terminal is the
+   runtime evidence (W184 reports it). Scaled ρ through the cycles: the per-cycle record carries `rho_{v,pf,ess}_after`
+   and `rho_{v,pf,ess}_action`; W185 checks on every E2 cell that the cycle-0 values are S39 × s exactly when the
+   action is a hold, and S39 × s times the recorded adaptation otherwise. The parallel builder in a worker process is
+   not on the campaign path (ruling 1). The launchers' `--freeze`/`--run` paths are first exercised by W184's single
+   attended run and by W186's attended seeds phase.
+
+8. **Order change.** W185 (E2 stage 1) follows W184 (E3) without waiting for the §4.4 text: the rewrite of §4.4 from
+   E3's records is round-9 text work and E2's design does not depend on E3's outcome; the plan's "E3's report rewrites
+   §4.4 before E2 starts" is replaced by "§4.4 is rewritten in round 9 from E3's records". The E2 stop rule (H2 fails
+   → stop before E1) stands; W186/W187 wait for Addendum 86.
+
+9. **Counts and time (replace Addendum 83 ruling 6):** E3 1; E2 8; E1 ≤ 75 (seeds 7, batch 4, searches ≤ 30 + ≤ 30,
+   cross-evaluations ≤ 4); screen 15; E6 0. Serial worst case ≈ 2.5 + 10 + 57 + 11.25 ≈ 81 h; ≈ 49 h with the batch
+   gate passed. D1 covers runs over 4 h within these limits; every extension needs a ruling.
+
+**W183g order (Worker tasks authorized by this addendum; zero solves; builds only where named; one gate per task).**
+- (a) Ruling 1: the (b′) comparator run against the W83 arm; wrapper v2 with `GATE_PASS_RULED` and the drift keys;
+  nothing re-run. **Prediction:** 0 genuine, ≤ 3 provenance.
+- (b) Ruling 2: E1 launcher v2 with the owned loop and the B+ advance; the dry-run gate of ruling 2 (advance off ≡
+  imported loop at poll 0 for 8 cases, bitwise; advance on → k = 2/2/1/0, poll sizes 8/9/8/14, skipped indices
+  recorded; W183b's table reproduced); the four batch seeds and the roots of ruling 4 declared in the spec.
+- (c) Ruling 4 (xi): the fixed-plan launcher with phases E3 (1 entry), E2 (8), cross (≤ 4, declared after W186's
+  searches), screen (15); zero-solve dry runs: keys recompute, E3's key carries `nrf_option`, E2's keys carry
+  `rho0_scale` 0.5/2.0 and the price, the screen's 15 keys under N at 1× with the x = 0 alias, pins, write-once
+  roots, the committed-spec scan (a committed holder of a key is reported and never reused: no cost is carried
+  across code states), memory preflight at concurrency 1. **Prediction:** key counts 1/8/15; 0 committed holders of
+  the E3 and E2 keys.
+- (d) Spec v1 freeze: production head `6f43479e` and every module hash, harness `c34ebdc5…`, gates `6f4631e1…`,
+  both launchers, oracle, settling v1–v6, the 81 inputs, the W2 and Phase A tables; keys of every phase; the B+ rule
+  text; the counts of ruling 9; the capture checklist; `ParallelExecution: false` pinned; committed.
+- (e) W183h as ordered in Addendum 84, at Overleaf `a87e195`; the HEAD stated.
+- Report `P5_15_W183G_REPORT.md` (W183h separate or inside); commit and push. Nothing solves in W183g.
+
+**W184 (E3) — authorized conditionally, no further addendum needed.** Launches, attended, as a separate commit with
+its launch log, once W183g (a)–(d) hold (0 genuine in (a); the dry-run gates in (b) and (c); the freeze in (d)) and
+W183g is reported. One certified evaluation of C_NRF (ruling 4 (viii)); stop for review if the certified status is
+not reached within its cap (report the uncertified form with gap, slack and bar) or if `nrf_capture_error` is set.
+Report `P5_15_W184_REPORT.md`: Q(C_NRF) with status, k\*/end, band or gap/slack, stopping ratio; the two conditional
+differences with the plan §3 reporting rule and denominators (Q(P_NRF) − Q(C_NRF) relative to Q(P_NRF); Q(C_NRF) −
+Q(C_OPEN) relative to Q(C_NRF)), recomputed from the records; the decomposition into TN conventional energy and DN
+flexibility and the curtailment columns, as Table 12/E.23; the terminal NRF capture (rows and active rows per copy,
+binding hours by both measures, per-node minima); the closure/σ/circle/SOC/interface diagnostics. **Hypotheses (plan
+§3, plus one):** H3a Q(C_NRF) − Q(C_OPEN) positive and within resolution (< 2τ = 9.1 k€); H3b Q(P_NRF) − Q(C_NRF) =
+90.9 ± 0.1 M€, 12.2 % at one decimal; H3c the four reverse-flow hours of C_OPEN (node 7, 2025: Autumn h19, Spring h22,
+Spring h2, Summer h22) are among the binding hours of C_NRF, and 864 rows per copy are active at terminal.
+
+**W185 (E2 stage 1) — authorized conditionally.** Follows W184's report without a further addendum if W184 ran to a
+declared status and the terminal capture read 864 active rows per copy; eight certified evaluations serially (ruling
+4 (ix)); the cycle-0 ρ check of ruling 7 on every cell; the margin and verdict rule of plan §4; report
+`P5_15_W185_REPORT.md`. **Hypothesis:** H2 as in the plan (paired margins within the baseline pair's threshold of
+their baseline values at each price; no pair's verdict changes); the ρ read-back holds on 8/8 cells. **Stop:** H2
+fails at either price → stop before E1 and report. W186 (E1) and W187 (screen) wait for Addendum 86 after W185.

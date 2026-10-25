@@ -289,3 +289,37 @@ each cell records candidate hash, code head, configuration hash and the stopping
 - **Reverse-flow context (Z7):** four hours at node 7 in 2025 (−3.157, −2.402, −1.602, −0.067 MW; weights 455–460
   days; prices 118–162 €/MWh): the directly priced energy of those hours is of the order of 1 M€ over the horizon,
   which is context for H3a, not a bound on the cost of imposing NRF.
+
+## 12. Amendments after W183 (v2.2, 2026-10-26; Addendum 85)
+
+- **E1 poll rule B+ (replaces the "completion cap" sentence of §5.1).** Variant B as frozen, with one declared
+  amendment, identical in both arms and at every poll: when fewer than n + 1 = 8 distinct feasible poll points remain
+  after rounding and snapping, the unit-box completion is used if it has ≤ 30 feasible points; if it has more, the
+  Halton index advances (at most 10 consecutive indices) and the 2n directions are re-drawn until at least n + 1
+  distinct feasible points remain; if no index in the window does, the poll is refused for review as frozen. Reason,
+  from W183b's zero-solve geometry table: the completion of the reference unit (31 points), of 7: 0.5/2 (34) and of
+  the historical incumbent (61) exceeds the cap and the arm budget, and at k = 0 every storage seed has 6–7 distinct
+  points, so the frozen rule would stop every storage incumbent at poll 0. The rule reads the snap table only (no
+  objective value) and was declared before any E1 solve; the paper states it in one sentence where E1 is reported;
+  the certificate scope stays as frozen (full-box only when the completion was used). Start index k₀ = 0 (t = 17) in
+  both arms; the A7 barrier rule (2 per poll / 3 overall) confirmed.
+- **Screen (§5.3): 15 evaluations** — the 14 unit neighbours of x = 0 under N at 1× plus x = 0 at 1× on the final code
+  (evaluated once; the N alias by G0); row 1 and row 54 reported beside as fixed-plan data, not as the comparator.
+- **Certified protocol for E3, E2 and the cross-evaluations:** the ext-v6 `settling_resettle` v6 declaration (spec
+  `10f4aa7a`) on the final code; a returned E1 plan that is a seed is still re-evaluated under it.
+- **E2 (§4) adds a per-cell runtime check:** the cycle-0 `rho_{v,pf,ess}_after` equal S39 × s (times the recorded
+  adaptation when the action is not a hold). **E3 (§3) adds:** the terminal NRF capture (864 active rows per copy;
+  binding hours by the expected-value rule and by the per-block row-body measure, which coincide at one scenario;
+  per-node minima; tolerance 1e-3 MW) and hypothesis H3c: the four C_OPEN reverse-flow hours are among the binding
+  hours of C_NRF.
+- **Order (§9, D5):** W185 (E2) follows W184 (E3) without waiting for the §4.4 text, which is rewritten in round 9 from
+  E3's records; the E2 stop rule stands; E1 and the screen wait for Addendum 86. W184 and W185 are authorized
+  conditionally on W183g's zero-solve gates (Addendum 85).
+- **Two-cycle bitwise gate:** read under the standing rule that keys absent in the reference and null in the new arm
+  are field-list drift (the 22 W64 keys), with the W48 whole-arm reference kept and a zero-solve re-comparison
+  against the W83 arm; the solve-bearing gate covers the sequential DSO builder, the only one the configuration runs.
+- **E6 (§7):** panel (b) in € (TN conventional cost and DN flexibility cost per block against x = 0); declared day
+  2025 Spring (40,181.22 €, 15.8 % of the value, determinate by 118×); the figure is drawn in round 9 from
+  `P515S55/e6_export/e6_export.json`.
+- **Counts (replace §11):** E3 1; E2 8; E1 ≤ 75; screen 15; serial worst case ≈ 81 h; ≈ 49 h with the batch gate
+  passed.
