@@ -17,7 +17,8 @@ Overleaf HEAD **`edd7a63`** (67 commits after `8f051a2`; main.tex diff 49 hunks;
 - [x] **W182f** — `7e5dd80e`: Z2 HELD (cap 281 used); Z7 FAILED favourably (committed JSON); Z3 table; Z4 15.2 GiB; Z5 inventory
 - [x] **W182g** — `a21b03e6` / `c39663e4`: Q = objective − contracted settlement − pin (deviation + row 18 inside Q at 3×3); y^End 2040; 42/47 plans admissible
 - [x] Planner review; report `P5_15_W182_REPORT.md` (Decisions 1–6)
-- [ ] **▶ Stopped for review** (A6 failed, no fallback; E1–E3 need code changes outside the spec): expert on 1, 2, 3, 4 (pickle read), 5; author on 4 (31.5 MB commit), 5, 6 (commit plan v2, brief, letter v9)
+- [ ] **▶ Stopped for review** (A6 failed, no fallback; E1–E3 need code changes outside the spec): expert on 1, 2, 3, 4 (pickle read), 5; author on 4 (31.5 MB commit), 5
+- [x] Author: plan v2, brief, letter v9 (+ diff) committed — `2f67f63a`; letter v9 = Overleaf `edd7a63` letter (cmp)
 - [ ] Then: campaign spec frozen (later addendum authorizes runs one gate per task)
 
 ## Addendum 80 order — W181 (zero-solve; short check, not a re-audit)
