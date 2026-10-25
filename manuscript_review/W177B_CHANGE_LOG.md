@@ -196,5 +196,14 @@ Kept by the expert during the author's whole-document read (2026-10-09 onward); 
   deferred with narrowed claims, E6 zero-solve; hypotheses H1–H3 recorded; counts reconciled (E1 ≤ 72 + 14; serial
   ≈ 84–89 h). Addendum 82 rewritten (v2): W182 = re-audit of `edd7a63` (A1–A8) + inventory Z1–Z7 + readings C1–C4;
   no run authorized.
-- Still open: W182 (Addendum 82 v2); campaign spec v1 after it; letter v10, cover letter, `highlights.tex` and the
-  marked copy after the results; letter pointers stale since `edd7a63`.
+- W182 received (`dfd09ca5`; Overleaf `edd7a63`, 67 commits after `8f051a2`; code `a17f6ba7`/production `575bfec4`;
+  seven zero-solve parts). Held: A1 0 M; A2 0 MISMATCH (701 MATCH, 31 DERIVED); A3 65/173 letter pointers MISMATCH;
+  33 PASS; A7 16 sentences; Z1 by code reading; Z2; Z6. Failed: A6 bitwise (Appendix E hand-edited, six hunks, 0
+  entries changed); Z7 favourably (reverse-flow hours in committed JSON). E1–E3 need harness/production changes
+  (no-ageing launcher, keyed ρ₀ option, NRF option on both copies); no perturbed coordinated start exists.
+  Rulings: Addendum 83 — generator port; "contracted interface settlement excluded"; eol_retention_r 0.50; E2 stage
+  2 deferred; NRF on the consensus exchange; concurrency gate inside E1; gate G0; E6 pickle read; round 8 scope;
+  counts E1 ≤ 75 + 14. W183 ordered (code changes, gates, spec v1 freeze). §3.3 generator-pricing sentence found
+  missing at `edd7a63` (letter R1.4 target) — restored in round 8.
+- Still open: W183; author to commit the two E6 JSONL files and confirm the out-of-budget labelling method; round 8
+  (expert) in parallel with W183; W184–W187 runs; round 9 and the marked copy after the results.

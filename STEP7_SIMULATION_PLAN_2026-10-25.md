@@ -266,3 +266,26 @@ each cell records candidate hash, code head, configuration hash and the stopping
 7. Concurrency: per-cycle time and determinism under four slots on the final code (step 2).
 8. Cost boundary and horizon-end date (C1, C2): stated once in the paper and used consistently (audit 3.3, 3.8).
 9. The historical searches' code state remains a reportable caveat for the rows that keep them (Z3).
+
+## 11. Amendments after W182 (v2.1, 2026-10-26; Addendum 83)
+
+- **E2 stage 2 is deferred for this revision.** No perturbed coordinated start exists; the `price_taker`
+  initialisation perturbs only the storage channel and would be mislabelled. The paper states E2 as a sensitivity to
+  initial penalty levels only.
+- **E1 launcher and keys.** A new launcher accepts `model_variant` + `flex_price_multiplier` together (untested
+  combination: gate G0 checks it); `eol_retention_r` = 0.50 (T8's declaration) so row 54's key is reusable.
+- **Gate G0** precedes E1: build-only NL identity at x = 0 with ageing on/off (Z1 was held by code reading only).
+- **Concurrency decided inside E1:** the seven serial seed evaluations are the reference; the four node-7 seeds are
+  re-run as one 4-slot batch and compared on the gated per-cycle fields; bitwise identity authorizes 4 slots for the
+  search batches, otherwise serial.
+- **NRF row** on the consensus exchange (`pc_adn`, `pg_adn`) on both copies, both DSO builders; declared per-network
+  option, default off; NL identity with the option off is the gate.
+- **Counts (replace §9):** E3 1; E2 8; E1 ≤ 75 at 2× (seeds 7, batch 4, searches ≤ 60, cross-evaluations 4); screen
+  14. Serial worst case ≈ 80 h; ≈ 48 h with the batch gate passed.
+- **E6 inputs:** two JSONL files (31.5 MB) committed by the author; the SoC from row 2's pickle under a guarded
+  zero-solve read.
+- **Convention:** "contracted interface settlement excluded" everywhere; at 3 × 3 the deviation settlement and the
+  commitment premium are inside Q.
+- **Reverse-flow context (Z7):** four hours at node 7 in 2025 (−3.157, −2.402, −1.602, −0.067 MW; weights 455–460
+  days; prices 118–162 €/MWh): the directly priced energy of those hours is of the order of 1 M€ over the horizon,
+  which is context for H3a, not a bound on the cost of imposing NRF.

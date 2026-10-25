@@ -3760,3 +3760,114 @@ marked copy compiled by the author is of `8f051a2`. Addendum 81's W182 is withdr
   PASS; A7 ≥ 6 sentences listed; Z1 Q(0) exactly independent; Z2 not reachable within the cap; Z6 ρ₀ is a
   configuration parameter and the NRF row needs a new declared option (code change, both copies); Z7 recoverable from
   `certified_models.pkl` only.
+
+# Addendum 83 — rulings on W182 (`dfd09ca5`, Overleaf `edd7a63`, code head `a17f6ba7`, production `575bfec4`); round 8 scope; campaign spec v1; W183 order (2026-10-26)
+
+**Received.** `P5_15_W182_REPORT.md` with parts a–g; seven zero-solve parts (guard 0, no build, pickle blocked). The
+HEAD is 67 commits after `8f051a2` (Addendum 82 said eight: the count was of the eight Overleaf commits the expert had
+seen listed; corrected). Letter v9 committed (`2f67f63a`) and byte-identical to the clone's.
+
+**Predictions against outcomes.** A1 ≤ 1 M — held (0 M; the interface-deviation sign matches the code). A2 — 701
+MATCH, 31 DERIVED, 0 MISMATCH. A3 ≥ 10 pointer MISMATCH — held (65 of 173). A6 bitwise — **failed** (Appendix E
+hand-edited in six hunks; 0 of 1,637 entries changed); 33 PASS — held. A7 ≥ 6 — held (16, plus 11 borderline). Z1 —
+held by code reading only. Z2 — held (row 40 used its whole cap of 281; the gap clause alone refuses). Z6 — held on
+both parts. Z7 — **failed favourably** (the four reverse-flow hours are in the committed
+`interface_settlement_detail_s31c.json`: node 7, 2025, Autumn h19 −3.157 MW, Spring h22 −2.402, Spring h2 −1.602,
+Summer h22 −0.067; weights 455/460/460/455; prices 161.80/134.53/117.73/131.72 €/MWh). Neither failure changes a
+number or a run; the A6 fallback is ruling 1.
+
+**Rulings.**
+
+1. **Appendix E: option (a).** The expert ports the author's six hunks into `gen_appE.py` (round 8) and the bitwise
+   gate stays. Rule from now on: Appendix E prose is edited through the generator — the author sends the sentence,
+   the expert patches the generator, the block is regenerated; a hand edit of the block fails the next W-check.
+   Hunk 2's `\ref{tab:res_flex_ladder}` → `Fig.~\ref{fig:res_flex_ladder}` is adopted in the generator.
+2. **Objective convention.** Everywhere the convention is stated (Appendix E intro, §2.2.6/C^Op paragraph, Table 13,
+   TASKS.md, the brief's convention line, the letter): "Q: gross operational cost, **contracted interface settlement
+   excluded**"; one sentence at Table 13 / §4.5: at the multi-scenario instance the deviation settlement and the
+   commitment premium (+25.1 M€, about 3.0 % of Q at x = 0) are inside Q, the contracted settlement is not. No number
+   changes. The expert's convention line in this brief is corrected accordingly from here on.
+3. **E1–E3 code changes (formulation points ruled; Worker tasks in W183).**
+   - (i) **No-ageing search launcher:** a new launcher (harness code; production untouched) that accepts
+     `model_variant` and `flex_price_multiplier` together, both in the evaluation key, concurrency declared as a
+     parameter with a memory preflight. `eol_retention_r` = **0.50**, the T8 declaration, so that the committed
+     no-ageing cell of the reference unit (row 54) carries the same key and the key space stays consistent.
+   - (ii) **ρ₀ scaling:** a declared, keyed evaluation option `rho0_scale` applied in the configuration hook through
+     `p59_rho.apply_rho_to_params` (all three channels and the ESSO); the S39 refusal is relaxed only when the option
+     is declared; the scale enters the evaluation key. Harness code only.
+   - (iii) **E2 stage 2 deferred.** Option (c), the `price_taker` initialisation, perturbs only the storage channel and
+     is not a perturbed coordinated start; it would be mislabelled as one. No production hook is built for this
+     revision. The paper states that E2 is a sensitivity to initial penalty levels and does not establish independence
+     from the starting point (plan §4, as already drafted).
+   - (iv) **NRF option, formulation.** The row is on the **interface exchange carried by the consensus channel**:
+     the TSO copy `pc_adn ≥ 0` and the DSO copy `pg_adn ≥ 0`, in the DN-import direction, on both DSO builders, as in
+     W116's arm (`pg_adn`), so that the coordinated arm and the static arms constrain the same quantity. At x = 0 this
+     equals the reference-generator row. For x > 0 the exchange net of the storage at the reference bus is the
+     physical transformer flow, and that is what "no reverse flow at the interface" means; the manuscript states this
+     definition once with the benchmark (§3.6/§4.4). Implemented as a declared per-network option (precedent
+     `shared_ess_model` in the params files), default off, plus a harness evaluation option and key entry; the harness
+     records the binding hours from `p_int_tso_expected_mw` / `p_int_dso_expected_mw` at terminal. A production change
+     under the "deactivate and unwire, never delete" and fixture-loading rules; with the option off, the NL files of
+     the baseline build must be byte-identical before and after the change (gate in W183).
+   - (v) **Concurrency.** Decision deferred to the E1 step and made cheap: the E1 seed evaluations run serially first
+     (needed anyway), then the same four are re-run as one 4-slot batch and compared on the gated per-cycle fields
+     (the W101/W142 replay comparison); bitwise identity authorizes 4 slots for the E1 search batches, otherwise E1
+     runs serially. The stale `p515_s44_gate.py` is left as is (deactivated by its literals; not edited). The 3 × 3
+     peak RSS (15.2 GiB) is irrelevant to E1 (SRP1 cells, 2.2 GiB).
+   - (vi) **Pinning.** Campaign spec v1 pins the production head **and** the sha256 of every harness and launcher
+     file it runs (`p515_s44_campaign_harness.py`, `p515_g_g1_g4_admm_gates.py`, the new launcher, `p56a_oracle.py`,
+     the settling modules), plus the case, params and cost files.
+   - (vii) **Gate G0 (first E1 gate, zero solves, build permitted):** at x = 0, the ESSO and network NL files with
+     `ageing_enabled` on and off are byte-identical; and the combination `model_variant` + `flex_price_multiplier`
+     applies both (NL of the unit at 2× under N differs from the unit at 2× under A only in the deactivated/altered
+     ageing rows; key contains both). Prediction: identical at x = 0.
+4. **E6.** The author is asked to commit the two JSONL files unmodified (`git add -f`, 31.5 MB, precedent the 13.7 MB
+   `interface_duals_per_cycle.jsonl`); the expert authorizes a zero-solve read of row 2's `certified_models.pkl`
+   (`d0a3d512…`) under an armed guard, pickle-block lifted for that file only, output a committed JSON of the hourly
+   SoC and schedule for the declared day. Export after the author's commit.
+5. **Round 8 (expert, next deliverable; independent of the campaign results).** Manuscript: the Appendix E generator
+   port (ruling 1); the convention wording (ruling 2); the 4 main.tex claim sentences (M-ABS-1/2, M-HL-1, M-CON-1)
+   reworded per D4 and audit §3.1; the out-of-budget evaluations marked once — a superscript in Tables 4/6 and
+   Fig. 5/E.20–E.21 rows and one sentence in §3.6 ("the 2025 ladder rungs above 1 M€ — 1/4, 1.25/5 at 4 h; 1.5/3,
+   2/4, 2.5/5 at 2 h — are valuation probes outside the admissible set") rather than 34 edits (author to confirm
+   this method); the `\textcolor{blue}` restored on the 23 lines of W182c A5 (rewritten captions and notes are revised
+   text; the reviewers' convention applies); the wording list: P^I direction and its storage exclusion stated at the
+   interface definition; y^End = 2040 (1 January) and the terminal-SoH index stated once (§2.2 or `app:salvage_credit`);
+   "load curtailment" removed from the Q list (never built); l. 1290 growth rates moved/labelled; l. 2919 τ pointer →
+   `eq:acceptance_tolerance`; l. 1573 "first binds in 2035" qualified single-scenario (2037 at 3 × 3); the §3.3
+   generator-pricing sentence restored (it was lost in the merge and the letter's R1.4 relies on it). Letter v10:
+   pointers renumbered from W182c's label map (65 rows; the l. 97 "Section 3.3" pointer resolved by the restored
+   sentence); [43]/[44] → [42]/[43]; l. 76/77/80 made true of the abstract; 13.9 % → "the price-taker arrangement
+   costs 13.9 % more; the saving is 12.2 % of its cost" at l. 53 and l. 80; the nine letter sentences of A7 reworded
+   ("numerically accepted under the declared rule" where "certified" was wrong; resolution statements without
+   "bounds"/"resolved to δ_R"; w.r. never rendered as break-even). `highlights.tex` replaced by the main.tex
+   highlights with 12.2 % and without "every evaluation is certified". Cover letter: rewritten (bi-level/Benders text
+   out; what changed and why; the narrowed requests). Everything compiled here; numbering checked against W182c's
+   map. The results-dependent text (§4.3 E1 table, §4.4 E3 sentences, §4.7 E2 paragraph, letter R2.5/R2.6/R3.6, the
+   marked copy) is round 9, after the campaign.
+6. **Counts and limits (replace plan §9).** E3 1; E2 stage 1 8 (stage 2 deferred); E1 at 2×: seeds 7 (x = 0 once, by
+   G0) + 1 concurrency batch (4, discarded as evidence if bitwise) + search ≤ 30 + ≤ 30 + cross-evaluations 4 = ≤ 75;
+   screen 14; E6 0. Serial worst case ≈ 2.5 + 10 + 57 + 10.5 ≈ 80 h; ≈ 48 h if the batch gate passes. Author's D1
+   is the authorization for runs over 4 h within these limits; every extension needs a ruling.
+
+**Campaign spec v1 (expert, frozen before W184).** Roots `P515S55/e3_cnrf`, `P515S55/e2_rho`, `P515S55/e1_2x`,
+`P515S55/e1_screen_1x`; eval keys with `model_variant`, `flex_price_multiplier`, `rho0_scale`, `nrf_option`; the
+capture checklist asserted before each run (rule 11): per cell Q, status, k\*/end, band or gap/slack, stopping ratio,
+candidate hash, code and harness hashes, closure/σ/circle/SOC/interface diagnostics, binding NRF hours (E3), E^Av
+and terminal SoH per node (E1); predictions H1a–d, H2, H3a–b as in the plan; stopping limits as ruling 6; no archived
+root written.
+
+**W183 order (Worker tasks authorized by this addendum; zero solves except the builds named; one gate per task).**
+- (W183a) `rho0_scale` option (ruling 3 ii) with a unit test that the key changes and the S39 refusal stays for an
+  undeclared ρ. (W183b) The E1 search launcher (3 i) with concurrency as a parameter and the memory preflight; a dry
+  run that builds the key set of the seed set under both models without solving. (W183c) The NRF option (3 iv):
+  production change on both copies and both DSO builders; fixture-loading check of every preserved pickle; **gate:**
+  option off → NL files byte-identical to the pre-change build for x = 0 and the reference unit; option on at x = 0 →
+  exactly 12 × 24 × 3 new rows per copy, none active elsewhere. (W183d) Gate G0 (3 vii). (W183e) The E6 export
+  (ruling 4) once the JSONL commit is in. (W183f) Spec v1 freeze: hashes, keys, checklist assertion, and the serial
+  two-cycle bitwise gate (`p515_s53_srp1_bitwise_gate.py`) re-run on the changed code at both DSO builders. Report
+  `P5_15_W183_REPORT.md`; nothing runs beyond the builds and the two-cycle gate. **Predictions:** G0 identical at
+  x = 0; the NRF-off NL identity holds; the two-cycle gate passes; the E1 key dry run yields 7 distinct seed keys.
+- Then, each by its own addendum line after W183 reports: **W184** E3 (one certified evaluation) → **W185** E2
+  stage 1 (eight) → **W186** E1 seeds, the batch gate, arm N, arm A, cross-evaluations → **W187** the 1× screen.
+  E3's report rewrites §4.4 from its records before E2 starts; a changed verdict in E2 stops the chain before E1.
