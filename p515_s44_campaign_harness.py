@@ -275,6 +275,15 @@ requires every network's flag off (an option in force without its key raises). E
 (s != 1.0; True), so every key of every spec frozen before W183a is byte-identical; a non-default declaration runs only
 under its label (`rho0_scale_label` == RHO0_SCALE_LABEL, `nrf_option_label` == NRF_OPTION_LABEL) at spec AND entry
 level. Entries without them keep their exact format, keys and behaviour.
+P5.15 Addendum 83 ruling 3 (iv) (W183c): an evaluation with `nrf_option` True also (a) asserts, in the child BEFORE any
+solve (rule eleven), that its NRF capture path exists (`assert_nrf_capture_path`: the production marker, the row and
+its rule functions in `shared_resources_planning`, the row built in the TSO builder and both DSO builders, and the
+`p_int_tso_expected_mw` / `p_int_dso_expected_mw` fields of `_get_interface_reporting_detail`), and (b) records at
+terminal, in the post_run_hook on the run's own models (`capture_nrf_terminal`, zero solves): the NRF row counts per
+network and block (indices, active), and the BINDING hours read from `_get_interface_reporting_detail` -- (node, year,
+day, hour) with the TSO and DSO expected interface P on each side, binding where a side is <= NRF_BINDING_TOLERANCE_MW.
+Both go into the record (`nrf_capture_checklist_asserted_before_run`, `nrf_terminal`); a failed terminal capture exits
+the child 2. Evaluations without the option are unchanged.
 AFTER the run, in the child, inside `run_admm_arm`'s post_run_hook (same live
 models/state), `run_post_certification` does, only if the trajectory is
 certified under the spec's bar (else it records `status: skipped` + reason):
@@ -385,6 +394,10 @@ FLEX_PRICE_READBACK_REL_TOL = 1e-15
 RHO0_SCALE_LABEL = 'EVALUATION OPTION — rho0 × s (S39 rho0 scaled on every channel and the ESSO)'
 NRF_OPTION_LABEL = 'EVALUATION OPTION — no reverse flow at the interface (TSO pc_adn >= 0, DSO pg_adn >= 0)'
 NRF_SUPPORT_ATTRIBUTE = 'no_reverse_flow'  # the NetworkParameters attribute production's NRF change introduces
+# W183c (Addendum 83 ruling 3 iv): an interface hour is recorded as BINDING for the NRF option on a side when that
+# side's expected interface P (MW, `_get_interface_reporting_detail`) is <= this tolerance -- 1 kW, declared before
+# any run. Every recorded hour carries both sides' values, so the hours can be re-thresholded from the record.
+NRF_BINDING_TOLERANCE_MW = 1e-3
 # Addenda 28-29 (W20): a MODEL VARIANT of the shared-ESS ageing law (see `validate_model_variant`). Exactly these
 # four keys; `available_energy_soh_point` values mirror shared_energy_storage_data.AVAILABLE_ENERGY_SOH_POINTS
 # (re-checked against production in the child, so the parent stays free of model imports).
@@ -1868,6 +1881,9 @@ def _w183a_record_fields(entry, holder):
             out['nrf_option_label'] = NRF_OPTION_LABEL
         if holder is not None:
             out['nrf_option_applied_in_child'] = holder.get('nrf_option_applied')
+            if nrf_option_in_key(entry['nrf_option']) is not None:  # W183c: the capture checklist and the terminal record
+                out['nrf_capture_checklist_asserted_before_run'] = holder.get('nrf_capture_checklist')
+                out['nrf_terminal'] = holder.get('nrf_terminal') or {'status': 'not_reached'}
     return out
 
 
@@ -3054,6 +3070,112 @@ def apply_nrf_option(planning, nrf_option):
     if failed:
         raise RuntimeError(f'nrf_option {option}: network flags not as declared: {failed}; in force {after}')
     return out
+
+
+def assert_nrf_capture_path():
+    """W183c (Addendum 83 ruling 3 iv; CLAUDE.md rule eleven): before any solve of an evaluation declaring
+    `nrf_option` True, assert that every quantity `capture_nrf_terminal` records has a capture path in the live code.
+    Raises AssertionError naming the missing checks; returns the checklist."""
+    import inspect
+    import shared_resources_planning as srp
+    import p515_g_g1_g4_admm_gates as G
+    supported, description = nrf_option_production_support()
+    row = getattr(srp, 'INTERFACE_NO_REVERSE_FLOW_ROW', None)
+    built = f'.{row} = pe.Constraint(' if isinstance(row, str) else None
+    detail_fn = getattr(srp, '_get_interface_reporting_detail', None)
+    detail_src = inspect.getsource(detail_fn) if callable(detail_fn) else ''
+    checks = {
+        'production_support_marker': supported,
+        'production_row_name_declared': isinstance(row, str) and bool(row),
+        'production_tso_rule_present': callable(getattr(srp, '_interface_no_reverse_flow_tso_rule', None)),
+        'production_dso_rule_present': callable(getattr(srp, '_interface_no_reverse_flow_dso_rule', None)),
+        'production_option_reader_present': callable(getattr(srp, '_no_reverse_flow_enabled', None)),
+        'tso_builder_builds_the_row': built is not None and built in inspect.getsource(
+            srp.create_transmission_network_model),
+        'sequential_dso_builder_builds_the_row': built is not None and built in inspect.getsource(
+            srp.create_distribution_networks_models_sequential),
+        'parallel_dso_builder_builds_the_row': built is not None and built in inspect.getsource(
+            srp.create_distribution_network_model),
+        'interface_reporting_detail_present': callable(detail_fn),
+        'interface_reporting_detail_has_p_int_tso_expected_mw': "'p_int_tso_expected_mw':" in detail_src,
+        'interface_reporting_detail_has_p_int_dso_expected_mw': "'p_int_dso_expected_mw':" in detail_src,
+        'run_admm_arm_post_run_hook_gets_models': (
+            'hook_kwargs = dict(planning=planning, sed=sed, models=models,' in inspect.getsource(G.run_admm_arm)
+            and 'post_run_hook(**hook_kwargs)' in inspect.getsource(G.run_admm_arm)),
+        'terminal_capture_function_present': callable(globals().get('capture_nrf_terminal')),
+    }
+    missing = sorted(k for k, v in checks.items() if not v)
+    if missing:
+        raise AssertionError(f'RULE ELEVEN (W183c): NRF capture paths missing: {missing}')
+    return {'checks': checks, 'production_support': description, 'row': row,
+            'binding_tolerance_mw': NRF_BINDING_TOLERANCE_MW}
+
+
+def capture_nrf_terminal(planning, models):
+    """W183c (Addendum 83 ruling 3 iv): the NRF record at terminal, read-only on the run's own models (zero solves).
+    (1) Row counts per network and block: indices and active indices of production's NRF row, the minimum row body
+    in MW and the number of row indices with body <= NRF_BINDING_TOLERANCE_MW. (2) The binding hours: from
+    production's `_get_interface_reporting_detail`, every (node, year, day, hour) at which the TSO or the DSO expected
+    interface P (`p_int_tso_expected_mw` / `p_int_dso_expected_mw`) is <= NRF_BINDING_TOLERANCE_MW, with both values,
+    plus per node the minimum of each side and the hours below -NRF_BINDING_TOLERANCE_MW (violations)."""
+    import pyomo.environ as pe
+    import shared_resources_planning as srp
+    row = srp.INTERFACE_NO_REVERSE_FLOW_ROW
+    tol = NRF_BINDING_TOLERANCE_MW
+    tn = planning.transmission_network
+
+    def block_counts(block, s_base):
+        comp = block.component(row)
+        if comp is None:
+            return {'present': False, 'n_indices': 0, 'n_active': 0, 'min_body_mw': None, 'n_body_le_tol': 0}
+        bodies = [pe.value(c.body) * s_base for c in comp.values()]
+        return {'present': True, 'n_indices': len(comp), 'n_active': sum(1 for c in comp.values() if c.active),
+                'min_body_mw': min(bodies) if bodies else None, 'n_body_le_tol': sum(1 for b in bodies if b <= tol)}
+
+    rows = {'TSO': {}}
+    for year in tn.years:
+        for day in tn.days:
+            rows['TSO'][f'{year}|{day}'] = block_counts(models['tso'][year][day], tn.network[year][day].baseMVA)
+    for node_id, dn in sorted(planning.distribution_networks.items()):
+        rows[f'DSO{node_id}'] = {}
+        for year in dn.years:
+            for day in dn.days:
+                rows[f'DSO{node_id}'][f'{year}|{day}'] = block_counts(models['dso'][node_id][year][day],
+                                                                       dn.network[year][day].baseMVA)
+    totals = {net: {'n_blocks': len(per), 'n_blocks_with_row': sum(1 for b in per.values() if b['present']),
+                    'n_indices': sum(b['n_indices'] for b in per.values()),
+                    'n_active': sum(b['n_active'] for b in per.values())} for net, per in rows.items()}
+    detail = srp._get_interface_reporting_detail(planning, models)
+    binding, per_node = [], {}
+    for node_id in sorted(detail):
+        mins = {'tso': None, 'dso': None}
+        violations = {'tso': 0, 'dso': 0}
+        n_hours = 0
+        for year in detail[node_id]:
+            for day in detail[node_id][year]:
+                for hour, values in detail[node_id][year][day]['periods'].items():
+                    n_hours += 1
+                    p_tso = float(values['p_int_tso_expected_mw'])
+                    p_dso = float(values['p_int_dso_expected_mw'])
+                    for side, v in (('tso', p_tso), ('dso', p_dso)):
+                        mins[side] = v if mins[side] is None else min(mins[side], v)
+                        violations[side] += int(v < -tol)
+                    if p_tso <= tol or p_dso <= tol:
+                        binding.append({'node': str(node_id), 'year': str(year), 'day': str(day), 'hour': int(hour),
+                                        'p_int_tso_expected_mw': p_tso, 'p_int_dso_expected_mw': p_dso,
+                                        'binding_tso': p_tso <= tol, 'binding_dso': p_dso <= tol})
+        per_node[str(node_id)] = {'n_hours': n_hours, 'min_p_int_tso_expected_mw': mins['tso'],
+                                  'min_p_int_dso_expected_mw': mins['dso'],
+                                  'n_hours_below_minus_tol_tso': violations['tso'],
+                                  'n_hours_below_minus_tol_dso': violations['dso'],
+                                  'n_binding_hours': sum(1 for b in binding if b['node'] == str(node_id))}
+    return {'status': 'written', 'row': row, 'binding_tolerance_mw': tol,
+            'binding_definition': ('an hour (node, year, day, hour) is binding on a side when that side\'s expected '
+                                   'interface P from shared_resources_planning._get_interface_reporting_detail '
+                                   '(p_int_tso_expected_mw / p_int_dso_expected_mw, MW, DN-import positive) is <= '
+                                   'binding_tolerance_mw'),
+            'row_counts_per_network': totals, 'row_counts_per_block': rows,
+            'n_binding_hours': len(binding), 'binding_hours': binding, 'per_node': per_node}
 
 
 def _config_hook_factory(spec, holder, overrides=None, model_variant=None, investment_year=INVESTMENT_YEAR,
@@ -5550,6 +5672,12 @@ def _child_real(args, spec, spec_path, entry, eval_dir, lock_content, env_caps, 
                                                       or entry.get('nrf_option_label') != NRF_OPTION_LABEL):
         raise RuntimeError(f'nrf_option entry {entry["label"]!r} without the label {NRF_OPTION_LABEL!r} '
                            f'at spec and entry level')
+    # W183c (Addendum 83 ruling 3 iv): the NRF capture path, asserted here, before any solve (rule eleven); only when
+    # the option is in the key, so every other evaluation is unchanged.
+    nrf_on = nrf_option_in_key(nrf_option) is not None
+    if nrf_on:
+        holder['nrf_capture_checklist'] = assert_nrf_capture_path()
+        progress['nrf_capture_checklist'] = holder['nrf_capture_checklist']
     post_request = entry.get('post_certification')
     post_checklist = None
     if post_request:
@@ -5687,6 +5815,16 @@ def _child_real(args, spec, spec_path, entry, eval_dir, lock_content, env_caps, 
                                      floor_rows_by_node=floor_rows_by_node, floor_sidecar_path=paths['floor'])
         caps = sed.get_updated_capacities(models['esso'])
         holder['published_caps'] = {str(n): {str(y): v for y, v in per_year.items()} for n, per_year in caps.items()}
+        if nrf_on:  # W183c: the NRF rows and binding hours, read-only on the run's own terminal models
+            try:
+                holder['nrf_terminal'] = capture_nrf_terminal(planning, models)
+            except Exception as error:  # noqa: BLE001 -- recorded loudly; the child exits 2 after writing its record
+                tb = traceback.format_exc()
+                print(tb, file=sys.stderr, flush=True)
+                holder['nrf_terminal'] = {'status': 'error', 'error': f'{type(error).__name__}: {error}',
+                                          'traceback': tb}
+            print(f"[S44-CHILD] NRF terminal capture: {holder['nrf_terminal'].get('status')} "
+                  f"(binding hours {holder['nrf_terminal'].get('n_binding_hours')})", flush=True)
         if model_variant is not None:  # W20: read back from CLONES of the run's own ESSO models; read-only capture
             holder['model_variant_readback_terminal'] = model_variant_readback_models(
                 models['esso'], sed, model_variant, investment_year, clone=True)
@@ -5999,6 +6137,7 @@ def _child_real(args, spec, spec_path, entry, eval_dir, lock_content, env_caps, 
     extension_error = extension is not None and not (holder.get('settling_extension') or {}).get('ok')
     resettle_error = resettle is not None and not (holder.get('settling_resettle') or {}).get('ok')
     interface_dual_error = not (holder.get('interface_dual_capture') or {}).get('ok')
+    nrf_error = nrf_on and (holder.get('nrf_terminal') or {}).get('status') != 'written'  # W183c
     return {'post_certification_error': (holder.get('post_certification') or {}).get('status') == 'error',
             'multiscenario_capture_error': capture_error,
             'convergence_depth_capture_error': convergence_depth_error,
@@ -6006,7 +6145,8 @@ def _child_real(args, spec, spec_path, entry, eval_dir, lock_content, env_caps, 
             'settling_continuation_error': settling_error,
             'settling_extension_error': extension_error,
             'settling_resettle_error': resettle_error,
-            'interface_dual_capture_error': interface_dual_error}
+            'interface_dual_capture_error': interface_dual_error,
+            'nrf_capture_error': nrf_error}
 
 
 def main_child(argv):
@@ -6069,6 +6209,10 @@ def main_child(argv):
                 sys.exit(2)
             if outcome and outcome.get('interface_dual_capture_error'):  # W101
                 print('[S44-CHILD] interface-dual capture not ok (recorded in evaluation_record.json); exiting 2',
+                      file=sys.stderr, flush=True)
+                sys.exit(2)
+            if outcome and outcome.get('nrf_capture_error'):  # W183c
+                print('[S44-CHILD] NRF terminal capture FAILED (recorded in evaluation_record.json); exiting 2',
                       file=sys.stderr, flush=True)
                 sys.exit(2)
     except SystemExit:

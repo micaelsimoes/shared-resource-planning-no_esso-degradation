@@ -72,6 +72,13 @@ LAUNCH (attached, alone, both streams captured; the harness committed first):
       > data/SRP1/Results/P515S55/w183_nl_reference_pre/launch.log 2>&1
 Exit 0 when every check passes (the comparisons are REPORTED, not gated; the checks are the harness's own: guard 0,
 stub counts, read-backs, determinism, the stripped-label equality), 1 otherwise.
+
+W183c (Addendum 83 ruling 3 iv): `--nrf` declares `nrf_option` True for every configuration of the run, through the
+campaign child's own configuration hook (`_config_hook_factory(..., nrf_option=True)` -> W183a's `apply_nrf_option`,
+which sets `params.no_reverse_flow` on the TSO and every DSO and reads it back); the eval key carries it. Without
+`--nrf` nothing is declared (the hook then requires every network's flag off once production has the marker). Each
+build records the hook's `w183a_nrf_option` record and checks the flags in force are as declared
+(`nrf_flags_as_declared`). The ext-v6 unit_N_1x key cross-check applies only without `--nrf`.
 """
 
 import argparse
@@ -338,7 +345,7 @@ def construct_configured(G, config, builder, ctx):
     hook = H._config_hook_factory(ctx['spec'], holder, overrides={}, model_variant=MODELS[model],
                                   investment_year=INVESTMENT_YEAR, expected_floor_rows=ctx['floor_rows'],
                                   flex_price_multiplier=FLEX[flex], interface_deviation_premium=None,
-                                  release_solution_bookkeeping=None)
+                                  release_solution_bookkeeping=None, nrf_option=ctx['nrf_option'])
     hook(planning=planning, sed=sed, candidate=candidate, report=report)
     checklist = report.get('rule_eleven_checklist') or {}
     readbacks = {
@@ -347,6 +354,7 @@ def construct_configured(G, config, builder, ctx):
         'w21_ess_ageing_baseline': checklist.get('w21_ess_ageing_baseline'),
         'w84_convergence_depth_tail': checklist.get('w84_convergence_depth_tail'),
         's44_campaign_configuration_checks': checklist.get('s44_campaign_configuration_checks'),
+        'w183a_nrf_option': checklist.get('w183a_nrf_option'),
     }
     state = {'parallel_execution': bool(planning.parallel_execution),
              'interface_deviation_premium': dict(planning.params.admm.interface_deviation_premium),
@@ -356,8 +364,12 @@ def construct_configured(G, config, builder, ctx):
     return planning, sed, candidate, readbacks, state
 
 
-def readbacks_ok(model, readbacks):
+def readbacks_ok(model, readbacks, nrf_option=None):
     ok = {}
+    # W183c: the NRF flags in force are as declared (True on the TSO and every DSO with --nrf; off otherwise)
+    in_force = (readbacks.get('w183a_nrf_option') or {}).get('in_force') or {}
+    ok['nrf_flags_as_declared'] = bool(in_force) and (
+        all(v is True for v in in_force.values()) if nrf_option is True else all(not v for v in in_force.values()))
     w20, w33, w21 = (readbacks.get('w20_model_variant'), readbacks.get('w33_flex_price_multiplier'),
                      readbacks.get('w21_ess_ageing_baseline'))
     if MODELS[model] is None:
@@ -386,7 +398,8 @@ def build_config(G, srp, config, ctx):
     record['eval_key_base'] = H.evaluation_key(
         record['candidate_key'], {}, case_file_aa=CASE_FILE_AA, model_variant=MODELS[model],
         ess_ageing_baseline=ctx['declared_ageing'], flex_price_multiplier=FLEX[flex],
-        convergence_depth_tail=CONVERGENCE_DEPTH_TAIL)
+        convergence_depth_tail=CONVERGENCE_DEPTH_TAIL, nrf_option=ctx['nrf_option'])
+    record['nrf_option'] = ctx['nrf_option']
     # ---- sequential builder: production's own `_run_operational_planning` initialisation, every solve stubbed
     t0 = time.time()
     planning, sed, candidate, readbacks, state = construct_configured(G, config, 'sequential', ctx)
@@ -399,7 +412,8 @@ def build_config(G, srp, config, ctx):
         type='distributed', candidate_solution=deepcopy(candidate), print_results=False, debug_flag=False,
         return_state=True)
     expected_calls = {'TSO': 1, 'ESSO': 1, **{f'DSO{n}': 1 for n in planning.distribution_networks}}
-    seq = {'construct_state': state, 'readbacks': readbacks, 'readback_checks': readbacks_ok(model, readbacks),
+    seq = {'construct_state': state, 'readbacks': readbacks,
+           'readback_checks': readbacks_ok(model, readbacks, ctx['nrf_option']),
            'stub_calls': dict(cap.calls), 'stub_calls_expected': expected_calls,
            'initialization_failed': run_state.get('initialization_failed'), 'convergence': convergence,
            'n_blocks': len(cap.blocks), 'blocks': dict(sorted(cap.blocks.items())), 'wall_s': time.time() - t0}
@@ -424,7 +438,8 @@ def build_config(G, srp, config, ctx):
         returned.append(r_node == node_id)
         del _res, _model
     expected_calls = {f'DSO{n}': 1 for n in planning.distribution_networks}
-    par = {'construct_state': state, 'readbacks': readbacks, 'readback_checks': readbacks_ok(model, readbacks),
+    par = {'construct_state': state, 'readbacks': readbacks,
+           'readback_checks': readbacks_ok(model, readbacks, ctx['nrf_option']),
            'premium_passed': {'alpha': premium['alpha'], 'floor': premium['floor']},
            'stub_calls': dict(cap.calls), 'stub_calls_expected': expected_calls,
            'n_blocks': len(cap.blocks), 'blocks': dict(sorted(cap.blocks.items())), 'wall_s': time.time() - t0}
@@ -732,6 +747,8 @@ def main():
     parser.add_argument('--determinism-configs', default=DEFAULT_DETERMINISM)
     parser.add_argument('--no-determinism', action='store_true')
     parser.add_argument('--expect-production-commit', default=None)
+    parser.add_argument('--nrf', action='store_true',
+                        help='W183c: declare nrf_option True for every configuration (through the hook)')
     parser.add_argument('--allow-uncommitted-harness', action='store_true',
                         help='smoke tests only: do not refuse when this script is not committed and clean')
     args = parser.parse_args()
@@ -775,7 +792,8 @@ def main():
         raise SystemExit(1)
     os.makedirs(out, exist_ok=True)
     run_tag = datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%S')
-    _log(f'{STAGE}; label {args.label}; HEAD {head}; configs {configs}; determinism {det_configs or "none"}')
+    _log(f'{STAGE}; label {args.label}; HEAD {head}; configs {configs}; determinism {det_configs or "none"}; '
+         f'nrf_option {True if args.nrf else None}')
 
     import pyomo
     import p515_g_g1_g4_admm_gates as G
@@ -790,7 +808,8 @@ def main():
     _cc, floor_rows, _fc = PG._build_floor_rows(f'p515s55_w183nl_{args.label}_{run_tag}_precheck')
     os.makedirs(args.scratch)
     ctx = {'out': out, 'label': args.label, 'run_tag': run_tag, 'scratch': args.scratch,
-           'spec': spec_like(declared, pin), 'declared_ageing': declared, 'floor_rows': floor_rows}
+           'spec': spec_like(declared, pin), 'declared_ageing': declared, 'floor_rows': floor_rows,
+           'nrf_option': True if args.nrf else None}
     modules_start = repo_modules_imported()
 
     records = {}
@@ -826,6 +845,8 @@ def main():
             cmd += ['--expect-production-commit', args.expect_production_commit]
         if args.allow_uncommitted_harness:
             cmd += ['--allow-uncommitted-harness']
+        if args.nrf:
+            cmd += ['--nrf']
         _log(f'(iv) determinism: separate process {cmd}')
         sys.stdout.flush()
         sys.stderr.flush()
@@ -881,7 +902,7 @@ def main():
         'imported_repo_modules_unchanged_during_run': modules_start == {k: modules_end.get(k) for k in modules_start},
     }
     unit_n = [c for c in records if c.startswith('unit_N_')]
-    if unit_n:
+    if unit_n and not args.nrf:
         checks['eval_key_unit_N_1x_equals_ext_v6_base_key'] = (
             'unit_N_1x' not in records or records['unit_N_1x']['eval_key_base'] == EXT_V6_UNIT_N_BASE_KEY)
     keys = [records[c]['eval_key_base'] for c in records]
@@ -912,7 +933,7 @@ def main():
         'env': {k: os.environ.get(k) for k in ('NLP_SOLVER_PATH', 'LP_SOLVER_PATH', 'OMP_NUM_THREADS')},
         'configuration': {'spec_like': ctx['spec'], 'cap': CAP, 'investment_year': INVESTMENT_YEAR,
                           'instances': {k: {str(n): list(v) for n, v in m.items()} for k, m in INSTANCES.items()},
-                          'models': MODELS, 'flex': FLEX, 'configs': configs,
+                          'models': MODELS, 'flex': FLEX, 'configs': configs, 'nrf_option': ctx['nrf_option'],
                           'floor_rows_by_node': floor_rows},
         'capture_path_checks': capture_checks,
         'digest_definition': ('per block, at the would-be solve: sha256 over per-component sha256 of {Param values; '

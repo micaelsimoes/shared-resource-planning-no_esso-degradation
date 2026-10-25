@@ -4194,6 +4194,39 @@ def _add_tso_scenario_tracking_penalty(model, network, active_distribution_netwo
     model.objective.expr = copy(model.objective.expr) + model.scenario_tracking_penalty
 
 
+# P5.15 Addendum 83 ruling 3 (iv) (W183c): the NO-REVERSE-FLOW option ("no reverse flow at the interface").
+# One ROW per (DN, market scenario, operation scenario, period) on the interface exchange carried by the
+# consensus channel, in the DN-IMPORT direction, on BOTH copies:
+#     TSO copy:  pc_adn[dn, s_m, s_o, p] >= 0   (`interface_pf_p_transmission_def`: pc + interface_delta_p,
+#                                                 positive = the TN's load at the ADN bus = DN import)
+#     DSO copy:  pg_adn[s_m, s_o, p] >= 0       (`interface_pf_p_distribution_def`: pg_ref - shared-ESS net power
+#                                                 at the reference bus, positive = import; W116's row,
+#                                                 `uncoordinated_benchmark._no_reverse_flow_rule`)
+# indexed per scenario like W116 (never on the expectation). Declared per network by
+# `NetworkParameters.no_reverse_flow` (params-file key 'no_reverse_flow', default False). The rows are CONSTRUCTED
+# ONLY when the option is on -- never constructed and deactivated -- so a build with the option off is unchanged.
+# Built by `create_transmission_network_model` and by BOTH DSO initialisation builders
+# (`create_distribution_networks_models_sequential`, `create_distribution_network_model`), beside the expected
+# interface P definition. The rule functions are module-level and named, so a pickled model resolves them by name.
+INTERFACE_NO_REVERSE_FLOW_ROW = 'interface_no_reverse_flow_p'
+
+
+def _no_reverse_flow_enabled(params):
+    """W183c: the per-network NRF option; False when the attribute is absent (a params object unpickled from a
+    fixture that predates the option)."""
+    return getattr(params, 'no_reverse_flow', False) is True
+
+
+def _interface_no_reverse_flow_tso_rule(m, dn, s_m, s_o, p):
+    """W183c (Addendum 83 ruling 3 iv): TSO copy of the interface exchange, DN-import direction."""
+    return m.pc_adn[dn, s_m, s_o, p] >= 0.0
+
+
+def _interface_no_reverse_flow_dso_rule(m, s_m, s_o, p):
+    """W183c (Addendum 83 ruling 3 iv): DSO copy of the interface exchange, DN-import direction."""
+    return m.pg_adn[s_m, s_o, p] >= 0.0
+
+
 def create_transmission_network_model(planning_problem, consensus_vars, candidate_solution):
 
     print(f'[INFO] \t\t - Transmission Network...')
@@ -4280,6 +4313,8 @@ def create_transmission_network_model(planning_problem, consensus_vars, candidat
             tso_model[year][day].expected_shared_ess_q = pe.Var(tso_model[year][day].shared_energy_storages, tso_model[year][day].periods, domain=pe.Reals, initialize=0.0)
             tso_model[year][day].expected_interface_vmag_def = pe.Constraint( tso_model[year][day].active_distribution_networks, tso_model[year][day].periods, rule=partial(tn_interface_expected_vmag_rule, network=transmission_network.network[year][day]))
             tso_model[year][day].expected_interface_pf_p_def = pe.Constraint(tso_model[year][day].active_distribution_networks, tso_model[year][day].periods, rule=partial(tn_interface_expected_pf_p_rule, network=transmission_network.network[year][day]))
+            if _no_reverse_flow_enabled(transmission_network.params):  # W183c: constructed only when the option is on
+                tso_model[year][day].interface_no_reverse_flow_p = pe.Constraint(tso_model[year][day].active_distribution_networks, tso_model[year][day].scenarios_market, tso_model[year][day].scenarios_operation, tso_model[year][day].periods, rule=_interface_no_reverse_flow_tso_rule)
             tso_model[year][day].expected_interface_pf_q_def = pe.Constraint(tso_model[year][day].active_distribution_networks, tso_model[year][day].periods, rule=partial(tn_interface_expected_pf_q_rule, network=transmission_network.network[year][day]))
             tso_model[year][day].expected_shared_ess_p_def = pe.Constraint(tso_model[year][day].shared_energy_storages, tso_model[year][day].periods, rule=partial(tn_interface_expected_sess_p_rule, network=transmission_network.network[year][day],),)
             tso_model[year][day].expected_shared_ess_q_def = pe.Constraint(tso_model[year][day].shared_energy_storages, tso_model[year][day].periods, rule=partial(tn_interface_expected_sess_q_rule, network=transmission_network.network[year][day],),)
@@ -4375,6 +4410,8 @@ def create_distribution_networks_models_sequential(distribution_networks, consen
                 dso_model[year][day].expected_shared_ess_q = pe.Var(dso_model[year][day].periods, domain=pe.Reals, initialize=0.0)
                 dso_model[year][day].expected_interface_vmag_def = pe.Constraint(dso_model[year][day].periods, rule=partial(dn_interface_expected_vmag_rule, network=distribution_network.network[year][day]))
                 dso_model[year][day].expected_interface_pf_p_def = pe.Constraint(dso_model[year][day].periods, rule=partial(dn_interface_expected_pf_p_rule, network=distribution_network.network[year][day]))
+                if _no_reverse_flow_enabled(distribution_network.params):  # W183c: constructed only when the option is on
+                    dso_model[year][day].interface_no_reverse_flow_p = pe.Constraint(dso_model[year][day].scenarios_market, dso_model[year][day].scenarios_operation, dso_model[year][day].periods, rule=_interface_no_reverse_flow_dso_rule)
                 dso_model[year][day].expected_interface_pf_q_def = pe.Constraint(dso_model[year][day].periods, rule=partial(dn_interface_expected_pf_q_rule, network=distribution_network.network[year][day]))
                 dso_model[year][day].expected_shared_ess_p_def = pe.Constraint(dso_model[year][day].periods, rule=partial(dn_interface_expected_sess_p_rule, network=distribution_network.network[year][day], shared_ess_idx=shared_ess_idx,),)
                 dso_model[year][day].expected_shared_ess_q_def = pe.Constraint(dso_model[year][day].periods, rule=partial(dn_interface_expected_sess_q_rule, network=distribution_network.network[year][day], shared_ess_idx=shared_ess_idx,),)
@@ -4491,6 +4528,8 @@ def create_distribution_network_model(node_id, distribution_network, candidate_s
             dso_model[year][day].expected_shared_ess_q = pe.Var(dso_model[year][day].periods, domain=pe.Reals, initialize=0.00)
             dso_model[year][day].interface_expected_values_vmag = pe.Constraint(dso_model[year][day].periods, rule=partial(dn_interface_expected_vmag_rule, network=distribution_network.network[year][day]))
             dso_model[year][day].interface_expected_values_pf_p = pe.Constraint(dso_model[year][day].periods, rule=partial(dn_interface_expected_pf_p_rule, network=distribution_network.network[year][day]))
+            if _no_reverse_flow_enabled(distribution_network.params):  # W183c: constructed only when the option is on
+                dso_model[year][day].interface_no_reverse_flow_p = pe.Constraint(dso_model[year][day].scenarios_market, dso_model[year][day].scenarios_operation, dso_model[year][day].periods, rule=_interface_no_reverse_flow_dso_rule)
             dso_model[year][day].interface_expected_values_pf_q = pe.Constraint(dso_model[year][day].periods, rule=partial(dn_interface_expected_pf_q_rule, network=distribution_network.network[year][day]))
             dso_model[year][day].expected_shared_ess_p_def = pe.Constraint(dso_model[year][day].periods, rule=partial(dn_interface_expected_sess_p_rule, network=distribution_network.network[year][day], shared_ess_idx=shared_ess_idx,),)
             dso_model[year][day].expected_shared_ess_q_def = pe.Constraint(dso_model[year][day].periods, rule=partial(dn_interface_expected_sess_q_rule, network=distribution_network.network[year][day], shared_ess_idx=shared_ess_idx,),)
