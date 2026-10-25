@@ -52,7 +52,7 @@ G.append((r'(c) Investment year (Table~\ref{tab:res_year_ladder})', [
     ('g_48749148', '7: 0.5/2', '2030', 'base'),
     ('g_9abf31d4', '7: 0.5/2', '2035', 'base'),
 ]))
-G.append((r'(d) Flexibility price (Tables~\ref{tab:res_flex_ladder} and~\ref{tab:res_energy_ladder_m2})', [
+G.append((r'(d) Flexibility price (Fig.~\ref{fig:res_flex_ladder} and Table~\ref{tab:res_energy_ladder_m2})', [
     ('h_aa8a76d7', X0, '---', '$m=1.5$'),
     ('h_f9eae48f', '7: 0.25/1', '2025', '$m=1.5$'),
     ('h_x0_m175', X0, '---', '$m=1.75$'),
@@ -144,7 +144,10 @@ def rule_col(c, r):
 FLAG = {'d_4a82a64a', 'j_a11d7966'}
 TWIN = {'e_c2_calfade', 'g070_neutrality'}
 
+OVER_BUDGET = {'7: 1/4', '7: 1.25/5', '7: 1.5/3', '7: 2/4', '7: 2.5/5'}  # 2025 ladder rungs above B = 1 M EUR (W182d A8)
+
 def e2_row(c, plan, year, cond):
+    if plan in OVER_BUDGET and year == '2025': plan = plan + '$^{b}$'
     r = T2[c]
     st = status(r)
     mark = ''
@@ -192,13 +195,13 @@ E1.append((r'(a) Plans against the plan without storage at the baseline price: $
     ('7: 0.25/1 (reference unit)', 'B:n7_4h_e1', 'T1'),
     ('7: 0.5/2', 'B:n7_4h_e2', 'T1'),
     ('7: 0.75/3', 'B:n7_4h_e3', 'T1'),
-    ('7: 1/4', 'B:n7_4h_e4', 'T1'),
-    ('7: 1.25/5', 'B:n7_4h_e5', 'T1'),
+    ('7: 1/4$^{b}$', 'B:n7_4h_e4', 'T1'),
+    ('7: 1.25/5$^{b}$', 'B:n7_4h_e5', 'T1'),
     ('7: 0.5/1', 'B:n7_2h_e1', 'T1'),
     ('7: 1/2', 'B:n7_2h_e2', 'T1'),
-    ('7: 1.5/3', 'B:n7_2h_e3', 'T1'),
-    ('7: 2/4', 'B:n7_2h_e4', 'T1'),
-    ('7: 2.5/5', 'B:n7_2h_e5', 'T1'),
+    ('7: 1.5/3$^{b}$', 'B:n7_2h_e3', 'T1'),
+    ('7: 2/4$^{b}$', 'B:n7_2h_e4', 'T1'),
+    ('7: 2.5/5$^{b}$', 'B:n7_2h_e5', 'T1'),
     ('5: 0.25/1', 'B:n5_4h_e1', 'T1'),
     ('9: 0.25/1', 'B:n9_4h_e1', 'T1'),
     ('9: 0.75/3', 'B:n9_4h_e3', 'T1'),
@@ -216,12 +219,12 @@ E1.append((r'(b) Flexibility price $m$, plans in 2025 against the plan without s
     ('7: 0.25/1, $m=2$', 'H:m2:value_minus_I', 'T1'),
     ('7: 0.5/2, $m=2$', 'I:m2:e2_value_minus_I', 'T1'),
     ('7: 0.75/3, $m=2$', 'J:e3_value_minus_I', 'T1'),
-    ('7: 1/4, $m=2$', 'J:e4_value_minus_I', 'T1'),
-    ('7: 1.25/5, $m=2$', 'J:e5_value_minus_I', 'T1'),
+    ('7: 1/4$^{b}$, $m=2$', 'J:e4_value_minus_I', 'T1'),
+    ('7: 1.25/5$^{b}$, $m=2$', 'J:e5_value_minus_I', 'T1'),
     (r'7: 0.25/1 $\to$ 0.5/2, $m=2$$^{\Delta}$', 'I:m2:second_MWh', 'T1'),
     (r'7: 0.5/2 $\to$ 0.75/3, $m=2$$^{\Delta}$', 'J:e2_to_e3', 'T1'),
-    (r'7: 0.75/3 $\to$ 1/4, $m=2$$^{\Delta}$', 'J:e3_to_e4', 'T1'),
-    (r'7: 1/4 $\to$ 1.25/5, $m=2$$^{\Delta}$', 'J:e4_to_e5', 'T1'),
+    (r'7: 0.75/3 $\to$ 1/4$^{b}$, $m=2$$^{\Delta}$', 'J:e3_to_e4', 'T1'),
+    (r'7: 1/4$^{b}$ $\to$ 1.25/5$^{b}$, $m=2$$^{\Delta}$', 'J:e4_to_e5', 'T1'),
 ]))
 E1.append((r'(c) Twice the base flexibility price, 2030 unless stated: neighbours against the plan returned by the search (5: 0.25/0.5; 7: 1/3.5, evaluation~40), $\Delta = F(\text{neighbour}) - F(\text{returned plan})$; positive: the returned plan costs less', [
     ('7: 0.75/3, 2025', 'L:y2025__n7_p0.75_e3', 'T1'),
@@ -276,14 +279,46 @@ P(r"""% ========================================================================
 % export (frozen_step6_tables_v1_590088fe.json via export_W160/*.csv) by gen_appE.py; none is typed by hand.
 % Audited against the frozen JSON by W179a (0 MISMATCH in 1,623 table entries; P5_15_W179A_APPENDIX_E.md). Round 6
 % (Addendum 79): row 16 relabelled, E.3/E.4/E.5/E.6 prose corrected; the four W179 check comments closed. Round 7
-% (Addendum 80): E.4 second phase and the E.21 note on evaluations 40 and 41.
+% (Addendum 80): E.4 second phase and the E.21 note on evaluations 40 and 41. Round 8 (Addendum 83/84): the author's six
+% hand-edited hunks of edd7a63 ported (E.1 salvage credit, lattice figure in E.4, E.5 and E.7 prose); 'contracted interface
+% settlement excluded'; ^b marks the seven 2025 evaluations above the 1 M EUR budget.
 % =====================================================================================================================
 \clearpage
 \section{\textcolor{blue}{Evaluation Record}}
 \label{app:results}
 
 \textcolor{blue}{
-    This appendix gives the record behind the comparisons of Section~\ref{sec:results}: every pairwise comparison (Table~\ref{tab:appE_claims}); every recourse evaluation those comparisons use, with its stopping status, band, gap and slack (Table~\ref{tab:appE_evaluations}); the neighbours of the plan without storage re-evaluated under the certification rule (Table~\ref{tab:appE_neighbours}); the solver starts of the static arrangements (Table~\ref{tab:appE_benchmark}); and the evaluations refused by the gap clause (Table~\ref{tab:appE_gap}). It closes with the certification statistics and the reproducibility record. The multi-scenario evaluations, stopped by the production exit rather than certified, are reported in Table~\ref{tab:res_multiscenario}. All entries are generated from the archived evaluation records. Throughout, $Q$ is the gross operational cost, settlement excluded; the net form subtracts the terminal salvage credit~\eqref{eq:salvage_credit}; the value of a plan is $Q(\boldsymbol{0}) - Q(\boldsymbol{x})$ under the same flexibility price; $F = I + Q$; and $\tau = 4{,}539.07$~\euro{}. Plans are written node: converter rating (MVA) / energy capacity (MWh). Amounts are rounded to 0.1~k\euro{} and ratios to two decimals, except the residual ratio of Table~\ref{tab:appE_gap}, given to three.
+    This appendix gives the record behind the comparisons of Section~\ref{sec:results}: every pairwise comparison (Table~\ref{tab:appE_claims}); every recourse evaluation those comparisons use, with its stopping status, band, gap and slack (Table~\ref{tab:appE_evaluations}); the neighbours of the plan without storage re-evaluated under the certification rule (Table~\ref{tab:appE_neighbours}); the solver starts of the static arrangements (Table~\ref{tab:appE_benchmark}); and the evaluations refused by the gap clause (Table~\ref{tab:appE_gap}). It closes with the certification statistics and the reproducibility record. The multi-scenario evaluations, stopped by the production exit rather than certified, are reported in Table~\ref{tab:res_multiscenario}. All entries are generated from the archived evaluation records. Throughout, $Q$ is the gross operational cost, contracted interface settlement excluded; the net form subtracts the terminal salvage credit~\eqref{eq:salvage_credit}; the value of a plan is $Q(\boldsymbol{0}) - Q(\boldsymbol{x})$ under the same flexibility price; $F = I + Q$; and $\tau = 4{,}539.07$~\euro{}. Plans are written node: converter rating (MVA) / energy capacity (MWh). Amounts are rounded to 0.1~k\euro{} and ratios to two decimals, except the residual ratio of Table~\ref{tab:appE_gap}, given to three.
+}
+
+\subsection{\textcolor{blue}{Terminal Salvage Credit}}
+\label{app:salvage_credit}
+
+The terminal salvage credit is calculated as:
+
+
+\textcolor{blue}{
+    \begin{equation}
+        C^\text{Salvage}(\boldsymbol{x}) =
+        \sum_{e \in E^S} \sum_{y^\text{Inv} \in Y}
+        \frac{\bar{c}^{\text{Inv,E}}_{y^\text{Inv}}\, E^{\text{Inv}}_{e,y^\text{Inv}}}{(1+r)^{\,y^\text{End}-y_0}}
+        \;\frac{T^\text{Rem}_{e,y^\text{Inv}}}{T^\text{Cal}_{e,y^\text{Inv}}}
+        \;\frac{SoH_{e,y^\text{Inv},y^\text{End}} - SoH^{\text{Min}}_e}{1 - SoH^{\text{Min}}_e}
+        \label{eq:salvage_credit}
+    \end{equation}
+}
+
+\textcolor{blue}{
+    \begin{equation}
+        T^\text{Rem}_{e,y^\text{Inv}} = \max\left\{0,\; y^\text{Inv} + T^\text{Cal}_{e,y^\text{Inv}} - y^\text{End}\right\}
+        \label{eq:salvage_remaining_life}
+    \end{equation}
+}
+
+\noindent
+\textcolor{blue}{
+    where $\bar{c}^{\text{Inv,E}}_{y^\text{Inv}} = \sum_{c \in \Omega_C} \omega_c\, c^{\text{Inv,E}}_{y^\text{Inv},c}$ is the expected undiscounted energy cost per MWh in the installation year, $y^\text{End} = y_0 + \sum_{y} Y_y = 2040$ the end of the planning horizon (1~January 2040, in both configurations), $T^\text{Rem}$ the remaining calendar life of the cohort at $y^\text{End}$ and $SoH_{e,y^\text{Inv},y^\text{End}}$ its terminal state of health, the end-of-block state of health of the last representative block (2035, or 2037 in the multi-scenario configuration). The credit returns the energy part of the cohort's cost in proportion to its remaining calendar life and to its state of health above the end-of-life floor; the converter is not credited. 
+    The credit is reported, not optimized: the recourse does not see it, no plan is selected for it, and the net value is $Q(\boldsymbol{0}) - Q(\boldsymbol{x}) + C^\text{Salvage}(\boldsymbol{x})$.
 }
 
 \subsection{\textcolor{blue}{Comparisons}}
@@ -296,7 +331,7 @@ P(r"""% ========================================================================
 # --- Table E.1 (portrait longtable)
 P(r"""{\scriptsize\setlength{\tabcolsep}{3pt}
 \begin{longtable}{@{}r >{\raggedright\arraybackslash}p{0.265\textwidth} c r r r c r r c@{}}
-\caption{\textcolor{blue}{Every pairwise comparison of the record. Eval.: the two evaluations of Table~\ref{tab:appE_evaluations} (reference / other); $^{u}$ uncertified; $^{f}$ flagged certificate. Thr.: the determinacy threshold, or the uncertified bar where an uncertified evaluation is involved; $\times$: $|\Delta|$ divided by it. det.: determinate; w.r.: within resolution; w.b.: within the uncertified bar. Net: net of the terminal salvage credit, against the same threshold or bar. Gross operational cost, settlement excluded.}}
+\caption{\textcolor{blue}{Every pairwise comparison of the record. Eval.: the two evaluations of Table~\ref{tab:appE_evaluations} (reference / other); $^{u}$ uncertified; $^{f}$ flagged certificate. Thr.: the determinacy threshold, or the uncertified bar where an uncertified evaluation is involved; $\times$: $|\Delta|$ divided by it. det.: determinate; w.r.: within resolution; w.b.: within the uncertified bar. Net: net of the terminal salvage credit, against the same threshold or bar. Gross operational cost, contracted interface settlement excluded. $^{b}$: investment above the 1~M\euro{} budget, a valuation probe outside the admissible set (Section~\ref{sec:case_settings}).}}
 \label{tab:appE_claims}\\
 \toprule
  & & & \multicolumn{4}{c}{Gross} & \multicolumn{3}{c}{Net of salvage} \\
@@ -339,7 +374,7 @@ P(r"""
 \begin{landscape}
 {\scriptsize\setlength{\tabcolsep}{3pt}
 \begin{longtable}{@{}r >{\raggedright\arraybackslash}p{4.6cm} c l l r r r r r r r r l@{}}
-\caption{\textcolor{blue}{Recourse evaluations. Plan: node: MVA/MWh. Condition: flexibility-price multiplier $m$ (base: $m = 1$) or ageing calibration. Status: certified on the oscillatory (osc.) or monotone (mon.) branch, the cause that left the evaluation uncertified (gap clause, lapse reset, growth test), or superseded. $k_0$: first residual pass; $k^{*}$/end: certification cycle, or the cycle at which an uncertified evaluation stopped. Range: window range over $\tau$. Band, and the magnitudes of the gap and slack, in k\euro{}. N.c.: non-clean cycles after $k_0$. Replay: last cycle replayed bitwise. Rule: applied in the run, or to the committed record. $^{f}$: flagged certificate (a turning point at a non-clean cycle); $^{t}$: bitwise twin of evaluation~2; $^{s}$: superseded by evaluation~15; certified under an earlier version of the rule, whose cycle, range and band are shown, and not decided under the rule of \ref{app:admm_updated_certification} within its recorded cycles. ---: not applicable or not tabulated.}}
+\caption{\textcolor{blue}{Recourse evaluations. Plan: node: MVA/MWh. Condition: flexibility-price multiplier $m$ (base: $m = 1$) or ageing calibration. Status: certified on the oscillatory (osc.) or monotone (mon.) branch, the cause that left the evaluation uncertified (gap clause, lapse reset, growth test), or superseded. $k_0$: first residual pass; $k^{*}$/end: certification cycle, or the cycle at which an uncertified evaluation stopped. Range: window range over $\tau$. Band, and the magnitudes of the gap and slack, in k\euro{}. N.c.: non-clean cycles after $k_0$. Replay: last cycle replayed bitwise. Rule: applied in the run, or to the committed record. $^{f}$: flagged certificate (a turning point at a non-clean cycle); $^{t}$: bitwise twin of evaluation~2; $^{b}$: investment above the 1~M\euro{} budget (valuation probe outside the admissible set); $^{s}$: superseded by evaluation~15; certified under an earlier version of the rule, whose cycle, range and band are shown, and not decided under the rule of \ref{app:admm_updated_certification} within its recorded cycles. ---: not applicable or not tabulated.}}
 \label{tab:appE_evaluations}\\
 \toprule
 No. & Plan & Year & Condition & Status & $k_0$ & $k^{*}$/end & Range/$\tau$ & Band & Gap & Slack & N.c. & Replay & Rule \\
@@ -368,12 +403,23 @@ P(r"""
 \label{app:results_neighbours}
 
 \textcolor{blue}{
+    Fig.~\ref{fig:investment_lattice} shows the resulting plans of a single node installed in 2025: twelve are admissible, the smallest being 0.25~MVA / 0.5~MWh, which is also the only admissible plan one unit step from the plan without storage. The plan without storage therefore has fourteen admissible neighbours: the smallest unit at any non-empty subset of the three nodes, installed in 2025 or 2030.
+}
+
+\begin{figure}[htbp!]
+    \centering
+    \includegraphics[width=0.75\textwidth]{fig_lattice_case.pdf}
+    \caption{\textcolor{blue}{Admissible single-node investment plans for installation in 2025 under the baseline constraints. The investment budget is shared across all nodes.}}
+    \label{fig:investment_lattice}
+\end{figure}
+
+\textcolor{blue}{
     The planning search evaluated all fourteen admissible unit neighbours of the plan without storage at its own resolution ($\sigma_Q$, or the sum of the two evaluations' bars where larger; Subsection~\ref{subsec:res_baseline}). Table~\ref{tab:appE_neighbours} gives the eight of them that were re-evaluated under the certification rule: the smallest unit, 0.25~MVA / 0.5~MWh, at each node installed in 2025 or 2030, and at two pairs of nodes. Every one costs determinately more than the plan without storage. The other six, the smallest unit at the two remaining pairs of nodes and at all three nodes, in 2025 or 2030, were evaluated by the search only, on an earlier state of the code and stopped by the production exit; each cost more than the plan without storage by 3.47--7.17 times the search resolution.
 }
 
 \begin{table}[htbp!]
     \centering
-    \caption{\textcolor{blue}{Neighbours of the plan without storage re-evaluated under the certification rule: the smallest unit (0.25~MVA / 0.5~MWh) at the nodes listed. $\Delta = F(\boldsymbol{x}) - F(\boldsymbol{0})$, gross operational cost, settlement excluded; every difference is determinate.}}
+    \caption{\textcolor{blue}{Neighbours of the plan without storage re-evaluated under the certification rule: the smallest unit (0.25~MVA / 0.5~MWh) at the nodes listed. $\Delta = F(\boldsymbol{x}) - F(\boldsymbol{0})$, gross operational cost, contracted interface settlement excluded; every difference is determinate.}}
     \label{tab:appE_neighbours}
     \scriptsize\setlength{\tabcolsep}{5pt}
     \begin{tabular}{l c c r r r}
@@ -406,12 +452,19 @@ P(r"""
 \label{app:results_benchmark}
 
 \textcolor{blue}{
-    Each static no-reverse-flow arrangement of Subsection~\ref{subsec:res_coordination} was solved from three starts (Table~\ref{tab:appE_benchmark}); the best is reported in Table~\ref{tab:res_benchmark}, and the spread over the starts is its band. Each arrangement is solved in three phases (Section~\ref{sec:case_settings}): the distribution networks' dispatch and the transmission network's dispatch against it, from which the curtailment columns are taken; a re-evaluation of each distribution network at the transmission network's interface voltage, with its decisions held at the first phase and its voltage, thermal and no-reverse-flow rows switched off, in which the exceedance columns count the network-hours (of 864: three networks, twelve blocks, 24~h) whose interface flow exceeds the no-reverse-flow limit and give the largest exceedance; and the consistency pass, a re-solve of each distribution network at that voltage with the rows on, followed by the transmission network's dispatch, whose cost is the $Q$ of Table~\ref{tab:appE_benchmark}. The consistency column is the change of $Q$ from the first phase to the pass.
+    In the passive arrangement, the DN dispatch objective includes a renewable-curtailment coefficient of 1~\euro/MWh. This auxiliary term is excluded from the reported operating cost $Q$.
+}
+
+\textcolor{blue}{
+    Each static no-reverse-flow arrangement of Subsection~\ref{subsec:res_coordination} was solved from three starts (Table~\ref{tab:appE_benchmark}); the best is reported in Table~\ref{tab:res_benchmark}, and the spread over the starts is its band. Each arrangement is solved in three phases: 
+    the distribution networks' dispatch and the transmission network's dispatch against it, from which the curtailment columns are taken; 
+    a re-evaluation of each distribution network at the transmission network's interface voltage, with its decisions held at the first phase and its voltage, thermal and no-reverse-flow rows switched off, in which the exceedance columns count the network-hours (of 864: three networks, twelve blocks, 24~h) whose interface flow exceeds the no-reverse-flow limit and give the largest exceedance; and 
+    the consistency pass, a re-solve of each distribution network at that voltage with the rows on, followed by the transmission network's dispatch, whose cost is the $Q$ of Table~\ref{tab:appE_benchmark}. The consistency column is the change of $Q$ from the first phase to the pass.
 }
 
 \begin{table}[htbp!]
     \centering
-    \caption{\textcolor{blue}{Static no-reverse-flow (NRF) arrangements at the plan without storage, by solver start. Cold: default start; perturbed: perturbed start; warm: started from the certified coordinated evaluation. $Q$: gross operational cost, settlement excluded, after the consistency pass. Curtailment: day-weighted, over the horizon, from the first phase (before the pass).}}
+    \caption{\textcolor{blue}{Static no-reverse-flow (NRF) arrangements at the plan without storage, by solver start. Cold: default start; perturbed: perturbed start; warm: started from the certified coordinated evaluation. $Q$: gross operational cost, contracted interface settlement excluded, after the consistency pass. Curtailment: day-weighted, over the horizon, from the first phase (before the pass).}}
     \label{tab:appE_benchmark}
     \scriptsize\setlength{\tabcolsep}{4pt}
     \begin{tabular}{l l r r r r r r}
@@ -482,12 +535,32 @@ P(r"""
 \label{app:results_statistics}
 
 \textcolor{blue}{
-    \textbf{Certification statistics.} The 42 single-scenario evaluations of the certification campaign are evaluations 3--11, 15, 22, 23, 26--31, 34--39 and 42--59 of Table~\ref{tab:appE_evaluations}. Of these, 32 certified, 24 on the oscillatory branch and 8 on the monotone branch; the 10 uncertified divide into 5 refused by the gap clause, 2 reset by residual lapses and 3 failed by the growth test. The median certification cycle was 174, and certification came a median 65 cycles after the first residual pass (range 21--89); the median ratio of the window range to $\tau$ at certification was 0.86. The four evaluations added later (32, 33, 60 and 61) all certified. Ten of the 46 certificates the tables use stop within 5\,\% of $\tau$ (evaluations 2, 3, 5, 10, 11, 12, 14, 17, 20 and 23; evaluation~36, at 0.94 on the monotone branch, is just below), so the rule bounds the stopping error of each evaluation at about $\tau$, not well inside it. The three evaluations continued past their certificates, 12, 14 and 3, moved by a further 0.004$\tau$, 0.74$\tau$ and 0.78--0.88$\tau$. After the first residual pass, 21 cycles in 10 evaluations had a local solve that was not clean, all in transmission blocks (column N.c.), while the 119 exits at IPOPT's acceptable level within ten times the tight-tail tolerances, all in distribution blocks, were counted as clean.
+    The three planning searches used earlier versions of the implementation without the tightened interior-point tolerances used for numerical acceptance. Their reported incumbents were re-evaluated using the settings in~\ref{app:admm_updated_settings}.
+}
+
+\textcolor{blue}{
+    The acceptance tolerance~\eqref{eq:acceptance_tolerance} uses $\delta_R = 0.07$ on the reference value $\mathcal{V} = 259{,}375.33$~\euro{}, the value of the reference unit in force when the rule was adopted, hence $\tau = 4{,}539.07$~\euro{}, kept frozen thereafter, and $P_{\max} = 30$ cycles;
+    an evaluation continued from, or re-run on, an earlier record is capped 100 cycles after that record's stopping cycle, a fresh one at $\min\{k_0 + 109, 300\}$. The planning search (Algorithm~\ref{alg:shared_ess_planning_mads}) used $\Delta_0 = 4$ lattice units, budgets of 20 new evaluations for the two variant-A searches and 60 for the variant-B certificate, a completion cap of 30 points, and the measured resolution $\sigma_Q = 18{,}449.66$~\euro{} of the recourse.
+    The search evaluations ran under the production exit (ten consecutive passing cycles, cap 500 cycles); variant B polled at unit size throughout; a run was stopped for review when a completion set exceeded the cap or when two barrier points occurred in one poll or three in all, and ran at most 60 polls; the cache of the baseline search was seeded with the single-node ladders of the initial design, including ladder points over the budget, and the caches of the two searches under the doubled flexibility price with the certified evaluations at that price, which for the variant-B run include multi-node plans installed in 2030.
+}
+
+\textcolor{blue}{
+    The baseline search used variant A and performed 14 new recourse evaluations. The initial search at twice the base flexibility price also used variant A and performed 20 new evaluations; it stopped when the unit-neighbour completion set exceeded the cap. A variant-B search continued from its incumbent and performed seven new evaluations. All new evaluations in the variant-A searches came from unit-neighbour completion. The baseline and variant-B searches stopped after unsuccessful unit polls.
+}
+
+\textcolor{blue}{
+    At every certificate used in a reported comparison, and at both multi-scenario evaluations, both daily closure slacks sat at their lower bound to within the solver's bound relaxation ($10^{-6}$~MWh per slack); in the superseded evaluation~16 of Table~\ref{tab:appE_evaluations} their sum reached $1.8 \times 10^{-6}$~MWh, $5 \times 10^{-6}$ of the available energy. Without storage the closure row is deactivated and its slacks are fixed at zero.
+    The shared-ESS agent's net-active-power slacks $\sigma^\pm_{e,y,d,t}$ were at their lower bounds at every certified evaluation.
+}
+
+\textcolor{blue}{
+    \textbf{Certification statistics.} The 42 single-scenario evaluations of the certification campaign are evaluations 3--11, 15, 22, 23, 26--31, 34--39 and 42--59 of Table~\ref{tab:appE_evaluations}. Of these, 32 certified, 24 on the oscillatory branch and 8 on the monotone branch; the 10 uncertified divide into 5 refused by the gap clause, 2 reset by residual lapses and 3 failed by the growth test. The median certification cycle was 174, and certification came a median 65 cycles after the first residual pass (range 21--89); the median ratio of the window range to $\tau$ at certification was 0.86. The four evaluations added later (32, 33, 60 and 61) all certified. Ten of the 46 certificates the tables use stop within 5\,\% of $\tau$ (evaluations 2, 3, 5, 10, 11, 12, 14, 17, 20 and 23; evaluation~36, at 0.94 on the monotone branch, is just below), so the accepted window ranges can lie close to $\tau$, without providing a guaranteed bound on the remaining objective movement. The three evaluations continued past their certificates, 12, 14 and 3, moved by a further 0.004$\tau$, 0.74$\tau$ and 0.78--0.88$\tau$. After the first residual pass, 21 cycles in 10 evaluations had a local solve that was not clean, all in transmission blocks (column N.c.), while the 119 exits at IPOPT's acceptable level within ten times the tight-tail tolerances, all in distribution blocks, were counted as clean.
 }
 
 \textcolor{blue}{
     \textbf{Reproducibility.} Replaying a run reproduces its trajectory bitwise: the multi-scenario evaluation of the plan without storage replayed its 72 recorded cycles bitwise; the three single-scenario reference continuations (the plan without storage, the reference unit and a larger plan not tabulated here) replayed bitwise through the stopping cycles of the residual-based runs they continue, cycles 132, 112 and 87; and every evaluation repeated from an earlier record replayed that record bitwise up to its first residual pass before continuing (column Replay). The evaluations ran one at a time on an Apple M2~Max with 32~GiB of memory under macOS~27.0, single-threaded: OMP, MKL, OpenBLAS, vecLib and NumExpr were capped at one thread in every evaluation's recorded environment, and the HSL library is built without OpenMP, so MA97 ran serially; the solver settings and versions are listed in~\ref{app:admm_updated_settings}. Two distribution blocks (node~7 in 2025 Winter, node~5 in 2035 Winter) end some primary solves at IPOPT's acceptable level within ten times the tight-tail tolerances; they are counted as clean under the rule of~\ref{app:admm_updated_certification}. Two offsets are common to every evaluation and cancel in every reported difference: tightening the interior-point tail lowered the certified objective of each of the three single-scenario references by $1.0$--$1.2 \times 10^{-6}$ relative, with the same sign (the complementarity tolerance went to $10^{-6}$ from $10^{-4}$ in the distribution subproblems and from $5 \times 10^{-4}$ in the transmission subproblem); and the $10^{-5}$~p.u. slack on the renewable availability bound lowers the objective by about 7.8~k\euro{} at first order, $1.2 \times 10^{-5}$ of it.
 }
+
 """)
 open(sys.argv[1] if len(sys.argv) > 1 else 'appE.tex', 'w', encoding='utf-8').write('\n'.join(out) + '\n')
 print('ok', no, n)
