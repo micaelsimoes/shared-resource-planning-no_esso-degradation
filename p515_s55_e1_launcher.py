@@ -1,5 +1,32 @@
 """
 P5.15 Addendum 83 ruling 3 (i), (v), (vi) -- task W183b: the E1 SEARCH LAUNCHER (matched degradation-aware and
+
+================================================================================
+v2 (W183g (b), PLANNER_BRIEF_2026-09-13.md Addendum 85 rulings 2, 3 and 4 (iv); v1 = sha256 320d503c..., cb36b22e)
+================================================================================
+  E1 POLL RULE B+ (ruling 2). The search loop is the launcher's OWN `run_continuation_e1`: a copy of
+  `p515_s53_f2_certificate.run_continuation` (the committed module is not edited) with ONE inserted step, between
+  `build_poll` and the completion-cap refusal: when fewer than n + 1 = 8 distinct feasible poll points remain after
+  rounding and snapping and the incumbent's completion has MORE than 30 feasible points, the Halton index advances by
+  one and the 2n directions are re-drawn, rounded and snapped (`C.build_poll`, unchanged, by reference), at most
+  ADVANCE_WINDOW = 10 consecutive indices (the refused one included); the first index with >= 8 distinct feasible
+  points is polled; the skipped indices and their snap tables are written into the poll record
+  (`halton_indices_skipped`, `advance_rule` -- the only new record fields); if no index in the window yields 8 points,
+  STOP_FOR_REVIEW_completion_cap as frozen (the terminating record is the record of the first examined index). A
+  completion of <= 30 points is used as frozen. The Halton index is explicit state `k_next`: each launched poll
+  examines k_next, k_next + 1, ... and polls at k_p; then k_next = k_p + 1; skipped indices are not launched polls
+  (MAX_POLLS counts launched polls); `poll_index` stays the Halton k. Everything else is the frozen variant B by
+  reference: `C.build_poll`, `C._certificate`, `PB.classify`, `PB.resolution`, `PB.BARRIER_STOP_*` (A7 confirmed,
+  ruling 3), the acceptance threshold, the budget check after the cap check at the chosen index. k0 = 0 (t = 17) in
+  both arms. The rule text is B_PLUS_RULE, recorded in every spec (extra.poll_design).
+  DECLARED ROOTS (ruling 4 iv): `P515S55/e1_2x` (phases seeds -- all seven --, search_N, search_A; phase `cross`
+  belongs to the fixed-plan launcher and is never created or read here) and the batch-gate root
+  `P515S55/e1_2x_batch4` (ONE seeds phase: unit_A_2x, unit_N_2x, n7_05_2_A_2x, n7_05_2_N_2x at concurrency 4; no
+  search phase; its records never seed an arm -- the cache is root-scoped). --freeze / --run refuse any other root.
+  The dry-run gate of W183g (b) is `p515_s55_w183g_b_e1_v2_dryrun.py`.
+
+v1 text follows (the search paragraph's "run_continuation BY IMPORT" is replaced by the v2 paragraph above).
+
 degradation-neutral searches at twice the base flexibility price; STEP7_SIMULATION_PLAN_2026-10-25.md section 5 and
 the section 11 amendments; Addendum 82 v2 ruling 1). HARNESS CODE: no production module is touched, and the campaign
 harness `p515_s44_campaign_harness.py` is used exactly as committed (no harness change was needed).
@@ -210,14 +237,16 @@ AUTHORITY = [
     'STEP7_SIMULATION_PLAN_2026-10-25.md sections 5.1, 5.2, 11',
     'P5_15_W182E_CODE_PATHS.md (Blocked 1: no committed search launcher accepts a model variant)',
     'P5_15_W183_0_NL_REFERENCE.md (G0 at x = 0; unit_N_1x key = the ext-v6 e_no_ageing base key)',
+    'PLANNER_BRIEF_2026-09-13.md Addendum 85 ruling 2 (E1 poll rule B+), ruling 3 (A7 confirmed), ruling 4 (i), (iv) '
+    '(k0 = 0; the 4-slot batch seeds and the roots); W183g order item (b) -- launcher v2',
 ]
 OBJECTIVE_CONVENTION = ('Q(x) = certified gross_operational_cost (contracted interface settlement excluded); F(x) = I(x) '
                         '+ Q(x); salvage and net recourse recorded by the harness, excluded from F')
 RESULTS_P55_REL = os.path.join('data', 'SRP1', 'Results', 'P515S55')
 RESULTS_FILE = 'campaign_results.json'
 MANIFEST_FILE = 'campaign_manifest_sha256.json'
-DRY_RUN_FILE = 'w183b_e1_dryrun.json'
-DRY_RUN_MANIFEST = 'w183b_e1_dryrun_manifest_sha256.json'
+DRY_RUN_FILE = 'e1_launcher_v2_dryrun.json'                      # v1: w183b_e1_dryrun.json
+DRY_RUN_MANIFEST = 'e1_launcher_v2_dryrun_manifest_sha256.json'  # v1: w183b_e1_dryrun_manifest_sha256.json
 LOG_RX = re.compile(r'^[A-Za-z0-9_.-]*launch[A-Za-z0-9_.-]*\.log$')
 
 # ---- the frozen configuration: the W142 extension v6 block (p515_s53_w142_resettle_ext_v6_campaign.py
@@ -277,15 +306,72 @@ COMPLETION_CAP = C.COMPLETION_CAP                       # 30
 MIN_FEASIBLE_POLL_POINTS = C.MIN_FEASIBLE_POLL_POINTS   # n + 1 = 8
 SIGMA_Q_EXPECTED_EUR = 18449.66
 PHASES = ('seeds', 'search_N', 'search_A')
+# ---- E1 poll rule B+ (Addendum 85 ruling 2) ----
+ADVANCE_WINDOW = 10      # at most 10 consecutive Halton indices examined per launched poll (the refused one included)
+B_PLUS_RULE = (
+    'E1 POLL RULE B+ (PLANNER_BRIEF_2026-09-13.md Addendum 85 ruling 2; declared before any E1 solve; identical in '
+    'both arms and at every poll): when fewer than n + 1 = 8 distinct feasible poll points remain after rounding and '
+    'snapping, (i) if the completion of the incumbent has <= 30 feasible points it is used, as frozen; (ii) if it has '
+    'more than 30, the Halton index advances by one and the 2n directions are re-drawn, rounded and snapped, at most '
+    '10 consecutive indices (the refused index included), and the first index with at least n + 1 distinct feasible '
+    'poll points is polled -- the skipped indices and their snap tables are written into the poll record '
+    '(halton_indices_skipped, advance_rule); skipped indices are not launched polls; (iii) if no index in the window '
+    'yields n + 1 points, STOP_FOR_REVIEW_completion_cap as frozen (the terminating record is the record of the first '
+    'examined index, with the further examined indices listed in halton_indices_skipped). Everything else is the '
+    'frozen variant B of Addendum 39 ruling 1 / spec v23: 2n = 14 OrthoMADS directions, the rounding, SNAP_RULE, '
+    'Delta = 1 at every poll, acceptance of a poll point only above max{bar_x + bar_inc, sigma_Q = 18,449.66 EUR}, '
+    'the A7 barrier rule (2 new barrier evaluations in one poll or 3 overall: stop for review), <= 30 new '
+    'evaluations per arm, <= 10 launched polls, the Halton index continuing from the last polled index + 1; '
+    'k0 = 0 (t = 17) in both arms. The rule reads the snap table only (no objective value).')
+POLL_RECORD_FIELDS_E1 = tuple(C.POLL_RECORD_FIELDS) + ('halton_indices_skipped', 'advance_rule')
+SKIPPED_INDEX_FIELDS = ('k', 'halton_t', 'halton_u', 'directions', 'snap_table', 'n_distinct_feasible_poll_points',
+                        'completion', 'candidates')
+SKIPPED_COMPLETION_FIELDS = ('n_feasible', 'over_cap', 'cap')
+SKIPPED_CANDIDATE_FIELDS = ('label', 'poll_part', 'direction_index', 'disposition')
+ADVANCE_RULE_FIELDS = ('enabled', 'window', 'first_index', 'polled_index', 'n_examined', 'text')
+# ---- the frozen variant-B primitives BY REFERENCE (the unchanged objects of p515_s53_f2_certificate), bound under the
+#      names C.run_continuation's body uses, so that run_continuation_e1's text differs from C.run_continuation only
+#      where B+ requires it (the W183g (b) gate diffs the two sources) ----
+build_poll, _certificate = C.build_poll, C._certificate
+DELTA_UNIT, POLL_RULE, STOP_RULE = C.DELTA_UNIT, C.POLL_RULE, C.STOP_RULE
+# ---- the declared roots (Addendum 85 ruling 4 (iv); spec v1) -- --freeze / --run refuse any other root ----
+E1_ROOT_REL = os.path.join('data', 'SRP1', 'Results', 'P515S55', 'e1_2x')
+E1_BATCH_ROOT_REL = os.path.join('data', 'SRP1', 'Results', 'P515S55', 'e1_2x_batch4')
+BATCH_SEEDS = ('unit_A_2x', 'unit_N_2x', 'n7_05_2_A_2x', 'n7_05_2_N_2x')
+BATCH_CONCURRENCY = 4
+DECLARED_ROOTS = {
+    E1_ROOT_REL: {
+        'role': 'the E1 root: seeds, both searches, then the cross-evaluations',
+        'phases': ['seeds', 'search_N', 'search_A', 'cross'],
+        'phases_of_this_launcher': list(PHASES),
+        'seeds': 'all seven (no --seeds subset)',
+        'cross': ('owned by the fixed-plan launcher (Addendum 85 ruling 4 (vi), (xi)); created after both searches; '
+                  'never created or read by this launcher'),
+        'concurrency': ('declared per phase at --freeze; 4 slots for the search batches only if the 4-slot batch gate '
+                        'is bitwise (ruling 4 iv), otherwise 1')},
+    E1_BATCH_ROOT_REL: {
+        'role': ('the 4-slot batch gate (ruling 4 iv): the four node-7 seed evaluations as ONE batch, compared with '
+                 'the serial records of P515S55/e1_2x on PER_CYCLE_TRAJECTORY_FIELDS (W101/W142 replay method; the '
+                 'comparison script is not part of this launcher), peak RSS recorded'),
+        'phases': ['seeds'], 'phases_of_this_launcher': ['seeds'],
+        'seeds': list(BATCH_SEEDS), 'concurrency': BATCH_CONCURRENCY,
+        'never_seeds_an_arm': ('the cache is root-scoped (load_seed_cache reads only <root>/campaign_s55_<root>_seeds) '
+                               'and no search phase is accepted in this root')},
+}
 POLL_DESIGN_RECORD = {
-    'variant': 'B (Addendum 70 ruling 6; plan 5.1)', 'module': 'p515_s53_f2_certificate (build_poll, run_continuation)',
+    'variant': 'B+ (Addendum 85 ruling 2) over variant B (Addendum 70 ruling 6; plan 5.1)',
+    'module': ('p515_s55_e1_launcher.run_continuation_e1 (a copy of p515_s53_f2_certificate.run_continuation with the '
+               'B+ advance inserted before the completion-cap refusal); p515_s53_f2_certificate.build_poll and '
+               '_certificate by reference, unchanged'),
+    'b_plus_rule': B_PLUS_RULE, 'advance_window': ADVANCE_WINDOW,
     'poll_rule': C.POLL_RULE, 'snap_rule': C.SNAP_RULE,
     'iteration_rule_as_applied': ('on success the next poll is again a unit poll (Delta = 1); the Halton index starts '
-                                  'at k = 0 (t = 17) for EACH arm and advances by one per poll; at most '
+                                  'at k = 0 (t = 17) for EACH arm and continues from the last POLLED index + 1 (B+: '
+                                  'indices skipped by the advance are not launched polls); at most '
                                   f'{N_MAX_NEW_EVALUATIONS} NEW evaluations per arm (seeds counted separately); a '
                                   'poll whose new evaluations would exceed what remains is not launched '
                                   '(evaluation_budget_exhausted); at most '
-                                  f'{MAX_POLLS} polls (max_polls_reached)'),
+                                  f'{MAX_POLLS} launched polls (max_polls_reached)'),
     'resolution_rule': PB.RESOLUTION_RULE, 'stop_rule': C.STOP_RULE,
     'barrier_stop_per_poll': PB.BARRIER_STOP_PER_POLL, 'barrier_stop_overall': PB.BARRIER_STOP_OVERALL,
     'certificate_statement': C.CERTIFICATE_STATEMENT, 'halton_k0': HALTON_K0, 'n_max_new_evaluations':
@@ -853,6 +939,26 @@ def resolve_root(arg):
     return _rel(real), real
 
 
+def declared_root_refusals(root_rel, phase, seed_labels, concurrency, all_seed_labels):
+    """Addendum 85 ruling 4 (iv), for --freeze / --run: only a DECLARED root, only a phase of this launcher declared
+    for it, the declared seed set (P515S55/e1_2x: all seven; P515S55/e1_2x_batch4: the four batch seeds) and, in the
+    batch root, the declared concurrency 4. `seed_labels` = the seeds phase's entry labels (None for a search phase).
+    Returns the refusals (empty = declared)."""
+    decl = DECLARED_ROOTS.get(root_rel)
+    if decl is None:
+        return [f'root {root_rel} is not a declared E1 root (Addendum 85 ruling 4 iv): {sorted(DECLARED_ROOTS)}']
+    out = []
+    if phase not in decl['phases_of_this_launcher']:
+        out.append(f"phase {phase} is not declared for {root_rel} (this launcher: {decl['phases_of_this_launcher']})")
+    if phase == 'seeds' and seed_labels is not None:
+        expected = sorted(BATCH_SEEDS) if root_rel == E1_BATCH_ROOT_REL else sorted(all_seed_labels)
+        if sorted(seed_labels) != expected:
+            out.append(f'seed set {sorted(seed_labels)} != the declared seed set of {root_rel}: {expected}')
+    if root_rel == E1_BATCH_ROOT_REL and concurrency != BATCH_CONCURRENCY:
+        out.append(f'concurrency {concurrency} != the declared {BATCH_CONCURRENCY} of the batch root {root_rel}')
+    return out
+
+
 def campaign_id(root_rel, phase):
     return f"s55_{H._sanitize_id(os.path.basename(root_rel))}_{H._sanitize_id(phase)}"
 
@@ -1067,6 +1173,176 @@ def initial_incumbent(lattice, cache, sigma_q):
 
 
 # ======================================================================================================================
+#  the E1 search loop: variant B with the B+ advance (Addendum 85 ruling 2)
+# ======================================================================================================================
+def _skipped_index_entry(record, completion):
+    """One examined-and-refused Halton index of the B+ advance, from its `C.build_poll` record: the index, the Halton
+    point, the 2n directions, the snap table, the distinct count, the completion size against the cap, and every
+    candidate's identity and disposition (SKIPPED_INDEX_FIELDS)."""
+    return {'k': record['poll_index'], 'halton_t': record['halton_t'], 'halton_u': record['halton_u'],
+            'directions': record['directions'], 'snap_table': record['snap_table'],
+            'n_distinct_feasible_poll_points': record['n_distinct_feasible_poll_points'],
+            'completion': {f: completion[f] for f in SKIPPED_COMPLETION_FIELDS},
+            'candidates': [{f: c[f] for f in SKIPPED_CANDIDATE_FIELDS} for c in record['candidates']]}
+
+
+# run_continuation_e1 -- the E1 loop (v2). A COPY of p515_s53_f2_certificate.run_continuation (the committed module is
+# not edited; its docstring is kept verbatim) with exactly three changes: (1) the signature (name; E1 defaults; the
+# `advance` and `advance_window` parameters); (2) the Halton index as explicit state `k_next` (k = k_next at each
+# launched poll, k_next = k_p + 1 after it) instead of k = k0 + i; (3) the B+ block between `build_poll` and the
+# completion-cap refusal (marked >>> / <<<), which also writes the two new record fields `halton_indices_skipped` and
+# `advance_rule`. With advance=False the loop is the imported loop plus the two fields at their trivial values
+# (skipped [], enabled False, n_examined 1) -- the W183g (b) gate tests this against C.run_continuation itself.
+# `on_poll_start` fires once per launched poll, on the chosen record. B_PLUS_RULE states the rule.
+def run_continuation_e1(lattice, cache, key_of, incumbent, evaluate_fn, sigma_q, k0=HALTON_K0,
+                        max_new_evaluations=N_MAX_NEW_EVALUATIONS, max_polls=MAX_POLLS, batch_size=1,
+                        completion_cap=COMPLETION_CAP, log=_log, on_poll=None, on_poll_start=None, advance=True,
+                        advance_window=ADVANCE_WINDOW):
+    """The continuation loop (POLL_RULE, SNAP_RULE, ITERATION_RULE). `cache` (eval_key -> entry) is extended in
+    place. `evaluate_fn(list[z]) -> list[cache entry]`. Structure, barrier rule, classification and record schema
+    follow PB.run_mads; the poll set is `build_poll`'s."""
+    inc = dict(incumbent)
+    history, n_new, n_barrier_new = [], 0, 0
+    termination, certificate = None, None
+    k_next = k0
+
+    def _finish(rec):
+        history.append(rec)
+        if on_poll:
+            on_poll(rec)
+
+    for i in range(max_polls):
+        k = k_next
+        record, completion = build_poll(lattice, cache, key_of, inc, k, sigma_q, completion_cap=completion_cap)
+        # >>> B+ advance (Addendum 85 ruling 2) -- the only inserted step; the rest of the loop is C.run_continuation's
+        first_k, skipped, n_examined = k, [], 1
+        if advance and completion is not None and completion['over_cap']:
+            pending = [_skipped_index_entry(record, completion)]
+            for k_try in range(first_k + 1, first_k + advance_window):
+                record_try, completion_try = build_poll(lattice, cache, key_of, inc, k_try, sigma_q,
+                                                        completion_cap=completion_cap)
+                n_examined += 1
+                if completion_try is not None and completion_try['n_feasible'] != completion['n_feasible']:
+                    raise RuntimeError(f'B+: the completion of {inc["label"]} changed with the Halton index '
+                                       f'({completion["n_feasible"]} at k = {first_k}, '
+                                       f'{completion_try["n_feasible"]} at k = {k_try})')
+                if completion_try is None:      # >= n + 1 distinct feasible poll points: polled at this index
+                    skipped, record, completion, k = pending, record_try, completion_try, k_try
+                    break
+                pending.append(_skipped_index_entry(record_try, completion_try))
+            else:                               # (iii): the record stays the first examined index's
+                skipped = pending[1:]
+        record['halton_indices_skipped'] = skipped
+        record['advance_rule'] = {'enabled': bool(advance), 'window': advance_window, 'first_index': first_k,
+                                  'polled_index': None if (completion is not None and completion['over_cap']) else k,
+                                  'n_examined': n_examined, 'text': B_PLUS_RULE}
+        k_next = k + 1
+        # <<< B+ advance
+        cands = record['candidates']
+        new = [c for c in cands if c['disposition'] == 'new_evaluation']
+        if on_poll_start:
+            on_poll_start(record)
+        if completion is not None and completion['over_cap']:
+            record['decision'] = 'stopped_for_review_completion_cap'
+            for c in cands:
+                if c['disposition'] in ('cache_hit', 'new_evaluation'):
+                    c['outcome'] = 'not_evaluated_completion_cap'
+            _finish(record)
+            termination = {'reason': 'STOP_FOR_REVIEW_completion_cap', 'poll_size_reached': DELTA_UNIT,
+                           'completion_n_feasible': completion['n_feasible'], 'cap': completion_cap,
+                           'rule': POLL_RULE,
+                           'detail': f"poll {k}: {record['n_distinct_feasible_poll_points']} distinct feasible poll "
+                                     f"points < {MIN_FEASIBLE_POLL_POINTS} triggered the completion of "
+                                     f"{inc['label']}, which has {completion['n_feasible']} feasible points > "
+                                     f'{completion_cap}; refused, nothing of this poll evaluated, not truncated'}
+            break
+        if n_new + len(new) > max_new_evaluations:
+            record['decision'] = 'not_launched_evaluation_budget'
+            _finish(record)
+            termination = {'reason': 'evaluation_budget_exhausted', 'poll_size_reached': DELTA_UNIT,
+                           'detail': f'poll {k} needs {len(new)} new evaluations; {n_new} used of '
+                                     f'{max_new_evaluations}'}
+            break
+        stop = None
+        for b in range(0, len(new), batch_size):
+            batch = new[b:b + batch_size]
+            recs = evaluate_fn([tuple(c['z']) for c in batch])
+            if len(recs) != len(batch):
+                raise RuntimeError('evaluate_fn returned a different number of records')
+            for c, rec in zip(batch, recs):
+                if rec.get('eval_key') != c['eval_key']:
+                    raise RuntimeError(f"evaluation record eval key {rec.get('eval_key')} != {c['eval_key']}")
+                cache[c['eval_key']] = dict(rec)
+                n_new += 1
+                if rec['status'] != 'certified':
+                    n_barrier_new += 1
+            record['batches'].append([c['label'] for c in batch])
+            barrier_this_poll = sum(1 for c in new if c['eval_key'] in cache
+                                    and cache[c['eval_key']]['status'] != 'certified')
+            if barrier_this_poll >= PB.BARRIER_STOP_PER_POLL or n_barrier_new >= PB.BARRIER_STOP_OVERALL:
+                stop = {'reason': 'STOP_FOR_REVIEW_barrier_rule', 'barrier_new_this_poll': barrier_this_poll,
+                        'barrier_new_overall': n_barrier_new, 'rule': STOP_RULE}
+                break
+        for c in cands:
+            if c['disposition'] not in ('cache_hit', 'new_evaluation'):
+                continue
+            rec = cache.get(c['eval_key'])
+            if rec is None:
+                c['outcome'] = 'not_evaluated_stop_rule'
+                continue
+            c['source'] = rec.get('source')
+            c['status'] = rec['status']
+            c['barrier_cause'] = rec.get('barrier_cause')
+            if rec['status'] != 'certified' or rec.get('Q') is None:
+                c.update({'F_eur': None, 'outcome': 'barrier'})
+                continue
+            f_x = c['I_x_eur'] + rec['Q']
+            res = PB.resolution(rec.get('bar'), inc['bar'], sigma_q)
+            c.update({'Q_eur': rec['Q'], 'F_eur': f_x, 'bar_eur': rec.get('bar'),
+                      'bar_sum_eur': (rec['bar'] + inc['bar']) if (rec.get('bar') is not None
+                                                                     and inc['bar'] is not None) else None,
+                      'resolution_eur': res if math.isfinite(res) else None, 'F_inc_minus_F_eur': inc['F'] - f_x,
+                      'outcome': PB.classify(inc['F'], f_x, res)})
+        if stop:
+            record['decision'] = 'stopped_for_review'
+            _finish(record)
+            termination = dict(stop, poll_size_reached=DELTA_UNIT)
+            break
+        improvers = [c for c in cands if c['outcome'] == 'improvement']
+        if improvers:
+            best = min(improvers, key=lambda c: (c['F_eur'], c['I_x_eur'], c['label']))
+            inc = {'eval_key': best['eval_key'], 'z': tuple(best['z']), 'label': best['label'], 'I': best['I_x_eur'],
+                   'Q': best['Q_eur'], 'F': best['F_eur'], 'bar': best['bar_eur'], 'source': best['source']}
+            record.update({'decision': 'success', 'next_incumbent': best['label'], 'next_poll_size': DELTA_UNIT})
+            _finish(record)
+            log(f"[S53-CERT] poll {k} (t={record['halton_t']}) incumbent={record['incumbent']['label']} "
+                f"new={record['n_new_evaluations']} hits={record['n_cache_hits']} -> success, next {best['label']}")
+            continue
+        record.update({'decision': 'failure_at_unit_mesh', 'next_incumbent': inc['label'], 'next_poll_size': None})
+        _finish(record)
+        termination = {'reason': 'poll_failure_at_unit_mesh', 'poll_size_reached': DELTA_UNIT}
+        certificate = _certificate(lattice, key_of, cache, inc, record, sigma_q)
+        break
+    if termination is None:
+        termination = {'reason': 'max_polls_reached', 'poll_size_reached': DELTA_UNIT}
+    last = history[-1] if history else None
+    unresolved = [c for c in (last['candidates'] if last else []) if c['outcome'] == 'indeterminate']
+    nb = lattice.neighbourhood(tuple(inc['z']))
+    return {'termination': termination, 'termination_certificate': certificate,
+            'incumbent': {kk: inc[kk] for kk in ('label', 'eval_key', 'z', 'I', 'Q', 'F', 'bar')},
+            'n_polls': len(history), 'n_new_evaluations': n_new, 'n_barrier_new_evaluations': n_barrier_new,
+            'final_poll_unresolved_indeterminate': [{kk: c[kk] for kk in ('label', 'F_eur', 'F_inc_minus_F_eur',
+                                                                          'resolution_eur')} for c in unresolved],
+            'final_poll_feasible_points': [c['label'] for c in (last['candidates'] if last else [])
+                                           if c['disposition'] in ('cache_hit', 'new_evaluation')],
+            'lattice_neighbourhood_of_incumbent': [
+                {'label': lattice.label(z), 'eval_key': key_of(z), 'in_cache': key_of(z) in cache,
+                 'polled_in_final_poll': any(c['eval_key'] == key_of(z) for c in (last['candidates'] if last else [])),
+                 'I_x_eur': lattice.investment_cost(z)} for z in nb],
+            'history': history}
+
+
+# ======================================================================================================================
 #  the harness record -> the E1 point / cache entry
 # ======================================================================================================================
 POINT_FIELDS = ('label', 'seed', 'model', 'status', 'eval_key', 'candidate_key', 'candidate_canonical',
@@ -1210,6 +1486,45 @@ def rule_eleven(lattice, sigma_q):
             lattice, dict(cache), key_of, dict(inc), _worse, sigma_q, k0=HALTON_K0, max_new_evaluations=0,
             max_polls=1, batch_size=1, completion_cap=COMPLETION_CAP,
             log=lambda m: None)['termination']['reason'] == 'evaluation_budget_exhausted'
+        # v2: the launcher's OWN loop (run_continuation_e1, B+ advance ON), which --run uses
+        out_be = run_continuation_e1(lattice, dict(cache), key_of, dict(inc), _barrier, sigma_q, k0=HALTON_K0,
+                                     max_new_evaluations=N_MAX_NEW_EVALUATIONS, max_polls=1, batch_size=1,
+                                     completion_cap=COMPLETION_CAP, log=lambda m: None, advance=True,
+                                     advance_window=ADVANCE_WINDOW)
+        checks['e1_loop_barrier_stop_rule_fires'] = out_be['termination']['reason'] == 'STOP_FOR_REVIEW_barrier_rule'
+        checks['e1_loop_budget_rule_refuses_poll'] = run_continuation_e1(
+            lattice, dict(cache), key_of, dict(inc), _worse, sigma_q, k0=HALTON_K0, max_new_evaluations=0,
+            max_polls=1, batch_size=1, completion_cap=COMPLETION_CAP, log=lambda m: None, advance=True,
+            advance_window=ADVANCE_WINDOW)['termination']['reason'] == 'evaluation_budget_exhausted'
+        # ... from a STORAGE incumbent (the reference unit), whose frozen first poll the completion cap refuses
+        z_u = SEEDS[1][1]
+        inc_u = {'eval_key': key_of(z_u), 'z': z_u, 'label': lattice.label(z_u), 'I': lattice.investment_cost(z_u),
+                 'Q': 1.0e8, 'F': 1.0e8 + lattice.investment_cost(z_u), 'bar': 1.0, 'source': 'synthetic'}
+        cache_u = {inc_u['eval_key']: {'label': inc_u['label'], 'status': 'certified', 'Q': 1.0e8, 'bar': 1.0,
+                                       'canonical': canonical_of(lattice, z_u), 'source': 'synthetic'}}
+        out_u = run_continuation_e1(lattice, cache_u, key_of, dict(inc_u), _worse, sigma_q, k0=HALTON_K0,
+                                    max_new_evaluations=N_MAX_NEW_EVALUATIONS, max_polls=1, batch_size=4,
+                                    completion_cap=COMPLETION_CAP, log=lambda m: None, advance=True,
+                                    advance_window=ADVANCE_WINDOW)
+        pu = out_u['history'][0]
+        skipped, rule = pu.get('halton_indices_skipped') or [], pu.get('advance_rule') or {}
+        checks['e1_loop_poll_record_fields'] = all(f in pu for f in POLL_RECORD_FIELDS_E1)
+        checks['e1_loop_candidate_record_fields'] = all(all(f in c for f in C.CANDIDATE_RECORD_FIELDS)
+                                                        for c in pu['candidates'])
+        checks['e1_loop_advance_ran_from_a_storage_incumbent'] = (
+            bool(skipped) and rule.get('enabled') is True and rule.get('first_index') == HALTON_K0
+            and [s['k'] for s in skipped] == list(range(HALTON_K0, pu['poll_index']))
+            and rule.get('polled_index') == pu['poll_index'] and rule.get('n_examined') == len(skipped) + 1
+            and pu['n_distinct_feasible_poll_points'] >= MIN_FEASIBLE_POLL_POINTS)
+        checks['e1_loop_skipped_index_fields'] = bool(skipped) and all(
+            all(f in s for f in SKIPPED_INDEX_FIELDS) and all(f in s['completion'] for f in SKIPPED_COMPLETION_FIELDS)
+            and all(all(f in c for f in SKIPPED_CANDIDATE_FIELDS) for c in s['candidates'])
+            and all(all(f in t for f in C.SNAP_RECORD_FIELDS) for t in s['snap_table']) for s in skipped)
+        checks['e1_loop_advance_rule_fields'] = all(f in rule for f in ADVANCE_RULE_FIELDS)
+        cert_u = out_u['termination_certificate'] or {}
+        checks['e1_loop_poll_failure_certificate_fields'] = (
+            out_u['termination']['reason'] == 'poll_failure_at_unit_mesh'
+            and all(f in cert_u for f in C.CERTIFICATE_FIELDS))
     except Exception as error:  # noqa: BLE001
         checks['poll_record_fields'] = False
         checks['poll_exception'] = False
@@ -1273,6 +1588,7 @@ def common_extra(root_rel, phase, concurrency, pins, preflight, lattice_ev, rule
                                                                           'degradation_clause')},
             'rule_eleven_asserted_before_freeze': rule11['checks'], 'g0': g0_info,
             'options_never_declared': ['rho0_scale', 'nrf_option'] + list(WRAPPER_KEYS),
+            'declared_roots': DECLARED_ROOTS, 'declared_root_of_this_spec': DECLARED_ROOTS.get(root_rel),
             'post_certification': 'none (production exit; as the Phase B searches)'}
 
 
@@ -1531,7 +1847,7 @@ def planted_scope_test(lattice, plan, scratch, g0):
 # ======================================================================================================================
 def dry_run(args, root_rel, root_abs):
     started = time.time()
-    res = {'schema': 'p515_s55_w183b_e1_dryrun_v1', 'stage': STAGE, 'authority': AUTHORITY, 'started_utc': _utc(),
+    res = {'schema': 'p515_s55_e1_launcher_dryrun_v2', 'stage': STAGE, 'authority': AUTHORITY, 'started_utc': _utc(),
            'argv': sys.argv, 'interpreter': sys.executable, 'git_head': H._git(['rev-parse', 'HEAD']),
            'objective_convention': OBJECTIVE_CONVENTION + ' (no objective value is computed by this dry run)',
            'root': root_rel, 'concurrency': args.concurrency}
@@ -1717,6 +2033,8 @@ def freeze(args, root_rel, root_abs):
         if subset is not None and not subset <= valid:
             refusals.append(f'--seeds names unknown or alias labels: {sorted(subset - valid)}; valid {sorted(valid)}')
         entries, rows = seeds_entries(lattice, plan, subset)
+        refusals += declared_root_refusals(root_rel, phase, [r['label'] for r in rows], args.concurrency,
+                                           sorted(valid))
         needs_alias = any(r['seed'] == ALIAS_SEED and r['model'] == ALIAS_TARGET_MODEL for r in rows)
         g0_ok, g0_info = g0_check(args.g0_artifact, args.g0_sha256, x0_keys, require_current_production=True)
         if needs_alias and not g0_ok:
@@ -1727,6 +2045,7 @@ def freeze(args, root_rel, root_abs):
         expected = {r['label']: (r['eval_key'], r['model']) for r in rows}
     else:
         arm = phase.split('_')[1]
+        refusals += declared_root_refusals(root_rel, phase, None, args.concurrency, None)
         g0 = g0_check(args.g0_artifact, args.g0_sha256, x0_keys, require_current_production=True) \
             if arm == ALIAS_MODEL else (None, {'not_used_by_arm_A': True})
         ok, cinfo, cache = load_seed_cache(root_abs, root_rel, arm, lattice, g0=g0 if arm == 'N' else None)
@@ -1821,6 +2140,13 @@ def run(args, root_rel, root_abs):
         return 1
     sigma_q = lev['sigma_Q']['sigma_Q_eur']
     by_label = {e['label']: e for e in spec['candidates']}
+    declared = declared_root_refusals(root_rel, phase, list(by_label) if phase == 'seeds' else None,
+                                      spec.get('concurrency'),
+                                      [r['label'] for r in plan if r['disposition'] == 'evaluate'])
+    if declared:
+        for f in declared:
+            _log(f'[RUN PRECONDITION FAILED] {f}')
+        return 1
     if phase == 'seeds':
         g0 = g0_check(args.g0_artifact, args.g0_sha256, x0_keys, require_current_production=True) \
             if extra.get('aliases') else (None, {})
@@ -1883,10 +2209,10 @@ def run(args, root_rel, root_abs):
                 H._atomic_write_json(state_path, {'spec_sha256': args.spec_sha256, 'utc': _utc(),
                                                   'history': history, 'new_points': points})
 
-            result = C.run_continuation(lattice, cache, key_of, inc, evaluate_fn, sigma_q, k0=HALTON_K0,
-                                        max_new_evaluations=N_MAX_NEW_EVALUATIONS, max_polls=MAX_POLLS,
-                                        batch_size=int(spec['concurrency']), completion_cap=COMPLETION_CAP,
-                                        log=_log, on_poll=on_poll)
+            result = run_continuation_e1(lattice, cache, key_of, inc, evaluate_fn, sigma_q, k0=HALTON_K0,
+                                         max_new_evaluations=N_MAX_NEW_EVALUATIONS, max_polls=MAX_POLLS,
+                                         batch_size=int(spec['concurrency']), completion_cap=COMPLETION_CAP,
+                                         log=_log, on_poll=on_poll, advance=True, advance_window=ADVANCE_WINDOW)
     finally:
         H.release_campaign_lock(expected_pid=os.getpid())
         _log('campaign lock released')
