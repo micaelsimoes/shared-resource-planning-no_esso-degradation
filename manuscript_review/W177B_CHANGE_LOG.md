@@ -205,5 +205,12 @@ Kept by the expert during the author's whole-document read (2026-10-09 onward); 
   2 deferred; NRF on the consensus exchange; concurrency gate inside E1; gate G0; E6 pickle read; round 8 scope;
   counts E1 ≤ 75 + 14. W183 ordered (code changes, gates, spec v1 freeze). §3.3 generator-pricing sentence found
   missing at `edd7a63` (letter R1.4 target) — restored in round 8.
-- Still open: W183; author to commit the two E6 JSONL files and confirm the out-of-budget labelling method; round 8
-  (expert) in parallel with W183; W184–W187 runs; round 9 and the marked copy after the results.
+- Author committed the two E6 JSONL files and forwarded W183 (Addendum 83).
+- Round 8 delivered (expert, 2026-10-26; `STEP6_ROUND8_CORRECTIONS.md`; Addendum 84): `main_edd7a63_round8.tex`
+  (+ `.diff`, 31 hunks; 21 main-text edits + regenerated Appendix E), letter v10 (+ `letter_v9_v10.diff`; 65 pointers
+  renumbered, [42]/[43], 12.2 %/13.9 %, nine A7 sentences, R3.6 narrowed, R3.4 v9 error fixed), `highlights_v3.tex`,
+  `cover_letter_v2.tex` (revision account; E1–E3 paragraph bracketed), `gen_appE.py` (six edd7a63 hunks ported +
+  round-8 edits), `appendixE_evaluation_record.tex`. Compile 0 errors, 0 undefined; label numbers identical to
+  `edd7a63`; 76 pages. W183h check ordered.
+- Still open: W183a–h; W184–W187 runs; round 9 (results text, letter R2.5/R2.6/R3.6, cover-letter paragraph, marked
+  copy); author's call on the prediction-record bullet (letter l. 286).

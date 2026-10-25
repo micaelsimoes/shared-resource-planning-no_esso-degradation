@@ -3871,3 +3871,39 @@ root written.
 - Then, each by its own addendum line after W183 reports: **W184** E3 (one certified evaluation) → **W185** E2
   stage 1 (eight) → **W186** E1 seeds, the batch gate, arm N, arm A, cross-evaluations → **W187** the 1× screen.
   E3's report rewrites §4.4 from its records before E2 starts; a changed verdict in E2 stops the chain before E1.
+
+# Addendum 84 — round 8 delivered (claims, consistency, submission files, Appendix E generator port); W183h check (2026-10-26)
+
+**Round 8 (expert, 2026-10-26; `STEP6_ROUND8_CORRECTIONS.md`), base Overleaf `edd7a63`.** `manuscript_review/
+main_edd7a63_round8.tex` (+ `.diff`, 31 hunks), `response_to_reviewers_v10.tex` (+ `letter_v9_v10.diff`, 12 hunks),
+`highlights_v3.tex`, `cover_letter_v2.tex` (+ diffs), `gen_appE.py` with the author's six `edd7a63` hunks ported and
+the round-8 edits (convention; $^{b}$ on the seven over-budget evaluations in E.20/E.21; y^End = 2040 and the
+terminal-SoH index in E.1; the τ pointer to `eq:acceptance_tolerance`; blue on the lattice caption),
+`appendixE_evaluation_record.tex` regenerated, `verify_appE.py` 33 PASS. Main text: 21 edits (abstract, highlight 1,
+contributions 1 and 4, $C^{\text{Op}}$ list, §3.3 growth rates and the restored generator-pricing sentence, §3.5
+convention and the over-budget sentence, §4.2 fit scope and Fig. 5 caption, Table 6 marks, blue restored on Tables
+3/4/6/7 captions and notes, §4.3 floor year, §4.5 cost boundary at 3 × 3, Fig. 8 caption, §4.4 convention, A.1 P^I
+direction). Letter v10: 65 pointers renumbered from W182c's map and verified against the round-8 `.aux` (every label
+number identical to `edd7a63`; 76 pages), [42]/[43], 12.2 % saving / 13.9 % cost increase, the abstract descriptions,
+the nine A7 sentences, R3.6 scope narrowed (the affine-ladder argument withdrawn), v9's R3.4 error corrected (the
+datasheet calibration loses less, −45.2 vs −64.4 k€). Compile: 0 errors, 0 undefined; the three submission files
+compile alone. Convention line of this brief from here on: Q = `gross_operational_cost`, **contracted interface
+settlement excluded**; net = Q − terminal salvage credit.
+
+**Rulings.** (1) The audit's §7 inconsistencies are closed by round 8 except the prediction-record bullet (letter
+l. 286), which is the author's call. (2) The A7 borderline sentences M-CON-3, M-45-1/2 and M-5-1 stand (they describe
+the formulation or quote the paper's own qualified wording). (3) The results-dependent text waits for W184–W187
+(round 9).
+
+**W183h (zero-solve; runs alongside W183a–g, no harness use), at the Overleaf HEAD carrying round 8; state the HEAD.**
+(a) `main.tex` byte-identical to `main_edd7a63_round8.tex`; letter to v10; `highlights.tex` to v3; `cover_letter.tex`
+to v2. (b) Appendix E block bitwise equal to the patched `gen_appE.py` output; `verify_appE.py` 33 PASS; entry check
+(W180a method): 0 MISMATCH, 0 entries changed, the $^{b}$ marks on exactly rows 5, 6, 9, 10, 11, 38, 39 of E.21 and
+4, 5, 8, 9, 10, 26, 27, 30, 31 of E.20. (c) Letter v10 pointer check against the HEAD (W182c method): expect 0
+MISMATCH, 0 AMBIGUOUS, 5 SUBMITTED. (d) Re-rate the 16 A7 sentences and the A8 places at the HEAD (expect 0 of the 16
+remaining; the over-budget points labelled at every table/figure occurrence, by the §3.5 sentence or the $^{b}$
+legend). (e) Numbers in the 21 main-text edits against the frozen JSON and the named records (growth rates
+1.00/2.50 % from `case9_operational_data.xlsx`; 1.15–1.91 M€ from W182d's table; "about 3 %" from W182g; 2037 from
+W182g). (f) 0 `[CONFIRM`, 0 `<word>~\ref{app:`; blue present on the 23 A5 lines. Report `P5_15_W183H_ROUND8.md`
+(part of W183's report or separate); commit and push. **Predictions:** (a)–(c) as stated; (d) 0 remaining; (e)
+0 MISMATCH; (f) hold.
