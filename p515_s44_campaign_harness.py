@@ -259,6 +259,22 @@ dispatches (`resettle_hooks_module`) to `p515_s53_w132_resettle_v3_hooks` -- W11
 exit of every block (TSO, DSO, ESSO) of every cycle; W118 declarations keep the W118 hooks and their exact keys. For any
 record carrying a re-settling summary, `status` follows the settling decision (`_apply_settling_resettle_status`; the
 W123 / W125 'status=certified' label defect on uncertified runs), production's trajectory view kept beside it.
+P5.15 Addendum 83 ruling 3 (ii) / (iv) (W183a): two declared, keyed evaluation options.
+`rho0_scale` = s (a finite float > 0, bool refused; `validate_rho0_scale`): in the child's configuration hook, AFTER
+the S39 rho checks have passed on the case-file values (unchanged, never relaxed), every entry of
+`planning.params.admm.rho` -- the TSO and every DSO on v / pf / ess, and the ESSO's `rho['ess']['esso']` -- is set to
+S39 x s through `p59_rho.apply_rho_to_params` and read back (exact equality, raising otherwise). Production reads these
+values only when it builds the ADMM Params (`shared_resources_planning.update_transmission_model_to_admm` /
+`update_distribution_models_to_admm` / `update_shared_energy_storage_model_to_admm`), after the hook, and the adaptive
+rule scales those Params in place, so the run starts from the scaled rho0. `nrf_option` (a bool, non-bool refused;
+`validate_nrf_option`): when True, the hook sets `params.no_reverse_flow = True` on the TSO's and every DSO's network
+parameters and reads it back -- and REFUSES unless production exposes the support marker
+(`nrf_option_production_support`: `network_parameters.NetworkParameters()` has the attribute `no_reverse_flow`), so the
+option cannot run against code that silently ignores it; once the marker exists, an evaluation without the option
+requires every network's flag off (an option in force without its key raises). Each enters the eval key ONLY when declared and non-default
+(s != 1.0; True), so every key of every spec frozen before W183a is byte-identical; a non-default declaration runs only
+under its label (`rho0_scale_label` == RHO0_SCALE_LABEL, `nrf_option_label` == NRF_OPTION_LABEL) at spec AND entry
+level. Entries without them keep their exact format, keys and behaviour.
 AFTER the run, in the child, inside `run_admm_arm`'s post_run_hook (same live
 models/state), `run_post_certification` does, only if the trajectory is
 certified under the spec's bar (else it records `status: skipped` + reason):
@@ -336,7 +352,8 @@ POST_CERTIFICATION_KEYS = frozenset({'persist_certified_models', 'hull_polish', 
 EVALUATION_OPTION_KEYS = frozenset({'overrides', 'post_certification', 'investment_year', 'model_variant',
                                     'flex_price_multiplier', 'interface_deviation_premium',
                                     'release_solution_bookkeeping', 'certification_continuation',
-                                    'settling_continuation', 'settling_extension', 'settling_resettle'})
+                                    'settling_continuation', 'settling_extension', 'settling_resettle',
+                                    'rho0_scale', 'nrf_option'})
 # P5.15 Addendum 39 (W47): a DERIVED INSTANCE (see the module docstring) and row 18's premium. The identity keys
 # of a derived instance enter the eval key; the other keys are provenance. Absent -> nothing changes.
 DERIVED_INSTANCE_KEYS = frozenset({'instance_label', 'case_path', 'case_sha256', 'scenario_checksum',
@@ -363,6 +380,11 @@ FLEX_PRICE_VARS = ('flex_p_down', 'flex_q_down')  # the variables `mch.flexibili
 # Read-back tolerance: coef(m) vs m * coef(1) differ only by the rounding order of (m * c) * baseMVA against
 # m * (c * baseMVA) -- at most a few ulp; 1e-15 relative (~4.5 ulp) is stated before any run.
 FLEX_PRICE_READBACK_REL_TOL = 1e-15
+# P5.15 Addendum 83 ruling 3 (ii) / (iv) (W183a): the rho0 scale and the no-reverse-flow option (module docstring;
+# `validate_rho0_scale` / `validate_nrf_option`). Each enters the eval key ONLY when declared and non-default.
+RHO0_SCALE_LABEL = 'EVALUATION OPTION — rho0 × s (S39 rho0 scaled on every channel and the ESSO)'
+NRF_OPTION_LABEL = 'EVALUATION OPTION — no reverse flow at the interface (TSO pc_adn >= 0, DSO pg_adn >= 0)'
+NRF_SUPPORT_ATTRIBUTE = 'no_reverse_flow'  # the NetworkParameters attribute production's NRF change introduces
 # Addenda 28-29 (W20): a MODEL VARIANT of the shared-ESS ageing law (see `validate_model_variant`). Exactly these
 # four keys; `available_energy_soh_point` values mirror shared_energy_storage_data.AVAILABLE_ENERGY_SOH_POINTS
 # (re-checked against production in the child, so the parent stays free of model imports).
@@ -679,6 +701,52 @@ def flex_price_multiplier_in_key(value):
     return None if (out is None or out == 1.0) else out
 
 
+def validate_rho0_scale(value):
+    """P5.15 Addendum 83 ruling 3 (ii) (W183a): the scale s applied to the S39 rho0 of every channel (v, pf, ess) of
+    the TSO and every DSO and to the ESSO's rho. None = not given (the case-file rho0). Otherwise a finite number > 0
+    (bool refused; the W33 precedent), returned as float. No model import (parent side)."""
+    if value is None:
+        return None
+    if isinstance(value, bool) or not isinstance(value, (int, float)):
+        raise ValueError(f'rho0_scale must be a positive finite number, got {value!r}')
+    out = float(value)
+    if out != out or out in (float('inf'), float('-inf')) or out <= 0.0:
+        raise ValueError(f'rho0_scale must be a positive finite number, got {value!r}')
+    return out
+
+
+def rho0_scale_in_key(value):
+    """The scale as it enters the eval key: None when absent OR exactly 1.0 (the case-file rho0 -- the same
+    evaluation as the baseline), else the validated float (the `flex_price_multiplier_in_key` rule)."""
+    out = validate_rho0_scale(value)
+    return None if (out is None or out == 1.0) else out
+
+
+def validate_nrf_option(value):
+    """P5.15 Addendum 83 ruling 3 (iv) (W183a): the no-reverse-flow option. None = not given (production's default:
+    off). Otherwise a bool (any other type refused, 0 / 1 included). No model import (parent side)."""
+    if value is None:
+        return None
+    if not isinstance(value, bool):
+        raise ValueError(f'nrf_option must be a bool, got {value!r}')
+    return value
+
+
+def nrf_option_in_key(value):
+    """The option as it enters the eval key: None when absent OR False (production's default), else True."""
+    out = validate_nrf_option(value)
+    return True if out is True else None
+
+
+def nrf_option_production_support():
+    """The support marker the production NRF change (W183c) introduces: a freshly constructed
+    `network_parameters.NetworkParameters()` carries the attribute `NRF_SUPPORT_ATTRIBUTE`. Child side (imports a
+    production module). Returns (supported, description)."""
+    import network_parameters as NP
+    supported = hasattr(NP.NetworkParameters(), NRF_SUPPORT_ATTRIBUTE)
+    return supported, f'hasattr(network_parameters.NetworkParameters(), {NRF_SUPPORT_ATTRIBUTE!r}) is {supported}'
+
+
 _HEX64 = frozenset('0123456789abcdef')
 
 
@@ -972,7 +1040,7 @@ def resettle_hooks_module(value):
 def evaluation_key(candidate_key_hex, overrides, case_file_aa=None, model_variant=None, ess_ageing_baseline=None,
                    flex_price_multiplier=None, derived_instance=None, interface_deviation_premium=None,
                    convergence_depth_tail=None, certification_continuation=None, settling_continuation=None,
-                   settling_extension=None, settling_resettle=None):
+                   settling_extension=None, settling_resettle=None, rho0_scale=None, nrf_option=None):
     """Identity of one EVALUATION (candidate x configuration). The case-file
     configuration (no overrides) keeps the candidate key itself, so a D
     evaluation's directory name is `<candidate key16>_<label>` as in s44_gate;
@@ -1028,14 +1096,21 @@ def evaluation_key(candidate_key_hex, overrides, case_file_aa=None, model_varian
     P5.15 Addendum 57 (W118): with a declared `settling_resettle` (validated; never together with any of the three
     options above), the key is sha256 of {'base_evaluation_key': <the key every rule above gives for the same
     arguments>, 'settling_resettle': <the validated declaration>} -- never the base key. `settling_resettle=None`
-    returns exactly what the formulas above return, so every pre-W118 key is byte-identical."""
+    returns exactly what the formulas above return, so every pre-W118 key is byte-identical.
+    P5.15 Addendum 83 ruling 3 (ii) / (iv) (W183a): with a `rho0_scale` s that is present AND != 1.0
+    (`rho0_scale_in_key`) and/or an `nrf_option` that is True (`nrf_option_in_key`), every base payload above
+    additionally carries 'rho0_scale': s and/or 'nrf_option': True (`_add_w183a_options`); with neither of the other
+    declarations, the payload is {candidate_key, overrides, rho0_scale and/or nrf_option} -- never the bare candidate
+    key. The four wrappers pass both to the base key they wrap. Absent, s == 1.0 and False return exactly what the
+    formulas above return, so every key frozen before W183a is byte-identical."""
     if settling_resettle is not None:
         if certification_continuation is not None or settling_continuation is not None or settling_extension is not None:
             raise ValueError('an entry may declare settling_resettle OR a continuation / extension, not several')
         base = evaluation_key(candidate_key_hex, overrides, case_file_aa=case_file_aa, model_variant=model_variant,
                               ess_ageing_baseline=ess_ageing_baseline, flex_price_multiplier=flex_price_multiplier,
                               derived_instance=derived_instance, interface_deviation_premium=interface_deviation_premium,
-                              convergence_depth_tail=convergence_depth_tail)
+                              convergence_depth_tail=convergence_depth_tail, rho0_scale=rho0_scale,
+                              nrf_option=nrf_option)
         payload = {'base_evaluation_key': base, 'settling_resettle': validate_settling_resettle(settling_resettle)}
         text = json.dumps(payload, sort_keys=True, separators=(',', ':'))
         return hashlib.sha256(text.encode()).hexdigest()
@@ -1045,7 +1120,8 @@ def evaluation_key(candidate_key_hex, overrides, case_file_aa=None, model_varian
         base = evaluation_key(candidate_key_hex, overrides, case_file_aa=case_file_aa, model_variant=model_variant,
                               ess_ageing_baseline=ess_ageing_baseline, flex_price_multiplier=flex_price_multiplier,
                               derived_instance=derived_instance, interface_deviation_premium=interface_deviation_premium,
-                              convergence_depth_tail=convergence_depth_tail)
+                              convergence_depth_tail=convergence_depth_tail, rho0_scale=rho0_scale,
+                              nrf_option=nrf_option)
         payload = {'base_evaluation_key': base, 'settling_extension': validate_settling_extension(settling_extension)}
         text = json.dumps(payload, sort_keys=True, separators=(',', ':'))
         return hashlib.sha256(text.encode()).hexdigest()
@@ -1055,7 +1131,8 @@ def evaluation_key(candidate_key_hex, overrides, case_file_aa=None, model_varian
         base = evaluation_key(candidate_key_hex, overrides, case_file_aa=case_file_aa, model_variant=model_variant,
                               ess_ageing_baseline=ess_ageing_baseline, flex_price_multiplier=flex_price_multiplier,
                               derived_instance=derived_instance, interface_deviation_premium=interface_deviation_premium,
-                              convergence_depth_tail=convergence_depth_tail)
+                              convergence_depth_tail=convergence_depth_tail, rho0_scale=rho0_scale,
+                              nrf_option=nrf_option)
         payload = {'base_evaluation_key': base,
                    'settling_continuation': validate_settling_continuation(settling_continuation)}
         text = json.dumps(payload, sort_keys=True, separators=(',', ':'))
@@ -1064,7 +1141,8 @@ def evaluation_key(candidate_key_hex, overrides, case_file_aa=None, model_varian
         base = evaluation_key(candidate_key_hex, overrides, case_file_aa=case_file_aa, model_variant=model_variant,
                               ess_ageing_baseline=ess_ageing_baseline, flex_price_multiplier=flex_price_multiplier,
                               derived_instance=derived_instance, interface_deviation_premium=interface_deviation_premium,
-                              convergence_depth_tail=convergence_depth_tail)
+                              convergence_depth_tail=convergence_depth_tail, rho0_scale=rho0_scale,
+                              nrf_option=nrf_option)
         payload = {'base_evaluation_key': base,
                    'certification_continuation': validate_certification_continuation(certification_continuation)}
         text = json.dumps(payload, sort_keys=True, separators=(',', ':'))
@@ -1075,6 +1153,8 @@ def evaluation_key(candidate_key_hex, overrides, case_file_aa=None, model_varian
     derived_instance = validate_derived_instance(derived_instance)
     premium = validate_interface_deviation_premium(interface_deviation_premium)
     tail = convergence_depth_tail_in_key(convergence_depth_tail)
+    rho_s = rho0_scale_in_key(rho0_scale)   # W183a: None when absent or 1.0
+    nrf = nrf_option_in_key(nrf_option)     # W183a: None when absent or False
     if tail is not None:  # W86: only when declared ENABLED, so every undeclared / declared-off key is byte-identical
         payload = {'candidate_key': candidate_key_hex, 'overrides': overrides or {}}
         if case_file_aa is not None:
@@ -1090,6 +1170,7 @@ def evaluation_key(candidate_key_hex, overrides, case_file_aa=None, model_varian
         if premium is not None:
             payload['interface_deviation_premium'] = premium
         payload['convergence_depth_tail'] = tail
+        _add_w183a_options(payload, rho_s, nrf)
         text = json.dumps(payload, sort_keys=True, separators=(',', ':'))
         return hashlib.sha256(text.encode()).hexdigest()
     if derived_instance is not None or premium is not None:
@@ -1106,6 +1187,7 @@ def evaluation_key(candidate_key_hex, overrides, case_file_aa=None, model_varian
             payload['derived_instance'] = derived_instance_identity(derived_instance)
         if premium is not None:
             payload['interface_deviation_premium'] = premium
+        _add_w183a_options(payload, rho_s, nrf)
         text = json.dumps(payload, sort_keys=True, separators=(',', ':'))
         return hashlib.sha256(text.encode()).hexdigest()
     if ess_ageing_baseline is not None:
@@ -1117,6 +1199,7 @@ def evaluation_key(candidate_key_hex, overrides, case_file_aa=None, model_varian
             payload['model_variant'] = model_variant
         if flex_m is not None:
             payload['flex_price_multiplier'] = flex_m
+        _add_w183a_options(payload, rho_s, nrf)
         text = json.dumps(payload, sort_keys=True, separators=(',', ':'))
         return hashlib.sha256(text.encode()).hexdigest()
     if case_file_aa is not None:
@@ -1127,23 +1210,42 @@ def evaluation_key(candidate_key_hex, overrides, case_file_aa=None, model_varian
             payload['model_variant'] = model_variant
         if flex_m is not None:
             payload['flex_price_multiplier'] = flex_m
+        _add_w183a_options(payload, rho_s, nrf)
         text = json.dumps(payload, sort_keys=True, separators=(',', ':'))
         return hashlib.sha256(text.encode()).hexdigest()
     if model_variant is not None:
         payload = {'candidate_key': candidate_key_hex, 'overrides': overrides or {}, 'model_variant': model_variant}
         if flex_m is not None:
             payload['flex_price_multiplier'] = flex_m
+        _add_w183a_options(payload, rho_s, nrf)
         text = json.dumps(payload, sort_keys=True, separators=(',', ':'))
         return hashlib.sha256(text.encode()).hexdigest()
     if flex_m is not None:
-        text = json.dumps({'candidate_key': candidate_key_hex, 'overrides': overrides or {},
-                           'flex_price_multiplier': flex_m}, sort_keys=True, separators=(',', ':'))
+        payload = {'candidate_key': candidate_key_hex, 'overrides': overrides or {}, 'flex_price_multiplier': flex_m}
+        _add_w183a_options(payload, rho_s, nrf)
+        text = json.dumps(payload, sort_keys=True, separators=(',', ':'))
+        return hashlib.sha256(text.encode()).hexdigest()
+    if rho_s is not None or nrf is not None:  # W183a: only when declared non-default, so every other key is unchanged
+        payload = {'candidate_key': candidate_key_hex, 'overrides': overrides or {}}
+        _add_w183a_options(payload, rho_s, nrf)
+        text = json.dumps(payload, sort_keys=True, separators=(',', ':'))
         return hashlib.sha256(text.encode()).hexdigest()
     if not overrides:
         return candidate_key_hex
     text = json.dumps({'candidate_key': candidate_key_hex, 'overrides': overrides}, sort_keys=True,
                       separators=(',', ':'))
     return hashlib.sha256(text.encode()).hexdigest()
+
+
+def _add_w183a_options(payload, rho_s, nrf):
+    """W183a (Addendum 83 ruling 3 ii / iv): add the two options to a base eval-key payload, each ONLY when it is
+    declared and non-default (`rho0_scale_in_key` / `nrf_option_in_key` already map absent / 1.0 / False to None),
+    so a payload without them is exactly the pre-W183a payload."""
+    if rho_s is not None:
+        payload['rho0_scale'] = rho_s
+    if nrf is not None:
+        payload['nrf_option'] = nrf
+    return payload
 
 
 def resolve_post_certification(request, candidate_key_hex):
@@ -1298,6 +1400,11 @@ def freeze_campaign_spec(campaign_root, campaign_id, candidates, configuration, 
     recorded in the entry only when given; it ENTERS the eval key.
     P5.15 Addendum 57 (W118): an entry's options may carry `settling_resettle` (`validate_settling_resettle`);
     recorded in the entry only when given; it ENTERS the eval key.
+    P5.15 Addendum 83 ruling 3 (ii) / (iv) (W183a): an entry's options may carry `rho0_scale` (`validate_rho0_scale`;
+    bool refused) and `nrf_option` (`validate_nrf_option`; non-bool refused); each is recorded in the entry only when
+    given, enters the eval key only when non-default (s != 1.0; True), and then the entry and the spec carry
+    `rho0_scale_label` == RHO0_SCALE_LABEL / `nrf_option_label` == NRF_OPTION_LABEL. Entries without them keep their
+    exact format and keys.
     One entry = one EVALUATION: its `eval_key` (`evaluation_key`) identifies
     candidate x configuration; labels and eval keys must be unique (the same
     candidate may appear under two configurations)."""
@@ -1336,6 +1443,8 @@ def freeze_campaign_spec(campaign_root, campaign_id, candidates, configuration, 
     cand_entries, seen_labels, seen_keys = [], set(), set()
     any_model_variant = False
     any_flex_price = False
+    any_rho0_scale = False  # W183a
+    any_nrf_option = False  # W183a
     for item in candidates:
         if len(item) == 2:
             (label, cand), options = item, {}
@@ -1358,12 +1467,14 @@ def freeze_campaign_spec(campaign_root, campaign_id, candidates, configuration, 
         settling = validate_settling_continuation(options.get('settling_continuation'))  # W101: keyed
         extension = validate_settling_extension(options.get('settling_extension'))  # W105: keyed
         resettle = validate_settling_resettle(options.get('settling_resettle'))  # W118: keyed
+        rho0_scale = validate_rho0_scale(options.get('rho0_scale'))  # W183a: keyed only when != 1.0
+        nrf_option = validate_nrf_option(options.get('nrf_option'))  # W183a: keyed only when True
         ekey = evaluation_key(key, eff_overrides, case_file_aa=case_file_aa, model_variant=model_variant,
                               ess_ageing_baseline=ess_ageing, flex_price_multiplier=flex_m,
                               derived_instance=derived, interface_deviation_premium=premium,
                               convergence_depth_tail=tail, certification_continuation=continuation,
                               settling_continuation=settling, settling_extension=extension,
-                              settling_resettle=resettle)
+                              settling_resettle=resettle, rho0_scale=rho0_scale, nrf_option=nrf_option)
         if label in seen_labels or ekey in seen_keys:
             raise ValueError(f'duplicate evaluation label or key (candidate x configuration): {label} / {ekey[:16]}')
         seen_labels.add(label)
@@ -1396,6 +1507,16 @@ def freeze_campaign_spec(campaign_root, campaign_id, candidates, configuration, 
             cand_entry['settling_extension'] = extension
         if resettle is not None:  # W118: only when given, so every other entry keeps its exact format
             cand_entry['settling_resettle'] = resettle
+        if rho0_scale is not None:  # W183a: only when given, so every other entry keeps its exact format
+            cand_entry['rho0_scale'] = rho0_scale
+            if rho0_scale_in_key(rho0_scale) is not None:
+                cand_entry['rho0_scale_label'] = RHO0_SCALE_LABEL
+                any_rho0_scale = True
+        if nrf_option is not None:  # W183a: only when given, so every other entry keeps its exact format
+            cand_entry['nrf_option'] = nrf_option
+            if nrf_option_in_key(nrf_option) is not None:
+                cand_entry['nrf_option_label'] = NRF_OPTION_LABEL
+                any_nrf_option = True
         cand_entries.append(cand_entry)
     os.makedirs(campaign_root, exist_ok=True)  # only after every validation above has passed
     try:
@@ -1449,6 +1570,10 @@ def freeze_campaign_spec(campaign_root, campaign_id, candidates, configuration, 
         spec['model_variant_label'] = MODEL_VARIANT_LABEL
     if any_flex_price:  # W33: a campaign holding a flexibility-price variant says so at the top level
         spec['flex_price_label'] = FLEX_PRICE_LABEL
+    if any_rho0_scale:  # W183a: a campaign holding a non-default rho0 scale says so at the top level
+        spec['rho0_scale_label'] = RHO0_SCALE_LABEL
+    if any_nrf_option:  # W183a: a campaign holding the no-reverse-flow option says so at the top level
+        spec['nrf_option_label'] = NRF_OPTION_LABEL
     text = json.dumps(spec, indent=1, sort_keys=True, default=str)
     digest = hashlib.sha256(text.encode()).hexdigest()
     path = os.path.join(campaign_root, f'campaign_spec_{_sanitize_id(campaign_id)}_{digest[:8]}.json')
@@ -1721,7 +1846,29 @@ def _barrier_record_for_missing(ctx, entry, eval_dir, exit_code):
         # W90: an entry declaring option (b) carries it on every path.
         **({'release_solution_bookkeeping': entry['release_solution_bookkeeping']}
            if 'release_solution_bookkeeping' in entry else {}),
+        # W183a: an entry declaring rho0_scale / nrf_option carries it (and its label when non-default) on every path.
+        **_w183a_record_fields(entry, None),
     }
+
+
+def _w183a_record_fields(entry, holder):
+    """W183a: the fields every record of an entry declaring `rho0_scale` / `nrf_option` carries (label only when
+    non-default; what the child's hook applied when `holder` is given). Empty otherwise, so every other record keeps
+    its exact format."""
+    out = {}
+    if 'rho0_scale' in entry:
+        out['rho0_scale'] = entry['rho0_scale']
+        if rho0_scale_in_key(entry['rho0_scale']) is not None:
+            out['rho0_scale_label'] = RHO0_SCALE_LABEL
+        if holder is not None:
+            out['rho0_scale_applied_in_child'] = holder.get('rho0_scale_applied')
+    if 'nrf_option' in entry:
+        out['nrf_option'] = entry['nrf_option']
+        if nrf_option_in_key(entry['nrf_option']) is not None:
+            out['nrf_option_label'] = NRF_OPTION_LABEL
+        if holder is not None:
+            out['nrf_option_applied_in_child'] = holder.get('nrf_option_applied')
+    return out
 
 
 def _derived_record_fields(spec, entry):
@@ -2836,9 +2983,82 @@ def flex_price_readback_run_models(dso_models, planning, original, m):
             'all_match': all_match and tso_ok and bool(per_block), 'per_block': per_block}
 
 
+def apply_rho0_scale(planning, rho0_scale, G):
+    """W183a (Addendum 83 ruling 3 ii): set every entry of `planning.params.admm.rho` (v / pf / ess of the TSO and
+    every DSO; `ess['esso']`) to the S39 value x s through `p59_rho.apply_rho_to_params`, then read every entry back.
+    Called by the configuration hook ONLY after its S39 checks passed on the case-file values. Raises unless every
+    entry equals S39 x s exactly, the network set of each group is unchanged and `previous_iter.ess` is off.
+    Returns the record (before / after / targets / checks / counts)."""
+    import p59_rho as RH
+    s = validate_rho0_scale(rho0_scale)
+    if s is None:
+        raise ValueError('apply_rho0_scale needs a declared rho0_scale')
+    a = planning.params.admm
+    base = {'v': G.S39_RHO_V, 'pf': G.S39_RHO_PF, 'ess': G.S39_RHO_ESS}
+    target = {group: base[group] * s for group in CHANNELS}
+    before = {group: dict(a.rho[group]) for group in CHANNELS}
+    replaced = RH.apply_rho_to_params(planning, target)
+    after = {group: dict(a.rho[group]) for group in CHANNELS}
+    mismatches = [f'{group}|{name}: {value!r} != {target[group]!r}' for group in CHANNELS
+                  for name, value in after[group].items()
+                  if not (isinstance(value, float) and value == target[group])]
+    checks = {
+        'every_entry_equals_s39_times_s_exactly': not mismatches,
+        'network_set_unchanged_per_group': all(set(after[g]) == set(before[g]) for g in CHANNELS),
+        'esso_entry_present': 'esso' in after['ess'],
+        'before_equals_replaced_record': {g: replaced.get(g) for g in CHANNELS} == before,
+        'previous_iter_ess_off': not (a.previous_iter['ess'].get('tso') or a.previous_iter['ess'].get('dso')),
+    }
+    out = {'rho0_scale': s, 'label': RHO0_SCALE_LABEL if s != 1.0 else None,
+           'where_applied': ('pre_solve_hook, after the S39 checks passed on the case-file rho: '
+                             'planning.params.admm.rho[v|pf|ess][<network>] = S39 x s via p59_rho.apply_rho_to_params; '
+                             'production builds the ADMM rho Params from these values after the hook; no file edited'),
+           's39_base': base, 'target': target, 'before': before, 'after': after,
+           'n_entries': sum(len(after[g]) for g in CHANNELS), 'n_mismatches': len(mismatches),
+           'mismatches': mismatches[:20], 'checks': checks}
+    failed = sorted(k for k, v in checks.items() if not v)
+    if failed:
+        raise RuntimeError(f'rho0_scale {s} did not take effect as specified: {failed}; {mismatches[:6]}')
+    return out
+
+
+def apply_nrf_option(planning, nrf_option):
+    """W183a (Addendum 83 ruling 3 iv): the no-reverse-flow option on the TSO's and every DSO's network parameters.
+    True: refuse (raise) unless production exposes the support marker (`nrf_option_production_support`); then set
+    `params.no_reverse_flow = True` on every network and read it back (raise if not in force). None / False: when the
+    marker exists, every network's flag must be off (raise otherwise: the option in force without its key). Returns
+    the record, or None when the option is not given and production has no marker (nothing to record)."""
+    option = validate_nrf_option(nrf_option)
+    supported, description = nrf_option_production_support()
+    networks = [('TSO', planning.transmission_network.params)] + [
+        (f'DSO{node_id}', dn.params) for node_id, dn in sorted(planning.distribution_networks.items())]
+    if option is True:
+        if not supported:
+            raise RuntimeError(f'nrf_option True refused: production has no no-reverse-flow support ({description}); '
+                               f'the option would be silently ignored')
+        before = {name: getattr(params, NRF_SUPPORT_ATTRIBUTE) for name, params in networks}
+        for _name, params in networks:
+            setattr(params, NRF_SUPPORT_ATTRIBUTE, True)
+        after = {name: getattr(params, NRF_SUPPORT_ATTRIBUTE) for name, params in networks}
+        checks = {'every_network_flag_is_true': all(v is True for v in after.values()),
+                  'n_networks_is_tso_plus_every_dso': len(after) == 1 + len(planning.distribution_networks)}
+    else:
+        if not supported:
+            return None if option is None else {'nrf_option': option, 'production_support': description,
+                                                'in_force': None, 'checks': {}}
+        before = after = {name: getattr(params, NRF_SUPPORT_ATTRIBUTE) for name, params in networks}
+        checks = {'every_network_flag_is_off': all(not v for v in after.values())}
+    out = {'nrf_option': option, 'label': NRF_OPTION_LABEL if option is True else None,
+           'production_support': description, 'before': before, 'in_force': after, 'checks': checks}
+    failed = sorted(k for k, v in checks.items() if not v)
+    if failed:
+        raise RuntimeError(f'nrf_option {option}: network flags not as declared: {failed}; in force {after}')
+    return out
+
+
 def _config_hook_factory(spec, holder, overrides=None, model_variant=None, investment_year=INVESTMENT_YEAR,
                          expected_floor_rows=None, flex_price_multiplier=None, interface_deviation_premium=None,
-                         release_solution_bookkeeping=None):
+                         release_solution_bookkeeping=None, rho0_scale=None, nrf_option=None):
     """pre_solve_hook: verify the case file carries the D oracle configuration
     (same checks as `p515_s43_aa_run._aa_on_pre_solve_hook`), then apply the
     evaluation's overrides (`overrides`; default = the campaign-level
@@ -2872,12 +3092,26 @@ def _config_hook_factory(spec, holder, overrides=None, model_variant=None, inves
     P5.15 Addendum 48 (W90): with `release_solution_bookkeeping` (a bool), after everything above, the switch is set on
     the TSO's and every DSO's solver parameters by `p515_s44_scale_measurement.set_release_solution_bookkeeping` (reads
     it back; raises if it did not take effect) -- the order of the SRP1 (b) gate (applied after the inner hook). It
-    changes no model. Without it (None) nothing changes."""
+    changes no model. Without it (None) nothing changes.
+    P5.15 Addendum 83 ruling 3 (ii) (W183a): with a `rho0_scale` s (validated; 1.0 included), AFTER the S39 checks
+    above have PASSED on the case-file values (never relaxed: a case-file rho that is not S39 still raises), every entry
+    of `planning.params.admm.rho` is set to S39 x s by `p59_rho.apply_rho_to_params` (v / pf / ess of the TSO and every
+    DSO, and the ESSO's `rho['ess']['esso']`) and read back -- exact float equality on every entry, the network set
+    unchanged, `previous_iter.ess` off (else `rho_ess_prev` would start from the unscaled `rho_previous_iter`) --
+    raising otherwise; before / after recorded (`w183a_rho0_scale`). Production reads these values only when it builds
+    the ADMM Params, after this hook. Without it (None) nothing changes.
+    P5.15 Addendum 83 ruling 3 (iv) (W183a): with `nrf_option` True, the hook REFUSES unless production exposes the
+    support marker (`nrf_option_production_support`); when it does, `params.no_reverse_flow = True` is set on the TSO's
+    and every DSO's network parameters and read back (raises if not in force). Otherwise (None / False), when the
+    marker exists, every network's `no_reverse_flow` must be off -- an option in force without its key raises; what is
+    in force is recorded (`w183a_nrf_option`) whenever the option is given or the marker exists."""
     import p515_g_g1_g4_admm_gates as G
     model_variant = validate_model_variant(model_variant)
     flex_price_multiplier = validate_flex_price_multiplier(flex_price_multiplier)
     premium = validate_interface_deviation_premium(interface_deviation_premium)
     release_bk = validate_release_solution_bookkeeping(release_solution_bookkeeping)
+    rho0_scale = validate_rho0_scale(rho0_scale)  # W183a
+    nrf_option = validate_nrf_option(nrf_option)  # W183a
     derived = validate_derived_instance(spec['configuration'].get('derived_instance'))
     if overrides is None:
         overrides = spec['configuration'].get('overrides') or {}
@@ -2947,6 +3181,14 @@ def _config_hook_factory(spec, holder, overrides=None, model_variant=None, inves
         # force that differs from the declaration (e.g. on without one) raises here, before any solve.
         holder['convergence_depth_tail_applied'] = apply_convergence_depth_tail_declaration(a, tail_declared)
         report['rule_eleven_checklist']['w84_convergence_depth_tail'] = holder['convergence_depth_tail_applied']
+        if rho0_scale is not None:  # W183a: only after the S39 checks above passed on the case-file values
+            applied_rho = apply_rho0_scale(planning, rho0_scale, G)  # raises if the read-back fails
+            holder['rho0_scale_applied'] = applied_rho
+            report['rule_eleven_checklist']['w183a_rho0_scale'] = applied_rho
+        applied_nrf = apply_nrf_option(planning, nrf_option)  # W183a: raises when declared and unsupported
+        if applied_nrf is not None:
+            holder['nrf_option_applied'] = applied_nrf
+            report['rule_eleven_checklist']['w183a_nrf_option'] = applied_nrf
         if derived is not None:  # W47: the planning object IS the declared derived instance
             got = (getattr(planning, 'scenario_metadata', None) or {}).get('combined_scenario_checksum')
             derived_checks = {'planning_scenario_checksum_equals_declaration': got == derived['scenario_checksum'],
@@ -5296,6 +5538,18 @@ def _child_real(args, spec, spec_path, entry, eval_dir, lock_content, env_caps, 
                                                              or entry.get('flex_price_label') != FLEX_PRICE_LABEL):
         raise RuntimeError(f'flex_price_multiplier entry {entry["label"]!r} without the label {FLEX_PRICE_LABEL!r} '
                            f'at spec and entry level')
+    # W183a (Addendum 83 ruling 3 ii / iv): a non-default rho0 scale / the no-reverse-flow option runs only under its
+    # explicit label, at spec AND entry level; s == 1.0 / False (explicit) run with no label (same key as absent).
+    rho0_scale = validate_rho0_scale(entry.get('rho0_scale'))
+    if rho0_scale_in_key(rho0_scale) is not None and (spec.get('rho0_scale_label') != RHO0_SCALE_LABEL
+                                                      or entry.get('rho0_scale_label') != RHO0_SCALE_LABEL):
+        raise RuntimeError(f'rho0_scale entry {entry["label"]!r} without the label {RHO0_SCALE_LABEL!r} '
+                           f'at spec and entry level')
+    nrf_option = validate_nrf_option(entry.get('nrf_option'))
+    if nrf_option_in_key(nrf_option) is not None and (spec.get('nrf_option_label') != NRF_OPTION_LABEL
+                                                      or entry.get('nrf_option_label') != NRF_OPTION_LABEL):
+        raise RuntimeError(f'nrf_option entry {entry["label"]!r} without the label {NRF_OPTION_LABEL!r} '
+                           f'at spec and entry level')
     post_request = entry.get('post_certification')
     post_checklist = None
     if post_request:
@@ -5563,7 +5817,8 @@ def _child_real(args, spec, spec_path, entry, eval_dir, lock_content, env_caps, 
                                                 expected_floor_rows=floor_rows_by_node,
                                                 flex_price_multiplier=flex_m,
                                                 interface_deviation_premium=premium,
-                                                release_solution_bookkeeping=release_bk),
+                                                release_solution_bookkeeping=release_bk,
+                                                rho0_scale=rho0_scale, nrf_option=nrf_option),
             investment_year=investment_year)
     run_wall = time.time() - t0
 
@@ -5682,6 +5937,7 @@ def _child_real(args, spec, spec_path, entry, eval_dir, lock_content, env_caps, 
             'settling_resettle_checklist_asserted_before_run': resettle_checklist,
             'settling_resettle_summary': holder.get('settling_resettle'),
         })
+    variant_extra.update(_w183a_record_fields(entry, holder))  # W183a: empty unless the entry declares an option
     record = build_evaluation_record(
         spec=spec, spec_path=spec_path, spec_sha256=args.spec_sha256, entry=entry, report=report,
         component_levels=component_levels,
@@ -5894,6 +6150,8 @@ def main_child(argv):
                     'settling_resettle_checklist_asserted_before_run': progress.get('settling_resettle_checklist'),
                     'settling_resettle_summary': (progress.get('holder') or {}).get('settling_resettle')}
                    if 'settling_resettle' in entry else {}),
+                # W183a: an entry declaring rho0_scale / nrf_option carries it, its label and what was applied.
+                **_w183a_record_fields(entry, progress.get('holder') or {}),
                 # W101: the interface-dual capture checklist and summary, on every path (None when not reached).
                 'interface_dual_capture_checklist_asserted_before_run': progress.get(
                     'interface_dual_capture_checklist'),
