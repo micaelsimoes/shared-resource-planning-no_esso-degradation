@@ -1,0 +1,1593 @@
+{
+ "schema": "p515_s55_w183f_bitwise_gate_v2_ruled_from_committed",
+ "authority": [
+  "PLANNER_BRIEF_2026-09-13.md Addendum 85 ruling 1 (c); W183g order item (a)",
+  "Planner task W183g (a)"
+ ],
+ "rule": "Addendum 85 ruling 1 (c): a key absent in the reference record and null or absent in the new arm is field_list_drift, listed by key, never genuine, provided every key shared by the two records is bitwise equal; a key present in both with different values stays genuine.",
+ "timestamp_utc": "2026-10-25T22:29:18.046967+00:00",
+ "git_head_at_run": "4c0d8e1db9a070dd231e0d00dc3c5e1f4777019b",
+ "script": "p515_s55_w183f_bitwise_gate_v2.py",
+ "script_sha256": "1d0d911c61c5a83b44b5aba81d274ca3d88451d72ee245baedf5597a99bd2f2e",
+ "imported_sha256": {
+  "p515_s55_w183f_bitwise_gate.py": "8fb660be802afa28ab55fee8048ca96a53ebffef78e1e37e1376f68f7521b47c",
+  "p515_s53_srp1_bitwise_gate.py": "b63b1fb94ec305a782cb139d6e9c42be8b7a49b2ef78cb0d174f09e3d53f6766",
+  "p515_s52_srp1_bitwise_gate.py": "7bd3009ad4c263159ec84b929c921b5cf4f2d702c71154963754b3a906f28545",
+  "p515_s45_snapshot_off_two_cycle_gate.py": "f5e103577a7dc0c465144984e28b50ab4b1efc0405c3c23f2ab3afc7f917f4a2",
+  "p515_s40_clone_capture_preflight.py": "30e33d0a7803c2a958bbf7da617dba277a8fe15888078e37aa451feba09a3652",
+  "p515_s43_aa_flagoff_gate.py": "22ef58b84bdd109d39e2cbf78d2e69e7302ccd0aadae2c90dcb9f6341d9472d3",
+  "p515_s44_tie_classifier.py": "b8ecc971ef362cecc0544471421bf3953df3149fb90e8cc044cc7b2cd2e2d6f9",
+  "p515_s44_campaign_harness.py": "c34ebdc5463a1fe0fd6398c6acad4dcfb61dbfbd142ef3de517ca517168d77be",
+  "gate_result_io.py": "26cadaa5c3105f9adb879ece756ef6d659b374f647a7756030efe80a2df6d07d",
+  "p513_solve_profile_guard.py": "9921682e5b825e0b76551b78c4765bfe039bccc414d727520f2c22b6f192a5ab"
+ },
+ "nothing_re_run": "no solve; the gate is not re-run; the committed W183f outputs are read only",
+ "instance": {
+  "candidate": "C* 0.96875 MVA / 3.875 MWh at nodes 5, 7, 9, investment year 2025",
+  "candidate_key": "578636daa6d6360d6701764c73ddf795e53c2c37e511e21be1400024f8f6350c"
+ },
+ "objective_convention": "gross_operational_cost (settlement-excluded gross cost), as in the gate",
+ "new_arm": {
+  "out_rel": "data/SRP1/Results/P515S55/w183f_srp1_bitwise_gate",
+  "arm_name": "s55w183fgate",
+  "commit": "c5b292dd",
+  "manifests": {
+   "manifest_sha256.json": "140c33e1a5cfc73cd05c121f10a0f8d68837dafa002f08f542cadef0dd2f17a1",
+   "w51_manifest_sha256.json": "a6c783394501190525ca2a91d0f281e5b3dd7deef91b9aeef8d2a3ffcaa63638",
+   "w183f_manifest_sha256.json": "e7cd233e812998949def55b8f175389e5a546eb1d92783271c50515837f26943"
+  },
+  "gate_dir_check": {
+   "gate_dir": "data/SRP1/Results/P515S55/w183f_srp1_bitwise_gate",
+   "manifests_pinned": {
+    "manifest_sha256.json": "140c33e1a5cfc73cd05c121f10a0f8d68837dafa002f08f542cadef0dd2f17a1",
+    "w51_manifest_sha256.json": "a6c783394501190525ca2a91d0f281e5b3dd7deef91b9aeef8d2a3ffcaa63638",
+    "w183f_manifest_sha256.json": "e7cd233e812998949def55b8f175389e5a546eb1d92783271c50515837f26943"
+   },
+   "file_entries_checked": 98,
+   "files_on_disk": 36,
+   "unlisted_files": [],
+   "git_clean": true
+  }
+ },
+ "reference_arm": {
+  "gate_dir": "data/SRP1/Results/P515S52/srp1_bitwise_gate",
+  "arm_dir": "data/SRP1/Results/P515S52/srp1_bitwise_gate/arm",
+  "manifest": "data/SRP1/Results/P515S52/srp1_bitwise_gate/manifest_sha256.json",
+  "manifest_sha256": "9a5d6b78bfdb4738e83389878eba3236b298a4e5e5b05308a48b44ebe094ba69",
+  "gate_json": "data/SRP1/Results/P515S52/srp1_bitwise_gate/gate.json",
+  "arm_name": "s52w48gate",
+  "commit": "e75a575e (run at fe0319d6)",
+  "gate_dir_check": {
+   "gate_dir": "data/SRP1/Results/P515S52/srp1_bitwise_gate",
+   "manifests_pinned": {
+    "manifest_sha256.json": "9a5d6b78bfdb4738e83389878eba3236b298a4e5e5b05308a48b44ebe094ba69",
+    "w48_manifest_sha256.json": "fad4d941dadae2f2c76e0602552bd471fa4789fafaf6d52c588aff58d9d95659"
+   },
+   "file_entries_checked": 63,
+   "files_on_disk": 34,
+   "unlisted_files": [],
+   "git_clean": true
+  },
+  "gate_pin_check_problems": []
+ },
+ "comparator": "the gate's own: S52G.compare_against_w39_arm -> W10.classify (CP._diff bitwise with the declared exclusions; rule_eleven_checklist subtree = provenance; arm-path tokens normalized; recourse-jump tie order by TC); compared files W10.GATING_JSON + W10.GATING_JSONL. 'legacy' = reference (W48) side, 'lightweight' = new (W183f) side",
+ "files_compared": [
+  "g_s39_D.json",
+  "boyd_terminal.json",
+  "component_levels_terminal.json",
+  "interface_settlement_detail_s31c.json",
+  "interface_voltage_terminal.json",
+  "recourse_jump_sidecar_baseline.jsonl",
+  "ess_entry_stride_baseline.jsonl",
+  "soh_floor_sidecar_baseline.jsonl",
+  "pf_entry_stride_s39_D.jsonl",
+  "ess_exempt_until_state_s39_D.jsonl",
+  "aa_per_cycle.jsonl",
+  "per_cycle_record.jsonl"
+ ],
+ "GATE_PASS": false,
+ "GATE_PASS_RULED": true,
+ "drift_keys": [
+  "E_abs_d_p_mwh_unweighted",
+  "E_abs_d_p_mwh_weighted",
+  "covariance_dso_weighted",
+  "curtailed_res_dso_mwh_weighted",
+  "curtailed_res_tso_mwh_weighted",
+  "cycle_wall_s",
+  "market_part_mw2h_unweighted",
+  "market_part_mw2h_weighted",
+  "max_abs_d_p_mw",
+  "n_non_optimal_block_terminations",
+  "non_optimal_blocks",
+  "operation_part_mw2h_unweighted",
+  "operation_part_mw2h_weighted",
+  "response_capture_error",
+  "response_capture_s",
+  "response_captured",
+  "response_cycle",
+  "row18_charge_weighted",
+  "rss_bytes",
+  "ru_maxrss_bytes",
+  "sum_omega_d2_p_mw2h_unweighted",
+  "sum_omega_d2_p_mw2h_weighted"
+ ],
+ "drift_keys_equal_harness_PER_CYCLE_RESPONSE_FIELDS": true,
+ "verdict": {
+  "GATE_PASS": false,
+  "GATE_PASS_RULED": true,
+  "ruled_items": {
+   "exactly_one_frozen_zero_genuine_item": true,
+   "frozen_items_other_than_zero_genuine_all_true_as_recorded": true,
+   "all_compared_files_present": true,
+   "recomputed_comparison_reproduces_the_frozen_one": true,
+   "no_file_left_undetermined_by_rule_c": true,
+   "zero_genuine_diffs_after_rule_c": true
+  },
+  "frozen_items_carried_as_recorded": {
+   "w39_w35_gate_pass": true,
+   "w51_code_present_in_the_modules_that_ran": true,
+   "w51_counter_exact_and_never_acting": true,
+   "vs_committed_w48_arm_all_files_present": true
+  },
+  "frozen_zero_genuine_item_replaced": {
+   "vs_committed_w48_arm_zero_genuine_diffs": false
+  },
+  "totals": {
+   "genuine_frozen": 44,
+   "field_list_drift": 44,
+   "genuine_ruled": 0
+  },
+  "drift_keys": [
+   "E_abs_d_p_mwh_unweighted",
+   "E_abs_d_p_mwh_weighted",
+   "covariance_dso_weighted",
+   "curtailed_res_dso_mwh_weighted",
+   "curtailed_res_tso_mwh_weighted",
+   "cycle_wall_s",
+   "market_part_mw2h_unweighted",
+   "market_part_mw2h_weighted",
+   "max_abs_d_p_mw",
+   "n_non_optimal_block_terminations",
+   "non_optimal_blocks",
+   "operation_part_mw2h_unweighted",
+   "operation_part_mw2h_weighted",
+   "response_capture_error",
+   "response_capture_s",
+   "response_captured",
+   "response_cycle",
+   "row18_charge_weighted",
+   "rss_bytes",
+   "ru_maxrss_bytes",
+   "sum_omega_d2_p_mw2h_unweighted",
+   "sum_omega_d2_p_mw2h_weighted"
+  ],
+  "n_drift_keys": 22,
+  "per_file_errors": {}
+ },
+ "per_file_gate": {
+  "g_s39_D.json": {
+   "provenance": 3,
+   "tie_order": 0,
+   "genuine": 0
+  },
+  "boyd_terminal.json": {
+   "provenance": 0,
+   "tie_order": 0,
+   "genuine": 0
+  },
+  "component_levels_terminal.json": {
+   "provenance": 0,
+   "tie_order": 0,
+   "genuine": 0
+  },
+  "interface_settlement_detail_s31c.json": {
+   "provenance": 0,
+   "tie_order": 0,
+   "genuine": 0
+  },
+  "interface_voltage_terminal.json": {
+   "provenance": 0,
+   "tie_order": 0,
+   "genuine": 0
+  },
+  "recourse_jump_sidecar_baseline.jsonl": {
+   "provenance": 0,
+   "tie_order": 0,
+   "genuine": 0
+  },
+  "ess_entry_stride_baseline.jsonl": {
+   "provenance": 0,
+   "tie_order": 0,
+   "genuine": 0
+  },
+  "soh_floor_sidecar_baseline.jsonl": {
+   "provenance": 0,
+   "tie_order": 0,
+   "genuine": 0
+  },
+  "pf_entry_stride_s39_D.jsonl": {
+   "provenance": 0,
+   "tie_order": 0,
+   "genuine": 0
+  },
+  "ess_exempt_until_state_s39_D.jsonl": {
+   "provenance": 0,
+   "tie_order": 0,
+   "genuine": 0
+  },
+  "aa_per_cycle.jsonl": {
+   "provenance": 0,
+   "tie_order": 0,
+   "genuine": 0
+  },
+  "per_cycle_record.jsonl": {
+   "provenance": 0,
+   "tie_order": 0,
+   "genuine": 44
+  }
+ },
+ "per_file_rule_c": {
+  "g_s39_D.json": {
+   "n": {
+    "genuine_frozen": 0,
+    "field_list_drift": 0,
+    "genuine_ruled": 0
+   },
+   "drift_keys": [],
+   "field_list_drift": [],
+   "records_with_candidates": {},
+   "genuine_ruled": []
+  },
+  "boyd_terminal.json": {
+   "n": {
+    "genuine_frozen": 0,
+    "field_list_drift": 0,
+    "genuine_ruled": 0
+   },
+   "drift_keys": [],
+   "field_list_drift": [],
+   "records_with_candidates": {},
+   "genuine_ruled": []
+  },
+  "component_levels_terminal.json": {
+   "n": {
+    "genuine_frozen": 0,
+    "field_list_drift": 0,
+    "genuine_ruled": 0
+   },
+   "drift_keys": [],
+   "field_list_drift": [],
+   "records_with_candidates": {},
+   "genuine_ruled": []
+  },
+  "interface_settlement_detail_s31c.json": {
+   "n": {
+    "genuine_frozen": 0,
+    "field_list_drift": 0,
+    "genuine_ruled": 0
+   },
+   "drift_keys": [],
+   "field_list_drift": [],
+   "records_with_candidates": {},
+   "genuine_ruled": []
+  },
+  "interface_voltage_terminal.json": {
+   "n": {
+    "genuine_frozen": 0,
+    "field_list_drift": 0,
+    "genuine_ruled": 0
+   },
+   "drift_keys": [],
+   "field_list_drift": [],
+   "records_with_candidates": {},
+   "genuine_ruled": []
+  },
+  "recourse_jump_sidecar_baseline.jsonl": {
+   "n": {
+    "genuine_frozen": 0,
+    "field_list_drift": 0,
+    "genuine_ruled": 0
+   },
+   "drift_keys": [],
+   "field_list_drift": [],
+   "records_with_candidates": {},
+   "genuine_ruled": []
+  },
+  "ess_entry_stride_baseline.jsonl": {
+   "n": {
+    "genuine_frozen": 0,
+    "field_list_drift": 0,
+    "genuine_ruled": 0
+   },
+   "drift_keys": [],
+   "field_list_drift": [],
+   "records_with_candidates": {},
+   "genuine_ruled": []
+  },
+  "soh_floor_sidecar_baseline.jsonl": {
+   "n": {
+    "genuine_frozen": 0,
+    "field_list_drift": 0,
+    "genuine_ruled": 0
+   },
+   "drift_keys": [],
+   "field_list_drift": [],
+   "records_with_candidates": {},
+   "genuine_ruled": []
+  },
+  "pf_entry_stride_s39_D.jsonl": {
+   "n": {
+    "genuine_frozen": 0,
+    "field_list_drift": 0,
+    "genuine_ruled": 0
+   },
+   "drift_keys": [],
+   "field_list_drift": [],
+   "records_with_candidates": {},
+   "genuine_ruled": []
+  },
+  "ess_exempt_until_state_s39_D.jsonl": {
+   "n": {
+    "genuine_frozen": 0,
+    "field_list_drift": 0,
+    "genuine_ruled": 0
+   },
+   "drift_keys": [],
+   "field_list_drift": [],
+   "records_with_candidates": {},
+   "genuine_ruled": []
+  },
+  "aa_per_cycle.jsonl": {
+   "n": {
+    "genuine_frozen": 0,
+    "field_list_drift": 0,
+    "genuine_ruled": 0
+   },
+   "drift_keys": [],
+   "field_list_drift": [],
+   "records_with_candidates": {},
+   "genuine_ruled": []
+  },
+  "per_cycle_record.jsonl": {
+   "n": {
+    "genuine_frozen": 44,
+    "field_list_drift": 44,
+    "genuine_ruled": 0
+   },
+   "drift_keys": [
+    "E_abs_d_p_mwh_unweighted",
+    "E_abs_d_p_mwh_weighted",
+    "covariance_dso_weighted",
+    "curtailed_res_dso_mwh_weighted",
+    "curtailed_res_tso_mwh_weighted",
+    "cycle_wall_s",
+    "market_part_mw2h_unweighted",
+    "market_part_mw2h_weighted",
+    "max_abs_d_p_mw",
+    "n_non_optimal_block_terminations",
+    "non_optimal_blocks",
+    "operation_part_mw2h_unweighted",
+    "operation_part_mw2h_weighted",
+    "response_capture_error",
+    "response_capture_s",
+    "response_captured",
+    "response_cycle",
+    "row18_charge_weighted",
+    "rss_bytes",
+    "ru_maxrss_bytes",
+    "sum_omega_d2_p_mw2h_unweighted",
+    "sum_omega_d2_p_mw2h_weighted"
+   ],
+   "field_list_drift": [
+    {
+     "field": "per_cycle_record.jsonl[0].E_abs_d_p_mwh_unweighted",
+     "record": "per_cycle_record.jsonl[0]",
+     "key": "E_abs_d_p_mwh_unweighted",
+     "reference": "<MISSING>",
+     "new_arm": null
+    },
+    {
+     "field": "per_cycle_record.jsonl[0].E_abs_d_p_mwh_weighted",
+     "record": "per_cycle_record.jsonl[0]",
+     "key": "E_abs_d_p_mwh_weighted",
+     "reference": "<MISSING>",
+     "new_arm": null
+    },
+    {
+     "field": "per_cycle_record.jsonl[0].covariance_dso_weighted",
+     "record": "per_cycle_record.jsonl[0]",
+     "key": "covariance_dso_weighted",
+     "reference": "<MISSING>",
+     "new_arm": null
+    },
+    {
+     "field": "per_cycle_record.jsonl[0].curtailed_res_dso_mwh_weighted",
+     "record": "per_cycle_record.jsonl[0]",
+     "key": "curtailed_res_dso_mwh_weighted",
+     "reference": "<MISSING>",
+     "new_arm": null
+    },
+    {
+     "field": "per_cycle_record.jsonl[0].curtailed_res_tso_mwh_weighted",
+     "record": "per_cycle_record.jsonl[0]",
+     "key": "curtailed_res_tso_mwh_weighted",
+     "reference": "<MISSING>",
+     "new_arm": null
+    },
+    {
+     "field": "per_cycle_record.jsonl[0].cycle_wall_s",
+     "record": "per_cycle_record.jsonl[0]",
+     "key": "cycle_wall_s",
+     "reference": "<MISSING>",
+     "new_arm": null
+    },
+    {
+     "field": "per_cycle_record.jsonl[0].market_part_mw2h_unweighted",
+     "record": "per_cycle_record.jsonl[0]",
+     "key": "market_part_mw2h_unweighted",
+     "reference": "<MISSING>",
+     "new_arm": null
+    },
+    {
+     "field": "per_cycle_record.jsonl[0].market_part_mw2h_weighted",
+     "record": "per_cycle_record.jsonl[0]",
+     "key": "market_part_mw2h_weighted",
+     "reference": "<MISSING>",
+     "new_arm": null
+    },
+    {
+     "field": "per_cycle_record.jsonl[0].max_abs_d_p_mw",
+     "record": "per_cycle_record.jsonl[0]",
+     "key": "max_abs_d_p_mw",
+     "reference": "<MISSING>",
+     "new_arm": null
+    },
+    {
+     "field": "per_cycle_record.jsonl[0].n_non_optimal_block_terminations",
+     "record": "per_cycle_record.jsonl[0]",
+     "key": "n_non_optimal_block_terminations",
+     "reference": "<MISSING>",
+     "new_arm": null
+    },
+    {
+     "field": "per_cycle_record.jsonl[0].non_optimal_blocks",
+     "record": "per_cycle_record.jsonl[0]",
+     "key": "non_optimal_blocks",
+     "reference": "<MISSING>",
+     "new_arm": null
+    },
+    {
+     "field": "per_cycle_record.jsonl[0].operation_part_mw2h_unweighted",
+     "record": "per_cycle_record.jsonl[0]",
+     "key": "operation_part_mw2h_unweighted",
+     "reference": "<MISSING>",
+     "new_arm": null
+    },
+    {
+     "field": "per_cycle_record.jsonl[0].operation_part_mw2h_weighted",
+     "record": "per_cycle_record.jsonl[0]",
+     "key": "operation_part_mw2h_weighted",
+     "reference": "<MISSING>",
+     "new_arm": null
+    },
+    {
+     "field": "per_cycle_record.jsonl[0].response_capture_error",
+     "record": "per_cycle_record.jsonl[0]",
+     "key": "response_capture_error",
+     "reference": "<MISSING>",
+     "new_arm": null
+    },
+    {
+     "field": "per_cycle_record.jsonl[0].response_capture_s",
+     "record": "per_cycle_record.jsonl[0]",
+     "key": "response_capture_s",
+     "reference": "<MISSING>",
+     "new_arm": null
+    },
+    {
+     "field": "per_cycle_record.jsonl[0].response_captured",
+     "record": "per_cycle_record.jsonl[0]",
+     "key": "response_captured",
+     "reference": "<MISSING>",
+     "new_arm": null
+    },
+    {
+     "field": "per_cycle_record.jsonl[0].response_cycle",
+     "record": "per_cycle_record.jsonl[0]",
+     "key": "response_cycle",
+     "reference": "<MISSING>",
+     "new_arm": null
+    },
+    {
+     "field": "per_cycle_record.jsonl[0].row18_charge_weighted",
+     "record": "per_cycle_record.jsonl[0]",
+     "key": "row18_charge_weighted",
+     "reference": "<MISSING>",
+     "new_arm": null
+    },
+    {
+     "field": "per_cycle_record.jsonl[0].rss_bytes",
+     "record": "per_cycle_record.jsonl[0]",
+     "key": "rss_bytes",
+     "reference": "<MISSING>",
+     "new_arm": null
+    },
+    {
+     "field": "per_cycle_record.jsonl[0].ru_maxrss_bytes",
+     "record": "per_cycle_record.jsonl[0]",
+     "key": "ru_maxrss_bytes",
+     "reference": "<MISSING>",
+     "new_arm": null
+    },
+    {
+     "field": "per_cycle_record.jsonl[0].sum_omega_d2_p_mw2h_unweighted",
+     "record": "per_cycle_record.jsonl[0]",
+     "key": "sum_omega_d2_p_mw2h_unweighted",
+     "reference": "<MISSING>",
+     "new_arm": null
+    },
+    {
+     "field": "per_cycle_record.jsonl[0].sum_omega_d2_p_mw2h_weighted",
+     "record": "per_cycle_record.jsonl[0]",
+     "key": "sum_omega_d2_p_mw2h_weighted",
+     "reference": "<MISSING>",
+     "new_arm": null
+    },
+    {
+     "field": "per_cycle_record.jsonl[1].E_abs_d_p_mwh_unweighted",
+     "record": "per_cycle_record.jsonl[1]",
+     "key": "E_abs_d_p_mwh_unweighted",
+     "reference": "<MISSING>",
+     "new_arm": null
+    },
+    {
+     "field": "per_cycle_record.jsonl[1].E_abs_d_p_mwh_weighted",
+     "record": "per_cycle_record.jsonl[1]",
+     "key": "E_abs_d_p_mwh_weighted",
+     "reference": "<MISSING>",
+     "new_arm": null
+    },
+    {
+     "field": "per_cycle_record.jsonl[1].covariance_dso_weighted",
+     "record": "per_cycle_record.jsonl[1]",
+     "key": "covariance_dso_weighted",
+     "reference": "<MISSING>",
+     "new_arm": null
+    },
+    {
+     "field": "per_cycle_record.jsonl[1].curtailed_res_dso_mwh_weighted",
+     "record": "per_cycle_record.jsonl[1]",
+     "key": "curtailed_res_dso_mwh_weighted",
+     "reference": "<MISSING>",
+     "new_arm": null
+    },
+    {
+     "field": "per_cycle_record.jsonl[1].curtailed_res_tso_mwh_weighted",
+     "record": "per_cycle_record.jsonl[1]",
+     "key": "curtailed_res_tso_mwh_weighted",
+     "reference": "<MISSING>",
+     "new_arm": null
+    },
+    {
+     "field": "per_cycle_record.jsonl[1].cycle_wall_s",
+     "record": "per_cycle_record.jsonl[1]",
+     "key": "cycle_wall_s",
+     "reference": "<MISSING>",
+     "new_arm": null
+    },
+    {
+     "field": "per_cycle_record.jsonl[1].market_part_mw2h_unweighted",
+     "record": "per_cycle_record.jsonl[1]",
+     "key": "market_part_mw2h_unweighted",
+     "reference": "<MISSING>",
+     "new_arm": null
+    },
+    {
+     "field": "per_cycle_record.jsonl[1].market_part_mw2h_weighted",
+     "record": "per_cycle_record.jsonl[1]",
+     "key": "market_part_mw2h_weighted",
+     "reference": "<MISSING>",
+     "new_arm": null
+    },
+    {
+     "field": "per_cycle_record.jsonl[1].max_abs_d_p_mw",
+     "record": "per_cycle_record.jsonl[1]",
+     "key": "max_abs_d_p_mw",
+     "reference": "<MISSING>",
+     "new_arm": null
+    },
+    {
+     "field": "per_cycle_record.jsonl[1].n_non_optimal_block_terminations",
+     "record": "per_cycle_record.jsonl[1]",
+     "key": "n_non_optimal_block_terminations",
+     "reference": "<MISSING>",
+     "new_arm": null
+    },
+    {
+     "field": "per_cycle_record.jsonl[1].non_optimal_blocks",
+     "record": "per_cycle_record.jsonl[1]",
+     "key": "non_optimal_blocks",
+     "reference": "<MISSING>",
+     "new_arm": null
+    },
+    {
+     "field": "per_cycle_record.jsonl[1].operation_part_mw2h_unweighted",
+     "record": "per_cycle_record.jsonl[1]",
+     "key": "operation_part_mw2h_unweighted",
+     "reference": "<MISSING>",
+     "new_arm": null
+    },
+    {
+     "field": "per_cycle_record.jsonl[1].operation_part_mw2h_weighted",
+     "record": "per_cycle_record.jsonl[1]",
+     "key": "operation_part_mw2h_weighted",
+     "reference": "<MISSING>",
+     "new_arm": null
+    },
+    {
+     "field": "per_cycle_record.jsonl[1].response_capture_error",
+     "record": "per_cycle_record.jsonl[1]",
+     "key": "response_capture_error",
+     "reference": "<MISSING>",
+     "new_arm": null
+    },
+    {
+     "field": "per_cycle_record.jsonl[1].response_capture_s",
+     "record": "per_cycle_record.jsonl[1]",
+     "key": "response_capture_s",
+     "reference": "<MISSING>",
+     "new_arm": null
+    },
+    {
+     "field": "per_cycle_record.jsonl[1].response_captured",
+     "record": "per_cycle_record.jsonl[1]",
+     "key": "response_captured",
+     "reference": "<MISSING>",
+     "new_arm": null
+    },
+    {
+     "field": "per_cycle_record.jsonl[1].response_cycle",
+     "record": "per_cycle_record.jsonl[1]",
+     "key": "response_cycle",
+     "reference": "<MISSING>",
+     "new_arm": null
+    },
+    {
+     "field": "per_cycle_record.jsonl[1].row18_charge_weighted",
+     "record": "per_cycle_record.jsonl[1]",
+     "key": "row18_charge_weighted",
+     "reference": "<MISSING>",
+     "new_arm": null
+    },
+    {
+     "field": "per_cycle_record.jsonl[1].rss_bytes",
+     "record": "per_cycle_record.jsonl[1]",
+     "key": "rss_bytes",
+     "reference": "<MISSING>",
+     "new_arm": null
+    },
+    {
+     "field": "per_cycle_record.jsonl[1].ru_maxrss_bytes",
+     "record": "per_cycle_record.jsonl[1]",
+     "key": "ru_maxrss_bytes",
+     "reference": "<MISSING>",
+     "new_arm": null
+    },
+    {
+     "field": "per_cycle_record.jsonl[1].sum_omega_d2_p_mw2h_unweighted",
+     "record": "per_cycle_record.jsonl[1]",
+     "key": "sum_omega_d2_p_mw2h_unweighted",
+     "reference": "<MISSING>",
+     "new_arm": null
+    },
+    {
+     "field": "per_cycle_record.jsonl[1].sum_omega_d2_p_mw2h_weighted",
+     "record": "per_cycle_record.jsonl[1]",
+     "key": "sum_omega_d2_p_mw2h_weighted",
+     "reference": "<MISSING>",
+     "new_arm": null
+    }
+   ],
+   "records_with_candidates": {
+    "per_cycle_record.jsonl[0]": {
+     "n_candidates": 22,
+     "n_shared_keys": 29,
+     "shared_keys_equal_under_gate_comparator": true,
+     "shared_keys_strict_type_exact_equal_incl_comparator_exclusions": true,
+     "blocking_diffs": []
+    },
+    "per_cycle_record.jsonl[1]": {
+     "n_candidates": 22,
+     "n_shared_keys": 29,
+     "shared_keys_equal_under_gate_comparator": true,
+     "shared_keys_strict_type_exact_equal_incl_comparator_exclusions": true,
+     "blocking_diffs": []
+    }
+   },
+   "genuine_ruled": []
+  }
+ },
+ "gate_comparison_recomputed": {
+  "reference_arm": {
+   "gate_dir": "data/SRP1/Results/P515S52/srp1_bitwise_gate",
+   "arm_dir": "data/SRP1/Results/P515S52/srp1_bitwise_gate/arm",
+   "manifest": "data/SRP1/Results/P515S52/srp1_bitwise_gate/manifest_sha256.json",
+   "manifest_sha256": "9a5d6b78bfdb4738e83389878eba3236b298a4e5e5b05308a48b44ebe094ba69",
+   "gate_json": "data/SRP1/Results/P515S52/srp1_bitwise_gate/gate.json",
+   "arm_name": "s52w48gate",
+   "commit": "e75a575e (run at fe0319d6)"
+  },
+  "comparator": "W10.classify (BY IMPORT): CP._diff bitwise, CP.EXCLUDE_KEY_NAMES / EXCLUDE_DOTTED_SUFFIXES, rule_eleven_checklist subtree = provenance, arm-path tokens normalized, recourse-jump tie order reclassified by TC; everything else genuine. CP._diff's 'legacy' = the W39 arm, 'lightweight' = this arm",
+  "token_groups": [
+   [
+    "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S55/w183f_srp1_bitwise_gate/arm",
+    "data/SRP1/Results/P515S55/w183f_srp1_bitwise_gate/arm",
+    "p515s44_s45_w10_snapoff_s55w183fgate_578636daa6d6360d_run",
+    "p515s44_s45_w10_snapoff_s55w183fgate_578636daa6d6360d_precheck",
+    "s55w183fgate"
+   ],
+   [
+    "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S52/srp1_bitwise_gate/arm",
+    "data/SRP1/Results/P515S52/srp1_bitwise_gate/arm",
+    "p515s44_s45_w10_snapoff_s52w48gate_578636daa6d6360d_run",
+    "p515s44_s45_w10_snapoff_s52w48gate_578636daa6d6360d_precheck",
+    "s52w48gate"
+   ]
+  ],
+  "files_compared": [
+   "g_s39_D.json",
+   "boyd_terminal.json",
+   "component_levels_terminal.json",
+   "interface_settlement_detail_s31c.json",
+   "interface_voltage_terminal.json",
+   "recourse_jump_sidecar_baseline.jsonl",
+   "ess_entry_stride_baseline.jsonl",
+   "soh_floor_sidecar_baseline.jsonl",
+   "pf_entry_stride_s39_D.jsonl",
+   "ess_exempt_until_state_s39_D.jsonl",
+   "aa_per_cycle.jsonl",
+   "per_cycle_record.jsonl"
+  ],
+  "per_file": {
+   "g_s39_D.json": {
+    "n_raw_diffs": 3,
+    "fg_buckets_raw_counts": {
+     "provenance": 3,
+     "aa_new_field": 0,
+     "known_tie_break_alias": 0,
+     "genuine": 0
+    },
+    "n": {
+     "provenance": 3,
+     "tie_order": 0,
+     "genuine": 0
+    },
+    "provenance_diffs": [
+     {
+      "field": "g_s39_D.json.rule_eleven_checklist.w10_arm",
+      "legacy": "s52w48gate",
+      "lightweight": "s55w183fgate",
+      "reason": "rule_eleven_checklist subtree (how the run was configured/verified, including the recorded snapshot modes)"
+     },
+     {
+      "field": "g_s39_D.json.rule_eleven_checklist.w183a_nrf_option",
+      "legacy": "<MISSING>",
+      "lightweight": {
+       "nrf_option": null,
+       "label": null,
+       "production_support": "hasattr(network_parameters.NetworkParameters(), 'no_reverse_flow') is True",
+       "before": {
+        "TSO": false,
+        "DSO5": false,
+        "DSO7": false,
+        "DSO9": false
+       },
+       "in_force": {
+        "TSO": false,
+        "DSO5": false,
+        "DSO7": false,
+        "DSO9": false
+       },
+       "checks": {
+        "every_network_flag_is_off": true
+       }
+      },
+      "reason": "rule_eleven_checklist subtree (how the run was configured/verified, including the recorded snapshot modes)"
+     },
+     {
+      "field": "g_s39_D.json.rule_eleven_checklist.w84_convergence_depth_tail",
+      "legacy": "<MISSING>",
+      "lightweight": {
+       "declared": null,
+       "source": "not declared -> production default (ADMMParameters.convergence_depth_tail)",
+       "before": {
+        "enabled": false,
+        "compl_inf_tol": 1e-06
+       },
+       "after": {
+        "enabled": false,
+        "compl_inf_tol": 1e-06
+       },
+       "enabled_in_force": false,
+       "expected_enabled": false,
+       "dict_in_force_equals_declaration": null,
+       "ok": true
+      },
+      "reason": "rule_eleven_checklist subtree (how the run was configured/verified, including the recorded snapshot modes)"
+     }
+    ],
+    "tie_order_diffs": [],
+    "tie_order_row_classes": {},
+    "genuine_diffs_first": [],
+    "genuine_diffs_listed_truncated": false
+   },
+   "boyd_terminal.json": {
+    "n_raw_diffs": 0,
+    "fg_buckets_raw_counts": {
+     "provenance": 0,
+     "aa_new_field": 0,
+     "known_tie_break_alias": 0,
+     "genuine": 0
+    },
+    "n": {
+     "provenance": 0,
+     "tie_order": 0,
+     "genuine": 0
+    },
+    "provenance_diffs": [],
+    "tie_order_diffs": [],
+    "tie_order_row_classes": {},
+    "genuine_diffs_first": [],
+    "genuine_diffs_listed_truncated": false
+   },
+   "component_levels_terminal.json": {
+    "n_raw_diffs": 0,
+    "fg_buckets_raw_counts": {
+     "provenance": 0,
+     "aa_new_field": 0,
+     "known_tie_break_alias": 0,
+     "genuine": 0
+    },
+    "n": {
+     "provenance": 0,
+     "tie_order": 0,
+     "genuine": 0
+    },
+    "provenance_diffs": [],
+    "tie_order_diffs": [],
+    "tie_order_row_classes": {},
+    "genuine_diffs_first": [],
+    "genuine_diffs_listed_truncated": false
+   },
+   "interface_settlement_detail_s31c.json": {
+    "n_raw_diffs": 0,
+    "fg_buckets_raw_counts": {
+     "provenance": 0,
+     "aa_new_field": 0,
+     "known_tie_break_alias": 0,
+     "genuine": 0
+    },
+    "n": {
+     "provenance": 0,
+     "tie_order": 0,
+     "genuine": 0
+    },
+    "provenance_diffs": [],
+    "tie_order_diffs": [],
+    "tie_order_row_classes": {},
+    "genuine_diffs_first": [],
+    "genuine_diffs_listed_truncated": false
+   },
+   "interface_voltage_terminal.json": {
+    "n_raw_diffs": 0,
+    "fg_buckets_raw_counts": {
+     "provenance": 0,
+     "aa_new_field": 0,
+     "known_tie_break_alias": 0,
+     "genuine": 0
+    },
+    "n": {
+     "provenance": 0,
+     "tie_order": 0,
+     "genuine": 0
+    },
+    "provenance_diffs": [],
+    "tie_order_diffs": [],
+    "tie_order_row_classes": {},
+    "genuine_diffs_first": [],
+    "genuine_diffs_listed_truncated": false
+   },
+   "recourse_jump_sidecar_baseline.jsonl": {
+    "n_raw_diffs": 0,
+    "fg_buckets_raw_counts": {
+     "provenance": 0,
+     "aa_new_field": 0,
+     "known_tie_break_alias": 0,
+     "genuine": 0
+    },
+    "n": {
+     "provenance": 0,
+     "tie_order": 0,
+     "genuine": 0
+    },
+    "provenance_diffs": [],
+    "tie_order_diffs": [],
+    "tie_order_row_classes": {},
+    "genuine_diffs_first": [],
+    "genuine_diffs_listed_truncated": false,
+    "n_rows": {
+     "w39": 2,
+     "w48": 2
+    }
+   },
+   "ess_entry_stride_baseline.jsonl": {
+    "n_raw_diffs": 0,
+    "fg_buckets_raw_counts": {
+     "provenance": 0,
+     "aa_new_field": 0,
+     "known_tie_break_alias": 0,
+     "genuine": 0
+    },
+    "n": {
+     "provenance": 0,
+     "tie_order": 0,
+     "genuine": 0
+    },
+    "provenance_diffs": [],
+    "tie_order_diffs": [],
+    "tie_order_row_classes": {},
+    "genuine_diffs_first": [],
+    "genuine_diffs_listed_truncated": false,
+    "n_rows": {
+     "w39": 2,
+     "w48": 2
+    }
+   },
+   "soh_floor_sidecar_baseline.jsonl": {
+    "n_raw_diffs": 0,
+    "fg_buckets_raw_counts": {
+     "provenance": 0,
+     "aa_new_field": 0,
+     "known_tie_break_alias": 0,
+     "genuine": 0
+    },
+    "n": {
+     "provenance": 0,
+     "tie_order": 0,
+     "genuine": 0
+    },
+    "provenance_diffs": [],
+    "tie_order_diffs": [],
+    "tie_order_row_classes": {},
+    "genuine_diffs_first": [],
+    "genuine_diffs_listed_truncated": false,
+    "n_rows": {
+     "w39": 2,
+     "w48": 2
+    }
+   },
+   "pf_entry_stride_s39_D.jsonl": {
+    "n_raw_diffs": 0,
+    "fg_buckets_raw_counts": {
+     "provenance": 0,
+     "aa_new_field": 0,
+     "known_tie_break_alias": 0,
+     "genuine": 0
+    },
+    "n": {
+     "provenance": 0,
+     "tie_order": 0,
+     "genuine": 0
+    },
+    "provenance_diffs": [],
+    "tie_order_diffs": [],
+    "tie_order_row_classes": {},
+    "genuine_diffs_first": [],
+    "genuine_diffs_listed_truncated": false,
+    "n_rows": {
+     "w39": 2,
+     "w48": 2
+    }
+   },
+   "ess_exempt_until_state_s39_D.jsonl": {
+    "n_raw_diffs": 0,
+    "fg_buckets_raw_counts": {
+     "provenance": 0,
+     "aa_new_field": 0,
+     "known_tie_break_alias": 0,
+     "genuine": 0
+    },
+    "n": {
+     "provenance": 0,
+     "tie_order": 0,
+     "genuine": 0
+    },
+    "provenance_diffs": [],
+    "tie_order_diffs": [],
+    "tie_order_row_classes": {},
+    "genuine_diffs_first": [],
+    "genuine_diffs_listed_truncated": false,
+    "n_rows": {
+     "w39": 2,
+     "w48": 2
+    }
+   },
+   "aa_per_cycle.jsonl": {
+    "n_raw_diffs": 0,
+    "fg_buckets_raw_counts": {
+     "provenance": 0,
+     "aa_new_field": 0,
+     "known_tie_break_alias": 0,
+     "genuine": 0
+    },
+    "n": {
+     "provenance": 0,
+     "tie_order": 0,
+     "genuine": 0
+    },
+    "provenance_diffs": [],
+    "tie_order_diffs": [],
+    "tie_order_row_classes": {},
+    "genuine_diffs_first": [],
+    "genuine_diffs_listed_truncated": false,
+    "n_rows": {
+     "w39": 2,
+     "w48": 2
+    }
+   },
+   "per_cycle_record.jsonl": {
+    "n_raw_diffs": 44,
+    "fg_buckets_raw_counts": {
+     "provenance": 0,
+     "aa_new_field": 0,
+     "known_tie_break_alias": 0,
+     "genuine": 44
+    },
+    "n": {
+     "provenance": 0,
+     "tie_order": 0,
+     "genuine": 44
+    },
+    "provenance_diffs": [],
+    "tie_order_diffs": [],
+    "tie_order_row_classes": {},
+    "genuine_diffs_first": [
+     {
+      "field": "per_cycle_record.jsonl[0].E_abs_d_p_mwh_unweighted",
+      "legacy": "<MISSING>",
+      "lightweight": null
+     },
+     {
+      "field": "per_cycle_record.jsonl[0].E_abs_d_p_mwh_weighted",
+      "legacy": "<MISSING>",
+      "lightweight": null
+     },
+     {
+      "field": "per_cycle_record.jsonl[0].covariance_dso_weighted",
+      "legacy": "<MISSING>",
+      "lightweight": null
+     },
+     {
+      "field": "per_cycle_record.jsonl[0].curtailed_res_dso_mwh_weighted",
+      "legacy": "<MISSING>",
+      "lightweight": null
+     },
+     {
+      "field": "per_cycle_record.jsonl[0].curtailed_res_tso_mwh_weighted",
+      "legacy": "<MISSING>",
+      "lightweight": null
+     },
+     {
+      "field": "per_cycle_record.jsonl[0].cycle_wall_s",
+      "legacy": "<MISSING>",
+      "lightweight": null
+     },
+     {
+      "field": "per_cycle_record.jsonl[0].market_part_mw2h_unweighted",
+      "legacy": "<MISSING>",
+      "lightweight": null
+     },
+     {
+      "field": "per_cycle_record.jsonl[0].market_part_mw2h_weighted",
+      "legacy": "<MISSING>",
+      "lightweight": null
+     },
+     {
+      "field": "per_cycle_record.jsonl[0].max_abs_d_p_mw",
+      "legacy": "<MISSING>",
+      "lightweight": null
+     },
+     {
+      "field": "per_cycle_record.jsonl[0].n_non_optimal_block_terminations",
+      "legacy": "<MISSING>",
+      "lightweight": null
+     },
+     {
+      "field": "per_cycle_record.jsonl[0].non_optimal_blocks",
+      "legacy": "<MISSING>",
+      "lightweight": null
+     },
+     {
+      "field": "per_cycle_record.jsonl[0].operation_part_mw2h_unweighted",
+      "legacy": "<MISSING>",
+      "lightweight": null
+     },
+     {
+      "field": "per_cycle_record.jsonl[0].operation_part_mw2h_weighted",
+      "legacy": "<MISSING>",
+      "lightweight": null
+     },
+     {
+      "field": "per_cycle_record.jsonl[0].response_capture_error",
+      "legacy": "<MISSING>",
+      "lightweight": null
+     },
+     {
+      "field": "per_cycle_record.jsonl[0].response_capture_s",
+      "legacy": "<MISSING>",
+      "lightweight": null
+     },
+     {
+      "field": "per_cycle_record.jsonl[0].response_captured",
+      "legacy": "<MISSING>",
+      "lightweight": null
+     },
+     {
+      "field": "per_cycle_record.jsonl[0].response_cycle",
+      "legacy": "<MISSING>",
+      "lightweight": null
+     },
+     {
+      "field": "per_cycle_record.jsonl[0].row18_charge_weighted",
+      "legacy": "<MISSING>",
+      "lightweight": null
+     },
+     {
+      "field": "per_cycle_record.jsonl[0].rss_bytes",
+      "legacy": "<MISSING>",
+      "lightweight": null
+     },
+     {
+      "field": "per_cycle_record.jsonl[0].ru_maxrss_bytes",
+      "legacy": "<MISSING>",
+      "lightweight": null
+     },
+     {
+      "field": "per_cycle_record.jsonl[0].sum_omega_d2_p_mw2h_unweighted",
+      "legacy": "<MISSING>",
+      "lightweight": null
+     },
+     {
+      "field": "per_cycle_record.jsonl[0].sum_omega_d2_p_mw2h_weighted",
+      "legacy": "<MISSING>",
+      "lightweight": null
+     },
+     {
+      "field": "per_cycle_record.jsonl[1].E_abs_d_p_mwh_unweighted",
+      "legacy": "<MISSING>",
+      "lightweight": null
+     },
+     {
+      "field": "per_cycle_record.jsonl[1].E_abs_d_p_mwh_weighted",
+      "legacy": "<MISSING>",
+      "lightweight": null
+     },
+     {
+      "field": "per_cycle_record.jsonl[1].covariance_dso_weighted",
+      "legacy": "<MISSING>",
+      "lightweight": null
+     },
+     {
+      "field": "per_cycle_record.jsonl[1].curtailed_res_dso_mwh_weighted",
+      "legacy": "<MISSING>",
+      "lightweight": null
+     },
+     {
+      "field": "per_cycle_record.jsonl[1].curtailed_res_tso_mwh_weighted",
+      "legacy": "<MISSING>",
+      "lightweight": null
+     },
+     {
+      "field": "per_cycle_record.jsonl[1].cycle_wall_s",
+      "legacy": "<MISSING>",
+      "lightweight": null
+     },
+     {
+      "field": "per_cycle_record.jsonl[1].market_part_mw2h_unweighted",
+      "legacy": "<MISSING>",
+      "lightweight": null
+     },
+     {
+      "field": "per_cycle_record.jsonl[1].market_part_mw2h_weighted",
+      "legacy": "<MISSING>",
+      "lightweight": null
+     },
+     {
+      "field": "per_cycle_record.jsonl[1].max_abs_d_p_mw",
+      "legacy": "<MISSING>",
+      "lightweight": null
+     },
+     {
+      "field": "per_cycle_record.jsonl[1].n_non_optimal_block_terminations",
+      "legacy": "<MISSING>",
+      "lightweight": null
+     },
+     {
+      "field": "per_cycle_record.jsonl[1].non_optimal_blocks",
+      "legacy": "<MISSING>",
+      "lightweight": null
+     },
+     {
+      "field": "per_cycle_record.jsonl[1].operation_part_mw2h_unweighted",
+      "legacy": "<MISSING>",
+      "lightweight": null
+     },
+     {
+      "field": "per_cycle_record.jsonl[1].operation_part_mw2h_weighted",
+      "legacy": "<MISSING>",
+      "lightweight": null
+     },
+     {
+      "field": "per_cycle_record.jsonl[1].response_capture_error",
+      "legacy": "<MISSING>",
+      "lightweight": null
+     },
+     {
+      "field": "per_cycle_record.jsonl[1].response_capture_s",
+      "legacy": "<MISSING>",
+      "lightweight": null
+     },
+     {
+      "field": "per_cycle_record.jsonl[1].response_captured",
+      "legacy": "<MISSING>",
+      "lightweight": null
+     },
+     {
+      "field": "per_cycle_record.jsonl[1].response_cycle",
+      "legacy": "<MISSING>",
+      "lightweight": null
+     },
+     {
+      "field": "per_cycle_record.jsonl[1].row18_charge_weighted",
+      "legacy": "<MISSING>",
+      "lightweight": null
+     },
+     {
+      "field": "per_cycle_record.jsonl[1].rss_bytes",
+      "legacy": "<MISSING>",
+      "lightweight": null
+     },
+     {
+      "field": "per_cycle_record.jsonl[1].ru_maxrss_bytes",
+      "legacy": "<MISSING>",
+      "lightweight": null
+     },
+     {
+      "field": "per_cycle_record.jsonl[1].sum_omega_d2_p_mw2h_unweighted",
+      "legacy": "<MISSING>",
+      "lightweight": null
+     },
+     {
+      "field": "per_cycle_record.jsonl[1].sum_omega_d2_p_mw2h_weighted",
+      "legacy": "<MISSING>",
+      "lightweight": null
+     }
+    ],
+    "genuine_diffs_listed_truncated": false,
+    "n_rows": {
+     "w39": 2,
+     "w48": 2
+    }
+   }
+  },
+  "totals": {
+   "provenance": 3,
+   "tie_order": 0,
+   "genuine": 44
+  },
+  "all_files_present": true,
+  "zero_genuine_diffs": false,
+  "esso_models_pickle_sha256_informational": {
+   "w39": "4e9876eadd47138498bc2e9e83e316fa338300039dcf35cab8a8c1d20dc237ae",
+   "w48": "18510da9c18841f0846d0e31c29910fd0cb430925fe1f836fc13915567cee941",
+   "sha256_equal": false
+  }
+ },
+ "negative_controls": {
+  "NC0_positive_unplanted": {
+   "planted": "nothing planted (positive control)",
+   "observed": {
+    "gate_classify_n": {
+     "provenance": 0,
+     "tie_order": 0,
+     "genuine": 44
+    },
+    "rule_c_n": {
+     "genuine_frozen": 44,
+     "field_list_drift": 44,
+     "genuine_ruled": 0
+    },
+    "drift_by_record": {
+     "per_cycle_record.jsonl[0]": 22,
+     "per_cycle_record.jsonl[1]": 22
+    },
+    "genuine_ruled_fields": [],
+    "genuine_ruled_reasons": [],
+    "GATE_PASS_RULED": true
+   },
+   "checks": {
+    "drift_44_as_22_per_row": true,
+    "genuine_ruled_0": true,
+    "gate_pass_ruled_true": true
+   },
+   "ok": true
+  },
+  "NC1_shared_key_different_value": {
+   "planted": "row 0 recourse += 1.0 (shared key, different value)",
+   "observed": {
+    "gate_classify_n": {
+     "provenance": 0,
+     "tie_order": 0,
+     "genuine": 45
+    },
+    "rule_c_n": {
+     "genuine_frozen": 45,
+     "field_list_drift": 22,
+     "genuine_ruled": 23
+    },
+    "drift_by_record": {
+     "per_cycle_record.jsonl[1]": 22
+    },
+    "genuine_ruled_fields": [
+     "per_cycle_record.jsonl[0].E_abs_d_p_mwh_unweighted",
+     "per_cycle_record.jsonl[0].E_abs_d_p_mwh_weighted",
+     "per_cycle_record.jsonl[0].covariance_dso_weighted",
+     "per_cycle_record.jsonl[0].curtailed_res_dso_mwh_weighted",
+     "per_cycle_record.jsonl[0].curtailed_res_tso_mwh_weighted",
+     "per_cycle_record.jsonl[0].cycle_wall_s",
+     "per_cycle_record.jsonl[0].market_part_mw2h_unweighted",
+     "per_cycle_record.jsonl[0].market_part_mw2h_weighted",
+     "per_cycle_record.jsonl[0].max_abs_d_p_mw",
+     "per_cycle_record.jsonl[0].n_non_optimal_block_terminations",
+     "per_cycle_record.jsonl[0].non_optimal_blocks",
+     "per_cycle_record.jsonl[0].operation_part_mw2h_unweighted",
+     "per_cycle_record.jsonl[0].operation_part_mw2h_weighted",
+     "per_cycle_record.jsonl[0].recourse",
+     "per_cycle_record.jsonl[0].response_capture_error",
+     "per_cycle_record.jsonl[0].response_capture_s",
+     "per_cycle_record.jsonl[0].response_captured",
+     "per_cycle_record.jsonl[0].response_cycle",
+     "per_cycle_record.jsonl[0].row18_charge_weighted",
+     "per_cycle_record.jsonl[0].rss_bytes",
+     "per_cycle_record.jsonl[0].ru_maxrss_bytes",
+     "per_cycle_record.jsonl[0].sum_omega_d2_p_mw2h_unweighted",
+     "per_cycle_record.jsonl[0].sum_omega_d2_p_mw2h_weighted"
+    ],
+    "genuine_ruled_reasons": [
+     "record per_cycle_record.jsonl[0]: 1 raw diff(s) on keys shared by the two records (not every shared key bitwise equal) -- drift classification disqualified",
+     "reference side is not <MISSING>"
+    ],
+    "GATE_PASS_RULED": false
+   },
+   "checks": {
+    "planted_diff_genuine": true,
+    "row0_drift_disqualified": true,
+    "row1_drift_kept": true,
+    "gate_pass_ruled_false": true
+   },
+   "ok": true
+  },
+  "NC2_absent_in_reference_non_null_in_new": {
+   "planted": "row 0 rss_bytes = 123456789; row 1 n_non_optimal_block_terminations = 0 (falsy, non-null); row 1 planted_new_key = 'x' (keys absent in the reference, non-null in the new arm)",
+   "observed": {
+    "gate_classify_n": {
+     "provenance": 0,
+     "tie_order": 0,
+     "genuine": 45
+    },
+    "rule_c_n": {
+     "genuine_frozen": 45,
+     "field_list_drift": 42,
+     "genuine_ruled": 3
+    },
+    "drift_by_record": {
+     "per_cycle_record.jsonl[0]": 21,
+     "per_cycle_record.jsonl[1]": 21
+    },
+    "genuine_ruled_fields": [
+     "per_cycle_record.jsonl[0].rss_bytes",
+     "per_cycle_record.jsonl[1].n_non_optimal_block_terminations",
+     "per_cycle_record.jsonl[1].planted_new_key"
+    ],
+    "genuine_ruled_reasons": [
+     "absent in reference, non-null in new arm"
+    ],
+    "GATE_PASS_RULED": false
+   },
+   "checks": {
+    "rss_bytes_genuine": true,
+    "falsy_zero_genuine": true,
+    "new_key_genuine": true,
+    "reason_recorded": true,
+    "other_drift_kept_rule_literal": true,
+    "gate_pass_ruled_false": true
+   },
+   "ok": true
+  },
+  "NC3_shared_key_one_ulp_disqualifies_record": {
+   "planted": "row 1 boyd_v_primal_ratio -> math.nextafter(v, inf) (shared key, one ulp)",
+   "observed": {
+    "gate_classify_n": {
+     "provenance": 0,
+     "tie_order": 0,
+     "genuine": 45
+    },
+    "rule_c_n": {
+     "genuine_frozen": 45,
+     "field_list_drift": 22,
+     "genuine_ruled": 23
+    },
+    "drift_by_record": {
+     "per_cycle_record.jsonl[0]": 22
+    },
+    "genuine_ruled_fields": [
+     "per_cycle_record.jsonl[1].E_abs_d_p_mwh_unweighted",
+     "per_cycle_record.jsonl[1].E_abs_d_p_mwh_weighted",
+     "per_cycle_record.jsonl[1].boyd_v_primal_ratio",
+     "per_cycle_record.jsonl[1].covariance_dso_weighted",
+     "per_cycle_record.jsonl[1].curtailed_res_dso_mwh_weighted",
+     "per_cycle_record.jsonl[1].curtailed_res_tso_mwh_weighted",
+     "per_cycle_record.jsonl[1].cycle_wall_s",
+     "per_cycle_record.jsonl[1].market_part_mw2h_unweighted",
+     "per_cycle_record.jsonl[1].market_part_mw2h_weighted",
+     "per_cycle_record.jsonl[1].max_abs_d_p_mw",
+     "per_cycle_record.jsonl[1].n_non_optimal_block_terminations",
+     "per_cycle_record.jsonl[1].non_optimal_blocks",
+     "per_cycle_record.jsonl[1].operation_part_mw2h_unweighted",
+     "per_cycle_record.jsonl[1].operation_part_mw2h_weighted",
+     "per_cycle_record.jsonl[1].response_capture_error",
+     "per_cycle_record.jsonl[1].response_capture_s",
+     "per_cycle_record.jsonl[1].response_captured",
+     "per_cycle_record.jsonl[1].response_cycle",
+     "per_cycle_record.jsonl[1].row18_charge_weighted",
+     "per_cycle_record.jsonl[1].rss_bytes",
+     "per_cycle_record.jsonl[1].ru_maxrss_bytes",
+     "per_cycle_record.jsonl[1].sum_omega_d2_p_mw2h_unweighted",
+     "per_cycle_record.jsonl[1].sum_omega_d2_p_mw2h_weighted"
+    ],
+    "genuine_ruled_reasons": [
+     "record per_cycle_record.jsonl[1]: 1 raw diff(s) on keys shared by the two records (not every shared key bitwise equal) -- drift classification disqualified",
+     "reference side is not <MISSING>"
+    ],
+    "GATE_PASS_RULED": false
+   },
+   "checks": {
+    "planted_diff_genuine": true,
+    "row1_all_candidates_genuine": true,
+    "row1_drift_disqualified": true,
+    "row0_drift_kept": true,
+    "gate_pass_ruled_false": true
+   },
+   "ok": true
+  },
+  "NC4_reference_key_missing_in_new": {
+   "planted": "row 0 cycle_convergence deleted (present in the reference, absent in the new arm)",
+   "observed": {
+    "gate_classify_n": {
+     "provenance": 0,
+     "tie_order": 0,
+     "genuine": 45
+    },
+    "rule_c_n": {
+     "genuine_frozen": 45,
+     "field_list_drift": 44,
+     "genuine_ruled": 1
+    },
+    "drift_by_record": {
+     "per_cycle_record.jsonl[0]": 22,
+     "per_cycle_record.jsonl[1]": 22
+    },
+    "genuine_ruled_fields": [
+     "per_cycle_record.jsonl[0].cycle_convergence"
+    ],
+    "genuine_ruled_reasons": [
+     "reference side is not <MISSING>"
+    ],
+    "GATE_PASS_RULED": false
+   },
+   "checks": {
+    "planted_diff_genuine": true,
+    "genuine_ruled_is_only_the_planted_diff": true,
+    "drift_kept_rule_literal": true,
+    "gate_pass_ruled_false": true
+   },
+   "ok": true
+  },
+  "NC5a_nested_record_drift_positive": {
+   "planted": "g_s39_D.json instance.planted_drift_key = None (nested record; its shared keys all equal)",
+   "observed": {
+    "gate_classify_n": {
+     "provenance": 3,
+     "tie_order": 0,
+     "genuine": 1
+    },
+    "rule_c_n": {
+     "genuine_frozen": 1,
+     "field_list_drift": 1,
+     "genuine_ruled": 0
+    },
+    "drift_by_record": {
+     "g_s39_D.json.instance": 1
+    },
+    "genuine_ruled_fields": [],
+    "genuine_ruled_reasons": [],
+    "GATE_PASS_RULED": true
+   },
+   "checks": {
+    "nested_drift": true,
+    "genuine_ruled_0": true,
+    "gate_pass_ruled_true": true
+   },
+   "ok": true
+  },
+  "NC5b_shared_key_differs_at_depth_any_class_disqualifies": {
+   "planted": "g_s39_D.json top-level planted_drift_key = None (the top-level record's shared key rule_eleven_checklist differs at depth 2 by provenance diffs)",
+   "observed": {
+    "gate_classify_n": {
+     "provenance": 3,
+     "tie_order": 0,
+     "genuine": 1
+    },
+    "rule_c_n": {
+     "genuine_frozen": 1,
+     "field_list_drift": 0,
+     "genuine_ruled": 1
+    },
+    "drift_by_record": {},
+    "genuine_ruled_fields": [
+     "g_s39_D.json.planted_drift_key"
+    ],
+    "genuine_ruled_reasons": [
+     "record g_s39_D.json: 3 raw diff(s) on keys shared by the two records (not every shared key bitwise equal) -- drift classification disqualified"
+    ],
+    "GATE_PASS_RULED": false
+   },
+   "checks": {
+    "candidate_genuine": true,
+    "no_drift": true,
+    "gate_pass_ruled_false": true
+   },
+   "ok": true
+  }
+ },
+ "negative_controls_all_as_declared": true,
+ "guards": {
+  "zero_solve_guard": {
+   "counts": {
+    "permitted_solve": 0,
+    "permitted_exec": 0,
+    "blocked_solve": 0,
+    "blocked_exec": 0
+   },
+   "verify_0_failures": []
+  },
+  "imported_chain_W10_GUARD": {
+   "counts": {
+    "permitted_solve": 0,
+    "permitted_exec": 0,
+    "blocked_solve": 0,
+    "blocked_exec": 0
+   },
+   "verify_0_failures": []
+  },
+  "pickle": {
+   "load": 0,
+   "loads": 0
+  },
+  "model_build": {
+   "ConcreteModel.__init__": 0
+  },
+  "all_zero": true
+ },
+ "wall_clock_s": 0.406904935836792
+}
