@@ -1,0 +1,6418 @@
+{
+ "schema": "w182g_cost_horizon_budget/1",
+ "stage": "P5.15 W182g (Addendum 82 v2, W182 order part C: C1, C2, C3)",
+ "started_utc": "2026-10-25T14:11:46.357158+00:00",
+ "interpreter": "/Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python",
+ "identity": {
+  "clone": "manuscript/6a67305f25e8348fb71380c3",
+  "clone_head": "edd7a63a6c2ea06c1db17e3b6941bde8aa6d6838",
+  "main_sha256": "b08a3365607e56f2ff8c56572a9a74bc9ea97d5fb461faa252fab7955ffa8f5b",
+  "main_n_lines": 2956,
+  "repo_head": "a21b03e6c47e0969e6a91d47cc1db0919522a6e0",
+  "last_commit_touching_production_files_read": "a51ad9ba4a195d0ca708336c2b9f40619bc23cd3",
+  "last_commit_per_production_file": {
+   "shared_resources_planning.py": "a51ad9ba4a195d0ca708336c2b9f40619bc23cd3",
+   "model_construction_helpers.py": "1d3105653ef45d435fa811a03d7666ff1fe94afd",
+   "network_data.py": "feb7b5feabfd50e5c9246dd168e2e8dd131ca1a9",
+   "network.py": "a51ad9ba4a195d0ca708336c2b9f40619bc23cd3",
+   "shared_energy_storage_data.py": "e5721b6d99e1f0a49f0598d4e89e62c10d79926e",
+   "shared_energy_storage_parameters.py": "b03c9b141b46896ddf9ea8edb50c75fa372c90db",
+   "network_parameters.py": "feb7b5feabfd50e5c9246dd168e2e8dd131ca1a9",
+   "definitions.py": "92e3fafe0ed2e8c65945585b86b52dc985b36e60"
+  },
+  "declared_last_production_commit": "575bfec4",
+  "checks": [
+   {
+    "check": "clone HEAD = edd7a63",
+    "ok": true,
+    "detail": "edd7a63a6c2ea06c1db17e3b6941bde8aa6d6838"
+   },
+   {
+    "check": "main.tex unmodified in the clone",
+    "ok": true,
+    "detail": ""
+   },
+   {
+    "check": "main.tex working copy = HEAD blob",
+    "ok": true,
+    "detail": null
+   },
+   {
+    "check": "declared order commit a17f6ba7 is an ancestor of repo HEAD (parallel W182 commits allowed)",
+    "ok": true,
+    "detail": "a21b03e6c47e0969e6a91d47cc1db0919522a6e0"
+   },
+   {
+    "check": "production files clean in the working tree",
+    "ok": true,
+    "detail": ""
+   },
+   {
+    "check": "no commit after 575bfec4 touches the production files read here",
+    "ok": true,
+    "detail": {
+     "after": "",
+     "last_touching": "a51ad9ba4a195d0ca708336c2b9f40619bc23cd3",
+     "ancestor_of_declared": true
+    }
+   }
+  ],
+  "ok": true
+ },
+ "objective_convention": "Q = gross_operational_cost = sum TSO/DSO get_primal_value (objective_function_rule, weighted Y_y D_d (1+r)^-(y-y0)) - contracted interface settlement - interface-voltage pin; net = Q - terminal salvage credit; F = I + Q. At one market scenario the deviation settlement is identically 0, so \"settlement excluded\" is exact there; at 3 x 3 the deviation settlement and the row 18 premium are INSIDE Q.",
+ "formula_I": "I(x) = sum_n (1+r)^-(y-y0) * sum_c w_c * (cS_{c,y} S_n + cE_{c,y} E_n); verdict ADMISSIBLE iff I(x) <= B + 1e-08; BOUNDARY iff admissible and B - I(x) < 0.01 B",
+ "code_anchors": {
+  "obj_rule_def": {
+   "file": "model_construction_helpers.py",
+   "function": null,
+   "lines": [
+    1811
+   ],
+   "line": 1811,
+   "text": "def objective_function_rule(model, params):",
+   "unique_in_function": true
+  },
+  "obj_core": {
+   "file": "model_construction_helpers.py",
+   "function": "objective_function_rule",
+   "lines": [
+    1813
+   ],
+   "line": 1813,
+   "text": "obj = model.total_gen_cost + model.total_flex_cost + model.total_load_curt_cost + model.total_gen_curt_penalty",
+   "unique_in_function": true
+  },
+  "obj_cm_branch": {
+   "file": "model_construction_helpers.py",
+   "function": "objective_function_rule",
+   "lines": [
+    1815
+   ],
+   "line": 1815,
+   "text": "obj = model.total_gen_curt_penalty + model.total_load_curt_penalty + model.total_flex_penalty",
+   "unique_in_function": true
+  },
+  "obj_ess_usage": {
+   "file": "model_construction_helpers.py",
+   "function": "objective_function_rule",
+   "lines": [
+    1816
+   ],
+   "line": 1816,
+   "text": "obj += model.total_ess_utilization_cost_penalty",
+   "unique_in_function": true
+  },
+  "obj_slacks": {
+   "file": "model_construction_helpers.py",
+   "function": "objective_function_rule",
+   "lines": [
+    1817
+   ],
+   "line": 1817,
+   "text": "obj += model.total_slack_penalties",
+   "unique_in_function": true
+  },
+  "obj_closure": {
+   "file": "model_construction_helpers.py",
+   "function": "objective_function_rule",
+   "lines": [
+    1818
+   ],
+   "line": 1818,
+   "text": "obj += model.total_ess_complementarity_penalties",
+   "unique_in_function": true
+  },
+  "obj_settlement": {
+   "file": "model_construction_helpers.py",
+   "function": "objective_function_rule",
+   "lines": [
+    1823
+   ],
+   "line": 1823,
+   "text": "obj += model.interface_settlement_weight * model.interface_settlement",
+   "unique_in_function": true
+  },
+  "obj_row18": {
+   "file": "model_construction_helpers.py",
+   "function": "objective_function_rule",
+   "lines": [
+    1836
+   ],
+   "line": 1836,
+   "text": "obj += model.row18_deviation_charge",
+   "unique_in_function": true
+  },
+  "obj_vpin": {
+   "file": "model_construction_helpers.py",
+   "function": "objective_function_rule",
+   "lines": [
+    1842
+   ],
+   "line": 1842,
+   "text": "obj += model.scenario_voltage_pin_weight * model.scenario_voltage_pin",
+   "unique_in_function": true
+  },
+  "gen_cost_line": {
+   "file": "model_construction_helpers.py",
+   "function": "generation_cost",
+   "lines": [
+    2007
+   ],
+   "line": 2007,
+   "text": "gen_cost_scenario += c_p[p] * network.baseMVA * model.pg[g, s_m, s_o, p]",
+   "unique_in_function": true
+  },
+  "gen_cost_filter": {
+   "file": "model_construction_helpers.py",
+   "function": "generation_cost",
+   "lines": [
+    2005
+   ],
+   "line": 2005,
+   "text": "if network.generators[g].is_controllable() and not (not network.is_transmission and network.generators[g].gen_type == GEN_REFERENCE):",
+   "unique_in_function": true
+  },
+  "flex_cost_line": {
+   "file": "model_construction_helpers.py",
+   "function": "flexibility_cost",
+   "lines": [
+    2047
+   ],
+   "line": 2047,
+   "text": "flex_cost += c_flex[p] * network.baseMVA * (",
+   "unique_in_function": true
+  },
+  "flex_cost_tso_adn_skip": {
+   "file": "model_construction_helpers.py",
+   "function": "flexibility_cost",
+   "lines": [
+    2044
+   ],
+   "line": 2044,
+   "text": "if load_is_tso_adn_interface(network, load):",
+   "unique_in_function": true
+  },
+  "load_curt_guard": {
+   "file": "model_construction_helpers.py",
+   "function": "load_curtailment_cost",
+   "lines": [
+    2088
+   ],
+   "line": 2088,
+   "text": "if params.l_curt:",
+   "unique_in_function": true
+  },
+  "load_curt_line": {
+   "file": "model_construction_helpers.py",
+   "function": "load_curtailment_cost",
+   "lines": [
+    2092
+   ],
+   "line": 2092,
+   "text": "load_curt_cost += cost * network.baseMVA * (",
+   "unique_in_function": true
+  },
+  "gen_curt_line": {
+   "file": "model_construction_helpers.py",
+   "function": "gen_curtailment_penalty",
+   "lines": [
+    2118
+   ],
+   "line": 2118,
+   "text": "gen_curt_penalty += penalty * network.baseMVA * (model.pg_avail[g, s_o, p] - model.pg[g, s_m, s_o, p])",
+   "unique_in_function": true
+  },
+  "sess_usage_line": {
+   "file": "model_construction_helpers.py",
+   "function": "ess_utilization_cost_penalty",
+   "lines": [
+    2218
+   ],
+   "line": 2218,
+   "text": "cost += model.penalty_shared_ess_usage * network.baseMVA * (model.shared_es_pch[e, s_m0, s_o0, p] + model.shared_es_pdch[e, s_m0, s_o0, p])",
+   "unique_in_function": true
+  },
+  "v_slack_line": {
+   "file": "model_construction_helpers.py",
+   "function": "voltage_slack_penalty",
+   "lines": [
+    2247
+   ],
+   "line": 2247,
+   "text": "total += PENALTY_VOLTAGE_SQUARED * (model.slack_v_sqr_down[i, s_m, s_o, p] + model.slack_v_sqr_up[i, s_m, s_o, p])",
+   "unique_in_function": true
+  },
+  "nb_slack_line": {
+   "file": "model_construction_helpers.py",
+   "function": "node_balance_slack_penalty",
+   "lines": [
+    2258
+   ],
+   "line": 2258,
+   "text": "total += base * PENALTY_NODE_BALANCE * (model.slack_node_balance_p_up[i, s_m, s_o, p] + model.slack_node_balance_p_down[i, s_m, s_o, p])",
+   "unique_in_function": true
+  },
+  "bf_slack_line": {
+   "file": "model_construction_helpers.py",
+   "function": "branch_flow_slack_penalty",
+   "lines": [
+    2271
+   ],
+   "line": 2271,
+   "text": "total += base * PENALTY_CURRENT * (model.slack_flow_ij_sqr[b, s_m, s_o, p])",
+   "unique_in_function": true
+  },
+  "flexdb_slack_line": {
+   "file": "model_construction_helpers.py",
+   "function": "flexibility_p_day_balance_slack_penalty",
+   "lines": [
+    2297
+   ],
+   "line": 2297,
+   "text": "total += base * PENALTY_FLEXIBILITY * (model.slack_flex_p_balance_up[c, s_m, s_o] + model.slack_flex_p_balance_down[c, s_m, s_o])",
+   "unique_in_function": true
+  },
+  "local_closure_line": {
+   "file": "model_construction_helpers.py",
+   "function": "local_ess_day_balance_slack_penalty",
+   "lines": [
+    2329
+   ],
+   "line": 2329,
+   "text": "total += base * PENALTY_ESS_BALANCE * (model.slack_es_soc_final_up[e, s_m, s_o] + model.slack_es_soc_final_down[e, s_m, s_o])",
+   "unique_in_function": true
+  },
+  "shared_closure_line": {
+   "file": "model_construction_helpers.py",
+   "function": "shared_ess_day_balance_slack_penalty",
+   "lines": [
+    2341
+   ],
+   "line": 2341,
+   "text": "total += base * PENALTY_SHARED_ESS_BALANCE * (model.slack_shared_es_soc_final_up[e, s_m0, s_o0] + model.slack_shared_es_soc_final_down[e, s_m0, s_o0])",
+   "unique_in_function": true
+  },
+  "settle_weight_param": {
+   "file": "model_construction_helpers.py",
+   "function": "build_objective",
+   "lines": [
+    1701
+   ],
+   "line": 1701,
+   "text": "model.interface_settlement_weight = pe.Param(initialize=0.00, mutable=True)",
+   "unique_in_function": true
+  },
+  "settle_expr": {
+   "file": "model_construction_helpers.py",
+   "function": "build_objective",
+   "lines": [
+    1702
+   ],
+   "line": 1702,
+   "text": "model.interface_settlement = pe.Expression(expr=interface_energy_settlement(model, network))",
+   "unique_in_function": true
+  },
+  "settle_contracted_expr": {
+   "file": "model_construction_helpers.py",
+   "function": "build_objective",
+   "lines": [
+    1723
+   ],
+   "line": 1723,
+   "text": "model.interface_settlement_contracted = pe.Expression(expr=interface_energy_settlement_contracted(model, network))",
+   "unique_in_function": true
+  },
+  "settle_deviation_expr": {
+   "file": "model_construction_helpers.py",
+   "function": "build_objective",
+   "lines": [
+    1724
+   ],
+   "line": 1724,
+   "text": "model.interface_settlement_deviation = pe.Expression(expr=model.interface_settlement - model.interface_settlement_contracted)",
+   "unique_in_function": true
+  },
+  "build_objective_line": {
+   "file": "model_construction_helpers.py",
+   "function": "build_objective",
+   "lines": [
+    1726
+   ],
+   "line": 1726,
+   "text": "model.objective = pe.Objective(sense=pe.minimize, rule=partial(objective_function_rule, params=params))",
+   "unique_in_function": true
+  },
+  "commit_single_scenario_guard": {
+   "file": "model_construction_helpers.py",
+   "function": "add_scenario_commitment_terms",
+   "lines": [
+    1917
+   ],
+   "line": 1917,
+   "text": "if n_scenarios == 1:",
+   "unique_in_function": true
+  },
+  "row18_charge_term": {
+   "file": "model_construction_helpers.py",
+   "function": "add_scenario_commitment_terms",
+   "lines": [
+    1979
+   ],
+   "line": 1979,
+   "text": "charge += (probability * model.row18_alpha * model.row18_premium[p] * network.baseMVA",
+   "unique_in_function": true
+  },
+  "row18_charge_expr": {
+   "file": "model_construction_helpers.py",
+   "function": "add_scenario_commitment_terms",
+   "lines": [
+    1982
+   ],
+   "line": 1982,
+   "text": "model.row18_deviation_charge = pe.Expression(expr=charge)",
+   "unique_in_function": true
+  },
+  "row18_dso_only": {
+   "file": "model_construction_helpers.py",
+   "function": "add_scenario_commitment_terms",
+   "lines": [
+    1948
+   ],
+   "line": 1948,
+   "text": "if (not network.is_transmission) and premium_alpha > 0.0:",
+   "unique_in_function": true
+  },
+  "vpin_weight": {
+   "file": "model_construction_helpers.py",
+   "function": "add_scenario_commitment_terms",
+   "lines": [
+    1940
+   ],
+   "line": 1940,
+   "text": "model.scenario_voltage_pin_weight = pe.Param(initialize=PENALTY_SCENARIO_DEVIATION, mutable=True)",
+   "unique_in_function": true
+  },
+  "vpin_expr": {
+   "file": "model_construction_helpers.py",
+   "function": "add_scenario_commitment_terms",
+   "lines": [
+    1941
+   ],
+   "line": 1941,
+   "text": "model.scenario_voltage_pin = pe.Expression(expr=voltage_deviation)",
+   "unique_in_function": true
+  },
+  "net_primal_value": {
+   "file": "network.py",
+   "function": "get_primal_value",
+   "lines": [
+    70
+   ],
+   "line": 70,
+   "text": "primal_value = pe.value(objective_function_rule(model, params))",
+   "unique_in_function": true
+  },
+  "nd_annualization": {
+   "file": "network_data.py",
+   "function": "get_primal_value",
+   "lines": [
+    100
+   ],
+   "line": 100,
+   "text": "annualization = 1 / ((1 + self.discount_factor) ** (int(year) - int(years[0])))",
+   "unique_in_function": true
+  },
+  "nd_weighting": {
+   "file": "network_data.py",
+   "function": "get_primal_value",
+   "lines": [
+    102
+   ],
+   "line": 102,
+   "text": "obj += self.network[year][day].get_primal_value(model[year][day], self.params) * self.years[year] * self.days[day] * annualization",
+   "unique_in_function": true
+  },
+  "q_tso": {
+   "file": "shared_resources_planning.py",
+   "function": "_get_operational_recourse_components",
+   "lines": [
+    1237
+   ],
+   "line": 1237,
+   "text": "gross_operational_cost_including_settlement = planning_problem.transmission_network.get_primal_value(models['tso'])",
+   "unique_in_function": true
+  },
+  "q_dso": {
+   "file": "shared_resources_planning.py",
+   "function": "_get_operational_recourse_components",
+   "lines": [
+    1239
+   ],
+   "line": 1239,
+   "text": "gross_operational_cost_including_settlement += distribution_network.get_primal_value(models['dso'][node_id])",
+   "unique_in_function": true
+  },
+  "q_gross_1": {
+   "file": "shared_resources_planning.py",
+   "function": "_get_operational_recourse_components",
+   "lines": [
+    1302
+   ],
+   "line": 1302,
+   "text": "gross_operational_cost = (gross_operational_cost_including_settlement",
+   "unique_in_function": true
+  },
+  "q_gross_2": {
+   "file": "shared_resources_planning.py",
+   "function": "_get_operational_recourse_components",
+   "lines": [
+    1303
+   ],
+   "line": 1303,
+   "text": "- interface_settlement_contracted_total",
+   "unique_in_function": true
+  },
+  "q_gross_3": {
+   "file": "shared_resources_planning.py",
+   "function": "_get_operational_recourse_components",
+   "lines": [
+    1304
+   ],
+   "line": 1304,
+   "text": "- voltage_pin_total)",
+   "unique_in_function": true
+  },
+  "q_salvage": {
+   "file": "shared_resources_planning.py",
+   "function": "_get_operational_recourse_components",
+   "lines": [
+    1305
+   ],
+   "line": 1305,
+   "text": "terminal_salvage_value = planning_problem.shared_ess_data.get_salvage_value(models['esso'])",
+   "unique_in_function": true
+  },
+  "q_net": {
+   "file": "shared_resources_planning.py",
+   "function": "_get_operational_recourse_components",
+   "lines": [
+    1306
+   ],
+   "line": 1306,
+   "text": "net_operational_recourse = gross_operational_cost - terminal_salvage_value",
+   "unique_in_function": true
+  },
+  "q_called_per_cycle": {
+   "file": "shared_resources_planning.py",
+   "function": "_run_operational_planning",
+   "lines": [
+    3301
+   ],
+   "line": 3301,
+   "text": "recourse_components = _get_operational_recourse_components(planning_problem, operational_models)",
+   "unique_in_function": true
+  },
+  "admm_prepare_dso_call": {
+   "file": "shared_resources_planning.py",
+   "function": "_run_operational_planning",
+   "lines": [
+    2925
+   ],
+   "line": 2925,
+   "text": "_prepare_distribution_objectives_for_admm(distribution_networks, dso_models)",
+   "unique_in_function": true
+  },
+  "admm_prepare_tso_call": {
+   "file": "shared_resources_planning.py",
+   "function": "_run_operational_planning",
+   "lines": [
+    2926
+   ],
+   "line": 2926,
+   "text": "_prepare_transmission_objectives_for_admm(transmission_network, tso_model)",
+   "unique_in_function": true
+  },
+  "admm_tso_sess_usage_0": {
+   "file": "shared_resources_planning.py",
+   "function": "_prepare_transmission_objectives_for_admm",
+   "lines": [
+    5041
+   ],
+   "line": 5041,
+   "text": "model[year][day].penalty_shared_ess_usage.set_value(0.00)",
+   "unique_in_function": true
+  },
+  "admm_tso_gencurt_0": {
+   "file": "shared_resources_planning.py",
+   "function": "_prepare_transmission_objectives_for_admm",
+   "lines": [
+    5042
+   ],
+   "line": 5042,
+   "text": "model[year][day].penalty_gen_curtailment.set_value(0.00)",
+   "unique_in_function": true
+  },
+  "admm_tso_loadcurt": {
+   "file": "shared_resources_planning.py",
+   "function": "_prepare_transmission_objectives_for_admm",
+   "lines": [
+    5044
+   ],
+   "line": 5044,
+   "text": "model[year][day].cost_load_curtailment.set_value(COST_CONSUMPTION_CURTAILMENT)",
+   "unique_in_function": true
+  },
+  "admm_tso_settle_1": {
+   "file": "shared_resources_planning.py",
+   "function": "_prepare_transmission_objectives_for_admm",
+   "lines": [
+    5050
+   ],
+   "line": 5050,
+   "text": "model[year][day].interface_settlement_weight.set_value(1.00)",
+   "unique_in_function": true
+  },
+  "admm_dso_sess_usage_0": {
+   "file": "shared_resources_planning.py",
+   "function": "_prepare_distribution_objectives_for_admm",
+   "lines": [
+    5326
+   ],
+   "line": 5326,
+   "text": "dso_model[year][day].penalty_shared_ess_usage.set_value(0.00)",
+   "unique_in_function": true
+  },
+  "admm_dso_gencurt_0": {
+   "file": "shared_resources_planning.py",
+   "function": "_prepare_distribution_objectives_for_admm",
+   "lines": [
+    5332
+   ],
+   "line": 5332,
+   "text": "dso_model[year][day].penalty_gen_curtailment.set_value(0.00)",
+   "unique_in_function": true
+  },
+  "admm_dso_loadcurt": {
+   "file": "shared_resources_planning.py",
+   "function": "_prepare_distribution_objectives_for_admm",
+   "lines": [
+    5334
+   ],
+   "line": 5334,
+   "text": "dso_model[year][day].cost_load_curtailment.set_value(COST_CONSUMPTION_CURTAILMENT)",
+   "unique_in_function": true
+  },
+  "admm_dso_settle_1": {
+   "file": "shared_resources_planning.py",
+   "function": "_prepare_distribution_objectives_for_admm",
+   "lines": [
+    5340
+   ],
+   "line": 5340,
+   "text": "dso_model[year][day].interface_settlement_weight.set_value(1.00)",
+   "unique_in_function": true
+  },
+  "admm_dso_row18_on": {
+   "file": "shared_resources_planning.py",
+   "function": "_prepare_distribution_objectives_for_admm",
+   "lines": [
+    5343
+   ],
+   "line": 5343,
+   "text": "_activate_row18_with_settlement(dso_model[year][day])",
+   "unique_in_function": true
+  },
+  "admm_tso_obj_scaled": {
+   "file": "shared_resources_planning.py",
+   "function": "update_transmission_model_to_admm",
+   "lines": [
+    5142
+   ],
+   "line": 5142,
+   "text": "obj = copy(model[year][day].objective.expr) / effective_scale",
+   "unique_in_function": true
+  },
+  "admm_tso_dual_v": {
+   "file": "shared_resources_planning.py",
+   "function": "update_transmission_model_to_admm",
+   "lines": [
+    5153
+   ],
+   "line": 5153,
+   "text": "obj += model[year][day].dual_vmag_req[dn, p] * constraint_v_req",
+   "unique_in_function": true
+  },
+  "admm_tso_rho_v": {
+   "file": "shared_resources_planning.py",
+   "function": "update_transmission_model_to_admm",
+   "lines": [
+    5154
+   ],
+   "line": 5154,
+   "text": "obj += (model[year][day].rho_v / 2) * (constraint_v_req ** 2)",
+   "unique_in_function": true
+  },
+  "admm_tso_prox_v": {
+   "file": "shared_resources_planning.py",
+   "function": "update_transmission_model_to_admm",
+   "lines": [
+    5168
+   ],
+   "line": 5168,
+   "text": "obj += (model[year][day].prox_gamma_v / 2) * proximal_v ** 2",
+   "unique_in_function": true
+  },
+  "admm_tso_dual_ess": {
+   "file": "shared_resources_planning.py",
+   "function": "update_transmission_model_to_admm",
+   "lines": [
+    5185
+   ],
+   "line": 5185,
+   "text": "obj += (model[year][day].dual_ess_p_req[e, p]) * constraint_ess_p_req",
+   "unique_in_function": true
+  },
+  "admm_tso_deact": {
+   "file": "shared_resources_planning.py",
+   "function": "update_transmission_model_to_admm",
+   "lines": [
+    5203
+   ],
+   "line": 5203,
+   "text": "model[year][day].objective.deactivate()",
+   "unique_in_function": true
+  },
+  "admm_tso_obj": {
+   "file": "shared_resources_planning.py",
+   "function": "update_transmission_model_to_admm",
+   "lines": [
+    5204
+   ],
+   "line": 5204,
+   "text": "model[year][day].admm_objective = pe.Objective(sense=pe.minimize, expr=obj)",
+   "unique_in_function": true
+  },
+  "admm_dso_obj_scaled": {
+   "file": "shared_resources_planning.py",
+   "function": "update_distribution_models_to_admm",
+   "lines": [
+    5407
+   ],
+   "line": 5407,
+   "text": "obj = copy(dso_model[year][day].objective.expr) / effective_scale",
+   "unique_in_function": true
+  },
+  "admm_dso_rho_pf": {
+   "file": "shared_resources_planning.py",
+   "function": "update_distribution_models_to_admm",
+   "lines": [
+    5432
+   ],
+   "line": 5432,
+   "text": "obj += (dso_model[year][day].rho_pf / 2) * (constraint_p_req ** 2)",
+   "unique_in_function": true
+  },
+  "admm_dso_obj": {
+   "file": "shared_resources_planning.py",
+   "function": "update_distribution_models_to_admm",
+   "lines": [
+    5452
+   ],
+   "line": 5452,
+   "text": "dso_model[year][day].admm_objective = pe.Objective(sense=pe.minimize, expr=obj)",
+   "unique_in_function": true
+  },
+  "admm_esso_base": {
+   "file": "shared_resources_planning.py",
+   "function": "update_shared_energy_storage_model_to_admm",
+   "lines": [
+    5502
+   ],
+   "line": 5502,
+   "text": "obj = copy(models[node_id].objective.expr)",
+   "unique_in_function": true
+  },
+  "admm_esso_dual": {
+   "file": "shared_resources_planning.py",
+   "function": "update_shared_energy_storage_model_to_admm",
+   "lines": [
+    5520
+   ],
+   "line": 5520,
+   "text": "obj += models[node_id].dual_p_req[y, d, p] * constraint_p_req",
+   "unique_in_function": true
+  },
+  "admm_esso_obj": {
+   "file": "shared_resources_planning.py",
+   "function": "update_shared_energy_storage_model_to_admm",
+   "lines": [
+    5526
+   ],
+   "line": 5526,
+   "text": "models[node_id].admm_objective = pe.Objective(sense=pe.minimize, expr=obj)",
+   "unique_in_function": true
+  },
+  "esso_slack_pen": {
+   "file": "shared_energy_storage_data.py",
+   "function": "_build_subproblem",
+   "lines": [
+    829
+   ],
+   "line": 829,
+   "text": "slack_penalty += PENALTY_ESSO_SLACK * (model.slack_es_pnet_up[y_inv, d, p] + model.slack_es_pnet_down[y_inv, d, p])",
+   "unique_in_function": true
+  },
+  "esso_throughput": {
+   "file": "shared_energy_storage_data.py",
+   "function": "_build_subproblem",
+   "lines": [
+    844
+   ],
+   "line": 844,
+   "text": "slack_penalty += EPS_ESSO_THROUGHPUT * throughput",
+   "unique_in_function": true
+  },
+  "esso_feas_expr": {
+   "file": "shared_energy_storage_data.py",
+   "function": "_build_subproblem",
+   "lines": [
+    848
+   ],
+   "line": 848,
+   "text": "model.feasibility_penalty = pe.Expression(expr=slack_penalty)",
+   "unique_in_function": true
+  },
+  "esso_salvage_expr": {
+   "file": "shared_energy_storage_data.py",
+   "function": "_build_subproblem",
+   "lines": [
+    849
+   ],
+   "line": 849,
+   "text": "model.salvage_value = pe.Expression(expr=salvage_value)",
+   "unique_in_function": true
+  },
+  "esso_objective_expr": {
+   "file": "shared_energy_storage_data.py",
+   "function": "_build_subproblem",
+   "lines": [
+    853
+   ],
+   "line": 853,
+   "text": "expr=model.feasibility_penalty,",
+   "unique_in_function": true
+  },
+  "salvage_sum": {
+   "file": "shared_energy_storage_data.py",
+   "function": "get_salvage_value",
+   "lines": [
+    148
+   ],
+   "line": 148,
+   "text": "salvage_value += pe.value(models[node_id].salvage_value)",
+   "unique_in_function": true
+  },
+  "master_annualization": {
+   "file": "shared_energy_storage_data.py",
+   "function": "_build_master_problem",
+   "lines": [
+    376
+   ],
+   "line": 376,
+   "text": "investment_cost_total += annualization * omega_m * model.es_s_investment[e, y] * c_inv_s",
+   "unique_in_function": true
+  },
+  "master_budget_row": {
+   "file": "shared_energy_storage_data.py",
+   "function": "_build_master_problem",
+   "lines": [
+    378
+   ],
+   "line": 378,
+   "text": "model.energy_storage_investment.add(investment_cost_total <= shared_ess_data.params.budget)",
+   "unique_in_function": true
+  },
+  "master_objective": {
+   "file": "shared_energy_storage_data.py",
+   "function": "_build_master_problem",
+   "lines": [
+    400
+   ],
+   "line": 400,
+   "text": "model.objective = pe.Objective(sense=pe.minimize, expr=model.investment_cost + model.alpha)",
+   "unique_in_function": true
+  },
+  "fs_tolerance": {
+   "file": "shared_resources_planning.py",
+   "function": "_check_candidate_first_stage_feasibility",
+   "lines": [
+    2238
+   ],
+   "line": 2238,
+   "text": "tolerance = 1e-8",
+   "unique_in_function": true
+  },
+  "fs_discount": {
+   "file": "shared_resources_planning.py",
+   "function": "_check_candidate_first_stage_feasibility",
+   "lines": [
+    2254
+   ],
+   "line": 2254,
+   "text": "(1.00 + shared_ess_data.discount_factor) ** (int(year) - int(years[0]))",
+   "unique_in_function": true
+  },
+  "fs_expected": {
+   "file": "shared_resources_planning.py",
+   "function": "_check_candidate_first_stage_feasibility",
+   "lines": [
+    2257
+   ],
+   "line": 2257,
+   "text": "expected_investment_cost += year_discount * probability * (",
+   "unique_in_function": true
+  },
+  "fs_terms": {
+   "file": "shared_resources_planning.py",
+   "function": "_check_candidate_first_stage_feasibility",
+   "lines": [
+    2258
+   ],
+   "line": 2258,
+   "text": "shared_ess_data.cost_investment['power'][scenario][year] * s_value",
+   "unique_in_function": true
+  },
+  "fs_budget": {
+   "file": "shared_resources_planning.py",
+   "function": "_check_candidate_first_stage_feasibility",
+   "lines": [
+    2266
+   ],
+   "line": 2266,
+   "text": "if expected_investment_cost > params.budget + tolerance:",
+   "unique_in_function": true
+  },
+  "budget_read": {
+   "file": "shared_energy_storage_parameters.py",
+   "function": "_read_parameters_from_file",
+   "lines": [
+    253
+   ],
+   "line": 253,
+   "text": "planning_parameters.budget = float(params_data['budget'])",
+   "unique_in_function": true
+  },
+  "cost_probs_read": {
+   "file": "shared_energy_storage_data.py",
+   "function": "_read_shared_energy_storage_data_from_file",
+   "lines": [
+    1743
+   ],
+   "line": 1743,
+   "text": "num_scenarios, shared_ess_data.prob_market_scenarios = _get_operational_scenarios_info_from_excel_file(filename, 'Scenarios')",
+   "unique_in_function": true
+  },
+  "cost_power_read": {
+   "file": "shared_energy_storage_data.py",
+   "function": "_read_shared_energy_storage_data_from_file",
+   "lines": [
+    1745
+   ],
+   "line": 1745,
+   "text": "investment_costs['power'] = _get_investment_costs_from_excel_file(filename, 'Investment Cost, Power', num_scenarios, shared_ess_data.years)",
+   "unique_in_function": true
+  },
+  "ess_prob_from_planning": {
+   "file": "shared_resources_planning.py",
+   "function": "_read_planning_problem",
+   "lines": [
+    9003
+   ],
+   "line": 9003,
+   "text": "shared_ess_data.prob_market_scenarios = planning_problem.prob_market_scenarios",
+   "unique_in_function": true
+  },
+  "ess_read_costfile": {
+   "file": "shared_resources_planning.py",
+   "function": "_read_planning_problem",
+   "lines": [
+    9009
+   ],
+   "line": 9009,
+   "text": "shared_ess_data.read_shared_energy_storage_data_from_file()",
+   "unique_in_function": true
+  },
+  "discount_read": {
+   "file": "shared_resources_planning.py",
+   "function": "_read_planning_problem",
+   "lines": [
+    8875
+   ],
+   "line": 8875,
+   "text": "planning_problem.discount_factor = planning_data['DiscountFactor']",
+   "unique_in_function": true
+  },
+  "soh_recursion": {
+   "file": "shared_energy_storage_data.py",
+   "function": "_build_subproblem",
+   "lines": [
+    724
+   ],
+   "line": 724,
+   "text": "== prev_soh * pe.exp(-model.es_D_per_unit[y_inv, y]) * (phi_cal ** num_years))",
+   "unique_in_function": true
+  },
+  "d_row": {
+   "file": "shared_energy_storage_data.py",
+   "function": "_build_subproblem",
+   "lines": [
+    703
+   ],
+   "line": 703,
+   "text": "== 365.00 * num_years * model.es_avg_ch_dch_per_unit[y_inv, y])",
+   "unique_in_function": true
+  },
+  "num_years_inv_block": {
+   "file": "shared_energy_storage_data.py",
+   "function": "_build_subproblem",
+   "lines": [
+    609,
+    678
+   ],
+   "line": 609,
+   "text": "num_years = shared_ess_data.years[repr_years[y_inv]]",
+   "unique_in_function": false
+  },
+  "soh_floor": {
+   "file": "shared_energy_storage_data.py",
+   "function": "_build_subproblem",
+   "lines": [
+    732
+   ],
+   "line": 732,
+   "text": "model.es_soh_per_unit_cumul[y_inv, y] >= shared_energy_storage.soh_min)",
+   "unique_in_function": true
+  },
+  "salv_terminal_idx": {
+   "file": "shared_energy_storage_data.py",
+   "function": "_build_terminal_salvage_value_expression",
+   "lines": [
+    871
+   ],
+   "line": 871,
+   "text": "terminal_year_idx = len(shared_ess_data.years) - 1",
+   "unique_in_function": true
+  },
+  "salv_terminal_disc": {
+   "file": "shared_energy_storage_data.py",
+   "function": "_build_terminal_salvage_value_expression",
+   "lines": [
+    872
+   ],
+   "line": 872,
+   "text": "terminal_discount = _get_terminal_discount_factor(shared_ess_data)",
+   "unique_in_function": true
+  },
+  "salv_e_rated": {
+   "file": "shared_energy_storage_data.py",
+   "function": "_build_terminal_salvage_value_expression",
+   "lines": [
+    883
+   ],
+   "line": 883,
+   "text": "e_rated = model.es_e_rated_per_unit[y_inv, terminal_year_idx]",
+   "unique_in_function": true
+  },
+  "salv_e_avail": {
+   "file": "shared_energy_storage_data.py",
+   "function": "_build_terminal_salvage_value_expression",
+   "lines": [
+    884
+   ],
+   "line": 884,
+   "text": "e_available = model.es_e_available_per_unit[y_inv, terminal_year_idx]",
+   "unique_in_function": true
+  },
+  "salv_mid_uses_end": {
+   "file": "shared_energy_storage_data.py",
+   "function": "_build_terminal_salvage_value_expression",
+   "lines": [
+    889
+   ],
+   "line": 889,
+   "text": "e_available = e_rated * model.es_soh_per_unit_cumul[y_inv, terminal_year_idx]",
+   "unique_in_function": true
+  },
+  "salv_usable": {
+   "file": "shared_energy_storage_data.py",
+   "function": "_build_terminal_salvage_value_expression",
+   "lines": [
+    890
+   ],
+   "line": 890,
+   "text": "usable_energy_above_eol = (e_available - min_soh * e_rated) / (1.00 - min_soh)",
+   "unique_in_function": true
+  },
+  "salv_cost_basis": {
+   "file": "shared_energy_storage_data.py",
+   "function": "_build_terminal_salvage_value_expression",
+   "lines": [
+    895
+   ],
+   "line": 895,
+   "text": "expected_unit_cost = _get_expected_energy_investment_cost(shared_ess_data, year_inv)",
+   "unique_in_function": true
+  },
+  "term_years": {
+   "file": "shared_energy_storage_data.py",
+   "function": "_get_terminal_discount_factor",
+   "lines": [
+    911
+   ],
+   "line": 911,
+   "text": "terminal_years = sum(float(num_years) for num_years in shared_ess_data.years.values())",
+   "unique_in_function": true
+  },
+  "term_disc": {
+   "file": "shared_energy_storage_data.py",
+   "function": "_get_terminal_discount_factor",
+   "lines": [
+    912
+   ],
+   "line": 912,
+   "text": "return 1.00 / ((1.00 + shared_ess_data.discount_factor) ** terminal_years)",
+   "unique_in_function": true
+  },
+  "age_at_terminal": {
+   "file": "shared_energy_storage_data.py",
+   "function": "_get_remaining_calendar_life",
+   "lines": [
+    919
+   ],
+   "line": 919,
+   "text": "age_at_terminal = sum(float(value) for value in represented_years[investment_year_idx:])",
+   "unique_in_function": true
+  },
+  "remaining_life": {
+   "file": "shared_energy_storage_data.py",
+   "function": "_get_remaining_calendar_life",
+   "lines": [
+    920
+   ],
+   "line": 920,
+   "text": "remaining_life = max(float(shared_energy_storage.t_cal) - age_at_terminal, 0.00)",
+   "unique_in_function": true
+  },
+  "remaining_frac": {
+   "file": "shared_energy_storage_data.py",
+   "function": "_get_remaining_calendar_life",
+   "lines": [
+    921
+   ],
+   "line": 921,
+   "text": "remaining_life_fraction = min(remaining_life / float(shared_energy_storage.t_cal), 1.00)",
+   "unique_in_function": true
+  },
+  "terminal_horizon": {
+   "file": "shared_energy_storage_data.py",
+   "function": "_get_salvage_value_results",
+   "lines": [
+    978
+   ],
+   "line": 978,
+   "text": "terminal_horizon_years = sum(float(value) for value in shared_ess_data.years.values())",
+   "unique_in_function": true
+  },
+  "terminal_date": {
+   "file": "shared_energy_storage_data.py",
+   "function": "_get_salvage_value_results",
+   "lines": [
+    979
+   ],
+   "line": 979,
+   "text": "terminal_date = int(years[0]) + terminal_horizon_years",
+   "unique_in_function": true
+  },
+  "terminal_soh_report": {
+   "file": "shared_energy_storage_data.py",
+   "function": "_get_salvage_value_results",
+   "lines": [
+    1007
+   ],
+   "line": 1007,
+   "text": "terminal_soh = pe.value(model.es_soh_per_unit_cumul[y_inv, terminal_year_idx])",
+   "unique_in_function": true
+  },
+  "l_curt_vars_guard": {
+   "file": "network.py",
+   "function": "_build_model",
+   "lines": [
+    352
+   ],
+   "line": 352,
+   "text": "if params.l_curt:",
+   "unique_in_function": true
+  },
+  "flex_day_balance_pinned": {
+   "file": "network_parameters.py",
+   "function": "__init__",
+   "lines": [
+    76
+   ],
+   "line": 76,
+   "text": "self.day_balance = True",
+   "unique_in_function": true
+  },
+  "l_curt_read": {
+   "file": "network_parameters.py",
+   "function": "_read_network_parameters_from_file",
+   "lines": [
+    143
+   ],
+   "line": 143,
+   "text": "parameters.l_curt = bool(params_data['l_curt'])",
+   "unique_in_function": true
+  }
+ },
+ "C1": {
+  "objective_rule_statements": [
+   {
+    "line": 1813,
+    "op": "=",
+    "model_attrs": [
+     "total_flex_cost",
+     "total_gen_cost",
+     "total_gen_curt_penalty",
+     "total_load_curt_cost"
+    ]
+   },
+   {
+    "line": 1815,
+    "op": "=",
+    "model_attrs": [
+     "total_flex_penalty",
+     "total_gen_curt_penalty",
+     "total_load_curt_penalty"
+    ]
+   },
+   {
+    "line": 1816,
+    "op": "+=",
+    "model_attrs": [
+     "total_ess_utilization_cost_penalty"
+    ]
+   },
+   {
+    "line": 1817,
+    "op": "+=",
+    "model_attrs": [
+     "total_slack_penalties"
+    ]
+   },
+   {
+    "line": 1818,
+    "op": "+=",
+    "model_attrs": [
+     "total_ess_complementarity_penalties"
+    ]
+   },
+   {
+    "line": 1823,
+    "op": "+=",
+    "model_attrs": [
+     "interface_settlement",
+     "interface_settlement_weight"
+    ]
+   },
+   {
+    "line": 1836,
+    "op": "+=",
+    "model_attrs": [
+     "row18_deviation_charge"
+    ]
+   },
+   {
+    "line": 1842,
+    "op": "+=",
+    "model_attrs": [
+     "scenario_voltage_pin",
+     "scenario_voltage_pin_weight"
+    ]
+   }
+  ],
+  "terms": [
+   {
+    "term": "TN generation cost (controllable generators at the scenario market price; a DSO reference generator excluded)",
+    "rule_attrs": [
+     "total_gen_cost"
+    ],
+    "status": "INSIDE_Q",
+    "agents": "TSO, DSO",
+    "anchors": [
+     "obj_core",
+     "gen_cost_line",
+     "gen_cost_filter"
+    ],
+    "admm_weight": "unchanged (market price)",
+    "code": [
+     {
+      "id": "obj_core",
+      "file": "model_construction_helpers.py",
+      "lines": [
+       1813
+      ]
+     },
+     {
+      "id": "gen_cost_line",
+      "file": "model_construction_helpers.py",
+      "lines": [
+       2007
+      ]
+     },
+     {
+      "id": "gen_cost_filter",
+      "file": "model_construction_helpers.py",
+      "lines": [
+       2005
+      ]
+     }
+    ]
+   },
+   {
+    "term": "Flexibility cost (fl_reg loads, flex_p_down + flex_q_down at cost_flex; TSO ADN-interface loads excluded)",
+    "rule_attrs": [
+     "total_flex_cost"
+    ],
+    "status": "INSIDE_Q",
+    "agents": "TSO (non-interface loads), DSO",
+    "anchors": [
+     "obj_core",
+     "flex_cost_line",
+     "flex_cost_tso_adn_skip"
+    ],
+    "admm_weight": "unchanged",
+    "code": [
+     {
+      "id": "obj_core",
+      "file": "model_construction_helpers.py",
+      "lines": [
+       1813
+      ]
+     },
+     {
+      "id": "flex_cost_line",
+      "file": "model_construction_helpers.py",
+      "lines": [
+       2047
+      ]
+     },
+     {
+      "id": "flex_cost_tso_adn_skip",
+      "file": "model_construction_helpers.py",
+      "lines": [
+       2044
+      ]
+     }
+    ]
+   },
+   {
+    "term": "Load curtailment cost (cost_load_curtailment x curtailment)",
+    "rule_attrs": [
+     "total_load_curt_cost"
+    ],
+    "status": "INSIDE_Q",
+    "agents": "TSO, DSO",
+    "anchors": [
+     "obj_core",
+     "load_curt_guard",
+     "load_curt_line",
+     "admm_tso_loadcurt",
+     "admm_dso_loadcurt",
+     "l_curt_vars_guard",
+     "l_curt_read"
+    ],
+    "admm_weight": "COST_CONSUMPTION_CURTAILMENT; term identically 0 when l_curt is false (variables not built)",
+    "code": [
+     {
+      "id": "obj_core",
+      "file": "model_construction_helpers.py",
+      "lines": [
+       1813
+      ]
+     },
+     {
+      "id": "load_curt_guard",
+      "file": "model_construction_helpers.py",
+      "lines": [
+       2088
+      ]
+     },
+     {
+      "id": "load_curt_line",
+      "file": "model_construction_helpers.py",
+      "lines": [
+       2092
+      ]
+     },
+     {
+      "id": "admm_tso_loadcurt",
+      "file": "shared_resources_planning.py",
+      "lines": [
+       5044
+      ]
+     },
+     {
+      "id": "admm_dso_loadcurt",
+      "file": "shared_resources_planning.py",
+      "lines": [
+       5334
+      ]
+     },
+     {
+      "id": "l_curt_vars_guard",
+      "file": "network.py",
+      "lines": [
+       352
+      ]
+     },
+     {
+      "id": "l_curt_read",
+      "file": "network_parameters.py",
+      "lines": [
+       143
+      ]
+     }
+    ]
+   },
+   {
+    "term": "RES curtailment penalty (pg_avail - pg)",
+    "rule_attrs": [
+     "total_gen_curt_penalty"
+    ],
+    "status": "INSIDE_Q",
+    "agents": "TSO, DSO",
+    "anchors": [
+     "obj_core",
+     "gen_curt_line",
+     "admm_tso_gencurt_0",
+     "admm_dso_gencurt_0"
+    ],
+    "admm_weight": "0 (set in both _prepare_*_objectives_for_admm): contributes 0 to Q",
+    "code": [
+     {
+      "id": "obj_core",
+      "file": "model_construction_helpers.py",
+      "lines": [
+       1813
+      ]
+     },
+     {
+      "id": "gen_curt_line",
+      "file": "model_construction_helpers.py",
+      "lines": [
+       2118
+      ]
+     },
+     {
+      "id": "admm_tso_gencurt_0",
+      "file": "shared_resources_planning.py",
+      "lines": [
+       5042
+      ]
+     },
+     {
+      "id": "admm_dso_gencurt_0",
+      "file": "shared_resources_planning.py",
+      "lines": [
+       5332
+      ]
+     }
+    ]
+   },
+   {
+    "term": "Storage usage penalty (shared ESS pch + pdch; local ESS when es_reg)",
+    "rule_attrs": [
+     "total_ess_utilization_cost_penalty"
+    ],
+    "status": "INSIDE_Q",
+    "agents": "TSO, DSO",
+    "anchors": [
+     "obj_ess_usage",
+     "sess_usage_line",
+     "admm_tso_sess_usage_0",
+     "admm_dso_sess_usage_0"
+    ],
+    "admm_weight": "shared-ESS weight 0 in ADMM; local-ESS part needs local ESSs (none in SRP1 records: ess_usage_cost 0)",
+    "code": [
+     {
+      "id": "obj_ess_usage",
+      "file": "model_construction_helpers.py",
+      "lines": [
+       1816
+      ]
+     },
+     {
+      "id": "sess_usage_line",
+      "file": "model_construction_helpers.py",
+      "lines": [
+       2218
+      ]
+     },
+     {
+      "id": "admm_tso_sess_usage_0",
+      "file": "shared_resources_planning.py",
+      "lines": [
+       5041
+      ]
+     },
+     {
+      "id": "admm_dso_sess_usage_0",
+      "file": "shared_resources_planning.py",
+      "lines": [
+       5326
+      ]
+     }
+    ]
+   },
+   {
+    "term": "Network-feasibility slack penalties (voltage^2 slack; node balance; branch flow; flexibility P day-balance)",
+    "rule_attrs": [
+     "total_slack_penalties"
+    ],
+    "status": "INSIDE_Q",
+    "agents": "TSO, DSO",
+    "anchors": [
+     "obj_slacks",
+     "v_slack_line",
+     "nb_slack_line",
+     "bf_slack_line",
+     "flexdb_slack_line",
+     "flex_day_balance_pinned"
+    ],
+    "admm_weight": "unchanged (constants in definitions.py); case flags decide which families exist",
+    "code": [
+     {
+      "id": "obj_slacks",
+      "file": "model_construction_helpers.py",
+      "lines": [
+       1817
+      ]
+     },
+     {
+      "id": "v_slack_line",
+      "file": "model_construction_helpers.py",
+      "lines": [
+       2247
+      ]
+     },
+     {
+      "id": "nb_slack_line",
+      "file": "model_construction_helpers.py",
+      "lines": [
+       2258
+      ]
+     },
+     {
+      "id": "bf_slack_line",
+      "file": "model_construction_helpers.py",
+      "lines": [
+       2271
+      ]
+     },
+     {
+      "id": "flexdb_slack_line",
+      "file": "model_construction_helpers.py",
+      "lines": [
+       2297
+      ]
+     },
+     {
+      "id": "flex_day_balance_pinned",
+      "file": "network_parameters.py",
+      "lines": [
+       76
+      ]
+     }
+    ]
+   },
+   {
+    "term": "Storage daily energy-closure slack penalties (shared ESS c^Cl; local ESS)",
+    "rule_attrs": [
+     "total_ess_complementarity_penalties"
+    ],
+    "status": "INSIDE_Q",
+    "agents": "TSO, DSO",
+    "anchors": [
+     "obj_closure",
+     "shared_closure_line",
+     "local_closure_line"
+    ],
+    "admm_weight": "unchanged",
+    "code": [
+     {
+      "id": "obj_closure",
+      "file": "model_construction_helpers.py",
+      "lines": [
+       1818
+      ]
+     },
+     {
+      "id": "shared_closure_line",
+      "file": "model_construction_helpers.py",
+      "lines": [
+       2341
+      ]
+     },
+     {
+      "id": "local_closure_line",
+      "file": "model_construction_helpers.py",
+      "lines": [
+       2329
+      ]
+     }
+    ]
+   },
+   {
+    "term": "Interface energy settlement, CONTRACTED part (expected exchange at the mean price)",
+    "rule_attrs": [
+     "interface_settlement_weight",
+     "interface_settlement"
+    ],
+    "status": "OUTSIDE_Q",
+    "agents": "TSO, DSO",
+    "anchors": [
+     "obj_settlement",
+     "settle_expr",
+     "settle_contracted_expr",
+     "settle_weight_param",
+     "admm_tso_settle_1",
+     "admm_dso_settle_1",
+     "q_gross_2"
+    ],
+    "admm_weight": "1 in the ADMM path (0 otherwise); in every local objective, subtracted from Q",
+    "code": [
+     {
+      "id": "obj_settlement",
+      "file": "model_construction_helpers.py",
+      "lines": [
+       1823
+      ]
+     },
+     {
+      "id": "settle_expr",
+      "file": "model_construction_helpers.py",
+      "lines": [
+       1702
+      ]
+     },
+     {
+      "id": "settle_contracted_expr",
+      "file": "model_construction_helpers.py",
+      "lines": [
+       1723
+      ]
+     },
+     {
+      "id": "settle_weight_param",
+      "file": "model_construction_helpers.py",
+      "lines": [
+       1701
+      ]
+     },
+     {
+      "id": "admm_tso_settle_1",
+      "file": "shared_resources_planning.py",
+      "lines": [
+       5050
+      ]
+     },
+     {
+      "id": "admm_dso_settle_1",
+      "file": "shared_resources_planning.py",
+      "lines": [
+       5340
+      ]
+     },
+     {
+      "id": "q_gross_2",
+      "file": "shared_resources_planning.py",
+      "lines": [
+       1303
+      ]
+     }
+    ]
+   },
+   {
+    "term": "Interface energy settlement, DEVIATION part (price-deviation covariance; the imbalance settlement)",
+    "rule_attrs": [
+     "interface_settlement_weight",
+     "interface_settlement"
+    ],
+    "status": "INSIDE_Q",
+    "agents": "DSO (TSO part identically 0, its schedule being scenario-free)",
+    "anchors": [
+     "obj_settlement",
+     "settle_deviation_expr",
+     "q_gross_1"
+    ],
+    "admm_weight": "1; identically 0 at one market scenario",
+    "code": [
+     {
+      "id": "obj_settlement",
+      "file": "model_construction_helpers.py",
+      "lines": [
+       1823
+      ]
+     },
+     {
+      "id": "settle_deviation_expr",
+      "file": "model_construction_helpers.py",
+      "lines": [
+       1724
+      ]
+     },
+     {
+      "id": "q_gross_1",
+      "file": "shared_resources_planning.py",
+      "lines": [
+       1302
+      ]
+     }
+    ]
+   },
+   {
+    "term": "Row 18 commitment-deviation premium (alpha * pibar_t * baseMVA * (d+ + d-), P and Q)",
+    "rule_attrs": [
+     "row18_deviation_charge"
+    ],
+    "status": "INSIDE_Q",
+    "agents": "DSO only",
+    "anchors": [
+     "obj_row18",
+     "row18_charge_term",
+     "row18_charge_expr",
+     "row18_dso_only",
+     "commit_single_scenario_guard",
+     "admm_dso_row18_on"
+    ],
+    "admm_weight": "alpha (0.5 in the 3 x 3 campaign); not constructed at one scenario; inactive at the initialisation solve",
+    "code": [
+     {
+      "id": "obj_row18",
+      "file": "model_construction_helpers.py",
+      "lines": [
+       1836
+      ]
+     },
+     {
+      "id": "row18_charge_term",
+      "file": "model_construction_helpers.py",
+      "lines": [
+       1979
+      ]
+     },
+     {
+      "id": "row18_charge_expr",
+      "file": "model_construction_helpers.py",
+      "lines": [
+       1982
+      ]
+     },
+     {
+      "id": "row18_dso_only",
+      "file": "model_construction_helpers.py",
+      "lines": [
+       1948
+      ]
+     },
+     {
+      "id": "commit_single_scenario_guard",
+      "file": "model_construction_helpers.py",
+      "lines": [
+       1917
+      ]
+     },
+     {
+      "id": "admm_dso_row18_on",
+      "file": "shared_resources_planning.py",
+      "lines": [
+       5343
+      ]
+     }
+    ]
+   },
+   {
+    "term": "Interface-voltage dispersion pin (PENALTY_SCENARIO_DEVIATION x E_s (v - vbar)^2)",
+    "rule_attrs": [
+     "scenario_voltage_pin_weight",
+     "scenario_voltage_pin"
+    ],
+    "status": "OUTSIDE_Q",
+    "agents": "TSO, DSO",
+    "anchors": [
+     "obj_vpin",
+     "vpin_weight",
+     "vpin_expr",
+     "q_gross_3",
+     "commit_single_scenario_guard"
+    ],
+    "admm_weight": "solver-only; not constructed at one scenario; subtracted from Q",
+    "code": [
+     {
+      "id": "obj_vpin",
+      "file": "model_construction_helpers.py",
+      "lines": [
+       1842
+      ]
+     },
+     {
+      "id": "vpin_weight",
+      "file": "model_construction_helpers.py",
+      "lines": [
+       1940
+      ]
+     },
+     {
+      "id": "vpin_expr",
+      "file": "model_construction_helpers.py",
+      "lines": [
+       1941
+      ]
+     },
+     {
+      "id": "q_gross_3",
+      "file": "shared_resources_planning.py",
+      "lines": [
+       1304
+      ]
+     },
+     {
+      "id": "commit_single_scenario_guard",
+      "file": "model_construction_helpers.py",
+      "lines": [
+       1917
+      ]
+     }
+    ]
+   },
+   {
+    "term": "ADMM augmented-Lagrangian terms (duals and rho/2 on interface V, P, Q and shared-ESS P, Q; TSO proximal terms; previous-iterate ESS terms; base objective divided by the block scale)",
+    "rule_attrs": [],
+    "status": "ADMM_LOCAL_ONLY",
+    "agents": "TSO, DSO",
+    "anchors": [
+     "admm_tso_obj_scaled",
+     "admm_tso_dual_v",
+     "admm_tso_rho_v",
+     "admm_tso_prox_v",
+     "admm_tso_dual_ess",
+     "admm_tso_deact",
+     "admm_tso_obj",
+     "admm_dso_obj_scaled",
+     "admm_dso_rho_pf",
+     "admm_dso_obj",
+     "net_primal_value"
+    ],
+    "admm_weight": "admm_objective only; get_primal_value evaluates objective_function_rule, not admm_objective",
+    "code": [
+     {
+      "id": "admm_tso_obj_scaled",
+      "file": "shared_resources_planning.py",
+      "lines": [
+       5142
+      ]
+     },
+     {
+      "id": "admm_tso_dual_v",
+      "file": "shared_resources_planning.py",
+      "lines": [
+       5153
+      ]
+     },
+     {
+      "id": "admm_tso_rho_v",
+      "file": "shared_resources_planning.py",
+      "lines": [
+       5154
+      ]
+     },
+     {
+      "id": "admm_tso_prox_v",
+      "file": "shared_resources_planning.py",
+      "lines": [
+       5168
+      ]
+     },
+     {
+      "id": "admm_tso_dual_ess",
+      "file": "shared_resources_planning.py",
+      "lines": [
+       5185
+      ]
+     },
+     {
+      "id": "admm_tso_deact",
+      "file": "shared_resources_planning.py",
+      "lines": [
+       5203
+      ]
+     },
+     {
+      "id": "admm_tso_obj",
+      "file": "shared_resources_planning.py",
+      "lines": [
+       5204
+      ]
+     },
+     {
+      "id": "admm_dso_obj_scaled",
+      "file": "shared_resources_planning.py",
+      "lines": [
+       5407
+      ]
+     },
+     {
+      "id": "admm_dso_rho_pf",
+      "file": "shared_resources_planning.py",
+      "lines": [
+       5432
+      ]
+     },
+     {
+      "id": "admm_dso_obj",
+      "file": "shared_resources_planning.py",
+      "lines": [
+       5452
+      ]
+     },
+     {
+      "id": "net_primal_value",
+      "file": "network.py",
+      "lines": [
+       70
+      ]
+     }
+    ]
+   },
+   {
+    "term": "ESSO objective (PENALTY_ESSO_SLACK x pnet slacks + EPS_ESSO_THROUGHPUT x throughput) and its AL terms",
+    "rule_attrs": [],
+    "status": "ADMM_LOCAL_ONLY",
+    "agents": "ESSO",
+    "anchors": [
+     "esso_slack_pen",
+     "esso_throughput",
+     "esso_feas_expr",
+     "esso_objective_expr",
+     "admm_esso_base",
+     "admm_esso_dual",
+     "admm_esso_obj",
+     "q_tso",
+     "q_dso"
+    ],
+    "admm_weight": "the ESSO model is not summed into Q (only TSO and DSO get_primal_value are)",
+    "code": [
+     {
+      "id": "esso_slack_pen",
+      "file": "shared_energy_storage_data.py",
+      "lines": [
+       829
+      ]
+     },
+     {
+      "id": "esso_throughput",
+      "file": "shared_energy_storage_data.py",
+      "lines": [
+       844
+      ]
+     },
+     {
+      "id": "esso_feas_expr",
+      "file": "shared_energy_storage_data.py",
+      "lines": [
+       848
+      ]
+     },
+     {
+      "id": "esso_objective_expr",
+      "file": "shared_energy_storage_data.py",
+      "lines": [
+       853
+      ]
+     },
+     {
+      "id": "admm_esso_base",
+      "file": "shared_resources_planning.py",
+      "lines": [
+       5502
+      ]
+     },
+     {
+      "id": "admm_esso_dual",
+      "file": "shared_resources_planning.py",
+      "lines": [
+       5520
+      ]
+     },
+     {
+      "id": "admm_esso_obj",
+      "file": "shared_resources_planning.py",
+      "lines": [
+       5526
+      ]
+     },
+     {
+      "id": "q_tso",
+      "file": "shared_resources_planning.py",
+      "lines": [
+       1237
+      ]
+     },
+     {
+      "id": "q_dso",
+      "file": "shared_resources_planning.py",
+      "lines": [
+       1239
+      ]
+     }
+    ]
+   },
+   {
+    "term": "Terminal salvage credit (ESSO Expression salvage_value; not in the ESSO objective)",
+    "rule_attrs": [],
+    "status": "OUTSIDE_Q",
+    "agents": "ESSO (reporting)",
+    "anchors": [
+     "esso_salvage_expr",
+     "esso_objective_expr",
+     "salvage_sum",
+     "q_salvage",
+     "q_net"
+    ],
+    "admm_weight": "net = Q - salvage; never in any objective",
+    "code": [
+     {
+      "id": "esso_salvage_expr",
+      "file": "shared_energy_storage_data.py",
+      "lines": [
+       849
+      ]
+     },
+     {
+      "id": "esso_objective_expr",
+      "file": "shared_energy_storage_data.py",
+      "lines": [
+       853
+      ]
+     },
+     {
+      "id": "salvage_sum",
+      "file": "shared_energy_storage_data.py",
+      "lines": [
+       148
+      ]
+     },
+     {
+      "id": "q_salvage",
+      "file": "shared_resources_planning.py",
+      "lines": [
+       1305
+      ]
+     },
+     {
+      "id": "q_net",
+      "file": "shared_resources_planning.py",
+      "lines": [
+       1306
+      ]
+     }
+    ]
+   },
+   {
+    "term": "Investment cost I(x) (expected over cost trajectories, discounted to y0)",
+    "rule_attrs": [],
+    "status": "OUTSIDE_Q",
+    "agents": "planning (master / search)",
+    "anchors": [
+     "master_annualization",
+     "master_objective",
+     "fs_expected"
+    ],
+    "admm_weight": "F = I + Q at the planning level; not in any operational model",
+    "code": [
+     {
+      "id": "master_annualization",
+      "file": "shared_energy_storage_data.py",
+      "lines": [
+       376
+      ]
+     },
+     {
+      "id": "master_objective",
+      "file": "shared_energy_storage_data.py",
+      "lines": [
+       400
+      ]
+     },
+     {
+      "id": "fs_expected",
+      "file": "shared_resources_planning.py",
+      "lines": [
+       2257
+      ]
+     }
+    ]
+   }
+  ],
+  "constants_definitions_py": {
+   "COST_CONSUMPTION_CURTAILMENT": {
+    "value": 300.0,
+    "line": 46
+   },
+   "PENALTY_VOLTAGE_SQUARED": {
+    "value": 50000.0,
+    "line": 49
+   },
+   "PENALTY_CURRENT": {
+    "value": 1000.0,
+    "line": 50
+   },
+   "PENALTY_NODE_BALANCE": {
+    "value": 1000000.0,
+    "line": 51
+   },
+   "PENALTY_FLEXIBILITY": {
+    "value": 1000.0,
+    "line": 52
+   },
+   "PENALTY_ESS_BALANCE": {
+    "value": 1000.0,
+    "line": 55
+   },
+   "PENALTY_SHARED_ESS_BALANCE": {
+    "value": 1000.0,
+    "line": 58
+   },
+   "PENALTY_GENERATION_CURTAILMENT": {
+    "value": 1.0,
+    "line": 59
+   },
+   "PENALTY_LOAD_CURTAILMENT": {
+    "value": 100.0,
+    "line": 60
+   },
+   "PENALTY_FLEXIBILITY_USAGE": {
+    "value": 0.01,
+    "line": 61
+   },
+   "PENALTY_ESS_USAGE": {
+    "value": 0.1,
+    "line": 62
+   },
+   "PENALTY_ESSO_SLACK": {
+    "value": 1000.0,
+    "line": 63
+   },
+   "EPS_ESSO_THROUGHPUT": {
+    "value": 1e-05,
+    "line": 74
+   },
+   "PENALTY_SCENARIO_DEVIATION": {
+    "value": 90000.0,
+    "line": 75
+   },
+   "PENALTY_SHARED_ESS_SCENARIO_DEVIATION": {
+    "value": 10000.0,
+    "line": 76
+   }
+  },
+  "case_flags": {
+   "per_network": {
+    "case9": {
+     "obj_type": "COST",
+     "l_curt": false,
+     "rg_curt": true,
+     "fl_reg": true,
+     "es_reg": true,
+     "slacks": {
+      "grid_operation": {
+       "voltage": true,
+       "branch_flow": false
+      },
+      "flexibility": {
+       "day_balance": false
+      },
+      "ess": {
+       "complementarity": false,
+       "day_balance": true
+      },
+      "shared_ess": {
+       "complementarity": false,
+       "day_balance": true
+      },
+      "node_balance": {
+       "active_power": false,
+       "reactive_power": false
+      }
+     },
+     "flexibility_day_balance_effective": true
+    },
+    "case33_1": {
+     "obj_type": "COST",
+     "l_curt": false,
+     "rg_curt": true,
+     "fl_reg": true,
+     "es_reg": true,
+     "slacks": {
+      "grid_operation": {
+       "voltage": true,
+       "branch_flow": false
+      },
+      "flexibility": {
+       "day_balance": false
+      },
+      "ess": {
+       "complementarity": false,
+       "day_balance": true
+      },
+      "shared_ess": {
+       "complementarity": false,
+       "day_balance": true
+      },
+      "node_balance": {
+       "active_power": false,
+       "reactive_power": false
+      }
+     },
+     "flexibility_day_balance_effective": true
+    },
+    "case33_2": {
+     "obj_type": "COST",
+     "l_curt": false,
+     "rg_curt": true,
+     "fl_reg": true,
+     "es_reg": true,
+     "slacks": {
+      "grid_operation": {
+       "voltage": true,
+       "branch_flow": false
+      },
+      "flexibility": {
+       "day_balance": false
+      },
+      "ess": {
+       "complementarity": false,
+       "day_balance": true
+      },
+      "shared_ess": {
+       "complementarity": false,
+       "day_balance": true
+      },
+      "node_balance": {
+       "active_power": false,
+       "reactive_power": false
+      }
+     },
+     "flexibility_day_balance_effective": true
+    },
+    "case33_3": {
+     "obj_type": "COST",
+     "l_curt": false,
+     "rg_curt": true,
+     "fl_reg": true,
+     "es_reg": true,
+     "slacks": {
+      "grid_operation": {
+       "voltage": true,
+       "branch_flow": false
+      },
+      "flexibility": {
+       "day_balance": false
+      },
+      "ess": {
+       "complementarity": false,
+       "day_balance": true
+      },
+      "shared_ess": {
+       "complementarity": false,
+       "day_balance": true
+      },
+      "node_balance": {
+       "active_power": false,
+       "reactive_power": false
+      }
+     },
+     "flexibility_day_balance_effective": true
+    }
+   },
+   "generator_and_flex_scan": {
+    "case9_2025": {
+     "generator_types": {
+      "CONV": 3,
+      "WIND": 3,
+      "PV": 3
+     },
+     "n_flexible_loads": 3,
+     "flexible_load_buses_if_tn": [
+      5,
+      7,
+      9
+     ]
+    },
+    "case9_2028": {
+     "generator_types": {
+      "CONV": 3,
+      "WIND": 3,
+      "PV": 3
+     },
+     "n_flexible_loads": 3,
+     "flexible_load_buses_if_tn": [
+      5,
+      7,
+      9
+     ]
+    },
+    "case9_2030": {
+     "generator_types": {
+      "CONV": 3,
+      "WIND": 3,
+      "PV": 3
+     },
+     "n_flexible_loads": 3,
+     "flexible_load_buses_if_tn": [
+      5,
+      7,
+      9
+     ]
+    },
+    "case9_2031": {
+     "generator_types": {
+      "CONV": 3,
+      "WIND": 3,
+      "PV": 3
+     },
+     "n_flexible_loads": 3,
+     "flexible_load_buses_if_tn": [
+      5,
+      7,
+      9
+     ]
+    },
+    "case9_2034": {
+     "generator_types": {
+      "CONV": 3,
+      "WIND": 3,
+      "PV": 3
+     },
+     "n_flexible_loads": 3,
+     "flexible_load_buses_if_tn": [
+      5,
+      7,
+      9
+     ]
+    },
+    "case9_2035": {
+     "generator_types": {
+      "CONV": 3,
+      "WIND": 3,
+      "PV": 3
+     },
+     "n_flexible_loads": 3,
+     "flexible_load_buses_if_tn": [
+      5,
+      7,
+      9
+     ]
+    },
+    "case9_2037": {
+     "generator_types": {
+      "CONV": 3,
+      "WIND": 3,
+      "PV": 3
+     },
+     "n_flexible_loads": 3,
+     "flexible_load_buses_if_tn": [
+      5,
+      7,
+      9
+     ]
+    },
+    "case33_1_2025": {
+     "generator_types": {
+      "REF": 1,
+      "WIND": 1,
+      "PV": 3
+     },
+     "n_flexible_loads": 32,
+     "flexible_load_buses_if_tn": null
+    },
+    "case33_1_2028": {
+     "generator_types": {
+      "REF": 1,
+      "WIND": 1,
+      "PV": 3
+     },
+     "n_flexible_loads": 32,
+     "flexible_load_buses_if_tn": null
+    },
+    "case33_1_2030": {
+     "generator_types": {
+      "REF": 1,
+      "WIND": 1,
+      "PV": 3
+     },
+     "n_flexible_loads": 32,
+     "flexible_load_buses_if_tn": null
+    },
+    "case33_1_2031": {
+     "generator_types": {
+      "REF": 1,
+      "WIND": 1,
+      "PV": 3
+     },
+     "n_flexible_loads": 32,
+     "flexible_load_buses_if_tn": null
+    },
+    "case33_1_2034": {
+     "generator_types": {
+      "REF": 1,
+      "WIND": 1,
+      "PV": 3
+     },
+     "n_flexible_loads": 32,
+     "flexible_load_buses_if_tn": null
+    },
+    "case33_1_2035": {
+     "generator_types": {
+      "REF": 1,
+      "WIND": 1,
+      "PV": 3
+     },
+     "n_flexible_loads": 32,
+     "flexible_load_buses_if_tn": null
+    },
+    "case33_1_2037": {
+     "generator_types": {
+      "REF": 1,
+      "WIND": 1,
+      "PV": 3
+     },
+     "n_flexible_loads": 32,
+     "flexible_load_buses_if_tn": null
+    },
+    "case33_2_2025": {
+     "generator_types": {
+      "REF": 1,
+      "WIND": 2,
+      "PV": 2
+     },
+     "n_flexible_loads": 32,
+     "flexible_load_buses_if_tn": null
+    },
+    "case33_2_2028": {
+     "generator_types": {
+      "REF": 1,
+      "WIND": 2,
+      "PV": 2
+     },
+     "n_flexible_loads": 32,
+     "flexible_load_buses_if_tn": null
+    },
+    "case33_2_2030": {
+     "generator_types": {
+      "REF": 1,
+      "WIND": 2,
+      "PV": 2
+     },
+     "n_flexible_loads": 32,
+     "flexible_load_buses_if_tn": null
+    },
+    "case33_2_2031": {
+     "generator_types": {
+      "REF": 1,
+      "WIND": 2,
+      "PV": 2
+     },
+     "n_flexible_loads": 32,
+     "flexible_load_buses_if_tn": null
+    },
+    "case33_2_2034": {
+     "generator_types": {
+      "REF": 1,
+      "WIND": 2,
+      "PV": 2
+     },
+     "n_flexible_loads": 32,
+     "flexible_load_buses_if_tn": null
+    },
+    "case33_2_2035": {
+     "generator_types": {
+      "REF": 1,
+      "WIND": 2,
+      "PV": 2
+     },
+     "n_flexible_loads": 32,
+     "flexible_load_buses_if_tn": null
+    },
+    "case33_2_2037": {
+     "generator_types": {
+      "REF": 1,
+      "WIND": 2,
+      "PV": 2
+     },
+     "n_flexible_loads": 32,
+     "flexible_load_buses_if_tn": null
+    },
+    "case33_3_2025": {
+     "generator_types": {
+      "REF": 1,
+      "WIND": 1,
+      "PV": 3
+     },
+     "n_flexible_loads": 32,
+     "flexible_load_buses_if_tn": null
+    },
+    "case33_3_2028": {
+     "generator_types": {
+      "REF": 1,
+      "WIND": 1,
+      "PV": 3
+     },
+     "n_flexible_loads": 32,
+     "flexible_load_buses_if_tn": null
+    },
+    "case33_3_2030": {
+     "generator_types": {
+      "REF": 1,
+      "WIND": 1,
+      "PV": 3
+     },
+     "n_flexible_loads": 32,
+     "flexible_load_buses_if_tn": null
+    },
+    "case33_3_2031": {
+     "generator_types": {
+      "REF": 1,
+      "WIND": 1,
+      "PV": 3
+     },
+     "n_flexible_loads": 32,
+     "flexible_load_buses_if_tn": null
+    },
+    "case33_3_2034": {
+     "generator_types": {
+      "REF": 1,
+      "WIND": 1,
+      "PV": 3
+     },
+     "n_flexible_loads": 32,
+     "flexible_load_buses_if_tn": null
+    },
+    "case33_3_2035": {
+     "generator_types": {
+      "REF": 1,
+      "WIND": 1,
+      "PV": 3
+     },
+     "n_flexible_loads": 32,
+     "flexible_load_buses_if_tn": null
+    },
+    "case33_3_2037": {
+     "generator_types": {
+      "REF": 1,
+      "WIND": 1,
+      "PV": 3
+     },
+     "n_flexible_loads": 32,
+     "flexible_load_buses_if_tn": null
+    }
+   },
+   "checks": [
+    {
+     "check": "l_curt is false in all four networks (load curtailment term identically 0, variables not built)",
+     "ok": true,
+     "detail": null
+    },
+    {
+     "check": "TN flexible loads sit only at the ADN interface buses (excluded from the flexibility cost)",
+     "ok": true,
+     "detail": {
+      "tn_flex_buses": [
+       5,
+       7,
+       9
+      ],
+      "adn_nodes": [
+       5,
+       7,
+       9
+      ]
+     }
+    },
+    {
+     "check": "DN generators are REF + RES only (no controllable non-reference DN generator)",
+     "ok": true,
+     "detail": [
+      "PV",
+      "REF",
+      "WIND"
+     ]
+    },
+    {
+     "check": "TN generators: CONV controllable, WIND/PV curtailable",
+     "ok": true,
+     "detail": [
+      "CONV",
+      "PV",
+      "WIND"
+     ]
+    },
+    {
+     "check": "both case files name the same ESS params file and cost file",
+     "ok": true,
+     "detail": {
+      "params_file": "SRP1_ESS_Params.json",
+      "data_file": "SRP1_ESS.xlsx"
+     }
+    },
+    {
+     "check": "both case files: DiscountFactor 0.02",
+     "ok": true,
+     "detail": null
+    },
+    {
+     "check": "ESS probabilities: the planning (market) vector is assigned first and then overwritten by the cost file 'Scenarios' sheet (assignment line < read call line in _read_planning_problem)",
+     "ok": true,
+     "detail": [
+      9003,
+      9009
+     ]
+    },
+    {
+     "check": "Q evaluates objective_function_rule, not admm_objective (network.py get_primal_value)",
+     "ok": true,
+     "detail": null
+    }
+   ]
+  },
+  "retired_helpers": {
+   "adn_interface_flexibility_cost": {
+    "file": "model_construction_helpers.py",
+    "def_lines": [
+     [
+      2053,
+      2071
+     ]
+    ],
+    "what": "row 3 / D1: the TSO ADN-interface flexibility charge (reporting helper only)",
+    "call_lines_in_file": []
+   },
+   "ess_complementarity_bilinear_value": {
+    "file": "model_construction_helpers.py",
+    "def_lines": [
+     [
+      2345,
+      2366
+     ]
+    ],
+    "what": "row 9: the bilinear pch*pdch penalty (reporting helper only)",
+    "call_lines_in_file": []
+   },
+   "_add_tso_scenario_deviation_penalty": {
+    "file": "shared_resources_planning.py",
+    "def_lines": [
+     [
+      4078,
+      4124
+     ]
+    ],
+    "what": "the 9e4 scenario-deviation quadratic, replaced by row 18 / the pin",
+    "call_lines_in_file": []
+   },
+   "_add_dso_scenario_deviation_penalty": {
+    "file": "shared_resources_planning.py",
+    "def_lines": [
+     [
+      4127,
+      4157
+     ]
+    ],
+    "what": "the DSO counterpart, likewise retired",
+    "call_lines_in_file": []
+   }
+  },
+  "records": {
+   "srp1_yl_y2035": {
+    "candidate_canonical": {
+     "investment_year": 2035,
+     "nodes": {
+      "5": [
+       0.0,
+       0.0
+      ],
+      "7": [
+       0.25,
+       1.0
+      ],
+      "9": [
+       0.0,
+       0.0
+      ]
+     }
+    },
+    "candidate_key": "7fca7670b9b79fef8ff34f324f83eea6949b47962eb7976a306e39d24ab9392f",
+    "eval_key": "3a2387f46448f9db7272cbe0a8c541b381ad37488c27fbc7aeebc8cf80d4e049",
+    "cycles_run": 167,
+    "gross_operational_cost": 653786670.2430254,
+    "including_settlement": 653787247.0425204,
+    "contracted_total": 576.7994949817657,
+    "deviation_total": 0.0,
+    "voltage_pin_total": 0.0,
+    "terminal_salvage_value": 56504.16641617859,
+    "net_operational_recourse": 653730166.0766093,
+    "row18_charge_weighted": null,
+    "decomposition_parts": {
+     "generation_cost": 445624277.5173533,
+     "flexibility_cost_internal": 208175411.28045774,
+     "load_curtailment_cost": 0.0,
+     "res_curtailment_penalty": 0.0,
+     "ess_usage_cost": 0.0,
+     "detector_penalty_total": -13018.554785880158
+    },
+    "decomposition_closure_residual": 2.384185791015625e-07,
+    "decomposition_closure_rel": 3.6467335593265857e-16
+   },
+   "3x3_x0": {
+    "candidate_canonical": {
+     "investment_year": 2025,
+     "nodes": {
+      "5": [
+       0.0,
+       0.0
+      ],
+      "7": [
+       0.0,
+       0.0
+      ],
+      "9": [
+       0.0,
+       0.0
+      ]
+     }
+    },
+    "candidate_key": "8435c71859ddde68e7ae5818b4ff91c03b4171791bcfaa70edcc3ddb52bacb57",
+    "eval_key": "f6e9cd53fdbb8ee8c80388a13d723c49de5b18173bcfa5c7351cbe0d9e5000d4",
+    "cycles_run": 72,
+    "gross_operational_cost": 842832534.7623764,
+    "including_settlement": 842830725.7059535,
+    "contracted_total": -1997.1036479473114,
+    "deviation_total": -748745.7728323116,
+    "voltage_pin_total": 188.0472249728892,
+    "terminal_salvage_value": 0.0,
+    "net_operational_recourse": 842832534.7623764,
+    "row18_charge_weighted": 25082401.205104288,
+    "decomposition_parts": {
+     "generation_cost": 624570476.9438205,
+     "flexibility_cost_internal": 193941102.42232892,
+     "load_curtailment_cost": 0.0,
+     "res_curtailment_penalty": 0.0,
+     "ess_usage_cost": 0.0,
+     "detector_penalty_total": -12700.036044901486
+    },
+    "decomposition_closure_residual": -1.862645149230957e-08,
+    "decomposition_closure_rel": -2.209982496411462e-17
+   },
+   "3x3_n7_4h_e1": {
+    "candidate_canonical": {
+     "investment_year": 2025,
+     "nodes": {
+      "5": [
+       0.0,
+       0.0
+      ],
+      "7": [
+       0.25,
+       1.0
+      ],
+      "9": [
+       0.0,
+       0.0
+      ]
+     }
+    },
+    "candidate_key": "db77e1549af855bcb3521950c634db55fe6c155ab2de591b0441b5f2bf4b369a",
+    "eval_key": "c82522f470b35b58399bfe47ebd45612a95641ae308128de5d1c3c08ad5408a1",
+    "cycles_run": 69,
+    "gross_operational_cost": 842595839.5131028,
+    "including_settlement": 842587170.32888,
+    "contracted_total": -8857.323066949844,
+    "deviation_total": -746992.080711786,
+    "voltage_pin_total": 188.13884410061658,
+    "terminal_salvage_value": 0.0,
+    "net_operational_recourse": 842595839.5131028,
+    "row18_charge_weighted": 25081114.02482169,
+    "decomposition_parts": {
+     "generation_cost": 624485588.9960958,
+     "flexibility_cost_internal": 193788856.64104205,
+     "load_curtailment_cost": 0.0,
+     "res_curtailment_penalty": 0.0,
+     "ess_usage_cost": 0.0,
+     "detector_penalty_total": -12728.06814448716
+    },
+    "decomposition_closure_residual": -5.848705768585205e-07,
+    "decomposition_closure_rel": -6.941294383752123e-16
+   }
+  },
+  "manuscript": {
+   "C1_Q_includes": {
+    "lines": [
+     724
+    ],
+    "text": "It includes TN generation costs, activated DN flexibility, load curtailment, and penalties on storage energy-closure and network-feasibility slacks. In the multi-scenario instance, it also includes the commitment charge and the deviation component of interface settlement"
+   },
+   "C1_contracted_excluded": {
+    "lines": [
+     728
+    ],
+    "text": "The contracted component of interface settlement is excluded as a transfer between operators. Storage-agent and solver regularisation terms are also excluded. Renewable curtailment is assigned no cost and is reported separately as curtailed energy."
+   },
+   "C1_weights": {
+    "lines": [
+     732
+    ],
+    "text": "The weights $Y_y$ and $D_d$ are the numbers of calendar years and days represented by $y$ and $d$, respectively. Operating costs are discounted to $y_0$ using the representative year $y$."
+   },
+   "C1_premium_additional": {
+    "lines": [
+     1157
+    ],
+    "text": "The deviation premium is additional to settlement at the corresponding scenario prices."
+   },
+   "C1_no_tso_premium": {
+    "lines": [
+     1153
+    ],
+    "text": "No deviation premium is imposed on the TSO."
+   },
+   "C1_single_scenario_omitted": {
+    "lines": [
+     1158
+    ],
+    "text": "With a single scenario, the interface exchange equals its expected value and the deviation-charge term is omitted."
+   },
+   "C1_appA_settlement": {
+    "lines": [
+     2096
+    ],
+    "text": "The interface settlement is carried at full weight: its contracted part is removed from the reported cost as a transfer, its deviation part is kept. A quadratic regularisation of the interface-voltage dispersion across scenarios is added to the TSO and DSO models as a solver-side term and removed from the reported cost."
+   },
+   "C1_appA_single": {
+    "lines": [
+     2096
+    ],
+    "text": "At a single scenario the commitment charge and the voltage regularisation are not constructed; the interface settlement remains in every local objective at full weight and is excluded from the reported cost as a transfer."
+   },
+   "C1_appE_blanket": {
+    "lines": [
+     2567
+    ],
+    "text": "Throughout, $Q$ is the gross operational cost, settlement excluded; the net form subtracts the terminal salvage credit~\\eqref{eq:salvage_credit}"
+   },
+   "C1_benchmark_same_Q": {
+    "lines": [
+     1350
+    ],
+    "text": "All arrangements are evaluated using the same cost function $Q$, excluding interface settlement."
+   },
+   "C1_block_weight": {
+    "lines": [
+     1828
+    ],
+    "text": "Each network block objective is divided by a common scale $\\sigma$ and multiplied by its block weight $w_{y,d} = Y_y D_d (1+r)^{-(y-y_0)}$"
+   },
+   "C1_F_def": {
+    "lines": [
+     552
+    ],
+    "text": "F(\\boldsymbol{x}) = I(\\boldsymbol{x}) + Q(\\boldsymbol{x})"
+   },
+   "C1_no_cycling_cost": {
+    "lines": [
+     1090
+    ],
+    "text": "No explicit monetary cycling cost is included"
+   },
+   "C1_salvage_after": {
+    "lines": [
+     1363
+    ],
+    "text": "The credit is calculated after the operational evaluation and does not affect dispatch or investment selection."
+   },
+   "C1_salvage_limitations": {
+    "lines": [
+     1785
+    ],
+    "text": "Terminal salvage credits are excluded from the planning objective and reported only in net values."
+   },
+   "C1_salvage_reported": {
+    "lines": [
+     2597
+    ],
+    "text": "The credit is reported, not optimized: the recourse does not see it, no plan is selected for it"
+   },
+   "C1_closure_price": {
+    "lines": [
+     1300
+    ],
+    "text": "priced at $c^{\\text{Cl}} = 10^{3}$~\\euro/MWh"
+   },
+   "C1_passive_rescurt": {
+    "lines": [
+     2841
+    ],
+    "text": "In the passive arrangement, the DN dispatch objective includes a renewable-curtailment coefficient of 1~\\euro/MWh. This auxiliary term is excluded from the reported operating cost $Q$."
+   },
+   "C1_fig_benchmark": {
+    "lines": [
+     1619
+    ],
+    "text": "Interface settlement is excluded."
+   }
+  },
+  "checks": [
+   {
+    "check": "objective_function_rule term set (AST) == declared term set (incl. the congestion-management branch)",
+    "ok": true,
+    "detail": {
+     "found": [
+      "interface_settlement",
+      "interface_settlement_weight",
+      "row18_deviation_charge",
+      "scenario_voltage_pin",
+      "scenario_voltage_pin_weight",
+      "total_ess_complementarity_penalties",
+      "total_ess_utilization_cost_penalty",
+      "total_flex_cost",
+      "total_flex_penalty",
+      "total_gen_cost",
+      "total_gen_curt_penalty",
+      "total_load_curt_cost",
+      "total_load_curt_penalty",
+      "total_slack_penalties"
+     ],
+     "declared": [
+      "interface_settlement",
+      "interface_settlement_weight",
+      "row18_deviation_charge",
+      "scenario_voltage_pin",
+      "scenario_voltage_pin_weight",
+      "total_ess_complementarity_penalties",
+      "total_ess_utilization_cost_penalty",
+      "total_flex_cost",
+      "total_flex_penalty",
+      "total_gen_cost",
+      "total_gen_curt_penalty",
+      "total_load_curt_cost",
+      "total_load_curt_penalty",
+      "total_slack_penalties"
+     ]
+    }
+   },
+   {
+    "check": "no ADMM attribute in objective_function_rule",
+    "ok": true,
+    "detail": null
+   },
+   {
+    "check": "srp1_yl_y2035: gross == including_settlement - contracted - voltage_pin",
+    "ok": true,
+    "detail": 0.0
+   },
+   {
+    "check": "srp1_yl_y2035: net == gross - salvage",
+    "ok": true,
+    "detail": 0.0
+   },
+   {
+    "check": "srp1_yl_y2035: decomposition closes within 1e-6 relative",
+    "ok": true,
+    "detail": 2.384185791015625e-07
+   },
+   {
+    "check": "srp1_yl_y2035: deviation settlement == 0 and voltage pin == 0 (one scenario)",
+    "ok": true,
+    "detail": null
+   },
+   {
+    "check": "srp1_yl_y2035: no row 18 charge recorded",
+    "ok": true,
+    "detail": null
+   },
+   {
+    "check": "3x3_x0: gross == including_settlement - contracted - voltage_pin",
+    "ok": true,
+    "detail": 0.0
+   },
+   {
+    "check": "3x3_x0: net == gross - salvage",
+    "ok": true,
+    "detail": 0.0
+   },
+   {
+    "check": "3x3_x0: decomposition closes within 1e-6 relative",
+    "ok": true,
+    "detail": -1.862645149230957e-08
+   },
+   {
+    "check": "3x3_x0: deviation settlement != 0 (3 x 3)",
+    "ok": true,
+    "detail": -748745.7728323116
+   },
+   {
+    "check": "3x3_x0: row 18 charge recorded > 0",
+    "ok": true,
+    "detail": 25082401.205104288
+   },
+   {
+    "check": "3x3_n7_4h_e1: gross == including_settlement - contracted - voltage_pin",
+    "ok": true,
+    "detail": 0.0
+   },
+   {
+    "check": "3x3_n7_4h_e1: net == gross - salvage",
+    "ok": true,
+    "detail": 0.0
+   },
+   {
+    "check": "3x3_n7_4h_e1: decomposition closes within 1e-6 relative",
+    "ok": true,
+    "detail": -5.848705768585205e-07
+   },
+   {
+    "check": "3x3_n7_4h_e1: deviation settlement != 0 (3 x 3)",
+    "ok": true,
+    "detail": -746992.080711786
+   },
+   {
+    "check": "3x3_n7_4h_e1: row 18 charge recorded > 0",
+    "ok": true,
+    "detail": 25081114.02482169
+   }
+  ]
+ },
+ "C2": {
+  "horizon": {
+   "SRP1": {
+    "Years": {
+     "2025": 5,
+     "2030": 5,
+     "2035": 5
+    },
+    "y0": 2025,
+    "sum_Y": 15,
+    "terminal_date_code": 2040,
+    "last_block": {
+     "year": 2035,
+     "width": 5,
+     "covers": "2035..2039",
+     "end_boundary": 2040
+    },
+    "terminal_discount": 0.7430147299885189,
+    "all_blocks_equal_width": true,
+    "blocks_contiguous": true,
+    "calendar_life_blocks_of_a_y0_cohort": 3,
+    "remaining_life_fraction_by_install_year": {
+     "2025": 0.0,
+     "2030": 0.3333333333333333,
+     "2035": 0.6666666666666666
+    }
+   },
+   "3x3": {
+    "Years": {
+     "2025": 3,
+     "2028": 3,
+     "2031": 3,
+     "2034": 3,
+     "2037": 3
+    },
+    "y0": 2025,
+    "sum_Y": 15,
+    "terminal_date_code": 2040,
+    "last_block": {
+     "year": 2037,
+     "width": 3,
+     "covers": "2037..2039",
+     "end_boundary": 2040
+    },
+    "terminal_discount": 0.7430147299885189,
+    "all_blocks_equal_width": true,
+    "blocks_contiguous": true,
+    "calendar_life_blocks_of_a_y0_cohort": 5,
+    "remaining_life_fraction_by_install_year": {
+     "2025": 0.0,
+     "2028": 0.2,
+     "2031": 0.4,
+     "2034": 0.6,
+     "2037": 0.8
+    }
+   }
+  },
+  "numeric": {
+   "k": 35851.3609417964,
+   "phi_cal": 0.985,
+   "soh_min": 0.7,
+   "t_cal": 15,
+   "cells": {
+    "srp1_yl_y2030": {
+     "eval_dir": "data/SRP1/Results/P515S53/w118_resettle/campaign_s53_w118_resettle_r2_yl_y2030/evals/6e4f11a95dc3d585_yl_y2030",
+     "candidate_canonical": {
+      "investment_year": 2030,
+      "nodes": {
+       "5": [
+        0.0,
+        0.0
+       ],
+       "7": [
+        0.25,
+        1.0
+       ],
+       "9": [
+        0.0,
+        0.0
+       ]
+      }
+     },
+     "candidate_key": "c408836ee5888f639f6a8ba26ce66f8ac1ffdc3beee9bace0f5b7b9b83bc85ca",
+     "eval_key": "6e4f11a95dc3d585f6b76ba8fbde9beef4f757c91a9e3b8e5001828b9c33bd6f",
+     "cycle": 169,
+     "certification_cycle": 169,
+     "plan": "7: 0.25/1 @2030",
+     "y_end": 2040,
+     "T_rem": 5,
+     "cbarE_install_year": 208198.72446060603,
+     "chain": [
+      {
+       "block": 2030,
+       "efc_per_day": 1.2171255869260633,
+       "soh_recorded": 0.8715121193894404,
+       "soh_recomputed_from_efc": 0.8715121193894522,
+       "rel_diff": 1.3503385436878517e-14,
+       "floor_active": false
+      },
+      {
+       "block": 2035,
+       "efc_per_day": 0.9887615004195619,
+       "soh_recorded": 0.768414307903785,
+       "soh_recomputed_from_efc": 0.7684143079038182,
+       "rel_diff": 4.32002216705825e-14,
+       "floor_active": false
+      }
+     ],
+     "terminal_soh": 0.768414307903785,
+     "salvage_recomputed": 11759.257932696846,
+     "salvage_recorded": 11759.257932696846,
+     "abs_diff": 0.0
+    },
+    "srp1_yl_y2035": {
+     "eval_dir": "data/SRP1/Results/P515S53/w118_resettle/campaign_s53_w118_resettle_r2_yl_y2035/evals/3a2387f46448f9db_yl_y2035",
+     "candidate_canonical": {
+      "investment_year": 2035,
+      "nodes": {
+       "5": [
+        0.0,
+        0.0
+       ],
+       "7": [
+        0.25,
+        1.0
+       ],
+       "9": [
+        0.0,
+        0.0
+       ]
+      }
+     },
+     "candidate_key": "7fca7670b9b79fef8ff34f324f83eea6949b47962eb7976a306e39d24ab9392f",
+     "eval_key": "3a2387f46448f9db7272cbe0a8c541b381ad37488c27fbc7aeebc8cf80d4e049",
+     "cycle": 167,
+     "certification_cycle": 167,
+     "plan": "7: 0.25/1 @2035",
+     "y_end": 2040,
+     "T_rem": 10,
+     "cbarE_install_year": 192708.1243895905,
+     "chain": [
+      {
+       "block": 2035,
+       "efc_per_day": 1.0808110390474486,
+       "soh_recorded": 0.8775806077803749,
+       "soh_recomputed_from_efc": 0.8775806077810232,
+       "rel_diff": 7.386890940055785e-13,
+       "floor_active": false
+      }
+     ],
+     "terminal_soh": 0.8775806077803749,
+     "salvage_recomputed": 56504.16641617859,
+     "salvage_recorded": 56504.16641617859,
+     "abs_diff": 0.0
+    },
+    "3x3_n7_4h_e1": {
+     "eval_dir": "data/SRP1/Results/P515S53/w90_3x3/campaign_s53_w91_3x3_pair/evals/c82522f470b35b58_n7_4h_e1",
+     "candidate_canonical": {
+      "investment_year": 2025,
+      "nodes": {
+       "5": [
+        0.0,
+        0.0
+       ],
+       "7": [
+        0.25,
+        1.0
+       ],
+       "9": [
+        0.0,
+        0.0
+       ]
+      }
+     },
+     "candidate_key": "db77e1549af855bcb3521950c634db55fe6c155ab2de591b0441b5f2bf4b369a",
+     "eval_key": "c82522f470b35b58399bfe47ebd45612a95641ae308128de5d1c3c08ad5408a1",
+     "cycle": 69,
+     "certification_cycle": 69,
+     "plan": "7: 0.25/1 @2025",
+     "y_end": 2040,
+     "T_rem": 0,
+     "cbarE_install_year": 253877.6774385931,
+     "chain": [
+      {
+       "block": 2025,
+       "efc_per_day": 0.9617899253469954,
+       "soh_recorded": 0.9280064040002202,
+       "soh_recomputed_from_efc": 0.9280064040002202,
+       "rel_diff": 0.0,
+       "floor_active": false
+      },
+      {
+       "block": 2028,
+       "efc_per_day": 0.9045426487231635,
+       "soh_recorded": 0.8627029959837803,
+       "soh_recomputed_from_efc": 0.8627029959837804,
+       "rel_diff": 1.286912216363776e-16,
+       "floor_active": false
+      },
+      {
+       "block": 2031,
+       "efc_per_day": 0.8114058112887319,
+       "soh_recorded": 0.8042796092867778,
+       "soh_recomputed_from_efc": 0.8042796092867777,
+       "rel_diff": 1.3803943452074888e-16,
+       "floor_active": false
+      },
+      {
+       "block": 2034,
+       "efc_per_day": 0.8232742929155098,
+       "soh_recorded": 0.7495409764081452,
+       "soh_recomputed_from_efc": 0.7495409764081452,
+       "rel_diff": 0.0,
+       "floor_active": false
+      },
+      {
+       "block": 2037,
+       "efc_per_day": 0.7543438533501766,
+       "soh_recorded": 0.699999990000031,
+       "soh_recomputed_from_efc": 0.6999999900000311,
+       "rel_diff": 1.5860329149791949e-16,
+       "floor_active": true
+      }
+     ],
+     "terminal_soh": 0.699999990000031,
+     "salvage_recomputed": 0.0,
+     "salvage_recorded": 0.0,
+     "abs_diff": 0.0
+    }
+   }
+  },
+  "workbook_3x3": {
+   "terminal_horizon_years": 15,
+   "terminal_discount_factor": 0.7430147299885189,
+   "terminal_valuation_dates": [
+    2040
+   ],
+   "terminal_representative_years": [
+    2037
+   ],
+   "expected_energy_cost_by_year": {
+    "2025": 253877.6774385931,
+    "2028": 226470.9458854221,
+    "2031": 205100.4549970562,
+    "2034": 195805.0100628926,
+    "2037": 186511.2072264896
+   },
+   "node7_2025": {
+    "Age at Terminal Date, [years]": 15,
+    "Remaining Calendar Life, [years]": 0,
+    "Terminal SoH, [p.u.]": 0.699999990000031,
+    "Terminal Salvage Value, [NPV m.u.]": 0
+   }
+  },
+  "code": {
+   "term_years": {
+    "file": "shared_energy_storage_data.py",
+    "function": "_get_terminal_discount_factor",
+    "lines": [
+     911
+    ],
+    "line": 911,
+    "text": "terminal_years = sum(float(num_years) for num_years in shared_ess_data.years.values())",
+    "unique_in_function": true
+   },
+   "term_disc": {
+    "file": "shared_energy_storage_data.py",
+    "function": "_get_terminal_discount_factor",
+    "lines": [
+     912
+    ],
+    "line": 912,
+    "text": "return 1.00 / ((1.00 + shared_ess_data.discount_factor) ** terminal_years)",
+    "unique_in_function": true
+   },
+   "terminal_horizon": {
+    "file": "shared_energy_storage_data.py",
+    "function": "_get_salvage_value_results",
+    "lines": [
+     978
+    ],
+    "line": 978,
+    "text": "terminal_horizon_years = sum(float(value) for value in shared_ess_data.years.values())",
+    "unique_in_function": true
+   },
+   "terminal_date": {
+    "file": "shared_energy_storage_data.py",
+    "function": "_get_salvage_value_results",
+    "lines": [
+     979
+    ],
+    "line": 979,
+    "text": "terminal_date = int(years[0]) + terminal_horizon_years",
+    "unique_in_function": true
+   },
+   "salv_terminal_idx": {
+    "file": "shared_energy_storage_data.py",
+    "function": "_build_terminal_salvage_value_expression",
+    "lines": [
+     871
+    ],
+    "line": 871,
+    "text": "terminal_year_idx = len(shared_ess_data.years) - 1",
+    "unique_in_function": true
+   },
+   "salv_e_rated": {
+    "file": "shared_energy_storage_data.py",
+    "function": "_build_terminal_salvage_value_expression",
+    "lines": [
+     883
+    ],
+    "line": 883,
+    "text": "e_rated = model.es_e_rated_per_unit[y_inv, terminal_year_idx]",
+    "unique_in_function": true
+   },
+   "salv_e_avail": {
+    "file": "shared_energy_storage_data.py",
+    "function": "_build_terminal_salvage_value_expression",
+    "lines": [
+     884
+    ],
+    "line": 884,
+    "text": "e_available = model.es_e_available_per_unit[y_inv, terminal_year_idx]",
+    "unique_in_function": true
+   },
+   "salv_mid_uses_end": {
+    "file": "shared_energy_storage_data.py",
+    "function": "_build_terminal_salvage_value_expression",
+    "lines": [
+     889
+    ],
+    "line": 889,
+    "text": "e_available = e_rated * model.es_soh_per_unit_cumul[y_inv, terminal_year_idx]",
+    "unique_in_function": true
+   },
+   "salv_usable": {
+    "file": "shared_energy_storage_data.py",
+    "function": "_build_terminal_salvage_value_expression",
+    "lines": [
+     890
+    ],
+    "line": 890,
+    "text": "usable_energy_above_eol = (e_available - min_soh * e_rated) / (1.00 - min_soh)",
+    "unique_in_function": true
+   },
+   "salv_cost_basis": {
+    "file": "shared_energy_storage_data.py",
+    "function": "_build_terminal_salvage_value_expression",
+    "lines": [
+     895
+    ],
+    "line": 895,
+    "text": "expected_unit_cost = _get_expected_energy_investment_cost(shared_ess_data, year_inv)",
+    "unique_in_function": true
+   },
+   "age_at_terminal": {
+    "file": "shared_energy_storage_data.py",
+    "function": "_get_remaining_calendar_life",
+    "lines": [
+     919
+    ],
+    "line": 919,
+    "text": "age_at_terminal = sum(float(value) for value in represented_years[investment_year_idx:])",
+    "unique_in_function": true
+   },
+   "remaining_life": {
+    "file": "shared_energy_storage_data.py",
+    "function": "_get_remaining_calendar_life",
+    "lines": [
+     920
+    ],
+    "line": 920,
+    "text": "remaining_life = max(float(shared_energy_storage.t_cal) - age_at_terminal, 0.00)",
+    "unique_in_function": true
+   },
+   "remaining_frac": {
+    "file": "shared_energy_storage_data.py",
+    "function": "_get_remaining_calendar_life",
+    "lines": [
+     921
+    ],
+    "line": 921,
+    "text": "remaining_life_fraction = min(remaining_life / float(shared_energy_storage.t_cal), 1.00)",
+    "unique_in_function": true
+   },
+   "soh_recursion": {
+    "file": "shared_energy_storage_data.py",
+    "function": "_build_subproblem",
+    "lines": [
+     724
+    ],
+    "line": 724,
+    "text": "== prev_soh * pe.exp(-model.es_D_per_unit[y_inv, y]) * (phi_cal ** num_years))",
+    "unique_in_function": true
+   },
+   "d_row": {
+    "file": "shared_energy_storage_data.py",
+    "function": "_build_subproblem",
+    "lines": [
+     703
+    ],
+    "line": 703,
+    "text": "== 365.00 * num_years * model.es_avg_ch_dch_per_unit[y_inv, y])",
+    "unique_in_function": true
+   },
+   "num_years_inv_block": {
+    "file": "shared_energy_storage_data.py",
+    "function": "_build_subproblem",
+    "lines": [
+     609,
+     678
+    ],
+    "line": 609,
+    "text": "num_years = shared_ess_data.years[repr_years[y_inv]]",
+    "unique_in_function": false
+   },
+   "soh_floor": {
+    "file": "shared_energy_storage_data.py",
+    "function": "_build_subproblem",
+    "lines": [
+     732
+    ],
+    "line": 732,
+    "text": "model.es_soh_per_unit_cumul[y_inv, y] >= shared_energy_storage.soh_min)",
+    "unique_in_function": true
+   },
+   "terminal_soh_report": {
+    "file": "shared_energy_storage_data.py",
+    "function": "_get_salvage_value_results",
+    "lines": [
+     1007
+    ],
+    "line": 1007,
+    "text": "terminal_soh = pe.value(model.es_soh_per_unit_cumul[y_inv, terminal_year_idx])",
+    "unique_in_function": true
+   }
+  },
+  "manuscript": {
+   "C2_horizon_15": {
+    "lines": [
+     146
+    ],
+    "text": "over a 15-year horizon"
+   },
+   "C2_two_configs": {
+    "lines": [
+     1196
+    ],
+    "text": "Two configurations represent the 15-year planning horizon."
+   },
+   "C2_srp1_years": {
+    "lines": [
+     1197
+    ],
+    "text": "using representative years 2025, 2030 and 2035, each representing five calendar years."
+   },
+   "C2_3x3_years": {
+    "lines": [
+     1198
+    ],
+    "text": "using representative years 2025, 2028, 2031, 2034 and 2037, each representing three calendar years."
+   },
+   "C2_nomenclature": {
+    "lines": [
+     251
+    ],
+    "text": "First year and end of the planning horizon"
+   },
+   "C2_end_of_block": {
+    "lines": [
+     790
+    ],
+    "text": "Available energy is evaluated using end-of-block state of health"
+   },
+   "C2_boundary": {
+    "lines": [
+     1036
+    ],
+    "text": "Let $y^{-}$ denote the boundary immediately before the block represented by year $y$."
+   },
+   "C2_salvage_discount": {
+    "lines": [
+     2580
+    ],
+    "text": "{(1+r)^{\\,y^\\text{End}-y_0}}"
+   },
+   "C2_salvage_soh": {
+    "lines": [
+     2582
+    ],
+    "text": "\\frac{SoH_{e,y^\\text{Inv},y^\\text{End}} - SoH^{\\text{Min}}_e}{1 - SoH^{\\text{Min}}_e}"
+   },
+   "C2_remaining_life": {
+    "lines": [
+     2589
+    ],
+    "text": "T^\\text{Rem}_{e,y^\\text{Inv}} = \\max\\left\\{0,\\; y^\\text{Inv} + T^\\text{Cal}_{e,y^\\text{Inv}} - y^\\text{End}\\right\\}"
+   },
+   "C2_yend_def": {
+    "lines": [
+     2596
+    ],
+    "text": "$y^\\text{End}$ the end of the planning horizon, $T^\\text{Rem}$ the remaining calendar life of the cohort at $y^\\text{End}$"
+   },
+   "C2_later_installs": {
+    "lines": [
+     1677
+    ],
+    "text": "Later installations have fewer operating years within the horizon and receive larger terminal salvage credits."
+   },
+   "C2_rescale_3x3": {
+    "lines": [
+     1255
+    ],
+    "text": "In the multi-scenario configuration, the 2025 capacities also apply in 2028, the 2030 capacities apply in 2031 and 2034, and the 2035 capacities apply in 2037."
+   },
+   "C2_calendar_life": {
+    "lines": [
+     1299
+    ],
+    "text": "The calendar lifetime is $T^{\\text{Cal}} = 15$~years."
+   }
+  },
+  "main_tex_mentions_of_2040": [],
+  "checks": [
+   {
+    "check": "SRP1: terminal date = y0 + sum Y_y = 2040 = end boundary of the last block",
+    "ok": true,
+    "detail": null
+   },
+   {
+    "check": "3x3: terminal date = y0 + sum Y_y = 2040 = end boundary of the last block",
+    "ok": true,
+    "detail": null
+   },
+   {
+    "check": "SRP1: blocks contiguous and of equal width (the D row reads the investment block width)",
+    "ok": true,
+    "detail": null
+   },
+   {
+    "check": "3x3: blocks contiguous and of equal width (the D row reads the investment block width)",
+    "ok": true,
+    "detail": null
+   },
+   {
+    "check": "srp1_yl_y2030: sidecar and per-cycle record end at the same cycle",
+    "ok": true,
+    "detail": [
+     169,
+     169
+    ]
+   },
+   {
+    "check": "srp1_yl_y2030: SoH chain reproduced from recorded EFC/day (max rel diff <= 1e-6)",
+    "ok": true,
+    "detail": 4.32002216705825e-14
+   },
+   {
+    "check": "srp1_yl_y2030: salvage reproduced from the terminal (end of last block) SoH, |diff| <= 1e-6 EUR",
+    "ok": true,
+    "detail": 0.0
+   },
+   {
+    "check": "srp1_yl_y2035: sidecar and per-cycle record end at the same cycle",
+    "ok": true,
+    "detail": [
+     167,
+     167
+    ]
+   },
+   {
+    "check": "srp1_yl_y2035: SoH chain reproduced from recorded EFC/day (max rel diff <= 1e-6)",
+    "ok": true,
+    "detail": 7.386890940055785e-13
+   },
+   {
+    "check": "srp1_yl_y2035: salvage reproduced from the terminal (end of last block) SoH, |diff| <= 1e-6 EUR",
+    "ok": true,
+    "detail": 0.0
+   },
+   {
+    "check": "3x3_n7_4h_e1: sidecar and per-cycle record end at the same cycle",
+    "ok": true,
+    "detail": [
+     69,
+     69
+    ]
+   },
+   {
+    "check": "3x3_n7_4h_e1: SoH chain reproduced from recorded EFC/day (max rel diff <= 1e-6)",
+    "ok": true,
+    "detail": 1.5860329149791949e-16
+   },
+   {
+    "check": "3x3_n7_4h_e1: salvage reproduced from the terminal (end of last block) SoH, |diff| <= 1e-6 EUR",
+    "ok": true,
+    "detail": 0.0
+   },
+   {
+    "check": "3x3 workbook (uncommitted): terminal valuation date 2040 for every cohort",
+    "ok": true,
+    "detail": [
+     2040
+    ]
+   },
+   {
+    "check": "3x3 workbook: terminal discount factor = 1.02**-15",
+    "ok": true,
+    "detail": 0.7430147299885189
+   },
+   {
+    "check": "3x3 workbook: expected installation energy cost per year = cost-file expectation",
+    "ok": true,
+    "detail": {
+     "2025": 253877.6774385931,
+     "2028": 226470.9458854221,
+     "2031": 205100.4549970562,
+     "2034": 195805.0100628926,
+     "2037": 186511.2072264896
+    }
+   },
+   {
+    "check": "main.tex states no numeric terminal date (no \"2040\" / \"2039\" anywhere in main.tex)",
+    "ok": true,
+    "detail": null
+   }
+  ],
+  "main_tex_mentions_of_2039": []
+ },
+ "C3": {
+  "budget": {
+   "B_eur": 1000000.0,
+   "source": "data/SRP1/SharedESS/SRP1_ESS_Params.json",
+   "key": "budget",
+   "test": "I(x) <= B + 1e-08"
+  },
+  "r": 0.02,
+  "y0": 2025,
+  "E_max": 5.0,
+  "phi": [
+   2.0,
+   4.0
+  ],
+  "cost_probs": [
+   0.35,
+   0.55,
+   0.1
+  ],
+  "unit_costs_by_year": {
+   "2025": {
+    "power": 256317.32425986166,
+    "energy": 253877.6774385931,
+    "discount": 1.0
+   },
+   "2028": {
+    "power": 228647.2267180396,
+    "energy": 226470.94588542212,
+    "discount": 0.9423223345470444
+   },
+   "2030": {
+    "power": 210199.41771354218,
+    "energy": 208198.72446060603,
+    "discount": 0.9057308098299159
+   },
+   "2031": {
+    "power": 207071.3753163321,
+    "energy": 205100.45499705616,
+    "discount": 0.887971382186192
+   },
+   "2034": {
+    "power": 197686.60546429973,
+    "energy": 195805.0100628926,
+    "discount": 0.8367552658726582
+   },
+   "2035": {
+    "power": 194559.9601549204,
+    "energy": 192708.1243895905,
+    "discount": 0.8203482998751551
+   },
+   "2037": {
+    "power": 188303.4934898265,
+    "energy": 186511.20722648964,
+    "discount": 0.7884931755816562
+   }
+  },
+  "table1": [
+   {
+    "line": 1229,
+    "kind": "power",
+    "trajectory": "Low",
+    "printed": {
+     "2025": 214.17,
+     "2030": 168.72,
+     "2035": 153.93
+    },
+    "file_keur": {
+     "2025": 214.17132910223768,
+     "2030": 168.72015012439266,
+     "2035": 153.92927440020514
+    },
+    "match_2dp": true,
+    "prob_printed_pct": 35.0,
+    "prob_file": 0.35,
+    "prob_match": true
+   },
+   {
+    "line": 1230,
+    "kind": "power",
+    "trajectory": "Medium",
+    "printed": {
+     "2025": 267.53,
+     "2030": 224.25,
+     "2035": 206.96
+    },
+    "file_keur": {
+     "2025": 267.5287212530719,
+     "2030": 224.2502932694956,
+     "2035": 206.95825777164166
+    },
+    "match_2dp": true,
+    "prob_printed_pct": 55.0,
+    "prob_file": 0.55,
+    "prob_match": true
+   },
+   {
+    "line": 1231,
+    "kind": "power",
+    "trajectory": "High",
+    "printed": {
+     "2025": 342.17,
+     "2030": 278.1,
+     "2035": 268.58
+    },
+    "file_keur": {
+     "2025": 342.16562384888937,
+     "2030": 278.0970387178216,
+     "2035": 268.57672340445697
+    },
+    "match_2dp": true,
+    "prob_printed_pct": 10.0,
+    "prob_file": 0.1,
+    "prob_match": true
+   },
+   {
+    "line": 1233,
+    "kind": "energy",
+    "trajectory": "Low",
+    "printed": {
+     "2025": 212.13,
+     "2030": 167.11,
+     "2035": 152.46
+    },
+    "file_keur": {
+     "2025": 212.13283090957788,
+     "2030": 167.1142595388713,
+     "2035": 152.46416443904658
+    },
+    "match_2dp": true,
+    "prob_printed_pct": 35.0,
+    "prob_file": 0.35,
+    "prob_match": true
+   },
+   {
+    "line": 1234,
+    "kind": "energy",
+    "trajectory": "Medium",
+    "printed": {
+     "2025": 264.98,
+     "2030": 222.12,
+     "2035": 204.99
+    },
+    "file_keur": {
+     "2025": 264.9823635447595,
+     "2030": 222.11586276729196,
+     "2035": 204.98841411333328
+    },
+    "match_2dp": true,
+    "prob_printed_pct": 55.0,
+    "prob_file": 0.55,
+    "prob_match": true
+   },
+   {
+    "line": 1235,
+    "kind": "energy",
+    "trajectory": "High",
+    "printed": {
+     "2025": 338.91,
+     "2030": 275.45,
+     "2035": 266.02
+    },
+    "file_keur": {
+     "2025": 338.90886670623127,
+     "2030": 275.450090999905,
+     "2035": 266.0203907359085
+    },
+    "match_2dp": true,
+    "prob_printed_pct": 10.0,
+    "prob_file": 0.1,
+    "prob_match": true
+   }
+  ],
+  "table1_expected": {
+   "2025": {
+    "power": 256318.0,
+    "energy": 253875.50000000003
+   },
+   "2030": {
+    "power": 210199.5,
+    "energy": 208199.5
+   },
+   "2035": {
+    "power": 194561.5,
+    "energy": 192707.5
+   }
+  },
+  "printed": {
+   "expected_2025_text": {
+    "power_keur_2dp": "256.32",
+    "energy_keur_2dp": "253.88",
+    "printed": [
+     "256.32",
+     "253.88"
+    ]
+   },
+   "p_fit_eur_10": 256320.0,
+   "e_baseline_eur_10": 253880.0
+  },
+  "inventory": [
+   {
+    "plan": "5: 0.25/0.5 @2025",
+    "year": 2025,
+    "nodes": [
+     [
+      5,
+      0.25,
+      0.5
+     ]
+    ],
+    "I_eur": 191018.16978426196,
+    "I_keur_1dp": 191.0,
+    "slack_eur": 808981.830215738,
+    "slack_pct_of_B": 80.8981830215738,
+    "verdict": "ADMISSIBLE",
+    "one_dE_step_fits": true,
+    "rules_violated": [],
+    "I_from_table1_rounded_eur": 191017.25,
+    "verdict_from_table1": "ADMISSIBLE",
+    "w2_records": [
+     {
+      "label": "n5_p0.25_e0.5",
+      "I_new_eur": 191018.169784262,
+      "abs_diff": -2.9103830456733704e-11
+     }
+    ],
+    "frozen_records": [
+     {
+      "claim_id": "C:y2025__n5_p0.25_e0.5",
+      "field": "I_other",
+      "I": 191018.16978426196,
+      "abs_diff": 0.0
+     }
+    ],
+    "sources": [
+     "Table E.21 row 15 (l. 2733, base)",
+     "Table E.21 row 16 (l. 2734, base)",
+     "neighbours table eval 15 (l. 2820)",
+     "Table value_ladder \"5\" (l. 1393)",
+     "claims table row 14 via eval 15 (l. 2638)",
+     "prose baseline_node5_smallest (l. [1374])",
+     "prose lattice_smallest (l. [2797])"
+    ]
+   },
+   {
+    "plan": "5: 0.25/0.5; 7: 0.25/0.5 @2025",
+    "year": 2025,
+    "nodes": [
+     [
+      5,
+      0.25,
+      0.5
+     ],
+     [
+      7,
+      0.25,
+      0.5
+     ]
+    ],
+    "I_eur": 382036.3395685239,
+    "I_keur_1dp": 382.0,
+    "slack_eur": 617963.6604314761,
+    "slack_pct_of_B": 61.79636604314761,
+    "verdict": "ADMISSIBLE",
+    "one_dE_step_fits": true,
+    "rules_violated": [],
+    "I_from_table1_rounded_eur": 382034.5,
+    "verdict_from_table1": "ADMISSIBLE",
+    "w2_records": [],
+    "frozen_records": [],
+    "sources": [
+     "prose C3_six_others (l. [2808])"
+    ]
+   },
+   {
+    "plan": "5: 0.25/0.5; 7: 0.25/0.5; 9: 0.25/0.5 @2025",
+    "year": 2025,
+    "nodes": [
+     [
+      5,
+      0.25,
+      0.5
+     ],
+     [
+      7,
+      0.25,
+      0.5
+     ],
+     [
+      9,
+      0.25,
+      0.5
+     ]
+    ],
+    "I_eur": 573054.5093527859,
+    "I_keur_1dp": 573.1,
+    "slack_eur": 426945.4906472141,
+    "slack_pct_of_B": 42.694549064721414,
+    "verdict": "ADMISSIBLE",
+    "one_dE_step_fits": true,
+    "rules_violated": [],
+    "I_from_table1_rounded_eur": 573051.75,
+    "verdict_from_table1": "ADMISSIBLE",
+    "w2_records": [],
+    "frozen_records": [],
+    "sources": [
+     "prose C3_six_others (l. [2808])"
+    ]
+   },
+   {
+    "plan": "5: 0.25/0.5; 9: 0.25/0.5 @2025",
+    "year": 2025,
+    "nodes": [
+     [
+      5,
+      0.25,
+      0.5
+     ],
+     [
+      9,
+      0.25,
+      0.5
+     ]
+    ],
+    "I_eur": 382036.3395685239,
+    "I_keur_1dp": 382.0,
+    "slack_eur": 617963.6604314761,
+    "slack_pct_of_B": 61.79636604314761,
+    "verdict": "ADMISSIBLE",
+    "one_dE_step_fits": true,
+    "rules_violated": [],
+    "I_from_table1_rounded_eur": 382034.5,
+    "verdict_from_table1": "ADMISSIBLE",
+    "w2_records": [],
+    "frozen_records": [
+     {
+      "claim_id": "C:y2025__n5_p0.25_e0.5__n9_p0.25_e0.5",
+      "field": "I_other",
+      "I": 382036.3395685239,
+      "abs_diff": 0.0
+     }
+    ],
+    "sources": [
+     "Table E.21 row 22 (l. 2740, base)",
+     "neighbours table eval 22 (l. 2826)",
+     "Table value_ladder \"5 and 9\" (l. 1397)",
+     "claims table row 15 via eval 22 (l. 2639)"
+    ]
+   },
+   {
+    "plan": "5: 0.25/1 @2025",
+    "year": 2025,
+    "nodes": [
+     [
+      5,
+      0.25,
+      1.0
+     ]
+    ],
+    "I_eur": 317957.0085035585,
+    "I_keur_1dp": 318.0,
+    "slack_eur": 682042.9914964414,
+    "slack_pct_of_B": 68.20429914964414,
+    "verdict": "ADMISSIBLE",
+    "one_dE_step_fits": true,
+    "rules_violated": [],
+    "I_from_table1_rounded_eur": 317955.0,
+    "verdict_from_table1": "ADMISSIBLE",
+    "w2_records": [
+     {
+      "label": "n5_p0.25_e1.0",
+      "I_new_eur": 317957.0085035586,
+      "abs_diff": -5.820766091346741e-11
+     },
+     {
+      "label": "n5_4h_e1",
+      "I_new_eur": 317957.0085035586,
+      "abs_diff": -5.820766091346741e-11
+     }
+    ],
+    "frozen_records": [
+     {
+      "claim_id": "B:n5_4h_e1",
+      "field": "I_other",
+      "I": 317957.0085035586,
+      "abs_diff": -5.820766091346741e-11
+     }
+    ],
+    "sources": [
+     "Table E.21 row 12 (l. 2728, base)",
+     "claims table row 11 via eval 12 (l. 2635)"
+    ]
+   },
+   {
+    "plan": "7: 0.25/0.5 @2025",
+    "year": 2025,
+    "nodes": [
+     [
+      7,
+      0.25,
+      0.5
+     ]
+    ],
+    "I_eur": 191018.16978426196,
+    "I_keur_1dp": 191.0,
+    "slack_eur": 808981.830215738,
+    "slack_pct_of_B": 80.8981830215738,
+    "verdict": "ADMISSIBLE",
+    "one_dE_step_fits": true,
+    "rules_violated": [],
+    "I_from_table1_rounded_eur": 191017.25,
+    "verdict_from_table1": "ADMISSIBLE",
+    "w2_records": [
+     {
+      "label": "n7_p0.25_e0.5",
+      "I_new_eur": 191018.169784262,
+      "abs_diff": -2.9103830456733704e-11
+     }
+    ],
+    "frozen_records": [],
+    "sources": [
+     "Table E.21 row 17 (l. 2735, base)",
+     "neighbours table eval 17 (l. 2821)",
+     "prose lattice_smallest (l. [2797])"
+    ]
+   },
+   {
+    "plan": "7: 0.25/0.5; 9: 0.25/0.5 @2025",
+    "year": 2025,
+    "nodes": [
+     [
+      7,
+      0.25,
+      0.5
+     ],
+     [
+      9,
+      0.25,
+      0.5
+     ]
+    ],
+    "I_eur": 382036.3395685239,
+    "I_keur_1dp": 382.0,
+    "slack_eur": 617963.6604314761,
+    "slack_pct_of_B": 61.79636604314761,
+    "verdict": "ADMISSIBLE",
+    "one_dE_step_fits": true,
+    "rules_violated": [],
+    "I_from_table1_rounded_eur": 382034.5,
+    "verdict_from_table1": "ADMISSIBLE",
+    "w2_records": [],
+    "frozen_records": [],
+    "sources": [
+     "prose C3_six_others (l. [2808])"
+    ]
+   },
+   {
+    "plan": "7: 0.25/1 @2025",
+    "year": 2025,
+    "nodes": [
+     [
+      7,
+      0.25,
+      1.0
+     ]
+    ],
+    "I_eur": 317957.0085035585,
+    "I_keur_1dp": 318.0,
+    "slack_eur": 682042.9914964414,
+    "slack_pct_of_B": 68.20429914964414,
+    "verdict": "ADMISSIBLE",
+    "one_dE_step_fits": true,
+    "rules_violated": [],
+    "I_from_table1_rounded_eur": 317955.0,
+    "verdict_from_table1": "ADMISSIBLE",
+    "w2_records": [
+     {
+      "label": "n7_p0.25_e1.0",
+      "I_new_eur": 317957.0085035586,
+      "abs_diff": -5.820766091346741e-11
+     },
+     {
+      "label": "n7_4h_e1",
+      "I_new_eur": 317957.0085035586,
+      "abs_diff": -5.820766091346741e-11
+     }
+    ],
+    "frozen_records": [
+     {
+      "claim_id": "B:n7_4h_e1",
+      "field": "I_other",
+      "I": 317957.0085035586,
+      "abs_diff": -5.820766091346741e-11
+     },
+     {
+      "claim_id": "H:m1.5:value_minus_I",
+      "field": "I_other",
+      "I": 317957.0085035586,
+      "abs_diff": -5.820766091346741e-11
+     },
+     {
+      "claim_id": "H:m2:value_minus_I",
+      "field": "I_other",
+      "I": 317957.0085035586,
+      "abs_diff": -5.820766091346741e-11
+     },
+     {
+      "claim_id": "E:C3_unit_value_minus_I",
+      "field": "I_other",
+      "I": 317957.0085035586,
+      "abs_diff": -5.820766091346741e-11
+     },
+     {
+      "claim_id": "E:n7_4h_e1_C2:value_minus_I",
+      "field": "I_other",
+      "I": 317957.0085035586,
+      "abs_diff": -5.820766091346741e-11
+     },
+     {
+      "claim_id": "E:n7_4h_e1_C2_calfade:value_minus_I",
+      "field": "I_other",
+      "I": 317957.0085035586,
+      "abs_diff": -5.820766091346741e-11
+     },
+     {
+      "claim_id": "E:n7_4h_e1_C3_midblock:value_minus_I",
+      "field": "I_other",
+      "I": 317957.0085035586,
+      "abs_diff": -5.820766091346741e-11
+     },
+     {
+      "claim_id": "E:n7_4h_e1_C4:value_minus_I",
+      "field": "I_other",
+      "I": 317957.0085035586,
+      "abs_diff": -5.820766091346741e-11
+     },
+     {
+      "claim_id": "E:n7_4h_e1_no_ageing:value_minus_I",
+      "field": "I_other",
+      "I": 317957.0085035586,
+      "abs_diff": -5.820766091346741e-11
+     },
+     {
+      "claim_id": "CHECK:headline_V_minus_I_settled",
+      "field": "I_other",
+      "I": 317957.0085035586,
+      "abs_diff": -5.820766091346741e-11
+     }
+    ],
+    "sources": [
+     "Table E.21 row 2 (l. 2718, base)",
+     "Table E.21 row 31 (l. 2753, $m=1.5$)",
+     "Table E.21 row 33 (l. 2755, $m=1.75$)",
+     "Table E.21 row 35 (l. 2757, $m=2$)",
+     "Table E.21 row 54 (l. 2780, no ageing)",
+     "Table E.21 row 55 (l. 2781, cycling only)",
+     "Table E.21 row 56 (l. 2782, baseline)",
+     "Table E.21 row 57 (l. 2783, datasheet)",
+     "Table E.21 row 58 (l. 2784, retention 50\\,\\%)",
+     "Table E.21 row 59 (l. 2785, ret.\\ 50\\,\\%, mid-block)",
+     "Table E.21 row 60 (l. 2786, baseline, 0.50 floor)",
+     "Table E.21 row 61 (l. 2787, baseline, 0.70 floor)",
+     "gap table eval 31 (l. 2898)",
+     "Table value_ladder \"7 (reference)\" (l. 1394)",
+     "Table energy_ladder_m2 (l. 1484)",
+     "Table year_ladder (l. 1689)",
+     "claims table row 1 via eval 2 (l. 2625)",
+     "claims table row 21 via eval 31 (l. 2647)",
+     "claims table row 22 via eval 33 (l. 2648)",
+     "claims table row 23 via eval 35 (l. 2649)",
+     "claims table row 28 via eval 35 (l. 2654)",
+     "claims table row 46 via eval 54 (l. 2676)",
+     "claims table row 47 via eval 55 (l. 2677)",
+     "claims table row 48 via eval 56 (l. 2678)",
+     "claims table row 49 via eval 57 (l. 2679)",
+     "claims table row 50 via eval 58 (l. 2680)",
+     "claims table row 51 via eval 59 (l. 2681)",
+     "claims table row 52 via eval 60 (l. 2682)",
+     "claims table row 53 via eval 58 (l. 2683)",
+     "claims table row 53 via eval 54 (l. 2683)",
+     "claims table row 54 via eval 58 (l. 2684)",
+     "claims table row 54 via eval 55 (l. 2684)",
+     "claims table row 55 via eval 58 (l. 2685)",
+     "claims table row 55 via eval 56 (l. 2685)",
+     "claims table row 56 via eval 58 (l. 2686)",
+     "claims table row 56 via eval 57 (l. 2686)",
+     "claims table row 57 via eval 58 (l. 2687)",
+     "claims table row 57 via eval 59 (l. 2687)",
+     "claims table row 58 via eval 2 (l. 2688)",
+     "claims table row 58 via eval 60 (l. 2688)",
+     "prose abstract_reference (l. [146])",
+     "prose baseline_reference (l. [1374])",
+     "prose ageing_reference (l. [1515])",
+     "prose multiscenario_reference (l. [1645])",
+     "prose year_ladder_caption (l. [1682])",
+     "prose discount_caption (l. [1711])",
+     "prose conclusions_reference (l. [1799])"
+    ]
+   },
+   {
+    "plan": "7: 0.5/1 @2025",
+    "year": 2025,
+    "nodes": [
+     [
+      7,
+      0.5,
+      1.0
+     ]
+    ],
+    "I_eur": 382036.3395685239,
+    "I_keur_1dp": 382.0,
+    "slack_eur": 617963.6604314761,
+    "slack_pct_of_B": 61.79636604314761,
+    "verdict": "ADMISSIBLE",
+    "one_dE_step_fits": true,
+    "rules_violated": [],
+    "I_from_table1_rounded_eur": 382034.5,
+    "verdict_from_table1": "ADMISSIBLE",
+    "w2_records": [
+     {
+      "label": "n7_2h_e1",
+      "I_new_eur": 382036.339568524,
+      "abs_diff": -5.820766091346741e-11
+     }
+    ],
+    "frozen_records": [
+     {
+      "claim_id": "B:n7_2h_e1",
+      "field": "I_other",
+      "I": 382036.339568524,
+      "abs_diff": -5.820766091346741e-11
+     }
+    ],
+    "sources": [
+     "Table E.21 row 7 (l. 2723, base)",
+     "Table value_ladder \"7\" (l. 1395)",
+     "claims table row 6 via eval 7 (l. 2630)"
+    ]
+   },
+   {
+    "plan": "7: 0.5/2 @2025",
+    "year": 2025,
+    "nodes": [
+     [
+      7,
+      0.5,
+      2.0
+     ]
+    ],
+    "I_eur": 635914.017007117,
+    "I_keur_1dp": 635.9,
+    "slack_eur": 364085.98299288296,
+    "slack_pct_of_B": 36.40859829928829,
+    "verdict": "ADMISSIBLE",
+    "one_dE_step_fits": true,
+    "rules_violated": [],
+    "I_from_table1_rounded_eur": 635910.0,
+    "verdict_from_table1": "ADMISSIBLE",
+    "w2_records": [
+     {
+      "label": "n7_4h_e2",
+      "I_new_eur": 635914.0170071172,
+      "abs_diff": -1.1641532182693481e-10
+     }
+    ],
+    "frozen_records": [
+     {
+      "claim_id": "B:n7_4h_e2",
+      "field": "I_other",
+      "I": 635914.0170071172,
+      "abs_diff": -1.1641532182693481e-10
+     },
+     {
+      "claim_id": "I:m2:e2_value_minus_I",
+      "field": "I_other",
+      "I": 635914.0170071172,
+      "abs_diff": -1.1641532182693481e-10
+     }
+    ],
+    "sources": [
+     "Table E.21 row 3 (l. 2719, base)",
+     "Table E.21 row 36 (l. 2758, $m=2$)",
+     "Table value_ladder \"7\" (l. 1396)",
+     "Table energy_ladder_m2 (l. 1485)",
+     "claims table row 2 via eval 3 (l. 2626)",
+     "claims table row 24 via eval 36 (l. 2650)",
+     "claims table row 28 via eval 36 (l. 2654)",
+     "claims table row 29 via eval 36 (l. 2655)"
+    ]
+   },
+   {
+    "plan": "7: 0.75/3 @2025",
+    "year": 2025,
+    "nodes": [
+     [
+      7,
+      0.75,
+      3.0
+     ]
+    ],
+    "I_eur": 953871.0255106755,
+    "I_keur_1dp": 953.9,
+    "slack_eur": 46128.97448932449,
+    "slack_pct_of_B": 4.61289744893245,
+    "verdict": "ADMISSIBLE",
+    "one_dE_step_fits": false,
+    "rules_violated": [],
+    "I_from_table1_rounded_eur": 953865.0000000001,
+    "verdict_from_table1": "ADMISSIBLE",
+    "w2_records": [
+     {
+      "label": "n7_4h_e3",
+      "I_new_eur": 953871.0255106756,
+      "abs_diff": -1.1641532182693481e-10
+     }
+    ],
+    "frozen_records": [
+     {
+      "claim_id": "B:n7_4h_e3",
+      "field": "I_other",
+      "I": 953871.0255106756,
+      "abs_diff": -1.1641532182693481e-10
+     },
+     {
+      "claim_id": "J:e3_value_minus_I",
+      "field": "I_other",
+      "I": 953871.0255106756,
+      "abs_diff": -1.1641532182693481e-10
+     }
+    ],
+    "sources": [
+     "Table E.21 row 4 (l. 2720, base)",
+     "Table E.21 row 37 (l. 2759, $m=2$)",
+     "Table energy_ladder_m2 (l. 1486)",
+     "claims table row 3 via eval 4 (l. 2627)",
+     "claims table row 25 via eval 37 (l. 2651)",
+     "claims table row 29 via eval 37 (l. 2655)",
+     "claims table row 30 via eval 37 (l. 2656)",
+     "claims table row 32 via eval 37 (l. 2660)"
+    ]
+   },
+   {
+    "plan": "7: 1/2 @2025",
+    "year": 2025,
+    "nodes": [
+     [
+      7,
+      1.0,
+      2.0
+     ]
+    ],
+    "I_eur": 764072.6791370478,
+    "I_keur_1dp": 764.1,
+    "slack_eur": 235927.32086295215,
+    "slack_pct_of_B": 23.592732086295218,
+    "verdict": "ADMISSIBLE",
+    "one_dE_step_fits": true,
+    "rules_violated": [],
+    "I_from_table1_rounded_eur": 764069.0,
+    "verdict_from_table1": "ADMISSIBLE",
+    "w2_records": [
+     {
+      "label": "n7_2h_e2",
+      "I_new_eur": 764072.679137048,
+      "abs_diff": -1.1641532182693481e-10
+     }
+    ],
+    "frozen_records": [
+     {
+      "claim_id": "B:n7_2h_e2",
+      "field": "I_other",
+      "I": 764072.679137048,
+      "abs_diff": -1.1641532182693481e-10
+     }
+    ],
+    "sources": [
+     "Table E.21 row 8 (l. 2724, base)",
+     "claims table row 7 via eval 8 (l. 2631)"
+    ]
+   },
+   {
+    "plan": "7: 1/4 @2025",
+    "year": 2025,
+    "nodes": [
+     [
+      7,
+      1.0,
+      4.0
+     ]
+    ],
+    "I_eur": 1271828.034014234,
+    "I_keur_1dp": 1271.8,
+    "slack_eur": -271828.0340142341,
+    "slack_pct_of_B": -27.18280340142341,
+    "verdict": "INADMISSIBLE",
+    "one_dE_step_fits": false,
+    "rules_violated": [],
+    "I_from_table1_rounded_eur": 1271820.0,
+    "verdict_from_table1": "INADMISSIBLE",
+    "w2_records": [
+     {
+      "label": "n7_4h_e4",
+      "I_new_eur": 1271828.0340142343,
+      "abs_diff": -2.3283064365386963e-10
+     }
+    ],
+    "frozen_records": [
+     {
+      "claim_id": "B:n7_4h_e4",
+      "field": "I_other",
+      "I": 1271828.0340142343,
+      "abs_diff": -2.3283064365386963e-10
+     },
+     {
+      "claim_id": "J:e4_value_minus_I",
+      "field": "I_other",
+      "I": 1271828.0340142343,
+      "abs_diff": -2.3283064365386963e-10
+     }
+    ],
+    "sources": [
+     "Table E.21 row 5 (l. 2721, base)",
+     "Table E.21 row 38 (l. 2760, $m=2$)",
+     "Table energy_ladder_m2 (l. 1487)",
+     "claims table row 4 via eval 5 (l. 2628)",
+     "claims table row 26 via eval 38 (l. 2652)",
+     "claims table row 30 via eval 38 (l. 2656)",
+     "claims table row 31 via eval 38 (l. 2657)"
+    ]
+   },
+   {
+    "plan": "7: 1.25/5 @2025",
+    "year": 2025,
+    "nodes": [
+     [
+      7,
+      1.25,
+      5.0
+     ]
+    ],
+    "I_eur": 1589785.0425177924,
+    "I_keur_1dp": 1589.8,
+    "slack_eur": -589785.0425177924,
+    "slack_pct_of_B": -58.97850425177924,
+    "verdict": "INADMISSIBLE",
+    "one_dE_step_fits": false,
+    "rules_violated": [],
+    "I_from_table1_rounded_eur": 1589775.0000000002,
+    "verdict_from_table1": "INADMISSIBLE",
+    "w2_records": [
+     {
+      "label": "n7_4h_e5",
+      "I_new_eur": 1589785.0425177924,
+      "abs_diff": 0.0
+     }
+    ],
+    "frozen_records": [
+     {
+      "claim_id": "B:n7_4h_e5",
+      "field": "I_other",
+      "I": 1589785.0425177924,
+      "abs_diff": 0.0
+     },
+     {
+      "claim_id": "J:e5_value_minus_I",
+      "field": "I_other",
+      "I": 1589785.0425177924,
+      "abs_diff": 0.0
+     }
+    ],
+    "sources": [
+     "Table E.21 row 6 (l. 2722, base)",
+     "Table E.21 row 39 (l. 2761, $m=2$)",
+     "gap table eval 39 (l. 2899)",
+     "gap table eval 6 (l. 2906)",
+     "Table energy_ladder_m2 (l. 1488)",
+     "claims table row 5 via eval 6 (l. 2629)",
+     "claims table row 27 via eval 39 (l. 2653)",
+     "claims table row 31 via eval 39 (l. 2657)"
+    ]
+   },
+   {
+    "plan": "7: 1.5/3 @2025",
+    "year": 2025,
+    "nodes": [
+     [
+      7,
+      1.5,
+      3.0
+     ]
+    ],
+    "I_eur": 1146109.0187055718,
+    "I_keur_1dp": 1146.1,
+    "slack_eur": -146109.01870557177,
+    "slack_pct_of_B": -14.610901870557178,
+    "verdict": "INADMISSIBLE",
+    "one_dE_step_fits": false,
+    "rules_violated": [],
+    "I_from_table1_rounded_eur": 1146103.5,
+    "verdict_from_table1": "INADMISSIBLE",
+    "w2_records": [
+     {
+      "label": "lattice_plan",
+      "I_new_eur": 1146109.018705572,
+      "abs_diff": -2.3283064365386963e-10
+     },
+     {
+      "label": "lattice_plan_n7_p1.5_e3.0",
+      "I_new_eur": 1146109.018705572,
+      "abs_diff": -2.3283064365386963e-10
+     },
+     {
+      "label": "n7_2h_e3",
+      "I_new_eur": 1146109.018705572,
+      "abs_diff": -2.3283064365386963e-10
+     }
+    ],
+    "frozen_records": [
+     {
+      "claim_id": "B:n7_2h_e3",
+      "field": "I_other",
+      "I": 1146109.018705572,
+      "abs_diff": -2.3283064365386963e-10
+     }
+    ],
+    "sources": [
+     "Table E.21 row 9 (l. 2725, base)",
+     "claims table row 8 via eval 9 (l. 2632)"
+    ]
+   },
+   {
+    "plan": "7: 2/4 @2025",
+    "year": 2025,
+    "nodes": [
+     [
+      7,
+      2.0,
+      4.0
+     ]
+    ],
+    "I_eur": 1528145.3582740957,
+    "I_keur_1dp": 1528.1,
+    "slack_eur": -528145.3582740957,
+    "slack_pct_of_B": -52.814535827409564,
+    "verdict": "INADMISSIBLE",
+    "one_dE_step_fits": false,
+    "rules_violated": [],
+    "I_from_table1_rounded_eur": 1528138.0,
+    "verdict_from_table1": "INADMISSIBLE",
+    "w2_records": [
+     {
+      "label": "n7_2h_e4",
+      "I_new_eur": 1528145.358274096,
+      "abs_diff": -2.3283064365386963e-10
+     }
+    ],
+    "frozen_records": [
+     {
+      "claim_id": "B:n7_2h_e4",
+      "field": "I_other",
+      "I": 1528145.358274096,
+      "abs_diff": -2.3283064365386963e-10
+     }
+    ],
+    "sources": [
+     "Table E.21 row 10 (l. 2726, base)",
+     "claims table row 9 via eval 10 (l. 2633)"
+    ]
+   },
+   {
+    "plan": "7: 2.5/5 @2025",
+    "year": 2025,
+    "nodes": [
+     [
+      7,
+      2.5,
+      5.0
+     ]
+    ],
+    "I_eur": 1910181.6978426196,
+    "I_keur_1dp": 1910.2,
+    "slack_eur": -910181.6978426196,
+    "slack_pct_of_B": -91.01816978426196,
+    "verdict": "INADMISSIBLE",
+    "one_dE_step_fits": false,
+    "rules_violated": [],
+    "I_from_table1_rounded_eur": 1910172.5000000002,
+    "verdict_from_table1": "INADMISSIBLE",
+    "w2_records": [
+     {
+      "label": "n7_2h_e5",
+      "I_new_eur": 1910181.6978426196,
+      "abs_diff": 0.0
+     }
+    ],
+    "frozen_records": [
+     {
+      "claim_id": "B:n7_2h_e5",
+      "field": "I_other",
+      "I": 1910181.6978426196,
+      "abs_diff": 0.0
+     }
+    ],
+    "sources": [
+     "Table E.21 row 11 (l. 2727, base)",
+     "claims table row 10 via eval 11 (l. 2634)"
+    ]
+   },
+   {
+    "plan": "9: 0.25/0.5 @2025",
+    "year": 2025,
+    "nodes": [
+     [
+      9,
+      0.25,
+      0.5
+     ]
+    ],
+    "I_eur": 191018.16978426196,
+    "I_keur_1dp": 191.0,
+    "slack_eur": 808981.830215738,
+    "slack_pct_of_B": 80.8981830215738,
+    "verdict": "ADMISSIBLE",
+    "one_dE_step_fits": true,
+    "rules_violated": [],
+    "I_from_table1_rounded_eur": 191017.25,
+    "verdict_from_table1": "ADMISSIBLE",
+    "w2_records": [
+     {
+      "label": "n9_p0.25_e0.5",
+      "I_new_eur": 191018.169784262,
+      "abs_diff": -2.9103830456733704e-11
+     }
+    ],
+    "frozen_records": [],
+    "sources": [
+     "Table E.21 row 18 (l. 2736, base)",
+     "neighbours table eval 18 (l. 2822)",
+     "prose lattice_smallest (l. [2797])"
+    ]
+   },
+   {
+    "plan": "9: 0.25/1 @2025",
+    "year": 2025,
+    "nodes": [
+     [
+      9,
+      0.25,
+      1.0
+     ]
+    ],
+    "I_eur": 317957.0085035585,
+    "I_keur_1dp": 318.0,
+    "slack_eur": 682042.9914964414,
+    "slack_pct_of_B": 68.20429914964414,
+    "verdict": "ADMISSIBLE",
+    "one_dE_step_fits": true,
+    "rules_violated": [],
+    "I_from_table1_rounded_eur": 317955.0,
+    "verdict_from_table1": "ADMISSIBLE",
+    "w2_records": [
+     {
+      "label": "n9_p0.25_e1.0",
+      "I_new_eur": 317957.0085035586,
+      "abs_diff": -5.820766091346741e-11
+     },
+     {
+      "label": "n9_4h_e1",
+      "I_new_eur": 317957.0085035586,
+      "abs_diff": -5.820766091346741e-11
+     }
+    ],
+    "frozen_records": [
+     {
+      "claim_id": "B:n9_4h_e1",
+      "field": "I_other",
+      "I": 317957.0085035586,
+      "abs_diff": -5.820766091346741e-11
+     }
+    ],
+    "sources": [
+     "Table E.21 row 13 (l. 2729, base)",
+     "claims table row 12 via eval 13 (l. 2636)"
+    ]
+   },
+   {
+    "plan": "9: 0.75/3 @2025",
+    "year": 2025,
+    "nodes": [
+     [
+      9,
+      0.75,
+      3.0
+     ]
+    ],
+    "I_eur": 953871.0255106755,
+    "I_keur_1dp": 953.9,
+    "slack_eur": 46128.97448932449,
+    "slack_pct_of_B": 4.61289744893245,
+    "verdict": "ADMISSIBLE",
+    "one_dE_step_fits": false,
+    "rules_violated": [],
+    "I_from_table1_rounded_eur": 953865.0000000001,
+    "verdict_from_table1": "ADMISSIBLE",
+    "w2_records": [
+     {
+      "label": "n9_4h_e3",
+      "I_new_eur": 953871.0255106756,
+      "abs_diff": -1.1641532182693481e-10
+     }
+    ],
+    "frozen_records": [
+     {
+      "claim_id": "B:n9_4h_e3",
+      "field": "I_other",
+      "I": 953871.0255106756,
+      "abs_diff": -1.1641532182693481e-10
+     }
+    ],
+    "sources": [
+     "Table E.21 row 14 (l. 2730, base)",
+     "claims table row 13 via eval 14 (l. 2637)"
+    ]
+   },
+   {
+    "plan": "5: 0.25/0.5 @2030",
+    "year": 2030,
+    "nodes": [
+     [
+      5,
+      0.25,
+      0.5
+     ]
+    ],
+    "I_eur": 141882.02186349596,
+    "I_keur_1dp": 141.9,
+    "slack_eur": 858117.9781365041,
+    "slack_pct_of_B": 85.8117978136504,
+    "verdict": "ADMISSIBLE",
+    "one_dE_step_fits": true,
+    "rules_violated": [],
+    "I_from_table1_rounded_eur": 141882.39171080265,
+    "verdict_from_table1": "ADMISSIBLE",
+    "w2_records": [],
+    "frozen_records": [],
+    "sources": [
+     "Table E.21 row 19 (l. 2737, base)",
+     "neighbours table eval 19 (l. 2823)"
+    ]
+   },
+   {
+    "plan": "5: 0.25/0.5; 7: 0.25/0.5 @2030",
+    "year": 2030,
+    "nodes": [
+     [
+      5,
+      0.25,
+      0.5
+     ],
+     [
+      7,
+      0.25,
+      0.5
+     ]
+    ],
+    "I_eur": 283764.0437269919,
+    "I_keur_1dp": 283.8,
+    "slack_eur": 716235.9562730081,
+    "slack_pct_of_B": 71.62359562730082,
+    "verdict": "ADMISSIBLE",
+    "one_dE_step_fits": true,
+    "rules_violated": [],
+    "I_from_table1_rounded_eur": 283764.7834216053,
+    "verdict_from_table1": "ADMISSIBLE",
+    "w2_records": [],
+    "frozen_records": [
+     {
+      "claim_id": "C:y2030__n5_p0.25_e0.5__n7_p0.25_e0.5",
+      "field": "I_other",
+      "I": 283764.0437269919,
+      "abs_diff": 0.0
+     }
+    ],
+    "sources": [
+     "Table E.21 row 23 (l. 2741, base)",
+     "neighbours table eval 23 (l. 2827)",
+     "Table value_ladder \"5 and 7 (2030)\" (l. 1398)",
+     "claims table row 16 via eval 23 (l. 2640)",
+     "prose two_node_2030_baseline (l. [1414])"
+    ]
+   },
+   {
+    "plan": "5: 0.25/0.5; 7: 0.25/0.5; 9: 0.25/0.5 @2030",
+    "year": 2030,
+    "nodes": [
+     [
+      5,
+      0.25,
+      0.5
+     ],
+     [
+      7,
+      0.25,
+      0.5
+     ],
+     [
+      9,
+      0.25,
+      0.5
+     ]
+    ],
+    "I_eur": 425646.0655904879,
+    "I_keur_1dp": 425.6,
+    "slack_eur": 574353.9344095121,
+    "slack_pct_of_B": 57.43539344095121,
+    "verdict": "ADMISSIBLE",
+    "one_dE_step_fits": true,
+    "rules_violated": [],
+    "I_from_table1_rounded_eur": 425647.1751324079,
+    "verdict_from_table1": "ADMISSIBLE",
+    "w2_records": [],
+    "frozen_records": [],
+    "sources": [
+     "prose C3_six_others (l. [2808])"
+    ]
+   },
+   {
+    "plan": "5: 0.25/0.5; 7: 0.75/2.5 @2030",
+    "year": 2030,
+    "nodes": [
+     [
+      5,
+      0.25,
+      0.5
+     ],
+     [
+      7,
+      0.75,
+      2.5
+     ]
+    ],
+    "I_eur": 756100.0867652439,
+    "I_keur_1dp": 756.1,
+    "slack_eur": 243899.9132347561,
+    "slack_pct_of_B": 24.38999132347561,
+    "verdict": "ADMISSIBLE",
+    "one_dE_step_fits": true,
+    "rules_violated": [],
+    "I_from_table1_rounded_eur": 756102.2685843942,
+    "verdict_from_table1": "ADMISSIBLE",
+    "w2_records": [],
+    "frozen_records": [],
+    "sources": [
+     "Table E.21 row 53 (l. 2777, $m=2$)",
+     "claims table row 45 via eval 53 (l. 2673)"
+    ]
+   },
+   {
+    "plan": "5: 0.25/0.5; 7: 0.75/3 @2030",
+    "year": 2030,
+    "nodes": [
+     [
+      5,
+      0.25,
+      0.5
+     ],
+     [
+      7,
+      0.75,
+      3.0
+     ]
+    ],
+    "I_eur": 850386.0864208741,
+    "I_keur_1dp": 850.4,
+    "slack_eur": 149613.9135791259,
+    "slack_pct_of_B": 14.96139135791259,
+    "verdict": "ADMISSIBLE",
+    "one_dE_step_fits": true,
+    "rules_violated": [],
+    "I_from_table1_rounded_eur": 850388.619454986,
+    "verdict_from_table1": "ADMISSIBLE",
+    "w2_records": [],
+    "frozen_records": [],
+    "sources": [
+     "Table E.21 row 43 (l. 2767, $m=2$)",
+     "claims table row 33 via eval 43 (l. 2661)"
+    ]
+   },
+   {
+    "plan": "5: 0.25/0.5; 7: 0.75/3; 9: 0.25/0.5 @2030",
+    "year": 2030,
+    "nodes": [
+     [
+      5,
+      0.25,
+      0.5
+     ],
+     [
+      7,
+      0.75,
+      3.0
+     ],
+     [
+      9,
+      0.25,
+      0.5
+     ]
+    ],
+    "I_eur": 992268.10828437,
+    "I_keur_1dp": 992.3,
+    "slack_eur": 7731.891715629958,
+    "slack_pct_of_B": 0.7731891715629957,
+    "verdict": "ADMISSIBLE (BOUNDARY)",
+    "one_dE_step_fits": false,
+    "rules_violated": [],
+    "I_from_table1_rounded_eur": 992271.0111657886,
+    "verdict_from_table1": "ADMISSIBLE (BOUNDARY)",
+    "w2_records": [],
+    "frozen_records": [],
+    "sources": [
+     "Table E.21 row 45 (l. 2769, $m=2$)",
+     "gap table eval 45 (l. 2902)",
+     "claims table row 37 via eval 45 (l. 2665)"
+    ]
+   },
+   {
+    "plan": "5: 0.25/0.5; 7: 1/3 @2030",
+    "year": 2030,
+    "nodes": [
+     [
+      5,
+      0.25,
+      0.5
+     ],
+     [
+      7,
+      1.0,
+      3.0
+     ]
+    ],
+    "I_eur": 897982.10862874,
+    "I_keur_1dp": 898.0,
+    "slack_eur": 102017.89137126005,
+    "slack_pct_of_B": 10.201789137126005,
+    "verdict": "ADMISSIBLE",
+    "one_dE_step_fits": true,
+    "rules_violated": [],
+    "I_from_table1_rounded_eur": 897984.6602951968,
+    "verdict_from_table1": "ADMISSIBLE",
+    "w2_records": [],
+    "frozen_records": [],
+    "sources": [
+     "Table E.21 row 42 (l. 2766, $m=2$)",
+     "gap table eval 42 (l. 2905)",
+     "claims table row 34 via eval 42 (l. 2662)"
+    ]
+   },
+   {
+    "plan": "5: 0.25/0.5; 7: 1/3.5 @2030",
+    "year": 2030,
+    "nodes": [
+     [
+      5,
+      0.25,
+      0.5
+     ],
+     [
+      7,
+      1.0,
+      3.5
+     ]
+    ],
+    "I_eur": 992268.10828437,
+    "I_keur_1dp": 992.3,
+    "slack_eur": 7731.891715629958,
+    "slack_pct_of_B": 0.7731891715629957,
+    "verdict": "ADMISSIBLE (BOUNDARY)",
+    "one_dE_step_fits": false,
+    "rules_violated": [],
+    "I_from_table1_rounded_eur": 992271.0111657886,
+    "verdict_from_table1": "ADMISSIBLE (BOUNDARY)",
+    "w2_records": [],
+    "frozen_records": [],
+    "sources": [
+     "Table E.21 row 40 (l. 2764, $m=2$)",
+     "gap table eval 40 (l. 2903)",
+     "claims table row 32 via eval 40 (l. 2660)",
+     "claims table row 33 via eval 40 (l. 2661)",
+     "claims table row 34 via eval 40 (l. 2662)",
+     "claims table row 35 via eval 40 (l. 2663)",
+     "claims table row 36 via eval 40 (l. 2664)",
+     "claims table row 37 via eval 40 (l. 2665)",
+     "claims table row 38 via eval 40 (l. 2666)",
+     "claims table row 39 via eval 40 (l. 2667)",
+     "claims table row 40 via eval 40 (l. 2668)",
+     "claims table row 41 via eval 40 (l. 2669)",
+     "claims table row 42 via eval 40 (l. 2670)",
+     "claims table row 43 via eval 40 (l. 2671)",
+     "claims table row 44 via eval 40 (l. 2672)",
+     "claims table row 45 via eval 40 (l. 2673)",
+     "prose returned_plan_m2 (l. [1507])"
+    ]
+   },
+   {
+    "plan": "5: 0.25/0.5; 7: 1.25/3 @2030",
+    "year": 2030,
+    "nodes": [
+     [
+      5,
+      0.25,
+      0.5
+     ],
+     [
+      7,
+      1.25,
+      3.0
+     ]
+    ],
+    "I_eur": 945578.1308366058,
+    "I_keur_1dp": 945.6,
+    "slack_eur": 54421.86916339421,
+    "slack_pct_of_B": 5.442186916339421,
+    "verdict": "ADMISSIBLE",
+    "one_dE_step_fits": false,
+    "rules_violated": [],
+    "I_from_table1_rounded_eur": 945580.7011354077,
+    "verdict_from_table1": "ADMISSIBLE",
+    "w2_records": [],
+    "frozen_records": [],
+    "sources": [
+     "Table E.21 row 44 (l. 2768, $m=2$)",
+     "claims table row 35 via eval 44 (l. 2663)"
+    ]
+   },
+   {
+    "plan": "5: 0.25/0.5; 9: 0.25/0.5 @2030",
+    "year": 2030,
+    "nodes": [
+     [
+      5,
+      0.25,
+      0.5
+     ],
+     [
+      9,
+      0.25,
+      0.5
+     ]
+    ],
+    "I_eur": 283764.0437269919,
+    "I_keur_1dp": 283.8,
+    "slack_eur": 716235.9562730081,
+    "slack_pct_of_B": 71.62359562730082,
+    "verdict": "ADMISSIBLE",
+    "one_dE_step_fits": true,
+    "rules_violated": [],
+    "I_from_table1_rounded_eur": 283764.7834216053,
+    "verdict_from_table1": "ADMISSIBLE",
+    "w2_records": [],
+    "frozen_records": [],
+    "sources": [
+     "prose C3_six_others (l. [2808])"
+    ]
+   },
+   {
+    "plan": "5: 0.25/1; 7: 1/3 @2030",
+    "year": 2030,
+    "nodes": [
+     [
+      5,
+      0.25,
+      1.0
+     ],
+     [
+      7,
+      1.0,
+      3.0
+     ]
+    ],
+    "I_eur": 992268.10828437,
+    "I_keur_1dp": 992.3,
+    "slack_eur": 7731.891715629958,
+    "slack_pct_of_B": 0.7731891715629957,
+    "verdict": "ADMISSIBLE (BOUNDARY)",
+    "one_dE_step_fits": false,
+    "rules_violated": [],
+    "I_from_table1_rounded_eur": 992271.0111657886,
+    "verdict_from_table1": "ADMISSIBLE (BOUNDARY)",
+    "w2_records": [],
+    "frozen_records": [],
+    "sources": [
+     "Table E.21 row 41 (l. 2765, $m=2$)",
+     "gap table eval 41 (l. 2904)",
+     "claims table row 36 via eval 41 (l. 2664)"
+    ]
+   },
+   {
+    "plan": "7: 0.25/0.5 @2030",
+    "year": 2030,
+    "nodes": [
+     [
+      7,
+      0.25,
+      0.5
+     ]
+    ],
+    "I_eur": 141882.02186349596,
+    "I_keur_1dp": 141.9,
+    "slack_eur": 858117.9781365041,
+    "slack_pct_of_B": 85.8117978136504,
+    "verdict": "ADMISSIBLE",
+    "one_dE_step_fits": true,
+    "rules_violated": [],
+    "I_from_table1_rounded_eur": 141882.39171080265,
+    "verdict_from_table1": "ADMISSIBLE",
+    "w2_records": [],
+    "frozen_records": [],
+    "sources": [
+     "Table E.21 row 20 (l. 2738, base)",
+     "neighbours table eval 20 (l. 2824)"
+    ]
+   },
+   {
+    "plan": "7: 0.25/0.5; 9: 0.25/0.5 @2030",
+    "year": 2030,
+    "nodes": [
+     [
+      7,
+      0.25,
+      0.5
+     ],
+     [
+      9,
+      0.25,
+      0.5
+     ]
+    ],
+    "I_eur": 283764.0437269919,
+    "I_keur_1dp": 283.8,
+    "slack_eur": 716235.9562730081,
+    "slack_pct_of_B": 71.62359562730082,
+    "verdict": "ADMISSIBLE",
+    "one_dE_step_fits": true,
+    "rules_violated": [],
+    "I_from_table1_rounded_eur": 283764.7834216053,
+    "verdict_from_table1": "ADMISSIBLE",
+    "w2_records": [],
+    "frozen_records": [],
+    "sources": [
+     "prose C3_six_others (l. [2808])"
+    ]
+   },
+   {
+    "plan": "7: 0.25/1 @2030",
+    "year": 2030,
+    "nodes": [
+     [
+      7,
+      0.25,
+      1.0
+     ]
+    ],
+    "I_eur": 236168.02151912605,
+    "I_keur_1dp": 236.2,
+    "slack_eur": 763831.978480874,
+    "slack_pct_of_B": 76.3831978480874,
+    "verdict": "ADMISSIBLE",
+    "one_dE_step_fits": true,
+    "rules_violated": [],
+    "I_from_table1_rounded_eur": 236168.74258139444,
+    "verdict_from_table1": "ADMISSIBLE",
+    "w2_records": [
+     {
+      "label": "n7_4h_e1_y2030",
+      "I_new_eur": 236168.02151912605,
+      "abs_diff": 0.0
+     }
+    ],
+    "frozen_records": [],
+    "sources": [
+     "Table E.21 row 24 (l. 2744, base)",
+     "Table year_ladder (l. 1690)"
+    ]
+   },
+   {
+    "plan": "7: 0.5/1 @2030",
+    "year": 2030,
+    "nodes": [
+     [
+      7,
+      0.5,
+      1.0
+     ]
+    ],
+    "I_eur": 283764.0437269919,
+    "I_keur_1dp": 283.8,
+    "slack_eur": 716235.9562730081,
+    "slack_pct_of_B": 71.62359562730082,
+    "verdict": "ADMISSIBLE",
+    "one_dE_step_fits": true,
+    "rules_violated": [],
+    "I_from_table1_rounded_eur": 283764.7834216053,
+    "verdict_from_table1": "ADMISSIBLE",
+    "w2_records": [
+     {
+      "label": "n7_2h_e1_y2030",
+      "I_new_eur": 283764.04372699186,
+      "abs_diff": 5.820766091346741e-11
+     }
+    ],
+    "frozen_records": [
+     {
+      "claim_id": "G:n7_2h_e1_y2030:gross",
+      "field": "I_other",
+      "I": 283764.04372699186,
+      "abs_diff": 5.820766091346741e-11
+     },
+     {
+      "claim_id": "G:n7_2h_e1_y2030:net",
+      "field": "I_other",
+      "I": 283764.04372699186,
+      "abs_diff": 5.820766091346741e-11
+     }
+    ],
+    "sources": [
+     "Table E.21 row 26 (l. 2746, base)",
+     "claims table row 17 via eval 26 (l. 2641)",
+     "prose larger_units_2030_2035 (l. [1677])"
+    ]
+   },
+   {
+    "plan": "7: 0.5/2 @2030",
+    "year": 2030,
+    "nodes": [
+     [
+      7,
+      0.5,
+      2.0
+     ]
+    ],
+    "I_eur": 472336.0430382521,
+    "I_keur_1dp": 472.3,
+    "slack_eur": 527663.956961748,
+    "slack_pct_of_B": 52.76639569617479,
+    "verdict": "ADMISSIBLE",
+    "one_dE_step_fits": true,
+    "rules_violated": [],
+    "I_from_table1_rounded_eur": 472337.4851627889,
+    "verdict_from_table1": "ADMISSIBLE",
+    "w2_records": [
+     {
+      "label": "n7_4h_e2_y2030",
+      "I_new_eur": 472336.0430382521,
+      "abs_diff": 0.0
+     }
+    ],
+    "frozen_records": [
+     {
+      "claim_id": "G:n7_4h_e2_y2030:gross",
+      "field": "I_other",
+      "I": 472336.0430382521,
+      "abs_diff": 0.0
+     },
+     {
+      "claim_id": "G:n7_4h_e2_y2030:net",
+      "field": "I_other",
+      "I": 472336.0430382521,
+      "abs_diff": 0.0
+     }
+    ],
+    "sources": [
+     "Table E.21 row 28 (l. 2748, base)",
+     "claims table row 19 via eval 28 (l. 2643)",
+     "prose larger_units_2030_2035 (l. [1677])"
+    ]
+   },
+   {
+    "plan": "7: 0.75/3 @2030",
+    "year": 2030,
+    "nodes": [
+     [
+      7,
+      0.75,
+      3.0
+     ]
+    ],
+    "I_eur": 708504.0645573782,
+    "I_keur_1dp": 708.5,
+    "slack_eur": 291495.9354426218,
+    "slack_pct_of_B": 29.14959354426218,
+    "verdict": "ADMISSIBLE",
+    "one_dE_step_fits": true,
+    "rules_violated": [],
+    "I_from_table1_rounded_eur": 708506.2277441833,
+    "verdict_from_table1": "ADMISSIBLE",
+    "w2_records": [
+     {
+      "label": "n7_4h_e3_y2030",
+      "I_new_eur": 708504.0645573782,
+      "abs_diff": 0.0
+     }
+    ],
+    "frozen_records": [],
+    "sources": [
+     "Table E.21 row 47 (l. 2771, $m=2$)",
+     "claims table row 38 via eval 47 (l. 2666)"
+    ]
+   },
+   {
+    "plan": "7: 0.75/3; 9: 0.25/0.5 @2030",
+    "year": 2030,
+    "nodes": [
+     [
+      7,
+      0.75,
+      3.0
+     ],
+     [
+      9,
+      0.25,
+      0.5
+     ]
+    ],
+    "I_eur": 850386.0864208741,
+    "I_keur_1dp": 850.4,
+    "slack_eur": 149613.9135791259,
+    "slack_pct_of_B": 14.96139135791259,
+    "verdict": "ADMISSIBLE",
+    "one_dE_step_fits": true,
+    "rules_violated": [],
+    "I_from_table1_rounded_eur": 850388.619454986,
+    "verdict_from_table1": "ADMISSIBLE",
+    "w2_records": [],
+    "frozen_records": [],
+    "sources": [
+     "Table E.21 row 52 (l. 2776, $m=2$)",
+     "claims table row 42 via eval 52 (l. 2670)"
+    ]
+   },
+   {
+    "plan": "7: 1/3 @2030",
+    "year": 2030,
+    "nodes": [
+     [
+      7,
+      1.0,
+      3.0
+     ]
+    ],
+    "I_eur": 756100.086765244,
+    "I_keur_1dp": 756.1,
+    "slack_eur": 243899.91323475598,
+    "slack_pct_of_B": 24.3899913234756,
+    "verdict": "ADMISSIBLE",
+    "one_dE_step_fits": true,
+    "rules_violated": [],
+    "I_from_table1_rounded_eur": 756102.2685843941,
+    "verdict_from_table1": "ADMISSIBLE",
+    "w2_records": [],
+    "frozen_records": [],
+    "sources": [
+     "Table E.21 row 46 (l. 2770, $m=2$)",
+     "claims table row 39 via eval 46 (l. 2667)"
+    ]
+   },
+   {
+    "plan": "7: 1/3; 9: 0.25/0.5 @2030",
+    "year": 2030,
+    "nodes": [
+     [
+      7,
+      1.0,
+      3.0
+     ],
+     [
+      9,
+      0.25,
+      0.5
+     ]
+    ],
+    "I_eur": 897982.10862874,
+    "I_keur_1dp": 898.0,
+    "slack_eur": 102017.89137126005,
+    "slack_pct_of_B": 10.201789137126005,
+    "verdict": "ADMISSIBLE",
+    "one_dE_step_fits": true,
+    "rules_violated": [],
+    "I_from_table1_rounded_eur": 897984.6602951968,
+    "verdict_from_table1": "ADMISSIBLE",
+    "w2_records": [],
+    "frozen_records": [],
+    "sources": [
+     "Table E.21 row 50 (l. 2774, $m=2$)",
+     "gap table eval 50 (l. 2900)",
+     "claims table row 43 via eval 50 (l. 2671)"
+    ]
+   },
+   {
+    "plan": "7: 1/3.5 @2030",
+    "year": 2030,
+    "nodes": [
+     [
+      7,
+      1.0,
+      3.5
+     ]
+    ],
+    "I_eur": 850386.0864208741,
+    "I_keur_1dp": 850.4,
+    "slack_eur": 149613.9135791259,
+    "slack_pct_of_B": 14.96139135791259,
+    "verdict": "ADMISSIBLE",
+    "one_dE_step_fits": true,
+    "rules_violated": [],
+    "I_from_table1_rounded_eur": 850388.619454986,
+    "verdict_from_table1": "ADMISSIBLE",
+    "w2_records": [],
+    "frozen_records": [],
+    "sources": [
+     "Table E.21 row 48 (l. 2772, $m=2$)",
+     "claims table row 40 via eval 48 (l. 2668)"
+    ]
+   },
+   {
+    "plan": "7: 1/3.5; 9: 0.25/0.5 @2030",
+    "year": 2030,
+    "nodes": [
+     [
+      7,
+      1.0,
+      3.5
+     ],
+     [
+      9,
+      0.25,
+      0.5
+     ]
+    ],
+    "I_eur": 992268.10828437,
+    "I_keur_1dp": 992.3,
+    "slack_eur": 7731.891715629958,
+    "slack_pct_of_B": 0.7731891715629957,
+    "verdict": "ADMISSIBLE (BOUNDARY)",
+    "one_dE_step_fits": false,
+    "rules_violated": [],
+    "I_from_table1_rounded_eur": 992271.0111657886,
+    "verdict_from_table1": "ADMISSIBLE (BOUNDARY)",
+    "w2_records": [],
+    "frozen_records": [],
+    "sources": [
+     "Table E.21 row 51 (l. 2775, $m=2$)",
+     "gap table eval 51 (l. 2901)",
+     "claims table row 44 via eval 51 (l. 2672)"
+    ]
+   },
+   {
+    "plan": "7: 1/4 @2030",
+    "year": 2030,
+    "nodes": [
+     [
+      7,
+      1.0,
+      4.0
+     ]
+    ],
+    "I_eur": 944672.0860765042,
+    "I_keur_1dp": 944.7,
+    "slack_eur": 55327.9139234958,
+    "slack_pct_of_B": 5.53279139234958,
+    "verdict": "ADMISSIBLE",
+    "one_dE_step_fits": false,
+    "rules_violated": [],
+    "I_from_table1_rounded_eur": 944674.9703255778,
+    "verdict_from_table1": "ADMISSIBLE",
+    "w2_records": [
+     {
+      "label": "n7_4h_e4_y2030",
+      "I_new_eur": 944672.0860765042,
+      "abs_diff": 0.0
+     }
+    ],
+    "frozen_records": [],
+    "sources": [
+     "Table E.21 row 49 (l. 2773, $m=2$)",
+     "claims table row 41 via eval 49 (l. 2669)"
+    ]
+   },
+   {
+    "plan": "9: 0.25/0.5 @2030",
+    "year": 2030,
+    "nodes": [
+     [
+      9,
+      0.25,
+      0.5
+     ]
+    ],
+    "I_eur": 141882.02186349596,
+    "I_keur_1dp": 141.9,
+    "slack_eur": 858117.9781365041,
+    "slack_pct_of_B": 85.8117978136504,
+    "verdict": "ADMISSIBLE",
+    "one_dE_step_fits": true,
+    "rules_violated": [],
+    "I_from_table1_rounded_eur": 141882.39171080265,
+    "verdict_from_table1": "ADMISSIBLE",
+    "w2_records": [],
+    "frozen_records": [],
+    "sources": [
+     "Table E.21 row 21 (l. 2739, base)",
+     "neighbours table eval 21 (l. 2825)"
+    ]
+   },
+   {
+    "plan": "7: 0.25/1 @2035",
+    "year": 2035,
+    "nodes": [
+     [
+      7,
+      0.25,
+      1.0
+     ]
+    ],
+    "I_eur": 197989.5153493472,
+    "I_keur_1dp": 198.0,
+    "slack_eur": 802010.4846506529,
+    "slack_pct_of_B": 80.20104846506528,
+    "verdict": "ADMISSIBLE",
+    "one_dE_step_fits": true,
+    "rules_violated": [],
+    "I_from_table1_rounded_eur": 197989.31893473145,
+    "verdict_from_table1": "ADMISSIBLE",
+    "w2_records": [
+     {
+      "label": "n7_4h_e1_y2035",
+      "I_new_eur": 197989.5153493472,
+      "abs_diff": 0.0
+     }
+    ],
+    "frozen_records": [],
+    "sources": [
+     "Table E.21 row 25 (l. 2745, base)",
+     "Table year_ladder (l. 1691)"
+    ]
+   },
+   {
+    "plan": "7: 0.5/1 @2035",
+    "year": 2035,
+    "nodes": [
+     [
+      7,
+      0.5,
+      1.0
+     ]
+    ],
+    "I_eur": 237891.24848356392,
+    "I_keur_1dp": 237.9,
+    "slack_eur": 762108.7515164361,
+    "slack_pct_of_B": 76.2108751516436,
+    "verdict": "ADMISSIBLE",
+    "one_dE_step_fits": true,
+    "rules_violated": [],
+    "I_from_table1_rounded_eur": 237891.36787127145,
+    "verdict_from_table1": "ADMISSIBLE",
+    "w2_records": [
+     {
+      "label": "n7_2h_e1_y2035",
+      "I_new_eur": 237891.24848356392,
+      "abs_diff": 0.0
+     }
+    ],
+    "frozen_records": [
+     {
+      "claim_id": "G:n7_2h_e1_y2035:gross",
+      "field": "I_other",
+      "I": 237891.24848356392,
+      "abs_diff": 0.0
+     },
+     {
+      "claim_id": "G:n7_2h_e1_y2035:net",
+      "field": "I_other",
+      "I": 237891.24848356392,
+      "abs_diff": 0.0
+     }
+    ],
+    "sources": [
+     "Table E.21 row 27 (l. 2747, base)",
+     "claims table row 18 via eval 27 (l. 2642)",
+     "prose larger_units_2030_2035 (l. [1677])"
+    ]
+   },
+   {
+    "plan": "7: 0.5/2 @2035",
+    "year": 2035,
+    "nodes": [
+     [
+      7,
+      0.5,
+      2.0
+     ]
+    ],
+    "I_eur": 395979.0306986944,
+    "I_keur_1dp": 396.0,
+    "slack_eur": 604020.9693013056,
+    "slack_pct_of_B": 60.402096930130554,
+    "verdict": "ADMISSIBLE",
+    "one_dE_step_fits": true,
+    "rules_violated": [],
+    "I_from_table1_rounded_eur": 395978.6378694629,
+    "verdict_from_table1": "ADMISSIBLE",
+    "w2_records": [
+     {
+      "label": "n7_4h_e2_y2035",
+      "I_new_eur": 395979.0306986944,
+      "abs_diff": 0.0
+     }
+    ],
+    "frozen_records": [
+     {
+      "claim_id": "G:n7_4h_e2_y2035:gross",
+      "field": "I_other",
+      "I": 395979.0306986944,
+      "abs_diff": 0.0
+     },
+     {
+      "claim_id": "G:n7_4h_e2_y2035:net",
+      "field": "I_other",
+      "I": 395979.0306986944,
+      "abs_diff": 0.0
+     }
+    ],
+    "sources": [
+     "Table E.21 row 29 (l. 2749, base)",
+     "claims table row 20 via eval 29 (l. 2644)",
+     "prose larger_units_2030_2035 (l. [1677])"
+    ]
+   }
+  ],
+  "n_distinct_plans": 47,
+  "n_admissible": 42,
+  "n_inadmissible": 5,
+  "n_boundary": 4,
+  "families": {
+   "single_node_2025": {
+    "n_rule_feasible": 35,
+    "n_admissible": 12,
+    "admissible": [
+     "0.25/0.5",
+     "0.25/1",
+     "0.5/1",
+     "0.5/1.5",
+     "0.5/2",
+     "0.75/1.5",
+     "0.75/2",
+     "0.75/2.5",
+     "0.75/3",
+     "1/2",
+     "1/2.5",
+     "1.25/2.5"
+    ],
+    "over_budget": [
+     "1/3 (1018.0 k)",
+     "1/3.5 (1144.9 k)",
+     "1/4 (1271.8 k)",
+     "1.25/3 (1082.0 k)",
+     "1.25/3.5 (1209.0 k)",
+     "1.25/4 (1335.9 k)",
+     "1.25/4.5 (1462.8 k)",
+     "1.25/5 (1589.8 k)",
+     "1.5/3 (1146.1 k)",
+     "1.5/3.5 (1273.0 k)",
+     "1.5/4 (1400.0 k)",
+     "1.5/4.5 (1526.9 k)",
+     "1.5/5 (1653.9 k)",
+     "1.75/3.5 (1337.1 k)",
+     "1.75/4 (1464.1 k)",
+     "1.75/4.5 (1591.0 k)",
+     "1.75/5 (1717.9 k)",
+     "2/4 (1528.1 k)",
+     "2/4.5 (1655.1 k)",
+     "2/5 (1782.0 k)",
+     "2.25/4.5 (1719.2 k)",
+     "2.25/5 (1846.1 k)",
+     "2.5/5 (1910.2 k)"
+    ]
+   },
+   "x0_box": {
+    "n_admissible": 14,
+    "n_budget_rejected": 0,
+    "members": [
+     "5: 0.25/0.5 @2025",
+     "5: 0.25/0.5 @2030",
+     "5: 0.25/0.5; 7: 0.25/0.5 @2025",
+     "5: 0.25/0.5; 7: 0.25/0.5 @2030",
+     "5: 0.25/0.5; 7: 0.25/0.5; 9: 0.25/0.5 @2025",
+     "5: 0.25/0.5; 7: 0.25/0.5; 9: 0.25/0.5 @2030",
+     "5: 0.25/0.5; 9: 0.25/0.5 @2025",
+     "5: 0.25/0.5; 9: 0.25/0.5 @2030",
+     "7: 0.25/0.5 @2025",
+     "7: 0.25/0.5 @2030",
+     "7: 0.25/0.5; 9: 0.25/0.5 @2025",
+     "7: 0.25/0.5; 9: 0.25/0.5 @2030",
+     "9: 0.25/0.5 @2025",
+     "9: 0.25/0.5 @2030"
+    ],
+    "max_I_eur": 573054.5093527859
+   },
+   "returned_plan_box": {
+    "incumbent": "5: 0.25/0.5; 7: 1/3.5 @2030",
+    "I_incumbent_eur": 992268.10828437,
+    "n_admissible": 61,
+    "n_budget_rejected": 106,
+    "n_admissible_by_year": {
+     "2025": 1,
+     "2030": 18,
+     "2035": 42
+    },
+    "min_budget_rejected_I_eur": 1017950.3565756408
+   }
+  },
+  "prose_anchors": {
+   "abstract_reference": {
+    "lines": [
+     146
+    ],
+    "text": "For a fixed reference 0.25~MVA/1~MWh unit",
+    "plans": [
+     "7: 0.25/1 @2025"
+    ]
+   },
+   "baseline_reference": {
+    "lines": [
+     1374
+    ],
+    "text": "comprising 0.25~MVA and 1~MWh installed at node~7 in 2025, provides discounted operating savings",
+    "plans": [
+     "7: 0.25/1 @2025"
+    ]
+   },
+   "baseline_node5_smallest": {
+    "lines": [
+     1374
+    ],
+    "text": "The smallest admissible unit at node~5, comprising 0.25~MVA and 0.5~MWh",
+    "plans": [
+     "5: 0.25/0.5 @2025"
+    ]
+   },
+   "two_node_2030_baseline": {
+    "lines": [
+     1414
+    ],
+    "text": "The two-node plan installed in 2030 remains uneconomic",
+    "plans": [
+     "5: 0.25/0.5; 7: 0.25/0.5 @2030"
+    ]
+   },
+   "returned_plan_m2": {
+    "lines": [
+     1507
+    ],
+    "text": "the planning search returned a two-node plan installed in 2030: 0.25~MVA and 0.5~MWh at node~5, and 1~MVA and 3.5~MWh at node~7",
+    "plans": [
+     "5: 0.25/0.5; 7: 1/3.5 @2030"
+    ]
+   },
+   "ageing_reference": {
+    "lines": [
+     1515
+    ],
+    "text": "compare the reference unit, comprising 0.25~MVA and 1~MWh installed at node~7 in 2025",
+    "plans": [
+     "7: 0.25/1 @2025"
+    ]
+   },
+   "multiscenario_reference": {
+    "lines": [
+     1645
+    ],
+    "text": "Multi-scenario evaluation of the reference unit (node~7, 0.25~MVA / 1~MWh, installed in 2025)",
+    "plans": [
+     "7: 0.25/1 @2025"
+    ]
+   },
+   "larger_units_2030_2035": {
+    "lines": [
+     1677
+    ],
+    "text": "The larger units evaluated at node~7, comprising 0.5~MVA / 1~MWh and 0.5~MVA / 2~MWh, also remain more expensive than the plan without storage when installed in either year",
+    "plans": [
+     "7: 0.5/1 @2030",
+     "7: 0.5/1 @2035",
+     "7: 0.5/2 @2030",
+     "7: 0.5/2 @2035"
+    ]
+   },
+   "year_ladder_caption": {
+    "lines": [
+     1682
+    ],
+    "text": "Effect of installation year on the discounted cost of the reference unit (node~7, 0.25~MVA / 1~MWh).",
+    "plans": [
+     "7: 0.25/1 @2025"
+    ]
+   },
+   "discount_caption": {
+    "lines": [
+     1711
+    ],
+    "text": "Effect of discount rate on the reference investment (node~7, 0.25~MVA / 1~MWh, installed in 2025).",
+    "plans": [
+     "7: 0.25/1 @2025"
+    ]
+   },
+   "conclusions_reference": {
+    "lines": [
+     1799
+    ],
+    "text": "The reference unit, comprising 0.25~MVA and 1~MWh, incurred",
+    "plans": [
+     "7: 0.25/1 @2025"
+    ]
+   },
+   "lattice_smallest": {
+    "lines": [
+     2797
+    ],
+    "text": "the smallest being 0.25~MVA / 0.5~MWh",
+    "plans": [
+     "5: 0.25/0.5 @2025",
+     "7: 0.25/0.5 @2025",
+     "9: 0.25/0.5 @2025"
+    ]
+   }
+  },
+  "audit": {
+   "quotes": {
+    "unit_costs": {
+     "lines": [
+      133
+     ],
+     "text": "The 2025 probability-weighted costs derived from Table 1 are approximately 256.318 k\u20ac/MVA and 253.8755 k\u20ac/MWh."
+    },
+    "row_1": {
+     "lines": [
+      137
+     ],
+     "text": "| 1 MWh / 0.25 MVA | 318.0 k\u20ac |"
+    },
+    "row_2": {
+     "lines": [
+      138
+     ],
+     "text": "| 2 MWh / 0.50 MVA | 635.9 k\u20ac |"
+    },
+    "row_3": {
+     "lines": [
+      139
+     ],
+     "text": "| 3 MWh / 0.75 MVA | 953.9 k\u20ac |"
+    },
+    "row_4": {
+     "lines": [
+      140
+     ],
+     "text": "| 4 MWh / 1.00 MVA | 1,271.8 k\u20ac |"
+    },
+    "row_5": {
+     "lines": [
+      141
+     ],
+     "text": "| 5 MWh / 1.25 MVA | 1,589.8 k\u20ac |"
+    },
+    "two_node": {
+     "lines": [
+      147
+     ],
+     "text": "The returned two-node 2030 plan is a different configuration and has an expected discounted investment of approximately 992.3 k\u20ac from the same table"
+    }
+   },
+   "compare": {
+    "unit_power_keur": {
+     "audit": 256.318,
+     "file": 256.31732425986166,
+     "diff_eur": 0.6757401383074466
+    },
+    "unit_energy_keur": {
+     "audit": 253.8755,
+     "file": 253.87767743859308,
+     "diff_eur": -2.1774385930912104
+    },
+    "ladder": {
+     "1": {
+      "audit_keur": 318.0,
+      "file_keur_1dp": 318.0,
+      "I_eur": 317957.0085035585,
+      "match": true,
+      "verdict": "ADMISSIBLE"
+     },
+     "2": {
+      "audit_keur": 635.9,
+      "file_keur_1dp": 635.9,
+      "I_eur": 635914.017007117,
+      "match": true,
+      "verdict": "ADMISSIBLE"
+     },
+     "3": {
+      "audit_keur": 953.9,
+      "file_keur_1dp": 953.9,
+      "I_eur": 953871.0255106755,
+      "match": true,
+      "verdict": "ADMISSIBLE"
+     },
+     "4": {
+      "audit_keur": 1271.8,
+      "file_keur_1dp": 1271.8,
+      "I_eur": 1271828.034014234,
+      "match": true,
+      "verdict": "INADMISSIBLE"
+     },
+     "5": {
+      "audit_keur": 1589.8,
+      "file_keur_1dp": 1589.8,
+      "I_eur": 1589785.0425177924,
+      "match": true,
+      "verdict": "INADMISSIBLE"
+     }
+    },
+    "two_node_2030": {
+     "audit_keur": 992.3,
+     "I_eur": 992268.10828437,
+     "file_keur_1dp": 992.3,
+     "match": true,
+     "verdict": "ADMISSIBLE (BOUNDARY)",
+     "slack_eur": 7731.891715629958
+    }
+   }
+  },
+  "manuscript": {
+   "C3_budget_text": {
+    "lines": [
+     1207
+    ],
+    "text": "The baseline expected discounted investment budget is 1~M\\euro{}, with a maximum rated energy capacity of 5~MWh per interface node. Costs are discounted at an annual rate of 2\\%."
+   },
+   "C3_budget_def": {
+    "lines": [
+     689
+    ],
+    "text": "is the budget for expected investment expenditure discounted to the initial year $y_0$."
+   },
+   "C3_budget_expected": {
+    "lines": [
+     690
+    ],
+    "text": "It does not require expenditure under every individual trajectory to remain within the budget."
+   },
+   "C3_expected_2025": {
+    "lines": [
+     1244
+    ],
+    "text": "The probability-weighted unit costs in 2025 are 256.32~k\\euro{}/MVA for converter rating and 253.88~k\\euro{}/MWh for energy capacity."
+   },
+   "C3_increments": {
+    "lines": [
+     1301
+    ],
+    "text": "Capacity additions use increments of $\\Delta^S = 0.25$~MVA and $\\Delta^E = 0.5$~MWh, with energy-to-converter-rating ratios between 2 and 4~MWh/MVA."
+   },
+   "C3_I_318_text": {
+    "lines": [
+     1374,
+     1636,
+     1799
+    ],
+    "text": "against an investment cost of 318.0~k\\euro{}"
+   },
+   "C3_I_318_table": {
+    "lines": [
+     1653
+    ],
+    "text": "Investment cost & 318.0~k\\euro{} \\\\"
+   },
+   "C3_p_256320": {
+    "lines": [
+     1424
+    ],
+    "text": "with converter cost fixed at $p=256{,}320$~\\euro/MVA"
+   },
+   "C3_e_253880": {
+    "lines": [
+     1425
+    ],
+    "text": "baseline energy-capacity cost of 253{,}880~\\euro/MWh"
+   },
+   "C3_returned_plan": {
+    "lines": [
+     1507
+    ],
+    "text": "the planning search returned a two-node plan installed in 2030: 0.25~MVA and 0.5~MWh at node~5, and 1~MVA and 3.5~MWh at node~7."
+   },
+   "C3_61": {
+    "lines": [
+     1507
+    ],
+    "text": "Of its 61 admissible unit neighbours, 17 were evaluated and 13 were re-evaluated"
+   },
+   "C3_twelve": {
+    "lines": [
+     2797
+    ],
+    "text": "shows the resulting plans of a single node installed in 2025: twelve are admissible, the smallest being 0.25~MVA / 0.5~MWh"
+   },
+   "C3_fourteen": {
+    "lines": [
+     2797
+    ],
+    "text": "The plan without storage therefore has fourteen admissible neighbours: the smallest unit at any non-empty subset of the three nodes, installed in 2025 or 2030."
+   },
+   "C3_six_others": {
+    "lines": [
+     2808
+    ],
+    "text": "The other six, the smallest unit at the two remaining pairs of nodes and at all three nodes, in 2025 or 2030, were evaluated by the search only"
+   },
+   "C3_over_budget_seed": {
+    "lines": [
+     2921
+    ],
+    "text": "including ladder points over the budget"
+   },
+   "C3_two_node_2030_salvage": {
+    "lines": [
+     1414
+    ],
+    "text": "The two-node plan installed in 2030 remains uneconomic after the terminal salvage credit, with a cost increase of 84.0~k\\euro{}."
+   }
+  },
+  "checks": [
+   {
+    "check": "unit costs 2025 == W2 table (production master) within 1e-6",
+    "ok": true,
+    "detail": null
+   },
+   {
+    "check": "unit costs 2030 == W2 table (production master) within 1e-6",
+    "ok": true,
+    "detail": null
+   },
+   {
+    "check": "unit costs 2035 == W2 table (production master) within 1e-6",
+    "ok": true,
+    "detail": null
+   },
+   {
+    "check": "Table 1: 6 rows parsed, every cell = file value rounded to 0.01 k EUR, every probability = file",
+    "ok": true,
+    "detail": null
+   },
+   {
+    "check": "text l. \"probability-weighted unit costs in 2025\" = file (2 dp k EUR)",
+    "ok": true,
+    "detail": null
+   },
+   {
+    "check": "p = 256,320 and 253,880 EUR = file rounded to 10 EUR",
+    "ok": true,
+    "detail": null
+   },
+   {
+    "check": "Table E.21: 61 rows numbered 1..61",
+    "ok": true,
+    "detail": 61
+   },
+   {
+    "check": "claims table: 58 rows, every Eval. pair in Table E.21",
+    "ok": true,
+    "detail": 58
+   },
+   {
+    "check": "gap table rows agree with Table E.21 (plan and year)",
+    "ok": true,
+    "detail": [
+     [
+      31,
+      "7: 0.25/1 @2025"
+     ],
+     [
+      39,
+      "7: 1.25/5 @2025"
+     ],
+     [
+      50,
+      "7: 1/3; 9: 0.25/0.5 @2030"
+     ],
+     [
+      51,
+      "7: 1/3.5; 9: 0.25/0.5 @2030"
+     ],
+     [
+      45,
+      "5: 0.25/0.5; 7: 0.75/3; 9: 0.25/0.5 @2030"
+     ],
+     [
+      40,
+      "5: 0.25/0.5; 7: 1/3.5 @2030"
+     ],
+     [
+      41,
+      "5: 0.25/1; 7: 1/3 @2030"
+     ],
+     [
+      42,
+      "5: 0.25/0.5; 7: 1/3 @2030"
+     ],
+     [
+      6,
+      "7: 1.25/5 @2025"
+     ]
+    ]
+   },
+   {
+    "check": "neighbours table rows agree with Table E.21",
+    "ok": true,
+    "detail": null
+   },
+   {
+    "check": "value ladder: 6 rows",
+    "ok": true,
+    "detail": [
+     "5: 0.25/0.5 @2025",
+     "7: 0.25/1 @2025",
+     "7: 0.5/1 @2025",
+     "7: 0.5/2 @2025",
+     "5: 0.25/0.5; 9: 0.25/0.5 @2025",
+     "5: 0.25/0.5; 7: 0.25/0.5 @2030"
+    ]
+   },
+   {
+    "check": "energy ladder m2: 5 rows",
+    "ok": true,
+    "detail": null
+   },
+   {
+    "check": "year ladder: 3 rows",
+    "ok": true,
+    "detail": null
+   },
+   {
+    "check": "prose anchor abstract_reference present",
+    "ok": true,
+    "detail": [
+     146
+    ]
+   },
+   {
+    "check": "prose anchor baseline_reference present",
+    "ok": true,
+    "detail": [
+     1374
+    ]
+   },
+   {
+    "check": "prose anchor baseline_node5_smallest present",
+    "ok": true,
+    "detail": [
+     1374
+    ]
+   },
+   {
+    "check": "prose anchor two_node_2030_baseline present",
+    "ok": true,
+    "detail": [
+     1414
+    ]
+   },
+   {
+    "check": "prose anchor returned_plan_m2 present",
+    "ok": true,
+    "detail": [
+     1507
+    ]
+   },
+   {
+    "check": "prose anchor ageing_reference present",
+    "ok": true,
+    "detail": [
+     1515
+    ]
+   },
+   {
+    "check": "prose anchor multiscenario_reference present",
+    "ok": true,
+    "detail": [
+     1645
+    ]
+   },
+   {
+    "check": "prose anchor larger_units_2030_2035 present",
+    "ok": true,
+    "detail": [
+     1677
+    ]
+   },
+   {
+    "check": "prose anchor year_ladder_caption present",
+    "ok": true,
+    "detail": [
+     1682
+    ]
+   },
+   {
+    "check": "prose anchor discount_caption present",
+    "ok": true,
+    "detail": [
+     1711
+    ]
+   },
+   {
+    "check": "prose anchor conclusions_reference present",
+    "ok": true,
+    "detail": [
+     1799
+    ]
+   },
+   {
+    "check": "prose anchor lattice_smallest present",
+    "ok": true,
+    "detail": [
+     2797
+    ]
+   },
+   {
+    "check": "I(x) == W2 I_new_eur (production master value) within 1e-6 EUR wherever the plan is in W2",
+    "ok": true,
+    "detail": 29
+   },
+   {
+    "check": "I(x) == frozen Step-6 I_ref / I_other within 1e-6 EUR wherever recorded",
+    "ok": true,
+    "detail": 37
+   },
+   {
+    "check": "Table-1-rounded unit costs give the same verdict for every plan",
+    "ok": true,
+    "detail": null
+   },
+   {
+    "check": "twelve admissible single-node plans in 2025 (text)",
+    "ok": true,
+    "detail": 12
+   },
+   {
+    "check": "fourteen admissible neighbours of x = 0 (text)",
+    "ok": true,
+    "detail": 14
+   },
+   {
+    "check": "61 admissible unit neighbours of the returned plan (text)",
+    "ok": true,
+    "detail": 61
+   },
+   {
+    "check": "the six search-only neighbours are in the x = 0 box",
+    "ok": true,
+    "detail": null
+   },
+   {
+    "check": "audit quote unit_costs present",
+    "ok": true,
+    "detail": [
+     133
+    ]
+   },
+   {
+    "check": "audit quote row_1 present",
+    "ok": true,
+    "detail": [
+     137
+    ]
+   },
+   {
+    "check": "audit quote row_2 present",
+    "ok": true,
+    "detail": [
+     138
+    ]
+   },
+   {
+    "check": "audit quote row_3 present",
+    "ok": true,
+    "detail": [
+     139
+    ]
+   },
+   {
+    "check": "audit quote row_4 present",
+    "ok": true,
+    "detail": [
+     140
+    ]
+   },
+   {
+    "check": "audit quote row_5 present",
+    "ok": true,
+    "detail": [
+     141
+    ]
+   },
+   {
+    "check": "audit quote two_node present",
+    "ok": true,
+    "detail": [
+     147
+    ]
+   },
+   {
+    "check": "audit: two-node 2030 plan = 992.3 k EUR (file, 0.1 k)",
+    "ok": true,
+    "detail": 992268.10828437
+   },
+   {
+    "check": "audit: the five 4 h ladder figures = file (0.1 k)",
+    "ok": true,
+    "detail": null
+   },
+   {
+    "check": "printed investment cost of the reference unit 318.0 k EUR = file (0.1 k)",
+    "ok": true,
+    "detail": null
+   }
+  ]
+ },
+ "negative_controls": [
+  {
+   "control": "NC1 an altered objective line is not found",
+   "refused": true,
+   "detail": null
+  },
+  {
+   "control": "NC2 an altered manuscript quote is not found",
+   "refused": true,
+   "detail": null
+  },
+  {
+   "control": "NC3 budget 0.99e6 makes the returned two-node plan INADMISSIBLE",
+   "refused": true,
+   "detail": 992268.10828437
+  },
+  {
+   "control": "NC4 a perturbed probability vector changes I(ref unit)",
+   "refused": true,
+   "detail": null
+  },
+  {
+   "control": "NC5 an altered recorded terminal SoH breaks the salvage reproduction",
+   "refused": true,
+   "detail": null
+  },
+  {
+   "control": "NC6 a rule-violating plan (7: 0.25/1.5, ratio 6) is flagged",
+   "refused": true,
+   "detail": null
+  }
+ ],
+ "negative_controls_all_refused": true,
+ "failed_checks": {},
+ "all_checks_ok": true,
+ "guards": {
+  "solve_profile_guard": {
+   "label": "P5.15 W182g cost boundary, horizon end, budget (never solves)",
+   "counts": {
+    "permitted_solve": 0,
+    "permitted_exec": 0,
+    "blocked_solve": 0,
+    "blocked_exec": 0
+   },
+   "verify_0_failures": []
+  },
+  "pickle_counts": {
+   "load": 0,
+   "loads": 0
+  },
+  "production_modules_imported": []
+ },
+ "finished_utc": "2026-10-25T14:11:48.457915+00:00"
+}
