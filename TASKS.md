@@ -1,9 +1,24 @@
 # TASKS — current order
 
-**Authority:** `PLANNER_BRIEF_2026-09-13.md` Addendum 80 (W181 order; committed in `fc2fad77`/`2e3ec946`); earlier orders below for record.
+**Authority:** `PLANNER_BRIEF_2026-09-13.md` Addendum 82 v2 (W182 order; committed in `ac7c494f`/`a17f6ba7`); Addendum 81's W182 withdrawn; earlier orders below for record.
 **Objective convention on every value:** Q = certified `gross_operational_cost`, settlement excluded.
 **Updated at every transition; read first when resuming.**
 
+
+## Addendum 82 v2 order — W182 (zero-solve; re-audit of `edd7a63` + evidence inventory; no campaign run authorized)
+
+Overleaf HEAD **`edd7a63`** (67 commits after `8f051a2`; main.tex diff 49 hunks; letter changed in `d2ebb0d`; `main_latexdiff.tex` added). Code head: repo HEAD `a17f6ba7` (tracked files clean); last production-code commit `575bfec4`. Not in the repo: `STEP7_SIMULATION_PLAN_2026-10-25.md` (plan v2), the author's `simulation_study_brief_for_expert_2026-10-25.md`, `response_to_reviewers_v9.tex`. Predictions (expert): A1 ≤ 1 M row (interface-deviation sign); A3 ≥ 10 letter pointers MISMATCH; A6 bitwise, 33 PASS; A7 ≥ 6 sentences; Z1 Q(0) exactly independent of ageing; Z2 not reachable within cap; Z6 ρ₀ a config parameter, NRF option needs code change (both copies); Z7 recoverable from `certified_models.pkl` only.
+
+- [x] **W182a** — `89171f00`: 3 MATCH, 2 L, 0 M — A1 HELD (named M not found)
+- [x] **W182b** — `b9643b84` / `7394eeee`: 701 MATCH, 31 DERIVED, 0 MISMATCH, 0 UNSOURCED
+- [x] **W182c** — `179c9355` / `6a9b1f85`: letter 65/173 MISMATCH (A3 HELD); 0 undefined refs; 5 captions + 3 notes lost blue; Appendix E bitwise FAILED (author hand-edits), 33 PASS HELD
+- [x] **W182d** — `ab1d8d7b` / `7614bcbf`: 16 sentences (A7 HELD); 7 over-budget evaluations in 34 places, 1 labelled; 13.9 % called a saving (highlights, letter)
+- [x] **W182e** — `2f4df40c` / `7fa0177d`: Z1 HELD by code reading; Z6 HELD (harness refuses ρ, no-ageing launcher, perturbed start need code; NRF production change); C4 gate stale
+- [x] **W182f** — `7e5dd80e`: Z2 HELD (cap 281 used); Z7 FAILED favourably (committed JSON); Z3 table; Z4 15.2 GiB; Z5 inventory
+- [x] **W182g** — `a21b03e6` / `c39663e4`: Q = objective − contracted settlement − pin (deviation + row 18 inside Q at 3×3); y^End 2040; 42/47 plans admissible
+- [x] Planner review; report `P5_15_W182_REPORT.md` (Decisions 1–6)
+- [ ] **▶ Stopped for review** (A6 failed, no fallback; E1–E3 need code changes outside the spec): expert on 1, 2, 3, 4 (pickle read), 5; author on 4 (31.5 MB commit), 5, 6 (commit plan v2, brief, letter v9)
+- [ ] Then: campaign spec frozen (later addendum authorizes runs one gate per task)
 
 ## Addendum 80 order — W181 (zero-solve; short check, not a re-audit)
 
@@ -12,7 +27,7 @@ Rulings: R2.2 "single-scenario" (letter v8); §2.3.3 "deactivated and its slacks
 - [x] **W181a** — `ed6490c6` / `4bcc2463`: identical, diffs equal (6 + 2 hunks); Appendix E bitwise (l. 2377–2697), 33 PASS, 0 MISMATCH in 1,623, 0 of 1,637 cells changed — all HELD
 - [x] **W181b** — `0692c852`: five sentences MATCH, R22-b closed (HELD); ageing citations absent (HELD); 0 CONFIRM, 1 AUTHOR (l. 1307)
 - [x] Planner review; report `P5_15_W181_REPORT.md` (no decisions; every prediction held)
-- [ ] **▶ Order complete; waiting on** the author (three ageing citations, then tell the expert the keys) and the expert (`latexdiff` against `manuscript_submitted/`, cover letter); then submission
+- [x] Order complete (superseded by Addenda 81/82); was waiting on the author (three ageing citations, then tell the expert the keys) and the expert (`latexdiff` against `manuscript_submitted/`, cover letter); then submission
 
 ## Addendum 79 order — W180 (zero-solve)
 

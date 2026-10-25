@@ -1,0 +1,3403 @@
+{
+ "stage": "P5.15 Addendum 82 v2 W182e -- Z1 / Z6 / C4 code paths (zero solves, code reading)",
+ "authority": [
+  "PLANNER_BRIEF_2026-09-13.md Addendum 82 v2 (W182 order, items Z1, Z6, C4)",
+  "manuscript_review/manuscript_critical_review_2026-10-25.md section 3.7",
+  "manuscript_review/STEP7_PLAN_REVIEW_2026-10-25.md"
+ ],
+ "timestamp_utc": "2026-10-25T14:10:56.377047+00:00",
+ "script": "p515_s53_w182e_code_paths.py",
+ "script_sha256": "ab8a7e0173d826d98af8f37e03e567b211704e7e18ae4494bb5b4125c34f1e9b",
+ "objective_convention": "Q = certified gross_operational_cost, settlement excluded; salvage reported, excluded",
+ "git_facts": {
+  "HEAD": "2f4df40c37a41c4e84f9c7d04b9b06a998e66049",
+  "order_code_head": "a17f6ba7",
+  "files_changed_order_head_to_HEAD": [
+   "P5_15_W182D_CLAIMS.md",
+   "data/SRP1/Results/P515S53/w182d_claims/launch.log",
+   "data/SRP1/Results/P515S53/w182d_claims/manifest_sha256.json",
+   "data/SRP1/Results/P515S53/w182d_claims/w182d_claims.json",
+   "p515_s53_w182d_claims.py",
+   "p515_s53_w182e_code_paths.py"
+  ],
+  "575bfec4_is_ancestor_of_55bb1e7d": true,
+  "55bb1e7d_is_ancestor_of_HEAD": true,
+  "numstat_55bb1e7d_to_HEAD_model_and_harness_files": [
+   "3\t0\tp515_s44_campaign_harness.py"
+  ],
+  "harness_commits_55bb1e7d_to_HEAD": [
+   "b4c3dc7a P5.15 W155 (Addendum 64): router - three-line branch in resettle_hooks_module for the W155 hooks (a declaration carrying the p515_s53_w155_a64_settling"
+  ],
+  "last_commit_per_production_module": {
+   "admm_anderson_acceleration.py": "42f48b92 2026-09-19T12:19:16+01:00",
+   "admm_parameters.py": "a51ad9ba 2026-09-25T14:56:18+01:00",
+   "admm_persistent_workers.py": "16a19456 2026-09-18T22:41:36+01:00",
+   "audit_p3_snapshots.py": "d06d4595 2026-09-05T13:49:06+01:00",
+   "benders_parameters.py": "dcfcd9fd 2026-08-19T16:38:35+01:00",
+   "branch.py": "38344a38 2026-08-19T11:04:30+01:00",
+   "centralized_coordination.py": "5d014032 2025-11-27T14:55:42+00:00",
+   "convex_oracle.py": "8af3e242 2026-09-13T20:00:52+01:00",
+   "debug.py": "feca8618 2026-09-05T12:10:02+01:00",
+   "definitions.py": "92e3fafe 2026-09-15T04:24:31+01:00",
+   "energy_storage.py": "f952c969 2025-12-05T16:10:58+00:00",
+   "gate_result_io.py": "ed5ba42a 2026-09-27T20:24:37+01:00",
+   "generator.py": "475cc0a9 2024-11-29T09:07:47+00:00",
+   "helper_functions.py": "606da51e 2026-09-12T16:39:20+01:00",
+   "hierarchical_coordination.py": "ec3e2650 2025-12-03T16:00:55+00:00",
+   "interface_dual_capture.py": "ab0bcbc9 2026-09-27T21:13:30+01:00",
+   "load.py": "cb36bf0a 2025-07-22T14:27:52+01:00",
+   "main.py": "10bc61a9 2026-09-01T09:28:33+01:00",
+   "model_construction_helpers.py": "1d310565 2026-09-22T22:51:38+01:00",
+   "network.py": "a51ad9ba 2026-09-25T14:56:18+01:00",
+   "network_data.py": "feb7b5fe 2026-09-13T17:43:51+01:00",
+   "network_parameters.py": "feb7b5fe 2026-09-13T17:43:51+01:00",
+   "node.py": "5b47352a 2024-04-22T09:51:20+01:00",
+   "planning_parameters.py": "6382bd49 2025-08-15T17:18:25+01:00",
+   "settling_criterion.py": "ab0bcbc9 2026-09-27T21:13:30+01:00",
+   "settling_criterion_v2.py": "e2c1ac09 2026-09-28T17:47:49+01:00",
+   "settling_criterion_v3.py": "9fd91ded 2026-09-29T23:09:48+01:00",
+   "settling_criterion_v4.py": "9edb5158 2026-09-30T08:17:02+01:00",
+   "settling_criterion_v5.py": "87ee2b14 2026-09-30T15:00:01+01:00",
+   "settling_criterion_v6.py": "575bfec4 2026-09-30T20:56:11+01:00",
+   "shared_energy_storage.py": "7dea5275 2026-09-12T15:47:06+01:00",
+   "shared_energy_storage_data.py": "e5721b6d 2026-09-21T13:51:57+01:00",
+   "shared_energy_storage_parameters.py": "b03c9b14 2026-09-13T16:30:51+01:00",
+   "shared_ess_price_taker.py": "fecba762 2026-09-16T16:01:55+01:00",
+   "shared_resources_planning.py": "a51ad9ba 2026-09-25T14:56:18+01:00",
+   "solver_parameters.py": "f5c2d87c 2026-09-22T13:24:42+01:00",
+   "uncoordinated_benchmark.py": "9098d4cd 2026-09-28T19:08:54+01:00",
+   "validate_vmag_refactor.py": "feca8618 2026-09-05T12:10:02+01:00"
+  },
+  "last_production_commit": "575bfec4 2026-09-30T20:56:11+01:00 P5.15 W142 (Addendum 61): v6 re-settling code - settling_criterion_v6 (v5 with the swing noise floor F = tau/10: (A) swings below F excluded from the growth comparis",
+  "model_file_numstat_bitwise_gate_w83_head_to_HEAD": [],
+  "model_file_numstat_bitwise_gate_w84_head_to_HEAD": [],
+  "replay_w86_recert_c3": {
+   "original_head": "deac7d9a1fa7f26e583462d2dbe4124a438de688",
+   "replay_head": "4ca1573d5d8835891d2d26cd9679a11db3cbab06",
+   "model_file_numstat_original_to_replay": [],
+   "model_file_numstat_replay_to_HEAD": []
+  },
+  "replay_s47_phase_b_c5": {
+   "original_head": "7c563e9b3820c47eac24ff8d550871550778012e",
+   "replay_head": "55bb1e7d3423b2936d91dd85f957d0e018ab53a6",
+   "model_file_numstat_original_to_replay": [
+    "76\t0\tadmm_parameters.py",
+    "385\t36\tmodel_construction_helpers.py",
+    "188\t5\tnetwork.py",
+    "852\t43\tshared_resources_planning.py"
+   ],
+   "model_file_numstat_replay_to_HEAD": []
+  }
+ },
+ "files": {
+  "shared_energy_storage_data.py": {
+   "sha256": "9acd095fb5e50e9b64c253600ae05ebb8e6463fd7a999d3a90f96ee82f037796",
+   "n_lines": 2889,
+   "tracked": true,
+   "status_clean": true,
+   "head_blob": "ff4162c2348a5b075d225bd3f2d63a57dae0508e",
+   "worktree_blob": "ff4162c2348a5b075d225bd3f2d63a57dae0508e",
+   "ok": true
+  },
+  "p515_s44_campaign_harness.py": {
+   "sha256": "9c6bda1969eca917c7875c1e4a84ab004a3b55edf52ad87179e12c816bbb7f21",
+   "n_lines": 5911,
+   "tracked": true,
+   "status_clean": true,
+   "head_blob": "5e38a38413bc4dcb8d1c2567ea4fc9598574dec5",
+   "worktree_blob": "5e38a38413bc4dcb8d1c2567ea4fc9598574dec5",
+   "ok": true
+  },
+  "p515_s47_phase_b_record.py": {
+   "sha256": "97f573e52fb574836a72dce8c61b3d5c6b8919aa509e0ffbc04a1a6473ed6c62",
+   "n_lines": 1575,
+   "tracked": true,
+   "status_clean": true,
+   "head_blob": "c96a4c9300f538a09da02a3b7528fbce05c3377a",
+   "worktree_blob": "c96a4c9300f538a09da02a3b7528fbce05c3377a",
+   "ok": true
+  },
+  "p515_s51_f2_phase_b.py": {
+   "sha256": "87ab3b2d23729d1fa10fe8c4bae0cec7d8daf0644f1cb8e6c314b441dcd13b29",
+   "n_lines": 1270,
+   "tracked": true,
+   "status_clean": true,
+   "head_blob": "28c2b3f9d239cadb33d420dc0f14ddac379e9be0",
+   "worktree_blob": "28c2b3f9d239cadb33d420dc0f14ddac379e9be0",
+   "ok": true
+  },
+  "p515_s46_ageing_campaign.py": {
+   "sha256": "3104ea46f7a181558fdc19b437a7232df0d8a97d3972f12266a5b8fa4752611f",
+   "n_lines": 823,
+   "tracked": true,
+   "status_clean": true,
+   "head_blob": "4961c3c81fc3cd6260d44ad559c65e9c1d434eae",
+   "worktree_blob": "4961c3c81fc3cd6260d44ad559c65e9c1d434eae",
+   "ok": true
+  },
+  "shared_resources_planning.py": {
+   "sha256": "0610d745a41c86c71dae9e776f0dc8e38c7099f73128a3d2c2e8f861ab9fc9c0",
+   "n_lines": 13484,
+   "tracked": true,
+   "status_clean": true,
+   "head_blob": "050bc411715e630d46bbba8f12a28a81c5c70ad7",
+   "worktree_blob": "050bc411715e630d46bbba8f12a28a81c5c70ad7",
+   "ok": true
+  },
+  "model_construction_helpers.py": {
+   "sha256": "a20a224f11008de8c0206484583b00253677267d616e1051bb1583791ed47f64",
+   "n_lines": 2511,
+   "tracked": true,
+   "status_clean": true,
+   "head_blob": "5b0de5fca140e4cb0ff6eb2c169e9ecb91749b74",
+   "worktree_blob": "5b0de5fca140e4cb0ff6eb2c169e9ecb91749b74",
+   "ok": true
+  },
+  "admm_persistent_workers.py": {
+   "sha256": "39dcbd267bb224e65197ca427952b08d45d3bbe98785b73fd55148c0979e1125",
+   "n_lines": 969,
+   "tracked": true,
+   "status_clean": true,
+   "head_blob": "0d6caa30df0bffed4d7bbb5faf7fc63322f188df",
+   "worktree_blob": "0d6caa30df0bffed4d7bbb5faf7fc63322f188df",
+   "ok": true
+  },
+  "p515_s47_baseline_campaign.py": {
+   "sha256": "abaf503d410b94201d6bfbc2f4d2e63927f86f3294883855fc020ff1274db4e2",
+   "n_lines": 1021,
+   "tracked": true,
+   "status_clean": true,
+   "head_blob": "5d1534273811baf96e14e753f1eeaf9fc9bdaef6",
+   "worktree_blob": "5d1534273811baf96e14e753f1eeaf9fc9bdaef6",
+   "ok": true
+  },
+  "network.py": {
+   "sha256": "18acaa84af7a043898a7b831223b4eab1d91f9bcf2c199f49beecfeb3bf91fb4",
+   "n_lines": 2473,
+   "tracked": true,
+   "status_clean": true,
+   "head_blob": "ffa61728b2bc449d4aa14a055c4ffbe4683f898e",
+   "worktree_blob": "ffa61728b2bc449d4aa14a055c4ffbe4683f898e",
+   "ok": true
+  },
+  "definitions.py": {
+   "sha256": "7e5719af129df111db1b403feeffe0b566d0b7f2e72915829e16bf143a9321af",
+   "n_lines": 98,
+   "tracked": true,
+   "status_clean": true,
+   "head_blob": "2f649080e8e753c878b92b1579cbbcdf040b0d6b",
+   "worktree_blob": "2f649080e8e753c878b92b1579cbbcdf040b0d6b",
+   "ok": true
+  },
+  "uncoordinated_benchmark.py": {
+   "sha256": "45d1c09db9b687040d57c8b01c1d092f3b53aa120f0e3229d998c435d261e31a",
+   "n_lines": 1730,
+   "tracked": true,
+   "status_clean": true,
+   "head_blob": "c808e3c135aa8db6af57da0df539e00d83367bcb",
+   "worktree_blob": "c808e3c135aa8db6af57da0df539e00d83367bcb",
+   "ok": true
+  },
+  "p515_g_g1_g4_admm_gates.py": {
+   "sha256": "6f4631e10a2f8a7786390c0f96e45332706779ae9cdf6a87ddd716d9ad9ad346",
+   "n_lines": 7075,
+   "tracked": true,
+   "status_clean": true,
+   "head_blob": "89ec636d519e579cd232401ec2dcb0957967f1dd",
+   "worktree_blob": "89ec636d519e579cd232401ec2dcb0957967f1dd",
+   "ok": true
+  },
+  "admm_parameters.py": {
+   "sha256": "40d0e972dcadfb4de099a0203682ba2e93badc62d9ae989f87be40b1ce3b75fa",
+   "n_lines": 708,
+   "tracked": true,
+   "status_clean": true,
+   "head_blob": "98e77817859591d59766fdcd155e431d6a6dc722",
+   "worktree_blob": "98e77817859591d59766fdcd155e431d6a6dc722",
+   "ok": true
+  },
+  "p59_rho.py": {
+   "sha256": "12d66b48fc473dd809638ea56ad470c5e9dfcaa5dc08be37f8af0bbfb17c159b",
+   "n_lines": 248,
+   "tracked": true,
+   "status_clean": true,
+   "head_blob": "7565326c213c40e21370fcb7136ff317b9b5d10a",
+   "worktree_blob": "7565326c213c40e21370fcb7136ff317b9b5d10a",
+   "ok": true
+  },
+  "network_parameters.py": {
+   "sha256": "086c7e411f8a3aeb983c4b049c14f231750d119dc126f6c92ef8df77d0bacc94",
+   "n_lines": 190,
+   "tracked": true,
+   "status_clean": true,
+   "head_blob": "c611c501a31228973ac8f4910933db3777538248",
+   "worktree_blob": "c611c501a31228973ac8f4910933db3777538248",
+   "ok": true
+  },
+  "p56a_oracle.py": {
+   "sha256": "699d571a2d69b14fd89024c535fa8b3ffa0625aa647f1714060dcc9cf6fa2f11",
+   "n_lines": 1246,
+   "tracked": true,
+   "status_clean": true,
+   "head_blob": "31549d666e63c2450afaa36e13601e67942ff73b",
+   "worktree_blob": "31549d666e63c2450afaa36e13601e67942ff73b",
+   "ok": true
+  },
+  "p515_s44_gate.py": {
+   "sha256": "38408b3080b78d16c583eaf711899f63acb4fcd31f0a009fa4d6d795d481b803",
+   "n_lines": 309,
+   "tracked": true,
+   "status_clean": true,
+   "head_blob": "7ef67f6271c524e411354ee80e5fc77176bcc7a2",
+   "worktree_blob": "7ef67f6271c524e411354ee80e5fc77176bcc7a2",
+   "ok": true
+  },
+  "PLANNER_BRIEF_2026-09-13.md": {
+   "sha256": "417f94f526f007dc1e0cd6988bd5fb43c75c2a5d624c24b723b2b0c1db68fc4e",
+   "n_lines": 3763,
+   "tracked": true,
+   "status_clean": true,
+   "head_blob": "a319eb16db5c2b5bfab2ff3a3975891e49ad480f",
+   "worktree_blob": "a319eb16db5c2b5bfab2ff3a3975891e49ad480f",
+   "ok": true
+  },
+  "p515_s53_w142_resettle_ext_v6_campaign.py": {
+   "sha256": "0a3232069d232b85815ea88b03478b52c54ff3be9b8b4b014f039addd94caa28",
+   "n_lines": 2188,
+   "tracked": true,
+   "status_clean": true,
+   "head_blob": "274b573ba4913843c5f6a7a815df7fc973cb493b",
+   "worktree_blob": "274b573ba4913843c5f6a7a815df7fc973cb493b",
+   "ok": true
+  },
+  "p515_s53_srp1_bitwise_gate.py": {
+   "sha256": "b63b1fb94ec305a782cb139d6e9c42be8b7a49b2ef78cb0d174f09e3d53f6766",
+   "n_lines": 417,
+   "tracked": true,
+   "status_clean": true,
+   "head_blob": "a9f22ff670c360614ff357e41a62472da8cf5cbd",
+   "worktree_blob": "a9f22ff670c360614ff357e41a62472da8cf5cbd",
+   "ok": true
+  }
+ },
+ "claims": [
+  {
+   "id": "Z1a-01",
+   "item": "Z1a",
+   "file": "shared_energy_storage_data.py",
+   "line_first": 58,
+   "line_last": 69,
+   "statement": "No-ageing is an attribute of SharedEnergyStorageData (default True), changed only by a model-variant evaluation of the campaign harness, never by a case file.",
+   "required_substrings": [
+    "ageing_enabled: True (default); False -- D == 0 and phi_cal == 1",
+    "never by a case file",
+    "self.ageing_enabled = True"
+   ],
+   "missing_substrings": [],
+   "citation_holds": true,
+   "excerpt": "        # P5.15 Addenda 28-29 (task W20): two ageing-MODEL switches, consumed by\n        # `_build_subproblem` / `_build_terminal_salvage_value_expression` through\n        # `_esso_ageing_model_settings`. The defaults reproduce the pre-W20 model\n        # exactly; they are changed only by a model-variant evaluation\n        # (`p515_s44_campaign_harness`, `model_variant`), never by a case file.\n        #   available_energy_soh_point: 'end' (default) -- the available energy of\n        #       block y uses the END-of-block SoH; 'mid' -- the MID-block SoH (see\n        #       `_esso_ageing_model_settings`).\n        #   ageing_enabled: True (default); False -- D == 0 and phi_cal == 1, so\n        #       SoH == 1 everywhere (available energy == rated energy).\n        self.available_energy_soh_point = AVAILABLE_ENERGY_SOH_POINT_DEFAULT\n        self.ageing_enabled = True",
+   "excerpt_sha256": "afcae5e1a492662bef749639f55d149b25c727733114b8c8fe308f4475493569",
+   "file_sha256": "9acd095fb5e50e9b64c253600ae05ebb8e6463fd7a999d3a90f96ee82f037796"
+  },
+  {
+   "id": "Z1a-02",
+   "item": "Z1a",
+   "file": "shared_energy_storage_data.py",
+   "line_first": 1529,
+   "line_last": 1563,
+   "statement": "The production reader of the switch; documents D == 0, phi == 1, SoH == 1, floor row kept.",
+   "required_substrings": [
+    "`ageing_enabled` False: D_y == 0 (the D row becomes `D == 0`, so k is never",
+    "The soh_min floor row is kept (trivially satisfied)",
+    "ageing_enabled = getattr(shared_ess_data, 'ageing_enabled', True)"
+   ],
+   "missing_substrings": [],
+   "citation_holds": true,
+   "excerpt": "def _esso_ageing_model_settings(shared_ess_data):\n    \"\"\"The two ageing-model switches (P5.15 Addenda 28-29, task W20), validated.\n\n    Returns `(available_energy_soh_point, ageing_enabled)`. Defaults ('end',\n    True) reproduce the pre-W20 ESSO model exactly. `getattr` defaults are used\n    because `SharedEnergyStorageData` objects pickled before W20 (preserved\n    fixtures) carry neither attribute; for them the default IS the model they\n    were built with.\n\n    SoH law (unchanged; `energy_storage_capacity_degradation`), per cohort y_inv\n    and block y of width n = num_years (the investment block's width):\n        D_y     = 365 * n * EFC/day_y / k          (k = cl_eff)\n        SoH_y   = SoH_{y-1} * exp(-D_y) * phi**n    (SoH_{y_inv - 1} = 1; END of block y)\n\n    `available_energy_soh_point`:\n      'end' (default): E_available_y = E_rated * SoH_y  (END-of-block SoH).\n      'mid':           E_available_y = E_rated * SoH_mid_y, with\n                           SoH_mid_y = SoH_{y-1} * exp(-D_y / 2) * phi**(n / 2).\n        Within block y the model's SoH decays exponentially, SoH(t) =\n        SoH_{y-1} * exp(-(D_y / n) * t) * phi**t for t in [0, n]; SoH_mid_y is\n        that curve at t = n / 2, which is also the GEOMETRIC mean of the block's\n        start and end values, sqrt(SoH_{y-1} * SoH_y). Only the available energy\n        changes: the END-of-block SoH_y still propagates to block y+1, to the\n        soh_min floor and to the terminal salvage exactly as with 'end'.\n    `ageing_enabled` False: D_y == 0 (the D row becomes `D == 0`, so k is never\n      divided by) and phi == 1, hence SoH == 1 everywhere and E_available ==\n      E_rated. The soh_min floor row is kept (trivially satisfied).\"\"\"\n    soh_point = getattr(shared_ess_data, 'available_energy_soh_point', AVAILABLE_ENERGY_SOH_POINT_DEFAULT)\n    ageing_enabled = getattr(shared_ess_data, 'ageing_enabled', True)\n    if soh_point not in AVAILABLE_ENERGY_SOH_POINTS:\n        raise ValueError(f'available_energy_soh_point must be one of {AVAILABLE_ENERGY_SOH_POINTS}, '\n                         f'got {soh_point!r}.')\n    if not isinstance(ageing_enabled, bool):\n        raise ValueError(f'ageing_enabled must be a bool, got {ageing_enabled!r}.')\n    return soh_point, ageing_enabled",
+   "excerpt_sha256": "67d7a290593df0c558bb1709037a8b793f09e18a9cb6a501b6283ca5ae3c4173",
+   "file_sha256": "9acd095fb5e50e9b64c253600ae05ebb8e6463fd7a999d3a90f96ee82f037796"
+  },
+  {
+   "id": "Z1a-03",
+   "item": "Z1a",
+   "file": "shared_energy_storage_data.py",
+   "line_first": 676,
+   "line_last": 711,
+   "statement": "Ageing off: the D row is D == 0 (k never consumed -- not a k -> infinity limit) and phi_cal is forced to 1.0 whatever calendar_retention_per_year says; ageing on: D * (2 k E_inv) == 365 n avg_ch_dch (product form).",
+   "required_substrings": [
+    "phi_cal = shared_energy_storage.phi_cal",
+    "if not ageing_enabled:",
+    "phi_cal = 1.00",
+    "2 * shared_energy_storage.cl_eff * model.es_e_investment_fixed[y_inv]",
+    "model.es_D_per_unit[y_inv, y] == 0.00)"
+   ],
+   "missing_substrings": [],
+   "citation_holds": true,
+   "excerpt": "    for y_inv in model.years:\n\n        num_years = shared_ess_data.years[repr_years[y_inv]]\n        shared_energy_storage = shared_ess_data.shared_energy_storages[repr_years[y_inv]][shared_ess_idx]\n        tcal_norm = round(shared_energy_storage.t_cal / (shared_ess_data.years[repr_years[y_inv]]))\n        max_tcal_norm = min(y_inv + tcal_norm, len(shared_ess_data.years))\n        phi_cal = shared_energy_storage.phi_cal\n        if not ageing_enabled:\n            # P5.15 Addenda 28-29 (task W20): ageing off -- no calendar loss.\n            phi_cal = 1.00\n\n        for y in range(y_inv, max_tcal_norm):\n\n            model.es_soh_per_unit_cumul[y_inv, y].fixed = False\n\n            # Annual fractional loss D[y_inv, y] -- LINEAR: `es_e_investment_fixed`\n            # (a Param) is used here instead of the Var `es_e_rated_per_unit`,\n            # even though the two are equal for every (y_inv, y) in this range\n            # (by `rated_e_capacity_unit` above); this keeps the row a plain\n            # `D * constant == constant * avg_ch_dch` LP row instead of a\n            # bilinear D * Var product (\"E_rated is now a constant\", Step 1\n            # item 2). This substitution is only valid within this y-range,\n            # which is exactly where this row is defined.\n            if ageing_enabled:\n                _add_esso_cohort_constraint(\n                    model, 'energy_storage_capacity_degradation', y_inv, y,\n                    model.es_D_per_unit[y_inv, y] * (2 * shared_energy_storage.cl_eff * model.es_e_investment_fixed[y_inv])\n                    == 365.00 * num_years * model.es_avg_ch_dch_per_unit[y_inv, y])\n            else:\n                # P5.15 Addenda 28-29 (task W20): ageing off -- D == 0 directly, so\n                # the characteristic constant cl_eff is never divided by (no\n                # \"infinite k\"). Same row family and position, so the\n                # (D, SoH, floor) triple structure per (y_inv, y) is unchanged.\n                _add_esso_cohort_constraint(\n                    model, 'energy_storage_capacity_degradation', y_inv, y,\n                    model.es_D_per_unit[y_inv, y] == 0.00)",
+   "excerpt_sha256": "dfa5a2afb644c623ebd24529e3e18be48e8a3ba1677cb7db31c480b53741650a",
+   "file_sha256": "9acd095fb5e50e9b64c253600ae05ebb8e6463fd7a999d3a90f96ee82f037796"
+  },
+  {
+   "id": "Z1a-04",
+   "item": "Z1a",
+   "file": "shared_energy_storage_data.py",
+   "line_first": 713,
+   "line_last": 732,
+   "statement": "SoH row SoH_y = SoH_{y-1} exp(-D_y) phi^n with SoH_{y_inv-1} = 1; the floor row SoH >= soh_min stays BUILT and ACTIVE under no-ageing (non-binding at SoH = 1), i.e. \"floor inactive\" holds as non-binding, not as deactivated.",
+   "required_substrings": [
+    "prev_soh = 1.00",
+    "pe.exp(-model.es_D_per_unit[y_inv, y]) * (phi_cal ** num_years))",
+    "model.es_soh_per_unit_cumul[y_inv, y] >= shared_energy_storage.soh_min)"
+   ],
+   "missing_substrings": [],
+   "citation_holds": true,
+   "excerpt": "            # Previous cumulative SoH\n            prev_soh = 1.00\n            if y > y_inv:\n                prev_soh = model.es_soh_per_unit_cumul[y_inv, y - 1]\n\n            # Cumulative SoH -- continuous-compounding (log-domain) form. One\n            # `exp` per cohort-year; `phi_cal` is the calendar-ageing retention\n            # factor (`ageing.calendar_retention_per_year`, default 1.0/neutral).\n            _add_esso_cohort_constraint(\n                model, 'energy_storage_capacity_degradation', y_inv, y,\n                model.es_soh_per_unit_cumul[y_inv, y]\n                == prev_soh * pe.exp(-model.es_D_per_unit[y_inv, y]) * (phi_cal ** num_years))\n\n            # Minimum admissible SoH -- LINEAR floor directly on the cumulative\n            # SoH variable (Step 1 item 2). Equivalent to the retired\n            # `e_available >= soh_min * e_rated` floor given\n            # `available_e_capacity_unit`'s definition of e_available (above).\n            _add_esso_cohort_constraint(\n                model, 'energy_storage_capacity_degradation', y_inv, y,\n                model.es_soh_per_unit_cumul[y_inv, y] >= shared_energy_storage.soh_min)",
+   "excerpt_sha256": "5d538bc62204ab05e5c0c2cad41036aa0a72f0613de5b546316eb977d70f4ab1",
+   "file_sha256": "9acd095fb5e50e9b64c253600ae05ebb8e6463fd7a999d3a90f96ee82f037796"
+  },
+  {
+   "id": "Z1a-05",
+   "item": "Z1a",
+   "file": "shared_energy_storage_data.py",
+   "line_first": 604,
+   "line_last": 628,
+   "statement": "Available energy E_av = E_rated * SoH ('end', the E1 setting); 'mid' uses the mid-block SoH with phi forced to 1.0 when ageing is off.",
+   "required_substrings": [
+    "soh_point, ageing_enabled = _esso_ageing_model_settings(shared_ess_data)",
+    "phi_cal = shared_energy_storage.phi_cal if ageing_enabled else 1.00",
+    "model.es_e_rated_per_unit[y_inv, y] * model.es_soh_per_unit_cumul[y_inv, y])"
+   ],
+   "missing_substrings": [],
+   "citation_holds": true,
+   "excerpt": "    soh_point, ageing_enabled = _esso_ageing_model_settings(shared_ess_data)\n    mid_block_context = dict()\n    if soh_point == 'mid':\n        for y_inv in model.years:\n            shared_energy_storage = shared_ess_data.shared_energy_storages[repr_years[y_inv]][shared_ess_idx]\n            num_years = shared_ess_data.years[repr_years[y_inv]]\n            tcal_norm = round(shared_energy_storage.t_cal / (shared_ess_data.years[repr_years[y_inv]]))\n            max_tcal_norm = min(y_inv + tcal_norm, len(shared_ess_data.years))\n            phi_cal = shared_energy_storage.phi_cal if ageing_enabled else 1.00\n            for y in range(y_inv, max_tcal_norm):\n                mid_block_context[(y_inv, y)] = (num_years, phi_cal)\n    model.available_s_capacity_unit = pe.ConstraintList()\n    model.available_e_capacity_unit = pe.ConstraintList()\n    for y_inv in model.years:\n        for y in model.years:\n            model.available_s_capacity_unit.add(model.es_s_available_per_unit[y_inv, y] == model.es_s_rated_per_unit[y_inv, y])\n            if (y_inv, y) in mid_block_context:\n                num_years, phi_cal = mid_block_context[(y_inv, y)]\n                prev_soh = 1.00\n                if y > y_inv:\n                    prev_soh = model.es_soh_per_unit_cumul[y_inv, y - 1]\n                soh_mid = prev_soh * pe.exp(-model.es_D_per_unit[y_inv, y] / 2.00) * (phi_cal ** (num_years / 2.00))\n                model.available_e_capacity_unit.add(model.es_e_available_per_unit[y_inv, y] == model.es_e_rated_per_unit[y_inv, y] * soh_mid)\n            else:\n                model.available_e_capacity_unit.add(model.es_e_available_per_unit[y_inv, y] == model.es_e_rated_per_unit[y_inv, y] * model.es_soh_per_unit_cumul[y_inv, y])",
+   "excerpt_sha256": "054257a8622b29376f313d398c084200ce086129853719a6b795c88acad79a46",
+   "file_sha256": "9acd095fb5e50e9b64c253600ae05ebb8e6463fd7a999d3a90f96ee82f037796"
+  },
+  {
+   "id": "Z1a-06",
+   "item": "Z1a",
+   "file": "p515_s44_campaign_harness.py",
+   "line_first": 336,
+   "line_last": 339,
+   "statement": "model_variant is a per-entry evaluation option of the campaign harness.",
+   "required_substrings": [
+    "'model_variant'"
+   ],
+   "missing_substrings": [],
+   "citation_holds": true,
+   "excerpt": "EVALUATION_OPTION_KEYS = frozenset({'overrides', 'post_certification', 'investment_year', 'model_variant',\n                                    'flex_price_multiplier', 'interface_deviation_premium',\n                                    'release_solution_bookkeeping', 'certification_continuation',\n                                    'settling_continuation', 'settling_extension', 'settling_resettle'})",
+   "excerpt_sha256": "af1f65b561e2c3f48ddd8da0a2064120ad50c0a61ed7b4a0b976308f0a8e909f",
+   "file_sha256": "9c6bda1969eca917c7875c1e4a84ab004a3b55edf52ad87179e12c816bbb7f21"
+  },
+  {
+   "id": "Z1a-07",
+   "item": "Z1a",
+   "file": "p515_s44_campaign_harness.py",
+   "line_first": 366,
+   "line_last": 370,
+   "statement": "Exactly four keys; eol_retention_r is REQUIRED even when ageing is off (it is then inert in the model).",
+   "required_substrings": [
+    "MODEL_VARIANT_KEYS = frozenset({'eol_retention_r', 'calendar_retention_per_year', 'available_energy_soh_point',",
+    "'ageing_enabled'})"
+   ],
+   "missing_substrings": [],
+   "citation_holds": true,
+   "excerpt": "# Addenda 28-29 (W20): a MODEL VARIANT of the shared-ESS ageing law (see `validate_model_variant`). Exactly these\n# four keys; `available_energy_soh_point` values mirror shared_energy_storage_data.AVAILABLE_ENERGY_SOH_POINTS\n# (re-checked against production in the child, so the parent stays free of model imports).\nMODEL_VARIANT_KEYS = frozenset({'eol_retention_r', 'calendar_retention_per_year', 'available_energy_soh_point',\n                                'ageing_enabled'})",
+   "excerpt_sha256": "bc2bbf5cdcea2ec05d4f8762a2652ed8cbc408b4d0401a1fa4a2a3f38e2fbfe2",
+   "file_sha256": "9c6bda1969eca917c7875c1e4a84ab004a3b55edf52ad87179e12c816bbb7f21"
+  },
+  {
+   "id": "Z1a-08",
+   "item": "Z1a",
+   "file": "p515_s44_campaign_harness.py",
+   "line_first": 646,
+   "line_last": 650,
+   "statement": "eol_retention_r in (0,1) and calendar retention in (0,1]: k = N D/(-ln R) is always finite, so no case-file or variant value reaches k -> infinity; the only exact no-ageing route is ageing_enabled = False.",
+   "required_substrings": [
+    "must lie in (0, 1), got",
+    "must lie in (0, 1], got"
+   ],
+   "missing_substrings": [],
+   "citation_holds": true,
+   "excerpt": "    if not 0.0 < out['eol_retention_r'] < 1.0:\n        raise ValueError(f\"model_variant.eol_retention_r must lie in (0, 1), got {out['eol_retention_r']}\")\n    if not 0.0 < out['calendar_retention_per_year'] <= 1.0:\n        raise ValueError(f\"model_variant.calendar_retention_per_year must lie in (0, 1], got \"\n                         f\"{out['calendar_retention_per_year']}\")",
+   "excerpt_sha256": "a0a8dd46d93c4512581b592c724c7e3c16bd89d6d352394b5bd2ec51fa7eaf59",
+   "file_sha256": "9c6bda1969eca917c7875c1e4a84ab004a3b55edf52ad87179e12c816bbb7f21"
+  },
+  {
+   "id": "Z1a-09",
+   "item": "Z1a",
+   "file": "p515_s44_campaign_harness.py",
+   "line_first": 2302,
+   "line_last": 2346,
+   "statement": "The variant is applied in the child to the deep-copied shared-ESS data BEFORE any ESSO model is built, through production's own apply_to and read back by production's own settings reader.",
+   "required_substrings": [
+    "needs an ACTIVE degradation calibration",
+    "sed.ageing_enabled = model_variant['ageing_enabled']",
+    "ageing.apply_to(ess)",
+    "settings = SED._esso_ageing_model_settings(sed)"
+   ],
+   "missing_substrings": [],
+   "citation_holds": true,
+   "excerpt": "def apply_model_variant(sed, model_variant):\n    \"\"\"Apply a validated `model_variant` to THIS evaluation's (deep-copied) shared-ESS data, BEFORE any\n    ESSO model is built: the calibration's eol_retention_r and calendar_retention_per_year on the loaded\n    ageing parameters, re-applied to every SharedEnergyStorage by production's own\n    `EnergyStorageAgeingParameters.apply_to` (so cl_eff = k is recomputed by production); the two\n    ageing-model switches on the shared-ESS data object. Verified to have taken effect: every ESS carries\n    the expected k and phi, and every other ageing constant is unchanged. Returns the applied record.\"\"\"\n    import shared_energy_storage_data as SED\n    model_variant = validate_model_variant(model_variant)\n    if tuple(SED.AVAILABLE_ENERGY_SOH_POINTS) != MODEL_VARIANT_SOH_POINTS:\n        raise RuntimeError(f'MODEL_VARIANT_SOH_POINTS {MODEL_VARIANT_SOH_POINTS} != production '\n                           f'{SED.AVAILABLE_ENERGY_SOH_POINTS}')\n    ageing = sed.params.ageing\n    if not ageing.calibration.is_active():\n        raise RuntimeError('model_variant.eol_retention_r needs an ACTIVE degradation calibration (otherwise '\n                           'production consumes cl_nom and the retention would silently not apply)')\n    before = _ageing_state(sed)\n    ageing.calibration.eol_retention_r = model_variant['eol_retention_r']\n    ageing.calendar_retention_per_year = model_variant['calendar_retention_per_year']\n    for year in sed.years:\n        for ess in sed.shared_energy_storages[year]:\n            ageing.apply_to(ess)\n    sed.available_energy_soh_point = model_variant['available_energy_soh_point']\n    sed.ageing_enabled = model_variant['ageing_enabled']\n    settings = SED._esso_ageing_model_settings(sed)  # production's own validation\n    after = _ageing_state(sed)\n    expected = model_variant_expected(model_variant, sed)\n    k_expected = model_variant_expected(dict(model_variant, ageing_enabled=True), sed)['k']\n    unchanged = ('bus', 't_cal', 'cl_nom', 'dod_nom', 'soh_min')\n    checks = {\n        'settings_read_by_production': settings == (model_variant['available_energy_soh_point'],\n                                                    model_variant['ageing_enabled']),\n        'every_ess_cl_eff_is_k': all(e['cl_eff'] == k_expected for e in after['per_ess']),\n        'every_ess_phi_cal_is_variant': all(e['phi_cal'] == model_variant['calendar_retention_per_year']\n                                            for e in after['per_ess']),\n        'other_ageing_constants_unchanged': ([{k: e[k] for k in unchanged} for e in before['per_ess']]\n                                             == [{k: e[k] for k in unchanged} for e in after['per_ess']]),\n        'calibration_n_d_status_unchanged': all(before['calibration'][k] == after['calibration'][k]\n                                                for k in ('status', 'cycles_n', 'reference_dod_d')),\n    }\n    failed = sorted(k for k, v in checks.items() if not v)\n    if failed:\n        raise RuntimeError(f'model_variant did not take effect as specified: {failed}')\n    return {'model_variant': model_variant, 'label': MODEL_VARIANT_LABEL, 'before': before, 'after': after,\n            'expected_in_model': expected, 'k_of_calibration_as_applied': k_expected, 'checks': checks}",
+   "excerpt_sha256": "0d140fdfe1c47eb17e6687c33347433c42e57978e0f16e13abb7af3f70c658b6",
+   "file_sha256": "9c6bda1969eca917c7875c1e4a84ab004a3b55edf52ad87179e12c816bbb7f21"
+  },
+  {
+   "id": "Z1a-10",
+   "item": "Z1a",
+   "file": "p515_s44_campaign_harness.py",
+   "line_first": 2998,
+   "line_last": 3010,
+   "statement": "Where the child applies it: the configuration hook (run_admm_arm pre_solve_hook).",
+   "required_substrings": [
+    "if model_variant is not None:",
+    "applied_mv = apply_model_variant(sed, model_variant)"
+   ],
+   "missing_substrings": [],
+   "citation_holds": true,
+   "excerpt": "        if model_variant is not None:\n            import shared_energy_storage_data as SED\n            applied_mv = apply_model_variant(sed, model_variant)\n            probes = {node_id: SED._build_subproblem(sed, node_id)\n                      for node_id in sed.active_distribution_network_nodes}\n            floor_rows_variant, _floor_counts = G._identify_soh_floor_rows(probes)\n            readback = model_variant_readback_models(probes, sed, model_variant, investment_year, clone=False)\n            del probes\n            floor_rows_ok = expected_floor_rows is None or floor_rows_variant == expected_floor_rows\n            holder['model_variant_applied'] = applied_mv\n            holder['model_variant_readback_pre_run'] = readback\n            report['rule_eleven_checklist']['w20_model_variant'] = {\n                'model_variant': model_variant, 'label': MODEL_VARIANT_LABEL,",
+   "excerpt_sha256": "419903a77faa695a8c2d5ea8820399b71912c084c490c9d3b9812ebbf0c73bf9",
+   "file_sha256": "9c6bda1969eca917c7875c1e4a84ab004a3b55edf52ad87179e12c816bbb7f21"
+  },
+  {
+   "id": "Z1a-11",
+   "item": "Z1a",
+   "file": "p515_s44_campaign_harness.py",
+   "line_first": 1126,
+   "line_last": 1133,
+   "statement": "The model variant enters the evaluation key, so aged and no-ageing evaluations of one candidate never share a cache key (and two no-ageing declarations differing only in the inert eol_retention_r get different keys).",
+   "required_substrings": [
+    "payload['model_variant'] = model_variant"
+   ],
+   "missing_substrings": [],
+   "citation_holds": true,
+   "excerpt": "        if model_variant is not None:\n            payload['model_variant'] = model_variant\n        if flex_m is not None:\n            payload['flex_price_multiplier'] = flex_m\n        text = json.dumps(payload, sort_keys=True, separators=(',', ':'))\n        return hashlib.sha256(text.encode()).hexdigest()\n    if model_variant is not None:\n        payload = {'candidate_key': candidate_key_hex, 'overrides': overrides or {}, 'model_variant': model_variant}",
+   "excerpt_sha256": "b9120473f5863046a98797a3b5f30361849864e274100a9e27814ade6498e6ec",
+   "file_sha256": "9c6bda1969eca917c7875c1e4a84ab004a3b55edf52ad87179e12c816bbb7f21"
+  },
+  {
+   "id": "Z1a-12",
+   "item": "Z1a",
+   "file": "p515_s47_phase_b_record.py",
+   "line_first": 874,
+   "line_last": 875,
+   "statement": "The committed Phase-B search launcher (PB, imported by every later search) asserts NO model variant.",
+   "required_substrings": [
+    "'no_model_variant': 'model_variant_label' not in spec and not any("
+   ],
+   "missing_substrings": [],
+   "citation_holds": true,
+   "excerpt": "        'no_model_variant': 'model_variant_label' not in spec and not any(\n            'model_variant' in e for e in spec.get('candidates') or []),",
+   "excerpt_sha256": "fbeb84683bfd4493eec3143aed02ad0bebce1128fcf890d666da0e0ae3139f28",
+   "file_sha256": "97f573e52fb574836a72dce8c61b3d5c6b8919aa509e0ffbc04a1a6473ed6c62"
+  },
+  {
+   "id": "Z1a-13",
+   "item": "Z1a",
+   "file": "p515_s51_f2_phase_b.py",
+   "line_first": 362,
+   "line_last": 363,
+   "statement": "The 2x (F2) Phase-B search launcher asserts NO ageing model variant on its cache sources ...",
+   "required_substrings": [
+    "'no_ageing_model_variant': ('model_variant_label' not in spec"
+   ],
+   "missing_substrings": [],
+   "citation_holds": true,
+   "excerpt": "        'no_ageing_model_variant': ('model_variant_label' not in spec\n                                    and not any('model_variant' in e for e in entries)),",
+   "excerpt_sha256": "0ee10dd1b171fbc11d1e5663b7678a138913474b44fbcfbd59eadf58ed119033",
+   "file_sha256": "87ab3b2d23729d1fa10fe8c4bae0cec7d8daf0644f1cb8e6c314b441dcd13b29"
+  },
+  {
+   "id": "Z1a-14",
+   "item": "Z1a",
+   "file": "p515_s51_f2_phase_b.py",
+   "line_first": 851,
+   "line_last": 852,
+   "statement": "... and on its own frozen spec: a no-ageing SEARCH is not runnable through the committed search launchers without a launcher change (harness-level; no production change).",
+   "required_substrings": [
+    "'no_ageing_model_variant': ('model_variant_label' not in spec"
+   ],
+   "missing_substrings": [],
+   "citation_holds": true,
+   "excerpt": "        'no_ageing_model_variant': ('model_variant_label' not in spec\n                                    and not any('model_variant' in e for e in entries)),",
+   "excerpt_sha256": "0ee10dd1b171fbc11d1e5663b7678a138913474b44fbcfbd59eadf58ed119033",
+   "file_sha256": "87ab3b2d23729d1fa10fe8c4bae0cec7d8daf0644f1cb8e6c314b441dcd13b29"
+  },
+  {
+   "id": "Z1a-15",
+   "item": "Z1a",
+   "file": "p515_s46_ageing_campaign.py",
+   "line_first": 148,
+   "line_last": 154,
+   "statement": "The original W20 no-ageing arm declaration (s46, C3-era): eol 0.50 is inherited from the C3 calibration.",
+   "required_substrings": [
+    "('no_ageing', {'eol_retention_r': 0.50, 'calendar_retention_per_year': 1.0,",
+    "'available_energy_soh_point': 'end', 'ageing_enabled': False}),"
+   ],
+   "missing_substrings": [],
+   "citation_holds": true,
+   "excerpt": "            'available_energy_soh_point': 'end', 'ageing_enabled': True}),\n    ('C2_calfade', {'eol_retention_r': 0.80, 'calendar_retention_per_year': 0.985,\n                    'available_energy_soh_point': 'end', 'ageing_enabled': True}),\n    ('C3_midblock', {'eol_retention_r': 0.50, 'calendar_retention_per_year': 1.0,\n                     'available_energy_soh_point': 'mid', 'ageing_enabled': True}),\n    ('no_ageing', {'eol_retention_r': 0.50, 'calendar_retention_per_year': 1.0,\n                   'available_energy_soh_point': 'end', 'ageing_enabled': False}),",
+   "excerpt_sha256": "2622bb9e4cc18969bbcdbdb6fba1294f77d4e384e595d2d1f8461f416db83a5a",
+   "file_sha256": "3104ea46f7a181558fdc19b437a7232df0d8a97d3972f12266a5b8fa4752611f"
+  },
+  {
+   "id": "Z1b-01",
+   "item": "Z1b",
+   "file": "shared_energy_storage_data.py",
+   "line_first": 1566,
+   "line_last": 1570,
+   "statement": "Every row built through _add_esso_cohort_constraint is registered to its investment cohort.",
+   "required_substrings": [
+    "model._esso_cohort_constraints[y_inv].append((constraint_name, constraint_idx, y))"
+   ],
+   "missing_substrings": [],
+   "citation_holds": true,
+   "excerpt": "def _add_esso_cohort_constraint(model, constraint_name, y_inv, y, expr):\n    constraint_list = getattr(model, constraint_name)\n    constraint_list.add(expr)\n    constraint_idx = len(constraint_list)\n    model._esso_cohort_constraints[y_inv].append((constraint_name, constraint_idx, y))",
+   "excerpt_sha256": "4381d87ce8a420c5f1def5302f93255e3cecbd1aad9ed9ba2c68c512ee1c209b",
+   "file_sha256": "9acd095fb5e50e9b64c253600ae05ebb8e6463fd7a999d3a90f96ee82f037796"
+  },
+  {
+   "id": "Z1b-02",
+   "item": "Z1b",
+   "file": "shared_energy_storage_data.py",
+   "line_first": 666,
+   "line_last": 666,
+   "statement": "The throughput-definition row is cohort-registered.",
+   "required_substrings": [
+    "_add_esso_cohort_constraint(model, 'energy_storage_charging_discharging', y_inv, y,"
+   ],
+   "missing_substrings": [],
+   "citation_holds": true,
+   "excerpt": "            _add_esso_cohort_constraint(model, 'energy_storage_charging_discharging', y_inv, y, model.es_avg_ch_dch_per_unit[y_inv, y] == avg_ch_dch)",
+   "excerpt_sha256": "23fc35cff4ce104c049f7b681b658a24bc3e2c3ba1bc1f2939595ddf98834da4",
+   "file_sha256": "9acd095fb5e50e9b64c253600ae05ebb8e6463fd7a999d3a90f96ee82f037796"
+  },
+  {
+   "id": "Z1b-03",
+   "item": "Z1b",
+   "file": "shared_energy_storage_data.py",
+   "line_first": 700,
+   "line_last": 732,
+   "statement": "The D row, the SoH row and the floor row (every ageing-parameter-bearing ESSO row: k, phi, n, soh_min) are cohort-registered.",
+   "required_substrings": [
+    "model, 'energy_storage_capacity_degradation', y_inv, y,"
+   ],
+   "missing_substrings": [],
+   "citation_holds": true,
+   "excerpt": "                _add_esso_cohort_constraint(\n                    model, 'energy_storage_capacity_degradation', y_inv, y,\n                    model.es_D_per_unit[y_inv, y] * (2 * shared_energy_storage.cl_eff * model.es_e_investment_fixed[y_inv])\n                    == 365.00 * num_years * model.es_avg_ch_dch_per_unit[y_inv, y])\n            else:\n                # P5.15 Addenda 28-29 (task W20): ageing off -- D == 0 directly, so\n                # the characteristic constant cl_eff is never divided by (no\n                # \"infinite k\"). Same row family and position, so the\n                # (D, SoH, floor) triple structure per (y_inv, y) is unchanged.\n                _add_esso_cohort_constraint(\n                    model, 'energy_storage_capacity_degradation', y_inv, y,\n                    model.es_D_per_unit[y_inv, y] == 0.00)\n\n            # Previous cumulative SoH\n            prev_soh = 1.00\n            if y > y_inv:\n                prev_soh = model.es_soh_per_unit_cumul[y_inv, y - 1]\n\n            # Cumulative SoH -- continuous-compounding (log-domain) form. One\n            # `exp` per cohort-year; `phi_cal` is the calendar-ageing retention\n            # factor (`ageing.calendar_retention_per_year`, default 1.0/neutral).\n            _add_esso_cohort_constraint(\n                model, 'energy_storage_capacity_degradation', y_inv, y,\n                model.es_soh_per_unit_cumul[y_inv, y]\n                == prev_soh * pe.exp(-model.es_D_per_unit[y_inv, y]) * (phi_cal ** num_years))\n\n            # Minimum admissible SoH -- LINEAR floor directly on the cumulative\n            # SoH variable (Step 1 item 2). Equivalent to the retired\n            # `e_available >= soh_min * e_rated` floor given\n            # `available_e_capacity_unit`'s definition of e_available (above).\n            _add_esso_cohort_constraint(\n                model, 'energy_storage_capacity_degradation', y_inv, y,\n                model.es_soh_per_unit_cumul[y_inv, y] >= shared_energy_storage.soh_min)",
+   "excerpt_sha256": "0496362c7abf07bb996565abb6b8816cf425e9864b85dfff9b2eb7d3fb40be5d",
+   "file_sha256": "9acd095fb5e50e9b64c253600ae05ebb8e6463fd7a999d3a90f96ee82f037796"
+  },
+  {
+   "id": "Z1b-04",
+   "item": "Z1b",
+   "file": "shared_energy_storage_data.py",
+   "line_first": 1586,
+   "line_last": 1636,
+   "statement": "At x = 0 every cohort is inactive: avg_ch_dch, D fixed 0, SoH fixed 1.0, pch/pdch fixed 0, and EVERY cohort-registered row (incl. D, SoH, floor) deactivated.",
+   "required_substrings": [
+    "inactive = s_is_zero and e_is_zero",
+    "_set_esso_variable_state(model.es_D_per_unit[y_inv, y], active_pair, 0.0)",
+    "_set_esso_variable_state(model.es_soh_per_unit_cumul[y_inv, y], active_pair, 1.0)",
+    "_set_esso_variable_state(model.es_pch_per_unit[y_inv, y, d, p], active_pair, 0.0)",
+    "constraint.deactivate()"
+   ],
+   "missing_substrings": [],
+   "citation_holds": true,
+   "excerpt": "def _configure_esso_cohort_state(model, y_inv, s_capacity, e_capacity, slacks_enabled):\n\n    tolerance = SHARED_ESS_ZERO_CAPACITY_TOLERANCE\n    s_is_zero = abs(s_capacity) <= tolerance\n    e_is_zero = abs(e_capacity) <= tolerance\n    if s_is_zero != e_is_zero:\n        raise ValueError(f'Inconsistent shared ESS cohort capacity: S={s_capacity}, E={e_capacity}.')\n    inactive = s_is_zero and e_is_zero\n\n    model._esso_cohort_inactive[y_inv] = inactive\n\n    # ------------------------------------------------------------------\n    # Variables\n    # ------------------------------------------------------------------\n    for y in model.years:\n\n        within_lifetime = _esso_cohort_pair_is_within_lifetime(model, y_inv, y)\n        active_pair = (not inactive and within_lifetime)\n\n        # Annual degradation quantities\n        # P5.15-1: es_degradation_per_unit / es_degradation_per_unit_cumul /\n        # es_soh_per_unit and their slack families are retired; es_D_per_unit\n        # takes es_degradation_per_unit's former place (same gating, inactive\n        # value 0.0 -- consistent with D representing zero throughput/loss when\n        # the cohort is inactive or outside its calendar-life window).\n        _set_esso_variable_state(model.es_avg_ch_dch_per_unit[y_inv, y], active_pair, 0.0)\n        _set_esso_variable_state(model.es_D_per_unit[y_inv, y], active_pair, 0.0)\n        _set_esso_variable_state(model.es_soh_per_unit_cumul[y_inv, y], active_pair, 1.0)\n\n        # --------------------------------------------------------------\n        # Time-dependent operation\n        # --------------------------------------------------------------\n        for d in model.days:\n            for p in model.periods:\n                _set_esso_variable_state(model.es_pch_per_unit[y_inv, y, d, p], active_pair, 0.0)\n                _set_esso_variable_state(model.es_pdch_per_unit[y_inv, y, d, p], active_pair, 0.0)\n                # P5.15-1: es_pch_hat_per_unit / es_pdch_hat_per_unit / the\n                # complementarity slack are retired (Step 1 item 3).\n\n    # ------------------------------------------------------------------\n    # Constraints\n    # ------------------------------------------------------------------\n    for constraint_name, constraint_idx, y in (model._esso_cohort_constraints[y_inv]):\n        constraint = getattr(model, constraint_name)[constraint_idx]\n        active_constraint = (not inactive and _esso_cohort_pair_is_within_lifetime(model, y_inv, y))\n        if active_constraint:\n            constraint.activate()\n        else:\n            constraint.deactivate()\n\n    return inactive",
+   "excerpt_sha256": "97ec19d40f7ee9f71e391a49825eb16894a6ff539970ea463ac6c7f41ca71466",
+   "file_sha256": "9acd095fb5e50e9b64c253600ae05ebb8e6463fd7a999d3a90f96ee82f037796"
+  },
+  {
+   "id": "Z1b-05",
+   "item": "Z1b",
+   "file": "shared_energy_storage_data.py",
+   "line_first": 1441,
+   "line_last": 1447,
+   "statement": "Both are applied for every candidate (the production entry for the ESSO candidate).",
+   "required_substrings": [
+    "_configure_esso_cohort_state(model, y_inv, s_candidate, e_candidate, shared_ess_data.params.slacks)",
+    "_configure_esso_cohort_pnet_share_rows(model)"
+   ],
+   "missing_substrings": [],
+   "citation_holds": true,
+   "excerpt": "            _configure_esso_cohort_state(model, y_inv, s_candidate, e_candidate, shared_ess_data.params.slacks)\n\n        # P5.15 Addendum 3 item 2 (H3 rule): run once per node, AFTER every\n        # cohort's own activity has been (re)established above, since the\n        # per-cohort share and row selection need to know the FULL active-\n        # cohort set for each calendar year, not just this one cohort.\n        _configure_esso_cohort_pnet_share_rows(model)",
+   "excerpt_sha256": "aaa2bc528c729cc8264eb120572cbd41904759732a1bad87bb052047c5ceeda3",
+   "file_sha256": "9acd095fb5e50e9b64c253600ae05ebb8e6463fd7a999d3a90f96ee82f037796"
+  },
+  {
+   "id": "Z1b-06",
+   "item": "Z1b",
+   "file": "shared_energy_storage_data.py",
+   "line_first": 1709,
+   "line_last": 1714,
+   "statement": "Cohort-allocation (H3) rows: all deactivated, shares 0.0, when <= 1 cohort is active (x = 0: none).",
+   "required_substrings": [
+    "if n_active <= 1:",
+    "model.energy_storage_cohort_pnet_share_h3[constraint_idx].deactivate()"
+   ],
+   "missing_substrings": [],
+   "citation_holds": true,
+   "excerpt": "        if n_active <= 1:\n            for y_inv in years:\n                model.es_pnet_cohort_share_h3[y_inv, y].set_value(0.00)\n                for constraint_idx in rows_by_year_cohort[y][y_inv]:\n                    model.energy_storage_cohort_pnet_share_h3[constraint_idx].deactivate()\n            continue",
+   "excerpt_sha256": "2a7ceaaaf1fe13cf1114fb96a7b232a5d1227d21235d6702fa2fbe6982a71165",
+   "file_sha256": "9acd095fb5e50e9b64c253600ae05ebb8e6463fd7a999d3a90f96ee82f037796"
+  },
+  {
+   "id": "Z1b-07",
+   "item": "Z1b",
+   "file": "shared_energy_storage_data.py",
+   "line_first": 548,
+   "line_last": 550,
+   "statement": "SoH initialisation: built fixed at 1.0 (unfixed only inside an active window).",
+   "required_substrings": [
+    "initialize=1.00, bounds=(0.00, 1.00))",
+    "model.es_soh_per_unit_cumul.fix(1.00)"
+   ],
+   "missing_substrings": [],
+   "citation_holds": true,
+   "excerpt": "    model.es_soh_per_unit_cumul = pe.Var(model.years, model.years, domain=pe.NonNegativeReals, initialize=1.00, bounds=(0.00, 1.00))\n    model.es_D_per_unit = pe.Var(model.years, model.years, domain=pe.NonNegativeReals, initialize=0.00)\n    model.es_soh_per_unit_cumul.fix(1.00)",
+   "excerpt_sha256": "3aa5a61b84f7cdbeeca94ef68f890e62720e024d810be4a73a93228575116877",
+   "file_sha256": "9acd095fb5e50e9b64c253600ae05ebb8e6463fd7a999d3a90f96ee82f037796"
+  },
+  {
+   "id": "Z1b-08",
+   "item": "Z1b",
+   "file": "shared_energy_storage_data.py",
+   "line_first": 846,
+   "line_last": 854,
+   "statement": "The ESSO objective is the feasibility penalty only; the salvage is an Expression outside every objective.",
+   "required_substrings": [
+    "salvage_value = _build_terminal_salvage_value_expression(shared_ess_data, model, shared_ess_idx)",
+    "model.salvage_value = pe.Expression(expr=salvage_value)",
+    "expr=model.feasibility_penalty,"
+   ],
+   "missing_substrings": [],
+   "citation_holds": true,
+   "excerpt": "    salvage_value = _build_terminal_salvage_value_expression(shared_ess_data, model, shared_ess_idx)\n\n    model.feasibility_penalty = pe.Expression(expr=slack_penalty)\n    model.salvage_value = pe.Expression(expr=salvage_value)\n    model.salvage_credit = pe.Expression(expr=-model.salvage_value)\n    model.objective = pe.Objective(\n        sense=pe.minimize,\n        expr=model.feasibility_penalty,\n    )",
+   "excerpt_sha256": "188bf016ee5e45c56426c3501c0fed996f34c3f8451e2c279454b933be999e4f",
+   "file_sha256": "9acd095fb5e50e9b64c253600ae05ebb8e6463fd7a999d3a90f96ee82f037796"
+  },
+  {
+   "id": "Z1b-09",
+   "item": "Z1b",
+   "file": "shared_resources_planning.py",
+   "line_first": 1302,
+   "line_last": 1306,
+   "statement": "Q (gross) is the network primal values less transfers; the salvage enters only net_operational_recourse.",
+   "required_substrings": [
+    "gross_operational_cost = (gross_operational_cost_including_settlement",
+    "net_operational_recourse = gross_operational_cost - terminal_salvage_value"
+   ],
+   "missing_substrings": [],
+   "citation_holds": true,
+   "excerpt": "    gross_operational_cost = (gross_operational_cost_including_settlement\n                              - interface_settlement_contracted_total\n                              - voltage_pin_total)\n    terminal_salvage_value = planning_problem.shared_ess_data.get_salvage_value(models['esso'])\n    net_operational_recourse = gross_operational_cost - terminal_salvage_value",
+   "excerpt_sha256": "aaaffeb9397f1c6b7a5909cf0ce924a45fe4034acf6b0bfcaa767bd420ef9fb5",
+   "file_sha256": "0610d745a41c86c71dae9e776f0dc8e38c7099f73128a3d2c2e8f861ab9fc9c0"
+  },
+  {
+   "id": "Z1b-10",
+   "item": "Z1b",
+   "file": "shared_resources_planning.py",
+   "line_first": 1237,
+   "line_last": 1239,
+   "statement": "Q is summed over TSO and DSO blocks only (no ESSO term).",
+   "required_substrings": [
+    "transmission_network.get_primal_value(models",
+    "distribution_network.get_primal_value(models"
+   ],
+   "missing_substrings": [],
+   "citation_holds": true,
+   "excerpt": "    gross_operational_cost_including_settlement = planning_problem.transmission_network.get_primal_value(models['tso'])\n    for node_id, distribution_network in planning_problem.distribution_networks.items():\n        gross_operational_cost_including_settlement += distribution_network.get_primal_value(models['dso'][node_id])",
+   "excerpt_sha256": "7b6123a8e7f23140dd9cd4cd9ef24b5c7034f5f38960ad2a6edd03790387ff3b",
+   "file_sha256": "0610d745a41c86c71dae9e776f0dc8e38c7099f73128a3d2c2e8f861ab9fc9c0"
+  },
+  {
+   "id": "Z1b-11",
+   "item": "Z1b",
+   "file": "shared_energy_storage_data.py",
+   "line_first": 615,
+   "line_last": 628,
+   "statement": "The available-capacity rows are NOT cohort-registered (active at x = 0). In 'end' mode they read E_av = E_rated * SoH with SoH FIXED at 1.0 (no ageing parameter); in 'mid' mode the active row carries the coefficient phi**(n/2) (with D fixed 0, prev SoH fixed 1) -- the only ageing parameter that can reach an active ESSO row at x = 0, on a variable forced to 0. Both E1 arms use 'end'.",
+   "required_substrings": [
+    "model.available_s_capacity_unit.add(model.es_s_available_per_unit[y_inv, y] == model.es_s_rated_per_unit[y_inv, y])",
+    "model.available_e_capacity_unit.add(model.es_e_available_per_unit[y_inv, y] == model.es_e_rated_per_unit[y_inv, y] * soh_mid)"
+   ],
+   "missing_substrings": [],
+   "citation_holds": true,
+   "excerpt": "    model.available_s_capacity_unit = pe.ConstraintList()\n    model.available_e_capacity_unit = pe.ConstraintList()\n    for y_inv in model.years:\n        for y in model.years:\n            model.available_s_capacity_unit.add(model.es_s_available_per_unit[y_inv, y] == model.es_s_rated_per_unit[y_inv, y])\n            if (y_inv, y) in mid_block_context:\n                num_years, phi_cal = mid_block_context[(y_inv, y)]\n                prev_soh = 1.00\n                if y > y_inv:\n                    prev_soh = model.es_soh_per_unit_cumul[y_inv, y - 1]\n                soh_mid = prev_soh * pe.exp(-model.es_D_per_unit[y_inv, y] / 2.00) * (phi_cal ** (num_years / 2.00))\n                model.available_e_capacity_unit.add(model.es_e_available_per_unit[y_inv, y] == model.es_e_rated_per_unit[y_inv, y] * soh_mid)\n            else:\n                model.available_e_capacity_unit.add(model.es_e_available_per_unit[y_inv, y] == model.es_e_rated_per_unit[y_inv, y] * model.es_soh_per_unit_cumul[y_inv, y])",
+   "excerpt_sha256": "20f2b8f2f8071d3483a0d6c2005dc2933acdf643fe010a43dd2e041a5d5ea81b",
+   "file_sha256": "9acd095fb5e50e9b64c253600ae05ebb8e6463fd7a999d3a90f96ee82f037796"
+  },
+  {
+   "id": "Z1b-12",
+   "item": "Z1b",
+   "file": "shared_energy_storage_data.py",
+   "line_first": 562,
+   "line_last": 570,
+   "statement": "The cohort window depends on t_cal (calendar_life_years); model_variant never changes t_cal (Z1a-07), so both E1 arms share the window.",
+   "required_substrings": [
+    "tcal_norm = round(shared_energy_storage.t_cal / (shared_ess_data.years[repr_years[y_inv]]))",
+    "model.rated_e_capacity_unit.add(model.es_e_rated_per_unit[y_inv, y] == model.es_e_investment_fixed[y_inv])"
+   ],
+   "missing_substrings": [],
+   "citation_holds": true,
+   "excerpt": "    for y_inv in model.years:\n        shared_energy_storage = shared_ess_data.shared_energy_storages[repr_years[y_inv]][shared_ess_idx]\n        tcal_norm = round(shared_energy_storage.t_cal / (shared_ess_data.years[repr_years[y_inv]]))\n        max_tcal_norm = min(y_inv + tcal_norm, len(shared_ess_data.years))\n        for y in range(y_inv, max_tcal_norm):\n            model.es_s_rated_per_unit[y_inv, y].fixed = False\n            model.es_e_rated_per_unit[y_inv, y].fixed = False\n            model.rated_s_capacity_unit.add(model.es_s_rated_per_unit[y_inv, y] == model.es_s_investment_fixed[y_inv])\n            model.rated_e_capacity_unit.add(model.es_e_rated_per_unit[y_inv, y] == model.es_e_investment_fixed[y_inv])",
+   "excerpt_sha256": "e45145da7590a158606cc07b0383ee6af7807b10f9d6c939a5805d84ddcdea48",
+   "file_sha256": "9acd095fb5e50e9b64c253600ae05ebb8e6463fd7a999d3a90f96ee82f037796"
+  },
+  {
+   "id": "Z1b-13",
+   "item": "Z1b",
+   "file": "model_construction_helpers.py",
+   "line_first": 1117,
+   "line_last": 1121,
+   "statement": "Network side: shared-ESS rows read only the capacity Params; inactive when S or E is zero.",
+   "required_substrings": [
+    "def configure_shared_ess_operational_state(",
+    "inactive = shared_ess_capacity_is_inactive(s_capacity, e_capacity)"
+   ],
+   "missing_substrings": [],
+   "citation_holds": true,
+   "excerpt": "def configure_shared_ess_operational_state(\n        model, shared_ess_idx, s_capacity, e_capacity):\n    s_capacity = normalize_shared_ess_capacity(s_capacity)\n    e_capacity = normalize_shared_ess_capacity(e_capacity)\n    inactive = shared_ess_capacity_is_inactive(s_capacity, e_capacity)",
+   "excerpt_sha256": "2934e5ecea3e722cce9242c23b686992e7bab4fad05f055b9001d123bd5548eb",
+   "file_sha256": "a20a224f11008de8c0206484583b00253677267d616e1051bb1583791ed47f64"
+  },
+  {
+   "id": "Z1b-14",
+   "item": "Z1b",
+   "file": "admm_persistent_workers.py",
+   "line_first": 333,
+   "line_last": 339,
+   "statement": "The networks receive the ESSO AVAILABLE capacity (SoH-derated); at x = 0 it is 0 under any ageing model.",
+   "required_substrings": [
+    "sess_capacity_year['s_available'] / s_base",
+    "sess_capacity_year['e_available'] / s_base"
+   ],
+   "missing_substrings": [],
+   "citation_holds": true,
+   "excerpt": "    model_yd.shared_es_s_rated_fixed[shared_ess_idx].set_value(sess_capacity_year['s_available'] / s_base)\n    model_yd.shared_es_e_rated_fixed[shared_ess_idx].set_value(sess_capacity_year['e_available'] / s_base)\n    configure_shared_ess_operational_state(\n        model_yd, shared_ess_idx,\n        pe.value(model_yd.shared_es_s_rated_fixed[shared_ess_idx]),\n        pe.value(model_yd.shared_es_e_rated_fixed[shared_ess_idx]),\n    )",
+   "excerpt_sha256": "c01ceee5357304f1d9cb200a8fd3b86c96194137c0e59bc6fed8a298920bb69e",
+   "file_sha256": "39dcbd267bb224e65197ca427952b08d45d3bbe98785b73fd55148c0979e1125"
+  },
+  {
+   "id": "Z1b-15",
+   "item": "Z1b",
+   "file": "shared_resources_planning.py",
+   "line_first": 2944,
+   "line_last": 2947,
+   "statement": "The price-taker initialisation (the other ageing-reading path, shared_ess_price_taker.py) runs only in mode 'price_taker' ...'",
+   "required_substrings": [
+    "if shared_ess_initialization_mode == 'price_taker':",
+    "_initialize_shared_ess_from_price_taker("
+   ],
+   "missing_substrings": [],
+   "citation_holds": true,
+   "excerpt": "        clipped_q_cells = 0\n        if shared_ess_initialization_mode == 'price_taker':\n            clipped_q_cells = _initialize_shared_ess_from_price_taker(\n                planning_problem, candidate_solution, tso_model, esso_model, consensus_vars)",
+   "excerpt_sha256": "bcc0e59665238c17c1cbe5befd8d130668169665db1f962b7bade78e091093c3",
+   "file_sha256": "0610d745a41c86c71dae9e776f0dc8e38c7099f73128a3d2c2e8f861ab9fc9c0"
+  },
+  {
+   "id": "Z1b-16",
+   "item": "Z1b",
+   "file": "p515_s44_campaign_harness.py",
+   "line_first": 2910,
+   "line_last": 2910,
+   "statement": "... and every campaign child refuses unless the mode is 'standalone'.",
+   "required_substrings": [
+    "'shared_ess_initialization_is_standalone': a.shared_ess_initialization == 'standalone',"
+   ],
+   "missing_substrings": [],
+   "citation_holds": true,
+   "excerpt": "            'shared_ess_initialization_is_standalone': a.shared_ess_initialization == 'standalone',",
+   "excerpt_sha256": "494958a48b392cd794f8f79b536a8d420f6b23ebd2413177b0febc2653fdec00",
+   "file_sha256": "9c6bda1969eca917c7875c1e4a84ab004a3b55edf52ad87179e12c816bbb7f21"
+  },
+  {
+   "id": "Z1b-17",
+   "item": "Z1b",
+   "file": "p515_s47_baseline_campaign.py",
+   "line_first": 35,
+   "line_last": 38,
+   "statement": "Prior empirical evidence (C3 -> baseline parameter change, ageing ON in both): x = 0 ESSO NL files byte-identical.",
+   "required_substrings": [
+    "It is ageing-independent: W21's case-file gate",
+    "NL file of",
+    "byte-identical before / after the edit"
+   ],
+   "missing_substrings": [],
+   "citation_holds": true,
+   "excerpt": "Q(0). x = 0 is not re-run: Q(0) = 653,859,461.2279255 (bar 9,629.978) from the pinned A0 x0\nrecord. It is ageing-independent: W21's case-file gate (2466401d,\ncase_file_baseline/after) found all 48 network blocks identical at x = 0 and the NL file of\nevery x = 0 ESSO block (the problem IPOPT receives) byte-identical before / after the edit;",
+   "excerpt_sha256": "77d69c0f80e6e160df1ec6ff9edc5beb4cde96d3b7675ab4ca56d21da48fa07e",
+   "file_sha256": "abaf503d410b94201d6bfbc2f4d2e63927f86f3294883855fc020ff1274db4e2"
+  },
+  {
+   "id": "Z1c-01",
+   "item": "Z1c",
+   "file": "model_construction_helpers.py",
+   "line_first": 906,
+   "line_last": 931,
+   "statement": "Normalised complementarity, network side: pch = S_av * pch_hat (product form, no division by S_av).",
+   "required_substrings": [
+    "- m.shared_es_s_rated_fixed[e] * m.shared_es_pch_hat[e, s_m0, s_o0, p]) == 0",
+    "that no expression ever divides by the rated-capacity decision variable"
+   ],
+   "missing_substrings": [],
+   "citation_holds": true,
+   "excerpt": "def sess_pch_hat_link_rule(m, e, s_m, s_o, p):\n    \"\"\"Link the dimensionless charging variable to physical power (P5.4-H1).\n\n    Written as `pch - S_rated * pch_hat == 0` rather than `pch_hat == pch/S` so\n    that no expression ever divides by the rated-capacity decision variable, and\n    so the row keeps a unit coefficient on the physical variable. That unit\n    coefficient is what keeps the row from being zero-gradient at zero dispatch\n    -- the defect that `sess_snet_def` had.\n\n    P5.15-1b (Step 2 Candidate 2): `S_rated` is now `shared_es_s_rated_fixed`\n    (a Param), so this row is LINEAR rather than bilinear.\n    \"\"\"\n    if sess_row_is_duplicate(m, s_m, s_o):\n        return pe.Constraint.Skip\n    s_m0, s_o0 = sess_na_scenario(m)\n    return (m.shared_es_pch[e, s_m0, s_o0, p]\n            - m.shared_es_s_rated_fixed[e] * m.shared_es_pch_hat[e, s_m0, s_o0, p]) == 0\n\n\ndef sess_pdch_hat_link_rule(m, e, s_m, s_o, p):\n    if sess_row_is_duplicate(m, s_m, s_o):\n        return pe.Constraint.Skip\n    s_m0, s_o0 = sess_na_scenario(m)\n    return (m.shared_es_pdch[e, s_m0, s_o0, p]\n            - m.shared_es_s_rated_fixed[e] * m.shared_es_pdch_hat[e, s_m0, s_o0, p]) == 0\n",
+   "excerpt_sha256": "9967df39fabfefeada8c1d76293093bde7b57cecd71765a9bb74a567e0f3cdf3",
+   "file_sha256": "a20a224f11008de8c0206484583b00253677267d616e1051bb1583791ed47f64"
+  },
+  {
+   "id": "Z1c-02",
+   "item": "Z1c",
+   "file": "model_construction_helpers.py",
+   "line_first": 949,
+   "line_last": 951,
+   "statement": "The complementarity row in force (BILINEAR_RELAXATION) is pch_hat * pdch_hat <= tol on the dimensionless pair.",
+   "required_substrings": [
+    "elif params.shared_ess_model == ESS_MODEL_BILINEAR_RELAXATION:",
+    "* m.shared_es_pdch_hat[e, s_m0, s_o0, p]) <= ESS_COMPLEMENTARITY_TOLERANCE"
+   ],
+   "missing_substrings": [],
+   "citation_holds": true,
+   "excerpt": "    elif params.shared_ess_model == ESS_MODEL_BILINEAR_RELAXATION:\n        return (m.shared_es_pch_hat[e, s_m0, s_o0, p]\n                * m.shared_es_pdch_hat[e, s_m0, s_o0, p]) <= ESS_COMPLEMENTARITY_TOLERANCE",
+   "excerpt_sha256": "d6d2af41c8719bca60e17cb5c4364cd6ba1340b6183f9fb87eb7c3bad85179b5",
+   "file_sha256": "a20a224f11008de8c0206484583b00253677267d616e1051bb1583791ed47f64"
+  },
+  {
+   "id": "Z1c-03",
+   "item": "Z1c",
+   "file": "network.py",
+   "line_first": 401,
+   "line_last": 402,
+   "statement": "pch_hat, pdch_hat in [0, 1].",
+   "required_substrings": [
+    "bounds=(0.0, 1.0)"
+   ],
+   "missing_substrings": [],
+   "citation_holds": true,
+   "excerpt": "    model.shared_es_pch_hat = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, bounds=(0.0, 1.0), initialize=0.0)\n    model.shared_es_pdch_hat = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, bounds=(0.0, 1.0), initialize=0.0)",
+   "excerpt_sha256": "a59169c343b937e3775d55df6cb3ee7646b31b6c384912881f77ce18fe90c7dc",
+   "file_sha256": "18acaa84af7a043898a7b831223b4eab1d91f9bcf2c199f49beecfeb3bf91fb4"
+  },
+  {
+   "id": "Z1c-04",
+   "item": "Z1c",
+   "file": "model_construction_helpers.py",
+   "line_first": 1067,
+   "line_last": 1069,
+   "statement": "Zero test on the network side: S_av OR E_av <= SHARED_ESS_ZERO_CAPACITY_TOLERANCE.",
+   "required_substrings": [
+    "return abs(s_capacity) <= tolerance or abs(e_capacity) <= tolerance"
+   ],
+   "missing_substrings": [],
+   "citation_holds": true,
+   "excerpt": "def shared_ess_capacity_is_inactive(s_capacity, e_capacity):\n    tolerance = SHARED_ESS_ZERO_CAPACITY_TOLERANCE\n    return abs(s_capacity) <= tolerance or abs(e_capacity) <= tolerance",
+   "excerpt_sha256": "f208b8a65d54f8ff24fa2394cca158f813839b8dba0bf06bdb34d03cd583f2c6",
+   "file_sha256": "a20a224f11008de8c0206484583b00253677267d616e1051bb1583791ed47f64"
+  },
+  {
+   "id": "Z1c-05",
+   "item": "Z1c",
+   "file": "definitions.py",
+   "line_first": 93,
+   "line_last": 93,
+   "statement": "The tolerance.",
+   "required_substrings": [
+    "SHARED_ESS_ZERO_CAPACITY_TOLERANCE = 1e-10"
+   ],
+   "missing_substrings": [],
+   "citation_holds": true,
+   "excerpt": "SHARED_ESS_ZERO_CAPACITY_TOLERANCE = 1e-10",
+   "excerpt_sha256": "8949550aee3ca0ae9b91e22e2d537c6c976f9b2c38074a4982cc53e4d41d3fd8",
+   "file_sha256": "7e5719af129df111db1b403feeffe0b566d0b7f2e72915829e16bf143a9321af"
+  },
+  {
+   "id": "Z1c-06",
+   "item": "Z1c",
+   "file": "model_construction_helpers.py",
+   "line_first": 1137,
+   "line_last": 1178,
+   "statement": "At zero capacity: every shared-ESS operational Var (incl. pch_hat/pdch_hat) fixed 0 and every row of _SHARED_ESS_OPERATIONAL_CONSTRAINTS (incl. sess_comp and the links) deactivated.",
+   "required_substrings": [
+    "entry.fix(0.0)",
+    "entry.deactivate()"
+   ],
+   "missing_substrings": [],
+   "citation_holds": true,
+   "excerpt": "    for variable_name in _SHARED_ESS_OPERATIONAL_VARIABLES:\n        if not hasattr(model, variable_name):\n            continue\n        variable = getattr(model, variable_name)\n        for entry in _component_entries_for_shared_ess(variable, shared_ess_idx):\n            if inactive:\n                entry.fix(0.0)\n            else:\n                if entry.fixed:\n                    entry.unfix()\n                if variable_name == 'shared_es_soc':\n                    entry.set_value(\n                        e_capacity * ENERGY_STORAGE_RELATIVE_INIT_SOC\n                    )\n\n    # P5.15 Step 3 (D6, signed table `P5_15_S31_PENALTY_TABLE_DRAFT.md`): the\n    # shared-ESS day-balance slack is bounded to the same fraction of energy\n    # capacity as the local-ESS one (`slack_es_balance_bounds`,\n    # `ESS_DAY_BALANCE_SLACK_FRACTION`). Capacity is candidate-dependent (Step\n    # 2 Candidate 2 made it a mutable Param), so a `bounds=` callable evaluated\n    # once at Var-construction time cannot track it; the bound is instead\n    # re-applied here, every time this function runs (i.e. every time the\n    # candidate capacity is set -- `shared_resources_planning.py`, every\n    # caller of `configure_shared_ess_operational_state`). Previously\n    # unbounded (D6 defect).\n    for variable_name in ('slack_shared_es_soc_final_up', 'slack_shared_es_soc_final_down'):\n        if not hasattr(model, variable_name):\n            continue\n        variable = getattr(model, variable_name)\n        slack_ub = 0.0 if inactive else e_capacity * ESS_DAY_BALANCE_SLACK_FRACTION + EQUALITY_TOLERANCE\n        for entry in _component_entries_for_shared_ess(variable, shared_ess_idx):\n            entry.setlb(0.0)\n            entry.setub(slack_ub)\n\n    for constraint_name in _SHARED_ESS_OPERATIONAL_CONSTRAINTS:\n        constraint = getattr(model, constraint_name)\n        for entry in _component_entries_for_shared_ess(\n                constraint, shared_ess_idx):\n            if inactive:\n                entry.deactivate()\n            else:\n                entry.activate()",
+   "excerpt_sha256": "4fcb597ebdc6e8f393d231377b83fbfa0d8bd5c6383c81b3b0a60e9ac6ac13e7",
+   "file_sha256": "a20a224f11008de8c0206484583b00253677267d616e1051bb1583791ed47f64"
+  },
+  {
+   "id": "Z1c-07",
+   "item": "Z1c",
+   "file": "model_construction_helpers.py",
+   "line_first": 1050,
+   "line_last": 1064,
+   "statement": "The deactivated row list includes the complementarity and link rows.",
+   "required_substrings": [
+    "'sess_pch_hat_link',",
+    "'sess_comp',"
+   ],
+   "missing_substrings": [],
+   "citation_holds": true,
+   "excerpt": "_SHARED_ESS_OPERATIONAL_CONSTRAINTS = (\n    'sess_pnet_def',\n    'sess_pch_hat_link',\n    'sess_pdch_hat_link',\n    'sess_converter_capability',\n    'sess_active_sum_limit',\n    # P5.15-1b Candidate 1: 'sess_phi_limit_lower'/'sess_phi_limit_upper' are\n    # removed (see the deletion note above `period_duration_hours`); no longer\n    # wired in `network.py`, so they are dropped from this activation list too.\n    'sess_soc_def',\n    'sess_soc_limit_upper',\n    'sess_soc_limit_lower',\n    'sess_soc_final',\n    'sess_comp',\n)",
+   "excerpt_sha256": "5801b780f587242d389a14fde95b8f8ae0f6eb1173717948a4819f5f8a1242d9",
+   "file_sha256": "a20a224f11008de8c0206484583b00253677267d616e1051bb1583791ed47f64"
+  },
+  {
+   "id": "Z1c-08",
+   "item": "Z1c",
+   "file": "shared_energy_storage_data.py",
+   "line_first": 1588,
+   "line_last": 1593,
+   "statement": "ESSO side: a cohort is inactive iff S_inv = E_inv = 0 (inconsistent zero raises).",
+   "required_substrings": [
+    "s_is_zero = abs(s_capacity) <= tolerance",
+    "raise ValueError(f'Inconsistent shared ESS cohort capacity"
+   ],
+   "missing_substrings": [],
+   "citation_holds": true,
+   "excerpt": "    tolerance = SHARED_ESS_ZERO_CAPACITY_TOLERANCE\n    s_is_zero = abs(s_capacity) <= tolerance\n    e_is_zero = abs(e_capacity) <= tolerance\n    if s_is_zero != e_is_zero:\n        raise ValueError(f'Inconsistent shared ESS cohort capacity: S={s_capacity}, E={e_capacity}.')\n    inactive = s_is_zero and e_is_zero",
+   "excerpt_sha256": "b2b6a2727d2ec0e0b3925ce8bf07062648e1b66215aee2fb78ad215abc9431ba",
+   "file_sha256": "9acd095fb5e50e9b64c253600ae05ebb8e6463fd7a999d3a90f96ee82f037796"
+  },
+  {
+   "id": "Z1c-09",
+   "item": "Z1c",
+   "file": "shared_energy_storage_data.py",
+   "line_first": 1716,
+   "line_last": 1726,
+   "statement": "Cohort allocation: the only division (share = E_inv / sum E_inv) is a Python float, guarded (> 0) and reached only with >= 2 active cohorts.",
+   "required_substrings": [
+    "total_e_rated = sum(",
+    "if y_inv in active_cohorts and total_e_rated > 0.00:",
+    "share = pe.value(model.es_e_investment_fixed[y_inv]) / total_e_rated"
+   ],
+   "missing_substrings": [],
+   "citation_holds": true,
+   "excerpt": "        total_e_rated = sum(\n            pe.value(model.es_e_investment_fixed[y_inv]) for y_inv in active_cohorts\n        )\n        omitted = max(active_cohorts)\n\n        for y_inv in years:\n\n            share = 0.00\n            if y_inv in active_cohorts and total_e_rated > 0.00:\n                share = pe.value(model.es_e_investment_fixed[y_inv]) / total_e_rated\n            model.es_pnet_cohort_share_h3[y_inv, y].set_value(share)",
+   "excerpt_sha256": "17c79f35ddaa2068c6c268532a4aad445da54cbc55ee6cd8414682ab3d505b8a",
+   "file_sha256": "9acd095fb5e50e9b64c253600ae05ebb8e6463fd7a999d3a90f96ee82f037796"
+  },
+  {
+   "id": "Z1c-10",
+   "item": "Z1c",
+   "file": "shared_energy_storage_data.py",
+   "line_first": 785,
+   "line_last": 787,
+   "statement": "OBSERVATION: the ESSO aggregate capability row is not cohort-registered: at x = 0 it stays active as a radius-0 circle (es_s_rated forced 0 by active equalities) -- no division, ageing-independent, degenerate.",
+   "required_substrings": [
+    "model.es_pnet[y, d, p] ** 2 + model.es_qnet[y, d, p] ** 2 <= model.es_s_rated[y] ** 2"
+   ],
+   "missing_substrings": [],
+   "citation_holds": true,
+   "excerpt": "\n                model.energy_storage_operation_agg.add(\n                    model.es_pnet[y, d, p] ** 2 + model.es_qnet[y, d, p] ** 2 <= model.es_s_rated[y] ** 2)",
+   "excerpt_sha256": "f4335a000bbe800fa0f65865453e72cb94075e6c4d93b97c5a84be9a3aabd4d1",
+   "file_sha256": "9acd095fb5e50e9b64c253600ae05ebb8e6463fd7a999d3a90f96ee82f037796"
+  },
+  {
+   "id": "Z1c-11",
+   "item": "Z1c",
+   "file": "shared_energy_storage_data.py",
+   "line_first": 2213,
+   "line_last": 2215,
+   "statement": "Reported SoH = E_av / E_rated is guarded at E_av = 0.",
+   "required_substrings": [
+    "if not isclose(e_available, 0.00, abs_tol=SMALL_TOLERANCE):",
+    "soh = e_available / pe.value(models[node_id].es_e_rated[y])"
+   ],
+   "missing_substrings": [],
+   "citation_holds": true,
+   "excerpt": "            soh = 0.00\n            if not isclose(e_available, 0.00, abs_tol=SMALL_TOLERANCE):\n                soh = e_available / pe.value(models[node_id].es_e_rated[y])",
+   "excerpt_sha256": "26c0532c9eee01e203a021aee920e1cc458f6add138d355966543215be1a1576",
+   "file_sha256": "9acd095fb5e50e9b64c253600ae05ebb8e6463fd7a999d3a90f96ee82f037796"
+  },
+  {
+   "id": "Z1c-12",
+   "item": "Z1c",
+   "file": "shared_resources_planning.py",
+   "line_first": 5024,
+   "line_last": 5028,
+   "statement": "ESS-channel ADMM normalisation uses the declared reference rating (case file 2.5 MVA), not S_av.",
+   "required_substrings": [
+    "if reference_mva is not None:",
+    "return float(reference_mva) / s_base"
+   ],
+   "missing_substrings": [],
+   "citation_holds": true,
+   "excerpt": "def _shared_ess_admm_normalization_pu(rating_pu, s_base, floor_mva, reference_mva=None):\n    if s_base <= 0.00:\n        raise ValueError('Network base power must be positive for ADMM normalization.')\n    if reference_mva is not None:\n        return float(reference_mva) / s_base",
+   "excerpt_sha256": "72fcaa4db48b95da6e49687766434affd1000d61fa98a8cf3562c9b91ced92da",
+   "file_sha256": "0610d745a41c86c71dae9e776f0dc8e38c7099f73128a3d2c2e8f861ab9fc9c0"
+  },
+  {
+   "id": "Z6a-01",
+   "item": "Z6a",
+   "file": "uncoordinated_benchmark.py",
+   "line_first": 912,
+   "line_last": 945,
+   "statement": "The benchmark perturbation: per free Var of ONE static block, multiplicative, seeded by (seed, crc32(label)).",
+   "required_substrings": [
+    "def apply_perturbation(block, *, seed, delta, label):",
+    "new = value * (1.0 + delta * u)"
+   ],
+   "missing_substrings": [],
+   "citation_holds": true,
+   "excerpt": "def apply_perturbation(block, *, seed, delta, label):\n    \"\"\"Declared perturbation of the current point of ONE block (applied after `apply_warm_values`):\n        for every FREE Var, in component_data_objects(pe.Var, sort=True) order, draw u ~ Uniform[-1, 1) from\n        numpy Generator(PCG64(SeedSequence([seed, crc32(label)]))) -- one draw per free Var, valued or not --\n        and set v <- clip(v * (1 + delta * u), lb, ub); a Var with value None or exactly 0.0 keeps its value.\n    Reproducible from (seed, delta, label) alone; `label` = block_label(kind, node_id, year, day).\"\"\"\n    if not (isinstance(seed, int) and seed >= 0):\n        raise ValueError(f'perturbation seed must be a declared non-negative int; got {seed!r}')\n    if not (isinstance(delta, float) and 0.0 < delta < 1.0):\n        raise ValueError(f'perturbation delta must be a declared float in (0, 1); got {delta!r}')\n    rng = np.random.default_rng(np.random.SeedSequence([seed, zlib.crc32(label.encode('utf-8'))]))\n    n_draws = n_changed = n_clipped = 0\n    max_rel = 0.0\n    for var_data in block.component_data_objects(pe.Var, sort=True, descend_into=True):\n        if var_data.fixed:\n            continue\n        u = float(rng.uniform(-1.0, 1.0))\n        n_draws += 1\n        value = var_data.value\n        if value is None or value == 0.0:\n            continue\n        new = value * (1.0 + delta * u)\n        if var_data.lb is not None and new < var_data.lb:\n            new = var_data.lb\n            n_clipped += 1\n        if var_data.ub is not None and new > var_data.ub:\n            new = var_data.ub\n            n_clipped += 1\n        if new != value:\n            n_changed += 1\n            max_rel = max(max_rel, abs(new - value) / abs(value))\n        var_data.set_value(new, skip_validation=True)\n    return {'label': label, 'seed': seed, 'delta': delta, 'crc32_label': zlib.crc32(label.encode('utf-8')),\n            'n_draws': n_draws, 'n_changed': n_changed, 'n_clipped': n_clipped, 'max_relative_change': max_rel}",
+   "excerpt_sha256": "7334c20247ca6ab00861f5a77dfddd30df9f225bb6353dfa766887d5520a6ae7",
+   "file_sha256": "45d1c09db9b687040d57c8b01c1d092f3b53aa120f0e3229d998c435d261e31a"
+  },
+  {
+   "id": "Z6a-02",
+   "item": "Z6a",
+   "file": "uncoordinated_benchmark.py",
+   "line_first": 948,
+   "line_last": 970,
+   "statement": "It is applied after a warm start from the CERTIFIED coordinated point, to the arm models before their one solve.",
+   "required_substrings": [
+    "def apply_start(planning_problem, arm_models, *, start, warm_values=None, perturbation=None",
+    "rec['warm'] = apply_warm_values(block, warm_values[label])"
+   ],
+   "missing_substrings": [],
+   "citation_holds": true,
+   "excerpt": "def apply_start(planning_problem, arm_models, *, start, warm_values=None, perturbation=None, agents=('DSO', 'TSO')):\n    \"\"\"cold: nothing (the build's own initial point); warm_from_certified: `apply_warm_values`; perturbed: warm, then\n    `apply_perturbation(seed, delta)`. Returns the per-block record.\"\"\"\n    if start not in STARTS:\n        raise ValueError(f'unknown start {start!r}; expected one of {STARTS}')\n    if start in (START_WARM, START_PERTURBED) and warm_values is None:\n        raise ValueError(f'start {start!r} needs the certified warm values')\n    if start == START_PERTURBED and not (isinstance(perturbation, dict) and 'seed' in perturbation\n                                         and 'delta' in perturbation):\n        raise ValueError('start perturbed needs a declared perturbation {\"seed\": int, \"delta\": float}')\n    records = {}\n    for kind, node_id, year, day, _nd, _net, block in iter_network_blocks(planning_problem, arm_models):\n        if kind not in agents:\n            continue\n        label = block_label(kind, node_id, year, day)\n        rec = {'start': start}\n        if start in (START_WARM, START_PERTURBED):\n            rec['warm'] = apply_warm_values(block, warm_values[label])\n        if start == START_PERTURBED:\n            rec['perturbation'] = apply_perturbation(block, seed=perturbation['seed'], delta=perturbation['delta'],\n                                                     label=label)\n        records[label] = rec\n    return records",
+   "excerpt_sha256": "fd1dc7bb6876f8511619fe9354a5fe0ed8efd782baf7d297f72921c201a34e43",
+   "file_sha256": "45d1c09db9b687040d57c8b01c1d092f3b53aa120f0e3229d998c435d261e31a"
+  },
+  {
+   "id": "Z6a-03",
+   "item": "Z6a",
+   "file": "uncoordinated_benchmark.py",
+   "line_first": 1103,
+   "line_last": 1119,
+   "statement": "Its only call sites: the uncoordinated arm runner.",
+   "required_substrings": [
+    "start_records = apply_start(planning_problem, _partial_models(planning_problem, dso_models=dso_models),",
+    "tso_results = solve_tso_model(planning_problem, tso_model"
+   ],
+   "missing_substrings": [],
+   "citation_holds": true,
+   "excerpt": "    start_records = apply_start(planning_problem, _partial_models(planning_problem, dso_models=dso_models),\n                                start=start, warm_values=warm_values, perturbation=perturbation, agents=('DSO',))\n    dso_results = solve_dso_models(planning_problem, dso_models, phase=f'{arm}:{start}:dso',\n                                   record_callback=record_callback)\n    dso_schedule = get_dso_interface_schedule(planning_problem, dso_models)\n\n    tso_model, tso_build = build_tso_arm_model(planning_problem, candidate_total_capacity, dso_schedule,\n                                               curtailment_penalty=tso_curtailment_penalty,\n                                               coupling=TSO_COUPLING_FIXED,\n                                               pin_interface_voltage=TSO_ARM_PIN_INTERFACE_VOLTAGE)\n    structure.update(check_arm_structures(planning_problem, {'tso': tso_model}, reference_structure,\n                                          tso_build_record=tso_build, tso_coupling=TSO_COUPLING_FIXED))\n    start_records.update(apply_start(planning_problem, _partial_models(planning_problem, tso_model=tso_model),\n                                     start=start, warm_values=warm_values, perturbation=perturbation,\n                                     agents=('TSO',)))\n    tso_results = solve_tso_model(planning_problem, tso_model, phase=f'{arm}:{start}:tso',\n                                  record_callback=record_callback)",
+   "excerpt_sha256": "c49b4d127ca927e22d8dfea8cea3b8ad37e3c25259ac7ebf796a692ef2915c21",
+   "file_sha256": "45d1c09db9b687040d57c8b01c1d092f3b53aa120f0e3229d998c435d261e31a"
+  },
+  {
+   "id": "Z6a-04",
+   "item": "Z6a",
+   "file": "shared_resources_planning.py",
+   "line_first": 2858,
+   "line_last": 2882,
+   "statement": "Coordinated ADMM, fresh start: models are BUILT AND INITIALISATION-SOLVED inside _run_operational_planning; no callback exists between build and first solve.",
+   "required_substrings": [
+    "if initial_state is None:",
+    "dso_models, results['dso'] = create_distribution_networks_models(",
+    "esso_model, results['esso'] = create_shared_energy_storage_model("
+   ],
+   "missing_substrings": [],
+   "citation_holds": true,
+   "excerpt": "    if initial_state is None:\n        # Create ADMM variables and obtain the initial local solutions.\n        consensus_vars, dual_vars = create_admm_variables(planning_problem)\n        # P5.15 Addendum 38: row 18's imbalance premium. Default-inactive (alpha = 0,\n        # no floor) unless a campaign/harness configuration or the case file raises it.\n        # Addendum 40 ruling 2: the run's alpha wires row 18's STRUCTURE here, but the\n        # builders hold it structurally inactive for the initialisation solve (rows\n        # deactivated, deviation Vars fixed at 0); it is activated with the settlement\n        # weight in `_prepare_distribution_objectives_for_admm`.\n        interface_premium = admm_parameters.interface_deviation_premium\n        dso_models, results['dso'] = create_distribution_networks_models(\n            distribution_networks,\n            consensus_vars,\n            candidate_solution['total_capacity'],\n            parallel_execution=planning_problem.parallel_execution,\n            premium_alpha=interface_premium['alpha'],\n            premium_floor=interface_premium['floor'],\n        )\n        tso_model, results['tso'] = create_transmission_network_model(\n            planning_problem, consensus_vars, candidate_solution['total_capacity']\n        )\n        esso_model, results['esso'] = create_shared_energy_storage_model(\n            shared_ess_data, consensus_vars, candidate_solution['investment']\n        )\n        network_ipopt_solve_records.extend(_drain_network_ipopt_solve_records(planning_problem, 0))",
+   "excerpt_sha256": "87c793823a993de5133a8b3ad70fe63be5a6d52f127656cda3059ea9b43f1e99",
+   "file_sha256": "0610d745a41c86c71dae9e776f0dc8e38c7099f73128a3d2c2e8f861ab9fc9c0"
+  },
+  {
+   "id": "Z6a-05",
+   "item": "Z6a",
+   "file": "shared_resources_planning.py",
+   "line_first": 2964,
+   "line_last": 2971,
+   "statement": "The only start alternative in production: a continuation from a full prior state (models, consensus, duals).",
+   "required_substrings": [
+    "models = _clone_operational_models(initial_state['models'])",
+    "dual_vars = deepcopy(initial_state['dual_vars'])"
+   ],
+   "missing_substrings": [],
+   "citation_holds": true,
+   "excerpt": "    else:\n        models = _clone_operational_models(initial_state['models'])\n        tso_model = models['tso']\n        dso_models = models['dso']\n        esso_model = models['esso']\n        consensus_vars = deepcopy(initial_state['consensus_vars'])\n        dual_vars = deepcopy(initial_state['dual_vars'])\n        _update_operational_models_with_candidate(planning_problem, models, candidate_solution)",
+   "excerpt_sha256": "d4da1e4700e16b06aa8f3e069fd52cd5764f53682cf4190aec47a892f349e696",
+   "file_sha256": "0610d745a41c86c71dae9e776f0dc8e38c7099f73128a3d2c2e8f861ab9fc9c0"
+  },
+  {
+   "id": "Z6a-06",
+   "item": "Z6a",
+   "file": "p515_g_g1_g4_admm_gates.py",
+   "line_first": 1194,
+   "line_last": 1198,
+   "statement": "The campaign child's only hook runs before any model exists ...",
+   "required_substrings": [
+    "`pre_solve_hook(planning=planning, sed=sed, candidate=candidate, report=report)`",
+    "immediately after `_construct_arm_planning` returns and BEFORE"
+   ],
+   "missing_substrings": [],
+   "citation_holds": true,
+   "excerpt": "    `pre_solve_hook`, if given, is called as\n    `pre_solve_hook(planning=planning, sed=sed, candidate=candidate, report=report)`\n    immediately after `_construct_arm_planning` returns and BEFORE\n    `planning.run_operational_planning(...)` is called -- i.e. before any\n    solve. Defaults to None (no-op), so every existing arm is unaffected.",
+   "excerpt_sha256": "eb032a83dad1d36be61936face7583f1dc561374ffce3f1f2c17af6cf63faf29",
+   "file_sha256": "6f4631e10a2f8a7786390c0f96e45332706779ae9cdf6a87ddd716d9ad9ad346"
+  },
+  {
+   "id": "Z6a-07",
+   "item": "Z6a",
+   "file": "p515_g_g1_g4_admm_gates.py",
+   "line_first": 1283,
+   "line_last": 1285,
+   "statement": "... and the run is always a fresh (cold) start: no initial_state is passed.",
+   "required_substrings": [
+    "planning.run_operational_planning(",
+    "type='distributed', candidate_solution=deepcopy(candidate),"
+   ],
+   "missing_substrings": [],
+   "citation_holds": true,
+   "excerpt": "                _c, _results, models, _s, _p, state = planning.run_operational_planning(\n                    type='distributed', candidate_solution=deepcopy(candidate),\n                    print_results=False, debug_flag=False, return_state=True)",
+   "excerpt_sha256": "6f011a366bfde766ff3d5c0edbf9faa17479639e799d1a36806e045653ddcb2f",
+   "file_sha256": "6f4631e10a2f8a7786390c0f96e45332706779ae9cdf6a87ddd716d9ad9ad346"
+  },
+  {
+   "id": "Z6b-01",
+   "item": "Z6b",
+   "file": "admm_parameters.py",
+   "line_first": 511,
+   "line_last": 513,
+   "statement": "rho_0 is read from the case file (admm.rho.{v,pf,ess}.<network>).",
+   "required_substrings": [
+    "admm_params.rho['v'] = params_data['rho']['v']",
+    "admm_params.rho['ess'] = params_data['rho']['ess']"
+   ],
+   "missing_substrings": [],
+   "citation_holds": true,
+   "excerpt": "    admm_params.rho['v'] = params_data['rho']['v']\n    admm_params.rho['pf'] = params_data['rho']['pf']\n    admm_params.rho['ess'] = params_data['rho']['ess']",
+   "excerpt_sha256": "9294e78bf484f9cf422ef653fe94d25262448d8914c85680300a3ab7c01abf36",
+   "file_sha256": "40d0e972dcadfb4de099a0203682ba2e93badc62d9ae989f87be40b1ce3b75fa"
+  },
+  {
+   "id": "Z6b-02",
+   "item": "Z6b",
+   "file": "shared_resources_planning.py",
+   "line_first": 5112,
+   "line_last": 5122,
+   "statement": "TSO: rho_0 initialises the mutable rho Params.",
+   "required_substrings": [
+    "initialize=params.rho['v'][transmission_network.name])",
+    "initialize=params.rho['ess'][transmission_network.name])"
+   ],
+   "missing_substrings": [],
+   "citation_holds": true,
+   "excerpt": "            model[year][day].rho_v = pe.Param(mutable=True, domain=pe.NonNegativeReals, initialize=params.rho['v'][transmission_network.name])\n            model[year][day].vmag_req = pe.Param(model[year][day].active_distribution_networks, model[year][day].periods, mutable=True, domain=pe.NonNegativeReals)    # Square of voltage magnitude\n            model[year][day].dual_vmag_req = pe.Param(model[year][day].active_distribution_networks, model[year][day].periods, mutable=True, domain=pe.Reals)          # Dual variable - voltage magnitude requested\n\n            model[year][day].rho_pf = pe.Param(mutable=True, domain=pe.NonNegativeReals, initialize=params.rho['pf'][transmission_network.name])\n            model[year][day].p_pf_req = pe.Param(model[year][day].active_distribution_networks, model[year][day].periods, mutable=True, domain=pe.Reals)                # Active power - requested by distribution networks\n            model[year][day].q_pf_req = pe.Param(model[year][day].active_distribution_networks, model[year][day].periods, mutable=True, domain=pe.Reals)                # Reactive power - requested by distribution networks\n            model[year][day].dual_pf_p_req = pe.Param(model[year][day].active_distribution_networks, model[year][day].periods, mutable=True, domain=pe.Reals)           # Dual variable - active power requested\n            model[year][day].dual_pf_q_req = pe.Param(model[year][day].active_distribution_networks, model[year][day].periods, mutable=True, domain=pe.Reals)           # Dual variable - reactive power requested\n\n            model[year][day].rho_ess = pe.Param(mutable=True, domain=pe.NonNegativeReals, initialize=params.rho['ess'][transmission_network.name])",
+   "excerpt_sha256": "0fa055e9005db1735927351fa1ac1918c88694110a417f133d7a178cff3a0905",
+   "file_sha256": "0610d745a41c86c71dae9e776f0dc8e38c7099f73128a3d2c2e8f861ab9fc9c0"
+  },
+  {
+   "id": "Z6b-03",
+   "item": "Z6b",
+   "file": "shared_resources_planning.py",
+   "line_first": 5378,
+   "line_last": 5388,
+   "statement": "DSO: likewise.",
+   "required_substrings": [
+    "initialize=params.rho['v'][distribution_network.network[year][day].name])"
+   ],
+   "missing_substrings": [],
+   "citation_holds": true,
+   "excerpt": "                dso_model[year][day].rho_v = pe.Param(mutable=True, domain=pe.NonNegativeReals, initialize=params.rho['v'][distribution_network.network[year][day].name])\n                dso_model[year][day].vmag_req = pe.Param(dso_model[year][day].periods, mutable=True, domain=pe.NonNegativeReals)       # Voltage magnitude - requested by TSO\n                dso_model[year][day].dual_vmag_req = pe.Param(dso_model[year][day].periods, mutable=True, domain=pe.Reals)             # Dual variable - voltage magnitude\n\n                dso_model[year][day].rho_pf = pe.Param(mutable=True, domain=pe.NonNegativeReals, initialize=params.rho['pf'][distribution_network.network[year][day].name])\n                dso_model[year][day].p_pf_req = pe.Param(dso_model[year][day].periods, mutable=True, domain=pe.Reals)                   # Active power - requested by TSO\n                dso_model[year][day].q_pf_req = pe.Param(dso_model[year][day].periods, mutable=True, domain=pe.Reals)                   # Reactive power - requested by TSO\n                dso_model[year][day].dual_pf_p_req = pe.Param(dso_model[year][day].periods, mutable=True, domain=pe.Reals)              # Dual variable - active power\n                dso_model[year][day].dual_pf_q_req = pe.Param(dso_model[year][day].periods, mutable=True, domain=pe.Reals)              # Dual variable - reactive power\n\n                dso_model[year][day].rho_ess = pe.Param(mutable=True, domain=pe.NonNegativeReals, initialize=params.rho['ess'][distribution_network.network[year][day].name])",
+   "excerpt_sha256": "31b0a74cb52946e24f41c75b59747942c73731ffc64efeb8f6952915da895c68",
+   "file_sha256": "0610d745a41c86c71dae9e776f0dc8e38c7099f73128a3d2c2e8f861ab9fc9c0"
+  },
+  {
+   "id": "Z6b-04",
+   "item": "Z6b",
+   "file": "shared_resources_planning.py",
+   "line_first": 5483,
+   "line_last": 5483,
+   "statement": "ESSO: likewise.",
+   "required_substrings": [
+    "initialize=params.rho['ess']['esso'])"
+   ],
+   "missing_substrings": [],
+   "citation_holds": true,
+   "excerpt": "        models[node_id].rho = pe.Param(mutable=True, domain=pe.NonNegativeReals, initialize=params.rho['ess']['esso'])",
+   "excerpt_sha256": "6e54bb1f712a4196ace8252b1a52d0df0ecc6ba771de5aa0ddcc98c7e3cfd082",
+   "file_sha256": "0610d745a41c86c71dae9e776f0dc8e38c7099f73128a3d2c2e8f861ab9fc9c0"
+  },
+  {
+   "id": "Z6b-05",
+   "item": "Z6b",
+   "file": "shared_resources_planning.py",
+   "line_first": 8275,
+   "line_last": 8284,
+   "statement": "The adaptive rule (case file adaptive_penalty true) moves rho from rho_0 by the declared factors.",
+   "required_substrings": [
+    "elif not params.adaptive_penalty:",
+    "factor = update_params['increase_factor']",
+    "factor = 1.0 / update_params['decrease_factor']"
+   ],
+   "missing_substrings": [],
+   "citation_holds": true,
+   "excerpt": "        elif not params.adaptive_penalty:\n            action = 'fixed'\n        elif not allow_update:\n            action = 'held after solver failure'\n        elif boyd_primal_ratio > increase_balance_ratio * boyd_dual_ratio_balance:\n            factor = update_params['increase_factor']\n            action = 'increased'\n        elif boyd_dual_ratio_balance > decrease_balance_ratio * boyd_primal_ratio:\n            factor = 1.0 / update_params['decrease_factor']\n            action = 'decreased'",
+   "excerpt_sha256": "5fdeda9283217e4e1f6cf4b7d2faed00ad906ea0a44a420df795b64f08061d03",
+   "file_sha256": "0610d745a41c86c71dae9e776f0dc8e38c7099f73128a3d2c2e8f861ab9fc9c0"
+  },
+  {
+   "id": "Z6b-06",
+   "item": "Z6b",
+   "file": "p59_rho.py",
+   "line_first": 89,
+   "line_last": 104,
+   "statement": "An existing diagnostic helper that sets rho on a deep-copied planning (used by earlier G-gate arms).",
+   "required_substrings": [
+    "def apply_rho_to_params(planning, rho):",
+    "admm.rho[group][network_name] = float(rho[group])"
+   ],
+   "missing_substrings": [],
+   "citation_holds": true,
+   "excerpt": "def apply_rho_to_params(planning, rho):\n    \"\"\"Mirror the override into the deep copy's ADMM parameters.\n\n    The warm path does not rebuild from these, but keeping them consistent means\n    a rebuild inside the same evaluation cannot silently use production values,\n    and the recorded `rho_snapshot` is then honest about what was in force.\n    \"\"\"\n    admm = planning.params.admm\n    replaced = {}\n    for group in GROUPS:\n        if group not in rho:\n            continue\n        replaced[group] = dict(admm.rho[group])\n        for network_name in admm.rho[group]:\n            admm.rho[group][network_name] = float(rho[group])\n    return replaced",
+   "excerpt_sha256": "ea5f6091c0b68b674c168159dfa93bf64609fc7cb1822c81d49423e2e947ff99",
+   "file_sha256": "12d66b48fc473dd809638ea56ad470c5e9dfcaa5dc08be37f8af0bbfb17c159b"
+  },
+  {
+   "id": "Z6b-07",
+   "item": "Z6b",
+   "file": "p515_s44_campaign_harness.py",
+   "line_first": 327,
+   "line_last": 330,
+   "statement": "The campaign harness admits NO rho override ...",
+   "required_substrings": [
+    "SUPPORTED_OVERRIDE_KEYS = frozenset({'anderson_acceleration'})"
+   ],
+   "missing_substrings": [],
+   "citation_holds": true,
+   "excerpt": "SUPPORTED_OVERRIDE_KEYS = frozenset({'anderson_acceleration'})\n# Addendum 25 item 2: the ONLY configuration a campaign spec may override is the AA flag and its\n# reject-policy sub-option (memory / regularization stay at the frozen 5 / 1e-10).\nSUPPORTED_AA_OVERRIDE_SUBKEYS = frozenset({'enabled', 'reject_policy'})",
+   "excerpt_sha256": "38cb96201c8c8d65f11ad0b120db2b79ad0e20475a8ea40139efb6c01452c126",
+   "file_sha256": "9c6bda1969eca917c7875c1e4a84ab004a3b55edf52ad87179e12c816bbb7f21"
+  },
+  {
+   "id": "Z6b-08",
+   "item": "Z6b",
+   "file": "p515_s44_campaign_harness.py",
+   "line_first": 2897,
+   "line_last": 2899,
+   "statement": "... and every child REFUSES unless rho equals the S39 constants ...",
+   "required_substrings": [
+    "'rho_v_matches_D': all(float(v) == G.S39_RHO_V for v in a.rho['v'].values()),",
+    "'rho_ess_matches_D': all(float(v) == G.S39_RHO_ESS for v in a.rho['ess'].values()),"
+   ],
+   "missing_substrings": [],
+   "citation_holds": true,
+   "excerpt": "            'rho_v_matches_D': all(float(v) == G.S39_RHO_V for v in a.rho['v'].values()),\n            'rho_pf_matches_D': all(float(v) == G.S39_RHO_PF for v in a.rho['pf'].values()),\n            'rho_ess_matches_D': all(float(v) == G.S39_RHO_ESS for v in a.rho['ess'].values()),",
+   "excerpt_sha256": "6feaf20e4f32418702b445028a3267b0cbb856e4ba77dc7710ba1419f26273e4",
+   "file_sha256": "9c6bda1969eca917c7875c1e4a84ab004a3b55edf52ad87179e12c816bbb7f21"
+  },
+  {
+   "id": "Z6b-09",
+   "item": "Z6b",
+   "file": "p515_s44_campaign_harness.py",
+   "line_first": 2924,
+   "line_last": 2925,
+   "statement": "... (the refusal).",
+   "required_substrings": [
+    "raise RuntimeError(f'S44 campaign child: configuration not as frozen (case file D + cap): {missing}')"
+   ],
+   "missing_substrings": [],
+   "citation_holds": true,
+   "excerpt": "        if missing:\n            raise RuntimeError(f'S44 campaign child: configuration not as frozen (case file D + cap): {missing}')",
+   "excerpt_sha256": "8086c3b43331a8d6f9d2e57e2cadf0b8f9d78edf5370217165ac9fc3d0830dfe",
+   "file_sha256": "9c6bda1969eca917c7875c1e4a84ab004a3b55edf52ad87179e12c816bbb7f21"
+  },
+  {
+   "id": "Z6b-10",
+   "item": "Z6b",
+   "file": "p515_g_g1_g4_admm_gates.py",
+   "line_first": 5878,
+   "line_last": 5880,
+   "statement": "The constants the child compares against (= the case file today).",
+   "required_substrings": [
+    "S39_RHO_V = 0.0077",
+    "S39_RHO_PF = 0.198",
+    "S39_RHO_ESS = 0.01"
+   ],
+   "missing_substrings": [],
+   "citation_holds": true,
+   "excerpt": "S39_RHO_V = 0.0077\nS39_RHO_PF = 0.198\nS39_RHO_ESS = 0.01  # spec v10 `common_configuration.base`: s38 arm A / s37_rho0p01 exactly",
+   "excerpt_sha256": "2542b378c89de67044da49aa872d17a7259ea89f7957f77076de8f463a266574",
+   "file_sha256": "6f4631e10a2f8a7786390c0f96e45332706779ae9cdf6a87ddd716d9ad9ad346"
+  },
+  {
+   "id": "Z6b-11",
+   "item": "Z6b",
+   "file": "p515_s44_campaign_harness.py",
+   "line_first": 1072,
+   "line_last": 1088,
+   "statement": "The evaluation-key payload (read in full by the scoped search R-rho): rho is not a key component, so a case-file rho edit would not separate cache keys.",
+   "required_substrings": [
+    "model_variant = validate_model_variant(model_variant)",
+    "payload['ess_ageing_baseline'] = ess_ageing_baseline"
+   ],
+   "missing_substrings": [],
+   "citation_holds": true,
+   "excerpt": "    model_variant = validate_model_variant(model_variant)\n    ess_ageing_baseline = validate_ess_ageing_baseline(ess_ageing_baseline)\n    flex_m = flex_price_multiplier_in_key(flex_price_multiplier)\n    derived_instance = validate_derived_instance(derived_instance)\n    premium = validate_interface_deviation_premium(interface_deviation_premium)\n    tail = convergence_depth_tail_in_key(convergence_depth_tail)\n    if tail is not None:  # W86: only when declared ENABLED, so every undeclared / declared-off key is byte-identical\n        payload = {'candidate_key': candidate_key_hex, 'overrides': overrides or {}}\n        if case_file_aa is not None:\n            payload['effective_anderson_acceleration'] = effective_anderson_acceleration(case_file_aa, overrides)\n        if model_variant is not None:\n            payload['model_variant'] = model_variant\n        if ess_ageing_baseline is not None:\n            payload['ess_ageing_baseline'] = ess_ageing_baseline\n        if flex_m is not None:\n            payload['flex_price_multiplier'] = flex_m\n        if derived_instance is not None:",
+   "excerpt_sha256": "7c63864aa0b06f7dc38e1abbf946ec0e14a5350d852b85f41ce58edf3dd4ef30",
+   "file_sha256": "9c6bda1969eca917c7875c1e4a84ab004a3b55edf52ad87179e12c816bbb7f21"
+  },
+  {
+   "id": "Z6c-01",
+   "item": "Z6c",
+   "file": "uncoordinated_benchmark.py",
+   "line_first": 192,
+   "line_last": 212,
+   "statement": "The only NRF row in the repository: the uncoordinated DSO arm, DSO copy only; stated absent from the coordinated path.",
+   "required_substrings": [
+    "uncoord_no_reverse_flow[s_m, s_o, p]:   pg_adn[s_m, s_o, p] >= 0",
+    "the coordinated path, production and the TSO arm never carry it.",
+    "NO_REVERSE_FLOW_ROW = 'uncoord_no_reverse_flow'"
+   ],
+   "missing_substrings": [],
+   "citation_holds": true,
+   "excerpt": "# W116 (Addendum 57 Decision 1(b)): the NO-REVERSE-FLOW rule of an uncoordinated DSO arm -- the connection-agreement\n# rule \"import only\" at the interface. One ROW per (market scenario, operation scenario, period) of every DSO arm\n# block, on production's own per-scenario DSO interface expression:\n#     uncoord_no_reverse_flow[s_m, s_o, p]:   pg_adn[s_m, s_o, p] >= 0\n# pg_adn (network.py L444, `model.pg_adn = pe.Expression(...)`, DSO blocks only) is\n# `model_construction_helpers.interface_pf_p_distribution_def` (L1287-1297): pg[ref_gen, s_m, s_o, p] minus the\n# scenario-free shared-ESS net power at the reference bus -- the DN reference generator is the upstream grid, and a\n# generator INJECTS into its bus (compute_node_gen, L1425-1433; the load convention of compute_node_load L1402-1419), so\n# pg_adn > 0 is power flowing from the TN INTO the DN (IMPORT) and pg_adn < 0 is REVERSE flow (export to the TN). The\n# same sign is the DSO's settlement convention (`interface_energy_settlement`, L1729-1756: the DSO block pays\n# +pi_t * baseMVA * pg_adn, the cost of importing) and the TSO copy's (`interface_pf_p_transmission_def`, L1241-1262:\n# pc_adn = the TN's LOAD at the ADN bus; the consensus pairs E[pg_adn] with E[pc_adn] through expected_interface_pf_p,\n# `dn_interface_expected_pf_p_def` L2416-2424 / `tn_interface_expected_pf_p_def` L2473-2475). The expected-interface\n# Var the TSO arm is fixed to, expected_interface_pf_p[p] = E_s[pg_adn[s, p]], therefore inherits the bound.\n# A ROW (not a Var bound) because pg_adn is an Expression. Only `build_dso_arm_models(no_reverse_flow=True)` adds it;\n# the coordinated path, production and the TSO arm never carry it. Declared rows per block = |S_m| x |S_o| x |P|,\n# counted by the structural check. In the consistency re-evaluation the row is deactivated like the voltage and\n# thermal limit rows (the reference generator is freed there) and EVALUATED afterwards as a hard DN limit\n# (`consistency_violations`, kind 'no_reverse_flow', excess in p.u. under the same key as the reference-generator\n# bounds), so a violation at the TN's actual voltage triggers the declared sequential pass.\nNO_REVERSE_FLOW_ROW = 'uncoord_no_reverse_flow'",
+   "excerpt_sha256": "b2385e2f1ffb9c4adff3625af63c9fe0b5c5f4c7147915c2f02505fe596a3eb4",
+   "file_sha256": "45d1c09db9b687040d57c8b01c1d092f3b53aa120f0e3229d998c435d261e31a"
+  },
+  {
+   "id": "Z6c-02",
+   "item": "Z6c",
+   "file": "uncoordinated_benchmark.py",
+   "line_first": 336,
+   "line_last": 338,
+   "statement": "The row rule.",
+   "required_substrings": [
+    "return m.pg_adn[s_m, s_o, p] >= 0.0"
+   ],
+   "missing_substrings": [],
+   "citation_holds": true,
+   "excerpt": "def _no_reverse_flow_rule(m, s_m, s_o, p):\n    \"\"\"W116 (Addendum 57): import only -- production's DSO interface expression pg_adn >= 0 (see NO_REVERSE_FLOW_ROW).\"\"\"\n    return m.pg_adn[s_m, s_o, p] >= 0.0",
+   "excerpt_sha256": "870c8a0a339aab40731e9acf838a7c435e0216896477ce07ec4b6118bc2c7a24",
+   "file_sha256": "45d1c09db9b687040d57c8b01c1d092f3b53aa120f0e3229d998c435d261e31a"
+  },
+  {
+   "id": "Z6c-03",
+   "item": "Z6c",
+   "file": "uncoordinated_benchmark.py",
+   "line_first": 405,
+   "line_last": 407,
+   "statement": "Added only in build_dso_arm_models(no_reverse_flow=True).",
+   "required_substrings": [
+    "if no_reverse_flow:",
+    "block.add_component(NO_REVERSE_FLOW_ROW"
+   ],
+   "missing_substrings": [],
+   "citation_holds": true,
+   "excerpt": "                if no_reverse_flow:\n                    block.add_component(NO_REVERSE_FLOW_ROW, pe.Constraint(\n                        block.scenarios_market, block.scenarios_operation, block.periods, rule=_no_reverse_flow_rule))",
+   "excerpt_sha256": "53f07211d00ba5400161f0ed6cb6e024f1916c9c16ab98f6cb2eb21c2c72edf9",
+   "file_sha256": "45d1c09db9b687040d57c8b01c1d092f3b53aa120f0e3229d998c435d261e31a"
+  },
+  {
+   "id": "Z6c-04",
+   "item": "Z6c",
+   "file": "network.py",
+   "line_first": 438,
+   "line_last": 445,
+   "statement": "The two interface copies in the coordinated model: TSO pc_adn (per ADN), DSO pg_adn.",
+   "required_substrings": [
+    "model.pc_adn = pe.Expression(model.adn_nodes",
+    "model.pg_adn = pe.Expression(model.scenarios_market"
+   ],
+   "missing_substrings": [],
+   "citation_holds": true,
+   "excerpt": "    if network.is_transmission: # Note: used coordinated operation\n        model.vmag_adn = pe.Expression(model.adn_nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(interface_vmag_transmission_def, network=network))\n        model.pc_adn = pe.Expression(model.adn_nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(interface_pf_p_transmission_def, network=network, params=params))\n        model.qc_adn = pe.Expression(model.adn_nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(interface_pf_q_transmission_def, network=network, params=params))\n    else:\n        model.vmag_adn = pe.Expression(model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(interface_vmag_distribution_def, network=network))\n        model.pg_adn = pe.Expression(model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(interface_pf_p_distribution_def, network=network))\n        model.qg_adn = pe.Expression(model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(interface_pf_q_distribution_def, network=network))",
+   "excerpt_sha256": "279ca18fb3f860ddcd260b9fb1203ff6a8cf57f705d89e06c4e4ebedba28ee77",
+   "file_sha256": "18acaa84af7a043898a7b831223b4eab1d91f9bcf2c199f49beecfeb3bf91fb4"
+  },
+  {
+   "id": "Z6c-05",
+   "item": "Z6c",
+   "file": "model_construction_helpers.py",
+   "line_first": 1241,
+   "line_last": 1262,
+   "statement": "TSO copy = fixed anchor pc (the consensus request) + free signed interface_delta_p (scenario-free).",
+   "required_substrings": [
+    "pc_adn = m.pc[adn_load_idx, s_m, s_o, p]",
+    "pc_adn += m.interface_delta_p[dn, s_m0, s_o0, p]"
+   ],
+   "missing_substrings": [],
+   "citation_holds": true,
+   "excerpt": "def interface_pf_p_transmission_def(m, dn, s_m, s_o, p, network, params):\n    adn_node_id = network.active_distribution_network_nodes[dn]\n    adn_load_idx = network.get_adn_load_idx(adn_node_id)\n    if params.l_curt:\n        m.pc_curt_down[adn_load_idx, s_m, s_o, p].fix(EQUALITY_TOLERANCE)\n        m.pc_curt_up[adn_load_idx, s_m, s_o, p].fix(EQUALITY_TOLERANCE)\n    pc_adn = m.pc[adn_load_idx, s_m, s_o, p]\n    # P5.15 Step 3.1-C (Addendum 12 item 2): signed interface reparametrization.\n    # `interface_delta_p` is fixed at 0 in every TSO model except the ADMM path,\n    # where it is freed and the legs below are fixed at 0 instead (see\n    # `create_transmission_network_model`, shared_resources_planning.py). Adding\n    # it here unconditionally, alongside the unchanged legs term, makes the\n    # interface expression `pc + legs` in the hierarchical/uncoordinated paths\n    # (delta == 0) and `pc + delta` in the ADMM path (legs == 0), without a\n    # path-specific branch in this shared rule.\n    # P5.15 Addendum 38 (A): scenario-free (see `sess_na_scenario`'s note) -- the TSO\n    # operates on its committed schedule in every scenario.\n    s_m0, s_o0 = sess_na_scenario(m)\n    pc_adn += m.interface_delta_p[dn, s_m0, s_o0, p]\n    if params.fl_reg:\n        pc_adn += m.flex_p_up[adn_load_idx, s_m, s_o, p] - m.flex_p_down[adn_load_idx, s_m, s_o, p]\n    return pc_adn",
+   "excerpt_sha256": "417b7a4a7721ccd2eb1749d2f7f2300b818afc178b79572b1991e778485b3bbc",
+   "file_sha256": "a20a224f11008de8c0206484583b00253677267d616e1051bb1583791ed47f64"
+  },
+  {
+   "id": "Z6c-06",
+   "item": "Z6c",
+   "file": "model_construction_helpers.py",
+   "line_first": 1287,
+   "line_last": 1297,
+   "statement": "DSO copy = reference-generator P MINUS the shared-ESS net power at the reference bus (equal to pg_ref at x = 0).",
+   "required_substrings": [
+    "return m.pg[ref_gen_idx, s_m, s_o, p] - shared_ess_p"
+   ],
+   "missing_substrings": [],
+   "citation_holds": true,
+   "excerpt": "def interface_pf_p_distribution_def(m, s_m, s_o, p, network):\n    ref_gen_idx = network.get_reference_gen_idx()\n    ref_node_id = network.get_reference_node_id()\n    # P5.15 Addendum 38 (B): the scenario-free shared-ESS schedule (see `sess_na_scenario`).\n    s_m0, s_o0 = sess_na_scenario(m)\n    shared_ess_p = sum(\n        m.shared_es_pnet[e, s_m0, s_o0, p]\n        for e in m.shared_energy_storages\n        if network.shared_energy_storages[e].bus == ref_node_id\n    )\n    return m.pg[ref_gen_idx, s_m, s_o, p] - shared_ess_p",
+   "excerpt_sha256": "241c24319de48073be1b3a049bb99bbe34a0cd5648355c5a3e866ec80e5d2c67",
+   "file_sha256": "a20a224f11008de8c0206484583b00253677267d616e1051bb1583791ed47f64"
+  },
+  {
+   "id": "Z6c-07",
+   "item": "Z6c",
+   "file": "shared_resources_planning.py",
+   "line_first": 4233,
+   "line_last": 4242,
+   "statement": "TSO builder: pc fixed to the DSO request (the anchor).",
+   "required_substrings": [
+    "interface_pf_p = consensus_vars['pf']['dso']['current'][adn_node_id][year][day]['p'][p] / s_base",
+    "fix_or_set(tso_model[year][day].pc[adn_load_idx, s_m, s_o, p], interface_pf_p)"
+   ],
+   "missing_substrings": [],
+   "citation_holds": true,
+   "excerpt": "                            # Fix Pc and Qc (base profiles), free pc_adn and qc_adn\n                            interface_pf_p = consensus_vars['pf']['dso']['current'][adn_node_id][year][day]['p'][p] / s_base\n                            interface_pf_q = consensus_vars['pf']['dso']['current'][adn_node_id][year][day]['q'][p] / s_base\n\n                            tso_model[year][day].pc[adn_load_idx, s_m, s_o, p].setub(None)\n                            tso_model[year][day].pc[adn_load_idx, s_m, s_o, p].setlb(None)\n                            tso_model[year][day].qc[adn_load_idx, s_m, s_o, p].setub(None)\n                            tso_model[year][day].qc[adn_load_idx, s_m, s_o, p].setlb(None)\n                            fix_or_set(tso_model[year][day].pc[adn_load_idx, s_m, s_o, p], interface_pf_p)\n                            fix_or_set(tso_model[year][day].qc[adn_load_idx, s_m, s_o, p], interface_pf_q)",
+   "excerpt_sha256": "f4fb02b1695a05f362527a9fec68a99b8f2e923d4da9bf5d2ffd6c390a7e67f6",
+   "file_sha256": "0610d745a41c86c71dae9e776f0dc8e38c7099f73128a3d2c2e8f861ab9fc9c0"
+  },
+  {
+   "id": "Z6c-08",
+   "item": "Z6c",
+   "file": "shared_resources_planning.py",
+   "line_first": 4267,
+   "line_last": 4273,
+   "statement": "TSO builder: delta freed within +/- the interface rating -- a TSO-side NRF would bind here (pc + delta >= 0).",
+   "required_substrings": [
+    "tso_model[year][day].interface_delta_p[dn, s_m, s_o, p].setlb(-interface_transf_rating)"
+   ],
+   "missing_substrings": [],
+   "citation_holds": true,
+   "excerpt": "                            if (s_m, s_o) == sess_na_scenario(tso_model[year][day]):\n                                tso_model[year][day].interface_delta_p[dn, s_m, s_o, p].fixed = False\n                                tso_model[year][day].interface_delta_q[dn, s_m, s_o, p].fixed = False\n                                tso_model[year][day].interface_delta_p[dn, s_m, s_o, p].setlb(-interface_transf_rating)\n                                tso_model[year][day].interface_delta_p[dn, s_m, s_o, p].setub(interface_transf_rating)\n                                tso_model[year][day].interface_delta_q[dn, s_m, s_o, p].setlb(-interface_transf_rating)\n                                tso_model[year][day].interface_delta_q[dn, s_m, s_o, p].setub(interface_transf_rating)",
+   "excerpt_sha256": "3226a80b590ee1923bbbf4470a82f1fdbe045107d2f15cb36fe5cf4734a7c730",
+   "file_sha256": "0610d745a41c86c71dae9e776f0dc8e38c7099f73128a3d2c2e8f861ab9fc9c0"
+  },
+  {
+   "id": "Z6c-09",
+   "item": "Z6c",
+   "file": "shared_resources_planning.py",
+   "line_first": 4277,
+   "line_last": 4282,
+   "statement": "TSO builder site for a declared TSO-copy NRF row (create_transmission_network_model).",
+   "required_substrings": [
+    "tso_model[year][day].expected_interface_pf_p = pe.Var(",
+    "tso_model[year][day].expected_interface_pf_p_def = pe.Constraint("
+   ],
+   "missing_substrings": [],
+   "citation_holds": true,
+   "excerpt": "            tso_model[year][day].expected_interface_pf_p = pe.Var(tso_model[year][day].active_distribution_networks, tso_model[year][day].periods, domain=pe.Reals, initialize=0.0)\n            tso_model[year][day].expected_interface_pf_q = pe.Var(tso_model[year][day].active_distribution_networks, tso_model[year][day].periods, domain=pe.Reals, initialize=0.0)\n            tso_model[year][day].expected_shared_ess_p = pe.Var(tso_model[year][day].shared_energy_storages, tso_model[year][day].periods, domain=pe.Reals, initialize=0.0)\n            tso_model[year][day].expected_shared_ess_q = pe.Var(tso_model[year][day].shared_energy_storages, tso_model[year][day].periods, domain=pe.Reals, initialize=0.0)\n            tso_model[year][day].expected_interface_vmag_def = pe.Constraint( tso_model[year][day].active_distribution_networks, tso_model[year][day].periods, rule=partial(tn_interface_expected_vmag_rule, network=transmission_network.network[year][day]))\n            tso_model[year][day].expected_interface_pf_p_def = pe.Constraint(tso_model[year][day].active_distribution_networks, tso_model[year][day].periods, rule=partial(tn_interface_expected_pf_p_rule, network=transmission_network.network[year][day]))",
+   "excerpt_sha256": "8e40ff80ffcd204f3928c44834db4a402b8d788fe0445930a41c88b8f6ae7743",
+   "file_sha256": "0610d745a41c86c71dae9e776f0dc8e38c7099f73128a3d2c2e8f861ab9fc9c0"
+  },
+  {
+   "id": "Z6c-10",
+   "item": "Z6c",
+   "file": "shared_resources_planning.py",
+   "line_first": 4372,
+   "line_last": 4377,
+   "statement": "DSO builder site, sequential (create_distribution_networks_models_sequential) ...",
+   "required_substrings": [
+    "dso_model[year][day].expected_interface_pf_p = pe.Var(dso_model[year][day].periods"
+   ],
+   "missing_substrings": [],
+   "citation_holds": true,
+   "excerpt": "                dso_model[year][day].expected_interface_pf_p = pe.Var(dso_model[year][day].periods, domain=pe.Reals, initialize=0.0)\n                dso_model[year][day].expected_interface_pf_q = pe.Var(dso_model[year][day].periods, domain=pe.Reals, initialize=0.0)\n                dso_model[year][day].expected_shared_ess_p = pe.Var(dso_model[year][day].periods, domain=pe.Reals, initialize=0.0)\n                dso_model[year][day].expected_shared_ess_q = pe.Var(dso_model[year][day].periods, domain=pe.Reals, initialize=0.0)\n                dso_model[year][day].expected_interface_vmag_def = pe.Constraint(dso_model[year][day].periods, rule=partial(dn_interface_expected_vmag_rule, network=distribution_network.network[year][day]))\n                dso_model[year][day].expected_interface_pf_p_def = pe.Constraint(dso_model[year][day].periods, rule=partial(dn_interface_expected_pf_p_rule, network=distribution_network.network[year][day]))",
+   "excerpt_sha256": "f11044a832fc2760aa8337b3a533424e4e9e058f92ffdf45fbc2f98a280104cd",
+   "file_sha256": "0610d745a41c86c71dae9e776f0dc8e38c7099f73128a3d2c2e8f861ab9fc9c0"
+  },
+  {
+   "id": "Z6c-11",
+   "item": "Z6c",
+   "file": "shared_resources_planning.py",
+   "line_first": 4488,
+   "line_last": 4488,
+   "statement": "... and parallel (create_distribution_network_model): a DSO-copy option must be wired in both builders.",
+   "required_substrings": [
+    "dso_model[year][day].expected_interface_pf_p = pe.Var(dso_model[year][day].periods"
+   ],
+   "missing_substrings": [],
+   "citation_holds": true,
+   "excerpt": "            dso_model[year][day].expected_interface_pf_p = pe.Var(dso_model[year][day].periods, domain=pe.Reals, initialize=0.00)",
+   "excerpt_sha256": "7c3b8155a3d742f1cd1e4e47d42979e7aadffef188bf875fa7ea9b7f3083baec",
+   "file_sha256": "0610d745a41c86c71dae9e776f0dc8e38c7099f73128a3d2c2e8f861ab9fc9c0"
+  },
+  {
+   "id": "Z6c-12",
+   "item": "Z6c",
+   "file": "network_parameters.py",
+   "line_first": 168,
+   "line_last": 174,
+   "statement": "Precedent for a declared per-network option read from the case33/case9 params files.",
+   "required_substrings": [
+    "if 'shared_ess_model' in params_data:",
+    "parameters.shared_ess_model = ESS_MODEL_BILINEAR_RELAXATION"
+   ],
+   "missing_substrings": [],
+   "citation_holds": true,
+   "excerpt": "    if 'shared_ess_model' in params_data:\n        if params_data['shared_ess_model'] == 'EXACT':\n            parameters.shared_ess_model = ESS_MODEL_EXACT\n        elif params_data['shared_ess_model'] == 'BILINEAR_RELAXATION':\n            parameters.shared_ess_model = ESS_MODEL_BILINEAR_RELAXATION\n        elif params_data['shared_ess_model'] == 'POLYNOMIAL_COMPLEMENTARITY':\n            parameters.shared_ess_model = ESS_MODEL_POLYNOMIAL_COMPLEMENTARITY",
+   "excerpt_sha256": "f367780cf233280399e0c610ef7b3c7f6f714a4c3e8bf06a17da53495d7d06e1",
+   "file_sha256": "086c7e411f8a3aeb983c4b049c14f231750d119dc126f6c92ef8df77d0bacc94"
+  },
+  {
+   "id": "Z6c-13",
+   "item": "Z6c",
+   "file": "shared_resources_planning.py",
+   "line_first": 1154,
+   "line_last": 1157,
+   "statement": "What is recorded for interface P on each side: the expected interface P of the TSO copy and of the DSO copy ...",
+   "required_substrings": [
+    "p_int_tso_expected = pe.value(local_tso_model.expected_interface_pf_p[dn, p]) * s_base",
+    "p_int_dso_expected = pe.value(local_dso_model.expected_interface_pf_p[p]) * s_base"
+   ],
+   "missing_substrings": [],
+   "citation_holds": true,
+   "excerpt": "                    p_int_tso_expected = pe.value(local_tso_model.expected_interface_pf_p[dn, p]) * s_base\n                    q_int_tso_expected = pe.value(local_tso_model.expected_interface_pf_q[dn, p]) * s_base\n                    p_int_dso_expected = pe.value(local_dso_model.expected_interface_pf_p[p]) * s_base\n                    q_int_dso_expected = pe.value(local_dso_model.expected_interface_pf_q[p]) * s_base",
+   "excerpt_sha256": "53402ab4fd4f69d59d0c2c2cfe55b1250cca62a4519ab68c7e89db759b07a858",
+   "file_sha256": "0610d745a41c86c71dae9e776f0dc8e38c7099f73128a3d2c2e8f861ab9fc9c0"
+  },
+  {
+   "id": "Z6c-14",
+   "item": "Z6c",
+   "file": "shared_resources_planning.py",
+   "line_first": 1209,
+   "line_last": 1220,
+   "statement": "... per (node, year, day, period), with the TSO delta and anchor per scenario and the price ...",
+   "required_substrings": [
+    "'p_int_tso_expected_mw': p_int_tso_expected,",
+    "'p_int_dso_expected_mw': p_int_dso_expected,",
+    "'delta_p_mw': delta_p_by_scenario,",
+    "'anchor_p_mw': anchor_p_by_scenario,",
+    "'price_per_mwh': price,"
+   ],
+   "missing_substrings": [],
+   "citation_holds": true,
+   "excerpt": "                    periods_detail[p] = {\n                        'priced_interface_residual_expected_mu': priced_interface_residual,\n                        'p_int_tso_expected_mw': p_int_tso_expected,\n                        'q_int_tso_expected_mvar': q_int_tso_expected,\n                        'p_int_dso_expected_mw': p_int_dso_expected,\n                        'q_int_dso_expected_mvar': q_int_dso_expected,\n                        'delta_p_mw': delta_p_by_scenario,\n                        'delta_q_mvar': delta_q_by_scenario,\n                        'anchor_p_mw': anchor_p_by_scenario,\n                        'anchor_q_mvar': anchor_q_by_scenario,\n                        'price_per_mwh': price,\n                        'price_per_mwh_by_scenario': price_by_scenario,",
+   "excerpt_sha256": "d4456afe3c488ae94488831a41894ff20dda2332cb373e9b0ca05d132317e1d1",
+   "file_sha256": "0610d745a41c86c71dae9e776f0dc8e38c7099f73128a3d2c2e8f861ab9fc9c0"
+  },
+  {
+   "id": "Z6c-15",
+   "item": "Z6c",
+   "file": "p515_g_g1_g4_admm_gates.py",
+   "line_first": 2051,
+   "line_last": 2058,
+   "statement": "... written at TERMINAL only, to interface_settlement_detail_s31c.json in every evaluation directory.",
+   "required_substrings": [
+    "def write_interface_settlement_detail_s31c(",
+    "detail = _s31c_interface_detail(planning, models)"
+   ],
+   "missing_substrings": [],
+   "citation_holds": true,
+   "excerpt": "def write_interface_settlement_detail_s31c(planning, sed, models, rows, report, out_dir, label):\n    \"\"\"S31C Part 3. REUSES `write_component_levels_terminal` (the s31 post-run\n    level writer, unmodified) and EXTENDS its output with the interface energy\n    settlement / signed-delta detail Addendum 12 requires, into a companion\n    artifact -- zero extra solves, same FINAL models `run_admm_arm` already\n    built.\"\"\"\n    base_path = write_component_levels_terminal(planning, sed, models, rows, report, out_dir, label)\n    detail = _s31c_interface_detail(planning, models)",
+   "excerpt_sha256": "09cc9fb8f77152b41e8732644f492d4ab3c09bc5167ea4901a2b99146c144941",
+   "file_sha256": "6f4631e10a2f8a7786390c0f96e45332706779ae9cdf6a87ddd716d9ad9ad346"
+  },
+  {
+   "id": "Z6c-16",
+   "item": "Z6c",
+   "file": "p515_g_g1_g4_admm_gates.py",
+   "line_first": 1935,
+   "line_last": 1935,
+   "statement": "The writer reads production's reporting helper.",
+   "required_substrings": [
+    "reporting_detail = srp._get_interface_reporting_detail(planning, models)"
+   ],
+   "missing_substrings": [],
+   "citation_holds": true,
+   "excerpt": "    reporting_detail = srp._get_interface_reporting_detail(planning, models)",
+   "excerpt_sha256": "bb8727cb5a4c638acf06659f62ae45dbfe097570c5524e17be0e8890f3c8621e",
+   "file_sha256": "6f4631e10a2f8a7786390c0f96e45332706779ae9cdf6a87ddd716d9ad9ad346"
+  },
+  {
+   "id": "C4-01",
+   "item": "C4",
+   "file": "p515_s44_campaign_harness.py",
+   "line_first": 11,
+   "line_last": 20,
+   "statement": "The harness runs N children, one process per evaluation, at most ctx.concurrency at once.",
+   "required_substrings": [
+    "Every candidate",
+    "OWN OS process",
+    "At most `ctx.concurrency`"
+   ],
+   "missing_substrings": [],
+   "citation_holds": true,
+   "excerpt": "================================================================================\n`evaluate(batch, ctx) -> records` (STEP4_DFO_METHOD.md 2.7). Every candidate\nof the batch is evaluated in its OWN OS process -- a fresh interpreter\n(`<python> -u p515_s44_campaign_harness.py --child ...`), never a fork of the\nparent -- with the thread caps `THREAD_CAP_ENV` (OMP / MKL / OPENBLAS /\nVECLIB / NUMEXPR = 1) placed in the child's environment before it starts (the\nIPOPT executables it launches inherit them). At most `ctx.concurrency`\nchildren run at once; the parent polls them (`os.wait4`, non-blocking, so\neach child's own rusage is captured), fills free slots in batch order, and\nreturns one record per candidate, in batch order.",
+   "excerpt_sha256": "da0738000c1b5dafbabedaafbdcab226094f44c76533e27a3a0333aea939e386",
+   "file_sha256": "9c6bda1969eca917c7875c1e4a84ab004a3b55edf52ad87179e12c816bbb7f21"
+  },
+  {
+   "id": "C4-02",
+   "item": "C4",
+   "file": "p515_s44_campaign_harness.py",
+   "line_first": 59,
+   "line_last": 65,
+   "statement": "Its isolation argument (checked at Addendum 25).",
+   "required_substrings": [
+    "Why concurrency is safe (checked, not assumed",
+    "p56a_oracle.fresh_planning",
+    "pyomo's temporary NL/",
+    "workers are off, so no process pool is shared."
+   ],
+   "missing_substrings": [],
+   "citation_holds": true,
+   "excerpt": "Why concurrency is safe (checked, not assumed; see the worker report): each\nevaluation has its own `eval_id` working dir (`p56a_oracle.fresh_planning`\nisolates every holder's `logs_dir`, hence every IPOPT `output_file`, TSO,\nDSO and ESSO), its own `results_dir` (`_set_results_dir_for_arm`, hence its\nown FrozenSMOPF snapshots), its own output files, and pyomo's temporary NL/\nSOL files are uniquely named; `ParallelExecution` is false and persistent\nworkers are off, so no process pool is shared.",
+   "excerpt_sha256": "31b34be36a3d80e9917efd752a1f903548e465d0f57a0895cecbc427c3d7950e",
+   "file_sha256": "9c6bda1969eca917c7875c1e4a84ab004a3b55edf52ad87179e12c816bbb7f21"
+  },
+  {
+   "id": "C4-03",
+   "item": "C4",
+   "file": "p515_s44_campaign_harness.py",
+   "line_first": 312,
+   "line_last": 313,
+   "statement": "One campaign lock at the repo root: one campaign (one spec) per machine; slots live inside it.",
+   "required_substrings": [
+    "CAMPAIGN_LOCK_PATH = os.path.join(REPO, '.p515_s44_campaign.lock')"
+   ],
+   "missing_substrings": [],
+   "citation_holds": true,
+   "excerpt": "CAMPAIGN_LOCK_PATH = os.path.join(REPO, '.p515_s44_campaign.lock')\nLEGACY_RUN_LOCK_PATH = os.path.join(REPO, '.p515_g_gate.lock')",
+   "excerpt_sha256": "fd6a68bb0178a989b8c0540f0d23fc4ec92b24742ac14db2343cb477866749d7",
+   "file_sha256": "9c6bda1969eca917c7875c1e4a84ab004a3b55edf52ad87179e12c816bbb7f21"
+  },
+  {
+   "id": "C4-04",
+   "item": "C4",
+   "file": "p515_s44_campaign_harness.py",
+   "line_first": 1630,
+   "line_last": 1630,
+   "statement": "Concurrency is a spec field.",
+   "required_substrings": [
+    "self.concurrency = int(spec['concurrency'])"
+   ],
+   "missing_substrings": [],
+   "citation_holds": true,
+   "excerpt": "        self.concurrency = int(spec['concurrency'])",
+   "excerpt_sha256": "c8c1878d04837f2b333bb567c7fcb9f7dbaa5ac04cb916abc498594f37a5a32e",
+   "file_sha256": "9c6bda1969eca917c7875c1e4a84ab004a3b55edf52ad87179e12c816bbb7f21"
+  },
+  {
+   "id": "C4-05",
+   "item": "C4",
+   "file": "p515_s44_campaign_harness.py",
+   "line_first": 1872,
+   "line_last": 1872,
+   "statement": "The slot loop.",
+   "required_substrings": [
+    "while pending and len(running) < ctx.concurrency:"
+   ],
+   "missing_substrings": [],
+   "citation_holds": true,
+   "excerpt": "            while pending and len(running) < ctx.concurrency:",
+   "excerpt_sha256": "0b2c1f956f2df09ea0e32ab04a6a292ea2e07b02a44c8981f0909ac1ad1db385",
+   "file_sha256": "9c6bda1969eca917c7875c1e4a84ab004a3b55edf52ad87179e12c816bbb7f21"
+  },
+  {
+   "id": "C4-06",
+   "item": "C4",
+   "file": "p56a_oracle.py",
+   "line_first": 174,
+   "line_last": 186,
+   "statement": "Per-evaluation log directory for every TSO/DSO/ESSO holder (the IPOPT output_file path).",
+   "required_substrings": [
+    "logs = os.path.join(WORK_DIR, eval_id, 'logs')",
+    "planning.shared_ess_data.logs_dir = logs"
+   ],
+   "missing_substrings": [],
+   "citation_holds": true,
+   "excerpt": "    planning = deepcopy(load_baseline()['planning'])\n    logs = os.path.join(WORK_DIR, eval_id, 'logs')\n    os.makedirs(logs, exist_ok=True)\n    planning.logs_dir = logs\n    for holder in _holders(planning):\n        if hasattr(holder, 'logs_dir'):\n            holder.logs_dir = logs\n        for year in holder.years:\n            for day in holder.days:\n                holder.network[year][day].logs_dir = logs\n    if hasattr(planning.shared_ess_data, 'logs_dir'):\n        planning.shared_ess_data.logs_dir = logs\n    planning.shared_ess_data.solver_recovery_diagnostics = []",
+   "excerpt_sha256": "f45d60447e52aec39cddeadec29a7dc64e1db7d0a255cf28d75e4787876e127f",
+   "file_sha256": "699d571a2d69b14fd89024c535fa8b3ffa0625aa647f1714060dcc9cf6fa2f11"
+  },
+  {
+   "id": "C4-07",
+   "item": "C4",
+   "file": "shared_energy_storage_data.py",
+   "line_first": 29,
+   "line_last": 38,
+   "statement": "The ESSO log fallback is the cwd -- harmless only because fresh_planning sets logs_dir (C4-06).",
+   "required_substrings": [
+    "callers that never set it keep the pre-fix",
+    "behaviour of writing into the process cwd"
+   ],
+   "missing_substrings": [],
+   "citation_holds": true,
+   "excerpt": "        # P5.15-F (PLANNER_BRIEF_2026-09-13.md Addendum 5): ESSO IPOPT logs now\n        # resolve against this directory, the same way network.py resolves\n        # `output_file` against `network.logs_dir`. Propagated from\n        # `planning_problem.logs_dir` in `_read_planning_problem`\n        # (shared_resources_planning.py), and reassigned by\n        # `p56a_oracle.fresh_planning` like the network logs_dirs. Empty by\n        # default (str()): callers that never set it keep the pre-fix\n        # behaviour of writing into the process cwd -- documented fallback,\n        # not a silent default.\n        self.logs_dir = str()",
+   "excerpt_sha256": "9387168c5499f9ffdf3ceacd90218b66602e173a17cbf9601bba62ea7e611850",
+   "file_sha256": "9acd095fb5e50e9b64c253600ae05ebb8e6463fd7a999d3a90f96ee82f037796"
+  },
+  {
+   "id": "C4-08",
+   "item": "C4",
+   "file": "p515_s44_gate.py",
+   "line_first": 1,
+   "line_last": 21,
+   "statement": "The ONLY concurrent-vs-serial bitwise gate: 3 slots, C* against the D run of P515S39 (pinned reference).",
+   "required_substrings": [
+    "Three concurrent evaluations through `p515_s44_campaign_harness.evaluate`",
+    "concurrency 3:",
+    "reproduces arm D bitwise",
+    "`data/SRP1/Results/P515S39_D_run/`"
+   ],
+   "missing_substrings": [],
+   "citation_holds": true,
+   "excerpt": "\"\"\"\nP5.15 Addendum 25 item 1 -- the campaign harness's bitwise GATE (campaign `s44_gate`).\n\nAuthority: PLANNER_BRIEF_2026-09-13.md Addendum 25; frozen spec v14\n`data/SRP1/Results/P515S44/frozen_s44_selection_spec_v14_e4500e27.json`,\n`item1_harness.gate` / `gate_companions`, `item3_selection_run.stop_rule`.\n\nThree concurrent evaluations through `p515_s44_campaign_harness.evaluate`,\nD configuration (the case file, `fb3de341`, no overrides), cap 500,\nconcurrency 3:\n  1. c_star      : 0.96875 MVA / 3.875 MWh at nodes 5, 7, 9\n  2. paper_plan  : node 7 only, 1.62 MVA / 3.24 MWh (nodes 5, 9 zero)\n  3. node7_empty : C* at nodes 5 and 9, node 7 zero\n\nGATE (evaluation 1 only -- the companions are designed to differ from D and\nare NOT compared to it; \"scope a gate per arm\"): the c_star evaluation\nreproduces arm D bitwise on every numeric trajectory field and cost\n(certified at cycle 139, gross_operational_cost 650,966,975.2943751) against\n`data/SRP1/Results/P515S39_D_run/`, with the comparator conventions of\n`p515_s40_clone_capture_preflight.py` (8f5cff48; `_diff`, exclusion sets,\n`ARTIFACT_FILES`, `SIDECAR_JSONL_FILES`, all BY IMPORT) and the diff",
+   "excerpt_sha256": "6626058eb115b104ea89d8760acce230d46f2f83e1082e1768e894ada8fc4f70",
+   "file_sha256": "38408b3080b78d16c583eaf711899f63acb4fcd31f0a009fa4d6d795d481b803"
+  },
+  {
+   "id": "C4-09",
+   "item": "C4",
+   "file": "p515_s44_gate.py",
+   "line_first": 38,
+   "line_last": 39,
+   "statement": "Its gating scalars are literals of the pre-baseline D configuration.",
+   "required_substrings": [
+    "Scalar checks (gating): c_star certified; cycles_run == 139;",
+    "gross_operational_cost == 650966975.2943751"
+   ],
+   "missing_substrings": [],
+   "citation_holds": true,
+   "excerpt": "Scalar checks (gating): c_star certified; cycles_run == 139;\ngross_operational_cost == 650966975.2943751 (exact).",
+   "excerpt_sha256": "1801636fa29b86934f11f8ba73f0128a507bea64098928d0e3a5fcd975f327c9",
+   "file_sha256": "38408b3080b78d16c583eaf711899f63acb4fcd31f0a009fa4d6d795d481b803"
+  },
+  {
+   "id": "C4-10",
+   "item": "C4",
+   "file": "PLANNER_BRIEF_2026-09-13.md",
+   "line_first": 1146,
+   "line_last": 1146,
+   "statement": "Ruling on its one run (strict FAIL on tie-order diffs only).",
+   "required_substrings": [
+    "Harness gate ruling accepted (tie order from the sort fix)."
+   ],
+   "missing_substrings": [],
+   "citation_holds": true,
+   "excerpt": "  not the main limit on AA \u2014 recorded. Harness gate ruling accepted (tie order from the sort fix).",
+   "excerpt_sha256": "444490a2a45d1d35b3e7587197af5bdf0a6c7ac654923602d58e4ace6fd5b094",
+   "file_sha256": "417f94f526f007dc1e0cd6988bd5fb43c75c2a5d624c24b723b2b0c1db68fc4e"
+  },
+  {
+   "id": "C4-11",
+   "item": "C4",
+   "file": "p515_s53_w142_resettle_ext_v6_campaign.py",
+   "line_first": 134,
+   "line_last": 134,
+   "statement": "The latest campaign launcher (W142 extension v6) fixes concurrency 1 ...",
+   "required_substrings": [
+    "CONCURRENCY = 1"
+   ],
+   "missing_substrings": [],
+   "citation_holds": true,
+   "excerpt": "CONCURRENCY = 1",
+   "excerpt_sha256": "5aa99a88fe1b9d0f1c745747daa45a5e4a6a042b0dc2b40a8ffa1e64f4851408",
+   "file_sha256": "0a3232069d232b85815ea88b03478b52c54ff3be9b8b4b014f039addd94caa28"
+  },
+  {
+   "id": "C4-12",
+   "item": "C4",
+   "file": "p515_s53_w142_resettle_ext_v6_campaign.py",
+   "line_first": 572,
+   "line_last": 572,
+   "statement": "... and checks it.",
+   "required_substrings": [
+    "'concurrency_1': spec.get('concurrency') == CONCURRENCY,"
+   ],
+   "missing_substrings": [],
+   "citation_holds": true,
+   "excerpt": "        'concurrency_1': spec.get('concurrency') == CONCURRENCY,",
+   "excerpt_sha256": "cccaaa7a93a0a6cfa703aacada875ff16d91c70cdced114aa0bd63e3debb5857",
+   "file_sha256": "0a3232069d232b85815ea88b03478b52c54ff3be9b8b4b014f039addd94caa28"
+  },
+  {
+   "id": "C4-13",
+   "item": "C4",
+   "file": "p515_s51_f2_phase_b.py",
+   "line_first": 855,
+   "line_last": 855,
+   "statement": "The 2x search launcher fixes concurrency 5 (Addendum 29 memory rule, pre-tight-tail).",
+   "required_substrings": [
+    "'concurrency_5': spec.get('concurrency') == CONCURRENCY == 5,"
+   ],
+   "missing_substrings": [],
+   "citation_holds": true,
+   "excerpt": "        'concurrency_5': spec.get('concurrency') == CONCURRENCY == 5,",
+   "excerpt_sha256": "ae6dfc595c97bfe49cb9525c88734e2edbf4bf503bfedbbcab7c5d8a47f7aed0",
+   "file_sha256": "87ab3b2d23729d1fa10fe8c4bae0cec7d8daf0644f1cb8e6c314b441dcd13b29"
+  },
+  {
+   "id": "C4-14",
+   "item": "C4",
+   "file": "p515_s53_srp1_bitwise_gate.py",
+   "line_first": 75,
+   "line_last": 78,
+   "statement": "The serial two-cycle bitwise gate does not cover the parallel DSO builder.",
+   "required_substrings": [
+    "NOT COVERED, stated rather than implied",
+    "the parallel DSO builder (`create_distribution_network_model`) runs only with"
+   ],
+   "missing_substrings": [],
+   "citation_holds": true,
+   "excerpt": "NOT COVERED, stated rather than implied: the fix's effect above one scenario (the change is designed to alter the\ninitialisation solve there -- it is the subject of the alpha row, not of this gate; the W51 zero-solve checks A-C\ncover its structure, per index in both phases); the parallel DSO builder (`create_distribution_network_model`) runs only with\n`parallel_execution` true, which this arm does not use (zero-solve check A2 exercised it in-process).",
+   "excerpt_sha256": "0508ea930e696222129b6ba686fb591acb024202b887a8b9e8d57a36ed42380f",
+   "file_sha256": "b63b1fb94ec305a782cb139d6e9c42be8b7a49b2ef78cb0d174f09e3d53f6766"
+  },
+  {
+   "id": "C4-15",
+   "item": "C4",
+   "file": "p515_g_g1_g4_admm_gates.py",
+   "line_first": 128,
+   "line_last": 128,
+   "statement": "A shared repo directory every child HASHES before and after its run (read; a write by any child would be reported as an error by every concurrent sibling).",
+   "required_substrings": [
+    "SHARED_FROZEN_SMOPF_DIR = os.path.join(REPO, 'data', 'SRP1', 'Results', 'FrozenSMOPF')"
+   ],
+   "missing_substrings": [],
+   "citation_holds": true,
+   "excerpt": "SHARED_FROZEN_SMOPF_DIR = os.path.join(REPO, 'data', 'SRP1', 'Results', 'FrozenSMOPF')",
+   "excerpt_sha256": "5dcb99b41024b09c0b7ad6e29f5bfba9ebe1ce69487d52b29473df33ba83fdc5",
+   "file_sha256": "6f4631e10a2f8a7786390c0f96e45332706779ae9cdf6a87ddd716d9ad9ad346"
+  }
+ ],
+ "n_claims": 93,
+ "n_claims_holding": 93,
+ "records": {
+  "T8_spec_v3": {
+   "path": "data/SRP1/Results/P515S53/w142_resettle_ext_v6/frozen_s53_resettle_ext_spec_v3_84775dc4.json",
+   "sha256": "84775dc41428ba6a6b504c86de728f3d2b44d19354c977c18d3b33f197c76ee6",
+   "at_head": {
+    "tracked": true,
+    "status_clean": true,
+    "head_blob": "455bc13f07bb372251490e1959af44e58694b450",
+    "worktree_blob": "455bc13f07bb372251490e1959af44e58694b450",
+    "ok": true
+   },
+   "values": {
+    "cells.*.model_variant": {
+     "e_c2": {
+      "ageing_enabled": true,
+      "available_energy_soh_point": "end",
+      "calendar_retention_per_year": 1.0,
+      "eol_retention_r": 0.8
+     },
+     "e_c2_calfade": {
+      "ageing_enabled": true,
+      "available_energy_soh_point": "end",
+      "calendar_retention_per_year": 0.985,
+      "eol_retention_r": 0.8
+     },
+     "e_c3_midblock": {
+      "ageing_enabled": true,
+      "available_energy_soh_point": "mid",
+      "calendar_retention_per_year": 1.0,
+      "eol_retention_r": 0.5
+     },
+     "e_c3_unit": {
+      "ageing_enabled": true,
+      "available_energy_soh_point": "end",
+      "calendar_retention_per_year": 1.0,
+      "eol_retention_r": 0.5
+     },
+     "e_c4": {
+      "ageing_enabled": true,
+      "available_energy_soh_point": "end",
+      "calendar_retention_per_year": 1.0,
+      "eol_retention_r": 0.7
+     },
+     "e_no_ageing": {
+      "ageing_enabled": false,
+      "available_energy_soh_point": "end",
+      "calendar_retention_per_year": 1.0,
+      "eol_retention_r": 0.5
+     },
+     "pb_y2025_n5_v6": null
+    },
+    "cells.e_no_ageing.campaign_spec.git_head": "55bb1e7d3423b2936d91dd85f957d0e018ab53a6",
+    "cells.e_no_ageing.campaign_spec.eval_key": "1b10e9e161523f46b9e4c0a2b6f7400ae1d2b2d7a42ef311e0d4726a7effd7e0",
+    "cells.e_no_ageing.candidate_key": "db77e1549af855bcb3521950c634db55fe6c155ab2de591b0441b5f2bf4b369a",
+    "cells.e_no_ageing.configuration.ess_ageing_baseline": {
+     "calendar_life_years": 15,
+     "calendar_retention_per_year": 0.985,
+     "calibration": {
+      "cycles_n": 10000,
+      "eol_retention_r": 0.8,
+      "reference_dod_d": 0.8,
+      "status": "ACTIVE"
+     },
+     "cycle_life_nominal": 10000,
+     "depth_of_discharge_nominal": 0.8,
+     "minimum_soh": 0.7
+    }
+   }
+  },
+  "T8_no_ageing_eval_record": {
+   "path": "data/SRP1/Results/P515S53/w142_resettle_ext_v6/campaign_s53_w142_resettle_ext_v6_e_no_ageing/evals/1b10e9e161523f46_e_no_ageing/evaluation_record.json",
+   "sha256": "f06339219628ef849b7470946aa54795841bcdee663c800b40efb7a7eb0ddbf7",
+   "at_head": {
+    "tracked": true,
+    "status_clean": true,
+    "head_blob": "4cf2b512cf135522f9a68fcb85e598828b229f40",
+    "worktree_blob": "4cf2b512cf135522f9a68fcb85e598828b229f40",
+    "ok": true
+   },
+   "values": {
+    "model_variant": {
+     "eol_retention_r": 0.5,
+     "calendar_retention_per_year": 1.0,
+     "available_energy_soh_point": "end",
+     "ageing_enabled": false
+    },
+    "model_variant_readback_pre_run.expected": {
+     "k": null,
+     "k_formula": "cycles_n * reference_dod_d / (-ln eol_retention_r) = 10000 * 0.8 / (-ln 0.5)",
+     "phi_cal_in_model": 1.0,
+     "available_energy_soh_point": "end",
+     "ageing_enabled": false,
+     "d_row_form": "D == 0"
+    },
+    "model_variant_readback_terminal.per_node.*.readback.d_row_form/phi_cal_in_model/floor_row_lower": {
+     "5": {
+      "d_row_form": "D == 0",
+      "phi_cal_in_model": 1.0,
+      "floor_row_lower": 0.7,
+      "k": null
+     },
+     "7": {
+      "d_row_form": "D == 0",
+      "phi_cal_in_model": 1.0,
+      "floor_row_lower": 0.7,
+      "k": null
+     },
+     "9": {
+      "d_row_form": "D == 0",
+      "phi_cal_in_model": 1.0,
+      "floor_row_lower": 0.7,
+      "k": null
+     }
+    },
+    "ageing_trajectory_terminal.nodes.7.cells[*].{y,D,soh_end,soh_used_for_available_energy,e_available}": [
+     {
+      "y": 0,
+      "D": 0.0,
+      "soh_end": 1.0,
+      "soh_used_for_available_energy": 1.0,
+      "e_available": 1.0
+     },
+     {
+      "y": 1,
+      "D": 0.0,
+      "soh_end": 1.0,
+      "soh_used_for_available_energy": 1.0,
+      "e_available": 1.0
+     },
+     {
+      "y": 2,
+      "D": 0.0,
+      "soh_end": 1.0,
+      "soh_used_for_available_energy": 1.0,
+      "e_available": 1.0
+     }
+    ],
+    "ageing_trajectory_terminal.nodes.{5,9}.cells": {
+     "5": [],
+     "9": []
+    }
+   }
+  },
+  "T8_no_ageing_campaign_spec": {
+   "path": "data/SRP1/Results/P515S53/w142_resettle_ext_v6/campaign_s53_w142_resettle_ext_v6_e_no_ageing/campaign_spec_s53_w142_resettle_ext_v6_e_no_ageing_10f4aa7a.json",
+   "sha256": "10f4aa7a05b5022ecdd347d45aea1070dc1557237ad482e17a0ee1645846d022",
+   "at_head": {
+    "tracked": true,
+    "status_clean": true,
+    "head_blob": "8ed8ee75f31eb3d671920e424b849cd481b533b8",
+    "worktree_blob": "8ed8ee75f31eb3d671920e424b849cd481b533b8",
+    "ok": true
+   },
+   "values": {
+    "git_head": "55bb1e7d3423b2936d91dd85f957d0e018ab53a6",
+    "concurrency": 1,
+    "candidates[0].canonical": {
+     "investment_year": 2025,
+     "nodes": {
+      "5": [
+       0.0,
+       0.0
+      ],
+      "7": [
+       0.25,
+       1.0
+      ],
+      "9": [
+       0.0,
+       0.0
+      ]
+     }
+    }
+   }
+  },
+  "x0_diff_analysis": {
+   "path": "data/SRP1/Results/P515S47/case_file_baseline/x0_diff_analysis/x0_diff_analysis.json",
+   "sha256": "f2db3be7671efea78d0a45841fc32013361bb41ad2484afff94120793c5b69cd",
+   "at_head": {
+    "tracked": true,
+    "status_clean": true,
+    "head_blob": "66debe5d94811c7b6bc4988ab675c1b4c66321d3",
+    "worktree_blob": "66debe5d94811c7b6bc4988ab675c1b4c66321d3",
+    "ok": true
+   },
+   "values": {
+    "checks": {
+     "X1_differing_components_are_degradation_rows_and_salvage_expressions_only": true,
+     "X2_every_differing_degradation_row_inactive_both_phases": true,
+     "X3_esso_objective_identical_feasibility_penalty_only": true,
+     "X4_salvage_variables_pinned_to_zero_by_active_rows_both_phases": true,
+     "X5_esso_nl_identical_before_after": true,
+     "X6_network_blocks_identical": true,
+     "guard_zero_solves_verified": true
+    },
+    "all_ok": true,
+    "network_blocks_differing": [],
+    "per_esso_block.*.components_differing": {
+     "ESSO|node5": [
+      "Constraint:energy_storage_capacity_degradation",
+      "Expression:salvage_credit",
+      "Expression:salvage_value"
+     ],
+     "ESSO|node7": [
+      "Constraint:energy_storage_capacity_degradation",
+      "Expression:salvage_credit",
+      "Expression:salvage_value"
+     ],
+     "ESSO|node9": [
+      "Constraint:energy_storage_capacity_degradation",
+      "Expression:salvage_credit",
+      "Expression:salvage_value"
+     ]
+    },
+    "inputs": {
+     "before": {
+      "path": "data/SRP1/Results/P515S47/case_file_baseline/before/case_file_baseline_before.json",
+      "sha256": "0e145c503b481907260df073929c7983e60d8a88301127565718ff8f3f376843"
+     },
+     "after": {
+      "path": "data/SRP1/Results/P515S47/case_file_baseline/after/case_file_baseline_after.json",
+      "sha256": "867a51032c2482315c26e52c14eb32673b18fd14d0e2f90de19bb1563fbeb977"
+     }
+    }
+   }
+  },
+  "variant_checks_s46": {
+   "path": "data/SRP1/Results/P515S46/variant_checks/variant_checks.json",
+   "sha256": "c9b68b7e4be4d0997756061cbf104f2b3b28398a490888b63ae620a06c5af784",
+   "at_head": {
+    "tracked": true,
+    "status_clean": true,
+    "head_blob": "37a9fe85df5e658ceb7deb000209ee7f20a79255",
+    "worktree_blob": "37a9fe85df5e658ceb7deb000209ee7f20a79255",
+    "ok": true
+   },
+   "values": {
+    "readback_table.no_ageing": {
+     "k_read_back": null,
+     "k_expected": null,
+     "phi_read_back": 1.0,
+     "phi_expected": 1.0,
+     "soh_point_read_back": "end",
+     "d_row_form_read_back": "D == 0",
+     "readback_all_match": true,
+     "synthetic_trajectory_all_within_1e-12": true,
+     "salvage_2030_equals_end_soh_closed_form": true,
+     "SoH_end_per_block": [
+      1.0,
+      1.0,
+      1.0
+     ],
+     "SoH_available_per_block": [
+      1.0,
+      1.0,
+      1.0
+     ]
+    },
+    "checks.V7_no_ageing_soh_identically_one": true,
+    "git_head_at_run": "dd3afa6ecf098164e4e32b2d05e5fbf57cd6973b",
+    "D_per_instance.x0.settings_read_by_production": [
+     "end",
+     true
+    ]
+   }
+  },
+  "s44_gate_results": {
+   "path": "data/SRP1/Results/P515S44/campaign_s44_gate/gate_results.json",
+   "sha256": "08f2d6e594ea3c84b620a48858f863444c2201a569116336d90dfab99920afa4",
+   "at_head": {
+    "tracked": true,
+    "status_clean": true,
+    "head_blob": "21f786ae719244ff757fa663d3f00f7ade5b24e1",
+    "worktree_blob": "21f786ae719244ff757fa663d3f00f7ade5b24e1",
+    "ok": true
+   },
+   "values": {
+    "gate_pass": false,
+    "gate_scope": "evaluation 1 (c_star) only; companions are not compared to D",
+    "timestamp_utc": "2026-09-19T10:53:41.110855+00:00",
+    "batch_info.max_concurrent_observed": 3,
+    "c_star_vs_D.d_dir": "data/SRP1/Results/P515S39_D_run",
+    "committed_in": "f825b8b73475977c1f49348c93510c43ca1cc7a7 2026-09-19T11:58:40+01:00"
+   }
+  },
+  "w86_recert_spec": {
+   "path": "data/SRP1/Results/P515S53/tight_tail_w86/campaign_s53_w86_tail_recert/campaign_spec_s53_w86_tail_recert_ddd6cd44.json",
+   "sha256": "ddd6cd4422b56f946eeeb427dff44ef572490bd34c606fad96eaf00fd4a84ec1",
+   "at_head": {
+    "tracked": true,
+    "status_clean": true,
+    "head_blob": "d23c3a3be28ee2bc91e4d7a6e54876b382b1b544",
+    "worktree_blob": "d23c3a3be28ee2bc91e4d7a6e54876b382b1b544",
+    "ok": true
+   },
+   "values": {
+    "git_head": "deac7d9a1fa7f26e583462d2dbe4124a438de688",
+    "concurrency": 3
+   }
+  },
+  "w101_cont_x0_results": {
+   "path": "data/SRP1/Results/P515S53/w101_srp1_continuation/campaign_s53_w101_srp1_cont_x0/campaign_results.json",
+   "sha256": "1cb32453f9a59ad5c9d91ae0c3d0d7f06a38defe87efee836a53c4c4e71f320e",
+   "at_head": {
+    "tracked": true,
+    "status_clean": true,
+    "head_blob": "50cad8e4a5bb476a9d6df7745cc1225f9890b6ad",
+    "worktree_blob": "50cad8e4a5bb476a9d6df7745cc1225f9890b6ad",
+    "ok": true
+   },
+   "values": {
+    "found": [
+     [
+      "replay_divergence_abort",
+      null
+     ],
+     [
+      "gate_detail.G13.summary.replay_bitwise_through_cycle",
+      132
+     ],
+     [
+      "gate_detail.G13.summary.replay_first_divergence",
+      null
+     ],
+     [
+      "gate_detail.G19.first_divergence_cycle",
+      null
+     ]
+    ]
+   }
+  },
+  "w101_cont_n7_4h_e1_results": {
+   "path": "data/SRP1/Results/P515S53/w101_srp1_continuation/campaign_s53_w101_srp1_cont_n7_4h_e1/campaign_results.json",
+   "sha256": "66d70b32ec1b1b3b99b46f0ad0a66226f86932c0194087fecd72891384ffe3f4",
+   "at_head": {
+    "tracked": true,
+    "status_clean": true,
+    "head_blob": "a18f066495ce5d58136f435628b771614f6693ff",
+    "worktree_blob": "a18f066495ce5d58136f435628b771614f6693ff",
+    "ok": true
+   },
+   "values": {
+    "found": [
+     [
+      "replay_divergence_abort",
+      null
+     ],
+     [
+      "gate_detail.G13.summary.replay_bitwise_through_cycle",
+      112
+     ],
+     [
+      "gate_detail.G13.summary.replay_first_divergence",
+      null
+     ],
+     [
+      "gate_detail.G19.first_divergence_cycle",
+      null
+     ]
+    ]
+   }
+  },
+  "w101_cont_c_star_results": {
+   "path": "data/SRP1/Results/P515S53/w101_srp1_continuation/campaign_s53_w101_srp1_cont_c_star/campaign_results.json",
+   "sha256": "20832469af3a7145b2d47c6db83451c4c0cd6564e69883b09a0cc750ed8fa059",
+   "at_head": {
+    "tracked": true,
+    "status_clean": true,
+    "head_blob": "294f20ebcaed9063b5d6da3cb587f1f8d419a0ca",
+    "worktree_blob": "294f20ebcaed9063b5d6da3cb587f1f8d419a0ca",
+    "ok": true
+   },
+   "values": {
+    "found": [
+     [
+      "replay_divergence_abort",
+      null
+     ],
+     [
+      "gate_detail.G13.summary.replay_bitwise_through_cycle",
+      87
+     ],
+     [
+      "gate_detail.G13.summary.replay_first_divergence",
+      null
+     ],
+     [
+      "gate_detail.G19.first_divergence_cycle",
+      null
+     ]
+    ]
+   }
+  },
+  "w101_cont_x0_spec": {
+   "path": "data/SRP1/Results/P515S53/w101_srp1_continuation/campaign_s53_w101_srp1_cont_x0/campaign_spec_s53_w101_srp1_cont_x0_d1d5c3bc.json",
+   "sha256": "d1d5c3bcbdc261d297282382ce4a54263a811059d17230613a1765ee915ebd33",
+   "at_head": {
+    "tracked": true,
+    "status_clean": true,
+    "head_blob": "34a2b4e8fcc9fb4981357b5e36d4b26254c5c964",
+    "worktree_blob": "34a2b4e8fcc9fb4981357b5e36d4b26254c5c964",
+    "ok": true
+   },
+   "values": {
+    "git_head": "4ca1573d5d8835891d2d26cd9679a11db3cbab06",
+    "concurrency": 1
+   }
+  },
+  "s47_phase_b_spec": {
+   "path": "data/SRP1/Results/P515S47/campaign_s47_phase_b/campaign_spec_s47_phase_b_8cfa264e.json",
+   "sha256": "8cfa264e7ab0d92ac0832657c9b328d70b45851ba92f4623384d11fddb334185",
+   "at_head": {
+    "tracked": true,
+    "status_clean": true,
+    "head_blob": "77baa5d018a6f1dbe8bc2de5b27277e234a1d78d",
+    "worktree_blob": "77baa5d018a6f1dbe8bc2de5b27277e234a1d78d",
+    "ok": true
+   },
+   "values": {
+    "git_head": "7c563e9b3820c47eac24ff8d550871550778012e",
+    "concurrency": 5
+   }
+  },
+  "w142_pb_results": {
+   "path": "data/SRP1/Results/P515S53/w142_resettle_ext_v6/campaign_s53_w142_resettle_ext_v6_pb_y2025_n5_v6/campaign_results.json",
+   "sha256": "4550cbcb47da679daaffefaf9878e1b2ccfd6ff4bf1ad4d674a09f539d128aeb",
+   "at_head": {
+    "tracked": true,
+    "status_clean": true,
+    "head_blob": "edcd669af9901e1da3ae04da6a4a2480d12a96f0",
+    "worktree_blob": "edcd669af9901e1da3ae04da6a4a2480d12a96f0",
+    "ok": true
+   },
+   "values": {
+    "found": [
+     [
+      "replay_divergence_abort",
+      null
+     ],
+     [
+      "gate_detail.G13.parts.replay_equal_every_gated_cycle",
+      true
+     ],
+     [
+      "gate_detail.G19.first_divergence_cycle",
+      null
+     ],
+     [
+      "cell_report.replay_bitwise_through",
+      110
+     ],
+     [
+      "cell_report.replay_first_divergence",
+      null
+     ]
+    ]
+   }
+  },
+  "w142_pb_spec": {
+   "path": "data/SRP1/Results/P515S53/w142_resettle_ext_v6/campaign_s53_w142_resettle_ext_v6_pb_y2025_n5_v6/campaign_spec_s53_w142_resettle_ext_v6_pb_y2025_n5_v6_dafacff3.json",
+   "sha256": "dafacff3668b6c811184deb4f51b98dc869831e6efe8376b6781eef7122e5275",
+   "at_head": {
+    "tracked": true,
+    "status_clean": true,
+    "head_blob": "fc282ae5b268ab82b0f28fa2718aa7326fdb2f7c",
+    "worktree_blob": "fc282ae5b268ab82b0f28fa2718aa7326fdb2f7c",
+    "ok": true
+   },
+   "values": {
+    "git_head": "55bb1e7d3423b2936d91dd85f957d0e018ab53a6",
+    "concurrency": 1
+   }
+  },
+  "bitwise_gate_w83": {
+   "path": "data/SRP1/Results/P515S53/tight_tail_w83/srp1_bitwise_gate/gate.json",
+   "sha256": "2bf691fc2e58e8ad102fe566b468ba6783f63a76e10f26452fdf5d16a0a3df9c",
+   "at_head": {
+    "tracked": true,
+    "status_clean": true,
+    "head_blob": "263470ab31e70d53af482904e54b74fabafe3638",
+    "worktree_blob": "263470ab31e70d53af482904e54b74fabafe3638",
+    "ok": true
+   },
+   "values": {
+    "gate_pass": true,
+    "git_head_at_run": "f9634f62652d99375140c29096b07ea0a7d1bdd2"
+   }
+  },
+  "bitwise_gate_w84": {
+   "path": "data/SRP1/Results/P515S53/tight_tail_w84/srp1_bitwise_gate/gate.json",
+   "sha256": "8f76abfdf4396fdab6c6eb4fe80e97ce05980faeaee733ca1aaa232a66dd073d",
+   "at_head": {
+    "tracked": true,
+    "status_clean": true,
+    "head_blob": "8a3d110316298e456990399dcf08dfe1c1c378d4",
+    "worktree_blob": "8a3d110316298e456990399dcf08dfe1c1c378d4",
+    "ok": true
+   },
+   "values": {
+    "gate_pass": true,
+    "git_head_at_run": "99a5d39d421c43778a955247234c0597331beebd"
+   }
+  },
+  "case_file": {
+   "path": "data/SRP1/SRP1_params.json",
+   "sha256": "dbfdb2a07d12bfedab5e66bf94b3df98e5ab0305616652b4083266476972006b",
+   "at_head": {
+    "tracked": true,
+    "status_clean": true,
+    "head_blob": "a80056d0e3fd58dcbe43f89a142d2bc270269295",
+    "worktree_blob": "a80056d0e3fd58dcbe43f89a142d2bc270269295",
+    "ok": true
+   },
+   "values": {
+    "admm.rho": {
+     "v": {
+      "case9": 0.0077,
+      "case33_1": 0.0077,
+      "case33_2": 0.0077,
+      "case33_3": 0.0077
+     },
+     "pf": {
+      "case9": 0.198,
+      "case33_1": 0.198,
+      "case33_2": 0.198,
+      "case33_3": 0.198
+     },
+     "ess": {
+      "case9": 0.01,
+      "case33_1": 0.01,
+      "case33_2": 0.01,
+      "case33_3": 0.01,
+      "esso": 0.01
+     }
+    },
+    "admm.adaptive_penalty": true,
+    "admm.penalty_update.min/max": [
+     0.0001,
+     10000.0
+    ],
+    "admm.shared_ess_initialization": "standalone",
+    "admm.shared_ess_reference_rating_mva": 2.5,
+    "admm.proximal_regularization.tso.tau": 0.0
+   }
+  },
+  "ess_params": {
+   "path": "data/SRP1/SharedESS/SRP1_ESS_Params.json",
+   "sha256": "39106f934bf3edbf18f01a5ef1fadfefc2f7a518706e6c8fa6d962617a312706",
+   "at_head": {
+    "tracked": true,
+    "status_clean": true,
+    "head_blob": "45034b489d464fb41c49b106f660a2bce691e662",
+    "worktree_blob": "45034b489d464fb41c49b106f660a2bce691e662",
+    "ok": true
+   },
+   "values": {
+    "ageing": {
+     "calendar_life_years": 15,
+     "cycle_life_nominal": 10000,
+     "depth_of_discharge_nominal": 0.8,
+     "minimum_soh": 0.7,
+     "calendar_retention_per_year": 0.985,
+     "calibration": {
+      "status": "ACTIVE",
+      "cycles_n": 10000,
+      "reference_dod_d": 0.8,
+      "eol_retention_r": 0.8,
+      "_note": "k = cycles_n * reference_dod_d / (-ln eol_retention_r). ACTIVE calibration since P5.15 Addendum 30: C2 = (10000, 0.80, 0.80), k = 35851.36, the ageing BASELINE together with calendar_retention_per_year 0.985 and minimum_soh 0.70 (frozen spec v17 baseline). HISTORY: ACTIVE from P5.13-D until Addendum 30: calibration C3 = (10000, 0.80, 0.50) gives k = 11541.560327111707, consumed by the degradation law in place of cycle_life_nominal. See P5_13_B_CYCLING_CALIBRATION.md for the candidates and P5_13_D_* for the impact gate. Setting status back to DECLARED_NOT_CONSUMED restores k = cycle_life_nominal exactly."
+     }
+    },
+    "salvage_value.enabled": true
+   }
+  },
+  "case33_1_params": {
+   "path": "data/SRP1/case33_1/case33_1_params.json",
+   "sha256": "8e9e5a536fd1ef2bca5694274a68795d1099884ef23f2134e7db7d3a58c80b8e",
+   "at_head": {
+    "tracked": true,
+    "status_clean": true,
+    "head_blob": "6976e695213178b04827ace061133a7b2abb5012",
+    "worktree_blob": "6976e695213178b04827ace061133a7b2abb5012",
+    "ok": true
+   },
+   "values": {
+    "shared_ess_model": "BILINEAR_RELAXATION"
+   }
+  },
+  "case9_params": {
+   "path": "data/SRP1/case9/case9_params.json",
+   "sha256": "f3eff0502c606a9076af19969ec3705c2e6204fa4d9172a218345e986dbbf4ab",
+   "at_head": {
+    "tracked": true,
+    "status_clean": true,
+    "head_blob": "975332dd52ce24318fab789a15631fd1475ee129",
+    "worktree_blob": "975332dd52ce24318fab789a15631fd1475ee129",
+    "ok": true
+   },
+   "values": {
+    "shared_ess_model": "BILINEAR_RELAXATION"
+   }
+  }
+ },
+ "scoped_searches": {
+  "S1_reverse_flow_in_production": {
+   "scope": "every tracked top-level non-p*.py module at HEAD (38 files)",
+   "files": [
+    "admm_anderson_acceleration.py",
+    "admm_parameters.py",
+    "admm_persistent_workers.py",
+    "audit_p3_snapshots.py",
+    "benders_parameters.py",
+    "branch.py",
+    "centralized_coordination.py",
+    "convex_oracle.py",
+    "debug.py",
+    "definitions.py",
+    "energy_storage.py",
+    "gate_result_io.py",
+    "generator.py",
+    "helper_functions.py",
+    "hierarchical_coordination.py",
+    "interface_dual_capture.py",
+    "load.py",
+    "main.py",
+    "model_construction_helpers.py",
+    "network.py",
+    "network_data.py",
+    "network_parameters.py",
+    "node.py",
+    "planning_parameters.py",
+    "settling_criterion.py",
+    "settling_criterion_v2.py",
+    "settling_criterion_v3.py",
+    "settling_criterion_v4.py",
+    "settling_criterion_v5.py",
+    "settling_criterion_v6.py",
+    "shared_energy_storage.py",
+    "shared_energy_storage_data.py",
+    "shared_energy_storage_parameters.py",
+    "shared_ess_price_taker.py",
+    "shared_resources_planning.py",
+    "solver_parameters.py",
+    "uncoordinated_benchmark.py",
+    "validate_vmag_refactor.py"
+   ],
+   "regex": "reverse_flow|no_reverse|NO_REVERSE|\\bnrf\\b",
+   "hits": {
+    "uncoordinated_benchmark.py": [
+     80,
+     81,
+     195,
+     206,
+     210,
+     212,
+     336,
+     337,
+     342,
+     345,
+     354,
+     355,
+     360,
+     405,
+     406,
+     407,
+     408,
+     832,
+     838,
+     840,
+     1074,
+     1089,
+     1100,
+     1495,
+     1499,
+     1561,
+     1566
+    ]
+   }
+  },
+  "S2_perturb_in_production": {
+   "scope": "same",
+   "regex": "perturb",
+   "hits": {
+    "shared_resources_planning.py": [
+     1835,
+     1882,
+     1883,
+     1884,
+     1885,
+     1887,
+     1892,
+     1900,
+     1915,
+     1916,
+     1965,
+     2001,
+     2014,
+     9757,
+     9780
+    ],
+    "uncoordinated_benchmark.py": [
+     131,
+     912,
+     913,
+     919,
+     921,
+     948,
+     949,
+     950,
+     955,
+     956,
+     957,
+     967,
+     1074,
+     1086,
+     1087,
+     1088,
+     1104,
+     1116
+    ]
+   }
+  },
+  "S3_ageing_enabled_in_production": {
+   "scope": "same",
+   "regex": "ageing_enabled",
+   "hits": {
+    "shared_energy_storage_data.py": [
+     66,
+     69,
+     604,
+     612,
+     683,
+     699,
+     874,
+     1532,
+     1553,
+     1557,
+     1561,
+     1562,
+     1563
+    ]
+   }
+  },
+  "S4_initial_state_callers_in_production": {
+   "scope": "same",
+   "regex": "initial_state\\s*=",
+   "hits": {
+    "shared_resources_planning.py": [
+     88,
+     94,
+     373,
+     383,
+     561,
+     2080,
+     2379,
+     2484,
+     2777,
+     2794
+    ]
+   }
+  },
+  "R_rho_in_eval_key_region": {
+   "scope": "p515_s44_campaign_harness.py lines 972-1140 (evaluation_key and its payload builder)",
+   "hits": []
+  },
+  "S5_committed_campaign_specs": {
+   "scope": "git ls-files data/SRP1/Results/*campaign_spec_*.json at HEAD (263 files), entries under \"candidates\"",
+   "n_specs": 263,
+   "concurrency_histogram": {
+    "2": 15,
+    "3": 5,
+    "1": 229,
+    "8": 1,
+    "7": 5,
+    "5": 8
+   },
+   "entries_with_model_variant_and_flex_multiplier_not_1": [],
+   "entries_with_ageing_enabled_false": [
+    {
+     "spec": "data/SRP1/Results/P515S46/campaign_s46_ageing/campaign_spec_s46_ageing_6544c17e.json",
+     "label": "n7_4h_e1_no_ageing",
+     "canonical": {
+      "investment_year": 2025,
+      "nodes": {
+       "5": [
+        0.0,
+        0.0
+       ],
+       "7": [
+        0.25,
+        1.0
+       ],
+       "9": [
+        0.0,
+        0.0
+       ]
+      }
+     },
+     "is_x0": false,
+     "model_variant": {
+      "ageing_enabled": false,
+      "available_energy_soh_point": "end",
+      "calendar_retention_per_year": 1.0,
+      "eol_retention_r": 0.5
+     }
+    },
+    {
+     "spec": "data/SRP1/Results/P515S53/w135_resettle_ext/campaign_s53_w135_resettle_ext_e_no_ageing/campaign_spec_s53_w135_resettle_ext_e_no_ageing_033823f6.json",
+     "label": "e_no_ageing",
+     "canonical": {
+      "investment_year": 2025,
+      "nodes": {
+       "5": [
+        0.0,
+        0.0
+       ],
+       "7": [
+        0.25,
+        1.0
+       ],
+       "9": [
+        0.0,
+        0.0
+       ]
+      }
+     },
+     "is_x0": false,
+     "model_variant": {
+      "ageing_enabled": false,
+      "available_energy_soh_point": "end",
+      "calendar_retention_per_year": 1.0,
+      "eol_retention_r": 0.5
+     }
+    },
+    {
+     "spec": "data/SRP1/Results/P515S53/w139_resettle_ext_v5/campaign_s53_w139_resettle_ext_v5_e_no_ageing/campaign_spec_s53_w139_resettle_ext_v5_e_no_ageing_7346907b.json",
+     "label": "e_no_ageing",
+     "canonical": {
+      "investment_year": 2025,
+      "nodes": {
+       "5": [
+        0.0,
+        0.0
+       ],
+       "7": [
+        0.25,
+        1.0
+       ],
+       "9": [
+        0.0,
+        0.0
+       ]
+      }
+     },
+     "is_x0": false,
+     "model_variant": {
+      "ageing_enabled": false,
+      "available_energy_soh_point": "end",
+      "calendar_retention_per_year": 1.0,
+      "eol_retention_r": 0.5
+     }
+    },
+    {
+     "spec": "data/SRP1/Results/P515S53/w142_resettle_ext_v6/campaign_s53_w142_resettle_ext_v6_e_no_ageing/campaign_spec_s53_w142_resettle_ext_v6_e_no_ageing_10f4aa7a.json",
+     "label": "e_no_ageing",
+     "canonical": {
+      "investment_year": 2025,
+      "nodes": {
+       "5": [
+        0.0,
+        0.0
+       ],
+       "7": [
+        0.25,
+        1.0
+       ],
+       "9": [
+        0.0,
+        0.0
+       ]
+      }
+     },
+     "is_x0": false,
+     "model_variant": {
+      "ageing_enabled": false,
+      "available_energy_soh_point": "end",
+      "calendar_retention_per_year": 1.0,
+      "eol_retention_r": 0.5
+     }
+    }
+   ],
+   "any_no_ageing_entry_at_x0": false
+  },
+  "S6_launchers_refusing_model_variant": {
+   "scope": "every tracked p515_*.py (320 files)",
+   "regex": "'no_(ageing_)?model_variant(_anywhere)?'",
+   "hits": {
+    "p515_s47_baseline_campaign.py": [
+     579
+    ],
+    "p515_s47_phase_b_record.py": [
+     874,
+     1383
+    ],
+    "p515_s48_x0_capture_campaign.py": [
+     353
+    ],
+    "p515_s49_flex_ladder_campaign.py": [
+     684
+    ],
+    "p515_s50_marginal_campaign.py": [
+     566
+    ],
+    "p515_s51_f2_ladder_campaign.py": [
+     696
+    ],
+    "p515_s51_f2_phase_b.py": [
+     362,
+     851
+    ],
+    "p515_s52_pilot_campaign.py": [
+     834
+    ],
+    "p515_s53_alpha_row_campaign.py": [
+     1827
+    ],
+    "p515_s53_f2_certificate.py": [
+     1412
+    ],
+    "p515_s53_w182e_code_paths.py": [
+     156,
+     158,
+     160
+    ],
+    "p515_s53_w86_tail_recert_campaign.py": [
+     561
+    ],
+    "p515_s53_w89_3x3_campaign.py": [
+     1460
+    ],
+    "p515_s53_w90_3x3_campaign.py": [
+     2452
+    ]
+   }
+  },
+  "S7_concurrent_near_bitwise": {
+   "scope": "every tracked p515_*.py (320 files): a line matching /concurren/i within 12 lines of a line matching /bitwise/i",
+   "hits": {
+    "p515_s44_campaign_harness.py": [
+     [
+      3971,
+      3969
+     ]
+    ],
+    "p515_s44_gate.py": [
+     [
+      8,
+      2
+     ],
+     [
+      8,
+      17
+     ],
+     [
+      10,
+      2
+     ],
+     [
+      10,
+      17
+     ],
+     [
+      235,
+      238
+     ]
+    ],
+    "p515_s46_ageing_campaign.py": [
+     [
+      186,
+      194
+     ],
+     [
+      190,
+      194
+     ]
+    ],
+    "p515_s48_x0_capture_campaign.py": [
+     [
+      16,
+      22
+     ],
+     [
+      109,
+      101
+     ],
+     [
+      110,
+      101
+     ],
+     [
+      112,
+      101
+     ]
+    ],
+    "p515_s49_flex_ladder_campaign.py": [
+     [
+      12,
+      4
+     ],
+     [
+      14,
+      4
+     ],
+     [
+      164,
+      176
+     ],
+     [
+      166,
+      176
+     ],
+     [
+      175,
+      176
+     ]
+    ],
+    "p515_s50_marginal_campaign.py": [
+     [
+      12,
+      5
+     ],
+     [
+      158,
+      169
+     ],
+     [
+      159,
+      169
+     ],
+     [
+      166,
+      169
+     ]
+    ],
+    "p515_s51_f2_ladder_campaign.py": [
+     [
+      24,
+      22
+     ],
+     [
+      177,
+      189
+     ],
+     [
+      178,
+      189
+     ],
+     [
+      185,
+      189
+     ]
+    ],
+    "p515_s51_f2_phase_b.py": [
+     [
+      43,
+      40
+     ],
+     [
+      216,
+      220
+     ]
+    ],
+    "p515_s52_pilot_campaign.py": [
+     [
+      29,
+      33
+     ],
+     [
+      29,
+      39
+     ],
+     [
+      34,
+      33
+     ],
+     [
+      34,
+      39
+     ],
+     [
+      171,
+      178
+     ],
+     [
+      174,
+      178
+     ],
+     [
+      176,
+      178
+     ],
+     [
+      179,
+      178
+     ],
+     [
+      950,
+      957
+     ],
+     [
+      950,
+      958
+     ],
+     [
+      952,
+      957
+     ],
+     [
+      952,
+      958
+     ],
+     [
+      959,
+      957
+     ],
+     [
+      959,
+      958
+     ],
+     [
+      959,
+      970
+     ],
+     [
+      982,
+      970
+     ]
+    ],
+    "p515_s53_alpha_row_campaign.py": [
+     [
+      431,
+      442
+     ],
+     [
+      452,
+      442
+     ]
+    ],
+    "p515_s53_curtailment_audit.py": [
+     [
+      1276,
+      1265
+     ],
+     [
+      1336,
+      1332
+     ],
+     [
+      1337,
+      1332
+     ]
+    ],
+    "p515_s53_w101_srp1_continuation_campaign.py": [
+     [
+      22,
+      19
+     ],
+     [
+      1165,
+      1154
+     ]
+    ],
+    "p515_s53_w105_c_star_extension_campaign.py": [
+     [
+      1138,
+      1150
+     ]
+    ],
+    "p515_s53_w118_resettle_campaign.py": [
+     [
+      27,
+      15
+     ]
+    ],
+    "p515_s53_w135_resettle_ext_campaign.py": [
+     [
+      1784,
+      1792
+     ]
+    ],
+    "p515_s53_w139_resettle_ext_v5_campaign.py": [
+     [
+      1793,
+      1802
+     ]
+    ],
+    "p515_s53_w142_resettle_ext_v6_campaign.py": [
+     [
+      1818,
+      1827
+     ]
+    ],
+    "p515_s53_w164_manuscript_number_check.py": [
+     [
+      956,
+      953
+     ]
+    ],
+    "p515_s53_w182e_code_paths.py": [
+     [
+      396,
+      406
+     ],
+     [
+      396,
+      407
+     ],
+     [
+      397,
+      406
+     ],
+     [
+      397,
+      407
+     ],
+     [
+      405,
+      406
+     ],
+     [
+      405,
+      407
+     ],
+     [
+      407,
+      406
+     ],
+     [
+      407,
+      407
+     ],
+     [
+      407,
+      419
+     ],
+     [
+      413,
+      406
+     ],
+     [
+      413,
+      407
+     ],
+     [
+      413,
+      419
+     ],
+     [
+      414,
+      406
+     ],
+     [
+      414,
+      407
+     ],
+     [
+      414,
+      419
+     ],
+     [
+      415,
+      406
+     ],
+     [
+      415,
+      407
+     ],
+     [
+      415,
+      419
+     ],
+     [
+      416,
+      406
+     ],
+     [
+      416,
+      407
+     ],
+     [
+      416,
+      419
+     ],
+     [
+      422,
+      419
+     ],
+     [
+      611,
+      615
+     ],
+     [
+      631,
+      632
+     ],
+     [
+      680,
+      676
+     ],
+     [
+      758,
+      758
+     ],
+     [
+      758,
+      759
+     ],
+     [
+      758,
+      764
+     ],
+     [
+      758,
+      768
+     ],
+     [
+      758,
+      770
+     ],
+     [
+      759,
+      758
+     ],
+     [
+      759,
+      759
+     ],
+     [
+      759,
+      764
+     ],
+     [
+      759,
+      768
+     ],
+     [
+      759,
+      770
+     ],
+     [
+      763,
+      758
+     ],
+     [
+      763,
+      759
+     ],
+     [
+      763,
+      764
+     ],
+     [
+      763,
+      768
+     ],
+     [
+      763,
+      770
+     ],
+     [
+      768,
+      758
+     ],
+     [
+      768,
+      759
+     ],
+     [
+      768,
+      764
+     ],
+     [
+      768,
+      768
+     ],
+     [
+      768,
+      770
+     ],
+     [
+      769,
+      758
+     ],
+     [
+      769,
+      759
+     ],
+     [
+      769,
+      764
+     ],
+     [
+      769,
+      768
+     ],
+     [
+      769,
+      770
+     ]
+    ],
+    "p515_s53_w90_3x3_campaign.py": [
+     [
+      152,
+      151
+     ],
+     [
+      2040,
+      2048
+     ],
+     [
+      2151,
+      2154
+     ]
+    ]
+   }
+  },
+  "S8_campaigns_on_final_production_code_by_concurrency": {
+   "scope": "the 263 committed campaign specs; git_head a descendant of 575bfec4",
+   "counts": {
+    "1": 49
+   },
+   "specs": {
+    "1": [
+     "data/SRP1/Results/P515S53/w142_resettle_ext_v6/campaign_s53_w142_resettle_ext_v6_e_c2/campaign_spec_s53_w142_resettle_ext_v6_e_c2_9f676e06.json",
+     "data/SRP1/Results/P515S53/w142_resettle_ext_v6/campaign_s53_w142_resettle_ext_v6_e_c2_calfade/campaign_spec_s53_w142_resettle_ext_v6_e_c2_calfade_aedebc38.json",
+     "data/SRP1/Results/P515S53/w142_resettle_ext_v6/campaign_s53_w142_resettle_ext_v6_e_c3_midblock/campaign_spec_s53_w142_resettle_ext_v6_e_c3_midblock_8b86d33f.json",
+     "data/SRP1/Results/P515S53/w142_resettle_ext_v6/campaign_s53_w142_resettle_ext_v6_e_c3_unit/campaign_spec_s53_w142_resettle_ext_v6_e_c3_unit_9a52754a.json",
+     "data/SRP1/Results/P515S53/w142_resettle_ext_v6/campaign_s53_w142_resettle_ext_v6_e_c4/campaign_spec_s53_w142_resettle_ext_v6_e_c4_98223186.json",
+     "data/SRP1/Results/P515S53/w142_resettle_ext_v6/campaign_s53_w142_resettle_ext_v6_e_no_ageing/campaign_spec_s53_w142_resettle_ext_v6_e_no_ageing_10f4aa7a.json",
+     "data/SRP1/Results/P515S53/w142_resettle_ext_v6/campaign_s53_w142_resettle_ext_v6_pb_y2025_n5_v6/campaign_spec_s53_w142_resettle_ext_v6_pb_y2025_n5_v6_dafacff3.json",
+     "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_c_156ce2d1/campaign_spec_s53_w142_resettle_v6_c_156ce2d1_193329df.json",
+     "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_c_6597a79d/campaign_spec_s53_w142_resettle_v6_c_6597a79d_5b811e22.json",
+     "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_d_3632b0ae/campaign_spec_s53_w142_resettle_v6_d_3632b0ae_01c8be5d.json",
+     "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_d_36686489/campaign_spec_s53_w142_resettle_v6_d_36686489_836bdffa.json",
+     "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_d_4a82a64a/campaign_spec_s53_w142_resettle_v6_d_4a82a64a_b8e324d1.json",
+     "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_d_9246ed01/campaign_spec_s53_w142_resettle_v6_d_9246ed01_2872a1a7.json",
+     "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_d_a12d95a2/campaign_spec_s53_w142_resettle_v6_d_a12d95a2_2e363942.json",
+     "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_d_c7fee8be/campaign_spec_s53_w142_resettle_v6_d_c7fee8be_6c5903b7.json",
+     "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_d_d3709599/campaign_spec_s53_w142_resettle_v6_d_d3709599_a6e09a80.json",
+     "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_d_f759dd48/campaign_spec_s53_w142_resettle_v6_d_f759dd48_ced7ebbd.json",
+     "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_g_37b5c499/campaign_spec_s53_w142_resettle_v6_g_37b5c499_84bbd300.json",
+     "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_g_47dce43c/campaign_spec_s53_w142_resettle_v6_g_47dce43c_de7424de.json",
+     "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_g_48749148/campaign_spec_s53_w142_resettle_v6_g_48749148_3acc6479.json",
+     "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_g_9abf31d4/campaign_spec_s53_w142_resettle_v6_g_9abf31d4_35789b3f.json",
+     "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_h_50dea31c/campaign_spec_s53_w142_resettle_v6_h_50dea31c_9dd35d71.json",
+     "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_h_74eda68d/campaign_spec_s53_w142_resettle_v6_h_74eda68d_63ca1061.json",
+     "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_h_aa8a76d7/campaign_spec_s53_w142_resettle_v6_h_aa8a76d7_3cd71274.json",
+     "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_h_f9eae48f/campaign_spec_s53_w142_resettle_v6_h_f9eae48f_606c5556.json",
+     "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_i_5a6a88b4/campaign_spec_s53_w142_resettle_v6_i_5a6a88b4_64209ede.json",
+     "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_j_5f3cccb4/campaign_spec_s53_w142_resettle_v6_j_5f3cccb4_749b6c35.json",
+     "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_j_a11d7966/campaign_spec_s53_w142_resettle_v6_j_a11d7966_1b7173a8.json",
+     "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_j_f3aa335e/campaign_spec_s53_w142_resettle_v6_j_f3aa335e_f7579eac.json",
+     "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_l_0ee93aca/campaign_spec_s53_w142_resettle_v6_l_0ee93aca_ff3f6a03.json",
+     "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_l_195156fa/campaign_spec_s53_w142_resettle_v6_l_195156fa_769e5fe7.json",
+     "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_l_2ab0ce2d/campaign_spec_s53_w142_resettle_v6_l_2ab0ce2d_800d38f1.json",
+     "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_l_45aa25a6/campaign_spec_s53_w142_resettle_v6_l_45aa25a6_c154615f.json",
+     "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_l_76c78064/campaign_spec_s53_w142_resettle_v6_l_76c78064_28c930a4.json",
+     "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_l_7b199ef9/campaign_spec_s53_w142_resettle_v6_l_7b199ef9_d352224d.json",
+     "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_l_7c455554/campaign_spec_s53_w142_resettle_v6_l_7c455554_77757915.json",
+     "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_l_7db09f6c/campaign_spec_s53_w142_resettle_v6_l_7db09f6c_3e276456.json",
+     "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_l_8e4c220e/campaign_spec_s53_w142_resettle_v6_l_8e4c220e_c09f57bc.json",
+     "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_l_b2251bc5/campaign_spec_s53_w142_resettle_v6_l_b2251bc5_4abd76ab.json",
+     "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_l_df1a5525/campaign_spec_s53_w142_resettle_v6_l_df1a5525_1bf01b64.json",
+     "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_l_e1da0984/campaign_spec_s53_w142_resettle_v6_l_e1da0984_e427ba34.json",
+     "data/SRP1/Results/P515S53/w155_a64_cells/campaign_s53_w155_a64_e_soh050/campaign_spec_s53_w155_a64_e_soh050_140c6bba.json",
+     "data/SRP1/Results/P515S53/w155_a64_cells/campaign_s53_w155_a64_g070_neutrality/campaign_spec_s53_w155_a64_g070_neutrality_444dad64.json",
+     "data/SRP1/Results/P515S53/w155_a64_cells/campaign_s53_w155_a64_h_unit_m175/campaign_spec_s53_w155_a64_h_unit_m175_fbd0a9a0.json",
+     "data/SRP1/Results/P515S53/w155_a64_cells/campaign_s53_w155_a64_h_x0_m175/campaign_spec_s53_w155_a64_h_x0_m175_001b3991.json",
+     "data/SRP1/Results/P515S53/w155_a64_cells/campaign_s53_w155_a64_r2_e_soh050/campaign_spec_s53_w155_a64_r2_e_soh050_28c9478d.json",
+     "data/SRP1/Results/P515S53/w155_a64_cells/campaign_s53_w155_a64_r2_g070_neutrality/campaign_spec_s53_w155_a64_r2_g070_neutrality_a5d02f7f.json",
+     "data/SRP1/Results/P515S53/w155_a64_cells/campaign_s53_w155_a64_r2_h_unit_m175/campaign_spec_s53_w155_a64_r2_h_unit_m175_eb85d0f4.json",
+     "data/SRP1/Results/P515S53/w155_a64_cells/campaign_s53_w155_a64_r2_h_x0_m175/campaign_spec_s53_w155_a64_r2_h_x0_m175_c4852b1b.json"
+    ]
+   }
+  }
+ },
+ "predictions": [
+  {
+   "item": "Z1",
+   "prediction": "Q(0) exactly independent of the ageing model (expert)",
+   "outcome": "HELD (by code reading; empirical NL identity on record only for an ageing-ON parameter change)",
+   "basis": [
+    "Z1b-01..Z1b-08",
+    "Z1b-09/10",
+    "Z1b-11",
+    "x0_diff_analysis",
+    "S5 any_no_ageing_entry_at_x0"
+   ]
+  },
+  {
+   "item": "Z6",
+   "prediction": "rho_0 is a configuration parameter (expert)",
+   "outcome": "HELD in production (case-file key, no production change); NOT runnable through the campaign harness without a harness change (child refuses rho != S39; rho absent from the eval key)",
+   "basis": [
+    "Z6b-01..05",
+    "Z6b-07..11",
+    "R_rho_in_eval_key_region"
+   ]
+  },
+  {
+   "item": "Z6",
+   "prediction": "the NRF row needs a new declared option (code change, both copies) (expert)",
+   "outcome": "HELD: no NRF option exists in the coordinated path; the only NRF row is the uncoordinated DSO arm's",
+   "basis": [
+    "Z6c-01..11",
+    "S1_reverse_flow_in_production"
+   ]
+  }
+ ],
+ "integrity_failures": [],
+ "solve_profile_guard": {
+  "counts": {
+   "permitted_solve": 0,
+   "permitted_exec": 0,
+   "blocked_solve": 0,
+   "blocked_exec": 0
+  },
+  "verify_0_failures": []
+ },
+ "pickle_guard": {
+  "counts": {
+   "load": 0,
+   "loads": 0
+  },
+  "pickle_load_and_loads_blocked": true,
+  "ok": true
+ },
+ "guards_ok": true,
+ "production_modules_imported": false,
+ "wall_clock_s": 13.39822506904602
+}

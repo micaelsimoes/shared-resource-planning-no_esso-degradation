@@ -1,0 +1,80 @@
+repo HEAD ab1d8d7b767f97c4755c67ea168ed442622e72e5; clone HEAD edd7a63a6c2ea06c1db17e3b6941bde8aa6d6838; main.tex sha256 b08a3365607e56f2ff8c56572a9a74bc9ea97d5fb461faa252fab7955ffa8f5b
+A7: listed 16, borderline 11, other 5; by file {'main.tex': 4, 'highlights.tex': 2, 'response_to_reviewers_draft.tex': 9, 'cover_letter.tex': 1}; by category {'ii': 3, 'iii': 3, 'i': 3, 'iv-s': 6, 'iv-b': 7}
+A7 coverage: covered 34, excluded 75, uncovered 0
+  M-ABS-1  listed     main.tex:145-145 ['ii', 'iii']
+  M-ABS-2  listed     main.tex:145-145 ['i']
+  M-HL-1   listed     main.tex:163-163 ['i', 'ii']
+  M-CON-1  listed     main.tex:387-387 ['i', 'iii']
+  M-CON-3  borderline main.tex:389-389 ['iv-b']
+  M-CON-4  other      main.tex:390-390 ['other: audit 3.1 "degradation matters" row']
+  M-45-1   borderline main.tex:1636-1636 ['iv-b']
+  M-45-2   borderline main.tex:1640-1640 ['iv-b']
+  M-5-1    borderline main.tex:1795-1795 ['i']
+  H-3      listed     highlights.tex:12-12 ['iv-s', 'iv-b']
+  H-4      listed     highlights.tex:13-13 ['iv-b']
+  L-01     listed     response_to_reviewers_draft.tex:42-43 ['iv-s']
+  L-00     borderline response_to_reviewers_draft.tex:48-49 ['iv-s']
+  L-02     borderline response_to_reviewers_draft.tex:54-55 ['iv-b']
+  L-02b    borderline response_to_reviewers_draft.tex:81-81 ['iv-b']
+  L-03     borderline response_to_reviewers_draft.tex:58-58 ['iv-b']
+  L-04     listed     response_to_reviewers_draft.tex:78-78 ['iv-s', 'iv-b']
+  L-05     listed     response_to_reviewers_draft.tex:102-102 ['iv-s']
+  L-06     borderline response_to_reviewers_draft.tex:114-115 ['i']
+  L-07     listed     response_to_reviewers_draft.tex:137-137 ['iv-s']
+  L-08     listed     response_to_reviewers_draft.tex:168-169 ['iv-b']
+  L-09     listed     response_to_reviewers_draft.tex:229-230 ['iv-s']
+  L-10     listed     response_to_reviewers_draft.tex:230-232 ['iv-b']
+  L-11     borderline response_to_reviewers_draft.tex:221-221 ['iii']
+  L-12     listed     response_to_reviewers_draft.tex:263-263 ['iv-b']
+  L-13     listed     response_to_reviewers_draft.tex:264-264 ['iv-b']
+  L-14     borderline response_to_reviewers_draft.tex:264-264 ['iv-b']
+  L-O1     other      response_to_reviewers_draft.tex:58-58 ['other: audit 7 extrapolation of the baseline search to unsearched calibrations; uses ladders with out-of-budget points (A8)']
+  L-O2     other      response_to_reviewers_draft.tex:249-249 ['other: audit 7 (datasheet loses 45.2 k EUR, baseline 64.4 k EUR: it loses less)']
+  L-O3     other      response_to_reviewers_draft.tex:264-264 ['other: audit 3.2 / 7 (fixed-plan losses offered as making re-optimisation unnecessary); ladders include out-of-budget points (A8)']
+  C-1      listed     cover_letter.tex:14-14 ['ii', 'iii']
+  C-O1     other      cover_letter.tex:24-24 ['other: withdrawn result (audit 7: cover letter unrevised)']
+A8(1) expected discounted unit costs (EUR):
+  2025: S 256317.32 /MVA, E 253877.68 /MWh (x 1.000000)
+  2030: S 190384.09 /MVA, E 188572.00 /MWh (x 0.905731)
+  2035: S 159606.93 /MVA, E 158087.78 /MWh (x 0.820348)
+  4 h ladder 2025 0.25/1: I = 317957.01, slack 682042.99, production ok True 
+  4 h ladder 2025 0.5/2: I = 635914.02, slack 364085.98, production ok True 
+  4 h ladder 2025 0.75/3: I = 953871.03, slack 46128.97, production ok True 
+  4 h ladder 2025 1/4: I = 1271828.03, slack -271828.03, production ok False investment budget violated
+  4 h ladder 2025 1.25/5: I = 1589785.04, slack -589785.04, production ok False investment budget violated
+  over budget: eval 5 (l. 2721) 7: 1/4 2025 base: I = 1271828.03, slack -271828.03
+  over budget: eval 6 (l. 2722) 7: 1.25/5 2025 base: I = 1589785.04, slack -589785.04
+  over budget: eval 9 (l. 2725) 7: 1.5/3 2025 base: I = 1146109.02, slack -146109.02
+  over budget: eval 10 (l. 2726) 7: 2/4 2025 base: I = 1528145.36, slack -528145.36
+  over budget: eval 11 (l. 2727) 7: 2.5/5 2025 base: I = 1910181.70, slack -910181.70
+  over budget: eval 38 (l. 2760) 7: 1/4 2025 $m=2$: I = 1271828.03, slack -271828.03
+  over budget: eval 39 (l. 2761) 7: 1.25/5 2025 $m=2$: I = 1589785.04, slack -589785.04
+  [ok] 2025: expected discounted unit costs = W2 table (|diff| <= 1e-6 EUR)
+  [ok] 2030: expected discounted unit costs = W2 table (|diff| <= 1e-6 EUR)
+  [ok] 2035: expected discounted unit costs = W2 table (|diff| <= 1e-6 EUR)
+  [ok] Table 1 equals the cost file (k EUR, 2 dp; probabilities)
+  [ok] printed 2025 expected costs 256.32 / 253.88 = file rounded
+  [ok] main.tex states budget 1 M EUR and 5 MWh per node = case file
+  [ok] 61 evaluations parsed from tab:appE_evaluations
+  [ok] closed-form verdict = production check for every evaluation
+  [ok] audit 3.6 table reproduced (k EUR, 1 dp)
+  [ok] s51 F2 record: 0.75/3 I = 953871.0255 EUR, E = 4 and 5 budget-infeasible
+  [ok] single-node 2025 lattice: 12 admissible (main.tex l. 2797), 23 over budget (W177b)
+  [ok] returned 2x plan (evaluation 40, 2030) I ~ 992.3 k EUR, within budget (audit 3.6)
+A8(1) places {'places': 34, 'labelled': 1, 'partial': 1, 'none': 32}; token-scan unlisted []
+  label phrase main.tex:506 'inadmissible'
+  label phrase main.tex:509 'inadmissible'
+  label phrase main.tex:2921 'over the budget'
+A8(2) 13.9 hits [('main.tex', 1583, 'cost increase (correct)'), ('main.tex', 1597, 'cost increase (correct)'), ('highlights.tex', 14, 'saving'), ('response_to_reviewers_draft.tex', 53, 'saving'), ('response_to_reviewers_draft.tex', 80, 'saving'), ('highlights_v2', 12, 'saving')]; ratios {'benefit_eur': 90896608.39950395, 'coordinated_Q_eur': 653873702.1876609, 'price_taker_Q_eur': 744770310.5871649, 'benefit_over_coordinated': 0.13901248527871937, 'benefit_over_price_taker': 0.1220464982389571, 'frozen_field_benefit_relative': 0.13901248527871937, 'frozen_benefit_relative_is_over_coordinated': True, 'pct_saving_vs_price_taker_1dp': 12.2, 'pct_increase_over_coordinated_1dp': 13.9, 'main_table_values_match_frozen': True}
+A8(3) abstract tech terms {'lithium': False, 'li-ion': False, 'lfp': False, 'chemistr': False}; cost terms {'technology': False, 'trajector': False, 'future': False, 'converter': False}; letter claims {'abstract_now_says_both': {'line': 76, 'ok_at_line': True}, 'abstract_names_the_chemistry': {'line': 77, 'ok_at_line': True}}
+highlights: standalone = main False; = review v2 True; = submitted False
+  control NC1 an altered A7 quote is not located: refused True
+  control NC2 a planted keyword sentence in the abstract is uncovered: refused True
+  control NC3 the production check is live: 7: 1.25/5 refused at 1e6, admitted at 1.6e6: refused True
+  control NC4 7: 1/4 is over budget in 2025 and within it in 2030 (discounting is applied): refused True
+  control NC5 a planted "lithium-ion" in the abstract is detected: refused True
+  control NC6 removing 13.9 from highlights.tex removes its hit: refused True
+prediction A7: {'expected': '>= 6 sentences listed', 'listed': 16, 'borderline': 11, 'held': True, 'held_on_main_tex_alone': False}
+guards: {'solve_profile_guard': {'label': 'P5.15 W182d claims listing (never solves)', 'counts': {'permitted_solve': 0, 'permitted_exec': 0, 'blocked_solve': 0, 'blocked_exec': 0}, 'verify_0_failures': []}, 'pickle_counts': {'load': 0, 'loads': 0}}
+inputs 21 (0 uncommitted)
+output data/SRP1/Results/P515S53/w182d_claims/w182d_claims.json sha256 4388c277404b80a5980c51ab3fcfeaca69e05c915c83a485f9030c9d56c3f7b1

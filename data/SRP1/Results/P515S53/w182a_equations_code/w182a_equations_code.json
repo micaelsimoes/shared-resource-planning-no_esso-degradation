@@ -1,0 +1,4559 @@
+{
+ "schema": "w182a_equations_code/1",
+ "stage": "P5.15 W182a (Addendum 82 v2, W182 item A1)",
+ "started_utc": "2026-10-25T14:10:25.654633+00:00",
+ "interpreter": "/Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python",
+ "identity": {
+  "clone": "manuscript/6a67305f25e8348fb71380c3",
+  "clone_head": "edd7a63a6c2ea06c1db17e3b6941bde8aa6d6838",
+  "base": "8f051a2a0cd8b37378d7407699e38c3bf20a71e7",
+  "n_commits_base_to_head": 67,
+  "main_sha256": "b08a3365607e56f2ff8c56572a9a74bc9ea97d5fb461faa252fab7955ffa8f5b",
+  "main_n_lines": 2956,
+  "repo_head": "7614bcbff369151a5a7d67ea7a030109011ddd63",
+  "repo_dirty_tracked": [],
+  "last_production_commit": "575bfec43ff47b03ed9f6ef955025cd35cfb28a2",
+  "checks": [
+   {
+    "check": "clone HEAD = declared edd7a63",
+    "ok": true,
+    "detail": "edd7a63a6c2ea06c1db17e3b6941bde8aa6d6838"
+   },
+   {
+    "check": "8f051a2 is an ancestor of edd7a63",
+    "ok": true,
+    "detail": null
+   },
+   {
+    "check": "main.tex unmodified in the clone working tree",
+    "ok": true,
+    "detail": ""
+   },
+   {
+    "check": "main.tex working copy = edd7a63 blob",
+    "ok": true,
+    "detail": null
+   },
+   {
+    "check": "main.tex sha256 starts b08a3365607e56f2 (critical review fingerprint)",
+    "ok": true,
+    "detail": "b08a3365607e56f2ff8c56572a9a74bc9ea97d5fb461faa252fab7955ffa8f5b"
+   },
+   {
+    "check": "code head a17f6ba7 = repo HEAD, or HEAD carries no change to a production / rule / case file since it (parallel W182 Workers commit report files)",
+    "ok": true,
+    "detail": "7614bcbff369151a5a7d67ea7a030109011ddd63"
+   },
+   {
+    "check": "production, rule, source and case files clean in the repo working tree",
+    "ok": true,
+    "detail": ""
+   },
+   {
+    "check": "last commit touching production / rule files at the code head = 575bfec4",
+    "ok": true,
+    "detail": "575bfec43ff47b03ed9f6ef955025cd35cfb28a2"
+   }
+  ],
+  "ok": true
+ },
+ "objective_convention": "Q = gross_operational_cost (settlement excluded); net = Q - terminal salvage credit; no Q computed here; salvage values compared in EUR",
+ "rating_rule": "computed: MISMATCH if any anchor / correspondence / record check fails (refused; the M or H judgement is the report's); else L if a scoped wording finding is confirmed; else MATCH",
+ "items": {
+  "eq:acceptance_tolerance": {
+   "item": "eq:acceptance_tolerance",
+   "printed": {
+    "label": "eq:acceptance_tolerance",
+    "label_line": 1994,
+    "begin_line": 1992,
+    "end_line": 1995,
+    "body": "\\tau = \\frac{\\delta_R\\mathcal{V}}{4}",
+    "ok": true,
+    "expected": "\\tau = \\frac{\\delta_R\\mathcal{V}}{4}",
+    "matches_declared": true
+   },
+   "anchors": {
+    "SC1_DELTA_R": {
+     "file": "settling_criterion.py",
+     "line": 55,
+     "text_at_line": "DELTA_R = 0.07",
+     "enclosing_def": null
+    },
+    "SC1_R_REF": {
+     "file": "settling_criterion.py",
+     "line": 56,
+     "text_at_line": "R_REF = 259375.33",
+     "enclosing_def": null
+    },
+    "SC1_TAU": {
+     "file": "settling_criterion.py",
+     "line": 57,
+     "text_at_line": "TAU = DELTA_R * R_REF / 4.0",
+     "enclosing_def": null
+    },
+    "SC1_EPS0": {
+     "file": "settling_criterion.py",
+     "line": 58,
+     "text_at_line": "EPS0 = TAU / 100.0",
+     "enclosing_def": null
+    },
+    "SC2_TAU": {
+     "file": "settling_criterion_v2.py",
+     "line": 69,
+     "text_at_line": "TAU = SC1.TAU",
+     "enclosing_def": null
+    },
+    "SC2_GAP": {
+     "file": "settling_criterion_v2.py",
+     "line": 74,
+     "text_at_line": "GAP_BOUND = TAU / 2.0",
+     "enclosing_def": null
+    },
+    "SC2_C3": {
+     "file": "settling_criterion_v2.py",
+     "line": 172,
+     "text_at_line": "a_parts.update({'range': rng, 'range_le_tau': rng <= TAU, 'band': [mn, mx]})",
+     "enclosing_def": "evaluate"
+    },
+    "SC2_M3": {
+     "file": "settling_criterion_v2.py",
+     "line": 182,
+     "text_at_line": "'last_step_times_L_le_tau': last * self.l_mono <= TAU, 'band': None}",
+     "enclosing_def": "evaluate"
+    },
+    "SC2_M2": {
+     "file": "settling_criterion_v2.py",
+     "line": 189,
+     "text_at_line": "b_parts.update({'range': rng, 'range_le_tau': rng <= TAU, 'band': [mn, mx], 'max_abs_dq': max(steps),",
+     "enclosing_def": "evaluate"
+    },
+    "SC2_C4": {
+     "file": "settling_criterion_v2.py",
+     "line": 277,
+     "text_at_line": "gap_ok = t_sum is not None and abs(t_sum) <= GAP_BOUND",
+     "enclosing_def": "observe"
+    },
+    "SC4_TAU": {
+     "file": "settling_criterion_v4.py",
+     "line": 62,
+     "text_at_line": "TAU = SC2.TAU",
+     "enclosing_def": null
+    },
+    "SC5_TAU": {
+     "file": "settling_criterion_v5.py",
+     "line": 52,
+     "text_at_line": "TAU = SC4.TAU",
+     "enclosing_def": null
+    },
+    "SC6_TAU": {
+     "file": "settling_criterion_v6.py",
+     "line": 57,
+     "text_at_line": "TAU = SC5.TAU",
+     "enclosing_def": null
+    },
+    "SC6_GAP": {
+     "file": "settling_criterion_v6.py",
+     "line": 62,
+     "text_at_line": "GAP_BOUND = SC5.GAP_BOUND",
+     "enclosing_def": null
+    },
+    "SC6_FLOOR": {
+     "file": "settling_criterion_v6.py",
+     "line": 80,
+     "text_at_line": "SWING_FLOOR = TAU / 10.0                 # \"Swing noise floor tau/10 (~454 EUR), adopted\"",
+     "enclosing_def": null
+    },
+    "SC6_DET": {
+     "file": "settling_criterion_v6.py",
+     "line": 363,
+     "text_at_line": "return max(DETERMINACY_BAR_FACTOR * max(bar_r, bar_o), DETERMINACY_TAU_MULTIPLE * TAU)",
+     "enclosing_def": "determinacy_threshold"
+    },
+    "HOOKS_V6": {
+     "file": "p515_s53_w142_resettle_v6_hooks.py",
+     "line": 30,
+     "text_at_line": "import settling_criterion_v6 as SC6",
+     "enclosing_def": null
+    },
+    "V_SRP1": {
+     "file": "p515_s53_w101_srp1_continuation_campaign.py",
+     "line": 119,
+     "text_at_line": "V_SRP1 = 259375.32654094696    # recert campaign_results R.R_tail (R_ref = 259,375.33 rounded)",
+     "enclosing_def": null
+    }
+   },
+   "checks": [
+    {
+     "check": "SC1_DELTA_R: settling_criterion.py:55 reads \"DELTA_R = 0.07\"",
+     "ok": true,
+     "detail": "DELTA_R = 0.07"
+    },
+    {
+     "check": "SC1_DELTA_R: enclosing def None",
+     "ok": true,
+     "detail": []
+    },
+    {
+     "check": "SC1_R_REF: settling_criterion.py:56 reads \"R_REF = 259375.33\"",
+     "ok": true,
+     "detail": "R_REF = 259375.33"
+    },
+    {
+     "check": "SC1_R_REF: enclosing def None",
+     "ok": true,
+     "detail": []
+    },
+    {
+     "check": "SC1_TAU: settling_criterion.py:57 reads \"TAU = DELTA_R * R_REF / 4.0\"",
+     "ok": true,
+     "detail": "TAU = DELTA_R * R_REF / 4.0"
+    },
+    {
+     "check": "SC1_TAU: enclosing def None",
+     "ok": true,
+     "detail": []
+    },
+    {
+     "check": "SC1_EPS0: settling_criterion.py:58 reads \"EPS0 = TAU / 100.0\"",
+     "ok": true,
+     "detail": "EPS0 = TAU / 100.0"
+    },
+    {
+     "check": "SC1_EPS0: enclosing def None",
+     "ok": true,
+     "detail": []
+    },
+    {
+     "check": "SC2_TAU: settling_criterion_v2.py:69 reads \"TAU = SC1.TAU\"",
+     "ok": true,
+     "detail": "TAU = SC1.TAU"
+    },
+    {
+     "check": "SC2_TAU: enclosing def None",
+     "ok": true,
+     "detail": []
+    },
+    {
+     "check": "SC2_GAP: settling_criterion_v2.py:74 reads \"GAP_BOUND = TAU / 2.0\"",
+     "ok": true,
+     "detail": "GAP_BOUND = TAU / 2.0"
+    },
+    {
+     "check": "SC2_GAP: enclosing def None",
+     "ok": true,
+     "detail": []
+    },
+    {
+     "check": "SC2_C3: settling_criterion_v2.py:172 reads \"a_parts.update({'range': rng, 'range_le_tau': rng <= TAU, 'band': [mn,\"",
+     "ok": true,
+     "detail": "a_parts.update({'range': rng, 'range_le_tau': rng <= TAU, 'band': [mn, mx]})"
+    },
+    {
+     "check": "SC2_C3: enclosing def evaluate",
+     "ok": true,
+     "detail": [
+      "evaluate"
+     ]
+    },
+    {
+     "check": "SC2_M3: settling_criterion_v2.py:182 reads \"'last_step_times_L_le_tau': last * self.l_mono <= TAU, 'band': None}\"",
+     "ok": true,
+     "detail": "'last_step_times_L_le_tau': last * self.l_mono <= TAU, 'band': None}"
+    },
+    {
+     "check": "SC2_M3: enclosing def evaluate",
+     "ok": true,
+     "detail": [
+      "evaluate"
+     ]
+    },
+    {
+     "check": "SC2_M2: settling_criterion_v2.py:189 reads \"b_parts.update({'range': rng, 'range_le_tau': rng <= TAU, 'band': [mn,\"",
+     "ok": true,
+     "detail": "b_parts.update({'range': rng, 'range_le_tau': rng <= TAU, 'band': [mn, mx], 'max_abs_dq': max(steps),"
+    },
+    {
+     "check": "SC2_M2: enclosing def evaluate",
+     "ok": true,
+     "detail": [
+      "evaluate"
+     ]
+    },
+    {
+     "check": "SC2_C4: settling_criterion_v2.py:277 reads \"gap_ok = t_sum is not None and abs(t_sum) <= GAP_BOUND\"",
+     "ok": true,
+     "detail": "gap_ok = t_sum is not None and abs(t_sum) <= GAP_BOUND"
+    },
+    {
+     "check": "SC2_C4: enclosing def observe",
+     "ok": true,
+     "detail": [
+      "observe"
+     ]
+    },
+    {
+     "check": "SC4_TAU: settling_criterion_v4.py:62 reads \"TAU = SC2.TAU\"",
+     "ok": true,
+     "detail": "TAU = SC2.TAU"
+    },
+    {
+     "check": "SC4_TAU: enclosing def None",
+     "ok": true,
+     "detail": []
+    },
+    {
+     "check": "SC5_TAU: settling_criterion_v5.py:52 reads \"TAU = SC4.TAU\"",
+     "ok": true,
+     "detail": "TAU = SC4.TAU"
+    },
+    {
+     "check": "SC5_TAU: enclosing def None",
+     "ok": true,
+     "detail": []
+    },
+    {
+     "check": "SC6_TAU: settling_criterion_v6.py:57 reads \"TAU = SC5.TAU\"",
+     "ok": true,
+     "detail": "TAU = SC5.TAU"
+    },
+    {
+     "check": "SC6_TAU: enclosing def None",
+     "ok": true,
+     "detail": []
+    },
+    {
+     "check": "SC6_GAP: settling_criterion_v6.py:62 reads \"GAP_BOUND = SC5.GAP_BOUND\"",
+     "ok": true,
+     "detail": "GAP_BOUND = SC5.GAP_BOUND"
+    },
+    {
+     "check": "SC6_GAP: enclosing def None",
+     "ok": true,
+     "detail": []
+    },
+    {
+     "check": "SC6_FLOOR: settling_criterion_v6.py:80 reads \"SWING_FLOOR = TAU / 10.0                 # \"Swing noise floor tau/10 (\"",
+     "ok": true,
+     "detail": "SWING_FLOOR = TAU / 10.0                 # \"Swing noise floor tau/10 (~454 EUR), adopted\""
+    },
+    {
+     "check": "SC6_FLOOR: enclosing def None",
+     "ok": true,
+     "detail": []
+    },
+    {
+     "check": "SC6_DET: settling_criterion_v6.py:363 reads \"return max(DETERMINACY_BAR_FACTOR * max(bar_r, bar_o), DETERMINACY_TAU\"",
+     "ok": true,
+     "detail": "return max(DETERMINACY_BAR_FACTOR * max(bar_r, bar_o), DETERMINACY_TAU_MULTIPLE * TAU)"
+    },
+    {
+     "check": "SC6_DET: enclosing def determinacy_threshold",
+     "ok": true,
+     "detail": [
+      "determinacy_threshold"
+     ]
+    },
+    {
+     "check": "HOOKS_V6: p515_s53_w142_resettle_v6_hooks.py:30 reads \"import settling_criterion_v6 as SC6\"",
+     "ok": true,
+     "detail": "import settling_criterion_v6 as SC6"
+    },
+    {
+     "check": "HOOKS_V6: enclosing def None",
+     "ok": true,
+     "detail": []
+    },
+    {
+     "check": "V_SRP1: p515_s53_w101_srp1_continuation_campaign.py:119 reads \"V_SRP1 = 259375.32654094696    # recert campaign_results R.R_tail (R_r\"",
+     "ok": true,
+     "detail": "V_SRP1 = 259375.32654094696    # recert campaign_results R.R_tail (R_ref = 259,375.33 rounded)"
+    },
+    {
+     "check": "V_SRP1: enclosing def None",
+     "ok": true,
+     "detail": []
+    },
+    {
+     "check": "printed body at its label = declared",
+     "ok": true,
+     "detail": "\\tau = \\frac{\\delta_R\\mathcal{V}}{4}"
+    },
+    {
+     "check": "symbols: numerator {delta_R, V} <-> {DELTA_R, R_REF}",
+     "ok": true,
+     "detail": [
+      "{'V', 'delta_R'}",
+      "{'DELTA_R', 'R_REF'}"
+     ]
+    },
+    {
+     "check": "symbols: denominator 4 <-> 4.0",
+     "ok": true,
+     "detail": [
+      4.0,
+      4.0
+     ]
+    },
+    {
+     "check": "values: printed delta_R = 0.07, V = 259,375.33, tau = 4,539.07 at l. [2919]",
+     "ok": true,
+     "detail": {
+      "delta_R": 0.07,
+      "R_REF": 259375.33,
+      "tau_code": 4539.0682750000005
+     }
+    },
+    {
+     "check": "V = R_REF is V_SRP1 = 259,375.32654... rounded to the cent (W101 constant)",
+     "ok": true,
+     "detail": 259375.33
+    },
+    {
+     "check": "prose tau_units present once",
+     "ok": true,
+     "detail": [
+      1999
+     ]
+    },
+    {
+     "check": "prose tau_C3 present once",
+     "ok": true,
+     "detail": [
+      2016
+     ]
+    },
+    {
+     "check": "prose tau_C4 present once",
+     "ok": true,
+     "detail": [
+      2017
+     ]
+    },
+    {
+     "check": "prose tau_floors present once",
+     "ok": true,
+     "detail": [
+      2023
+     ]
+    },
+    {
+     "check": "prose tau_M3 present once",
+     "ok": true,
+     "detail": [
+      2023
+     ]
+    },
+    {
+     "check": "prose tau_det present once",
+     "ok": true,
+     "detail": [
+      2029
+     ]
+    },
+    {
+     "check": "tau / settling_criterion absent from every production module (outside Q and the model)",
+     "ok": true,
+     "detail": {
+      "model_construction_helpers.py": 0,
+      "network.py": 0,
+      "network_data.py": 0,
+      "shared_resources_planning.py": 0,
+      "shared_energy_storage_data.py": 0,
+      "shared_energy_storage_parameters.py": 0,
+      "shared_energy_storage.py": 0,
+      "admm_parameters.py": 0,
+      "definitions.py": 0,
+      "helper_functions.py": 0
+     }
+    },
+    {
+     "check": "search run heads: settling_criterion*.py absent, no tau token in the search code, ab0bcbc9 (tau introduced) not an ancestor, resolution rule = max(bar_x + bar_inc, sigma_q)",
+     "ok": true,
+     "detail": {
+      "baseline_variant_A_s47": {
+       "head": "353e094b",
+       "rule_files": 0,
+       "tau_tokens": 0,
+       "ok": true
+      },
+      "m2_variant_A_s51": {
+       "head": "c39c4836",
+       "rule_files": 0,
+       "tau_tokens": 0,
+       "ok": true
+      },
+      "m2_variant_B_s53": {
+       "head": "e1f98be8",
+       "rule_files": 0,
+       "tau_tokens": 0,
+       "ok": true
+      }
+     }
+    },
+    {
+     "check": "prose: searches used earlier code; search resolution sigma_Q",
+     "ok": true,
+     "detail": [
+      [
+       2915
+      ],
+      [
+       2920
+      ]
+     ]
+    },
+    {
+     "check": "certification run heads: settling_criterion*.py identical to the code head",
+     "ok": true,
+     "detail": {}
+    }
+   ],
+   "l_findings": [],
+   "production_tau_hits": {
+    "model_construction_helpers.py": 0,
+    "network.py": 0,
+    "network_data.py": 0,
+    "shared_resources_planning.py": 0,
+    "shared_energy_storage_data.py": 0,
+    "shared_energy_storage_parameters.py": 0,
+    "shared_energy_storage.py": 0,
+    "admm_parameters.py": 0,
+    "definitions.py": 0,
+    "helper_functions.py": 0
+   },
+   "values": {
+    "delta_R": 0.07,
+    "R_REF": 259375.33,
+    "tau_code": 4539.0682750000005,
+    "eps0": 45.39068275,
+    "gap_bound": 2269.5341375000003,
+    "swing_floor": 453.9068275000001
+   },
+   "rating": "MATCH"
+  },
+  "eq:interface_deviation": {
+   "item": "eq:interface_deviation",
+   "printed": {
+    "label": "eq:interface_deviation",
+    "label_line": 1123,
+    "begin_line": 1115,
+    "end_line": 1124,
+    "body": "P^{\\text{I}}_{i,s,t} - \\bar{P}^{\\text{I}}_{i,t} = d^{+}_{i,s,t} - d^{-}_{i,s,t}",
+    "ok": true,
+    "expected": "P^{\\text{I}}_{i,s,t} - \\bar{P}^{\\text{I}}_{i,t} = d^{+}_{i,s,t} - d^{-}_{i,s,t}",
+    "matches_declared": true
+   },
+   "anchors": {
+    "DEV_P_RULE_DEF": {
+     "file": "model_construction_helpers.py",
+     "line": 1861,
+     "text_at_line": "def row18_interface_deviation_p_rule(m, s_m, s_o, p):",
+     "enclosing_def": "row18_interface_deviation_p_rule"
+    },
+    "DEV_P_LHS": {
+     "file": "model_construction_helpers.py",
+     "line": 1866,
+     "text_at_line": "return (m.pg_adn[s_m, s_o, p] - m.expected_interface_pf_p[p]",
+     "enclosing_def": "row18_interface_deviation_p_rule"
+    },
+    "DEV_P_RHS": {
+     "file": "model_construction_helpers.py",
+     "line": 1867,
+     "text_at_line": "== m.row18_dev_p_up[s_m, s_o, p] - m.row18_dev_p_down[s_m, s_o, p])",
+     "enclosing_def": "row18_interface_deviation_p_rule"
+    },
+    "DEV_Q_LHS": {
+     "file": "model_construction_helpers.py",
+     "line": 1873,
+     "text_at_line": "return (m.qg_adn[s_m, s_o, p] - m.expected_interface_pf_q[p]",
+     "enclosing_def": "row18_interface_deviation_q_rule"
+    },
+    "DEV_Q_RHS": {
+     "file": "model_construction_helpers.py",
+     "line": 1874,
+     "text_at_line": "== m.row18_dev_q_up[s_m, s_o, p] - m.row18_dev_q_down[s_m, s_o, p])",
+     "enclosing_def": "row18_interface_deviation_q_rule"
+    },
+    "DEV_P_ROWS": {
+     "file": "model_construction_helpers.py",
+     "line": 1971,
+     "text_at_line": "model.row18_dev_p_def = pe.Constraint(model.scenarios_market, model.scenarios_operation, model.periods, rule=row18_interface_deviation_p_rule)",
+     "enclosing_def": "add_scenario_commitment_terms"
+    },
+    "DEV_DSO_ONLY": {
+     "file": "model_construction_helpers.py",
+     "line": 1948,
+     "text_at_line": "if (not network.is_transmission) and premium_alpha > 0.0:",
+     "enclosing_def": "add_scenario_commitment_terms"
+    },
+    "DEV_SINGLE": {
+     "file": "model_construction_helpers.py",
+     "line": 1917,
+     "text_at_line": "if n_scenarios == 1:",
+     "enclosing_def": "add_scenario_commitment_terms"
+    },
+    "DEV_CHARGE": {
+     "file": "model_construction_helpers.py",
+     "line": 1979,
+     "text_at_line": "charge += (probability * model.row18_alpha * model.row18_premium[p] * network.baseMVA",
+     "enclosing_def": "add_scenario_commitment_terms"
+    },
+    "DEV_CHARGE_TERMS": {
+     "file": "model_construction_helpers.py",
+     "line": 1980,
+     "text_at_line": "* (model.row18_dev_p_up[s_m, s_o, p] + model.row18_dev_p_down[s_m, s_o, p]",
+     "enclosing_def": "add_scenario_commitment_terms"
+    },
+    "DEV_IN_OBJ": {
+     "file": "model_construction_helpers.py",
+     "line": 1836,
+     "text_at_line": "obj += model.row18_deviation_charge",
+     "enclosing_def": "objective_function_rule"
+    },
+    "DSO_IFACE_P": {
+     "file": "model_construction_helpers.py",
+     "line": 1297,
+     "text_at_line": "return m.pg[ref_gen_idx, s_m, s_o, p] - shared_ess_p",
+     "enclosing_def": "interface_pf_p_distribution_def"
+    },
+    "DSO_IFACE_ESS": {
+     "file": "model_construction_helpers.py",
+     "line": 1293,
+     "text_at_line": "m.shared_es_pnet[e, s_m0, s_o0, p]",
+     "enclosing_def": "interface_pf_p_distribution_def"
+    },
+    "TSO_IFACE_LOAD": {
+     "file": "model_construction_helpers.py",
+     "line": 1247,
+     "text_at_line": "pc_adn = m.pc[adn_load_idx, s_m, s_o, p]",
+     "enclosing_def": "interface_pf_p_transmission_def"
+    },
+    "TSO_IFACE_DELTA": {
+     "file": "model_construction_helpers.py",
+     "line": 1259,
+     "text_at_line": "pc_adn += m.interface_delta_p[dn, s_m0, s_o0, p]",
+     "enclosing_def": "interface_pf_p_transmission_def"
+    },
+    "ESS_PNET_SIGN": {
+     "file": "model_construction_helpers.py",
+     "line": 999,
+     "text_at_line": "return m.shared_es_pnet[e, s_m0, s_o0, p] == m.shared_es_pch[e, s_m0, s_o0, p] - m.shared_es_pdch[e, s_m0, s_o0, p]",
+     "enclosing_def": "sess_pnet_rule"
+    },
+    "EXPECTED_P_DEF": {
+     "file": "model_construction_helpers.py",
+     "line": 2420,
+     "text_at_line": "m.pg_adn[s_m, s_o, p]",
+     "enclosing_def": "dn_interface_expected_pf_p_def"
+    },
+    "EXPECTED_P_RULE": {
+     "file": "model_construction_helpers.py",
+     "line": 2443,
+     "text_at_line": "return m.expected_interface_pf_p[p] == dn_interface_expected_pf_p_def(m, p, network)",
+     "enclosing_def": "dn_interface_expected_pf_p_rule"
+    },
+    "PG_ADN_EXPR": {
+     "file": "network.py",
+     "line": 444,
+     "text_at_line": "model.pg_adn = pe.Expression(model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(interface_pf_p_distribution_def, network=network))",
+     "enclosing_def": "_build_model"
+    },
+    "TSO_ALPHA_0": {
+     "file": "shared_resources_planning.py",
+     "line": 4298,
+     "text_at_line": "premium_alpha=0.0,",
+     "enclosing_def": "create_transmission_network_model"
+    }
+   },
+   "checks": [
+    {
+     "check": "DEV_P_RULE_DEF: model_construction_helpers.py:1861 reads \"def row18_interface_deviation_p_rule(m, s_m, s_o, p):\"",
+     "ok": true,
+     "detail": "def row18_interface_deviation_p_rule(m, s_m, s_o, p):"
+    },
+    {
+     "check": "DEV_P_RULE_DEF: enclosing def row18_interface_deviation_p_rule",
+     "ok": true,
+     "detail": [
+      "row18_interface_deviation_p_rule"
+     ]
+    },
+    {
+     "check": "DEV_P_LHS: model_construction_helpers.py:1866 reads \"return (m.pg_adn[s_m, s_o, p] - m.expected_interface_pf_p[p]\"",
+     "ok": true,
+     "detail": "return (m.pg_adn[s_m, s_o, p] - m.expected_interface_pf_p[p]"
+    },
+    {
+     "check": "DEV_P_LHS: enclosing def row18_interface_deviation_p_rule",
+     "ok": true,
+     "detail": [
+      "row18_interface_deviation_p_rule"
+     ]
+    },
+    {
+     "check": "DEV_P_RHS: model_construction_helpers.py:1867 reads \"== m.row18_dev_p_up[s_m, s_o, p] - m.row18_dev_p_down[s_m, s_o, p])\"",
+     "ok": true,
+     "detail": "== m.row18_dev_p_up[s_m, s_o, p] - m.row18_dev_p_down[s_m, s_o, p])"
+    },
+    {
+     "check": "DEV_P_RHS: enclosing def row18_interface_deviation_p_rule",
+     "ok": true,
+     "detail": [
+      "row18_interface_deviation_p_rule"
+     ]
+    },
+    {
+     "check": "DEV_Q_LHS: model_construction_helpers.py:1873 reads \"return (m.qg_adn[s_m, s_o, p] - m.expected_interface_pf_q[p]\"",
+     "ok": true,
+     "detail": "return (m.qg_adn[s_m, s_o, p] - m.expected_interface_pf_q[p]"
+    },
+    {
+     "check": "DEV_Q_LHS: enclosing def row18_interface_deviation_q_rule",
+     "ok": true,
+     "detail": [
+      "row18_interface_deviation_q_rule"
+     ]
+    },
+    {
+     "check": "DEV_Q_RHS: model_construction_helpers.py:1874 reads \"== m.row18_dev_q_up[s_m, s_o, p] - m.row18_dev_q_down[s_m, s_o, p])\"",
+     "ok": true,
+     "detail": "== m.row18_dev_q_up[s_m, s_o, p] - m.row18_dev_q_down[s_m, s_o, p])"
+    },
+    {
+     "check": "DEV_Q_RHS: enclosing def row18_interface_deviation_q_rule",
+     "ok": true,
+     "detail": [
+      "row18_interface_deviation_q_rule"
+     ]
+    },
+    {
+     "check": "DEV_P_ROWS: model_construction_helpers.py:1971 reads \"model.row18_dev_p_def = pe.Constraint(model.scenarios_market, model.sc\"",
+     "ok": true,
+     "detail": "model.row18_dev_p_def = pe.Constraint(model.scenarios_market, model.scenarios_operation, model.periods, rule=row18_interface_deviation_p_rule)"
+    },
+    {
+     "check": "DEV_P_ROWS: enclosing def add_scenario_commitment_terms",
+     "ok": true,
+     "detail": [
+      "add_scenario_commitment_terms"
+     ]
+    },
+    {
+     "check": "DEV_DSO_ONLY: model_construction_helpers.py:1948 reads \"if (not network.is_transmission) and premium_alpha > 0.0:\"",
+     "ok": true,
+     "detail": "if (not network.is_transmission) and premium_alpha > 0.0:"
+    },
+    {
+     "check": "DEV_DSO_ONLY: enclosing def add_scenario_commitment_terms",
+     "ok": true,
+     "detail": [
+      "add_scenario_commitment_terms"
+     ]
+    },
+    {
+     "check": "DEV_SINGLE: model_construction_helpers.py:1917 reads \"if n_scenarios == 1:\"",
+     "ok": true,
+     "detail": "if n_scenarios == 1:"
+    },
+    {
+     "check": "DEV_SINGLE: enclosing def add_scenario_commitment_terms",
+     "ok": true,
+     "detail": [
+      "add_scenario_commitment_terms"
+     ]
+    },
+    {
+     "check": "DEV_CHARGE: model_construction_helpers.py:1979 reads \"charge += (probability * model.row18_alpha * model.row18_premium[p] * \"",
+     "ok": true,
+     "detail": "charge += (probability * model.row18_alpha * model.row18_premium[p] * network.baseMVA"
+    },
+    {
+     "check": "DEV_CHARGE: enclosing def add_scenario_commitment_terms",
+     "ok": true,
+     "detail": [
+      "add_scenario_commitment_terms"
+     ]
+    },
+    {
+     "check": "DEV_CHARGE_TERMS: model_construction_helpers.py:1980 reads \"* (model.row18_dev_p_up[s_m, s_o, p] + model.row18_dev_p_down[s_m, s_o\"",
+     "ok": true,
+     "detail": "* (model.row18_dev_p_up[s_m, s_o, p] + model.row18_dev_p_down[s_m, s_o, p]"
+    },
+    {
+     "check": "DEV_CHARGE_TERMS: enclosing def add_scenario_commitment_terms",
+     "ok": true,
+     "detail": [
+      "add_scenario_commitment_terms"
+     ]
+    },
+    {
+     "check": "DEV_IN_OBJ: model_construction_helpers.py:1836 reads \"obj += model.row18_deviation_charge\"",
+     "ok": true,
+     "detail": "obj += model.row18_deviation_charge"
+    },
+    {
+     "check": "DEV_IN_OBJ: enclosing def objective_function_rule",
+     "ok": true,
+     "detail": [
+      "objective_function_rule"
+     ]
+    },
+    {
+     "check": "DSO_IFACE_P: model_construction_helpers.py:1297 reads \"return m.pg[ref_gen_idx, s_m, s_o, p] - shared_ess_p\"",
+     "ok": true,
+     "detail": "return m.pg[ref_gen_idx, s_m, s_o, p] - shared_ess_p"
+    },
+    {
+     "check": "DSO_IFACE_P: enclosing def interface_pf_p_distribution_def",
+     "ok": true,
+     "detail": [
+      "interface_pf_p_distribution_def"
+     ]
+    },
+    {
+     "check": "DSO_IFACE_ESS: model_construction_helpers.py:1293 reads \"m.shared_es_pnet[e, s_m0, s_o0, p]\"",
+     "ok": true,
+     "detail": "m.shared_es_pnet[e, s_m0, s_o0, p]"
+    },
+    {
+     "check": "DSO_IFACE_ESS: enclosing def interface_pf_p_distribution_def",
+     "ok": true,
+     "detail": [
+      "interface_pf_p_distribution_def"
+     ]
+    },
+    {
+     "check": "TSO_IFACE_LOAD: model_construction_helpers.py:1247 reads \"pc_adn = m.pc[adn_load_idx, s_m, s_o, p]\"",
+     "ok": true,
+     "detail": "pc_adn = m.pc[adn_load_idx, s_m, s_o, p]"
+    },
+    {
+     "check": "TSO_IFACE_LOAD: enclosing def interface_pf_p_transmission_def",
+     "ok": true,
+     "detail": [
+      "interface_pf_p_transmission_def"
+     ]
+    },
+    {
+     "check": "TSO_IFACE_DELTA: model_construction_helpers.py:1259 reads \"pc_adn += m.interface_delta_p[dn, s_m0, s_o0, p]\"",
+     "ok": true,
+     "detail": "pc_adn += m.interface_delta_p[dn, s_m0, s_o0, p]"
+    },
+    {
+     "check": "TSO_IFACE_DELTA: enclosing def interface_pf_p_transmission_def",
+     "ok": true,
+     "detail": [
+      "interface_pf_p_transmission_def"
+     ]
+    },
+    {
+     "check": "ESS_PNET_SIGN: model_construction_helpers.py:999 reads \"return m.shared_es_pnet[e, s_m0, s_o0, p] == m.shared_es_pch[e, s_m0, \"",
+     "ok": true,
+     "detail": "return m.shared_es_pnet[e, s_m0, s_o0, p] == m.shared_es_pch[e, s_m0, s_o0, p] - m.shared_es_pdch[e, s_m0, s_o0, p]"
+    },
+    {
+     "check": "ESS_PNET_SIGN: enclosing def sess_pnet_rule",
+     "ok": true,
+     "detail": [
+      "sess_pnet_rule"
+     ]
+    },
+    {
+     "check": "EXPECTED_P_DEF: model_construction_helpers.py:2420 reads \"m.pg_adn[s_m, s_o, p]\"",
+     "ok": true,
+     "detail": "m.pg_adn[s_m, s_o, p]"
+    },
+    {
+     "check": "EXPECTED_P_DEF: enclosing def dn_interface_expected_pf_p_def",
+     "ok": true,
+     "detail": [
+      "dn_interface_expected_pf_p_def"
+     ]
+    },
+    {
+     "check": "EXPECTED_P_RULE: model_construction_helpers.py:2443 reads \"return m.expected_interface_pf_p[p] == dn_interface_expected_pf_p_def(\"",
+     "ok": true,
+     "detail": "return m.expected_interface_pf_p[p] == dn_interface_expected_pf_p_def(m, p, network)"
+    },
+    {
+     "check": "EXPECTED_P_RULE: enclosing def dn_interface_expected_pf_p_rule",
+     "ok": true,
+     "detail": [
+      "dn_interface_expected_pf_p_rule"
+     ]
+    },
+    {
+     "check": "PG_ADN_EXPR: network.py:444 reads \"model.pg_adn = pe.Expression(model.scenarios_market, model.scenarios_o\"",
+     "ok": true,
+     "detail": "model.pg_adn = pe.Expression(model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(interface_pf_p_distribution_def, network=network))"
+    },
+    {
+     "check": "PG_ADN_EXPR: enclosing def _build_model",
+     "ok": true,
+     "detail": [
+      "_build_model"
+     ]
+    },
+    {
+     "check": "TSO_ALPHA_0: shared_resources_planning.py:4298 reads \"premium_alpha=0.0,\"",
+     "ok": true,
+     "detail": "premium_alpha=0.0,"
+    },
+    {
+     "check": "TSO_ALPHA_0: enclosing def create_transmission_network_model",
+     "ok": true,
+     "detail": [
+      "create_transmission_network_model"
+     ]
+    },
+    {
+     "check": "printed body at its label = declared",
+     "ok": true,
+     "detail": "P^{\\text{I}}_{i,s,t} - \\bar{P}^{\\text{I}}_{i,t} = d^{+}_{i,s,t} - d^{-}_{i,s,t}"
+    },
+    {
+     "check": "symbols / sign: printed P - Pbar - d+ + d- = 0 equals the code P row (pg_adn - expected - up + down)",
+     "ok": true,
+     "detail": [
+      {
+       "flow": 1,
+       "expectation": -1,
+       "dev_up": -1,
+       "dev_down": 1
+      },
+      {
+       "flow": 1,
+       "expectation": -1,
+       "dev_up": -1,
+       "dev_down": 1
+      }
+     ]
+    },
+    {
+     "check": "the Q row has the same signed form (prose: \"an analogous charge\")",
+     "ok": true,
+     "detail": {
+      "flow": 1,
+      "expectation": -1,
+      "dev_up": -1,
+      "dev_down": 1
+     }
+    },
+    {
+     "check": "indices: rule over (s_m, s_o, p) = (s, t) with s = (m, o); year/day omitted in the print (prose)",
+     "ok": true,
+     "detail": [
+      "m",
+      "s_m",
+      "s_o",
+      "p"
+     ]
+    },
+    {
+     "check": "DSO copy = reference-generator injection into the DN minus the co-located ESS net power (pg - shared_ess_p): TN -> DN positive, ESS excluded",
+     "ok": true,
+     "detail": [
+      [
+       1,
+       "pg"
+      ],
+      [
+       -1,
+       "shared_ess_p"
+      ]
+     ]
+    },
+    {
+     "check": "ESS net power = pch - pdch (charging positive), the scenario-free copy (s_m0, s_o0)",
+     "ok": true,
+     "detail": [
+      [
+       [
+        1,
+        "shared_es_pnet"
+       ]
+      ],
+      [
+       [
+        1,
+        "shared_es_pch"
+       ],
+       [
+        -1,
+        "shared_es_pdch"
+       ]
+      ]
+     ]
+    },
+    {
+     "check": "TSO copy = the ADN load at the TN node (pc) + the scenario-free interface delta: TN -> DN positive",
+     "ok": true,
+     "detail": null
+    },
+    {
+     "check": "Pbar = sum_s prob_m prob_o pg_adn[s, t] (the expectation of the same flow)",
+     "ok": true,
+     "detail": null
+    },
+    {
+     "check": "prose: no premium on the TSO; omitted at one scenario",
+     "ok": true,
+     "detail": [
+      [
+       1153
+      ],
+      [
+       1158
+      ]
+     ]
+    },
+    {
+     "check": "charge sums d+ + d- (symmetric): a reversed orientation of P^I swaps d+ and d- and changes no number",
+     "ok": true,
+     "detail": null
+    },
+    {
+     "check": "the ESS term in P^I is the scenario-free copy, so it cancels in P - Pbar (sum_s omega_s = 1): excluding or including it changes no deviation",
+     "ok": true,
+     "detail": null
+    }
+   ],
+   "canonical": {
+    "printed": {
+     "flow": 1,
+     "expectation": -1,
+     "dev_up": -1,
+     "dev_down": 1
+    },
+    "code_p": {
+     "flow": 1,
+     "expectation": -1,
+     "dev_up": -1,
+     "dev_down": 1
+    },
+    "code_q": {
+     "flow": 1,
+     "expectation": -1,
+     "dev_up": -1,
+     "dev_down": 1
+    }
+   },
+   "l_findings": [
+    {
+     "finding": "orientation of P^I (TN -> DN positive in both code copies) is not stated in main.tex",
+     "confirmed": true,
+     "scope": {
+      "nomenclature_line": [
+       336
+      ],
+      "commitment_subsection_lines": [
+       1092,
+       1163
+      ],
+      "every_line_with_P^{\\text{I}}": [
+       336,
+       1105,
+       1116,
+       1832
+      ],
+      "words": [
+       "positive",
+       "import",
+       "export",
+       "withdraw",
+       "injection",
+       "inject",
+       "direction",
+       "sign convention",
+       "from the TN",
+       "from TN",
+       "TN-to-DN",
+       "TN--DN direction",
+       "into the DN",
+       "flowing"
+      ]
+     },
+     "hits": {
+      "subsection": [],
+      "nomenclature": [],
+      "P_I_lines": []
+     },
+     "context_whole_document_not_deciding": [
+      {
+       "line": 1628,
+       "word": "reverse",
+       "text": "The comparison also reflects differences in interface restrictions. Both static arrangements prohibit DN-to-TN active-power flow, whereas coordinated operation "
+      },
+      {
+       "line": 2847,
+       "word": "reverse",
+       "text": "a re-evaluation of each distribution network at the transmission network's interface voltage, with its decisions held at the first phase and its voltage, therma"
+      }
+     ]
+    },
+    {
+     "finding": "P^I in the code is the DN exchange net of the co-located shared-ESS schedule (pg - pnet_ESS); main.tex does not say whether P^I includes the shared ESS at the interface node",
+     "confirmed": true,
+     "scope": {
+      "commitment_subsection_lines": [
+       1092,
+       1163
+      ],
+      "every_line_with_P^{\\text{I}}": [
+       336,
+       1105,
+       1116,
+       1832
+      ],
+      "words": [
+       "exclud",
+       "net of",
+       "excluding",
+       "without the storage",
+       "storage excluded"
+      ]
+     },
+     "hits": []
+    }
+   ],
+   "notes": [
+    "units: the code row is in per unit on network.baseMVA (the charge multiplies by baseMVA, l. 1979); the print carries no unit -- notation only",
+    "row 18 is inactive (rows deactivated, d+/- fixed at 0) at the DSO initialisation solve and activated with the settlement weight before the ADMM cycles (shared_resources_planning._set_row18_inactive_for_initialisation / _activate_row18_with_settlement); not stated in main.tex; no reported number is taken at initialisation"
+   ],
+   "rating": "L"
+  },
+  "eq:interface_deviation_nonnegative": {
+   "item": "eq:interface_deviation_nonnegative",
+   "printed": {
+    "label": "eq:interface_deviation_nonnegative",
+    "label_line": 1133,
+    "begin_line": 1131,
+    "end_line": 1134,
+    "body": "d^{\\pm}_{i,s,t} \\ge 0",
+    "ok": true,
+    "expected": "d^{\\pm}_{i,s,t} \\ge 0",
+    "matches_declared": true
+   },
+   "anchors": {
+    "NN_P_UP": {
+     "file": "model_construction_helpers.py",
+     "line": 1966,
+     "text_at_line": "model.row18_dev_p_up = pe.Var(model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)",
+     "enclosing_def": "add_scenario_commitment_terms"
+    },
+    "NN_P_DOWN": {
+     "file": "model_construction_helpers.py",
+     "line": 1967,
+     "text_at_line": "model.row18_dev_p_down = pe.Var(model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)",
+     "enclosing_def": "add_scenario_commitment_terms"
+    },
+    "NN_Q_UP": {
+     "file": "model_construction_helpers.py",
+     "line": 1968,
+     "text_at_line": "model.row18_dev_q_up = pe.Var(model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)",
+     "enclosing_def": "add_scenario_commitment_terms"
+    },
+    "NN_Q_DOWN": {
+     "file": "model_construction_helpers.py",
+     "line": 1969,
+     "text_at_line": "model.row18_dev_q_down = pe.Var(model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)",
+     "enclosing_def": "add_scenario_commitment_terms"
+    }
+   },
+   "checks": [
+    {
+     "check": "NN_P_UP: model_construction_helpers.py:1966 reads \"model.row18_dev_p_up = pe.Var(model.scenarios_market, model.scenarios_\"",
+     "ok": true,
+     "detail": "model.row18_dev_p_up = pe.Var(model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)"
+    },
+    {
+     "check": "NN_P_UP: enclosing def add_scenario_commitment_terms",
+     "ok": true,
+     "detail": [
+      "add_scenario_commitment_terms"
+     ]
+    },
+    {
+     "check": "NN_P_DOWN: model_construction_helpers.py:1967 reads \"model.row18_dev_p_down = pe.Var(model.scenarios_market, model.scenario\"",
+     "ok": true,
+     "detail": "model.row18_dev_p_down = pe.Var(model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)"
+    },
+    {
+     "check": "NN_P_DOWN: enclosing def add_scenario_commitment_terms",
+     "ok": true,
+     "detail": [
+      "add_scenario_commitment_terms"
+     ]
+    },
+    {
+     "check": "NN_Q_UP: model_construction_helpers.py:1968 reads \"model.row18_dev_q_up = pe.Var(model.scenarios_market, model.scenarios_\"",
+     "ok": true,
+     "detail": "model.row18_dev_q_up = pe.Var(model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)"
+    },
+    {
+     "check": "NN_Q_UP: enclosing def add_scenario_commitment_terms",
+     "ok": true,
+     "detail": [
+      "add_scenario_commitment_terms"
+     ]
+    },
+    {
+     "check": "NN_Q_DOWN: model_construction_helpers.py:1969 reads \"model.row18_dev_q_down = pe.Var(model.scenarios_market, model.scenario\"",
+     "ok": true,
+     "detail": "model.row18_dev_q_down = pe.Var(model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)"
+    },
+    {
+     "check": "NN_Q_DOWN: enclosing def add_scenario_commitment_terms",
+     "ok": true,
+     "detail": [
+      "add_scenario_commitment_terms"
+     ]
+    },
+    {
+     "check": "printed body at its label = declared",
+     "ok": true,
+     "detail": "d^{\\pm}_{i,s,t} \\ge 0"
+    },
+    {
+     "check": "symbols: d^{+/-} >= 0 <-> domain=pe.NonNegativeReals on the four deviation Vars (P and Q), no other bound",
+     "ok": true,
+     "detail": {
+      "NN_P_UP": "NonNegativeReals",
+      "NN_P_UP_bounds_kw": false,
+      "NN_P_DOWN": "NonNegativeReals",
+      "NN_P_DOWN_bounds_kw": false,
+      "NN_Q_UP": "NonNegativeReals",
+      "NN_Q_UP_bounds_kw": false,
+      "NN_Q_DOWN": "NonNegativeReals",
+      "NN_Q_DOWN_bounds_kw": false
+     }
+    }
+   ],
+   "l_findings": [],
+   "domains": {
+    "NN_P_UP": "NonNegativeReals",
+    "NN_P_UP_bounds_kw": false,
+    "NN_P_DOWN": "NonNegativeReals",
+    "NN_P_DOWN_bounds_kw": false,
+    "NN_Q_UP": "NonNegativeReals",
+    "NN_Q_UP_bounds_kw": false,
+    "NN_Q_DOWN": "NonNegativeReals",
+    "NN_Q_DOWN_bounds_kw": false
+   },
+   "notes": [
+    "at the DSO initialisation solve the pair is fixed at 0 with its row deactivated (consistent with >= 0)"
+   ],
+   "rating": "MATCH"
+  },
+  "eq:soh_initial": {
+   "item": "eq:soh_initial",
+   "printed": {
+    "label": "eq:soh_initial",
+    "label_line": 1062,
+    "begin_line": 1060,
+    "end_line": 1063,
+    "body": "SoH_{e,y^{\\text{Inv}},(y^{\\text{Inv}})^{-}} = 1",
+    "ok": true,
+    "expected": "SoH_{e,y^{\\text{Inv}},(y^{\\text{Inv}})^{-}} = 1",
+    "matches_declared": true
+   },
+   "anchors": {
+    "SOH_LOOP": {
+     "file": "shared_energy_storage_data.py",
+     "line": 687,
+     "text_at_line": "for y in range(y_inv, max_tcal_norm):",
+     "enclosing_def": "_build_subproblem"
+    },
+    "SOH_INIT": {
+     "file": "shared_energy_storage_data.py",
+     "line": 714,
+     "text_at_line": "prev_soh = 1.00",
+     "enclosing_def": "_build_subproblem"
+    },
+    "SOH_IF": {
+     "file": "shared_energy_storage_data.py",
+     "line": 715,
+     "text_at_line": "if y > y_inv:",
+     "enclosing_def": "_build_subproblem"
+    },
+    "SOH_PREV": {
+     "file": "shared_energy_storage_data.py",
+     "line": 716,
+     "text_at_line": "prev_soh = model.es_soh_per_unit_cumul[y_inv, y - 1]",
+     "enclosing_def": "_build_subproblem"
+    },
+    "SOH_CHAIN": {
+     "file": "shared_energy_storage_data.py",
+     "line": 724,
+     "text_at_line": "== prev_soh * pe.exp(-model.es_D_per_unit[y_inv, y]) * (phi_cal ** num_years))",
+     "enclosing_def": "_build_subproblem"
+    },
+    "SOH_FIXED_1": {
+     "file": "shared_energy_storage_data.py",
+     "line": 550,
+     "text_at_line": "model.es_soh_per_unit_cumul.fix(1.00)",
+     "enclosing_def": "_build_subproblem"
+    },
+    "SOH_POINT_DEFAULT": {
+     "file": "shared_energy_storage_data.py",
+     "line": 17,
+     "text_at_line": "AVAILABLE_ENERGY_SOH_POINT_DEFAULT = 'end'",
+     "enclosing_def": null
+    },
+    "SOH_MID_INIT": {
+     "file": "shared_energy_storage_data.py",
+     "line": 622,
+     "text_at_line": "prev_soh = 1.00",
+     "enclosing_def": "_build_subproblem"
+    }
+   },
+   "checks": [
+    {
+     "check": "SOH_LOOP: shared_energy_storage_data.py:687 reads \"for y in range(y_inv, max_tcal_norm):\"",
+     "ok": true,
+     "detail": "for y in range(y_inv, max_tcal_norm):"
+    },
+    {
+     "check": "SOH_LOOP: enclosing def _build_subproblem",
+     "ok": true,
+     "detail": [
+      "_build_subproblem"
+     ]
+    },
+    {
+     "check": "SOH_INIT: shared_energy_storage_data.py:714 reads \"prev_soh = 1.00\"",
+     "ok": true,
+     "detail": "prev_soh = 1.00"
+    },
+    {
+     "check": "SOH_INIT: enclosing def _build_subproblem",
+     "ok": true,
+     "detail": [
+      "_build_subproblem"
+     ]
+    },
+    {
+     "check": "SOH_IF: shared_energy_storage_data.py:715 reads \"if y > y_inv:\"",
+     "ok": true,
+     "detail": "if y > y_inv:"
+    },
+    {
+     "check": "SOH_IF: enclosing def _build_subproblem",
+     "ok": true,
+     "detail": [
+      "_build_subproblem"
+     ]
+    },
+    {
+     "check": "SOH_PREV: shared_energy_storage_data.py:716 reads \"prev_soh = model.es_soh_per_unit_cumul[y_inv, y - 1]\"",
+     "ok": true,
+     "detail": "prev_soh = model.es_soh_per_unit_cumul[y_inv, y - 1]"
+    },
+    {
+     "check": "SOH_PREV: enclosing def _build_subproblem",
+     "ok": true,
+     "detail": [
+      "_build_subproblem"
+     ]
+    },
+    {
+     "check": "SOH_CHAIN: shared_energy_storage_data.py:724 reads \"== prev_soh * pe.exp(-model.es_D_per_unit[y_inv, y]) * (phi_cal ** num\"",
+     "ok": true,
+     "detail": "== prev_soh * pe.exp(-model.es_D_per_unit[y_inv, y]) * (phi_cal ** num_years))"
+    },
+    {
+     "check": "SOH_CHAIN: enclosing def _build_subproblem",
+     "ok": true,
+     "detail": [
+      "_build_subproblem"
+     ]
+    },
+    {
+     "check": "SOH_FIXED_1: shared_energy_storage_data.py:550 reads \"model.es_soh_per_unit_cumul.fix(1.00)\"",
+     "ok": true,
+     "detail": "model.es_soh_per_unit_cumul.fix(1.00)"
+    },
+    {
+     "check": "SOH_FIXED_1: enclosing def _build_subproblem",
+     "ok": true,
+     "detail": [
+      "_build_subproblem"
+     ]
+    },
+    {
+     "check": "SOH_POINT_DEFAULT: shared_energy_storage_data.py:17 reads \"AVAILABLE_ENERGY_SOH_POINT_DEFAULT = 'end'\"",
+     "ok": true,
+     "detail": "AVAILABLE_ENERGY_SOH_POINT_DEFAULT = 'end'"
+    },
+    {
+     "check": "SOH_POINT_DEFAULT: enclosing def None",
+     "ok": true,
+     "detail": []
+    },
+    {
+     "check": "SOH_MID_INIT: shared_energy_storage_data.py:622 reads \"prev_soh = 1.00\"",
+     "ok": true,
+     "detail": "prev_soh = 1.00"
+    },
+    {
+     "check": "SOH_MID_INIT: enclosing def _build_subproblem",
+     "ok": true,
+     "detail": [
+      "_build_subproblem"
+     ]
+    },
+    {
+     "check": "printed body at its label = declared",
+     "ok": true,
+     "detail": "SoH_{e,y^{\\text{Inv}},(y^{\\text{Inv}})^{-}} = 1"
+    },
+    {
+     "check": "symbols: SoH at the boundary before the installation block = 1 <-> prev_soh = 1.00 for y = y_inv (loop starts at y_inv; reassigned only if y > y_inv)",
+     "ok": true,
+     "detail": {
+      "loop_iter": "range(y_inv, max_tcal_norm)",
+      "init_value": 1.0,
+      "next_is_if_y_gt_y_inv": true,
+      "if_body": "prev_soh = model.es_soh_per_unit_cumul[y_inv, y - 1]",
+      "prev_soh_loaded_at": [
+       724
+      ]
+     }
+    },
+    {
+     "check": "prose: boundary = preceding block terminal state, or initial state for a new cohort; new cohort starts at unit SoH",
+     "ok": true,
+     "detail": [
+      [
+       1036
+      ],
+      [
+       1056
+      ]
+     ]
+    },
+    {
+     "check": "records: soh_prev_end == 1.0 exactly at every installation cell (54) and == the previous block end at every later cell (81)",
+     "ok": true,
+     "detail": []
+    }
+   ],
+   "l_findings": [],
+   "structure": {
+    "loop_iter": "range(y_inv, max_tcal_norm)",
+    "init_value": 1.0,
+    "next_is_if_y_gt_y_inv": true,
+    "if_body": "prev_soh = model.es_soh_per_unit_cumul[y_inv, y - 1]",
+    "prev_soh_loaded_at": [
+     724
+    ]
+   },
+   "records": {
+    "n_installation_cells": 54,
+    "n_propagation_cells": 81,
+    "context_eq_soh_chain_max_abs_dev": 1.1667444788088233e-11,
+    "violations": []
+   },
+   "notes": [
+    "context (eq:soh_chain, not an A1 item): recorded soh_end = soh_prev_end exp(-D) phi^n to 1.167e-11 at every recorded cell",
+    "the 'mid' available-energy variant (cell e_c3_midblock) uses the same literal 1.00 (l. 622)",
+    "outside a cohort's calendar window and at zero capacity the SoH variable is fixed at 1.0 (l. 550)"
+   ],
+   "rating": "MATCH"
+  },
+  "app:salvage_credit": {
+   "item": "app:salvage_credit",
+   "printed": {
+    "app:salvage_credit": {
+     "label": "app:salvage_credit",
+     "label_line": 2571,
+     "ok": true
+    },
+    "eq:salvage_credit": {
+     "label": "eq:salvage_credit",
+     "label_line": 2583,
+     "begin_line": 2577,
+     "end_line": 2584,
+     "body": "C^\\text{Salvage}(\\boldsymbol{x}) = \\sum_{e \\in E^S} \\sum_{y^\\text{Inv} \\in Y} \\frac{\\bar{c}^{\\text{Inv,E}}_{y^\\text{Inv}}\\, E^{\\text{Inv}}_{e,y^\\text{Inv}}}{(1+r)^{\\,y^\\text{End}-y_0}} \\;\\frac{T^\\text{Rem}_{e,y^\\text{Inv}}}{T^\\text{Cal}_{e,y^\\text{Inv}}} \\;\\frac{SoH_{e,y^\\text{Inv},y^\\text{End}} - SoH^{\\text{Min}}_e}{1 - SoH^{\\text{Min}}_e}",
+     "ok": true,
+     "expected": "C^\\text{Salvage}(\\boldsymbol{x}) = \\sum_{e \\in E^S} \\sum_{y^\\text{Inv} \\in Y} \\frac{\\bar{c}^{\\text{Inv,E}}_{y^\\text{Inv}}\\, E^{\\text{Inv}}_{e,y^\\text{Inv}}}{(1+r)^{\\,y^\\text{End}-y_0}} \\;\\frac{T^\\text{Rem}_{e,y^\\text{Inv}}}{T^\\text{Cal}_{e,y^\\text{Inv}}} \\;\\frac{SoH_{e,y^\\text{Inv},y^\\text{End}} - SoH^{\\text{Min}}_e}{1 - SoH^{\\text{Min}}_e}",
+     "matches_declared": true
+    },
+    "eq:salvage_remaining_life": {
+     "label": "eq:salvage_remaining_life",
+     "label_line": 2590,
+     "begin_line": 2588,
+     "end_line": 2591,
+     "body": "T^\\text{Rem}_{e,y^\\text{Inv}} = \\max\\left\\{0,\\; y^\\text{Inv} + T^\\text{Cal}_{e,y^\\text{Inv}} - y^\\text{End}\\right\\}",
+     "ok": true,
+     "expected": "T^\\text{Rem}_{e,y^\\text{Inv}} = \\max\\left\\{0,\\; y^\\text{Inv} + T^\\text{Cal}_{e,y^\\text{Inv}} - y^\\text{End}\\right\\}",
+     "matches_declared": true
+    }
+   },
+   "anchors": {
+    "SALV_DEF": {
+     "file": "shared_energy_storage_data.py",
+     "line": 866,
+     "text_at_line": "def _build_terminal_salvage_value_expression(shared_ess_data, model, shared_ess_idx):",
+     "enclosing_def": "_build_terminal_salvage_value_expression"
+    },
+    "SALV_TERMINAL_IDX": {
+     "file": "shared_energy_storage_data.py",
+     "line": 871,
+     "text_at_line": "terminal_year_idx = len(shared_ess_data.years) - 1",
+     "enclosing_def": "_build_terminal_salvage_value_expression"
+    },
+    "SALV_E_RATED": {
+     "file": "shared_energy_storage_data.py",
+     "line": 883,
+     "text_at_line": "e_rated = model.es_e_rated_per_unit[y_inv, terminal_year_idx]",
+     "enclosing_def": "_build_terminal_salvage_value_expression"
+    },
+    "SALV_E_AVAIL": {
+     "file": "shared_energy_storage_data.py",
+     "line": 884,
+     "text_at_line": "e_available = model.es_e_available_per_unit[y_inv, terminal_year_idx]",
+     "enclosing_def": "_build_terminal_salvage_value_expression"
+    },
+    "SALV_ABOVE_EOL": {
+     "file": "shared_energy_storage_data.py",
+     "line": 890,
+     "text_at_line": "usable_energy_above_eol = (e_available - min_soh * e_rated) / (1.00 - min_soh)",
+     "enclosing_def": "_build_terminal_salvage_value_expression"
+    },
+    "SALV_SUM": {
+     "file": "shared_energy_storage_data.py",
+     "line": 899,
+     "text_at_line": "salvage_value += (",
+     "enclosing_def": "_build_terminal_salvage_value_expression"
+    },
+    "SALV_DISC_SUM": {
+     "file": "shared_energy_storage_data.py",
+     "line": 911,
+     "text_at_line": "terminal_years = sum(float(num_years) for num_years in shared_ess_data.years.values())",
+     "enclosing_def": "_get_terminal_discount_factor"
+    },
+    "SALV_DISC": {
+     "file": "shared_energy_storage_data.py",
+     "line": 912,
+     "text_at_line": "return 1.00 / ((1.00 + shared_ess_data.discount_factor) ** terminal_years)",
+     "enclosing_def": "_get_terminal_discount_factor"
+    },
+    "SALV_AGE": {
+     "file": "shared_energy_storage_data.py",
+     "line": 919,
+     "text_at_line": "age_at_terminal = sum(float(value) for value in represented_years[investment_year_idx:])",
+     "enclosing_def": "_get_remaining_calendar_life"
+    },
+    "SALV_REM": {
+     "file": "shared_energy_storage_data.py",
+     "line": 920,
+     "text_at_line": "remaining_life = max(float(shared_energy_storage.t_cal) - age_at_terminal, 0.00)",
+     "enclosing_def": "_get_remaining_calendar_life"
+    },
+    "SALV_REM_FRAC": {
+     "file": "shared_energy_storage_data.py",
+     "line": 921,
+     "text_at_line": "remaining_life_fraction = min(remaining_life / float(shared_energy_storage.t_cal), 1.00)",
+     "enclosing_def": "_get_remaining_calendar_life"
+    },
+    "SALV_CBAR": {
+     "file": "shared_energy_storage_data.py",
+     "line": 928,
+     "text_at_line": "expected_cost += probability * shared_ess_data.cost_investment['energy'][scenario][year]",
+     "enclosing_def": "_get_expected_energy_investment_cost"
+    },
+    "SALV_NOT_IN_OBJ": {
+     "file": "shared_energy_storage_data.py",
+     "line": 853,
+     "text_at_line": "expr=model.feasibility_penalty,",
+     "enclosing_def": "_build_subproblem"
+    },
+    "SALV_EXPR": {
+     "file": "shared_energy_storage_data.py",
+     "line": 849,
+     "text_at_line": "model.salvage_value = pe.Expression(expr=salvage_value)",
+     "enclosing_def": "_build_subproblem"
+    },
+    "SALV_GET": {
+     "file": "shared_energy_storage_data.py",
+     "line": 148,
+     "text_at_line": "salvage_value += pe.value(models[node_id].salvage_value)",
+     "enclosing_def": "get_salvage_value"
+    },
+    "SALV_NET": {
+     "file": "shared_resources_planning.py",
+     "line": 1306,
+     "text_at_line": "net_operational_recourse = gross_operational_cost - terminal_salvage_value",
+     "enclosing_def": "_get_operational_recourse_components"
+    },
+    "SALV_PARAM_RECOVERY": {
+     "file": "shared_energy_storage_parameters.py",
+     "line": 14,
+     "text_at_line": "self.energy_recovery_fraction = 1.00",
+     "enclosing_def": "__init__"
+    },
+    "SALV_PARAM_FLOOR": {
+     "file": "shared_energy_storage_parameters.py",
+     "line": 15,
+     "text_at_line": "self.recycling_floor_fraction = 0.00",
+     "enclosing_def": "__init__"
+    },
+    "SALV_CBAR_READ": {
+     "file": "shared_energy_storage_data.py",
+     "line": 1743,
+     "text_at_line": "num_scenarios, shared_ess_data.prob_market_scenarios = _get_operational_scenarios_info_from_excel_file(filename, 'Scenarios')",
+     "enclosing_def": "_read_shared_energy_storage_data_from_file"
+    }
+   },
+   "checks": [
+    {
+     "check": "SALV_DEF: shared_energy_storage_data.py:866 reads \"def _build_terminal_salvage_value_expression(shared_ess_data, model, s\"",
+     "ok": true,
+     "detail": "def _build_terminal_salvage_value_expression(shared_ess_data, model, shared_ess_idx):"
+    },
+    {
+     "check": "SALV_DEF: enclosing def _build_terminal_salvage_value_expression",
+     "ok": true,
+     "detail": [
+      "_build_terminal_salvage_value_expression"
+     ]
+    },
+    {
+     "check": "SALV_TERMINAL_IDX: shared_energy_storage_data.py:871 reads \"terminal_year_idx = len(shared_ess_data.years) - 1\"",
+     "ok": true,
+     "detail": "terminal_year_idx = len(shared_ess_data.years) - 1"
+    },
+    {
+     "check": "SALV_TERMINAL_IDX: enclosing def _build_terminal_salvage_value_expression",
+     "ok": true,
+     "detail": [
+      "_build_terminal_salvage_value_expression"
+     ]
+    },
+    {
+     "check": "SALV_E_RATED: shared_energy_storage_data.py:883 reads \"e_rated = model.es_e_rated_per_unit[y_inv, terminal_year_idx]\"",
+     "ok": true,
+     "detail": "e_rated = model.es_e_rated_per_unit[y_inv, terminal_year_idx]"
+    },
+    {
+     "check": "SALV_E_RATED: enclosing def _build_terminal_salvage_value_expression",
+     "ok": true,
+     "detail": [
+      "_build_terminal_salvage_value_expression"
+     ]
+    },
+    {
+     "check": "SALV_E_AVAIL: shared_energy_storage_data.py:884 reads \"e_available = model.es_e_available_per_unit[y_inv, terminal_year_idx]\"",
+     "ok": true,
+     "detail": "e_available = model.es_e_available_per_unit[y_inv, terminal_year_idx]"
+    },
+    {
+     "check": "SALV_E_AVAIL: enclosing def _build_terminal_salvage_value_expression",
+     "ok": true,
+     "detail": [
+      "_build_terminal_salvage_value_expression"
+     ]
+    },
+    {
+     "check": "SALV_ABOVE_EOL: shared_energy_storage_data.py:890 reads \"usable_energy_above_eol = (e_available - min_soh * e_rated) / (1.00 - \"",
+     "ok": true,
+     "detail": "usable_energy_above_eol = (e_available - min_soh * e_rated) / (1.00 - min_soh)"
+    },
+    {
+     "check": "SALV_ABOVE_EOL: enclosing def _build_terminal_salvage_value_expression",
+     "ok": true,
+     "detail": [
+      "_build_terminal_salvage_value_expression"
+     ]
+    },
+    {
+     "check": "SALV_SUM: shared_energy_storage_data.py:899 reads \"salvage_value += (\"",
+     "ok": true,
+     "detail": "salvage_value += ("
+    },
+    {
+     "check": "SALV_SUM: enclosing def _build_terminal_salvage_value_expression",
+     "ok": true,
+     "detail": [
+      "_build_terminal_salvage_value_expression"
+     ]
+    },
+    {
+     "check": "SALV_DISC_SUM: shared_energy_storage_data.py:911 reads \"terminal_years = sum(float(num_years) for num_years in shared_ess_data\"",
+     "ok": true,
+     "detail": "terminal_years = sum(float(num_years) for num_years in shared_ess_data.years.values())"
+    },
+    {
+     "check": "SALV_DISC_SUM: enclosing def _get_terminal_discount_factor",
+     "ok": true,
+     "detail": [
+      "_get_terminal_discount_factor"
+     ]
+    },
+    {
+     "check": "SALV_DISC: shared_energy_storage_data.py:912 reads \"return 1.00 / ((1.00 + shared_ess_data.discount_factor) ** terminal_ye\"",
+     "ok": true,
+     "detail": "return 1.00 / ((1.00 + shared_ess_data.discount_factor) ** terminal_years)"
+    },
+    {
+     "check": "SALV_DISC: enclosing def _get_terminal_discount_factor",
+     "ok": true,
+     "detail": [
+      "_get_terminal_discount_factor"
+     ]
+    },
+    {
+     "check": "SALV_AGE: shared_energy_storage_data.py:919 reads \"age_at_terminal = sum(float(value) for value in represented_years[inve\"",
+     "ok": true,
+     "detail": "age_at_terminal = sum(float(value) for value in represented_years[investment_year_idx:])"
+    },
+    {
+     "check": "SALV_AGE: enclosing def _get_remaining_calendar_life",
+     "ok": true,
+     "detail": [
+      "_get_remaining_calendar_life"
+     ]
+    },
+    {
+     "check": "SALV_REM: shared_energy_storage_data.py:920 reads \"remaining_life = max(float(shared_energy_storage.t_cal) - age_at_termi\"",
+     "ok": true,
+     "detail": "remaining_life = max(float(shared_energy_storage.t_cal) - age_at_terminal, 0.00)"
+    },
+    {
+     "check": "SALV_REM: enclosing def _get_remaining_calendar_life",
+     "ok": true,
+     "detail": [
+      "_get_remaining_calendar_life"
+     ]
+    },
+    {
+     "check": "SALV_REM_FRAC: shared_energy_storage_data.py:921 reads \"remaining_life_fraction = min(remaining_life / float(shared_energy_sto\"",
+     "ok": true,
+     "detail": "remaining_life_fraction = min(remaining_life / float(shared_energy_storage.t_cal), 1.00)"
+    },
+    {
+     "check": "SALV_REM_FRAC: enclosing def _get_remaining_calendar_life",
+     "ok": true,
+     "detail": [
+      "_get_remaining_calendar_life"
+     ]
+    },
+    {
+     "check": "SALV_CBAR: shared_energy_storage_data.py:928 reads \"expected_cost += probability * shared_ess_data.cost_investment['energy\"",
+     "ok": true,
+     "detail": "expected_cost += probability * shared_ess_data.cost_investment['energy'][scenario][year]"
+    },
+    {
+     "check": "SALV_CBAR: enclosing def _get_expected_energy_investment_cost",
+     "ok": true,
+     "detail": [
+      "_get_expected_energy_investment_cost"
+     ]
+    },
+    {
+     "check": "SALV_NOT_IN_OBJ: shared_energy_storage_data.py:853 reads \"expr=model.feasibility_penalty,\"",
+     "ok": true,
+     "detail": "expr=model.feasibility_penalty,"
+    },
+    {
+     "check": "SALV_NOT_IN_OBJ: enclosing def _build_subproblem",
+     "ok": true,
+     "detail": [
+      "_build_subproblem"
+     ]
+    },
+    {
+     "check": "SALV_EXPR: shared_energy_storage_data.py:849 reads \"model.salvage_value = pe.Expression(expr=salvage_value)\"",
+     "ok": true,
+     "detail": "model.salvage_value = pe.Expression(expr=salvage_value)"
+    },
+    {
+     "check": "SALV_EXPR: enclosing def _build_subproblem",
+     "ok": true,
+     "detail": [
+      "_build_subproblem"
+     ]
+    },
+    {
+     "check": "SALV_GET: shared_energy_storage_data.py:148 reads \"salvage_value += pe.value(models[node_id].salvage_value)\"",
+     "ok": true,
+     "detail": "salvage_value += pe.value(models[node_id].salvage_value)"
+    },
+    {
+     "check": "SALV_GET: enclosing def get_salvage_value",
+     "ok": true,
+     "detail": [
+      "get_salvage_value"
+     ]
+    },
+    {
+     "check": "SALV_NET: shared_resources_planning.py:1306 reads \"net_operational_recourse = gross_operational_cost - terminal_salvage_v\"",
+     "ok": true,
+     "detail": "net_operational_recourse = gross_operational_cost - terminal_salvage_value"
+    },
+    {
+     "check": "SALV_NET: enclosing def _get_operational_recourse_components",
+     "ok": true,
+     "detail": [
+      "_get_operational_recourse_components"
+     ]
+    },
+    {
+     "check": "SALV_PARAM_RECOVERY: shared_energy_storage_parameters.py:14 reads \"self.energy_recovery_fraction = 1.00\"",
+     "ok": true,
+     "detail": "self.energy_recovery_fraction = 1.00"
+    },
+    {
+     "check": "SALV_PARAM_RECOVERY: enclosing def __init__",
+     "ok": true,
+     "detail": [
+      "__init__"
+     ]
+    },
+    {
+     "check": "SALV_PARAM_FLOOR: shared_energy_storage_parameters.py:15 reads \"self.recycling_floor_fraction = 0.00\"",
+     "ok": true,
+     "detail": "self.recycling_floor_fraction = 0.00"
+    },
+    {
+     "check": "SALV_PARAM_FLOOR: enclosing def __init__",
+     "ok": true,
+     "detail": [
+      "__init__"
+     ]
+    },
+    {
+     "check": "SALV_CBAR_READ: shared_energy_storage_data.py:1743 reads \"num_scenarios, shared_ess_data.prob_market_scenarios = _get_operationa\"",
+     "ok": true,
+     "detail": "num_scenarios, shared_ess_data.prob_market_scenarios = _get_operational_scenarios_info_from_excel_file(filename, 'Scenarios')"
+    },
+    {
+     "check": "SALV_CBAR_READ: enclosing def _read_shared_energy_storage_data_from_file",
+     "ok": true,
+     "detail": [
+      "_read_shared_energy_storage_data_from_file"
+     ]
+    },
+    {
+     "check": "printed eq:salvage_credit at its label = declared",
+     "ok": true,
+     "detail": "C^\\text{Salvage}(\\boldsymbol{x}) = \\sum_{e \\in E^S} \\sum_{y^\\text{Inv} \\in Y} \\frac{\\bar{c}^{\\text{Inv,E}}_{y^\\text{Inv}}\\, E^{\\text{Inv}}_{e,y^\\text{Inv}}}{(1+r)^{\\,y^\\text{End}-y_0}} \\;\\frac{T^\\text{Rem}_{e,y^\\text{Inv}}}{T^\\text{Cal}_{e,y^\\text{Inv}}} \\;\\frac{SoH_{e,y^\\text{Inv},y^\\text{End}} - SoH^{\\text{Min}}_e}{1 - SoH^{\\text{Min}}_e}"
+    },
+    {
+     "check": "printed eq:salvage_remaining_life at its label = declared",
+     "ok": true,
+     "detail": "T^\\text{Rem}_{e,y^\\text{Inv}} = \\max\\left\\{0,\\; y^\\text{Inv} + T^\\text{Cal}_{e,y^\\text{Inv}} - y^\\text{End}\\right\\}"
+    },
+    {
+     "check": "app:salvage_credit label present once; both equations inside it (after the label)",
+     "ok": true,
+     "detail": [
+      2571,
+      2583
+     ]
+    },
+    {
+     "check": "symbols: code product = terminal_discount x energy_recovery_fraction x expected_unit_cost x remaining_life_fraction x residual_energy <-> 1/(1+r)^(yEnd-y0) x [1] x cbar x Trem/Tcal x E (SoH - SoHmin)/(1 - SoHmin)",
+     "ok": true,
+     "detail": [
+      "energy_recovery_fraction",
+      "expected_unit_cost",
+      "remaining_life_fraction",
+      "residual_energy",
+      "terminal_discount"
+     ]
+    },
+    {
+     "check": "configuration: energy_recovery_fraction = 1.0 and recycling_floor_fraction = 0.0 in SRP1_ESS_Params.json (the two code factors absent from the print are identities)",
+     "ok": true,
+     "detail": {
+      "enabled": true,
+      "energy_recovery_fraction": 1.0,
+      "recycling_floor_fraction": 0.0,
+      "cost_basis": "EXPECTED_INSTALLATION_ENERGY_COST",
+      "health_basis": "NORMALIZED_ABOVE_MINIMUM_SOH",
+      "calendar_life_basis": "REMAINING_FRACTION_AT_TERMINAL"
+     }
+    },
+    {
+     "check": "discount: code exponent = sum of block widths = y^End - y_0 (contiguous blocks); r = DiscountFactor 0.02 = printed 2 %",
+     "ok": true,
+     "detail": 0.02
+    },
+    {
+     "check": "records: printed formula reproduces the recorded terminal salvage of every committed evaluation record (49 records, 17 with a non-zero credit; worst |diff| 9.459e-11 EUR)",
+     "ok": true,
+     "detail": 9.458744898438454e-11
+    },
+    {
+     "check": "not optimized: the ESSO objective is the feasibility penalty only; the salvage is a separate Expression (no network objective references it)",
+     "ok": true,
+     "detail": null
+    },
+    {
+     "check": "not selected for: every planning search excludes salvage from F (OBJECTIVE_CONVENTION at its run head)",
+     "ok": true,
+     "detail": {
+      "baseline_variant_A_s47": true,
+      "m2_variant_A_s51": true,
+      "m2_variant_B_s53": true
+     }
+    },
+    {
+     "check": "prose salv_cbar present once",
+     "ok": true,
+     "detail": [
+      2596
+     ]
+    },
+    {
+     "check": "prose salv_no_converter present once",
+     "ok": true,
+     "detail": [
+      2596
+     ]
+    },
+    {
+     "check": "prose salv_reported present once",
+     "ok": true,
+     "detail": [
+      2597
+     ]
+    },
+    {
+     "check": "prose salv_net_form present once",
+     "ok": true,
+     "detail": [
+      2567
+     ]
+    },
+    {
+     "check": "prose salv_after present once",
+     "ok": true,
+     "detail": [
+      1363
+     ]
+    }
+   ],
+   "code_factors": [
+    "energy_recovery_fraction",
+    "expected_unit_cost",
+    "remaining_life_fraction",
+    "residual_energy",
+    "terminal_discount"
+   ],
+   "reproduction": {
+    "rows": [
+     {
+      "record": "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_c_156ce2d1/evals/3a4c10c859114e20_c_156ce2d1/evaluation_record.json",
+      "candidate": {
+       "investment_year": 2025,
+       "nodes": {
+        "5": [
+         0.25,
+         0.5
+        ],
+        "7": [
+         0.0,
+         0.0
+        ],
+        "9": [
+         0.25,
+         0.5
+        ]
+       }
+      },
+      "eval_key": "3a4c10c859114e2039c87f11304a2afcfd01dfdf18f632cb425a56d4ff3db3ab",
+      "recorded_salvage": 7.20297863641061e-36,
+      "printed_formula": 0.0,
+      "abs_diff": 7.20297863641061e-36,
+      "max_node_abs_diff": 7.719236100981241e-36,
+      "params": {
+       "y0": 2025,
+       "y_end": 2040,
+       "r": 0.02,
+       "t_cal": 15,
+       "soh_min": 0.7
+      },
+      "ess_params_sha256_in_child_equals_file": true
+     },
+     {
+      "record": "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_c_6597a79d/evals/3a0d03e88a16f174_c_6597a79d/evaluation_record.json",
+      "candidate": {
+       "investment_year": 2030,
+       "nodes": {
+        "5": [
+         0.25,
+         0.5
+        ],
+        "7": [
+         0.25,
+         0.5
+        ],
+        "9": [
+         0.0,
+         0.0
+        ]
+       }
+      },
+      "eval_key": "3a0d03e88a16f174d6283f583a116422b6c573491ce20a50e28266d92da2f097",
+      "recorded_salvage": 9854.563093072618,
+      "printed_formula": 9854.56309307262,
+      "abs_diff": 1.8189894035458565e-12,
+      "max_node_abs_diff": 9.094947017729282e-13,
+      "params": {
+       "y0": 2025,
+       "y_end": 2040,
+       "r": 0.02,
+       "t_cal": 15,
+       "soh_min": 0.7
+      },
+      "ess_params_sha256_in_child_equals_file": true
+     },
+     {
+      "record": "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_d_3632b0ae/evals/1fe57699ce791ef6_d_3632b0ae/evaluation_record.json",
+      "candidate": {
+       "investment_year": 2025,
+       "nodes": {
+        "5": [
+         0.0,
+         0.0
+        ],
+        "7": [
+         1.0,
+         4.0
+        ],
+        "9": [
+         0.0,
+         0.0
+        ]
+       }
+      },
+      "eval_key": "1fe57699ce791ef6f35f1eb38ffa8865236c0caea88c1d638775e04a9b48bf96",
+      "recorded_salvage": 3.6398940031173446e-34,
+      "printed_formula": 0.0,
+      "abs_diff": 3.6398940031173446e-34,
+      "max_node_abs_diff": 3.6398940031173446e-34,
+      "params": {
+       "y0": 2025,
+       "y_end": 2040,
+       "r": 0.02,
+       "t_cal": 15,
+       "soh_min": 0.7
+      },
+      "ess_params_sha256_in_child_equals_file": true
+     },
+     {
+      "record": "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_d_36686489/evals/4de61708589e6e26_d_36686489/evaluation_record.json",
+      "candidate": {
+       "investment_year": 2025,
+       "nodes": {
+        "5": [
+         0.0,
+         0.0
+        ],
+        "7": [
+         1.25,
+         5.0
+        ],
+        "9": [
+         0.0,
+         0.0
+        ]
+       }
+      },
+      "eval_key": "4de61708589e6e2611aad952e124d583183b2b5f18bff1fb7e9fe1a8c7ebe53b",
+      "recorded_salvage": -7.212513395532331e-34,
+      "printed_formula": 0.0,
+      "abs_diff": 7.212513395532331e-34,
+      "max_node_abs_diff": 7.212513395532331e-34,
+      "params": {
+       "y0": 2025,
+       "y_end": 2040,
+       "r": 0.02,
+       "t_cal": 15,
+       "soh_min": 0.7
+      },
+      "ess_params_sha256_in_child_equals_file": true
+     },
+     {
+      "record": "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_d_4a82a64a/evals/14b00a04ffbcfd33_d_4a82a64a/evaluation_record.json",
+      "candidate": {
+       "investment_year": 2025,
+       "nodes": {
+        "5": [
+         0.0,
+         0.0
+        ],
+        "7": [
+         0.75,
+         3.0
+        ],
+        "9": [
+         0.0,
+         0.0
+        ]
+       }
+      },
+      "eval_key": "14b00a04ffbcfd3335e199ecda1fb32241fefe2822273cc43a76525b8ec368c2",
+      "recorded_salvage": 3.0576283095458205e-34,
+      "printed_formula": 0.0,
+      "abs_diff": 3.0576283095458205e-34,
+      "max_node_abs_diff": 3.0576283095458205e-34,
+      "params": {
+       "y0": 2025,
+       "y_end": 2040,
+       "r": 0.02,
+       "t_cal": 15,
+       "soh_min": 0.7
+      },
+      "ess_params_sha256_in_child_equals_file": true
+     },
+     {
+      "record": "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_d_9246ed01/evals/579a1370d1e916a7_d_9246ed01/evaluation_record.json",
+      "candidate": {
+       "investment_year": 2025,
+       "nodes": {
+        "5": [
+         0.0,
+         0.0
+        ],
+        "7": [
+         2.5,
+         5.0
+        ],
+        "9": [
+         0.0,
+         0.0
+        ]
+       }
+      },
+      "eval_key": "579a1370d1e916a745fd8816dafdab2835c6a1753a194e954f78714fdf53f097",
+      "recorded_salvage": -1.5614590145867757e-52,
+      "printed_formula": 0.0,
+      "abs_diff": 1.5614590145867757e-52,
+      "max_node_abs_diff": 1.5614590145867757e-52,
+      "params": {
+       "y0": 2025,
+       "y_end": 2040,
+       "r": 0.02,
+       "t_cal": 15,
+       "soh_min": 0.7
+      },
+      "ess_params_sha256_in_child_equals_file": true
+     },
+     {
+      "record": "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_d_a12d95a2/evals/9bc66d9ed4863f39_d_a12d95a2/evaluation_record.json",
+      "candidate": {
+       "investment_year": 2025,
+       "nodes": {
+        "5": [
+         0.0,
+         0.0
+        ],
+        "7": [
+         1.0,
+         2.0
+        ],
+        "9": [
+         0.0,
+         0.0
+        ]
+       }
+      },
+      "eval_key": "9bc66d9ed4863f397b51c787e7be6ffaeb5c3456610570bc41cfb3335ae9f417",
+      "recorded_salvage": -5.274139677185478e-37,
+      "printed_formula": 0.0,
+      "abs_diff": 5.274139677185478e-37,
+      "max_node_abs_diff": 5.274139677185478e-37,
+      "params": {
+       "y0": 2025,
+       "y_end": 2040,
+       "r": 0.02,
+       "t_cal": 15,
+       "soh_min": 0.7
+      },
+      "ess_params_sha256_in_child_equals_file": true
+     },
+     {
+      "record": "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_d_c7fee8be/evals/aa0b99f57c75682a_d_c7fee8be/evaluation_record.json",
+      "candidate": {
+       "investment_year": 2025,
+       "nodes": {
+        "5": [
+         0.0,
+         0.0
+        ],
+        "7": [
+         2.0,
+         4.0
+        ],
+        "9": [
+         0.0,
+         0.0
+        ]
+       }
+      },
+      "eval_key": "aa0b99f57c75682afb1ff37f46fb430e38ff30f21d0b674ba4a1348c164fe8bf",
+      "recorded_salvage": 0.0,
+      "printed_formula": 0.0,
+      "abs_diff": 0.0,
+      "max_node_abs_diff": 0.0,
+      "params": {
+       "y0": 2025,
+       "y_end": 2040,
+       "r": 0.02,
+       "t_cal": 15,
+       "soh_min": 0.7
+      },
+      "ess_params_sha256_in_child_equals_file": true
+     },
+     {
+      "record": "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_d_d3709599/evals/64408baeee0990b9_d_d3709599/evaluation_record.json",
+      "candidate": {
+       "investment_year": 2025,
+       "nodes": {
+        "5": [
+         0.0,
+         0.0
+        ],
+        "7": [
+         0.5,
+         1.0
+        ],
+        "9": [
+         0.0,
+         0.0
+        ]
+       }
+      },
+      "eval_key": "64408baeee0990b9acc7bfc665fbc988f78527f7175233714570d69abb909fcd",
+      "recorded_salvage": 4.5709210535607474e-36,
+      "printed_formula": 0.0,
+      "abs_diff": 4.5709210535607474e-36,
+      "max_node_abs_diff": 4.5709210535607474e-36,
+      "params": {
+       "y0": 2025,
+       "y_end": 2040,
+       "r": 0.02,
+       "t_cal": 15,
+       "soh_min": 0.7
+      },
+      "ess_params_sha256_in_child_equals_file": true
+     },
+     {
+      "record": "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_d_f759dd48/evals/5f1b1aa621d3450a_d_f759dd48/evaluation_record.json",
+      "candidate": {
+       "investment_year": 2025,
+       "nodes": {
+        "5": [
+         0.0,
+         0.0
+        ],
+        "7": [
+         1.5,
+         3.0
+        ],
+        "9": [
+         0.0,
+         0.0
+        ]
+       }
+      },
+      "eval_key": "5f1b1aa621d3450a16635264b853efdc367345f28fca00a5ce275352d71b4033",
+      "recorded_salvage": -5.274139677185478e-37,
+      "printed_formula": 0.0,
+      "abs_diff": 5.274139677185478e-37,
+      "max_node_abs_diff": 5.274139677185478e-37,
+      "params": {
+       "y0": 2025,
+       "y_end": 2040,
+       "r": 0.02,
+       "t_cal": 15,
+       "soh_min": 0.7
+      },
+      "ess_params_sha256_in_child_equals_file": true
+     },
+     {
+      "record": "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_g_37b5c499/evals/bf2d8348d3a4b730_g_37b5c499/evaluation_record.json",
+      "candidate": {
+       "investment_year": 2030,
+       "nodes": {
+        "5": [
+         0.0,
+         0.0
+        ],
+        "7": [
+         0.5,
+         1.0
+        ],
+        "9": [
+         0.0,
+         0.0
+        ]
+       }
+      },
+      "eval_key": "bf2d8348d3a4b730be6d78471821d0dbaea69e34b6f5df9485904830565ca892",
+      "recorded_salvage": 10689.223171750033,
+      "printed_formula": 10689.22317175003,
+      "abs_diff": 1.8189894035458565e-12,
+      "max_node_abs_diff": 1.8189894035458565e-12,
+      "params": {
+       "y0": 2025,
+       "y_end": 2040,
+       "r": 0.02,
+       "t_cal": 15,
+       "soh_min": 0.7
+      },
+      "ess_params_sha256_in_child_equals_file": true
+     },
+     {
+      "record": "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_g_47dce43c/evals/46ff23a160a27b67_g_47dce43c/evaluation_record.json",
+      "candidate": {
+       "investment_year": 2035,
+       "nodes": {
+        "5": [
+         0.0,
+         0.0
+        ],
+        "7": [
+         0.5,
+         1.0
+        ],
+        "9": [
+         0.0,
+         0.0
+        ]
+       }
+      },
+      "eval_key": "46ff23a160a27b67ab6014c741560099c4aa9a9bbd8bcf7a5b6959a9e82dfc55",
+      "recorded_salvage": 54570.633994124204,
+      "printed_formula": 54570.6339941242,
+      "abs_diff": 7.275957614183426e-12,
+      "max_node_abs_diff": 7.275957614183426e-12,
+      "params": {
+       "y0": 2025,
+       "y_end": 2040,
+       "r": 0.02,
+       "t_cal": 15,
+       "soh_min": 0.7
+      },
+      "ess_params_sha256_in_child_equals_file": true
+     },
+     {
+      "record": "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_g_48749148/evals/22331aa714b8af80_g_48749148/evaluation_record.json",
+      "candidate": {
+       "investment_year": 2030,
+       "nodes": {
+        "5": [
+         0.0,
+         0.0
+        ],
+        "7": [
+         0.5,
+         2.0
+        ],
+        "9": [
+         0.0,
+         0.0
+        ]
+       }
+      },
+      "eval_key": "22331aa714b8af8077359ec7e01ea72d34c748e391f340db490315cacabc3e27",
+      "recorded_salvage": 24366.307494369685,
+      "printed_formula": 24366.307494369685,
+      "abs_diff": 0.0,
+      "max_node_abs_diff": 0.0,
+      "params": {
+       "y0": 2025,
+       "y_end": 2040,
+       "r": 0.02,
+       "t_cal": 15,
+       "soh_min": 0.7
+      },
+      "ess_params_sha256_in_child_equals_file": true
+     },
+     {
+      "record": "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_g_9abf31d4/evals/5560d0f015a8d196_g_9abf31d4/evaluation_record.json",
+      "candidate": {
+       "investment_year": 2035,
+       "nodes": {
+        "5": [
+         0.0,
+         0.0
+        ],
+        "7": [
+         0.5,
+         2.0
+        ],
+        "9": [
+         0.0,
+         0.0
+        ]
+       }
+      },
+      "eval_key": "5560d0f015a8d196708dd6f2cf646bcc150e2ff691fb22adc7276af7a4902065",
+      "recorded_salvage": 114448.80622058801,
+      "printed_formula": 114448.80622058803,
+      "abs_diff": 1.4551915228366852e-11,
+      "max_node_abs_diff": 1.4551915228366852e-11,
+      "params": {
+       "y0": 2025,
+       "y_end": 2040,
+       "r": 0.02,
+       "t_cal": 15,
+       "soh_min": 0.7
+      },
+      "ess_params_sha256_in_child_equals_file": true
+     },
+     {
+      "record": "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_h_50dea31c/evals/354b1bdae2b86bce_h_50dea31c/evaluation_record.json",
+      "candidate": {
+       "investment_year": 2025,
+       "nodes": {
+        "5": [
+         0.0,
+         0.0
+        ],
+        "7": [
+         0.0,
+         0.0
+        ],
+        "9": [
+         0.0,
+         0.0
+        ]
+       }
+      },
+      "eval_key": "354b1bdae2b86bce8638689641c7f32fee4c8c0aa896f1d50e9be6312ebee10d",
+      "recorded_salvage": 0.0,
+      "printed_formula": 0.0,
+      "abs_diff": 0.0,
+      "max_node_abs_diff": 0.0,
+      "params": {
+       "y0": 2025,
+       "y_end": 2040,
+       "r": 0.02,
+       "t_cal": 15,
+       "soh_min": 0.7
+      },
+      "ess_params_sha256_in_child_equals_file": true
+     },
+     {
+      "record": "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_h_74eda68d/evals/dca0862812873604_h_74eda68d/evaluation_record.json",
+      "candidate": {
+       "investment_year": 2025,
+       "nodes": {
+        "5": [
+         0.0,
+         0.0
+        ],
+        "7": [
+         0.25,
+         1.0
+        ],
+        "9": [
+         0.0,
+         0.0
+        ]
+       }
+      },
+      "eval_key": "dca08628128736042fb1d1fa1a933b0b93f6d4cfea9ef8b4279e3c45d5a6139a",
+      "recorded_salvage": 0.0,
+      "printed_formula": 0.0,
+      "abs_diff": 0.0,
+      "max_node_abs_diff": 0.0,
+      "params": {
+       "y0": 2025,
+       "y_end": 2040,
+       "r": 0.02,
+       "t_cal": 15,
+       "soh_min": 0.7
+      },
+      "ess_params_sha256_in_child_equals_file": true
+     },
+     {
+      "record": "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_h_aa8a76d7/evals/22dd5ef8a9223f56_h_aa8a76d7/evaluation_record.json",
+      "candidate": {
+       "investment_year": 2025,
+       "nodes": {
+        "5": [
+         0.0,
+         0.0
+        ],
+        "7": [
+         0.0,
+         0.0
+        ],
+        "9": [
+         0.0,
+         0.0
+        ]
+       }
+      },
+      "eval_key": "22dd5ef8a9223f56b2a91af4c26acf596c4785fee3d568baebcc6eb2ebb77112",
+      "recorded_salvage": 0.0,
+      "printed_formula": 0.0,
+      "abs_diff": 0.0,
+      "max_node_abs_diff": 0.0,
+      "params": {
+       "y0": 2025,
+       "y_end": 2040,
+       "r": 0.02,
+       "t_cal": 15,
+       "soh_min": 0.7
+      },
+      "ess_params_sha256_in_child_equals_file": true
+     },
+     {
+      "record": "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_h_f9eae48f/evals/aed2d618a19ca483_h_f9eae48f/evaluation_record.json",
+      "candidate": {
+       "investment_year": 2025,
+       "nodes": {
+        "5": [
+         0.0,
+         0.0
+        ],
+        "7": [
+         0.25,
+         1.0
+        ],
+        "9": [
+         0.0,
+         0.0
+        ]
+       }
+      },
+      "eval_key": "aed2d618a19ca4838729b94554283a6b7f7bda230ac73bc40aab423ba66df1a3",
+      "recorded_salvage": 0.0,
+      "printed_formula": 0.0,
+      "abs_diff": 0.0,
+      "max_node_abs_diff": 0.0,
+      "params": {
+       "y0": 2025,
+       "y_end": 2040,
+       "r": 0.02,
+       "t_cal": 15,
+       "soh_min": 0.7
+      },
+      "ess_params_sha256_in_child_equals_file": true
+     },
+     {
+      "record": "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_i_5a6a88b4/evals/e046a8cfd25f819c_i_5a6a88b4/evaluation_record.json",
+      "candidate": {
+       "investment_year": 2025,
+       "nodes": {
+        "5": [
+         0.0,
+         0.0
+        ],
+        "7": [
+         0.5,
+         2.0
+        ],
+        "9": [
+         0.0,
+         0.0
+        ]
+       }
+      },
+      "eval_key": "e046a8cfd25f819c316d6089264bac5518e940bcb6e0b084b86be722943fd05f",
+      "recorded_salvage": -5.762747683783339e-33,
+      "printed_formula": 0.0,
+      "abs_diff": 5.762747683783339e-33,
+      "max_node_abs_diff": 5.762747683783339e-33,
+      "params": {
+       "y0": 2025,
+       "y_end": 2040,
+       "r": 0.02,
+       "t_cal": 15,
+       "soh_min": 0.7
+      },
+      "ess_params_sha256_in_child_equals_file": true
+     },
+     {
+      "record": "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_j_5f3cccb4/evals/cc7f005909db6741_j_5f3cccb4/evaluation_record.json",
+      "candidate": {
+       "investment_year": 2025,
+       "nodes": {
+        "5": [
+         0.0,
+         0.0
+        ],
+        "7": [
+         1.25,
+         5.0
+        ],
+        "9": [
+         0.0,
+         0.0
+        ]
+       }
+      },
+      "eval_key": "cc7f005909db6741a3fd02538e14f1d839c46a0df0b1e4031caceafc444f9bc6",
+      "recorded_salvage": 0.0,
+      "printed_formula": 0.0,
+      "abs_diff": 0.0,
+      "max_node_abs_diff": 0.0,
+      "params": {
+       "y0": 2025,
+       "y_end": 2040,
+       "r": 0.02,
+       "t_cal": 15,
+       "soh_min": 0.7
+      },
+      "ess_params_sha256_in_child_equals_file": true
+     },
+     {
+      "record": "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_j_a11d7966/evals/87efbc3d23566c29_j_a11d7966/evaluation_record.json",
+      "candidate": {
+       "investment_year": 2025,
+       "nodes": {
+        "5": [
+         0.0,
+         0.0
+        ],
+        "7": [
+         1.0,
+         4.0
+        ],
+        "9": [
+         0.0,
+         0.0
+        ]
+       }
+      },
+      "eval_key": "87efbc3d23566c2922f2d9f315901a441ee922e5dd3670885f38aef265b6f5ca",
+      "recorded_salvage": -7.072313823864204e-37,
+      "printed_formula": 0.0,
+      "abs_diff": 7.072313823864204e-37,
+      "max_node_abs_diff": 7.072313823864204e-37,
+      "params": {
+       "y0": 2025,
+       "y_end": 2040,
+       "r": 0.02,
+       "t_cal": 15,
+       "soh_min": 0.7
+      },
+      "ess_params_sha256_in_child_equals_file": true
+     },
+     {
+      "record": "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_j_f3aa335e/evals/af066d6bc9fdb74d_j_f3aa335e/evaluation_record.json",
+      "candidate": {
+       "investment_year": 2025,
+       "nodes": {
+        "5": [
+         0.0,
+         0.0
+        ],
+        "7": [
+         0.75,
+         3.0
+        ],
+        "9": [
+         0.0,
+         0.0
+        ]
+       }
+      },
+      "eval_key": "af066d6bc9fdb74da003a2d1fb37c960b0e0084cdb358c476cfe261db9cb5e65",
+      "recorded_salvage": -7.206925448128798e-34,
+      "printed_formula": 0.0,
+      "abs_diff": 7.206925448128798e-34,
+      "max_node_abs_diff": 7.206925448128798e-34,
+      "params": {
+       "y0": 2025,
+       "y_end": 2040,
+       "r": 0.02,
+       "t_cal": 15,
+       "soh_min": 0.7
+      },
+      "ess_params_sha256_in_child_equals_file": true
+     },
+     {
+      "record": "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_l_0ee93aca/evals/86d27f42e98503ca_l_0ee93aca/evaluation_record.json",
+      "candidate": {
+       "investment_year": 2030,
+       "nodes": {
+        "5": [
+         0.25,
+         0.5
+        ],
+        "7": [
+         1.0,
+         3.0
+        ],
+        "9": [
+         0.0,
+         0.0
+        ]
+       }
+      },
+      "eval_key": "86d27f42e98503cacc298a01e098451647bfb1ad1652ceaed4552f26ae418e06",
+      "recorded_salvage": 31350.166790932337,
+      "printed_formula": 31350.1667909323,
+      "abs_diff": 3.637978807091713e-11,
+      "max_node_abs_diff": 3.637978807091713e-11,
+      "params": {
+       "y0": 2025,
+       "y_end": 2040,
+       "r": 0.02,
+       "t_cal": 15,
+       "soh_min": 0.7
+      },
+      "ess_params_sha256_in_child_equals_file": true
+     },
+     {
+      "record": "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_l_195156fa/evals/1fd23b8db2be1ba0_l_195156fa/evaluation_record.json",
+      "candidate": {
+       "investment_year": 2030,
+       "nodes": {
+        "5": [
+         0.25,
+         0.5
+        ],
+        "7": [
+         0.75,
+         3.0
+        ],
+        "9": [
+         0.0,
+         0.0
+        ]
+       }
+      },
+      "eval_key": "1fd23b8db2be1ba0dddc6fb947141cc1a71caf23198c18829f13caeaa2d6107c",
+      "recorded_salvage": 35290.548333965744,
+      "printed_formula": 35290.54833396572,
+      "abs_diff": 2.1827872842550278e-11,
+      "max_node_abs_diff": 2.546585164964199e-11,
+      "params": {
+       "y0": 2025,
+       "y_end": 2040,
+       "r": 0.02,
+       "t_cal": 15,
+       "soh_min": 0.7
+      },
+      "ess_params_sha256_in_child_equals_file": true
+     },
+     {
+      "record": "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_l_2ab0ce2d/evals/75266862b990d2eb_l_2ab0ce2d/evaluation_record.json",
+      "candidate": {
+       "investment_year": 2030,
+       "nodes": {
+        "5": [
+         0.25,
+         0.5
+        ],
+        "7": [
+         1.25,
+         3.0
+        ],
+        "9": [
+         0.0,
+         0.0
+        ]
+       }
+      },
+      "eval_key": "75266862b990d2eb2367fbf9ba5dbf412d9a244288b64c7a4b7edd06294ff4d9",
+      "recorded_salvage": 29527.775994148258,
+      "printed_formula": 29527.775994148204,
+      "abs_diff": 5.4569682106375694e-11,
+      "max_node_abs_diff": 5.4569682106375694e-11,
+      "params": {
+       "y0": 2025,
+       "y_end": 2040,
+       "r": 0.02,
+       "t_cal": 15,
+       "soh_min": 0.7
+      },
+      "ess_params_sha256_in_child_equals_file": true
+     },
+     {
+      "record": "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_l_45aa25a6/evals/296e09ff97ac2db4_l_45aa25a6/evaluation_record.json",
+      "candidate": {
+       "investment_year": 2030,
+       "nodes": {
+        "5": [
+         0.0,
+         0.0
+        ],
+        "7": [
+         1.0,
+         3.0
+        ],
+        "9": [
+         0.25,
+         0.5
+        ]
+       }
+      },
+      "eval_key": "296e09ff97ac2db4511262faf0a9589e0e2371c31d2e834863f05964f0de6d56",
+      "recorded_salvage": 31207.16612989004,
+      "printed_formula": 31207.16612988996,
+      "abs_diff": 8.003553375601768e-11,
+      "max_node_abs_diff": 8.003553375601768e-11,
+      "params": {
+       "y0": 2025,
+       "y_end": 2040,
+       "r": 0.02,
+       "t_cal": 15,
+       "soh_min": 0.7
+      },
+      "ess_params_sha256_in_child_equals_file": true
+     },
+     {
+      "record": "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_l_76c78064/evals/571ed31e4139a567_l_76c78064/evaluation_record.json",
+      "candidate": {
+       "investment_year": 2030,
+       "nodes": {
+        "5": [
+         0.0,
+         0.0
+        ],
+        "7": [
+         1.0,
+         3.0
+        ],
+        "9": [
+         0.0,
+         0.0
+        ]
+       }
+      },
+      "eval_key": "571ed31e4139a567f60a4c0c6b33c6cd187be82e306de59c77f377c4e42f4718",
+      "recorded_salvage": 28519.18424285254,
+      "printed_formula": 28519.184242852447,
+      "abs_diff": 9.458744898438454e-11,
+      "max_node_abs_diff": 9.458744898438454e-11,
+      "params": {
+       "y0": 2025,
+       "y_end": 2040,
+       "r": 0.02,
+       "t_cal": 15,
+       "soh_min": 0.7
+      },
+      "ess_params_sha256_in_child_equals_file": true
+     },
+     {
+      "record": "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_l_7b199ef9/evals/331e76c7c613b64e_l_7b199ef9/evaluation_record.json",
+      "candidate": {
+       "investment_year": 2030,
+       "nodes": {
+        "5": [
+         0.0,
+         0.0
+        ],
+        "7": [
+         1.0,
+         4.0
+        ],
+        "9": [
+         0.0,
+         0.0
+        ]
+       }
+      },
+      "eval_key": "331e76c7c613b64e63b0c015b685a883e296e9f2e8fc20f0524797de4ebd0753",
+      "recorded_salvage": 43815.51274495719,
+      "printed_formula": 43815.51274495719,
+      "abs_diff": 0.0,
+      "max_node_abs_diff": 0.0,
+      "params": {
+       "y0": 2025,
+       "y_end": 2040,
+       "r": 0.02,
+       "t_cal": 15,
+       "soh_min": 0.7
+      },
+      "ess_params_sha256_in_child_equals_file": true
+     },
+     {
+      "record": "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_l_7c455554/evals/9906389c1cd682a9_l_7c455554/evaluation_record.json",
+      "candidate": {
+       "investment_year": 2030,
+       "nodes": {
+        "5": [
+         0.0,
+         0.0
+        ],
+        "7": [
+         1.0,
+         3.5
+        ],
+        "9": [
+         0.25,
+         0.5
+        ]
+       }
+      },
+      "eval_key": "9906389c1cd682a93a74588f32554f653e167ed6316f09d6c8326d6ce218299e",
+      "recorded_salvage": 38868.17867492824,
+      "printed_formula": 38868.17867492823,
+      "abs_diff": 7.275957614183426e-12,
+      "max_node_abs_diff": 7.275957614183426e-12,
+      "params": {
+       "y0": 2025,
+       "y_end": 2040,
+       "r": 0.02,
+       "t_cal": 15,
+       "soh_min": 0.7
+      },
+      "ess_params_sha256_in_child_equals_file": true
+     },
+     {
+      "record": "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_l_7db09f6c/evals/7f5a857b06a6083a_l_7db09f6c/evaluation_record.json",
+      "candidate": {
+       "investment_year": 2030,
+       "nodes": {
+        "5": [
+         0.0,
+         0.0
+        ],
+        "7": [
+         0.75,
+         3.0
+        ],
+        "9": [
+         0.25,
+         0.5
+        ]
+       }
+      },
+      "eval_key": "7f5a857b06a6083a80e945321e58b756d62be69e8d608bb66df53ed52b6c11e7",
+      "recorded_salvage": 35929.00818698191,
+      "printed_formula": 35929.0081869819,
+      "abs_diff": 1.4551915228366852e-11,
+      "max_node_abs_diff": 1.8189894035458565e-11,
+      "params": {
+       "y0": 2025,
+       "y_end": 2040,
+       "r": 0.02,
+       "t_cal": 15,
+       "soh_min": 0.7
+      },
+      "ess_params_sha256_in_child_equals_file": true
+     },
+     {
+      "record": "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_l_8e4c220e/evals/5775a50cf6c84503_l_8e4c220e/evaluation_record.json",
+      "candidate": {
+       "investment_year": 2030,
+       "nodes": {
+        "5": [
+         0.0,
+         0.0
+        ],
+        "7": [
+         0.75,
+         3.0
+        ],
+        "9": [
+         0.0,
+         0.0
+        ]
+       }
+      },
+      "eval_key": "5775a50cf6c845039a99241d7d7e28fb53d36f0221eb4099a1172697c21f9ba0",
+      "recorded_salvage": 31295.73304971723,
+      "printed_formula": 31295.73304971717,
+      "abs_diff": 5.820766091346741e-11,
+      "max_node_abs_diff": 5.820766091346741e-11,
+      "params": {
+       "y0": 2025,
+       "y_end": 2040,
+       "r": 0.02,
+       "t_cal": 15,
+       "soh_min": 0.7
+      },
+      "ess_params_sha256_in_child_equals_file": true
+     },
+     {
+      "record": "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_l_b2251bc5/evals/abf4ac0af85dcb5e_l_b2251bc5/evaluation_record.json",
+      "candidate": {
+       "investment_year": 2030,
+       "nodes": {
+        "5": [
+         0.25,
+         0.5
+        ],
+        "7": [
+         0.75,
+         3.0
+        ],
+        "9": [
+         0.25,
+         0.5
+        ]
+       }
+      },
+      "eval_key": "abf4ac0af85dcb5e45d25291570824e42f45814d32b7ea3f51340041aca845fd",
+      "recorded_salvage": 37881.04425075437,
+      "printed_formula": 37881.04425075431,
+      "abs_diff": 5.820766091346741e-11,
+      "max_node_abs_diff": 5.820766091346741e-11,
+      "params": {
+       "y0": 2025,
+       "y_end": 2040,
+       "r": 0.02,
+       "t_cal": 15,
+       "soh_min": 0.7
+      },
+      "ess_params_sha256_in_child_equals_file": true
+     },
+     {
+      "record": "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_l_df1a5525/evals/6c8f6353e29b204f_l_df1a5525/evaluation_record.json",
+      "candidate": {
+       "investment_year": 2030,
+       "nodes": {
+        "5": [
+         0.25,
+         0.5
+        ],
+        "7": [
+         0.75,
+         2.5
+        ],
+        "9": [
+         0.0,
+         0.0
+        ]
+       }
+      },
+      "eval_key": "6c8f6353e29b204fa2aa8082a6124a68d9a8fca42ac9e00716265ef871eb9d1f",
+      "recorded_salvage": 28178.538711077243,
+      "printed_formula": 28178.538711077268,
+      "abs_diff": 2.546585164964199e-11,
+      "max_node_abs_diff": 2.546585164964199e-11,
+      "params": {
+       "y0": 2025,
+       "y_end": 2040,
+       "r": 0.02,
+       "t_cal": 15,
+       "soh_min": 0.7
+      },
+      "ess_params_sha256_in_child_equals_file": true
+     },
+     {
+      "record": "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_l_e1da0984/evals/2587ab4987bc3125_l_e1da0984/evaluation_record.json",
+      "candidate": {
+       "investment_year": 2030,
+       "nodes": {
+        "5": [
+         0.0,
+         0.0
+        ],
+        "7": [
+         1.0,
+         3.5
+        ],
+        "9": [
+         0.0,
+         0.0
+        ]
+       }
+      },
+      "eval_key": "2587ab4987bc31257b951ec667552fbb5d20f0c9ad95802ee6efa805bb0bcacd",
+      "recorded_salvage": 36117.29864816551,
+      "printed_formula": 36117.298648165415,
+      "abs_diff": 9.458744898438454e-11,
+      "max_node_abs_diff": 9.458744898438454e-11,
+      "params": {
+       "y0": 2025,
+       "y_end": 2040,
+       "r": 0.02,
+       "t_cal": 15,
+       "soh_min": 0.7
+      },
+      "ess_params_sha256_in_child_equals_file": true
+     },
+     {
+      "record": "data/SRP1/Results/P515S53/w142_resettle_ext_v6/campaign_s53_w142_resettle_ext_v6_e_c2/evals/ba969ad21c1831ab_e_c2/evaluation_record.json",
+      "candidate": {
+       "investment_year": 2025,
+       "nodes": {
+        "5": [
+         0.0,
+         0.0
+        ],
+        "7": [
+         0.25,
+         1.0
+        ],
+        "9": [
+         0.0,
+         0.0
+        ]
+       }
+      },
+      "eval_key": "ba969ad21c1831ab4e881a768fda1f678441ebbe6ee46aca414b1bf483450038",
+      "recorded_salvage": -2.498334423338841e-50,
+      "printed_formula": 0.0,
+      "abs_diff": 2.498334423338841e-50,
+      "max_node_abs_diff": 2.498334423338841e-50,
+      "params": {
+       "y0": 2025,
+       "y_end": 2040,
+       "r": 0.02,
+       "t_cal": 15,
+       "soh_min": 0.7
+      },
+      "ess_params_sha256_in_child_equals_file": true
+     },
+     {
+      "record": "data/SRP1/Results/P515S53/w142_resettle_ext_v6/campaign_s53_w142_resettle_ext_v6_e_c2_calfade/evals/bbd82994a7ddff94_e_c2_calfade/evaluation_record.json",
+      "candidate": {
+       "investment_year": 2025,
+       "nodes": {
+        "5": [
+         0.0,
+         0.0
+        ],
+        "7": [
+         0.25,
+         1.0
+        ],
+        "9": [
+         0.0,
+         0.0
+        ]
+       }
+      },
+      "eval_key": "bbd82994a7ddff9484d385761133695f600b35452acb0e5e75e1777be8b903d2",
+      "recorded_salvage": 0.0,
+      "printed_formula": 0.0,
+      "abs_diff": 0.0,
+      "max_node_abs_diff": 0.0,
+      "params": {
+       "y0": 2025,
+       "y_end": 2040,
+       "r": 0.02,
+       "t_cal": 15,
+       "soh_min": 0.7
+      },
+      "ess_params_sha256_in_child_equals_file": true
+     },
+     {
+      "record": "data/SRP1/Results/P515S53/w142_resettle_ext_v6/campaign_s53_w142_resettle_ext_v6_e_c3_midblock/evals/8b1eace91df86cd5_e_c3_midblock/evaluation_record.json",
+      "candidate": {
+       "investment_year": 2025,
+       "nodes": {
+        "5": [
+         0.0,
+         0.0
+        ],
+        "7": [
+         0.25,
+         1.0
+        ],
+        "9": [
+         0.0,
+         0.0
+        ]
+       }
+      },
+      "eval_key": "8b1eace91df86cd5ca54e7e5332f516ab1048c17b22db9f871fc6f015c016e39",
+      "recorded_salvage": 0.0,
+      "printed_formula": 0.0,
+      "abs_diff": 0.0,
+      "max_node_abs_diff": 0.0,
+      "params": {
+       "y0": 2025,
+       "y_end": 2040,
+       "r": 0.02,
+       "t_cal": 15,
+       "soh_min": 0.7
+      },
+      "ess_params_sha256_in_child_equals_file": true
+     },
+     {
+      "record": "data/SRP1/Results/P515S53/w142_resettle_ext_v6/campaign_s53_w142_resettle_ext_v6_e_c3_unit/evals/409740fb51f27cab_e_c3_unit/evaluation_record.json",
+      "candidate": {
+       "investment_year": 2025,
+       "nodes": {
+        "5": [
+         0.0,
+         0.0
+        ],
+        "7": [
+         0.25,
+         1.0
+        ],
+        "9": [
+         0.0,
+         0.0
+        ]
+       }
+      },
+      "eval_key": "409740fb51f27cabd81e08d1f2c4b435873ab5ad2a1e20e544177e3ec8dc9fed",
+      "recorded_salvage": 0.0,
+      "printed_formula": 0.0,
+      "abs_diff": 0.0,
+      "max_node_abs_diff": 0.0,
+      "params": {
+       "y0": 2025,
+       "y_end": 2040,
+       "r": 0.02,
+       "t_cal": 15,
+       "soh_min": 0.7
+      },
+      "ess_params_sha256_in_child_equals_file": true
+     },
+     {
+      "record": "data/SRP1/Results/P515S53/w142_resettle_ext_v6/campaign_s53_w142_resettle_ext_v6_e_c4/evals/c59d7006b4b9c0a2_e_c4/evaluation_record.json",
+      "candidate": {
+       "investment_year": 2025,
+       "nodes": {
+        "5": [
+         0.0,
+         0.0
+        ],
+        "7": [
+         0.25,
+         1.0
+        ],
+        "9": [
+         0.0,
+         0.0
+        ]
+       }
+      },
+      "eval_key": "c59d7006b4b9c0a297e687de73a9100121248f0dc052307eac8349e155888e0c",
+      "recorded_salvage": 4.996668846677682e-51,
+      "printed_formula": 0.0,
+      "abs_diff": 4.996668846677682e-51,
+      "max_node_abs_diff": 4.996668846677682e-51,
+      "params": {
+       "y0": 2025,
+       "y_end": 2040,
+       "r": 0.02,
+       "t_cal": 15,
+       "soh_min": 0.7
+      },
+      "ess_params_sha256_in_child_equals_file": true
+     },
+     {
+      "record": "data/SRP1/Results/P515S53/w142_resettle_ext_v6/campaign_s53_w142_resettle_ext_v6_e_no_ageing/evals/1b10e9e161523f46_e_no_ageing/evaluation_record.json",
+      "candidate": {
+       "investment_year": 2025,
+       "nodes": {
+        "5": [
+         0.0,
+         0.0
+        ],
+        "7": [
+         0.25,
+         1.0
+        ],
+        "9": [
+         0.0,
+         0.0
+        ]
+       }
+      },
+      "eval_key": "1b10e9e161523f46b9e4c0a2b6f7400ae1d2b2d7a42ef311e0d4726a7effd7e0",
+      "recorded_salvage": 6.844681569997464e-38,
+      "printed_formula": 0.0,
+      "abs_diff": 6.844681569997464e-38,
+      "max_node_abs_diff": 6.844681569997464e-38,
+      "params": {
+       "y0": 2025,
+       "y_end": 2040,
+       "r": 0.02,
+       "t_cal": 15,
+       "soh_min": 0.7
+      },
+      "ess_params_sha256_in_child_equals_file": true
+     },
+     {
+      "record": "data/SRP1/Results/P515S53/w142_resettle_ext_v6/campaign_s53_w142_resettle_ext_v6_pb_y2025_n5_v6/evals/be95e57603437a06_pb_y2025_n5_v6/evaluation_record.json",
+      "candidate": {
+       "investment_year": 2025,
+       "nodes": {
+        "5": [
+         0.25,
+         0.5
+        ],
+        "7": [
+         0.0,
+         0.0
+        ],
+        "9": [
+         0.0,
+         0.0
+        ]
+       }
+      },
+      "eval_key": "be95e57603437a0692818d82eda1b7221ed414b1924443ccb2f45affb51f80ad",
+      "recorded_salvage": 0.0,
+      "printed_formula": 0.0,
+      "abs_diff": 0.0,
+      "max_node_abs_diff": 0.0,
+      "params": {
+       "y0": 2025,
+       "y_end": 2040,
+       "r": 0.02,
+       "t_cal": 15,
+       "soh_min": 0.7
+      },
+      "ess_params_sha256_in_child_equals_file": true
+     },
+     {
+      "record": "data/SRP1/Results/P515S53/w155_a64_cells/campaign_s53_w155_a64_r2_e_soh050/evals/3f01b9eaaab13c82_e_soh050/evaluation_record.json",
+      "candidate": {
+       "investment_year": 2025,
+       "nodes": {
+        "5": [
+         0.0,
+         0.0
+        ],
+        "7": [
+         0.25,
+         1.0
+        ],
+        "9": [
+         0.0,
+         0.0
+        ]
+       }
+      },
+      "eval_key": "3f01b9eaaab13c82bc9333e05b9e56cf9bf91b0c28c8aec28ced991d4ab35540",
+      "recorded_salvage": 0.0,
+      "printed_formula": 0.0,
+      "abs_diff": 0.0,
+      "max_node_abs_diff": 0.0,
+      "params": {
+       "y0": 2025,
+       "y_end": 2040,
+       "r": 0.02,
+       "t_cal": 15,
+       "soh_min": 0.7
+      },
+      "ess_params_sha256_in_child_equals_file": true
+     },
+     {
+      "record": "data/SRP1/Results/P515S53/w155_a64_cells/campaign_s53_w155_a64_r2_g070_neutrality/evals/5007232b1c3eaf03_g070_neutrality/evaluation_record.json",
+      "candidate": {
+       "investment_year": 2025,
+       "nodes": {
+        "5": [
+         0.0,
+         0.0
+        ],
+        "7": [
+         0.25,
+         1.0
+        ],
+        "9": [
+         0.0,
+         0.0
+        ]
+       }
+      },
+      "eval_key": "5007232b1c3eaf03a5e6d673f1b491ef64eada5a431fef84f3d40655efe5170d",
+      "recorded_salvage": 0.0,
+      "printed_formula": 0.0,
+      "abs_diff": 0.0,
+      "max_node_abs_diff": 0.0,
+      "params": {
+       "y0": 2025,
+       "y_end": 2040,
+       "r": 0.02,
+       "t_cal": 15,
+       "soh_min": 0.7
+      },
+      "ess_params_sha256_in_child_equals_file": true
+     },
+     {
+      "record": "data/SRP1/Results/P515S53/w155_a64_cells/campaign_s53_w155_a64_r2_h_unit_m175/evals/dc3ab9329c395890_h_unit_m175/evaluation_record.json",
+      "candidate": {
+       "investment_year": 2025,
+       "nodes": {
+        "5": [
+         0.0,
+         0.0
+        ],
+        "7": [
+         0.25,
+         1.0
+        ],
+        "9": [
+         0.0,
+         0.0
+        ]
+       }
+      },
+      "eval_key": "dc3ab9329c3958904ad88d83cd284908101b62f1c4655a8140d22022a8bb0434",
+      "recorded_salvage": -5.465106551053714e-52,
+      "printed_formula": 0.0,
+      "abs_diff": 5.465106551053714e-52,
+      "max_node_abs_diff": 5.465106551053714e-52,
+      "params": {
+       "y0": 2025,
+       "y_end": 2040,
+       "r": 0.02,
+       "t_cal": 15,
+       "soh_min": 0.7
+      },
+      "ess_params_sha256_in_child_equals_file": true
+     },
+     {
+      "record": "data/SRP1/Results/P515S53/w155_a64_cells/campaign_s53_w155_a64_r2_h_x0_m175/evals/b9f9be3528a64a93_h_x0_m175/evaluation_record.json",
+      "candidate": {
+       "investment_year": 2025,
+       "nodes": {
+        "5": [
+         0.0,
+         0.0
+        ],
+        "7": [
+         0.0,
+         0.0
+        ],
+        "9": [
+         0.0,
+         0.0
+        ]
+       }
+      },
+      "eval_key": "b9f9be3528a64a93e597740902d38217ce9da8c9c0ab724f679a23e30bbfb83c",
+      "recorded_salvage": 0.0,
+      "printed_formula": 0.0,
+      "abs_diff": 0.0,
+      "max_node_abs_diff": 0.0,
+      "params": {
+       "y0": 2025,
+       "y_end": 2040,
+       "r": 0.02,
+       "t_cal": 15,
+       "soh_min": 0.7
+      },
+      "ess_params_sha256_in_child_equals_file": true
+     },
+     {
+      "record": "data/SRP1/Results/P515S53/w90_3x3/campaign_s53_w91_3x3_pair/evals/c82522f470b35b58_n7_4h_e1/evaluation_record.json",
+      "candidate": {
+       "investment_year": 2025,
+       "nodes": {
+        "5": [
+         0.0,
+         0.0
+        ],
+        "7": [
+         0.25,
+         1.0
+        ],
+        "9": [
+         0.0,
+         0.0
+        ]
+       }
+      },
+      "eval_key": "c82522f470b35b58399bfe47ebd45612a95641ae308128de5d1c3c08ad5408a1",
+      "recorded_salvage": 0.0,
+      "printed_formula": 0.0,
+      "abs_diff": 0.0,
+      "max_node_abs_diff": 0.0,
+      "params": {
+       "y0": 2025,
+       "y_end": 2040,
+       "r": 0.02,
+       "t_cal": 15,
+       "soh_min": 0.7
+      },
+      "ess_params_sha256_in_child_equals_file": true
+     },
+     {
+      "record": "data/SRP1/Results/P515S53/w90_3x3/campaign_s53_w91_3x3_pair/evals/f6e9cd53fdbb8ee8_x0/evaluation_record.json",
+      "candidate": {
+       "investment_year": 2025,
+       "nodes": {
+        "5": [
+         0.0,
+         0.0
+        ],
+        "7": [
+         0.0,
+         0.0
+        ],
+        "9": [
+         0.0,
+         0.0
+        ]
+       }
+      },
+      "eval_key": "f6e9cd53fdbb8ee8c80388a13d723c49de5b18173bcfa5c7351cbe0d9e5000d4",
+      "recorded_salvage": 0.0,
+      "printed_formula": 0.0,
+      "abs_diff": 0.0,
+      "max_node_abs_diff": 0.0,
+      "params": {
+       "y0": 2025,
+       "y_end": 2040,
+       "r": 0.02,
+       "t_cal": 15,
+       "soh_min": 0.7
+      },
+      "ess_params_sha256_in_child_equals_file": true
+     },
+     {
+      "record": "data/SRP1/Results/P515S53/w90_3x3/campaign_s53_w91_3x3_smoke_boff/evals/f6e9cd53fdbb8ee8_x0/evaluation_record.json",
+      "candidate": {
+       "investment_year": 2025,
+       "nodes": {
+        "5": [
+         0.0,
+         0.0
+        ],
+        "7": [
+         0.0,
+         0.0
+        ],
+        "9": [
+         0.0,
+         0.0
+        ]
+       }
+      },
+      "eval_key": "f6e9cd53fdbb8ee8c80388a13d723c49de5b18173bcfa5c7351cbe0d9e5000d4",
+      "recorded_salvage": 0.0,
+      "printed_formula": 0.0,
+      "abs_diff": 0.0,
+      "max_node_abs_diff": 0.0,
+      "params": {
+       "y0": 2025,
+       "y_end": 2040,
+       "r": 0.02,
+       "t_cal": 15,
+       "soh_min": 0.7
+      },
+      "ess_params_sha256_in_child_equals_file": true
+     },
+     {
+      "record": "data/SRP1/Results/P515S53/w90_3x3/campaign_s53_w91_3x3_smoke_bon/evals/f6e9cd53fdbb8ee8_x0/evaluation_record.json",
+      "candidate": {
+       "investment_year": 2025,
+       "nodes": {
+        "5": [
+         0.0,
+         0.0
+        ],
+        "7": [
+         0.0,
+         0.0
+        ],
+        "9": [
+         0.0,
+         0.0
+        ]
+       }
+      },
+      "eval_key": "f6e9cd53fdbb8ee8c80388a13d723c49de5b18173bcfa5c7351cbe0d9e5000d4",
+      "recorded_salvage": 0.0,
+      "printed_formula": 0.0,
+      "abs_diff": 0.0,
+      "max_node_abs_diff": 0.0,
+      "params": {
+       "y0": 2025,
+       "y_end": 2040,
+       "r": 0.02,
+       "t_cal": 15,
+       "soh_min": 0.7
+      },
+      "ess_params_sha256_in_child_equals_file": true
+     }
+    ],
+    "n_tested": 49,
+    "n_nonzero_salvage": 17,
+    "worst_abs_diff_eur": 9.458744898438454e-11,
+    "tolerance_eur": 1e-06,
+    "ok": true
+   },
+   "l_findings": [
+    {
+     "finding": "SoH_{e,y^Inv,y^End} indexes SoH by the horizon-end date; elsewhere SoH is indexed by representative-year blocks (eq:soh_chain, end-of-block state). The code uses the end-of-block SoH of the final representative block (terminal_year_idx = len(years) - 1), which under eq:soh_chain is the state at y^End; main.tex does not state the mapping or the numeric y^End",
+     "confirmed": true,
+     "scope": {
+      "lines_with_y^End": [
+       251,
+       315,
+       2580,
+       2582,
+       2589,
+       2596
+      ],
+      "eq:soh_chain_label_line": [
+       1046
+      ],
+      "lines_with_2040": []
+     }
+    }
+   ],
+   "notes": [
+    "the remaining-life fraction carries min(., 1) (l. 921), inactive in every evaluated case (T^Rem <= T^Cal)",
+    "the cohort calendar window uses round(t_cal / width) blocks (l. 680); exact for t_cal = 15 and widths 5 and 3",
+    "salvage sensitivities are added to the post-convergence investment sensitivities (shared_resources_planning._get_operational_sensitivities), which feed only the retired Benders cut; not on the DFO search path"
+   ],
+   "rating": "L"
+  }
+ },
+ "printed_locations": {
+  "eq:acceptance_tolerance": {
+   "label": "eq:acceptance_tolerance",
+   "label_line": 1994,
+   "begin_line": 1992,
+   "end_line": 1995,
+   "body": "\\tau = \\frac{\\delta_R\\mathcal{V}}{4}",
+   "ok": true,
+   "expected": "\\tau = \\frac{\\delta_R\\mathcal{V}}{4}",
+   "matches_declared": true
+  },
+  "eq:interface_deviation": {
+   "label": "eq:interface_deviation",
+   "label_line": 1123,
+   "begin_line": 1115,
+   "end_line": 1124,
+   "body": "P^{\\text{I}}_{i,s,t} - \\bar{P}^{\\text{I}}_{i,t} = d^{+}_{i,s,t} - d^{-}_{i,s,t}",
+   "ok": true,
+   "expected": "P^{\\text{I}}_{i,s,t} - \\bar{P}^{\\text{I}}_{i,t} = d^{+}_{i,s,t} - d^{-}_{i,s,t}",
+   "matches_declared": true
+  },
+  "eq:interface_deviation_nonnegative": {
+   "label": "eq:interface_deviation_nonnegative",
+   "label_line": 1133,
+   "begin_line": 1131,
+   "end_line": 1134,
+   "body": "d^{\\pm}_{i,s,t} \\ge 0",
+   "ok": true,
+   "expected": "d^{\\pm}_{i,s,t} \\ge 0",
+   "matches_declared": true
+  },
+  "eq:soh_initial": {
+   "label": "eq:soh_initial",
+   "label_line": 1062,
+   "begin_line": 1060,
+   "end_line": 1063,
+   "body": "SoH_{e,y^{\\text{Inv}},(y^{\\text{Inv}})^{-}} = 1",
+   "ok": true,
+   "expected": "SoH_{e,y^{\\text{Inv}},(y^{\\text{Inv}})^{-}} = 1",
+   "matches_declared": true
+  },
+  "eq:salvage_credit": {
+   "label": "eq:salvage_credit",
+   "label_line": 2583,
+   "begin_line": 2577,
+   "end_line": 2584,
+   "body": "C^\\text{Salvage}(\\boldsymbol{x}) = \\sum_{e \\in E^S} \\sum_{y^\\text{Inv} \\in Y} \\frac{\\bar{c}^{\\text{Inv,E}}_{y^\\text{Inv}}\\, E^{\\text{Inv}}_{e,y^\\text{Inv}}}{(1+r)^{\\,y^\\text{End}-y_0}} \\;\\frac{T^\\text{Rem}_{e,y^\\text{Inv}}}{T^\\text{Cal}_{e,y^\\text{Inv}}} \\;\\frac{SoH_{e,y^\\text{Inv},y^\\text{End}} - SoH^{\\text{Min}}_e}{1 - SoH^{\\text{Min}}_e}",
+   "ok": true,
+   "expected": "C^\\text{Salvage}(\\boldsymbol{x}) = \\sum_{e \\in E^S} \\sum_{y^\\text{Inv} \\in Y} \\frac{\\bar{c}^{\\text{Inv,E}}_{y^\\text{Inv}}\\, E^{\\text{Inv}}_{e,y^\\text{Inv}}}{(1+r)^{\\,y^\\text{End}-y_0}} \\;\\frac{T^\\text{Rem}_{e,y^\\text{Inv}}}{T^\\text{Cal}_{e,y^\\text{Inv}}} \\;\\frac{SoH_{e,y^\\text{Inv},y^\\text{End}} - SoH^{\\text{Min}}_e}{1 - SoH^{\\text{Min}}_e}",
+   "matches_declared": true
+  },
+  "eq:salvage_remaining_life": {
+   "label": "eq:salvage_remaining_life",
+   "label_line": 2590,
+   "begin_line": 2588,
+   "end_line": 2591,
+   "body": "T^\\text{Rem}_{e,y^\\text{Inv}} = \\max\\left\\{0,\\; y^\\text{Inv} + T^\\text{Cal}_{e,y^\\text{Inv}} - y^\\text{End}\\right\\}",
+   "ok": true,
+   "expected": "T^\\text{Rem}_{e,y^\\text{Inv}} = \\max\\left\\{0,\\; y^\\text{Inv} + T^\\text{Cal}_{e,y^\\text{Inv}} - y^\\text{End}\\right\\}",
+   "matches_declared": true
+  },
+  "app:salvage_credit": {
+   "label": "app:salvage_credit",
+   "label_line": 2571,
+   "ok": true
+  }
+ },
+ "prose_lines": {
+  "tau_units": [
+   1999
+  ],
+  "tau_values": [
+   2919
+  ],
+  "tau_C3": [
+   2016
+  ],
+  "tau_C4": [
+   2017
+  ],
+  "tau_floors": [
+   2023
+  ],
+  "tau_M3": [
+   2023
+  ],
+  "tau_det": [
+   2029
+  ],
+  "searches_earlier_code": [
+   2915
+  ],
+  "search_sigma": [
+   2920
+  ],
+  "dev_tso_common": [
+   1097
+  ],
+  "dev_reactive": [
+   1153
+  ],
+  "dev_no_tso": [
+   1153
+  ],
+  "dev_single": [
+   1158
+  ],
+  "dev_nomenclature": [
+   336
+  ],
+  "soh_boundary": [
+   1036
+  ],
+  "soh_new_cohort": [
+   1056
+  ],
+  "salv_cbar": [
+   2596
+  ],
+  "salv_no_converter": [
+   2596
+  ],
+  "salv_reported": [
+   2597
+  ],
+  "salv_net_form": [
+   2567
+  ],
+  "salv_rate": [
+   1207
+  ],
+  "salv_after": [
+   1363
+  ]
+ },
+ "search_runs": {
+  "runs": {
+   "baseline_variant_A_s47": {
+    "results": "data/SRP1/Results/P515S47/campaign_s47_phase_b/campaign_results.json",
+    "git_head_at_run": "353e094b55e2575340e8279a3faa0fde5c4daeaa",
+    "date": "2026-09-21T22:40:46+01:00",
+    "harness": "p515_s47_phase_b_record.py",
+    "settling_criterion_files_at_head": [],
+    "tau_token_counts_at_head": {
+     "p515_s47_phase_b_record.py": 0,
+     "p515_s51_f2_phase_b.py": null,
+     "p515_s53_f2_certificate.py": null,
+     "p515_s44_campaign_harness.py": 0
+    },
+    "resolution_rule_sigma_q_present": true,
+    "objective_convention_file": "p515_s47_phase_b_record.py",
+    "salvage_excluded_from_F_text": true,
+    "tau_intro_ab0bcbc9_is_ancestor": false,
+    "summary": {
+     "head": "353e094b",
+     "rule_files": 0,
+     "tau_tokens": 0,
+     "ok": true
+    }
+   },
+   "m2_variant_A_s51": {
+    "results": "data/SRP1/Results/P515S51/campaign_s51_f2_phase_b/campaign_results.json",
+    "git_head_at_run": "c39c483641e312f97b347278e53fbb58dddef546",
+    "date": "2026-09-23T09:35:46+01:00",
+    "harness": "p515_s51_f2_phase_b.py",
+    "settling_criterion_files_at_head": [],
+    "tau_token_counts_at_head": {
+     "p515_s47_phase_b_record.py": 0,
+     "p515_s51_f2_phase_b.py": 0,
+     "p515_s53_f2_certificate.py": null,
+     "p515_s44_campaign_harness.py": 0
+    },
+    "resolution_rule_sigma_q_present": true,
+    "objective_convention_file": "p515_s51_f2_phase_b.py",
+    "salvage_excluded_from_F_text": true,
+    "tau_intro_ab0bcbc9_is_ancestor": false,
+    "summary": {
+     "head": "c39c4836",
+     "rule_files": 0,
+     "tau_tokens": 0,
+     "ok": true
+    }
+   },
+   "m2_variant_B_s53": {
+    "results": "data/SRP1/Results/P515S53/campaign_s53_f2_certificate_r1/campaign_results.json",
+    "git_head_at_run": "e1f98be8360697125fbd9c71e54f6483dd5e3f81",
+    "date": "2026-09-24T09:49:58+01:00",
+    "harness": "p515_s53_f2_certificate.py",
+    "settling_criterion_files_at_head": [],
+    "tau_token_counts_at_head": {
+     "p515_s47_phase_b_record.py": 0,
+     "p515_s51_f2_phase_b.py": 0,
+     "p515_s53_f2_certificate.py": 0,
+     "p515_s44_campaign_harness.py": 0
+    },
+    "resolution_rule_sigma_q_present": true,
+    "objective_convention_file": "p515_s51_f2_phase_b.py",
+    "salvage_excluded_from_F_text": true,
+    "tau_intro_ab0bcbc9_is_ancestor": false,
+    "summary": {
+     "head": "e1f98be8",
+     "rule_files": 0,
+     "tau_tokens": 0,
+     "ok": true
+    }
+   }
+  },
+  "all_ok": true,
+  "tau_introduced_in": "ab0bcbc9d099cea26883b0817b76ea8d2f67de78"
+ },
+ "run_heads_identity": {
+  "n_heads": 46,
+  "per_head": {
+   "fdd706052223260227b000e21140479733a65c26": {
+    "campaign_results": [
+     "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_c_156ce2d1/campaign_results.json"
+    ],
+    "certification_root": true,
+    "production_and_case_files_differ": [],
+    "rule_files_differ": []
+   },
+   "1fcbce4ef1b5dd55a8117098d3b2dbb979185fc9": {
+    "campaign_results": [
+     "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_c_6597a79d/campaign_results.json"
+    ],
+    "certification_root": true,
+    "production_and_case_files_differ": [],
+    "rule_files_differ": []
+   },
+   "354b362abb30b202d390454db691b65ea7db9e92": {
+    "campaign_results": [
+     "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_d_3632b0ae/campaign_results.json"
+    ],
+    "certification_root": true,
+    "production_and_case_files_differ": [],
+    "rule_files_differ": []
+   },
+   "48625326053c86fef7cb356b1ab3d129c63ab091": {
+    "campaign_results": [
+     "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_d_36686489/campaign_results.json"
+    ],
+    "certification_root": true,
+    "production_and_case_files_differ": [],
+    "rule_files_differ": []
+   },
+   "b64a423357e797295f914b4219207568dd41191a": {
+    "campaign_results": [
+     "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_d_4a82a64a/campaign_results.json"
+    ],
+    "certification_root": true,
+    "production_and_case_files_differ": [],
+    "rule_files_differ": []
+   },
+   "d0a34c40f44e0e7e857a9e4f0b40fb1646749fc9": {
+    "campaign_results": [
+     "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_d_9246ed01/campaign_results.json"
+    ],
+    "certification_root": true,
+    "production_and_case_files_differ": [],
+    "rule_files_differ": []
+   },
+   "02affadd8322e02c69822cd3bf3fe120a82258cc": {
+    "campaign_results": [
+     "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_d_a12d95a2/campaign_results.json"
+    ],
+    "certification_root": true,
+    "production_and_case_files_differ": [],
+    "rule_files_differ": []
+   },
+   "dfdc2ccfb3d9d33bbe19b7c037609a2fe888e9db": {
+    "campaign_results": [
+     "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_d_c7fee8be/campaign_results.json"
+    ],
+    "certification_root": true,
+    "production_and_case_files_differ": [],
+    "rule_files_differ": []
+   },
+   "e487cbde0a1d13b6e774f8d3544f79f7e53ec8d2": {
+    "campaign_results": [
+     "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_d_d3709599/campaign_results.json"
+    ],
+    "certification_root": true,
+    "production_and_case_files_differ": [],
+    "rule_files_differ": []
+   },
+   "73d41460bbc5ac5fd7b8ff1b1c761c8bde1dd9d4": {
+    "campaign_results": [
+     "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_d_f759dd48/campaign_results.json"
+    ],
+    "certification_root": true,
+    "production_and_case_files_differ": [],
+    "rule_files_differ": []
+   },
+   "3d9b8d94e8bfc56ae04e3624f3fcbdab74054cd6": {
+    "campaign_results": [
+     "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_g_37b5c499/campaign_results.json"
+    ],
+    "certification_root": true,
+    "production_and_case_files_differ": [],
+    "rule_files_differ": []
+   },
+   "bf810183f7ca8201f9f4a28df4e670c3b0cb7f16": {
+    "campaign_results": [
+     "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_g_47dce43c/campaign_results.json"
+    ],
+    "certification_root": true,
+    "production_and_case_files_differ": [],
+    "rule_files_differ": []
+   },
+   "4ab435aa4144c143d304bc5474f0043da07648e1": {
+    "campaign_results": [
+     "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_g_48749148/campaign_results.json"
+    ],
+    "certification_root": true,
+    "production_and_case_files_differ": [],
+    "rule_files_differ": []
+   },
+   "58f7209e049452d87ba63537b127b36c58701b88": {
+    "campaign_results": [
+     "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_g_9abf31d4/campaign_results.json"
+    ],
+    "certification_root": true,
+    "production_and_case_files_differ": [],
+    "rule_files_differ": []
+   },
+   "3740b4761ee9a42e90b0cf0a1c07cc6651b3b41f": {
+    "campaign_results": [
+     "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_h_50dea31c/campaign_results.json"
+    ],
+    "certification_root": true,
+    "production_and_case_files_differ": [],
+    "rule_files_differ": []
+   },
+   "72d74291d56e669b37b6013254938cbd5220cb02": {
+    "campaign_results": [
+     "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_h_74eda68d/campaign_results.json"
+    ],
+    "certification_root": true,
+    "production_and_case_files_differ": [],
+    "rule_files_differ": []
+   },
+   "9d2f458fe71ed27dfa25e89b46ba0ff2951bb32c": {
+    "campaign_results": [
+     "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_h_aa8a76d7/campaign_results.json"
+    ],
+    "certification_root": true,
+    "production_and_case_files_differ": [],
+    "rule_files_differ": []
+   },
+   "40568e6a41e7fbb7ff0d16ab508fa5051145e4ee": {
+    "campaign_results": [
+     "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_h_f9eae48f/campaign_results.json"
+    ],
+    "certification_root": true,
+    "production_and_case_files_differ": [],
+    "rule_files_differ": []
+   },
+   "4611e19779d152df906dfa4aee1d02dae9b747c1": {
+    "campaign_results": [
+     "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_i_5a6a88b4/campaign_results.json"
+    ],
+    "certification_root": true,
+    "production_and_case_files_differ": [],
+    "rule_files_differ": []
+   },
+   "49c658da4cfad1ca87907f9f7645056bf93b4937": {
+    "campaign_results": [
+     "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_j_5f3cccb4/campaign_results.json"
+    ],
+    "certification_root": true,
+    "production_and_case_files_differ": [],
+    "rule_files_differ": []
+   },
+   "b8a6e68985fee5992b55c548e59f17df64465a31": {
+    "campaign_results": [
+     "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_j_a11d7966/campaign_results.json"
+    ],
+    "certification_root": true,
+    "production_and_case_files_differ": [],
+    "rule_files_differ": []
+   },
+   "4b30ea00d7c66933cd01c35c21db3b10a89fa4c6": {
+    "campaign_results": [
+     "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_j_f3aa335e/campaign_results.json"
+    ],
+    "certification_root": true,
+    "production_and_case_files_differ": [],
+    "rule_files_differ": []
+   },
+   "eb9e3dd7b1924a2a7a3ededd5ed7d6ebbc104969": {
+    "campaign_results": [
+     "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_l_0ee93aca/campaign_results.json"
+    ],
+    "certification_root": true,
+    "production_and_case_files_differ": [],
+    "rule_files_differ": []
+   },
+   "9af8c950edd2aceeab5fb8cf3b41dece7b16206a": {
+    "campaign_results": [
+     "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_l_195156fa/campaign_results.json"
+    ],
+    "certification_root": true,
+    "production_and_case_files_differ": [],
+    "rule_files_differ": []
+   },
+   "122f5bdfdaa3fd14b1a1eb145284f018572d1ad4": {
+    "campaign_results": [
+     "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_l_2ab0ce2d/campaign_results.json"
+    ],
+    "certification_root": true,
+    "production_and_case_files_differ": [],
+    "rule_files_differ": []
+   },
+   "714c9445590efce9f683979371dfd6d4879792c8": {
+    "campaign_results": [
+     "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_l_45aa25a6/campaign_results.json"
+    ],
+    "certification_root": true,
+    "production_and_case_files_differ": [],
+    "rule_files_differ": []
+   },
+   "a477ab96e99a25d379428ccdd8b855966454f64e": {
+    "campaign_results": [
+     "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_l_76c78064/campaign_results.json"
+    ],
+    "certification_root": true,
+    "production_and_case_files_differ": [],
+    "rule_files_differ": []
+   },
+   "bf84fd4119bcc4cf68377d291b0c7765a08d3259": {
+    "campaign_results": [
+     "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_l_7b199ef9/campaign_results.json"
+    ],
+    "certification_root": true,
+    "production_and_case_files_differ": [],
+    "rule_files_differ": []
+   },
+   "6f116e6c8c66aab9fcb4c79b5e76bd4abd1ed472": {
+    "campaign_results": [
+     "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_l_7c455554/campaign_results.json"
+    ],
+    "certification_root": true,
+    "production_and_case_files_differ": [],
+    "rule_files_differ": []
+   },
+   "ad818c3a4506fa5093d21dbbec376dd64cc933fe": {
+    "campaign_results": [
+     "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_l_7db09f6c/campaign_results.json"
+    ],
+    "certification_root": true,
+    "production_and_case_files_differ": [],
+    "rule_files_differ": []
+   },
+   "dcf3e87e389f154fb7d014f2af4a1f7474c70b67": {
+    "campaign_results": [
+     "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_l_8e4c220e/campaign_results.json"
+    ],
+    "certification_root": true,
+    "production_and_case_files_differ": [],
+    "rule_files_differ": []
+   },
+   "5689169985c24c7cbcf4b071e8e5e1ede965be5a": {
+    "campaign_results": [
+     "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_l_b2251bc5/campaign_results.json"
+    ],
+    "certification_root": true,
+    "production_and_case_files_differ": [],
+    "rule_files_differ": []
+   },
+   "7f2475bd457512e37dca8c1d67e95e7d0470a026": {
+    "campaign_results": [
+     "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_l_df1a5525/campaign_results.json"
+    ],
+    "certification_root": true,
+    "production_and_case_files_differ": [],
+    "rule_files_differ": []
+   },
+   "f42e7299fee6ef373dc4e6f3e23351b3ec7c219f": {
+    "campaign_results": [
+     "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_l_e1da0984/campaign_results.json"
+    ],
+    "certification_root": true,
+    "production_and_case_files_differ": [],
+    "rule_files_differ": []
+   },
+   "22c7c116b0bb5bd527704af48f603f1cfe6c2e6b": {
+    "campaign_results": [
+     "data/SRP1/Results/P515S53/w142_resettle_ext_v6/campaign_s53_w142_resettle_ext_v6_e_c2/campaign_results.json"
+    ],
+    "certification_root": true,
+    "production_and_case_files_differ": [],
+    "rule_files_differ": []
+   },
+   "afc6dbd7efc35a36a1aa155394f77db00c4e11f6": {
+    "campaign_results": [
+     "data/SRP1/Results/P515S53/w142_resettle_ext_v6/campaign_s53_w142_resettle_ext_v6_e_c2_calfade/campaign_results.json"
+    ],
+    "certification_root": true,
+    "production_and_case_files_differ": [],
+    "rule_files_differ": []
+   },
+   "4c735dc36ff9333fa07661532d0acd25a99ffbff": {
+    "campaign_results": [
+     "data/SRP1/Results/P515S53/w142_resettle_ext_v6/campaign_s53_w142_resettle_ext_v6_e_c3_midblock/campaign_results.json"
+    ],
+    "certification_root": true,
+    "production_and_case_files_differ": [],
+    "rule_files_differ": []
+   },
+   "13c6f5b05174bfcab0294f2bb5b133370b982005": {
+    "campaign_results": [
+     "data/SRP1/Results/P515S53/w142_resettle_ext_v6/campaign_s53_w142_resettle_ext_v6_e_c3_unit/campaign_results.json"
+    ],
+    "certification_root": true,
+    "production_and_case_files_differ": [],
+    "rule_files_differ": []
+   },
+   "23cee0344ecc1bd69e8183e6117bed6abee831f8": {
+    "campaign_results": [
+     "data/SRP1/Results/P515S53/w142_resettle_ext_v6/campaign_s53_w142_resettle_ext_v6_e_c4/campaign_results.json"
+    ],
+    "certification_root": true,
+    "production_and_case_files_differ": [],
+    "rule_files_differ": []
+   },
+   "d7602e1aeafc69fe0a5aa7596cfa1108c44b7a10": {
+    "campaign_results": [
+     "data/SRP1/Results/P515S53/w142_resettle_ext_v6/campaign_s53_w142_resettle_ext_v6_e_no_ageing/campaign_results.json"
+    ],
+    "certification_root": true,
+    "production_and_case_files_differ": [],
+    "rule_files_differ": []
+   },
+   "72d52c23f4522377fce69393a76291effee16faa": {
+    "campaign_results": [
+     "data/SRP1/Results/P515S53/w142_resettle_ext_v6/campaign_s53_w142_resettle_ext_v6_pb_y2025_n5_v6/campaign_results.json"
+    ],
+    "certification_root": true,
+    "production_and_case_files_differ": [],
+    "rule_files_differ": []
+   },
+   "6cc4c8c114ec2036a41d9dafffd79abf41f62e68": {
+    "campaign_results": [
+     "data/SRP1/Results/P515S53/w155_a64_cells/campaign_s53_w155_a64_r2_e_soh050/campaign_results.json"
+    ],
+    "certification_root": true,
+    "production_and_case_files_differ": [],
+    "rule_files_differ": []
+   },
+   "241d30303a9891d869d94e8b0dde4b29113e2b2c": {
+    "campaign_results": [
+     "data/SRP1/Results/P515S53/w155_a64_cells/campaign_s53_w155_a64_r2_g070_neutrality/campaign_results.json"
+    ],
+    "certification_root": true,
+    "production_and_case_files_differ": [],
+    "rule_files_differ": []
+   },
+   "ae2b65745874f73f90027808c21c26537a4e91fa": {
+    "campaign_results": [
+     "data/SRP1/Results/P515S53/w155_a64_cells/campaign_s53_w155_a64_r2_h_unit_m175/campaign_results.json"
+    ],
+    "certification_root": true,
+    "production_and_case_files_differ": [],
+    "rule_files_differ": []
+   },
+   "0e1d7c0e0671d20c52960fa05be33f2ea659fbb2": {
+    "campaign_results": [
+     "data/SRP1/Results/P515S53/w155_a64_cells/campaign_s53_w155_a64_r2_h_x0_m175/campaign_results.json"
+    ],
+    "certification_root": true,
+    "production_and_case_files_differ": [],
+    "rule_files_differ": []
+   },
+   "8a8ef1508bc73ecbe56320bdad77e861b96b26c4": {
+    "campaign_results": [
+     "data/SRP1/Results/P515S53/w90_3x3/campaign_s53_w91_3x3_pair/campaign_results.json"
+    ],
+    "certification_root": false,
+    "production_and_case_files_differ": [],
+    "rule_files_differ": null
+   }
+  },
+  "production_identical_all": true,
+  "production_differ": {},
+  "cert_rule_files_identical_all": true,
+  "cert_rule_files_differ": {}
+ },
+ "history_git_log_S": {
+  "eq:acceptance_tolerance": [
+   {
+    "file": "settling_criterion.py",
+    "string": "TAU = DELTA_R * R_REF / 4.0",
+    "commits_newest_first": [
+     {
+      "commit": "ab0bcbc9d099cea26883b0817b76ea8d2f67de78",
+      "date": "2026-09-27T21:13:30+01:00",
+      "subject": "P5.15 W101 (Addendum 53): SRP1 three-reference settling continuation - code"
+     }
+    ],
+    "introduced_in": {
+     "commit": "ab0bcbc9d099cea26883b0817b76ea8d2f67de78",
+     "date": "2026-09-27T21:13:30+01:00",
+     "subject": "P5.15 W101 (Addendum 53): SRP1 three-reference settling continuation - code"
+    },
+    "n_commits": 1
+   },
+   {
+    "file": "settling_criterion_v2.py",
+    "string": "GAP_BOUND = TAU / 2.0",
+    "commits_newest_first": [
+     {
+      "commit": "e2c1ac0939685360fb3106578d9a4b695c07576d",
+      "date": "2026-09-28T17:47:49+01:00",
+      "subject": "P5.15 W118 code (Addendum 57 Decisions 2 and 3, Addendum 54 Ruling 2): SRP1 re-settling campaign, 10 cells - settling_criterion_v2 (gap clau"
+     }
+    ],
+    "introduced_in": {
+     "commit": "e2c1ac0939685360fb3106578d9a4b695c07576d",
+     "date": "2026-09-28T17:47:49+01:00",
+     "subject": "P5.15 W118 code (Addendum 57 Decisions 2 and 3, Addendum 54 Ruling 2): SRP1 re-settling campaign, 10 cells - settling_criterion_v2 (gap clau"
+    },
+    "n_commits": 1
+   },
+   {
+    "file": "settling_criterion_v6.py",
+    "string": "SWING_FLOOR = TAU / 10.0",
+    "commits_newest_first": [
+     {
+      "commit": "575bfec43ff47b03ed9f6ef955025cd35cfb28a2",
+      "date": "2026-09-30T20:56:11+01:00",
+      "subject": "P5.15 W142 (Addendum 61): v6 re-settling code - settling_criterion_v6 (v5 with the swing noise floor F = tau/10: (A) swings below F excluded"
+     }
+    ],
+    "introduced_in": {
+     "commit": "575bfec43ff47b03ed9f6ef955025cd35cfb28a2",
+     "date": "2026-09-30T20:56:11+01:00",
+     "subject": "P5.15 W142 (Addendum 61): v6 re-settling code - settling_criterion_v6 (v5 with the swing noise floor F = tau/10: (A) swings below F excluded"
+    },
+    "n_commits": 1
+   }
+  ],
+  "eq:interface_deviation": [
+   {
+    "file": "model_construction_helpers.py",
+    "string": "m.pg_adn[s_m, s_o, p] - m.expected_interface_pf_p[p]",
+    "commits_newest_first": [
+     {
+      "commit": "1d3105653ef45d435fa811a03d7666ff1fe94afd",
+      "date": "2026-09-22T22:51:38+01:00",
+      "subject": "P5.15 Addendum 38 W39: row 18 as signed (commitment + imbalance settlement)"
+     }
+    ],
+    "introduced_in": {
+     "commit": "1d3105653ef45d435fa811a03d7666ff1fe94afd",
+     "date": "2026-09-22T22:51:38+01:00",
+     "subject": "P5.15 Addendum 38 W39: row 18 as signed (commitment + imbalance settlement)"
+    },
+    "n_commits": 1
+   },
+   {
+    "file": "model_construction_helpers.py",
+    "string": "return m.pg[ref_gen_idx, s_m, s_o, p] - shared_ess_p",
+    "commits_newest_first": [
+     {
+      "commit": "f46cb3829e7dc8c612f1e03cfb0f049165736226",
+      "date": "2026-08-18T14:17:30+01:00",
+      "subject": "ESS. Correction. ADN net values"
+     }
+    ],
+    "introduced_in": {
+     "commit": "f46cb3829e7dc8c612f1e03cfb0f049165736226",
+     "date": "2026-08-18T14:17:30+01:00",
+     "subject": "ESS. Correction. ADN net values"
+    },
+    "n_commits": 1
+   }
+  ],
+  "eq:interface_deviation_nonnegative": [
+   {
+    "file": "model_construction_helpers.py",
+    "string": "model.row18_dev_p_up = pe.Var(",
+    "commits_newest_first": [
+     {
+      "commit": "1d3105653ef45d435fa811a03d7666ff1fe94afd",
+      "date": "2026-09-22T22:51:38+01:00",
+      "subject": "P5.15 Addendum 38 W39: row 18 as signed (commitment + imbalance settlement)"
+     }
+    ],
+    "introduced_in": {
+     "commit": "1d3105653ef45d435fa811a03d7666ff1fe94afd",
+     "date": "2026-09-22T22:51:38+01:00",
+     "subject": "P5.15 Addendum 38 W39: row 18 as signed (commitment + imbalance settlement)"
+    },
+    "n_commits": 1
+   }
+  ],
+  "eq:soh_initial": [
+   {
+    "file": "shared_energy_storage_data.py",
+    "string": "prev_soh = 1.00",
+    "commits_newest_first": [
+     {
+      "commit": "e5721b6d99e1f0a49f0598d4e89e62c10d79926e",
+      "date": "2026-09-21T13:51:57+01:00",
+      "subject": "P5.15 Addenda 28-29 W20 (i): ageing model switches (available_energy_soh_point, ageing_enabled; defaults unchanged), harness model_variant, "
+     },
+     {
+      "commit": "9603fd72cf3cbfbfa83a8d494c86fc8ab738b62c",
+      "date": "2024-08-22T16:31:24+01:00",
+      "subject": "\"decomposed\" functions removed. Merged with original"
+     },
+     {
+      "commit": "4a54c7b35ad9e3646380e3e6410e884c3edb5879",
+      "date": "2024-08-22T13:30:13+01:00",
+      "subject": "build_subproblem_decomposed() and update_model_with_candidate_solution_decomposed() methods added."
+     },
+     {
+      "commit": "fc9b1f6e12ef5a2605f35c15fc0deb3a3521e6c4",
+      "date": "2024-05-07T09:50:28+01:00",
+      "subject": "Model. Update"
+     }
+    ],
+    "introduced_in": {
+     "commit": "fc9b1f6e12ef5a2605f35c15fc0deb3a3521e6c4",
+     "date": "2024-05-07T09:50:28+01:00",
+     "subject": "Model. Update"
+    },
+    "n_commits": 4
+   }
+  ],
+  "app:salvage_credit": [
+   {
+    "file": "shared_energy_storage_data.py",
+    "string": "def _get_remaining_calendar_life",
+    "commits_newest_first": [
+     {
+      "commit": "9a433546f58486803262832aa3379b4c625f1c0b",
+      "date": "2026-08-05T14:26:29+01:00",
+      "subject": "salvageable value added."
+     }
+    ],
+    "introduced_in": {
+     "commit": "9a433546f58486803262832aa3379b4c625f1c0b",
+     "date": "2026-08-05T14:26:29+01:00",
+     "subject": "salvageable value added."
+    },
+    "n_commits": 1
+   },
+   {
+    "file": "shared_energy_storage_data.py",
+    "string": "usable_energy_above_eol = (e_available - min_soh * e_rated) / (1.00 - min_soh)",
+    "commits_newest_first": [
+     {
+      "commit": "9a433546f58486803262832aa3379b4c625f1c0b",
+      "date": "2026-08-05T14:26:29+01:00",
+      "subject": "salvageable value added."
+     }
+    ],
+    "introduced_in": {
+     "commit": "9a433546f58486803262832aa3379b4c625f1c0b",
+     "date": "2026-08-05T14:26:29+01:00",
+     "subject": "salvageable value added."
+    },
+    "n_commits": 1
+   },
+   {
+    "file": "shared_energy_storage_data.py",
+    "string": "model.salvage_value = pe.Expression(expr=salvage_value)",
+    "commits_newest_first": [
+     {
+      "commit": "9a433546f58486803262832aa3379b4c625f1c0b",
+      "date": "2026-08-05T14:26:29+01:00",
+      "subject": "salvageable value added."
+     }
+    ],
+    "introduced_in": {
+     "commit": "9a433546f58486803262832aa3379b4c625f1c0b",
+     "date": "2026-08-05T14:26:29+01:00",
+     "subject": "salvageable value added."
+    },
+    "n_commits": 1
+   },
+   {
+    "file": "shared_resources_planning.py",
+    "string": "net_operational_recourse = gross_operational_cost - terminal_salvage_value",
+    "commits_newest_first": [
+     {
+      "commit": "fc200780a9b7e4e81be74024bcf8b40d5b7bb105",
+      "date": "2026-09-15T10:26:48+01:00",
+      "subject": "P5.15 Step 3.1: implement the signed penalty table rows and D2/D3/D6"
+     }
+    ],
+    "introduced_in": {
+     "commit": "fc200780a9b7e4e81be74024bcf8b40d5b7bb105",
+     "date": "2026-09-15T10:26:48+01:00",
+     "subject": "P5.15 Step 3.1: implement the signed penalty table rows and D2/D3/D6"
+    },
+    "n_commits": 1
+   }
+  ]
+ },
+ "predecessor_at_8f051a2": {
+  "eq:acceptance_tolerance": [
+   739
+  ],
+  "eq:interface_deviation": [
+   1075
+  ],
+  "eq:interface_deviation_nonnegative": [
+   1075
+  ],
+  "eq:soh_initial": [
+   1029
+  ],
+  "app:salvage_credit": [
+   1350
+  ]
+ },
+ "case_inputs": {
+  "probs": [
+   0.35,
+   0.55,
+   0.1
+  ],
+  "srp1_years": {
+   "2025": 5,
+   "2030": 5,
+   "2035": 5
+  },
+  "srp1_discount": 0.02,
+  "salvage_params": {
+   "enabled": true,
+   "energy_recovery_fraction": 1.0,
+   "recycling_floor_fraction": 0.0,
+   "cost_basis": "EXPECTED_INSTALLATION_ENERGY_COST",
+   "health_basis": "NORMALIZED_ABOVE_MINIMUM_SOH",
+   "calendar_life_basis": "REMAINING_FRACTION_AT_TERMINAL"
+  },
+  "ess_params_sha256": "39106f934bf3edbf18f01a5ef1fadfefc2f7a518706e6c8fa6d962617a312706"
+ },
+ "n_evaluation_records": 49,
+ "negative_controls": [
+  {
+   "control": "NC1 altered code line number (DEV_P_LHS 1866 -> 1867)",
+   "item": "eq:interface_deviation",
+   "rating": "MISMATCH",
+   "refused": true,
+   "failed_checks": [
+    "DEV_P_LHS: model_construction_helpers.py:1867 reads \"return (m.pg_adn[s_m, s_o, p] - m.expected_interface_pf_p[p]\""
+   ]
+  },
+  {
+   "control": "NC2 sign swap in the code deviation row (anchor text re-declared to the swapped line)",
+   "item": "eq:interface_deviation",
+   "rating": "MISMATCH",
+   "refused": true,
+   "failed_checks": [
+    "symbols / sign: printed P - Pbar - d+ + d- = 0 equals the code P row (pg_adn - expected - up + down)",
+    "the Q row has the same signed form (prose: \"an analogous charge\")"
+   ],
+   "canonical_check_failed": true
+  },
+  {
+   "control": "NC3 deviation Var domain pe.Reals (anchor re-declared)",
+   "item": "eq:interface_deviation_nonnegative",
+   "rating": "MISMATCH",
+   "refused": true,
+   "failed_checks": [
+    "symbols: d^{+/-} >= 0 <-> domain=pe.NonNegativeReals on the four deviation Vars (P and Q), no other bound"
+   ]
+  },
+  {
+   "control": "NC4 initial SoH literal 0.95 (anchor re-declared)",
+   "item": "eq:soh_initial",
+   "rating": "MISMATCH",
+   "refused": true,
+   "failed_checks": [
+    "symbols: SoH at the boundary before the installation block = 1 <-> prev_soh = 1.00 for y = y_inv (loop starts at y_inv; reassigned only if y > y_inv)"
+   ]
+  },
+  {
+   "control": "NC5 tau denominator 2.0 (anchor re-declared)",
+   "item": "eq:acceptance_tolerance",
+   "rating": "MISMATCH",
+   "refused": true,
+   "failed_checks": [
+    "symbols: denominator 4 <-> 4.0",
+    "values: printed delta_R = 0.07, V = 259,375.33, tau = 4,539.07 at l. [2919]"
+   ]
+  },
+  {
+   "control": "NC6 delta_R literal 0.08 (anchor re-declared)",
+   "item": "eq:acceptance_tolerance",
+   "rating": "MISMATCH",
+   "refused": true,
+   "failed_checks": [
+    "values: printed delta_R = 0.07, V = 259,375.33, tau = 4,539.07 at l. [2919]"
+   ]
+  },
+  {
+   "control": "NC7 printed deviation with d+ and d- swapped (declared text re-declared)",
+   "item": "eq:interface_deviation",
+   "rating": "MISMATCH",
+   "refused": true,
+   "failed_checks": [
+    "symbols / sign: printed P - Pbar - d+ + d- = 0 equals the code P row (pg_adn - expected - up + down)"
+   ]
+  },
+  {
+   "control": "NC8 salvage discounted over y^End - y^Inv instead of y^End - y_0",
+   "item": "app:salvage_credit",
+   "rating": "MISMATCH",
+   "refused": true,
+   "failed_checks": [
+    "records: printed formula reproduces the recorded terminal salvage of every committed evaluation record (49 records, 17 with a non-zero credit; worst |diff| 2.506e+04 EUR)"
+   ]
+  },
+  {
+   "control": "NC9 code salvage product without remaining_life_fraction",
+   "item": "app:salvage_credit",
+   "rating": "MISMATCH",
+   "refused": true,
+   "failed_checks": [
+    "symbols: code product = terminal_discount x energy_recovery_fraction x expected_unit_cost x remaining_life_fraction x residual_energy <-> 1/(1+r)^(yEnd-y0) x [1] x cbar x Trem/Tcal x E (SoH - SoHmin)/(1 - SoHmin)"
+   ]
+  }
+ ],
+ "negative_controls_all_refused": true,
+ "prediction_A1": {
+  "expected": "at most one M row (the interface-deviation sign convention)",
+  "ratings": {
+   "eq:acceptance_tolerance": "MATCH",
+   "eq:interface_deviation": "L",
+   "eq:interface_deviation_nonnegative": "MATCH",
+   "eq:soh_initial": "MATCH",
+   "app:salvage_credit": "L"
+  },
+  "n_refused_for_M_or_H_judgement": 0,
+  "held_at_most_one_M": true,
+  "the_named_M_found": false
+ },
+ "guards": {
+  "solve_profile_guard": {
+   "label": "P5.15 W182a equations vs code (never solves)",
+   "counts": {
+    "permitted_solve": 0,
+    "permitted_exec": 0,
+    "blocked_solve": 0,
+    "blocked_exec": 0
+   },
+   "verify_0_failures": []
+  },
+  "pickle_counts": {
+   "load": 0,
+   "loads": 0
+  },
+  "production_modules_imported": []
+ },
+ "finished_utc": "2026-10-25T14:10:47.313827+00:00"
+}

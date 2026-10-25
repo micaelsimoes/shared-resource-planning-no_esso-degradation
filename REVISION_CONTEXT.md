@@ -24,9 +24,11 @@ authority is `PLANNER_BRIEF_2026-09-13.md` with its Addenda 1–67**; it superse
 
 Authority: `PLANNER_BRIEF_2026-09-13.md` Addenda 52–78; `STEP6_ROUND1…4_CORRECTIONS.md`. Tables FROZEN: `frozen_step6_tables_v1_590088fe.json` (W160).
 Methods text: `export/paragraphs_v5.md` (Addendum 67). Expert's revision plan: `STEP6_REVISION_MAP.md`. Latest handoff:
-`P5_15_W181_REPORT.md` (W181 at Overleaf `cd57efc` = `main_e5322f8_round7.tex` + letter v8, zero-solve; every
-prediction held). Current order: `TASKS.md` (Addendum 80 section) — complete. Waiting on the author (three ageing
-citations under §3.5, `% [AUTHOR]` at l. 1307) and the expert (latexdiff, cover letter); then submission.
+`P5_15_W182_REPORT.md` (W182 at Overleaf `edd7a63`, code head `a17f6ba7` / production `575bfec4`; zero-solve re-audit
+and Step 7 evidence inventory). Current order: `TASKS.md` (Addendum 82 v2 section) — **stopped for review**: Appendix E
+no longer equals `gen_appE.py` output (author hand-edits); "settlement excluded" is exact only at one scenario; E1–E3
+need harness/production changes (no-ageing launcher, ρ option, perturbed start, NRF on both copies, 4-slot gate);
+letter v9 65 pointer mismatches. No campaign run authorized; spec not frozen.
 
 ## Manuscript facts established from code and case files (W164–W167)
 
@@ -61,6 +63,17 @@ citations under §3.5, `% [AUTHOR]` at l. 1307) and the expert (latexdiff, cover
 - **Manuscript state at Overleaf `8b76423`:** §2, §3.1, §3.5–3.6 and Appendix A closed for the revision (Addendum 71);
   0 number MISMATCH (W176b); no H/M row (W176a; 2 new L rows R4-1, R4-2); §4–§5 and Appendix E still the submitted text (559 submitted-version figures). Benchmark values
   are post consistency-pass (Addendum 49); LFP is not named in any input file.
+- **Manuscript at Overleaf `edd7a63` (W182):** 67 author commits after `8f051a2`; numbers 0 MISMATCH (701 MATCH, 31
+  DERIVED); four new equations + salvage appendix match the code (2 L: P^I direction, y^End = 2040 unstated); headline
+  12.2 % = benefit / price-taker Q (13.9 % = benefit / coordinated Q, still called a saving in highlights and letter);
+  7 over-budget 2025 probes (incl. three 2 h rungs) in 34 places, 1 labelled; letter v9 65/173 pointers MISMATCH,
+  citations [43]/[44] → [42]/[43]; Appendix E hand-edited (6 hunks, 0 table entries changed).
+- **Q boundary (W182g):** Q = TSO + DSO objective − contracted settlement − voltage pin; at 3 × 3 the deviation
+  settlement and the row-18 premium (+25.1 M€, ≈ 3 % of Q) stay inside Q; load curtailment never built; y^End = 2040.
+- **Step 7 readiness (W182e/f):** no-ageing = `ageing_enabled` via harness `model_variant`, refused by the committed
+  search launchers; ρ₀ = case-file `admm.rho`, refused by the harness; perturbed coordinated start has no hook; no NRF
+  option on the coordinated path; concurrency gate stale; row 40 cap exhausted (gap clause); reverse-flow hours in the
+  committed `interface_settlement_detail_s31c.json`.
 - **Manuscript at Overleaf `cd57efc` (W181):** round 7 applied verbatim; Appendix E bitwise, 0 MISMATCH, 0 cells
   changed; §2.3.3 "deactivated and its slacks are fixed at zero", Table 13 "cycle 72 … 69 for the unit", E.4 phase B,
   E.21 note, R2.2 "single-scenario" all MATCH; R22-b closed. Only open item: the three ageing citations (author).
