@@ -3632,3 +3632,131 @@ commit and push; nothing else runs.
 all five MATCH and R22-b closes; (d) absent, or present with three keys. **After W181:** the `latexdiff` against
 `manuscript_submitted/` (expert, in the container, demo graphics), the cover letter, and submission once the
 citations are in.
+
+# Addendum 81 — W181 held; ageing citations; marked copy (latexdiff); letter v9; W182 order (2026-10-16)
+
+**Received.** `P5_15_W181_REPORT.md` (`6931c781`, Overleaf `cd57efc`): every prediction of Addendum 80 held — identity,
+clone diff = expert diffs, Appendix E bitwise with 0 cells changed, 33 PASS, five sentences MATCH, R22-b closed,
+ageing citations absent. Rounds 6 and 7 are closed.
+
+**Ageing citations (author, Overleaf `fa7dcb6` → `8f051a2`).** The expert traced the 10,000-cycles-at-0.80-DoD-to-0.80
+statement: it is the case file's own input (`cycles_n = 10000`, `reference_dod_d = 0.80`; S35 Z2, P5.13-B) and no
+manufacturer document states it; Addendum 30 Q1 only placed it "at the favourable end of the datasheet range". Ruling:
+C2 is stated as an assumption bracketed by a datasheet, not as a datasheet reading. §3.5 now reads "cycle-life
+statements of the kind given in manufacturers' datasheets"; "The baseline assumes 10,000 cycles at 80 % depth of
+discharge to 80 % retention (k = 35,851), at the favourable end of current LFP cell datasheets, and adds a calendar
+retention of 0.985 per year …, a modelling assumption in the range reported for LFP cells [43]"; "the datasheet
+statement of 8,000 full cycles to 70 % retention [44]"; Table 6 caption "cycle count, depth of discharge and end
+retention of the cycle-life statement". Sources verified by the expert: [43] Naumann, Schimpe, Keil, Hesse, Jossen,
+J. Energy Storage 17 (2018) 153–169, doi 10.1016/j.est.2018.01.019; [44] EVE Power Co., Ltd., Product Specification
+PBRI-MB31-D06-01 Version A (20 Nov 2023), Table 3: "25℃ 8000 cycles, 70% SOH" at 0.5P, 2.5–3.65 V. Keil et al. 2016
+not used (record not verified). Expert compile at `8f051a2`: 0 errors, 0 undefined; every label number identical to
+round 7; references [1]–[42] unchanged, [43]–[44] new; the EVE entry's title and month were brace-protected after a
+first render lowercased "V/Ah/Version A".
+
+**Marked copy.** `manuscript_review/main_latexdiff.tex`: latexdiff 1.4.0 (standalone, run with Perl on the Air; the
+script is parked untracked at `manuscript_review/latexdiff-so`), `manuscript_submitted/main.tex` against `main.tex` at
+`8f051a2` with its 381 `\textcolor{blue}{…}` revision wrappers stripped first (a marked copy shows additions in blue
+already; latexdiff wrapped the wrapper's argument, equations included, in `\DIFadd`, which `ulem` cannot typeset —
+the stripped source compiles with every label number identical to `8f051a2`). Options: `--math-markup=whole`,
+`--exclude-textcmd="section,subsection,subsubsection,caption"`, PICTUREENV extended to
+`table|longtable|tabular|algorithm|figure|landscape` (every results table is new; inline marking inside tables broke
+them: 111 errors in the first run). Post-processed by script: one `\emergencystretch=2em` assignment latexdiff had
+wrapped; 18 `\ref`/`\eqref` to labels that exist only in the submitted version (deleted figures and tables) print the
+label name in brackets instead of "??"; inside display-math environments the 61 `\DIFadd`/`\DIFdel` wrappers are
+replaced by colour-only `\DIFaddm`/`\DIFdelm` (no underline or strike-through, which `ulem` cannot apply across
+`aligned` blocks). Expert compile with a stand-in for `ulem` (absent in the container): 0 errors, 0 undefined, 98
+pages; a static check finds no `ulem`-marked argument containing an environment or paragraph break. The final PDF
+with underline and strike-through is compiled on Overleaf, which has `ulem`.
+
+**Letter v9** (`response_to_reviewers_v9.tex`, + `letter_v8_v9.diff`, 4 hunks): opening paragraph "cycle-life
+calibration bracketed by a manufacturer datasheet"; R1.2(iv) "one of them read from a manufacturer datasheet [44]";
+R3.4 response extended (which calibration reads what; favourable baseline strengthens the negative result); R3.5 cites
+[43]. Compiles alone. The letter has no bibliography: [43] and [44] are the manuscript's numbers at `8f051a2`.
+
+**W182 order (zero solves), at the Overleaf HEAD carrying letter v9; state the HEAD.** (a) `main.tex` byte-identical to
+`main.tex` at `8f051a2` (the only manuscript change since `cd57efc` is §3.5 / Table 6 caption / the two `\cite` / the
+two bib entries); rate the §3.5 paragraph and the Table 6 caption against the frozen calibration constants (k =
+35,851; 22,429; φ = 0.985; floor 0.70) and against the two sources as described above (the Planner reads the bib
+entries, not the web). (b) Letter v9: pointer check; [43] and [44] against the `.bbl`/`.aux` ordering derived from
+the source (elsarticle-num, citation order). (c) `main_latexdiff.tex`: confirm it was generated from `main.tex` at
+`8f051a2` (the %DIF header names the files; compare the ADD-side text outside DIF markup with `main.tex`); count the
+`\DIFadd`/`\DIFdel` blocks; confirm no table, figure or algorithm environment carries inline DIF markup; list any
+`\ref` that would be undefined. (d) `STEP6_*`, brief and change log present at HEAD. Report `P5_15_W182_REPORT.md`;
+commit and push. **Predictions:** (a) MATCH on all four constants and both sources; (b) 0 pointer MISMATCH, [43]/[44]
+confirmed; (c) generated from `8f051a2`, 0 inline markup in environments, 0 undefined refs; (d) present.
+**After W182:** the cover letter (expert draft from `manuscript_submitted/cover_letter.tex`), then submission: revised
+`main.tex` (blue), `main_latexdiff.tex` compiled on Overleaf as the marked copy, letter v9, highlights.
+
+# Addendum 82 (v2, replaces v1 of the same date, never acted on) — simulation brief E1–E6; decisions D1–D5; manuscript at `edd7a63`; W182 order (2026-10-25)
+
+**Received.** The author's brief `simulation_study_brief_for_expert_2026-10-25.md`; decisions D1–D5 with six protocol
+clarifications; `manuscript_review/STEP7_PLAN_REVIEW_2026-10-25.md`; `manuscript_review/manuscript_critical_review_2026-10-25.md`.
+The expert's plan is `STEP7_SIMULATION_PLAN_2026-10-25.md` v2 (repo root). **No run is authorized by this addendum**;
+the campaign spec is frozen after W182 and runs are authorized one gate per task by a later addendum.
+
+**Manuscript state.** Overleaf `edd7a63`, eight commits after `8f051a2`: 1,021 changed lines in `main.tex`, four new
+equations and `app:salvage_credit`, `tab:res_capacity_summary` added, `tab:res_flex_ladder` and two figures removed,
+§3.3/3.4 merged, retitled subsections, headline 12.2 % against the price-taker benchmark. Letter v9 unchanged. The
+marked copy compiled by the author is of `8f051a2`. Addendum 81's W182 is withdrawn.
+
+**Rulings.**
+1. **E1 (D2, D3, clarification 1):** both arms on the final code head under the frozen configuration, variant B
+   throughout, common seed set {x = 0; 7: 0.25/1 2025; 7: 0.5/2 2025; the historical 2× incumbent}, seed costs
+   evaluated under each ageing model, N^max = 30 new search evaluations per arm, cross-evaluations certified under
+   rule v6, primary setting 2×. The historical 2× incumbent (row 40, gap clause) is a reference row and a seed, not
+   the comparator. Baseline price: a fourteen-point unit-neighbourhood screen under the no-ageing model, labelled as
+   such (clarification 2); the aged 1× search (s47) is not re-run.
+2. **E2 (clarification 3):** stage 1 = the eight-evaluation penalty pilot (ρ₀ × 0.5, × 2); each pair's verdict by its
+   own rule-v6 quantities; the baseline threshold descriptive only; range of margins reported separately from the
+   per-pair verdict; stage 2 (perturbed coordinated start, four evaluations) conditional on Z6; no centralized model.
+3. **E3 (clarifications 4, 5):** one certified C_NRF evaluation with the NRF row on both interface copies, a declared
+   option off by default; the reporting rule for the static-vs-ADMM comparison is the plan's §3 (two uncertainties
+   side by side; "resolved under the declared procedure" only beyond three times each; "determinate" reserved for
+   rule-v6 pairs); the mechanism sentence of §4.4 re-derived from the new decomposition; the four reverse-flow hours
+   are context, not a bound.
+4. **E5 deferred, claim narrowed (clarification 6); E4 deferred, wording per D4.** Exact sentences in plan §6 and §8.
+5. **E6:** zero-solve export from rows 1–2; day rule declared; inputs committed or hash-recorded first (Z5).
+6. **Predictions are hypotheses** (plan §1, §8): H1a–d, H2, H3a–b recorded; no outcome extends the campaign.
+7. **Counts and estimates reconciled:** E1 ≤ 72 evaluations at 2× (seeds 7–8, search ≤ 60, cross-evaluations 4) +
+   14 for the screen; E3 1; E2 8 (+4); concurrency check 5. Serial ≈ 84–89 h; ≈ 50 h with four slots after the check.
+
+**W182 order (zero solves), at Overleaf `edd7a63` or later; state the HEAD and the code head of the working tree.**
+- **A. Re-audit of the author's edits since `8f051a2`.** (A1) the four new equations (`eq:acceptance_tolerance`,
+  `eq:interface_deviation`, `eq:interface_deviation_nonnegative`, `eq:soh_initial`) and `app:salvage_credit` against
+  the code in the W166 form; the presence of an equation is not evidence that the implementation changed — rate what
+  the code does. (A2) every changed or moved number in the 49 hunks against the frozen JSON and the named records
+  (W163 checker, new declarations version). (A3) a label map old → new for every table/figure/equation at `edd7a63`,
+  and the letter v9 pointer check against it (removed `tab:res_flex_ladder`, the two removed figures, shifted
+  numbers). (A4) every `\ref` or prose mention that still points at removed tables/figures. (A5) captions and
+  sentences whose `\textcolor{blue}` the author dropped — list only. (A6) Appendix E block bitwise equal to
+  `gen_appE.py` output; `verify_appE.py` 33 PASS. (A7) sentences in the abstract, highlights (both copies),
+  contributions, §4.5, §5 and the letter that claim or imply a multi-scenario search, a value of stochastic selection,
+  an installation-timing preference, or that "certification" bounds error or resolves a ratio (audit §3.1, §3.4,
+  §7); list with line numbers. (A8) out-of-budget ladder points (4 h / 4–5 MWh, 2025) — every place they appear and
+  whether each is labelled as a probe outside the admissible set (audit 3.6); the 13.9 % figure wherever it is still
+  called a saving (letter, `highlights.tex`, cover letter); the abstract's technology and cost-uncertainty sentences
+  (audit §6).
+- **B. Evidence inventory.** (Z1) the no-ageing arm's search-path implementation identical to T8's (k → ∞, φ = 1,
+  floor inactive, SoH ≡ 1); whether Q(0) is exactly independent of the ageing model (storage rows deactivated at
+  x = 0); the zero-capacity handling of the normalised complementarity, cohort allocation and degradation rows at
+  S^Av = 0, with code lines (audit 3.7). (Z2) row 40 (`ref:5ca4f86c`): remaining cap and reachability of a rule-v6
+  certificate. (Z3) one table over E.21: code head of the run, final-head yes/no, configuration hash. (Z4) wall time
+  per cycle and peak RSS of the 3 × 3 cells and of a five-block single-scenario build, from the records (for the E4
+  file only). (Z5) E6 inputs: which quantities are in committed records, which only in `ess_schedule_per_cycle.jsonl`
+  (uncommitted) or `certified_models.pkl`; commit or hash-record the exact files for rows 1 and 2. (Z6) whether the
+  benchmark harness's perturbed start applies to the coordinated procedure without new code; where ρ₀ enters, so that
+  × 0.5 / × 2 is a configuration parameter; where the NRF row would be declared as an option on both interface copies
+  and what the harness records for interface P on each side. (Z7) from row 1's records: the four reverse-flow
+  interface-hours with magnitude, block weight and price — without solves; state "not recoverable" if the records
+  lack them.
+- **C. Pre-campaign readings (brief §2).** (C1) cost boundary term by term with code lines and inside/outside Q,
+  including deviation settlement and commitment charges (audit 3.8). (C2) horizon-end date and its mapping to terminal
+  SoH and the final block (audit 3.3). (C3) budget admissibility of every plan named in the manuscript (expected
+  2025 cost from Table 1; the two-node 2030 plan ≈ 992.3 k€ per the audit — confirm from the file). (C4) the
+  concurrency path: bitwise gate present on the final code; whether a 4-slot batch is runnable without code change.
+- **Report** `P5_15_W182_REPORT.md` with part reports; commit and push; nothing else runs. **Predictions (expert):**
+  A1 at most one M row (the interface-deviation sign convention); A3 ≥ 10 letter pointers MISMATCH; A6 bitwise, 33
+  PASS; A7 ≥ 6 sentences listed; Z1 Q(0) exactly independent; Z2 not reachable within the cap; Z6 ρ₀ is a
+  configuration parameter and the NRF row needs a new declared option (code change, both copies); Z7 recoverable from
+  `certified_models.pkl` only.

@@ -173,22 +173,28 @@ Kept by the expert during the author's whole-document read (2026-10-09 onward); 
   "deactivated and its slacks are fixed at zero"; Table 13 "(cycle 72 for the plan without storage, 69 for the
   unit)"; `% [AUTHOR]` citation reminder restored under Table 6. Compile 0 errors, 0 undefined; label numbers
   identical to `e5322f8`. Accepted L: 0.004τ, search-only neighbours' bands, W153 cause rule for rows 39/41.
-- Still open: W181 (Addendum 80, short check); **the three ageing citations under §3.5 (author, before submission)**;
-  then `latexdiff` vs `manuscript_submitted/`, cover letter, submission.
-
-## For the Planner to check
-- Conclusions v2: every number against §4 and the frozen tables.
-- §4.6 salvage count: placeholder said "one verdict changes category" (F2 neighbour), letter R3.1 says two (F2 neighbour
-  + investment year, 3.46× gross / 0.19× net). Confirm W153: 60 claims, 0 sign changes, number of verdict changes, and
-  whether the 2035−2030 pair is among the 60.
-- Fig. `fig:res_ageing` v2 numbers and row mapping against the frozen figure (C2 = cycling only, C2_calfade = baseline,
-  C3_unit = retention 50 %, C3_midblock = retention 50 % mid-block, C4 = datasheet 8,000 cycles).
-- every number in §4 against the frozen tables (W177(b) proper), incl. the author's 4.1–4.6 text;
-- the moved sentences at their new lines (S401, NEW-4 declarations);
-- Fig. `fig:investment_lattice` geometry (12 points, budget line) and the fourteen-neighbour sentence;
-- §3.6 run-settings sentence (from Algorithm 1) against the campaign specs;
-- §2.2.7 + Appendix A "Certification Rule" after the split: every clause of rule v6 present in the appendix (holds,
-  k₀ reset, C1–C5, noise/counting sentence, M1–M3, uncertified form); §2.2.7 summary consistent with it; resolution
-  and determinacy in §2.2.7; relocated sentences present at their new places; all refs to `subsubsec:certification`
-  that cite a specific clause (gap clause, growth test, branches) still resolve for the reader;
-- nomenclature v3 against the symbols in use (symbol audit).
+- W181 received (`6931c781`, Overleaf `cd57efc`): every Addendum 80 prediction held; rounds 6–7 closed.
+- Ageing citations (author, Overleaf `fa7dcb6`, bib fix `8f051a2`; Addendum 81): the 10,000-cycle statement has no
+  datasheet (case-file input) → §3.5 restated as an assumption "at the favourable end of current LFP cell datasheets";
+  calendar 0.985/yr cited to Naumann et al. 2018 [43]; 8,000 cycles to 70 % cited to the EVE MB31 specification
+  PBRI-MB31-D06-01 [44]; Table 6 caption reworded; `% [AUTHOR]` comment removed. Expert compile 0 errors, numbering
+  unchanged, [1]–[42] unchanged.
+- Marked copy (expert, 2026-10-16): `main_latexdiff.tex` = latexdiff 1.4.0 of `manuscript_submitted/main.tex` vs
+  `8f051a2` with the 381 `\textcolor{blue}{}` wrappers stripped, `--math-markup=whole`, tables/figures/algorithms as
+  whole blocks; post-processed (emergencystretch; 18 refs to removed labels print the label; display-math markup
+  colour-only). First delivery failed on Overleaf ("Missing $ inserted", l. 746: `\DIFadd` around a wrapped equation);
+  fixed as above. Compiles 0 errors / 0 undefined with a ulem stand-in (98 pages); final PDF on Overleaf.
+  `main_latexdiff_v2..v5.tex`, `rev_nocolor_scratch.tex` and `latexdiff-so` in `manuscript_review/` are scratch (do not
+  stage; delete).
+- Letter v9 (+ `letter_v8_v9.diff`, 4 hunks): opening, R1.2(iv), R3.4, R3.5 with [43]/[44].
+- 2026-10-25: author's simulation brief E1–E6 after an external critical audit (`manuscript_review/manuscript_critical_review_2026-10-25.md`);
+  Overleaf at `edd7a63` (1,021 changed lines, four new equations, one table added, one table and two figures removed,
+  headline 12.2 % vs the price-taker benchmark). Expert plan v1 → reviewed (`STEP7_PLAN_REVIEW_2026-10-25.md`) →
+  author's D1–D5 and six clarifications → **plan v2** (`STEP7_SIMULATION_PLAN_2026-10-25.md`): matched E1 arms (both
+  on the final code, variant B, common seeds, N^max 30 each, 2× primary, 14-point unit-neighbourhood screen at 1×),
+  staged E2 (penalty pilot 8, start stage conditional), E3 with a declared mixed-comparison reporting rule, E4/E5
+  deferred with narrowed claims, E6 zero-solve; hypotheses H1–H3 recorded; counts reconciled (E1 ≤ 72 + 14; serial
+  ≈ 84–89 h). Addendum 82 rewritten (v2): W182 = re-audit of `edd7a63` (A1–A8) + inventory Z1–Z7 + readings C1–C4;
+  no run authorized.
+- Still open: W182 (Addendum 82 v2); campaign spec v1 after it; letter v10, cover letter, `highlights.tex` and the
+  marked copy after the results; letter pointers stale since `edd7a63`.
