@@ -24,11 +24,11 @@ authority is `PLANNER_BRIEF_2026-09-13.md` with its Addenda 1–67**; it superse
 
 Authority: `PLANNER_BRIEF_2026-09-13.md` Addenda 52–78; `STEP6_ROUND1…4_CORRECTIONS.md`. Tables FROZEN: `frozen_step6_tables_v1_590088fe.json` (W160).
 Methods text: `export/paragraphs_v5.md` (Addendum 67). Expert's revision plan: `STEP6_REVISION_MAP.md`. Latest handoff:
-`P5_15_W182_REPORT.md` (W182 at Overleaf `edd7a63`, code head `a17f6ba7` / production `575bfec4`; zero-solve re-audit
-and Step 7 evidence inventory). Current order: `TASKS.md` (Addendum 82 v2 section) — **stopped for review**: Appendix E
-no longer equals `gen_appE.py` output (author hand-edits); "settlement excluded" is exact only at one scenario; E1–E3
-need harness/production changes (no-ageing launcher, ρ option, perturbed start, NRF on both copies, 4-slot gate);
-letter v9 65 pointer mismatches. No campaign run authorized; spec not frozen.
+`P5_15_W183_REPORT.md` (W183, Addendum 83: code changes and gates; production now `6f43479e`, harness `c34ebdc5…`,
+E1 launcher `p515_s55_e1_launcher.py`). Current order: `TASKS.md` (Addendum 83 section) — **stopped for review**: the
+two-cycle bitwise gate failed as frozen on W64 field-list drift only (same as the unruled W83 failure); the E1
+variant-B search stops at its first poll for any storage incumbent (completion > cap 30); spec v1 not frozen; no
+campaign queued.
 
 ## Manuscript facts established from code and case files (W164–W167)
 
@@ -63,6 +63,11 @@ letter v9 65 pointer mismatches. No campaign run authorized; spec not frozen.
 - **Manuscript state at Overleaf `8b76423`:** §2, §3.1, §3.5–3.6 and Appendix A closed for the revision (Addendum 71);
   0 number MISMATCH (W176b); no H/M row (W176a; 2 new L rows R4-1, R4-2); §4–§5 and Appendix E still the submitted text (559 submitted-version figures). Benchmark values
   are post consistency-pass (Addendum 49); LFP is not named in any input file.
+- **Step 7 code state (W183):** NRF option in production (`NetworkParameters.no_reverse_flow`, default off; rows
+  `pc_adn ≥ 0` / `pg_adn ≥ 0` built only when on, both DSO builders; off-build NL byte-identical, 696/696 blocks);
+  harness options `rho0_scale` / `nrf_option` keyed only when non-default (7,213/7,213 committed keys unchanged); E1
+  launcher with root-scoped cache, pins, concurrency preflight, x = 0 N-arm alias justified by G0 (G0_PASS on
+  `6f43479e`); E6 export at `P515S55/e6_export/` (declared day 2025 Spring).
 - **Manuscript at Overleaf `edd7a63` (W182):** 67 author commits after `8f051a2`; numbers 0 MISMATCH (701 MATCH, 31
   DERIVED); four new equations + salvage appendix match the code (2 L: P^I direction, y^End = 2040 unstated); headline
   12.2 % = benefit / price-taker Q (13.9 % = benefit / coordinated Q, still called a saving in highlights and letter);

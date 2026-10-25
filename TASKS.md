@@ -1,9 +1,25 @@
 # TASKS — current order
 
-**Authority:** `PLANNER_BRIEF_2026-09-13.md` Addendum 82 v2 (W182 order; committed in `ac7c494f`/`a17f6ba7`); Addendum 81's W182 withdrawn; earlier orders below for record.
-**Objective convention on every value:** Q = certified `gross_operational_cost`, settlement excluded.
+**Authority:** `PLANNER_BRIEF_2026-09-13.md` Addendum 83 (W183 order; committed in `b2041a5a`); earlier orders below for record.
+**Objective convention on every value:** Q = certified `gross_operational_cost`, contracted interface settlement excluded (Addendum 83 ruling 2; at 3 × 3 the deviation settlement and the row-18 premium are inside Q).
 **Updated at every transition; read first when resuming.**
 
+
+## Addendum 83 order — W183 (code changes and gates; zero solves except the named builds and the two-cycle bitwise gate)
+
+Rulings: Appendix E edited only through `gen_appE.py` (round 8 ports the six hunks); convention "contracted interface settlement excluded"; E1 launcher with `model_variant` + `flex_price_multiplier` keyed, `eol_retention_r` 0.50; `rho0_scale` keyed option; E2 stage 2 deferred; NRF row on `pc_adn` / `pg_adn` ≥ 0, both DSO builders, declared option default off; concurrency decided inside E1 by a 4-slot batch gate; spec v1 pins production head + harness hashes; G0 before E1. E6 inputs committed `741e8ddf`. Predictions (expert): G0 identical at x = 0; NRF-off NL identity holds; two-cycle gate passes; E1 key dry run yields 7 distinct seed keys.
+
+- [x] **Advisor** — design review done: order (0) → (1) → (2) → (3) → (4) → (5); key fields only when declared and non-default, threaded through the four wrapper branches; NRF rows constructed only when on, in `shared_resources_planning.py` + `network_parameters.py` (MCH untouched, else the gate's MCH pin refuses); gate both NL and component digests; seeds = 7 evaluations + 1 G0 alias; row 54 is a resettle key (base-key match needs ext-v6 config block); bitwise gate covers the sequential builder only; batch root and E2/E3 launchers unspecified
+- [x] **W183-0** — `62c62d08` / `33dbf690`: reference built (zero solves); G0 at x = 0 identical (ESSO + all network NL, both builders); unit A vs N differs only in 6 degradation rows; 1× vs 2× only DSO flex expression/objective; cross-process byte-identical
+- [x] **W183e** — `5c1e6f23` / `d794f11b`: declared day 2025 Spring (12.2 k€ ahead, bar 0.1 k€); cross-checks agree; pickle read 3× in total (two trials + run); panel (b) in € (MWh needs row 1's pickle)
+- [x] **W183a** — `8d324c10` / `f61d8e5b` (resumed after a usage-limit cut; predecessor's edit kept): 7,213/7,213 committed keys unchanged; 13/13 ρ entries = S39×s; S39 refusal kept; NRF refuses without production support; NL 174/174 identical; extra guard `previous_iter.ess` off (kept)
+- [x] **W183c** — `6f43479e` / `e717850f`: NRF rows built only when on (srp 39 lines, network_parameters 10; MCH untouched); 115/115 fixtures load; off → 696/696 blocks identical (prediction HELD); on → 864 TSO + 864 DSO per builder, all active; binding capture at terminal (tolerance 1e-3 MW, expert to confirm)
+- [x] **W183b** — `cb36b22e` / `6a99e088`: launcher built (`--run` not executed); dry run 7 keys + 1 G0 alias (prediction HELD); keys = rows 35 and 40 (W118 r2); row 54 base key reproduced at 1×; root-scoped cache proven; **finding: variant B stops at poll 0 for any storage incumbent at k = 0 (completion 31/34/61 > cap 30) — expert ruling needed before W186**
+- [x] **W183d** — `dbf7a25c` / `d4ab31ca`: G0_PASS on production `6f43479e` (prediction HELD): x = 0 A/N identical (ESSO + 84 network blocks); unit 2× N vs A only 6 degradation rows; keys distinct; launcher accepts the alias (production equals current). Launcher G0 pointer: `w183_nl_post_w183c_off/w183_nl_digest.json.gz` `ca195bd3…`
+- [x] **W183f** — `17b4c1cf` / `c5b292dd`: two-cycle gate GATE_PASS=False as frozen (153/153 solves; only item: 22 W64 keys absent in W48 ref vs null — same as unruled W83 failure; 29 shared keys bitwise equal; arm = W83 arm bitwise) — prediction FAILED; spec v1 freeze held
+- [x] Planner review; report `P5_15_W183_REPORT.md` (Decisions 1–5)
+- [ ] **▶ Stopped for review** (gate failure, no fallback; E1 poll-0 stop): expert on 1 (gate ruling; rec. zero-solve re-comparison vs W83 arm), 2 (E1 completion/cap), 3 (spec v1 open points), 4, 5; author: push
+- [ ] Then by addendum line: W184 E3 → W185 E2 stage 1 → W186 E1 → W187 screen
 
 ## Addendum 82 v2 order — W182 (zero-solve; re-audit of `edd7a63` + evidence inventory; no campaign run authorized)
 
@@ -17,7 +33,7 @@ Overleaf HEAD **`edd7a63`** (67 commits after `8f051a2`; main.tex diff 49 hunks;
 - [x] **W182f** — `7e5dd80e`: Z2 HELD (cap 281 used); Z7 FAILED favourably (committed JSON); Z3 table; Z4 15.2 GiB; Z5 inventory
 - [x] **W182g** — `a21b03e6` / `c39663e4`: Q = objective − contracted settlement − pin (deviation + row 18 inside Q at 3×3); y^End 2040; 42/47 plans admissible
 - [x] Planner review; report `P5_15_W182_REPORT.md` (Decisions 1–6)
-- [ ] **▶ Stopped for review** (A6 failed, no fallback; E1–E3 need code changes outside the spec): expert on 1, 2, 3, 4 (pickle read), 5; author on 4 (31.5 MB commit), 5
+- [x] Stopped for review → Addendum 83 rulings received 2026-10-26 (A6 failed, no fallback; E1–E3 need code changes outside the spec): expert on 1, 2, 3, 4 (pickle read), 5; author on 4 (31.5 MB commit), 5
 - [x] Author: plan v2, brief, letter v9 (+ diff) committed — `2f67f63a`; letter v9 = Overleaf `edd7a63` letter (cmp)
 - [ ] Then: campaign spec frozen (later addendum authorizes runs one gate per task)
 
