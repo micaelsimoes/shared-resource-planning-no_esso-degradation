@@ -1,0 +1,257 @@
+clone HEAD edd7a63a6c2ea06c1db17e3b6941bde8aa6d6838; 67 commits after 8f051a2; main.tex sha256 b08a3365607e56f2ff8c56572a9a74bc9ea97d5fb461faa252fab7955ffa8f5b (2956 lines)
+repo HEAD 7614bcbff369151a5a7d67ea7a030109011ddd63; last production/rule commit 575bfec43ff47b03ed9f6ef955025cd35cfb28a2; dirty tracked []
+eq:acceptance_tolerance: MATCH
+    [ok] SC1_DELTA_R: settling_criterion.py:55 reads "DELTA_R = 0.07"
+    [ok] SC1_DELTA_R: enclosing def None
+    [ok] SC1_R_REF: settling_criterion.py:56 reads "R_REF = 259375.33"
+    [ok] SC1_R_REF: enclosing def None
+    [ok] SC1_TAU: settling_criterion.py:57 reads "TAU = DELTA_R * R_REF / 4.0"
+    [ok] SC1_TAU: enclosing def None
+    [ok] SC1_EPS0: settling_criterion.py:58 reads "EPS0 = TAU / 100.0"
+    [ok] SC1_EPS0: enclosing def None
+    [ok] SC2_TAU: settling_criterion_v2.py:69 reads "TAU = SC1.TAU"
+    [ok] SC2_TAU: enclosing def None
+    [ok] SC2_GAP: settling_criterion_v2.py:74 reads "GAP_BOUND = TAU / 2.0"
+    [ok] SC2_GAP: enclosing def None
+    [ok] SC2_C3: settling_criterion_v2.py:172 reads "a_parts.update({'range': rng, 'range_le_tau': rng <= TAU, 'band': [mn,"
+    [ok] SC2_C3: enclosing def evaluate
+    [ok] SC2_M3: settling_criterion_v2.py:182 reads "'last_step_times_L_le_tau': last * self.l_mono <= TAU, 'band': None}"
+    [ok] SC2_M3: enclosing def evaluate
+    [ok] SC2_M2: settling_criterion_v2.py:189 reads "b_parts.update({'range': rng, 'range_le_tau': rng <= TAU, 'band': [mn,"
+    [ok] SC2_M2: enclosing def evaluate
+    [ok] SC2_C4: settling_criterion_v2.py:277 reads "gap_ok = t_sum is not None and abs(t_sum) <= GAP_BOUND"
+    [ok] SC2_C4: enclosing def observe
+    [ok] SC4_TAU: settling_criterion_v4.py:62 reads "TAU = SC2.TAU"
+    [ok] SC4_TAU: enclosing def None
+    [ok] SC5_TAU: settling_criterion_v5.py:52 reads "TAU = SC4.TAU"
+    [ok] SC5_TAU: enclosing def None
+    [ok] SC6_TAU: settling_criterion_v6.py:57 reads "TAU = SC5.TAU"
+    [ok] SC6_TAU: enclosing def None
+    [ok] SC6_GAP: settling_criterion_v6.py:62 reads "GAP_BOUND = SC5.GAP_BOUND"
+    [ok] SC6_GAP: enclosing def None
+    [ok] SC6_FLOOR: settling_criterion_v6.py:80 reads "SWING_FLOOR = TAU / 10.0                 # "Swing noise floor tau/10 ("
+    [ok] SC6_FLOOR: enclosing def None
+    [ok] SC6_DET: settling_criterion_v6.py:363 reads "return max(DETERMINACY_BAR_FACTOR * max(bar_r, bar_o), DETERMINACY_TAU"
+    [ok] SC6_DET: enclosing def determinacy_threshold
+    [ok] HOOKS_V6: p515_s53_w142_resettle_v6_hooks.py:30 reads "import settling_criterion_v6 as SC6"
+    [ok] HOOKS_V6: enclosing def None
+    [ok] V_SRP1: p515_s53_w101_srp1_continuation_campaign.py:119 reads "V_SRP1 = 259375.32654094696    # recert campaign_results R.R_tail (R_r"
+    [ok] V_SRP1: enclosing def None
+    [ok] printed body at its label = declared
+    [ok] symbols: numerator {delta_R, V} <-> {DELTA_R, R_REF}
+    [ok] symbols: denominator 4 <-> 4.0
+    [ok] values: printed delta_R = 0.07, V = 259,375.33, tau = 4,539.07 at l. [2919]
+    [ok] V = R_REF is V_SRP1 = 259,375.32654... rounded to the cent (W101 constant)
+    [ok] prose tau_units present once
+    [ok] prose tau_C3 present once
+    [ok] prose tau_C4 present once
+    [ok] prose tau_floors present once
+    [ok] prose tau_M3 present once
+    [ok] prose tau_det present once
+    [ok] tau / settling_criterion absent from every production module (outside Q and the model)
+    [ok] search run heads: settling_criterion*.py absent, no tau token in the search code, ab0bcbc9 (tau introduced) not an ancestor, resolution rule = max(bar_x + bar_inc, sigma_q)
+    [ok] prose: searches used earlier code; search resolution sigma_Q
+    [ok] certification run heads: settling_criterion*.py identical to the code head
+eq:interface_deviation: L
+    [ok] DEV_P_RULE_DEF: model_construction_helpers.py:1861 reads "def row18_interface_deviation_p_rule(m, s_m, s_o, p):"
+    [ok] DEV_P_RULE_DEF: enclosing def row18_interface_deviation_p_rule
+    [ok] DEV_P_LHS: model_construction_helpers.py:1866 reads "return (m.pg_adn[s_m, s_o, p] - m.expected_interface_pf_p[p]"
+    [ok] DEV_P_LHS: enclosing def row18_interface_deviation_p_rule
+    [ok] DEV_P_RHS: model_construction_helpers.py:1867 reads "== m.row18_dev_p_up[s_m, s_o, p] - m.row18_dev_p_down[s_m, s_o, p])"
+    [ok] DEV_P_RHS: enclosing def row18_interface_deviation_p_rule
+    [ok] DEV_Q_LHS: model_construction_helpers.py:1873 reads "return (m.qg_adn[s_m, s_o, p] - m.expected_interface_pf_q[p]"
+    [ok] DEV_Q_LHS: enclosing def row18_interface_deviation_q_rule
+    [ok] DEV_Q_RHS: model_construction_helpers.py:1874 reads "== m.row18_dev_q_up[s_m, s_o, p] - m.row18_dev_q_down[s_m, s_o, p])"
+    [ok] DEV_Q_RHS: enclosing def row18_interface_deviation_q_rule
+    [ok] DEV_P_ROWS: model_construction_helpers.py:1971 reads "model.row18_dev_p_def = pe.Constraint(model.scenarios_market, model.sc"
+    [ok] DEV_P_ROWS: enclosing def add_scenario_commitment_terms
+    [ok] DEV_DSO_ONLY: model_construction_helpers.py:1948 reads "if (not network.is_transmission) and premium_alpha > 0.0:"
+    [ok] DEV_DSO_ONLY: enclosing def add_scenario_commitment_terms
+    [ok] DEV_SINGLE: model_construction_helpers.py:1917 reads "if n_scenarios == 1:"
+    [ok] DEV_SINGLE: enclosing def add_scenario_commitment_terms
+    [ok] DEV_CHARGE: model_construction_helpers.py:1979 reads "charge += (probability * model.row18_alpha * model.row18_premium[p] * "
+    [ok] DEV_CHARGE: enclosing def add_scenario_commitment_terms
+    [ok] DEV_CHARGE_TERMS: model_construction_helpers.py:1980 reads "* (model.row18_dev_p_up[s_m, s_o, p] + model.row18_dev_p_down[s_m, s_o"
+    [ok] DEV_CHARGE_TERMS: enclosing def add_scenario_commitment_terms
+    [ok] DEV_IN_OBJ: model_construction_helpers.py:1836 reads "obj += model.row18_deviation_charge"
+    [ok] DEV_IN_OBJ: enclosing def objective_function_rule
+    [ok] DSO_IFACE_P: model_construction_helpers.py:1297 reads "return m.pg[ref_gen_idx, s_m, s_o, p] - shared_ess_p"
+    [ok] DSO_IFACE_P: enclosing def interface_pf_p_distribution_def
+    [ok] DSO_IFACE_ESS: model_construction_helpers.py:1293 reads "m.shared_es_pnet[e, s_m0, s_o0, p]"
+    [ok] DSO_IFACE_ESS: enclosing def interface_pf_p_distribution_def
+    [ok] TSO_IFACE_LOAD: model_construction_helpers.py:1247 reads "pc_adn = m.pc[adn_load_idx, s_m, s_o, p]"
+    [ok] TSO_IFACE_LOAD: enclosing def interface_pf_p_transmission_def
+    [ok] TSO_IFACE_DELTA: model_construction_helpers.py:1259 reads "pc_adn += m.interface_delta_p[dn, s_m0, s_o0, p]"
+    [ok] TSO_IFACE_DELTA: enclosing def interface_pf_p_transmission_def
+    [ok] ESS_PNET_SIGN: model_construction_helpers.py:999 reads "return m.shared_es_pnet[e, s_m0, s_o0, p] == m.shared_es_pch[e, s_m0, "
+    [ok] ESS_PNET_SIGN: enclosing def sess_pnet_rule
+    [ok] EXPECTED_P_DEF: model_construction_helpers.py:2420 reads "m.pg_adn[s_m, s_o, p]"
+    [ok] EXPECTED_P_DEF: enclosing def dn_interface_expected_pf_p_def
+    [ok] EXPECTED_P_RULE: model_construction_helpers.py:2443 reads "return m.expected_interface_pf_p[p] == dn_interface_expected_pf_p_def("
+    [ok] EXPECTED_P_RULE: enclosing def dn_interface_expected_pf_p_rule
+    [ok] PG_ADN_EXPR: network.py:444 reads "model.pg_adn = pe.Expression(model.scenarios_market, model.scenarios_o"
+    [ok] PG_ADN_EXPR: enclosing def _build_model
+    [ok] TSO_ALPHA_0: shared_resources_planning.py:4298 reads "premium_alpha=0.0,"
+    [ok] TSO_ALPHA_0: enclosing def create_transmission_network_model
+    [ok] printed body at its label = declared
+    [ok] symbols / sign: printed P - Pbar - d+ + d- = 0 equals the code P row (pg_adn - expected - up + down)
+    [ok] the Q row has the same signed form (prose: "an analogous charge")
+    [ok] indices: rule over (s_m, s_o, p) = (s, t) with s = (m, o); year/day omitted in the print (prose)
+    [ok] DSO copy = reference-generator injection into the DN minus the co-located ESS net power (pg - shared_ess_p): TN -> DN positive, ESS excluded
+    [ok] ESS net power = pch - pdch (charging positive), the scenario-free copy (s_m0, s_o0)
+    [ok] TSO copy = the ADN load at the TN node (pc) + the scenario-free interface delta: TN -> DN positive
+    [ok] Pbar = sum_s prob_m prob_o pg_adn[s, t] (the expectation of the same flow)
+    [ok] prose: no premium on the TSO; omitted at one scenario
+    [ok] charge sums d+ + d- (symmetric): a reversed orientation of P^I swaps d+ and d- and changes no number
+    [ok] the ESS term in P^I is the scenario-free copy, so it cancels in P - Pbar (sum_s omega_s = 1): excluding or including it changes no deviation
+    L-finding confirmed=True: orientation of P^I (TN -> DN positive in both code copies) is not stated in main.tex
+    L-finding confirmed=True: P^I in the code is the DN exchange net of the co-located shared-ESS schedule (pg - pnet_ESS); main.tex does not say whether P^I includes the shared ESS at the interface node
+    note: units: the code row is in per unit on network.baseMVA (the charge multiplies by baseMVA, l. 1979); the print carries no unit -- notation only
+    note: row 18 is inactive (rows deactivated, d+/- fixed at 0) at the DSO initialisation solve and activated with the settlement weight before the ADMM cycles (shared_resources_planning._set_row18_inactive_for_initialisation / _activate_row18_with_settlement); not stated in main.tex; no reported number is taken at initialisation
+eq:interface_deviation_nonnegative: MATCH
+    [ok] NN_P_UP: model_construction_helpers.py:1966 reads "model.row18_dev_p_up = pe.Var(model.scenarios_market, model.scenarios_"
+    [ok] NN_P_UP: enclosing def add_scenario_commitment_terms
+    [ok] NN_P_DOWN: model_construction_helpers.py:1967 reads "model.row18_dev_p_down = pe.Var(model.scenarios_market, model.scenario"
+    [ok] NN_P_DOWN: enclosing def add_scenario_commitment_terms
+    [ok] NN_Q_UP: model_construction_helpers.py:1968 reads "model.row18_dev_q_up = pe.Var(model.scenarios_market, model.scenarios_"
+    [ok] NN_Q_UP: enclosing def add_scenario_commitment_terms
+    [ok] NN_Q_DOWN: model_construction_helpers.py:1969 reads "model.row18_dev_q_down = pe.Var(model.scenarios_market, model.scenario"
+    [ok] NN_Q_DOWN: enclosing def add_scenario_commitment_terms
+    [ok] printed body at its label = declared
+    [ok] symbols: d^{+/-} >= 0 <-> domain=pe.NonNegativeReals on the four deviation Vars (P and Q), no other bound
+    note: at the DSO initialisation solve the pair is fixed at 0 with its row deactivated (consistent with >= 0)
+eq:soh_initial: MATCH
+    [ok] SOH_LOOP: shared_energy_storage_data.py:687 reads "for y in range(y_inv, max_tcal_norm):"
+    [ok] SOH_LOOP: enclosing def _build_subproblem
+    [ok] SOH_INIT: shared_energy_storage_data.py:714 reads "prev_soh = 1.00"
+    [ok] SOH_INIT: enclosing def _build_subproblem
+    [ok] SOH_IF: shared_energy_storage_data.py:715 reads "if y > y_inv:"
+    [ok] SOH_IF: enclosing def _build_subproblem
+    [ok] SOH_PREV: shared_energy_storage_data.py:716 reads "prev_soh = model.es_soh_per_unit_cumul[y_inv, y - 1]"
+    [ok] SOH_PREV: enclosing def _build_subproblem
+    [ok] SOH_CHAIN: shared_energy_storage_data.py:724 reads "== prev_soh * pe.exp(-model.es_D_per_unit[y_inv, y]) * (phi_cal ** num"
+    [ok] SOH_CHAIN: enclosing def _build_subproblem
+    [ok] SOH_FIXED_1: shared_energy_storage_data.py:550 reads "model.es_soh_per_unit_cumul.fix(1.00)"
+    [ok] SOH_FIXED_1: enclosing def _build_subproblem
+    [ok] SOH_POINT_DEFAULT: shared_energy_storage_data.py:17 reads "AVAILABLE_ENERGY_SOH_POINT_DEFAULT = 'end'"
+    [ok] SOH_POINT_DEFAULT: enclosing def None
+    [ok] SOH_MID_INIT: shared_energy_storage_data.py:622 reads "prev_soh = 1.00"
+    [ok] SOH_MID_INIT: enclosing def _build_subproblem
+    [ok] printed body at its label = declared
+    [ok] symbols: SoH at the boundary before the installation block = 1 <-> prev_soh = 1.00 for y = y_inv (loop starts at y_inv; reassigned only if y > y_inv)
+    [ok] prose: boundary = preceding block terminal state, or initial state for a new cohort; new cohort starts at unit SoH
+    [ok] records: soh_prev_end == 1.0 exactly at every installation cell (54) and == the previous block end at every later cell (81)
+    note: context (eq:soh_chain, not an A1 item): recorded soh_end = soh_prev_end exp(-D) phi^n to 1.167e-11 at every recorded cell
+    note: the 'mid' available-energy variant (cell e_c3_midblock) uses the same literal 1.00 (l. 622)
+    note: outside a cohort's calendar window and at zero capacity the SoH variable is fixed at 1.0 (l. 550)
+app:salvage_credit: L
+    [ok] SALV_DEF: shared_energy_storage_data.py:866 reads "def _build_terminal_salvage_value_expression(shared_ess_data, model, s"
+    [ok] SALV_DEF: enclosing def _build_terminal_salvage_value_expression
+    [ok] SALV_TERMINAL_IDX: shared_energy_storage_data.py:871 reads "terminal_year_idx = len(shared_ess_data.years) - 1"
+    [ok] SALV_TERMINAL_IDX: enclosing def _build_terminal_salvage_value_expression
+    [ok] SALV_E_RATED: shared_energy_storage_data.py:883 reads "e_rated = model.es_e_rated_per_unit[y_inv, terminal_year_idx]"
+    [ok] SALV_E_RATED: enclosing def _build_terminal_salvage_value_expression
+    [ok] SALV_E_AVAIL: shared_energy_storage_data.py:884 reads "e_available = model.es_e_available_per_unit[y_inv, terminal_year_idx]"
+    [ok] SALV_E_AVAIL: enclosing def _build_terminal_salvage_value_expression
+    [ok] SALV_ABOVE_EOL: shared_energy_storage_data.py:890 reads "usable_energy_above_eol = (e_available - min_soh * e_rated) / (1.00 - "
+    [ok] SALV_ABOVE_EOL: enclosing def _build_terminal_salvage_value_expression
+    [ok] SALV_SUM: shared_energy_storage_data.py:899 reads "salvage_value += ("
+    [ok] SALV_SUM: enclosing def _build_terminal_salvage_value_expression
+    [ok] SALV_DISC_SUM: shared_energy_storage_data.py:911 reads "terminal_years = sum(float(num_years) for num_years in shared_ess_data"
+    [ok] SALV_DISC_SUM: enclosing def _get_terminal_discount_factor
+    [ok] SALV_DISC: shared_energy_storage_data.py:912 reads "return 1.00 / ((1.00 + shared_ess_data.discount_factor) ** terminal_ye"
+    [ok] SALV_DISC: enclosing def _get_terminal_discount_factor
+    [ok] SALV_AGE: shared_energy_storage_data.py:919 reads "age_at_terminal = sum(float(value) for value in represented_years[inve"
+    [ok] SALV_AGE: enclosing def _get_remaining_calendar_life
+    [ok] SALV_REM: shared_energy_storage_data.py:920 reads "remaining_life = max(float(shared_energy_storage.t_cal) - age_at_termi"
+    [ok] SALV_REM: enclosing def _get_remaining_calendar_life
+    [ok] SALV_REM_FRAC: shared_energy_storage_data.py:921 reads "remaining_life_fraction = min(remaining_life / float(shared_energy_sto"
+    [ok] SALV_REM_FRAC: enclosing def _get_remaining_calendar_life
+    [ok] SALV_CBAR: shared_energy_storage_data.py:928 reads "expected_cost += probability * shared_ess_data.cost_investment['energy"
+    [ok] SALV_CBAR: enclosing def _get_expected_energy_investment_cost
+    [ok] SALV_NOT_IN_OBJ: shared_energy_storage_data.py:853 reads "expr=model.feasibility_penalty,"
+    [ok] SALV_NOT_IN_OBJ: enclosing def _build_subproblem
+    [ok] SALV_EXPR: shared_energy_storage_data.py:849 reads "model.salvage_value = pe.Expression(expr=salvage_value)"
+    [ok] SALV_EXPR: enclosing def _build_subproblem
+    [ok] SALV_GET: shared_energy_storage_data.py:148 reads "salvage_value += pe.value(models[node_id].salvage_value)"
+    [ok] SALV_GET: enclosing def get_salvage_value
+    [ok] SALV_NET: shared_resources_planning.py:1306 reads "net_operational_recourse = gross_operational_cost - terminal_salvage_v"
+    [ok] SALV_NET: enclosing def _get_operational_recourse_components
+    [ok] SALV_PARAM_RECOVERY: shared_energy_storage_parameters.py:14 reads "self.energy_recovery_fraction = 1.00"
+    [ok] SALV_PARAM_RECOVERY: enclosing def __init__
+    [ok] SALV_PARAM_FLOOR: shared_energy_storage_parameters.py:15 reads "self.recycling_floor_fraction = 0.00"
+    [ok] SALV_PARAM_FLOOR: enclosing def __init__
+    [ok] SALV_CBAR_READ: shared_energy_storage_data.py:1743 reads "num_scenarios, shared_ess_data.prob_market_scenarios = _get_operationa"
+    [ok] SALV_CBAR_READ: enclosing def _read_shared_energy_storage_data_from_file
+    [ok] printed eq:salvage_credit at its label = declared
+    [ok] printed eq:salvage_remaining_life at its label = declared
+    [ok] app:salvage_credit label present once; both equations inside it (after the label)
+    [ok] symbols: code product = terminal_discount x energy_recovery_fraction x expected_unit_cost x remaining_life_fraction x residual_energy <-> 1/(1+r)^(yEnd-y0) x [1] x cbar x Trem/Tcal x E (SoH - SoHmin)/(1 - SoHmin)
+    [ok] configuration: energy_recovery_fraction = 1.0 and recycling_floor_fraction = 0.0 in SRP1_ESS_Params.json (the two code factors absent from the print are identities)
+    [ok] discount: code exponent = sum of block widths = y^End - y_0 (contiguous blocks); r = DiscountFactor 0.02 = printed 2 %
+    [ok] records: printed formula reproduces the recorded terminal salvage of every committed evaluation record (49 records, 17 with a non-zero credit; worst |diff| 9.459e-11 EUR)
+    [ok] not optimized: the ESSO objective is the feasibility penalty only; the salvage is a separate Expression (no network objective references it)
+    [ok] not selected for: every planning search excludes salvage from F (OBJECTIVE_CONVENTION at its run head)
+    [ok] prose salv_cbar present once
+    [ok] prose salv_no_converter present once
+    [ok] prose salv_reported present once
+    [ok] prose salv_net_form present once
+    [ok] prose salv_after present once
+    L-finding confirmed=True: SoH_{e,y^Inv,y^End} indexes SoH by the horizon-end date; elsewhere SoH is indexed by representative-year blocks (eq:soh_chain, end-of-block state). The code uses the end-of-block SoH of the final representative block (terminal_year_idx = len(years) - 1), which under eq:soh_chain is the state at y^End; main.tex does not state the mapping or the numeric y^End
+    note: the remaining-life fraction carries min(., 1) (l. 921), inactive in every evaluated case (T^Rem <= T^Cal)
+    note: the cohort calendar window uses round(t_cal / width) blocks (l. 680); exact for t_cal = 15 and widths 5 and 3
+    note: salvage sensitivities are added to the post-convergence investment sensitivities (shared_resources_planning._get_operational_sensitivities), which feed only the retired Benders cut; not on the DFO search path
+  printed eq:acceptance_tolerance: label l. 1994 begin 1992 end 1995
+  printed eq:interface_deviation: label l. 1123 begin 1115 end 1124
+  printed eq:interface_deviation_nonnegative: label l. 1133 begin 1131 end 1134
+  printed eq:soh_initial: label l. 1062 begin 1060 end 1063
+  printed eq:salvage_credit: label l. 2583 begin 2577 end 2584
+  printed eq:salvage_remaining_life: label l. 2590 begin 2588 end 2591
+  printed app:salvage_credit: label l. 2571 begin None end None
+  salvage evals: recorded 9854.563093 printed 9854.563093 |diff| 1.82e-12
+  salvage evals: recorded 10689.223172 printed 10689.223172 |diff| 1.82e-12
+  salvage evals: recorded 54570.633994 printed 54570.633994 |diff| 7.28e-12
+  salvage evals: recorded 24366.307494 printed 24366.307494 |diff| 0.00e+00
+  salvage evals: recorded 114448.806221 printed 114448.806221 |diff| 1.46e-11
+  salvage evals: recorded 31350.166791 printed 31350.166791 |diff| 3.64e-11
+  salvage evals: recorded 35290.548334 printed 35290.548334 |diff| 2.18e-11
+  salvage evals: recorded 29527.775994 printed 29527.775994 |diff| 5.46e-11
+  salvage evals: recorded 31207.166130 printed 31207.166130 |diff| 8.00e-11
+  salvage evals: recorded 28519.184243 printed 28519.184243 |diff| 9.46e-11
+  salvage evals: recorded 43815.512745 printed 43815.512745 |diff| 0.00e+00
+  salvage evals: recorded 38868.178675 printed 38868.178675 |diff| 7.28e-12
+  salvage evals: recorded 35929.008187 printed 35929.008187 |diff| 1.46e-11
+  salvage evals: recorded 31295.733050 printed 31295.733050 |diff| 5.82e-11
+  salvage evals: recorded 37881.044251 printed 37881.044251 |diff| 5.82e-11
+  salvage evals: recorded 28178.538711 printed 28178.538711 |diff| 2.55e-11
+  salvage evals: recorded 36117.298648 printed 36117.298648 |diff| 9.46e-11
+  salvage reproduction: 49 records, 17 non-zero, worst 9.459e-11 EUR
+  search baseline_variant_A_s47: head 353e094b 2026-09-21T22:40:46+01:00 rule files [] tau tokens {'p515_s47_phase_b_record.py': 0, 'p515_s51_f2_phase_b.py': None, 'p515_s53_f2_certificate.py': None, 'p515_s44_campaign_harness.py': 0} sigma_q rule True tau-intro ancestor False
+  search m2_variant_A_s51: head c39c4836 2026-09-23T09:35:46+01:00 rule files [] tau tokens {'p515_s47_phase_b_record.py': 0, 'p515_s51_f2_phase_b.py': 0, 'p515_s53_f2_certificate.py': None, 'p515_s44_campaign_harness.py': 0} sigma_q rule True tau-intro ancestor False
+  search m2_variant_B_s53: head e1f98be8 2026-09-24T09:49:58+01:00 rule files [] tau tokens {'p515_s47_phase_b_record.py': 0, 'p515_s51_f2_phase_b.py': 0, 'p515_s53_f2_certificate.py': 0, 'p515_s44_campaign_harness.py': 0} sigma_q rule True tau-intro ancestor False
+  run heads: 46; production+case identical to code head at all: True {}; rule files identical at all certification heads: True
+  history eq:acceptance_tolerance [settling_criterion.py] "TAU = DELTA_R * R_REF / 4.0": introduced ab0bcbc9 2026-09-27 (1 changing commits: ['ab0bcbc9'])
+  history eq:acceptance_tolerance [settling_criterion_v2.py] "GAP_BOUND = TAU / 2.0": introduced e2c1ac09 2026-09-28 (1 changing commits: ['e2c1ac09'])
+  history eq:acceptance_tolerance [settling_criterion_v6.py] "SWING_FLOOR = TAU / 10.0": introduced 575bfec4 2026-09-30 (1 changing commits: ['575bfec4'])
+  history eq:interface_deviation [model_construction_helpers.py] "m.pg_adn[s_m, s_o, p] - m.expected_interface_pf_p[": introduced 1d310565 2026-09-22 (1 changing commits: ['1d310565'])
+  history eq:interface_deviation [model_construction_helpers.py] "return m.pg[ref_gen_idx, s_m, s_o, p] - shared_ess": introduced f46cb382 2026-08-18 (1 changing commits: ['f46cb382'])
+  history eq:interface_deviation_nonnegative [model_construction_helpers.py] "model.row18_dev_p_up = pe.Var(": introduced 1d310565 2026-09-22 (1 changing commits: ['1d310565'])
+  history eq:soh_initial [shared_energy_storage_data.py] "prev_soh = 1.00": introduced fc9b1f6e 2024-05-07 (4 changing commits: ['e5721b6d', '9603fd72', '4a54c7b3', 'fc9b1f6e'])
+  history app:salvage_credit [shared_energy_storage_data.py] "def _get_remaining_calendar_life": introduced 9a433546 2026-08-05 (1 changing commits: ['9a433546'])
+  history app:salvage_credit [shared_energy_storage_data.py] "usable_energy_above_eol = (e_available - min_soh *": introduced 9a433546 2026-08-05 (1 changing commits: ['9a433546'])
+  history app:salvage_credit [shared_energy_storage_data.py] "model.salvage_value = pe.Expression(expr=salvage_v": introduced 9a433546 2026-08-05 (1 changing commits: ['9a433546'])
+  history app:salvage_credit [shared_resources_planning.py] "net_operational_recourse = gross_operational_cost ": introduced fc200780 2026-09-15 (1 changing commits: ['fc200780'])
+  predecessor at 8f051a2 (line hits): {'eq:acceptance_tolerance': [739], 'eq:interface_deviation': [1075], 'eq:interface_deviation_nonnegative': [1075], 'eq:soh_initial': [1029], 'app:salvage_credit': [1350]}
+  control NC1 altered code line number (DEV_P_LHS 1866 -> 1867): rating MISMATCH refused True
+  control NC2 sign swap in the code deviation row (anchor text re-declared to the swapped line): rating MISMATCH refused True
+  control NC3 deviation Var domain pe.Reals (anchor re-declared): rating MISMATCH refused True
+  control NC4 initial SoH literal 0.95 (anchor re-declared): rating MISMATCH refused True
+  control NC5 tau denominator 2.0 (anchor re-declared): rating MISMATCH refused True
+  control NC6 delta_R literal 0.08 (anchor re-declared): rating MISMATCH refused True
+  control NC7 printed deviation with d+ and d- swapped (declared text re-declared): rating MISMATCH refused True
+  control NC8 salvage discounted over y^End - y^Inv instead of y^End - y_0: rating MISMATCH refused True
+  control NC9 code salvage product without remaining_life_fraction: rating MISMATCH refused True
+prediction A1: {'expected': 'at most one M row (the interface-deviation sign convention)', 'ratings': {'eq:acceptance_tolerance': 'MATCH', 'eq:interface_deviation': 'L', 'eq:interface_deviation_nonnegative': 'MATCH', 'eq:soh_initial': 'MATCH', 'app:salvage_credit': 'L'}, 'n_refused_for_M_or_H_judgement': 0, 'held_at_most_one_M': True, 'the_named_M_found': False}
+inputs 130 (0 uncommitted)
+guards: {'solve_profile_guard': {'label': 'P5.15 W182a equations vs code (never solves)', 'counts': {'permitted_solve': 0, 'permitted_exec': 0, 'blocked_solve': 0, 'blocked_exec': 0}, 'verify_0_failures': []}, 'pickle_counts': {'load': 0, 'loads': 0}, 'production_modules_imported': []}
+output data/SRP1/Results/P515S53/w182a_equations_code/w182a_equations_code.json sha256 493d4b0373d9dae09f6204c97889081105f193e92c9d8bcc541c52a77c0f9367
