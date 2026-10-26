@@ -1,0 +1,726 @@
+{
+ "H3c": {
+  "c_open_reverse_flow_hours": [
+   {
+    "day": "Autumn",
+    "hour_1_based": 19,
+    "node": "7",
+    "p_int_dso_mw": -3.156856856401926,
+    "period": 18,
+    "year": "2025"
+   },
+   {
+    "day": "Spring",
+    "hour_1_based": 22,
+    "node": "7",
+    "p_int_dso_mw": -2.4015618438831847,
+    "period": 21,
+    "year": "2025"
+   },
+   {
+    "day": "Spring",
+    "hour_1_based": 2,
+    "node": "7",
+    "p_int_dso_mw": -1.6016853043904722,
+    "period": 1,
+    "year": "2025"
+   },
+   {
+    "day": "Summer",
+    "hour_1_based": 22,
+    "node": "7",
+    "p_int_dso_mw": -0.06689106638714658,
+    "period": 21,
+    "year": "2025"
+   }
+  ],
+  "c_open_reverse_flow_source": "data/SRP1/Results/P515S53/w182f_records/w182f_records.json Z7_row1_reverse_flow (source data/SRP1/Results/P515S53/w101_srp1_continuation/campaign_s53_w101_srp1_cont_x0/evals/d110bd1a5977df1e_x0/interface_settlement_detail_s31c.json)",
+  "each_among_binding_hours": {
+   "7|2025|Autumn|p18": true,
+   "7|2025|Spring|p1": true,
+   "7|2025|Spring|p21": true,
+   "7|2025|Summer|p21": true
+  },
+  "holds": true,
+  "matching": "(node, year, day, period): the capture's binding_hours \"hour\" is the period index of _get_interface_reporting_detail (0-based), Z7's \"period\" the same index",
+  "n_active_864_per_copy": true,
+  "z7_source_is_row_1": true
+ },
+ "Q_C_NRF": 653894166.0688057,
+ "band_or_gap_slack": {
+  "band": [
+   653891810.4930832,
+   653895965.712424
+  ],
+  "band_width": 4155.219340801239
+ },
+ "candidate_key": "8435c71859ddde68e7ae5818b4ff91c03b4171791bcfaa70edcc3ddb52bacb57",
+ "cell": "e3_cnrf_x0_1x",
+ "cell_report": {
+  "Q_cc_end": 653894573.0595093,
+  "Q_end": 653894166.0688057,
+  "Q_net_end": 653894166.0688057,
+  "W": 33,
+  "band": [
+   653891810.4930832,
+   653895965.712424
+  ],
+  "band_width": 4155.219340801239,
+  "branch": "oscillatory",
+  "candidate_canonical": {
+   "investment_year": 2025,
+   "nodes": {
+    "5": [
+     0.0,
+     0.0
+    ],
+    "7": [
+     0.0,
+     0.0
+    ],
+    "9": [
+     0.0,
+     0.0
+    ]
+   }
+  },
+  "candidate_key": "8435c71859ddde68e7ae5818b4ff91c03b4171791bcfaa70edcc3ddb52bacb57",
+  "cell": "e3_cnrf_x0_1x",
+  "criterion_version": 6,
+  "cycles_run": 206,
+  "end_cycle": 206,
+  "eval_key": "35b275180d897e4c123c37839b91f50b01454bb24085685d26e9d2b33346e12f",
+  "flex_price_multiplier": null,
+  "gap_refusals": [],
+  "harness_bar_eur": 101.04322016239166,
+  "k0_run": 134,
+  "k_star": 206,
+  "lapse_events": [],
+  "non_clean_cycles": [],
+  "nrf_option": true,
+  "objective_convention": "Q = certified gross_operational_cost, contracted interface settlement EXCLUDED (Addendum 83 ruling 2); salvage reported separately; net = gross - terminal salvage",
+  "phase": "e3",
+  "range_over_tau": 0.9154344215721757,
+  "record_status": "certified",
+  "rho0_scale": null,
+  "rule_cap": 243,
+  "status": "certified",
+  "stopping_ratio_definition": "rule ten: |Q[k] - Q[k-1]| / objective_tolerance at the last cycle (the record's rule_ten.terminal_step_over_threshold)",
+  "stopping_ratio_terminal_step_over_threshold": 0.0014751613208057854,
+  "t_sum_end": 406.9907036243126,
+  "terminal_salvage_value_end": 0.0,
+  "terminal_step_abs": 96.4599381685257,
+  "terminal_step_over_EPS0": 2.125104367779656,
+  "vetoes": [],
+  "view": {
+   "Q": 653894166.0688057,
+   "Q_cc": 653894573.0595093,
+   "Q_net": 653894166.0688057,
+   "band": 4155.219340801239,
+   "bar": 101.04322016239166,
+   "gap": null,
+   "gap_refused": null,
+   "gated": false,
+   "label": null,
+   "salvage": 0.0,
+   "slack": null,
+   "status": "certified",
+   "t": 406.9907036243126
+  },
+  "window": [
+   174,
+   206
+  ]
+ },
+ "cross_checks": {
+  "benchmark_coordinated_cell_is_row_1": true,
+  "benchmark_instance_is_x0": true,
+  "c_open_Q_equals_benchmark_coordinated_q_bitwise": true,
+  "c_open_Q_equals_its_evaluation_record_certified_cost": true,
+  "c_open_certified": true,
+  "c_open_eval_key_is_row_1": true,
+  "c_open_record_eval_key": true,
+  "e3_record_eval_key_is_the_cell_key": true
+ },
+ "decomposition": {
+  "C_NRF": {
+   "by_agent": {
+    "DSO": {
+     "block_gross_weighted": 208101155.83685884,
+     "flexibility_cost_weighted": 208113571.50087407,
+     "generation_cost_weighted": 0.0,
+     "n_blocks": 36,
+     "res_curtailment_definitional_unweighted_sum": 1.4927100001516485
+    },
+    "TSO": {
+     "block_gross_weighted": 445793010.2319471,
+     "flexibility_cost_weighted": 0.0,
+     "generation_cost_weighted": 445793607.1347246,
+     "n_blocks": 12,
+     "res_curtailment_definitional_unweighted_sum": -0.04609955452201118
+    }
+   },
+   "gross_operational_cost": 653894166.0688057,
+   "identity_residual_eur": 2.384185791015625e-07,
+   "sum_of_block_gross": 653894166.0688059
+  },
+  "C_OPEN": {
+   "by_agent": {
+    "DSO": {
+     "block_gross_weighted": 208207991.47492936,
+     "flexibility_cost_weighted": 208220407.1389444,
+     "generation_cost_weighted": 0.0,
+     "n_blocks": 36,
+     "res_curtailment_definitional_unweighted_sum": 1.4930020979937129
+    },
+    "TSO": {
+     "block_gross_weighted": 445665710.7127318,
+     "flexibility_cost_weighted": 0.0,
+     "generation_cost_weighted": 445666307.6155093,
+     "n_blocks": 12,
+     "res_curtailment_definitional_unweighted_sum": -0.04609955859345323
+    }
+   },
+   "gross_operational_cost": 653873702.1876609,
+   "identity_residual_eur": 2.384185791015625e-07,
+   "sum_of_block_gross": 653873702.1876612
+  },
+  "P_NRF": {
+   "DSO_residual": 228938011.81323504,
+   "TSO_block_gross_weighted": 515832298.77392983,
+   "gross_operational_cost": 744770310.5871649
+  },
+  "convention": "Q = gross, settlement excluded; TN = the sum over the 12 TSO blocks of the block gross (weighted); DN = the 36 DSO blocks; TN conventional = TSO generation_cost; DN flexibility = DSO flexibility_cost_internal; for Q(P_NRF) the TN term is the arm's TSO block_components and the DN term the residual (the W124 method, Table 12 / Fig. 5(b))",
+  "curtailment_definition": "P_NRF: the Table 12 / E.23 column (report_v3 curtailment_table phase A, by agent, mwh_day_weighted / 1000). C_NRF / C_OPEN: the record's res_curtailment_definitional_at_weight_1 (component levels, unweighted per representative day, signed) x the instance day weight (read from the price-taker arm's per-block day_weight) / 1000 -- the coordinated cells' measure; its equivalence with the phase-A curtailment definition is NOT confirmed (Table 12 reports dashes for the coordinated row)",
+  "curtailment_gwh": {
+   "C_NRF": {
+    "DSO": 0.6815271258270634,
+    "TSO": -0.021006825001101775
+   },
+   "C_OPEN": {
+    "DSO": 0.6816614408448545,
+    "TSO": -0.021006826875664467
+   },
+   "P_NRF": {
+    "DSO": 0.5759993476596375,
+    "TSO": 807.6498725410403
+   }
+  },
+  "difference_1_P_NRF_minus_C_NRF": {
+   "dDN_residual": 20836855.976376474,
+   "dTN": 70039288.54198271
+  },
+  "difference_2_C_NRF_minus_C_OPEN": {
+   "dDN_block_gross": -106835.63807052374,
+   "dDN_flexibility": -106835.63807031512,
+   "dTN_block_gross": 127299.51921534538,
+   "dTN_conventional": 127299.51921534538
+  }
+ },
+ "difference_1": {
+  "H3b_90p9_pm_0p1_MEUR_and_12p2_percent": {
+   "holds": true,
+   "statement": "H3b: Q(P_NRF) - Q(C_NRF) = 90.9 M EUR +- 0.1 M EUR, 12.2 % at one decimal"
+  },
+  "Q_C_NRF": 653894166.0688057,
+  "Q_P_NRF": 744770310.5871649,
+  "Q_P_NRF_source": "data/SRP1/Results/P515S53/w116_benchmark_nrf/report_v3/report_v3.json per_arm_nrf.price_taker.q_best (best start warm_from_certified)",
+  "admm_cell_measure": 71926.10724064271,
+  "admm_cell_measure_definition": "max(the C_NRF certification band (or the harness bar if uncertified), the between-configuration spread of Q at C* = claim.bands_eur.coordinated_reproducibility_0.011pct)",
+  "between_configuration_spread_at_cstar": 71926.10724064271,
+  "definition": "Q(P_NRF) - Q(C_NRF), relative to Q(P_NRF) (coordination under NRF)",
+  "difference_eur": 90876144.51835918,
+  "percent_one_decimal": 12.2,
+  "relative_to_Q_P_NRF": 0.1220190214708128,
+  "resolved_under_the_declared_procedure": true,
+  "rule": "plan section 3 (clarification 5): resolved only if it exceeds three times each of the two measures; the two are reported side by side, never combined; \"determinate\" is reserved for ADMM pairs under rule v6",
+  "static_three_start_spread_s": 0.004241466522216797
+ },
+ "difference_2": {
+  "H3a_positive_and_within_resolution_lt_2tau": {
+   "holds": false,
+   "statement": "H3a: Q(C_NRF) - Q(C_OPEN) is positive and within resolution (< 2 tau = 9.1 k EUR)",
+   "two_tau": 9078.136550000001
+  },
+  "Q_C_NRF": 653894166.0688057,
+  "Q_C_OPEN": 653873702.1876609,
+  "Q_C_OPEN_source": "data/SRP1/Results/P515S53/w160_step6_frozen/frozen_step6_tables_v1_590088fe.json tables.cells[eval_key d110bd1a5977df1e] (E.21 row 1, x0 settled (W101 d110bd1a, certified at 181))",
+  "definition": "Q(C_NRF) - Q(C_OPEN), relative to Q(C_NRF) (permitting reverse flow under coordination)",
+  "difference_Qcc_report_only": 20728.343554496765,
+  "difference_eur": 20463.88114476204,
+  "relative_to_Q_C_NRF": 3.1295402538594814e-05,
+  "resolution": {
+   "bands": [
+    4155.219340801239,
+    4209.1713362932205
+   ],
+   "binding_term": "3 x larger bar",
+   "margin_Q": 20463.88114476204,
+   "margin_Qcc": 20728.343554496765,
+   "margin_over_threshold": 1.620578771908061,
+   "rule": "rule v6 (certified pair)",
+   "sign": 1,
+   "threshold": 12627.514008879662,
+   "verdict": "determinate"
+  }
+ },
+ "eval_key": "35b275180d897e4c123c37839b91f50b01454bb24085685d26e9d2b33346e12f",
+ "k_star_or_end": 206,
+ "nrf_terminal": {
+  "binding_by_block_row_body": {
+   "definition": "per block: the minimum NRF row body (MW) and the number of row indices with body <= the binding tolerance (W183c row_counts_per_block)",
+   "n_rows_body_le_tol_total": {
+    "DSO5": 0,
+    "DSO7": 4,
+    "DSO9": 0,
+    "TSO": 4
+   },
+   "per_block": {
+    "DSO5": {
+     "2025|Autumn": {
+      "min_body_mw": 20.410362984808113,
+      "n_active": 24,
+      "n_body_le_tol": 0,
+      "n_indices": 24
+     },
+     "2025|Spring": {
+      "min_body_mw": 9.327766348428506,
+      "n_active": 24,
+      "n_body_le_tol": 0,
+      "n_indices": 24
+     },
+     "2025|Summer": {
+      "min_body_mw": 9.278538046991843,
+      "n_active": 24,
+      "n_body_le_tol": 0,
+      "n_indices": 24
+     },
+     "2025|Winter": {
+      "min_body_mw": 15.374521078462031,
+      "n_active": 24,
+      "n_body_le_tol": 0,
+      "n_indices": 24
+     },
+     "2030|Autumn": {
+      "min_body_mw": 27.951798700752555,
+      "n_active": 24,
+      "n_body_le_tol": 0,
+      "n_indices": 24
+     },
+     "2030|Spring": {
+      "min_body_mw": 14.709615176368596,
+      "n_active": 24,
+      "n_body_le_tol": 0,
+      "n_indices": 24
+     },
+     "2030|Summer": {
+      "min_body_mw": 13.384316743649983,
+      "n_active": 24,
+      "n_body_le_tol": 0,
+      "n_indices": 24
+     },
+     "2030|Winter": {
+      "min_body_mw": 25.318819851472828,
+      "n_active": 24,
+      "n_body_le_tol": 0,
+      "n_indices": 24
+     },
+     "2035|Autumn": {
+      "min_body_mw": 23.46277928167611,
+      "n_active": 24,
+      "n_body_le_tol": 0,
+      "n_indices": 24
+     },
+     "2035|Spring": {
+      "min_body_mw": 14.539745333526632,
+      "n_active": 24,
+      "n_body_le_tol": 0,
+      "n_indices": 24
+     },
+     "2035|Summer": {
+      "min_body_mw": 15.71714289469722,
+      "n_active": 24,
+      "n_body_le_tol": 0,
+      "n_indices": 24
+     },
+     "2035|Winter": {
+      "min_body_mw": 28.185155063615458,
+      "n_active": 24,
+      "n_body_le_tol": 0,
+      "n_indices": 24
+     }
+    },
+    "DSO7": {
+     "2025|Autumn": {
+      "min_body_mw": -9.424306885197034e-07,
+      "n_active": 24,
+      "n_body_le_tol": 1,
+      "n_indices": 24
+     },
+     "2025|Spring": {
+      "min_body_mw": -9.944781205471365e-07,
+      "n_active": 24,
+      "n_body_le_tol": 2,
+      "n_indices": 24
+     },
+     "2025|Summer": {
+      "min_body_mw": -9.905120185621985e-07,
+      "n_active": 24,
+      "n_body_le_tol": 1,
+      "n_indices": 24
+     },
+     "2025|Winter": {
+      "min_body_mw": 2.5232413778360705,
+      "n_active": 24,
+      "n_body_le_tol": 0,
+      "n_indices": 24
+     },
+     "2030|Autumn": {
+      "min_body_mw": 14.24382477731721,
+      "n_active": 24,
+      "n_body_le_tol": 0,
+      "n_indices": 24
+     },
+     "2030|Spring": {
+      "min_body_mw": 6.539333096345572,
+      "n_active": 24,
+      "n_body_le_tol": 0,
+      "n_indices": 24
+     },
+     "2030|Summer": {
+      "min_body_mw": 5.791118732739664,
+      "n_active": 24,
+      "n_body_le_tol": 0,
+      "n_indices": 24
+     },
+     "2030|Winter": {
+      "min_body_mw": 9.66988180476958,
+      "n_active": 24,
+      "n_body_le_tol": 0,
+      "n_indices": 24
+     },
+     "2035|Autumn": {
+      "min_body_mw": 14.522320277581802,
+      "n_active": 24,
+      "n_body_le_tol": 0,
+      "n_indices": 24
+     },
+     "2035|Spring": {
+      "min_body_mw": 6.263070520065289,
+      "n_active": 24,
+      "n_body_le_tol": 0,
+      "n_indices": 24
+     },
+     "2035|Summer": {
+      "min_body_mw": 6.203532362801238,
+      "n_active": 24,
+      "n_body_le_tol": 0,
+      "n_indices": 24
+     },
+     "2035|Winter": {
+      "min_body_mw": 12.056404312280657,
+      "n_active": 24,
+      "n_body_le_tol": 0,
+      "n_indices": 24
+     }
+    },
+    "DSO9": {
+     "2025|Autumn": {
+      "min_body_mw": 23.473473521806625,
+      "n_active": 24,
+      "n_body_le_tol": 0,
+      "n_indices": 24
+     },
+     "2025|Spring": {
+      "min_body_mw": 6.615583310467866,
+      "n_active": 24,
+      "n_body_le_tol": 0,
+      "n_indices": 24
+     },
+     "2025|Summer": {
+      "min_body_mw": 5.517445453814069,
+      "n_active": 24,
+      "n_body_le_tol": 0,
+      "n_indices": 24
+     },
+     "2025|Winter": {
+      "min_body_mw": 20.619232371591025,
+      "n_active": 24,
+      "n_body_le_tol": 0,
+      "n_indices": 24
+     },
+     "2030|Autumn": {
+      "min_body_mw": 21.058089186921368,
+      "n_active": 24,
+      "n_body_le_tol": 0,
+      "n_indices": 24
+     },
+     "2030|Spring": {
+      "min_body_mw": 8.395217214914325,
+      "n_active": 24,
+      "n_body_le_tol": 0,
+      "n_indices": 24
+     },
+     "2030|Summer": {
+      "min_body_mw": 7.086009465658595,
+      "n_active": 24,
+      "n_body_le_tol": 0,
+      "n_indices": 24
+     },
+     "2030|Winter": {
+      "min_body_mw": 20.57772331711832,
+      "n_active": 24,
+      "n_body_le_tol": 0,
+      "n_indices": 24
+     },
+     "2035|Autumn": {
+      "min_body_mw": 24.350306302518852,
+      "n_active": 24,
+      "n_body_le_tol": 0,
+      "n_indices": 24
+     },
+     "2035|Spring": {
+      "min_body_mw": 6.495779361877467,
+      "n_active": 24,
+      "n_body_le_tol": 0,
+      "n_indices": 24
+     },
+     "2035|Summer": {
+      "min_body_mw": 9.094464386090218,
+      "n_active": 24,
+      "n_body_le_tol": 0,
+      "n_indices": 24
+     },
+     "2035|Winter": {
+      "min_body_mw": 23.030012576251284,
+      "n_active": 24,
+      "n_body_le_tol": 0,
+      "n_indices": 24
+     }
+    },
+    "TSO": {
+     "2025|Autumn": {
+      "min_body_mw": -5.50649176256357e-07,
+      "n_active": 72,
+      "n_body_le_tol": 1,
+      "n_indices": 72
+     },
+     "2025|Spring": {
+      "min_body_mw": -5.253882662259457e-07,
+      "n_active": 72,
+      "n_body_le_tol": 2,
+      "n_indices": 72
+     },
+     "2025|Summer": {
+      "min_body_mw": -6.533411645026632e-07,
+      "n_active": 72,
+      "n_body_le_tol": 1,
+      "n_indices": 72
+     },
+     "2025|Winter": {
+      "min_body_mw": 2.523231759970357,
+      "n_active": 72,
+      "n_body_le_tol": 0,
+      "n_indices": 72
+     },
+     "2030|Autumn": {
+      "min_body_mw": 14.243824776472696,
+      "n_active": 72,
+      "n_body_le_tol": 0,
+      "n_indices": 72
+     },
+     "2030|Spring": {
+      "min_body_mw": 6.539331736095138,
+      "n_active": 72,
+      "n_body_le_tol": 0,
+      "n_indices": 72
+     },
+     "2030|Summer": {
+      "min_body_mw": 5.791087583866411,
+      "n_active": 72,
+      "n_body_le_tol": 0,
+      "n_indices": 72
+     },
+     "2030|Winter": {
+      "min_body_mw": 9.669881973357363,
+      "n_active": 72,
+      "n_body_le_tol": 0,
+      "n_indices": 72
+     },
+     "2035|Autumn": {
+      "min_body_mw": 14.522324936178466,
+      "n_active": 72,
+      "n_body_le_tol": 0,
+      "n_indices": 72
+     },
+     "2035|Spring": {
+      "min_body_mw": 6.2630397991702775,
+      "n_active": 72,
+      "n_body_le_tol": 0,
+      "n_indices": 72
+     },
+     "2035|Summer": {
+      "min_body_mw": 6.203533559809548,
+      "n_active": 72,
+      "n_body_le_tol": 0,
+      "n_indices": 72
+     },
+     "2035|Winter": {
+      "min_body_mw": 12.056404308794013,
+      "n_active": 72,
+      "n_body_le_tol": 0,
+      "n_indices": 72
+     }
+    }
+   }
+  },
+  "binding_hours_expected_value_rule": {
+   "definition": "an hour (node, year, day, hour) is binding on a side when that side's expected interface P from shared_resources_planning._get_interface_reporting_detail (p_int_tso_expected_mw / p_int_dso_expected_mw, MW, DN-import positive) is <= binding_tolerance_mw",
+   "hours": [
+    {
+     "binding_dso": true,
+     "binding_tso": true,
+     "day": "Spring",
+     "hour": 1,
+     "node": "7",
+     "p_int_dso_expected_mw": -8.805633921547084e-07,
+     "p_int_tso_expected_mw": -5.253882677538278e-07,
+     "year": "2025"
+    },
+    {
+     "binding_dso": true,
+     "binding_tso": true,
+     "day": "Spring",
+     "hour": 21,
+     "node": "7",
+     "p_int_dso_expected_mw": -9.944781205471365e-07,
+     "p_int_tso_expected_mw": -5.002048160896578e-07,
+     "year": "2025"
+    },
+    {
+     "binding_dso": true,
+     "binding_tso": true,
+     "day": "Summer",
+     "hour": 21,
+     "node": "7",
+     "p_int_dso_expected_mw": -9.905120185621985e-07,
+     "p_int_tso_expected_mw": -6.533411620025098e-07,
+     "year": "2025"
+    },
+    {
+     "binding_dso": true,
+     "binding_tso": true,
+     "day": "Autumn",
+     "hour": 18,
+     "node": "7",
+     "p_int_dso_expected_mw": -9.424306885197034e-07,
+     "p_int_tso_expected_mw": -5.506491773969059e-07,
+     "year": "2025"
+    }
+   ],
+   "n_binding_hours": 4
+  },
+  "binding_tolerance_mw": 0.001,
+  "checks": {
+   "dso_n_active_288_each": true,
+   "dso_n_active_total_864": true,
+   "status_written": true,
+   "tso_n_active_864": true
+  },
+  "error": null,
+  "measures_coincide_note": "at one scenario the expected-value rule and the per-block row-body measure read the same interface quantity, so they coincide (Addendum 85 ruling 4 (x)); both are reported",
+  "n_active_per_copy_ok": true,
+  "per_node_minima": {
+   "5": {
+    "min_p_int_dso_expected_mw": 9.278538046991843,
+    "min_p_int_tso_expected_mw": 9.278537838687352,
+    "n_binding_hours": 0,
+    "n_hours": 288,
+    "n_hours_below_minus_tol_dso": 0,
+    "n_hours_below_minus_tol_tso": 0
+   },
+   "7": {
+    "min_p_int_dso_expected_mw": -9.944781205471365e-07,
+    "min_p_int_tso_expected_mw": -6.533411620025098e-07,
+    "n_binding_hours": 4,
+    "n_hours": 288,
+    "n_hours_below_minus_tol_dso": 0,
+    "n_hours_below_minus_tol_tso": 0
+   },
+   "9": {
+    "min_p_int_dso_expected_mw": 5.517445453814069,
+    "min_p_int_tso_expected_mw": 5.517441554489673,
+    "n_binding_hours": 0,
+    "n_hours": 288,
+    "n_hours_below_minus_tol_dso": 0,
+    "n_hours_below_minus_tol_tso": 0
+   }
+  },
+  "row": "interface_no_reverse_flow_p",
+  "row_counts_per_network": {
+   "DSO5": {
+    "n_active": 288,
+    "n_blocks": 12,
+    "n_blocks_with_row": 12,
+    "n_indices": 288
+   },
+   "DSO7": {
+    "n_active": 288,
+    "n_blocks": 12,
+    "n_blocks_with_row": 12,
+    "n_indices": 288
+   },
+   "DSO9": {
+    "n_active": 288,
+    "n_blocks": 12,
+    "n_blocks_with_row": 12,
+    "n_indices": 288
+   },
+   "TSO": {
+    "n_active": 864,
+    "n_blocks": 12,
+    "n_blocks_with_row": 12,
+    "n_indices": 864
+   }
+  },
+  "status": "written"
+ },
+ "objective_convention": "Q = certified gross_operational_cost, contracted interface settlement EXCLUDED (Addendum 83 ruling 2); salvage reported separately; net = gross - terminal salvage",
+ "planted": false,
+ "records_read": {
+  "benchmark_report_v3": {
+   "path": "data/SRP1/Results/P515S53/w116_benchmark_nrf/report_v3/report_v3.json",
+   "sha256": "bf6dbf7247a922020c58e7b9502f63539c0bbf048447c3e33bbbf202c152694a"
+  },
+  "c_open_component_levels": {
+   "path": "data/SRP1/Results/P515S53/w101_srp1_continuation/campaign_s53_w101_srp1_cont_x0/evals/d110bd1a5977df1e_x0/component_levels_terminal.json",
+   "sha256": "033c1e7eac919969c0cdfbfbb8969484b49b2e83b09a36cd171e7c3068a3a3d1"
+  },
+  "c_open_evaluation_record": {
+   "path": "data/SRP1/Results/P515S53/w101_srp1_continuation/campaign_s53_w101_srp1_cont_x0/evals/d110bd1a5977df1e_x0/evaluation_record.json",
+   "sha256": "c08fa4335c7e266d6d61439fe36d28d56cc7ead31b4956d0f2c6d1fe2b0e8956"
+  },
+  "price_taker_best_arm": {
+   "path": "data/SRP1/Results/P515S53/w116_benchmark_nrf/nrf_arm_price_taker_warm_from_certified_r2/nrf_arm_price_taker_warm_from_certified_r2.json",
+   "sha256": "b0362c511c8c490bc4f90f8680c62bd6cdf03ab20cf6f19587e65c703ab87c2b"
+  },
+  "step6_tables": {
+   "path": "data/SRP1/Results/P515S53/w160_step6_frozen/frozen_step6_tables_v1_590088fe.json",
+   "sha256": "590088fe6b364c265c97998c5491edea7ca70baad0dbe2ba5150273656d9b6f4"
+  },
+  "w182f_records": {
+   "path": "data/SRP1/Results/P515S53/w182f_records/w182f_records.json",
+   "sha256": "405c79c9e146600421a76443692fb23eb69d0d35d90358de14c899d66ddda085"
+  }
+ },
+ "schema": "p515_s55_step7_e3_report_v1",
+ "source": {
+  "results": "data/SRP1/Results/P515S55/e3_cnrf/campaign_s55_step7_e3_cnrf_x0_1x/campaign_results.json",
+  "results_sha256": "0db2edf9af390131bf88a12aae9ff5200894663530a3e9aafea289e00e5bf627",
+  "retry": false
+ },
+ "stage": "P5.15 Addendum 86 ruling 1, W183i (b) -- the Step-7 fixed-plan launcher: E3 (C_NRF), E2 stage 1 (rho0 x s), the 1x unit-neighbourhood screen, the cross-evaluations (declared after W186)",
+ "status": "certified",
+ "stopping_ratio": 0.0014751613208057854,
+ "utc": "2026-10-26T10:58:42.833242+00:00"
+}
