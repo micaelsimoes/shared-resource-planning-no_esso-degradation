@@ -1,0 +1,4717 @@
+{
+ "STOP_FOR_REVIEW": false,
+ "alias": null,
+ "batch_info": {
+  "max_concurrent_observed": 1,
+  "timeline": [
+   {
+    "event": "start",
+    "label": "e2_x0_1x_rho0p5",
+    "pid": 2194,
+    "t": 1793013123.981513
+   },
+   {
+    "event": "end",
+    "exit_code": 0,
+    "label": "e2_x0_1x_rho0p5",
+    "pid": 2194,
+    "t": 1793017502.261334
+   }
+  ]
+ },
+ "campaign_spec_path": "data/SRP1/Results/P515S55/e2_rho/campaign_s55_step7_e2_x0_1x_rho0p5/campaign_spec_s55_step7_e2_x0_1x_rho0p5_b156e6b4.json",
+ "campaign_spec_sha256": "b156e6b47fc24be770b691c3a5b162546beacf5b86677d9e251a9d7de5650bfc",
+ "candidate_key": "8435c71859ddde68e7ae5818b4ff91c03b4171791bcfaa70edcc3ddb52bacb57",
+ "cell": "e2_x0_1x_rho0p5",
+ "eval_key": "64f3605028f1cf8760c772f891c975d50adfb581714cba798897e8f8fb42cf54",
+ "exit_code": 0,
+ "git_head_at_run": "f1cada84af15fc884832df388fbb58ce81a087bd",
+ "guards": {
+  "all_zero": true,
+  "model_build_tripwire": {
+   "ConcreteModel.__init__": 0
+  },
+  "pickle": {
+   "blocked": true,
+   "counts": {
+    "load": 0,
+    "loads": 0
+   }
+  },
+  "solve_guards_ok": true,
+  "solve_profile_guards": {
+   "__main__.PARENT_GUARD": {
+    "counts": {
+     "blocked_exec": 0,
+     "blocked_solve": 0,
+     "permitted_exec": 0,
+     "permitted_solve": 0
+    },
+    "verify_0_failures": []
+   },
+   "p515_s47_phase_b_record.PARENT_GUARD": {
+    "counts": {
+     "blocked_exec": 0,
+     "blocked_solve": 0,
+     "permitted_exec": 0,
+     "permitted_solve": 0
+    },
+    "verify_0_failures": []
+   }
+  }
+ },
+ "launch_index_1_based": 1,
+ "memory_preflight_at_run": {
+  "available_gib": 16.311599731445312,
+  "concurrency": 1,
+  "hw_memsize_gib": 32.0,
+  "page_size": 16384,
+  "pages": {
+   "Anonymous pages": 851860,
+   "Pages free": 5746,
+   "Pages inactive": 936326,
+   "Pages occupied by compressor": 56465,
+   "Pages wired down": 119830
+  },
+  "pass": true,
+  "per_slot_gib": 2.75,
+  "required_gib": 2.75,
+  "rule": "hw.memsize - (wired + anonymous + compressor-occupied pages) x page size >= concurrency x 2.75 GiB (the S47 launcher rule)",
+  "utc": "2026-10-26T11:12:03.922288+00:00"
+ },
+ "objective_convention": "Q = certified gross_operational_cost, contracted interface settlement EXCLUDED (Addendum 83 ruling 2); salvage reported separately; net = gross - terminal salvage",
+ "outcome": {
+  "cell": "e2_x0_1x_rho0p5",
+  "cell_report": {
+   "Q_cc_end": 653873947.7142843,
+   "Q_end": 653874468.0886946,
+   "Q_net_end": 653874468.0886946,
+   "W": 28,
+   "band": [
+    653872021.9926565,
+    653876348.2437536
+   ],
+   "band_width": 4326.251097083092,
+   "branch": "oscillatory",
+   "candidate_canonical": {
+    "investment_year": 2025,
+    "nodes": {
+     "5": [
+      0.0,
+      0.0
+     ],
+     "7": [
+      0.0,
+      0.0
+     ],
+     "9": [
+      0.0,
+      0.0
+     ]
+    }
+   },
+   "candidate_key": "8435c71859ddde68e7ae5818b4ff91c03b4171791bcfaa70edcc3ddb52bacb57",
+   "cell": "e2_x0_1x_rho0p5",
+   "criterion_version": 6,
+   "cycles_run": 177,
+   "end_cycle": 177,
+   "eval_key": "64f3605028f1cf8760c772f891c975d50adfb581714cba798897e8f8fb42cf54",
+   "flex_price_multiplier": null,
+   "gap_refusals": [],
+   "harness_bar_eur": 324.5909388065338,
+   "k0_run": 94,
+   "k_star": 177,
+   "lapse_events": [
+    {
+     "boyd_k": false,
+     "cycle": 96,
+     "k0_before": 94,
+     "q_is_none": false
+    }
+   ],
+   "non_clean_cycles": [],
+   "nrf_option": null,
+   "objective_convention": "Q = certified gross_operational_cost, contracted interface settlement EXCLUDED (Addendum 83 ruling 2); salvage reported separately; net = gross - terminal salvage",
+   "phase": "e2",
+   "range_over_tau": 0.953114347477642,
+   "record_status": "certified",
+   "rho0_scale": 0.5,
+   "rule_cap": 203,
+   "status": "certified",
+   "stopping_ratio_definition": "rule ten: |Q[k] - Q[k-1]| / objective_tolerance at the last cycle (the record's rule_ten.terminal_step_over_threshold)",
+   "stopping_ratio_terminal_step_over_threshold": 0.0042328046980841935,
+   "t_sum_end": -520.3744102754246,
+   "terminal_salvage_value_end": 0.0,
+   "terminal_step_abs": 276.77240920066833,
+   "terminal_step_over_EPS0": 6.09755994914327,
+   "vetoes": [],
+   "view": {
+    "Q": 653874468.0886946,
+    "Q_cc": 653873947.7142843,
+    "Q_net": 653874468.0886946,
+    "band": 4326.251097083092,
+    "bar": 324.5909388065338,
+    "gap": null,
+    "gap_refused": null,
+    "gated": false,
+    "label": null,
+    "salvage": 0.0,
+    "slack": null,
+    "status": "certified",
+    "t": -520.3744102754246
+   },
+   "window": [
+    150,
+    177
+   ]
+  },
+  "eval_key": "64f3605028f1cf8760c772f891c975d50adfb581714cba798897e8f8fb42cf54",
+  "faults": [],
+  "phase": "e2",
+  "record_status": "certified",
+  "rho0_scale_applied_in_child_checks": {
+   "before_equals_replaced_record": true,
+   "esso_entry_present": true,
+   "every_entry_equals_s39_times_s_exactly": true,
+   "network_set_unchanged_per_group": true,
+   "previous_iter_ess_off": true
+  },
+  "rho_model_counts_equal_the_declared_blocks": true,
+  "rho_read_back": {
+   "cycle_1": {
+    "cycle": 1,
+    "ess": {
+     "action": "exempt (fixed)",
+     "bitwise": true,
+     "recorded": 0.005000000000000002,
+     "replicated": 0.005000000000000002,
+     "x": 0.005
+    },
+    "pf": {
+     "action": "held",
+     "bitwise": true,
+     "recorded": 0.0990000000000001,
+     "replicated": 0.0990000000000001,
+     "x": 0.099
+    },
+    "v": {
+     "action": "increased",
+     "bitwise": true,
+     "recorded": 0.005774999999999999,
+     "replicated": 0.005774999999999999,
+     "x": 0.005775000000000001
+    }
+   },
+   "errors": [],
+   "holds": true,
+   "mismatches": [],
+   "n": {
+    "ess": 51,
+    "pf": 48,
+    "v": 48
+   },
+   "n_checks": 531,
+   "n_cycles": 177,
+   "per_cycle": [
+    {
+     "cycle": 1,
+     "ess": {
+      "action": "exempt (fixed)",
+      "bitwise": true,
+      "recorded": 0.005000000000000002,
+      "replicated": 0.005000000000000002,
+      "x": 0.005
+     },
+     "pf": {
+      "action": "held",
+      "bitwise": true,
+      "recorded": 0.0990000000000001,
+      "replicated": 0.0990000000000001,
+      "x": 0.099
+     },
+     "v": {
+      "action": "increased",
+      "bitwise": true,
+      "recorded": 0.005774999999999999,
+      "replicated": 0.005774999999999999,
+      "x": 0.005775000000000001
+     }
+    },
+    {
+     "cycle": 2,
+     "ess": {
+      "action": "exempt (fixed)",
+      "bitwise": true,
+      "recorded": 0.005000000000000002,
+      "replicated": 0.005000000000000002,
+      "x": 0.005
+     },
+     "pf": {
+      "action": "held",
+      "bitwise": true,
+      "recorded": 0.0990000000000001,
+      "replicated": 0.0990000000000001,
+      "x": 0.099
+     },
+     "v": {
+      "action": "increased",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 3,
+     "ess": {
+      "action": "exempt (fixed)",
+      "bitwise": true,
+      "recorded": 0.005000000000000002,
+      "replicated": 0.005000000000000002,
+      "x": 0.005
+     },
+     "pf": {
+      "action": "held",
+      "bitwise": true,
+      "recorded": 0.0990000000000001,
+      "replicated": 0.0990000000000001,
+      "x": 0.099
+     },
+     "v": {
+      "action": "held",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 4,
+     "ess": {
+      "action": "exempt (fixed)",
+      "bitwise": true,
+      "recorded": 0.005000000000000002,
+      "replicated": 0.005000000000000002,
+      "x": 0.005
+     },
+     "pf": {
+      "action": "held",
+      "bitwise": true,
+      "recorded": 0.0990000000000001,
+      "replicated": 0.0990000000000001,
+      "x": 0.099
+     },
+     "v": {
+      "action": "held",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 5,
+     "ess": {
+      "action": "increased",
+      "bitwise": true,
+      "recorded": 0.007500000000000006,
+      "replicated": 0.007500000000000006,
+      "x": 0.0075
+     },
+     "pf": {
+      "action": "held",
+      "bitwise": true,
+      "recorded": 0.0990000000000001,
+      "replicated": 0.0990000000000001,
+      "x": 0.099
+     },
+     "v": {
+      "action": "held",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 6,
+     "ess": {
+      "action": "increased",
+      "bitwise": true,
+      "recorded": 0.011249999999999993,
+      "replicated": 0.011249999999999993,
+      "x": 0.01125
+     },
+     "pf": {
+      "action": "held",
+      "bitwise": true,
+      "recorded": 0.0990000000000001,
+      "replicated": 0.0990000000000001,
+      "x": 0.099
+     },
+     "v": {
+      "action": "held",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 7,
+     "ess": {
+      "action": "increased",
+      "bitwise": true,
+      "recorded": 0.016874999999999984,
+      "replicated": 0.016874999999999984,
+      "x": 0.016875
+     },
+     "pf": {
+      "action": "held",
+      "bitwise": true,
+      "recorded": 0.0990000000000001,
+      "replicated": 0.0990000000000001,
+      "x": 0.099
+     },
+     "v": {
+      "action": "held",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 8,
+     "ess": {
+      "action": "increased",
+      "bitwise": true,
+      "recorded": 0.025312500000000005,
+      "replicated": 0.025312500000000005,
+      "x": 0.0253125
+     },
+     "pf": {
+      "action": "held",
+      "bitwise": true,
+      "recorded": 0.0990000000000001,
+      "replicated": 0.0990000000000001,
+      "x": 0.099
+     },
+     "v": {
+      "action": "held",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 9,
+     "ess": {
+      "action": "increased",
+      "bitwise": true,
+      "recorded": 0.03796875000000005,
+      "replicated": 0.03796875000000005,
+      "x": 0.03796875
+     },
+     "pf": {
+      "action": "held",
+      "bitwise": true,
+      "recorded": 0.0990000000000001,
+      "replicated": 0.0990000000000001,
+      "x": 0.099
+     },
+     "v": {
+      "action": "held",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 10,
+     "ess": {
+      "action": "held",
+      "bitwise": true,
+      "recorded": 0.03796875000000005,
+      "replicated": 0.03796875000000005,
+      "x": 0.03796875
+     },
+     "pf": {
+      "action": "held",
+      "bitwise": true,
+      "recorded": 0.0990000000000001,
+      "replicated": 0.0990000000000001,
+      "x": 0.099
+     },
+     "v": {
+      "action": "held",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 11,
+     "ess": {
+      "action": "increased",
+      "bitwise": true,
+      "recorded": 0.056953125000000035,
+      "replicated": 0.056953125000000035,
+      "x": 0.05695312500000001
+     },
+     "pf": {
+      "action": "held",
+      "bitwise": true,
+      "recorded": 0.0990000000000001,
+      "replicated": 0.0990000000000001,
+      "x": 0.099
+     },
+     "v": {
+      "action": "held",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 12,
+     "ess": {
+      "action": "increased",
+      "bitwise": true,
+      "recorded": 0.08542968749999999,
+      "replicated": 0.08542968749999999,
+      "x": 0.08542968750000002
+     },
+     "pf": {
+      "action": "held",
+      "bitwise": true,
+      "recorded": 0.0990000000000001,
+      "replicated": 0.0990000000000001,
+      "x": 0.099
+     },
+     "v": {
+      "action": "held",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 13,
+     "ess": {
+      "action": "increased",
+      "bitwise": true,
+      "recorded": 0.12814453125000017,
+      "replicated": 0.12814453125000017,
+      "x": 0.12814453125000003
+     },
+     "pf": {
+      "action": "held",
+      "bitwise": true,
+      "recorded": 0.0990000000000001,
+      "replicated": 0.0990000000000001,
+      "x": 0.099
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 14,
+     "ess": {
+      "action": "held",
+      "bitwise": true,
+      "recorded": 0.12814453125000017,
+      "replicated": 0.12814453125000017,
+      "x": 0.12814453125000003
+     },
+     "pf": {
+      "action": "held",
+      "bitwise": true,
+      "recorded": 0.0990000000000001,
+      "replicated": 0.0990000000000001,
+      "x": 0.099
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 15,
+     "ess": {
+      "action": "increased",
+      "bitwise": true,
+      "recorded": 0.19221679687499996,
+      "replicated": 0.19221679687499996,
+      "x": 0.19221679687500004
+     },
+     "pf": {
+      "action": "held",
+      "bitwise": true,
+      "recorded": 0.0990000000000001,
+      "replicated": 0.0990000000000001,
+      "x": 0.099
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 16,
+     "ess": {
+      "action": "increased",
+      "bitwise": true,
+      "recorded": 0.28832519531250034,
+      "replicated": 0.28832519531250034,
+      "x": 0.28832519531250006
+     },
+     "pf": {
+      "action": "held",
+      "bitwise": true,
+      "recorded": 0.0990000000000001,
+      "replicated": 0.0990000000000001,
+      "x": 0.099
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 17,
+     "ess": {
+      "action": "increased",
+      "bitwise": true,
+      "recorded": 0.43248779296875023,
+      "replicated": 0.43248779296875023,
+      "x": 0.43248779296875006
+     },
+     "pf": {
+      "action": "held",
+      "bitwise": true,
+      "recorded": 0.0990000000000001,
+      "replicated": 0.0990000000000001,
+      "x": 0.099
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 18,
+     "ess": {
+      "action": "increased",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held",
+      "bitwise": true,
+      "recorded": 0.0990000000000001,
+      "replicated": 0.0990000000000001,
+      "x": 0.099
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 19,
+     "ess": {
+      "action": "increased",
+      "bitwise": true,
+      "recorded": 0.9730975341796869,
+      "replicated": 0.9730975341796869,
+      "x": 0.9730975341796877
+     },
+     "pf": {
+      "action": "held",
+      "bitwise": true,
+      "recorded": 0.0990000000000001,
+      "replicated": 0.0990000000000001,
+      "x": 0.099
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 20,
+     "ess": {
+      "action": "decreased",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held",
+      "bitwise": true,
+      "recorded": 0.0990000000000001,
+      "replicated": 0.0990000000000001,
+      "x": 0.099
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 21,
+     "ess": {
+      "action": "increased",
+      "bitwise": true,
+      "recorded": 0.9730975341796869,
+      "replicated": 0.9730975341796869,
+      "x": 0.9730975341796877
+     },
+     "pf": {
+      "action": "held",
+      "bitwise": true,
+      "recorded": 0.0990000000000001,
+      "replicated": 0.0990000000000001,
+      "x": 0.099
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 22,
+     "ess": {
+      "action": "held",
+      "bitwise": true,
+      "recorded": 0.9730975341796869,
+      "replicated": 0.9730975341796869,
+      "x": 0.9730975341796877
+     },
+     "pf": {
+      "action": "held",
+      "bitwise": true,
+      "recorded": 0.0990000000000001,
+      "replicated": 0.0990000000000001,
+      "x": 0.099
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 23,
+     "ess": {
+      "action": "held",
+      "bitwise": true,
+      "recorded": 0.9730975341796869,
+      "replicated": 0.9730975341796869,
+      "x": 0.9730975341796877
+     },
+     "pf": {
+      "action": "held",
+      "bitwise": true,
+      "recorded": 0.0990000000000001,
+      "replicated": 0.0990000000000001,
+      "x": 0.099
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 24,
+     "ess": {
+      "action": "held",
+      "bitwise": true,
+      "recorded": 0.9730975341796869,
+      "replicated": 0.9730975341796869,
+      "x": 0.9730975341796877
+     },
+     "pf": {
+      "action": "held",
+      "bitwise": true,
+      "recorded": 0.0990000000000001,
+      "replicated": 0.0990000000000001,
+      "x": 0.099
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 25,
+     "ess": {
+      "action": "decreased",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held",
+      "bitwise": true,
+      "recorded": 0.0990000000000001,
+      "replicated": 0.0990000000000001,
+      "x": 0.099
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 26,
+     "ess": {
+      "action": "held",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held",
+      "bitwise": true,
+      "recorded": 0.0990000000000001,
+      "replicated": 0.0990000000000001,
+      "x": 0.099
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 27,
+     "ess": {
+      "action": "held",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held",
+      "bitwise": true,
+      "recorded": 0.0990000000000001,
+      "replicated": 0.0990000000000001,
+      "x": 0.099
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 28,
+     "ess": {
+      "action": "held",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held",
+      "bitwise": true,
+      "recorded": 0.0990000000000001,
+      "replicated": 0.0990000000000001,
+      "x": 0.099
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 29,
+     "ess": {
+      "action": "decreased",
+      "bitwise": true,
+      "recorded": 0.43248779296875023,
+      "replicated": 0.43248779296875023,
+      "x": 0.43248779296875006
+     },
+     "pf": {
+      "action": "held",
+      "bitwise": true,
+      "recorded": 0.0990000000000001,
+      "replicated": 0.0990000000000001,
+      "x": 0.099
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 30,
+     "ess": {
+      "action": "held",
+      "bitwise": true,
+      "recorded": 0.43248779296875023,
+      "replicated": 0.43248779296875023,
+      "x": 0.43248779296875006
+     },
+     "pf": {
+      "action": "held",
+      "bitwise": true,
+      "recorded": 0.0990000000000001,
+      "replicated": 0.0990000000000001,
+      "x": 0.099
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 31,
+     "ess": {
+      "action": "held",
+      "bitwise": true,
+      "recorded": 0.43248779296875023,
+      "replicated": 0.43248779296875023,
+      "x": 0.43248779296875006
+     },
+     "pf": {
+      "action": "held",
+      "bitwise": true,
+      "recorded": 0.0990000000000001,
+      "replicated": 0.0990000000000001,
+      "x": 0.099
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 32,
+     "ess": {
+      "action": "held",
+      "bitwise": true,
+      "recorded": 0.43248779296875023,
+      "replicated": 0.43248779296875023,
+      "x": 0.43248779296875006
+     },
+     "pf": {
+      "action": "held",
+      "bitwise": true,
+      "recorded": 0.0990000000000001,
+      "replicated": 0.0990000000000001,
+      "x": 0.099
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 33,
+     "ess": {
+      "action": "held",
+      "bitwise": true,
+      "recorded": 0.43248779296875023,
+      "replicated": 0.43248779296875023,
+      "x": 0.43248779296875006
+     },
+     "pf": {
+      "action": "held",
+      "bitwise": true,
+      "recorded": 0.0990000000000001,
+      "replicated": 0.0990000000000001,
+      "x": 0.099
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 34,
+     "ess": {
+      "action": "held",
+      "bitwise": true,
+      "recorded": 0.43248779296875023,
+      "replicated": 0.43248779296875023,
+      "x": 0.43248779296875006
+     },
+     "pf": {
+      "action": "held",
+      "bitwise": true,
+      "recorded": 0.0990000000000001,
+      "replicated": 0.0990000000000001,
+      "x": 0.099
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 35,
+     "ess": {
+      "action": "increased",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held",
+      "bitwise": true,
+      "recorded": 0.0990000000000001,
+      "replicated": 0.0990000000000001,
+      "x": 0.099
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 36,
+     "ess": {
+      "action": "held",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held",
+      "bitwise": true,
+      "recorded": 0.0990000000000001,
+      "replicated": 0.0990000000000001,
+      "x": 0.099
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 37,
+     "ess": {
+      "action": "held",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held",
+      "bitwise": true,
+      "recorded": 0.0990000000000001,
+      "replicated": 0.0990000000000001,
+      "x": 0.099
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 38,
+     "ess": {
+      "action": "held",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held",
+      "bitwise": true,
+      "recorded": 0.0990000000000001,
+      "replicated": 0.0990000000000001,
+      "x": 0.099
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 39,
+     "ess": {
+      "action": "held",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held",
+      "bitwise": true,
+      "recorded": 0.0990000000000001,
+      "replicated": 0.0990000000000001,
+      "x": 0.099
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 40,
+     "ess": {
+      "action": "held",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held",
+      "bitwise": true,
+      "recorded": 0.0990000000000001,
+      "replicated": 0.0990000000000001,
+      "x": 0.099
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 41,
+     "ess": {
+      "action": "held",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held",
+      "bitwise": true,
+      "recorded": 0.0990000000000001,
+      "replicated": 0.0990000000000001,
+      "x": 0.099
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 42,
+     "ess": {
+      "action": "held",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held",
+      "bitwise": true,
+      "recorded": 0.0990000000000001,
+      "replicated": 0.0990000000000001,
+      "x": 0.099
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 43,
+     "ess": {
+      "action": "held",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held",
+      "bitwise": true,
+      "recorded": 0.0990000000000001,
+      "replicated": 0.0990000000000001,
+      "x": 0.099
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 44,
+     "ess": {
+      "action": "held",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held",
+      "bitwise": true,
+      "recorded": 0.0990000000000001,
+      "replicated": 0.0990000000000001,
+      "x": 0.099
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 45,
+     "ess": {
+      "action": "held",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held",
+      "bitwise": true,
+      "recorded": 0.0990000000000001,
+      "replicated": 0.0990000000000001,
+      "x": 0.099
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 46,
+     "ess": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held",
+      "bitwise": true,
+      "recorded": 0.0990000000000001,
+      "replicated": 0.0990000000000001,
+      "x": 0.099
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 47,
+     "ess": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held",
+      "bitwise": true,
+      "recorded": 0.0990000000000001,
+      "replicated": 0.0990000000000001,
+      "x": 0.099
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 48,
+     "ess": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held",
+      "bitwise": true,
+      "recorded": 0.0990000000000001,
+      "replicated": 0.0990000000000001,
+      "x": 0.099
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 49,
+     "ess": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held",
+      "bitwise": true,
+      "recorded": 0.0990000000000001,
+      "replicated": 0.0990000000000001,
+      "x": 0.099
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 50,
+     "ess": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held",
+      "bitwise": true,
+      "recorded": 0.0990000000000001,
+      "replicated": 0.0990000000000001,
+      "x": 0.099
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 51,
+     "ess": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held",
+      "bitwise": true,
+      "recorded": 0.0990000000000001,
+      "replicated": 0.0990000000000001,
+      "x": 0.099
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 52,
+     "ess": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held",
+      "bitwise": true,
+      "recorded": 0.0990000000000001,
+      "replicated": 0.0990000000000001,
+      "x": 0.099
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 53,
+     "ess": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held",
+      "bitwise": true,
+      "recorded": 0.0990000000000001,
+      "replicated": 0.0990000000000001,
+      "x": 0.099
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 54,
+     "ess": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held",
+      "bitwise": true,
+      "recorded": 0.0990000000000001,
+      "replicated": 0.0990000000000001,
+      "x": 0.099
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 55,
+     "ess": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held",
+      "bitwise": true,
+      "recorded": 0.0990000000000001,
+      "replicated": 0.0990000000000001,
+      "x": 0.099
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 56,
+     "ess": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "increased",
+      "bitwise": true,
+      "recorded": 0.1485000000000001,
+      "replicated": 0.1485000000000001,
+      "x": 0.14850000000000002
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 57,
+     "ess": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held",
+      "bitwise": true,
+      "recorded": 0.1485000000000001,
+      "replicated": 0.1485000000000001,
+      "x": 0.14850000000000002
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 58,
+     "ess": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held",
+      "bitwise": true,
+      "recorded": 0.1485000000000001,
+      "replicated": 0.1485000000000001,
+      "x": 0.14850000000000002
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 59,
+     "ess": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held",
+      "bitwise": true,
+      "recorded": 0.1485000000000001,
+      "replicated": 0.1485000000000001,
+      "x": 0.14850000000000002
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 60,
+     "ess": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held",
+      "bitwise": true,
+      "recorded": 0.1485000000000001,
+      "replicated": 0.1485000000000001,
+      "x": 0.14850000000000002
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 61,
+     "ess": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "increased",
+      "bitwise": true,
+      "recorded": 0.2227500000000001,
+      "replicated": 0.2227500000000001,
+      "x": 0.22275000000000003
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 62,
+     "ess": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "increased",
+      "bitwise": true,
+      "recorded": 0.33412500000000017,
+      "replicated": 0.33412500000000017,
+      "x": 0.33412500000000006
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 63,
+     "ess": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "increased",
+      "bitwise": true,
+      "recorded": 0.5011875000000002,
+      "replicated": 0.5011875000000002,
+      "x": 0.5011875000000001
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 64,
+     "ess": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "increased",
+      "bitwise": true,
+      "recorded": 0.7517812500000004,
+      "replicated": 0.7517812500000004,
+      "x": 0.7517812500000002
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 65,
+     "ess": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held",
+      "bitwise": true,
+      "recorded": 0.7517812500000004,
+      "replicated": 0.7517812500000004,
+      "x": 0.7517812500000002
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 66,
+     "ess": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held",
+      "bitwise": true,
+      "recorded": 0.7517812500000004,
+      "replicated": 0.7517812500000004,
+      "x": 0.7517812500000002
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 67,
+     "ess": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held",
+      "bitwise": true,
+      "recorded": 0.7517812500000004,
+      "replicated": 0.7517812500000004,
+      "x": 0.7517812500000002
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 68,
+     "ess": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held",
+      "bitwise": true,
+      "recorded": 0.7517812500000004,
+      "replicated": 0.7517812500000004,
+      "x": 0.7517812500000002
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 69,
+     "ess": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held",
+      "bitwise": true,
+      "recorded": 0.7517812500000004,
+      "replicated": 0.7517812500000004,
+      "x": 0.7517812500000002
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 70,
+     "ess": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held",
+      "bitwise": true,
+      "recorded": 0.7517812500000004,
+      "replicated": 0.7517812500000004,
+      "x": 0.7517812500000002
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 71,
+     "ess": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held",
+      "bitwise": true,
+      "recorded": 0.7517812500000004,
+      "replicated": 0.7517812500000004,
+      "x": 0.7517812500000002
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 72,
+     "ess": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held",
+      "bitwise": true,
+      "recorded": 0.7517812500000004,
+      "replicated": 0.7517812500000004,
+      "x": 0.7517812500000002
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 73,
+     "ess": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held",
+      "bitwise": true,
+      "recorded": 0.7517812500000004,
+      "replicated": 0.7517812500000004,
+      "x": 0.7517812500000002
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 74,
+     "ess": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held",
+      "bitwise": true,
+      "recorded": 0.7517812500000004,
+      "replicated": 0.7517812500000004,
+      "x": 0.7517812500000002
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 75,
+     "ess": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.7517812500000004,
+      "replicated": 0.7517812500000004,
+      "x": 0.7517812500000002
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 76,
+     "ess": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.7517812500000004,
+      "replicated": 0.7517812500000004,
+      "x": 0.7517812500000002
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 77,
+     "ess": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.7517812500000004,
+      "replicated": 0.7517812500000004,
+      "x": 0.7517812500000002
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 78,
+     "ess": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.7517812500000004,
+      "replicated": 0.7517812500000004,
+      "x": 0.7517812500000002
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 79,
+     "ess": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.7517812500000004,
+      "replicated": 0.7517812500000004,
+      "x": 0.7517812500000002
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 80,
+     "ess": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.7517812500000004,
+      "replicated": 0.7517812500000004,
+      "x": 0.7517812500000002
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 81,
+     "ess": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.7517812500000004,
+      "replicated": 0.7517812500000004,
+      "x": 0.7517812500000002
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 82,
+     "ess": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.7517812500000004,
+      "replicated": 0.7517812500000004,
+      "x": 0.7517812500000002
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 83,
+     "ess": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.7517812500000004,
+      "replicated": 0.7517812500000004,
+      "x": 0.7517812500000002
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 84,
+     "ess": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.7517812500000004,
+      "replicated": 0.7517812500000004,
+      "x": 0.7517812500000002
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 85,
+     "ess": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.7517812500000004,
+      "replicated": 0.7517812500000004,
+      "x": 0.7517812500000002
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 86,
+     "ess": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.7517812500000004,
+      "replicated": 0.7517812500000004,
+      "x": 0.7517812500000002
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 87,
+     "ess": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.7517812500000004,
+      "replicated": 0.7517812500000004,
+      "x": 0.7517812500000002
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 88,
+     "ess": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.7517812500000004,
+      "replicated": 0.7517812500000004,
+      "x": 0.7517812500000002
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 89,
+     "ess": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.7517812500000004,
+      "replicated": 0.7517812500000004,
+      "x": 0.7517812500000002
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 90,
+     "ess": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.7517812500000004,
+      "replicated": 0.7517812500000004,
+      "x": 0.7517812500000002
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 91,
+     "ess": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.7517812500000004,
+      "replicated": 0.7517812500000004,
+      "x": 0.7517812500000002
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 92,
+     "ess": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.7517812500000004,
+      "replicated": 0.7517812500000004,
+      "x": 0.7517812500000002
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 93,
+     "ess": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.7517812500000004,
+      "replicated": 0.7517812500000004,
+      "x": 0.7517812500000002
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 94,
+     "ess": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.7517812500000004,
+      "replicated": 0.7517812500000004,
+      "x": 0.7517812500000002
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 95,
+     "ess": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.7517812500000004,
+      "replicated": 0.7517812500000004,
+      "x": 0.7517812500000002
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 96,
+     "ess": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.7517812500000004,
+      "replicated": 0.7517812500000004,
+      "x": 0.7517812500000002
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 97,
+     "ess": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.7517812500000004,
+      "replicated": 0.7517812500000004,
+      "x": 0.7517812500000002
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 98,
+     "ess": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.7517812500000004,
+      "replicated": 0.7517812500000004,
+      "x": 0.7517812500000002
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 99,
+     "ess": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.7517812500000004,
+      "replicated": 0.7517812500000004,
+      "x": 0.7517812500000002
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 100,
+     "ess": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.7517812500000004,
+      "replicated": 0.7517812500000004,
+      "x": 0.7517812500000002
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 101,
+     "ess": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.7517812500000004,
+      "replicated": 0.7517812500000004,
+      "x": 0.7517812500000002
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 102,
+     "ess": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.7517812500000004,
+      "replicated": 0.7517812500000004,
+      "x": 0.7517812500000002
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 103,
+     "ess": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.7517812500000004,
+      "replicated": 0.7517812500000004,
+      "x": 0.7517812500000002
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 104,
+     "ess": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.7517812500000004,
+      "replicated": 0.7517812500000004,
+      "x": 0.7517812500000002
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 105,
+     "ess": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.7517812500000004,
+      "replicated": 0.7517812500000004,
+      "x": 0.7517812500000002
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 106,
+     "ess": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.7517812500000004,
+      "replicated": 0.7517812500000004,
+      "x": 0.7517812500000002
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 107,
+     "ess": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.7517812500000004,
+      "replicated": 0.7517812500000004,
+      "x": 0.7517812500000002
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 108,
+     "ess": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.7517812500000004,
+      "replicated": 0.7517812500000004,
+      "x": 0.7517812500000002
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 109,
+     "ess": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.7517812500000004,
+      "replicated": 0.7517812500000004,
+      "x": 0.7517812500000002
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 110,
+     "ess": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.7517812500000004,
+      "replicated": 0.7517812500000004,
+      "x": 0.7517812500000002
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 111,
+     "ess": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.7517812500000004,
+      "replicated": 0.7517812500000004,
+      "x": 0.7517812500000002
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 112,
+     "ess": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.7517812500000004,
+      "replicated": 0.7517812500000004,
+      "x": 0.7517812500000002
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 113,
+     "ess": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.7517812500000004,
+      "replicated": 0.7517812500000004,
+      "x": 0.7517812500000002
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 114,
+     "ess": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.7517812500000004,
+      "replicated": 0.7517812500000004,
+      "x": 0.7517812500000002
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 115,
+     "ess": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.7517812500000004,
+      "replicated": 0.7517812500000004,
+      "x": 0.7517812500000002
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 116,
+     "ess": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.7517812500000004,
+      "replicated": 0.7517812500000004,
+      "x": 0.7517812500000002
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 117,
+     "ess": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.7517812500000004,
+      "replicated": 0.7517812500000004,
+      "x": 0.7517812500000002
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 118,
+     "ess": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.7517812500000004,
+      "replicated": 0.7517812500000004,
+      "x": 0.7517812500000002
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 119,
+     "ess": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.7517812500000004,
+      "replicated": 0.7517812500000004,
+      "x": 0.7517812500000002
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 120,
+     "ess": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.7517812500000004,
+      "replicated": 0.7517812500000004,
+      "x": 0.7517812500000002
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 121,
+     "ess": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.7517812500000004,
+      "replicated": 0.7517812500000004,
+      "x": 0.7517812500000002
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 122,
+     "ess": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.7517812500000004,
+      "replicated": 0.7517812500000004,
+      "x": 0.7517812500000002
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 123,
+     "ess": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.7517812500000004,
+      "replicated": 0.7517812500000004,
+      "x": 0.7517812500000002
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 124,
+     "ess": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.7517812500000004,
+      "replicated": 0.7517812500000004,
+      "x": 0.7517812500000002
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 125,
+     "ess": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.7517812500000004,
+      "replicated": 0.7517812500000004,
+      "x": 0.7517812500000002
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 126,
+     "ess": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.7517812500000004,
+      "replicated": 0.7517812500000004,
+      "x": 0.7517812500000002
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 127,
+     "ess": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.7517812500000004,
+      "replicated": 0.7517812500000004,
+      "x": 0.7517812500000002
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 128,
+     "ess": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.7517812500000004,
+      "replicated": 0.7517812500000004,
+      "x": 0.7517812500000002
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 129,
+     "ess": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.7517812500000004,
+      "replicated": 0.7517812500000004,
+      "x": 0.7517812500000002
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 130,
+     "ess": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.7517812500000004,
+      "replicated": 0.7517812500000004,
+      "x": 0.7517812500000002
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 131,
+     "ess": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.7517812500000004,
+      "replicated": 0.7517812500000004,
+      "x": 0.7517812500000002
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 132,
+     "ess": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.7517812500000004,
+      "replicated": 0.7517812500000004,
+      "x": 0.7517812500000002
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 133,
+     "ess": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.7517812500000004,
+      "replicated": 0.7517812500000004,
+      "x": 0.7517812500000002
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 134,
+     "ess": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.7517812500000004,
+      "replicated": 0.7517812500000004,
+      "x": 0.7517812500000002
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 135,
+     "ess": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.7517812500000004,
+      "replicated": 0.7517812500000004,
+      "x": 0.7517812500000002
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 136,
+     "ess": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.7517812500000004,
+      "replicated": 0.7517812500000004,
+      "x": 0.7517812500000002
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 137,
+     "ess": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.7517812500000004,
+      "replicated": 0.7517812500000004,
+      "x": 0.7517812500000002
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 138,
+     "ess": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.7517812500000004,
+      "replicated": 0.7517812500000004,
+      "x": 0.7517812500000002
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 139,
+     "ess": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.7517812500000004,
+      "replicated": 0.7517812500000004,
+      "x": 0.7517812500000002
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 140,
+     "ess": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.7517812500000004,
+      "replicated": 0.7517812500000004,
+      "x": 0.7517812500000002
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 141,
+     "ess": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.7517812500000004,
+      "replicated": 0.7517812500000004,
+      "x": 0.7517812500000002
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 142,
+     "ess": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.7517812500000004,
+      "replicated": 0.7517812500000004,
+      "x": 0.7517812500000002
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 143,
+     "ess": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.7517812500000004,
+      "replicated": 0.7517812500000004,
+      "x": 0.7517812500000002
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 144,
+     "ess": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.7517812500000004,
+      "replicated": 0.7517812500000004,
+      "x": 0.7517812500000002
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 145,
+     "ess": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.7517812500000004,
+      "replicated": 0.7517812500000004,
+      "x": 0.7517812500000002
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 146,
+     "ess": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.7517812500000004,
+      "replicated": 0.7517812500000004,
+      "x": 0.7517812500000002
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 147,
+     "ess": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.7517812500000004,
+      "replicated": 0.7517812500000004,
+      "x": 0.7517812500000002
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 148,
+     "ess": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.7517812500000004,
+      "replicated": 0.7517812500000004,
+      "x": 0.7517812500000002
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 149,
+     "ess": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.7517812500000004,
+      "replicated": 0.7517812500000004,
+      "x": 0.7517812500000002
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 150,
+     "ess": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.7517812500000004,
+      "replicated": 0.7517812500000004,
+      "x": 0.7517812500000002
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 151,
+     "ess": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.7517812500000004,
+      "replicated": 0.7517812500000004,
+      "x": 0.7517812500000002
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 152,
+     "ess": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.7517812500000004,
+      "replicated": 0.7517812500000004,
+      "x": 0.7517812500000002
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 153,
+     "ess": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.7517812500000004,
+      "replicated": 0.7517812500000004,
+      "x": 0.7517812500000002
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 154,
+     "ess": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.7517812500000004,
+      "replicated": 0.7517812500000004,
+      "x": 0.7517812500000002
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 155,
+     "ess": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.7517812500000004,
+      "replicated": 0.7517812500000004,
+      "x": 0.7517812500000002
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 156,
+     "ess": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.7517812500000004,
+      "replicated": 0.7517812500000004,
+      "x": 0.7517812500000002
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 157,
+     "ess": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.7517812500000004,
+      "replicated": 0.7517812500000004,
+      "x": 0.7517812500000002
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 158,
+     "ess": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.7517812500000004,
+      "replicated": 0.7517812500000004,
+      "x": 0.7517812500000002
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 159,
+     "ess": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.7517812500000004,
+      "replicated": 0.7517812500000004,
+      "x": 0.7517812500000002
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 160,
+     "ess": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.7517812500000004,
+      "replicated": 0.7517812500000004,
+      "x": 0.7517812500000002
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 161,
+     "ess": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.7517812500000004,
+      "replicated": 0.7517812500000004,
+      "x": 0.7517812500000002
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 162,
+     "ess": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.7517812500000004,
+      "replicated": 0.7517812500000004,
+      "x": 0.7517812500000002
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 163,
+     "ess": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.7517812500000004,
+      "replicated": 0.7517812500000004,
+      "x": 0.7517812500000002
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 164,
+     "ess": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.7517812500000004,
+      "replicated": 0.7517812500000004,
+      "x": 0.7517812500000002
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 165,
+     "ess": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.7517812500000004,
+      "replicated": 0.7517812500000004,
+      "x": 0.7517812500000002
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 166,
+     "ess": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.7517812500000004,
+      "replicated": 0.7517812500000004,
+      "x": 0.7517812500000002
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 167,
+     "ess": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.7517812500000004,
+      "replicated": 0.7517812500000004,
+      "x": 0.7517812500000002
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 168,
+     "ess": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.7517812500000004,
+      "replicated": 0.7517812500000004,
+      "x": 0.7517812500000002
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 169,
+     "ess": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.7517812500000004,
+      "replicated": 0.7517812500000004,
+      "x": 0.7517812500000002
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 170,
+     "ess": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.7517812500000004,
+      "replicated": 0.7517812500000004,
+      "x": 0.7517812500000002
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 171,
+     "ess": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.7517812500000004,
+      "replicated": 0.7517812500000004,
+      "x": 0.7517812500000002
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 172,
+     "ess": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.7517812500000004,
+      "replicated": 0.7517812500000004,
+      "x": 0.7517812500000002
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 173,
+     "ess": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.7517812500000004,
+      "replicated": 0.7517812500000004,
+      "x": 0.7517812500000002
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 174,
+     "ess": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.7517812500000004,
+      "replicated": 0.7517812500000004,
+      "x": 0.7517812500000002
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 175,
+     "ess": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.7517812500000004,
+      "replicated": 0.7517812500000004,
+      "x": 0.7517812500000002
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 176,
+     "ess": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.7517812500000004,
+      "replicated": 0.7517812500000004,
+      "x": 0.7517812500000002
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    },
+    {
+     "cycle": 177,
+     "ess": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.6487316894531252,
+      "replicated": 0.6487316894531252,
+      "x": 0.6487316894531251
+     },
+     "pf": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.7517812500000004,
+      "replicated": 0.7517812500000004,
+      "x": 0.7517812500000002
+     },
+     "v": {
+      "action": "held (frozen after 10 unchanged cycles)",
+      "bitwise": true,
+      "recorded": 0.008662500000000005,
+      "replicated": 0.008662500000000005,
+      "x": 0.0086625
+     }
+    }
+   ],
+   "rule": "Addendum 86 ruling 2: per E2 cell, per cycle, per channel g in {v, pf, ess}, the recorded rho_g_after equals BITWISE sum([x] * n_g) / n_g in the canonical interpreter; x starts at S39_g x s and is carried across cycles from the recorded actions: increased -> x = min(max(x * 1.5, 1e-4), 1e4); decreased -> x = min(max(x * (1.0 / 1.5), 1e-4), 1e4) (production _scale_admm_penalty: value * factor, factor = 1.0 / decrease_factor); every factor-1 action (held, fixed, exempt (fixed), held after solver failure, held (frozen ...), any of them with \" (exemption lifted)\") keeps x; an unknown action refuses; n_v = n_pf = TSO + DSO blocks, n_ess = TSO + DSO + ESSO models (the record's solve_profile). A cell that does not reproduce bitwise is a harness-fault stop.",
+   "s": 0.5,
+   "s39": {
+    "ess": 0.01,
+    "pf": 0.198,
+    "v": 0.0077
+   }
+  },
+  "stops": []
+ },
+ "parent_capture_checklist": {
+  "record_capture_paths": {
+   "component_levels_recourse_key_interface_settlement_total": true,
+   "esso_capture_attr_es_avg_ch_dch_per_unit": true,
+   "esso_capture_attr_es_e_rated_per_unit": true,
+   "esso_capture_attr_es_soh_per_unit_cumul": true,
+   "evaluator_fn__certification_from_trajectory": true,
+   "evaluator_fn__first_pass_cycle": true,
+   "evaluator_fn__terminal_ratios": true,
+   "harness_fn__derive_stopped_by_from_trajectory": true,
+   "harness_fn__identify_soh_floor_rows": true,
+   "harness_fn__s35ref_terminal_floor_and_efc": true,
+   "harness_fn_run_admm_arm": true,
+   "harness_fn_s38_pf_capture_hooks": true,
+   "harness_fn_s39_exempt_until_capture_hooks": true,
+   "harness_fn_write_boyd_terminal_s35ref": true,
+   "production_state_has_peak_rss": true,
+   "run_admm_arm_accepts_investment_map": true,
+   "run_admm_arm_post_run_hook_gets_state": true,
+   "trajectory_field_boyd_all_pass": true,
+   "trajectory_field_boyd_ess_channel_pass": true,
+   "trajectory_field_boyd_ess_dual_ratio": true,
+   "trajectory_field_boyd_ess_primal_ratio": true,
+   "trajectory_field_boyd_pf_channel_pass": true,
+   "trajectory_field_boyd_pf_dual_ratio": true,
+   "trajectory_field_boyd_pf_primal_ratio": true,
+   "trajectory_field_boyd_stop": true,
+   "trajectory_field_boyd_v_channel_pass": true,
+   "trajectory_field_boyd_v_dual_ratio": true,
+   "trajectory_field_boyd_v_primal_ratio": true,
+   "trajectory_field_consecutive_converged_cycles": true,
+   "trajectory_field_cycle": true,
+   "trajectory_field_cycle_convergence": true,
+   "trajectory_field_efc_per_day_max": true,
+   "trajectory_field_gross_operational_cost": true,
+   "trajectory_field_local_solves_ok": true,
+   "trajectory_field_objective_change_abs": true,
+   "trajectory_field_objective_change_ratio": true,
+   "trajectory_field_objective_tolerance": true,
+   "trajectory_field_recourse": true,
+   "trajectory_field_rho_ess_action": true,
+   "trajectory_field_rho_ess_after": true,
+   "trajectory_field_rho_freeze_active": true,
+   "trajectory_field_rho_pf_action": true,
+   "trajectory_field_rho_pf_after": true,
+   "trajectory_field_rho_v_action": true,
+   "trajectory_field_rho_v_after": true,
+   "trajectory_field_terminal_salvage_value": true
+  },
+  "rho_wiring": {
+   "apply_rho0_scale_callable": true,
+   "config_hook_calls_apply_rho0_scale": true,
+   "config_hook_records_w183a_rho0_scale": true,
+   "harness_trajectory_field_rho_ess_action": true,
+   "harness_trajectory_field_rho_ess_after": true,
+   "harness_trajectory_field_rho_pf_action": true,
+   "harness_trajectory_field_rho_pf_after": true,
+   "harness_trajectory_field_rho_v_action": true,
+   "harness_trajectory_field_rho_v_after": true,
+   "production_penalty_summary_is_a_mean_over_models": true,
+   "production_scale_rule_value_times_factor_clamped": true,
+   "production_writes_rho_ess_action": true,
+   "production_writes_rho_ess_after": true,
+   "production_writes_rho_pf_action": true,
+   "production_writes_rho_pf_after": true,
+   "production_writes_rho_v_action": true,
+   "production_writes_rho_v_after": true,
+   "validate_rho0_scale_callable": true
+  },
+  "step7_resettle_preconditions": {
+   "a_aa_step_called_with_boyd_metrics": true,
+   "a_anderson_acceleration_on": true,
+   "a_boyd_all_pass_key_in_production": true,
+   "aa_off_literal_is_production": true,
+   "b_source_order_aa_step_lt_recourse_lt_convergence_test": true,
+   "block_functions_callable": true,
+   "c_certificate_length_read_only_by_the_loop_test_the_record_and_the_print": true,
+   "c_certificate_length_written_only_by_disable_restore_rule_end": true,
+   "c_no_early_stop_in_declaration": true,
+   "capture:loop:boyd_after_esso_update_before_aa": true,
+   "capture:loop:boyd_call_once_per_cycle": true,
+   "capture:loop:boyd_metrics_passed_to_penalties": true,
+   "capture:model_source:network": true,
+   "capture:model_source:shared_energy_storage_data": true,
+   "capture:source:boyd_channel_fields": true,
+   "capture:source:ess_consensus_four_copies": true,
+   "capture:source:ess_copies_written_from_models": true,
+   "capture:source:esso_not_in_gross_Q": true,
+   "capture:source:q_blocks_tso_dso_salvage": true,
+   "capture:source:q_components_classified_total": true,
+   "capture:source:q_gross_is_tso_plus_dso": true,
+   "capture:writer_is_gate_result_io": true,
+   "clean:classifier:unit_cases": true,
+   "clean:clean_source:deque_holds_three_attempts": true,
+   "clean:clean_source:drain_empties_the_deques": true,
+   "clean:clean_source:esso_complementarity_entry_is_the_loaded_attempt": true,
+   "clean:clean_source:esso_diagnostics_carry_the_log_path": true,
+   "clean:clean_source:esso_log_name_scheme": true,
+   "clean:clean_source:esso_sinks_passed": true,
+   "clean:clean_source:esso_tol_override": true,
+   "clean:clean_source:esso_update_passes_the_cycle": true,
+   "clean:clean_source:loop_esso_then_local_check_then_drain": true,
+   "clean:clean_source:loop_one_drain_per_cycle": true,
+   "clean:clean_source:network_attempt_order": true,
+   "clean:clean_source:network_log_appended_per_network": true,
+   "clean:clean_source:network_record_fields": true,
+   "clean:clean_source:network_record_per_attempt": true,
+   "clean:clean_source:network_record_tol_in_force": true,
+   "clean:clean_source:no_drain_between_cycle_start_and_the_check": true,
+   "clean:tolerance_table:DSO5_dual_inf_tol_constr_viol_tol_not_passed": true,
+   "clean:tolerance_table:DSO5_recovery_does_not_pass_tol_or_compl_inf_tol": true,
+   "clean:tolerance_table:DSO5_tol_1e-05": true,
+   "clean:tolerance_table:DSO7_dual_inf_tol_constr_viol_tol_not_passed": true,
+   "clean:tolerance_table:DSO7_recovery_does_not_pass_tol_or_compl_inf_tol": true,
+   "clean:tolerance_table:DSO7_tol_1e-05": true,
+   "clean:tolerance_table:DSO9_dual_inf_tol_constr_viol_tol_not_passed": true,
+   "clean:tolerance_table:DSO9_recovery_does_not_pass_tol_or_compl_inf_tol": true,
+   "clean:tolerance_table:DSO9_tol_1e-05": true,
+   "clean:tolerance_table:ESSO_compl_dual_constr_tol_not_passed": true,
+   "clean:tolerance_table:ESSO_tol_after_override_is_table": true,
+   "clean:tolerance_table:TSO_dual_inf_tol_constr_viol_tol_not_passed": true,
+   "clean:tolerance_table:TSO_recovery_does_not_pass_tol_or_compl_inf_tol": true,
+   "clean:tolerance_table:TSO_tol_1e-05": true,
+   "clean:tolerance_table:network_compl_inf_tol_is_the_spec_tail_value": true,
+   "clean:tolerance_table:table_constr_viol_tol_is_ipopt_default_1e-4": true,
+   "clean:tolerance_table:table_dual_inf_tol_is_ipopt_default_1": true,
+   "clean:tolerance_table:table_esso_compl_inf_tol_is_ipopt_default_1e-4": true,
+   "d_spec_cap_equals_the_cell_cap_within_its_ceiling": true,
+   "declaration_captures_exit_clean_by_block": true,
+   "e_no_replay_reference_every_step7_cell_ungated": true,
+   "efc_read_once_per_cycle_after_penalties_before_the_row": true,
+   "exit:exit_source:esso_update_returns_the_optimize_results": true,
+   "exit:exit_source:local_check_iterates_every_block": true,
+   "exit:final_attempt:esso_final_attempt_is_returned": true,
+   "exit:final_attempt:esso_optimize_collects_optimize": true,
+   "exit:final_attempt:network_final_attempt_is_returned": true,
+   "exit:harness:child_refuses_parallel_execution": true,
+   "exit:harness:child_refuses_persistent_worker_pool": true,
+   "exit:harness:ipopt_exit_class_cases": true,
+   "exit:harness:termination_record_reads_result_solver_message": true,
+   "exit:loop:esso_then_boyd_then_local_check_then_aa_then_recourse": true,
+   "exit:loop:local_check_called_twice_init_and_once_per_cycle": true,
+   "exit:signature:_admm_local_solves_succeeded": true,
+   "f_rule_class_callable": true,
+   "f_rule_constants_equal_settling_criterion_v6": true,
+   "f_rule_is_the_v6_declaration": true,
+   "h_lambda_t_capture_path": true,
+   "loop_exit_is_the_convergence_break": true,
+   "signature:_admm_local_solves_succeeded": true,
+   "signature:_anderson_acceleration_cycle_step": true,
+   "signature:_apply_convergence_depth_tail": true,
+   "signature:_capture_convergence_depth_tail_baseline": true,
+   "signature:_convergence_depth_tail_next_state": true,
+   "signature:_get_admm_efc_per_day_max": true,
+   "signature:_get_operational_recourse_components": true,
+   "signature:_update_admm_penalties": true,
+   "signature:get_admm_boyd_residual_metrics": true,
+   "state_carries_every_w118_state_attribute": true,
+   "state_class_is_the_step7_state_on_the_v6_state": true,
+   "step7_candidate_investment_year_is_the_cell_year": true,
+   "step7_candidate_key_is_the_cell_candidate": true,
+   "step7_declared_options_are_the_cell_options": true,
+   "step7_entry_keys_are_exactly_the_base_and_the_declared_options": true,
+   "step7_entry_label_is_the_cell": true,
+   "step7_entry_overrides_empty": true,
+   "step7_entry_settling_resettle_is_the_declaration": true,
+   "step7_ess_ageing_baseline_declared": true,
+   "step7_ess_params_file_pinned_as_expected": true,
+   "step7_flex_price_multiplier_absent_from_the_entry": true,
+   "step7_flex_price_multiplier_label_absent_at_entry_and_spec_level": true,
+   "step7_floor_not_overridden_minimum_soh_is_the_declared_floor": true,
+   "step7_no_model_variant_arm_a_by_absence": true,
+   "step7_no_premium_or_derived_instance": true,
+   "step7_nrf_option_absent_from_the_entry": true,
+   "step7_nrf_option_label_absent_at_entry_and_spec_level": true,
+   "step7_rho0_scale_is_the_declared_value": true,
+   "step7_rho0_scale_label_at_entry_and_spec_level": true,
+   "step7_spec_holds_one_entry": true,
+   "t_sum:gates:terminal_identity_and_pf_stride_use_the_same_copies_and_weight": true,
+   "t_sum:signature:_expected_market_price": true,
+   "t_sum:signature:_get_admm_block_weight": true,
+   "t_sum:source:block_weight_definition": true,
+   "t_sum:source:expected_price_definition": true,
+   "t_sum:source:pf_consensus_layout": true,
+   "t_sum:source:reporting_detail_price": true,
+   "tail_enabled_for_this_run": true
+  }
+ },
+ "parent_view": {
+  "exit_code": 0,
+  "wait4_ru_maxrss": 3662462976,
+  "wall_s": 4378.279820919037
+ },
+ "phase": "e2",
+ "pre_launch_assertion": {
+  "base_key": "91b1a0cc3463c00fa93fd2839e4ab2535b33b741d799a6ff3f729d11ad9dc257",
+  "campaign_id": "s55_step7_e2_x0_1x_rho0p5",
+  "committed_holder_rule": "E3 / E2: refused if held (key collision); screen: reported, never reused (no cost is carried across code states)",
+  "committed_holders_outside_the_stage_roots": [],
+  "eval_dir_name": "64f3605028f1cf87_e2_x0_1x_rho0p5",
+  "eval_key": "64f3605028f1cf8760c772f891c975d50adfb581714cba798897e8f8fb42cf54",
+  "excluded_roots": [
+   "data/SRP1/Results/P515S55/e3_cnrf",
+   "data/SRP1/Results/P515S55/e2_rho",
+   "data/SRP1/Results/P515S55/e1_screen_1x",
+   "data/SRP1/Results/P515S55/e1_2x/cross"
+  ],
+  "holds": true,
+  "parts": {
+   "base_payload_carries_rho0_scale": true,
+   "e2_key_carries_rho0_scale": true,
+   "e2_key_carries_the_price": true,
+   "eval_key_absent_from_committed_specs_outside_the_stage_roots": true,
+   "frozen_entry_equals_recomputed": true,
+   "harness_base_equals_independent_base": true,
+   "harness_key_equals_independent_payload_key": true,
+   "key_differs_from_base": true,
+   "key_differs_without_rho0_scale": true,
+   "working_dirs_absent": true
+  },
+  "working_dir_ids": {
+   "precheck": "p515s44_s55_step7_e2_x0_1x_rho0p5_64f3605028f1cf87_precheck",
+   "run": "p515s44_s55_step7_e2_x0_1x_rho0p5_64f3605028f1cf87_run"
+  }
+ },
+ "retry": false,
+ "solver": {
+  "expected": "/usr/local/bin/ipopt",
+  "ok": true,
+  "resolved": {
+   "NLP_SOLVER_PATH": "/usr/local/bin/ipopt",
+   "source": "environment"
+  },
+  "sha256": "b316abbe38cd851d9a9a87a6a1a1714a4334304c9539df1976d2f7101360ff05"
+ },
+ "stage": "P5.15 Addendum 86 ruling 1, W183i (b) -- the Step-7 fixed-plan launcher: E3 (C_NRF), E2 stage 1 (rho0 x s), the 1x unit-neighbourhood screen, the cross-evaluations (declared after W186)",
+ "stage_spec": {
+  "name": "frozen_s55_step7_e2_spec_v1_7631a6d7.json",
+  "sha256": "7631a6d7c28cfdde5fd3d7fa4ca6db0da29b3a784aa2b08491465a897ae66e66"
+ },
+ "utc": "2026-10-26T12:25:02.283222+00:00",
+ "wall_clock_s": 4381.603538036346
+}
