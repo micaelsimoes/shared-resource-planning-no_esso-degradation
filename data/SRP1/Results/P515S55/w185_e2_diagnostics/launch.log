@@ -1,0 +1,723 @@
+[21:36:28] repo HEAD 9587232d38e8fe4297ff8e845a24a9b1d1b7b080; tracked changes: [' M TASKS.md']; script committed; trial False; no_pickle False; cells ['e2_x0_1x_rho0p5', 'e2_unit_1x_rho0p5', 'e2_x0_1x_rho2p0', 'e2_unit_1x_rho2p0', 'e2_x0_2x_rho0p5', 'e2_unit_2x_rho0p5', 'e2_x0_2x_rho2p0', 'e2_unit_2x_rho2p0']; out data/SRP1/Results/P515S55/w185_e2_diagnostics
+[21:36:29] capture-path checklist: 81 paths, 101 key checks, all present
+[21:36:29] e2_x0_1x_rho0p5: pins verified; pickle sha256 before load 64ec67cc0a59bf57fd2cdf0ae53216a7683062dfea83949fbde18218220e0614 (= committed campaign manifest = post_certification); 5 recorded inputs = manifest
+[21:36:29] e2_unit_1x_rho0p5: pins verified; pickle sha256 before load a668d74abc6f1737bc9aee970ff5b403d0c828be3a36bb58b1460230579ac4ab (= committed campaign manifest = post_certification); 5 recorded inputs = manifest
+[21:36:29] e2_x0_1x_rho2p0: pins verified; pickle sha256 before load b332511ca7a8b197d4889d6f3089ad5958ef5061b994fcea02fb6d0a341011dc (= committed campaign manifest = post_certification); 5 recorded inputs = manifest
+[21:36:30] e2_unit_1x_rho2p0: pins verified; pickle sha256 before load bada14e6dacfd860176e1c3b7a8119dfb641359732edaddd7ebc4f138e4e371e (= committed campaign manifest = post_certification); 5 recorded inputs = manifest
+[21:36:30] e2_x0_2x_rho0p5: pins verified; pickle sha256 before load 1c19b627c38644481e1c265c5c0c787de9718a13c099bc575186b310d389492d (= committed campaign manifest = post_certification); 5 recorded inputs = manifest
+[21:36:30] e2_unit_2x_rho0p5: pins verified; pickle sha256 before load 88b6b4741d7c07b3445dad0b561e161268415396c8bce7497ed80f5c853ea073 (= committed campaign manifest = post_certification); 5 recorded inputs = manifest
+[21:36:30] e2_x0_2x_rho2p0: pins verified; pickle sha256 before load 191e3c7ecd03474c4640ee336fe1380ec39624d2305a89442c2149d8b3997bfd (= committed campaign manifest = post_certification); 5 recorded inputs = manifest
+[21:36:31] e2_unit_2x_rho2p0: pins verified; pickle sha256 before load abfbcad0cfe11447cd1e6209c8a504e3debd2f10a3dbee01c2477aad0352a83d (= committed campaign manifest = post_certification); 5 recorded inputs = manifest
+[21:36:31] negative controls before the loads: [('NC_loads_bytes', True), ('NC_load_in_memory', True), ('NC_unpickler', True), ('NC_non_listed', True), ('NC_wrong_sha256', True)]
+[21:36:31] GUARDED READ e2_x0_1x_rho0p5: loading data/SRP1/Results/P515S55/e2_rho/campaign_s55_step7_e2_x0_1x_rho0p5/evals/64f3605028f1cf87_e2_x0_1x_rho0p5/certified_models.pkl sha256 64ec67cc0a59bf57fd2cdf0ae53216a7683062dfea83949fbde18218220e0614 (declared load 1 of 8 of this run, HEAD 9587232d38e8fe4297ff8e845a24a9b1d1b7b080, out data/SRP1/Results/P515S55/w185_e2_diagnostics)
+[21:36:31] W185 pickle gate: delegated load #1 data/SRP1/Results/P515S55/e2_rho/campaign_s55_step7_e2_x0_1x_rho0p5/evals/64f3605028f1cf87_e2_x0_1x_rho0p5/certified_models.pkl sha256 64ec67cc0a59bf57fd2cdf0ae53216a7683062dfea83949fbde18218220e0614 (164176533 bytes)
+[21:36:39] e2_x0_1x_rho0p5: loaded; payload keys ['dso', 'tso']
+[21:36:40] e2_x0_1x_rho0p5: NC second load refused True
+[21:36:40] e2_x0_1x_rho0p5: flags none; notes none
+[21:36:40] GUARDED READ e2_unit_1x_rho0p5: loading data/SRP1/Results/P515S55/e2_rho/campaign_s55_step7_e2_unit_1x_rho0p5/evals/a895b40ec0b7ccdb_e2_unit_1x_rho0p5/certified_models.pkl sha256 a668d74abc6f1737bc9aee970ff5b403d0c828be3a36bb58b1460230579ac4ab (declared load 2 of 8 of this run, HEAD 9587232d38e8fe4297ff8e845a24a9b1d1b7b080, out data/SRP1/Results/P515S55/w185_e2_diagnostics)
+[21:36:40] W185 pickle gate: delegated load #2 data/SRP1/Results/P515S55/e2_rho/campaign_s55_step7_e2_unit_1x_rho0p5/evals/a895b40ec0b7ccdb_e2_unit_1x_rho0p5/certified_models.pkl sha256 a668d74abc6f1737bc9aee970ff5b403d0c828be3a36bb58b1460230579ac4ab (164685771 bytes)
+[21:36:47] e2_unit_1x_rho0p5: loaded; payload keys ['dso', 'tso']
+[21:36:48] e2_unit_1x_rho0p5: NC second load refused True
+[21:36:48] e2_unit_1x_rho0p5: flags ['(2) converter circle positive on 40 of 576 active rows; max 7.353e-05 MVA^2 (7.353e-09 p.u.^2; 1.177e-03 of S^2) at TSO|2035|Spring e1', '(4) SOC limit violated on 225 active rows (strict; 0 beyond 1e-6 MWh); min margins -9.974532722673533e-07 / -9.97558549480082e-07 MWh']; notes ["capacity held by the models differs from the record's published_available_capacity_terminal: max |dE| 2.920792473659617e-06 MWh, max |dS| 0.0 MVA (not a limit; reported)"]
+[21:36:48] GUARDED READ e2_x0_1x_rho2p0: loading data/SRP1/Results/P515S55/e2_rho/campaign_s55_step7_e2_x0_1x_rho2p0/evals/f4df38b251a68808_e2_x0_1x_rho2p0/certified_models.pkl sha256 b332511ca7a8b197d4889d6f3089ad5958ef5061b994fcea02fb6d0a341011dc (declared load 3 of 8 of this run, HEAD 9587232d38e8fe4297ff8e845a24a9b1d1b7b080, out data/SRP1/Results/P515S55/w185_e2_diagnostics)
+[21:36:48] W185 pickle gate: delegated load #3 data/SRP1/Results/P515S55/e2_rho/campaign_s55_step7_e2_x0_1x_rho2p0/evals/f4df38b251a68808_e2_x0_1x_rho2p0/certified_models.pkl sha256 b332511ca7a8b197d4889d6f3089ad5958ef5061b994fcea02fb6d0a341011dc (164176533 bytes)
+[21:36:54] e2_x0_1x_rho2p0: loaded; payload keys ['dso', 'tso']
+[21:36:56] e2_x0_1x_rho2p0: NC second load refused True
+[21:36:56] e2_x0_1x_rho2p0: flags none; notes none
+[21:36:56] GUARDED READ e2_unit_1x_rho2p0: loading data/SRP1/Results/P515S55/e2_rho/campaign_s55_step7_e2_unit_1x_rho2p0/evals/13145d7ed63e9f2d_e2_unit_1x_rho2p0/certified_models.pkl sha256 bada14e6dacfd860176e1c3b7a8119dfb641359732edaddd7ebc4f138e4e371e (declared load 4 of 8 of this run, HEAD 9587232d38e8fe4297ff8e845a24a9b1d1b7b080, out data/SRP1/Results/P515S55/w185_e2_diagnostics)
+[21:36:56] W185 pickle gate: delegated load #4 data/SRP1/Results/P515S55/e2_rho/campaign_s55_step7_e2_unit_1x_rho2p0/evals/13145d7ed63e9f2d_e2_unit_1x_rho2p0/certified_models.pkl sha256 bada14e6dacfd860176e1c3b7a8119dfb641359732edaddd7ebc4f138e4e371e (164685771 bytes)
+[21:37:02] e2_unit_1x_rho2p0: loaded; payload keys ['dso', 'tso']
+[21:37:03] e2_unit_1x_rho2p0: NC second load refused True
+[21:37:03] e2_unit_1x_rho2p0: flags ['(2) converter circle positive on 48 of 576 active rows; max 3.122e-05 MVA^2 (3.122e-09 p.u.^2; 4.996e-04 of S^2) at TSO|2025|Autumn e1', '(4) SOC limit violated on 229 active rows (strict; 0 beyond 1e-6 MWh); min margins -9.974933720268038e-07 / -9.975513776995515e-07 MWh']; notes ["capacity held by the models differs from the record's published_available_capacity_terminal: max |dE| 1.4448057541471826e-06 MWh, max |dS| 0.0 MVA (not a limit; reported)"]
+[21:37:03] GUARDED READ e2_x0_2x_rho0p5: loading data/SRP1/Results/P515S55/e2_rho/campaign_s55_step7_e2_x0_2x_rho0p5/evals/14a161e63a4ee34f_e2_x0_2x_rho0p5/certified_models.pkl sha256 1c19b627c38644481e1c265c5c0c787de9718a13c099bc575186b310d389492d (declared load 5 of 8 of this run, HEAD 9587232d38e8fe4297ff8e845a24a9b1d1b7b080, out data/SRP1/Results/P515S55/w185_e2_diagnostics)
+[21:37:04] W185 pickle gate: delegated load #5 data/SRP1/Results/P515S55/e2_rho/campaign_s55_step7_e2_x0_2x_rho0p5/evals/14a161e63a4ee34f_e2_x0_2x_rho0p5/certified_models.pkl sha256 1c19b627c38644481e1c265c5c0c787de9718a13c099bc575186b310d389492d (164184561 bytes)
+[21:37:10] e2_x0_2x_rho0p5: loaded; payload keys ['dso', 'tso']
+[21:37:11] e2_x0_2x_rho0p5: NC second load refused True
+[21:37:11] e2_x0_2x_rho0p5: flags none; notes none
+[21:37:11] GUARDED READ e2_unit_2x_rho0p5: loading data/SRP1/Results/P515S55/e2_rho/campaign_s55_step7_e2_unit_2x_rho0p5/evals/3e35c66844450f94_e2_unit_2x_rho0p5/certified_models.pkl sha256 88b6b4741d7c07b3445dad0b561e161268415396c8bce7497ed80f5c853ea073 (declared load 6 of 8 of this run, HEAD 9587232d38e8fe4297ff8e845a24a9b1d1b7b080, out data/SRP1/Results/P515S55/w185_e2_diagnostics)
+[21:37:11] W185 pickle gate: delegated load #6 data/SRP1/Results/P515S55/e2_rho/campaign_s55_step7_e2_unit_2x_rho0p5/evals/3e35c66844450f94_e2_unit_2x_rho0p5/certified_models.pkl sha256 88b6b4741d7c07b3445dad0b561e161268415396c8bce7497ed80f5c853ea073 (164693799 bytes)
+[21:37:18] e2_unit_2x_rho0p5: loaded; payload keys ['dso', 'tso']
+[21:37:19] e2_unit_2x_rho0p5: NC second load refused True
+[21:37:19] e2_unit_2x_rho0p5: flags ['(2) converter circle positive on 54 of 576 active rows; max 3.066e-05 MVA^2 (3.066e-09 p.u.^2; 4.906e-04 of S^2) at TSO|2030|Summer e1', '(4) SOC limit violated on 235 active rows (strict; 0 beyond 1e-6 MWh); min margins -9.978955329485555e-07 / -9.983485148822024e-07 MWh']; notes ["capacity held by the models differs from the record's published_available_capacity_terminal: max |dE| 1.4729668008861552e-05 MWh, max |dS| 0.0 MVA (not a limit; reported)"]
+[21:37:19] GUARDED READ e2_x0_2x_rho2p0: loading data/SRP1/Results/P515S55/e2_rho/campaign_s55_step7_e2_x0_2x_rho2p0/evals/16614c6680f4d3b4_e2_x0_2x_rho2p0/certified_models.pkl sha256 191e3c7ecd03474c4640ee336fe1380ec39624d2305a89442c2149d8b3997bfd (declared load 7 of 8 of this run, HEAD 9587232d38e8fe4297ff8e845a24a9b1d1b7b080, out data/SRP1/Results/P515S55/w185_e2_diagnostics)
+[21:37:19] W185 pickle gate: delegated load #7 data/SRP1/Results/P515S55/e2_rho/campaign_s55_step7_e2_x0_2x_rho2p0/evals/16614c6680f4d3b4_e2_x0_2x_rho2p0/certified_models.pkl sha256 191e3c7ecd03474c4640ee336fe1380ec39624d2305a89442c2149d8b3997bfd (164184561 bytes)
+[21:37:26] e2_x0_2x_rho2p0: loaded; payload keys ['dso', 'tso']
+[21:37:27] e2_x0_2x_rho2p0: NC second load refused True
+[21:37:27] e2_x0_2x_rho2p0: flags none; notes none
+[21:37:27] GUARDED READ e2_unit_2x_rho2p0: loading data/SRP1/Results/P515S55/e2_rho/campaign_s55_step7_e2_unit_2x_rho2p0/evals/43074041a7942052_e2_unit_2x_rho2p0/certified_models.pkl sha256 abfbcad0cfe11447cd1e6209c8a504e3debd2f10a3dbee01c2477aad0352a83d (declared load 8 of 8 of this run, HEAD 9587232d38e8fe4297ff8e845a24a9b1d1b7b080, out data/SRP1/Results/P515S55/w185_e2_diagnostics)
+[21:37:27] W185 pickle gate: delegated load #8 data/SRP1/Results/P515S55/e2_rho/campaign_s55_step7_e2_unit_2x_rho2p0/evals/43074041a7942052_e2_unit_2x_rho2p0/certified_models.pkl sha256 abfbcad0cfe11447cd1e6209c8a504e3debd2f10a3dbee01c2477aad0352a83d (164693799 bytes)
+[21:37:34] e2_unit_2x_rho2p0: loaded; payload keys ['dso', 'tso']
+[21:37:35] e2_unit_2x_rho2p0: NC second load refused True
+[21:37:35] e2_unit_2x_rho2p0: flags ['(2) converter circle positive on 51 of 576 active rows; max 8.373e-05 MVA^2 (8.373e-09 p.u.^2; 1.340e-03 of S^2) at TSO|2035|Autumn e1', '(4) SOC limit violated on 222 active rows (strict; 0 beyond 1e-6 MWh); min margins -9.984190412685827e-07 / -9.985336110046594e-07 MWh']; notes ["capacity held by the models differs from the record's published_available_capacity_terminal: max |dE| 1.6038898333237128e-05 MWh, max |dS| 0.0 MVA (not a limit; reported)"]
+=== per-cell summary {
+ "e2_x0_1x_rho0p5": {
+  "Q": 653874468.0886946,
+  "k*": 177,
+  "closure_rec_S_mwh_minmax": [
+   0.0,
+   0.0
+  ],
+  "ratio_max": {
+   "v": 0.010950381376590997,
+   "pf": 0.3591876880443497,
+   "ess": 4.7109860715102026e-21
+  },
+  "consensus_max_mw": {
+   "5": 0.0006803609586221171,
+   "7": 0.00017026694759980643,
+   "9": 0.0003822898185177337
+  },
+  "settlement_total": -520.3744103908539,
+  "identity_residual": -1.1542942957021296e-07,
+  "flags": [],
+  "closure_slack": {
+   "slack_mwh_min_storage": null,
+   "slack_mwh_max_storage": null,
+   "n_below_relaxed_floor": 0,
+   "n_abs_gt_1e-6_mwh": 0,
+   "n_above_ub": 0
+  },
+  "circle": {
+   "rows_active": 0,
+   "residual_mva2_max_active": null,
+   "residual_over_S2_max_active": null,
+   "sign_of_max": null,
+   "n_active_positive": 0
+  },
+  "by_network": {},
+  "pe_over_sav": null,
+  "soc": {
+   "rows_active": 0,
+   "soc_minus_10pct_E_min_mwh": null,
+   "soc_90pct_E_minus_soc_min_mwh": null,
+   "violations_strict": 0
+  }
+ },
+ "e2_unit_1x_rho0p5": {
+  "Q": 653620775.4918147,
+  "k*": 177,
+  "closure_rec_S_mwh_minmax": [
+   -1.9998181816175257e-06,
+   0.0
+  ],
+  "ratio_max": {
+   "v": 0.031732089321901,
+   "pf": 0.2509990653287546,
+   "ess": 0.18144028910245047
+  },
+  "consensus_max_mw": {
+   "5": 0.0005896022343812035,
+   "7": 0.0001596231560645478,
+   "9": 0.00033284851941317584
+  },
+  "settlement_total": -323.8561997413635,
+  "identity_residual": 1.9104896864519105e-07,
+  "flags": [
+   "(2) converter circle positive on 40 of 576 active rows; max 7.353e-05 MVA^2 (7.353e-09 p.u.^2; 1.177e-03 of S^2) at TSO|2035|Spring e1",
+   "(4) SOC limit violated on 225 active rows (strict; 0 beyond 1e-6 MWh); min margins -9.974532722673533e-07 / -9.97558549480082e-07 MWh"
+  ],
+  "closure_slack": {
+   "slack_mwh_min_storage": -9.99920371086588e-07,
+   "slack_mwh_max_storage": -9.998940874035362e-07,
+   "n_below_relaxed_floor": 0,
+   "n_abs_gt_1e-6_mwh": 0,
+   "n_above_ub": 0
+  },
+  "circle": {
+   "rows_active": 576,
+   "residual_mva2_max_active": 7.353136730662866e-05,
+   "residual_over_S2_max_active": 0.0011765018769060586,
+   "sign_of_max": 1,
+   "n_active_positive": 40
+  },
+  "by_network": {
+   "DSO7": {
+    "n_entries": 12,
+    "circle_residual_mva2_max_active": 7.352040477870377e-05,
+    "circle_at": "DSO7|2035|Spring e0",
+    "circle_residual_pu2_max_active": 7.3520404778703774e-09,
+    "circle_residual_over_S2_max_active": 0.0011763264764592604,
+    "circle_n_active_positive": 22,
+    "circle_rows_active": 288,
+    "pnet_over_s_max": 0.9999999542099755,
+    "apparent_over_s_max": 1.0005879903718908,
+    "soc_minus_10pct_E_min_mwh": -9.918876028684742e-07,
+    "soc_90pct_E_minus_soc_min_mwh": -9.909507947720997e-07,
+    "soc_violations_strict": 109,
+    "soc_violations_beyond_1e-6_mwh": 0,
+    "soc_rows_active": 576,
+    "closure_slack_mwh_min": -9.999100505557396e-07,
+    "closure_slack_mwh_max": -9.999081105656695e-07
+   },
+   "TSO": {
+    "n_entries": 12,
+    "circle_residual_mva2_max_active": 7.353136730662866e-05,
+    "circle_at": "TSO|2035|Spring e1",
+    "circle_residual_pu2_max_active": 7.353136730662866e-09,
+    "circle_residual_over_S2_max_active": 0.0011765018769060586,
+    "circle_n_active_positive": 18,
+    "circle_rows_active": 288,
+    "pnet_over_s_max": 0.9999999744960382,
+    "apparent_over_s_max": 1.0005880780205738,
+    "soc_minus_10pct_E_min_mwh": -9.974532722673533e-07,
+    "soc_90pct_E_minus_soc_min_mwh": -9.97558549480082e-07,
+    "soc_violations_strict": 116,
+    "soc_violations_beyond_1e-6_mwh": 0,
+    "soc_rows_active": 576,
+    "closure_slack_mwh_min": -9.99920371086588e-07,
+    "closure_slack_mwh_max": -9.998940874035362e-07
+   }
+  },
+  "pe_over_sav": 0.9999999744960382,
+  "soc": {
+   "rows_active": 1152,
+   "soc_minus_10pct_E_min_mwh": -9.974532722673533e-07,
+   "soc_90pct_E_minus_soc_min_mwh": -9.97558549480082e-07,
+   "violations_strict": 225
+  }
+ },
+ "e2_x0_1x_rho2p0": {
+  "Q": 653872972.5164962,
+  "k*": 185,
+  "closure_rec_S_mwh_minmax": [
+   0.0,
+   0.0
+  ],
+  "ratio_max": {
+   "v": 0.047380417615762484,
+   "pf": 0.2956058406993268,
+   "ess": 5.206972410961308e-21
+  },
+  "consensus_max_mw": {
+   "5": 0.0014318162398900824,
+   "7": 0.00033540409748589184,
+   "9": 0.0008013629380059228
+  },
+  "settlement_total": 1792.0128259658813,
+  "identity_residual": -2.573356141510885e-07,
+  "flags": [],
+  "closure_slack": {
+   "slack_mwh_min_storage": null,
+   "slack_mwh_max_storage": null,
+   "n_below_relaxed_floor": 0,
+   "n_abs_gt_1e-6_mwh": 0,
+   "n_above_ub": 0
+  },
+  "circle": {
+   "rows_active": 0,
+   "residual_mva2_max_active": null,
+   "residual_over_S2_max_active": null,
+   "sign_of_max": null,
+   "n_active_positive": 0
+  },
+  "by_network": {},
+  "pe_over_sav": null,
+  "soc": {
+   "rows_active": 0,
+   "soc_minus_10pct_E_min_mwh": null,
+   "soc_90pct_E_minus_soc_min_mwh": null,
+   "violations_strict": 0
+  }
+ },
+ "e2_unit_1x_rho2p0": {
+  "Q": 653620852.7833008,
+  "k*": 194,
+  "closure_rec_S_mwh_minmax": [
+   -1.9998181796513466e-06,
+   0.0
+  ],
+  "ratio_max": {
+   "v": 0.036753924886359556,
+   "pf": 0.2652831959129754,
+   "ess": 0.17575367256235797
+  },
+  "consensus_max_mw": {
+   "5": 0.0008309780429165414,
+   "7": 0.00018277871280591995,
+   "9": 0.00045480863795432924
+  },
+  "settlement_total": 203.96897053718567,
+  "identity_residual": -1.875969815046119e-07,
+  "flags": [
+   "(2) converter circle positive on 48 of 576 active rows; max 3.122e-05 MVA^2 (3.122e-09 p.u.^2; 4.996e-04 of S^2) at TSO|2025|Autumn e1",
+   "(4) SOC limit violated on 229 active rows (strict; 0 beyond 1e-6 MWh); min margins -9.974933720268038e-07 / -9.975513776995515e-07 MWh"
+  ],
+  "closure_slack": {
+   "slack_mwh_min_storage": -9.999204403548888e-07,
+   "slack_mwh_max_storage": -9.998939646117398e-07,
+   "n_below_relaxed_floor": 0,
+   "n_abs_gt_1e-6_mwh": 0,
+   "n_above_ub": 0
+  },
+  "circle": {
+   "rows_active": 576,
+   "residual_mva2_max_active": 3.122341030417442e-05,
+   "residual_over_S2_max_active": 0.0004995745648667907,
+   "sign_of_max": 1,
+   "n_active_positive": 48
+  },
+  "by_network": {
+   "DSO7": {
+    "n_entries": 12,
+    "circle_residual_mva2_max_active": 2.1413399262827044e-05,
+    "circle_at": "DSO7|2025|Autumn e0",
+    "circle_residual_pu2_max_active": 2.1413399262827044e-09,
+    "circle_residual_over_S2_max_active": 0.0003426143882052327,
+    "circle_n_active_positive": 24,
+    "circle_rows_active": 288,
+    "pnet_over_s_max": 0.9999999226331449,
+    "apparent_over_s_max": 1.0001712925235382,
+    "soc_minus_10pct_E_min_mwh": -9.915411297578558e-07,
+    "soc_90pct_E_minus_soc_min_mwh": -9.909519176586057e-07,
+    "soc_violations_strict": 112,
+    "soc_violations_beyond_1e-6_mwh": 0,
+    "soc_rows_active": 576,
+    "closure_slack_mwh_min": -9.999097548641282e-07,
+    "closure_slack_mwh_max": -9.999084171121561e-07
+   },
+   "TSO": {
+    "n_entries": 12,
+    "circle_residual_mva2_max_active": 3.122341030417442e-05,
+    "circle_at": "TSO|2025|Autumn e1",
+    "circle_residual_pu2_max_active": 3.122341030417442e-09,
+    "circle_residual_over_S2_max_active": 0.0004995745648667907,
+    "circle_n_active_positive": 24,
+    "circle_rows_active": 288,
+    "pnet_over_s_max": 0.9999999604754206,
+    "apparent_over_s_max": 1.0002497560933803,
+    "soc_minus_10pct_E_min_mwh": -9.974933720268038e-07,
+    "soc_90pct_E_minus_soc_min_mwh": -9.975513776995515e-07,
+    "soc_violations_strict": 117,
+    "soc_violations_beyond_1e-6_mwh": 0,
+    "soc_rows_active": 576,
+    "closure_slack_mwh_min": -9.999204403548888e-07,
+    "closure_slack_mwh_max": -9.998939646117398e-07
+   }
+  },
+  "pe_over_sav": 0.9999999604754206,
+  "soc": {
+   "rows_active": 1152,
+   "soc_minus_10pct_E_min_mwh": -9.974933720268038e-07,
+   "soc_90pct_E_minus_soc_min_mwh": -9.975513776995515e-07,
+   "violations_strict": 229
+  }
+ },
+ "e2_x0_2x_rho0p5": {
+  "Q": 811016337.915931,
+  "k*": 162,
+  "closure_rec_S_mwh_minmax": [
+   0.0,
+   0.0
+  ],
+  "ratio_max": {
+   "v": 0.05624868458637008,
+   "pf": 0.6101758906116682,
+   "ess": 4.612019506180672e-21
+  },
+  "consensus_max_mw": {
+   "5": 0.00023248193378577753,
+   "7": 9.745880945821739e-05,
+   "9": 0.00013000125762907544
+  },
+  "settlement_total": -7.696387529373169,
+  "identity_residual": -1.2530483584072272e-07,
+  "flags": [],
+  "closure_slack": {
+   "slack_mwh_min_storage": null,
+   "slack_mwh_max_storage": null,
+   "n_below_relaxed_floor": 0,
+   "n_abs_gt_1e-6_mwh": 0,
+   "n_above_ub": 0
+  },
+  "circle": {
+   "rows_active": 0,
+   "residual_mva2_max_active": null,
+   "residual_over_S2_max_active": null,
+   "sign_of_max": null,
+   "n_active_positive": 0
+  },
+  "by_network": {},
+  "pe_over_sav": null,
+  "soc": {
+   "rows_active": 0,
+   "soc_minus_10pct_E_min_mwh": null,
+   "soc_90pct_E_minus_soc_min_mwh": null,
+   "violations_strict": 0
+  }
+ },
+ "e2_unit_2x_rho0p5": {
+  "Q": 810651421.4856707,
+  "k*": 178,
+  "closure_rec_S_mwh_minmax": [
+   -1.9998181794632524e-06,
+   0.0
+  ],
+  "ratio_max": {
+   "v": 0.04644564347946329,
+   "pf": 0.5194904040648471,
+   "ess": 0.263414312050724
+  },
+  "consensus_max_mw": {
+   "5": 0.0009563536533576666,
+   "7": 0.00025811944211184823,
+   "9": 0.000542398880780226
+  },
+  "settlement_total": -1475.8803753852844,
+  "identity_residual": -1.3655517250299454e-07,
+  "flags": [
+   "(2) converter circle positive on 54 of 576 active rows; max 3.066e-05 MVA^2 (3.066e-09 p.u.^2; 4.906e-04 of S^2) at TSO|2030|Summer e1",
+   "(4) SOC limit violated on 235 active rows (strict; 0 beyond 1e-6 MWh); min margins -9.978955329485555e-07 / -9.983485148822024e-07 MWh"
+  ],
+  "closure_slack": {
+   "slack_mwh_min_storage": -9.999210749884683e-07,
+   "slack_mwh_max_storage": -9.998928159382502e-07,
+   "n_below_relaxed_floor": 0,
+   "n_abs_gt_1e-6_mwh": 0,
+   "n_above_ub": 0
+  },
+  "circle": {
+   "rows_active": 576,
+   "residual_mva2_max_active": 3.066481805745895e-05,
+   "residual_over_S2_max_active": 0.0004906370889193432,
+   "sign_of_max": 1,
+   "n_active_positive": 54
+  },
+  "by_network": {
+   "DSO7": {
+    "n_entries": 12,
+    "circle_residual_mva2_max_active": 2.6782400043527332e-05,
+    "circle_at": "DSO7|2025|Summer e0",
+    "circle_residual_pu2_max_active": 2.678240004352733e-09,
+    "circle_residual_over_S2_max_active": 0.0004285184006964373,
+    "circle_n_active_positive": 30,
+    "circle_rows_active": 288,
+    "pnet_over_s_max": 0.999999946059608,
+    "apparent_over_s_max": 1.0002142362517623,
+    "soc_minus_10pct_E_min_mwh": -9.97216465317436e-07,
+    "soc_90pct_E_minus_soc_min_mwh": -9.961945369313385e-07,
+    "soc_violations_strict": 116,
+    "soc_violations_beyond_1e-6_mwh": 0,
+    "soc_rows_active": 576,
+    "closure_slack_mwh_min": -9.999101476300235e-07,
+    "closure_slack_mwh_max": -9.9990800903738e-07
+   },
+   "TSO": {
+    "n_entries": 12,
+    "circle_residual_mva2_max_active": 3.066481805745895e-05,
+    "circle_at": "TSO|2030|Summer e1",
+    "circle_residual_pu2_max_active": 3.066481805745895e-09,
+    "circle_residual_over_S2_max_active": 0.0004906370889193432,
+    "circle_n_active_positive": 24,
+    "circle_rows_active": 288,
+    "pnet_over_s_max": 0.9999999517002404,
+    "apparent_over_s_max": 1.0002452884612452,
+    "soc_minus_10pct_E_min_mwh": -9.978955329485555e-07,
+    "soc_90pct_E_minus_soc_min_mwh": -9.983485148822024e-07,
+    "soc_violations_strict": 119,
+    "soc_violations_beyond_1e-6_mwh": 0,
+    "soc_rows_active": 576,
+    "closure_slack_mwh_min": -9.999210749884683e-07,
+    "closure_slack_mwh_max": -9.998928159382502e-07
+   }
+  },
+  "pe_over_sav": 0.9999999517002404,
+  "soc": {
+   "rows_active": 1152,
+   "soc_minus_10pct_E_min_mwh": -9.978955329485555e-07,
+   "soc_90pct_E_minus_soc_min_mwh": -9.983485148822024e-07,
+   "violations_strict": 235
+  }
+ },
+ "e2_x0_2x_rho2p0": {
+  "Q": 811014413.2702415,
+  "k*": 136,
+  "closure_rec_S_mwh_minmax": [
+   0.0,
+   0.0
+  ],
+  "ratio_max": {
+   "v": 0.07900537884781403,
+   "pf": 0.13654460759660603,
+   "ess": 4.5216690571391345e-21
+  },
+  "consensus_max_mw": {
+   "5": 0.004475155382621665,
+   "7": 0.001105693755190984,
+   "9": 0.0025151112575301227
+  },
+  "settlement_total": 849.1569855213165,
+  "identity_residual": -1.549790340504842e-07,
+  "flags": [],
+  "closure_slack": {
+   "slack_mwh_min_storage": null,
+   "slack_mwh_max_storage": null,
+   "n_below_relaxed_floor": 0,
+   "n_abs_gt_1e-6_mwh": 0,
+   "n_above_ub": 0
+  },
+  "circle": {
+   "rows_active": 0,
+   "residual_mva2_max_active": null,
+   "residual_over_S2_max_active": null,
+   "sign_of_max": null,
+   "n_active_positive": 0
+  },
+  "by_network": {},
+  "pe_over_sav": null,
+  "soc": {
+   "rows_active": 0,
+   "soc_minus_10pct_E_min_mwh": null,
+   "soc_90pct_E_minus_soc_min_mwh": null,
+   "violations_strict": 0
+  }
+ },
+ "e2_unit_2x_rho2p0": {
+  "Q": 810650949.4648235,
+  "k*": 134,
+  "closure_rec_S_mwh_minmax": [
+   -1.999818179877989e-06,
+   0.0
+  ],
+  "ratio_max": {
+   "v": 0.07357329007872365,
+   "pf": 0.12438977515564804,
+   "ess": 0.2533955677999264
+  },
+  "consensus_max_mw": {
+   "5": 0.002428224049447536,
+   "7": 0.0005930099851738646,
+   "9": 0.00136052664395514
+  },
+  "settlement_total": -1781.1116564273834,
+  "identity_residual": -8.603456080891192e-08,
+  "flags": [
+   "(2) converter circle positive on 51 of 576 active rows; max 8.373e-05 MVA^2 (8.373e-09 p.u.^2; 1.340e-03 of S^2) at TSO|2035|Autumn e1",
+   "(4) SOC limit violated on 222 active rows (strict; 0 beyond 1e-6 MWh); min margins -9.984190412685827e-07 / -9.985336110046594e-07 MWh"
+  ],
+  "closure_slack": {
+   "slack_mwh_min_storage": -9.999215643620052e-07,
+   "slack_mwh_max_storage": -9.998918999955287e-07,
+   "n_below_relaxed_floor": 0,
+   "n_abs_gt_1e-6_mwh": 0,
+   "n_above_ub": 0
+  },
+  "circle": {
+   "rows_active": 576,
+   "residual_mva2_max_active": 8.372621747634789e-05,
+   "residual_over_S2_max_active": 0.0013396194796215662,
+   "sign_of_max": 1,
+   "n_active_positive": 51
+  },
+  "by_network": {
+   "DSO7": {
+    "n_entries": 12,
+    "circle_residual_mva2_max_active": 7.165673209487346e-05,
+    "circle_at": "DSO7|2030|Autumn e0",
+    "circle_residual_pu2_max_active": 7.165673209487346e-09,
+    "circle_residual_over_S2_max_active": 0.0011465077135179753,
+    "circle_n_active_positive": 26,
+    "circle_rows_active": 288,
+    "pnet_over_s_max": 0.9999999779313302,
+    "apparent_over_s_max": 1.0005730896408909,
+    "soc_minus_10pct_E_min_mwh": -9.945070186530118e-07,
+    "soc_90pct_E_minus_soc_min_mwh": -9.95062506264216e-07,
+    "soc_violations_strict": 104,
+    "soc_violations_beyond_1e-6_mwh": 0,
+    "soc_rows_active": 576,
+    "closure_slack_mwh_min": -9.999097079163938e-07,
+    "closure_slack_mwh_max": -9.999084654115647e-07
+   },
+   "TSO": {
+    "n_entries": 12,
+    "circle_residual_mva2_max_active": 8.372621747634789e-05,
+    "circle_at": "TSO|2035|Autumn e1",
+    "circle_residual_pu2_max_active": 8.372621747634789e-09,
+    "circle_residual_over_S2_max_active": 0.0013396194796215662,
+    "circle_n_active_positive": 25,
+    "circle_rows_active": 288,
+    "pnet_over_s_max": 0.9999999856387181,
+    "apparent_over_s_max": 1.0006695855673948,
+    "soc_minus_10pct_E_min_mwh": -9.984190412685827e-07,
+    "soc_90pct_E_minus_soc_min_mwh": -9.985336110046594e-07,
+    "soc_violations_strict": 118,
+    "soc_violations_beyond_1e-6_mwh": 0,
+    "soc_rows_active": 576,
+    "closure_slack_mwh_min": -9.999215643620052e-07,
+    "closure_slack_mwh_max": -9.998918999955287e-07
+   }
+  },
+  "pe_over_sav": 0.9999999856387181,
+  "soc": {
+   "rows_active": 1152,
+   "soc_minus_10pct_E_min_mwh": -9.984190412685827e-07,
+   "soc_90pct_E_minus_soc_min_mwh": -9.985336110046594e-07,
+   "violations_strict": 222
+  }
+ }
+}
+=== guards {
+ "solve_profile_guard": {
+  "label": "P5.15 W185 E2 diagnostics (never solves)",
+  "counts": {
+   "permitted_solve": 0,
+   "permitted_exec": 0,
+   "blocked_solve": 0,
+   "blocked_exec": 0
+  },
+  "verify_0_failures": []
+ },
+ "pickle_gate": {
+  "allow_list": [
+   {
+    "path": "data/SRP1/Results/P515S55/e2_rho/campaign_s55_step7_e2_x0_1x_rho0p5/evals/64f3605028f1cf87_e2_x0_1x_rho0p5/certified_models.pkl",
+    "sha256": "64ec67cc0a59bf57fd2cdf0ae53216a7683062dfea83949fbde18218220e0614"
+   },
+   {
+    "path": "data/SRP1/Results/P515S55/e2_rho/campaign_s55_step7_e2_unit_1x_rho0p5/evals/a895b40ec0b7ccdb_e2_unit_1x_rho0p5/certified_models.pkl",
+    "sha256": "a668d74abc6f1737bc9aee970ff5b403d0c828be3a36bb58b1460230579ac4ab"
+   },
+   {
+    "path": "data/SRP1/Results/P515S55/e2_rho/campaign_s55_step7_e2_x0_1x_rho2p0/evals/f4df38b251a68808_e2_x0_1x_rho2p0/certified_models.pkl",
+    "sha256": "b332511ca7a8b197d4889d6f3089ad5958ef5061b994fcea02fb6d0a341011dc"
+   },
+   {
+    "path": "data/SRP1/Results/P515S55/e2_rho/campaign_s55_step7_e2_unit_1x_rho2p0/evals/13145d7ed63e9f2d_e2_unit_1x_rho2p0/certified_models.pkl",
+    "sha256": "bada14e6dacfd860176e1c3b7a8119dfb641359732edaddd7ebc4f138e4e371e"
+   },
+   {
+    "path": "data/SRP1/Results/P515S55/e2_rho/campaign_s55_step7_e2_x0_2x_rho0p5/evals/14a161e63a4ee34f_e2_x0_2x_rho0p5/certified_models.pkl",
+    "sha256": "1c19b627c38644481e1c265c5c0c787de9718a13c099bc575186b310d389492d"
+   },
+   {
+    "path": "data/SRP1/Results/P515S55/e2_rho/campaign_s55_step7_e2_unit_2x_rho0p5/evals/3e35c66844450f94_e2_unit_2x_rho0p5/certified_models.pkl",
+    "sha256": "88b6b4741d7c07b3445dad0b561e161268415396c8bce7497ed80f5c853ea073"
+   },
+   {
+    "path": "data/SRP1/Results/P515S55/e2_rho/campaign_s55_step7_e2_x0_2x_rho2p0/evals/16614c6680f4d3b4_e2_x0_2x_rho2p0/certified_models.pkl",
+    "sha256": "191e3c7ecd03474c4640ee336fe1380ec39624d2305a89442c2149d8b3997bfd"
+   },
+   {
+    "path": "data/SRP1/Results/P515S55/e2_rho/campaign_s55_step7_e2_unit_2x_rho2p0/evals/43074041a7942052_e2_unit_2x_rho2p0/certified_models.pkl",
+    "sha256": "abfbcad0cfe11447cd1e6209c8a504e3debd2f10a3dbee01c2477aad0352a83d"
+   }
+  ],
+  "counts": {
+   "load_attempts": 18,
+   "loads_attempts": 1,
+   "unpickler_attempts": 1,
+   "refused": 12,
+   "delegated": 8
+  },
+  "expected_delegated_loads": 8,
+  "expected_refusals": 12,
+  "refusals": [
+   {
+    "kind": "pickle.loads",
+    "reason": "byte-string loads are not on the allow-list"
+   },
+   {
+    "kind": "pickle.load",
+    "reason": "the handle has no file path (not on the allow-list)"
+   },
+   {
+    "kind": "pickle.Unpickler",
+    "reason": "Unpickler is not on the allow-list"
+   },
+   {
+    "kind": "pickle.load",
+    "reason": "data/SRP1/Results/P515S55/e2_rho/campaign_s55_step7_e2_x0_1x_rho0p5/evals/64f3605028f1cf87_e2_x0_1x_rho0p5/esso_models_s39_D.pkl is not on the allow-list"
+   },
+   {
+    "kind": "pickle.load",
+    "reason": "data/SRP1/Results/P515S55/e2_rho/campaign_s55_step7_e2_x0_1x_rho0p5/evals/64f3605028f1cf87_e2_x0_1x_rho0p5/certified_models.pkl has already been loaded once in this run (each allow-listed file at most once)"
+   },
+   {
+    "kind": "pickle.load",
+    "reason": "data/SRP1/Results/P515S55/e2_rho/campaign_s55_step7_e2_unit_1x_rho0p5/evals/a895b40ec0b7ccdb_e2_unit_1x_rho0p5/certified_models.pkl has already been loaded once in this run (each allow-listed file at most once)"
+   },
+   {
+    "kind": "pickle.load",
+    "reason": "data/SRP1/Results/P515S55/e2_rho/campaign_s55_step7_e2_x0_1x_rho2p0/evals/f4df38b251a68808_e2_x0_1x_rho2p0/certified_models.pkl has already been loaded once in this run (each allow-listed file at most once)"
+   },
+   {
+    "kind": "pickle.load",
+    "reason": "data/SRP1/Results/P515S55/e2_rho/campaign_s55_step7_e2_unit_1x_rho2p0/evals/13145d7ed63e9f2d_e2_unit_1x_rho2p0/certified_models.pkl has already been loaded once in this run (each allow-listed file at most once)"
+   },
+   {
+    "kind": "pickle.load",
+    "reason": "data/SRP1/Results/P515S55/e2_rho/campaign_s55_step7_e2_x0_2x_rho0p5/evals/14a161e63a4ee34f_e2_x0_2x_rho0p5/certified_models.pkl has already been loaded once in this run (each allow-listed file at most once)"
+   },
+   {
+    "kind": "pickle.load",
+    "reason": "data/SRP1/Results/P515S55/e2_rho/campaign_s55_step7_e2_unit_2x_rho0p5/evals/3e35c66844450f94_e2_unit_2x_rho0p5/certified_models.pkl has already been loaded once in this run (each allow-listed file at most once)"
+   },
+   {
+    "kind": "pickle.load",
+    "reason": "data/SRP1/Results/P515S55/e2_rho/campaign_s55_step7_e2_x0_2x_rho2p0/evals/16614c6680f4d3b4_e2_x0_2x_rho2p0/certified_models.pkl has already been loaded once in this run (each allow-listed file at most once)"
+   },
+   {
+    "kind": "pickle.load",
+    "reason": "data/SRP1/Results/P515S55/e2_rho/campaign_s55_step7_e2_unit_2x_rho2p0/evals/43074041a7942052_e2_unit_2x_rho2p0/certified_models.pkl has already been loaded once in this run (each allow-listed file at most once)"
+   }
+  ],
+  "loaded": [
+   {
+    "n": 1,
+    "path": "data/SRP1/Results/P515S55/e2_rho/campaign_s55_step7_e2_x0_1x_rho0p5/evals/64f3605028f1cf87_e2_x0_1x_rho0p5/certified_models.pkl",
+    "sha256_of_bytes_unpickled": "64ec67cc0a59bf57fd2cdf0ae53216a7683062dfea83949fbde18218220e0614",
+    "size_bytes": 164176533
+   },
+   {
+    "n": 2,
+    "path": "data/SRP1/Results/P515S55/e2_rho/campaign_s55_step7_e2_unit_1x_rho0p5/evals/a895b40ec0b7ccdb_e2_unit_1x_rho0p5/certified_models.pkl",
+    "sha256_of_bytes_unpickled": "a668d74abc6f1737bc9aee970ff5b403d0c828be3a36bb58b1460230579ac4ab",
+    "size_bytes": 164685771
+   },
+   {
+    "n": 3,
+    "path": "data/SRP1/Results/P515S55/e2_rho/campaign_s55_step7_e2_x0_1x_rho2p0/evals/f4df38b251a68808_e2_x0_1x_rho2p0/certified_models.pkl",
+    "sha256_of_bytes_unpickled": "b332511ca7a8b197d4889d6f3089ad5958ef5061b994fcea02fb6d0a341011dc",
+    "size_bytes": 164176533
+   },
+   {
+    "n": 4,
+    "path": "data/SRP1/Results/P515S55/e2_rho/campaign_s55_step7_e2_unit_1x_rho2p0/evals/13145d7ed63e9f2d_e2_unit_1x_rho2p0/certified_models.pkl",
+    "sha256_of_bytes_unpickled": "bada14e6dacfd860176e1c3b7a8119dfb641359732edaddd7ebc4f138e4e371e",
+    "size_bytes": 164685771
+   },
+   {
+    "n": 5,
+    "path": "data/SRP1/Results/P515S55/e2_rho/campaign_s55_step7_e2_x0_2x_rho0p5/evals/14a161e63a4ee34f_e2_x0_2x_rho0p5/certified_models.pkl",
+    "sha256_of_bytes_unpickled": "1c19b627c38644481e1c265c5c0c787de9718a13c099bc575186b310d389492d",
+    "size_bytes": 164184561
+   },
+   {
+    "n": 6,
+    "path": "data/SRP1/Results/P515S55/e2_rho/campaign_s55_step7_e2_unit_2x_rho0p5/evals/3e35c66844450f94_e2_unit_2x_rho0p5/certified_models.pkl",
+    "sha256_of_bytes_unpickled": "88b6b4741d7c07b3445dad0b561e161268415396c8bce7497ed80f5c853ea073",
+    "size_bytes": 164693799
+   },
+   {
+    "n": 7,
+    "path": "data/SRP1/Results/P515S55/e2_rho/campaign_s55_step7_e2_x0_2x_rho2p0/evals/16614c6680f4d3b4_e2_x0_2x_rho2p0/certified_models.pkl",
+    "sha256_of_bytes_unpickled": "191e3c7ecd03474c4640ee336fe1380ec39624d2305a89442c2149d8b3997bfd",
+    "size_bytes": 164184561
+   },
+   {
+    "n": 8,
+    "path": "data/SRP1/Results/P515S55/e2_rho/campaign_s55_step7_e2_unit_2x_rho2p0/evals/43074041a7942052_e2_unit_2x_rho2p0/certified_models.pkl",
+    "sha256_of_bytes_unpickled": "abfbcad0cfe11447cd1e6209c8a504e3debd2f10a3dbee01c2477aad0352a83d",
+    "size_bytes": 164693799
+   }
+  ],
+  "ok": true
+ },
+ "build_guard": {
+  "blocked": "pyomo.core.base.PyomoModel.Model.__init__",
+  "counts": {
+   "pyomo_model_init": 0
+  },
+  "ok": true
+ }
+}
+[21:37:35] wrote data/SRP1/Results/P515S55/w185_e2_diagnostics/w185_e2_diagnostics.json sha256 7d8b0ca68129dc27963cc8af70806ae036f6c58374eb5bbea52a86640f785215
