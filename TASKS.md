@@ -14,8 +14,8 @@ W184 launches once (a), (b), (d) hold; W185 follows W184's report (all eight cel
 - [x] **W183i(c)** — `4aca667e` / `7ddd6ce7`: E1 launcher v3 `532cf6e7…`, resumable launches (unit = batch); gate 447/447 (split ≡ in-process bytewise incl. after B+ and A7; 7/7 foreign and 24/24 tampered refused); for Addendum 87: a single evaluation can exceed 4 h (cap 500 ≈ 4.7 h), commit between launches, harness fault stops the arm, crashed launch blocks resume
 - [x] **W183i(d)** — `2a62ee1d` / `d8dcc139` / `36af2aa9`: spec v1 `frozen_step7_campaign_spec_v1_96345241.json`; E3 + E2 frozen (9 cells, cap 300, persist on; stage specs `bd2cfa4d`, `7631a6d7`); keys = dry runs; E3 preconditions-only 22/22; diagnostics (circle/|P^E|/SOC) via guarded read of the run's own `certified_models.pkl` (accepted)
 - [x] Planner review; report `P5_15_W183I_REPORT.md`
-- [ ] **▶ W184** (E3, 1 certified evaluation, attended) → `P5_15_W184_REPORT.md`
-- [ ] **W185** (E2, 8 certified evaluations serially, attended) → `P5_15_W185_REPORT.md`
+- [x] **W184** — `d7d4875e` / `bb4afafc` / `41cc3433`; report `P5_15_W184_REPORT.md`: C_NRF certified k* 206, Q 653,894,166.07; H3b HELD (90.876 M€, 12.2 %), H3c HELD (binding = the four hours; 864/copy), **H3a FAILED** (+20,463.88 € determinate 1.62×; plan §3 fallback = reporting only) → W185 proceeds (E2 independent; Addendum 63 rule)
+- [ ] **▶ W185** (E2, 8 certified evaluations serially, attended; pair Workers in order (1×,0.5), (1×,2.0), (2×,0.5), (2×,2.0)) → `P5_15_W185_REPORT.md`
 
 ## Addendum 85 order — W183g (zero-solve) + W183h (Addendum 84); then W184 (E3) and W185 (E2 stage 1) conditionally
 
