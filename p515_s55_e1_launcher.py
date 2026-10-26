@@ -2,6 +2,36 @@
 P5.15 Addendum 83 ruling 3 (i), (v), (vi) -- task W183b: the E1 SEARCH LAUNCHER (matched degradation-aware and
 
 ================================================================================
+v3 (W183i (c), PLANNER_BRIEF_2026-09-13.md Addendum 86 ruling 3 (iii)-(v); v2 = sha256 b0841b09..., 7cf88b15)
+================================================================================
+  RESUMABLE LAUNCHES (ruling 3 iii). `--run --resumable [--launch-unit batch|poll]` runs ONE launch unit of a phase and
+  exits; the same command, re-issued after the launch's outputs are committed, resumes. The unit is a BATCH by default
+  (one harness batch = `concurrency` evaluations in parallel): a poll of up to 14 directions (or a completion of up to
+  30 points) at ~0.5-3 h per evaluation can exceed 4 h, so the launch is a batch within a poll with the same resume
+  rules (`poll` = every batch of one evaluating poll, available for short polls). The seeds phase likewise launches
+  one batch of its own size (the spec's concurrency) at a time.
+  RESUME STATE, rebuilt ONLY from the phase root's own records: each launch writes ONE write-once launch record
+  `e1_launch_<NNN>.json` (its live batches, the points it evaluated, the polls it completed, the loop state at its end)
+  and `e1_launch_<NNN>_manifest_sha256.json` (sha256 of every file the launch created: its eval dirs, heartbeat files
+  and launch record). `verify_own_records` refuses unless: the launch chain is contiguous and hash-linked; every
+  manifest hash holds and each manifest lists exactly its launch's files; nothing else is in the phase root; every
+  point's eval dir resolves inside the PHASE root and is its spec entry's; its eval key is recomputed from its
+  canonical candidate under the ARM's model (seeds: the seed's model) and equals the spec entry's; its model is the
+  arm's; the point re-derived from its own eval dir (`harness_record_from_disk` + `point_from_harness`) equals the
+  stored point; no launch recorded a problem; (at --run) the launch records and manifests are git-tracked and clean
+  -- the cache loader's root-scoping. The search loop is then REPLAYED (the unchanged `run_continuation_e1`, every
+  recorded batch served from those records, nothing evaluated) up to the first batch that needs a live evaluation
+  (the resume point): there the loop's OWN state (the resume hook `state_probe`: k_next, new-evaluation count, A7
+  barrier count, polls completed, incumbent; and the poll in progress) must equal the last launch record's
+  `state_after`, the counts must equal those of the records, and the replayed polls must be byte-equal to the
+  persisted ones -- otherwise REFUSED, nothing written. The run precondition "the phase holds exactly its frozen
+  spec" is relaxed ONLY for such a resume (`root_refusals` mode 'resume'). Exit 4 = launch done, phase not finished.
+  The launch record of the terminating launch carries the loop's return dict; campaign_results.json and its manifest
+  are then written as in v2. Ruling 3 (iv): the five B+ choices of v2 are kept unchanged; (v): ADVANCE_WINDOW stays 10.
+  The zero-solve gate of W183i (c) is `p515_s55_w183i_c_e1_v3_resume_gate.py`. v2's `--run` (one process per phase)
+  is unchanged.
+
+================================================================================
 v2 (W183g (b), PLANNER_BRIEF_2026-09-13.md Addendum 85 rulings 2, 3 and 4 (iv); v1 = sha256 320d503c..., cb36b22e)
 ================================================================================
   E1 POLL RULE B+ (ruling 2). The search loop is the launcher's OWN `run_continuation_e1`: a copy of
@@ -123,8 +153,11 @@ MODES (repo root, canonical interpreter, attached, ALONE, both streams captured,
         ZERO SOLVES: freezes and validates the phase's campaign spec.
   --run --phase ... --root R --spec-sha256 X [--g0-artifact P --g0-sha256 S]
         runs the frozen phase (seeds: every entry; search: the variant-B poll) through `H.evaluate`.
+  --run --resumable [--launch-unit batch|poll] --phase ... --root R --spec-sha256 X [--g0-artifact P --g0-sha256 S]
+        (v3) ONE launch unit of the phase (see the v3 paragraph); re-issue the same command to resume.
   Exit codes: 0 done (search: poll failure at unit mesh with its certificate holding); 2 search budget / max polls; 3
-  STOP_FOR_REVIEW (barrier rule or completion cap); 1 any refusal, guard, tripwire, read-back or precondition failure.
+  STOP_FOR_REVIEW (barrier rule or completion cap); 1 any refusal, guard, tripwire, read-back or precondition failure;
+  4 (v3, --resumable) the launch unit is done and the phase is not finished.
 
 EXACT COMMAND OF THE W183b DRY RUN (the only mode run by W183b):
   mkdir data/SRP1/Results/P515S55/w183b_e1_dryrun && NLP_SOLVER_PATH=/usr/local/bin/ipopt \\
@@ -239,14 +272,16 @@ AUTHORITY = [
     'P5_15_W183_0_NL_REFERENCE.md (G0 at x = 0; unit_N_1x key = the ext-v6 e_no_ageing base key)',
     'PLANNER_BRIEF_2026-09-13.md Addendum 85 ruling 2 (E1 poll rule B+), ruling 3 (A7 confirmed), ruling 4 (i), (iv) '
     '(k0 = 0; the 4-slot batch seeds and the roots); W183g order item (b) -- launcher v2',
+    'PLANNER_BRIEF_2026-09-13.md Addendum 86 ruling 3 (iii)-(v) (E1 per-poll resumable launches; the B+ choices kept; '
+    'window 10); W183i order item (c) -- launcher v3',
 ]
 OBJECTIVE_CONVENTION = ('Q(x) = certified gross_operational_cost (contracted interface settlement excluded); F(x) = I(x) '
                         '+ Q(x); salvage and net recourse recorded by the harness, excluded from F')
 RESULTS_P55_REL = os.path.join('data', 'SRP1', 'Results', 'P515S55')
 RESULTS_FILE = 'campaign_results.json'
 MANIFEST_FILE = 'campaign_manifest_sha256.json'
-DRY_RUN_FILE = 'e1_launcher_v2_dryrun.json'                      # v1: w183b_e1_dryrun.json
-DRY_RUN_MANIFEST = 'e1_launcher_v2_dryrun_manifest_sha256.json'  # v1: w183b_e1_dryrun_manifest_sha256.json
+DRY_RUN_FILE = 'e1_launcher_v3_dryrun.json'                      # v1: w183b_e1_dryrun.json; v2: e1_launcher_v2_...
+DRY_RUN_MANIFEST = 'e1_launcher_v3_dryrun_manifest_sha256.json'  # v1: w183b_e1_dryrun_manifest_sha256.json
 LOG_RX = re.compile(r'^[A-Za-z0-9_.-]*launch[A-Za-z0-9_.-]*\.log$')
 
 # ---- the frozen configuration: the W142 extension v6 block (p515_s53_w142_resettle_ext_v6_campaign.py
@@ -329,6 +364,24 @@ SKIPPED_INDEX_FIELDS = ('k', 'halton_t', 'halton_u', 'directions', 'snap_table',
 SKIPPED_COMPLETION_FIELDS = ('n_feasible', 'over_cap', 'cap')
 SKIPPED_CANDIDATE_FIELDS = ('label', 'poll_part', 'direction_index', 'disposition')
 ADVANCE_RULE_FIELDS = ('enabled', 'window', 'first_index', 'polled_index', 'n_examined', 'text')
+# ---- v3: resumable launches (Addendum 86 ruling 3 iii) ----
+LAUNCH_UNITS = ('batch', 'poll')           # batch (default): one harness batch per launch; poll: one evaluating poll
+LAUNCH_RECORD_SCHEMA = 'p515_s55_e1_launch_record_v1'
+LAUNCH_RECORD_FMT = 'e1_launch_{:03d}.json'
+LAUNCH_MANIFEST_FMT = 'e1_launch_{:03d}_manifest_sha256.json'
+LAUNCH_RECORD_RX = re.compile(r'^e1_launch_(\d{3})\.json$')
+LAUNCH_MANIFEST_RX = re.compile(r'^e1_launch_(\d{3})_manifest_sha256\.json$')
+EXIT_SUSPENDED = 4                         # the launch unit is done; the phase is not finished (resume)
+STATE_FIELDS = ('k_next', 'n_new', 'n_barrier_new', 'n_polls', 'incumbent')   # the loop state the resume hook exposes
+RESUME_RULE = (
+    'E1 RESUMABLE LAUNCHES (PLANNER_BRIEF_2026-09-13.md Addendum 86 ruling 3 iii): one launch per batch (default; a '
+    'poll can exceed 4 h) or per evaluating poll; the seeds phase one batch of its own size per launch. The resume '
+    'state is rebuilt ONLY from the phase root\'s own records (launch records + manifests, hash-chained; every point '
+    'inside the phase root, its eval key recomputed under the arm\'s model, its model the arm\'s, re-derived from its '
+    'own eval dir; no foreign file; git-tracked and clean at --run). The unchanged loop is replayed on those records '
+    'up to the first batch needing a live evaluation; there its own k_next, new-evaluation count, barrier count, polls '
+    'and incumbent must equal the last launch record, and the replayed polls must be byte-equal to the persisted '
+    'ones; otherwise the launch is refused and nothing is written.')
 # ---- the frozen variant-B primitives BY REFERENCE (the unchanged objects of p515_s53_f2_certificate), bound under the
 #      names C.run_continuation's body uses, so that run_continuation_e1's text differs from C.run_continuation only
 #      where B+ requires it (the W183g (b) gate diffs the two sources) ----
@@ -1013,6 +1066,10 @@ def root_refusals(inv, mode, phase=None):
     elif mode == 'run':
         if not (own['exists'] and own['only_spec']):
             out.append(f'phase {phase} must hold exactly its frozen spec and nothing else: {own}')
+    elif mode == 'resume':   # v3 (Addendum 86 ruling 3 iii): relaxed ONLY here; `verify_own_records` verifies the rest
+        if not (own['exists'] and len(own.get('specs') or []) == 1 and not own.get('results')
+                and not own.get('manifest')):
+            out.append(f'phase {phase} is not resumable (it must hold its one frozen spec and no results): {own}')
     if phase.startswith('search'):
         if not inv['phases']['seeds'].get('complete'):
             out.append(f"the seeds phase is not complete in this root: {inv['phases']['seeds']}")
@@ -1194,10 +1251,13 @@ def _skipped_index_entry(record, completion):
 # `advance_rule`. With advance=False the loop is the imported loop plus the two fields at their trivial values
 # (skipped [], enabled False, n_examined 1) -- the W183g (b) gate tests this against C.run_continuation itself.
 # `on_poll_start` fires once per launched poll, on the chosen record. B_PLUS_RULE states the rule.
+# v3 (Addendum 86 ruling 3 iii): (4) the RESUME HOOK -- the `state_probe` parameter and the two marked lines after
+# `k_next = k0`: when a dict is given, the loop registers under 'get' a closure returning its own state (k_next, n_new,
+# n_barrier_new, polls completed, incumbent) at the moment of the call; it reads only, so the loop is unchanged.
 def run_continuation_e1(lattice, cache, key_of, incumbent, evaluate_fn, sigma_q, k0=HALTON_K0,
                         max_new_evaluations=N_MAX_NEW_EVALUATIONS, max_polls=MAX_POLLS, batch_size=1,
                         completion_cap=COMPLETION_CAP, log=_log, on_poll=None, on_poll_start=None, advance=True,
-                        advance_window=ADVANCE_WINDOW):
+                        advance_window=ADVANCE_WINDOW, state_probe=None):
     """The continuation loop (POLL_RULE, SNAP_RULE, ITERATION_RULE). `cache` (eval_key -> entry) is extended in
     place. `evaluate_fn(list[z]) -> list[cache entry]`. Structure, barrier rule, classification and record schema
     follow PB.run_mads; the poll set is `build_poll`'s."""
@@ -1205,6 +1265,9 @@ def run_continuation_e1(lattice, cache, key_of, incumbent, evaluate_fn, sigma_q,
     history, n_new, n_barrier_new = [], 0, 0
     termination, certificate = None, None
     k_next = k0
+    if state_probe is not None:   # >>> resume hook (v3, Addendum 86 ruling 3 iii): read-only view of the loop state
+        state_probe['get'] = lambda: {'k_next': k_next, 'n_new': n_new, 'n_barrier_new': n_barrier_new,
+                                      'n_polls': len(history), 'incumbent': dict(inc)}   # <<< resume hook
 
     def _finish(rec):
         history.append(rec)
@@ -1525,6 +1588,18 @@ def rule_eleven(lattice, sigma_q):
         checks['e1_loop_poll_failure_certificate_fields'] = (
             out_u['termination']['reason'] == 'poll_failure_at_unit_mesh'
             and all(f in cert_u for f in C.CERTIFICATE_FIELDS))
+        # v3: the resume hook exposes every state field a launch record must capture (STATE_FIELDS)
+        probe = {}
+        out_p = run_continuation_e1(lattice, dict(cache), key_of, dict(inc), _barrier, sigma_q, k0=HALTON_K0,
+                                    max_new_evaluations=N_MAX_NEW_EVALUATIONS, max_polls=1, batch_size=1,
+                                    completion_cap=COMPLETION_CAP, log=lambda m: None, advance=True,
+                                    advance_window=ADVANCE_WINDOW, state_probe=probe)
+        st = probe['get']()
+        checks['resume_state_probe_fields'] = (
+            sorted(st) == sorted(STATE_FIELDS) and st['n_new'] == out_p['n_new_evaluations']
+            and st['n_barrier_new'] == out_p['n_barrier_new_evaluations'] and st['n_polls'] == out_p['n_polls']
+            and st['k_next'] == out_p['history'][-1]['poll_index'] + 1
+            and st['incumbent']['eval_key'] == out_p['incumbent']['eval_key'])
     except Exception as error:  # noqa: BLE001
         checks['poll_record_fields'] = False
         checks['poll_exception'] = False
@@ -1847,7 +1922,7 @@ def planted_scope_test(lattice, plan, scratch, g0):
 # ======================================================================================================================
 def dry_run(args, root_rel, root_abs):
     started = time.time()
-    res = {'schema': 'p515_s55_e1_launcher_dryrun_v2', 'stage': STAGE, 'authority': AUTHORITY, 'started_utc': _utc(),
+    res = {'schema': 'p515_s55_e1_launcher_dryrun_v3', 'stage': STAGE, 'authority': AUTHORITY, 'started_utc': _utc(),
            'argv': sys.argv, 'interpreter': sys.executable, 'git_head': H._git(['rev-parse', 'HEAD']),
            'objective_convention': OBJECTIVE_CONVENTION + ' (no objective value is computed by this dry run)',
            'root': root_rel, 'concurrency': args.concurrency}
@@ -2083,11 +2158,13 @@ def freeze(args, root_rel, root_abs):
 # ======================================================================================================================
 #  --run
 # ======================================================================================================================
-def _run_preconditions(args, root_rel, root_abs):
+def _run_preconditions(args, root_rel, root_abs, resume=False):
+    """`resume` (v3, --run --resumable into a phase holding more than its spec): the root rule 'resume' replaces 'run';
+    the launch core then refuses unless every record of the phase root verifies (`verify_own_records`)."""
     phase = args.phase
     croot = phase_root(root_abs, root_rel, phase)
     inv = root_inventory(root_abs, root_rel)
-    failures = root_refusals(inv, 'run', phase)
+    failures = root_refusals(inv, 'resume' if resume else 'run', phase)
     if failures:
         return failures, None, None, None
     spec_path, spec = H.load_frozen_spec(croot, args.spec_sha256)
@@ -2248,6 +2325,616 @@ def run(args, root_rel, root_abs):
 
 
 # ======================================================================================================================
+#  v3: resumable launches (Addendum 86 ruling 3 iii) -- one launch per batch (or per evaluating poll); see RESUME_RULE
+# ======================================================================================================================
+class SuspendLaunch(Exception):
+    """Raised by a launch's evaluate_fn BEFORE anything is evaluated, when the launch unit is used up. `state` = the
+    loop state at that moment (the resume hook) and the poll in progress."""
+
+    def __init__(self, state):
+        super().__init__('launch unit used up')
+        self.state = state
+
+
+class ResumeRefused(Exception):
+    """Raised during the replay, before anything is evaluated, when the rebuilt state disagrees with the records."""
+
+    def __init__(self, reasons):
+        super().__init__('; '.join(reasons))
+        self.reasons = list(reasons)
+
+
+def _ser(obj):
+    return GRIO.dumps(obj, sort_keys=True)
+
+
+def launch_paths(croot, n):
+    return os.path.join(croot, LAUNCH_RECORD_FMT.format(n)), os.path.join(croot, LAUNCH_MANIFEST_FMT.format(n))
+
+
+def files_under(path):
+    out = []
+    for directory, _dirs, files in os.walk(path):
+        for fname in files:
+            out.append(os.path.join(directory, fname))
+    return sorted(out)
+
+
+def harness_record_from_disk(eval_dir_abs):
+    """The record `H.evaluate` returned for one evaluation, rebuilt from the eval dir's own files: the child's
+    evaluation_record.json (or the parent's parent_barrier_record.json) plus the `parent_view` that H.evaluate's
+    `_reap` adds (from exit_code.txt and wait4_rusage.json, which `_reap` writes from the same values).
+    -> (record, path of the record file) or (None, None)."""
+    rec_path = os.path.join(eval_dir_abs, 'evaluation_record.json')
+    bar_path = os.path.join(eval_dir_abs, 'parent_barrier_record.json')
+    src = rec_path if os.path.isfile(rec_path) else (bar_path if os.path.isfile(bar_path) else None)
+    if src is None:
+        return None, None
+    with open(src) as handle:
+        record = json.load(handle)
+    with open(os.path.join(eval_dir_abs, 'wait4_rusage.json')) as handle:
+        wait4 = json.load(handle)
+    with open(os.path.join(eval_dir_abs, 'exit_code.txt')) as handle:
+        exit_code = int(handle.read().strip())
+    record['parent_view'] = {'exit_code': exit_code, 'wall_s': wait4['wall_s_parent_view'],
+                             'wait4_ru_maxrss': (wait4.get('rusage') or {}).get('ru_maxrss')}
+    return record, src
+
+
+def _without_head(point):
+    return {k: v for k, v in point.items() if k != 'git_head_at_record'}   # HEAD moves when a launch is committed
+
+
+def _launch_expected_files(croot, spec, lr):
+    """The files one launch creates: every file of its points' eval dirs, the harness init-identity file of each (if
+    the harness wrote one), the heartbeat file of each of its harness calls, and its launch record (added by caller)."""
+    by_label = {e['label']: e for e in spec['candidates']}
+    out = set()
+    for tag in lr.get('heartbeat_tags') or []:
+        out.add(_rel(os.path.join(croot, H.heartbeat_file_name(tag))))
+    for lab in (lab for b in lr.get('batches') or [] for lab in b):
+        entry = by_label.get(lab)
+        if entry is None:
+            continue
+        ed_abs = os.path.join(croot, 'evals', entry['eval_dir'])
+        out.update(_rel(f) for f in (files_under(ed_abs) if os.path.isdir(ed_abs) else []))
+        ident = os.path.join(croot, H.INIT_IDENTITY_DIR_NAME, f"{entry['eval_dir']}.json")
+        if os.path.isfile(ident):
+            out.add(_rel(ident))
+    return out
+
+
+def verify_own_records(croot, root_abs, root_rel, phase, spec, spec_path, spec_sha256, lattice, require_git=True):
+    """The resume precondition (ruling 3 iii): the phase root's OWN records, verified; nothing else read.
+    -> (refusals, info, chain); chain = [{'n', 'record', 'record_sha256', 'manifest', 'manifest_sha256'}] in order.
+    Refused unless: no results yet; exactly the one frozen spec; launch records 1..n each with a manifest, hash-chained
+    (previous_launch_manifest_sha256), of this phase / arm / campaign / root / spec / launcher, one launch unit, none
+    terminated, none with a problem or an unexpected file; every manifest hash holds, each manifest lists exactly its
+    launch's files and no file is in two; per point: in the spec, evaluated once, its model the arm's (seeds: the
+    seed's), the spec entry of that model, its eval dir inside the PHASE root and the entry's, its eval key recomputed
+    from its canonical candidate under that model and equal to the entry's, its record file hashed in its launch's
+    manifest, and the point re-derived from its own eval dir equal to the stored one (but for git_head_at_record); no
+    file in the phase root outside the spec, the launch manifests and what they list; with `require_git` the spec, the
+    launch records and the manifests git-tracked and clean (the cache loader's rule)."""
+    info = {'phase_root': _rel(croot), 'rule': RESUME_RULE, 'require_git': require_git, 'launches': []}
+    if not os.path.isdir(croot):
+        return [f'records: no phase root {_rel(croot)}'], info, []
+    names = sorted(os.listdir(croot))
+    if RESULTS_FILE in names or MANIFEST_FILE in names:
+        return [f'records: the phase is complete ({RESULTS_FILE} / {MANIFEST_FILE} present): nothing to resume'], \
+            info, []
+    refusals, chain = [], []
+    spec_name = os.path.basename(spec_path)
+    specs = [n for n in names if n.startswith('campaign_spec_')]
+    if os.path.realpath(os.path.dirname(spec_path)) != os.path.realpath(croot) or specs != [spec_name] \
+            or H.sha256_file(spec_path) != spec_sha256:
+        refusals.append(f'records: the phase root must hold exactly its one frozen spec {spec_name} '
+                        f'(sha256 {spec_sha256}): {specs}')
+    if require_git and not all(_git_tracked_clean(_rel(spec_path))):
+        refusals.append(f'records: the frozen spec {_rel(spec_path)} is not git-tracked and clean')
+    rec_idx = sorted(int(m.group(1)) for m in (LAUNCH_RECORD_RX.match(n) for n in names) if m)
+    man_idx = sorted(int(m.group(1)) for m in (LAUNCH_MANIFEST_RX.match(n) for n in names) if m)
+    if rec_idx != list(range(1, len(rec_idx) + 1)) or man_idx != rec_idx:
+        return refusals + [f'records: launch records {rec_idx} and manifests {man_idx} are not one contiguous chain '
+                           f'1..n with a manifest each'], info, []
+    extra = spec.get('extra') or {}
+    arm = None if phase == 'seeds' else extra.get('arm')
+    plan_by_label = {r['label']: r for r in seed_plan(lattice)}
+    by_label = {e['label']: e for e in spec['candidates']}
+    key_of = {m: make_arm_key_of(lattice, m) for m in MODELS}
+    listed, seen_labels, prev_manifest_sha, unit0 = {}, set(), None, None
+    for n in rec_idx:
+        rec_p, man_p = launch_paths(croot, n)
+        try:
+            lr, manifest = _load(rec_p), _load(man_p)
+        except (OSError, ValueError) as error:
+            refusals.append(f'launch {n}: unreadable launch record or manifest: {error}')
+            continue
+        rec_rel, man_sha = _rel(rec_p), H.sha256_file(man_p)
+        unit0 = unit0 or lr.get('launch_unit')
+        lc = {
+            'schema': lr.get('schema') == LAUNCH_RECORD_SCHEMA,
+            'launch_index': lr.get('launch_index') == n,
+            'phase': lr.get('phase') == phase,
+            'arm': lr.get('arm') == arm,
+            'campaign_id': lr.get('campaign_id') == spec.get('campaign_id'),
+            'e1_root_is_this_root': lr.get('e1_root') == root_rel,
+            'campaign_spec_sha256': lr.get('campaign_spec_sha256') == spec_sha256,
+            'campaign_script': lr.get('campaign_script') == SCRIPT_NAME,
+            'previous_launch_manifest_sha256_chain': lr.get('previous_launch_manifest_sha256') == prev_manifest_sha,
+            'launch_unit_known_and_one_per_phase': lr.get('launch_unit') in LAUNCH_UNITS
+            and lr.get('launch_unit') == unit0,
+            'not_terminated': lr.get('terminated') is False,
+            'no_problems_recorded': not lr.get('problems'),
+            'no_unexpected_or_missing_files_recorded': not lr.get('unexpected_new_files')
+            and not lr.get('expected_new_files_missing'),
+            'manifest_lists_the_launch_record_and_its_hash_holds': manifest.get(rec_rel) == H.sha256_file(rec_p),
+            'every_manifest_hash_holds': all(_sha_or_none(f) == h for f, h in manifest.items()),
+            'every_manifest_file_inside_the_phase_root': all(_inside(_abs(f), croot) for f in manifest),
+            'no_file_in_two_manifests': not (set(manifest) & set(listed)),
+        }
+        batches, new_points = lr.get('batches') or [], lr.get('new_points') or {}
+        flat = [lab for b in batches for lab in b]
+        lc['batches_list_exactly_the_new_points'] = sorted(flat) == sorted(new_points) and len(set(flat)) == len(flat)
+        for lab in flat:
+            p = new_points.get(lab) or {}
+            entry = by_label.get(lab) or {}
+            if phase == 'seeds':
+                model, seed = (plan_by_label[lab]['model'], plan_by_label[lab]['seed']) if lab in plan_by_label \
+                    else (None, None)
+            else:
+                model, seed = arm, None
+            can = p.get('candidate_canonical')
+            z = lattice.z_of_canonical(can) if isinstance(can, dict) else None
+            ed = p.get('eval_dir')
+            ed_expected = _rel(os.path.join(croot, 'evals', entry['eval_dir'])) if entry else None
+            pc = {
+                'label_in_the_spec': bool(entry),
+                'label_evaluated_once': lab not in seen_labels,
+                'point_model_is_the_arms_model': model in MODELS and p.get('model') == model,
+                'spec_entry_of_that_model': model in MODELS and bool(entry)
+                and entry.get('model_variant') == MODEL_DECLARATIONS[model],
+                'eval_dir_inside_the_phase_root': bool(ed) and _inside(_abs(ed), croot),
+                'eval_dir_is_the_spec_entrys': bool(ed_expected) and ed == ed_expected,
+                'on_the_lattice': z is not None,
+                'eval_key_recomputes_under_the_arms_model': z is not None and model in MODELS
+                and p.get('eval_key') == key_of[model](z),
+                'eval_key_equals_the_spec_entrys': bool(entry) and p.get('eval_key') == entry.get('eval_key'),
+                'candidate_equals_the_spec_entrys': bool(entry) and p.get('candidate_key') == entry.get('key')
+                and can == entry.get('canonical'),
+            }
+            seen_labels.add(lab)
+            rp, src = None, None
+            if entry and model in MODELS:
+                try:
+                    rec, src = harness_record_from_disk(_abs(ed_expected))
+                    rp = point_from_harness(rec, entry, model, seed) if rec is not None else None
+                except (OSError, ValueError, KeyError, TypeError) as error:
+                    rp, src = None, None
+                    pc['eval_dir_files_readable'] = False
+                    refusals.append(f'launch {n}: point {lab}: eval dir unreadable: {error}')
+            pc['record_file_hashed_in_this_launchs_manifest'] = (src is not None and manifest.get(_rel(src))
+                                                                == H.sha256_file(src))
+            pc['point_rederived_from_its_eval_dir_equals_the_stored_point'] = (
+                rp is not None and _ser(_without_head(rp)) == _ser(_without_head(p)))
+            bad = [k for k, v in pc.items() if not v]
+            if bad:
+                refusals.append(f'launch {n}: point {lab} refused: {bad}')
+        lc['manifest_lists_exactly_this_launchs_files'] = (set(manifest)
+                                                           == _launch_expected_files(croot, spec, lr) | {rec_rel})
+        if require_git:
+            lc['launch_record_and_manifest_git_tracked_and_clean'] = all(
+                all(_git_tracked_clean(_rel(p))) for p in (rec_p, man_p))
+        bad = [k for k, v in lc.items() if not v]
+        if bad:
+            refusals.append(f'launch {n} refused: {bad}')
+        listed.update({f: n for f in manifest})
+        chain.append({'n': n, 'record': lr, 'record_sha256': H.sha256_file(rec_p), 'manifest': manifest,
+                      'manifest_sha256': man_sha})
+        info['launches'].append({'n': n, 'record': rec_rel, 'record_sha256': chain[-1]['record_sha256'],
+                                 'manifest_sha256': man_sha, 'n_batches': len(batches), 'n_points': len(flat),
+                                 'checks': lc})
+        prev_manifest_sha = man_sha
+    allowed = set(listed) | {_rel(spec_path)} | {_rel(launch_paths(croot, n)[1]) for n in rec_idx}
+    foreign = [_rel(f) for f in files_under(croot) if _rel(f) not in allowed]
+    if foreign:
+        refusals.append(f'records: {len(foreign)} file(s) in the phase root that no launch manifest lists (foreign): '
+                        f'{foreign[:12]}{" ..." if len(foreign) > 12 else ""}')
+    return refusals, info, chain
+
+
+def write_launch_record(croot, spec_path, spec, chain, lr):
+    """Write launch n = len(chain) + 1 (write-once): the launch record, then its manifest = sha256 of every file the
+    launch created (every file in the phase root not in the spec, an earlier manifest or an earlier manifest's list)
+    and of the record itself. The record carries the files it did not expect / the expected files missing (both make
+    the next resume refuse). -> {'n', 'record', 'record_sha256', 'manifest', 'manifest_sha256'}."""
+    n = len(chain) + 1
+    rec_p, man_p = launch_paths(croot, n)
+    prior = ({f for c in chain for f in c['manifest']} | {_rel(spec_path)}
+             | {_rel(launch_paths(croot, c['n'])[1]) for c in chain})
+    new_files = sorted(_rel(f) for f in files_under(croot) if _rel(f) not in prior)
+    expected = _launch_expected_files(croot, spec, lr)
+    lr = dict(lr, launch_index=n,
+              previous_launch_manifest_sha256=chain[-1]['manifest_sha256'] if chain else None,
+              unexpected_new_files=sorted(set(new_files) - expected),
+              expected_new_files_missing=sorted(expected - set(new_files)))
+    rec_sha = _write_once_json(rec_p, lr)
+    manifest = {f: H.sha256_file(_abs(f)) for f in new_files}
+    manifest[_rel(rec_p)] = rec_sha
+    man_sha = _write_once_json(man_p, manifest)
+    return {'n': n, 'record': _rel(rec_p), 'record_sha256': rec_sha, 'manifest': _rel(man_p),
+            'manifest_sha256': man_sha, 'unexpected_new_files': lr['unexpected_new_files'],
+            'expected_new_files_missing': lr['expected_new_files_missing']}
+
+
+def _launch_record_base(spec, spec_sha256, root_rel, phase, arm, launch_unit, started_utc):
+    return {'schema': LAUNCH_RECORD_SCHEMA, 'launch_unit': launch_unit, 'phase': phase, 'arm': arm,
+            'campaign_id': spec['campaign_id'], 'e1_root': root_rel, 'campaign_spec_sha256': spec_sha256,
+            'campaign_script': SCRIPT_NAME, 'campaign_script_sha256': _sha(SCRIPT_NAME), 'resume_rule': RESUME_RULE,
+            'git_head_at_launch': H._git(['rev-parse', 'HEAD']), 'started_utc': started_utc}
+
+
+def _results_extra(results_extra):
+    return {k: (v() if callable(v) else v) for k, v in (results_extra or {}).items()}
+
+
+def search_launch(*, croot, root_abs, root_rel, spec, spec_path, spec_sha256, lattice, sigma_q, harness_evaluate, ctx,
+                  launch_unit='batch', g0=None, require_git=True, log=_log, results_extra=None):
+    """ONE resumable launch of a search phase. Verifies the seed cache and the incumbent against the frozen spec and
+    the phase root's own records (`verify_own_records`), replays the unchanged `run_continuation_e1` on those records
+    to the resume point, checks the loop's own state there against the last launch record, evaluates ONE launch unit
+    live through `harness_evaluate(labels, ctx, heartbeat_tag=...)` (H.evaluate at --run), then writes its launch
+    record and manifest (and, if the loop terminated, campaign_results.json and its manifest, as v2). A refusal
+    writes nothing. -> outcome dict (status 'refused' / 'suspended' / 'terminated')."""
+    started, started_utc = time.time(), _utc()
+    extra = spec.get('extra') or {}
+    phase, arm = extra.get('phase'), extra.get('arm')
+    outcome = {'phase': phase, 'arm': arm, 'launch_unit': launch_unit, 'status': None, 'refusals': []}
+
+    def _refuse(reasons):
+        for r in reasons:
+            log(f'[RESUME REFUSED] {r}')
+        return dict(outcome, status='refused', refusals=list(reasons))
+
+    pre = []
+    if launch_unit not in LAUNCH_UNITS:
+        pre.append(f'unknown launch unit {launch_unit!r}: {LAUNCH_UNITS}')
+    if arm not in MODELS or phase != f'search_{arm}':
+        pre.append(f'not a search phase spec: phase {phase!r} arm {arm!r}')
+    if os.path.realpath(croot) != os.path.realpath(phase_root(root_abs, root_rel, str(phase))):
+        pre.append(f'{_rel(croot)} is not the {phase} phase root of {root_rel}')
+    if pre:
+        return _refuse(pre)
+    ok, cinfo, seed_cache = load_seed_cache(root_abs, root_rel, arm, lattice, g0=g0, require_git=require_git)
+    if not ok or {k: _jsonable(v) for k, v in sorted(seed_cache.items())} != extra.get('cache_table'):
+        return _refuse([f"seed cache refused or differs from the frozen table: {cinfo.get('reason')}"])
+    inc, inc_rec = initial_incumbent(lattice, seed_cache, sigma_q)
+    if inc is None or _jsonable(inc_rec) != extra.get('initial_incumbent'):
+        return _refuse(['initial incumbent differs from the frozen one'])
+    refusals, vinfo, chain = verify_own_records(croot, root_abs, root_rel, phase, spec, spec_path, spec_sha256,
+                                                lattice, require_git=require_git)
+    if chain and chain[0]['record'].get('launch_unit') != launch_unit:
+        refusals.append(f"launch unit {launch_unit} != this phase's {chain[0]['record'].get('launch_unit')} "
+                        f"(one unit per phase)")
+    if refusals:
+        return _refuse(refusals)
+    recorded = [(list(b), [c['record']['new_points'][lab] for lab in b]) for c in chain for b in c['record']['batches']]
+    persisted_polls = [p for c in chain for p in c['record']['completed_polls']]
+    stated = chain[-1]['record']['state_after'] if chain else None
+    n_rec_points = sum(len(ps) for _b, ps in recorded)
+    n_rec_barrier = sum(1 for _b, ps in recorded for p in ps if p.get('status') != 'certified')
+    key_of = make_arm_key_of(lattice, arm)
+    label_of_key = {e['eval_key']: e['label'] for e in spec['candidates']}
+    by_label = {e['label']: e for e in spec['candidates']}
+    cache = copy.deepcopy(seed_cache)
+    probe, cur, served, counter = {}, {'record': None}, [0], [0]
+    live = {'batches': 0, 'poll': None}
+    history_seen, new_batches, tags, batch_infos, new_points, problems, resume_point = [], [], [], [], {}, {}, {}
+
+    def _poll_in_progress():
+        r = cur['record']
+        if r is None or any(h is r for h in history_seen):
+            return None
+        rule = r.get('advance_rule') or {}
+        return {'poll_index': r['poll_index'], 'halton_t': r['halton_t'], 'first_index': rule.get('first_index'),
+                'polled_index': rule.get('polled_index'), 'n_examined': rule.get('n_examined'),
+                'skipped_ks': [s['k'] for s in r.get('halton_indices_skipped') or []],
+                'n_new_evaluations_listed': r['n_new_evaluations'], 'batches_done': [list(b) for b in r['batches']]}
+
+    def _state(raw):
+        return _jsonable(dict({f: raw[f] for f in STATE_FIELDS}, poll_in_progress=_poll_in_progress()))
+
+    def _check_resume_point(raw, where):
+        state = _state(raw)
+        checks = {'every_recorded_batch_served': served[0] == len(recorded),
+                  'n_new_equals_the_records': raw['n_new'] == n_rec_points,
+                  'n_barrier_new_equals_the_records': raw['n_barrier_new'] == n_rec_barrier}
+        if chain:
+            checks['reached_at_a_live_batch'] = where == 'live_batch'
+            checks['replayed_polls_byte_equal_the_persisted_polls'] = (
+                len(history_seen) == len(persisted_polls)
+                and all(_ser(a) == _ser(b) for a, b in zip(history_seen, persisted_polls)))
+            for f in STATE_FIELDS + ('poll_in_progress',):
+                checks[f'{f}_equals_the_last_launch_record'] = _ser(state[f]) == _ser(stated.get(f))
+        resume_point.update({'where': where, 'checks': checks, 'state': state})
+        bad = [k for k, v in checks.items() if not v]
+        if bad:
+            raise ResumeRefused([f'resume state disagrees with the records: {k}' for k in bad])
+
+    def _loop_log(msg):
+        log(('[replay] ' if chain and not resume_point else '') + msg)
+
+    def evaluate_fn(batch):
+        keys = [key_of(z) for z in batch]
+        labels = [label_of_key[k] for k in keys]
+        counter[0] += 1
+        if served[0] < len(recorded):          # the replay: served from the verified records, nothing evaluated
+            rec_labels, rec_points = recorded[served[0]]
+            if labels != rec_labels:
+                raise ResumeRefused([f'replay diverged at batch {counter[0]}: the loop asks {labels}, the records '
+                                     f'hold {rec_labels}'])
+            served[0] += 1
+            return [cache_entry_from_point(p, root_rel, spec['campaign_id']) for p in rec_points]
+        raw = probe['get']()
+        if not resume_point:
+            _check_resume_point(raw, 'live_batch')
+        if (launch_unit == 'batch' and live['batches'] >= 1) or (
+                launch_unit == 'poll' and live['poll'] is not None and raw['n_polls'] != live['poll']):
+            raise SuspendLaunch(_state(raw))
+        if live['poll'] is None:
+            live['poll'] = raw['n_polls']
+        live['batches'] += 1
+        tag = f'batch_{counter[0]:03d}'
+        log(f'evaluating batch {counter[0]}: {labels}')
+        harness_evaluate.last_batch_info = {}
+        recs = harness_evaluate(labels, ctx, heartbeat_tag=tag)
+        tags.append(tag)
+        new_batches.append(list(labels))
+        batch_infos.append({'labels': labels, **getattr(harness_evaluate, 'last_batch_info', {})})
+        out = []
+        for lab, rec in zip(labels, recs):
+            p = point_from_harness(rec, by_label[lab], arm)
+            new_points[lab] = p
+            if point_problems(p):
+                problems[lab] = point_problems(p)
+            out.append(cache_entry_from_point(p, root_rel, spec['campaign_id']))
+        return out
+
+    result, state = None, None
+    try:
+        result = run_continuation_e1(lattice, cache, key_of, inc, evaluate_fn, sigma_q, k0=HALTON_K0,
+                                     max_new_evaluations=N_MAX_NEW_EVALUATIONS, max_polls=MAX_POLLS,
+                                     batch_size=int(spec['concurrency']), completion_cap=COMPLETION_CAP,
+                                     log=_loop_log, on_poll=history_seen.append,
+                                     on_poll_start=lambda r: cur.__setitem__('record', r), advance=True,
+                                     advance_window=ADVANCE_WINDOW, state_probe=probe)
+        raw = probe['get']()
+        if not resume_point:
+            _check_resume_point(raw, 'loop_end')
+        state = _state(raw)
+    except SuspendLaunch as suspend:
+        state = suspend.state
+    except ResumeRefused as refused:
+        return _refuse(refused.reasons)
+    lr = dict(_launch_record_base(spec, spec_sha256, root_rel, phase, arm, launch_unit, started_utc),
+              replay={'n_launches_before': len(chain), 'n_batches_served': served[0],
+                      'n_polls_replayed': len(persisted_polls), 'resume_point': resume_point,
+                      'records_verified': vinfo},
+              batches=new_batches, heartbeat_tags=tags, batch_infos=batch_infos, new_points=new_points,
+              problems=problems, completed_polls=history_seen[len(persisted_polls):], state_after=state,
+              terminated=result is not None, result=result, finished_utc=_utc(), wall_clock_s=time.time() - started)
+    written = write_launch_record(croot, spec_path, spec, chain, lr)
+    outcome.update({'status': 'terminated' if result is not None else 'suspended', 'launch': written,
+                    'problems': problems, 'state_after': state, 'n_batches_served': served[0],
+                    'batches': new_batches, 'resume_point': resume_point, 'result': result})
+    log(f"launch {written['n']} ({launch_unit}): served {served[0]} recorded batches, evaluated {len(new_batches)} "
+        f"live batch(es) {new_batches}; {outcome['status']}; state {state}")
+    if result is not None:
+        points = {}
+        for c in chain:
+            points.update(c['record']['new_points'])
+        points.update(new_points)
+        launches = [{'n': c['n'], 'record': _rel(launch_paths(croot, c['n'])[0]), 'record_sha256': c['record_sha256'],
+                     'manifest_sha256': c['manifest_sha256']} for c in chain] + [
+            {k: written[k] for k in ('n', 'record', 'record_sha256', 'manifest_sha256')}]
+        results = {
+            'stage': STAGE, 'phase': phase, 'campaign_id': spec['campaign_id'], 'e1_root': root_rel,
+            'timestamp_utc': _utc(), 'git_head_at_run': H._git(['rev-parse', 'HEAD']),
+            'campaign_spec_path': _rel(spec_path), 'campaign_spec_sha256': spec_sha256,
+            'objective_convention': OBJECTIVE_CONVENTION, 'flex_price_multiplier': FLEX_M, 'points': points,
+            'aliases': extra.get('aliases') or [], 'problems': problems,
+            'batch_info': [bi for c in chain for bi in c['record']['batch_infos']] + batch_infos,
+            'resumable': {'rule': RESUME_RULE, 'launch_unit': launch_unit, 'n_launches': written['n'],
+                          'launches': launches},
+            'arm': arm, 'termination': result['termination'],
+            'termination_certificate': result['termination_certificate'],
+            'STOP_FOR_REVIEW': result['termination']['reason'].startswith('STOP_FOR_REVIEW'),
+            'initial_incumbent': extra['initial_incumbent'], 'final_incumbent': result['incumbent'],
+            'n_polls': result['n_polls'], 'n_new_evaluations': result['n_new_evaluations'],
+            'n_barrier_new_evaluations': result['n_barrier_new_evaluations'],
+            'final_poll_unresolved_indeterminate': result['final_poll_unresolved_indeterminate'],
+            'lattice_neighbourhood_of_incumbent': result['lattice_neighbourhood_of_incumbent'],
+            'poll_history': result['history'], 'wall_clock_s_last_launch': time.time() - started,
+            **_results_extra(results_extra)}
+        _write_results(croot, results)
+        outcome['results_written'] = _rel(os.path.join(croot, RESULTS_FILE))
+    return outcome
+
+
+def seeds_launch(*, croot, root_abs, root_rel, spec, spec_path, spec_sha256, lattice, harness_evaluate, ctx,
+                 require_git=True, log=_log, results_extra=None):
+    """ONE resumable launch of the seeds phase: the next batch of the spec's own size (its concurrency), in spec order,
+    after `verify_own_records` and the state check (the evaluated labels are the spec's prefix, one batch of that size
+    per launch, the last launch record's count and labels equal to the records'). Writes its launch record and
+    manifest; the launch that completes the phase writes campaign_results.json and its manifest exactly as v2's seeds
+    run does (points, aliases) plus the launch list. A refusal writes nothing."""
+    started, started_utc = time.time(), _utc()
+    extra = spec.get('extra') or {}
+    outcome = {'phase': 'seeds', 'arm': None, 'launch_unit': 'batch', 'status': None, 'refusals': []}
+
+    def _refuse(reasons):
+        for r in reasons:
+            log(f'[RESUME REFUSED] {r}')
+        return dict(outcome, status='refused', refusals=list(reasons))
+
+    if extra.get('phase') != 'seeds' or os.path.realpath(croot) != os.path.realpath(
+            phase_root(root_abs, root_rel, 'seeds')):
+        return _refuse([f'not the seeds phase spec / root of {root_rel}'])
+    refusals, vinfo, chain = verify_own_records(croot, root_abs, root_rel, 'seeds', spec, spec_path, spec_sha256,
+                                                lattice, require_git=require_git)
+    if refusals:
+        return _refuse(refusals)
+    plan = seed_plan(lattice)
+    seed_of = {r['label']: (r['seed'], r['model']) for r in plan}
+    by_label = {e['label']: e for e in spec['candidates']}
+    labels_all = [e['label'] for e in spec['candidates']]
+    conc = int(spec['concurrency'])
+    done = [lab for c in chain for b in c['record']['batches'] for lab in b]
+    pts_done = [c['record']['new_points'][lab] for c in chain for b in c['record']['batches'] for lab in b]
+    expected_sizes = [min(conc, len(labels_all) - conc * i) for i in range(len(chain))]
+    checks = {'evaluated_labels_are_the_spec_prefix': done == labels_all[:len(done)],
+              'one_batch_of_the_spec_concurrency_per_launch': [
+                  [len(b) for b in c['record']['batches']] for c in chain] == [[s] for s in expected_sizes],
+              'every_seed_known': all(lab in seed_of for lab in labels_all),
+              'not_already_complete': len(done) < len(labels_all)}
+    if chain:
+        stated = chain[-1]['record']['state_after'] or {}
+        checks['n_evaluated_equals_the_last_launch_record'] = stated.get('n_evaluated') == len(done)
+        checks['labels_evaluated_equal_the_last_launch_record'] = stated.get('labels_evaluated') == done
+        checks['n_not_certified_equals_the_last_launch_record'] = stated.get('n_not_certified') == sum(
+            1 for p in pts_done if p.get('status') != 'certified')
+    bad = [k for k, v in checks.items() if not v]
+    if bad:
+        return _refuse([f'resume state disagrees with the records: {k}' for k in bad])
+    batch = labels_all[len(done):len(done) + conc]
+    tag = f'seeds_batch_{len(chain) + 1:03d}'
+    log(f'seeds launch {len(chain) + 1}: evaluating {batch}')
+    harness_evaluate.last_batch_info = {}
+    recs = harness_evaluate(batch, ctx, heartbeat_tag=tag)
+    batch_info = {'labels': batch, **getattr(harness_evaluate, 'last_batch_info', {})}
+    new_points, problems = {}, {}
+    for lab, rec in zip(batch, recs):
+        seed, model = seed_of[lab]
+        new_points[lab] = point_from_harness(rec, by_label[lab], model, seed)
+        if point_problems(new_points[lab]):
+            problems[lab] = point_problems(new_points[lab])
+    done_after = done + batch
+    terminated = len(done_after) == len(labels_all)
+    state = {'n_evaluated': len(done_after), 'labels_evaluated': done_after,
+             'n_not_certified': sum(1 for p in pts_done + [new_points[lab] for lab in batch]
+                                    if p.get('status') != 'certified')}
+    lr = dict(_launch_record_base(spec, spec_sha256, root_rel, 'seeds', None, 'batch', started_utc),
+              replay={'n_launches_before': len(chain), 'state_checks': checks, 'records_verified': vinfo},
+              batches=[batch], heartbeat_tags=[tag], batch_infos=[batch_info], new_points=new_points,
+              problems=problems, completed_polls=[], state_after=state, terminated=terminated, result=None,
+              finished_utc=_utc(), wall_clock_s=time.time() - started)
+    written = write_launch_record(croot, spec_path, spec, chain, lr)
+    outcome.update({'status': 'terminated' if terminated else 'suspended', 'launch': written, 'problems': problems,
+                    'state_after': state, 'batches': [batch]})
+    if terminated:
+        points = {}
+        for c in chain:
+            points.update(c['record']['new_points'])
+        points.update(new_points)
+        points = {lab: points[lab] for lab in labels_all}
+        launches = [{'n': c['n'], 'record': _rel(launch_paths(croot, c['n'])[0]), 'record_sha256': c['record_sha256'],
+                     'manifest_sha256': c['manifest_sha256']} for c in chain] + [
+            {k: written[k] for k in ('n', 'record', 'record_sha256', 'manifest_sha256')}]
+        results = {
+            'stage': STAGE, 'phase': 'seeds', 'campaign_id': spec['campaign_id'], 'e1_root': root_rel,
+            'timestamp_utc': _utc(), 'git_head_at_run': H._git(['rev-parse', 'HEAD']),
+            'campaign_spec_path': _rel(spec_path), 'campaign_spec_sha256': spec_sha256,
+            'objective_convention': OBJECTIVE_CONVENTION, 'flex_price_multiplier': FLEX_M, 'points': points,
+            'aliases': extra.get('aliases') or [], 'problems': problems,
+            'batch_info': [bi for c in chain for bi in c['record']['batch_infos']] + [batch_info],
+            'resumable': {'rule': RESUME_RULE, 'launch_unit': 'batch', 'n_launches': written['n'],
+                          'launches': launches},
+            'wall_clock_s_last_launch': time.time() - started, **_results_extra(results_extra)}
+        _write_results(croot, results)
+        outcome['results_written'] = _rel(os.path.join(croot, RESULTS_FILE))
+    return outcome
+
+
+def run_resumable(args, root_rel, root_abs):
+    """--run --resumable: ONE launch unit of the phase (the first launch when the phase holds only its frozen spec, a
+    resume otherwise); the v2 preconditions (pins, declared roots, G0, memory, lock) at every launch; the run
+    precondition relaxed only for a resume whose records all verify. Exit: 4 launch done / phase not finished; else as
+    --run (0 / 2 / 3; 1 on any refusal, problem or guard)."""
+    phase = args.phase
+    croot = phase_root(root_abs, root_rel, phase)
+    lattice, lev, lfail = build_lattice()
+    own = root_inventory(root_abs, root_rel)['phases'].get(phase) or {}
+    first = bool(own.get('exists') and own.get('only_spec'))
+    failures, spec_path, spec, memory = _run_preconditions(args, root_rel, root_abs, resume=not first)
+    failures += lfail
+    if spec is None or failures:
+        for f in failures:
+            _log(f'[RUN PRECONDITION FAILED] {f}')
+        return 1
+    extra = spec['extra']
+    plan = seed_plan(lattice)
+    x0_keys = {m: next(r['eval_key'] for r in plan if r['seed'] == 'x0' and r['model'] == m) for m in MODELS}
+    try:
+        rule11 = rule_eleven(lattice, lev['sigma_Q']['sigma_Q_eur'])
+    except AssertionError as error:
+        _log(f'[RUN PRECONDITION FAILED] {error}')
+        return 1
+    declared = declared_root_refusals(root_rel, phase, [e['label'] for e in spec['candidates']]
+                                      if phase == 'seeds' else None, spec.get('concurrency'),
+                                      [r['label'] for r in plan if r['disposition'] == 'evaluate'])
+    if declared:
+        for f in declared:
+            _log(f'[RUN PRECONDITION FAILED] {f}')
+        return 1
+    g0 = None
+    if phase == 'seeds':
+        if extra.get('aliases'):
+            g0 = g0_check(args.g0_artifact, args.g0_sha256, x0_keys, require_current_production=True)
+            if not (g0[0] and g0[1].get('sha256_on_disk') == extra['aliases'][0]['g0_artifact_sha256']):
+                _log(f'[RUN PRECONDITION FAILED] G0 alias not accepted now: {g0[1].get("checks")}')
+                return 1
+    elif extra['arm'] == ALIAS_MODEL:
+        g0 = g0_check(args.g0_artifact, args.g0_sha256, x0_keys, require_current_production=True)
+    lock = H.acquire_campaign_lock(spec['campaign_id'], args.spec_sha256)
+    _log(f"campaign lock acquired: {lock}; HEAD {H._git(['rev-parse', 'HEAD'])}; memory {memory}; "
+         f"{'first launch' if first else 'resume'}; unit {args.launch_unit}")
+    ctx = H.CampaignContext(croot, spec_path, args.spec_sha256, spec, log=_log)
+    results_extra = {'memory_preflight_gating_last_launch': memory,
+                     'rule_eleven_asserted_before_run': rule11['checks'], 'guards': guards_report}
+    try:
+        common = dict(croot=croot, root_abs=root_abs, root_rel=root_rel, spec=spec, spec_path=spec_path,
+                      spec_sha256=args.spec_sha256, lattice=lattice, harness_evaluate=H.evaluate, ctx=ctx,
+                      require_git=True, log=_log, results_extra=results_extra)
+        if phase == 'seeds':
+            if args.launch_unit != 'batch':
+                _log('[RUN PRECONDITION FAILED] the seeds phase launches by batch only')
+                return 1
+            outcome = seeds_launch(**common)
+        else:
+            outcome = search_launch(sigma_q=lev['sigma_Q']['sigma_Q_eur'], launch_unit=args.launch_unit, g0=g0,
+                                    **common)
+    finally:
+        H.release_campaign_lock(expected_pid=os.getpid())
+        _log('campaign lock released')
+    g = guards_report()
+    _log(f"launch outcome {outcome['status']}; problems {outcome.get('problems')}; guards {g['all_zero']}")
+    if outcome['status'] == 'refused' or outcome.get('problems') or not g['all_zero'] or (
+            outcome.get('launch') or {}).get('unexpected_new_files') or (
+            outcome.get('launch') or {}).get('expected_new_files_missing'):
+        return 1
+    if outcome['status'] == 'suspended':
+        _log(f"phase not finished: commit {outcome['launch']['record']} and its manifest, then re-issue this command")
+        return EXIT_SUSPENDED
+    result = outcome.get('result')
+    if result is None:
+        return 0
+    reason = result['termination']['reason']
+    if reason == 'poll_failure_at_unit_mesh':
+        return 0 if (result['termination_certificate'] or {}).get('holds') else 1
+    return 3 if reason.startswith('STOP_FOR_REVIEW') else 2
+
+
+# ======================================================================================================================
 def main():
     parser = argparse.ArgumentParser(description=__doc__.split('\n')[1])
     mode = parser.add_mutually_exclusive_group(required=True)
@@ -2264,7 +2951,17 @@ def main():
     parser.add_argument('--scratch', help='--dry-run only: a NEW directory outside the repository')
     parser.add_argument('--allow-uncommitted', action='store_true',
                         help='--dry-run smoke only: do not assert that every pinned file is committed and clean')
+    parser.add_argument('--resumable', action='store_true',
+                        help='--run only (v3): run ONE launch unit of the phase and exit (4 = resume needed)')
+    parser.add_argument('--launch-unit', choices=LAUNCH_UNITS,
+                        help='--run --resumable only: batch (default; one harness batch) or poll (one evaluating poll)')
     args = parser.parse_args()
+    if (args.resumable or args.launch_unit) and not args.run:
+        parser.error('--resumable / --launch-unit are --run options')
+    if args.launch_unit and not args.resumable:
+        parser.error('--launch-unit needs --resumable')
+    if args.resumable and not args.launch_unit:
+        args.launch_unit = 'batch'
     alive = _own_process_alive()
     if alive:
         raise SystemExit(f'REFUSED: another copy of this launcher is alive: {alive}')
@@ -2284,7 +2981,7 @@ def main():
                 or args.allow_uncommitted:
             parser.error('--run takes --phase, --root, --spec-sha256, --g0-artifact, --g0-sha256 '
                          '(the concurrency is the frozen spec\'s)')
-        code = run(args, root_rel, root_abs)
+        code = run_resumable(args, root_rel, root_abs) if args.resumable else run(args, root_rel, root_abs)
     g = guards_report()
     _log(f"final guards: all_zero={g['all_zero']} pickle={g['pickle']['counts']} build={g['model_build_tripwire']} "
          f"tripwires_nonzero={[k for k, v in g['committed_launcher_function_tripwires'].items() if v]}")
