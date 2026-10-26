@@ -4091,3 +4091,105 @@ declared status and the terminal capture read 864 active rows per copy; eight ce
 `P5_15_W185_REPORT.md`. **Hypothesis:** H2 as in the plan (paired margins within the baseline pair's threshold of
 their baseline values at each price; no pair's verdict changes); the ρ read-back holds on 8/8 cells. **Stop:** H2
 fails at either price → stop before E1 and report. W186 (E1) and W187 (screen) wait for Addendum 86 after W185.
+
+# Addendum 86 — rulings on W183g/W183h (`3a299aa0`); the fixed-plan launcher as a Step-7 hooks module with a gated router patch; the ρ read-back restated; E2 runs all eight; E1 per-poll launches; round-9 wording queued; W183i order; W184/W185 re-authorized conditionally (2026-10-26)
+
+**Received.** `P5_15_W183G_REPORT.md` (+ `…W183G_A_GATE_RULED.md`, `…W183G_B_E1_V2.md`, `…W183H_ROUND8.md`); zero
+solves everywhere (guard 0, pickle 0, builds 0); production `6f43479e` and harness `c34ebdc5…` unchanged; E1 launcher v2
+`b0841b09…` (`7cf88b15`). Overleaf `a87e195` confirmed byte-identical to round 8 by the Planner (cmp) as by the expert.
+W183g (c)/(d), W184 and W185 held on decision 1. The Studio's push reached origin: `3a299aa0` is on the Air.
+
+**Predictions against outcomes (Addendum 85 / 84).** (a) 0 genuine vs the W83 arm — **held**; `GATE_PASS_RULED` True
+with three negative controls; provenance ≤ 3 — **failed on the count** (4: the fourth is the W83 reference arm's own
+`w83_convergence_depth_tail` read-back, configuration of the reference, not trajectory; the W184 condition "0 genuine"
+is met). (b) advance off ≡ imported loop (8 cases, byte-equal), advance on → k = 2/2/1/0 with sizes 8/9/8/14, A7 and
+every other path unchanged, the v1 assertions — **all held** (175/175). W183h: identity, Appendix E (33 PASS, 1,623
+entries 0 MISMATCH, the `$^{b}$` rows exact), letter v10 pointers (167 MATCH / 0 / 0 / 5 SUBMITTED), the 16 A7
+sentences (0 remaining), the 21 edits' numbers (0 MISMATCH; "about 3 %" = 2.887 %), 0 `[CONFIRM`, blue 23/23 —
+**held**; over-budget labelled at every occurrence — **failed 23/25** (E.24 rows 39 and 6, no mark, no legend); 0
+`<word>~\ref{app:` — **failed, 7** (introduced at `edd7a63`; W182c's pattern accepted "Section"/"Appendix" before
+`app:`). The two-cycle gate is therefore **passed under the ruled reading**; the stop of W183f is lifted. The W183f
+wrapper, the committed gate and their outputs are untouched.
+
+**Rulings.**
+
+1. **Fixed-plan launcher: option (a), the W155 pattern, with the router patch gated.** The harness's `settling_resettle`
+   validators accept only cells of their own fixed tables (ext v6: the seven W135 cells), and the declaration carries
+   the cell identity in the key; the `10f4aa7a` declaration validates and is refused with the cell renamed. Reusing a
+   committed cell name (b) is rejected, as the Planner recommends: a false identity in every key and record. Running
+   E3/E2 at the production exit (c) is rejected: H2 is a rule-v6 verdict and E3's status is part of its result.
+   Ordered: a new hooks module `p515_s55_step7_resettle_hooks.py` (own schema; cells E3 1, E2 8, cross ≤ 4 added after
+   W186; the v6 rule, state and capture checklists by import; the ext-v6 declaration shape with
+   `nrf_option_expected` / `rho0_scale_expected` / `flex_price_multiplier_expected` and entry checks) and the
+   one-branch addition in `resettle_hooks_module`. This changes the harness sha256 from `c34ebdc5…`, which is
+   authorized here; spec v1 pins the patched hash, and the E1 launcher's pins are taken at its freeze on the patched
+   harness. **Gates (W183i (a)), before any solve:** (i) every committed eval key recomputes (the W183a T1 method,
+   7,213 entries of the 252 v2 specs); (ii) the router routes every committed schema to the same module as before;
+   (iii) neutrality: the new branch is taken by no committed spec, and a planted spec of the new schema is routed to
+   the new module; (iv) **the two-cycle bitwise gate re-run on the patched harness** (153 solves, about 2 min; the
+   harness is in the gate's clean-file list) into a new write-once root, read under the ruled comparator against the
+   W48 reference and the W83 arm — ordered, not optional: it closes the harness question at the cost of two minutes.
+   Prediction for (iv): 0 genuine, `GATE_PASS_RULED` True, provenance ≤ 4. The 1× screen stays a thin production-exit
+   phase of the same launcher (no resettle declaration). The cross-evaluations use `P515S55/e1_2x/cross` as their own
+   phase root (decision 3, choice (d)).
+
+2. **Ruling 7 restated.** The recorded `rho_*_after` is a mean over models; the Params equal S39 × s exactly (W183a T3)
+   and the mean carries the summation's ulp. The check on every E2 cell is **bitwise equality with the replicated
+   arithmetic** `sum([x] * n_g) / n_g` in the canonical interpreter, per channel g ∈ {v, pf, ess}: x = S39_g × s for a
+   factor-1 action (held, fixed, exempt, held after failure); x = clamp(S39_g × s × f) for increased/decreased (f = 1.5
+   or 1/1.5, clamp [1e-4, 1e4]); n_g the recorded model count of the channel. The restatement reproduces the committed
+   W183f row (s = 1) on all three channels (pf 0.1980000000000002, n = 48; ess 0.010000000000000004, n = 51; v
+   0.011549999999999998, n = 48). A cell that does not reproduce bitwise is a harness-fault stop. The check runs on
+   cycle 0 and is reported for every cycle (the per-cycle actions are recorded, so the recursion is replicable).
+
+3. **W185 and campaign declarations.** (i) **E2 completes all eight cells.** H2 is evaluated after each completed pair
+   in the order (1×, 0.5), (1×, 2.0), (2×, 0.5), (2×, 2.0) and reported per pair; a failed pair does **not** stop E2 —
+   the paper's fallback ("the margin as a range over configurations") needs all eight, the cost of finishing is at
+   most 7.5 h, and the chain already stops before E1 (W186 waits for Addendum 87 in any case). The Planner's
+   recommendation to stop at the first failing pair is not adopted, for that reason; a failed H2 is recorded as a
+   failed prediction either way. (ii) `persist_certified_models` **on** for E3 and for all eight E2 cells (precedent
+   `10f4aa7a`; the pickles stay untracked under the roots; the manifests hash them). (iii) **E1 per-poll launches
+   (W183i (c)):** the E1 launcher gains a resumable mode — one launch per poll (seeds phase likewise in batches of its
+   own size), the resume state rebuilt only from the phase root's own evaluation records (manifest-hashed, keys
+   recomputed under the arm's model, the same root-scoping as the cache loader), the run precondition relaxed only for
+   a resume into a phase root whose records all verify, and a refusal when the rebuilt state and the launcher's
+   `k_next`/budget/incumbent disagree with the last poll record. Gate (zero-solve, stub records): a run split at every
+   poll boundary reproduces the in-process loop's records byte-equal (the W183g (b) method), including after a B+
+   advance and after an A7 stop; a planted foreign record in the root is refused. (iv) **The five B+ interpretation
+   choices of W183g (b) are confirmed:** (a) the window includes the first refused index; (b) on exhaustion the
+   terminating record is the first examined index's, byte-equal to the frozen loop's, with the nine further indices in
+   `halton_indices_skipped`; (c) `advance_rule.polled_index` null on a cap refusal; (d) `--freeze`/`--run` accept only
+   `P515S55/e1_2x` and `P515S55/e1_2x_batch4`, cross under `e1_2x/cross`; (e) the renamed dry-run output. (v) The
+   window stays at 10: the scan's exhausting cases (the unit at k = 3…12, 7: 0.5/2 at k = 4…13) are reachable only if
+   such a point becomes the incumbent at those indices, which the seed-incumbent rule and the unit-step polls make
+   unlikely but not impossible; rule (iii) applies and a `STOP_FOR_REVIEW_completion_cap` is a reportable E1 outcome,
+   ruled on if it occurs, never patched mid-run.
+
+4. **Round-9 wording queue (expert; no run depends on it).** (i) The seven `Appendix~`/`Section~\ref{app:…}` prefixes
+   at `main.tex` l. 530, 1631, 1639, 1742, 1763, 1780, 2002 → the bare `\ref` (the label prints its own word on
+   elsarticle); the W182c/W183h pattern is tightened to `\b(Appendix|Section)~\\ref\{app:` for the next check. (ii)
+   E.24 rows 39 and 6 (7: 1.25/5, 2025) get the over-budget mark and the caption its legend, through `gen_appE.py`.
+   (iii) The E.23 start mark becomes `$^{s}$` (generator), so `$^{b}$` means over budget only. (iv) "Within numerical
+   resolution of break-even" at l. 1520 and l. 1806 and in cover letter v2 l. 19 → the letter-v10 wording ("within the
+   numerical resolution of zero, so its sign is not resolved"). (v) The cover letter's bracketed paragraph is filled
+   from W184–W187. (vi) The letter's prediction-record bullet (l. 286): the author's call stands; the expert's
+   recommendation is to drop it and keep the record internal (audit §4). All six go into the round-9 deliverables.
+
+**W183i order (Worker tasks authorized by this addendum; zero solves except gate (a)(iv)'s 153).**
+- (a) Ruling 1: hooks module + router patch; gates (i)–(iv); report before anything else runs.
+- (b) The fixed-plan launcher on the patched harness: phases E3 (1), E2 (8), screen (15), cross (≤ 4, declared after
+  W186); dry runs as Addendum 85 W183g (c) (keys recompute; E3's key carries `nrf_option`; E2's keys carry
+  `rho0_scale` 0.5/2.0 and the price; the screen's 15 keys under N at 1× with the x = 0 alias; pins; write-once roots;
+  the committed-spec scan; preflight). Prediction: key counts 1/8/15; 0 committed holders of the E3 and E2 keys.
+- (c) Ruling 3 (iii): E1 launcher v3 with per-poll launches; its gate.
+- (d) Spec v1 freeze on the patched harness: as Addendum 85 W183g (d), plus the ρ check of ruling 2 and the
+  declarations of ruling 3 in the spec text; the E1 launcher's pins refreshed at freeze.
+- Report `P5_15_W183I_REPORT.md`; commit and push.
+
+**W184 (E3) and W185 (E2) — re-authorized conditionally, no further addendum.** W184 launches, attended, once W183i
+(a), (b) and (d) hold ((c) may follow in parallel; it is needed before W186 only), under its Addendum 85 line (one
+certified evaluation of C_NRF, `persist_certified_models` on, hypotheses H3a–H3c, the terminal NRF capture, stop for
+review on an unreached status or `nrf_capture_error`). W185 follows W184's report under its Addendum 85 line with
+rulings 2 and 3 (i)–(ii) of this addendum (eight cells serially, all completed; H2 per pair; the ρ read-back on every
+cell; prediction: H2 holds at both prices and the read-back holds 8/8). W186 (E1) and W187 (screen) wait for
+Addendum 87 after W185.

@@ -231,6 +231,21 @@ Kept by the expert during the author's whole-document read (2026-10-09 onward); 
   ≈ 81 h serial. W183g ordered (comparator run, launcher v2 + dry-run gate, fixed-plan launcher, spec v1 freeze,
   W183h); W184 (E3) and W185 (E2) authorized conditionally on W183g's gates, no further addendum. Plan amended
   (`STEP7_SIMULATION_PLAN_2026-10-25.md` §12, v2.2).
-- Still open: W183g (+ W183h); W184–W187 runs; round 9 (results text incl. the one-sentence B+ statement, the E6
-  figure, letter R2.5/R2.6/R3.6, cover-letter paragraph, marked copy); author's call on the prediction-record bullet
-  (letter l. 286).
+- W183g/W183h received (`3a299aa0`; zero solves). Held: 0 genuine vs the W83 arm (`GATE_PASS_RULED` True → the
+  two-cycle gate passed under the ruled reading); E1 launcher v2 175/175 (B+ dry-run gate: k = 2/2/1/0, sizes
+  8/9/8/14); W183h identity, Appendix E (33 PASS, 0 MISMATCH), letter v10 pointers 0/0/5, A7 0 remaining, numbers 0
+  MISMATCH, blue 23/23. Failed: provenance count 4 (≤ 3 predicted; the W83 arm's own tail read-back); over-budget
+  marks 23/25 (E.24 rows 39, 6); 7 `Appendix~/Section~\ref{app:` prefixes from `edd7a63`. Held for review: the
+  fixed-plan launcher cannot carry the ext-v6 `settling_resettle` declaration for new cells (fixed cell tables);
+  ruling 7's "exactly" fails at ulp level (the recorded ρ is a mean over models). W184/W185 not launched.
+  Rulings: Addendum 86 — Step-7 hooks module + one-branch router patch (harness hash changes; gated: 7,213 keys
+  recompute, routing identity, neutrality, the two-cycle gate re-run on the patched harness); ρ check restated as
+  bitwise equality with the replicated mean; E2 completes all eight cells (H2 per pair; a failure stops the chain
+  before E1, not E2); certified models persisted for E3/E2; E1 launcher v3 with per-poll launches (one arm ≈ 22 h
+  cannot run attached); the five B+ interpretation choices confirmed; window kept at 10. Round-9 queue: the seven
+  prefixes, E.24 marks + legend, E.23 mark → `$^{s}$`, "break-even" wording at l. 1520/1806 and cover letter l. 19,
+  the cover-letter paragraph; prediction-record bullet still the author's call (expert recommends dropping it).
+  W183i ordered; W184/W185 re-authorized conditionally on W183i (a), (b), (d).
+- Still open: W183i; W184–W187 runs; round 9 (results text incl. the one-sentence B+ statement, the E6 figure, the
+  six wording items above, letter R2.5/R2.6/R3.6, cover-letter paragraph, marked copy); author's call on the
+  prediction-record bullet (letter l. 286).

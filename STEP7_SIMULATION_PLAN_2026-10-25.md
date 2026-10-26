@@ -323,3 +323,17 @@ each cell records candidate hash, code head, configuration hash and the stopping
   `P515S55/e6_export/e6_export.json`.
 - **Counts (replace §11):** E3 1; E2 8; E1 ≤ 75; screen 15; serial worst case ≈ 81 h; ≈ 49 h with the batch gate
   passed.
+
+## 13. Amendments after W183g (v2.3, 2026-10-26; Addendum 86)
+
+- **Certified protocol for E3, E2 and the cross-evaluations (§12):** carried by a new Step-7 hooks module (own cells and
+  schema; the v6 rule and checklists by import) with a one-branch router addition in the harness, gated zero-solve
+  (every committed key recomputes; routing identity; neutrality) plus the two-cycle bitwise gate re-run on the patched
+  harness under the ruled comparator; spec v1 pins the patched harness. The cross-evaluations run under
+  `P515S55/e1_2x/cross`; the screen stays production-exit.
+- **E2 (§4):** all eight cells are completed; H2 is evaluated and reported per pair in the order (1×, 0.5), (1×, 2.0),
+  (2×, 0.5), (2×, 2.0); a failed pair stops the chain before E1, not E2. The ρ check is bitwise equality of the
+  recorded per-cycle `rho_*_after` with the replicated mean `sum([x]·n_g)/n_g` (x = S39_g × s, times the recorded
+  adaptation factor with its clamp when the action is not a hold). Certified models persisted for E3 and E2.
+- **E1 (§5):** launched poll by poll (resume state rebuilt from the phase root's own verified records), since one arm
+  (≤ 30 × 0.75 h ≈ 22 h) cannot run attached; B+ window 10 as declared, exhaustion → stop for review as frozen.
