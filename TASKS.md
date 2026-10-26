@@ -1,9 +1,21 @@
 # TASKS — current order
 
-**Authority:** `PLANNER_BRIEF_2026-09-13.md` Addendum 85 (W183g order; W184/W185 conditional) and Addendum 84 (W183h); committed in `92cba160`; earlier orders below for record.
+**Authority:** `PLANNER_BRIEF_2026-09-13.md` Addendum 86 (W183i order; W184/W185 re-authorized conditionally; committed in `dd9e46d1`); earlier orders below for record.
 **Objective convention on every value:** Q = certified `gross_operational_cost`, contracted interface settlement excluded (Addendum 83 ruling 2; at 3 × 3 the deviation settlement and the row-18 premium are inside Q).
 **Updated at every transition; read first when resuming.**
 
+
+## Addendum 86 order — W183i (zero solves except (a)(iv) 153); then W184 (E3) and W185 (E2) conditionally
+
+W184 launches once (a), (b), (d) hold; W185 follows W184's report (all eight cells; H2 per pair; replicated-mean ρ read-back on every cell). W186/W187 wait for Addendum 87.
+
+- [x] **W183i(a)** — `299f6a4a` / `637ce3c5`: hooks `9318ade3…` (9 cells; arm A, gate none_first_evaluation, item E3/E2 — accepted), router +3 lines → harness `d9a944f2…`; (i) 7,213/7,213 keys; (ii) 9 schemas routed identically; (iii) neutral, 25/25 refusals; (iv) 153/153 solves, GATE_PASS frozen False / RULED True, 0 genuine vs W48 and W83, provenance 3/4, Q bitwise = W48 — prediction HELD
+- [x] **W183i(b)** — `02e8d467` / `396c0d62`: launcher `3b990d19…`; 263/263 dry-run assertions; keys 1/8/15, 0 holders of E3/E2 keys (prediction HELD); ρ replication bitwise on W183f row + 1,074 cycle checks; choices accepted: screen x = 0 holder (W86) reported, evaluated anew; 1× by absence; W132 uncertified form; W184 to reproduce Table 12's C_OPEN curtailment before reporting C_NRF's
+- [x] **W183i(c)** — `4aca667e` / `7ddd6ce7`: E1 launcher v3 `532cf6e7…`, resumable launches (unit = batch); gate 447/447 (split ≡ in-process bytewise incl. after B+ and A7; 7/7 foreign and 24/24 tampered refused); for Addendum 87: a single evaluation can exceed 4 h (cap 500 ≈ 4.7 h), commit between launches, harness fault stops the arm, crashed launch blocks resume
+- [x] **W183i(d)** — `2a62ee1d` / `d8dcc139` / `36af2aa9`: spec v1 `frozen_step7_campaign_spec_v1_96345241.json`; E3 + E2 frozen (9 cells, cap 300, persist on; stage specs `bd2cfa4d`, `7631a6d7`); keys = dry runs; E3 preconditions-only 22/22; diagnostics (circle/|P^E|/SOC) via guarded read of the run's own `certified_models.pkl` (accepted)
+- [x] Planner review; report `P5_15_W183I_REPORT.md`
+- [ ] **▶ W184** (E3, 1 certified evaluation, attended) → `P5_15_W184_REPORT.md`
+- [ ] **W185** (E2, 8 certified evaluations serially, attended) → `P5_15_W185_REPORT.md`
 
 ## Addendum 85 order — W183g (zero-solve) + W183h (Addendum 84); then W184 (E3) and W185 (E2 stage 1) conditionally
 
@@ -16,7 +28,7 @@ Overleaf clone pulled (ff) at **`a87e195`**: main.tex = `main_edd7a63_round8.tex
 - [ ] **W183g(c)** ⏸ held for expert ruling (hooks module + router patch + gate; harness pin) — fixed-plan launcher (E3 1, E2 8, cross ≤ 4, screen 15); dry runs (key counts 1/8/15; 0 committed holders of E3/E2 keys)
 - [ ] **W183g(d)** ⏸ held (depends on (c) and the harness pin) — spec v1 freeze (pins, keys, B+ text, counts, checklist, `ParallelExecution: false`)
 - [x] Planner review; report `P5_15_W183G_REPORT.md` (Decisions 1–4)
-- [ ] **▶ Stopped for review**: (c)/(d) not buildable as ordered (hooks module + router patch + harness pin); ruling 7 "exactly" → replicated mean; H2 continuation; persistence; E1 resumability; B+ choices; round-9 wording. W184/W185 NOT launched; author: push
+- [x] Stopped for review → Addendum 86 rulings (W155-pattern hooks module + gated router patch; ρ check = replicated mean; E2 all eight; persistence on; E1 per-poll launches; B+ choices confirmed): (c)/(d) not buildable as ordered (hooks module + router patch + harness pin); ruling 7 "exactly" → replicated mean; H2 continuation; persistence; E1 resumability; B+ choices; round-9 wording. W184/W185 NOT launched; author: push
 - [ ] **W184** (E3, 1 certified evaluation; conditional) → `P5_15_W184_REPORT.md`
 - [ ] **W185** (E2 stage 1, 8 certified evaluations; conditional) → `P5_15_W185_REPORT.md`
 
