@@ -1046,6 +1046,9 @@ def resettle_hooks_module(value):
     import p515_s53_w155_a64_hooks as W155C
     if W155C.is_w155_declaration(value):
         return W155C
+    import p515_s55_step7_resettle_hooks as S7C
+    if S7C.is_step7_declaration(value):
+        return S7C
     import p515_s53_w118_resettle_hooks as W118C
     return W118C
 
