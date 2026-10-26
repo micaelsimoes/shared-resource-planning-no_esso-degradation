@@ -1,9 +1,24 @@
 # TASKS — current order
 
-**Authority:** `PLANNER_BRIEF_2026-09-13.md` Addendum 83 (W183 order; committed in `b2041a5a`); earlier orders below for record.
+**Authority:** `PLANNER_BRIEF_2026-09-13.md` Addendum 85 (W183g order; W184/W185 conditional) and Addendum 84 (W183h); committed in `92cba160`; earlier orders below for record.
 **Objective convention on every value:** Q = certified `gross_operational_cost`, contracted interface settlement excluded (Addendum 83 ruling 2; at 3 × 3 the deviation settlement and the row-18 premium are inside Q).
 **Updated at every transition; read first when resuming.**
 
+
+## Addendum 85 order — W183g (zero-solve) + W183h (Addendum 84); then W184 (E3) and W185 (E2 stage 1) conditionally
+
+Overleaf clone pulled (ff) at **`a87e195`**: main.tex = `main_edd7a63_round8.tex`, letter = v10, highlights = v3, cover letter = v2 (cmp). Conditions for W184: (a) 0 genuine, (b) and (c) dry-run gates hold, (d) frozen, W183g reported. W185 after W184 if W184 reached a declared status and 864 active NRF rows per copy at terminal; stop if H2 fails. W186/W187 wait for Addendum 86.
+
+- [x] **W183g(a)** — `4c0d8e1d` / `36fee733`: vs W83 arm 0 genuine / 0 tie / **4 provenance** (prediction ≤ 3 FAILED on count: 4th = W83's own `w83_convergence_depth_tail` read-back; all under rule_eleven_checklist); wrapper v2 `GATE_PASS_RULED=True` (44 → 22 drift keys × 2); W184 condition "0 genuine" met (Addendum 85 states it)
+- [x] **W183h** — `3707475a` / `05873be5`: (a) identity HELD; (b) Appendix E bitwise, 33 PASS, 0 MISMATCH, marks exact HELD; (c) letter v10 167/5/0/0 HELD; (d) A7 16/16 resolved HELD, A8 **23/25** (E.24 rows 39, 6 unmarked); (e) 0 MISMATCH HELD; (f) 0 CONFIRM, blue 23/23 HELD, **7 `Appendix~`/`Section~\ref{app:}` prefixes** (from `edd7a63`)
+- [x] **Advisor** — (b) design criteria adopted; **(c) cannot be thin**: every `settling_resettle` validator accepts only its own fixed cell table (Planner confirmed: a new cell name is refused by ext v6) → needs a Step-7 hooks module (W155 pattern) + one-branch router patch to the harness, which changes the harness pin of (d); ruling 7 "exactly" fails at ulp level on a correct run (Planner confirmed: pf 0.1980000000000002, ess 0.010000000000000004 = sum/len of S39); one cell per attached process; E1 arm process ≈ 22 h needs resumability before W186
+- [x] **W183g(b)** — `7cf88b15` / `f0cff829`: E1 launcher v2 `b0841b09…`; GATE_PASS 175/175 (advance off ≡ imported loop 8/8 bytewise; on → k 2/2/1/0, sizes 8/9/8/14; A7/budget/window paths); 35 over-cap incumbents can exhaust the window (incl. unit k 3–12)
+- [ ] **W183g(c)** ⏸ held for expert ruling (hooks module + router patch + gate; harness pin) — fixed-plan launcher (E3 1, E2 8, cross ≤ 4, screen 15); dry runs (key counts 1/8/15; 0 committed holders of E3/E2 keys)
+- [ ] **W183g(d)** ⏸ held (depends on (c) and the harness pin) — spec v1 freeze (pins, keys, B+ text, counts, checklist, `ParallelExecution: false`)
+- [x] Planner review; report `P5_15_W183G_REPORT.md` (Decisions 1–4)
+- [ ] **▶ Stopped for review**: (c)/(d) not buildable as ordered (hooks module + router patch + harness pin); ruling 7 "exactly" → replicated mean; H2 continuation; persistence; E1 resumability; B+ choices; round-9 wording. W184/W185 NOT launched; author: push
+- [ ] **W184** (E3, 1 certified evaluation; conditional) → `P5_15_W184_REPORT.md`
+- [ ] **W185** (E2 stage 1, 8 certified evaluations; conditional) → `P5_15_W185_REPORT.md`
 
 ## Addendum 83 order — W183 (code changes and gates; zero solves except the named builds and the two-cycle bitwise gate)
 
@@ -18,7 +33,7 @@ Rulings: Appendix E edited only through `gen_appE.py` (round 8 ports the six hun
 - [x] **W183d** — `dbf7a25c` / `d4ab31ca`: G0_PASS on production `6f43479e` (prediction HELD): x = 0 A/N identical (ESSO + 84 network blocks); unit 2× N vs A only 6 degradation rows; keys distinct; launcher accepts the alias (production equals current). Launcher G0 pointer: `w183_nl_post_w183c_off/w183_nl_digest.json.gz` `ca195bd3…`
 - [x] **W183f** — `17b4c1cf` / `c5b292dd`: two-cycle gate GATE_PASS=False as frozen (153/153 solves; only item: 22 W64 keys absent in W48 ref vs null — same as unruled W83 failure; 29 shared keys bitwise equal; arm = W83 arm bitwise) — prediction FAILED; spec v1 freeze held
 - [x] Planner review; report `P5_15_W183_REPORT.md` (Decisions 1–5)
-- [ ] **▶ Stopped for review** (gate failure, no fallback; E1 poll-0 stop): expert on 1 (gate ruling; rec. zero-solve re-comparison vs W83 arm), 2 (E1 completion/cap), 3 (spec v1 open points), 4, 5; author: push
+- [x] Stopped for review → Addendum 85 rulings (gate = field-list drift; E1 poll rule B+; spec v1 declarations) (gate failure, no fallback; E1 poll-0 stop): expert on 1 (gate ruling; rec. zero-solve re-comparison vs W83 arm), 2 (E1 completion/cap), 3 (spec v1 open points), 4, 5; author: push
 - [ ] Then by addendum line: W184 E3 → W185 E2 stage 1 → W186 E1 → W187 screen
 
 ## Addendum 82 v2 order — W182 (zero-solve; re-audit of `edd7a63` + evidence inventory; no campaign run authorized)

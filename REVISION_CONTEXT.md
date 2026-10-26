@@ -24,11 +24,11 @@ authority is `PLANNER_BRIEF_2026-09-13.md` with its Addenda 1–67**; it superse
 
 Authority: `PLANNER_BRIEF_2026-09-13.md` Addenda 52–78; `STEP6_ROUND1…4_CORRECTIONS.md`. Tables FROZEN: `frozen_step6_tables_v1_590088fe.json` (W160).
 Methods text: `export/paragraphs_v5.md` (Addendum 67). Expert's revision plan: `STEP6_REVISION_MAP.md`. Latest handoff:
-`P5_15_W183_REPORT.md` (W183, Addendum 83: code changes and gates; production now `6f43479e`, harness `c34ebdc5…`,
-E1 launcher `p515_s55_e1_launcher.py`). Current order: `TASKS.md` (Addendum 83 section) — **stopped for review**: the
-two-cycle bitwise gate failed as frozen on W64 field-list drift only (same as the unruled W83 failure); the E1
-variant-B search stops at its first poll for any storage incumbent (completion > cap 30); spec v1 not frozen; no
-campaign queued.
+`P5_15_W183G_REPORT.md` (W183g + W183h, Addenda 84–85; zero solves). Current order: `TASKS.md` (Addendum 85
+section) — **stopped for review** before W184: the gate is passed under the ruled comparator (0 genuine vs W83;
+`GATE_PASS_RULED`), E1 launcher v2 (B+) gated, round 8 checked at Overleaf `a87e195`; but the fixed-plan launcher for
+E3/E2/cross needs a Step-7 hooks module + a harness router patch (validators accept only their own cells), which
+changes the harness pin of spec v1, and ruling 7's exact ρ check fails at ulp level on a correct run. No E3/E2 solve.
 
 ## Manuscript facts established from code and case files (W164–W167)
 
