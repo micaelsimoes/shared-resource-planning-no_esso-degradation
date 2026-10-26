@@ -1,0 +1,830 @@
+{
+ "STOP_FOR_REVIEW": false,
+ "alias": null,
+ "batch_info": {
+  "max_concurrent_observed": 1,
+  "timeline": [
+   {
+    "event": "start",
+    "label": "e3_cnrf_x0_1x",
+    "pid": 87852,
+    "t": 1793007315.0509062
+   },
+   {
+    "event": "end",
+    "exit_code": 0,
+    "label": "e3_cnrf_x0_1x",
+    "pid": 87852,
+    "t": 1793012204.398348
+   }
+  ]
+ },
+ "campaign_spec_path": "data/SRP1/Results/P515S55/e3_cnrf/campaign_s55_step7_e3_cnrf_x0_1x/campaign_spec_s55_step7_e3_cnrf_x0_1x_1363bcef.json",
+ "campaign_spec_sha256": "1363bceffe198e331fb0c7cc770016acb6dbc33107c24b41344cc935cc129995",
+ "candidate_key": "8435c71859ddde68e7ae5818b4ff91c03b4171791bcfaa70edcc3ddb52bacb57",
+ "cell": "e3_cnrf_x0_1x",
+ "eval_key": "35b275180d897e4c123c37839b91f50b01454bb24085685d26e9d2b33346e12f",
+ "exit_code": 0,
+ "git_head_at_run": "ec87c098ff55f6805fc3b01a315e42a071d48284",
+ "guards": {
+  "all_zero": true,
+  "model_build_tripwire": {
+   "ConcreteModel.__init__": 0
+  },
+  "pickle": {
+   "blocked": true,
+   "counts": {
+    "load": 0,
+    "loads": 0
+   }
+  },
+  "solve_guards_ok": true,
+  "solve_profile_guards": {
+   "__main__.PARENT_GUARD": {
+    "counts": {
+     "blocked_exec": 0,
+     "blocked_solve": 0,
+     "permitted_exec": 0,
+     "permitted_solve": 0
+    },
+    "verify_0_failures": []
+   },
+   "p515_s47_phase_b_record.PARENT_GUARD": {
+    "counts": {
+     "blocked_exec": 0,
+     "blocked_solve": 0,
+     "permitted_exec": 0,
+     "permitted_solve": 0
+    },
+    "verify_0_failures": []
+   }
+  }
+ },
+ "launch_index_1_based": 1,
+ "memory_preflight_at_run": {
+  "available_gib": 17.289520263671875,
+  "concurrency": 1,
+  "hw_memsize_gib": 32.0,
+  "page_size": 16384,
+  "pages": {
+   "Anonymous pages": 789262,
+   "Pages free": 7795,
+   "Pages inactive": 941925,
+   "Pages occupied by compressor": 47152,
+   "Pages wired down": 127652
+  },
+  "pass": true,
+  "per_slot_gib": 2.75,
+  "required_gib": 2.75,
+  "rule": "hw.memsize - (wired + anonymous + compressor-occupied pages) x page size >= concurrency x 2.75 GiB (the S47 launcher rule)",
+  "utc": "2026-10-26T09:35:14.991598+00:00"
+ },
+ "objective_convention": "Q = certified gross_operational_cost, contracted interface settlement EXCLUDED (Addendum 83 ruling 2); salvage reported separately; net = gross - terminal salvage",
+ "outcome": {
+  "cell": "e3_cnrf_x0_1x",
+  "cell_report": {
+   "Q_cc_end": 653894573.0595093,
+   "Q_end": 653894166.0688057,
+   "Q_net_end": 653894166.0688057,
+   "W": 33,
+   "band": [
+    653891810.4930832,
+    653895965.712424
+   ],
+   "band_width": 4155.219340801239,
+   "branch": "oscillatory",
+   "candidate_canonical": {
+    "investment_year": 2025,
+    "nodes": {
+     "5": [
+      0.0,
+      0.0
+     ],
+     "7": [
+      0.0,
+      0.0
+     ],
+     "9": [
+      0.0,
+      0.0
+     ]
+    }
+   },
+   "candidate_key": "8435c71859ddde68e7ae5818b4ff91c03b4171791bcfaa70edcc3ddb52bacb57",
+   "cell": "e3_cnrf_x0_1x",
+   "criterion_version": 6,
+   "cycles_run": 206,
+   "end_cycle": 206,
+   "eval_key": "35b275180d897e4c123c37839b91f50b01454bb24085685d26e9d2b33346e12f",
+   "flex_price_multiplier": null,
+   "gap_refusals": [],
+   "harness_bar_eur": 101.04322016239166,
+   "k0_run": 134,
+   "k_star": 206,
+   "lapse_events": [],
+   "non_clean_cycles": [],
+   "nrf_option": true,
+   "objective_convention": "Q = certified gross_operational_cost, contracted interface settlement EXCLUDED (Addendum 83 ruling 2); salvage reported separately; net = gross - terminal salvage",
+   "phase": "e3",
+   "range_over_tau": 0.9154344215721757,
+   "record_status": "certified",
+   "rho0_scale": null,
+   "rule_cap": 243,
+   "status": "certified",
+   "stopping_ratio_definition": "rule ten: |Q[k] - Q[k-1]| / objective_tolerance at the last cycle (the record's rule_ten.terminal_step_over_threshold)",
+   "stopping_ratio_terminal_step_over_threshold": 0.0014751613208057854,
+   "t_sum_end": 406.9907036243126,
+   "terminal_salvage_value_end": 0.0,
+   "terminal_step_abs": 96.4599381685257,
+   "terminal_step_over_EPS0": 2.125104367779656,
+   "vetoes": [],
+   "view": {
+    "Q": 653894166.0688057,
+    "Q_cc": 653894573.0595093,
+    "Q_net": 653894166.0688057,
+    "band": 4155.219340801239,
+    "bar": 101.04322016239166,
+    "gap": null,
+    "gap_refused": null,
+    "gated": false,
+    "label": null,
+    "salvage": 0.0,
+    "slack": null,
+    "status": "certified",
+    "t": 406.9907036243126
+   },
+   "window": [
+    174,
+    206
+   ]
+  },
+  "eval_key": "35b275180d897e4c123c37839b91f50b01454bb24085685d26e9d2b33346e12f",
+  "faults": [],
+  "nrf_capture_error": false,
+  "nrf_terminal": {
+   "binding_by_block_row_body": {
+    "definition": "per block: the minimum NRF row body (MW) and the number of row indices with body <= the binding tolerance (W183c row_counts_per_block)",
+    "n_rows_body_le_tol_total": {
+     "DSO5": 0,
+     "DSO7": 4,
+     "DSO9": 0,
+     "TSO": 4
+    },
+    "per_block": {
+     "DSO5": {
+      "2025|Autumn": {
+       "min_body_mw": 20.410362984808113,
+       "n_active": 24,
+       "n_body_le_tol": 0,
+       "n_indices": 24
+      },
+      "2025|Spring": {
+       "min_body_mw": 9.327766348428506,
+       "n_active": 24,
+       "n_body_le_tol": 0,
+       "n_indices": 24
+      },
+      "2025|Summer": {
+       "min_body_mw": 9.278538046991843,
+       "n_active": 24,
+       "n_body_le_tol": 0,
+       "n_indices": 24
+      },
+      "2025|Winter": {
+       "min_body_mw": 15.374521078462031,
+       "n_active": 24,
+       "n_body_le_tol": 0,
+       "n_indices": 24
+      },
+      "2030|Autumn": {
+       "min_body_mw": 27.951798700752555,
+       "n_active": 24,
+       "n_body_le_tol": 0,
+       "n_indices": 24
+      },
+      "2030|Spring": {
+       "min_body_mw": 14.709615176368596,
+       "n_active": 24,
+       "n_body_le_tol": 0,
+       "n_indices": 24
+      },
+      "2030|Summer": {
+       "min_body_mw": 13.384316743649983,
+       "n_active": 24,
+       "n_body_le_tol": 0,
+       "n_indices": 24
+      },
+      "2030|Winter": {
+       "min_body_mw": 25.318819851472828,
+       "n_active": 24,
+       "n_body_le_tol": 0,
+       "n_indices": 24
+      },
+      "2035|Autumn": {
+       "min_body_mw": 23.46277928167611,
+       "n_active": 24,
+       "n_body_le_tol": 0,
+       "n_indices": 24
+      },
+      "2035|Spring": {
+       "min_body_mw": 14.539745333526632,
+       "n_active": 24,
+       "n_body_le_tol": 0,
+       "n_indices": 24
+      },
+      "2035|Summer": {
+       "min_body_mw": 15.71714289469722,
+       "n_active": 24,
+       "n_body_le_tol": 0,
+       "n_indices": 24
+      },
+      "2035|Winter": {
+       "min_body_mw": 28.185155063615458,
+       "n_active": 24,
+       "n_body_le_tol": 0,
+       "n_indices": 24
+      }
+     },
+     "DSO7": {
+      "2025|Autumn": {
+       "min_body_mw": -9.424306885197034e-07,
+       "n_active": 24,
+       "n_body_le_tol": 1,
+       "n_indices": 24
+      },
+      "2025|Spring": {
+       "min_body_mw": -9.944781205471365e-07,
+       "n_active": 24,
+       "n_body_le_tol": 2,
+       "n_indices": 24
+      },
+      "2025|Summer": {
+       "min_body_mw": -9.905120185621985e-07,
+       "n_active": 24,
+       "n_body_le_tol": 1,
+       "n_indices": 24
+      },
+      "2025|Winter": {
+       "min_body_mw": 2.5232413778360705,
+       "n_active": 24,
+       "n_body_le_tol": 0,
+       "n_indices": 24
+      },
+      "2030|Autumn": {
+       "min_body_mw": 14.24382477731721,
+       "n_active": 24,
+       "n_body_le_tol": 0,
+       "n_indices": 24
+      },
+      "2030|Spring": {
+       "min_body_mw": 6.539333096345572,
+       "n_active": 24,
+       "n_body_le_tol": 0,
+       "n_indices": 24
+      },
+      "2030|Summer": {
+       "min_body_mw": 5.791118732739664,
+       "n_active": 24,
+       "n_body_le_tol": 0,
+       "n_indices": 24
+      },
+      "2030|Winter": {
+       "min_body_mw": 9.66988180476958,
+       "n_active": 24,
+       "n_body_le_tol": 0,
+       "n_indices": 24
+      },
+      "2035|Autumn": {
+       "min_body_mw": 14.522320277581802,
+       "n_active": 24,
+       "n_body_le_tol": 0,
+       "n_indices": 24
+      },
+      "2035|Spring": {
+       "min_body_mw": 6.263070520065289,
+       "n_active": 24,
+       "n_body_le_tol": 0,
+       "n_indices": 24
+      },
+      "2035|Summer": {
+       "min_body_mw": 6.203532362801238,
+       "n_active": 24,
+       "n_body_le_tol": 0,
+       "n_indices": 24
+      },
+      "2035|Winter": {
+       "min_body_mw": 12.056404312280657,
+       "n_active": 24,
+       "n_body_le_tol": 0,
+       "n_indices": 24
+      }
+     },
+     "DSO9": {
+      "2025|Autumn": {
+       "min_body_mw": 23.473473521806625,
+       "n_active": 24,
+       "n_body_le_tol": 0,
+       "n_indices": 24
+      },
+      "2025|Spring": {
+       "min_body_mw": 6.615583310467866,
+       "n_active": 24,
+       "n_body_le_tol": 0,
+       "n_indices": 24
+      },
+      "2025|Summer": {
+       "min_body_mw": 5.517445453814069,
+       "n_active": 24,
+       "n_body_le_tol": 0,
+       "n_indices": 24
+      },
+      "2025|Winter": {
+       "min_body_mw": 20.619232371591025,
+       "n_active": 24,
+       "n_body_le_tol": 0,
+       "n_indices": 24
+      },
+      "2030|Autumn": {
+       "min_body_mw": 21.058089186921368,
+       "n_active": 24,
+       "n_body_le_tol": 0,
+       "n_indices": 24
+      },
+      "2030|Spring": {
+       "min_body_mw": 8.395217214914325,
+       "n_active": 24,
+       "n_body_le_tol": 0,
+       "n_indices": 24
+      },
+      "2030|Summer": {
+       "min_body_mw": 7.086009465658595,
+       "n_active": 24,
+       "n_body_le_tol": 0,
+       "n_indices": 24
+      },
+      "2030|Winter": {
+       "min_body_mw": 20.57772331711832,
+       "n_active": 24,
+       "n_body_le_tol": 0,
+       "n_indices": 24
+      },
+      "2035|Autumn": {
+       "min_body_mw": 24.350306302518852,
+       "n_active": 24,
+       "n_body_le_tol": 0,
+       "n_indices": 24
+      },
+      "2035|Spring": {
+       "min_body_mw": 6.495779361877467,
+       "n_active": 24,
+       "n_body_le_tol": 0,
+       "n_indices": 24
+      },
+      "2035|Summer": {
+       "min_body_mw": 9.094464386090218,
+       "n_active": 24,
+       "n_body_le_tol": 0,
+       "n_indices": 24
+      },
+      "2035|Winter": {
+       "min_body_mw": 23.030012576251284,
+       "n_active": 24,
+       "n_body_le_tol": 0,
+       "n_indices": 24
+      }
+     },
+     "TSO": {
+      "2025|Autumn": {
+       "min_body_mw": -5.50649176256357e-07,
+       "n_active": 72,
+       "n_body_le_tol": 1,
+       "n_indices": 72
+      },
+      "2025|Spring": {
+       "min_body_mw": -5.253882662259457e-07,
+       "n_active": 72,
+       "n_body_le_tol": 2,
+       "n_indices": 72
+      },
+      "2025|Summer": {
+       "min_body_mw": -6.533411645026632e-07,
+       "n_active": 72,
+       "n_body_le_tol": 1,
+       "n_indices": 72
+      },
+      "2025|Winter": {
+       "min_body_mw": 2.523231759970357,
+       "n_active": 72,
+       "n_body_le_tol": 0,
+       "n_indices": 72
+      },
+      "2030|Autumn": {
+       "min_body_mw": 14.243824776472696,
+       "n_active": 72,
+       "n_body_le_tol": 0,
+       "n_indices": 72
+      },
+      "2030|Spring": {
+       "min_body_mw": 6.539331736095138,
+       "n_active": 72,
+       "n_body_le_tol": 0,
+       "n_indices": 72
+      },
+      "2030|Summer": {
+       "min_body_mw": 5.791087583866411,
+       "n_active": 72,
+       "n_body_le_tol": 0,
+       "n_indices": 72
+      },
+      "2030|Winter": {
+       "min_body_mw": 9.669881973357363,
+       "n_active": 72,
+       "n_body_le_tol": 0,
+       "n_indices": 72
+      },
+      "2035|Autumn": {
+       "min_body_mw": 14.522324936178466,
+       "n_active": 72,
+       "n_body_le_tol": 0,
+       "n_indices": 72
+      },
+      "2035|Spring": {
+       "min_body_mw": 6.2630397991702775,
+       "n_active": 72,
+       "n_body_le_tol": 0,
+       "n_indices": 72
+      },
+      "2035|Summer": {
+       "min_body_mw": 6.203533559809548,
+       "n_active": 72,
+       "n_body_le_tol": 0,
+       "n_indices": 72
+      },
+      "2035|Winter": {
+       "min_body_mw": 12.056404308794013,
+       "n_active": 72,
+       "n_body_le_tol": 0,
+       "n_indices": 72
+      }
+     }
+    }
+   },
+   "binding_hours_expected_value_rule": {
+    "definition": "an hour (node, year, day, hour) is binding on a side when that side's expected interface P from shared_resources_planning._get_interface_reporting_detail (p_int_tso_expected_mw / p_int_dso_expected_mw, MW, DN-import positive) is <= binding_tolerance_mw",
+    "hours": [
+     {
+      "binding_dso": true,
+      "binding_tso": true,
+      "day": "Spring",
+      "hour": 1,
+      "node": "7",
+      "p_int_dso_expected_mw": -8.805633921547084e-07,
+      "p_int_tso_expected_mw": -5.253882677538278e-07,
+      "year": "2025"
+     },
+     {
+      "binding_dso": true,
+      "binding_tso": true,
+      "day": "Spring",
+      "hour": 21,
+      "node": "7",
+      "p_int_dso_expected_mw": -9.944781205471365e-07,
+      "p_int_tso_expected_mw": -5.002048160896578e-07,
+      "year": "2025"
+     },
+     {
+      "binding_dso": true,
+      "binding_tso": true,
+      "day": "Summer",
+      "hour": 21,
+      "node": "7",
+      "p_int_dso_expected_mw": -9.905120185621985e-07,
+      "p_int_tso_expected_mw": -6.533411620025098e-07,
+      "year": "2025"
+     },
+     {
+      "binding_dso": true,
+      "binding_tso": true,
+      "day": "Autumn",
+      "hour": 18,
+      "node": "7",
+      "p_int_dso_expected_mw": -9.424306885197034e-07,
+      "p_int_tso_expected_mw": -5.506491773969059e-07,
+      "year": "2025"
+     }
+    ],
+    "n_binding_hours": 4
+   },
+   "binding_tolerance_mw": 0.001,
+   "checks": {
+    "dso_n_active_288_each": true,
+    "dso_n_active_total_864": true,
+    "status_written": true,
+    "tso_n_active_864": true
+   },
+   "error": null,
+   "measures_coincide_note": "at one scenario the expected-value rule and the per-block row-body measure read the same interface quantity, so they coincide (Addendum 85 ruling 4 (x)); both are reported",
+   "n_active_per_copy_ok": true,
+   "per_node_minima": {
+    "5": {
+     "min_p_int_dso_expected_mw": 9.278538046991843,
+     "min_p_int_tso_expected_mw": 9.278537838687352,
+     "n_binding_hours": 0,
+     "n_hours": 288,
+     "n_hours_below_minus_tol_dso": 0,
+     "n_hours_below_minus_tol_tso": 0
+    },
+    "7": {
+     "min_p_int_dso_expected_mw": -9.944781205471365e-07,
+     "min_p_int_tso_expected_mw": -6.533411620025098e-07,
+     "n_binding_hours": 4,
+     "n_hours": 288,
+     "n_hours_below_minus_tol_dso": 0,
+     "n_hours_below_minus_tol_tso": 0
+    },
+    "9": {
+     "min_p_int_dso_expected_mw": 5.517445453814069,
+     "min_p_int_tso_expected_mw": 5.517441554489673,
+     "n_binding_hours": 0,
+     "n_hours": 288,
+     "n_hours_below_minus_tol_dso": 0,
+     "n_hours_below_minus_tol_tso": 0
+    }
+   },
+   "row": "interface_no_reverse_flow_p",
+   "row_counts_per_network": {
+    "DSO5": {
+     "n_active": 288,
+     "n_blocks": 12,
+     "n_blocks_with_row": 12,
+     "n_indices": 288
+    },
+    "DSO7": {
+     "n_active": 288,
+     "n_blocks": 12,
+     "n_blocks_with_row": 12,
+     "n_indices": 288
+    },
+    "DSO9": {
+     "n_active": 288,
+     "n_blocks": 12,
+     "n_blocks_with_row": 12,
+     "n_indices": 288
+    },
+    "TSO": {
+     "n_active": 864,
+     "n_blocks": 12,
+     "n_blocks_with_row": 12,
+     "n_indices": 864
+    }
+   },
+   "status": "written"
+  },
+  "phase": "e3",
+  "record_status": "certified",
+  "stops": []
+ },
+ "parent_capture_checklist": {
+  "nrf_capture_path": {
+   "binding_tolerance_mw": 0.001,
+   "checks": {
+    "interface_reporting_detail_has_p_int_dso_expected_mw": true,
+    "interface_reporting_detail_has_p_int_tso_expected_mw": true,
+    "interface_reporting_detail_present": true,
+    "parallel_dso_builder_builds_the_row": true,
+    "production_dso_rule_present": true,
+    "production_option_reader_present": true,
+    "production_row_name_declared": true,
+    "production_support_marker": true,
+    "production_tso_rule_present": true,
+    "run_admm_arm_post_run_hook_gets_models": true,
+    "sequential_dso_builder_builds_the_row": true,
+    "terminal_capture_function_present": true,
+    "tso_builder_builds_the_row": true
+   },
+   "production_support": "hasattr(network_parameters.NetworkParameters(), 'no_reverse_flow') is True",
+   "row": "interface_no_reverse_flow_p"
+  },
+  "record_capture_paths": {
+   "component_levels_recourse_key_interface_settlement_total": true,
+   "esso_capture_attr_es_avg_ch_dch_per_unit": true,
+   "esso_capture_attr_es_e_rated_per_unit": true,
+   "esso_capture_attr_es_soh_per_unit_cumul": true,
+   "evaluator_fn__certification_from_trajectory": true,
+   "evaluator_fn__first_pass_cycle": true,
+   "evaluator_fn__terminal_ratios": true,
+   "harness_fn__derive_stopped_by_from_trajectory": true,
+   "harness_fn__identify_soh_floor_rows": true,
+   "harness_fn__s35ref_terminal_floor_and_efc": true,
+   "harness_fn_run_admm_arm": true,
+   "harness_fn_s38_pf_capture_hooks": true,
+   "harness_fn_s39_exempt_until_capture_hooks": true,
+   "harness_fn_write_boyd_terminal_s35ref": true,
+   "production_state_has_peak_rss": true,
+   "run_admm_arm_accepts_investment_map": true,
+   "run_admm_arm_post_run_hook_gets_state": true,
+   "trajectory_field_boyd_all_pass": true,
+   "trajectory_field_boyd_ess_channel_pass": true,
+   "trajectory_field_boyd_ess_dual_ratio": true,
+   "trajectory_field_boyd_ess_primal_ratio": true,
+   "trajectory_field_boyd_pf_channel_pass": true,
+   "trajectory_field_boyd_pf_dual_ratio": true,
+   "trajectory_field_boyd_pf_primal_ratio": true,
+   "trajectory_field_boyd_stop": true,
+   "trajectory_field_boyd_v_channel_pass": true,
+   "trajectory_field_boyd_v_dual_ratio": true,
+   "trajectory_field_boyd_v_primal_ratio": true,
+   "trajectory_field_consecutive_converged_cycles": true,
+   "trajectory_field_cycle": true,
+   "trajectory_field_cycle_convergence": true,
+   "trajectory_field_efc_per_day_max": true,
+   "trajectory_field_gross_operational_cost": true,
+   "trajectory_field_local_solves_ok": true,
+   "trajectory_field_objective_change_abs": true,
+   "trajectory_field_objective_change_ratio": true,
+   "trajectory_field_objective_tolerance": true,
+   "trajectory_field_recourse": true,
+   "trajectory_field_rho_ess_action": true,
+   "trajectory_field_rho_ess_after": true,
+   "trajectory_field_rho_freeze_active": true,
+   "trajectory_field_rho_pf_action": true,
+   "trajectory_field_rho_pf_after": true,
+   "trajectory_field_rho_v_action": true,
+   "trajectory_field_rho_v_after": true,
+   "trajectory_field_terminal_salvage_value": true
+  },
+  "step7_resettle_preconditions": {
+   "a_aa_step_called_with_boyd_metrics": true,
+   "a_anderson_acceleration_on": true,
+   "a_boyd_all_pass_key_in_production": true,
+   "aa_off_literal_is_production": true,
+   "b_source_order_aa_step_lt_recourse_lt_convergence_test": true,
+   "block_functions_callable": true,
+   "c_certificate_length_read_only_by_the_loop_test_the_record_and_the_print": true,
+   "c_certificate_length_written_only_by_disable_restore_rule_end": true,
+   "c_no_early_stop_in_declaration": true,
+   "capture:loop:boyd_after_esso_update_before_aa": true,
+   "capture:loop:boyd_call_once_per_cycle": true,
+   "capture:loop:boyd_metrics_passed_to_penalties": true,
+   "capture:model_source:network": true,
+   "capture:model_source:shared_energy_storage_data": true,
+   "capture:source:boyd_channel_fields": true,
+   "capture:source:ess_consensus_four_copies": true,
+   "capture:source:ess_copies_written_from_models": true,
+   "capture:source:esso_not_in_gross_Q": true,
+   "capture:source:q_blocks_tso_dso_salvage": true,
+   "capture:source:q_components_classified_total": true,
+   "capture:source:q_gross_is_tso_plus_dso": true,
+   "capture:writer_is_gate_result_io": true,
+   "clean:classifier:unit_cases": true,
+   "clean:clean_source:deque_holds_three_attempts": true,
+   "clean:clean_source:drain_empties_the_deques": true,
+   "clean:clean_source:esso_complementarity_entry_is_the_loaded_attempt": true,
+   "clean:clean_source:esso_diagnostics_carry_the_log_path": true,
+   "clean:clean_source:esso_log_name_scheme": true,
+   "clean:clean_source:esso_sinks_passed": true,
+   "clean:clean_source:esso_tol_override": true,
+   "clean:clean_source:esso_update_passes_the_cycle": true,
+   "clean:clean_source:loop_esso_then_local_check_then_drain": true,
+   "clean:clean_source:loop_one_drain_per_cycle": true,
+   "clean:clean_source:network_attempt_order": true,
+   "clean:clean_source:network_log_appended_per_network": true,
+   "clean:clean_source:network_record_fields": true,
+   "clean:clean_source:network_record_per_attempt": true,
+   "clean:clean_source:network_record_tol_in_force": true,
+   "clean:clean_source:no_drain_between_cycle_start_and_the_check": true,
+   "clean:tolerance_table:DSO5_dual_inf_tol_constr_viol_tol_not_passed": true,
+   "clean:tolerance_table:DSO5_recovery_does_not_pass_tol_or_compl_inf_tol": true,
+   "clean:tolerance_table:DSO5_tol_1e-05": true,
+   "clean:tolerance_table:DSO7_dual_inf_tol_constr_viol_tol_not_passed": true,
+   "clean:tolerance_table:DSO7_recovery_does_not_pass_tol_or_compl_inf_tol": true,
+   "clean:tolerance_table:DSO7_tol_1e-05": true,
+   "clean:tolerance_table:DSO9_dual_inf_tol_constr_viol_tol_not_passed": true,
+   "clean:tolerance_table:DSO9_recovery_does_not_pass_tol_or_compl_inf_tol": true,
+   "clean:tolerance_table:DSO9_tol_1e-05": true,
+   "clean:tolerance_table:ESSO_compl_dual_constr_tol_not_passed": true,
+   "clean:tolerance_table:ESSO_tol_after_override_is_table": true,
+   "clean:tolerance_table:TSO_dual_inf_tol_constr_viol_tol_not_passed": true,
+   "clean:tolerance_table:TSO_recovery_does_not_pass_tol_or_compl_inf_tol": true,
+   "clean:tolerance_table:TSO_tol_1e-05": true,
+   "clean:tolerance_table:network_compl_inf_tol_is_the_spec_tail_value": true,
+   "clean:tolerance_table:table_constr_viol_tol_is_ipopt_default_1e-4": true,
+   "clean:tolerance_table:table_dual_inf_tol_is_ipopt_default_1": true,
+   "clean:tolerance_table:table_esso_compl_inf_tol_is_ipopt_default_1e-4": true,
+   "d_spec_cap_equals_the_cell_cap_within_its_ceiling": true,
+   "declaration_captures_exit_clean_by_block": true,
+   "e_no_replay_reference_every_step7_cell_ungated": true,
+   "efc_read_once_per_cycle_after_penalties_before_the_row": true,
+   "exit:exit_source:esso_update_returns_the_optimize_results": true,
+   "exit:exit_source:local_check_iterates_every_block": true,
+   "exit:final_attempt:esso_final_attempt_is_returned": true,
+   "exit:final_attempt:esso_optimize_collects_optimize": true,
+   "exit:final_attempt:network_final_attempt_is_returned": true,
+   "exit:harness:child_refuses_parallel_execution": true,
+   "exit:harness:child_refuses_persistent_worker_pool": true,
+   "exit:harness:ipopt_exit_class_cases": true,
+   "exit:harness:termination_record_reads_result_solver_message": true,
+   "exit:loop:esso_then_boyd_then_local_check_then_aa_then_recourse": true,
+   "exit:loop:local_check_called_twice_init_and_once_per_cycle": true,
+   "exit:signature:_admm_local_solves_succeeded": true,
+   "f_rule_class_callable": true,
+   "f_rule_constants_equal_settling_criterion_v6": true,
+   "f_rule_is_the_v6_declaration": true,
+   "h_lambda_t_capture_path": true,
+   "loop_exit_is_the_convergence_break": true,
+   "signature:_admm_local_solves_succeeded": true,
+   "signature:_anderson_acceleration_cycle_step": true,
+   "signature:_apply_convergence_depth_tail": true,
+   "signature:_capture_convergence_depth_tail_baseline": true,
+   "signature:_convergence_depth_tail_next_state": true,
+   "signature:_get_admm_efc_per_day_max": true,
+   "signature:_get_operational_recourse_components": true,
+   "signature:_update_admm_penalties": true,
+   "signature:get_admm_boyd_residual_metrics": true,
+   "state_carries_every_w118_state_attribute": true,
+   "state_class_is_the_step7_state_on_the_v6_state": true,
+   "step7_candidate_investment_year_is_the_cell_year": true,
+   "step7_candidate_key_is_the_cell_candidate": true,
+   "step7_declared_options_are_the_cell_options": true,
+   "step7_entry_keys_are_exactly_the_base_and_the_declared_options": true,
+   "step7_entry_label_is_the_cell": true,
+   "step7_entry_overrides_empty": true,
+   "step7_entry_settling_resettle_is_the_declaration": true,
+   "step7_ess_ageing_baseline_declared": true,
+   "step7_ess_params_file_pinned_as_expected": true,
+   "step7_flex_price_multiplier_absent_from_the_entry": true,
+   "step7_flex_price_multiplier_label_absent_at_entry_and_spec_level": true,
+   "step7_floor_not_overridden_minimum_soh_is_the_declared_floor": true,
+   "step7_no_model_variant_arm_a_by_absence": true,
+   "step7_no_premium_or_derived_instance": true,
+   "step7_nrf_option_is_the_declared_value": true,
+   "step7_nrf_option_label_at_entry_and_spec_level": true,
+   "step7_rho0_scale_absent_from_the_entry": true,
+   "step7_rho0_scale_label_absent_at_entry_and_spec_level": true,
+   "step7_spec_holds_one_entry": true,
+   "t_sum:gates:terminal_identity_and_pf_stride_use_the_same_copies_and_weight": true,
+   "t_sum:signature:_expected_market_price": true,
+   "t_sum:signature:_get_admm_block_weight": true,
+   "t_sum:source:block_weight_definition": true,
+   "t_sum:source:expected_price_definition": true,
+   "t_sum:source:pf_consensus_layout": true,
+   "t_sum:source:reporting_detail_price": true,
+   "tail_enabled_for_this_run": true
+  }
+ },
+ "parent_view": {
+  "exit_code": 0,
+  "wait4_ru_maxrss": 3702325248,
+  "wall_s": 4889.347441911697
+ },
+ "phase": "e3",
+ "pre_launch_assertion": {
+  "base_key": "759802ecc43b3ee5b1877beafa66c67cf5f279f49cb62a8d66659ff7cfd46894",
+  "campaign_id": "s55_step7_e3_cnrf_x0_1x",
+  "committed_holder_rule": "E3 / E2: refused if held (key collision); screen: reported, never reused (no cost is carried across code states)",
+  "committed_holders_outside_the_stage_roots": [],
+  "eval_dir_name": "35b275180d897e4c_e3_cnrf_x0_1x",
+  "eval_key": "35b275180d897e4c123c37839b91f50b01454bb24085685d26e9d2b33346e12f",
+  "excluded_roots": [
+   "data/SRP1/Results/P515S55/e3_cnrf",
+   "data/SRP1/Results/P515S55/e2_rho",
+   "data/SRP1/Results/P515S55/e1_screen_1x",
+   "data/SRP1/Results/P515S55/e1_2x/cross"
+  ],
+  "holds": true,
+  "parts": {
+   "base_payload_carries_nrf_option": true,
+   "e3_base_equals_w183c_committed_x0_A_1x_nrf_key": true,
+   "e3_base_without_nrf_equals_w183c_off_key": true,
+   "e3_key_carries_nrf_option": true,
+   "eval_key_absent_from_committed_specs_outside_the_stage_roots": true,
+   "frozen_entry_equals_recomputed": true,
+   "harness_base_equals_independent_base": true,
+   "harness_key_equals_independent_payload_key": true,
+   "key_differs_from_base": true,
+   "key_differs_without_nrf_option": true,
+   "working_dirs_absent": true
+  },
+  "working_dir_ids": {
+   "precheck": "p515s44_s55_step7_e3_cnrf_x0_1x_35b275180d897e4c_precheck",
+   "run": "p515s44_s55_step7_e3_cnrf_x0_1x_35b275180d897e4c_run"
+  }
+ },
+ "retry": false,
+ "solver": {
+  "expected": "/usr/local/bin/ipopt",
+  "ok": true,
+  "resolved": {
+   "NLP_SOLVER_PATH": "/usr/local/bin/ipopt",
+   "source": "environment"
+  },
+  "sha256": "b316abbe38cd851d9a9a87a6a1a1714a4334304c9539df1976d2f7101360ff05"
+ },
+ "stage": "P5.15 Addendum 86 ruling 1, W183i (b) -- the Step-7 fixed-plan launcher: E3 (C_NRF), E2 stage 1 (rho0 x s), the 1x unit-neighbourhood screen, the cross-evaluations (declared after W186)",
+ "stage_spec": {
+  "name": "frozen_s55_step7_e3_spec_v1_bd2cfa4d.json",
+  "sha256": "bd2cfa4d5503cdc440f01c9e2370b00ce22dd13833ef9e4d8c3d04233a465b46"
+ },
+ "utc": "2026-10-26T10:56:44.423764+00:00",
+ "wall_clock_s": 4892.657701015472
+}
