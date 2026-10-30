@@ -63,11 +63,15 @@ expert must see before confirming R1, and two author items:**
 
 ## D0 order — authorized by the author 2026-10-30; spec `P5_16_D0_SPEC_v1.md` (Advisor review first)
 
-**Correction to the earlier draft:** D0 is **not** zero-solve. No SRP1 certified cell has persisted network models,
-so the certified block points are obtained by reproducing the two cells in-process to their certificates, gated
-bitwise against the committed reports (`p515_s41_hull_polish.py` precedent), then building the relaxation on the
-live models; ≈ 1.5–2 h each on the 24 GB machine, attended. Conic solves follow with the production solve paths
-guarded at zero.
+**Correction of the correction (Advisor review of spec v1, verified):** the W86 tight-tail reference pair (x = 0
+cycle 132, unit cycle 112) ran with `persist_certified_models: true` from the Studio checkout; their
+`certified_models.pkl` and ESSO pickles are hash-recorded (spec v2 §2) but absent from the 24 GB machine's checkout.
+**Author action:** check the Studio for the four files; if present with matching sha256, D0 is zero-ADMM-solve
+(hash-verified loads, route A). Only if absent: in-process reproduction with a comparator parameterised to the W86
+records (route B, ≈ 1.5–2 h each). Spec v2 `P5_16_D0_SPEC_v2.md` also: deactivate-and-add construction on
+production's own W-space rows; ESSO P-net slacks fixed at 0; rated-vs-available capacity variants; row inventory and
+1e-12 identity gates; all 12 groups per cell; the differential prediction P6 (gap plan-independent) beside the
+absolute class — relevant to R4.
 
 - **T0.1 Build.** For the two certified SRP1 cache points x = 0 and 7: 0.25 MVA / 1 MWh (2025), one (year, day) block
   each: W-space SOC relaxation of TSO + 3 DSOs + ESSO with SoH ≡ 1 and the H3 pro-rata rows dropped, exact coupling,

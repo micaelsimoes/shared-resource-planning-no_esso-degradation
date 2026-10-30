@@ -12,12 +12,14 @@ order below stands but W184/W185 are **held** (Planner recommendation R6).
 - [x] Author (2026-10-30): R1, R2 agreed as recommended; R5 closed (Gurobi primary, Clarabel fallback, IPOPT
   cross-check); D0 and the convention-change zero-solve tasks authorized. Still with the author: append Addendum 87
   to the brief; forward R1 (confirmation), R3, R4, R6 to the expert
-- [ ] **▶ Advisor:** review `P5_16_D0_SPEC_v1.md` (running) before the D0 Worker task
+- [x] Advisor: D0 spec v1 reviewed — build with changes (W86 pickles exist on the Studio; deactivate-and-add;
+  ESSO slacks; rated/available variants; inventory + identity gates; 12 groups; P6 differential) → `P5_16_D0_SPEC_v2.md`
+- [ ] **▶ Author:** check the Studio for the four W86 pickles (spec v2 §2 hashes) → route A (zero ADMM solves) or B
 - [x] Advisor: convention-change spec v1 reviewed — build with changes (κ = a/σ; 2025-cohort salvage ≡ 0; G-CC-2/3
   restated; 2037 column; params file + σ-band prediction) → `P5_16_CONVENTION_CHANGE_SPEC_v2.md`; expert items F2/F4
   and author items (recovery fraction, 2040 cost) added to the Addendum 87 draft
-- [ ] **D0 / T0.1** — reproduce x = 0 and the unit in-process (bitwise gate vs committed certificates); build the
-  W-space relaxation on the live blocks; mapped-point identity gate → `P5_16_D0_REPORT.md` part (a)
+- [ ] **D0 / T0.1** — G-D0-0 builder dry run on FrozenSMOPF + ESSO pickle (zero solves); then route A/B point
+  acquisition; row inventory; identity gates → `P5_16_D0_REPORT.md` part (a)
 - [ ] **D0 / T0.2** — gap, circulation, TN rank cost, dual infeasibility, capacity duals vs Phase A slopes;
   predictions recorded first → decision point H1 / H2 / H3
 - [ ] Convention change (after R1–R3): ESSO salvage term; `'mid'` baseline; five-block single-scenario case file;
