@@ -27,6 +27,12 @@ here authorizes a run. Basis: `REVISION_REALIGNMENT_ANALYSIS_2026-10-30.md` (v2)
 
 ## Rulings requested from the expert
 
+**Author's agreement recorded 2026-10-30 (this session):** R1 as recommended (option (a), terminal salvage term in the
+ESSO objective); R2 as recommended (horizon-end expected energy cost, energy-only, cited recovery fraction); R5 closed
+(Gurobi `QCPDual = 1` primary, Clarabel open-source fallback per block, IPOPT cross-check; no licence request, no
+environment change before D0). The expert's confirmation of R1 is still requested, since it supersedes a governing
+decision. Author authorized D0 and the convention-change zero-solve tasks to proceed.
+
 - **R1 — salvage mechanism.** Option (a): terminal salvage term in the ESSO objective, so dispatch internalises the
   marginal salvage loss of cycling (this supersedes the governing decision "no explicit degradation cost"); option (b):
   planning-only credit, dispatch unchanged (the critical review's §3.3 objection then stands). Planner recommends (a).
@@ -45,7 +51,13 @@ here authorizes a run. Basis: `REVISION_REALIGNMENT_ANALYSIS_2026-10-30.md` (v2)
   penalty pilot) into the new campaign, so the paper carries numbers from one convention. W183i (zero-solve) may
   complete as ordered; its launcher work is reused.
 
-## D0 order (zero ADMM solves; conic solves only) — authorized on adoption
+## D0 order — authorized by the author 2026-10-30; spec `P5_16_D0_SPEC_v1.md` (Advisor review first)
+
+**Correction to the earlier draft:** D0 is **not** zero-solve. No SRP1 certified cell has persisted network models,
+so the certified block points are obtained by reproducing the two cells in-process to their certificates, gated
+bitwise against the committed reports (`p515_s41_hull_polish.py` precedent), then building the relaxation on the
+live models; ≈ 1.5–2 h each on the 24 GB machine, attended. Conic solves follow with the production solve paths
+guarded at zero.
 
 - **T0.1 Build.** For the two certified SRP1 cache points x = 0 and 7: 0.25 MVA / 1 MWh (2025), one (year, day) block
   each: W-space SOC relaxation of TSO + 3 DSOs + ESSO with SoH ≡ 1 and the H3 pro-rata rows dropped, exact coupling,

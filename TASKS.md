@@ -9,10 +9,12 @@ order below stands but W184/W185 are **held** (Planner recommendation R6).
 - [x] Analysis, strategies, plan — `REVISION_REALIGNMENT_ANALYSIS_2026-10-30.md` v2 (Advisor review recorded)
 - [x] Author decisions 1–6 taken (direction (c); salvage in F; mid-block + 3-year blocks; lattice kept; full
   (node, year) space; machines) — recorded in the draft addendum
-- [ ] **▶ Author:** adopt Addendum 87; forward R1–R6 to the expert; decide the conic-solver licence (R5)
-- [ ] Advisor: review the D0 spec and the convention-change spec before any Worker task
-- [ ] **D0 / T0.1** — one-block W-space relaxation build for x = 0 and the unit; mapped-point identity gate
-  (zero ADMM solves) → `P5_16_D0_REPORT.md` part (a)
+- [x] Author (2026-10-30): R1, R2 agreed as recommended; R5 closed (Gurobi primary, Clarabel fallback, IPOPT
+  cross-check); D0 and the convention-change zero-solve tasks authorized. Still with the author: append Addendum 87
+  to the brief; forward R1 (confirmation), R3, R4, R6 to the expert
+- [ ] **▶ Advisor:** review `P5_16_D0_SPEC_v1.md` (then the convention-change spec) before any Worker task
+- [ ] **D0 / T0.1** — reproduce x = 0 and the unit in-process (bitwise gate vs committed certificates); build the
+  W-space relaxation on the live blocks; mapped-point identity gate → `P5_16_D0_REPORT.md` part (a)
 - [ ] **D0 / T0.2** — gap, circulation, TN rank cost, dual infeasibility, capacity duals vs Phase A slopes;
   predictions recorded first → decision point H1 / H2 / H3
 - [ ] Convention change (after R1–R3): ESSO salvage term; `'mid'` baseline; five-block single-scenario case file;
