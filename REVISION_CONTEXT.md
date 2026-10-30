@@ -13,10 +13,47 @@ Act as a technical planner and mathematical-programming reviewer for the shared 
 
 Read this file first. When checking the mathematical formulation, also consult `simoes_2026_revisions.pdf` where relevant and inspect the current implementation before proposing changes. Prefer reviewer-driven implementation and validation plans before production edits.
 
-This file is the repository-wide source of context. **As of 2026-10-07 the active
-authority is `PLANNER_BRIEF_2026-09-13.md` with its Addenda 1–67**; it supersedes
+This file is the repository-wide source of context. **As of 2026-10-30 the active
+authority is `PLANNER_BRIEF_2026-09-13.md` with its Addenda 1–86, and the realignment direction recorded below (Addendum 87 draft)**; it supersedes
 `COWORK_HANDOFF.md` and the P5.12-R scope formerly governed by
 `LOCAL_NLP_STABILITY_PLAN.md`, which is retained as a historical record.
+
+---
+
+# CURRENT DIRECTION — 2026-10-30 (realignment decided; Addendum 87 drafted, not yet adopted)
+
+Authority once adopted: `PLANNER_BRIEF_ADDENDUM87_DRAFT_2026-10-30.md` → Addendum 87. Analysis and plan:
+`REVISION_REALIGNMENT_ANALYSIS_2026-10-30.md` (v2). Order: `TASKS.md` (Realignment section).
+
+**Why.** The author judged the current revision (`main_edd7a63_round8.tex`) too far from the submitted paper's
+intent: the bounds/gap narrative, multi-scenario and staged planning, the paper-scale instance and the physical
+results were lost. Diagnosis (analysis §3): the submitted recourse was a transfer payment (Addendum 11); Q's
+resolution, not convexity, disqualified local-dual cuts; paper scale was unaffordable on the Studio; Q is affine, so
+the MADS search finds a corner. None of this is reversed; the valid way back is a two-sided method.
+
+**Method.** LB: convex (SOC, W-space) relaxation of the production recourse with SoH ≡ 1 (valid because degradation
+only tightens constraints and carries no cost; salvage at maximum credit), H3 pro-rata rows dropped, exact coupling,
+the gross objective convention; Q_LB convex in x; Benders cuts from dual-feasible conic points (anchored at the dual
+objective with margin — never ObjVal; P5.5-C's `ObjBound = −inf` is the failure mode); lattice MILP master over
+(P_{n,y}, E_{n,y}) with per-node years and staging, multi-cut over blocks and the 25 scenarios. UB: the certified
+ADMM point of the full AC model; MADS as the mesh-local certificate in the **coordinate unit neighbourhood** of the
+master's plan (wording: expert). Claim: LB ≤ min_X [I + Q_AC] ≤ I(x̂) + Q_cert(x̂); the relaxation never produces a
+reported operating point. ADMM statement per analysis §6.4 (no global guarantee; approximate KKT point of the
+coupled problem at a certified fixed point).
+
+**Convention change (author, 2026-10-30), one re-evaluation campaign:** salvage in F (ESSO mechanism and basis:
+expert R1/R2); mid-block SoH point; 3-year blocks 2025–2037 (calendar life five blocks); lattice unchanged; full
+(node, year) space. Every storage-plan cell in the cache is superseded; x = 0 cells stand (salvage and storage rows
+inert). W184/W185 held pending R6.
+
+**Decision point D0** (zero ADMM solves): one-block relaxation gap at x = 0 and the unit on the current formulation.
+H1 (≤ 1e-4) → certified bound on the value of any lattice plan; H2 (≤ 1e-2) → valid, non-discriminating gap (R4
+wording); H3 → current manuscript + paper-scale UBs. The P5.5-C 21.9 % gap does not transfer (pre-Addendum-11
+objective, apparent-power ESSO, old complementarity; circulation dominant and now predicted inert).
+
+**Machines.** Studio (M2 Max 32 GB; 42.3 min/cycle serial at paper scale): re-evaluation campaign (≈ 1.7 h per cell
+at 6–7 slots on the five-block single-scenario instance) and 2–3 full 5 × 4 × 25 UBs. 24 GB Mac: D0 and the LB side.
+No VM request now.
 
 ---
 

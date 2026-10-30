@@ -1,5 +1,27 @@
 # TASKS — current order
 
+**Direction (author, 2026-10-30):** realignment per `REVISION_REALIGNMENT_ANALYSIS_2026-10-30.md` (v2); draft
+Addendum 87 `PLANNER_BRIEF_ADDENDUM87_DRAFT_2026-10-30.md` awaiting adoption. Until adopted, the Addendum 85/86
+order below stands but W184/W185 are **held** (Planner recommendation R6).
+
+## Realignment order — pending Addendum 87 adoption (nothing below runs before it)
+
+- [x] Analysis, strategies, plan — `REVISION_REALIGNMENT_ANALYSIS_2026-10-30.md` v2 (Advisor review recorded)
+- [x] Author decisions 1–6 taken (direction (c); salvage in F; mid-block + 3-year blocks; lattice kept; full
+  (node, year) space; machines) — recorded in the draft addendum
+- [ ] **▶ Author:** adopt Addendum 87; forward R1–R6 to the expert; decide the conic-solver licence (R5)
+- [ ] Advisor: review the D0 spec and the convention-change spec before any Worker task
+- [ ] **D0 / T0.1** — one-block W-space relaxation build for x = 0 and the unit; mapped-point identity gate
+  (zero ADMM solves) → `P5_16_D0_REPORT.md` part (a)
+- [ ] **D0 / T0.2** — gap, circulation, TN rank cost, dual infeasibility, capacity duals vs Phase A slopes;
+  predictions recorded first → decision point H1 / H2 / H3
+- [ ] Convention change (after R1–R3): ESSO salvage term; `'mid'` baseline; five-block single-scenario case file;
+  cumulative admissibility + general-lattice canonicalization; gate x = 0 bitwise + fixtures unpickle
+- [ ] Spec v2 freeze → re-evaluation campaign on the Studio (authorized by a later addendum, one gate per task)
+- [ ] If H1/H2: Phase 2 LB oracle (SoH ≡ 1 blocks, dual extraction with margin, cache validation, lattice MILP
+  master with years) → UB at the master's plan + coordinate unit poll → 2–3 full 5 × 4 × 25 UBs
+- [ ] Phase 4 manuscript with the expert
+
 **Authority:** `PLANNER_BRIEF_2026-09-13.md` Addendum 85 (W183g order; W184/W185 conditional) and Addendum 84 (W183h); committed in `92cba160`; earlier orders below for record.
 **Objective convention on every value:** Q = certified `gross_operational_cost`, contracted interface settlement excluded (Addendum 83 ruling 2; at 3 × 3 the deviation settlement and the row-18 premium are inside Q).
 **Updated at every transition; read first when resuming.**
