@@ -33,6 +33,16 @@ ESSO objective); R2 as recommended (horizon-end expected energy cost, energy-onl
 environment change before D0). The expert's confirmation of R1 is still requested, since it supersedes a governing
 decision. Author authorized D0 and the convention-change zero-solve tasks to proceed.
 
+**Advisor review of the convention-change spec (2026-10-30; `P5_16_CONVENTION_CHANGE_SPEC_v2.md` §0) — facts the
+expert must see before confirming R1, and two author items:**
+- F2: a 2025 cohort's salvage is identically zero (remaining calendar life 0 at the horizon end), so under R1 (a)
+  dispatch is salvage-aware only for 2028+ cohorts; for a 2025-only plan the critical review's §3.3 objection stands.
+  **Author/expert:** should a calendar-expired cohort with SoH above the floor carry a health-based residual value?
+- F4 (expert wording): the LB may credit salvage and bound available energy at the calendar-only SoH φ_cal^age
+  (dispatch-independent, hence valid) instead of SoH ≡ 1 — about 2× tighter on the salvage credit.
+- F9 (**author**): "horizon-end cost" is operationally the 2037 cost column; a 2040 value needs data or a rule.
+- **Author:** `energy_recovery_fraction` is 1.0 and `recycling_floor_fraction` 0.0 today — cited values needed.
+
 - **R1 — salvage mechanism.** Option (a): terminal salvage term in the ESSO objective, so dispatch internalises the
   marginal salvage loss of cycling (this supersedes the governing decision "no explicit degradation cost"); option (b):
   planning-only credit, dispatch unchanged (the critical review's §3.3 objection then stands). Planner recommends (a).
