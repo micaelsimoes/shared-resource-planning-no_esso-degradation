@@ -97,6 +97,12 @@ order below stands but W184/W185 are **held** (Planner recommendation R6).
   circles. **Ruling: Gurobi on the Studio primary (R5); one IPOPT smooth-form solve of the x = 0 group here as the
   interior/well-posedness test before any further Clarabel work** — `P5_16_D0_T02_CLARABEL_REPORT.md`,
   evidence `t02_clarabel_ablation` (`60bec4d9…`)
+- [x] **IPOPT interior test** (1 solve): x = 0 2025 Spring variant C — Optimal 115 it., 0 restoration (well-posed);
+  **gap 5.84 k€ = 9.1e-5** (≈ 0.2 k€ after pricing IPOPT's 1e-8 bound relaxation by multipliers up to 3.3e9;
+  unresolved < 1 k€) — provisional H1 on this group; I1/I2/I3/I5 HELD, I4 FAILED below its band; Clarabel stall not
+  explained by redundancy (216 duplicated pins) — rulings spec §15 (resolution column Σ|λ|·viol; bound_relax 0;
+  Gurobi Feas/OptTol 1e-9; P1 misread fix) — `P5_16_D0_T02_IPOPT_INTERIOR_REPORT.md`, evidence `t02_ipopt_interior`
+- [ ] **▶ T0.2 harness update per §15** (zero-solve rehearsal) → commit → author pulls on the Studio → Step 4
 - [ ] **▶ Stopped for the expert (R8)** — no freeze, no campaign until ruled; author: Gurobi key for T0.2; Studio
   Part B files ESSO salvage term; `'mid'` baseline; five-block single-scenario case file;
   cumulative admissibility + general-lattice canonicalization; gate x = 0 bitwise + fixtures unpickle

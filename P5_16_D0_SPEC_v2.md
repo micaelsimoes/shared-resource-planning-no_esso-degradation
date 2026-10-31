@@ -281,3 +281,31 @@ is gone) is asserted by inventory before solving, so Σ_groups Q_LB is the joint
 5. **Gurobi licence:** `~/gurobi.lic` (academic 2805683) is bound to a different host ID; preflight refuses (exit 6).
    Author action: a new academic key for this host (`grbgetkey`), or the Clarabel fallback path (R5) — the latter
    needs a matrix-form reader for the exported LPs (one Worker task). No solve runs until one of them exists.
+
+## 15. Planner rulings after the IPOPT interior test (2026-10-31; `P5_16_D0_T02_IPOPT_INTERIOR_REPORT.md`, evidence `P516D0/t02_ipopt_interior/`, manifest `ff2ea488…`)
+
+One IPOPT smooth-form solve of the x = 0, variant C, 2025 Spring group: Optimal, 115 iterations, 0 restoration — the
+relaxation is well-posed (I2 held); containment held (I3); TN rank residual 2.42e-2 (I5 held); the equality block
+carries exactly 216 structural redundant rows (I1 held; duplicated pins, not the Clarabel cause). **Gap 5,843.89 € =
+9.13e-5 relative (I4 "failed" below its band)** — and it is a solver-tolerance artefact to first order: IPOPT's default
+`bound_relax_factor 1e-8` priced by multipliers up to 3.3e9 on 25 capability circles of radius < 1e-4 is worth
+Σ|λ|·violation = 5,654 €, so the exact-relaxation gap on this group is ≈ 0.19 k€, unresolved below ≈ 1 k€; what is
+firm is gap ≤ 5.84 k€. Consequence: at this multiplier scale **Q_LB's resolution is each solver's primal feasibility
+tolerance, not its primal-dual gap**, and G-D0-5's agreement threshold (1e-7 relative ≈ 6 €) is far below it.
+
+Rulings for T0.2 (harness update before the Studio run; zero-solve rehearsal; then the author pulls once more):
+1. **Resolution column:** every solve records Σ_i |λ_i|·max(0, violation_i) over all rows and bounds at the returned
+   point (the price of the solver's relaxation) and reports it as Q_LB's resolution beside the primal-dual gap; the
+   gap readings and the H-class carry it as an error bar: gap ∈ [gap − res_cert, gap + res_LB] where res_cert prices
+   the certified point's own violations at the same multipliers.
+2. **IPOPT cross-checks:** `bound_relax_factor 0`, `honor_original_bounds yes`, tol 1e-9; the certified start kept by
+   `bound_push`/`bound_frac` 1e-10 (the default push discarded the start: iteration 0 at inf_pr 6.9e-2).
+3. **Gurobi:** `FeasibilityTol 1e-9`, `OptimalityTol 1e-9` in addition to §4's barrier settings; the resolution column
+   measured on Gurobi's returned point the same way.
+4. **P1 misread fixed:** `rank_and_cycles` excludes the OLTC branch's `d0_cone` (its WR/WI carry no cost and sit in no
+   balance row; the live cone is `d0_tr_cone`), so the DSO rank residual is read on non-transformer branches
+   (≤ 1e-8 here) and the transformer separately.
+5. **Phase 2 note:** capability circles with r < 1e-4 are replaced in the LB formulation by p = q = 0 (equivalent to
+   tolerance), which removes the 1e9 multipliers; recorded, not applied in D0.
+6. The group reading **H1 on this group** is provisional: single group, single solver; the class is decided on
+   Σ over 12 groups per the decision rule.
