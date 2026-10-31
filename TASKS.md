@@ -31,9 +31,10 @@ order below stands but W184/W185 are **held** (Planner recommendation R6).
   over the restated gate), C2 semantically held (ruling §13), C3 HELD (Q_cert⁺ − gross = 13,012.57 / 13,032.47 € =
   −detector penalty to 1.8e-12 €), C4 HELD (E_C/E_R = 0.985^{5,10,15}), C5 HELD (2 value-dependent bounds per copy);
   72 LPs exported — `P5_16_D0_T01C_REPORT.md`, manifest `d2955128…`
-- [ ] **▶ D0 / T0.2** — 132 declared solves (108 Gurobi incl. fixed-mode and freeze attribution; 24 IPOPT
-  cross-checks); measurements (a)–(g); P1–P9 + expert predictions; absolute class on C, P6 on A and C →
-  `P5_16_D0_REPORT.md`
+- [ ] **▶ D0 / T0.2** — harness `p516_d0_t02.py` built and rehearsed zero-solve (338 gate rows; LP objective at the
+  certified point = T0.1c to 2.9e-13; guards verified) — **BLOCKED: Gurobi HostID mismatch on this machine** (licence
+  bound to hostid 8451acaa, host is adaa18f1) → author: new academic key (`grbgetkey`) or Clarabel fallback; rulings
+  spec §14 (freeze (b); separability by elimination; g_tight; design choices). 132 declared solves → `P5_16_D0_REPORT.md`
 - [ ] **D0 / T0.2** — gap, circulation, TN rank cost, dual infeasibility, capacity duals vs Phase A slopes;
   predictions recorded first → decision point H1 / H2 / H3
 - [x] **Addendum 88 received** (expert, 2026-10-31, appended by the author): R1 (a) confirmed with the governing

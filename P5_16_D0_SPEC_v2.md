@@ -260,3 +260,24 @@ variant C at the unit cell, the P5.5-D4 fixed-mode re-solve (12) and the two-way
 solves; IPOPT smooth-form cross-check on variant C, both cells, 12 groups each: 24 solves. **132 declared**, leaf
 guard, counted exactly. Group separability of the relaxed ESSO (no row couples different (year, day) once the SoH chain
 is gone) is asserted by inventory before solving, so Σ_groups Q_LB is the joint relaxed optimum.
+
+## 14. Planner rulings before the T0.2 launch (2026-10-31; harness `p516_d0_t02.py` rehearsed zero-solve, 338 gate rows)
+
+1. **Freeze attribution (c) restated.** The certified state of charge belongs to the carried (variant A) capacity; on
+   C and R the SoC bounds shift (violations 2.3e-4–4.9e-4 p.u. on C, up to 1.1e-3 on R), so "DSO + ESSO frozen" is
+   infeasible by construction. Ruled **option (b)**: freeze only the DSO W columns (and the transformer U, C, D) plus
+   the ESSO — symmetric with the TN-W freeze (both freeze voltage geometry, both leave dispatch free). Labelled as a
+   two-way geometry-freeze bracket. Declared count unchanged (12 + 12).
+2. **Separability by elimination accepted.** The three `energy_storage_charging_discharging` rows per year feed only
+   `es_avg_ch_dch_per_unit` → `es_D_per_unit` (lb 0, no other row, not in the objective); removing them as inert by
+   interval arithmetic leaves 72/72 group LPs separable. Kept as a gate.
+3. **Lagrangian margin g.** The "all variables boxed" premise fails (7.5–8.7 k unbounded columns per LP), so g_spec is
+   −∞ wherever an unbounded column has a nonzero gradient; g_tight (cones in convex form) reported beside it;
+   informative in D0. **Phase 2 note:** the LB formulation adds explicit physical boxes on every variable so the
+   margin is finite — recorded for the Phase 2 spec.
+4. **Design choices ratified:** fixed-mode (b) in the P5.5-D4 lineage (TSO-derived schedule; off-mode bound δ·S with
+   δ = √1e-4; TSO and DSO7 copies fixed, ESSO split left free); TN-W freeze at the rank-1 image of the certified
+   voltages; (f) via ESSO pinning-row duals + chain rule + derived-bound reduced costs; P9 "≈" = within a factor 2.
+5. **Gurobi licence:** `~/gurobi.lic` (academic 2805683) is bound to a different host ID; preflight refuses (exit 6).
+   Author action: a new academic key for this host (`grbgetkey`), or the Clarabel fallback path (R5) — the latter
+   needs a matrix-form reader for the exported LPs (one Worker task). No solve runs until one of them exists.
