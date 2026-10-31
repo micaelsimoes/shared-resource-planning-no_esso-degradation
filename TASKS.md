@@ -86,6 +86,11 @@ order below stands but W184/W185 are **held** (Planner recommendation R6).
   form — **STOP: slack safety FAILED as worded** (5.84 vs bar 1.0 per MW-period; 171× penalty/marginal; per-MWh
   passes 50×) → `EXPERT_REQUEST_2026-10-31b.md` R8 (rec. (a): `PENALTY_ESSO_SLACK` 1e4 on the new instance via params)
   — `P5_16_CC_C1C3C4_REPORT.md`, evidence `P516CC/g_cc1..g_cc5`
+- [x] **Clarabel path built** (`p516_d0_clarabel.py`, clarabel 0.11.1 in opf_env_py311; LP → cones; zero-solve
+  identity 1.5e-13; leaf guard): smoke on variant C 2025 Spring ×2 — **K1 FAILED** (MaxIterations at 200; primal
+  stalled 1e-2 infeasible, dual converged); likely cause 864/576 empty-interior storage cones ‖(p,q)‖ ≤ 0 →
+  4-solve ablation (presolve to p = q = 0, 200 vs 5,000 iterations) — `P5_16_D0_T02_CLARABEL_REPORT.md`,
+  evidence `P516D0/t02_clarabel_smoke` (`13f146c7…`). Gurobi works on the Studio (licence 2807206) → T0.2 runs there
 - [ ] **▶ Stopped for the expert (R8)** — no freeze, no campaign until ruled; author: Gurobi key for T0.2; Studio
   Part B files ESSO salvage term; `'mid'` baseline; five-block single-scenario case file;
   cumulative admissibility + general-lattice canonicalization; gate x = 0 bitwise + fixtures unpickle
