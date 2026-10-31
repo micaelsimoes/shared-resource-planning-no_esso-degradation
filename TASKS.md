@@ -27,8 +27,13 @@ order below stands but W184/W185 are **held** (Planner recommendation R6).
   definitional residuals 4e-11 × |y|² 1e5) → Planner rulings spec v2 §12 (gate = first-order bound + 4·resolution;
   variant C defined; capacity-derived bounds follow the variant; T0.2 compares against Q_cert⁺ = gross with
   bound-projected slacks, +13.0 k€) — `P5_16_D0_T01B_REPORT.md`, manifest `4e5bbd45…`
-- [ ] **▶ D0 / T0.1c** — R, A, C with §12 applied; envelope check preserved; Q_cert⁺; 72 LP exports (zero solves)
-- [ ] **D0 / T0.2** — declared conic solves + IPOPT cross-check; measurements; P1–P9 → `P5_16_D0_REPORT.md`
+- [x] **D0 / T0.1c** — R, A, C, both cells, 12 groups (zero solves; guard 0/0): C1 HELD (0 of 1.25 M gated rows
+  over the restated gate), C2 semantically held (ruling §13), C3 HELD (Q_cert⁺ − gross = 13,012.57 / 13,032.47 € =
+  −detector penalty to 1.8e-12 €), C4 HELD (E_C/E_R = 0.985^{5,10,15}), C5 HELD (2 value-dependent bounds per copy);
+  72 LPs exported — `P5_16_D0_T01C_REPORT.md`, manifest `d2955128…`
+- [ ] **▶ D0 / T0.2** — 132 declared solves (108 Gurobi incl. fixed-mode and freeze attribution; 24 IPOPT
+  cross-checks); measurements (a)–(g); P1–P9 + expert predictions; absolute class on C, P6 on A and C →
+  `P5_16_D0_REPORT.md`
 - [ ] **D0 / T0.2** — gap, circulation, TN rank cost, dual infeasibility, capacity duals vs Phase A slopes;
   predictions recorded first → decision point H1 / H2 / H3
 - [x] **Addendum 88 received** (expert, 2026-10-31, appended by the author): R1 (a) confirmed with the governing

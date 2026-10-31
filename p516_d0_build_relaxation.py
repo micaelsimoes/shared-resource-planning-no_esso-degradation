@@ -57,6 +57,19 @@ T0.1b extension (spec v2 section 10 ruling 3): `inventory_rows(..., drop_sess_co
 DROPPED_NETWORK_FAMILIES); `nonconvex_active_rows` lists any active row still outside CONVEX_FORMS after
 relaxation (a stop for the caller, never a drop). The defaults keep the T0.1a dry-run behaviour unchanged.
 
+T0.1c extension (spec v2 section 12 rulings 2-4), all opt-in; every default keeps the T0.1a / T0.1b behaviour:
+  * `relax_network_block(..., capacity_mode='calendar', calendar_capacity=...)` -- variant C on the network copies
+    (`shared_es_s/e_rated_fixed` set to the calendar-only capacity); `derived_bounds=` resets the capacity-derived
+    Var bounds on the clone (values computed by the caller, normally with `production_capacity_bounds`).
+  * `relax_esso_block(..., calendar_factors=...)` -- variant C on the ESSO: the SoH == 1 rows are replaced by
+    `es_e_available_per_unit == phi_cal^age_end * es_e_rated_per_unit` (component `d0_available_e_eq_calendar`);
+    the mapped point follows the same factor.
+  * `capacity_bound_inventory` / `production_capacity_bounds` -- call the PRODUCTION function
+    `configure_shared_ess_operational_state` (MCH l.1117) on a scratch clone (never on the input, never on the
+    relaxed clone: it also resets `shared_es_soc` values and fixed / active flags) to inventory which Var bounds
+    depend on capacity and to read their values at a given capacity.
+  * `envelope_first_order_table` -- ruling 2: the first-order statement for the envelope-rewrite rows.
+
 Nothing here calls a solver. Callers arm `p513_solve_profile_guard.SolveProfileGuard` (blocking form).
 """
 
@@ -457,16 +470,21 @@ def _envelope_rewrite_expr(relaxed, cd, network, transformers):
     return expr
 
 
-def relax_network_block(block, capacity_mode, rated_capacity=None, drop_sess_comp=False):
+def relax_network_block(block, capacity_mode, rated_capacity=None, drop_sess_comp=False, calendar_capacity=None,
+                        derived_bounds=None):
     """Clone `block` (never mutated) and build its W-space relaxation (spec v2 section 3 items 1-3, 5).
 
     capacity_mode 'available': `shared_es_s/e_rated_fixed` left at the values the block carried (variant A).
     capacity_mode 'rated': reset to `rated_capacity` = {e: {'s': pu, 'e': pu}} (variant R).
+    capacity_mode 'calendar' (T0.1c, spec v2 section 12 ruling 3): reset to `calendar_capacity` (same shape;
+    variant C).
     drop_sess_comp=True (T0.1b, spec v2 section 10 ruling 3): the active `sess_comp` rows are verified to be the
     BILINEAR_RELAXATION row and deactivated (dropped, LB-safe). Default False = T0.1a behaviour.
+    derived_bounds (T0.1c, spec v2 section 12 ruling 4): {Var family local name: {index: (lb, ub)}} set on the
+    clone after the capacity Params (the caller computes them at the variant's capacity); default None = no change.
     Returns (relaxed, record). `relaxed._d0_meta` carries the row maps `mapped_point` needs."""
-    if capacity_mode not in ('rated', 'available'):
-        raise ValueError(f'capacity_mode must be rated or available, got {capacity_mode!r}')
+    if capacity_mode not in ('rated', 'available', 'calendar'):
+        raise ValueError(f'capacity_mode must be rated, available or calendar, got {capacity_mode!r}')
     _assert_no_d0_components(block)
     network, params = network_and_params(block)
     _check_definitional_rules(block)
@@ -575,10 +593,28 @@ def relax_network_block(block, capacity_mode, rated_capacity=None, drop_sess_com
         for e, cap in rated_capacity.items():
             relaxed.shared_es_s_rated_fixed[e].set_value(cap['s'])
             relaxed.shared_es_e_rated_fixed[e].set_value(cap['e'])
+    elif capacity_mode == 'calendar':
+        if calendar_capacity is None or set(calendar_capacity) != set(capacity_before):
+            raise ValueError(f'calendar mode needs calendar_capacity for every shared ESS {sorted(capacity_before)}')
+        for e, cap in calendar_capacity.items():
+            relaxed.shared_es_s_rated_fixed[e].set_value(cap['s'])
+            relaxed.shared_es_e_rated_fixed[e].set_value(cap['e'])
     record['capacity_params_carried'] = capacity_before
     record['capacity_params_set'] = {e: {'s': float(pe.value(relaxed.shared_es_s_rated_fixed[e])),
                                          'e': float(pe.value(relaxed.shared_es_e_rated_fixed[e]))}
                                      for e in relaxed.shared_es_s_rated_fixed}
+    if derived_bounds is not None:
+        reset = []
+        for family in sorted(derived_bounds):
+            var = getattr(relaxed, family)
+            for index in sorted(derived_bounds[family], key=repr):
+                lb, ub = derived_bounds[family][index]
+                vd = var[index]
+                before = [vd.lb, vd.ub]
+                vd.setlb(lb)
+                vd.setub(ub)
+                reset.append({'var': vd.name, 'before': before, 'after': [vd.lb, vd.ub]})
+        record['capacity_derived_bounds_reset'] = reset
 
     # 5. objectives: every production / ADMM objective deactivated; the LB objective is attached by the caller
     deactivated_objectives = []
@@ -610,8 +646,13 @@ def relax_network_block(block, capacity_mode, rated_capacity=None, drop_sess_com
 # ----------------------------------------------------------------------------------------------------------------------
 #  ESSO relaxation
 # ----------------------------------------------------------------------------------------------------------------------
-def relax_esso_block(esso_model):
-    """Clone the ESSO (never mutated) and apply spec v2 section 3 item 4. Returns (relaxed, record)."""
+def relax_esso_block(esso_model, calendar_factors=None):
+    """Clone the ESSO (never mutated) and apply spec v2 section 3 item 4. Returns (relaxed, record).
+
+    calendar_factors (T0.1c, spec v2 section 12 ruling 3, variant C): {(y_inv, y): phi_cal ** age_end} for every
+    pair whose available-e row was active; the replacement rows become
+    `es_e_available_per_unit == factor * es_e_rated_per_unit` (component `d0_available_e_eq_calendar`) instead of
+    the SoH == 1 rows. Default None = the SoH == 1 form (T0.1a / T0.1b behaviour, variants R and A)."""
     _assert_no_d0_components(esso_model)
     relaxed = esso_model.clone()
     record = {'dropped_rows': {}, 'drop_arguments': ESSO_DROP_ARGUMENTS}
@@ -639,11 +680,21 @@ def relax_esso_block(esso_model):
                 record['dropped_rows'][sub] = record['dropped_rows'].get(sub, 0) + 1
     record['h3_rows_total_deactivated'] = len(relaxed.energy_storage_cohort_pnet_share_h3)
 
-    relaxed.d0_available_e_eq_rated = pe.ConstraintList()
-    for pair in sorted(available_pairs):
-        relaxed.d0_available_e_eq_rated.add(
-            relaxed.es_e_available_per_unit[pair] == relaxed.es_e_rated_per_unit[pair])
-    record['available_eq_rated_pairs'] = [list(p) for p in sorted(available_pairs)]
+    if calendar_factors is None:
+        relaxed.d0_available_e_eq_rated = pe.ConstraintList()
+        for pair in sorted(available_pairs):
+            relaxed.d0_available_e_eq_rated.add(
+                relaxed.es_e_available_per_unit[pair] == relaxed.es_e_rated_per_unit[pair])
+        record['available_eq_rated_pairs'] = [list(p) for p in sorted(available_pairs)]
+    else:
+        missing = sorted(set(available_pairs) - set(calendar_factors))
+        if missing:
+            raise ValueError(f'calendar_factors lacks the available-e pairs {missing}')
+        relaxed.d0_available_e_eq_calendar = pe.ConstraintList()
+        for pair in sorted(available_pairs):
+            relaxed.d0_available_e_eq_calendar.add(
+                relaxed.es_e_available_per_unit[pair] == float(calendar_factors[pair]) * relaxed.es_e_rated_per_unit[pair])
+        record['available_eq_calendar_pairs'] = [[*p, float(calendar_factors[p])] for p in sorted(available_pairs)]
 
     slack_record = {}
     for name in ESSO_SLACK_VARS:
@@ -674,6 +725,9 @@ def relax_esso_block(esso_model):
     if nonlinear_left:
         raise RuntimeError(f'non-polynomial rows remain active in the relaxed ESSO: {nonlinear_left[:5]}')
     relaxed._d0_meta = {'kind': 'esso', 'available_pairs': sorted(available_pairs)}
+    if calendar_factors is not None:
+        relaxed._d0_meta['available_component'] = 'd0_available_e_eq_calendar'
+        relaxed._d0_meta['calendar_factors'] = {p: float(calendar_factors[p]) for p in available_pairs}
     return relaxed, record
 
 
@@ -774,8 +828,10 @@ def _set_network_mapped_point(relaxed, w_source='ef'):
 
 
 def _set_esso_mapped_point(relaxed):
+    factors = relaxed._d0_meta.get('calendar_factors')      # T0.1c variant C; None = SoH == 1 (unchanged)
     for pair in relaxed._d0_meta['available_pairs']:
-        relaxed.es_e_available_per_unit[pair].set_value(relaxed.es_e_rated_per_unit[pair].value,
+        rated = relaxed.es_e_rated_per_unit[pair].value
+        relaxed.es_e_available_per_unit[pair].set_value(rated if factors is None else factors[pair] * rated,
                                                         skip_validation=True)
     # slack_es_pnet_up/down are fixed at 0 by relax_esso_block (their value is 0 at the mapped point)
 
@@ -911,10 +967,190 @@ def mapped_point(block, relaxed, w_source='ef'):
                            'lower_row_residual': row_residual(relaxed.d0_tr_U_lower[idx]),
                            'upper_row_residual': row_residual(relaxed.d0_tr_U_upper[idx])})
     else:
-        for k, cd in relaxed.d0_available_e_eq_rated.items():
+        for k, cd in getattr(relaxed, meta.get('available_component', 'd0_available_e_eq_rated')).items():
             added.append({'index': k, 'residual': row_residual(cd)})
     return {'retained': retained, 'envelope': envelope, 'cones': cones, 'envelope_bounds': bounds,
             'replaced_production': replaced_prod, 'added_esso': added}
+
+
+def envelope_first_order_table(block, relaxed):
+    """T0.1c (spec v2 section 12 ruling 2): the first-order statement for the envelope-rewrite rows, evaluated AFTER
+    `mapped_point(block, relaxed, 'ef')`.
+
+    Per rewrite row: delta = residual_delta(production row at the certified point, rewrite row at the mapped point);
+    first-order bound = sum_k |c_k| * |x_k(mapped) - x_k(certified)| over the rewrite row's linear terms, with the
+    certified value of U = r_sqr * Wii(from), C = r * WijR, D = r * WijI taken from the production block's own
+    r_sqr, r and W (so the bound carries both the W mapping offset and the r_sqr_def residual); resolution =
+    eps * (|constant| + sum_k |c_k x_k|) of the rewrite row at the mapped point. Accepted iff
+    delta <= bound + 4 * resolution. (Same formula as the T0.1b scratch check `/tmp/t01b_explore/env_bound.py`.)"""
+    meta = relaxed._d0_meta
+    network = meta['network']
+    certified = {}
+    for idx in relaxed.d0_tr_index:
+        b, s_m, s_o, p = idx
+        fnode, _tnode = _branch_nodes(network, b)
+        certified[('d0_tr_U', idx)] = block.r_sqr[idx].value * block.vmag_sqr[fnode, s_m, s_o, p].value
+        certified[('d0_tr_C', idx)] = block.r[idx].value * block.voltage_product_real[idx].value
+        certified[('d0_tr_D', idx)] = block.r[idx].value * block.voltage_product_imag[idx].value
+    rows = []
+    for k, (name, index) in meta['envelope_map'].items():
+        cd = relaxed.d0_env_rewrite[k]
+        repn = generate_standard_repn(cd.body, compute_values=True, quadratic=False)
+        if repn.nonlinear_expr is not None or repn.quadratic_vars:
+            raise RuntimeError(f'{cd.name}: rewrite row is not linear')
+        scale = abs(float(pe.value(repn.constant)))
+        bound = 0.0
+        for coef, v in zip(repn.linear_coefs, repn.linear_vars):
+            c = float(pe.value(coef))
+            scale += abs(c * v.value)
+            family = v.parent_component().local_name
+            if family in ('d0_tr_U', 'd0_tr_C', 'd0_tr_D'):
+                old = certified[(family, v.index())]
+            else:
+                old = getattr(block, family)[v.index()].value
+            bound += abs(c) * abs(v.value - old)
+        delta = residual_delta(row_residual(getattr(block, name)[index]), row_residual(cd))
+        resolution = _EPS * scale
+        rows.append({'family': name, 'index': repr(index), 'delta': delta, 'first_order_bound': bound,
+                     'eval_resolution': resolution, 'threshold': bound + 4.0 * resolution,
+                     'within': bool(delta <= bound + 4.0 * resolution)})
+    return rows
+
+
+# ----------------------------------------------------------------------------------------------------------------------
+#  Capacity-derived Var bounds (T0.1c, spec v2 section 12 ruling 4)
+# ----------------------------------------------------------------------------------------------------------------------
+# Static inventory of the production code sites that set a Var bound / fixing from the shared-ESS capacity
+# (scoped search: `setub` / `setlb` / `bounds=` / `.fix(` in model_construction_helpers.py, network.py,
+# shared_resources_planning.py, shared_energy_storage_data.py; every site that writes `shared_es_*_rated_fixed`
+# in shared_resources_planning.py calls `configure_shared_ess_operational_state` right after).
+CAPACITY_BOUND_CODE_SITES = [
+    {'site': 'model_construction_helpers.configure_shared_ess_operational_state (l.1117), l.1153-1169',
+     'vars': ['slack_shared_es_soc_final_up', 'slack_shared_es_soc_final_down'],
+     'bound': 'lb 0; ub = 0 if inactive else e_capacity * ESS_DAY_BALANCE_SLACK_FRACTION (0.05) + EQUALITY_TOLERANCE',
+     'kind': 'value_dependent'},
+    {'site': 'model_construction_helpers.configure_shared_ess_operational_state, l.1186-1196 '
+             '(_SHARED_ESS_ZERO_GATED_BOUND_VARIABLES, l.1043)',
+     'vars': ['shared_es_pch', 'shared_es_pdch', 'shared_es_pnet', 'shared_es_qnet'],
+     'bound': '[0, 0] if inactive else the capacity-INDEPENDENT (0, None) / (None, None)',
+     'kind': 'zero_gated'},
+    {'site': 'model_construction_helpers.configure_shared_ess_operational_state, l.1137-1150 '
+             '(_SHARED_ESS_OPERATIONAL_VARIABLES, l.1002) and _configure_shared_ess_expected_schedule (l.1088)',
+     'vars': ['shared_es_pch', 'shared_es_pdch', 'shared_es_pch_hat', 'shared_es_pdch_hat', 'shared_es_pnet',
+              'shared_es_qnet', 'shared_es_soc', 'slack_shared_es_soc_final_up', 'slack_shared_es_soc_final_down',
+              'expected_shared_ess_p', 'expected_shared_ess_q'],
+     'bound': 'FIXED at 0 if inactive, unfixed otherwise (a fixing, not a bound); shared_es_soc VALUE reset to '
+              'e_capacity * ENERGY_STORAGE_RELATIVE_INIT_SOC (an initial value, not a bound)',
+     'kind': 'zero_gated_fixing'},
+    {'site': 'network.py l.393-407 (shared-ESS Var declarations)',
+     'vars': ['shared_es_pch_hat', 'shared_es_pdch_hat'],
+     'bound': 'constant (0, 1); every other shared-ESS Var is declared with a domain only',
+     'kind': 'capacity_independent'},
+    {'site': 'shared_energy_storage_data.py l.463-468, 548-550, 567-568, 689; _configure_esso_cohort_state l.1585',
+     'vars': ['es_s_rated_per_unit', 'es_e_rated_per_unit', 'es_soh_per_unit_cumul', 'es_avg_ch_dch_per_unit',
+              'es_D_per_unit', 'es_pch_per_unit', 'es_pdch_per_unit'],
+     'bound': 'ESSO: es_soh_per_unit_cumul bounds constant (0, 1); every other Var domain-only; fixings depend on the '
+              'calendar-life window and on cohort capacity == 0 only (zero-gated), never on its value',
+     'kind': 'zero_gated_fixing'},
+    {'site': 'shared_resources_planning.py l.4270-4306, 4657-4669, 5408-5414 (setub / setlb)',
+     'vars': ['pc', 'qc', 'interface_delta_p', 'interface_delta_q', 'flex_*', '*_curt_*', 'e', 'f',
+              'slack_v_sqr_*'],
+     'bound': 'ADN interface / DSO reference reshaping: interface rating, DSO anchor, voltage limits -- '
+              'not shared-ESS capacity',
+     'kind': 'capacity_independent'},
+]
+
+
+def _state_snapshot(model):
+    """{Var name: (value, fixed, lb, ub)}, {Constraint name: active} of `model` (descending into sub-blocks)."""
+    variables = {v.name: (v.value, bool(v.fixed), v.lb, v.ub)
+                 for v in model.component_data_objects(pe.Var, descend_into=True)}
+    rows = {c.name: bool(c.active) for c in model.component_data_objects(pe.Constraint, active=None,
+                                                                            descend_into=True)}
+    return variables, rows
+
+
+def _family_of(name):
+    return name.split('[', 1)[0]
+
+
+def _snapshot_diff(a, b):
+    """Per-family counts of the changes between two `_state_snapshot`s: bounds, fixed flags, values, row activity."""
+    (va, ra), (vb, rb) = a, b
+    out = {'bounds': {}, 'fixed': {}, 'values': {}, 'active': {}}
+    for name, (val, fixed, lb, ub) in va.items():
+        val2, fixed2, lb2, ub2 = vb[name]
+        fam = _family_of(name)
+        if (lb, ub) != (lb2, ub2):
+            out['bounds'][fam] = out['bounds'].get(fam, 0) + 1
+        if fixed != fixed2:
+            out['fixed'][fam] = out['fixed'].get(fam, 0) + 1
+        if val != val2:
+            out['values'][fam] = out['values'].get(fam, 0) + 1
+    for name, active in ra.items():
+        if active != rb[name]:
+            fam = _family_of(name)
+            out['active'][fam] = out['active'].get(fam, 0) + 1
+    return out
+
+
+def capacity_bound_inventory(block, probes):
+    """Empirical inventory of the Var bounds the PRODUCTION function `mch.configure_shared_ess_operational_state`
+    sets from capacity, on a scratch clone of `block` (never mutated).
+
+    probes = {e: [(s_zero, e_zero), (s_1, e_1), (s_2, e_2)]} (pu; the first must be zero, the other two positive and
+    different). For each shared ESS e the production function is called at the three probes in turn and the whole
+    block's state is snapshot after each call. A Var whose (lb, ub) differs between the two POSITIVE probes is
+    VALUE-dependent; one that differs only between zero and positive is ZERO-GATED. Fixed flags, values and row
+    activity changes are recorded per family as the non-bound effects of the same calls."""
+    scratch = block.clone()
+    result = {'per_e': {}, 'value_dependent': {}, 'zero_gated': {}}
+    for e, (zero, pos1, pos2) in probes.items():
+        if zero != (0.0, 0.0) or min(pos1) <= 0.0 or min(pos2) <= 0.0 or pos1 == pos2:
+            raise ValueError(f'bad probes for e={e}: {zero}, {pos1}, {pos2}')
+        snaps = []
+        for s_cap, e_cap in (zero, pos1, pos2):
+            mch.configure_shared_ess_operational_state(scratch, e, s_cap, e_cap)
+            snaps.append(_state_snapshot(scratch))
+        value_dep, zero_gated, examples = {}, {}, {}
+        for name, (_v0, _f0, lb0, ub0) in snaps[0][0].items():
+            b0, b1, b2 = (lb0, ub0), snaps[1][0][name][2:], snaps[2][0][name][2:]
+            fam = _family_of(name)
+            if b1 != b2:
+                value_dep[fam] = value_dep.get(fam, 0) + 1
+                examples.setdefault(fam, {'var': name, 'bounds_at_probes': [list(b0), list(b1), list(b2)]})
+            elif b0 != b1:
+                zero_gated[fam] = zero_gated.get(fam, 0) + 1
+                examples.setdefault(fam, {'var': name, 'bounds_at_probes': [list(b0), list(b1), list(b2)]})
+        result['per_e'][repr(e)] = {
+            'probes': [list(zero), list(pos1), list(pos2)],
+            'value_dependent_bounds': value_dep, 'zero_gated_bounds': zero_gated, 'examples': examples,
+            'zero_vs_positive_effects': _snapshot_diff(snaps[0], snaps[1]),
+            'positive_vs_positive_effects': _snapshot_diff(snaps[1], snaps[2])}
+        for fam, n in value_dep.items():
+            result['value_dependent'][fam] = result['value_dependent'].get(fam, 0) + n
+        for fam, n in zero_gated.items():
+            result['zero_gated'][fam] = result['zero_gated'].get(fam, 0) + n
+    return result
+
+
+def production_capacity_bounds(block, capacities, families):
+    """Bounds the PRODUCTION function `mch.configure_shared_ess_operational_state` sets on a scratch clone of `block`
+    (never mutated) when called with capacities = {e: {'s': pu, 'e': pu}} for every shared ESS e.
+
+    Returns (bounds, effects): bounds = {family: {index: (lb, ub)}} for every entry of each family in `families`
+    after the calls; effects = `_snapshot_diff(block, scratch)` -- everything else the same calls change
+    relative to the block (e.g. the `shared_es_soc` values; the reason the call is not made on the relaxed clone)."""
+    scratch = block.clone()
+    before = _state_snapshot(block)
+    for e, cap in capacities.items():
+        mch.configure_shared_ess_operational_state(scratch, e, cap['s'], cap['e'])
+    effects = _snapshot_diff(before, _state_snapshot(scratch))
+    bounds = {}
+    for family in families:
+        var = getattr(scratch, family)
+        bounds[family] = {index: (vd.lb, vd.ub) for index, vd in var.items()}
+    return bounds, effects
 
 
 # ----------------------------------------------------------------------------------------------------------------------

@@ -242,3 +242,21 @@ envelope first-order check preserved; Q_cert⁺ computed per group and cell; exp
 files); the capacity-derived-bound inventory. Predictions: all retained and envelope rows within the restated gate in
 every block-mode; the three variants coincide at x = 0 bitwise in the exported LPs; Q_cert⁺ − gross = 13,012.57 /
 13,032.47 €. **T0.2** then runs the declared conic solves on R, A, C.
+
+## 13. Planner rulings after T0.1c (2026-10-31; `P5_16_D0_T01C_REPORT.md`, evidence `P516D0/t01c/`, manifest `d2955128…`)
+
+T0.1c: zero solves; C1, C3, C4, C5 held; 1,209,360 retained-row checks and 41,472 envelope checks inside the restated
+gate (max ratio 0.9999999982 — on single-W-term rows the first-order bound is the row's own Δ, so the gate carries
+information on multi-term rows); Q_cert⁺ − gross = 13,012.57 € (x = 0) / 13,032.47 € (unit), equal to the recorded
+detector penalty to 1.8e-12 €; E_C/E_R = 0.985^{5,10,15} to 1e-15; two value-dependent bounds per network storage copy,
+reset for R and C. **C2 ruled semantically held:** R and A LPs identical in body at x = 0; C differs only in the 27
+calendar available-energy rows (name and a φ^{age} coefficient on `es_e_rated_per_unit`, a Var pinned to 0 by the
+retained rated-capacity rows) — same feasible set, same objective. Noted, unverified: the network copies carry an
+available energy 6e-6 relative below the ESSO's certified value (hypothesis: the pre-ESSO-solve iterate of the
+certified cycle) — reported in T0.2 beside variant A, not acted on.
+
+**T0.2 declared solves:** Gurobi on every exported group LP — 3 variants × 2 cells × 12 groups = 72 — plus, on
+variant C at the unit cell, the P5.5-D4 fixed-mode re-solve (12) and the two-way freeze attribution (24): 108 Gurobi
+solves; IPOPT smooth-form cross-check on variant C, both cells, 12 groups each: 24 solves. **132 declared**, leaf
+guard, counted exactly. Group separability of the relaxed ESSO (no row couples different (year, day) once the SoH chain
+is gone) is asserted by inventory before solving, so Σ_groups Q_LB is the joint relaxed optimum.
