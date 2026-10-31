@@ -16,6 +16,11 @@ W184 launches once (a), (b), (d) hold; W185 follows W184's report (all eight cel
 - [x] Planner review; report `P5_15_W183I_REPORT.md`
 - [x] **W184** — `d7d4875e` / `bb4afafc` / `41cc3433`; report `P5_15_W184_REPORT.md`: C_NRF certified k* 206, Q 653,894,166.07; H3b HELD (90.876 M€, 12.2 %), H3c HELD (binding = the four hours; 864/copy), **H3a FAILED** (+20,463.88 € determinate 1.62×; plan §3 fallback = reporting only) → W185 proceeds (E2 independent; Addendum 63 rule)
 - [ ] **▶ W185** (E2, 8 certified evaluations serially, attended; pair Workers in order (1×,0.5), (1×,2.0), (2×,0.5), (2×,2.0)) → `P5_15_W185_REPORT.md`
+  - [x] pair 1 (1×, 0.5) — `7311e0df` / `0134c776` / `c54e49b1`: both certified k* 177; margin −64,264.41 determinate 4.95×; **H2 HELD** (shift +153 vs 13,054); ρ read-back 531/531 per cell
+  - [x] pair 2 (1×, 2.0) — `364ed6f1` / `c5419ccd` / `545c5578`: certified k* 185 / 194; margin −65,837.28 determinate 5.17×; **H2 HELD** (shift −1,420); ρ 555 + 582 checks; x = 0 t_sum at k* = 79 % of the gap bound (recorded)
+  - [x] pair 3 (2×, 0.5) — `7a78774f` / `fd5d8279` / `984c79c1`: certified k* 162 (osc.) / 178 (**monotone**, 7 gap refusals, still descending, band = descent); margin +46,959.42 determinate 3.56×; **H2 HELD** (+674); ρ 486 + 534; x = 0 ess "held after solver failure" label without failure (hold path)
+  - [x] pair 4 (2×, 2.0) — `3955b850` / `f8aed532` / `209a1af7`: certified k* 136 / 134 (osc.); margin +45,506.80 determinate 4.12×; **H2 HELD** (−779); ρ 408 + 402. **All eight: H2 HELD at both prices (1× [−65,837, −64,264], 2× [+45,507, +46,959]); ρ read-back 8/8 (4,029 checks); 8/8 certified (7 osc., 1 monotone)**
+  - [ ] ▶ guarded diagnostics read (Worker running) of the eight `certified_models.pkl` (circle / |P^E|/S^Av / SOC); W185 report
 
 ## Addendum 85 order — W183g (zero-solve) + W183h (Addendum 84); then W184 (E3) and W185 (E2 stage 1) conditionally
 
