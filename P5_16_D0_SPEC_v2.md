@@ -199,3 +199,64 @@ channel; gates per rulings 1–3; `.lp` exports with name maps for every group. 
   forbidden words listed there.
 - **T0.1b** proceeds as ordered and adds variant C to its builds and exports (follow-up task if it has returned
   without it).
+
+## 12. Planner rulings after T0.1b (2026-10-31; `P5_16_D0_T01B_REPORT.md`, evidence `P516D0/t01b/`, manifest `4e5bbd45…`)
+
+T0.1b: zero solves; Q1–Q5 all held; same-point Δ = 0 on 810,912 row checks; coupling residuals equal the recorded
+inter-copy mismatches (worst 0.139 × eps_pri); objective identity 5e-15 per block, 12-group sums equal the recorded
+gross to 2e-16 / 6e-16. The stop rule fired on the retained-row Δ at the rank-1 mapped point (max 2.08e-9) because the
+**certified points satisfy the definitional rows only to IPOPT tolerance** (`vmag_sqr_def` 4.1e-11, `r_sqr_def`
+1.8e-11), not to one ulp as the T0.1a fixtures did; |y|² ≈ 1e5 amplifies that. 0 rows exceed their first-order W
+bound + 4·eps·Σ|terms|. Rulings:
+
+1. **Gate restated (option (a)).** The mapped point is the exact rank-1 point (cones ≤ 7.3e-16). Ruling 1(ii) and the
+   stop line become: |Δ_row| ≤ first-order W bound (|∂row/∂W| · |δW|, δW = the certified definitional residual) +
+   4·eps·Σ|terms|, per row; the same-point Δ = 0 remains the primary construction test. The certified definitional
+   residuals are reported per block as the **mapping offset**. Re-evaluated from `identities.json`; no re-run needed
+   for retained rows.
+2. **Envelope-rewrite rows:** the same first-order statement (the scratch check that found all 960 affected rows within
+   6.110e-9 vs a bound of 6.113e-9 is repeated **inside the evidence root** in T0.1c); at the certified-W point they
+   match to ≤ 1.3e-13.
+3. **Variant C defined (SRP1, end-of-block convention):** for a cohort installed in block y_inv, in block y ≥ y_inv,
+   age_end(y) = Σ_{k = y_inv..y} num_years_k; available energy E_C = E_rated · φ_cal^{age_end(y)} with φ_cal =
+   `calendar_retention_per_year` (0.985) from the ESS params; available power S unchanged (rated). ESSO: the SoH ≡ 1
+   available rows become `es_e_available_per_unit == es_e_rated_per_unit · φ^{age_end}`; network copies'
+   `shared_es_e_rated_fixed` set to E_C. At x = 0 all three variants coincide identically (prediction).
+4. **Capacity-derived bounds follow the variant.** Variant R (and C) reset every bound derived from available capacity
+   — in particular the `slack_shared_es_soc_final_up/down` bounds set by `configure_shared_ess_operational_state`
+   (e·fraction + 1e-5) — to the variant's capacity, by calling the production function with that capacity or by the
+   same arithmetic; the builder inventories every Var bound that depends on capacity and lists it. "R = production at
+   rated capacity" then holds in every bound.
+5. **Containment comparator for T0.2 (G-D0-4).** The certified gross contains −13,012.57 € (x = 0) / −13,032.47 €
+   (unit) of detector-penalty terms from slacks at ≈ −1e-8 inside IPOPT's bound relaxation (Addenda 32–34: a known
+   residue, ≤ 2e-5 of Q absolutely, ≤ 181 € in differences; here 19.90 € between the cells). A bound-respecting conic
+   solve cannot reach them. **G-D0-4 compares Q_LB against Q_cert⁺ = gross with every slack-penalty term re-evaluated at
+   the bound-projected slacks (max(slack, 0))**, i.e. the AC-feasible-within-tolerance value; both gross and Q_cert⁺
+   are reported with the correction stated. The absolute class and P6 are read against Q_cert⁺; the correction cancels
+   in P6 to 19.90 €.
+6. **Builder committed with the evidence** (`p516_d0_build_relaxation.py`, the +90-line extension: `drop_sess_comp`,
+   `nonconvex_active_rows`, the BILINEAR_RELAXATION form check).
+
+**T0.1c (next, zero solves):** variants R, A, C for both cells and all 12 groups with rulings 1–4 applied; the
+envelope first-order check preserved; Q_cert⁺ computed per group and cell; exports for all three variants (72 LP
+files); the capacity-derived-bound inventory. Predictions: all retained and envelope rows within the restated gate in
+every block-mode; the three variants coincide at x = 0 bitwise in the exported LPs; Q_cert⁺ − gross = 13,012.57 /
+13,032.47 €. **T0.2** then runs the declared conic solves on R, A, C.
+
+## 13. Planner rulings after T0.1c (2026-10-31; `P5_16_D0_T01C_REPORT.md`, evidence `P516D0/t01c/`, manifest `d2955128…`)
+
+T0.1c: zero solves; C1, C3, C4, C5 held; 1,209,360 retained-row checks and 41,472 envelope checks inside the restated
+gate (max ratio 0.9999999982 — on single-W-term rows the first-order bound is the row's own Δ, so the gate carries
+information on multi-term rows); Q_cert⁺ − gross = 13,012.57 € (x = 0) / 13,032.47 € (unit), equal to the recorded
+detector penalty to 1.8e-12 €; E_C/E_R = 0.985^{5,10,15} to 1e-15; two value-dependent bounds per network storage copy,
+reset for R and C. **C2 ruled semantically held:** R and A LPs identical in body at x = 0; C differs only in the 27
+calendar available-energy rows (name and a φ^{age} coefficient on `es_e_rated_per_unit`, a Var pinned to 0 by the
+retained rated-capacity rows) — same feasible set, same objective. Noted, unverified: the network copies carry an
+available energy 6e-6 relative below the ESSO's certified value (hypothesis: the pre-ESSO-solve iterate of the
+certified cycle) — reported in T0.2 beside variant A, not acted on.
+
+**T0.2 declared solves:** Gurobi on every exported group LP — 3 variants × 2 cells × 12 groups = 72 — plus, on
+variant C at the unit cell, the P5.5-D4 fixed-mode re-solve (12) and the two-way freeze attribution (24): 108 Gurobi
+solves; IPOPT smooth-form cross-check on variant C, both cells, 12 groups each: 24 solves. **132 declared**, leaf
+guard, counted exactly. Group separability of the relaxed ESSO (no row couples different (year, day) once the SoH chain
+is gone) is asserted by inventory before solving, so Σ_groups Q_LB is the joint relaxed optimum.

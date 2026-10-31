@@ -84,7 +84,23 @@ Zero-solve dry run (blocking guard; run_smopf is reached and blocked; NL files a
 the replica self-test; writes under the given scratch directory, which must not exist, plus the lock file):
     /opt/anaconda3/envs/opf_env_py311/bin/python -u p516_tperf_profile.py --dry-run /tmp/<new dir>
 
-PART B (--studio): see `run_studio`. NOT RUN on this machine (needs >= 18 GiB; refuses on hw.model Mac17,3).
+PART B (Planner rulings: unit cell; derive_case('paper', {}) of the committed case file; exactly 6 declared solves;
+nothing else running). See `run_studio_mode` and `studio_build_blocks`. ONE paper-scale TSO block (2025 Spring) and
+ONE DSO block (node 7, 2025 Spring) plus the ESSO are built through the s44 zero-solve build path (all `.optimize`
+intercepted; a blocking guard armed over the whole build), not the whole instance.
+  --studio      the Studio only (refuses on hw.model Mac17,3, on < 10 GiB available, on any modified tracked file,
+                and on any other harness-python / IPOPT process). Output data/SRP1/Results/P516TPERF/studio/.
+                Cases per block: (ii) cold from the built point, then (i) warm and (iii) warm+diag, each from its own
+                clone of the post-(ii) block. Launch (attached, both streams), then the manifest:
+      /path/to/opf_env_py311/bin/python -u p516_tperf_profile.py --studio \\
+          > data/SRP1/Results/P516TPERF/studio_launch_stdout.log 2> data/SRP1/Results/P516TPERF/studio_launch_stderr.log
+      /path/to/opf_env_py311/bin/python -u p516_tperf_profile.py --manifest --studio-manifest
+  --studio-dry  this machine, ZERO solves (blocking guard for the whole run): the same build and case preparation,
+                the same capture checklist, then run_smopf per case blocked at OptSolver.solve (option dicts as
+                production assembles them, compared with `intended_passed_options`), one NL write per block (not a
+                solve). Output data/SRP1/Results/P516TPERF/studio_dry/; manifest: --manifest --manifest-root studio_dry
+  --restriction-equivalence  ZERO solves: SRP1-scale full build vs the one-block build, NL/row/col hashes of the
+                compared blocks. Output data/SRP1/Results/P516TPERF/studio_dry_equiv/.
 Concurrency: an exclusive flock on data/SRP1/Results/P516TPERF/.p516_tperf.lock plus a process scan; the
 harness refuses to run while another copy holds it.
 """
@@ -113,7 +129,13 @@ def _parse_args(argv=None):
     g.add_argument('--dry-run', metavar='SCRATCH_DIR', default=None)
     g.add_argument('--manifest', action='store_true')
     g.add_argument('--studio', action='store_true')
+    g.add_argument('--studio-dry', action='store_true',
+                   help='Part B rehearsal on this machine: one-block paper build + option assembly, ZERO solves')
+    g.add_argument('--restriction-equivalence', action='store_true',
+                   help='ZERO solves: SRP1-scale full vs one-block build, NL hashes of the compared blocks')
     ap.add_argument('--studio-manifest', action='store_true', help='with --manifest: hash the studio root')
+    ap.add_argument('--manifest-root', choices=('local', 'studio', 'studio_dry', 'studio_dry_equiv'), default=None,
+                    help='with --manifest: the root to hash (default local; --studio-manifest = studio)')
     return ap.parse_args(argv)
 
 
@@ -127,6 +149,8 @@ if ARGS.manifest:
     _GUARD = None
 elif ARGS.dry_run:
     _GUARD = SolveProfileGuard((), label='P5.16 T-perf DRY RUN (zero solves)').install()
+elif ARGS.studio_dry or ARGS.restriction_equivalence:
+    _GUARD = SolveProfileGuard((), label='P5.16 T-perf Part B ZERO-SOLVE mode (blocking)').install()
 else:
     _GUARD = SolveProfileGuard(PERMITTED, label=f'P5.16 T-perf ({DECLARED_SOLVES} declared solves)').install()
 
@@ -1165,7 +1189,9 @@ def _post_solve_parse(rec, ev, log_path, model, network, network_module, pe, wal
 # ======================================================================================================================
 #  capture-path checklist (asserted BEFORE the first solve)
 # ======================================================================================================================
-def capture_checklist(inst, prepared, network_module, out_dir, dry):
+def capture_checklist(inst, prepared, network_module, out_dir, dry, deferred=()):
+    """`deferred` (Part B only; empty for Part A, whose behaviour and record are unchanged): per-case item names
+    recorded but not failed here, because they are asserted per case immediately before that case's solve."""
     import pyomo.environ  # noqa: F401
     from pyomo.opt import WriterFactory
     from pyomo.repn.plugins.nl_writer import NLWriter
@@ -1208,9 +1234,11 @@ def capture_checklist(inst, prepared, network_module, out_dir, dry):
     items['nl_dir_exists'] = os.path.isdir(os.path.join(out_dir, 'nl'))
     failures = [k for k, v in items.items() if k != 'per_case' and v is not True]
     for ck, c in per_case.items():
-        failures += [f'{ck}:{k}' for k, v in c.items() if v is not True]
+        failures += [f'{ck}:{k}' for k, v in c.items() if v is not True and k not in deferred]
     items['failures'] = failures
     items['asserted_before_first_solve'] = True
+    if deferred:
+        items['deferred_per_case_items (asserted per case immediately before that case\'s solve)'] = list(deferred)
     if failures:
         raise RuntimeError(f'capture checklist failed before any solve: {failures}')
     return items
@@ -1503,29 +1531,468 @@ def summarise(record):
 
 
 # ======================================================================================================================
-#  Part B -- the Studio (NOT RUN HERE)
+#  Part B -- the Studio (--studio), its zero-solve rehearsal on this machine (--studio-dry), and the zero-solve
+#  check that the one-block restriction leaves the block unchanged (--restriction-equivalence)
 # ======================================================================================================================
-def run_studio():
-    """Part B stub (P5_16_TPERF_SPEC_v1.md section 2). NOT RUN on this machine; untested beyond import/compile.
+STUDIO_DRY_OUT_REL = os.path.join(TPERF_ROOT_REL, 'studio_dry')
+STUDIO_EQUIV_OUT_REL = os.path.join(TPERF_ROOT_REL, 'studio_dry_equiv')
+LAUNCH_LOGS_REL['studio_dry'] = [os.path.join(TPERF_ROOT_REL, 'studio_dry_launch_stdout.log'),
+                                 os.path.join(TPERF_ROOT_REL, 'studio_dry_launch_stderr.log')]
+LAUNCH_LOGS_REL['studio_dry_equiv'] = [os.path.join(TPERF_ROOT_REL, 'studio_dry_equiv_launch_stdout.log'),
+                                       os.path.join(TPERF_ROOT_REL, 'studio_dry_equiv_launch_stderr.log')]
+# Planner ruling (Part B): the unit cell, investment year 2025 (the `_construct_arm_planning` default cohort).
+STUDIO_UNIT_CELL = {5: (0.0, 0.0), 7: (0.25, 1.0), 9: (0.0, 0.0)}
+STUDIO_CASE_ORDER = ('ii_cold', 'i_warm', 'iii_warm_diag')   # no certified point at paper scale: cold first
+GIB = 1 << 30
+STUDIO_DRY_RSS_ABORT_BYTES = 16 * GIB    # task stop condition on this 24 GB machine (RSS of process + children)
+STUDIO_RSS_ABORT_BYTES = 24 * GIB        # the Studio (32 GB): the s44 precedent's 24 GiB rss_tree limit
+STUDIO_MIN_AVAILABLE_BYTES = 10 * GIB    # see run_studio_mode; the one-block build needs far less than the s44 full build
+# Tracked inputs of the build: every repository module loaded once the build modules are imported (computed, not
+# listed) plus the case data under data/SRP1 (Results excluded). --studio-dry / --restriction-equivalence refuse if
+# any is modified (the harness itself excepted); --studio refuses on ANY modified tracked file (the author's
+# pre-flight: `git status` clean on tracked files).
+STUDIO_DATA_PATHSPEC = ('data/SRP1', ':(exclude)data/SRP1/Results')
 
-    Builds the paper instance with p515_s44_scale_measurement.derive_case('paper', {}) (5 years x 4 days x 5 x 5
-    scenarios) through the established zero-solve paper-scale build path of that stage (production reader on the
-    derived case file; p515_g_g1_g4_admm_gates._construct_arm_planning with apply_rho=False; every
-    create_*_model with `.optimize` intercepted by p515_s44_scale_measurement.Interceptor; ADMM objective
-    preparation as in that stage's child_build), records build time and memory, then on the TSO 2025 Spring and
-    DSO node-7 2025 Spring blocks runs the same three cases through `network.run_smopf`, in the order
-    (ii) cold from the built (initialisation) point, then (i) warm and (iii) warm+diagnostics, each from its own
-    clone of the post-(ii) block (there is no certified point at paper scale). Declared solves: 6 (same guard).
-    PLANNER TO CONFIRM before the author runs it: the candidate (default here: the unit cell, node 7 0.25 MVA /
-    1.0 MWh, 2025 cohort) and the s44 build configuration (its D-arm ADMM settings, not a campaign spec's)."""
+
+def _loaded_repo_modules():
+    out = set()
+    for mod in list(sys.modules.values()):
+        f = getattr(mod, '__file__', None)
+        if f and os.path.abspath(f).startswith(REPO + os.sep) and os.path.dirname(os.path.abspath(f)) == REPO:
+            out.add(os.path.basename(f))
+    return sorted(out)
+
+
+def _build_input_status():
+    """Import the build modules (module-level code only; no build), then `git status` of every loaded repository
+    module and of the case data. Returns (status_text, loaded_modules, dirty_lines_excluding_the_harness)."""
+    _studio_modules()
+    mods = _loaded_repo_modules()
+    status = _git_status(['--untracked-files=no', '--'] + mods + list(STUDIO_DATA_PATHSPEC))
+    dirty = [ln for ln in status.splitlines() if not ln.endswith('p516_tperf_profile.py')]
+    return status, mods, dirty
+STUDIO_DRY_PREDICTIONS = {
+    'D1_dso_block_variables': (
+        'a paper-scale DSO block (node 7, 2025 Spring, 25 scenario combinations) has about 269k variables '
+        '(Planner, citing REVISION_CONTEXT.md; the figure appears in P5_15_S44_SELECTION_REPORT.md:85 and '
+        'STEP4_DFO_METHOD.md:258 and is the s44 per-block len(Var data) 269,050 at Network.build_model)'),
+    'D2_build_rss': ('peak RSS of this process over the build of the TSO block + the DSO block + the ESSO '
+                     '<= 6 GiB'),
+}
+
+
+class MemWatchdog(threading.Thread):
+    """RSS of this process plus its descendants, sampled every `interval` s; above `limit` it writes an abort record
+    (best effort) and ends the process with exit code 97 (os._exit: the memory is released at once)."""
+
+    def __init__(self, limit_bytes, abort_path, interval=0.5):
+        super().__init__(daemon=True)
+        self.limit = limit_bytes
+        self.abort_path = abort_path
+        self.interval = interval
+        self.stop_event = threading.Event()
+        self.stage = 'start'
+        self.n = 0
+        self.peak = {'rss_tree': 0, 'rss_self': 0, 'rss_children': 0, 'stage': None, 't': None}
+        self.t0 = time.time()
+
+    def run(self):
+        me = psutil.Process()
+        while not self.stop_event.is_set():
+            try:
+                s = me.memory_info().rss
+                c = 0
+                for ch in me.children(recursive=True):
+                    try:
+                        c += ch.memory_info().rss
+                    except (psutil.NoSuchProcess, psutil.AccessDenied):
+                        pass
+            except psutil.Error:
+                self.stop_event.wait(self.interval)
+                continue
+            self.n += 1
+            if s + c > self.peak['rss_tree']:
+                self.peak = {'rss_tree': s + c, 'rss_self': s, 'rss_children': c, 'stage': self.stage,
+                             't': time.time() - self.t0}
+            if s + c > self.limit:
+                rec = {'cause': 'rss_tree above limit', 'limit_bytes': self.limit, 'rss_tree': s + c, 'rss_self': s,
+                       'rss_children': c, 'stage': self.stage, 't': time.time() - self.t0, 'utc': _utc()}
+                try:
+                    with open(self.abort_path, 'x') as handle:
+                        json.dump(rec, handle, indent=1)
+                except Exception:  # noqa: BLE001 -- best effort; the stderr line below is the primary record
+                    pass
+                print(f'MEMORY WATCHDOG ABORT: {rec}', file=sys.stderr, flush=True)
+                os._exit(97)
+            self.stop_event.wait(self.interval)
+
+    def stop(self):
+        self.stop_event.set()
+        self.join()
+        return self.summary()
+
+    def summary(self):
+        return {'limit_bytes': self.limit, 'measure': 'rss of this process + all descendants (psutil)',
+                'interval_s': self.interval, 'n_samples': self.n, 'peak': dict(self.peak)}
+
+
+def _foreign_compute_processes():
+    """Other processes that would compete for the machine: python interpreters running a repository harness
+    (`p5<digit>…py`, `w1<digit><digit>…py`, `main.py`) or anything under this repository, and IPOPT processes."""
+    me = {os.getpid(), os.getppid()}
+    pat = re.compile(r'(^|[/\s])(p5\d\w*\.py|w1\d\d\w*\.py|main\.py)(\s|$)')
+    rows = []
+    for proc in psutil.process_iter(['pid', 'name', 'cmdline']):
+        try:
+            name = (proc.info['name'] or '').lower()
+            cmd = ' '.join(proc.info['cmdline'] or [])
+        except (psutil.NoSuchProcess, psutil.AccessDenied):
+            continue
+        if proc.info['pid'] in me:
+            continue
+        if 'ipopt' in name or ('python' in name and (pat.search(cmd) or REPO in cmd)):
+            rows.append({'pid': proc.info['pid'], 'name': name, 'cmdline': cmd[:300]})
+    return rows
+
+
+class _PlanningView:
+    """Read-only view of a planning object with `distribution_networks` replaced by a subset. Passed ONLY to
+    `update_distribution_models_to_admm`, which reads nothing from the planning object but `distribution_networks`
+    (shared_resources_planning.py; checked by reading its body), so that it iterates the node-7 DSO that was built
+    and not the two that were not. The planning object itself is never modified through this view."""
+
+    def __init__(self, planning, distribution_networks):
+        object.__setattr__(self, '_planning', planning)
+        object.__setattr__(self, 'distribution_networks', distribution_networks)
+
+    def __getattr__(self, name):
+        return getattr(object.__getattribute__(self, '_planning'), name)
+
+    def __setattr__(self, name, value):
+        raise AttributeError('read-only planning view')
+
+
+def _stage_factory(stages, wd):
+    from contextlib import contextmanager
+
+    @contextmanager
+    def stage(name):
+        wd.stage = name
+        t = time.perf_counter()
+        rss0 = _rss()
+        _log(f'stage: {name}')
+        ok = False
+        try:
+            yield
+            ok = True
+        finally:
+            stages.append({'stage': name, 'wall_s': time.perf_counter() - t, 'rss_before': rss0, 'rss_after': _rss(),
+                           'self_ru_maxrss_after': resource.getrusage(resource.RUSAGE_SELF).ru_maxrss, 'ok': ok})
+    return stage
+
+
+def _studio_modules():
+    import pyomo.environ as pe
+    import network as network_module
+    import shared_resources_planning as srp
+    import p515_g_g1_g4_admm_gates as G
+    import p515_s44_scale_measurement as S44
+    return pe, network_module, srp, G, S44
+
+
+def studio_read(out_dir, instance, baseline_label, stage, record):
+    """Derive the case (p515_s44_scale_measurement.derive_case(instance, {})), read it with production's reader
+    (that stage's `read_planning_from_derived_case`: diagrams / results / logs redirected under `out_dir`), install
+    it as the oracle baseline, and redirect the oracle's eval directory (`p56a_oracle.WORK_DIR`, where
+    `fresh_planning` creates `<eval_id>/logs`) under `out_dir` so that nothing is written outside the output root."""
+    import types
+    pe, network_module, srp, G, S44 = _studio_modules()
+    O = G.O
+    case, spec, changes = S44.derive_case(instance, {})
+    case_path = os.path.join(out_dir, f'derived_case_{instance}.json')
+    with open(case_path, 'x') as handle:
+        json.dump(case, handle, indent=1)
+    launch = {'derived_case': {'path': os.path.relpath(case_path, REPO), 'sha256': _sha(case_path)},
+              'instance': baseline_label}
+    record['derived_case'] = {'instance': instance, 'path': launch['derived_case']['path'],
+                              'sha256': launch['derived_case']['sha256'], 'spec': spec, 'changes_vs_source': changes,
+                              'source_case': S44.SOURCE_CASE_REL, 'source_case_sha256': _sha(S44.SOURCE_CASE),
+                              'derivation': f"p515_s44_scale_measurement.derive_case({instance!r}, {{}})"}
+    planning0 = S44.read_planning_from_derived_case(launch, out_dir, types.SimpleNamespace(stage=stage))
+    record['scenario_checksum'] = S44.inject_oracle_baseline(O, planning0, launch)
+    record['scenario_checksum_equals_srp1_canonical'] = record['scenario_checksum'] == O.CANONICAL_CHECKSUM
+    record['baseline_label'] = baseline_label
+    record['planning_dimensions'] = S44.planning_dimensions(planning0)
+    before = O.WORK_DIR
+    O.WORK_DIR = os.path.join(out_dir, 'oracle_evals')
+    record['oracle_work_dir_redirect'] = {'from': os.path.relpath(before, REPO), 'to': os.path.relpath(O.WORK_DIR, REPO),
+                                          'reason': 'p56a_oracle.fresh_planning creates <WORK_DIR>/<eval_id>/logs; '
+                                                    'kept under this output root'}
+    return planning0
+
+
+def studio_build_blocks(out_dir, eval_id, restrict, stage, rec):
+    """The s44 zero-solve build path (`_construct_arm_planning` with apply_rho=False; production `create_*_model`
+    with `.optimize` intercepted on THIS planning instance by `p515_s44_scale_measurement.Interceptor`; the ADMM
+    objective preparation of that stage's child_build), on the unit-cell candidate.
+
+    restrict=True builds ONE TSO block (YEAR, DAY) and ONE DSO block (node DSO_NODE, YEAR, DAY) plus the ESSO,
+    not the whole instance. Mechanism (harness-only; no production change): AFTER `create_admm_variables` (which
+    keeps the full consensus structure) and AFTER the ESSO AL scale is resolved over the full block set, the
+    `years` / `days` dicts of the TSO holder and of the node-7 DSO holder on this private planning copy are replaced
+    by one-entry dicts with the same weights, for the duration of the create / prepare / update calls, then
+    restored; `create_distribution_networks_models` and `_prepare_distribution_objectives_for_admm` receive
+    {DSO_NODE: dn}; `update_distribution_models_to_admm` receives a `_PlanningView` with that subset. The one
+    year-list-dependent quantity in the block, the ADMM block weight's annualisation (int(year) - int(years[0])),
+    is unchanged because YEAR is the instance's first year (asserted). The ESSO is not restricted (all nodes, all
+    years: it has no scenario index and is small); it gets 0 solves. `--restriction-equivalence` checks the
+    restriction bitwise (NL files) against the full build at SRP1 scale.
+
+    ZERO solves: every agent's `.optimize` is intercepted (declared counts checked exactly); the caller arms a
+    blocking guard over this whole call."""
+    pe, network_module, srp, G, S44 = _studio_modules()
+    R = G.R
+    construct_report = {}
+    with stage(f'construct arm planning ({eval_id}; s44 path, apply_rho=False, unit-cell candidate)'):
+        planning, sed, candidate = G._construct_arm_planning(
+            eval_id, os.path.join(out_dir, f'arm_build_{eval_id}'), construct_report,
+            investment_map=STUDIO_UNIT_CELL, eval_id=eval_id, num_max_iters_override=1, apply_rho=False)
+    rec['construct_report'] = construct_report
+    if planning.parallel_execution:
+        raise RuntimeError('ParallelExecution is on; this build follows the sequential path')
+    params = planning.params.admm
+    scale = params.objective_scale
+    if scale is None:
+        raise RuntimeError('case file has no fixed objective_scale')
+    rec['objective_scale_used'] = scale
+    rec['admm_settings_in_force (set by _construct_arm_planning; none enters a block NLP at build)'] = {
+        'num_max_iters': params.num_max_iters, 'tol_objective_rel': params.tol['objective']['rel'],
+        'adaptive_penalty': params.adaptive_penalty, 'esso_budget': sed.params.budget,
+        'rho': {k: (dict(v) if isinstance(v, dict) else v) for k, v in dict(params.rho).items()}
+        if isinstance(params.rho, dict) else str(params.rho)}
+    tn = planning.transmission_network
+    dns = {DSO_NODE: planning.distribution_networks[DSO_NODE]} if restrict else dict(planning.distribution_networks)
+    with stage('ESSO AL scale (full block set, before any restriction)'):
+        al_scale = srp._resolve_esso_al_scale(planning, params, scale)[0]
+    rec['al_scale_esso'] = al_scale
+    with stage('create_admm_variables (full instance)'):
+        cv, dv = srp.create_admm_variables(planning)
+    saved = []
+    if restrict:
+        restriction = {}
+        for label, holder in (('tso', tn), (f'dso_{DSO_NODE}', dns[DSO_NODE])):
+            years, days = holder.years, holder.days
+            if list(years)[0] != YEAR or YEAR not in years or DAY not in days:
+                raise RuntimeError(f'{label}: restriction needs {YEAR} as first year and {DAY} among days '
+                                   f'(years {list(years)}, days {list(days)})')
+            saved.append((holder, years, days))
+            holder.years = {YEAR: years[YEAR]}
+            holder.days = {DAY: days[DAY]}
+            restriction[label] = {'years_full': {str(k): v for k, v in years.items()},
+                                  'days_full': dict(days), 'years_built': {str(YEAR): years[YEAR]},
+                                  'days_built': {DAY: days[DAY]}}
+        rec['restriction'] = restriction
+    else:
+        rec['restriction'] = None
+    interceptor = S44.Interceptor()
+    init_capture = {}
+
+    def capture(inner, key, pick):
+        # The block(s) exactly as production hands them to `.optimize` for the INITIALISATION solve (round 0):
+        # cloned here, at the intercepted call, before the interceptor returns "no result".
+        def _stub(models, *args, **kwargs):
+            block = pick(models)
+            if block is not None:
+                init_capture[key] = {'model': block.clone(), 'optimize_args': [repr(a) for a in args],
+                                     'optimize_kwargs': {k: repr(v) for k, v in kwargs.items()}}
+            return inner(models, *args, **kwargs)
+        return _stub
+
+    tn.optimize = capture(interceptor.network(tn, 'tso'), 'tso', lambda m: m.get(YEAR, {}).get(DAY))
+    for node_id, dn in dns.items():
+        dn.optimize = capture(interceptor.network(dn, 'dso'), 'dso' if node_id == DSO_NODE else f'dso_{node_id}',
+                              (lambda m: m.get(YEAR, {}).get(DAY)) if node_id == DSO_NODE else (lambda m: None))
+    sed.optimize = capture(interceptor.esso(sed), 'esso', lambda m: m.get(DSO_NODE))
+    try:
+        with stage(f'create_distribution_networks_models (nodes {sorted(dns)}; optimize intercepted)'):
+            dso_models, _ = srp.create_distribution_networks_models(dns, cv, candidate['total_capacity'],
+                                                                    parallel_execution=False)
+        with stage('create_transmission_network_model (optimize intercepted)'):
+            tso_model, _ = srp.create_transmission_network_model(planning, cv, candidate['total_capacity'])
+        with stage('create_shared_energy_storage_model (optimize intercepted)'):
+            esso_model, _ = srp.create_shared_energy_storage_model(sed, cv, candidate['investment'])
+        with stage('ADMM objective preparation (s44 child_build sequence)'):
+            srp._prepare_distribution_objectives_for_admm(dns, dso_models)
+            srp._prepare_transmission_objectives_for_admm(tn, tso_model)
+            view = _PlanningView(planning, dns) if restrict else planning
+            with R.patched_admm_objectives():
+                srp.update_distribution_models_to_admm(view, dso_models, params, scale)
+                srp.update_transmission_model_to_admm(planning, tso_model, params, scale)
+            srp.update_shared_energy_storage_model_to_admm(planning, esso_model, params, al_scale_esso=al_scale)
+    finally:
+        for holder in [tn] + list(dns.values()) + [sed]:
+            if 'optimize' in vars(holder):
+                del holder.optimize
+        for holder, years, days in saved:
+            holder.years = years
+            holder.days = days
+    declared = {'dso': len(dns), 'tso': 1, 'esso_init': 1}
+    observed = interceptor.counts()
+    rec['interceptor'] = {'declared': declared, 'observed': observed, 'exact_match': observed == declared,
+                          'mechanism': ('instance attribute `.optimize` on this planning copy\'s TSO holder, the built '
+                                        'DSO holder(s) and shared_ess_data, replaced by '
+                                        'p515_s44_scale_measurement.Interceptor stubs (record the call, return None '
+                                        'per block / node; never a solver); deleted after the build')}
+    if observed != declared:
+        raise RuntimeError(f'interceptor counts {observed} != declared {declared}')
+    rec['models_built'] = {'tso': {str(y): sorted(d) for y, d in tso_model.items()},
+                           'dso': {str(n): {str(y): sorted(d) for y, d in yd.items()} for n, yd in dso_models.items()},
+                           'esso_nodes': sorted(esso_model)}
+    if restrict and not (list(tso_model) == [YEAR] and list(tso_model[YEAR]) == [DAY] and list(dso_models) == [DSO_NODE]
+                         and list(dso_models[DSO_NODE]) == [YEAR] and list(dso_models[DSO_NODE][YEAR]) == [DAY]):
+        raise RuntimeError(f'restricted build produced {rec["models_built"]}')
+    rec['candidate'] = {'investment_map': {str(k): list(v) for k, v in STUDIO_UNIT_CELL.items()},
+                        'investment_year': construct_report.get('instance', {}).get('year')}
+    if sorted(init_capture) != ['dso', 'esso', 'tso']:
+        raise RuntimeError(f'initialisation capture incomplete: {sorted(init_capture)}')
+    rec['initialisation_capture'] = {k: {'optimize_args': v['optimize_args'], 'optimize_kwargs': v['optimize_kwargs']}
+                                     for k, v in init_capture.items()}
+    rec['solved_problem'] = (
+        'the INITIALISATION problem of each block: the block cloned at the moment production calls '
+        '`.optimize` inside create_*_model (NetworkData.optimize would run run_smopf(block, holder.params, '
+        'from_warm_start=False) on it -- the round-0 solve). The ADMM-prepared blocks (after update_*_to_admm) '
+        'are built and sized but NOT solvable as they stand: their objectives reference AL Params '
+        '(dual_vmag_req, vmag_req, ...) that production sets only in the per-cycle update from the ADMM state')
+    return {'bases': {'tso': init_capture['tso']['model'], 'dso': init_capture['dso']['model']},
+            'esso_init': init_capture['esso']['model'],
+            'admm_prepared': {'tso': tso_model[YEAR][DAY], 'dso': dso_models[DSO_NODE][YEAR][DAY]},
+            'esso': esso_model, 'tso_model': tso_model, 'dso_models': dso_models}
+
+
+def pyomo_jacobian_nnz(model, pe):
+    """Pyomo-level nonzeros: distinct Vars per active constraint body (identify_variables), summed; free = not fixed.
+    Before Pyomo's NL presolve and before IPOPT removes lb == ub columns (the NL-level counts are separate)."""
+    from pyomo.core.expr.visitor import identify_variables
+    t = time.perf_counter()
+    out = {'eq': {'rows': 0, 'nnz_all_vars': 0, 'nnz_free_vars': 0},
+           'ineq': {'rows': 0, 'nnz_all_vars': 0, 'nnz_free_vars': 0}}
+    for c in model.component_data_objects(pe.Constraint, active=True, descend_into=True):
+        n_all = n_free = 0
+        for v in identify_variables(c.body, include_fixed=True):
+            n_all += 1
+            n_free += not v.fixed
+        k = 'eq' if c.equality else 'ineq'
+        out[k]['rows'] += 1
+        out[k]['nnz_all_vars'] += n_all
+        out[k]['nnz_free_vars'] += n_free
+    objs = list(model.component_data_objects(pe.Objective, active=True))
+    out['objective_gradient_nnz_free'] = (sum(1 for v in identify_variables(objs[0].expr, include_fixed=False))
+                                          if len(objs) == 1 else None)
+    out['total_nnz_free_vars'] = out['eq']['nnz_free_vars'] + out['ineq']['nnz_free_vars']
+    out['compute_s'] = time.perf_counter() - t
+    out['definition'] = ('per active constraint: number of distinct Vars in its body (pyomo identify_variables); '
+                         'free = Var not fixed; Pyomo level, before NL presolve / IPOPT fixed-variable removal')
+    return out
+
+
+def studio_prepare_case(model, ck, case, logs_dir, network_module, source):
+    """Per-case network / params copies (the clone's own, asserted distinct from its source block's), the log
+    redirect, and the options Part A used for the same case: production options + output_file + timing statistics
+    (+ the case-iii diagnostics). Cold: production's `_clear_multiplier_suffixes` (a freshly built block has none)."""
+    net, prm = _build_time_objects(model)
+    net_src, prm_src = _build_time_objects(source)
+    if net is net_src or prm is prm_src:
+        raise RuntimeError(f'{ck}: clone shares network/params with its source block')
+    net.logs_dir = logs_dir
+    net.ipopt_solve_records = deque(maxlen=network_module.IPOPT_SOLVE_RECORDS_MAXLEN)
+    production_options = dict(prm.solver_params.options or {})
+    options = dict(production_options)
+    options['output_file'] = f'tperf_{ck}.log'
+    options.update(ALL_CASE_OPTIONS)
+    if case == 'iii_warm_diag':
+        options.update(CASE_III_OPTIONS)
+    prm.solver_params.options = options
+    if case == 'ii_cold':
+        network_module._clear_multiplier_suffixes(model)
+    entry = {'options_added_or_changed': {k: v for k, v in options.items() if production_options.get(k) != v},
+             'production_options': production_options,
+             'solver': prm.solver_params.solver, 'solver_path': prm.solver_params.solver_path,
+             'recovery_enabled': getattr(prm.solver_params, 'recovery_enabled', None),
+             'recovery_tier2_enabled': getattr(prm.solver_params, 'recovery_tier2_enabled', None),
+             'network': net.name, 'year': net.year, 'day': net.day, 'baseMVA': net.baseMVA}
+    return net, prm, entry
+
+
+def intended_passed_options(production_options, case, log_path):
+    """What `_create_smopf_solver` is intended to hand IPOPT for this case, stated independently of it: the pinned
+    fixed_variable_treatment and max_iter, then the case file's options, then this harness's additions; output_file
+    becomes the absolute per-(year, day) path with file_append yes; warm cases add warm_start_init_point yes."""
+    import helper_functions as HF
+    o = {'fixed_variable_treatment': HF.IPOPT_FIXED_VARIABLE_TREATMENT, 'max_iter': 500}
+    o.update(production_options)
+    o.update(ALL_CASE_OPTIONS)
+    if case == 'iii_warm_diag':
+        o.update(CASE_III_OPTIONS)
+    o['output_file'] = log_path
+    o['file_append'] = 'yes'
+    if CASE_IS_WARM[case]:
+        o['warm_start_init_point'] = 'yes'
+    return o
+
+
+def studio_extra_checklist(record, out_dir, wd, build_zero):
+    """Capture paths the Part B record needs beyond the per-solve checklist (asserted before the first solve)."""
+    items = {
+        'memory_watchdog_running': wd.is_alive(),
+        'out_logs_dir_exists': os.path.isdir(os.path.join(out_dir, 'logs')),
+        'out_nl_dir_exists': os.path.isdir(os.path.join(out_dir, 'nl')),
+        'derived_case_written_and_hashed': bool(record.get('derived_case', {}).get('sha256')),
+        'build_wall_and_stages_recorded': record.get('build_wall_s') is not None and bool(record.get('build_stages')),
+        'build_memory_recorded': record.get('build_memory', {}).get('self_ru_maxrss_at_build_end') is not None,
+        'block_sizes_recorded (vars, rows, Pyomo nnz)': all(
+            (record.get('blocks') or {}).get(b, {}).get('size_pyomo_built', {}).get('pyomo_nnz') is not None
+            for b in BLOCKS),
+        'esso_size_recorded': (record.get('esso') or {}).get(f'node_{DSO_NODE}') is not None,
+        'build_produced_zero_solves (guard counts all 0 at build end)': build_zero,
+        'scaling_replica_callable': callable(gradient_scaling_replica) and callable(validate_replica),
+        'rss_monitor_class (per-solve peak RSS, 25 ms)': issubclass(RssMonitor, threading.Thread),
+    }
+    failures = [k for k, v in items.items() if v is not True]
+    items['failures'] = failures
+    if failures:
+        raise RuntimeError(f'studio capture checklist failed before any solve: {failures}')
+    return items
+
+
+def _git_status(args):
+    return _git(['status', '--porcelain'] + list(args))
+
+
+def run_studio_mode(dry):
+    """--studio (dry=False; the Studio only) and --studio-dry (dry=True; zero solves, allowed on this machine).
+
+    Both run the SAME build (`studio_read` + `studio_build_blocks(restrict=True)`) and the same case preparation and
+    capture checklist. --studio-dry then reaches `network.run_smopf` once per case under the blocking guard (blocked
+    at OptSolver.solve, before any NL write or process launch: IPOPT is never invoked), records the option dict
+    production assembled and compares it with `intended_passed_options`, and writes one NL file per block with
+    Pyomo's writer (an NL write, not a solve) for the IPOPT-level counts. --studio runs the 6 declared solves.
+
+    Guards. --studio-dry: the module-level BLOCKING guard covers the whole run; the build must leave every count at
+    0, and the option-assembly step must give exactly 6 blocked / 0 permitted. --studio: the module-level BOUNDED
+    guard (6 declared) plus a second, BLOCKING guard stacked over it for the whole build (uninstalled after the
+    build, which restores the bounded guard); both must read 0 at build end, then verify(6) at the end."""
     hw = _git_free_cmd(['sysctl', '-n', 'hw.model'])
-    if hw == 'Mac17,3':
+    if not dry and hw == 'Mac17,3':
         raise RuntimeError('refusing: --studio must not run on this 24 GB machine (hw.model Mac17,3; CLAUDE.local.md)')
     avail = psutil.virtual_memory().available
-    if avail < 18 * 2 ** 30:
-        raise RuntimeError(f'refusing: {avail / 2 ** 30:.1f} GiB available < 18 GiB (paper build ~16 GiB RSS, s44)')
-    import p515_s44_scale_measurement as S44
-    out_dir = os.path.join(REPO, STUDIO_OUT_REL)
+    if not dry and avail < STUDIO_MIN_AVAILABLE_BYTES:
+        raise RuntimeError(f'refusing: {avail / GIB:.1f} GiB available < {STUDIO_MIN_AVAILABLE_BYTES / GIB:.0f} GiB')
+    foreign = _foreign_compute_processes()
+    if not dry and foreign:
+        raise RuntimeError(f'refusing: other compute processes are running (nothing else may run during the timed '
+                           f'solves): {foreign}')
+    mode = 'studio_dry' if dry else 'studio'
+    out_dir = os.path.join(REPO, STUDIO_DRY_OUT_REL if dry else STUDIO_OUT_REL)
     lock = Lock(os.path.join(REPO, LOCK_REL))
     lock_info = lock.acquire()
     try:
@@ -1533,139 +2000,332 @@ def run_studio():
             raise RuntimeError(f'refusing: output directory exists: {out_dir}')
         os.makedirs(os.path.join(out_dir, 'logs'))
         os.makedirs(os.path.join(out_dir, 'nl'))
-        record = {'schema': 'p516_tperf_studio_v1', 'stage': 'P5.16 T-perf Part B (Studio)', 'authority': AUTHORITY,
-                  'utc_start': _utc(), 'lock': lock_info, 'hw_model': hw, 'mem_available_at_start': avail,
-                  'thread_env_in_force': {k: os.environ.get(k) for k in THREAD_CAP_ENV},
-                  'git_head': _git(['rev-parse', 'HEAD']), 'harness_sha256': _sha(THIS),
-                  'production_files_git_status': _git(['status', '--porcelain', '--'] + list(PRODUCTION_FILES))}
-        if record['production_files_git_status']:
-            raise RuntimeError('production files not clean')
-        stages = []
+        record = {'schema': f'p516_tperf_{mode}_v1', 'stage': f'P5.16 T-perf Part B ({mode})', 'authority': AUTHORITY,
+                  'mode': mode, 'utc_start': _utc(), 'lock': lock_info,
+                  'objective_convention': 'none computed or compared (sizes / timing / iterations / memory only)',
+                  'instance': {'case': "p515_s44_scale_measurement.derive_case('paper', {}) of the committed case file",
+                               'candidate': 'unit cell: node 7 0.25 MVA / 1.0 MWh, nodes 5 and 9 empty, cohort 2025',
+                               'blocks': f'TSO {YEAR} {DAY}; DSO node {DSO_NODE} {YEAR} {DAY}; ESSO (0 solves)'},
+                  'declared_solves': 0 if dry else DECLARED_SOLVES,
+                  'thread_env_before': THREAD_ENV_BEFORE,
+                  'thread_env_in_force': {k: os.environ.get(k) for k in THREAD_CAP_ENV}}
+        record['provenance'] = {
+            'python': sys.executable, 'python_version': sys.version, 'platform': platform.platform(),
+            'hw_model': hw, 'mem_total_bytes': psutil.virtual_memory().total, 'mem_available_at_start': avail,
+            'cpu_count_logical': psutil.cpu_count(), 'cpu_count_physical': psutil.cpu_count(logical=False),
+            'git_head': _git(['rev-parse', 'HEAD']), 'git_branch': _git(['rev-parse', '--abbrev-ref', 'HEAD']),
+            'git_status_tracked': _git_status(['--untracked-files=no']),
+            'production_files_sha256': {f: _sha(os.path.join(REPO, f)) for f in PRODUCTION_FILES},
+            'harness_sha256': _sha(THIS), 'harness_git_status': _git_status(['--', 'p516_tperf_profile.py']),
+            'other_compute_processes_at_start': foreign, 'loadavg_1_5_15_at_start': list(os.getloadavg()),
+        }
+        if not dry and record['provenance']['git_status_tracked']:
+            raise RuntimeError(f"refusing: tracked files modified: {record['provenance']['git_status_tracked']}")
+        (record['provenance']['git_status_build_inputs'], record['provenance']['repository_modules_loaded'],
+         dirty_inputs) = _build_input_status()
+        if dirty_inputs:
+            raise RuntimeError(f'refusing: build inputs modified: {dirty_inputs}')
+        if dry:
+            record['predictions_recorded_before_run'] = STUDIO_DRY_PREDICTIONS
+            _write_json(os.path.join(out_dir, 'predictions.json'),
+                        {'utc': _utc(), 'harness_sha256': record['provenance']['harness_sha256'],
+                         'predictions': STUDIO_DRY_PREDICTIONS})
+        wd = MemWatchdog(STUDIO_DRY_RSS_ABORT_BYTES if dry else STUDIO_RSS_ABORT_BYTES,
+                         os.path.join(out_dir, 'watchdog_abort.json'))
+        wd.start()
+        try:
+            return _studio_body(dry, mode, out_dir, record, wd)
+        except BaseException as error:
+            record['status'] = 'error'
+            record['error'] = f'{type(error).__name__}: {error}'
+            record['traceback'] = traceback.format_exc()
+            record['guard_counts_at_error'] = dict(_GUARD.counts)
+            record['watchdog'] = wd.summary()
+            try:
+                _write_json(os.path.join(out_dir, f'tperf_{mode}_error.json'), record)
+            except Exception:  # noqa: BLE001 -- the traceback reaches stderr through __main__
+                pass
+            raise
+    finally:
+        lock.release()
 
-        class _Stage:
-            def __init__(self, name):
-                self.name = name
 
-            def __enter__(self):
-                self.t = time.perf_counter()
-                _log(f'stage: {self.name}')
+def _studio_body(dry, mode, out_dir, record, wd):
+    stages = []
+    stage = _stage_factory(stages, wd)
+    record['memory'] = {'rss_at_start': _rss()}
+    build_guard = None if dry else SolveProfileGuard((), label='P5.16 T-perf studio BUILD phase (zero solves)').install()
+    build_t0 = time.perf_counter()
+    record['build'] = {}
+    try:
+        studio_read(out_dir, 'paper', 'paper', stage, record)
+        record['memory']['rss_after_read'] = _rss()
+        built = studio_build_blocks(out_dir, 'p516_tperf_studio_dry_build' if dry else 'p516_tperf_studio_build', True,
+                                    stage, record['build'])
+    finally:
+        if build_guard is not None:
+            build_guard.uninstall()
+            record['build_phase_blocking_guard'] = {'counts': dict(build_guard.counts),
+                                                    'verify_0_failures': build_guard.verify(0)}
+    record['build_wall_s'] = time.perf_counter() - build_t0
+    record['build_stages'] = list(stages)
+    record['stages_all'] = stages   # the same list, extended to the end of the run
+    record['build_memory'] = {'rss_at_build_end': _rss(), 'self_ru_maxrss_at_build_end':
+                              resource.getrusage(resource.RUSAGE_SELF).ru_maxrss, 'ru_units': 'bytes (macOS)',
+                              'watchdog_peak_at_build_end': dict(wd.peak),
+                              'rss_after_read_before_construct': record['memory']['rss_after_read']}
+    record['guard_counts_at_build_end'] = dict(_GUARD.counts)
+    build_zero = all(v == 0 for v in _GUARD.counts.values()) and (
+        build_guard is None or (not record['build_phase_blocking_guard']['verify_0_failures']))
+    record['build_produced_zero_solves'] = build_zero
+    _log(f'build done in {record["build_wall_s"]:.1f}s; guard {_GUARD.counts}; zero solves: {build_zero}; '
+         f'ru_maxrss {record["build_memory"]["self_ru_maxrss_at_build_end"] / GIB:.2f} GiB')
+    if not build_zero:
+        raise RuntimeError(f'build was not zero-solve: guard {_GUARD.counts} {record.get("build_phase_blocking_guard")}')
 
-            def __exit__(self, *exc):
-                stages.append({'stage': self.name, 'wall_s': time.perf_counter() - self.t, 'rss_after': _rss(),
-                               'ok': exc[0] is None})
-                return False
+    pe, network_module, srp, G, S44 = _studio_modules()
+    bases = built['bases']
+    record['blocks'] = {}
+    for block, model in bases.items():
+        with stage(f'size {block} block (Pyomo vars / rows / nnz; the solved initialisation problem)'):
+            net0, prm0 = _build_time_objects(model)
+            size = block_size(model, pe)
+            size['pyomo_nnz'] = pyomo_jacobian_nnz(model, pe)
+            prepared_size = block_size(built['admm_prepared'][block], pe)
+            record['blocks'][block] = {'network': net0.name, 'year': net0.year, 'day': net0.day,
+                                       'baseMVA': net0.baseMVA, 'size_pyomo_built': size,
+                                       'size_pyomo_admm_prepared_reference (not solved)': prepared_size}
+        _log(f'{block}: vars {size["pyomo_vars"]} (free {size["pyomo_vars_free"]}), rows eq {size["pyomo_active_equalities"]}'
+             f' ineq {size["pyomo_active_inequalities"]}, nnz(free) {size["pyomo_nnz"]["total_nnz_free_vars"]}, '
+             f'scenarios {size["scenarios_market"]}x{size["scenarios_operation"]}')
+    record['esso'] = {f'node_{n}': block_size_esso(m, pe) for n, m in built['esso'].items()}
+    record['esso']['node_7_initialisation_problem'] = block_size_esso(built['esso_init'], pe)
+    record['solved_problem'] = record['build'].get('solved_problem')
+    del built
+    gc.collect()
+    record['memory']['rss_after_release_of_unused'] = _rss()
+    if dry:
+        d1 = record['blocks']['dso']['size_pyomo_built']['pyomo_vars']
+        peak = record['build_memory']['self_ru_maxrss_at_build_end']
+        record['predictions_outcome'] = {
+            'D1_dso_block_variables': {'measured_pyomo_vars': d1, 'relative_to_269k': d1 / 269_000.0,
+                                       'within_5pct': abs(d1 / 269_000.0 - 1.0) <= 0.05},
+            'D2_build_rss': {'measured_self_ru_maxrss_bytes': peak, 'measured_gib': peak / GIB,
+                             'watchdog_peak_rss_tree_bytes': record['build_memory']['watchdog_peak_at_build_end'][
+                                 'rss_tree'], 'holds': peak <= 6 * GIB}}
 
-        class _Stages:
-            def stage(self, name):
-                return _Stage(name)
-
-        case, spec, changes = S44.derive_case('paper', {})
-        case_path = os.path.join(out_dir, 'derived_case_paper.json')
-        with open(case_path, 'x') as handle:
-            json.dump(case, handle, indent=1)
-        launch = {'derived_case': {'path': os.path.relpath(case_path, REPO), 'sha256': _sha(case_path)},
-                  'instance': 'paper'}
-        record['derived_case'] = {'path': launch['derived_case']['path'], 'sha256': launch['derived_case']['sha256'],
-                                  'changes': changes, 'spec': spec}
-        build_t0 = time.perf_counter()
-        import pyomo.environ as pe
-        import network as network_module
-        import shared_resources_planning as srp
-        import p515_g_g1_g4_admm_gates as G
-        O, R = G.O, G.R
-        planning0 = S44.read_planning_from_derived_case(launch, out_dir, _Stages())
-        record['scenario_checksum'] = S44.inject_oracle_baseline(O, planning0, launch)
-        construct_report = {}
-        unit_cell = {5: (0.0, 0.0), 7: (0.25, 1.0), 9: (0.0, 0.0)}
-        with _Stage('construct arm planning (s44 path, apply_rho=False, unit-cell candidate)'):
-            planning, sed, candidate = G._construct_arm_planning(
-                'p516_tperf_studio', os.path.join(out_dir, 'arm_build'), construct_report,
-                investment_map=unit_cell, eval_id='p516_tperf_studio_build', num_max_iters_override=1,
-                apply_rho=False)
-        record['construct_report'] = construct_report
-        params = planning.params.admm
-        interceptor = S44.Interceptor()
-        tn = planning.transmission_network
-        tn.optimize = interceptor.network(tn, 'tso')
-        for dn in planning.distribution_networks.values():
-            dn.optimize = interceptor.network(dn, 'dso')
-        sed.optimize = interceptor.esso(sed)
-        with _Stage('create models (optimize intercepted)'):
-            cv, dv = srp.create_admm_variables(planning)
-            dso_models, res_dso = srp.create_distribution_networks_models(
-                planning.distribution_networks, cv, candidate['total_capacity'], parallel_execution=False)
-            tso_model, res_tso = srp.create_transmission_network_model(planning, cv, candidate['total_capacity'])
-            esso_model, res_esso = srp.create_shared_energy_storage_model(sed, cv, candidate['investment'])
-        with _Stage('ADMM objective preparation (s44 child_build sequence)'):
-            srp._prepare_distribution_objectives_for_admm(planning.distribution_networks, dso_models)
-            srp._prepare_transmission_objectives_for_admm(tn, tso_model)
-            scale = params.objective_scale
-            if scale is None:
-                raise RuntimeError('case file has no fixed objective_scale')
-            al_scale = srp._resolve_esso_al_scale(planning, params, scale)[0]
-            with R.patched_admm_objectives():
-                srp.update_distribution_models_to_admm(planning, dso_models, params, scale)
-                srp.update_transmission_model_to_admm(planning, tso_model, params, scale)
-            srp.update_shared_energy_storage_model_to_admm(planning, esso_model, params, al_scale_esso=al_scale)
-        del tn.optimize
-        for dn in planning.distribution_networks.values():
-            del dn.optimize
-        del sed.optimize
-        record['interceptor_counts'] = interceptor.counts()
-        record['build_wall_s'] = time.perf_counter() - build_t0
-        record['build_rss'] = _rss()
-        record['build_rusage'] = _rusage()
-        record['build_stages'] = stages
-        years = list(tso_model.keys())
-        y0 = years[0]
-        bases = {'tso': tso_model[y0][DAY], 'dso': dso_models[DSO_NODE][y0][DAY]}
-        record['blocks'] = {b: block_size(m, pe) for b, m in bases.items()}
-        inst = Instrument(os.path.join(out_dir, 'nl'), False).install()
-        record['solves'] = {}
-        stopped = None
+    logs_dir = os.path.join(out_dir, 'logs')
+    inst = Instrument(os.path.join(out_dir, 'nl'), dry).install()
+    # Stand-ins for the pre-solve checklist: every case prepared exactly as it will be, from a clone of the BUILT
+    # block (on the Studio the warm cases are re-prepared from the post-(ii) block; their suffix item is deferred
+    # to the per-case check immediately before each warm solve).
+    prepared = {}
+    with stage('prepare 6 case stand-ins (clones of the built blocks)'):
         for block in BLOCKS:
-            order = ('ii_cold', 'i_warm', 'iii_warm_diag')
-            solved_cold = None
-            for case in order:
+            for case in STUDIO_CASE_ORDER:
                 ck = f'{block}_{case}'
-                model = bases[block].clone() if case == 'ii_cold' else solved_cold.clone()
-                net, prm = _build_time_objects(model)
-                net.logs_dir = os.path.join(out_dir, 'logs')
-                net.ipopt_solve_records = deque(maxlen=network_module.IPOPT_SOLVE_RECORDS_MAXLEN)
-                options = dict(prm.solver_params.options or {})
-                options['output_file'] = f'tperf_{ck}.log'
-                options.update(ALL_CASE_OPTIONS)
-                if case == 'iii_warm_diag':
-                    options.update(CASE_III_OPTIONS)
-                prm.solver_params.options = options
-                if case == 'ii_cold':
-                    network_module._clear_multiplier_suffixes(model)
-                rec, ok = run_case(ck, block, case, model, net, prm, inst, network_module, pe,
-                                   os.path.join(out_dir, 'logs'), False)
+                t = time.perf_counter()
+                model = bases[block].clone()
+                clone_s = time.perf_counter() - t
+                net, prm, entry = studio_prepare_case(model, ck, case, logs_dir, network_module, bases[block])
+                entry['clone_s'] = clone_s
+                prepared[ck] = {'block': block, 'case': case, 'model': model, 'network': net, 'params': prm,
+                                'entry': entry}
+    record['capture_checklist'] = capture_checklist(inst, prepared, network_module, out_dir, dry,
+                                                    deferred=('warm_suffixes_present',))
+    record['capture_checklist_studio'] = studio_extra_checklist(record, out_dir, wd, build_zero)
+    record['memory']['rss_before_first_solve'] = _rss()
+    _log('capture checklists hold (warm-suffix item deferred to the per-case check)')
+    record['solves'] = {}
+    stopped = None
+
+    if dry:
+        for ck, p in prepared.items():
+            wd.stage = f'option assembly (blocked) {ck}'
+            log_path = expected_log_path(p['network'], p['params'].solver_params.options)
+            rec, ok = run_case(ck, p['block'], p['case'], p['model'], p['network'], p['params'], inst,
+                               network_module, pe, logs_dir, True)
+            rec['preparation'] = p['entry']
+            rec['options_intended'] = intended_passed_options(p['entry']['production_options'], p['case'], log_path)
+            rec['options_match_intended'] = rec['solver_options_passed'] == rec['options_intended']
+            rec['options_diff'] = {k: [rec['options_intended'].get(k), (rec['solver_options_passed'] or {}).get(k)]
+                                   for k in set(rec['options_intended']) | set(rec['solver_options_passed'] or {})
+                                   if rec['options_intended'].get(k) != (rec['solver_options_passed'] or {}).get(k)}
+            record['solves'][ck] = rec
+            print(f'OPTIONS {ck} (passed by production, solve blocked; match_intended={rec["options_match_intended"]}):\n'
+                  + json.dumps(rec['solver_options_passed'], indent=1, sort_keys=True), flush=True)
+        record['nl_selftest'] = {}
+        for block in BLOCKS:
+            wd.stage = f'NL write (not a solve) {block}'
+            nl_rec = {}
+            dry_nl_selftest(f'{block}_built', prepared[f'{block}_ii_cold']['model'], out_dir, nl_rec)
+            record['nl_selftest'][block] = nl_rec
+        fails = []
+        if _GUARD.counts['permitted_solve'] or _GUARD.counts['permitted_exec'] or _GUARD.counts['blocked_exec']:
+            fails.append(f'dry run reached a permitted solve or a process launch {_GUARD.counts}')
+        if _GUARD.counts['blocked_solve'] != len(prepared):
+            fails.append(f"blocked {_GUARD.counts['blocked_solve']} != cases {len(prepared)}")
+        if not all(r['options_match_intended'] for r in record['solves'].values()):
+            fails.append('option assembly differs from intended: '
+                         + str({ck: r['options_diff'] for ck, r in record['solves'].items() if r['options_diff']}))
+        expected = 0
+    else:
+        del prepared
+        gc.collect()
+        for block in BLOCKS:
+            solved_cold = None
+            for case in STUDIO_CASE_ORDER:
+                ck = f'{block}_{case}'
+                source = bases[block] if case == 'ii_cold' else solved_cold
+                t = time.perf_counter()
+                model = source.clone()
+                clone_s = time.perf_counter() - t
+                net, prm, entry = studio_prepare_case(model, ck, case, logs_dir, network_module, source)
+                entry['clone_s'] = clone_s
+                cl = capture_checklist(inst, {ck: {'block': block, 'case': case, 'model': model, 'network': net,
+                                                   'params': prm}}, network_module, out_dir, False)
+                log_path = expected_log_path(net, prm.solver_params.options)
+                wd.stage = f'solve {ck}'
+                _log(f'case {ck}: run_smopf(from_warm_start={CASE_IS_WARM[case]})')
+                rec, ok = run_case(ck, block, case, model, net, prm, inst, network_module, pe, logs_dir, False)
+                rec['preparation'] = entry
+                rec['capture_checklist_case'] = cl
+                rec['options_intended'] = intended_passed_options(entry['production_options'], case, log_path)
+                rec['options_match_intended'] = rec['solver_options_passed'] == rec['options_intended']
                 record['solves'][ck] = rec
-                if not ok or rec['solve_calls_in_case'] != 1:
-                    stopped = f'solve failed at {ck}'
+                s = (rec.get('ipopt_log') or {}).get('summary', {})
+                _log(f'case {ck}: ok={ok} term={rec["termination_condition"]} iters={s.get("iterations")} '
+                     f'run_smopf={rec["timing"]["run_smopf_wall_s"]:.3f}s '
+                     f'peak_ipopt_rss={rec["rss_monitor"]["peak_child_rss"] / GIB:.2f} GiB')
+                if not ok or rec['solve_calls_in_case'] != 1 or rec['cap_blocked_in_case']:
+                    stopped = (f'solve failed or count off at {ck}: ok={ok} calls={rec["solve_calls_in_case"]} '
+                               f'cap_blocked={rec["cap_blocked_in_case"]} -- stopping')
+                    _log(stopped)
                     break
                 if case == 'ii_cold':
                     solved_cold = model
             if stopped:
                 break
         for ck, rec in record['solves'].items():
+            if not rec['nl_capture']:
+                rec['gradient_scaling'] = {'computed': False, 'reason': 'no NL captured'}
+                continue
             try:
                 rep = gradient_scaling_replica(rec['nl_capture'][0]['path'])
                 rep['validation_against_ipopt_log'] = validate_replica(rep, rec['ipopt_log'])
+                rep['computed'] = True
                 rec['gradient_scaling'] = rep
-            except Exception as error:  # noqa: BLE001
-                rec['gradient_scaling'] = {'computed': False, 'reason': f'{type(error).__name__}: {error}'}
+            except Exception as error:  # noqa: BLE001 -- recorded; the solves are already done
+                rec['gradient_scaling'] = {'computed': False, 'reason': f'{type(error).__name__}: {error}',
+                                           'traceback': traceback.format_exc()}
         fails = _GUARD.verify(DECLARED_SOLVES)
-        record['guard'] = {'permitted': [list(p) for p in PERMITTED], 'declared_solves': DECLARED_SOLVES,
-                           'counts': dict(_GUARD.counts), 'verify_failures': fails}
-        record['stopped'] = stopped
-        record['status'] = 'complete' if not fails and not stopped else 'failed'
-        record['summary'] = summarise(record)
+        expected = DECLARED_SOLVES
+    record['guard'] = {'permitted': [] if dry else [list(p) for p in PERMITTED], 'declared_solves': expected,
+                       'counts': dict(_GUARD.counts), 'verify_failures': fails, 'per_case_cap_blocks': inst.cap_blocks,
+                       'note': ('dry: every case reaches OptSolver.solve and is blocked there (6 expected); no NL '
+                                'write by a solver, no IPOPT process' if dry else
+                                'bounded guard, permitted site network.py:_run_smopf_solver_attempt, exact count')}
+    record['stopped'] = stopped
+    record['status'] = 'complete' if not fails and stopped is None else ('stopped' if stopped else 'guard_failed')
+    try:
+        record['summary'] = summarise(record) if not dry else None
+    except Exception as error:  # noqa: BLE001 -- the per-solve records are complete without it
+        record['summary'] = {'error': f'{type(error).__name__}: {error}', 'traceback': traceback.format_exc()}
+    record['memory']['rusage_end'] = _rusage()
+    record['loadavg_1_5_15_at_end'] = list(os.getloadavg())
+    record['other_compute_processes_at_end'] = _foreign_compute_processes()
+    record['watchdog'] = wd.stop()
+    record['utc_end'] = _utc()
+    record['wall_s'] = time.time() - T0
+    name = f'tperf_{mode}.json'
+    _write_json(os.path.join(out_dir, name), record)
+    _log(f'status={record["status"]} guard={_GUARD.counts} verify_failures={fails} -> {name}')
+    return 0 if record['status'] == 'complete' else 2
+
+
+def run_restriction_equivalence():
+    """Zero solves (blocking guard over the whole run). At SRP1 scale (derive_case('srp1', {}) = the committed case
+    file unchanged; the full build is small), build the instance twice in one process from the same installed
+    baseline -- once in full, once restricted exactly as --studio / --studio-dry restrict it -- and compare the
+    TSO (YEAR, DAY) block, the DSO node-DSO_NODE (YEAR, DAY) block and the node-DSO_NODE ESSO between the two:
+    sha256 of the NL / .row / .col files Pyomo writes with symbolic labels (NL writes, not solves) and the Pyomo
+    sizes. The blocks NL-compared are the initialisation-problem captures (what --studio solves); the ADMM-prepared
+    blocks are compared on Pyomo sizes (they cannot be NL-written: unset AL Params). Controls: a second write of the
+    full DSO capture must hash identically (writer determinism) and differently from the TSO capture."""
+    out_dir = os.path.join(REPO, STUDIO_EQUIV_OUT_REL)
+    lock = Lock(os.path.join(REPO, LOCK_REL))
+    lock_info = lock.acquire()
+    try:
+        if os.path.exists(out_dir):
+            raise RuntimeError(f'refusing: output directory exists: {out_dir}')
+        os.makedirs(os.path.join(out_dir, 'nl'))
+        record = {'schema': 'p516_tperf_restriction_equivalence_v1', 'utc_start': _utc(), 'lock': lock_info,
+                  'objective_convention': 'none computed or compared',
+                  'provenance': {'git_head': _git(['rev-parse', 'HEAD']),
+                                 'harness_sha256': _sha(THIS), 'hw_model': _git_free_cmd(['sysctl', '-n', 'hw.model'])}}
+        (record['provenance']['git_status_build_inputs'], record['provenance']['repository_modules_loaded'],
+         dirty) = _build_input_status()
+        if dirty:
+            raise RuntimeError(f'refusing: build inputs modified: {dirty}')
+        wd = MemWatchdog(STUDIO_DRY_RSS_ABORT_BYTES, os.path.join(out_dir, 'watchdog_abort.json'))
+        wd.start()
+        stages = []
+        stage = _stage_factory(stages, wd)
+        pe, network_module, srp, G, S44 = _studio_modules()
+        studio_read(out_dir, 'srp1', 'srp1_restriction_equivalence', stage, record)
+        record['build_full'], record['build_restricted'] = {}, {}
+        full = studio_build_blocks(out_dir, 'p516_tperf_equiv_full', False, stage, record['build_full'])
+        restricted = studio_build_blocks(out_dir, 'p516_tperf_equiv_restricted', True, stage, record['build_restricted'])
+        second_day = [d for d in full['tso_model'][YEAR] if d != DAY][0]
+        # NL-compared: the initialisation-problem captures (what --studio solves). The ADMM-prepared blocks cannot
+        # be NL-written (unset AL Params; see studio_build_blocks) and are compared on Pyomo sizes only.
+        pairs = {'tso': (full['bases']['tso'], restricted['bases']['tso']),
+                 'dso': (full['bases']['dso'], restricted['bases']['dso']),
+                 'esso_node7': (full['esso_init'], restricted['esso_init'])}
+        record['admm_prepared_size_comparison'] = {}
+        for key in ('tso', 'dso'):
+            sa = block_size(full['admm_prepared'][key], pe)
+            sb = block_size(restricted['admm_prepared'][key], pe)
+            record['admm_prepared_size_comparison'][key] = {'full': sa, 'restricted': sb, 'identical': sa == sb}
+        sa, sb = block_size_esso(full['esso'][DSO_NODE], pe), block_size_esso(restricted['esso'][DSO_NODE], pe)
+        record['admm_prepared_size_comparison']['esso_node7'] = {'full': sa, 'restricted': sb, 'identical': sa == sb}
+
+        def write(model, stem):
+            path = os.path.join(out_dir, 'nl', f'{stem}.nl')
+            model.write(path, format='nl', io_options={'symbolic_solver_labels': True})
+            return {ext: _sha(path[:-3] + ext) for ext in ('.nl', '.row', '.col')}
+
+        record['comparison'] = {}
+        for key, (a, b) in pairs.items():
+            ha, hb = write(a, f'full_{key}'), write(b, f'restricted_{key}')
+            sa = block_size(a, pe) if key != 'esso_node7' else block_size_esso(a, pe)
+            sb = block_size(b, pe) if key != 'esso_node7' else block_size_esso(b, pe)
+            record['comparison'][key] = {'full_sha256': ha, 'restricted_sha256': hb, 'nl_row_col_identical': ha == hb,
+                                         'full_size': sa, 'restricted_size': sb, 'sizes_identical': sa == sb}
+            _log(f'{key}: NL/row/col identical={ha == hb}; sizes identical={sa == sb}')
+        # control: a block of the same build that must differ (the full build's ADMM-prepared TSO (YEAR, second
+        # day) cannot be written, so the control is the full DSO init capture vs the full TSO init capture's NL)
+        ctrl = write(full['bases']['dso'], 'full_dso_control_copy')
+        record['discrimination_control'] = {
+            'what': ('the full build\'s DSO init capture written a second time: must hash IDENTICALLY to its first '
+                     'write (writer determinism) and DIFFERENTLY from the TSO init capture (the hash discriminates)'),
+            'second_write_sha256': ctrl,
+            'second_write_identical_to_first': ctrl == record['comparison']['dso']['full_sha256'],
+            'differs_from_full_tso_spring_nl': ctrl['.nl'] != record['comparison']['tso']['full_sha256']['.nl'],
+            'unused_second_day': second_day}
+        record['guard'] = {'counts': dict(_GUARD.counts), 'verify_0_failures': _GUARD.verify(0)}
+        ok = (all(c['nl_row_col_identical'] and c['sizes_identical'] for c in record['comparison'].values())
+              and all(c['identical'] for c in record['admm_prepared_size_comparison'].values())
+              and record['discrimination_control']['differs_from_full_tso_spring_nl']
+              and record['discrimination_control']['second_write_identical_to_first']
+              and not record['guard']['verify_0_failures'])
+        record['status'] = 'equivalent' if ok else 'NOT_EQUIVALENT_or_guard_failed'
+        record['stages'] = stages
+        record['watchdog'] = wd.stop()
         record['utc_end'] = _utc()
-        _write_json(os.path.join(out_dir, 'tperf_studio.json'), record)
-        return 0 if record['status'] == 'complete' else 2
+        _write_json(os.path.join(out_dir, 'restriction_equivalence.json'), record)
+        _log(f'status={record["status"]} guard={_GUARD.counts}')
+        return 0 if ok else 2
     finally:
         lock.release()
 
@@ -1673,8 +2333,12 @@ def run_studio():
 # ======================================================================================================================
 #  manifest
 # ======================================================================================================================
-def manifest(studio=False):
-    root = os.path.join(REPO, STUDIO_OUT_REL if studio else LOCAL_OUT_REL)
+MANIFEST_ROOTS = {'local': LOCAL_OUT_REL, 'studio': STUDIO_OUT_REL, 'studio_dry': STUDIO_DRY_OUT_REL,
+                  'studio_dry_equiv': STUDIO_EQUIV_OUT_REL}
+
+
+def manifest(root_name='local'):
+    root = os.path.join(REPO, MANIFEST_ROOTS[root_name])
     target = os.path.join(root, 'manifest_sha256.json')
     if os.path.exists(target):
         raise RuntimeError(f'refusing to overwrite {target}')
@@ -1683,13 +2347,20 @@ def manifest(studio=False):
         for nm in sorted(names):
             p = os.path.join(dirpath, nm)
             files[os.path.relpath(p, REPO)] = _sha(p)
-    for rel in LAUNCH_LOGS_REL['studio' if studio else 'local']:
+    for rel in LAUNCH_LOGS_REL[root_name]:
         if os.path.exists(os.path.join(REPO, rel)):
             files[rel] = _sha(os.path.join(REPO, rel))
     files[os.path.relpath(THIS, REPO)] = _sha(THIS)
-    for rel in INPUTS.values():
-        files[rel[0]] = _sha(os.path.join(REPO, rel[0]))
-    _write_json(target, {'schema': 'p516_tperf_manifest_v1', 'utc': _utc(), 'files': files})
+    if root_name == 'local':
+        for rel in INPUTS.values():
+            files[rel[0]] = _sha(os.path.join(REPO, rel[0]))
+    else:
+        # Part B roots: the Part A pickles are not inputs (and need not exist on the Studio); the source case
+        # file and its params file are.
+        for rel in (os.path.join('data', 'SRP1', 'SRP1.json'), os.path.join('data', 'SRP1', 'SRP1_params.json')):
+            files[rel] = _sha(os.path.join(REPO, rel))
+    _write_json(target, {'schema': 'p516_tperf_manifest_v1', 'utc': _utc(), 'root': root_name, 'files': files}
+                if root_name != 'local' else {'schema': 'p516_tperf_manifest_v1', 'utc': _utc(), 'files': files})
     print(f'manifest: {len(files)} files -> {target}')
     return 0
 
@@ -1697,9 +2368,13 @@ def manifest(studio=False):
 if __name__ == '__main__':
     try:
         if ARGS.manifest:
-            sys.exit(manifest(studio=ARGS.studio_manifest))
+            sys.exit(manifest(ARGS.manifest_root or ('studio' if ARGS.studio_manifest else 'local')))
         if ARGS.studio:
-            sys.exit(run_studio())
+            sys.exit(run_studio_mode(dry=False))
+        if ARGS.studio_dry:
+            sys.exit(run_studio_mode(dry=True))
+        if ARGS.restriction_equivalence:
+            sys.exit(run_restriction_equivalence())
         sys.exit(run_local(ARGS.dry_run))
     except Exception:
         traceback.print_exc()

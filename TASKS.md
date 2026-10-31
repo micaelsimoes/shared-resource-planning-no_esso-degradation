@@ -21,9 +21,19 @@ order below stands but W184/W185 are **held** (Planner recommendation R6).
 - [x] **D0 / T0.1a** — builder dry run (zero solves; guard 0/0): inventory complete; cones 6.8e-16; objective 0.0;
   P-a/P-b FAILED (OLTC envelope rows; 1 ulp × |y|² = 4.8e-11) → Planner rulings spec v2 §10 (gate at fp resolution;
   envelope-rewrite class; `sess_comp` dropped; `s_bounds` housekeeping) — `P5_16_D0_T01A_REPORT.md`
-- [ ] **▶ D0 / T0.1b** — certified blocks (route A, both cells, 12 groups, both modes): capture, inventory with
-  nonconvex listing, coupling rows, gates per §10, exports (zero solves)
-- [ ] **D0 / T0.2** — declared conic solves + IPOPT cross-check; measurements; P1–P9 → `P5_16_D0_REPORT.md`
+- [x] **D0 / T0.1b** — certified blocks, both cells, 12 groups, R + A (zero solves): Q1–Q5 HELD (0 nonconvex rows
+  after `sess_comp`; same-point Δ = 0 on 810,912 rows; coupling = mismatch ≤ 0.139 eps_pri; objective identity
+  5e-15; e_available < rated at the unit); stop rule fired on the rank-1 mapped point (2.08e-9: certified
+  definitional residuals 4e-11 × |y|² 1e5) → Planner rulings spec v2 §12 (gate = first-order bound + 4·resolution;
+  variant C defined; capacity-derived bounds follow the variant; T0.2 compares against Q_cert⁺ = gross with
+  bound-projected slacks, +13.0 k€) — `P5_16_D0_T01B_REPORT.md`, manifest `4e5bbd45…`
+- [x] **D0 / T0.1c** — R, A, C, both cells, 12 groups (zero solves; guard 0/0): C1 HELD (0 of 1.25 M gated rows
+  over the restated gate), C2 semantically held (ruling §13), C3 HELD (Q_cert⁺ − gross = 13,012.57 / 13,032.47 € =
+  −detector penalty to 1.8e-12 €), C4 HELD (E_C/E_R = 0.985^{5,10,15}), C5 HELD (2 value-dependent bounds per copy);
+  72 LPs exported — `P5_16_D0_T01C_REPORT.md`, manifest `d2955128…`
+- [ ] **▶ D0 / T0.2** — 132 declared solves (108 Gurobi incl. fixed-mode and freeze attribution; 24 IPOPT
+  cross-checks); measurements (a)–(g); P1–P9 + expert predictions; absolute class on C, P6 on A and C →
+  `P5_16_D0_REPORT.md`
 - [ ] **D0 / T0.2** — gap, circulation, TN rank cost, dual infeasibility, capacity duals vs Phase A slopes;
   predictions recorded first → decision point H1 / H2 / H3
 - [x] **Addendum 88 received** (expert, 2026-10-31, appended by the author): R1 (a) confirmed with the governing
@@ -36,12 +46,39 @@ order below stands but W184/W185 are **held** (Planner recommendation R6).
   still 22/51 iterations because the barrier restarts at μ = 0.1 (no `mu_init`) — P2 FAILED (51 > 30; cold/warm
   1.45–2.55× < 3×); scaling span 3.0 decades — P3 FAILED on the DSO; df = 1e-3 from a 1e5 objective gradient
   (unidentified); production resets SoC to 0.5·E every cycle
-- [ ] **▶ T-perf A-zero** (running, zero solves): identify the 1e5 gradient term; cycle wall vs Σ solve times from
-  records (prediction: non-solve share ≥ 40 % on SRP1)
-- [ ] T-perf Part B on the Studio (author runs; unit cell, committed case-file configuration) — command to follow
+- [x] **T-perf A-zero** (zero solves; guard 0): the 1e5 gradient = slack penalties 1e3 × baseMVA
+  (`PENALTY_SHARED_ESS_BALANCE`, `PENALTY_FLEXIBILITY`; 5e4 tier `PENALTY_VOLTAGE_SQUARED`), every such slack at its
+  bound; df = 1e-3 ⇒ unscaled stationarity tolerance 1e-4 €/MWh against economic gradients 326–15,809 — **economic
+  stationarity is tight; the per-unit/scaling concern does not bite on termination**. Cycle wall median 28.7 s
+  (112 cycles, from `child_stdout.log`); per-solve times not recorded for the cell; proxy non-solve share 41–43 %
+  (solve = whole `run_smopf`) / 62–63 % (IPOPT process only). **Planner ruling:** solve = the whole `run_smopf` call
+  (what a block costs production) → prediction INDETERMINATE at proxy level (k* = 1.02–1.05); settled by Part B's
+  per-solve timing on the Studio — `P5_16_TPERF_AZERO_REPORT.md`, evidence `P516TPERF/azero`
+- [x] **T-perf Part B readiness** — the stub would have failed at its first solve (ADMM Params unset outside a cycle);
+  rebuilt: `--studio` solves the initialisation problem (Planner ruling A), one TSO + one DSO block + ESSO (bitwise
+  equal to the full build at SRP1 scale), `--studio-dry` zero-solve here (DSO 269,170 vars — D1 HELD; build RSS
+  2.2 GiB — D2 HELD); refusals + 24 GiB watchdog; never-run stub `run_studio` deleted (process deviation recorded;
+  no alias) — `P5_16_TPERF_PARTB_READINESS.md`, evidence `P516TPERF/studio_dry` (`37820a9f…`), `studio_dry_equiv`
+- [ ] **▶ Author: run Part B on the Studio** at the commit carrying harness sha256 `2c85fc93…` (procedure in the
+  readiness report); copy back `studio/` + the two launch logs
+- [x] **A2 + A2b** (`mu_init` A/B; 1 + 5 declared solves, guards exact): iterations −78/−79 % (TSO 48 → 10, DSO 51 → 11
+  on the perturbed problem), wall −35/−43 % — A3, A5 HELD; A1, A2 FAILED (TSO 9 > 8; perturbation costs the TSO a
+  22-iteration μ = 10^-1.7 plateau); **A4 FAILED**: DSO `mu_init` solves end 23–41× outside the complementarity bar with
+  35–38× larger dual infeasibility (all within tol) — hypothesis: a shallower stop (13–15 % of tol vs 0.4 %), not a
+  different limit. **R7: do not adopt yet**; the bar question → Advisor with Part B — `P5_16_TPERF_A2_REPORT.md`,
+  evidence `P516TPERF/a2` (`c22e94d3…`), `a2b` (`8dc01e26…`)
 - [ ] Expert R7 (to request): `mu_init` / warm-start barrier policy as a production configuration lever; diagnostic
   A/B (≤ 6 solves) proposed first — author authorization needed
-- [ ] Convention change per **spec v3** (R1–R3 ruled; waits on the author's R2(ii)/(v)): ESSO salvage term; `'mid'` baseline; five-block single-scenario case file;
+- [x] Amendment to Addendum 88 (author, 2026-10-31): C2 closed — installation-year basis, f = 1.0 notional residual,
+  no converter credit, today's defaults frozen → `P5_16_CONVENTION_CHANGE_SPEC_v4.md`; hold lifted on commit
+- [x] **C5 + G-CC-4** — `p516_lattice.py` (general lattice, R3 neighbourhood, resolution-by-bound hook),
+  `p516_lattice_gate.py`: 30/30 checks, L1–L4 HELD (old domain 1,705 ↔ general common-year points; master-row
+  oracle 200/200, I(x) exact; |N(x=0)| = 30 five-block / 18 SRP1; 3 + 3 MWh rejected by both); finding F-1: at
+  B = €1M the 5 MWh cumulative cap never binds (cheapest over-cap plan €1.03–1.11 M) — `P5_16_CC_C5_REPORT.md`,
+  evidence `P516CC/g_cc4` (manifest `5c99a3fb…`). Five-block instance checked against the module only (no case
+  file yet — C4)
+- [ ] **▶ Convention change per spec v4** — C1 + C3 + C4 + G-CC-1/2/3/5 (production edit; starts when the three
+  running Workers release the tree): ESSO salvage term; `'mid'` baseline; five-block single-scenario case file;
   cumulative admissibility + general-lattice canonicalization; gate x = 0 bitwise + fixtures unpickle
 - [ ] Spec v2 freeze → re-evaluation campaign on the Studio (authorized by a later addendum, one gate per task)
 - [ ] If H1/H2: Phase 2 LB oracle (SoH ≡ 1 blocks, dual extraction with margin, cache validation, lattice MILP
