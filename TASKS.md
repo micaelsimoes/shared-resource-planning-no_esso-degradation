@@ -54,7 +54,14 @@ order below stands but W184/W185 are **held** (Planner recommendation R6).
   A/B (≤ 6 solves) proposed first — author authorization needed
 - [x] Amendment to Addendum 88 (author, 2026-10-31): C2 closed — installation-year basis, f = 1.0 notional residual,
   no converter credit, today's defaults frozen → `P5_16_CONVENTION_CHANGE_SPEC_v4.md`; hold lifted on commit
-- [ ] **▶ Convention change per spec v4** (zero-solve tasks G-CC-1…5 proceed as ordered): ESSO salvage term; `'mid'` baseline; five-block single-scenario case file;
+- [x] **C5 + G-CC-4** — `p516_lattice.py` (general lattice, R3 neighbourhood, resolution-by-bound hook),
+  `p516_lattice_gate.py`: 30/30 checks, L1–L4 HELD (old domain 1,705 ↔ general common-year points; master-row
+  oracle 200/200, I(x) exact; |N(x=0)| = 30 five-block / 18 SRP1; 3 + 3 MWh rejected by both); finding F-1: at
+  B = €1M the 5 MWh cumulative cap never binds (cheapest over-cap plan €1.03–1.11 M) — `P5_16_CC_C5_REPORT.md`,
+  evidence `P516CC/g_cc4` (manifest `5c99a3fb…`). Five-block instance checked against the module only (no case
+  file yet — C4)
+- [ ] **▶ Convention change per spec v4** — C1 + C3 + C4 + G-CC-1/2/3/5 (production edit; starts when the three
+  running Workers release the tree): ESSO salvage term; `'mid'` baseline; five-block single-scenario case file;
   cumulative admissibility + general-lattice canonicalization; gate x = 0 bitwise + fixtures unpickle
 - [ ] Spec v2 freeze → re-evaluation campaign on the Studio (authorized by a later addendum, one gate per task)
 - [ ] If H1/H2: Phase 2 LB oracle (SoH ≡ 1 blocks, dual extraction with margin, cache validation, lattice MILP
