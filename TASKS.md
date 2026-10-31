@@ -41,7 +41,9 @@ order below stands but W184/W185 are **held** (Planner recommendation R6).
 - [ ] T-perf Part B on the Studio (author runs; unit cell, committed case-file configuration) — command to follow
 - [ ] Expert R7 (to request): `mu_init` / warm-start barrier policy as a production configuration lever; diagnostic
   A/B (≤ 6 solves) proposed first — author authorization needed
-- [ ] Convention change per **spec v3** (R1–R3 ruled; waits on the author's R2(ii)/(v)): ESSO salvage term; `'mid'` baseline; five-block single-scenario case file;
+- [x] Amendment to Addendum 88 (author, 2026-10-31): C2 closed — installation-year basis, f = 1.0 notional residual,
+  no converter credit, today's defaults frozen → `P5_16_CONVENTION_CHANGE_SPEC_v4.md`; hold lifted on commit
+- [ ] **▶ Convention change per spec v4** (zero-solve tasks G-CC-1…5 proceed as ordered): ESSO salvage term; `'mid'` baseline; five-block single-scenario case file;
   cumulative admissibility + general-lattice canonicalization; gate x = 0 bitwise + fixtures unpickle
 - [ ] Spec v2 freeze → re-evaluation campaign on the Studio (authorized by a later addendum, one gate per task)
 - [ ] If H1/H2: Phase 2 LB oracle (SoH ≡ 1 blocks, dual extraction with margin, cache validation, lattice MILP
