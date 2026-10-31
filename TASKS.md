@@ -21,8 +21,13 @@ order below stands but W184/W185 are **held** (Planner recommendation R6).
 - [x] **D0 / T0.1a** — builder dry run (zero solves; guard 0/0): inventory complete; cones 6.8e-16; objective 0.0;
   P-a/P-b FAILED (OLTC envelope rows; 1 ulp × |y|² = 4.8e-11) → Planner rulings spec v2 §10 (gate at fp resolution;
   envelope-rewrite class; `sess_comp` dropped; `s_bounds` housekeeping) — `P5_16_D0_T01A_REPORT.md`
-- [ ] **▶ D0 / T0.1b** — certified blocks (route A, both cells, 12 groups, both modes): capture, inventory with
-  nonconvex listing, coupling rows, gates per §10, exports (zero solves)
+- [x] **D0 / T0.1b** — certified blocks, both cells, 12 groups, R + A (zero solves): Q1–Q5 HELD (0 nonconvex rows
+  after `sess_comp`; same-point Δ = 0 on 810,912 rows; coupling = mismatch ≤ 0.139 eps_pri; objective identity
+  5e-15; e_available < rated at the unit); stop rule fired on the rank-1 mapped point (2.08e-9: certified
+  definitional residuals 4e-11 × |y|² 1e5) → Planner rulings spec v2 §12 (gate = first-order bound + 4·resolution;
+  variant C defined; capacity-derived bounds follow the variant; T0.2 compares against Q_cert⁺ = gross with
+  bound-projected slacks, +13.0 k€) — `P5_16_D0_T01B_REPORT.md`, manifest `4e5bbd45…`
+- [ ] **▶ D0 / T0.1c** — R, A, C with §12 applied; envelope check preserved; Q_cert⁺; 72 LP exports (zero solves)
 - [ ] **D0 / T0.2** — declared conic solves + IPOPT cross-check; measurements; P1–P9 → `P5_16_D0_REPORT.md`
 - [ ] **D0 / T0.2** — gap, circulation, TN rank cost, dual infeasibility, capacity duals vs Phase A slopes;
   predictions recorded first → decision point H1 / H2 / H3

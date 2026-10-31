@@ -52,6 +52,11 @@ them (the `_get_operational_recourse_components` lineage). Pre-Step-3.1-C fixtur
 for them -- and only for them -- `objective_function_rule` is evaluated through `_PreSettlementFixtureView`, which
 supplies 0 for the two absent settlement attributes and delegates everything else (recorded per block).
 
+T0.1b extension (spec v2 section 10 ruling 3): `inventory_rows(..., drop_sess_comp=True)` and
+`relax_network_block(..., drop_sess_comp=True)` drop the nonconvex `sess_comp` rows (form verified first, see
+DROPPED_NETWORK_FAMILIES); `nonconvex_active_rows` lists any active row still outside CONVEX_FORMS after
+relaxation (a stop for the caller, never a drop). The defaults keep the T0.1a dry-run behaviour unchanged.
+
 Nothing here calls a solver. Callers arm `p513_solve_profile_guard.SolveProfileGuard` (blocking form).
 """
 
@@ -102,6 +107,21 @@ ESSO_DROP_ARGUMENTS = {
 }
 
 ESSO_SLACK_VARS = ('slack_es_pnet_up', 'slack_es_pnet_down')
+
+# T0.1b (spec v2 section 10 ruling 3): the ONE network family dropped in the relaxation, opt-in
+# (`drop_sess_comp=True`); the T0.1a dry run keeps the default False and is unchanged.
+# component name -> (expected production rule function name, sub-label, LB-safety argument)
+DROPPED_NETWORK_FAMILIES = {
+    'sess_comp': ('sess_comp_rule', 'sess_comp_nonconvex',
+                  'sess_comp (network.py l.512, MCH sess_comp_rule l.933, BILINEAR_RELAXATION branch): '
+                  'shared_es_pch_hat * shared_es_pdch_hat <= ESS_COMPLEMENTARITY_TOLERANCE (1e-4). Nonconvex '
+                  'bilinear inequality; removing it only enlarges the feasible set (LB-safe). P5.5-D2: the convex '
+                  'hull of the complementarity set inside the box is the triangle production already imposes '
+                  '(sess_active_sum_limit). Spec v2 section 10 ruling 3.'),
+}
+
+# Row forms a convex conic solver accepts (labels of `_quadratic_form_label`).
+CONVEX_FORMS = ('linear', 'convex_quadratic_psd', 'rotated_cone', 'lorentz_cone')
 
 _D0_PREFIX = 'd0_'
 
@@ -267,6 +287,49 @@ def _check_definitional_rules(block):
     return found
 
 
+def _check_sess_comp_rows(block):
+    """Verify the `sess_comp` family is exactly ruling 3's row before it is dropped: built from `sess_comp_rule`,
+    every active row of the BILINEAR_RELAXATION form  1.0 * shared_es_pch_hat[k] * shared_es_pdch_hat[k] <= tol
+    (same index k, no linear or constant part, no lower bound, tol == ESS_COMPLEMENTARITY_TOLERANCE).
+    Raises on any other form (a different form needs a new ruling, not a silent drop). Returns the active count."""
+    component = getattr(block, 'sess_comp', None)
+    if component is None:
+        return 0
+    actual = rule_function_name(component)
+    if actual != DROPPED_NETWORK_FAMILIES['sess_comp'][0]:
+        raise RuntimeError(f'sess_comp: built from rule {actual!r}, expected sess_comp_rule')
+    n = 0
+    for cd in component.values():
+        if not cd.active:
+            continue
+        repn = generate_standard_repn(cd.body, compute_values=True, quadratic=True)
+        ok = (repn.nonlinear_expr is None and not repn.linear_vars and float(pe.value(repn.constant)) == 0.0
+              and len(repn.quadratic_vars) == 1 and float(pe.value(repn.quadratic_coefs[0])) == 1.0
+              and cd.lower is None and cd.upper is not None
+              and float(pe.value(cd.upper)) == float(mch.ESS_COMPLEMENTARITY_TOLERANCE))
+        if ok:
+            v1, v2 = repn.quadratic_vars[0]
+            names = {v1.parent_component().local_name, v2.parent_component().local_name}
+            ok = names == {'shared_es_pch_hat', 'shared_es_pdch_hat'} and v1.index() == v2.index()
+        if not ok:
+            raise RuntimeError(f'{cd.name}: not the BILINEAR_RELAXATION sess_comp row ruling 3 drops: {cd.expr}')
+        n += 1
+    return n
+
+
+def nonconvex_active_rows(model):
+    """Every ACTIVE row of `model` (descending into sub-blocks) whose form at the current Param values is not in
+    CONVEX_FORMS, as [{'row', 'form'}]. Used after relaxation: a non-empty list is a stop (spec v2 section 10
+    ruling 3), never a silent drop."""
+    rows = []
+    for cd in model.component_data_objects(pe.Constraint, active=True, descend_into=True):
+        repn = generate_standard_repn(cd.body, compute_values=True, quadratic=True)
+        form = _quadratic_form_label(cd, repn)
+        if form not in CONVEX_FORMS:
+            rows.append({'row': cd.name, 'form': form})
+    return rows
+
+
 def _classify_esso_row(name, cd):
     """(class, sub-label) for one active ESSO row; raises if a degradation-list row matches no known form."""
     if name == 'available_e_capacity_unit':
@@ -288,13 +351,15 @@ def _classify_esso_row(name, cd):
     return 'retained', None
 
 
-def inventory_rows(block, kind):
+def inventory_rows(block, kind, drop_sess_comp=False):
     """Classify every ACTIVE constraint row of `block` (kind 'network' or 'esso').
 
     Network: class 'replaced' (definitional family, sub-label cone / decoupled / envelope; or a row referencing a
     transformer's r / r_sqr, sub-label 'envelope_rewrite'), else 'retained'. Nothing is dropped on a network block.
     ESSO: class 'dropped' (SoH exp chain, soh floor, bilinear available-e, H3; each with its LB-safety argument),
     else 'retained'.
+    drop_sess_comp=True (T0.1b, spec v2 section 10 ruling 3): network rows of `sess_comp` are class 'dropped',
+    sub-label 'sess_comp_nonconvex' (form verified by `_check_sess_comp_rows`). Default False = T0.1a behaviour.
     Each row also gets a form label (linear / convex_quadratic_psd / rotated_cone / lorentz_cone /
     nonconvex_quadratic / nonlinear) at the current Param values -- an audit only.
     Returns {'rows': [...], 'counts': {...}, ...}."""
@@ -308,6 +373,9 @@ def inventory_rows(block, kind):
         transformer_rows = _transformer_rows(block, network)
         extra['active_transformer_branches'] = active_transformer_branches(network)
         extra['n_transformer_branches_any_status'] = sum(1 for br in network.branches if br.is_transformer)
+        if drop_sess_comp:
+            extra['drop_sess_comp'] = True
+            extra['sess_comp_rows_verified'] = _check_sess_comp_rows(block)
     for component in block.component_objects(pe.Constraint, active=True, descend_into=True):
         name = component.name
         for index, cd in component.items():
@@ -318,6 +386,8 @@ def inventory_rows(block, kind):
             if kind == 'network':
                 if name in DEFINITIONAL_FAMILIES:
                     cls, sub = 'replaced', DEFINITIONAL_FAMILIES[name][1]
+                elif drop_sess_comp and name in DROPPED_NETWORK_FAMILIES:
+                    cls, sub = 'dropped', DROPPED_NETWORK_FAMILIES[name][1]
                 elif (name, index) in transformer_rows:
                     cls, sub = 'replaced', 'envelope_rewrite'
                 else:
@@ -387,11 +457,13 @@ def _envelope_rewrite_expr(relaxed, cd, network, transformers):
     return expr
 
 
-def relax_network_block(block, capacity_mode, rated_capacity=None):
+def relax_network_block(block, capacity_mode, rated_capacity=None, drop_sess_comp=False):
     """Clone `block` (never mutated) and build its W-space relaxation (spec v2 section 3 items 1-3, 5).
 
     capacity_mode 'available': `shared_es_s/e_rated_fixed` left at the values the block carried (variant A).
     capacity_mode 'rated': reset to `rated_capacity` = {e: {'s': pu, 'e': pu}} (variant R).
+    drop_sess_comp=True (T0.1b, spec v2 section 10 ruling 3): the active `sess_comp` rows are verified to be the
+    BILINEAR_RELAXATION row and deactivated (dropped, LB-safe). Default False = T0.1a behaviour.
     Returns (relaxed, record). `relaxed._d0_meta` carries the row maps `mapped_point` needs."""
     if capacity_mode not in ('rated', 'available'):
         raise ValueError(f'capacity_mode must be rated or available, got {capacity_mode!r}')
@@ -410,6 +482,20 @@ def relax_network_block(block, capacity_mode, rated_capacity=None):
         deactivated[name] = sum(1 for cd in component.values() if cd.active)
         component.deactivate()
     record['deactivated_definitional_rows'] = deactivated
+
+    # 1b. (opt-in) drop the nonconvex sess_comp rows -- spec v2 section 10 ruling 3
+    if drop_sess_comp:
+        record['drop_sess_comp'] = True
+        n_verified = _check_sess_comp_rows(relaxed)
+        dropped = 0
+        for cd in relaxed.sess_comp.values():
+            if cd.active:
+                cd.deactivate()
+                dropped += 1
+        if dropped != n_verified:
+            raise RuntimeError(f'sess_comp: verified {n_verified} rows, dropped {dropped}')
+        record['dropped_rows'] = {'sess_comp': dropped}
+        record['drop_arguments'] = {'sess_comp': DROPPED_NETWORK_FAMILIES['sess_comp'][2]}
 
     # 2. rotated cone per active branch and period, on the production W variables
     active_branches = [b for b, br in enumerate(network.branches) if br.status]
