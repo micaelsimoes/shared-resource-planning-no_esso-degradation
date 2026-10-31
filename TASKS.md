@@ -49,7 +49,14 @@ order below stands but W184/W185 are **held** (Planner recommendation R6).
   (solve = whole `run_smopf`) / 62–63 % (IPOPT process only). **Planner ruling:** solve = the whole `run_smopf` call
   (what a block costs production) → prediction INDETERMINATE at proxy level (k* = 1.02–1.05); settled by Part B's
   per-solve timing on the Studio — `P5_16_TPERF_AZERO_REPORT.md`, evidence `P516TPERF/azero`
-- [ ] T-perf Part B on the Studio (author runs; unit cell, committed case-file configuration) — command to follow
+- [x] **T-perf Part B readiness** — the stub would have failed at its first solve (ADMM Params unset outside a cycle);
+  rebuilt: `--studio` solves the initialisation problem (Planner ruling A), one TSO + one DSO block + ESSO (bitwise
+  equal to the full build at SRP1 scale), `--studio-dry` zero-solve here (DSO 269,170 vars — D1 HELD; build RSS
+  2.2 GiB — D2 HELD); refusals + 24 GiB watchdog; never-run stub `run_studio` deleted (process deviation recorded;
+  no alias) — `P5_16_TPERF_PARTB_READINESS.md`, evidence `P516TPERF/studio_dry` (`37820a9f…`), `studio_dry_equiv`
+- [ ] **▶ Author: run Part B on the Studio** at the commit carrying harness sha256 `2c85fc93…` (procedure in the
+  readiness report); copy back `studio/` + the two launch logs
+- [ ] A2b (running): the five remaining `mu_init` solves under the stopping-slack gates (a2 = TSO c1: 22 → 9 iterations)
 - [ ] Expert R7 (to request): `mu_init` / warm-start barrier policy as a production configuration lever; diagnostic
   A/B (≤ 6 solves) proposed first — author authorization needed
 - [x] Amendment to Addendum 88 (author, 2026-10-31): C2 closed — installation-year basis, f = 1.0 notional residual,
