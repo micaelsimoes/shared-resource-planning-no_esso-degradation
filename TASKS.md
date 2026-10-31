@@ -36,8 +36,14 @@ order below stands but W184/W185 are **held** (Planner recommendation R6).
   still 22/51 iterations because the barrier restarts at μ = 0.1 (no `mu_init`) — P2 FAILED (51 > 30; cold/warm
   1.45–2.55× < 3×); scaling span 3.0 decades — P3 FAILED on the DSO; df = 1e-3 from a 1e5 objective gradient
   (unidentified); production resets SoC to 0.5·E every cycle
-- [ ] **▶ T-perf A-zero** (running, zero solves): identify the 1e5 gradient term; cycle wall vs Σ solve times from
-  records (prediction: non-solve share ≥ 40 % on SRP1)
+- [x] **T-perf A-zero** (zero solves; guard 0): the 1e5 gradient = slack penalties 1e3 × baseMVA
+  (`PENALTY_SHARED_ESS_BALANCE`, `PENALTY_FLEXIBILITY`; 5e4 tier `PENALTY_VOLTAGE_SQUARED`), every such slack at its
+  bound; df = 1e-3 ⇒ unscaled stationarity tolerance 1e-4 €/MWh against economic gradients 326–15,809 — **economic
+  stationarity is tight; the per-unit/scaling concern does not bite on termination**. Cycle wall median 28.7 s
+  (112 cycles, from `child_stdout.log`); per-solve times not recorded for the cell; proxy non-solve share 41–43 %
+  (solve = whole `run_smopf`) / 62–63 % (IPOPT process only). **Planner ruling:** solve = the whole `run_smopf` call
+  (what a block costs production) → prediction INDETERMINATE at proxy level (k* = 1.02–1.05); settled by Part B's
+  per-solve timing on the Studio — `P5_16_TPERF_AZERO_REPORT.md`, evidence `P516TPERF/azero`
 - [ ] T-perf Part B on the Studio (author runs; unit cell, committed case-file configuration) — command to follow
 - [ ] Expert R7 (to request): `mu_init` / warm-start barrier policy as a production configuration lever; diagnostic
   A/B (≤ 6 solves) proposed first — author authorization needed
