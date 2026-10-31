@@ -4193,3 +4193,488 @@ review on an unreached status or `nrf_capture_error`). W185 follows W184's repor
 rulings 2 and 3 (i)–(ii) of this addendum (eight cells serially, all completed; H2 per pair; the ρ read-back on every
 cell; prediction: H2 holds at both prices and the read-back holds 8/8). W186 (E1) and W187 (screen) wait for
 Addendum 87 after W185.
+
+
+# Addendum 87 — realignment direction; convention change; D0 and T-perf orders; W184/W185 held (drafted by the Planner 2026-10-30; adopted by the author 2026-10-31)
+
+**Adoption (author, 2026-10-31).** Decisions 1–6 and the agreements recorded under "Author's agreement" are the
+author's. The items under "Rulings requested from the expert" (R1 confirmation, R3, R4, R6, F4 wording, and the
+salvage-parameter convention) are forwarded in `EXPERT_REQUEST_2026-10-31.md` and remain open until Addendum 88.
+D0 (`P5_16_D0_SPEC_v2.md`, route A — the four W86 pickles verified on the 24 GB machine), the convention-change
+zero-solve tasks (`P5_16_CONVENTION_CHANGE_SPEC_v2.md`) and T-perf (`P5_16_TPERF_SPEC_v1.md`) are authorized.
+
+**Status: adopted** (see Adoption below). Basis: `REVISION_REALIGNMENT_ANALYSIS_2026-10-30.md` (v2) and the Advisor review it records.
+
+## Author's decisions (taken 2026-10-30)
+
+1. **Direction.** The revision is realigned with the submitted paper's intent under valid mathematics: a convex
+   relaxation of the operational recourse supplies a **lower bound** and the Benders master; the certified ADMM
+   evaluation of the full AC model supplies the **upper bound** and every reported physical quantity; the MADS
+   frame supplies the mesh-local certificate around the master's plan. The relaxation never produces a reported
+   operating point. The decision to proceed past D0 (below) is conditional on D0's outcome (H1/H2 proceed; H3 falls
+   back to the current manuscript plus paper-scale upper bounds).
+2. **Salvage is part of the planning objective F.** Identical on both sides: realised terminal credit on the UB side,
+   maximum credit (SoH ≡ 1, affine in x) on the LB side.
+3. **Degradation convention for the UB instance:** mid-block SoH point (`available_energy_soh_point = 'mid'`) and
+   3-year blocks (2025/2028/2031/2034/2037, calendar life = five blocks). Applied together with decision 2 in one
+   re-evaluation campaign. All storage-plan cells in the cache are superseded by it; x = 0 cells are not.
+4. **Lattice unchanged:** 0.25 MVA / 0.5 MWh, 2 h ≤ E/P ≤ 4 h per cohort, 5 MWh cumulative rated energy per node and
+   year, €1 M expected discounted budget over all years.
+5. **Full (node, year) decision space** on both sides: per-node investment years and staged additions. The UB search
+   runs on the general lattice z ∈ ℤ^{2|N||Y|} (30 on the paper's year set).
+6. **Machines.** No VM request. Studio: the re-evaluation campaign and 2–3 full 5 × 4 × 25 upper bounds (x = 0 and the
+   plan; serial, or 3–4 persistent workers if a two-cycle memory smoke passes on 32 GB). The 24 GB machine: D0 and the
+   LB side. A VM is requested only if D0 → H1 and further paper-scale UBs are needed, with measured hours.
+
+## Rulings requested from the expert
+
+**Author's agreement recorded 2026-10-30 (this session):** R1 as recommended (option (a), terminal salvage term in the
+ESSO objective); R2 as recommended (horizon-end expected energy cost, energy-only, cited recovery fraction); R5 closed
+(Gurobi `QCPDual = 1` primary, Clarabel open-source fallback per block, IPOPT cross-check; no licence request, no
+environment change before D0). The expert's confirmation of R1 is still requested, since it supersedes a governing
+decision. Author authorized D0 and the convention-change zero-solve tasks to proceed.
+
+**Advisor review of the convention-change spec (2026-10-30; `P5_16_CONVENTION_CHANGE_SPEC_v2.md` §0) — facts the
+expert must see before confirming R1, and two author items:**
+- F2: a 2025 cohort's salvage is identically zero (remaining calendar life 0 at the horizon end), so under R1 (a)
+  dispatch is salvage-aware only for 2028+ cohorts; for a 2025-only plan the critical review's §3.3 objection stands.
+  **Author/expert:** should a calendar-expired cohort with SoH above the floor carry a health-based residual value?
+- F4 (expert wording): the LB may credit salvage and bound available energy at the calendar-only SoH φ_cal^age
+  (dispatch-independent, hence valid) instead of SoH ≡ 1 — about 2× tighter on the salvage credit.
+- F9 (**author**): "horizon-end cost" is operationally the 2037 cost column; a 2040 value needs data or a rule.
+- **Author:** `energy_recovery_fraction` is 1.0 and `recycling_floor_fraction` 0.0 today — cited values needed.
+
+- **R1 — salvage mechanism.** Option (a): terminal salvage term in the ESSO objective, so dispatch internalises the
+  marginal salvage loss of cycling (this supersedes the governing decision "no explicit degradation cost"); option (b):
+  planning-only credit, dispatch unchanged (the critical review's §3.3 objection then stands). Planner recommends (a).
+- **R2 — salvage basis.** Purchase-year expected energy cost (as implemented in
+  `shared_energy_storage_data.py::_build_terminal_salvage_value_expression`) vs horizon-end expected cost;
+  energy-only vs converter pro-rata; `energy_recovery_fraction` and `recycling_floor_fraction` values with citations.
+  Planner recommends horizon-end cost, energy-only, cited fraction. Fixed before any freeze.
+- **R3 — certificate wording on the general lattice.** Coordinate unit neighbourhood (±1 in one coordinate, plus the
+  activation moves of inactive cohorts) replaces the ∞-norm box completion of Addendum A2; completion cap and N^max
+  restated accordingly.
+- **R4 — non-discriminating bound.** Whether a valid gap larger than the between-plan differences (H2) is acceptable
+  wording, stated with the sentence that plan selection rests on the mesh-local certificate.
+- **R5 — conic solver.** Admission of MOSEK (academic) or Clarabel to the canonical environment for the LB side;
+  Gurobi's QCP duals are not accepted as certificates (P5.5-C).
+- **R6 — W184 (E3) and W185 (E2).** Planner recommends holding both and re-scoping the robustness checks (NRF arm,
+  penalty pilot) into the new campaign, so the paper carries numbers from one convention. W183i (zero-solve) may
+  complete as ordered; its launcher work is reused.
+
+## D0 order — authorized by the author 2026-10-30; spec `P5_16_D0_SPEC_v1.md` (Advisor review first)
+
+**Correction of the correction (Advisor review of spec v1, verified):** the W86 tight-tail reference pair (x = 0
+cycle 132, unit cycle 112) ran with `persist_certified_models: true` from the Studio checkout; their
+`certified_models.pkl` and ESSO pickles are hash-recorded (spec v2 §2) but absent from the 24 GB machine's checkout.
+**Author action:** check the Studio for the four files; if present with matching sha256, D0 is zero-ADMM-solve
+(hash-verified loads, route A). Only if absent: in-process reproduction with a comparator parameterised to the W86
+records (route B, ≈ 1.5–2 h each). Spec v2 `P5_16_D0_SPEC_v2.md` also: deactivate-and-add construction on
+production's own W-space rows; ESSO P-net slacks fixed at 0; rated-vs-available capacity variants; row inventory and
+1e-12 identity gates; all 12 groups per cell; the differential prediction P6 (gap plan-independent) beside the
+absolute class — relevant to R4.
+
+- **T0.1 Build.** For the two certified SRP1 cache points x = 0 and 7: 0.25 MVA / 1 MWh (2025), one (year, day) block
+  each: W-space SOC relaxation of TSO + 3 DSOs + ESSO with SoH ≡ 1 and the H3 pro-rata rows dropped, exact coupling,
+  the `gross_operational_cost` convention (contracted settlement and voltage pin excluded, deviation costs and slack
+  penalties included), built from production constructors wherever the rule does not touch (e, f, r); only the
+  voltage families are rewritten. **Gate:** the certified ADMM point mapped into the relaxation violates no row by
+  more than the recorded consensus residuals and reproduces the block's gross objective to ≈ 1e-8. Failure stops
+  the realignment: the relaxation is not of production's problem.
+- **T0.2 Measure.** Per block: relative gap (Q_cert − Q_LB)/Q_cert; min(p_ch, p_dch)/S and dissipated energy; TN rank
+  residual in cost terms; conic dual infeasibility; capacity duals at the unit against the Phase A slopes
+  (227.7 k€/MWh, 51.7 k€/MVA) scaled to one block.
+- **Predictions (recorded before the run):** DSO blocks exact to ≤ 1e-5; circulation ≤ 0.05; overall gap ≤ 1e-2
+  (H1 or H2). Interpretation: ≤ 1e-4 → H1; 1e-4–1e-2 → H2 (R4 applies); > 1e-2 or circulation > 0.05 → H3.
+- Harness `p516_d0_*.py` under `data/SRP1/Results/P516D0/`; report `P5_16_D0_REPORT.md`; Advisor reviews the spec
+  before the Worker builds. Output paths new; no cited artefact touched.
+
+## Convention-change tasks (zero solves except the named gate) — authorized on adoption, after R1–R3
+
+- ESSO salvage term per R1/R2; `'mid'` as the baseline SoH point; the single-scenario five-block case file
+  (2025–2037); cumulative-capacity admissibility and general-lattice canonicalization per decision 5 and R3.
+- **Gate:** x = 0 bitwise identical on the ESSO and every network block (salvage and storage rows inert);
+  every preserved fixture unpickles; the unit cell builds under the new convention.
+- Then spec v2 freeze (configuration hash, horizon, SoH point, salvage basis, lattice, certificate rule) — the
+  re-evaluation campaign is authorized by a later addendum, one gate per task.
+
+## T-perf (author-authorized 2026-10-31)
+Diagnostic `P5_16_TPERF_SPEC_v1.md`: six declared timed solves on the certified unit-cell blocks here and six on
+paper-scale blocks on the Studio — NL-write / IPOPT / load split, iterations, scaling factors, RSS — producing a
+ranked lever table. A formulation lever adopted from it (per-unit base / scaling, W-auxiliary structure) enters
+the convention-change spec as C6 with the Step 1b candidate-3′ gate, so it rides the single re-evaluation campaign.
+
+## Stops
+
+As `CLAUDE.md`. In addition: D0's T0.1 gate failure; any D0 reading in H3; any salvage basis change after freeze.
+
+# Addendum 88 — expert rulings on `EXPERT_REQUEST_2026-10-31.md` (R1–R4, R6, F4); D0 and convention-change amendments; predictions (2026-10-31)
+
+**Inputs.** I read the following:
+- Addendum 87 (adopted 2026-10-31) and the request (R1–R4, R6, F4; R5 closed by the author);
+- `REVISION_REALIGNMENT_ANALYSIS_2026-10-30.md` v2;
+- `P5_16_D0_SPEC_v2.md`, including the Planner's §10 rulings after T0.1a;
+- `P5_16_CONVENTION_CHANGE_SPEC_v2.md` and `P5_16_TPERF_SPEC_v1.md`;
+- `P5_16_D0_T01A_REPORT.md` (`42840e42`).
+
+I checked them against the production salvage code: `shared_energy_storage_data.py` l. 846–909 and
+`_get_remaining_calendar_life` l. 915–922.
+
+**The problem every ruling below refers to.**
+
+P_S: min over x ∈ X of F(x) = I(x) + Q_S(x), where
+
+Q_S(x) = min over AC-feasible coordinated operation u of [Q(x, u) − S(x, u)].
+
+Here Q is the gross operational cost (contracted settlement excluded) and S is the terminal salvage credit of R2.
+
+- **Upper bound:** UB(x) = I(x) + Q(x, u_cert) − S(x, u_cert), at a certified operating point.
+- **Lower bound:** LB comes from the relaxation (F4), with the master over X.
+
+Both bound P_S:
+- the value of any operating point that is feasible to tolerance bounds Q_S from above, whatever rule produced the
+  dispatch;
+- the relaxation bounds Q_S from below provided it enlarges the feasible set and over-credits S.
+
+Two consequences are used throughout:
+1. The UB needs feasibility, not optimality.
+2. Certification matters only where plans are compared.
+
+## R1 — salvage mechanism: option (a) confirmed
+
+1. **Why (a).**
+   - Under P_S, option (a) evaluates the recourse that P_S defines.
+   - Option (b) evaluates a feasible but deliberately non-optimising dispatch of the same recourse. It is still a
+     valid UB, but a weaker one with a known bias, and the critical review's §3.3 objection applies to it.
+   - Option (a) costs one Param and one objective term.
+2. **The governing decision is restated, not reversed.**
+   - New wording: "No cycling or degradation cost is priced anywhere. The only degradation-dependent term in any
+     objective is the terminal value lost to ageing, which is part of the planning objective F by definition. Within
+     operation, the SoH floor remains the only enforced intertemporal constraint."
+   - This keeps the author's principle that a paid-for asset carries no operating cost. The salvage marginal is the
+     opportunity cost of the asset's own residual value, not an imputed price.
+3. **F2 does not weaken (a).**
+   - Under R2(iv), a cohort whose calendar life ends at the horizon has zero terminal value. For such a cohort,
+     salvage-aware and salvage-unaware dispatch coincide, so there is nothing to internalise.
+   - The §3.3 objection is therefore answered for every cohort: by the term for 2028+ cohorts, and by the zero-residual
+     convention for 2025 cohorts.
+   - Manuscript sentence: "A cohort installed in 2025 reaches the end of its 15-year calendar life at the end of the
+     horizon and carries no terminal credit; for it, salvage-aware and salvage-unaware operation coincide."
+4. **Conditions added to G-CC-3 (zero solves).**
+   - (i) **€ parity as an identity, checked numerically on the built models.** After the a = σ/w_med factor, a 1 €
+     change of S changes the ESSO objective exactly as much as a 1 € change of a block's present-value cost changes
+     that block's ADMM objective. This is in addition to the specified hand replica of κ.
+   - (ii) **Slack safety.** The salvage marginal per unit of `es_pnet`, in objective units, must be
+     ≤ 1e-3 × `PENALTY_ESSO_SLACK`. Otherwise the P-net slacks become cheaper than cycling the cells and the ESSO
+     "dispatches" through them. If it fails: stop, and raise the slack penalty before freeze.
+   - (iii) **Complementarity diagnostic.** It uses the effective marginal ε + κ·∂S/∂throughput. The salvage term
+     penalises both directions of throughput, so it reinforces the structural complementarity rather than weakening
+     it.
+   - (iv) **Initialisation.** κ = 0 at the initialisation solve, stated in the manuscript's algorithm.
+5. **Reporting.**
+   - Every UB reports Q (gross), S (realised), I and F separately.
+   - The value of a plan becomes Q(0) − Q(x) + S(x), one definition throughout the paper. S(0) = 0.
+
+## R2 — salvage basis and parameters
+
+The credit is
+
+S(x, u) = disc_T · f · Σ_cohorts [ c^E_T · rlf_c · E_c · h_c(u) ] + C^conv(x),
+
+where
+- h_c = (SoH_{c,T} − SoH^Min)/(1 − SoH^Min);
+- the recycling floor is 0;
+- C^conv is given in (v).
+
+**(i) Cost basis: horizon-end expected cost.**
+- In practice this is the **2037 column**: the expected energy cost of the last representative year (which stands for
+  2037–2039), probability-weighted over the cost trajectories and discounted from the horizon end (1.02⁻¹⁵).
+- No extrapolation to 2040. There are no data for it, and an invented rule is worse than a stated one.
+- Why: a unit of residual capacity at the horizon end has one value whatever its purchase year (the replacement-cost
+  reading). A purchase-year basis would credit older cohorts at superseded prices. With the year now a decision
+  variable, the timing result would then be decided by the price trajectory rather than by operation.
+- Direction, to state in the paper: with declining costs, the 2037 price overstates a 2040 price. The f sensitivity in
+  (ii) covers this, because S is linear in f · c_T.
+
+**(ii) Recovery fraction: base f = 1.0, meaning value in continued use, not resale.**
+- The horizon is a modelling truncation, not a sale.
+- The remaining-life and health factors already depreciate the asset.
+- A resale fraction well below 1 would reintroduce the late-investment penalty R3.1 objects to.
+- *This differs from the Planner's recommendation and from the author's provisional agreement of 2026-10-30; the
+  author decides.*
+- In either case, the paper must also report:
+  - the case with S off (f = 0; this is the C1 A/B arm on the timing-relevant plans);
+  - a cited resale or second-life value as a further row, if the author supplies one;
+  - the timing result at each.
+
+**(iii) Recycling floor: 0.**
+A scrap floor credits capacity below end of life. That is inconsistent with the continued-use meaning and with
+h_c = 0 at SoH^Min.
+
+**(iv) Calendar-expired cohorts: zero residual value.**
+- T^Cal = 15 y is the asset's end of life by assumption, and the model itself withdraws the cohort at T^Cal (the
+  cohort window). Crediting value after a withdrawal the model imposes would be inconsistent.
+- φ_cal = 0.985 was calibrated as 80 % retention at 15 y, which is the calendar end-of-life statement.
+- Manuscript sentence: as in R1.3.
+
+**(v) Converter: credited pro rata to remaining calendar life.**
+- The credit is C^conv = disc_T · f · Σ_c c^S_T · rlf_c · S_c, at the 2037 expected power cost, with no health factor
+  (the converter does not age in the model).
+- Why: without it, a late cohort pays the full converter cost for only its in-horizon years. That is the
+  late-investment penalty R3.1 names.
+- Size: at a 2037 0.25 MVA / 1 MWh cohort, the converter credit is ≈ 30 % of the energy credit (0.25 · c^S_T · 0.8 ·
+  0.743 against 1 · c^E_T · 0.8 · 0.85 · 0.743, taking c^S_T ≈ c^E_T as in 2025). It is zero for 2025 cohorts.
+- C^conv is dispatch-independent. It is computed in F and in the results writer, **never in the ESSO objective**, so
+  the switch-off and x = 0 gates are untouched, and it is exact on the LB side.
+- *This differs from the Planner's recommendation (energy-only); the author decides.* If energy-only is kept, the
+  manuscript states that the converter is not credited, and the timing result carries that caveat.
+
+**(vi) Manuscript reading of the product rlf · h.**
+- Wording: "remaining capacity-years: the share of calendar life remaining times the share of usable capacity above
+  the end-of-life floor; calendar fade enters both factors, so the credit is conservative."
+- State the terminal date explicitly: T is the end of the last block (2040), and SoH_{c,T} is the end-of-block SoH of
+  the 2037 block (critical review §3.3, last paragraph).
+
+**(vii) Freeze.**
+Cost basis, f, floor, converter treatment and terminal date go into the spec v2 freeze. Any change after the freeze is
+a stop (Addendum 87).
+
+## R3 — certificate on the general lattice: adopted, with two additions
+
+1. **Neighbourhood N(x)** at the finest mesh (z ∈ ℤ³⁰). It consists of:
+   - **(a) Coordinate steps** ±e_i on every P_{n,y} and E_{n,y}. This is the maximal positive basis, which carries
+     the GPS/MADS theory at Δ = 1.
+   - **(b) Activation and deactivation.** Each inactive cohort can be activated to 0.25/0.5 or 0.25/1.0. Each active
+     smallest cohort can be **deactivated** to 0/0. This is the reverse move; without it, a smallest cohort is never
+     tested against its own absence.
+   - **(c) One-block shifts.** Each active cohort can move to y ± 1 at the same (P, E). If a cohort already exists in
+     the target year, the shifted one is added to it; the per-cohort duration constraint is closed under addition.
+     Timing is the question R3.1 raises, and the general lattice exists to answer it. Without (c), no year move is a
+     unit move.
+
+   (b) and (c) enter as search-step points, which the theory admits.
+2. **Size in closed form.**
+   - |N| ≤ 30 + 5A for A active cohorts: 4A coordinate steps, 2(15 − A) activations, ≤ A deactivations, ≤ 2A shifts.
+   - Coordinate steps on inactive cohorts are inadmissible by construction and are not listed.
+   - The size is recorded before any poll.
+3. **Resolution by bound.**
+   - A neighbour x′ is resolved without an ADMM evaluation when F_LB(x′), minus the LB's dual-bound margin, is at
+     least UB(x̂). Such an x′ cannot improve on x̂ in P_S.
+   - Report it separately: "resolved by the lower bound: k of |N|".
+   - Under H1 this resolves most of N; under H2, possibly none of it.
+4. **Run rule.**
+   - Start at the master's plan with Δ = 1 and poll all of N.
+   - Move on a determinate improvement.
+   - Terminate when no point of N(incumbent) is determinately better.
+   - Completion cap: 60 points (stop for review above it).
+   - N^max: 120 new evaluations per certificate run, which is two complete neighbourhoods at A ≤ 6.
+   - A run stopped by N^max reports "k of |N| evaluated", as was done for the F2 plan.
+5. **Statement.**
+   - Wording: "x̂ is mesh-local optimal on the investment lattice in the coordinate unit neighbourhood (unit steps in
+     each converter rating and energy capacity, activation and removal of a smallest unit, and a one-block shift of
+     each installation): no evaluated neighbour is determinately better; k neighbours were resolved by the lower
+     bound."
+   - Never write "locally optimal" without naming the neighbourhood.
+   - Comparisons use the determinacy rule, as before.
+
+## R4 — wording when the bound is valid but non-discriminating (ruled now, before D0)
+
+**Rules for every case.**
+- **Units.** Report the gap as G = UB − LB in k€ **and** as g = G/F(x̂), always both, and always beside what is at
+  stake: the reference unit's value and the largest difference D between evaluated plans. A relative gap on its own
+  is not admissible: g = 1e-3 of a 654 M€ cost is 654 k€, larger than every storage effect.
+- **"Global optimum".** Use it only as "the optimum of the lattice planning problem with AC coordinated operation".
+  Qualify the UB once: "an operating point feasible to the solver and consensus tolerances".
+- **Decompose G where measured:**
+  - network relaxation (rank gap, OLTC envelope);
+  - degradation relaxation (calendar-only SoH against the realised SoH; plan-dependent, it grows with storage cycling);
+  - salvage over-credit (zero for 2025 cohorts);
+  - the UB's distance from the recourse optimum (not measured; part of G).
+- **Exclusions.** Report how many evaluated plans the bound alone excludes, i.e. those with F_LB(x′) > UB(x̂).
+- **Forbidden words:** "optimal", "near-optimal", "certified optimal", "the gap certifies the plan".
+
+**Always true, in every case:** "No plan on the lattice can lower the total cost by more than G = … k€ below that of
+x̂."
+
+**H2, with P6 holding on variant C (amendment D-3):**
+"The plan x̂ is within G = … k€ (g = … % of its total cost) of the optimum of the lattice planning problem with AC
+coordinated operation. G is larger than the differences between the evaluated plans (at most D = … k€), so the bound
+does not decide between them, and the choice of x̂ rests on the mesh-local certificate (Section …). The relaxation gap
+of the network model differed by Δ = … k€ between the plan without storage and the reference unit, within resolution,
+which is consistent with a gap that does not depend on the plan; the relaxed problem's optimal plan is x̂ [or: is x′,
+whose evaluation is reported in Table …]. These observations support the ranking; they do not certify it."
+
+**H2, with P6 failing:** keep the first two sentences, then add: "The gap differed by Δ between the two plans where it
+was measured, beyond resolution, so the relaxed problem is not used to rank plans."
+
+**H1:** "… G is smaller than the differences between plans; the bound excludes k of the m evaluated plans, and no plan
+can improve on x̂ by more than G." For x̂ = 0, this gives the certified negative: "no lattice plan reduces the total
+cost by more than G below that of the plan without storage."
+
+**H3:** no gap claim in the abstract, highlights or conclusions. The bound is reported once, in the limitations, as
+non-informative, with G stated.
+
+**Why rule now.** In H2, the lower-bound effort pays only through the always-true sentence and the relaxed
+multi-scenario and staged optima. The wording must not be chosen after seeing D0.
+
+## R5 — noted
+
+The author's set-up stands: Gurobi `QCPDual = 1` as primary, Clarabel per block whenever a log contains "failed to
+compute QCP dual", and an IPOPT cross-check. Benders cuts and the R3.3 resolution by bound are anchored on the
+Lagrangian dual bound with its margin (G-D0-5), never on a primal value.
+
+## R6 — W184 (E3) and W185 (E2): held and re-scoped
+
+- The paper carries one instance and one convention.
+- E3 (C_NRF at x = 0) and E2 (ρ₀ × 0.5 and × 2 at the reference pair) are re-ordered on the five-block instance after
+  the spec v2 freeze. Their Addendum 85/86 hypotheses are restated for that instance, and the launchers and key logic
+  are reused.
+- W186 and W187 are held with them; the campaign addendum re-scopes them against the R3 certificate run.
+- W183i (zero-solve) completes as ordered.
+
+## F4 — calendar-only SoH on the lower-bound side: adopted; Decision 2 reworded
+
+**New wording of Decision 2:** "On the lower-bound side the state of health is replaced by its calendar-only value
+φ_cal^age, a dispatch-independent upper bound (SoH = φ_cal^age · exp(−ΣD) with D ≥ 0). Available energy is bounded by
+φ_cal^{age_mid} × rated (affine in x), and the salvage is credited at (φ_cal^{age_T} − SoH^Min)/(1 − SoH^Min): 0.447
+for a 2028 cohort, 0.852 for a 2037 cohort, and 0 for 2025 by R2(iv)."
+
+**Validity argument for the manuscript's proposition.** It is needed because a larger available energy also raises
+the lower SoC limit and the initial state, so "larger capacity is looser" is not automatic.
+- With SoC limits 0.10–0.90 of available energy, and the daily start and closure at 0.50, any power schedule feasible
+  at E_av is feasible at every E′ ≥ E_av, with the stored energy shifted by 0.5 (E′ − E_av).
+- The deviation from the start state stays within ±0.4 E_av ≤ ±0.4 E′.
+- The closure-slack bound grows from 0.05 E_av to 0.05 E′.
+- So enlarging available energy enlarges the set of feasible power schedules, which is all that the networks and the
+  objective see.
+- Condition to state: SoC^Min ≤ SoC^0 ≤ SoC^Max, with all three limits proportional to available energy.
+
+**Recorded, not adopted.**
+- A secant tightening SoH ≤ φ^age (1 − c·D) captures cycling fade validly. It is jointly linear in (E, throughput),
+  because E·D is linear.
+- But it couples the years and breaks the per-block separability of analysis §6.2.
+- Consider it only if D0 shows that the degradation share of the gap is material.
+
+## Amendments to the D0 spec (before T0.2; predictions below copied into spec §6 before any conic solve)
+
+- **D-1. Variant A is not a lower bound of production.**
+  - Fixing available energy at the certified point's values excludes dispatches that age the unit less (and so have
+    more available energy), and the global optimum may use one of them.
+  - A is a bound only conditional on the certified SoH trajectory. It is an attribution diagnostic and must never be
+    quoted as a bound.
+  - Relabel it in spec §3.3 and in the report.
+- **D-2. Add variant C.** Calendar-only available energy per F4, which is the Phase-2 object. On SRP1's end-of-block
+  convention: rated × φ_cal^{age at block end}. Same gates, same exports.
+- **D-3. Read P6 per variant, and the absolute class on C** (C = R at x = 0).
+  - The mechanism question (is the network gap plan-independent?) is read on A.
+  - The decision relevance for R4 is read on C.
+  - R is reported. Its differential contains the degradation relaxation by construction, which is plan-dependent, so
+    a P6 failure on R alone says nothing about the rank gap.
+- **D-4. Planner §10 rulings confirmed.**
+  - **Identity gate at floating-point resolution.** A bar below a row's evaluation resolution tests rounding, not
+    construction; the same-point Δ = 0 is the primary test.
+  - **Envelope-rewrite class:** accepted.
+  - **`sess_comp` dropped.** The convex hull of {p_ch · p_dch = 0} in the box is the triangle p_ch + p_dch ≤ S, which
+    production already imposes (eq. 26), so nothing beyond the hull is lost. Any other nonconvex row is a stop.
+  - **FrozenSMOPF loadability repair:** later, as housekeeping, under unwire-never-delete.
+- **D-5. Transfer of the D0 class.**
+  - D0 measures the superseded convention (SRP1, end-of-block). Its class transfers to the five-block instance on the
+    reading that the network gap is per block and plan-independent.
+  - The first Phase-2 LB evaluation on the new instance re-measures it at x = 0 and at the reference unit. This is a
+    gate, not an assumption.
+
+## Amendments to the convention-change spec (v3)
+
+- **C2:** per R2. Horizon-end 2037 column; f = 1 base unless the author rules otherwise; floor 0; calendar-expired 0.
+  The converter is credited pro rata outside the ESSO unless the author keeps energy-only. The cost-basis dispatcher
+  serves the power cost too.
+- **G-CC-3:** extended per R1.4: the € parity identity, slack safety ≤ 1e-3, and the diagnostic. It is run on a cell
+  with a 2028+ cohort.
+- **C5:** neighbourhood per R3: activation and deactivation, one-block shifts, closed-form size, and a hook for
+  resolution by bound.
+- **Freeze list:**
+  - τ = 4,539.07 € stays frozen as an absolute threshold. The new instance's reference value is reported beside it;
+    re-setting τ needs a ruling.
+  - Add the salvage items of R2(vii).
+
+## Predictions (expert; recorded before any run)
+
+- **G-CC-3 (marginal salvage per MWh of cell throughput, 2037 basis, f = 1):**
+  - 0 exactly for a 2025 cohort;
+  - ≈ 1 €/MWh for a 2028 cohort and ≈ 5 €/MWh for a 2037 cohort, each within a factor of 2;
+  - the slack-safety gate holds.
+- **G-CC-2:** x = 0 network blocks bitwise identical. The ESSO is value-inert: S ≡ 0, and C^conv is outside the ESSO
+  and 0 at x = 0.
+- **D0 variants (unit cell; at x = 0, R = A = C identically):**
+  - per group, gap_A ≤ gap_C ≤ gap_R;
+  - summed over the 12 groups, gap_R − gap_C ∈ [10, 50] k€ and gap_C − gap_A ∈ [5, 40] k€;
+  - P6 holds on A; on R it fails by about the degradation share (≥ 15 k€).
+- **C1 A/B (campaign, later):**
+  - at a 2028+ unit: EFC/day lower by ≤ 3 %, terminal SoH higher by ≤ 0.005, F changing by ≤ τ;
+  - at a 2025-only plan: the ESSO dispatch is identical to solver tolerance. Bitwise identity is not predicted.
+
+## Stops
+
+As Addendum 87, plus:
+- the G-CC-3 slack-safety check fails;
+- any D0 artefact quotes variant A as a bound;
+- salvage parameters change after the freeze.
+
+## Author decisions requested before the freeze
+
+1. **R2(ii) base recovery fraction.** f = 1.0 with the continued-use meaning (expert's ruling), or a cited resale
+   value (Planner's recommendation). If a cited value is supplied, it is a sensitivity row in either case.
+2. **R2(v) converter.** Credited pro rata (expert's ruling) or energy-only (Planner's recommendation).
+
+## Planner order (zero solves)
+
+1. Amend `P5_16_D0_SPEC_v2.md` per D-1 to D-5 and copy the D0 predictions above into §6 before T0.2. T0.1b proceeds
+   as ordered and adds variant C to its builds and exports.
+2. Write `P5_16_CONVENTION_CHANGE_SPEC_v3.md` per the C2, G-CC-3, C5 and freeze-list amendments, with R2(ii) and (v)
+   marked pending the author.
+3. Report the two spec diffs. Nothing else runs on the convention change until the author answers R2(ii) and (v).
+
+## Amendment to Addendum 88 — author's decisions on R2(ii) and R2(v) (2026-10-31)
+
+1. **Converter: not credited (author).**
+   - The expert concurs. The credit is confined to the energy capacity, the quantity whose ageing the model tracks.
+   - R2(v) and C^conv are withdrawn.
+   - The manuscript states the leftover late-installation penalty beside the timing results: a late cohort carries the
+     undepreciated part of its converter cost (for a 2037 cohort, roughly a third of its energy credit at 4 h, more at
+     2 h).
+2. **Salvage is a notional residual value, not a resale value. There is no recovery fraction (f = 1).**
+   - The expert's R2(i) horizon-end basis is withdrawn in favour of the author's original-cost basis: the cohort's
+     expected (probability-weighted) energy investment cost in its installation year. This is the basis already
+     implemented (`EXPECTED_INSTALLATION_ENERGY_COST`).
+   - Why the expert withdraws R2(i): with the original-cost basis, the credit is the undepreciated share of each
+     cohort's own investment. F therefore charges each installation for the part of it used within the horizon,
+     consistently with I(x), and no choice between a 2037 and a 2040 price is needed (F9 closed).
+3. **The shape of the credit is unchanged from the code.**
+   - S = disc_T · Σ_c c^E(y_c) · rlf_c · E_c · (SoH_{c,T} − SoH^Min)/(1 − SoH^Min), with recycling floor 0.
+   - Calendar-expired cohorts (2025) therefore carry zero, and R2(iv) stands.
+   - A health-only credit (no remaining-life factor) is a different convention. It would credit a 2025 cohort after the
+     model has retired it at T^Cal. It is not adopted.
+4. **Consequences.**
+   - **C2:** no change to the salvage basis. Today's defaults are confirmed and enter the freeze: `cost_basis =
+     EXPECTED_INSTALLATION_ENERGY_COST`, `energy_recovery_fraction = 1.0`, `recycling_floor_fraction = 0.0`, energy
+     only. The cost-basis dispatcher is not needed.
+   - **Sensitivity:** the sensitivity required by R2(ii) reduces to the salvage-off arm (the C1 A/B) on the
+     timing-relevant plans.
+   - **G-CC-3 prediction (unchanged):** ≈ 1 €/MWh for a 2028 cohort and ≈ 5 €/MWh for a 2037 cohort, each within a
+     factor of 2; 0 for 2025.
+5. **Manuscript wording.**
+   - "The terminal credit is a notional residual value, not a resale price: the expected energy investment cost of
+     each installation, scaled by the share of its calendar life remaining at the end of the horizon and by its usable
+     capacity above the end-of-life floor, and discounted from the end of the horizon (2040)."
+   - "The converter is not credited; an installation made late in the horizon therefore carries the undepreciated part
+     of its converter cost."
+6. **Planner order (zero solves).**
+   - Revise `P5_16_CONVENTION_CHANGE_SPEC_v3.md` (written at `95148ca7`) to v4, with C2 closed per this amendment:
+     - (i) basis: installation-year expected energy cost (today's code). The 2037 column, the cost-basis dispatcher
+       and the F9 note are removed.
+     - (ii) f = 1.0, meaning a notional residual value.
+     - (v) the converter is not credited, and C^conv is removed.
+     - The freeze list carries today's salvage defaults.
+   - Report the v3 → v4 diff.
+   - The Addendum 88 hold on the convention change is lifted once v4 is committed. The zero-solve tasks
+     (G-CC-1 to G-CC-5) then proceed as ordered.

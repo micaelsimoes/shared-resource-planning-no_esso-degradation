@@ -1,26 +1,57 @@
 # TASKS — current order
 
-**Authority:** `PLANNER_BRIEF_2026-09-13.md` Addendum 86 (W183i order; W184/W185 re-authorized conditionally; committed in `dd9e46d1`); earlier orders below for record.
+**Direction (author, 2026-10-30):** realignment per `REVISION_REALIGNMENT_ANALYSIS_2026-10-30.md` (v2); draft
+Addendum 87 `PLANNER_BRIEF_ADDENDUM87_DRAFT_2026-10-30.md` awaiting adoption. Until adopted, the Addendum 85/86
+order below stands but W184/W185 are **held** (Planner recommendation R6).
+
+## Realignment order — pending Addendum 87 adoption (nothing below runs before it)
+
+- [x] Analysis, strategies, plan — `REVISION_REALIGNMENT_ANALYSIS_2026-10-30.md` v2 (Advisor review recorded)
+- [x] Author decisions 1–6 taken (direction (c); salvage in F; mid-block + 3-year blocks; lattice kept; full
+  (node, year) space; machines) — recorded in the draft addendum
+- [x] Author (2026-10-30): R1, R2 agreed as recommended; R5 closed (Gurobi primary, Clarabel fallback, IPOPT
+  cross-check); D0 and the convention-change zero-solve tasks authorized. Still with the author: append Addendum 87
+  to the brief; forward R1 (confirmation), R3, R4, R6 to the expert
+- [x] Advisor: D0 spec v1 reviewed — build with changes (W86 pickles exist on the Studio; deactivate-and-add;
+  ESSO slacks; rated/available variants; inventory + identity gates; 12 groups; P6 differential) → `P5_16_D0_SPEC_v2.md`
+- [ ] **▶ Author:** check the Studio for the four W86 pickles (spec v2 §2 hashes) → route A (zero ADMM solves) or B
+- [x] Advisor: convention-change spec v1 reviewed — build with changes (κ = a/σ; 2025-cohort salvage ≡ 0; G-CC-2/3
+  restated; 2037 column; params file + σ-band prediction) → `P5_16_CONVENTION_CHANGE_SPEC_v2.md`; expert items F2/F4
+  and author items (recovery fraction, 2040 cost) added to the Addendum 87 draft
+- [x] **D0 / T0.1a** — builder dry run (zero solves; guard 0/0): inventory complete; cones 6.8e-16; objective 0.0;
+  P-a/P-b FAILED (OLTC envelope rows; 1 ulp × |y|² = 4.8e-11) → Planner rulings spec v2 §10 (gate at fp resolution;
+  envelope-rewrite class; `sess_comp` dropped; `s_bounds` housekeeping) — `P5_16_D0_T01A_REPORT.md`
+- [ ] **▶ D0 / T0.1b** — certified blocks (route A, both cells, 12 groups, both modes): capture, inventory with
+  nonconvex listing, coupling rows, gates per §10, exports (zero solves)
+- [ ] **D0 / T0.2** — declared conic solves + IPOPT cross-check; measurements; P1–P9 → `P5_16_D0_REPORT.md`
+- [ ] **D0 / T0.2** — gap, circulation, TN rank cost, dual infeasibility, capacity duals vs Phase A slopes;
+  predictions recorded first → decision point H1 / H2 / H3
+- [x] **Addendum 88 received** (expert, 2026-10-31, appended by the author): R1 (a) confirmed with the governing
+  decision restated; R2 ruled (2037 column; f = 1 continued-use and converter pro rata — **both pending the author**;
+  floor 0; calendar-expired 0; terminal date 2040); R3 neighbourhood (coordinate + activation/deactivation + one-block
+  shifts; resolution by bound; cap 60; N^max 120); R4 wording ruled; R6 held and re-scoped; F4 adopted; D0 amendments
+  D-1…D-5 → spec v2 §6/§11; convention spec → **v3** `P5_16_CONVENTION_CHANGE_SPEC_v3.md`
+- [x] **T-perf Part A** — `p516_tperf_profile.py`, `P5_16_TPERF_REPORT.md`, evidence `P516TPERF/local` (6/6 solves,
+  guard exact): SRP1 block solves 0.1–0.4 s; NL write + load 25–52 % of wall (P1 HELD); warm re-solve from the optimum
+  still 22/51 iterations because the barrier restarts at μ = 0.1 (no `mu_init`) — P2 FAILED (51 > 30; cold/warm
+  1.45–2.55× < 3×); scaling span 3.0 decades — P3 FAILED on the DSO; df = 1e-3 from a 1e5 objective gradient
+  (unidentified); production resets SoC to 0.5·E every cycle
+- [ ] **▶ T-perf A-zero** (running, zero solves): identify the 1e5 gradient term; cycle wall vs Σ solve times from
+  records (prediction: non-solve share ≥ 40 % on SRP1)
+- [ ] T-perf Part B on the Studio (author runs; unit cell, committed case-file configuration) — command to follow
+- [ ] Expert R7 (to request): `mu_init` / warm-start barrier policy as a production configuration lever; diagnostic
+  A/B (≤ 6 solves) proposed first — author authorization needed
+- [ ] Convention change per **spec v3** (R1–R3 ruled; waits on the author's R2(ii)/(v)): ESSO salvage term; `'mid'` baseline; five-block single-scenario case file;
+  cumulative admissibility + general-lattice canonicalization; gate x = 0 bitwise + fixtures unpickle
+- [ ] Spec v2 freeze → re-evaluation campaign on the Studio (authorized by a later addendum, one gate per task)
+- [ ] If H1/H2: Phase 2 LB oracle (SoH ≡ 1 blocks, dual extraction with margin, cache validation, lattice MILP
+  master with years) → UB at the master's plan + coordinate unit poll → 2–3 full 5 × 4 × 25 UBs
+- [ ] Phase 4 manuscript with the expert
+
+**Authority:** `PLANNER_BRIEF_2026-09-13.md` Addendum 85 (W183g order; W184/W185 conditional) and Addendum 84 (W183h); committed in `92cba160`; earlier orders below for record.
 **Objective convention on every value:** Q = certified `gross_operational_cost`, contracted interface settlement excluded (Addendum 83 ruling 2; at 3 × 3 the deviation settlement and the row-18 premium are inside Q).
 **Updated at every transition; read first when resuming.**
 
-
-## Addendum 86 order — W183i (zero solves except (a)(iv) 153); then W184 (E3) and W185 (E2) conditionally
-
-W184 launches once (a), (b), (d) hold; W185 follows W184's report (all eight cells; H2 per pair; replicated-mean ρ read-back on every cell). W186/W187 wait for Addendum 87.
-
-- [x] **W183i(a)** — `299f6a4a` / `637ce3c5`: hooks `9318ade3…` (9 cells; arm A, gate none_first_evaluation, item E3/E2 — accepted), router +3 lines → harness `d9a944f2…`; (i) 7,213/7,213 keys; (ii) 9 schemas routed identically; (iii) neutral, 25/25 refusals; (iv) 153/153 solves, GATE_PASS frozen False / RULED True, 0 genuine vs W48 and W83, provenance 3/4, Q bitwise = W48 — prediction HELD
-- [x] **W183i(b)** — `02e8d467` / `396c0d62`: launcher `3b990d19…`; 263/263 dry-run assertions; keys 1/8/15, 0 holders of E3/E2 keys (prediction HELD); ρ replication bitwise on W183f row + 1,074 cycle checks; choices accepted: screen x = 0 holder (W86) reported, evaluated anew; 1× by absence; W132 uncertified form; W184 to reproduce Table 12's C_OPEN curtailment before reporting C_NRF's
-- [x] **W183i(c)** — `4aca667e` / `7ddd6ce7`: E1 launcher v3 `532cf6e7…`, resumable launches (unit = batch); gate 447/447 (split ≡ in-process bytewise incl. after B+ and A7; 7/7 foreign and 24/24 tampered refused); for Addendum 87: a single evaluation can exceed 4 h (cap 500 ≈ 4.7 h), commit between launches, harness fault stops the arm, crashed launch blocks resume
-- [x] **W183i(d)** — `2a62ee1d` / `d8dcc139` / `36af2aa9`: spec v1 `frozen_step7_campaign_spec_v1_96345241.json`; E3 + E2 frozen (9 cells, cap 300, persist on; stage specs `bd2cfa4d`, `7631a6d7`); keys = dry runs; E3 preconditions-only 22/22; diagnostics (circle/|P^E|/SOC) via guarded read of the run's own `certified_models.pkl` (accepted)
-- [x] Planner review; report `P5_15_W183I_REPORT.md`
-- [x] **W184** — `d7d4875e` / `bb4afafc` / `41cc3433`; report `P5_15_W184_REPORT.md`: C_NRF certified k* 206, Q 653,894,166.07; H3b HELD (90.876 M€, 12.2 %), H3c HELD (binding = the four hours; 864/copy), **H3a FAILED** (+20,463.88 € determinate 1.62×; plan §3 fallback = reporting only) → W185 proceeds (E2 independent; Addendum 63 rule)
-- [ ] **▶ W185** (E2, 8 certified evaluations serially, attended; pair Workers in order (1×,0.5), (1×,2.0), (2×,0.5), (2×,2.0)) → `P5_15_W185_REPORT.md`
-  - [x] pair 1 (1×, 0.5) — `7311e0df` / `0134c776` / `c54e49b1`: both certified k* 177; margin −64,264.41 determinate 4.95×; **H2 HELD** (shift +153 vs 13,054); ρ read-back 531/531 per cell
-  - [x] pair 2 (1×, 2.0) — `364ed6f1` / `c5419ccd` / `545c5578`: certified k* 185 / 194; margin −65,837.28 determinate 5.17×; **H2 HELD** (shift −1,420); ρ 555 + 582 checks; x = 0 t_sum at k* = 79 % of the gap bound (recorded)
-  - [x] pair 3 (2×, 0.5) — `7a78774f` / `fd5d8279` / `984c79c1`: certified k* 162 (osc.) / 178 (**monotone**, 7 gap refusals, still descending, band = descent); margin +46,959.42 determinate 3.56×; **H2 HELD** (+674); ρ 486 + 534; x = 0 ess "held after solver failure" label without failure (hold path)
-  - [x] pair 4 (2×, 2.0) — `3955b850` / `f8aed532` / `209a1af7`: certified k* 136 / 134 (osc.); margin +45,506.80 determinate 4.12×; **H2 HELD** (−779); ρ 408 + 402. **All eight: H2 HELD at both prices (1× [−65,837, −64,264], 2× [+45,507, +46,959]); ρ read-back 8/8 (4,029 checks); 8/8 certified (7 osc., 1 monotone)**
-  - [ ] ▶ guarded diagnostics read (Worker running) of the eight `certified_models.pkl` (circle / |P^E|/S^Av / SOC); W185 report
 
 ## Addendum 85 order — W183g (zero-solve) + W183h (Addendum 84); then W184 (E3) and W185 (E2 stage 1) conditionally
 
@@ -33,7 +64,7 @@ Overleaf clone pulled (ff) at **`a87e195`**: main.tex = `main_edd7a63_round8.tex
 - [ ] **W183g(c)** ⏸ held for expert ruling (hooks module + router patch + gate; harness pin) — fixed-plan launcher (E3 1, E2 8, cross ≤ 4, screen 15); dry runs (key counts 1/8/15; 0 committed holders of E3/E2 keys)
 - [ ] **W183g(d)** ⏸ held (depends on (c) and the harness pin) — spec v1 freeze (pins, keys, B+ text, counts, checklist, `ParallelExecution: false`)
 - [x] Planner review; report `P5_15_W183G_REPORT.md` (Decisions 1–4)
-- [x] Stopped for review → Addendum 86 rulings (W155-pattern hooks module + gated router patch; ρ check = replicated mean; E2 all eight; persistence on; E1 per-poll launches; B+ choices confirmed): (c)/(d) not buildable as ordered (hooks module + router patch + harness pin); ruling 7 "exactly" → replicated mean; H2 continuation; persistence; E1 resumability; B+ choices; round-9 wording. W184/W185 NOT launched; author: push
+- [ ] **▶ Stopped for review**: (c)/(d) not buildable as ordered (hooks module + router patch + harness pin); ruling 7 "exactly" → replicated mean; H2 continuation; persistence; E1 resumability; B+ choices; round-9 wording. W184/W185 NOT launched; author: push
 - [ ] **W184** (E3, 1 certified evaluation; conditional) → `P5_15_W184_REPORT.md`
 - [ ] **W185** (E2 stage 1, 8 certified evaluations; conditional) → `P5_15_W185_REPORT.md`
 

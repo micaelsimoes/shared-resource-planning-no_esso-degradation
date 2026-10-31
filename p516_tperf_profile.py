@@ -1,0 +1,1708 @@
+"""P5.16 T-perf -- where the solve time goes. Part A (this machine) and the Part B (--studio) mode.
+
+Authority: P5_16_TPERF_SPEC_v1.md (author-authorized diagnostic, 2026-10-31); TASKS.md line "T-perf".
+Not a production change; nothing here enters a table. No ADMM cycle is run.
+
+PART A INSTANCE (hash-verified BEFORE unpickling, against the declared value AND both committed manifests):
+  campaign s53_w86_tail_recert (spec ddd6cd44), cell n7_4h_e1, eval key ca8927e75d628bd1...,
+  candidate_key db77e1549af855bc... (2025 cohort; node 7 0.25 MVA / 1.0 MWh; nodes 5, 9 empty),
+  certified at cycle 112 (certified_cost 653,599,356.24, gross_operational_cost, settlement excluded --
+  quoted from post_certification.json for identification only; no objective is compared here).
+  certified_models.pkl  sha256 fe06ca485003b4fc9c0fd9788279bd287dd813d659179b311885e8ab03efda04
+                        payload {'tso': {year: {day: ConcreteModel}}, 'dso': {node: {year: {day: ConcreteModel}}}}
+  esso_models_s39_D.pkl sha256 95f7b38a6ec21833f7b5521ec8332d8022ef6801b4095d1410225438b2cedfc9
+                        payload {node: ConcreteModel}            (ESSO: 0 solves; its size is reported)
+  Blocks used: TSO 2025 Spring (case9) and DSO node 7 2025 Spring (case33_2). Each case solves its OWN
+  `clone()` of the loaded block (the clone deep-copies the block's build-time `network` / `params`
+  objects held by its rule partials); the loaded blocks and the pickle files are never modified.
+
+PRODUCTION SOLVE PATH. Every solve is `network.run_smopf(model, params, from_warm_start=...)`, called on
+the `network` / `params` objects the block was BUILT with (recovered from its pickled bound-rule partial,
+the p515_s48 precedent). That is the exact call `NetworkData.optimize` makes inside
+`update_transmission_coordination_model_and_solve` / `update_distribution_coordination_models_and_solve`
+(the ADMM-cycle path); the Param updates those functions perform before the call need the ADMM state
+(consensus, duals), which is not in the pickle -- the certified block already carries cycle 112's Params.
+Options are production's (`_create_smopf_solver`: fixed_variable_treatment, max_iter 500, then the case
+file's options from the block's own params), with these additions on the per-case params copy, recorded
+per solve:
+  all cases   output_file   -> 'tperf_<block>_<case>.log' under <out>/logs (network.logs_dir is redirected
+                               on the clone's network copy; production appends '_<year>_<day>'), asserted
+                               absent before the solve -> one fresh file per solve
+              print_timing_statistics yes   (output only; implies timing_statistics yes)
+  case iii    print_info_string yes, print_level 5, nlp_scaling_method gradient-based (both the defaults)
+
+DECLARED SOLVES: exactly 6 = 2 blocks x 3 cases, armed `SolveProfileGuard` (bounded; permitted call site
+network.py:_run_smopf_solver_attempt), installed BEFORE any production import, `verify(6)` exact at the end
+(too few fails too). An additional per-case cap (this harness) blocks a second solve inside one case, so a
+production recovery attempt after a failed primary is blocked (no 7th solve), recorded, and the run stops.
+  (i)   warm   -- re-solve AT the certified point (cycle-112 values, Params, multiplier suffixes),
+                  from_warm_start=True (production copies ipopt_z*_out -> ipopt_z*_in; dual is exported).
+  (ii)  cold   -- production INITIALISATION start point on the certified block: every free Var reset to its
+                  build-time `initialize=` rule (Var._rule_init, None where the Var has none), then
+                  `configure_shared_ess_operational_state` per shared ESS with the block's own capacity
+                  Params (what the builders do after build: it sets shared_es_soc = 0.5 E), then production's
+                  `_clear_multiplier_suffixes` (a freshly built block has empty suffixes); from_warm_start=False.
+                  Fixed Vars are untouched; bounds / fixed flags / active flags / Params are asserted
+                  unchanged by the reset. NOT reproduced (needs an ADMM initialisation): the initialisation
+                  solve's own problem (no AL terms, row 18 inactive, initial-consensus ADN pc/qc); here the
+                  certified cycle-112 problem is solved from the initialisation point.
+  (iii) warm + diagnostics -- as (i) from an untouched clone, with the case-iii options above.
+Order: TSO i, ii, iii; DSO i, ii, iii.
+
+GRADIENT-SCALING FACTORS. IPOPT 3.14.18 prints the per-row scaling vectors only at print level J_VECTOR (8)
+(IpNLPScaling.cpp), which also prints every iterate vector; at the production file_print_level 6 it prints
+the objective factor ('Scaling parameter for objective function = %e', 'objective scaling factor = %g') and
+whether c / d scaling was applied. The per-row factors are therefore COMPUTED, method label
+'replica_of_IpGradientScaling_3.14.18': the NL file Pyomo wrote for that very solve is captured (hard link,
+time recorded separately) and evaluated at IPOPT's starting point (AmplTNLP::get_starting_point: x0 from the
+NL x segment, else 0 projected onto the bounds), with fixed (lb == ub) columns removed
+(fixed_variable_treatment make_parameter): df = 100 / max|grad f| if that max > 100 else 1, floored at 1e-8;
+per constraint class (c = equality rows g_l == g_u, d = the rest) row factors min(1, 100 / max_j |J_ij|) if
+the class's largest row max exceeds 100, else no scaling (all 1), floored at 1e-8. VALIDATED per solve
+against IPOPT's own log: the printed objective factor, the c/d 'scaling provided' lines, the variable and
+constraint counts and the Jacobian nonzero counts. Span = log10(max / min) over {df} U {dc_i} U {dd_i}.
+
+MEASURED PER SOLVE (capture paths asserted BEFORE the first solve, `capture_checklist`): Pyomo NL write
+(NLWriter.__call__ wall), presolve total, IPOPT process wall (_execute_command), IPOPT OverallAlgorithm /
+function evaluations / linear solver (timing statistics; linear solver := LinearSystemSymbolicFactorization
++ LinearSystemFactorization + LinearSystemBackSolve, wall), result load := sol read (_postsolve) +
+ModelSolutions.load_from; iterations, restoration iterations and phases, mu_final (production's own
+`parse_ipopt_attempt_segment` on this solve's log), termination; variables at bounds (|x - b| <= 1e-6 max(1,|b|),
+and 1e-8); peak RSS: resource.getrusage (self, children) and a psutil monitor of this process and its
+IPOPT child sampled every 25 ms while the solve runs. Full IPOPT output: the output_file log (file level 6)
+and the process stdout+stderr (Pyomo's TeeStream merges both) written to <case>_stdout_stderr.log.
+
+PART A OUTPUT (write-once; refuses if the directory exists): data/SRP1/Results/P516TPERF/local/
+    tperf_local.json, logs/ (6 IPOPT output_file logs + 6 stdout/stderr logs), nl/ (6 NL files),
+    manifest_sha256.json (--manifest, after the run; it also hashes the two launch logs)
+LAUNCH (attached, alone, both streams captured), then the manifest:
+    mkdir -p data/SRP1/Results/P516TPERF && set -o noclobber && \\
+    /opt/anaconda3/envs/opf_env_py311/bin/python -u p516_tperf_profile.py \\
+        > data/SRP1/Results/P516TPERF/local_launch_stdout.log 2> data/SRP1/Results/P516TPERF/local_launch_stderr.log
+    /opt/anaconda3/envs/opf_env_py311/bin/python -u p516_tperf_profile.py --manifest
+Zero-solve dry run (blocking guard; run_smopf is reached and blocked; NL files are written by model.write for
+the replica self-test; writes under the given scratch directory, which must not exist, plus the lock file):
+    /opt/anaconda3/envs/opf_env_py311/bin/python -u p516_tperf_profile.py --dry-run /tmp/<new dir>
+
+PART B (--studio): see `run_studio`. NOT RUN on this machine (needs >= 18 GiB; refuses on hw.model Mac17,3).
+Concurrency: an exclusive flock on data/SRP1/Results/P516TPERF/.p516_tperf.lock plus a process scan; the
+harness refuses to run while another copy holds it.
+"""
+import os
+import sys
+
+# Thread caps exactly as the production campaign child (launch.json `thread_caps_in_child_env`; MA97 is
+# OpenMP-threaded, so this matters for the linear-solver time). Set before numpy / Pyomo load; the IPOPT
+# subprocess inherits os.environ.
+THREAD_CAP_ENV = {'OMP_NUM_THREADS': '1', 'MKL_NUM_THREADS': '1', 'OPENBLAS_NUM_THREADS': '1',
+                  'VECLIB_MAXIMUM_THREADS': '1', 'NUMEXPR_NUM_THREADS': '1'}
+THREAD_ENV_BEFORE = {k: os.environ.get(k) for k in THREAD_CAP_ENV}
+os.environ.update(THREAD_CAP_ENV)
+
+REPO = os.path.dirname(os.path.abspath(__file__))
+if REPO not in sys.path:
+    sys.path.insert(0, REPO)
+os.chdir(REPO)
+
+import argparse  # noqa: E402
+
+
+def _parse_args(argv=None):
+    ap = argparse.ArgumentParser(description=__doc__.split('\n')[0])
+    g = ap.add_mutually_exclusive_group()
+    g.add_argument('--dry-run', metavar='SCRATCH_DIR', default=None)
+    g.add_argument('--manifest', action='store_true')
+    g.add_argument('--studio', action='store_true')
+    ap.add_argument('--studio-manifest', action='store_true', help='with --manifest: hash the studio root')
+    return ap.parse_args(argv)
+
+
+ARGS = _parse_args()
+
+from p513_solve_profile_guard import SolveProfileGuard, SolverInvocationBlocked  # noqa: E402
+
+PERMITTED = (('network.py', '_run_smopf_solver_attempt'),)
+DECLARED_SOLVES = 6
+if ARGS.manifest:
+    _GUARD = None
+elif ARGS.dry_run:
+    _GUARD = SolveProfileGuard((), label='P5.16 T-perf DRY RUN (zero solves)').install()
+else:
+    _GUARD = SolveProfileGuard(PERMITTED, label=f'P5.16 T-perf ({DECLARED_SOLVES} declared solves)').install()
+
+import copy  # noqa: E402
+import fcntl  # noqa: E402
+import gc  # noqa: E402
+import hashlib  # noqa: E402
+import inspect  # noqa: E402
+import json  # noqa: E402
+import math  # noqa: E402
+import pickle  # noqa: E402
+import platform  # noqa: E402
+import re  # noqa: E402
+import resource  # noqa: E402
+import shutil  # noqa: E402
+import subprocess  # noqa: E402
+import threading  # noqa: E402
+import time  # noqa: E402
+import traceback  # noqa: E402
+from collections import deque  # noqa: E402
+from datetime import datetime, timezone  # noqa: E402
+
+import psutil  # noqa: E402
+
+THIS = os.path.abspath(__file__)
+STAGE = 'P5.16 T-perf Part A -- solve-time profile on the certified SRP1 unit-cell blocks'
+AUTHORITY = ['P5_16_TPERF_SPEC_v1.md (author-authorized 2026-10-31)', 'TASKS.md T-perf line']
+PY = '/opt/anaconda3/envs/opf_env_py311/bin/python'
+TPERF_ROOT_REL = os.path.join('data', 'SRP1', 'Results', 'P516TPERF')
+LOCAL_OUT_REL = os.path.join(TPERF_ROOT_REL, 'local')
+STUDIO_OUT_REL = os.path.join(TPERF_ROOT_REL, 'studio')
+LOCK_REL = os.path.join(TPERF_ROOT_REL, '.p516_tperf.lock')
+LAUNCH_LOGS_REL = {'local': [os.path.join(TPERF_ROOT_REL, 'local_launch_stdout.log'),
+                             os.path.join(TPERF_ROOT_REL, 'local_launch_stderr.log')],
+                   'studio': [os.path.join(TPERF_ROOT_REL, 'studio_launch_stdout.log'),
+                              os.path.join(TPERF_ROOT_REL, 'studio_launch_stderr.log')]}
+D0_FORBIDDEN = (os.path.join('data', 'SRP1', 'Results', 'P516D0'),)
+
+CAMPAIGN_REL = os.path.join('data', 'SRP1', 'Results', 'P515S53', 'tight_tail_w86', 'campaign_s53_w86_tail_recert')
+EVAL_REL = os.path.join(CAMPAIGN_REL, 'evals', 'ca8927e75d628bd1_n7_4h_e1')
+INPUTS = {
+    'certified_models': (os.path.join(EVAL_REL, 'certified_models.pkl'),
+                         'fe06ca485003b4fc9c0fd9788279bd287dd813d659179b311885e8ab03efda04'),
+    'esso_models': (os.path.join(EVAL_REL, 'esso_models_s39_D.pkl'),
+                    '95f7b38a6ec21833f7b5521ec8332d8022ef6801b4095d1410225438b2cedfc9'),
+    'production_solve_records': (os.path.join(EVAL_REL, 'network_ipopt_solve_records.jsonl'), None),
+    'post_certification': (os.path.join(EVAL_REL, 'post_certification.json'), None),
+}
+MANIFESTS = (os.path.join(CAMPAIGN_REL, 'campaign_manifest_sha256.json'),
+             os.path.join(EVAL_REL, 'child_manifest_sha256.json'))
+INSTANCE = {
+    'campaign': 's53_w86_tail_recert', 'campaign_spec_sha256_prefix': 'ddd6cd44',
+    'cell_label': 'n7_4h_e1',
+    'eval_key': 'ca8927e75d628bd188cf74f9d81436cbb3e0be53f64e02d9876ebb271a21951d',
+    'candidate_key': 'db77e1549af855bcb3521950c634db55fe6c155ab2de591b0441b5f2bf4b369a',
+    'candidate_canonical': {'investment_year': 2025, 'nodes': {'5': [0.0, 0.0], '7': [0.25, 1.0], '9': [0.0, 0.0]}},
+    'certification_cycle': 112,
+}
+YEAR, DAY, DSO_NODE = 2025, 'Spring', 7
+BLOCKS = ('tso', 'dso')
+CASES = ('i_warm', 'ii_cold', 'iii_warm_diag')
+CASE_IS_WARM = {'i_warm': True, 'ii_cold': False, 'iii_warm_diag': True}
+CASE_III_OPTIONS = {'print_info_string': 'yes', 'print_level': 5, 'nlp_scaling_method': 'gradient-based'}
+ALL_CASE_OPTIONS = {'print_timing_statistics': 'yes'}
+AT_BOUND_RTOL = (1e-6, 1e-8)
+RSS_SAMPLE_S = 0.025
+IPOPT_SCALING = {'nlp_scaling_max_gradient': 100.0, 'nlp_scaling_min_value': 1e-8,
+                 'nlp_scaling_obj_target_gradient': 0.0, 'nlp_scaling_constr_target_gradient': 0.0,
+                 'obj_scaling_factor': 1.0, 'nlp_lower_bound_inf': -1e19, 'nlp_upper_bound_inf': 1e19,
+                 'source': 'IPOPT 3.14.18 defaults (IpGradientScaling.cpp, IpNLPScaling.cpp, AmplTNLP.cpp); '
+                           'none of these keys is set by the case-file options (asserted per solve)'}
+LINEAR_SOLVER_TIMERS = ('LinearSystemSymbolicFactorization', 'LinearSystemFactorization', 'LinearSystemBackSolve')
+PRODUCTION_FILES = ('network.py', 'network_data.py', 'shared_resources_planning.py', 'model_construction_helpers.py',
+                    'helper_functions.py', 'network_parameters.py', 'p513_solve_profile_guard.py')
+T0 = time.time()
+
+
+def _utc():
+    return datetime.now(timezone.utc).isoformat()
+
+
+def _log(msg):
+    print(f'{time.strftime("%H:%M:%S")} [T-perf +{time.time() - T0:8.2f}s] {msg}', flush=True)
+
+
+def _sha(path):
+    h = hashlib.sha256()
+    with open(path, 'rb') as handle:
+        for chunk in iter(lambda: handle.read(1 << 20), b''):
+            h.update(chunk)
+    return h.hexdigest()
+
+
+def _git(args):
+    return subprocess.run(['git'] + list(args), cwd=REPO, capture_output=True, text=True).stdout.strip()
+
+
+def _rss():
+    return psutil.Process().memory_info().rss
+
+
+def _rusage():
+    s = resource.getrusage(resource.RUSAGE_SELF)
+    c = resource.getrusage(resource.RUSAGE_CHILDREN)
+    return {'self_ru_maxrss': s.ru_maxrss, 'children_ru_maxrss': c.ru_maxrss, 'units': 'bytes (macOS ru_maxrss)'}
+
+
+def _write_json(path, obj):
+    import gate_result_io as GRIO
+    if os.path.exists(path):
+        raise RuntimeError(f'refusing to overwrite {path}')
+    try:
+        GRIO.check(obj, default=GRIO.json_default_item)
+    except Exception:
+        # Nothing is lost: the record is pickled beside the refused path, then the refusal is raised.
+        with open(path + '.refused_record.pkl', 'xb') as handle:
+            pickle.dump(obj, handle)
+        raise
+    with open(path, 'x') as handle:
+        GRIO.dump(obj, handle, default=GRIO.json_default_item, indent=1, sort_keys=False)
+
+
+# ======================================================================================================================
+#  concurrency refusal
+# ======================================================================================================================
+class Lock:
+    def __init__(self, path):
+        self.path = path
+        self.handle = None
+
+    def acquire(self):
+        os.makedirs(os.path.dirname(self.path), exist_ok=True)
+        self.handle = open(self.path, 'a+')
+        try:
+            fcntl.flock(self.handle, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except OSError:
+            raise RuntimeError(f'refusing to run: another p516_tperf_profile.py holds {self.path}')
+        others = []
+        me = {os.getpid(), os.getppid()}
+        for proc in psutil.process_iter(['pid', 'cmdline']):
+            try:
+                cmd = ' '.join(proc.info['cmdline'] or [])
+            except (psutil.NoSuchProcess, psutil.AccessDenied):
+                continue
+            if proc.info['pid'] not in me and 'p516_tperf_profile.py' in cmd and 'python' in cmd:
+                others.append({'pid': proc.info['pid'], 'cmdline': cmd[:300]})
+        if others:
+            raise RuntimeError(f'refusing to run: other p516_tperf_profile.py processes {others}')
+        self.handle.seek(0)
+        self.handle.truncate()
+        self.handle.write(f'{os.getpid()} {_utc()}\n')
+        self.handle.flush()
+        return {'path': self.path, 'pid': os.getpid(), 'other_copies_found': others}
+
+    def release(self):
+        if self.handle is not None:
+            fcntl.flock(self.handle, fcntl.LOCK_UN)
+            self.handle.close()
+            self.handle = None
+
+
+def _concurrent_process_snapshot():
+    """Other python processes and the load average, recorded beside every timing (machine is shared)."""
+    rows = []
+    me = os.getpid()
+    for proc in psutil.process_iter(['pid', 'cmdline', 'cpu_percent']):
+        try:
+            cmd = ' '.join(proc.info['cmdline'] or [])
+        except (psutil.NoSuchProcess, psutil.AccessDenied):
+            continue
+        if proc.info['pid'] != me and ('python' in cmd.lower() or 'ipopt' in cmd.lower()):
+            rows.append({'pid': proc.info['pid'], 'cmdline': cmd[:200]})
+    return {'loadavg_1_5_15': list(os.getloadavg()), 'other_python_or_ipopt_processes': rows}
+
+
+# ======================================================================================================================
+#  inputs
+# ======================================================================================================================
+def verify_inputs():
+    manifests = {rel: json.load(open(os.path.join(REPO, rel))) for rel in MANIFESTS}
+    out = {}
+    for key, (rel, declared) in INPUTS.items():
+        now = _sha(os.path.join(REPO, rel))
+        pinned = {m: d.get(rel) for m, d in manifests.items()}
+        problems = []
+        if declared is not None and declared != now:
+            problems.append(f'declared {declared}')
+        for m, value in pinned.items():
+            if value != now:
+                problems.append(f'{m}: {value}')
+        if problems:
+            raise RuntimeError(f'input hash mismatch for {rel}: now {now}; {problems}')
+        out[key] = {'path': rel, 'sha256': now, 'declared_in_task': declared, 'manifest_pins': pinned,
+                    'size_bytes': os.path.getsize(os.path.join(REPO, rel))}
+    return out
+
+
+def _build_time_objects(block):
+    """The `network` / `params` the block was BUILT with (pickled bound-rule partial of `slack_v_sqr_down`,
+    network.py: bounds=partial(voltage_slack_down_bounds, network=network, params=params)); p515_s48 precedent."""
+    import functools
+    import model_construction_helpers as mch
+    fcn = block.slack_v_sqr_down._rule_bounds._initializer._fcn
+    if not (isinstance(fcn, functools.partial) and fcn.func is mch.voltage_slack_down_bounds):
+        raise RuntimeError(f'unexpected bound rule on {block.name}: {fcn!r}')
+    return fcn.keywords['network'], fcn.keywords['params']
+
+
+def pickle_structure(payload):
+    struct = {'top_keys': sorted(payload.keys())}
+    struct['tso'] = {str(y): sorted(d.keys()) for y, d in payload['tso'].items()}
+    struct['dso'] = {str(n): {str(y): sorted(d.keys()) for y, d in yd.items()} for n, yd in payload['dso'].items()}
+    struct['model_type'] = type(payload['tso'][YEAR][DAY]).__name__
+    struct['n_tso_blocks'] = sum(len(d) for d in payload['tso'].values())
+    struct['n_dso_blocks'] = sum(len(d) for yd in payload['dso'].values() for d in yd.values())
+    return struct
+
+
+def block_size(model, pe):
+    nv = nf = 0
+    for v in model.component_data_objects(pe.Var, descend_into=True):
+        nv += 1
+        nf += bool(v.fixed)
+    n_eq = n_ineq = 0
+    for c in model.component_data_objects(pe.Constraint, active=True, descend_into=True):
+        if c.equality:
+            n_eq += 1
+        else:
+            n_ineq += 1
+    objs = [o.name for o in model.component_data_objects(pe.Objective, active=True)]
+    return {'pyomo_vars': nv, 'pyomo_vars_fixed': nf, 'pyomo_vars_free': nv - nf,
+            'pyomo_active_constraints': n_eq + n_ineq, 'pyomo_active_equalities': n_eq,
+            'pyomo_active_inequalities': n_ineq, 'active_objectives': objs,
+            'scenarios_market': len(model.scenarios_market) if hasattr(model, 'scenarios_market') else None,
+            'scenarios_operation': len(model.scenarios_operation) if hasattr(model, 'scenarios_operation') else None,
+            'periods': len(model.periods) if hasattr(model, 'periods') else None}
+
+
+# ======================================================================================================================
+#  cold start = production initialisation point
+# ======================================================================================================================
+def _norm(x):
+    """A comparable form of a raw bound / Param value (a Pyomo expression object would turn `==` into a relation)."""
+    if x is None or isinstance(x, (bool, int, float, str)):
+        return x
+    try:
+        import pyomo.environ as pe
+        return ('expr', str(x), pe.value(x))
+    except Exception:  # noqa: BLE001
+        return ('repr', repr(x))
+
+
+def _structure_signature(state):
+    """Everything in a capture_block_mutable_state() EXCEPT Var values and suffixes."""
+    return {'params': {n: {i: _norm(v) for i, v in d.items()} for n, d in state['params'].items()},
+            'vars': {n: {i: (_norm(e[1]), _norm(e[2]), bool(e[3])) for i, e in d.items()}
+                     for n, d in state['vars'].items()},
+            'constraints': state['constraints'], 'objectives': state['objectives']}
+
+
+def reset_to_initialisation_point(model, block, network_module, mch, pe):
+    before = network_module.capture_block_mutable_state(model)
+    n_reset = n_none = n_skipped_fixed = 0
+    n_reference_skipped = 0
+    for comp in model.component_objects(pe.Var, active=None, descend_into=True):
+        if comp.is_reference():
+            n_reference_skipped += 1
+            continue
+        init = comp._rule_init
+        parent = comp.parent_block()
+        for index in comp:
+            vd = comp[index]
+            if vd.fixed:
+                n_skipped_fixed += 1
+                continue
+            value = None if init is None else init(parent, index)
+            if value is None:
+                n_none += 1
+            vd.set_value(value, skip_validation=True)
+            n_reset += 1
+    shared = list(model.shared_energy_storages)
+    if block == 'dso' and len(shared) != 1:
+        raise RuntimeError(f'DSO block has {len(shared)} shared ESS (expected 1)')
+    soc_set = {}
+    for e in shared:
+        mch.configure_shared_ess_operational_state(model, e, pe.value(model.shared_es_s_rated_fixed[e]),
+                                                   pe.value(model.shared_es_e_rated_fixed[e]))
+        soc_set[str(e)] = sorted({round(pe.value(model.shared_es_soc[i]), 15) for i in model.shared_es_soc
+                                  if (i[0] if isinstance(i, tuple) else i) == e
+                                  and model.shared_es_soc[i].value is not None})[:4]
+    network_module._clear_multiplier_suffixes(model)
+    after = network_module.capture_block_mutable_state(model)
+    unchanged = _structure_signature(before) == _structure_signature(after)
+    if not unchanged:
+        raise RuntimeError('cold reset changed bounds / fixed flags / active flags / Params -- refusing')
+    return {'free_vars_reset': n_reset, 'reset_to_None_no_initializer': n_none,
+            'reference_components_skipped': n_reference_skipped,
+            'fixed_vars_untouched': n_skipped_fixed, 'shared_ess_configured': [str(e) for e in shared],
+            'shared_es_soc_values_after_configure_sample': soc_set,
+            'suffixes_after_clear': {s: len(getattr(model, s)) for s in ('dual', 'ipopt_zL_in', 'ipopt_zU_in')},
+            'structure_unchanged_bounds_fixed_active_params': unchanged,
+            'method': ('Var._rule_init(parent, index) for every free VarData (None where no initializer); then '
+                       'model_construction_helpers.configure_shared_ess_operational_state per shared ESS with the '
+                       "block's own shared_es_s/e_rated_fixed; then network._clear_multiplier_suffixes")}
+
+
+# ======================================================================================================================
+#  instrumentation (timing / log / NL capture) -- wraps Pyomo internals for THIS process only
+# ======================================================================================================================
+class Instrument:
+    def __init__(self, nl_dir, dry):
+        self.nl_dir = nl_dir
+        self.dry = dry
+        self.case = None
+        self.events = None
+        self.cap_blocks = 0
+        self.installed = {}
+
+    def begin(self, case_key):
+        self.case = case_key
+        self.events = {'solve_calls': 0, 'nl_write': [], 'presolve': [], 'execute': [], 'postsolve': [],
+                       'load_from': [], 'solve_wall': [], 'nl_capture': [], 'solver_options_passed': None,
+                       'stdout_stderr_text': None, 'returncode': None, 'cap_blocked': 0}
+
+    def end(self):
+        ev = self.events
+        self.case = None
+        self.events = None
+        return ev
+
+    def install(self):
+        from pyomo.opt.base.solvers import OptSolver
+        from pyomo.opt.solver.shellcmd import SystemCallSolver
+        from pyomo.repn.plugins.nl_writer import NLWriter
+        from pyomo.core.base.PyomoModel import ModelSolutions
+        inst = self
+        orig = {'solve': OptSolver.solve, 'presolve': SystemCallSolver._presolve,
+                'execute': SystemCallSolver._execute_command, 'postsolve': SystemCallSolver._postsolve,
+                'nl_call': NLWriter.__call__, 'load_from': ModelSolutions.load_from}
+        self.orig = orig
+
+        def solve(solver_self, *args, **kwargs):
+            if inst.events is None:
+                raise SolverInvocationBlocked('T-perf: solve outside a declared case')
+            if inst.events['solve_calls'] >= 1:
+                inst.events['cap_blocked'] += 1
+                inst.cap_blocks += 1
+                raise SolverInvocationBlocked('T-perf: second solve inside one declared case (production '
+                                              'recovery after a failed primary) -- blocked by the per-case cap')
+            inst.events['solve_calls'] += 1
+            inst.events['solver_options_passed'] = {str(k): v for k, v in dict(solver_self.options).items()}
+            t = time.perf_counter()
+            try:
+                return orig['solve'](solver_self, *args, **kwargs)
+            finally:
+                inst.events['solve_wall'].append(time.perf_counter() - t)
+
+        def presolve(solver_self, *args, **kwargs):
+            t = time.perf_counter()
+            try:
+                return orig['presolve'](solver_self, *args, **kwargs)
+            finally:
+                if inst.events is not None:
+                    inst.events['presolve'].append(time.perf_counter() - t)
+
+        def execute(solver_self, command):
+            t = time.perf_counter()
+            out = orig['execute'](solver_self, command)
+            if inst.events is not None:
+                inst.events['execute'].append(time.perf_counter() - t)
+                inst.events['returncode'] = out[0]
+                inst.events['stdout_stderr_text'] = out[1]
+                inst.events['command'] = list(command.cmd) if hasattr(command, 'cmd') else None
+            return out
+
+        def postsolve(solver_self, *args, **kwargs):
+            t = time.perf_counter()
+            try:
+                return orig['postsolve'](solver_self, *args, **kwargs)
+            finally:
+                if inst.events is not None:
+                    inst.events['postsolve'].append(time.perf_counter() - t)
+
+        def nl_call(writer_self, model, filename, solver_capability, io_options):
+            t = time.perf_counter()
+            out = orig['nl_call'](writer_self, model, filename, solver_capability, io_options)
+            dt = time.perf_counter() - t
+            if inst.events is not None:
+                inst.events['nl_write'].append(dt)
+                t2 = time.perf_counter()
+                target = os.path.join(inst.nl_dir, f'{inst.case}.nl')
+                try:
+                    os.link(filename, target)
+                    how = 'hard_link'
+                except OSError:
+                    shutil.copyfile(filename, target)
+                    how = 'copy'
+                inst.events['nl_capture'].append({'path': target, 'method': how, 'source_tmp': filename,
+                                                  'capture_s': time.perf_counter() - t2,
+                                                  'io_options': {str(k): str(v) for k, v in dict(io_options).items()}})
+            return out
+
+        def load_from(sol_self, *args, **kwargs):
+            t = time.perf_counter()
+            try:
+                return orig['load_from'](sol_self, *args, **kwargs)
+            finally:
+                if inst.events is not None:
+                    inst.events['load_from'].append(time.perf_counter() - t)
+
+        OptSolver.solve = solve
+        SystemCallSolver._presolve = presolve
+        SystemCallSolver._execute_command = execute
+        SystemCallSolver._postsolve = postsolve
+        NLWriter.__call__ = nl_call
+        ModelSolutions.load_from = load_from
+        self.installed = {'OptSolver.solve': solve, 'SystemCallSolver._presolve': presolve,
+                          'SystemCallSolver._execute_command': execute, 'SystemCallSolver._postsolve': postsolve,
+                          'NLWriter.__call__': nl_call, 'ModelSolutions.load_from': load_from}
+        return self
+
+    def is_wired(self):
+        from pyomo.opt.base.solvers import OptSolver
+        from pyomo.opt.solver.shellcmd import SystemCallSolver
+        from pyomo.repn.plugins.nl_writer import NLWriter
+        from pyomo.core.base.PyomoModel import ModelSolutions
+        from pyomo.solvers.plugins.solvers.IPOPT import IPOPT
+        live = {'OptSolver.solve': IPOPT.solve, 'SystemCallSolver._presolve': IPOPT._presolve,
+                'SystemCallSolver._execute_command': IPOPT._execute_command,
+                'SystemCallSolver._postsolve': IPOPT._postsolve, 'NLWriter.__call__': NLWriter.__call__,
+                'ModelSolutions.load_from': ModelSolutions.load_from}
+        _ = (OptSolver, SystemCallSolver)
+        return {k: live[k] is v for k, v in self.installed.items()}
+
+
+class RssMonitor(threading.Thread):
+    def __init__(self, interval=RSS_SAMPLE_S):
+        super().__init__(daemon=True)
+        self.interval = interval
+        self.stop_event = threading.Event()
+        self.peak_self = 0
+        self.peak_child = 0
+        self.peak_sum = 0
+        self.n = 0
+        self.child_pids = set()
+
+    def run(self):
+        me = psutil.Process()
+        while not self.stop_event.is_set():
+            try:
+                s = me.memory_info().rss
+                c = 0
+                for ch in me.children(recursive=True):
+                    try:
+                        c += ch.memory_info().rss
+                        self.child_pids.add(ch.pid)
+                    except (psutil.NoSuchProcess, psutil.AccessDenied):
+                        pass
+                self.peak_self = max(self.peak_self, s)
+                self.peak_child = max(self.peak_child, c)
+                self.peak_sum = max(self.peak_sum, s + c)
+                self.n += 1
+            except psutil.Error:
+                pass
+            self.stop_event.wait(self.interval)
+
+    def stop(self):
+        self.stop_event.set()
+        self.join()
+        return {'peak_self_rss': self.peak_self, 'peak_child_rss': self.peak_child, 'peak_self_plus_child_rss':
+                self.peak_sum, 'n_samples': self.n, 'interval_s': self.interval, 'child_pids_seen': sorted(self.child_pids)}
+
+
+# ======================================================================================================================
+#  IPOPT log parsing
+# ======================================================================================================================
+_TIMING_RE = re.compile(r'^(\s*)([A-Za-z0-9 ]+?)\.*:\s+([-0-9.eE+]+) \(sys:\s+([-0-9.eE+]+) wall:\s+([-0-9.eE+]+)\)')
+_ITER_RE = re.compile(r'^\s*(\d+)(r?)\s+[-+0-9.eE]+\s+[-+0-9.eE]+\s+[-+0-9.eE]+\s+')
+
+
+def parse_ipopt_log(text):
+    out = {'problem': {}, 'timing_statistics': {}, 'summary': {}}
+    for m in re.finditer(r'Number of nonzeros in ([A-Za-z ]+?)\.*:\s+(\d+)', text):
+        out['problem'][f'nnz {m.group(1).strip()}'] = int(m.group(2))
+    for label in ('Total number of variables', 'variables with only lower bounds',
+                  'variables with lower and upper bounds', 'variables with only upper bounds',
+                  'Total number of equality constraints', 'Total number of inequality constraints',
+                  'inequality constraints with only lower bounds', 'inequality constraints with lower and upper bounds',
+                  'inequality constraints with only upper bounds'):
+        m = re.search(re.escape(label) + r'\.*:\s+(\d+)', text)
+        out['problem'][label] = int(m.group(1)) if m else None
+    in_timing = False
+    for line in text.splitlines():
+        if line.startswith('Timing Statistics:'):
+            in_timing = True
+            continue
+        if in_timing:
+            m = _TIMING_RE.match(line)
+            if m:
+                out['timing_statistics'][m.group(2).strip()] = {
+                    'cpu': float(m.group(3)), 'sys': float(m.group(4)), 'wall': float(m.group(5)),
+                    'depth': len(m.group(1))}
+    iters = []
+    for line in text.splitlines():
+        m = _ITER_RE.match(line)
+        if m:
+            iters.append((int(m.group(1)), m.group(2) == 'r'))
+    # The iteration table is printed once per iteration at print_level >= 5; the file log at level 6 may
+    # repeat the header but each iteration line once. Deduplicate by (iter, r) order of appearance.
+    restoration = [k for k, r in iters if r]
+    phases = 0
+    prev = False
+    for _, r in iters:
+        if r and not prev:
+            phases += 1
+        prev = r
+    out['summary']['iteration_lines'] = len(iters)
+    out['summary']['restoration_iteration_lines'] = len(restoration)
+    out['summary']['restoration_phases'] = phases
+    m = re.search(r'Number of Iterations\.+:\s+(\d+)', text)
+    out['summary']['iterations'] = int(m.group(1)) if m else None
+    exits = re.findall(r'EXIT: (.*)', text)
+    out['summary']['exit'] = exits[-1].strip() if exits else None
+    for key, pat in (('total_s_ipopt_wo_fevals', r'Total seconds in IPOPT \(w/o function evaluations\)\s+=\s+([-0-9.eE+]+)'),
+                     ('total_s_nlp_fevals', r'Total seconds in NLP function evaluations\s+=\s+([-0-9.eE+]+)'),
+                     ('total_s_ipopt', r'Total seconds in IPOPT\s+=\s+([-0-9.eE+]+)')):
+        m = re.search(pat, text)
+        out['summary'][key] = float(m.group(1)) if m else None
+    m = re.search(r'Scaling parameter for objective function = (\S+)', text)
+    out['summary']['scaling_parameter_for_objective_function'] = float(m.group(1)) if m else None
+    m = re.search(r'objective scaling factor = (\S+)', text)
+    out['summary']['objective_scaling_factor_printed'] = float(m.group(1)) if m else None
+    for cls in ('c', 'd', 'x'):
+        if re.search(rf'^No {cls} scaling provided', text, re.M):
+            out['summary'][f'{cls}_scaling_provided'] = False
+        elif re.search(rf'^{cls} scaling provided', text, re.M):
+            out['summary'][f'{cls}_scaling_provided'] = True
+        else:
+            out['summary'][f'{cls}_scaling_provided'] = None
+    m = re.search(r'This is Ipopt version (\S+), running with linear solver (\S+)', text)
+    out['summary']['ipopt_version'] = m.group(1).rstrip(',') if m else None
+    out['summary']['linear_solver'] = m.group(2).rstrip('.') if m else None
+    ts = out['timing_statistics']
+    if all(k in ts for k in LINEAR_SOLVER_TIMERS):
+        out['summary']['linear_solver_wall_s'] = sum(ts[k]['wall'] for k in LINEAR_SOLVER_TIMERS)
+        out['summary']['linear_solver_cpu_s'] = sum(ts[k]['cpu'] for k in LINEAR_SOLVER_TIMERS)
+    else:
+        out['summary']['linear_solver_wall_s'] = None
+        out['summary']['linear_solver_cpu_s'] = None
+    out['summary']['overall_algorithm_wall_s'] = ts.get('OverallAlgorithm', {}).get('wall')
+    out['summary']['function_evaluations_wall_s'] = ts.get('Function Evaluations', {}).get('wall')
+    out['summary']['pd_system_solver_total_wall_s'] = ts.get('PDSystemSolverTotal', {}).get('wall')
+    return out
+
+
+# ======================================================================================================================
+#  NL file: evaluation at IPOPT's starting point -> IpGradientScaling replica
+# ======================================================================================================================
+_UNARY = {13: (math.floor, lambda x: 0.0), 14: (math.ceil, lambda x: 0.0), 15: (abs, lambda x: 1.0 if x >= 0 else -1.0),
+          16: (lambda x: -x, lambda x: -1.0), 37: (math.tanh, lambda x: 1.0 - math.tanh(x) ** 2),
+          38: (math.tan, lambda x: 1.0 / math.cos(x) ** 2), 39: (math.sqrt, lambda x: 0.5 / math.sqrt(x)),
+          40: (math.sinh, math.cosh), 41: (math.sin, math.cos), 42: (math.log10, lambda x: 1.0 / (x * math.log(10.0))),
+          43: (math.log, lambda x: 1.0 / x), 44: (math.exp, math.exp), 45: (math.cosh, math.sinh),
+          46: (math.cos, lambda x: -math.sin(x)), 49: (math.atan, lambda x: 1.0 / (1.0 + x * x)),
+          51: (math.asin, lambda x: 1.0 / math.sqrt(1.0 - x * x)), 53: (math.acos, lambda x: -1.0 / math.sqrt(1.0 - x * x)),
+          50: (math.asinh, lambda x: 1.0 / math.sqrt(x * x + 1.0)), 52: (math.acosh, lambda x: 1.0 / math.sqrt(x * x - 1.0)),
+          47: (math.atanh, lambda x: 1.0 / (1.0 - x * x))}
+_BINARY = {0, 1, 2, 3, 5}
+
+
+class NLProblem:
+    """Minimal reader of a TEXT .nl file as Pyomo's NL writer v2 emits it (g header; segments S, V, C, O, d, x,
+    r, b, k, J, G). Expressions: prefix opcodes o0 o1 o2 o3 o5 o54 and the unary functions above, n<const>,
+    v<idx> (idx >= n_vars -> defined variable). Anything else raises (the replica is then reported as not
+    computed, with the reason)."""
+
+    def __init__(self, path):
+        with open(path) as handle:
+            raw = handle.read().split('\n')
+        self.lines = [ln.split('#', 1)[0].strip() for ln in raw]
+        if not self.lines[0].startswith('g'):
+            raise ValueError(f'not a text NL file (header {self.lines[0][:10]!r})')
+        h = [ln.split() for ln in self.lines[1:10]]
+        self.n, self.m, self.n_obj = int(h[0][0]), int(h[0][1]), int(h[0][2])
+        self.n_eqns_header = int(h[0][4])
+        self.nnz_jac_header, self.nnz_grad_header = int(h[6][0]), int(h[6][1])
+        self.pos = 10
+        self.C, self.O, self.V, self.J, self.G = {}, {}, {}, {}, {}
+        self.x0, self.r, self.b = {}, [None] * self.m, [None] * self.n
+        self.obj_sense = {}
+        self._parse()
+
+    def _next(self):
+        while self.pos < len(self.lines) and self.lines[self.pos] == '':
+            self.pos += 1
+        ln = self.lines[self.pos]
+        self.pos += 1
+        return ln
+
+    def _expr(self):
+        tok = self._next()
+        c = tok[0]
+        if c == 'n':
+            return ('n', float(tok[1:]))
+        if c == 'v':
+            return ('v', int(tok[1:]))
+        if c == 'o':
+            code = int(tok[1:])
+            if code == 54:
+                k = int(self._next())
+                return ('sum', [self._expr() for _ in range(k)])
+            if code in _BINARY:
+                a = self._expr()
+                b = self._expr()
+                return ('b', code, a, b)
+            if code in _UNARY:
+                return ('u', code, self._expr())
+            raise ValueError(f'unsupported NL opcode o{code}')
+        raise ValueError(f'unsupported NL token {tok!r}')
+
+    def _parse(self):
+        while True:
+            while self.pos < len(self.lines) and self.lines[self.pos] == '':
+                self.pos += 1
+            if self.pos >= len(self.lines):
+                break
+            ln = self.lines[self.pos]
+            self.pos += 1
+            tag, rest = ln[0], ln[1:].split()
+            if tag == 'S':
+                for _ in range(int(rest[1])):
+                    self._next()
+            elif tag == 'V':
+                i, nlin = int(rest[0]), int(rest[1])
+                lin = {}
+                for _ in range(nlin):
+                    j, coef = self._next().split()
+                    lin[int(j)] = lin.get(int(j), 0.0) + float(coef)
+                self.V[i] = (lin, self._expr())
+            elif tag == 'C':
+                self.C[int(rest[0])] = self._expr()
+            elif tag == 'O':
+                self.obj_sense[int(rest[0])] = int(rest[1])
+                self.O[int(rest[0])] = self._expr()
+            elif tag == 'd':
+                for _ in range(int(rest[0])):
+                    self._next()
+            elif tag == 'x':
+                for _ in range(int(rest[0])):
+                    j, val = self._next().split()
+                    self.x0[int(j)] = float(val)
+            elif tag == 'r':
+                for i in range(self.m):
+                    self.r[i] = [float(t) for t in self._next().split()]
+            elif tag == 'b':
+                for i in range(self.n):
+                    self.b[i] = [float(t) for t in self._next().split()]
+            elif tag == 'k':
+                for _ in range(int(rest[0])):
+                    self._next()
+            elif tag == 'J':
+                i, k = int(rest[0]), int(rest[1])
+                self.J[i] = {}
+                for _ in range(k):
+                    j, coef = self._next().split()
+                    self.J[i][int(j)] = float(coef)
+            elif tag == 'G':
+                i, k = int(rest[0]), int(rest[1])
+                self.G[i] = {}
+                for _ in range(k):
+                    j, coef = self._next().split()
+                    self.G[i][int(j)] = float(coef)
+            else:
+                raise ValueError(f'unsupported NL segment {ln[:20]!r}')
+
+    def bounds(self, j):
+        t = self.b[j]
+        kind = int(t[0])
+        if kind == 0:
+            return t[1], t[2]
+        if kind == 1:
+            return -math.inf, t[1]
+        if kind == 2:
+            return t[1], math.inf
+        if kind == 3:
+            return -math.inf, math.inf
+        if kind == 4:
+            return t[1], t[1]
+        raise ValueError(f'variable bound type {kind}')
+
+    def row_bounds(self, i):
+        t = self.r[i]
+        kind = int(t[0])
+        if kind == 0:
+            return t[1], t[2]
+        if kind == 1:
+            return -math.inf, t[1]
+        if kind == 2:
+            return t[1], math.inf
+        if kind == 3:
+            return -math.inf, math.inf
+        if kind == 4:
+            return t[1], t[1]
+        raise ValueError(f'constraint type {kind} (complementarity) unsupported')
+
+    def starting_point(self):
+        x = []
+        for j in range(self.n):
+            if j in self.x0:
+                x.append(self.x0[j])
+            else:
+                lo, up = self.bounds(j)
+                x.append(max(lo, min(up, 0.0)))
+        return x
+
+
+def _ad(node, x, n, dcache, nl):
+    """Forward-mode sparse AD: returns (value, {var_index: derivative})."""
+    t = node[0]
+    if t == 'n':
+        return node[1], {}
+    if t == 'v':
+        i = node[1]
+        if i < n:
+            return x[i], {i: 1.0}
+        return _defined(i, x, n, dcache, nl)
+    if t == 'sum':
+        val = 0.0
+        g = {}
+        for ch in node[1]:
+            v, gc_ = _ad(ch, x, n, dcache, nl)
+            val += v
+            for k, d in gc_.items():
+                g[k] = g.get(k, 0.0) + d
+        return val, g
+    if t == 'u':
+        f, df = _UNARY[node[1]]
+        v, g = _ad(node[2], x, n, dcache, nl)
+        s = df(v)
+        return f(v), {k: s * d for k, d in g.items()}
+    code, a, b = node[1], node[2], node[3]
+    va, ga = _ad(a, x, n, dcache, nl)
+    vb, gb = _ad(b, x, n, dcache, nl)
+    if code == 0:
+        g = dict(ga)
+        for k, d in gb.items():
+            g[k] = g.get(k, 0.0) + d
+        return va + vb, g
+    if code == 1:
+        g = dict(ga)
+        for k, d in gb.items():
+            g[k] = g.get(k, 0.0) - d
+        return va - vb, g
+    if code == 2:
+        g = {k: vb * d for k, d in ga.items()}
+        for k, d in gb.items():
+            g[k] = g.get(k, 0.0) + va * d
+        return va * vb, g
+    if code == 3:
+        g = {k: d / vb for k, d in ga.items()}
+        for k, d in gb.items():
+            g[k] = g.get(k, 0.0) - va * d / (vb * vb)
+        return va / vb, g
+    if code == 5:
+        val = va ** vb
+        g = {}
+        if ga:
+            s = vb * va ** (vb - 1.0) if vb != 0 else 0.0
+            for k, d in ga.items():
+                g[k] = s * d
+        if gb:
+            s = val * math.log(va)
+            for k, d in gb.items():
+                g[k] = g.get(k, 0.0) + s * d
+        return val, g
+    raise ValueError(f'opcode {code}')
+
+
+def _defined(i, x, n, dcache, nl):
+    if i in dcache:
+        return dcache[i]
+    lin, expr = nl.V[i]
+    val, g = _ad(expr, x, n, dcache, nl)
+    g = dict(g)
+    for j, coef in lin.items():
+        if j < n:
+            val += coef * x[j]
+            g[j] = g.get(j, 0.0) + coef
+        else:
+            vj, gj = _defined(j, x, n, dcache, nl)
+            val += coef * vj
+            for k, d in gj.items():
+                g[k] = g.get(k, 0.0) + coef * d
+    dcache[i] = (val, g)
+    return dcache[i]
+
+
+def gradient_scaling_replica(nl_path):
+    t0 = time.perf_counter()
+    sys.setrecursionlimit(max(sys.getrecursionlimit(), 20000))
+    nl = NLProblem(nl_path)
+    n = nl.n
+    x = nl.starting_point()
+    fixed = set()
+    for j in range(n):
+        lo, up = nl.bounds(j)
+        if lo == up:
+            fixed.add(j)
+    dcache = {}
+    sp = IPOPT_SCALING
+    mg, mv = sp['nlp_scaling_max_gradient'], sp['nlp_scaling_min_value']
+    # objective (single objective expected)
+    if nl.n_obj != 1:
+        raise ValueError(f'{nl.n_obj} objectives')
+    _, gobj = _ad(nl.O[0], x, n, dcache, nl)
+    gobj = dict(gobj)
+    for j, coef in nl.G.get(0, {}).items():
+        gobj[j] = gobj.get(j, 0.0) + coef
+    max_grad_f = max((abs(d) for j, d in gobj.items() if j not in fixed), default=0.0)
+    df = mg / max_grad_f if max_grad_f > mg else 1.0
+    df = max(df, mv) * sp['obj_scaling_factor']
+    rows = {'c': [], 'd': []}
+    nnz = {'c': 0, 'd': 0}
+    for i in range(nl.m):
+        _, g = _ad(nl.C[i], x, n, dcache, nl) if i in nl.C else (0.0, {})
+        tot = {}
+        for j, coef in nl.J.get(i, {}).items():
+            tot[j] = coef + g.get(j, 0.0)
+        for j, d in g.items():
+            if j not in tot:
+                raise ValueError(f'row {i}: nonlinear derivative on column {j} absent from its J segment')
+        lo, up = nl.row_bounds(i)
+        cls = 'c' if lo == up else 'd'
+        entries = [abs(d) for j, d in tot.items() if j not in fixed]
+        nnz[cls] += len(entries)
+        rows[cls].append(max(entries) if entries else 0.0)
+    out = {'method': 'replica_of_IpGradientScaling_3.14.18 (NL file evaluated at AmplTNLP starting point)',
+           'n_free_vars': n - len(fixed), 'n_nl_vars': n, 'n_fixed_lb_eq_ub_removed': len(fixed),
+           'n_eq_rows': len(rows['c']), 'n_ineq_rows': len(rows['d']),
+           'nnz_jac_c_free_cols': nnz['c'], 'nnz_jac_d_free_cols': nnz['d'],
+           'nl_header': {'n_vars': nl.n, 'n_cons': nl.m, 'n_eqns': nl.n_eqns_header,
+                         'nnz_jacobian': nl.nnz_jac_header, 'nnz_obj_gradient': nl.nnz_grad_header},
+           'n_defined_variables': len(nl.V), 'x0_from_nl_x_segment': len(nl.x0),
+           'max_abs_obj_gradient': max_grad_f, 'df': df}
+    factors = [df]
+    for cls in ('c', 'd'):
+        rm = rows[cls]
+        arow_max = max(rm) if rm else 0.0
+        provided = bool(rm) and arow_max > mg
+        if provided:
+            fac = [max(min(1.0, mg / r) if r > 0 else 1.0, mv) for r in rm]
+        else:
+            fac = [1.0] * len(rm)
+        factors.extend(fac)
+        nz = [r for r in rm if r > 0]
+        out[cls] = {'scaling_provided': provided, 'arow_max': arow_max,
+                    'row_max_gradient_min_nonzero': min(nz) if nz else None,
+                    'row_max_gradient_span_decades': (math.log10(max(nz) / min(nz)) if nz else None),
+                    'rows_scaled_below_1': sum(1 for f in fac if f < 1.0),
+                    'factor_min': min(fac) if fac else None, 'factor_max': max(fac) if fac else None,
+                    'zero_rows': sum(1 for r in rm if r == 0)}
+    out['factor_min_all'] = min(factors)
+    out['factor_max_all'] = max(factors)
+    out['factor_span_decades_all'] = math.log10(max(factors) / min(factors))
+    cf = factors[1:]
+    out['constraint_factor_span_decades'] = math.log10(max(cf) / min(cf)) if cf else None
+    allrows = [r for r in rows['c'] + rows['d'] if r > 0]
+    out['row_max_gradient_span_decades_all'] = math.log10(max(allrows) / min(allrows)) if allrows else None
+    out['compute_s'] = time.perf_counter() - t0
+    out['span_definition'] = 'log10(max/min) over {df} U {dc_i} U {dd_i}; unscaled rows count as 1'
+    return out
+
+
+def validate_replica(rep, ipopt):
+    s, p = ipopt['summary'], ipopt['problem']
+    checks = {}
+    printed = s.get('scaling_parameter_for_objective_function')
+    checks['df_vs_scaling_parameter_line'] = (None if printed is None else
+                                              abs(rep['df'] - printed) <= 1e-6 * max(abs(printed), 1e-300))
+    printed_g = s.get('objective_scaling_factor_printed')
+    checks['df_vs_objective_scaling_factor_line_6sig'] = (None if printed_g is None else
+                                                          abs(rep['df'] - printed_g) <= 1e-5 * max(abs(printed_g), 1e-300))
+    checks['c_scaling_provided_agrees'] = (None if s.get('c_scaling_provided') is None else
+                                           s['c_scaling_provided'] == rep['c']['scaling_provided'])
+    checks['d_scaling_provided_agrees'] = (None if s.get('d_scaling_provided') is None else
+                                           s['d_scaling_provided'] == rep['d']['scaling_provided'])
+    checks['n_vars_agrees'] = p.get('Total number of variables') == rep['n_free_vars']
+    checks['n_eq_agrees'] = p.get('Total number of equality constraints') == rep['n_eq_rows']
+    checks['n_ineq_agrees'] = p.get('Total number of inequality constraints') == rep['n_ineq_rows']
+    checks['nnz_eq_jac_agrees'] = p.get('nnz equality constraint Jacobian') == rep['nnz_jac_c_free_cols']
+    checks['nnz_ineq_jac_agrees'] = p.get('nnz inequality constraint Jacobian') == rep['nnz_jac_d_free_cols']
+    checks['all_pass'] = all(v is True for v in checks.values())
+    return checks
+
+
+# ======================================================================================================================
+#  per-solve measurement
+# ======================================================================================================================
+def vars_at_bounds(model, pe):
+    out = {}
+    for rtol in AT_BOUND_RTOL:
+        n_lb = n_ub = n_free = 0
+        for v in model.component_data_objects(pe.Var, descend_into=True):
+            if v.fixed or v.value is None:
+                continue
+            n_free += 1
+            lb, ub = v.lb, v.ub
+            at_lb = lb is not None and abs(v.value - lb) <= rtol * max(1.0, abs(lb))
+            at_ub = ub is not None and abs(v.value - ub) <= rtol * max(1.0, abs(ub))
+            n_lb += at_lb
+            n_ub += at_ub and not at_lb
+        out[f'rtol_{rtol:g}'] = {'at_lower': n_lb, 'at_upper': n_ub, 'at_any': n_lb + n_ub,
+                                 'free_vars_with_value': n_free}
+    out['definition'] = '|x - b| <= rtol * max(1, |b|) on the loaded solution, free (unfixed) Vars only'
+    return out
+
+
+def expected_log_path(network, options):
+    """Read-only replica of network.py `_create_smopf_solver`'s output_file path construction (p515_s42 precedent;
+    run_smopf does not return the path)."""
+    configured_path = os.path.join(network.logs_dir, options['output_file'])
+    stem, ext = os.path.splitext(configured_path)
+    day_label = ''.join(ch if ch.isalnum() or ch in ('-', '_') else '_' for ch in str(network.day))
+    return f'{stem}_{network.year}_{day_label}{ext}'
+
+
+def run_case(case_key, block, case, model, network, params, inst, network_module, pe, logs_dir, dry):
+    rec = {'case_key': case_key, 'block': block, 'case': case, 'from_warm_start': CASE_IS_WARM[case]}
+    log_path = expected_log_path(network, params.solver_params.options)
+    if os.path.exists(log_path):
+        raise RuntimeError(f'refusing: IPOPT log {log_path} exists (append would mix solves)')
+    rec['ipopt_output_file'] = os.path.relpath(log_path, REPO)
+    rec['concurrent_before'] = _concurrent_process_snapshot()
+    rec['rusage_before'] = _rusage()
+    rec['rss_before'] = _rss()
+    guard_before = dict(_GUARD.counts)
+    inst.begin(case_key)
+    mon = RssMonitor()
+    mon.start()
+    t0 = time.perf_counter()
+    result = network.run_smopf(model, params, from_warm_start=CASE_IS_WARM[case])
+    wall = time.perf_counter() - t0
+    rec['rss_monitor'] = mon.stop()
+    ev = inst.end()
+    rec['rusage_after'] = _rusage()
+    rec['rss_after'] = _rss()
+    rec['concurrent_after'] = _concurrent_process_snapshot()
+    guard_after = dict(_GUARD.counts)
+    rec['guard_delta'] = {k: guard_after[k] - guard_before[k] for k in guard_after}
+    rec['solve_calls_in_case'] = ev['solve_calls']
+    rec['cap_blocked_in_case'] = ev['cap_blocked']
+    rec['solver_options_passed'] = ev['solver_options_passed']
+    rec['command'] = ev.get('command')
+    rec['returncode'] = ev['returncode']
+    succeeded = bool(network_module.solver_result_succeeded(result))
+    rec['succeeded'] = succeeded
+    rec['termination_condition'] = (str(result.solver.termination_condition)
+                                    if result is not None and hasattr(result, 'solver') else None)
+    rec['solver_status'] = (str(result.solver.status) if result is not None and hasattr(result, 'solver') else None)
+    rec['solver_message'] = (str(getattr(result.solver, 'message', None))
+                             if result is not None and hasattr(result, 'solver') else None)
+    stdout_path = os.path.join(logs_dir, f'{case_key}_stdout_stderr.log')
+    if ev['stdout_stderr_text'] is not None:
+        with open(stdout_path, 'x') as handle:
+            handle.write(ev['stdout_stderr_text'])
+        rec['ipopt_stdout_stderr_file'] = os.path.relpath(stdout_path, REPO)
+    else:
+        rec['ipopt_stdout_stderr_file'] = None
+    one = lambda xs: (xs[0] if len(xs) == 1 else (None if not xs else xs))  # noqa: E731
+    nl_cap = sum(c['capture_s'] for c in ev['nl_capture'])
+    timing = {
+        'run_smopf_wall_s': wall,
+        'opt_solver_solve_wall_s': one(ev['solve_wall']),
+        'presolve_wall_s (NL write + command build + NL capture)': one(ev['presolve']),
+        'nl_write_wall_s (NLWriter.__call__)': one(ev['nl_write']),
+        'nl_capture_hardlink_s (harness overhead, inside presolve)': nl_cap,
+        'ipopt_process_wall_s (_execute_command)': one(ev['execute']),
+        'sol_read_wall_s (_postsolve)': one(ev['postsolve']),
+        'load_from_wall_s (ModelSolutions.load_from)': one(ev['load_from']),
+    }
+    try:
+        res_load = ev['postsolve'][0] + ev['load_from'][0]
+    except IndexError:
+        res_load = None
+    timing['result_load_wall_s (sol read + load_from)'] = res_load
+    if len(ev['solve_wall']) == 1 and len(ev['presolve']) == 1 and len(ev['execute']) == 1 and len(ev['postsolve']) == 1:
+        timing['pyomo_solve_epilogue_s (solve - presolve - process - postsolve)'] = (
+            ev['solve_wall'][0] - ev['presolve'][0] - ev['execute'][0] - ev['postsolve'][0])
+        timing['run_smopf_outside_solve_s (option assembly, suffix copy, record parse, load_from)'] = (
+            wall - ev['solve_wall'][0])
+    rec['timing'] = timing
+    rec['nl_capture'] = ev['nl_capture']
+    try:
+        _post_solve_parse(rec, ev, log_path, model, network, network_module, pe, wall, res_load, succeeded)
+    except Exception as error:  # noqa: BLE001 -- the raw logs / NL are on disk; a parse fault must not cost a solve
+        rec['post_solve_parse_error'] = {'error': f'{type(error).__name__}: {error}', 'traceback': traceback.format_exc()}
+        _log(f'post-solve parse error recorded for {case_key}: {error}')
+    if dry:
+        rec['dry_run_note'] = 'blocked by the zero-solve guard inside run_smopf (expected); no IPOPT process'
+    return rec, succeeded
+
+
+def _post_solve_parse(rec, ev, log_path, model, network, network_module, pe, wall, res_load, succeeded):
+    if os.path.exists(log_path):
+        text = open(log_path, errors='replace').read()
+        rec['ipopt_log'] = parse_ipopt_log(text)
+        rec['production_attempt_parse'] = network_module.parse_ipopt_attempt_segment(
+            text, dict(ev['solver_options_passed'] or {}))
+    else:
+        rec['ipopt_log'] = None
+        rec['production_attempt_parse'] = None
+    rec['production_solve_records'] = [dict(r) for r in network.ipopt_solve_records]
+    if succeeded:
+        rec['vars_at_bounds'] = vars_at_bounds(model, pe)
+    # derived shares (per solve)
+    s = (rec['ipopt_log'] or {}).get('summary', {})
+    nlw = ev['nl_write'][0] if len(ev['nl_write']) == 1 else None
+    if nlw is not None and res_load is not None:
+        rec['shares'] = {
+            'nl_write_plus_result_load_over_run_smopf_wall': (nlw + res_load) / wall,
+            'nl_write_over_run_smopf_wall': nlw / wall,
+            'result_load_over_run_smopf_wall': res_load / wall,
+            'ipopt_process_over_run_smopf_wall': ev['execute'][0] / wall if ev['execute'] else None,
+            'linear_solver_over_overall_algorithm': (s.get('linear_solver_wall_s') / s['overall_algorithm_wall_s']
+                                                     if s.get('linear_solver_wall_s') is not None
+                                                     and s.get('overall_algorithm_wall_s') else None),
+            'function_evals_over_overall_algorithm': (s.get('function_evaluations_wall_s') / s['overall_algorithm_wall_s']
+                                                      if s.get('function_evaluations_wall_s') is not None
+                                                      and s.get('overall_algorithm_wall_s') else None),
+            'definition': 'denominator run_smopf_wall_s = wall of network.run_smopf (the whole production solve call)',
+        }
+    if ev['stdout_stderr_text']:
+        rec['stdout_parse'] = parse_ipopt_log(ev['stdout_stderr_text'])['summary']
+
+
+# ======================================================================================================================
+#  capture-path checklist (asserted BEFORE the first solve)
+# ======================================================================================================================
+def capture_checklist(inst, prepared, network_module, out_dir, dry):
+    import pyomo.environ  # noqa: F401
+    from pyomo.opt import WriterFactory
+    from pyomo.repn.plugins.nl_writer import NLWriter
+    items = {}
+    wired = inst.is_wired()
+    items['instrument_wrappers_live (NL write, presolve, process, sol read, load_from, per-case cap)'] = all(wired.values())
+    items['nl_writer_is_the_wrapped_class'] = type(WriterFactory('nl')) is NLWriter
+    src = inspect.getsource(network_module._run_smopf)
+    items['run_smopf_calls_load_from'] = 'model.solutions.load_from(result)' in src
+    items['run_smopf_attempt_uses_solver_solve'] = 'solver.solve(model' in inspect.getsource(
+        network_module._run_smopf_solver_attempt)
+    items['production_attempt_parser_exists'] = callable(getattr(network_module, 'parse_ipopt_attempt_segment', None))
+    items['guard_installed'] = _GUARD is not None
+    items['psutil_monitor'] = psutil.Process().memory_info().rss > 0
+    items['rusage'] = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss > 0
+    per_case = {}
+    for ck, p in prepared.items():
+        opts = p['params'].solver_params.options
+        net = p['network']
+        lp = expected_log_path(net, opts)
+        c = {
+            'output_file_set': bool(opts.get('output_file')),
+            'log_dir_is_out_logs': os.path.abspath(net.logs_dir) == os.path.abspath(os.path.join(out_dir, 'logs')),
+            'log_path_fresh': not os.path.exists(lp),
+            'file_print_level_ge_6 (mu lines, objective scaling factor, iteration table)': int(opts.get('file_print_level', 5)) >= 6,
+            'print_timing_statistics_yes': opts.get('print_timing_statistics') == 'yes',
+            'scaling_defaults_untouched': not any(k in opts for k in IPOPT_SCALING if k.startswith(('nlp_scaling', 'obj_scaling'))
+                                                  and not (p['case'] == 'iii_warm_diag' and k == 'nlp_scaling_method')),
+            'solver_executable_exists': os.path.isfile(p['params'].solver_params.solver_path),
+            'network_records_deque': isinstance(getattr(net, 'ipopt_solve_records', None), deque),
+            'warm_suffixes_present': (len(p['model'].ipopt_zL_out) > 0 and len(p['model'].dual) > 0)
+            if CASE_IS_WARM[p['case']] else True,
+            'cold_suffixes_cleared': (len(p['model'].dual) == 0 and len(p['model'].ipopt_zL_in) == 0)
+            if not CASE_IS_WARM[p['case']] else True,
+            'iii_diagnostic_options': all(opts.get(k) == v for k, v in CASE_III_OPTIONS.items())
+            if p['case'] == 'iii_warm_diag' else True,
+        }
+        per_case[ck] = c
+    items['per_case'] = per_case
+    items['nl_dir_exists'] = os.path.isdir(os.path.join(out_dir, 'nl'))
+    failures = [k for k, v in items.items() if k != 'per_case' and v is not True]
+    for ck, c in per_case.items():
+        failures += [f'{ck}:{k}' for k, v in c.items() if v is not True]
+    items['failures'] = failures
+    items['asserted_before_first_solve'] = True
+    if failures:
+        raise RuntimeError(f'capture checklist failed before any solve: {failures}')
+    return items
+
+
+# ======================================================================================================================
+#  Part A
+# ======================================================================================================================
+def production_reference_iterations():
+    """ZERO-SOLVE read of the committed production per-attempt records of THIS cell (child manifest-verified):
+    the iterations each ADMM round's solve of the two blocks actually took."""
+    path = os.path.join(REPO, INPUTS['production_solve_records'][0])
+    rows = [json.loads(ln) for ln in open(path) if ln.strip()]
+    out = {}
+    for block, net in (('tso', 'case9'), ('dso', 'case33_2')):
+        sel = [r for r in rows if r['network'] == net and r['year'] == YEAR and r['day'] == DAY]
+        warm = [r['iterations'] for r in sel if r['round'] > 0 and r['attempt'] == 'primary']
+        init = [r['iterations'] for r in sel if r['round'] == 0 and r['attempt'] == 'primary']
+        srt = sorted(warm)
+        out[block] = {'network': net, 'n_records': len(sel),
+                      'attempts': sorted({r['attempt'] for r in sel}),
+                      'initialisation_round0_iterations': init,
+                      'cycle_rounds_iterations_min': min(warm), 'cycle_rounds_iterations_median': srt[len(srt) // 2],
+                      'cycle_rounds_iterations_max': max(warm),
+                      'cycle_rounds_iterations_mean': sum(warm) / len(warm),
+                      'cycle_rounds_le_30': sum(1 for w in warm if w <= 30), 'cycle_rounds_n': len(warm),
+                      'last_10_rounds': [r['iterations'] for r in sel if r['attempt'] == 'primary'][-10:],
+                      'floor_status_counts': {s: sum(1 for r in sel if str(r.get('floor_status')) == s)
+                                              for s in sorted({str(r.get('floor_status')) for r in sel})},
+                      'restoration_or_recovery_attempts': [r['round'] for r in sel if r['attempt'] != 'primary']}
+    out['source'] = INPUTS['production_solve_records'][0]
+    out['note'] = ('production cycle k warm-starts from cycle k-1 with UPDATED Params; case (i) here re-solves the '
+                   'identical cycle-112 problem from its own solution, a lower bound on that cost')
+    return out
+
+
+def run_local(dry_dir=None):
+    dry = dry_dir is not None
+    out_dir = os.path.abspath(dry_dir) if dry else os.path.join(REPO, LOCAL_OUT_REL)
+    for forbidden in D0_FORBIDDEN:
+        if os.path.abspath(out_dir).startswith(os.path.abspath(os.path.join(REPO, forbidden))):
+            raise RuntimeError('refusing: output under the D0 root')
+    lock = Lock(os.path.join(REPO, LOCK_REL))
+    lock_info = lock.acquire()
+    try:
+        if os.path.exists(out_dir):
+            raise RuntimeError(f'refusing: output directory exists: {out_dir}')
+        os.makedirs(os.path.join(out_dir, 'logs'))
+        os.makedirs(os.path.join(out_dir, 'nl'))
+        record = {'schema': 'p516_tperf_local_v1', 'stage': STAGE, 'authority': AUTHORITY, 'utc_start': _utc(),
+                  'mode': 'dry_run' if dry else 'part_a', 'instance': INSTANCE,
+                  'objective_convention': 'none computed or compared (timing / iterations / memory only)',
+                  'lock': lock_info, 'thread_env_before': THREAD_ENV_BEFORE,
+                  'thread_env_in_force': {k: os.environ.get(k) for k in THREAD_CAP_ENV}}
+        record['provenance'] = {
+            'python': sys.executable, 'python_version': sys.version, 'platform': platform.platform(),
+            'hw_model': _git_free_cmd(['sysctl', '-n', 'hw.model']),
+            'mem_total_bytes': psutil.virtual_memory().total, 'cpu_count_logical': psutil.cpu_count(),
+            'cpu_count_physical': psutil.cpu_count(logical=False),
+            'git_head': _git(['rev-parse', 'HEAD']), 'git_branch': _git(['rev-parse', '--abbrev-ref', 'HEAD']),
+            'production_files_git_status': _git(['status', '--porcelain', '--'] + list(PRODUCTION_FILES)),
+            'production_files_sha256': {f: _sha(os.path.join(REPO, f)) for f in PRODUCTION_FILES},
+            'harness_sha256': _sha(THIS), 'harness_git_status': _git(['status', '--porcelain', '--', 'p516_tperf_profile.py']),
+            'ipopt_version_probe (not a solve)': _git_free_cmd(['/usr/local/bin/ipopt', '--version']),
+        }
+        if record['provenance']['production_files_git_status']:
+            raise RuntimeError(f"production files not clean: {record['provenance']['production_files_git_status']}")
+        _log('verifying input hashes (declared + campaign manifest + child manifest)')
+        record['inputs'] = verify_inputs()
+
+        import pyomo
+        import pyomo.environ as pe
+        import network as network_module
+        import model_construction_helpers as mch
+        record['provenance']['pyomo_version'] = pyomo.version.version
+        record['memory'] = {'rss_after_imports': _rss()}
+
+        _log('unpickling certified_models.pkl')
+        t = time.perf_counter()
+        with open(os.path.join(REPO, INPUTS['certified_models'][0]), 'rb') as handle:
+            payload = pickle.load(handle)
+        record['memory']['certified_models_unpickle_s'] = time.perf_counter() - t
+        record['memory']['rss_after_unpickle'] = _rss()
+        if not (isinstance(payload, dict) and 'tso' in payload and 'dso' in payload
+                and DAY in payload['tso'].get(YEAR, {}) and DAY in payload['dso'].get(DSO_NODE, {}).get(YEAR, {})):
+            raise RuntimeError('pickle lacks the 2025 Spring TSO / DSO node-7 blocks')
+        record['pickle_structure'] = pickle_structure(payload)
+        originals = {'tso': payload['tso'][YEAR][DAY], 'dso': payload['dso'][DSO_NODE][YEAR][DAY]}
+        prepared = {}
+        record['blocks'] = {}
+        for block in BLOCKS:
+            orig = originals[block]
+            net0, prm0 = _build_time_objects(orig)
+            record['blocks'][block] = {
+                'model_name': orig.name, 'network': net0.name, 'year': net0.year, 'day': net0.day,
+                'baseMVA': net0.baseMVA, 'size_pyomo_certified_point': block_size(orig, pe),
+                'suffix_sizes': {s: len(getattr(orig, s)) for s in ('dual', 'ipopt_zL_out', 'ipopt_zU_out',
+                                                                    'ipopt_zL_in', 'ipopt_zU_in')},
+                'production_solver_params': {'solver': prm0.solver_params.solver,
+                                             'solver_path': prm0.solver_params.solver_path,
+                                             'options': dict(prm0.solver_params.options or {}),
+                                             'recovery_enabled': getattr(prm0.solver_params, 'recovery_enabled', None),
+                                             'recovery_tier2_enabled': getattr(prm0.solver_params, 'recovery_tier2_enabled', None),
+                                             'recovery_options': dict(prm0.solver_params.recovery_options or {}),
+                                             'release_solution_bookkeeping': getattr(prm0.solver_params, 'release_solution_bookkeeping', None),
+                                             'verbose': prm0.solver_params.verbose},
+                'production_logs_dir_in_pickle': net0.logs_dir}
+            for case in CASES:
+                ck = f'{block}_{case}'
+                t = time.perf_counter()
+                model = orig.clone()
+                clone_s = time.perf_counter() - t
+                net, prm = _build_time_objects(model)
+                if net is net0 or prm is prm0:
+                    raise RuntimeError('clone shares network/params with the loaded block')
+                net.logs_dir = os.path.join(out_dir, 'logs')
+                net.ipopt_solve_records = deque(maxlen=network_module.IPOPT_SOLVE_RECORDS_MAXLEN)
+                options = dict(prm.solver_params.options or {})
+                production_options = dict(options)
+                options['output_file'] = f'tperf_{ck}.log'
+                options.update(ALL_CASE_OPTIONS)
+                if case == 'iii_warm_diag':
+                    options.update(CASE_III_OPTIONS)
+                prm.solver_params.options = options
+                entry = {'clone_s': clone_s,
+                         'options_added_or_changed': {k: v for k, v in options.items()
+                                                      if production_options.get(k) != v},
+                         'production_options': production_options}
+                if case == 'ii_cold':
+                    entry['cold_reset'] = reset_to_initialisation_point(model, block, network_module, mch, pe)
+                entry['size_pyomo_at_solve'] = block_size(model, pe)
+                prepared[ck] = {'block': block, 'case': case, 'model': model, 'network': net, 'params': prm,
+                                'entry': entry}
+        del originals
+        del payload
+        gc.collect()
+        record['memory']['rss_after_clone_and_release'] = _rss()
+
+        _log('ESSO pickle: size only (0 solves)')
+        with open(os.path.join(REPO, INPUTS['esso_models'][0]), 'rb') as handle:
+            esso = pickle.load(handle)
+        record['esso'] = {'keys': sorted(esso.keys()), 'node_7_size': block_size_esso(esso[DSO_NODE], pe)}
+        del esso
+        gc.collect()
+        record['production_reference_iterations'] = production_reference_iterations()
+
+        inst = Instrument(os.path.join(out_dir, 'nl'), dry).install()
+        record['capture_checklist'] = capture_checklist(inst, prepared, network_module, out_dir, dry)
+        record['memory']['rss_build_footprint_before_first_solve'] = _rss()
+        record['memory']['rusage_before_first_solve'] = _rusage()
+        _log('capture checklist holds; starting the declared solves' + (' (DRY: all blocked)' if dry else ''))
+
+        record['solves'] = {}
+        stopped = None
+        for ck, p in prepared.items():
+            _log(f'case {ck}: run_smopf(from_warm_start={CASE_IS_WARM[p["case"]]})')
+            rec, ok = run_case(ck, p['block'], p['case'], p['model'], p['network'], p['params'], inst,
+                               network_module, pe, os.path.join(out_dir, 'logs'), dry)
+            rec['preparation'] = p['entry']
+            record['solves'][ck] = rec
+            s = (rec.get('ipopt_log') or {}).get('summary', {})
+            _log(f'case {ck}: ok={ok} term={rec["termination_condition"]} iters={s.get("iterations")} '
+                 f'restoration={s.get("restoration_iteration_lines")} run_smopf={rec["timing"]["run_smopf_wall_s"]:.3f}s '
+                 f'ipopt={rec["timing"]["ipopt_process_wall_s (_execute_command)"]}')
+            if dry:
+                if dry_nl_selftest(ck, p['model'], out_dir, rec) is False:
+                    stopped = f'dry-run NL self-test failed at {ck}'
+                    break
+                continue
+            if not ok or rec['solve_calls_in_case'] != 1 or rec['cap_blocked_in_case']:
+                stopped = (f'solve failed or count off at {ck}: ok={ok} calls={rec["solve_calls_in_case"]} '
+                           f'cap_blocked={rec["cap_blocked_in_case"]} -- stopping (task: record and stop)')
+                _log(stopped)
+                break
+        record['stopped'] = stopped
+
+        # scaling replica (post-processing, after every solve)
+        if not dry:
+            for ck, rec in record['solves'].items():
+                if not rec['nl_capture']:
+                    rec['gradient_scaling'] = {'computed': False, 'reason': 'no NL captured'}
+                    continue
+                try:
+                    rep = gradient_scaling_replica(rec['nl_capture'][0]['path'])
+                    rep['validation_against_ipopt_log'] = validate_replica(rep, rec['ipopt_log'])
+                    rep['computed'] = True
+                    rec['gradient_scaling'] = rep
+                except Exception as error:  # noqa: BLE001 -- recorded; the solves are already done
+                    rec['gradient_scaling'] = {'computed': False, 'reason': f'{type(error).__name__}: {error}',
+                                               'traceback': traceback.format_exc()}
+
+        record['memory']['rusage_end'] = _rusage()
+        expected = 0 if dry else DECLARED_SOLVES
+        if dry:
+            fails = []
+            if _GUARD.counts['permitted_solve'] or _GUARD.counts['permitted_exec']:
+                fails.append(f'dry run reached a permitted solve {_GUARD.counts}')
+            if _GUARD.counts['blocked_solve'] != len(record['solves']):
+                fails.append(f"blocked {_GUARD.counts['blocked_solve']} != cases {len(record['solves'])}")
+        else:
+            fails = _GUARD.verify(expected)
+        record['guard'] = {'permitted': [list(p) for p in PERMITTED] if not dry else [],
+                           'declared_solves': expected, 'counts': dict(_GUARD.counts),
+                           'verify_failures': fails, 'per_case_cap_blocks': inst.cap_blocks}
+        record['status'] = ('complete' if not fails and stopped is None else
+                            ('stopped' if stopped else 'guard_failed'))
+        try:
+            record['summary'] = summarise(record) if not dry else None
+        except Exception as error:  # noqa: BLE001 -- the per-solve records are complete without it
+            record['summary'] = {'error': f'{type(error).__name__}: {error}', 'traceback': traceback.format_exc()}
+        record['utc_end'] = _utc()
+        record['wall_s'] = time.time() - T0
+        name = 'tperf_local.json' if not dry else 'tperf_dry_run.json'
+        _write_json(os.path.join(out_dir, name), record)
+        _log(f'status={record["status"]} guard={_GUARD.counts} verify_failures={fails} -> {name}')
+        return 0 if record['status'] == 'complete' else 2
+    finally:
+        lock.release()
+
+
+def _git_free_cmd(cmd):
+    try:
+        return subprocess.run(cmd, capture_output=True, text=True, timeout=30).stdout.strip()
+    except Exception as error:  # noqa: BLE001
+        return f'{type(error).__name__}: {error}'
+
+
+def block_size_esso(model, pe):
+    nv = nf = 0
+    for v in model.component_data_objects(pe.Var, descend_into=True):
+        nv += 1
+        nf += bool(v.fixed)
+    nc = sum(1 for _ in model.component_data_objects(pe.Constraint, active=True, descend_into=True))
+    return {'pyomo_vars': nv, 'pyomo_vars_fixed': nf, 'pyomo_vars_free': nv - nf, 'pyomo_active_constraints': nc,
+            'active_objectives': [o.name for o in model.component_data_objects(pe.Objective, active=True)]}
+
+
+def dry_nl_selftest(ck, model, out_dir, rec):
+    """Zero-solve: write this case's NL with Pyomo's writer and run the replica on it (parser self-test)."""
+    path = os.path.join(out_dir, 'nl', f'{ck}_selftest.nl')
+    try:
+        t = time.perf_counter()
+        model.write(path, format='nl', io_options={'symbolic_solver_labels': False})
+        rec['dry_nl_write_s'] = time.perf_counter() - t
+        rep = gradient_scaling_replica(path)
+        rec['dry_gradient_scaling_selftest'] = rep
+        _log(f'  dry NL self-test {ck}: n_free={rep["n_free_vars"]} eq={rep["n_eq_rows"]} ineq={rep["n_ineq_rows"]} '
+             f'df={rep["df"]:.6g} c_prov={rep["c"]["scaling_provided"]} d_prov={rep["d"]["scaling_provided"]} '
+             f'span={rep["factor_span_decades_all"]:.3f} rowgrad_span={rep["row_max_gradient_span_decades_all"]:.3f} '
+             f'({rep["compute_s"]:.2f}s)')
+        return True
+    except Exception as error:  # noqa: BLE001
+        rec['dry_gradient_scaling_selftest'] = {'error': f'{type(error).__name__}: {error}',
+                                                'traceback': traceback.format_exc()}
+        _log(f'  dry NL self-test {ck} FAILED: {error}')
+        return False
+
+
+def summarise(record):
+    rows = {}
+    for ck, rec in record['solves'].items():
+        s = (rec.get('ipopt_log') or {}).get('summary', {})
+        p = (rec.get('ipopt_log') or {}).get('problem', {})
+        g = rec.get('gradient_scaling') or {}
+        t = rec['timing']
+        rows[ck] = {
+            'termination': rec['termination_condition'], 'iterations': s.get('iterations'),
+            'restoration_iterations': s.get('restoration_iteration_lines'), 'restoration_phases': s.get('restoration_phases'),
+            'mu_final': (rec.get('production_attempt_parse') or {}).get('mu_final'),
+            'floor_status': (rec.get('production_attempt_parse') or {}).get('floor_status'),
+            'n_vars_ipopt': p.get('Total number of variables'), 'n_eq': p.get('Total number of equality constraints'),
+            'n_ineq': p.get('Total number of inequality constraints'),
+            'nnz_jac_eq': p.get('nnz equality constraint Jacobian'), 'nnz_jac_ineq': p.get('nnz inequality constraint Jacobian'),
+            'nnz_hessian': p.get('nnz Lagrangian Hessian'),
+            'run_smopf_s': t['run_smopf_wall_s'], 'nl_write_s': t['nl_write_wall_s (NLWriter.__call__)'],
+            'result_load_s': t['result_load_wall_s (sol read + load_from)'],
+            'ipopt_process_s': t['ipopt_process_wall_s (_execute_command)'],
+            'ipopt_overall_algorithm_s': s.get('overall_algorithm_wall_s'),
+            'ipopt_linear_solver_s': s.get('linear_solver_wall_s'),
+            'ipopt_function_evals_s': s.get('function_evaluations_wall_s'),
+            'shares': rec.get('shares'),
+            'peak_self_rss': rec['rss_monitor']['peak_self_rss'], 'peak_ipopt_rss': rec['rss_monitor']['peak_child_rss'],
+            'vars_at_bounds_1e-6': ((rec.get('vars_at_bounds') or {}).get('rtol_1e-06') or {}).get('at_any'),
+            'scaling_df': g.get('df'), 'scaling_span_decades': g.get('factor_span_decades_all'),
+            'scaling_factor_min': g.get('factor_min_all'), 'scaling_factor_max': g.get('factor_max_all'),
+            'row_gradient_span_decades': g.get('row_max_gradient_span_decades_all'),
+            'scaling_replica_validated': (g.get('validation_against_ipopt_log') or {}).get('all_pass'),
+        }
+    return rows
+
+
+# ======================================================================================================================
+#  Part B -- the Studio (NOT RUN HERE)
+# ======================================================================================================================
+def run_studio():
+    """Part B stub (P5_16_TPERF_SPEC_v1.md section 2). NOT RUN on this machine; untested beyond import/compile.
+
+    Builds the paper instance with p515_s44_scale_measurement.derive_case('paper', {}) (5 years x 4 days x 5 x 5
+    scenarios) through the established zero-solve paper-scale build path of that stage (production reader on the
+    derived case file; p515_g_g1_g4_admm_gates._construct_arm_planning with apply_rho=False; every
+    create_*_model with `.optimize` intercepted by p515_s44_scale_measurement.Interceptor; ADMM objective
+    preparation as in that stage's child_build), records build time and memory, then on the TSO 2025 Spring and
+    DSO node-7 2025 Spring blocks runs the same three cases through `network.run_smopf`, in the order
+    (ii) cold from the built (initialisation) point, then (i) warm and (iii) warm+diagnostics, each from its own
+    clone of the post-(ii) block (there is no certified point at paper scale). Declared solves: 6 (same guard).
+    PLANNER TO CONFIRM before the author runs it: the candidate (default here: the unit cell, node 7 0.25 MVA /
+    1.0 MWh, 2025 cohort) and the s44 build configuration (its D-arm ADMM settings, not a campaign spec's)."""
+    hw = _git_free_cmd(['sysctl', '-n', 'hw.model'])
+    if hw == 'Mac17,3':
+        raise RuntimeError('refusing: --studio must not run on this 24 GB machine (hw.model Mac17,3; CLAUDE.local.md)')
+    avail = psutil.virtual_memory().available
+    if avail < 18 * 2 ** 30:
+        raise RuntimeError(f'refusing: {avail / 2 ** 30:.1f} GiB available < 18 GiB (paper build ~16 GiB RSS, s44)')
+    import p515_s44_scale_measurement as S44
+    out_dir = os.path.join(REPO, STUDIO_OUT_REL)
+    lock = Lock(os.path.join(REPO, LOCK_REL))
+    lock_info = lock.acquire()
+    try:
+        if os.path.exists(out_dir):
+            raise RuntimeError(f'refusing: output directory exists: {out_dir}')
+        os.makedirs(os.path.join(out_dir, 'logs'))
+        os.makedirs(os.path.join(out_dir, 'nl'))
+        record = {'schema': 'p516_tperf_studio_v1', 'stage': 'P5.16 T-perf Part B (Studio)', 'authority': AUTHORITY,
+                  'utc_start': _utc(), 'lock': lock_info, 'hw_model': hw, 'mem_available_at_start': avail,
+                  'thread_env_in_force': {k: os.environ.get(k) for k in THREAD_CAP_ENV},
+                  'git_head': _git(['rev-parse', 'HEAD']), 'harness_sha256': _sha(THIS),
+                  'production_files_git_status': _git(['status', '--porcelain', '--'] + list(PRODUCTION_FILES))}
+        if record['production_files_git_status']:
+            raise RuntimeError('production files not clean')
+        stages = []
+
+        class _Stage:
+            def __init__(self, name):
+                self.name = name
+
+            def __enter__(self):
+                self.t = time.perf_counter()
+                _log(f'stage: {self.name}')
+
+            def __exit__(self, *exc):
+                stages.append({'stage': self.name, 'wall_s': time.perf_counter() - self.t, 'rss_after': _rss(),
+                               'ok': exc[0] is None})
+                return False
+
+        class _Stages:
+            def stage(self, name):
+                return _Stage(name)
+
+        case, spec, changes = S44.derive_case('paper', {})
+        case_path = os.path.join(out_dir, 'derived_case_paper.json')
+        with open(case_path, 'x') as handle:
+            json.dump(case, handle, indent=1)
+        launch = {'derived_case': {'path': os.path.relpath(case_path, REPO), 'sha256': _sha(case_path)},
+                  'instance': 'paper'}
+        record['derived_case'] = {'path': launch['derived_case']['path'], 'sha256': launch['derived_case']['sha256'],
+                                  'changes': changes, 'spec': spec}
+        build_t0 = time.perf_counter()
+        import pyomo.environ as pe
+        import network as network_module
+        import shared_resources_planning as srp
+        import p515_g_g1_g4_admm_gates as G
+        O, R = G.O, G.R
+        planning0 = S44.read_planning_from_derived_case(launch, out_dir, _Stages())
+        record['scenario_checksum'] = S44.inject_oracle_baseline(O, planning0, launch)
+        construct_report = {}
+        unit_cell = {5: (0.0, 0.0), 7: (0.25, 1.0), 9: (0.0, 0.0)}
+        with _Stage('construct arm planning (s44 path, apply_rho=False, unit-cell candidate)'):
+            planning, sed, candidate = G._construct_arm_planning(
+                'p516_tperf_studio', os.path.join(out_dir, 'arm_build'), construct_report,
+                investment_map=unit_cell, eval_id='p516_tperf_studio_build', num_max_iters_override=1,
+                apply_rho=False)
+        record['construct_report'] = construct_report
+        params = planning.params.admm
+        interceptor = S44.Interceptor()
+        tn = planning.transmission_network
+        tn.optimize = interceptor.network(tn, 'tso')
+        for dn in planning.distribution_networks.values():
+            dn.optimize = interceptor.network(dn, 'dso')
+        sed.optimize = interceptor.esso(sed)
+        with _Stage('create models (optimize intercepted)'):
+            cv, dv = srp.create_admm_variables(planning)
+            dso_models, res_dso = srp.create_distribution_networks_models(
+                planning.distribution_networks, cv, candidate['total_capacity'], parallel_execution=False)
+            tso_model, res_tso = srp.create_transmission_network_model(planning, cv, candidate['total_capacity'])
+            esso_model, res_esso = srp.create_shared_energy_storage_model(sed, cv, candidate['investment'])
+        with _Stage('ADMM objective preparation (s44 child_build sequence)'):
+            srp._prepare_distribution_objectives_for_admm(planning.distribution_networks, dso_models)
+            srp._prepare_transmission_objectives_for_admm(tn, tso_model)
+            scale = params.objective_scale
+            if scale is None:
+                raise RuntimeError('case file has no fixed objective_scale')
+            al_scale = srp._resolve_esso_al_scale(planning, params, scale)[0]
+            with R.patched_admm_objectives():
+                srp.update_distribution_models_to_admm(planning, dso_models, params, scale)
+                srp.update_transmission_model_to_admm(planning, tso_model, params, scale)
+            srp.update_shared_energy_storage_model_to_admm(planning, esso_model, params, al_scale_esso=al_scale)
+        del tn.optimize
+        for dn in planning.distribution_networks.values():
+            del dn.optimize
+        del sed.optimize
+        record['interceptor_counts'] = interceptor.counts()
+        record['build_wall_s'] = time.perf_counter() - build_t0
+        record['build_rss'] = _rss()
+        record['build_rusage'] = _rusage()
+        record['build_stages'] = stages
+        years = list(tso_model.keys())
+        y0 = years[0]
+        bases = {'tso': tso_model[y0][DAY], 'dso': dso_models[DSO_NODE][y0][DAY]}
+        record['blocks'] = {b: block_size(m, pe) for b, m in bases.items()}
+        inst = Instrument(os.path.join(out_dir, 'nl'), False).install()
+        record['solves'] = {}
+        stopped = None
+        for block in BLOCKS:
+            order = ('ii_cold', 'i_warm', 'iii_warm_diag')
+            solved_cold = None
+            for case in order:
+                ck = f'{block}_{case}'
+                model = bases[block].clone() if case == 'ii_cold' else solved_cold.clone()
+                net, prm = _build_time_objects(model)
+                net.logs_dir = os.path.join(out_dir, 'logs')
+                net.ipopt_solve_records = deque(maxlen=network_module.IPOPT_SOLVE_RECORDS_MAXLEN)
+                options = dict(prm.solver_params.options or {})
+                options['output_file'] = f'tperf_{ck}.log'
+                options.update(ALL_CASE_OPTIONS)
+                if case == 'iii_warm_diag':
+                    options.update(CASE_III_OPTIONS)
+                prm.solver_params.options = options
+                if case == 'ii_cold':
+                    network_module._clear_multiplier_suffixes(model)
+                rec, ok = run_case(ck, block, case, model, net, prm, inst, network_module, pe,
+                                   os.path.join(out_dir, 'logs'), False)
+                record['solves'][ck] = rec
+                if not ok or rec['solve_calls_in_case'] != 1:
+                    stopped = f'solve failed at {ck}'
+                    break
+                if case == 'ii_cold':
+                    solved_cold = model
+            if stopped:
+                break
+        for ck, rec in record['solves'].items():
+            try:
+                rep = gradient_scaling_replica(rec['nl_capture'][0]['path'])
+                rep['validation_against_ipopt_log'] = validate_replica(rep, rec['ipopt_log'])
+                rec['gradient_scaling'] = rep
+            except Exception as error:  # noqa: BLE001
+                rec['gradient_scaling'] = {'computed': False, 'reason': f'{type(error).__name__}: {error}'}
+        fails = _GUARD.verify(DECLARED_SOLVES)
+        record['guard'] = {'permitted': [list(p) for p in PERMITTED], 'declared_solves': DECLARED_SOLVES,
+                           'counts': dict(_GUARD.counts), 'verify_failures': fails}
+        record['stopped'] = stopped
+        record['status'] = 'complete' if not fails and not stopped else 'failed'
+        record['summary'] = summarise(record)
+        record['utc_end'] = _utc()
+        _write_json(os.path.join(out_dir, 'tperf_studio.json'), record)
+        return 0 if record['status'] == 'complete' else 2
+    finally:
+        lock.release()
+
+
+# ======================================================================================================================
+#  manifest
+# ======================================================================================================================
+def manifest(studio=False):
+    root = os.path.join(REPO, STUDIO_OUT_REL if studio else LOCAL_OUT_REL)
+    target = os.path.join(root, 'manifest_sha256.json')
+    if os.path.exists(target):
+        raise RuntimeError(f'refusing to overwrite {target}')
+    files = {}
+    for dirpath, _, names in os.walk(root):
+        for nm in sorted(names):
+            p = os.path.join(dirpath, nm)
+            files[os.path.relpath(p, REPO)] = _sha(p)
+    for rel in LAUNCH_LOGS_REL['studio' if studio else 'local']:
+        if os.path.exists(os.path.join(REPO, rel)):
+            files[rel] = _sha(os.path.join(REPO, rel))
+    files[os.path.relpath(THIS, REPO)] = _sha(THIS)
+    for rel in INPUTS.values():
+        files[rel[0]] = _sha(os.path.join(REPO, rel[0]))
+    _write_json(target, {'schema': 'p516_tperf_manifest_v1', 'utc': _utc(), 'files': files})
+    print(f'manifest: {len(files)} files -> {target}')
+    return 0
+
+
+if __name__ == '__main__':
+    try:
+        if ARGS.manifest:
+            sys.exit(manifest(studio=ARGS.studio_manifest))
+        if ARGS.studio:
+            sys.exit(run_studio())
+        sys.exit(run_local(ARGS.dry_run))
+    except Exception:
+        traceback.print_exc()
+        if _GUARD is not None:
+            print(f'guard counts at error: {_GUARD.counts}', file=sys.stderr, flush=True)
+        sys.exit(1)
