@@ -56,7 +56,12 @@ order below stands but W184/W185 are **held** (Planner recommendation R6).
   no alias) — `P5_16_TPERF_PARTB_READINESS.md`, evidence `P516TPERF/studio_dry` (`37820a9f…`), `studio_dry_equiv`
 - [ ] **▶ Author: run Part B on the Studio** at the commit carrying harness sha256 `2c85fc93…` (procedure in the
   readiness report); copy back `studio/` + the two launch logs
-- [ ] A2b (running): the five remaining `mu_init` solves under the stopping-slack gates (a2 = TSO c1: 22 → 9 iterations)
+- [x] **A2 + A2b** (`mu_init` A/B; 1 + 5 declared solves, guards exact): iterations −78/−79 % (TSO 48 → 10, DSO 51 → 11
+  on the perturbed problem), wall −35/−43 % — A3, A5 HELD; A1, A2 FAILED (TSO 9 > 8; perturbation costs the TSO a
+  22-iteration μ = 10^-1.7 plateau); **A4 FAILED**: DSO `mu_init` solves end 23–41× outside the complementarity bar with
+  35–38× larger dual infeasibility (all within tol) — hypothesis: a shallower stop (13–15 % of tol vs 0.4 %), not a
+  different limit. **R7: do not adopt yet**; the bar question → Advisor with Part B — `P5_16_TPERF_A2_REPORT.md`,
+  evidence `P516TPERF/a2` (`c22e94d3…`), `a2b` (`8dc01e26…`)
 - [ ] Expert R7 (to request): `mu_init` / warm-start barrier policy as a production configuration lever; diagnostic
   A/B (≤ 6 solves) proposed first — author authorization needed
 - [x] Amendment to Addendum 88 (author, 2026-10-31): C2 closed — installation-year basis, f = 1.0 notional residual,

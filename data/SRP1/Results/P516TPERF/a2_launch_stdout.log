@@ -1,0 +1,22 @@
+11:03:49 [A2 +    0.08s] verifying input hashes (certified_models, esso, production records, post_certification; coupling.json; Part A baseline)
+11:03:49 [A2 +    0.20s]   perturbation tso vmag_req: +0.0215504 kV = +6.24648e-05 pu of v_base (vmag)
+11:03:49 [A2 +    0.20s]   perturbation tso p_pf_req: +0.019051 MW = +0.00019051 pu of s_base
+11:03:49 [A2 +    0.20s]   perturbation tso q_pf_req: +0.00169751 Mvar = +1.69751e-05 pu of s_base
+11:03:49 [A2 +    0.20s]   perturbation tso p_ess_req: +0.00111885 MW = +1.11885e-05 pu of s_base
+11:03:49 [A2 +    0.20s]   perturbation tso q_ess_req: +1.77742e-05 Mvar = +1.77742e-07 pu of s_base
+11:03:49 [A2 +    0.20s]   perturbation dso vmag_req: +0.01058 kV = +3.06668e-05 pu of v_base (vmag)
+11:03:49 [A2 +    0.20s]   perturbation dso p_pf_req: +0.00271483 MW = +2.71483e-05 pu of s_base
+11:03:49 [A2 +    0.20s]   perturbation dso q_pf_req: +8.82934e-05 Mvar = +8.82934e-07 pu of s_base
+11:03:49 [A2 +    0.20s]   perturbation dso p_ess_req: +0.000646057 MW = +6.46057e-06 pu of s_base
+11:03:49 [A2 +    0.20s]   perturbation dso q_ess_req: +1.77704e-05 Mvar = +1.77704e-07 pu of s_base
+11:03:50 [A2 +    1.38s] unpickling certified_models.pkl
+11:03:57 [A2 +    8.18s]   comparator tso: c1 comparator (Part A warm limit) = -52244.70012990263 (== declared -52244.70012990263: True); option regime matches Part A warm: True {}; recorded: certified f = -52244.722971252544, limit - certified = 0.0228413 (4.372e-07 rel), compl_inf_tol passed 0.0005 vs at certification 1e-06
+11:03:57 [A2 +    8.18s]   comparator dso: c1 comparator (Part A warm limit) = 54561.135089701755 (== declared 54561.135089701755: True); option regime matches Part A warm: True {}; recorded: certified f = 54561.093554978834, limit - certified = 0.0415347 (7.613e-07 rel), compl_inf_tol passed None vs at certification 1e-06
+11:03:57 [A2 +    8.18s] comparator check: ok
+11:03:58 [A2 +    9.23s] capture checklist holds; predictions written; starting the declared solves
+11:03:58 [A2 +    9.23s] case tso_c1_ident_mu: run_smopf(from_warm_start=True) perturbed=False mu_init=1e-06
+[INFO] 			 - Running SMOPF, Network case9, 2025, Spring...
+11:03:58 [A2 +    9.42s] case tso_c1_ident_mu: ok=True term=optimal iters=9 restoration=0 mu0=1e-06 mu_final=4.545454545454545e-08 run_smopf=0.142s ipopt=0.07021970799542032
+11:03:58 [A2 +    9.43s]   gate tso c1 objective vs Part A warm limit: f = -52244.70006213897 vs -52244.70012990263, rel 1.297e-09 -> pass=False; IPOPT log f = -52244.700062138974; options match Part A: True; REPORTED (not gated) vs certified: obj rel 4.385e-07, max |dx| 8.627e-04 p.u., 903 Vars > 1e-6
+11:03:58 [A2 +    9.43s] c1 objective gate (vs Part A's warm limit, ruling (b)) failed on tso_c1_ident_mu -- stopping (task: report, do not tune)
+11:03:58 [A2 +    9.43s] status=stopped guard={'permitted_solve': 1, 'permitted_exec': 1, 'blocked_solve': 0, 'blocked_exec': 0} verify_failures=['solve count 1 != declared 6 (too few means the path under test did not run)', 'process-launch count 1 != declared 6 (a retry would raise this above the solve count)'] -> a2.json

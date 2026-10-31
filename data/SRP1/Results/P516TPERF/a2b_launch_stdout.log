@@ -1,0 +1,39 @@
+11:15:36 [A2b +    0.07s] verifying input hashes (certified_models, esso, production records, post_certification; coupling.json; Part A baseline)
+11:15:36 [A2b +    0.15s] continuation (ruling (a)): verifying a2 by reference (manifest, a2.json, c1 log, harness blob)
+11:15:37 [A2b +    0.44s]   a2 verified: manifest c22e94d3, a2.json e87d67b2; Part A harness imported 2c85fc93 (a2 imported b8dbb6aa, committed d013452f); used definitions identical to HEAD: {'run_case': True, 'Instrument': True, 'parse_ipopt_log': True, '_post_solve_parse': True, 'Lock': True, 'verify_inputs': True, '_write_json': True, 'capture_checklist': False, 'expected_log_path': True, '_build_time_objects': True, '_structure_signature': True, '_norm': True, '_sha': True, '_git': True, '_git_free_cmd': True, '_utc': True}
+11:15:37 [A2b +    0.48s]   perturbation tso vmag_req: +0.0215504 kV = +6.24648e-05 pu of v_base (vmag)
+11:15:37 [A2b +    0.48s]   perturbation tso p_pf_req: +0.019051 MW = +0.00019051 pu of s_base
+11:15:37 [A2b +    0.48s]   perturbation tso q_pf_req: +0.00169751 Mvar = +1.69751e-05 pu of s_base
+11:15:37 [A2b +    0.48s]   perturbation tso p_ess_req: +0.00111885 MW = +1.11885e-05 pu of s_base
+11:15:37 [A2b +    0.48s]   perturbation tso q_ess_req: +1.77742e-05 Mvar = +1.77742e-07 pu of s_base
+11:15:37 [A2b +    0.48s]   perturbation dso vmag_req: +0.01058 kV = +3.06668e-05 pu of v_base (vmag)
+11:15:37 [A2b +    0.48s]   perturbation dso p_pf_req: +0.00271483 MW = +2.71483e-05 pu of s_base
+11:15:37 [A2b +    0.48s]   perturbation dso q_pf_req: +8.82934e-05 Mvar = +8.82934e-07 pu of s_base
+11:15:37 [A2b +    0.48s]   perturbation dso p_ess_req: +0.000646057 MW = +6.46057e-06 pu of s_base
+11:15:37 [A2b +    0.48s]   perturbation dso q_ess_req: +1.77704e-05 Mvar = +1.77704e-07 pu of s_base
+11:15:38 [A2b +    1.67s] unpickling certified_models.pkl
+11:15:46 [A2b +    9.80s]   comparator tso: c1 comparator (Part A warm limit) = -52244.70012990263 (== declared -52244.70012990263: True); option regime matches Part A warm: True {}; recorded: certified f = -52244.722971252544, limit - certified = 0.0228413 (4.372e-07 rel), compl_inf_tol passed 0.0005 vs at certification 1e-06
+11:15:46 [A2b +    9.80s]   comparator dso: c1 comparator (Part A warm limit) = 54561.135089701755 (== declared 54561.135089701755: True); option regime matches Part A warm: True {}; recorded: certified f = 54561.093554978834, limit - certified = 0.0415347 (7.613e-07 rel), compl_inf_tol passed None vs at certification 1e-06
+11:15:46 [A2b +    9.80s] comparator check: ok
+11:15:49 [A2b +   12.59s] capture checklist holds; predictions written; starting the declared solves
+11:15:49 [A2b +   12.59s]   restated gate tso c1 (a2, by reference): |df| 6.7764e-05 / bar 7.1888e-05 = 0.9426 -> indeterminate (inside stopping slack)
+11:15:49 [A2b +   12.59s] case tso_c2_pert: run_smopf(from_warm_start=True) perturbed=True mu_init=None
+[INFO] 			 - Running SMOPF, Network case9, 2025, Spring...
+11:15:49 [A2b +   12.81s] case tso_c2_pert: ok=True term=optimal iters=48 restoration=0 mu0=0.1 mu_final=4.545454545454545e-08 run_smopf=0.176s ipopt=0.10812050000095041
+11:15:49 [A2b +   12.82s] case tso_c3_pert_mu: run_smopf(from_warm_start=True) perturbed=True mu_init=1e-06
+[INFO] 			 - Running SMOPF, Network case9, 2025, Spring...
+11:15:49 [A2b +   12.97s] case tso_c3_pert_mu: ok=True term=optimal iters=10 restoration=0 mu0=1e-06 mu_final=4.545454545454545e-08 run_smopf=0.114s ipopt=0.04037962499569403
+11:15:49 [A2b +   12.99s]   restated gate tso c3 vs c2: |df| 1.4583e-04 / bar 5.9520e-05 = 2.4501 -> real difference; max |dx| 7.935e-05 p.u. (agree <= 1e-4: True), 91 Vars > 1e-6
+11:15:49 [A2b +   12.99s] case dso_c1_ident_mu: run_smopf(from_warm_start=True) perturbed=False mu_init=1e-06
+[INFO] 			 - Running SMOPF, Network case33_2, 2025, Spring...
+11:15:50 [A2b +   13.36s] case dso_c1_ident_mu: ok=True term=optimal iters=11 restoration=0 mu0=1e-06 mu_final=9.090909090909092e-09 run_smopf=0.321s ipopt=0.11218841699883342
+11:15:50 [A2b +   13.44s]   gate dso c1 objective vs Part A warm limit: f = 54561.135802082346 vs 54561.135089701755, rel 1.306e-08 -> pass=False; IPOPT log f = 54561.13580207912; options match Part A: True; REPORTED (not gated) vs certified: obj rel 7.743e-07, max |dx| 6.672e-03 p.u., 1932 Vars > 1e-6
+11:15:50 [A2b +   13.44s]   restated gate dso c1: |df| 7.1238e-04 / bar 1.7239e-05 = 41.3234 -> real difference (1e-9 figure: 1.306e-08 rel, reported beside)
+11:15:50 [A2b +   13.44s] case dso_c2_pert: run_smopf(from_warm_start=True) perturbed=True mu_init=None
+[INFO] 			 - Running SMOPF, Network case33_2, 2025, Spring...
+11:15:50 [A2b +   14.04s] case dso_c2_pert: ok=True term=optimal iters=51 restoration=0 mu0=0.1 mu_final=9.090909090909092e-09 run_smopf=0.546s ipopt=0.31865362499956973
+11:15:50 [A2b +   14.07s] case dso_c3_pert_mu: run_smopf(from_warm_start=True) perturbed=True mu_init=1e-06
+[INFO] 			 - Running SMOPF, Network case33_2, 2025, Spring...
+11:15:51 [A2b +   14.43s] case dso_c3_pert_mu: ok=True term=optimal iters=11 restoration=0 mu0=1e-06 mu_final=9.090909090909092e-09 run_smopf=0.311s ipopt=0.10924762500508223
+11:15:51 [A2b +   14.50s]   restated gate dso c3 vs c2: |df| 4.6152e-04 / bar 2.0062e-05 = 23.0044 -> real difference; max |dx| 5.648e-04 p.u. (agree <= 1e-4: False), 578 Vars > 1e-6
+11:15:51 [A2b +   14.51s] status=complete guard={'permitted_solve': 5, 'permitted_exec': 5, 'blocked_solve': 0, 'blocked_exec': 0} verify_failures=[] -> a2b.json
