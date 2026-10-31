@@ -78,8 +78,16 @@ order below stands but W184/W185 are **held** (Planner recommendation R6).
   B = €1M the 5 MWh cumulative cap never binds (cheapest over-cap plan €1.03–1.11 M) — `P5_16_CC_C5_REPORT.md`,
   evidence `P516CC/g_cc4` (manifest `5c99a3fb…`). Five-block instance checked against the module only (no case
   file yet — C4)
-- [ ] **▶ Convention change per spec v4** — C1 + C3 + C4 + G-CC-1/2/3/5 (production edit; starts when the three
-  running Workers release the tree): ESSO salvage term; `'mid'` baseline; five-block single-scenario case file;
+- [x] **C1 + C3 + C4 built** (switch-controlled; `SRP1_5x3y_1x1.json`, `SRP1_5x3y_ESS_Params.json`, `p516_cc_gates.py`):
+  G-CC-1 bitwise identity with HEAD HELD (87/87 blocks; T0.1a LPs reproduce; fixtures 112/139 = HEAD, 22 need
+  `s_bounds`, 5 absent here — literal FAIL recorded, pre-existing); G-CC-2 HELD (ESSO NL bitwise at x = 0 for C1);
+  G-CC-5 HELD (80 + 3 blocks, 1.6 GiB, tcal 5, weights/discount/rlf exact, G0 digests `c1c7cd45…`); G-CC-3: κ =
+  1/w_med exact, ∂S/∂TP = 0 / −1.23 / −2.36 / −3.59 / −4.85 €/MWh (expert predictions HELD), parity in a-normalised
+  form — **STOP: slack safety FAILED as worded** (5.84 vs bar 1.0 per MW-period; 171× penalty/marginal; per-MWh
+  passes 50×) → `EXPERT_REQUEST_2026-10-31b.md` R8 (rec. (a): `PENALTY_ESSO_SLACK` 1e4 on the new instance via params)
+  — `P5_16_CC_C1C3C4_REPORT.md`, evidence `P516CC/g_cc1..g_cc5`
+- [ ] **▶ Stopped for the expert (R8)** — no freeze, no campaign until ruled; author: Gurobi key for T0.2; Studio
+  Part B files ESSO salvage term; `'mid'` baseline; five-block single-scenario case file;
   cumulative admissibility + general-lattice canonicalization; gate x = 0 bitwise + fixtures unpickle
 - [ ] Spec v2 freeze → re-evaluation campaign on the Studio (authorized by a later addendum, one gate per task)
 - [ ] If H1/H2: Phase 2 LB oracle (SoH ≡ 1 blocks, dual extraction with margin, cache validation, lattice MILP

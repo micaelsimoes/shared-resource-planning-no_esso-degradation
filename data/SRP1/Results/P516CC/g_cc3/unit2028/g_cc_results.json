@@ -1,0 +1,973 @@
+{
+ "all_ok": false,
+ "argv": [
+  "p516_cc_gates.py",
+  "--gate",
+  "cc3",
+  "--run-name",
+  "unit2028"
+ ],
+ "build_order": {
+  "build_subproblem_kappa_init_0": true,
+  "create_before_update": true,
+  "create_esso_at": 5279,
+  "update_esso_to_admm_at": 8163
+ },
+ "capture_path_checks": {
+  "block_weight_fn": true,
+  "diagnostic_effective_marginal": true,
+  "esso_al_scale_fn": true,
+  "kappa_set_in_update_to_admm": true,
+  "new_case_file_exists": true,
+  "new_ess_params_exists": true,
+  "remaining_life_fn": true,
+  "salvage_credit_builder": true,
+  "switch_in_objective_default_false": true,
+  "switch_soh_point_default_none": true,
+  "terminal_discount_fn": true,
+  "update_to_admm_takes_objective_scale": true,
+  "w183_build_config": true,
+  "w183_capture_class": true,
+  "w183_compare_blocks": true,
+  "w183_nl_row_analysis": true
+ },
+ "checks": {
+  "ad_vs_closed_form_1e-6": true,
+  "admm_objective_carries_term": true,
+  "build_order_create_before_update": true,
+  "dS_dTP_negative_2028plus": true,
+  "dS_dTP_zero_2025": true,
+  "d_obj_d_TP_equals_kappa_d_credit_1e-6": true,
+  "diagnostic_effective_marginal_matches": true,
+  "euro_parity_identity": true,
+  "fd_vs_ad_1e-6": true,
+  "guard_zero_solves_verified": true,
+  "imported_repo_modules_unchanged_during_run": true,
+  "init_stub_calls_exact": true,
+  "kappa_equals_params_ratio": true,
+  "kappa_hand_replica_1e-12": true,
+  "kappa_zero_at_initialisation": true,
+  "memory_below_16_GiB": true,
+  "slack_safety": false,
+  "unchanged_files_unmodified": true,
+  "unit_credit_equals_minus_S": true
+ },
+ "complementarity_diagnostic": {
+  "hand_pair_marginal_max": 11.109063219577447,
+  "hand_pair_marginal_min": 2e-05,
+  "matches_hand": true,
+  "note": "no IPOPT log exists (zero solves), so mu_final/s_obj are None and both bounds are None; the effective marginal fields are what is checked",
+  "record": {
+   "complementarity_ratio_argmax": null,
+   "complementarity_ratio_max": 0.0,
+   "effective_pair_marginal_max": 11.109063219577447,
+   "effective_pair_marginal_min": 2e-05,
+   "eps_esso_throughput_in_force": 1e-05,
+   "log_path": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516CC/g_cc3/unit2028/no_such_ipopt.log",
+   "mu_final": null,
+   "n_active_cohort_periods": 1440,
+   "node_id": 7,
+   "parse_reason": "IPOPT log not found: /Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516CC/g_cc3/unit2028/no_such_ipopt.log",
+   "s_obj": null,
+   "salvage_in_objective": true,
+   "salvage_objective_kappa": 0.004125137066901099,
+   "spurious_throughput_bound": null,
+   "spurious_throughput_bound_eps_only": null,
+   "spurious_throughput_measured": 0.0
+  }
+ },
+ "env": {
+  "LP_SOLVER_PATH": "/Users/micaelsimoes/dist/bin/Clp",
+  "NLP_SOLVER_PATH": "/usr/local/bin/ipopt"
+ },
+ "error": null,
+ "euro_parity": {
+  "esso": {
+   "d_admm_objective_per_euro_S": -0.004125137066897515,
+   "minus_r_over_a": 1.0679726120550305e-08,
+   "one_over_sigma": 1.0679726120559583e-08,
+   "rel_minus_r_over_a_vs_1_over_sigma": 8.687168234150033e-13,
+   "rel_minus_r_vs_kappa": 8.68804755634562e-13
+  },
+  "identity_holds": true,
+  "literal_reading": {
+   "d_block_admm_objective_per_euro_pv": {
+    "DSO7": 1.0679726120517523e-08,
+    "TSO": 1.0679726120550264e-08
+   },
+   "d_esso_objective_per_euro_S_magnitude": 0.004125137066897515,
+   "note": "without the a-normalisation the two differ by the factor a = sigma / w_med (kappa = a / sigma, not 1 / sigma, per F1)"
+  },
+  "networks": {
+   "DSO7": {
+    "admm_objective_scale_param": 363980.1945600001,
+    "block": "case33_2|2028|Summer",
+    "block_weight": 257.2539973313431,
+    "d_admm_per_euro_pv": 1.0679726120517523e-08,
+    "rel_vs_1_over_sigma": 3.93834816663749e-12,
+    "variable": "flex_p_down[0,0,0,0]"
+   },
+   "TSO": {
+    "admm_objective_scale_param": 363980.1945600001,
+    "block": "case9|2028|Summer",
+    "block_weight": 257.2539973313431,
+    "d_admm_per_euro_pv": 1.0679726120550264e-08,
+    "rel_vs_1_over_sigma": 8.725894911370745e-13,
+    "variable": "pg[0,0,0,0]"
+   }
+  }
+ },
+ "gate": "cc3",
+ "init_stub_calls": {
+  "DSO5": 1,
+  "DSO7": 1,
+  "DSO9": 1,
+  "ESSO": 1,
+  "TSO": 1
+ },
+ "interpreter": "/opt/anaconda3/envs/opf_env_py311/bin/python",
+ "kappa": {
+  "a": 386258.6943086285,
+  "al_scale_applied": true,
+  "n_blocks": 80,
+  "per_node": {
+   "5": {
+    "admm_common_objective_scale": 93635360.0,
+    "admm_esso_al_scale": 386258.6943086285,
+    "kappa": 0.004125137066901099,
+    "kappa_from_params": 0.004125137066901099,
+    "kappa_hand_1_over_wmed": 0.004125137066901099,
+    "kappa_hand_a_over_sigma": 0.004125137066901099,
+    "rel_kappa_vs_1_over_wmed": 0.0,
+    "rel_kappa_vs_hand": 0.0,
+    "rel_kappa_vs_params": 0.0
+   },
+   "7": {
+    "admm_common_objective_scale": 93635360.0,
+    "admm_esso_al_scale": 386258.6943086285,
+    "kappa": 0.004125137066901099,
+    "kappa_from_params": 0.004125137066901099,
+    "kappa_hand_1_over_wmed": 0.004125137066901099,
+    "kappa_hand_a_over_sigma": 0.004125137066901099,
+    "rel_kappa_vs_1_over_wmed": 0.0,
+    "rel_kappa_vs_hand": 0.0,
+    "rel_kappa_vs_params": 0.0
+   },
+   "9": {
+    "admm_common_objective_scale": 93635360.0,
+    "admm_esso_al_scale": 386258.6943086285,
+    "kappa": 0.004125137066901099,
+    "kappa_from_params": 0.004125137066901099,
+    "kappa_hand_1_over_wmed": 0.004125137066901099,
+    "kappa_hand_a_over_sigma": 0.004125137066901099,
+    "rel_kappa_vs_1_over_wmed": 0.0,
+    "rel_kappa_vs_hand": 0.0,
+    "rel_kappa_vs_params": 0.0
+   }
+  },
+  "w_med_hand": 242.4161873368304
+ },
+ "kappa_at_initialisation_stub": {
+  "5": 0.0,
+  "7": 0.0,
+  "9": 0.0
+ },
+ "memory": {
+  "breach": null,
+  "limit_bytes": 17179869184,
+  "peak_rss_bytes": 1343176704,
+  "peak_rss_gib": 1.2509307861328125
+ },
+ "new_files_sha256": {
+  "data/SRP1/SRP1_5x3y_1x1.json": "f916e0c6feff4ce1bdf62d843efef386b791e7649442176bacfa16cec3d55b79",
+  "data/SRP1/SharedESS/SRP1_5x3y_ESS_Params.json": "08ade261858aeadd852c9f823c9f273b7490ba426c52a50f229fdbca80a50517"
+ },
+ "params_filled_with_zero_for_evaluation": {
+  "DSO7": {
+   "dual_ess_p_req": 24,
+   "dual_ess_q_req": 24,
+   "dual_pf_p_req": 24,
+   "dual_pf_q_req": 24,
+   "dual_vmag_req": 24,
+   "p_ess_req": 24,
+   "p_pf_req": 24,
+   "q_ess_req": 24,
+   "q_pf_req": 24,
+   "vmag_req": 24
+  },
+  "ESSO7": {
+   "dual_p_req": 480,
+   "dual_q_req": 480,
+   "p_req": 480,
+   "q_req": 480
+  },
+  "TSO": {
+   "dual_ess_p_req": 72,
+   "dual_ess_q_req": 72,
+   "dual_pf_p_req": 72,
+   "dual_pf_q_req": 72,
+   "dual_vmag_req": 72,
+   "p_ess_req": 72,
+   "p_pf_req": 72,
+   "q_ess_req": 72,
+   "q_pf_req": 72,
+   "vmag_req": 72
+  },
+  "probe_ESSO7": {
+   "dual_p_req": 480,
+   "dual_q_req": 480,
+   "p_req": 480,
+   "q_req": 480
+  }
+ },
+ "per_cohort_probe": {
+  "investments": [
+   [
+    7,
+    2025,
+    0.25,
+    1.0
+   ],
+   [
+    7,
+    2028,
+    0.25,
+    1.0
+   ],
+   [
+    7,
+    2031,
+    0.25,
+    1.0
+   ],
+   [
+    7,
+    2034,
+    0.25,
+    1.0
+   ],
+   [
+    7,
+    2037,
+    0.25,
+    1.0
+   ]
+  ],
+  "kappa": 0.004125137066901099,
+  "per_cohort": {
+   "2025": {
+    "credit_change_for_unit_avg_step": 0.0,
+    "dS_dTP_eur_per_MWh": 0.0,
+    "in_term": false,
+    "window": [
+     2025,
+     2028,
+     2031,
+     2034,
+     2037
+    ]
+   },
+   "2028": {
+    "calculus": {
+     "block_width": 3,
+     "per_block": {
+      "2028": {
+       "ad": {
+        "S": -1.2272524651809842,
+        "credit": 1.2272524651809842,
+        "obj": 0.005062584634563829
+       },
+       "avg0": 1.0058333333333338,
+       "closed_form_dS_dTP": -1.227252465180984,
+       "fd": {
+        "S": -1.2272524736698442,
+        "admm": 0.005062584672680488,
+        "credit": 1.2272524736698442,
+        "obj": 0.005062584672680488
+       },
+       "h": 1.0058333333333338e-06,
+       "rel_ad_vs_closed_S": 1.809282207408613e-16,
+       "rel_admm_vs_obj_fd": 0.0,
+       "rel_credit_vs_minus_S_fd": 0.0,
+       "rel_fd_vs_ad_S": 6.916963087429005e-09,
+       "rel_obj_fd_vs_ad": 7.529090691608238e-09,
+       "rel_obj_vs_kappa_credit_fd": 6.12127674253918e-10,
+       "soh_T": 0.7844240433333831
+      },
+      "2031": {
+       "ad": {
+        "S": -1.227252465180984,
+        "credit": 1.227252465180984,
+        "obj": 0.005062584634563828
+       },
+       "avg0": 1.0058333333333338,
+       "closed_form_dS_dTP": -1.227252465180984,
+       "fd": {
+        "S": -1.2272524736698442,
+        "admm": 0.005062584672680488,
+        "credit": 1.2272524736698442,
+        "obj": 0.005062584672680488
+       },
+       "h": 1.0058333333333338e-06,
+       "rel_ad_vs_closed_S": 0.0,
+       "rel_admm_vs_obj_fd": 0.0,
+       "rel_credit_vs_minus_S_fd": 0.0,
+       "rel_fd_vs_ad_S": 6.916963268357225e-09,
+       "rel_obj_fd_vs_ad": 7.529090862936085e-09,
+       "rel_obj_vs_kappa_credit_fd": 6.12127674253918e-10,
+       "soh_T": 0.7844240433333831
+      },
+      "2034": {
+       "ad": {
+        "S": -1.2272524651809842,
+        "credit": 1.2272524651809842,
+        "obj": 0.005062584634563829
+       },
+       "avg0": 1.0058333333333338,
+       "closed_form_dS_dTP": -1.227252465180984,
+       "fd": {
+        "S": -1.2272524736698442,
+        "admm": 0.005062584672680488,
+        "credit": 1.2272524736698442,
+        "obj": 0.005062584672680488
+       },
+       "h": 1.0058333333333338e-06,
+       "rel_ad_vs_closed_S": 1.809282207408613e-16,
+       "rel_admm_vs_obj_fd": 0.0,
+       "rel_credit_vs_minus_S_fd": 0.0,
+       "rel_fd_vs_ad_S": 6.916963087429005e-09,
+       "rel_obj_fd_vs_ad": 7.529090691608238e-09,
+       "rel_obj_vs_kappa_credit_fd": 6.12127674253918e-10,
+       "soh_T": 0.7844240433333831
+      },
+      "2037": {
+       "ad": {
+        "S": -1.2272524651809842,
+        "credit": 1.2272524651809842,
+        "obj": 0.005062584634563829
+       },
+       "avg0": 1.0058333333333338,
+       "closed_form_dS_dTP": -1.227252465180984,
+       "fd": {
+        "S": -1.2272524604574961,
+        "admm": 0.005062584621069753,
+        "credit": 1.2272524604574961,
+        "obj": 0.005062584621069753
+       },
+       "h": 1.0058333333333338e-06,
+       "rel_ad_vs_closed_S": 1.809282207408613e-16,
+       "rel_admm_vs_obj_fd": 0.0,
+       "rel_credit_vs_minus_S_fd": 0.0,
+       "rel_fd_vs_ad_S": 3.8488315804258994e-09,
+       "rel_obj_fd_vs_ad": 2.665451863543682e-09,
+       "rel_obj_vs_kappa_credit_fd": 1.1833797912351624e-09,
+       "soh_T": 0.7844240433333831
+      }
+     },
+     "y_inv": 1,
+     "year": 2028
+    },
+    "dS_dTP_eur_per_MWh": -1.2272524736698442,
+    "in_term": true,
+    "spread_over_blocks_rel": 1.0765794641232678e-08,
+    "window": [
+     2028,
+     2031,
+     2034,
+     2037
+    ]
+   },
+   "2031": {
+    "calculus": {
+     "block_width": 3,
+     "per_block": {
+      "2031": {
+       "ad": {
+        "S": -2.362002290639567,
+        "credit": 2.362002290639567,
+        "obj": 0.009743583201222582
+       },
+       "avg0": 1.0058333333333338,
+       "closed_form_dS_dTP": -2.3620022906395666,
+       "fd": {
+        "S": -2.3620023111225192,
+        "admm": 0.00974358330858088,
+        "credit": 2.3620023111225192,
+        "obj": 0.00974358330858088
+       },
+       "h": 1.0058333333333338e-06,
+       "rel_ad_vs_closed_S": 1.880138777214374e-16,
+       "rel_admm_vs_obj_fd": 0.0,
+       "rel_credit_vs_minus_S_fd": 0.0,
+       "rel_fd_vs_ad_S": 8.671859517994593e-09,
+       "rel_obj_fd_vs_ad": 1.1018358872609694e-08,
+       "rel_obj_vs_kappa_credit_fd": 2.346499531924207e-09,
+       "soh_T": 0.8335145254083555
+      },
+      "2034": {
+       "ad": {
+        "S": -2.362002290639567,
+        "credit": 2.362002290639567,
+        "obj": 0.009743583201222582
+       },
+       "avg0": 1.0058333333333338,
+       "closed_form_dS_dTP": -2.3620022906395666,
+       "fd": {
+        "S": -2.3620023111225192,
+        "admm": 0.00974358330858088,
+        "credit": 2.3620023111225192,
+        "obj": 0.00974358330858088
+       },
+       "h": 1.0058333333333338e-06,
+       "rel_ad_vs_closed_S": 1.880138777214374e-16,
+       "rel_admm_vs_obj_fd": 0.0,
+       "rel_credit_vs_minus_S_fd": 0.0,
+       "rel_fd_vs_ad_S": 8.671859517994593e-09,
+       "rel_obj_fd_vs_ad": 1.1018358872609694e-08,
+       "rel_obj_vs_kappa_credit_fd": 2.346499531924207e-09,
+       "soh_T": 0.8335145254083555
+      },
+      "2037": {
+       "ad": {
+        "S": -2.362002290639567,
+        "credit": 2.362002290639567,
+        "obj": 0.009743583201222582
+       },
+       "avg0": 1.0058333333333338,
+       "closed_form_dS_dTP": -2.3620022906395666,
+       "fd": {
+        "S": -2.3620023111225192,
+        "admm": 0.00974358330858088,
+        "credit": 2.3620023111225192,
+        "obj": 0.00974358330858088
+       },
+       "h": 1.0058333333333338e-06,
+       "rel_ad_vs_closed_S": 1.880138777214374e-16,
+       "rel_admm_vs_obj_fd": 0.0,
+       "rel_credit_vs_minus_S_fd": 0.0,
+       "rel_fd_vs_ad_S": 8.671859517994593e-09,
+       "rel_obj_fd_vs_ad": 1.1018358872609694e-08,
+       "rel_obj_vs_kappa_credit_fd": 2.346499531924207e-09,
+       "soh_T": 0.8335145254083555
+      }
+     },
+     "y_inv": 2,
+     "year": 2031
+    },
+    "dS_dTP_eur_per_MWh": -2.3620023111225192,
+    "in_term": true,
+    "spread_over_blocks_rel": 0.0,
+    "window": [
+     2031,
+     2034,
+     2037
+    ]
+   },
+   "2034": {
+    "calculus": {
+     "block_width": 3,
+     "per_block": {
+      "2034": {
+       "ad": {
+        "S": -3.594107191049791,
+        "credit": 3.594107191049791,
+        "obj": 0.014826184796215284
+       },
+       "avg0": 1.0058333333333338,
+       "closed_form_dS_dTP": -3.59410719104979,
+       "fd": {
+        "S": -3.5941072178791256,
+        "admm": 0.014826184895330805,
+        "credit": 3.5941072178791256,
+        "obj": 0.014826184895330805
+       },
+       "h": 1.0058333333333338e-06,
+       "rel_ad_vs_closed_S": 2.471207374982882e-16,
+       "rel_admm_vs_obj_fd": 0.0,
+       "rel_credit_vs_minus_S_fd": 0.0,
+       "rel_fd_vs_ad_S": 7.464812017954679e-09,
+       "rel_obj_fd_vs_ad": 6.685166956005533e-09,
+       "rel_obj_vs_kappa_credit_fd": 7.796450460173713e-10,
+       "soh_T": 0.8856771665417276
+      },
+      "2037": {
+       "ad": {
+        "S": -3.594107191049791,
+        "credit": 3.594107191049791,
+        "obj": 0.014826184796215284
+       },
+       "avg0": 1.0058333333333338,
+       "closed_form_dS_dTP": -3.59410719104979,
+       "fd": {
+        "S": -3.594107204666777,
+        "admm": 0.014826184843720069,
+        "credit": 3.594107204666777,
+        "obj": 0.014826184843720069
+       },
+       "h": 1.0058333333333338e-06,
+       "rel_ad_vs_closed_S": 2.471207374982882e-16,
+       "rel_admm_vs_obj_fd": 0.0,
+       "rel_credit_vs_minus_S_fd": 0.0,
+       "rel_fd_vs_ad_S": 3.788697840620105e-09,
+       "rel_obj_fd_vs_ad": 3.2041138923334705e-09,
+       "rel_obj_vs_kappa_credit_fd": 5.845838752406078e-10,
+       "soh_T": 0.8856771665417276
+      }
+     },
+     "y_inv": 3,
+     "year": 2034
+    },
+    "dS_dTP_eur_per_MWh": -3.5941072178791256,
+    "in_term": true,
+    "spread_over_blocks_rel": 3.676114191262259e-09,
+    "window": [
+     2034,
+     2037
+    ]
+   },
+   "2037": {
+    "calculus": {
+     "block_width": 3,
+     "per_block": {
+      "2037": {
+       "ad": {
+        "S": -4.850351036075849,
+        "credit": 4.850351036075849,
+        "obj": 0.020008362846398633
+       },
+       "avg0": 1.0058333333333338,
+       "closed_form_dS_dTP": -4.850351036075848,
+       "fd": {
+        "S": -4.850351058497243,
+        "admm": 0.020008362944737672,
+        "credit": 4.850351058497243,
+        "obj": 0.020008362944737672
+       },
+       "h": 1.0058333333333338e-06,
+       "rel_ad_vs_closed_S": 1.8311631737456705e-16,
+       "rel_admm_vs_obj_fd": 0.0,
+       "rel_credit_vs_minus_S_fd": 0.0,
+       "rel_fd_vs_ad_S": 4.622633341048906e-09,
+       "rel_obj_fd_vs_ad": 4.914896764566574e-09,
+       "rel_obj_vs_kappa_credit_fd": 2.9226335109501695e-10,
+       "soh_T": 0.9411042272467633
+      }
+     },
+     "y_inv": 4,
+     "year": 2037
+    },
+    "dS_dTP_eur_per_MWh": -4.850351058497243,
+    "in_term": true,
+    "spread_over_blocks_rel": 0.0,
+    "window": [
+     2037
+    ]
+   }
+  }
+ },
+ "prediction_outcomes": {
+  "expert_dS_dTP": {
+   "2025": {
+    "abs_dS_dTP": 0.0,
+    "held": true
+   },
+   "2028": {
+    "abs_dS_dTP": 1.2272524736698442,
+    "band": [
+     0.5,
+     2.0
+    ],
+    "held": true
+   },
+   "2037": {
+    "abs_dS_dTP": 4.850351058497243,
+    "band": [
+     2.5,
+     10.0
+    ],
+    "held": true
+   }
+  },
+  "slack_safety": {
+   "held": false,
+   "predicted": "holds"
+  }
+ },
+ "production": {
+  "diff_stat_vs_head": " shared_energy_storage_data.py       | 146 +++++++++++++++++++++++++++++++++++-\n shared_energy_storage_parameters.py |  21 ++++++\n shared_resources_planning.py        |  22 +++++-\n 3 files changed, 183 insertions(+), 6 deletions(-)\n",
+  "git_status": {
+   "shared_energy_storage_data.py": " M",
+   "shared_energy_storage_parameters.py": " M",
+   "shared_resources_planning.py": " M"
+  },
+  "head": "ff3153ff18ec551a442adacaddaf8a89d26dc93d",
+  "modules_sha256": {
+   "admm_anderson_acceleration.py": "24cf3bea9b07725ae15029dd0d9d81ed46ab8e75ecf1c9141a4b0afc6be2659e",
+   "admm_parameters.py": "40d0e972dcadfb4de099a0203682ba2e93badc62d9ae989f87be40b1ce3b75fa",
+   "admm_persistent_workers.py": "39dcbd267bb224e65197ca427952b08d45d3bbe98785b73fd55148c0979e1125",
+   "audit_p3_snapshots.py": "b8649c27a38a741154cb8cc3d14aa02a5ce91a883bbf50e24782237defdf6f6e",
+   "benders_parameters.py": "f74521a4aa4df1bd877b97887c207db98cb7a3b28d541840a41d21fd3c0c7cf7",
+   "branch.py": "f85525f4984ef6e29263b527652abdd1d173558410f06a1bc812f5d65d6adb79",
+   "centralized_coordination.py": "04d2b549ff6f15decae30514606dbef2cb504c687fcc37ffc0fab75867c6eba9",
+   "convex_oracle.py": "a88e255571b836e135ee015a23598c4cc4c60a96872a972ea91cf391e1d42c6f",
+   "debug.py": "9de612d4d0f00ae20460cd206a767779b516a54ec8528d68fb625f5ec44bb1f1",
+   "definitions.py": "7e5719af129df111db1b403feeffe0b566d0b7f2e72915829e16bf143a9321af",
+   "energy_storage.py": "a3a06c5d037ba000514e2e1a1138b2acd9c54c1ee728641cd5a2ec1f965aec11",
+   "gate_result_io.py": "26cadaa5c3105f9adb879ece756ef6d659b374f647a7756030efe80a2df6d07d",
+   "generator.py": "4727ff02f7847690cd7a9723d997f88e80f98174b21511881123a038868cb72b",
+   "helper_functions.py": "808c60a08b8e157381f28e0c1da5741b0efd39e35f36dd531f88b84deebce1e2",
+   "hierarchical_coordination.py": "7bf34f4ac88e472f23c82dace21065b9ad867fddf8cb2dde7d2de810c05797c4",
+   "interface_dual_capture.py": "e4223ac25fa488970ec195b4c3bb6b1171faa3aeba4824e0d6ee6482ab58f55c",
+   "load.py": "ac603d6d9e9489cd67f3372cf46b0e365ae604440722c6209d2bf1d749fa7a69",
+   "main.py": "d7de3a7a383220082f821dd30d396f897a85df5ef193be6c12ac1f7b3367ab75",
+   "model_construction_helpers.py": "a20a224f11008de8c0206484583b00253677267d616e1051bb1583791ed47f64",
+   "network.py": "18acaa84af7a043898a7b831223b4eab1d91f9bcf2c199f49beecfeb3bf91fb4",
+   "network_data.py": "2938bc4bd4ecc74f42aa90d347cdc1162eebcefaba15bc87b8281a798d457d6b",
+   "network_parameters.py": "30ea1b23982c8839f593e98030f99d764704912dfb6b344dd8a2454d06438a92",
+   "node.py": "d5f11f15b732469203a3f7cf8268e95353ae1a9d94ff3f2315d6ec5e2de86725",
+   "planning_parameters.py": "40297471cba1b0281899e7835f272f7a5df4f5e353b6d97838e5a4554c93adf9",
+   "settling_criterion.py": "fbe5550b34a4062feed82476e1959b5e4e2786cb13ca61728bfa1803ba75f65f",
+   "settling_criterion_v2.py": "3db13b0eb7a093f49a7ff014a3c46a5aa013b86da5e5d78c3a19daba476af59e",
+   "settling_criterion_v3.py": "0d78b9228381b9d4af3492c7712f9892d2f012d00e5023407962ff3619b5e965",
+   "settling_criterion_v4.py": "077561ceefa704a0c5512d45d17865609c6775e5ad18332a990ce3f1bb747775",
+   "settling_criterion_v5.py": "5ea29fb303c5f9ac1e6c2fcb869b7c6d044d2d8738298dee67093d70086a976f",
+   "settling_criterion_v6.py": "53f477118d51f5fd843190c0da920f1647618ef41f6a1973988653b10eb66e2d",
+   "shared_energy_storage.py": "d45c72d0db9a3743f3c26765f124ba7fbec44733ecb0d2d28b83b7e6a451f088",
+   "shared_energy_storage_data.py": "e8bf4f923e28db83480e786340c32a291eca56288fa17f15ecac7fb72fc3cb85",
+   "shared_energy_storage_parameters.py": "f31a2caa83a7c07f8f2375bf2016dd2180ff470ee33c1df0a04ece038d46aff6",
+   "shared_ess_price_taker.py": "9a55c951530c7223ffc436a0ae86339707f1d12ec96ca03bd23f77442ffc8b9c",
+   "shared_resources_planning.py": "c9336a61a713ef6890fbffcda845395d757e26c41ae2422e82dd88bb881c33e8",
+   "solver_parameters.py": "2801ef16853d7e63752d646c4c8a789a17a6731959060112c48f9457074c8b65",
+   "uncoordinated_benchmark.py": "45d1c09db9b687040d57c8b01c1d092f3b53aa120f0e3229d998c435d261e31a",
+   "validate_vmag_refactor.py": "55022d106a18fe15d794d9691888b1f2584c95a563e06b97741b6cd612306512"
+  }
+ },
+ "pyomo_version": "6.9.5",
+ "python": "3.11.11 | packaged by conda-forge | (main, Dec  5 2024, 08:47:03) [Clang 18.1.8 ]",
+ "read": {
+  "no_side_write_into_data_SRP1_Diagrams": true,
+  "read_wall_s": 8.422859191894531,
+  "side_writes": [
+   "SRP1_5x3y_1x1_market_prices_2025_Autumn.pdf",
+   "SRP1_5x3y_1x1_market_prices_2025_Spring.pdf",
+   "SRP1_5x3y_1x1_market_prices_2025_Summer.pdf",
+   "SRP1_5x3y_1x1_market_prices_2025_Winter.pdf",
+   "case33_1_RES_generation_scenarios_2025_Autumn.pdf",
+   "case33_1_RES_generation_scenarios_2025_Spring.pdf",
+   "case33_1_RES_generation_scenarios_2025_Summer.pdf",
+   "case33_1_RES_generation_scenarios_2025_Winter.pdf",
+   "case33_1_flexibility_scenarios_2025_Autumn.pdf",
+   "case33_1_flexibility_scenarios_2025_Spring.pdf",
+   "case33_1_flexibility_scenarios_2025_Summer.pdf",
+   "case33_1_flexibility_scenarios_2025_Winter.pdf",
+   "case33_1_load_scenarios_2025_Autumn.pdf",
+   "case33_1_load_scenarios_2025_Spring.pdf",
+   "case33_1_load_scenarios_2025_Summer.pdf",
+   "case33_1_load_scenarios_2025_Winter.pdf",
+   "case33_2_RES_generation_scenarios_2025_Autumn.pdf",
+   "case33_2_RES_generation_scenarios_2025_Spring.pdf",
+   "case33_2_RES_generation_scenarios_2025_Summer.pdf",
+   "case33_2_RES_generation_scenarios_2025_Winter.pdf",
+   "case33_2_flexibility_scenarios_2025_Autumn.pdf",
+   "case33_2_flexibility_scenarios_2025_Spring.pdf",
+   "case33_2_flexibility_scenarios_2025_Summer.pdf",
+   "case33_2_flexibility_scenarios_2025_Winter.pdf",
+   "case33_2_load_scenarios_2025_Autumn.pdf",
+   "case33_2_load_scenarios_2025_Spring.pdf",
+   "case33_2_load_scenarios_2025_Summer.pdf",
+   "case33_2_load_scenarios_2025_Winter.pdf",
+   "case33_3_RES_generation_scenarios_2025_Autumn.pdf",
+   "case33_3_RES_generation_scenarios_2025_Spring.pdf",
+   "case33_3_RES_generation_scenarios_2025_Summer.pdf",
+   "case33_3_RES_generation_scenarios_2025_Winter.pdf",
+   "case33_3_flexibility_scenarios_2025_Autumn.pdf",
+   "case33_3_flexibility_scenarios_2025_Spring.pdf",
+   "case33_3_flexibility_scenarios_2025_Summer.pdf",
+   "case33_3_flexibility_scenarios_2025_Winter.pdf",
+   "case33_3_load_scenarios_2025_Autumn.pdf",
+   "case33_3_load_scenarios_2025_Spring.pdf",
+   "case33_3_load_scenarios_2025_Summer.pdf",
+   "case33_3_load_scenarios_2025_Winter.pdf",
+   "case9_RES_generation_scenarios_2025_Autumn.pdf",
+   "case9_RES_generation_scenarios_2025_Spring.pdf",
+   "case9_RES_generation_scenarios_2025_Summer.pdf",
+   "case9_RES_generation_scenarios_2025_Winter.pdf",
+   "case9_flexibility_scenarios_2025_Autumn.pdf",
+   "case9_flexibility_scenarios_2025_Spring.pdf",
+   "case9_flexibility_scenarios_2025_Summer.pdf",
+   "case9_flexibility_scenarios_2025_Winter.pdf",
+   "case9_load_scenarios_2025_Autumn.pdf",
+   "case9_load_scenarios_2025_Spring.pdf",
+   "case9_load_scenarios_2025_Summer.pdf",
+   "case9_load_scenarios_2025_Winter.pdf"
+  ]
+ },
+ "repo_modules_imported_sha256": {
+  "admm_anderson_acceleration.py": "24cf3bea9b07725ae15029dd0d9d81ed46ab8e75ecf1c9141a4b0afc6be2659e",
+  "admm_parameters.py": "40d0e972dcadfb4de099a0203682ba2e93badc62d9ae989f87be40b1ce3b75fa",
+  "admm_persistent_workers.py": "39dcbd267bb224e65197ca427952b08d45d3bbe98785b73fd55148c0979e1125",
+  "benders_parameters.py": "f74521a4aa4df1bd877b97887c207db98cb7a3b28d541840a41d21fd3c0c7cf7",
+  "branch.py": "f85525f4984ef6e29263b527652abdd1d173558410f06a1bc812f5d65d6adb79",
+  "centralized_coordination.py": "04d2b549ff6f15decae30514606dbef2cb504c687fcc37ffc0fab75867c6eba9",
+  "definitions.py": "7e5719af129df111db1b403feeffe0b566d0b7f2e72915829e16bf143a9321af",
+  "energy_storage.py": "a3a06c5d037ba000514e2e1a1138b2acd9c54c1ee728641cd5a2ec1f965aec11",
+  "gate_result_io.py": "26cadaa5c3105f9adb879ece756ef6d659b374f647a7756030efe80a2df6d07d",
+  "generator.py": "4727ff02f7847690cd7a9723d997f88e80f98174b21511881123a038868cb72b",
+  "helper_functions.py": "808c60a08b8e157381f28e0c1da5741b0efd39e35f36dd531f88b84deebce1e2",
+  "hierarchical_coordination.py": "7bf34f4ac88e472f23c82dace21065b9ad867fddf8cb2dde7d2de810c05797c4",
+  "load.py": "ac603d6d9e9489cd67f3372cf46b0e365ae604440722c6209d2bf1d749fa7a69",
+  "model_construction_helpers.py": "a20a224f11008de8c0206484583b00253677267d616e1051bb1583791ed47f64",
+  "network.py": "18acaa84af7a043898a7b831223b4eab1d91f9bcf2c199f49beecfeb3bf91fb4",
+  "network_data.py": "2938bc4bd4ecc74f42aa90d347cdc1162eebcefaba15bc87b8281a798d457d6b",
+  "network_parameters.py": "30ea1b23982c8839f593e98030f99d764704912dfb6b344dd8a2454d06438a92",
+  "node.py": "d5f11f15b732469203a3f7cf8268e95353ae1a9d94ff3f2315d6ec5e2de86725",
+  "p510_oracle.py": "6575217fcfcae5b19925306c7181cb4f1d67a2d066e99238a3f82800696d3c8f",
+  "p511_1_selfconsistent_t0.py": "98bb8af9bc7ef8e5f96e66d9ec31ea495e810ecf50ba9605c97437eccc1ed0d2",
+  "p512_a_cold_rescaled_convergence.py": "79989a4aec49e17d7b00e4b162032cf4b925f668ee509af002aa6a1722b1ffb9",
+  "p513_solve_profile_guard.py": "9921682e5b825e0b76551b78c4765bfe039bccc414d727520f2c22b6f192a5ab",
+  "p514_l_capacity_ladder.py": "011acfebc6af8bd956d8ae2996401be5c04c6ab32a7e17cecf51258c7796c5e4",
+  "p514_n_instrumented_cstar.py": "62df39d41fec0ee48b320f6ade9eb1be4132203dcdbd100b90d1fc545d1d43c2",
+  "p515_g_g1_g4_admm_gates.py": "6f4631e10a2f8a7786390c0f96e45332706779ae9cdf6a87ddd716d9ad9ad346",
+  "p515_s44_campaign_harness.py": "d9a944f220e791b82147f08d0e606126ad454b8b6b2994024f94e106798fb191",
+  "p515_s53_w183_nl_digest.py": "4308bc2f5fb496de2b8025e46b9b31c1c6b26f4d2f14575e00becdf37f99e750",
+  "p516_cc_gates.py": "933ba24575e1759e529fc404e9b18b4316662632c158dacdcf2da4da5921fb43",
+  "p54r_provenance.py": "d09835677d4323cd3bda49384ff61b48bf94d2891e46473200db2ca068232240",
+  "p56a_candidates.py": "ab513adfac26d309ea3065a85ec8111a10f87bdfe59787be842efbc011c29a74",
+  "p56a_oracle.py": "699d571a2d69b14fd89024c535fa8b3ffa0625aa647f1714060dcc9cf6fa2f11",
+  "p56b_candidates.py": "e6dba4c6dc31db923a96d0015d7e7de5ad5560187be8b7227e4d3bf632a7ab7c",
+  "p56b_policy.py": "d9d03eaafb7d979da7f524e74a7db8bb42db168f4dfed0e3344590b9d664036c",
+  "p57_eval.py": "f98fad1ff5b30bc8edd00831311b919c1924ce9e01469a78dcdd05ed550f2e2d",
+  "p57_fingerprint.py": "0820f3eef365f083047e5e80dbcbc9646e5dbd9808c45e5aaf4f56e6649d3d97",
+  "p58_eval.py": "8a34bfd5ca466de70355f721edc2dd8315a4f85ce71d304d82df9e2403cb7a4a",
+  "p58_rescale.py": "2c9d4f2a7125d4103da0d9cc7bba6d600bf97a3f03805d32955738d71b537cf0",
+  "p59_rho.py": "12d66b48fc473dd809638ea56ad470c5e9dfcaa5dc08be37f8af0bbfb17c159b",
+  "planning_parameters.py": "40297471cba1b0281899e7835f272f7a5df4f5e353b6d97838e5a4554c93adf9",
+  "shared_energy_storage.py": "d45c72d0db9a3743f3c26765f124ba7fbec44733ecb0d2d28b83b7e6a451f088",
+  "shared_energy_storage_data.py": "e8bf4f923e28db83480e786340c32a291eca56288fa17f15ecac7fb72fc3cb85",
+  "shared_energy_storage_parameters.py": "f31a2caa83a7c07f8f2375bf2016dd2180ff470ee33c1df0a04ece038d46aff6",
+  "shared_ess_price_taker.py": "9a55c951530c7223ffc436a0ae86339707f1d12ec96ca03bd23f77442ffc8b9c",
+  "shared_resources_planning.py": "c9336a61a713ef6890fbffcda845395d757e26c41ae2422e82dd88bb881c33e8",
+  "solver_parameters.py": "2801ef16853d7e63752d646c4c8a789a17a6731959060112c48f9457074c8b65"
+ },
+ "script": "p516_cc_gates.py",
+ "script_git_status": {
+  "p516_cc_gates.py": "??"
+ },
+ "script_sha256": "933ba24575e1759e529fc404e9b18b4316662632c158dacdcf2da4da5921fb43",
+ "sigma": {
+  "sigma_computed": null,
+  "sigma_computed_note": "needs the initialisation solve (network objective values); the [1/3, 3] band assertion is therefore not evaluated here",
+  "sigma_used": 93635360.0,
+  "source": "admm.objective_scale (sigma_fixed, SRP1_params.json)"
+ },
+ "slack_safety": {
+  "PENALTY_ESSO_SLACK": 1000.0,
+  "definition": "salvage marginal per MW of a cohort pch/pdch at ONE representative period (the unit es_pnet and the slack pair are measured in), in objective units: kappa * d(-S)/dp = kappa * c * SoH_T; worst over cohort, block, day and direction; SoH_T at the calendar-only upper bound phi_cal**age_T (F4) and at the replayed nominal point",
+  "holds": false,
+  "max_marginal_at_calendar_soh_ub": 5.841446062406405,
+  "max_marginal_at_replay_soh": 5.7524043183396065,
+  "per_MWh_reading": {
+   "2025": 0.0,
+   "2028": 0.00506258466958154,
+   "2031": 0.009743583285717566,
+   "2034": 0.014826184906889967,
+   "2037": 0.02000836293888996
+  },
+  "per_cohort_worst": {
+   "2028": {
+    "day": "Spring",
+    "direction": "pdch",
+    "eps": 1e-05,
+    "euro_per_MW_period": 352.83508373953293,
+    "fd_objective_marginal_incl_eps": 1.4555030816154613,
+    "fd_salvage_marginal_obj_units_per_MW": 1.4554930771737418,
+    "marginal_at_calendar_soh_ub": 1.5477257741879331,
+    "marginal_obj_units_per_MW_at_calendar_soh_ub": 1.5477257741879331,
+    "marginal_obj_units_per_MW_at_replay_soh": 1.4554930824371006,
+    "rel_fd_vs_closed": 3.6162032807815146e-09,
+    "soh_T_calendar_ub": 0.834131968340877,
+    "soh_T_replay": 0.7844240433333831,
+    "y": 2028
+   },
+   "2031": {
+    "day": "Spring",
+    "direction": "pdch",
+    "eps": 1e-05,
+    "euro_per_MW_period": 679.0756585588755,
+    "fd_objective_marginal_incl_eps": 2.801290293064085,
+    "fd_salvage_marginal_obj_units_per_MW": 2.8012802886223653,
+    "marginal_at_calendar_soh_ub": 2.9333875806264564,
+    "marginal_obj_units_per_MW_at_calendar_soh_ub": 2.9333875806264564,
+    "marginal_obj_units_per_MW_at_replay_soh": 2.801280170351492,
+    "rel_fd_vs_closed": 4.2220292635329606e-08,
+    "soh_T_calendar_ub": 0.8728227840194345,
+    "soh_T_replay": 0.8335145254083555,
+    "y": 2031
+   },
+   "2034": {
+    "day": "Spring",
+    "direction": "pdch",
+    "eps": 1e-05,
+    "euro_per_MW_period": 1033.3058174268147,
+    "fd_objective_marginal_incl_eps": 4.262538141119876,
+    "fd_salvage_marginal_obj_units_per_MW": 4.262528136678156,
+    "marginal_at_calendar_soh_ub": 4.395509191889606,
+    "marginal_obj_units_per_MW_at_calendar_soh_ub": 4.395509191889606,
+    "marginal_obj_units_per_MW_at_replay_soh": 4.262528128911892,
+    "rel_fd_vs_closed": 1.821985410361034e-09,
+    "soh_T_calendar_ub": 0.9133082548301406,
+    "soh_T_replay": 0.8856771665417276,
+    "y": 2034
+   },
+   "2037": {
+    "day": "Spring",
+    "direction": "pdch",
+    "eps": 1e-05,
+    "euro_per_MW_period": 1394.4759228718062,
+    "fd_objective_marginal_incl_eps": 5.75241432443363,
+    "fd_salvage_marginal_obj_units_per_MW": 5.752404319991911,
+    "marginal_at_calendar_soh_ub": 5.841446062406405,
+    "marginal_obj_units_per_MW_at_calendar_soh_ub": 5.841446062406405,
+    "marginal_obj_units_per_MW_at_replay_soh": 5.7524043183396065,
+    "rel_fd_vs_closed": 2.872371237188414e-10,
+    "soh_T_calendar_ub": 0.9556716249999999,
+    "soh_T_replay": 0.9411042272467633,
+    "y": 2037
+   }
+  },
+  "ratio_to_penalty_ub": 0.005841446062406405,
+  "ratio_to_threshold_ub": 5.841446062406405,
+  "threshold": 1.0
+ },
+ "solve_profile_guard": {
+  "counts": {
+   "blocked_exec": 0,
+   "blocked_solve": 0,
+   "permitted_exec": 0,
+   "permitted_solve": 0
+  },
+  "verify_0_failures": []
+ },
+ "started_utc": "2026-10-31T15:38:28.467750+00:00",
+ "unchanged_files": {
+  "files": [
+   "data/SRP1/SRP1.json",
+   "data/SRP1/SharedESS/SRP1_ESS_Params.json",
+   "data/SRP1/SharedESS/SRP1_ESS.xlsx",
+   "model_construction_helpers.py"
+  ],
+  "git_status": {},
+  "sha256": {
+   "data/SRP1/SRP1.json": "61a794a7ce7a3fb983f2e92128eec446dd7dbb17ad75a3b3b1c5735f8bd4e4ef",
+   "data/SRP1/SharedESS/SRP1_ESS.xlsx": "e17bd5887e1d0738005ae17c3144593527081c9a0776e19cfaa50aafefe39cd6",
+   "data/SRP1/SharedESS/SRP1_ESS_Params.json": "39106f934bf3edbf18f01a5ef1fadfefc2f7a518706e6c8fa6d962617a312706",
+   "model_construction_helpers.py": "a20a224f11008de8c0206484583b00253677267d616e1051bb1583791ed47f64"
+  },
+  "unmodified": true
+ },
+ "unit_cell_calculus": {
+  "block_width": 3,
+  "per_block": {
+   "2028": {
+    "ad": {
+     "S": -1.2272524651809842,
+     "credit": 1.2272524651809842,
+     "obj": 0.005062584634563829
+    },
+    "avg0": 1.0058333333333338,
+    "closed_form_dS_dTP": -1.227252465180984,
+    "fd": {
+     "S": -1.2272524744956161,
+     "admm": 0.005062584672680488,
+     "credit": 1.2272524744956161,
+     "obj": 0.005062584672680488
+    },
+    "h": 1.0058333333333338e-06,
+    "rel_ad_vs_closed_S": 1.809282207408613e-16,
+    "rel_admm_vs_obj_fd": 0.0,
+    "rel_credit_vs_minus_S_fd": 0.0,
+    "rel_fd_vs_ad_S": 7.589825360479278e-09,
+    "rel_obj_fd_vs_ad": 7.529090691608238e-09,
+    "rel_obj_vs_kappa_credit_fd": 6.073469419425791e-11,
+    "soh_T": 0.7844240433333831
+   },
+   "2031": {
+    "ad": {
+     "S": -1.227252465180984,
+     "credit": 1.227252465180984,
+     "obj": 0.005062584634563828
+    },
+    "avg0": 1.0058333333333338,
+    "closed_form_dS_dTP": -1.227252465180984,
+    "fd": {
+     "S": -1.2272524744956161,
+     "admm": 0.005062584672680488,
+     "credit": 1.2272524744956161,
+     "obj": 0.005062584672680488
+    },
+    "h": 1.0058333333333338e-06,
+    "rel_ad_vs_closed_S": 0.0,
+    "rel_admm_vs_obj_fd": 0.0,
+    "rel_credit_vs_minus_S_fd": 0.0,
+    "rel_fd_vs_ad_S": 7.589825541407498e-09,
+    "rel_obj_fd_vs_ad": 7.529090862936085e-09,
+    "rel_obj_vs_kappa_credit_fd": 6.073469419425791e-11,
+    "soh_T": 0.7844240433333831
+   },
+   "2034": {
+    "ad": {
+     "S": -1.2272524651809842,
+     "credit": 1.2272524651809842,
+     "obj": 0.005062584634563829
+    },
+    "avg0": 1.0058333333333338,
+    "closed_form_dS_dTP": -1.227252465180984,
+    "fd": {
+     "S": -1.2272524744956161,
+     "admm": 0.005062584672680488,
+     "credit": 1.2272524744956161,
+     "obj": 0.005062584672680488
+    },
+    "h": 1.0058333333333338e-06,
+    "rel_ad_vs_closed_S": 1.809282207408613e-16,
+    "rel_admm_vs_obj_fd": 0.0,
+    "rel_credit_vs_minus_S_fd": 0.0,
+    "rel_fd_vs_ad_S": 7.589825360479278e-09,
+    "rel_obj_fd_vs_ad": 7.529090691608238e-09,
+    "rel_obj_vs_kappa_credit_fd": 6.073469419425791e-11,
+    "soh_T": 0.7844240433333831
+   },
+   "2037": {
+    "ad": {
+     "S": -1.2272524651809842,
+     "credit": 1.2272524651809842,
+     "obj": 0.005062584634563829
+    },
+    "avg0": 1.0058333333333338,
+    "closed_form_dS_dTP": -1.227252465180984,
+    "fd": {
+     "S": -1.2272524621090397,
+     "admm": 0.005062584621069753,
+     "credit": 1.2272524621090397,
+     "obj": 0.005062584621069753
+    },
+    "h": 1.0058333333333338e-06,
+    "rel_ad_vs_closed_S": 1.809282207408613e-16,
+    "rel_admm_vs_obj_fd": 0.0,
+    "rel_credit_vs_minus_S_fd": 0.0,
+    "rel_fd_vs_ad_S": 2.5031071957314337e-09,
+    "rel_obj_fd_vs_ad": 2.665451863543682e-09,
+    "rel_obj_vs_kappa_credit_fd": 1.623446167055595e-10,
+    "soh_T": 0.7844240433333831
+   }
+  },
+  "y_inv": 1,
+  "year": 2028
+ },
+ "unit_cell_value_identity": {
+  "S": 9470.759461751804,
+  "credit": -9470.759461751804,
+  "rel_credit_vs_minus_S": 0.0
+ },
+ "wall_clock_s": 17.30485725402832
+}

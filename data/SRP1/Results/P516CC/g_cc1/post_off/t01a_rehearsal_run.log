@@ -1,0 +1,183 @@
+# p516_d0_dry_run parent start 2026-10-31T15:31:43+0000 interpreter /opt/anaconda3/envs/opf_env_py311/bin/python
+[write] ../../../../tmp/p516cc_t01a_20261031T152857/predictions.json
+[capture] 15 required quantities -> writers present for ['identities.json', 'inventory.json', 'name_map.json']
+[inputs] FrozenSMOPF pickles: 24; unpickled 2; failed 22
+[inputs] DSO: using data/SRP1/Results/FrozenSMOPF/matched_success_DSO_node7_case33_2_2025_Autumn_cycle7.pkl sha256 3b0aba78f861b646000cca274860ba32de444c770377b33c40dc782817fe8564
+[inputs] TSO: using data/SRP1/Results/FrozenSMOPF/matched_success_TSO_case9_2025_Summer_cycle7.pkl sha256 1bc0aa68d46150ac6355270587dc1f7b08460d863e00c006b12a1b51b09b9304
+[inputs] ESSO: data/SRP1/Results/P515S39_D_run/esso_models_s39_D.pkl sha256 cfac19ea68fa89e142ac8e0b1dc9d37911b266cca49e70398dbdb96f93d33732; nodes [5, 7, 9]
+[INFO] Scenario random seed: 2026
+[INFO] Reading MARKET DATA from file(s)...
+[INFO] 	 - Generating market scenarios...
+[INFO] 	 - Plotting market scenarios...
+[INFO] Reading DISTRIBUTION NETWORK DATA from file(s)...
+[INFO]	 - Generating load stochastic scenarios...
+[INFO]	 - Generating RES generation stochastic scenarios...
+[INFO]	 - Generating flexibility stochastic scenarios...
+[INFO]	 - Plotting flexibility profiles...
+[INFO]	 - Plotting load scenarios...
+[INFO]	 - Plotting RES generation scenarios...
+[INFO] Reading DISTRIBUTION NETWORK DATA from file(s)...
+[INFO]	 - Generating load stochastic scenarios...
+[INFO]	 - Generating RES generation stochastic scenarios...
+[INFO]	 - Generating flexibility stochastic scenarios...
+[INFO]	 - Plotting flexibility profiles...
+[INFO]	 - Plotting load scenarios...
+[INFO]	 - Plotting RES generation scenarios...
+[INFO] Reading DISTRIBUTION NETWORK DATA from file(s)...
+[INFO]	 - Generating load stochastic scenarios...
+[INFO]	 - Generating RES generation stochastic scenarios...
+[INFO]	 - Generating flexibility stochastic scenarios...
+[INFO]	 - Plotting flexibility profiles...
+[INFO]	 - Plotting load scenarios...
+[INFO]	 - Plotting RES generation scenarios...
+[INFO] Reading TRANSMISSION NETWORK DATA from file(s)...
+[INFO]	 - Generating load stochastic scenarios...
+[INFO]	 - Generating RES generation stochastic scenarios...
+[INFO]	 - Generating flexibility stochastic scenarios...
+[INFO]	 - Plotting flexibility profiles...
+[INFO]	 - Plotting load scenarios...
+[INFO]	 - Plotting RES generation scenarios...
+[INFO] Scenario checksum: 5a02b77ccbbbbbb869de92958a3851d095624711abc2dbfc0157466064410358
+[INFO] Reading SHARED ESS DATA from file(s)...
+[INFO] Reading PLANNING PARAMETERS from file...
+[inventory] DSO case33_2 2025 Autumn: 7829 active rows
+            replaced  cone              voltage_mag_sqr_def          792
+            replaced  cone              voltage_product_imag_def     768
+            replaced  cone              voltage_product_real_def     768
+            replaced  decoupled         voltage_mag_def              24
+            replaced  envelope          r_sqr_def                    24
+            replaced  envelope_rewrite  node_balance_p               48
+            replaced  envelope_rewrite  node_balance_q               48
+            replaced  envelope_rewrite  pij_def                      24
+            replaced  envelope_rewrite  pji_def                      24
+            replaced  envelope_rewrite  qij_def                      24
+            replaced  envelope_rewrite  qji_def                      24
+WARNING: EXPORT Suffix 'ipopt_zL_in' found on 1 block:
+        ipopt_zL_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'ipopt_zU_in' found on 1 block:
+        ipopt_zU_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'dual' found on 1 block:
+        dual
+    LP writer cannot export suffixes to LP files.  Skipping.
+[export] dso_case33_2_2025_Autumn_c7_rated.lp sha256 6e3e704e72fedd10... {'variables': 7709, 'constraints': 6293, 'objectives': 1, 'other': 0}
+[gate] G-D0-3 retained |delta| (task 1e-12) DSO        rated     achieved 4.789e-11 <= 1e-12: FAIL
+[gate] G-D0-3 cone rel (W)                DSO        rated     achieved 6.778e-16 <= 1e-12: PASS
+[gate] G-D0-3 cone rel (transformer UCD)  DSO        rated     achieved 6.102e-16 <= 1e-12: PASS
+[gate] G-D0-3 envelope rewrite (spec 1e-9) DSO        rated     achieved 1.162e-13 <= 1e-09: PASS
+[gate] G-D0-3 objective rel (1e-8)        DSO        rated     achieved 0.000e+00 <= 1e-08: PASS
+[gate] same-point production==relaxed     DSO        rated     achieved 0.000e+00 <= 0e+00: PASS
+[gate] G-D0-2 inventory==builder (0 = consistent) DSO        rated     achieved 0.000e+00 <= 0e+00: PASS
+WARNING: EXPORT Suffix 'ipopt_zL_in' found on 1 block:
+        ipopt_zL_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'ipopt_zU_in' found on 1 block:
+        ipopt_zU_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'dual' found on 1 block:
+        dual
+    LP writer cannot export suffixes to LP files.  Skipping.
+[export] dso_case33_2_2025_Autumn_c7_available.lp sha256 9f1e8120c6f2f26a... {'variables': 7709, 'constraints': 6293, 'objectives': 1, 'other': 0}
+[gate] G-D0-3 retained |delta| (task 1e-12) DSO        available achieved 4.789e-11 <= 1e-12: FAIL
+[gate] G-D0-3 cone rel (W)                DSO        available achieved 6.778e-16 <= 1e-12: PASS
+[gate] G-D0-3 cone rel (transformer UCD)  DSO        available achieved 6.102e-16 <= 1e-12: PASS
+[gate] G-D0-3 envelope rewrite (spec 1e-9) DSO        available achieved 1.162e-13 <= 1e-09: PASS
+[gate] G-D0-3 objective rel (1e-8)        DSO        available achieved 0.000e+00 <= 1e-08: PASS
+[gate] same-point production==relaxed     DSO        available achieved 0.000e+00 <= 0e+00: PASS
+[gate] G-D0-2 inventory==builder (0 = consistent) DSO        available achieved 0.000e+00 <= 0e+00: PASS
+[gate] input not mutated (0 = unchanged)  DSO        -         achieved 0.000e+00 <= 0e+00: PASS
+[inventory] TSO case9 2025 Summer: 3528 active rows
+            replaced  cone              voltage_mag_sqr_def          216
+            replaced  cone              voltage_product_imag_def     216
+            replaced  cone              voltage_product_real_def     216
+            replaced  decoupled         voltage_mag_def              72
+WARNING: EXPORT Suffix 'ipopt_zL_in' found on 1 block:
+        ipopt_zL_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'ipopt_zU_in' found on 1 block:
+        ipopt_zU_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'dual' found on 1 block:
+        dual
+    LP writer cannot export suffixes to LP files.  Skipping.
+[export] tso_case9_2025_Summer_c7_rated.lp sha256 6567a6969d622380... {'variables': 2604, 'constraints': 3024, 'objectives': 1, 'other': 0}
+[gate] G-D0-3 retained |delta| (task 1e-12) TSO        rated     achieved 3.872e-13 <= 1e-12: PASS
+[gate] G-D0-3 cone rel (W)                TSO        rated     achieved 5.404e-16 <= 1e-12: PASS
+[gate] G-D0-3 objective rel (1e-8)        TSO        rated     achieved 0.000e+00 <= 1e-08: PASS
+[gate] same-point production==relaxed     TSO        rated     achieved 0.000e+00 <= 0e+00: PASS
+[gate] G-D0-2 inventory==builder (0 = consistent) TSO        rated     achieved 0.000e+00 <= 0e+00: PASS
+WARNING: EXPORT Suffix 'ipopt_zL_in' found on 1 block:
+        ipopt_zL_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'ipopt_zU_in' found on 1 block:
+        ipopt_zU_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'dual' found on 1 block:
+        dual
+    LP writer cannot export suffixes to LP files.  Skipping.
+[export] tso_case9_2025_Summer_c7_available.lp sha256 ab5c3a0c42361caf... {'variables': 2604, 'constraints': 3024, 'objectives': 1, 'other': 0}
+[gate] G-D0-3 retained |delta| (task 1e-12) TSO        available achieved 3.872e-13 <= 1e-12: PASS
+[gate] G-D0-3 cone rel (W)                TSO        available achieved 5.404e-16 <= 1e-12: PASS
+[gate] G-D0-3 objective rel (1e-8)        TSO        available achieved 0.000e+00 <= 1e-08: PASS
+[gate] same-point production==relaxed     TSO        available achieved 0.000e+00 <= 0e+00: PASS
+[gate] G-D0-2 inventory==builder (0 = consistent) TSO        available achieved 0.000e+00 <= 0e+00: PASS
+[gate] input not mutated (0 = unchanged)  TSO        -         achieved 0.000e+00 <= 0e+00: PASS
+[gate] G-D0-3 objective rel summed        TSO+DSO    rated     achieved 0.000e+00 <= 1e-08: PASS
+[gate] G-D0-3 objective rel summed        TSO+DSO    available achieved 0.000e+00 <= 1e-08: PASS
+WARNING: EXPORT Suffix 'ipopt_zL_in' found on 1 block:
+        ipopt_zL_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'ipopt_zU_in' found on 1 block:
+        ipopt_zU_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'dual' found on 1 block:
+        dual
+    LP writer cannot export suffixes to LP files.  Skipping.
+[export] esso_node5_s39_D_terminal.lp sha256 c0eaf8f14005c6a2... {'variables': 1195, 'constraints': 1194, 'objectives': 1, 'other': 0}
+[gate] G-D0-3 retained |delta| (task 1e-12) ESSO_5     -         achieved 1.355e-20 <= 1e-12: PASS
+[gate] ESSO dropped subs within allowed (0 = yes) ESSO_5     -         achieved 0.000e+00 <= 0e+00: PASS
+[gate] G-D0-2 inventory==builder (0 = consistent) ESSO_5     -         achieved 0.000e+00 <= 0e+00: PASS
+[gate] input not mutated (0 = unchanged)  ESSO_5     -         achieved 0.000e+00 <= 0e+00: PASS
+WARNING: EXPORT Suffix 'ipopt_zL_in' found on 1 block:
+        ipopt_zL_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'ipopt_zU_in' found on 1 block:
+        ipopt_zU_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'dual' found on 1 block:
+        dual
+    LP writer cannot export suffixes to LP files.  Skipping.
+[export] esso_node7_s39_D_terminal.lp sha256 c0eaf8f14005c6a2... {'variables': 1195, 'constraints': 1194, 'objectives': 1, 'other': 0}
+[gate] G-D0-3 retained |delta| (task 1e-12) ESSO_7     -         achieved 1.355e-20 <= 1e-12: PASS
+[gate] ESSO dropped subs within allowed (0 = yes) ESSO_7     -         achieved 0.000e+00 <= 0e+00: PASS
+[gate] G-D0-2 inventory==builder (0 = consistent) ESSO_7     -         achieved 0.000e+00 <= 0e+00: PASS
+[gate] input not mutated (0 = unchanged)  ESSO_7     -         achieved 0.000e+00 <= 0e+00: PASS
+WARNING: EXPORT Suffix 'ipopt_zL_in' found on 1 block:
+        ipopt_zL_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'ipopt_zU_in' found on 1 block:
+        ipopt_zU_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'dual' found on 1 block:
+        dual
+    LP writer cannot export suffixes to LP files.  Skipping.
+[export] esso_node9_s39_D_terminal.lp sha256 c0eaf8f14005c6a2... {'variables': 1195, 'constraints': 1194, 'objectives': 1, 'other': 0}
+[gate] G-D0-3 retained |delta| (task 1e-12) ESSO_9     -         achieved 1.355e-20 <= 1e-12: PASS
+[gate] ESSO dropped subs within allowed (0 = yes) ESSO_9     -         achieved 0.000e+00 <= 0e+00: PASS
+[gate] G-D0-2 inventory==builder (0 = consistent) ESSO_9     -         achieved 0.000e+00 <= 0e+00: PASS
+[gate] input not mutated (0 = unchanged)  ESSO_9     -         achieved 0.000e+00 <= 0e+00: PASS
+[gate] guard: zero solves (failures count) process    -         achieved 0.000e+00 <= 0e+00: PASS
+[gate] containment: writes outside OUT_DIR process    -         achieved 1.000e+00 <= 0e+00: FAIL
+[write] ../../../../tmp/p516cc_t01a_20261031T152857/inventory.json
+[write] ../../../../tmp/p516cc_t01a_20261031T152857/identities.json
+[write] ../../../../tmp/p516cc_t01a_20261031T152857/name_map.json
+[summary] gates all pass: False; failed: [('G-D0-3 retained |delta| (task 1e-12)', 'DSO', 'rated', 4.789146856865045e-11), ('G-D0-3 retained |delta| (task 1e-12)', 'DSO', 'available', 4.789146856865045e-11), ('containment: writes outside OUT_DIR', 'process', '-', 1.0)]
+[summary] stop rule (identity beyond 1e-10): False
+[prediction] P-a: held=False
+[prediction] P-b: held=False
+[prediction] P-c: held=True
+[prediction] P-d: held=True
+[prediction] P-e: held=True
+[summary] guard counts {'permitted_solve': 0, 'permitted_exec': 0, 'blocked_solve': 0, 'blocked_exec': 0}; solver libraries imported: {'gurobipy': False, 'highspy': False, 'clarabel': False, 'cplex': False, 'docplex': False, 'xpress': False, 'mosek': False}
+# child exit code 2; wall 15.8 s

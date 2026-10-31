@@ -2930,7 +2930,7 @@ def _run_operational_planning(planning_problem, candidate_solution, initial_stat
 
         update_distribution_models_to_admm(planning_problem, dso_models, admm_parameters, objective_scale)
         update_transmission_model_to_admm(planning_problem, tso_model, admm_parameters, objective_scale)
-        update_shared_energy_storage_model_to_admm(planning_problem, esso_model, admm_parameters, al_scale_esso=al_scale_esso)
+        update_shared_energy_storage_model_to_admm(planning_problem, esso_model, admm_parameters, al_scale_esso=al_scale_esso, objective_scale=objective_scale)
         _initialize_shared_ess_consensus(planning_problem, consensus_vars)
 
         # P5.15 Addendum 16 items 2-3, PHASE 1 (frozen spec v6,
@@ -5491,7 +5491,7 @@ def update_distribution_models_to_admm(planning_problem, models, params, objecti
                 dso_model[year][day].admm_objective = pe.Objective(sense=pe.minimize, expr=obj)
 
 
-def update_shared_energy_storage_model_to_admm(planning_problem, models, params, al_scale_esso=1.0):
+def update_shared_energy_storage_model_to_admm(planning_problem, models, params, al_scale_esso=1.0, objective_scale=None):
     """
     P5.15 Step 3.4 (frozen spec v4, `changes_from_v3.a_D5_esso_scaling`,
     Addendum 15 item 5(a)): `al_scale_esso` multiplies ONLY the ESSO's AL
@@ -5508,6 +5508,15 @@ def update_shared_energy_storage_model_to_admm(planning_problem, models, params,
     absent), the multiplication is not even constructed -- the built
     expression is bit-identical to the pre-3.4 code, matching every other
     optional 3.4 key's "absent means unchanged" convention.
+
+    P5.16 convention change C1 (spec v4; Addendum 88 R1, F1): when the ESSO
+    model carries the salvage term (`salvage_objective_kappa`, built only with
+    `salvage_value.in_objective` on), kappa is set here to
+    admm_esso_al_scale / admm_common_objective_scale = a / sigma (a = 1 when the
+    AL scale is not applied), which puts one euro of salvage on the same footing
+    as one euro of a block's present-value cost in that block's ADMM objective.
+    `objective_scale` (sigma in use) is then required. Without the term nothing
+    below is constructed or set (bit-identical to the pre-P5.16 code).
     """
 
     shared_ess_data = planning_problem.shared_ess_data
@@ -5523,6 +5532,15 @@ def update_shared_energy_storage_model_to_admm(planning_problem, models, params,
 
         if apply_al_scale:
             models[node_id].admm_esso_al_scale = pe.Param(initialize=al_scale_esso)
+
+        # P5.16 C1: kappa = a / sigma (initialised 0 in `_build_subproblem`; set only here).
+        if hasattr(models[node_id], 'salvage_objective_kappa'):
+            if objective_scale is None:
+                raise ValueError('ESSO salvage term in the objective requires objective_scale (sigma) to set kappa.')
+            models[node_id].admm_common_objective_scale = pe.Param(initialize=objective_scale)
+            esso_al_scale = pe.value(models[node_id].admm_esso_al_scale) if apply_al_scale else 1.0
+            models[node_id].salvage_objective_kappa.set_value(
+                esso_al_scale / pe.value(models[node_id].admm_common_objective_scale))
 
         # Free Pnet, Qnet
         for y in models[node_id].years:

@@ -16,12 +16,22 @@ class SalvageValueParameters:
         self.cost_basis = 'EXPECTED_INSTALLATION_ENERGY_COST'
         self.health_basis = 'NORMALIZED_ABOVE_MINIMUM_SOH'
         self.calendar_life_basis = 'REMAINING_FRACTION_AT_TERMINAL'
+        # P5.16 convention change C1 (P5_16_CONVENTION_CHANGE_SPEC_v4.md; Addendum 88 R1): when True, the ESSO
+        # objective carries kappa * salvage_credit_obj (`shared_energy_storage_data._build_subproblem`). Default
+        # False: the term, its kappa Param and its Expression are NOT constructed, so the built model is the
+        # pre-P5.16 model bit for bit. Read with getattr(..., False) by the builder, because parameter objects
+        # pickled before P5.16 do not carry the attribute.
+        self.in_objective = False
 
     def read_parameters(self, params_data):
         if not params_data:
             return
 
         self.enabled = bool(params_data.get('enabled', self.enabled))
+        in_objective = params_data.get('in_objective', self.in_objective)
+        if not isinstance(in_objective, bool):
+            raise ValueError(f'Salvage in_objective must be a JSON boolean, got {in_objective!r}.')
+        self.in_objective = in_objective
         self.energy_recovery_fraction = float(
             params_data.get('energy_recovery_fraction', self.energy_recovery_fraction)
         )
@@ -46,6 +56,8 @@ class SalvageValueParameters:
             raise ValueError(
                 f'Unsupported salvage calendar-life basis: {self.calendar_life_basis}.'
             )
+        if self.in_objective and not self.enabled:
+            raise ValueError('Salvage in_objective requires salvage_value.enabled to be true.')
 
 
 # ======================================================================================================================
@@ -231,6 +243,10 @@ class SharedEnergyStorageParameters:
         self.verbose = False                            # Verbose -- Bool
         self.salvage_value = SalvageValueParameters()
         self.ageing = EnergyStorageAgeingParameters()
+        # P5.16 convention change C3 (spec v4): the available-energy SoH point declared by the parameters file
+        # ('end' or 'mid'). None = not declared: `SharedEnergyStorageData.available_energy_soh_point` keeps its own
+        # default ('end') and is not assigned at all, so files without the key build exactly as before.
+        self.available_energy_soh_point = None
         self.solver_params = SolverParameters(
             default_solver='ipopt',
             path_env_vars=('NLP_SOLVER_PATH', 'SOLVER_PATH'),
@@ -264,3 +280,8 @@ def _read_parameters_from_file(planning_parameters, filename):
         planning_parameters.lp_solver_params.read_solver_parameters(params_data['lp_solver'])
     planning_parameters.salvage_value.read_parameters(params_data.get('salvage_value'))
     planning_parameters.ageing.read_parameters(params_data.get('ageing'))
+    if params_data.get('available_energy_soh_point') is not None:
+        soh_point = params_data['available_energy_soh_point']
+        if soh_point not in ('end', 'mid'):
+            raise ValueError(f"available_energy_soh_point must be 'end' or 'mid', got {soh_point!r}.")
+        planning_parameters.available_energy_soh_point = soh_point

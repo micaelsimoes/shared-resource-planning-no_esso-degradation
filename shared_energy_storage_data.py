@@ -173,6 +173,10 @@ class SharedEnergyStorageData:
     def read_parameters_from_file(self):
         filename = os.path.join(self.data_dir, 'SharedESS', self.params_file)
         self.params.read_parameters_from_file(filename)
+        # P5.16 convention change C3 (spec v4): a parameters file MAY declare the available-energy SoH point.
+        # Absent (None) -> nothing is assigned and the W20 default / model-variant path is untouched.
+        if self.params.available_energy_soh_point is not None:
+            self.available_energy_soh_point = self.params.available_energy_soh_point
 
     def create_shared_energy_storages(self, planning_problem):
         for year in planning_problem.years:
@@ -848,10 +852,30 @@ def _build_subproblem(shared_ess_data, node_id):
     model.feasibility_penalty = pe.Expression(expr=slack_penalty)
     model.salvage_value = pe.Expression(expr=salvage_value)
     model.salvage_credit = pe.Expression(expr=-model.salvage_value)
-    model.objective = pe.Objective(
-        sense=pe.minimize,
-        expr=model.feasibility_penalty,
-    )
+    if getattr(shared_ess_data.params.salvage_value, 'in_objective', False):
+        # P5.16 convention change C1 (P5_16_CONVENTION_CHANGE_SPEC_v4.md; Addendum 88 R1 option (a)): the terminal
+        # salvage credit enters the ESSO objective as kappa * salvage_credit_obj. kappa is a mutable Param
+        # initialised 0 here -- the standalone initialisation solve therefore runs WITHOUT the term -- and set to
+        # admm_esso_al_scale / admm_common_objective_scale (= a / sigma) by
+        # `update_shared_energy_storage_model_to_admm`. salvage_credit_obj is linear in one Var per cohort
+        # (Param es_e_investment_fixed x Var es_soh_per_unit_cumul at the terminal block), never the bilinear
+        # e_available row. With the switch off (default) none of these components is constructed.
+        model.salvage_objective_kappa = pe.Param(mutable=True, initialize=0.00)
+        salvage_credit_obj, throughput_coefficients = _build_salvage_credit_objective_expression(
+            shared_ess_data, model, shared_ess_idx)
+        model.salvage_credit_obj = pe.Expression(expr=salvage_credit_obj)
+        # Plain dict (not a component): d(-S)/d(pch|pdch)[y_inv, y, d] per unit of terminal SoH, read by
+        # `_get_esso_complementarity_diagnostics` for the effective throughput marginal (Addendum 88 R1.4 (iii)).
+        model._salvage_throughput_coefficients = throughput_coefficients
+        model.objective = pe.Objective(
+            sense=pe.minimize,
+            expr=model.feasibility_penalty + model.salvage_objective_kappa * model.salvage_credit_obj,
+        )
+    else:
+        model.objective = pe.Objective(
+            sense=pe.minimize,
+            expr=model.feasibility_penalty,
+        )
 
     # Define that we want the duals
     model.ipopt_zL_out = pe.Suffix(direction=pe.Suffix.IMPORT)  # Ipopt bound multipliers (obtained from solution)
@@ -905,6 +929,78 @@ def _build_terminal_salvage_value_expression(shared_ess_data, model, shared_ess_
         )
 
     return salvage_value
+
+
+def _build_salvage_credit_objective_expression(shared_ess_data, model, shared_ess_idx):
+    """P5.16 convention change C1 (spec v4): the ESSO objective's salvage credit, -S, built LINEAR in one Var per
+    cohort:
+
+        salvage_credit_obj = - sum_cohorts disc_T * f * c^E(y_inv) * rlf(y_inv)
+                               * [floor * E + (1 - floor) * E * (SoH[y_inv, T] - soh_min) / (1 - soh_min)]
+
+    with E the Param `es_e_investment_fixed[y_inv]` and SoH[y_inv, T] the Var `es_soh_per_unit_cumul` at the terminal
+    block T (END-of-block SoH also under 'mid', exactly as `_build_terminal_salvage_value_expression`). The factors
+    are those of the reporting expression (today's defaults: cost basis EXPECTED_INSTALLATION_ENERGY_COST, f = 1,
+    floor 0). A cohort contributes only when its remaining-life fraction at the terminal date is > 0 AND (y_inv, T)
+    lies inside its calendar-life window (same tcal_norm as the rated / degradation rows); inside that window
+    `rated_e_capacity_unit` makes E_rated equal to E, so the value equals -`salvage_value` at any feasible point.
+
+    Also returns, per (y_inv, y, d), the coefficients (c_ch, c_dch) with
+        d(-S)/d pch[y_inv, y, d, p] = c_ch * SoH[y_inv, T],   d(-S)/d pdch[y_inv, y, d, p] = c_dch * SoH[y_inv, T]
+    through the D row (D * 2 k E = 365 n avg) and the SoH chain (dSoH_T/dD_y = -SoH_T): E cancels, so
+        c_ch = disc_T f c^E rlf (1 - floor) n nd eff_ch dt / (2 k (1 - soh_min)),  c_dch the same with 1/eff_dch.
+    Zero when ageing is disabled (D == 0). Consumed only by the complementarity diagnostic."""
+    params = shared_ess_data.params.salvage_value
+    if not params.enabled:
+        raise ValueError('salvage_value.in_objective requires salvage_value.enabled.')
+    repr_years = list(shared_ess_data.years)
+    repr_days = list(shared_ess_data.days)
+    terminal_year_idx = len(repr_years) - 1
+    terminal_discount = _get_terminal_discount_factor(shared_ess_data)
+    _soh_point, ageing_enabled = _esso_ageing_model_settings(shared_ess_data)
+    dt = period_duration_hours(model)
+    credit = 0.00
+    coefficients = dict()
+
+    for y_inv in model.years:
+        year_inv = repr_years[y_inv]
+        shared_energy_storage = shared_ess_data.shared_energy_storages[year_inv][shared_ess_idx]
+        min_soh = shared_energy_storage.soh_min
+        if not 0.00 <= min_soh < 1.00:
+            raise ValueError(f'Invalid minimum SoH {min_soh} for salvage valuation.')
+        _, _, remaining_life_fraction = _get_remaining_calendar_life(shared_ess_data, y_inv, shared_energy_storage)
+        if remaining_life_fraction <= 0.00:
+            continue
+        num_years = shared_ess_data.years[year_inv]
+        tcal_norm = round(shared_energy_storage.t_cal / num_years)
+        max_tcal_norm = min(y_inv + tcal_norm, len(repr_years))
+        if not (y_inv <= terminal_year_idx < max_tcal_norm):
+            continue
+
+        e_investment = model.es_e_investment_fixed[y_inv]
+        terminal_soh = model.es_soh_per_unit_cumul[y_inv, terminal_year_idx]
+        usable_energy_above_eol = e_investment * (terminal_soh - min_soh) / (1.00 - min_soh)
+        residual_energy = (
+            params.recycling_floor_fraction * e_investment
+            + (1.00 - params.recycling_floor_fraction) * usable_energy_above_eol
+        )
+        expected_unit_cost = _get_expected_energy_investment_cost(shared_ess_data, year_inv)
+        unit_value = (terminal_discount * params.energy_recovery_fraction * expected_unit_cost
+                      * remaining_life_fraction)
+        credit -= unit_value * residual_energy
+
+        per_unit_soh = unit_value * (1.00 - params.recycling_floor_fraction) / (1.00 - min_soh)
+        for y in range(y_inv, max_tcal_norm):
+            for d in model.days:
+                num_days = shared_ess_data.days[repr_days[d]]
+                if ageing_enabled:
+                    base = per_unit_soh * num_years * num_days * dt / (2.00 * shared_energy_storage.cl_eff)
+                    coefficients[(y_inv, y, d)] = (base * shared_energy_storage.eff_ch,
+                                                   base / shared_energy_storage.eff_dch)
+                else:
+                    coefficients[(y_inv, y, d)] = (0.00, 0.00)
+
+    return credit, coefficients
 
 
 def _get_terminal_discount_factor(shared_ess_data):
@@ -2114,6 +2210,48 @@ def _get_esso_complementarity_diagnostics(model, node_id, log_path):
     bound = None
     if mu_final is not None and s_obj not in (None, 0.0) and eps_in_force:
         bound = 2.0 * n_periods * mu_final / (2.0 * s_obj * eps_in_force)
+    if hasattr(model, 'salvage_objective_kappa'):
+        # P5.16 C1 / Addendum 88 R1.4 (iii): with the salvage term in the objective the per-unit throughput
+        # marginal of a cohort-period is a_ch = eps + kappa * d(-S)/d pch (a_dch likewise), so the barrier identity
+        # reads min(pch, pdch) = mu_final / (s_obj * (a_ch + a_dch)); the bound sums 2 * that over the SAME active
+        # cohort-periods `_complementarity_ratio_for_model` iterates. The eps-only bound is kept beside it.
+        kappa = pe.value(model.salvage_objective_kappa)
+        coefficients = getattr(model, '_salvage_throughput_coefficients', {})
+        terminal_year_idx = len(model.years) - 1
+        sum_marginal = []
+        for y_inv in model.years:
+            for y in model.years:
+                if not _esso_cohort_pair_is_within_lifetime(model, y_inv, y):
+                    continue
+                if model._esso_cohort_inactive.get(y_inv, False):
+                    continue
+                for d in model.days:
+                    c_ch, c_dch = coefficients.get((y_inv, y, d), (0.00, 0.00))
+                    soh_terminal = pe.value(model.es_soh_per_unit_cumul[y_inv, terminal_year_idx]) \
+                        if (c_ch or c_dch) else 0.00
+                    pair_marginal = 2.0 * eps_in_force + kappa * (c_ch + c_dch) * soh_terminal
+                    sum_marginal.extend([pair_marginal] * len(model.periods))
+        effective_bound = None
+        if mu_final is not None and s_obj not in (None, 0.0) and all(m > 0.0 for m in sum_marginal):
+            effective_bound = sum(2.0 * mu_final / (s_obj * m) for m in sum_marginal)
+        return {
+            'node_id': node_id,
+            'log_path': log_path,
+            'complementarity_ratio_max': max_ratio,
+            'complementarity_ratio_argmax': argmax,
+            'n_active_cohort_periods': n_periods,
+            'eps_esso_throughput_in_force': eps_in_force,
+            'salvage_in_objective': True,
+            'salvage_objective_kappa': kappa,
+            'effective_pair_marginal_min': min(sum_marginal) if sum_marginal else None,
+            'effective_pair_marginal_max': max(sum_marginal) if sum_marginal else None,
+            'mu_final': mu_final,
+            's_obj': s_obj,
+            'parse_reason': parse_reason,
+            'spurious_throughput_bound': effective_bound,
+            'spurious_throughput_bound_eps_only': bound,
+            'spurious_throughput_measured': spurious_throughput_measured,
+        }
     return {
         'node_id': node_id,
         'log_path': log_path,
