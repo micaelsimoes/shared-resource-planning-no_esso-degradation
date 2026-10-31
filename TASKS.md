@@ -18,8 +18,12 @@ order below stands but W184/W185 are **held** (Planner recommendation R6).
 - [x] Advisor: convention-change spec v1 reviewed — build with changes (κ = a/σ; 2025-cohort salvage ≡ 0; G-CC-2/3
   restated; 2037 column; params file + σ-band prediction) → `P5_16_CONVENTION_CHANGE_SPEC_v2.md`; expert items F2/F4
   and author items (recovery fraction, 2040 cost) added to the Addendum 87 draft
-- [ ] **D0 / T0.1** — G-D0-0 builder dry run on FrozenSMOPF + ESSO pickle (zero solves); then route A/B point
-  acquisition; row inventory; identity gates → `P5_16_D0_REPORT.md` part (a)
+- [x] **D0 / T0.1a** — builder dry run (zero solves; guard 0/0): inventory complete; cones 6.8e-16; objective 0.0;
+  P-a/P-b FAILED (OLTC envelope rows; 1 ulp × |y|² = 4.8e-11) → Planner rulings spec v2 §10 (gate at fp resolution;
+  envelope-rewrite class; `sess_comp` dropped; `s_bounds` housekeeping) — `P5_16_D0_T01A_REPORT.md`
+- [ ] **▶ D0 / T0.1b** — certified blocks (route A, both cells, 12 groups, both modes): capture, inventory with
+  nonconvex listing, coupling rows, gates per §10, exports (zero solves)
+- [ ] **D0 / T0.2** — declared conic solves + IPOPT cross-check; measurements; P1–P9 → `P5_16_D0_REPORT.md`
 - [ ] **D0 / T0.2** — gap, circulation, TN rank cost, dual infeasibility, capacity duals vs Phase A slopes;
   predictions recorded first → decision point H1 / H2 / H3
 - [ ] **T-perf** (author-authorized 2026-10-31; `P5_16_TPERF_SPEC_v1.md`): Part A here (6 declared solves on the

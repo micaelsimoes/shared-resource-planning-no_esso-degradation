@@ -139,3 +139,36 @@ as a compute node (file copy only); writes under existing roots.
 ## 9. Interpretation
 Absolute class from Σgap/Q (variant R). Decision relevance from P6/P7. Reported together; the expert's R4 wording is
 chosen on both. G-D0-3 failure stops the realignment (the relaxation is not of production's problem).
+
+## 10. Planner rulings after T0.1a (2026-10-31; `P5_16_D0_T01A_REPORT.md`, evidence `P516D0/dry_run/`)
+
+Dry run: zero solves (guard 0/0), inventory complete on every block, cones 6.8e-16, objective identity 0.0; two
+predictions failed (P-a, P-b) for reasons that are properties of the instance, not of the builder.
+
+1. **Retained-row identity gate restated to floating-point resolution.** The 1e-12 absolute bar cannot be met on
+   case33_2: `branch_flow_limit` carries |y|² ≈ 1.08e5, so one ulp of W (2.2e-16, from mapping e² + f²) moves the row
+   by 4.8e-11 — exactly the first-order bound. Gate becomes: (i) **same-point identity, production row vs relaxed row
+   at identical W: Δ = 0 exactly** (primary; held on 5,261 + 2,808 rows); (ii) at the mapped point
+   |Δ| ≤ max(1e-12, 8·eps·Σ|terms|) per row (held: 0 rows above first-order bound + 4× resolution). The 1e-10 stop
+   line is unchanged.
+2. **Inventory "replaced" class** = the five definitional families **plus the envelope-rewrite rows**: on the OLTC
+   branch (one per case33_k; none on case9) the rows containing r·WijR, r·WijI, r_sqr·Wii (`node_balance_p/q` at the
+   two transformer nodes, `pij/qij/pji/qji_def`) are rebuilt in (U, C, D) from the production row's own degree-2
+   representation — matched to 1.2e-13. Nothing else is replaced; nothing is dropped on a network block except
+   ruling 3.
+3. **`sess_comp` is dropped in the relaxation** (`pch_hat · pdch_hat ≤ 1e-4`, the `BILINEAR_RELAXATION` branch of
+   `model_construction_helpers.sess_comp_rule`; 24 DSO + 72 TSO rows): a nonconvex row whose removal enlarges the
+   feasible set (lower-bound safe; P5.5-D2: the convex hull of the complementarity set inside the box is the
+   triangle production already imposes). **Any other nonconvex row found on the certified blocks is listed in the
+   inventory and is a stop**, not a silent drop. Reported to the expert as information in Addendum 88.
+4. **FrozenSMOPF loadability** (21/24 snapshots fail to unpickle: `s_bounds` deleted in P5.4-B `1e86d40e`, an
+   unwire-never-delete violation predating the rule): not needed for D0 (the W86 certified pickles post-date it);
+   recorded as a housekeeping repair (retained unwired stub + x = 0 bitwise gate) for a later task.
+5. Side writes: production's data loader regenerates untracked diagrams in `data/SRP1/Diagrams/`; the harness now
+   redirects them. No tracked or cited file touched.
+
+**T0.1b (next, zero solves):** the same builder on the route-A certified blocks of both cells, all 12 groups, both
+capacity modes; capture before mutation (pickled live blocks, Var vectors, inter-copy mismatches); inventory with
+the nonconvex-row listing; coupling rows (§3.6) built and their residuals reported as the inter-copy mismatch per
+channel; gates per rulings 1–3; `.lp` exports with name maps for every group. **T0.2** (the 96 declared conic solves
++ IPOPT cross-checks) follows only after T0.1b's gates hold.
