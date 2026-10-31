@@ -22,6 +22,8 @@ order below stands but W184/W185 are **held** (Planner recommendation R6).
   acquisition; row inventory; identity gates → `P5_16_D0_REPORT.md` part (a)
 - [ ] **D0 / T0.2** — gap, circulation, TN rank cost, dual infeasibility, capacity duals vs Phase A slopes;
   predictions recorded first → decision point H1 / H2 / H3
+- [ ] **T-perf** (author-authorized 2026-10-31; `P5_16_TPERF_SPEC_v1.md`): Part A here (6 declared solves on the
+  certified unit-cell blocks), Part B on the Studio (author runs); ranked lever table → Advisor → C6 decision
 - [ ] Convention change (after R1–R3): ESSO salvage term; `'mid'` baseline; five-block single-scenario case file;
   cumulative admissibility + general-lattice canonicalization; gate x = 0 bitwise + fixtures unpickle
 - [ ] Spec v2 freeze → re-evaluation campaign on the Studio (authorized by a later addendum, one gate per task)

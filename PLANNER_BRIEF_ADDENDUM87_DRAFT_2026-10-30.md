@@ -97,6 +97,12 @@ absolute class — relevant to R4.
 - Then spec v2 freeze (configuration hash, horizon, SoH point, salvage basis, lattice, certificate rule) — the
   re-evaluation campaign is authorized by a later addendum, one gate per task.
 
+## T-perf (author-authorized 2026-10-31)
+Diagnostic `P5_16_TPERF_SPEC_v1.md`: six declared timed solves on the certified unit-cell blocks here and six on
+paper-scale blocks on the Studio — NL-write / IPOPT / load split, iterations, scaling factors, RSS — producing a
+ranked lever table. A formulation lever adopted from it (per-unit base / scaling, W-auxiliary structure) enters
+the convention-change spec as C6 with the Step 1b candidate-3′ gate, so it rides the single re-evaluation campaign.
+
 ## Stops
 
 As `CLAUDE.md`. In addition: D0's T0.1 gate failure; any D0 reading in H3; any salvage basis change after freeze.
