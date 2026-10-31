@@ -1,0 +1,4397 @@
+{
+ "schema": "p516_tperf_local_v1",
+ "stage": "P5.16 T-perf Part A -- solve-time profile on the certified SRP1 unit-cell blocks",
+ "authority": [
+  "P5_16_TPERF_SPEC_v1.md (author-authorized 2026-10-31)",
+  "TASKS.md T-perf line"
+ ],
+ "utc_start": "2026-10-31T10:14:08.088069+00:00",
+ "mode": "part_a",
+ "instance": {
+  "campaign": "s53_w86_tail_recert",
+  "campaign_spec_sha256_prefix": "ddd6cd44",
+  "cell_label": "n7_4h_e1",
+  "eval_key": "ca8927e75d628bd188cf74f9d81436cbb3e0be53f64e02d9876ebb271a21951d",
+  "candidate_key": "db77e1549af855bcb3521950c634db55fe6c155ab2de591b0441b5f2bf4b369a",
+  "candidate_canonical": {
+   "investment_year": 2025,
+   "nodes": {
+    "5": [
+     0.0,
+     0.0
+    ],
+    "7": [
+     0.25,
+     1.0
+    ],
+    "9": [
+     0.0,
+     0.0
+    ]
+   }
+  },
+  "certification_cycle": 112
+ },
+ "objective_convention": "none computed or compared (timing / iterations / memory only)",
+ "lock": {
+  "path": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/.p516_tperf.lock",
+  "pid": 69828,
+  "other_copies_found": []
+ },
+ "thread_env_before": {
+  "OMP_NUM_THREADS": null,
+  "MKL_NUM_THREADS": null,
+  "OPENBLAS_NUM_THREADS": null,
+  "VECLIB_MAXIMUM_THREADS": null,
+  "NUMEXPR_NUM_THREADS": null
+ },
+ "thread_env_in_force": {
+  "OMP_NUM_THREADS": "1",
+  "MKL_NUM_THREADS": "1",
+  "OPENBLAS_NUM_THREADS": "1",
+  "VECLIB_MAXIMUM_THREADS": "1",
+  "NUMEXPR_NUM_THREADS": "1"
+ },
+ "provenance": {
+  "python": "/opt/anaconda3/envs/opf_env_py311/bin/python",
+  "python_version": "3.11.11 | packaged by conda-forge | (main, Dec  5 2024, 08:47:03) [Clang 18.1.8 ]",
+  "platform": "macOS-27.0-arm64-arm-64bit",
+  "hw_model": "Mac17,3",
+  "mem_total_bytes": 25769803776,
+  "cpu_count_logical": 10,
+  "cpu_count_physical": 10,
+  "git_head": "42840e42ce2ca5f524614bc4f692e81ef3e01372",
+  "git_branch": "feature/derivative-free-planning",
+  "production_files_git_status": "",
+  "production_files_sha256": {
+   "network.py": "18acaa84af7a043898a7b831223b4eab1d91f9bcf2c199f49beecfeb3bf91fb4",
+   "network_data.py": "2938bc4bd4ecc74f42aa90d347cdc1162eebcefaba15bc87b8281a798d457d6b",
+   "shared_resources_planning.py": "ade9c843bc7c5b6514ab91ecc54f327330a5249709766699ff2f50c8288473d6",
+   "model_construction_helpers.py": "a20a224f11008de8c0206484583b00253677267d616e1051bb1583791ed47f64",
+   "helper_functions.py": "808c60a08b8e157381f28e0c1da5741b0efd39e35f36dd531f88b84deebce1e2",
+   "network_parameters.py": "30ea1b23982c8839f593e98030f99d764704912dfb6b344dd8a2454d06438a92",
+   "p513_solve_profile_guard.py": "9921682e5b825e0b76551b78c4765bfe039bccc414d727520f2c22b6f192a5ab"
+  },
+  "harness_sha256": "d013452fce3258b03771e1dba178ec8802fe119622553dc6d08dd472b39dfd9a",
+  "harness_git_status": "?? p516_tperf_profile.py",
+  "ipopt_version_probe (not a solve)": "Ipopt 3.14.18 (aarch64-apple-darwin24.5.0), ASL(20241111)",
+  "pyomo_version": "6.9.5"
+ },
+ "inputs": {
+  "certified_models": {
+   "path": "data/SRP1/Results/P515S53/tight_tail_w86/campaign_s53_w86_tail_recert/evals/ca8927e75d628bd1_n7_4h_e1/certified_models.pkl",
+   "sha256": "fe06ca485003b4fc9c0fd9788279bd287dd813d659179b311885e8ab03efda04",
+   "declared_in_task": "fe06ca485003b4fc9c0fd9788279bd287dd813d659179b311885e8ab03efda04",
+   "manifest_pins": {
+    "data/SRP1/Results/P515S53/tight_tail_w86/campaign_s53_w86_tail_recert/campaign_manifest_sha256.json": "fe06ca485003b4fc9c0fd9788279bd287dd813d659179b311885e8ab03efda04",
+    "data/SRP1/Results/P515S53/tight_tail_w86/campaign_s53_w86_tail_recert/evals/ca8927e75d628bd1_n7_4h_e1/child_manifest_sha256.json": "fe06ca485003b4fc9c0fd9788279bd287dd813d659179b311885e8ab03efda04"
+   },
+   "size_bytes": 164685717
+  },
+  "esso_models": {
+   "path": "data/SRP1/Results/P515S53/tight_tail_w86/campaign_s53_w86_tail_recert/evals/ca8927e75d628bd1_n7_4h_e1/esso_models_s39_D.pkl",
+   "sha256": "95f7b38a6ec21833f7b5521ec8332d8022ef6801b4095d1410225438b2cedfc9",
+   "declared_in_task": "95f7b38a6ec21833f7b5521ec8332d8022ef6801b4095d1410225438b2cedfc9",
+   "manifest_pins": {
+    "data/SRP1/Results/P515S53/tight_tail_w86/campaign_s53_w86_tail_recert/campaign_manifest_sha256.json": "95f7b38a6ec21833f7b5521ec8332d8022ef6801b4095d1410225438b2cedfc9",
+    "data/SRP1/Results/P515S53/tight_tail_w86/campaign_s53_w86_tail_recert/evals/ca8927e75d628bd1_n7_4h_e1/child_manifest_sha256.json": "95f7b38a6ec21833f7b5521ec8332d8022ef6801b4095d1410225438b2cedfc9"
+   },
+   "size_bytes": 2718805
+  },
+  "production_solve_records": {
+   "path": "data/SRP1/Results/P515S53/tight_tail_w86/campaign_s53_w86_tail_recert/evals/ca8927e75d628bd1_n7_4h_e1/network_ipopt_solve_records.jsonl",
+   "sha256": "2a1f2252b70fb48d53998fa14069b60ed8d7348d66a3ec7b721a6edd28b58b8f",
+   "declared_in_task": null,
+   "manifest_pins": {
+    "data/SRP1/Results/P515S53/tight_tail_w86/campaign_s53_w86_tail_recert/campaign_manifest_sha256.json": "2a1f2252b70fb48d53998fa14069b60ed8d7348d66a3ec7b721a6edd28b58b8f",
+    "data/SRP1/Results/P515S53/tight_tail_w86/campaign_s53_w86_tail_recert/evals/ca8927e75d628bd1_n7_4h_e1/child_manifest_sha256.json": "2a1f2252b70fb48d53998fa14069b60ed8d7348d66a3ec7b721a6edd28b58b8f"
+   },
+   "size_bytes": 4135049
+  },
+  "post_certification": {
+   "path": "data/SRP1/Results/P515S53/tight_tail_w86/campaign_s53_w86_tail_recert/evals/ca8927e75d628bd1_n7_4h_e1/post_certification.json",
+   "sha256": "cb762da69d11753cb485e0729023cc056ac53e67ccf98296a6e2e672448ccb2d",
+   "declared_in_task": null,
+   "manifest_pins": {
+    "data/SRP1/Results/P515S53/tight_tail_w86/campaign_s53_w86_tail_recert/campaign_manifest_sha256.json": "cb762da69d11753cb485e0729023cc056ac53e67ccf98296a6e2e672448ccb2d",
+    "data/SRP1/Results/P515S53/tight_tail_w86/campaign_s53_w86_tail_recert/evals/ca8927e75d628bd1_n7_4h_e1/child_manifest_sha256.json": "cb762da69d11753cb485e0729023cc056ac53e67ccf98296a6e2e672448ccb2d"
+   },
+   "size_bytes": 1260
+  }
+ },
+ "memory": {
+  "rss_after_imports": 201277440,
+  "certified_models_unpickle_s": 4.231250541000918,
+  "rss_after_unpickle": 2231910400,
+  "rss_after_clone_and_release": 1807761408,
+  "rss_build_footprint_before_first_solve": 1810268160,
+  "rusage_before_first_solve": {
+   "self_ru_maxrss": 2253750272,
+   "children_ru_maxrss": 16449536,
+   "units": "bytes (macOS ru_maxrss)"
+  },
+  "rusage_end": {
+   "self_ru_maxrss": 2253750272,
+   "children_ru_maxrss": 46301184,
+   "units": "bytes (macOS ru_maxrss)"
+  }
+ },
+ "pickle_structure": {
+  "top_keys": [
+   "dso",
+   "tso"
+  ],
+  "tso": {
+   "2025": [
+    "Autumn",
+    "Spring",
+    "Summer",
+    "Winter"
+   ],
+   "2030": [
+    "Autumn",
+    "Spring",
+    "Summer",
+    "Winter"
+   ],
+   "2035": [
+    "Autumn",
+    "Spring",
+    "Summer",
+    "Winter"
+   ]
+  },
+  "dso": {
+   "5": {
+    "2025": [
+     "Autumn",
+     "Spring",
+     "Summer",
+     "Winter"
+    ],
+    "2030": [
+     "Autumn",
+     "Spring",
+     "Summer",
+     "Winter"
+    ],
+    "2035": [
+     "Autumn",
+     "Spring",
+     "Summer",
+     "Winter"
+    ]
+   },
+   "7": {
+    "2025": [
+     "Autumn",
+     "Spring",
+     "Summer",
+     "Winter"
+    ],
+    "2030": [
+     "Autumn",
+     "Spring",
+     "Summer",
+     "Winter"
+    ],
+    "2035": [
+     "Autumn",
+     "Spring",
+     "Summer",
+     "Winter"
+    ]
+   },
+   "9": {
+    "2025": [
+     "Autumn",
+     "Spring",
+     "Summer",
+     "Winter"
+    ],
+    "2030": [
+     "Autumn",
+     "Spring",
+     "Summer",
+     "Winter"
+    ],
+    "2035": [
+     "Autumn",
+     "Spring",
+     "Summer",
+     "Winter"
+    ]
+   }
+  },
+  "model_type": "ConcreteModel",
+  "n_tso_blocks": 12,
+  "n_dso_blocks": 36
+ },
+ "blocks": {
+  "tso": {
+   "model_name": "case9",
+   "network": "case9",
+   "year": 2025,
+   "day": "Spring",
+   "baseMVA": 100.0,
+   "size_pyomo_certified_point": {
+    "pyomo_vars": 3906,
+    "pyomo_vars_fixed": 1024,
+    "pyomo_vars_free": 2882,
+    "pyomo_active_constraints": 2848,
+    "pyomo_active_equalities": 1513,
+    "pyomo_active_inequalities": 1335,
+    "active_objectives": [
+     "p58_rescaled_admm_objective"
+    ],
+    "scenarios_market": 1,
+    "scenarios_operation": 1,
+    "periods": 24
+   },
+   "suffix_sizes": {
+    "dual": 2848,
+    "ipopt_zL_out": 1751,
+    "ipopt_zU_out": 1559,
+    "ipopt_zL_in": 1751,
+    "ipopt_zU_in": 1559
+   },
+   "production_solver_params": {
+    "solver": "ipopt",
+    "solver_path": "/usr/local/bin/ipopt",
+    "options": {
+     "tol": 1e-05,
+     "acceptable_tol": 0.0001,
+     "acceptable_iter": 5,
+     "linear_solver": "ma97",
+     "compl_inf_tol": 0.0005,
+     "bound_push": 1e-06,
+     "bound_frac": 1e-06,
+     "slack_bound_frac": 1e-06,
+     "slack_bound_push": 1e-06,
+     "output_file": "optim_log_case9.log",
+     "file_print_level": 6
+    },
+    "recovery_enabled": true,
+    "recovery_tier2_enabled": true,
+    "recovery_options": {
+     "acceptable_tol": 0.0001,
+     "acceptable_iter": 1
+    },
+    "release_solution_bookkeeping": false,
+    "verbose": false
+   },
+   "production_logs_dir_in_pickle": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P56A/evals/p515s44_s53_w86_tail_recert_ca8927e75d628bd1_run/logs"
+  },
+  "dso": {
+   "model_name": "case33_2",
+   "network": "case33_2",
+   "year": 2025,
+   "day": "Spring",
+   "baseMVA": 100.0,
+   "size_pyomo_certified_point": {
+    "pyomo_vars": 10882,
+    "pyomo_vars_fixed": 64,
+    "pyomo_vars_free": 10818,
+    "pyomo_active_constraints": 7803,
+    "pyomo_active_equalities": 4305,
+    "pyomo_active_inequalities": 3498,
+    "active_objectives": [
+     "p58_rescaled_admm_objective"
+    ],
+    "scenarios_market": 1,
+    "scenarios_operation": 1,
+    "periods": 24
+   },
+   "suffix_sizes": {
+    "dual": 7803,
+    "ipopt_zL_out": 7535,
+    "ipopt_zU_out": 7369,
+    "ipopt_zL_in": 7535,
+    "ipopt_zU_in": 7369
+   },
+   "production_solver_params": {
+    "solver": "ipopt",
+    "solver_path": "/usr/local/bin/ipopt",
+    "options": {
+     "tol": 1e-05,
+     "acceptable_tol": 0.0001,
+     "acceptable_iter": 5,
+     "linear_solver": "ma97",
+     "bound_push": 1e-05,
+     "bound_frac": 1e-05,
+     "slack_bound_frac": 1e-05,
+     "slack_bound_push": 1e-05,
+     "output_file": "optim_log_case33_2.log",
+     "file_print_level": 6
+    },
+    "recovery_enabled": true,
+    "recovery_tier2_enabled": true,
+    "recovery_options": {},
+    "release_solution_bookkeeping": false,
+    "verbose": false
+   },
+   "production_logs_dir_in_pickle": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P56A/evals/p515s44_s53_w86_tail_recert_ca8927e75d628bd1_run/logs"
+  }
+ },
+ "esso": {
+  "keys": [
+   5,
+   7,
+   9
+  ],
+  "node_7_size": {
+   "pyomo_vars": 2949,
+   "pyomo_vars_fixed": 1176,
+   "pyomo_vars_free": 1773,
+   "pyomo_active_constraints": 1200,
+   "active_objectives": [
+    "admm_objective"
+   ]
+  }
+ },
+ "production_reference_iterations": {
+  "tso": {
+   "network": "case9",
+   "n_records": 113,
+   "attempts": [
+    "primary"
+   ],
+   "initialisation_round0_iterations": [
+    32
+   ],
+   "cycle_rounds_iterations_min": 21,
+   "cycle_rounds_iterations_median": 37,
+   "cycle_rounds_iterations_max": 84,
+   "cycle_rounds_iterations_mean": 41.401785714285715,
+   "cycle_rounds_le_30": 7,
+   "cycle_rounds_n": 112,
+   "last_10_rounds": [
+    35,
+    31,
+    31,
+    31,
+    31,
+    31,
+    31,
+    31,
+    31,
+    28
+   ],
+   "floor_status_counts": {
+    "at": 113
+   },
+   "restoration_or_recovery_attempts": []
+  },
+  "dso": {
+   "network": "case33_2",
+   "n_records": 113,
+   "attempts": [
+    "primary"
+   ],
+   "initialisation_round0_iterations": [
+    46
+   ],
+   "cycle_rounds_iterations_min": 47,
+   "cycle_rounds_iterations_median": 53,
+   "cycle_rounds_iterations_max": 158,
+   "cycle_rounds_iterations_mean": 59.151785714285715,
+   "cycle_rounds_le_30": 0,
+   "cycle_rounds_n": 112,
+   "last_10_rounds": [
+    51,
+    55,
+    64,
+    62,
+    53,
+    64,
+    52,
+    71,
+    57,
+    69
+   ],
+   "floor_status_counts": {
+    "at": 113
+   },
+   "restoration_or_recovery_attempts": []
+  },
+  "source": "data/SRP1/Results/P515S53/tight_tail_w86/campaign_s53_w86_tail_recert/evals/ca8927e75d628bd1_n7_4h_e1/network_ipopt_solve_records.jsonl",
+  "note": "production cycle k warm-starts from cycle k-1 with UPDATED Params; case (i) here re-solves the identical cycle-112 problem from its own solution, a lower bound on that cost"
+ },
+ "capture_checklist": {
+  "instrument_wrappers_live (NL write, presolve, process, sol read, load_from, per-case cap)": true,
+  "nl_writer_is_the_wrapped_class": true,
+  "run_smopf_calls_load_from": true,
+  "run_smopf_attempt_uses_solver_solve": true,
+  "production_attempt_parser_exists": true,
+  "guard_installed": true,
+  "psutil_monitor": true,
+  "rusage": true,
+  "per_case": {
+   "tso_i_warm": {
+    "output_file_set": true,
+    "log_dir_is_out_logs": true,
+    "log_path_fresh": true,
+    "file_print_level_ge_6 (mu lines, objective scaling factor, iteration table)": true,
+    "print_timing_statistics_yes": true,
+    "scaling_defaults_untouched": true,
+    "solver_executable_exists": true,
+    "network_records_deque": true,
+    "warm_suffixes_present": true,
+    "cold_suffixes_cleared": true,
+    "iii_diagnostic_options": true
+   },
+   "tso_ii_cold": {
+    "output_file_set": true,
+    "log_dir_is_out_logs": true,
+    "log_path_fresh": true,
+    "file_print_level_ge_6 (mu lines, objective scaling factor, iteration table)": true,
+    "print_timing_statistics_yes": true,
+    "scaling_defaults_untouched": true,
+    "solver_executable_exists": true,
+    "network_records_deque": true,
+    "warm_suffixes_present": true,
+    "cold_suffixes_cleared": true,
+    "iii_diagnostic_options": true
+   },
+   "tso_iii_warm_diag": {
+    "output_file_set": true,
+    "log_dir_is_out_logs": true,
+    "log_path_fresh": true,
+    "file_print_level_ge_6 (mu lines, objective scaling factor, iteration table)": true,
+    "print_timing_statistics_yes": true,
+    "scaling_defaults_untouched": true,
+    "solver_executable_exists": true,
+    "network_records_deque": true,
+    "warm_suffixes_present": true,
+    "cold_suffixes_cleared": true,
+    "iii_diagnostic_options": true
+   },
+   "dso_i_warm": {
+    "output_file_set": true,
+    "log_dir_is_out_logs": true,
+    "log_path_fresh": true,
+    "file_print_level_ge_6 (mu lines, objective scaling factor, iteration table)": true,
+    "print_timing_statistics_yes": true,
+    "scaling_defaults_untouched": true,
+    "solver_executable_exists": true,
+    "network_records_deque": true,
+    "warm_suffixes_present": true,
+    "cold_suffixes_cleared": true,
+    "iii_diagnostic_options": true
+   },
+   "dso_ii_cold": {
+    "output_file_set": true,
+    "log_dir_is_out_logs": true,
+    "log_path_fresh": true,
+    "file_print_level_ge_6 (mu lines, objective scaling factor, iteration table)": true,
+    "print_timing_statistics_yes": true,
+    "scaling_defaults_untouched": true,
+    "solver_executable_exists": true,
+    "network_records_deque": true,
+    "warm_suffixes_present": true,
+    "cold_suffixes_cleared": true,
+    "iii_diagnostic_options": true
+   },
+   "dso_iii_warm_diag": {
+    "output_file_set": true,
+    "log_dir_is_out_logs": true,
+    "log_path_fresh": true,
+    "file_print_level_ge_6 (mu lines, objective scaling factor, iteration table)": true,
+    "print_timing_statistics_yes": true,
+    "scaling_defaults_untouched": true,
+    "solver_executable_exists": true,
+    "network_records_deque": true,
+    "warm_suffixes_present": true,
+    "cold_suffixes_cleared": true,
+    "iii_diagnostic_options": true
+   }
+  },
+  "nl_dir_exists": true,
+  "failures": [],
+  "asserted_before_first_solve": true
+ },
+ "solves": {
+  "tso_i_warm": {
+   "case_key": "tso_i_warm",
+   "block": "tso",
+   "case": "i_warm",
+   "from_warm_start": true,
+   "ipopt_output_file": "data/SRP1/Results/P516TPERF/local/logs/tperf_tso_i_warm_2025_Spring.log",
+   "concurrent_before": {
+    "loadavg_1_5_15": [
+     1.81982421875,
+     1.78466796875,
+     1.93603515625
+    ],
+    "other_python_or_ipopt_processes": [
+     {
+      "pid": 53993,
+      "cmdline": "/bin/zsh -c source /Users/micaelsimoes/.claude/shell-snapshots/snapshot-zsh-1793375629313-omxnmq.sh 2>/dev/null || true && setopt NO_EXTENDED_GLOB NO_BARE_GLOB_QUAL 2>/dev/null || true && { \\builtin u"
+     },
+     {
+      "pid": 53994,
+      "cmdline": "python3 -m http.server 8765 --bind 127.0.0.1"
+     },
+     {
+      "pid": 69826,
+      "cmdline": "/bin/zsh -c source /Users/micaelsimoes/.claude/shell-snapshots/snapshot-zsh-1793381931459-22mvu7.sh 2>/dev/null || true && setopt NO_EXTENDED_GLOB NO_BARE_GLOB_QUAL 2>/dev/null || true && { \\builtin u"
+     },
+     {
+      "pid": 82478,
+      "cmdline": "/opt/anaconda3/envs/opf_env_py311/bin/python /Applications/PyCharm.app/Contents/plugins/python-ce/helpers/pydev/pydevconsole.py --mode=client --host=127.0.0.1 --port=56956"
+     }
+    ]
+   },
+   "rusage_before": {
+    "self_ru_maxrss": 2253750272,
+    "children_ru_maxrss": 16449536,
+    "units": "bytes (macOS ru_maxrss)"
+   },
+   "rss_before": 1810300928,
+   "rss_monitor": {
+    "peak_self_rss": 1810563072,
+    "peak_child_rss": 18726912,
+    "peak_self_plus_child_rss": 1829289984,
+    "n_samples": 3,
+    "interval_s": 0.025,
+    "child_pids_seen": [
+     69897
+    ]
+   },
+   "rusage_after": {
+    "self_ru_maxrss": 2253750272,
+    "children_ru_maxrss": 22413312,
+    "units": "bytes (macOS ru_maxrss)"
+   },
+   "rss_after": 1786331136,
+   "concurrent_after": {
+    "loadavg_1_5_15": [
+     1.81982421875,
+     1.78466796875,
+     1.93603515625
+    ],
+    "other_python_or_ipopt_processes": [
+     {
+      "pid": 53993,
+      "cmdline": "/bin/zsh -c source /Users/micaelsimoes/.claude/shell-snapshots/snapshot-zsh-1793375629313-omxnmq.sh 2>/dev/null || true && setopt NO_EXTENDED_GLOB NO_BARE_GLOB_QUAL 2>/dev/null || true && { \\builtin u"
+     },
+     {
+      "pid": 53994,
+      "cmdline": "python3 -m http.server 8765 --bind 127.0.0.1"
+     },
+     {
+      "pid": 69826,
+      "cmdline": "/bin/zsh -c source /Users/micaelsimoes/.claude/shell-snapshots/snapshot-zsh-1793381931459-22mvu7.sh 2>/dev/null || true && setopt NO_EXTENDED_GLOB NO_BARE_GLOB_QUAL 2>/dev/null || true && { \\builtin u"
+     },
+     {
+      "pid": 82478,
+      "cmdline": "/opt/anaconda3/envs/opf_env_py311/bin/python /Applications/PyCharm.app/Contents/plugins/python-ce/helpers/pydev/pydevconsole.py --mode=client --host=127.0.0.1 --port=56956"
+     }
+    ]
+   },
+   "guard_delta": {
+    "permitted_solve": 1,
+    "permitted_exec": 1,
+    "blocked_solve": 0,
+    "blocked_exec": 0
+   },
+   "solve_calls_in_case": 1,
+   "cap_blocked_in_case": 0,
+   "solver_options_passed": {
+    "fixed_variable_treatment": "make_parameter",
+    "max_iter": 500,
+    "tol": 1e-05,
+    "acceptable_tol": 0.0001,
+    "acceptable_iter": 5,
+    "linear_solver": "ma97",
+    "compl_inf_tol": 0.0005,
+    "bound_push": 1e-06,
+    "bound_frac": 1e-06,
+    "slack_bound_frac": 1e-06,
+    "slack_bound_push": 1e-06,
+    "output_file": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/local/logs/tperf_tso_i_warm_2025_Spring.log",
+    "file_append": "yes",
+    "file_print_level": 6,
+    "print_timing_statistics": "yes",
+    "warm_start_init_point": "yes"
+   },
+   "command": [
+    "/usr/local/bin/ipopt",
+    "/var/folders/1_/ncv6jx9x7nlfjkv26hp5gfqc0000gn/T/tmp3o039fa_.pyomo.nl",
+    "-AMPL",
+    "fixed_variable_treatment=make_parameter",
+    "max_iter=500",
+    "tol=1e-05",
+    "acceptable_tol=0.0001",
+    "acceptable_iter=5",
+    "linear_solver=ma97",
+    "compl_inf_tol=0.0005",
+    "bound_push=1e-06",
+    "bound_frac=1e-06",
+    "slack_bound_frac=1e-06",
+    "slack_bound_push=1e-06",
+    "output_file=/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/local/logs/tperf_tso_i_warm_2025_Spring.log",
+    "file_append=yes",
+    "file_print_level=6",
+    "print_timing_statistics=yes",
+    "warm_start_init_point=yes"
+   ],
+   "returncode": 0,
+   "succeeded": true,
+   "termination_condition": "optimal",
+   "solver_status": "ok",
+   "solver_message": "Ipopt 3.14.18\\x3a Optimal Solution Found",
+   "ipopt_stdout_stderr_file": "data/SRP1/Results/P516TPERF/local/logs/tso_i_warm_stdout_stderr.log",
+   "timing": {
+    "run_smopf_wall_s": 0.11658658299711533,
+    "opt_solver_solve_wall_s": 0.10969837499578716,
+    "presolve_wall_s (NL write + command build + NL capture)": 0.04821158300183015,
+    "nl_write_wall_s (NLWriter.__call__)": 0.044623292000324,
+    "nl_capture_hardlink_s (harness overhead, inside presolve)": 0.00023233300453284755,
+    "ipopt_process_wall_s (_execute_command)": 0.05799958400166361,
+    "sol_read_wall_s (_postsolve)": 0.003176666003128048,
+    "load_from_wall_s (ModelSolutions.load_from)": 0.005901165997784119,
+    "result_load_wall_s (sol read + load_from)": 0.009077832000912167,
+    "pyomo_solve_epilogue_s (solve - presolve - process - postsolve)": 0.00031054198916535825,
+    "run_smopf_outside_solve_s (option assembly, suffix copy, record parse, load_from)": 0.006888208001328167
+   },
+   "nl_capture": [
+    {
+     "path": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/local/nl/tso_i_warm.nl",
+     "method": "hard_link",
+     "source_tmp": "/var/folders/1_/ncv6jx9x7nlfjkv26hp5gfqc0000gn/T/tmp3o039fa_.pyomo.nl",
+     "capture_s": 0.00023233300453284755,
+     "io_options": {}
+    }
+   ],
+   "ipopt_log": {
+    "problem": {
+     "nnz equality constraint Jacobian": 6116,
+     "nnz inequality constraint Jacobian": 2430,
+     "nnz Lagrangian Hessian": 1938,
+     "Total number of variables": 2348,
+     "variables with only lower bounds": 144,
+     "variables with lower and upper bounds": 1532,
+     "variables with only upper bounds": 0,
+     "Total number of equality constraints": 1513,
+     "Total number of inequality constraints": 1335,
+     "inequality constraints with only lower bounds": 456,
+     "inequality constraints with lower and upper bounds": 0,
+     "inequality constraints with only upper bounds": 879
+    },
+    "timing_statistics": {
+     "OverallAlgorithm": {
+      "cpu": 0.025,
+      "sys": 0.003,
+      "wall": 0.032,
+      "depth": 0
+     },
+     "PrintProblemStatistics": {
+      "cpu": 0.0,
+      "sys": 0.0,
+      "wall": 0.0,
+      "depth": 1
+     },
+     "InitializeIterates": {
+      "cpu": 0.0,
+      "sys": 0.001,
+      "wall": 0.004,
+      "depth": 1
+     },
+     "UpdateHessian": {
+      "cpu": 0.002,
+      "sys": 0.0,
+      "wall": 0.002,
+      "depth": 1
+     },
+     "OutputIteration": {
+      "cpu": 0.0,
+      "sys": 0.0,
+      "wall": 0.0,
+      "depth": 1
+     },
+     "UpdateBarrierParameter": {
+      "cpu": 0.0,
+      "sys": 0.0,
+      "wall": 0.0,
+      "depth": 1
+     },
+     "ComputeSearchDirection": {
+      "cpu": 0.018,
+      "sys": 0.001,
+      "wall": 0.021,
+      "depth": 1
+     },
+     "ComputeAcceptableTrialPoint": {
+      "cpu": 0.002,
+      "sys": 0.0,
+      "wall": 0.002,
+      "depth": 1
+     },
+     "AcceptTrialPoint": {
+      "cpu": 0.0,
+      "sys": 0.0,
+      "wall": 0.0,
+      "depth": 1
+     },
+     "CheckConvergence": {
+      "cpu": 0.002,
+      "sys": 0.0,
+      "wall": 0.002,
+      "depth": 1
+     },
+     "PDSystemSolverTotal": {
+      "cpu": 0.018,
+      "sys": 0.001,
+      "wall": 0.021,
+      "depth": 0
+     },
+     "PDSystemSolverSolveOnce": {
+      "cpu": 0.016,
+      "sys": 0.001,
+      "wall": 0.019,
+      "depth": 1
+     },
+     "ComputeResiduals": {
+      "cpu": 0.002,
+      "sys": 0.0,
+      "wall": 0.002,
+      "depth": 1
+     },
+     "StdAugSystemSolverMultiSolve": {
+      "cpu": 0.015,
+      "sys": 0.001,
+      "wall": 0.018,
+      "depth": 1
+     },
+     "LinearSystemScaling": {
+      "cpu": 0.0,
+      "sys": 0.0,
+      "wall": 0.0,
+      "depth": 1
+     },
+     "LinearSystemSymbolicFactorization": {
+      "cpu": 0.001,
+      "sys": 0.0,
+      "wall": 0.002,
+      "depth": 1
+     },
+     "LinearSystemFactorization": {
+      "cpu": 0.011,
+      "sys": 0.001,
+      "wall": 0.012,
+      "depth": 1
+     },
+     "LinearSystemBackSolve": {
+      "cpu": 0.003,
+      "sys": 0.0,
+      "wall": 0.004,
+      "depth": 1
+     },
+     "LinearSystemStructureConverter": {
+      "cpu": 0.001,
+      "sys": 0.0,
+      "wall": 0.001,
+      "depth": 1
+     },
+     "LinearSystemStructureConverterInit": {
+      "cpu": 0.0,
+      "sys": 0.0,
+      "wall": 0.0,
+      "depth": 2
+     },
+     "QualityFunctionSearch": {
+      "cpu": 0.0,
+      "sys": 0.0,
+      "wall": 0.0,
+      "depth": 0
+     },
+     "TryCorrector": {
+      "cpu": 0.0,
+      "sys": 0.0,
+      "wall": 0.0,
+      "depth": 0
+     },
+     "Task1": {
+      "cpu": 0.0,
+      "sys": 0.0,
+      "wall": 0.0,
+      "depth": 0
+     },
+     "Task2": {
+      "cpu": 0.0,
+      "sys": 0.0,
+      "wall": 0.0,
+      "depth": 0
+     },
+     "Task3": {
+      "cpu": 0.0,
+      "sys": 0.0,
+      "wall": 0.0,
+      "depth": 0
+     },
+     "Task4": {
+      "cpu": 0.0,
+      "sys": 0.0,
+      "wall": 0.0,
+      "depth": 0
+     },
+     "Task5": {
+      "cpu": 0.0,
+      "sys": 0.0,
+      "wall": 0.0,
+      "depth": 0
+     },
+     "Task6": {
+      "cpu": 0.0,
+      "sys": 0.0,
+      "wall": 0.0,
+      "depth": 0
+     },
+     "Function Evaluations": {
+      "cpu": 0.003,
+      "sys": 0.0,
+      "wall": 0.003,
+      "depth": 0
+     },
+     "Objective function": {
+      "cpu": 0.0,
+      "sys": 0.0,
+      "wall": 0.0,
+      "depth": 1
+     },
+     "Objective function gradient": {
+      "cpu": 0.0,
+      "sys": 0.0,
+      "wall": 0.0,
+      "depth": 1
+     },
+     "Equality constraints": {
+      "cpu": 0.001,
+      "sys": 0.0,
+      "wall": 0.001,
+      "depth": 1
+     },
+     "Inequality constraints": {
+      "cpu": 0.0,
+      "sys": 0.0,
+      "wall": 0.0,
+      "depth": 1
+     },
+     "Equality constraint Jacobian": {
+      "cpu": 0.001,
+      "sys": 0.0,
+      "wall": 0.001,
+      "depth": 1
+     },
+     "Inequality constraint Jacobian": {
+      "cpu": 0.0,
+      "sys": 0.0,
+      "wall": 0.0,
+      "depth": 1
+     },
+     "Lagrangian Hessian": {
+      "cpu": 0.002,
+      "sys": 0.0,
+      "wall": 0.002,
+      "depth": 1
+     }
+    },
+    "summary": {
+     "iteration_lines": 23,
+     "restoration_iteration_lines": 0,
+     "restoration_phases": 0,
+     "iterations": 22,
+     "exit": "Optimal Solution Found.",
+     "total_s_ipopt_wo_fevals": 0.029,
+     "total_s_nlp_fevals": 0.003,
+     "total_s_ipopt": null,
+     "scaling_parameter_for_objective_function": 0.001,
+     "objective_scaling_factor_printed": 0.001,
+     "c_scaling_provided": false,
+     "d_scaling_provided": true,
+     "x_scaling_provided": false,
+     "ipopt_version": "3.14.18",
+     "linear_solver": "ma97",
+     "linear_solver_wall_s": 0.018000000000000002,
+     "linear_solver_cpu_s": 0.015,
+     "overall_algorithm_wall_s": 0.032,
+     "function_evaluations_wall_s": 0.003,
+     "pd_system_solver_total_wall_s": 0.021
+    }
+   },
+   "production_attempt_parse": {
+    "compl_inf_tol_passed": 0.0005,
+    "compl_inf_tol_in_force": 0.0005,
+    "compl_inf_tol_logged": 0.0005,
+    "tol_in_force": 1e-05,
+    "mu_strategy_passed": null,
+    "options_list_agrees": true,
+    "obj_scaling_factor": 0.001,
+    "mu_final": 4.545454545454545e-08,
+    "mu_floor": 4.545454545454545e-08,
+    "mu_over_floor": 1.0,
+    "floor_status": "at",
+    "iterations": 22,
+    "exit": "Optimal Solution Found.",
+    "parse_reason": null
+   },
+   "production_solve_records": [
+    {
+     "network": "case9",
+     "year": 2025,
+     "day": "Spring",
+     "attempt": "primary",
+     "warm_start": true,
+     "log_path": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/local/logs/tperf_tso_i_warm_2025_Spring.log",
+     "log_bytes": [
+      0,
+      78867
+     ],
+     "compl_inf_tol_passed": 0.0005,
+     "compl_inf_tol_in_force": 0.0005,
+     "compl_inf_tol_logged": 0.0005,
+     "tol_in_force": 1e-05,
+     "mu_strategy_passed": null,
+     "options_list_agrees": true,
+     "obj_scaling_factor": 0.001,
+     "mu_final": 4.545454545454545e-08,
+     "mu_floor": 4.545454545454545e-08,
+     "mu_over_floor": 1.0,
+     "floor_status": "at",
+     "iterations": 22,
+     "exit": "Optimal Solution Found.",
+     "parse_reason": null
+    }
+   ],
+   "vars_at_bounds": {
+    "rtol_1e-06": {
+     "at_lower": 406,
+     "at_upper": 0,
+     "at_any": 406,
+     "free_vars_with_value": 2666
+    },
+    "rtol_1e-08": {
+     "at_lower": 344,
+     "at_upper": 0,
+     "at_any": 344,
+     "free_vars_with_value": 2666
+    },
+    "definition": "|x - b| <= rtol * max(1, |b|) on the loaded solution, free (unfixed) Vars only"
+   },
+   "shares": {
+    "nl_write_plus_result_load_over_run_smopf_wall": 0.460611526821786,
+    "nl_write_over_run_smopf_wall": 0.38274809033066953,
+    "result_load_over_run_smopf_wall": 0.07786343649111646,
+    "ipopt_process_over_run_smopf_wall": 0.4974807778961896,
+    "linear_solver_over_overall_algorithm": 0.5625,
+    "function_evals_over_overall_algorithm": 0.09375,
+    "definition": "denominator run_smopf_wall_s = wall of network.run_smopf (the whole production solve call)"
+   },
+   "stdout_parse": {
+    "iteration_lines": 23,
+    "restoration_iteration_lines": 0,
+    "restoration_phases": 0,
+    "iterations": 22,
+    "exit": "Optimal Solution Found.",
+    "total_s_ipopt_wo_fevals": 0.029,
+    "total_s_nlp_fevals": 0.003,
+    "total_s_ipopt": null,
+    "scaling_parameter_for_objective_function": null,
+    "objective_scaling_factor_printed": null,
+    "c_scaling_provided": null,
+    "d_scaling_provided": null,
+    "x_scaling_provided": null,
+    "ipopt_version": "3.14.18",
+    "linear_solver": "ma97",
+    "linear_solver_wall_s": 0.018000000000000002,
+    "linear_solver_cpu_s": 0.015,
+    "overall_algorithm_wall_s": 0.032,
+    "function_evaluations_wall_s": 0.003,
+    "pd_system_solver_total_wall_s": 0.021
+   },
+   "preparation": {
+    "clone_s": 0.07247987499431474,
+    "options_added_or_changed": {
+     "output_file": "tperf_tso_i_warm.log",
+     "print_timing_statistics": "yes"
+    },
+    "production_options": {
+     "tol": 1e-05,
+     "acceptable_tol": 0.0001,
+     "acceptable_iter": 5,
+     "linear_solver": "ma97",
+     "compl_inf_tol": 0.0005,
+     "bound_push": 1e-06,
+     "bound_frac": 1e-06,
+     "slack_bound_frac": 1e-06,
+     "slack_bound_push": 1e-06,
+     "output_file": "optim_log_case9.log",
+     "file_print_level": 6
+    },
+    "size_pyomo_at_solve": {
+     "pyomo_vars": 3906,
+     "pyomo_vars_fixed": 1024,
+     "pyomo_vars_free": 2882,
+     "pyomo_active_constraints": 2848,
+     "pyomo_active_equalities": 1513,
+     "pyomo_active_inequalities": 1335,
+     "active_objectives": [
+      "p58_rescaled_admm_objective"
+     ],
+     "scenarios_market": 1,
+     "scenarios_operation": 1,
+     "periods": 24
+    }
+   },
+   "gradient_scaling": {
+    "method": "replica_of_IpGradientScaling_3.14.18 (NL file evaluated at AmplTNLP starting point)",
+    "n_free_vars": 2348,
+    "n_nl_vars": 2450,
+    "n_fixed_lb_eq_ub_removed": 102,
+    "n_eq_rows": 1513,
+    "n_ineq_rows": 1335,
+    "nnz_jac_c_free_cols": 6116,
+    "nnz_jac_d_free_cols": 2430,
+    "nl_header": {
+     "n_vars": 2450,
+     "n_cons": 2848,
+     "n_eqns": 1513,
+     "nnz_jacobian": 8648,
+     "nnz_obj_gradient": 698
+    },
+    "n_defined_variables": 117,
+    "x0_from_nl_x_segment": 2450,
+    "max_abs_obj_gradient": 100000.0,
+    "df": 0.001,
+    "c": {
+     "scaling_provided": false,
+     "arow_max": 39.30888872611898,
+     "row_max_gradient_min_nonzero": 1.0,
+     "row_max_gradient_span_decades": 1.594490766360505,
+     "rows_scaled_below_1": 0,
+     "factor_min": 1.0,
+     "factor_max": 1.0,
+     "zero_rows": 0
+    },
+    "d": {
+     "scaling_provided": true,
+     "arow_max": 602.8163580246913,
+     "row_max_gradient_min_nonzero": 7.46843050350485e-08,
+     "row_max_gradient_span_decades": 9.906955684737643,
+     "rows_scaled_below_1": 168,
+     "factor_min": 0.165888,
+     "factor_max": 1.0,
+     "zero_rows": 0
+    },
+    "factor_min_all": 0.001,
+    "factor_max_all": 1.0,
+    "factor_span_decades_all": 3.0,
+    "constraint_factor_span_decades": 0.780185028817557,
+    "row_max_gradient_span_decades_all": 9.906955684737643,
+    "compute_s": 0.015214250001008622,
+    "span_definition": "log10(max/min) over {df} U {dc_i} U {dd_i}; unscaled rows count as 1",
+    "validation_against_ipopt_log": {
+     "df_vs_scaling_parameter_line": true,
+     "df_vs_objective_scaling_factor_line_6sig": true,
+     "c_scaling_provided_agrees": true,
+     "d_scaling_provided_agrees": true,
+     "n_vars_agrees": true,
+     "n_eq_agrees": true,
+     "n_ineq_agrees": true,
+     "nnz_eq_jac_agrees": true,
+     "nnz_ineq_jac_agrees": true,
+     "all_pass": true
+    },
+    "computed": true
+   }
+  },
+  "tso_ii_cold": {
+   "case_key": "tso_ii_cold",
+   "block": "tso",
+   "case": "ii_cold",
+   "from_warm_start": false,
+   "ipopt_output_file": "data/SRP1/Results/P516TPERF/local/logs/tperf_tso_ii_cold_2025_Spring.log",
+   "concurrent_before": {
+    "loadavg_1_5_15": [
+     1.81982421875,
+     1.78466796875,
+     1.93603515625
+    ],
+    "other_python_or_ipopt_processes": [
+     {
+      "pid": 53993,
+      "cmdline": "/bin/zsh -c source /Users/micaelsimoes/.claude/shell-snapshots/snapshot-zsh-1793375629313-omxnmq.sh 2>/dev/null || true && setopt NO_EXTENDED_GLOB NO_BARE_GLOB_QUAL 2>/dev/null || true && { \\builtin u"
+     },
+     {
+      "pid": 53994,
+      "cmdline": "python3 -m http.server 8765 --bind 127.0.0.1"
+     },
+     {
+      "pid": 69826,
+      "cmdline": "/bin/zsh -c source /Users/micaelsimoes/.claude/shell-snapshots/snapshot-zsh-1793381931459-22mvu7.sh 2>/dev/null || true && setopt NO_EXTENDED_GLOB NO_BARE_GLOB_QUAL 2>/dev/null || true && { \\builtin u"
+     },
+     {
+      "pid": 82478,
+      "cmdline": "/opt/anaconda3/envs/opf_env_py311/bin/python /Applications/PyCharm.app/Contents/plugins/python-ce/helpers/pydev/pydevconsole.py --mode=client --host=127.0.0.1 --port=56956"
+     }
+    ]
+   },
+   "rusage_before": {
+    "self_ru_maxrss": 2253750272,
+    "children_ru_maxrss": 22413312,
+    "units": "bytes (macOS ru_maxrss)"
+   },
+   "rss_before": 1786494976,
+   "rss_monitor": {
+    "peak_self_rss": 1786626048,
+    "peak_child_rss": 22265856,
+    "peak_self_plus_child_rss": 1808891904,
+    "n_samples": 4,
+    "interval_s": 0.025,
+    "child_pids_seen": [
+     69898
+    ]
+   },
+   "rusage_after": {
+    "self_ru_maxrss": 2253750272,
+    "children_ru_maxrss": 22429696,
+    "units": "bytes (macOS ru_maxrss)"
+   },
+   "rss_after": 1786511360,
+   "concurrent_after": {
+    "loadavg_1_5_15": [
+     1.81982421875,
+     1.78466796875,
+     1.93603515625
+    ],
+    "other_python_or_ipopt_processes": [
+     {
+      "pid": 53993,
+      "cmdline": "/bin/zsh -c source /Users/micaelsimoes/.claude/shell-snapshots/snapshot-zsh-1793375629313-omxnmq.sh 2>/dev/null || true && setopt NO_EXTENDED_GLOB NO_BARE_GLOB_QUAL 2>/dev/null || true && { \\builtin u"
+     },
+     {
+      "pid": 53994,
+      "cmdline": "python3 -m http.server 8765 --bind 127.0.0.1"
+     },
+     {
+      "pid": 69826,
+      "cmdline": "/bin/zsh -c source /Users/micaelsimoes/.claude/shell-snapshots/snapshot-zsh-1793381931459-22mvu7.sh 2>/dev/null || true && setopt NO_EXTENDED_GLOB NO_BARE_GLOB_QUAL 2>/dev/null || true && { \\builtin u"
+     },
+     {
+      "pid": 82478,
+      "cmdline": "/opt/anaconda3/envs/opf_env_py311/bin/python /Applications/PyCharm.app/Contents/plugins/python-ce/helpers/pydev/pydevconsole.py --mode=client --host=127.0.0.1 --port=56956"
+     }
+    ]
+   },
+   "guard_delta": {
+    "permitted_solve": 1,
+    "permitted_exec": 1,
+    "blocked_solve": 0,
+    "blocked_exec": 0
+   },
+   "solve_calls_in_case": 1,
+   "cap_blocked_in_case": 0,
+   "solver_options_passed": {
+    "fixed_variable_treatment": "make_parameter",
+    "max_iter": 500,
+    "tol": 1e-05,
+    "acceptable_tol": 0.0001,
+    "acceptable_iter": 5,
+    "linear_solver": "ma97",
+    "compl_inf_tol": 0.0005,
+    "bound_push": 1e-06,
+    "bound_frac": 1e-06,
+    "slack_bound_frac": 1e-06,
+    "slack_bound_push": 1e-06,
+    "output_file": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/local/logs/tperf_tso_ii_cold_2025_Spring.log",
+    "file_append": "yes",
+    "file_print_level": 6,
+    "print_timing_statistics": "yes"
+   },
+   "command": [
+    "/usr/local/bin/ipopt",
+    "/var/folders/1_/ncv6jx9x7nlfjkv26hp5gfqc0000gn/T/tmpo7i34085.pyomo.nl",
+    "-AMPL",
+    "fixed_variable_treatment=make_parameter",
+    "max_iter=500",
+    "tol=1e-05",
+    "acceptable_tol=0.0001",
+    "acceptable_iter=5",
+    "linear_solver=ma97",
+    "compl_inf_tol=0.0005",
+    "bound_push=1e-06",
+    "bound_frac=1e-06",
+    "slack_bound_frac=1e-06",
+    "slack_bound_push=1e-06",
+    "output_file=/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/local/logs/tperf_tso_ii_cold_2025_Spring.log",
+    "file_append=yes",
+    "file_print_level=6",
+    "print_timing_statistics=yes"
+   ],
+   "returncode": 0,
+   "succeeded": true,
+   "termination_condition": "optimal",
+   "solver_status": "ok",
+   "solver_message": "Ipopt 3.14.18\\x3a Optimal Solution Found",
+   "ipopt_stdout_stderr_file": "data/SRP1/Results/P516TPERF/local/logs/tso_ii_cold_stdout_stderr.log",
+   "timing": {
+    "run_smopf_wall_s": 0.13911841699882643,
+    "opt_solver_solve_wall_s": 0.13215266699990025,
+    "presolve_wall_s (NL write + command build + NL capture)": 0.04261308299464872,
+    "nl_write_wall_s (NLWriter.__call__)": 0.04190987500624033,
+    "nl_capture_hardlink_s (harness overhead, inside presolve)": 0.00024629099789308384,
+    "ipopt_process_wall_s (_execute_command)": 0.08630929100036155,
+    "sol_read_wall_s (_postsolve)": 0.0029218749987194315,
+    "load_from_wall_s (ModelSolutions.load_from)": 0.005456708000565413,
+    "result_load_wall_s (sol read + load_from)": 0.008378582999284845,
+    "pyomo_solve_epilogue_s (solve - presolve - process - postsolve)": 0.00030841800617054105,
+    "run_smopf_outside_solve_s (option assembly, suffix copy, record parse, load_from)": 0.006965749998926185
+   },
+   "nl_capture": [
+    {
+     "path": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/local/nl/tso_ii_cold.nl",
+     "method": "hard_link",
+     "source_tmp": "/var/folders/1_/ncv6jx9x7nlfjkv26hp5gfqc0000gn/T/tmpo7i34085.pyomo.nl",
+     "capture_s": 0.00024629099789308384,
+     "io_options": {}
+    }
+   ],
+   "ipopt_log": {
+    "problem": {
+     "nnz equality constraint Jacobian": 6116,
+     "nnz inequality constraint Jacobian": 2430,
+     "nnz Lagrangian Hessian": 1938,
+     "Total number of variables": 2348,
+     "variables with only lower bounds": 144,
+     "variables with lower and upper bounds": 1532,
+     "variables with only upper bounds": 0,
+     "Total number of equality constraints": 1513,
+     "Total number of inequality constraints": 1335,
+     "inequality constraints with only lower bounds": 456,
+     "inequality constraints with lower and upper bounds": 0,
+     "inequality constraints with only upper bounds": 879
+    },
+    "timing_statistics": {
+     "OverallAlgorithm": {
+      "cpu": 0.064,
+      "sys": 0.003,
+      "wall": 0.067,
+      "depth": 0
+     },
+     "PrintProblemStatistics": {
+      "cpu": 0.0,
+      "sys": 0.0,
+      "wall": 0.0,
+      "depth": 1
+     },
+     "InitializeIterates": {
+      "cpu": 0.002,
+      "sys": 0.0,
+      "wall": 0.002,
+      "depth": 1
+     },
+     "UpdateHessian": {
+      "cpu": 0.004,
+      "sys": 0.0,
+      "wall": 0.004,
+      "depth": 1
+     },
+     "OutputIteration": {
+      "cpu": 0.001,
+      "sys": 0.0,
+      "wall": 0.001,
+      "depth": 1
+     },
+     "UpdateBarrierParameter": {
+      "cpu": 0.0,
+      "sys": 0.0,
+      "wall": 0.0,
+      "depth": 1
+     },
+     "ComputeSearchDirection": {
+      "cpu": 0.047,
+      "sys": 0.001,
+      "wall": 0.048,
+      "depth": 1
+     },
+     "ComputeAcceptableTrialPoint": {
+      "cpu": 0.006,
+      "sys": 0.0,
+      "wall": 0.006,
+      "depth": 1
+     },
+     "AcceptTrialPoint": {
+      "cpu": 0.0,
+      "sys": 0.0,
+      "wall": 0.0,
+      "depth": 1
+     },
+     "CheckConvergence": {
+      "cpu": 0.004,
+      "sys": 0.0,
+      "wall": 0.004,
+      "depth": 1
+     },
+     "PDSystemSolverTotal": {
+      "cpu": 0.047,
+      "sys": 0.001,
+      "wall": 0.048,
+      "depth": 0
+     },
+     "PDSystemSolverSolveOnce": {
+      "cpu": 0.042,
+      "sys": 0.001,
+      "wall": 0.043,
+      "depth": 1
+     },
+     "ComputeResiduals": {
+      "cpu": 0.004,
+      "sys": 0.0,
+      "wall": 0.004,
+      "depth": 1
+     },
+     "StdAugSystemSolverMultiSolve": {
+      "cpu": 0.042,
+      "sys": 0.001,
+      "wall": 0.043,
+      "depth": 1
+     },
+     "LinearSystemScaling": {
+      "cpu": 0.0,
+      "sys": 0.0,
+      "wall": 0.0,
+      "depth": 1
+     },
+     "LinearSystemSymbolicFactorization": {
+      "cpu": 0.001,
+      "sys": 0.0,
+      "wall": 0.001,
+      "depth": 1
+     },
+     "LinearSystemFactorization": {
+      "cpu": 0.031,
+      "sys": 0.0,
+      "wall": 0.031,
+      "depth": 1
+     },
+     "LinearSystemBackSolve": {
+      "cpu": 0.009,
+      "sys": 0.0,
+      "wall": 0.009,
+      "depth": 1
+     },
+     "LinearSystemStructureConverter": {
+      "cpu": 0.001,
+      "sys": 0.0,
+      "wall": 0.001,
+      "depth": 1
+     },
+     "LinearSystemStructureConverterInit": {
+      "cpu": 0.0,
+      "sys": 0.0,
+      "wall": 0.0,
+      "depth": 2
+     },
+     "QualityFunctionSearch": {
+      "cpu": 0.0,
+      "sys": 0.0,
+      "wall": 0.0,
+      "depth": 0
+     },
+     "TryCorrector": {
+      "cpu": 0.0,
+      "sys": 0.0,
+      "wall": 0.0,
+      "depth": 0
+     },
+     "Task1": {
+      "cpu": 0.0,
+      "sys": 0.0,
+      "wall": 0.0,
+      "depth": 0
+     },
+     "Task2": {
+      "cpu": 0.0,
+      "sys": 0.0,
+      "wall": 0.0,
+      "depth": 0
+     },
+     "Task3": {
+      "cpu": 0.0,
+      "sys": 0.0,
+      "wall": 0.0,
+      "depth": 0
+     },
+     "Task4": {
+      "cpu": 0.0,
+      "sys": 0.0,
+      "wall": 0.0,
+      "depth": 0
+     },
+     "Task5": {
+      "cpu": 0.0,
+      "sys": 0.0,
+      "wall": 0.0,
+      "depth": 0
+     },
+     "Task6": {
+      "cpu": 0.0,
+      "sys": 0.0,
+      "wall": 0.0,
+      "depth": 0
+     },
+     "Function Evaluations": {
+      "cpu": 0.008,
+      "sys": 0.0,
+      "wall": 0.008,
+      "depth": 0
+     },
+     "Objective function": {
+      "cpu": 0.0,
+      "sys": 0.0,
+      "wall": 0.0,
+      "depth": 1
+     },
+     "Objective function gradient": {
+      "cpu": 0.0,
+      "sys": 0.0,
+      "wall": 0.0,
+      "depth": 1
+     },
+     "Equality constraints": {
+      "cpu": 0.002,
+      "sys": 0.0,
+      "wall": 0.002,
+      "depth": 1
+     },
+     "Inequality constraints": {
+      "cpu": 0.0,
+      "sys": 0.0,
+      "wall": 0.0,
+      "depth": 1
+     },
+     "Equality constraint Jacobian": {
+      "cpu": 0.002,
+      "sys": 0.0,
+      "wall": 0.002,
+      "depth": 1
+     },
+     "Inequality constraint Jacobian": {
+      "cpu": 0.0,
+      "sys": 0.0,
+      "wall": 0.0,
+      "depth": 1
+     },
+     "Lagrangian Hessian": {
+      "cpu": 0.004,
+      "sys": 0.0,
+      "wall": 0.004,
+      "depth": 1
+     }
+    },
+    "summary": {
+     "iteration_lines": 57,
+     "restoration_iteration_lines": 0,
+     "restoration_phases": 0,
+     "iterations": 56,
+     "exit": "Optimal Solution Found.",
+     "total_s_ipopt_wo_fevals": 0.059,
+     "total_s_nlp_fevals": 0.008,
+     "total_s_ipopt": null,
+     "scaling_parameter_for_objective_function": 0.001,
+     "objective_scaling_factor_printed": 0.001,
+     "c_scaling_provided": false,
+     "d_scaling_provided": true,
+     "x_scaling_provided": false,
+     "ipopt_version": "3.14.18",
+     "linear_solver": "ma97",
+     "linear_solver_wall_s": 0.041,
+     "linear_solver_cpu_s": 0.041,
+     "overall_algorithm_wall_s": 0.067,
+     "function_evaluations_wall_s": 0.008,
+     "pd_system_solver_total_wall_s": 0.048
+    }
+   },
+   "production_attempt_parse": {
+    "compl_inf_tol_passed": 0.0005,
+    "compl_inf_tol_in_force": 0.0005,
+    "compl_inf_tol_logged": 0.0005,
+    "tol_in_force": 1e-05,
+    "mu_strategy_passed": null,
+    "options_list_agrees": true,
+    "obj_scaling_factor": 0.001,
+    "mu_final": 4.545454545454545e-08,
+    "mu_floor": 4.545454545454545e-08,
+    "mu_over_floor": 1.0,
+    "floor_status": "at",
+    "iterations": 56,
+    "exit": "Optimal Solution Found.",
+    "parse_reason": null
+   },
+   "production_solve_records": [
+    {
+     "network": "case9",
+     "year": 2025,
+     "day": "Spring",
+     "attempt": "primary",
+     "warm_start": false,
+     "log_path": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/local/logs/tperf_tso_ii_cold_2025_Spring.log",
+     "log_bytes": [
+      0,
+      196520
+     ],
+     "compl_inf_tol_passed": 0.0005,
+     "compl_inf_tol_in_force": 0.0005,
+     "compl_inf_tol_logged": 0.0005,
+     "tol_in_force": 1e-05,
+     "mu_strategy_passed": null,
+     "options_list_agrees": true,
+     "obj_scaling_factor": 0.001,
+     "mu_final": 4.545454545454545e-08,
+     "mu_floor": 4.545454545454545e-08,
+     "mu_over_floor": 1.0,
+     "floor_status": "at",
+     "iterations": 56,
+     "exit": "Optimal Solution Found.",
+     "parse_reason": null
+    }
+   ],
+   "vars_at_bounds": {
+    "rtol_1e-06": {
+     "at_lower": 406,
+     "at_upper": 0,
+     "at_any": 406,
+     "free_vars_with_value": 2666
+    },
+    "rtol_1e-08": {
+     "at_lower": 344,
+     "at_upper": 0,
+     "at_any": 344,
+     "free_vars_with_value": 2666
+    },
+    "definition": "|x - b| <= rtol * max(1, |b|) on the loaded solution, free (unfixed) Vars only"
+   },
+   "shares": {
+    "nl_write_plus_result_load_over_run_smopf_wall": 0.36147951572759335,
+    "nl_write_over_run_smopf_wall": 0.301253248206482,
+    "result_load_over_run_smopf_wall": 0.06022626752111135,
+    "ipopt_process_over_run_smopf_wall": 0.6204016180049665,
+    "linear_solver_over_overall_algorithm": 0.6119402985074627,
+    "function_evals_over_overall_algorithm": 0.11940298507462686,
+    "definition": "denominator run_smopf_wall_s = wall of network.run_smopf (the whole production solve call)"
+   },
+   "stdout_parse": {
+    "iteration_lines": 57,
+    "restoration_iteration_lines": 0,
+    "restoration_phases": 0,
+    "iterations": 56,
+    "exit": "Optimal Solution Found.",
+    "total_s_ipopt_wo_fevals": 0.059,
+    "total_s_nlp_fevals": 0.008,
+    "total_s_ipopt": null,
+    "scaling_parameter_for_objective_function": null,
+    "objective_scaling_factor_printed": null,
+    "c_scaling_provided": null,
+    "d_scaling_provided": null,
+    "x_scaling_provided": null,
+    "ipopt_version": "3.14.18",
+    "linear_solver": "ma97",
+    "linear_solver_wall_s": 0.041,
+    "linear_solver_cpu_s": 0.041,
+    "overall_algorithm_wall_s": 0.067,
+    "function_evaluations_wall_s": 0.008,
+    "pd_system_solver_total_wall_s": 0.048
+   },
+   "preparation": {
+    "clone_s": 0.07339579200197477,
+    "options_added_or_changed": {
+     "output_file": "tperf_tso_ii_cold.log",
+     "print_timing_statistics": "yes"
+    },
+    "production_options": {
+     "tol": 1e-05,
+     "acceptable_tol": 0.0001,
+     "acceptable_iter": 5,
+     "linear_solver": "ma97",
+     "compl_inf_tol": 0.0005,
+     "bound_push": 1e-06,
+     "bound_frac": 1e-06,
+     "slack_bound_frac": 1e-06,
+     "slack_bound_push": 1e-06,
+     "output_file": "optim_log_case9.log",
+     "file_print_level": 6
+    },
+    "cold_reset": {
+     "free_vars_reset": 2882,
+     "reset_to_None_no_initializer": 216,
+     "reference_components_skipped": 0,
+     "fixed_vars_untouched": 1024,
+     "shared_ess_configured": [
+      "0",
+      "1",
+      "2"
+     ],
+     "shared_es_soc_values_after_configure_sample": {
+      "0": [
+       0.0
+      ],
+      "1": [
+       0.004401943900631
+      ],
+      "2": [
+       0.0
+      ]
+     },
+     "suffixes_after_clear": {
+      "dual": 0,
+      "ipopt_zL_in": 0,
+      "ipopt_zU_in": 0
+     },
+     "structure_unchanged_bounds_fixed_active_params": true,
+     "method": "Var._rule_init(parent, index) for every free VarData (None where no initializer); then model_construction_helpers.configure_shared_ess_operational_state per shared ESS with the block's own shared_es_s/e_rated_fixed; then network._clear_multiplier_suffixes"
+    },
+    "size_pyomo_at_solve": {
+     "pyomo_vars": 3906,
+     "pyomo_vars_fixed": 1024,
+     "pyomo_vars_free": 2882,
+     "pyomo_active_constraints": 2848,
+     "pyomo_active_equalities": 1513,
+     "pyomo_active_inequalities": 1335,
+     "active_objectives": [
+      "p58_rescaled_admm_objective"
+     ],
+     "scenarios_market": 1,
+     "scenarios_operation": 1,
+     "periods": 24
+    }
+   },
+   "gradient_scaling": {
+    "method": "replica_of_IpGradientScaling_3.14.18 (NL file evaluated at AmplTNLP starting point)",
+    "n_free_vars": 2348,
+    "n_nl_vars": 2450,
+    "n_fixed_lb_eq_ub_removed": 102,
+    "n_eq_rows": 1513,
+    "n_ineq_rows": 1335,
+    "nnz_jac_c_free_cols": 6116,
+    "nnz_jac_d_free_cols": 2430,
+    "nl_header": {
+     "n_vars": 2450,
+     "n_cons": 2848,
+     "n_eqns": 1513,
+     "nnz_jacobian": 8648,
+     "nnz_obj_gradient": 698
+    },
+    "n_defined_variables": 117,
+    "x0_from_nl_x_segment": 2450,
+    "max_abs_obj_gradient": 100000.0,
+    "df": 0.001,
+    "c": {
+     "scaling_provided": false,
+     "arow_max": 39.30888872611898,
+     "row_max_gradient_min_nonzero": 1.0,
+     "row_max_gradient_span_decades": 1.594490766360505,
+     "rows_scaled_below_1": 0,
+     "factor_min": 1.0,
+     "factor_max": 1.0,
+     "zero_rows": 0
+    },
+    "d": {
+     "scaling_provided": true,
+     "arow_max": 602.8163580246913,
+     "row_max_gradient_min_nonzero": 0.0025163968535344542,
+     "row_max_gradient_span_decades": 5.379405895339669,
+     "rows_scaled_below_1": 168,
+     "factor_min": 0.165888,
+     "factor_max": 1.0,
+     "zero_rows": 48
+    },
+    "factor_min_all": 0.001,
+    "factor_max_all": 1.0,
+    "factor_span_decades_all": 3.0,
+    "constraint_factor_span_decades": 0.780185028817557,
+    "row_max_gradient_span_decades_all": 5.379405895339669,
+    "compute_s": 0.013411250001809094,
+    "span_definition": "log10(max/min) over {df} U {dc_i} U {dd_i}; unscaled rows count as 1",
+    "validation_against_ipopt_log": {
+     "df_vs_scaling_parameter_line": true,
+     "df_vs_objective_scaling_factor_line_6sig": true,
+     "c_scaling_provided_agrees": true,
+     "d_scaling_provided_agrees": true,
+     "n_vars_agrees": true,
+     "n_eq_agrees": true,
+     "n_ineq_agrees": true,
+     "nnz_eq_jac_agrees": true,
+     "nnz_ineq_jac_agrees": true,
+     "all_pass": true
+    },
+    "computed": true
+   }
+  },
+  "tso_iii_warm_diag": {
+   "case_key": "tso_iii_warm_diag",
+   "block": "tso",
+   "case": "iii_warm_diag",
+   "from_warm_start": true,
+   "ipopt_output_file": "data/SRP1/Results/P516TPERF/local/logs/tperf_tso_iii_warm_diag_2025_Spring.log",
+   "concurrent_before": {
+    "loadavg_1_5_15": [
+     1.81982421875,
+     1.78466796875,
+     1.93603515625
+    ],
+    "other_python_or_ipopt_processes": [
+     {
+      "pid": 53993,
+      "cmdline": "/bin/zsh -c source /Users/micaelsimoes/.claude/shell-snapshots/snapshot-zsh-1793375629313-omxnmq.sh 2>/dev/null || true && setopt NO_EXTENDED_GLOB NO_BARE_GLOB_QUAL 2>/dev/null || true && { \\builtin u"
+     },
+     {
+      "pid": 53994,
+      "cmdline": "python3 -m http.server 8765 --bind 127.0.0.1"
+     },
+     {
+      "pid": 69826,
+      "cmdline": "/bin/zsh -c source /Users/micaelsimoes/.claude/shell-snapshots/snapshot-zsh-1793381931459-22mvu7.sh 2>/dev/null || true && setopt NO_EXTENDED_GLOB NO_BARE_GLOB_QUAL 2>/dev/null || true && { \\builtin u"
+     },
+     {
+      "pid": 82478,
+      "cmdline": "/opt/anaconda3/envs/opf_env_py311/bin/python /Applications/PyCharm.app/Contents/plugins/python-ce/helpers/pydev/pydevconsole.py --mode=client --host=127.0.0.1 --port=56956"
+     }
+    ]
+   },
+   "rusage_before": {
+    "self_ru_maxrss": 2253750272,
+    "children_ru_maxrss": 22429696,
+    "units": "bytes (macOS ru_maxrss)"
+   },
+   "rss_before": 1786511360,
+   "rss_monitor": {
+    "peak_self_rss": 1786675200,
+    "peak_child_rss": 22183936,
+    "peak_self_plus_child_rss": 1808859136,
+    "n_samples": 3,
+    "interval_s": 0.025,
+    "child_pids_seen": [
+     69913
+    ]
+   },
+   "rusage_after": {
+    "self_ru_maxrss": 2253750272,
+    "children_ru_maxrss": 22429696,
+    "units": "bytes (macOS ru_maxrss)"
+   },
+   "rss_after": 1786560512,
+   "concurrent_after": {
+    "loadavg_1_5_15": [
+     1.81982421875,
+     1.78466796875,
+     1.93603515625
+    ],
+    "other_python_or_ipopt_processes": [
+     {
+      "pid": 53993,
+      "cmdline": "/bin/zsh -c source /Users/micaelsimoes/.claude/shell-snapshots/snapshot-zsh-1793375629313-omxnmq.sh 2>/dev/null || true && setopt NO_EXTENDED_GLOB NO_BARE_GLOB_QUAL 2>/dev/null || true && { \\builtin u"
+     },
+     {
+      "pid": 53994,
+      "cmdline": "python3 -m http.server 8765 --bind 127.0.0.1"
+     },
+     {
+      "pid": 69826,
+      "cmdline": "/bin/zsh -c source /Users/micaelsimoes/.claude/shell-snapshots/snapshot-zsh-1793381931459-22mvu7.sh 2>/dev/null || true && setopt NO_EXTENDED_GLOB NO_BARE_GLOB_QUAL 2>/dev/null || true && { \\builtin u"
+     },
+     {
+      "pid": 82478,
+      "cmdline": "/opt/anaconda3/envs/opf_env_py311/bin/python /Applications/PyCharm.app/Contents/plugins/python-ce/helpers/pydev/pydevconsole.py --mode=client --host=127.0.0.1 --port=56956"
+     }
+    ]
+   },
+   "guard_delta": {
+    "permitted_solve": 1,
+    "permitted_exec": 1,
+    "blocked_solve": 0,
+    "blocked_exec": 0
+   },
+   "solve_calls_in_case": 1,
+   "cap_blocked_in_case": 0,
+   "solver_options_passed": {
+    "fixed_variable_treatment": "make_parameter",
+    "max_iter": 500,
+    "tol": 1e-05,
+    "acceptable_tol": 0.0001,
+    "acceptable_iter": 5,
+    "linear_solver": "ma97",
+    "compl_inf_tol": 0.0005,
+    "bound_push": 1e-06,
+    "bound_frac": 1e-06,
+    "slack_bound_frac": 1e-06,
+    "slack_bound_push": 1e-06,
+    "output_file": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/local/logs/tperf_tso_iii_warm_diag_2025_Spring.log",
+    "file_append": "yes",
+    "file_print_level": 6,
+    "print_timing_statistics": "yes",
+    "print_info_string": "yes",
+    "print_level": 5,
+    "nlp_scaling_method": "gradient-based",
+    "warm_start_init_point": "yes"
+   },
+   "command": [
+    "/usr/local/bin/ipopt",
+    "/var/folders/1_/ncv6jx9x7nlfjkv26hp5gfqc0000gn/T/tmp1wsujgz4.pyomo.nl",
+    "-AMPL",
+    "fixed_variable_treatment=make_parameter",
+    "max_iter=500",
+    "tol=1e-05",
+    "acceptable_tol=0.0001",
+    "acceptable_iter=5",
+    "linear_solver=ma97",
+    "compl_inf_tol=0.0005",
+    "bound_push=1e-06",
+    "bound_frac=1e-06",
+    "slack_bound_frac=1e-06",
+    "slack_bound_push=1e-06",
+    "output_file=/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/local/logs/tperf_tso_iii_warm_diag_2025_Spring.log",
+    "file_append=yes",
+    "file_print_level=6",
+    "print_timing_statistics=yes",
+    "print_info_string=yes",
+    "print_level=5",
+    "nlp_scaling_method=gradient-based",
+    "warm_start_init_point=yes"
+   ],
+   "returncode": 0,
+   "succeeded": true,
+   "termination_condition": "optimal",
+   "solver_status": "ok",
+   "solver_message": "Ipopt 3.14.18\\x3a Optimal Solution Found",
+   "ipopt_stdout_stderr_file": "data/SRP1/Results/P516TPERF/local/logs/tso_iii_warm_diag_stdout_stderr.log",
+   "timing": {
+    "run_smopf_wall_s": 0.10368562499934342,
+    "opt_solver_solve_wall_s": 0.09648391600057948,
+    "presolve_wall_s (NL write + command build + NL capture)": 0.04640316600125516,
+    "nl_write_wall_s (NLWriter.__call__)": 0.04568166700482834,
+    "nl_capture_hardlink_s (harness overhead, inside presolve)": 0.0002487500023562461,
+    "ipopt_process_wall_s (_execute_command)": 0.04682837500149617,
+    "sol_read_wall_s (_postsolve)": 0.002863207999325823,
+    "load_from_wall_s (ModelSolutions.load_from)": 0.005306084000039846,
+    "result_load_wall_s (sol read + load_from)": 0.008169291999365669,
+    "pyomo_solve_epilogue_s (solve - presolve - process - postsolve)": 0.0003891669985023327,
+    "run_smopf_outside_solve_s (option assembly, suffix copy, record parse, load_from)": 0.007201708998763934
+   },
+   "nl_capture": [
+    {
+     "path": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/local/nl/tso_iii_warm_diag.nl",
+     "method": "hard_link",
+     "source_tmp": "/var/folders/1_/ncv6jx9x7nlfjkv26hp5gfqc0000gn/T/tmp1wsujgz4.pyomo.nl",
+     "capture_s": 0.0002487500023562461,
+     "io_options": {}
+    }
+   ],
+   "ipopt_log": {
+    "problem": {
+     "nnz equality constraint Jacobian": 6116,
+     "nnz inequality constraint Jacobian": 2430,
+     "nnz Lagrangian Hessian": 1938,
+     "Total number of variables": 2348,
+     "variables with only lower bounds": 144,
+     "variables with lower and upper bounds": 1532,
+     "variables with only upper bounds": 0,
+     "Total number of equality constraints": 1513,
+     "Total number of inequality constraints": 1335,
+     "inequality constraints with only lower bounds": 456,
+     "inequality constraints with lower and upper bounds": 0,
+     "inequality constraints with only upper bounds": 879
+    },
+    "timing_statistics": {
+     "OverallAlgorithm": {
+      "cpu": 0.024,
+      "sys": 0.001,
+      "wall": 0.026,
+      "depth": 0
+     },
+     "PrintProblemStatistics": {
+      "cpu": 0.0,
+      "sys": 0.0,
+      "wall": 0.0,
+      "depth": 1
+     },
+     "InitializeIterates": {
+      "cpu": 0.0,
+      "sys": 0.0,
+      "wall": 0.0,
+      "depth": 1
+     },
+     "UpdateHessian": {
+      "cpu": 0.002,
+      "sys": 0.0,
+      "wall": 0.002,
+      "depth": 1
+     },
+     "OutputIteration": {
+      "cpu": 0.0,
+      "sys": 0.0,
+      "wall": 0.0,
+      "depth": 1
+     },
+     "UpdateBarrierParameter": {
+      "cpu": 0.0,
+      "sys": 0.0,
+      "wall": 0.0,
+      "depth": 1
+     },
+     "ComputeSearchDirection": {
+      "cpu": 0.018,
+      "sys": 0.0,
+      "wall": 0.019,
+      "depth": 1
+     },
+     "ComputeAcceptableTrialPoint": {
+      "cpu": 0.002,
+      "sys": 0.0,
+      "wall": 0.002,
+      "depth": 1
+     },
+     "AcceptTrialPoint": {
+      "cpu": 0.0,
+      "sys": 0.0,
+      "wall": 0.0,
+      "depth": 1
+     },
+     "CheckConvergence": {
+      "cpu": 0.002,
+      "sys": 0.0,
+      "wall": 0.002,
+      "depth": 1
+     },
+     "PDSystemSolverTotal": {
+      "cpu": 0.018,
+      "sys": 0.0,
+      "wall": 0.018,
+      "depth": 0
+     },
+     "PDSystemSolverSolveOnce": {
+      "cpu": 0.016,
+      "sys": 0.0,
+      "wall": 0.016,
+      "depth": 1
+     },
+     "ComputeResiduals": {
+      "cpu": 0.002,
+      "sys": 0.0,
+      "wall": 0.002,
+      "depth": 1
+     },
+     "StdAugSystemSolverMultiSolve": {
+      "cpu": 0.015,
+      "sys": 0.0,
+      "wall": 0.016,
+      "depth": 1
+     },
+     "LinearSystemScaling": {
+      "cpu": 0.0,
+      "sys": 0.0,
+      "wall": 0.0,
+      "depth": 1
+     },
+     "LinearSystemSymbolicFactorization": {
+      "cpu": 0.001,
+      "sys": 0.0,
+      "wall": 0.001,
+      "depth": 1
+     },
+     "LinearSystemFactorization": {
+      "cpu": 0.01,
+      "sys": 0.0,
+      "wall": 0.01,
+      "depth": 1
+     },
+     "LinearSystemBackSolve": {
+      "cpu": 0.003,
+      "sys": 0.0,
+      "wall": 0.003,
+      "depth": 1
+     },
+     "LinearSystemStructureConverter": {
+      "cpu": 0.001,
+      "sys": 0.0,
+      "wall": 0.001,
+      "depth": 1
+     },
+     "LinearSystemStructureConverterInit": {
+      "cpu": 0.0,
+      "sys": 0.0,
+      "wall": 0.0,
+      "depth": 2
+     },
+     "QualityFunctionSearch": {
+      "cpu": 0.0,
+      "sys": 0.0,
+      "wall": 0.0,
+      "depth": 0
+     },
+     "TryCorrector": {
+      "cpu": 0.0,
+      "sys": 0.0,
+      "wall": 0.0,
+      "depth": 0
+     },
+     "Task1": {
+      "cpu": 0.0,
+      "sys": 0.0,
+      "wall": 0.0,
+      "depth": 0
+     },
+     "Task2": {
+      "cpu": 0.0,
+      "sys": 0.0,
+      "wall": 0.0,
+      "depth": 0
+     },
+     "Task3": {
+      "cpu": 0.0,
+      "sys": 0.0,
+      "wall": 0.0,
+      "depth": 0
+     },
+     "Task4": {
+      "cpu": 0.0,
+      "sys": 0.0,
+      "wall": 0.0,
+      "depth": 0
+     },
+     "Task5": {
+      "cpu": 0.0,
+      "sys": 0.0,
+      "wall": 0.0,
+      "depth": 0
+     },
+     "Task6": {
+      "cpu": 0.0,
+      "sys": 0.0,
+      "wall": 0.0,
+      "depth": 0
+     },
+     "Function Evaluations": {
+      "cpu": 0.003,
+      "sys": 0.0,
+      "wall": 0.003,
+      "depth": 0
+     },
+     "Objective function": {
+      "cpu": 0.0,
+      "sys": 0.0,
+      "wall": 0.0,
+      "depth": 1
+     },
+     "Objective function gradient": {
+      "cpu": 0.0,
+      "sys": 0.0,
+      "wall": 0.0,
+      "depth": 1
+     },
+     "Equality constraints": {
+      "cpu": 0.001,
+      "sys": 0.0,
+      "wall": 0.001,
+      "depth": 1
+     },
+     "Inequality constraints": {
+      "cpu": 0.0,
+      "sys": 0.0,
+      "wall": 0.0,
+      "depth": 1
+     },
+     "Equality constraint Jacobian": {
+      "cpu": 0.001,
+      "sys": 0.0,
+      "wall": 0.001,
+      "depth": 1
+     },
+     "Inequality constraint Jacobian": {
+      "cpu": 0.0,
+      "sys": 0.0,
+      "wall": 0.0,
+      "depth": 1
+     },
+     "Lagrangian Hessian": {
+      "cpu": 0.002,
+      "sys": 0.0,
+      "wall": 0.002,
+      "depth": 1
+     }
+    },
+    "summary": {
+     "iteration_lines": 23,
+     "restoration_iteration_lines": 0,
+     "restoration_phases": 0,
+     "iterations": 22,
+     "exit": "Optimal Solution Found.",
+     "total_s_ipopt_wo_fevals": 0.023,
+     "total_s_nlp_fevals": 0.003,
+     "total_s_ipopt": null,
+     "scaling_parameter_for_objective_function": 0.001,
+     "objective_scaling_factor_printed": 0.001,
+     "c_scaling_provided": false,
+     "d_scaling_provided": true,
+     "x_scaling_provided": false,
+     "ipopt_version": "3.14.18",
+     "linear_solver": "ma97",
+     "linear_solver_wall_s": 0.013999999999999999,
+     "linear_solver_cpu_s": 0.013999999999999999,
+     "overall_algorithm_wall_s": 0.026,
+     "function_evaluations_wall_s": 0.003,
+     "pd_system_solver_total_wall_s": 0.018
+    }
+   },
+   "production_attempt_parse": {
+    "compl_inf_tol_passed": 0.0005,
+    "compl_inf_tol_in_force": 0.0005,
+    "compl_inf_tol_logged": 0.0005,
+    "tol_in_force": 1e-05,
+    "mu_strategy_passed": null,
+    "options_list_agrees": true,
+    "obj_scaling_factor": 0.001,
+    "mu_final": 4.545454545454545e-08,
+    "mu_floor": 4.545454545454545e-08,
+    "mu_over_floor": 1.0,
+    "floor_status": "at",
+    "iterations": 22,
+    "exit": "Optimal Solution Found.",
+    "parse_reason": null
+   },
+   "production_solve_records": [
+    {
+     "network": "case9",
+     "year": 2025,
+     "day": "Spring",
+     "attempt": "primary",
+     "warm_start": true,
+     "log_path": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/local/logs/tperf_tso_iii_warm_diag_2025_Spring.log",
+     "log_bytes": [
+      0,
+      79087
+     ],
+     "compl_inf_tol_passed": 0.0005,
+     "compl_inf_tol_in_force": 0.0005,
+     "compl_inf_tol_logged": 0.0005,
+     "tol_in_force": 1e-05,
+     "mu_strategy_passed": null,
+     "options_list_agrees": true,
+     "obj_scaling_factor": 0.001,
+     "mu_final": 4.545454545454545e-08,
+     "mu_floor": 4.545454545454545e-08,
+     "mu_over_floor": 1.0,
+     "floor_status": "at",
+     "iterations": 22,
+     "exit": "Optimal Solution Found.",
+     "parse_reason": null
+    }
+   ],
+   "vars_at_bounds": {
+    "rtol_1e-06": {
+     "at_lower": 406,
+     "at_upper": 0,
+     "at_any": 406,
+     "free_vars_with_value": 2666
+    },
+    "rtol_1e-08": {
+     "at_lower": 344,
+     "at_upper": 0,
+     "at_any": 344,
+     "free_vars_with_value": 2666
+    },
+    "definition": "|x - b| <= rtol * max(1, |b|) on the loaded solution, free (unfixed) Vars only"
+   },
+   "shares": {
+    "nl_write_plus_result_load_over_run_smopf_wall": 0.519367646233844,
+    "nl_write_over_run_smopf_wall": 0.4405785952017709,
+    "result_load_over_run_smopf_wall": 0.07878905103207316,
+    "ipopt_process_over_run_smopf_wall": 0.4516380645995306,
+    "linear_solver_over_overall_algorithm": 0.5384615384615384,
+    "function_evals_over_overall_algorithm": 0.11538461538461539,
+    "definition": "denominator run_smopf_wall_s = wall of network.run_smopf (the whole production solve call)"
+   },
+   "stdout_parse": {
+    "iteration_lines": 23,
+    "restoration_iteration_lines": 0,
+    "restoration_phases": 0,
+    "iterations": 22,
+    "exit": "Optimal Solution Found.",
+    "total_s_ipopt_wo_fevals": 0.023,
+    "total_s_nlp_fevals": 0.003,
+    "total_s_ipopt": null,
+    "scaling_parameter_for_objective_function": null,
+    "objective_scaling_factor_printed": null,
+    "c_scaling_provided": null,
+    "d_scaling_provided": null,
+    "x_scaling_provided": null,
+    "ipopt_version": "3.14.18",
+    "linear_solver": "ma97",
+    "linear_solver_wall_s": 0.013999999999999999,
+    "linear_solver_cpu_s": 0.013999999999999999,
+    "overall_algorithm_wall_s": 0.026,
+    "function_evaluations_wall_s": 0.003,
+    "pd_system_solver_total_wall_s": 0.018
+   },
+   "preparation": {
+    "clone_s": 0.073538999997254,
+    "options_added_or_changed": {
+     "output_file": "tperf_tso_iii_warm_diag.log",
+     "print_timing_statistics": "yes",
+     "print_info_string": "yes",
+     "print_level": 5,
+     "nlp_scaling_method": "gradient-based"
+    },
+    "production_options": {
+     "tol": 1e-05,
+     "acceptable_tol": 0.0001,
+     "acceptable_iter": 5,
+     "linear_solver": "ma97",
+     "compl_inf_tol": 0.0005,
+     "bound_push": 1e-06,
+     "bound_frac": 1e-06,
+     "slack_bound_frac": 1e-06,
+     "slack_bound_push": 1e-06,
+     "output_file": "optim_log_case9.log",
+     "file_print_level": 6
+    },
+    "size_pyomo_at_solve": {
+     "pyomo_vars": 3906,
+     "pyomo_vars_fixed": 1024,
+     "pyomo_vars_free": 2882,
+     "pyomo_active_constraints": 2848,
+     "pyomo_active_equalities": 1513,
+     "pyomo_active_inequalities": 1335,
+     "active_objectives": [
+      "p58_rescaled_admm_objective"
+     ],
+     "scenarios_market": 1,
+     "scenarios_operation": 1,
+     "periods": 24
+    }
+   },
+   "gradient_scaling": {
+    "method": "replica_of_IpGradientScaling_3.14.18 (NL file evaluated at AmplTNLP starting point)",
+    "n_free_vars": 2348,
+    "n_nl_vars": 2450,
+    "n_fixed_lb_eq_ub_removed": 102,
+    "n_eq_rows": 1513,
+    "n_ineq_rows": 1335,
+    "nnz_jac_c_free_cols": 6116,
+    "nnz_jac_d_free_cols": 2430,
+    "nl_header": {
+     "n_vars": 2450,
+     "n_cons": 2848,
+     "n_eqns": 1513,
+     "nnz_jacobian": 8648,
+     "nnz_obj_gradient": 698
+    },
+    "n_defined_variables": 117,
+    "x0_from_nl_x_segment": 2450,
+    "max_abs_obj_gradient": 100000.0,
+    "df": 0.001,
+    "c": {
+     "scaling_provided": false,
+     "arow_max": 39.30888872611898,
+     "row_max_gradient_min_nonzero": 1.0,
+     "row_max_gradient_span_decades": 1.594490766360505,
+     "rows_scaled_below_1": 0,
+     "factor_min": 1.0,
+     "factor_max": 1.0,
+     "zero_rows": 0
+    },
+    "d": {
+     "scaling_provided": true,
+     "arow_max": 602.8163580246913,
+     "row_max_gradient_min_nonzero": 7.46843050350485e-08,
+     "row_max_gradient_span_decades": 9.906955684737643,
+     "rows_scaled_below_1": 168,
+     "factor_min": 0.165888,
+     "factor_max": 1.0,
+     "zero_rows": 0
+    },
+    "factor_min_all": 0.001,
+    "factor_max_all": 1.0,
+    "factor_span_decades_all": 3.0,
+    "constraint_factor_span_decades": 0.780185028817557,
+    "row_max_gradient_span_decades_all": 9.906955684737643,
+    "compute_s": 0.014308749996416736,
+    "span_definition": "log10(max/min) over {df} U {dc_i} U {dd_i}; unscaled rows count as 1",
+    "validation_against_ipopt_log": {
+     "df_vs_scaling_parameter_line": true,
+     "df_vs_objective_scaling_factor_line_6sig": true,
+     "c_scaling_provided_agrees": true,
+     "d_scaling_provided_agrees": true,
+     "n_vars_agrees": true,
+     "n_eq_agrees": true,
+     "n_ineq_agrees": true,
+     "nnz_eq_jac_agrees": true,
+     "nnz_ineq_jac_agrees": true,
+     "all_pass": true
+    },
+    "computed": true
+   }
+  },
+  "dso_i_warm": {
+   "case_key": "dso_i_warm",
+   "block": "dso",
+   "case": "i_warm",
+   "from_warm_start": true,
+   "ipopt_output_file": "data/SRP1/Results/P516TPERF/local/logs/tperf_dso_i_warm_2025_Spring.log",
+   "concurrent_before": {
+    "loadavg_1_5_15": [
+     1.81982421875,
+     1.78466796875,
+     1.93603515625
+    ],
+    "other_python_or_ipopt_processes": [
+     {
+      "pid": 53993,
+      "cmdline": "/bin/zsh -c source /Users/micaelsimoes/.claude/shell-snapshots/snapshot-zsh-1793375629313-omxnmq.sh 2>/dev/null || true && setopt NO_EXTENDED_GLOB NO_BARE_GLOB_QUAL 2>/dev/null || true && { \\builtin u"
+     },
+     {
+      "pid": 53994,
+      "cmdline": "python3 -m http.server 8765 --bind 127.0.0.1"
+     },
+     {
+      "pid": 69826,
+      "cmdline": "/bin/zsh -c source /Users/micaelsimoes/.claude/shell-snapshots/snapshot-zsh-1793381931459-22mvu7.sh 2>/dev/null || true && setopt NO_EXTENDED_GLOB NO_BARE_GLOB_QUAL 2>/dev/null || true && { \\builtin u"
+     },
+     {
+      "pid": 82478,
+      "cmdline": "/opt/anaconda3/envs/opf_env_py311/bin/python /Applications/PyCharm.app/Contents/plugins/python-ce/helpers/pydev/pydevconsole.py --mode=client --host=127.0.0.1 --port=56956"
+     }
+    ]
+   },
+   "rusage_before": {
+    "self_ru_maxrss": 2253750272,
+    "children_ru_maxrss": 22429696,
+    "units": "bytes (macOS ru_maxrss)"
+   },
+   "rss_before": 1786560512,
+   "rss_monitor": {
+    "peak_self_rss": 1787084800,
+    "peak_child_rss": 45924352,
+    "peak_self_plus_child_rss": 1833009152,
+    "n_samples": 10,
+    "interval_s": 0.025,
+    "child_pids_seen": [
+     69914
+    ]
+   },
+   "rusage_after": {
+    "self_ru_maxrss": 2253750272,
+    "children_ru_maxrss": 45973504,
+    "units": "bytes (macOS ru_maxrss)"
+   },
+   "rss_after": 1787035648,
+   "concurrent_after": {
+    "loadavg_1_5_15": [
+     1.81982421875,
+     1.78466796875,
+     1.93603515625
+    ],
+    "other_python_or_ipopt_processes": [
+     {
+      "pid": 53993,
+      "cmdline": "/bin/zsh -c source /Users/micaelsimoes/.claude/shell-snapshots/snapshot-zsh-1793375629313-omxnmq.sh 2>/dev/null || true && setopt NO_EXTENDED_GLOB NO_BARE_GLOB_QUAL 2>/dev/null || true && { \\builtin u"
+     },
+     {
+      "pid": 53994,
+      "cmdline": "python3 -m http.server 8765 --bind 127.0.0.1"
+     },
+     {
+      "pid": 69826,
+      "cmdline": "/bin/zsh -c source /Users/micaelsimoes/.claude/shell-snapshots/snapshot-zsh-1793381931459-22mvu7.sh 2>/dev/null || true && setopt NO_EXTENDED_GLOB NO_BARE_GLOB_QUAL 2>/dev/null || true && { \\builtin u"
+     },
+     {
+      "pid": 82478,
+      "cmdline": "/opt/anaconda3/envs/opf_env_py311/bin/python /Applications/PyCharm.app/Contents/plugins/python-ce/helpers/pydev/pydevconsole.py --mode=client --host=127.0.0.1 --port=56956"
+     }
+    ]
+   },
+   "guard_delta": {
+    "permitted_solve": 1,
+    "permitted_exec": 1,
+    "blocked_solve": 0,
+    "blocked_exec": 0
+   },
+   "solve_calls_in_case": 1,
+   "cap_blocked_in_case": 0,
+   "solver_options_passed": {
+    "fixed_variable_treatment": "make_parameter",
+    "max_iter": 500,
+    "tol": 1e-05,
+    "acceptable_tol": 0.0001,
+    "acceptable_iter": 5,
+    "linear_solver": "ma97",
+    "bound_push": 1e-05,
+    "bound_frac": 1e-05,
+    "slack_bound_frac": 1e-05,
+    "slack_bound_push": 1e-05,
+    "output_file": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/local/logs/tperf_dso_i_warm_2025_Spring.log",
+    "file_append": "yes",
+    "file_print_level": 6,
+    "print_timing_statistics": "yes",
+    "warm_start_init_point": "yes"
+   },
+   "command": [
+    "/usr/local/bin/ipopt",
+    "/var/folders/1_/ncv6jx9x7nlfjkv26hp5gfqc0000gn/T/tmplexf24ez.pyomo.nl",
+    "-AMPL",
+    "fixed_variable_treatment=make_parameter",
+    "max_iter=500",
+    "tol=1e-05",
+    "acceptable_tol=0.0001",
+    "acceptable_iter=5",
+    "linear_solver=ma97",
+    "bound_push=1e-05",
+    "bound_frac=1e-05",
+    "slack_bound_frac=1e-05",
+    "slack_bound_push=1e-05",
+    "output_file=/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/local/logs/tperf_dso_i_warm_2025_Spring.log",
+    "file_append=yes",
+    "file_print_level=6",
+    "print_timing_statistics=yes",
+    "warm_start_init_point=yes"
+   ],
+   "returncode": 0,
+   "succeeded": true,
+   "termination_condition": "optimal",
+   "solver_status": "ok",
+   "solver_message": "Ipopt 3.14.18\\x3a Optimal Solution Found",
+   "ipopt_stdout_stderr_file": "data/SRP1/Results/P516TPERF/local/logs/dso_i_warm_stdout_stderr.log",
+   "timing": {
+    "run_smopf_wall_s": 0.4287277089970303,
+    "opt_solver_solve_wall_s": 0.4124282919947291,
+    "presolve_wall_s (NL write + command build + NL capture)": 0.129265707997547,
+    "nl_write_wall_s (NLWriter.__call__)": 0.12851650000084192,
+    "nl_capture_hardlink_s (harness overhead, inside presolve)": 0.00026404199888929725,
+    "ipopt_process_wall_s (_execute_command)": 0.2739758749958128,
+    "sol_read_wall_s (_postsolve)": 0.008863625000230968,
+    "load_from_wall_s (ModelSolutions.load_from)": 0.014101667002250906,
+    "result_load_wall_s (sol read + load_from)": 0.022965292002481874,
+    "pyomo_solve_epilogue_s (solve - presolve - process - postsolve)": 0.0003230840011383407,
+    "run_smopf_outside_solve_s (option assembly, suffix copy, record parse, load_from)": 0.016299417002301197
+   },
+   "nl_capture": [
+    {
+     "path": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/local/nl/dso_i_warm.nl",
+     "method": "hard_link",
+     "source_tmp": "/var/folders/1_/ncv6jx9x7nlfjkv26hp5gfqc0000gn/T/tmplexf24ez.pyomo.nl",
+     "capture_s": 0.00026404199888929725,
+     "io_options": {}
+    }
+   ],
+   "ipopt_log": {
+    "problem": {
+     "nnz equality constraint Jacobian": 24030,
+     "nnz inequality constraint Jacobian": 6876,
+     "nnz Lagrangian Hessian": 5220,
+     "Total number of variables": 9246,
+     "variables with only lower bounds": 120,
+     "variables with lower and upper bounds": 7350,
+     "variables with only upper bounds": 0,
+     "Total number of equality constraints": 4305,
+     "Total number of inequality constraints": 3498,
+     "inequality constraints with only lower bounds": 1584,
+     "inequality constraints with lower and upper bounds": 0,
+     "inequality constraints with only upper bounds": 1914
+    },
+    "timing_statistics": {
+     "OverallAlgorithm": {
+      "cpu": 0.228,
+      "sys": 0.004,
+      "wall": 0.232,
+      "depth": 0
+     },
+     "PrintProblemStatistics": {
+      "cpu": 0.0,
+      "sys": 0.0,
+      "wall": 0.0,
+      "depth": 1
+     },
+     "InitializeIterates": {
+      "cpu": 0.001,
+      "sys": 0.0,
+      "wall": 0.001,
+      "depth": 1
+     },
+     "UpdateHessian": {
+      "cpu": 0.012,
+      "sys": 0.0,
+      "wall": 0.012,
+      "depth": 1
+     },
+     "OutputIteration": {
+      "cpu": 0.001,
+      "sys": 0.001,
+      "wall": 0.001,
+      "depth": 1
+     },
+     "UpdateBarrierParameter": {
+      "cpu": 0.001,
+      "sys": 0.0,
+      "wall": 0.001,
+      "depth": 1
+     },
+     "ComputeSearchDirection": {
+      "cpu": 0.187,
+      "sys": 0.002,
+      "wall": 0.19,
+      "depth": 1
+     },
+     "ComputeAcceptableTrialPoint": {
+      "cpu": 0.013,
+      "sys": 0.0,
+      "wall": 0.013,
+      "depth": 1
+     },
+     "AcceptTrialPoint": {
+      "cpu": 0.001,
+      "sys": 0.0,
+      "wall": 0.001,
+      "depth": 1
+     },
+     "CheckConvergence": {
+      "cpu": 0.013,
+      "sys": 0.0,
+      "wall": 0.013,
+      "depth": 1
+     },
+     "PDSystemSolverTotal": {
+      "cpu": 0.186,
+      "sys": 0.002,
+      "wall": 0.189,
+      "depth": 0
+     },
+     "PDSystemSolverSolveOnce": {
+      "cpu": 0.169,
+      "sys": 0.002,
+      "wall": 0.172,
+      "depth": 1
+     },
+     "ComputeResiduals": {
+      "cpu": 0.014,
+      "sys": 0.0,
+      "wall": 0.014,
+      "depth": 1
+     },
+     "StdAugSystemSolverMultiSolve": {
+      "cpu": 0.166,
+      "sys": 0.002,
+      "wall": 0.169,
+      "depth": 1
+     },
+     "LinearSystemScaling": {
+      "cpu": 0.0,
+      "sys": 0.0,
+      "wall": 0.0,
+      "depth": 1
+     },
+     "LinearSystemSymbolicFactorization": {
+      "cpu": 0.003,
+      "sys": 0.0,
+      "wall": 0.003,
+      "depth": 1
+     },
+     "LinearSystemFactorization": {
+      "cpu": 0.131,
+      "sys": 0.001,
+      "wall": 0.132,
+      "depth": 1
+     },
+     "LinearSystemBackSolve": {
+      "cpu": 0.028,
+      "sys": 0.0,
+      "wall": 0.028,
+      "depth": 1
+     },
+     "LinearSystemStructureConverter": {
+      "cpu": 0.002,
+      "sys": 0.0,
+      "wall": 0.003,
+      "depth": 1
+     },
+     "LinearSystemStructureConverterInit": {
+      "cpu": 0.001,
+      "sys": 0.0,
+      "wall": 0.001,
+      "depth": 2
+     },
+     "QualityFunctionSearch": {
+      "cpu": 0.0,
+      "sys": 0.0,
+      "wall": 0.0,
+      "depth": 0
+     },
+     "TryCorrector": {
+      "cpu": 0.0,
+      "sys": 0.0,
+      "wall": 0.0,
+      "depth": 0
+     },
+     "Task1": {
+      "cpu": 0.0,
+      "sys": 0.0,
+      "wall": 0.0,
+      "depth": 0
+     },
+     "Task2": {
+      "cpu": 0.0,
+      "sys": 0.0,
+      "wall": 0.0,
+      "depth": 0
+     },
+     "Task3": {
+      "cpu": 0.0,
+      "sys": 0.0,
+      "wall": 0.0,
+      "depth": 0
+     },
+     "Task4": {
+      "cpu": 0.0,
+      "sys": 0.0,
+      "wall": 0.0,
+      "depth": 0
+     },
+     "Task5": {
+      "cpu": 0.0,
+      "sys": 0.0,
+      "wall": 0.0,
+      "depth": 0
+     },
+     "Task6": {
+      "cpu": 0.0,
+      "sys": 0.0,
+      "wall": 0.0,
+      "depth": 0
+     },
+     "Function Evaluations": {
+      "cpu": 0.021,
+      "sys": 0.0,
+      "wall": 0.022,
+      "depth": 0
+     },
+     "Objective function": {
+      "cpu": 0.0,
+      "sys": 0.0,
+      "wall": 0.0,
+      "depth": 1
+     },
+     "Objective function gradient": {
+      "cpu": 0.001,
+      "sys": 0.0,
+      "wall": 0.001,
+      "depth": 1
+     },
+     "Equality constraints": {
+      "cpu": 0.004,
+      "sys": 0.0,
+      "wall": 0.004,
+      "depth": 1
+     },
+     "Inequality constraints": {
+      "cpu": 0.0,
+      "sys": 0.0,
+      "wall": 0.0,
+      "depth": 1
+     },
+     "Equality constraint Jacobian": {
+      "cpu": 0.005,
+      "sys": 0.0,
+      "wall": 0.005,
+      "depth": 1
+     },
+     "Inequality constraint Jacobian": {
+      "cpu": 0.0,
+      "sys": 0.0,
+      "wall": 0.0,
+      "depth": 1
+     },
+     "Lagrangian Hessian": {
+      "cpu": 0.012,
+      "sys": 0.0,
+      "wall": 0.012,
+      "depth": 1
+     }
+    },
+    "summary": {
+     "iteration_lines": 52,
+     "restoration_iteration_lines": 0,
+     "restoration_phases": 0,
+     "iterations": 51,
+     "exit": "Optimal Solution Found.",
+     "total_s_ipopt_wo_fevals": 0.211,
+     "total_s_nlp_fevals": 0.022,
+     "total_s_ipopt": null,
+     "scaling_parameter_for_objective_function": 0.001,
+     "objective_scaling_factor_printed": 0.001,
+     "c_scaling_provided": true,
+     "d_scaling_provided": true,
+     "x_scaling_provided": false,
+     "ipopt_version": "3.14.18",
+     "linear_solver": "ma97",
+     "linear_solver_wall_s": 0.163,
+     "linear_solver_cpu_s": 0.162,
+     "overall_algorithm_wall_s": 0.232,
+     "function_evaluations_wall_s": 0.022,
+     "pd_system_solver_total_wall_s": 0.189
+    }
+   },
+   "production_attempt_parse": {
+    "compl_inf_tol_passed": null,
+    "compl_inf_tol_in_force": 0.0001,
+    "compl_inf_tol_logged": null,
+    "tol_in_force": 1e-05,
+    "mu_strategy_passed": null,
+    "options_list_agrees": true,
+    "obj_scaling_factor": 0.001,
+    "mu_final": 9.090909090909092e-09,
+    "mu_floor": 9.090909090909092e-09,
+    "mu_over_floor": 1.0,
+    "floor_status": "at",
+    "iterations": 51,
+    "exit": "Optimal Solution Found.",
+    "parse_reason": null
+   },
+   "production_solve_records": [
+    {
+     "network": "case33_2",
+     "year": 2025,
+     "day": "Spring",
+     "attempt": "primary",
+     "warm_start": true,
+     "log_path": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/local/logs/tperf_dso_i_warm_2025_Spring.log",
+     "log_bytes": [
+      0,
+      170888
+     ],
+     "compl_inf_tol_passed": null,
+     "compl_inf_tol_in_force": 0.0001,
+     "compl_inf_tol_logged": null,
+     "tol_in_force": 1e-05,
+     "mu_strategy_passed": null,
+     "options_list_agrees": true,
+     "obj_scaling_factor": 0.001,
+     "mu_final": 9.090909090909092e-09,
+     "mu_floor": 9.090909090909092e-09,
+     "mu_over_floor": 1.0,
+     "floor_status": "at",
+     "iterations": 51,
+     "exit": "Optimal Solution Found.",
+     "parse_reason": null
+    }
+   ],
+   "vars_at_bounds": {
+    "rtol_1e-06": {
+     "at_lower": 3510,
+     "at_upper": 783,
+     "at_any": 4293,
+     "free_vars_with_value": 10074
+    },
+    "rtol_1e-08": {
+     "at_lower": 3286,
+     "at_upper": 256,
+     "at_any": 3542,
+     "free_vars_with_value": 10074
+    },
+    "definition": "|x - b| <= rtol * max(1, |b|) on the loaded solution, free (unfixed) Vars only"
+   },
+   "shares": {
+    "nl_write_plus_result_load_over_run_smopf_wall": 0.35332867184559114,
+    "nl_write_over_run_smopf_wall": 0.29976252363416084,
+    "result_load_over_run_smopf_wall": 0.05356614821143028,
+    "ipopt_process_over_run_smopf_wall": 0.6390440114933429,
+    "linear_solver_over_overall_algorithm": 0.7025862068965517,
+    "function_evals_over_overall_algorithm": 0.09482758620689655,
+    "definition": "denominator run_smopf_wall_s = wall of network.run_smopf (the whole production solve call)"
+   },
+   "stdout_parse": {
+    "iteration_lines": 52,
+    "restoration_iteration_lines": 0,
+    "restoration_phases": 0,
+    "iterations": 51,
+    "exit": "Optimal Solution Found.",
+    "total_s_ipopt_wo_fevals": 0.211,
+    "total_s_nlp_fevals": 0.022,
+    "total_s_ipopt": null,
+    "scaling_parameter_for_objective_function": null,
+    "objective_scaling_factor_printed": null,
+    "c_scaling_provided": null,
+    "d_scaling_provided": null,
+    "x_scaling_provided": null,
+    "ipopt_version": "3.14.18",
+    "linear_solver": "ma97",
+    "linear_solver_wall_s": 0.163,
+    "linear_solver_cpu_s": 0.162,
+    "overall_algorithm_wall_s": 0.232,
+    "function_evaluations_wall_s": 0.022,
+    "pd_system_solver_total_wall_s": 0.189
+   },
+   "preparation": {
+    "clone_s": 0.1778145830030553,
+    "options_added_or_changed": {
+     "output_file": "tperf_dso_i_warm.log",
+     "print_timing_statistics": "yes"
+    },
+    "production_options": {
+     "tol": 1e-05,
+     "acceptable_tol": 0.0001,
+     "acceptable_iter": 5,
+     "linear_solver": "ma97",
+     "bound_push": 1e-05,
+     "bound_frac": 1e-05,
+     "slack_bound_frac": 1e-05,
+     "slack_bound_push": 1e-05,
+     "output_file": "optim_log_case33_2.log",
+     "file_print_level": 6
+    },
+    "size_pyomo_at_solve": {
+     "pyomo_vars": 10882,
+     "pyomo_vars_fixed": 64,
+     "pyomo_vars_free": 10818,
+     "pyomo_active_constraints": 7803,
+     "pyomo_active_equalities": 4305,
+     "pyomo_active_inequalities": 3498,
+     "active_objectives": [
+      "p58_rescaled_admm_objective"
+     ],
+     "scenarios_market": 1,
+     "scenarios_operation": 1,
+     "periods": 24
+    }
+   },
+   "gradient_scaling": {
+    "method": "replica_of_IpGradientScaling_3.14.18 (NL file evaluated at AmplTNLP starting point)",
+    "n_free_vars": 9246,
+    "n_nl_vars": 9330,
+    "n_fixed_lb_eq_ub_removed": 84,
+    "n_eq_rows": 4305,
+    "n_ineq_rows": 3498,
+    "nnz_jac_c_free_cols": 24030,
+    "nnz_jac_d_free_cols": 6876,
+    "nl_header": {
+     "n_vars": 9330,
+     "n_cons": 7803,
+     "n_eqns": 4305,
+     "nnz_jacobian": 30990,
+     "nnz_obj_gradient": 3354
+    },
+    "n_defined_variables": 126,
+    "x0_from_nl_x_segment": 9330,
+    "max_abs_obj_gradient": 100000.0,
+    "df": 0.001,
+    "c": {
+     "scaling_provided": true,
+     "arow_max": 336.239540451105,
+     "row_max_gradient_min_nonzero": 1.0,
+     "row_max_gradient_span_decades": 2.5266487834341946,
+     "rows_scaled_below_1": 600,
+     "factor_min": 0.29740702079784614,
+     "factor_max": 1.0,
+     "zero_rows": 0
+    },
+    "d": {
+     "scaling_provided": true,
+     "arow_max": 107841.86585782134,
+     "row_max_gradient_min_nonzero": 3.7721184162671023e-06,
+     "row_max_gradient_span_decades": 10.456202075456819,
+     "rows_scaled_below_1": 744,
+     "factor_min": 0.0009272836593150192,
+     "factor_max": 1.0,
+     "zero_rows": 0
+    },
+    "factor_min_all": 0.0009272836593150192,
+    "factor_max_all": 1.0,
+    "factor_span_decades_all": 3.032787393330207,
+    "constraint_factor_span_decades": 3.032787393330207,
+    "row_max_gradient_span_decades_all": 10.456202075456819,
+    "compute_s": 0.04847741599951405,
+    "span_definition": "log10(max/min) over {df} U {dc_i} U {dd_i}; unscaled rows count as 1",
+    "validation_against_ipopt_log": {
+     "df_vs_scaling_parameter_line": true,
+     "df_vs_objective_scaling_factor_line_6sig": true,
+     "c_scaling_provided_agrees": true,
+     "d_scaling_provided_agrees": true,
+     "n_vars_agrees": true,
+     "n_eq_agrees": true,
+     "n_ineq_agrees": true,
+     "nnz_eq_jac_agrees": true,
+     "nnz_ineq_jac_agrees": true,
+     "all_pass": true
+    },
+    "computed": true
+   }
+  },
+  "dso_ii_cold": {
+   "case_key": "dso_ii_cold",
+   "block": "dso",
+   "case": "ii_cold",
+   "from_warm_start": false,
+   "ipopt_output_file": "data/SRP1/Results/P516TPERF/local/logs/tperf_dso_ii_cold_2025_Spring.log",
+   "concurrent_before": {
+    "loadavg_1_5_15": [
+     1.81982421875,
+     1.78466796875,
+     1.93603515625
+    ],
+    "other_python_or_ipopt_processes": [
+     {
+      "pid": 53993,
+      "cmdline": "/bin/zsh -c source /Users/micaelsimoes/.claude/shell-snapshots/snapshot-zsh-1793375629313-omxnmq.sh 2>/dev/null || true && setopt NO_EXTENDED_GLOB NO_BARE_GLOB_QUAL 2>/dev/null || true && { \\builtin u"
+     },
+     {
+      "pid": 53994,
+      "cmdline": "python3 -m http.server 8765 --bind 127.0.0.1"
+     },
+     {
+      "pid": 69826,
+      "cmdline": "/bin/zsh -c source /Users/micaelsimoes/.claude/shell-snapshots/snapshot-zsh-1793381931459-22mvu7.sh 2>/dev/null || true && setopt NO_EXTENDED_GLOB NO_BARE_GLOB_QUAL 2>/dev/null || true && { \\builtin u"
+     },
+     {
+      "pid": 82478,
+      "cmdline": "/opt/anaconda3/envs/opf_env_py311/bin/python /Applications/PyCharm.app/Contents/plugins/python-ce/helpers/pydev/pydevconsole.py --mode=client --host=127.0.0.1 --port=56956"
+     }
+    ]
+   },
+   "rusage_before": {
+    "self_ru_maxrss": 2253750272,
+    "children_ru_maxrss": 45973504,
+    "units": "bytes (macOS ru_maxrss)"
+   },
+   "rss_before": 1787035648,
+   "rss_monitor": {
+    "peak_self_rss": 1787199488,
+    "peak_child_rss": 46153728,
+    "peak_self_plus_child_rss": 1833353216,
+    "n_samples": 13,
+    "interval_s": 0.025,
+    "child_pids_seen": [
+     69915
+    ]
+   },
+   "rusage_after": {
+    "self_ru_maxrss": 2253750272,
+    "children_ru_maxrss": 46301184,
+    "units": "bytes (macOS ru_maxrss)"
+   },
+   "rss_after": 1786036224,
+   "concurrent_after": {
+    "loadavg_1_5_15": [
+     1.81982421875,
+     1.78466796875,
+     1.93603515625
+    ],
+    "other_python_or_ipopt_processes": [
+     {
+      "pid": 53993,
+      "cmdline": "/bin/zsh -c source /Users/micaelsimoes/.claude/shell-snapshots/snapshot-zsh-1793375629313-omxnmq.sh 2>/dev/null || true && setopt NO_EXTENDED_GLOB NO_BARE_GLOB_QUAL 2>/dev/null || true && { \\builtin u"
+     },
+     {
+      "pid": 53994,
+      "cmdline": "python3 -m http.server 8765 --bind 127.0.0.1"
+     },
+     {
+      "pid": 69826,
+      "cmdline": "/bin/zsh -c source /Users/micaelsimoes/.claude/shell-snapshots/snapshot-zsh-1793381931459-22mvu7.sh 2>/dev/null || true && setopt NO_EXTENDED_GLOB NO_BARE_GLOB_QUAL 2>/dev/null || true && { \\builtin u"
+     },
+     {
+      "pid": 82478,
+      "cmdline": "/opt/anaconda3/envs/opf_env_py311/bin/python /Applications/PyCharm.app/Contents/plugins/python-ce/helpers/pydev/pydevconsole.py --mode=client --host=127.0.0.1 --port=56956"
+     }
+    ]
+   },
+   "guard_delta": {
+    "permitted_solve": 1,
+    "permitted_exec": 1,
+    "blocked_solve": 0,
+    "blocked_exec": 0
+   },
+   "solve_calls_in_case": 1,
+   "cap_blocked_in_case": 0,
+   "solver_options_passed": {
+    "fixed_variable_treatment": "make_parameter",
+    "max_iter": 500,
+    "tol": 1e-05,
+    "acceptable_tol": 0.0001,
+    "acceptable_iter": 5,
+    "linear_solver": "ma97",
+    "bound_push": 1e-05,
+    "bound_frac": 1e-05,
+    "slack_bound_frac": 1e-05,
+    "slack_bound_push": 1e-05,
+    "output_file": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/local/logs/tperf_dso_ii_cold_2025_Spring.log",
+    "file_append": "yes",
+    "file_print_level": 6,
+    "print_timing_statistics": "yes"
+   },
+   "command": [
+    "/usr/local/bin/ipopt",
+    "/var/folders/1_/ncv6jx9x7nlfjkv26hp5gfqc0000gn/T/tmpgus3941g.pyomo.nl",
+    "-AMPL",
+    "fixed_variable_treatment=make_parameter",
+    "max_iter=500",
+    "tol=1e-05",
+    "acceptable_tol=0.0001",
+    "acceptable_iter=5",
+    "linear_solver=ma97",
+    "bound_push=1e-05",
+    "bound_frac=1e-05",
+    "slack_bound_frac=1e-05",
+    "slack_bound_push=1e-05",
+    "output_file=/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/local/logs/tperf_dso_ii_cold_2025_Spring.log",
+    "file_append=yes",
+    "file_print_level=6",
+    "print_timing_statistics=yes"
+   ],
+   "returncode": 0,
+   "succeeded": true,
+   "termination_condition": "optimal",
+   "solver_status": "ok",
+   "solver_message": "Ipopt 3.14.18\\x3a Optimal Solution Found",
+   "ipopt_stdout_stderr_file": "data/SRP1/Results/P516TPERF/local/logs/dso_ii_cold_stdout_stderr.log",
+   "timing": {
+    "run_smopf_wall_s": 0.5401140409958316,
+    "opt_solver_solve_wall_s": 0.5244055000002845,
+    "presolve_wall_s (NL write + command build + NL capture)": 0.11271429099724628,
+    "nl_write_wall_s (NLWriter.__call__)": 0.1120160840000608,
+    "nl_capture_hardlink_s (harness overhead, inside presolve)": 0.0002481669944245368,
+    "ipopt_process_wall_s (_execute_command)": 0.40182908400311135,
+    "sol_read_wall_s (_postsolve)": 0.009507750000921078,
+    "load_from_wall_s (ModelSolutions.load_from)": 0.01449004199821502,
+    "result_load_wall_s (sol read + load_from)": 0.023997791999136098,
+    "pyomo_solve_epilogue_s (solve - presolve - process - postsolve)": 0.00035437499900581315,
+    "run_smopf_outside_solve_s (option assembly, suffix copy, record parse, load_from)": 0.015708540995547082
+   },
+   "nl_capture": [
+    {
+     "path": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/local/nl/dso_ii_cold.nl",
+     "method": "hard_link",
+     "source_tmp": "/var/folders/1_/ncv6jx9x7nlfjkv26hp5gfqc0000gn/T/tmpgus3941g.pyomo.nl",
+     "capture_s": 0.0002481669944245368,
+     "io_options": {}
+    }
+   ],
+   "ipopt_log": {
+    "problem": {
+     "nnz equality constraint Jacobian": 24030,
+     "nnz inequality constraint Jacobian": 6876,
+     "nnz Lagrangian Hessian": 5220,
+     "Total number of variables": 9246,
+     "variables with only lower bounds": 120,
+     "variables with lower and upper bounds": 7350,
+     "variables with only upper bounds": 0,
+     "Total number of equality constraints": 4305,
+     "Total number of inequality constraints": 3498,
+     "inequality constraints with only lower bounds": 1584,
+     "inequality constraints with lower and upper bounds": 0,
+     "inequality constraints with only upper bounds": 1914
+    },
+    "timing_statistics": {
+     "OverallAlgorithm": {
+      "cpu": 0.364,
+      "sys": 0.006,
+      "wall": 0.37,
+      "depth": 0
+     },
+     "PrintProblemStatistics": {
+      "cpu": 0.0,
+      "sys": 0.0,
+      "wall": 0.0,
+      "depth": 1
+     },
+     "InitializeIterates": {
+      "cpu": 0.008,
+      "sys": 0.001,
+      "wall": 0.008,
+      "depth": 1
+     },
+     "UpdateHessian": {
+      "cpu": 0.018,
+      "sys": 0.0,
+      "wall": 0.018,
+      "depth": 1
+     },
+     "OutputIteration": {
+      "cpu": 0.001,
+      "sys": 0.001,
+      "wall": 0.002,
+      "depth": 1
+     },
+     "UpdateBarrierParameter": {
+      "cpu": 0.001,
+      "sys": 0.0,
+      "wall": 0.001,
+      "depth": 1
+     },
+     "ComputeSearchDirection": {
+      "cpu": 0.294,
+      "sys": 0.003,
+      "wall": 0.298,
+      "depth": 1
+     },
+     "ComputeAcceptableTrialPoint": {
+      "cpu": 0.022,
+      "sys": 0.001,
+      "wall": 0.023,
+      "depth": 1
+     },
+     "AcceptTrialPoint": {
+      "cpu": 0.002,
+      "sys": 0.0,
+      "wall": 0.002,
+      "depth": 1
+     },
+     "CheckConvergence": {
+      "cpu": 0.018,
+      "sys": 0.0,
+      "wall": 0.018,
+      "depth": 1
+     },
+     "PDSystemSolverTotal": {
+      "cpu": 0.295,
+      "sys": 0.003,
+      "wall": 0.298,
+      "depth": 0
+     },
+     "PDSystemSolverSolveOnce": {
+      "cpu": 0.271,
+      "sys": 0.002,
+      "wall": 0.274,
+      "depth": 1
+     },
+     "ComputeResiduals": {
+      "cpu": 0.021,
+      "sys": 0.0,
+      "wall": 0.021,
+      "depth": 1
+     },
+     "StdAugSystemSolverMultiSolve": {
+      "cpu": 0.273,
+      "sys": 0.003,
+      "wall": 0.276,
+      "depth": 1
+     },
+     "LinearSystemScaling": {
+      "cpu": 0.0,
+      "sys": 0.0,
+      "wall": 0.0,
+      "depth": 1
+     },
+     "LinearSystemSymbolicFactorization": {
+      "cpu": 0.003,
+      "sys": 0.0,
+      "wall": 0.003,
+      "depth": 1
+     },
+     "LinearSystemFactorization": {
+      "cpu": 0.221,
+      "sys": 0.002,
+      "wall": 0.222,
+      "depth": 1
+     },
+     "LinearSystemBackSolve": {
+      "cpu": 0.042,
+      "sys": 0.0,
+      "wall": 0.043,
+      "depth": 1
+     },
+     "LinearSystemStructureConverter": {
+      "cpu": 0.003,
+      "sys": 0.0,
+      "wall": 0.003,
+      "depth": 1
+     },
+     "LinearSystemStructureConverterInit": {
+      "cpu": 0.001,
+      "sys": 0.0,
+      "wall": 0.001,
+      "depth": 2
+     },
+     "QualityFunctionSearch": {
+      "cpu": 0.0,
+      "sys": 0.0,
+      "wall": 0.0,
+      "depth": 0
+     },
+     "TryCorrector": {
+      "cpu": 0.0,
+      "sys": 0.0,
+      "wall": 0.0,
+      "depth": 0
+     },
+     "Task1": {
+      "cpu": 0.0,
+      "sys": 0.0,
+      "wall": 0.0,
+      "depth": 0
+     },
+     "Task2": {
+      "cpu": 0.0,
+      "sys": 0.0,
+      "wall": 0.0,
+      "depth": 0
+     },
+     "Task3": {
+      "cpu": 0.0,
+      "sys": 0.0,
+      "wall": 0.0,
+      "depth": 0
+     },
+     "Task4": {
+      "cpu": 0.0,
+      "sys": 0.0,
+      "wall": 0.0,
+      "depth": 0
+     },
+     "Task5": {
+      "cpu": 0.0,
+      "sys": 0.0,
+      "wall": 0.0,
+      "depth": 0
+     },
+     "Task6": {
+      "cpu": 0.0,
+      "sys": 0.0,
+      "wall": 0.0,
+      "depth": 0
+     },
+     "Function Evaluations": {
+      "cpu": 0.032,
+      "sys": 0.0,
+      "wall": 0.032,
+      "depth": 0
+     },
+     "Objective function": {
+      "cpu": 0.0,
+      "sys": 0.0,
+      "wall": 0.001,
+      "depth": 1
+     },
+     "Objective function gradient": {
+      "cpu": 0.001,
+      "sys": 0.0,
+      "wall": 0.001,
+      "depth": 1
+     },
+     "Equality constraints": {
+      "cpu": 0.006,
+      "sys": 0.0,
+      "wall": 0.006,
+      "depth": 1
+     },
+     "Inequality constraints": {
+      "cpu": 0.0,
+      "sys": 0.0,
+      "wall": 0.0,
+      "depth": 1
+     },
+     "Equality constraint Jacobian": {
+      "cpu": 0.007,
+      "sys": 0.0,
+      "wall": 0.007,
+      "depth": 1
+     },
+     "Inequality constraint Jacobian": {
+      "cpu": 0.0,
+      "sys": 0.0,
+      "wall": 0.0,
+      "depth": 1
+     },
+     "Lagrangian Hessian": {
+      "cpu": 0.017,
+      "sys": 0.0,
+      "wall": 0.017,
+      "depth": 1
+     }
+    },
+    "summary": {
+     "iteration_lines": 75,
+     "restoration_iteration_lines": 0,
+     "restoration_phases": 0,
+     "iterations": 74,
+     "exit": "Optimal Solution Found.",
+     "total_s_ipopt_wo_fevals": 0.338,
+     "total_s_nlp_fevals": 0.032,
+     "total_s_ipopt": null,
+     "scaling_parameter_for_objective_function": 0.001,
+     "objective_scaling_factor_printed": 0.001,
+     "c_scaling_provided": true,
+     "d_scaling_provided": true,
+     "x_scaling_provided": false,
+     "ipopt_version": "3.14.18",
+     "linear_solver": "ma97",
+     "linear_solver_wall_s": 0.268,
+     "linear_solver_cpu_s": 0.266,
+     "overall_algorithm_wall_s": 0.37,
+     "function_evaluations_wall_s": 0.032,
+     "pd_system_solver_total_wall_s": 0.298
+    }
+   },
+   "production_attempt_parse": {
+    "compl_inf_tol_passed": null,
+    "compl_inf_tol_in_force": 0.0001,
+    "compl_inf_tol_logged": null,
+    "tol_in_force": 1e-05,
+    "mu_strategy_passed": null,
+    "options_list_agrees": true,
+    "obj_scaling_factor": 0.001,
+    "mu_final": 9.090909090909092e-09,
+    "mu_floor": 9.090909090909092e-09,
+    "mu_over_floor": 1.0,
+    "floor_status": "at",
+    "iterations": 74,
+    "exit": "Optimal Solution Found.",
+    "parse_reason": null
+   },
+   "production_solve_records": [
+    {
+     "network": "case33_2",
+     "year": 2025,
+     "day": "Spring",
+     "attempt": "primary",
+     "warm_start": false,
+     "log_path": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/local/logs/tperf_dso_ii_cold_2025_Spring.log",
+     "log_bytes": [
+      0,
+      251455
+     ],
+     "compl_inf_tol_passed": null,
+     "compl_inf_tol_in_force": 0.0001,
+     "compl_inf_tol_logged": null,
+     "tol_in_force": 1e-05,
+     "mu_strategy_passed": null,
+     "options_list_agrees": true,
+     "obj_scaling_factor": 0.001,
+     "mu_final": 9.090909090909092e-09,
+     "mu_floor": 9.090909090909092e-09,
+     "mu_over_floor": 1.0,
+     "floor_status": "at",
+     "iterations": 74,
+     "exit": "Optimal Solution Found.",
+     "parse_reason": null
+    }
+   ],
+   "vars_at_bounds": {
+    "rtol_1e-06": {
+     "at_lower": 3510,
+     "at_upper": 783,
+     "at_any": 4293,
+     "free_vars_with_value": 10074
+    },
+    "rtol_1e-08": {
+     "at_lower": 3286,
+     "at_upper": 256,
+     "at_any": 3542,
+     "free_vars_with_value": 10074
+    },
+    "definition": "|x - b| <= rtol * max(1, |b|) on the loaded solution, free (unfixed) Vars only"
+   },
+   "shares": {
+    "nl_write_plus_result_load_over_run_smopf_wall": 0.251824366106873,
+    "nl_write_over_run_smopf_wall": 0.20739339379796887,
+    "result_load_over_run_smopf_wall": 0.04443097230890412,
+    "ipopt_process_over_run_smopf_wall": 0.7439708163524905,
+    "linear_solver_over_overall_algorithm": 0.7243243243243244,
+    "function_evals_over_overall_algorithm": 0.08648648648648649,
+    "definition": "denominator run_smopf_wall_s = wall of network.run_smopf (the whole production solve call)"
+   },
+   "stdout_parse": {
+    "iteration_lines": 75,
+    "restoration_iteration_lines": 0,
+    "restoration_phases": 0,
+    "iterations": 74,
+    "exit": "Optimal Solution Found.",
+    "total_s_ipopt_wo_fevals": 0.338,
+    "total_s_nlp_fevals": 0.032,
+    "total_s_ipopt": null,
+    "scaling_parameter_for_objective_function": null,
+    "objective_scaling_factor_printed": null,
+    "c_scaling_provided": null,
+    "d_scaling_provided": null,
+    "x_scaling_provided": null,
+    "ipopt_version": "3.14.18",
+    "linear_solver": "ma97",
+    "linear_solver_wall_s": 0.268,
+    "linear_solver_cpu_s": 0.266,
+    "overall_algorithm_wall_s": 0.37,
+    "function_evaluations_wall_s": 0.032,
+    "pd_system_solver_total_wall_s": 0.298
+   },
+   "preparation": {
+    "clone_s": 0.19057912500284147,
+    "options_added_or_changed": {
+     "output_file": "tperf_dso_ii_cold.log",
+     "print_timing_statistics": "yes"
+    },
+    "production_options": {
+     "tol": 1e-05,
+     "acceptable_tol": 0.0001,
+     "acceptable_iter": 5,
+     "linear_solver": "ma97",
+     "bound_push": 1e-05,
+     "bound_frac": 1e-05,
+     "slack_bound_frac": 1e-05,
+     "slack_bound_push": 1e-05,
+     "output_file": "optim_log_case33_2.log",
+     "file_print_level": 6
+    },
+    "cold_reset": {
+     "free_vars_reset": 10818,
+     "reset_to_None_no_initializer": 768,
+     "reference_components_skipped": 0,
+     "fixed_vars_untouched": 64,
+     "shared_ess_configured": [
+      "0"
+     ],
+     "shared_es_soc_values_after_configure_sample": {
+      "0": [
+       0.004401943900631
+      ]
+     },
+     "suffixes_after_clear": {
+      "dual": 0,
+      "ipopt_zL_in": 0,
+      "ipopt_zU_in": 0
+     },
+     "structure_unchanged_bounds_fixed_active_params": true,
+     "method": "Var._rule_init(parent, index) for every free VarData (None where no initializer); then model_construction_helpers.configure_shared_ess_operational_state per shared ESS with the block's own shared_es_s/e_rated_fixed; then network._clear_multiplier_suffixes"
+    },
+    "size_pyomo_at_solve": {
+     "pyomo_vars": 10882,
+     "pyomo_vars_fixed": 64,
+     "pyomo_vars_free": 10818,
+     "pyomo_active_constraints": 7803,
+     "pyomo_active_equalities": 4305,
+     "pyomo_active_inequalities": 3498,
+     "active_objectives": [
+      "p58_rescaled_admm_objective"
+     ],
+     "scenarios_market": 1,
+     "scenarios_operation": 1,
+     "periods": 24
+    }
+   },
+   "gradient_scaling": {
+    "method": "replica_of_IpGradientScaling_3.14.18 (NL file evaluated at AmplTNLP starting point)",
+    "n_free_vars": 9246,
+    "n_nl_vars": 9330,
+    "n_fixed_lb_eq_ub_removed": 84,
+    "n_eq_rows": 4305,
+    "n_ineq_rows": 3498,
+    "nnz_jac_c_free_cols": 24030,
+    "nnz_jac_d_free_cols": 6876,
+    "nl_header": {
+     "n_vars": 9330,
+     "n_cons": 7803,
+     "n_eqns": 4305,
+     "nnz_jacobian": 30990,
+     "nnz_obj_gradient": 3354
+    },
+    "n_defined_variables": 126,
+    "x0_from_nl_x_segment": 9306,
+    "max_abs_obj_gradient": 100000.0,
+    "df": 0.001,
+    "c": {
+     "scaling_provided": true,
+     "arow_max": 336.239540451105,
+     "row_max_gradient_min_nonzero": 1.0,
+     "row_max_gradient_span_decades": 2.5266487834341946,
+     "rows_scaled_below_1": 600,
+     "factor_min": 0.29740702079784614,
+     "factor_max": 1.0,
+     "zero_rows": 0
+    },
+    "d": {
+     "scaling_provided": true,
+     "arow_max": 107841.86585782134,
+     "row_max_gradient_min_nonzero": 0.0019906407811826447,
+     "row_max_gradient_span_decades": 7.733794496349175,
+     "rows_scaled_below_1": 744,
+     "factor_min": 0.0009272836593150192,
+     "factor_max": 1.0,
+     "zero_rows": 96
+    },
+    "factor_min_all": 0.0009272836593150192,
+    "factor_max_all": 1.0,
+    "factor_span_decades_all": 3.032787393330207,
+    "constraint_factor_span_decades": 3.032787393330207,
+    "row_max_gradient_span_decades_all": 7.733794496349175,
+    "compute_s": 0.043395415996201336,
+    "span_definition": "log10(max/min) over {df} U {dc_i} U {dd_i}; unscaled rows count as 1",
+    "validation_against_ipopt_log": {
+     "df_vs_scaling_parameter_line": true,
+     "df_vs_objective_scaling_factor_line_6sig": true,
+     "c_scaling_provided_agrees": true,
+     "d_scaling_provided_agrees": true,
+     "n_vars_agrees": true,
+     "n_eq_agrees": true,
+     "n_ineq_agrees": true,
+     "nnz_eq_jac_agrees": true,
+     "nnz_ineq_jac_agrees": true,
+     "all_pass": true
+    },
+    "computed": true
+   }
+  },
+  "dso_iii_warm_diag": {
+   "case_key": "dso_iii_warm_diag",
+   "block": "dso",
+   "case": "iii_warm_diag",
+   "from_warm_start": true,
+   "ipopt_output_file": "data/SRP1/Results/P516TPERF/local/logs/tperf_dso_iii_warm_diag_2025_Spring.log",
+   "concurrent_before": {
+    "loadavg_1_5_15": [
+     1.81982421875,
+     1.78466796875,
+     1.93603515625
+    ],
+    "other_python_or_ipopt_processes": [
+     {
+      "pid": 53993,
+      "cmdline": "/bin/zsh -c source /Users/micaelsimoes/.claude/shell-snapshots/snapshot-zsh-1793375629313-omxnmq.sh 2>/dev/null || true && setopt NO_EXTENDED_GLOB NO_BARE_GLOB_QUAL 2>/dev/null || true && { \\builtin u"
+     },
+     {
+      "pid": 53994,
+      "cmdline": "python3 -m http.server 8765 --bind 127.0.0.1"
+     },
+     {
+      "pid": 69826,
+      "cmdline": "/bin/zsh -c source /Users/micaelsimoes/.claude/shell-snapshots/snapshot-zsh-1793381931459-22mvu7.sh 2>/dev/null || true && setopt NO_EXTENDED_GLOB NO_BARE_GLOB_QUAL 2>/dev/null || true && { \\builtin u"
+     },
+     {
+      "pid": 82478,
+      "cmdline": "/opt/anaconda3/envs/opf_env_py311/bin/python /Applications/PyCharm.app/Contents/plugins/python-ce/helpers/pydev/pydevconsole.py --mode=client --host=127.0.0.1 --port=56956"
+     }
+    ]
+   },
+   "rusage_before": {
+    "self_ru_maxrss": 2253750272,
+    "children_ru_maxrss": 46301184,
+    "units": "bytes (macOS ru_maxrss)"
+   },
+   "rss_before": 1786052608,
+   "rss_monitor": {
+    "peak_self_rss": 1786331136,
+    "peak_child_rss": 45973504,
+    "peak_self_plus_child_rss": 1832304640,
+    "n_samples": 10,
+    "interval_s": 0.025,
+    "child_pids_seen": [
+     69916
+    ]
+   },
+   "rusage_after": {
+    "self_ru_maxrss": 2253750272,
+    "children_ru_maxrss": 46301184,
+    "units": "bytes (macOS ru_maxrss)"
+   },
+   "rss_after": 1774682112,
+   "concurrent_after": {
+    "loadavg_1_5_15": [
+     1.81982421875,
+     1.78466796875,
+     1.93603515625
+    ],
+    "other_python_or_ipopt_processes": [
+     {
+      "pid": 53993,
+      "cmdline": "/bin/zsh -c source /Users/micaelsimoes/.claude/shell-snapshots/snapshot-zsh-1793375629313-omxnmq.sh 2>/dev/null || true && setopt NO_EXTENDED_GLOB NO_BARE_GLOB_QUAL 2>/dev/null || true && { \\builtin u"
+     },
+     {
+      "pid": 53994,
+      "cmdline": "python3 -m http.server 8765 --bind 127.0.0.1"
+     },
+     {
+      "pid": 69826,
+      "cmdline": "/bin/zsh -c source /Users/micaelsimoes/.claude/shell-snapshots/snapshot-zsh-1793381931459-22mvu7.sh 2>/dev/null || true && setopt NO_EXTENDED_GLOB NO_BARE_GLOB_QUAL 2>/dev/null || true && { \\builtin u"
+     },
+     {
+      "pid": 82478,
+      "cmdline": "/opt/anaconda3/envs/opf_env_py311/bin/python /Applications/PyCharm.app/Contents/plugins/python-ce/helpers/pydev/pydevconsole.py --mode=client --host=127.0.0.1 --port=56956"
+     }
+    ]
+   },
+   "guard_delta": {
+    "permitted_solve": 1,
+    "permitted_exec": 1,
+    "blocked_solve": 0,
+    "blocked_exec": 0
+   },
+   "solve_calls_in_case": 1,
+   "cap_blocked_in_case": 0,
+   "solver_options_passed": {
+    "fixed_variable_treatment": "make_parameter",
+    "max_iter": 500,
+    "tol": 1e-05,
+    "acceptable_tol": 0.0001,
+    "acceptable_iter": 5,
+    "linear_solver": "ma97",
+    "bound_push": 1e-05,
+    "bound_frac": 1e-05,
+    "slack_bound_frac": 1e-05,
+    "slack_bound_push": 1e-05,
+    "output_file": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/local/logs/tperf_dso_iii_warm_diag_2025_Spring.log",
+    "file_append": "yes",
+    "file_print_level": 6,
+    "print_timing_statistics": "yes",
+    "print_info_string": "yes",
+    "print_level": 5,
+    "nlp_scaling_method": "gradient-based",
+    "warm_start_init_point": "yes"
+   },
+   "command": [
+    "/usr/local/bin/ipopt",
+    "/var/folders/1_/ncv6jx9x7nlfjkv26hp5gfqc0000gn/T/tmpcjzgczew.pyomo.nl",
+    "-AMPL",
+    "fixed_variable_treatment=make_parameter",
+    "max_iter=500",
+    "tol=1e-05",
+    "acceptable_tol=0.0001",
+    "acceptable_iter=5",
+    "linear_solver=ma97",
+    "bound_push=1e-05",
+    "bound_frac=1e-05",
+    "slack_bound_frac=1e-05",
+    "slack_bound_push=1e-05",
+    "output_file=/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/local/logs/tperf_dso_iii_warm_diag_2025_Spring.log",
+    "file_append=yes",
+    "file_print_level=6",
+    "print_timing_statistics=yes",
+    "print_info_string=yes",
+    "print_level=5",
+    "nlp_scaling_method=gradient-based",
+    "warm_start_init_point=yes"
+   ],
+   "returncode": 0,
+   "succeeded": true,
+   "termination_condition": "optimal",
+   "solver_status": "ok",
+   "solver_message": "Ipopt 3.14.18\\x3a Optimal Solution Found",
+   "ipopt_stdout_stderr_file": "data/SRP1/Results/P516TPERF/local/logs/dso_iii_warm_diag_stdout_stderr.log",
+   "timing": {
+    "run_smopf_wall_s": 0.4287500420032302,
+    "opt_solver_solve_wall_s": 0.41168312500667525,
+    "presolve_wall_s (NL write + command build + NL capture)": 0.1266930410056375,
+    "nl_write_wall_s (NLWriter.__call__)": 0.1259924170008162,
+    "nl_capture_hardlink_s (harness overhead, inside presolve)": 0.00024012500216485932,
+    "ipopt_process_wall_s (_execute_command)": 0.2753040410025278,
+    "sol_read_wall_s (_postsolve)": 0.009329000000434462,
+    "load_from_wall_s (ModelSolutions.load_from)": 0.015388958003313746,
+    "result_load_wall_s (sol read + load_from)": 0.02471795800374821,
+    "pyomo_solve_epilogue_s (solve - presolve - process - postsolve)": 0.00035704299807548523,
+    "run_smopf_outside_solve_s (option assembly, suffix copy, record parse, load_from)": 0.017066916996554937
+   },
+   "nl_capture": [
+    {
+     "path": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/local/nl/dso_iii_warm_diag.nl",
+     "method": "hard_link",
+     "source_tmp": "/var/folders/1_/ncv6jx9x7nlfjkv26hp5gfqc0000gn/T/tmpcjzgczew.pyomo.nl",
+     "capture_s": 0.00024012500216485932,
+     "io_options": {}
+    }
+   ],
+   "ipopt_log": {
+    "problem": {
+     "nnz equality constraint Jacobian": 24030,
+     "nnz inequality constraint Jacobian": 6876,
+     "nnz Lagrangian Hessian": 5220,
+     "Total number of variables": 9246,
+     "variables with only lower bounds": 120,
+     "variables with lower and upper bounds": 7350,
+     "variables with only upper bounds": 0,
+     "Total number of equality constraints": 4305,
+     "Total number of inequality constraints": 3498,
+     "inequality constraints with only lower bounds": 1584,
+     "inequality constraints with lower and upper bounds": 0,
+     "inequality constraints with only upper bounds": 1914
+    },
+    "timing_statistics": {
+     "OverallAlgorithm": {
+      "cpu": 0.227,
+      "sys": 0.004,
+      "wall": 0.232,
+      "depth": 0
+     },
+     "PrintProblemStatistics": {
+      "cpu": 0.0,
+      "sys": 0.0,
+      "wall": 0.0,
+      "depth": 1
+     },
+     "InitializeIterates": {
+      "cpu": 0.001,
+      "sys": 0.0,
+      "wall": 0.001,
+      "depth": 1
+     },
+     "UpdateHessian": {
+      "cpu": 0.012,
+      "sys": 0.0,
+      "wall": 0.012,
+      "depth": 1
+     },
+     "OutputIteration": {
+      "cpu": 0.001,
+      "sys": 0.001,
+      "wall": 0.002,
+      "depth": 1
+     },
+     "UpdateBarrierParameter": {
+      "cpu": 0.001,
+      "sys": 0.0,
+      "wall": 0.001,
+      "depth": 1
+     },
+     "ComputeSearchDirection": {
+      "cpu": 0.186,
+      "sys": 0.003,
+      "wall": 0.189,
+      "depth": 1
+     },
+     "ComputeAcceptableTrialPoint": {
+      "cpu": 0.013,
+      "sys": 0.0,
+      "wall": 0.013,
+      "depth": 1
+     },
+     "AcceptTrialPoint": {
+      "cpu": 0.001,
+      "sys": 0.0,
+      "wall": 0.001,
+      "depth": 1
+     },
+     "CheckConvergence": {
+      "cpu": 0.013,
+      "sys": 0.0,
+      "wall": 0.013,
+      "depth": 1
+     },
+     "PDSystemSolverTotal": {
+      "cpu": 0.185,
+      "sys": 0.002,
+      "wall": 0.188,
+      "depth": 0
+     },
+     "PDSystemSolverSolveOnce": {
+      "cpu": 0.168,
+      "sys": 0.002,
+      "wall": 0.171,
+      "depth": 1
+     },
+     "ComputeResiduals": {
+      "cpu": 0.014,
+      "sys": 0.0,
+      "wall": 0.014,
+      "depth": 1
+     },
+     "StdAugSystemSolverMultiSolve": {
+      "cpu": 0.165,
+      "sys": 0.002,
+      "wall": 0.168,
+      "depth": 1
+     },
+     "LinearSystemScaling": {
+      "cpu": 0.0,
+      "sys": 0.0,
+      "wall": 0.0,
+      "depth": 1
+     },
+     "LinearSystemSymbolicFactorization": {
+      "cpu": 0.003,
+      "sys": 0.0,
+      "wall": 0.003,
+      "depth": 1
+     },
+     "LinearSystemFactorization": {
+      "cpu": 0.13,
+      "sys": 0.001,
+      "wall": 0.131,
+      "depth": 1
+     },
+     "LinearSystemBackSolve": {
+      "cpu": 0.028,
+      "sys": 0.0,
+      "wall": 0.028,
+      "depth": 1
+     },
+     "LinearSystemStructureConverter": {
+      "cpu": 0.002,
+      "sys": 0.0,
+      "wall": 0.003,
+      "depth": 1
+     },
+     "LinearSystemStructureConverterInit": {
+      "cpu": 0.001,
+      "sys": 0.0,
+      "wall": 0.001,
+      "depth": 2
+     },
+     "QualityFunctionSearch": {
+      "cpu": 0.0,
+      "sys": 0.0,
+      "wall": 0.0,
+      "depth": 0
+     },
+     "TryCorrector": {
+      "cpu": 0.0,
+      "sys": 0.0,
+      "wall": 0.0,
+      "depth": 0
+     },
+     "Task1": {
+      "cpu": 0.0,
+      "sys": 0.0,
+      "wall": 0.0,
+      "depth": 0
+     },
+     "Task2": {
+      "cpu": 0.0,
+      "sys": 0.0,
+      "wall": 0.0,
+      "depth": 0
+     },
+     "Task3": {
+      "cpu": 0.0,
+      "sys": 0.0,
+      "wall": 0.0,
+      "depth": 0
+     },
+     "Task4": {
+      "cpu": 0.0,
+      "sys": 0.0,
+      "wall": 0.0,
+      "depth": 0
+     },
+     "Task5": {
+      "cpu": 0.0,
+      "sys": 0.0,
+      "wall": 0.0,
+      "depth": 0
+     },
+     "Task6": {
+      "cpu": 0.0,
+      "sys": 0.0,
+      "wall": 0.0,
+      "depth": 0
+     },
+     "Function Evaluations": {
+      "cpu": 0.022,
+      "sys": 0.0,
+      "wall": 0.022,
+      "depth": 0
+     },
+     "Objective function": {
+      "cpu": 0.0,
+      "sys": 0.0,
+      "wall": 0.0,
+      "depth": 1
+     },
+     "Objective function gradient": {
+      "cpu": 0.001,
+      "sys": 0.0,
+      "wall": 0.001,
+      "depth": 1
+     },
+     "Equality constraints": {
+      "cpu": 0.004,
+      "sys": 0.0,
+      "wall": 0.004,
+      "depth": 1
+     },
+     "Inequality constraints": {
+      "cpu": 0.0,
+      "sys": 0.0,
+      "wall": 0.0,
+      "depth": 1
+     },
+     "Equality constraint Jacobian": {
+      "cpu": 0.005,
+      "sys": 0.0,
+      "wall": 0.005,
+      "depth": 1
+     },
+     "Inequality constraint Jacobian": {
+      "cpu": 0.0,
+      "sys": 0.0,
+      "wall": 0.0,
+      "depth": 1
+     },
+     "Lagrangian Hessian": {
+      "cpu": 0.012,
+      "sys": 0.0,
+      "wall": 0.012,
+      "depth": 1
+     }
+    },
+    "summary": {
+     "iteration_lines": 52,
+     "restoration_iteration_lines": 0,
+     "restoration_phases": 0,
+     "iterations": 51,
+     "exit": "Optimal Solution Found.",
+     "total_s_ipopt_wo_fevals": 0.21,
+     "total_s_nlp_fevals": 0.022,
+     "total_s_ipopt": null,
+     "scaling_parameter_for_objective_function": 0.001,
+     "objective_scaling_factor_printed": 0.001,
+     "c_scaling_provided": true,
+     "d_scaling_provided": true,
+     "x_scaling_provided": false,
+     "ipopt_version": "3.14.18",
+     "linear_solver": "ma97",
+     "linear_solver_wall_s": 0.162,
+     "linear_solver_cpu_s": 0.161,
+     "overall_algorithm_wall_s": 0.232,
+     "function_evaluations_wall_s": 0.022,
+     "pd_system_solver_total_wall_s": 0.188
+    }
+   },
+   "production_attempt_parse": {
+    "compl_inf_tol_passed": null,
+    "compl_inf_tol_in_force": 0.0001,
+    "compl_inf_tol_logged": null,
+    "tol_in_force": 1e-05,
+    "mu_strategy_passed": null,
+    "options_list_agrees": true,
+    "obj_scaling_factor": 0.001,
+    "mu_final": 9.090909090909092e-09,
+    "mu_floor": 9.090909090909092e-09,
+    "mu_over_floor": 1.0,
+    "floor_status": "at",
+    "iterations": 51,
+    "exit": "Optimal Solution Found.",
+    "parse_reason": null
+   },
+   "production_solve_records": [
+    {
+     "network": "case33_2",
+     "year": 2025,
+     "day": "Spring",
+     "attempt": "primary",
+     "warm_start": true,
+     "log_path": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/local/logs/tperf_dso_iii_warm_diag_2025_Spring.log",
+     "log_bytes": [
+      0,
+      171108
+     ],
+     "compl_inf_tol_passed": null,
+     "compl_inf_tol_in_force": 0.0001,
+     "compl_inf_tol_logged": null,
+     "tol_in_force": 1e-05,
+     "mu_strategy_passed": null,
+     "options_list_agrees": true,
+     "obj_scaling_factor": 0.001,
+     "mu_final": 9.090909090909092e-09,
+     "mu_floor": 9.090909090909092e-09,
+     "mu_over_floor": 1.0,
+     "floor_status": "at",
+     "iterations": 51,
+     "exit": "Optimal Solution Found.",
+     "parse_reason": null
+    }
+   ],
+   "vars_at_bounds": {
+    "rtol_1e-06": {
+     "at_lower": 3510,
+     "at_upper": 783,
+     "at_any": 4293,
+     "free_vars_with_value": 10074
+    },
+    "rtol_1e-08": {
+     "at_lower": 3286,
+     "at_upper": 256,
+     "at_any": 3542,
+     "free_vars_with_value": 10074
+    },
+    "definition": "|x - b| <= rtol * max(1, |b|) on the loaded solution, free (unfixed) Vars only"
+   },
+   "shares": {
+    "nl_write_plus_result_load_over_run_smopf_wall": 0.3515110442914638,
+    "nl_write_over_run_smopf_wall": 0.29385983593645215,
+    "result_load_over_run_smopf_wall": 0.05765120835501162,
+    "ipopt_process_over_run_smopf_wall": 0.6421084875379527,
+    "linear_solver_over_overall_algorithm": 0.6982758620689655,
+    "function_evals_over_overall_algorithm": 0.09482758620689655,
+    "definition": "denominator run_smopf_wall_s = wall of network.run_smopf (the whole production solve call)"
+   },
+   "stdout_parse": {
+    "iteration_lines": 52,
+    "restoration_iteration_lines": 0,
+    "restoration_phases": 0,
+    "iterations": 51,
+    "exit": "Optimal Solution Found.",
+    "total_s_ipopt_wo_fevals": 0.21,
+    "total_s_nlp_fevals": 0.022,
+    "total_s_ipopt": null,
+    "scaling_parameter_for_objective_function": null,
+    "objective_scaling_factor_printed": null,
+    "c_scaling_provided": null,
+    "d_scaling_provided": null,
+    "x_scaling_provided": null,
+    "ipopt_version": "3.14.18",
+    "linear_solver": "ma97",
+    "linear_solver_wall_s": 0.162,
+    "linear_solver_cpu_s": 0.161,
+    "overall_algorithm_wall_s": 0.232,
+    "function_evaluations_wall_s": 0.022,
+    "pd_system_solver_total_wall_s": 0.188
+   },
+   "preparation": {
+    "clone_s": 0.18164370800514007,
+    "options_added_or_changed": {
+     "output_file": "tperf_dso_iii_warm_diag.log",
+     "print_timing_statistics": "yes",
+     "print_info_string": "yes",
+     "print_level": 5,
+     "nlp_scaling_method": "gradient-based"
+    },
+    "production_options": {
+     "tol": 1e-05,
+     "acceptable_tol": 0.0001,
+     "acceptable_iter": 5,
+     "linear_solver": "ma97",
+     "bound_push": 1e-05,
+     "bound_frac": 1e-05,
+     "slack_bound_frac": 1e-05,
+     "slack_bound_push": 1e-05,
+     "output_file": "optim_log_case33_2.log",
+     "file_print_level": 6
+    },
+    "size_pyomo_at_solve": {
+     "pyomo_vars": 10882,
+     "pyomo_vars_fixed": 64,
+     "pyomo_vars_free": 10818,
+     "pyomo_active_constraints": 7803,
+     "pyomo_active_equalities": 4305,
+     "pyomo_active_inequalities": 3498,
+     "active_objectives": [
+      "p58_rescaled_admm_objective"
+     ],
+     "scenarios_market": 1,
+     "scenarios_operation": 1,
+     "periods": 24
+    }
+   },
+   "gradient_scaling": {
+    "method": "replica_of_IpGradientScaling_3.14.18 (NL file evaluated at AmplTNLP starting point)",
+    "n_free_vars": 9246,
+    "n_nl_vars": 9330,
+    "n_fixed_lb_eq_ub_removed": 84,
+    "n_eq_rows": 4305,
+    "n_ineq_rows": 3498,
+    "nnz_jac_c_free_cols": 24030,
+    "nnz_jac_d_free_cols": 6876,
+    "nl_header": {
+     "n_vars": 9330,
+     "n_cons": 7803,
+     "n_eqns": 4305,
+     "nnz_jacobian": 30990,
+     "nnz_obj_gradient": 3354
+    },
+    "n_defined_variables": 126,
+    "x0_from_nl_x_segment": 9330,
+    "max_abs_obj_gradient": 100000.0,
+    "df": 0.001,
+    "c": {
+     "scaling_provided": true,
+     "arow_max": 336.239540451105,
+     "row_max_gradient_min_nonzero": 1.0,
+     "row_max_gradient_span_decades": 2.5266487834341946,
+     "rows_scaled_below_1": 600,
+     "factor_min": 0.29740702079784614,
+     "factor_max": 1.0,
+     "zero_rows": 0
+    },
+    "d": {
+     "scaling_provided": true,
+     "arow_max": 107841.86585782134,
+     "row_max_gradient_min_nonzero": 3.7721184162671023e-06,
+     "row_max_gradient_span_decades": 10.456202075456819,
+     "rows_scaled_below_1": 744,
+     "factor_min": 0.0009272836593150192,
+     "factor_max": 1.0,
+     "zero_rows": 0
+    },
+    "factor_min_all": 0.0009272836593150192,
+    "factor_max_all": 1.0,
+    "factor_span_decades_all": 3.032787393330207,
+    "constraint_factor_span_decades": 3.032787393330207,
+    "row_max_gradient_span_decades_all": 10.456202075456819,
+    "compute_s": 0.04808174999925541,
+    "span_definition": "log10(max/min) over {df} U {dc_i} U {dd_i}; unscaled rows count as 1",
+    "validation_against_ipopt_log": {
+     "df_vs_scaling_parameter_line": true,
+     "df_vs_objective_scaling_factor_line_6sig": true,
+     "c_scaling_provided_agrees": true,
+     "d_scaling_provided_agrees": true,
+     "n_vars_agrees": true,
+     "n_eq_agrees": true,
+     "n_ineq_agrees": true,
+     "nnz_eq_jac_agrees": true,
+     "nnz_ineq_jac_agrees": true,
+     "all_pass": true
+    },
+    "computed": true
+   }
+  }
+ },
+ "stopped": null,
+ "guard": {
+  "permitted": [
+   [
+    "network.py",
+    "_run_smopf_solver_attempt"
+   ]
+  ],
+  "declared_solves": 6,
+  "counts": {
+   "permitted_solve": 6,
+   "permitted_exec": 6,
+   "blocked_solve": 0,
+   "blocked_exec": 0
+  },
+  "verify_failures": [],
+  "per_case_cap_blocks": 0
+ },
+ "status": "complete",
+ "summary": {
+  "tso_i_warm": {
+   "termination": "optimal",
+   "iterations": 22,
+   "restoration_iterations": 0,
+   "restoration_phases": 0,
+   "mu_final": 4.545454545454545e-08,
+   "floor_status": "at",
+   "n_vars_ipopt": 2348,
+   "n_eq": 1513,
+   "n_ineq": 1335,
+   "nnz_jac_eq": 6116,
+   "nnz_jac_ineq": 2430,
+   "nnz_hessian": 1938,
+   "run_smopf_s": 0.11658658299711533,
+   "nl_write_s": 0.044623292000324,
+   "result_load_s": 0.009077832000912167,
+   "ipopt_process_s": 0.05799958400166361,
+   "ipopt_overall_algorithm_s": 0.032,
+   "ipopt_linear_solver_s": 0.018000000000000002,
+   "ipopt_function_evals_s": 0.003,
+   "shares": {
+    "nl_write_plus_result_load_over_run_smopf_wall": 0.460611526821786,
+    "nl_write_over_run_smopf_wall": 0.38274809033066953,
+    "result_load_over_run_smopf_wall": 0.07786343649111646,
+    "ipopt_process_over_run_smopf_wall": 0.4974807778961896,
+    "linear_solver_over_overall_algorithm": 0.5625,
+    "function_evals_over_overall_algorithm": 0.09375,
+    "definition": "denominator run_smopf_wall_s = wall of network.run_smopf (the whole production solve call)"
+   },
+   "peak_self_rss": 1810563072,
+   "peak_ipopt_rss": 18726912,
+   "vars_at_bounds_1e-6": 406,
+   "scaling_df": 0.001,
+   "scaling_span_decades": 3.0,
+   "scaling_factor_min": 0.001,
+   "scaling_factor_max": 1.0,
+   "row_gradient_span_decades": 9.906955684737643,
+   "scaling_replica_validated": true
+  },
+  "tso_ii_cold": {
+   "termination": "optimal",
+   "iterations": 56,
+   "restoration_iterations": 0,
+   "restoration_phases": 0,
+   "mu_final": 4.545454545454545e-08,
+   "floor_status": "at",
+   "n_vars_ipopt": 2348,
+   "n_eq": 1513,
+   "n_ineq": 1335,
+   "nnz_jac_eq": 6116,
+   "nnz_jac_ineq": 2430,
+   "nnz_hessian": 1938,
+   "run_smopf_s": 0.13911841699882643,
+   "nl_write_s": 0.04190987500624033,
+   "result_load_s": 0.008378582999284845,
+   "ipopt_process_s": 0.08630929100036155,
+   "ipopt_overall_algorithm_s": 0.067,
+   "ipopt_linear_solver_s": 0.041,
+   "ipopt_function_evals_s": 0.008,
+   "shares": {
+    "nl_write_plus_result_load_over_run_smopf_wall": 0.36147951572759335,
+    "nl_write_over_run_smopf_wall": 0.301253248206482,
+    "result_load_over_run_smopf_wall": 0.06022626752111135,
+    "ipopt_process_over_run_smopf_wall": 0.6204016180049665,
+    "linear_solver_over_overall_algorithm": 0.6119402985074627,
+    "function_evals_over_overall_algorithm": 0.11940298507462686,
+    "definition": "denominator run_smopf_wall_s = wall of network.run_smopf (the whole production solve call)"
+   },
+   "peak_self_rss": 1786626048,
+   "peak_ipopt_rss": 22265856,
+   "vars_at_bounds_1e-6": 406,
+   "scaling_df": 0.001,
+   "scaling_span_decades": 3.0,
+   "scaling_factor_min": 0.001,
+   "scaling_factor_max": 1.0,
+   "row_gradient_span_decades": 5.379405895339669,
+   "scaling_replica_validated": true
+  },
+  "tso_iii_warm_diag": {
+   "termination": "optimal",
+   "iterations": 22,
+   "restoration_iterations": 0,
+   "restoration_phases": 0,
+   "mu_final": 4.545454545454545e-08,
+   "floor_status": "at",
+   "n_vars_ipopt": 2348,
+   "n_eq": 1513,
+   "n_ineq": 1335,
+   "nnz_jac_eq": 6116,
+   "nnz_jac_ineq": 2430,
+   "nnz_hessian": 1938,
+   "run_smopf_s": 0.10368562499934342,
+   "nl_write_s": 0.04568166700482834,
+   "result_load_s": 0.008169291999365669,
+   "ipopt_process_s": 0.04682837500149617,
+   "ipopt_overall_algorithm_s": 0.026,
+   "ipopt_linear_solver_s": 0.013999999999999999,
+   "ipopt_function_evals_s": 0.003,
+   "shares": {
+    "nl_write_plus_result_load_over_run_smopf_wall": 0.519367646233844,
+    "nl_write_over_run_smopf_wall": 0.4405785952017709,
+    "result_load_over_run_smopf_wall": 0.07878905103207316,
+    "ipopt_process_over_run_smopf_wall": 0.4516380645995306,
+    "linear_solver_over_overall_algorithm": 0.5384615384615384,
+    "function_evals_over_overall_algorithm": 0.11538461538461539,
+    "definition": "denominator run_smopf_wall_s = wall of network.run_smopf (the whole production solve call)"
+   },
+   "peak_self_rss": 1786675200,
+   "peak_ipopt_rss": 22183936,
+   "vars_at_bounds_1e-6": 406,
+   "scaling_df": 0.001,
+   "scaling_span_decades": 3.0,
+   "scaling_factor_min": 0.001,
+   "scaling_factor_max": 1.0,
+   "row_gradient_span_decades": 9.906955684737643,
+   "scaling_replica_validated": true
+  },
+  "dso_i_warm": {
+   "termination": "optimal",
+   "iterations": 51,
+   "restoration_iterations": 0,
+   "restoration_phases": 0,
+   "mu_final": 9.090909090909092e-09,
+   "floor_status": "at",
+   "n_vars_ipopt": 9246,
+   "n_eq": 4305,
+   "n_ineq": 3498,
+   "nnz_jac_eq": 24030,
+   "nnz_jac_ineq": 6876,
+   "nnz_hessian": 5220,
+   "run_smopf_s": 0.4287277089970303,
+   "nl_write_s": 0.12851650000084192,
+   "result_load_s": 0.022965292002481874,
+   "ipopt_process_s": 0.2739758749958128,
+   "ipopt_overall_algorithm_s": 0.232,
+   "ipopt_linear_solver_s": 0.163,
+   "ipopt_function_evals_s": 0.022,
+   "shares": {
+    "nl_write_plus_result_load_over_run_smopf_wall": 0.35332867184559114,
+    "nl_write_over_run_smopf_wall": 0.29976252363416084,
+    "result_load_over_run_smopf_wall": 0.05356614821143028,
+    "ipopt_process_over_run_smopf_wall": 0.6390440114933429,
+    "linear_solver_over_overall_algorithm": 0.7025862068965517,
+    "function_evals_over_overall_algorithm": 0.09482758620689655,
+    "definition": "denominator run_smopf_wall_s = wall of network.run_smopf (the whole production solve call)"
+   },
+   "peak_self_rss": 1787084800,
+   "peak_ipopt_rss": 45924352,
+   "vars_at_bounds_1e-6": 4293,
+   "scaling_df": 0.001,
+   "scaling_span_decades": 3.032787393330207,
+   "scaling_factor_min": 0.0009272836593150192,
+   "scaling_factor_max": 1.0,
+   "row_gradient_span_decades": 10.456202075456819,
+   "scaling_replica_validated": true
+  },
+  "dso_ii_cold": {
+   "termination": "optimal",
+   "iterations": 74,
+   "restoration_iterations": 0,
+   "restoration_phases": 0,
+   "mu_final": 9.090909090909092e-09,
+   "floor_status": "at",
+   "n_vars_ipopt": 9246,
+   "n_eq": 4305,
+   "n_ineq": 3498,
+   "nnz_jac_eq": 24030,
+   "nnz_jac_ineq": 6876,
+   "nnz_hessian": 5220,
+   "run_smopf_s": 0.5401140409958316,
+   "nl_write_s": 0.1120160840000608,
+   "result_load_s": 0.023997791999136098,
+   "ipopt_process_s": 0.40182908400311135,
+   "ipopt_overall_algorithm_s": 0.37,
+   "ipopt_linear_solver_s": 0.268,
+   "ipopt_function_evals_s": 0.032,
+   "shares": {
+    "nl_write_plus_result_load_over_run_smopf_wall": 0.251824366106873,
+    "nl_write_over_run_smopf_wall": 0.20739339379796887,
+    "result_load_over_run_smopf_wall": 0.04443097230890412,
+    "ipopt_process_over_run_smopf_wall": 0.7439708163524905,
+    "linear_solver_over_overall_algorithm": 0.7243243243243244,
+    "function_evals_over_overall_algorithm": 0.08648648648648649,
+    "definition": "denominator run_smopf_wall_s = wall of network.run_smopf (the whole production solve call)"
+   },
+   "peak_self_rss": 1787199488,
+   "peak_ipopt_rss": 46153728,
+   "vars_at_bounds_1e-6": 4293,
+   "scaling_df": 0.001,
+   "scaling_span_decades": 3.032787393330207,
+   "scaling_factor_min": 0.0009272836593150192,
+   "scaling_factor_max": 1.0,
+   "row_gradient_span_decades": 7.733794496349175,
+   "scaling_replica_validated": true
+  },
+  "dso_iii_warm_diag": {
+   "termination": "optimal",
+   "iterations": 51,
+   "restoration_iterations": 0,
+   "restoration_phases": 0,
+   "mu_final": 9.090909090909092e-09,
+   "floor_status": "at",
+   "n_vars_ipopt": 9246,
+   "n_eq": 4305,
+   "n_ineq": 3498,
+   "nnz_jac_eq": 24030,
+   "nnz_jac_ineq": 6876,
+   "nnz_hessian": 5220,
+   "run_smopf_s": 0.4287500420032302,
+   "nl_write_s": 0.1259924170008162,
+   "result_load_s": 0.02471795800374821,
+   "ipopt_process_s": 0.2753040410025278,
+   "ipopt_overall_algorithm_s": 0.232,
+   "ipopt_linear_solver_s": 0.162,
+   "ipopt_function_evals_s": 0.022,
+   "shares": {
+    "nl_write_plus_result_load_over_run_smopf_wall": 0.3515110442914638,
+    "nl_write_over_run_smopf_wall": 0.29385983593645215,
+    "result_load_over_run_smopf_wall": 0.05765120835501162,
+    "ipopt_process_over_run_smopf_wall": 0.6421084875379527,
+    "linear_solver_over_overall_algorithm": 0.6982758620689655,
+    "function_evals_over_overall_algorithm": 0.09482758620689655,
+    "definition": "denominator run_smopf_wall_s = wall of network.run_smopf (the whole production solve call)"
+   },
+   "peak_self_rss": 1786331136,
+   "peak_ipopt_rss": 45973504,
+   "vars_at_bounds_1e-6": 4293,
+   "scaling_df": 0.001,
+   "scaling_span_decades": 3.032787393330207,
+   "scaling_factor_min": 0.0009272836593150192,
+   "scaling_factor_max": 1.0,
+   "row_gradient_span_decades": 10.456202075456819,
+   "scaling_replica_validated": true
+  }
+ },
+ "utc_end": "2026-10-31T10:14:19.747164+00:00",
+ "wall_s": 11.676939010620117
+}

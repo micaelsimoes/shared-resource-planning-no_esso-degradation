@@ -26,9 +26,22 @@ order below stands but W184/W185 are **held** (Planner recommendation R6).
 - [ ] **D0 / T0.2** — declared conic solves + IPOPT cross-check; measurements; P1–P9 → `P5_16_D0_REPORT.md`
 - [ ] **D0 / T0.2** — gap, circulation, TN rank cost, dual infeasibility, capacity duals vs Phase A slopes;
   predictions recorded first → decision point H1 / H2 / H3
-- [ ] **T-perf** (author-authorized 2026-10-31; `P5_16_TPERF_SPEC_v1.md`): Part A here (6 declared solves on the
-  certified unit-cell blocks), Part B on the Studio (author runs); ranked lever table → Advisor → C6 decision
-- [ ] Convention change (after R1–R3): ESSO salvage term; `'mid'` baseline; five-block single-scenario case file;
+- [x] **Addendum 88 received** (expert, 2026-10-31, appended by the author): R1 (a) confirmed with the governing
+  decision restated; R2 ruled (2037 column; f = 1 continued-use and converter pro rata — **both pending the author**;
+  floor 0; calendar-expired 0; terminal date 2040); R3 neighbourhood (coordinate + activation/deactivation + one-block
+  shifts; resolution by bound; cap 60; N^max 120); R4 wording ruled; R6 held and re-scoped; F4 adopted; D0 amendments
+  D-1…D-5 → spec v2 §6/§11; convention spec → **v3** `P5_16_CONVENTION_CHANGE_SPEC_v3.md`
+- [x] **T-perf Part A** — `p516_tperf_profile.py`, `P5_16_TPERF_REPORT.md`, evidence `P516TPERF/local` (6/6 solves,
+  guard exact): SRP1 block solves 0.1–0.4 s; NL write + load 25–52 % of wall (P1 HELD); warm re-solve from the optimum
+  still 22/51 iterations because the barrier restarts at μ = 0.1 (no `mu_init`) — P2 FAILED (51 > 30; cold/warm
+  1.45–2.55× < 3×); scaling span 3.0 decades — P3 FAILED on the DSO; df = 1e-3 from a 1e5 objective gradient
+  (unidentified); production resets SoC to 0.5·E every cycle
+- [ ] **▶ T-perf A-zero** (running, zero solves): identify the 1e5 gradient term; cycle wall vs Σ solve times from
+  records (prediction: non-solve share ≥ 40 % on SRP1)
+- [ ] T-perf Part B on the Studio (author runs; unit cell, committed case-file configuration) — command to follow
+- [ ] Expert R7 (to request): `mu_init` / warm-start barrier policy as a production configuration lever; diagnostic
+  A/B (≤ 6 solves) proposed first — author authorization needed
+- [ ] Convention change per **spec v3** (R1–R3 ruled; waits on the author's R2(ii)/(v)): ESSO salvage term; `'mid'` baseline; five-block single-scenario case file;
   cumulative admissibility + general-lattice canonicalization; gate x = 0 bitwise + fixtures unpickle
 - [ ] Spec v2 freeze → re-evaluation campaign on the Studio (authorized by a later addendum, one gate per task)
 - [ ] If H1/H2: Phase 2 LB oracle (SoH ≡ 1 blocks, dual extraction with margin, cache validation, lattice MILP

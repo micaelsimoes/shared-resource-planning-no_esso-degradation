@@ -124,6 +124,11 @@ independent); point estimate ≤ 5 k€ against the 259,375 € value. **P7: Q_L
 tolerance (containment: the unit's feasible set includes x = 0's). P8 OLTC envelope slack ≤ 1e-5 if transformers
 exist. P9 TN rank residual ≈ 2.45e-2 relative (P5.5-C8), cycle-angle residual ≈ 1.2e-2 rad.
 
+**Expert predictions (Addendum 88, recorded before any conic solve; variants per §11):** at x = 0 the variants R, A
+and C coincide identically. Unit cell: per group gap_A ≤ gap_C ≤ gap_R; summed over the 12 groups
+gap_R − gap_C ∈ [10, 50] k€ and gap_C − gap_A ∈ [5, 40] k€; **P6 holds on A** (network gap plan-independent) and
+**fails on R** by about the degradation share (≥ 15 k€).
+
 ## 7. Captures (every quantity below has a capture path asserted before the run)
 
 Pickles of all live blocks + ESSO before mutation; `dual_vars` and consensus vectors; each relaxation exported to
@@ -172,3 +177,25 @@ capacity modes; capture before mutation (pickled live blocks, Var vectors, inter
 the nonconvex-row listing; coupling rows (§3.6) built and their residuals reported as the inter-copy mismatch per
 channel; gates per rulings 1–3; `.lp` exports with name maps for every group. **T0.2** (the 96 declared conic solves
 + IPOPT cross-checks) follows only after T0.1b's gates hold.
+
+## 11. Addendum 88 amendments (expert, 2026-10-31) — binding before T0.2
+
+- **D-1. Variant A is not a lower bound of production.** Fixing available energy at the certified values excludes
+  dispatches that age the unit less; A is a bound only conditional on the certified SoH trajectory — an
+  **attribution diagnostic, never quoted as a bound** (any artefact that does is a stop).
+- **D-2. Variant C added:** calendar-only available energy per F4 — on SRP1's end-of-block convention
+  rated × φ_cal^{age at block end} on the network copies (and the ESSO's available rows). Same gates, same exports.
+  C is the Phase-2 object.
+- **D-3. Readings:** the mechanism question (is the network gap plan-independent?) is read on **A**; the decision
+  relevance for R4 is read on **C**; R is reported, its differential contains the plan-dependent degradation
+  relaxation by construction, so a P6 failure on R alone says nothing about the rank gap. **Absolute class on C.**
+- **D-4.** The §10 rulings are confirmed (identity at fp resolution with same-point Δ = 0 primary; envelope-rewrite
+  class; `sess_comp` dropped; FrozenSMOPF repair later).
+- **D-5. Transfer.** D0 measures the superseded convention (SRP1, end-of-block); its class transfers to the five-block
+  instance on the reading that the network gap is per block and plan-independent; **the first Phase-2 LB evaluation
+  on the new instance re-measures it at x = 0 and the unit — a gate, not an assumption.**
+- **R4 wording is ruled** (Addendum 88 R4): G in k€ and g = G/F(x̂) always together and beside the stakes; decomposition
+  of G where measured; "no plan on the lattice can lower the total cost by more than G below that of x̂" in every case;
+  forbidden words listed there.
+- **T0.1b** proceeds as ordered and adds variant C to its builds and exports (follow-up task if it has returned
+  without it).
