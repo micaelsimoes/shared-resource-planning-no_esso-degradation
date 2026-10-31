@@ -35,8 +35,27 @@ replaces `solve` ON THE TYPE and counts two events per solve (leaf entry + the s
 Gurobi optimize and Pyomo solves are blocked (permitted count 0, verified exactly). The audit hook of
 `p516_d0_t02` raises on any process launch in the child and records every write-open.
 
-Stops (exit 3): a quadratic row that fits none of the three patterns (before any solve); G-D0-4 containment violated;
-the leaf-guard count disagreeing. Refusals: root exists (4); input hash mismatch (5); Clarabel or the gurobipy reader
+Ablation mode (`--ablation`; task P5.16 D0 / T0.2-clarabel ablation, Planner ruling: option (b) + (a)): exactly 4
+declared solves on the same two groups, every one with the PRESOLVE on, max_iter 200 and 5,000 per group; every other
+Clarabel setting at its default (verbose on). Output root `t02_clarabel_ablation/` (refuses if it exists), record
+`ablation.json`. The smoke mode (no flag) is unchanged: presolve off, 2 solves, `t02_clarabel_smoke/`, `smoke.json`.
+  PRESOLVE (equivalence-preserving; `build_conic(data, presolve=True)`): a column is PINNED to 0 when (a) it is fixed at
+  LB = UB = 0, or (b) an '=' row with rhs exactly 0 has it as its only unpinned column with a nonzero coefficient
+  (a x_k + sum_{pinned} a_j x_j = 0 => x_k = 0 exactly); (b) is iterated to a fixed point. This covers the
+  zero-investment chain: es_s_rated_per_unit[k, u] pinned by the single-column row rated_s_capacity_unit, then the
+  head es_s_rated[k] pinned by rated_s_capacity (es_s_rated - sum_u es_s_rated_per_unit = 0). Every Lorentz cone
+  |sqrt(d) x| <= sqrt(e) t whose head t is pinned is the set {sqrt(d_i) x_i = 0} (the chain rows stay in the model), so
+  it is REPLACED by zero-cone rows s_i = sqrt(d_i) x_i = 0 (same set; the empty-interior cone is removed) -- one row per
+  component x_i that is NOT itself already pinned by the LP's rows (a row for a pinned component would be a linear
+  combination of existing equality rows: same set, but a new rank deficiency of the zero cone; on these LPs every es_pnet
+  and some es_qnet are already pinned). Nothing else is altered: no column substituted, no other cone touched.
+  Small-radius circles (r < 1e-4) are reported, not altered.
+  Gate (ii) identity on a replaced cone: |s_bar|^2 + sum_{pinned i} d_i x_i^2 - e t^2 (s_bar the zero-row slacks; x_i
+  and t read from x) equals the LP row value q(x) - rhs to 8 eps; the containment stop applies only at a CONVERGED point
+  (status Solved or AlmostSolved).
+
+Stops (exit 3): a quadratic row that fits none of the three patterns (before any solve); G-D0-4 containment violated
+(ablation: at a converged point only); the leaf-guard count disagreeing. Refusals: root exists (4); input hash mismatch (5); Clarabel or the gurobipy reader
 unavailable (6, nothing created).
 
 Usage (one process, attached, alone):
@@ -45,6 +64,8 @@ Rehearsal (zero solves; scratch under /tmp, never evidence; the Clarabel solver 
 validation, equilibration and KKT setup -- but `solve` is never called; every "solution" is the certified point with
 zero multipliers, labelled STAND-IN):
     P516_D0_CLARABEL_REHEARSAL_DIR=/tmp/... /opt/anaconda3/envs/opf_env_py311/bin/python p516_d0_clarabel.py
+Ablation (4 declared solves; rehearsal as above with the same flag):
+    /opt/anaconda3/envs/opf_env_py311/bin/python p516_d0_clarabel.py --ablation
 
 Exit codes: 0 all gates pass; 2 a gate failed (no stop); 3 a stop fired; 4 refused (root exists); 5 refused (input hash
 mismatch); 6 refused (solver unavailable).
@@ -63,7 +84,9 @@ import time
 import p516_d0_t01b as T1B
 
 REPO = os.path.dirname(os.path.abspath(__file__))
-OUT_DIR = os.path.join(REPO, 'data', 'SRP1', 'Results', 'P516D0', 't02_clarabel_smoke')
+ABLATION = '--ablation' in sys.argv[1:]          # parsed in the parent and passed on to the child
+OUT_DIR = os.path.join(REPO, 'data', 'SRP1', 'Results', 'P516D0',
+                       't02_clarabel_ablation' if ABLATION else 't02_clarabel_smoke')
 _REHEARSAL = os.environ.get('P516_D0_CLARABEL_REHEARSAL_DIR')
 if _REHEARSAL:
     if not os.path.abspath(_REHEARSAL).startswith(('/tmp/', '/private/tmp/')):
@@ -82,7 +105,16 @@ T01B_MANIFEST_SHA256 = '4e5bbd45234598094593a8daca807a576590eee52f492f5281b63cf6
 
 SMOKE = (('x0', 2025, 'Spring'), ('unit_n7', 2025, 'Spring'))
 MODE, VAR = 'calendar', 'C'
-DECLARED_SOLVES = 2
+PRESOLVE = ABLATION
+# the solve plan: (solve label, group tag, max_iter override or None = the default); the smoke labels are the group tags
+_TAGS = [f'{c}_{y}_{d}_{VAR}' for c, y, d in SMOKE]
+SOLVE_PLAN = ([(f'{_TAGS[0]}.presolve.it200', _TAGS[0], 200), (f'{_TAGS[0]}.presolve.it5000', _TAGS[0], 5000),
+               (f'{_TAGS[1]}.presolve.it200', _TAGS[1], 200), (f'{_TAGS[1]}.presolve.it5000', _TAGS[1], 5000)]
+              if ABLATION else [(t, t, None) for t in _TAGS])
+DECLARED_SOLVES = len(SOLVE_PLAN)
+CONVERGED_STATUSES = ('Solved', 'AlmostSolved')   # ablation: the containment STOP applies at these statuses only
+SMALL_CIRCLE_R = 1e-4                             # circles reported (not altered) by the ablation
+B5_STATIONARITY_REL = 1e-6
 # Clarabel settings: every value at the Clarabel 0.11.1 default except `verbose` (the per-solve log). The full
 # settings object is recorded per solve.
 CLARABEL_OVERRIDES = {'verbose': True}
@@ -124,6 +156,47 @@ OPERATIONALISATION = {
     'projection': '108 x the mean (setup + solve) wall of the two smoke solves, plus 72 group reads + builds at the '
                   'mean measured read + build time',
 }
+
+if ABLATION:
+    PREDICTIONS = {
+        'B1': 'with the presolve, both groups converge (status Solved) within 200 iterations',
+        'B2': 'if B1 fails, 5,000 iterations suffice (status Solved) on the group(s) that failed at 200',
+        'B3': 'the converged x = 0 Q_LB lies within 1e-2 relative of Q_cert+ and containment holds',
+        'B4': 'P7: Q_LB(unit) <= Q_LB(x0) holds between converged values',
+        'B5': 'the Gurobi-convention stationarity residual <= 1e-6 relative at a converged point',
+    }
+    OPERATIONALISATION = {
+        'converged': 'status == Solved (Clarabel 0.11.1, full tolerances); AlmostSolved is reported, counts as '
+                     'NOT converged for B1-B5, but triggers the containment STOP (conservative)',
+        'B1': 'solves x0.presolve.it200 and unit_n7.presolve.it200 both status Solved',
+        'B2': 'evaluated only if B1 FAILED: every group whose it200 solve is not Solved has its it5000 solve Solved; '
+              'NOT APPLICABLE when B1 held (the it5000 solves are still run and reported)',
+        'B3': 'on the converged x0 it5000 solve (else the converged x0 it200 solve; else INDETERMINATE): '
+              'Q_LB - Q_cert+ - solver gap <= 0 AND (Q_cert+ - Q_LB) / Q_cert+ <= 1e-2',
+        'B4': 'on the it5000 pair if both Solved (else the it200 pair if both Solved; else INDETERMINATE): '
+              'Q_LB(unit) - Q_LB(x0) - gap(unit) - gap(x0) <= 0; every both-converged pair is reported',
+        'B5': 'at every Solved point: ||c - A\'Pi - RC - sum_j QCPi_j grad q_j(x)||_inf / ||c||_inf <= 1e-6 with the '
+              'mapping of `gurobi_convention_duals` (strict: the multipliers of the presolve rows have no image in '
+              'the Gurobi convention -- the replaced quadratic row has a zero gradient at its apex -- and are NOT '
+              'mapped). HELD iff every Solved point passes; INDETERMINATE if none is Solved. Reported beside it: the '
+              'same residual with the presolve-row multipliers folded into RC as implicit fixings (labelled '
+              '"folded"), and the residual restricted to columns no presolve row touches',
+        'gate_i': 'as in the smoke: |q.x_cert + const - (c.x_cert + ObjCon)| / |c.x_cert + ObjCon| <= 1e-12 and vs '
+                  'the T0.1c record <= 1e-12, on the PRESOLVED build',
+        'gate_ii_identity': 'as in the smoke on the presolved build; for each replaced cone |alpha (|s_bar|^2 - e t^2) '
+                            '- (q(x) - rhs)| <= 8 eps (|s_bar|^2 + e t^2 + sum|terms|) (s_bar the zero-row slacks)',
+        'gate_ii_classes': 'unchanged (computed on the LP form)',
+        'gate_iii': 'G-D0-4 containment per solve: Q_LB - Q_cert+ - solver gap <= 0; a violation at a converged point '
+                    '(Solved / AlmostSolved) is a STOP (no further solve); at an unconverged point it is recorded, '
+                    'not a stop',
+        'per_solve_record': 'status, iterations, r_prim / r_dual and Clarabel info (res_primal, res_dual, gap_abs, '
+                            'gap_rel), objective, wall, the max LP-row violation of the returned point (linear / '
+                            'quadratic / bound, worst row), containment vs Q_cert+ (T0.1c objective.json), the dual '
+                            'residual ||q + A\'z||_inf, the duality gap (Clarabel and recomputed), the Gurobi-'
+                            'convention stationarity residual (strict and folded), the small-circle activity',
+        'projection': '108 x the mean (setup + solve) wall of the converged solves of the smallest max_iter that '
+                      'converged, plus 72 group reads + builds; stated per iteration as well',
+    }
 
 sha256_file = T1B.sha256_file
 np = None            # bound in the child after the guards are armed
@@ -192,9 +265,45 @@ def classify_quadratic_row(q, lb, rhs, sense):
     return 'circle', {'r': rhs, 'x': pos, 'alpha': 1.0}
 
 
-def build_conic(data):
+def pinned_zero_columns(data):
+    """Columns pinned to 0 by the LP's own rows (ablation presolve): (a) fixed at LB = UB = 0; (b) the only unpinned
+    column with a nonzero coefficient of an '=' row whose rhs is exactly 0, iterated to a fixed point. Exact: the row
+    reads a_k x_k + sum_{pinned} a_j x_j = 0, so x_k = 0. Returns (mask, provenance {col: (how, row index, round)})."""
+    n = len(data['var_names'])
+    lb, ub = data['lb'], data['ub']
+    Ar = data['A']
+    pinned = np.isfinite(lb) & (lb == ub) & (lb == 0.0)
+    how = {int(k): ('fixed at 0', None, 0) for k in np.nonzero(pinned)[0]}
+    eq_rows = [int(i) for i in np.nonzero((data['sense'] == '=') & (data['rhs'] == 0.0))[0]]
+    row_cols = {}
+    col_rows = {}
+    for i in eq_rows:
+        lo, hi = Ar.indptr[i], Ar.indptr[i + 1]
+        cols_ = [int(c_) for c_, v_ in zip(Ar.indices[lo:hi], Ar.data[lo:hi]) if v_ != 0.0]
+        row_cols[i] = cols_
+        for c_ in cols_:
+            col_rows.setdefault(c_, []).append(i)
+    work, rnd = list(eq_rows), 0
+    while work:
+        rnd += 1
+        touched = []
+        for i in work:
+            unp = [c_ for c_ in row_cols[i] if not pinned[c_]]
+            if len(unp) == 1:
+                k = unp[0]
+                pinned[k] = True
+                how[k] = ('eq row, rhs 0', i, rnd)
+                touched.extend(col_rows.get(k, []))
+        work = sorted(set(touched))
+    assert n == len(pinned)
+    return pinned, how
+
+
+def build_conic(data, presolve=False):
     """The Clarabel data (P, q, A, b, cone list) for one exported LP read by `p516_d0_t02.read_lp_data`, with a row map
-    back to the LP. Raises ConeMappingError naming the first quadratic row that fits no pattern."""
+    back to the LP. Raises ConeMappingError naming the first quadratic row that fits no pattern. With `presolve`, every
+    Lorentz cone whose head is pinned to 0 (`pinned_zero_columns`) is replaced by zero-cone rows sqrt(d_i) x_i = 0
+    (rmap kind 'Q', tag 'presolved_x'; listed in `presolved_cones`, not in `cones_meta`); nothing else changes."""
     import scipy.sparse as sp
     n = len(data['var_names'])
     lb, ub = data['lb'], data['ub']
@@ -217,11 +326,34 @@ def build_conic(data):
 
     sense = data['sense']
     fixed = np.isfinite(lb) & (lb == ub)
+    # ---- classification of every quadratic row first (pure; the first misfit is a STOP) ----
+    classified = []
+    for j, q in enumerate(data['qrows']):
+        try:
+            classified.append(classify_quadratic_row(q, lb, float(data['qc_rhs'][j]), str(data['qc_sense'][j])))
+        except ValueError as error:
+            raise ConeMappingError(data['qc_names'][j], str(error)) from None
+    replaced = set()
+    pinned, how = (pinned_zero_columns(data) if presolve else (None, None))
+    if presolve:
+        replaced = {j for j, (pattern, spec) in enumerate(classified) if pattern == 'lorentz' and pinned[spec['t']]}
     # ---- zero cone ----
     for i in np.nonzero(sense == '=')[0]:
         add_row(lin_entries(i, 1.0), float(data['rhs'][i]), 'L', int(i), 'eq')
     for k in np.nonzero(fixed)[0]:
         add_row([(int(k), 1.0)], float(lb[k]), 'B', int(k), 'fix')
+    presolved_cones = []
+    for j in sorted(replaced):
+        spec = classified[j][1]
+        start = len(b)
+        for x_, d in spec['x']:
+            if not pinned[x_]:                  # an already-pinned component needs no row (it would be dependent)
+                add_row([(x_, -math.sqrt(d))], 0.0, 'Q', j, 'presolved_x')     # s_i = sqrt(d_i) x_i = 0
+        presolved_cones.append({'qrow': j, 'pattern': 'lorentz', 'start': start, 'dim': len(b) - start, 'alpha': 1.0,
+                                'head_col': spec['t'], 'e': spec['e'],
+                                'x_cols': [x_ for x_, _d in spec['x'] if not pinned[x_]],
+                                'x_pinned': [(x_, d) for x_, d in spec['x'] if pinned[x_]]})
+    n_presolved_rows = sum(c['dim'] for c in presolved_cones)
     n_zero = len(b)
     # ---- nonnegative cone ----
     for i in np.nonzero(sense == '<')[0]:
@@ -239,11 +371,9 @@ def build_conic(data):
     # ---- second-order cones ----
     cones_meta = []
     pattern_count = {'rotated': 0, 'lorentz': 0, 'circle': 0}
-    for j, q in enumerate(data['qrows']):
-        try:
-            pattern, spec = classify_quadratic_row(q, lb, float(data['qc_rhs'][j]), str(data['qc_sense'][j]))
-        except ValueError as error:
-            raise ConeMappingError(data['qc_names'][j], str(error)) from None
+    for j, (pattern, spec) in enumerate(classified):
+        if j in replaced:
+            continue
         start = len(b)
         if pattern == 'rotated':
             u, v, k = spec['u'], spec['v'], spec['k']
@@ -275,13 +405,95 @@ def build_conic(data):
         'n_finite_lb_not_fixed': int(np.sum(np.isfinite(lb) & ~fixed)),
     }
     inventory['dims_consistent'] = bool(
-        n_zero == inventory['n_lp_eq_rows'] + inventory['n_fixed_columns'] and
+        n_zero == inventory['n_lp_eq_rows'] + inventory['n_fixed_columns'] + n_presolved_rows and
         n_nonneg == inventory['n_lp_le_rows'] + inventory['n_lp_ge_rows'] + inventory['n_finite_ub_not_fixed'] +
-        inventory['n_finite_lb_not_fixed'] and len(cones_meta) == len(data['qrows']) and
+        inventory['n_finite_lb_not_fixed'] and len(cones_meta) + len(presolved_cones) == len(data['qrows']) and
         m == n_zero + n_nonneg + sum(c['dim'] for c in cones_meta))
-    return {'P': P, 'q': data['c'].astype(float).copy(), 'const': float(data['obj_con']), 'A': A,
-            'b': np.asarray(b, dtype=float), 'n_zero': n_zero, 'n_nonneg': n_nonneg, 'cones_meta': cones_meta,
-            'rmap': rmap, 'inventory': inventory}
+    out = {'P': P, 'q': data['c'].astype(float).copy(), 'const': float(data['obj_con']), 'A': A,
+           'b': np.asarray(b, dtype=float), 'n_zero': n_zero, 'n_nonneg': n_nonneg, 'cones_meta': cones_meta,
+           'rmap': rmap, 'inventory': inventory}
+    if presolve:
+        out['presolved_cones'] = presolved_cones
+        out['presolve'] = presolve_report(data, classified, pinned, how, presolved_cones, cones_meta)
+        inventory['presolve'] = {k: out['presolve'][k] for k in (
+            'n_columns_pinned', 'n_lorentz_cones', 'n_lorentz_cones_replaced', 'n_zero_rows_added',
+            'n_components_already_pinned_no_row', 'n_replaced_cones_with_no_row',
+            'n_distinct_pinned_heads', 'pinned_heads', 'n_lorentz_cones_kept', 'kept_heads')}
+    return out
+
+
+def presolve_report(data, classified, pinned, how, presolved_cones, cones_meta):
+    """What the presolve did and why (provenance of every pinned head through its chain), plus the empty-interior
+    candidates it did NOT alter: rotated cones with a pinned factor, circles with r == 0, and the small circles."""
+    from p516_d0_t02 import parse_pyomo_name
+
+    def fam(name):
+        blk, f_, _idx = parse_pyomo_name(name)
+        return f'{(blk or "top").split("_")[0]}.{f_}'
+
+    def chain(k, depth=0):
+        kind, row, rnd = how[k]
+        rec = {'column': data['var_names'][k], 'how': kind, 'round': rnd}
+        if row is not None:
+            rec['row'] = data['con_names'][row]
+            if depth < 2:
+                lo, hi = data['A'].indptr[row], data['A'].indptr[row + 1]
+                rec['inputs'] = [chain(int(c_), depth + 1) for c_, v_ in zip(data['A'].indices[lo:hi],
+                                                                              data['A'].data[lo:hi])
+                                 if v_ != 0.0 and int(c_) != k]
+        return rec
+
+    heads = sorted({c['head_col'] for c in presolved_cones})
+    lorentz = [j for j, (p, _s) in enumerate(classified) if p == 'lorentz']
+    kept_heads = sorted({classified[c['qrow']][1]['t'] for c in cones_meta if c['pattern'] == 'lorentz'})
+    pin_row_fams = {}
+    for k, (kind, row, _rnd) in how.items():
+        key = 'fixed at 0' if row is None else fam(data['con_names'][row])
+        pin_row_fams[key] = pin_row_fams.get(key, 0) + 1
+    rot_pinned = [data['qc_names'][j] for j, (p, s) in enumerate(classified)
+                  if p == 'rotated' and (pinned[s['u']] or pinned[s['v']])]
+    circ_zero = [data['qc_names'][j] for j, (p, s) in enumerate(classified) if p == 'circle' and s['r'] == 0.0]
+    used_rows = {row for (_k, row, _r) in how.values() if row is not None}
+    implied = {}                                # '=' rows (rhs 0) of the LP whose columns are all pinned by OTHER rows
+    Ar = data['A']
+    for i in np.nonzero((data['sense'] == '=') & (data['rhs'] == 0.0))[0]:
+        lo, hi = Ar.indptr[i], Ar.indptr[i + 1]
+        cols_ = [c_ for c_, v_ in zip(Ar.indices[lo:hi], Ar.data[lo:hi]) if v_ != 0.0]
+        if cols_ and int(i) not in used_rows and all(pinned[c_] for c_ in cols_):
+            f_ = fam(data['con_names'][i])
+            implied[f_] = implied.get(f_, 0) + 1
+    small = [{'qrow': j, 'row': data['qc_names'][j], 'family': fam(data['qc_names'][j]), 'r': s['r'],
+              'radius': math.sqrt(s['r'])}
+             for j, (p, s) in enumerate(classified) if p == 'circle' and s['r'] < SMALL_CIRCLE_R]
+    small_by_fam = {}
+    for c in small:
+        rec = small_by_fam.setdefault(c['family'], {'count': 0, 'r_min': math.inf, 'r_max': 0.0})
+        rec['count'] += 1
+        rec['r_min'] = min(rec['r_min'], c['r'])
+        rec['r_max'] = max(rec['r_max'], c['r'])
+    return {
+        'rule': ('pinned: fixed at LB = UB = 0, or the only unpinned nonzero column of an = row with rhs exactly 0 '
+                 '(iterated); a Lorentz cone with a pinned head is replaced by zero rows sqrt(d_i) x_i = 0'),
+        'n_columns_pinned': int(pinned.sum()), 'pinned_by_row_family': dict(sorted(pin_row_fams.items())),
+        'n_lorentz_cones': len(lorentz), 'n_lorentz_cones_replaced': len(presolved_cones),
+        'n_lorentz_cones_kept': len(lorentz) - len(presolved_cones),
+        'replaced_by_family': {f_: sum(1 for c in presolved_cones if fam(data['qc_names'][c['qrow']]) == f_)
+                               for f_ in sorted({fam(data['qc_names'][c['qrow']]) for c in presolved_cones})},
+        'n_zero_rows_added': sum(c['dim'] for c in presolved_cones),
+        'n_components_already_pinned_no_row': sum(len(c['x_pinned']) for c in presolved_cones),
+        'n_replaced_cones_with_no_row': sum(1 for c in presolved_cones if c['dim'] == 0),
+        'n_distinct_pinned_heads': len(heads), 'pinned_heads': [data['var_names'][k] for k in heads],
+        'kept_heads': [data['var_names'][k] for k in kept_heads],
+        'head_chains': [chain(k) for k in heads],
+        'not_altered': {'implied_equality_rows_already_in_the_lp': {
+                            'count': sum(implied.values()), 'by_family': implied,
+                            'note': ('rhs-0 rows whose every column is pinned by other rows: linearly dependent on '
+                                     'them (a rank deficiency of the zero cone present in the LP itself)')},
+                        'rotated_cones_with_a_pinned_factor': {'count': len(rot_pinned), 'rows': rot_pinned[:20]},
+                        'circles_with_r_eq_0': {'count': len(circ_zero), 'rows': circ_zero[:20]},
+                        'small_circles_r_lt_1e-4': {'count': len(small), 'by_family': small_by_fam,
+                                                    'rows': small}},
+    }
 
 
 def clarabel_cones(conic):
@@ -340,8 +552,12 @@ def gate_identity_and_classes(conic, data, x, cell):
     nn = conic['n_nonneg']
     worst = {'linear_or_bound': (0.0, None), 'cone': (0.0, None)}
     n_over = {'linear_or_bound': 0, 'cone': 0}
+    presolved = conic.get('presolved_cones')
+    n_presolved_rows = sum(c['dim'] for c in presolved) if presolved else 0
     for r in range(nz + nn):
         kind, idx, tag = conic['rmap'][r]
+        if kind == 'Q':                         # presolve rows: checked below, per replaced cone
+            continue
         v_conic = abs(s[r]) if r < nz else max(-s[r], 0.0)
         if kind == 'L':
             v_lp = lpv['lin'][idx]
@@ -371,10 +587,42 @@ def gate_identity_and_classes(conic, data, x, cell):
             worst['cone'] = (ratio, data['qc_names'][c['qrow']])
         soc_viol = max(float(np.linalg.norm(sc[1:])) - sc[0], 0.0)
         cone_rel.append(soc_viol)
-    out['identity'] = {'n_linear_and_bound_rows': nz + nn, 'n_cones': len(conic['cones_meta']),
+    presolved_check = None
+    if presolved:
+        worst['presolved_cone'] = (0.0, None)
+        n_over['presolved_cone'] = 0
+        max_zero_row, max_head, max_lp_quad = 0.0, 0.0, 0.0
+        for c in presolved:
+            sc = s[c['start']:c['start'] + c['dim']]
+            t_val = float(x[c['head_col']])
+            s0sq = c['e'] * t_val * t_val
+            pin_sq = sum(d_ * float(x[x_]) ** 2 for x_, d_ in c['x_pinned'])
+            val_conic = c['alpha'] * (float(sc @ sc) + pin_sq - s0sq)
+            val_lp = lpv['quad_val'][c['qrow']]
+            scale = c['alpha'] * (float(sc @ sc) + pin_sq + s0sq) + lpv['quad_terms'][c['qrow']]
+            diff = abs(val_conic - val_lp)
+            tol = 8.0 * eps * scale
+            ratio = diff / tol if tol > 0 else (0.0 if diff == 0.0 else math.inf)
+            if diff > tol:
+                n_over['presolved_cone'] += 1
+            if ratio > worst['presolved_cone'][0]:
+                worst['presolved_cone'] = (ratio, data['qc_names'][c['qrow']])
+            max_zero_row = max(max_zero_row, float(np.max(np.abs(sc), initial=0.0)))
+            max_head = max(max_head, abs(t_val))
+            max_lp_quad = max(max_lp_quad, float(max(val_lp, 0.0)))
+        presolved_check = {
+            'n_replaced_cones': len(presolved), 'n_zero_rows': n_presolved_rows,
+            'max_abs_zero_row_slack_at_point': max_zero_row, 'max_abs_pinned_head_at_point': max_head,
+            'max_lp_quadratic_violation_of_replaced_rows_at_point': max_lp_quad,
+            'note': ('identity |s_bar|^2 + sum_pinned d x_i^2 - e t^2 == q(x) - rhs per replaced cone; at the point '
+                     'the zero rows are violated by |sqrt(d) x_i| where the LP row is violated by sum d x_i^2 - e t^2 '
+                     '(same set, different violation measure)')}
+    out['identity'] = {'n_linear_and_bound_rows': nz + nn - n_presolved_rows, 'n_cones': len(conic['cones_meta']),
                        'n_over_tolerance': n_over, 'worst_ratio_to_tolerance': {k: v[0] for k, v in worst.items()},
                        'worst_row': {k: v[1] for k, v in worst.items()}, 'max_soc_violation_conic':
                            max(cone_rel) if cone_rel else 0.0}
+    if presolved_check is not None:
+        out['identity']['presolved'] = presolved_check
     # ---- (b) classes over the LP-form violations ----
     classes = {}
 
@@ -476,8 +724,15 @@ def gurobi_convention_duals(conic, data, x, s, z):
     cone with a nonzero multiplier has s_0 > 0)."""
     m_lin, n = len(data['rhs']), len(data['var_names'])
     Pi, RC, QCPi = np.zeros(m_lin), np.zeros(n), np.zeros(len(data['qrows']))
+    presolved = conic.get('presolved_cones')
+    rc_fold = np.zeros(n) if presolved else None
     for r in range(conic['n_zero'] + conic['n_nonneg']):
         kind, idx, tag = conic['rmap'][r]
+        if kind == 'Q':
+            # presolve row s_i = sqrt(d_i) x_i = 0 (A entry -sqrt(d_i)): its multiplier contributes +sqrt(d_i) z to c,
+            # which the Gurobi convention cannot carry (the replaced row's gradient is 0 at its apex): unmapped in
+            # the strict residual; folded into RC as an implicit fixing in the "folded" reading (below)
+            continue
         if kind == 'L':
             Pi[idx] = z[r] if tag == 'ge' else -z[r]
         elif tag == 'lb':
@@ -500,11 +755,104 @@ def gurobi_convention_duals(conic, data, x, s, z):
             _v, g = quadratic_value_and_grad(q, x)
             for i_, gv in g.items():
                 r[i_] -= QCPi[j] * gv
-    return {'Pi': Pi, 'QCPi': QCPi, 'RC': RC,
-            'check': {'mapped_stationarity_residual_inf': float(np.max(np.abs(r))),
-                      'n_cones_with_s0_le_0': n_degenerate, 'max_norm_z_on_those_cones': z_norm_lost,
-                      'convention': ('Pi = -z on = and < rows, +z on > rows; RC = z_LB - z_UB - z_fix; QCPi = '
-                                     '-z0 / (2 alpha s0) for s0 > 0, else 0')}}
+    check = {'mapped_stationarity_residual_inf': float(np.max(np.abs(r))),
+             'n_cones_with_s0_le_0': n_degenerate, 'max_norm_z_on_those_cones': z_norm_lost,
+             'convention': ('Pi = -z on = and < rows, +z on > rows; RC = z_LB - z_UB - z_fix; QCPi = '
+                            '-z0 / (2 alpha s0) for s0 > 0, else 0')}
+    if presolved:
+        touched = np.zeros(n, dtype=bool)
+        z_max = 0.0
+        for c in presolved:
+            zc = z[c['start']:c['start'] + c['dim']]
+            z_max = max(z_max, float(np.max(np.abs(zc), initial=0.0)))
+            for i_, col in enumerate(c['x_cols']):
+                touched[col] = True
+                rc_fold[col] += -float(conic['A'][c['start'] + i_, col]) * float(zc[i_])   # +sqrt(d_i) z_i
+        r_fold = r - rc_fold
+        c_inf = float(np.max(np.abs(data['c'])))
+        check.update({
+            'c_inf': c_inf,
+            'mapped_stationarity_residual_rel_to_c_inf': check['mapped_stationarity_residual_inf'] / c_inf,
+            'presolve_rows_max_abs_z': z_max, 'n_columns_touched_by_presolve_rows': int(touched.sum()),
+            'folded_stationarity_residual_inf': float(np.max(np.abs(r_fold))),
+            'folded_stationarity_residual_rel_to_c_inf': float(np.max(np.abs(r_fold))) / c_inf,
+            'untouched_columns_stationarity_residual_inf': float(np.max(np.abs(r[~touched]), initial=0.0)),
+            'untouched_columns_stationarity_residual_rel_to_c_inf':
+                float(np.max(np.abs(r[~touched]), initial=0.0)) / c_inf,
+            'argmax_strict': data['var_names'][int(np.argmax(np.abs(r)))],
+            'argmax_folded': data['var_names'][int(np.argmax(np.abs(r_fold)))],
+            'presolve_convention': ('strict: the presolve-row multipliers are not mapped (the replaced quadratic row '
+                                    'has a zero gradient at its apex, so no QCPi carries them); folded: RC[x_i] += '
+                                    'sqrt(d_i) z_i (an implicit fixing x_i = 0); untouched: the strict residual on '
+                                    'the columns no presolve row touches')})
+    return {'Pi': Pi, 'QCPi': QCPi, 'RC': RC, 'check': check}
+
+
+def returned_point_violation(data, x):
+    """Ablation: the max LP-row violation of a returned point, by row class, with the worst row and the top families
+    (the LP form itself, no tolerance class: the returned point is the solver's answer to this LP)."""
+    from p516_d0_t02 import parse_pyomo_name
+    lpv = lp_row_violations(data, x)
+
+    def fam(name):
+        blk, f_, _idx = parse_pyomo_name(name)
+        return f'{(blk or "top").split("_")[0]}.{f_}'
+
+    out = {}
+    eq = data['sense'] == '='
+    for label, mask in (('linear_eq', eq), ('linear_ineq', ~eq)):
+        v = np.where(mask, lpv['lin'], 0.0)
+        k = int(np.argmax(v))
+        fams = {}
+        for i in np.nonzero(v > 0.0)[0]:
+            f_ = fam(data['con_names'][i])
+            fams[f_] = max(fams.get(f_, 0.0), float(v[i]))
+        out[label] = {'max': float(v[k]), 'worst_row': data['con_names'][k] if v[k] > 0 else None,
+                      'n_rows_over_1e-8': int(np.sum(v > 1e-8)),
+                      'top_families': dict(sorted(fams.items(), key=lambda t: -t[1])[:8])}
+    qv = np.maximum(lpv['quad_val'], 0.0)
+    k = int(np.argmax(qv)) if len(qv) else 0
+    out['quadratic'] = {'max': float(qv[k]) if len(qv) else 0.0,
+                        'worst_row': data['qc_names'][k] if len(qv) and qv[k] > 0 else None,
+                        'n_rows_over_1e-8': int(np.sum(qv > 1e-8))}
+    bv = np.maximum(lpv['lb'], lpv['ub'])
+    k = int(np.argmax(bv))
+    out['bound'] = {'max': float(bv[k]), 'worst_column': data['var_names'][k] if bv[k] > 0 else None,
+                    'n_columns_over_1e-8': int(np.sum(bv > 1e-8))}
+    out['max_over_all'] = max(out['linear_eq']['max'], out['linear_ineq']['max'], out['quadratic']['max'],
+                              out['bound']['max'])
+    return out
+
+
+def small_circle_activity(conic, data, s, z):
+    """Ablation: the circles with r < 1e-4 (reported, not altered) at a returned point: slack s0 - |s_bar| (>= 0 inside),
+    the share of the radius used, and the multiplier norm, by family."""
+    from p516_d0_t02 import parse_pyomo_name
+    fams = {}
+    for c in conic['cones_meta']:
+        if c['pattern'] != 'circle':
+            continue
+        r0 = float(conic['b'][c['start']])          # head row: s0 = sqrt(r), no column entries
+        if r0 * r0 >= SMALL_CIRCLE_R:
+            continue
+        sc = s[c['start']:c['start'] + c['dim']]
+        zc = z[c['start']:c['start'] + c['dim']]
+        nb = float(np.linalg.norm(sc[1:]))
+        blk, f_, _idx = parse_pyomo_name(data['qc_names'][c['qrow']])
+        key = f'{(blk or "top").split("_")[0]}.{f_}'
+        rec = fams.setdefault(key, {'count': 0, 'radius_min': math.inf, 'radius_max': 0.0, 'max_used_share': 0.0,
+                                    'min_slack': math.inf, 'n_active_used_share_ge_0.999': 0, 'max_norm_z': 0.0,
+                                    'max_z0': 0.0})
+        rec['count'] += 1
+        rec['radius_min'] = min(rec['radius_min'], r0)
+        rec['radius_max'] = max(rec['radius_max'], r0)
+        share = nb / sc[0] if sc[0] > 0 else math.inf
+        rec['max_used_share'] = max(rec['max_used_share'], share)
+        rec['min_slack'] = min(rec['min_slack'], float(sc[0] - nb))
+        rec['n_active_used_share_ge_0.999'] += int(share >= 0.999)
+        rec['max_norm_z'] = max(rec['max_norm_z'], float(np.linalg.norm(zc)))
+        rec['max_z0'] = max(rec['max_z0'], float(zc[0]))
+    return fams
 
 
 # ======================================================================================================================
@@ -653,7 +1001,8 @@ def parent():
         json.dump(provenance, handle, indent=1)
     with open(LOG_PATH, 'w', buffering=1) as log:
         log.write(f'# p516_d0_clarabel parent start {provenance["started"]} interpreter {sys.executable}\n')
-        child = subprocess.Popen([sys.executable, '-u', os.path.abspath(__file__), '--child'], cwd=REPO,
+        child = subprocess.Popen([sys.executable, '-u', os.path.abspath(__file__), '--child'] +
+                                 (['--ablation'] if ABLATION else []), cwd=REPO,
                                  env=dict(os.environ, HOME=home), stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
                                  text=True, bufsize=1)
         for line in child.stdout:
@@ -694,7 +1043,9 @@ def child():
     pyomo_guard = SolveProfileGuard(permitted=no_site, label='P5.16 D0 T0.2-clarabel: no Pyomo solve').install()
     gurobi_guard = T02.GurobiLeafGuard(permitted=no_site, label='P5.16 D0 T0.2-clarabel: no Gurobi optimize'
                                        ).install()
-    clarabel_guard = ClarabelLeafGuard(permitted=leaf_site, label='P5.16 D0 T0.2-clarabel smoke (leaf only)').install()
+    clarabel_guard = ClarabelLeafGuard(permitted=leaf_site, label='P5.16 D0 T0.2-clarabel '
+                                       f'{"ablation" if ABLATION else "smoke"} (leaf only)').install()
+    record_name = 'ablation.json' if ABLATION else 'smoke.json'
     t_start = time.time()
     global np
     import numpy
@@ -724,7 +1075,11 @@ def child():
         'operationalisation': OPERATIONALISATION, 'declared_solves': DECLARED_SOLVES,
         'smoke_groups': [f'{c}_{y}_{d}_{VAR}' for c, y, d in SMOKE], 'clarabel_version': clarabel.__version__,
         'clarabel_overrides': CLARABEL_OVERRIDES, 'clarabel_defaults': default_settings,
-        'note': 'recorded by the harness before any input is loaded (task P5.16 D0 / T0.2-clarabel)'})
+        'note': 'recorded by the harness before any input is loaded (task P5.16 D0 / T0.2-clarabel)',
+        **({'solve_plan': [{'label': l_, 'group': t_, 'max_iter': m_, 'presolve': PRESOLVE}
+                           for l_, t_, m_ in SOLVE_PLAN],
+            'converged_statuses_for_the_containment_stop': CONVERGED_STATUSES,
+            'task': 'P5.16 D0 / T0.2-clarabel ablation (Planner ruling: option (b) + (a))'} if ABLATION else {})})
     print('[write] predictions.json')
 
     # ---- inputs, hash-checked -----------------------------------------------------------------------------------
@@ -741,7 +1096,7 @@ def child():
     check(os.path.join(T01C_ROOT, 'manifest_sha256.json'), T01C_MANIFEST_SHA256, 't01c/manifest')
     check(os.path.join(T01B_ROOT, 'manifest_sha256.json'), T01B_MANIFEST_SHA256, 't01b/manifest')
     if mismatch:
-        write_json('smoke.json', {'refused': True, 'inputs': inputs, 'mismatch': mismatch})
+        write_json(record_name, {'refused': True, 'inputs': inputs, 'mismatch': mismatch})
         print(f'[REFUSED] input hash mismatch: {mismatch}')
         return 5
     t01c_files = json.load(open(os.path.join(REPO, T01C_ROOT, 'manifest_sha256.json')))['files']
@@ -755,7 +1110,7 @@ def child():
                      f'captures/{cell}/vectors_esso.json'):
             check(os.path.join(T01B_ROOT, name), t01b_files[name]['sha256'], f't01b/{name}')
     if mismatch:
-        write_json('smoke.json', {'refused': True, 'inputs': inputs, 'mismatch': mismatch})
+        write_json(record_name, {'refused': True, 'inputs': inputs, 'mismatch': mismatch})
         print(f'[REFUSED] input hash mismatch: {mismatch}')
         return 5
     objective_t01c = json.load(open(os.path.join(REPO, T01C_ROOT, 'objective.json')))
@@ -776,7 +1131,7 @@ def child():
                                     'gross_recorded': float(ev['terminal_gross_operational_cost']),
                                     'eval_dir': cell['eval_dir']}
     if mismatch:
-        write_json('smoke.json', {'refused': True, 'inputs': inputs, 'mismatch': mismatch})
+        write_json(record_name, {'refused': True, 'inputs': inputs, 'mismatch': mismatch})
         print(f'[REFUSED] input hash mismatch: {mismatch}')
         return 5
     print(f'[inputs] {len(inputs)} files hash-checked against the T0.1b / T0.1c manifests: all match')
@@ -838,7 +1193,7 @@ def child():
         gc.collect()
         t1 = time.time()
         try:
-            conic = build_conic(data)
+            conic = build_conic(data, presolve=PRESOLVE)
         except ConeMappingError as error:
             stops.append({'stop': 'a quadratic row cannot be mapped to a second-order cone', 'group': tag,
                           'row': error.row, 'detail': error.detail})
@@ -858,7 +1213,7 @@ def child():
              abs(obj_cl - ref) / abs(ref), IDENTITY_OBJ_REL)
         # ---- gate (ii): feasibility of the mapped point ----
         feas = gate_identity_and_classes(conic, data, x_cert, cell)
-        for kind in ('linear_or_bound', 'cone'):
+        for kind in ('linear_or_bound', 'cone') + (('presolved_cone',) if PRESOLVE else ()):
             gate(f'(ii) identity: rows whose Clarabel-model violation differs from the LP form beyond fp ({kind})',
                  tag, float(feas['identity']['n_over_tolerance'][kind]), 0.0)
         gate('(ii) violated rows outside their stated class threshold (count)', tag,
@@ -874,26 +1229,45 @@ def child():
                        'rel_vs_t01c': abs(obj_cl - ref) / abs(ref)},
             'gate_ii': feas, 'gross_group': q_plus['gross'], 'q_cert_plus_group': q_plus['q_cert_plus'],
             'q_cert_plus_correction': q_plus['q_cert_plus'] - q_plus['gross']}
+        if PRESOLVE:
+            groups[tag]['presolve'] = conic['presolve']
+            print(f'[presolve] {tag}: {conic["presolve"]["n_columns_pinned"]} columns pinned '
+                  f'{conic["presolve"]["pinned_by_row_family"]}; Lorentz cones replaced '
+                  f'{conic["presolve"]["n_lorentz_cones_replaced"]} of {conic["presolve"]["n_lorentz_cones"]} '
+                  f'(heads {conic["presolve"]["pinned_heads"]}; kept {conic["presolve"]["kept_heads"]}); not altered: '
+                  f'{ {k: v["count"] for k, v in conic["presolve"]["not_altered"].items()} }; small circles by '
+                  f'family {conic["presolve"]["not_altered"]["small_circles_r_lt_1e-4"]["by_family"]}; identity '
+                  f'at the certified point {json.dumps(feas["identity"].get("presolved"))}')
         prepared[tag] = (data, conic, x_cert, networks)
         print(f'[gate i/ii] {tag}: obj at certified {obj_cl:.6f} (T0.1c {ref:.6f}); identity over-tolerance '
               f'{feas["identity"]["n_over_tolerance"]}; class over-threshold {feas["n_over_class_threshold"]}')
 
     # ==================================================================================================================
-    #  Phase 2: the two declared solves (only if no stop), then the measurements
+    #  Phase 2: the declared solves (only if no stop), then the measurements
     # ==================================================================================================================
     rss = {}
+    solves = {}                                 # ablation: one record per solve label (the smoke records per group)
+    n_solved = 0
 
     def note_rss():
         return {'self_max_rss_bytes': resource.getrusage(resource.RUSAGE_SELF).ru_maxrss}
 
     if not stops:
-        for tag, (data, conic, x_cert, networks) in prepared.items():
-            g = groups[tag]
-            print(f'\n========== solve {tag} ==========')
+        for label, tag, max_iter in SOLVE_PLAN:
+            data, conic, x_cert, networks = prepared[tag]
+            if ABLATION:
+                g = solves[label] = {'group': tag, 'max_iter': max_iter, 'presolve': PRESOLVE,
+                                     'instance': groups[tag]['instance'], 'gross_group': groups[tag]['gross_group'],
+                                     'q_cert_plus_group': groups[tag]['q_cert_plus_group']}
+            else:
+                g = groups[tag]
+            print(f'\n========== solve {label} ==========')
             cones = clarabel_cones(conic)
             settings = dict(CLARABEL_OVERRIDES)
+            if max_iter is not None:
+                settings['max_iter'] = max_iter
             rss_before = note_rss()
-            log_path = os.path.join(OUT_DIR, 'logs', f'{tag}.clarabel.log')
+            log_path = os.path.join(OUT_DIR, 'logs', f'{label}.clarabel.log')
             os.makedirs(os.path.dirname(log_path), exist_ok=True)
             if DRY:
                 st = clarabel.DefaultSettings()
@@ -915,12 +1289,13 @@ def child():
                 payload = {'P': conic['P'], 'q': conic['q'], 'A': conic['A'], 'b': conic['b'], 'cones': cones,
                            'settings': settings}
                 res = _leaf_solve(payload)
+                n_solved += 1
             rss_after = note_rss()
             with open(log_path, 'w') as handle:
                 handle.write(res['log_text'] or '')
             print(res['log_text'] or '[log] (empty print buffer)')
             x, z, s = res['x'], res['z'], res['s']
-            vec_path = os.path.join(OUT_DIR, 'vectors', f'{tag}.npz')
+            vec_path = os.path.join(OUT_DIR, 'vectors', f'{label}.npz')
             os.makedirs(os.path.dirname(vec_path), exist_ok=True)
             np.savez_compressed(vec_path, x=x, z=z, s=s, x_cert=x_cert)    # saved BEFORE any post-processing
             q_lb = res['obj_val'] + conic['const']
@@ -938,27 +1313,57 @@ def child():
             g['gap_vs_q_cert_plus_keur'] = g['gap_vs_q_cert_plus_eur'] / 1e3
             g['gap_vs_q_cert_plus_rel'] = g['gap_vs_q_cert_plus_eur'] / g['q_cert_plus_group']
             g['gap_vs_gross_eur'] = g['gross_group'] - q_lb
-            print(f'[solve] {tag}: status {res["status"]}, {res["iterations"]} it, Q_LB {q_lb:.4f}, solver gap '
+            print(f'[solve] {label}: status {res["status"]}, {res["iterations"]} it, Q_LB {q_lb:.4f}, solver gap '
                   f'{gap_s:.4e} ({g["solver_gap_rel"]:.3e} rel); Q_cert+ {g["q_cert_plus_group"]:.4f}; gap '
                   f'{g["gap_vs_q_cert_plus_keur"]:.3f} kEUR ({g["gap_vs_q_cert_plus_rel"]:.3e}); setup '
                   f'{res["setup_s"]:.2f} s, solve {res["solve_wall_s"]:.2f} s; peak RSS {rss_after}')
+            if ABLATION:
+                g['converged'] = res['status'] == 'Solved'
+                g['containment_stop_applies'] = res['status'] in CONVERGED_STATUSES
+                print(f'[solve] {label}: r_prim {res["r_prim"]}, r_dual {res["r_dual"]}; info res_primal '
+                      f'{res["info"].get("res_primal")}, res_dual {res["info"].get("res_dual")}, gap_abs '
+                      f'{res["info"].get("gap_abs")}, gap_rel {res["info"].get("gap_rel")}; converged '
+                      f'{g["converged"]}')
             # ---- gate (iii): containment ----
-            if not gate('(iii) G-D0-4 containment: Q_LB - Q_cert+ - solver gap (<= 0)', tag,
+            if not gate('(iii) G-D0-4 containment: Q_LB - Q_cert+ - solver gap (<= 0)', label,
                         q_lb - g['q_cert_plus_group'] - gap_s, 0.0):
-                stops.append({'stop': 'G-D0-4 containment violated', 'group': tag, 'Q_LB': q_lb,
-                              'Q_cert_plus': g['q_cert_plus_group'], 'solver_gap': gap_s})
+                if not ABLATION:
+                    stops.append({'stop': 'G-D0-4 containment violated', 'group': tag, 'Q_LB': q_lb,
+                                  'Q_cert_plus': g['q_cert_plus_group'], 'solver_gap': gap_s})
+                elif g['containment_stop_applies']:
+                    stops.append({'stop': 'G-D0-4 containment violated at a converged point', 'group': tag,
+                                  'solve': label, 'status': res['status'], 'Q_LB': q_lb,
+                                  'Q_cert_plus': g['q_cert_plus_group'], 'solver_gap': gap_s})
+                else:
+                    g['containment_note'] = 'violated at an UNCONVERGED point: recorded, not a stop (task rule)'
             # ---- gate (v): duals ----
             try:
+                if ABLATION:
+                    g['returned_point_lp_violation'] = returned_point_violation(data, x)
+                    g['small_circle_activity'] = small_circle_activity(conic, data, s, z)
+                    rpv = g['returned_point_lp_violation']
+                    worst_ = {k_: (v_['max'], v_.get('worst_row') or v_.get('worst_column'))
+                              for k_, v_ in rpv.items() if isinstance(v_, dict)}
+                    print(f'[point] {label}: max LP-row violation {rpv["max_over_all"]:.3e} {json.dumps(worst_)}')
                 g['duals'] = conic_dual_checks(conic, x, s, z, res['obj_val'], res['obj_val_dual'])
                 gm = gurobi_convention_duals(conic, data, x, s, z)
                 g['duals']['gurobi_convention'] = gm['check']
-                np.savez_compressed(os.path.join(OUT_DIR, 'vectors', f'{tag}.gurobi_convention.npz'),
+                np.savez_compressed(os.path.join(OUT_DIR, 'vectors', f'{label}.gurobi_convention.npz'),
                                     X=x, Pi=gm['Pi'], QCPi=gm['QCPi'], RC=gm['RC'])
-                print(f'[duals] {tag}: ||q + A\'z||_inf {g["duals"]["dual_residual_inf"]:.3e} (q_inf '
+                print(f'[duals] {label}: ||q + A\'z||_inf {g["duals"]["dual_residual_inf"]:.3e} (q_inf '
                       f'{g["duals"]["q_inf"]:.3e}); gap Clarabel {g["duals"]["gap_abs_clarabel"]:.4e}, recomputed '
                       f'{g["duals"]["gap_abs_recomputed"]:.4e}; dual-cone viol SOC {g["duals"]["soc_max_z_violation"]:.2e}'
                       f', min z_nonneg {g["duals"]["nonneg_min_z"]:.2e}; mapped stationarity '
                       f'{gm["check"]["mapped_stationarity_residual_inf"]:.3e}')
+                if ABLATION:
+                    print(f'[duals] {label}: Gurobi-convention stationarity rel to ||c||_inf: strict '
+                          f'{gm["check"]["mapped_stationarity_residual_rel_to_c_inf"]:.3e} (argmax '
+                          f'{gm["check"]["argmax_strict"]}), folded '
+                          f'{gm["check"]["folded_stationarity_residual_rel_to_c_inf"]:.3e} (argmax '
+                          f'{gm["check"]["argmax_folded"]}), untouched columns '
+                          f'{gm["check"]["untouched_columns_stationarity_residual_rel_to_c_inf"]:.3e}; presolve-row '
+                          f'max |z| {gm["check"]["presolve_rows_max_abs_z"]:.3e}; cones with s0 <= 0 '
+                          f'{gm["check"]["n_cones_with_s0_le_0"]}')
                 # T0.2 measurements on the Clarabel solution, through the T0.2 functions themselves
                 g['t02_lagrangian_g'] = T02.lagrangian_bound(data, x, gm['Pi'], gm['QCPi'], gm['RC'], q_lb)
                 rk = T02.rank_and_cycles(data, x, networks, T02._cycle_basis)
@@ -971,7 +1376,7 @@ def child():
             except Exception as error:      # noqa: BLE001 -- recorded; vectors are already saved
                 import traceback
                 g['postprocessing_error'] = traceback.format_exc()
-                print(f'[ERROR] post-processing {tag}: {error!r} (vectors saved; recomputable without a solve)')
+                print(f'[ERROR] post-processing {label}: {error!r} (vectors saved; recomputable without a solve)')
             gc.collect()
             if stops:
                 print('[STOP] containment violated; no further solve')
@@ -981,7 +1386,7 @@ def child():
     tags = list(groups)
     t_x0, t_u = tags[0], tags[1] if len(tags) > 1 else None
     readings = {}
-    if t_u and 'Q_LB' in groups[t_x0] and 'Q_LB' in groups[t_u]:
+    if not ABLATION and t_u and 'Q_LB' in groups[t_x0] and 'Q_LB' in groups[t_u]:
         a, b_ = groups[t_x0], groups[t_u]
         tol = a['solver_gap_abs'] + b_['solver_gap_abs']
         readings['P7'] = {'Q_LB_unit_minus_x0': b_['Q_LB'] - a['Q_LB'], 'tol': tol,
@@ -990,11 +1395,30 @@ def child():
                           'delta_Q_cert_plus_x0_minus_unit': a['q_cert_plus_group'] - b_['q_cert_plus_group']}
         gate('(iv) P7 Q_LB(unit) - Q_LB(x0) - tolerance (<= 0)', f'{t_u} vs {t_x0}',
              b_['Q_LB'] - a['Q_LB'] - tol, 0.0)
+    if ABLATION:
+        readings['P7_pairs'] = {}
+        for it in (200, 5000):
+            lx, lu = f'{_TAGS[0]}.presolve.it{it}', f'{_TAGS[1]}.presolve.it{it}'
+            if 'Q_LB' not in solves.get(lx, {}) or 'Q_LB' not in solves.get(lu, {}):
+                readings['P7_pairs'][f'it{it}'] = {'available': False}
+                continue
+            a, b_ = solves[lx], solves[lu]
+            tol = a['solver_gap_abs'] + b_['solver_gap_abs']
+            both = bool(a['solve']['status'] == 'Solved' and b_['solve']['status'] == 'Solved')
+            readings['P7_pairs'][f'it{it}'] = {
+                'available': True, 'both_converged': both, 'statuses': [a['solve']['status'], b_['solve']['status']],
+                'Q_LB_x0': a['Q_LB'], 'Q_LB_unit': b_['Q_LB'], 'Q_LB_unit_minus_x0': b_['Q_LB'] - a['Q_LB'],
+                'tol': tol, 'held': bool(b_['Q_LB'] <= a['Q_LB'] + tol),
+                'delta_Q_cert_plus_x0_minus_unit': a['q_cert_plus_group'] - b_['q_cert_plus_group'],
+                'note': None if both else 'not both converged: no P7 gate (a reading between iterates is no bound)'}
+            if both:
+                gate('(iv) P7 Q_LB(unit) - Q_LB(x0) - tolerance (<= 0), converged pair', f'{lu} vs {lx}',
+                     b_['Q_LB'] - a['Q_LB'] - tol, 0.0)
 
     # ---- predictions ----
     preds = {}
     solved = [g for g in groups.values() if 'solve' in g]
-    if len(solved) == 2 and not DRY:
+    if not ABLATION and len(solved) == 2 and not DRY:
         preds['K1'] = {'per_group': {t: {'status': g['solve']['status'], 'gap_rel': g['solver_gap_rel'],
                                          'gap_abs_eur': g['solver_gap_abs']} for t, g in groups.items()},
                        'verdict': 'HELD' if all(g['solve']['status'] == 'Solved' and g['solver_gap_rel'] <= 1e-8
@@ -1006,11 +1430,64 @@ def child():
         g0 = groups[t_x0]
         preds['K3'] = {'gap_keur': g0['gap_vs_q_cert_plus_keur'], 'gap_rel': g0['gap_vs_q_cert_plus_rel'],
                        'verdict': 'HELD' if 0.0 <= g0['gap_vs_q_cert_plus_rel'] <= 1e-2 else 'FAILED'}
+    if ABLATION and not DRY:
+        def lab(gi, it):
+            return f'{_TAGS[gi]}.presolve.it{it}'
+
+        def status(label_):
+            return solves.get(label_, {}).get('solve', {}).get('status')
+
+        per = {l_: {'status': status(l_), 'iterations': solves[l_]['solve']['iterations']}
+               for l_ in solves if 'solve' in solves[l_]}
+        b1 = all(status(lab(gi, 200)) == 'Solved' for gi in (0, 1))
+        preds['B1'] = {'per_solve': per, 'verdict': 'HELD' if b1 else 'FAILED'}
+        if b1:
+            preds['B2'] = {'verdict': 'NOT APPLICABLE (B1 held)',
+                           'it5000_statuses': {lab(gi, 5000): status(lab(gi, 5000)) for gi in (0, 1)}}
+        else:
+            need = [gi for gi in (0, 1) if status(lab(gi, 200)) != 'Solved']
+            st5 = {lab(gi, 5000): status(lab(gi, 5000)) for gi in need}
+            preds['B2'] = {'groups_failed_at_200': [_TAGS[gi] for gi in need], 'it5000_statuses': st5,
+                           'verdict': ('INDETERMINATE (not run)' if any(v is None for v in st5.values()) else
+                                       'HELD' if all(v == 'Solved' for v in st5.values()) else 'FAILED')}
+        pick = next((l_ for l_ in (lab(0, 5000), lab(0, 200)) if status(l_) == 'Solved'), None)
+        if pick is None:
+            preds['B3'] = {'verdict': 'INDETERMINATE (no converged x = 0 solve)'}
+        else:
+            s0_ = solves[pick]
+            cont = s0_['Q_LB'] - s0_['q_cert_plus_group'] - s0_['solver_gap_abs']
+            preds['B3'] = {'solve': pick, 'containment_Q_LB_minus_Qcert_plus_minus_gap': cont,
+                           'gap_keur': s0_['gap_vs_q_cert_plus_keur'], 'gap_rel': s0_['gap_vs_q_cert_plus_rel'],
+                           'verdict': 'HELD' if cont <= 0.0 and s0_['gap_vs_q_cert_plus_rel'] <= 1e-2 else 'FAILED'}
+        pair = next((k_ for k_ in ('it5000', 'it200') if readings['P7_pairs'].get(k_, {}).get('both_converged')),
+                    None)
+        if pair is None:
+            preds['B4'] = {'verdict': 'INDETERMINATE (no converged pair)'}
+        else:
+            p_ = readings['P7_pairs'][pair]
+            preds['B4'] = {'pair': pair, 'Q_LB_unit_minus_x0': p_['Q_LB_unit_minus_x0'], 'tol': p_['tol'],
+                           'verdict': 'HELD' if p_['held'] else 'FAILED'}
+        conv5 = {l_: solves[l_]['duals']['gurobi_convention'] for l_ in solves
+                 if status(l_) == 'Solved' and 'duals' in solves[l_]}
+        if not conv5:
+            preds['B5'] = {'verdict': 'INDETERMINATE (no converged point)'}
+        else:
+            preds['B5'] = {
+                'per_solve': {l_: {k_: c_[k_] for k_ in ('mapped_stationarity_residual_rel_to_c_inf',
+                                                         'folded_stationarity_residual_rel_to_c_inf',
+                                                         'untouched_columns_stationarity_residual_rel_to_c_inf',
+                                                         'argmax_strict', 'argmax_folded',
+                                                         'presolve_rows_max_abs_z')}
+                              for l_, c_ in conv5.items()},
+                'verdict': 'HELD' if all(c_['mapped_stationarity_residual_rel_to_c_inf'] <= B5_STATIONARITY_REL
+                                         for c_ in conv5.values()) else 'FAILED',
+                'verdict_folded_reading': 'HELD' if all(c_['folded_stationarity_residual_rel_to_c_inf'] <=
+                                                        B5_STATIONARITY_REL for c_ in conv5.values()) else 'FAILED'}
     for k_, text in PREDICTIONS.items():
         preds.setdefault(k_, {'verdict': None})['prediction'] = text
 
     # ---- projection (vi) ----
-    if solved:
+    if solved and not ABLATION:
         mean_solve = sum(g['solve']['wall_s'] for g in solved) / len(solved)
         mean_prep = sum(g['read_s'] + g['build_s'] for g in groups.values()) / len(groups)
         readings['projection_108'] = {
@@ -1021,9 +1498,41 @@ def child():
             'note': ('solver-side only; excludes T0.2 post-processing (Lagrangian margin, rank, capacity sensitivity, '
                      'block unpickling) and the 24 IPOPT cross-checks; the fixed-mode and freeze solves are assumed '
                      'to cost one group solve each')}
+    real = [g for g in solves.values() if 'solve' in g and g['solve']['iterations'] > 0]
+    if ABLATION and real:
+        mean_prep = sum(g['read_s'] + g['build_s'] for g in groups.values()) / len(groups)
+        per_it = sum(g['solve']['solve_wall_s'] / g['solve']['iterations'] for g in real) / len(real)
+        first_conv = {}
+        for gi in (0, 1):
+            l_ = next((lab_ for lab_ in (f'{_TAGS[gi]}.presolve.it200', f'{_TAGS[gi]}.presolve.it5000')
+                       if solves.get(lab_, {}).get('solve', {}).get('status') == 'Solved'), None)
+            if l_:
+                first_conv[_TAGS[gi]] = l_
+        proj = {'mean_read_plus_build_s': mean_prep, 'mean_solve_s_per_iteration': per_it,
+                'projected_72_reads_builds_s': 72 * mean_prep,
+                'peak_rss_bytes': max(g['solve']['rss_after']['self_max_rss_bytes'] for g in real),
+                'first_converged_solve_per_group': first_conv,
+                'note': ('solver-side only; excludes T0.2 post-processing (Lagrangian margin, rank, capacity '
+                         'sensitivity, block unpickling) and the 24 IPOPT cross-checks; the fixed-mode and freeze '
+                         'solves are assumed to cost one group solve each; two groups of 72 measured')}
+        if len(first_conv) == 2:
+            chosen = [solves[l_] for l_ in first_conv.values()]
+            mean_solve = sum(g['solve']['wall_s'] for g in chosen) / len(chosen)
+            mean_iter = sum(g['solve']['iterations'] for g in chosen) / len(chosen)
+            proj.update({'basis': 'converged', 'mean_setup_plus_solve_s': mean_solve,
+                         'mean_iterations_to_converge': mean_iter, 'projected_108_solves_s': 108 * mean_solve,
+                         'projected_total_s': 108 * mean_solve + 72 * mean_prep})
+        else:
+            caps = [g for g in real if g['max_iter'] == 5000]
+            if caps:
+                mean_solve = sum(g['solve']['wall_s'] for g in caps) / len(caps)
+                proj.update({'basis': 'NOT converged on both groups: 108 x the mean it5000 wall (a floor at the cap)',
+                             'mean_setup_plus_solve_s': mean_solve, 'projected_108_solves_s': 108 * mean_solve,
+                             'projected_total_s': 108 * mean_solve + 72 * mean_prep})
+        readings['projection_108'] = proj
 
     # ---- guards, containment, provenance ----
-    expected = 0 if DRY else sum(1 for g in groups.values() if 'solve' in g)
+    expected = 0 if DRY else n_solved
     if not DRY and not stops and expected != DECLARED_SOLVES:
         stops.append({'stop': f'solved {expected} != declared {DECLARED_SOLVES}'})
     cl_fail = clarabel_guard.verify(expected)
@@ -1066,7 +1575,8 @@ def child():
                  'leaf_static_check': {'names': sorted(leaf_names), 'project_modules_referenced': leaf_project_refs}}
     gates_out = {'rows': gate_rows, 'all_pass': all(r['pass'] for r in gate_rows),
                  'failed': [r for r in gate_rows if not r['pass']], 'stops': stops, 'stop_triggered': bool(stops)}
-    payload = {'stage': 'P5.16 D0 / T0.2-clarabel smoke', 'rehearsal_stand_in': DRY,
+    payload = {'stage': f'P5.16 D0 / T0.2-clarabel {"ablation" if ABLATION else "smoke"}',
+               'rehearsal_stand_in': DRY,
                'objective_convention': ('gross_operational_cost (settlement-EXCLUDED, salvage NOT subtracted) per '
                                         'group; Q_cert+ = gross with every detector slack at max(slack, 0) (spec '
                                         'section 12 ruling 5); gap = Q_cert+ - Q_LB; variant C (calendar-only)'),
@@ -1076,8 +1586,14 @@ def child():
                'thresholds': {'identity_obj_rel': IDENTITY_OBJ_REL, 'ipopt_bound_relax': IPOPT_BOUND_RELAX,
                               't01c_mapping_delta': T01C_MAPPING_DELTA, 'capacity_shift_C': CAPACITY_SHIFT_C},
                'provenance': provenance}
-    write_json('smoke.json', payload)
-    print('[write] smoke.json')
+    if ABLATION:
+        payload['solve_plan'] = [{'label': l_, 'group': t_, 'max_iter': m_, 'presolve': PRESOLVE}
+                                 for l_, t_, m_ in SOLVE_PLAN]
+        payload['solves'] = solves
+        payload['thresholds'].update({'B5_stationarity_rel': B5_STATIONARITY_REL, 'small_circle_r': SMALL_CIRCLE_R,
+                                      'converged_statuses_for_the_containment_stop': CONVERGED_STATUSES})
+    write_json(record_name, payload)
+    print(f'[write] {record_name}')
     print(f'[summary] gates {len(gate_rows)} rows, all pass {gates_out["all_pass"]}; failed '
           f'{sorted({(r["gate"], r["scope"]) for r in gates_out["failed"]})}; stops {stops}; guards '
           f'{guard_out["counted_events"]}; repo writes outside OUT_DIR {len(writes_repo)}; wall '

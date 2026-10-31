@@ -91,6 +91,12 @@ order below stands but W184/W185 are **held** (Planner recommendation R6).
   stalled 1e-2 infeasible, dual converged); likely cause 864/576 empty-interior storage cones ‖(p,q)‖ ≤ 0 →
   4-solve ablation (presolve to p = q = 0, 200 vs 5,000 iterations) — `P5_16_D0_T02_CLARABEL_REPORT.md`,
   evidence `P516D0/t02_clarabel_smoke` (`13f146c7…`). Gurobi works on the Studio (licence 2807206) → T0.2 runs there
+- [x] Clarabel ablation (4 solves): B1/B2 FAILED (MaxIterations 200; NumericalError at 1,436 / InsufficientProgress
+  at 1,235 with r_prim 1.7e-3 / 1.1e-4); the presolve changed nothing (cones decoupled, multipliers 0) — cause
+  unidentified; candidates: 216/144 redundant rhs-0 equalities in the LP; objective entries 4.6e7 on tiny active
+  circles. **Ruling: Gurobi on the Studio primary (R5); one IPOPT smooth-form solve of the x = 0 group here as the
+  interior/well-posedness test before any further Clarabel work** — `P5_16_D0_T02_CLARABEL_REPORT.md`,
+  evidence `t02_clarabel_ablation` (`60bec4d9…`)
 - [ ] **▶ Stopped for the expert (R8)** — no freeze, no campaign until ruled; author: Gurobi key for T0.2; Studio
   Part B files ESSO salvage term; `'mid'` baseline; five-block single-scenario case file;
   cumulative admissibility + general-lattice canonicalization; gate x = 0 bitwise + fixtures unpickle
