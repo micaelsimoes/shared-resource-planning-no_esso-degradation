@@ -1,0 +1,1056 @@
+{
+ "schema": "p515_frozen_spec_v25",
+ "version": 25,
+ "stage": "P5.15 Addendum 40 ruling 1 -- the R3.6 alpha row (settled, 2 x 2) + the unit at alpha = 0.5 -- W65: G9 / G13 re-derived, hull polish as s52, re-smoke r2",
+ "authority": [
+  "PLANNER_BRIEF_2026-09-13.md Addendum 40 rulings 1 and 2",
+  "frozen spec v23 ruling1_alpha_row / ruling2_init_fix",
+  "Planner task W64",
+  "Planner task W65 (rulings 1-7)"
+ ],
+ "predecessor": {
+  "path": "data/SRP1/Results/P515S53/frozen_s53_spec_v24_3ac8c185.json",
+  "sha256": "3ac8c185261e80bfda29b6b7c53645da1d5984af3d20e5aae1db18f685a14074"
+ },
+ "predecessor_not_edited": "v24 stays as frozen; its failed G9 / G13 predictions stay on the record",
+ "amendments_from_v24": {
+  "ruling_1_G13": "v24 G13 floor (charge / alpha >= the |d| form - 1e-9) REFUTED by r1: -2.99e-6. Replaced by a SYMMETRIC band derived from IPOPT's primal tolerances (formulas.P_gap_primal_bound); the check is fixed, the observation is not. Evaluated on the r1 evidence BEFORE r2 (g13_r1_evaluation): ADMITTED, |obs| / E = 1.196e-3.",
+  "ruling_2_G9": "v24 G9 limit (< 10 MB) REFUTED by r1: 25.15 MB (15,823 entries at ~1.35 kB, indent 1). The capture is written in a COMPACT, LOSSLESS layout (new_capture.w65.layout); entries are NEVER capped or subsampled; the limit is re-declared as a structural ceiling from measurement (smoke_gate.g9).",
+  "ruling_3_alpha_arb": "the recomputed alpha_arb governs (alpha_arb); both provenances recorded; conclusion unchanged",
+  "ruling_4_hull_polish": "post-certification hull polish on every cell, configured exactly as the s52 pilot ({persist_certified_models: False, hull_polish: True}, reference None), asserted equal to p515_s52_pilot_campaign's pilot stage; Q stays certified_cost (unpolished), as the pilot's value and R were computed",
+  "ruling_5_init_identity_scope": "the cycle-0 identity is scoped to the five x = 0 cells plus the (r2) smoke; the unit is a different candidate and is compared with nothing",
+  "ruling_6_isolation": "a zero-solve harness-isolation check for a baseline non-derived SRP1-style configuration (--harness-isolation-check), and the known gaps recorded (known_gaps)",
+  "ruling_7_refreeze_resmoke": "v25 (predecessor v24 3ac8c185, not edited); new campaign ids s53_alpha_row_smoke_r2 / s53_alpha_row_v25; the W64 row spec 870f3af8 (never run) and the r1 smoke 44bc7931 (committed evidence) are superseded and never written again; r2 predictions recorded here BEFORE the run; r2 must reproduce r1 (smoke_gate G16)",
+  "capture_additions_w65": "zero-solve, additive: the IPOPT exit message per block (termination record), the realized (d+ + d-) - |d| decomposition per DSO block (primal_split), the IPOPT options in force per DSO network, and the compact layout with a write-time round-trip check"
+ },
+ "v24_predictions_scored_on_r1": {
+  "source": "r1 smoke_gate.json (776c2344, sha256 62c32adb...) and its evaluation record",
+  "smoke_checks": {
+   "G9_capture_cost": "REFUTED (FAIL): 25,151,522 bytes vs < 10 MB. Why: the Planner's estimate assumed a few thousand rows of ~25 floats; r1 wrote 15,823 entries (15,751 DSO) at ~1.35 kB each with indent 1 and every field name repeated per entry. RSS delta 12.1 MB passed.",
+   "G13_P_formulas": "REFUTED (FAIL): charge / alpha = 32,536,670.811 vs the |d| form 32,536,768.124, relative -2.99e-6 vs the floor -1e-9. Why: the floor assumed the row-18 defining rows and d+/- >= 0 hold EXACTLY; the returned point satisfies them only to IPOPT's primal tolerances -- IPOPT 3.14.18 honor_original_bounds = no leaves the zero leg of a split up to bound_relax_factor = 1e-8 pu BELOW zero (r1: min leg -8.11e-9 pu on the entries; logs: max final bound violation 9.79e-9), and (d+ + d-) - |d| >= -(|r| + 2 beta) per index. The post-hoc P matched the child's live value at relative difference 0.0: the P(0) formula is verified.",
+   "all_other_checks": "PASS (G1-G8, G10-G12, G14, G1b)"
+  },
+  "worker_smoke": {
+   "W-S1": "CONFIRMED: 249 solves (240 network, 9 ESSO), 0 retries, GUARD.verify(249) == []",
+   "W-S2": "CONFIRMED: 60/60 DSO alpha 0.5, 192 active rows, 0 fixed pair Vars; 20/20 TSO",
+   "W-S3": "CONFIRMED: 179742.587656685 (0x1.5f0f4b385591bp+17), compared with 0 records",
+   "W-S4": "PARTLY REFUTED: 2 lines, all finite (confirmed); per-cycle capture 0.259 / 0.260 s, BELOW the predicted 0.5-10 s",
+   "W-S5": "REFUTED: 15,823 entries vs 1,500-4,500 predicted; DSO share 99.5 % (>= 95 %, confirmed)",
+   "W-S6": "CONFIRMED: 11,520 / 11,520 at <= 1e-6 (worst 2.51e-7), 0 missing",
+   "W-S7": "REFUTED: charge / alpha is 2.99e-6 BELOW the |d| form, not above it by <= 1e-4 (bound relaxation, see G13)",
+   "W-S8": "CONFIRMED: 60 blocks, every rho_pf 0.132 (in {0.198, 0.132}), some dual_pf_p_req nonzero",
+   "W-S9": "REFUTED on size (25.15 MB vs 2-8 MB); confirmed on capture time (12.5 s) and RSS delta (12.1 MB)",
+   "W-S10": "REFUTED as a range (peak 11.52 GB vs 12.3-13.5 GB); confirmed in substance: below the 12.86 GB twin, the capture did not move the peak (ru_maxrss 11.03 GB before = after the capture)",
+   "W-S11": "CONFIRMED: both keys equal the superseded s52 keys",
+   "W-S12": "CONFIRMED: 1,134.7 s (18.9 min)",
+   "W-S13": "REFUTED: Q-leg share 51.3 % vs 5-40 %"
+  }
+ },
+ "purpose": {
+  "statement": "The row is NOT a search for a coordinated alpha*. Independent review established there is no single threshold in range: the committed alpha_arb distribution (price spread / 2 pibar, instance data) has median 0.022, p90 0.157, max 0.668, so market-arbitrage suppression is essentially complete by alpha ~ 0.25; while the curtailment mechanism needs alpha of order 4+ to hold schedule where flexibility is exhausted. The row is a TWO-MECHANISM COST-OF-COMMITMENT CURVE: arbitrage collapse at low alpha, physical-waste growth at high alpha.",
+  "alpha_arb_recomputed_at_freeze": "the campaign spec freeze recomputes the distribution from the instance (extra.instance_facts.alpha_arb) and records it beside these",
+  "alpha_arb": {
+   "authoritative": {
+    "median": 0.042183120545718114,
+    "p90": 0.18890081514072066,
+    "max": 0.877367699960065,
+    "n_hours": 480,
+    "fraction_of_hours_below": {
+     "0.0": 0.0,
+     "0.1": 0.7270833333333333,
+     "0.25": 0.9458333333333333,
+     "0.5": 0.9916666666666667,
+     "1.0": 1.0
+    }
+   },
+   "authoritative_provenance": "this instance (the 2 x 2 pilot derived case 7ecff44a..., scenario checksum 53b4bea4...): p515_s53_alpha_row_campaign.instance_facts -> p515_s51_coordinated_decomposition.alpha_arb_by_hour on the TSO block prices, per (year, day, hour), 5 representative years x 4 days x 24 h = 480 hours; first recorded in the W64 campaign specs (870f3af8 / 44bc7931, extra.instance_facts.alpha_arb, cd8b7cf8); recomputed at every v25 campaign freeze and asserted EQUAL to the values here",
+   "superseded_figures": {
+    "median": 0.022,
+    "p90": 0.157,
+    "max": 0.668
+   },
+   "superseded_provenance": "the earlier committed decomposition, W46: data/SRP1/Results/P515S51/coordinated_decomposition/w46_r1/analysis.json (sha256 fa49bf81290fbf72f14e1a94224e3939d22da2e23b820d828e22148aea14296c, commit 74923c25), alpha_arb_distribution (median 0.02226, 0.9-quantile 0.15725, max 0.66786, n = 288) -- a DIFFERENT instance: derived case fe054c22..., scenario checksum 9d633584..., 2025 only, 12 DSO blocks (nodes 5 / 7 / 9 x 4 days) x 24 h, DSO-block prices. Quoted by the Planner in the v24 purpose; not wrong for that instance, not this one",
+   "conclusion": "UNCHANGED: arbitrage suppression is essentially complete by alpha ~ 0.25 -- 94.6 % of this instance's hours have alpha_arb < 0.25 and the p90 is 0.189 < 0.25; 99.2 % are below 0.5 and all 480 below 1.0. The tail is heavier than the W46 figures (max 0.877 vs 0.668): 26 of 480 hours (5.4 %) have alpha_arb at or above 0.25 and 4 (0.8 %) at or above 0.5, so the low-alpha end of the curve may still move between 0.25 and 0.5 on those hours"
+  },
+  "v25_note": "the statement above quotes the W46 figures (a different instance); on THIS instance the recomputed values govern (alpha_arb.authoritative); the conclusion is unchanged"
+ },
+ "instance": {
+  "label": "s52_pilot_2x2",
+  "case_path": "data/SRP1/Results/P515S52/pilot_instance/SRP1__s52_pilot_2x2.json",
+  "case_sha256": "7ecff44a874892187d1dd2e3d5ed0664a2f90a4bfa4cdb820a4abcbbd828f949",
+  "scenario_checksum": "53b4bea4142001617282a08541079952564903b6d84db066f90d71a650b7d563",
+  "record_path": "data/SRP1/Results/P515S52/pilot_instance/instance_record.json",
+  "record_sha256": "af539cd13d0fde164c5328b8944e903a46bed177a023f8af985288c8df5afb81",
+  "structure": "5 representative years (2025/28/31/34/37, 3-year blocks) x 4 days x 2 market x 2 operation",
+  "ageing": "BASELINE (C2 + phi_cal 0.985 + soh_min 0.70)",
+  "aa": {
+   "enabled": true,
+   "memory": 5,
+   "regularization": 1e-10,
+   "reject_policy": "keep_memory"
+  },
+  "cost_file": {
+   "path": "data/SRP1/SharedESS/SRP1_ESS.xlsx",
+   "sha256": "e17bd5887e1d0738005ae17c3144593527081c9a0776e19cfaa50aafefe39cd6"
+  },
+  "budget_eur": 1000000.0,
+  "premium_floor": null
+ },
+ "cells": {
+  "alpha_grid_as_ordered": [
+   0.0,
+   0.1,
+   0.25,
+   0.5,
+   1.0
+  ],
+  "cells": {
+   "x0_a0p00": {
+    "point": "x0",
+    "alpha": 0.0,
+    "nodes": {
+     "5": [
+      0.0,
+      0.0
+     ],
+     "7": [
+      0.0,
+      0.0
+     ],
+     "9": [
+      0.0,
+      0.0
+     ]
+    },
+    "investment_year": 2025
+   },
+   "x0_a0p10": {
+    "point": "x0",
+    "alpha": 0.1,
+    "nodes": {
+     "5": [
+      0.0,
+      0.0
+     ],
+     "7": [
+      0.0,
+      0.0
+     ],
+     "9": [
+      0.0,
+      0.0
+     ]
+    },
+    "investment_year": 2025
+   },
+   "x0_a0p25": {
+    "point": "x0",
+    "alpha": 0.25,
+    "nodes": {
+     "5": [
+      0.0,
+      0.0
+     ],
+     "7": [
+      0.0,
+      0.0
+     ],
+     "9": [
+      0.0,
+      0.0
+     ]
+    },
+    "investment_year": 2025
+   },
+   "x0_a0p50": {
+    "point": "x0",
+    "alpha": 0.5,
+    "nodes": {
+     "5": [
+      0.0,
+      0.0
+     ],
+     "7": [
+      0.0,
+      0.0
+     ],
+     "9": [
+      0.0,
+      0.0
+     ]
+    },
+    "investment_year": 2025
+   },
+   "x0_a1p00": {
+    "point": "x0",
+    "alpha": 1.0,
+    "nodes": {
+     "5": [
+      0.0,
+      0.0
+     ],
+     "7": [
+      0.0,
+      0.0
+     ],
+     "9": [
+      0.0,
+      0.0
+     ]
+    },
+    "investment_year": 2025
+   },
+   "n7_4h_e1_a0p50": {
+    "point": "n7_4h_e1",
+    "alpha": 0.5,
+    "nodes": {
+     "5": [
+      0.0,
+      0.0
+     ],
+     "7": [
+      0.25,
+      1.0
+     ],
+     "9": [
+      0.0,
+      0.0
+     ]
+    },
+    "investment_year": 2025
+   }
+  },
+  "all_certified": true,
+  "cap": 500,
+  "required_consecutive_cycles": 10,
+  "post_certification": {
+   "persist_certified_models": false,
+   "hull_polish": true,
+   "reference": null
+  },
+  "post_certification_note": "post-certification hull polish on every cell, configured exactly as the s52 pilot ({persist_certified_models: False, hull_polish: True}, reference None), asserted equal to p515_s52_pilot_campaign's pilot stage; Q stays certified_cost (unpolished), as the pilot's value and R were computed",
+  "concurrency": 2,
+  "run_order_pairs": {
+   "1": [
+    "x0_a0p50",
+    "n7_4h_e1_a0p50"
+   ],
+   "2": [
+    "x0_a0p00",
+    "x0_a1p00"
+   ],
+   "3": [
+    "x0_a0p10",
+    "x0_a0p25"
+   ]
+  },
+  "pair_rationale": {
+   "1": "by value: the alpha = 0.5 pair restates the pilot pair and R on the fixed initialisation",
+   "2": "by value: the two ends of the grid bound the curve (free deviation, strongest premium)",
+   "3": "by value: the interior of the arbitrage-collapse region"
+  },
+  "post_certification_source": "p515_s52_pilot_campaign.POST_CERTIFICATION == STAGES[\"pilot\"][\"post_certification\"] (the s52 pilot, campaign_s52_pilot_nopersist, spec 08790b4d), by import; resolved by the harness with reference None",
+  "campaign_ids": {
+   "row": "s53_alpha_row_v25",
+   "smoke": "s53_alpha_row_smoke_r2"
+  }
+ },
+ "objective_convention": "Q(x) = certified_cost = gross_operational_cost (_get_operational_recourse_components: the CONTRACTED interface settlement and the solver-only interface-voltage pin excluded; the row 18 charge and the price-deviation covariance -- the settlement DEVIATION part -- included, Addendum 38 (C)); value = Q(0) - Q(x); F = I + Q; terminal salvage and net_operational_recourse = gross - salvage reported, excluded.",
+ "formulas": {
+  "notation": "b = DSO (node, year, day) block; w_b = admm_block_weight (_get_admm_block_weight: years x days x annualization -- the Q weighting); s = (s_m, s_o), omega_s = prob_market[s_m] * prob_operation[s_o]; t = hour; B_b = baseMVA; pibar_t = sum_m omega_m pi_{m,t} (model_construction_helpers.expected_market_price; = row18_premium, no floor); d_p[s,t] = p_int[s,t] - pbar_t (MW), d_q likewise (MVAr) -- production _get_local_interface_dispersion per_scenario, captured in multiscenario_terminal.json blocks[b].dispersion.per_scenario_d; all money EUR, horizon-weighted unless stated.",
+  "Q": "Q(alpha) = certified_cost = gross_operational_cost (objective convention above), the cell's certified value",
+  "charge": "charge(alpha) = sum_b w_b row18_deviation_charge_b = multiscenario_terminal summary.all_dso.row18_charge_weighted; row18_deviation_charge_b = sum_{s,t} omega_s alpha pibar_t B_b (dp+ + dp- + dq+ + dq-) (add_scenario_commitment_terms); 0 at alpha = 0 (row 18 not constructed)",
+  "C": "C(alpha) = Q(alpha) - charge(alpha): the comparable system-cost curve; must be NON-DECREASING in alpha",
+  "VP": "VP(alpha) = recourse_components.voltage_pin_total (weighted): the interface-voltage pin, in the SOLVER objective, excluded from Q",
+  "V": "V(alpha) = Q(alpha) + VP(alpha): the value of the solver's system problem (the function the envelope is about)",
+  "A": "A(alpha) = V(alpha) - charge(alpha) = C(alpha) + VP(alpha): non-decreasing at global optima (the rigorous form)",
+  "P_charge": "P(alpha) = charge(alpha) / alpha for alpha > 0: the pibar-weighted deviation volume (EUR per unit alpha)",
+  "P_posthoc": "P(alpha) |d| form, POST HOC from captured data (the alpha = 0 cell's P, so it sits on the same axis): P = sum_b w_b sum_s omega_s sum_t pibar_t (|d_p[s,t]| + |d_q[s,t]|), computed by p515_s44_campaign_harness.p_posthoc_block from multiscenario_terminal.json blocks[b].dispersion {per_scenario_d, probabilities, pibar_by_hour} and blocks[b].admm_block_weight. At alpha > 0 it is the minimal-split form of charge / alpha (d+ + d- >= |d|, equal at an exact minimal split): both are reported, P_charge is the one used for alpha > 0.",
+  "P_used": "P(0) = P_posthoc(0); P(alpha > 0) = P_charge(alpha)",
+  "envelope": {
+   "inequality": "for adjacent alpha1 < alpha2: (alpha2 - alpha1) P(alpha2) <= V(alpha2) - V(alpha1) <= (alpha2 - alpha1) P(alpha1)  (V = Q + VP: the voltage pin is in the solver objective and excluded from Q, so it enters the check; the Q-only form dQ is reported beside it)",
+   "validity": "holds at GLOBAL optima only (V(alpha) = min_x [A_x + alpha P_x] is concave with supergradient P). IPOPT is local and ADMM stops at a bar, so a violation WITHIN resolution is \"consistent\", not a proof; a violation BEYOND the bars means the two cells are not comparable optima.",
+   "violation": "viol = max(LB - dV, dV - UB, 0)",
+   "resolution": "res = bar(alpha1) + bar(alpha2), each the cell's record bar (max |gross step| over the last 10 cycles). Stated limitation: the bar bounds stopping slack of Q, not of VP or P.",
+   "verdict": "\"within\" if viol == 0; \"consistent\" if 0 < viol <= res; \"not comparable optima\" if viol > res"
+  },
+  "monotonicity": "C and A non-decreasing, P non-increasing, each checked per adjacent pair against res (a decrease of C beyond res, or an increase of P beyond the P-step equivalent res / (alpha2 - alpha1), is a finding)",
+  "dispersion": {
+   "E_abs_d": "sum_b [w_b] sum_s omega_s sum_t |d_p| (MWh), weighted and unweighted (all_dso summaries)",
+   "sum_omega_d2": "sum_b [w_b] sum_s omega_s sum_t d_p^2 (MW^2 h), weighted and unweighted",
+   "peak_block_rms": "max_b rms_mw_b (rms_mw_b = sqrt(sum_s omega_s sum_t d_p^2 / n_hours))",
+   "peak_abs_d": "max_b max_abs_mw_b",
+   "worst_block_share": "max_b rms_mw_b / mean_abs_committed_flow_mw_b, reported WITH that block's rms_mw and mean_abs_committed_flow_mw (absolute), and the max-absolute-RMS block with its share"
+  },
+  "split": "market / operation parts of sum omega d^2: p515_s51_coordinated_decomposition.block_decomposition (W46 committed definitions: market_part = sum_t sum_m omega_m dbar_{m,t}^2, operation_part = sum_t sum_s omega_s (d - dbar_{m(s)})^2) per DSO block, aggregated by .aggregate (unweighted, the W46 convention) and also weighted by w_b",
+  "covariance": "the earned price-deviation covariance = production interface_settlement_deviation_total (recourse components, weighted; negative = earned), and the W46 formula sum_t sum_m omega_m (pi_m - pibar) dbar_m (unweighted and weighted) beside it",
+  "curtailment": "per network / hour / scenario: c[g,s,t] = (pg_avail - pg) B (production definitional); V_plus = sum_g max(c, 0); priced at pi_s: sum_s omega_s sum_t pi_{m(s),t} V_plus[s,t]; weighted by w_b per network (response_terminal.json curtailment_by_block / summary.curtailment_per_network); entries above TOL = EQUALITY_TOLERANCE x B carry the dual-based cause (W53 audit classes)",
+  "row18_condition_entries": "DN entries with d_p[s,t] <= +D_TOL_MW (the audit constant) and pi_{m(s),t} < alpha pibar_t: count and volume per cell",
+  "flexibility": "DSO flexibility legs P up / P down / Q up / Q down (omega-weighted, w_b-weighted), per DSO",
+  "Q_leg_share": "charge_q / (charge_p + charge_q), legs from row18_dev_q_* / row18_dev_p_* at the charge coefficients",
+  "unit_value": "value = Q(x0, 0.5) - Q(unit, 0.5); resolution = bar(x0) + bar(unit); value per MWh = value / 1.0; ratio to SRP1 (259,427.77 EUR/MWh, res 34,734.63) against R = 0.937 and the pilot's 0.942; value against the pilot's 244,321.29. v25: Q = certified_cost (UNPOLISHED), exactly as the s52 pilot valued the unit (p515_s52_pilot_campaign._value_block, certified_cost_gross) -- so the restated R is comparable with the pilot's 0.9418 (report; 0.942 rounded in code); the hull polish (gate D) is reported beside, never substituted into Q",
+  "code": "p515_s53_alpha_row_campaign.cell_quantities (per cell) and .row_analysis (across cells); p515_s44_campaign_harness.p_posthoc_block (the P |d| form)",
+  "P_gap_primal_bound": {
+   "statement": "SYMMETRIC band: |P_charge - P_posthoc| <= E,  E = sum_b w_b x 2 x W_b x (eps_b + 2 beta_b)  (EUR per unit alpha)",
+   "symbols": "w_b = admm_block_weight; W_b = sum_s omega_s sum_t pibar_t B_b (ONE leg; P and Q give the factor 2; captured as primal_split.bound_weight); eps_b bounds |r|, r = d - (d+ - d-) the row-18 defining-row residual (per unit) at the block's last IPOPT exit; beta_b bounds the returned point's violation of d+/- >= 0 (per unit)",
+   "derivation": [
+    "row 18 defines d = d+ - d- with d = pg_adn - expected_interface_pf_p (and the Q twin): the SAME d the |d| form reads (_get_local_interface_dispersion), so P_charge - P_posthoc = sum_b w_b sum omega_s pibar_t B_b [(d+ + d-) - |d|] over both legs",
+    "the returned point satisfies the row to a residual r and the bounds d+/- >= 0 only to -beta (IPOPT 3.14.18 honor_original_bounds = no: the final point is NOT projected back into the original bounds)",
+    "per index and leg: (d+ + d-) - |d+ - d- + r| lies in [2 min(d+, d-) - |r|, 2 min(d+, d-) + |r|], and d+/- >= -beta gives 2 min(d+, d-) >= -2 beta, so the LOWER side is >= -(|r| + 2 beta) >= -(eps + 2 beta)",
+    "the weights w_b omega_s pibar_t B_b are >= 0 (pibar_t > 0 on this instance: premium_floor_needed False at freeze), so summing gives P_charge - P_posthoc >= -E",
+    "eps: the row-18 rows have unit coefficients (+1 pg_adn, -1 expected, -1 d+, +1 d-), so gradient-based NLP scaling (nlp_scaling_max_gradient 100) leaves them at scale s = min(1, 100 / 1) = 1; \"Optimal Solution Found\" bounds the SCALED overall NLP error (which contains the scaled constraint violation) by tol and the unscaled violation by constr_viol_tol: eps = min(tol / s, constr_viol_tol); \"Solved To Acceptable Level\": eps = min(acceptable_tol / s, acceptable_constr_viol_tol); any other exit: NO bound (the check fails)",
+    "beta = min(bound_relax_factor x max(1, |0|), constr_viol_tol): IPOPT relaxes every bound by bound_relax_factor, capped absolutely by constr_viol_tol (option documentation, ipopt --print-options)",
+    "SYMMETRIC as ruled: the upper side carries the same primal term PLUS 2 max(0, min(d+, d-)) -- incomplete complementarity of the split, NOT a primal-tolerance quantity. It is MEASURED (primal_split.split_positive) and reported; an upper-side excess beyond E is attributed to it and FAILS the check, never explained away"
+   ],
+   "values_on_this_instance": "DSO case files case33_1/2/3_params.json: tol 1e-5, acceptable_tol 1e-4 (set); constr_viol_tol 1e-4, acceptable_constr_viol_tol 1e-2, bound_relax_factor 1e-8, honor_original_bounds no, nlp_scaling_method gradient-based, nlp_scaling_max_gradient 100 (IPOPT 3.14.18 defaults, unset) -> eps = 1e-5 (optimal) / 1e-4 (acceptable), beta = 1e-8",
+   "retry_caveat": "the options in force are the case file's; a retried last solve's option_overrides are not reflected -- the smoke requires zero retries; in the row the bound is reported with the retry count",
+   "code": "p515_s53_alpha_row_campaign.p_gap_primal_bound / g13_eps_beta; p515_s44_campaign_harness._row18_primal_split_block / ipopt_options_in_force / _termination_record (ipopt_exit)"
+  },
+  "P_gap_decomposition": "captured per DSO block (primal_split), weighted in summary.P_gap_decomposition_weighted: gap = sum omega pibar B [(d+ + d-) - |d|] (== P_charge - P_posthoc up to summation order); split = sum omega pibar B 2 min(d+, d-) = split_positive - split_negative (split_negative: bound violation; split_positive: complementarity); residual = sum omega pibar B |r|; per block |gap - split| <= residual (asserted, reported)",
+  "post_certification": "hull polish per certified cell as the s52 pilot: post_certification.json / the record's summary (status, gate_d: blocks_solved, relative_pct, threshold_pct, pass) reported per cell in cell_quantities"
+ },
+ "reporting_rules": [
+  "Q(alpha) is reported ONLY beside its tangent bounds (the envelope), never as a bare system-cost curve.",
+  "Every dispersion share is reported with its absolute value and its denominator (the mean committed flow moves with alpha).",
+  "Every difference carries its resolution (bar sum); a difference inside it is INDETERMINATE.",
+  "The rule-ten terminal-step-to-threshold ratio is reported for every cell.",
+  "State the objective convention on every table."
+ ],
+ "new_capture": {
+  "1_dual_based_curtailment": "response_terminal.json curtailment_entries: every curtaillable generator-hour-scenario with c > TOL, read at the TERMINAL (in-memory models, before the workbook and any post-certification step): pg, pg_avail, qg, sg_avail, sg, sg_capability slack and dual, class (capability_bound / interior, the audit's CAP_SLACK_TOL), zU(pg), the node-balance dual at the generator bus and at the reference bus (raw, and / (B omega_s) as EUR/MWh), the scenario price, d_p[s,t], d+, d-, the dual of row18_dev_p_def[s,t], zL(d+), zL(d-), the premium and alpha, the active voltage / branch rows of that network-hour (network_hour_rows, the audit's _network_hour_rows with no transformer set), and the IPOPT termination of the block's last solve. Helpers and tolerances BY IMPORT from p515_s53_curtailment_audit (guard disarmed at import).",
+  "2_coordination_state": "response_terminal.json coordination_by_dso_block: the W44 p515_s51_2x2_limit_gate.coordination_record BY IMPORT per DSO block (dual_pf_p/q_req as set for the last solve, rho_pf, the TSO request p/q_pf_req, pbar, the effective objective scale, lambda_AL, penalty_gen_curtailment, interface_settlement_weight, settlement parts, per-scenario curtailment) + the block's termination",
+  "3_per_cycle_response": "per_cycle_response.jsonl, appended every cycle (survives a crash), merged by cycle into per_cycle_record.jsonl: response_cycle, response_captured, response_capture_error, E_abs_d_p_mwh_weighted, E_abs_d_p_mwh_unweighted, sum_omega_d2_p_mw2h_weighted, sum_omega_d2_p_mw2h_unweighted, market_part_mw2h_weighted, operation_part_mw2h_weighted, market_part_mw2h_unweighted, operation_part_mw2h_unweighted, row18_charge_weighted, covariance_dso_weighted, curtailed_res_dso_mwh_weighted, curtailed_res_tso_mwh_weighted, max_abs_d_p_mw, n_non_optimal_block_terminations, non_optimal_blocks, cycle_wall_s, rss_bytes, ru_maxrss_bytes, response_capture_s",
+  "also": "activation_readback.json and initialisation_identity.json (+ <root>/init_identity/<eval dir>.json); row 18 charge by leg with the zL stationarity sanity identity; DSO flexibility legs; the P |d| form per block; voltage_pin_total",
+  "scope": "derived-instance / premium evaluations only; every other evaluation runs exactly as before",
+  "w65": {
+   "termination_record": "every block's last-solve record adds message (the IPOPT .sol exit message) and ipopt_exit (optimal / acceptable / other): Pyomo maps both IPOPT success exits to optimal",
+   "primal_split": "row18_legs_by_dso_block[b].primal_split (_row18_primal_split_block): see formulas.P_gap_decomposition",
+   "options_in_force": "summary.ipopt_options_in_force_dso: the case-file options relevant to G13, IPOPT defaults for unset",
+   "exit_counts": "summary.dso_last_solve_ipopt_exit_counts",
+   "layout": "response_terminal.json schema p515_s44_response_terminal_v2: no indentation; curtailment_entries COLUMNAR (field names once; block-constant fields once per block with the fields that block lacks; network_hour_rows_key rebuilt from block|scenario|hour, asserted per entry); coordination hours columnar; the write-time round trip (decode == captured payload, exact, NaN-safe) or the capture RAISES; read ONLY through H.load_response_terminal (which reads r1's v1 layout unchanged). Nothing is capped, subsampled or dropped.",
+   "scope": "as W64: derived-instance / premium evaluations only"
+  }
+ },
+ "pre_run_assertions": {
+  "before_any_solve_in_the_parent": [
+   "campaign spec checks (entries, alphas, cap, concurrency, configuration, instance, no reference, eval keys recompute; x0_a0p50 / n7_4h_e1_a0p50 keys equal the superseded ones and every other key differs)",
+   "pins (spec v24/v23, instance, ESS params, cost file, sigma check) tracked, clean, hashing as pinned",
+   "rule eleven: H.assert_record_capture_paths + H.assert_alpha_row_capture_paths + this launcher's checklist (every spec-required quantity incl. the P(0) post-hoc formula and its inputs)",
+   "memory preflight at the stage concurrency (P52 rule, refusing)",
+   "declared solve profile 83 per cycle (from the instance, at freeze)",
+   "fresh campaign root / eval dirs / working-dir ids; protected roots snapshotted",
+   "pair order: pair N requires pairs < N complete with verified manifests; pair 1 requires the smoke gate committed and PASS",
+   "v25: pins v23 (sha), v24 (sha AND re-derived content: not edited), v25 (sha AND re-derived content)",
+   "v25: every entry's post_certification == the s52 pilot's ({persist False, hull_polish True, reference None}), asserted at import against p515_s52_pilot_campaign and per entry at freeze and run",
+   "v25: at campaign freeze the instance's structural curtailment maxima == v25 g9.structural_max and alpha_arb == v25 alpha_arb.authoritative",
+   "v25: pair 1 requires the r2 smoke gate (campaign s53_alpha_row_smoke_r2) committed, clean and PASS; its x0 initialisation record is the x = 0 identity reference"
+  ],
+  "before_any_solve_in_the_child": [
+   "H.assert_alpha_row_capture_paths (rule eleven, fail fast)",
+   "the configuration hook (premium alpha applied and read back, AA, ageing)"
+  ],
+  "at_activation_before_any_ADMM_cycle_solve": [
+   "alpha read-back on EVERY DSO block == the arm's alpha; every row 18 row active and no pair Var fixed where alpha > 0; row 18 ABSENT where alpha = 0; TSO carries no row 18",
+   "penalty_gen_curtailment == 0 and interface_settlement_weight == 1 on EVERY block (TSO and DSO)",
+   "the cycle-0 (initialisation) gross cost is BITWISE equal (float.hex) to every earlier record of the same candidate in <root>/init_identity (the smoke's x0 record is placed there before pair 1): the run-time form of the .nl identity. SCOPE: the five x = 0 cells (and the smoke); the unit is a different candidate and is compared with nothing.",
+   "any failure RAISES in the child: the evaluation stops before its first ADMM-cycle solve"
+  ],
+  "note": "the activation-time assertions cannot precede the initialisation solve (activation reads its solution); they precede every ADMM-cycle solve",
+  "init_identity_scope": "W65 ruling 5: the cycle-0 identity (float.hex) is enforced across the FIVE x = 0 cells (x0_a0p00, x0_a0p10, x0_a0p25, x0_a0p50, x0_a1p00) plus the r2 smoke's x0 record (placed as the reference before pair 1). The unit n7_4h_e1_a0p50 is a DIFFERENT candidate: its record is written and listed (other_candidates_not_compared), compared with nothing. r2 vs r1 identity of the smoke's own record is checked by G16.",
+  "harness_isolation_check": "W65 ruling 6, ZERO SOLVES (SolveProfileGuard(permitted=()) verified at exactly 0): --harness-isolation-check -> data/SRP1/Results/P515S53/alpha_row/harness_isolation_check_w65.json; must PASS before the r2 smoke"
+ },
+ "hazard": {
+  "statement": "the alpha = 0.5 x = 0 cell (and the alpha = 0.5 unit) have the SAME evaluation key as the superseded pre-fix pilot cells in campaign_s52_pilot_nopersist: the key identifies candidate x configuration, not code, and the init fix changed code only. The launcher must refuse to consult, reuse or write into any artifact of that campaign.",
+  "protected_roots": [
+   "data/SRP1/Results/P515S52/campaign_s52_pilot_nopersist",
+   "data/SRP1/Results/P515S52/campaign_s52_pilot_repro_nopersist",
+   "data/SRP1/Results/P515S52/campaign_s52_pilot",
+   "data/SRP1/Results/P515S52/campaign_s52_pilot_repro"
+  ],
+  "superseded_keys": {
+   "x0_a0p50": {
+    "superseded_label": "x0",
+    "eval_key": "7d53b6f21b686a44db69f0901e03c870d14e15d00bfaaa6a5379822890918a94",
+    "eval_dir": "7d53b6f21b686a44_x0",
+    "working_dir_ids": {
+     "precheck": "p515s44_s52_pilot_nopersist_7d53b6f21b686a44_precheck",
+     "run": "p515s44_s52_pilot_nopersist_7d53b6f21b686a44_run"
+    }
+   },
+   "n7_4h_e1_a0p50": {
+    "superseded_label": "n7_4h_e1",
+    "eval_key": "711fce9aa74d687892b994e332472c7d59745ef74ce9030abc12d54a9aaf83b4",
+    "eval_dir": "711fce9aa74d6878_n7_4h_e1",
+    "working_dir_ids": {
+     "precheck": "p515s44_s52_pilot_nopersist_711fce9aa74d6878_precheck",
+     "run": "p515s44_s52_pilot_nopersist_711fce9aa74d6878_run"
+    }
+   }
+  },
+  "superseded_spec": {
+   "path": "data/SRP1/Results/P515S52/campaign_s52_pilot_nopersist/campaign_spec_s52_pilot_nopersist_08790b4d.json",
+   "sha256": "08790b4db71a8161ac968479f3547f7908942a910dc387e33b93018161e45f54",
+   "note": "recorded, never read by this launcher"
+  },
+  "enforcement": [
+   "fresh campaign ids (v25: s53_alpha_row_v25, s53_alpha_row_smoke_r2) -> fresh roots, eval dirs and working-dir ids (asserted different from the superseded ones)",
+   "no post_certification.reference (nothing is read from another evaluation)",
+   "the harness evaluate() writes only under its own campaign root (asserted on its source)",
+   "the file metadata (relpath, size, mtime_ns) of every protected root is snapshotted before and after every run: any change fails the run; no file content under a protected root is read",
+   "the eval-key identity is ASSERTED (the hazard is known, not accidental): x0_a0p50 == s52 x0, n7_4h_e1_a0p50 == s52 n7_4h_e1"
+  ],
+  "w64_roots": "the W64 roots campaign_s53_alpha_row (spec 870f3af8, never run) and campaign_s53_alpha_row_smoke (the r1 evidence) are never written; r1 files are READ (G16, the G9 / G13 measurements) only after verifying against r1's committed manifest"
+ },
+ "superseded_w64_campaign_specs": {
+  "row": {
+   "path": "data/SRP1/Results/P515S53/alpha_row/campaign_s53_alpha_row/campaign_spec_s53_alpha_row_870f3af8.json",
+   "sha256": "870f3af8cff8c9bb41ecdcaa368f6044723abc557e1ab8dcfea347902fce9266",
+   "status": "frozen at cd8b7cf8 pinning v24, NEVER RUN; superseded by the v25 row spec (W65 ruling 7)"
+  },
+  "smoke_r1": {
+   "path": "data/SRP1/Results/P515S53/alpha_row/campaign_s53_alpha_row_smoke/campaign_spec_s53_alpha_row_smoke_44bc7931.json",
+   "sha256": "44bc79315915589a2729af1f1fd0ef83bc143e7d1e96222f5b31baca03baf648",
+   "status": "ran as r1 (776c2344): FAILED G9 and G13; committed evidence, cited; never re-run onto"
+  }
+ },
+ "r1_smoke_evidence": {
+  "root": "data/SRP1/Results/P515S53/alpha_row/campaign_s53_alpha_row_smoke",
+  "eval_dir": "data/SRP1/Results/P515S53/alpha_row/campaign_s53_alpha_row_smoke/evals/7d53b6f21b686a44_x0_a0p50",
+  "gate": {
+   "file": "smoke_gate.json",
+   "sha256": "62c32adb059694b85e9b81d650e95a8a58b27151467900c9a132f887ed2f9048"
+  },
+  "manifest": {
+   "file": "smoke_manifest_sha256.json",
+   "sha256": "4af0c2dd4b1844acbf2f00114c43cee79c4cae21745e91d57b5ccaeb5047460a"
+  },
+  "commit": "776c2344",
+  "run_working_dir": "data/SRP1/Results/P56A/evals/p515s44_s53_alpha_row_smoke_7d53b6f21b686a44_run",
+  "failed_checks": [
+   "G13_P_formulas",
+   "G9_capture_cost"
+  ]
+ },
+ "smoke_gate": {
+  "what": "ONE 2-cycle x0 alpha = 0.5 evaluation (campaign s53_alpha_row_smoke_r2, cap 2, concurrency 1, post-certification requested exactly as the row -- the s52 pilot's hull polish -- and SKIPPED because a cap-2 run is not certified) run in the launcher process through the harness child path H._child_real (the gate hooks s38/s39, run_admm_arm, the W47 multi-scenario capture, the W64 capture with the W65 additions), attached, alone",
+  "declared_solve_profile": "SolveProfileGuard(p514_n_instrumented_cstar.PERMITTED) armed around the whole child path; expected = 83 x 3 = 249 + every retry ATTEMPTED (per-event reconciliation, W35); verified EXACTLY with GUARD.verify(expected) (solves and process launches); an unsupported reconciliation fails",
+  "checks": {
+   "G1_guard_exact": "GUARD.verify(expected) == [] and the child's own solve_profile identity holds",
+   "G2_child_ran": "evaluation_record status not_certified (cap 2) with cycles_run == 2, no child error; multiscenario_terminal, operational_workbook and response_terminal all \"written\"",
+   "G3_activation_readback": "all_ok; 60 DSO blocks each alpha_on_model == 0.5, 192 rows all active, 0 pair Vars fixed; 20 TSO blocks penalty 0 / weight 1 / no row 18",
+   "G4_init_identity": "record written with a finite gross cost and its float.hex; compared with 0 records",
+   "G5_per_cycle": "2 response lines, both captured, cycles 1..2 match the trajectory, every numeric response field finite; per_cycle_record.jsonl carries every PER_CYCLE_RECORD_FIELDS key",
+   "G6_row18_duals_nonempty_and_sane": "some DSO curtailment entries carry the row 18 fields, all finite; the zL stationarity identity |zL(d+) + zL(d-)| = 2 omega alpha pibar B holds to rel 1e-4 on >= 99% of the checked indices and to 1e-2 on all, with 0 missing suffix values (n_checked = 2 x 96 x 60 = 11,520)",
+   "G7_coordination_nonempty_and_sane": "60 DSO blocks, no capture error, 24 hours each, dual_pf_p_req / p_pf_req_mw / pbar_mw finite, rho_pf > 0, admm_objective_scale > 0, some dual_pf_p_req != 0",
+   "G8_curtailment_entries": "n > 0; c_mw > tol, pg / pg_avail / qg / sg_avail finite, bus dual present, termination available on every entry (LMP quantiles reported, not gated)",
+   "G9_capture_cost": "response_terminal.json (compact, lossless layout) file_bytes <= 22,000,000 (g9 ceiling); the write-time round trip verified (the written file decodes EXACTLY to the captured payload, every section) and n_entries_written == n_entries_captured == summary.n_curtailment_entries_above_tol == len(decoded entries) -- NO cap; RSS max(after capture, after write-and-verify) - before < 1 GiB",
+   "G10_per_cycle_cost": "per-cycle capture < 60 s per cycle",
+   "G11_eval_key_unchanged": "x0_a0p50 key == the superseded s52 x0 key (computed by the pre-W64 harness) and the row spec's n7_4h_e1_a0p50 key == the s52 unit key",
+   "G12_hazard": "protected-root metadata unchanged before / after",
+   "G13_P_formulas": "(a) the P |d| form post hoc (multiscenario_terminal.json) equals the child live value to rel 1e-9 (unchanged); (b) the bound is derivable: alpha > 0, zero retries credited, every DSO block's last solve succeeded with an IPOPT success exit (optimal / acceptable) and the options in force recorded; (c) SYMMETRIC: |P_charge - P_posthoc| <= E (p_gap_primal_bound). Reported: E, |obs| / E, the realized decomposition (gap, split -/+, residual) and |captured gap - observed gap|",
+   "G14_rule_eleven": "the child's alpha-row checklist all true",
+   "G1b_no_solve_after_verify": "the bounded guard's counts do not move while the (zero-solve) checks run",
+   "G15_post_certification_as_s52": "the entry requests exactly {persist_certified_models: False, hull_polish: True, reference: None} (== the s52 pilot's); post_certification.json written with status skipped (not certified at cap 2), evaluated False; the record's post_certification summary agrees; its solves are covered by G1 (exactly the declared count)",
+   "G16_reproduces_r1": "(i) every r1 check other than G9 / G13 has the SAME verdict in r2 (PASS); (ii) canonical-JSON identity (exact floats) r2 vs r1 of: the solve-guard counts and permitted sites; the initialisation-identity record (gross and component float.hex); activation_readback.json; every per_cycle_record.jsonl and per_cycle_response.jsonl row less the four timing / memory fields (cycle_wall_s, rss_bytes, ru_maxrss_bytes, response_capture_s); multiscenario_terminal.json in full; response_terminal.json decoded and projected onto r1's structure (every r1 key; the W65 additions ignored) less capture_cost and schema; the evaluation-record core (status, cycles_run, certification_cycle, terminal gross / net, recourse components, bar, rule_ten, eval_key, candidate_key); (iii) every r1 file compared verifies against r1's committed manifest. Any difference FAILS G16."
+  },
+  "reported_not_gated": [
+   "smoke process peak RSS vs the s52 repro twin",
+   "LMP quantiles",
+   "Q-leg share",
+   "curtailment counts by class",
+   "wall time",
+   "G13 realized decomposition",
+   "response_terminal.json bytes vs the r1 re-encoding",
+   "RSS after write-and-verify"
+  ],
+  "unchanged_from_v24": [
+   "G1_guard_exact",
+   "G2_child_ran",
+   "G3_activation_readback",
+   "G4_init_identity",
+   "G5_per_cycle",
+   "G6_row18_duals_nonempty_and_sane",
+   "G7_coordination_nonempty_and_sane",
+   "G8_curtailment_entries",
+   "G10_per_cycle_cost",
+   "G11_eval_key_unchanged",
+   "G12_hazard",
+   "G14_rule_eleven",
+   "G1b_no_solve_after_verify"
+  ],
+  "g9": {
+   "ceiling_bytes": 22000000,
+   "ceiling_raw_bytes": 21819425.375,
+   "formula": "ceil_to_1e6( 1.10 x [ N_dso_max x b_dso_max + N_tso_max x b_tso_max + K_max x b_key_max + 1.25 x F_r1 + 50,000 ] )",
+   "how_chosen": "from MEASUREMENT, not an estimate: the committed r1 capture re-encoded with the W65 layout (in memory, decoding back to r1 exactly) gives the per-entry byte maxima (b_dso_max 490, b_tso_max 368), the per network-hour key maximum (b_key_max 362) and the fixed per-block part (F_r1 1,181,377); the entry count is bounded STRUCTURALLY -- at most every curtaillable generator-hour-scenario of every block (N_dso_max 23,040, N_tso_max 11,520; r1 had 15,751 / 72) and every network-hour-scenario (K_max 7,680; r1 5,761) -- so no alpha, the alpha = 1.0 cell included, can exceed it by COUNT. Headroom: 1.25 on the fixed part (the W65 additions: messages, primal split, summary keys) and 1.10 overall. A file above the ceiling therefore means a representation defect (bytes per entry grew), not more curtailment, and FAILS. r1's payload re-encoded is 9,443,819 bytes, 43 % of the ceiling; at the structural maximum the entries alone would be 15.5 MB.",
+   "r1_measurement": {
+    "r1_file": "data/SRP1/Results/P515S53/alpha_row/campaign_s53_alpha_row_smoke/evals/7d53b6f21b686a44_x0_a0p50/response_terminal.json",
+    "r1_file_bytes_v1_indent1": 25151522,
+    "r1_payload_reencoded_bytes_v2": 9443819,
+    "reencoded_decodes_to_r1_exactly": true,
+    "n_entries_r1": {
+     "DSO": 15751,
+     "TSO": 72
+    },
+    "bytes_per_entry_max": {
+     "DSO": 490,
+     "TSO": 368
+    },
+    "bytes_per_network_hour_key_max": 362,
+    "n_network_hour_keys_r1": 5761,
+    "fixed_part_bytes_r1": 1181377,
+    "entries_header_bytes_r1": 16276
+   },
+   "structural_max": {
+    "n_entries_dso": 23040,
+    "n_entries_tso": 11520,
+    "n_network_hour_scenarios": 7680
+   },
+   "code": "p515_s53_alpha_row_campaign.measure_r1_encoding / g9_ceiling_bytes; p515_s44_campaign_harness.encode_response_payload / decode_response_payload / load_response_terminal / write_response_terminal"
+  }
+ },
+ "g13_r1_evaluation": {
+  "eps": 1e-05,
+  "beta": 1e-08,
+  "baseMVA_dso": [
+   100.0
+  ],
+  "W_weighted_sum_eur_per_alpha_per_pu": 4058936966.8023076,
+  "E_eur_per_alpha": 81341.09681471824,
+  "E_rel_to_P_posthoc": 0.002499974690292382,
+  "P_charge_r1": 32536670.811121777,
+  "P_posthoc_r1": 32536768.12432252,
+  "observed_gap_eur_per_alpha": -97.3132007420063,
+  "observed_gap_rel": -2.990868680324179e-06,
+  "observed_over_E": 0.0011963595839341815,
+  "bound_relaxation_part_only_4_beta_W": 162.3574786720923,
+  "row_residual_part_only_2_eps_W": 81178.73933604616,
+  "admitted": true,
+  "realized_on_r1_entries": {
+   "n": 15751,
+   "max_abs_row_residual_mw": 3.448604577008862e-09,
+   "max_abs_row_residual_pu": 3.448604577008862e-11,
+   "min_split_leg_mw": -8.108688182541835e-07,
+   "min_split_leg_pu": -8.108688182541835e-09,
+   "max_split_leg_mw": 5.2878984725565305e-06,
+   "note": "the P leg on curtailment entries only (a sample, not every index); r2 captures every index and both legs (primal_split)"
+  },
+  "inputs_sha256": {
+   "data/SRP1/Results/P515S53/alpha_row/campaign_s53_alpha_row_smoke/evals/7d53b6f21b686a44_x0_a0p50/multiscenario_terminal.json": "497fd88a2f2c28598e0ea35790e38a7460e1e9588e494e4f1c385720405d6bbb",
+   "data/SRP1/Results/P515S53/alpha_row/campaign_s53_alpha_row_smoke/evals/7d53b6f21b686a44_x0_a0p50/response_terminal.json": "51b0c9581d76dc2127c1b8989448b17df85ed8b2bfec68354122fbdb1d8d0cd7",
+   "data/SRP1/Results/P515S53/alpha_row/campaign_s53_alpha_row_smoke/smoke_gate.json": "62c32adb059694b85e9b81d650e95a8a58b27151467900c9a132f887ed2f9048",
+   "data/SRP1/case33_1/case33_1_params.json": "8e9e5a536fd1ef2bca5694274a68795d1099884ef23f2134e7db7d3a58c80b8e",
+   "data/SRP1/case33_2/case33_2_params.json": "31b5fedf87b96724dc5676566fd87f1c21dc02ecfb8d2bd9fdf280a9b7be35ff",
+   "data/SRP1/case33_3/case33_3_params.json": "a19bd5b9d18a26deff44dc62a351f2e6c193012c3f7075d12cade4f230760c49"
+  },
+  "eps_beta_by_case_file": {
+   "case33_1": [
+    1e-05,
+    1e-08,
+    "row scale 1.0; exit optimal"
+   ],
+   "case33_2": [
+    1e-05,
+    1e-08,
+    "row scale 1.0; exit optimal"
+   ],
+   "case33_3": [
+    1e-05,
+    1e-08,
+    "row scale 1.0; exit optimal"
+   ]
+  },
+  "r1_logs": {
+   "dir": "data/SRP1/Results/P56A/evals/p515s44_s53_alpha_row_smoke_7d53b6f21b686a44_run/logs",
+   "n_dso_logs": 60,
+   "all_last_exits_optimal": true,
+   "last_exits": [
+    "EXIT: Optimal Solution Found."
+   ],
+   "max_last_final_unscaled_constraint_violation": 2.2706200714390362e-06,
+   "max_last_final_variable_bound_violation": 9.786098275073977e-09,
+   "per_file": {
+    "optim_log_case33_1_2025_Autumn.log": {
+     "sha256": "30ae183e7f4e8538685af4b61790e6c2c20286fe97b11c2a3edb3aad7b61c158",
+     "n_exit_lines": 3,
+     "last_exit": "EXIT: Optimal Solution Found.",
+     "last_final_unscaled_constraint_violation": 3.29613358829306e-09,
+     "last_final_variable_bound_violation": 9.671822803525877e-09
+    },
+    "optim_log_case33_1_2025_Spring.log": {
+     "sha256": "126fcff4ba25679b7a698583e6a4ebc25bb5ee0be2485a5eaf8c23d1af8b4d57",
+     "n_exit_lines": 3,
+     "last_exit": "EXIT: Optimal Solution Found.",
+     "last_final_unscaled_constraint_violation": 2.6164758470947902e-08,
+     "last_final_variable_bound_violation": 9.669301295730961e-09
+    },
+    "optim_log_case33_1_2025_Summer.log": {
+     "sha256": "0237471e2faacde2d82986f3f125bbbf41e70f5183e3ddb51fea33288d3e2736",
+     "n_exit_lines": 3,
+     "last_exit": "EXIT: Optimal Solution Found.",
+     "last_final_unscaled_constraint_violation": 4.860012392526869e-09,
+     "last_final_variable_bound_violation": 9.660903671049066e-09
+    },
+    "optim_log_case33_1_2025_Winter.log": {
+     "sha256": "d49765bea71d37aed99f8cb397bb70b2d68cf5a0ca154026337282719cb5d76f",
+     "n_exit_lines": 3,
+     "last_exit": "EXIT: Optimal Solution Found.",
+     "last_final_unscaled_constraint_violation": 2.400785450995535e-08,
+     "last_final_variable_bound_violation": 9.65635109303471e-09
+    },
+    "optim_log_case33_1_2028_Autumn.log": {
+     "sha256": "29c319d9f82825e7f33d9a1087f42b03ae0943efee236566f3769ff58dcd44d9",
+     "n_exit_lines": 3,
+     "last_exit": "EXIT: Optimal Solution Found.",
+     "last_final_unscaled_constraint_violation": 4.409095311075362e-11,
+     "last_final_variable_bound_violation": 9.663481165268714e-09
+    },
+    "optim_log_case33_1_2028_Spring.log": {
+     "sha256": "9cbd94bd65411c1b0cfc84dc346aba78ceeebfd6e6412ca4980874be837a49ad",
+     "n_exit_lines": 3,
+     "last_exit": "EXIT: Optimal Solution Found.",
+     "last_final_unscaled_constraint_violation": 1.4019879840398985e-09,
+     "last_final_variable_bound_violation": 9.663663966229705e-09
+    },
+    "optim_log_case33_1_2028_Summer.log": {
+     "sha256": "d87c77b683b16bb4e3aa75e93c77630be9e1e0fbfcb71e3fa5159fab1fcd725c",
+     "n_exit_lines": 3,
+     "last_exit": "EXIT: Optimal Solution Found.",
+     "last_final_unscaled_constraint_violation": 2.9498120612814205e-10,
+     "last_final_variable_bound_violation": 9.650428943151246e-09
+    },
+    "optim_log_case33_1_2028_Winter.log": {
+     "sha256": "c29317d0678cd7f4f970718ec6c2942d0becbcd0027ea6e7dd360fe527806d69",
+     "n_exit_lines": 3,
+     "last_exit": "EXIT: Optimal Solution Found.",
+     "last_final_unscaled_constraint_violation": 1.1855049164566367e-09,
+     "last_final_variable_bound_violation": 9.669298210628566e-09
+    },
+    "optim_log_case33_1_2031_Autumn.log": {
+     "sha256": "7d9eb91e2a2ea3debfaa0164431aabd67821d5f12bdd3a391e42f47a2441b4cf",
+     "n_exit_lines": 3,
+     "last_exit": "EXIT: Optimal Solution Found.",
+     "last_final_unscaled_constraint_violation": 3.2956515294557676e-09,
+     "last_final_variable_bound_violation": 9.678094835841603e-09
+    },
+    "optim_log_case33_1_2031_Spring.log": {
+     "sha256": "4b0fdb1fa8f57c41bf59d81eed4ccb3227249fab115f8d20fd63c4cd62163f00",
+     "n_exit_lines": 3,
+     "last_exit": "EXIT: Optimal Solution Found.",
+     "last_final_unscaled_constraint_violation": 5.2762921506385934e-08,
+     "last_final_variable_bound_violation": 9.66653406420775e-09
+    },
+    "optim_log_case33_1_2031_Summer.log": {
+     "sha256": "e2d31b972165fdc6c64070b3a9ba260ac6eb1682ac5f1b979a3bdb7862cd8823",
+     "n_exit_lines": 3,
+     "last_exit": "EXIT: Optimal Solution Found.",
+     "last_final_unscaled_constraint_violation": 9.500494835279483e-11,
+     "last_final_variable_bound_violation": 9.663593953341902e-09
+    },
+    "optim_log_case33_1_2031_Winter.log": {
+     "sha256": "6842c23c1edeca79cce5e2981e4935d4218974d59c74087c98a784bdd0863c8c",
+     "n_exit_lines": 3,
+     "last_exit": "EXIT: Optimal Solution Found.",
+     "last_final_unscaled_constraint_violation": 1.6212831077666578e-10,
+     "last_final_variable_bound_violation": 9.677749622739812e-09
+    },
+    "optim_log_case33_1_2034_Autumn.log": {
+     "sha256": "4ea1b945572443ad303e52def0a12ecb5d178636aafa6c2b57787f8a9690ce00",
+     "n_exit_lines": 3,
+     "last_exit": "EXIT: Optimal Solution Found.",
+     "last_final_unscaled_constraint_violation": 3.972012335706765e-08,
+     "last_final_variable_bound_violation": 9.657034480984611e-09
+    },
+    "optim_log_case33_1_2034_Spring.log": {
+     "sha256": "94465834a29611746fc220b5832cb3cfd00f01243841cb132f0b2632064680c8",
+     "n_exit_lines": 3,
+     "last_exit": "EXIT: Optimal Solution Found.",
+     "last_final_unscaled_constraint_violation": 1.8068156056014693e-08,
+     "last_final_variable_bound_violation": 9.667394651700312e-09
+    },
+    "optim_log_case33_1_2034_Summer.log": {
+     "sha256": "753f6feef2ef2e474f7ed33d5fad6dfbc83636f1724edb72a10931fc618540d9",
+     "n_exit_lines": 3,
+     "last_exit": "EXIT: Optimal Solution Found.",
+     "last_final_unscaled_constraint_violation": 2.5294321724186054e-09,
+     "last_final_variable_bound_violation": 9.657058977271273e-09
+    },
+    "optim_log_case33_1_2034_Winter.log": {
+     "sha256": "c09a981acdbd732ffd984953633039e350af62a978a719ee36372aefe9afe9c6",
+     "n_exit_lines": 3,
+     "last_exit": "EXIT: Optimal Solution Found.",
+     "last_final_unscaled_constraint_violation": 1.4314538799241795e-10,
+     "last_final_variable_bound_violation": 9.693088098932184e-09
+    },
+    "optim_log_case33_1_2037_Autumn.log": {
+     "sha256": "c2ba0116a2253fe80be7f7021c36165f5446fdc41b215e7b96c2aa5c56600465",
+     "n_exit_lines": 3,
+     "last_exit": "EXIT: Optimal Solution Found.",
+     "last_final_unscaled_constraint_violation": 2.9387603461827894e-13,
+     "last_final_variable_bound_violation": 9.68046387334108e-09
+    },
+    "optim_log_case33_1_2037_Spring.log": {
+     "sha256": "8b6b6a418b1c92ab2b9852a314e2cb125677642efbd876b06f3a6b836c084c30",
+     "n_exit_lines": 3,
+     "last_exit": "EXIT: Optimal Solution Found.",
+     "last_final_unscaled_constraint_violation": 4.865805947051882e-08,
+     "last_final_variable_bound_violation": 9.652025900972701e-09
+    },
+    "optim_log_case33_1_2037_Summer.log": {
+     "sha256": "e67fde88dcc180fbaeb991d04a7f533d51ec3bd9df6a7036397f9a1b21a42bda",
+     "n_exit_lines": 3,
+     "last_exit": "EXIT: Optimal Solution Found.",
+     "last_final_unscaled_constraint_violation": 4.3600190124948313e-10,
+     "last_final_variable_bound_violation": 9.669052533989643e-09
+    },
+    "optim_log_case33_1_2037_Winter.log": {
+     "sha256": "f18f65ab519754010fc9f93893ac49d49dc7d0fc8a4f4f31f8ea8b74dbaff993",
+     "n_exit_lines": 3,
+     "last_exit": "EXIT: Optimal Solution Found.",
+     "last_final_unscaled_constraint_violation": 3.8616737585428496e-10,
+     "last_final_variable_bound_violation": 9.676314440805246e-09
+    },
+    "optim_log_case33_2_2025_Autumn.log": {
+     "sha256": "8ea80121ae034f40b7ca058ff96043598a5d46db732eb7d69b603872554b3a4c",
+     "n_exit_lines": 3,
+     "last_exit": "EXIT: Optimal Solution Found.",
+     "last_final_unscaled_constraint_violation": 1.7474669811168297e-07,
+     "last_final_variable_bound_violation": 9.730489382539427e-09
+    },
+    "optim_log_case33_2_2025_Spring.log": {
+     "sha256": "63745d15e2ce81bcc71e2ea1e96e7c4de919b759b56b0bb554b89ddbe95b0c21",
+     "n_exit_lines": 3,
+     "last_exit": "EXIT: Optimal Solution Found.",
+     "last_final_unscaled_constraint_violation": 4.477085369103406e-12,
+     "last_final_variable_bound_violation": 9.76734836284985e-09
+    },
+    "optim_log_case33_2_2025_Summer.log": {
+     "sha256": "1850f18a4a578390af6cdd212e52c020044180d66958877eb3e184c451e5416f",
+     "n_exit_lines": 3,
+     "last_exit": "EXIT: Optimal Solution Found.",
+     "last_final_unscaled_constraint_violation": 1.287369381097747e-07,
+     "last_final_variable_bound_violation": 9.701037826114518e-09
+    },
+    "optim_log_case33_2_2025_Winter.log": {
+     "sha256": "a91d5019549ed1d6196944ae32c9c7ef89a7e99d9ca22e8970859c1d1c22ae93",
+     "n_exit_lines": 3,
+     "last_exit": "EXIT: Optimal Solution Found.",
+     "last_final_unscaled_constraint_violation": 2.2706200714390362e-06,
+     "last_final_variable_bound_violation": 9.712111875985281e-09
+    },
+    "optim_log_case33_2_2028_Autumn.log": {
+     "sha256": "fba37e2d4d7b0ddad475ce372eabac6d9ddbb0e488af337c3b5ee0f4252eca40",
+     "n_exit_lines": 3,
+     "last_exit": "EXIT: Optimal Solution Found.",
+     "last_final_unscaled_constraint_violation": 6.203936724347159e-07,
+     "last_final_variable_bound_violation": 9.661536208675935e-09
+    },
+    "optim_log_case33_2_2028_Spring.log": {
+     "sha256": "6ea51cfcead6de12548cb10d01c7ea399d1ae1f5bd174f41a9ce87bbddb9e93d",
+     "n_exit_lines": 3,
+     "last_exit": "EXIT: Optimal Solution Found.",
+     "last_final_unscaled_constraint_violation": 3.088785782701109e-08,
+     "last_final_variable_bound_violation": 9.750493221260543e-09
+    },
+    "optim_log_case33_2_2028_Summer.log": {
+     "sha256": "94a9296f5ee3fe1e4d7d63e42ae172c4e7a6a6e52ad8c537e433283ded9ef17b",
+     "n_exit_lines": 3,
+     "last_exit": "EXIT: Optimal Solution Found.",
+     "last_final_unscaled_constraint_violation": 7.591227646486232e-10,
+     "last_final_variable_bound_violation": 9.773033000049593e-09
+    },
+    "optim_log_case33_2_2028_Winter.log": {
+     "sha256": "23f738476e02396381a4b592d7df1804bccaf9249bb703f7d3edc7f8f4c04f12",
+     "n_exit_lines": 3,
+     "last_exit": "EXIT: Optimal Solution Found.",
+     "last_final_unscaled_constraint_violation": 1.0287061313896118e-08,
+     "last_final_variable_bound_violation": 9.732673669936042e-09
+    },
+    "optim_log_case33_2_2031_Autumn.log": {
+     "sha256": "49262ed4834338476f5ca0bc890e597b0f7445015778b909522b1fc99fbcbf27",
+     "n_exit_lines": 3,
+     "last_exit": "EXIT: Optimal Solution Found.",
+     "last_final_unscaled_constraint_violation": 3.3498628315697943e-09,
+     "last_final_variable_bound_violation": 9.724558077021079e-09
+    },
+    "optim_log_case33_2_2031_Spring.log": {
+     "sha256": "f2b146743c335d7e4629af739b8f96ce2c5f5cc9399d8114965cf5965014186b",
+     "n_exit_lines": 3,
+     "last_exit": "EXIT: Optimal Solution Found.",
+     "last_final_unscaled_constraint_violation": 5.1705550306807915e-09,
+     "last_final_variable_bound_violation": 9.667162964605882e-09
+    },
+    "optim_log_case33_2_2031_Summer.log": {
+     "sha256": "7edf70159cdec20960ebacb7c385826a16e7d25190ca9c01a5260aa9414d7283",
+     "n_exit_lines": 3,
+     "last_exit": "EXIT: Optimal Solution Found.",
+     "last_final_unscaled_constraint_violation": 3.8916549982559445e-09,
+     "last_final_variable_bound_violation": 9.769448269450166e-09
+    },
+    "optim_log_case33_2_2031_Winter.log": {
+     "sha256": "bf58be2decca76f8e5986d3e1b7dd0dbd0b09a31b0fd9f19ba639637679b9b2e",
+     "n_exit_lines": 3,
+     "last_exit": "EXIT: Optimal Solution Found.",
+     "last_final_unscaled_constraint_violation": 1.5739589476204685e-07,
+     "last_final_variable_bound_violation": 9.735609456043394e-09
+    },
+    "optim_log_case33_2_2034_Autumn.log": {
+     "sha256": "f23bae98e8429f787a66598368a09be62e68b8bcabd5ad61932d47c4a3f0a4af",
+     "n_exit_lines": 3,
+     "last_exit": "EXIT: Optimal Solution Found.",
+     "last_final_unscaled_constraint_violation": 7.960299086562372e-12,
+     "last_final_variable_bound_violation": 9.760563505744095e-09
+    },
+    "optim_log_case33_2_2034_Spring.log": {
+     "sha256": "ad2c9f619e8afa4b0c915ae120cec5c2eea7a5c06671fa13b10f6139890566d2",
+     "n_exit_lines": 3,
+     "last_exit": "EXIT: Optimal Solution Found.",
+     "last_final_unscaled_constraint_violation": 3.725941016612229e-08,
+     "last_final_variable_bound_violation": 9.702890601752684e-09
+    },
+    "optim_log_case33_2_2034_Summer.log": {
+     "sha256": "8b25350411a4c7ab2f25a3e8f63094e8f8a6ccfd00ffad769684ea8dbd5b1df5",
+     "n_exit_lines": 3,
+     "last_exit": "EXIT: Optimal Solution Found.",
+     "last_final_unscaled_constraint_violation": 1.0190539532068167e-08,
+     "last_final_variable_bound_violation": 9.70685314200694e-09
+    },
+    "optim_log_case33_2_2034_Winter.log": {
+     "sha256": "fc72d6b9d685b04c96a9c2aba9dfdc75249483de76b622e4a023aa59676faf80",
+     "n_exit_lines": 3,
+     "last_exit": "EXIT: Optimal Solution Found.",
+     "last_final_unscaled_constraint_violation": 1.4616596821781513e-10,
+     "last_final_variable_bound_violation": 9.786098275073977e-09
+    },
+    "optim_log_case33_2_2037_Autumn.log": {
+     "sha256": "4aeac9263f5d02b67da8e07b18cb94ca5f70bd05bf8e4f54b3b99235f83b12b9",
+     "n_exit_lines": 3,
+     "last_exit": "EXIT: Optimal Solution Found.",
+     "last_final_unscaled_constraint_violation": 6.568190698635873e-08,
+     "last_final_variable_bound_violation": 9.73802652665286e-09
+    },
+    "optim_log_case33_2_2037_Spring.log": {
+     "sha256": "7ab44a5d26668b7216d6c1c31cf6efd482494982fffe277c4ec5b1a7c58cfe7b",
+     "n_exit_lines": 3,
+     "last_exit": "EXIT: Optimal Solution Found.",
+     "last_final_unscaled_constraint_violation": 6.772051530656853e-10,
+     "last_final_variable_bound_violation": 9.690847410957865e-09
+    },
+    "optim_log_case33_2_2037_Summer.log": {
+     "sha256": "6c3b2e65157e15b26f403e22d8097783bdc6b42c39111e221a0d19d97a9fff2a",
+     "n_exit_lines": 3,
+     "last_exit": "EXIT: Optimal Solution Found.",
+     "last_final_unscaled_constraint_violation": 4.224608194946457e-07,
+     "last_final_variable_bound_violation": 9.72318351246543e-09
+    },
+    "optim_log_case33_2_2037_Winter.log": {
+     "sha256": "61c30eddcfd6ded932f46e51efa5423dd76941577ec24fcf712428a013da1600",
+     "n_exit_lines": 3,
+     "last_exit": "EXIT: Optimal Solution Found.",
+     "last_final_unscaled_constraint_violation": 5.756325416328423e-10,
+     "last_final_variable_bound_violation": 9.721804565651748e-09
+    },
+    "optim_log_case33_3_2025_Autumn.log": {
+     "sha256": "af7427ff77839cf203b5cb41e319ef496b8993cf9402a0a1fb7b6d5cf620f306",
+     "n_exit_lines": 3,
+     "last_exit": "EXIT: Optimal Solution Found.",
+     "last_final_unscaled_constraint_violation": 6.015742348708386e-10,
+     "last_final_variable_bound_violation": 9.752072721311288e-09
+    },
+    "optim_log_case33_3_2025_Spring.log": {
+     "sha256": "c2b09ae31f54b3e0604b3029cbbeb2771a534e8376921b1119d97dbcaf229225",
+     "n_exit_lines": 3,
+     "last_exit": "EXIT: Optimal Solution Found.",
+     "last_final_unscaled_constraint_violation": 8.012347176844514e-07,
+     "last_final_variable_bound_violation": 9.67470708129855e-09
+    },
+    "optim_log_case33_3_2025_Summer.log": {
+     "sha256": "b1846c18d91a6eb20dbe7e968cf6af3711183690e6bc29f6df8e09784e6bf5f2",
+     "n_exit_lines": 3,
+     "last_exit": "EXIT: Optimal Solution Found.",
+     "last_final_unscaled_constraint_violation": 9.358486208199679e-13,
+     "last_final_variable_bound_violation": 9.72043925640278e-09
+    },
+    "optim_log_case33_3_2025_Winter.log": {
+     "sha256": "d58c6521bc973e440d44a9ff859d7f6065ff6549a350dbb0813ee3cc5ccae5de",
+     "n_exit_lines": 3,
+     "last_exit": "EXIT: Optimal Solution Found.",
+     "last_final_unscaled_constraint_violation": 4.506811590587745e-12,
+     "last_final_variable_bound_violation": 9.72039948210281e-09
+    },
+    "optim_log_case33_3_2028_Autumn.log": {
+     "sha256": "82e8ff349388ce687b6a2a0b74f2232e24687c75da0f2c583f3bdbf8b29ef539",
+     "n_exit_lines": 3,
+     "last_exit": "EXIT: Optimal Solution Found.",
+     "last_final_unscaled_constraint_violation": 2.515580792650475e-07,
+     "last_final_variable_bound_violation": 9.64881324792599e-09
+    },
+    "optim_log_case33_3_2028_Spring.log": {
+     "sha256": "845c0ba0e696348e02db7736550a440bc1f84b0e1e1b7a6d2ebdf4cd69b9173c",
+     "n_exit_lines": 3,
+     "last_exit": "EXIT: Optimal Solution Found.",
+     "last_final_unscaled_constraint_violation": 1.0372514269718636e-07,
+     "last_final_variable_bound_violation": 9.674505353768889e-09
+    },
+    "optim_log_case33_3_2028_Summer.log": {
+     "sha256": "a3a72144580fdf147c4cf0f79cbfd68fe01f0f06b750ebf054a84b9ccf1235fe",
+     "n_exit_lines": 3,
+     "last_exit": "EXIT: Optimal Solution Found.",
+     "last_final_unscaled_constraint_violation": 6.425460929992965e-08,
+     "last_final_variable_bound_violation": 9.712800076347283e-09
+    },
+    "optim_log_case33_3_2028_Winter.log": {
+     "sha256": "a72f6618742c13569bc7f71c8d6b4390c8b6a517bb94109e024c54911f328a09",
+     "n_exit_lines": 3,
+     "last_exit": "EXIT: Optimal Solution Found.",
+     "last_final_unscaled_constraint_violation": 3.338241905126438e-10,
+     "last_final_variable_bound_violation": 9.761969057988686e-09
+    },
+    "optim_log_case33_3_2031_Autumn.log": {
+     "sha256": "fb76c6cb17549f88a4f60b796deaa59b1092e5e1a5e16d3923c2308fba737fc7",
+     "n_exit_lines": 3,
+     "last_exit": "EXIT: Optimal Solution Found.",
+     "last_final_unscaled_constraint_violation": 7.353700981482802e-12,
+     "last_final_variable_bound_violation": 9.706995798502531e-09
+    },
+    "optim_log_case33_3_2031_Spring.log": {
+     "sha256": "fa5563d8c23d3ffe8a02713a82c1755e3781cd6168a69dded66a0a88b87e3466",
+     "n_exit_lines": 3,
+     "last_exit": "EXIT: Optimal Solution Found.",
+     "last_final_unscaled_constraint_violation": 1.199869925638808e-09,
+     "last_final_variable_bound_violation": 9.702931005089234e-09
+    },
+    "optim_log_case33_3_2031_Summer.log": {
+     "sha256": "e1f64cfa4a4d2ec3d90ab4e45e19c8878837cc327d1f69c5c564627d5c77cdf4",
+     "n_exit_lines": 3,
+     "last_exit": "EXIT: Optimal Solution Found.",
+     "last_final_unscaled_constraint_violation": 1.4476203791247146e-08,
+     "last_final_variable_bound_violation": 9.707194786251795e-09
+    },
+    "optim_log_case33_3_2031_Winter.log": {
+     "sha256": "3f03253b04a184311eb088a2c757c0b539fc5ec480a922e43ffc383002e39a2d",
+     "n_exit_lines": 3,
+     "last_exit": "EXIT: Optimal Solution Found.",
+     "last_final_unscaled_constraint_violation": 1.1212404305016577e-07,
+     "last_final_variable_bound_violation": 9.768298029219119e-09
+    },
+    "optim_log_case33_3_2034_Autumn.log": {
+     "sha256": "e5a9081d2d30afe398251964f01e623cbb07d82f1b2ba7d81440b669050fb2a6",
+     "n_exit_lines": 3,
+     "last_exit": "EXIT: Optimal Solution Found.",
+     "last_final_unscaled_constraint_violation": 1.3158811859037556e-06,
+     "last_final_variable_bound_violation": 9.663508954422754e-09
+    },
+    "optim_log_case33_3_2034_Spring.log": {
+     "sha256": "3c7b5387e7774f995568e37e7f681ece7a345f4cc82485f0b9705a0b0aa6d396",
+     "n_exit_lines": 3,
+     "last_exit": "EXIT: Optimal Solution Found.",
+     "last_final_unscaled_constraint_violation": 1.1312081138470374e-07,
+     "last_final_variable_bound_violation": 9.679739921260326e-09
+    },
+    "optim_log_case33_3_2034_Summer.log": {
+     "sha256": "d330ddfb2fe0895d7e09065a9aa047a229425c961e43139d531c9e1f9bdd0ee5",
+     "n_exit_lines": 3,
+     "last_exit": "EXIT: Optimal Solution Found.",
+     "last_final_unscaled_constraint_violation": 1.341022067280484e-07,
+     "last_final_variable_bound_violation": 9.642057244732607e-09
+    },
+    "optim_log_case33_3_2034_Winter.log": {
+     "sha256": "21213adf340367a527263920521b1b9f64e749d582b6c6ba59dd91577959c12f",
+     "n_exit_lines": 3,
+     "last_exit": "EXIT: Optimal Solution Found.",
+     "last_final_unscaled_constraint_violation": 3.0101211190292076e-08,
+     "last_final_variable_bound_violation": 9.736215446208151e-09
+    },
+    "optim_log_case33_3_2037_Autumn.log": {
+     "sha256": "f5facc6872964cb750bc8329647c9122d1baf3babe3ec13b0ac48c5aae71a3aa",
+     "n_exit_lines": 3,
+     "last_exit": "EXIT: Optimal Solution Found.",
+     "last_final_unscaled_constraint_violation": 6.619038650512721e-11,
+     "last_final_variable_bound_violation": 9.773024875773158e-09
+    },
+    "optim_log_case33_3_2037_Spring.log": {
+     "sha256": "9bb49f2f929bb16310abf0ae8523b8d90917b669336030ddc0c5cae093a698cd",
+     "n_exit_lines": 3,
+     "last_exit": "EXIT: Optimal Solution Found.",
+     "last_final_unscaled_constraint_violation": 1.4583361582611557e-06,
+     "last_final_variable_bound_violation": 9.645629576306738e-09
+    },
+    "optim_log_case33_3_2037_Summer.log": {
+     "sha256": "108172efbd3a9b345fdea30e1c181b38de2834cd01262b12debb22bb387980c2",
+     "n_exit_lines": 3,
+     "last_exit": "EXIT: Optimal Solution Found.",
+     "last_final_unscaled_constraint_violation": 3.4363274101223418e-09,
+     "last_final_variable_bound_violation": 9.737364297399642e-09
+    },
+    "optim_log_case33_3_2037_Winter.log": {
+     "sha256": "8ad815c61f92477d67442153fd642bcfda140dfa2dfb47061973fb91bb4332e9",
+     "n_exit_lines": 3,
+     "last_exit": "EXIT: Optimal Solution Found.",
+     "last_final_unscaled_constraint_violation": 1.0858806565039457e-07,
+     "last_final_variable_bound_violation": 9.77235077673167e-09
+    }
+   }
+  }
+ },
+ "memory": {
+  "rule": "hw.memsize - (wired + anonymous + compressor-occupied) x page size >= 2 x 7 GiB + 4 GiB (one terminal-phase transient at a time: the harness terminal-phase lock)",
+  "required_gib_row": 18.0,
+  "required_gib_smoke": 11.0,
+  "claim_to_verify": "the new capture (1: dual-based curtailment, 2: coordination state) is a few thousand rows of ~25 floats, under 10 MB, no pickling, so the 18 GiB budget at concurrency 2 stands",
+  "how_verified": "the smoke gate MEASURES the capture: response_terminal.json size, RSS before/after the capture (psutil) and ru_maxrss before/after, per-cycle capture RSS and time; and the smoke process peak against the s52 repro twin (same configuration, 2 cycles, 12855246848 bytes)",
+  "v25": "the r1 capture measured RSS +12.1 MB and did not move the peak (ru_maxrss 11.03 GB before = after); the W65 write-and-verify step is measured in r2 (rss_after_write_verify_bytes) and gated with the capture (G9 < 1 GiB); the row's hull polish was part of the s52 pilot the memory rule was set for (unchanged)"
+ },
+ "known_gaps": [
+  "No full SRP1 campaign bitwise gate was run for the W64 / W65 harness change (known and ACCEPTED, W65 ruling 6). What stands in for it: the zero-solve isolation check (harness_isolation_check_w65.json) -- for a baseline non-derived SRP1-style configuration through H._child_real up to the run, none of the six W64 hooks is installed, no W64 capture function is called and no W64 output is written; the post-run branches (per-cycle fields, record keys, terminal capture) by source inspection; the pre-W64 per-cycle tuples by comparison with the pre-W64 harness (git 70950e8c^).",
+  "p515_s45_snapshot_off_two_cycle_gate.py writes {k: row.get(k) for k in H.PER_CYCLE_RECORD_FIELDS}: re-run, it would now write the 22 PER_CYCLE_RESPONSE_FIELDS keys as null in its per-cycle record (W64 finding 6). Not changed (out of scope); its committed artifacts are unaffected.",
+  "G13 bound: the options in force are the case file's; a retried last solve's option_overrides are not reflected (the smoke requires zero retries; the row reports the retry count beside the bound).",
+  "The r1 IPOPT logs used to evaluate the G13 bound on r1 (exits, final violations) are in the untracked P56A working dir; their sha256 are recorded here (g13_r1_evaluation.r1_logs.per_file)."
+ ],
+ "predictions_recorded_before_run": {
+  "planner_spec_v23_ruling1": [
+   "at certified points the market-arbitrage part of sum omega d^2 falls monotonically with alpha and the earned covariance shrinks toward 0, as the 2-cycle sweep showed for that component",
+   "the operation part does NOT fall to zero: it is physical recourse, so dispersion plateaus rather than vanishing; I expect no alpha in this range to reach the 1e-2 MW tolerance",
+   "Q(0) rises with alpha, since the premium is a real cost inside Q: monotone increase across the row",
+   "the non-monotonicity seen at 2 cycles does NOT survive certification - if it does, that is a finding about the formulation rather than the coordination state"
+  ],
+  "planner_spec_v23_ruling2": [
+   "the re-run unit value stays within 10,000 EUR (~4 %) of the pilot's 244,321",
+   "the restated R ratio stays within 0.01 of 0.942"
+  ],
+  "worker_row": {
+   "W-R1": "all 6 cells certify inside cap 500 at 60-130 cycles each; each pair 4-6 h wall",
+   "W-R2": "the cycle-0 gross cost is bitwise equal across the five x = 0 cells and the smoke",
+   "W-R3": "P non-increasing: P(0) > P(0.1) >= P(0.25) >= P(0.5) >= P(1.0); P(0.5) ~ 40 M EUR (pilot charge 20.07 M / 0.5), P(0) 1.5-4 x P(0.5)",
+   "W-R4": "C and A non-decreasing within resolution; every adjacent envelope \"within\" or \"consistent\"",
+   "W-R5": "market part at alpha >= 0.25 <= 5 % of its alpha = 0 value; operation part within +-30 % across the row",
+   "W-R6": "earned covariance magnitude falls >= 10x from alpha = 0 to alpha = 0.25",
+   "W-R7": "DSO curtailed RES (V_plus, weighted) larger at alpha = 1.0 than at alpha = 0 beyond resolution of the priced value; row-18-condition entries grow from alpha 0.25 to 1.0",
+   "W-R8": "V(0.5) - V(0) in [15 M, 60 M] EUR (envelope lower bound 0.5 P(0.5) ~ 20 M)",
+   "W-R9": "Q-leg share of the charge at alpha = 0.5 certified: 2-25 %",
+   "W-R10": "unit value within 10,000 of 244,321 and R within 0.01 of 0.942 (agreeing with the Planner)",
+   "W-R11": "the hull polish is evaluated on every certified cell (post_certification status evaluated, gate D recorded); no pass / fail prediction beyond \"as the pilot\""
+  },
+  "worker_smoke_r2_recorded_before_the_run": {
+   "W2-S1": "G1 as r1: exactly 249 solves (240 network, 9 ESSO), 0 retries, GUARD.verify(249) == []",
+   "W2-S2": "every r1 PASS item (G1-G8, G10-G12, G14, G1b) passes again, and G16 finds r2 IDENTICAL to r1 on every compared quantity (the ADMM path is untouched by W65; the s52 repro reproduced its pilot bitwise) -- about 90 % confident on bitwise identity; a difference would be reported as a G16 FAIL",
+   "W2-S3": "initialisation gross cost 0x1.5f0f4b385591bp+17 (= r1), compared with 0 records",
+   "W2-S4": "G13 PASS: P_charge 32,536,670.811121777 and P_posthoc 32,536,768.12432252 exactly as r1, gap -97.3132, E = 81,341.10 (all 60 DSO exits optimal, eps 1e-5, beta 1e-8), |gap| / E = 1.2e-3; realized: split_negative 97-162 EUR/alpha (it carries the gap), residual term < 1 EUR/alpha, split_positive < 10 EUR/alpha; |captured gap - observed gap| < 1e-3 EUR/alpha",
+   "W2-S5": "G9 PASS: response_terminal.json 9.44-9.56 MB (r1 re-encoded 9,443,819 bytes + the W65 fields) vs the ceiling 22,000,000; round trip verified; 15,823 entries written == captured; RSS delta incl. write-and-verify 0.05-0.5 GiB",
+   "W2-S6": "G15 PASS: requested {persist False, hull_polish True, reference None}; status skipped; evaluated False",
+   "W2-S7": "smoke process peak RSS within 2 % of r1's 11,524,325,376 bytes (the write-verify transient sits below the process peak)",
+   "W2-S8": "wall 17-22 min (r1 18.9 min)",
+   "W2-S9": "isolation check PASS: baseline 0 / 6 W64 wrappers installed, 0 W64 capture calls, 0 W64 files; positive control 6 / 6 installed, alpha-row checklist and hooks each called once; guard verify(0) == []"
+  }
+ },
+ "stop": "DO NOT LAUNCH the row in W65. After the row: STOP FOR REVIEW with the 3x3 prediction attached (v23).",
+ "frozen_utc": "2026-09-24T15:12:17.643721+00:00",
+ "git_head_at_freeze": "b2e349d2d6e0d70312b20733d19d67af9d31beb6",
+ "verified_at_freeze": {
+  "g9_r1_measurement_equal": true,
+  "g13_r1_evaluation_equal": true,
+  "g13_admitted": true,
+  "r1_response_terminal_sha256": "51b0c9581d76dc2127c1b8989448b17df85ed8b2bfec68354122fbdb1d8d0cd7",
+  "v24_rederived": true
+ }
+}

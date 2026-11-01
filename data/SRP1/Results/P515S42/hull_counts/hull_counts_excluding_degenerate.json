@@ -1,0 +1,86 @@
+{
+ "stage": "P5.15 Addendum 24 -- hull-bound active counts excluding degenerate intervals",
+ "authority": [
+  "PLANNER_BRIEF_2026-09-13.md Addendum 24",
+  "data/SRP1/Results/P515S42/frozen_s42_helper_aa_spec_v13_2cab76e8.json"
+ ],
+ "source_artifact": "data/SRP1/Results/P515S41/hull_polish/hull_bound_detail.json",
+ "source_artifact_sha256": "cf90e6e9da9ecef14588caeb215eb0c1d216aed078c3b5f07bff97e1215c2d64",
+ "source_artifact_commit": "2e6c5570",
+ "timestamp_utc": "2026-09-18T19:26:03.594928+00:00",
+ "n_descriptors_total": 8640,
+ "convention": "'active' means: at the polished point, the constrained quantity sits within 1e-9 relative of an interval end (p515_s41_hull_polish.HULL_ACTIVE_REL_TOL, scale max(|lo|,|hi|,1.0)). A degenerate interval (lo == hi) is counted as active BY DEFINITION in the committed hull_polish_results.json convention (_hull_bounds_active's own documented choice); this report's headline numbers are 'n_active_excluding_degenerate' / 'n_non_degenerate' -- degenerate entries removed from BOTH the numerator and the denominator.",
+ "per_channel": {
+  "ESS_P": {
+   "n_total_descriptors": 1728,
+   "n_degenerate": 0,
+   "n_non_degenerate": 1728,
+   "n_active_including_degenerate": 27,
+   "n_active_excluding_degenerate": 27,
+   "active_excluding_degenerate_fraction_of_non_degenerate": 0.015625
+  },
+  "ESS_Q": {
+   "n_total_descriptors": 1728,
+   "n_degenerate": 0,
+   "n_non_degenerate": 1728,
+   "n_active_including_degenerate": 1267,
+   "n_active_excluding_degenerate": 1267,
+   "active_excluding_degenerate_fraction_of_non_degenerate": 0.7332175925925926
+  },
+  "PF_P": {
+   "n_total_descriptors": 1728,
+   "n_degenerate": 0,
+   "n_non_degenerate": 1728,
+   "n_active_including_degenerate": 458,
+   "n_active_excluding_degenerate": 458,
+   "active_excluding_degenerate_fraction_of_non_degenerate": 0.2650462962962963
+  },
+  "PF_Q": {
+   "n_total_descriptors": 1728,
+   "n_degenerate": 0,
+   "n_non_degenerate": 1728,
+   "n_active_including_degenerate": 197,
+   "n_active_excluding_degenerate": 197,
+   "active_excluding_degenerate_fraction_of_non_degenerate": 0.11400462962962964
+  },
+  "V": {
+   "n_total_descriptors": 1728,
+   "n_degenerate": 0,
+   "n_non_degenerate": 1728,
+   "n_active_including_degenerate": 564,
+   "n_active_excluding_degenerate": 564,
+   "active_excluding_degenerate_fraction_of_non_degenerate": 0.3263888888888889
+  }
+ },
+ "cross_check_against_committed_results_json": {
+  "committed_active_including_degenerate": {
+   "V": 564,
+   "PF_P": 458,
+   "ESS_Q": 1267,
+   "PF_Q": 197,
+   "ESS_P": 27
+  },
+  "recomputed_active_including_degenerate": {
+   "V": 564,
+   "PF_P": 458,
+   "ESS_Q": 1267,
+   "PF_Q": 197,
+   "ESS_P": 27
+  },
+  "committed_total": {
+   "V": 1728,
+   "PF_P": 1728,
+   "PF_Q": 1728,
+   "ESS_P": 1728,
+   "ESS_Q": 1728
+  },
+  "recomputed_total": {
+   "V": 1728,
+   "PF_P": 1728,
+   "PF_Q": 1728,
+   "ESS_P": 1728,
+   "ESS_Q": 1728
+  },
+  "matches": true
+ }
+}

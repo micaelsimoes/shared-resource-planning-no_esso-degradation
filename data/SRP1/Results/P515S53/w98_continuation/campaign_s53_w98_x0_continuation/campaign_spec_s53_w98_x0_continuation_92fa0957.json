@@ -1,0 +1,235 @@
+{
+ "authority": [
+  "PLANNER_BRIEF_2026-09-13.md Addendum 51",
+  "Planner task W98",
+  "data/SRP1/Results/P515S53/frozen_s53_spec_v37_774d083f.json"
+ ],
+ "bar_window_cycles": 10,
+ "campaign_id": "s53_w98_x0_continuation",
+ "candidates": [
+  {
+   "canonical": {
+    "investment_year": 2025,
+    "nodes": {
+     "5": [
+      0.0,
+      0.0
+     ],
+     "7": [
+      0.0,
+      0.0
+     ],
+     "9": [
+      0.0,
+      0.0
+     ]
+    }
+   },
+   "certification_continuation": {
+    "continuation_cycles": 30,
+    "early_stop": {
+     "abs_gross_step_below_eur": 500.0,
+     "consecutive_cycles": 3
+    },
+    "hold_after_cycle": 72,
+    "label": "CONTINUATION RUN (W98, spec v37) -- NOT a certification: certification rule disabled; regime held after cycle N (AA off, tight tail on, rho frozen)",
+    "record_all_blocks": true,
+    "replay_reference": {
+     "n_cycles": 72,
+     "per_cycle_record": "data/SRP1/Results/P515S53/w90_3x3/campaign_s53_w91_3x3_pair/evals/f6e9cd53fdbb8ee8_x0/per_cycle_record.jsonl",
+     "sha256": "3f0908014805cbd2e0af558cdca2d1cc07842efc55202db727539c0f9812fe80"
+    }
+   },
+   "effective_anderson_acceleration": {
+    "enabled": true,
+    "memory": 5,
+    "regularization": 1e-10,
+    "reject_policy": "keep_memory"
+   },
+   "eval_dir": "25b92ae0f1f2c02e_x0_cont",
+   "eval_key": "25b92ae0f1f2c02eea9b3811f16edf210479e461e653f474bd23d451ff7bf3e3",
+   "interface_deviation_premium": {
+    "alpha": 0.5,
+    "floor": null
+   },
+   "key": "8435c71859ddde68e7ae5818b4ff91c03b4171791bcfaa70edcc3ddb52bacb57",
+   "label": "x0_cont",
+   "overrides": {},
+   "post_certification": null,
+   "release_solution_bookkeeping": true,
+   "working_dir_ids": {
+    "precheck": "p515s44_s53_w98_x0_continuation_25b92ae0f1f2c02e_precheck",
+    "run": "p515s44_s53_w98_x0_continuation_25b92ae0f1f2c02e_run"
+   }
+  }
+ ],
+ "cap": 102,
+ "concurrency": 1,
+ "configuration": {
+  "apply_rho": false,
+  "arm_label": "s39_D",
+  "case_file": "data/SRP1/SRP1_params.json",
+  "case_file_anderson_acceleration": {
+   "enabled": true,
+   "memory": 5,
+   "regularization": 1e-10,
+   "reject_policy": "keep_memory"
+  },
+  "case_file_last_commit": "b5629311c092863c78cc508eaf34676382ac9f83",
+  "case_file_sha256": "dbfdb2a07d12bfedab5e66bf94b3df98e5ab0305616652b4083266476972006b",
+  "convergence_depth_tail": {
+   "compl_inf_tol": 1e-06,
+   "enabled": true
+  },
+  "derived_instance": {
+   "case_path": "data/SRP1/Results/P515S53/w89_3x3/instance/SRP1__s53_3x3.json",
+   "case_sha256": "2a64e3c5bd06c30c8a015207f41b69257b001094cbd4b185a84394a6765c5871",
+   "changes_vs_source": [
+    {
+     "from": {
+      "2025": 5,
+      "2030": 5,
+      "2035": 5
+     },
+     "key": "Years",
+     "to": {
+      "2025": 3,
+      "2028": 3,
+      "2031": 3,
+      "2034": 3,
+      "2037": 3
+     }
+    },
+    {
+     "from": 1,
+     "key": "NumMarketScenarios",
+     "to": 3
+    },
+    {
+     "from": 1,
+     "key": "TransmissionNetwork[case9].num_operation_scenarios",
+     "to": 3
+    },
+    {
+     "from": 1,
+     "key": "DistributionNetworks[case33_1].num_operation_scenarios",
+     "to": 3
+    },
+    {
+     "from": 1,
+     "key": "DistributionNetworks[case33_2].num_operation_scenarios",
+     "to": 3
+    },
+    {
+     "from": 1,
+     "key": "DistributionNetworks[case33_3].num_operation_scenarios",
+     "to": 3
+    }
+   ],
+   "instance_label": "s53_3x3",
+   "scenario_checksum": "0248a5c8710bdbdf047523ca036bd2f4639546aebf18fd08391a64b340a3b193",
+   "source_case_path": "data/SRP1/SRP1.json",
+   "source_case_sha256": "61a794a7ce7a3fb983f2e92128eec446dd7dbb17ad75a3b3b1c5735f8bd4e4ef"
+  },
+  "ess_ageing_baseline": {
+   "calendar_life_years": 15,
+   "calendar_retention_per_year": 0.985,
+   "calibration": {
+    "cycles_n": 10000,
+    "eol_retention_r": 0.8,
+    "reference_dod_d": 0.8,
+    "status": "ACTIVE"
+   },
+   "cycle_life_nominal": 10000,
+   "depth_of_discharge_nominal": 0.8,
+   "minimum_soh": 0.7
+  },
+  "ess_ageing_baseline_label": "BASELINE (C2 + phi_cal 0.985 + soh_min 0.70)",
+  "ess_params_file": {
+   "last_commit": "2466401d429eeb43a680b36e32947878372c3cbf",
+   "path": "data/SRP1/SharedESS/SRP1_ESS_Params.json",
+   "sha256": "39106f934bf3edbf18f01a5ef1fadfefc2f7a518706e6c8fa6d962617a312706"
+  },
+  "full_diagnostics_in_rows": true,
+  "name": "W98 CONTINUATION of the certified 3 x 3 x = 0 cell -- BASELINE (C2 + phi_cal 0.985 + soh_min 0.70); the 3 x 3 prefix-draw instance s53_3x3; row 18 premium alpha 0.5 (no floor); case-file AA declared; the convergence-depth tail DECLARED {True, 1e-6}; option (b) release_solution_bookkeeping ON; concurrency 1; persistence by the margin rule; no hull polish",
+  "note": "the certified cell's configuration (spec 231558f0) unchanged; the entry adds certification_continuation (keyed); cap N + 30; persistence off; option (b) on",
+  "overrides": {}
+ },
+ "extra": {
+  "base_key_without_continuation": "f6e9cd53fdbb8ee8c80388a13d723c49de5b18173bcfa5c7351cbe0d9e5000d4",
+  "campaign_script": "p515_s53_w98_continuation_campaign.py",
+  "campaign_script_sha256": "50be85daf17e0a226db0139e216a0e3a4a0f3aeaf3ce12a94aa2eb8e6df12436",
+  "certified_cell": {
+   "Q": 842832534.7623764,
+   "campaign_id": "s53_w91_3x3_pair",
+   "certification_cycle": 72,
+   "eval_dir": "data/SRP1/Results/P515S53/w90_3x3/campaign_s53_w91_3x3_pair/evals/f6e9cd53fdbb8ee8_x0",
+   "eval_key": "f6e9cd53fdbb8ee8c80388a13d723c49de5b18173bcfa5c7351cbe0d9e5000d4",
+   "per_cycle_record": {
+    "path": "data/SRP1/Results/P515S53/w90_3x3/campaign_s53_w91_3x3_pair/evals/f6e9cd53fdbb8ee8_x0/per_cycle_record.jsonl",
+    "sha256": "3f0908014805cbd2e0af558cdca2d1cc07842efc55202db727539c0f9812fe80"
+   }
+  },
+  "expected_eval_key": "25b92ae0f1f2c02eea9b3811f16edf210479e461e653f474bd23d451ff7bf3e3",
+  "label": "CONTINUATION RUN (W98, spec v37) -- NOT a certification: certification rule disabled; regime held after cycle N (AA off, tight tail on, rho frozen)",
+  "objective_convention": "Q = gross_operational_cost, settlement EXCLUDED (terminal salvage 0 at x = 0, so gross = net here); every value in this spec and in the run's results is on this convention",
+  "pre_launch_assertion_at_freeze": {
+   "base_key_without_continuation": "f6e9cd53fdbb8ee8c80388a13d723c49de5b18173bcfa5c7351cbe0d9e5000d4",
+   "certified_working_dir_ids": {
+    "precheck": "p515s44_s53_w91_3x3_pair_f6e9cd53fdbb8ee8_precheck",
+    "run": "p515s44_s53_w91_3x3_pair_f6e9cd53fdbb8ee8_run"
+   },
+   "continuation_key": "25b92ae0f1f2c02eea9b3811f16edf210479e461e653f474bd23d451ff7bf3e3",
+   "eval_dir_name": "25b92ae0f1f2c02e_x0_cont",
+   "excluded_roots": [
+    "data/SRP1/Results/P515S53/w98_continuation"
+   ],
+   "holds": true,
+   "n_committed_keys_scanned": 3523,
+   "parts": {
+    "base_key_equals_certified_key": true,
+    "campaign_root_differs_from_certified": true,
+    "certified_eval_dir_untouched_by_this_campaign": true,
+    "continuation_key_absent_from_committed_specs": true,
+    "continuation_key_differs_from_certified_key": true,
+    "eval_dir_name_differs_from_certified": true,
+    "working_dir_ids_differ_from_certified": true,
+    "working_dirs_absent": true
+   },
+   "working_dir_ids": {
+    "precheck": "p515s44_s53_w98_x0_continuation_25b92ae0f1f2c02e_precheck",
+    "run": "p515s44_s53_w98_x0_continuation_25b92ae0f1f2c02e_run"
+   }
+  },
+  "required_bytes": 20584120351.275146,
+  "solve_claim": {
+   "child": "RECONCILED PER EVENT (G5), as the pair: 83 x (cycles_run + 1) + every retry attempted (80 network blocks + 3 ESSO per round; round 0 = initialisation); cycles_run in [75, 102] -> base 6,308 to 8,549",
+   "parent": "never solves: every launcher guard permitted=(), verify(0)"
+  },
+  "stage_spec": {
+   "path": "data/SRP1/Results/P515S53/frozen_s53_spec_v37_774d083f.json",
+   "sha256": "774d083f6b609068ba3e547a67fc9520d94b6f830670354ec0553a0ecc8deb19"
+  },
+  "stage_text": "P5.15 Addendum 51, W98 -- stage 1 of the post-certification continuation (route A): x = 0 replayed under the certifying configuration (bitwise gate against the 72 recorded cycles), then up to 30 further cycles with the certification rule disabled and the certifying regime held (AA off, tight tail on, rho frozen); early stop at |dQ| < 500 EUR for 3 cycles; every block recorded every cycle"
+ },
+ "frozen_utc": "2026-09-27T07:04:53.189891+00:00",
+ "git_head": "876137ac4e0572122c4b7ad1d177739d3e45ef26",
+ "harness": {
+  "path": "p515_s44_campaign_harness.py",
+  "sha256": "f7bcfac6677457d46ba588df86d57ac22327be4038a94d0d4943bbb048b995f2"
+ },
+ "interpreter": "/Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python",
+ "nlp_solver_path_env": {
+  "NLP_SOLVER_PATH": "/usr/local/bin/ipopt",
+  "source": "environment"
+ },
+ "required_consecutive_cycles": 10,
+ "schema": "p515_s44_campaign_spec_v2",
+ "thread_caps": {
+  "MKL_NUM_THREADS": "1",
+  "NUMEXPR_NUM_THREADS": "1",
+  "OMP_NUM_THREADS": "1",
+  "OPENBLAS_NUM_THREADS": "1",
+  "VECLIB_MAXIMUM_THREADS": "1"
+ }
+}

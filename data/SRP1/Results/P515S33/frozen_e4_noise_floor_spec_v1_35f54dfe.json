@@ -1,0 +1,50 @@
+{
+ "authority": "PLANNER_BRIEF_2026-09-13.md Addendum 14 (E4: a few solves; local-solver noise floor sets eps_abs)",
+ "derivation_rule": {
+  "delta_c": "max over fixtures of max(RMS(W1-C1), RMS(W1-T1)) for channel c",
+  "eps_abs": "max(1e-5, 3 * max_c delta_c), rounded UP to the next value of the form 1eK or 3eK",
+  "invalid_if": "any replay does not terminate optimal or acceptable; W1 vs W2 not bitwise identical in the measured entries (report and stop - non-determinism must be understood first); fixture hash mismatch",
+  "note": "Addendum 14: tolerances are not loosened without derivation; this rule is the derivation. eps_abs stays 1e-5 unless the measured floor requires more. eps_rel unchanged at 1e-4."
+ },
+ "fixtures": {
+  "files": {
+   "matched_success_DSO_node7_case33_2_2025_Autumn_cycle7.pkl": {
+    "bytes": 4090848,
+    "path": "data/SRP1/Results/P515S32_run/results/FrozenSMOPF/matched_success_DSO_node7_case33_2_2025_Autumn_cycle7.pkl",
+    "sha256": "85afdd2d5153dff943d568f97f16183999f2c114089fef0bb25e86f8731c9c25"
+   },
+   "matched_success_TSO_case9_2025_Summer_cycle7.pkl": {
+    "bytes": 1588345,
+    "path": "data/SRP1/Results/P515S32_run/results/FrozenSMOPF/matched_success_TSO_case9_2025_Summer_cycle7.pkl",
+    "sha256": "21695017d48d5997218fb3cda877f064e3f788d850050c8aee83b9c51672639c"
+   }
+  },
+  "limitation": "cycle-7 states, not terminal; one TSO block and one DSO block; the ESSO subproblem (tol 1e-10) is not measured",
+  "note": "exact PRE-SOLVE Pyomo models captured by production _save_frozen_network_block during the s32 gate (commit 9627525a; files hash-recorded in data/SRP1/Results/P515S32_run/evidence_manifest_sha256.json); current production formulation; cycle 7, warm-start path"
+ },
+ "measured_quantities": {
+  "ESS": "expected_shared_ess_p and _q entries times s_base divided by (2 * normalization rating), rating = _shared_ess_admm_normalization_mva(S, shared_ess_normalization_floor_mva) as in get_admm_boyd_residual_metrics",
+  "PF": "expected_interface_pf_p and _q entries times s_base divided by the interface rating (get_interface_branch_rating of the DSO network)",
+  "V": "expected_interface_vmag entries (TSO: [dn, p]; DSO: [p]) - already per-unit of v_base",
+  "per_pair_statistics": "for pairs (W1,W2), (W1,C1), (W1,T1): RMS per entry and max abs per entry of the difference, per channel; also termination status, iterations, objective difference"
+ },
+ "permitted_solves": 8,
+ "predecessor": null,
+ "predictions": "none on delta; the report states delta_c against the s32 per-entry steps above",
+ "purpose": "Measure the iterate difference produced by the local NLP solver alone, at fixed inputs, in the Boyd normalized units of each channel, and derive eps_abs from it by a rule frozen here.",
+ "reference_numbers_from_s32": {
+  "ESS_rms_step_per_entry_cycle_150": 5.5e-05,
+  "PF_rms_step_per_entry_cycle_150": 0.00017,
+  "V_rms_step_per_entry_cycles_25_150": 9.2e-05,
+  "network_acceptable_tol": 0.0001,
+  "network_ipopt_tol": 1e-05
+ },
+ "replay_method": "fresh process state per replay: unpickle the fixture anew for EVERY solve (a solve mutates the model); context from p56a_oracle.fresh_planning; solver from production network._create_smopf_solver(net, model, params, from_warm_start=...), exactly as p512_y_tso_replay.py; load solutions into the model; no option changes except those listed per variant",
+ "stage": "P5.15 Step 3.2 E4 - local-solver noise floor, frozen specification v1",
+ "variants_per_fixture": {
+  "C1": "cold (from_warm_start=False, production options)",
+  "T1": "warm with IPOPT tol and acceptable_tol each divided by 10 (tolerance sensitivity reference)",
+  "W1": "warm (from_warm_start=True, production options)",
+  "W2": "warm repeat, identical to W1 (repeatability)"
+ }
+}

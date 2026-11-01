@@ -1,0 +1,377 @@
+{
+  "meta": {
+    "stage": "P5.15 Addendum 3 item 1",
+    "objective": "Remedy (h) verification: two direct ESSO solves of the same reformulated node-7/9 instance the P5.15-1b eps check used, differing only in the ESSO IPOPT tol/acceptable_tol (control 1e-6/1e-5 vs remedy (h) 1e-8/1e-7).",
+    "authority": "PLANNER_BRIEF_2026-09-13.md, Addendum 3, \"Authorized\" item 1 / \"Verification required\"",
+    "construction_commit": "b03c9b14",
+    "construction_source": "p515_1_esso_reform_smoke.py + p515_1b_eps_sensitivity_check.py (imported, not reimplemented)",
+    "capture_path_notes": {
+      "gross_operational_cost": "NOT CAPTURED, same reasoning as P5.15-1b: create_shared_energy_storage_model never builds the TSO/DSO SMOPFs; only the ESSO objective (== feasibility_penalty) is reported."
+    },
+    "instance": {
+      "construction_commit": "b03c9b14",
+      "construction_module": "p515_1_esso_reform_smoke.py + p515_1b_eps_sensitivity_check.py",
+      "baseline_checksum": "5a02b77ccbbbbbb869de92958a3851d095624711abc2dbfc0157466064410358",
+      "smoke_nodes_with_investment": [
+        7,
+        9
+      ],
+      "s_candidate_mva": 1.0,
+      "e_candidate_mvah": 2.0,
+      "amplitude_mw_formula": "0.10 * S_CANDIDATE_MVA",
+      "eps_esso_throughput_both_arms": 0.001,
+      "primary_nodes_for_this_task": [
+        7,
+        9
+      ]
+    },
+    "instance_hash_sha256": "13f219d1aaadaff9401030e226975452e265ce8e1454f5de7b6daa4e19635391",
+    "guard": {
+      "permitted_call_sites": [
+        [
+          "shared_energy_storage_data.py",
+          "_run_solver_attempt"
+        ]
+      ],
+      "expected_solves_declared_in_advance": 6,
+      "observed_counts": {
+        "permitted_solve": 6,
+        "permitted_exec": 6,
+        "blocked_solve": 0,
+        "blocked_exec": 0
+      },
+      "permitted_sites_hit": {
+        "shared_energy_storage_data.py:_run_solver_attempt": 6
+      },
+      "verify_failures": []
+    }
+  },
+  "arms_full": {
+    "control": {
+      "tag": "control",
+      "tol_overrides_in_force": {
+        "tol": 1e-06,
+        "acceptable_tol": 1e-05
+      },
+      "wall_seconds": 0.2975308895111084,
+      "nodes": {
+        "5": {
+          "termination_condition": "optimal",
+          "status": "ok",
+          "objective": -0.005236363636361883,
+          "log_tail_primary": {
+            "log_path": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P5151/tol_check_logs/control/optim_log_node_5.txt",
+            "exit_line": "EXIT: Optimal Solution Found.",
+            "n_iterations": 7
+          },
+          "recovery_fired": false,
+          "log_tail_recovery": null,
+          "diagnostics": {
+            "node_id": 5,
+            "log_path": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P5151/tol_check_logs/control/optim_log_node_5.txt",
+            "complementarity_ratio_max": 0.0,
+            "complementarity_ratio_argmax": null,
+            "n_active_cohort_periods": 0,
+            "eps_esso_throughput_in_force": 0.001,
+            "mu_final": 9.090909090939848e-08,
+            "s_obj": 0.1,
+            "parse_reason": null,
+            "spurious_throughput_bound": 0.0,
+            "spurious_throughput_measured": 0.0
+          }
+        },
+        "7": {
+          "termination_condition": "optimal",
+          "status": "ok",
+          "objective": 0.023830335995985618,
+          "log_tail_primary": {
+            "log_path": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P5151/tol_check_logs/control/optim_log_node_7.txt",
+            "exit_line": "EXIT: Optimal Solution Found.",
+            "n_iterations": 16
+          },
+          "recovery_fired": false,
+          "log_tail_recovery": null,
+          "diagnostics": {
+            "node_id": 7,
+            "log_path": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P5151/tol_check_logs/control/optim_log_node_7.txt",
+            "complementarity_ratio_max": 0.0004631922961631556,
+            "complementarity_ratio_argmax": {
+              "y_inv": 0,
+              "y": 0,
+              "d": 0,
+              "p": 12,
+              "pch": 0.0004631922961631556,
+              "pdch": 0.10046319229616135,
+              "s_max": 1.0
+            },
+            "n_active_cohort_periods": 288,
+            "eps_esso_throughput_in_force": 0.001,
+            "mu_final": 9.23061805926066e-08,
+            "s_obj": 0.1,
+            "parse_reason": null,
+            "spurious_throughput_bound": 0.265841800106707,
+            "spurious_throughput_measured": 0.26669963234898486
+          }
+        },
+        "9": {
+          "termination_condition": "optimal",
+          "status": "ok",
+          "objective": 0.023830335995985618,
+          "log_tail_primary": {
+            "log_path": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P5151/tol_check_logs/control/optim_log_node_9.txt",
+            "exit_line": "EXIT: Optimal Solution Found.",
+            "n_iterations": 16
+          },
+          "recovery_fired": false,
+          "log_tail_recovery": null,
+          "diagnostics": {
+            "node_id": 9,
+            "log_path": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P5151/tol_check_logs/control/optim_log_node_9.txt",
+            "complementarity_ratio_max": 0.0004631922961631556,
+            "complementarity_ratio_argmax": {
+              "y_inv": 0,
+              "y": 0,
+              "d": 0,
+              "p": 12,
+              "pch": 0.0004631922961631556,
+              "pdch": 0.10046319229616135,
+              "s_max": 1.0
+            },
+            "n_active_cohort_periods": 288,
+            "eps_esso_throughput_in_force": 0.001,
+            "mu_final": 9.23061805926066e-08,
+            "s_obj": 0.1,
+            "parse_reason": null,
+            "spurious_throughput_bound": 0.265841800106707,
+            "spurious_throughput_measured": 0.26669963234898486
+          }
+        }
+      },
+      "recovery_diagnostics": [],
+      "esso_complementarity_diagnostics_sink": [
+        {
+          "node_id": 5,
+          "log_path": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P5151/tol_check_logs/control/optim_log_node_5.txt",
+          "complementarity_ratio_max": 0.0,
+          "complementarity_ratio_argmax": null,
+          "n_active_cohort_periods": 0,
+          "eps_esso_throughput_in_force": 0.001,
+          "mu_final": 9.090909090939848e-08,
+          "s_obj": 0.1,
+          "parse_reason": null,
+          "spurious_throughput_bound": 0.0,
+          "spurious_throughput_measured": 0.0
+        },
+        {
+          "node_id": 7,
+          "log_path": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P5151/tol_check_logs/control/optim_log_node_7.txt",
+          "complementarity_ratio_max": 0.0004631922961631556,
+          "complementarity_ratio_argmax": {
+            "y_inv": 0,
+            "y": 0,
+            "d": 0,
+            "p": 12,
+            "pch": 0.0004631922961631556,
+            "pdch": 0.10046319229616135,
+            "s_max": 1.0
+          },
+          "n_active_cohort_periods": 288,
+          "eps_esso_throughput_in_force": 0.001,
+          "mu_final": 9.23061805926066e-08,
+          "s_obj": 0.1,
+          "parse_reason": null,
+          "spurious_throughput_bound": 0.265841800106707,
+          "spurious_throughput_measured": 0.26669963234898486
+        },
+        {
+          "node_id": 9,
+          "log_path": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P5151/tol_check_logs/control/optim_log_node_9.txt",
+          "complementarity_ratio_max": 0.0004631922961631556,
+          "complementarity_ratio_argmax": {
+            "y_inv": 0,
+            "y": 0,
+            "d": 0,
+            "p": 12,
+            "pch": 0.0004631922961631556,
+            "pdch": 0.10046319229616135,
+            "s_max": 1.0
+          },
+          "n_active_cohort_periods": 288,
+          "eps_esso_throughput_in_force": 0.001,
+          "mu_final": 9.23061805926066e-08,
+          "s_obj": 0.1,
+          "parse_reason": null,
+          "spurious_throughput_bound": 0.265841800106707,
+          "spurious_throughput_measured": 0.26669963234898486
+        }
+      ],
+      "total_objective_all_active_nodes": 0.042424308355609355,
+      "total_feasibility_penalty_all_active_nodes": 0.042424308355609355,
+      "complementarity_detector_absolute_max_violation": 0.0004621922961631556,
+      "complementarity_detector_ratio_max_violation": 0.0004631922961631556
+    },
+    "remedy_h": {
+      "tag": "remedy_h",
+      "tol_overrides_in_force": {
+        "tol": 1e-08,
+        "acceptable_tol": 1e-07
+      },
+      "wall_seconds": 0.2438042163848877,
+      "nodes": {
+        "5": {
+          "termination_condition": "optimal",
+          "status": "ok",
+          "objective": -0.005745565995494309,
+          "log_tail_primary": {
+            "log_path": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P5151/tol_check_logs/remedy_h/optim_log_node_5.txt",
+            "exit_line": "EXIT: Optimal Solution Found.",
+            "n_iterations": 7
+          },
+          "recovery_fired": false,
+          "log_tail_recovery": null,
+          "diagnostics": {
+            "node_id": 5,
+            "log_path": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P5151/tol_check_logs/remedy_h/optim_log_node_5.txt",
+            "complementarity_ratio_max": 0.0,
+            "complementarity_ratio_argmax": null,
+            "n_active_cohort_periods": 0,
+            "eps_esso_throughput_in_force": 0.001,
+            "mu_final": 2.5059035600196736e-09,
+            "s_obj": 0.1,
+            "parse_reason": null,
+            "spurious_throughput_bound": 0.0,
+            "spurious_throughput_measured": 0.0
+          }
+        },
+        "7": {
+          "termination_condition": "optimal",
+          "status": "ok",
+          "objective": 0.023047848581170288,
+          "log_tail_primary": {
+            "log_path": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P5151/tol_check_logs/remedy_h/optim_log_node_7.txt",
+            "exit_line": "EXIT: Optimal Solution Found.",
+            "n_iterations": 17
+          },
+          "recovery_fired": false,
+          "log_tail_recovery": null,
+          "diagnostics": {
+            "node_id": 7,
+            "log_path": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P5151/tol_check_logs/remedy_h/optim_log_node_7.txt",
+            "complementarity_ratio_max": 4.535107906477239e-06,
+            "complementarity_ratio_argmax": {
+              "y_inv": 0,
+              "y": 2,
+              "d": 1,
+              "p": 12,
+              "pch": 4.535107906477239e-06,
+              "pdch": 0.10000453510790647,
+              "s_max": 1.0
+            },
+            "n_active_cohort_periods": 288,
+            "eps_esso_throughput_in_force": 0.001,
+            "mu_final": 9.096063001298259e-10,
+            "s_obj": 0.1,
+            "parse_reason": null,
+            "spurious_throughput_bound": 0.0026196661443738988,
+            "spurious_throughput_measured": 0.002612217534001667
+          }
+        },
+        "9": {
+          "termination_condition": "optimal",
+          "status": "ok",
+          "objective": 0.023047848581170288,
+          "log_tail_primary": {
+            "log_path": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P5151/tol_check_logs/remedy_h/optim_log_node_9.txt",
+            "exit_line": "EXIT: Optimal Solution Found.",
+            "n_iterations": 17
+          },
+          "recovery_fired": false,
+          "log_tail_recovery": null,
+          "diagnostics": {
+            "node_id": 9,
+            "log_path": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P5151/tol_check_logs/remedy_h/optim_log_node_9.txt",
+            "complementarity_ratio_max": 4.535107906477239e-06,
+            "complementarity_ratio_argmax": {
+              "y_inv": 0,
+              "y": 2,
+              "d": 1,
+              "p": 12,
+              "pch": 4.535107906477239e-06,
+              "pdch": 0.10000453510790647,
+              "s_max": 1.0
+            },
+            "n_active_cohort_periods": 288,
+            "eps_esso_throughput_in_force": 0.001,
+            "mu_final": 9.096063001298259e-10,
+            "s_obj": 0.1,
+            "parse_reason": null,
+            "spurious_throughput_bound": 0.0026196661443738988,
+            "spurious_throughput_measured": 0.002612217534001667
+          }
+        }
+      },
+      "recovery_diagnostics": [],
+      "esso_complementarity_diagnostics_sink": [
+        {
+          "node_id": 5,
+          "log_path": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P5151/tol_check_logs/remedy_h/optim_log_node_5.txt",
+          "complementarity_ratio_max": 0.0,
+          "complementarity_ratio_argmax": null,
+          "n_active_cohort_periods": 0,
+          "eps_esso_throughput_in_force": 0.001,
+          "mu_final": 2.5059035600196736e-09,
+          "s_obj": 0.1,
+          "parse_reason": null,
+          "spurious_throughput_bound": 0.0,
+          "spurious_throughput_measured": 0.0
+        },
+        {
+          "node_id": 7,
+          "log_path": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P5151/tol_check_logs/remedy_h/optim_log_node_7.txt",
+          "complementarity_ratio_max": 4.535107906477239e-06,
+          "complementarity_ratio_argmax": {
+            "y_inv": 0,
+            "y": 2,
+            "d": 1,
+            "p": 12,
+            "pch": 4.535107906477239e-06,
+            "pdch": 0.10000453510790647,
+            "s_max": 1.0
+          },
+          "n_active_cohort_periods": 288,
+          "eps_esso_throughput_in_force": 0.001,
+          "mu_final": 9.096063001298259e-10,
+          "s_obj": 0.1,
+          "parse_reason": null,
+          "spurious_throughput_bound": 0.0026196661443738988,
+          "spurious_throughput_measured": 0.002612217534001667
+        },
+        {
+          "node_id": 9,
+          "log_path": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P5151/tol_check_logs/remedy_h/optim_log_node_9.txt",
+          "complementarity_ratio_max": 4.535107906477239e-06,
+          "complementarity_ratio_argmax": {
+            "y_inv": 0,
+            "y": 2,
+            "d": 1,
+            "p": 12,
+            "pch": 4.535107906477239e-06,
+            "pdch": 0.10000453510790647,
+            "s_max": 1.0
+          },
+          "n_active_cohort_periods": 288,
+          "eps_esso_throughput_in_force": 0.001,
+          "mu_final": 9.096063001298259e-10,
+          "s_obj": 0.1,
+          "parse_reason": null,
+          "spurious_throughput_bound": 0.0026196661443738988,
+          "spurious_throughput_measured": 0.002612217534001667
+        }
+      ],
+      "total_objective_all_active_nodes": 0.04035013116684627,
+      "total_feasibility_penalty_all_active_nodes": 0.04035013116684627,
+      "complementarity_detector_absolute_max_violation": 3.5351079064772395e-06,
+      "complementarity_detector_ratio_max_violation": 4.535107906477239e-06
+    }
+  }
+}

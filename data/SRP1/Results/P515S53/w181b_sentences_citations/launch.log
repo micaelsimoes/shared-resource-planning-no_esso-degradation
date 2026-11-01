@@ -1,0 +1,128 @@
+repo HEAD 4bcc24630afc865018d808070ef26489c7d308d3; clone HEAD cd57efcb54399cb652a0ac2dcd64e5d3a78d89fc (parent e5322f8); identity ok True
+main.tex sha256 ff7b045edd17136fce7a37d9ef7ec16c8515ab4f8df69f3c33cc021127bbed35; letter sha256 06cc24604c54955964c6000edf48de2aba34408d6a6e499e55122ac705d5cb2c; bib 8db46aeab8be
+prior evidence: {'W179c': {'sha256': '417c270f8fae66c884271aa403ea15e92931af531ff70397300ef653c3f4e19c', 'equals_report': True, 'equals_manifest': True, 'status': 'committed'}, 'W180b': {'sha256': 'bd6343ed7970b343311afe025309c9729d298dfb770db148895574469252b639', 'equals_report': True, 'equals_manifest': True, 'status': 'committed'}, 'W180c': {'sha256': '88e1d1d96d584f53afad6207aa5269eca6adb2197cc1acfb3fa697fad5f95bc9', 'equals_report': True, 'equals_manifest': True, 'status': 'committed'}, 'frozen': {'sha256': '590088fe6b364c265c97998c5491edea7ca70baad0dbe2ba5150273656d9b6f4', 'equals_declared': True, 'status': 'committed'}}
+S1_section_2_3_3_closure: MATCH  (line [969])
+    [ok] sentence present exactly once
+    [ok] old wording ("not built") absent
+    [ok] repo HEAD: row_built: network.py:511 reads "model.sess_soc_final = pe.Constraint(model.shared_energy_sto"
+    [ok] repo HEAD: row_built: inside def _build_model
+    [ok] repo HEAD: fix_at_0: model_construction_helpers.py:1143 reads "entry.fix(0.0)"
+    [ok] repo HEAD: fix_at_0: inside def configure_shared_ess_operational_state
+    [ok] repo HEAD: bounds_00: model_construction_helpers.py:1166 reads "slack_ub = 0.0 if inactive else e_capacity * ESS_DAY_BALANCE"
+    [ok] repo HEAD: bounds_00: inside def configure_shared_ess_operational_state
+    [ok] repo HEAD: setlb_0: model_construction_helpers.py:1168 reads "entry.setlb(0.0)"
+    [ok] repo HEAD: setlb_0: inside def configure_shared_ess_operational_state
+    [ok] repo HEAD: setub_slack_ub: model_construction_helpers.py:1169 reads "entry.setub(slack_ub)"
+    [ok] repo HEAD: setub_slack_ub: inside def configure_shared_ess_operational_state
+    [ok] repo HEAD: deactivate: model_construction_helpers.py:1176 reads "entry.deactivate()"
+    [ok] repo HEAD: deactivate: inside def configure_shared_ess_operational_state
+    [ok] repo HEAD: inactive_test: model_construction_helpers.py:1069 reads "return abs(s_capacity) <= tolerance or abs(e_capacity) <= to"
+    [ok] repo HEAD: inactive_test: inside def shared_ess_capacity_is_inactive
+    [ok] repo HEAD: inactive_flag: model_construction_helpers.py:1121 reads "inactive = shared_ess_capacity_is_inactive(s_capacity, e_cap"
+    [ok] repo HEAD: inactive_flag: inside def configure_shared_ess_operational_state
+    [ok] repo HEAD: row_built: a direct statement of _build_model (no if / loop around it: built for every unit)
+    [ok] repo HEAD: fix_at_0: under "if inactive:" in the loop over _SHARED_ESS_OPERATIONAL_VARIABLES
+    [ok] repo HEAD: both closure slacks are in _SHARED_ESS_OPERATIONAL_VARIABLES
+    [ok] repo HEAD: bounds_00: in the loop over the two closure slacks; setlb(0.0) and setub(slack_ub) follow in it
+    [ok] repo HEAD: deactivate: under "if inactive:" in the loop over _SHARED_ESS_OPERATIONAL_CONSTRAINTS
+    [ok] repo HEAD: 'sess_soc_final' (the closure row) is in _SHARED_ESS_OPERATIONAL_CONSTRAINTS
+    [ok] repo HEAD: inactive test tolerance SHARED_ESS_ZERO_CAPACITY_TOLERANCE = 1e-10 (a zero capacity is inactive)
+    [ok] repo HEAD: candidate path: _update_model_with_candidate_solution calls configure_shared_ess_operational_state with |candidate s, e| / s_base on both the TN and the DN branch
+    [ok] x = 0 run ref:7aa017f0 at aad37370: same lines hold, and the four files are unchanged to HEAD
+    [ok] x = 0 run h_aa8a76d7 at 9d2f458f: same lines hold, and the four files are unchanged to HEAD
+    [ok] x = 0 run h_x0_m175 at 0e1d7c0e: same lines hold, and the four files are unchanged to HEAD
+    [ok] x = 0 run h_50dea31c at 3740b476: same lines hold, and the four files are unchanged to HEAD
+    [ok] x = 0 run t11_3x3_x0 at 8a8ef150: same lines hold, and the four files are unchanged to HEAD
+S2_table13_cycles: MATCH  (line [1621])
+    [ok] Table 13 row present exactly once (tab:res_multiscenario)
+    [ok] old "(cycle 72) &" absent
+    [ok] printed x = 0 cycle = per_cell.x0.cycles_run = certification_cycle
+    [ok] printed unit cycle = per_cell.n7_4h_e1.cycles_run = certification_cycle
+    [ok] both cells certified (production exit of the 3 x 3 pair)
+    [ok] value_eur = Q(x0) - Q(unit)
+    [ok] 236.7 k EUR = value_eur rounded to 0.1 k EUR
+    [ok] frozen JSON three_by_three.rows[0]: same value, label still "(cycle 72)" (frozen, not edited)
+    [ok] instance: W169 eval keys of t11_3x3_x0 / t11_3x3_unit name the campaign eval dirs; x0 all-zero, unit node 7 [0.25, 1]
+S3_E4_phase_B: MATCH  (line [2624])
+    [ok] E.4 sentence present exactly once
+    [ok] old wording ("a re-solve ... with its no-reverse-flow rows switched off") absent
+    [ok] W116 phase_A_open: p515_s53_w116_benchmark_nrf.py:565
+    [ok] W116 phase_A_solve: p515_s53_w116_benchmark_nrf.py:566
+    [ok] W116 consistency_branch: p515_s53_w116_benchmark_nrf.py:614
+    [ok] W116 tn_voltage: p515_s53_w116_benchmark_nrf.py:615
+    [ok] W116 phase_B_open: p515_s53_w116_benchmark_nrf.py:616
+    [ok] W116 phase_B_call: p515_s53_w116_benchmark_nrf.py:617
+    [ok] UB voltage_rows: uncoordinated_benchmark.py:235
+    [ok] UB thermal_rows: uncoordinated_benchmark.py:236
+    [ok] UB nrf_row: uncoordinated_benchmark.py:212
+    [ok] UB builder_def: uncoordinated_benchmark.py:1411
+    [ok] UB clone: uncoordinated_benchmark.py:1427
+    [ok] UB decision_loop: uncoordinated_benchmark.py:1434
+    [ok] UB decision_fix: uncoordinated_benchmark.py:1442
+    [ok] UB nonref_gen_fix: uncoordinated_benchmark.py:1452
+    [ok] UB limit_loop: uncoordinated_benchmark.py:1487
+    [ok] UB limit_deactivate: uncoordinated_benchmark.py:1492
+    [ok] UB nrf_get: uncoordinated_benchmark.py:1495
+    [ok] UB nrf_deactivate: uncoordinated_benchmark.py:1498
+    [ok] UB reeval_def: uncoordinated_benchmark.py:1580
+    [ok] UB reeval_arm_block: uncoordinated_benchmark.py:1591
+    [ok] UB reeval_build: uncoordinated_benchmark.py:1592
+    [ok] row families named in the sentence = families the builder deactivates
+    [ok] phase B is fed arm_out["models"]["dso"] (the phase-A solution) and no TSO solve
+    [ok] builder fixes every DSO decision family and the non-reference generators at the arm value
+    [ok] run nrf_arm_passive_cold_r2: 36 DSO blocks, relaxed families = the five, decisions fixed > 0, modules at run = HEAD bytes
+    [ok] run nrf_arm_passive_perturbed_r2: 36 DSO blocks, relaxed families = the five, decisions fixed > 0, modules at run = HEAD bytes
+    [ok] run nrf_arm_passive_warm_from_certified_r2: 36 DSO blocks, relaxed families = the five, decisions fixed > 0, modules at run = HEAD bytes
+    [ok] run nrf_arm_price_taker_cold_r2: 36 DSO blocks, relaxed families = the five, decisions fixed > 0, modules at run = HEAD bytes
+    [ok] run nrf_arm_price_taker_perturbed_r2: 36 DSO blocks, relaxed families = the five, decisions fixed > 0, modules at run = HEAD bytes
+    [ok] run nrf_arm_price_taker_warm_from_certified_r2: 36 DSO blocks, relaxed families = the five, decisions fixed > 0, modules at run = HEAD bytes
+S4_E21_note: MATCH  (line [2583])
+    [ok] E.21 note sentence present exactly once
+    [ok] old note ("Evaluations~1, 2, 40 and~41 continue earlier runs") absent
+    [ok] E.21 block: 61 rows, identical to e5322f8; the only changed line is the note
+    [ok] W163 N49: the reference continuations are {x0, n7_4h_e1, c_star}, all replayed bitwise (G19)
+    [ok] evaluation 1 "continues an earlier run": W163 N49 reference continuation, eval key = W101 summary
+    [ok] evaluation 2 "continues an earlier run": W163 N49 reference continuation, eval key = W101 summary
+    [ok] evaluation 40 "re-decided from the records of earlier runs": not an N49 continuation; v6 decision on record (W142 item 1); issued under an earlier rule; printed Rule "record"
+    [ok] evaluation 41 "re-decided from the records of earlier runs": not an N49 continuation; v6 decision on record (W142 item 1); issued under an earlier rule; printed Rule "record"
+    [ok] "their first residual passes are not tabulated": k_0 printed "---" for all four
+    [ok] the four rows are 1, 2 (continuations) and 40, 41 (re-decided)
+S5_letter_R2_2: MATCH  (line [125])
+    [ok] R2.2 reply present exactly once (letter l. 125)
+    [ok] R2.2: "the cycles of every single-scenario evaluation behind a reported comparison in Appendix~E."
+    [ok] R2.2: v7 wording ("every evaluation behind") absent
+    [ok] R2.2's own two classes still stated (search: production exit; behind the comparisons: certification rule or cap)
+    [ok] W180c R22-b residue was the 3 x 3 pair (multi-scenario); W180c verdict on record "still (narrowed)" / L
+    [ok] the 3 x 3 pair is multi-scenario: Appendix E intro sends the multi-scenario evaluations to Table 13 (outside E.21)
+    [ok] every E.21 row prints a k*/end cycle (61 rows, column 7 numeric)
+    [ok] the six search-only neighbours: stopped at the production exit (E.3) -- under R2.2's classes a search evaluation; their bands accepted as L by Addendum 80 ruling 4
+    [ok] letter v7 -> v8: changed lines exactly {1, 125}
+    [ok] letter pointer multiset v8 = v7 (whole letter)
+    [ok] R2.2 line pointer multiset v8 = v7
+  S3 families sentence ['branch_flow_limit', 'branch_flow_limit_ji', 'uncoord_no_reverse_flow', 'voltage_magnitude_lower_cons', 'voltage_magnitude_upper_cons'] code ['branch_flow_limit', 'branch_flow_limit_ji', 'uncoord_no_reverse_flow', 'voltage_magnitude_lower_cons', 'voltage_magnitude_upper_cons']
+  S1 x0 run heads: {'ref:7aa017f0': {'head': 'aad373703626ddbf6871e7a243fdc1a86584abcd', 'diff_stat_vs_HEAD': 'NO CHANGE', 'all_code_checks_hold': True}, 'h_aa8a76d7': {'head': '9d2f458fe71ed27dfa25e89b46ba0ff2951bb32c', 'diff_stat_vs_HEAD': 'NO CHANGE', 'all_code_checks_hold': True}, 'h_x0_m175': {'head': '0e1d7c0e0671d20c52960fa05be33f2ea659fbb2', 'diff_stat_vs_HEAD': 'NO CHANGE', 'all_code_checks_hold': True}, 'h_50dea31c': {'head': '3740b4761ee9a42e90b0cf0a1c07cc6651b3b41f', 'diff_stat_vs_HEAD': 'NO CHANGE', 'all_code_checks_hold': True}, 't11_3x3_x0': {'head': '8a8ef1508bc73ecbe56320bdad77e861b96b26c4', 'diff_stat_vs_HEAD': 'NO CHANGE', 'all_code_checks_hold': True}}
+  S5 R22-b: closed; letter changed lines [1, 125]; pointers 177
+(d) section 3.5 lines [1264, 1309]: cites [{'key': 'nrel_ess_costs', 'line': 1268, 'resolves_in_bib': True}]; bib entries 48; thebibliography False; ['\\bibliographystyle{elsarticle-num}', '\\bibliography{bibliography}']
+    10,000 cycles at 0.80 DoD: {'sentences': 1, 'with_cite': 0, 'cite_keys': []}
+    8,000 full cycles (EVE MB31 datasheet): {'sentences': 1, 'with_cite': 0, 'cite_keys': []}
+    calendar retention 0.985/yr: {'sentences': 2, 'with_cite': 0, 'cite_keys': []}
+    [AUTHOR] comment: [(1307, '% [AUTHOR] datasheet citations for the two cycle-life statements (10,000 cycles at 0.80 DoD; 8,000 full cycles, EVE MB31) and for the'), (1308, '% calendar retention 0.985/yr are still to be added before submission (round 4 item 6; Addendum 80).')] (directly after the ageing table: True; table label l. [1305])
+    hits elsewhere in main.tex {'MB31': [1307], 'EVE ': [1307], 'datasheet': [388, 1041, 1283, 1288, 1307, 1515, 1555, 2577]}; bib keys matching ageing terms []
+counts {'counts': {'main.tex': {'[CONFIRM': 0, '[AUTHOR': 1}, 'letter': {'[CONFIRM': 0, '[AUTHOR': 0}}, 'CONFIRM_zero': True, 'AUTHOR_total': 1, 'AUTHOR_total_is_1': True}
+  control NC1 S1 sentence altered ("fixed at one"): rating MISMATCH refused True
+  control NC2 S1 code line number altered (1143 -> 1144): rating MISMATCH refused True
+  control NC3 S2 Table 13 cycles swapped: rating MISMATCH refused True
+  control NC4 S2 campaign_results n7_4h_e1 cycles_run altered to 72: rating MISMATCH refused True
+  control NC5 S3 "thermal" dropped from the row families: rating MISMATCH refused True
+  control NC6 S3 W116 phase-B line number altered (617 -> 618): rating MISMATCH refused True
+  control NC7 S4 note with evaluations 2 and 40 swapped: rating MISMATCH refused True
+  control NC8 S4 the old (round-6) note: rating MISMATCH refused True
+  control NC9 S5 the v7 letter (no "single-scenario"): rating MISMATCH/still refused True
+  control NC10 S5 a pointer changed in R2.2 (Section 4.7 -> 4.8): rating MISMATCH refused True
+  control NC11 (d) a \cite key not in bibliography.bib: rating [False] refused True
+  control NC12 (d) a \cite planted in the 10,000-cycle sentence is detected: rating {'10,000 cycles at 0.80 DoD': True, '8,000 full cycles (EVE MB31 datasheet)': False, 'calendar retention 0.985/yr': True} refused True
+prediction (c): {'expected': 'all five MATCH and R22-b closes', 'ratings': {'S1_section_2_3_3_closure': 'MATCH', 'S2_table13_cycles': 'MATCH', 'S3_E4_phase_B': 'MATCH', 'S4_E21_note': 'MATCH', 'S5_letter_R2_2': 'MATCH'}, 'R22b': 'closed', 'held': True}
+prediction (d): {'expected': 'citations absent, or present with three keys', 'n_statements_with_cite': 0, 'cite_keys_section_3_5': ['nrel_ess_costs'], 'all_keys_resolve': True, 'outcome': 'absent', 'held': True}
+inputs 56 (0 uncommitted)
+guards: {'solve_profile_guard': {'label': 'P5.15 W181b sentences and citations (never solves)', 'counts': {'permitted_solve': 0, 'permitted_exec': 0, 'blocked_solve': 0, 'blocked_exec': 0}, 'verify_0_failures': []}, 'pickle_counts': {'load': 0, 'loads': 0}, 'production_modules_imported': [], 'frozen_json_unchanged_at_end': True}
+output data/SRP1/Results/P515S53/w181b_sentences_citations/w181b_sentences_citations.json sha256 5ea3f8d4e91cc7e2491802fdfbdb36764a030561c5e695c5984df359fc9bbc9a

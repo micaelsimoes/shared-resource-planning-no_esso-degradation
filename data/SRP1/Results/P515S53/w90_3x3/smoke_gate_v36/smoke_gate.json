@@ -1,0 +1,1301 @@
+{
+ "stage": "P5.15 Addendum 48, W90 / W91 -- option (b) measured at zero solves on the 3 x 3 instance; stage spec v36 (W91: the margin rule on ONE measure, footprint; G6 v36 closes the tier-2 vacuity hole); the two-arm 3 x 3 smoke ((b) on vs off, bitwise, measuring the runtime footprint peak directly) and the 3 x 3 pair (x = 0 and the smallest node-7 unit, concurrency 1, (b) on, persistence by the margin rule)",
+ "gate": "W90/W91 two-arm 3 x 3 smoke (x0, cap 3, (b) on vs off; spec v36)",
+ "utc": "2026-09-26T10:04:07.057694+00:00",
+ "git_head": "8e3b2a0f882859211bcef5ab0ab9d2e4deebfc77",
+ "stage_spec": {
+  "path": "data/SRP1/Results/P515S53/frozen_s53_spec_v36_14bbddc7.json",
+  "sha256": "14bbddc7593c6ee3ee56854b12cb146d6770a27953e3f36bd88c3e0417c40110"
+ },
+ "A_post_memory_preflight_at_launch": {
+  "utc": "2026-09-26T08:30:54.233738+00:00",
+  "vm_stat_header": "Mach Virtual Memory Statistics: (page size of 16384 bytes)",
+  "page_size_bytes": 16384,
+  "vm_stat_pages": {
+   "pages_free": 196159,
+   "pages_inactive": 876942,
+   "pages_wired_down": 154563,
+   "anonymous_pages": 264646,
+   "pages_occupied_by_compressor": 78046
+  },
+  "hw_memsize_bytes": 34359738368,
+  "concurrency": 1,
+  "required_bytes": 22991268222.12439,
+  "required_gib": 21.412287114303922,
+  "per_child_budget_gib": 3.5,
+  "rule": "hw.memsize - (wired + anonymous + compressor-occupied) x page size >= 1 x 3.5 GiB",
+  "rule_rationale": "non-reclaimable load = wired + anonymous + compressor-occupied pages; file-backed pages (active or inactive) are cache the kernel reclaims on demand, so free + inactive under-counts what new processes can obtain (free + inactive recorded alongside)",
+  "budget_derivation": {
+   "x0_capture_child_peak_with_persist_bytes": 3470491648,
+   "x0_capture_production_peak_before_persist_bytes": 2395537408,
+   "s47_recert_c_star_child_peak_no_persist_bytes": 2577645568,
+   "s47_recert_unit_child_peak_no_persist_bytes": 2574581760,
+   "source": "data/SRP1/Results/P515S48/x0_capture/evals/d2c96b1480402a3b_x0/{evaluation_record,post_certification}.json and data/SRP1/Results/P515S47/campaign_s47_recert/evals/*/evaluation_record.json peak_rss",
+   "budget": "3.5 GiB per child = the measured persist peak (3.23 GiB) + 0.27 GiB margin"
+  },
+  "missing_vm_stat_figures": [],
+  "non_reclaimable_gib": 7.5875091552734375,
+  "available_bytes": 26212712448,
+  "available_gib": 24.412490844726562,
+  "free_plus_inactive_gib": 16.374221801757812,
+  "pass": true,
+  "stage": "smoke launch (A_post)",
+  "w86_rule_fields_superseded": [
+   "required_bytes",
+   "required_gib",
+   "rule",
+   "per_child_budget_gib"
+  ]
+ },
+ "per_arm": {
+  "smoke_bon": {
+   "eval_dir": "data/SRP1/Results/P515S53/w90_3x3/campaign_s53_w91_3x3_smoke_bon/evals/f6e9cd53fdbb8ee8_x0",
+   "campaign_spec_path": "data/SRP1/Results/P515S53/w90_3x3/campaign_s53_w91_3x3_smoke_bon/campaign_spec_s53_w91_3x3_smoke_bon_6e8fe1f3.json",
+   "campaign_spec_sha256": "6e8fe1f355aa3345745d2259a253ee9776e34212aa4fba773b2c42759994f4c8",
+   "preflight": {
+    "utc": "2026-09-26T08:30:54.241090+00:00",
+    "vm_stat_header": "Mach Virtual Memory Statistics: (page size of 16384 bytes)",
+    "page_size_bytes": 16384,
+    "vm_stat_pages": {
+     "pages_free": 196153,
+     "pages_inactive": 876943,
+     "pages_wired_down": 154563,
+     "anonymous_pages": 264651,
+     "pages_occupied_by_compressor": 78046
+    },
+    "hw_memsize_bytes": 34359738368,
+    "concurrency": 1,
+    "required_bytes": 19860137972.667107,
+    "required_gib": 18.49619482892296,
+    "per_child_budget_gib": 3.5,
+    "rule": "hw.memsize - (wired + anonymous + compressor-occupied) x page size >= 1 x 3.5 GiB",
+    "rule_rationale": "non-reclaimable load = wired + anonymous + compressor-occupied pages; file-backed pages (active or inactive) are cache the kernel reclaims on demand, so free + inactive under-counts what new processes can obtain (free + inactive recorded alongside)",
+    "budget_derivation": {
+     "x0_capture_child_peak_with_persist_bytes": 3470491648,
+     "x0_capture_production_peak_before_persist_bytes": 2395537408,
+     "s47_recert_c_star_child_peak_no_persist_bytes": 2577645568,
+     "s47_recert_unit_child_peak_no_persist_bytes": 2574581760,
+     "source": "data/SRP1/Results/P515S48/x0_capture/evals/d2c96b1480402a3b_x0/{evaluation_record,post_certification}.json and data/SRP1/Results/P515S47/campaign_s47_recert/evals/*/evaluation_record.json peak_rss",
+     "budget": "3.5 GiB per child = the measured persist peak (3.23 GiB) + 0.27 GiB margin"
+    },
+    "missing_vm_stat_figures": [],
+    "non_reclaimable_gib": 7.58758544921875,
+    "available_bytes": 26212630528,
+    "available_gib": 24.41241455078125,
+    "free_plus_inactive_gib": 16.3741455078125,
+    "pass": true,
+    "stage": "smoke_bon",
+    "w86_rule_fields_superseded": [
+     "required_bytes",
+     "required_gib",
+     "rule",
+     "per_child_budget_gib"
+    ]
+   },
+   "evaluate_error": null,
+   "batch_info": {
+    "max_concurrent_observed": 1,
+    "timeline": [
+     {
+      "event": "start",
+      "label": "x0",
+      "pid": 2322,
+      "t": 1790411454.244372
+     },
+     {
+      "event": "end",
+      "label": "x0",
+      "pid": 2322,
+      "t": 1790413908.00773,
+      "exit_code": 0
+     }
+    ]
+   },
+   "checks": {
+    "S1_child_exit0_record_uncertified_cap_cycles": true,
+    "S2_append_byte_identical": true,
+    "S3_checklist_line1_before_any_solve": true,
+    "S4_tail_state_check": true,
+    "S5_solve_profile_base_plus_retries": true,
+    "S6_tail_inactive_at_cap": true,
+    "S7_records_pass_per_record_predicate_at_production_tol": true,
+    "S8_append_sealed": true,
+    "S9_no_post_certification": true,
+    "S10_eval_key_equals_pair_x0_and_v34": true,
+    "S11_ess_ageing_readback": true,
+    "S12_alpha_row_capture": true,
+    "S13_sigma_inside_band": true,
+    "S15_b_in_force_as_declared": true
+   },
+   "detail": {
+    "exit_code": 0,
+    "w86_evaluation_checks": {
+     "checks": {
+      "append_reconciles_byte_identical": true,
+      "checklist_line1_before_any_solve": true,
+      "tail_state_check_matches": true,
+      "solve_profile_reconciled_per_event": false,
+      "floor_records_at_compl_inf_tol_in_force": true,
+      "append_sealed_after_reconcile": true,
+      "post_certification_skipped_uncertified": false,
+      "ess_ageing_readback_all_match": true,
+      "all_files_present": true
+     },
+     "detail": {
+      "files_present": {
+       "network_ipopt_solve_records.jsonl": true,
+       "network_ipopt_solve_records_append.jsonl": true,
+       "convergence_depth_append_events.jsonl": true,
+       "convergence_depth_tail_state.json": true
+      },
+      "append": {
+       "record_field": {
+        "records_append_path": "data/SRP1/Results/P515S53/w90_3x3/campaign_s53_w91_3x3_smoke_bon/evals/f6e9cd53fdbb8ee8_x0/network_ipopt_solve_records_append.jsonl",
+        "records_append_sha256": "6c2cc0d8c04840c3a46b47b2f5cd528cba31952e7a61f8057c100b031993540b",
+        "end_of_run_records_sha256": "6c2cc0d8c04840c3a46b47b2f5cd528cba31952e7a61f8057c100b031993540b",
+        "n_records_appended": 320,
+        "rounds_appended": [
+         0,
+         1,
+         2,
+         3
+        ],
+        "events_path": "data/SRP1/Results/P515S53/w90_3x3/campaign_s53_w91_3x3_smoke_bon/evals/f6e9cd53fdbb8ee8_x0/convergence_depth_append_events.jsonl",
+        "records_append_byte_identical_to_end_of_run_file": true,
+        "tail_state_rebuilt_from_events_equals_returned_state": true,
+        "write_errors": [],
+        "ok": true
+       },
+       "end_of_run_sha256": "6c2cc0d8c04840c3a46b47b2f5cd528cba31952e7a61f8057c100b031993540b",
+       "append_sha256": "6c2cc0d8c04840c3a46b47b2f5cd528cba31952e7a61f8057c100b031993540b",
+       "n_end_of_run": 320,
+       "rounds_drained": [
+        0,
+        1,
+        2,
+        3
+       ],
+       "n_bytes": 245641
+      },
+      "checklist": {
+       "first_event": "checklist",
+       "utc": "2026-09-26T08:31:09.882900+00:00",
+       "pid": 2322,
+       "record_child_pid": 2322,
+       "work_logs_dir": "data/SRP1/Results/P56A/evals/p515s44_s53_w91_3x3_smoke_bon_f6e9cd53fdbb8ee8_run/logs",
+       "n_log_files": 92,
+       "earliest_log_birth_utc": "2026-09-26T08:31:34.837585+00:00",
+       "first_drain_utc": "2026-09-26T08:36:25.986241+00:00",
+       "seconds_before_first_log": 24.95468497276306
+      },
+      "solve_profile": {
+       "observed": {
+        "permitted_solve": 332,
+        "permitted_exec": 332,
+        "blocked_solve": 0,
+        "blocked_exec": 0
+       },
+       "identity_holds": true,
+       "identity": "observed == base + sum over network-failure events of [recovery_attempted] + [tier2_attempted]; unsupported when an ESSO recovery event or an 'indeterminate' network event exists",
+       "derivation": "(1 + n_dso) * n_years * n_days + n_esso_nodes, per cycle, from the planning object",
+       "n_dso": 3,
+       "n_years": 5,
+       "n_days": 4,
+       "n_esso_nodes": 3,
+       "solves_per_cycle": 83,
+       "rounds": 4,
+       "rounds_note": "one initialization round + cycles_run ADMM cycles",
+       "base_solves": 332,
+       "retry_solves_credited": 0,
+       "reconciliation_supported": true,
+       "expected_solves": 332,
+       "recovered_only_identity": {
+        "expected": 332,
+        "holds": true,
+        "note": "pre-W35 rule, REPORTED not gated: credits retries only to RECOVERED blocks, so an unrecovered block's attempts go uncounted (78a9b230)"
+       }
+      },
+      "floor": {
+       "production_compl_inf_tol": {
+        "case9": 0.0005,
+        "case33_1": 0.0001,
+        "case33_2": 0.0001,
+        "case33_3": 0.0001
+       },
+       "tail_active_cycles": [],
+       "n_records": 320,
+       "n_bad": 0,
+       "bad_first": [],
+       "floor_status_tally": {
+        "DSO|at": 240,
+        "TSO|above": 30,
+        "TSO|at": 50
+       },
+       "floor_status_tally_tail_cycles": {},
+       "exit_tally": {
+        "Optimal Solution Found.": 316,
+        "Solved To Acceptable Level.": 4
+       },
+       "records_per_round": {
+        "0": 80,
+        "1": 80,
+        "2": 80,
+        "3": 80
+       }
+      },
+      "post_certification": {},
+      "certified_models_pkl": null,
+      "tail_state_check": {
+       "expected_enabled": true,
+       "enabled_in_state": true,
+       "expected_compl_inf_tol_tail": 1e-06,
+       "compl_inf_tol_tail_in_state": 1e-06,
+       "match": true,
+       "n_cycles_recorded": 3,
+       "cycles_tail_active": [],
+       "n_cycles_acted": 0,
+       "restore_at_exit_acted": false
+      },
+      "tail_state_summary": {
+       "n_per_cycle": 3,
+       "cycles_active": [],
+       "n_acted": 0,
+       "restore_at_exit_acted": false
+      }
+     }
+    },
+    "S5": {
+     "solve_profile": {
+      "observed": {
+       "permitted_solve": 332,
+       "permitted_exec": 332,
+       "blocked_solve": 0,
+       "blocked_exec": 0
+      },
+      "identity_holds": true,
+      "identity": "observed == base + sum over network-failure events of [recovery_attempted] + [tier2_attempted]; unsupported when an ESSO recovery event or an 'indeterminate' network event exists",
+      "derivation": "(1 + n_dso) * n_years * n_days + n_esso_nodes, per cycle, from the planning object",
+      "n_dso": 3,
+      "n_years": 5,
+      "n_days": 4,
+      "n_esso_nodes": 3,
+      "solves_per_cycle": 83,
+      "rounds": 4,
+      "rounds_note": "one initialization round + cycles_run ADMM cycles",
+      "base_solves": 332,
+      "retry_solves_credited": 0,
+      "reconciliation_supported": true,
+      "expected_solves": 332,
+      "recovered_only_identity": {
+       "expected": 332,
+       "holds": true,
+       "note": "pre-W35 rule, REPORTED not gated: credits retries only to RECOVERED blocks, so an unrecovered block's attempts go uncounted (78a9b230)"
+      }
+     },
+     "n_network_records": 320,
+     "rounds": 4
+    },
+    "S6": {
+     "apply_cycles": [
+      1,
+      2,
+      3,
+      null
+     ],
+     "apply_active": [
+      false,
+      false,
+      false,
+      false
+     ],
+     "next_state_values": [
+      false,
+      false,
+      false
+     ],
+     "row_cycle_convergence": [
+      false,
+      false,
+      false
+     ],
+     "tail_on_lines_in_child_stdout": 0
+    },
+    "S7": {
+     "n_records": 320,
+     "n_bad": 0,
+     "bad_first": [],
+     "production": {
+      "case9": 0.0005,
+      "case33_1": 0.0001,
+      "case33_2": 0.0001,
+      "case33_3": 0.0001
+     },
+     "records_per_round": {
+      "0": 80,
+      "1": 80,
+      "2": 80,
+      "3": 80
+     },
+     "floor_status_tally": {
+      "DSO5|at": 80,
+      "DSO7|at": 80,
+      "DSO9|at": 80,
+      "TSO|above": 30,
+      "TSO|at": 50
+     },
+     "attempts": {
+      "primary": 320
+     }
+    },
+    "S12": {
+     "parts": {
+      "written_all_three": true,
+      "multiscenario_checks_pass": true,
+      "activation_readback_all_ok": true,
+      "per_cycle_response_every_cycle": true,
+      "derived_checksum_in_child": true,
+      "premium_applied_alpha_0p5": true,
+      "initialisation_identity_recorded_and_equal": true,
+      "capture_checklist_asserted_before_run": true,
+      "response_terminal_file_present": true,
+      "multiscenario_terminal_file_present": true
+     },
+     "written": {
+      "multiscenario_terminal": "written",
+      "operational_workbook": "written",
+      "response_terminal": "written"
+     },
+     "per_cycle_response": {
+      "path": "data/SRP1/Results/P515S53/w90_3x3/campaign_s53_w91_3x3_smoke_bon/evals/f6e9cd53fdbb8ee8_x0/per_cycle_response.jsonl",
+      "n_lines": 3,
+      "n_trajectory_rows": 3,
+      "n_captured": 3,
+      "cycles_match": true
+     },
+     "premium_applied": {
+      "declared": {
+       "alpha": 0.5,
+       "floor": null
+      },
+      "before": {
+       "alpha": 0.0,
+       "floor": null,
+       "source": "default"
+      },
+      "after": {
+       "alpha": 0.5,
+       "floor": null,
+       "source": "campaign spec entry interface_deviation_premium (p515_s44_campaign_harness, W47)"
+      },
+      "took_effect": true
+     },
+     "activation_readback_all_ok": true,
+     "initialisation_identity": {
+      "path": "data/SRP1/Results/P515S53/w90_3x3/campaign_s53_w91_3x3_smoke_bon/init_identity/f6e9cd53fdbb8ee8_x0.json",
+      "gross_operational_cost": 272114.20300347114,
+      "gross_operational_cost_hex": "0x1.09bc8cfe02456p+18",
+      "n_compared": 0,
+      "compared": [],
+      "other_candidates_not_compared": [],
+      "mismatches": [],
+      "all_equal": true
+     }
+    },
+    "S13": {
+     "sigma_computed": 48004110.48493802,
+     "sigma_fixed": 93635360.0,
+     "ratio": 0.5126707526402208,
+     "band": [
+      0.3333333333333333,
+      3.0
+     ]
+    },
+    "S15": {
+     "parts": {
+      "declared_in_record": true,
+      "took_effect": true,
+      "read_back_all": true,
+      "calls_as_expected": true
+     },
+     "calls": 320,
+     "successful_network_solves": 320,
+     "n_blocks_over_all_rounds": 320,
+     "applied": {
+      "requested": true,
+      "before": {
+       "tso": false,
+       "dso_5": false,
+       "dso_7": false,
+       "dso_9": false
+      },
+      "read_back": {
+       "tso": true,
+       "dso_5": true,
+       "dso_7": true,
+       "dso_9": true
+      },
+      "solver_params_objects_distinct": true,
+      "took_effect": true
+     }
+    }
+   },
+   "peak_rss": {
+    "units": "bytes on macOS/BSD, kilobytes on Linux (ru_maxrss)",
+    "child_python_process_ru_maxrss": 18292523008,
+    "production_state_peak_rss_ru_maxrss": 16120676352,
+    "solver_subprocesses_max_ru_maxrss": 428212224,
+    "semantics": "child_python_process = RUSAGE_SELF of the evaluation process at record time (the evaluation's own peak); production_state = the same measure taken by production at the end of run_operational_planning; solver_subprocesses = RUSAGE_CHILDREN max over the IPOPT executables this evaluation launched; when a post-certification step ran, child_python_process includes it (the ADMM run alone is production_state)"
+   },
+   "footprint_peak": {
+    "measure": "ri_lifetime_max_phys_footprint of the evaluation child (the harness's --child Python process; its IPOPT subprocesses are NOT included -- the same scope as child_python_process_ru_maxrss), read by this launcher with proc_pid_rusage(pid, RUSAGE_INFO_V4) (struct rusage_info_v4, macOS SDK sys/resource.h): the kernel-tracked high-water mark of phys_footprint over the process lifetime -- the footprint analogue of ru_maxrss, so no sampling gap. FINAL value = the read on the EXITED, NOT-YET-REAPED child (ri_proc_exit_abstime != 0), taken on the kqueue EVFILT_PROC NOTE_EXIT event (xnu keeps the exit rusage until the harness reaps with os.wait4, which it polls every POLL_S = 5 s); identity: pid from the harness's launch.json, parent pid == this launcher, command line holds --child and the entry's eval key, ri_proc_start_abstime constant across reads (no pid reuse)",
+    "launch_json": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S53/w90_3x3/campaign_s53_w91_3x3_smoke_bon/evals/f6e9cd53fdbb8ee8_x0/launch.json",
+    "eval_key": "f6e9cd53fdbb8ee8c80388a13d723c49de5b18173bcfa5c7351cbe0d9e5000d4",
+    "poll_s": 1.0,
+    "pid": 2322,
+    "identity": {
+     "ppid": 2246,
+     "launcher_pid": 2246,
+     "ppid_is_launcher": true,
+     "cmdline_has_child_flag": true,
+     "cmdline_has_eval_key": true
+    },
+    "identity_verified": true,
+    "registered_exit_event": true,
+    "n_live_reads": 2447,
+    "live_max_phys_footprint_sampled_bytes": 19898695232,
+    "lifetime_max_phys_footprint_last_live_bytes": 19898695232,
+    "exit_event_received": true,
+    "final_read_after_exit": true,
+    "exit_read": {
+     "ri_phys_footprint": 0,
+     "ri_lifetime_max_phys_footprint": 19898695232,
+     "ri_interval_max_phys_footprint": 19898695232,
+     "ri_resident_size": 2515795968,
+     "ri_proc_start_abstime": 53443498037,
+     "ri_proc_exit_abstime": 112259514765
+    },
+    "lifetime_max_phys_footprint_bytes": 19898695232,
+    "capture_exact": true,
+    "errors": [],
+    "lifetime_max_phys_footprint_gib": 18.532104074954987,
+    "thread_alive_after_stop": false
+   },
+   "wall_time_s": {
+    "child_process_s": 2423.195130109787,
+    "run_admm_arm_s": 2407.606794834137,
+    "run_admm_arm_reported_wall_clock_s": 2078.9983150959015
+   },
+   "cycle_wall_s": [
+    644.3028509616852,
+    685.0563669204712,
+    415.823358297348
+   ],
+   "cycle_rss_bytes": [
+    14826291200,
+    15203254272,
+    15404269568
+   ],
+   "cycle_ru_maxrss_bytes": [
+    15232991232,
+    15835987968,
+    16120676352
+   ]
+  },
+  "smoke_boff": {
+   "eval_dir": "data/SRP1/Results/P515S53/w90_3x3/campaign_s53_w91_3x3_smoke_boff/evals/f6e9cd53fdbb8ee8_x0",
+   "campaign_spec_path": "data/SRP1/Results/P515S53/w90_3x3/campaign_s53_w91_3x3_smoke_boff/campaign_spec_s53_w91_3x3_smoke_boff_b99acdc0.json",
+   "campaign_spec_sha256": "b99acdc02e8b26cf0e1dc4e6d930b188e648606cf29e4bec635c67f656f160d3",
+   "preflight": {
+    "utc": "2026-09-26T09:11:48.045094+00:00",
+    "vm_stat_header": "Mach Virtual Memory Statistics: (page size of 16384 bytes)",
+    "page_size_bytes": 16384,
+    "vm_stat_pages": {
+     "pages_free": 1130307,
+     "pages_inactive": 591805,
+     "pages_wired_down": 139291,
+     "anonymous_pages": 94876,
+     "pages_occupied_by_compressor": 124807
+    },
+    "hw_memsize_bytes": 34359738368,
+    "concurrency": 1,
+    "required_bytes": 22991268222.12439,
+    "required_gib": 21.412287114303922,
+    "per_child_budget_gib": 3.5,
+    "rule": "hw.memsize - (wired + anonymous + compressor-occupied) x page size >= 1 x 3.5 GiB",
+    "rule_rationale": "non-reclaimable load = wired + anonymous + compressor-occupied pages; file-backed pages (active or inactive) are cache the kernel reclaims on demand, so free + inactive under-counts what new processes can obtain (free + inactive recorded alongside)",
+    "budget_derivation": {
+     "x0_capture_child_peak_with_persist_bytes": 3470491648,
+     "x0_capture_production_peak_before_persist_bytes": 2395537408,
+     "s47_recert_c_star_child_peak_no_persist_bytes": 2577645568,
+     "s47_recert_unit_child_peak_no_persist_bytes": 2574581760,
+     "source": "data/SRP1/Results/P515S48/x0_capture/evals/d2c96b1480402a3b_x0/{evaluation_record,post_certification}.json and data/SRP1/Results/P515S47/campaign_s47_recert/evals/*/evaluation_record.json peak_rss",
+     "budget": "3.5 GiB per child = the measured persist peak (3.23 GiB) + 0.27 GiB margin"
+    },
+    "missing_vm_stat_figures": [],
+    "non_reclaimable_gib": 5.477508544921875,
+    "available_bytes": 28478308352,
+    "available_gib": 26.522491455078125,
+    "free_plus_inactive_gib": 26.27734375,
+    "pass": true,
+    "stage": "smoke_boff",
+    "w86_rule_fields_superseded": [
+     "required_bytes",
+     "required_gib",
+     "rule",
+     "per_child_budget_gib"
+    ]
+   },
+   "evaluate_error": null,
+   "batch_info": {
+    "max_concurrent_observed": 1,
+    "timeline": [
+     {
+      "event": "start",
+      "label": "x0",
+      "pid": 3093,
+      "t": 1790413908.048929
+     },
+     {
+      "event": "end",
+      "label": "x0",
+      "pid": 3093,
+      "t": 1790417047.012011,
+      "exit_code": 0
+     }
+    ]
+   },
+   "checks": {
+    "S1_child_exit0_record_uncertified_cap_cycles": true,
+    "S2_append_byte_identical": true,
+    "S3_checklist_line1_before_any_solve": true,
+    "S4_tail_state_check": true,
+    "S5_solve_profile_base_plus_retries": true,
+    "S6_tail_inactive_at_cap": true,
+    "S7_records_pass_per_record_predicate_at_production_tol": true,
+    "S8_append_sealed": true,
+    "S9_no_post_certification": true,
+    "S10_eval_key_equals_pair_x0_and_v34": true,
+    "S11_ess_ageing_readback": true,
+    "S12_alpha_row_capture": true,
+    "S13_sigma_inside_band": true,
+    "S15_b_in_force_as_declared": true
+   },
+   "detail": {
+    "exit_code": 0,
+    "w86_evaluation_checks": {
+     "checks": {
+      "append_reconciles_byte_identical": true,
+      "checklist_line1_before_any_solve": true,
+      "tail_state_check_matches": true,
+      "solve_profile_reconciled_per_event": false,
+      "floor_records_at_compl_inf_tol_in_force": true,
+      "append_sealed_after_reconcile": true,
+      "post_certification_skipped_uncertified": false,
+      "ess_ageing_readback_all_match": true,
+      "all_files_present": true
+     },
+     "detail": {
+      "files_present": {
+       "network_ipopt_solve_records.jsonl": true,
+       "network_ipopt_solve_records_append.jsonl": true,
+       "convergence_depth_append_events.jsonl": true,
+       "convergence_depth_tail_state.json": true
+      },
+      "append": {
+       "record_field": {
+        "records_append_path": "data/SRP1/Results/P515S53/w90_3x3/campaign_s53_w91_3x3_smoke_boff/evals/f6e9cd53fdbb8ee8_x0/network_ipopt_solve_records_append.jsonl",
+        "records_append_sha256": "6101dc9c83970542c313beb99449b92ba7b7f1b963000deaa394901d15703005",
+        "end_of_run_records_sha256": "6101dc9c83970542c313beb99449b92ba7b7f1b963000deaa394901d15703005",
+        "n_records_appended": 320,
+        "rounds_appended": [
+         0,
+         1,
+         2,
+         3
+        ],
+        "events_path": "data/SRP1/Results/P515S53/w90_3x3/campaign_s53_w91_3x3_smoke_boff/evals/f6e9cd53fdbb8ee8_x0/convergence_depth_append_events.jsonl",
+        "records_append_byte_identical_to_end_of_run_file": true,
+        "tail_state_rebuilt_from_events_equals_returned_state": true,
+        "write_errors": [],
+        "ok": true
+       },
+       "end_of_run_sha256": "6101dc9c83970542c313beb99449b92ba7b7f1b963000deaa394901d15703005",
+       "append_sha256": "6101dc9c83970542c313beb99449b92ba7b7f1b963000deaa394901d15703005",
+       "n_end_of_run": 320,
+       "rounds_drained": [
+        0,
+        1,
+        2,
+        3
+       ],
+       "n_bytes": 245961
+      },
+      "checklist": {
+       "first_event": "checklist",
+       "utc": "2026-09-26T09:12:04.019570+00:00",
+       "pid": 3093,
+       "record_child_pid": 3093,
+       "work_logs_dir": "data/SRP1/Results/P56A/evals/p515s44_s53_w91_3x3_smoke_boff_f6e9cd53fdbb8ee8_run/logs",
+       "n_log_files": 92,
+       "earliest_log_birth_utc": "2026-09-26T09:12:28.643707+00:00",
+       "first_drain_utc": "2026-09-26T09:17:05.730790+00:00",
+       "seconds_before_first_log": 24.624136686325073
+      },
+      "solve_profile": {
+       "observed": {
+        "permitted_solve": 332,
+        "permitted_exec": 332,
+        "blocked_solve": 0,
+        "blocked_exec": 0
+       },
+       "identity_holds": true,
+       "identity": "observed == base + sum over network-failure events of [recovery_attempted] + [tier2_attempted]; unsupported when an ESSO recovery event or an 'indeterminate' network event exists",
+       "derivation": "(1 + n_dso) * n_years * n_days + n_esso_nodes, per cycle, from the planning object",
+       "n_dso": 3,
+       "n_years": 5,
+       "n_days": 4,
+       "n_esso_nodes": 3,
+       "solves_per_cycle": 83,
+       "rounds": 4,
+       "rounds_note": "one initialization round + cycles_run ADMM cycles",
+       "base_solves": 332,
+       "retry_solves_credited": 0,
+       "reconciliation_supported": true,
+       "expected_solves": 332,
+       "recovered_only_identity": {
+        "expected": 332,
+        "holds": true,
+        "note": "pre-W35 rule, REPORTED not gated: credits retries only to RECOVERED blocks, so an unrecovered block's attempts go uncounted (78a9b230)"
+       }
+      },
+      "floor": {
+       "production_compl_inf_tol": {
+        "case9": 0.0005,
+        "case33_1": 0.0001,
+        "case33_2": 0.0001,
+        "case33_3": 0.0001
+       },
+       "tail_active_cycles": [],
+       "n_records": 320,
+       "n_bad": 0,
+       "bad_first": [],
+       "floor_status_tally": {
+        "DSO|at": 240,
+        "TSO|above": 30,
+        "TSO|at": 50
+       },
+       "floor_status_tally_tail_cycles": {},
+       "exit_tally": {
+        "Optimal Solution Found.": 316,
+        "Solved To Acceptable Level.": 4
+       },
+       "records_per_round": {
+        "0": 80,
+        "1": 80,
+        "2": 80,
+        "3": 80
+       }
+      },
+      "post_certification": {},
+      "certified_models_pkl": null,
+      "tail_state_check": {
+       "expected_enabled": true,
+       "enabled_in_state": true,
+       "expected_compl_inf_tol_tail": 1e-06,
+       "compl_inf_tol_tail_in_state": 1e-06,
+       "match": true,
+       "n_cycles_recorded": 3,
+       "cycles_tail_active": [],
+       "n_cycles_acted": 0,
+       "restore_at_exit_acted": false
+      },
+      "tail_state_summary": {
+       "n_per_cycle": 3,
+       "cycles_active": [],
+       "n_acted": 0,
+       "restore_at_exit_acted": false
+      }
+     }
+    },
+    "S5": {
+     "solve_profile": {
+      "observed": {
+       "permitted_solve": 332,
+       "permitted_exec": 332,
+       "blocked_solve": 0,
+       "blocked_exec": 0
+      },
+      "identity_holds": true,
+      "identity": "observed == base + sum over network-failure events of [recovery_attempted] + [tier2_attempted]; unsupported when an ESSO recovery event or an 'indeterminate' network event exists",
+      "derivation": "(1 + n_dso) * n_years * n_days + n_esso_nodes, per cycle, from the planning object",
+      "n_dso": 3,
+      "n_years": 5,
+      "n_days": 4,
+      "n_esso_nodes": 3,
+      "solves_per_cycle": 83,
+      "rounds": 4,
+      "rounds_note": "one initialization round + cycles_run ADMM cycles",
+      "base_solves": 332,
+      "retry_solves_credited": 0,
+      "reconciliation_supported": true,
+      "expected_solves": 332,
+      "recovered_only_identity": {
+       "expected": 332,
+       "holds": true,
+       "note": "pre-W35 rule, REPORTED not gated: credits retries only to RECOVERED blocks, so an unrecovered block's attempts go uncounted (78a9b230)"
+      }
+     },
+     "n_network_records": 320,
+     "rounds": 4
+    },
+    "S6": {
+     "apply_cycles": [
+      1,
+      2,
+      3,
+      null
+     ],
+     "apply_active": [
+      false,
+      false,
+      false,
+      false
+     ],
+     "next_state_values": [
+      false,
+      false,
+      false
+     ],
+     "row_cycle_convergence": [
+      false,
+      false,
+      false
+     ],
+     "tail_on_lines_in_child_stdout": 0
+    },
+    "S7": {
+     "n_records": 320,
+     "n_bad": 0,
+     "bad_first": [],
+     "production": {
+      "case9": 0.0005,
+      "case33_1": 0.0001,
+      "case33_2": 0.0001,
+      "case33_3": 0.0001
+     },
+     "records_per_round": {
+      "0": 80,
+      "1": 80,
+      "2": 80,
+      "3": 80
+     },
+     "floor_status_tally": {
+      "DSO5|at": 80,
+      "DSO7|at": 80,
+      "DSO9|at": 80,
+      "TSO|above": 30,
+      "TSO|at": 50
+     },
+     "attempts": {
+      "primary": 320
+     }
+    },
+    "S12": {
+     "parts": {
+      "written_all_three": true,
+      "multiscenario_checks_pass": true,
+      "activation_readback_all_ok": true,
+      "per_cycle_response_every_cycle": true,
+      "derived_checksum_in_child": true,
+      "premium_applied_alpha_0p5": true,
+      "initialisation_identity_recorded_and_equal": true,
+      "capture_checklist_asserted_before_run": true,
+      "response_terminal_file_present": true,
+      "multiscenario_terminal_file_present": true
+     },
+     "written": {
+      "multiscenario_terminal": "written",
+      "operational_workbook": "written",
+      "response_terminal": "written"
+     },
+     "per_cycle_response": {
+      "path": "data/SRP1/Results/P515S53/w90_3x3/campaign_s53_w91_3x3_smoke_boff/evals/f6e9cd53fdbb8ee8_x0/per_cycle_response.jsonl",
+      "n_lines": 3,
+      "n_trajectory_rows": 3,
+      "n_captured": 3,
+      "cycles_match": true
+     },
+     "premium_applied": {
+      "declared": {
+       "alpha": 0.5,
+       "floor": null
+      },
+      "before": {
+       "alpha": 0.0,
+       "floor": null,
+       "source": "default"
+      },
+      "after": {
+       "alpha": 0.5,
+       "floor": null,
+       "source": "campaign spec entry interface_deviation_premium (p515_s44_campaign_harness, W47)"
+      },
+      "took_effect": true
+     },
+     "activation_readback_all_ok": true,
+     "initialisation_identity": {
+      "path": "data/SRP1/Results/P515S53/w90_3x3/campaign_s53_w91_3x3_smoke_boff/init_identity/f6e9cd53fdbb8ee8_x0.json",
+      "gross_operational_cost": 272114.20300347114,
+      "gross_operational_cost_hex": "0x1.09bc8cfe02456p+18",
+      "n_compared": 0,
+      "compared": [],
+      "other_candidates_not_compared": [],
+      "mismatches": [],
+      "all_equal": true
+     }
+    },
+    "S13": {
+     "sigma_computed": 48004110.48493802,
+     "sigma_fixed": 93635360.0,
+     "ratio": 0.5126707526402208,
+     "band": [
+      0.3333333333333333,
+      3.0
+     ]
+    },
+    "S15": {
+     "parts": {
+      "declared_in_record": true,
+      "took_effect": true,
+      "read_back_all": true,
+      "calls_as_expected": true
+     },
+     "calls": 0,
+     "successful_network_solves": 320,
+     "n_blocks_over_all_rounds": 320,
+     "applied": {
+      "requested": false,
+      "before": {
+       "tso": false,
+       "dso_5": false,
+       "dso_7": false,
+       "dso_9": false
+      },
+      "read_back": {
+       "tso": false,
+       "dso_5": false,
+       "dso_7": false,
+       "dso_9": false
+      },
+      "solver_params_objects_distinct": true,
+      "took_effect": true
+     }
+    }
+   },
+   "peak_rss": {
+    "units": "bytes on macOS/BSD, kilobytes on Linux (ru_maxrss)",
+    "child_python_process_ru_maxrss": 19882868736,
+    "production_state_peak_rss_ru_maxrss": 19882868736,
+    "solver_subprocesses_max_ru_maxrss": 423690240,
+    "semantics": "child_python_process = RUSAGE_SELF of the evaluation process at record time (the evaluation's own peak); production_state = the same measure taken by production at the end of run_operational_planning; solver_subprocesses = RUSAGE_CHILDREN max over the IPOPT executables this evaluation launched; when a post-certification step ran, child_python_process includes it (the ADMM run alone is production_state)"
+   },
+   "footprint_peak": {
+    "measure": "ri_lifetime_max_phys_footprint of the evaluation child (the harness's --child Python process; its IPOPT subprocesses are NOT included -- the same scope as child_python_process_ru_maxrss), read by this launcher with proc_pid_rusage(pid, RUSAGE_INFO_V4) (struct rusage_info_v4, macOS SDK sys/resource.h): the kernel-tracked high-water mark of phys_footprint over the process lifetime -- the footprint analogue of ru_maxrss, so no sampling gap. FINAL value = the read on the EXITED, NOT-YET-REAPED child (ri_proc_exit_abstime != 0), taken on the kqueue EVFILT_PROC NOTE_EXIT event (xnu keeps the exit rusage until the harness reaps with os.wait4, which it polls every POLL_S = 5 s); identity: pid from the harness's launch.json, parent pid == this launcher, command line holds --child and the entry's eval key, ri_proc_start_abstime constant across reads (no pid reuse)",
+    "launch_json": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S53/w90_3x3/campaign_s53_w91_3x3_smoke_boff/evals/f6e9cd53fdbb8ee8_x0/launch.json",
+    "eval_key": "f6e9cd53fdbb8ee8c80388a13d723c49de5b18173bcfa5c7351cbe0d9e5000d4",
+    "poll_s": 1.0,
+    "pid": 3093,
+    "identity": {
+     "ppid": 2246,
+     "launcher_pid": 2246,
+     "ppid_is_launcher": true,
+     "cmdline_has_child_flag": true,
+     "cmdline_has_eval_key": true
+    },
+    "identity_verified": true,
+    "registered_exit_event": true,
+    "n_live_reads": 3132,
+    "live_max_phys_footprint_sampled_bytes": 24834214536,
+    "lifetime_max_phys_footprint_last_live_bytes": 24834214536,
+    "exit_event_received": true,
+    "final_read_after_exit": true,
+    "exit_read": {
+     "ri_phys_footprint": 0,
+     "ri_lifetime_max_phys_footprint": 24834214536,
+     "ri_interval_max_phys_footprint": 24834214536,
+     "ri_resident_size": 1626750976,
+     "ri_proc_start_abstime": 112334819167,
+     "ri_proc_exit_abstime": 187593221203
+    },
+    "lifetime_max_phys_footprint_bytes": 24834214536,
+    "capture_exact": true,
+    "errors": [],
+    "lifetime_max_phys_footprint_gib": 23.12866462022066,
+    "thread_alive_after_stop": false
+   },
+   "wall_time_s": {
+    "child_process_s": 3104.627618074417,
+    "run_admm_arm_s": 3088.731542825699,
+    "run_admm_arm_reported_wall_clock_s": 2099.7047600746155
+   },
+   "cycle_wall_s": [
+    668.2967300415039,
+    690.4483988285065,
+    421.3084681034088
+   ],
+   "cycle_rss_bytes": [
+    14124646400,
+    14234042368,
+    15414181888
+   ],
+   "cycle_ru_maxrss_bytes": [
+    18236735488,
+    18973638656,
+    19882868736
+   ]
+  }
+ },
+ "cross_arm": {
+  "S16_bitwise_on_vs_off": true,
+  "S17_runtime_peak_measured_both_arms": true,
+  "S17_footprint_peak_captured_exactly_both_arms": true,
+  "S14_parent_guards_zero": true
+ },
+ "cross_arm_detail": {
+  "parts": {
+   "same_row_count_eq_cap": true,
+   "per_cycle_rows_identical": true,
+   "initialisation_identity_gross_hex_equal": true,
+   "cycles_run_equal": true
+  },
+  "n_rows": [
+   3,
+   3
+  ],
+  "row_diffs": [],
+  "excluded_fields": [
+   "cycle_wall_s",
+   "rss_bytes",
+   "ru_maxrss_bytes",
+   "response_capture_s"
+  ],
+  "compared_fields": [
+   "E_abs_d_p_mwh_unweighted",
+   "E_abs_d_p_mwh_weighted",
+   "boyd_all_pass",
+   "boyd_ess_channel_pass",
+   "boyd_ess_dual_ratio",
+   "boyd_ess_primal_ratio",
+   "boyd_pf_channel_pass",
+   "boyd_pf_dual_ratio",
+   "boyd_pf_primal_ratio",
+   "boyd_stop",
+   "boyd_v_channel_pass",
+   "boyd_v_dual_ratio",
+   "boyd_v_primal_ratio",
+   "consecutive_converged_cycles",
+   "covariance_dso_weighted",
+   "curtailed_res_dso_mwh_weighted",
+   "curtailed_res_tso_mwh_weighted",
+   "cycle",
+   "cycle_convergence",
+   "efc_per_day_max",
+   "gross_operational_cost",
+   "local_solves_ok",
+   "market_part_mw2h_unweighted",
+   "market_part_mw2h_weighted",
+   "max_abs_d_p_mw",
+   "n_non_optimal_block_terminations",
+   "non_optimal_blocks",
+   "objective_change_abs",
+   "objective_change_ratio",
+   "objective_tolerance",
+   "operation_part_mw2h_unweighted",
+   "operation_part_mw2h_weighted",
+   "recourse",
+   "response_capture_error",
+   "response_captured",
+   "response_cycle",
+   "rho_ess_action",
+   "rho_ess_after",
+   "rho_freeze_active",
+   "rho_pf_action",
+   "rho_pf_after",
+   "rho_v_action",
+   "rho_v_after",
+   "row18_charge_weighted",
+   "sum_omega_d2_p_mw2h_unweighted",
+   "sum_omega_d2_p_mw2h_weighted",
+   "terminal_salvage_value"
+  ],
+  "gross_by_cycle_on": [
+   2959183725.7226768,
+   1596357853.1100283,
+   1083242818.3479004
+  ],
+  "gross_by_cycle_off": [
+   2959183725.7226768,
+   1596357853.1100283,
+   1083242818.3479004
+  ],
+  "init_identity_gross_hex": [
+   "0x1.09bc8cfe02456p+18",
+   "0x1.09bc8cfe02456p+18"
+  ],
+  "solve_records_reported_not_gated": {
+   "n": [
+    320,
+    320
+   ],
+   "n_differing": 320,
+   "first_differing": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9
+   ],
+   "differing_keys_first50": [
+    "log_bytes",
+    "log_path"
+   ],
+   "excluded_keys": [
+    "log_path",
+    "log",
+    "wall_s",
+    "wall",
+    "time",
+    "utc",
+    "t_s",
+    "log_offset",
+    "path",
+    "ipopt_log_path",
+    "solver_log_path",
+    "cpu_s",
+    "elapsed_s",
+    "*_path",
+    "*_s"
+   ]
+  }
+ },
+ "checks": {
+  "smoke_bon:S1_child_exit0_record_uncertified_cap_cycles": true,
+  "smoke_bon:S2_append_byte_identical": true,
+  "smoke_bon:S3_checklist_line1_before_any_solve": true,
+  "smoke_bon:S4_tail_state_check": true,
+  "smoke_bon:S5_solve_profile_base_plus_retries": true,
+  "smoke_bon:S6_tail_inactive_at_cap": true,
+  "smoke_bon:S7_records_pass_per_record_predicate_at_production_tol": true,
+  "smoke_bon:S8_append_sealed": true,
+  "smoke_bon:S9_no_post_certification": true,
+  "smoke_bon:S10_eval_key_equals_pair_x0_and_v34": true,
+  "smoke_bon:S11_ess_ageing_readback": true,
+  "smoke_bon:S12_alpha_row_capture": true,
+  "smoke_bon:S13_sigma_inside_band": true,
+  "smoke_bon:S15_b_in_force_as_declared": true,
+  "smoke_boff:S1_child_exit0_record_uncertified_cap_cycles": true,
+  "smoke_boff:S2_append_byte_identical": true,
+  "smoke_boff:S3_checklist_line1_before_any_solve": true,
+  "smoke_boff:S4_tail_state_check": true,
+  "smoke_boff:S5_solve_profile_base_plus_retries": true,
+  "smoke_boff:S6_tail_inactive_at_cap": true,
+  "smoke_boff:S7_records_pass_per_record_predicate_at_production_tol": true,
+  "smoke_boff:S8_append_sealed": true,
+  "smoke_boff:S9_no_post_certification": true,
+  "smoke_boff:S10_eval_key_equals_pair_x0_and_v34": true,
+  "smoke_boff:S11_ess_ageing_readback": true,
+  "smoke_boff:S12_alpha_row_capture": true,
+  "smoke_boff:S13_sigma_inside_band": true,
+  "smoke_boff:S15_b_in_force_as_declared": true,
+  "S16_bitwise_on_vs_off": true,
+  "S17_runtime_peak_measured_both_arms": true,
+  "S17_footprint_peak_captured_exactly_both_arms": true,
+  "S14_parent_guards_zero": true
+ },
+ "pass": true,
+ "failing": [],
+ "runtime_peaks_measured_bytes": {
+  "smoke_bon": {
+   "child_python_process_ru_maxrss": 18292523008,
+   "production_state_peak_rss_ru_maxrss": 16120676352,
+   "child_lifetime_max_phys_footprint": 19898695232
+  },
+  "smoke_boff": {
+   "child_python_process_ru_maxrss": 19882868736,
+   "production_state_peak_rss_ru_maxrss": 19882868736,
+   "child_lifetime_max_phys_footprint": 24834214536
+  }
+ },
+ "b_saving_measured_at_runtime_bytes": {
+  "child_lifetime_max_phys_footprint": 4935519304,
+  "child_python_process_ru_maxrss": 1590345728,
+  "production_state_peak_rss_ru_maxrss": 3762192384
+ },
+ "b_saving_measured_at_runtime_gib": {
+  "child_lifetime_max_phys_footprint": 4.596560545265675,
+  "child_python_process_ru_maxrss": 1.4811248779296875,
+  "production_state_peak_rss_ru_maxrss": 3.503814697265625
+ },
+ "margin_rule": {
+  "definition": {
+   "rule": "Addendum 48: persistence ONLY IF the measured runtime peak with persistence <= 0.85 x memory available after the reboot (>= 15 % headroom for a ~15 h run); the rule, not any prediction, decides",
+   "governing_measure": "v36 (W91, the Planner ruling on W90 question 3): FOOTPRINT (macOS phys_footprint) for BOTH memory terms, P_on and T_persist -- the W32 rule that \"resident\" means footprint. v35 mixed units (P_on = ru_maxrss, an RSS peak; T_persist = a footprint transient); on macOS the two diverge sharply under compression (the W90 (b)-off probe: RSS 9.97 vs footprint 13.28 GiB at the same moment), so the verdict depended on which was used",
+   "A_post": "the available memory the smoke launch's preflight records BEFORE its first arm (L.memory_preflight: hw.memsize - (wired + anonymous + compressor-occupied) x page size, the vm_stat measure used by every committed launch) -- the smoke is the first launch after the author's reboot; recorded in smoke_gate.json provenance",
+   "P_on": "the (b)-ON smoke arm's child FOOTPRINT PEAK, measured directly on the 3 x 3 instance by this launcher: ChildFootprintMonitor.lifetime_max_phys_footprint_bytes with capture_exact True (FOOTPRINT_MEASURE: ri_lifetime_max_phys_footprint of the evaluation child, final read on the exited, unreaped child). The RSS peaks (peak_rss.child_python_process_ru_maxrss etc.) are REPORTED, NOT USED. If the capture is not exact the rule is NOT evaluated (no fallback to RSS) and the pair cannot be frozen",
+   "g": "the measured growth from a smoke to a full certified run: max child peak of the 2 x 2 alpha-row pair 1 / the 2 x 2 smoke r2 child peak (= k_run / k_smoke of the committed v34 memory model; both (b) off) = 1.0344. RSS-BASED (ru_maxrss) -- it CANNOT be restated on a footprint basis (no committed harness run carries a footprint; search scope in item1_memory_measurement.estimates.formulas.g_basis); used as a dimensionless ratio. Reported with it: g_break = (0.85 x A_post - T_persist) / P_on (the g at which the verdict flips) and the verdict at g = 1 (the pair's x0 cell repeats the smoke's three cycles bit for bit, so its footprint peak is not expected below P_on: g = 1 is the floor of a footprint g). A REFUSAL that holds at g = 1 does not depend on g's basis; a PERSIST verdict rests on the RSS-based g and is flagged",
+   "T_persist": "the stage spec's declared persistence transient: the ON probe's FOOTPRINT-sampled pickle transient (8.37 GiB) -- the footprint value, not a max over measures",
+   "P_run": "g x P_on (the pair's per-child peak without persistence)",
+   "P_persist": "P_run + T_persist (the runtime peak with persistence; the transient on top of the peak: an upper bound)",
+   "test": "persist_certified_models = (P_persist <= 0.85 x A_post), P_persist = g x P_on(footprint) + T_persist(footprint); hull_polish = False in every case",
+   "A_post_note": "A_post (vm_stat: hw.memsize - (wired + anonymous + compressor-occupied) x page size) counts the compressor at its COMPRESSED size while phys_footprint counts compressed pages at their logical size, so footprint demand <= 0.85 x A_post errs toward refusing",
+   "where_decided": "computed and recorded by the smoke gate (smoke_gate.json margin_rule), read by --stage pair --freeze into every pair entry's post_certification; the pair --run preflight then REFUSES unless available >= P_persist (persist) or P_run (no persist) at its own launch",
+   "without_persistence": "the hull polish is omitted at 3 x 3 and reported as such, with the SRP1 figure (3.09e-6 relative, below the band -- Addendum 48's statement; provenance in the stage spec's hull_polish_srp1_figure_provenance; the terminal models are not kept); with persistence the pickle is kept and no polish runs in the child either (Addendum 46 voided the polished convention; a polish, if ever wanted, runs post hoc from the pickle)"
+  },
+  "measure": "phys_footprint (P_on and T_persist)",
+  "P_on_capture": {
+   "capture_exact": true,
+   "identity_verified": true,
+   "final_read_after_exit": true,
+   "lifetime_max_phys_footprint_bytes": 19898695232,
+   "errors": []
+  },
+  "rss_peak_on_reported_not_used_bytes": 18292523008,
+  "g": 1.0344457318072233,
+  "g_basis": "RSS (ru_maxrss), dimensionless; cannot be restated on footprint",
+  "T_persist_bytes": 8989973440,
+  "T_persist_measure": "phys_footprint (the ON probe's footprint-sampled pickle transient)",
+  "evaluated": true,
+  "P_on_bytes": 19898695232,
+  "P_run_bytes": 20584120351.275146,
+  "P_persist_bytes": 29574093791.275146,
+  "A_post_bytes": 26212712448,
+  "threshold_bytes": 22280805580.8,
+  "gib": {
+   "P_on": 18.532104074954987,
+   "P_run": 19.170455961744437,
+   "P_persist": 27.543021171610008,
+   "T_persist": 8.37256520986557,
+   "A_post": 24.412490844726562,
+   "threshold": 20.750617218017577
+  },
+  "persist_certified_models": false,
+  "g_break_even": 0.6679248054126888,
+  "persist_at_g_1": false,
+  "verdict_independent_of_g_basis": true,
+  "verdict_note": "REFUSAL holds at g = 1 (the floor of a footprint g): independent of g's basis",
+  "post_certification_for_the_pair": {
+   "persist_certified_models": false,
+   "hull_polish": false
+  },
+  "required_pair_bytes": 20584120351.275146
+ },
+ "pre_launch_assertion": {
+  "per_cell": {
+   "x0": {
+    "eval_key": "f6e9cd53fdbb8ee8c80388a13d723c49de5b18173bcfa5c7351cbe0d9e5000d4",
+    "v34_frozen_eval_key": "f6e9cd53fdbb8ee8c80388a13d723c49de5b18173bcfa5c7351cbe0d9e5000d4",
+    "equals_v34_frozen_key": true,
+    "pre_tail_3x3_key": "19ad04f2e9c14c51de8a886195ec583a73d6916730fcbdbde512610dbf3c9857",
+    "differs_from_pre_tail_3x3_key": true,
+    "declared_off_key_equals_pre_tail_key": true,
+    "alpha_row_2x2_key_same_candidate": "7d53b6f21b686a44db69f0901e03c870d14e15d00bfaaa6a5379822890918a94",
+    "differs_from_2x2_alpha_row_key": true,
+    "absent_from_every_committed_spec_outside_w89_w90": true,
+    "committed_specs_holding_it_outside_w89_w90": [],
+    "frozen_entries_equal_recomputed": true,
+    "n_frozen_entries_checked": 2
+   },
+   "n7_4h_e1": {
+    "eval_key": "c82522f470b35b58399bfe47ebd45612a95641ae308128de5d1c3c08ad5408a1",
+    "v34_frozen_eval_key": "c82522f470b35b58399bfe47ebd45612a95641ae308128de5d1c3c08ad5408a1",
+    "equals_v34_frozen_key": true,
+    "pre_tail_3x3_key": "08cbcdcefb78bc9ce27c27c00dfe1ff84895f47992e0be0d8f02e8e4f5ff0481",
+    "differs_from_pre_tail_3x3_key": true,
+    "declared_off_key_equals_pre_tail_key": true,
+    "alpha_row_2x2_key_same_candidate": "711fce9aa74d687892b994e332472c7d59745ef74ce9030abc12d54a9aaf83b4",
+    "differs_from_2x2_alpha_row_key": true,
+    "absent_from_every_committed_spec_outside_w89_w90": true,
+    "committed_specs_holding_it_outside_w89_w90": [],
+    "frozen_entries_equal_recomputed": true,
+    "n_frozen_entries_checked": 0
+   }
+  },
+  "holds": true,
+  "n_committed_keys_scanned": 3521,
+  "excluded_roots": [
+   "data/SRP1/Results/P515S53/w89_3x3",
+   "data/SRP1/Results/P515S53/w90_3x3"
+  ]
+ },
+ "guards": {
+  "alpha_row_launcher": {
+   "counts": {
+    "permitted_solve": 0,
+    "permitted_exec": 0,
+    "blocked_solve": 0,
+    "blocked_exec": 0
+   },
+   "verify_0_failures": []
+  },
+  "w86_launcher": {
+   "counts": {
+    "permitted_solve": 0,
+    "permitted_exec": 0,
+    "blocked_solve": 0,
+    "blocked_exec": 0
+   },
+   "verify_0_failures": []
+  },
+  "w87": {
+   "counts": {
+    "permitted_solve": 0,
+    "permitted_exec": 0,
+    "blocked_solve": 0,
+    "blocked_exec": 0
+   },
+   "verify_0_failures": []
+  },
+  "w88": {
+   "counts": {
+    "permitted_solve": 0,
+    "permitted_exec": 0,
+    "blocked_solve": 0,
+    "blocked_exec": 0
+   },
+   "verify_0_failures": []
+  },
+  "w89_step1": {
+   "counts": {
+    "permitted_solve": 0,
+    "permitted_exec": 0,
+    "blocked_solve": 0,
+    "blocked_exec": 0
+   },
+   "verify_0_failures": []
+  },
+  "w89_3x3_launcher": {
+   "counts": {
+    "permitted_solve": 0,
+    "permitted_exec": 0,
+    "blocked_solve": 0,
+    "blocked_exec": 0
+   },
+   "verify_0_failures": []
+  },
+  "w90_3x3_parent": {
+   "counts": {
+    "permitted_solve": 0,
+    "permitted_exec": 0,
+    "blocked_solve": 0,
+    "blocked_exec": 0
+   },
+   "verify_0_failures": []
+  }
+ },
+ "launcher_wall_s": 5598.949903964996
+}

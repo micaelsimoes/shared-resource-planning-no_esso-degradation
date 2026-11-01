@@ -1,0 +1,13 @@
+16:32:31 [W86-RECERT-FREEZE] P5.15 Addendum 46 ruling 7, W86 -- tight-tail SRP1 re-certification (C*, n7_4h_e1, x = 0) through the campaign harness, tail declared {enabled True, compl_inf_tol 1e-6}
+16:32:31 [W86-RECERT-FREEZE] frozen campaign spec: data/SRP1/Results/P515S53/tight_tail_w86/campaign_s53_w86_tail_recert/campaign_spec_s53_w86_tail_recert_ddd6cd44.json sha256=ddd6cd4422b56f946eeeb427dff44ef572490bd34c606fad96eaf00fd4a84ec1
+16:32:31 [W86-RECERT-FREEZE]   c_star: key=578636daa6d6360d eval_key=96c5aa50cc229cc14f8bfd34de306b7cc79caf77ac28a09e0046ad3978c49772 eval_dir=96c5aa50cc229cc1_c_star post_certification={'persist_certified_models': True, 'hull_polish': False, 'reference': None}
+16:32:31 [W86-RECERT-FREEZE]   n7_4h_e1: key=db77e1549af855bc eval_key=ca8927e75d628bd188cf74f9d81436cbb3e0be53f64e02d9876ebb271a21951d eval_dir=ca8927e75d628bd1_n7_4h_e1 post_certification={'persist_certified_models': True, 'hull_polish': False, 'reference': None}
+16:32:31 [W86-RECERT-FREEZE]   x0: key=8435c71859ddde68 eval_key=5cfe69a615ae370835a5896eaa6899f1d9973b7adf649437c2ddd94d1d2836ee eval_dir=5cfe69a615ae3708_x0 post_certification={'persist_certified_models': True, 'hull_polish': False, 'reference': None}
+16:32:31 [W86-RECERT-FREEZE] spec checks: all=True failing=[]
+16:32:31 [W86-RECERT-FREEZE] pre-launch assertion on the FROZEN spec: holds=True
+16:32:31 [W86-RECERT-FREEZE]   c_star: frozen 96c5aa50cc229cc14f8bfd34de306b7cc79caf77ac28a09e0046ad3978c49772 == expected 96c5aa50cc229cc1: True; pre-tail 070f833e1e318f85 differs True; absent from committed specs True
+16:32:31 [W86-RECERT-FREEZE]   n7_4h_e1: frozen ca8927e75d628bd188cf74f9d81436cbb3e0be53f64e02d9876ebb271a21951d == expected ca8927e75d628bd1: True; pre-tail bd504ecf5a288d44 differs True; absent from committed specs True
+16:32:31 [W86-RECERT-FREEZE]   x0: frozen 5cfe69a615ae370835a5896eaa6899f1d9973b7adf649437c2ddd94d1d2836ee == expected 5cfe69a615ae3708: True; pre-tail d2c96b1480402a3b differs True; absent from committed specs True
+16:32:31 [W86-RECERT-FREEZE] memory at freeze (non-gating): available (memsize - wired - anonymous - compressor) = 18.03 GiB; free+inactive = 13.58 GiB (recorded only); required 10.50 GiB (hw.memsize - (wired + anonymous + compressor-occupied) x page size >= 3 x 3.5 GiB) -> would PASS
+16:32:31 [W86-RECERT-FREEZE] parent guard {'permitted_solve': 0, 'permitted_exec': 0, 'blocked_solve': 0, 'blocked_exec': 0} verify0_failures=[] wall=2.1s
+16:32:31 [W86-RECERT-FREEZE] freeze OK; run with: --stage recert --run --spec-sha256 ddd6cd4422b56f946eeeb427dff44ef572490bd34c606fad96eaf00fd4a84ec1

@@ -1,0 +1,23 @@
+16:03:31 [W86-SMOKE] memory preflight: available (memsize - wired - anonymous - compressor) = 18.66 GiB; free+inactive = 11.66 GiB (recorded only); required 3.50 GiB (hw.memsize - (wired + anonymous + compressor-occupied) x page size >= 1 x 3.5 GiB) -> PASS
+16:03:31 [W86-SMOKE] P5.15 Addendum 46 ruling 7, W86 -- tight-tail SRP1 re-certification (C*, n7_4h_e1, x = 0) through the campaign harness, tail declared {enabled True, compl_inf_tol 1e-6}
+16:03:31 [W86-SMOKE] ONE cell c_star eval_key 96c5aa50cc229cc14f8bfd34de306b7cc79caf77ac28a09e0046ad3978c49772 cap 2 through H.evaluate (real child: main_child -> _child_real); DECLARED: {'base': 153, 'rule': '51 per round x (cap 2 + 1) + every retry attempted, per event'}
+16:03:31 [W86-SMOKE] campaign lock acquired: {'pid': 34701, 'campaign_id': 's53_w86_tail_smoke', 'campaign_spec_sha256': '37266e0173d45259b7e6f75d40d96780bc928740baf287226eea4b98f6a9f0b1', 'started_utc': '2026-09-25T16:03:31.022054+00:00'}
+16:03:31 [S44-HARNESS] launched c_star (key 578636daa6d6360d) pid=34737
+16:03:31 [S44-HARNESS] heartbeat c_star: 0s cycle=None
+16:04:31 [S44-HARNESS] heartbeat c_star: 60s cycle=None
+16:05:21 [S44-HARNESS] finished c_star pid=34737 exit=0 status=not_certified wall=110s
+16:05:21 [W86-SMOKE] campaign lock released
+16:05:21 [W86-SMOKE]   S1_child_exit0_record_uncertified_2_cycles: PASS
+16:05:21 [W86-SMOKE]   S2_append_written_and_byte_identical_to_end_of_run: PASS
+16:05:21 [W86-SMOKE]   S3_checklist_line1_before_any_solve: PASS
+16:05:21 [W86-SMOKE]   S4_tail_state_check_matches: PASS
+16:05:21 [W86-SMOKE]   S5_solve_profile_reconciled_per_event_153: PASS
+16:05:21 [W86-SMOKE]   S6_tail_inactive_at_cap2: PASS
+16:05:21 [W86-SMOKE]   S7_floor_records_at_production_compl_inf_tol: PASS
+16:05:21 [W86-SMOKE]   S8_append_sealed_no_write_error: PASS
+16:05:21 [W86-SMOKE]   S9_post_certification_skipped_uncertified: PASS
+16:05:21 [W86-SMOKE]   S10_eval_key_expected_fresh_names: PASS
+16:05:21 [W86-SMOKE]   S11_ess_ageing_readback_all_match: PASS
+16:05:21 [W86-SMOKE]   S12_parent_guard_zero: PASS
+16:05:21 [W86-SMOKE] solve claim: RECONCILED PER EVENT, NOT GUARD-VERIFIED: the child's in-window guard count {'permitted_solve': 153, 'permitted_exec': 153, 'blocked_solve': 0, 'blocked_exec': 0} reconciled in its record (expected 153); the parent cannot verify a guard in the child process
+16:05:21 [W86-SMOKE] GATE PASS failing=[] wall=112s

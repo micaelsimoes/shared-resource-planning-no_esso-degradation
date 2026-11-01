@@ -1,0 +1,11 @@
+[S42-PW-PREFLIGHT] preconditions passed (no lock, no forbidden process, fresh output dirs, production files clean).
+[S42-PW-PREFLIGHT] run SERIAL (persistent_workers.enabled=False), 2 cycles, oracle s39_D.
+[S42-PW-PREFLIGHT] serial: cycles_run=2 wall_clock_s=101.20 w1001_warning_count=0 frozen_snapshot_files=[]
+[S42-PW-PREFLIGHT] run PARALLEL8 (persistent_workers.enabled=True, num_workers=8), 2 cycles, oracle s39_D.
+[S42-PW-PREFLIGHT] parallel8: cycles_run=2 wall_clock_s=133.55 w1001_warning_count=0 frozen_snapshot_files=[]
+[S42-PW-PREFLIGHT] wrote /Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S42/persistent_workers_task/pw_preflight/persistent_workers_preflight_results.json
+[S42-PW-PREFLIGHT] bitwise_identical=False total_n_diffs=2 all_artifacts_present=True esso_models_pickle_bytes_diverges=True
+[S42-PW-PREFLIGHT] serial wall=101.20s w1001=0 parallel8 wall=133.55s w1001=0 speedup=0.7577802266593692
+[S42-PW-PREFLIGHT] *** BITWISE COMPARISON FAILED *** -- see diffs above/in /Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S42/persistent_workers_task/pw_preflight/persistent_workers_preflight_results.json. Reported as-is; NOT rationalized.
+[S42-PW-PREFLIGHT] first diffs: [{'field': 'report.esso_models_pickle.bytes', 'serial': 2842737, 'parallel8': 2873130}]
+[S42-PW-PREFLIGHT] wrote /Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S42/persistent_workers_task/pw_preflight/manifest_sha256.json

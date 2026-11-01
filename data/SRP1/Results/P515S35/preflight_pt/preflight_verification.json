@@ -1,0 +1,1315 @@
+{
+ "stage": "P5.15 Addendum 16 items 2-3, PHASE 2 -- two-cycle preflight (spec v6, s35pt arm)",
+ "authority": [
+  "PLANNER_BRIEF_2026-09-13.md Addendum 16 items 2 and 3",
+  "data/SRP1/Results/P515S35/frozen_s35pt_spec_v6_651a9d84.json"
+ ],
+ "spec_file": "data/SRP1/Results/P515S35/frozen_s35pt_spec_v6_651a9d84.json",
+ "spec_file_sha256": "651a9d84103c9f0803a7c5ad83e0ca3d8aed1b6ea0a458559e45b0e647bb6f3c",
+ "checklist": {
+  "tso_total_gen_cost": true,
+  "tso_total_flex_cost": true,
+  "tso_total_load_curt_cost": true,
+  "tso_total_gen_curt_penalty": true,
+  "tso_total_ess_utilization_cost_penalty": true,
+  "tso_slack_flex_q_balance_up_present": true,
+  "mch_adn_interface_flexibility_cost": true,
+  "mch_gen_curtailment_definitional_value": true,
+  "mch_ess_complementarity_bilinear_value": true,
+  "mch_load_is_tso_adn_interface": true,
+  "srp_get_local_detector_components": true,
+  "srp_get_operational_recourse_components": true,
+  "srp_get_admm_block_weight": true,
+  "esso_get_feasibility_violation": true,
+  "tso_detector_components_evaluate": true,
+  "tso_adn_interface_flex_cost_evaluate": true,
+  "tso_interface_delta_p_present": true,
+  "tso_interface_delta_q_present": true,
+  "tso_interface_settlement_present": true,
+  "tso_interface_settlement_weight_present": true,
+  "tso_expected_interface_pf_p_will_exist_after_admm_setup": true,
+  "dso_interface_settlement_present": true,
+  "dso_interface_settlement_weight_present": true,
+  "srp_get_interface_reporting_detail": true,
+  "srp_get_operational_interface_settlement_blocks": true,
+  "srp_get_local_interface_settlement": true,
+  "s35ref_spec_file_hash_matches": true,
+  "s35ref_spec_file_hash_observed": "995548ababa1b428e9bc4354a078ffd8322cc54d00f04b9ef7a694e43311c7ba",
+  "s35ref_predecessor_spec_sha256_matches_s34": true,
+  "boyd_eps_source_is_case_file": true,
+  "boyd_eps_abs_is_1e-5": true,
+  "boyd_eps_rel_is_1e-4": true,
+  "objective_scale_is_93635360": true,
+  "objective_scale_source_is_case_file": true,
+  "objective_scale_assert_factor_at_least_1": true,
+  "srp_resolve_common_admm_objective_scale_callable": true,
+  "al_scale_esso_present": true,
+  "al_scale_esso_mode_is_sigma_over_median_block_weight": true,
+  "srp_resolve_esso_al_scale_callable": true,
+  "srp_update_shared_energy_storage_model_to_admm_accepts_al_scale_esso": true,
+  "shared_ess_reference_rating_mva_is_2p5": true,
+  "srp_admm_shared_ess_reference_mva_callable": true,
+  "initial_rho_v_pf_ess_matches_spec_v5": true,
+  "initial_rho_snapshot": {
+   "v": {
+    "case9": 0.0077,
+    "case33_1": 0.0077,
+    "case33_2": 0.0077,
+    "case33_3": 0.0077
+   },
+   "pf": {
+    "case9": 0.198,
+    "case33_1": 0.198,
+    "case33_2": 0.198,
+    "case33_3": 0.198
+   },
+   "ess": {
+    "case9": 0.1125,
+    "case33_1": 0.1125,
+    "case33_2": 0.1125,
+    "case33_3": 0.1125,
+    "esso": 0.1125
+   }
+  },
+  "freeze_after_unchanged_cycles_is_10": true,
+  "freeze_backstop_cycle_is_60": true,
+  "minimum_consecutive_converged_cycles_is_3": true,
+  "srp_update_admm_penalties_accepts_freeze_state": true,
+  "srp_init_admm_freeze_state_callable": true,
+  "srp_get_admm_boyd_residual_metrics": true,
+  "boyd_field_r_in_source": true,
+  "boyd_field_s_in_source": true,
+  "boyd_field_s_rho_part_in_source": true,
+  "boyd_field_s_proximal_part_in_source": true,
+  "boyd_field_eps_pri_in_source": true,
+  "boyd_field_eps_dual_in_source": true,
+  "boyd_field_norm_x_in_source": true,
+  "boyd_field_norm_z_in_source": true,
+  "boyd_field_norm_y_in_source": true,
+  "boyd_field_primal_ratio_in_source": true,
+  "boyd_field_dual_ratio_in_source": true,
+  "boyd_field_dual_ratio_balance_in_source": true,
+  "admm_diagnostics_key_boyd_v_r_present": true,
+  "admm_diagnostics_key_boyd_v_s_present": true,
+  "admm_diagnostics_key_boyd_v_s_rho_part_present": true,
+  "admm_diagnostics_key_boyd_v_s_proximal_part_present": true,
+  "admm_diagnostics_key_boyd_v_proximal_share_present": true,
+  "admm_diagnostics_key_boyd_v_eps_pri_present": true,
+  "admm_diagnostics_key_boyd_v_eps_dual_present": true,
+  "admm_diagnostics_key_boyd_v_norm_x_present": true,
+  "admm_diagnostics_key_boyd_v_norm_z_present": true,
+  "admm_diagnostics_key_boyd_v_norm_y_present": true,
+  "admm_diagnostics_key_boyd_v_primal_ratio_present": true,
+  "admm_diagnostics_key_boyd_v_dual_ratio_present": true,
+  "admm_diagnostics_key_boyd_v_dual_ratio_balance_present": true,
+  "admm_diagnostics_key_boyd_v_primal_pass_present": true,
+  "admm_diagnostics_key_boyd_v_dual_pass_present": true,
+  "admm_diagnostics_key_boyd_v_channel_pass_present": true,
+  "admm_diagnostics_key_boyd_pf_r_present": true,
+  "admm_diagnostics_key_boyd_pf_s_present": true,
+  "admm_diagnostics_key_boyd_pf_s_rho_part_present": true,
+  "admm_diagnostics_key_boyd_pf_s_proximal_part_present": true,
+  "admm_diagnostics_key_boyd_pf_eps_pri_present": true,
+  "admm_diagnostics_key_boyd_pf_eps_dual_present": true,
+  "admm_diagnostics_key_boyd_pf_norm_x_present": true,
+  "admm_diagnostics_key_boyd_pf_norm_z_present": true,
+  "admm_diagnostics_key_boyd_pf_norm_y_present": true,
+  "admm_diagnostics_key_boyd_pf_primal_ratio_present": true,
+  "admm_diagnostics_key_boyd_pf_dual_ratio_present": true,
+  "admm_diagnostics_key_boyd_pf_dual_ratio_balance_present": true,
+  "admm_diagnostics_key_boyd_pf_channel_pass_present": true,
+  "admm_diagnostics_key_boyd_ess_r_present": true,
+  "admm_diagnostics_key_boyd_ess_s_present": true,
+  "admm_diagnostics_key_boyd_ess_s_rho_part_present": true,
+  "admm_diagnostics_key_boyd_ess_s_proximal_part_present": true,
+  "admm_diagnostics_key_boyd_ess_eps_pri_present": true,
+  "admm_diagnostics_key_boyd_ess_eps_dual_present": true,
+  "admm_diagnostics_key_boyd_ess_norm_x_present": true,
+  "admm_diagnostics_key_boyd_ess_norm_z_present": true,
+  "admm_diagnostics_key_boyd_ess_norm_y_present": true,
+  "admm_diagnostics_key_boyd_ess_norm_y_tso_present": true,
+  "admm_diagnostics_key_boyd_ess_norm_y_dso_present": true,
+  "admm_diagnostics_key_boyd_ess_norm_y_esso_present": true,
+  "admm_diagnostics_key_boyd_ess_primal_ratio_present": true,
+  "admm_diagnostics_key_boyd_ess_dual_ratio_present": true,
+  "admm_diagnostics_key_boyd_ess_dual_ratio_balance_present": true,
+  "admm_diagnostics_key_boyd_ess_channel_pass_present": true,
+  "admm_diagnostics_key_boyd_all_pass_present": true,
+  "admm_diagnostics_key_boyd_stop_present": true,
+  "admm_diagnostics_key_boyd_eps_abs_present": true,
+  "admm_diagnostics_key_boyd_eps_rel_present": true,
+  "admm_diagnostics_key_boyd_eps_source_present": true,
+  "admm_diagnostics_key_rho_v_before_present": true,
+  "admm_diagnostics_key_rho_v_after_present": true,
+  "admm_diagnostics_key_rho_v_action_present": true,
+  "admm_diagnostics_key_rho_pf_before_present": true,
+  "admm_diagnostics_key_rho_pf_after_present": true,
+  "admm_diagnostics_key_rho_pf_action_present": true,
+  "admm_diagnostics_key_rho_ess_before_present": true,
+  "admm_diagnostics_key_rho_ess_after_present": true,
+  "admm_diagnostics_key_rho_ess_action_present": true,
+  "admm_diagnostics_key_objective_change_ratio_present": true,
+  "admm_diagnostics_key_objective_change_abs_present": true,
+  "admm_diagnostics_key_objective_tolerance_present": true,
+  "admm_diagnostics_key_gap_proxy_G_present": true,
+  "admm_diagnostics_key_gap_proxy_G_reason_present": true,
+  "admm_diagnostics_key_gap_proxy_Q_present": true,
+  "admm_diagnostics_key_gap_proxy_G_over_Q_present": true,
+  "admm_diagnostics_key_recourse_present": true,
+  "admm_diagnostics_key_gross_operational_cost_present": true,
+  "admm_diagnostics_key_gamma_v_before_present": true,
+  "admm_diagnostics_key_gamma_v_after_present": true,
+  "admm_diagnostics_key_gamma_pf_before_present": true,
+  "admm_diagnostics_key_gamma_pf_after_present": true,
+  "admm_diagnostics_key_gamma_ess_before_present": true,
+  "admm_diagnostics_key_gamma_ess_after_present": true,
+  "admm_diagnostics_key_rho_freeze_active_present": true,
+  "admm_diagnostics_key_freeze_after_cycle_present": true,
+  "admm_diagnostics_key_gamma_policy_present": true,
+  "admm_diagnostics_key_gamma_tau_present": true,
+  "admm_diagnostics_key_sigma_fixed_present": true,
+  "admm_diagnostics_key_sigma_computed_present": true,
+  "admm_diagnostics_key_al_scale_esso_present": true,
+  "admm_diagnostics_key_shared_ess_reference_rating_mva_present": true,
+  "admm_diagnostics_key_freeze_after_unchanged_cycles_present": true,
+  "admm_diagnostics_key_freeze_backstop_cycle_present": true,
+  "admm_diagnostics_key_rho_frozen_v_present": true,
+  "admm_diagnostics_key_rho_frozen_pf_present": true,
+  "admm_diagnostics_key_rho_frozen_ess_present": true,
+  "admm_diagnostics_key_rho_unchanged_streak_v_present": true,
+  "admm_diagnostics_key_rho_unchanged_streak_pf_present": true,
+  "admm_diagnostics_key_rho_unchanged_streak_ess_present": true,
+  "admm_diagnostics_key_rho_at_clamp_v_present": true,
+  "admm_diagnostics_key_rho_at_clamp_pf_present": true,
+  "admm_diagnostics_key_rho_at_clamp_ess_present": true,
+  "admm_diagnostics_key_efc_per_day_max_present": true,
+  "srp_get_admm_efc_per_day_max_callable": true,
+  "prox_gamma_v_mutable_in_source": true,
+  "write_interface_voltage_terminal_callable": true,
+  "write_component_levels_terminal_callable": true,
+  "write_interface_settlement_detail_s31c_callable": true,
+  "srp_get_operational_recourse_block_components_callable": true,
+  "srp_get_operational_objective_component_blocks_callable": true,
+  "s34_capture_hooks_callable": true,
+  "s35ref_capture_hooks_callable": true,
+  "write_boyd_terminal_s35ref_callable": true,
+  "s31c_g_baseline_reference_exists": true,
+  "s32_g_baseline_reference_exists": true,
+  "s33e2_g_baseline_reference_exists": true,
+  "s33e2_leak_classification_baseline_exists": true,
+  "s34_g_baseline_reference_exists": true,
+  "active_distribution_network_nodes_nonempty": true,
+  "soh_floor_rows_identified_pre_solve": true,
+  "soh_floor_identification_error": null,
+  "soh_floor_row_counts_by_node": {
+   "5": 6,
+   "7": 6,
+   "9": 6
+  },
+  "soh_floor_row_count_uniform_across_nodes": true,
+  "s35pt_spec_file_hash_matches": true,
+  "s35pt_spec_file_hash_observed": "651a9d84103c9f0803a7c5ad83e0ca3d8aed1b6ea0a458559e45b0e647bb6f3c",
+  "s35pt_predecessor_spec_sha256_matches_s35ref": true,
+  "shared_ess_initialization_is_price_taker": true,
+  "shared_ess_initialization_source_is_case_file": true,
+  "shared_ess_price_taker_solve_price_taker_schedule_callable": true,
+  "shared_ess_price_taker_lp_call_counter_callable": true,
+  "srp_initialize_shared_ess_from_price_taker_callable": true,
+  "s35pt_capture_hooks_callable": true,
+  "write_boyd_terminal_s35pt_callable": true,
+  "hash_consensus_ess_z_callable": true,
+  "s35ref_g_baseline_reference_exists": true,
+  "s35ref_evaluation_v2_reference_exists": true
+ },
+ "num_cycles": 2,
+ "permitted_solves": 153,
+ "solve_profile": {
+  "observed": {
+   "permitted_solve": 154,
+   "permitted_exec": 154,
+   "blocked_solve": 0,
+   "blocked_exec": 0
+  },
+  "identity_holds": false
+ },
+ "solve_profile_counts_exact": false,
+ "rho_ess_matches_0p1125": true,
+ "reference_source_run1_s35ref": {
+  "path": "data/SRP1/Results/P515S35_REF_run/g_baseline.json",
+  "sha256": "8c72a1560dc90b40d9cb653962d64dda9389c77659d7a153eea1839bc3a90124"
+ },
+ "cycles_rows": [
+  {
+   "cycle": 1,
+   "local_solves_ok": true,
+   "primal_v": 0.01852917502417527,
+   "primal_v_mean": 0.007256003224449615,
+   "primal_pf": 0.3256596628129763,
+   "primal_pf_mean": 0.06184421748221909,
+   "primal_ess": 0.0003069458900471833,
+   "primal_ess_mean": 1.6649823364176073e-05,
+   "primal_v_tolerance": 0.01,
+   "primal_v_mean_tolerance": 0.001,
+   "primal_pf_tolerance": 0.01,
+   "primal_pf_mean_tolerance": 0.001,
+   "primal_ess_tolerance": 0.1,
+   "primal_ess_mean_tolerance": 0.01,
+   "dual_v": 0.0001257906604401926,
+   "dual_v_mean": 3.870692975444773e-05,
+   "dual_pf": 0.12894303127626408,
+   "dual_pf_mean": 0.023562410612239713,
+   "dual_ess": 1.8174819208933805e-05,
+   "dual_ess_mean": 1.5125783549905527e-06,
+   "dual_v_tolerance": 0.01,
+   "dual_pf_tolerance": 0.01,
+   "dual_ess_tolerance": 0.01,
+   "primal_v_ratio": 1.852917502417527,
+   "primal_v_mean_ratio": 7.256003224449614,
+   "primal_pf_ratio": 32.565966281297634,
+   "primal_pf_mean_ratio": 61.844217482219086,
+   "primal_ess_ratio": 0.0030694589004718327,
+   "primal_ess_mean_ratio": 0.0016649823364176073,
+   "dual_v_ratio": 0.01257906604401926,
+   "dual_v_mean_ratio": 0.0038706929754447734,
+   "dual_pf_ratio": 12.894303127626408,
+   "dual_pf_mean_ratio": 2.356241061223971,
+   "dual_ess_ratio": 0.0018174819208933806,
+   "dual_ess_mean_ratio": 0.00015125783549905527,
+   "worst_v_primal_node": 5,
+   "worst_v_primal_year": 2035,
+   "worst_v_primal_day": "Winter",
+   "worst_v_primal_period": 4,
+   "worst_v_primal_tso": 349.5900265940184,
+   "worst_v_primal_dso": 343.19746121067794,
+   "worst_v_primal_difference": 6.392565383340468,
+   "worst_v_primal_base": 345.0,
+   "worst_v_primal_rho_tso": 0.0077,
+   "worst_v_primal_rho_dso": 0.0077,
+   "worst_pf_primal_node": 7,
+   "worst_pf_primal_year": 2035,
+   "worst_pf_primal_day": "Spring",
+   "worst_pf_primal_period": 14,
+   "worst_pf_primal_type": "p",
+   "worst_pf_primal_tso": 51.79397145195823,
+   "worst_pf_primal_dso": 84.35993773325586,
+   "worst_pf_primal_difference": 32.565966281297634,
+   "worst_pf_primal_rating": 100.0,
+   "worst_ess_primal_node": 7,
+   "worst_ess_primal_year": 2035,
+   "worst_ess_primal_day": "Summer",
+   "worst_ess_primal_period": 13,
+   "worst_ess_primal_type": "p",
+   "worst_ess_primal_agent": "tso",
+   "worst_ess_primal_agent_value": 0.9119842511668981,
+   "worst_ess_primal_z": 0.913518980617134,
+   "worst_ess_primal_difference": 0.0015347294502359166,
+   "worst_ess_primal_rating": 2.5,
+   "worst_ess_primal_rho": 0.1125,
+   "worst_pf_dual_agent": "dso",
+   "worst_pf_dual_node": 7,
+   "worst_pf_dual_year": 2035,
+   "worst_pf_dual_day": "Spring",
+   "worst_pf_dual_period": 14,
+   "worst_pf_dual_type": "p",
+   "worst_pf_dual_change": 65.12274306882024,
+   "gross_operational_cost": 904886897.7198681,
+   "terminal_salvage_value": 5.2465022890115656e-52,
+   "recourse": 904886897.7198681,
+   "objective_change_abs": null,
+   "objective_change_rel": null,
+   "objective_tolerance": null,
+   "objective_absolute_tolerance": 1000.0,
+   "objective_relative_tolerance": 0.0001,
+   "residual_convergence": false,
+   "objective_convergence": false,
+   "cycle_convergence": false,
+   "consecutive_converged_cycles": 0,
+   "required_consecutive_cycles": 3,
+   "rho_v_before": 0.0076999999999999985,
+   "rho_pf_before": 0.1980000000000002,
+   "rho_ess_before": 0.11249999999999989,
+   "rho_v_after": 0.011549999999999998,
+   "rho_pf_after": 0.1980000000000002,
+   "rho_ess_after": 0.16875000000000007,
+   "rho_v_action": "increased",
+   "rho_pf_action": "held",
+   "rho_ess_action": "increased",
+   "gamma_v_before": 0.007699999999999999,
+   "gamma_v_after": 0.011550000000000003,
+   "gamma_pf_before": 0.19799999999999998,
+   "gamma_pf_after": 0.19799999999999998,
+   "gamma_ess_before": 0.11250000000000003,
+   "gamma_ess_after": 0.16874999999999998,
+   "rho_freeze_active": false,
+   "freeze_after_cycle": null,
+   "gamma_policy": "tied_to_rho",
+   "gamma_tau": 1.0,
+   "sigma_fixed": 93635360.0,
+   "sigma_computed": 93635360.28800085,
+   "al_scale_esso": 227210.9966521344,
+   "shared_ess_reference_rating_mva": 2.5,
+   "freeze_after_unchanged_cycles": 10,
+   "freeze_backstop_cycle": 60,
+   "rho_frozen_v": false,
+   "rho_frozen_pf": false,
+   "rho_frozen_ess": false,
+   "rho_unchanged_streak_v": 0,
+   "rho_unchanged_streak_pf": 1,
+   "rho_unchanged_streak_ess": 0,
+   "rho_at_clamp_v": false,
+   "rho_at_clamp_pf": false,
+   "rho_at_clamp_ess": false,
+   "efc_per_day_max": 1.1918118015584207,
+   "objective_change_ratio": null,
+   "boyd_all_pass": false,
+   "boyd_stop": false,
+   "boyd_eps_abs": 1e-05,
+   "boyd_eps_rel": 0.0001,
+   "boyd_eps_source": "case_file",
+   "boyd_v_r": 0.24726738318853064,
+   "boyd_v_s": 0.0019973000288384026,
+   "boyd_v_s_rho_part": 0.0014123043944557214,
+   "boyd_v_s_proximal_part": 0.0014123043944557214,
+   "boyd_v_proximal_share": 0.7071067811865476,
+   "boyd_v_eps_pri": 0.003241847664790855,
+   "boyd_v_eps_dual": 0.00029407999841488564,
+   "boyd_v_norm_x": 29.289337925938952,
+   "boyd_v_norm_z": 29.479088956568734,
+   "boyd_v_norm_y": 0.0014122928090418516,
+   "boyd_v_primal_ratio": 76.27359726802057,
+   "boyd_v_dual_ratio": 6.7916894709059,
+   "boyd_v_dual_ratio_balance": 4.802449680590837,
+   "boyd_v_primal_pass": false,
+   "boyd_v_dual_pass": false,
+   "boyd_v_channel_pass": false,
+   "boyd_pf_r": 3.488823292777661,
+   "boyd_pf_s": 1.4446298793493613,
+   "boyd_pf_s_rho_part": 1.0215075839926373,
+   "boyd_pf_s_proximal_part": 1.0215075839926373,
+   "boyd_pf_proximal_share": 0.7071067811865475,
+   "boyd_pf_eps_pri": 0.0013869184711300295,
+   "boyd_pf_eps_dual": 0.0005195609080423309,
+   "boyd_pf_norm_x": 9.71226277313499,
+   "boyd_pf_norm_z": 8.421327535236166,
+   "boyd_pf_norm_y": 1.0386871422580024,
+   "boyd_pf_primal_ratio": 2515.521543191394,
+   "boyd_pf_dual_ratio": 2780.4822437327425,
+   "boyd_pf_dual_ratio_balance": 1966.097849512209,
+   "boyd_pf_primal_pass": false,
+   "boyd_pf_dual_pass": false,
+   "boyd_pf_channel_pass": false,
+   "boyd_ess_r": 0.0017552139475932019,
+   "boyd_ess_s": 0.00025457598013075634,
+   "boyd_ess_s_rho_part": 0.00014763126571865886,
+   "boyd_ess_s_proximal_part": 0.00020739802082431216,
+   "boyd_ess_proximal_share": 0.8146802409158459,
+   "boyd_ess_eps_pri": 0.0013002606599781257,
+   "boyd_ess_eps_dual": 0.0007200197461569105,
+   "boyd_ess_norm_x": 5.802606599781257,
+   "boyd_ess_norm_z": 5.802606334316418,
+   "boyd_ess_norm_y": 0.00019746156910423519,
+   "boyd_ess_norm_y_tso": 0.00014177986984460945,
+   "boyd_ess_norm_y_dso": 0.0001079936468905767,
+   "boyd_ess_norm_y_esso": 8.501124638085054e-05,
+   "boyd_ess_primal_ratio": 1.3498939109814565,
+   "boyd_ess_dual_ratio": 0.35356805350068526,
+   "boyd_ess_dual_ratio_balance": 0.20503780140286082,
+   "boyd_ess_primal_pass": false,
+   "boyd_ess_dual_pass": true,
+   "boyd_ess_channel_pass": false,
+   "gap_proxy_G": null,
+   "gap_proxy_G_reason": "sigma_b (admm_objective_scale) is not defined for the ESSO block: its objective is not divided by an effective scale (F5, known concern, 3.4 scope). G requires sigma_b for every block; summing the TSO/DSO blocks only would silently omit the ESSO block, which the evidence rules forbid.",
+   "gap_proxy_Q": 904886897.7198681,
+   "gap_proxy_G_over_Q": null,
+   "slack_consensus_v": 0.539689435010078,
+   "slack_stationarity_v": 258.3516714820534,
+   "state_step_norm_v": 2.5804619836298487e-05,
+   "slack_consensus_pf": 0.030706903991799924,
+   "slack_stationarity_pf": 0.42440479306499346,
+   "state_step_norm_pf": 7.854136870746571e-05,
+   "slack_consensus_ess": 325.79032084328657,
+   "slack_stationarity_ess": 6611.227753594595,
+   "state_step_norm_ess": 1.5125783549905527e-06,
+   "slack_objective": null,
+   "recourse_change": null,
+   "nonfinite": false
+  },
+  {
+   "cycle": 2,
+   "local_solves_ok": true,
+   "primal_v": 0.008436089143526221,
+   "primal_v_mean": 0.002835673887273396,
+   "primal_pf": 0.17848010400258527,
+   "primal_pf_mean": 0.0613753788241726,
+   "primal_ess": 0.00010215576324920711,
+   "primal_ess_mean": 1.195777438190525e-05,
+   "primal_v_tolerance": 0.01,
+   "primal_v_mean_tolerance": 0.001,
+   "primal_pf_tolerance": 0.01,
+   "primal_pf_mean_tolerance": 0.001,
+   "primal_ess_tolerance": 0.1,
+   "primal_ess_mean_tolerance": 0.01,
+   "dual_v": 0.0003365705599157006,
+   "dual_v_mean": 9.511316418483781e-05,
+   "dual_pf": 0.06367942083120927,
+   "dual_pf_mean": 0.009873461455707548,
+   "dual_ess": 1.510351001456498e-05,
+   "dual_ess_mean": 2.0972470852144357e-06,
+   "dual_v_tolerance": 0.01,
+   "dual_pf_tolerance": 0.01,
+   "dual_ess_tolerance": 0.01,
+   "primal_v_ratio": 0.8436089143526221,
+   "primal_v_mean_ratio": 2.835673887273396,
+   "primal_pf_ratio": 17.848010400258527,
+   "primal_pf_mean_ratio": 61.3753788241726,
+   "primal_ess_ratio": 0.001021557632492071,
+   "primal_ess_mean_ratio": 0.001195777438190525,
+   "dual_v_ratio": 0.03365705599157006,
+   "dual_v_mean_ratio": 0.009511316418483781,
+   "dual_pf_ratio": 6.367942083120926,
+   "dual_pf_mean_ratio": 0.9873461455707548,
+   "dual_ess_ratio": 0.001510351001456498,
+   "dual_ess_mean_ratio": 0.00020972470852144358,
+   "worst_v_primal_node": 7,
+   "worst_v_primal_year": 2025,
+   "worst_v_primal_day": "Autumn",
+   "worst_v_primal_period": 22,
+   "worst_v_primal_tso": 350.2377280724419,
+   "worst_v_primal_dso": 347.32727731792534,
+   "worst_v_primal_difference": 2.910450754516546,
+   "worst_v_primal_base": 345.0,
+   "worst_v_primal_rho_tso": 0.011550000000000001,
+   "worst_v_primal_rho_dso": 0.011550000000000001,
+   "worst_pf_primal_node": 5,
+   "worst_pf_primal_year": 2035,
+   "worst_pf_primal_day": "Summer",
+   "worst_pf_primal_period": 22,
+   "worst_pf_primal_type": "p",
+   "worst_pf_primal_tso": 67.836542046816,
+   "worst_pf_primal_dso": 32.14052124629895,
+   "worst_pf_primal_difference": 35.696020800517054,
+   "worst_pf_primal_rating": 200.0,
+   "worst_ess_primal_node": 5,
+   "worst_ess_primal_year": 2035,
+   "worst_ess_primal_day": "Spring",
+   "worst_ess_primal_period": 2,
+   "worst_ess_primal_type": "q",
+   "worst_ess_primal_agent": "tso",
+   "worst_ess_primal_agent_value": 0.0020657561914015406,
+   "worst_ess_primal_z": 0.001554977375155505,
+   "worst_ess_primal_difference": 0.0005107788162460355,
+   "worst_ess_primal_rating": 2.5,
+   "worst_ess_primal_rho": 0.16875,
+   "worst_pf_dual_agent": "dso",
+   "worst_pf_dual_node": 9,
+   "worst_pf_dual_year": 2035,
+   "worst_pf_dual_day": "Summer",
+   "worst_pf_dual_period": 9,
+   "worst_pf_dual_type": "p",
+   "worst_pf_dual_change": 48.24198547818884,
+   "gross_operational_cost": 1122165290.754859,
+   "terminal_salvage_value": -7.560839190083828e-36,
+   "recourse": 1122165290.754859,
+   "objective_change_abs": 217278393.0349909,
+   "objective_change_rel": 0.19362423238811094,
+   "objective_tolerance": 112216.5290754859,
+   "objective_absolute_tolerance": 1000.0,
+   "objective_relative_tolerance": 0.0001,
+   "residual_convergence": false,
+   "objective_convergence": false,
+   "cycle_convergence": false,
+   "consecutive_converged_cycles": 0,
+   "required_consecutive_cycles": 3,
+   "rho_v_before": 0.011549999999999998,
+   "rho_pf_before": 0.1980000000000002,
+   "rho_ess_before": 0.16875000000000007,
+   "rho_v_after": 0.011549999999999998,
+   "rho_pf_after": 0.1980000000000002,
+   "rho_ess_after": 0.16875000000000007,
+   "rho_v_action": "held",
+   "rho_pf_action": "held",
+   "rho_ess_action": "held",
+   "gamma_v_before": 0.011550000000000003,
+   "gamma_v_after": 0.011550000000000003,
+   "gamma_pf_before": 0.19799999999999998,
+   "gamma_pf_after": 0.19799999999999998,
+   "gamma_ess_before": 0.16874999999999998,
+   "gamma_ess_after": 0.16874999999999998,
+   "rho_freeze_active": false,
+   "freeze_after_cycle": null,
+   "gamma_policy": "tied_to_rho",
+   "gamma_tau": 1.0,
+   "sigma_fixed": 93635360.0,
+   "sigma_computed": 93635360.28800085,
+   "al_scale_esso": 227210.9966521344,
+   "shared_ess_reference_rating_mva": 2.5,
+   "freeze_after_unchanged_cycles": 10,
+   "freeze_backstop_cycle": 60,
+   "rho_frozen_v": false,
+   "rho_frozen_pf": false,
+   "rho_frozen_ess": false,
+   "rho_unchanged_streak_v": 1,
+   "rho_unchanged_streak_pf": 2,
+   "rho_unchanged_streak_ess": 1,
+   "rho_at_clamp_v": false,
+   "rho_at_clamp_pf": false,
+   "rho_at_clamp_ess": false,
+   "efc_per_day_max": 1.1917893075793056,
+   "objective_change_ratio": 1936.2423238811095,
+   "boyd_all_pass": false,
+   "boyd_stop": false,
+   "boyd_eps_abs": 1e-05,
+   "boyd_eps_rel": 0.0001,
+   "boyd_eps_source": "case_file",
+   "boyd_v_r": 0.09865668569116047,
+   "boyd_v_s": 0.003205643284864914,
+   "boyd_v_s_rho_part": 0.0022667321047931,
+   "boyd_v_s_proximal_part": 0.0022667321047931,
+   "boyd_v_proximal_share": 0.7071067811865475,
+   "boyd_v_eps_pri": 0.003259194166613595,
+   "boyd_v_eps_dual": 0.00029416544230766986,
+   "boyd_v_norm_x": 29.571081881477117,
+   "boyd_v_norm_z": 29.652553974796135,
+   "boyd_v_norm_y": 0.0022667317368845535,
+   "boyd_v_primal_ratio": 30.270269473901234,
+   "boyd_v_dual_ratio": 10.897416296480221,
+   "boyd_v_dual_ratio_balance": 7.7056369606539565,
+   "boyd_v_primal_pass": false,
+   "boyd_v_dual_pass": false,
+   "boyd_v_channel_pass": false,
+   "boyd_pf_r": 2.8154909386358375,
+   "boyd_pf_s": 0.7135913695414146,
+   "boyd_pf_s_rho_part": 0.5045852963989298,
+   "boyd_pf_s_proximal_part": 0.5045852963989298,
+   "boyd_pf_proximal_share": 0.7071067811865476,
+   "boyd_pf_eps_pri": 0.0014218242196672372,
+   "boyd_pf_eps_dual": 0.00046829962219787236,
+   "boyd_pf_norm_x": 8.556660098437117,
+   "boyd_pf_norm_z": 10.061320258507065,
+   "boyd_pf_norm_y": 0.5260742838134176,
+   "boyd_pf_primal_ratio": 1980.1962153203249,
+   "boyd_pf_dual_ratio": 1523.792323795423,
+   "boyd_pf_dual_ratio_balance": 1077.483885275751,
+   "boyd_pf_primal_pass": false,
+   "boyd_pf_dual_pass": false,
+   "boyd_pf_channel_pass": false,
+   "boyd_ess_r": 0.0012016588213758176,
+   "boyd_ess_s": 0.0002783155567635891,
+   "boyd_ess_s_rho_part": 0.0002270042497055494,
+   "boyd_ess_s_proximal_part": 0.00016102366208805042,
+   "boyd_ess_proximal_share": 0.5785650790078886,
+   "boyd_ess_eps_pri": 0.0013002349632032714,
+   "boyd_ess_eps_dual": 0.0007200364419978703,
+   "boyd_ess_norm_x": 5.802349632032713,
+   "boyd_ess_norm_z": 5.80234950760174,
+   "boyd_ess_norm_y": 0.00036441997870251426,
+   "boyd_ess_norm_y_tso": 0.00028041843181537127,
+   "boyd_ess_norm_y_dso": 0.00019232912568793769,
+   "boyd_ess_norm_y_esso": 0.0001310607927179692,
+   "boyd_ess_primal_ratio": 0.9241859013046375,
+   "boyd_ess_dual_ratio": 0.3865298206176241,
+   "boyd_ess_dual_ratio_balance": 0.31526772322201546,
+   "boyd_ess_primal_pass": true,
+   "boyd_ess_dual_pass": true,
+   "boyd_ess_channel_pass": true,
+   "gap_proxy_G": null,
+   "gap_proxy_G_reason": "sigma_b (admm_objective_scale) is not defined for the ESSO block: its objective is not divided by an effective scale (F5, known concern, 3.4 scope). G requires sigma_b for every block; summing the TSO/DSO blocks only would silently omit the ESSO block, which the evidence rules forbid.",
+   "gap_proxy_Q": 1122165290.754859,
+   "gap_proxy_G_over_Q": null,
+   "slack_consensus_v": 1.1853833962475266,
+   "slack_stationarity_v": 105.13791740296367,
+   "state_step_norm_v": 6.34087761232252e-05,
+   "slack_consensus_pf": 0.05602865403896869,
+   "slack_stationarity_pf": 1.012816026563744,
+   "state_step_norm_pf": 3.291153818569183e-05,
+   "slack_consensus_ess": 978.8972919330242,
+   "slack_stationarity_ess": 4768.155393086427,
+   "state_step_norm_ess": 2.0972470852144357e-06,
+   "slack_objective": 0.0005164642811833312,
+   "recourse_change": 217278393.0349909,
+   "nonfinite": false
+  }
+ ],
+ "field_completeness_by_cycle": {
+  "1": {
+   "all_ok": true,
+   "missing_or_nonfinite": [],
+   "per_field": {
+    "boyd_v_r": {
+     "value": 0.24726738318853064,
+     "finite": true
+    },
+    "boyd_v_s": {
+     "value": 0.0019973000288384026,
+     "finite": true
+    },
+    "boyd_v_s_rho_part": {
+     "value": 0.0014123043944557214,
+     "finite": true
+    },
+    "boyd_v_s_proximal_part": {
+     "value": 0.0014123043944557214,
+     "finite": true
+    },
+    "boyd_v_eps_pri": {
+     "value": 0.003241847664790855,
+     "finite": true
+    },
+    "boyd_v_eps_dual": {
+     "value": 0.00029407999841488564,
+     "finite": true
+    },
+    "boyd_v_norm_x": {
+     "value": 29.289337925938952,
+     "finite": true
+    },
+    "boyd_v_norm_z": {
+     "value": 29.479088956568734,
+     "finite": true
+    },
+    "boyd_v_norm_y": {
+     "value": 0.0014122928090418516,
+     "finite": true
+    },
+    "boyd_v_primal_ratio": {
+     "value": 76.27359726802057,
+     "finite": true
+    },
+    "boyd_v_dual_ratio": {
+     "value": 6.7916894709059,
+     "finite": true
+    },
+    "boyd_v_dual_ratio_balance": {
+     "value": 4.802449680590837,
+     "finite": true
+    },
+    "rho_v_before": {
+     "value": 0.0076999999999999985,
+     "present": true
+    },
+    "rho_v_after": {
+     "value": 0.011549999999999998,
+     "present": true
+    },
+    "rho_v_action": {
+     "value": "increased",
+     "present": true
+    },
+    "gamma_v_before": {
+     "value": 0.007699999999999999,
+     "present": true
+    },
+    "gamma_v_after": {
+     "value": 0.011550000000000003,
+     "present": true
+    },
+    "rho_frozen_v": {
+     "value": false,
+     "present": true
+    },
+    "rho_unchanged_streak_v": {
+     "value": 0,
+     "present": true
+    },
+    "rho_at_clamp_v": {
+     "value": false,
+     "present": true
+    },
+    "boyd_pf_r": {
+     "value": 3.488823292777661,
+     "finite": true
+    },
+    "boyd_pf_s": {
+     "value": 1.4446298793493613,
+     "finite": true
+    },
+    "boyd_pf_s_rho_part": {
+     "value": 1.0215075839926373,
+     "finite": true
+    },
+    "boyd_pf_s_proximal_part": {
+     "value": 1.0215075839926373,
+     "finite": true
+    },
+    "boyd_pf_eps_pri": {
+     "value": 0.0013869184711300295,
+     "finite": true
+    },
+    "boyd_pf_eps_dual": {
+     "value": 0.0005195609080423309,
+     "finite": true
+    },
+    "boyd_pf_norm_x": {
+     "value": 9.71226277313499,
+     "finite": true
+    },
+    "boyd_pf_norm_z": {
+     "value": 8.421327535236166,
+     "finite": true
+    },
+    "boyd_pf_norm_y": {
+     "value": 1.0386871422580024,
+     "finite": true
+    },
+    "boyd_pf_primal_ratio": {
+     "value": 2515.521543191394,
+     "finite": true
+    },
+    "boyd_pf_dual_ratio": {
+     "value": 2780.4822437327425,
+     "finite": true
+    },
+    "boyd_pf_dual_ratio_balance": {
+     "value": 1966.097849512209,
+     "finite": true
+    },
+    "rho_pf_before": {
+     "value": 0.1980000000000002,
+     "present": true
+    },
+    "rho_pf_after": {
+     "value": 0.1980000000000002,
+     "present": true
+    },
+    "rho_pf_action": {
+     "value": "held",
+     "present": true
+    },
+    "gamma_pf_before": {
+     "value": 0.19799999999999998,
+     "present": true
+    },
+    "gamma_pf_after": {
+     "value": 0.19799999999999998,
+     "present": true
+    },
+    "rho_frozen_pf": {
+     "value": false,
+     "present": true
+    },
+    "rho_unchanged_streak_pf": {
+     "value": 1,
+     "present": true
+    },
+    "rho_at_clamp_pf": {
+     "value": false,
+     "present": true
+    },
+    "boyd_ess_r": {
+     "value": 0.0017552139475932019,
+     "finite": true
+    },
+    "boyd_ess_s": {
+     "value": 0.00025457598013075634,
+     "finite": true
+    },
+    "boyd_ess_s_rho_part": {
+     "value": 0.00014763126571865886,
+     "finite": true
+    },
+    "boyd_ess_s_proximal_part": {
+     "value": 0.00020739802082431216,
+     "finite": true
+    },
+    "boyd_ess_eps_pri": {
+     "value": 0.0013002606599781257,
+     "finite": true
+    },
+    "boyd_ess_eps_dual": {
+     "value": 0.0007200197461569105,
+     "finite": true
+    },
+    "boyd_ess_norm_x": {
+     "value": 5.802606599781257,
+     "finite": true
+    },
+    "boyd_ess_norm_z": {
+     "value": 5.802606334316418,
+     "finite": true
+    },
+    "boyd_ess_norm_y": {
+     "value": 0.00019746156910423519,
+     "finite": true
+    },
+    "boyd_ess_primal_ratio": {
+     "value": 1.3498939109814565,
+     "finite": true
+    },
+    "boyd_ess_dual_ratio": {
+     "value": 0.35356805350068526,
+     "finite": true
+    },
+    "boyd_ess_dual_ratio_balance": {
+     "value": 0.20503780140286082,
+     "finite": true
+    },
+    "rho_ess_before": {
+     "value": 0.11249999999999989,
+     "present": true
+    },
+    "rho_ess_after": {
+     "value": 0.16875000000000007,
+     "present": true
+    },
+    "rho_ess_action": {
+     "value": "increased",
+     "present": true
+    },
+    "gamma_ess_before": {
+     "value": 0.11250000000000003,
+     "present": true
+    },
+    "gamma_ess_after": {
+     "value": 0.16874999999999998,
+     "present": true
+    },
+    "rho_frozen_ess": {
+     "value": false,
+     "present": true
+    },
+    "rho_unchanged_streak_ess": {
+     "value": 0,
+     "present": true
+    },
+    "rho_at_clamp_ess": {
+     "value": false,
+     "present": true
+    },
+    "objective_change_abs": {
+     "value": null
+    },
+    "objective_tolerance": {
+     "value": null
+    },
+    "objective_change_ratio": {
+     "value": null
+    },
+    "rho_freeze_active": {
+     "value": false
+    },
+    "gamma_policy": {
+     "value": "tied_to_rho"
+    },
+    "gamma_tau": {
+     "value": 1.0
+    },
+    "freeze_after_unchanged_cycles": {
+     "value": 10
+    },
+    "freeze_backstop_cycle": {
+     "value": 60
+    },
+    "recourse": {
+     "value": 904886897.7198681,
+     "finite": true
+    },
+    "gross_operational_cost": {
+     "value": 904886897.7198681,
+     "finite": true
+    },
+    "sigma_fixed": {
+     "value": 93635360.0,
+     "finite": true
+    },
+    "sigma_computed": {
+     "value": 93635360.28800085,
+     "finite": true
+    },
+    "al_scale_esso": {
+     "value": 227210.9966521344,
+     "finite": true
+    },
+    "shared_ess_reference_rating_mva": {
+     "value": 2.5,
+     "finite": true
+    },
+    "efc_per_day_max": {
+     "value": 1.1918118015584207,
+     "key_present": true
+    },
+    "gap_proxy_G": {
+     "value": null
+    },
+    "gap_proxy_Q": {
+     "value": 904886897.7198681
+    },
+    "gap_proxy_G_over_Q": {
+     "value": null
+    },
+    "gap_proxy_G_reason": {
+     "value": "sigma_b (admm_objective_scale) is not defined for the ESSO block: its objective is not divided by an effective scale (F5, known concern, 3.4 scope). G requires sigma_b for every block; summing the TSO/DSO blocks only would silently omit the ESSO block, which the evidence rules forbid."
+    }
+   }
+  },
+  "2": {
+   "all_ok": true,
+   "missing_or_nonfinite": [],
+   "per_field": {
+    "boyd_v_r": {
+     "value": 0.09865668569116047,
+     "finite": true
+    },
+    "boyd_v_s": {
+     "value": 0.003205643284864914,
+     "finite": true
+    },
+    "boyd_v_s_rho_part": {
+     "value": 0.0022667321047931,
+     "finite": true
+    },
+    "boyd_v_s_proximal_part": {
+     "value": 0.0022667321047931,
+     "finite": true
+    },
+    "boyd_v_eps_pri": {
+     "value": 0.003259194166613595,
+     "finite": true
+    },
+    "boyd_v_eps_dual": {
+     "value": 0.00029416544230766986,
+     "finite": true
+    },
+    "boyd_v_norm_x": {
+     "value": 29.571081881477117,
+     "finite": true
+    },
+    "boyd_v_norm_z": {
+     "value": 29.652553974796135,
+     "finite": true
+    },
+    "boyd_v_norm_y": {
+     "value": 0.0022667317368845535,
+     "finite": true
+    },
+    "boyd_v_primal_ratio": {
+     "value": 30.270269473901234,
+     "finite": true
+    },
+    "boyd_v_dual_ratio": {
+     "value": 10.897416296480221,
+     "finite": true
+    },
+    "boyd_v_dual_ratio_balance": {
+     "value": 7.7056369606539565,
+     "finite": true
+    },
+    "rho_v_before": {
+     "value": 0.011549999999999998,
+     "present": true
+    },
+    "rho_v_after": {
+     "value": 0.011549999999999998,
+     "present": true
+    },
+    "rho_v_action": {
+     "value": "held",
+     "present": true
+    },
+    "gamma_v_before": {
+     "value": 0.011550000000000003,
+     "present": true
+    },
+    "gamma_v_after": {
+     "value": 0.011550000000000003,
+     "present": true
+    },
+    "rho_frozen_v": {
+     "value": false,
+     "present": true
+    },
+    "rho_unchanged_streak_v": {
+     "value": 1,
+     "present": true
+    },
+    "rho_at_clamp_v": {
+     "value": false,
+     "present": true
+    },
+    "boyd_pf_r": {
+     "value": 2.8154909386358375,
+     "finite": true
+    },
+    "boyd_pf_s": {
+     "value": 0.7135913695414146,
+     "finite": true
+    },
+    "boyd_pf_s_rho_part": {
+     "value": 0.5045852963989298,
+     "finite": true
+    },
+    "boyd_pf_s_proximal_part": {
+     "value": 0.5045852963989298,
+     "finite": true
+    },
+    "boyd_pf_eps_pri": {
+     "value": 0.0014218242196672372,
+     "finite": true
+    },
+    "boyd_pf_eps_dual": {
+     "value": 0.00046829962219787236,
+     "finite": true
+    },
+    "boyd_pf_norm_x": {
+     "value": 8.556660098437117,
+     "finite": true
+    },
+    "boyd_pf_norm_z": {
+     "value": 10.061320258507065,
+     "finite": true
+    },
+    "boyd_pf_norm_y": {
+     "value": 0.5260742838134176,
+     "finite": true
+    },
+    "boyd_pf_primal_ratio": {
+     "value": 1980.1962153203249,
+     "finite": true
+    },
+    "boyd_pf_dual_ratio": {
+     "value": 1523.792323795423,
+     "finite": true
+    },
+    "boyd_pf_dual_ratio_balance": {
+     "value": 1077.483885275751,
+     "finite": true
+    },
+    "rho_pf_before": {
+     "value": 0.1980000000000002,
+     "present": true
+    },
+    "rho_pf_after": {
+     "value": 0.1980000000000002,
+     "present": true
+    },
+    "rho_pf_action": {
+     "value": "held",
+     "present": true
+    },
+    "gamma_pf_before": {
+     "value": 0.19799999999999998,
+     "present": true
+    },
+    "gamma_pf_after": {
+     "value": 0.19799999999999998,
+     "present": true
+    },
+    "rho_frozen_pf": {
+     "value": false,
+     "present": true
+    },
+    "rho_unchanged_streak_pf": {
+     "value": 2,
+     "present": true
+    },
+    "rho_at_clamp_pf": {
+     "value": false,
+     "present": true
+    },
+    "boyd_ess_r": {
+     "value": 0.0012016588213758176,
+     "finite": true
+    },
+    "boyd_ess_s": {
+     "value": 0.0002783155567635891,
+     "finite": true
+    },
+    "boyd_ess_s_rho_part": {
+     "value": 0.0002270042497055494,
+     "finite": true
+    },
+    "boyd_ess_s_proximal_part": {
+     "value": 0.00016102366208805042,
+     "finite": true
+    },
+    "boyd_ess_eps_pri": {
+     "value": 0.0013002349632032714,
+     "finite": true
+    },
+    "boyd_ess_eps_dual": {
+     "value": 0.0007200364419978703,
+     "finite": true
+    },
+    "boyd_ess_norm_x": {
+     "value": 5.802349632032713,
+     "finite": true
+    },
+    "boyd_ess_norm_z": {
+     "value": 5.80234950760174,
+     "finite": true
+    },
+    "boyd_ess_norm_y": {
+     "value": 0.00036441997870251426,
+     "finite": true
+    },
+    "boyd_ess_primal_ratio": {
+     "value": 0.9241859013046375,
+     "finite": true
+    },
+    "boyd_ess_dual_ratio": {
+     "value": 0.3865298206176241,
+     "finite": true
+    },
+    "boyd_ess_dual_ratio_balance": {
+     "value": 0.31526772322201546,
+     "finite": true
+    },
+    "rho_ess_before": {
+     "value": 0.16875000000000007,
+     "present": true
+    },
+    "rho_ess_after": {
+     "value": 0.16875000000000007,
+     "present": true
+    },
+    "rho_ess_action": {
+     "value": "held",
+     "present": true
+    },
+    "gamma_ess_before": {
+     "value": 0.16874999999999998,
+     "present": true
+    },
+    "gamma_ess_after": {
+     "value": 0.16874999999999998,
+     "present": true
+    },
+    "rho_frozen_ess": {
+     "value": false,
+     "present": true
+    },
+    "rho_unchanged_streak_ess": {
+     "value": 1,
+     "present": true
+    },
+    "rho_at_clamp_ess": {
+     "value": false,
+     "present": true
+    },
+    "objective_change_abs": {
+     "value": 217278393.0349909
+    },
+    "objective_tolerance": {
+     "value": 112216.5290754859
+    },
+    "objective_change_ratio": {
+     "value": 1936.2423238811095
+    },
+    "rho_freeze_active": {
+     "value": false
+    },
+    "gamma_policy": {
+     "value": "tied_to_rho"
+    },
+    "gamma_tau": {
+     "value": 1.0
+    },
+    "freeze_after_unchanged_cycles": {
+     "value": 10
+    },
+    "freeze_backstop_cycle": {
+     "value": 60
+    },
+    "recourse": {
+     "value": 1122165290.754859,
+     "finite": true
+    },
+    "gross_operational_cost": {
+     "value": 1122165290.754859,
+     "finite": true
+    },
+    "sigma_fixed": {
+     "value": 93635360.0,
+     "finite": true
+    },
+    "sigma_computed": {
+     "value": 93635360.28800085,
+     "finite": true
+    },
+    "al_scale_esso": {
+     "value": 227210.9966521344,
+     "finite": true
+    },
+    "shared_ess_reference_rating_mva": {
+     "value": 2.5,
+     "finite": true
+    },
+    "efc_per_day_max": {
+     "value": 1.1917893075793056,
+     "key_present": true
+    },
+    "gap_proxy_G": {
+     "value": null
+    },
+    "gap_proxy_Q": {
+     "value": 1122165290.754859
+    },
+    "gap_proxy_G_over_Q": {
+     "value": null
+    },
+    "gap_proxy_G_reason": {
+     "value": "sigma_b (admm_objective_scale) is not defined for the ESSO block: its objective is not divided by an effective scale (F5, known concern, 3.4 scope). G requires sigma_b for every block; summing the TSO/DSO blocks only would silently omit the ESSO block, which the evidence rules forbid."
+    }
+   }
+  }
+ },
+ "field_completeness_all_ok": true,
+ "lp_result_max_efc_per_day_harness": 1.1917770631428637,
+ "price_taker_initialization_capture": {
+  "clipped_q_cells": 231
+ },
+ "signature_1_efc_near_lp_at_cycle1": {
+  "lp_max_efc": 1.1917770631428637,
+  "efc_cycle1": 1.1918118015584207,
+  "efc_cycle2": 1.1917893075793056,
+  "efc_cycle1_over_lp_max": 1.000029148417629,
+  "ref_s35ref_efc_cycle1": 0.0002874939717676194,
+  "rel_change_1_to_2": 1.8873767725509474e-05,
+  "efc_near_lp": true,
+  "efc_far_from_ref_cycle1": true,
+  "efc_change_below_1pct": true,
+  "pass": true
+ },
+ "signature_2a_ess_boyd_dual_ratio": {
+  "s35pt_cycle1": 0.35356805350068526,
+  "s35pt_cycle2": 0.3865298206176241,
+  "ref_s35ref_cycle1": 19.398718953708162,
+  "ref_s35ref_cycle2": 17.84838313764675
+ },
+ "signature_2b_per_cell_ess_lambda_sum_to_zero": {
+  "tolerance": 1e-09,
+  "by_cycle": {
+   "1": {
+    "n_cells": 1728,
+    "max_abs_sum": 1.9984048324570708e-17
+   },
+   "2": {
+    "n_cells": 1728,
+    "max_abs_sum": 2.4981119196897453e-17
+   }
+  },
+  "max_abs_sum_any_cycle": 2.4981119196897453e-17,
+  "pass": true
+ },
+ "signature_2c_tso_proximal_movement_on_ess": {
+  "s35pt_cycle1": 0.00020739802082431216,
+  "s35pt_cycle2": 0.00016102366208805042,
+  "ref_s35ref_cycle1": 0.012110966319851615,
+  "ref_s35ref_cycle2": 0.0019465989824024338
+ },
+ "signature_3_no_failures": {
+  "local_solve_failures": 0,
+  "network_failures_n_blocks": 1,
+  "pass": false
+ },
+ "signature_4_pf_primal_residual_reported_only": {
+  "s35pt_cycle1": 0.3256596628129763,
+  "ref_s35ref_cycle1": 0.32563866921653173,
+  "exceeds_ref": true
+ },
+ "diagnostic_red_flags": {
+  "efc_approx_zero_at_cycle1": false,
+  "tso_copy_and_esso_pnet_drift_excluded_at_t0_by": "p515_s35pt_phase2_checks.py (Z3/Z4)"
+ },
+ "overall_ok": false,
+ "local_solve_failures": 0
+}

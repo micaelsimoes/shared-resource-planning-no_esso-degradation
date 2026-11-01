@@ -1,0 +1,281 @@
+{
+ "schema": "p515_s44_scale_measurement_v1",
+ "label": "srp1_calibration_r2",
+ "instance": "srp1",
+ "launch": "launch.json",
+ "build_child": {
+  "mode": "build",
+  "command": [
+   "/Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python",
+   "-u",
+   "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/p515_s44_scale_measurement.py",
+   "--child",
+   "build",
+   "--label",
+   "srp1_calibration_r2"
+  ],
+  "exit_code": 0,
+  "raw_returncode": 0,
+  "wall_s": 30.36974000930786,
+  "parent_observed_peak": {
+   "measure": 1170276352,
+   "rss_tree": 1170276352
+  },
+  "wait4_rusage": {
+   "ru_utime": 28.259243,
+   "ru_stime": 1.485018,
+   "ru_maxrss": 1170276352,
+   "ru_minflt": 113178,
+   "ru_majflt": 28,
+   "ru_nvcsw": 9,
+   "ru_nivcsw": 8637
+  },
+  "thread_caps_in_child_env": {
+   "OMP_NUM_THREADS": "1",
+   "MKL_NUM_THREADS": "1",
+   "OPENBLAS_NUM_THREADS": "1",
+   "VECLIB_MAXIMUM_THREADS": "1",
+   "NUMEXPR_NUM_THREADS": "1"
+  }
+ },
+ "build_status": "complete",
+ "build": {
+  "block_counts": {
+   "tso_blocks": 12,
+   "dso_blocks": 36,
+   "dso_blocks_per_node": {
+    "5": 12,
+    "7": 12,
+    "9": 12
+   },
+   "esso_models": 3,
+   "network_build_model_calls": 48,
+   "pristine_clone_blocks": {
+    "tso": 12,
+    "dso7": 12
+   },
+   "network_blocks": 48
+  },
+  "counts_by_agent": {
+   "TSO": {
+    "models": 12,
+    "len_counts": {
+     "var": 46872,
+     "constraint": 40320,
+     "expression": 18324,
+     "param": 18384,
+     "objective": 36,
+     "suffix": 0
+    },
+    "deep": {
+     "var_data": 46872,
+     "var_fixed": 7056,
+     "var_free": 39816,
+     "constraint_data": 40320,
+     "constraint_active": 40320,
+     "constraint_active_equality": 21636,
+     "constraint_active_inequality": 18684,
+     "objective_active": 12
+    }
+   },
+   "DSO": {
+    "models": 36,
+    "len_counts": {
+     "var": 391752,
+     "constraint": 279684,
+     "expression": 150012,
+     "param": 73044,
+     "objective": 108,
+     "suffix": 0
+    },
+    "deep": {
+     "var_data": 391752,
+     "var_fixed": 2304,
+     "var_free": 389448,
+     "constraint_data": 279684,
+     "constraint_active": 279684,
+     "constraint_active_equality": 154980,
+     "constraint_active_inequality": 124704,
+     "objective_active": 36
+    }
+   },
+   "ESSO": {
+    "models": 3,
+    "len_counts": {
+     "var": 8847,
+     "constraint": 9693,
+     "expression": 9,
+     "param": 3507,
+     "objective": 6,
+     "suffix": 0
+    },
+    "deep": {
+     "var_data": 8847,
+     "var_fixed": 3528,
+     "var_free": 5319,
+     "constraint_data": 9693,
+     "constraint_active": 3600,
+     "constraint_active_equality": 999,
+     "constraint_active_inequality": 2601,
+     "objective_active": 3
+    }
+   },
+   "ALL": {
+    "models": 51,
+    "len_counts": {
+     "var": 447471,
+     "constraint": 329697,
+     "expression": 168345,
+     "param": 94935,
+     "objective": 150,
+     "suffix": 0
+    },
+    "deep": {
+     "var_data": 447471,
+     "var_fixed": 12888,
+     "var_free": 434583,
+     "constraint_data": 329697,
+     "constraint_active": 323604,
+     "constraint_active_equality": 177615,
+     "constraint_active_inequality": 145989,
+     "objective_active": 51
+    }
+   }
+  },
+  "memory_at_build_complete": {
+   "t": 27.157,
+   "stage": "child start",
+   "rss_self": 1170194432,
+   "rss_children": 0,
+   "n_children": 0,
+   "rss_tree": 1170194432,
+   "footprint_self": 974472872,
+   "measure": 1170194432,
+   "sys_available": 14653554688,
+   "sys_used_pct": 57.4,
+   "swap_used": 262144
+  },
+  "watchdog_peak": {
+   "measure": 1170194432,
+   "rss_tree": 1170194432,
+   "rss_self": 1170194432,
+   "footprint_self": 974489256,
+   "stage_at_peak_measure": "model counting (len per component type, all models; deep iteration, all models)",
+   "t_at_peak_measure": 27.366
+  },
+  "ru_maxrss_self_final": 1170227200,
+  "guard": {
+   "permitted": [],
+   "counts": {
+    "permitted_solve": 0,
+    "permitted_exec": 0,
+    "blocked_solve": 0,
+    "blocked_exec": 0
+   },
+   "declared_solves": 0,
+   "verify_failures": []
+  },
+  "interceptor_check": {
+   "declared": {
+    "dso": 3,
+    "tso": 1,
+    "esso_init": 1
+   },
+   "observed": {
+    "dso": 3,
+    "tso": 1,
+    "esso_init": 1
+   },
+   "exact_match": true
+  },
+  "scenario_checksum": "5a02b77ccbbbbbb869de92958a3851d095624711abc2dbfc0157466064410358",
+  "stage_wall_s": [
+   [
+    "import production modules",
+    1.416,
+    219381760
+   ],
+   [
+    "read_planning_problem (data, copula/KDE scenario generation, networks, ESS)",
+    12.95,
+    359366656
+   ],
+   [
+    "provenance (IPOPT identity probe: `ipopt --version`, not a solve)",
+    0.103,
+    364544000
+   ],
+   [
+    "oracle construction: _construct_arm_planning (fresh_planning deepcopy, results redirect, budget, candidate C*)",
+    0.057,
+    368328704
+   ],
+   [
+    "create_admm_variables",
+    0.016,
+    368525312
+   ],
+   [
+    "create_distribution_networks_models (sequential; optimize intercepted)",
+    6.21,
+    802062336
+   ],
+   [
+    "create_transmission_network_model (optimize intercepted)",
+    1.214,
+    863043584
+   ],
+   [
+    "create_shared_energy_storage_model (optimize intercepted)",
+    0.077,
+    871890944
+   ],
+   [
+    "_prepare_distribution/transmission_objectives_for_admm",
+    0.013,
+    872448000
+   ],
+   [
+    "_compute_common_admm_objective_scale (attempted on unsolved blocks)",
+    0.154,
+    872448000
+   ],
+   [
+    "ADMM preparation: ESSO AL scale; update_*_to_admm (TSO/DSO under patched_admm_objectives); ESSO AL objective; consensus initialization",
+    0.172,
+    890699776
+   ],
+   [
+    "update_interface_power_flow_variables (skips unsolved blocks)",
+    0.016,
+    890798080
+   ],
+   [
+    "get_updated_capacities",
+    0.016,
+    890814464
+   ],
+   [
+    "pristine clones kept by the ADMM loop (tso_pristine_base, dso_pristine_base)",
+    4.693,
+    1170178048
+   ],
+   [
+    "model counting (len per component type, all models; deep iteration, all models)",
+    0.267,
+    1170210816
+   ]
+  ]
+ },
+ "parent_guard": {
+  "counts": {
+   "permitted_solve": 0,
+   "permitted_exec": 0,
+   "blocked_solve": 0,
+   "blocked_exec": 0
+  },
+  "verify_failures": []
+ },
+ "exit_code": 0,
+ "ended_utc": "2026-09-19T14:34:25.380724+00:00"
+}

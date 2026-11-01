@@ -1,0 +1,61 @@
+{
+  "stage": "P5.13-A multi-scenario throughput discrepancy diagnostic",
+  "version": "v2",
+  "supersedes": {
+    "version": "v1",
+    "file": "frozen_throughput_diagnostic_spec_v1_bf56149e.json",
+    "sha256": "bf56149e43316d9a5302974c0fc113c5bd25e40d85d59afa876f23b5bf17d311",
+    "reason": "v1 asserted the sign expectation A >= B without recording why, and stated a blanket rule that any violation is a diagnostic defect. The derivation is now preserved with its assumptions, and one case is identified in which A < B is a genuine finding rather than a defect. v1 is unmodified.",
+    "unchanged_from_v1": ["purpose", "precondition", "quantity definitions A and B", "reporting", "controls", "interpretation_limits"]
+  },
+  "status": "FROZEN SPECIFICATION - not executed; no case currently satisfies its precondition",
+  "purpose": "quantify the gap between the expectation of realized directional throughput and the directional throughput of the expected net schedule",
+  "precondition": {
+    "requirement": "a configuration with more than one market or operation scenario at the shared-ESS-bearing networks",
+    "current_status": "SRP1 has NumMarketScenarios = 1 and num_operation_scenarios = 1 for the TSO and all three DSOs, so the discrepancy is identically zero by construction",
+    "rule": "DO NOT run this diagnostic on a single-scenario configuration; a zero result there is structural and must never be recorded as a measured null"
+  },
+  "quantities": {
+    "A_expectation_of_realized_throughput": "sum_{s_m,s_o} pi_m*pi_o * sum_p ( eff_ch * shared_es_pch[e,s_m,s_o,p] * dt + shared_es_pdch[e,s_m,s_o,p] * dt / eff_dch )",
+    "B_throughput_of_expected_schedule": "sum_p ( eff_ch * pch_hat[p] * dt + pdch_hat[p] * dt / eff_dch ), where pch_hat/pdch_hat are the ESSO's directional decomposition of expected_shared_ess_p[p] = sum_{s_m,s_o} pi_m*pi_o*shared_es_pnet[e,s_m,s_o,p]",
+    "discrepancy": "A - B, reported absolutely, relative to A, and as equivalent full cycles via 2*cl_nom*E_rated"
+  },
+  "sign_expectation": {
+    "claim": "A >= B, with equality iff no period has scenarios of opposing dispatch sign",
+    "derivation": {
+      "setup": "Fix a period p. Let X_s = shared_es_pch[e,s,p] >= 0 and Y_s = shared_es_pdch[e,s,p] >= 0 be the per-scenario directional powers, and N = E[X - Y] the coordinated expected net power that the ESSO receives. The ESSO's decomposition satisfies x_hat - y_hat = N together with its complementarity row, so x_hat = max(N,0) and y_hat = max(-N,0) up to the tolerance.",
+      "case_N_nonnegative": "B_p = eff_ch * N = eff_ch * (E[X] - E[Y]) <= eff_ch * E[X] <= eff_ch * E[X] + E[Y]/eff_dch = A_p",
+      "case_N_negative": "B_p = |N| / eff_dch = (E[Y] - E[X]) / eff_dch <= E[Y] / eff_dch <= A_p",
+      "root_cause": "For nonnegative X, Y: |E[X - Y]| <= E[X + Y]. Per-scenario complementarity makes X + Y = |X - Y| within each realization, so this is exactly |E[z]| <= E[|z|] for the signed per-scenario dispatch z. Opposite-sign dispatch CANCELS in the expectation of the net and ADDS in the expectation of the throughput; that cancellation is the whole discrepancy.",
+      "equality_condition": "Equality holds iff, in every period, no scenario dispatches against the sign of the expected net - i.e. the minority-direction expectation is zero. Efficiencies do not affect the equality condition: eff_ch and eff_dch appear identically on both sides when only one direction is active.",
+      "assumptions": [
+        "(i) per-scenario network complementarity holds at tolerance: model_construction_helpers.py:836-838, shared_es_pch_hat * shared_es_pdch_hat <= ESS_COMPLEMENTARITY_TOLERANCE",
+        "(ii) the ESSO decomposition satisfies its complementarity rows at tolerance with NO active slack: shared_energy_storage_data.py:569 and :618-620",
+        "(iii) eff_ch, eff_dch in (0, 1]"
+      ]
+    },
+    "violation_rule": {
+      "supersedes_v1_rule": "v1 said: report any violation as a defect in the diagnostic, not a finding. That rule is wrong in one case and would have concealed it.",
+      "rule": "If assumptions (i) and (iii) hold and assumption (ii) is VERIFIED to hold with no active slack, then A < B is a defect in the diagnostic and must be reported as such. If slack_es_ch_comp_per_unit (shared_energy_storage_data.py:569) is ACTIVE, x_hat and y_hat may both be strictly positive, B may exceed A, and A < B is then a genuine FINDING - evidence of complementarity slack absorbing directional inconsistency - and must be reported with the active slack values and their PENALTY_ESSO_SLACK contribution to gross_operational_cost.",
+      "obligation": "the diagnostic must record the slack activity alongside every A/B pair; a discrepancy reported without it is uninterpretable"
+    }
+  },
+  "reporting": {
+    "per": ["shared ESS unit", "representative day", "year", "period"],
+    "aggregate": "annualized via the same (num_days/365) weighting the production law uses",
+    "must_report": ["number of periods with sign disagreement across scenarios", "worst-period discrepancy with its scenario decomposition", "resulting SoH difference after the cumulative exponent", "active complementarity slack per period (v2 addition)"]
+  },
+  "controls": [
+    "recompute B by the production path and require it to match the ESSO's own es_avg_ch_dch_per_unit to machine precision; a mismatch invalidates the diagnostic",
+    "run once on a deliberately single-scenario case and require the discrepancy to be exactly zero, as a null control for the implementation"
+  ],
+  "interpretation_limits": [
+    "this measures a modelling discrepancy, not an error: which of A or B is correct depends on the definitional decision recorded in P5_13_A_THROUGHPUT_DEFINITION.md",
+    "no causal or planning-ranking claim may be drawn from it without re-deriving the ranking baseline under the chosen definition"
+  ],
+  "dependencies": {
+    "blocked_by": "the definitional decision (Option A or Option B) and the penalty-classification decision, both of which change the objective",
+    "implementation_consequence": "the coordination/evaluation path hard-wires scenario (0,0) at p56a_oracle.py:275-287 and :393-397, so a multi-scenario case requires changing that path before this diagnostic can run",
+    "v2_addition": "adopting Option B is a production model change at the two ESSO complementarity sites plus the ADMM consensus channel (shared_resources_planning.py:3783-3827); see corrections C1-C5 of P5_13_A_THROUGHPUT_DEFINITION.md"
+  }
+}

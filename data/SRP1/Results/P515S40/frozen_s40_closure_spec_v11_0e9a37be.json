@@ -1,0 +1,87 @@
+{
+ "authority": [
+  "PLANNER_BRIEF_2026-09-13.md Addendum 22",
+  "P5_15_ADDENDUM21_EXPERT_REPORT.md (reviewed)"
+ ],
+ "authorized_items": {
+  "1_zero_solve_analyses": {
+   "a_cost_decomposition": "component decomposition of the C-vs-run-1 (-57,743) and D-vs-run-1 (-72,191) cost differences from committed terminal artifacts; zero solves; report which components carry the difference and whether C and D agree",
+   "b_node7_cross_check": "period-by-period cross-check of the largest PF-residual entries against the at-rating periods at each arm's stop; plus the RESULT table Addendum 22 asks for: node 7 interface utilization and storage dispatch in the binding periods (the storage's congestion-relief value; the interface rating is NOT changed)"
+  },
+  "2_step_3_6": {
+   "integrate": "cherry-pick the lightweight TSO capture (worktree commits 0c29f49d, b2a9ecae, 816090b0, bff03b7e), recording the interface-load re-fix bug the pristine-block design avoids",
+   "preflight": "two-cycle bitwise preflight, legacy clone vs lightweight capture, on the oracle configuration; gate: bitwise identity on every numeric artifact",
+   "remeasure": "10-cycle per-phase timing re-measurement; report absorbable share against X = 70% and the projected 8-worker speed-up",
+   "then": "persistent single-threaded workers (Addendum 18 design: fixed block subsets, models built once, OMP_NUM_THREADS=1, private temp dirs and log paths, fixed assembly order); gate: two-cycle serial-vs-parallel bitwise identity, then one matched full run"
+  },
+  "3_case_file": "write D's configuration into data/SRP1/SRP1_params.json (closes Track B); the file has not been edited by any stage since the campaign began, so this is the first change - it is committed alone, with the pre-change values recorded in the commit message",
+  "4_step_3_5": "polish gap on D's certified point: re-solve every network block with the unscaled base objective at fixed consensus (48 network solves, no ADMM); gate: recourse change < 0.1% of the recourse; fail => stop for review before touching the rho/sigma ratio",
+  "5_closure": "REVISION_CONTEXT.md head records D as THE baseline ADMM configuration; manuscript list carries penalty table, stopping-rule definitions, rho policy, sigma constants, polish gap; Step 3 closed; stop for review",
+  "6_step_3_7": {
+   "citations": [
+    "Zhang, O'Donoghue & Boyd (2020)",
+    "Fu, Zhang & Boyd (2020)"
+   ],
+   "gate": [
+    "two-cycle identity with the flag off (bitwise against the oracle configuration)",
+    "with the flag on: certification <= 80 cycles at C*, and certified cost within D's bar"
+   ],
+   "method": "type-II Anderson acceleration, memory 5, on the joint (consensus, dual) iterate, active only once rho is frozen on every channel, safeguarded (accept the extrapolated step only if the combined residual norm falls against the plain step, else take the plain step), regularized least squares, harness flag default off",
+   "sequencing": "after 3.5 and after the 3.6 bitwise gate; stop for review after 3.7"
+  }
+ },
+ "campaign_rules_adopted": [
+  "one frozen oracle configuration for every candidate in a campaign",
+  "costs from different configurations never share a table",
+  "every reported cost carries its bar (max objective step over the last 10 cycles)",
+  "close Step 4 decisions get longer runs via the cold-audit cadence"
+ ],
+ "oracle": {
+  "arm": "s39_D",
+  "certification_bar": "all three channels inside their Boyd tolerances with every local solve successful for 10 consecutive cycles, within the cap; per-channel terminal ratios and the rule-ten objective ratio reported, not gated",
+  "certification_cycle": 139,
+  "certified_cost": 650966975.2943751,
+  "configuration": {
+   "boyd_eps_abs": 1e-05,
+   "boyd_eps_rel": 0.0001,
+   "cap": 300,
+   "ess_balancing": "two-phase: exempt until the ESS Boyd dual ratio has been < 1 on 5 consecutive cycles, then standard balancing, one-way (balancing_exempt_until)",
+   "freeze_after_unchanged_cycles": 10,
+   "freeze_backstop_cycle": 200,
+   "gamma_policy": "tied_to_rho (gamma = tau*rho = 0 on every channel)",
+   "minimum_consecutive_converged_cycles": 10,
+   "observed_in_the_oracle_run": "ESS exemption lifted at cycle 31; rho_ess 0.01 -> 0.015 (32) -> 0.0225 (33), frozen from 43; rho_pf 0.198 -> 0.132 (cycle 2), frozen from 12; no clamp on any channel",
+   "pf_balancing": "active",
+   "rho_ess_initial": 0.01,
+   "rho_pf_initial": 0.198,
+   "rho_v_initial": 0.0077,
+   "shared_ess_initialization": "standalone (cold)",
+   "tau": 0.0,
+   "v_balancing": "active"
+  },
+  "cost_bar_definition": "max objective step over the run's last 10 cycles; D's value 7898.630394935608",
+  "run": "data/SRP1/Results/P515S39_D_run",
+  "withdrawn": "the 'storage terminal ratio < 0.5' condition (an ordering artefact, as criterion (c) was); storage converged to tolerance at ~0.8 is accepted; no further storage lever"
+ },
+ "planner_risk_notes_not_predictions": [
+  "the 3.6 bitwise preflight compares legacy clone vs lightweight capture: the clone never mutated the model, so identity is expected; a mismatch means the capture/apply path is wrong, not that timing is risky",
+  "the case-file change is the first ever made to data/SRP1/SRP1_params.json in this campaign; every previous arm applied overrides. After it, any harness that asserts the OLD case-file values in its rule-eleven checklist will fail loudly - that is intended, and those assertions belong to superseded stages",
+  "Anderson acceleration operates on the joint iterate while balancing is frozen; if rho freezes late (cycle 43 for ESS in D), AA has fewer cycles to act than the 80-cycle target implies"
+ ],
+ "predecessor": {
+  "note": "v10 arms C and D both certified under the 10-consecutive-cycle bar; Addendum 22 adopts D and withdraws the 'storage terminal < 0.5' condition",
+  "path": "data/SRP1/Results/P515S39/frozen_s39_oracle_spec_v10_f1b2b999.json",
+  "sha256": "f1b2b9999101fc69be89d7eb1e265cfc9b6f3e81c5c0602e9d81b15101076f10"
+ },
+ "predictions_recorded_in_advance": {
+  "step_3_5": "recourse change < 0.1% at D's certified point (the gate)",
+  "step_3_6_remeasurement": [
+   "the per-cycle TSO clone cost (4.1-4.4 s of a ~35 s cycle) disappears from the phase table",
+   "wall clock per cycle falls to ~31-33 s",
+   "the absorbable share stays >= 70% (it was 97.4-97.5% on 2 cycles)"
+  ],
+  "step_3_7": "certification <= 80 cycles at C* with the flag on (Addendum 22), against D's 139; certified cost within D's bar"
+ },
+ "report": "stop for review after item 5 (Step 3 closure), leading with the closure status per item and the 3.5 gate; then again after 3.7, leading with the gate verdict",
+ "stage": "P5.15 Addendum 22 - oracle adopted (arm D); Step 3 closure programme and Step 3.7 - frozen specification v11"
+}

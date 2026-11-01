@@ -1,0 +1,624 @@
+{
+ "cell_meta": {
+  "cell": "d_c52e1670",
+  "group": "T2",
+  "tables": [
+   "T2"
+  ],
+  "item": "D",
+  "status_frozen": "certified",
+  "superseded": false,
+  "certified_point": true,
+  "point": 150,
+  "point_kind": "k*",
+  "eval_key": "af42a163b14f089560b43ccda5fb06d643ad6b9aa281c3bb9c738502846fdb90",
+  "candidate_key": "cc4eb5df385852e67c612ab21d74526d90a2c66f5c7c934889ce4f67731c4ffe",
+  "candidate_canonical": {
+   "investment_year": 2025,
+   "nodes": {
+    "5": [
+     0.0,
+     0.0
+    ],
+    "7": [
+     0.5,
+     2.0
+    ],
+    "9": [
+     0.0,
+     0.0
+    ]
+   }
+  },
+  "certifying_spec": {
+   "certificate_record": "data/SRP1/Results/P515S53/w142_resettle_v6/v6_from_records/d_c52e1670_v6_from_records_certificate.json",
+   "mode": "v6 from records",
+   "series": "frozen_s53_resettle_spec",
+   "source_run_stage_spec": "frozen_s53_resettle_spec_v5_ab32ffc9",
+   "version": 6
+  },
+  "case": "SRP1",
+  "kind": "admm",
+  "eval_dir": "data/SRP1/Results/P515S53/w139_resettle_v5/campaign_s53_w139_resettle_v5_d_c52e1670/evals/af42a163b14f0895_d_c52e1670",
+  "eval_record_status": "not_certified",
+  "eval_record_cycles_run": 198
+ },
+ "plan_ref": "capture_plan.json plans.d_c52e1670",
+ "not_carried": {
+  "closure": "no record carries the closure level at cycle 150: component_levels_terminal.json is at cycle 198; per-cycle records carry only the aggregate slack_penalties (recourse_blocks_all.jsonl / creep_diagnostic_per_cycle.jsonl: voltage + flexibility + closure summed); ess_schedule_per_cycle.jsonl (uncommitted, where present) carries the network copies' charge / discharge per cycle, from which only the SIGNED s+ - s- could be reconstructed through the SoC recursion -- not done (a derived value, not the variable); pickles: certified_models.pkl holds cycle 198, not 150 -- no record or pickle holds cycle 150",
+  "sigma_sum": "component_levels_terminal.json is not at cycle 150"
+ },
+ "pickles": [
+  {
+   "path": "data/SRP1/Results/P515S53/w139_resettle_v5/campaign_s53_w139_resettle_v5_d_c52e1670/evals/af42a163b14f0895_d_c52e1670/certified_models.pkl",
+   "holds": "the persisted certified models (TSO / DSO / ESSO) at cycle 198 (post_certification.json)",
+   "read": false
+  },
+  {
+   "path": "data/SRP1/Results/P515S53/w139_resettle_v5/campaign_s53_w139_resettle_v5_d_c52e1670/evals/af42a163b14f0895_d_c52e1670/esso_models_s39_D.pkl",
+   "holds": "ESSO models at the run terminal",
+   "read": false
+  },
+  {
+   "path": "data/SRP1/Results/P515S53/w139_resettle_v5/campaign_s53_w139_resettle_v5_d_c52e1670/evals/af42a163b14f0895_d_c52e1670/results/FrozenSMOPF/matched_success_DSO_node7_case33_2_2025_Autumn_cycle7.pkl",
+   "holds": "FrozenSMOPF fixture (a frozen single-block solve, not this cell's point)",
+   "read": false
+  },
+  {
+   "path": "data/SRP1/Results/P515S53/w139_resettle_v5/campaign_s53_w139_resettle_v5_d_c52e1670/evals/af42a163b14f0895_d_c52e1670/results/FrozenSMOPF/matched_success_TSO_case9_2025_Summer_cycle7.pkl",
+   "holds": "FrozenSMOPF fixture (a frozen single-block solve, not this cell's point)",
+   "read": false
+  }
+ ],
+ "records_not_carrying": [
+  {
+   "path": "data/SRP1/Results/P515S53/w139_resettle_v5/campaign_s53_w139_resettle_v5_d_c52e1670/evals/af42a163b14f0895_d_c52e1670/aa_per_cycle.jsonl",
+   "label": "committed",
+   "scan": "first 3 records parsed; keys scanned (records are homogeneous)",
+   "keys_found": {},
+   "log_pattern_counts": null,
+   "carries_sheets": null
+  },
+  {
+   "path": "data/SRP1/Results/P515S53/w139_resettle_v5/campaign_s53_w139_resettle_v5_d_c52e1670/evals/af42a163b14f0895_d_c52e1670/boyd_terminal.json",
+   "label": "committed",
+   "scan": "json parsed in full; keys scanned",
+   "keys_found": {},
+   "log_pattern_counts": null,
+   "carries_sheets": null
+  },
+  {
+   "path": "data/SRP1/Results/P515S53/w139_resettle_v5/campaign_s53_w139_resettle_v5_d_c52e1670/evals/af42a163b14f0895_d_c52e1670/child_manifest_sha256.json",
+   "label": "committed",
+   "scan": "json parsed in full; keys scanned",
+   "keys_found": {},
+   "log_pattern_counts": null,
+   "carries_sheets": null
+  },
+  {
+   "path": "data/SRP1/Results/P515S53/w139_resettle_v5/campaign_s53_w139_resettle_v5_d_c52e1670/evals/af42a163b14f0895_d_c52e1670/child_stderr.log",
+   "label": "committed",
+   "scan": "log scanned in full for the patterns",
+   "keys_found": {},
+   "log_pattern_counts": {
+    "Shared ESS complementarity diagnostics": 0,
+    "ESSO violation": 0,
+    "soc_final": 0,
+    "[SLACK COMPONENTS]": 0
+   },
+   "carries_sheets": null
+  },
+  {
+   "path": "data/SRP1/Results/P515S53/w139_resettle_v5/campaign_s53_w139_resettle_v5_d_c52e1670/evals/af42a163b14f0895_d_c52e1670/child_stdout.log",
+   "label": "committed",
+   "scan": "log scanned in full for the patterns",
+   "keys_found": {},
+   "log_pattern_counts": {
+    "Shared ESS complementarity diagnostics": 597,
+    "ESSO violation": 0,
+    "soc_final": 0,
+    "[SLACK COMPONENTS]": 290
+   },
+   "carries_sheets": null
+  },
+  {
+   "path": "data/SRP1/Results/P515S53/w139_resettle_v5/campaign_s53_w139_resettle_v5_d_c52e1670/evals/af42a163b14f0895_d_c52e1670/convergence_depth_append_events.jsonl",
+   "label": "committed",
+   "scan": "first 3 records parsed; keys scanned (records are homogeneous)",
+   "keys_found": {},
+   "log_pattern_counts": null,
+   "carries_sheets": null
+  },
+  {
+   "path": "data/SRP1/Results/P515S53/w139_resettle_v5/campaign_s53_w139_resettle_v5_d_c52e1670/evals/af42a163b14f0895_d_c52e1670/convergence_depth_tail_state.json",
+   "label": "committed",
+   "scan": "json parsed in full; keys scanned",
+   "keys_found": {},
+   "log_pattern_counts": null,
+   "carries_sheets": null
+  },
+  {
+   "path": "data/SRP1/Results/P515S53/w139_resettle_v5/campaign_s53_w139_resettle_v5_d_c52e1670/evals/af42a163b14f0895_d_c52e1670/creep_diagnostic_per_cycle.jsonl",
+   "label": "committed",
+   "scan": "first 3 records parsed; keys scanned (records are homogeneous)",
+   "keys_found": {
+    "slack_penalties": {
+     "count": 265,
+     "example_path": "/q_decomposition/blocks[*]/slack_penalties"
+    }
+   },
+   "log_pattern_counts": null,
+   "carries_sheets": null
+  },
+  {
+   "path": "data/SRP1/Results/P515S53/w139_resettle_v5/campaign_s53_w139_resettle_v5_d_c52e1670/evals/af42a163b14f0895_d_c52e1670/ess_entry_stride_baseline.jsonl",
+   "label": "uncommitted",
+   "scan": "first 3 records parsed; keys scanned (records are homogeneous)",
+   "keys_found": {},
+   "log_pattern_counts": null,
+   "carries_sheets": null
+  },
+  {
+   "path": "data/SRP1/Results/P515S53/w139_resettle_v5/campaign_s53_w139_resettle_v5_d_c52e1670/evals/af42a163b14f0895_d_c52e1670/ess_exempt_until_state_s39_D.jsonl",
+   "label": "committed",
+   "scan": "first 3 records parsed; keys scanned (records are homogeneous)",
+   "keys_found": {},
+   "log_pattern_counts": null,
+   "carries_sheets": null
+  },
+  {
+   "path": "data/SRP1/Results/P515S53/w139_resettle_v5/campaign_s53_w139_resettle_v5_d_c52e1670/evals/af42a163b14f0895_d_c52e1670/ess_schedule_per_cycle.jsonl",
+   "label": "uncommitted",
+   "scan": "first 3 records parsed; keys scanned (records are homogeneous)",
+   "keys_found": {},
+   "log_pattern_counts": null,
+   "carries_sheets": null
+  },
+  {
+   "path": "data/SRP1/Results/P515S53/w139_resettle_v5/campaign_s53_w139_resettle_v5_d_c52e1670/evals/af42a163b14f0895_d_c52e1670/esso_recovery_events_s39_D.jsonl",
+   "label": "committed",
+   "scan": "first 0 records parsed; keys scanned (records are homogeneous)",
+   "keys_found": {},
+   "log_pattern_counts": null,
+   "carries_sheets": null
+  },
+  {
+   "path": "data/SRP1/Results/P515S53/w139_resettle_v5/campaign_s53_w139_resettle_v5_d_c52e1670/evals/af42a163b14f0895_d_c52e1670/exit_code.txt",
+   "label": "committed",
+   "scan": "log scanned in full for the patterns",
+   "keys_found": {},
+   "log_pattern_counts": {
+    "Shared ESS complementarity diagnostics": 0,
+    "ESSO violation": 0,
+    "soc_final": 0,
+    "[SLACK COMPONENTS]": 0
+   },
+   "carries_sheets": null
+  },
+  {
+   "path": "data/SRP1/Results/P515S53/w139_resettle_v5/campaign_s53_w139_resettle_v5_d_c52e1670/evals/af42a163b14f0895_d_c52e1670/frozen_snapshots_s39_D.jsonl",
+   "label": "committed",
+   "scan": "first 2 records parsed; keys scanned (records are homogeneous)",
+   "keys_found": {},
+   "log_pattern_counts": null,
+   "carries_sheets": null
+  },
+  {
+   "path": "data/SRP1/Results/P515S53/w139_resettle_v5/campaign_s53_w139_resettle_v5_d_c52e1670/evals/af42a163b14f0895_d_c52e1670/heartbeat_s39_D.json",
+   "label": "committed",
+   "scan": "json parsed in full; keys scanned",
+   "keys_found": {},
+   "log_pattern_counts": null,
+   "carries_sheets": null
+  },
+  {
+   "path": "data/SRP1/Results/P515S53/w139_resettle_v5/campaign_s53_w139_resettle_v5_d_c52e1670/evals/af42a163b14f0895_d_c52e1670/interface_duals_per_cycle.jsonl",
+   "label": "committed",
+   "scan": "first 3 records parsed; keys scanned (records are homogeneous)",
+   "keys_found": {},
+   "log_pattern_counts": null,
+   "carries_sheets": null
+  },
+  {
+   "path": "data/SRP1/Results/P515S53/w139_resettle_v5/campaign_s53_w139_resettle_v5_d_c52e1670/evals/af42a163b14f0895_d_c52e1670/interface_settlement_detail_s31c.json",
+   "label": "committed",
+   "scan": "json parsed in full; keys scanned",
+   "keys_found": {},
+   "log_pattern_counts": null,
+   "carries_sheets": null
+  },
+  {
+   "path": "data/SRP1/Results/P515S53/w139_resettle_v5/campaign_s53_w139_resettle_v5_d_c52e1670/evals/af42a163b14f0895_d_c52e1670/interface_voltage_terminal.json",
+   "label": "committed",
+   "scan": "json parsed in full; keys scanned",
+   "keys_found": {},
+   "log_pattern_counts": null,
+   "carries_sheets": null
+  },
+  {
+   "path": "data/SRP1/Results/P515S53/w139_resettle_v5/campaign_s53_w139_resettle_v5_d_c52e1670/evals/af42a163b14f0895_d_c52e1670/launch.json",
+   "label": "committed",
+   "scan": "json parsed in full; keys scanned",
+   "keys_found": {},
+   "log_pattern_counts": null,
+   "carries_sheets": null
+  },
+  {
+   "path": "data/SRP1/Results/P515S53/w139_resettle_v5/campaign_s53_w139_resettle_v5_d_c52e1670/evals/af42a163b14f0895_d_c52e1670/network_ipopt_solve_records.jsonl",
+   "label": "committed",
+   "scan": "first 3 records parsed; keys scanned (records are homogeneous)",
+   "keys_found": {},
+   "log_pattern_counts": null,
+   "carries_sheets": null
+  },
+  {
+   "path": "data/SRP1/Results/P515S53/w139_resettle_v5/campaign_s53_w139_resettle_v5_d_c52e1670/evals/af42a163b14f0895_d_c52e1670/network_ipopt_solve_records_append.jsonl",
+   "label": "committed",
+   "scan": "first 3 records parsed; keys scanned (records are homogeneous)",
+   "keys_found": {},
+   "log_pattern_counts": null,
+   "carries_sheets": null
+  },
+  {
+   "path": "data/SRP1/Results/P515S53/w139_resettle_v5/campaign_s53_w139_resettle_v5_d_c52e1670/evals/af42a163b14f0895_d_c52e1670/per_cycle_record.jsonl",
+   "label": "committed",
+   "scan": "first 3 records parsed; keys scanned (records are homogeneous)",
+   "keys_found": {},
+   "log_pattern_counts": null,
+   "carries_sheets": null
+  },
+  {
+   "path": "data/SRP1/Results/P515S53/w139_resettle_v5/campaign_s53_w139_resettle_v5_d_c52e1670/evals/af42a163b14f0895_d_c52e1670/pf_entry_stride_s39_D.jsonl",
+   "label": "uncommitted",
+   "scan": "first 3 records parsed; keys scanned (records are homogeneous)",
+   "keys_found": {},
+   "log_pattern_counts": null,
+   "carries_sheets": null
+  },
+  {
+   "path": "data/SRP1/Results/P515S53/w139_resettle_v5/campaign_s53_w139_resettle_v5_d_c52e1670/evals/af42a163b14f0895_d_c52e1670/post_certification.json",
+   "label": "committed",
+   "scan": "json parsed in full; keys scanned",
+   "keys_found": {},
+   "log_pattern_counts": null,
+   "carries_sheets": null
+  },
+  {
+   "path": "data/SRP1/Results/P515S53/w139_resettle_v5/campaign_s53_w139_resettle_v5_d_c52e1670/evals/af42a163b14f0895_d_c52e1670/recourse_blocks_all.jsonl",
+   "label": "committed",
+   "scan": "first 3 records parsed; keys scanned (records are homogeneous)",
+   "keys_found": {
+    "slack_penalties": {
+     "count": 144,
+     "example_path": "/objective_component_blocks[*]/slack_penalties"
+    }
+   },
+   "log_pattern_counts": null,
+   "carries_sheets": null
+  },
+  {
+   "path": "data/SRP1/Results/P515S53/w139_resettle_v5/campaign_s53_w139_resettle_v5_d_c52e1670/evals/af42a163b14f0895_d_c52e1670/recourse_jump_sidecar_baseline.jsonl",
+   "label": "committed",
+   "scan": "first 3 records parsed; keys scanned (records are homogeneous)",
+   "keys_found": {},
+   "log_pattern_counts": null,
+   "carries_sheets": null
+  },
+  {
+   "path": "data/SRP1/Results/P515S53/w139_resettle_v5/campaign_s53_w139_resettle_v5_d_c52e1670/evals/af42a163b14f0895_d_c52e1670/resettle_cycle_record.jsonl",
+   "label": "committed",
+   "scan": "first 3 records parsed; keys scanned (records are homogeneous)",
+   "keys_found": {},
+   "log_pattern_counts": null,
+   "carries_sheets": null
+  },
+  {
+   "path": "data/SRP1/Results/P515S53/w139_resettle_v5/campaign_s53_w139_resettle_v5_d_c52e1670/evals/af42a163b14f0895_d_c52e1670/resettle_decision.json",
+   "label": "committed",
+   "scan": "json parsed in full; keys scanned",
+   "keys_found": {},
+   "log_pattern_counts": null,
+   "carries_sheets": null
+  },
+  {
+   "path": "data/SRP1/Results/P515S53/w139_resettle_v5/campaign_s53_w139_resettle_v5_d_c52e1670/evals/af42a163b14f0895_d_c52e1670/soh_floor_sidecar_baseline.jsonl",
+   "label": "committed",
+   "scan": "first 3 records parsed; keys scanned (records are homogeneous)",
+   "keys_found": {},
+   "log_pattern_counts": null,
+   "carries_sheets": null
+  },
+  {
+   "path": "data/SRP1/Results/P515S53/w139_resettle_v5/campaign_s53_w139_resettle_v5_d_c52e1670/evals/af42a163b14f0895_d_c52e1670/stdout_s39_D.log",
+   "label": "committed",
+   "scan": "log scanned in full for the patterns",
+   "keys_found": {},
+   "log_pattern_counts": {
+    "Shared ESS complementarity diagnostics": 597,
+    "ESSO violation": 0,
+    "soc_final": 0,
+    "[SLACK COMPONENTS]": 290
+   },
+   "carries_sheets": null
+  },
+  {
+   "path": "data/SRP1/Results/P515S53/w139_resettle_v5/campaign_s53_w139_resettle_v5_d_c52e1670/evals/af42a163b14f0895_d_c52e1670/wait4_rusage.json",
+   "label": "committed",
+   "scan": "json parsed in full; keys scanned",
+   "keys_found": {},
+   "log_pattern_counts": null,
+   "carries_sheets": null
+  },
+  {
+   "path": "data/SRP1/Results/P515S53/w139_resettle_v5/campaign_s53_w139_resettle_v5_d_c52e1670/campaign_heartbeat.json",
+   "label": "committed",
+   "scan": "json parsed in full; keys scanned",
+   "keys_found": {},
+   "log_pattern_counts": null,
+   "carries_sheets": null
+  },
+  {
+   "path": "data/SRP1/Results/P515S53/w139_resettle_v5/campaign_s53_w139_resettle_v5_d_c52e1670/campaign_manifest_sha256.json",
+   "label": "committed",
+   "scan": "json parsed in full; keys scanned",
+   "keys_found": {},
+   "log_pattern_counts": null,
+   "carries_sheets": null
+  },
+  {
+   "path": "data/SRP1/Results/P515S53/w139_resettle_v5/campaign_s53_w139_resettle_v5_d_c52e1670/campaign_results.json",
+   "label": "committed",
+   "scan": "json parsed in full; keys scanned",
+   "keys_found": {},
+   "log_pattern_counts": null,
+   "carries_sheets": null
+  },
+  {
+   "path": "data/SRP1/Results/P515S53/w139_resettle_v5/campaign_s53_w139_resettle_v5_d_c52e1670/campaign_spec_s53_w139_resettle_v5_d_c52e1670_b0008223.json",
+   "label": "committed",
+   "scan": "json parsed in full; keys scanned",
+   "keys_found": {},
+   "log_pattern_counts": null,
+   "carries_sheets": null
+  }
+ ],
+ "capacities": {
+  "path": "data/SRP1/Results/P515S53/w139_resettle_v5/campaign_s53_w139_resettle_v5_d_c52e1670/evals/af42a163b14f0895_d_c52e1670/evaluation_record.json",
+  "label": "committed",
+  "at": "terminal 198 != P 150 (E^Av and S at the terminal used for the relative value; labelled)",
+  "nodes": {
+   "5": {
+    "has_storage": false,
+    "e": {
+     "2025": 0.0,
+     "2030": 0.0,
+     "2035": 0.0
+    },
+    "s": {
+     "2025": 0.0,
+     "2030": 0.0,
+     "2035": 0.0
+    }
+   },
+   "7": {
+    "has_storage": true,
+    "e": {
+     "2025": 1.761338159802179,
+     "2030": 1.5605607793038727,
+     "2035": 1.399999980000059
+    },
+    "s": {
+     "2025": 0.5,
+     "2030": 0.5,
+     "2035": 0.5
+    }
+   },
+   "9": {
+    "has_storage": false,
+    "e": {
+     "2025": 0.0,
+     "2030": 0.0,
+     "2035": 0.0
+    },
+    "s": {
+     "2025": 0.0,
+     "2030": 0.0,
+     "2035": 0.0
+    }
+   }
+  },
+  "sha256": "cd87c54e2aa56b92b72adf53c4c513d1f4bc3a9b6863d1f552856ee136de58a1"
+ },
+ "index_orders": {
+  "years": [
+   "2025",
+   "2030",
+   "2035"
+  ],
+  "days": [
+   "Spring",
+   "Summer",
+   "Autumn",
+   "Winter"
+  ],
+  "source": "data/SRP1/SRP1.json"
+ },
+ "closure_terminal_beside": {
+  "path": "data/SRP1/Results/P515S53/w139_resettle_v5/campaign_s53_w139_resettle_v5_d_c52e1670/evals/af42a163b14f0895_d_c52e1670/component_levels_terminal.json",
+  "label": "committed",
+  "at_cycle": 198,
+  "NOT_THE_POINT": true,
+  "max_sum_s_mwh_active_blocks": -1.9998143613154764e-06,
+  "argmax_block": "TSO|2035|Winter",
+  "min_sum_s_mwh": -1.999818179716134e-06,
+  "n_blocks_positive": 0,
+  "max_frac_signed": -1.1353955148787757e-06,
+  "esso_feasibility_violation_D3": -1.7279842907474655e-05
+ },
+ "sigma_elementwise": {
+  "source_paths": {
+   "5": "data/SRP1/Results/P515S53/w139_resettle_v5/campaign_s53_w139_resettle_v5_d_c52e1670/evals/af42a163b14f0895_d_c52e1670/esso_capture/s39_D/node5_cycle150.jsonl",
+   "7": "data/SRP1/Results/P515S53/w139_resettle_v5/campaign_s53_w139_resettle_v5_d_c52e1670/evals/af42a163b14f0895_d_c52e1670/esso_capture/s39_D/node7_cycle150.jsonl",
+   "9": "data/SRP1/Results/P515S53/w139_resettle_v5/campaign_s53_w139_resettle_v5_d_c52e1670/evals/af42a163b14f0895_d_c52e1670/esso_capture/s39_D/node9_cycle150.jsonl"
+  },
+  "labels": {
+   "5": "uncommitted",
+   "7": "uncommitted",
+   "9": "uncommitted"
+  },
+  "per_node": {
+   "5": {
+    "path": "data/SRP1/Results/P515S53/w139_resettle_v5/campaign_s53_w139_resettle_v5_d_c52e1670/evals/af42a163b14f0895_d_c52e1670/esso_capture/s39_D/node5_cycle150.jsonl",
+    "n_rows": 0,
+    "n_elements": 0,
+    "expected_elements": 0,
+    "years_with_capacity": [],
+    "max_sigma_mw": null,
+    "min_sigma_mw": null
+   },
+   "7": {
+    "path": "data/SRP1/Results/P515S53/w139_resettle_v5/campaign_s53_w139_resettle_v5_d_c52e1670/evals/af42a163b14f0895_d_c52e1670/esso_capture/s39_D/node7_cycle150.jsonl",
+    "n_rows": 288,
+    "n_elements": 288,
+    "expected_elements": 288,
+    "years_with_capacity": [
+     "2025",
+     "2030",
+     "2035"
+    ],
+    "max_sigma_mw": -1.9999818172235377e-08,
+    "min_sigma_mw": -1.9999818181816474e-08
+   },
+   "9": {
+    "path": "data/SRP1/Results/P515S53/w139_resettle_v5/campaign_s53_w139_resettle_v5_d_c52e1670/evals/af42a163b14f0895_d_c52e1670/esso_capture/s39_D/node9_cycle150.jsonl",
+    "n_rows": 0,
+    "n_elements": 0,
+    "expected_elements": 0,
+    "years_with_capacity": [],
+    "max_sigma_mw": null,
+    "min_sigma_mw": null
+   }
+  },
+  "n_elements": 288,
+  "max_sigma_mw": -1.9999818172235377e-08,
+  "argmax": {
+   "e": 7,
+   "year": "2025",
+   "day": "Spring",
+   "t": 0,
+   "y": 0,
+   "d": 0
+  },
+  "min_sigma_mw": -1.9999818181816474e-08,
+  "n_positive": 0,
+  "max_positive_sigma_mw": null,
+  "max_frac_signed": -3.9999636344470754e-08,
+  "argmax_frac_signed": {
+   "e": 7,
+   "year": "2025",
+   "day": "Spring",
+   "t": 0,
+   "S_mva": 0.5,
+   "sigma_sum_mw": -1.9999818172235377e-08
+  },
+  "max_frac_abs": 3.999963636363295e-08,
+  "argmax_frac_abs": {
+   "e": 7,
+   "year": "2025",
+   "day": "Winter",
+   "t": 21,
+   "S_mva": 0.5,
+   "sigma_sum_mw": -1.9999818181816474e-08
+  },
+  "sum_captured_mw": -5.759947634711252e-06,
+  "every_element_at_or_above_relaxed_floor": true,
+  "max_minus_min_mw": 9.581097377581261e-18,
+  "source_sha256": {
+   "5": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "7": "c729db4daf8f2d2b18223e3e628ff767df71ba681aa0fef6f58e4becc9810a3f",
+   "9": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+ },
+ "detector": {
+  "path": "data/SRP1/Results/P515S53/w139_resettle_v5/campaign_s53_w139_resettle_v5_d_c52e1670/evals/af42a163b14f0895_d_c52e1670/g_s39_D.json",
+  "label": "committed",
+  "round_found": true,
+  "per_node_at_point": {
+   "5": {
+    "complementarity_ratio_max": 0.0,
+    "complementarity_ratio_argmax": null,
+    "n_active_cohort_periods": 0,
+    "spurious_throughput_measured": 0.0,
+    "spurious_throughput_bound": 0.0,
+    "mu_final": 9.090909090934439e-12,
+    "s_obj": 0.1,
+    "parse_reason": null,
+    "log_path": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P56A/evals/p515s44_s53_w139_resettle_v5_d_c52e1670_af42a163b14f0895_run/logs/optim_log_esso_node5_cycle150.txt"
+   },
+   "7": {
+    "complementarity_ratio_max": 0.0,
+    "complementarity_ratio_argmax": null,
+    "n_active_cohort_periods": 288,
+    "spurious_throughput_measured": -5.755513422637256e-06,
+    "spurious_throughput_bound": 0.002654638054543649,
+    "mu_final": 9.217493244943227e-12,
+    "s_obj": 0.1,
+    "parse_reason": null,
+    "log_path": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P56A/evals/p515s44_s53_w139_resettle_v5_d_c52e1670_af42a163b14f0895_run/logs/optim_log_esso_node7_cycle150.txt"
+   },
+   "9": {
+    "complementarity_ratio_max": 0.0,
+    "complementarity_ratio_argmax": null,
+    "n_active_cohort_periods": 0,
+    "spurious_throughput_measured": 0.0,
+    "spurious_throughput_bound": 0.0,
+    "mu_final": 9.090909090934439e-12,
+    "s_obj": 0.1,
+    "parse_reason": null,
+    "log_path": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P56A/evals/p515s44_s53_w139_resettle_v5_d_c52e1670_af42a163b14f0895_run/logs/optim_log_esso_node9_cycle150.txt"
+   }
+  },
+  "per_node_summary_all_rounds": {
+   "5": {
+    "ratio_max": 0.0,
+    "bound_max": 0.0,
+    "measured_max": 0.0,
+    "n_solves": 199
+   },
+   "7": {
+    "ratio_max": 1.803414995941601e-05,
+    "bound_max": 0.028137458176457835,
+    "measured_max": 0.002983674761052877,
+    "n_solves": 199
+   },
+   "9": {
+    "ratio_max": 0.0,
+    "bound_max": 0.0,
+    "measured_max": 0.0,
+    "n_solves": 199
+   }
+  },
+  "grouping_clean": true,
+  "expected_total_solves": 597,
+  "observed_total_solves": 597,
+  "persistent_workers_off": true,
+  "leak_classification_crosscheck": {
+   "path": "data/SRP1/Results/P515S53/w139_resettle_v5/campaign_s53_w139_resettle_v5_d_c52e1670/evals/af42a163b14f0895_d_c52e1670/leak_classification_s39_D.jsonl",
+   "values": {
+    "5": 0.0,
+    "7": 0.0,
+    "9": 0.0
+   },
+   "agree_exactly": true
+  },
+  "max_ratio_at_point": 0.0,
+  "sha256": "8b20aa77b2e8c54794d494d5427a96ee2e3b03bff0d2f8774390b28f95a95c7f"
+ },
+ "network_failures": {
+  "path": "data/SRP1/Results/P515S53/w139_resettle_v5/campaign_s53_w139_resettle_v5_d_c52e1670/evals/af42a163b14f0895_d_c52e1670/network_failures_s39_D.jsonl",
+  "label": "committed",
+  "at_point": []
+ },
+ "closure_src_flag": "—",
+ "sigma_src_flag": "U"
+}

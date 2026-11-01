@@ -1,0 +1,846 @@
+{
+ "authority": [
+  "PLANNER_BRIEF_2026-09-13.md Addendum 54 Ruling 1 (committed 271e9325)",
+  "TASKS.md Addendum 54 order (W105)",
+  "Planner task W105"
+ ],
+ "captures": {
+  "a_q_by_block_and_component": {
+   "definition": "per TSO / DSO block (48): the weighted components of production's _get_local_objective_components generation_cost, flexibility_cost, load_curtailment_cost, res_curtailment_penalty, ess_usage_penalty, ess_complementarity_penalties, slack_penalties and other = block value (production _get_operational_recourse_block_components) - classified_total; the components of a block sum to its contribution to gross Q; aggregates per agent (TSO, DSO_5, DSO_7, DSO_9, ESSO) with ess_terms = ess_usage_penalty + ess_complementarity_penalties; deltas vs the previous cycle; reconciliation with gross Q every cycle",
+   "file": "creep_diagnostic_per_cycle.jsonl",
+   "key": "q_decomposition",
+   "q_by_agent_from_source": "gross_operational_cost = sum over TSO blocks + sum over DSO blocks of weight x (objective_function_rule - contracted settlement - voltage pin); weight = years x days x annualisation. The ESSO does NOT enter gross Q (its only term in the NET recourse is the terminal salvage); its row is 0 by construction; its salvage and feasibility penalty are reported beside",
+   "shape": "48 blocks x 9 values (+ deltas) + 5 agents per cycle"
+  },
+  "b_ess_movement": {
+   "definition": "per ESS node n (5, 7, 9) and family f: S_f,n(k) = sum over years, days, periods of |x_f(k) - x_f(k-1)|, x read at production's get_admm_boyd_residual_metrics call of cycle k (after the cycle's ESS consensus / dual update, before AA). Families: p and q of the consensus copies esso (= the ESSO's es_pnet), tso (= TSO expected_shared_ess x s_base), dso (= DSO expected_shared_ess x s_base), z (the consensus value); charge and discharge of esso (es_pch / es_pdch summed over cohorts), tso and dso (probability-weighted shared_es_pch / shared_es_pdch x s_base) -- charge and discharge are separate variables on every side, so they are recorded separately. Units MW / Mvar. Unavailable (None) on the first cycle",
+   "file": "creep_diagnostic_per_cycle.jsonl",
+   "key": "ess_movement",
+   "raw_file": "ess_schedule_per_cycle.jsonl",
+   "shape": "36 blocks x 24 periods; 14 families; 12,096 floats per raw cycle line"
+  },
+  "c_boyd_full": {
+   "definition": "every field production's get_admm_boyd_residual_metrics returns per channel (v, pf, ess): r, s (the raw primal and dual residual norms), eps_pri, eps_dual, primal_ratio, dual_ratio, and the rest; plus all_boyd_pass, eps_abs, eps_rel",
+   "file": "creep_diagnostic_per_cycle.jsonl",
+   "key": "boyd"
+  },
+  "capture_path_asserted_before_any_solve": "assert_extension_preconditions (checklist incl. capture:*)",
+  "lambda_t": "interface_duals_per_cycle.jsonl (harness default, unchanged)",
+  "write_only": "checks L1 (real W104 cycle-187 models: fingerprints before == after)"
+ },
+ "cell": {
+  "N_hold": 87,
+  "base_cell": "c_star",
+  "campaign_id": "s53_w105_c_star_ext_r2",
+  "campaign_root": "data/SRP1/Results/P515S53/w105_c_star_extension/campaign_s53_w105_c_star_ext_r2",
+  "candidate_key": "578636daa6d6360d6701764c73ddf795e53c2c37e511e21be1400024f8f6350c",
+  "canonical": {
+   "investment_year": 2025,
+   "nodes": {
+    "5": [
+     0.96875,
+     3.875
+    ],
+    "7": [
+     0.96875,
+     3.875
+    ],
+    "9": [
+     0.96875,
+     3.875
+    ]
+   }
+  },
+  "cap": 287,
+  "declaration": {
+   "abort_on_replay_divergence": true,
+   "base_cell": "c_star",
+   "cap": 287,
+   "captures": {
+    "boyd_full": true,
+    "ess_schedule_movement": true,
+    "q_decomposition": true
+   },
+   "cell": "c_star_ext",
+   "extension_cycles": 100,
+   "hold_after_cycle": 87,
+   "label": "SETTLING EXTENSION DIAGNOSTIC RUN (W105, spec v40) -- C* replayed bitwise through cycle 187 against W104 (abort on divergence; W104 holds after cycle 87), then exactly 100 more cycles 188-287 under the same holds; the settling rule evaluated report-only (never stops the run); per-block dQ by component, sum |dp_ess| per node and side, and all six Boyd residuals recorded every cycle",
+   "record_all_blocks": true,
+   "replay_reference": {
+    "cycle_record": "data/SRP1/Results/P515S53/w101_srp1_continuation/campaign_s53_w101_srp1_cont_c_star/evals/4bf36c151fd10613_c_star/settling_continuation_cycle_record.jsonl",
+    "cycle_record_sha256": "2ea4552bcf24adad79843426e3ea10669b43ad6d29fd59a9b2f10ef90f498b63",
+    "decision": "data/SRP1/Results/P515S53/w101_srp1_continuation/campaign_s53_w101_srp1_cont_c_star/evals/4bf36c151fd10613_c_star/settling_decision.json",
+    "decision_sha256": "a51965ffdbd857805356fbdbad8adfb7c92fac77d6fd0904e7d109e8790af60e",
+    "eval_key": "4bf36c151fd106139782939724c6d888585cdb78e0dbff6516d2cea36a42d5a1",
+    "evidence_commit": "82dcebb7",
+    "n_cycles": 187,
+    "per_cycle_record": "data/SRP1/Results/P515S53/w101_srp1_continuation/campaign_s53_w101_srp1_cont_c_star/evals/4bf36c151fd10613_c_star/per_cycle_record.jsonl",
+    "per_cycle_record_sha256": "f65c383366ea3e4132f5ba3a3941074689240851ffc2fcf6ed3daaa034f6a890"
+   },
+   "replay_through_cycle": 187,
+   "settling_rule": {
+    "eps0": 45.39068275,
+    "function": "settling_criterion.SettlingRule",
+    "k_excl": 3,
+    "l_mono": 44,
+    "module": "settling_criterion",
+    "p_max": 22,
+    "p_max_function": "settling_criterion.p_max_from_records",
+    "tau": 4539.0682750000005,
+    "w_factor": 1.1,
+    "w_min": 20
+   },
+   "settling_rule_mode": "report_only_non_latching",
+   "w104_mirror_rule": {
+    "cap": 187,
+    "n": 87,
+    "p_max": 22
+   }
+  },
+  "extension_cycles": 100,
+  "keys": {
+   "base_key_without_extension": "96c5aa50cc229cc14f8bfd34de306b7cc79caf77ac28a09e0046ad3978c49772",
+   "extension_key": "8864266d3c064ed08783f6eb7c2ef078ee5d0a97793c88f55b17f11a1e1e1238"
+  },
+  "label": "c_star_ext",
+  "launch_command_template": "cd /Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation && set -o noclobber && NLP_SOLVER_PATH=/usr/local/bin/ipopt /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python -u p515_s53_w105_c_star_extension_campaign.py --run --spec-sha256 <campaign spec sha256> > data/SRP1/Results/P515S53/w105_c_star_extension/run_c_star_ext_v41_launch.log 2>&1",
+  "pre_launch_assertion_at_freeze": {
+   "base_key_without_extension": "96c5aa50cc229cc14f8bfd34de306b7cc79caf77ac28a09e0046ad3978c49772",
+   "eval_dir_name": "8864266d3c064ed0_c_star_ext",
+   "excluded_roots": [
+    "data/SRP1/Results/P515S53/w105_c_star_extension"
+   ],
+   "extension_key": "8864266d3c064ed08783f6eb7c2ef078ee5d0a97793c88f55b17f11a1e1e1238",
+   "holds": true,
+   "n_committed_keys_scanned": 3527,
+   "parts": {
+    "base_key_equals_recert_key": true,
+    "campaign_root_differs_from_w104": true,
+    "candidate_key_equals_w104_and_recert": true,
+    "eval_dir_name_differs_from_w104_and_recert": true,
+    "extension_key_absent_from_committed_specs_outside_w105_root": true,
+    "extension_key_differs_from_recert_and_w104": true,
+    "working_dir_ids_differ_from_w104_and_recert": true,
+    "working_dirs_absent": true
+   },
+   "working_dir_ids": {
+    "precheck": "p515s44_s53_w105_c_star_ext_r2_8864266d3c064ed0_precheck",
+    "run": "p515s44_s53_w105_c_star_ext_r2_8864266d3c064ed0_run"
+   }
+  },
+  "recert_eval_key": "96c5aa50cc229cc14f8bfd34de306b7cc79caf77ac28a09e0046ad3978c49772",
+  "replay_through": 187,
+  "w104_eval_key": "4bf36c151fd106139782939724c6d888585cdb78e0dbff6516d2cea36a42d5a1"
+ },
+ "code_sha256": {
+  "gate_result_io.py": "26cadaa5c3105f9adb879ece756ef6d659b374f647a7756030efe80a2df6d07d",
+  "interface_dual_capture.py": "e4223ac25fa488970ec195b4c3bb6b1171faa3aeba4824e0d6ee6482ab58f55c",
+  "network.py": "18acaa84af7a043898a7b831223b4eab1d91f9bcf2c199f49beecfeb3bf91fb4",
+  "p515_g_g1_g4_admm_gates.py": "6f4631e10a2f8a7786390c0f96e45332706779ae9cdf6a87ddd716d9ad9ad346",
+  "p515_gate_result_bool_typing_test.py": "dbd6f92b772a5816ab929cef66e7132aaec0adc96c6ac55bc6ec0bf651652e76",
+  "p515_s44_campaign_harness.py": "68a9265afe71d374a3058cee24ad1d614d71c6d10d5c4cb69bfc32cd78637b82",
+  "p515_s53_w101_continuation_checks.py": "8f786a21a70f7363451e1f1261aaad5a0ae8b3075c74fd3785f06a5db953cd6a",
+  "p515_s53_w101_settling_continuation_hooks.py": "05004cf8b475c940ef1d30a225bcad20e257f02c0d34bb5034ee4975d6625f6b",
+  "p515_s53_w101_srp1_continuation_campaign.py": "1ad7a7c8127681b93f1a2191f48cc6bf4f0dec846026163c567782693038ed64",
+  "p515_s53_w105_c_star_extension_campaign.py": "b9b764331a34e77b1c263b9f5347e5ff634db344423adc700ff3b1d231826350",
+  "p515_s53_w105_extension_checks.py": "af14bbad4ae03c1a43dd6a982b6876369002b2c48244837d6b3094ab98397e12",
+  "p515_s53_w105_settling_extension_hooks.py": "1ff61ce96dc25e4ccac3b864c834c54edf2d382525bddd9adce9af71bba84f05",
+  "p515_s53_w86_tail_recert_campaign.py": "812333ff36603c123c3e5909b0777de2c17af6971cebb396e854af5f186a55b2",
+  "p515_s53_w89_3x3_campaign.py": "2fe976849522a10a6ebf876459b1c4397789374c4928862f6874a3eeeddc5a5d",
+  "p515_s53_w89_g6_final_attempt_reeval.py": "d1d543bf3c38098921765b6c18b9b9b64600932985211364f150b8b24595565e",
+  "p515_s53_w90_3x3_campaign.py": "3b9ad1fb0bbcf8872a6a79e8c800994f7296f0415ef93d112287b869386a9b2c",
+  "p515_s53_w95_x0_drift_diagnostics.py": "6530eb22a807ea74652ed85fb4d15d4e5a230b624c6db45ff15d40f45ebd9e68",
+  "p515_s53_w98_continuation_campaign.py": "c27230a95a693d20c53bfeebb5505765a2f37877383a21cf2c136096fbe7c3ee",
+  "p515_s53_w98_continuation_checks.py": "25edfd17fae83832b4c3f46812a24018c8905d2b399201814f5fd39321f35172",
+  "p515_s53_w98_continuation_hooks.py": "eb0ef724daacb2d5107c12db2d32ef4cb4546ff634c6e4957be897e2c0582fb4",
+  "settling_criterion.py": "fbe5550b34a4062feed82476e1959b5e4e2786cb13ca61728bfa1803ba75f65f",
+  "shared_energy_storage_data.py": "9acd095fb5e50e9b64c253600ae05ebb8e6463fd7a999d3a90f96ee82f037796"
+ },
+ "code_since_w104_launch": {
+  "changed_py": [
+   {
+    "path": "p515_s44_campaign_harness.py",
+    "status": "M"
+   },
+   {
+    "path": "p515_s53_w104_literal_reading.py",
+    "status": "A"
+   },
+   {
+    "path": "p515_s53_w105_c_star_extension_campaign.py",
+    "status": "A"
+   },
+   {
+    "path": "p515_s53_w105_extension_checks.py",
+    "status": "A"
+   },
+   {
+    "path": "p515_s53_w105_settling_extension_hooks.py",
+    "status": "A"
+   },
+   {
+    "path": "p515_s53_w106_benchmark_repoint.py",
+    "status": "A"
+   },
+   {
+    "path": "p515_s53_w93_uncoordinated_benchmark.py",
+    "status": "M"
+   },
+   {
+    "path": "p515_s53_w93_uncoordinated_benchmark_checks.py",
+    "status": "M"
+   }
+  ],
+  "head": "42481c3011f6e0b17c5e50e4d3e95080654d7109",
+  "note": "the harness changed (W105 keyed option settling_extension); production unchanged",
+  "ok": true,
+  "production_changed": [],
+  "uncommitted_tracked_py": [],
+  "w104_launch_commit": "953b9bcd"
+ },
+ "configuration": {
+  "checked_field_by_field": "validate_campaign_spec at --freeze and at --run",
+  "concurrency": 1,
+  "identical_to_w104": {
+   "arm_label": "s39_D",
+   "case_file_anderson_acceleration": {
+    "enabled": true,
+    "memory": 5,
+    "regularization": 1e-10,
+    "reject_policy": "keep_memory"
+   },
+   "convergence_depth_tail": {
+    "compl_inf_tol": 1e-06,
+    "enabled": true
+   },
+   "ess_ageing_baseline": {
+    "calendar_life_years": 15,
+    "calendar_retention_per_year": 0.985,
+    "calibration": {
+     "cycles_n": 10000,
+     "eol_retention_r": 0.8,
+     "reference_dod_d": 0.8,
+     "status": "ACTIVE"
+    },
+    "cycle_life_nominal": 10000,
+    "depth_of_discharge_nominal": 0.8,
+    "minimum_soh": 0.7
+   },
+   "ess_ageing_baseline_label": "BASELINE (C2 + phi_cal 0.985 + soh_min 0.70)",
+   "name": "W105 C* SETTLING EXTENSION diagnostic -- BASELINE (C2 + phi_cal 0.985 + soh_min 0.70): the case file alone (AA keep_memory declared) with the ESS ageing parameters declared, the convergence-depth tight tail DECLARED ENABLED (compl_inf_tol 1e-6, certifying cycles only), post-certification: persist the certified TSO/DSO models only",
+   "note": "W104's configuration (spec 1a7483ef = the recert ddd6cd44) unchanged; the entry declares settling_extension (keyed) instead of settling_continuation; cap 287; persist_certified_models as W104; no option (b); concurrency 1",
+   "overrides": {}
+  },
+  "option_b_release_solution_bookkeeping": "absent, as in W104 (never keyed)",
+  "persistence": "persist_certified_models True, hull_polish False, no reference (as W104)"
+ },
+ "defect_note": {
+  "changed": "schema / version / predecessor; the code pins; the campaign id and root (s53_w105_c_star_ext_r2; the v40 root is write-once) and what derives from them (working-dir ids, launch command, log name); the committed zero-solve checks output (r2) and its pre-launch / inline results; freeze-time records (git head, UTC, code_since_w104_launch, memory, the measured capture overhead and the wall estimate derived from it)",
+  "defect": "p515_s53_w105_extension_checks.py tests_K (r1, 49342e8c) required the extension eval key 8864266d to appear in NO committed campaign spec; W105 then committed its own campaign spec 1a9f1f24 (4461e077), which carries it, so K failed and the --run inline checks (_run_checks_inline) refused every launch. Reproduced zero-solve in W108: K the only failing section; the only holder the v40 campaign spec",
+  "fix": "tests_K (r2) excludes the W105 stage root, exactly as pre_launch_assertion does (L.committed_eval_keys(exclude_roots=(ROOT_REL,))): the key must appear in no committed campaign spec outside its own root; negative controls (a planted spec outside the root; a planted spec in a sibling directory sharing the root name prefix) refused; positive controls (a planted spec in the r2 campaign root; the committed v40 campaign spec) accepted. Everything else in K unchanged",
+  "logging": "a failing _run_checks_inline now logs the failing sections and, within each, the failing items (_failing_check_items; logging only)",
+  "preconditions_only_mode": "--run --spec-sha256 S --preconditions-only: every --run precondition, then a stop before the campaign lock and the child (zero solves); added in W108 because the launcher had no dry-run mode",
+  "superseded_before_any_run": {
+   "campaign_spec_s53_w105_c_star_ext": {
+    "path": "data/SRP1/Results/P515S53/w105_c_star_extension/campaign_s53_w105_c_star_ext/campaign_spec_s53_w105_c_star_ext_1a9f1f24.json",
+    "sha256": "1a9f1f24233f6fe9905a40fc185e09898aa6b2f237566636fe5fb7da261cc8c2"
+   },
+   "refused_v40_launch_log": {
+    "path": "data/SRP1/Results/P515S53/w105_c_star_extension/run_c_star_ext_v40_launch.log",
+    "sha256": "53f01ba73608627451a87b59eb4f3b276bc86ae1998c474d4643f024aec3529d"
+   },
+   "stage_spec_v40": {
+    "path": "data/SRP1/Results/P515S53/frozen_s53_spec_v40_9bc1779d.json",
+    "sha256": "9bc1779da9a44fddc99308701185f62b5d58a29b82577473a750b8f6f0b68785"
+   },
+   "zero_solve_checks_r1": {
+    "path": "data/SRP1/Results/P515S53/w105_c_star_extension/zero_solve_checks/w105_zero_solve_checks.json",
+    "sha256": "9688a018dae16cf57cfe06ce87dafacaae9a027d82057ad32c7904b2774b159a"
+   }
+  },
+  "task": "Planner task W108 (W107 launch refused with zero solves)",
+  "unchanged": "the declaration, the eval key 8864266d, the cell, the configuration, the holds, cap 287, the captures, the definitions, the predictions, the scorer, the gates"
+ },
+ "definitions": {
+  "P_a": "the creep sits in TSO generation cost: share_TSO_gen = D[TSO, generation_cost] / DQ >= 0.5 (a positive ratio: the same sign). Reported beside: every D[a, c] / DQ, the DSO share (sum of D[DSO_n, value]) / DQ, the ESSO share (0 by construction), the reconciliation residual",
+  "P_b": "the ESS schedules are still moving: with S_k = sum over ESS nodes of sum over years, days, periods of |p(k) - p(k-1)| on the ESSO side (consensus_vars ess esso = the ESSO's es_pnet, MW), ratio_b = mean(S_k, 263..287) / mean(S_k, 188..212) >= 0.5. Reported beside, per node and per side (esso, tso, dso, z; p and q; charge / discharge per side) with the same ratio. PRIMARY SIDE = ESSO (Worker reading of \"Sigma |dp_ess|\": the ESSO's own schedule; the network-side copies differ from it only by the ESS primal residual)",
+  "P_c": "the rising residual is the ESS channel: slope_g = the ordinary least-squares slope of boyd_{g}_primal_ratio on k over 188..287 (per_cycle_record), g in v, pf, ess; P_c holds iff argmax_g slope_g == ess AND slope_ess > 0. All six slopes (primal and dual) reported. PRE-REGISTERED AGAINST: W104 found pf_primal rising 0.013 -> 0.127 over 152-187 (w104_reference_slopes_152_187)",
+  "P_d": "the rate stays within a factor 2 of -265 EUR/cycle: mean(dQ_k, 188..287) = DQ / 100 in [-530, -132.5]; the four 25-cycle quarter means reported",
+  "agent_component_change": "D[a, c] = agents[a][c] at cycle 287 - at cycle 187, from creep_diagnostic_per_cycle.jsonl q_decomposition.agents (a in TSO, DSO_5, DSO_7, DSO_9, ESSO; c in the components + other + value); the components of a block sum to its contribution to Q",
+  "dQ_k": "Q_k - Q_(k-1)",
+  "objective": "Q_k = gross_operational_cost of cycle k (settlement excluded), per_cycle_record.jsonl",
+  "objective_convention": "gross_operational_cost (settlement excluded); net and salvage reported beside",
+  "outcome": "confirmed: P_a, P_b, P_c, P_d all hold and no trigger -> the expert adds a creep branch; refuted: any trigger -> Advisor review before the campaign is sized; mixed: anything else, reported as such; not_scoreable: the run did not reach 287 (aborted)",
+  "report_only_rule": "SettlingRule(N = 87, cap = 287, P_MAX = 22) observes every cycle, non-latching; the first cycle at which it would certify (if any), every would-certify cycle, and its status at 287 are reported; it never ends the run",
+  "resolution_note": "DQ, the shares and the means are statistics of ONE trajectory (exact per-cycle values), not differences of two settled quantities: no stopping-slack bar applies. The terminal-step-to-threshold ratios are reported (|dQ_287| / EPS0; production rule ten of cycle 287)",
+  "total_change": "DQ = Q_287 - Q_187 (= the sum of dQ_k over 188..287)",
+  "triggers": {
+   "T1_dso_share_gt_half": "the DSO blocks carry more than 50 % of the change: DSO share > 0.5",
+   "T2_creep_decays": "|mean dQ over 263..287| < 0.25 x |mean dQ over 188..212|",
+   "T3_boyd_lapse": "any cycle k in 188..287 with NOT (boyd_all_pass AND local_solves_ok); cycles 88..187 are W104's, replayed bitwise, and had none"
+  },
+  "window": "the extension window 188..287 (100 cycles); Q_187 is the last replayed (W104) cycle"
+ },
+ "expected_wall_time": {
+  "basis": "W104's own per-cycle walls (t_end_s - t_start_s of its cycle lines, concurrency 1), its child wall and its campaign wall: replay 1..187 = W104's sum; 188..287 = 100 x W104's mean over 88..187; + W104's init / terminal / persistence overhead and launcher overhead; + the measured new capture overhead x 287",
+  "expected_wall_h": 2.2165651101403765,
+  "expected_wall_s": 7979.634396505356,
+  "new_capture_overhead_s_per_cycle_measured": 0.018877124786376952,
+  "task_statement": "about 287 x 25-28 s = 2.0-2.3 h plus the capture overhead",
+  "w104_child_overhead_s": 58.50950074195862,
+  "w104_cycles": 187,
+  "w104_launcher_overhead_s": 32.6217041015625,
+  "w104_max_cycle_s_88_187": 32.18481111526489,
+  "w104_mean_cycle_s_1_187": 27.934162049370016,
+  "w104_mean_cycle_s_88_187": 26.593971536159515,
+  "w104_sum_cycle_walls_s": 5223.688303232193
+ },
+ "fixed_length": {
+  "cap": 287,
+  "certificate_length": "10**9 for the whole run (restored at exit)",
+  "early_stop": "ABSENT",
+  "stops": "only production's num_max_iters = 287 (or an abort)"
+ },
+ "frozen_utc": "2026-09-28T12:18:23.053354+00:00",
+ "gates": {
+  "G1-G5, G7, G9, G11": "as W104 (W86 evaluation_checks; solve profile 51 x (287 + 1) + retries)",
+  "G13": "holds inert through 87, held 88..287; certificate length 10**9 every cycle",
+  "G14": "all-block capture",
+  "G15": "fixed length: cycles_run == 287, stopped by the cap",
+  "G16": "lambda_t sidecar complete",
+  "G17": "the pure rules replay the in-cycle records (report-only + mirror)",
+  "G18": "line fields",
+  "G19": "replay 1..187 bitwise every field",
+  "G20": "production counters",
+  "G21": "creep captures complete, reconciling, Boyd equal to production's g rows, no capture errors",
+  "G22": "cycle lines and all-block lines 1..187 equal W104's",
+  "G6": "v37 (Optimal Solution Found + four metrics within the tail tolerances, final accepted attempt; B = 48)",
+  "G8": "persistence as W104",
+  "post_run_evaluator_self_tests": {
+   "pass": {
+    "expect_all_pass": true,
+    "gates": {
+     "creep_capture": true,
+     "fixed_length": true,
+     "holds": true,
+     "line_fields": true,
+     "replay_full_1_187": true,
+     "rule_replays": true,
+     "w104_lines_blocks": true
+    },
+    "ok": true,
+    "score_on_synthetic": {
+     "DQ_total": -26520.254625678062,
+     "mean_dQ_188_287": -265.20254625678064,
+     "outcome": "refuted",
+     "predictions_held": {
+      "P_a": true,
+      "P_b": true,
+      "P_c": false,
+      "P_d": true
+     },
+     "triggers_fired": [
+      "T3_boyd_lapse"
+     ]
+    }
+   },
+   "score_on_synthetic_drive_is_refuted_by_T3": {
+    "got": {
+     "DQ_total": -26520.254625678062,
+     "mean_dQ_188_287": -265.20254625678064,
+     "outcome": "refuted",
+     "predictions_held": {
+      "P_a": true,
+      "P_b": true,
+      "P_c": false,
+      "P_d": true
+     },
+     "triggers_fired": [
+      "T3_boyd_lapse"
+     ]
+    },
+    "ok": true
+   },
+   "tampered_boyd_capture_250": {
+    "expect_all_pass": false,
+    "gates": {
+     "creep_capture": false,
+     "fixed_length": true,
+     "holds": true,
+     "line_fields": true,
+     "replay_full_1_187": true,
+     "rule_replays": true,
+     "w104_lines_blocks": true
+    },
+    "ok": true,
+    "score_on_synthetic": null
+   },
+   "tampered_per_cycle_row_150": {
+    "expect_all_pass": false,
+    "gates": {
+     "creep_capture": true,
+     "fixed_length": true,
+     "holds": true,
+     "line_fields": true,
+     "replay_full_1_187": false,
+     "rule_replays": true,
+     "w104_lines_blocks": true
+    },
+    "ok": true,
+    "score_on_synthetic": null
+   }
+  }
+ },
+ "git_head": "42481c3011f6e0b17c5e50e4d3e95080654d7109",
+ "holds_after_87": {
+  "AA": "off (production's own off branch via all_boyd_pass forced True on a copy, every cycle > 87, even when Boyd lapses)",
+  "boyd_lapse_behaviour": "recorded (the rule's k0 resets); the run continues to 287",
+  "exactly_as_w104": "the same wrapper code as W101's for these three holds (checks H1-H3)",
+  "rho": "frozen (allow_update False; before == after asserted)",
+  "tail": "on (applied True at the top of every cycle > 87; next-state True)"
+ },
+ "labelling_and_identity": {
+  "evaluation_key": "sha256({base_evaluation_key, settling_extension}); every key without the declaration byte-identical to the pre-W105 harness (checks K: all committed entries)",
+  "label": "SETTLING EXTENSION DIAGNOSTIC RUN (W105, spec v40) -- C* replayed bitwise through cycle 187 against W104 (abort on divergence; W104 holds after cycle 87), then exactly 100 more cycles 188-287 under the same holds; the settling rule evaluated report-only (never stops the run); per-block dQ by component, sum |dp_ess| per node and side, and all six Boyd residuals recorded every cycle"
+ },
+ "launch_command_template": "cd /Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation && set -o noclobber && NLP_SOLVER_PATH=/usr/local/bin/ipopt /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python -u p515_s53_w105_c_star_extension_campaign.py --run --spec-sha256 <campaign spec sha256> > data/SRP1/Results/P515S53/w105_c_star_extension/run_c_star_ext_v41_launch.log 2>&1",
+ "memory_preflight": {
+  "measured_at_freeze_non_gating": {
+   "available_bytes": 17730027520,
+   "available_gib": 16.512374877929688,
+   "budget_derivation": {
+    "budget": "3.5 GiB per child = the measured persist peak (3.23 GiB) + 0.27 GiB margin",
+    "s47_recert_c_star_child_peak_no_persist_bytes": 2577645568,
+    "s47_recert_unit_child_peak_no_persist_bytes": 2574581760,
+    "source": "data/SRP1/Results/P515S48/x0_capture/evals/d2c96b1480402a3b_x0/{evaluation_record,post_certification}.json and data/SRP1/Results/P515S47/campaign_s47_recert/evals/*/evaluation_record.json peak_rss",
+    "x0_capture_child_peak_with_persist_bytes": 3470491648,
+    "x0_capture_production_peak_before_persist_bytes": 2395537408
+   },
+   "concurrency": 1,
+   "free_plus_inactive_gib": 12.683349609375,
+   "hw_memsize_bytes": 34359738368,
+   "missing_vm_stat_figures": [],
+   "non_reclaimable_gib": 15.487625122070312,
+   "page_size_bytes": 16384,
+   "pass": true,
+   "per_child_budget_gib": 3.5,
+   "required_bytes": 3758096384,
+   "required_gib": 3.5,
+   "rule": "hw.memsize - (wired + anonymous + compressor-occupied) x page size >= 1 x 3.5 GiB",
+   "rule_rationale": "non-reclaimable load = wired + anonymous + compressor-occupied pages; file-backed pages (active or inactive) are cache the kernel reclaims on demand, so free + inactive under-counts what new processes can obtain (free + inactive recorded alongside)",
+   "utc": "2026-09-28T12:18:23.041106+00:00",
+   "vm_stat_header": "Mach Virtual Memory Statistics: (page size of 16384 bytes)",
+   "vm_stat_pages": {
+    "anonymous_pages": 565939,
+    "pages_free": 64275,
+    "pages_inactive": 766941,
+    "pages_occupied_by_compressor": 288051,
+    "pages_wired_down": 161007
+   }
+  },
+  "rule": "W86 rule at concurrency 1"
+ },
+ "objective_convention": "Q = gross_operational_cost, settlement EXCLUDED; net_operational_recourse and the terminal salvage reported beside it; every value in this spec and in the run's results is on this convention",
+ "predecessor": {
+  "path": "data/SRP1/Results/P515S53/frozen_s53_spec_v40_9bc1779d.json",
+  "sha256": "9bc1779da9a44fddc99308701185f62b5d58a29b82577473a750b8f6f0b68785",
+  "version": 40
+ },
+ "predictions_recorded_before_any_run": {
+  "expert_H_ess_flat": {
+   "P_a": {
+    "statement": "D[TSO, generation_cost] / DQ >= 0.5",
+    "threshold": 0.5
+   },
+   "P_b": {
+    "statement": "mean S_k(263..287) / mean S_k(188..212) >= 0.5 (ESSO side, all nodes)",
+    "threshold": 0.5
+   },
+   "P_c": {
+    "statement": "argmax_g OLS slope of boyd_g_primal_ratio over 188..287 == ess, slope > 0"
+   },
+   "P_d": {
+    "bounds": [
+     -530.0,
+     -132.5
+    ],
+    "statement": "mean dQ over 188..287 in [-530, -132.5] EUR/cycle"
+   },
+   "outcome_mapping": "confirmed: P_a, P_b, P_c, P_d all hold and no trigger -> the expert adds a creep branch; refuted: any trigger -> Advisor review before the campaign is sized; mixed: anything else, reported as such; not_scoreable: the run did not reach 287 (aborted)",
+   "refutation_triggers": [
+    "T1_dso_share_gt_half",
+    "T2_creep_decays",
+    "T3_boyd_lapse"
+   ]
+  },
+  "pre_registration_against_P_c": "W104 found the pf_primal ratio rising 0.013 -> 0.127 over cycles 152-187 (committed per_cycle_record of 82dcebb7)"
+ },
+ "production_sha256": {
+  "admm_anderson_acceleration.py": "24cf3bea9b07725ae15029dd0d9d81ed46ab8e75ecf1c9141a4b0afc6be2659e",
+  "admm_parameters.py": "40d0e972dcadfb4de099a0203682ba2e93badc62d9ae989f87be40b1ce3b75fa",
+  "admm_persistent_workers.py": "39dcbd267bb224e65197ca427952b08d45d3bbe98785b73fd55148c0979e1125",
+  "data/SRP1/SRP1_params.json": "dbfdb2a07d12bfedab5e66bf94b3df98e5ab0305616652b4083266476972006b",
+  "gate_result_io.py": "26cadaa5c3105f9adb879ece756ef6d659b374f647a7756030efe80a2df6d07d",
+  "interface_dual_capture.py": "e4223ac25fa488970ec195b4c3bb6b1171faa3aeba4824e0d6ee6482ab58f55c",
+  "model_construction_helpers.py": "a20a224f11008de8c0206484583b00253677267d616e1051bb1583791ed47f64",
+  "network.py": "18acaa84af7a043898a7b831223b4eab1d91f9bcf2c199f49beecfeb3bf91fb4",
+  "network_data.py": "2938bc4bd4ecc74f42aa90d347cdc1162eebcefaba15bc87b8281a798d457d6b",
+  "p514_n_instrumented_cstar.py": "62df39d41fec0ee48b320f6ade9eb1be4132203dcdbd100b90d1fc545d1d43c2",
+  "p515_g_g1_g4_admm_gates.py": "6f4631e10a2f8a7786390c0f96e45332706779ae9cdf6a87ddd716d9ad9ad346",
+  "p515_s39_evaluate.py": "2dd5b31f29aadb84dfcaf7b9e112fdda570bf20f78154b19d49914ba3a8a28c4",
+  "p515_s40_clone_capture_preflight.py": "30e33d0a7803c2a958bbf7da617dba277a8fe15888078e37aa451feba09a3652",
+  "p515_s40_cost_decomposition.py": "2fb70a404ca7b41969fc84908e564acc8d1c1fbd68c3e7ffb5dcdd19877222ad",
+  "p515_s40_polish_gap.py": "026a4d80037e9d03fbb8505986ab5a74a0b1eb08fc9c5b4ebf5494dce4556cf4",
+  "p515_s41_hull_polish.py": "e76c5921ecd1057dceb8fa8e097e960247a51d3e09f13d78ae95dec727385d5d",
+  "p515_s42_exact_fix_rerun.py": "de83af2ff01c48861995d70314a6565cf3e4c6ab8c2b32fc748fdc829c9e930a",
+  "p515_s43_aa_flagoff_gate.py": "22ef58b84bdd109d39e2cbf78d2e69e7302ccd0aadae2c90dcb9f6341d9472d3",
+  "p515_s43_aa_run.py": "34fd36a469d92186b6f982a529f9f8c68d6bd9d73157a4f75698c71597073aa8",
+  "p515_s44_campaign_harness.py": "68a9265afe71d374a3058cee24ad1d614d71c6d10d5c4cb69bfc32cd78637b82",
+  "p56a_oracle.py": "699d571a2d69b14fd89024c535fa8b3ffa0625aa647f1714060dcc9cf6fa2f11",
+  "shared_energy_storage_data.py": "9acd095fb5e50e9b64c253600ae05ebb8e6463fd7a999d3a90f96ee82f037796",
+  "shared_resources_planning.py": "0610d745a41c86c71dae9e776f0dc8e38c7099f73128a3d2c2e8f861ab9fc9c0"
+ },
+ "replay_gate": {
+  "expected": "bitwise: production unchanged since W104's launch commit (code_since_w104_launch)",
+  "in_cycle": "every cycle k <= 187, at the end of the cycle: the per_cycle_record fields cycle, local_solves_ok, recourse, gross_operational_cost, terminal_salvage_value, cycle_convergence, consecutive_converged_cycles, boyd_all_pass, boyd_stop, boyd_v_primal_ratio, boyd_v_dual_ratio, boyd_v_channel_pass, boyd_pf_primal_ratio, boyd_pf_dual_ratio, boyd_pf_channel_pass, boyd_ess_primal_ratio, boyd_ess_dual_ratio, boyd_ess_channel_pass, rho_v_after, rho_pf_after, rho_ess_after, rho_v_action, rho_pf_action, rho_ess_action, rho_freeze_active, efc_per_day_max; the W104 cycle-line fields local_solves_ok, gross, gross_hex, net_operational_recourse, terminal_salvage_value, step, boyd_k, boyd_ratios_at_aa, boyd_ratios, boyd_pf_primal_ratio, aa, tail_apply, tail_next, rho, holds, efc_per_day_max, consecutive_converged_cycles_tracked, certificate_length_in_force_at_cycle_end, blocks_captured; the mirror rule's settling record against W104's 'settling'; at 187 the mirror's decision against W104's settling_decision.json -- all as JSON text against W104's committed records; the FIRST difference writes the cycle line with the cycle and magnitude (fields, gross difference, largest relative difference) and ABORTS the run (no relabelled continuation)",
+  "post_run": "G19 every field of per_cycle_record rows 1..187 bitwise (adds objective_change_abs, objective_tolerance, objective_change_ratio); G22 the cycle lines and the W101 all-block lines 1..187 (except capture_s) against W104's",
+  "reference_hashes": {
+   "cycle_record": "2ea4552bcf24adad79843426e3ea10669b43ad6d29fd59a9b2f10ef90f498b63",
+   "decision": "a51965ffdbd857805356fbdbad8adfb7c92fac77d6fd0904e7d109e8790af60e",
+   "g_s39_D": "0f9ba6dfb85cc101551acdedca0516bb6777a7e9a2b27654eefd8c35ec425136",
+   "per_cycle_record": "f65c383366ea3e4132f5ba3a3941074689240851ffc2fcf6ed3daaa034f6a890",
+   "recourse_blocks_all": "328b1b20f90224e18d073e996d3622622944269d989e6954733d380dc334c789"
+  }
+ },
+ "report_only_rule": {
+  "adapter": "p515_s53_w105_settling_extension_hooks.ReportOnlyRule (non-latching)",
+  "cap": 287,
+  "class": "settling_criterion.SettlingRule",
+  "constants": {
+   "CAP": {
+    "formula": "CAP = N + CAP_AFTER_N, CAP_AFTER_N = 100",
+    "value": "N + 100 per cell"
+   },
+   "DELTA_R": {
+    "formula": "Addendum 53 Ruling 1: dR = 0.07",
+    "value": 0.07
+   },
+   "EPS0": {
+    "formula": "EPS0 = TAU / 100 (a step that cannot accumulate TAU within the cap)",
+    "value": 45.39068275
+   },
+   "K_EXCL": {
+    "formula": "K_EXCL = 3",
+    "value": 3
+   },
+   "L_MONO": {
+    "formula": "L_MONO = 2 * P_MAX",
+    "value": 44
+   },
+   "P_MAX": {
+    "formula": "longest interval between same-kind turning points, settling_criterion.turning_points over cycles 1..N of the three SRP1 reference records (settling_criterion.p_max_from_records)",
+    "value": 22
+   },
+   "R_REF": {
+    "formula": "V_SRP1 = R_ref = 259,375.33 (tight-tail SRP1 value, Addendum 48)",
+    "value": 259375.33
+   },
+   "TAU": {
+    "formula": "TAU = DELTA_R * R_REF / 4 = 0.07 * 259375.33 / 4",
+    "value": 4539.0682750000005
+   },
+   "W_FACTOR": {
+    "formula": "W_FACTOR = 1.1",
+    "value": 1.1
+   },
+   "W_MIN": {
+    "formula": "W_MIN = 20",
+    "value": 20
+   }
+  },
+  "definition": "SettlingRule(N = 87, cap = 287, P_MAX = 22) observes every cycle, non-latching; the first cycle at which it would certify (if any), every would-certify cycle, and its status at 287 are reported; it never ends the run",
+  "module": "settling_criterion",
+  "n": 87,
+  "p_max": 22,
+  "readings": {
+   "boyd_lapse": "a Boyd lapse (or a failed local solve) resets k0 strictly: T, A and the sign state are cleared",
+   "monotone_branch": "half-window means of |dQ| over [lo .. k] (second half strictly below the first), plus the stationary sub-case max |dQ| < EPS0",
+   "p_max": "P_MAX is a spec constant computed from the SRP1 reference records (turning_points, cycles 1..N)",
+   "swings": "successive half-swings compared over ALL consecutive pairs of A since k0, with <= (A[i+1] <= A[i])",
+   "three_turning_points": "\"successive swings not growing\" needs two half-swings, so certification effectively requires three turning points -- stricter than the ruling's \"at least two sign changes\"; the literal two-sign-change reading is computed report-only and never decides",
+   "window": "W = max(W_MIN, ceil(W_FACTOR * P_hat)) = max(20, ceil(1.1 P_hat)), per option 1(a)"
+  },
+  "w104_mirror": {
+   "cap": 187,
+   "n": 87,
+   "p_max": 22,
+   "use": "gate only (cycles <= 187)"
+  }
+ },
+ "schema": "p515_s53_stage_spec_v41",
+ "scorer": {
+  "function": "p515_s53_w105_c_star_extension_campaign.py:score_extension",
+  "self_tests": {
+   "aborted_not_scoreable": {
+    "got": "not_scoreable",
+    "ok": true
+   },
+   "confirmed": {
+    "fired": [],
+    "got": "confirmed",
+    "held": {
+     "P_a": true,
+     "P_b": true,
+     "P_c": true,
+     "P_d": true
+    },
+    "ok": true,
+    "want": "confirmed"
+   },
+   "mixed_ess_stops": {
+    "fired": [],
+    "got": "mixed",
+    "held": {
+     "P_a": true,
+     "P_b": false,
+     "P_c": true,
+     "P_d": true
+    },
+    "ok": true,
+    "want": "mixed"
+   },
+   "mixed_pf_rises": {
+    "fired": [],
+    "got": "mixed",
+    "held": {
+     "P_a": true,
+     "P_b": true,
+     "P_c": false,
+     "P_d": true
+    },
+    "ok": true,
+    "want": "mixed"
+   },
+   "mixed_rate_high": {
+    "fired": [],
+    "got": "mixed",
+    "held": {
+     "P_a": true,
+     "P_b": true,
+     "P_c": true,
+     "P_d": false
+    },
+    "ok": true,
+    "want": "mixed"
+   },
+   "refuted_T1_dso": {
+    "fired": [
+     "T1_dso_share_gt_half"
+    ],
+    "got": "refuted",
+    "held": {
+     "P_a": false,
+     "P_b": true,
+     "P_c": true,
+     "P_d": true
+    },
+    "ok": true,
+    "want": "refuted"
+   },
+   "refuted_T2_decay": {
+    "fired": [
+     "T2_creep_decays"
+    ],
+    "got": "refuted",
+    "held": {
+     "P_a": true,
+     "P_b": true,
+     "P_c": true,
+     "P_d": false
+    },
+    "ok": true,
+    "want": "refuted"
+   },
+   "refuted_T3_lapse": {
+    "fired": [
+     "T3_boyd_lapse"
+    ],
+    "got": "refuted",
+    "held": {
+     "P_a": true,
+     "P_b": true,
+     "P_c": true,
+     "P_d": true
+    },
+    "ok": true,
+    "want": "refuted"
+   }
+  }
+ },
+ "solve_profile_declared": {
+  "child": "RECONCILED PER EVENT (G5): 51 x (287 + 1) + every retry attempted",
+  "parent": "never solves: every launcher guard permitted=(), verify(0)"
+ },
+ "solver": {
+  "expected": "/usr/local/bin/ipopt",
+  "ok": true,
+  "recert_x0_child_path": "/usr/local/bin/ipopt",
+  "resolved": {
+   "NLP_SOLVER_PATH": "/usr/local/bin/ipopt",
+   "source": "environment"
+  },
+  "sha256": "b316abbe38cd851d9a9a87a6a1a1714a4334304c9539df1976d2f7101360ff05"
+ },
+ "stage_text": "P5.15 Addendum 54 Ruling 1, W105 -- C* settling extension diagnostic: C* replayed under W104's configuration, gated bitwise per cycle against W104's committed records through 187 (abort on the first divergence), W104's holds after 87 (AA off, tight tail on, rho frozen), then exactly 100 more cycles 188-287 under the same holds; the settling rule report-only; per cycle: Q by block and component, sum |dp_ess| per node and side, all six Boyd residuals",
+ "verbatim_text": {
+  "check": {
+   "all_found": true,
+   "brief": "PLANNER_BRIEF_2026-09-13.md",
+   "brief_git_state": {
+    "git_clean": true,
+    "git_tracked": true
+   },
+   "brief_sha256_at_freeze": "9c7cc4e2744a6a8f566f42edd7d33b61488ef10c552b3d9e3d91935bab5e3120",
+   "found_whitespace_normalised": {
+    "h_ess_flat": true,
+    "predictions": true,
+    "record_per_cycle": true,
+    "refuted": true,
+    "ruling_1": true
+   }
+  },
+  "quotes": {
+   "h_ess_flat": "**H_ess-flat:** the ESSO carries no economic term (\u03b5-throughput regularizer only)",
+   "predictions": "**Predictions:** the creep sits in TSO generation cost with ESS schedules still moving (\u03a3|\u0394p_ess| not decaying) and the rising residual is the ESS channel; the rate stays within a factor 2 of \u2212265 \u20ac/cycle over 100 cycles.",
+   "record_per_cycle": "**Record per cycle:** per-block \u0394Q (TSO, DSO, ESSO), \u03a3|\u0394p_ess| per node, the channel whose primal residual is rising.",
+   "refuted": "refuted (creep in DSO blocks, or decays, or the residual leaves tolerance) \u2192 Advisor review before the campaign is sized.",
+   "ruling_1": "**Ruling 1 \u2014 C\\*: option (a), 100-cycle diagnostic extension (\u2248 2.7 h), with a hypothesis to test.**"
+  }
+ },
+ "version": 41,
+ "w104": {
+  "launch_git": "953b9bcd",
+  "pins": {
+   "campaign_manifest": {
+    "path": "data/SRP1/Results/P515S53/w101_srp1_continuation/campaign_s53_w101_srp1_cont_c_star/campaign_manifest_sha256.json",
+    "sha256": "5b8a7a5edd3d0b1a099ec5c1cc7e2ed5906e54a6889f403ca021326a49c12fe9"
+   },
+   "campaign_results": {
+    "path": "data/SRP1/Results/P515S53/w101_srp1_continuation/campaign_s53_w101_srp1_cont_c_star/campaign_results.json",
+    "sha256": "20832469af3a7145b2d47c6db83451c4c0cd6564e69883b09a0cc750ed8fa059"
+   },
+   "campaign_spec": {
+    "path": "data/SRP1/Results/P515S53/w101_srp1_continuation/campaign_s53_w101_srp1_cont_c_star/campaign_spec_s53_w101_srp1_cont_c_star_1a7483ef.json",
+    "sha256": "1a7483ef17ef8e6054bc18c42fc9a0dd219ff93217f6a7ad6bb9a1130b45c7ea"
+   }
+  },
+  "records": {
+   "campaign_id": "s53_w101_srp1_cont_c_star",
+   "cycle_record": {
+    "path": "data/SRP1/Results/P515S53/w101_srp1_continuation/campaign_s53_w101_srp1_cont_c_star/evals/4bf36c151fd10613_c_star/settling_continuation_cycle_record.jsonl",
+    "sha256": "2ea4552bcf24adad79843426e3ea10669b43ad6d29fd59a9b2f10ef90f498b63"
+   },
+   "decision": {
+    "path": "data/SRP1/Results/P515S53/w101_srp1_continuation/campaign_s53_w101_srp1_cont_c_star/evals/4bf36c151fd10613_c_star/settling_decision.json",
+    "sha256": "a51965ffdbd857805356fbdbad8adfb7c92fac77d6fd0904e7d109e8790af60e"
+   },
+   "eval_key": "4bf36c151fd106139782939724c6d888585cdb78e0dbff6516d2cea36a42d5a1",
+   "evidence_commit": "82dcebb7",
+   "g_s39_D": {
+    "path": "data/SRP1/Results/P515S53/w101_srp1_continuation/campaign_s53_w101_srp1_cont_c_star/evals/4bf36c151fd10613_c_star/g_s39_D.json",
+    "sha256": "0f9ba6dfb85cc101551acdedca0516bb6777a7e9a2b27654eefd8c35ec425136"
+   },
+   "per_cycle_record": {
+    "path": "data/SRP1/Results/P515S53/w101_srp1_continuation/campaign_s53_w101_srp1_cont_c_star/evals/4bf36c151fd10613_c_star/per_cycle_record.jsonl",
+    "sha256": "f65c383366ea3e4132f5ba3a3941074689240851ffc2fcf6ed3daaa034f6a890"
+   },
+   "recourse_blocks_all": {
+    "path": "data/SRP1/Results/P515S53/w101_srp1_continuation/campaign_s53_w101_srp1_cont_c_star/evals/4bf36c151fd10613_c_star/recourse_blocks_all.jsonl",
+    "sha256": "328b1b20f90224e18d073e996d3622622944269d989e6954733d380dc334c789"
+   }
+  }
+ },
+ "w104_reference_slopes_152_187": {
+  "boyd_ess_dual_ratio": {
+   "at_152": 0.48738995646547983,
+   "at_187": 0.45316279466382864,
+   "slope_143_187": -0.0008117100921074729,
+   "slope_152_187": -0.0009923849749162246
+  },
+  "boyd_ess_primal_ratio": {
+   "at_152": 0.14432655309537762,
+   "at_187": 0.2020775338544604,
+   "slope_143_187": 0.0015606405870960329,
+   "slope_152_187": 0.0029781887720345766
+  },
+  "boyd_pf_dual_ratio": {
+   "at_152": 0.11319445526740089,
+   "at_187": 0.05994656721176629,
+   "slope_143_187": -0.0016881760215661334,
+   "slope_152_187": -0.0014977081762021119
+  },
+  "boyd_pf_primal_ratio": {
+   "at_152": 0.012723853904827104,
+   "at_187": 0.12696470407564117,
+   "slope_143_187": 0.002646707047523853,
+   "slope_152_187": 0.003500298737198073
+  },
+  "boyd_v_dual_ratio": {
+   "at_152": 0.10025238653139987,
+   "at_187": 0.062226962827481073,
+   "slope_143_187": -0.001154397332507675,
+   "slope_152_187": -0.0009420742353026678
+  },
+  "boyd_v_primal_ratio": {
+   "at_152": 0.00490413182141823,
+   "at_187": 0.042231007092543786,
+   "slope_143_187": -0.00042805290799498226,
+   "slope_152_187": -4.3559687214899035e-05
+  },
+  "mean_dQ_143_187": -266.0076697561476,
+  "mean_dQ_163_187": -258.4338788604736
+ },
+ "zero_solve_checks": {
+  "committed_output": {
+   "L4_overhead": 0.018877124786376952,
+   "all_hold": true,
+   "code_sha256_at_check": {
+    "admm_anderson_acceleration.py": "24cf3bea9b07725ae15029dd0d9d81ed46ab8e75ecf1c9141a4b0afc6be2659e",
+    "gate_result_io.py": "26cadaa5c3105f9adb879ece756ef6d659b374f647a7756030efe80a2df6d07d",
+    "interface_dual_capture.py": "e4223ac25fa488970ec195b4c3bb6b1171faa3aeba4824e0d6ee6482ab58f55c",
+    "network.py": "18acaa84af7a043898a7b831223b4eab1d91f9bcf2c199f49beecfeb3bf91fb4",
+    "p515_s44_campaign_harness.py": "68a9265afe71d374a3058cee24ad1d614d71c6d10d5c4cb69bfc32cd78637b82",
+    "p515_s53_w101_continuation_checks.py": "8f786a21a70f7363451e1f1261aaad5a0ae8b3075c74fd3785f06a5db953cd6a",
+    "p515_s53_w101_settling_continuation_hooks.py": "05004cf8b475c940ef1d30a225bcad20e257f02c0d34bb5034ee4975d6625f6b",
+    "p515_s53_w105_extension_checks.py": "af14bbad4ae03c1a43dd6a982b6876369002b2c48244837d6b3094ab98397e12",
+    "p515_s53_w105_settling_extension_hooks.py": "1ff61ce96dc25e4ccac3b864c834c54edf2d382525bddd9adce9af71bba84f05",
+    "p515_s53_w98_continuation_checks.py": "25edfd17fae83832b4c3f46812a24018c8905d2b399201814f5fd39321f35172",
+    "settling_criterion.py": "fbe5550b34a4062feed82476e1959b5e4e2786cb13ca61728bfa1803ba75f65f",
+    "shared_energy_storage_data.py": "9acd095fb5e50e9b64c253600ae05ebb8e6463fd7a999d3a90f96ee82f037796",
+    "shared_resources_planning.py": "0610d745a41c86c71dae9e776f0dc8e38c7099f73128a3d2c2e8f861ab9fc9c0"
+   },
+   "committed_clean": true,
+   "guards_verify_0_failures": {
+    "w101_checks_imported": [],
+    "w105_checks": [],
+    "w98_checks_imported": []
+   },
+   "manifest": "data/SRP1/Results/P515S53/w105_c_star_extension/zero_solve_checks_r2/w105_zero_solve_checks_r2_manifest_sha256.json",
+   "path": "data/SRP1/Results/P515S53/w105_c_star_extension/zero_solve_checks_r2/w105_zero_solve_checks_r2.json",
+   "sha256": "4d2a928b8c6cd581aff5cd2701687a74e53f5a3aaa092342f51f38d882f8b1dc"
+  },
+  "inline_rerun_at_freeze": {
+   "all_hold": true,
+   "per_section": {
+    "H": true,
+    "K": true,
+    "L": true,
+    "P": true,
+    "R": true
+   }
+  },
+  "rerun_before_launch": "the --run mode re-runs every check and refuses unless all hold",
+  "script": "p515_s53_w105_extension_checks.py"
+ },
+ "zero_solve_smoke": "no zero-solve path exercises _child_real end to end (it builds and solves); the wiring is exercised zero-solve by checks R (real wrappers, recorded values) and H4 (real install); THE FIRST REAL CYCLE OF THE LAUNCH IS THE SMOKE (its in-cycle replay gate at cycle 1)"
+}

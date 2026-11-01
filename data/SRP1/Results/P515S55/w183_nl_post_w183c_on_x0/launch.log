@@ -1,0 +1,21 @@
+17:53:08 [W183-nl] P5.15 Addendum 83 W183-0 / W183c / W183d -- NL + component-digest reference of the ADMM initialisation models (zero solves, builds only); label post_w183c_on_x0; HEAD 6f43479ed8ece7a4a5878942ca38952ce1cae1bc; configs ['x0_A_1x']; determinism none; nrf_option True
+17:53:09 [W183-nl] rule eleven capture-path checks: {'block_state_verbatim_from_precedent': True, 'construct_arm_planning_exists': True, 'config_hook_takes_model_variant_and_flex': True, 'parallel_worker_signature': True, 'init_failed_branch_returns_before_update_to_admm': True, 'nl_writer_call_forces_presolve_and_scaling_off': True, 'floor_rows_builder_exists': True, 'evaluation_key_takes_tail': True}
+[INFO] Running OPERATIONAL PLANNING (DISTRIBUTED)...
+[INFO]	 - Initializing...
+[INFO] 		 - Distribution Network node 5...
+[INFO] 		 - Distribution Network node 7...
+[INFO] 		 - Distribution Network node 9...
+[INFO] 		 - Transmission Network...
+[WARNING] Operational initialization failed because at least one local problem did not solve successfully. ADMM will not be started.
+[INFO] 	 - Execution time: 32.95 s
+17:54:49 [W183-nl] x0_A_1x: eval key 759802ecc43b3ee5; sequential 51 blocks checks True (45s); parallel 36 blocks checks True (42s); total 88s
+17:54:49 [W183-nl]   ESSO plain NL: {'ESSO|node5': '834c9bf5cc26', 'ESSO|node7': '834c9bf5cc26', 'ESSO|node9': '834c9bf5cc26'}
+17:54:49 [W183-nl]   OK   capture_paths_asserted
+17:54:49 [W183-nl]   OK   every_build_check_passes
+17:54:49 [W183-nl]   OK   no_nl_write_errors
+17:54:49 [W183-nl]   OK   labelled_nl_equals_plain_after_comment_strip
+17:54:49 [W183-nl]   OK   imported_repo_modules_unchanged_during_run
+17:54:49 [W183-nl]   OK   eval_keys_pairwise_distinct
+17:54:49 [W183-nl]   OK   guard_zero_solves_verified
+17:54:49 [W183-nl] wrote /Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S55/w183_nl_post_w183c_on_x0/w183_nl_digest.json sha256=d23870fac89478cdbd430a29f9c88219f3880f0e3fed8a72379016580a328fe6; manifest 436 files
+17:54:49 [W183-nl] ALL_OK=True guard={'permitted_solve': 0, 'permitted_exec': 0, 'blocked_solve': 0, 'blocked_exec': 0} wall=101.3s

@@ -1,0 +1,68 @@
+08:32:20 [W183i-a] P5.15 Addendum 86 W183i (a) -- Step-7 hooks module router patch: gates (i)-(iii) (zero solves); HEAD 299f6a4a0c5e739a839a7563f2c493359760c8bf
+08:32:20 [W183i-a]    sha256 p515_s44_campaign_harness.py: d9a944f220e791b82147f08d0e606126ad454b8b6b2994024f94e106798fb191
+08:32:20 [W183i-a]    sha256 p515_s55_step7_resettle_hooks.py: 9318ade3e6d0d5fec25d0c276c4d82fba5bb163c7da61ec10ee6f49aaf2fa1d2
+08:32:20 [W183i-a]    sha256 p515_s55_w183i_a_router_gates.py: 4f7c026a3909ca828714b9a06f8a86902445d44d2f8a3056cba8e83af8175f4d
+08:32:20 [W183i-a]    sha256 p515_s55_w183i_bitwise_gate.py: 9ed515308fa5c56d639b0a29d0e9da6b75285d3dbbf1929f548bf96c90d911f5
+08:32:20 [W183i-a]    sha256 p515_s53_w183a_option_tests.py: 78393efc69b2b44d9ebd76312e6cee7bda28d6ac5fe74558801986df6fc4e4f5
+08:32:20 [W183i-a]    sha256 p515_s53_w142_resettle_v6_hooks.py: 19631fb246a4fe81d7a20b3915e38b362a174656ab7403416325057c0925b38e
+08:32:20 [W183i-a]    sha256 p515_s53_w142_resettle_ext_v6_hooks.py: a0fe14d3c7f532d113af1eff9354502430b14f73374cee22009c7c185eb5d963
+08:32:20 [W183i-a]    sha256 p515_s53_w155_a64_hooks.py: c46f94c84fb10547e69b6ed1ff8d1f3075526f8cab093699be04638d89129685
+08:32:20 [W183i-a]    sha256 gate_result_io.py: 26cadaa5c3105f9adb879ece756ef6d659b374f647a7756030efe80a2df6d07d
+08:32:20 [W183i-a]    sha256 p513_solve_profile_guard.py: 9921682e5b825e0b76551b78c4765bfe039bccc414d727520f2c22b6f192a5ab
+08:32:20 [W183i-a] pre-patch harness dd9e46d196f7 blob c34ebdc5463a1fe0; patched d9a944f220e791b8; diff exactly the three router lines: True ['    import p515_s55_step7_resettle_hooks as S7C', '    if S7C.is_step7_declaration(value):', '        return S7C']
+08:32:20 [W183i-a] (i) 252 v2 specs (263 tracked spec files), 7213 entries; new == stored 7213; new == pre-patch 7213; skips 11; errors 0; PASS True; counts as expected True
+08:32:22 [W183i-a] (ii) A <no schema key: W118 declaration>: n 20 -> ['p515_s53_w118_resettle_hooks'] (pre ['p515_s53_w118_resettle_hooks']) same True validate same True (ok 20 / refused 0)
+08:32:22 [W183i-a] (ii) A p515_s53_w132_settling_resettle_v3: n 38 -> ['p515_s53_w132_resettle_v3_hooks'] (pre ['p515_s53_w132_resettle_v3_hooks']) same True validate same True (ok 38 / refused 0)
+08:32:22 [W183i-a] (ii) A p515_s53_w135_settling_resettle_ext_v1: n 7 -> ['p515_s53_w135_resettle_ext_hooks'] (pre ['p515_s53_w135_resettle_ext_hooks']) same True validate same True (ok 7 / refused 0)
+08:32:22 [W183i-a] (ii) A p515_s53_w137_settling_resettle_v4: n 38 -> ['p515_s53_w137_resettle_v4_hooks'] (pre ['p515_s53_w137_resettle_v4_hooks']) same True validate same True (ok 38 / refused 0)
+08:32:22 [W183i-a] (ii) A p515_s53_w139_settling_resettle_ext_v5: n 7 -> ['p515_s53_w139_resettle_ext_v5_hooks'] (pre ['p515_s53_w139_resettle_ext_v5_hooks']) same True validate same True (ok 7 / refused 0)
+08:32:22 [W183i-a] (ii) A p515_s53_w139_settling_resettle_v5: n 36 -> ['p515_s53_w139_resettle_v5_hooks'] (pre ['p515_s53_w139_resettle_v5_hooks']) same True validate same True (ok 36 / refused 0)
+08:32:22 [W183i-a] (ii) A p515_s53_w142_settling_resettle_ext_v6: n 7 -> ['p515_s53_w142_resettle_ext_v6_hooks'] (pre ['p515_s53_w142_resettle_ext_v6_hooks']) same True validate same True (ok 7 / refused 0)
+08:32:22 [W183i-a] (ii) A p515_s53_w142_settling_resettle_v6: n 34 -> ['p515_s53_w142_resettle_v6_hooks'] (pre ['p515_s53_w142_resettle_v6_hooks']) same True validate same True (ok 34 / refused 0)
+08:32:22 [W183i-a] (ii) A p515_s53_w155_a64_settling_resettle_v1: n 8 -> ['p515_s53_w155_a64_hooks'] (pre ['p515_s53_w155_a64_hooks']) same True validate same True (ok 8 / refused 0)
+08:32:22 [W183i-a] (ii) B <no schema key: W118 declaration>: n 31 -> ['p515_s53_w118_resettle_hooks'] (pre ['p515_s53_w118_resettle_hooks']) same True validate same True (ok 30 / refused 1)
+08:32:22 [W183i-a] (ii) B p515_s53_w132_settling_resettle_v3: n 39 -> ['p515_s53_w132_resettle_v3_hooks'] (pre ['p515_s53_w132_resettle_v3_hooks']) same True validate same True (ok 39 / refused 0)
+08:32:22 [W183i-a] (ii) B p515_s53_w135_settling_resettle_ext_v1: n 7 -> ['p515_s53_w135_resettle_ext_hooks'] (pre ['p515_s53_w135_resettle_ext_hooks']) same True validate same True (ok 7 / refused 0)
+08:32:22 [W183i-a] (ii) B p515_s53_w137_settling_resettle_v4: n 41 -> ['p515_s53_w137_resettle_v4_hooks'] (pre ['p515_s53_w137_resettle_v4_hooks']) same True validate same True (ok 41 / refused 0)
+08:32:22 [W183i-a] (ii) B p515_s53_w139_settling_resettle_ext_v5: n 7 -> ['p515_s53_w139_resettle_ext_v5_hooks'] (pre ['p515_s53_w139_resettle_ext_v5_hooks']) same True validate same True (ok 7 / refused 0)
+08:32:22 [W183i-a] (ii) B p515_s53_w139_settling_resettle_v5: n 38 -> ['p515_s53_w139_resettle_v5_hooks'] (pre ['p515_s53_w139_resettle_v5_hooks']) same True validate same True (ok 38 / refused 0)
+08:32:22 [W183i-a] (ii) B p515_s53_w142_settling_resettle_ext_v6: n 14 -> ['p515_s53_w142_resettle_ext_v6_hooks'] (pre ['p515_s53_w142_resettle_ext_v6_hooks']) same True validate same True (ok 14 / refused 0)
+08:32:22 [W183i-a] (ii) B p515_s53_w142_settling_resettle_v6: n 68 -> ['p515_s53_w142_resettle_v6_hooks'] (pre ['p515_s53_w142_resettle_v6_hooks']) same True validate same True (ok 68 / refused 0)
+08:32:22 [W183i-a] (ii) B p515_s53_w155_a64_settling_resettle_v1: n 12 -> ['p515_s53_w155_a64_hooks'] (pre ['p515_s53_w155_a64_hooks']) same True validate same True (ok 12 / refused 0)
+08:32:22 [W183i-a] (ii) A 195 B 257 mismatches 0 validate mismatches 0 PASS True
+08:32:24 [W183i-a]    planted e3_cnrf_x0_1x: key 35b275180d897e4c routed p515_s55_step7_resettle_hooks pass True (checklist 116 checks; pre-patch refuses True)
+08:32:24 [W183i-a]    planted e2_x0_1x_rho0p5: key 64f3605028f1cf87 routed p515_s55_step7_resettle_hooks pass True (checklist 116 checks; pre-patch refuses True)
+08:32:25 [W183i-a]    planted e2_unit_1x_rho0p5: key a895b40ec0b7ccdb routed p515_s55_step7_resettle_hooks pass True (checklist 116 checks; pre-patch refuses True)
+08:32:25 [W183i-a]    planted e2_x0_1x_rho2p0: key f4df38b251a68808 routed p515_s55_step7_resettle_hooks pass True (checklist 116 checks; pre-patch refuses True)
+08:32:26 [W183i-a]    planted e2_unit_1x_rho2p0: key 13145d7ed63e9f2d routed p515_s55_step7_resettle_hooks pass True (checklist 116 checks; pre-patch refuses True)
+08:32:26 [W183i-a]    planted e2_x0_2x_rho0p5: key 14a161e63a4ee34f routed p515_s55_step7_resettle_hooks pass True (checklist 116 checks; pre-patch refuses True)
+08:32:26 [W183i-a]    planted e2_unit_2x_rho0p5: key 3e35c66844450f94 routed p515_s55_step7_resettle_hooks pass True (checklist 116 checks; pre-patch refuses True)
+08:32:27 [W183i-a]    planted e2_x0_2x_rho2p0: key 16614c6680f4d3b4 routed p515_s55_step7_resettle_hooks pass True (checklist 116 checks; pre-patch refuses True)
+08:32:27 [W183i-a]    planted e2_unit_2x_rho2p0: key 43074041a7942052 routed p515_s55_step7_resettle_hooks pass True (checklist 116 checks; pre-patch refuses True)
+08:32:28 [W183i-a]    refusal R1_renamed_cell: OK (ValueError: settling_resettle (Step 7).cell must be one of ['e2_unit_1x_rho0p5', 'e2_unit_1x_rho2p0', 'e2_unit_2x_rho0p5', 'e2_unit_2x_rho2p)
+08:32:28 [W183i-a]    refusal R2_committed_ext_v6_cell_name_under_the_step7_schema: OK (ValueError: settling_resettle (Step 7).cell must be one of ['e2_unit_1x_rho0p5', 'e2_unit_1x_rho2p0', 'e2_unit_2x_rho0p5', 'e2_unit_2x_rho2p)
+08:32:28 [W183i-a]    refusal R3_step7_declaration_under_the_ext_v6_schema: OK (ValueError: settling_resettle (W142 ext v6).cell must be one of ['e_c2', 'e_c2_calfade', 'e_c3_midblock', 'e_c3_unit', 'e_c4', 'e_no_ageing')
+08:32:28 [W183i-a]    refusal R4_mutated_expected_rho0_scale: OK (ValueError: settling_resettle (Step 7) differs from the Step-7 declaration of e2_x0_1x_rho0p5 on ['rho0_scale_expected'])
+08:32:28 [W183i-a]    refusal R5_int_where_a_float_is_declared: OK (ValueError: settling_resettle (Step 7) differs from the Step-7 declaration of e2_unit_2x_rho2p0 on ['flex_price_multiplier_expected'])
+08:32:28 [W183i-a]    refusal R6_nrf_option_expected_dropped: OK (ValueError: settling_resettle (Step 7) must have exactly ['N_old', 'abort_on_replay_divergence', 'arm', 'cap_rule', 'captures', 'cell', 'cla)
+08:32:28 [W183i-a]    refusal R7_early_stop_key: OK (ValueError: settling_resettle (Step 7) must NOT carry ['early_stop'] (the settling rule is the only stop before the cap))
+08:32:28 [W183i-a]    refusal E1_e3_entry_missing_nrf_option_and_label: OK (RuntimeError: Step-7 settling-resettle preconditions fail (before any solve): ['step7_entry_keys_are_exactly_the_base_and_the_declared_optio)
+08:32:28 [W183i-a]    refusal E2_e3_entry_missing_nrf_option_only: OK (RuntimeError: Step-7 settling-resettle preconditions fail (before any solve): ['step7_entry_keys_are_exactly_the_base_and_the_declared_optio)
+08:32:28 [W183i-a]    refusal E3_e3_entry_missing_nrf_option_label: OK (RuntimeError: Step-7 settling-resettle preconditions fail (before any solve): ['step7_nrf_option_label_at_entry_and_spec_level'])
+08:32:28 [W183i-a]    refusal E4_e3_spec_missing_nrf_option_label: OK (RuntimeError: Step-7 settling-resettle preconditions fail (before any solve): ['step7_nrf_option_label_at_entry_and_spec_level'])
+08:32:28 [W183i-a]    refusal E5_e3_entry_nrf_option_False: OK (RuntimeError: Step-7 settling-resettle preconditions fail (before any solve): ['step7_nrf_option_is_the_declared_value'])
+08:32:28 [W183i-a]    refusal E6_e2_entry_missing_rho0_scale: OK (RuntimeError: Step-7 settling-resettle preconditions fail (before any solve): ['step7_entry_keys_are_exactly_the_base_and_the_declared_optio)
+08:32:28 [W183i-a]    refusal E7_e2_entry_missing_rho0_scale_label: OK (RuntimeError: Step-7 settling-resettle preconditions fail (before any solve): ['step7_rho0_scale_label_at_entry_and_spec_level'])
+08:32:28 [W183i-a]    refusal E8_e2_spec_missing_rho0_scale_label: OK (RuntimeError: Step-7 settling-resettle preconditions fail (before any solve): ['step7_rho0_scale_label_at_entry_and_spec_level'])
+08:32:28 [W183i-a]    refusal E9_e2_entry_rho0_scale_other_value: OK (RuntimeError: Step-7 settling-resettle preconditions fail (before any solve): ['step7_rho0_scale_is_the_declared_value'])
+08:32:28 [W183i-a]    refusal E10_e2_2x_entry_missing_flex_multiplier: OK (RuntimeError: Step-7 settling-resettle preconditions fail (before any solve): ['step7_entry_keys_are_exactly_the_base_and_the_declared_optio)
+08:32:28 [W183i-a]    refusal E11_e2_2x_entry_missing_flex_label: OK (RuntimeError: Step-7 settling-resettle preconditions fail (before any solve): ['step7_flex_price_multiplier_label_at_entry_and_spec_level'])
+08:32:28 [W183i-a]    refusal E12_e2_2x_spec_missing_flex_label: OK (RuntimeError: Step-7 settling-resettle preconditions fail (before any solve): ['step7_flex_price_multiplier_label_at_entry_and_spec_level'])
+08:32:28 [W183i-a]    refusal E13_e2_entry_carrying_an_undeclared_nrf_option: OK (RuntimeError: Step-7 settling-resettle preconditions fail (before any solve): ['step7_entry_keys_are_exactly_the_base_and_the_declared_optio)
+08:32:28 [W183i-a]    refusal E14_e3_entry_carrying_an_undeclared_rho0_scale_1p0: OK (RuntimeError: Step-7 settling-resettle preconditions fail (before any solve): ['step7_entry_keys_are_exactly_the_base_and_the_declared_optio)
+08:32:28 [W183i-a]    refusal E15_e2_1x_entry_carrying_flex_multiplier_1p0: OK (RuntimeError: Step-7 settling-resettle preconditions fail (before any solve): ['step7_entry_keys_are_exactly_the_base_and_the_declared_optio)
+08:32:28 [W183i-a]    refusal E16_entry_carrying_a_model_variant: OK (RuntimeError: Step-7 settling-resettle preconditions fail (before any solve): ['step7_entry_keys_are_exactly_the_base_and_the_declared_optio)
+08:32:28 [W183i-a]    refusal E17_entry_label_not_the_cell: OK (RuntimeError: Step-7 settling-resettle preconditions fail (before any solve): ['step7_entry_label_is_the_cell'])
+08:32:28 [W183i-a]    refusal E18_entry_with_an_aa_override: OK (RuntimeError: Step-7 settling-resettle preconditions fail (before any solve): ['step7_entry_overrides_empty'])
+08:32:28 [W183i-a] (iii) committed hits 0; schema string in ['p515_s55_step7_resettle_hooks.py']; planted pass True (constants True, keys distinct True, refusals 25/25); PASS True
+08:32:28 [W183i-a] ALL_PASS=True summary={'i_keys_recompute': True, 'i_counts_as_expected': True, 'ii_routing_identity': True, 'iii_neutrality': True, 'guards_all_zero': True} guards={'counts': {'permitted_solve': 0, 'permitted_exec': 0, 'blocked_solve': 0, 'blocked_exec': 0}, 'verify_0_failures': []} pickle={'load': 0, 'loads': 0} build={'ConcreteModel.__init__': 0} wall=8.6s

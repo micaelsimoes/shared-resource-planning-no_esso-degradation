@@ -1,0 +1,122 @@
+{
+ "stage": "P5.15 Addendum 22 item (2), first half -- clone-capture 2-cycle bitwise preflight",
+ "authority": [
+  "PLANNER_BRIEF_2026-09-13.md Addendum 22",
+  "data/SRP1/Results/P515S40/frozen_s40_closure_spec_v11_0e9a37be.json"
+ ],
+ "timestamp_utc": "2026-09-17T23:35:55.133297+00:00",
+ "arm": "s39_D",
+ "num_cycles": 2,
+ "legacy": {
+  "out_dir": "data/SRP1/Results/P515S40/clone_preflight_v2/legacy",
+  "mode_label": "preflight_s40cpre_v2_legacy",
+  "capture_mode_requested": "legacy_clone",
+  "report_path": "data/SRP1/Results/P515S40/clone_preflight_v2/legacy/g_s39_D.json",
+  "clone_counts_by_cycle": {
+   "1": 12,
+   "2": 12
+  },
+  "frozen_snapshot_files": []
+ },
+ "lightweight": {
+  "out_dir": "data/SRP1/Results/P515S40/clone_preflight_v2/lightweight",
+  "mode_label": "preflight_s40cpre_v2_lightweight",
+  "capture_mode_requested": "lightweight",
+  "report_path": "data/SRP1/Results/P515S40/clone_preflight_v2/lightweight/g_s39_D.json",
+  "clone_counts_by_cycle": {},
+  "frozen_snapshot_files": []
+ },
+ "clone_counts_match_expected": {
+  "legacy_all_cycles_equal_12": true,
+  "lightweight_all_cycles_zero": true,
+  "note": "legacy: one BlockData.clone() per (year, day) TSO block, every cycle, via NetworkData.optimize -- 12 (year, day) blocks in the production case file, so 12/cycle is the expected count, not an assumed one (cross-checked against p515_s36_clone_capture_checks.py case A, which found the same 12). lightweight: zero per cycle unless a failure or the cycle-7 comparator needs a snapshot -- neither condition is reachable in a 2-cycle run, so 0/cycle is expected here."
+ },
+ "excluded_field_names": [
+  "component_levels_terminal_and_settlement_detail_path",
+  "component_levels_terminal_path",
+  "ess_entry_stride_sidecar_path",
+  "esso_capture_dir",
+  "heartbeat_path",
+  "interface_voltage_terminal_path",
+  "leak_classification_path",
+  "log_path",
+  "recourse_jump_sidecar_path",
+  "results_dir_redirect",
+  "s34_ess_entry_stride_sidecar_path",
+  "s34_recourse_jump_sidecar_path",
+  "s35ref_soh_floor_sidecar_path",
+  "s38_pf_entry_stride_sidecar_path",
+  "s39_ess_exempt_until_state_sidecar_path",
+  "soh_floor_sidecar_path",
+  "stdout_path",
+  "timestamp_utc",
+  "wall_clock_s"
+ ],
+ "excluded_dotted_suffixes": [
+  "esso_models_pickle.path",
+  "network_failures_summary.path",
+  "soh_floor_multiplier_and_efc_per_cohort_year_terminal.path"
+ ],
+ "intentional_difference_suffixes": [
+  "rule_eleven_checklist.s40_tso_snapshot_capture_mode_requested"
+ ],
+ "bitwise_diff": {
+  "report_g_s39_D": {
+   "diffs": [],
+   "n_diffs": 0
+  },
+  "artifacts": {
+   "g_s39_D.json": {
+    "diffs": [],
+    "n_diffs": 0
+   },
+   "boyd_terminal.json": {
+    "diffs": [],
+    "n_diffs": 0
+   },
+   "component_levels_terminal.json": {
+    "diffs": [],
+    "n_diffs": 0
+   },
+   "interface_settlement_detail_s31c.json": {
+    "diffs": [],
+    "n_diffs": 0
+   },
+   "interface_voltage_terminal.json": {
+    "diffs": [],
+    "n_diffs": 0
+   }
+  },
+  "sidecars": {
+   "recourse_jump_sidecar_baseline.jsonl": {
+    "diffs": [],
+    "n_diffs": 0,
+    "n_rows": 2
+   },
+   "ess_entry_stride_baseline.jsonl": {
+    "diffs": [],
+    "n_diffs": 0,
+    "n_rows": 2
+   },
+   "soh_floor_sidecar_baseline.jsonl": {
+    "diffs": [],
+    "n_diffs": 0,
+    "n_rows": 2
+   },
+   "pf_entry_stride_s39_D.jsonl": {
+    "diffs": [],
+    "n_diffs": 0,
+    "n_rows": 2
+   },
+   "ess_exempt_until_state_s39_D.jsonl": {
+    "diffs": [],
+    "n_diffs": 0,
+    "n_rows": 2
+   }
+  },
+  "total_n_diffs": 0,
+  "all_artifacts_present": true
+ },
+ "bitwise_identical": true,
+ "wall_clock_s": 202.6929931640625
+}

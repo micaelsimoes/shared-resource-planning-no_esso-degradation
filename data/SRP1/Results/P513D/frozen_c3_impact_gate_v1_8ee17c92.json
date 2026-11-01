@@ -1,0 +1,40 @@
+{
+  "stage": "P5.13-D — Step 0 of the ADMM stabilization track: activate calibration C3 and two determinism fixes",
+  "status": "FROZEN GATE — written and hashed BEFORE any source edit",
+  "authorization": "author, 2026-09-12: activate C3 (N, D, R) = (10000, 0.80, 0.50), k = 11542, under the impact gate; fold in the two determinism fixes (pin fixed_variable_treatment, replace the warm-start merge with a clean assignment) as stabilization work; stabilize afterwards, not before",
+  "rationale": "C3 changes the degradation term and therefore the recourse. Stabilizing against the current objective would mean stabilizing against one about to change.",
+  "three_changes": {
+    "C3_activation": "the degradation law consumes k = N*D/(-ln R) derived from the calibration triple instead of cl_nom directly; this is INTENTIONALLY NOT NEUTRAL",
+    "fixed_variable_treatment": "pinned explicitly to the value measured as this binary's default, removing the silent dependence on an IPOPT 3.14 default; expected neutral",
+    "warm_start_assignment": "model.ipopt_zL_in/_zU_in are assigned from _out rather than merged into, at BOTH sites (network.py and shared_energy_storage_data.py); expected inert once the pin is in place"
+  },
+  "measured_facts_required_before_editing": {
+    "ipopt_default": "the default of fixed_variable_treatment must be read from this machine's binary via `ipopt --print-options`, NOT from memory or documentation; the pinned value must equal it or the change is not neutral and must be reported as such",
+    "recorded": "/usr/local/bin/ipopt 3.14.18 (aarch64-apple-darwin24.5.0), ASL(20241111): fixed_variable_treatment default is \"make_parameter\""
+  },
+  "expectations": {
+    "E1_confinement": "exactly ONE constraint component differs between pre and post: energy_storage_capacity_degradation. Every other constraint component, and all sets, params, vars, objectives and named expressions, must be byte-identical. A difference anywhere else FAILS the gate.",
+    "E2_coefficient": "the changed rows must carry 2*k = 23083.120654223414 in place of 2*cl_nom = 20000",
+    "E3_derivation": "k == N*D/(-ln R) for (10000, 0.80, 0.50) to double precision, i.e. 11541.560327111707",
+    "E4_determinism": "two post-change captures must be identical, including .nl bytes",
+    "E5_reversion_control": "setting calibration status back to DECLARED_NOT_CONSUMED must reproduce the PRE-change model byte-identically, proving the activation is the only effective change and is reversible",
+    "E6_consistency_guard": "with the calibration ACTIVE, cycles_n must equal cl_nom and reference_dod_d must equal dod_nom, or construction raises; this is what prevents the (count, depth) pair drifting apart again, which is the P5.13-B defect",
+    "E7_warm_start": "after the change, the exported ipopt_zL_in/_zU_in key sets must equal the _out key sets exactly, verified by injecting stale keys into _in and calling the production solver-creation function; no solve",
+    "E8_option_pin": "the assembled solver options must contain fixed_variable_treatment = make_parameter on BOTH the network and ESSO paths, and a case-level configuration must still be able to override it"
+  },
+  "not_permitted": [
+    "any solve of any kind",
+    "any change to rho, tolerances, warm-start pushes, or any ADMM parameter",
+    "any change to the degradation law's STRUCTURE — only the constant it consumes changes",
+    "acting on S1, S2 or S3 in this stage"
+  ],
+  "decision_rule": {
+    "pass": "E1-E8 all hold; the impact is then exactly the intended coefficient change and nothing else",
+    "fail": "any expectation violated — revert and report; in particular, a difference outside the degradation rows means the change is not what it claims to be"
+  },
+  "what_this_gate_does_not_prove": [
+    "it does not measure the impact of C3 on Q(x) or on any ADMM trajectory; that requires solves and is not authorized here. The impact measured is structural: which rows changed, and by what constant.",
+    "the analytic consequence for SoH trajectories is already recorded in P5_13_B_CYCLING_CALIBRATION.md (15-year retention at 1 EFC/day moves 0.5784 -> 0.6223) and is not re-derived here",
+    "it says nothing about whether ADMM stabilizes; that is S1-S3"
+  ]
+}

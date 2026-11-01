@@ -1,0 +1,190 @@
+{
+ "Q0_eur": 653859461.2279255,
+ "formulas": {
+  "AE": "sum_y w_y * SoH_used[y] / sum_y w_y",
+  "EFC": "sum_y w_y * EFC_per_day[y] / sum_y w_y",
+  "elasticity": "ln(value / value_C3) / ln(AE / AE_C3)",
+  "value": "Q(0) - Q_variant(x); Q = certified gross_operational_cost, settlement excluded",
+  "value_per_AE": "value / AE",
+  "w_y": "1 / 1.02**(y - 2025), y in {2025, 2030, 2035}"
+ },
+ "inputs_sha256": {
+  "data/SRP1/Results/P515S45/campaign_s45_a1a/evals/7eb1ce62c2509f54_n7_4h_e1/evaluation_record.json": "fc8578a1ff4af75b3337136ed534207bdff9f969bacb5ef577f9c68d24a3a7df",
+  "data/SRP1/Results/P515S46/campaign_s46_ageing/campaign_results.json": "c2920f69c7ed085736375a2b033606d6dd863b8724a22ff8ee7b757cdcb440fb",
+  "data/SRP1/Results/P515S46/campaign_s46_ageing/evals/06f092d164f13819_n7_4h_e1_no_ageing/evaluation_record.json": "42030a2466c0f8699a3616a9e9e3d9703b1225b3d547ee1f49bff2292842078b",
+  "data/SRP1/Results/P515S46/campaign_s46_ageing/evals/65a5da775d1ff5b2_n7_4h_e1_c4/evaluation_record.json": "050b1d0d3964d41a35c8ff4de59904f5eafb8cea4b71d4205f63c3c6378567cf",
+  "data/SRP1/Results/P515S46/campaign_s46_ageing/evals/98e2857016a16d1c_n7_4h_e1_c2_calfade/evaluation_record.json": "11d49a26ae3d7eff900981191eb7846964542d0b49be7a1d987478a1e9fbec3c",
+  "data/SRP1/Results/P515S46/campaign_s46_ageing/evals/c6b53015fcf65e24_n7_4h_e1_c2/evaluation_record.json": "e8d9daa3ceb69a5aae786974a313ca81eafe1e306ef52d5280fae50f8e428bad",
+  "data/SRP1/Results/P515S46/campaign_s46_ageing/evals/ed4a1acc7059784d_n7_4h_e1_c3_midblock/evaluation_record.json": "be7f5c80886c72253e02538970efc79615107648973c99a997295a75c3d6c05a"
+ },
+ "instance": {
+  "candidate": "node 7, 0.25 MVA / 1.0 MWh, 2025, other nodes zero",
+  "candidate_key": "db77e1549af855bcb3521950c634db55fe6c155ab2de591b0441b5f2bf4b369a"
+ },
+ "labelling": "MODEL VARIANTS - not the baseline; C3 row is the baseline, shown for reference only",
+ "script_sha256": "c2d4b1c56097a563d5230f4a1eece78abc6dbeb91b5e63aaeca2a53f823a4dd5",
+ "solve_profile_guard": {
+  "counts": {
+   "blocked_exec": 0,
+   "blocked_solve": 0,
+   "permitted_exec": 0,
+   "permitted_solve": 0
+  },
+  "verify0_failures": []
+ },
+ "stage": "P5.15 Addendum 28 ageing-batch mechanism table (zero solves)",
+ "table": [
+  {
+   "AE": 0.7291068288594151,
+   "AE_over_C3": 1.0,
+   "EFC": 1.0097675912759376,
+   "EFC_over_C3": 1.0,
+   "efc_per_day": [
+    1.1445130063747824,
+    1.0270140074738057,
+    0.8264722451025055
+   ],
+   "elasticity": null,
+   "soh_used": [
+    0.8344560494683406,
+    0.7093750037117399,
+    0.622472246143986
+   ],
+   "value_eur": 261807.50442624092,
+   "value_over_C3": 1.0,
+   "value_per_AE": 359079.75904683524,
+   "variant": "C3 (baseline)"
+  },
+  {
+   "AE": 0.8888001401696896,
+   "AE_over_C3": 1.2190259437839748,
+   "EFC": 1.175332247750887,
+   "EFC_over_C3": 1.163963131620953,
+   "candidate_key": "db77e1549af855bcb3521950c634db55fe6c155ab2de591b0441b5f2bf4b369a",
+   "efc_per_day": [
+    1.2533211954661165,
+    1.2242456951816334,
+    1.02625975733814
+   ],
+   "elasticity": 0.6005243309458448,
+   "eval_key": "c6b53015fcf65e248bcf936d7e4fd9f61f1e09ebd8f78b7e4dda55d6736e7b78",
+   "label": "n7_4h_e1_C2",
+   "soh_used": [
+    0.938192767051053,
+    0.8815094052146132,
+    0.8366403641175433
+   ],
+   "status": "certified",
+   "value_eur": 294872.9667842388,
+   "value_minus_I_eur": -23084.041719319765,
+   "value_over_C3": 1.1262968471070447,
+   "value_per_AE": 331765.2118370973,
+   "variant": "C2"
+  },
+  {
+   "AE": 0.8353982934286389,
+   "AE_over_C3": 1.145783114849578,
+   "EFC": 1.1200866506078553,
+   "EFC_over_C3": 1.1092519311226052,
+   "candidate_key": "db77e1549af855bcb3521950c634db55fe6c155ab2de591b0441b5f2bf4b369a",
+   "efc_per_day": [
+    1.2196629702530883,
+    1.1578266239477404,
+    0.9570356925188545
+   ],
+   "elasticity": 0.4132607018916576,
+   "eval_key": "65a5da775d1ff5b270518f9a90734bbf6e3894c98510f0af16dc81f3346f6850",
+   "label": "n7_4h_e1_C4",
+   "soh_used": [
+    0.9055256524943572,
+    0.8241127387875559,
+    0.7623735982712441
+   ],
+   "status": "certified",
+   "value_eur": 276953.46157443523,
+   "value_minus_I_eur": -41003.546929123346,
+   "value_over_C3": 1.0578515011683378,
+   "value_per_AE": 331522.6566213869,
+   "variant": "C4"
+  },
+  {
+   "AE": 0.7789202327373529,
+   "AE_over_C3": 1.0683211319743964,
+   "EFC": 1.0614692243812744,
+   "EFC_over_C3": 1.051201517608628,
+   "candidate_key": "db77e1549af855bcb3521950c634db55fe6c155ab2de591b0441b5f2bf4b369a",
+   "efc_per_day": [
+    1.1849136818112997,
+    1.0904838509990038,
+    0.8789566273341424
+   ],
+   "elasticity": 0.6757370557796795,
+   "eval_key": "98e2857016a16d1c09aea36acb06929baed718ffc7c01ca53de1e24d4f3e9cfd",
+   "label": "n7_4h_e1_C2_calfade",
+   "soh_used": [
+    0.8729423404762146,
+    0.7657001531322141,
+    0.678903844156344
+   ],
+   "status": "certified",
+   "value_eur": 273764.4008514881,
+   "value_minus_I_eur": -44192.60765207047,
+   "value_over_C3": 1.0456705641476973,
+   "value_per_AE": 351466.54220214585,
+   "variant": "C2_calfade"
+  },
+  {
+   "AE": 0.7799795990102941,
+   "AE_over_C3": 1.0697740963837388,
+   "EFC": 1.0636850394660693,
+   "EFC_over_C3": 1.0533958988741179,
+   "candidate_key": "db77e1549af855bcb3521950c634db55fe6c155ab2de591b0441b5f2bf4b369a",
+   "efc_per_day": [
+    1.2217637791341065,
+    1.0804842956090919,
+    0.8524402016753773
+   ],
+   "elasticity": 0.13000447119227676,
+   "eval_key": "ed4a1acc7059784d03b2847e7639bfae00e80ee0a8487520a9e532fbdbf3967a",
+   "label": "n7_4h_e1_C3_midblock",
+   "soh_used": [
+    0.907923449704165,
+    0.756830637890902,
+    0.6495750825277669
+   ],
+   "status": "certified",
+   "value_eur": 264113.25161135197,
+   "value_minus_I_eur": -53843.75689220661,
+   "value_over_C3": 1.0088070324422678,
+   "value_per_AE": 338615.5893647498,
+   "variant": "C3_midblock"
+  },
+  {
+   "AE": 1.0,
+   "AE_over_C3": 1.3715411245898754,
+   "EFC": 1.2843854699539512,
+   "EFC_over_C3": 1.271961470194352,
+   "candidate_key": "db77e1549af855bcb3521950c634db55fe6c155ab2de591b0441b5f2bf4b369a",
+   "efc_per_day": [
+    1.3134442677571954,
+    1.3536085184304318,
+    1.1725351186181752
+   ],
+   "elasticity": 0.6198441005274611,
+   "eval_key": "06f092d164f1381936520acd48d0b8ac4ec8c739adbd32557e7158a46c1276e1",
+   "label": "n7_4h_e1_no_ageing",
+   "soh_used": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "status": "certified",
+   "value_eur": 318441.87862062454,
+   "value_minus_I_eur": 484.8701170659624,
+   "value_over_C3": 1.2163206678070575,
+   "value_per_AE": 318441.87862062454,
+   "variant": "no_ageing"
+  }
+ ],
+ "value_C3_eur": 261807.50442624092
+}

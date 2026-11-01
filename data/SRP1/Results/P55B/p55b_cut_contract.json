@@ -1,0 +1,217 @@
+{
+ "stage": "P5.5-B6/B7",
+ "timestamp_utc": "2026-09-07T21:54:00.423161+00:00",
+ "sys_executable": "/opt/anaconda3/envs/opf_env_py311/bin/python",
+ "q0": 0.6,
+ "test_problem": "min -p s.t. ||(p,q)||<=S, q==q0, S==theta",
+ "B7_interfaces": {
+  "gurobi_direct": {
+   "interface": "gurobi_direct",
+   "theta": 1.0,
+   "termination": "optimal",
+   "ObjVal": -0.799999979513199,
+   "p": 0.799999979513199,
+   "q": 0.6,
+   "S": 1.0,
+   "fix_row_dual": -1.249999980793623,
+   "soc_dual": -0.6249999903968116,
+   "qfix_dual": 0.7499999884761739,
+   "Lower_bound": -0.799999979513199,
+   "Upper_bound": -0.799999979513199,
+   "fix_dual_matches_analytic": true
+  },
+  "gurobi_persistent": {
+   "interface": "gurobi_persistent",
+   "theta": 1.0,
+   "termination": "optimal",
+   "ObjVal": -0.799999979513199,
+   "p": 0.799999979513199,
+   "q": 0.6,
+   "S": 1.0,
+   "fix_row_dual": -1.249999980793623,
+   "soc_dual": -0.6249999903968116,
+   "qfix_dual": 0.7499999884761739,
+   "Lower_bound": -0.799999979513199,
+   "Upper_bound": -0.799999979513199,
+   "fix_dual_matches_analytic": true
+  },
+  "gurobi": {
+   "interface": "gurobi",
+   "theta": 1.0,
+   "termination": "optimal",
+   "ObjVal": -0.799999979513199,
+   "p": 0.799999979513199,
+   "q": 0.6,
+   "S": 1.0,
+   "fix_row_dual": -1.249999980793623,
+   "soc_dual": -0.6249999903968116,
+   "qfix_dual": 0.7499999884761739,
+   "Lower_bound": -0.8000001745174735,
+   "Upper_bound": -0.799999979513199,
+   "fix_dual_matches_analytic": true
+  }
+ },
+ "B7_analytic_dR_at_theta_k": -1.25,
+ "B6_cut_construction": {
+  "theta_k": 1.0,
+  "interface_used": "gurobi_persistent",
+  "lambda_fix_row_dual": -1.249999980793623,
+  "analytic_dR_dtheta": -1.25,
+  "dual_matches_analytic_derivative": true,
+  "ObjVal": -0.799999979513199,
+  "ObjBound": -0.8000001745174735,
+  "analytic_R": -0.8,
+  "gap_abs": 1.950042745058056e-07,
+  "ordering": {
+   "ObjBound_le_analytic_R": true,
+   "analytic_R_le_ObjVal": true,
+   "ObjBound_le_ObjVal": true
+  },
+  "beta_from_ObjVal": 0.45000000128042406,
+  "beta_from_ObjBound": 0.44999980627614955,
+  "L_at_theta_k_from_ObjVal": -0.799999979513199,
+  "L_at_theta_k_from_ObjBound": -0.8000001745174735
+ },
+ "B6_sweep": [
+  {
+   "theta": 0.65,
+   "R_analytic": -0.2500000000000001,
+   "R_solved_ObjVal": -0.24999996167164132,
+   "R_solved_ObjBound": -0.250000036508019,
+   "L_from_ObjVal": -0.362499986235431,
+   "L_from_ObjBound": -0.3625001812397055,
+   "violation_vs_analytic_ObjVal_anchor": -0.1124999862354309,
+   "violation_vs_analytic_ObjBound_anchor": -0.1125001812397054,
+   "violation_vs_solved_ObjVal_anchor": -0.11250002456378969
+  },
+  {
+   "theta": 0.7,
+   "R_analytic": -0.36055512754639885,
+   "R_solved_ObjVal": -0.36055509279958853,
+   "R_solved_ObjBound": -0.360555813299295,
+   "L_from_ObjVal": -0.42499998527511207,
+   "L_from_ObjBound": -0.4250001802793866,
+   "violation_vs_analytic_ObjVal_anchor": -0.06444485772871322,
+   "violation_vs_analytic_ObjBound_anchor": -0.06444505273298773,
+   "violation_vs_solved_ObjVal_anchor": -0.06444489247552354
+  },
+  {
+   "theta": 0.8,
+   "R_analytic": -0.5291502622129183,
+   "R_solved_ObjVal": -0.5291502085320651,
+   "R_solved_ObjBound": -0.5291511089605024,
+   "L_from_ObjVal": -0.5499999833544744,
+   "L_from_ObjBound": -0.5500001783587489,
+   "violation_vs_analytic_ObjVal_anchor": -0.020849721141556143,
+   "violation_vs_analytic_ObjBound_anchor": -0.02084991614583065,
+   "violation_vs_solved_ObjVal_anchor": -0.02084977482240935
+  },
+  {
+   "theta": 0.9,
+   "R_analytic": -0.6708203932499369,
+   "R_solved_ObjVal": -0.6708203751864679,
+   "R_solved_ObjBound": -0.6708205876101925,
+   "L_from_ObjVal": -0.6749999814338367,
+   "L_from_ObjBound": -0.6750001764381112,
+   "violation_vs_analytic_ObjVal_anchor": -0.004179588183899741,
+   "violation_vs_analytic_ObjBound_anchor": -0.004179783188174246,
+   "violation_vs_solved_ObjVal_anchor": -0.0041796062473687945
+  },
+  {
+   "theta": 0.95,
+   "R_analytic": -0.7365459931328118,
+   "R_solved_ObjVal": -0.7365459873429785,
+   "R_solved_ObjBound": -0.7365460897067191,
+   "L_from_ObjVal": -0.7374999804735177,
+   "L_from_ObjBound": -0.7375001754777922,
+   "violation_vs_analytic_ObjVal_anchor": -0.0009539873407059529,
+   "violation_vs_analytic_ObjBound_anchor": -0.0009541823449804587,
+   "violation_vs_solved_ObjVal_anchor": -0.0009539931305392324
+  },
+  {
+   "theta": 1.0,
+   "R_analytic": -0.8,
+   "R_solved_ObjVal": -0.799999979513199,
+   "R_solved_ObjBound": -0.8000001745174735,
+   "L_from_ObjVal": -0.799999979513199,
+   "L_from_ObjBound": -0.8000001745174735,
+   "violation_vs_analytic_ObjVal_anchor": 2.048680103339251e-08,
+   "violation_vs_analytic_ObjBound_anchor": -1.745174734724131e-07,
+   "violation_vs_solved_ObjVal_anchor": 0.0
+  },
+  {
+   "theta": 1.05,
+   "R_analytic": -0.8616843969807043,
+   "R_solved_ObjVal": -0.8616843780205832,
+   "R_solved_ObjBound": -0.8616844793888095,
+   "L_from_ObjVal": -0.8624999785528803,
+   "L_from_ObjBound": -0.8625001735571548,
+   "violation_vs_analytic_ObjVal_anchor": -0.0008155815721759829,
+   "violation_vs_analytic_ObjBound_anchor": -0.0008157765764504887,
+   "violation_vs_solved_ObjVal_anchor": -0.0008156005322971227
+  },
+  {
+   "theta": 1.1,
+   "R_analytic": -0.9219544457292889,
+   "R_solved_ObjVal": -0.9219544209141739,
+   "R_solved_ObjBound": -0.9219548423494681,
+   "L_from_ObjVal": -0.9249999775925614,
+   "L_from_ObjBound": -0.9250001725968359,
+   "violation_vs_analytic_ObjVal_anchor": -0.0030455318632724993,
+   "violation_vs_analytic_ObjBound_anchor": -0.003045726867547005,
+   "violation_vs_solved_ObjVal_anchor": -0.003045556678387462
+  },
+  {
+   "theta": 1.25,
+   "R_analytic": -1.0965856099730655,
+   "R_solved_ObjVal": -1.0965840786760708,
+   "R_solved_ObjBound": -1.0965860608872866,
+   "L_from_ObjVal": -1.1124999747116049,
+   "L_from_ObjBound": -1.1125001697158794,
+   "violation_vs_analytic_ObjVal_anchor": -0.015914364738539355,
+   "violation_vs_analytic_ObjBound_anchor": -0.01591455974281386,
+   "violation_vs_solved_ObjVal_anchor": -0.015915896035534116
+  },
+  {
+   "theta": 1.5,
+   "R_analytic": -1.374772708486752,
+   "R_solved_ObjVal": -1.3747727065469049,
+   "R_solved_ObjBound": -1.3747727129372627,
+   "L_from_ObjVal": -1.4249999699100107,
+   "L_from_ObjBound": -1.4250001649142852,
+   "violation_vs_analytic_ObjVal_anchor": -0.05022726142325862,
+   "violation_vs_analytic_ObjBound_anchor": -0.050227456427533124,
+   "violation_vs_solved_ObjVal_anchor": -0.05022726336310579
+  },
+  {
+   "theta": 2.0,
+   "R_analytic": -1.9078784028338913,
+   "R_solved_ObjVal": -1.9078773723438884,
+   "R_solved_ObjBound": -1.9078791042169743,
+   "L_from_ObjVal": -2.049999960306822,
+   "L_from_ObjBound": -2.0500001553110967,
+   "violation_vs_analytic_ObjVal_anchor": -0.14212155747293087,
+   "violation_vs_analytic_ObjBound_anchor": -0.14212175247720538,
+   "violation_vs_solved_ObjVal_anchor": -0.14212258796293376
+  },
+  {
+   "theta": 3.0,
+   "R_analytic": -2.939387691339814,
+   "R_solved_ObjVal": -2.9393873927056515,
+   "R_solved_ObjBound": -2.9393885264437243,
+   "L_from_ObjVal": -3.2999999411004453,
+   "L_from_ObjBound": -3.3000001361047198,
+   "violation_vs_analytic_ObjVal_anchor": -0.36061224976063144,
+   "violation_vs_analytic_ObjBound_anchor": -0.36061244476490595,
+   "violation_vs_solved_ObjVal_anchor": -0.36061254839479373
+  }
+ ],
+ "B6_sweep_summary": {
+  "n_points": 12,
+  "worst_violation_ObjVal_anchor": 2.048680103339251e-08,
+  "worst_violation_ObjBound_anchor": -1.745174734724131e-07,
+  "ObjVal_anchor_is_valid_cut": false,
+  "ObjBound_anchor_is_valid_cut": true,
+  "note": "positive violation means L(theta) > R(theta), i.e. the cut cuts off feasible values and is INVALID at that point"
+ }
+}

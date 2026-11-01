@@ -1,0 +1,3019 @@
+{
+ "W_bool_typing_test": {
+  "exit_code": 0,
+  "n_files_scanned": null,
+  "out": "data/SRP1/Results/P515S53/w118_resettle/zero_solve_checks/w118_bool_typing_test.json",
+  "pass": true,
+  "stderr_tail": "",
+  "stdout_tail": "  scanned 0/90195 (1 s)\n  scanned 20000/90195 (17 s)\n  scanned 40000/90195 (28 s)\n  scanned 60000/90195 (42 s)\n  scanned 80000/90195 (55 s)\n{\n \"verdict\": \"PASS\",\n \"ok\": true,\n \"registry\": \"gate_result_bool_typing_historical.json\",\n \"registry_sha256\": \"5230b3fa67e35c2603afdbd5fe5cc3c63e66c87ea23c4a90c7d99f65794bc05f\",\n \"registry_entries\": 97,\n \"scope\": {\n  \"root\": \"data\",\n  \"suffixes\": [\n   \".json\",\n   \".jsonl\"\n  ],\n  \"files\": 90195,\n  \"tracked_files\": 8088,\n  \"candidates\": 408,\n  \"files_with_unparsed_lines\": 0\n },\n \"known_historical_matched\": 97,\n \"listed_untracked_absent\": [],\n \"failure_counts\": {\n  \"F1_new_string_flag\": 0,\n  \"F2_hash_changed\": 0,\n  \"F3_listed_tracked_missing\": 0,\n  \"F4_registry_inconsistent\": 0,\n  \"F5_registry_invalid\": 0\n },\n \"wall_s\": 62.792470932006836\n}\nVERDICT: PASS\n",
+  "verdict": "PASS",
+  "wall_s": 62.86683917045593
+ },
+ "all_hold": true,
+ "all_hold_including_typing_test": true,
+ "code_sha256": {
+  "admm_anderson_acceleration.py": "24cf3bea9b07725ae15029dd0d9d81ed46ab8e75ecf1c9141a4b0afc6be2659e",
+  "gate_result_io.py": "26cadaa5c3105f9adb879ece756ef6d659b374f647a7756030efe80a2df6d07d",
+  "interface_dual_capture.py": "e4223ac25fa488970ec195b4c3bb6b1171faa3aeba4824e0d6ee6482ab58f55c",
+  "p515_g_g1_g4_admm_gates.py": "6f4631e10a2f8a7786390c0f96e45332706779ae9cdf6a87ddd716d9ad9ad346",
+  "p515_gate_result_bool_typing_test.py": "dbd6f92b772a5816ab929cef66e7132aaec0adc96c6ac55bc6ec0bf651652e76",
+  "p515_s44_campaign_harness.py": "4115fc8376ab7038b4a9adbca34c4d432a07cb6e91fa21f103949b5c885a36ae",
+  "p515_s53_w101_continuation_checks.py": "8f786a21a70f7363451e1f1261aaad5a0ae8b3075c74fd3785f06a5db953cd6a",
+  "p515_s53_w101_settling_continuation_hooks.py": "05004cf8b475c940ef1d30a225bcad20e257f02c0d34bb5034ee4975d6625f6b",
+  "p515_s53_w105_extension_checks.py": "af14bbad4ae03c1a43dd6a982b6876369002b2c48244837d6b3094ab98397e12",
+  "p515_s53_w105_settling_extension_hooks.py": "1ff61ce96dc25e4ccac3b864c834c54edf2d382525bddd9adce9af71bba84f05",
+  "p515_s53_w112_consensus_gap.py": "67a524c6a1bdd101cfa075d45306241a7c734258327463e02e44a495c6aa382a",
+  "p515_s53_w118_resettle_checks.py": "c95e1f22f84bf1a33c301bb4505b6bb37f51de2503fc38905e62d49b6e107a48",
+  "p515_s53_w118_resettle_hooks.py": "081066cbb4e651517c9dedbb6a51a96d85305fa4710c50d7e9dc67fdc3f06dd7",
+  "p515_s53_w98_continuation_checks.py": "25edfd17fae83832b4c3f46812a24018c8905d2b399201814f5fd39321f35172",
+  "settling_criterion.py": "fbe5550b34a4062feed82476e1959b5e4e2786cb13ca61728bfa1803ba75f65f",
+  "settling_criterion_v2.py": "3db13b0eb7a093f49a7ff014a3c46a5aa013b86da5e5d78c3a19daba476af59e",
+  "shared_resources_planning.py": "0610d745a41c86c71dae9e776f0dc8e38c7099f73128a3d2c2e8f861ab9fc9c0"
+ },
+ "constants": {
+  "CAP": {
+   "formula": "Planner task W118; CAP_AFTER_K0 = 109, CAP_CEILING = 300",
+   "value": "fixed N_old + 100 (gated) | min(first k0 + 109, 300) (ungated)"
+  },
+  "DELTA_R": {
+   "formula": "Addendum 53 Ruling 1: dR = 0.07",
+   "value": 0.07
+  },
+  "DRIFT_WINDOW": {
+   "formula": "mean dQ over the last 25 cycles (uncertified form)",
+   "value": 25
+  },
+  "EPS0": {
+   "formula": "EPS0 = TAU / 100 (a step that cannot accumulate TAU within the cap)",
+   "value": 45.39068275
+  },
+  "GAP_BOUND": {
+   "formula": "GAP_BOUND = TAU / 2 (Addendum 57 Decision 2: |t_sum| <= tau/2)",
+   "value": 2269.5341375000003
+  },
+  "K_EXCL": {
+   "formula": "K_EXCL = 3",
+   "value": 3
+  },
+  "L_MONO": {
+   "formula": "L_MONO = 2 * P_MAX (Addendum 57 Decision 2: L = 60)",
+   "value": 60
+  },
+  "MONOTONE_LAST_STEP_CLAUSE": {
+   "formula": "Addendum 57 Decision 2: |last step| x L <= tau",
+   "value": "abs(dQ_k) * L_MONO <= TAU"
+  },
+  "P_MAX": {
+   "formula": "instance-measured spec constant (W118: the post-certification periods of the settled SRP1 references, P_hat = 29 (x0, W102) and 30 (unit, W103))",
+   "value": 30
+  },
+  "R_REF": {
+   "formula": "V_SRP1 = R_ref = 259,375.33 (tight-tail SRP1 value, Addendum 48)",
+   "value": 259375.33
+  },
+  "TAU": {
+   "formula": "TAU = DELTA_R * R_REF / 4 = 0.07 * 259375.33 / 4",
+   "value": 4539.0682750000005
+  },
+  "VERSION": {
+   "formula": "settling_criterion_v2 (settling_criterion.py = version 1, unchanged)",
+   "value": 2
+  },
+  "W_FACTOR": {
+   "formula": "W_FACTOR = 1.1",
+   "value": 1.1
+  },
+  "W_MIN": {
+   "formula": "W_MIN = 20",
+   "value": 20
+  }
+ },
+ "finished_utc": "2026-09-28T16:49:49.297858+00:00",
+ "git_head": "e2c1ac0939685360fb3106578d9a4b695c07576d",
+ "guards": {
+  "w101_checks_imported": {
+   "counts": {
+    "blocked_exec": 0,
+    "blocked_solve": 0,
+    "permitted_exec": 0,
+    "permitted_solve": 0
+   },
+   "verify_0_failures": []
+  },
+  "w105_checks_imported": {
+   "counts": {
+    "blocked_exec": 0,
+    "blocked_solve": 0,
+    "permitted_exec": 0,
+    "permitted_solve": 0
+   },
+   "verify_0_failures": []
+  },
+  "w112_imported": {
+   "counts": {
+    "blocked_exec": 0,
+    "blocked_solve": 0,
+    "permitted_exec": 0,
+    "permitted_solve": 0
+   },
+   "verify_0_failures": []
+  },
+  "w118_checks": {
+   "counts": {
+    "blocked_exec": 0,
+    "blocked_solve": 0,
+    "permitted_exec": 0,
+    "permitted_solve": 0
+   },
+   "verify_0_failures": []
+  },
+  "w98_checks_imported": {
+   "counts": {
+    "blocked_exec": 0,
+    "blocked_solve": 0,
+    "permitted_exec": 0,
+    "permitted_solve": 0
+   },
+   "verify_0_failures": []
+  }
+ },
+ "p_max": 30,
+ "readings": {
+  "boyd_lapse": "a Boyd lapse (or a failed local solve) resets k0 strictly: T, A and the sign state are cleared",
+  "gap_clause": "|t_sum_k| <= TAU / 2 checked at the cycle a branch would certify; a failure is recorded and the rule continues; t_sum None fails",
+  "monotone_amended": "Addendum 57 Decision 2: steps decreasing over the window AND |last step| x L <= TAU, L = 2 x P_MAX = 60; \"steps decreasing\" = version 1's half-window-means clause or its stationary sub-case; no sign change in the window (version 1)",
+  "monotone_branch": "half-window means of |dQ| over [lo .. k] (second half strictly below the first), plus the stationary sub-case max |dQ| < EPS0",
+  "monotone_range_kept": "the window range <= TAU clause of version 1 is KEPT beside |dQ_k| L <= TAU: the stricter reading (both must hold)",
+  "n_is_first_k0": "N := the run's first residual pass k0; decisions from k0 + K_EXCL; no \"no decision before N_old\" (Addendum 57 / Planner task W118)",
+  "p_max": "P_MAX is a spec constant computed from the SRP1 reference records (turning_points, cycles 1..N)",
+  "swings": "successive half-swings compared over ALL consecutive pairs of A since k0, with <= (A[i+1] <= A[i])",
+  "three_turning_points": "\"successive swings not growing\" needs two half-swings, so certification effectively requires three turning points -- stricter than the ruling's \"at least two sign changes\"; the literal two-sign-change reading is computed report-only and never decides",
+  "uncertified_form": "band over the last L_MONO cycles; drift = mean dQ over the last 25; dQ_cc rate = mean (dQ + dt_sum) over the last 25; t_sum and Q_cc at the cap; reasons",
+  "window": "W = max(W_MIN, ceil(W_FACTOR * P_hat)) = max(20, ceil(1.1 P_hat)), per option 1(a)"
+ },
+ "schema": "p515_s53_w118_zero_solve_checks_v1",
+ "sections": {
+  "H": {
+   "holds": true,
+   "result": {
+    "holds": true,
+    "tests": {
+     "H10_layering_real_install": {
+      "appender_recorded_held_tail_value_after_k0": true,
+      "child_real_checklist_before_run_admm_arm": true,
+      "child_real_order_continuation_settling_extension_resettle_idc_s38_appender": true,
+      "files_written_by_install_without_cycles": [],
+      "holds": true,
+      "idc_wraps_the_resettle_boyd_wrapper": true,
+      "production_functions_restored_on_exit": true,
+      "summary_errors": [],
+      "summary_phase": "ended"
+     },
+     "H11_certificate_length_writes": {
+      "holds": true,
+      "negative_control_extra_write_detected": true,
+      "writes_in_source": [
+       "admm_parameters.minimum_consecutive_converged_cycles = CERTIFICATION_DISABLED_THRESHOLD",
+       "st.params.minimum_consecutive_converged_cycles = SETTLING_END_THRESHOLD",
+       "st.params.minimum_consecutive_converged_cycles = st.threshold_original"
+      ]
+     },
+     "H1_gated_original_values_bitwise_through_k0_then_certify": {
+      "cells": {
+       "f2_challenger": {
+        "branch": "oscillatory",
+        "capture_errors": [],
+        "certificate_length_after": 10,
+        "creep_lines": 212,
+        "decision_files": 1,
+        "ended_by": "settling_rule",
+        "errors": [],
+        "first_divergence": null,
+        "first_pass": 152,
+        "gap_refusals": 0,
+        "holds_after_first_pass": [
+         "{\"aa\": true, \"rho\": true, \"tail_apply\": true, \"tail_next\": true}"
+        ],
+        "holds_through_first_pass": [
+         "{\"aa\": false, \"rho\": false, \"tail_apply\": false, \"tail_next\": false}"
+        ],
+        "in_cycle_rule_equals_pure_replay": true,
+        "k_star": 212,
+        "last_cycle": 212,
+        "lines": 212,
+        "n_lapses": 1,
+        "n_overlap": 9,
+        "ok": true,
+        "overlap_all_zero": true,
+        "pure_decision_status": "certified",
+        "q_cc_every_line": true,
+        "raised": null,
+        "replay_bitwise_through": 152,
+        "rule_cap": 261,
+        "status": "certified",
+        "stopped_by": "settling_rule",
+        "summary_ok": true,
+        "t_sum_every_line": true
+       },
+       "f2_incumbent": {
+        "branch": "oscillatory",
+        "capture_errors": [],
+        "certificate_length_after": 10,
+        "creep_lines": 232,
+        "decision_files": 1,
+        "ended_by": "settling_rule",
+        "errors": [],
+        "first_divergence": null,
+        "first_pass": 172,
+        "gap_refusals": 0,
+        "holds_after_first_pass": [
+         "{\"aa\": true, \"rho\": true, \"tail_apply\": true, \"tail_next\": true}"
+        ],
+        "holds_through_first_pass": [
+         "{\"aa\": false, \"rho\": false, \"tail_apply\": false, \"tail_next\": false}"
+        ],
+        "in_cycle_rule_equals_pure_replay": true,
+        "k_star": 232,
+        "last_cycle": 232,
+        "lines": 232,
+        "n_lapses": 1,
+        "n_overlap": 9,
+        "ok": true,
+        "overlap_all_zero": true,
+        "pure_decision_status": "certified",
+        "q_cc_every_line": true,
+        "raised": null,
+        "replay_bitwise_through": 172,
+        "rule_cap": 281,
+        "status": "certified",
+        "stopped_by": "settling_rule",
+        "summary_ok": true,
+        "t_sum_every_line": true
+       },
+       "pb_y2025_n5": {
+        "branch": "oscillatory",
+        "capture_errors": [],
+        "certificate_length_after": 10,
+        "creep_lines": 170,
+        "decision_files": 1,
+        "ended_by": "settling_rule",
+        "errors": [],
+        "first_divergence": null,
+        "first_pass": 110,
+        "gap_refusals": 0,
+        "holds_after_first_pass": [
+         "{\"aa\": true, \"rho\": true, \"tail_apply\": true, \"tail_next\": true}"
+        ],
+        "holds_through_first_pass": [
+         "{\"aa\": false, \"rho\": false, \"tail_apply\": false, \"tail_next\": false}"
+        ],
+        "in_cycle_rule_equals_pure_replay": true,
+        "k_star": 170,
+        "last_cycle": 170,
+        "lines": 170,
+        "n_lapses": 1,
+        "n_overlap": 9,
+        "ok": true,
+        "overlap_all_zero": true,
+        "pure_decision_status": "certified",
+        "q_cc_every_line": true,
+        "raised": null,
+        "replay_bitwise_through": 110,
+        "rule_cap": 219,
+        "status": "certified",
+        "stopped_by": "settling_rule",
+        "summary_ok": true,
+        "t_sum_every_line": true
+       },
+       "pb_y2025_n7": {
+        "branch": "oscillatory",
+        "capture_errors": [],
+        "certificate_length_after": 10,
+        "creep_lines": 172,
+        "decision_files": 1,
+        "ended_by": "settling_rule",
+        "errors": [],
+        "first_divergence": null,
+        "first_pass": 112,
+        "gap_refusals": 0,
+        "holds_after_first_pass": [
+         "{\"aa\": true, \"rho\": true, \"tail_apply\": true, \"tail_next\": true}"
+        ],
+        "holds_through_first_pass": [
+         "{\"aa\": false, \"rho\": false, \"tail_apply\": false, \"tail_next\": false}"
+        ],
+        "in_cycle_rule_equals_pure_replay": true,
+        "k_star": 172,
+        "last_cycle": 172,
+        "lines": 172,
+        "n_lapses": 1,
+        "n_overlap": 9,
+        "ok": true,
+        "overlap_all_zero": true,
+        "pure_decision_status": "certified",
+        "q_cc_every_line": true,
+        "raised": null,
+        "replay_bitwise_through": 112,
+        "rule_cap": 221,
+        "status": "certified",
+        "stopped_by": "settling_rule",
+        "summary_ok": true,
+        "t_sum_every_line": true
+       },
+       "pb_y2025_n9": {
+        "branch": "oscillatory",
+        "capture_errors": [],
+        "certificate_length_after": 10,
+        "creep_lines": 173,
+        "decision_files": 1,
+        "ended_by": "settling_rule",
+        "errors": [],
+        "first_divergence": null,
+        "first_pass": 113,
+        "gap_refusals": 0,
+        "holds_after_first_pass": [
+         "{\"aa\": true, \"rho\": true, \"tail_apply\": true, \"tail_next\": true}"
+        ],
+        "holds_through_first_pass": [
+         "{\"aa\": false, \"rho\": false, \"tail_apply\": false, \"tail_next\": false}"
+        ],
+        "in_cycle_rule_equals_pure_replay": true,
+        "k_star": 173,
+        "last_cycle": 173,
+        "lines": 173,
+        "n_lapses": 1,
+        "n_overlap": 9,
+        "ok": true,
+        "overlap_all_zero": true,
+        "pure_decision_status": "certified",
+        "q_cc_every_line": true,
+        "raised": null,
+        "replay_bitwise_through": 113,
+        "rule_cap": 222,
+        "status": "certified",
+        "stopped_by": "settling_rule",
+        "summary_ok": true,
+        "t_sum_every_line": true
+       },
+       "pb_y2030_n5": {
+        "branch": "oscillatory",
+        "capture_errors": [],
+        "certificate_length_after": 10,
+        "creep_lines": 182,
+        "decision_files": 1,
+        "ended_by": "settling_rule",
+        "errors": [],
+        "first_divergence": null,
+        "first_pass": 122,
+        "gap_refusals": 0,
+        "holds_after_first_pass": [
+         "{\"aa\": true, \"rho\": true, \"tail_apply\": true, \"tail_next\": true}"
+        ],
+        "holds_through_first_pass": [
+         "{\"aa\": false, \"rho\": false, \"tail_apply\": false, \"tail_next\": false}"
+        ],
+        "in_cycle_rule_equals_pure_replay": true,
+        "k_star": 182,
+        "last_cycle": 182,
+        "lines": 182,
+        "n_lapses": 1,
+        "n_overlap": 9,
+        "ok": true,
+        "overlap_all_zero": true,
+        "pure_decision_status": "certified",
+        "q_cc_every_line": true,
+        "raised": null,
+        "replay_bitwise_through": 122,
+        "rule_cap": 231,
+        "status": "certified",
+        "stopped_by": "settling_rule",
+        "summary_ok": true,
+        "t_sum_every_line": true
+       },
+       "pb_y2030_n7": {
+        "branch": "oscillatory",
+        "capture_errors": [],
+        "certificate_length_after": 10,
+        "creep_lines": 185,
+        "decision_files": 1,
+        "ended_by": "settling_rule",
+        "errors": [],
+        "first_divergence": null,
+        "first_pass": 125,
+        "gap_refusals": 0,
+        "holds_after_first_pass": [
+         "{\"aa\": true, \"rho\": true, \"tail_apply\": true, \"tail_next\": true}"
+        ],
+        "holds_through_first_pass": [
+         "{\"aa\": false, \"rho\": false, \"tail_apply\": false, \"tail_next\": false}"
+        ],
+        "in_cycle_rule_equals_pure_replay": true,
+        "k_star": 185,
+        "last_cycle": 185,
+        "lines": 185,
+        "n_lapses": 1,
+        "n_overlap": 9,
+        "ok": true,
+        "overlap_all_zero": true,
+        "pure_decision_status": "certified",
+        "q_cc_every_line": true,
+        "raised": null,
+        "replay_bitwise_through": 125,
+        "rule_cap": 234,
+        "status": "certified",
+        "stopped_by": "settling_rule",
+        "summary_ok": true,
+        "t_sum_every_line": true
+       },
+       "pb_y2030_n9": {
+        "branch": "oscillatory",
+        "capture_errors": [],
+        "certificate_length_after": 10,
+        "creep_lines": 180,
+        "decision_files": 1,
+        "ended_by": "settling_rule",
+        "errors": [],
+        "first_divergence": null,
+        "first_pass": 120,
+        "gap_refusals": 0,
+        "holds_after_first_pass": [
+         "{\"aa\": true, \"rho\": true, \"tail_apply\": true, \"tail_next\": true}"
+        ],
+        "holds_through_first_pass": [
+         "{\"aa\": false, \"rho\": false, \"tail_apply\": false, \"tail_next\": false}"
+        ],
+        "in_cycle_rule_equals_pure_replay": true,
+        "k_star": 180,
+        "last_cycle": 180,
+        "lines": 180,
+        "n_lapses": 1,
+        "n_overlap": 9,
+        "ok": true,
+        "overlap_all_zero": true,
+        "pure_decision_status": "certified",
+        "q_cc_every_line": true,
+        "raised": null,
+        "replay_bitwise_through": 120,
+        "rule_cap": 229,
+        "status": "certified",
+        "stopped_by": "settling_rule",
+        "summary_ok": true,
+        "t_sum_every_line": true
+       }
+      },
+      "holds": true
+     },
+     "H2_one_ulp_at_40_aborts": {
+      "detail": {
+       "branch": null,
+       "capture_errors": [],
+       "certificate_length_after": 1000000000,
+       "creep_lines": 40,
+       "decision_files": 0,
+       "ended_by": null,
+       "errors": [
+        "REPLAY DIVERGED at cycle 40 (fields ['gross_operational_cost'], gross difference 1.1920928955078125e-07, max relative 1.4716970836614241e-16) -- cell ABORTED (W118: no relabelled continuation)"
+       ],
+       "first_divergence": {
+        "cycle": 40,
+        "fields_differing": [
+         "gross_operational_cost"
+        ],
+        "gross_difference_run_minus_recorded": 1.1920928955078125e-07,
+        "max_relative_difference": 1.4716970836614241e-16,
+        "relative_difference_by_field": {
+         "gross_operational_cost": 1.4716970836614241e-16
+        },
+        "values": {
+         "gross_operational_cost": {
+          "recorded": "810012405.9103341",
+          "run": "810012405.9103342"
+         }
+        }
+       },
+       "first_pass": null,
+       "gap_refusals": 0,
+       "holds_after_first_pass": [],
+       "holds_through_first_pass": [
+        "{\"aa\": false, \"rho\": false, \"tail_apply\": false, \"tail_next\": false}"
+       ],
+       "in_cycle_rule_equals_pure_replay": true,
+       "k_star": null,
+       "last_cycle": 40,
+       "lines": 40,
+       "n_lapses": 0,
+       "n_overlap": 0,
+       "ok": true,
+       "overlap_all_zero": true,
+       "pure_decision_status": null,
+       "q_cc_every_line": true,
+       "raised": "W118 settling-resettle hook: REPLAY DIVERGED at cycle 40 (fields ['gross_operational_cost'], gross difference 1.1920928955078125e-07, max relative 1.4716970836614241e-16) -- cell ABORTED (W118: no relabelled continuation)",
+       "replay_bitwise_through": 39,
+       "rule_cap": 261,
+       "status": null,
+       "stopped_by": "replay_divergence_abort",
+       "summary_ok": false,
+       "t_sum_every_line": true
+      },
+      "holds": true
+     },
+     "H3_gap_refusal_then_certification": {
+      "detail": {
+       "branch": "oscillatory",
+       "capture_errors": [],
+       "certificate_length_after": 10,
+       "creep_lines": 210,
+       "decision_files": 1,
+       "ended_by": "settling_rule",
+       "errors": [],
+       "first_divergence": null,
+       "first_pass": 120,
+       "gap_refusals": 30,
+       "holds_after_first_pass": [
+        "{\"aa\": true, \"rho\": true, \"tail_apply\": true, \"tail_next\": true}"
+       ],
+       "holds_through_first_pass": [
+        "{\"aa\": false, \"rho\": false, \"tail_apply\": false, \"tail_next\": false}"
+       ],
+       "in_cycle_rule_equals_pure_replay": true,
+       "k_star": 210,
+       "last_cycle": 210,
+       "lines": 210,
+       "n_lapses": 1,
+       "n_overlap": 9,
+       "ok": true,
+       "overlap_all_zero": true,
+       "pure_decision_status": "certified",
+       "q_cc_every_line": true,
+       "raised": null,
+       "replay_bitwise_through": 120,
+       "rule_cap": 229,
+       "status": "certified",
+       "stopped_by": "settling_rule",
+       "summary_ok": true,
+       "t_sum_every_line": true
+      },
+      "holds": true
+     },
+     "H4_gated_creep_uncertified_at_the_cap": {
+      "detail": {
+       "branch": null,
+       "capture_errors": [],
+       "certificate_length_after": 10,
+       "creep_lines": 221,
+       "decision_files": 1,
+       "ended_by": "cap",
+       "errors": [],
+       "first_divergence": null,
+       "first_pass": 112,
+       "gap_refusals": 0,
+       "holds_after_first_pass": [
+        "{\"aa\": true, \"rho\": true, \"tail_apply\": true, \"tail_next\": true}"
+       ],
+       "holds_through_first_pass": [
+        "{\"aa\": false, \"rho\": false, \"tail_apply\": false, \"tail_next\": false}"
+       ],
+       "in_cycle_rule_equals_pure_replay": true,
+       "k_star": null,
+       "last_cycle": 221,
+       "lines": 221,
+       "n_lapses": 0,
+       "n_overlap": 9,
+       "ok": true,
+       "overlap_all_zero": true,
+       "pure_decision_status": "uncertified",
+       "q_cc_every_line": true,
+       "raised": null,
+       "replay_bitwise_through": 112,
+       "rule_cap": 221,
+       "status": "uncertified",
+       "stopped_by": "cap",
+       "summary_ok": true,
+       "t_sum_every_line": true
+      },
+      "holds": true
+     },
+     "H5_ungated_dynamic_rule_cap": {
+      "detail": {
+       "branch": null,
+       "capture_errors": [],
+       "certificate_length_after": 10,
+       "creep_lines": 159,
+       "decision_files": 1,
+       "ended_by": "rule_cap",
+       "errors": [],
+       "first_divergence": null,
+       "first_pass": 50,
+       "gap_refusals": 0,
+       "holds_after_first_pass": [
+        "{\"aa\": true, \"rho\": true, \"tail_apply\": true, \"tail_next\": true}"
+       ],
+       "holds_through_first_pass": [
+        "{\"aa\": false, \"rho\": false, \"tail_apply\": false, \"tail_next\": false}"
+       ],
+       "in_cycle_rule_equals_pure_replay": true,
+       "k_star": null,
+       "last_cycle": 159,
+       "lines": 159,
+       "n_lapses": 0,
+       "n_overlap": 0,
+       "ok": true,
+       "overlap_all_zero": true,
+       "pure_decision_status": "uncertified",
+       "q_cc_every_line": true,
+       "raised": null,
+       "replay_bitwise_through": 0,
+       "rule_cap": 159,
+       "status": "uncertified",
+       "stopped_by": "rule_cap",
+       "summary_ok": true,
+       "t_sum_every_line": true
+      },
+      "holds": true
+     },
+     "H5b_ungated_certifies": {
+      "detail": {
+       "branch": "oscillatory",
+       "capture_errors": [],
+       "certificate_length_after": 10,
+       "creep_lines": 151,
+       "decision_files": 1,
+       "ended_by": "settling_rule",
+       "errors": [],
+       "first_divergence": null,
+       "first_pass": 100,
+       "gap_refusals": 0,
+       "holds_after_first_pass": [
+        "{\"aa\": true, \"rho\": true, \"tail_apply\": true, \"tail_next\": true}"
+       ],
+       "holds_through_first_pass": [
+        "{\"aa\": false, \"rho\": false, \"tail_apply\": false, \"tail_next\": false}"
+       ],
+       "in_cycle_rule_equals_pure_replay": true,
+       "k_star": 151,
+       "last_cycle": 151,
+       "lines": 151,
+       "n_lapses": 0,
+       "n_overlap": 0,
+       "ok": true,
+       "overlap_all_zero": true,
+       "pure_decision_status": "certified",
+       "q_cc_every_line": true,
+       "raised": null,
+       "replay_bitwise_through": 0,
+       "rule_cap": 209,
+       "status": "certified",
+       "stopped_by": "settling_rule",
+       "summary_ok": true,
+       "t_sum_every_line": true
+      },
+      "holds": true
+     },
+     "H6_t_sum_real_srp1_data": {
+      "by_node": {
+       "5": 102.61037338223254,
+       "7": 1.4014942037834661,
+       "9": 38.516426368424604
+      },
+      "diff_vs_terminal": 1.0640280834195437e-07,
+      "diff_vs_w112": 0.0,
+      "holds": true,
+      "n_price_weight_entries": 864,
+      "one_market_scenario_every_block": true,
+      "price_equal_bitwise_to_detail": true,
+      "price_weight_sha256": "ae50cd63f29ff72273eac435165ec7c53e5d9fa8d16df6555f71ac07727a9b73",
+      "sum_abs_gap_mw_p": 0.011824877361129665,
+      "t_sum_in_cycle_function": 142.52829395444053,
+      "t_sum_w112_formula_from_stride": 142.52829395444053,
+      "terminal_t_tso_plus_t_dso": 142.52829384803772,
+      "weight_equal_bitwise_to_detail": true,
+      "write_only_consensus_unchanged": true,
+      "write_only_planning_fingerprint_unchanged": true
+     },
+     "H7_aa_hold_real_production": {
+      "aam_restored": true,
+      "acts_after_87": true,
+      "holds": true,
+      "inert_through_87_bitwise": true,
+      "n_accepted_extrapolations_through_87": 86
+     },
+     "H8_tail_hold_real_production": {
+      "acts_after_87": true,
+      "certificate_length_after_baseline": 1000000000,
+      "holds": true,
+      "inert_through_87": true
+     },
+     "H9_rho_hold_real_production": {
+      "acts_after_87": true,
+      "cycles_with_rho_change_through_87": 87,
+      "holds": true,
+      "inert_through_87_bitwise": true,
+      "wrapped_rho_after_87_equals_rho_at_87_bitwise": true
+     }
+    }
+   },
+   "wall_s": 41.187045097351074
+  },
+  "K": {
+   "holds": true,
+   "result": {
+    "committed_entries_scanned": 7039,
+    "committed_specs_scanned": 68,
+    "controls": {
+     "planted_outside": {
+      "outside_found": [
+       "data/SRP1/Results/P515S53/w118_planted_negative_control/campaign_planted/campaign_spec_planted_00000000.json"
+      ],
+      "rel": "data/SRP1/Results/P515S53/w118_planted_negative_control/campaign_planted/campaign_spec_planted_00000000.json"
+     },
+     "planted_own": {
+      "holders": [
+       "data/SRP1/Results/P515S53/w118_resettle/campaign_s53_w118_resettle_f2_challenger/campaign_spec_s53_w118_resettle_f2_challenger_00000000.json"
+      ],
+      "outside_found": [],
+      "rel": "data/SRP1/Results/P515S53/w118_resettle/campaign_s53_w118_resettle_f2_challenger/campaign_spec_s53_w118_resettle_f2_challenger_00000000.json"
+     },
+     "planted_sibling": {
+      "outside_found": [
+       "data/SRP1/Results/P515S53/w118_resettle_planted_sibling/campaign_planted/campaign_spec_planted_00000000.json"
+      ],
+      "rel": "data/SRP1/Results/P515S53/w118_resettle_planted_sibling/campaign_planted/campaign_spec_planted_00000000.json"
+     }
+    },
+    "entries_equal": 7039,
+    "errors": [],
+    "holds": true,
+    "key_excluded_roots": [
+     "data/SRP1/Results/P515S53/w118_resettle"
+    ],
+    "mismatches": [],
+    "parts": {
+     "control_own_campaign_spec_accepted": true,
+     "control_planted_outside_root_refused": true,
+     "control_planted_sibling_prefix_refused": true,
+     "key_regression_every_entry_equal": true,
+     "key_regression_no_errors": true,
+     "key_regression_no_mismatch": true,
+     "resettle_base_equals_pre_w118_every_cell": true,
+     "resettle_formula_holds_every_cell": true,
+     "resettle_keys_absent_from_committed_specs_outside_own_root": true,
+     "resettle_keys_differ_from_originals": true,
+     "resettle_keys_distinct": true
+    },
+    "pre_w118_harness": {
+     "commit": "49342e8c",
+     "sha256": "68a9265afe71d374a3058cee24ad1d614d71c6d10d5c4cb69bfc32cd78637b82",
+     "sha256_loaded": "68a9265afe71d374a3058cee24ad1d614d71c6d10d5c4cb69bfc32cd78637b82"
+    },
+    "resettle_keys": {
+     "f2_challenger": {
+      "base_equals_pre_w118": true,
+      "base_key_now": "5fc15dcb1533f1bb1dfe71b83e815f5431cb33bbc2a9dee38194d2709ac3d889",
+      "candidate_key": "4032a138125d4222e8ef5f71727db547eb5af0306713866a23dc86504fd9d815",
+      "differs_from_original": true,
+      "formula_holds": true,
+      "original_eval_key": "e28de4acf80bbbe9f4b176296fc16b17929804f72255249aa2b139633aef6401",
+      "resettle_key": "1fe91e86f11e76af948c5d4dc659636da9680b02e22426760259710c7241353c"
+     },
+     "f2_incumbent": {
+      "base_equals_pre_w118": true,
+      "base_key_now": "c4dea62e18c62f41df3af31a520a383697810613380356014c894f57f39fea36",
+      "candidate_key": "59757776a2da3ffeb369b361520faa715a159976c3b98437b6be1d863278b8db",
+      "differs_from_original": true,
+      "formula_holds": true,
+      "original_eval_key": "5ca4f86c3406c0424d3b63b8f39df4568f1be77f7f2d72642491539c0eb42663",
+      "resettle_key": "24c5ccb6f285219f112f54709f268a76b7eace266d5c3ea1320f92f06859c7f3"
+     },
+     "pb_y2025_n5": {
+      "base_equals_pre_w118": true,
+      "base_key_now": "70e25ba765d954f0d3199591caf4fec436c40e19b7122088f7ad28c096da280a",
+      "candidate_key": "33031c083b68c6556f4c4a0f7683de83fb9995d73b98814e44bac374d5fc803c",
+      "differs_from_original": true,
+      "formula_holds": true,
+      "original_eval_key": "4a8527254a85b9cca48e1eb872b35ed9f3d5209f84002e2c255516b8af5b304a",
+      "resettle_key": "ca29c5e818366a6e37669b8390b1931fd8daf5d04cd2f8922f479b72aa54859e"
+     },
+     "pb_y2025_n7": {
+      "base_equals_pre_w118": true,
+      "base_key_now": "335f69a227646bb45fbb7c916b114da9ad52cacaead7773e8a0127729de88759",
+      "candidate_key": "56b9730bfb7b78c75e0af96f2e6a21c169d84b451e23187f1a8736654a48600f",
+      "differs_from_original": true,
+      "formula_holds": true,
+      "original_eval_key": "10c73abd8511010de3962ea8be10693d51c411b7fca0a0dfb92d2730c6b9ec89",
+      "resettle_key": "b9b8e4be4a6c82b64236540c479e5bbc32b34aeb08a94af84498e9afab693ebe"
+     },
+     "pb_y2025_n9": {
+      "base_equals_pre_w118": true,
+      "base_key_now": "1fa41562ec4f2ddc63472ba0149b9453fd92a209f2ce96e0c110c4f3c8c1bd0d",
+      "candidate_key": "c50a0e021a232e7d80144b31ca5789b11176b8ea2eeaf1dfd1a422f489eb851c",
+      "differs_from_original": true,
+      "formula_holds": true,
+      "original_eval_key": "1bff3ed2fb98302a10e5eadaff8cdd1fda48d9178564b1ea0ee62824450aa163",
+      "resettle_key": "b7bce5a8bf2365b921cbd4349c644836af57089d910e72c0baa2ef5720dfd81c"
+     },
+     "pb_y2030_n5": {
+      "base_equals_pre_w118": true,
+      "base_key_now": "e52da5c09d89dc378c80b6715958c6ffdd7ae4f6dc3ebc6bc981f719a7ee4cfc",
+      "candidate_key": "e0e614845a23e067b3c5a11b2bf573b1258cd3b3612512d7e7671983e32490f7",
+      "differs_from_original": true,
+      "formula_holds": true,
+      "original_eval_key": "d0c1f1605a44d5a86554dcf5ee169517122667cd2c93c2bdff81cbc4cf395b51",
+      "resettle_key": "3846675acea98ea7666b8f4868222d7dd089c71a948789012c21844a49d43493"
+     },
+     "pb_y2030_n7": {
+      "base_equals_pre_w118": true,
+      "base_key_now": "b95f2011e24f49f23227d62e12abc917613f6015f43806a51847f16857a6afb4",
+      "candidate_key": "53c1de5c5a53948424a3ef33c5335ed3432f43302b7053874a67a5c20c757a88",
+      "differs_from_original": true,
+      "formula_holds": true,
+      "original_eval_key": "d7030f598c2aeb4dbf00af404568ba801c0c02bd1c26c4b70e97f43eb30f0f66",
+      "resettle_key": "828f03fa9ac2ca6e384f5bf78db0fe2b64a6be874905226aed267a83d2a7ed83"
+     },
+     "pb_y2030_n9": {
+      "base_equals_pre_w118": true,
+      "base_key_now": "f78b7c7d4cd87253e18817103389174411d7b84d057e97520938228ed3188da7",
+      "candidate_key": "da2f6bc13b10aabe49906062e1a1dd4462d66acce0b2043d85eb94b2e673be96",
+      "differs_from_original": true,
+      "formula_holds": true,
+      "original_eval_key": "a30a9faffdd74f9ebef7de4e72c12e9f4b0ca7e4cd63c425faf4c6c37278dd67",
+      "resettle_key": "344c936fc23919be83c033b49a35dc7b465bf7fa51d9d0eb190e9cc0b988341e"
+     },
+     "yl_y2030": {
+      "base_equals_pre_w118": true,
+      "base_key_now": "90ba1ddf573a031f02714c508e94a6ccd2415697acc3400416550b2450d0b6c9",
+      "candidate_key": "c408836ee5888f639f6a8ba26ce66f8ac1ffdc3beee9bace0f5b7b9b83bc85ca",
+      "differs_from_original": true,
+      "formula_holds": true,
+      "original_eval_key": "549476cd276a0350da9e5e02d92ce1548a2330c3f042dcce130c95da6af27cdb",
+      "resettle_key": "6e4f11a95dc3d585f6b76ba8fbde9beef4f757c91a9e3b8e5001828b9c33bd6f"
+     },
+     "yl_y2035": {
+      "base_equals_pre_w118": true,
+      "base_key_now": "2b324b4d9cb0ce33e3f206c90545e836b41964a33a5f822ffa440ac62ccbb96b",
+      "candidate_key": "7fca7670b9b79fef8ff34f324f83eea6949b47962eb7976a306e39d24ab9392f",
+      "differs_from_original": true,
+      "formula_holds": true,
+      "original_eval_key": "dab6a8a2df221ba9b48daa43b30ca0088be9f9beb2e5a7709ffc9662c8b8e332",
+      "resettle_key": "3a2387f46448f9db7272cbe0a8c541b381ad37488c27fbc7aeebc8cf80d4e049"
+     }
+    },
+    "resettle_keys_in_committed_specs_all_REPORTED": {
+     "f2_challenger": [],
+     "f2_incumbent": [],
+     "pb_y2025_n5": [],
+     "pb_y2025_n7": [],
+     "pb_y2025_n9": [],
+     "pb_y2030_n5": [],
+     "pb_y2030_n7": [],
+     "pb_y2030_n9": [],
+     "yl_y2030": [],
+     "yl_y2035": []
+    }
+   },
+   "wall_s": 0.5866122245788574
+  },
+  "O": {
+   "holds": true,
+   "result": {
+    "cells": {
+     "f2_challenger": {
+      "I_j": 992268.1082843703,
+      "I_j_source": {
+       "distinct": [
+        992268.1082843703
+       ],
+       "field": "history[*].candidates[eval_key].I_x_eur / history[*].incumbent.I",
+       "sha256": "4e347b0cf652b857f4fed43d54dd160650b9038fa7ddfb1d6cb554f68b3d6472",
+       "source": "data/SRP1/Results/P515S53/campaign_s53_f2_certificate_r1/continuation_state.json",
+       "values_found": [
+        [
+         "poll",
+         992268.1082843703
+        ]
+       ]
+      },
+      "N_old": 161,
+      "Q_N_old": 809788918.8597116,
+      "Q_k0": 809787034.8049798,
+      "candidate_key": "4032a138125d4222e8ef5f71727db547eb5af0306713866a23dc86504fd9d815",
+      "canonical": {
+       "investment_year": 2030,
+       "nodes": {
+        "5": [
+         0.25,
+         1.0
+        ],
+        "7": [
+         1.0,
+         3.0
+        ],
+        "9": [
+         0.0,
+         0.0
+        ]
+       }
+      },
+      "e_over_p": {
+       "5": 4.0,
+       "7": 3.0
+      },
+      "k0": 152,
+      "lattice": {
+       "budget_i_le_1e6": true,
+       "e_over_p_in_2_4": true,
+       "p_le_2_5_e_le_5": true,
+       "p_zero_iff_e_zero": true,
+       "steps_0_25_mva_0_5_mwh": true,
+       "year_on_the_lattice": true
+      },
+      "ok": true,
+      "original": {
+       "campaign_id": "s53_f2_certificate_r1",
+       "configuration": {
+        "case_file_anderson_acceleration": {
+         "enabled": true,
+         "memory": 5,
+         "regularization": 1e-10,
+         "reject_policy": "keep_memory"
+        },
+        "case_file_sha256": "dbfdb2a07d12bfedab5e66bf94b3df98e5ab0305616652b4083266476972006b",
+        "convergence_depth_tail": null,
+        "ess_ageing_baseline_label": "BASELINE (C2 + phi_cal 0.985 + soh_min 0.70)"
+       },
+       "ess_params_file_at_run": {
+        "last_commit": "2466401d429eeb43a680b36e32947878372c3cbf",
+        "path": "data/SRP1/SharedESS/SRP1_ESS_Params.json",
+        "sha256": "39106f934bf3edbf18f01a5ef1fadfefc2f7a518706e6c8fa6d962617a312706"
+       },
+       "eval_dir": "data/SRP1/Results/P515S53/campaign_s53_f2_certificate_r1/evals/e28de4acf80bbbe9_y2030__n5_p0_25_e1__n7_p1_e3_m2",
+       "eval_key": "e28de4acf80bbbe9f4b176296fc16b17929804f72255249aa2b139633aef6401",
+       "git_head": "a5ccc7fbc56bf4dd139350ddba64ea5156a4e3ac",
+       "harness_sha256": "abf797989997535e610b614ce051848cfa780b5ead311cbe7dc169345bcedeb5",
+       "per_cycle_record": "data/SRP1/Results/P515S53/campaign_s53_f2_certificate_r1/evals/e28de4acf80bbbe9_y2030__n5_p0_25_e1__n7_p1_e3_m2/per_cycle_record.jsonl",
+       "per_cycle_record_sha256": "10c14cbf11a4facfd31d09cd54abc94650f3dd74e2631925362ae65a7d3249d3",
+       "spec": "data/SRP1/Results/P515S53/campaign_s53_f2_certificate_r1/campaign_spec_s53_f2_certificate_r1_803571c0.json",
+       "spec_sha256": "803571c0efcf828eb9716d6c6255909da91d882a57a7bd4e053805f96f88027f"
+      },
+      "parts": {
+       "I_j_found_unique": true,
+       "N_old_as_pinned": true,
+       "base_key_original_configuration_equals_original_eval_key": true,
+       "boyd_passes_every_cycle_k0_to_N_old": true,
+       "entry_eval_dir_and_label_as_pinned": true,
+       "first_residual_pass_is_N_old_minus_9": true,
+       "flex_multiplier_as_pinned": true,
+       "in_the_current_admissible_domain": true,
+       "lattice_legal": true,
+       "no_failed_local_solve": true,
+       "original_record_certified_at_N_old": true,
+       "original_spec_entry_found": true,
+       "per_cycle_record_committed_clean": true,
+       "per_cycle_record_in_campaign_manifest": true,
+       "per_cycle_record_sha256_as_pinned": true
+      },
+      "t_sum_terminal_original": -8023.549041509628
+     },
+     "f2_incumbent": {
+      "I_j": 992268.1082843702,
+      "I_j_source": {
+       "distinct": [
+        992268.1082843702
+       ],
+       "field": "history[*].candidates[eval_key].I_x_eur / history[*].incumbent.I",
+       "sha256": "6b36da06a86b6fe629f02be600c660a87c37b27c97c2786646c09b4920d72c01",
+       "source": "data/SRP1/Results/P515S51/campaign_s51_f2_phase_b/phase_b_state.json",
+       "values_found": [
+        [
+         "incumbent",
+         992268.1082843702
+        ],
+        [
+         "poll",
+         992268.1082843702
+        ]
+       ]
+      },
+      "N_old": 181,
+      "Q_N_old": 809795490.1476665,
+      "Q_k0": 809796397.0106792,
+      "candidate_key": "59757776a2da3ffeb369b361520faa715a159976c3b98437b6be1d863278b8db",
+      "canonical": {
+       "investment_year": 2030,
+       "nodes": {
+        "5": [
+         0.25,
+         0.5
+        ],
+        "7": [
+         1.0,
+         3.5
+        ],
+        "9": [
+         0.0,
+         0.0
+        ]
+       }
+      },
+      "e_over_p": {
+       "5": 2.0,
+       "7": 3.5
+      },
+      "k0": 172,
+      "lattice": {
+       "budget_i_le_1e6": true,
+       "e_over_p_in_2_4": true,
+       "p_le_2_5_e_le_5": true,
+       "p_zero_iff_e_zero": true,
+       "steps_0_25_mva_0_5_mwh": true,
+       "year_on_the_lattice": true
+      },
+      "ok": true,
+      "original": {
+       "campaign_id": "s51_f2_phase_b",
+       "configuration": {
+        "case_file_anderson_acceleration": {
+         "enabled": true,
+         "memory": 5,
+         "regularization": 1e-10,
+         "reject_policy": "keep_memory"
+        },
+        "case_file_sha256": "dbfdb2a07d12bfedab5e66bf94b3df98e5ab0305616652b4083266476972006b",
+        "convergence_depth_tail": null,
+        "ess_ageing_baseline_label": "BASELINE (C2 + phi_cal 0.985 + soh_min 0.70)"
+       },
+       "ess_params_file_at_run": {
+        "last_commit": "2466401d429eeb43a680b36e32947878372c3cbf",
+        "path": "data/SRP1/SharedESS/SRP1_ESS_Params.json",
+        "sha256": "39106f934bf3edbf18f01a5ef1fadfefc2f7a518706e6c8fa6d962617a312706"
+       },
+       "eval_dir": "data/SRP1/Results/P515S51/campaign_s51_f2_phase_b/evals/5ca4f86c3406c042_y2030__n5_p0_25_e0_5__n7_p1_e3_5_m2",
+       "eval_key": "5ca4f86c3406c0424d3b63b8f39df4568f1be77f7f2d72642491539c0eb42663",
+       "git_head": "2e2ef65da1e5ba61dc4a0f765cda80b773f7489a",
+       "harness_sha256": "5c198bd8b2a4bc87c5297f092c1f03d95c0b82a9fe9eb30afadb8fc768832d6c",
+       "per_cycle_record": "data/SRP1/Results/P515S51/campaign_s51_f2_phase_b/evals/5ca4f86c3406c042_y2030__n5_p0_25_e0_5__n7_p1_e3_5_m2/per_cycle_record.jsonl",
+       "per_cycle_record_sha256": "749949ae7b4d83bf753acf52a092d734d2037bf8daf5a2bfe457d8baee9f3176",
+       "spec": "data/SRP1/Results/P515S51/campaign_s51_f2_phase_b/campaign_spec_s51_f2_phase_b_5ce295e1.json",
+       "spec_sha256": "5ce295e17c5165ea2148d1240c918ebca05b8aafbeeb22e2ebfc03f9bf120094"
+      },
+      "parts": {
+       "I_j_found_unique": true,
+       "N_old_as_pinned": true,
+       "base_key_original_configuration_equals_original_eval_key": true,
+       "boyd_passes_every_cycle_k0_to_N_old": true,
+       "entry_eval_dir_and_label_as_pinned": true,
+       "first_residual_pass_is_N_old_minus_9": true,
+       "flex_multiplier_as_pinned": true,
+       "in_the_current_admissible_domain": true,
+       "lattice_legal": true,
+       "no_failed_local_solve": true,
+       "original_record_certified_at_N_old": true,
+       "original_spec_entry_found": true,
+       "per_cycle_record_committed_clean": true,
+       "per_cycle_record_in_campaign_manifest": true,
+       "per_cycle_record_sha256_as_pinned": true
+      },
+      "t_sum_terminal_original": -10244.316858291626
+     },
+     "pb_y2025_n5": {
+      "I_j": 191018.16978426196,
+      "I_j_source": {
+       "distinct": [
+        191018.16978426196
+       ],
+       "field": "history[*].candidates[eval_key].I_x_eur / history[*].incumbent.I",
+       "sha256": "f14ea275cba3599138b16d4ffcc6b03129257d4c4a78069bacc7f09d163c7b52",
+       "source": "data/SRP1/Results/P515S47/campaign_s47_phase_b/phase_b_state.json",
+       "values_found": [
+        [
+         "poll",
+         191018.16978426196
+        ]
+       ]
+      },
+      "N_old": 119,
+      "Q_N_old": 653711463.530828,
+      "Q_k0": 653765992.9536726,
+      "candidate_key": "33031c083b68c6556f4c4a0f7683de83fb9995d73b98814e44bac374d5fc803c",
+      "canonical": {
+       "investment_year": 2025,
+       "nodes": {
+        "5": [
+         0.25,
+         0.5
+        ],
+        "7": [
+         0.0,
+         0.0
+        ],
+        "9": [
+         0.0,
+         0.0
+        ]
+       }
+      },
+      "e_over_p": {
+       "5": 2.0
+      },
+      "k0": 110,
+      "lattice": {
+       "budget_i_le_1e6": true,
+       "e_over_p_in_2_4": true,
+       "p_le_2_5_e_le_5": true,
+       "p_zero_iff_e_zero": true,
+       "steps_0_25_mva_0_5_mwh": true,
+       "year_on_the_lattice": true
+      },
+      "ok": true,
+      "original": {
+       "campaign_id": "s47_phase_b",
+       "configuration": {
+        "case_file_anderson_acceleration": {
+         "enabled": true,
+         "memory": 5,
+         "regularization": 1e-10,
+         "reject_policy": "keep_memory"
+        },
+        "case_file_sha256": "dbfdb2a07d12bfedab5e66bf94b3df98e5ab0305616652b4083266476972006b",
+        "convergence_depth_tail": null,
+        "ess_ageing_baseline_label": "BASELINE (C2 + phi_cal 0.985 + soh_min 0.70)"
+       },
+       "ess_params_file_at_run": {
+        "last_commit": "2466401d429eeb43a680b36e32947878372c3cbf",
+        "path": "data/SRP1/SharedESS/SRP1_ESS_Params.json",
+        "sha256": "39106f934bf3edbf18f01a5ef1fadfefc2f7a518706e6c8fa6d962617a312706"
+       },
+       "eval_dir": "data/SRP1/Results/P515S47/campaign_s47_phase_b/evals/4a8527254a85b9cc_y2025__n5_p0_25_e0_5",
+       "eval_key": "4a8527254a85b9cca48e1eb872b35ed9f3d5209f84002e2c255516b8af5b304a",
+       "git_head": "7c563e9b3820c47eac24ff8d550871550778012e",
+       "harness_sha256": "4f39e80c07459e7ebc186ef5e73b0e630a8e384f53d4ee0bf72bc2ebc9332332",
+       "per_cycle_record": "data/SRP1/Results/P515S47/campaign_s47_phase_b/evals/4a8527254a85b9cc_y2025__n5_p0_25_e0_5/per_cycle_record.jsonl",
+       "per_cycle_record_sha256": "c84067449b6c5908b8c1187936d0516ba953c89bacc0255fb746c04437e2d9e7",
+       "spec": "data/SRP1/Results/P515S47/campaign_s47_phase_b/campaign_spec_s47_phase_b_8cfa264e.json",
+       "spec_sha256": "8cfa264e7ab0d92ac0832657c9b328d70b45851ba92f4623384d11fddb334185"
+      },
+      "parts": {
+       "I_j_found_unique": true,
+       "N_old_as_pinned": true,
+       "base_key_original_configuration_equals_original_eval_key": true,
+       "boyd_passes_every_cycle_k0_to_N_old": true,
+       "entry_eval_dir_and_label_as_pinned": true,
+       "first_residual_pass_is_N_old_minus_9": true,
+       "flex_multiplier_as_pinned": true,
+       "in_the_current_admissible_domain": true,
+       "lattice_legal": true,
+       "no_failed_local_solve": true,
+       "original_record_certified_at_N_old": true,
+       "original_spec_entry_found": true,
+       "per_cycle_record_committed_clean": true,
+       "per_cycle_record_in_campaign_manifest": true,
+       "per_cycle_record_sha256_as_pinned": true
+      },
+      "t_sum_terminal_original": 36770.953993558884
+     },
+     "pb_y2025_n7": {
+      "I_j": 191018.16978426196,
+      "I_j_source": {
+       "distinct": [
+        191018.16978426196
+       ],
+       "field": "history[*].candidates[eval_key].I_x_eur / history[*].incumbent.I",
+       "sha256": "f14ea275cba3599138b16d4ffcc6b03129257d4c4a78069bacc7f09d163c7b52",
+       "source": "data/SRP1/Results/P515S47/campaign_s47_phase_b/phase_b_state.json",
+       "values_found": [
+        [
+         "poll",
+         191018.16978426196
+        ]
+       ]
+      },
+      "N_old": 121,
+      "Q_N_old": 653725854.4554961,
+      "Q_k0": 653764980.9933937,
+      "candidate_key": "56b9730bfb7b78c75e0af96f2e6a21c169d84b451e23187f1a8736654a48600f",
+      "canonical": {
+       "investment_year": 2025,
+       "nodes": {
+        "5": [
+         0.0,
+         0.0
+        ],
+        "7": [
+         0.25,
+         0.5
+        ],
+        "9": [
+         0.0,
+         0.0
+        ]
+       }
+      },
+      "e_over_p": {
+       "7": 2.0
+      },
+      "k0": 112,
+      "lattice": {
+       "budget_i_le_1e6": true,
+       "e_over_p_in_2_4": true,
+       "p_le_2_5_e_le_5": true,
+       "p_zero_iff_e_zero": true,
+       "steps_0_25_mva_0_5_mwh": true,
+       "year_on_the_lattice": true
+      },
+      "ok": true,
+      "original": {
+       "campaign_id": "s47_phase_b",
+       "configuration": {
+        "case_file_anderson_acceleration": {
+         "enabled": true,
+         "memory": 5,
+         "regularization": 1e-10,
+         "reject_policy": "keep_memory"
+        },
+        "case_file_sha256": "dbfdb2a07d12bfedab5e66bf94b3df98e5ab0305616652b4083266476972006b",
+        "convergence_depth_tail": null,
+        "ess_ageing_baseline_label": "BASELINE (C2 + phi_cal 0.985 + soh_min 0.70)"
+       },
+       "ess_params_file_at_run": {
+        "last_commit": "2466401d429eeb43a680b36e32947878372c3cbf",
+        "path": "data/SRP1/SharedESS/SRP1_ESS_Params.json",
+        "sha256": "39106f934bf3edbf18f01a5ef1fadfefc2f7a518706e6c8fa6d962617a312706"
+       },
+       "eval_dir": "data/SRP1/Results/P515S47/campaign_s47_phase_b/evals/10c73abd8511010d_y2025__n7_p0_25_e0_5",
+       "eval_key": "10c73abd8511010de3962ea8be10693d51c411b7fca0a0dfb92d2730c6b9ec89",
+       "git_head": "7c563e9b3820c47eac24ff8d550871550778012e",
+       "harness_sha256": "4f39e80c07459e7ebc186ef5e73b0e630a8e384f53d4ee0bf72bc2ebc9332332",
+       "per_cycle_record": "data/SRP1/Results/P515S47/campaign_s47_phase_b/evals/10c73abd8511010d_y2025__n7_p0_25_e0_5/per_cycle_record.jsonl",
+       "per_cycle_record_sha256": "de4bc52b23884eaf71a5ccec616a4ffb9f4a3332dde57661a0ea386c8878ef3d",
+       "spec": "data/SRP1/Results/P515S47/campaign_s47_phase_b/campaign_spec_s47_phase_b_8cfa264e.json",
+       "spec_sha256": "8cfa264e7ab0d92ac0832657c9b328d70b45851ba92f4623384d11fddb334185"
+      },
+      "parts": {
+       "I_j_found_unique": true,
+       "N_old_as_pinned": true,
+       "base_key_original_configuration_equals_original_eval_key": true,
+       "boyd_passes_every_cycle_k0_to_N_old": true,
+       "entry_eval_dir_and_label_as_pinned": true,
+       "first_residual_pass_is_N_old_minus_9": true,
+       "flex_multiplier_as_pinned": true,
+       "in_the_current_admissible_domain": true,
+       "lattice_legal": true,
+       "no_failed_local_solve": true,
+       "original_record_certified_at_N_old": true,
+       "original_spec_entry_found": true,
+       "per_cycle_record_committed_clean": true,
+       "per_cycle_record_in_campaign_manifest": true,
+       "per_cycle_record_sha256_as_pinned": true
+      },
+      "t_sum_terminal_original": 21359.704191684723
+     },
+     "pb_y2025_n9": {
+      "I_j": 191018.16978426196,
+      "I_j_source": {
+       "distinct": [
+        191018.16978426196
+       ],
+       "field": "history[*].candidates[eval_key].I_x_eur / history[*].incumbent.I",
+       "sha256": "f14ea275cba3599138b16d4ffcc6b03129257d4c4a78069bacc7f09d163c7b52",
+       "source": "data/SRP1/Results/P515S47/campaign_s47_phase_b/phase_b_state.json",
+       "values_found": [
+        [
+         "poll",
+         191018.16978426196
+        ]
+       ]
+      },
+      "N_old": 122,
+      "Q_N_old": 653722932.4752731,
+      "Q_k0": 653763798.3381088,
+      "candidate_key": "c50a0e021a232e7d80144b31ca5789b11176b8ea2eeaf1dfd1a422f489eb851c",
+      "canonical": {
+       "investment_year": 2025,
+       "nodes": {
+        "5": [
+         0.0,
+         0.0
+        ],
+        "7": [
+         0.0,
+         0.0
+        ],
+        "9": [
+         0.25,
+         0.5
+        ]
+       }
+      },
+      "e_over_p": {
+       "9": 2.0
+      },
+      "k0": 113,
+      "lattice": {
+       "budget_i_le_1e6": true,
+       "e_over_p_in_2_4": true,
+       "p_le_2_5_e_le_5": true,
+       "p_zero_iff_e_zero": true,
+       "steps_0_25_mva_0_5_mwh": true,
+       "year_on_the_lattice": true
+      },
+      "ok": true,
+      "original": {
+       "campaign_id": "s47_phase_b",
+       "configuration": {
+        "case_file_anderson_acceleration": {
+         "enabled": true,
+         "memory": 5,
+         "regularization": 1e-10,
+         "reject_policy": "keep_memory"
+        },
+        "case_file_sha256": "dbfdb2a07d12bfedab5e66bf94b3df98e5ab0305616652b4083266476972006b",
+        "convergence_depth_tail": null,
+        "ess_ageing_baseline_label": "BASELINE (C2 + phi_cal 0.985 + soh_min 0.70)"
+       },
+       "ess_params_file_at_run": {
+        "last_commit": "2466401d429eeb43a680b36e32947878372c3cbf",
+        "path": "data/SRP1/SharedESS/SRP1_ESS_Params.json",
+        "sha256": "39106f934bf3edbf18f01a5ef1fadfefc2f7a518706e6c8fa6d962617a312706"
+       },
+       "eval_dir": "data/SRP1/Results/P515S47/campaign_s47_phase_b/evals/1bff3ed2fb98302a_y2025__n9_p0_25_e0_5",
+       "eval_key": "1bff3ed2fb98302a10e5eadaff8cdd1fda48d9178564b1ea0ee62824450aa163",
+       "git_head": "7c563e9b3820c47eac24ff8d550871550778012e",
+       "harness_sha256": "4f39e80c07459e7ebc186ef5e73b0e630a8e384f53d4ee0bf72bc2ebc9332332",
+       "per_cycle_record": "data/SRP1/Results/P515S47/campaign_s47_phase_b/evals/1bff3ed2fb98302a_y2025__n9_p0_25_e0_5/per_cycle_record.jsonl",
+       "per_cycle_record_sha256": "129859c10482980cc48ca9826dc342e517e59da56d219409027fd9225bc99b09",
+       "spec": "data/SRP1/Results/P515S47/campaign_s47_phase_b/campaign_spec_s47_phase_b_8cfa264e.json",
+       "spec_sha256": "8cfa264e7ab0d92ac0832657c9b328d70b45851ba92f4623384d11fddb334185"
+      },
+      "parts": {
+       "I_j_found_unique": true,
+       "N_old_as_pinned": true,
+       "base_key_original_configuration_equals_original_eval_key": true,
+       "boyd_passes_every_cycle_k0_to_N_old": true,
+       "entry_eval_dir_and_label_as_pinned": true,
+       "first_residual_pass_is_N_old_minus_9": true,
+       "flex_multiplier_as_pinned": true,
+       "in_the_current_admissible_domain": true,
+       "lattice_legal": true,
+       "no_failed_local_solve": true,
+       "original_record_certified_at_N_old": true,
+       "original_spec_entry_found": true,
+       "per_cycle_record_committed_clean": true,
+       "per_cycle_record_in_campaign_manifest": true,
+       "per_cycle_record_sha256_as_pinned": true
+      },
+      "t_sum_terminal_original": 22317.519203186035
+     },
+     "pb_y2030_n5": {
+      "I_j": 141882.02186349596,
+      "I_j_source": {
+       "distinct": [
+        141882.02186349596
+       ],
+       "field": "history[*].candidates[eval_key].I_x_eur / history[*].incumbent.I",
+       "sha256": "f14ea275cba3599138b16d4ffcc6b03129257d4c4a78069bacc7f09d163c7b52",
+       "source": "data/SRP1/Results/P515S47/campaign_s47_phase_b/phase_b_state.json",
+       "values_found": [
+        [
+         "poll",
+         141882.02186349596
+        ]
+       ]
+      },
+      "N_old": 131,
+      "Q_N_old": 653761255.120128,
+      "Q_k0": 653796820.9210572,
+      "candidate_key": "e0e614845a23e067b3c5a11b2bf573b1258cd3b3612512d7e7671983e32490f7",
+      "canonical": {
+       "investment_year": 2030,
+       "nodes": {
+        "5": [
+         0.25,
+         0.5
+        ],
+        "7": [
+         0.0,
+         0.0
+        ],
+        "9": [
+         0.0,
+         0.0
+        ]
+       }
+      },
+      "e_over_p": {
+       "5": 2.0
+      },
+      "k0": 122,
+      "lattice": {
+       "budget_i_le_1e6": true,
+       "e_over_p_in_2_4": true,
+       "p_le_2_5_e_le_5": true,
+       "p_zero_iff_e_zero": true,
+       "steps_0_25_mva_0_5_mwh": true,
+       "year_on_the_lattice": true
+      },
+      "ok": true,
+      "original": {
+       "campaign_id": "s47_phase_b",
+       "configuration": {
+        "case_file_anderson_acceleration": {
+         "enabled": true,
+         "memory": 5,
+         "regularization": 1e-10,
+         "reject_policy": "keep_memory"
+        },
+        "case_file_sha256": "dbfdb2a07d12bfedab5e66bf94b3df98e5ab0305616652b4083266476972006b",
+        "convergence_depth_tail": null,
+        "ess_ageing_baseline_label": "BASELINE (C2 + phi_cal 0.985 + soh_min 0.70)"
+       },
+       "ess_params_file_at_run": {
+        "last_commit": "2466401d429eeb43a680b36e32947878372c3cbf",
+        "path": "data/SRP1/SharedESS/SRP1_ESS_Params.json",
+        "sha256": "39106f934bf3edbf18f01a5ef1fadfefc2f7a518706e6c8fa6d962617a312706"
+       },
+       "eval_dir": "data/SRP1/Results/P515S47/campaign_s47_phase_b/evals/d0c1f1605a44d5a8_y2030__n5_p0_25_e0_5",
+       "eval_key": "d0c1f1605a44d5a86554dcf5ee169517122667cd2c93c2bdff81cbc4cf395b51",
+       "git_head": "7c563e9b3820c47eac24ff8d550871550778012e",
+       "harness_sha256": "4f39e80c07459e7ebc186ef5e73b0e630a8e384f53d4ee0bf72bc2ebc9332332",
+       "per_cycle_record": "data/SRP1/Results/P515S47/campaign_s47_phase_b/evals/d0c1f1605a44d5a8_y2030__n5_p0_25_e0_5/per_cycle_record.jsonl",
+       "per_cycle_record_sha256": "7d0dddd5eb23a0eda78572e37cdf701018c7e942a9bc02056596a335d315f5ca",
+       "spec": "data/SRP1/Results/P515S47/campaign_s47_phase_b/campaign_spec_s47_phase_b_8cfa264e.json",
+       "spec_sha256": "8cfa264e7ab0d92ac0832657c9b328d70b45851ba92f4623384d11fddb334185"
+      },
+      "parts": {
+       "I_j_found_unique": true,
+       "N_old_as_pinned": true,
+       "base_key_original_configuration_equals_original_eval_key": true,
+       "boyd_passes_every_cycle_k0_to_N_old": true,
+       "entry_eval_dir_and_label_as_pinned": true,
+       "first_residual_pass_is_N_old_minus_9": true,
+       "flex_multiplier_as_pinned": true,
+       "in_the_current_admissible_domain": true,
+       "lattice_legal": true,
+       "no_failed_local_solve": true,
+       "original_record_certified_at_N_old": true,
+       "original_spec_entry_found": true,
+       "per_cycle_record_committed_clean": true,
+       "per_cycle_record_in_campaign_manifest": true,
+       "per_cycle_record_sha256_as_pinned": true
+      },
+      "t_sum_terminal_original": 25079.483800649643
+     },
+     "pb_y2030_n7": {
+      "I_j": 141882.02186349596,
+      "I_j_source": {
+       "distinct": [
+        141882.02186349596
+       ],
+       "field": "history[*].candidates[eval_key].I_x_eur / history[*].incumbent.I",
+       "sha256": "f14ea275cba3599138b16d4ffcc6b03129257d4c4a78069bacc7f09d163c7b52",
+       "source": "data/SRP1/Results/P515S47/campaign_s47_phase_b/phase_b_state.json",
+       "values_found": [
+        [
+         "poll",
+         141882.02186349596
+        ]
+       ]
+      },
+      "N_old": 134,
+      "Q_N_old": 653759847.4845948,
+      "Q_k0": 653794927.5325444,
+      "candidate_key": "53c1de5c5a53948424a3ef33c5335ed3432f43302b7053874a67a5c20c757a88",
+      "canonical": {
+       "investment_year": 2030,
+       "nodes": {
+        "5": [
+         0.0,
+         0.0
+        ],
+        "7": [
+         0.25,
+         0.5
+        ],
+        "9": [
+         0.0,
+         0.0
+        ]
+       }
+      },
+      "e_over_p": {
+       "7": 2.0
+      },
+      "k0": 125,
+      "lattice": {
+       "budget_i_le_1e6": true,
+       "e_over_p_in_2_4": true,
+       "p_le_2_5_e_le_5": true,
+       "p_zero_iff_e_zero": true,
+       "steps_0_25_mva_0_5_mwh": true,
+       "year_on_the_lattice": true
+      },
+      "ok": true,
+      "original": {
+       "campaign_id": "s47_phase_b",
+       "configuration": {
+        "case_file_anderson_acceleration": {
+         "enabled": true,
+         "memory": 5,
+         "regularization": 1e-10,
+         "reject_policy": "keep_memory"
+        },
+        "case_file_sha256": "dbfdb2a07d12bfedab5e66bf94b3df98e5ab0305616652b4083266476972006b",
+        "convergence_depth_tail": null,
+        "ess_ageing_baseline_label": "BASELINE (C2 + phi_cal 0.985 + soh_min 0.70)"
+       },
+       "ess_params_file_at_run": {
+        "last_commit": "2466401d429eeb43a680b36e32947878372c3cbf",
+        "path": "data/SRP1/SharedESS/SRP1_ESS_Params.json",
+        "sha256": "39106f934bf3edbf18f01a5ef1fadfefc2f7a518706e6c8fa6d962617a312706"
+       },
+       "eval_dir": "data/SRP1/Results/P515S47/campaign_s47_phase_b/evals/d7030f598c2aeb4d_y2030__n7_p0_25_e0_5",
+       "eval_key": "d7030f598c2aeb4dbf00af404568ba801c0c02bd1c26c4b70e97f43eb30f0f66",
+       "git_head": "7c563e9b3820c47eac24ff8d550871550778012e",
+       "harness_sha256": "4f39e80c07459e7ebc186ef5e73b0e630a8e384f53d4ee0bf72bc2ebc9332332",
+       "per_cycle_record": "data/SRP1/Results/P515S47/campaign_s47_phase_b/evals/d7030f598c2aeb4d_y2030__n7_p0_25_e0_5/per_cycle_record.jsonl",
+       "per_cycle_record_sha256": "ab250b6557d9548c04e4c0f24ea827ee026b4fd9593cc70fcc3f717881f97eb4",
+       "spec": "data/SRP1/Results/P515S47/campaign_s47_phase_b/campaign_spec_s47_phase_b_8cfa264e.json",
+       "spec_sha256": "8cfa264e7ab0d92ac0832657c9b328d70b45851ba92f4623384d11fddb334185"
+      },
+      "parts": {
+       "I_j_found_unique": true,
+       "N_old_as_pinned": true,
+       "base_key_original_configuration_equals_original_eval_key": true,
+       "boyd_passes_every_cycle_k0_to_N_old": true,
+       "entry_eval_dir_and_label_as_pinned": true,
+       "first_residual_pass_is_N_old_minus_9": true,
+       "flex_multiplier_as_pinned": true,
+       "in_the_current_admissible_domain": true,
+       "lattice_legal": true,
+       "no_failed_local_solve": true,
+       "original_record_certified_at_N_old": true,
+       "original_spec_entry_found": true,
+       "per_cycle_record_committed_clean": true,
+       "per_cycle_record_in_campaign_manifest": true,
+       "per_cycle_record_sha256_as_pinned": true
+      },
+      "t_sum_terminal_original": 35538.11300897598
+     },
+     "pb_y2030_n9": {
+      "I_j": 141882.02186349596,
+      "I_j_source": {
+       "distinct": [
+        141882.02186349596
+       ],
+       "field": "history[*].candidates[eval_key].I_x_eur / history[*].incumbent.I",
+       "sha256": "f14ea275cba3599138b16d4ffcc6b03129257d4c4a78069bacc7f09d163c7b52",
+       "source": "data/SRP1/Results/P515S47/campaign_s47_phase_b/phase_b_state.json",
+       "values_found": [
+        [
+         "poll",
+         141882.02186349596
+        ]
+       ]
+      },
+      "N_old": 129,
+      "Q_N_old": 653751038.531909,
+      "Q_k0": 653801569.932136,
+      "candidate_key": "da2f6bc13b10aabe49906062e1a1dd4462d66acce0b2043d85eb94b2e673be96",
+      "canonical": {
+       "investment_year": 2030,
+       "nodes": {
+        "5": [
+         0.0,
+         0.0
+        ],
+        "7": [
+         0.0,
+         0.0
+        ],
+        "9": [
+         0.25,
+         0.5
+        ]
+       }
+      },
+      "e_over_p": {
+       "9": 2.0
+      },
+      "k0": 120,
+      "lattice": {
+       "budget_i_le_1e6": true,
+       "e_over_p_in_2_4": true,
+       "p_le_2_5_e_le_5": true,
+       "p_zero_iff_e_zero": true,
+       "steps_0_25_mva_0_5_mwh": true,
+       "year_on_the_lattice": true
+      },
+      "ok": true,
+      "original": {
+       "campaign_id": "s47_phase_b",
+       "configuration": {
+        "case_file_anderson_acceleration": {
+         "enabled": true,
+         "memory": 5,
+         "regularization": 1e-10,
+         "reject_policy": "keep_memory"
+        },
+        "case_file_sha256": "dbfdb2a07d12bfedab5e66bf94b3df98e5ab0305616652b4083266476972006b",
+        "convergence_depth_tail": null,
+        "ess_ageing_baseline_label": "BASELINE (C2 + phi_cal 0.985 + soh_min 0.70)"
+       },
+       "ess_params_file_at_run": {
+        "last_commit": "2466401d429eeb43a680b36e32947878372c3cbf",
+        "path": "data/SRP1/SharedESS/SRP1_ESS_Params.json",
+        "sha256": "39106f934bf3edbf18f01a5ef1fadfefc2f7a518706e6c8fa6d962617a312706"
+       },
+       "eval_dir": "data/SRP1/Results/P515S47/campaign_s47_phase_b/evals/a30a9faffdd74f9e_y2030__n9_p0_25_e0_5",
+       "eval_key": "a30a9faffdd74f9ebef7de4e72c12e9f4b0ca7e4cd63c425faf4c6c37278dd67",
+       "git_head": "7c563e9b3820c47eac24ff8d550871550778012e",
+       "harness_sha256": "4f39e80c07459e7ebc186ef5e73b0e630a8e384f53d4ee0bf72bc2ebc9332332",
+       "per_cycle_record": "data/SRP1/Results/P515S47/campaign_s47_phase_b/evals/a30a9faffdd74f9e_y2030__n9_p0_25_e0_5/per_cycle_record.jsonl",
+       "per_cycle_record_sha256": "b7889025d1ad4ec2c010f5fc2327a9963060fe21bace8aeab56e0c96aa6566d2",
+       "spec": "data/SRP1/Results/P515S47/campaign_s47_phase_b/campaign_spec_s47_phase_b_8cfa264e.json",
+       "spec_sha256": "8cfa264e7ab0d92ac0832657c9b328d70b45851ba92f4623384d11fddb334185"
+      },
+      "parts": {
+       "I_j_found_unique": true,
+       "N_old_as_pinned": true,
+       "base_key_original_configuration_equals_original_eval_key": true,
+       "boyd_passes_every_cycle_k0_to_N_old": true,
+       "entry_eval_dir_and_label_as_pinned": true,
+       "first_residual_pass_is_N_old_minus_9": true,
+       "flex_multiplier_as_pinned": true,
+       "in_the_current_admissible_domain": true,
+       "lattice_legal": true,
+       "no_failed_local_solve": true,
+       "original_record_certified_at_N_old": true,
+       "original_spec_entry_found": true,
+       "per_cycle_record_committed_clean": true,
+       "per_cycle_record_in_campaign_manifest": true,
+       "per_cycle_record_sha256_as_pinned": true
+      },
+      "t_sum_terminal_original": 45767.84514427185
+     },
+     "yl_y2030": {
+      "I_j": 236168.02151912605,
+      "I_j_source": {
+       "candidate_key_in_source": "c408836ee5888f639f6a8ba26ce66f8ac1ffdc3beee9bace0f5b7b9b83bc85ca",
+       "field": "candidates['n7_4h_e1_y2030'].I_new_eur",
+       "sha256": "28152120f5c7acc57655d40871f764a5e797b93428f5a9f87b7eed55fbe4790b",
+       "source": "data/SRP1/Results/P515S45/investment_cost/investment_cost_results.json"
+      },
+      "N_old": 119,
+      "Q_N_old": 653689107.4598882,
+      "Q_k0": 653754042.6367605,
+      "candidate_key": "c408836ee5888f639f6a8ba26ce66f8ac1ffdc3beee9bace0f5b7b9b83bc85ca",
+      "canonical": {
+       "investment_year": 2030,
+       "nodes": {
+        "5": [
+         0.0,
+         0.0
+        ],
+        "7": [
+         0.25,
+         1.0
+        ],
+        "9": [
+         0.0,
+         0.0
+        ]
+       }
+      },
+      "e_over_p": {
+       "7": 4.0
+      },
+      "k0": 110,
+      "lattice": {
+       "budget_i_le_1e6": true,
+       "e_over_p_in_2_4": true,
+       "p_le_2_5_e_le_5": true,
+       "p_zero_iff_e_zero": true,
+       "steps_0_25_mva_0_5_mwh": true,
+       "year_on_the_lattice": true
+      },
+      "ok": true,
+      "original": {
+       "campaign_id": "s45_a1b",
+       "configuration": {
+        "case_file_anderson_acceleration": {
+         "enabled": true,
+         "memory": 5,
+         "regularization": 1e-10,
+         "reject_policy": "keep_memory"
+        },
+        "case_file_sha256": "dbfdb2a07d12bfedab5e66bf94b3df98e5ab0305616652b4083266476972006b",
+        "convergence_depth_tail": null,
+        "ess_ageing_baseline_label": null
+       },
+       "ess_params_file_at_run": null,
+       "eval_dir": "data/SRP1/Results/P515S45/campaign_s45_a1b/evals/549476cd276a0350_n7_4h_e1_y2030",
+       "eval_key": "549476cd276a0350da9e5e02d92ce1548a2330c3f042dcce130c95da6af27cdb",
+       "git_head": "d0dbd1866a5d161845f5943f52be5129c21b4e98",
+       "harness_sha256": "611d6badf122d80bb83494bf03ef8b772157ef1fba25eb0b2694a57eaf7b2cad",
+       "per_cycle_record": "data/SRP1/Results/P515S45/campaign_s45_a1b/evals/549476cd276a0350_n7_4h_e1_y2030/per_cycle_record.jsonl",
+       "per_cycle_record_sha256": "9a08a3a21906c441072f16ad95e97a4a5c7b69ebf2e8cfafd0d7ab34c612e1e1",
+       "spec": "data/SRP1/Results/P515S45/campaign_s45_a1b/campaign_spec_s45_a1b_bd3040a9.json",
+       "spec_sha256": "bd3040a9e3ac51fd8fa305e2e1bccaf8eb08811d57b4e499e1a12c0dfa8fd789"
+      },
+      "parts": {
+       "I_j_found_unique": true,
+       "N_old_as_pinned": true,
+       "base_key_original_configuration_equals_original_eval_key": true,
+       "boyd_passes_every_cycle_k0_to_N_old": true,
+       "entry_eval_dir_and_label_as_pinned": true,
+       "first_residual_pass_is_N_old_minus_9": true,
+       "flex_multiplier_as_pinned": true,
+       "in_the_current_admissible_domain": true,
+       "lattice_legal": true,
+       "no_failed_local_solve": true,
+       "original_record_certified_at_N_old": true,
+       "original_spec_entry_found": true,
+       "per_cycle_record_committed_clean": true,
+       "per_cycle_record_in_campaign_manifest": true,
+       "per_cycle_record_sha256_as_pinned": true
+      },
+      "t_sum_terminal_original": 40249.564744472504
+     },
+     "yl_y2035": {
+      "I_j": 197989.5153493472,
+      "I_j_source": {
+       "candidate_key_in_source": "7fca7670b9b79fef8ff34f324f83eea6949b47962eb7976a306e39d24ab9392f",
+       "field": "candidates['n7_4h_e1_y2035'].I_new_eur",
+       "sha256": "28152120f5c7acc57655d40871f764a5e797b93428f5a9f87b7eed55fbe4790b",
+       "source": "data/SRP1/Results/P515S45/investment_cost/investment_cost_results.json"
+      },
+      "N_old": 119,
+      "Q_N_old": 653776244.6982625,
+      "Q_k0": 653803806.2590053,
+      "candidate_key": "7fca7670b9b79fef8ff34f324f83eea6949b47962eb7976a306e39d24ab9392f",
+      "canonical": {
+       "investment_year": 2035,
+       "nodes": {
+        "5": [
+         0.0,
+         0.0
+        ],
+        "7": [
+         0.25,
+         1.0
+        ],
+        "9": [
+         0.0,
+         0.0
+        ]
+       }
+      },
+      "e_over_p": {
+       "7": 4.0
+      },
+      "k0": 110,
+      "lattice": {
+       "budget_i_le_1e6": true,
+       "e_over_p_in_2_4": true,
+       "p_le_2_5_e_le_5": true,
+       "p_zero_iff_e_zero": true,
+       "steps_0_25_mva_0_5_mwh": true,
+       "year_on_the_lattice": true
+      },
+      "ok": true,
+      "original": {
+       "campaign_id": "s45_a1b",
+       "configuration": {
+        "case_file_anderson_acceleration": {
+         "enabled": true,
+         "memory": 5,
+         "regularization": 1e-10,
+         "reject_policy": "keep_memory"
+        },
+        "case_file_sha256": "dbfdb2a07d12bfedab5e66bf94b3df98e5ab0305616652b4083266476972006b",
+        "convergence_depth_tail": null,
+        "ess_ageing_baseline_label": null
+       },
+       "ess_params_file_at_run": null,
+       "eval_dir": "data/SRP1/Results/P515S45/campaign_s45_a1b/evals/dab6a8a2df221ba9_n7_4h_e1_y2035",
+       "eval_key": "dab6a8a2df221ba9b48daa43b30ca0088be9f9beb2e5a7709ffc9662c8b8e332",
+       "git_head": "d0dbd1866a5d161845f5943f52be5129c21b4e98",
+       "harness_sha256": "611d6badf122d80bb83494bf03ef8b772157ef1fba25eb0b2694a57eaf7b2cad",
+       "per_cycle_record": "data/SRP1/Results/P515S45/campaign_s45_a1b/evals/dab6a8a2df221ba9_n7_4h_e1_y2035/per_cycle_record.jsonl",
+       "per_cycle_record_sha256": "cf72939e940021c82169194ba25f7a11960c6423cc7b166f7859106a7225545d",
+       "spec": "data/SRP1/Results/P515S45/campaign_s45_a1b/campaign_spec_s45_a1b_bd3040a9.json",
+       "spec_sha256": "bd3040a9e3ac51fd8fa305e2e1bccaf8eb08811d57b4e499e1a12c0dfa8fd789"
+      },
+      "parts": {
+       "I_j_found_unique": true,
+       "N_old_as_pinned": true,
+       "base_key_original_configuration_equals_original_eval_key": true,
+       "boyd_passes_every_cycle_k0_to_N_old": true,
+       "entry_eval_dir_and_label_as_pinned": true,
+       "first_residual_pass_is_N_old_minus_9": true,
+       "flex_multiplier_as_pinned": true,
+       "in_the_current_admissible_domain": true,
+       "lattice_legal": true,
+       "no_failed_local_solve": true,
+       "original_record_certified_at_N_old": true,
+       "original_spec_entry_found": true,
+       "per_cycle_record_committed_clean": true,
+       "per_cycle_record_in_campaign_manifest": true,
+       "per_cycle_record_sha256_as_pinned": true
+      },
+      "t_sum_terminal_original": 22644.684433460236
+     }
+    },
+    "holds": true,
+    "inputs_now": {
+     "case_file": {
+      "expected": "dbfdb2a07d12bfedab5e66bf94b3df98e5ab0305616652b4083266476972006b",
+      "path": "data/SRP1/SRP1_params.json",
+      "sha256": "dbfdb2a07d12bfedab5e66bf94b3df98e5ab0305616652b4083266476972006b"
+     },
+     "cost_file": {
+      "expected": "e17bd5887e1d0738005ae17c3144593527081c9a0776e19cfaa50aafefe39cd6",
+      "last_commit": "2cada62b6d8fbd35acead8cb84a3f2a31536a54e",
+      "path": "data/SRP1/SharedESS/SRP1_ESS.xlsx",
+      "sha256": "e17bd5887e1d0738005ae17c3144593527081c9a0776e19cfaa50aafefe39cd6"
+     },
+     "ess_params_file": {
+      "budget": 1000000.0,
+      "calibration": 0.8,
+      "expected_C2": "39106f934bf3edbf18f01a5ef1fadfefc2f7a518706e6c8fa6d962617a312706",
+      "last_commit": "2466401d429eeb43a680b36e32947878372c3cbf",
+      "max_capacity": 5.0,
+      "max_energy_to_power_factor": 4.0,
+      "min_energy_to_power_factor": 2.0,
+      "minimum_soh": 0.7,
+      "path": "data/SRP1/SharedESS/SRP1_ESS_Params.json",
+      "sha256": "39106f934bf3edbf18f01a5ef1fadfefc2f7a518706e6c8fa6d962617a312706"
+     }
+    },
+    "parts": {
+     "case_file_as_every_original_and_now": true,
+     "cost_file_as_pinned": true,
+     "ess_params_now_C2_E_over_P_2_4": true,
+     "every_cell_ok": true,
+     "gated_cells_ran_with_the_current_ess_params": true,
+     "no_original_had_the_tail": true,
+     "x0_comparator_Q181_bitwise": true,
+     "x0_comparator_t_bitwise": true,
+     "year_ladder_ran_without_a_c2_declaration": true
+    },
+    "x0_comparator": {
+     "Q181": 653873702.1876609,
+     "Q181_pinned": 653873702.1876609,
+     "band_width": 4209.1713362932205,
+     "k_star": 181,
+     "source": {
+      "decision": "data/SRP1/Results/P515S53/w101_srp1_continuation/campaign_s53_w101_srp1_cont_x0/evals/d110bd1a5977df1e_x0/settling_decision.json",
+      "detail": "data/SRP1/Results/P515S53/w101_srp1_continuation/campaign_s53_w101_srp1_cont_x0/evals/d110bd1a5977df1e_x0/interface_settlement_detail_s31c.json",
+      "per_cycle_record": "data/SRP1/Results/P515S53/w101_srp1_continuation/campaign_s53_w101_srp1_cont_x0/evals/d110bd1a5977df1e_x0/per_cycle_record.jsonl"
+     },
+     "t_x0_pinned": 142.52829384803772,
+     "t_x0_terminal": 142.52829384803772
+    }
+   },
+   "wall_s": 0.9162209033966064
+  },
+  "P": {
+   "holds": true,
+   "result": {
+    "cells": {
+     "f2_challenger": {
+      "checklist": {
+       "a_aa_step_called_with_boyd_metrics": true,
+       "a_anderson_acceleration_on": true,
+       "a_boyd_all_pass_key_in_production": true,
+       "aa_off_literal_is_production": true,
+       "b_source_order_aa_step_lt_recourse_lt_convergence_test": true,
+       "block_functions_callable": true,
+       "c_certificate_length_read_only_by_the_loop_test_the_record_and_the_print": true,
+       "c_certificate_length_written_only_by_disable_restore_rule_end": true,
+       "c_no_early_stop_in_declaration": true,
+       "capture:loop:boyd_after_esso_update_before_aa": true,
+       "capture:loop:boyd_call_once_per_cycle": true,
+       "capture:loop:boyd_metrics_passed_to_penalties": true,
+       "capture:model_source:network": true,
+       "capture:model_source:shared_energy_storage_data": true,
+       "capture:source:boyd_channel_fields": true,
+       "capture:source:ess_consensus_four_copies": true,
+       "capture:source:ess_copies_written_from_models": true,
+       "capture:source:esso_not_in_gross_Q": true,
+       "capture:source:q_blocks_tso_dso_salvage": true,
+       "capture:source:q_components_classified_total": true,
+       "capture:source:q_gross_is_tso_plus_dso": true,
+       "capture:writer_is_gate_result_io": true,
+       "d_spec_cap_equals_the_cell_cap": true,
+       "e_original_record_hashes_holds_1_N_old_first_pass_k0": true,
+       "efc_read_once_per_cycle_after_penalties_before_the_row": true,
+       "f_rule_class_callable": true,
+       "f_rule_constants_equal_settling_criterion_v2": true,
+       "h_lambda_t_capture_path": true,
+       "loop_exit_is_the_convergence_break": true,
+       "signature:_anderson_acceleration_cycle_step": true,
+       "signature:_apply_convergence_depth_tail": true,
+       "signature:_capture_convergence_depth_tail_baseline": true,
+       "signature:_convergence_depth_tail_next_state": true,
+       "signature:_get_admm_efc_per_day_max": true,
+       "signature:_get_operational_recourse_components": true,
+       "signature:_update_admm_penalties": true,
+       "signature:get_admm_boyd_residual_metrics": true,
+       "t_sum:gates:terminal_identity_and_pf_stride_use_the_same_copies_and_weight": true,
+       "t_sum:signature:_expected_market_price": true,
+       "t_sum:signature:_get_admm_block_weight": true,
+       "t_sum:source:block_weight_definition": true,
+       "t_sum:source:expected_price_definition": true,
+       "t_sum:source:pf_consensus_layout": true,
+       "t_sum:source:reporting_detail_price": true,
+       "tail_enabled_for_this_run": true
+      },
+      "negative_controls": {
+       "aa_off": "refused: W118 settling-resettle preconditions fail (before any solve): ['a_anderson_acceleration_on']",
+       "cap_wrong": "refused: W118 settling-resettle preconditions fail (before any solve): ['d_spec_cap_equals_the_cell_cap']",
+       "tail_off": "refused: W118 settling-resettle preconditions fail (before any solve): ['tail_enabled_for_this_run']"
+      },
+      "ok": true,
+      "validator_refuses": {
+       "abort_false": "settling_resettle differs from the W118 declaration of f2_challenger on ['abort_on_replay_divergence']",
+       "cap_rule_changed": "settling_resettle differs from the W118 declaration of f2_challenger on ['cap_rule']",
+       "early_stop_key": "settling_resettle must NOT carry ['early_stop'] (the settling rule is the only stop before the cap)",
+       "extra_key": "settling_resettle must have exactly ['N_old', 'abort_on_replay_divergence', 'cap_rule', 'captures', 'cell', 'first_residual_pass_expected', 'gate', 'group', 'ho",
+       "gap_bound_tau": "settling_resettle differs from the W118 declaration of f2_challenger on ['settling_rule']",
+       "no_reference": "settling_resettle differs from the W118 declaration of f2_challenger on ['replay_reference']",
+       "p_max_22": "settling_resettle differs from the W118 declaration of f2_challenger on ['settling_rule']",
+       "rule_module_v1": "settling_resettle differs from the W118 declaration of f2_challenger on ['settling_rule']",
+       "unknown_cell": "settling_resettle.cell must be one of ['f2_challenger', 'f2_incumbent', 'pb_y2025_n5', 'pb_y2025_n7', 'pb_y2025_n9', 'pb_y2030_n5', 'pb_y2030_n7', 'pb_y2030_n9'",
+       "wrong_k0": "settling_resettle differs from the W118 declaration of f2_challenger on ['first_residual_pass_expected']",
+       "wrong_sha": "settling_resettle differs from the W118 declaration of f2_challenger on ['replay_reference']"
+      }
+     },
+     "f2_incumbent": {
+      "checklist": {
+       "a_aa_step_called_with_boyd_metrics": true,
+       "a_anderson_acceleration_on": true,
+       "a_boyd_all_pass_key_in_production": true,
+       "aa_off_literal_is_production": true,
+       "b_source_order_aa_step_lt_recourse_lt_convergence_test": true,
+       "block_functions_callable": true,
+       "c_certificate_length_read_only_by_the_loop_test_the_record_and_the_print": true,
+       "c_certificate_length_written_only_by_disable_restore_rule_end": true,
+       "c_no_early_stop_in_declaration": true,
+       "capture:loop:boyd_after_esso_update_before_aa": true,
+       "capture:loop:boyd_call_once_per_cycle": true,
+       "capture:loop:boyd_metrics_passed_to_penalties": true,
+       "capture:model_source:network": true,
+       "capture:model_source:shared_energy_storage_data": true,
+       "capture:source:boyd_channel_fields": true,
+       "capture:source:ess_consensus_four_copies": true,
+       "capture:source:ess_copies_written_from_models": true,
+       "capture:source:esso_not_in_gross_Q": true,
+       "capture:source:q_blocks_tso_dso_salvage": true,
+       "capture:source:q_components_classified_total": true,
+       "capture:source:q_gross_is_tso_plus_dso": true,
+       "capture:writer_is_gate_result_io": true,
+       "d_spec_cap_equals_the_cell_cap": true,
+       "e_original_record_hashes_holds_1_N_old_first_pass_k0": true,
+       "efc_read_once_per_cycle_after_penalties_before_the_row": true,
+       "f_rule_class_callable": true,
+       "f_rule_constants_equal_settling_criterion_v2": true,
+       "h_lambda_t_capture_path": true,
+       "loop_exit_is_the_convergence_break": true,
+       "signature:_anderson_acceleration_cycle_step": true,
+       "signature:_apply_convergence_depth_tail": true,
+       "signature:_capture_convergence_depth_tail_baseline": true,
+       "signature:_convergence_depth_tail_next_state": true,
+       "signature:_get_admm_efc_per_day_max": true,
+       "signature:_get_operational_recourse_components": true,
+       "signature:_update_admm_penalties": true,
+       "signature:get_admm_boyd_residual_metrics": true,
+       "t_sum:gates:terminal_identity_and_pf_stride_use_the_same_copies_and_weight": true,
+       "t_sum:signature:_expected_market_price": true,
+       "t_sum:signature:_get_admm_block_weight": true,
+       "t_sum:source:block_weight_definition": true,
+       "t_sum:source:expected_price_definition": true,
+       "t_sum:source:pf_consensus_layout": true,
+       "t_sum:source:reporting_detail_price": true,
+       "tail_enabled_for_this_run": true
+      },
+      "negative_controls": {
+       "aa_off": "refused: W118 settling-resettle preconditions fail (before any solve): ['a_anderson_acceleration_on']",
+       "cap_wrong": "refused: W118 settling-resettle preconditions fail (before any solve): ['d_spec_cap_equals_the_cell_cap']",
+       "tail_off": "refused: W118 settling-resettle preconditions fail (before any solve): ['tail_enabled_for_this_run']"
+      },
+      "ok": true,
+      "validator_refuses": {
+       "abort_false": "settling_resettle differs from the W118 declaration of f2_incumbent on ['abort_on_replay_divergence']",
+       "cap_rule_changed": "settling_resettle differs from the W118 declaration of f2_incumbent on ['cap_rule']",
+       "early_stop_key": "settling_resettle must NOT carry ['early_stop'] (the settling rule is the only stop before the cap)",
+       "extra_key": "settling_resettle must have exactly ['N_old', 'abort_on_replay_divergence', 'cap_rule', 'captures', 'cell', 'first_residual_pass_expected', 'gate', 'group', 'ho",
+       "gap_bound_tau": "settling_resettle differs from the W118 declaration of f2_incumbent on ['settling_rule']",
+       "no_reference": "settling_resettle differs from the W118 declaration of f2_incumbent on ['replay_reference']",
+       "p_max_22": "settling_resettle differs from the W118 declaration of f2_incumbent on ['settling_rule']",
+       "rule_module_v1": "settling_resettle differs from the W118 declaration of f2_incumbent on ['settling_rule']",
+       "unknown_cell": "settling_resettle.cell must be one of ['f2_challenger', 'f2_incumbent', 'pb_y2025_n5', 'pb_y2025_n7', 'pb_y2025_n9', 'pb_y2030_n5', 'pb_y2030_n7', 'pb_y2030_n9'",
+       "wrong_k0": "settling_resettle differs from the W118 declaration of f2_incumbent on ['first_residual_pass_expected']",
+       "wrong_sha": "settling_resettle differs from the W118 declaration of f2_incumbent on ['replay_reference']"
+      }
+     },
+     "pb_y2025_n5": {
+      "checklist": {
+       "a_aa_step_called_with_boyd_metrics": true,
+       "a_anderson_acceleration_on": true,
+       "a_boyd_all_pass_key_in_production": true,
+       "aa_off_literal_is_production": true,
+       "b_source_order_aa_step_lt_recourse_lt_convergence_test": true,
+       "block_functions_callable": true,
+       "c_certificate_length_read_only_by_the_loop_test_the_record_and_the_print": true,
+       "c_certificate_length_written_only_by_disable_restore_rule_end": true,
+       "c_no_early_stop_in_declaration": true,
+       "capture:loop:boyd_after_esso_update_before_aa": true,
+       "capture:loop:boyd_call_once_per_cycle": true,
+       "capture:loop:boyd_metrics_passed_to_penalties": true,
+       "capture:model_source:network": true,
+       "capture:model_source:shared_energy_storage_data": true,
+       "capture:source:boyd_channel_fields": true,
+       "capture:source:ess_consensus_four_copies": true,
+       "capture:source:ess_copies_written_from_models": true,
+       "capture:source:esso_not_in_gross_Q": true,
+       "capture:source:q_blocks_tso_dso_salvage": true,
+       "capture:source:q_components_classified_total": true,
+       "capture:source:q_gross_is_tso_plus_dso": true,
+       "capture:writer_is_gate_result_io": true,
+       "d_spec_cap_equals_the_cell_cap": true,
+       "e_original_record_hashes_holds_1_N_old_first_pass_k0": true,
+       "efc_read_once_per_cycle_after_penalties_before_the_row": true,
+       "f_rule_class_callable": true,
+       "f_rule_constants_equal_settling_criterion_v2": true,
+       "h_lambda_t_capture_path": true,
+       "loop_exit_is_the_convergence_break": true,
+       "signature:_anderson_acceleration_cycle_step": true,
+       "signature:_apply_convergence_depth_tail": true,
+       "signature:_capture_convergence_depth_tail_baseline": true,
+       "signature:_convergence_depth_tail_next_state": true,
+       "signature:_get_admm_efc_per_day_max": true,
+       "signature:_get_operational_recourse_components": true,
+       "signature:_update_admm_penalties": true,
+       "signature:get_admm_boyd_residual_metrics": true,
+       "t_sum:gates:terminal_identity_and_pf_stride_use_the_same_copies_and_weight": true,
+       "t_sum:signature:_expected_market_price": true,
+       "t_sum:signature:_get_admm_block_weight": true,
+       "t_sum:source:block_weight_definition": true,
+       "t_sum:source:expected_price_definition": true,
+       "t_sum:source:pf_consensus_layout": true,
+       "t_sum:source:reporting_detail_price": true,
+       "tail_enabled_for_this_run": true
+      },
+      "negative_controls": {
+       "aa_off": "refused: W118 settling-resettle preconditions fail (before any solve): ['a_anderson_acceleration_on']",
+       "cap_wrong": "refused: W118 settling-resettle preconditions fail (before any solve): ['d_spec_cap_equals_the_cell_cap']",
+       "tail_off": "refused: W118 settling-resettle preconditions fail (before any solve): ['tail_enabled_for_this_run']"
+      },
+      "ok": true,
+      "validator_refuses": {
+       "abort_false": "settling_resettle differs from the W118 declaration of pb_y2025_n5 on ['abort_on_replay_divergence']",
+       "cap_rule_changed": "settling_resettle differs from the W118 declaration of pb_y2025_n5 on ['cap_rule']",
+       "early_stop_key": "settling_resettle must NOT carry ['early_stop'] (the settling rule is the only stop before the cap)",
+       "extra_key": "settling_resettle must have exactly ['N_old', 'abort_on_replay_divergence', 'cap_rule', 'captures', 'cell', 'first_residual_pass_expected', 'gate', 'group', 'ho",
+       "gap_bound_tau": "settling_resettle differs from the W118 declaration of pb_y2025_n5 on ['settling_rule']",
+       "no_reference": "settling_resettle differs from the W118 declaration of pb_y2025_n5 on ['replay_reference']",
+       "p_max_22": "settling_resettle differs from the W118 declaration of pb_y2025_n5 on ['settling_rule']",
+       "rule_module_v1": "settling_resettle differs from the W118 declaration of pb_y2025_n5 on ['settling_rule']",
+       "unknown_cell": "settling_resettle.cell must be one of ['f2_challenger', 'f2_incumbent', 'pb_y2025_n5', 'pb_y2025_n7', 'pb_y2025_n9', 'pb_y2030_n5', 'pb_y2030_n7', 'pb_y2030_n9'",
+       "wrong_k0": "settling_resettle differs from the W118 declaration of pb_y2025_n5 on ['first_residual_pass_expected']",
+       "wrong_sha": "settling_resettle differs from the W118 declaration of pb_y2025_n5 on ['replay_reference']"
+      }
+     },
+     "pb_y2025_n7": {
+      "checklist": {
+       "a_aa_step_called_with_boyd_metrics": true,
+       "a_anderson_acceleration_on": true,
+       "a_boyd_all_pass_key_in_production": true,
+       "aa_off_literal_is_production": true,
+       "b_source_order_aa_step_lt_recourse_lt_convergence_test": true,
+       "block_functions_callable": true,
+       "c_certificate_length_read_only_by_the_loop_test_the_record_and_the_print": true,
+       "c_certificate_length_written_only_by_disable_restore_rule_end": true,
+       "c_no_early_stop_in_declaration": true,
+       "capture:loop:boyd_after_esso_update_before_aa": true,
+       "capture:loop:boyd_call_once_per_cycle": true,
+       "capture:loop:boyd_metrics_passed_to_penalties": true,
+       "capture:model_source:network": true,
+       "capture:model_source:shared_energy_storage_data": true,
+       "capture:source:boyd_channel_fields": true,
+       "capture:source:ess_consensus_four_copies": true,
+       "capture:source:ess_copies_written_from_models": true,
+       "capture:source:esso_not_in_gross_Q": true,
+       "capture:source:q_blocks_tso_dso_salvage": true,
+       "capture:source:q_components_classified_total": true,
+       "capture:source:q_gross_is_tso_plus_dso": true,
+       "capture:writer_is_gate_result_io": true,
+       "d_spec_cap_equals_the_cell_cap": true,
+       "e_original_record_hashes_holds_1_N_old_first_pass_k0": true,
+       "efc_read_once_per_cycle_after_penalties_before_the_row": true,
+       "f_rule_class_callable": true,
+       "f_rule_constants_equal_settling_criterion_v2": true,
+       "h_lambda_t_capture_path": true,
+       "loop_exit_is_the_convergence_break": true,
+       "signature:_anderson_acceleration_cycle_step": true,
+       "signature:_apply_convergence_depth_tail": true,
+       "signature:_capture_convergence_depth_tail_baseline": true,
+       "signature:_convergence_depth_tail_next_state": true,
+       "signature:_get_admm_efc_per_day_max": true,
+       "signature:_get_operational_recourse_components": true,
+       "signature:_update_admm_penalties": true,
+       "signature:get_admm_boyd_residual_metrics": true,
+       "t_sum:gates:terminal_identity_and_pf_stride_use_the_same_copies_and_weight": true,
+       "t_sum:signature:_expected_market_price": true,
+       "t_sum:signature:_get_admm_block_weight": true,
+       "t_sum:source:block_weight_definition": true,
+       "t_sum:source:expected_price_definition": true,
+       "t_sum:source:pf_consensus_layout": true,
+       "t_sum:source:reporting_detail_price": true,
+       "tail_enabled_for_this_run": true
+      },
+      "negative_controls": {
+       "aa_off": "refused: W118 settling-resettle preconditions fail (before any solve): ['a_anderson_acceleration_on']",
+       "cap_wrong": "refused: W118 settling-resettle preconditions fail (before any solve): ['d_spec_cap_equals_the_cell_cap']",
+       "tail_off": "refused: W118 settling-resettle preconditions fail (before any solve): ['tail_enabled_for_this_run']"
+      },
+      "ok": true,
+      "validator_refuses": {
+       "abort_false": "settling_resettle differs from the W118 declaration of pb_y2025_n7 on ['abort_on_replay_divergence']",
+       "cap_rule_changed": "settling_resettle differs from the W118 declaration of pb_y2025_n7 on ['cap_rule']",
+       "early_stop_key": "settling_resettle must NOT carry ['early_stop'] (the settling rule is the only stop before the cap)",
+       "extra_key": "settling_resettle must have exactly ['N_old', 'abort_on_replay_divergence', 'cap_rule', 'captures', 'cell', 'first_residual_pass_expected', 'gate', 'group', 'ho",
+       "gap_bound_tau": "settling_resettle differs from the W118 declaration of pb_y2025_n7 on ['settling_rule']",
+       "no_reference": "settling_resettle differs from the W118 declaration of pb_y2025_n7 on ['replay_reference']",
+       "p_max_22": "settling_resettle differs from the W118 declaration of pb_y2025_n7 on ['settling_rule']",
+       "rule_module_v1": "settling_resettle differs from the W118 declaration of pb_y2025_n7 on ['settling_rule']",
+       "unknown_cell": "settling_resettle.cell must be one of ['f2_challenger', 'f2_incumbent', 'pb_y2025_n5', 'pb_y2025_n7', 'pb_y2025_n9', 'pb_y2030_n5', 'pb_y2030_n7', 'pb_y2030_n9'",
+       "wrong_k0": "settling_resettle differs from the W118 declaration of pb_y2025_n7 on ['first_residual_pass_expected']",
+       "wrong_sha": "settling_resettle differs from the W118 declaration of pb_y2025_n7 on ['replay_reference']"
+      }
+     },
+     "pb_y2025_n9": {
+      "checklist": {
+       "a_aa_step_called_with_boyd_metrics": true,
+       "a_anderson_acceleration_on": true,
+       "a_boyd_all_pass_key_in_production": true,
+       "aa_off_literal_is_production": true,
+       "b_source_order_aa_step_lt_recourse_lt_convergence_test": true,
+       "block_functions_callable": true,
+       "c_certificate_length_read_only_by_the_loop_test_the_record_and_the_print": true,
+       "c_certificate_length_written_only_by_disable_restore_rule_end": true,
+       "c_no_early_stop_in_declaration": true,
+       "capture:loop:boyd_after_esso_update_before_aa": true,
+       "capture:loop:boyd_call_once_per_cycle": true,
+       "capture:loop:boyd_metrics_passed_to_penalties": true,
+       "capture:model_source:network": true,
+       "capture:model_source:shared_energy_storage_data": true,
+       "capture:source:boyd_channel_fields": true,
+       "capture:source:ess_consensus_four_copies": true,
+       "capture:source:ess_copies_written_from_models": true,
+       "capture:source:esso_not_in_gross_Q": true,
+       "capture:source:q_blocks_tso_dso_salvage": true,
+       "capture:source:q_components_classified_total": true,
+       "capture:source:q_gross_is_tso_plus_dso": true,
+       "capture:writer_is_gate_result_io": true,
+       "d_spec_cap_equals_the_cell_cap": true,
+       "e_original_record_hashes_holds_1_N_old_first_pass_k0": true,
+       "efc_read_once_per_cycle_after_penalties_before_the_row": true,
+       "f_rule_class_callable": true,
+       "f_rule_constants_equal_settling_criterion_v2": true,
+       "h_lambda_t_capture_path": true,
+       "loop_exit_is_the_convergence_break": true,
+       "signature:_anderson_acceleration_cycle_step": true,
+       "signature:_apply_convergence_depth_tail": true,
+       "signature:_capture_convergence_depth_tail_baseline": true,
+       "signature:_convergence_depth_tail_next_state": true,
+       "signature:_get_admm_efc_per_day_max": true,
+       "signature:_get_operational_recourse_components": true,
+       "signature:_update_admm_penalties": true,
+       "signature:get_admm_boyd_residual_metrics": true,
+       "t_sum:gates:terminal_identity_and_pf_stride_use_the_same_copies_and_weight": true,
+       "t_sum:signature:_expected_market_price": true,
+       "t_sum:signature:_get_admm_block_weight": true,
+       "t_sum:source:block_weight_definition": true,
+       "t_sum:source:expected_price_definition": true,
+       "t_sum:source:pf_consensus_layout": true,
+       "t_sum:source:reporting_detail_price": true,
+       "tail_enabled_for_this_run": true
+      },
+      "negative_controls": {
+       "aa_off": "refused: W118 settling-resettle preconditions fail (before any solve): ['a_anderson_acceleration_on']",
+       "cap_wrong": "refused: W118 settling-resettle preconditions fail (before any solve): ['d_spec_cap_equals_the_cell_cap']",
+       "tail_off": "refused: W118 settling-resettle preconditions fail (before any solve): ['tail_enabled_for_this_run']"
+      },
+      "ok": true,
+      "validator_refuses": {
+       "abort_false": "settling_resettle differs from the W118 declaration of pb_y2025_n9 on ['abort_on_replay_divergence']",
+       "cap_rule_changed": "settling_resettle differs from the W118 declaration of pb_y2025_n9 on ['cap_rule']",
+       "early_stop_key": "settling_resettle must NOT carry ['early_stop'] (the settling rule is the only stop before the cap)",
+       "extra_key": "settling_resettle must have exactly ['N_old', 'abort_on_replay_divergence', 'cap_rule', 'captures', 'cell', 'first_residual_pass_expected', 'gate', 'group', 'ho",
+       "gap_bound_tau": "settling_resettle differs from the W118 declaration of pb_y2025_n9 on ['settling_rule']",
+       "no_reference": "settling_resettle differs from the W118 declaration of pb_y2025_n9 on ['replay_reference']",
+       "p_max_22": "settling_resettle differs from the W118 declaration of pb_y2025_n9 on ['settling_rule']",
+       "rule_module_v1": "settling_resettle differs from the W118 declaration of pb_y2025_n9 on ['settling_rule']",
+       "unknown_cell": "settling_resettle.cell must be one of ['f2_challenger', 'f2_incumbent', 'pb_y2025_n5', 'pb_y2025_n7', 'pb_y2025_n9', 'pb_y2030_n5', 'pb_y2030_n7', 'pb_y2030_n9'",
+       "wrong_k0": "settling_resettle differs from the W118 declaration of pb_y2025_n9 on ['first_residual_pass_expected']",
+       "wrong_sha": "settling_resettle differs from the W118 declaration of pb_y2025_n9 on ['replay_reference']"
+      }
+     },
+     "pb_y2030_n5": {
+      "checklist": {
+       "a_aa_step_called_with_boyd_metrics": true,
+       "a_anderson_acceleration_on": true,
+       "a_boyd_all_pass_key_in_production": true,
+       "aa_off_literal_is_production": true,
+       "b_source_order_aa_step_lt_recourse_lt_convergence_test": true,
+       "block_functions_callable": true,
+       "c_certificate_length_read_only_by_the_loop_test_the_record_and_the_print": true,
+       "c_certificate_length_written_only_by_disable_restore_rule_end": true,
+       "c_no_early_stop_in_declaration": true,
+       "capture:loop:boyd_after_esso_update_before_aa": true,
+       "capture:loop:boyd_call_once_per_cycle": true,
+       "capture:loop:boyd_metrics_passed_to_penalties": true,
+       "capture:model_source:network": true,
+       "capture:model_source:shared_energy_storage_data": true,
+       "capture:source:boyd_channel_fields": true,
+       "capture:source:ess_consensus_four_copies": true,
+       "capture:source:ess_copies_written_from_models": true,
+       "capture:source:esso_not_in_gross_Q": true,
+       "capture:source:q_blocks_tso_dso_salvage": true,
+       "capture:source:q_components_classified_total": true,
+       "capture:source:q_gross_is_tso_plus_dso": true,
+       "capture:writer_is_gate_result_io": true,
+       "d_spec_cap_equals_the_cell_cap": true,
+       "e_original_record_hashes_holds_1_N_old_first_pass_k0": true,
+       "efc_read_once_per_cycle_after_penalties_before_the_row": true,
+       "f_rule_class_callable": true,
+       "f_rule_constants_equal_settling_criterion_v2": true,
+       "h_lambda_t_capture_path": true,
+       "loop_exit_is_the_convergence_break": true,
+       "signature:_anderson_acceleration_cycle_step": true,
+       "signature:_apply_convergence_depth_tail": true,
+       "signature:_capture_convergence_depth_tail_baseline": true,
+       "signature:_convergence_depth_tail_next_state": true,
+       "signature:_get_admm_efc_per_day_max": true,
+       "signature:_get_operational_recourse_components": true,
+       "signature:_update_admm_penalties": true,
+       "signature:get_admm_boyd_residual_metrics": true,
+       "t_sum:gates:terminal_identity_and_pf_stride_use_the_same_copies_and_weight": true,
+       "t_sum:signature:_expected_market_price": true,
+       "t_sum:signature:_get_admm_block_weight": true,
+       "t_sum:source:block_weight_definition": true,
+       "t_sum:source:expected_price_definition": true,
+       "t_sum:source:pf_consensus_layout": true,
+       "t_sum:source:reporting_detail_price": true,
+       "tail_enabled_for_this_run": true
+      },
+      "negative_controls": {
+       "aa_off": "refused: W118 settling-resettle preconditions fail (before any solve): ['a_anderson_acceleration_on']",
+       "cap_wrong": "refused: W118 settling-resettle preconditions fail (before any solve): ['d_spec_cap_equals_the_cell_cap']",
+       "tail_off": "refused: W118 settling-resettle preconditions fail (before any solve): ['tail_enabled_for_this_run']"
+      },
+      "ok": true,
+      "validator_refuses": {
+       "abort_false": "settling_resettle differs from the W118 declaration of pb_y2030_n5 on ['abort_on_replay_divergence']",
+       "cap_rule_changed": "settling_resettle differs from the W118 declaration of pb_y2030_n5 on ['cap_rule']",
+       "early_stop_key": "settling_resettle must NOT carry ['early_stop'] (the settling rule is the only stop before the cap)",
+       "extra_key": "settling_resettle must have exactly ['N_old', 'abort_on_replay_divergence', 'cap_rule', 'captures', 'cell', 'first_residual_pass_expected', 'gate', 'group', 'ho",
+       "gap_bound_tau": "settling_resettle differs from the W118 declaration of pb_y2030_n5 on ['settling_rule']",
+       "no_reference": "settling_resettle differs from the W118 declaration of pb_y2030_n5 on ['replay_reference']",
+       "p_max_22": "settling_resettle differs from the W118 declaration of pb_y2030_n5 on ['settling_rule']",
+       "rule_module_v1": "settling_resettle differs from the W118 declaration of pb_y2030_n5 on ['settling_rule']",
+       "unknown_cell": "settling_resettle.cell must be one of ['f2_challenger', 'f2_incumbent', 'pb_y2025_n5', 'pb_y2025_n7', 'pb_y2025_n9', 'pb_y2030_n5', 'pb_y2030_n7', 'pb_y2030_n9'",
+       "wrong_k0": "settling_resettle differs from the W118 declaration of pb_y2030_n5 on ['first_residual_pass_expected']",
+       "wrong_sha": "settling_resettle differs from the W118 declaration of pb_y2030_n5 on ['replay_reference']"
+      }
+     },
+     "pb_y2030_n7": {
+      "checklist": {
+       "a_aa_step_called_with_boyd_metrics": true,
+       "a_anderson_acceleration_on": true,
+       "a_boyd_all_pass_key_in_production": true,
+       "aa_off_literal_is_production": true,
+       "b_source_order_aa_step_lt_recourse_lt_convergence_test": true,
+       "block_functions_callable": true,
+       "c_certificate_length_read_only_by_the_loop_test_the_record_and_the_print": true,
+       "c_certificate_length_written_only_by_disable_restore_rule_end": true,
+       "c_no_early_stop_in_declaration": true,
+       "capture:loop:boyd_after_esso_update_before_aa": true,
+       "capture:loop:boyd_call_once_per_cycle": true,
+       "capture:loop:boyd_metrics_passed_to_penalties": true,
+       "capture:model_source:network": true,
+       "capture:model_source:shared_energy_storage_data": true,
+       "capture:source:boyd_channel_fields": true,
+       "capture:source:ess_consensus_four_copies": true,
+       "capture:source:ess_copies_written_from_models": true,
+       "capture:source:esso_not_in_gross_Q": true,
+       "capture:source:q_blocks_tso_dso_salvage": true,
+       "capture:source:q_components_classified_total": true,
+       "capture:source:q_gross_is_tso_plus_dso": true,
+       "capture:writer_is_gate_result_io": true,
+       "d_spec_cap_equals_the_cell_cap": true,
+       "e_original_record_hashes_holds_1_N_old_first_pass_k0": true,
+       "efc_read_once_per_cycle_after_penalties_before_the_row": true,
+       "f_rule_class_callable": true,
+       "f_rule_constants_equal_settling_criterion_v2": true,
+       "h_lambda_t_capture_path": true,
+       "loop_exit_is_the_convergence_break": true,
+       "signature:_anderson_acceleration_cycle_step": true,
+       "signature:_apply_convergence_depth_tail": true,
+       "signature:_capture_convergence_depth_tail_baseline": true,
+       "signature:_convergence_depth_tail_next_state": true,
+       "signature:_get_admm_efc_per_day_max": true,
+       "signature:_get_operational_recourse_components": true,
+       "signature:_update_admm_penalties": true,
+       "signature:get_admm_boyd_residual_metrics": true,
+       "t_sum:gates:terminal_identity_and_pf_stride_use_the_same_copies_and_weight": true,
+       "t_sum:signature:_expected_market_price": true,
+       "t_sum:signature:_get_admm_block_weight": true,
+       "t_sum:source:block_weight_definition": true,
+       "t_sum:source:expected_price_definition": true,
+       "t_sum:source:pf_consensus_layout": true,
+       "t_sum:source:reporting_detail_price": true,
+       "tail_enabled_for_this_run": true
+      },
+      "negative_controls": {
+       "aa_off": "refused: W118 settling-resettle preconditions fail (before any solve): ['a_anderson_acceleration_on']",
+       "cap_wrong": "refused: W118 settling-resettle preconditions fail (before any solve): ['d_spec_cap_equals_the_cell_cap']",
+       "tail_off": "refused: W118 settling-resettle preconditions fail (before any solve): ['tail_enabled_for_this_run']"
+      },
+      "ok": true,
+      "validator_refuses": {
+       "abort_false": "settling_resettle differs from the W118 declaration of pb_y2030_n7 on ['abort_on_replay_divergence']",
+       "cap_rule_changed": "settling_resettle differs from the W118 declaration of pb_y2030_n7 on ['cap_rule']",
+       "early_stop_key": "settling_resettle must NOT carry ['early_stop'] (the settling rule is the only stop before the cap)",
+       "extra_key": "settling_resettle must have exactly ['N_old', 'abort_on_replay_divergence', 'cap_rule', 'captures', 'cell', 'first_residual_pass_expected', 'gate', 'group', 'ho",
+       "gap_bound_tau": "settling_resettle differs from the W118 declaration of pb_y2030_n7 on ['settling_rule']",
+       "no_reference": "settling_resettle differs from the W118 declaration of pb_y2030_n7 on ['replay_reference']",
+       "p_max_22": "settling_resettle differs from the W118 declaration of pb_y2030_n7 on ['settling_rule']",
+       "rule_module_v1": "settling_resettle differs from the W118 declaration of pb_y2030_n7 on ['settling_rule']",
+       "unknown_cell": "settling_resettle.cell must be one of ['f2_challenger', 'f2_incumbent', 'pb_y2025_n5', 'pb_y2025_n7', 'pb_y2025_n9', 'pb_y2030_n5', 'pb_y2030_n7', 'pb_y2030_n9'",
+       "wrong_k0": "settling_resettle differs from the W118 declaration of pb_y2030_n7 on ['first_residual_pass_expected']",
+       "wrong_sha": "settling_resettle differs from the W118 declaration of pb_y2030_n7 on ['replay_reference']"
+      }
+     },
+     "pb_y2030_n9": {
+      "checklist": {
+       "a_aa_step_called_with_boyd_metrics": true,
+       "a_anderson_acceleration_on": true,
+       "a_boyd_all_pass_key_in_production": true,
+       "aa_off_literal_is_production": true,
+       "b_source_order_aa_step_lt_recourse_lt_convergence_test": true,
+       "block_functions_callable": true,
+       "c_certificate_length_read_only_by_the_loop_test_the_record_and_the_print": true,
+       "c_certificate_length_written_only_by_disable_restore_rule_end": true,
+       "c_no_early_stop_in_declaration": true,
+       "capture:loop:boyd_after_esso_update_before_aa": true,
+       "capture:loop:boyd_call_once_per_cycle": true,
+       "capture:loop:boyd_metrics_passed_to_penalties": true,
+       "capture:model_source:network": true,
+       "capture:model_source:shared_energy_storage_data": true,
+       "capture:source:boyd_channel_fields": true,
+       "capture:source:ess_consensus_four_copies": true,
+       "capture:source:ess_copies_written_from_models": true,
+       "capture:source:esso_not_in_gross_Q": true,
+       "capture:source:q_blocks_tso_dso_salvage": true,
+       "capture:source:q_components_classified_total": true,
+       "capture:source:q_gross_is_tso_plus_dso": true,
+       "capture:writer_is_gate_result_io": true,
+       "d_spec_cap_equals_the_cell_cap": true,
+       "e_original_record_hashes_holds_1_N_old_first_pass_k0": true,
+       "efc_read_once_per_cycle_after_penalties_before_the_row": true,
+       "f_rule_class_callable": true,
+       "f_rule_constants_equal_settling_criterion_v2": true,
+       "h_lambda_t_capture_path": true,
+       "loop_exit_is_the_convergence_break": true,
+       "signature:_anderson_acceleration_cycle_step": true,
+       "signature:_apply_convergence_depth_tail": true,
+       "signature:_capture_convergence_depth_tail_baseline": true,
+       "signature:_convergence_depth_tail_next_state": true,
+       "signature:_get_admm_efc_per_day_max": true,
+       "signature:_get_operational_recourse_components": true,
+       "signature:_update_admm_penalties": true,
+       "signature:get_admm_boyd_residual_metrics": true,
+       "t_sum:gates:terminal_identity_and_pf_stride_use_the_same_copies_and_weight": true,
+       "t_sum:signature:_expected_market_price": true,
+       "t_sum:signature:_get_admm_block_weight": true,
+       "t_sum:source:block_weight_definition": true,
+       "t_sum:source:expected_price_definition": true,
+       "t_sum:source:pf_consensus_layout": true,
+       "t_sum:source:reporting_detail_price": true,
+       "tail_enabled_for_this_run": true
+      },
+      "negative_controls": {
+       "aa_off": "refused: W118 settling-resettle preconditions fail (before any solve): ['a_anderson_acceleration_on']",
+       "cap_wrong": "refused: W118 settling-resettle preconditions fail (before any solve): ['d_spec_cap_equals_the_cell_cap']",
+       "tail_off": "refused: W118 settling-resettle preconditions fail (before any solve): ['tail_enabled_for_this_run']"
+      },
+      "ok": true,
+      "validator_refuses": {
+       "abort_false": "settling_resettle differs from the W118 declaration of pb_y2030_n9 on ['abort_on_replay_divergence']",
+       "cap_rule_changed": "settling_resettle differs from the W118 declaration of pb_y2030_n9 on ['cap_rule']",
+       "early_stop_key": "settling_resettle must NOT carry ['early_stop'] (the settling rule is the only stop before the cap)",
+       "extra_key": "settling_resettle must have exactly ['N_old', 'abort_on_replay_divergence', 'cap_rule', 'captures', 'cell', 'first_residual_pass_expected', 'gate', 'group', 'ho",
+       "gap_bound_tau": "settling_resettle differs from the W118 declaration of pb_y2030_n9 on ['settling_rule']",
+       "no_reference": "settling_resettle differs from the W118 declaration of pb_y2030_n9 on ['replay_reference']",
+       "p_max_22": "settling_resettle differs from the W118 declaration of pb_y2030_n9 on ['settling_rule']",
+       "rule_module_v1": "settling_resettle differs from the W118 declaration of pb_y2030_n9 on ['settling_rule']",
+       "unknown_cell": "settling_resettle.cell must be one of ['f2_challenger', 'f2_incumbent', 'pb_y2025_n5', 'pb_y2025_n7', 'pb_y2025_n9', 'pb_y2030_n5', 'pb_y2030_n7', 'pb_y2030_n9'",
+       "wrong_k0": "settling_resettle differs from the W118 declaration of pb_y2030_n9 on ['first_residual_pass_expected']",
+       "wrong_sha": "settling_resettle differs from the W118 declaration of pb_y2030_n9 on ['replay_reference']"
+      }
+     },
+     "yl_y2030": {
+      "checklist": {
+       "a_aa_step_called_with_boyd_metrics": true,
+       "a_anderson_acceleration_on": true,
+       "a_boyd_all_pass_key_in_production": true,
+       "aa_off_literal_is_production": true,
+       "b_source_order_aa_step_lt_recourse_lt_convergence_test": true,
+       "block_functions_callable": true,
+       "c_certificate_length_read_only_by_the_loop_test_the_record_and_the_print": true,
+       "c_certificate_length_written_only_by_disable_restore_rule_end": true,
+       "c_no_early_stop_in_declaration": true,
+       "capture:loop:boyd_after_esso_update_before_aa": true,
+       "capture:loop:boyd_call_once_per_cycle": true,
+       "capture:loop:boyd_metrics_passed_to_penalties": true,
+       "capture:model_source:network": true,
+       "capture:model_source:shared_energy_storage_data": true,
+       "capture:source:boyd_channel_fields": true,
+       "capture:source:ess_consensus_four_copies": true,
+       "capture:source:ess_copies_written_from_models": true,
+       "capture:source:esso_not_in_gross_Q": true,
+       "capture:source:q_blocks_tso_dso_salvage": true,
+       "capture:source:q_components_classified_total": true,
+       "capture:source:q_gross_is_tso_plus_dso": true,
+       "capture:writer_is_gate_result_io": true,
+       "d_spec_cap_equals_the_cell_cap": true,
+       "efc_read_once_per_cycle_after_penalties_before_the_row": true,
+       "f_rule_class_callable": true,
+       "f_rule_constants_equal_settling_criterion_v2": true,
+       "h_lambda_t_capture_path": true,
+       "loop_exit_is_the_convergence_break": true,
+       "signature:_anderson_acceleration_cycle_step": true,
+       "signature:_apply_convergence_depth_tail": true,
+       "signature:_capture_convergence_depth_tail_baseline": true,
+       "signature:_convergence_depth_tail_next_state": true,
+       "signature:_get_admm_efc_per_day_max": true,
+       "signature:_get_operational_recourse_components": true,
+       "signature:_update_admm_penalties": true,
+       "signature:get_admm_boyd_residual_metrics": true,
+       "t_sum:gates:terminal_identity_and_pf_stride_use_the_same_copies_and_weight": true,
+       "t_sum:signature:_expected_market_price": true,
+       "t_sum:signature:_get_admm_block_weight": true,
+       "t_sum:source:block_weight_definition": true,
+       "t_sum:source:expected_price_definition": true,
+       "t_sum:source:pf_consensus_layout": true,
+       "t_sum:source:reporting_detail_price": true,
+       "tail_enabled_for_this_run": true
+      },
+      "negative_controls": {
+       "aa_off": "refused: W118 settling-resettle preconditions fail (before any solve): ['a_anderson_acceleration_on']",
+       "cap_wrong": "refused: W118 settling-resettle preconditions fail (before any solve): ['d_spec_cap_equals_the_cell_cap']",
+       "tail_off": "refused: W118 settling-resettle preconditions fail (before any solve): ['tail_enabled_for_this_run']"
+      },
+      "ok": true,
+      "validator_refuses": {
+       "abort_true": "settling_resettle differs from the W118 declaration of yl_y2030 on ['abort_on_replay_divergence']",
+       "cap_rule_changed": "settling_resettle differs from the W118 declaration of yl_y2030 on ['cap_rule']",
+       "early_stop_key": "settling_resettle must NOT carry ['early_stop'] (the settling rule is the only stop before the cap)",
+       "extra_key": "settling_resettle must have exactly ['N_old', 'abort_on_replay_divergence', 'cap_rule', 'captures', 'cell', 'first_residual_pass_expected', 'gate', 'group', 'ho",
+       "gap_bound_tau": "settling_resettle differs from the W118 declaration of yl_y2030 on ['settling_rule']",
+       "invented_reference": "settling_resettle differs from the W118 declaration of yl_y2030 on ['replay_reference']",
+       "p_max_22": "settling_resettle differs from the W118 declaration of yl_y2030 on ['settling_rule']",
+       "rule_module_v1": "settling_resettle differs from the W118 declaration of yl_y2030 on ['settling_rule']",
+       "unknown_cell": "settling_resettle.cell must be one of ['f2_challenger', 'f2_incumbent', 'pb_y2025_n5', 'pb_y2025_n7', 'pb_y2025_n9', 'pb_y2030_n5', 'pb_y2030_n7', 'pb_y2030_n9'"
+      }
+     },
+     "yl_y2035": {
+      "checklist": {
+       "a_aa_step_called_with_boyd_metrics": true,
+       "a_anderson_acceleration_on": true,
+       "a_boyd_all_pass_key_in_production": true,
+       "aa_off_literal_is_production": true,
+       "b_source_order_aa_step_lt_recourse_lt_convergence_test": true,
+       "block_functions_callable": true,
+       "c_certificate_length_read_only_by_the_loop_test_the_record_and_the_print": true,
+       "c_certificate_length_written_only_by_disable_restore_rule_end": true,
+       "c_no_early_stop_in_declaration": true,
+       "capture:loop:boyd_after_esso_update_before_aa": true,
+       "capture:loop:boyd_call_once_per_cycle": true,
+       "capture:loop:boyd_metrics_passed_to_penalties": true,
+       "capture:model_source:network": true,
+       "capture:model_source:shared_energy_storage_data": true,
+       "capture:source:boyd_channel_fields": true,
+       "capture:source:ess_consensus_four_copies": true,
+       "capture:source:ess_copies_written_from_models": true,
+       "capture:source:esso_not_in_gross_Q": true,
+       "capture:source:q_blocks_tso_dso_salvage": true,
+       "capture:source:q_components_classified_total": true,
+       "capture:source:q_gross_is_tso_plus_dso": true,
+       "capture:writer_is_gate_result_io": true,
+       "d_spec_cap_equals_the_cell_cap": true,
+       "efc_read_once_per_cycle_after_penalties_before_the_row": true,
+       "f_rule_class_callable": true,
+       "f_rule_constants_equal_settling_criterion_v2": true,
+       "h_lambda_t_capture_path": true,
+       "loop_exit_is_the_convergence_break": true,
+       "signature:_anderson_acceleration_cycle_step": true,
+       "signature:_apply_convergence_depth_tail": true,
+       "signature:_capture_convergence_depth_tail_baseline": true,
+       "signature:_convergence_depth_tail_next_state": true,
+       "signature:_get_admm_efc_per_day_max": true,
+       "signature:_get_operational_recourse_components": true,
+       "signature:_update_admm_penalties": true,
+       "signature:get_admm_boyd_residual_metrics": true,
+       "t_sum:gates:terminal_identity_and_pf_stride_use_the_same_copies_and_weight": true,
+       "t_sum:signature:_expected_market_price": true,
+       "t_sum:signature:_get_admm_block_weight": true,
+       "t_sum:source:block_weight_definition": true,
+       "t_sum:source:expected_price_definition": true,
+       "t_sum:source:pf_consensus_layout": true,
+       "t_sum:source:reporting_detail_price": true,
+       "tail_enabled_for_this_run": true
+      },
+      "negative_controls": {
+       "aa_off": "refused: W118 settling-resettle preconditions fail (before any solve): ['a_anderson_acceleration_on']",
+       "cap_wrong": "refused: W118 settling-resettle preconditions fail (before any solve): ['d_spec_cap_equals_the_cell_cap']",
+       "tail_off": "refused: W118 settling-resettle preconditions fail (before any solve): ['tail_enabled_for_this_run']"
+      },
+      "ok": true,
+      "validator_refuses": {
+       "abort_true": "settling_resettle differs from the W118 declaration of yl_y2035 on ['abort_on_replay_divergence']",
+       "cap_rule_changed": "settling_resettle differs from the W118 declaration of yl_y2035 on ['cap_rule']",
+       "early_stop_key": "settling_resettle must NOT carry ['early_stop'] (the settling rule is the only stop before the cap)",
+       "extra_key": "settling_resettle must have exactly ['N_old', 'abort_on_replay_divergence', 'cap_rule', 'captures', 'cell', 'first_residual_pass_expected', 'gate', 'group', 'ho",
+       "gap_bound_tau": "settling_resettle differs from the W118 declaration of yl_y2035 on ['settling_rule']",
+       "invented_reference": "settling_resettle differs from the W118 declaration of yl_y2035 on ['replay_reference']",
+       "p_max_22": "settling_resettle differs from the W118 declaration of yl_y2035 on ['settling_rule']",
+       "rule_module_v1": "settling_resettle differs from the W118 declaration of yl_y2035 on ['settling_rule']",
+       "unknown_cell": "settling_resettle.cell must be one of ['f2_challenger', 'f2_incumbent', 'pb_y2025_n5', 'pb_y2025_n7', 'pb_y2025_n9', 'pb_y2030_n5', 'pb_y2030_n7', 'pb_y2030_n9'"
+      }
+     }
+    },
+    "holds": true
+   },
+   "wall_s": 2.1266109943389893
+  },
+  "R": {
+   "holds": true,
+   "result": {
+    "holds": true,
+    "tests": {
+     "R1_c_star_extension_1_287_never_certifies": {
+      "N_first_k0": 78,
+      "T": [
+       [
+        88,
+        "min",
+        650911261.587111
+       ],
+       [
+        99,
+        "max",
+        650941147.1849856
+       ]
+      ],
+      "band": [
+       650891816.5397184,
+       650899612.1197592
+      ],
+      "band_width": 7795.580040812492,
+      "cycles_where_a_branch_held_but_the_gap_refused": [],
+      "dQ_cc_rate_mean_last_25": -66.28154879429043,
+      "drift_rate_mean_dQ_last_25": -116.31221552848815,
+      "gap_refusals": [],
+      "k0": 78,
+      "n_turning_points": 2,
+      "ok": true,
+      "reasons": [
+       "insufficient_turning_points",
+       "range_above_tau",
+       "monotone_last_step_times_L_above_tau"
+      ],
+      "status": "uncertified",
+      "t_sum_at_287": 15615.698982591444,
+      "terminal_validation": {
+       "abs_diff": 3.625809767981991e-07,
+       "cycles_run_in_detail": 287,
+       "last_cycle": 287,
+       "pass": true,
+       "t_sum_from_stride": 15615.698982591444,
+       "terminal_t_tso_plus_t_dso": 15615.698982954025,
+       "tol_eur": 0.01
+      }
+     },
+     "R2_x0_W102_1_181": {
+      "N_first_k0": 123,
+      "Q_at_k_star": 653873702.1876609,
+      "band_width_v2": 4209.1713362932205,
+      "branch_v2": "oscillatory",
+      "branch_version_1": "oscillatory",
+      "gap_refusal_cycles": [],
+      "k0": 123,
+      "k_star_v2": 181,
+      "k_star_version_1_certificate": 181,
+      "ok": true,
+      "range_over_tau_v2": 0.9273205603617451,
+      "report_only": true,
+      "same_cycle_as_version_1": true,
+      "status_within_record": "certified",
+      "t_sum_at_k_star": 142.52829395444053,
+      "terminal_validation": {
+       "abs_diff": 1.0640280834195437e-07,
+       "cycles_run_in_detail": 181,
+       "last_cycle": 181,
+       "pass": true,
+       "t_sum_from_stride": 142.52829395444053,
+       "terminal_t_tso_plus_t_dso": 142.52829384803772,
+       "tol_eur": 0.01
+      },
+      "uncertified_reasons_at_record_end": null
+     },
+     "R3_unit_W103_1_172": {
+      "N_first_k0": 103,
+      "Q_at_k_star": 653620162.5657823,
+      "band_width_v2": 4351.407173395157,
+      "branch_v2": "oscillatory",
+      "branch_version_1": "oscillatory",
+      "gap_refusal_cycles": [],
+      "k0": 103,
+      "k_star_v2": 172,
+      "k_star_version_1_certificate": 172,
+      "ok": true,
+      "range_over_tau_v2": 0.9586564708360014,
+      "report_only": true,
+      "same_cycle_as_version_1": true,
+      "status_within_record": "certified",
+      "t_sum_at_k_star": 662.9971061576365,
+      "terminal_validation": {
+       "abs_diff": 8.234962933784118e-08,
+       "cycles_run_in_detail": 172,
+       "last_cycle": 172,
+       "pass": true,
+       "t_sum_from_stride": 662.9971061576365,
+       "terminal_t_tso_plus_t_dso": 662.9971060752869,
+       "tol_eur": 0.01
+      },
+      "uncertified_reasons_at_record_end": null
+     }
+    }
+   },
+   "wall_s": 4.294877290725708
+  },
+  "V": {
+   "holds": true,
+   "result": {
+    "holds": true,
+    "tests": {
+     "T10_growing_oscillation": {
+      "ok": true,
+      "reasons": [
+       "swings_growing",
+       "range_above_tau",
+       "monotone_window_not_reached"
+      ]
+     },
+     "T11_jitter": {
+      "ok": true,
+      "pm20_stationary": {
+       "branch": "monotone",
+       "k_star": 63
+      },
+      "pm60_equal_amplitudes": {
+       "branch": "oscillatory",
+       "k_star": 20
+      }
+     },
+     "T12_plus500_zero_minus500": {
+      "ok": true,
+      "sign_change_cycles": [
+       8
+      ]
+     },
+     "T1_x0_trunc_72": {
+      "expected": {
+       "T": [
+        [
+         66,
+         "max"
+        ]
+       ],
+       "reason": "insufficient_turning_points"
+      },
+      "got": {
+       "A": [],
+       "N": 63,
+       "T": [
+        [
+         66,
+         "max"
+        ]
+       ],
+       "certified_at": [],
+       "k0": 63,
+       "reasons": [
+        "insufficient_turning_points",
+        "monotone_window_not_reached"
+       ],
+       "status": "uncertified"
+      },
+      "ok": true
+     },
+     "T2_x0_trunc_77": {
+      "expected": {
+       "T": [
+        [
+         66,
+         "max"
+        ]
+       ],
+       "reason": "insufficient_turning_points"
+      },
+      "got": {
+       "A": [],
+       "N": 63,
+       "T": [
+        [
+         66,
+         "max"
+        ]
+       ],
+       "certified_at": [],
+       "k0": 63,
+       "reasons": [
+        "insufficient_turning_points",
+        "monotone_window_not_reached"
+       ],
+       "status": "uncertified"
+      },
+      "ok": true
+     },
+     "T3_x0_trunc_86": {
+      "expected": {
+       "A_rounded": [
+        29140
+       ],
+       "T": [
+        [
+         66,
+         "max"
+        ],
+        [
+         77,
+         "min"
+        ]
+       ],
+       "reason": "insufficient_turning_points"
+      },
+      "got": {
+       "A": [
+        29139.8967525959
+       ],
+       "N": 63,
+       "T": [
+        [
+         66,
+         "max"
+        ],
+        [
+         77,
+         "min"
+        ]
+       ],
+       "certified_at": [],
+       "k0": 63,
+       "reasons": [
+        "insufficient_turning_points",
+        "monotone_window_not_reached"
+       ],
+       "status": "uncertified"
+      },
+      "ok": true
+     },
+     "T4_x0_trunc_88": {
+      "expected": {
+       "A_rounded": [
+        29140,
+        7824
+       ],
+       "T": [
+        [
+         66,
+         "max"
+        ],
+        [
+         77,
+         "min"
+        ],
+        [
+         86,
+         "max"
+        ]
+       ],
+       "reason": "range_above_tau"
+      },
+      "got": {
+       "A": [
+        29139.8967525959,
+        7824.217131137848
+       ],
+       "N": 63,
+       "P_hat": 20,
+       "T": [
+        [
+         66,
+         "max"
+        ],
+        [
+         77,
+         "min"
+        ],
+        [
+         86,
+         "max"
+        ]
+       ],
+       "W": 22,
+       "certified_at": [],
+       "k0": 63,
+       "range": 28130.184715390205,
+       "reasons": [
+        "range_above_tau",
+        "monotone_window_not_reached"
+       ],
+       "status": "uncertified",
+       "window": [
+        67,
+        88
+       ]
+      },
+      "ok": true
+     },
+     "T5_node7_1_69": {
+      "T": [
+       [
+        65,
+        "max"
+       ]
+      ],
+      "k0": 60,
+      "ok": true,
+      "status": "uncertified"
+     },
+     "T6_damped_cosine": {
+      "P_hat": 20,
+      "branch": "oscillatory",
+      "k_star": 46,
+      "k_star_version_1": 46,
+      "ok": true,
+      "range": 4063.091553211212
+     },
+     "T7_damped_cosine_lapse_at_k0_plus_25": {
+      "N_first_k0": 11,
+      "k0_after_reset": 37,
+      "k_star": 99,
+      "ok": true
+     },
+     "T8_constant_creep_minus_80": {
+      "band_width": 4720.0,
+      "drift": -80.0,
+      "ok": true,
+      "reasons": [
+       "insufficient_turning_points",
+       "range_above_tau",
+       "monotone_not_decreasing",
+       "monotone_last_step_times_L_above_tau"
+      ]
+     },
+     "T9_decaying_creep": {
+      "expected_k_star_k0_plus_K_EXCL_plus_L_minus_1": 63,
+      "k_star": 63,
+      "last_step_times_L": 1361.7269539833069,
+      "ok": true,
+      "range": 3692.644525051117
+     },
+     "V0_settling_criterion_v1_byte_identical": {
+      "ok": true,
+      "pinned": {
+       "v39": "fbe5550b34a4062feed82476e1959b5e4e2786cb13ca61728bfa1803ba75f65f",
+       "v41": "fbe5550b34a4062feed82476e1959b5e4e2786cb13ca61728bfa1803ba75f65f"
+      },
+      "sha256_now": "fbe5550b34a4062feed82476e1959b5e4e2786cb13ca61728bfa1803ba75f65f"
+     },
+     "V13_gap_clause_refusal_then_certification": {
+      "first_refusal": {
+       "abs_t_sum": 3000.0,
+       "branch": "oscillatory",
+       "cycle": 46,
+       "gap_bound": 2269.5341375000003,
+       "t_sum": 3000.0
+      },
+      "k_star_with_gap": 52,
+      "k_star_without_gap": 46,
+      "n_refusals": 6,
+      "ok": true,
+      "t_sum_k_star": -100.0
+     },
+     "V13b_gap_never_closes_uncertified": {
+      "n_refusals": 155,
+      "ok": true,
+      "reasons": [
+       "gap_clause"
+      ],
+      "t_sum_at_cap": 3000.0
+     },
+     "V13c_t_sum_missing_fails_the_clause": {
+      "k_star": 47,
+      "ok": true,
+      "refusals": [
+       {
+        "abs_t_sum": null,
+        "branch": "oscillatory",
+        "cycle": 46,
+        "gap_bound": 2269.5341375000003,
+        "t_sum": null
+       }
+      ]
+     },
+     "V14_monotone_refuses_c_star_188_287": {
+      "at_287": {
+       "last_step_abs": 111.10338854789734,
+       "last_step_times_L": 6666.20331287384,
+       "range": 7795.580040812492,
+       "range_le_tau": false,
+       "steps_decreasing": true,
+       "strictly_decreasing": true,
+       "tau": 4539.0682750000005
+      },
+      "cycles_mapped": "188..287 -> 1..100 (boyd True, t_sum 0: the monotone clause isolated)",
+      "first_reached_cycle_original_numbering": 250,
+      "literal_reading_refuses_on_the_new_clause_alone": true,
+      "n_cycles_monotone_window_reached_without_sign_change": 38,
+      "ok": true,
+      "reasons_at_287": [
+       "insufficient_turning_points",
+       "range_above_tau",
+       "monotone_last_step_times_L_above_tau"
+      ],
+      "sign_changes_in_window": []
+     },
+     "V15_monotone_certifies_fast_geometric_decay": {
+      "k_star": 63,
+      "last_step_times_L": 4.291534423828125e-05,
+      "ok": true,
+      "range": 2400.999998688698
+     },
+     "V16_uncertified_form": {
+      "decision": {
+       "Q_cc_at_cap": 999991680.0,
+       "band": [
+        999990480.0,
+        999995200.0
+       ],
+       "band_width": 4720.0,
+       "band_window": [
+        61,
+        120
+       ],
+       "dQ_cc_rate_mean_last_25": -70.0,
+       "drift_rate_mean_dQ_last_25": -80.0,
+       "k_cap": 120,
+       "reasons": [
+        "insufficient_turning_points",
+        "range_above_tau",
+        "monotone_not_decreasing",
+        "monotone_last_step_times_L_above_tau"
+       ],
+       "t_sum_at_cap": 1200.0
+      },
+      "form_fields": [
+       "band",
+       "band_width",
+       "band_window",
+       "drift_rate_mean_dQ_last_25",
+       "dQ_cc_rate_mean_last_25",
+       "t_sum_at_cap",
+       "Q_cc_at_cap",
+       "reasons",
+       "k_cap"
+      ],
+      "ok": true
+     },
+     "V17_dynamic_cap": {
+      "first_pass_250_cap_ceiling": 300,
+      "first_pass_50_cap": 159,
+      "no_pass_cap": 300,
+      "no_pass_reasons": [
+       "no_residual_pass"
+      ],
+      "ok": true
+     }
+    }
+   },
+   "wall_s": 0.04706597328186035
+  }
+ },
+ "started_utc": "2026-09-28T16:47:57.270349+00:00",
+ "task": "W118 (PLANNER_BRIEF_2026-09-13.md Addendum 57 Decisions 2 and 3; Addendum 54 Ruling 2)"
+}

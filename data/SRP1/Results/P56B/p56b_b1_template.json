@@ -1,0 +1,595 @@
+{
+ "stage": "P5.6-B1",
+ "provenance": {
+  "timestamp_utc": "2026-09-08T13:39:39.571809+00:00",
+  "git_head": "721f0b4d591f1575191eb7d00f650d71a144a2f1",
+  "sys_executable": "/opt/anaconda3/envs/opf_env_py311/bin/python",
+  "conda_default_env": null,
+  "conda_env_from_path": "opf_env_py311",
+  "python_version": "3.11.11",
+  "numpy_version": "2.4.2",
+  "pandas_version": "3.0.0",
+  "scipy_version": "1.17.0",
+  "pyomo_version": "6.9.5",
+  "ipopt": {
+   "path": "/usr/local/bin/ipopt",
+   "version": "3.14.18",
+   "exists": true,
+   "banner": "Ipopt 3.14.18 (aarch64-apple-darwin24.5.0), ASL(20241111)"
+  },
+  "hsl_linear_solver": "ma97",
+  "gurobi": {
+   "gurobipy": "13.0.1",
+   "gurobi_runtime": "13.0.1",
+   "licence": "ACADEMIC",
+   "licence_expiry": "2027-04-10",
+   "available": true,
+   "licence_id": "2805683",
+   "licence_version": "13"
+  },
+  "scenario_checksum": "5a02b77ccbbbbbb869de92958a3851d095624711abc2dbfc0157466064410358",
+  "canonical_checksum": "5a02b77ccbbbbbb869de92958a3851d095624711abc2dbfc0157466064410358",
+  "checksum_matches_canonical": true,
+  "stage": "P5.6-B1 template"
+ },
+ "timestamp_utc": "2026-09-08T13:47:54.100288+00:00",
+ "stabilization_tolerance": 100.0,
+ "max_refinements": 5,
+ "anchor_policy": "midpoint-first-dso-fallback",
+ "refinements": [
+  {
+   "refinement": 0,
+   "template_used": "T0",
+   "certificate": {
+    "status": "VALID",
+    "master_feasible": true,
+    "interface_anchor": "midpoint",
+    "fallback_used": false,
+    "max_coordinated_residual": 1.1102230246251565e-16,
+    "esso_max_violation": 1.0502709812953981e-13,
+    "esso_production_violation": -3.239996180242487e-05,
+    "esso_production_feasible": true,
+    "network_max_violation": 1.5000220759397997e-05,
+    "network_h1_violation": 0.0,
+    "converter_capability_violation": 9.998696299213639e-09,
+    "physical_salvage": 3428.356254506647,
+    "gross_operational_cost": 827974518.7171049,
+    "net_operational_recourse": 827971090.3608505,
+    "investment_cost": 50000.0,
+    "total_objective": 828021090.3608505,
+    "admm_cycles": 2,
+    "admm_runtime_s": 66.35396409034729,
+    "polish_runtime_s": 27.945850133895874,
+    "wall_clock_s": 110.60007691383362
+   },
+   "fingerprint": {
+    "admm_cycles": 2,
+    "total_objective": 828021090.3608505,
+    "net_operational_recourse": 827971090.3608505,
+    "gross_operational_cost": 827974518.7171049,
+    "physical_salvage": 3428.356254506647,
+    "interface_anchor": "midpoint",
+    "fallback_used": false,
+    "dominant_blocks": [
+     {
+      "block": "TSO|2025|Summer",
+      "weighted_base_objective": 92952964.93433146
+     },
+     {
+      "block": "TSO|2025|Winter",
+      "weighted_base_objective": 85133062.67119631
+     },
+     {
+      "block": "TSO|2025|Spring",
+      "weighted_base_objective": 79043092.94719464
+     },
+     {
+      "block": "TSO|2025|Autumn",
+      "weighted_base_objective": 77811953.26713471
+     },
+     {
+      "block": "TSO|2030|Summer",
+      "weighted_base_objective": 69944067.75984293
+     }
+    ],
+    "available_capacity": {
+     "5|2025": {
+      "s_available": 0.010634892806127162,
+      "e_available": 0.016931728559667687
+     },
+     "5|2030": {
+      "s_available": 0.021269785612254323,
+      "e_available": 0.030547767695918077
+     },
+     "5|2035": {
+      "s_available": 0.03190467841838149,
+      "e_available": 0.04085907430881929
+     },
+     "7|2025": {
+      "s_available": 0.010634892806127162,
+      "e_available": 0.01695285699924951
+     },
+     "7|2030": {
+      "s_available": 0.021269785612254323,
+      "e_available": 0.030627396228311364
+     },
+     "7|2035": {
+      "s_available": 0.03190467841838149,
+      "e_available": 0.04095087878746688
+     },
+     "9|2025": {
+      "s_available": 0.010634892806127162,
+      "e_available": 0.016984373532358748
+     },
+     "9|2030": {
+      "s_available": 0.021269785612254323,
+      "e_available": 0.030629723494445423
+     },
+     "9|2035": {
+      "s_available": 0.03190467841838149,
+      "e_available": 0.04095329713819955
+     }
+    },
+    "max_coordinated_residual": 1.1102230246251565e-16,
+    "esso_max_violation": 1.0502709812953981e-13,
+    "network_max_violation": 1.5000220759397997e-05,
+    "network_h1_violation": 0.0
+   },
+   "interface_summary": {
+    "sum_abs_interface_p_pu": 309.82371629405856,
+    "sum_abs_interface_q_pu": 62.24506265948515,
+    "sum_abs_shared_ess_p_pu": 0.038102750721087986,
+    "sum_abs_shared_ess_q_pu": 1.4160389771652162e-05,
+    "sum_abs_interface_v_pu": 892.0559890333864,
+    "n_entries": 864
+   },
+   "total_objective": 828021090.3608505
+  },
+  {
+   "refinement": 1,
+   "template_used": "T1",
+   "certificate": {
+    "status": "VALID",
+    "master_feasible": true,
+    "interface_anchor": "midpoint",
+    "fallback_used": false,
+    "max_coordinated_residual": 1.1102230246251565e-16,
+    "esso_max_violation": 4.3168502106283313e-10,
+    "esso_production_violation": -3.23999618031682e-05,
+    "esso_production_feasible": true,
+    "network_max_violation": 1.2994872649746414e-05,
+    "network_h1_violation": 0.0,
+    "converter_capability_violation": 1.0768152224061023e-08,
+    "physical_salvage": 3422.7996449958696,
+    "gross_operational_cost": 827368741.3635893,
+    "net_operational_recourse": 827365318.5639443,
+    "investment_cost": 50000.0,
+    "total_objective": 827415318.5639443,
+    "admm_cycles": 1,
+    "admm_runtime_s": 45.593849182128906,
+    "polish_runtime_s": 22.70896625518799,
+    "wall_clock_s": 88.65134000778198
+   },
+   "fingerprint": {
+    "admm_cycles": 1,
+    "total_objective": 827415318.5639443,
+    "net_operational_recourse": 827365318.5639443,
+    "gross_operational_cost": 827368741.3635893,
+    "physical_salvage": 3422.7996449958696,
+    "interface_anchor": "midpoint",
+    "fallback_used": false,
+    "dominant_blocks": [
+     {
+      "block": "TSO|2025|Summer",
+      "weighted_base_objective": 93050571.60578145
+     },
+     {
+      "block": "TSO|2025|Winter",
+      "weighted_base_objective": 85137463.28538194
+     },
+     {
+      "block": "TSO|2025|Spring",
+      "weighted_base_objective": 78882107.28315558
+     },
+     {
+      "block": "TSO|2025|Autumn",
+      "weighted_base_objective": 77783638.23217288
+     },
+     {
+      "block": "TSO|2030|Summer",
+      "weighted_base_objective": 69943959.06428632
+     }
+    ],
+    "available_capacity": {
+     "5|2025": {
+      "s_available": 0.010634892806127162,
+      "e_available": 0.0169145194289781
+     },
+     "5|2030": {
+      "s_available": 0.021269785612254323,
+      "e_available": 0.03052293090456753
+     },
+     "5|2035": {
+      "s_available": 0.03190467841838149,
+      "e_available": 0.040830260841673
+     },
+     "7|2025": {
+      "s_available": 0.010634892806127162,
+      "e_available": 0.016933260938066474
+     },
+     "7|2030": {
+      "s_available": 0.021269785612254323,
+      "e_available": 0.030605278887960115
+     },
+     "7|2035": {
+      "s_available": 0.03190467841838149,
+      "e_available": 0.04092473031211703
+     },
+     "9|2025": {
+      "s_available": 0.010634892806127162,
+      "e_available": 0.01696852837862139
+     },
+     "9|2030": {
+      "s_available": 0.021269785612254323,
+      "e_available": 0.030611375507518697
+     },
+     "9|2035": {
+      "s_available": 0.03190467841838149,
+      "e_available": 0.04092953298728162
+     }
+    },
+    "max_coordinated_residual": 1.1102230246251565e-16,
+    "esso_max_violation": 4.3168502106283313e-10,
+    "network_max_violation": 1.2994872649746414e-05,
+    "network_h1_violation": 0.0
+   },
+   "interface_summary": {
+    "sum_abs_interface_p_pu": 309.80180233724843,
+    "sum_abs_interface_q_pu": 62.03799173200829,
+    "sum_abs_shared_ess_p_pu": 0.03816551453800886,
+    "sum_abs_shared_ess_q_pu": 1.4050703434564476e-05,
+    "sum_abs_interface_v_pu": 892.0626179915275,
+    "n_entries": 864
+   },
+   "total_objective": 827415318.5639443,
+   "delta_vs_previous": -605771.7969061136,
+   "within_tolerance": false,
+   "consecutive_within": 0
+  },
+  {
+   "refinement": 2,
+   "template_used": "T2",
+   "certificate": {
+    "status": "VALID",
+    "master_feasible": true,
+    "interface_anchor": "midpoint",
+    "fallback_used": false,
+    "max_coordinated_residual": 1.1102230246251565e-16,
+    "esso_max_violation": 9.969802761133906e-14,
+    "esso_production_violation": -3.2399961803820235e-05,
+    "esso_production_feasible": true,
+    "network_max_violation": 1.4185421759238537e-05,
+    "network_h1_violation": 0.0,
+    "converter_capability_violation": 9.998696328920726e-09,
+    "physical_salvage": 3417.6566836930415,
+    "gross_operational_cost": 826777446.5021619,
+    "net_operational_recourse": 826774028.8454782,
+    "investment_cost": 50000.0,
+    "total_objective": 826824028.8454782,
+    "admm_cycles": 1,
+    "admm_runtime_s": 47.89341902732849,
+    "polish_runtime_s": 23.25481390953064,
+    "wall_clock_s": 92.06389927864075
+   },
+   "fingerprint": {
+    "admm_cycles": 1,
+    "total_objective": 826824028.8454782,
+    "net_operational_recourse": 826774028.8454782,
+    "gross_operational_cost": 826777446.5021619,
+    "physical_salvage": 3417.6566836930415,
+    "interface_anchor": "midpoint",
+    "fallback_used": false,
+    "dominant_blocks": [
+     {
+      "block": "TSO|2025|Summer",
+      "weighted_base_objective": 93126683.78717701
+     },
+     {
+      "block": "TSO|2025|Winter",
+      "weighted_base_objective": 85139134.81628785
+     },
+     {
+      "block": "TSO|2025|Spring",
+      "weighted_base_objective": 78690230.50035267
+     },
+     {
+      "block": "TSO|2025|Autumn",
+      "weighted_base_objective": 77787006.49682802
+     },
+     {
+      "block": "TSO|2030|Summer",
+      "weighted_base_objective": 69898740.65864131
+     }
+    ],
+    "available_capacity": {
+     "5|2025": {
+      "s_available": 0.010634892806127162,
+      "e_available": 0.016902040937450874
+     },
+     "5|2030": {
+      "s_available": 0.021269785612254323,
+      "e_available": 0.030502859376598246
+     },
+     "5|2035": {
+      "s_available": 0.03190467841838149,
+      "e_available": 0.0408057327461781
+     },
+     "7|2025": {
+      "s_available": 0.010634892806127162,
+      "e_available": 0.016915099184950915
+     },
+     "7|2030": {
+      "s_available": 0.021269785612254323,
+      "e_available": 0.03058575605712967
+     },
+     "7|2035": {
+      "s_available": 0.03190467841838149,
+      "e_available": 0.04090136554531213
+     },
+     "9|2025": {
+      "s_available": 0.010634892806127162,
+      "e_available": 0.01695391551351327
+     },
+     "9|2030": {
+      "s_available": 0.021269785612254323,
+      "e_available": 0.030594572780128018
+     },
+     "9|2035": {
+      "s_available": 0.03190467841838149,
+      "e_available": 0.040906774113375996
+     }
+    },
+    "max_coordinated_residual": 1.1102230246251565e-16,
+    "esso_max_violation": 9.969802761133906e-14,
+    "network_max_violation": 1.4185421759238537e-05,
+    "network_h1_violation": 0.0
+   },
+   "interface_summary": {
+    "sum_abs_interface_p_pu": 309.75103008077554,
+    "sum_abs_interface_q_pu": 61.852761844402174,
+    "sum_abs_shared_ess_p_pu": 0.03822184518346125,
+    "sum_abs_shared_ess_q_pu": 1.3957047058274678e-05,
+    "sum_abs_interface_v_pu": 892.0698501323988,
+    "n_entries": 864
+   },
+   "total_objective": 826824028.8454782,
+   "delta_vs_previous": -591289.7184661627,
+   "within_tolerance": false,
+   "consecutive_within": 0
+  },
+  {
+   "refinement": 3,
+   "template_used": "T3",
+   "certificate": {
+    "status": "VALID",
+    "master_feasible": true,
+    "interface_anchor": "midpoint",
+    "fallback_used": false,
+    "max_coordinated_residual": 1.1102230246251565e-16,
+    "esso_max_violation": 9.743317264110374e-13,
+    "esso_production_violation": -3.239996180459044e-05,
+    "esso_production_feasible": true,
+    "network_max_violation": 1.4595880259316019e-05,
+    "network_h1_violation": 0.0,
+    "converter_capability_violation": 9.99869687824732e-09,
+    "physical_salvage": 3412.5067172850486,
+    "gross_operational_cost": 826358434.7001548,
+    "net_operational_recourse": 826355022.1934375,
+    "investment_cost": 50000.0,
+    "total_objective": 826405022.1934375,
+    "admm_cycles": 1,
+    "admm_runtime_s": 52.439980030059814,
+    "polish_runtime_s": 22.865063905715942,
+    "wall_clock_s": 95.86083793640137
+   },
+   "fingerprint": {
+    "admm_cycles": 1,
+    "total_objective": 826405022.1934375,
+    "net_operational_recourse": 826355022.1934375,
+    "gross_operational_cost": 826358434.7001548,
+    "physical_salvage": 3412.5067172850486,
+    "interface_anchor": "midpoint",
+    "fallback_used": false,
+    "dominant_blocks": [
+     {
+      "block": "TSO|2025|Summer",
+      "weighted_base_objective": 93211189.94294742
+     },
+     {
+      "block": "TSO|2025|Winter",
+      "weighted_base_objective": 85121137.09360418
+     },
+     {
+      "block": "TSO|2025|Spring",
+      "weighted_base_objective": 78573247.4352783
+     },
+     {
+      "block": "TSO|2025|Autumn",
+      "weighted_base_objective": 77780042.44754006
+     },
+     {
+      "block": "TSO|2030|Summer",
+      "weighted_base_objective": 69849570.07000974
+     }
+    ],
+    "available_capacity": {
+     "5|2025": {
+      "s_available": 0.010634892806127162,
+      "e_available": 0.016885158949765836
+     },
+     "5|2030": {
+      "s_available": 0.021269785612254323,
+      "e_available": 0.03047982458251089
+     },
+     "5|2035": {
+      "s_available": 0.03190467841838149,
+      "e_available": 0.0407786023301804
+     },
+     "7|2025": {
+      "s_available": 0.010634892806127162,
+      "e_available": 0.016897441859990384
+     },
+     "7|2030": {
+      "s_available": 0.021269785612254323,
+      "e_available": 0.03056642757291351
+     },
+     "7|2035": {
+      "s_available": 0.03190467841838149,
+      "e_available": 0.0408792083498532
+     },
+     "9|2025": {
+      "s_available": 0.010634892806127162,
+      "e_available": 0.01694248953196367
+     },
+     "9|2030": {
+      "s_available": 0.021269785612254323,
+      "e_available": 0.030580840022405253
+     },
+     "9|2035": {
+      "s_available": 0.03190467841838149,
+      "e_available": 0.04088606687744624
+     }
+    },
+    "max_coordinated_residual": 1.1102230246251565e-16,
+    "esso_max_violation": 9.743317264110374e-13,
+    "network_max_violation": 1.4595880259316019e-05,
+    "network_h1_violation": 0.0
+   },
+   "interface_summary": {
+    "sum_abs_interface_p_pu": 309.7252323694288,
+    "sum_abs_interface_q_pu": 61.685924315262966,
+    "sum_abs_shared_ess_p_pu": 0.038277159396191064,
+    "sum_abs_shared_ess_q_pu": 1.3874815730455344e-05,
+    "sum_abs_interface_v_pu": 892.0755015633465,
+    "n_entries": 864
+   },
+   "total_objective": 826405022.1934375,
+   "delta_vs_previous": -419006.65204072,
+   "within_tolerance": false,
+   "consecutive_within": 0
+  },
+  {
+   "refinement": 4,
+   "template_used": "T4",
+   "certificate": {
+    "status": "VALID",
+    "master_feasible": true,
+    "interface_anchor": "midpoint",
+    "fallback_used": false,
+    "max_coordinated_residual": 1.1102230246251565e-16,
+    "esso_max_violation": 4.718336832354453e-12,
+    "esso_production_violation": -3.239996180540242e-05,
+    "esso_production_feasible": true,
+    "network_max_violation": 9.021819496135564e-06,
+    "network_h1_violation": 0.0,
+    "converter_capability_violation": 9.998682907926563e-09,
+    "physical_salvage": 3407.690226262499,
+    "gross_operational_cost": 825914929.5725468,
+    "net_operational_recourse": 825911521.8823205,
+    "investment_cost": 50000.0,
+    "total_objective": 825961521.8823205,
+    "admm_cycles": 1,
+    "admm_runtime_s": 55.5541558265686,
+    "polish_runtime_s": 22.95623278617859,
+    "wall_clock_s": 99.05324602127075
+   },
+   "fingerprint": {
+    "admm_cycles": 1,
+    "total_objective": 825961521.8823205,
+    "net_operational_recourse": 825911521.8823205,
+    "gross_operational_cost": 825914929.5725468,
+    "physical_salvage": 3407.690226262499,
+    "interface_anchor": "midpoint",
+    "fallback_used": false,
+    "dominant_blocks": [
+     {
+      "block": "TSO|2025|Summer",
+      "weighted_base_objective": 93294681.08820595
+     },
+     {
+      "block": "TSO|2025|Winter",
+      "weighted_base_objective": 85135062.25811858
+     },
+     {
+      "block": "TSO|2025|Spring",
+      "weighted_base_objective": 78409602.89012343
+     },
+     {
+      "block": "TSO|2025|Autumn",
+      "weighted_base_objective": 77773735.76002
+     },
+     {
+      "block": "TSO|2030|Summer",
+      "weighted_base_objective": 69816633.27685937
+     }
+    ],
+    "available_capacity": {
+     "5|2025": {
+      "s_available": 0.010634892806127162,
+      "e_available": 0.016873538420043625
+     },
+     "5|2030": {
+      "s_available": 0.021269785612254323,
+      "e_available": 0.030461893062775868
+     },
+     "5|2035": {
+      "s_available": 0.03190467841838149,
+      "e_available": 0.040756835406575195
+     },
+     "7|2025": {
+      "s_available": 0.010634892806127162,
+      "e_available": 0.016880362271227457
+     },
+     "7|2030": {
+      "s_available": 0.021269785612254323,
+      "e_available": 0.030548686595290506
+     },
+     "7|2035": {
+      "s_available": 0.03190467841838149,
+      "e_available": 0.04085810394803974
+     },
+     "9|2025": {
+      "s_available": 0.010634892806127162,
+      "e_available": 0.016928443516495324
+     },
+     "9|2030": {
+      "s_available": 0.021269785612254323,
+      "e_available": 0.03056525306229379
+     },
+     "9|2035": {
+      "s_available": 0.03190467841838149,
+      "e_available": 0.04086422327120111
+     }
+    },
+    "max_coordinated_residual": 1.1102230246251565e-16,
+    "esso_max_violation": 4.718336832354453e-12,
+    "network_max_violation": 9.021819496135564e-06,
+    "network_h1_violation": 0.0
+   },
+   "interface_summary": {
+    "sum_abs_interface_p_pu": 309.69563107540864,
+    "sum_abs_interface_q_pu": 61.52547138945209,
+    "sum_abs_shared_ess_p_pu": 0.03832784947517915,
+    "sum_abs_shared_ess_q_pu": 1.381274778188686e-05,
+    "sum_abs_interface_v_pu": 892.082879996009,
+    "n_entries": 864
+   },
+   "total_objective": 825961521.8823205,
+   "delta_vs_previous": -443500.3111169338,
+   "within_tolerance": false,
+   "consecutive_within": 0
+  }
+ ],
+ "stabilized": false,
+ "stabilized_at_refinement": null
+}

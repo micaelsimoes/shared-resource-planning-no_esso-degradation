@@ -1,3 +1,6 @@
+from definitions import BRANCH_DEFAULT_ANGLE_MIN, BRANCH_DEFAULT_ANGLE_MAX
+
+
 # ============================================================================================
 #   Class Branch
 # ============================================================================================
@@ -17,6 +20,8 @@ class Branch:
         self.ratio = 0.0             # ratio, transformer off nominal turns ratio ( = 0 for lines )
                                      #  (taps at 'from' bus, impedance at 'to' bus,
                                      #   i.e. if r = x = 0, then ratio = Vf / Vt)
+        self.angle_min = BRANCH_DEFAULT_ANGLE_MIN  # minimum theta_f - theta_t, [degrees]
+        self.angle_max = BRANCH_DEFAULT_ANGLE_MAX  # maximum theta_f - theta_t, [degrees]
         self.status = True           # initial branch status
         self.pre_processed = False
         self.is_transformer = False  # Indicates if the branch is a transformer

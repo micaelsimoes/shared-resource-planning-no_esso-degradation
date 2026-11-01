@@ -1,0 +1,51 @@
+{
+ "arms": {
+  "A": "G1 configuration (C* control, k = 11,541.56, cold, rel 1e-4, rho_pf 300 adaptive, cap 90, budget 5.0e6, remedy (h), H3) with Candidate 4 reverted: params.slacks.flexibility.day_balance = False on every network (restores pe.inequality(-SMALL_TOLERANCE, p_up - p_down, SMALL_TOLERANCE) and removes slack_flex_*_balance). Recovery policy G1-equivalent: case33_1 recovery disabled, tier 2 off.",
+  "B": "Run only if A fails the criterion: G1 configuration with Candidate 1 re-wired (shared-ESS power-factor rows restored), Candidate 4 as in G1, same G1-equivalent recovery policy."
+ },
+ "authority": "PLANNER_BRIEF_2026-09-13.md Addendum 7 item 2",
+ "criterion": {
+  "attribution_A": "Candidate 4 is the cause iff A recovers BOTH EFC (all nodes) and recourse; record that the old numbers carried a spurious flexible-energy source",
+  "attribution_B": "Candidate 1 is the cause iff B recovers BOTH; if neither, attribution is unresolved within the two-run budget",
+  "efc_all": "EFC recovered iff recovered on all three nodes 5, 7, 9",
+  "efc_per_node": "recovered on node n iff |EFC_arm(n) - EFC_old(n)| <= 0.10 * |EFC_G1(n) - EFC_old(n)| (arm closes >= 90% of the G1-vs-old year-1 EFC/day gap)",
+  "partial": "report per-node gap closure fraction 1 - |EFC_arm - EFC_old| / |EFC_G1 - EFC_old| and recourse difference/bar regardless of verdict",
+  "recourse": "recovered iff |recourse_arm - old_recourse| <= old_terminal_step + arm_terminal_step (rule nine)",
+  "validity": "criterion applies only if the arm converged within the cap and its rule-ten ratio (terminal step / tolerance) < 1; otherwise verdict INDETERMINATE"
+ },
+ "declared_before_any_ablation_run": true,
+ "not_permitted": [
+  "tuning any tolerance, rho, cap or budget",
+  "more than two ablation runs",
+  "changing the criterion after any ablation result is seen"
+ ],
+ "predecessor_sha256": null,
+ "reference_values": {
+  "g1_efc_year1": {
+   "5": 0.9725282263121774,
+   "7": 0.9722376047552705,
+   "9": 0.9723672487025958
+  },
+  "g1_recourse": 817618798.07215,
+  "g1_terminal_step": 72885.91393995285,
+  "old_efc_year1": {
+   "5": 1.112440062599957,
+   "7": 1.1121947359876687,
+   "9": 1.112428507710553
+  },
+  "old_recourse": 816121464.1554238,
+  "old_terminal_step": 76144.07965803146
+ },
+ "sources": {
+  "g1": {
+   "path": "data/SRP1/Results/P515G1/g_control.json",
+   "sha256": "5dcae17acccd31b1e17cd3b9b6b8f110b5f5424f522abc10460c32cbf015d12a"
+  },
+  "old_control": {
+   "path": "data/SRP1/Results/P514N/n1_control.json",
+   "sha256": "52cdce5e44846b2019934ecb2f7c7f1725b84f02ee43f454c66cceff8c18c606"
+  }
+ },
+ "stage": "P5.15 ablation A/B (Addendum 7 item 2)",
+ "version": 1
+}

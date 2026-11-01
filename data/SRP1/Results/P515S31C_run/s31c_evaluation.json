@@ -1,0 +1,127 @@
+{
+ "stage": "P5.15 row 3-prime economic baseline - gate evaluation",
+ "run_dir": "data/SRP1/Results/P515S31C_run",
+ "1_cancellation": {
+  "t_tso": -1157892562.0820394,
+  "t_dso_by_node": {
+   "5": 422538403.38653314,
+   "7": 341025637.4458047,
+   "9": 394261127.85604775
+  },
+  "t_tso_plus_t_dso_terminal": -67393.39365386963,
+  "priced_consensus_residual_total": 67393.3936540809,
+  "closure_t_sum_plus_priced_residual": 2.1126470528542995e-07,
+  "settlement_magnitude_scale": 2315717730.770425,
+  "t_sum_relative_to_settlement_scale": -2.9102594309474958e-05,
+  "t_sum_relative_to_system_cost": -0.00010189491853987835
+ },
+ "2_convergence": {
+  "cycles_run": 90,
+  "converged_at_cycle": null,
+  "rule_ten": 1.9593453987741412,
+  "terminal_objective_step": 129616.68283557892,
+  "terminal_objective_tolerance": 66153.05444189331,
+  "local_solve_failures": 0,
+  "network_failures_summary": {
+   "n_blocks": 9,
+   "classes": {
+    "recovered_tier1": 9,
+    "recovered_tier2": 0,
+    "unrecovered": 0,
+    "not_attempted": 0,
+    "indeterminate": 0,
+    "recovered": 9
+   },
+   "n_frozen_snapshots": 2,
+   "n_esso_recovery_events": 0,
+   "path": "data/SRP1/Results/P515S31C_run/network_failures_baseline.jsonl"
+  },
+  "network_failure_records_by_termination": {
+   "maxIterations": 9
+  },
+  "wall_clock_s": 2783.8411662578583,
+  "solves": 4650,
+  "shared_frozen_smopf_modified": []
+ },
+ "3_recourse": {
+  "system_cost_recourse_gross": 661400927.7360976,
+  "net_operational_recourse": 661400927.7360976,
+  "gross_including_settlement": 661333534.3424437,
+  "detector_penalty_total": -12801.479077786285,
+  "detector_components": {
+   "voltage_slack": -11796.939926940266,
+   "node_balance_slack": 0.0,
+   "branch_flow_slack": 0.0,
+   "flexibility_p_day_balance_slack": -946.4772772541701,
+   "local_ess_day_balance_slack": 0.0,
+   "shared_ess_day_balance_slack": -58.06187359185158,
+   "detector_penalty_total": -12801.479077786285
+  },
+  "economic_recourse_all_D_excluded": 661413729.2151754,
+  "economic_recourse_voltage_excluded": 661412724.6760246,
+  "economic_components_weighted": {
+   "generation_cost": 472648988.4241745,
+   "flexibility_cost_internal": 188764740.79100093,
+   "load_curtailment_cost": 0.0,
+   "res_curtailment_penalty": 0.0,
+   "ess_usage_cost": 0.0
+  }
+ },
+ "4_per_dso": {
+  "5": {
+   "interface_settlement_weighted": 422538403.38653314,
+   "priced_consensus_residual_weighted": 42185.57572850191,
+   "max_abs_interface_consensus_residual_mw": 0.3713508469372755,
+   "residual_fields_used": [
+    "residual_mw"
+   ],
+   "flexibility_volumes": {
+    "sum_abs_delta_p_mw": 6150.976403716372,
+    "max_abs_delta_p_mw": 73.5743112377035,
+    "sum_abs_delta_q_mvar": 122.55126550359205,
+    "max_abs_delta_q_mvar": 1.826434993645941,
+    "sum_abs_delta_p_pu": 61.50976403716372,
+    "max_abs_delta_p_pu": 0.7357431123770349,
+    "sum_abs_delta_q_pu": 1.2255126550359206,
+    "max_abs_delta_q_pu": 0.01826434993645941
+   }
+  },
+  "7": {
+   "interface_settlement_weighted": 341025637.4458047,
+   "priced_consensus_residual_weighted": 3727.673821782952,
+   "max_abs_interface_consensus_residual_mw": 0.15445520026699455,
+   "residual_fields_used": [
+    "residual_mw"
+   ],
+   "flexibility_volumes": {
+    "sum_abs_delta_p_mw": 4251.090811314155,
+    "max_abs_delta_p_mw": 72.29350166253946,
+    "sum_abs_delta_q_mvar": 197.5671570313163,
+    "max_abs_delta_q_mvar": 3.1196968938531398,
+    "sum_abs_delta_p_pu": 42.51090811314155,
+    "max_abs_delta_p_pu": 0.7229350166253945,
+    "sum_abs_delta_q_pu": 1.975671570313163,
+    "max_abs_delta_q_pu": 0.031196968938531397
+   }
+  },
+  "9": {
+   "interface_settlement_weighted": 394261127.85604775,
+   "priced_consensus_residual_weighted": 21480.144103796025,
+   "max_abs_interface_consensus_residual_mw": 0.2458992436336036,
+   "residual_fields_used": [
+    "residual_mw"
+   ],
+   "flexibility_volumes": {
+    "sum_abs_delta_p_mw": 6670.748922082685,
+    "max_abs_delta_p_mw": 83.49943602077336,
+    "sum_abs_delta_q_mvar": 265.3209848336218,
+    "max_abs_delta_q_mvar": 10.929104076110505,
+    "sum_abs_delta_p_pu": 66.70748922082684,
+    "max_abs_delta_p_pu": 0.8349943602077335,
+    "sum_abs_delta_q_pu": 2.653209848336218,
+    "max_abs_delta_q_pu": 0.10929104076110505
+   }
+  }
+ },
+ "esso_feasibility_violation_D3": -1.727984290909094e-05
+}

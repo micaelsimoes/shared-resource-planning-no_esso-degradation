@@ -1,0 +1,663 @@
+{
+ "schema": "p515_s53_w84_tight_tail_gate_r2_v1_addendum",
+ "stage": "P5.15 Addendum 46 ruling 7 W84 -- SRP1 two-cycle bitwise identity with the convergence-depth tight tail ENABLED, whole-arm comparison per Planner ruling Q1 (keys present in both arms, strictly; the 22 W64 keys asserted separately)",
+ "authority": [
+  "PLANNER_BRIEF_2026-09-13.md Addendum 46 ruling 7",
+  "Planner task W83",
+  "data/SRP1/Results/P515S53/frozen_s53_spec_v28_c8b5a715.json"
+ ],
+ "spec": {
+  "path": "data/SRP1/Results/P515S53/frozen_s53_spec_v28_c8b5a715.json",
+  "sha256": "c8b5a715083c47cdaa1d5af0f24259115682542d159a206365ccf7f76c50edde"
+ },
+ "timestamp_utc": "2026-09-25T14:42:41.264185+00:00",
+ "git_head_at_run": "99a5d39d421c43778a955247234c0597331beebd",
+ "script": "p515_s53_w83_tight_tail_gate.py",
+ "script_sha256": "2895a8f215fca6e9a65561dc941052bdc79d59eea5a610107f1b841089dd9dfc",
+ "imported_r2_gate_sha256": "b63b1fb94ec305a782cb139d6e9c42be8b7a49b2ef78cb0d174f09e3d53f6766",
+ "production_sha256": {
+  "network.py": "18acaa84af7a043898a7b831223b4eab1d91f9bcf2c199f49beecfeb3bf91fb4",
+  "shared_resources_planning.py": "0610d745a41c86c71dae9e776f0dc8e38c7099f73128a3d2c2e8f861ab9fc9c0",
+  "admm_parameters.py": "40d0e972dcadfb4de099a0203682ba2e93badc62d9ae989f87be40b1ce3b75fa",
+  "admm_anderson_acceleration.py": "24cf3bea9b07725ae15029dd0d9d81ed46ab8e75ecf1c9141a4b0afc6be2659e",
+  "solver_parameters.py": "2801ef16853d7e63752d646c4c8a789a17a6731959060112c48f9457074c8b65"
+ },
+ "instance": {
+  "candidate": "C* 0.96875 MVA / 3.875 MWh at nodes 5, 7, 9, investment year 2025",
+  "candidate_key": "578636daa6d6360d6701764c73ddf795e53c2c37e511e21be1400024f8f6350c"
+ },
+ "objective_convention": "gross_operational_cost (settlement-excluded gross cost), as in gate.json",
+ "declared_substitutions": {
+  "1_identifiers": {
+   "STAGE": "P5.15 Addendum 46 ruling 7 W84 -- SRP1 two-cycle bitwise identity with the convergence-depth tight tail ENABLED, whole-arm comparison per Planner ruling Q1 (keys present in both arms, strictly; the 22 W64 keys asserted separately)",
+   "SCHEMA": "p515_s53_w84_tight_tail_gate_r2_v1",
+   "ARM": "s53w84tailgate",
+   "OUT_REL": "data/SRP1/Results/P515S53/tight_tail_w84/srp1_bitwise_gate"
+  },
+  "2_extra_clean_files": [
+   "network.py",
+   "solver_parameters.py",
+   "model_construction_helpers.py",
+   "shared_resources_planning.py",
+   "p56a_oracle.py",
+   "p515_s41_hull_polish.py",
+   "p515_g_g1_g4_admm_gates.py",
+   "p515_s44_scale_measurement.py",
+   "p515_s45_snapshot_off_two_cycle_gate.py",
+   "p515_s49_memory_fix_gate.py",
+   "p515_s44_campaign_harness.py",
+   "shared_energy_storage_data.py",
+   "data/SRP1/SharedESS/SRP1_ESS_Params.json",
+   "admm_parameters.py",
+   "p515_s31c_evaluate.py",
+   "p515_s51_row18_zero_solve_checks.py",
+   "p515_s51_srp1_bitwise_gate.py",
+   "p515_s52_pilot_checks.py",
+   "p515_s52_srp1_bitwise_gate.py",
+   "p515_s53_init_fix_zero_solve_checks.py",
+   "p515_s53_srp1_bitwise_gate.py",
+   "p515_s53_w84_tight_tail_gate_r2.py",
+   "p515_s53_w84_harness_capture_checks.py",
+   "data/SRP1/Results/P515S53/tight_tail_w84/harness_checks/checks_w84.json",
+   "admm_anderson_acceleration.py",
+   "p515_s53_w83_tight_tail_checks.py",
+   "p515_s53_w83_tight_tail_gate.py",
+   "data/SRP1/Results/P515S53/frozen_s53_spec_v28_c8b5a715.json",
+   "data/SRP1/Results/P515S53/tight_tail_w83/checks/checks_w83.json"
+  ],
+  "3_reference_arm": {
+   "gate_dir": "data/SRP1/Results/P515S53/srp1_bitwise_gate",
+   "arm_dir": "data/SRP1/Results/P515S53/srp1_bitwise_gate/arm",
+   "manifest": "data/SRP1/Results/P515S53/srp1_bitwise_gate/manifest_sha256.json",
+   "manifest_sha256": "8dfda779b3546c66a7818cfd38b74f284a92d219eb3e29e440dddfd45cd4f7c3",
+   "gate_json": "data/SRP1/Results/P515S53/srp1_bitwise_gate/gate.json",
+   "arm_name": "s53w51gate",
+   "commit": "d5a00bd9 (run at 2167c0d9)"
+  },
+  "4_presence": "r2 combined presence (row 18 + W47 + W51) + w83_code_presence",
+  "5_arm_wrapper": "one-shot W10.run_arm wrapper installed at the run-lock acquisition: tail enabled after the committed hook and read back; pass-through counters on the two tail functions; returned-state capture; all removed when the arm returns"
+ },
+ "w83_code_presence_before_run": {
+  "tail_functions_present": true,
+  "tail_reads_the_aa_off_predicate": true,
+  "tail_applied_at_the_top_of_each_cycle": true,
+  "tail_restored_at_loop_exit": true,
+  "tail_starts_off": true,
+  "records_drained_each_cycle": true,
+  "capture_after_the_solve_in_the_guarded_site": true,
+  "tail_default_off": true,
+  "aa_off_constant": true
+ },
+ "w83_code_presence_after_run": {
+  "tail_functions_present": true,
+  "tail_reads_the_aa_off_predicate": true,
+  "tail_applied_at_the_top_of_each_cycle": true,
+  "tail_restored_at_loop_exit": true,
+  "tail_starts_off": true,
+  "records_drained_each_cycle": true,
+  "capture_after_the_solve_in_the_guarded_site": true,
+  "tail_default_off": true,
+  "aa_off_constant": true
+ },
+ "w83_evaluation": {
+  "items": {
+   "tail_enabled_and_read_back_in_the_arm": true,
+   "run_arm_wrapped_exactly_once": true,
+   "apply_calls_exactly_cap_plus_1_all_inactive_none_acted": true,
+   "next_state_calls_exactly_cap_all_false": true,
+   "state_tail_record_as_declared": true,
+   "baseline_is_production": true,
+   "holders_identical_before_and_after_the_arm": true,
+   "esso_options_unchanged": true,
+   "floor_capture_complete": true,
+   "floor_capture_every_record_parsed_at_production_compl_inf_tol": true,
+   "no_tail_on_line_in_the_arm_stdout": true,
+   "w83_code_present_before_and_after_the_arm": true,
+   "r2_gate_layers_pass": true,
+   "lock_hook_and_run_arm_restored": true
+  },
+  "declared_before_the_run": {
+   "apply_calls": 3,
+   "next_state_calls": 2,
+   "network_records": "observed solves - 9 ESSO solves (= 144 + attempted network retries)"
+  },
+  "observed": {
+   "apply_calls": [
+    {
+     "cycle": 1,
+     "active": false,
+     "acted": false,
+     "stack_tail": "  File \"/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/p515_s53_w83_tight_tail_gate.py\", line 228, in capturing_run\n    result = orig_run(*args, **kwargs)\n  File \"/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/shared_resources_planning.py\", line 3078, in _run_operational_planning\n    tail_cycle_record = _apply_convergence_depth_tail(\n"
+    },
+    {
+     "cycle": 2,
+     "active": false,
+     "acted": false,
+     "stack_tail": "  File \"/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/p515_s53_w83_tight_tail_gate.py\", line 228, in capturing_run\n    result = orig_run(*args, **kwargs)\n  File \"/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/shared_resources_planning.py\", line 3078, in _run_operational_planning\n    tail_cycle_record = _apply_convergence_depth_tail(\n"
+    },
+    {
+     "cycle": null,
+     "active": false,
+     "acted": false,
+     "stack_tail": "  File \"/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/p515_s53_w83_tight_tail_gate.py\", line 228, in capturing_run\n    result = orig_run(*args, **kwargs)\n  File \"/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/shared_resources_planning.py\", line 3726, in _run_operational_planning\n    convergence_depth_tail_state['restore_at_exit'] = _apply_convergence_depth_tail(\n"
+    }
+   ],
+   "next_calls": [
+    {
+     "cycle_convergence": false,
+     "aa_enabled": true,
+     "aa_action": "insufficient memory (m_k=0)",
+     "returned": false
+    },
+    {
+     "cycle_convergence": false,
+     "aa_enabled": true,
+     "aa_action": "insufficient memory (m_k=0)",
+     "returned": false
+    }
+   ],
+   "hook_calls": 1,
+   "readback": {
+    "before": {
+     "enabled": false,
+     "compl_inf_tol": 1e-06
+    },
+    "declared": {
+     "enabled": true,
+     "compl_inf_tol": 1e-06
+    },
+    "after": {
+     "enabled": true,
+     "compl_inf_tol": 1e-06
+    },
+    "enabled_helper": true,
+    "persistent_workers_enabled": false,
+    "parallel_execution": false,
+    "ok": true
+   },
+   "n_records": 144,
+   "expected_records": 144,
+   "records_per_round": {
+    "0": 48,
+    "1": 48,
+    "2": 48
+   },
+   "floor_status_tally_REPORTED_not_gated": {
+    "TSO|round0|at": 12,
+    "DSO|round0|at": 36,
+    "TSO|round1|at": 12,
+    "DSO|round1|at": 36,
+    "TSO|round2|at": 12,
+    "DSO|round2|at": 36
+   },
+   "exit_tally": {
+    "Optimal Solution Found.": 143,
+    "Solved To Acceptable Level.": 1
+   },
+   "bad_records_first": [],
+   "n_bad_records": 0,
+   "holders_before": {
+    "TSO": {
+     "id": 4701235520,
+     "items": [
+      [
+       "tol",
+       1e-05
+      ],
+      [
+       "acceptable_tol",
+       0.0001
+      ],
+      [
+       "acceptable_iter",
+       5
+      ],
+      [
+       "linear_solver",
+       "ma97"
+      ],
+      [
+       "compl_inf_tol",
+       0.0005
+      ],
+      [
+       "bound_push",
+       1e-06
+      ],
+      [
+       "bound_frac",
+       1e-06
+      ],
+      [
+       "slack_bound_frac",
+       1e-06
+      ],
+      [
+       "slack_bound_push",
+       1e-06
+      ],
+      [
+       "output_file",
+       "optim_log_case9.log"
+      ],
+      [
+       "file_print_level",
+       6
+      ]
+     ]
+    },
+    "DSO5": {
+     "id": 4734745600,
+     "items": [
+      [
+       "tol",
+       1e-05
+      ],
+      [
+       "acceptable_tol",
+       0.0001
+      ],
+      [
+       "acceptable_iter",
+       5
+      ],
+      [
+       "linear_solver",
+       "ma97"
+      ],
+      [
+       "bound_push",
+       1e-05
+      ],
+      [
+       "bound_frac",
+       1e-05
+      ],
+      [
+       "slack_bound_frac",
+       1e-05
+      ],
+      [
+       "slack_bound_push",
+       1e-05
+      ],
+      [
+       "output_file",
+       "optim_log_case33_1.log"
+      ],
+      [
+       "file_print_level",
+       6
+      ]
+     ]
+    },
+    "DSO7": {
+     "id": 4734447168,
+     "items": [
+      [
+       "tol",
+       1e-05
+      ],
+      [
+       "acceptable_tol",
+       0.0001
+      ],
+      [
+       "acceptable_iter",
+       5
+      ],
+      [
+       "linear_solver",
+       "ma97"
+      ],
+      [
+       "bound_push",
+       1e-05
+      ],
+      [
+       "bound_frac",
+       1e-05
+      ],
+      [
+       "slack_bound_frac",
+       1e-05
+      ],
+      [
+       "slack_bound_push",
+       1e-05
+      ],
+      [
+       "output_file",
+       "optim_log_case33_2.log"
+      ],
+      [
+       "file_print_level",
+       6
+      ]
+     ]
+    },
+    "DSO9": {
+     "id": 4739764032,
+     "items": [
+      [
+       "tol",
+       1e-05
+      ],
+      [
+       "acceptable_tol",
+       0.0001
+      ],
+      [
+       "acceptable_iter",
+       5
+      ],
+      [
+       "linear_solver",
+       "ma97"
+      ],
+      [
+       "bound_push",
+       1e-05
+      ],
+      [
+       "bound_frac",
+       1e-05
+      ],
+      [
+       "slack_bound_frac",
+       1e-05
+      ],
+      [
+       "slack_bound_push",
+       1e-05
+      ],
+      [
+       "output_file",
+       "optim_log_case33_3.log"
+      ],
+      [
+       "file_print_level",
+       6
+      ]
+     ]
+    }
+   },
+   "holders_after": {
+    "TSO": {
+     "id": 4701235520,
+     "items": [
+      [
+       "tol",
+       1e-05
+      ],
+      [
+       "acceptable_tol",
+       0.0001
+      ],
+      [
+       "acceptable_iter",
+       5
+      ],
+      [
+       "linear_solver",
+       "ma97"
+      ],
+      [
+       "compl_inf_tol",
+       0.0005
+      ],
+      [
+       "bound_push",
+       1e-06
+      ],
+      [
+       "bound_frac",
+       1e-06
+      ],
+      [
+       "slack_bound_frac",
+       1e-06
+      ],
+      [
+       "slack_bound_push",
+       1e-06
+      ],
+      [
+       "output_file",
+       "optim_log_case9.log"
+      ],
+      [
+       "file_print_level",
+       6
+      ]
+     ]
+    },
+    "DSO5": {
+     "id": 4734745600,
+     "items": [
+      [
+       "tol",
+       1e-05
+      ],
+      [
+       "acceptable_tol",
+       0.0001
+      ],
+      [
+       "acceptable_iter",
+       5
+      ],
+      [
+       "linear_solver",
+       "ma97"
+      ],
+      [
+       "bound_push",
+       1e-05
+      ],
+      [
+       "bound_frac",
+       1e-05
+      ],
+      [
+       "slack_bound_frac",
+       1e-05
+      ],
+      [
+       "slack_bound_push",
+       1e-05
+      ],
+      [
+       "output_file",
+       "optim_log_case33_1.log"
+      ],
+      [
+       "file_print_level",
+       6
+      ]
+     ]
+    },
+    "DSO7": {
+     "id": 4734447168,
+     "items": [
+      [
+       "tol",
+       1e-05
+      ],
+      [
+       "acceptable_tol",
+       0.0001
+      ],
+      [
+       "acceptable_iter",
+       5
+      ],
+      [
+       "linear_solver",
+       "ma97"
+      ],
+      [
+       "bound_push",
+       1e-05
+      ],
+      [
+       "bound_frac",
+       1e-05
+      ],
+      [
+       "slack_bound_frac",
+       1e-05
+      ],
+      [
+       "slack_bound_push",
+       1e-05
+      ],
+      [
+       "output_file",
+       "optim_log_case33_2.log"
+      ],
+      [
+       "file_print_level",
+       6
+      ]
+     ]
+    },
+    "DSO9": {
+     "id": 4739764032,
+     "items": [
+      [
+       "tol",
+       1e-05
+      ],
+      [
+       "acceptable_tol",
+       0.0001
+      ],
+      [
+       "acceptable_iter",
+       5
+      ],
+      [
+       "linear_solver",
+       "ma97"
+      ],
+      [
+       "bound_push",
+       1e-05
+      ],
+      [
+       "bound_frac",
+       1e-05
+      ],
+      [
+       "slack_bound_frac",
+       1e-05
+      ],
+      [
+       "slack_bound_push",
+       1e-05
+      ],
+      [
+       "output_file",
+       "optim_log_case33_3.log"
+      ],
+      [
+       "file_print_level",
+       6
+      ]
+     ]
+    }
+   },
+   "esso_before": {
+    "id": 4700422528,
+    "items": [
+     [
+      "tol",
+      1e-06
+     ],
+     [
+      "acceptable_tol",
+      1e-05
+     ],
+     [
+      "acceptable_iter",
+      5
+     ],
+     [
+      "linear_solver",
+      "ma57"
+     ]
+    ],
+    "recovery_items": [
+     [
+      "acceptable_tol",
+      0.0001
+     ],
+     [
+      "acceptable_iter",
+      1
+     ]
+    ]
+   },
+   "esso_after": {
+    "id": 4700422528,
+    "items": [
+     [
+      "tol",
+      1e-06
+     ],
+     [
+      "acceptable_tol",
+      1e-05
+     ],
+     [
+      "acceptable_iter",
+      5
+     ],
+     [
+      "linear_solver",
+      "ma57"
+     ]
+    ],
+    "recovery_items": [
+     [
+      "acceptable_tol",
+      0.0001
+     ],
+     [
+      "acceptable_iter",
+      1
+     ]
+    ]
+   },
+   "stale_records_discarded": 0
+  }
+ },
+ "sidecars": {
+  "tail_state": "data/SRP1/Results/P515S53/tight_tail_w84/srp1_bitwise_gate/w83_tail_state.json",
+  "network_ipopt_solve_records": "data/SRP1/Results/P515S53/tight_tail_w84/srp1_bitwise_gate/w83_network_ipopt_solve_records.jsonl"
+ },
+ "guard_counts_at_end": {
+  "permitted_solve": 153,
+  "permitted_exec": 153,
+  "blocked_solve": 0,
+  "blocked_exec": 0
+ },
+ "gate_items": {
+  "tail_enabled_and_read_back_in_the_arm": true,
+  "run_arm_wrapped_exactly_once": true,
+  "apply_calls_exactly_cap_plus_1_all_inactive_none_acted": true,
+  "next_state_calls_exactly_cap_all_false": true,
+  "state_tail_record_as_declared": true,
+  "baseline_is_production": true,
+  "holders_identical_before_and_after_the_arm": true,
+  "esso_options_unchanged": true,
+  "floor_capture_complete": true,
+  "floor_capture_every_record_parsed_at_production_compl_inf_tol": true,
+  "no_tail_on_line_in_the_arm_stdout": true,
+  "w83_code_present_before_and_after_the_arm": true,
+  "r2_gate_layers_pass": true,
+  "lock_hook_and_run_arm_restored": true
+ },
+ "gate_pass": true
+}

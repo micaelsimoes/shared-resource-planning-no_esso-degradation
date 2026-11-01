@@ -1,0 +1,2036 @@
+{
+ "stage": "P5.15 Addendum 27 item 1 (W4) -- re-verification comparator (zero solves)",
+ "authority": [
+  "PLANNER_BRIEF_2026-09-13.md Addendum 27 item 1 (re-verification; W4 comparator)",
+  "data/SRP1/Results/P515S45/frozen_s45_phaseA_spec_v15_5feefd7b.json configuration.reverification_gate",
+  "p515_s44_gate.compare_c_star_to_d (model); p515_s44_tie_classifier (tie order)"
+ ],
+ "gate_text_spec_v15": "a case-file-alone C* evaluation through the campaign harness (no overrides) reproduces the committed AA C* evaluation (campaign_s44_aa_variant, 107 cycles, 650,982,939.9389359) bitwise on every numeric trajectory field and cost; tie-order in the recourse-jump top-10 classified with p515_s44_tie_classifier; provenance non-gating",
+ "timestamp_utc": "2026-09-19T18:19:31.957334+00:00",
+ "git_head": "6b343bb279fa39d7d47644148acc013b040a03d8",
+ "script": "p515_s45_reverify_compare.py",
+ "script_sha256": "d648133a274efa356b17694f2d9a13bdc3b98e0c7a0211307e83f81c69e748e1",
+ "script_git_status": "clean",
+ "mode": "real",
+ "self_test": null,
+ "inputs": {
+  "reference_dir": "data/SRP1/Results/P515S44/campaign_s44_aa_variant/evals/837fc982565dbba3_c_star_aa_keep_memory",
+  "candidate_dir": "data/SRP1/Results/P515S45/reverify_aa_c_star/evals/3e741dac72c9e1bc_c_star_aa_case_file",
+  "reference_pins": {
+   "evaluation_record.json": "6e90d4424df3405b0cc066bba1f57c28666a1524e5cdcc62890c6e6a74e69a4f",
+   "component_levels_terminal.json": "8452f6261b1bf1fe84d4dfd8a177fa8f4145ade4c042a4904a29d4483a745782"
+  },
+  "reference_pins_verified": true,
+  "campaign_spec": "data/SRP1/Results/P515S45/reverify_aa_c_star/campaign_spec_s45_reverify_aa_c_star_4a214b99.json",
+  "campaign_spec_sha256": "4a214b99df34e58791d31d842f2ad6c5293f83e82064d52320934b6d32b6e58d",
+  "spec_v15": "data/SRP1/Results/P515S45/frozen_s45_phaseA_spec_v15_5feefd7b.json",
+  "spec_v15_sha256": "5feefd7b642fc3d480156ad5e52ed6e1cf9d6698cfd40dbb33389bab6e6229fe",
+  "candidate_campaign_outputs_sha256": {
+   "campaign_results.json": "cc6b81b2bc2f77119d18dbe15f156b6dfad63e618e053f0aef2e0a52bc24f8fd",
+   "campaign_manifest_sha256.json": "48274af704ee3cec5e52f57b06ad8f1030a03175adeb73e13dd8f19a26760422"
+  },
+  "input_file_sha256": {
+   "data/SRP1/Results/P515S44/campaign_s44_aa_variant/evals/837fc982565dbba3_c_star_aa_keep_memory/g_s39_D.json": "f69e4c1fa817f63d70efc91485ceb6c908b064e9ae3002ba3aed55e17a63e3c0",
+   "data/SRP1/Results/P515S44/campaign_s44_aa_variant/evals/837fc982565dbba3_c_star_aa_keep_memory/boyd_terminal.json": "c492bb792a4a271e06223bd94b16d9e914175a45deefeab7156e9724b05d3fcc",
+   "data/SRP1/Results/P515S44/campaign_s44_aa_variant/evals/837fc982565dbba3_c_star_aa_keep_memory/component_levels_terminal.json": "8452f6261b1bf1fe84d4dfd8a177fa8f4145ade4c042a4904a29d4483a745782",
+   "data/SRP1/Results/P515S44/campaign_s44_aa_variant/evals/837fc982565dbba3_c_star_aa_keep_memory/interface_settlement_detail_s31c.json": "2e1f386f2261ba11655d3b8b41df5189c989eca51636c506c87e943baa88aadb",
+   "data/SRP1/Results/P515S44/campaign_s44_aa_variant/evals/837fc982565dbba3_c_star_aa_keep_memory/interface_voltage_terminal.json": "eb11fe35e2a8b83bbb0bed4f238e12c67c16218cceaf9edf58d9cd6ad8826cba",
+   "data/SRP1/Results/P515S44/campaign_s44_aa_variant/evals/837fc982565dbba3_c_star_aa_keep_memory/evaluation_record.json": "6e90d4424df3405b0cc066bba1f57c28666a1524e5cdcc62890c6e6a74e69a4f",
+   "data/SRP1/Results/P515S44/campaign_s44_aa_variant/evals/837fc982565dbba3_c_star_aa_keep_memory/recourse_jump_sidecar_baseline.jsonl": "ddebdd33cc3bf720179af209051db6190696bbefdfee38960b9ccf8be5cecb85",
+   "data/SRP1/Results/P515S44/campaign_s44_aa_variant/evals/837fc982565dbba3_c_star_aa_keep_memory/ess_entry_stride_baseline.jsonl": "9e60334c9cf0a03ed0b4cf7533c6951ed374e619a5519874f1bc8c933c63cfc0",
+   "data/SRP1/Results/P515S44/campaign_s44_aa_variant/evals/837fc982565dbba3_c_star_aa_keep_memory/soh_floor_sidecar_baseline.jsonl": "d79bbce3bc5659c59ed0bf6c295a8fece412c40faec64aaa4aade433c73395fe",
+   "data/SRP1/Results/P515S44/campaign_s44_aa_variant/evals/837fc982565dbba3_c_star_aa_keep_memory/pf_entry_stride_s39_D.jsonl": "11d36302a5dc9d7083ff4f7a4ee33ed6424944ab44fbed5c7a324dc0618ac042",
+   "data/SRP1/Results/P515S44/campaign_s44_aa_variant/evals/837fc982565dbba3_c_star_aa_keep_memory/ess_exempt_until_state_s39_D.jsonl": "2afcf36760c08b12a6428ff8e0540ac13eae2bfeae4efce980dcfb9f635ef43f",
+   "data/SRP1/Results/P515S44/campaign_s44_aa_variant/evals/837fc982565dbba3_c_star_aa_keep_memory/aa_per_cycle.jsonl": "02a7d20398b163caf335dde8104bb412c8a46b2aa5b55cb150c363f09c91364a",
+   "data/SRP1/Results/P515S44/campaign_s44_aa_variant/evals/837fc982565dbba3_c_star_aa_keep_memory/per_cycle_record.jsonl": "f38b0bdf0473424f5f5db67d54c78c5e15575df4030d0d49c46d497f10441f7d",
+   "data/SRP1/Results/P515S44/campaign_s44_aa_variant/evals/837fc982565dbba3_c_star_aa_keep_memory/leak_classification_s39_D.jsonl": "4c803d56965d1544dc175aac9f6aaa45d94a900244d2ca8a81f69da6837a1e34",
+   "data/SRP1/Results/P515S44/campaign_s44_aa_variant/evals/837fc982565dbba3_c_star_aa_keep_memory/network_failures_s39_D.jsonl": "abf810d62d5c7f3dc6fba840435d41e2e4866999b0b825ddaf3162394fdfead0",
+   "data/SRP1/Results/P515S44/campaign_s44_aa_variant/evals/837fc982565dbba3_c_star_aa_keep_memory/esso_recovery_events_s39_D.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "data/SRP1/Results/P515S44/campaign_s44_aa_variant/evals/837fc982565dbba3_c_star_aa_keep_memory/frozen_snapshots_s39_D.jsonl": "7d507f27ebc9561e81b660290a738973b00cbd8a9206390960ce2d209bbf521a",
+   "data/SRP1/Results/P515S45/reverify_aa_c_star/evals/3e741dac72c9e1bc_c_star_aa_case_file/g_s39_D.json": "7959be12a16a8c8be46fa6209ab581036ec177c9c21a2a47f4e7d9e67ba558be",
+   "data/SRP1/Results/P515S45/reverify_aa_c_star/evals/3e741dac72c9e1bc_c_star_aa_case_file/boyd_terminal.json": "dcb373c43cb83abf2a6969c970e6ccc75f28368e2aa0428b55da359675945962",
+   "data/SRP1/Results/P515S45/reverify_aa_c_star/evals/3e741dac72c9e1bc_c_star_aa_case_file/component_levels_terminal.json": "2c01cb7877c7042047735e99f8dfb03f7ca279c3b94d823457153b7130d58a4c",
+   "data/SRP1/Results/P515S45/reverify_aa_c_star/evals/3e741dac72c9e1bc_c_star_aa_case_file/interface_settlement_detail_s31c.json": "ba3161ec7f1ec4ae38792849ad83e0b0b7110db32a3e7625e0132822df3e1023",
+   "data/SRP1/Results/P515S45/reverify_aa_c_star/evals/3e741dac72c9e1bc_c_star_aa_case_file/interface_voltage_terminal.json": "767b1ca0bfba005e18ad101940ce08c4e740ae4dc73eaef7a989aa197b48247d",
+   "data/SRP1/Results/P515S45/reverify_aa_c_star/evals/3e741dac72c9e1bc_c_star_aa_case_file/evaluation_record.json": "da6a5b31541a3237c63a4fe63f2233b21d405e7b6f96a88d15ebde00a5ec95d5",
+   "data/SRP1/Results/P515S45/reverify_aa_c_star/evals/3e741dac72c9e1bc_c_star_aa_case_file/recourse_jump_sidecar_baseline.jsonl": "ddebdd33cc3bf720179af209051db6190696bbefdfee38960b9ccf8be5cecb85",
+   "data/SRP1/Results/P515S45/reverify_aa_c_star/evals/3e741dac72c9e1bc_c_star_aa_case_file/ess_entry_stride_baseline.jsonl": "9e60334c9cf0a03ed0b4cf7533c6951ed374e619a5519874f1bc8c933c63cfc0",
+   "data/SRP1/Results/P515S45/reverify_aa_c_star/evals/3e741dac72c9e1bc_c_star_aa_case_file/soh_floor_sidecar_baseline.jsonl": "d79bbce3bc5659c59ed0bf6c295a8fece412c40faec64aaa4aade433c73395fe",
+   "data/SRP1/Results/P515S45/reverify_aa_c_star/evals/3e741dac72c9e1bc_c_star_aa_case_file/pf_entry_stride_s39_D.jsonl": "11d36302a5dc9d7083ff4f7a4ee33ed6424944ab44fbed5c7a324dc0618ac042",
+   "data/SRP1/Results/P515S45/reverify_aa_c_star/evals/3e741dac72c9e1bc_c_star_aa_case_file/ess_exempt_until_state_s39_D.jsonl": "2afcf36760c08b12a6428ff8e0540ac13eae2bfeae4efce980dcfb9f635ef43f",
+   "data/SRP1/Results/P515S45/reverify_aa_c_star/evals/3e741dac72c9e1bc_c_star_aa_case_file/aa_per_cycle.jsonl": "02a7d20398b163caf335dde8104bb412c8a46b2aa5b55cb150c363f09c91364a",
+   "data/SRP1/Results/P515S45/reverify_aa_c_star/evals/3e741dac72c9e1bc_c_star_aa_case_file/per_cycle_record.jsonl": "362af4daef80da49889930020368e566b184b57fdd6f8e9e0f2af172b6266f14",
+   "data/SRP1/Results/P515S45/reverify_aa_c_star/evals/3e741dac72c9e1bc_c_star_aa_case_file/leak_classification_s39_D.jsonl": "cc5be359853f91918afb4a0c9e46acae2de61c5a3aef62bb7e2a5c928c8fd2cb",
+   "data/SRP1/Results/P515S45/reverify_aa_c_star/evals/3e741dac72c9e1bc_c_star_aa_case_file/network_failures_s39_D.jsonl": "88425f041c1d96da95627a1ca890b1080b368024cc22182bc9ab176f3f1973a2",
+   "data/SRP1/Results/P515S45/reverify_aa_c_star/evals/3e741dac72c9e1bc_c_star_aa_case_file/esso_recovery_events_s39_D.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "data/SRP1/Results/P515S45/reverify_aa_c_star/evals/3e741dac72c9e1bc_c_star_aa_case_file/frozen_snapshots_s39_D.jsonl": "656c181890d0a6fb008cf7b891f80b4e34ef8a5006b797f2dab07096fe676523"
+  }
+ },
+ "capture_path_checklist_asserted_before_compare": {
+  "reference_file_g_s39_D.json": true,
+  "reference_file_boyd_terminal.json": true,
+  "reference_file_component_levels_terminal.json": true,
+  "reference_file_interface_settlement_detail_s31c.json": true,
+  "reference_file_interface_voltage_terminal.json": true,
+  "reference_file_evaluation_record.json": true,
+  "reference_file_recourse_jump_sidecar_baseline.jsonl": true,
+  "reference_file_ess_entry_stride_baseline.jsonl": true,
+  "reference_file_soh_floor_sidecar_baseline.jsonl": true,
+  "reference_file_pf_entry_stride_s39_D.jsonl": true,
+  "reference_file_ess_exempt_until_state_s39_D.jsonl": true,
+  "reference_file_aa_per_cycle.jsonl": true,
+  "reference_file_per_cycle_record.jsonl": true,
+  "candidate_file_g_s39_D.json": true,
+  "candidate_file_boyd_terminal.json": true,
+  "candidate_file_component_levels_terminal.json": true,
+  "candidate_file_interface_settlement_detail_s31c.json": true,
+  "candidate_file_interface_voltage_terminal.json": true,
+  "candidate_file_evaluation_record.json": true,
+  "candidate_file_recourse_jump_sidecar_baseline.jsonl": true,
+  "candidate_file_ess_entry_stride_baseline.jsonl": true,
+  "candidate_file_soh_floor_sidecar_baseline.jsonl": true,
+  "candidate_file_pf_entry_stride_s39_D.jsonl": true,
+  "candidate_file_ess_exempt_until_state_s39_D.jsonl": true,
+  "candidate_file_aa_per_cycle.jsonl": true,
+  "candidate_file_per_cycle_record.jsonl": true,
+  "reference_record_field_status": true,
+  "reference_record_field_certification": true,
+  "reference_record_field_cycles_run": true,
+  "reference_record_field_certification_cycle": true,
+  "reference_record_field_certified_cost": true,
+  "reference_record_field_candidate_key": true,
+  "reference_record_field_rule_ten": true,
+  "candidate_record_field_status": true,
+  "candidate_record_field_certification": true,
+  "candidate_record_field_cycles_run": true,
+  "candidate_record_field_certification_cycle": true,
+  "candidate_record_field_certified_cost": true,
+  "candidate_record_field_candidate_key": true,
+  "candidate_record_field_rule_ten": true,
+  "reference_record_field_overrides_applied_in_child.anderson_acceleration": true,
+  "candidate_record_field_effective_anderson_acceleration": true,
+  "candidate_record_field_case_file_sha256_in_child": true,
+  "candidate_report_field_cycles_run": true,
+  "candidate_report_field_gross_operational_cost": true,
+  "candidate_report_field_cycle_trajectory": true,
+  "comparator_CP__diff": true,
+  "comparator_FG__classify_diffs": true,
+  "tie_classifier_TC_reclassify_sidecar_diffs": true
+ },
+ "capture_path_checklist_false_items": [],
+ "candidate_aa_source": "anderson_acceleration_effective_in_child",
+ "comparison": {
+  "reference_dir": "data/SRP1/Results/P515S44/campaign_s44_aa_variant/evals/837fc982565dbba3_c_star_aa_keep_memory",
+  "candidate_dir": "data/SRP1/Results/P515S45/reverify_aa_c_star/evals/3e741dac72c9e1bc_c_star_aa_case_file",
+  "instance": {
+   "reference_candidate_key": "578636daa6d6360d6701764c73ddf795e53c2c37e511e21be1400024f8f6350c",
+   "candidate_candidate_key": "578636daa6d6360d6701764c73ddf795e53c2c37e511e21be1400024f8f6350c",
+   "reference_candidate_canonical": {
+    "investment_year": 2025,
+    "nodes": {
+     "5": [
+      0.96875,
+      3.875
+     ],
+     "7": [
+      0.96875,
+      3.875
+     ],
+     "9": [
+      0.96875,
+      3.875
+     ]
+    }
+   },
+   "candidate_candidate_canonical": {
+    "investment_year": 2025,
+    "nodes": {
+     "5": [
+      0.96875,
+      3.875
+     ],
+     "7": [
+      0.96875,
+      3.875
+     ],
+     "9": [
+      0.96875,
+      3.875
+     ]
+    }
+   }
+  },
+  "comparator": "p515_s40_clone_capture_preflight._diff (8f5cff48) + p515_s43_aa_flagoff_gate._classify_diffs + record provenance keys (this script) + p515_s44_tie_classifier.reclassify_sidecar_diffs",
+  "diff_value_naming": "CP._diff names the reference value 'legacy' and the candidate value 'lightweight'",
+  "excluded_field_names": [
+   "component_levels_terminal_and_settlement_detail_path",
+   "component_levels_terminal_path",
+   "ess_entry_stride_sidecar_path",
+   "esso_capture_dir",
+   "heartbeat_path",
+   "interface_voltage_terminal_path",
+   "leak_classification_path",
+   "log_path",
+   "recourse_jump_sidecar_path",
+   "results_dir_redirect",
+   "s34_ess_entry_stride_sidecar_path",
+   "s34_recourse_jump_sidecar_path",
+   "s35ref_soh_floor_sidecar_path",
+   "s38_pf_entry_stride_sidecar_path",
+   "s39_ess_exempt_until_state_sidecar_path",
+   "soh_floor_sidecar_path",
+   "stdout_path",
+   "timestamp_utc",
+   "wall_clock_s"
+  ],
+  "excluded_dotted_suffixes": [
+   "esso_models_pickle.path",
+   "network_failures_summary.path",
+   "soh_floor_multiplier_and_efc_per_cohort_year_terminal.path"
+  ],
+  "intentional_difference_suffixes_excluded": [
+   "rule_eleven_checklist.s40_tso_snapshot_capture_mode_requested"
+  ],
+  "record_provenance_keys": {
+   "campaign_id": "campaign identity",
+   "campaign_spec_path": "campaign identity (spec path)",
+   "campaign_spec_sha256": "campaign identity (spec hash)",
+   "candidate_label": "campaign identity (label)",
+   "working_dir_ids": "campaign identity (working-dir ids derive from campaign id + eval key)",
+   "eval_dir": "campaign identity (eval dir)",
+   "eval_key": "campaign identity (eval key = candidate key + effective overrides + case-file AA declaration)",
+   "report_path": "path under the run's own eval dir",
+   "per_cycle_record_path": "path under the run's own eval dir",
+   "campaign_lock_seen_by_child": "run provenance (lock content: pid, campaign id, spec hash, start time)",
+   "child_pid": "run provenance (pid)",
+   "parent_pid": "run provenance (pid)",
+   "configuration": "configuration bookkeeping (name, note, case_file_sha256, case_file_last_commit, case_file_anderson_acceleration declaration)",
+   "evaluation_overrides_effective": "configuration bookkeeping (override vs case file)",
+   "overrides_applied_in_child": "configuration bookkeeping (override vs case file); AA dict gated separately",
+   "anderson_acceleration_effective_in_child": "configuration bookkeeping (Addendum 27 field); AA dict gated separately",
+   "case_file_sha256_in_child": "configuration bookkeeping (Addendum 27 field; case-file sha256)",
+   "configuration_checks_in_child": "configuration bookkeeping (check names differ: AA-off-before-overrides vs case-file-AA-matches-declaration)",
+   "record_capture_checklist_asserted_before_run": "run provenance (rule-eleven checklist)",
+   "thread_caps_seen_by_child": "run provenance (environment)",
+   "PYTHONHASHSEED_in_child": "run provenance (environment)",
+   "nlp_solver_path_in_child": "run provenance (environment)",
+   "schema": "record schema version",
+   "wall_time_s": "run measurement (wall time; not reproducible)",
+   "peak_rss": "run measurement (peak RSS; not reproducible)"
+  },
+  "record_provenance_dotted": {
+   "aa_per_cycle.path": "path under the run's own eval dir"
+  },
+  "record_post_certification_keys_conditional": [
+   "post_certification",
+   "post_certification_path",
+   "post_certification_capture_checklist_asserted_before_run"
+  ],
+  "gating_files": [
+   "g_s39_D.json",
+   "boyd_terminal.json",
+   "component_levels_terminal.json",
+   "interface_settlement_detail_s31c.json",
+   "interface_voltage_terminal.json",
+   "evaluation_record.json",
+   "recourse_jump_sidecar_baseline.jsonl",
+   "ess_entry_stride_baseline.jsonl",
+   "soh_floor_sidecar_baseline.jsonl",
+   "pf_entry_stride_s39_D.jsonl",
+   "ess_exempt_until_state_s39_D.jsonl",
+   "aa_per_cycle.jsonl",
+   "per_cycle_record.jsonl"
+  ],
+  "files": {
+   "g_s39_D.json": {
+    "n_raw_diffs": 79,
+    "fg_buckets_raw_counts": {
+     "provenance": 4,
+     "aa_new_field": 0,
+     "known_tie_break_alias": 0,
+     "genuine": 75
+    },
+    "n": {
+     "provenance": 4,
+     "tie_order": 0,
+     "genuine": 75
+    },
+    "provenance_diffs": [
+     {
+      "field": "g_s39_D.json.rule_eleven_checklist.s44_campaign_configuration_checks.anderson_acceleration_case_file_matches_declaration",
+      "legacy": "<MISSING>",
+      "lightweight": true,
+      "reason": "rule_eleven_checklist subtree"
+     },
+     {
+      "field": "g_s39_D.json.rule_eleven_checklist.s44_campaign_configuration_checks.anderson_acceleration_case_file_memory_regularization_frozen",
+      "legacy": "<MISSING>",
+      "lightweight": true,
+      "reason": "rule_eleven_checklist subtree"
+     },
+     {
+      "field": "g_s39_D.json.rule_eleven_checklist.s44_campaign_configuration_checks.anderson_acceleration_off_before_overrides",
+      "legacy": true,
+      "lightweight": "<MISSING>",
+      "reason": "rule_eleven_checklist subtree"
+     },
+     {
+      "field": "g_s39_D.json.rule_eleven_checklist.s44_campaign_overrides_applied.anderson_acceleration",
+      "legacy": {
+       "enabled": true,
+       "memory": 5,
+       "regularization": 1e-10,
+       "reject_policy": "keep_memory"
+      },
+      "lightweight": "<MISSING>",
+      "reason": "rule_eleven_checklist subtree"
+     }
+    ],
+    "tie_order_diffs": [],
+    "tie_order_row_classes": {},
+    "genuine_field_patterns": {
+     "g_s39_D.json.cycle_trajectory[*].terminal_salvage_value": 75
+    },
+    "genuine_diffs_first": [
+     {
+      "field": "g_s39_D.json.cycle_trajectory[0].terminal_salvage_value",
+      "legacy": 5.249449594634685e-36,
+      "lightweight": 6.561811993293358e-36
+     },
+     {
+      "field": "g_s39_D.json.cycle_trajectory[1].terminal_salvage_value",
+      "legacy": 6.749009278652274e-35,
+      "lightweight": 8.436261598315344e-35
+     },
+     {
+      "field": "g_s39_D.json.cycle_trajectory[2].terminal_salvage_value",
+      "legacy": -2.112235636416071e-37,
+      "lightweight": -2.640294545520089e-37
+     },
+     {
+      "field": "g_s39_D.json.cycle_trajectory[3].terminal_salvage_value",
+      "legacy": 4.2993927526263884e-35,
+      "lightweight": 5.374240940782986e-35
+     },
+     {
+      "field": "g_s39_D.json.cycle_trajectory[4].terminal_salvage_value",
+      "legacy": -4.243491447939378e-37,
+      "lightweight": -5.304364309924223e-37
+     },
+     {
+      "field": "g_s39_D.json.cycle_trajectory[5].terminal_salvage_value",
+      "legacy": 3.260326422457187e-51,
+      "lightweight": 4.0754080280714847e-51
+     },
+     {
+      "field": "g_s39_D.json.cycle_trajectory[6].terminal_salvage_value",
+      "legacy": 1.8400233027890562e-50,
+      "lightweight": 2.3000291284863207e-50
+     },
+     {
+      "field": "g_s39_D.json.cycle_trajectory[10].terminal_salvage_value",
+      "legacy": -1.4990006540033046e-52,
+      "lightweight": -1.873750817504131e-52
+     },
+     {
+      "field": "g_s39_D.json.cycle_trajectory[12].terminal_salvage_value",
+      "legacy": -3.117921360326873e-50,
+      "lightweight": -3.897401700408592e-50
+     },
+     {
+      "field": "g_s39_D.json.cycle_trajectory[13].terminal_salvage_value",
+      "legacy": -2.3984010464052873e-51,
+      "lightweight": -2.9980013080066094e-51
+     },
+     {
+      "field": "g_s39_D.json.cycle_trajectory[14].terminal_salvage_value",
+      "legacy": 1.1242504905024782e-52,
+      "lightweight": 1.4053131131280982e-52
+     },
+     {
+      "field": "g_s39_D.json.cycle_trajectory[15].terminal_salvage_value",
+      "legacy": 2.0986009156046262e-51,
+      "lightweight": 2.6232511445057832e-51
+     },
+     {
+      "field": "g_s39_D.json.cycle_trajectory[16].terminal_salvage_value",
+      "legacy": 7.495003270016523e-53,
+      "lightweight": 9.368754087520654e-53
+     },
+     {
+      "field": "g_s39_D.json.cycle_trajectory[17].terminal_salvage_value",
+      "legacy": -1.1992005232026436e-51,
+      "lightweight": -1.4990006540033047e-51
+     },
+     {
+      "field": "g_s39_D.json.cycle_trajectory[18].terminal_salvage_value",
+      "legacy": 9.593604185621149e-51,
+      "lightweight": 1.1992005232026438e-50
+     },
+     {
+      "field": "g_s39_D.json.cycle_trajectory[21].terminal_salvage_value",
+      "legacy": -2.7056961804759643e-50,
+      "lightweight": -3.382120225594956e-50
+     },
+     {
+      "field": "g_s39_D.json.cycle_trajectory[23].terminal_salvage_value",
+      "legacy": -4.3471018966095827e-51,
+      "lightweight": -5.43387737076198e-51
+     },
+     {
+      "field": "g_s39_D.json.cycle_trajectory[24].terminal_salvage_value",
+      "legacy": 1.1992005232026436e-51,
+      "lightweight": 1.4990006540033047e-51
+     },
+     {
+      "field": "g_s39_D.json.cycle_trajectory[25].terminal_salvage_value",
+      "legacy": 1.4390406278431724e-50,
+      "lightweight": 1.7988007848039656e-50
+     },
+     {
+      "field": "g_s39_D.json.cycle_trajectory[27].terminal_salvage_value",
+      "legacy": -9.593604185621149e-51,
+      "lightweight": -1.1992005232026438e-50
+     },
+     {
+      "field": "g_s39_D.json.cycle_trajectory[28].terminal_salvage_value",
+      "legacy": -9.593604185621144e-51,
+      "lightweight": -1.1992005232026438e-50
+     },
+     {
+      "field": "g_s39_D.json.cycle_trajectory[29].terminal_salvage_value",
+      "legacy": 9.593604185621149e-51,
+      "lightweight": 1.1992005232026438e-50
+     },
+     {
+      "field": "g_s39_D.json.cycle_trajectory[31].terminal_salvage_value",
+      "legacy": -9.593604185621149e-51,
+      "lightweight": -1.1992005232026438e-50
+     },
+     {
+      "field": "g_s39_D.json.cycle_trajectory[32].terminal_salvage_value",
+      "legacy": 1.4390406278431721e-50,
+      "lightweight": 1.7988007848039656e-50
+     },
+     {
+      "field": "g_s39_D.json.cycle_trajectory[35].terminal_salvage_value",
+      "legacy": 2.3984010464052873e-51,
+      "lightweight": 2.9980013080066094e-51
+     },
+     {
+      "field": "g_s39_D.json.cycle_trajectory[36].terminal_salvage_value",
+      "legacy": -4.7968020928105746e-51,
+      "lightweight": -5.996002616013219e-51
+     },
+     {
+      "field": "g_s39_D.json.cycle_trajectory[38].terminal_salvage_value",
+      "legacy": -2.158560941764758e-50,
+      "lightweight": -2.6982011772059485e-50
+     },
+     {
+      "field": "g_s39_D.json.cycle_trajectory[39].terminal_salvage_value",
+      "legacy": 2.698201177205948e-51,
+      "lightweight": 3.3727514715074356e-51
+     },
+     {
+      "field": "g_s39_D.json.cycle_trajectory[40].terminal_salvage_value",
+      "legacy": 5.996002616013218e-52,
+      "lightweight": 7.495003270016524e-52
+     },
+     {
+      "field": "g_s39_D.json.cycle_trajectory[42].terminal_salvage_value",
+      "legacy": -2.8780812556863443e-50,
+      "lightweight": -3.5976015696079313e-50
+     },
+     {
+      "field": "g_s39_D.json.cycle_trajectory[43].terminal_salvage_value",
+      "legacy": -4.8342771091606574e-51,
+      "lightweight": -6.042846386450821e-51
+     },
+     {
+      "field": "g_s39_D.json.cycle_trajectory[45].terminal_salvage_value",
+      "legacy": -9.593604185621149e-51,
+      "lightweight": -1.1992005232026438e-50
+     },
+     {
+      "field": "g_s39_D.json.cycle_trajectory[46].terminal_salvage_value",
+      "legacy": -2.8780812556863443e-50,
+      "lightweight": -3.5976015696079313e-50
+     },
+     {
+      "field": "g_s39_D.json.cycle_trajectory[47].terminal_salvage_value",
+      "legacy": 1.1992005232026436e-51,
+      "lightweight": 1.4990006540033047e-51
+     },
+     {
+      "field": "g_s39_D.json.cycle_trajectory[49].terminal_salvage_value",
+      "legacy": -2.3984010464052866e-50,
+      "lightweight": -2.9980013080066094e-50
+     },
+     {
+      "field": "g_s39_D.json.cycle_trajectory[50].terminal_salvage_value",
+      "legacy": 1.0792804708823793e-50,
+      "lightweight": 1.3491005886029742e-50
+     },
+     {
+      "field": "g_s39_D.json.cycle_trajectory[51].terminal_salvage_value",
+      "legacy": -4.7968020928105746e-51,
+      "lightweight": -5.996002616013219e-51
+     },
+     {
+      "field": "g_s39_D.json.cycle_trajectory[52].terminal_salvage_value",
+      "legacy": 6.595602877614541e-51,
+      "lightweight": 8.244503597018176e-51
+     },
+     {
+      "field": "g_s39_D.json.cycle_trajectory[54].terminal_salvage_value",
+      "legacy": -1.8287807978840315e-50,
+      "lightweight": -2.2859759973550397e-50
+     },
+     {
+      "field": "g_s39_D.json.cycle_trajectory[55].terminal_salvage_value",
+      "legacy": 2.3984010464052873e-51,
+      "lightweight": 2.9980013080066094e-51
+     },
+     {
+      "field": "g_s39_D.json.cycle_trajectory[58].terminal_salvage_value",
+      "legacy": -7.195203139215862e-51,
+      "lightweight": -8.994003924019828e-51
+     },
+     {
+      "field": "g_s39_D.json.cycle_trajectory[59].terminal_salvage_value",
+      "legacy": -4.7968020928105746e-51,
+      "lightweight": -5.996002616013219e-51
+     },
+     {
+      "field": "g_s39_D.json.cycle_trajectory[60].terminal_salvage_value",
+      "legacy": -9.593604185621149e-51,
+      "lightweight": -1.1992005232026438e-50
+     },
+     {
+      "field": "g_s39_D.json.cycle_trajectory[61].terminal_salvage_value",
+      "legacy": -2.3984010464052873e-51,
+      "lightweight": -2.9980013080066094e-51
+     },
+     {
+      "field": "g_s39_D.json.cycle_trajectory[62].terminal_salvage_value",
+      "legacy": -1.1392404970425114e-50,
+      "lightweight": -1.4240506213031395e-50
+     },
+     {
+      "field": "g_s39_D.json.cycle_trajectory[63].terminal_salvage_value",
+      "legacy": 5.996002616013218e-52,
+      "lightweight": 7.495003270016524e-52
+     },
+     {
+      "field": "g_s39_D.json.cycle_trajectory[66].terminal_salvage_value",
+      "legacy": -4.7968020928105746e-51,
+      "lightweight": -5.996002616013219e-51
+     },
+     {
+      "field": "g_s39_D.json.cycle_trajectory[67].terminal_salvage_value",
+      "legacy": 1.4990006540033046e-52,
+      "lightweight": 1.873750817504131e-52
+     },
+     {
+      "field": "g_s39_D.json.cycle_trajectory[68].terminal_salvage_value",
+      "legacy": -4.7968020928105746e-51,
+      "lightweight": -5.996002616013219e-51
+     },
+     {
+      "field": "g_s39_D.json.cycle_trajectory[69].terminal_salvage_value",
+      "legacy": -5.4568208573775e-36,
+      "lightweight": -6.821026071721875e-36
+     },
+     {
+      "field": "g_s39_D.json.cycle_trajectory[70].terminal_salvage_value",
+      "legacy": -1.1992005232026438e-50,
+      "lightweight": -1.4990006540033047e-50
+     },
+     {
+      "field": "g_s39_D.json.cycle_trajectory[72].terminal_salvage_value",
+      "legacy": -4.7968020928105746e-51,
+      "lightweight": -5.996002616013219e-51
+     },
+     {
+      "field": "g_s39_D.json.cycle_trajectory[73].terminal_salvage_value",
+      "legacy": -4.7968020928105746e-51,
+      "lightweight": -5.996002616013219e-51
+     },
+     {
+      "field": "g_s39_D.json.cycle_trajectory[75].terminal_salvage_value",
+      "legacy": -4.7968020928105746e-51,
+      "lightweight": -5.996002616013219e-51
+     },
+     {
+      "field": "g_s39_D.json.cycle_trajectory[76].terminal_salvage_value",
+      "legacy": -5.996002616013219e-51,
+      "lightweight": -7.495003270016524e-51
+     },
+     {
+      "field": "g_s39_D.json.cycle_trajectory[80].terminal_salvage_value",
+      "legacy": -9.593604185621149e-51,
+      "lightweight": -1.1992005232026438e-50
+     },
+     {
+      "field": "g_s39_D.json.cycle_trajectory[81].terminal_salvage_value",
+      "legacy": -1.7988007848039654e-50,
+      "lightweight": -2.248500981004957e-50
+     },
+     {
+      "field": "g_s39_D.json.cycle_trajectory[82].terminal_salvage_value",
+      "legacy": -1.1992005232026436e-51,
+      "lightweight": -1.4990006540033047e-51
+     },
+     {
+      "field": "g_s39_D.json.cycle_trajectory[83].terminal_salvage_value",
+      "legacy": -5.396402354411896e-51,
+      "lightweight": -6.745502943014871e-51
+     },
+     {
+      "field": "g_s39_D.json.cycle_trajectory[86].terminal_salvage_value",
+      "legacy": -4.7968020928105746e-51,
+      "lightweight": -5.996002616013219e-51
+     },
+     {
+      "field": "g_s39_D.json.cycle_trajectory[87].terminal_salvage_value",
+      "legacy": -2.3984010464052873e-51,
+      "lightweight": -2.9980013080066094e-51
+     },
+     {
+      "field": "g_s39_D.json.cycle_trajectory[88].terminal_salvage_value",
+      "legacy": 9.593604185621149e-51,
+      "lightweight": 1.1992005232026438e-50
+     },
+     {
+      "field": "g_s39_D.json.cycle_trajectory[90].terminal_salvage_value",
+      "legacy": 1.1992005232026436e-51,
+      "lightweight": 1.4990006540033047e-51
+     },
+     {
+      "field": "g_s39_D.json.cycle_trajectory[92].terminal_salvage_value",
+      "legacy": -1.1992005232026436e-51,
+      "lightweight": -1.4990006540033047e-51
+     },
+     {
+      "field": "g_s39_D.json.cycle_trajectory[93].terminal_salvage_value",
+      "legacy": -1.8737508175041306e-51,
+      "lightweight": -2.3421885218801636e-51
+     },
+     {
+      "field": "g_s39_D.json.cycle_trajectory[94].terminal_salvage_value",
+      "legacy": 2.3984010464052873e-51,
+      "lightweight": 2.9980013080066094e-51
+     },
+     {
+      "field": "g_s39_D.json.cycle_trajectory[96].terminal_salvage_value",
+      "legacy": 4.871752125510739e-52,
+      "lightweight": 6.089690156888425e-52
+     },
+     {
+      "field": "g_s39_D.json.cycle_trajectory[97].terminal_salvage_value",
+      "legacy": 2.281224962394118e-37,
+      "lightweight": 2.8515312029926483e-37
+     },
+     {
+      "field": "g_s39_D.json.cycle_trajectory[98].terminal_salvage_value",
+      "legacy": -1.1992005232026436e-51,
+      "lightweight": -1.4990006540033047e-51
+     },
+     {
+      "field": "g_s39_D.json.cycle_trajectory[99].terminal_salvage_value",
+      "legacy": -3.447701504207601e-50,
+      "lightweight": -4.3096268802595015e-50
+     },
+     {
+      "field": "g_s39_D.json.cycle_trajectory[100].terminal_salvage_value",
+      "legacy": -1.1992005232026435e-50,
+      "lightweight": -1.4990006540033047e-50
+     },
+     {
+      "field": "g_s39_D.json.cycle_trajectory[101].terminal_salvage_value",
+      "legacy": -2.3984010464052873e-51,
+      "lightweight": -2.9980013080066094e-51
+     },
+     {
+      "field": "g_s39_D.json.cycle_trajectory[102].terminal_salvage_value",
+      "legacy": 1.4390406278431724e-50,
+      "lightweight": 1.7988007848039656e-50
+     },
+     {
+      "field": "g_s39_D.json.cycle_trajectory[104].terminal_salvage_value",
+      "legacy": 3.799533620018084e-37,
+      "lightweight": 4.749417025022606e-37
+     },
+     {
+      "field": "g_s39_D.json.cycle_trajectory[105].terminal_salvage_value",
+      "legacy": -1.4390406278431721e-50,
+      "lightweight": -1.7988007848039656e-50
+     }
+    ],
+    "genuine_diffs_listed_truncated": false
+   },
+   "boyd_terminal.json": {
+    "n_raw_diffs": 0,
+    "fg_buckets_raw_counts": {
+     "provenance": 0,
+     "aa_new_field": 0,
+     "known_tie_break_alias": 0,
+     "genuine": 0
+    },
+    "n": {
+     "provenance": 0,
+     "tie_order": 0,
+     "genuine": 0
+    },
+    "provenance_diffs": [],
+    "tie_order_diffs": [],
+    "tie_order_row_classes": {},
+    "genuine_field_patterns": {},
+    "genuine_diffs_first": [],
+    "genuine_diffs_listed_truncated": false
+   },
+   "component_levels_terminal.json": {
+    "n_raw_diffs": 0,
+    "fg_buckets_raw_counts": {
+     "provenance": 0,
+     "aa_new_field": 0,
+     "known_tie_break_alias": 0,
+     "genuine": 0
+    },
+    "n": {
+     "provenance": 0,
+     "tie_order": 0,
+     "genuine": 0
+    },
+    "provenance_diffs": [],
+    "tie_order_diffs": [],
+    "tie_order_row_classes": {},
+    "genuine_field_patterns": {},
+    "genuine_diffs_first": [],
+    "genuine_diffs_listed_truncated": false
+   },
+   "interface_settlement_detail_s31c.json": {
+    "n_raw_diffs": 0,
+    "fg_buckets_raw_counts": {
+     "provenance": 0,
+     "aa_new_field": 0,
+     "known_tie_break_alias": 0,
+     "genuine": 0
+    },
+    "n": {
+     "provenance": 0,
+     "tie_order": 0,
+     "genuine": 0
+    },
+    "provenance_diffs": [],
+    "tie_order_diffs": [],
+    "tie_order_row_classes": {},
+    "genuine_field_patterns": {},
+    "genuine_diffs_first": [],
+    "genuine_diffs_listed_truncated": false
+   },
+   "interface_voltage_terminal.json": {
+    "n_raw_diffs": 0,
+    "fg_buckets_raw_counts": {
+     "provenance": 0,
+     "aa_new_field": 0,
+     "known_tie_break_alias": 0,
+     "genuine": 0
+    },
+    "n": {
+     "provenance": 0,
+     "tie_order": 0,
+     "genuine": 0
+    },
+    "provenance_diffs": [],
+    "tie_order_diffs": [],
+    "tie_order_row_classes": {},
+    "genuine_field_patterns": {},
+    "genuine_diffs_first": [],
+    "genuine_diffs_listed_truncated": false
+   },
+   "evaluation_record.json": {
+    "n_raw_diffs": 38,
+    "fg_buckets_raw_counts": {
+     "provenance": 0,
+     "aa_new_field": 0,
+     "known_tie_break_alias": 0,
+     "genuine": 38
+    },
+    "n": {
+     "provenance": 38,
+     "tie_order": 0,
+     "genuine": 0
+    },
+    "provenance_diffs": [
+     {
+      "field": "evaluation_record.json.aa_per_cycle.path",
+      "legacy": "data/SRP1/Results/P515S44/campaign_s44_aa_variant/evals/837fc982565dbba3_c_star_aa_keep_memory/aa_per_cycle.jsonl",
+      "lightweight": "data/SRP1/Results/P515S45/reverify_aa_c_star/evals/3e741dac72c9e1bc_c_star_aa_case_file/aa_per_cycle.jsonl",
+      "reason": "path under the run's own eval dir"
+     },
+     {
+      "field": "evaluation_record.json.anderson_acceleration_effective_in_child",
+      "legacy": "<MISSING>",
+      "lightweight": {
+       "enabled": true,
+       "memory": 5,
+       "regularization": 1e-10,
+       "reject_policy": "keep_memory"
+      },
+      "reason": "configuration bookkeeping (Addendum 27 field); AA dict gated separately"
+     },
+     {
+      "field": "evaluation_record.json.campaign_id",
+      "legacy": "s44_aa_variant",
+      "lightweight": "s45_reverify_aa_c_star",
+      "reason": "campaign identity"
+     },
+     {
+      "field": "evaluation_record.json.campaign_lock_seen_by_child.campaign_id",
+      "legacy": "s44_aa_variant",
+      "lightweight": "s45_reverify_aa_c_star",
+      "reason": "run provenance (lock content: pid, campaign id, spec hash, start time)"
+     },
+     {
+      "field": "evaluation_record.json.campaign_lock_seen_by_child.campaign_spec_sha256",
+      "legacy": "f90618e8d00299969a7e35c48850e0316b3a2f15436763d66bf1306afb392186",
+      "lightweight": "4a214b99df34e58791d31d842f2ad6c5293f83e82064d52320934b6d32b6e58d",
+      "reason": "run provenance (lock content: pid, campaign id, spec hash, start time)"
+     },
+     {
+      "field": "evaluation_record.json.campaign_lock_seen_by_child.pid",
+      "legacy": 70211,
+      "lightweight": 15734,
+      "reason": "run provenance (lock content: pid, campaign id, spec hash, start time)"
+     },
+     {
+      "field": "evaluation_record.json.campaign_lock_seen_by_child.started_utc",
+      "legacy": "2026-09-19T12:38:03.976379+00:00",
+      "lightweight": "2026-09-19T16:46:20.907734+00:00",
+      "reason": "run provenance (lock content: pid, campaign id, spec hash, start time)"
+     },
+     {
+      "field": "evaluation_record.json.campaign_spec_path",
+      "legacy": "data/SRP1/Results/P515S44/campaign_s44_aa_variant/campaign_spec_s44_aa_variant_f90618e8.json",
+      "lightweight": "data/SRP1/Results/P515S45/reverify_aa_c_star/campaign_spec_s45_reverify_aa_c_star_4a214b99.json",
+      "reason": "campaign identity (spec path)"
+     },
+     {
+      "field": "evaluation_record.json.campaign_spec_sha256",
+      "legacy": "f90618e8d00299969a7e35c48850e0316b3a2f15436763d66bf1306afb392186",
+      "lightweight": "4a214b99df34e58791d31d842f2ad6c5293f83e82064d52320934b6d32b6e58d",
+      "reason": "campaign identity (spec hash)"
+     },
+     {
+      "field": "evaluation_record.json.candidate_label",
+      "legacy": "c_star_aa_keep_memory",
+      "lightweight": "c_star_aa_case_file",
+      "reason": "campaign identity (label)"
+     },
+     {
+      "field": "evaluation_record.json.case_file_sha256_in_child",
+      "legacy": "<MISSING>",
+      "lightweight": "dbfdb2a07d12bfedab5e66bf94b3df98e5ab0305616652b4083266476972006b",
+      "reason": "configuration bookkeeping (Addendum 27 field; case-file sha256)"
+     },
+     {
+      "field": "evaluation_record.json.child_pid",
+      "legacy": 70222,
+      "lightweight": 15745,
+      "reason": "run provenance (pid)"
+     },
+     {
+      "field": "evaluation_record.json.configuration.case_file_anderson_acceleration",
+      "legacy": "<MISSING>",
+      "lightweight": {
+       "enabled": true,
+       "memory": 5,
+       "regularization": 1e-10,
+       "reject_policy": "keep_memory"
+      },
+      "reason": "configuration bookkeeping (name, note, case_file_sha256, case_file_last_commit, case_file_anderson_acceleration declaration)"
+     },
+     {
+      "field": "evaluation_record.json.configuration.case_file_last_commit",
+      "legacy": "fb3de341b359422dfbfb77e6bbffd7dc83a80bab",
+      "lightweight": "b5629311c092863c78cc508eaf34676382ac9f83",
+      "reason": "configuration bookkeeping (name, note, case_file_sha256, case_file_last_commit, case_file_anderson_acceleration declaration)"
+     },
+     {
+      "field": "evaluation_record.json.configuration.case_file_sha256",
+      "legacy": "490e5b211f5083fe6ffca11d2aa07cd26739f141654fce3a23898258d610edf8",
+      "lightweight": "dbfdb2a07d12bfedab5e66bf94b3df98e5ab0305616652b4083266476972006b",
+      "reason": "configuration bookkeeping (name, note, case_file_sha256, case_file_last_commit, case_file_anderson_acceleration declaration)"
+     },
+     {
+      "field": "evaluation_record.json.configuration.name",
+      "legacy": "per-evaluation: AA keep_memory (override) and D (case file, fb3de341)",
+      "lightweight": "case file alone: AA keep_memory adopted in data/SRP1/SRP1_params.json (Addendum 27)",
+      "reason": "configuration bookkeeping (name, note, case_file_sha256, case_file_last_commit, case_file_anderson_acceleration declaration)"
+     },
+     {
+      "field": "evaluation_record.json.configuration.note",
+      "legacy": "campaign-level overrides empty; each entry carries its own (AA entry only); num_max_iters := cap (run_admm_arm always sets it)",
+      "lightweight": "no overrides; the case file carries AA (declared, checked by the child hook); num_max_iters := cap (run_admm_arm always sets it)",
+      "reason": "configuration bookkeeping (name, note, case_file_sha256, case_file_last_commit, case_file_anderson_acceleration declaration)"
+     },
+     {
+      "field": "evaluation_record.json.configuration_checks_in_child.anderson_acceleration_case_file_matches_declaration",
+      "legacy": "<MISSING>",
+      "lightweight": true,
+      "reason": "configuration bookkeeping (check names differ: AA-off-before-overrides vs case-file-AA-matches-declaration)"
+     },
+     {
+      "field": "evaluation_record.json.configuration_checks_in_child.anderson_acceleration_case_file_memory_regularization_frozen",
+      "legacy": "<MISSING>",
+      "lightweight": true,
+      "reason": "configuration bookkeeping (check names differ: AA-off-before-overrides vs case-file-AA-matches-declaration)"
+     },
+     {
+      "field": "evaluation_record.json.configuration_checks_in_child.anderson_acceleration_off_before_overrides",
+      "legacy": true,
+      "lightweight": "<MISSING>",
+      "reason": "configuration bookkeeping (check names differ: AA-off-before-overrides vs case-file-AA-matches-declaration)"
+     },
+     {
+      "field": "evaluation_record.json.eval_dir",
+      "legacy": "data/SRP1/Results/P515S44/campaign_s44_aa_variant/evals/837fc982565dbba3_c_star_aa_keep_memory",
+      "lightweight": "data/SRP1/Results/P515S45/reverify_aa_c_star/evals/3e741dac72c9e1bc_c_star_aa_case_file",
+      "reason": "campaign identity (eval dir)"
+     },
+     {
+      "field": "evaluation_record.json.eval_key",
+      "legacy": "837fc982565dbba32241ed21a46da14984395006e3dbb4b03d5f72b9b72c50a7",
+      "lightweight": "3e741dac72c9e1bcccc04ce5cc2e29f91cd639c43620d4efa3e36885915263aa",
+      "reason": "campaign identity (eval key = candidate key + effective overrides + case-file AA declaration)"
+     },
+     {
+      "field": "evaluation_record.json.evaluation_overrides_effective.anderson_acceleration",
+      "legacy": {
+       "enabled": true,
+       "reject_policy": "keep_memory"
+      },
+      "lightweight": "<MISSING>",
+      "reason": "configuration bookkeeping (override vs case file)"
+     },
+     {
+      "field": "evaluation_record.json.overrides_applied_in_child.anderson_acceleration",
+      "legacy": {
+       "enabled": true,
+       "memory": 5,
+       "regularization": 1e-10,
+       "reject_policy": "keep_memory"
+      },
+      "lightweight": "<MISSING>",
+      "reason": "configuration bookkeeping (override vs case file); AA dict gated separately"
+     },
+     {
+      "field": "evaluation_record.json.parent_pid",
+      "legacy": 70211,
+      "lightweight": 15734,
+      "reason": "run provenance (pid)"
+     },
+     {
+      "field": "evaluation_record.json.peak_rss.child_python_process_ru_maxrss",
+      "legacy": 3386720256,
+      "lightweight": 2581463040,
+      "reason": "run measurement (peak RSS; not reproducible)"
+     },
+     {
+      "field": "evaluation_record.json.peak_rss.production_state_peak_rss_ru_maxrss",
+      "legacy": 2467315712,
+      "lightweight": 2581463040,
+      "reason": "run measurement (peak RSS; not reproducible)"
+     },
+     {
+      "field": "evaluation_record.json.peak_rss.solver_subprocesses_max_ru_maxrss",
+      "legacy": 55476224,
+      "lightweight": 52920320,
+      "reason": "run measurement (peak RSS; not reproducible)"
+     },
+     {
+      "field": "evaluation_record.json.per_cycle_record_path",
+      "legacy": "data/SRP1/Results/P515S44/campaign_s44_aa_variant/evals/837fc982565dbba3_c_star_aa_keep_memory/per_cycle_record.jsonl",
+      "lightweight": "data/SRP1/Results/P515S45/reverify_aa_c_star/evals/3e741dac72c9e1bc_c_star_aa_case_file/per_cycle_record.jsonl",
+      "reason": "path under the run's own eval dir"
+     },
+     {
+      "field": "evaluation_record.json.post_certification",
+      "legacy": {
+       "status": "evaluated",
+       "evaluated": true,
+       "skip_reason": null,
+       "error": null,
+       "certified_cost": 650982939.9389359,
+       "gate_c_pass": true,
+       "persisted_models": {
+        "path": "data/SRP1/Results/P515S44/campaign_s44_aa_variant/evals/837fc982565dbba3_c_star_aa_keep_memory/certified_models.pkl",
+        "sha256": "b2714370418f60e754ca074fcac08c293da6b1b9194eaa4ea9a858e834836ba2",
+        "size_bytes": 165541198
+       },
+       "hull_bound_detail_path": "data/SRP1/Results/P515S44/campaign_s44_aa_variant/evals/837fc982565dbba3_c_star_aa_keep_memory/hull_bound_detail.json",
+       "requested": {
+        "hull_polish": true,
+        "persist_certified_models": true,
+        "reference": {
+         "campaign_spec_sha256": "4047b4e3f1852c3616a80ad26f2d43f2aa4b333847e447fb5b9323fb3bce7f33",
+         "candidate_key": "578636daa6d6360d6701764c73ddf795e53c2c37e511e21be1400024f8f6350c",
+         "certification_cycle": 139,
+         "certified_cost": 650966975.2943751,
+         "component_levels_terminal_sha256": "ff9050bb1759cff14f9d4e94d7e095b7a9b7fc3fa7ca8439f2a9ed5c0aa0444d",
+         "configuration_overrides": {},
+         "eval_dir": "data/SRP1/Results/P515S44/campaign_s44_gate/evals/578636daa6d6360d_c_star",
+         "evaluation_record_sha256": "f7722fc44a2785f1d085dbc2f72703bc0962d06cf9a3796dbd4bce89d9ed7870"
+        }
+       },
+       "gate_b": {
+        "abs_diff": 15964.644560813904,
+        "abs_tolerance": 97645.04629415624,
+        "reference_certified_cost": 650966975.2943751,
+        "pass": true
+       },
+       "gate_c": {
+        "headline_diff_AA_minus_D": 15964.644560813904,
+        "dominant_two_diff": 15964.644634366035,
+        "unaccounted_residual": -8.794086170382798e-08,
+        "other_priced_components_nonzero": [],
+        "reconciles": true
+       },
+       "gate_d": {
+        "blocks_solved": 48,
+        "n_blocks": 48,
+        "relative_pct": 0.000251548202285187,
+        "threshold_pct": 0.1,
+        "settlement_excluded_change": 9128.456514120102,
+        "settlement_remainder_before": 26195.5495057106,
+        "settlement_remainder_after": 15429.55710887909,
+        "hull_bounds_non_degenerate_by_channel": {
+         "V": {
+          "total": 1728,
+          "degenerate": 0,
+          "non_degenerate": 1728,
+          "active_non_degenerate": 516
+         },
+         "PF_P": {
+          "total": 1728,
+          "degenerate": 0,
+          "non_degenerate": 1728,
+          "active_non_degenerate": 492
+         },
+         "PF_Q": {
+          "total": 1728,
+          "degenerate": 0,
+          "non_degenerate": 1728,
+          "active_non_degenerate": 201
+         },
+         "ESS_P": {
+          "total": 1728,
+          "degenerate": 0,
+          "non_degenerate": 1728,
+          "active_non_degenerate": 24
+         },
+         "ESS_Q": {
+          "total": 1728,
+          "degenerate": 0,
+          "non_degenerate": 1728,
+          "active_non_degenerate": 1418
+         }
+        },
+        "pass": true
+       }
+      },
+      "lightweight": null,
+      "reason": "post-certification requested in the reference campaign only (candidate record holds None for all three keys)"
+     },
+     {
+      "field": "evaluation_record.json.post_certification_capture_checklist_asserted_before_run",
+      "legacy": {
+       "certification_fn": true,
+       "stopped_by_fn": true,
+       "hull_polish_fn": true,
+       "persist_fn": true,
+       "decomposition_fn_accepts_reference_dir": true,
+       "cost_band_constant_1_5e_4": true,
+       "reconciliation_tol_1_0": true,
+       "hull_gate_threshold_0_1_pct": true,
+       "aa_sidecar_fn": true,
+       "run_admm_arm_passes_state_to_hook": true,
+       "reference_hashes_verified_before_run": {
+        "evaluation_record_sha256": "f7722fc44a2785f1d085dbc2f72703bc0962d06cf9a3796dbd4bce89d9ed7870",
+        "component_levels_terminal_sha256": "ff9050bb1759cff14f9d4e94d7e095b7a9b7fc3fa7ca8439f2a9ed5c0aa0444d"
+       }
+      },
+      "lightweight": null,
+      "reason": "post-certification requested in the reference campaign only (candidate record holds None for all three keys)"
+     },
+     {
+      "field": "evaluation_record.json.post_certification_path",
+      "legacy": "data/SRP1/Results/P515S44/campaign_s44_aa_variant/evals/837fc982565dbba3_c_star_aa_keep_memory/post_certification.json",
+      "lightweight": null,
+      "reason": "post-certification requested in the reference campaign only (candidate record holds None for all three keys)"
+     },
+     {
+      "field": "evaluation_record.json.report_path",
+      "legacy": "data/SRP1/Results/P515S44/campaign_s44_aa_variant/evals/837fc982565dbba3_c_star_aa_keep_memory/g_s39_D.json",
+      "lightweight": "data/SRP1/Results/P515S45/reverify_aa_c_star/evals/3e741dac72c9e1bc_c_star_aa_case_file/g_s39_D.json",
+      "reason": "path under the run's own eval dir"
+     },
+     {
+      "field": "evaluation_record.json.wall_time_s.child_process_s",
+      "legacy": 3631.326085805893,
+      "lightweight": 3262.0989429950714,
+      "reason": "run measurement (wall time; not reproducible)"
+     },
+     {
+      "field": "evaluation_record.json.wall_time_s.run_admm_arm_reported_wall_clock_s",
+      "legacy": 3580.0612659454346,
+      "lightweight": 3247.9433879852295,
+      "reason": "run measurement (wall time; not reproducible)"
+     },
+     {
+      "field": "evaluation_record.json.wall_time_s.run_admm_arm_s",
+      "legacy": 3617.2052030563354,
+      "lightweight": 3248.8429520130157,
+      "reason": "run measurement (wall time; not reproducible)"
+     },
+     {
+      "field": "evaluation_record.json.working_dir_ids.precheck",
+      "legacy": "p515s44_s44_aa_variant_837fc982565dbba3_precheck",
+      "lightweight": "p515s44_s45_reverify_aa_c_star_3e741dac72c9e1bc_precheck",
+      "reason": "campaign identity (working-dir ids derive from campaign id + eval key)"
+     },
+     {
+      "field": "evaluation_record.json.working_dir_ids.run",
+      "legacy": "p515s44_s44_aa_variant_837fc982565dbba3_run",
+      "lightweight": "p515s44_s45_reverify_aa_c_star_3e741dac72c9e1bc_run",
+      "reason": "campaign identity (working-dir ids derive from campaign id + eval key)"
+     }
+    ],
+    "tie_order_diffs": [],
+    "tie_order_row_classes": {},
+    "genuine_field_patterns": {},
+    "genuine_diffs_first": [],
+    "genuine_diffs_listed_truncated": false
+   },
+   "recourse_jump_sidecar_baseline.jsonl": {
+    "n_raw_diffs": 0,
+    "fg_buckets_raw_counts": {
+     "provenance": 0,
+     "aa_new_field": 0,
+     "known_tie_break_alias": 0,
+     "genuine": 0
+    },
+    "n": {
+     "provenance": 0,
+     "tie_order": 0,
+     "genuine": 0
+    },
+    "provenance_diffs": [],
+    "tie_order_diffs": [],
+    "tie_order_row_classes": {},
+    "genuine_field_patterns": {},
+    "genuine_diffs_first": [],
+    "genuine_diffs_listed_truncated": false,
+    "n_rows": {
+     "reference": 107,
+     "candidate": 107
+    }
+   },
+   "ess_entry_stride_baseline.jsonl": {
+    "n_raw_diffs": 0,
+    "fg_buckets_raw_counts": {
+     "provenance": 0,
+     "aa_new_field": 0,
+     "known_tie_break_alias": 0,
+     "genuine": 0
+    },
+    "n": {
+     "provenance": 0,
+     "tie_order": 0,
+     "genuine": 0
+    },
+    "provenance_diffs": [],
+    "tie_order_diffs": [],
+    "tie_order_row_classes": {},
+    "genuine_field_patterns": {},
+    "genuine_diffs_first": [],
+    "genuine_diffs_listed_truncated": false,
+    "n_rows": {
+     "reference": 107,
+     "candidate": 107
+    }
+   },
+   "soh_floor_sidecar_baseline.jsonl": {
+    "n_raw_diffs": 0,
+    "fg_buckets_raw_counts": {
+     "provenance": 0,
+     "aa_new_field": 0,
+     "known_tie_break_alias": 0,
+     "genuine": 0
+    },
+    "n": {
+     "provenance": 0,
+     "tie_order": 0,
+     "genuine": 0
+    },
+    "provenance_diffs": [],
+    "tie_order_diffs": [],
+    "tie_order_row_classes": {},
+    "genuine_field_patterns": {},
+    "genuine_diffs_first": [],
+    "genuine_diffs_listed_truncated": false,
+    "n_rows": {
+     "reference": 107,
+     "candidate": 107
+    }
+   },
+   "pf_entry_stride_s39_D.jsonl": {
+    "n_raw_diffs": 0,
+    "fg_buckets_raw_counts": {
+     "provenance": 0,
+     "aa_new_field": 0,
+     "known_tie_break_alias": 0,
+     "genuine": 0
+    },
+    "n": {
+     "provenance": 0,
+     "tie_order": 0,
+     "genuine": 0
+    },
+    "provenance_diffs": [],
+    "tie_order_diffs": [],
+    "tie_order_row_classes": {},
+    "genuine_field_patterns": {},
+    "genuine_diffs_first": [],
+    "genuine_diffs_listed_truncated": false,
+    "n_rows": {
+     "reference": 107,
+     "candidate": 107
+    }
+   },
+   "ess_exempt_until_state_s39_D.jsonl": {
+    "n_raw_diffs": 0,
+    "fg_buckets_raw_counts": {
+     "provenance": 0,
+     "aa_new_field": 0,
+     "known_tie_break_alias": 0,
+     "genuine": 0
+    },
+    "n": {
+     "provenance": 0,
+     "tie_order": 0,
+     "genuine": 0
+    },
+    "provenance_diffs": [],
+    "tie_order_diffs": [],
+    "tie_order_row_classes": {},
+    "genuine_field_patterns": {},
+    "genuine_diffs_first": [],
+    "genuine_diffs_listed_truncated": false,
+    "n_rows": {
+     "reference": 107,
+     "candidate": 107
+    }
+   },
+   "aa_per_cycle.jsonl": {
+    "n_raw_diffs": 0,
+    "fg_buckets_raw_counts": {
+     "provenance": 0,
+     "aa_new_field": 0,
+     "known_tie_break_alias": 0,
+     "genuine": 0
+    },
+    "n": {
+     "provenance": 0,
+     "tie_order": 0,
+     "genuine": 0
+    },
+    "provenance_diffs": [],
+    "tie_order_diffs": [],
+    "tie_order_row_classes": {},
+    "genuine_field_patterns": {},
+    "genuine_diffs_first": [],
+    "genuine_diffs_listed_truncated": false,
+    "n_rows": {
+     "reference": 107,
+     "candidate": 107
+    }
+   },
+   "per_cycle_record.jsonl": {
+    "n_raw_diffs": 75,
+    "fg_buckets_raw_counts": {
+     "provenance": 0,
+     "aa_new_field": 0,
+     "known_tie_break_alias": 0,
+     "genuine": 75
+    },
+    "n": {
+     "provenance": 0,
+     "tie_order": 0,
+     "genuine": 75
+    },
+    "provenance_diffs": [],
+    "tie_order_diffs": [],
+    "tie_order_row_classes": {},
+    "genuine_field_patterns": {
+     "per_cycle_record.jsonl[*].terminal_salvage_value": 75
+    },
+    "genuine_diffs_first": [
+     {
+      "field": "per_cycle_record.jsonl[0].terminal_salvage_value",
+      "legacy": 5.249449594634685e-36,
+      "lightweight": 6.561811993293358e-36
+     },
+     {
+      "field": "per_cycle_record.jsonl[1].terminal_salvage_value",
+      "legacy": 6.749009278652274e-35,
+      "lightweight": 8.436261598315344e-35
+     },
+     {
+      "field": "per_cycle_record.jsonl[2].terminal_salvage_value",
+      "legacy": -2.112235636416071e-37,
+      "lightweight": -2.640294545520089e-37
+     },
+     {
+      "field": "per_cycle_record.jsonl[3].terminal_salvage_value",
+      "legacy": 4.2993927526263884e-35,
+      "lightweight": 5.374240940782986e-35
+     },
+     {
+      "field": "per_cycle_record.jsonl[4].terminal_salvage_value",
+      "legacy": -4.243491447939378e-37,
+      "lightweight": -5.304364309924223e-37
+     },
+     {
+      "field": "per_cycle_record.jsonl[5].terminal_salvage_value",
+      "legacy": 3.260326422457187e-51,
+      "lightweight": 4.0754080280714847e-51
+     },
+     {
+      "field": "per_cycle_record.jsonl[6].terminal_salvage_value",
+      "legacy": 1.8400233027890562e-50,
+      "lightweight": 2.3000291284863207e-50
+     },
+     {
+      "field": "per_cycle_record.jsonl[10].terminal_salvage_value",
+      "legacy": -1.4990006540033046e-52,
+      "lightweight": -1.873750817504131e-52
+     },
+     {
+      "field": "per_cycle_record.jsonl[12].terminal_salvage_value",
+      "legacy": -3.117921360326873e-50,
+      "lightweight": -3.897401700408592e-50
+     },
+     {
+      "field": "per_cycle_record.jsonl[13].terminal_salvage_value",
+      "legacy": -2.3984010464052873e-51,
+      "lightweight": -2.9980013080066094e-51
+     },
+     {
+      "field": "per_cycle_record.jsonl[14].terminal_salvage_value",
+      "legacy": 1.1242504905024782e-52,
+      "lightweight": 1.4053131131280982e-52
+     },
+     {
+      "field": "per_cycle_record.jsonl[15].terminal_salvage_value",
+      "legacy": 2.0986009156046262e-51,
+      "lightweight": 2.6232511445057832e-51
+     },
+     {
+      "field": "per_cycle_record.jsonl[16].terminal_salvage_value",
+      "legacy": 7.495003270016523e-53,
+      "lightweight": 9.368754087520654e-53
+     },
+     {
+      "field": "per_cycle_record.jsonl[17].terminal_salvage_value",
+      "legacy": -1.1992005232026436e-51,
+      "lightweight": -1.4990006540033047e-51
+     },
+     {
+      "field": "per_cycle_record.jsonl[18].terminal_salvage_value",
+      "legacy": 9.593604185621149e-51,
+      "lightweight": 1.1992005232026438e-50
+     },
+     {
+      "field": "per_cycle_record.jsonl[21].terminal_salvage_value",
+      "legacy": -2.7056961804759643e-50,
+      "lightweight": -3.382120225594956e-50
+     },
+     {
+      "field": "per_cycle_record.jsonl[23].terminal_salvage_value",
+      "legacy": -4.3471018966095827e-51,
+      "lightweight": -5.43387737076198e-51
+     },
+     {
+      "field": "per_cycle_record.jsonl[24].terminal_salvage_value",
+      "legacy": 1.1992005232026436e-51,
+      "lightweight": 1.4990006540033047e-51
+     },
+     {
+      "field": "per_cycle_record.jsonl[25].terminal_salvage_value",
+      "legacy": 1.4390406278431724e-50,
+      "lightweight": 1.7988007848039656e-50
+     },
+     {
+      "field": "per_cycle_record.jsonl[27].terminal_salvage_value",
+      "legacy": -9.593604185621149e-51,
+      "lightweight": -1.1992005232026438e-50
+     },
+     {
+      "field": "per_cycle_record.jsonl[28].terminal_salvage_value",
+      "legacy": -9.593604185621144e-51,
+      "lightweight": -1.1992005232026438e-50
+     },
+     {
+      "field": "per_cycle_record.jsonl[29].terminal_salvage_value",
+      "legacy": 9.593604185621149e-51,
+      "lightweight": 1.1992005232026438e-50
+     },
+     {
+      "field": "per_cycle_record.jsonl[31].terminal_salvage_value",
+      "legacy": -9.593604185621149e-51,
+      "lightweight": -1.1992005232026438e-50
+     },
+     {
+      "field": "per_cycle_record.jsonl[32].terminal_salvage_value",
+      "legacy": 1.4390406278431721e-50,
+      "lightweight": 1.7988007848039656e-50
+     },
+     {
+      "field": "per_cycle_record.jsonl[35].terminal_salvage_value",
+      "legacy": 2.3984010464052873e-51,
+      "lightweight": 2.9980013080066094e-51
+     },
+     {
+      "field": "per_cycle_record.jsonl[36].terminal_salvage_value",
+      "legacy": -4.7968020928105746e-51,
+      "lightweight": -5.996002616013219e-51
+     },
+     {
+      "field": "per_cycle_record.jsonl[38].terminal_salvage_value",
+      "legacy": -2.158560941764758e-50,
+      "lightweight": -2.6982011772059485e-50
+     },
+     {
+      "field": "per_cycle_record.jsonl[39].terminal_salvage_value",
+      "legacy": 2.698201177205948e-51,
+      "lightweight": 3.3727514715074356e-51
+     },
+     {
+      "field": "per_cycle_record.jsonl[40].terminal_salvage_value",
+      "legacy": 5.996002616013218e-52,
+      "lightweight": 7.495003270016524e-52
+     },
+     {
+      "field": "per_cycle_record.jsonl[42].terminal_salvage_value",
+      "legacy": -2.8780812556863443e-50,
+      "lightweight": -3.5976015696079313e-50
+     },
+     {
+      "field": "per_cycle_record.jsonl[43].terminal_salvage_value",
+      "legacy": -4.8342771091606574e-51,
+      "lightweight": -6.042846386450821e-51
+     },
+     {
+      "field": "per_cycle_record.jsonl[45].terminal_salvage_value",
+      "legacy": -9.593604185621149e-51,
+      "lightweight": -1.1992005232026438e-50
+     },
+     {
+      "field": "per_cycle_record.jsonl[46].terminal_salvage_value",
+      "legacy": -2.8780812556863443e-50,
+      "lightweight": -3.5976015696079313e-50
+     },
+     {
+      "field": "per_cycle_record.jsonl[47].terminal_salvage_value",
+      "legacy": 1.1992005232026436e-51,
+      "lightweight": 1.4990006540033047e-51
+     },
+     {
+      "field": "per_cycle_record.jsonl[49].terminal_salvage_value",
+      "legacy": -2.3984010464052866e-50,
+      "lightweight": -2.9980013080066094e-50
+     },
+     {
+      "field": "per_cycle_record.jsonl[50].terminal_salvage_value",
+      "legacy": 1.0792804708823793e-50,
+      "lightweight": 1.3491005886029742e-50
+     },
+     {
+      "field": "per_cycle_record.jsonl[51].terminal_salvage_value",
+      "legacy": -4.7968020928105746e-51,
+      "lightweight": -5.996002616013219e-51
+     },
+     {
+      "field": "per_cycle_record.jsonl[52].terminal_salvage_value",
+      "legacy": 6.595602877614541e-51,
+      "lightweight": 8.244503597018176e-51
+     },
+     {
+      "field": "per_cycle_record.jsonl[54].terminal_salvage_value",
+      "legacy": -1.8287807978840315e-50,
+      "lightweight": -2.2859759973550397e-50
+     },
+     {
+      "field": "per_cycle_record.jsonl[55].terminal_salvage_value",
+      "legacy": 2.3984010464052873e-51,
+      "lightweight": 2.9980013080066094e-51
+     },
+     {
+      "field": "per_cycle_record.jsonl[58].terminal_salvage_value",
+      "legacy": -7.195203139215862e-51,
+      "lightweight": -8.994003924019828e-51
+     },
+     {
+      "field": "per_cycle_record.jsonl[59].terminal_salvage_value",
+      "legacy": -4.7968020928105746e-51,
+      "lightweight": -5.996002616013219e-51
+     },
+     {
+      "field": "per_cycle_record.jsonl[60].terminal_salvage_value",
+      "legacy": -9.593604185621149e-51,
+      "lightweight": -1.1992005232026438e-50
+     },
+     {
+      "field": "per_cycle_record.jsonl[61].terminal_salvage_value",
+      "legacy": -2.3984010464052873e-51,
+      "lightweight": -2.9980013080066094e-51
+     },
+     {
+      "field": "per_cycle_record.jsonl[62].terminal_salvage_value",
+      "legacy": -1.1392404970425114e-50,
+      "lightweight": -1.4240506213031395e-50
+     },
+     {
+      "field": "per_cycle_record.jsonl[63].terminal_salvage_value",
+      "legacy": 5.996002616013218e-52,
+      "lightweight": 7.495003270016524e-52
+     },
+     {
+      "field": "per_cycle_record.jsonl[66].terminal_salvage_value",
+      "legacy": -4.7968020928105746e-51,
+      "lightweight": -5.996002616013219e-51
+     },
+     {
+      "field": "per_cycle_record.jsonl[67].terminal_salvage_value",
+      "legacy": 1.4990006540033046e-52,
+      "lightweight": 1.873750817504131e-52
+     },
+     {
+      "field": "per_cycle_record.jsonl[68].terminal_salvage_value",
+      "legacy": -4.7968020928105746e-51,
+      "lightweight": -5.996002616013219e-51
+     },
+     {
+      "field": "per_cycle_record.jsonl[69].terminal_salvage_value",
+      "legacy": -5.4568208573775e-36,
+      "lightweight": -6.821026071721875e-36
+     },
+     {
+      "field": "per_cycle_record.jsonl[70].terminal_salvage_value",
+      "legacy": -1.1992005232026438e-50,
+      "lightweight": -1.4990006540033047e-50
+     },
+     {
+      "field": "per_cycle_record.jsonl[72].terminal_salvage_value",
+      "legacy": -4.7968020928105746e-51,
+      "lightweight": -5.996002616013219e-51
+     },
+     {
+      "field": "per_cycle_record.jsonl[73].terminal_salvage_value",
+      "legacy": -4.7968020928105746e-51,
+      "lightweight": -5.996002616013219e-51
+     },
+     {
+      "field": "per_cycle_record.jsonl[75].terminal_salvage_value",
+      "legacy": -4.7968020928105746e-51,
+      "lightweight": -5.996002616013219e-51
+     },
+     {
+      "field": "per_cycle_record.jsonl[76].terminal_salvage_value",
+      "legacy": -5.996002616013219e-51,
+      "lightweight": -7.495003270016524e-51
+     },
+     {
+      "field": "per_cycle_record.jsonl[80].terminal_salvage_value",
+      "legacy": -9.593604185621149e-51,
+      "lightweight": -1.1992005232026438e-50
+     },
+     {
+      "field": "per_cycle_record.jsonl[81].terminal_salvage_value",
+      "legacy": -1.7988007848039654e-50,
+      "lightweight": -2.248500981004957e-50
+     },
+     {
+      "field": "per_cycle_record.jsonl[82].terminal_salvage_value",
+      "legacy": -1.1992005232026436e-51,
+      "lightweight": -1.4990006540033047e-51
+     },
+     {
+      "field": "per_cycle_record.jsonl[83].terminal_salvage_value",
+      "legacy": -5.396402354411896e-51,
+      "lightweight": -6.745502943014871e-51
+     },
+     {
+      "field": "per_cycle_record.jsonl[86].terminal_salvage_value",
+      "legacy": -4.7968020928105746e-51,
+      "lightweight": -5.996002616013219e-51
+     },
+     {
+      "field": "per_cycle_record.jsonl[87].terminal_salvage_value",
+      "legacy": -2.3984010464052873e-51,
+      "lightweight": -2.9980013080066094e-51
+     },
+     {
+      "field": "per_cycle_record.jsonl[88].terminal_salvage_value",
+      "legacy": 9.593604185621149e-51,
+      "lightweight": 1.1992005232026438e-50
+     },
+     {
+      "field": "per_cycle_record.jsonl[90].terminal_salvage_value",
+      "legacy": 1.1992005232026436e-51,
+      "lightweight": 1.4990006540033047e-51
+     },
+     {
+      "field": "per_cycle_record.jsonl[92].terminal_salvage_value",
+      "legacy": -1.1992005232026436e-51,
+      "lightweight": -1.4990006540033047e-51
+     },
+     {
+      "field": "per_cycle_record.jsonl[93].terminal_salvage_value",
+      "legacy": -1.8737508175041306e-51,
+      "lightweight": -2.3421885218801636e-51
+     },
+     {
+      "field": "per_cycle_record.jsonl[94].terminal_salvage_value",
+      "legacy": 2.3984010464052873e-51,
+      "lightweight": 2.9980013080066094e-51
+     },
+     {
+      "field": "per_cycle_record.jsonl[96].terminal_salvage_value",
+      "legacy": 4.871752125510739e-52,
+      "lightweight": 6.089690156888425e-52
+     },
+     {
+      "field": "per_cycle_record.jsonl[97].terminal_salvage_value",
+      "legacy": 2.281224962394118e-37,
+      "lightweight": 2.8515312029926483e-37
+     },
+     {
+      "field": "per_cycle_record.jsonl[98].terminal_salvage_value",
+      "legacy": -1.1992005232026436e-51,
+      "lightweight": -1.4990006540033047e-51
+     },
+     {
+      "field": "per_cycle_record.jsonl[99].terminal_salvage_value",
+      "legacy": -3.447701504207601e-50,
+      "lightweight": -4.3096268802595015e-50
+     },
+     {
+      "field": "per_cycle_record.jsonl[100].terminal_salvage_value",
+      "legacy": -1.1992005232026435e-50,
+      "lightweight": -1.4990006540033047e-50
+     },
+     {
+      "field": "per_cycle_record.jsonl[101].terminal_salvage_value",
+      "legacy": -2.3984010464052873e-51,
+      "lightweight": -2.9980013080066094e-51
+     },
+     {
+      "field": "per_cycle_record.jsonl[102].terminal_salvage_value",
+      "legacy": 1.4390406278431724e-50,
+      "lightweight": 1.7988007848039656e-50
+     },
+     {
+      "field": "per_cycle_record.jsonl[104].terminal_salvage_value",
+      "legacy": 3.799533620018084e-37,
+      "lightweight": 4.749417025022606e-37
+     },
+     {
+      "field": "per_cycle_record.jsonl[105].terminal_salvage_value",
+      "legacy": -1.4390406278431721e-50,
+      "lightweight": -1.7988007848039656e-50
+     }
+    ],
+    "genuine_diffs_listed_truncated": false,
+    "n_rows": {
+     "reference": 107,
+     "candidate": 107
+    }
+   }
+  },
+  "supplementary_not_gating": {
+   "leak_classification_s39_D.jsonl": {
+    "n_rows": {
+     "reference": 324,
+     "candidate": 324
+    },
+    "n_raw_diffs": 0,
+    "n_diffs_ignoring_path_like_keys": 0,
+    "path_like_keys_ignored_in_that_count": [
+     "log_path",
+     "primary_log",
+     "recovery_log",
+     "tier2_log",
+     "path",
+     "mtime_utc"
+    ],
+    "first_raw_diffs_ignoring_path_like_keys": []
+   },
+   "network_failures_s39_D.jsonl": {
+    "n_rows": {
+     "reference": 43,
+     "candidate": 43
+    },
+    "n_raw_diffs": 45,
+    "n_diffs_ignoring_path_like_keys": 0,
+    "path_like_keys_ignored_in_that_count": [
+     "log_path",
+     "primary_log",
+     "recovery_log",
+     "tier2_log",
+     "path",
+     "mtime_utc"
+    ],
+    "first_raw_diffs_ignoring_path_like_keys": []
+   },
+   "esso_recovery_events_s39_D.jsonl": {
+    "n_rows": {
+     "reference": 0,
+     "candidate": 0
+    },
+    "n_raw_diffs": 0,
+    "n_diffs_ignoring_path_like_keys": 0,
+    "path_like_keys_ignored_in_that_count": [
+     "log_path",
+     "primary_log",
+     "recovery_log",
+     "tier2_log",
+     "path",
+     "mtime_utc"
+    ],
+    "first_raw_diffs_ignoring_path_like_keys": []
+   },
+   "frozen_snapshots_s39_D.jsonl": {
+    "n_rows": {
+     "reference": 2,
+     "candidate": 2
+    },
+    "n_raw_diffs": 4,
+    "n_diffs_ignoring_path_like_keys": 0,
+    "path_like_keys_ignored_in_that_count": [
+     "log_path",
+     "primary_log",
+     "recovery_log",
+     "tier2_log",
+     "path",
+     "mtime_utc"
+    ],
+    "first_raw_diffs_ignoring_path_like_keys": []
+   }
+  },
+  "not_compared": {
+   "esso_models_s39_D.pkl": "binary pickle; its size is compared via the report field esso_models_pickle.bytes; sha256 equality recorded (informational)",
+   "post_certification.json": "reference only (post-certification requested there, not in this campaign)",
+   "hull_bound_detail.json": "reference only (post-certification)",
+   "certified_models.pkl": "reference only (post-certification)",
+   "child_manifest_sha256.json": "hashes of files under each run's own eval dir (paths differ by construction)",
+   "launch.json / heartbeat_s39_D.json / child_stdout.log / child_stderr.log / stdout_s39_D.log / exit_code.txt / wait4_rusage.json / esso_capture/ / results/": "process bookkeeping, logs and working files"
+  },
+  "esso_models_pickle_informational": {
+   "reference_sha256": "258abcd69a51226b24072b5e2e432d6319c941b4b8972b9ec9d51aae55cc9e59",
+   "candidate_sha256": "3511aa639adff609a357a87e64f50c0327aff782859f2a5284bbfab2400cb9d4",
+   "sha256_equal": false
+  },
+  "totals_by_class": {
+   "provenance": 42,
+   "tie_order": 0,
+   "genuine": 150
+  },
+  "provenance_field_patterns_with_reason": [
+   [
+    "evaluation_record.json.aa_per_cycle.path",
+    "path under the run's own eval dir"
+   ],
+   [
+    "evaluation_record.json.anderson_acceleration_effective_in_child",
+    "configuration bookkeeping (Addendum 27 field); AA dict gated separately"
+   ],
+   [
+    "evaluation_record.json.campaign_id",
+    "campaign identity"
+   ],
+   [
+    "evaluation_record.json.campaign_lock_seen_by_child.campaign_id",
+    "run provenance (lock content: pid, campaign id, spec hash, start time)"
+   ],
+   [
+    "evaluation_record.json.campaign_lock_seen_by_child.campaign_spec_sha256",
+    "run provenance (lock content: pid, campaign id, spec hash, start time)"
+   ],
+   [
+    "evaluation_record.json.campaign_lock_seen_by_child.pid",
+    "run provenance (lock content: pid, campaign id, spec hash, start time)"
+   ],
+   [
+    "evaluation_record.json.campaign_lock_seen_by_child.started_utc",
+    "run provenance (lock content: pid, campaign id, spec hash, start time)"
+   ],
+   [
+    "evaluation_record.json.campaign_spec_path",
+    "campaign identity (spec path)"
+   ],
+   [
+    "evaluation_record.json.campaign_spec_sha256",
+    "campaign identity (spec hash)"
+   ],
+   [
+    "evaluation_record.json.candidate_label",
+    "campaign identity (label)"
+   ],
+   [
+    "evaluation_record.json.case_file_sha256_in_child",
+    "configuration bookkeeping (Addendum 27 field; case-file sha256)"
+   ],
+   [
+    "evaluation_record.json.child_pid",
+    "run provenance (pid)"
+   ],
+   [
+    "evaluation_record.json.configuration.case_file_anderson_acceleration",
+    "configuration bookkeeping (name, note, case_file_sha256, case_file_last_commit, case_file_anderson_acceleration declaration)"
+   ],
+   [
+    "evaluation_record.json.configuration.case_file_last_commit",
+    "configuration bookkeeping (name, note, case_file_sha256, case_file_last_commit, case_file_anderson_acceleration declaration)"
+   ],
+   [
+    "evaluation_record.json.configuration.case_file_sha256",
+    "configuration bookkeeping (name, note, case_file_sha256, case_file_last_commit, case_file_anderson_acceleration declaration)"
+   ],
+   [
+    "evaluation_record.json.configuration.name",
+    "configuration bookkeeping (name, note, case_file_sha256, case_file_last_commit, case_file_anderson_acceleration declaration)"
+   ],
+   [
+    "evaluation_record.json.configuration.note",
+    "configuration bookkeeping (name, note, case_file_sha256, case_file_last_commit, case_file_anderson_acceleration declaration)"
+   ],
+   [
+    "evaluation_record.json.configuration_checks_in_child.anderson_acceleration_case_file_matches_declaration",
+    "configuration bookkeeping (check names differ: AA-off-before-overrides vs case-file-AA-matches-declaration)"
+   ],
+   [
+    "evaluation_record.json.configuration_checks_in_child.anderson_acceleration_case_file_memory_regularization_frozen",
+    "configuration bookkeeping (check names differ: AA-off-before-overrides vs case-file-AA-matches-declaration)"
+   ],
+   [
+    "evaluation_record.json.configuration_checks_in_child.anderson_acceleration_off_before_overrides",
+    "configuration bookkeeping (check names differ: AA-off-before-overrides vs case-file-AA-matches-declaration)"
+   ],
+   [
+    "evaluation_record.json.eval_dir",
+    "campaign identity (eval dir)"
+   ],
+   [
+    "evaluation_record.json.eval_key",
+    "campaign identity (eval key = candidate key + effective overrides + case-file AA declaration)"
+   ],
+   [
+    "evaluation_record.json.evaluation_overrides_effective.anderson_acceleration",
+    "configuration bookkeeping (override vs case file)"
+   ],
+   [
+    "evaluation_record.json.overrides_applied_in_child.anderson_acceleration",
+    "configuration bookkeeping (override vs case file); AA dict gated separately"
+   ],
+   [
+    "evaluation_record.json.parent_pid",
+    "run provenance (pid)"
+   ],
+   [
+    "evaluation_record.json.peak_rss.child_python_process_ru_maxrss",
+    "run measurement (peak RSS; not reproducible)"
+   ],
+   [
+    "evaluation_record.json.peak_rss.production_state_peak_rss_ru_maxrss",
+    "run measurement (peak RSS; not reproducible)"
+   ],
+   [
+    "evaluation_record.json.peak_rss.solver_subprocesses_max_ru_maxrss",
+    "run measurement (peak RSS; not reproducible)"
+   ],
+   [
+    "evaluation_record.json.per_cycle_record_path",
+    "path under the run's own eval dir"
+   ],
+   [
+    "evaluation_record.json.post_certification",
+    "post-certification requested in the reference campaign only (candidate record holds None for all three keys)"
+   ],
+   [
+    "evaluation_record.json.post_certification_capture_checklist_asserted_before_run",
+    "post-certification requested in the reference campaign only (candidate record holds None for all three keys)"
+   ],
+   [
+    "evaluation_record.json.post_certification_path",
+    "post-certification requested in the reference campaign only (candidate record holds None for all three keys)"
+   ],
+   [
+    "evaluation_record.json.report_path",
+    "path under the run's own eval dir"
+   ],
+   [
+    "evaluation_record.json.wall_time_s.child_process_s",
+    "run measurement (wall time; not reproducible)"
+   ],
+   [
+    "evaluation_record.json.wall_time_s.run_admm_arm_reported_wall_clock_s",
+    "run measurement (wall time; not reproducible)"
+   ],
+   [
+    "evaluation_record.json.wall_time_s.run_admm_arm_s",
+    "run measurement (wall time; not reproducible)"
+   ],
+   [
+    "evaluation_record.json.working_dir_ids.precheck",
+    "campaign identity (working-dir ids derive from campaign id + eval key)"
+   ],
+   [
+    "evaluation_record.json.working_dir_ids.run",
+    "campaign identity (working-dir ids derive from campaign id + eval key)"
+   ],
+   [
+    "g_s39_D.json.rule_eleven_checklist.s44_campaign_configuration_checks.anderson_acceleration_case_file_matches_declaration",
+    "rule_eleven_checklist subtree"
+   ],
+   [
+    "g_s39_D.json.rule_eleven_checklist.s44_campaign_configuration_checks.anderson_acceleration_case_file_memory_regularization_frozen",
+    "rule_eleven_checklist subtree"
+   ],
+   [
+    "g_s39_D.json.rule_eleven_checklist.s44_campaign_configuration_checks.anderson_acceleration_off_before_overrides",
+    "rule_eleven_checklist subtree"
+   ],
+   [
+    "g_s39_D.json.rule_eleven_checklist.s44_campaign_overrides_applied.anderson_acceleration",
+    "rule_eleven_checklist subtree"
+   ]
+  ],
+  "all_gating_files_present": true,
+  "n_genuine_diffs": 150,
+  "scalar_checks": {
+   "candidate_status_certified": {
+    "value": "certified",
+    "expected": "certified",
+    "match": true
+   },
+   "candidate_certification.certified": {
+    "value": true,
+    "expected": true,
+    "match": true
+   },
+   "candidate_record_cycles_run": {
+    "value": 107,
+    "expected": 107,
+    "match": true
+   },
+   "candidate_record_certification_cycle": {
+    "value": 107,
+    "expected": 107,
+    "match": true
+   },
+   "candidate_report_cycles_run": {
+    "value": 107,
+    "expected": 107,
+    "match": true
+   },
+   "candidate_record_certified_cost": {
+    "value": 650982939.9389359,
+    "expected": 650982939.9389359,
+    "match": true
+   },
+   "candidate_report_gross_operational_cost": {
+    "value": 650982939.9389359,
+    "expected": 650982939.9389359,
+    "match": true
+   },
+   "candidate_record_candidate_key_is_c_star": {
+    "value": "578636daa6d6360d6701764c73ddf795e53c2c37e511e21be1400024f8f6350c",
+    "expected": "578636daa6d6360d6701764c73ddf795e53c2c37e511e21be1400024f8f6350c",
+    "match": true
+   },
+   "reference_record_certified_cost": {
+    "value": 650982939.9389359,
+    "expected": 650982939.9389359,
+    "match": true
+   },
+   "reference_record_certification_cycle": {
+    "value": 107,
+    "expected": 107,
+    "match": true
+   }
+  },
+  "aa_checks": {
+   "candidate_effective_aa": {
+    "source": "anderson_acceleration_effective_in_child",
+    "value": {
+     "enabled": true,
+     "memory": 5,
+     "regularization": 1e-10,
+     "reject_policy": "keep_memory"
+    },
+    "expected": {
+     "enabled": true,
+     "memory": 5,
+     "regularization": 1e-10,
+     "reject_policy": "keep_memory"
+    },
+    "match": true
+   },
+   "reference_applied_override_aa": {
+    "source": "overrides_applied_in_child.anderson_acceleration",
+    "value": {
+     "enabled": true,
+     "memory": 5,
+     "regularization": 1e-10,
+     "reject_policy": "keep_memory"
+    },
+    "expected": {
+     "enabled": true,
+     "memory": 5,
+     "regularization": 1e-10,
+     "reject_policy": "keep_memory"
+    },
+    "match": true
+   }
+  },
+  "rule_ten_terminal_step_over_threshold": {
+   "reference": 0.039388223126442946,
+   "candidate": 0.039388223126442946
+  },
+  "objective_convention": "gross_operational_cost (settlement-excluded; = certified_cost)"
+ },
+ "gate_items": {
+  "capture_path_checklist_all_true": true,
+  "all_gating_files_present": true,
+  "zero_genuine_diffs": false,
+  "scalar_checks_all_match": true,
+  "aa_checks_all_match": true,
+  "reference_pins_verified": true,
+  "solve_profile_guard_verified_0": true
+ },
+ "gate_pass": false,
+ "solve_profile_guard": {
+  "counts": {
+   "permitted_solve": 0,
+   "permitted_exec": 0,
+   "blocked_solve": 0,
+   "blocked_exec": 0
+  },
+  "verify_0_failures": []
+ },
+ "wall_clock_s": 4.387955188751221
+}

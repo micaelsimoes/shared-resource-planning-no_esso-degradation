@@ -1,0 +1,60 @@
+{
+ "authority": [
+  "PLANNER_BRIEF_2026-09-13.md Addendum 39 (rulings 1-3 and the model question), Addendum 38, Addendum 36 (pilot)",
+  "P5_15_ADDENDUM38_REPORT.md (accepted in full)"
+ ],
+ "models": {
+  "advisor": "fable (Fable 5.1), unchanged",
+  "note": "no file change was required: the pins were already present. Model changes are taken at task boundaries; the bitwise gates protect the numerics",
+  "planner_configured": "claude-opus-5-5 (.claude/agents/planner.md)",
+  "planner_running_this_session": "claude-opus-5 - the session predates the pin; 5.5 applies at the next restart, as Addendum 39 directs",
+  "recorded_by_name_and_date": "2026-09-23",
+  "worker_configured_and_running": "claude-opus-5-5"
+ },
+ "order": [
+  "alpha threshold test (single block, minutes)",
+  "pilot launcher + instance + freeze",
+  "pilot run (machine alone)",
+  "STOP FOR REVIEW",
+  "F2 unit-poll continuation (cap 60)"
+ ],
+ "pilot": {
+  "instance": "the paper's 5 representative years and 4 days, 2 market x 2 operation scenarios, row 18 ACTIVE at alpha = 0.50, baseline ageing, AA-on, campaign cost file and budget",
+  "predictions_recorded_before_run": {
+   "planner": [
+    "cycle time 3-5 min (measured 46.7 s/cycle at 2x2 with 1 year x 4 days under full ADMM; the pilot has 5 years, so ~5x the blocks)",
+    "7-10 h per evaluation at 100-140 cycles; ~3.9 GiB per process",
+    "interface dispersion ~ 0 at alpha = 0.50 (single-block and 2x2 limit evidence), reported as a priced result with the unpriced-up-shifting convention stated",
+    "the settlement identity residual equals the covariance term by construction",
+    "value per MWh within 10% of SRP1's; the R = 0.937 prediction is on the market spread while the storage prices at the bus-7 marginal cost - a deviation either way is informative"
+   ]
+  },
+  "runs": "x = 0 and the smallest node-7 4 h unit (0.25/1.0, 2025), concurrency 2, 10-cycle bar, hull polish on both, a two-cycle bitwise reproduction of one, and the full manuscript output (per-scenario costs and interface profiles, interface dispersion, ESS dispatch and SoH trajectory, settlement split and its covariance identity, penalty-table components, Excel writers)"
+ },
+ "predecessor": {
+  "path": "data/SRP1/Results/P515S51/frozen_s51_spec_v21_13cb828c.json",
+  "sha256": "13cb828c988dfaa5613675a4d34607ca0f74bcc885fc5fb2397904baf19e0530"
+ },
+ "ruling1_f2_continuation": {
+  "cap": "60 new evaluations for the continuation; report either the certificate or the budget exhaustion",
+  "incumbent": "y2030 n5 0.25/0.5 + n7 1.0/3.5, I = 992,268, F = 810,787,758.2559508 (campaign s51_f2_phase_b, 0012d85b)",
+  "iterate": "on success, iterate",
+  "poll": "standard unit poll from the incumbent: the 2n OrthoMADS directions rounded to the lattice, infeasible ones SNAPPED to the nearest feasible lattice point, and the completion set added ONLY if fewer than n + 1 feasible poll points remain (the completion cap of 30 stays)",
+  "rationale_recorded": "at an interior incumbent the MADS certificate is poll failure over a POSITIVE SPANNING SET at unit mesh, not the full box; the box completion was a remedy for x = 0 where every direction was infeasible"
+ },
+ "ruling2_alpha": {
+  "R3_6_row": "{0, alpha*/2, alpha*, 2 alpha*, 0.5} once alpha* is measured",
+  "manuscript_convention": "unpriced UPWARD flexibility makes holding the schedule cheaper than cost_flex suggests; state it as the reason dispersion vanishes at alpha = 0.50",
+  "pilot_baseline": "alpha = 0.50 unchanged",
+  "predictions_recorded_before_run": {
+   "planner": "dispersion falls monotonically with alpha; alpha* between 0.01 and 0.1, most likely 0.02-0.05, since at 0.5 the premium already exceeds the DSOs' true cost of holding the schedule and the premium scales linearly with alpha; at alpha = 0 dispersion is the natural scenario spread, 3.22 MW RMS on the single-block test"
+  },
+  "threshold_test": "single-block test at alpha in {0, 0.01, 0.02, 0.05, 0.1, 0.25} to locate alpha* below which dispersion appears"
+ },
+ "ruling3_sequencing": {
+  "ordered": "pilot first; the F2 unit poll concurrently at concurrency 3 if the campaign harness and memory allow, otherwise after the pilot",
+  "planner_finding": "the harness does NOT allow it: a single global campaign lock (.p515_s44_campaign.lock) is taken per campaign and every launcher refuses while it is held. Memory would have allowed it (2 x 3.9 + 3 x 2.2 = 14.4 GiB against ~21 GiB non-reclaimable-free). Therefore: pilot first, F2 continuation after",
+  "stop": "STOP FOR REVIEW after the pilot, with the F2 poll attached if done"
+ },
+ "stage": "P5.15 Addendum 39 - alpha threshold; multi-scenario pilot at alpha = 0.50; F2 unit-poll continuation"
+}

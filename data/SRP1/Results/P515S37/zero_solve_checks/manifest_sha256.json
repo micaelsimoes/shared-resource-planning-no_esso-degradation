@@ -1,0 +1,11 @@
+{
+ "stage": "P5.15 Addendum 19 (s37 preparation worker task) -- zero-solve check evidence manifest",
+ "entries": {
+  "zero_solve_checks.json": {
+   "sha256": "0bd6a6fd1626643a05f9417ae3d35d177eb416b2f00059bcc941ee80415d597f",
+   "bytes": 5259,
+   "committed": true
+  }
+ },
+ "note": "p515_s37_zero_solve_checks.py builds every synthetic/probe ADMM-ready state in memory only (via p515_s32_zero_solve_checks._build_admm_ready_state/_reset_rho/_dummy_residual_metrics, p515_s32v2_zero_solve_checks._fake_boyd_metrics_v2/_load_module_at_commit, and this script's own _synthetic_boyd_sequence/_reset_gamma_tied/_run_trajectory helpers) and never pickles a snapshot to disk -- there is no companion .pkl fixture in this directory to hash-record."
+}

@@ -1,0 +1,71 @@
+{
+  "stage": "P5.12-T no-solve trajectory forensic",
+  "zero_solves_authorized": true,
+  "solver_invocations_performed": 0,
+  "repository_root": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation",
+  "interpreter": "/Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python",
+  "git": {
+    "branch": "feature/derivative-free-planning",
+    "head_before": "ba202e2b0e937306f3c163de2173951c1d0c24f0",
+    "head_after": "ba202e2b0e937306f3c163de2173951c1d0c24f0",
+    "pre_existing_uncommitted_modifications": [
+      "LOCAL_NLP_STABILITY_PLAN.md",
+      "REVISION_CONTEXT.md"
+    ],
+    "note": "These two files were already modified (M) before this worker session started, per the repository status supplied in the task context. They were read-only inspected, never edited, by this stage."
+  },
+  "inputs": {
+    "V1_variant1_1e-6": {
+      "path": "data/SRP1/Results/P512P/variant1_1e-6/logs/optim_log_case33_3_2025_Spring.log",
+      "sha256": "3c5479835849bc859f3bcaf964a2791e89318bae0fe979d2eb7dbb3e155d2bd7",
+      "lines": 7400,
+      "verified_match_to_plan": true
+    },
+    "ArmA_1e-5": {
+      "path": "data/SRP1/Results/P512ArmA/logs/optim_log_case33_3_2025_Spring.log",
+      "sha256": "4f66a7efeef933bdc0a425af76f0095f5c11a2112ff2c8bb6d7c03ff45409d58",
+      "lines": 243498,
+      "verified_match_to_plan": true
+    },
+    "V2_variant2_1e-4": {
+      "path": "data/SRP1/Results/P512P/variant2_1e-4/logs/optim_log_case33_3_2025_Spring.log",
+      "sha256": "ccf80716e9b7c7f7346d1404234a2b125d00cc0658f6ec8ba35ad8a63095ed2e",
+      "lines": 12599,
+      "verified_match_to_plan": true
+    }
+  },
+  "outputs": {
+    "harness_script": {
+      "path": "p512_t_trajectory_forensic.py",
+      "sha256": "b2f24abfb6028b52a78a8279de9cfd40fed87d7ecc60aec3be438263c8dcb22d"
+    },
+    "journal_json": {
+      "path": "data/SRP1/Results/P512T/journal.json",
+      "sha256": "9a9287433bb22e8f7691c44ea398e4b2c4683e3f9e39eec8b6e8adce08c54a8f"
+    },
+    "report_md": {
+      "path": "P5_12_T_TRAJECTORY_FORENSIC_REPORT.md",
+      "sha256": "7e836689e1004214f3b5742fc006f7b7f6ae3b2641794ddb99d7869f7ae8a09b"
+    },
+    "manifest_json": {
+      "path": "data/SRP1/Results/P512T/manifest.json",
+      "note": "this file"
+    }
+  },
+  "commands_run": [
+    "shasum -a 256 <three input logs>",
+    "wc -l <three input logs>",
+    "grep -n 'Summary of Iteration: 0' / 'Beginning Iteration 0' / 'Current NLP Values for Iteration 0:' on V1 log (structure inspection)",
+    "grep -c 'becomes too large' on ArmA and V2 logs (safeguard count sanity)",
+    "grep -o 'Some value in [a-zA-Z_]* becomes too large' | sort -u on ArmA and V2 (confirms only z_U messages occur, no z_L analogue)",
+    "grep -n 'restoration|Restoration|RESTORATION' on all three logs (none found)",
+    "sed -n contextual reads around first ArmA safeguard (line 6327) and V2 safeguard window",
+    "/Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python -B p512_t_trajectory_forensic.py",
+    "python -B -c '...' ad hoc read-only inspections of journal.json for reporting (no re-parse of raw logs, no solver calls)",
+    "shasum -a 256 p512_t_trajectory_forensic.py data/SRP1/Results/P512T/journal.json"
+  ],
+  "output_directory_verified_absent_before_run": true,
+  "no_production_file_modified": true,
+  "no_governing_document_modified": true,
+  "no_solver_invoked": true
+}

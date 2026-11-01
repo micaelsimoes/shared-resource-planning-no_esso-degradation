@@ -1,0 +1,3564 @@
+{
+ "schema": "p515_s51_row18_zero_solve_checks_v1",
+ "stage": "P5.15 Addendum 38 (W39) -- row 18 as signed: zero-solve structural checks",
+ "authority": [
+  "PLANNER_BRIEF_2026-09-13.md Addenda 10, 37, 38",
+  "data/SRP1/Results/P515S51/frozen_s51_spec_v21_13cb828c.json (row18_design, gates)"
+ ],
+ "frozen_spec": {
+  "path": "data/SRP1/Results/P515S51/frozen_s51_spec_v21_13cb828c.json",
+  "sha256_declared": "13cb828c988dfaa5613675a4d34607ca0f74bcc885fc5fb2397904baf19e0530",
+  "sha256_observed": "13cb828c988dfaa5613675a4d34607ca0f74bcc885fc5fb2397904baf19e0530"
+ },
+ "timestamp_utc": "2026-09-22T21:11:07.864658+00:00",
+ "interpreter": "/Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python",
+ "script": "p515_s51_row18_zero_solve_checks.py",
+ "script_sha256": "1beae7847fec073e7dff71e0932b4356c2d6b300e93b8b53847b9f49f5e6b92f",
+ "git_head": "a3ad769981dabc3a289f238bc2dd3a07fbbaa711",
+ "git_tracked_changes": [
+  "M admm_parameters.py",
+  " M model_construction_helpers.py",
+  " M network.py",
+  " M p515_s31c_evaluate.py",
+  " M shared_resources_planning.py"
+ ],
+ "instances": {
+  "1x1": {
+   "instance_spec": {
+    "description": "the current SRP1 case file unchanged (3 years x 4 days x 1 x 1 scenario)",
+    "years": {
+     "2025": 5
+    },
+    "num_market_scenarios": null,
+    "num_operation_scenarios": null
+   },
+   "changes_vs_source": [
+    {
+     "key": "Years",
+     "from": {
+      "2025": 5,
+      "2030": 5,
+      "2035": 5
+     },
+     "to": {
+      "2025": 5
+     }
+    }
+   ],
+   "case_path": "data/SRP1/Results/P515S51/row18_zero_solve_checks/work/case/SRP1__1x1.json",
+   "case_sha256": "7fc0bce418c1e5d5656ec23f2e29c8f860ef99c69201e5f5d596286cb951bbfc"
+  },
+  "2x2": {
+   "instance_spec": {
+    "description": "the current SRP1 case file unchanged (3 years x 4 days x 1 x 1 scenario)",
+    "years": {
+     "2025": 5
+    },
+    "num_market_scenarios": 2,
+    "num_operation_scenarios": 2
+   },
+   "changes_vs_source": [
+    {
+     "key": "Years",
+     "from": {
+      "2025": 5,
+      "2030": 5,
+      "2035": 5
+     },
+     "to": {
+      "2025": 5
+     }
+    },
+    {
+     "key": "NumMarketScenarios",
+     "from": 1,
+     "to": 2
+    },
+    {
+     "key": "TransmissionNetwork[case9].num_operation_scenarios",
+     "from": 1,
+     "to": 2
+    },
+    {
+     "key": "DistributionNetworks[case33_1].num_operation_scenarios",
+     "from": 1,
+     "to": 2
+    },
+    {
+     "key": "DistributionNetworks[case33_2].num_operation_scenarios",
+     "from": 1,
+     "to": 2
+    },
+    {
+     "key": "DistributionNetworks[case33_3].num_operation_scenarios",
+     "from": 1,
+     "to": 2
+    }
+   ],
+   "case_path": "data/SRP1/Results/P515S51/row18_zero_solve_checks/work/case/SRP1__2x2_alpha0.json",
+   "case_sha256": "fe054c22ff4c9e0195d0260b63986d4b697b60e3b3f8900b8329ed81d52c3688"
+  },
+  "paper": {
+   "instance_spec": {
+    "description": "the current SRP1 case file unchanged (3 years x 4 days x 1 x 1 scenario)",
+    "years": {
+     "2025": 3,
+     "2028": 3,
+     "2031": 3,
+     "2034": 3,
+     "2037": 3
+    },
+    "num_market_scenarios": 5,
+    "num_operation_scenarios": 5
+   },
+   "changes_vs_source": [
+    {
+     "key": "Years",
+     "from": {
+      "2025": 5,
+      "2030": 5,
+      "2035": 5
+     },
+     "to": {
+      "2025": 3,
+      "2028": 3,
+      "2031": 3,
+      "2034": 3,
+      "2037": 3
+     }
+    },
+    {
+     "key": "NumMarketScenarios",
+     "from": 1,
+     "to": 5
+    },
+    {
+     "key": "TransmissionNetwork[case9].num_operation_scenarios",
+     "from": 1,
+     "to": 5
+    },
+    {
+     "key": "DistributionNetworks[case33_1].num_operation_scenarios",
+     "from": 1,
+     "to": 5
+    },
+    {
+     "key": "DistributionNetworks[case33_2].num_operation_scenarios",
+     "from": 1,
+     "to": 5
+    },
+    {
+     "key": "DistributionNetworks[case33_3].num_operation_scenarios",
+     "from": 1,
+     "to": 5
+    }
+   ],
+   "case_path": "data/SRP1/Results/P515S51/row18_zero_solve_checks/work/case/SRP1__paper.json",
+   "case_sha256": "d726307c1949d91b34b00241fbc713412c689b113222929133eda38d9756ca14"
+  }
+ },
+ "alpha_pilot": 0.5,
+ "solve_profile_guard": {
+  "permitted": [],
+  "counts": {
+   "permitted_solve": 0,
+   "permitted_exec": 0,
+   "blocked_solve": 0,
+   "blocked_exec": 0
+  },
+  "verify_failures": []
+ },
+ "checks": {
+  "A_pibar_sign": {
+   "definition": "pibar_t = sum_sm prob_market_scenarios[s_m] * cost_energy_p[s_m][t] (model_construction_helpers.expected_market_price)",
+   "ruling": "PLANNER_BRIEF Addendum 38: \"a premium floor only if any hour's mean price is non-positive\". This check decides it; it is not assumed either way.",
+   "per_instance": {
+    "srp1_1x1": {
+     "n_blocks": 16,
+     "n_hours_checked": 384,
+     "pibar_min_over_all_blocks": 3.2589652668910762,
+     "n_hours_with_pibar_non_positive": 0,
+     "any_non_positive": false,
+     "blocks": [
+      {
+       "block": "TSO:case9:2025:Spring",
+       "n_market_scenarios": 1,
+       "prob_market_scenarios": [
+        1.0
+       ],
+       "pibar_min": 3.2589652668910762,
+       "pibar_max": 158.08689556133885,
+       "n_periods": 24
+      },
+      {
+       "block": "TSO:case9:2025:Summer",
+       "n_market_scenarios": 1,
+       "prob_market_scenarios": [
+        1.0
+       ],
+       "pibar_min": 33.63971087294918,
+       "pibar_max": 144.2626415559513,
+       "n_periods": 24
+      },
+      {
+       "block": "TSO:case9:2025:Autumn",
+       "n_market_scenarios": 1,
+       "prob_market_scenarios": [
+        1.0
+       ],
+       "pibar_min": 80.5488384104911,
+       "pibar_max": 161.80042086881863,
+       "n_periods": 24
+      },
+      {
+       "block": "TSO:case9:2025:Winter",
+       "n_market_scenarios": 1,
+       "prob_market_scenarios": [
+        1.0
+       ],
+       "pibar_min": 84.1287791281758,
+       "pibar_max": 141.0096736584578,
+       "n_periods": 24
+      },
+      {
+       "block": "DSO:5:case33_1:2025:Spring",
+       "n_market_scenarios": 1,
+       "prob_market_scenarios": [
+        1.0
+       ],
+       "pibar_min": 3.2589652668910762,
+       "pibar_max": 158.08689556133885,
+       "n_periods": 24
+      },
+      {
+       "block": "DSO:5:case33_1:2025:Summer",
+       "n_market_scenarios": 1,
+       "prob_market_scenarios": [
+        1.0
+       ],
+       "pibar_min": 33.63971087294918,
+       "pibar_max": 144.2626415559513,
+       "n_periods": 24
+      },
+      {
+       "block": "DSO:5:case33_1:2025:Autumn",
+       "n_market_scenarios": 1,
+       "prob_market_scenarios": [
+        1.0
+       ],
+       "pibar_min": 80.5488384104911,
+       "pibar_max": 161.80042086881863,
+       "n_periods": 24
+      },
+      {
+       "block": "DSO:5:case33_1:2025:Winter",
+       "n_market_scenarios": 1,
+       "prob_market_scenarios": [
+        1.0
+       ],
+       "pibar_min": 84.1287791281758,
+       "pibar_max": 141.0096736584578,
+       "n_periods": 24
+      },
+      {
+       "block": "DSO:7:case33_2:2025:Spring",
+       "n_market_scenarios": 1,
+       "prob_market_scenarios": [
+        1.0
+       ],
+       "pibar_min": 3.2589652668910762,
+       "pibar_max": 158.08689556133885,
+       "n_periods": 24
+      },
+      {
+       "block": "DSO:7:case33_2:2025:Summer",
+       "n_market_scenarios": 1,
+       "prob_market_scenarios": [
+        1.0
+       ],
+       "pibar_min": 33.63971087294918,
+       "pibar_max": 144.2626415559513,
+       "n_periods": 24
+      },
+      {
+       "block": "DSO:7:case33_2:2025:Autumn",
+       "n_market_scenarios": 1,
+       "prob_market_scenarios": [
+        1.0
+       ],
+       "pibar_min": 80.5488384104911,
+       "pibar_max": 161.80042086881863,
+       "n_periods": 24
+      },
+      {
+       "block": "DSO:7:case33_2:2025:Winter",
+       "n_market_scenarios": 1,
+       "prob_market_scenarios": [
+        1.0
+       ],
+       "pibar_min": 84.1287791281758,
+       "pibar_max": 141.0096736584578,
+       "n_periods": 24
+      },
+      {
+       "block": "DSO:9:case33_3:2025:Spring",
+       "n_market_scenarios": 1,
+       "prob_market_scenarios": [
+        1.0
+       ],
+       "pibar_min": 3.2589652668910762,
+       "pibar_max": 158.08689556133885,
+       "n_periods": 24
+      },
+      {
+       "block": "DSO:9:case33_3:2025:Summer",
+       "n_market_scenarios": 1,
+       "prob_market_scenarios": [
+        1.0
+       ],
+       "pibar_min": 33.63971087294918,
+       "pibar_max": 144.2626415559513,
+       "n_periods": 24
+      },
+      {
+       "block": "DSO:9:case33_3:2025:Autumn",
+       "n_market_scenarios": 1,
+       "prob_market_scenarios": [
+        1.0
+       ],
+       "pibar_min": 80.5488384104911,
+       "pibar_max": 161.80042086881863,
+       "n_periods": 24
+      },
+      {
+       "block": "DSO:9:case33_3:2025:Winter",
+       "n_market_scenarios": 1,
+       "prob_market_scenarios": [
+        1.0
+       ],
+       "pibar_min": 84.1287791281758,
+       "pibar_max": 141.0096736584578,
+       "n_periods": 24
+      }
+     ]
+    },
+    "derived_2x2": {
+     "n_blocks": 16,
+     "n_hours_checked": 384,
+     "pibar_min_over_all_blocks": 9.81204468708017,
+     "n_hours_with_pibar_non_positive": 0,
+     "any_non_positive": false,
+     "blocks": [
+      {
+       "block": "TSO:case9:2025:Spring",
+       "n_market_scenarios": 2,
+       "prob_market_scenarios": [
+        0.5,
+        0.5
+       ],
+       "pibar_min": 9.81204468708017,
+       "pibar_max": 157.6525959539668,
+       "n_periods": 24
+      },
+      {
+       "block": "TSO:case9:2025:Summer",
+       "n_market_scenarios": 2,
+       "prob_market_scenarios": [
+        0.5,
+        0.5
+       ],
+       "pibar_min": 37.458328086001686,
+       "pibar_max": 142.74079256354335,
+       "n_periods": 24
+      },
+      {
+       "block": "TSO:case9:2025:Autumn",
+       "n_market_scenarios": 2,
+       "prob_market_scenarios": [
+        0.5,
+        0.5
+       ],
+       "pibar_min": 81.43953394552642,
+       "pibar_max": 157.62302620541436,
+       "n_periods": 24
+      },
+      {
+       "block": "TSO:case9:2025:Winter",
+       "n_market_scenarios": 2,
+       "prob_market_scenarios": [
+        0.5,
+        0.5
+       ],
+       "pibar_min": 84.92881425282786,
+       "pibar_max": 140.54841735412435,
+       "n_periods": 24
+      },
+      {
+       "block": "DSO:5:case33_1:2025:Spring",
+       "n_market_scenarios": 2,
+       "prob_market_scenarios": [
+        0.5,
+        0.5
+       ],
+       "pibar_min": 9.81204468708017,
+       "pibar_max": 157.6525959539668,
+       "n_periods": 24
+      },
+      {
+       "block": "DSO:5:case33_1:2025:Summer",
+       "n_market_scenarios": 2,
+       "prob_market_scenarios": [
+        0.5,
+        0.5
+       ],
+       "pibar_min": 37.458328086001686,
+       "pibar_max": 142.74079256354335,
+       "n_periods": 24
+      },
+      {
+       "block": "DSO:5:case33_1:2025:Autumn",
+       "n_market_scenarios": 2,
+       "prob_market_scenarios": [
+        0.5,
+        0.5
+       ],
+       "pibar_min": 81.43953394552642,
+       "pibar_max": 157.62302620541436,
+       "n_periods": 24
+      },
+      {
+       "block": "DSO:5:case33_1:2025:Winter",
+       "n_market_scenarios": 2,
+       "prob_market_scenarios": [
+        0.5,
+        0.5
+       ],
+       "pibar_min": 84.92881425282786,
+       "pibar_max": 140.54841735412435,
+       "n_periods": 24
+      },
+      {
+       "block": "DSO:7:case33_2:2025:Spring",
+       "n_market_scenarios": 2,
+       "prob_market_scenarios": [
+        0.5,
+        0.5
+       ],
+       "pibar_min": 9.81204468708017,
+       "pibar_max": 157.6525959539668,
+       "n_periods": 24
+      },
+      {
+       "block": "DSO:7:case33_2:2025:Summer",
+       "n_market_scenarios": 2,
+       "prob_market_scenarios": [
+        0.5,
+        0.5
+       ],
+       "pibar_min": 37.458328086001686,
+       "pibar_max": 142.74079256354335,
+       "n_periods": 24
+      },
+      {
+       "block": "DSO:7:case33_2:2025:Autumn",
+       "n_market_scenarios": 2,
+       "prob_market_scenarios": [
+        0.5,
+        0.5
+       ],
+       "pibar_min": 81.43953394552642,
+       "pibar_max": 157.62302620541436,
+       "n_periods": 24
+      },
+      {
+       "block": "DSO:7:case33_2:2025:Winter",
+       "n_market_scenarios": 2,
+       "prob_market_scenarios": [
+        0.5,
+        0.5
+       ],
+       "pibar_min": 84.92881425282786,
+       "pibar_max": 140.54841735412435,
+       "n_periods": 24
+      },
+      {
+       "block": "DSO:9:case33_3:2025:Spring",
+       "n_market_scenarios": 2,
+       "prob_market_scenarios": [
+        0.5,
+        0.5
+       ],
+       "pibar_min": 9.81204468708017,
+       "pibar_max": 157.6525959539668,
+       "n_periods": 24
+      },
+      {
+       "block": "DSO:9:case33_3:2025:Summer",
+       "n_market_scenarios": 2,
+       "prob_market_scenarios": [
+        0.5,
+        0.5
+       ],
+       "pibar_min": 37.458328086001686,
+       "pibar_max": 142.74079256354335,
+       "n_periods": 24
+      },
+      {
+       "block": "DSO:9:case33_3:2025:Autumn",
+       "n_market_scenarios": 2,
+       "prob_market_scenarios": [
+        0.5,
+        0.5
+       ],
+       "pibar_min": 81.43953394552642,
+       "pibar_max": 157.62302620541436,
+       "n_periods": 24
+      },
+      {
+       "block": "DSO:9:case33_3:2025:Winter",
+       "n_market_scenarios": 2,
+       "prob_market_scenarios": [
+        0.5,
+        0.5
+       ],
+       "pibar_min": 84.92881425282786,
+       "pibar_max": 140.54841735412435,
+       "n_periods": 24
+      }
+     ]
+    },
+    "paper_5x5": {
+     "n_blocks": 80,
+     "n_hours_checked": 1920,
+     "pibar_min_over_all_blocks": 6.813654546687065,
+     "n_hours_with_pibar_non_positive": 0,
+     "any_non_positive": false,
+     "blocks": [
+      {
+       "block": "TSO:case9:2025:Spring",
+       "n_market_scenarios": 5,
+       "prob_market_scenarios": [
+        0.2,
+        0.2,
+        0.2,
+        0.2,
+        0.2
+       ],
+       "pibar_min": 9.377929201185884,
+       "pibar_max": 157.80950795295394,
+       "n_periods": 24
+      },
+      {
+       "block": "TSO:case9:2025:Summer",
+       "n_market_scenarios": 5,
+       "prob_market_scenarios": [
+        0.2,
+        0.2,
+        0.2,
+        0.2,
+        0.2
+       ],
+       "pibar_min": 39.77415126249347,
+       "pibar_max": 140.96547977601205,
+       "n_periods": 24
+      },
+      {
+       "block": "TSO:case9:2025:Autumn",
+       "n_market_scenarios": 5,
+       "prob_market_scenarios": [
+        0.2,
+        0.2,
+        0.2,
+        0.2,
+        0.2
+       ],
+       "pibar_min": 72.8042322777414,
+       "pibar_max": 136.30230876757554,
+       "n_periods": 24
+      },
+      {
+       "block": "TSO:case9:2025:Winter",
+       "n_market_scenarios": 5,
+       "prob_market_scenarios": [
+        0.2,
+        0.2,
+        0.2,
+        0.2,
+        0.2
+       ],
+       "pibar_min": 85.51939755514356,
+       "pibar_max": 139.25805761358396,
+       "n_periods": 24
+      },
+      {
+       "block": "TSO:case9:2028:Spring",
+       "n_market_scenarios": 5,
+       "prob_market_scenarios": [
+        0.2,
+        0.2,
+        0.2,
+        0.2,
+        0.2
+       ],
+       "pibar_min": 10.887713008948506,
+       "pibar_max": 169.86089491189762,
+       "n_periods": 24
+      },
+      {
+       "block": "TSO:case9:2028:Summer",
+       "n_market_scenarios": 5,
+       "prob_market_scenarios": [
+        0.2,
+        0.2,
+        0.2,
+        0.2,
+        0.2
+       ],
+       "pibar_min": 56.96215708672814,
+       "pibar_max": 149.7644145347498,
+       "n_periods": 24
+      },
+      {
+       "block": "TSO:case9:2028:Autumn",
+       "n_market_scenarios": 5,
+       "prob_market_scenarios": [
+        0.2,
+        0.2,
+        0.2,
+        0.2,
+        0.2
+       ],
+       "pibar_min": 86.12295365631488,
+       "pibar_max": 162.27528795935567,
+       "n_periods": 24
+      },
+      {
+       "block": "TSO:case9:2028:Winter",
+       "n_market_scenarios": 5,
+       "prob_market_scenarios": [
+        0.2,
+        0.2,
+        0.2,
+        0.2,
+        0.2
+       ],
+       "pibar_min": 97.07636556914822,
+       "pibar_max": 144.5028512963431,
+       "n_periods": 24
+      },
+      {
+       "block": "TSO:case9:2031:Spring",
+       "n_market_scenarios": 5,
+       "prob_market_scenarios": [
+        0.2,
+        0.2,
+        0.2,
+        0.2,
+        0.2
+       ],
+       "pibar_min": 8.969488395481605,
+       "pibar_max": 183.13202712290956,
+       "n_periods": 24
+      },
+      {
+       "block": "TSO:case9:2031:Summer",
+       "n_market_scenarios": 5,
+       "prob_market_scenarios": [
+        0.2,
+        0.2,
+        0.2,
+        0.2,
+        0.2
+       ],
+       "pibar_min": 51.82554688658268,
+       "pibar_max": 161.29154673383093,
+       "n_periods": 24
+      },
+      {
+       "block": "TSO:case9:2031:Autumn",
+       "n_market_scenarios": 5,
+       "prob_market_scenarios": [
+        0.2,
+        0.2,
+        0.2,
+        0.2,
+        0.2
+       ],
+       "pibar_min": 88.72185659657426,
+       "pibar_max": 166.4651998836532,
+       "n_periods": 24
+      },
+      {
+       "block": "TSO:case9:2031:Winter",
+       "n_market_scenarios": 5,
+       "prob_market_scenarios": [
+        0.2,
+        0.2,
+        0.2,
+        0.2,
+        0.2
+       ],
+       "pibar_min": 103.52321793390057,
+       "pibar_max": 157.19259357553787,
+       "n_periods": 24
+      },
+      {
+       "block": "TSO:case9:2034:Spring",
+       "n_market_scenarios": 5,
+       "prob_market_scenarios": [
+        0.2,
+        0.2,
+        0.2,
+        0.2,
+        0.2
+       ],
+       "pibar_min": 6.813654546687065,
+       "pibar_max": 197.23522688377182,
+       "n_periods": 24
+      },
+      {
+       "block": "TSO:case9:2034:Summer",
+       "n_market_scenarios": 5,
+       "prob_market_scenarios": [
+        0.2,
+        0.2,
+        0.2,
+        0.2,
+        0.2
+       ],
+       "pibar_min": 55.01357752435976,
+       "pibar_max": 178.13537165614989,
+       "n_periods": 24
+      },
+      {
+       "block": "TSO:case9:2034:Autumn",
+       "n_market_scenarios": 5,
+       "prob_market_scenarios": [
+        0.2,
+        0.2,
+        0.2,
+        0.2,
+        0.2
+       ],
+       "pibar_min": 90.49748590715296,
+       "pibar_max": 172.0195942378516,
+       "n_periods": 24
+      },
+      {
+       "block": "TSO:case9:2034:Winter",
+       "n_market_scenarios": 5,
+       "prob_market_scenarios": [
+        0.2,
+        0.2,
+        0.2,
+        0.2,
+        0.2
+       ],
+       "pibar_min": 110.23244671770053,
+       "pibar_max": 170.5236742694112,
+       "n_periods": 24
+      },
+      {
+       "block": "TSO:case9:2037:Spring",
+       "n_market_scenarios": 5,
+       "prob_market_scenarios": [
+        0.2,
+        0.2,
+        0.2,
+        0.2,
+        0.2
+       ],
+       "pibar_min": 14.259616014039214,
+       "pibar_max": 212.09807747838036,
+       "n_periods": 24
+      },
+      {
+       "block": "TSO:case9:2037:Summer",
+       "n_market_scenarios": 5,
+       "prob_market_scenarios": [
+        0.2,
+        0.2,
+        0.2,
+        0.2,
+        0.2
+       ],
+       "pibar_min": 55.07724686662025,
+       "pibar_max": 188.65949415796214,
+       "n_periods": 24
+      },
+      {
+       "block": "TSO:case9:2037:Autumn",
+       "n_market_scenarios": 5,
+       "prob_market_scenarios": [
+        0.2,
+        0.2,
+        0.2,
+        0.2,
+        0.2
+       ],
+       "pibar_min": 105.08998810303245,
+       "pibar_max": 196.6901240934605,
+       "n_periods": 24
+      },
+      {
+       "block": "TSO:case9:2037:Winter",
+       "n_market_scenarios": 5,
+       "prob_market_scenarios": [
+        0.2,
+        0.2,
+        0.2,
+        0.2,
+        0.2
+       ],
+       "pibar_min": 120.93293593835168,
+       "pibar_max": 180.1165026730447,
+       "n_periods": 24
+      },
+      {
+       "block": "DSO:5:case33_1:2025:Spring",
+       "n_market_scenarios": 5,
+       "prob_market_scenarios": [
+        0.2,
+        0.2,
+        0.2,
+        0.2,
+        0.2
+       ],
+       "pibar_min": 9.377929201185884,
+       "pibar_max": 157.80950795295394,
+       "n_periods": 24
+      },
+      {
+       "block": "DSO:5:case33_1:2025:Summer",
+       "n_market_scenarios": 5,
+       "prob_market_scenarios": [
+        0.2,
+        0.2,
+        0.2,
+        0.2,
+        0.2
+       ],
+       "pibar_min": 39.77415126249347,
+       "pibar_max": 140.96547977601205,
+       "n_periods": 24
+      },
+      {
+       "block": "DSO:5:case33_1:2025:Autumn",
+       "n_market_scenarios": 5,
+       "prob_market_scenarios": [
+        0.2,
+        0.2,
+        0.2,
+        0.2,
+        0.2
+       ],
+       "pibar_min": 72.8042322777414,
+       "pibar_max": 136.30230876757554,
+       "n_periods": 24
+      },
+      {
+       "block": "DSO:5:case33_1:2025:Winter",
+       "n_market_scenarios": 5,
+       "prob_market_scenarios": [
+        0.2,
+        0.2,
+        0.2,
+        0.2,
+        0.2
+       ],
+       "pibar_min": 85.51939755514356,
+       "pibar_max": 139.25805761358396,
+       "n_periods": 24
+      },
+      {
+       "block": "DSO:5:case33_1:2028:Spring",
+       "n_market_scenarios": 5,
+       "prob_market_scenarios": [
+        0.2,
+        0.2,
+        0.2,
+        0.2,
+        0.2
+       ],
+       "pibar_min": 10.887713008948506,
+       "pibar_max": 169.86089491189762,
+       "n_periods": 24
+      },
+      {
+       "block": "DSO:5:case33_1:2028:Summer",
+       "n_market_scenarios": 5,
+       "prob_market_scenarios": [
+        0.2,
+        0.2,
+        0.2,
+        0.2,
+        0.2
+       ],
+       "pibar_min": 56.96215708672814,
+       "pibar_max": 149.7644145347498,
+       "n_periods": 24
+      },
+      {
+       "block": "DSO:5:case33_1:2028:Autumn",
+       "n_market_scenarios": 5,
+       "prob_market_scenarios": [
+        0.2,
+        0.2,
+        0.2,
+        0.2,
+        0.2
+       ],
+       "pibar_min": 86.12295365631488,
+       "pibar_max": 162.27528795935567,
+       "n_periods": 24
+      },
+      {
+       "block": "DSO:5:case33_1:2028:Winter",
+       "n_market_scenarios": 5,
+       "prob_market_scenarios": [
+        0.2,
+        0.2,
+        0.2,
+        0.2,
+        0.2
+       ],
+       "pibar_min": 97.07636556914822,
+       "pibar_max": 144.5028512963431,
+       "n_periods": 24
+      },
+      {
+       "block": "DSO:5:case33_1:2031:Spring",
+       "n_market_scenarios": 5,
+       "prob_market_scenarios": [
+        0.2,
+        0.2,
+        0.2,
+        0.2,
+        0.2
+       ],
+       "pibar_min": 8.969488395481605,
+       "pibar_max": 183.13202712290956,
+       "n_periods": 24
+      },
+      {
+       "block": "DSO:5:case33_1:2031:Summer",
+       "n_market_scenarios": 5,
+       "prob_market_scenarios": [
+        0.2,
+        0.2,
+        0.2,
+        0.2,
+        0.2
+       ],
+       "pibar_min": 51.82554688658268,
+       "pibar_max": 161.29154673383093,
+       "n_periods": 24
+      },
+      {
+       "block": "DSO:5:case33_1:2031:Autumn",
+       "n_market_scenarios": 5,
+       "prob_market_scenarios": [
+        0.2,
+        0.2,
+        0.2,
+        0.2,
+        0.2
+       ],
+       "pibar_min": 88.72185659657426,
+       "pibar_max": 166.4651998836532,
+       "n_periods": 24
+      },
+      {
+       "block": "DSO:5:case33_1:2031:Winter",
+       "n_market_scenarios": 5,
+       "prob_market_scenarios": [
+        0.2,
+        0.2,
+        0.2,
+        0.2,
+        0.2
+       ],
+       "pibar_min": 103.52321793390057,
+       "pibar_max": 157.19259357553787,
+       "n_periods": 24
+      },
+      {
+       "block": "DSO:5:case33_1:2034:Spring",
+       "n_market_scenarios": 5,
+       "prob_market_scenarios": [
+        0.2,
+        0.2,
+        0.2,
+        0.2,
+        0.2
+       ],
+       "pibar_min": 6.813654546687065,
+       "pibar_max": 197.23522688377182,
+       "n_periods": 24
+      },
+      {
+       "block": "DSO:5:case33_1:2034:Summer",
+       "n_market_scenarios": 5,
+       "prob_market_scenarios": [
+        0.2,
+        0.2,
+        0.2,
+        0.2,
+        0.2
+       ],
+       "pibar_min": 55.01357752435976,
+       "pibar_max": 178.13537165614989,
+       "n_periods": 24
+      },
+      {
+       "block": "DSO:5:case33_1:2034:Autumn",
+       "n_market_scenarios": 5,
+       "prob_market_scenarios": [
+        0.2,
+        0.2,
+        0.2,
+        0.2,
+        0.2
+       ],
+       "pibar_min": 90.49748590715296,
+       "pibar_max": 172.0195942378516,
+       "n_periods": 24
+      },
+      {
+       "block": "DSO:5:case33_1:2034:Winter",
+       "n_market_scenarios": 5,
+       "prob_market_scenarios": [
+        0.2,
+        0.2,
+        0.2,
+        0.2,
+        0.2
+       ],
+       "pibar_min": 110.23244671770053,
+       "pibar_max": 170.5236742694112,
+       "n_periods": 24
+      },
+      {
+       "block": "DSO:5:case33_1:2037:Spring",
+       "n_market_scenarios": 5,
+       "prob_market_scenarios": [
+        0.2,
+        0.2,
+        0.2,
+        0.2,
+        0.2
+       ],
+       "pibar_min": 14.259616014039214,
+       "pibar_max": 212.09807747838036,
+       "n_periods": 24
+      },
+      {
+       "block": "DSO:5:case33_1:2037:Summer",
+       "n_market_scenarios": 5,
+       "prob_market_scenarios": [
+        0.2,
+        0.2,
+        0.2,
+        0.2,
+        0.2
+       ],
+       "pibar_min": 55.07724686662025,
+       "pibar_max": 188.65949415796214,
+       "n_periods": 24
+      },
+      {
+       "block": "DSO:5:case33_1:2037:Autumn",
+       "n_market_scenarios": 5,
+       "prob_market_scenarios": [
+        0.2,
+        0.2,
+        0.2,
+        0.2,
+        0.2
+       ],
+       "pibar_min": 105.08998810303245,
+       "pibar_max": 196.6901240934605,
+       "n_periods": 24
+      },
+      {
+       "block": "DSO:5:case33_1:2037:Winter",
+       "n_market_scenarios": 5,
+       "prob_market_scenarios": [
+        0.2,
+        0.2,
+        0.2,
+        0.2,
+        0.2
+       ],
+       "pibar_min": 120.93293593835168,
+       "pibar_max": 180.1165026730447,
+       "n_periods": 24
+      },
+      {
+       "block": "DSO:7:case33_2:2025:Spring",
+       "n_market_scenarios": 5,
+       "prob_market_scenarios": [
+        0.2,
+        0.2,
+        0.2,
+        0.2,
+        0.2
+       ],
+       "pibar_min": 9.377929201185884,
+       "pibar_max": 157.80950795295394,
+       "n_periods": 24
+      },
+      {
+       "block": "DSO:7:case33_2:2025:Summer",
+       "n_market_scenarios": 5,
+       "prob_market_scenarios": [
+        0.2,
+        0.2,
+        0.2,
+        0.2,
+        0.2
+       ],
+       "pibar_min": 39.77415126249347,
+       "pibar_max": 140.96547977601205,
+       "n_periods": 24
+      },
+      {
+       "block": "DSO:7:case33_2:2025:Autumn",
+       "n_market_scenarios": 5,
+       "prob_market_scenarios": [
+        0.2,
+        0.2,
+        0.2,
+        0.2,
+        0.2
+       ],
+       "pibar_min": 72.8042322777414,
+       "pibar_max": 136.30230876757554,
+       "n_periods": 24
+      },
+      {
+       "block": "DSO:7:case33_2:2025:Winter",
+       "n_market_scenarios": 5,
+       "prob_market_scenarios": [
+        0.2,
+        0.2,
+        0.2,
+        0.2,
+        0.2
+       ],
+       "pibar_min": 85.51939755514356,
+       "pibar_max": 139.25805761358396,
+       "n_periods": 24
+      },
+      {
+       "block": "DSO:7:case33_2:2028:Spring",
+       "n_market_scenarios": 5,
+       "prob_market_scenarios": [
+        0.2,
+        0.2,
+        0.2,
+        0.2,
+        0.2
+       ],
+       "pibar_min": 10.887713008948506,
+       "pibar_max": 169.86089491189762,
+       "n_periods": 24
+      },
+      {
+       "block": "DSO:7:case33_2:2028:Summer",
+       "n_market_scenarios": 5,
+       "prob_market_scenarios": [
+        0.2,
+        0.2,
+        0.2,
+        0.2,
+        0.2
+       ],
+       "pibar_min": 56.96215708672814,
+       "pibar_max": 149.7644145347498,
+       "n_periods": 24
+      },
+      {
+       "block": "DSO:7:case33_2:2028:Autumn",
+       "n_market_scenarios": 5,
+       "prob_market_scenarios": [
+        0.2,
+        0.2,
+        0.2,
+        0.2,
+        0.2
+       ],
+       "pibar_min": 86.12295365631488,
+       "pibar_max": 162.27528795935567,
+       "n_periods": 24
+      },
+      {
+       "block": "DSO:7:case33_2:2028:Winter",
+       "n_market_scenarios": 5,
+       "prob_market_scenarios": [
+        0.2,
+        0.2,
+        0.2,
+        0.2,
+        0.2
+       ],
+       "pibar_min": 97.07636556914822,
+       "pibar_max": 144.5028512963431,
+       "n_periods": 24
+      },
+      {
+       "block": "DSO:7:case33_2:2031:Spring",
+       "n_market_scenarios": 5,
+       "prob_market_scenarios": [
+        0.2,
+        0.2,
+        0.2,
+        0.2,
+        0.2
+       ],
+       "pibar_min": 8.969488395481605,
+       "pibar_max": 183.13202712290956,
+       "n_periods": 24
+      },
+      {
+       "block": "DSO:7:case33_2:2031:Summer",
+       "n_market_scenarios": 5,
+       "prob_market_scenarios": [
+        0.2,
+        0.2,
+        0.2,
+        0.2,
+        0.2
+       ],
+       "pibar_min": 51.82554688658268,
+       "pibar_max": 161.29154673383093,
+       "n_periods": 24
+      },
+      {
+       "block": "DSO:7:case33_2:2031:Autumn",
+       "n_market_scenarios": 5,
+       "prob_market_scenarios": [
+        0.2,
+        0.2,
+        0.2,
+        0.2,
+        0.2
+       ],
+       "pibar_min": 88.72185659657426,
+       "pibar_max": 166.4651998836532,
+       "n_periods": 24
+      },
+      {
+       "block": "DSO:7:case33_2:2031:Winter",
+       "n_market_scenarios": 5,
+       "prob_market_scenarios": [
+        0.2,
+        0.2,
+        0.2,
+        0.2,
+        0.2
+       ],
+       "pibar_min": 103.52321793390057,
+       "pibar_max": 157.19259357553787,
+       "n_periods": 24
+      },
+      {
+       "block": "DSO:7:case33_2:2034:Spring",
+       "n_market_scenarios": 5,
+       "prob_market_scenarios": [
+        0.2,
+        0.2,
+        0.2,
+        0.2,
+        0.2
+       ],
+       "pibar_min": 6.813654546687065,
+       "pibar_max": 197.23522688377182,
+       "n_periods": 24
+      },
+      {
+       "block": "DSO:7:case33_2:2034:Summer",
+       "n_market_scenarios": 5,
+       "prob_market_scenarios": [
+        0.2,
+        0.2,
+        0.2,
+        0.2,
+        0.2
+       ],
+       "pibar_min": 55.01357752435976,
+       "pibar_max": 178.13537165614989,
+       "n_periods": 24
+      },
+      {
+       "block": "DSO:7:case33_2:2034:Autumn",
+       "n_market_scenarios": 5,
+       "prob_market_scenarios": [
+        0.2,
+        0.2,
+        0.2,
+        0.2,
+        0.2
+       ],
+       "pibar_min": 90.49748590715296,
+       "pibar_max": 172.0195942378516,
+       "n_periods": 24
+      },
+      {
+       "block": "DSO:7:case33_2:2034:Winter",
+       "n_market_scenarios": 5,
+       "prob_market_scenarios": [
+        0.2,
+        0.2,
+        0.2,
+        0.2,
+        0.2
+       ],
+       "pibar_min": 110.23244671770053,
+       "pibar_max": 170.5236742694112,
+       "n_periods": 24
+      },
+      {
+       "block": "DSO:7:case33_2:2037:Spring",
+       "n_market_scenarios": 5,
+       "prob_market_scenarios": [
+        0.2,
+        0.2,
+        0.2,
+        0.2,
+        0.2
+       ],
+       "pibar_min": 14.259616014039214,
+       "pibar_max": 212.09807747838036,
+       "n_periods": 24
+      },
+      {
+       "block": "DSO:7:case33_2:2037:Summer",
+       "n_market_scenarios": 5,
+       "prob_market_scenarios": [
+        0.2,
+        0.2,
+        0.2,
+        0.2,
+        0.2
+       ],
+       "pibar_min": 55.07724686662025,
+       "pibar_max": 188.65949415796214,
+       "n_periods": 24
+      },
+      {
+       "block": "DSO:7:case33_2:2037:Autumn",
+       "n_market_scenarios": 5,
+       "prob_market_scenarios": [
+        0.2,
+        0.2,
+        0.2,
+        0.2,
+        0.2
+       ],
+       "pibar_min": 105.08998810303245,
+       "pibar_max": 196.6901240934605,
+       "n_periods": 24
+      },
+      {
+       "block": "DSO:7:case33_2:2037:Winter",
+       "n_market_scenarios": 5,
+       "prob_market_scenarios": [
+        0.2,
+        0.2,
+        0.2,
+        0.2,
+        0.2
+       ],
+       "pibar_min": 120.93293593835168,
+       "pibar_max": 180.1165026730447,
+       "n_periods": 24
+      },
+      {
+       "block": "DSO:9:case33_3:2025:Spring",
+       "n_market_scenarios": 5,
+       "prob_market_scenarios": [
+        0.2,
+        0.2,
+        0.2,
+        0.2,
+        0.2
+       ],
+       "pibar_min": 9.377929201185884,
+       "pibar_max": 157.80950795295394,
+       "n_periods": 24
+      },
+      {
+       "block": "DSO:9:case33_3:2025:Summer",
+       "n_market_scenarios": 5,
+       "prob_market_scenarios": [
+        0.2,
+        0.2,
+        0.2,
+        0.2,
+        0.2
+       ],
+       "pibar_min": 39.77415126249347,
+       "pibar_max": 140.96547977601205,
+       "n_periods": 24
+      },
+      {
+       "block": "DSO:9:case33_3:2025:Autumn",
+       "n_market_scenarios": 5,
+       "prob_market_scenarios": [
+        0.2,
+        0.2,
+        0.2,
+        0.2,
+        0.2
+       ],
+       "pibar_min": 72.8042322777414,
+       "pibar_max": 136.30230876757554,
+       "n_periods": 24
+      },
+      {
+       "block": "DSO:9:case33_3:2025:Winter",
+       "n_market_scenarios": 5,
+       "prob_market_scenarios": [
+        0.2,
+        0.2,
+        0.2,
+        0.2,
+        0.2
+       ],
+       "pibar_min": 85.51939755514356,
+       "pibar_max": 139.25805761358396,
+       "n_periods": 24
+      },
+      {
+       "block": "DSO:9:case33_3:2028:Spring",
+       "n_market_scenarios": 5,
+       "prob_market_scenarios": [
+        0.2,
+        0.2,
+        0.2,
+        0.2,
+        0.2
+       ],
+       "pibar_min": 10.887713008948506,
+       "pibar_max": 169.86089491189762,
+       "n_periods": 24
+      },
+      {
+       "block": "DSO:9:case33_3:2028:Summer",
+       "n_market_scenarios": 5,
+       "prob_market_scenarios": [
+        0.2,
+        0.2,
+        0.2,
+        0.2,
+        0.2
+       ],
+       "pibar_min": 56.96215708672814,
+       "pibar_max": 149.7644145347498,
+       "n_periods": 24
+      },
+      {
+       "block": "DSO:9:case33_3:2028:Autumn",
+       "n_market_scenarios": 5,
+       "prob_market_scenarios": [
+        0.2,
+        0.2,
+        0.2,
+        0.2,
+        0.2
+       ],
+       "pibar_min": 86.12295365631488,
+       "pibar_max": 162.27528795935567,
+       "n_periods": 24
+      },
+      {
+       "block": "DSO:9:case33_3:2028:Winter",
+       "n_market_scenarios": 5,
+       "prob_market_scenarios": [
+        0.2,
+        0.2,
+        0.2,
+        0.2,
+        0.2
+       ],
+       "pibar_min": 97.07636556914822,
+       "pibar_max": 144.5028512963431,
+       "n_periods": 24
+      },
+      {
+       "block": "DSO:9:case33_3:2031:Spring",
+       "n_market_scenarios": 5,
+       "prob_market_scenarios": [
+        0.2,
+        0.2,
+        0.2,
+        0.2,
+        0.2
+       ],
+       "pibar_min": 8.969488395481605,
+       "pibar_max": 183.13202712290956,
+       "n_periods": 24
+      },
+      {
+       "block": "DSO:9:case33_3:2031:Summer",
+       "n_market_scenarios": 5,
+       "prob_market_scenarios": [
+        0.2,
+        0.2,
+        0.2,
+        0.2,
+        0.2
+       ],
+       "pibar_min": 51.82554688658268,
+       "pibar_max": 161.29154673383093,
+       "n_periods": 24
+      },
+      {
+       "block": "DSO:9:case33_3:2031:Autumn",
+       "n_market_scenarios": 5,
+       "prob_market_scenarios": [
+        0.2,
+        0.2,
+        0.2,
+        0.2,
+        0.2
+       ],
+       "pibar_min": 88.72185659657426,
+       "pibar_max": 166.4651998836532,
+       "n_periods": 24
+      },
+      {
+       "block": "DSO:9:case33_3:2031:Winter",
+       "n_market_scenarios": 5,
+       "prob_market_scenarios": [
+        0.2,
+        0.2,
+        0.2,
+        0.2,
+        0.2
+       ],
+       "pibar_min": 103.52321793390057,
+       "pibar_max": 157.19259357553787,
+       "n_periods": 24
+      },
+      {
+       "block": "DSO:9:case33_3:2034:Spring",
+       "n_market_scenarios": 5,
+       "prob_market_scenarios": [
+        0.2,
+        0.2,
+        0.2,
+        0.2,
+        0.2
+       ],
+       "pibar_min": 6.813654546687065,
+       "pibar_max": 197.23522688377182,
+       "n_periods": 24
+      },
+      {
+       "block": "DSO:9:case33_3:2034:Summer",
+       "n_market_scenarios": 5,
+       "prob_market_scenarios": [
+        0.2,
+        0.2,
+        0.2,
+        0.2,
+        0.2
+       ],
+       "pibar_min": 55.01357752435976,
+       "pibar_max": 178.13537165614989,
+       "n_periods": 24
+      },
+      {
+       "block": "DSO:9:case33_3:2034:Autumn",
+       "n_market_scenarios": 5,
+       "prob_market_scenarios": [
+        0.2,
+        0.2,
+        0.2,
+        0.2,
+        0.2
+       ],
+       "pibar_min": 90.49748590715296,
+       "pibar_max": 172.0195942378516,
+       "n_periods": 24
+      },
+      {
+       "block": "DSO:9:case33_3:2034:Winter",
+       "n_market_scenarios": 5,
+       "prob_market_scenarios": [
+        0.2,
+        0.2,
+        0.2,
+        0.2,
+        0.2
+       ],
+       "pibar_min": 110.23244671770053,
+       "pibar_max": 170.5236742694112,
+       "n_periods": 24
+      },
+      {
+       "block": "DSO:9:case33_3:2037:Spring",
+       "n_market_scenarios": 5,
+       "prob_market_scenarios": [
+        0.2,
+        0.2,
+        0.2,
+        0.2,
+        0.2
+       ],
+       "pibar_min": 14.259616014039214,
+       "pibar_max": 212.09807747838036,
+       "n_periods": 24
+      },
+      {
+       "block": "DSO:9:case33_3:2037:Summer",
+       "n_market_scenarios": 5,
+       "prob_market_scenarios": [
+        0.2,
+        0.2,
+        0.2,
+        0.2,
+        0.2
+       ],
+       "pibar_min": 55.07724686662025,
+       "pibar_max": 188.65949415796214,
+       "n_periods": 24
+      },
+      {
+       "block": "DSO:9:case33_3:2037:Autumn",
+       "n_market_scenarios": 5,
+       "prob_market_scenarios": [
+        0.2,
+        0.2,
+        0.2,
+        0.2,
+        0.2
+       ],
+       "pibar_min": 105.08998810303245,
+       "pibar_max": 196.6901240934605,
+       "n_periods": 24
+      },
+      {
+       "block": "DSO:9:case33_3:2037:Winter",
+       "n_market_scenarios": 5,
+       "prob_market_scenarios": [
+        0.2,
+        0.2,
+        0.2,
+        0.2,
+        0.2
+       ],
+       "pibar_min": 120.93293593835168,
+       "pibar_max": 180.1165026730447,
+       "n_periods": 24
+      }
+     ]
+    }
+   },
+   "any_hour_non_positive_anywhere": false,
+   "premium_floor_required": false,
+   "premium_floor_configured_default": null,
+   "pass": true
+  },
+  "B_vacuous_at_1x1": {
+   "admm_default_alpha": 0.0,
+   "admm_default_floor": null,
+   "admm_default_source": "default",
+   "n_scenarios": 1,
+   "wired_report_at_alpha_pilot": {
+    "n_scenarios_market": 1,
+    "n_scenarios_operation": 1,
+    "n_scenarios": 1,
+    "is_transmission": false,
+    "row18_wired": false,
+    "row18_alpha": 0.5,
+    "row18_premium_floor": null,
+    "row18_premium_floor_applied": false,
+    "row18_n_deviation_variables": 0,
+    "row18_n_deviation_rows": 0,
+    "voltage_pin_wired": false,
+    "voltage_pin_weight": 0.0,
+    "objective_rebuilt": false,
+    "reason": "single scenario: row 18 and the voltage pin are vacuous and are not constructed (structural absence, not a zero weight)"
+   },
+   "block": "DSO:5:case33_1:2025:Spring",
+   "before": {
+    "n_variables_randomized": 10600,
+    "objective_value": 3908438.0047435393,
+    "objective_function_rule_value": 3908438.0047435393,
+    "n_components": 141,
+    "has_row18": false,
+    "has_voltage_pin": false
+   },
+   "after": {
+    "n_variables_randomized": 10600,
+    "objective_value": 3908438.0047435393,
+    "objective_function_rule_value": 3908438.0047435393,
+    "n_components": 141,
+    "has_row18": false,
+    "has_voltage_pin": false
+   },
+   "alpha_probe": 0.5,
+   "pass": true
+  },
+  "build_record": {
+   "stubbed_optimize_calls_alpha_0": 4,
+   "stubbed_optimize_calls_alpha_0.5": 4,
+   "note": "production's own builders ran; every local solve was replaced by a stub that reports failure, so the post-solve extractions were skipped"
+  },
+  "C_counts_2x2": {
+   "per_arm": {
+    "alpha_0": {
+     "TSO:case9:2025:Spring": {
+      "n_var_data": 14544,
+      "n_constraint_data": 10479,
+      "n_constraint_data_active": 9684,
+      "n_expression_data": 6087,
+      "n_var_data_unfixed": 9576
+     },
+     "DSO:5:case33_1:2025:Spring": {
+      "n_var_data": 43168,
+      "n_constraint_data": 30093,
+      "n_constraint_data_active": 29828,
+      "n_expression_data": 16647,
+      "n_var_data_unfixed": 42184,
+      "row18_components": {
+       "row18_dev_p_up": 0,
+       "row18_dev_p_down": 0,
+       "row18_dev_q_up": 0,
+       "row18_dev_q_down": 0,
+       "row18_dev_p_def": 0,
+       "row18_dev_q_def": 0
+      },
+      "has_row18_charge": false,
+      "has_voltage_pin": true,
+      "row18_alpha": null
+     },
+     "DSO:7:case33_2:2025:Spring": {
+      "n_var_data": 43168,
+      "n_constraint_data": 30201,
+      "n_constraint_data_active": 29936,
+      "n_expression_data": 16647,
+      "n_var_data_unfixed": 42184,
+      "row18_components": {
+       "row18_dev_p_up": 0,
+       "row18_dev_p_down": 0,
+       "row18_dev_q_up": 0,
+       "row18_dev_q_down": 0,
+       "row18_dev_p_def": 0,
+       "row18_dev_q_def": 0
+      },
+      "has_row18_charge": false,
+      "has_voltage_pin": true,
+      "row18_alpha": null
+     },
+     "DSO:9:case33_3:2025:Spring": {
+      "n_var_data": 43168,
+      "n_constraint_data": 30093,
+      "n_constraint_data_active": 29828,
+      "n_expression_data": 16647,
+      "n_var_data_unfixed": 42184,
+      "row18_components": {
+       "row18_dev_p_up": 0,
+       "row18_dev_p_down": 0,
+       "row18_dev_q_up": 0,
+       "row18_dev_q_down": 0,
+       "row18_dev_p_def": 0,
+       "row18_dev_q_def": 0
+      },
+      "has_row18_charge": false,
+      "has_voltage_pin": true,
+      "row18_alpha": null
+     }
+    },
+    "alpha_0.5": {
+     "TSO:case9:2025:Spring": {
+      "n_var_data": 14544,
+      "n_constraint_data": 10479,
+      "n_constraint_data_active": 9684,
+      "n_expression_data": 6087,
+      "n_var_data_unfixed": 9576
+     },
+     "DSO:5:case33_1:2025:Spring": {
+      "n_var_data": 43552,
+      "n_constraint_data": 30285,
+      "n_constraint_data_active": 30020,
+      "n_expression_data": 16648,
+      "n_var_data_unfixed": 42568,
+      "row18_components": {
+       "row18_dev_p_up": 96,
+       "row18_dev_p_down": 96,
+       "row18_dev_q_up": 96,
+       "row18_dev_q_down": 96,
+       "row18_dev_p_def": 96,
+       "row18_dev_q_def": 96
+      },
+      "has_row18_charge": true,
+      "has_voltage_pin": true,
+      "row18_alpha": 0.5
+     },
+     "DSO:7:case33_2:2025:Spring": {
+      "n_var_data": 43552,
+      "n_constraint_data": 30393,
+      "n_constraint_data_active": 30128,
+      "n_expression_data": 16648,
+      "n_var_data_unfixed": 42568,
+      "row18_components": {
+       "row18_dev_p_up": 96,
+       "row18_dev_p_down": 96,
+       "row18_dev_q_up": 96,
+       "row18_dev_q_down": 96,
+       "row18_dev_p_def": 96,
+       "row18_dev_q_def": 96
+      },
+      "has_row18_charge": true,
+      "has_voltage_pin": true,
+      "row18_alpha": 0.5
+     },
+     "DSO:9:case33_3:2025:Spring": {
+      "n_var_data": 43552,
+      "n_constraint_data": 30285,
+      "n_constraint_data_active": 30020,
+      "n_expression_data": 16648,
+      "n_var_data_unfixed": 42568,
+      "row18_components": {
+       "row18_dev_p_up": 96,
+       "row18_dev_p_down": 96,
+       "row18_dev_q_up": 96,
+       "row18_dev_q_down": 96,
+       "row18_dev_p_def": 96,
+       "row18_dev_q_def": 96
+      },
+      "has_row18_charge": true,
+      "has_voltage_pin": true,
+      "row18_alpha": 0.5
+     }
+    }
+   },
+   "reference_block": "DSO:5:case33_1:2025:Spring",
+   "n_scenarios": 4,
+   "n_periods": 24,
+   "expected_row18_variables": 384,
+   "observed_row18_variables": 384,
+   "expected_row18_rows": 192,
+   "observed_row18_rows": 192,
+   "var_data_delta_alpha05_minus_alpha0": 384,
+   "active_row_delta_alpha05_minus_alpha0": 192,
+   "pass": true
+  },
+  "D_tso_deviation_fixed_at_zero": {
+   "block": "TSO:case9:2025:Spring",
+   "first_scenario_pair": [
+    0,
+    0
+   ],
+   "n_first_pair_entries": 144,
+   "n_first_pair_free": 144,
+   "first_pair_bounds_sample": {
+    "fixed": false,
+    "lb": -2.0,
+    "ub": 2.0
+   },
+   "n_non_first_fixed_at_zero": 432,
+   "non_first_free_offenders": [],
+   "free_variables_in_pc_adn_per_scenario": {
+    "0_0": [
+     "interface_delta_p[0,0,0,0]"
+    ],
+    "0_1": [
+     "interface_delta_p[0,0,0,0]"
+    ],
+    "1_0": [
+     "interface_delta_p[0,0,0,0]"
+    ],
+    "1_1": [
+     "interface_delta_p[0,0,0,0]"
+    ]
+   },
+   "pc_adn_free_variables_identical_across_scenarios": true,
+   "pass": true
+  },
+  "E_storage_scenario_free": {
+   "per_block": {
+    "TSO:None:case9:2025:Spring": {
+     "first_scenario_pair": [
+      0,
+      0
+     ],
+     "shared_ess_index": 0,
+     "shared_ess_bus": 5,
+     "shared_es_pnet_referenced_by_each_scenario_balance_row": {
+      "0_0": [
+       "shared_es_pnet[0,0,0,0]"
+      ],
+      "0_1": [
+       "shared_es_pnet[0,0,0,0]"
+      ],
+      "1_0": [
+       "shared_es_pnet[0,0,0,0]"
+      ],
+      "1_1": [
+       "shared_es_pnet[0,0,0,0]"
+      ]
+     },
+     "expected_single_variable": [
+      "shared_es_pnet[0,0,0,0]"
+     ],
+     "balance_rows_reference_one_scenario_free_variable": true,
+     "per_scenario_copies_present": {
+      "shared_es_pch": 72,
+      "shared_es_pdch": 72,
+      "shared_es_pnet": 72,
+      "shared_es_qnet": 72,
+      "shared_es_soc": 72,
+      "shared_es_pch_hat": 72,
+      "shared_es_pdch_hat": 72
+     },
+     "per_scenario_copies_unwired": {
+      "shared_es_pch": 72,
+      "shared_es_pdch": 72,
+      "shared_es_pnet": 72,
+      "shared_es_qnet": 72,
+      "shared_es_soc": 72,
+      "shared_es_pch_hat": 72,
+      "shared_es_pdch_hat": 72
+     },
+     "per_scenario_copies_still_wired": {
+      "shared_es_pch": 0,
+      "shared_es_pdch": 0,
+      "shared_es_pnet": 0,
+      "shared_es_qnet": 0,
+      "shared_es_soc": 0,
+      "shared_es_pch_hat": 0,
+      "shared_es_pdch_hat": 0
+     },
+     "pass": true
+    },
+    "DSO:5:case33_1:2025:Spring": {
+     "first_scenario_pair": [
+      0,
+      0
+     ],
+     "shared_ess_index": 0,
+     "shared_ess_bus": 1,
+     "shared_es_pnet_referenced_by_each_scenario_balance_row": {
+      "0_0": [
+       "shared_es_pnet[0,0,0,0]"
+      ],
+      "0_1": [
+       "shared_es_pnet[0,0,0,0]"
+      ],
+      "1_0": [
+       "shared_es_pnet[0,0,0,0]"
+      ],
+      "1_1": [
+       "shared_es_pnet[0,0,0,0]"
+      ]
+     },
+     "expected_single_variable": [
+      "shared_es_pnet[0,0,0,0]"
+     ],
+     "balance_rows_reference_one_scenario_free_variable": true,
+     "per_scenario_copies_present": {
+      "shared_es_pch": 72,
+      "shared_es_pdch": 72,
+      "shared_es_pnet": 72,
+      "shared_es_qnet": 72,
+      "shared_es_soc": 72,
+      "shared_es_pch_hat": 72,
+      "shared_es_pdch_hat": 72
+     },
+     "per_scenario_copies_unwired": {
+      "shared_es_pch": 72,
+      "shared_es_pdch": 72,
+      "shared_es_pnet": 72,
+      "shared_es_qnet": 72,
+      "shared_es_soc": 72,
+      "shared_es_pch_hat": 72,
+      "shared_es_pdch_hat": 72
+     },
+     "per_scenario_copies_still_wired": {
+      "shared_es_pch": 0,
+      "shared_es_pdch": 0,
+      "shared_es_pnet": 0,
+      "shared_es_qnet": 0,
+      "shared_es_soc": 0,
+      "shared_es_pch_hat": 0,
+      "shared_es_pdch_hat": 0
+     },
+     "pass": true
+    },
+    "DSO:7:case33_2:2025:Spring": {
+     "first_scenario_pair": [
+      0,
+      0
+     ],
+     "shared_ess_index": 0,
+     "shared_ess_bus": 1,
+     "shared_es_pnet_referenced_by_each_scenario_balance_row": {
+      "0_0": [
+       "shared_es_pnet[0,0,0,0]"
+      ],
+      "0_1": [
+       "shared_es_pnet[0,0,0,0]"
+      ],
+      "1_0": [
+       "shared_es_pnet[0,0,0,0]"
+      ],
+      "1_1": [
+       "shared_es_pnet[0,0,0,0]"
+      ]
+     },
+     "expected_single_variable": [
+      "shared_es_pnet[0,0,0,0]"
+     ],
+     "balance_rows_reference_one_scenario_free_variable": true,
+     "per_scenario_copies_present": {
+      "shared_es_pch": 72,
+      "shared_es_pdch": 72,
+      "shared_es_pnet": 72,
+      "shared_es_qnet": 72,
+      "shared_es_soc": 72,
+      "shared_es_pch_hat": 72,
+      "shared_es_pdch_hat": 72
+     },
+     "per_scenario_copies_unwired": {
+      "shared_es_pch": 72,
+      "shared_es_pdch": 72,
+      "shared_es_pnet": 72,
+      "shared_es_qnet": 72,
+      "shared_es_soc": 72,
+      "shared_es_pch_hat": 72,
+      "shared_es_pdch_hat": 72
+     },
+     "per_scenario_copies_still_wired": {
+      "shared_es_pch": 0,
+      "shared_es_pdch": 0,
+      "shared_es_pnet": 0,
+      "shared_es_qnet": 0,
+      "shared_es_soc": 0,
+      "shared_es_pch_hat": 0,
+      "shared_es_pdch_hat": 0
+     },
+     "pass": true
+    },
+    "DSO:9:case33_3:2025:Spring": {
+     "first_scenario_pair": [
+      0,
+      0
+     ],
+     "shared_ess_index": 0,
+     "shared_ess_bus": 1,
+     "shared_es_pnet_referenced_by_each_scenario_balance_row": {
+      "0_0": [
+       "shared_es_pnet[0,0,0,0]"
+      ],
+      "0_1": [
+       "shared_es_pnet[0,0,0,0]"
+      ],
+      "1_0": [
+       "shared_es_pnet[0,0,0,0]"
+      ],
+      "1_1": [
+       "shared_es_pnet[0,0,0,0]"
+      ]
+     },
+     "expected_single_variable": [
+      "shared_es_pnet[0,0,0,0]"
+     ],
+     "balance_rows_reference_one_scenario_free_variable": true,
+     "per_scenario_copies_present": {
+      "shared_es_pch": 72,
+      "shared_es_pdch": 72,
+      "shared_es_pnet": 72,
+      "shared_es_qnet": 72,
+      "shared_es_soc": 72,
+      "shared_es_pch_hat": 72,
+      "shared_es_pdch_hat": 72
+     },
+     "per_scenario_copies_unwired": {
+      "shared_es_pch": 72,
+      "shared_es_pdch": 72,
+      "shared_es_pnet": 72,
+      "shared_es_qnet": 72,
+      "shared_es_soc": 72,
+      "shared_es_pch_hat": 72,
+      "shared_es_pdch_hat": 72
+     },
+     "per_scenario_copies_still_wired": {
+      "shared_es_pch": 0,
+      "shared_es_pdch": 0,
+      "shared_es_pnet": 0,
+      "shared_es_qnet": 0,
+      "shared_es_soc": 0,
+      "shared_es_pch_hat": 0,
+      "shared_es_pdch_hat": 0
+     },
+     "pass": true
+    }
+   },
+   "pass": true
+  },
+  "G_finite_difference": {
+   "block": "DSO:5:case33_1:2025:Spring",
+   "identity": "d(objective_function_rule)/d(unit deviation variable) == omega_s * alpha * pibar_t * baseMVA",
+   "tolerance_rel": 1e-12,
+   "n_probes": 48,
+   "probes": [
+    {
+     "scenario": "0_0",
+     "period": 0,
+     "variable": "p_up",
+     "omega": 0.25,
+     "alpha": 0.5,
+     "pibar": 143.06281197426998,
+     "baseMVA": 100.0,
+     "expected": 1788.2851496783746,
+     "observed": 1788.2851496783746,
+     "rel_error": 0.0,
+     "pass": true
+    },
+    {
+     "scenario": "0_0",
+     "period": 0,
+     "variable": "p_down",
+     "omega": 0.25,
+     "alpha": 0.5,
+     "pibar": 143.06281197426998,
+     "baseMVA": 100.0,
+     "expected": 1788.2851496783746,
+     "observed": 1788.2851496783746,
+     "rel_error": 0.0,
+     "pass": true
+    },
+    {
+     "scenario": "0_0",
+     "period": 0,
+     "variable": "q_up",
+     "omega": 0.25,
+     "alpha": 0.5,
+     "pibar": 143.06281197426998,
+     "baseMVA": 100.0,
+     "expected": 1788.2851496783746,
+     "observed": 1788.2851496783746,
+     "rel_error": 0.0,
+     "pass": true
+    },
+    {
+     "scenario": "0_0",
+     "period": 0,
+     "variable": "q_down",
+     "omega": 0.25,
+     "alpha": 0.5,
+     "pibar": 143.06281197426998,
+     "baseMVA": 100.0,
+     "expected": 1788.2851496783746,
+     "observed": 1788.2851496783746,
+     "rel_error": 0.0,
+     "pass": true
+    },
+    {
+     "scenario": "0_0",
+     "period": 12,
+     "variable": "p_up",
+     "omega": 0.25,
+     "alpha": 0.5,
+     "pibar": 25.276070958584995,
+     "baseMVA": 100.0,
+     "expected": 315.95088698231245,
+     "observed": 315.95088698231245,
+     "rel_error": 0.0,
+     "pass": true
+    },
+    {
+     "scenario": "0_0",
+     "period": 12,
+     "variable": "p_down",
+     "omega": 0.25,
+     "alpha": 0.5,
+     "pibar": 25.276070958584995,
+     "baseMVA": 100.0,
+     "expected": 315.95088698231245,
+     "observed": 315.95088698231245,
+     "rel_error": 0.0,
+     "pass": true
+    },
+    {
+     "scenario": "0_0",
+     "period": 12,
+     "variable": "q_up",
+     "omega": 0.25,
+     "alpha": 0.5,
+     "pibar": 25.276070958584995,
+     "baseMVA": 100.0,
+     "expected": 315.95088698231245,
+     "observed": 315.95088698231245,
+     "rel_error": 0.0,
+     "pass": true
+    },
+    {
+     "scenario": "0_0",
+     "period": 12,
+     "variable": "q_down",
+     "omega": 0.25,
+     "alpha": 0.5,
+     "pibar": 25.276070958584995,
+     "baseMVA": 100.0,
+     "expected": 315.95088698231245,
+     "observed": 315.95088698231245,
+     "rel_error": 0.0,
+     "pass": true
+    },
+    {
+     "scenario": "0_0",
+     "period": 23,
+     "variable": "p_up",
+     "omega": 0.25,
+     "alpha": 0.5,
+     "pibar": 157.6525959539668,
+     "baseMVA": 100.0,
+     "expected": 1970.657449424585,
+     "observed": 1970.657449424585,
+     "rel_error": 0.0,
+     "pass": true
+    },
+    {
+     "scenario": "0_0",
+     "period": 23,
+     "variable": "p_down",
+     "omega": 0.25,
+     "alpha": 0.5,
+     "pibar": 157.6525959539668,
+     "baseMVA": 100.0,
+     "expected": 1970.657449424585,
+     "observed": 1970.657449424585,
+     "rel_error": 0.0,
+     "pass": true
+    },
+    {
+     "scenario": "0_0",
+     "period": 23,
+     "variable": "q_up",
+     "omega": 0.25,
+     "alpha": 0.5,
+     "pibar": 157.6525959539668,
+     "baseMVA": 100.0,
+     "expected": 1970.657449424585,
+     "observed": 1970.657449424585,
+     "rel_error": 0.0,
+     "pass": true
+    },
+    {
+     "scenario": "0_0",
+     "period": 23,
+     "variable": "q_down",
+     "omega": 0.25,
+     "alpha": 0.5,
+     "pibar": 157.6525959539668,
+     "baseMVA": 100.0,
+     "expected": 1970.657449424585,
+     "observed": 1970.657449424585,
+     "rel_error": 0.0,
+     "pass": true
+    },
+    {
+     "scenario": "0_1",
+     "period": 0,
+     "variable": "p_up",
+     "omega": 0.25,
+     "alpha": 0.5,
+     "pibar": 143.06281197426998,
+     "baseMVA": 100.0,
+     "expected": 1788.2851496783746,
+     "observed": 1788.2851496783746,
+     "rel_error": 0.0,
+     "pass": true
+    },
+    {
+     "scenario": "0_1",
+     "period": 0,
+     "variable": "p_down",
+     "omega": 0.25,
+     "alpha": 0.5,
+     "pibar": 143.06281197426998,
+     "baseMVA": 100.0,
+     "expected": 1788.2851496783746,
+     "observed": 1788.2851496783746,
+     "rel_error": 0.0,
+     "pass": true
+    },
+    {
+     "scenario": "0_1",
+     "period": 0,
+     "variable": "q_up",
+     "omega": 0.25,
+     "alpha": 0.5,
+     "pibar": 143.06281197426998,
+     "baseMVA": 100.0,
+     "expected": 1788.2851496783746,
+     "observed": 1788.2851496783746,
+     "rel_error": 0.0,
+     "pass": true
+    },
+    {
+     "scenario": "0_1",
+     "period": 0,
+     "variable": "q_down",
+     "omega": 0.25,
+     "alpha": 0.5,
+     "pibar": 143.06281197426998,
+     "baseMVA": 100.0,
+     "expected": 1788.2851496783746,
+     "observed": 1788.2851496783746,
+     "rel_error": 0.0,
+     "pass": true
+    },
+    {
+     "scenario": "0_1",
+     "period": 12,
+     "variable": "p_up",
+     "omega": 0.25,
+     "alpha": 0.5,
+     "pibar": 25.276070958584995,
+     "baseMVA": 100.0,
+     "expected": 315.95088698231245,
+     "observed": 315.95088698231245,
+     "rel_error": 0.0,
+     "pass": true
+    },
+    {
+     "scenario": "0_1",
+     "period": 12,
+     "variable": "p_down",
+     "omega": 0.25,
+     "alpha": 0.5,
+     "pibar": 25.276070958584995,
+     "baseMVA": 100.0,
+     "expected": 315.95088698231245,
+     "observed": 315.95088698231245,
+     "rel_error": 0.0,
+     "pass": true
+    },
+    {
+     "scenario": "0_1",
+     "period": 12,
+     "variable": "q_up",
+     "omega": 0.25,
+     "alpha": 0.5,
+     "pibar": 25.276070958584995,
+     "baseMVA": 100.0,
+     "expected": 315.95088698231245,
+     "observed": 315.95088698231245,
+     "rel_error": 0.0,
+     "pass": true
+    },
+    {
+     "scenario": "0_1",
+     "period": 12,
+     "variable": "q_down",
+     "omega": 0.25,
+     "alpha": 0.5,
+     "pibar": 25.276070958584995,
+     "baseMVA": 100.0,
+     "expected": 315.95088698231245,
+     "observed": 315.95088698231245,
+     "rel_error": 0.0,
+     "pass": true
+    },
+    {
+     "scenario": "0_1",
+     "period": 23,
+     "variable": "p_up",
+     "omega": 0.25,
+     "alpha": 0.5,
+     "pibar": 157.6525959539668,
+     "baseMVA": 100.0,
+     "expected": 1970.657449424585,
+     "observed": 1970.657449424585,
+     "rel_error": 0.0,
+     "pass": true
+    },
+    {
+     "scenario": "0_1",
+     "period": 23,
+     "variable": "p_down",
+     "omega": 0.25,
+     "alpha": 0.5,
+     "pibar": 157.6525959539668,
+     "baseMVA": 100.0,
+     "expected": 1970.657449424585,
+     "observed": 1970.657449424585,
+     "rel_error": 0.0,
+     "pass": true
+    },
+    {
+     "scenario": "0_1",
+     "period": 23,
+     "variable": "q_up",
+     "omega": 0.25,
+     "alpha": 0.5,
+     "pibar": 157.6525959539668,
+     "baseMVA": 100.0,
+     "expected": 1970.657449424585,
+     "observed": 1970.657449424585,
+     "rel_error": 0.0,
+     "pass": true
+    },
+    {
+     "scenario": "0_1",
+     "period": 23,
+     "variable": "q_down",
+     "omega": 0.25,
+     "alpha": 0.5,
+     "pibar": 157.6525959539668,
+     "baseMVA": 100.0,
+     "expected": 1970.657449424585,
+     "observed": 1970.657449424585,
+     "rel_error": 0.0,
+     "pass": true
+    },
+    {
+     "scenario": "1_0",
+     "period": 0,
+     "variable": "p_up",
+     "omega": 0.25,
+     "alpha": 0.5,
+     "pibar": 143.06281197426998,
+     "baseMVA": 100.0,
+     "expected": 1788.2851496783746,
+     "observed": 1788.2851496783746,
+     "rel_error": 0.0,
+     "pass": true
+    },
+    {
+     "scenario": "1_0",
+     "period": 0,
+     "variable": "p_down",
+     "omega": 0.25,
+     "alpha": 0.5,
+     "pibar": 143.06281197426998,
+     "baseMVA": 100.0,
+     "expected": 1788.2851496783746,
+     "observed": 1788.2851496783746,
+     "rel_error": 0.0,
+     "pass": true
+    },
+    {
+     "scenario": "1_0",
+     "period": 0,
+     "variable": "q_up",
+     "omega": 0.25,
+     "alpha": 0.5,
+     "pibar": 143.06281197426998,
+     "baseMVA": 100.0,
+     "expected": 1788.2851496783746,
+     "observed": 1788.2851496783746,
+     "rel_error": 0.0,
+     "pass": true
+    },
+    {
+     "scenario": "1_0",
+     "period": 0,
+     "variable": "q_down",
+     "omega": 0.25,
+     "alpha": 0.5,
+     "pibar": 143.06281197426998,
+     "baseMVA": 100.0,
+     "expected": 1788.2851496783746,
+     "observed": 1788.2851496783746,
+     "rel_error": 0.0,
+     "pass": true
+    },
+    {
+     "scenario": "1_0",
+     "period": 12,
+     "variable": "p_up",
+     "omega": 0.25,
+     "alpha": 0.5,
+     "pibar": 25.276070958584995,
+     "baseMVA": 100.0,
+     "expected": 315.95088698231245,
+     "observed": 315.95088698231245,
+     "rel_error": 0.0,
+     "pass": true
+    },
+    {
+     "scenario": "1_0",
+     "period": 12,
+     "variable": "p_down",
+     "omega": 0.25,
+     "alpha": 0.5,
+     "pibar": 25.276070958584995,
+     "baseMVA": 100.0,
+     "expected": 315.95088698231245,
+     "observed": 315.95088698231245,
+     "rel_error": 0.0,
+     "pass": true
+    },
+    {
+     "scenario": "1_0",
+     "period": 12,
+     "variable": "q_up",
+     "omega": 0.25,
+     "alpha": 0.5,
+     "pibar": 25.276070958584995,
+     "baseMVA": 100.0,
+     "expected": 315.95088698231245,
+     "observed": 315.95088698231245,
+     "rel_error": 0.0,
+     "pass": true
+    },
+    {
+     "scenario": "1_0",
+     "period": 12,
+     "variable": "q_down",
+     "omega": 0.25,
+     "alpha": 0.5,
+     "pibar": 25.276070958584995,
+     "baseMVA": 100.0,
+     "expected": 315.95088698231245,
+     "observed": 315.95088698231245,
+     "rel_error": 0.0,
+     "pass": true
+    },
+    {
+     "scenario": "1_0",
+     "period": 23,
+     "variable": "p_up",
+     "omega": 0.25,
+     "alpha": 0.5,
+     "pibar": 157.6525959539668,
+     "baseMVA": 100.0,
+     "expected": 1970.657449424585,
+     "observed": 1970.657449424585,
+     "rel_error": 0.0,
+     "pass": true
+    },
+    {
+     "scenario": "1_0",
+     "period": 23,
+     "variable": "p_down",
+     "omega": 0.25,
+     "alpha": 0.5,
+     "pibar": 157.6525959539668,
+     "baseMVA": 100.0,
+     "expected": 1970.657449424585,
+     "observed": 1970.657449424585,
+     "rel_error": 0.0,
+     "pass": true
+    },
+    {
+     "scenario": "1_0",
+     "period": 23,
+     "variable": "q_up",
+     "omega": 0.25,
+     "alpha": 0.5,
+     "pibar": 157.6525959539668,
+     "baseMVA": 100.0,
+     "expected": 1970.657449424585,
+     "observed": 1970.657449424585,
+     "rel_error": 0.0,
+     "pass": true
+    },
+    {
+     "scenario": "1_0",
+     "period": 23,
+     "variable": "q_down",
+     "omega": 0.25,
+     "alpha": 0.5,
+     "pibar": 157.6525959539668,
+     "baseMVA": 100.0,
+     "expected": 1970.657449424585,
+     "observed": 1970.657449424585,
+     "rel_error": 0.0,
+     "pass": true
+    },
+    {
+     "scenario": "1_1",
+     "period": 0,
+     "variable": "p_up",
+     "omega": 0.25,
+     "alpha": 0.5,
+     "pibar": 143.06281197426998,
+     "baseMVA": 100.0,
+     "expected": 1788.2851496783746,
+     "observed": 1788.2851496783746,
+     "rel_error": 0.0,
+     "pass": true
+    },
+    {
+     "scenario": "1_1",
+     "period": 0,
+     "variable": "p_down",
+     "omega": 0.25,
+     "alpha": 0.5,
+     "pibar": 143.06281197426998,
+     "baseMVA": 100.0,
+     "expected": 1788.2851496783746,
+     "observed": 1788.2851496783746,
+     "rel_error": 0.0,
+     "pass": true
+    },
+    {
+     "scenario": "1_1",
+     "period": 0,
+     "variable": "q_up",
+     "omega": 0.25,
+     "alpha": 0.5,
+     "pibar": 143.06281197426998,
+     "baseMVA": 100.0,
+     "expected": 1788.2851496783746,
+     "observed": 1788.2851496783746,
+     "rel_error": 0.0,
+     "pass": true
+    },
+    {
+     "scenario": "1_1",
+     "period": 0,
+     "variable": "q_down",
+     "omega": 0.25,
+     "alpha": 0.5,
+     "pibar": 143.06281197426998,
+     "baseMVA": 100.0,
+     "expected": 1788.2851496783746,
+     "observed": 1788.2851496783746,
+     "rel_error": 0.0,
+     "pass": true
+    },
+    {
+     "scenario": "1_1",
+     "period": 12,
+     "variable": "p_up",
+     "omega": 0.25,
+     "alpha": 0.5,
+     "pibar": 25.276070958584995,
+     "baseMVA": 100.0,
+     "expected": 315.95088698231245,
+     "observed": 315.95088698231245,
+     "rel_error": 0.0,
+     "pass": true
+    },
+    {
+     "scenario": "1_1",
+     "period": 12,
+     "variable": "p_down",
+     "omega": 0.25,
+     "alpha": 0.5,
+     "pibar": 25.276070958584995,
+     "baseMVA": 100.0,
+     "expected": 315.95088698231245,
+     "observed": 315.95088698231245,
+     "rel_error": 0.0,
+     "pass": true
+    },
+    {
+     "scenario": "1_1",
+     "period": 12,
+     "variable": "q_up",
+     "omega": 0.25,
+     "alpha": 0.5,
+     "pibar": 25.276070958584995,
+     "baseMVA": 100.0,
+     "expected": 315.95088698231245,
+     "observed": 315.95088698231245,
+     "rel_error": 0.0,
+     "pass": true
+    },
+    {
+     "scenario": "1_1",
+     "period": 12,
+     "variable": "q_down",
+     "omega": 0.25,
+     "alpha": 0.5,
+     "pibar": 25.276070958584995,
+     "baseMVA": 100.0,
+     "expected": 315.95088698231245,
+     "observed": 315.95088698231245,
+     "rel_error": 0.0,
+     "pass": true
+    },
+    {
+     "scenario": "1_1",
+     "period": 23,
+     "variable": "p_up",
+     "omega": 0.25,
+     "alpha": 0.5,
+     "pibar": 157.6525959539668,
+     "baseMVA": 100.0,
+     "expected": 1970.657449424585,
+     "observed": 1970.657449424585,
+     "rel_error": 0.0,
+     "pass": true
+    },
+    {
+     "scenario": "1_1",
+     "period": 23,
+     "variable": "p_down",
+     "omega": 0.25,
+     "alpha": 0.5,
+     "pibar": 157.6525959539668,
+     "baseMVA": 100.0,
+     "expected": 1970.657449424585,
+     "observed": 1970.657449424585,
+     "rel_error": 0.0,
+     "pass": true
+    },
+    {
+     "scenario": "1_1",
+     "period": 23,
+     "variable": "q_up",
+     "omega": 0.25,
+     "alpha": 0.5,
+     "pibar": 157.6525959539668,
+     "baseMVA": 100.0,
+     "expected": 1970.657449424585,
+     "observed": 1970.657449424585,
+     "rel_error": 0.0,
+     "pass": true
+    },
+    {
+     "scenario": "1_1",
+     "period": 23,
+     "variable": "q_down",
+     "omega": 0.25,
+     "alpha": 0.5,
+     "pibar": 157.6525959539668,
+     "baseMVA": 100.0,
+     "expected": 1970.657449424585,
+     "observed": 1970.657449424585,
+     "rel_error": 0.0,
+     "pass": true
+    }
+   ],
+   "pass": true
+  },
+  "I_objective_equals_rule_2x2": {
+   "why": "W37 found that above 1 x 1 the hull polish minimises `model.objective` (which carried the retired quadratic) while Delta is measured on `objective_function_rule` (which did not), so \"Delta <= 0 by construction\" did not hold there. With the quadratic unwired and row 18 + the voltage pin inside the rule, the two coincide again.",
+   "evaluated_at": "a deterministic pseudo-random point (`_randomize_point`), NOT the built model's 0/1 initial point, where both sides evaluate to 0.0 and the identity would be vacuous",
+   "per_block": {
+    "alpha_0|TSO:None:case9:2025:Spring": {
+     "n_variables_randomized": 9576,
+     "model_objective": 3263198.599463643,
+     "objective_function_rule": 3263198.599463643,
+     "difference": 0.0,
+     "has_retired_quadratic": false,
+     "has_row18": false,
+     "has_voltage_pin": true,
+     "pass": true
+    },
+    "alpha_0|TSO:None:case9:2025:Summer": {
+     "n_variables_randomized": 9576,
+     "model_objective": 3493139.1603728402,
+     "objective_function_rule": 3493139.1603728402,
+     "difference": 0.0,
+     "has_retired_quadratic": false,
+     "has_row18": false,
+     "has_voltage_pin": true,
+     "pass": true
+    },
+    "alpha_0|TSO:None:case9:2025:Autumn": {
+     "n_variables_randomized": 9576,
+     "model_objective": 3544320.2158960267,
+     "objective_function_rule": 3544320.2158960267,
+     "difference": 0.0,
+     "has_retired_quadratic": false,
+     "has_row18": false,
+     "has_voltage_pin": true,
+     "pass": true
+    },
+    "alpha_0|TSO:None:case9:2025:Winter": {
+     "n_variables_randomized": 9576,
+     "model_objective": 3496157.9181282944,
+     "objective_function_rule": 3496157.9181282944,
+     "difference": 0.0,
+     "has_retired_quadratic": false,
+     "has_row18": false,
+     "has_voltage_pin": true,
+     "pass": true
+    },
+    "alpha_0|DSO:5:case33_1:2025:Spring": {
+     "n_variables_randomized": 42184,
+     "model_objective": 4492805.15710298,
+     "objective_function_rule": 4492805.15710298,
+     "difference": 0.0,
+     "has_retired_quadratic": false,
+     "has_row18": false,
+     "has_voltage_pin": true,
+     "pass": true
+    },
+    "alpha_0|DSO:5:case33_1:2025:Summer": {
+     "n_variables_randomized": 42184,
+     "model_objective": 4399456.779495293,
+     "objective_function_rule": 4399456.779495293,
+     "difference": 0.0,
+     "has_retired_quadratic": false,
+     "has_row18": false,
+     "has_voltage_pin": true,
+     "pass": true
+    },
+    "alpha_0|DSO:5:case33_1:2025:Autumn": {
+     "n_variables_randomized": 42184,
+     "model_objective": 4590208.698754648,
+     "objective_function_rule": 4590208.698754648,
+     "difference": 0.0,
+     "has_retired_quadratic": false,
+     "has_row18": false,
+     "has_voltage_pin": true,
+     "pass": true
+    },
+    "alpha_0|DSO:5:case33_1:2025:Winter": {
+     "n_variables_randomized": 42184,
+     "model_objective": 4535130.634024776,
+     "objective_function_rule": 4535130.634024776,
+     "difference": 0.0,
+     "has_retired_quadratic": false,
+     "has_row18": false,
+     "has_voltage_pin": true,
+     "pass": true
+    },
+    "alpha_0|DSO:7:case33_2:2025:Spring": {
+     "n_variables_randomized": 42184,
+     "model_objective": 4509593.576126203,
+     "objective_function_rule": 4509593.576126203,
+     "difference": 0.0,
+     "has_retired_quadratic": false,
+     "has_row18": false,
+     "has_voltage_pin": true,
+     "pass": true
+    },
+    "alpha_0|DSO:7:case33_2:2025:Summer": {
+     "n_variables_randomized": 42184,
+     "model_objective": 4610958.281335408,
+     "objective_function_rule": 4610958.281335408,
+     "difference": 0.0,
+     "has_retired_quadratic": false,
+     "has_row18": false,
+     "has_voltage_pin": true,
+     "pass": true
+    },
+    "alpha_0|DSO:7:case33_2:2025:Autumn": {
+     "n_variables_randomized": 42184,
+     "model_objective": 4569145.364667244,
+     "objective_function_rule": 4569145.364667244,
+     "difference": 0.0,
+     "has_retired_quadratic": false,
+     "has_row18": false,
+     "has_voltage_pin": true,
+     "pass": true
+    },
+    "alpha_0|DSO:7:case33_2:2025:Winter": {
+     "n_variables_randomized": 42184,
+     "model_objective": 4542964.707779231,
+     "objective_function_rule": 4542964.707779231,
+     "difference": 0.0,
+     "has_retired_quadratic": false,
+     "has_row18": false,
+     "has_voltage_pin": true,
+     "pass": true
+    },
+    "alpha_0|DSO:9:case33_3:2025:Spring": {
+     "n_variables_randomized": 42184,
+     "model_objective": 4478427.913361402,
+     "objective_function_rule": 4478427.913361402,
+     "difference": 0.0,
+     "has_retired_quadratic": false,
+     "has_row18": false,
+     "has_voltage_pin": true,
+     "pass": true
+    },
+    "alpha_0|DSO:9:case33_3:2025:Summer": {
+     "n_variables_randomized": 42184,
+     "model_objective": 4617595.688998112,
+     "objective_function_rule": 4617595.688998112,
+     "difference": 0.0,
+     "has_retired_quadratic": false,
+     "has_row18": false,
+     "has_voltage_pin": true,
+     "pass": true
+    },
+    "alpha_0|DSO:9:case33_3:2025:Autumn": {
+     "n_variables_randomized": 42184,
+     "model_objective": 4565949.794829915,
+     "objective_function_rule": 4565949.794829915,
+     "difference": 0.0,
+     "has_retired_quadratic": false,
+     "has_row18": false,
+     "has_voltage_pin": true,
+     "pass": true
+    },
+    "alpha_0|DSO:9:case33_3:2025:Winter": {
+     "n_variables_randomized": 42184,
+     "model_objective": 4345674.8121606065,
+     "objective_function_rule": 4345674.8121606065,
+     "difference": 0.0,
+     "has_retired_quadratic": false,
+     "has_row18": false,
+     "has_voltage_pin": true,
+     "pass": true
+    },
+    "alpha_0.5|TSO:None:case9:2025:Spring": {
+     "n_variables_randomized": 9576,
+     "model_objective": 3200914.400870679,
+     "objective_function_rule": 3200914.400870679,
+     "difference": 0.0,
+     "has_retired_quadratic": false,
+     "has_row18": false,
+     "has_voltage_pin": true,
+     "pass": true
+    },
+    "alpha_0.5|TSO:None:case9:2025:Summer": {
+     "n_variables_randomized": 9576,
+     "model_objective": 3457916.282340806,
+     "objective_function_rule": 3457916.282340806,
+     "difference": 0.0,
+     "has_retired_quadratic": false,
+     "has_row18": false,
+     "has_voltage_pin": true,
+     "pass": true
+    },
+    "alpha_0.5|TSO:None:case9:2025:Autumn": {
+     "n_variables_randomized": 9576,
+     "model_objective": 3598822.3345305733,
+     "objective_function_rule": 3598822.3345305733,
+     "difference": 0.0,
+     "has_retired_quadratic": false,
+     "has_row18": false,
+     "has_voltage_pin": true,
+     "pass": true
+    },
+    "alpha_0.5|TSO:None:case9:2025:Winter": {
+     "n_variables_randomized": 9576,
+     "model_objective": 3321553.200840749,
+     "objective_function_rule": 3321553.200840749,
+     "difference": 0.0,
+     "has_retired_quadratic": false,
+     "has_row18": false,
+     "has_voltage_pin": true,
+     "pass": true
+    },
+    "alpha_0.5|DSO:5:case33_1:2025:Spring": {
+     "n_variables_randomized": 42568,
+     "model_objective": 4844794.858757546,
+     "objective_function_rule": 4844794.858757546,
+     "difference": 0.0,
+     "has_retired_quadratic": false,
+     "has_row18": true,
+     "has_voltage_pin": true,
+     "pass": true
+    },
+    "alpha_0.5|DSO:5:case33_1:2025:Summer": {
+     "n_variables_randomized": 42568,
+     "model_objective": 4786409.392086608,
+     "objective_function_rule": 4786409.392086608,
+     "difference": 0.0,
+     "has_retired_quadratic": false,
+     "has_row18": true,
+     "has_voltage_pin": true,
+     "pass": true
+    },
+    "alpha_0.5|DSO:5:case33_1:2025:Autumn": {
+     "n_variables_randomized": 42568,
+     "model_objective": 4832850.541180385,
+     "objective_function_rule": 4832850.541180385,
+     "difference": 0.0,
+     "has_retired_quadratic": false,
+     "has_row18": true,
+     "has_voltage_pin": true,
+     "pass": true
+    },
+    "alpha_0.5|DSO:5:case33_1:2025:Winter": {
+     "n_variables_randomized": 42568,
+     "model_objective": 4721378.318993592,
+     "objective_function_rule": 4721378.318993592,
+     "difference": 0.0,
+     "has_retired_quadratic": false,
+     "has_row18": true,
+     "has_voltage_pin": true,
+     "pass": true
+    },
+    "alpha_0.5|DSO:7:case33_2:2025:Spring": {
+     "n_variables_randomized": 42568,
+     "model_objective": 4754281.060444675,
+     "objective_function_rule": 4754281.060444675,
+     "difference": 0.0,
+     "has_retired_quadratic": false,
+     "has_row18": true,
+     "has_voltage_pin": true,
+     "pass": true
+    },
+    "alpha_0.5|DSO:7:case33_2:2025:Summer": {
+     "n_variables_randomized": 42568,
+     "model_objective": 4642145.278992114,
+     "objective_function_rule": 4642145.278992114,
+     "difference": 0.0,
+     "has_retired_quadratic": false,
+     "has_row18": true,
+     "has_voltage_pin": true,
+     "pass": true
+    },
+    "alpha_0.5|DSO:7:case33_2:2025:Autumn": {
+     "n_variables_randomized": 42568,
+     "model_objective": 4771984.353748953,
+     "objective_function_rule": 4771984.353748953,
+     "difference": 0.0,
+     "has_retired_quadratic": false,
+     "has_row18": true,
+     "has_voltage_pin": true,
+     "pass": true
+    },
+    "alpha_0.5|DSO:7:case33_2:2025:Winter": {
+     "n_variables_randomized": 42568,
+     "model_objective": 4604756.889733977,
+     "objective_function_rule": 4604756.889733977,
+     "difference": 0.0,
+     "has_retired_quadratic": false,
+     "has_row18": true,
+     "has_voltage_pin": true,
+     "pass": true
+    },
+    "alpha_0.5|DSO:9:case33_3:2025:Spring": {
+     "n_variables_randomized": 42568,
+     "model_objective": 4957953.17462207,
+     "objective_function_rule": 4957953.17462207,
+     "difference": 0.0,
+     "has_retired_quadratic": false,
+     "has_row18": true,
+     "has_voltage_pin": true,
+     "pass": true
+    },
+    "alpha_0.5|DSO:9:case33_3:2025:Summer": {
+     "n_variables_randomized": 42568,
+     "model_objective": 4543410.898281416,
+     "objective_function_rule": 4543410.898281416,
+     "difference": 0.0,
+     "has_retired_quadratic": false,
+     "has_row18": true,
+     "has_voltage_pin": true,
+     "pass": true
+    },
+    "alpha_0.5|DSO:9:case33_3:2025:Autumn": {
+     "n_variables_randomized": 42568,
+     "model_objective": 4770254.521352835,
+     "objective_function_rule": 4770254.521352835,
+     "difference": 0.0,
+     "has_retired_quadratic": false,
+     "has_row18": true,
+     "has_voltage_pin": true,
+     "pass": true
+    },
+    "alpha_0.5|DSO:9:case33_3:2025:Winter": {
+     "n_variables_randomized": 42568,
+     "model_objective": 4607184.543443225,
+     "objective_function_rule": 4607184.543443225,
+     "difference": 0.0,
+     "has_retired_quadratic": false,
+     "has_row18": true,
+     "has_voltage_pin": true,
+     "pass": true
+    }
+   },
+   "n_blocks_evaluating_to_zero": 0,
+   "tolerance_abs": 1e-09,
+   "pass": true
+  },
+  "H_settlement_split": {
+   "dso_block": "DSO:5:case33_1:2025:Spring",
+   "tso_block": "TSO:case9:2025:Spring",
+   "n_market_scenarios": 2,
+   "market_prices_differ_across_scenarios": true,
+   "settlement": 66032.75960157842,
+   "contracted": 64644.29066580362,
+   "deviation_reported": 1388.4689357747993,
+   "covariance_recomputed": 1388.4689357747982,
+   "abs_difference": 1.1368683772161603e-12,
+   "tso_deviation_part": 3.7834979593753815e-10,
+   "tolerance_abs": 1e-09,
+   "identity": "interface_settlement - interface_settlement_contracted == sum_t baseMVA * Cov_s(pi_t, p_int)",
+   "pass": true
+  },
+  "F_fixtures_unpickle": {
+   "scope": "every .pkl TRACKED IN GIT and present in this worktree. Untracked fixtures held only in the main checkout (e.g. data/SRP1/Results/P512R/cycle21_pre_setup/snapshot.pkl) are NOT in this worktree and were not loaded here; that part of the claim is scoped to the tracked set.",
+   "n_tracked": 93,
+   "n_loaded": 93,
+   "n_failed": 0,
+   "failed": [],
+   "loaded": [
+    {
+     "path": "data/SRP1/Results/P515A/run_a/esso_models_ablation_a.pkl",
+     "sha256": "09dca2bdc945f68a1e46f98d6236d72a7a6a028093cba97ec13eb78fd073f9bd",
+     "type": "dict"
+    },
+    {
+     "path": "data/SRP1/Results/P515A/run_b/esso_models_ablation_b.pkl",
+     "sha256": "90effc35cf08dd148223ffb252c9f1c9822645bc7620f7df037e1c6f1a9f2632",
+     "type": "dict"
+    },
+    {
+     "path": "data/SRP1/Results/P515A/run_b/results/FrozenSMOPF/frozen_DSO_node7_case33_2_2035_Autumn_cycle38.pkl",
+     "sha256": "53bb75175f7a2232154adb2299d0b291bc8bcd3c65d6bd155c6e25343874946d",
+     "type": "dict"
+    },
+    {
+     "path": "data/SRP1/Results/P515A/run_c/esso_models_ablation_c.pkl",
+     "sha256": "d8ae62d31ef3e5a8938c80451a0c026773b2f66732f66ee6ce1c5423499bb006",
+     "type": "dict"
+    },
+    {
+     "path": "data/SRP1/Results/P515A/run_c/results/FrozenSMOPF/frozen_DSO_node7_case33_2_2025_Spring_cycle27.pkl",
+     "sha256": "5edce80ebbebfc572279605dc1c71756dfde4a4965dddf59d1297d6a2ab50e2b",
+     "type": "dict"
+    },
+    {
+     "path": "data/SRP1/Results/P515F/t2_results/FrozenSMOPF/failure_TSO_case9_2025_Spring_cycle1.pkl",
+     "sha256": "914580cfee424fcc5ee1bb96d82cb866f68ae2e85d2b9d8ba25efdde2ce94369",
+     "type": "dict"
+    },
+    {
+     "path": "data/SRP1/Results/P515G1/esso_models_control.pkl",
+     "sha256": "48dac4ff8090a0dea5cd5de5ef12a5d682f58637ee2b753a7119339cff2a2c2e",
+     "type": "dict"
+    },
+    {
+     "path": "data/SRP1/Results/P515G1B/esso_models_baseline.pkl",
+     "sha256": "bba9e2274779954d01641de568112c409a65158145e9400637c5820b43f7f02a",
+     "type": "dict"
+    },
+    {
+     "path": "data/SRP1/Results/P515G1_smoke/esso_models_smoke.pkl",
+     "sha256": "3a1de0c299619469f9be687ad63fddb5d8b07288e2ffd6b423b7d08801044616",
+     "type": "dict"
+    },
+    {
+     "path": "data/SRP1/Results/P515G2/esso_models_k10000.pkl",
+     "sha256": "004b7d80b28b3b454dbd700c1697187ec29bdea763d55d1661f51c06207016b0",
+     "type": "dict"
+    },
+    {
+     "path": "data/SRP1/Results/P515G2R/esso_models_k10000_r.pkl",
+     "sha256": "c9afe3691441f7313f209fa1452b2bf6a30dd232304096f2b21fad90c2004468",
+     "type": "dict"
+    },
+    {
+     "path": "data/SRP1/Results/P515G3F_B/esso_models_g3_full_node7_b.pkl",
+     "sha256": "87975bedd6db4378f1b191cbb63a641bfd2f5a9287db5de6339af49eae24a752",
+     "type": "dict"
+    },
+    {
+     "path": "data/SRP1/Results/P515G3F_r2/esso_models_g3_full_node7.pkl",
+     "sha256": "446c424dc5c85a3c011a1b99ffa8a7f64c7304d2dee78ee75d5b5b24bf8073c7",
+     "type": "dict"
+    },
+    {
+     "path": "data/SRP1/Results/P515G3F_r2/results/FrozenSMOPF/frozen_DSO_node7_case33_2_2035_Autumn_cycle38.pkl",
+     "sha256": "4499cf99a4341eb99929f53bdc7cd8ef7bfd2e6edad1dcb9eab93792d9c6fe47",
+     "type": "dict"
+    },
+    {
+     "path": "data/SRP1/Results/P515G4/esso_models_control_rep2.pkl",
+     "sha256": "2d4e38875f1eb54a813ec7937f44ea28008c406039bce905b2d77ccf703a55c3",
+     "type": "dict"
+    },
+    {
+     "path": "data/SRP1/Results/P515R/r2_g1policy/esso_models_r2_g1policy.pkl",
+     "sha256": "88d4a5651dfefec1df21b56778ef2d1fefe39a97e07fb4656c976cfe2d927f66",
+     "type": "dict"
+    },
+    {
+     "path": "data/SRP1/Results/P515S30/esso_models_baseline_rep.pkl",
+     "sha256": "3da439f1a1161b21d7c76b0cb1a7d06a8887aac1c1615ae2ff90ddbd4879208d",
+     "type": "dict"
+    },
+    {
+     "path": "data/SRP1/Results/P515S31C_run/esso_models_baseline.pkl",
+     "sha256": "026cccd887b5fcf42522de61e941dc9e6026c1b7cf95a3b0b35400ea30457985",
+     "type": "dict"
+    },
+    {
+     "path": "data/SRP1/Results/P515S31_run/esso_models_baseline.pkl",
+     "sha256": "ae6ea62efcc480b3f8504a999262aef131f6c01b0c2006c3b058d38f5792d265",
+     "type": "dict"
+    },
+    {
+     "path": "data/SRP1/Results/P515S32/diag_mapping/esso_models_diag_mapping.pkl",
+     "sha256": "5cc76aebff3abaeb4c5be18210f8f4e4c777653ad43d659b36075f438a143e71",
+     "type": "dict"
+    },
+    {
+     "path": "data/SRP1/Results/P515S32/diag_mapping/raw_snapshots.pkl",
+     "sha256": "c2d7e1bbeae2a4f97b400e77af7fffb139ea3a4bda5008fcbb3e0c1d9acd5201",
+     "type": "dict"
+    },
+    {
+     "path": "data/SRP1/Results/P515S32/preflight/esso_models_preflight.pkl",
+     "sha256": "78b7a5a13b091f00bb8078a628d0a262913803d1a2c0f1a1991306b293976147",
+     "type": "dict"
+    },
+    {
+     "path": "data/SRP1/Results/P515S32/preflight_v2/esso_models_preflight_v2.pkl",
+     "sha256": "936f58cf8adac4aebdbb3c068a9977abc3e904a0fb130edc470b2565e51d975c",
+     "type": "dict"
+    },
+    {
+     "path": "data/SRP1/Results/P515S32_run/esso_models_baseline.pkl",
+     "sha256": "7b892910225b2a32f6d7edf66f207cccb6f00a8c5b106eb042cfbe79b02fdf51",
+     "type": "dict"
+    },
+    {
+     "path": "data/SRP1/Results/P515S33/preflight_e2/esso_models_preflight_e2.pkl",
+     "sha256": "c637fd1665b3e53188b4e63c8510c0cdf5328d47338bd79e2ffa04f0a7feb731",
+     "type": "dict"
+    },
+    {
+     "path": "data/SRP1/Results/P515S33_E2_run/esso_models_baseline.pkl",
+     "sha256": "66f3e1b98baff97f5496772a715c5a71a63d6f8451bc14ffde1f03b296cd1535",
+     "type": "dict"
+    },
+    {
+     "path": "data/SRP1/Results/P515S34/preflight/esso_models_preflight.pkl",
+     "sha256": "1508ce29dbce90df5e653ced22e6917bab0d09cee41e63b5017e1460a093964e",
+     "type": "dict"
+    },
+    {
+     "path": "data/SRP1/Results/P515S34_run/esso_models_baseline.pkl",
+     "sha256": "bf5ec3f9e832c6903e0f2d9b156e900c3b75384efca4334418a042512a0f028a",
+     "type": "dict"
+    },
+    {
+     "path": "data/SRP1/Results/P515S35/preflight_pt/esso_models_preflight.pkl",
+     "sha256": "96c8ba8084d12c7766d6a59f42d371badc90ae4a84755ef7afb28e0f88c9e09c",
+     "type": "dict"
+    },
+    {
+     "path": "data/SRP1/Results/P515S35/preflight_ref/esso_models_preflight.pkl",
+     "sha256": "26468f57b588babdcef779d342a9ebdba593edbddbcafac93d58821870c9c292",
+     "type": "dict"
+    },
+    {
+     "path": "data/SRP1/Results/P515S35_PT_run/esso_models_baseline.pkl",
+     "sha256": "1fe16b500a3f14c551612b2041866e49404288301793dd70ff097cec9aaf7f39",
+     "type": "dict"
+    },
+    {
+     "path": "data/SRP1/Results/P515S35_REF_run/esso_models_baseline.pkl",
+     "sha256": "ba3863a0436cc4f033180a6a36a84d4d3493fa030d684dca9268160e88d01927",
+     "type": "dict"
+    },
+    {
+     "path": "data/SRP1/Results/P515S36/step36_timing/off/esso_models_off.pkl",
+     "sha256": "4101078f84159dbc878c3db18ad37d71bee2f171ff2e36fabf846185440d1740",
+     "type": "dict"
+    },
+    {
+     "path": "data/SRP1/Results/P515S36/step36_timing/on/esso_models_on.pkl",
+     "sha256": "c73249ba6489e6f1e5b76fa2ac210ff762d101ae154aaec7996a2847282f4a39",
+     "type": "dict"
+    },
+    {
+     "path": "data/SRP1/Results/P515S36/step36_timing_10cyc/off/esso_models_off.pkl",
+     "sha256": "2eac9032eddbbe2e6013d3c8fdc8fd3bae258eb4e8c4270b8b56e6265ab2b11b",
+     "type": "dict"
+    },
+    {
+     "path": "data/SRP1/Results/P515S36/step36_timing_10cyc/off/results/FrozenSMOPF/matched_success_DSO_node7_case33_2_2025_Autumn_cycle7.pkl",
+     "sha256": "9c5a94293cfb1c53c86402e00ccf6649b0fc22056a2558a5ec7fab1d1d199b6d",
+     "type": "dict"
+    },
+    {
+     "path": "data/SRP1/Results/P515S36/step36_timing_10cyc/off/results/FrozenSMOPF/matched_success_TSO_case9_2025_Summer_cycle7.pkl",
+     "sha256": "b566067ed424d2d7ba2c29f7538307260bf7c7c59abe76e57531f66e2da396e1",
+     "type": "dict"
+    },
+    {
+     "path": "data/SRP1/Results/P515S36/step36_timing_10cyc/on/esso_models_on.pkl",
+     "sha256": "9dbbd851071b2c3443eff4dc7a46c17142ecaa5507d6a177486bb98dda0a325a",
+     "type": "dict"
+    },
+    {
+     "path": "data/SRP1/Results/P515S36/step36_timing_10cyc/on/results/FrozenSMOPF/matched_success_DSO_node7_case33_2_2025_Autumn_cycle7.pkl",
+     "sha256": "be344b96b58498b9207beebfc5c6bb63d616c44315a8e65b65e2a93ba9323222",
+     "type": "dict"
+    },
+    {
+     "path": "data/SRP1/Results/P515S36/step36_timing_10cyc/on/results/FrozenSMOPF/matched_success_TSO_case9_2025_Summer_cycle7.pkl",
+     "sha256": "01527d8cf4ce9a72b9ba0cfc10f78efa433c8c6e40b74248069366984c650de4",
+     "type": "dict"
+    },
+    {
+     "path": "data/SRP1/Results/P515S36/step36_timing_10cyc_defectfix/off/esso_models_off.pkl",
+     "sha256": "6fb2824faab7630db74ae3482f1848852a3e705a555cee2165ce6136f65cf567",
+     "type": "dict"
+    },
+    {
+     "path": "data/SRP1/Results/P515S36/step36_timing_10cyc_defectfix/off/results/FrozenSMOPF/matched_success_DSO_node7_case33_2_2025_Autumn_cycle7.pkl",
+     "sha256": "d0627a601e6a4075f02db6d379ec4d76ebe0e29af34d9fadfb80ead229946089",
+     "type": "dict"
+    },
+    {
+     "path": "data/SRP1/Results/P515S36/step36_timing_10cyc_defectfix/off/results/FrozenSMOPF/matched_success_TSO_case9_2025_Summer_cycle7.pkl",
+     "sha256": "4c7932e3606dba5a55ca0a6f89f885312699ec5325325763a0f3253c4da04c81",
+     "type": "dict"
+    },
+    {
+     "path": "data/SRP1/Results/P515S36/step36_timing_10cyc_defectfix/on/esso_models_on.pkl",
+     "sha256": "071438efd486cab3923781076128c30bcddfd1c9b245a2c368e0a4e7a0840428",
+     "type": "dict"
+    },
+    {
+     "path": "data/SRP1/Results/P515S36/step36_timing_10cyc_defectfix/on/results/FrozenSMOPF/matched_success_DSO_node7_case33_2_2025_Autumn_cycle7.pkl",
+     "sha256": "3dd85bb54a4d47956209e67a00d8dfc587075045c7b0ec46f29735f1154c6349",
+     "type": "dict"
+    },
+    {
+     "path": "data/SRP1/Results/P515S36/step36_timing_10cyc_defectfix/on/results/FrozenSMOPF/matched_success_TSO_case9_2025_Summer_cycle7.pkl",
+     "sha256": "94f6817c723a119ca60cdb96c1e4497fdb409163bfba02380ebe61efbefde934",
+     "type": "dict"
+    },
+    {
+     "path": "data/SRP1/Results/P515S37/preflight_rho0p01/esso_models_s37_rho0p01.pkl",
+     "sha256": "b231a63ff02a6ba1200dc79156a0aff1e9bc4c46c9420c6151b6fa6b6ba08cad",
+     "type": "dict"
+    },
+    {
+     "path": "data/SRP1/Results/P515S37_RHO0P001_run/esso_models_s37_rho0p001.pkl",
+     "sha256": "2129237556877b613f215e1885bd2fdda289f9076163cf4ef2cdce2610c907fc",
+     "type": "dict"
+    },
+    {
+     "path": "data/SRP1/Results/P515S37_RHO0P01_run/esso_models_s37_rho0p01.pkl",
+     "sha256": "cd7651e85f9ae3b83026175685f09654c211687af51b65da45cd2e17292ebc15",
+     "type": "dict"
+    },
+    {
+     "path": "data/SRP1/Results/P515S38/preflight_A/esso_models_s38_A_tau0.pkl",
+     "sha256": "7c688a82991d14a283cb251bd7696fd3da86a6ea031cf467ed21de91f868ca04",
+     "type": "dict"
+    },
+    {
+     "path": "data/SRP1/Results/P515S38/preflight_B/esso_models_s38_B_pfbal.pkl",
+     "sha256": "6addbfb9c0d2388e03254231b5b7149cfb0bcb1ea26334ffd8c545236e740ac8",
+     "type": "dict"
+    },
+    {
+     "path": "data/SRP1/Results/P515S38_A_TAU0_run/esso_models_s38_A_tau0.pkl",
+     "sha256": "a8bdd77208f1713df3606186b5416dbb97ad558dca0a03e35769946bf4009669",
+     "type": "dict"
+    },
+    {
+     "path": "data/SRP1/Results/P515S38_B_PFBAL_run/esso_models_s38_B_pfbal.pkl",
+     "sha256": "a87911681a9a74ae928611e4fe5e05bafdd3504283eff0fcf573c029a86ce1ec",
+     "type": "dict"
+    },
+    {
+     "path": "data/SRP1/Results/P515S39/preflight_C/esso_models_s39_C.pkl",
+     "sha256": "c095a9144a02f19b153d1d3b0a16ea6fbf788db03a26607eeb1dac25611e931a",
+     "type": "dict"
+    },
+    {
+     "path": "data/SRP1/Results/P515S39/preflight_C_v2/esso_models_s39_C.pkl",
+     "sha256": "b9d278ffa82a84355eabbaa6b8c99249ac6d65a0f9d6185cb77e294cab15122b",
+     "type": "dict"
+    },
+    {
+     "path": "data/SRP1/Results/P515S39/preflight_D/esso_models_s39_D.pkl",
+     "sha256": "f9033c0050fe2422b9865c9cbd203a772b74eb300d9c6c8fb73a231af977c29d",
+     "type": "dict"
+    },
+    {
+     "path": "data/SRP1/Results/P515S39/preflight_D_v2/esso_models_s39_D.pkl",
+     "sha256": "82ead6824f02605fb0d9a0ef9e4ab64076f6327fee878befdea5ec2f5997a4b5",
+     "type": "dict"
+    },
+    {
+     "path": "data/SRP1/Results/P515S39_C_run/esso_models_s39_C.pkl",
+     "sha256": "f6137f4c71f3aaf69eba3a980a26ec005c2481a812aced3d01f2767e25d1fa33",
+     "type": "dict"
+    },
+    {
+     "path": "data/SRP1/Results/P515S39_D_run/esso_models_s39_D.pkl",
+     "sha256": "cfac19ea68fa89e142ac8e0b1dc9d37911b266cca49e70398dbdb96f93d33732",
+     "type": "dict"
+    },
+    {
+     "path": "data/SRP1/Results/P515S40/case_file_repro/esso_models_s39_D.pkl",
+     "sha256": "44779ed1aa00ed7c0cc5380067b928c917c06a0d8a7031dc20ebf63c237f2487",
+     "type": "dict"
+    },
+    {
+     "path": "data/SRP1/Results/P515S40/clone_preflight/legacy/esso_models_s39_D.pkl",
+     "sha256": "766d32e03d15d943c5d35ef5f77b84cca9762ec0b6c0d427415baba940cb8ae0",
+     "type": "dict"
+    },
+    {
+     "path": "data/SRP1/Results/P515S40/clone_preflight/lightweight/esso_models_s39_D.pkl",
+     "sha256": "c41fb95757f394d794474437eb398428f2d049e85fbe9eace942fd5b7620c9a6",
+     "type": "dict"
+    },
+    {
+     "path": "data/SRP1/Results/P515S40/clone_preflight_v2/legacy/esso_models_s39_D.pkl",
+     "sha256": "ac02b5a45f4f8b4e4512b5f559a8d7435e4111c90d3c225f30368328ec2fccca",
+     "type": "dict"
+    },
+    {
+     "path": "data/SRP1/Results/P515S40/clone_preflight_v2/lightweight/esso_models_s39_D.pkl",
+     "sha256": "8a4a567bfbeb36be107a862f8f4b625ec3b000798b886a4544779e9a76760973",
+     "type": "dict"
+    },
+    {
+     "path": "data/SRP1/Results/P515S40/persistent_workers_preflight_v4/parallel8/esso_models_s39_D.pkl",
+     "sha256": "44d23837dd46af516b1ec76c888ed3792cc177665c187c0d358975fd6ed4973a",
+     "type": "dict"
+    },
+    {
+     "path": "data/SRP1/Results/P515S40/persistent_workers_preflight_v4/serial/esso_models_s39_D.pkl",
+     "sha256": "00bdbcb7e0dbba15b4899b98c7c33776e8520014d49dbccf85b5cab6366f93a7",
+     "type": "dict"
+    },
+    {
+     "path": "data/SRP1/Results/P515S40/polish_gap/esso_models_s39_D.pkl",
+     "sha256": "f746077eab47c536fc15ab5ac264e48acce4dc2670fe684f7a0bfcb699a899b5",
+     "type": "dict"
+    },
+    {
+     "path": "data/SRP1/Results/P515S40/polish_gap_smoke/esso_models_s39_D.pkl",
+     "sha256": "83cf544632794624688faf8aaef1ebf8ea196536f1acd275d54c854e8983b546",
+     "type": "dict"
+    },
+    {
+     "path": "data/SRP1/Results/P515S40/polish_gap_v2/esso_models_s39_D.pkl",
+     "sha256": "294b1c48e300f8dfc87ca321e7fc0aa0abd18bf42d23eb30c73487167942b173",
+     "type": "dict"
+    },
+    {
+     "path": "data/SRP1/Results/P515S41/hull_polish/esso_models_s39_D.pkl",
+     "sha256": "e8d85ee02fd693829059ed9c795aa7668ab34896db43f5228dba137e05ad3d62",
+     "type": "dict"
+    },
+    {
+     "path": "data/SRP1/Results/P515S41/hull_polish_smoke/esso_models_s39_D.pkl",
+     "sha256": "d0976b46f182f0a1633d9c77f33ec59aa7e7014e062a63750b033321b39cae2a",
+     "type": "dict"
+    },
+    {
+     "path": "data/SRP1/Results/P515S42/exact_fix_rerun/esso_models_s39_D.pkl",
+     "sha256": "6a840eb018026d43a81c1122244f2fabf1c7d53feb3de8ccf5c675d1f18f1894",
+     "type": "dict"
+    },
+    {
+     "path": "data/SRP1/Results/P515S42/exact_fix_rerun_checks/_throwaway.pkl",
+     "sha256": "07cafc1a98282c2c78611405569e6f0d157d2590aaa22703690ddf84011368c8",
+     "type": "dict"
+    },
+    {
+     "path": "data/SRP1/Results/P515S42/exact_fix_rerun_smoke/esso_models_s39_D.pkl",
+     "sha256": "3d533cc120bf7bc010d78febd295ab8712aacf3d850bfd0e3cdabcc86bf6cac3",
+     "type": "dict"
+    },
+    {
+     "path": "data/SRP1/Results/P515S42/persistent_workers_task/dso_clone_preflight/legacy/esso_models_s39_D.pkl",
+     "sha256": "483f538743f50fa7bbe2860bff6bbfb403278f48f43d5e064c0af0537a10b5c5",
+     "type": "dict"
+    },
+    {
+     "path": "data/SRP1/Results/P515S42/persistent_workers_task/dso_clone_preflight/lightweight/esso_models_s39_D.pkl",
+     "sha256": "ac53b9035c04d707078d0c61e0d455699906586f60384b4aa40eff3f09a87bbf",
+     "type": "dict"
+    },
+    {
+     "path": "data/SRP1/Results/P515S42/persistent_workers_task/interface_helper_checks/dispatch_check_snapshots/FrozenSMOPF/frozen_DSO_node7_case33_2_2025_Spring_cycle1.pkl",
+     "sha256": "34f75c073c1be0dac35b9f9e8d5c1a5a35340338a5eec311c80795ff8058e74f",
+     "type": "dict"
+    },
+    {
+     "path": "data/SRP1/Results/P515S42/persistent_workers_task/interface_helper_checks/dispatch_check_snapshots/FrozenSMOPF/matched_success_DSO_node7_case33_2_2025_Autumn_cycle7.pkl",
+     "sha256": "a8df07be3b99881eb9f75331e23589ba0f581aed1aee6352cd5f7d7bea612218",
+     "type": "dict"
+    },
+    {
+     "path": "data/SRP1/Results/P515S42/persistent_workers_task/interface_helper_checks/pw_branch_snapshots/FrozenSMOPF/frozen_DSO_node7_case33_2_2025_Spring_cycle1.pkl",
+     "sha256": "e4f14c27f32878acf1cfe584bbe1a1cfc078c9c3f52497cc64e6bc5db7066e51",
+     "type": "dict"
+    },
+    {
+     "path": "data/SRP1/Results/P515S42/persistent_workers_task/pw_preflight/parallel8/esso_models_s39_D.pkl",
+     "sha256": "84f6f3ef2322084c3333ac17bb0623021bb993cfbbb3250c06ebcd579cfe5337",
+     "type": "dict"
+    },
+    {
+     "path": "data/SRP1/Results/P515S42/persistent_workers_task/pw_preflight/serial/esso_models_s39_D.pkl",
+     "sha256": "8b1892f494e797b9269bddefba95a298f91731b5567809f8eb15dde912fa7c46",
+     "type": "dict"
+    },
+    {
+     "path": "data/SRP1/Results/P515S42/persistent_workers_task/timing_5cyc/parallel8/esso_models_s39_D.pkl",
+     "sha256": "6627409467c475fa1e076555a612f31610b530208c29e63c6557471c8579660e",
+     "type": "dict"
+    },
+    {
+     "path": "data/SRP1/Results/P515S43/aa_run/esso_models_s39_D.pkl",
+     "sha256": "02bfabdedbc0bf4bfe618bb93e493ea89681d9f1680507ed3045d6370b6dff78",
+     "type": "dict"
+    },
+    {
+     "path": "data/SRP1/Results/P515S43/aa_run_smoke/esso_models_s39_D.pkl",
+     "sha256": "13013d30167e6696ecddff14579d3c1853d3d9cebf1421f96a8b46c5438c6963",
+     "type": "dict"
+    },
+    {
+     "path": "data/SRP1/Results/P515S43/flagoff_gate/esso_models_s39_D.pkl",
+     "sha256": "2aea01b308aec607b49036ad0839430c72befadb9a018b79f5a9f8e4aa31eaa2",
+     "type": "dict"
+    },
+    {
+     "path": "data/SRP1/Results/P515S44/aa_variant_flagoff_gate/esso_models_s39_D.pkl",
+     "sha256": "12fe2751e56e8dfd72d738714b6661df576d6f8a764926ef1e72727dd5ac5110",
+     "type": "dict"
+    },
+    {
+     "path": "data/SRP1/Results/P515S44/campaign_s44_aa_variant_smoke/evals/578636daa6d6360d_c_star_d/esso_models_s39_D.pkl",
+     "sha256": "74208486ad3084b8806cd98c17f4d5a58276b13df07ef83587fe80299d660dbf",
+     "type": "dict"
+    },
+    {
+     "path": "data/SRP1/Results/P515S44/campaign_s44_aa_variant_smoke/evals/837fc982565dbba3_c_star_aa_keep_memory/esso_models_s39_D.pkl",
+     "sha256": "af484a3548de463c33e9af7af8a7693ef78d91ca3c96d27dc0bfb347cf3ed5d0",
+     "type": "dict"
+    },
+    {
+     "path": "data/SRP1/Results/P515S44/campaign_s44_gate/evals/578636daa6d6360d_c_star/esso_models_s39_D.pkl",
+     "sha256": "78a9bf7a540d84375eb22a6ac8cb7cf44ef961998bc529764933e2213acf920a",
+     "type": "dict"
+    },
+    {
+     "path": "data/SRP1/Results/P515S44/campaign_s44_gate/evals/d1a02e67107d0bac_paper_plan/esso_models_s39_D.pkl",
+     "sha256": "6c6eca82b5fa9d9bd8709f7533bac6e03c40ddf0ae6d8fff6271771d04f31913",
+     "type": "dict"
+    },
+    {
+     "path": "data/SRP1/Results/P515S44/campaign_s44_gate/evals/e30704e6e4dd3765_node7_empty/esso_models_s39_D.pkl",
+     "sha256": "76ccd4e22878d2b3ac2126187a5554ec51d9079c27d3362177758a8b6ae4655a",
+     "type": "dict"
+    },
+    {
+     "path": "data/SRP1/Results/P515S50/multiscenario_smoke/w37_2x2_r2/arm_unit/esso_models_w37_unit.pkl",
+     "sha256": "f30734e0120574f391cc51e91e292035e2edcba1f5e0c4605178aba4a39a9631",
+     "type": "dict"
+    },
+    {
+     "path": "data/SRP1/Results/P515S50/multiscenario_smoke/w37_2x2_r2/arm_x0/esso_models_w37_x0.pkl",
+     "sha256": "678bb1c41938e088e407e4350b34613f636b07ded9731238692219baf1761bc3",
+     "type": "dict"
+    }
+   ],
+   "pass": true
+  },
+  "J_retired_quadratic_never_called": {
+   "mechanism": "ARMED tripwire around `_add_tso_scenario_deviation_penalty` and `_add_dso_scenario_deviation_penalty` for the whole run (CLAUDE.md rule six: armed, never asserted)",
+   "n_calls": 0,
+   "calls": [],
+   "pass": true
+  }
+ },
+ "all_checks_pass": true
+}

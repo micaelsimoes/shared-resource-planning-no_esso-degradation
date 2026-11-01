@@ -1,0 +1,75 @@
+{
+ "authority": [
+  "PLANNER_BRIEF_2026-09-13.md Addendum 30 and Addendum 31 (and Addendum 29 for the memory task)",
+  "P5_15_ADDENDUM28_AGEING_REPORT.md (accepted)"
+ ],
+ "baseline": {
+  "ageing": {
+   "calendar_retention_per_year": 0.985,
+   "cycles_n": 10000,
+   "eol_retention_r": 0.8,
+   "k": "35851.36 (= cycles_n * reference_dod_d / -ln eol_retention_r)",
+   "minimum_soh": 0.7,
+   "reference_dod_d": 0.8
+  },
+  "citations": {
+   "descriptions_from_addendum_30": {
+    "C2": "10,000 cycles at 0.80 DoD to 0.80 retention - datasheet convention",
+    "calendar": "phi_cal = 0.985 (0.80 at the 15-year calendar life)",
+    "floor": "soh_min 0.70 (the manuscript's floor)"
+   },
+   "note": "Addendum 30 asks for the author's citations to be recorded in the spec. No citation text is present in the brief (Addenda 28-31) or in the user's decision message, and no bibliographic source exists in the repository for these values (searched: PLANNER_BRIEF_2026-09-13.md Addenda 28-31; P5_13_B_CYCLING_CALIBRATION.md, which describes C2 only as 'conventional datasheet: manufacturer counts quoted to 80% SoH'). Recorded as pending rather than invented; the values themselves are the author's decision.",
+   "status": "TO BE SUPPLIED BY THE AUTHOR"
+  },
+  "configuration": "AA-on keep_memory from the case file; cap 500; 10 consecutive cycles; concurrency 5",
+  "file": "data/SRP1/SharedESS/SRP1_ESS_Params.json (ageing block only; every other key unchanged)",
+  "identity_requirement": "every evaluation under the new baseline must carry an evaluation key that differs from the C3 evaluation of the same candidate (the ESS ageing parameters must enter the key); committed keys unchanged",
+  "sensitivity_set": "all C3 results (A0, A1a, A1b, A2, A3, the ageing batch) become the sensitivity set and never share a table with the baseline"
+ },
+ "predecessor": {
+  "path": "data/SRP1/Results/P515S46/frozen_s46_ageing_spec_v16_f4295086.json",
+  "sha256": "f4295086c10b22c7b33f4e7eff0bd38f7c93c09aeefc12117175633e8efc41f0"
+ },
+ "predictions_recorded_before_run": {
+  "S2_c_star": "certifies within cap 500 (Planner)",
+  "S2_unit": "certifies; the 0.70 floor binds in the 2035 block (expert: SoH ~0.68 at the horizon without the floor; the C2+fade variant at floor 0.50 reached end-of-block SoH 0.873/0.766/0.679); value below the C2+fade/0.50 value 273,764, Planner range 255k-272k, i.e. value - I between -63k and -46k (Planner)",
+  "S3": "every ladder point has F > F(0); x = 0 remains the minimiser; value per MWh at 4 h a little above C3's 227.7k slope but well below the 253.9k energy cost (Planner)",
+  "S4": "Phase B terminates at x = 0 with no new evaluations beyond the cached unit-step neighbours, or at most a few (Planner)",
+  "Z31_expert": "the mean-profile spread is at most the average of the scenario spreads (misaligned peaks flatten it); uncertainty cannot improve the case in this model"
+ },
+ "stage": "P5.15 Addenda 30-31 - ageing baseline C2 + calendar fade + soh_min 0.70; re-certification checks; A1a re-run under the baseline; Phase B formal record; Addendum 31 market-spread zero-solve check; then the memory task (Addendum 29)",
+ "steps": [
+  {
+   "id": "S1",
+   "what": "write the baseline into the case file; gate: built ESSO read-back k/phi/soh_min; x = 0 oracle model digests identical before/after (Q(0) is ageing-independent); key-identity recompute"
+  },
+  {
+   "id": "S2",
+   "what": "re-certification checks under AA-on: C* and the smallest node-7 4 h unit (0.25/1.0, 2025); report certification, Q, value, whether the 0.70 floor binds and in which block"
+  },
+  {
+   "id": "S3",
+   "what": "A1a re-run under the baseline: the 30 single-node 2025 ladder points (spec v15 A1.ladders_2025), concurrency 5"
+  },
+  {
+   "id": "S4",
+   "what": "Phase B formal record under the baseline: MADS poll from the incumbent under B = 1e6, cached neighbours, own frozen spec"
+  },
+  {
+   "id": "STOP-1",
+   "what": "STOP FOR REVIEW after the Phase B record, with the ladders attached"
+  },
+  {
+   "id": "Z31",
+   "what": "Addendum 31 zero solves, before the memory task: daily 4 h spread (top-4 h mean - bottom-4 h mean, Z4 definition) for each of the five paper-scale market scenarios and for their probability-weighted mean profile; which scenario/average SRP1's single scenario corresponds to; ratio mean-profile spread / SRP1's 98.0 EUR/MWh = first-order estimate of paper-scale value per MWh relative to SRP1, recorded as a prediction for the paper-scale evaluations"
+  },
+  {
+   "id": "S5",
+   "what": "memory task (Addendum 29), machine alone, decision rule in spec v16"
+  },
+  {
+   "id": "STOP-2",
+   "what": "STOP FOR REVIEW after the memory task"
+  }
+ ]
+}

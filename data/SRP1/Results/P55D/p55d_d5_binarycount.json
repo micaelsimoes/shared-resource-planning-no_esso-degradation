@@ -1,0 +1,101 @@
+{
+ "stage": "P5.5-D5",
+ "provenance": {
+  "timestamp_utc": "2026-09-08T06:17:39.268857+00:00",
+  "git_head": "6028d7f69ff6bfd1fd2e51f2d032b9da474c2d18",
+  "sys_executable": "/opt/anaconda3/envs/opf_env_py311/bin/python",
+  "conda_default_env": null,
+  "conda_env_from_path": "opf_env_py311",
+  "python_version": "3.11.11",
+  "numpy_version": "2.4.2",
+  "pandas_version": "3.0.0",
+  "scipy_version": "1.17.0",
+  "pyomo_version": "6.9.5",
+  "ipopt": {
+   "path": "/usr/local/bin/ipopt",
+   "version": "3.14.18",
+   "exists": true,
+   "banner": "Ipopt 3.14.18 (aarch64-apple-darwin24.5.0), ASL(20241111)"
+  },
+  "hsl_linear_solver": "ma97",
+  "gurobi": {
+   "gurobipy": "13.0.1",
+   "gurobi_runtime": "13.0.1",
+   "licence": "ACADEMIC",
+   "licence_expiry": "2027-04-10",
+   "available": true,
+   "licence_id": "2805683",
+   "licence_version": "13"
+  },
+  "scenario_checksum": "5a02b77ccbbbbbb869de92958a3851d095624711abc2dbfc0157466064410358",
+  "canonical_checksum": "5a02b77ccbbbbbb869de92958a3851d095624711abc2dbfc0157466064410358",
+  "checksum_matches_canonical": true,
+  "stage": "P5.5-D5 binary count"
+ },
+ "timestamp_utc": "2026-09-08T06:17:39.373026+00:00",
+ "delta": 0.01,
+ "binary_factorisation": {
+  "physical_shared_ESS_count": 3,
+  "physical_shared_ESS_nodes": [
+   5,
+   7,
+   9
+  ],
+  "network_copies_per_physical_ESS": 2,
+  "network_copies_detail": {
+   "transmission": {
+    "5": 1,
+    "7": 1,
+    "9": 1
+   },
+   "distribution": {
+    "5": 1,
+    "7": 1,
+    "9": 1
+   }
+  },
+  "year_count": 3,
+  "years": [
+   2025,
+   2030,
+   2035
+  ],
+  "representative_day_count": 4,
+  "days": [
+   "Spring",
+   "Summer",
+   "Autumn",
+   "Winter"
+  ],
+  "period_count": 24,
+  "market_scenarios": 1,
+  "operation_scenarios": 1,
+  "binaries_one_per_physical_ESS": 864,
+  "binaries_one_per_network_copy": 1728,
+  "arithmetic_shared": "3 x 3 x 4 x 24 x 1 x 1 = 864",
+  "arithmetic_per_copy": "864 x 2 = 1728"
+ },
+ "shared_binary_sufficiency": {
+  "question": "can one mode binary be shared between the TSO and DSO copies of the same physical ESS?",
+  "what_the_couplings_force": "the interface_ess_p / interface_ess_q rows force shared_es_pnet_TSO == shared_es_pnet_DSO (both networks are on a 100 MVA base, so the conversion is the identity).  They force the NET power to agree; they do not force the (pch, pdch) split to agree.",
+  "physical_answer": "physically the two copies are one device, so a common mode is the correct physics and one binary per physical ESS / year / day / period is what the device actually has.",
+  "mathematical_answer": "NOT unconditionally valid as an OUTER approximation of the two-copy H1 set.  Write pi for the common net power.  A charge-dominant copy has pdch <= delta*S, hence pch = pi + pdch in [pi, pi + delta*S].  A discharge-dominant copy has pch <= delta*S, hence pdch = pch - pi >= 0 requires pi <= delta*S.  The two copies can therefore legitimately sit in OPPOSITE modes precisely when |pi| <= delta*S.  Outside that band the modes must agree and one shared binary loses nothing; inside it, a shared binary would exclude combinations that are H1-feasible for each copy separately, which breaks the lower-bound guarantee in that band.",
+  "opposite_mode_band": "|pnet| <= delta*S = 0.01 * S",
+  "band_width_over_S": 0.02,
+  "rigorous_options": [
+   "1728 binaries (one per network copy) -- unconditionally a valid outer approximation;",
+   "864 binaries (one per physical ESS) -- valid only with an explicit argument that the |pnet| <= delta*S band contributes nothing, which has NOT been proved here;"
+  ],
+  "recommendation": "if the MISOCP were ever built, start from 864 shared binaries for tractability and treat the |pnet| <= 0.01*S band as a documented approximation, or use 1728 for a formally clean bound.  Do not assume the shared form is free."
+ },
+ "execution_status": {
+  "D5_solving_performed": false,
+  "why": "D4 is the gate for D5, and D4 fired against it: fixing every ESS mode moved the full-model objective by 0.049 % and closed 0.42 % of the gap to the polished nonlinear feasible point.  Because Q_MISOCP <= Q_fixed_mode, the unrestricted MISOCP optimum cannot close more.  Running MI-1..MI-4 would only measure the cost of confirming a conclusion already reached.",
+  "stages_not_run": [
+   "MI-1",
+   "MI-2",
+   "MI-3",
+   "MI-4"
+  ]
+ }
+}

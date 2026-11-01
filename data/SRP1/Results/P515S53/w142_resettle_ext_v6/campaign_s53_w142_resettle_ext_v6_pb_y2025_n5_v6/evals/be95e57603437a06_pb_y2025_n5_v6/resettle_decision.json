@@ -1,0 +1,948 @@
+{
+ "A": [
+  31172.541702389717,
+  12257.353842377663,
+  4508.629555821419,
+  2098.4627211093903
+ ],
+ "N": 110,
+ "N_definition": "the first residual pass (version 2; no non-clean reset)",
+ "N_old": 119,
+ "P_hat": 29,
+ "Q_N_old_recorded": 653711463.530828,
+ "Q_cc_k_star": 653732625.0328001,
+ "Q_k_star": 653732376.7483528,
+ "T": [
+  [
+   119,
+   "min",
+   653710770.7396618
+  ],
+  [
+   133,
+   "max",
+   653741943.2813642
+  ],
+  [
+   147,
+   "min",
+   653729685.9275218
+  ],
+  [
+   161,
+   "max",
+   653734194.5570776
+  ],
+  [
+   176,
+   "min",
+   653732096.0943565
+  ]
+ ],
+ "W": 32,
+ "band": [
+  653732096.0943565,
+  653732812.9135617
+ ],
+ "band_width": 716.8192051649094,
+ "branch": "oscillatory",
+ "cap": 219,
+ "cap_ceiling": 300,
+ "cap_mode": "fixed",
+ "cell": "pb_y2025_n5_v6",
+ "certA_parts": {
+  "P_hat": 29,
+  "W": 32,
+  "at_least_3_turning_points": true,
+  "band": [
+   653732096.0943565,
+   653732812.9135617
+  ],
+  "growth_floor": 453.9068275000001,
+  "n_turning_points": 5,
+  "range": 716.8192051649094,
+  "range_le_tau": true,
+  "swing_pairs_compared": [
+   [
+    0,
+    1
+   ],
+   [
+    1,
+    2
+   ],
+   [
+    2,
+    3
+   ]
+  ],
+  "swings_excluded_below_floor": [],
+  "swings_non_increasing_all_pairs": true,
+  "swings_non_increasing_all_pairs_note": "version 2's unfloored all-pairs value, REPORT-ONLY; version 6 decides on swings_non_increasing_floored",
+  "swings_non_increasing_floored": true,
+  "turning_point_floor": 453.9068275000001,
+  "window": [
+   168,
+   199
+  ],
+  "window_inside_run": true
+ },
+ "certB_parts": {
+  "L_MONO": 60,
+  "band": [
+   653729685.9275218,
+   653734353.8872068
+  ],
+  "j_change": 180,
+  "last_step_abs": 11.53931999206543,
+  "last_step_times_L": 692.3591995239258,
+  "last_step_times_L_le_tau": true,
+  "lo_ge_k0_plus_K_EXCL": true,
+  "max_abs_dq": 1361.4323861598969,
+  "mean_abs_dq_first_half": 427.9509183367093,
+  "mean_abs_dq_second_half": 46.68942091067632,
+  "no_sign_change_in_window": false,
+  "range": 4667.959684967995,
+  "range_le_tau": false,
+  "stationary": false,
+  "steps_decreasing": true,
+  "strictly_decreasing": true,
+  "window": [
+   140,
+   199
+  ]
+ },
+ "clean_rule": {
+  "factor": 10.0,
+  "metric_table": {
+   "complementarity": {
+    "column": "unscaled",
+    "ipopt_meaning": "max-norm of the unscaled complementarity; termination requires <= compl_inf_tol",
+    "log_line": "Complementarity",
+    "option": "compl_inf_tol"
+   },
+   "constraint_violation": {
+    "column": "unscaled",
+    "ipopt_meaning": "max-norm of the unscaled constraint violation; termination requires <= constr_viol_tol",
+    "log_line": "Constraint violation",
+    "option": "constr_viol_tol"
+   },
+   "dual_infeasibility": {
+    "column": "unscaled",
+    "ipopt_meaning": "max-norm of the unscaled dual infeasibility; termination requires <= dual_inf_tol",
+    "log_line": "Dual infeasibility",
+    "option": "dual_inf_tol"
+   },
+   "overall_nlp_error": {
+    "column": "scaled",
+    "ipopt_meaning": "the (scaled) NLP error; successful termination requires it <= tol",
+    "log_line": "Overall NLP error",
+    "option": "tol"
+   }
+  },
+  "tolerances": {
+   "esso": {
+    "compl_inf_tol": 0.0001,
+    "constr_viol_tol": 0.0001,
+    "dual_inf_tol": 1.0,
+    "tol": 1e-10
+   },
+   "network": {
+    "compl_inf_tol": 1e-06,
+    "constr_viol_tol": 0.0001,
+    "dual_inf_tol": 1.0,
+    "tol": 1e-05
+   }
+  }
+ },
+ "decided_at_cycle": 199,
+ "first_residual_pass_run": 110,
+ "gap_bound": 2269.5341375000003,
+ "gap_refusals": [],
+ "gated": true,
+ "k0": 110,
+ "k_star": 199,
+ "lapse_events": [],
+ "n_vetoes": 29,
+ "non_clean_cycles": [
+  167
+ ],
+ "out_of_window_reads": {
+  "W": 32,
+  "any_non_clean_read_outside_window": true,
+  "any_out_of_window_read": true,
+  "branch": "oscillatory",
+  "enumeration": "settling_criterion_v6.SUB_TEST_READS",
+  "k": 199,
+  "k0": 110,
+  "non_clean_cycles_read_outside_window": [
+   167
+  ],
+  "non_clean_turning_points_outside_window": [],
+  "reads": {
+   "P_hat": {
+    "P_hat": 29,
+    "positions": [
+     {
+      "Q_t": 653729685.9275218,
+      "kind": "min",
+      "non_clean": false,
+      "outside_window": true,
+      "t": 147
+     },
+     {
+      "Q_t": 653732096.0943565,
+      "kind": "min",
+      "non_clean": false,
+      "outside_window": false,
+      "t": 176
+     }
+    ],
+    "positions_outside_window": [
+     {
+      "Q_t": 653729685.9275218,
+      "kind": "min",
+      "non_clean": false,
+      "outside_window": true,
+      "t": 147
+     }
+    ],
+    "reads": "T[-1].t - T[-3].t"
+   },
+   "k0_no_boyd_lapse_span": {
+    "any_non_clean_outside_window": true,
+    "cycles": [
+     110,
+     199
+    ],
+    "non_clean_cycles_outside_window": [
+     167
+    ],
+    "outside_window": [
+     110,
+     167
+    ],
+    "reads": "boyd_k and Q not None (no lapse since k0)"
+   },
+   "sign_state_Q_span": {
+    "any_non_clean_outside_window": true,
+    "cycles": [
+     112,
+     199
+    ],
+    "non_clean_cycles_outside_window": [
+     167
+    ],
+    "outside_window": [
+     112,
+     167
+    ],
+    "reads": "Q (every step dQ_c, c >= k0 + K_EXCL, and the extremum search locating each turning point)"
+   },
+   "swings_excluded_below_growth_floor": {
+    "excluded_swing_indices": [],
+    "pairs_compared": [
+     [
+      0,
+      1
+     ],
+     [
+      1,
+      2
+     ],
+     [
+      2,
+      3
+     ]
+    ],
+    "reads": "(A): the swings < GROWTH_TEST_FLOOR excluded from the comparison"
+   },
+   "swings_non_increasing_all_pairs": {
+    "pairs_with_an_endpoint_outside_window": [
+     [
+      119,
+      133
+     ],
+     [
+      133,
+      147
+     ],
+     [
+      147,
+      161
+     ],
+     [
+      161,
+      176
+     ]
+    ],
+    "reads": "A[i] = |Q_T[i+1] - Q_T[i]| for every consecutive pair since k0",
+    "turning_points_outside_window": [
+     {
+      "Q_t": 653710770.7396618,
+      "kind": "min",
+      "non_clean": false,
+      "outside_window": true,
+      "t": 119
+     },
+     {
+      "Q_t": 653741943.2813642,
+      "kind": "max",
+      "non_clean": false,
+      "outside_window": true,
+      "t": 133
+     },
+     {
+      "Q_t": 653729685.9275218,
+      "kind": "min",
+      "non_clean": false,
+      "outside_window": true,
+      "t": 147
+     },
+     {
+      "Q_t": 653734194.5570776,
+      "kind": "max",
+      "non_clean": false,
+      "outside_window": true,
+      "t": 161
+     }
+    ],
+    "turning_points_read": [
+     {
+      "Q_t": 653710770.7396618,
+      "kind": "min",
+      "non_clean": false,
+      "outside_window": true,
+      "t": 119
+     },
+     {
+      "Q_t": 653741943.2813642,
+      "kind": "max",
+      "non_clean": false,
+      "outside_window": true,
+      "t": 133
+     },
+     {
+      "Q_t": 653729685.9275218,
+      "kind": "min",
+      "non_clean": false,
+      "outside_window": true,
+      "t": 147
+     },
+     {
+      "Q_t": 653734194.5570776,
+      "kind": "max",
+      "non_clean": false,
+      "outside_window": true,
+      "t": 161
+     },
+     {
+      "Q_t": 653732096.0943565,
+      "kind": "min",
+      "non_clean": false,
+      "outside_window": false,
+      "t": 176
+     }
+    ]
+   },
+   "turning_point_count": {
+    "n_turning_points": 5,
+    "reads": "len(T) >= 3",
+    "turning_points_outside_window": [
+     {
+      "Q_t": 653710770.7396618,
+      "kind": "min",
+      "non_clean": false,
+      "outside_window": true,
+      "t": 119
+     },
+     {
+      "Q_t": 653741943.2813642,
+      "kind": "max",
+      "non_clean": false,
+      "outside_window": true,
+      "t": 133
+     },
+     {
+      "Q_t": 653729685.9275218,
+      "kind": "min",
+      "non_clean": false,
+      "outside_window": true,
+      "t": 147
+     },
+     {
+      "Q_t": 653734194.5570776,
+      "kind": "max",
+      "non_clean": false,
+      "outside_window": true,
+      "t": 161
+     }
+    ]
+   },
+   "turning_point_floor": {
+    "reads": "the (B) rejections since k0: the candidate, the swing it closed, the point un-registered",
+    "rejections_outside_window": [],
+    "rejections_since_k0": [
+     {
+      "candidate": [
+       167,
+       "max",
+       653733946.832507
+      ],
+      "closed_swing": 439.298327088356,
+      "cycle": 168,
+      "popped": [
+       166,
+       "min",
+       653733507.5341799
+      ]
+     }
+    ]
+   }
+  },
+  "turning_points_outside_window": [
+   119,
+   133,
+   147,
+   161
+  ],
+  "window": [
+   168,
+   199
+  ],
+  "window_all_clean": true
+ },
+ "range": 716.8192051649094,
+ "range_over_tau": 0.15792210245282315,
+ "reading": "gamma_window_a_clean_10x_swing_floor_tau_over_10",
+ "spec_cap": 219,
+ "status": "certified",
+ "swing_floor": {
+  "F": 453.9068275000001,
+  "carries": [
+   "A_growth_test_floor",
+   "B_turning_point_floor"
+  ],
+  "growth_test_floor": 453.9068275000001,
+  "turning_point_floor": 453.9068275000001
+ },
+ "t_sum_k_star": 248.28444732587155,
+ "turning_point_floor_rejections": [
+  {
+   "candidate": [
+    167,
+    "max",
+    653733946.832507
+   ],
+   "closed_swing": 439.298327088356,
+   "cycle": 168,
+   "popped": [
+    166,
+    "min",
+    653733507.5341799
+   ]
+  }
+ ],
+ "version": 6,
+ "vetoes": [
+  {
+   "branches": [
+    {
+     "W": 21,
+     "branch": "oscillatory",
+     "non_clean_in_window": [
+      167
+     ],
+     "window": [
+      147,
+      167
+     ]
+    }
+   ],
+   "cycle": 167,
+   "k0": 110
+  },
+  {
+   "branches": [
+    {
+     "W": 31,
+     "branch": "oscillatory",
+     "non_clean_in_window": [
+      167
+     ],
+     "window": [
+      141,
+      171
+     ]
+    }
+   ],
+   "cycle": 171,
+   "k0": 110
+  },
+  {
+   "branches": [
+    {
+     "W": 31,
+     "branch": "oscillatory",
+     "non_clean_in_window": [
+      167
+     ],
+     "window": [
+      142,
+      172
+     ]
+    }
+   ],
+   "cycle": 172,
+   "k0": 110
+  },
+  {
+   "branches": [
+    {
+     "W": 31,
+     "branch": "oscillatory",
+     "non_clean_in_window": [
+      167
+     ],
+     "window": [
+      143,
+      173
+     ]
+    }
+   ],
+   "cycle": 173,
+   "k0": 110
+  },
+  {
+   "branches": [
+    {
+     "W": 31,
+     "branch": "oscillatory",
+     "non_clean_in_window": [
+      167
+     ],
+     "window": [
+      144,
+      174
+     ]
+    }
+   ],
+   "cycle": 174,
+   "k0": 110
+  },
+  {
+   "branches": [
+    {
+     "W": 31,
+     "branch": "oscillatory",
+     "non_clean_in_window": [
+      167
+     ],
+     "window": [
+      145,
+      175
+     ]
+    }
+   ],
+   "cycle": 175,
+   "k0": 110
+  },
+  {
+   "branches": [
+    {
+     "W": 31,
+     "branch": "oscillatory",
+     "non_clean_in_window": [
+      167
+     ],
+     "window": [
+      146,
+      176
+     ]
+    }
+   ],
+   "cycle": 176,
+   "k0": 110
+  },
+  {
+   "branches": [
+    {
+     "W": 31,
+     "branch": "oscillatory",
+     "non_clean_in_window": [
+      167
+     ],
+     "window": [
+      147,
+      177
+     ]
+    }
+   ],
+   "cycle": 177,
+   "k0": 110
+  },
+  {
+   "branches": [
+    {
+     "W": 31,
+     "branch": "oscillatory",
+     "non_clean_in_window": [
+      167
+     ],
+     "window": [
+      148,
+      178
+     ]
+    }
+   ],
+   "cycle": 178,
+   "k0": 110
+  },
+  {
+   "branches": [
+    {
+     "W": 31,
+     "branch": "oscillatory",
+     "non_clean_in_window": [
+      167
+     ],
+     "window": [
+      149,
+      179
+     ]
+    }
+   ],
+   "cycle": 179,
+   "k0": 110
+  },
+  {
+   "branches": [
+    {
+     "W": 32,
+     "branch": "oscillatory",
+     "non_clean_in_window": [
+      167
+     ],
+     "window": [
+      149,
+      180
+     ]
+    }
+   ],
+   "cycle": 180,
+   "k0": 110
+  },
+  {
+   "branches": [
+    {
+     "W": 32,
+     "branch": "oscillatory",
+     "non_clean_in_window": [
+      167
+     ],
+     "window": [
+      150,
+      181
+     ]
+    }
+   ],
+   "cycle": 181,
+   "k0": 110
+  },
+  {
+   "branches": [
+    {
+     "W": 32,
+     "branch": "oscillatory",
+     "non_clean_in_window": [
+      167
+     ],
+     "window": [
+      151,
+      182
+     ]
+    }
+   ],
+   "cycle": 182,
+   "k0": 110
+  },
+  {
+   "branches": [
+    {
+     "W": 32,
+     "branch": "oscillatory",
+     "non_clean_in_window": [
+      167
+     ],
+     "window": [
+      152,
+      183
+     ]
+    }
+   ],
+   "cycle": 183,
+   "k0": 110
+  },
+  {
+   "branches": [
+    {
+     "W": 32,
+     "branch": "oscillatory",
+     "non_clean_in_window": [
+      167
+     ],
+     "window": [
+      153,
+      184
+     ]
+    }
+   ],
+   "cycle": 184,
+   "k0": 110
+  },
+  {
+   "branches": [
+    {
+     "W": 32,
+     "branch": "oscillatory",
+     "non_clean_in_window": [
+      167
+     ],
+     "window": [
+      154,
+      185
+     ]
+    }
+   ],
+   "cycle": 185,
+   "k0": 110
+  },
+  {
+   "branches": [
+    {
+     "W": 32,
+     "branch": "oscillatory",
+     "non_clean_in_window": [
+      167
+     ],
+     "window": [
+      155,
+      186
+     ]
+    }
+   ],
+   "cycle": 186,
+   "k0": 110
+  },
+  {
+   "branches": [
+    {
+     "W": 32,
+     "branch": "oscillatory",
+     "non_clean_in_window": [
+      167
+     ],
+     "window": [
+      156,
+      187
+     ]
+    }
+   ],
+   "cycle": 187,
+   "k0": 110
+  },
+  {
+   "branches": [
+    {
+     "W": 32,
+     "branch": "oscillatory",
+     "non_clean_in_window": [
+      167
+     ],
+     "window": [
+      157,
+      188
+     ]
+    }
+   ],
+   "cycle": 188,
+   "k0": 110
+  },
+  {
+   "branches": [
+    {
+     "W": 32,
+     "branch": "oscillatory",
+     "non_clean_in_window": [
+      167
+     ],
+     "window": [
+      158,
+      189
+     ]
+    }
+   ],
+   "cycle": 189,
+   "k0": 110
+  },
+  {
+   "branches": [
+    {
+     "W": 32,
+     "branch": "oscillatory",
+     "non_clean_in_window": [
+      167
+     ],
+     "window": [
+      159,
+      190
+     ]
+    }
+   ],
+   "cycle": 190,
+   "k0": 110
+  },
+  {
+   "branches": [
+    {
+     "W": 32,
+     "branch": "oscillatory",
+     "non_clean_in_window": [
+      167
+     ],
+     "window": [
+      160,
+      191
+     ]
+    }
+   ],
+   "cycle": 191,
+   "k0": 110
+  },
+  {
+   "branches": [
+    {
+     "W": 32,
+     "branch": "oscillatory",
+     "non_clean_in_window": [
+      167
+     ],
+     "window": [
+      161,
+      192
+     ]
+    }
+   ],
+   "cycle": 192,
+   "k0": 110
+  },
+  {
+   "branches": [
+    {
+     "W": 32,
+     "branch": "oscillatory",
+     "non_clean_in_window": [
+      167
+     ],
+     "window": [
+      162,
+      193
+     ]
+    }
+   ],
+   "cycle": 193,
+   "k0": 110
+  },
+  {
+   "branches": [
+    {
+     "W": 32,
+     "branch": "oscillatory",
+     "non_clean_in_window": [
+      167
+     ],
+     "window": [
+      163,
+      194
+     ]
+    }
+   ],
+   "cycle": 194,
+   "k0": 110
+  },
+  {
+   "branches": [
+    {
+     "W": 32,
+     "branch": "oscillatory",
+     "non_clean_in_window": [
+      167
+     ],
+     "window": [
+      164,
+      195
+     ]
+    }
+   ],
+   "cycle": 195,
+   "k0": 110
+  },
+  {
+   "branches": [
+    {
+     "W": 32,
+     "branch": "oscillatory",
+     "non_clean_in_window": [
+      167
+     ],
+     "window": [
+      165,
+      196
+     ]
+    }
+   ],
+   "cycle": 196,
+   "k0": 110
+  },
+  {
+   "branches": [
+    {
+     "W": 32,
+     "branch": "oscillatory",
+     "non_clean_in_window": [
+      167
+     ],
+     "window": [
+      166,
+      197
+     ]
+    }
+   ],
+   "cycle": 197,
+   "k0": 110
+  },
+  {
+   "branches": [
+    {
+     "W": 32,
+     "branch": "oscillatory",
+     "non_clean_in_window": [
+      167
+     ],
+     "window": [
+      167,
+      198
+     ]
+    }
+   ],
+   "cycle": 198,
+   "k0": 110
+  }
+ ],
+ "window": [
+  168,
+  199
+ ],
+ "window_all_clean": true,
+ "window_rule": "Addendum 59 Supplement (unchanged in v5): the certifying window is the last W cycles the certification test reads at k -- oscillatory [k - W + 1, k], monotone [k - L + 1, k]; every cycle of it must be all-CLEAN on all 51 blocks, otherwise certification is refused at that cycle only (certification_vetoed_non_clean) and the state is unchanged"
+}

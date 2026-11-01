@@ -1,0 +1,960 @@
+{
+ "stage": "P5.15 G1-G4",
+ "arm": "r2_g1policy",
+ "timestamp_utc": "2026-09-14T17:36:55.589508+00:00",
+ "rule_eleven_checklist": {
+  "esso_attributes": [
+   "es_avg_ch_dch_per_unit",
+   "es_D_per_unit",
+   "es_soh_per_unit_cumul",
+   "es_e_rated_per_unit"
+  ],
+  "derived": [
+   "efc_per_day",
+   "efc_margin_to_threshold",
+   "degradation_fraction_per_year"
+  ],
+  "artifacts": [
+   "esso_models_pickle"
+  ],
+  "asserted_before_run": true,
+  "detector": {
+   "esso_complementarity_diagnostics_sink": true,
+   "asserted_before_run": true,
+   "logs_dir_absolute": true,
+   "hooks_installed": true,
+   "output_root_fresh": true,
+   "esso_suffixes_present": true,
+   "results_dir_absolute_and_under_out_dir": true
+  }
+ },
+ "results_dir_redirect": {
+  "target_results_dir": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515R/r2_g1policy/results",
+  "planning": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515R/r2_g1policy/results",
+  "transmission_network": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515R/r2_g1policy/results",
+  "distribution_networks": {
+   "5": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515R/r2_g1policy/results",
+   "7": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515R/r2_g1policy/results",
+   "9": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515R/r2_g1policy/results"
+  },
+  "shared_ess_data": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515R/r2_g1policy/results",
+  "network_year_day_sample": {
+   "transmission_network": {
+    "2025": {
+     "Spring": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515R/r2_g1policy/results",
+     "Summer": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515R/r2_g1policy/results",
+     "Autumn": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515R/r2_g1policy/results",
+     "Winter": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515R/r2_g1policy/results"
+    },
+    "2030": {
+     "Spring": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515R/r2_g1policy/results",
+     "Summer": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515R/r2_g1policy/results",
+     "Autumn": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515R/r2_g1policy/results",
+     "Winter": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515R/r2_g1policy/results"
+    },
+    "2035": {
+     "Spring": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515R/r2_g1policy/results",
+     "Summer": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515R/r2_g1policy/results",
+     "Autumn": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515R/r2_g1policy/results",
+     "Winter": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515R/r2_g1policy/results"
+    }
+   },
+   "distribution_networks[5]": {
+    "2025": {
+     "Spring": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515R/r2_g1policy/results",
+     "Summer": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515R/r2_g1policy/results",
+     "Autumn": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515R/r2_g1policy/results",
+     "Winter": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515R/r2_g1policy/results"
+    },
+    "2030": {
+     "Spring": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515R/r2_g1policy/results",
+     "Summer": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515R/r2_g1policy/results",
+     "Autumn": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515R/r2_g1policy/results",
+     "Winter": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515R/r2_g1policy/results"
+    },
+    "2035": {
+     "Spring": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515R/r2_g1policy/results",
+     "Summer": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515R/r2_g1policy/results",
+     "Autumn": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515R/r2_g1policy/results",
+     "Winter": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515R/r2_g1policy/results"
+    }
+   },
+   "distribution_networks[7]": {
+    "2025": {
+     "Spring": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515R/r2_g1policy/results",
+     "Summer": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515R/r2_g1policy/results",
+     "Autumn": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515R/r2_g1policy/results",
+     "Winter": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515R/r2_g1policy/results"
+    },
+    "2030": {
+     "Spring": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515R/r2_g1policy/results",
+     "Summer": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515R/r2_g1policy/results",
+     "Autumn": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515R/r2_g1policy/results",
+     "Winter": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515R/r2_g1policy/results"
+    },
+    "2035": {
+     "Spring": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515R/r2_g1policy/results",
+     "Summer": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515R/r2_g1policy/results",
+     "Autumn": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515R/r2_g1policy/results",
+     "Winter": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515R/r2_g1policy/results"
+    }
+   },
+   "distribution_networks[9]": {
+    "2025": {
+     "Spring": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515R/r2_g1policy/results",
+     "Summer": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515R/r2_g1policy/results",
+     "Autumn": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515R/r2_g1policy/results",
+     "Winter": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515R/r2_g1policy/results"
+    },
+    "2030": {
+     "Spring": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515R/r2_g1policy/results",
+     "Summer": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515R/r2_g1policy/results",
+     "Autumn": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515R/r2_g1policy/results",
+     "Winter": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515R/r2_g1policy/results"
+    },
+    "2035": {
+     "Spring": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515R/r2_g1policy/results",
+     "Summer": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515R/r2_g1policy/results",
+     "Autumn": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515R/r2_g1policy/results",
+     "Winter": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515R/r2_g1policy/results"
+    }
+   }
+  }
+ },
+ "k_in_force": {
+  "2025": 11541.560327111707,
+  "2030": 11541.560327111707,
+  "2035": 11541.560327111707
+ },
+ "instance": {
+  "s_mva": 0.96875,
+  "e_mwh": 3.875,
+  "year": 2025,
+  "assignment": "uniform across active nodes (control/perturbation)"
+ },
+ "active_distribution_network_nodes": [
+  5,
+  7,
+  9
+ ],
+ "wall_clock_s": 134.50902605056763,
+ "shared_frozen_smopf_modified": [],
+ "shared_frozen_smopf_new_files": [],
+ "shared_frozen_smopf_dir": "data/SRP1/Results/FrozenSMOPF",
+ "network_failures_summary": {
+  "n_blocks": 1,
+  "classes": {
+   "recovered_tier1": 1,
+   "recovered_tier2": 0,
+   "unrecovered": 0,
+   "not_attempted": 0,
+   "indeterminate": 0,
+   "recovered": 1
+  },
+  "n_frozen_snapshots": 0,
+  "n_esso_recovery_events": 0,
+  "path": "data/SRP1/Results/P515R/r2_g1policy/network_failures_r2_g1policy.jsonl"
+ },
+ "heartbeat_path": "data/SRP1/Results/P515R/r2_g1policy/heartbeat_r2_g1policy.json",
+ "stdout_path": "data/SRP1/Results/P515R/r2_g1policy/stdout_r2_g1policy.log",
+ "leak_classification_path": "data/SRP1/Results/P515R/r2_g1policy/leak_classification_r2_g1policy.jsonl",
+ "esso_capture_dir": "data/SRP1/Results/P515R/r2_g1policy/esso_capture/r2_g1policy",
+ "cycle_trajectory": [
+  {
+   "cycle": 1,
+   "cycle_convergence": false,
+   "residual_convergence": false,
+   "objective_convergence": false,
+   "consecutive_converged_cycles": 0,
+   "required_consecutive_cycles": 1,
+   "local_solves_ok": true,
+   "recourse": 2808857254.39832,
+   "gross_operational_cost": 2808857254.39832,
+   "objective_change_abs": null,
+   "objective_tolerance": null,
+   "primal_v": 0.06780793534492781,
+   "primal_v_mean": 0.05184606603804322,
+   "dual_v": 0.14999999735247105,
+   "dual_v_mean": 0.10173675204722808,
+   "primal_v_ratio": 6.780793534492781,
+   "primal_v_mean_ratio": 51.84606603804322,
+   "dual_v_mean_ratio": 10.173675204722809,
+   "slack_consensus_v": 0.14747536478041465,
+   "slack_stationarity_v": 0.09829289611445247,
+   "state_step_norm_v": 0.06782450136481873,
+   "primal_pf": 0.4516064301945104,
+   "primal_pf_mean": 0.17804947003474844,
+   "dual_pf": 218.2092642804217,
+   "dual_pf_mean": 65.4280555151708,
+   "primal_pf_ratio": 45.16064301945104,
+   "primal_pf_mean_ratio": 178.04947003474842,
+   "dual_pf_mean_ratio": 6542.80555151708,
+   "slack_consensus_pf": 0.02214317452409374,
+   "slack_stationarity_pf": 0.00015283963310939755,
+   "state_step_norm_pf": 0.21809351838390265,
+   "primal_ess": 0.11373814491655453,
+   "primal_ess_mean": 0.008184810592747897,
+   "dual_ess": 0.02876322659067648,
+   "dual_ess_mean": 0.0025795765838554584,
+   "primal_ess_ratio": 1.1373814491655452,
+   "primal_ess_mean_ratio": 0.8184810592747896,
+   "dual_ess_mean_ratio": 0.25795765838554585,
+   "slack_consensus_ess": 0.8792125111005311,
+   "slack_stationarity_ess": 3.8766052004759284,
+   "state_step_norm_ess": 0.0025795765838554584,
+   "slack_objective": null,
+   "worst_pf_primal_difference": 45.160643019451044,
+   "recourse_change": null,
+   "nonfinite": false
+  },
+  {
+   "cycle": 2,
+   "cycle_convergence": false,
+   "residual_convergence": false,
+   "objective_convergence": false,
+   "consecutive_converged_cycles": 0,
+   "required_consecutive_cycles": 1,
+   "local_solves_ok": true,
+   "recourse": 1832134032.524669,
+   "gross_operational_cost": 1832134032.524669,
+   "objective_change_abs": 976723221.8736513,
+   "objective_tolerance": 280885.725439832,
+   "primal_v": 0.03462103117119057,
+   "primal_v_mean": 0.02127855708567692,
+   "dual_v": 0.11214815655132102,
+   "dual_v_mean": 0.03561380884655242,
+   "primal_v_ratio": 3.462103117119057,
+   "primal_v_mean_ratio": 21.27855708567692,
+   "dual_v_mean_ratio": 3.561380884655242,
+   "slack_consensus_v": 0.2888417722324044,
+   "slack_stationarity_v": 0.28078996108185283,
+   "state_step_norm_v": 0.023742539231034948,
+   "primal_pf": 0.0035627345707344737,
+   "primal_pf_mean": 0.001553861330053052,
+   "dual_pf": 89.64888967589258,
+   "dual_pf_mean": 17.92384891053445,
+   "primal_pf_ratio": 0.3562734570734474,
+   "primal_pf_mean_ratio": 1.553861330053052,
+   "dual_pf_mean_ratio": 1792.3848910534448,
+   "slack_consensus_pf": 2.80683272959581,
+   "slack_stationarity_pf": 0.0005579158834642186,
+   "state_step_norm_pf": 0.05974616303511483,
+   "primal_ess": 0.02338278707072535,
+   "primal_ess_mean": 0.0014659166068971942,
+   "dual_ess": 0.019204152987146325,
+   "dual_ess_mean": 0.0019148407709246704,
+   "primal_ess_ratio": 0.2338278707072535,
+   "primal_ess_mean_ratio": 0.14659166068971943,
+   "dual_ess_mean_ratio": 0.19148407709246704,
+   "slack_consensus_ess": 4.276650157123376,
+   "slack_stationarity_ess": 5.222366345986582,
+   "state_step_norm_ess": 0.0019148407709246704,
+   "slack_objective": 0.0002875796532215217,
+   "worst_pf_primal_difference": 0.7125469141468947,
+   "recourse_change": -976723221.8736513,
+   "nonfinite": false
+  }
+ ],
+ "cycles_run": 2,
+ "recourse": 1832134032.524669,
+ "gross_operational_cost": 1832134032.524669,
+ "converged_at_cycle": null,
+ "terminal_objective_change_abs": 976723221.8736513,
+ "terminal_objective_tolerance": 280885.725439832,
+ "rule_ten_terminal_step_over_threshold": 3477.2974680155944,
+ "local_solve_failures": 0,
+ "esso_capture": {
+  "5": {
+   "es_avg_ch_dch_per_unit": {
+    "(0, 0)": 8.508217453450099,
+    "(0, 1)": 6.813942979003848,
+    "(0, 2)": 7.787474881889994,
+    "(1, 0)": 0.0,
+    "(1, 1)": 0.0,
+    "(1, 2)": 0.0,
+    "(2, 0)": 0.0,
+    "(2, 1)": 0.0,
+    "(2, 2)": 0.0
+   },
+   "es_D_per_unit": {
+    "(0, 0)": 0.17359420426606426,
+    "(0, 1)": 0.13902571435510921,
+    "(0, 2)": 0.15888880517686746,
+    "(1, 0)": 0.0,
+    "(1, 1)": 0.0,
+    "(1, 2)": 0.0,
+    "(2, 0)": 0.0,
+    "(2, 1)": 0.0,
+    "(2, 2)": 0.0
+   },
+   "es_soh_per_unit_cumul": {
+    "(0, 0)": 0.8406379555278616,
+    "(0, 1)": 0.7315278994930247,
+    "(0, 2)": 0.6240600229337164,
+    "(1, 0)": 1.0,
+    "(1, 1)": 1.0,
+    "(1, 2)": 1.0,
+    "(2, 0)": 1.0,
+    "(2, 1)": 1.0,
+    "(2, 2)": 1.0
+   },
+   "es_e_rated_per_unit": {
+    "(0, 0)": 3.875,
+    "(0, 1)": 3.875,
+    "(0, 2)": 3.875,
+    "(1, 0)": 0.0,
+    "(1, 1)": 0.0,
+    "(1, 2)": 0.0,
+    "(2, 0)": 0.0,
+    "(2, 1)": 0.0,
+    "(2, 2)": 0.0
+   },
+   "efc_per_day_per_cohort_year": {
+    "(0, 0)": {
+     "efc_per_day": 1.0978345101225935,
+     "margin_to_threshold": 0.3633654898774066,
+     "fraction_of_threshold": 0.7513239187808606
+    },
+    "(0, 1)": {
+     "efc_per_day": 0.8792184489037222,
+     "margin_to_threshold": 0.5819815510962778,
+     "fraction_of_threshold": 0.601709861007201
+    },
+    "(0, 2)": {
+     "efc_per_day": 1.004835468630967,
+     "margin_to_threshold": 0.456364531369033,
+     "fraction_of_threshold": 0.6876782566595723
+    },
+    "(1, 0)": null,
+    "(1, 1)": null,
+    "(1, 2)": null,
+    "(2, 0)": null,
+    "(2, 1)": null,
+    "(2, 2)": null
+   },
+   "efc_per_day_max": 1.0978345101225935,
+   "efc_per_day_min": 0.8792184489037222,
+   "degradation_fraction_per_year_per_cohort_year": {
+    "(0, 0)": 0.15936204424998024,
+    "(0, 1)": 0.129794348606591,
+    "(0, 2)": 0.1469087869780581,
+    "(1, 0)": 0.0,
+    "(1, 1)": 0.0,
+    "(1, 2)": 0.0,
+    "(2, 0)": 0.0,
+    "(2, 1)": 0.0,
+    "(2, 2)": 0.0
+   }
+  },
+  "7": {
+   "es_avg_ch_dch_per_unit": {
+    "(0, 0)": 8.508149408886066,
+    "(0, 1)": 6.776963438838345,
+    "(0, 2)": 7.835032831680133,
+    "(1, 0)": 0.0,
+    "(1, 1)": 0.0,
+    "(1, 2)": 0.0,
+    "(2, 0)": 0.0,
+    "(2, 1)": 0.0,
+    "(2, 2)": 0.0
+   },
+   "es_D_per_unit": {
+    "(0, 0)": 0.17359281594447834,
+    "(0, 1)": 0.13827121626143948,
+    "(0, 2)": 0.1598591358595884,
+    "(1, 0)": 0.0,
+    "(1, 1)": 0.0,
+    "(1, 2)": 0.0,
+    "(2, 0)": 0.0,
+    "(2, 1)": 0.0,
+    "(2, 2)": 0.0
+   },
+   "es_soh_per_unit_cumul": {
+    "(0, 0)": 0.8406391225715755,
+    "(0, 1)": 0.7320810604723471,
+    "(0, 2)": 0.6239262111021466,
+    "(1, 0)": 1.0,
+    "(1, 1)": 1.0,
+    "(1, 2)": 1.0,
+    "(2, 0)": 1.0,
+    "(2, 1)": 1.0,
+    "(2, 2)": 1.0
+   },
+   "es_e_rated_per_unit": {
+    "(0, 0)": 3.875,
+    "(0, 1)": 3.875,
+    "(0, 2)": 3.875,
+    "(1, 0)": 0.0,
+    "(1, 1)": 0.0,
+    "(1, 2)": 0.0,
+    "(2, 0)": 0.0,
+    "(2, 1)": 0.0,
+    "(2, 2)": 0.0
+   },
+   "efc_per_day_per_cohort_year": {
+    "(0, 0)": {
+     "efc_per_day": 1.0978257301788472,
+     "margin_to_threshold": 0.36337426982115284,
+     "fraction_of_threshold": 0.7513179100594355
+    },
+    "(0, 1)": {
+     "efc_per_day": 0.8744468953339799,
+     "margin_to_threshold": 0.5867531046660202,
+     "fraction_of_threshold": 0.5984443576060634
+    },
+    "(0, 2)": {
+     "efc_per_day": 1.0109719782813074,
+     "margin_to_threshold": 0.4502280217186927,
+     "fraction_of_threshold": 0.6918778937046998
+    },
+    "(1, 0)": null,
+    "(1, 1)": null,
+    "(1, 2)": null,
+    "(2, 0)": null,
+    "(2, 1)": null,
+    "(2, 2)": null
+   },
+   "efc_per_day_max": 1.0978257301788472,
+   "efc_per_day_min": 0.8744468953339799,
+   "degradation_fraction_per_year_per_cohort_year": {
+    "(0, 0)": 0.15936087717335012,
+    "(0, 1)": 0.12913753234936576,
+    "(0, 2)": 0.14773616607663254,
+    "(1, 0)": 0.0,
+    "(1, 1)": 0.0,
+    "(1, 2)": 0.0,
+    "(2, 0)": 0.0,
+    "(2, 1)": 0.0,
+    "(2, 2)": 0.0
+   }
+  },
+  "9": {
+   "es_avg_ch_dch_per_unit": {
+    "(0, 0)": 8.508209768105736,
+    "(0, 1)": 6.898530336654271,
+    "(0, 2)": 7.838159829101831,
+    "(1, 0)": 0.0,
+    "(1, 1)": 0.0,
+    "(1, 2)": 0.0,
+    "(2, 0)": 0.0,
+    "(2, 1)": 0.0,
+    "(2, 2)": 0.0
+   },
+   "es_D_per_unit": {
+    "(0, 0)": 0.17359404746104057,
+    "(0, 1)": 0.14075156058819296,
+    "(0, 2)": 0.15992293637152072,
+    "(1, 0)": 0.0,
+    "(1, 1)": 0.0,
+    "(1, 2)": 0.0,
+    "(2, 0)": 0.0,
+    "(2, 1)": 0.0,
+    "(2, 2)": 0.0
+   },
+   "es_soh_per_unit_cumul": {
+    "(0, 0)": 0.8406380873551439,
+    "(0, 1)": 0.7302665981719197,
+    "(0, 2)": 0.6223401036726562,
+    "(1, 0)": 1.0,
+    "(1, 1)": 1.0,
+    "(1, 2)": 1.0,
+    "(2, 0)": 1.0,
+    "(2, 1)": 1.0,
+    "(2, 2)": 1.0
+   },
+   "es_e_rated_per_unit": {
+    "(0, 0)": 3.875,
+    "(0, 1)": 3.875,
+    "(0, 2)": 3.875,
+    "(1, 0)": 0.0,
+    "(1, 1)": 0.0,
+    "(1, 2)": 0.0,
+    "(2, 0)": 0.0,
+    "(2, 1)": 0.0,
+    "(2, 2)": 0.0
+   },
+   "efc_per_day_per_cohort_year": {
+    "(0, 0)": {
+     "efc_per_day": 1.0978335184652563,
+     "margin_to_threshold": 0.3633664815347437,
+     "fraction_of_threshold": 0.7513232401213087
+    },
+    "(0, 1)": {
+     "efc_per_day": 0.8901329466650671,
+     "margin_to_threshold": 0.5710670533349329,
+     "fraction_of_threshold": 0.6091794050541111
+    },
+    "(0, 2)": {
+     "efc_per_day": 1.0113754618195911,
+     "margin_to_threshold": 0.4498245381804089,
+     "fraction_of_threshold": 0.692154025335061
+    },
+    "(1, 0)": null,
+    "(1, 1)": null,
+    "(1, 2)": null,
+    "(2, 0)": null,
+    "(2, 1)": null,
+    "(2, 2)": null
+   },
+   "efc_per_day_max": 1.0978335184652563,
+   "efc_per_day_min": 0.8901329466650671,
+   "degradation_fraction_per_year_per_cohort_year": {
+    "(0, 0)": 0.15936191243371534,
+    "(0, 1)": 0.13129489452384346,
+    "(0, 2)": 0.14779053921100282,
+    "(1, 0)": 0.0,
+    "(1, 1)": 0.0,
+    "(1, 2)": 0.0,
+    "(2, 0)": 0.0,
+    "(2, 1)": 0.0,
+    "(2, 2)": 0.0
+   }
+  }
+ },
+ "esso_complementarity_diagnostics_by_round": {
+  "n_active_nodes": 3,
+  "cycles_run": 2,
+  "expected_total_solves": 9,
+  "observed_total_solves": 9,
+  "grouping_clean": true,
+  "per_round": [
+   {
+    "round": "init",
+    "entries": [
+     {
+      "node_id": 5,
+      "log_path": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P56A/evals/p515r_r2_g1policy/logs/optim_log_esso_node5_init.txt",
+      "complementarity_ratio_max": 2.5655894888303533e-05,
+      "complementarity_ratio_argmax": {
+       "y_inv": 0,
+       "y": 1,
+       "d": 1,
+       "p": 2,
+       "pch": 2.4854148173044048e-05,
+       "pdch": 2.5241425003856535e-05,
+       "s_max": 0.96875
+      },
+      "n_active_cohort_periods": 288,
+      "eps_esso_throughput_in_force": 0.001,
+      "mu_final": 3.131588719877726e-09,
+      "s_obj": 0.1,
+      "parse_reason": null,
+      "spurious_throughput_bound": 0.00901897551324785,
+      "spurious_throughput_measured": 0.007662618369242636
+     },
+     {
+      "node_id": 7,
+      "log_path": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P56A/evals/p515r_r2_g1policy/logs/optim_log_esso_node7_init.txt",
+      "complementarity_ratio_max": 2.58382986970178e-05,
+      "complementarity_ratio_argmax": {
+       "y_inv": 0,
+       "y": 0,
+       "d": 3,
+       "p": 9,
+       "pch": 2.5030851862735993e-05,
+       "pdch": 2.506513018853517e-05,
+       "s_max": 0.96875
+      },
+      "n_active_cohort_periods": 288,
+      "eps_esso_throughput_in_force": 0.001,
+      "mu_final": 3.1526843727040035e-09,
+      "s_obj": 0.1,
+      "parse_reason": null,
+      "spurious_throughput_bound": 0.00907973099338753,
+      "spurious_throughput_measured": 0.007756867187968823
+     },
+     {
+      "node_id": 9,
+      "log_path": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P56A/evals/p515r_r2_g1policy/logs/optim_log_esso_node9_init.txt",
+      "complementarity_ratio_max": 2.565726540377339e-05,
+      "complementarity_ratio_argmax": {
+       "y_inv": 0,
+       "y": 1,
+       "d": 1,
+       "p": 2,
+       "pch": 2.485547585990547e-05,
+       "pdch": 2.524301382207552e-05,
+       "s_max": 0.96875
+      },
+      "n_active_cohort_periods": 288,
+      "eps_esso_throughput_in_force": 0.001,
+      "mu_final": 3.1275424868861434e-09,
+      "s_obj": 0.1,
+      "parse_reason": null,
+      "spurious_throughput_bound": 0.009007322362232093,
+      "spurious_throughput_measured": 0.007699178337099712
+     }
+    ],
+    "ratio_max": 2.58382986970178e-05,
+    "bound_max": 0.00907973099338753,
+    "measured_max": 0.007756867187968823
+   },
+   {
+    "round": 1,
+    "entries": [
+     {
+      "node_id": 5,
+      "log_path": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P56A/evals/p515r_r2_g1policy/logs/optim_log_esso_node5_cycle001.txt",
+      "complementarity_ratio_max": 2.5854181605136904e-05,
+      "complementarity_ratio_argmax": {
+       "y_inv": 0,
+       "y": 0,
+       "d": 3,
+       "p": 18,
+       "pch": 2.5046238429976375e-05,
+       "pdch": 2.5050547317174362e-05,
+       "s_max": 0.96875
+      },
+      "n_active_cohort_periods": 288,
+      "eps_esso_throughput_in_force": 0.001,
+      "mu_final": 2.992742198683291e-09,
+      "s_obj": 0.1,
+      "parse_reason": null,
+      "spurious_throughput_bound": 0.008619097532207878,
+      "spurious_throughput_measured": 0.009298866304843428
+     },
+     {
+      "node_id": 7,
+      "log_path": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P56A/evals/p515r_r2_g1policy/logs/optim_log_esso_node7_cycle001.txt",
+      "complementarity_ratio_max": 2.5853131749945763e-05,
+      "complementarity_ratio_argmax": {
+       "y_inv": 0,
+       "y": 0,
+       "d": 3,
+       "p": 18,
+       "pch": 2.5045221382759958e-05,
+       "pdch": 2.5051565196084404e-05,
+       "s_max": 0.96875
+      },
+      "n_active_cohort_periods": 288,
+      "eps_esso_throughput_in_force": 0.001,
+      "mu_final": 3.071007418231589e-09,
+      "s_obj": 0.1,
+      "parse_reason": null,
+      "spurious_throughput_bound": 0.008844501364506976,
+      "spurious_throughput_measured": 0.009238086614579057
+     },
+     {
+      "node_id": 9,
+      "log_path": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P56A/evals/p515r_r2_g1policy/logs/optim_log_esso_node9_cycle001.txt",
+      "complementarity_ratio_max": 2.5853051287405964e-05,
+      "complementarity_ratio_argmax": {
+       "y_inv": 0,
+       "y": 0,
+       "d": 3,
+       "p": 18,
+       "pch": 2.50516418520302e-05,
+       "pdch": 2.5045143434674526e-05,
+       "s_max": 0.96875
+      },
+      "n_active_cohort_periods": 288,
+      "eps_esso_throughput_in_force": 0.001,
+      "mu_final": 2.979458065320824e-09,
+      "s_obj": 0.1,
+      "parse_reason": null,
+      "spurious_throughput_bound": 0.008580839228123973,
+      "spurious_throughput_measured": 0.009242032255708807
+     }
+    ],
+    "ratio_max": 2.5854181605136904e-05,
+    "bound_max": 0.008844501364506976,
+    "measured_max": 0.009298866304843428
+   },
+   {
+    "round": 2,
+    "entries": [
+     {
+      "node_id": 5,
+      "log_path": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P56A/evals/p515r_r2_g1policy/logs/optim_log_esso_node5_cycle002.txt",
+      "complementarity_ratio_max": 2.5849754087320066e-05,
+      "complementarity_ratio_argmax": {
+       "y_inv": 0,
+       "y": 0,
+       "d": 2,
+       "p": 21,
+       "pch": 2.5041949272091315e-05,
+       "pdch": 2.505482103008033e-05,
+       "s_max": 0.96875
+      },
+      "n_active_cohort_periods": 288,
+      "eps_esso_throughput_in_force": 0.001,
+      "mu_final": 4.252423877725842e-09,
+      "s_obj": 0.1,
+      "parse_reason": null,
+      "spurious_throughput_bound": 0.012246980767850425,
+      "spurious_throughput_measured": 0.008611134615100454
+     },
+     {
+      "node_id": 7,
+      "log_path": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P56A/evals/p515r_r2_g1policy/logs/optim_log_esso_node7_cycle002.txt",
+      "complementarity_ratio_max": 2.5838648472303754e-05,
+      "complementarity_ratio_argmax": {
+       "y_inv": 0,
+       "y": 0,
+       "d": 3,
+       "p": 8,
+       "pch": 2.503119070754426e-05,
+       "pdch": 2.5065600675930448e-05,
+       "s_max": 0.96875
+      },
+      "n_active_cohort_periods": 288,
+      "eps_esso_throughput_in_force": 0.001,
+      "mu_final": 4.323179949177501e-09,
+      "s_obj": 0.1,
+      "parse_reason": null,
+      "spurious_throughput_bound": 0.012450758253631202,
+      "spurious_throughput_measured": 0.008590945718736314
+     },
+     {
+      "node_id": 9,
+      "log_path": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P56A/evals/p515r_r2_g1policy/logs/optim_log_esso_node9_cycle002.txt",
+      "complementarity_ratio_max": 2.5855826722827507e-05,
+      "complementarity_ratio_argmax": {
+       "y_inv": 0,
+       "y": 0,
+       "d": 2,
+       "p": 21,
+       "pch": 2.5047832137739146e-05,
+       "pdch": 2.5048934061527318e-05,
+       "s_max": 0.96875
+      },
+      "n_active_cohort_periods": 288,
+      "eps_esso_throughput_in_force": 0.001,
+      "mu_final": 4.249563120920729e-09,
+      "s_obj": 0.1,
+      "parse_reason": null,
+      "spurious_throughput_bound": 0.0122387417882517,
+      "spurious_throughput_measured": 0.008583647642405328
+     }
+    ],
+    "ratio_max": 2.5855826722827507e-05,
+    "bound_max": 0.012450758253631202,
+    "measured_max": 0.008611134615100454
+   }
+  ],
+  "per_node_summary": {
+   "5": {
+    "ratio_max": 2.5854181605136904e-05,
+    "bound_max": 0.012246980767850425,
+    "measured_max": 0.009298866304843428,
+    "n_solves": 3
+   },
+   "7": {
+    "ratio_max": 2.5853131749945763e-05,
+    "bound_max": 0.012450758253631202,
+    "measured_max": 0.009238086614579057,
+    "n_solves": 3
+   },
+   "9": {
+    "ratio_max": 2.5855826722827507e-05,
+    "bound_max": 0.0122387417882517,
+    "measured_max": 0.009242032255708807,
+    "n_solves": 3
+   }
+  },
+  "flat_diagnostics": [
+   {
+    "node_id": 5,
+    "log_path": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P56A/evals/p515r_r2_g1policy/logs/optim_log_esso_node5_init.txt",
+    "complementarity_ratio_max": 2.5655894888303533e-05,
+    "complementarity_ratio_argmax": {
+     "y_inv": 0,
+     "y": 1,
+     "d": 1,
+     "p": 2,
+     "pch": 2.4854148173044048e-05,
+     "pdch": 2.5241425003856535e-05,
+     "s_max": 0.96875
+    },
+    "n_active_cohort_periods": 288,
+    "eps_esso_throughput_in_force": 0.001,
+    "mu_final": 3.131588719877726e-09,
+    "s_obj": 0.1,
+    "parse_reason": null,
+    "spurious_throughput_bound": 0.00901897551324785,
+    "spurious_throughput_measured": 0.007662618369242636
+   },
+   {
+    "node_id": 7,
+    "log_path": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P56A/evals/p515r_r2_g1policy/logs/optim_log_esso_node7_init.txt",
+    "complementarity_ratio_max": 2.58382986970178e-05,
+    "complementarity_ratio_argmax": {
+     "y_inv": 0,
+     "y": 0,
+     "d": 3,
+     "p": 9,
+     "pch": 2.5030851862735993e-05,
+     "pdch": 2.506513018853517e-05,
+     "s_max": 0.96875
+    },
+    "n_active_cohort_periods": 288,
+    "eps_esso_throughput_in_force": 0.001,
+    "mu_final": 3.1526843727040035e-09,
+    "s_obj": 0.1,
+    "parse_reason": null,
+    "spurious_throughput_bound": 0.00907973099338753,
+    "spurious_throughput_measured": 0.007756867187968823
+   },
+   {
+    "node_id": 9,
+    "log_path": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P56A/evals/p515r_r2_g1policy/logs/optim_log_esso_node9_init.txt",
+    "complementarity_ratio_max": 2.565726540377339e-05,
+    "complementarity_ratio_argmax": {
+     "y_inv": 0,
+     "y": 1,
+     "d": 1,
+     "p": 2,
+     "pch": 2.485547585990547e-05,
+     "pdch": 2.524301382207552e-05,
+     "s_max": 0.96875
+    },
+    "n_active_cohort_periods": 288,
+    "eps_esso_throughput_in_force": 0.001,
+    "mu_final": 3.1275424868861434e-09,
+    "s_obj": 0.1,
+    "parse_reason": null,
+    "spurious_throughput_bound": 0.009007322362232093,
+    "spurious_throughput_measured": 0.007699178337099712
+   },
+   {
+    "node_id": 5,
+    "log_path": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P56A/evals/p515r_r2_g1policy/logs/optim_log_esso_node5_cycle001.txt",
+    "complementarity_ratio_max": 2.5854181605136904e-05,
+    "complementarity_ratio_argmax": {
+     "y_inv": 0,
+     "y": 0,
+     "d": 3,
+     "p": 18,
+     "pch": 2.5046238429976375e-05,
+     "pdch": 2.5050547317174362e-05,
+     "s_max": 0.96875
+    },
+    "n_active_cohort_periods": 288,
+    "eps_esso_throughput_in_force": 0.001,
+    "mu_final": 2.992742198683291e-09,
+    "s_obj": 0.1,
+    "parse_reason": null,
+    "spurious_throughput_bound": 0.008619097532207878,
+    "spurious_throughput_measured": 0.009298866304843428
+   },
+   {
+    "node_id": 7,
+    "log_path": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P56A/evals/p515r_r2_g1policy/logs/optim_log_esso_node7_cycle001.txt",
+    "complementarity_ratio_max": 2.5853131749945763e-05,
+    "complementarity_ratio_argmax": {
+     "y_inv": 0,
+     "y": 0,
+     "d": 3,
+     "p": 18,
+     "pch": 2.5045221382759958e-05,
+     "pdch": 2.5051565196084404e-05,
+     "s_max": 0.96875
+    },
+    "n_active_cohort_periods": 288,
+    "eps_esso_throughput_in_force": 0.001,
+    "mu_final": 3.071007418231589e-09,
+    "s_obj": 0.1,
+    "parse_reason": null,
+    "spurious_throughput_bound": 0.008844501364506976,
+    "spurious_throughput_measured": 0.009238086614579057
+   },
+   {
+    "node_id": 9,
+    "log_path": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P56A/evals/p515r_r2_g1policy/logs/optim_log_esso_node9_cycle001.txt",
+    "complementarity_ratio_max": 2.5853051287405964e-05,
+    "complementarity_ratio_argmax": {
+     "y_inv": 0,
+     "y": 0,
+     "d": 3,
+     "p": 18,
+     "pch": 2.50516418520302e-05,
+     "pdch": 2.5045143434674526e-05,
+     "s_max": 0.96875
+    },
+    "n_active_cohort_periods": 288,
+    "eps_esso_throughput_in_force": 0.001,
+    "mu_final": 2.979458065320824e-09,
+    "s_obj": 0.1,
+    "parse_reason": null,
+    "spurious_throughput_bound": 0.008580839228123973,
+    "spurious_throughput_measured": 0.009242032255708807
+   },
+   {
+    "node_id": 5,
+    "log_path": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P56A/evals/p515r_r2_g1policy/logs/optim_log_esso_node5_cycle002.txt",
+    "complementarity_ratio_max": 2.5849754087320066e-05,
+    "complementarity_ratio_argmax": {
+     "y_inv": 0,
+     "y": 0,
+     "d": 2,
+     "p": 21,
+     "pch": 2.5041949272091315e-05,
+     "pdch": 2.505482103008033e-05,
+     "s_max": 0.96875
+    },
+    "n_active_cohort_periods": 288,
+    "eps_esso_throughput_in_force": 0.001,
+    "mu_final": 4.252423877725842e-09,
+    "s_obj": 0.1,
+    "parse_reason": null,
+    "spurious_throughput_bound": 0.012246980767850425,
+    "spurious_throughput_measured": 0.008611134615100454
+   },
+   {
+    "node_id": 7,
+    "log_path": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P56A/evals/p515r_r2_g1policy/logs/optim_log_esso_node7_cycle002.txt",
+    "complementarity_ratio_max": 2.5838648472303754e-05,
+    "complementarity_ratio_argmax": {
+     "y_inv": 0,
+     "y": 0,
+     "d": 3,
+     "p": 8,
+     "pch": 2.503119070754426e-05,
+     "pdch": 2.5065600675930448e-05,
+     "s_max": 0.96875
+    },
+    "n_active_cohort_periods": 288,
+    "eps_esso_throughput_in_force": 0.001,
+    "mu_final": 4.323179949177501e-09,
+    "s_obj": 0.1,
+    "parse_reason": null,
+    "spurious_throughput_bound": 0.012450758253631202,
+    "spurious_throughput_measured": 0.008590945718736314
+   },
+   {
+    "node_id": 9,
+    "log_path": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P56A/evals/p515r_r2_g1policy/logs/optim_log_esso_node9_cycle002.txt",
+    "complementarity_ratio_max": 2.5855826722827507e-05,
+    "complementarity_ratio_argmax": {
+     "y_inv": 0,
+     "y": 0,
+     "d": 2,
+     "p": 21,
+     "pch": 2.5047832137739146e-05,
+     "pdch": 2.5048934061527318e-05,
+     "s_max": 0.96875
+    },
+    "n_active_cohort_periods": 288,
+    "eps_esso_throughput_in_force": 0.001,
+    "mu_final": 4.249563120920729e-09,
+    "s_obj": 0.1,
+    "parse_reason": null,
+    "spurious_throughput_bound": 0.0122387417882517,
+    "spurious_throughput_measured": 0.008583647642405328
+   }
+  ]
+ },
+ "esso_models_pickle": {
+  "path": "data/SRP1/Results/P515R/r2_g1policy/esso_models_r2_g1policy.pkl",
+  "bytes": 2762390
+ },
+ "solve_profile": {
+  "observed": {
+   "permitted_solve": 154,
+   "permitted_exec": 154,
+   "blocked_solve": 0,
+   "blocked_exec": 0
+  },
+  "identity_holds": false
+ }
+}

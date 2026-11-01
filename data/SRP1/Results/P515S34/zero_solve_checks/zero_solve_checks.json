@@ -1,0 +1,342 @@
+{
+ "stage": "P5.15 Step 3.4 (+3.3(b) folded in) worker task -- zero-solve verification",
+ "authority": [
+  "PLANNER_BRIEF_2026-09-13.md Addendum 15 item 5",
+  "data/SRP1/Results/P515S34/frozen_s34_spec_v4_966940a7.json"
+ ],
+ "spec_file": "data/SRP1/Results/P515S34/frozen_s34_spec_v4_966940a7.json",
+ "spec_file_sha256": "966940a789db3093a57d5fdc23be8ccb172b762bf02d0cd09eeaaf0f52f544e9",
+ "pre_change_commit": "9f182b79",
+ "timestamp_utc": "2026-09-16T09:44:57.974325+00:00",
+ "solve_profile_guard": {
+  "permitted": [],
+  "counts": {
+   "permitted_solve": 0,
+   "permitted_exec": 0,
+   "blocked_solve": 0,
+   "blocked_exec": 0
+  },
+  "verify_failures": []
+ },
+ "checks": {
+  "d5_equivalence": {
+   "al_scale": 5.0,
+   "old_base_value": 0.0,
+   "al_only_value": -0.207451,
+   "production_new_obj_value": -1.037255,
+   "literal_reading_obj_value": -0.207451,
+   "al_scale_times_literal": -1.037255,
+   "algebra": "new_obj = old_base + al_scale*AL (production); literal_obj = old_base/al_scale + AL (literal \"same sigma convention\" reading); al_scale*literal_obj = old_base + al_scale*AL = new_obj -- same positive-constant factor, hence the same argmin, even though new_obj != literal_obj.",
+   "new_obj_equals_base_plus_scaled_al": true,
+   "identity_holds_al_scale_times_literal_equals_new": true,
+   "pass": true
+  },
+  "esso_al_scale_absent_bit_identical": {
+   "pre_change_commit": "9f182b79",
+   "admm_esso_al_scale_param_constructed_when_absent": false,
+   "objective_value_current_absent": -2.7923750000000003,
+   "objective_value_pre_change": -2.7923750000000003,
+   "objective_values_match": true,
+   "n_diff_lines": 38,
+   "n_offending_diff_lines": 21,
+   "offending_lines_sample": [
+    "-def update_shared_energy_storage_model_to_admm(planning_problem, models, params):",
+    "+    terms below (the two dual terms and the two rho/2 terms) -- the ESSO",
+    "+    base objective (`obj = copy(models[node_id].objective.expr)`) is NEVER",
+    "+    divided or scaled, unlike the TSO/DSO objectives (see",
+    "+    `update_transmission_model_to_admm`, `update_distribution_models_to_admm`).",
+    "+    This is argmin-identical to a base-objective division by the same",
+    "+    equivalence check) but keeps `PENALTY_ESSO_SLACK` (which enforces the",
+    "+    storage dynamics) at its configured absolute magnitude.",
+    "+",
+    "+    absent), the multiplication is not even constructed -- the built",
+    "+    expression is bit-identical to the pre-3.4 code, matching every other",
+    "+    optional 3.4 key's \"absent means unchanged\" convention.",
+    "+",
+    "-                    obj += models[node_id].dual_p_req[y, d, p] * constraint_p_req",
+    "-                    obj += models[node_id].dual_q_req[y, d, p] * constraint_q_req",
+    "-                    obj += (models[node_id].rho / 2) * constraint_p_req ** 2",
+    "-                    obj += (models[node_id].rho / 2) * constraint_q_req ** 2",
+    "+                        obj += models[node_id].dual_p_req[y, d, p] * constraint_p_req",
+    "+                        obj += models[node_id].dual_q_req[y, d, p] * constraint_q_req",
+    "+                        obj += (models[node_id].rho / 2) * constraint_p_req ** 2"
+   ],
+   "pass": true
+  },
+  "sigma_assertion": {
+   "objective_scale_fixed": 93635360.0,
+   "objective_scale_assert_factor": 3.0,
+   "within_factor": {
+    "computed": 234088400.0,
+    "used": 93635360.0,
+    "sigma_computed": 234088400.0,
+    "sigma_fixed": 93635360.0,
+    "pass": true
+   },
+   "absent": {
+    "computed": 42.0,
+    "used": 42.0,
+    "sigma_computed": 42.0,
+    "sigma_fixed": null,
+    "pass": true
+   },
+   "outside_factor": {
+    "computed": 936353600.0,
+    "ratio": 10.0,
+    "raised": true,
+    "error_message": "ADMM fixed objective scale (sigma) failed its calibration-range assertion: sigma_computed=9.363536e+08 | sigma_fixed=9.363536e+07 | ratio=1.000000e+01 | objective_scale_assert_factor=3.000.",
+    "error_message_has_both_numbers": true,
+    "pass": true
+   },
+   "pass": true
+  },
+  "s_ref_all_sites": {
+   "n_call_sites_with_reference_mva_kwarg": 13,
+   "expected_n_call_sites": 13,
+   "call_site_lines_missing_reference_mva": [],
+   "unit_tests_pass": true,
+   "unit_tests": {
+    "mva_with_ref": 2.5,
+    "mva_without_ref": 0.96875,
+    "pu_with_ref": 0.025,
+    "pu_without_ref": 0.0096875
+   },
+   "end_to_end_esso_build": {
+    "s_ref_configured": 2.5,
+    "implied_s_ref_from_built_objective": 2.5,
+    "pass": true
+   },
+   "pass": true
+  },
+  "freeze_rule_v4": {
+   "streak_history_v": [
+    {
+     "cycle": 1,
+     "action_v": "increased",
+     "streak_v": 0,
+     "ever_acted_v": true,
+     "frozen_v": false
+    },
+    {
+     "cycle": 2,
+     "action_v": "held",
+     "streak_v": 1,
+     "ever_acted_v": true,
+     "frozen_v": false
+    },
+    {
+     "cycle": 3,
+     "action_v": "held",
+     "streak_v": 2,
+     "ever_acted_v": true,
+     "frozen_v": false
+    },
+    {
+     "cycle": 4,
+     "action_v": "held",
+     "streak_v": 3,
+     "ever_acted_v": true,
+     "frozen_v": true
+    },
+    {
+     "cycle": 5,
+     "action_v": "held (frozen after 3 unchanged cycles)",
+     "streak_v": 3,
+     "ever_acted_v": true,
+     "frozen_v": true
+    }
+   ],
+   "streak_triggers_at_cycle_5": true,
+   "never_acted_never_freezes_via_streak": true,
+   "backstop_freezes_all_channels": true,
+   "clamp_detected_without_raising": true,
+   "pass": true
+  },
+  "update_isolation": {
+   "actions": {
+    "v": "increased",
+    "pf": "held",
+    "ess": "held"
+   },
+   "rho_before": {
+    "v": 1.0,
+    "pf": 1.0,
+    "ess": 1.0
+   },
+   "rho_after": {
+    "v": 1.5,
+    "pf": 1.0,
+    "ess": 1.0
+   },
+   "gamma_before": {
+    "v": 0.007699999999999999,
+    "pf": 0.19799999999999998,
+    "ess": 0.049999999999999996
+   },
+   "gamma_after": {
+    "v": 1.5,
+    "pf": 1.0,
+    "ess": 1.0
+   },
+   "rho_freeze_active": false,
+   "consensus_vars_unchanged": true,
+   "dual_vars_unchanged": true,
+   "rho_v_changed_as_expected": true,
+   "pass": true
+  },
+  "tso_dso_bit_identical_when_absent": {
+   "pre_change_commit": "9f182b79",
+   "tso_objective_current": 0.2772,
+   "tso_objective_pre_change": 0.2772,
+   "tso_matches": true,
+   "dso_objective_current": 0.09240000000000004,
+   "dso_objective_pre_change": 0.09240000000000004,
+   "dso_matches": true,
+   "pass": true
+  },
+  "other_case_params_load": {
+   "other_cases": {
+    "CS1": {
+     "path": "data/CS1/CS1_params.json",
+     "objective_scale": null,
+     "objective_scale_source": "default",
+     "shared_ess_reference_rating_mva": null,
+     "esso_al_scale": {
+      "mode": "fixed",
+      "value": 1.0,
+      "source": "default"
+     },
+     "freeze_after_unchanged_cycles": null,
+     "freeze_backstop_cycle": null
+    },
+    "CS7": {
+     "path": "data/CS7/CS7_params.json",
+     "objective_scale": null,
+     "objective_scale_source": "default",
+     "shared_ess_reference_rating_mva": null,
+     "esso_al_scale": {
+      "mode": "fixed",
+      "value": 1.0,
+      "source": "default"
+     },
+     "freeze_after_unchanged_cycles": null,
+     "freeze_backstop_cycle": null
+    },
+    "HR1": {
+     "path": "data/HR1/HR1_params.json",
+     "objective_scale": null,
+     "objective_scale_source": "default",
+     "shared_ess_reference_rating_mva": null,
+     "esso_al_scale": {
+      "mode": "fixed",
+      "value": 1.0,
+      "source": "default"
+     },
+     "freeze_after_unchanged_cycles": null,
+     "freeze_backstop_cycle": null
+    },
+    "OP1": {
+     "path": "data/OP1/OP1_params.json",
+     "objective_scale": null,
+     "objective_scale_source": "default",
+     "shared_ess_reference_rating_mva": null,
+     "esso_al_scale": {
+      "mode": "fixed",
+      "value": 1.0,
+      "source": "default"
+     },
+     "freeze_after_unchanged_cycles": null,
+     "freeze_backstop_cycle": null
+    },
+    "OP2": {
+     "path": "data/OP2/OP2_params.json",
+     "objective_scale": null,
+     "objective_scale_source": "default",
+     "shared_ess_reference_rating_mva": null,
+     "esso_al_scale": {
+      "mode": "fixed",
+      "value": 1.0,
+      "source": "default"
+     },
+     "freeze_after_unchanged_cycles": null,
+     "freeze_backstop_cycle": null
+    }
+   },
+   "other_cases_all_defaults": true,
+   "srp1": {
+    "objective_scale": 93635360.0,
+    "objective_scale_source": "case_file",
+    "shared_ess_reference_rating_mva": 2.5,
+    "esso_al_scale": {
+     "mode": "sigma_over_median_block_weight",
+     "value": null,
+     "source": "case_file"
+    },
+    "freeze_after_unchanged_cycles": 10,
+    "freeze_backstop_cycle": 60,
+    "freeze_after_cycle": null,
+    "rho_v": {
+     "case9": 0.0077,
+     "case33_1": 0.0077,
+     "case33_2": 0.0077,
+     "case33_3": 0.0077
+    },
+    "rho_pf": {
+     "case9": 0.198,
+     "case33_1": 0.198,
+     "case33_2": 0.198,
+     "case33_3": 0.198
+    },
+    "rho_ess": {
+     "case9": 0.05,
+     "case33_1": 0.05,
+     "case33_2": 0.05,
+     "case33_3": 0.05,
+     "esso": 0.05
+    }
+   },
+   "srp1_matches_spec_v4": true,
+   "pass": true
+  },
+  "fixture_unpickling": {
+   "fixtures": [
+    {
+     "path": "data/SRP1/Results/P512R/cycle21_pre_setup/snapshot.pkl",
+     "loads": true
+    },
+    {
+     "path": "data/SRP1/Results/P512R/production_snapshots/FrozenSMOPF/matched_success_DSO_node7_case33_2_2025_Autumn_cycle7.pkl",
+     "loads": true
+    },
+    {
+     "path": "data/SRP1/Results/P515G3F_r2/results/FrozenSMOPF/frozen_DSO_node7_case33_2_2035_Autumn_cycle38.pkl",
+     "loads": true
+    },
+    {
+     "path": "data/SRP1/Results/FrozenSMOPF/matched_success_TSO_case9_2025_Summer_cycle7.pkl",
+     "loads": true
+    },
+    {
+     "path": "data/SRP1/Results/FrozenSMOPF/matched_success_DSO_node7_case33_2_2025_Autumn_cycle7.pkl",
+     "loads": true
+    }
+   ],
+   "pass": true
+  },
+  "hierarchical_uncoordinated_untouched": {
+   "method": "exact source-text equality (9f182b79 vs current tree) for both path functions, plus every diff hunk header in shared_resources_planning.py.",
+   "pre_change_commit": "9f182b79",
+   "functions": {
+    "_run_operational_planning_hierarchical": {
+     "identical": true
+    },
+    "_run_operational_planning_without_coordination": {
+     "identical": true
+    }
+   },
+   "diff_hunk_count": 24,
+   "pass": true
+  }
+ },
+ "all_checks_pass": true
+}

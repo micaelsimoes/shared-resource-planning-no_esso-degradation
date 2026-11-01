@@ -1,0 +1,119 @@
+{
+ "stage": "P5.15 s34 closeout analysis",
+ "cycles": 150,
+ "ess_dual_decay": {
+  "terminal_ratio": 2.842895090932163,
+  "window_120_150": {
+   "window": [
+    120,
+    150
+   ],
+   "ratio_start": 3.0730476962200797,
+   "ratio_end": 2.842895090932163,
+   "decay_per_window": 0.9251060744774611,
+   "cycles_to_target_from_end": 402.6454339582466
+  },
+  "window_90_150": {
+   "window": [
+    90,
+    150
+   ],
+   "ratio_start": 3.4622431629111783,
+   "ratio_end": 2.842895090932163,
+   "decay_per_window": 0.8211136414063288,
+   "cycles_to_target_from_end": 318.06879936302835
+  }
+ },
+ "efc_trend": {
+  "terminal": 0.8382386925751658,
+  "soh_threshold": 1.4612,
+  "efc_star": 1.852,
+  "slope_120_150_per_cycle": 0.0021540330215353695,
+  "cycles_from_150_to_soh_at_slope_120_150": 289.2069439960557,
+  "cycles_from_150_to_efc_star_at_slope_120_150": 470.63406052254345,
+  "slope_90_150_per_cycle": 0.0022792895745045523,
+  "cycles_from_150_to_soh_at_slope_90_150": 273.31380549145314,
+  "cycles_from_150_to_efc_star_at_slope_90_150": 444.77073855137286,
+  "monotone_increasing_fraction": 1.0
+ },
+ "ess_step_persistence": {
+  "source": "data/SRP1/Results/P515S34_run/ess_entry_stride_baseline.jsonl",
+  "available": true,
+  "n_cycles_with_vectors": 150,
+  "entry_count_per_cycle": 1728,
+  "cos_sampled": [
+   [
+    10,
+    0.999489
+   ],
+   [
+    30,
+    0.954533
+   ],
+   [
+    60,
+    0.99938
+   ],
+   [
+    90,
+    0.975419
+   ],
+   [
+    120,
+    0.999659
+   ],
+   [
+    140,
+    0.998861
+   ],
+   [
+    150,
+    0.999816
+   ]
+  ],
+  "cos_mean_first_40": 0.9838002275107055,
+  "cos_mean_last_30": 0.9984979722812034,
+  "cos_min_last_30": 0.9889287491314783,
+  "step_norm_sampled": [
+   [
+    10,
+    0.2251488626909158
+   ],
+   [
+    30,
+    0.1099127353334083
+   ],
+   [
+    60,
+    0.07102607651199427
+   ],
+   [
+    90,
+    0.055542014417251415
+   ],
+   [
+    120,
+    0.04923914135438971
+   ],
+   [
+    150,
+    0.045548285818325485
+   ]
+  ]
+ },
+ "falsifier_reading": {
+  "step_rise_vs_s33e2": 5.144232214072042,
+  "threshold": 3.0,
+  "cos_criterion": "spec v4 falsifies the stiffness reading only if the rise is < 3x AND the cosine persists at 1.000",
+  "verdict_on_rise": "not falsified (5.14x > 3x)"
+ },
+ "solve_profile_guard": {
+  "counts": {
+   "permitted_solve": 0,
+   "permitted_exec": 0,
+   "blocked_solve": 0,
+   "blocked_exec": 0
+  },
+  "verify_failures": []
+ }
+}

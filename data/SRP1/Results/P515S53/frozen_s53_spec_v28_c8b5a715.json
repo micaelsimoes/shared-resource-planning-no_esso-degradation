@@ -1,0 +1,250 @@
+{
+ "schema": "p515_frozen_spec_v28",
+ "version": 28,
+ "stage": "P5.15 Addendum 46 ruling 7, W83 -- convergence-depth tight tail: compl_inf_tol 1e-6 on every TSO/DSO network solve in the certifying cycles, switched by the AA-off predicate; per-solve floor status",
+ "authority": [
+  "PLANNER_BRIEF_2026-09-13.md Addendum 46 (ruling 7: convergence depth, minimal (c))",
+  "Planner task W83 (implement, gate, STOP; ruling on the 1e-4 / 5e-4 wording)"
+ ],
+ "predecessor": {
+  "path": "data/SRP1/Results/P515S53/frozen_s53_spec_v27_654046ec.json",
+  "sha256": "654046ecc97c485616abffcbd258d4a7c85b7d18531dc0cbd83f424f4e3e846b"
+ },
+ "predecessor_not_edited": "v27 stays as frozen; v28 records the W83 tight tail and adds nothing to v27's tests",
+ "ruling_verbatim": "\"(7) Convergence depth: option (c) in its minimal form -- compl_inf_tol 1e-4 -> 1e-6 only in the certifying cycles, switched by the same all-channels-inside-tolerance condition that turns AA off; everything before the tail bitwise unchanged; per-solve floor status reported for every cell from now on.\"",
+ "brief_addendum_46_text": "Convergence depth (item 7): minimal (c). compl_inf_tol 1e-4 -> 1e-6 only in the certifying cycles, switched by the all-channels-inside-tolerance condition that turns AA off; all cycles before the tail bitwise unchanged; per-solve floor status reported for every cell from now on.",
+ "wording_discrepancy_and_planner_ruling": {
+  "discrepancy": "The ruling names 1e-4, which is IPOPT's DEFAULT: the DSO blocks inherit it because compl_inf_tol is absent from their options (case33_1/2/3_params.json). The TSO sets it explicitly to 5e-4 (case9_params.json), and all fifteen 2x2 early-stopping solves (W82) were TSO solves. A change applied only where the value is literally 1e-4 would tighten DSO blocks that already reach their floor 120/120 and leave the actual problem untouched.",
+  "planner_ruling": "Implement the intent: compl_inf_tol = 1e-6 on ALL network solves (TSO and every DSO) in the certifying cycles -- TSO from 5e-4, DSO from the 1e-4 default. Recorded here so the author can overrule it.",
+  "as_implemented": "ADMMParameters.convergence_depth_tail = {enabled, compl_inf_tol: 1e-6}; every TSO/DSO holder"
+ },
+ "author_prediction_verbatim": "Prediction: SRP1 references (C*, x = 0, smallest unit) unchanged or within 1e-6 relative (SRP1 already at the floor 192/192); at 2 x 2 the fifteen early stops would reach the floor.",
+ "implementation": {
+  "switch": {
+   "predicate": "the AA-off predicate: `cycle_convergence = boyd_all_pass and local_solves_ok` with `boyd_all_pass = boyd_metrics['all_boyd_pass']` (shared_resources_planning._run_operational_planning); the SAME boyd_metrics['all_boyd_pass'] is what _anderson_acceleration_cycle_step hands to AndersonAccelerationState.step (called only when local_solves_ok), whose action is 'off (all channels within Boyd tolerance)' exactly then; it is also the certificate counter's condition",
+   "read_not_rederived": "_convergence_depth_tail_next_state(cycle_convergence, aa_enabled, aa_record) returns cycle_convergence itself and raises if AA's own record for the cycle disagrees (AA enabled)",
+   "timing": "non-latching, mirroring AA: tail ON for cycle k+1 iff the predicate held at the end of cycle k; OFF at cycle 1 of every call; holders restored at loop exit. The first cycle of a converged streak runs at production tolerance, cycles 2..10 tight (the certified terminal cycle is tight whenever the streak is >= 2)",
+   "default": "OFF; programmatic only (no case-file key); enabled per run by the harness"
+  },
+  "what_changes_when_on": "only the compl_inf_tol key of solver_params.options on the TSO holder and each DSO holder (NetworkData.params.solver_params); nothing else",
+  "retry_tiers": "inherit: network._create_smopf_solver merges solver_params.options BEFORE the retry option_overrides; no SRP1 recovery_options sets compl_inf_tol; the baseline capture REFUSES to run if one does (asserted by --run, functionally on all three tiers)",
+  "esso": "NOT touched: the ESSO is not a network solve (the ruling and the task name network solves), its objective carries the oracle's own D5 scaling (sigma fixed, S_ref 2.5 MVA) and is outside Q; its options (tol 1e-6, compl_inf_tol at the IPOPT default) are recorded before/after and must be unchanged -- the scaling-pin test's treatment (spec v27 configuration.esso)",
+  "persistent_workers": "refused with the tail enabled (workers hold their own holder copies)",
+  "parallel_execution": "the holder change reaches pickled DSO tasks, but per-attempt records from worker processes are not returned; every campaign runs parallel_execution off"
+ },
+ "floor_status_capture": {
+  "where": "production: network._run_smopf_solver_attempt -> _append_ipopt_solve_record (every TSO/DSO IPOPT attempt: primary, recovery, recovery_tier2), drained per round by shared_resources_planning._drain_network_ipopt_solve_records into state['network_ipopt_solve_records'] (round 0 = initialisation, k = cycle k); per-cycle tail state in state['convergence_depth_tail']",
+  "fields": [
+   "network",
+   "year",
+   "day",
+   "agent",
+   "round",
+   "attempt",
+   "warm_start",
+   "log_path",
+   "log_bytes",
+   "compl_inf_tol_passed",
+   "compl_inf_tol_in_force",
+   "compl_inf_tol_logged",
+   "options_list_agrees",
+   "tol_in_force",
+   "mu_strategy_passed",
+   "obj_scaling_factor",
+   "mu_final",
+   "mu_floor",
+   "mu_over_floor",
+   "floor_status",
+   "iterations",
+   "exit",
+   "parse_reason"
+  ],
+  "formulas": {
+   "segment": "the attempt's own byte range [size before solve, size after] of its appended output_file",
+   "compl_inf_tol_in_force": "value passed to IPOPT (solver.options) else the IPOPT default 1e-4",
+   "tol_in_force": "value passed else the IPOPT default 1e-8",
+   "obj_scaling_factor": "FIRST 'objective scaling factor = S' line of the segment",
+   "mu_final": "LAST 'Current barrier parameter mu = X' line of the segment",
+   "mu_floor": "min(tol, compl_inf_tol x S) / (barrier_tol_factor + 1), barrier_tol_factor 10; None (reason recorded) when mu_strategy / barrier_tol_factor / mu_target / mu_min is passed",
+   "floor_status": "'at' iff |mu_final/mu_floor - 1| <= 1e-3; 'above' iff > 1 + 1e-3; else 'below'"
+  },
+  "validation_rule": "Addendum 46 standing rule (a log-derived quantity is validated by reproducing a known figure before it drives a decision): --run must reproduce W82's committed terminal figures exactly (352 blocks; 15 of 20 x0_a0p50 TSO above floor; 337 of 352 at floor)",
+  "persistence_note": "production keeps the records in the returned state; writing them into every eval directory is a harness step (the gate below writes its own sidecar; the campaign harness does not yet -- a question for the Planner)"
+ },
+ "gate": {
+  "script": "p515_s53_w83_tight_tail_gate.py",
+  "kind": "SRP1 two-cycle bitwise gate, built on the committed r2 gate (p515_s53_srp1_bitwise_gate.py, d5a00bd9) by import, arm with the tail ENABLED",
+  "arm": "s53w83tailgate (distinct: the eval dir under P56A/evals is arm-named)",
+  "output_root": "data/SRP1/Results/P515S53/tight_tail_w83/srp1_bitwise_gate",
+  "launch_log": "data/SRP1/Results/P515S53/tight_tail_w83/srp1_bitwise_gate_launch.log",
+  "instance": "C* 0.96875 MVA / 3.875 MWh at nodes 5, 7, 9, 2025; candidate_key 578636daa6d6360d6701764c73ddf795e53c2c37e511e21be1400024f8f6350c",
+  "configuration": "the r2 configuration (baseline, cap 2, snapshots on, apply_rho False) + tail enabled",
+  "solve_profile": "declared before the run: 51 per cycle x (cap 2 + 1) = 153 base; observed == 153 + every attempted retry (per event); W10.GUARD.verify(that) EXACTLY",
+  "items": [
+   "every committed r2 gate item (W35: 2 cycles, 0 diffs vs committed C* rows[:2] + derived fields, 0 field mismatches, event-level solve identity, GUARD.verify exact, no blocked call, FrozenSMOPF untouched, ESS-ageing declaration; W39 tripwire 0 calls; W51 counter 36/36 each, 0 acting)",
+   "0 genuine diffs vs the committed r2 arm (P515S53/srp1_bitwise_gate/arm)",
+   "tail enabled and read back in the arm; tail apply counter EXACTLY cap + 1 = 3 calls (cycles 1, 2, exit restore), every one active False and acted False; next-state counter EXACTLY 2 calls, both returning False",
+   "returned state: per_cycle 2 records, aa_off_predicate_end_of_cycle False on both, restore_at_exit acted False; holders after the arm identical to before (items and order); ESSO options unchanged",
+   "floor capture complete: records == observed solves - 9 ESSO solves, every parse_reason None, compl_inf_tol_in_force == production on every record (TSO 5e-4 passed and logged; DSO 1e-4 default, absent from the list), options_list_agrees on every record",
+   "no \"Convergence-depth tail ON\" line in the arm stdout",
+   "W83 code present in the modules that ran (before and after the arm)"
+  ],
+  "applies_to": "the single tail-enabled arm; there is no other arm"
+ },
+ "positive_control_zero_solve": {
+  "script": "p515_s53_w83_tight_tail_checks.py --run",
+  "a": "the switch reads the AA-off predicate (source/AST + the real AA state machine; disagreement raises)",
+  "b": "predicate false -> no holder written, options identical (object, items, order), ESSO unchanged",
+  "c": "predicate true -> compl_inf_tol 1e-6 on every TSO/DSO holder and on all three retry tiers; ESSO unchanged",
+  "not_permanently_false": "committed C* rows: predicate true on cycles 78-87 (AA off there), tail would be ON 79-87"
+ },
+ "calibration_zero_solve": {
+  "path": "data/SRP1/Results/P515S53/tight_tail_w83/calibration/calibration_w83.json",
+  "sha256": "e8115cbce369c1782297f9989682e505d585a6039e7260212b377afb1a95af11",
+  "manifest_sha256": "e20a3ff85b367007a49261af149408adaa3bf4c16182375b945be30156ffc76e",
+  "summary_tail_cycles": {
+   "TSO": {
+    "n": 108,
+    "exits": {
+     "Optimal Solution Found.": 108
+    },
+    "floor_status_production": {
+     "at": 108
+    },
+    "iterations_median": 30.0,
+    "iterations_max": 324,
+    "final_compl_meets_tight_cit": 0,
+    "mu_final_over_tight_floor_median": 499.99999999999994,
+    "mu_final_over_tight_floor_min": 499.9999999999999,
+    "acceptable_run_at_exit_histogram": {
+     "1": 85,
+     "2": 23
+    },
+    "acceptable_run_at_exit_ge_4": 0,
+    "acceptable_run_at_exit_ge_5": 0,
+    "parse_reasons": [
+     "None"
+    ]
+   },
+   "DSO": {
+    "n": 324,
+    "exits": {
+     "Maximum Number of Iterations Exceeded.": 2,
+     "Optimal Solution Found.": 322
+    },
+    "floor_status_production": {
+     "above": 2,
+     "at": 322
+    },
+    "iterations_median": 44.0,
+    "iterations_max": 500,
+    "final_compl_meets_tight_cit": 0,
+    "mu_final_over_tight_floor_median": 100.00000000000001,
+    "mu_final_over_tight_floor_min": 99.99999999999999,
+    "acceptable_run_at_exit_histogram": {
+     "0": 2,
+     "1": 289,
+     "2": 33
+    },
+    "acceptable_run_at_exit_ge_4": 0,
+    "acceptable_run_at_exit_ge_5": 0,
+    "parse_reasons": [
+     "None"
+    ]
+   }
+  },
+  "derived_tail_schedule": {
+   "rule": "tail ON for cycle k+1 iff cycle_convergence(k) (= the AA-off predicate) -- no predicate precedes cycle 1",
+   "cycles_with_predicate_true": [
+    78,
+    79,
+    80,
+    81,
+    82,
+    83,
+    84,
+    85,
+    86,
+    87
+   ],
+   "cycles_tail_would_be_on": [
+    79,
+    80,
+    81,
+    82,
+    83,
+    84,
+    85,
+    86,
+    87
+   ],
+   "aa_action_on_predicate_cycles": [
+    "off (all channels within Boyd tolerance)"
+   ]
+  }
+ },
+ "fallback_rule_operational": {
+  "cells": {
+   "C*": {
+    "reference": "P515S47/campaign_s47_recert c_star (eval 070f833e), certified cycle 87",
+    "Q_ref_gross": 650912327.1956586,
+    "bar_ref": 25146.48616361618
+   },
+   "x0": {
+    "reference": "P515S45/campaign_s45_a0_c7 x0 (eval 7aa017f0), certified cycle 132 (the pinned Q(0))",
+    "Q_ref_gross": 653859461.2279255,
+    "bar_ref": 9629.97833788395
+   },
+   "unit n7_4h_e1": {
+    "reference": "P515S47/campaign_s47_recert n7_4h_e1 (eval bd504ecf), certified cycle 112",
+    "Q_ref_gross": 653600033.4601703,
+    "bar_ref": 25104.654562950134
+   }
+  },
+  "objective_convention": "gross_operational_cost (settlement-excluded gross; equal to net recourse at these cells)",
+  "fails_to_certify": "TEST: the tail-enabled run of the cell ends with status != \"certified\" under the UNCHANGED certification criterion (all three Boyd channels inside tolerance and every local solve successful for 10 consecutive cycles) within the cap of that cell's reference campaign; a harness error counts as a failure to certify",
+  "moves_materially": "TEST: |Q_tail - Q_ref| > bar_ref(cell), the reference's own bar (max |step| of the gross cost over its last 10 cycles). REPORTED beside it, never replacing it: |dQ| / (bar_ref + bar_tail) (the two-run resolution; below 1 the difference is indeterminate, CLAUDE.md), |dQ| / (1e-6 |Q_ref|) (the author's band, ~650 EUR, ~39x below the smallest bar), and the tail run's rule-ten terminal step / threshold",
+  "consequence": "if ANY of the three cells fails to certify or moves materially: the fallback -- the unchanged configuration (tail disabled) with the depth caveat recorded (the Planner's 8 reading); otherwise the tail-enabled references replace them for what follows"
+ },
+ "predictions_recorded_before_any_run": {
+  "author": "see author_prediction_verbatim",
+  "worker": {
+   "G1_gate": "the tail-enabled two-cycle arm is bit-identical to the committed C* rows (0 diffs) and has 0 genuine diffs vs the r2 arm; 153/153 solves; tail counter 3/3 inactive, 0 acted",
+   "G2_floor_capture": "144/144 network records parse; compl_inf_tol_in_force TSO 5e-4 / DSO 1e-4 on every record; floor status NOT predicted as all-at at cycles 0-2 (early, cold ADMM rounds) -- reported, not gated",
+   "P1_certifies": "each of the three SRP1 cells certifies with the tail (probability 0.85)",
+   "P2_cert_cycle": "certification cycle within +3 of the reference for each cell (0.6)",
+   "P3_systematic_shift": "the at-floor barrier-gap estimate (W82: SRP1 cells G ~ 3,387-3,466 EUR, TSO ~950-1,020 at cit 5e-4, DSO ~2,435-2,450 at 1e-4) falls by factors 500 (TSO) and 100 (DSO), i.e. a systematic dQ ~ -3.4e3 EUR per cell (~5e-6 relative) on top of path/stopping differences of the order of the bar",
+   "P4_author_band": "|dQ| > 1e-6 |Q_ref| (~650 EUR) on each of the three cells -- the author's band is REFUTED (0.8)",
+   "P5_material": "|dQ| < bar_ref on each cell -- NOT material, no fallback (0.75)",
+   "P6_R": "R = Q(0) - Q(unit) changes by less than the two-cell bar-sum 34,734.63 (0.9)",
+   "P7_acceptable_exits": "some tight-cycle solves could exit \"Solved To Acceptable Level\" above the tight floor, because acceptable_iter 5 / acceptable_tol 1e-4 / acceptable_compl_inf_tol 1e-2 are unchanged by the ruling. The calibration shows every one of the 432 reference solves of cycles 79-87 exiting with a trailing acceptable run of only 0-2 iterates (counter 0-1 at the optimal exit), and the tail needs ONE further barrier update (mu^1.5 undershoots the tight floor: TSO 4.5e-8 -> 9.1e-11, DSO 9.1e-9 -> 9.1e-11) plus a few Newton steps, so an acceptable exit needs >= 4 more consecutive acceptable iterates. Probability that >= 1 tight solve in a cell exits acceptable: 0.35",
+   "P8_iterations": "median iterations of tight-cycle solves +1 to +6 over the reference's same cycles (reference medians: TSO 30, DSO 44) (0.6)",
+   "P10_retries": "network retries in the tight cycles at most twice the reference's in the same window (the reference already has 2 DSO max_iter primaries in cycles 79-87, recovered) (0.7); every retry attempt in a tight cycle passes 1e-6 (certain by construction; the per-attempt record shows it)",
+   "P9_2x2": "at 2x2 (NOT run in this task) the fifteen x0 TSO early stops, which ended \"Optimal\" with unscaled complementarity ~2.6e-4 against 5e-4, can no longer stop there; each either reaches the tight floor or exits acceptable -- the author's \"would reach the floor\" is CONFIRMED only for the former; probability all fifteen reach the floor: 0.5"
+  },
+  "seen_before_these_predictions": [
+   "calibration_w83.json and calibrate_launch.log (this spec's calibration_zero_solve, run at a51ad9ba; its summary is embedded above) -- seen BEFORE P7, P8 and P10 were written; P1-P6 and P9 were written before it",
+   "W81/W82 committed outputs (SRP1 G, 2x2 early stops and their exits/complementarity)",
+   "s47_recert campaign_results.json (Q and bars of C* and the unit), W82 x0 pin (Q(0), bar)",
+   "the committed r2 gate outputs and the committed C* trajectory (predicate on cycles 78-87)"
+  ]
+ },
+ "not_permitted": [
+  "the SRP1 re-certification (C*, x = 0, smallest unit) is NOT run in W83",
+  "no change to the ADMM formulation, the certification criterion, the AA predicate or anything outside the solver-option tail",
+  "no committed artifact modified or re-run onto; distinct arm name and fresh launch logs"
+ ],
+ "production_sha256_at_freeze": {
+  "network.py": "18acaa84af7a043898a7b831223b4eab1d91f9bcf2c199f49beecfeb3bf91fb4",
+  "shared_resources_planning.py": "0610d745a41c86c71dae9e776f0dc8e38c7099f73128a3d2c2e8f861ab9fc9c0",
+  "admm_parameters.py": "40d0e972dcadfb4de099a0203682ba2e93badc62d9ae989f87be40b1ce3b75fa",
+  "admm_anderson_acceleration.py": "24cf3bea9b07725ae15029dd0d9d81ed46ab8e75ecf1c9141a4b0afc6be2659e",
+  "solver_parameters.py": "2801ef16853d7e63752d646c4c8a789a17a6731959060112c48f9457074c8b65"
+ },
+ "harness_sha256_at_freeze": {
+  "p515_s53_w83_tight_tail_checks.py": "db3e52f10eecf02cd094a6fb4da095b49b5d50acabea583ae86bba6c47e73808",
+  "p515_s53_w83_tight_tail_gate.py": "2895a8f215fca6e9a65561dc941052bdc79d59eea5a610107f1b841089dd9dfc"
+ },
+ "frozen_utc": "2026-09-25T13:57:19.317943+00:00",
+ "git_head_at_freeze": "d86449c5fcf345e852fc75bded25aa0f34c02297"
+}

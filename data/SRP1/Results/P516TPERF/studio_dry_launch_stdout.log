@@ -1,0 +1,195 @@
+11:13:10 [T-perf +    1.45s] stage: read_planning_problem (data, copula/KDE scenario generation, networks, ESS)
+[INFO] Scenario random seed: 2026
+[INFO] Reading MARKET DATA from file(s)...
+[INFO] 	 - Generating market scenarios...
+[INFO] 	 - Plotting market scenarios...
+[INFO] Reading DISTRIBUTION NETWORK DATA from file(s)...
+[INFO]	 - Generating load stochastic scenarios...
+[INFO]	 - Generating RES generation stochastic scenarios...
+[INFO]	 - Generating flexibility stochastic scenarios...
+[INFO]	 - Plotting flexibility profiles...
+[INFO]	 - Plotting load scenarios...
+[INFO]	 - Plotting RES generation scenarios...
+[INFO] Reading DISTRIBUTION NETWORK DATA from file(s)...
+[INFO]	 - Generating load stochastic scenarios...
+[INFO]	 - Generating RES generation stochastic scenarios...
+[INFO]	 - Generating flexibility stochastic scenarios...
+[INFO]	 - Plotting flexibility profiles...
+[INFO]	 - Plotting load scenarios...
+[INFO]	 - Plotting RES generation scenarios...
+[INFO] Reading DISTRIBUTION NETWORK DATA from file(s)...
+[INFO]	 - Generating load stochastic scenarios...
+[INFO]	 - Generating RES generation stochastic scenarios...
+[INFO]	 - Generating flexibility stochastic scenarios...
+[INFO]	 - Plotting flexibility profiles...
+[INFO]	 - Plotting load scenarios...
+[INFO]	 - Plotting RES generation scenarios...
+[INFO] Reading TRANSMISSION NETWORK DATA from file(s)...
+[INFO]	 - Generating load stochastic scenarios...
+[INFO]	 - Generating RES generation stochastic scenarios...
+[INFO]	 - Generating flexibility stochastic scenarios...
+[INFO]	 - Plotting flexibility profiles...
+[INFO]	 - Plotting load scenarios...
+[INFO]	 - Plotting RES generation scenarios...
+[INFO] Scenario checksum: 1e8bdd3e5233442a87fbe44b78281c8ae61b09c09700388fed20ab9684d18aef
+[INFO] Reading SHARED ESS DATA from file(s)...
+[INFO] Reading PLANNING PARAMETERS from file...
+11:13:22 [T-perf +   13.02s] stage: construct arm planning (p516_tperf_studio_dry_build; s44 path, apply_rho=False, unit-cell candidate)
+11:13:22 [T-perf +   13.08s] stage: ESSO AL scale (full block set, before any restriction)
+[ADMM ESSO AL SCALE] mode=sigma_over_median_block_weight | sigma=9.363536e+07 | median_block_weight=2.424162e+02 | al_scale_esso=3.862587e+05
+11:13:22 [T-perf +   13.08s] stage: create_admm_variables (full instance)
+11:13:22 [T-perf +   13.12s] stage: create_distribution_networks_models (nodes [7]; optimize intercepted)
+[INFO] 		 - Distribution Network node 7...
+11:13:29 [T-perf +   19.84s] stage: create_transmission_network_model (optimize intercepted)
+[INFO] 		 - Transmission Network...
+11:13:32 [T-perf +   23.33s] stage: create_shared_energy_storage_model (optimize intercepted)
+11:13:34 [T-perf +   24.90s] stage: ADMM objective preparation (s44 child_build sequence)
+11:13:34 [T-perf +   24.95s] build done in 23.5s; guard {'permitted_solve': 0, 'permitted_exec': 0, 'blocked_solve': 0, 'blocked_exec': 0}; zero solves: True; ru_maxrss 1.40 GiB
+11:13:34 [T-perf +   24.95s] stage: size tso block (Pyomo vars / rows / nnz; the solved initialisation problem)
+11:13:34 [T-perf +   25.37s] tso: vars 89010 (free 62258), rows eq 29161 ineq 30495, nnz(free) 203264, scenarios 5x5
+11:13:34 [T-perf +   25.37s] stage: size dso block (Pyomo vars / rows / nnz; the solved initialisation problem)
+11:13:36 [T-perf +   26.68s] dso: vars 269170 (free 267570), rows eq 102417 ineq 84570, nnz(free) 758574, scenarios 5x5
+11:13:38 [T-perf +   28.65s] stage: prepare 6 case stand-ins (clones of the built blocks)
+11:13:54 [T-perf +   45.34s] capture checklists hold (warm-suffix item deferred to the per-case check)
+[INFO] 			 - Running SMOPF, Network case9, 2025, Spring...
+[WARNING] Solver execution failed for network case9, year=2025, day=Spring: OptSolver.solve reached from an undeclared call site; P5.16 T-perf Part B ZERO-SOLVE mode (blocking) permits only ()
+[WARNING] Network solver did not converge for case9, year=2025, day=Spring: no SolverResults returned | warm_start=False
+[WARNING] IPOPT solver log for case9, year=2025, day=Spring: /Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry/logs/tperf_tso_ii_cold_2025_Spring.log
+OPTIONS tso_ii_cold (passed by production, solve blocked; match_intended=True):
+{
+ "acceptable_iter": 5,
+ "acceptable_tol": 0.0001,
+ "bound_frac": 1e-06,
+ "bound_push": 1e-06,
+ "compl_inf_tol": 0.0005,
+ "file_append": "yes",
+ "file_print_level": 6,
+ "fixed_variable_treatment": "make_parameter",
+ "linear_solver": "ma97",
+ "max_iter": 500,
+ "output_file": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry/logs/tperf_tso_ii_cold_2025_Spring.log",
+ "print_timing_statistics": "yes",
+ "slack_bound_frac": 1e-06,
+ "slack_bound_push": 1e-06,
+ "tol": 1e-05
+}
+[INFO] 			 - Running SMOPF, Network case9, 2025, Spring...
+[WARNING] Solver execution failed for network case9, year=2025, day=Spring: OptSolver.solve reached from an undeclared call site; P5.16 T-perf Part B ZERO-SOLVE mode (blocking) permits only ()
+[WARNING] Network solver did not converge for case9, year=2025, day=Spring: no SolverResults returned | warm_start=True
+[WARNING] IPOPT solver log for case9, year=2025, day=Spring: /Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry/logs/tperf_tso_i_warm_2025_Spring.log
+OPTIONS tso_i_warm (passed by production, solve blocked; match_intended=True):
+{
+ "acceptable_iter": 5,
+ "acceptable_tol": 0.0001,
+ "bound_frac": 1e-06,
+ "bound_push": 1e-06,
+ "compl_inf_tol": 0.0005,
+ "file_append": "yes",
+ "file_print_level": 6,
+ "fixed_variable_treatment": "make_parameter",
+ "linear_solver": "ma97",
+ "max_iter": 500,
+ "output_file": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry/logs/tperf_tso_i_warm_2025_Spring.log",
+ "print_timing_statistics": "yes",
+ "slack_bound_frac": 1e-06,
+ "slack_bound_push": 1e-06,
+ "tol": 1e-05,
+ "warm_start_init_point": "yes"
+}
+[INFO] 			 - Running SMOPF, Network case9, 2025, Spring...
+[WARNING] Solver execution failed for network case9, year=2025, day=Spring: OptSolver.solve reached from an undeclared call site; P5.16 T-perf Part B ZERO-SOLVE mode (blocking) permits only ()
+[WARNING] Network solver did not converge for case9, year=2025, day=Spring: no SolverResults returned | warm_start=True
+[WARNING] IPOPT solver log for case9, year=2025, day=Spring: /Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry/logs/tperf_tso_iii_warm_diag_2025_Spring.log
+OPTIONS tso_iii_warm_diag (passed by production, solve blocked; match_intended=True):
+{
+ "acceptable_iter": 5,
+ "acceptable_tol": 0.0001,
+ "bound_frac": 1e-06,
+ "bound_push": 1e-06,
+ "compl_inf_tol": 0.0005,
+ "file_append": "yes",
+ "file_print_level": 6,
+ "fixed_variable_treatment": "make_parameter",
+ "linear_solver": "ma97",
+ "max_iter": 500,
+ "nlp_scaling_method": "gradient-based",
+ "output_file": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry/logs/tperf_tso_iii_warm_diag_2025_Spring.log",
+ "print_info_string": "yes",
+ "print_level": 5,
+ "print_timing_statistics": "yes",
+ "slack_bound_frac": 1e-06,
+ "slack_bound_push": 1e-06,
+ "tol": 1e-05,
+ "warm_start_init_point": "yes"
+}
+[INFO] 			 - Running SMOPF, Network case33_2, 2025, Spring...
+[WARNING] Solver execution failed for network case33_2, year=2025, day=Spring: OptSolver.solve reached from an undeclared call site; P5.16 T-perf Part B ZERO-SOLVE mode (blocking) permits only ()
+[WARNING] Network solver did not converge for case33_2, year=2025, day=Spring: no SolverResults returned | warm_start=False
+[WARNING] IPOPT solver log for case33_2, year=2025, day=Spring: /Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry/logs/tperf_dso_ii_cold_2025_Spring.log
+OPTIONS dso_ii_cold (passed by production, solve blocked; match_intended=True):
+{
+ "acceptable_iter": 5,
+ "acceptable_tol": 0.0001,
+ "bound_frac": 1e-05,
+ "bound_push": 1e-05,
+ "file_append": "yes",
+ "file_print_level": 6,
+ "fixed_variable_treatment": "make_parameter",
+ "linear_solver": "ma97",
+ "max_iter": 500,
+ "output_file": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry/logs/tperf_dso_ii_cold_2025_Spring.log",
+ "print_timing_statistics": "yes",
+ "slack_bound_frac": 1e-05,
+ "slack_bound_push": 1e-05,
+ "tol": 1e-05
+}
+[INFO] 			 - Running SMOPF, Network case33_2, 2025, Spring...
+[WARNING] Solver execution failed for network case33_2, year=2025, day=Spring: OptSolver.solve reached from an undeclared call site; P5.16 T-perf Part B ZERO-SOLVE mode (blocking) permits only ()
+[WARNING] Network solver did not converge for case33_2, year=2025, day=Spring: no SolverResults returned | warm_start=True
+[WARNING] IPOPT solver log for case33_2, year=2025, day=Spring: /Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry/logs/tperf_dso_i_warm_2025_Spring.log
+OPTIONS dso_i_warm (passed by production, solve blocked; match_intended=True):
+{
+ "acceptable_iter": 5,
+ "acceptable_tol": 0.0001,
+ "bound_frac": 1e-05,
+ "bound_push": 1e-05,
+ "file_append": "yes",
+ "file_print_level": 6,
+ "fixed_variable_treatment": "make_parameter",
+ "linear_solver": "ma97",
+ "max_iter": 500,
+ "output_file": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry/logs/tperf_dso_i_warm_2025_Spring.log",
+ "print_timing_statistics": "yes",
+ "slack_bound_frac": 1e-05,
+ "slack_bound_push": 1e-05,
+ "tol": 1e-05,
+ "warm_start_init_point": "yes"
+}
+[INFO] 			 - Running SMOPF, Network case33_2, 2025, Spring...
+[WARNING] Solver execution failed for network case33_2, year=2025, day=Spring: OptSolver.solve reached from an undeclared call site; P5.16 T-perf Part B ZERO-SOLVE mode (blocking) permits only ()
+[WARNING] Network solver did not converge for case33_2, year=2025, day=Spring: no SolverResults returned | warm_start=True
+[WARNING] IPOPT solver log for case33_2, year=2025, day=Spring: /Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry/logs/tperf_dso_iii_warm_diag_2025_Spring.log
+OPTIONS dso_iii_warm_diag (passed by production, solve blocked; match_intended=True):
+{
+ "acceptable_iter": 5,
+ "acceptable_tol": 0.0001,
+ "bound_frac": 1e-05,
+ "bound_push": 1e-05,
+ "file_append": "yes",
+ "file_print_level": 6,
+ "fixed_variable_treatment": "make_parameter",
+ "linear_solver": "ma97",
+ "max_iter": 500,
+ "nlp_scaling_method": "gradient-based",
+ "output_file": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry/logs/tperf_dso_iii_warm_diag_2025_Spring.log",
+ "print_info_string": "yes",
+ "print_level": 5,
+ "print_timing_statistics": "yes",
+ "slack_bound_frac": 1e-05,
+ "slack_bound_push": 1e-05,
+ "tol": 1e-05,
+ "warm_start_init_point": "yes"
+}
+11:14:03 [T-perf +   53.70s]   dry NL self-test tso_built: n_free=44828 eq=29161 ineq=30495 df=0.001 c_prov=False d_prov=True span=3.000 rowgrad_span=5.443 (7.29s)
+11:14:10 [T-perf +   61.45s]   dry NL self-test dso_built: n_free=224190 eq=102417 ineq=84570 df=0.001 c_prov=True d_prov=True span=3.033 rowgrad_span=7.744 (2.39s)
+11:14:10 [T-perf +   61.49s] status=complete guard={'permitted_solve': 0, 'permitted_exec': 0, 'blocked_solve': 6, 'blocked_exec': 0} verify_failures=[] -> tperf_studio_dry.json

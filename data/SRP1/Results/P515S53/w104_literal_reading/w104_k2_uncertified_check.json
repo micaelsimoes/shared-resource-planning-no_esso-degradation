@@ -1,0 +1,53 @@
+{
+ "all_agree": true,
+ "code": "import json, hashlib\nfrom p513_solve_profile_guard import SolveProfileGuard\nG = SolveProfileGuard(permitted=(), label='W104 K2 uncertified comparison (never solves)').install()\nimport settling_criterion as SC\nC = 'data/SRP1/Results/P515S53/w101_srp1_continuation/campaign_s53_w101_srp1_cont_c_star/'\nE = C + 'evals/4bf36c151fd10613_c_star/'\nLR = 'data/SRP1/Results/P515S53/w104_literal_reading/w104_literal_reading.json'\nrows = [json.loads(l) for l in open(E + 'per_cycle_record.jsonl')]\nq = {r['cycle']: r['gross_operational_cost'] for r in rows}\ndec = json.load(open(E + 'settling_decision.json'))\nsr = json.load(open(C + 'campaign_results.json'))['settling_report']\nind = json.load(open(LR))['cells']['c_star']['K2_independent_rederivation']['independent']\nN, K = 87, rows[-1]['cycle']\nL_MONO = json.load(open(C + 'campaign_spec_s53_w101_srp1_cont_c_star_1a7483ef.json'))['candidates'][0]['settling_continuation']['settling_rule']['l_mono']\nassert L_MONO == 2 * 22\nbw = dec['band_window']; vals = [q[c] for c in range(bw[0], bw[1] + 1)]\nband = [min(vals), max(vals)]\nmono = [q[c] for c in range(K - L_MONO + 1, K + 1)]\ncmp = {'T': json.dumps(ind['T']) == json.dumps(dec['T']), 'A': json.dumps(ind['A']) == json.dumps(dec['A']),\n       'k0': ind['k0'] == dec['k0'], 'no_lapse_after_N': ind['lapse_cycles_after_N'] == [] and dec['lapse_events'] == [],\n       'band_window_is_last_20': bw == [K - 19, K] and dec['band_window_length'] == 20,\n       'band': band == dec['band'], 'band_width': band[1] - band[0] == dec['band_width'],\n       'Q_at_cap': q[K] == sr['Q_at_cap'], 's_signed': q[K] - q[N] == sr['s_signed'],\n       'mid_band_minus_Q_N': (band[0] + band[1]) / 2 - q[N] == sr['report_only']['mid_band_minus_Q_N'],\n       'Q_N_eq_decision': q[N] == dec['Q_N'],\n       'fewer_than_3_turning_points': len(ind['T']) < 3,\n       'monotone_window_range_gt_tau': max(mono) - min(mono) > SC.TAU}\nout = {'what': 'W104 zero-solve K2 comparison for the UNCERTIFIED c_star decision (the W103 script reports but does not '\n               'compare K2 when uncertified): independent T/A/k0 from w104_literal_reading.json vs settling_decision.json; '\n               'band over band_window recomputed from raw Q; s = Q_cap - Q_N; mid(band) - Q_N; monotone window '\n               '[K - L_MONO + 1, K] range vs TAU',\n       'code': open(__file__).read(),\n       'inputs': {p: hashlib.sha256(open(p, 'rb').read()).hexdigest() for p in\n                  (E + 'per_cycle_record.jsonl', E + 'settling_decision.json', C + 'campaign_results.json', LR, 'settling_criterion.py')},\n       'values': {'band': band, 'band_width': band[1] - band[0], 'range_over_tau_band': (band[1] - band[0]) / SC.TAU,\n                  's_signed': q[K] - q[N], 'mid_band_minus_Q_N': (band[0] + band[1]) / 2 - q[N],\n                  'monotone_window': [K - L_MONO + 1, K], 'monotone_range': max(mono) - min(mono),\n                  'monotone_range_over_tau': (max(mono) - min(mono)) / SC.TAU, 'TAU': SC.TAU},\n       'comparisons': cmp, 'all_agree': all(cmp.values())}\nout['guard'] = {'counts': dict(G.counts), 'verify_0_failures': G.verify(0)}\nassert not out['guard']['verify_0_failures']\nimport gate_result_io as GRIO\nwith open('data/SRP1/Results/P515S53/w104_literal_reading/w104_k2_uncertified_check.json', 'x') as fh:\n    GRIO.dump(out, fh, indent=1, sort_keys=True, default=GRIO.json_default)\nprint(json.dumps(out['comparisons']), out['all_agree'], json.dumps(out['values']), out['guard'])\n",
+ "comparisons": {
+  "A": true,
+  "Q_N_eq_decision": true,
+  "Q_at_cap": true,
+  "T": true,
+  "band": true,
+  "band_width": true,
+  "band_window_is_last_20": true,
+  "fewer_than_3_turning_points": true,
+  "k0": true,
+  "mid_band_minus_Q_N": true,
+  "monotone_window_range_gt_tau": true,
+  "no_lapse_after_N": true,
+  "s_signed": true
+ },
+ "guard": {
+  "counts": {
+   "blocked_exec": 0,
+   "blocked_solve": 0,
+   "permitted_exec": 0,
+   "permitted_solve": 0
+  },
+  "verify_0_failures": []
+ },
+ "inputs": {
+  "data/SRP1/Results/P515S53/w101_srp1_continuation/campaign_s53_w101_srp1_cont_c_star/campaign_results.json": "20832469af3a7145b2d47c6db83451c4c0cd6564e69883b09a0cc750ed8fa059",
+  "data/SRP1/Results/P515S53/w101_srp1_continuation/campaign_s53_w101_srp1_cont_c_star/evals/4bf36c151fd10613_c_star/per_cycle_record.jsonl": "f65c383366ea3e4132f5ba3a3941074689240851ffc2fcf6ed3daaa034f6a890",
+  "data/SRP1/Results/P515S53/w101_srp1_continuation/campaign_s53_w101_srp1_cont_c_star/evals/4bf36c151fd10613_c_star/settling_decision.json": "a51965ffdbd857805356fbdbad8adfb7c92fac77d6fd0904e7d109e8790af60e",
+  "data/SRP1/Results/P515S53/w104_literal_reading/w104_literal_reading.json": "7496379893301266432ac1f64263ea6fa48247b3aafbc4d88af425a9e84d6c39",
+  "settling_criterion.py": "fbe5550b34a4062feed82476e1959b5e4e2786cb13ca61728bfa1803ba75f65f"
+ },
+ "values": {
+  "TAU": 4539.0682750000005,
+  "band": [
+   650907167.3283353,
+   650911903.2009044
+  ],
+  "band_width": 4735.8725690841675,
+  "mid_band_minus_Q_N": -2010.9408466815948,
+  "monotone_range": 11391.563473939896,
+  "monotone_range_over_tau": 2.509669999167372,
+  "monotone_window": [
+   144,
+   187
+  ],
+  "range_over_tau_band": 1.043357861605236,
+  "s_signed": -4378.877131223679
+ },
+ "what": "W104 zero-solve K2 comparison for the UNCERTIFIED c_star decision (the W103 script reports but does not compare K2 when uncertified): independent T/A/k0 from w104_literal_reading.json vs settling_decision.json; band over band_window recomputed from raw Q; s = Q_cap - Q_N; mid(band) - Q_N; monotone window [K - L_MONO + 1, K] range vs TAU"
+}

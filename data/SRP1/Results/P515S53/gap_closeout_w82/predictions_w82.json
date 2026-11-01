@@ -1,0 +1,42 @@
+{
+ "stage": "P5.15 Addendum 45 item 3 close-out, task W82: (1) the complete 2x2 barrier-gap difference (TSO + DSO, x0_a0p50 vs n7_4h_e1_a0p50, terminal ADMM solves) against the two-cell bar-sum 16,551.50; (2) the mu-floor test of W81 finding 3 with the at-floor counterfactual and a frozen three-way decomposition; (3) the SRP1 C2-baseline pair (campaign_s47_recert n7_4h_e1 against its pinned Q(0) record) against its own bars",
+ "recorded_utc": "2026-09-25 (before the W82 harness was written or run; before any per-block 2x2 unit-cell field, any 2x2 DSO per-block field, or any terminal-solve field of the s47_recert unit was read)",
+ "author": "Worker (W82)",
+ "seen_before_recording": [
+  "Everything in W81 (srp1_gap_w81.json, committed d98e39f2): Phase A per-block terminal fields, aggregates and verdict (R = 0.0038). In that JSON every TSO block of x0/unit/unit_dup has at_floor True (s = 0.002 x0, 0.001 unit) and every DSO block has at_floor null because compl_inf_tol is absent from the DSO options list (W81 parser returned None); DSO mu_last is 9.0909e-9 at s = 0.001 in all three cells",
+  "W74 JSON log_summary for x0_a0p50 ONLY: TSO terminal obj_scale 0.00471435-0.00711499 (20 distinct), mu_last 2.3094e-7-1.8449e-6 (6 distinct), n_pairs 15,588-15,924; DSO terminal obj_scale 0.004 (all 60), mu_last 3.6364e-8 (2 float-distinct values), n_pairs 71,814-72,416; and its TSO|2025|Spring terminal block (s 0.00634306, mu 2.88321e-7, n_pairs 15,924, w 276)",
+  "W74 committed per-cell TSO terminal G: x0_a0p50 18,637.754597773586, unit 3,558.841539982312, difference 15,078.913057791275; W73 18,790.22",
+  "2x2 bars from alpha_row_recompute.json (W72): x0_a0p50 7,898.826446652412, n7_4h_e1_a0p50 8,652.678509116173, resolution_two_cell 16,551.504955768585",
+  "2x2 unit network_failures_s39_D.jsonl: 4 recovered_tier1 events at cycles 7, 32, 47, 57 (terminal cycle 67); x0_a0p50 has none",
+  "s47_recert campaign_results.json: n7_4h_e1 cycles 112, value 259,427.76775527, bar 25,104.654562950134, x0_bar 9,629.97833788395, bar_sum_with_x0 34,734.63290083408; Q(0) pinned from data/SRP1/Results/P515S45/campaign_s45_a0_c7 x0 (eval dir 7aa017f09989b56d_x0, the SAME x0 as Phase A / W81)",
+  "s47_recert unit run dir: 113 IPOPT runs in optim_log_case9_2025_Spring.log and in optim_log_case33_2_2025_Summer.log; one recovery log (case33_2 2025 Summer, 1 run, EXIT Optimal) for a maxIterations primary at cycle 6; 339 ESSO logs; solve_profile permitted_solve 5,764; the options lists of the case9 and case33_2 2025 Spring logs (TSO: tol 1e-5, compl_inf_tol 5e-4; DSO: tol 1e-5, no compl_inf_tol)",
+  "IPOPT 3.14.18 IpMonotoneMuUpdate: new_mu = Max(new_mu, mu_target, Min(tol, compl_inf_tol x obj_scaling)/(barrier_tol_factor + 1)); defaults barrier_tol_factor 10, compl_inf_tol 1e-4, mu_target 0"
+ ],
+ "not_seen_before_recording": "every per-block field of the 2x2 unit cell (TSO and DSO), every 2x2 DSO per-block value of either cell other than the x0 summary above, every x0_a0p50 TSO per-block field except 2025 Spring, and every terminal-solve field (s, mu, n_pairs, objective) of the s47_recert unit's 48 network logs",
+ "definitions_frozen_here": {
+  "terminal_admm_solve": "solve K + 1 of the block's main log (W81 rule; layout A no polish n == K + 1, layout B polish n == K + 2); recovery attempts are in *_recovery*.log and must not be at the terminal cycle",
+  "g_b": "w_b x n_pairs x mu_last / s (W73/W74/W81 primary formula; EUR of Q)",
+  "mu_floor_b": "min(tol, cit x s) / (btf + 1); tol and cit from the options list printed before the run, cit = 1e-4 (IPOPT default) when absent; btf = 10 and mu_target = 0 required absent from the list (asserted); at_floor iff |mu_last / floor - 1| <= 1e-3, above iff mu_last / floor > 1 + 1e-3, below iff < 1 - 1e-3 (flagged)",
+  "g_floor_b": "w_b x n_pairs x mu_floor_b / s (the at-floor counterfactual; equals w_b x n_pairs x cit / 11 when cit x s <= tol, independent of s)",
+  "decomposition": "Delta G = P + S + C exactly, with P = sum_b w_b n_pairs cit_b / 11 over x0 minus unit (structural pair count, s cancels), S = Delta G_floor - P (non-zero only for blocks with cit x s > tol: scaling regime), C = Delta G - Delta G_floor (above-floor excess: incomplete convergence)",
+  "R": "|Delta G_total| / bar_sum; bar_sum 2x2 = 16,551.504955768585 (W72); C2-baseline = 34,734.63290083408 (s47_recert bar_sum_with_x0 = x0_bar + unit bar); Phase A = 20,970.29711854458 (W81)"
+ },
+ "predictions": {
+  "P1_control_w74": {"statement": "Re-parsing the 2x2 TSO logs with W74's weights reproduces W74's terminal G for x0_a0p50 (18,637.754597773586), n7_4h_e1_a0p50 (3,558.841539982312) and the difference 15,078.913057791275, each to 1e-9 relative", "expected": true},
+  "P2_identification_2x2": {"statement": "All 160 2x2 network logs (80 per cell) are layout B: n_solves == K + 2, cold-multiplier solves == [1, K + 2]; the unit's 4 recovery events are all at cycles != K", "expected": true},
+  "P3_dso_floor_2x2": {"statement": "All 120 2x2 DSO terminal solves (60 per cell) are at the floor", "expected": true},
+  "P4_dso_diff_2x2": {"statement": "Delta G_DSO (2x2, x0 - unit) <= 0 and |Delta G_DSO| <= 500 EUR", "expected": true},
+  "P5_complete_ratio_2x2": {"statement": "The complete 2x2 figure |Delta G_TSO + Delta G_DSO| / 16,551.50 lies in [0.85, 0.92] (so < 1)", "expected": true},
+  "P6_unit_tso_floor_2x2": {"statement": "All 20 2x2 unit TSO terminal solves are at the floor", "expected": true},
+  "P7_x0_tso_above_2x2": {"statement": "At least 14 of the 20 x0_a0p50 TSO terminal solves are ABOVE the floor (DEDUCED, not predicted: 6 distinct mu over 20 distinct s allows at most 6 at-floor blocks)", "expected": true},
+  "P8_counterfactual_2x2": {"statement": "At the floor the complete 2x2 difference Delta G_floor <= 0 and |Delta G_floor| / 16,551.50 < 0.05, and S == 0 (every 2x2 block has cit x s <= tol)", "expected": true},
+  "P9_explanation_2x2": {"statement": "C / Delta G_total >= 1.0 (incomplete convergence carries the entire 2x2 figure; P is negative)", "expected": true},
+  "P10_c2_x0_identical": {"statement": "The C2-baseline pair's x0 is the Phase A x0 run: every terminal-solve field of its 48 blocks equals W81's x0 record", "expected": true},
+  "P11_recert_identification": {"statement": "s47_recert unit: all 48 main logs layout A (n == K + 1, cold == [1]), no polish, the only recovery log is at a non-terminal cycle, and 48 (K + 1) + recovery runs + ESSO runs == permitted_solve", "expected": true},
+  "P12_recert_floor": {"statement": "All 48 s47_recert unit terminal solves are at the floor", "expected": true},
+  "P13_c2_ratio": {"statement": "C2-baseline |Delta G_total| / 34,734.63 < 0.05", "expected": true},
+  "P14_phase_a_floor": {"statement": "Under the default-cit rule all 144 Phase A terminal solves (x0, unit, unit_dup) are at the floor (DEDUCED from W81's committed mu and s values; a reclassification of W81's null DSO at_floor, not a prediction)", "expected": true},
+  "P15_recert_units": {"statement": "s47_recert unit units check as W81 P2: every |f / base_unweighted - 1| <= 0.05 and median <= 0.01", "expected": true}
+ },
+ "frozen_verdict_rule": "Per pair, R = |Delta G_total| / bar_sum with the primary formula; R < 1 -> SUB-RESOLUTION. 'Sub-resolution everywhere it has been measured' iff R < 1 for SRP1 Phase A (W81, re-derived), SRP1 C2-baseline and 2x2 complete. 2x2 explanation: with Delta G = P + S + C, the supported explanation is the component whose signed share of Delta G_total is >= 0.5: C -> 'incomplete convergence', S -> 'scaling artifact', P -> 'structural pair-count difference'; if no share reaches 0.5 -> 'mixed, none dominant'. Shares are reported for all three regardless. The decomposition is an accounting identity on the estimate: it does not decide whether above-floor stopping is itself caused by the scaling (that would need solves)."
+}

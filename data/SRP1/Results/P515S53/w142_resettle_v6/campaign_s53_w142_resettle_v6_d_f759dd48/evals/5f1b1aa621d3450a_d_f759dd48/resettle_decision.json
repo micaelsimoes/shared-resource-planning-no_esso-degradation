@@ -1,0 +1,532 @@
+{
+ "A": [
+  37623.143891334534,
+  17000.73165869713,
+  1165.5052676200867,
+  3953.32529091835,
+  1179.383139371872,
+  2195.452471256256,
+  1219.2720773220062
+ ],
+ "N": 89,
+ "N_definition": "the first residual pass (version 2; no non-clean reset)",
+ "N_old": 98,
+ "Q_N_old_recorded": 653075483.4554613,
+ "Q_at_cap": 653089276.8755138,
+ "Q_cc_at_cap": 653090043.3301392,
+ "T": [
+  [
+   97,
+   "min",
+   653074291.5021095
+  ],
+  [
+   110,
+   "max",
+   653111914.6460009
+  ],
+  [
+   127,
+   "min",
+   653094913.9143422
+  ],
+  [
+   141,
+   "max",
+   653096079.4196098
+  ],
+  [
+   169,
+   "min",
+   653092126.0943189
+  ],
+  [
+   170,
+   "max",
+   653093305.4774582
+  ],
+  [
+   178,
+   "min",
+   653091110.024987
+  ],
+  [
+   179,
+   "max",
+   653092329.2970643
+  ]
+ ],
+ "band": [
+  653089276.8755138,
+  653096079.4196098
+ ],
+ "band_width": 6802.544095993042,
+ "band_window": [
+  139,
+  198
+ ],
+ "band_window_length": 60,
+ "cap": 198,
+ "cap_ceiling": 300,
+ "cap_mode": "fixed",
+ "cell": "d_f759dd48",
+ "certification_vetoed_at_cap": false,
+ "clean_rule": {
+  "factor": 10.0,
+  "metric_table": {
+   "complementarity": {
+    "column": "unscaled",
+    "ipopt_meaning": "max-norm of the unscaled complementarity; termination requires <= compl_inf_tol",
+    "log_line": "Complementarity",
+    "option": "compl_inf_tol"
+   },
+   "constraint_violation": {
+    "column": "unscaled",
+    "ipopt_meaning": "max-norm of the unscaled constraint violation; termination requires <= constr_viol_tol",
+    "log_line": "Constraint violation",
+    "option": "constr_viol_tol"
+   },
+   "dual_infeasibility": {
+    "column": "unscaled",
+    "ipopt_meaning": "max-norm of the unscaled dual infeasibility; termination requires <= dual_inf_tol",
+    "log_line": "Dual infeasibility",
+    "option": "dual_inf_tol"
+   },
+   "overall_nlp_error": {
+    "column": "scaled",
+    "ipopt_meaning": "the (scaled) NLP error; successful termination requires it <= tol",
+    "log_line": "Overall NLP error",
+    "option": "tol"
+   }
+  },
+  "tolerances": {
+   "esso": {
+    "compl_inf_tol": 0.0001,
+    "constr_viol_tol": 0.0001,
+    "dual_inf_tol": 1.0,
+    "tol": 1e-10
+   },
+   "network": {
+    "compl_inf_tol": 1e-06,
+    "constr_viol_tol": 0.0001,
+    "dual_inf_tol": 1.0,
+    "tol": 1e-05
+   }
+  }
+ },
+ "dQ_cc_n_steps": 25,
+ "dQ_cc_rate_mean_last_25": -100.72076502925303,
+ "decided_at_cycle": 198,
+ "drift_n_steps": 25,
+ "drift_rate_mean_dQ_last_25": -91.97695293426514,
+ "first_residual_pass_run": 89,
+ "gap_bound": 2269.5341375000003,
+ "gap_clause_refused_at_cap": false,
+ "gap_refusals": [],
+ "gated": true,
+ "k0": 89,
+ "k_cap": 198,
+ "lapse_events": [],
+ "n_vetoes": 17,
+ "non_clean_cycles": [
+  12,
+  35,
+  40,
+  58,
+  59,
+  96,
+  110,
+  141,
+  144,
+  170,
+  179
+ ],
+ "out_of_window_reads": null,
+ "reading": "gamma_window_a_clean_10x_swing_floor_tau_over_10",
+ "reasons": [
+  "swings_growing",
+  "range_above_tau",
+  "monotone_window_not_reached"
+ ],
+ "spec_cap": 198,
+ "status": "uncertified",
+ "swing_floor": {
+  "F": 453.9068275000001,
+  "carries": [
+   "A_growth_test_floor",
+   "B_turning_point_floor"
+  ],
+  "growth_test_floor": 453.9068275000001,
+  "turning_point_floor": 453.9068275000001
+ },
+ "t_sum_at_cap": 766.4546254186604,
+ "turning_point_floor_rejections": [
+  {
+   "candidate": [
+    140,
+    "min",
+    653095648.171026
+   ],
+   "closed_swing": 174.78372049331665,
+   "cycle": 141,
+   "popped": [
+    136,
+    "max",
+    653095822.9547465
+   ]
+  },
+  {
+   "candidate": [
+    144,
+    "max",
+    653095569.073413
+   ],
+   "closed_swing": 370.5329165458679,
+   "cycle": 145,
+   "popped": [
+    143,
+    "min",
+    653095198.5404965
+   ]
+  },
+  {
+   "candidate": [
+    173,
+    "max",
+    653091576.2993371
+   ],
+   "closed_swing": 312.7437745332718,
+   "cycle": 175,
+   "popped": [
+    171,
+    "min",
+    653091263.5555626
+   ]
+  },
+  {
+   "candidate": [
+    183,
+    "max",
+    653090656.54702
+   ],
+   "closed_swing": 397.46055722236633,
+   "cycle": 184,
+   "popped": [
+    180,
+    "min",
+    653090259.0864627
+   ]
+  }
+ ],
+ "version": 6,
+ "vetoes": [
+  {
+   "branches": [
+    {
+     "W": 20,
+     "branch": "oscillatory",
+     "non_clean_in_window": [
+      141,
+      144
+     ],
+     "window": [
+      125,
+      144
+     ]
+    }
+   ],
+   "cycle": 144,
+   "k0": 89
+  },
+  {
+   "branches": [
+    {
+     "W": 35,
+     "branch": "oscillatory",
+     "non_clean_in_window": [
+      141,
+      144
+     ],
+     "window": [
+      120,
+      154
+     ]
+    }
+   ],
+   "cycle": 154,
+   "k0": 89
+  },
+  {
+   "branches": [
+    {
+     "W": 35,
+     "branch": "oscillatory",
+     "non_clean_in_window": [
+      141,
+      144
+     ],
+     "window": [
+      121,
+      155
+     ]
+    }
+   ],
+   "cycle": 155,
+   "k0": 89
+  },
+  {
+   "branches": [
+    {
+     "W": 35,
+     "branch": "oscillatory",
+     "non_clean_in_window": [
+      141,
+      144
+     ],
+     "window": [
+      122,
+      156
+     ]
+    }
+   ],
+   "cycle": 156,
+   "k0": 89
+  },
+  {
+   "branches": [
+    {
+     "W": 35,
+     "branch": "oscillatory",
+     "non_clean_in_window": [
+      141,
+      144
+     ],
+     "window": [
+      123,
+      157
+     ]
+    }
+   ],
+   "cycle": 157,
+   "k0": 89
+  },
+  {
+   "branches": [
+    {
+     "W": 35,
+     "branch": "oscillatory",
+     "non_clean_in_window": [
+      141,
+      144
+     ],
+     "window": [
+      124,
+      158
+     ]
+    }
+   ],
+   "cycle": 158,
+   "k0": 89
+  },
+  {
+   "branches": [
+    {
+     "W": 35,
+     "branch": "oscillatory",
+     "non_clean_in_window": [
+      141,
+      144
+     ],
+     "window": [
+      125,
+      159
+     ]
+    }
+   ],
+   "cycle": 159,
+   "k0": 89
+  },
+  {
+   "branches": [
+    {
+     "W": 35,
+     "branch": "oscillatory",
+     "non_clean_in_window": [
+      141,
+      144
+     ],
+     "window": [
+      126,
+      160
+     ]
+    }
+   ],
+   "cycle": 160,
+   "k0": 89
+  },
+  {
+   "branches": [
+    {
+     "W": 35,
+     "branch": "oscillatory",
+     "non_clean_in_window": [
+      141,
+      144
+     ],
+     "window": [
+      127,
+      161
+     ]
+    }
+   ],
+   "cycle": 161,
+   "k0": 89
+  },
+  {
+   "branches": [
+    {
+     "W": 35,
+     "branch": "oscillatory",
+     "non_clean_in_window": [
+      141,
+      144
+     ],
+     "window": [
+      128,
+      162
+     ]
+    }
+   ],
+   "cycle": 162,
+   "k0": 89
+  },
+  {
+   "branches": [
+    {
+     "W": 35,
+     "branch": "oscillatory",
+     "non_clean_in_window": [
+      141,
+      144
+     ],
+     "window": [
+      129,
+      163
+     ]
+    }
+   ],
+   "cycle": 163,
+   "k0": 89
+  },
+  {
+   "branches": [
+    {
+     "W": 35,
+     "branch": "oscillatory",
+     "non_clean_in_window": [
+      141,
+      144
+     ],
+     "window": [
+      130,
+      164
+     ]
+    }
+   ],
+   "cycle": 164,
+   "k0": 89
+  },
+  {
+   "branches": [
+    {
+     "W": 35,
+     "branch": "oscillatory",
+     "non_clean_in_window": [
+      141,
+      144
+     ],
+     "window": [
+      131,
+      165
+     ]
+    }
+   ],
+   "cycle": 165,
+   "k0": 89
+  },
+  {
+   "branches": [
+    {
+     "W": 35,
+     "branch": "oscillatory",
+     "non_clean_in_window": [
+      141,
+      144
+     ],
+     "window": [
+      132,
+      166
+     ]
+    }
+   ],
+   "cycle": 166,
+   "k0": 89
+  },
+  {
+   "branches": [
+    {
+     "W": 35,
+     "branch": "oscillatory",
+     "non_clean_in_window": [
+      141,
+      144
+     ],
+     "window": [
+      133,
+      167
+     ]
+    }
+   ],
+   "cycle": 167,
+   "k0": 89
+  },
+  {
+   "branches": [
+    {
+     "W": 35,
+     "branch": "oscillatory",
+     "non_clean_in_window": [
+      141,
+      144
+     ],
+     "window": [
+      134,
+      168
+     ]
+    }
+   ],
+   "cycle": 168,
+   "k0": 89
+  },
+  {
+   "branches": [
+    {
+     "W": 35,
+     "branch": "oscillatory",
+     "non_clean_in_window": [
+      141,
+      144
+     ],
+     "window": [
+      135,
+      169
+     ]
+    }
+   ],
+   "cycle": 169,
+   "k0": 89
+  }
+ ],
+ "window_all_clean": null,
+ "window_rule": "Addendum 59 Supplement (unchanged in v5): the certifying window is the last W cycles the certification test reads at k -- oscillatory [k - W + 1, k], monotone [k - L + 1, k]; every cycle of it must be all-CLEAN on all 51 blocks, otherwise certification is refused at that cycle only (certification_vetoed_non_clean) and the state is unchanged"
+}

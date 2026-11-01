@@ -1,0 +1,90 @@
+13:11:21 [S46-AGEING] memory preflight: available (memsize - wired - anonymous - compressor-occupied) = 21.72 GiB [wired 2.02, anonymous 7.25, compressor-occupied 1.02, memsize 32.00]; free+inactive = 15.54 GiB (recorded only); required 13.75 GiB (hw.memsize - (wired + anonymous + compressor-occupied) x page size >= 5 x 2.75 GiB) -> PASS; vm_stat pages {'pages_free': 4154, 'pages_active': 781792, 'pages_inactive': 1014467, 'pages_speculative': 49061, 'pages_wired_down': 132085, 'pages_purgeable': 2311, 'file_backed_pages': 1370316, 'anonymous_pages': 475004, 'pages_stored_in_compressor': 141175, 'pages_occupied_by_compressor': 66727}
+13:11:21 [S46-AGEING] MODEL VARIANT — not the baseline
+13:11:21 [S46-AGEING] preconditions passed; spec data/SRP1/Results/P515S46/campaign_s46_ageing/campaign_spec_s46_ageing_6544c17e.json sha256=6544c17e5231db41db401c4dc768472142a4fe878d86b2a33b1ff33990963f45; git HEAD 3e0cd105854f0a3f84079cd0dc5a43669b422902 (spec frozen at e127daa77dc612acbb6870661d92c5cdbabf708e)
+13:11:21 [S46-AGEING] 5 evaluations in ONE batch of 5: ['n7_4h_e1_C2', 'n7_4h_e1_C4', 'n7_4h_e1_C2_calfade', 'n7_4h_e1_C3_midblock', 'n7_4h_e1_no_ageing']
+13:11:21 [S46-AGEING] campaign lock acquired: {'pid': 80230, 'campaign_id': 's46_ageing', 'campaign_spec_sha256': '6544c17e5231db41db401c4dc768472142a4fe878d86b2a33b1ff33990963f45', 'started_utc': '2026-09-21T13:11:21.996945+00:00'}
+13:11:22 [S44-HARNESS] launched n7_4h_e1_C2 (key db77e1549af855bc) pid=80262
+13:11:22 [S44-HARNESS] launched n7_4h_e1_C4 (key db77e1549af855bc) pid=80263
+13:11:22 [S44-HARNESS] launched n7_4h_e1_C2_calfade (key db77e1549af855bc) pid=80264
+13:11:22 [S44-HARNESS] launched n7_4h_e1_C3_midblock (key db77e1549af855bc) pid=80265
+13:11:22 [S44-HARNESS] launched n7_4h_e1_no_ageing (key db77e1549af855bc) pid=80266
+13:11:22 [S44-HARNESS] heartbeat n7_4h_e1_C2: 0s cycle=None; n7_4h_e1_C4: 0s cycle=None; n7_4h_e1_C2_calfade: 0s cycle=None; n7_4h_e1_C3_midblock: 0s cycle=None; n7_4h_e1_no_ageing: 0s cycle=None
+13:12:22 [S44-HARNESS] heartbeat n7_4h_e1_C2: 60s cycle=None; n7_4h_e1_C4: 60s cycle=None; n7_4h_e1_C2_calfade: 60s cycle=None; n7_4h_e1_C3_midblock: 60s cycle=None; n7_4h_e1_no_ageing: 60s cycle=None
+13:13:22 [S44-HARNESS] heartbeat n7_4h_e1_C2: 120s cycle=2; n7_4h_e1_C4: 120s cycle=2; n7_4h_e1_C2_calfade: 120s cycle=2; n7_4h_e1_C3_midblock: 120s cycle=2; n7_4h_e1_no_ageing: 120s cycle=2
+13:14:22 [S44-HARNESS] heartbeat n7_4h_e1_C2: 180s cycle=4; n7_4h_e1_C4: 180s cycle=4; n7_4h_e1_C2_calfade: 180s cycle=4; n7_4h_e1_C3_midblock: 180s cycle=4; n7_4h_e1_no_ageing: 180s cycle=4
+13:15:22 [S44-HARNESS] heartbeat n7_4h_e1_C2: 240s cycle=5; n7_4h_e1_C4: 240s cycle=5; n7_4h_e1_C2_calfade: 240s cycle=5; n7_4h_e1_C3_midblock: 240s cycle=5; n7_4h_e1_no_ageing: 240s cycle=6
+13:16:22 [S44-HARNESS] heartbeat n7_4h_e1_C2: 300s cycle=7; n7_4h_e1_C4: 300s cycle=7; n7_4h_e1_C2_calfade: 300s cycle=7; n7_4h_e1_C3_midblock: 300s cycle=7; n7_4h_e1_no_ageing: 300s cycle=7
+13:17:22 [S44-HARNESS] heartbeat n7_4h_e1_C2: 360s cycle=9; n7_4h_e1_C4: 360s cycle=9; n7_4h_e1_C2_calfade: 360s cycle=9; n7_4h_e1_C3_midblock: 360s cycle=9; n7_4h_e1_no_ageing: 360s cycle=9
+13:18:22 [S44-HARNESS] heartbeat n7_4h_e1_C2: 421s cycle=11; n7_4h_e1_C4: 421s cycle=11; n7_4h_e1_C2_calfade: 421s cycle=11; n7_4h_e1_C3_midblock: 421s cycle=11; n7_4h_e1_no_ageing: 421s cycle=11
+13:19:22 [S44-HARNESS] heartbeat n7_4h_e1_C2: 481s cycle=13; n7_4h_e1_C4: 481s cycle=13; n7_4h_e1_C2_calfade: 481s cycle=13; n7_4h_e1_C3_midblock: 481s cycle=13; n7_4h_e1_no_ageing: 481s cycle=13
+13:20:22 [S44-HARNESS] heartbeat n7_4h_e1_C2: 541s cycle=15; n7_4h_e1_C4: 541s cycle=15; n7_4h_e1_C2_calfade: 541s cycle=15; n7_4h_e1_C3_midblock: 541s cycle=15; n7_4h_e1_no_ageing: 541s cycle=15
+13:21:22 [S44-HARNESS] heartbeat n7_4h_e1_C2: 601s cycle=16; n7_4h_e1_C4: 601s cycle=16; n7_4h_e1_C2_calfade: 601s cycle=17; n7_4h_e1_C3_midblock: 601s cycle=17; n7_4h_e1_no_ageing: 601s cycle=17
+13:22:22 [S44-HARNESS] heartbeat n7_4h_e1_C2: 661s cycle=18; n7_4h_e1_C4: 661s cycle=18; n7_4h_e1_C2_calfade: 661s cycle=18; n7_4h_e1_C3_midblock: 661s cycle=18; n7_4h_e1_no_ageing: 661s cycle=19
+13:23:22 [S44-HARNESS] heartbeat n7_4h_e1_C2: 721s cycle=20; n7_4h_e1_C4: 721s cycle=20; n7_4h_e1_C2_calfade: 721s cycle=20; n7_4h_e1_C3_midblock: 721s cycle=20; n7_4h_e1_no_ageing: 721s cycle=20
+13:24:22 [S44-HARNESS] heartbeat n7_4h_e1_C2: 781s cycle=22; n7_4h_e1_C4: 781s cycle=22; n7_4h_e1_C2_calfade: 781s cycle=22; n7_4h_e1_C3_midblock: 781s cycle=22; n7_4h_e1_no_ageing: 781s cycle=22
+13:25:22 [S44-HARNESS] heartbeat n7_4h_e1_C2: 841s cycle=24; n7_4h_e1_C4: 841s cycle=24; n7_4h_e1_C2_calfade: 841s cycle=24; n7_4h_e1_C3_midblock: 841s cycle=24; n7_4h_e1_no_ageing: 841s cycle=24
+13:26:23 [S44-HARNESS] heartbeat n7_4h_e1_C2: 901s cycle=26; n7_4h_e1_C4: 901s cycle=26; n7_4h_e1_C2_calfade: 901s cycle=26; n7_4h_e1_C3_midblock: 901s cycle=26; n7_4h_e1_no_ageing: 901s cycle=26
+13:27:23 [S44-HARNESS] heartbeat n7_4h_e1_C2: 961s cycle=28; n7_4h_e1_C4: 961s cycle=28; n7_4h_e1_C2_calfade: 961s cycle=28; n7_4h_e1_C3_midblock: 961s cycle=28; n7_4h_e1_no_ageing: 961s cycle=28
+13:28:23 [S44-HARNESS] heartbeat n7_4h_e1_C2: 1021s cycle=30; n7_4h_e1_C4: 1021s cycle=30; n7_4h_e1_C2_calfade: 1021s cycle=30; n7_4h_e1_C3_midblock: 1021s cycle=30; n7_4h_e1_no_ageing: 1021s cycle=30
+13:29:23 [S44-HARNESS] heartbeat n7_4h_e1_C2: 1081s cycle=32; n7_4h_e1_C4: 1081s cycle=32; n7_4h_e1_C2_calfade: 1081s cycle=32; n7_4h_e1_C3_midblock: 1081s cycle=32; n7_4h_e1_no_ageing: 1081s cycle=32
+13:30:23 [S44-HARNESS] heartbeat n7_4h_e1_C2: 1141s cycle=34; n7_4h_e1_C4: 1141s cycle=34; n7_4h_e1_C2_calfade: 1141s cycle=34; n7_4h_e1_C3_midblock: 1141s cycle=34; n7_4h_e1_no_ageing: 1141s cycle=34
+13:31:23 [S44-HARNESS] heartbeat n7_4h_e1_C2: 1202s cycle=36; n7_4h_e1_C4: 1202s cycle=36; n7_4h_e1_C2_calfade: 1202s cycle=36; n7_4h_e1_C3_midblock: 1202s cycle=36; n7_4h_e1_no_ageing: 1202s cycle=36
+13:32:23 [S44-HARNESS] heartbeat n7_4h_e1_C2: 1262s cycle=37; n7_4h_e1_C4: 1262s cycle=38; n7_4h_e1_C2_calfade: 1262s cycle=38; n7_4h_e1_C3_midblock: 1262s cycle=38; n7_4h_e1_no_ageing: 1262s cycle=38
+13:33:23 [S44-HARNESS] heartbeat n7_4h_e1_C2: 1322s cycle=39; n7_4h_e1_C4: 1322s cycle=40; n7_4h_e1_C2_calfade: 1322s cycle=40; n7_4h_e1_C3_midblock: 1322s cycle=40; n7_4h_e1_no_ageing: 1322s cycle=40
+13:34:23 [S44-HARNESS] heartbeat n7_4h_e1_C2: 1382s cycle=41; n7_4h_e1_C4: 1382s cycle=42; n7_4h_e1_C2_calfade: 1382s cycle=42; n7_4h_e1_C3_midblock: 1382s cycle=42; n7_4h_e1_no_ageing: 1382s cycle=42
+13:35:23 [S44-HARNESS] heartbeat n7_4h_e1_C2: 1442s cycle=43; n7_4h_e1_C4: 1442s cycle=44; n7_4h_e1_C2_calfade: 1442s cycle=44; n7_4h_e1_C3_midblock: 1442s cycle=44; n7_4h_e1_no_ageing: 1442s cycle=44
+13:36:23 [S44-HARNESS] heartbeat n7_4h_e1_C2: 1502s cycle=45; n7_4h_e1_C4: 1502s cycle=46; n7_4h_e1_C2_calfade: 1502s cycle=45; n7_4h_e1_C3_midblock: 1502s cycle=45; n7_4h_e1_no_ageing: 1502s cycle=45
+13:37:23 [S44-HARNESS] heartbeat n7_4h_e1_C2: 1562s cycle=47; n7_4h_e1_C4: 1562s cycle=47; n7_4h_e1_C2_calfade: 1562s cycle=47; n7_4h_e1_C3_midblock: 1562s cycle=47; n7_4h_e1_no_ageing: 1562s cycle=47
+13:38:23 [S44-HARNESS] heartbeat n7_4h_e1_C2: 1622s cycle=49; n7_4h_e1_C4: 1622s cycle=49; n7_4h_e1_C2_calfade: 1622s cycle=49; n7_4h_e1_C3_midblock: 1622s cycle=49; n7_4h_e1_no_ageing: 1622s cycle=49
+13:39:23 [S44-HARNESS] heartbeat n7_4h_e1_C2: 1682s cycle=51; n7_4h_e1_C4: 1682s cycle=51; n7_4h_e1_C2_calfade: 1682s cycle=51; n7_4h_e1_C3_midblock: 1682s cycle=51; n7_4h_e1_no_ageing: 1682s cycle=51
+13:40:24 [S44-HARNESS] heartbeat n7_4h_e1_C2: 1742s cycle=53; n7_4h_e1_C4: 1742s cycle=53; n7_4h_e1_C2_calfade: 1742s cycle=53; n7_4h_e1_C3_midblock: 1742s cycle=53; n7_4h_e1_no_ageing: 1742s cycle=53
+13:41:24 [S44-HARNESS] heartbeat n7_4h_e1_C2: 1802s cycle=55; n7_4h_e1_C4: 1802s cycle=55; n7_4h_e1_C2_calfade: 1802s cycle=55; n7_4h_e1_C3_midblock: 1802s cycle=55; n7_4h_e1_no_ageing: 1802s cycle=55
+13:42:24 [S44-HARNESS] heartbeat n7_4h_e1_C2: 1862s cycle=57; n7_4h_e1_C4: 1862s cycle=57; n7_4h_e1_C2_calfade: 1862s cycle=57; n7_4h_e1_C3_midblock: 1862s cycle=57; n7_4h_e1_no_ageing: 1862s cycle=57
+13:43:24 [S44-HARNESS] heartbeat n7_4h_e1_C2: 1922s cycle=59; n7_4h_e1_C4: 1922s cycle=59; n7_4h_e1_C2_calfade: 1922s cycle=59; n7_4h_e1_C3_midblock: 1922s cycle=59; n7_4h_e1_no_ageing: 1922s cycle=59
+13:44:24 [S44-HARNESS] heartbeat n7_4h_e1_C2: 1982s cycle=61; n7_4h_e1_C4: 1982s cycle=61; n7_4h_e1_C2_calfade: 1982s cycle=61; n7_4h_e1_C3_midblock: 1982s cycle=61; n7_4h_e1_no_ageing: 1982s cycle=61
+13:45:24 [S44-HARNESS] heartbeat n7_4h_e1_C2: 2042s cycle=63; n7_4h_e1_C4: 2042s cycle=63; n7_4h_e1_C2_calfade: 2042s cycle=63; n7_4h_e1_C3_midblock: 2042s cycle=63; n7_4h_e1_no_ageing: 2042s cycle=63
+13:46:24 [S44-HARNESS] heartbeat n7_4h_e1_C2: 2103s cycle=64; n7_4h_e1_C4: 2103s cycle=65; n7_4h_e1_C2_calfade: 2103s cycle=65; n7_4h_e1_C3_midblock: 2103s cycle=65; n7_4h_e1_no_ageing: 2103s cycle=65
+13:47:24 [S44-HARNESS] heartbeat n7_4h_e1_C2: 2163s cycle=66; n7_4h_e1_C4: 2163s cycle=67; n7_4h_e1_C2_calfade: 2163s cycle=67; n7_4h_e1_C3_midblock: 2163s cycle=67; n7_4h_e1_no_ageing: 2163s cycle=67
+13:48:24 [S44-HARNESS] heartbeat n7_4h_e1_C2: 2223s cycle=68; n7_4h_e1_C4: 2223s cycle=69; n7_4h_e1_C2_calfade: 2223s cycle=69; n7_4h_e1_C3_midblock: 2223s cycle=69; n7_4h_e1_no_ageing: 2223s cycle=69
+13:49:24 [S44-HARNESS] heartbeat n7_4h_e1_C2: 2283s cycle=70; n7_4h_e1_C4: 2283s cycle=71; n7_4h_e1_C2_calfade: 2283s cycle=71; n7_4h_e1_C3_midblock: 2283s cycle=71; n7_4h_e1_no_ageing: 2283s cycle=70
+13:50:24 [S44-HARNESS] heartbeat n7_4h_e1_C2: 2343s cycle=72; n7_4h_e1_C4: 2343s cycle=72; n7_4h_e1_C2_calfade: 2343s cycle=72; n7_4h_e1_C3_midblock: 2343s cycle=73; n7_4h_e1_no_ageing: 2343s cycle=72
+13:51:24 [S44-HARNESS] heartbeat n7_4h_e1_C2: 2403s cycle=74; n7_4h_e1_C4: 2403s cycle=74; n7_4h_e1_C2_calfade: 2403s cycle=74; n7_4h_e1_C3_midblock: 2403s cycle=74; n7_4h_e1_no_ageing: 2403s cycle=74
+13:52:24 [S44-HARNESS] heartbeat n7_4h_e1_C2: 2463s cycle=76; n7_4h_e1_C4: 2463s cycle=76; n7_4h_e1_C2_calfade: 2463s cycle=76; n7_4h_e1_C3_midblock: 2463s cycle=76; n7_4h_e1_no_ageing: 2463s cycle=76
+13:53:24 [S44-HARNESS] heartbeat n7_4h_e1_C2: 2523s cycle=78; n7_4h_e1_C4: 2523s cycle=78; n7_4h_e1_C2_calfade: 2523s cycle=78; n7_4h_e1_C3_midblock: 2523s cycle=78; n7_4h_e1_no_ageing: 2523s cycle=78
+13:54:24 [S44-HARNESS] heartbeat n7_4h_e1_C2: 2583s cycle=80; n7_4h_e1_C4: 2583s cycle=80; n7_4h_e1_C2_calfade: 2583s cycle=80; n7_4h_e1_C3_midblock: 2583s cycle=80; n7_4h_e1_no_ageing: 2583s cycle=80
+13:55:25 [S44-HARNESS] heartbeat n7_4h_e1_C2: 2643s cycle=82; n7_4h_e1_C4: 2643s cycle=82; n7_4h_e1_C2_calfade: 2643s cycle=82; n7_4h_e1_C3_midblock: 2643s cycle=82; n7_4h_e1_no_ageing: 2643s cycle=82
+13:56:25 [S44-HARNESS] heartbeat n7_4h_e1_C2: 2703s cycle=84; n7_4h_e1_C4: 2703s cycle=84; n7_4h_e1_C2_calfade: 2703s cycle=84; n7_4h_e1_C3_midblock: 2703s cycle=84; n7_4h_e1_no_ageing: 2703s cycle=84
+13:57:25 [S44-HARNESS] heartbeat n7_4h_e1_C2: 2763s cycle=86; n7_4h_e1_C4: 2763s cycle=86; n7_4h_e1_C2_calfade: 2763s cycle=86; n7_4h_e1_C3_midblock: 2763s cycle=86; n7_4h_e1_no_ageing: 2763s cycle=86
+13:58:25 [S44-HARNESS] heartbeat n7_4h_e1_C2: 2823s cycle=88; n7_4h_e1_C4: 2823s cycle=88; n7_4h_e1_C2_calfade: 2823s cycle=88; n7_4h_e1_C3_midblock: 2823s cycle=88; n7_4h_e1_no_ageing: 2823s cycle=88
+13:59:25 [S44-HARNESS] heartbeat n7_4h_e1_C2: 2883s cycle=89; n7_4h_e1_C4: 2883s cycle=89; n7_4h_e1_C2_calfade: 2883s cycle=90; n7_4h_e1_C3_midblock: 2883s cycle=90; n7_4h_e1_no_ageing: 2883s cycle=90
+14:00:25 [S44-HARNESS] heartbeat n7_4h_e1_C2: 2943s cycle=91; n7_4h_e1_C4: 2943s cycle=91; n7_4h_e1_C2_calfade: 2943s cycle=92; n7_4h_e1_C3_midblock: 2943s cycle=92; n7_4h_e1_no_ageing: 2943s cycle=92
+14:01:25 [S44-HARNESS] heartbeat n7_4h_e1_C2: 3003s cycle=93; n7_4h_e1_C4: 3003s cycle=93; n7_4h_e1_C2_calfade: 3003s cycle=94; n7_4h_e1_C3_midblock: 3003s cycle=94; n7_4h_e1_no_ageing: 3003s cycle=94
+14:02:25 [S44-HARNESS] heartbeat n7_4h_e1_C2: 3064s cycle=95; n7_4h_e1_C4: 3064s cycle=95; n7_4h_e1_C2_calfade: 3064s cycle=96; n7_4h_e1_C3_midblock: 3064s cycle=96; n7_4h_e1_no_ageing: 3064s cycle=96
+14:03:25 [S44-HARNESS] heartbeat n7_4h_e1_C2: 3124s cycle=97; n7_4h_e1_C4: 3124s cycle=97; n7_4h_e1_C2_calfade: 3124s cycle=98; n7_4h_e1_C3_midblock: 3124s cycle=98; n7_4h_e1_no_ageing: 3124s cycle=98
+14:04:25 [S44-HARNESS] heartbeat n7_4h_e1_C2: 3184s cycle=99; n7_4h_e1_C4: 3184s cycle=99; n7_4h_e1_C2_calfade: 3184s cycle=100; n7_4h_e1_C3_midblock: 3184s cycle=100; n7_4h_e1_no_ageing: 3184s cycle=100
+14:05:25 [S44-HARNESS] heartbeat n7_4h_e1_C2: 3244s cycle=101; n7_4h_e1_C4: 3244s cycle=101; n7_4h_e1_C2_calfade: 3244s cycle=102; n7_4h_e1_C3_midblock: 3244s cycle=102; n7_4h_e1_no_ageing: 3244s cycle=102
+14:06:25 [S44-HARNESS] heartbeat n7_4h_e1_C2: 3304s cycle=103; n7_4h_e1_C4: 3304s cycle=103; n7_4h_e1_C2_calfade: 3304s cycle=103; n7_4h_e1_C3_midblock: 3304s cycle=104; n7_4h_e1_no_ageing: 3304s cycle=104
+14:07:25 [S44-HARNESS] heartbeat n7_4h_e1_C2: 3364s cycle=105; n7_4h_e1_C4: 3364s cycle=105; n7_4h_e1_C2_calfade: 3364s cycle=105; n7_4h_e1_C3_midblock: 3364s cycle=106; n7_4h_e1_no_ageing: 3364s cycle=106
+14:08:25 [S44-HARNESS] heartbeat n7_4h_e1_C2: 3424s cycle=107; n7_4h_e1_C4: 3424s cycle=107; n7_4h_e1_C2_calfade: 3424s cycle=107; n7_4h_e1_C3_midblock: 3424s cycle=108; n7_4h_e1_no_ageing: 3424s cycle=108
+14:09:25 [S44-HARNESS] heartbeat n7_4h_e1_C2: 3484s cycle=109; n7_4h_e1_C4: 3484s cycle=109; n7_4h_e1_C2_calfade: 3484s cycle=109; n7_4h_e1_C3_midblock: 3484s cycle=110; n7_4h_e1_no_ageing: 3484s cycle=110
+14:10:26 [S44-HARNESS] heartbeat n7_4h_e1_C2: 3544s cycle=111; n7_4h_e1_C4: 3544s cycle=111; n7_4h_e1_C2_calfade: 3544s cycle=111; n7_4h_e1_C3_midblock: 3544s cycle=112; n7_4h_e1_no_ageing: 3544s cycle=111
+14:11:26 [S44-HARNESS] heartbeat n7_4h_e1_C2: 3604s cycle=113; n7_4h_e1_C4: 3604s cycle=113; n7_4h_e1_C2_calfade: 3604s cycle=113; n7_4h_e1_C3_midblock: 3604s cycle=114; n7_4h_e1_no_ageing: 3604s cycle=113
+14:12:26 [S44-HARNESS] heartbeat n7_4h_e1_C2: 3664s cycle=115; n7_4h_e1_C4: 3664s cycle=115; n7_4h_e1_C2_calfade: 3664s cycle=115; n7_4h_e1_C3_midblock: 3664s cycle=116; n7_4h_e1_no_ageing: 3664s cycle=115
+14:13:26 [S44-HARNESS] heartbeat n7_4h_e1_C2: 3724s cycle=117; n7_4h_e1_C4: 3724s cycle=117; n7_4h_e1_C2_calfade: 3724s cycle=117; n7_4h_e1_C3_midblock: 3724s cycle=118; n7_4h_e1_no_ageing: 3724s cycle=117
+14:13:51 [S44-HARNESS] finished n7_4h_e1_no_ageing pid=80266 exit=0 status=certified wall=3749s
+14:14:21 [S44-HARNESS] finished n7_4h_e1_C2 pid=80262 exit=0 status=certified wall=3779s
+14:14:26 [S44-HARNESS] heartbeat n7_4h_e1_C4: 3784s cycle=119; n7_4h_e1_C2_calfade: 3784s cycle=119; n7_4h_e1_C3_midblock: 3784s cycle=120
+14:14:36 [S44-HARNESS] finished n7_4h_e1_C4 pid=80263 exit=0 status=certified wall=3794s
+14:15:11 [S44-HARNESS] finished n7_4h_e1_C2_calfade pid=80264 exit=0 status=certified wall=3829s
+14:15:26 [S44-HARNESS] heartbeat n7_4h_e1_C3_midblock: 3844s cycle=122
+14:15:46 [S44-HARNESS] finished n7_4h_e1_C3_midblock pid=80265 exit=0 status=certified wall=3864s
+14:15:46 [S46-AGEING] campaign lock released
+14:15:46 [S46-AGEING] MODEL VARIANT — not the baseline -- objective convention: Q(x) = certified_cost = gross_operational_cost (settlement-excluded); value = Q(0) - Q(x) with Q(0) from the pinned A0 x0 record; F would be I(x) + Q(x); terminal_salvage_value and net_operational_recourse are reported, excluded (Addendum 27 item 3).
+14:15:46 [S46-AGEING] {'variant': 'C2', 'status': 'certified', 'cycles': 119, 'Q': 653564588.2611413, 'value': 294872.9667842388, 'I_x': 317957.0085035586, 'value_minus_I': -23084.041719319765, 'value_over_value_C3': 1.1262968471070447, 'bar': 14269.066940784454, 'bar_sum': 23899.045278668404, 'indeterminate_vs_bars': True, 'k_read_back': 35851.3609417964, 'phi_read_back': 1.0, 'soh_point_read_back': 'end', 'prediction_value_minus_I': 4066}
+14:15:46 [S46-AGEING] {'variant': 'C4', 'status': 'certified', 'cycles': 119, 'Q': 653582507.7663511, 'value': 276953.46157443523, 'I_x': 317957.0085035586, 'value_minus_I': -41003.546929123346, 'value_over_value_C3': 1.0578515011683378, 'bar': 13980.185742378235, 'bar_sum': 23610.164080262184, 'indeterminate_vs_bars': False, 'k_read_back': 22429.38601645703, 'phi_read_back': 1.0, 'soh_point_read_back': 'end', 'prediction_value_minus_I': -14260}
+14:15:46 [S46-AGEING] {'variant': 'C2_calfade', 'status': 'certified', 'cycles': 121, 'Q': 653585696.827074, 'value': 273764.4008514881, 'I_x': 317957.0085035586, 'value_minus_I': -44192.60765207047, 'value_over_value_C3': 1.0456705641476973, 'bar': 11516.992573976517, 'bar_sum': 21146.970911860466, 'indeterminate_vs_bars': False, 'k_read_back': 35851.3609417964, 'phi_read_back': 0.985, 'soh_point_read_back': 'end', 'prediction_value_minus_I': -29969}
+14:15:46 [S46-AGEING] {'variant': 'C3_midblock', 'status': 'certified', 'cycles': 123, 'Q': 653595347.9763142, 'value': 264113.25161135197, 'I_x': 317957.0085035586, 'value_minus_I': -53843.75689220661, 'value_over_value_C3': 1.0088070324422678, 'bar': 14903.21850514412, 'bar_sum': 24533.19684302807, 'indeterminate_vs_bars': False, 'k_read_back': 11541.560327111707, 'phi_read_back': 1.0, 'soh_point_read_back': 'mid', 'prediction_value_minus_I': -32587}
+14:15:46 [S46-AGEING] {'variant': 'no_ageing', 'status': 'certified', 'cycles': 118, 'Q': 653541019.3493049, 'value': 318441.87862062454, 'I_x': 317957.0085035586, 'value_minus_I': 484.8701170659624, 'value_over_value_C3': 1.2163206678070575, 'bar': 9180.610110521317, 'bar_sum': 18810.588448405266, 'indeterminate_vs_bars': True, 'k_read_back': None, 'phi_read_back': 1.0, 'soh_point_read_back': 'end', 'prediction_value_minus_I': 38101}
+14:15:46 [S46-AGEING] parent guard {'permitted_solve': 0, 'permitted_exec': 0, 'blocked_solve': 0, 'blocked_exec': 0} verify0_failures=[]
+14:15:46 [S46-AGEING] STOP FOR REVIEW (spec v16 ageing_batch.stop)
+14:15:46 [S46-AGEING] OK: harness clean

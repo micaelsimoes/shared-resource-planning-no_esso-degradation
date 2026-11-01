@@ -1,0 +1,55 @@
+[S45] check (iii): mode validation
+[S45] check (v): scale script --snapshots switch
+[S45] checks (i)/(ii)/(iv): dispatch arms on a real ADMM-ready state
+[INFO] 		 - Distribution Network node 5...
+[INFO] 		 - Distribution Network node 7...
+[INFO] 		 - Distribution Network node 9...
+[INFO] 		 - Transmission Network...
+[INFO] 		 - Updating transmission network...
+[DEBUG][FROZEN SMOPF] Saved failure pre-solve block to /Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S45/snapshot_switch_checks_r2/planning_results/FrozenSMOPF/failure_TSO_case9_2025_Spring_cycle7.pkl
+[DEBUG][FROZEN SMOPF] Saved matched_success pre-solve block to /Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S45/snapshot_switch_checks_r2/planning_results/FrozenSMOPF/matched_success_TSO_case9_2025_Summer_cycle7.pkl
+[ERROR] Transmission network case9, year=2025, day=Spring did not converge: status=warning, termination=maxIterations
+[INFO] 		 - Updating distribution networks:
+[DEBUG][FROZEN SMOPF] Capturing failure | node=7 | network=case33_2 | year=2025 | day=Spring | cycle=7 | status=warning, termination=maxIterations
+[DEBUG][FROZEN SMOPF] Saved failing pre-solve block to /Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S45/snapshot_switch_checks_r2/planning_results/FrozenSMOPF/frozen_DSO_node7_case33_2_2025_Spring_cycle7.pkl
+[DEBUG][FROZEN SMOPF] Saved matched_success pre-solve block to /Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S45/snapshot_switch_checks_r2/planning_results/FrozenSMOPF/matched_success_DSO_node7_case33_2_2025_Autumn_cycle7.pkl
+[WARNING] Distribution network node=7, network=case33_2, year=2025, day=Spring did not converge: status=warning, termination=maxIterations
+[INFO] 		 - Updating transmission network...
+[WARNING][FROZEN SMOPF] snapshot capture is OFF (tso_snapshot_capture_mode=off): NO pre-solve snapshot written for failed block agent=TSO | network=case9 | year=2025 | day=Spring | cycle=7
+[DEBUG][FROZEN SMOPF] Wrote snapshot-skipped marker to /Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S45/snapshot_switch_checks_r2/planning_results/FrozenSMOPF/snapshot_skipped_failure_TSO_case9_2025_Spring_cycle7.json
+[INFO][FROZEN SMOPF] cycle-7 TSO comparator snapshot SKIPPED (tso_snapshot_capture_mode=off)
+[ERROR] Transmission network case9, year=2025, day=Spring did not converge: status=warning, termination=maxIterations
+[INFO] 		 - Updating distribution networks:
+[WARNING][FROZEN SMOPF] snapshot capture is OFF (dso_snapshot_capture_mode=off): NO pre-solve snapshot written for failed block agent=DSO | node=7 | network=case33_2 | year=2025 | day=Spring | cycle=7
+[DEBUG][FROZEN SMOPF] Wrote snapshot-skipped marker to /Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S45/snapshot_switch_checks_r2/planning_results/FrozenSMOPF/snapshot_skipped_failure_DSO_node7_case33_2_2025_Spring_cycle7.json
+[INFO][FROZEN SMOPF] cycle-7 DSO node=7 comparator snapshot SKIPPED (dso_snapshot_capture_mode=off)
+[WARNING] Distribution network node=7, network=case33_2, year=2025, day=Spring did not converge: status=warning, termination=maxIterations
+[INFO] 		 - Updating transmission network...
+[DEBUG][FROZEN SMOPF] Saved failure pre-solve block to /Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S45/snapshot_switch_checks_r2/planning_results/FrozenSMOPF/failure_TSO_case9_2025_Spring_cycle7.pkl
+[DEBUG][FROZEN SMOPF] Saved matched_success pre-solve block to /Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S45/snapshot_switch_checks_r2/planning_results/FrozenSMOPF/matched_success_TSO_case9_2025_Summer_cycle7.pkl
+[ERROR] Transmission network case9, year=2025, day=Spring did not converge: status=warning, termination=maxIterations
+[INFO] 		 - Updating distribution networks:
+[DEBUG][FROZEN SMOPF] Capturing failure | node=7 | network=case33_2 | year=2025 | day=Spring | cycle=7 | status=warning, termination=maxIterations
+[DEBUG][FROZEN SMOPF] Saved failing pre-solve block to /Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S45/snapshot_switch_checks_r2/planning_results/FrozenSMOPF/frozen_DSO_node7_case33_2_2025_Spring_cycle7.pkl
+[DEBUG][FROZEN SMOPF] Saved matched_success pre-solve block to /Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S45/snapshot_switch_checks_r2/planning_results/FrozenSMOPF/matched_success_DSO_node7_case33_2_2025_Autumn_cycle7.pkl
+[WARNING] Distribution network node=7, network=case33_2, year=2025, day=Spring did not converge: status=warning, termination=maxIterations
+{
+ "status": "PASS",
+ "gates": {
+  "check_i_off": true,
+  "check_ii_lightweight": true,
+  "check_iib_legacy_clone_regression": true,
+  "check_iii_validation": true,
+  "check_iv_configuration_identical": true,
+  "check_v_scale_script": true,
+  "zero_solves": true
+ },
+ "guard_counts": {
+  "permitted_solve": 0,
+  "permitted_exec": 0,
+  "blocked_solve": 0,
+  "blocked_exec": 0
+ },
+ "results": "data/SRP1/Results/P515S45/snapshot_switch_checks_r2/results.json",
+ "manifest_files": 10
+}

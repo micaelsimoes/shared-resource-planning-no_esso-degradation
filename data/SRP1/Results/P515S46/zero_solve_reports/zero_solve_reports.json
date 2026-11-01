@@ -1,0 +1,2744 @@
+{
+ "stage": "P5.15 Addendum 28 W19 -- zero-solve reports Z1-Z4 (zero solves)",
+ "authority": [
+  "PLANNER_BRIEF_2026-09-13.md Addendum 28 (W19)",
+  "data/SRP1/Results/P515S46/frozen_s46_ageing_spec_v16_f4295086.json (zero_solve_items)"
+ ],
+ "started_utc": "2026-09-21T10:17:41.252182+00:00",
+ "git_HEAD": "912af3889ef8f19899b0fc710d13c3c0fa519f1b",
+ "git_status_porcelain_inputs_and_code": [
+  "?? p515_s46_zero_solve_reports.py"
+ ],
+ "inputs_sha256": {
+  "data/SRP1/Results/P515S46/frozen_s46_ageing_spec_v16_f4295086.json": {
+   "sha256": "f4295086c10b22c7b33f4e7eff0bd38f7c93c09aeefc12117175633e8efc41f0",
+   "tracked": true
+  },
+  "data/SRP1/Results/P515S45/phase_a_tables/phase_a_tables.json": {
+   "sha256": "a2b78541b5c50ad2a185ca3eb3d0f1b38bb388c4866c45628a984c407b4a3995",
+   "tracked": true
+  },
+  "data/SRP1/SRP1.json": {
+   "sha256": "61a794a7ce7a3fb983f2e92128eec446dd7dbb17ad75a3b3b1c5735f8bd4e4ef",
+   "tracked": true
+  },
+  "data/SRP1/MarketData/SRP1_market_data.xlsx": {
+   "sha256": "f8da8b9a97dbe066f67af5a5f873a9a48ab4666af15020027251840e78a94578",
+   "tracked": true
+  },
+  "data/SRP1/SharedESS/SRP1_ESS_Params.json": {
+   "sha256": "badcdeae4d2a0ac9d369fb7cfb028ecb84b369c881bc0b4e56c590d38a3a13bb",
+   "tracked": true
+  },
+  "data/SRP1/SRP1_params.json": {
+   "sha256": "dbfdb2a07d12bfedab5e66bf94b3df98e5ab0305616652b4083266476972006b",
+   "tracked": true
+  },
+  "data/SRP1/case33_2/case33_2_params.json": {
+   "sha256": "31b5fedf87b96724dc5676566fd87f1c21dc02ecfb8d2bd9fdf280a9b7be35ff",
+   "tracked": true
+  },
+  "data/SRP1/case9/case9_params.json": {
+   "sha256": "f3eff0502c606a9076af19969ec3705c2e6204fa4d9172a218345e986dbbf4ab",
+   "tracked": true
+  },
+  "data/SRP1/Results/P515S45/campaign_s45_a1a/evals/7eb1ce62c2509f54_n7_4h_e1/evaluation_record.json": {
+   "sha256": "fc8578a1ff4af75b3337136ed534207bdff9f969bacb5ef577f9c68d24a3a7df",
+   "tracked": true
+  },
+  "data/SRP1/Results/P515S45/campaign_s45_a1a/evals/7eb1ce62c2509f54_n7_4h_e1/component_levels_terminal.json": {
+   "sha256": "0811bf62084887eb7ded88058046667a5cabd06873229b3715f198960fbb1f85",
+   "tracked": true
+  },
+  "data/SRP1/Results/P515S45/campaign_s45_a1a/evals/7eb1ce62c2509f54_n7_4h_e1/interface_settlement_detail_s31c.json": {
+   "sha256": "73bbb5a971a549203ef6a4e74b83bd73e79a3d6981b96275f92ede44e28cba43",
+   "tracked": true
+  },
+  "data/SRP1/Results/P515S45/campaign_s45_a1a/evals/7eb1ce62c2509f54_n7_4h_e1/soh_floor_sidecar_baseline.jsonl": {
+   "sha256": "5aade6259bf94440bd0db4ec7be3e861af2899782628b897c2992a1eb6ec433e",
+   "tracked": true
+  },
+  "data/SRP1/Results/P515S45/campaign_s45_a0_c7/evals/7eb1ce62c2509f54_n7_p0_25_e1_0/evaluation_record.json": {
+   "sha256": "7e262442c90f2c25853892789b34014f107ce01af73b147b805ddbedbb8e82c0",
+   "tracked": true
+  },
+  "data/SRP1/Results/P515S45/campaign_s45_a0_c7/evals/7eb1ce62c2509f54_n7_p0_25_e1_0/component_levels_terminal.json": {
+   "sha256": "6e09353947e1160bff4f332554da9cae920345034f99d85fc301dcc2635f4c07",
+   "tracked": true
+  },
+  "data/SRP1/Results/P515S45/campaign_s45_a0_c7/evals/7eb1ce62c2509f54_n7_p0_25_e1_0/interface_settlement_detail_s31c.json": {
+   "sha256": "abd24223574c24580f2d9fc1d6a6621e1541cb5b54115befaf10637ba3467eb0",
+   "tracked": true
+  },
+  "data/SRP1/Results/P515S45/campaign_s45_a0_c7/evals/7eb1ce62c2509f54_n7_p0_25_e1_0/soh_floor_sidecar_baseline.jsonl": {
+   "sha256": "5aade6259bf94440bd0db4ec7be3e861af2899782628b897c2992a1eb6ec433e",
+   "tracked": true
+  },
+  "data/SRP1/Results/P515S45/campaign_s45_a0_c7/evals/7aa017f09989b56d_x0/evaluation_record.json": {
+   "sha256": "34868965df76a9f1dc62d93d6ce4e2a50ceb4e12f8d3f2aeb4f8c96742bb4835",
+   "tracked": true
+  },
+  "data/SRP1/Results/P515S45/campaign_s45_a0_c7/evals/7aa017f09989b56d_x0/component_levels_terminal.json": {
+   "sha256": "32696d9c3afc7f4e3e6624d59f21910509e6e6fe1f5e75a43b33f1413acd7279",
+   "tracked": true
+  },
+  "data/SRP1/Results/P515S45/campaign_s45_a0_c7/evals/7aa017f09989b56d_x0/interface_settlement_detail_s31c.json": {
+   "sha256": "4882ecce4bf3295bf6001190683c58b1e83f577914636c6805c03cde1deccd12",
+   "tracked": true
+  },
+  "data/SRP1/Results/P515S45/campaign_s45_a0_c7/evals/7aa017f09989b56d_x0/soh_floor_sidecar_baseline.jsonl": {
+   "sha256": "681c80a208be494a89a1e3e5f9f91ccc67bf5a82528fe6bf25305f27d9476080",
+   "tracked": true
+  },
+  "data/SRP1/Results/P515S45/campaign_s45_a1a/evals/7eb1ce62c2509f54_n7_4h_e1/child_manifest_sha256.json": {
+   "sha256": "5f05a958d0650fc261d4f305a2878c97d1ac9e2d456edfb4595efdb822e8b7ea",
+   "tracked": true
+  }
+ },
+ "code_sha256": {
+  "network.py": {
+   "sha256": "f55140afb7886e576b8f54b193aead1b373dad16fd1edfc72ecd7b7daa90d877",
+   "tracked": true
+  },
+  "model_construction_helpers.py": {
+   "sha256": "73f469fd61dafe45a0d6ea138b56baecf9defd975257f0d87082cee07b5cacd9",
+   "tracked": true
+  },
+  "shared_resources_planning.py": {
+   "sha256": "83b587274d85c7bc19accb8e1ad5824c12637d5193beda68a9fc23c83ddb5bbf",
+   "tracked": true
+  },
+  "shared_energy_storage_data.py": {
+   "sha256": "9220c1ac5a47afd21399d2b625dd470d5c0523b3190b172fc87319d96c3a1aaf",
+   "tracked": true
+  },
+  "shared_energy_storage_parameters.py": {
+   "sha256": "5fe0c4fb876a9c2f1e506e982f2a120c320a3fd4198b870f877d9a310cd390bb",
+   "tracked": true
+  },
+  "p56a_oracle.py": {
+   "sha256": "67b0bff842838e1147c7542c1799e45d0dd48513ada1243dca82f111ae7b5942",
+   "tracked": true
+  },
+  "p515_s44_campaign_harness.py": {
+   "sha256": "611d6badf122d80bb83494bf03ef8b772157ef1fba25eb0b2694a57eaf7b2cad",
+   "tracked": true
+  },
+  "p515_g_g1_g4_admm_gates.py": {
+   "sha256": "21b9645577debd5b194a3c9bbd4442a3ba8f4894ac54daa7b5b7057b1a74909b",
+   "tracked": true
+  },
+  "definitions.py": {
+   "sha256": "7e5719af129df111db1b403feeffe0b566d0b7f2e72915829e16bf143a9321af",
+   "tracked": true
+  },
+  "p515_s46_zero_solve_reports.py": {
+   "sha256": "b9e16abde283b775070250b2ab97993a67d34107acb651a7b55717758a1873c4",
+   "tracked": false
+  }
+ },
+ "objective_convention": "Q(x) = gross_operational_cost, settlement-EXCLUDED (the oracle cost convention); V(x) = Q(0) - Q(x); terminal salvage reported by the records ~0 (gross = net here)",
+ "instance": {
+  "candidate_canonical": {
+   "investment_year": 2025,
+   "nodes": {
+    "5": [
+     0.0,
+     0.0
+    ],
+    "7": [
+     0.25,
+     1.0
+    ],
+    "9": [
+     0.0,
+     0.0
+    ]
+   }
+  },
+  "candidate_key": "db77e1549af855bcb3521950c634db55fe6c155ab2de591b0441b5f2bf4b369a",
+  "x0_canonical": {
+   "investment_year": 2025,
+   "nodes": {
+    "5": [
+     0.0,
+     0.0
+    ],
+    "7": [
+     0.0,
+     0.0
+    ],
+    "9": [
+     0.0,
+     0.0
+    ]
+   }
+  },
+  "x0_candidate_key": "8435c71859ddde68e7ae5818b4ff91c03b4171791bcfaa70edcc3ddb52bacb57",
+  "records": {
+   "a1a": {
+    "path": "data/SRP1/Results/P515S45/campaign_s45_a1a/evals/7eb1ce62c2509f54_n7_4h_e1",
+    "campaign_id": "s45_a1a",
+    "candidate_label": "n7_4h_e1",
+    "candidate_key": "db77e1549af855bcb3521950c634db55fe6c155ab2de591b0441b5f2bf4b369a",
+    "eval_key": "7eb1ce62c2509f54201191ed7220a7e25f06ca8830cb73e5afe2a14101a76b20",
+    "status": "certified",
+    "certified_cost_gross_eur": 653597653.7234993,
+    "bar_eur": 11340.31878066063,
+    "terminal_objective_change_abs": 1208.568416595459,
+    "terminal_step_over_threshold": 0.0184910152248915
+   },
+   "a0_c7": {
+    "path": "data/SRP1/Results/P515S45/campaign_s45_a0_c7/evals/7eb1ce62c2509f54_n7_p0_25_e1_0",
+    "campaign_id": "s45_a0_c7",
+    "candidate_label": "n7_p0.25_e1.0",
+    "candidate_key": "db77e1549af855bcb3521950c634db55fe6c155ab2de591b0441b5f2bf4b369a",
+    "eval_key": "7eb1ce62c2509f54201191ed7220a7e25f06ca8830cb73e5afe2a14101a76b20",
+    "status": "certified",
+    "certified_cost_gross_eur": 653597653.7234993,
+    "bar_eur": 11340.31878066063,
+    "terminal_objective_change_abs": 1208.568416595459,
+    "terminal_step_over_threshold": 0.0184910152248915
+   },
+   "x0": {
+    "path": "data/SRP1/Results/P515S45/campaign_s45_a0_c7/evals/7aa017f09989b56d_x0",
+    "campaign_id": "s45_a0_c7",
+    "candidate_label": "x0",
+    "candidate_key": "8435c71859ddde68e7ae5818b4ff91c03b4171791bcfaa70edcc3ddb52bacb57",
+    "eval_key": "7aa017f09989b56d17a1307d7ae2d9d86582e9666295ee9e25ef560ee32f975b",
+    "status": "certified",
+    "certified_cost_gross_eur": 653859461.2279255,
+    "bar_eur": 9629.97833788395,
+    "terminal_objective_change_abs": 219.8718364238739,
+    "terminal_step_over_threshold": 0.003362677294765486
+   }
+  }
+ },
+ "baseline_checksum": "5a02b77ccbbbbbb869de92958a3851d095624711abc2dbfc0157466064410358",
+ "Z1": {
+  "citations": {
+   "get_interface_branch_rating": "network.py:78",
+   "selection_rule": "network.py:84",
+   "rating_sum": "network.py:85",
+   "branch_flow_limit_rule": "model_construction_helpers.py:1536",
+   "branch_flow_limit_ji_rule": "model_construction_helpers.py:1550",
+   "apparent_power_limit_for_transformers_under_MIXED": "model_construction_helpers.py:1231",
+   "branch_flow_limit_row_wired": "network.py:520",
+   "branch_flow_limit_ji_row_wired": "network.py:521",
+   "dso_interface_p_def_storage_at_reference_bus": "model_construction_helpers.py:1208",
+   "dso_interface_p_returns_pg_minus_storage": "model_construction_helpers.py:1216",
+   "shared_storage_in_node_balance": "model_construction_helpers.py:1329",
+   "tso_adn_interface_load_def": "model_construction_helpers.py:1167",
+   "get_interface_branch_rating_uses_in_srp": [
+    "shared_resources_planning.py:3750",
+    "shared_resources_planning.py:4611",
+    "shared_resources_planning.py:4768",
+    "shared_resources_planning.py:4936",
+    "shared_resources_planning.py:6130",
+    "shared_resources_planning.py:6481",
+    "shared_resources_planning.py:7689"
+   ]
+  },
+  "selection_rule_text": "network.py get_interface_branch_rating: DSO only; ref = get_reference_node_id(); sums branch.rate over every IN-SERVICE branch (branch.status) whose fbus OR tbus equals the reference bus. It is used by production ONLY as the per-unit normalization of the PF consensus residual / augmented-Lagrangian terms (the shared_resources_planning.py sites listed) -- it is not itself a constraint row.",
+  "dso_node7_data_per_block": {
+   "2025|Spring": {
+    "reference_bus": 1,
+    "baseMVA": 100.0,
+    "adjacent_in_service_branches": [
+     {
+      "branch_index": 31,
+      "branch_id": 1,
+      "from_bus": 1,
+      "to_bus": 2,
+      "rate_mva": 100.0,
+      "is_transformer": true
+     }
+    ],
+    "get_interface_branch_rating_mva": 100.0,
+    "loads_at_reference_bus": [],
+    "reference_bus_gs_bs": [
+     0.0,
+     0.0
+    ],
+    "generators_at_reference_bus_pu": [
+     [
+      0,
+      1,
+      -1.0,
+      1.0,
+      -1.0,
+      1.0
+     ]
+    ],
+    "shared_storage_buses": [
+     1
+    ]
+   },
+   "2025|Summer": {
+    "reference_bus": 1,
+    "baseMVA": 100.0,
+    "adjacent_in_service_branches": [
+     {
+      "branch_index": 31,
+      "branch_id": 1,
+      "from_bus": 1,
+      "to_bus": 2,
+      "rate_mva": 100.0,
+      "is_transformer": true
+     }
+    ],
+    "get_interface_branch_rating_mva": 100.0,
+    "loads_at_reference_bus": [],
+    "reference_bus_gs_bs": [
+     0.0,
+     0.0
+    ],
+    "generators_at_reference_bus_pu": [
+     [
+      0,
+      1,
+      -1.0,
+      1.0,
+      -1.0,
+      1.0
+     ]
+    ],
+    "shared_storage_buses": [
+     1
+    ]
+   },
+   "2025|Autumn": {
+    "reference_bus": 1,
+    "baseMVA": 100.0,
+    "adjacent_in_service_branches": [
+     {
+      "branch_index": 31,
+      "branch_id": 1,
+      "from_bus": 1,
+      "to_bus": 2,
+      "rate_mva": 100.0,
+      "is_transformer": true
+     }
+    ],
+    "get_interface_branch_rating_mva": 100.0,
+    "loads_at_reference_bus": [],
+    "reference_bus_gs_bs": [
+     0.0,
+     0.0
+    ],
+    "generators_at_reference_bus_pu": [
+     [
+      0,
+      1,
+      -1.0,
+      1.0,
+      -1.0,
+      1.0
+     ]
+    ],
+    "shared_storage_buses": [
+     1
+    ]
+   },
+   "2025|Winter": {
+    "reference_bus": 1,
+    "baseMVA": 100.0,
+    "adjacent_in_service_branches": [
+     {
+      "branch_index": 31,
+      "branch_id": 1,
+      "from_bus": 1,
+      "to_bus": 2,
+      "rate_mva": 100.0,
+      "is_transformer": true
+     }
+    ],
+    "get_interface_branch_rating_mva": 100.0,
+    "loads_at_reference_bus": [],
+    "reference_bus_gs_bs": [
+     0.0,
+     0.0
+    ],
+    "generators_at_reference_bus_pu": [
+     [
+      0,
+      1,
+      -1.0,
+      1.0,
+      -1.0,
+      1.0
+     ]
+    ],
+    "shared_storage_buses": [
+     1
+    ]
+   },
+   "2030|Spring": {
+    "reference_bus": 1,
+    "baseMVA": 100.0,
+    "adjacent_in_service_branches": [
+     {
+      "branch_index": 31,
+      "branch_id": 1,
+      "from_bus": 1,
+      "to_bus": 2,
+      "rate_mva": 100.0,
+      "is_transformer": true
+     }
+    ],
+    "get_interface_branch_rating_mva": 100.0,
+    "loads_at_reference_bus": [],
+    "reference_bus_gs_bs": [
+     0.0,
+     0.0
+    ],
+    "generators_at_reference_bus_pu": [
+     [
+      0,
+      1,
+      -1.0,
+      1.0,
+      -1.0,
+      1.0
+     ]
+    ],
+    "shared_storage_buses": [
+     1
+    ]
+   },
+   "2030|Summer": {
+    "reference_bus": 1,
+    "baseMVA": 100.0,
+    "adjacent_in_service_branches": [
+     {
+      "branch_index": 31,
+      "branch_id": 1,
+      "from_bus": 1,
+      "to_bus": 2,
+      "rate_mva": 100.0,
+      "is_transformer": true
+     }
+    ],
+    "get_interface_branch_rating_mva": 100.0,
+    "loads_at_reference_bus": [],
+    "reference_bus_gs_bs": [
+     0.0,
+     0.0
+    ],
+    "generators_at_reference_bus_pu": [
+     [
+      0,
+      1,
+      -1.0,
+      1.0,
+      -1.0,
+      1.0
+     ]
+    ],
+    "shared_storage_buses": [
+     1
+    ]
+   },
+   "2030|Autumn": {
+    "reference_bus": 1,
+    "baseMVA": 100.0,
+    "adjacent_in_service_branches": [
+     {
+      "branch_index": 31,
+      "branch_id": 1,
+      "from_bus": 1,
+      "to_bus": 2,
+      "rate_mva": 100.0,
+      "is_transformer": true
+     }
+    ],
+    "get_interface_branch_rating_mva": 100.0,
+    "loads_at_reference_bus": [],
+    "reference_bus_gs_bs": [
+     0.0,
+     0.0
+    ],
+    "generators_at_reference_bus_pu": [
+     [
+      0,
+      1,
+      -1.0,
+      1.0,
+      -1.0,
+      1.0
+     ]
+    ],
+    "shared_storage_buses": [
+     1
+    ]
+   },
+   "2030|Winter": {
+    "reference_bus": 1,
+    "baseMVA": 100.0,
+    "adjacent_in_service_branches": [
+     {
+      "branch_index": 31,
+      "branch_id": 1,
+      "from_bus": 1,
+      "to_bus": 2,
+      "rate_mva": 100.0,
+      "is_transformer": true
+     }
+    ],
+    "get_interface_branch_rating_mva": 100.0,
+    "loads_at_reference_bus": [],
+    "reference_bus_gs_bs": [
+     0.0,
+     0.0
+    ],
+    "generators_at_reference_bus_pu": [
+     [
+      0,
+      1,
+      -1.0,
+      1.0,
+      -1.0,
+      1.0
+     ]
+    ],
+    "shared_storage_buses": [
+     1
+    ]
+   },
+   "2035|Spring": {
+    "reference_bus": 1,
+    "baseMVA": 100.0,
+    "adjacent_in_service_branches": [
+     {
+      "branch_index": 31,
+      "branch_id": 1,
+      "from_bus": 1,
+      "to_bus": 2,
+      "rate_mva": 100.0,
+      "is_transformer": true
+     }
+    ],
+    "get_interface_branch_rating_mva": 100.0,
+    "loads_at_reference_bus": [],
+    "reference_bus_gs_bs": [
+     0.0,
+     0.0
+    ],
+    "generators_at_reference_bus_pu": [
+     [
+      0,
+      1,
+      -1.0,
+      1.0,
+      -1.0,
+      1.0
+     ]
+    ],
+    "shared_storage_buses": [
+     1
+    ]
+   },
+   "2035|Summer": {
+    "reference_bus": 1,
+    "baseMVA": 100.0,
+    "adjacent_in_service_branches": [
+     {
+      "branch_index": 31,
+      "branch_id": 1,
+      "from_bus": 1,
+      "to_bus": 2,
+      "rate_mva": 100.0,
+      "is_transformer": true
+     }
+    ],
+    "get_interface_branch_rating_mva": 100.0,
+    "loads_at_reference_bus": [],
+    "reference_bus_gs_bs": [
+     0.0,
+     0.0
+    ],
+    "generators_at_reference_bus_pu": [
+     [
+      0,
+      1,
+      -1.0,
+      1.0,
+      -1.0,
+      1.0
+     ]
+    ],
+    "shared_storage_buses": [
+     1
+    ]
+   },
+   "2035|Autumn": {
+    "reference_bus": 1,
+    "baseMVA": 100.0,
+    "adjacent_in_service_branches": [
+     {
+      "branch_index": 31,
+      "branch_id": 1,
+      "from_bus": 1,
+      "to_bus": 2,
+      "rate_mva": 100.0,
+      "is_transformer": true
+     }
+    ],
+    "get_interface_branch_rating_mva": 100.0,
+    "loads_at_reference_bus": [],
+    "reference_bus_gs_bs": [
+     0.0,
+     0.0
+    ],
+    "generators_at_reference_bus_pu": [
+     [
+      0,
+      1,
+      -1.0,
+      1.0,
+      -1.0,
+      1.0
+     ]
+    ],
+    "shared_storage_buses": [
+     1
+    ]
+   },
+   "2035|Winter": {
+    "reference_bus": 1,
+    "baseMVA": 100.0,
+    "adjacent_in_service_branches": [
+     {
+      "branch_index": 31,
+      "branch_id": 1,
+      "from_bus": 1,
+      "to_bus": 2,
+      "rate_mva": 100.0,
+      "is_transformer": true
+     }
+    ],
+    "get_interface_branch_rating_mva": 100.0,
+    "loads_at_reference_bus": [],
+    "reference_bus_gs_bs": [
+     0.0,
+     0.0
+    ],
+    "generators_at_reference_bus_pu": [
+     [
+      0,
+      1,
+      -1.0,
+      1.0,
+      -1.0,
+      1.0
+     ]
+    ],
+    "shared_storage_buses": [
+     1
+    ]
+   }
+  },
+  "dso_built_model_rows": {
+   "2025|Spring": {
+    "apparent_power_limited_branches": [
+     31
+    ],
+    "row_names": [
+     "branch_flow_limit[31,s_m,s_o,p]",
+     "branch_flow_limit_ji[31,s_m,s_o,p]"
+    ],
+    "row_upper_pu2": 1.00001,
+    "all_periods_structure_ok": true
+   },
+   "2025|Summer": {
+    "apparent_power_limited_branches": [
+     31
+    ],
+    "row_names": [
+     "branch_flow_limit[31,s_m,s_o,p]",
+     "branch_flow_limit_ji[31,s_m,s_o,p]"
+    ],
+    "row_upper_pu2": 1.00001,
+    "all_periods_structure_ok": true
+   },
+   "2025|Autumn": {
+    "apparent_power_limited_branches": [
+     31
+    ],
+    "row_names": [
+     "branch_flow_limit[31,s_m,s_o,p]",
+     "branch_flow_limit_ji[31,s_m,s_o,p]"
+    ],
+    "row_upper_pu2": 1.00001,
+    "all_periods_structure_ok": true
+   },
+   "2025|Winter": {
+    "apparent_power_limited_branches": [
+     31
+    ],
+    "row_names": [
+     "branch_flow_limit[31,s_m,s_o,p]",
+     "branch_flow_limit_ji[31,s_m,s_o,p]"
+    ],
+    "row_upper_pu2": 1.00001,
+    "all_periods_structure_ok": true
+   },
+   "2030|Spring": {
+    "apparent_power_limited_branches": [
+     31
+    ],
+    "row_names": [
+     "branch_flow_limit[31,s_m,s_o,p]",
+     "branch_flow_limit_ji[31,s_m,s_o,p]"
+    ],
+    "row_upper_pu2": 1.00001,
+    "all_periods_structure_ok": true
+   },
+   "2030|Summer": {
+    "apparent_power_limited_branches": [
+     31
+    ],
+    "row_names": [
+     "branch_flow_limit[31,s_m,s_o,p]",
+     "branch_flow_limit_ji[31,s_m,s_o,p]"
+    ],
+    "row_upper_pu2": 1.00001,
+    "all_periods_structure_ok": true
+   },
+   "2030|Autumn": {
+    "apparent_power_limited_branches": [
+     31
+    ],
+    "row_names": [
+     "branch_flow_limit[31,s_m,s_o,p]",
+     "branch_flow_limit_ji[31,s_m,s_o,p]"
+    ],
+    "row_upper_pu2": 1.00001,
+    "all_periods_structure_ok": true
+   },
+   "2030|Winter": {
+    "apparent_power_limited_branches": [
+     31
+    ],
+    "row_names": [
+     "branch_flow_limit[31,s_m,s_o,p]",
+     "branch_flow_limit_ji[31,s_m,s_o,p]"
+    ],
+    "row_upper_pu2": 1.00001,
+    "all_periods_structure_ok": true
+   },
+   "2035|Spring": {
+    "apparent_power_limited_branches": [
+     31
+    ],
+    "row_names": [
+     "branch_flow_limit[31,s_m,s_o,p]",
+     "branch_flow_limit_ji[31,s_m,s_o,p]"
+    ],
+    "row_upper_pu2": 1.00001,
+    "all_periods_structure_ok": true
+   },
+   "2035|Summer": {
+    "apparent_power_limited_branches": [
+     31
+    ],
+    "row_names": [
+     "branch_flow_limit[31,s_m,s_o,p]",
+     "branch_flow_limit_ji[31,s_m,s_o,p]"
+    ],
+    "row_upper_pu2": 1.00001,
+    "all_periods_structure_ok": true
+   },
+   "2035|Autumn": {
+    "apparent_power_limited_branches": [
+     31
+    ],
+    "row_names": [
+     "branch_flow_limit[31,s_m,s_o,p]",
+     "branch_flow_limit_ji[31,s_m,s_o,p]"
+    ],
+    "row_upper_pu2": 1.00001,
+    "all_periods_structure_ok": true
+   },
+   "2035|Winter": {
+    "apparent_power_limited_branches": [
+     31
+    ],
+    "row_names": [
+     "branch_flow_limit[31,s_m,s_o,p]",
+     "branch_flow_limit_ji[31,s_m,s_o,p]"
+    ],
+    "row_upper_pu2": 1.00001,
+    "all_periods_structure_ok": true
+   }
+  },
+  "tso_built_model_rows": {
+   "2025|Spring": {
+    "tso_shared_storage_buses": [
+     5,
+     7,
+     9
+    ],
+    "tso_node_balance_at_bus7_holds_storage_and_adn_load_all_periods": true,
+    "tso_branches_adjacent_to_bus7": [
+     {
+      "from_bus": 6,
+      "to_bus": 7,
+      "rate_mva": 150.0
+     },
+     {
+      "from_bus": 7,
+      "to_bus": 8,
+      "rate_mva": 250.0
+     }
+    ],
+    "tso_apparent_power_limited_branches": [],
+    "tso_branch_limit_type": 3,
+    "dn_index_of_node7": 1
+   },
+   "2025|Summer": {
+    "tso_shared_storage_buses": [
+     5,
+     7,
+     9
+    ],
+    "tso_node_balance_at_bus7_holds_storage_and_adn_load_all_periods": true,
+    "tso_branches_adjacent_to_bus7": [
+     {
+      "from_bus": 6,
+      "to_bus": 7,
+      "rate_mva": 150.0
+     },
+     {
+      "from_bus": 7,
+      "to_bus": 8,
+      "rate_mva": 250.0
+     }
+    ],
+    "tso_apparent_power_limited_branches": [],
+    "tso_branch_limit_type": 3,
+    "dn_index_of_node7": 1
+   },
+   "2025|Autumn": {
+    "tso_shared_storage_buses": [
+     5,
+     7,
+     9
+    ],
+    "tso_node_balance_at_bus7_holds_storage_and_adn_load_all_periods": true,
+    "tso_branches_adjacent_to_bus7": [
+     {
+      "from_bus": 6,
+      "to_bus": 7,
+      "rate_mva": 150.0
+     },
+     {
+      "from_bus": 7,
+      "to_bus": 8,
+      "rate_mva": 250.0
+     }
+    ],
+    "tso_apparent_power_limited_branches": [],
+    "tso_branch_limit_type": 3,
+    "dn_index_of_node7": 1
+   },
+   "2025|Winter": {
+    "tso_shared_storage_buses": [
+     5,
+     7,
+     9
+    ],
+    "tso_node_balance_at_bus7_holds_storage_and_adn_load_all_periods": true,
+    "tso_branches_adjacent_to_bus7": [
+     {
+      "from_bus": 6,
+      "to_bus": 7,
+      "rate_mva": 150.0
+     },
+     {
+      "from_bus": 7,
+      "to_bus": 8,
+      "rate_mva": 250.0
+     }
+    ],
+    "tso_apparent_power_limited_branches": [],
+    "tso_branch_limit_type": 3,
+    "dn_index_of_node7": 1
+   },
+   "2030|Spring": {
+    "tso_shared_storage_buses": [
+     5,
+     7,
+     9
+    ],
+    "tso_node_balance_at_bus7_holds_storage_and_adn_load_all_periods": true,
+    "tso_branches_adjacent_to_bus7": [
+     {
+      "from_bus": 6,
+      "to_bus": 7,
+      "rate_mva": 150.0
+     },
+     {
+      "from_bus": 7,
+      "to_bus": 8,
+      "rate_mva": 250.0
+     }
+    ],
+    "tso_apparent_power_limited_branches": [],
+    "tso_branch_limit_type": 3,
+    "dn_index_of_node7": 1
+   },
+   "2030|Summer": {
+    "tso_shared_storage_buses": [
+     5,
+     7,
+     9
+    ],
+    "tso_node_balance_at_bus7_holds_storage_and_adn_load_all_periods": true,
+    "tso_branches_adjacent_to_bus7": [
+     {
+      "from_bus": 6,
+      "to_bus": 7,
+      "rate_mva": 150.0
+     },
+     {
+      "from_bus": 7,
+      "to_bus": 8,
+      "rate_mva": 250.0
+     }
+    ],
+    "tso_apparent_power_limited_branches": [],
+    "tso_branch_limit_type": 3,
+    "dn_index_of_node7": 1
+   },
+   "2030|Autumn": {
+    "tso_shared_storage_buses": [
+     5,
+     7,
+     9
+    ],
+    "tso_node_balance_at_bus7_holds_storage_and_adn_load_all_periods": true,
+    "tso_branches_adjacent_to_bus7": [
+     {
+      "from_bus": 6,
+      "to_bus": 7,
+      "rate_mva": 150.0
+     },
+     {
+      "from_bus": 7,
+      "to_bus": 8,
+      "rate_mva": 250.0
+     }
+    ],
+    "tso_apparent_power_limited_branches": [],
+    "tso_branch_limit_type": 3,
+    "dn_index_of_node7": 1
+   },
+   "2030|Winter": {
+    "tso_shared_storage_buses": [
+     5,
+     7,
+     9
+    ],
+    "tso_node_balance_at_bus7_holds_storage_and_adn_load_all_periods": true,
+    "tso_branches_adjacent_to_bus7": [
+     {
+      "from_bus": 6,
+      "to_bus": 7,
+      "rate_mva": 150.0
+     },
+     {
+      "from_bus": 7,
+      "to_bus": 8,
+      "rate_mva": 250.0
+     }
+    ],
+    "tso_apparent_power_limited_branches": [],
+    "tso_branch_limit_type": 3,
+    "dn_index_of_node7": 1
+   },
+   "2035|Spring": {
+    "tso_shared_storage_buses": [
+     5,
+     7,
+     9
+    ],
+    "tso_node_balance_at_bus7_holds_storage_and_adn_load_all_periods": true,
+    "tso_branches_adjacent_to_bus7": [
+     {
+      "from_bus": 6,
+      "to_bus": 7,
+      "rate_mva": 150.0
+     },
+     {
+      "from_bus": 7,
+      "to_bus": 8,
+      "rate_mva": 250.0
+     }
+    ],
+    "tso_apparent_power_limited_branches": [],
+    "tso_branch_limit_type": 3,
+    "dn_index_of_node7": 1
+   },
+   "2035|Summer": {
+    "tso_shared_storage_buses": [
+     5,
+     7,
+     9
+    ],
+    "tso_node_balance_at_bus7_holds_storage_and_adn_load_all_periods": true,
+    "tso_branches_adjacent_to_bus7": [
+     {
+      "from_bus": 6,
+      "to_bus": 7,
+      "rate_mva": 150.0
+     },
+     {
+      "from_bus": 7,
+      "to_bus": 8,
+      "rate_mva": 250.0
+     }
+    ],
+    "tso_apparent_power_limited_branches": [],
+    "tso_branch_limit_type": 3,
+    "dn_index_of_node7": 1
+   },
+   "2035|Autumn": {
+    "tso_shared_storage_buses": [
+     5,
+     7,
+     9
+    ],
+    "tso_node_balance_at_bus7_holds_storage_and_adn_load_all_periods": true,
+    "tso_branches_adjacent_to_bus7": [
+     {
+      "from_bus": 6,
+      "to_bus": 7,
+      "rate_mva": 150.0
+     },
+     {
+      "from_bus": 7,
+      "to_bus": 8,
+      "rate_mva": 250.0
+     }
+    ],
+    "tso_apparent_power_limited_branches": [],
+    "tso_branch_limit_type": 3,
+    "dn_index_of_node7": 1
+   },
+   "2035|Winter": {
+    "tso_shared_storage_buses": [
+     5,
+     7,
+     9
+    ],
+    "tso_node_balance_at_bus7_holds_storage_and_adn_load_all_periods": true,
+    "tso_branches_adjacent_to_bus7": [
+     {
+      "from_bus": 6,
+      "to_bus": 7,
+      "rate_mva": 150.0
+     },
+     {
+      "from_bus": 7,
+      "to_bus": 8,
+      "rate_mva": 250.0
+     }
+    ],
+    "tso_apparent_power_limited_branches": [],
+    "tso_branch_limit_type": 3,
+    "dn_index_of_node7": 1
+   }
+  },
+  "terminal_interface_flows": {
+   "a1a_candidate": {
+    "5": {
+     "rating_mva": 200.0,
+     "n_slots": 288,
+     "max_util": 0.5099141100376053,
+     "n_at_rating_ge_0_99": 0
+    },
+    "7": {
+     "rating_mva": 100.0,
+     "n_slots": 288,
+     "max_util": 1.0000050030497831,
+     "n_at_rating_ge_0_99": 23,
+     "at_rating_slots": [
+      {
+       "year": "2025",
+       "day": "Spring",
+       "period": 9,
+       "p_mw": 99.65702216385723,
+       "q_mvar": 8.281181084199812,
+       "s_mva": 100.00050013233354,
+       "util": 1.0000050013233355
+      },
+      {
+       "year": "2025",
+       "day": "Spring",
+       "period": 10,
+       "p_mw": 99.74931676401219,
+       "q_mvar": 7.083349680235044,
+       "s_mva": 100.00050018664771,
+       "util": 1.0000050018664772
+      },
+      {
+       "year": "2025",
+       "day": "Spring",
+       "period": 11,
+       "p_mw": 99.55322142334144,
+       "q_mvar": 9.447547154329675,
+       "s_mva": 100.00050021373958,
+       "util": 1.0000050021373958
+      },
+      {
+       "year": "2025",
+       "day": "Spring",
+       "period": 12,
+       "p_mw": 99.7243806135873,
+       "q_mvar": 7.426168088747949,
+       "s_mva": 100.0005003049783,
+       "util": 1.0000050030497831
+      },
+      {
+       "year": "2025",
+       "day": "Summer",
+       "period": 10,
+       "p_mw": 99.31173514299432,
+       "q_mvar": 11.716551670366712,
+       "s_mva": 100.00049159957479,
+       "util": 1.0000049159957478
+      },
+      {
+       "year": "2025",
+       "day": "Summer",
+       "period": 11,
+       "p_mw": 99.15648653089364,
+       "q_mvar": 12.964995497333707,
+       "s_mva": 100.00049964573765,
+       "util": 1.0000049964573765
+      },
+      {
+       "year": "2025",
+       "day": "Summer",
+       "period": 12,
+       "p_mw": 99.31035921219676,
+       "q_mvar": 11.728280550842538,
+       "s_mva": 100.00050005642385,
+       "util": 1.0000050005642385
+      },
+      {
+       "year": "2025",
+       "day": "Summer",
+       "period": 13,
+       "p_mw": 99.43789606800273,
+       "q_mvar": 10.59267872147597,
+       "s_mva": 100.0005000833862,
+       "util": 1.000005000833862
+      },
+      {
+       "year": "2030",
+       "day": "Spring",
+       "period": 9,
+       "p_mw": 99.5016086915927,
+       "q_mvar": 9.976307990993579,
+       "s_mva": 100.00048426555742,
+       "util": 1.000004842655574
+      },
+      {
+       "year": "2030",
+       "day": "Spring",
+       "period": 10,
+       "p_mw": 99.61387347077036,
+       "q_mvar": 8.784986687528892,
+       "s_mva": 100.00049889350906,
+       "util": 1.0000049889350906
+      },
+      {
+       "year": "2030",
+       "day": "Spring",
+       "period": 11,
+       "p_mw": 99.40147892504179,
+       "q_mvar": 10.929129944337083,
+       "s_mva": 100.00049946788131,
+       "util": 1.0000049946788132
+      },
+      {
+       "year": "2030",
+       "day": "Spring",
+       "period": 12,
+       "p_mw": 99.61441979374877,
+       "q_mvar": 8.778803981630091,
+       "s_mva": 100.0005001497147,
+       "util": 1.0000050014971469
+      },
+      {
+       "year": "2030",
+       "day": "Spring",
+       "period": 13,
+       "p_mw": 99.73971278920688,
+       "q_mvar": 7.217321551009334,
+       "s_mva": 100.00050018696977,
+       "util": 1.0000050018696978
+      },
+      {
+       "year": "2030",
+       "day": "Summer",
+       "period": 11,
+       "p_mw": 99.10805684802425,
+       "q_mvar": 13.330150467737933,
+       "s_mva": 100.0004992171726,
+       "util": 1.000004992171726
+      },
+      {
+       "year": "2030",
+       "day": "Summer",
+       "period": 12,
+       "p_mw": 99.27382475506685,
+       "q_mvar": 12.03360724985163,
+       "s_mva": 100.00049992346742,
+       "util": 1.0000049992346742
+      },
+      {
+       "year": "2030",
+       "day": "Summer",
+       "period": 13,
+       "p_mw": 99.44240409627935,
+       "q_mvar": 10.550274337133004,
+       "s_mva": 100.0005001039319,
+       "util": 1.0000050010393189
+      },
+      {
+       "year": "2035",
+       "day": "Autumn",
+       "period": 11,
+       "p_mw": 99.43297564445992,
+       "q_mvar": 10.63873547423509,
+       "s_mva": 100.00049668877904,
+       "util": 1.0000049668877904
+      },
+      {
+       "year": "2035",
+       "day": "Spring",
+       "period": 10,
+       "p_mw": 99.65586879129799,
+       "q_mvar": 8.295024621730635,
+       "s_mva": 100.00049808887712,
+       "util": 1.0000049808887712
+      },
+      {
+       "year": "2035",
+       "day": "Spring",
+       "period": 12,
+       "p_mw": 99.62535130729991,
+       "q_mvar": 8.653863126101374,
+       "s_mva": 100.00049984929186,
+       "util": 1.0000049984929185
+      },
+      {
+       "year": "2035",
+       "day": "Spring",
+       "period": 13,
+       "p_mw": 99.78017570023306,
+       "q_mvar": 6.634498947663527,
+       "s_mva": 100.00050019402867,
+       "util": 1.0000050019402869
+      },
+      {
+       "year": "2035",
+       "day": "Summer",
+       "period": 11,
+       "p_mw": 99.05630069939959,
+       "q_mvar": 13.709458101495606,
+       "s_mva": 100.00049974718394,
+       "util": 1.0000049974718395
+      },
+      {
+       "year": "2035",
+       "day": "Summer",
+       "period": 12,
+       "p_mw": 99.29672300928638,
+       "q_mvar": 11.843176470306632,
+       "s_mva": 100.00050014519812,
+       "util": 1.0000050014519812
+      },
+      {
+       "year": "2035",
+       "day": "Summer",
+       "period": 13,
+       "p_mw": 99.42780512711788,
+       "q_mvar": 10.686982760972283,
+       "s_mva": 100.00050016339642,
+       "util": 1.0000050016339643
+      }
+     ],
+     "max_s_mva": 100.0005003049783,
+     "max_p_mw_in_at_rating_slots": 99.78017570023306,
+     "max_abs_s_minus_row_bound_in_at_rating_slots_mva": 1.5733192583411437e-05,
+     "n_on_row_bound": 23,
+     "on_row_bound_tolerance_mva": 0.001,
+     "max_s_minus_row_bound_mva": 3.0622830138327117e-07,
+     "at_rating_utilization_min": 1.000004842655574
+    },
+    "9": {
+     "rating_mva": 150.0,
+     "n_slots": 288,
+     "max_util": 0.6716202352883339,
+     "n_at_rating_ge_0_99": 0
+    }
+   },
+   "x0": {
+    "5": {
+     "rating_mva": 200.0,
+     "n_slots": 288,
+     "max_util": 0.50991411189603,
+     "n_at_rating_ge_0_99": 0
+    },
+    "7": {
+     "rating_mva": 100.0,
+     "n_slots": 288,
+     "max_util": 1.0000050030497674,
+     "n_at_rating_ge_0_99": 23,
+     "at_rating_slots": [
+      {
+       "year": "2025",
+       "day": "Spring",
+       "period": 9,
+       "p_mw": 99.65705462832618,
+       "q_mvar": 8.280790392451243,
+       "s_mva": 100.00050013233384,
+       "util": 1.0000050013233384
+      },
+      {
+       "year": "2025",
+       "day": "Spring",
+       "period": 10,
+       "p_mw": 99.74934350247904,
+       "q_mvar": 7.08297313305387,
+       "s_mva": 100.00050018664466,
+       "util": 1.0000050018664466
+      },
+      {
+       "year": "2025",
+       "day": "Spring",
+       "period": 11,
+       "p_mw": 99.55323030692877,
+       "q_mvar": 9.447453543325954,
+       "s_mva": 100.00050021373744,
+       "util": 1.0000050021373743
+      },
+      {
+       "year": "2025",
+       "day": "Spring",
+       "period": 12,
+       "p_mw": 99.7243845024495,
+       "q_mvar": 7.42611586586557,
+       "s_mva": 100.00050030497673,
+       "util": 1.0000050030497674
+      },
+      {
+       "year": "2025",
+       "day": "Summer",
+       "period": 10,
+       "p_mw": 99.31173048128383,
+       "q_mvar": 11.716591109995663,
+       "s_mva": 100.00049159092164,
+       "util": 1.0000049159092164
+      },
+      {
+       "year": "2025",
+       "day": "Summer",
+       "period": 11,
+       "p_mw": 99.15648253525826,
+       "q_mvar": 12.965026055347515,
+       "s_mva": 100.00049964565585,
+       "util": 1.0000049964565585
+      },
+      {
+       "year": "2025",
+       "day": "Summer",
+       "period": 12,
+       "p_mw": 99.31035686042256,
+       "q_mvar": 11.728300464519041,
+       "s_mva": 100.0005000564023,
+       "util": 1.000005000564023
+      },
+      {
+       "year": "2025",
+       "day": "Summer",
+       "period": 13,
+       "p_mw": 99.4378951208543,
+       "q_mvar": 10.59268761269994,
+       "s_mva": 100.00050008338091,
+       "util": 1.000005000833809
+      },
+      {
+       "year": "2030",
+       "day": "Spring",
+       "period": 9,
+       "p_mw": 99.50168292621012,
+       "q_mvar": 9.975571358097952,
+       "s_mva": 100.0004846441684,
+       "util": 1.000004846441684
+      },
+      {
+       "year": "2030",
+       "day": "Spring",
+       "period": 10,
+       "p_mw": 99.6139246600386,
+       "q_mvar": 8.784406270746516,
+       "s_mva": 100.0004988972824,
+       "util": 1.000004988972824
+      },
+      {
+       "year": "2030",
+       "day": "Spring",
+       "period": 11,
+       "p_mw": 99.40155440723039,
+       "q_mvar": 10.92844341905263,
+       "s_mva": 100.00049946943774,
+       "util": 1.0000049946943774
+      },
+      {
+       "year": "2030",
+       "day": "Spring",
+       "period": 12,
+       "p_mw": 99.61444488888401,
+       "q_mvar": 8.778519220753472,
+       "s_mva": 100.00050014989749,
+       "util": 1.000005001498975
+      },
+      {
+       "year": "2030",
+       "day": "Spring",
+       "period": 13,
+       "p_mw": 99.73972755212841,
+       "q_mvar": 7.217117534056196,
+       "s_mva": 100.000500187115,
+       "util": 1.00000500187115
+      },
+      {
+       "year": "2030",
+       "day": "Summer",
+       "period": 11,
+       "p_mw": 99.10811246441908,
+       "q_mvar": 13.329736970923348,
+       "s_mva": 100.00049921862362,
+       "util": 1.0000049921862362
+      },
+      {
+       "year": "2030",
+       "day": "Summer",
+       "period": 12,
+       "p_mw": 99.27386477600574,
+       "q_mvar": 12.03327708635999,
+       "s_mva": 100.00049992375932,
+       "util": 1.0000049992375932
+      },
+      {
+       "year": "2030",
+       "day": "Summer",
+       "period": 13,
+       "p_mw": 99.4424314913255,
+       "q_mvar": 10.550016121207822,
+       "s_mva": 100.00050010407303,
+       "util": 1.0000050010407302
+      },
+      {
+       "year": "2035",
+       "day": "Autumn",
+       "period": 11,
+       "p_mw": 99.43293644610398,
+       "q_mvar": 10.63910173301153,
+       "s_mva": 100.00049667866816,
+       "util": 1.0000049667866815
+      },
+      {
+       "year": "2035",
+       "day": "Spring",
+       "period": 10,
+       "p_mw": 99.65594852152958,
+       "q_mvar": 8.294066710459578,
+       "s_mva": 100.00049809037607,
+       "util": 1.0000049809037608
+      },
+      {
+       "year": "2035",
+       "day": "Spring",
+       "period": 12,
+       "p_mw": 99.6254299442694,
+       "q_mvar": 8.652957791779233,
+       "s_mva": 100.00049984938497,
+       "util": 1.0000049984938497
+      },
+      {
+       "year": "2035",
+       "day": "Spring",
+       "period": 13,
+       "p_mw": 99.78020560900065,
+       "q_mvar": 6.634049116851679,
+       "s_mva": 100.00050019404526,
+       "util": 1.0000050019404525
+      },
+      {
+       "year": "2035",
+       "day": "Summer",
+       "period": 11,
+       "p_mw": 99.05635642872059,
+       "q_mvar": 13.709055431194445,
+       "s_mva": 100.00049974749774,
+       "util": 1.0000049974749774
+      },
+      {
+       "year": "2035",
+       "day": "Summer",
+       "period": 12,
+       "p_mw": 99.2967525348002,
+       "q_mvar": 11.842928917534358,
+       "s_mva": 100.00050014526488,
+       "util": 1.0000050014526487
+      },
+      {
+       "year": "2035",
+       "day": "Summer",
+       "period": 13,
+       "p_mw": 99.42783090642027,
+       "q_mvar": 10.686742917637616,
+       "s_mva": 100.00050016346609,
+       "util": 1.0000050016346609
+      }
+     ],
+     "max_s_mva": 100.00050030497673,
+     "max_p_mw_in_at_rating_slots": 99.78020560900065,
+     "max_abs_s_minus_row_bound_in_at_rating_slots_mva": 1.535458160617509e-05,
+     "n_on_row_bound": 23,
+     "on_row_bound_tolerance_mva": 0.001,
+     "max_s_minus_row_bound_mva": 3.062267239783978e-07,
+     "at_rating_utilization_min": 1.000004846441684
+    },
+    "9": {
+     "rating_mva": 150.0,
+     "n_slots": 288,
+     "max_util": 0.6716202689172522,
+     "n_at_rating_ge_0_99": 0
+    }
+   }
+  },
+  "row_bound_mva": 100.00049999875,
+  "row_bound_formula": "|S_ij| at the branch_flow_limit row bound = sqrt((rate/baseMVA)^2 + EQUALITY_TOLERANCE) * baseMVA = sqrt(1 + 1e-5) * 100 MVA",
+  "candidate_vs_x0_at_rating": {
+   "same_slot_set": true,
+   "n_candidate": 23,
+   "n_x0": 23,
+   "max_abs_delta_p_mw_on_common_slots": 7.973023159024706e-05
+  },
+  "reference_generator_bound_margin": {
+   "pmax_mw": 100.0,
+   "qmax_mvar": 100.0,
+   "ess_stride_sidecar": "data/SRP1/Results/P515S45/campaign_s45_a1a/evals/7eb1ce62c2509f54_n7_4h_e1/ess_entry_stride_baseline.jsonl",
+   "ess_stride_sidecar_sha256": "e83f21638f79efc15b2ccaa57937d9e0bdace8ba8f29de6e2ad00e133a1139a4",
+   "ess_stride_sidecar_committed_manifest_sha256": "e83f21638f79efc15b2ccaa57937d9e0bdace8ba8f29de6e2ad00e133a1139a4",
+   "ess_stride_cycle": 125,
+   "formula": "pg_ref = p_int + shared_es_pnet (DSO copy, x_dso; positive = charging), from the bus-1 balance",
+   "max_pg_ref_mw_in_at_rating_slots": 99.82477448518317,
+   "max_abs_qg_ref_mvar_in_at_rating_slots": 13.711532313027584,
+   "max_storage_abs_s_over_rating_in_at_rating_slots": 0.9999743977844775,
+   "n_at_rating_slots_storage_ge_0_99_of_own_rating": 2,
+   "n_at_rating_slots_storage_le_0_01_of_own_rating": 4,
+   "at_rating_slots_storage_ge_0_99_of_own_rating": [
+    {
+     "year": "2025",
+     "day": "Summer",
+     "period": 13,
+     "p_int_mw": 99.43789606800273,
+     "storage_pnet_dso_mw_positive_charge": 0.24992967612183248,
+     "pg_ref_mw": 99.68782574412457,
+     "q_int_mvar": 10.59267872147597,
+     "storage_qnet_dso_mvar": 0.0031686375693260717,
+     "qg_ref_mvar": 10.595847359045296,
+     "storage_abs_s_over_rating": 0.999799045972018
+    },
+    {
+     "year": "2035",
+     "day": "Autumn",
+     "period": 11,
+     "p_int_mw": 99.43297564445992,
+     "storage_pnet_dso_mw_positive_charge": 0.24997801275810191,
+     "pg_ref_mw": 99.68295365721802,
+     "q_int_mvar": 10.63873547423509,
+     "storage_qnet_dso_mvar": 0.002791576890757788,
+     "qg_ref_mvar": 10.641527051125848,
+     "storage_abs_s_over_rating": 0.9999743977844775
+    }
+   ],
+   "per_slot": [
+    {
+     "year": "2025",
+     "day": "Spring",
+     "period": 9,
+     "p_int_mw": 99.65702216385723,
+     "storage_pnet_dso_mw_positive_charge": 3.0437348628869663e-05,
+     "pg_ref_mw": 99.65705260120586,
+     "q_int_mvar": 8.281181084199812,
+     "storage_qnet_dso_mvar": 0.004791777488554105,
+     "qg_ref_mvar": 8.285972861688366,
+     "storage_abs_s_over_rating": 0.019167496626113882
+    },
+    {
+     "year": "2025",
+     "day": "Spring",
+     "period": 10,
+     "p_int_mw": 99.74931676401219,
+     "storage_pnet_dso_mw_positive_charge": 2.6893434936159203e-05,
+     "pg_ref_mw": 99.74934365744713,
+     "q_int_mvar": 7.083349680235044,
+     "storage_qnet_dso_mvar": 0.004677124649846103,
+     "qg_ref_mvar": 7.0880268048848905,
+     "storage_abs_s_over_rating": 0.018708807870964177
+    },
+    {
+     "year": "2025",
+     "day": "Spring",
+     "period": 11,
+     "p_int_mw": 99.55322142334144,
+     "storage_pnet_dso_mw_positive_charge": 7.124716623647788e-06,
+     "pg_ref_mw": 99.55322854805806,
+     "q_int_mvar": 9.447547154329675,
+     "storage_qnet_dso_mvar": 0.0033916196866283265,
+     "qg_ref_mvar": 9.450938774016302,
+     "storage_abs_s_over_rating": 0.013566508680017447
+    },
+    {
+     "year": "2025",
+     "day": "Spring",
+     "period": 12,
+     "p_int_mw": 99.7243806135873,
+     "storage_pnet_dso_mw_positive_charge": 0.00017903086969826355,
+     "pg_ref_mw": 99.724559644457,
+     "q_int_mvar": 7.426168088747949,
+     "storage_qnet_dso_mvar": 0.0021384870664199625,
+     "qg_ref_mvar": 7.428306575814369,
+     "storage_abs_s_over_rating": 0.008583872306180119
+    },
+    {
+     "year": "2025",
+     "day": "Summer",
+     "period": 10,
+     "p_int_mw": 99.31173514299432,
+     "storage_pnet_dso_mw_positive_charge": 1.3117377304230695e-05,
+     "pg_ref_mw": 99.31174826037163,
+     "q_int_mvar": 11.716551670366712,
+     "storage_qnet_dso_mvar": 0.005206576990817342,
+     "qg_ref_mvar": 11.72175824735753,
+     "storage_abs_s_over_rating": 0.020826374058638596
+    },
+    {
+     "year": "2025",
+     "day": "Summer",
+     "period": 11,
+     "p_int_mw": 99.15648653089364,
+     "storage_pnet_dso_mw_positive_charge": 6.658544822948624e-05,
+     "pg_ref_mw": 99.15655311634187,
+     "q_int_mvar": 12.964995497333707,
+     "storage_qnet_dso_mvar": 0.0031634891906003474,
+     "qg_ref_mvar": 12.968158986524307,
+     "storage_abs_s_over_rating": 0.012656759446848099
+    },
+    {
+     "year": "2025",
+     "day": "Summer",
+     "period": 12,
+     "p_int_mw": 99.31035921219676,
+     "storage_pnet_dso_mw_positive_charge": 0.05543888068862417,
+     "pg_ref_mw": 99.36579809288538,
+     "q_int_mvar": 11.728280550842538,
+     "storage_qnet_dso_mvar": 0.0029601206955326286,
+     "qg_ref_mvar": 11.731240671538071,
+     "storage_abs_s_over_rating": 0.22207140496838854
+    },
+    {
+     "year": "2025",
+     "day": "Summer",
+     "period": 13,
+     "p_int_mw": 99.43789606800273,
+     "storage_pnet_dso_mw_positive_charge": 0.24992967612183248,
+     "pg_ref_mw": 99.68782574412457,
+     "q_int_mvar": 10.59267872147597,
+     "storage_qnet_dso_mvar": 0.0031686375693260717,
+     "qg_ref_mvar": 10.595847359045296,
+     "storage_abs_s_over_rating": 0.999799045972018
+    },
+    {
+     "year": "2030",
+     "day": "Spring",
+     "period": 9,
+     "p_int_mw": 99.5016086915927,
+     "storage_pnet_dso_mw_positive_charge": 2.7436258930383305e-05,
+     "pg_ref_mw": 99.50163612785163,
+     "q_int_mvar": 9.976307990993579,
+     "storage_qnet_dso_mvar": 0.004480896613116238,
+     "qg_ref_mvar": 9.980788887606696,
+     "storage_abs_s_over_rating": 0.017923922430423837
+    },
+    {
+     "year": "2030",
+     "day": "Spring",
+     "period": 10,
+     "p_int_mw": 99.61387347077036,
+     "storage_pnet_dso_mw_positive_charge": 2.2220348674305256e-05,
+     "pg_ref_mw": 99.61389569111903,
+     "q_int_mvar": 8.784986687528892,
+     "storage_qnet_dso_mvar": 0.004147543385473126,
+     "qg_ref_mvar": 8.789134230914366,
+     "storage_abs_s_over_rating": 0.016590411629987766
+    },
+    {
+     "year": "2030",
+     "day": "Spring",
+     "period": 11,
+     "p_int_mw": 99.40147892504179,
+     "storage_pnet_dso_mw_positive_charge": 1.2431770679996066e-06,
+     "pg_ref_mw": 99.40148016821885,
+     "q_int_mvar": 10.929129944337083,
+     "storage_qnet_dso_mvar": 0.002942584213019879,
+     "qg_ref_mvar": 10.932072528550103,
+     "storage_abs_s_over_rating": 0.01177033790250937
+    },
+    {
+     "year": "2030",
+     "day": "Spring",
+     "period": 12,
+     "p_int_mw": 99.61441979374877,
+     "storage_pnet_dso_mw_positive_charge": 0.00017637255748601338,
+     "pg_ref_mw": 99.61459616630626,
+     "q_int_mvar": 8.778803981630091,
+     "storage_qnet_dso_mvar": 0.001936188794870884,
+     "qg_ref_mvar": 8.780740170424961,
+     "storage_abs_s_over_rating": 0.007776821282161728
+    },
+    {
+     "year": "2030",
+     "day": "Spring",
+     "period": 13,
+     "p_int_mw": 99.73971278920688,
+     "storage_pnet_dso_mw_positive_charge": 0.08506169597629208,
+     "pg_ref_mw": 99.82477448518317,
+     "q_int_mvar": 7.217321551009334,
+     "storage_qnet_dso_mvar": 0.0017720350978816142,
+     "qg_ref_mvar": 7.219093586107216,
+     "storage_abs_s_over_rating": 0.3403206072103485
+    },
+    {
+     "year": "2030",
+     "day": "Summer",
+     "period": 11,
+     "p_int_mw": 99.10805684802425,
+     "storage_pnet_dso_mw_positive_charge": 2.3092556650866262e-05,
+     "pg_ref_mw": 99.1080799405809,
+     "q_int_mvar": 13.330150467737933,
+     "storage_qnet_dso_mvar": 0.0033580039676638397,
+     "qg_ref_mvar": 13.333508471705597,
+     "storage_abs_s_over_rating": 0.013432333475919224
+    },
+    {
+     "year": "2030",
+     "day": "Summer",
+     "period": 12,
+     "p_int_mw": 99.27382475506685,
+     "storage_pnet_dso_mw_positive_charge": 0.00017411335734678307,
+     "pg_ref_mw": 99.2739988684242,
+     "q_int_mvar": 12.03360724985163,
+     "storage_qnet_dso_mvar": 0.003445030032631662,
+     "qg_ref_mvar": 12.037052279884263,
+     "storage_abs_s_over_rating": 0.013797708439847933
+    },
+    {
+     "year": "2030",
+     "day": "Summer",
+     "period": 13,
+     "p_int_mw": 99.44240409627935,
+     "storage_pnet_dso_mw_positive_charge": 0.08512821738665896,
+     "pg_ref_mw": 99.527532313666,
+     "q_int_mvar": 10.550274337133004,
+     "storage_qnet_dso_mvar": 0.0036480491513188364,
+     "qg_ref_mvar": 10.553922386284324,
+     "storage_abs_s_over_rating": 0.3408253900880204
+    },
+    {
+     "year": "2035",
+     "day": "Autumn",
+     "period": 11,
+     "p_int_mw": 99.43297564445992,
+     "storage_pnet_dso_mw_positive_charge": 0.24997801275810191,
+     "pg_ref_mw": 99.68295365721802,
+     "q_int_mvar": 10.63873547423509,
+     "storage_qnet_dso_mvar": 0.002791576890757788,
+     "qg_ref_mvar": 10.641527051125848,
+     "storage_abs_s_over_rating": 0.9999743977844775
+    },
+    {
+     "year": "2035",
+     "day": "Spring",
+     "period": 10,
+     "p_int_mw": 99.65586879129799,
+     "storage_pnet_dso_mw_positive_charge": 0.12502757318633484,
+     "pg_ref_mw": 99.78089636448432,
+     "q_int_mvar": 8.295024621730635,
+     "storage_qnet_dso_mvar": 0.0057006427955055925,
+     "qg_ref_mvar": 8.30072526452614,
+     "storage_abs_s_over_rating": 0.5006298654318779
+    },
+    {
+     "year": "2035",
+     "day": "Spring",
+     "period": 12,
+     "p_int_mw": 99.62535130729991,
+     "storage_pnet_dso_mw_positive_charge": 1.991692659466248e-05,
+     "pg_ref_mw": 99.6253712242265,
+     "q_int_mvar": 8.653863126101374,
+     "storage_qnet_dso_mvar": 0.004423299115927578,
+     "qg_ref_mvar": 8.658286425217302,
+     "storage_abs_s_over_rating": 0.017693375823931698
+    },
+    {
+     "year": "2035",
+     "day": "Spring",
+     "period": 13,
+     "p_int_mw": 99.78017570023306,
+     "storage_pnet_dso_mw_positive_charge": 0.013505007594240623,
+     "pg_ref_mw": 99.7936807078273,
+     "q_int_mvar": 6.634498947663527,
+     "storage_qnet_dso_mvar": 0.0034987160489203715,
+     "qg_ref_mvar": 6.637997663712447,
+     "storage_abs_s_over_rating": 0.055803404069855074
+    },
+    {
+     "year": "2035",
+     "day": "Summer",
+     "period": 11,
+     "p_int_mw": 99.05630069939959,
+     "storage_pnet_dso_mw_positive_charge": 1.767300355325649e-05,
+     "pg_ref_mw": 99.05631837240314,
+     "q_int_mvar": 13.709458101495606,
+     "storage_qnet_dso_mvar": 0.0020742115319784113,
+     "qg_ref_mvar": 13.711532313027584,
+     "storage_abs_s_over_rating": 0.008297147282720076
+    },
+    {
+     "year": "2035",
+     "day": "Summer",
+     "period": 12,
+     "p_int_mw": 99.29672300928638,
+     "storage_pnet_dso_mw_positive_charge": 0.00018546497174170724,
+     "pg_ref_mw": 99.29690847425812,
+     "q_int_mvar": 11.843176470306632,
+     "storage_qnet_dso_mvar": 0.0023179281294066103,
+     "qg_ref_mvar": 11.845494398436038,
+     "storage_abs_s_over_rating": 0.009301344478160202
+    },
+    {
+     "year": "2035",
+     "day": "Summer",
+     "period": 13,
+     "p_int_mw": 99.42780512711788,
+     "storage_pnet_dso_mw_positive_charge": 0.19672771471915645,
+     "pg_ref_mw": 99.62453284183704,
+     "q_int_mvar": 10.686982760972283,
+     "storage_qnet_dso_mvar": 0.0026812617490903396,
+     "qg_ref_mvar": 10.689664022721374,
+     "storage_abs_s_over_rating": 0.7869839429435794
+    }
+   ]
+  },
+  "one_line": "Node-7 DN (case33_2): get_interface_branch_rating sums ONE branch -- branch_id 1 (index 31), from bus 1 (the DN reference bus) to bus 2, transformer, 100 MVA; the binding row is its apparent-power limit at the bus-1 end, branch_flow_limit[31,*] (pij^2 + qij^2 <= 1 + 1e-5 p.u.^2); the shared storage injects at DN bus 1 (the reference bus, the from-bus of that branch) in the DSO model and at TN bus 7 in the TSO model.",
+  "nuance": "There is no multi-branch sum: bus 1 has exactly one in-service branch, no load and no shunt, so the DSO interface flow pg_adn = pg_ref - shared_es_pnet equals, by the bus-1 node balance, the from-end flow of branch 1-2 identically. The storage term appears in the bus-1 balance and in pg_adn and cancels between them; it appears in no row of bus 2 or beyond and not in the branch row. The injection therefore sits AT the upstream terminal of the single constrained branch (the TN side of the cut), not upstream of a separate element: the constrained flow is the DN's own net draw, which the storage cannot change -- only DN-side resources (flexibility, DERs) can. In the TSO the storage is a separate injection at TN bus 7, the same bus as the ADN interface load; TN branches at bus 7 were NOT evaluated here (no TN branch flow is captured in the records used).",
+  "confirm_or_refute": "CONFIRMED, with the precise wording: the binding element (branch 1-2, 100 MVA, its bus-1 end) is on the DN side of the storage's injection bus (bus 1 = its from-bus), and the interface flow is by construction net of the storage, so the storage cannot relieve it."
+ },
+ "Z2": {
+  "citations": {
+   "phi_cal_read": "shared_energy_storage_data.py:638",
+   "phi_cal_read_all_occurrences": [
+    "shared_energy_storage_data.py:638",
+    "shared_energy_storage_data.py:1823"
+   ],
+   "soh_chain_row": "shared_energy_storage_data.py:668",
+   "D_row": "shared_energy_storage_data.py:654",
+   "throughput_row": "shared_energy_storage_data.py:621",
+   "available_energy_row": "shared_energy_storage_data.py:584",
+   "soh_floor_row": "shared_energy_storage_data.py:676",
+   "published_available_capacity": "shared_energy_storage_data.py:246",
+   "phi_cal_source_default": "shared_energy_storage_parameters.py:144",
+   "phi_cal_bound_to_object": "shared_energy_storage_parameters.py:185",
+   "cl_eff_bound_to_object": "shared_energy_storage_parameters.py:184",
+   "tso_uses_e_available": [
+    "shared_resources_planning.py:5427",
+    "shared_resources_planning.py:5761",
+    "shared_resources_planning.py:5971"
+   ],
+   "efc_capture_formula": "p515_g_g1_g4_admm_gates.py:3527"
+  },
+  "phi_cal_as_consumed": {
+   "2025": 1.0,
+   "2030": 1.0,
+   "2035": 1.0
+  },
+  "phi_cal_in_case_file": "ageing.calendar_retention_per_year is ABSENT from data/SRP1/SharedESS/SRP1_ESS_Params.json; the default 1.0 applies",
+  "k_cl_eff_as_consumed": {
+   "2025": 11541.560327111707,
+   "2030": 11541.560327111707,
+   "2035": 11541.560327111707
+  },
+  "k_calibration_in_case_file": {
+   "status": "ACTIVE",
+   "cycles_n": 10000,
+   "reference_dod_d": 0.8,
+   "eol_retention_r": 0.5,
+   "_note": "k = cycles_n * reference_dod_d / (-ln eol_retention_r). ACTIVE since P5.13-D: calibration C3 = (10000, 0.80, 0.50) gives k = 11541.560327111707, consumed by the degradation law in place of cycle_life_nominal. See P5_13_B_CYCLING_CALIBRATION.md for the candidates and P5_13_D_* for the impact gate. Setting status back to DECLARED_NOT_CONSUMED restores k = cycle_life_nominal exactly."
+  },
+  "soh_min": {
+   "2025": 0.5,
+   "2030": 0.5,
+   "2035": 0.5
+  },
+  "num_years_per_block": {
+   "2025": 5,
+   "2030": 5,
+   "2035": 5
+  },
+  "days": {
+   "Spring": 92,
+   "Summer": 91,
+   "Autumn": 91,
+   "Winter": 91
+  },
+  "trajectory": [
+   {
+    "cohort": 2025,
+    "year_block": 2025,
+    "cohort_year_index": "(0, 0)",
+    "efc_per_day": 1.1445130063747824,
+    "D": 0.18097520416952909,
+    "soh_start_of_block": 1.0,
+    "soh_used_for_available_energy_end_of_block": 0.8344560494683406,
+    "soh_recomputed": 0.8344560494700041,
+    "e_available_mwh_published": 0.8344560494683406,
+    "e_rated_mwh": 1.0,
+    "e_available_over_rated": 0.8344560494683406,
+    "floor_row_active": false,
+    "floor_row_dual": 2.718109575757166e-10,
+    "sidecar_soh": 0.8344560494683406,
+    "sidecar_efc": 1.1445130063747824,
+    "efc_block_total_cycles": 2088.736236633978
+   },
+   {
+    "cohort": 2025,
+    "year_block": 2030,
+    "cohort_year_index": "(0, 1)",
+    "efc_per_day": 1.0270140074738057,
+    "D": 0.16239576890109642,
+    "soh_start_of_block": 0.8344560494683406,
+    "soh_used_for_available_energy_end_of_block": 0.7093750037117399,
+    "soh_recomputed": 0.7093750037169481,
+    "e_available_mwh_published": 0.7093750037117399,
+    "e_rated_mwh": 1.0,
+    "e_available_over_rated": 0.7093750037117399,
+    "floor_row_active": false,
+    "floor_row_dual": 4.3419215067071717e-10,
+    "sidecar_soh": 0.7093750037117399,
+    "sidecar_efc": 1.0270140074738057,
+    "efc_block_total_cycles": 1874.3005636396954
+   },
+   {
+    "cohort": 2025,
+    "year_block": 2035,
+    "cohort_year_index": "(0, 2)",
+    "efc_per_day": 0.8264722451025055,
+    "D": 0.13068526304619074,
+    "soh_start_of_block": 0.7093750037117399,
+    "soh_used_for_available_energy_end_of_block": 0.622472246143986,
+    "soh_recomputed": 0.6224722461556228,
+    "e_available_mwh_published": 0.622472246143986,
+    "e_rated_mwh": 1.0,
+    "e_available_over_rated": 0.622472246143986,
+    "floor_row_active": false,
+    "floor_row_dual": 7.422833263749537e-10,
+    "sidecar_soh": 0.622472246143986,
+    "sidecar_efc": 0.8264722451025055,
+    "efc_block_total_cycles": 1508.3118473120726
+   }
+  ],
+  "inactive_cohorts": [
+   {
+    "node_id": 7,
+    "y_inv": "1",
+    "y": "1",
+    "constraint_idx": 12,
+    "dual": null,
+    "es_soh_per_unit_cumul": 1.0,
+    "soh_min": 0.5,
+    "active": false,
+    "efc_per_day": null
+   },
+   {
+    "node_id": 7,
+    "y_inv": "1",
+    "y": "2",
+    "constraint_idx": 15,
+    "dual": null,
+    "es_soh_per_unit_cumul": 1.0,
+    "soh_min": 0.5,
+    "active": false,
+    "efc_per_day": null
+   },
+   {
+    "node_id": 7,
+    "y_inv": "2",
+    "y": "2",
+    "constraint_idx": 18,
+    "dual": null,
+    "es_soh_per_unit_cumul": 1.0,
+    "soh_min": 0.5,
+    "active": false,
+    "efc_per_day": null
+   }
+  ],
+  "efc_horizon_total_cycles": 5471.348647585746,
+  "formula": "EFC/day[y_inv,y] = avg_ch_dch / (2 E_rated), avg_ch_dch = sum_d (n_d/365) sum_p (eta_ch pch + pdch/eta_dch) dt (throughput on the CELL side, E_rated = nameplate); D[y_inv,y] = 365 * num_years * avg_ch_dch / (2 k E) = 365 * num_years * EFC/day / k; SoH[y_inv,y] = SoH[y_inv,y-1] * exp(-D[y_inv,y]) * phi_cal^num_years (SoH[y_inv,y_inv-1] := 1); E_available[y] = sum_{y_inv} E_rated[y_inv,y] * SoH[y_inv,y], published to the TSO and DSO blocks of year y as shared_es_e_rated_fixed.",
+  "end_of_block_statement": "YES -- available energy in block y uses the END-of-block SoH: SoH[0,y] already includes exp(-D[0,y]), the degradation caused by block y's own throughput (for 2025: 0.8345, not 1.0).",
+  "max_abs_soh_recompute_deviation": 1.1636802632608578e-11
+ },
+ "Z3": {
+  "citations": {
+   "block_weight": "shared_resources_planning.py:3421",
+   "annualization": "shared_resources_planning.py:3423",
+   "weight_return": "shared_resources_planning.py:3424",
+   "discount_factor_source": "data/SRP1/SRP1.json \"DiscountFactor\""
+  },
+  "production_convention": "block weight = num_years[y] * num_days[d] / (1 + r)^(y - y_first), r = DiscountFactor = 0.02: ONE discount factor per representative year, applied to all num_years (5) years of that block (NOT an annuity over the 5 years); y_first = 2025 so the 2025 block is undiscounted.",
+  "discount_factor_in_model": 0.02,
+  "Q_per_year": {
+   "a1a": {
+    "per_year": {
+     "2025": {
+      "weighted_r2": 306129057.64917004,
+      "undiscounted": 306129057.6491701
+     },
+     "2030": {
+      "weighted_r2": 170685591.93424335,
+      "undiscounted": 188450685.4374268
+     },
+     "2035": {
+      "weighted_r2": 176783004.14008588,
+      "undiscounted": 215497495.5966747
+     }
+    },
+    "sum_blocks_weighted_r2": 653597653.7234993,
+    "recorded_gross_operational_cost": 653597653.7234993,
+    "recorded_certified_cost_in_evaluation_record": 653597653.7234993,
+    "abs_sum_minus_recorded": 0.0,
+    "max_block_weight_deviation": 5.684341886080802e-14
+   },
+   "x0": {
+    "per_year": {
+     "2025": {
+      "weighted_r2": 306232429.5971157,
+      "undiscounted": 306232429.5971157
+     },
+     "2030": {
+      "weighted_r2": 170760980.24925143,
+      "undiscounted": 188533920.2288128
+     },
+     "2035": {
+      "weighted_r2": 176866051.38155848,
+      "undiscounted": 215598729.72062582
+     }
+    },
+    "sum_blocks_weighted_r2": 653859461.2279255,
+    "recorded_gross_operational_cost": 653859461.2279255,
+    "recorded_certified_cost_in_evaluation_record": 653859461.2279255,
+    "abs_sum_minus_recorded": 0.0,
+    "max_block_weight_deviation": 5.684341886080802e-14
+   }
+  },
+  "V_per_year": {
+   "2025": {
+    "V_weighted_r2": 103371.94794565439,
+    "V_undiscounted": 103371.94794559479
+   },
+   "2030": {
+    "V_weighted_r2": 75388.31500807405,
+    "V_undiscounted": 83234.79138600826
+   },
+   "2035": {
+    "V_weighted_r2": 83047.24147260189,
+    "V_undiscounted": 101234.12395110726
+   }
+  },
+  "reconstruction": {
+   "certified_value_eur": 261807.50442624092,
+   "certified_value_source": "data/SRP1/Results/P515S45/phase_a_tables/phase_a_tables.json T1 identity a0_c7:n7_p0.25_e1.0 value_eur",
+   "V_r2_from_weighted_blocks": 261807.50442633033,
+   "V_r2_from_undiscounted_reweighted": 261807.50442630972,
+   "abs_diff_weighted": 8.940696716308594e-08,
+   "abs_diff_reweighted": 6.880145519971848e-08,
+   "tolerance_eur": 1.0
+  },
+  "I_x_eur": 317957.0085035586,
+  "I_x_source": "data/SRP1/Results/P515S45/phase_a_tables/phase_a_tables.json T1 identity a0_c7:n7_p0.25_e1.0 I_x_eur (paid in 2025, factor 1.0, held fixed)",
+  "bar_sum_eur": 20970.29711854458,
+  "bar_note": "resolution of V(2 %) = bar(x) + bar(x0) (max |gross step| over the last 10 cycles of each run); the per-year split of the bar is not recorded, so V(r)'s bar is bounded conservatively by bar_sum * max_y ((1.02/(1+r))^(y-2025)).",
+  "table": [
+   {
+    "rate": 0.0,
+    "V_per_year": {
+     "2025": 103371.94794559479,
+     "2030": 83234.79138600826,
+     "2035": 101234.12395110726
+    },
+    "V": 287840.8632827103,
+    "V_over_V_2pct": 1.0994370230656552,
+    "value_to_cost": 0.9052823356132714,
+    "resolution_bar_eur_conservative": 25562.67517313798,
+    "change_vs_2pct_pct": 9.943702306565516,
+    "expert_prediction": "+ at most ~10 %"
+   },
+   {
+    "rate": 0.02,
+    "V_per_year": {
+     "2025": 103371.94794559479,
+     "2030": 75388.31500807338,
+     "2035": 83047.24147264157
+    },
+    "V": 261807.50442630972,
+    "V_over_V_2pct": 1.0,
+    "value_to_cost": 0.823405358034055,
+    "resolution_bar_eur_conservative": 20970.29711854458,
+    "change_vs_2pct_pct": 0.0,
+    "expert_prediction": null
+   },
+   {
+    "rate": 0.05,
+    "V_per_year": {
+     "2025": 103371.94794559479,
+     "2030": 65216.637011480954,
+     "2035": 62148.97040417275
+    },
+    "V": 230737.5553612485,
+    "V_over_V_2pct": 0.8813252158942357,
+    "value_to_cost": 0.725687904937834,
+    "resolution_bar_eur_conservative": 20970.29711854458,
+    "change_vs_2pct_pct": -11.867478410576426,
+    "expert_prediction": "~ -12 %"
+   },
+   {
+    "rate": 0.08,
+    "V_per_year": {
+     "2025": 103371.94794559479,
+     "2030": 56648.20042592698,
+     "2035": 46890.98698611064
+    },
+    "V": 206911.13535763242,
+    "V_over_V_2pct": 0.7903178169435214,
+    "value_to_cost": 0.6507519250210729,
+    "resolution_bar_eur_conservative": 20970.29711854458,
+    "change_vs_2pct_pct": -20.968218305647856,
+    "expert_prediction": "~ -21 %"
+   }
+  ],
+  "formula": "Q_y = sum over the TSO block and all DSO blocks of year y of the gross settlement-excluded per-block cost (sum of generation_cost + flexibility_cost_internal + load_curtailment_cost + res_curtailment_penalty + ess_usage_cost + detector_penalty_total); undiscounted Q_y = sum of unweighted * num_years * num_days; V_y = Q_y(0) - Q_y(x); V(r) = sum_y V_y_undiscounted / (1 + r)^(y - 2025); value_to_cost(r) = V(r) / I(x)."
+ },
+ "Z4": {
+  "citations": {
+   "market_reader": "shared_resources_planning.py:8302",
+   "price_array": "shared_resources_planning.py:8346",
+   "tso_prices_bound": "shared_resources_planning.py:8175",
+   "dso_prices_bound": "shared_resources_planning.py:8132",
+   "generation_cost_uses_price": "model_construction_helpers.py:1669",
+   "market_file": "data/SRP1/MarketData/SRP1_market_data.xlsx (base profiles; SRP1.json \"MarketData\"), synthetic scenario selection seeded by SRP1.json \"RandomSeed\", growth factor from its \"Growth Factors\" sheet"
+  },
+  "max_abs_dev_vs_prices_recorded_in_certified_run": 0.0,
+  "per_representative_day": [
+   {
+    "year": 2025,
+    "day": "Spring",
+    "num_days": 92,
+    "num_years": 5,
+    "weight_undiscounted": 460,
+    "weight_model_r2": 460.0,
+    "min": 3.2589652668910762,
+    "max": 158.08689556133885,
+    "mean": 83.60145377354466,
+    "max_minus_min": 154.82793029444778,
+    "top4_mean_minus_bottom4_mean": 133.3715969399047,
+    "prices": [
+     116.6741563028345,
+     117.72769218863633,
+     120.19845744897576,
+     119.22860902435463,
+     124.72952816104966,
+     128.03663614649625,
+     134.8799247808026,
+     115.96857921951926,
+     77.83624431368597,
+     38.123663843804934,
+     33.608660885680955,
+     30.838312307723616,
+     15.689403206252234,
+     12.702646780769136,
+     3.2589652668910762,
+     6.985251712125617,
+     13.601224711837649,
+     41.51769184732111,
+     80.21280042116278,
+     113.9651653572442,
+     142.53569675079214,
+     134.53195913830874,
+     125.49672518746387,
+     158.08689556133885
+    ]
+   },
+   {
+    "year": 2025,
+    "day": "Summer",
+    "num_days": 91,
+    "num_years": 5,
+    "weight_undiscounted": 455,
+    "weight_model_r2": 455.0,
+    "min": 33.63971087294918,
+    "max": 144.2626415559513,
+    "mean": 90.60782341050286,
+    "max_minus_min": 110.62293068300211,
+    "top4_mean_minus_bottom4_mean": 96.40798156790564,
+    "prices": [
+     121.74287276332464,
+     115.32886788799718,
+     112.00342991401446,
+     108.17294045880145,
+     111.28348464173462,
+     105.1551409954758,
+     109.57559794692766,
+     104.5472472304923,
+     79.15592927859231,
+     62.119846687817166,
+     57.76247392536227,
+     48.215049170836885,
+     38.424589573272584,
+     36.41228701489688,
+     33.63971087294918,
+     37.88721781582405,
+     51.35847584956535,
+     80.27603961812194,
+     106.45642056661225,
+     123.07440809088446,
+     144.2626415559513,
+     131.71640251884176,
+     130.1211567572963,
+     125.89553071647589
+    ]
+   },
+   {
+    "year": 2025,
+    "day": "Autumn",
+    "num_days": 91,
+    "num_years": 5,
+    "weight_undiscounted": 455,
+    "weight_model_r2": 455.0,
+    "min": 80.5488384104911,
+    "max": 161.80042086881863,
+    "mean": 104.31500466875927,
+    "max_minus_min": 81.25158245832753,
+    "top4_mean_minus_bottom4_mean": 56.25985147000799,
+    "prices": [
+     95.55431057471607,
+     93.18084783640107,
+     92.14002418701001,
+     84.81557569560239,
+     87.24578403322691,
+     90.12445289047265,
+     102.1153437560564,
+     114.61430739991985,
+     106.70823614436681,
+     110.71365374036111,
+     93.18821526799111,
+     83.75767012687857,
+     80.5488384104911,
+     80.68186183488376,
+     86.01972898629111,
+     104.37244864915272,
+     113.63648766663488,
+     128.91485584443214,
+     161.80042086881863,
+     149.48148826112856,
+     111.14134173937182,
+     109.29163298630553,
+     114.64658697350838,
+     108.86599817620075
+    ]
+   },
+   {
+    "year": 2025,
+    "day": "Winter",
+    "num_days": 91,
+    "num_years": 5,
+    "weight_undiscounted": 455,
+    "weight_model_r2": 455.0,
+    "min": 84.1287791281758,
+    "max": 141.0096736584578,
+    "mean": 103.11592806157795,
+    "max_minus_min": 56.88089453028202,
+    "top4_mean_minus_bottom4_mean": 46.27642309551209,
+    "prices": [
+     97.73315729186665,
+     91.68951173342124,
+     86.8481101860464,
+     84.78616509037643,
+     84.1287791281758,
+     85.5685196105134,
+     91.66792812391392,
+     108.67001880403274,
+     124.24538255992334,
+     119.83858069901969,
+     103.96607274798963,
+     92.04593158873284,
+     89.56756562944251,
+     87.38870127829533,
+     88.02522700287633,
+     89.73970575705343,
+     102.46203129151371,
+     125.02645316997688,
+     133.2831014434276,
+     141.0096736584578,
+     127.11803812529799,
+     115.91226793021733,
+     106.37516503291006,
+     97.68618559438974
+    ]
+   },
+   {
+    "year": 2030,
+    "day": "Spring",
+    "num_days": 92,
+    "num_years": 5,
+    "weight_undiscounted": 460,
+    "weight_model_r2": 416.6361725217613,
+    "min": 3.6872200684858494,
+    "max": 178.86081198848117,
+    "mean": 94.58737140898431,
+    "max_minus_min": 175.17359191999532,
+    "top4_mean_minus_bottom4_mean": 150.89772014414626,
+    "prices": [
+     132.00609867311138,
+     133.19807782688255,
+     135.99352193455542,
+     134.89622746168004,
+     141.120012551384,
+     144.86170168703444,
+     152.60425465106974,
+     131.2078029662211,
+     88.06456607706546,
+     43.13342637836225,
+     38.02511495031532,
+     34.89071981664453,
+     17.75111964290627,
+     14.371878893210852,
+     3.6872200684858494,
+     7.903171156207219,
+     15.388537344344032,
+     46.97345753632123,
+     90.7534211754601,
+     128.94112406862416,
+     161.26605793393372,
+     152.2105634653484,
+     141.98802556797432,
+     178.86081198848117
+    ]
+   },
+   {
+    "year": 2030,
+    "day": "Summer",
+    "num_days": 91,
+    "num_years": 5,
+    "weight_undiscounted": 455,
+    "weight_model_r2": 412.10751847261173,
+    "min": 42.75631128099415,
+    "max": 183.24191720991652,
+    "mean": 111.42647910215022,
+    "max_minus_min": 140.48560592892238,
+    "top4_mean_minus_bottom4_mean": 118.99378651634143,
+    "prices": [
+     157.2295846409329,
+     146.05807481795617,
+     140.1314481729325,
+     136.4769909891094,
+     137.06872692713097,
+     124.61064418039874,
+     126.80404128933819,
+     137.40194381646896,
+     100.57291154605105,
+     81.89540180220972,
+     70.69221433347226,
+     63.313388118914794,
+     54.65511338787096,
+     47.253953378793334,
+     44.443457203140966,
+     42.75631128099415,
+     66.3227624500982,
+     93.29740196563867,
+     109.73394937911998,
+     146.52233278137945,
+     183.24191720991652,
+     165.71208548651978,
+     158.90039397879593,
+     139.1404493144219
+    ]
+   },
+   {
+    "year": 2030,
+    "day": "Autumn",
+    "num_days": 91,
+    "num_years": 5,
+    "weight_undiscounted": 455,
+    "weight_model_r2": 412.10751847261173,
+    "min": 92.1510859186698,
+    "max": 175.0720960938451,
+    "mean": 119.90674664688125,
+    "max_minus_min": 82.92101017517528,
+    "top4_mean_minus_bottom4_mean": 63.16084753019511,
+    "prices": [
+     101.82864114836356,
+     99.11856565611392,
+     98.47609735010252,
+     92.1510859186698,
+     93.28389127731378,
+     98.40368955709599,
+     113.25919638531286,
+     131.954699823856,
+     133.52383302208568,
+     127.85102689109998,
+     109.70167775644411,
+     101.18503410368253,
+     100.22055152327871,
+     98.48106424657317,
+     101.25720739346058,
+     119.13956428503687,
+     133.04072677802063,
+     150.15716510620055,
+     175.0720960938451,
+     166.66382722175683,
+     143.06506580216003,
+     135.8850694487885,
+     132.1633502872896,
+     121.87879244859872
+    ]
+   },
+   {
+    "year": 2030,
+    "day": "Winter",
+    "num_days": 91,
+    "num_years": 5,
+    "weight_undiscounted": 455,
+    "weight_model_r2": 412.10751847261173,
+    "min": 92.36652066248404,
+    "max": 161.3846935824976,
+    "mean": 113.95752059192974,
+    "max_minus_min": 69.01817292001355,
+    "top4_mean_minus_bottom4_mean": 58.41381262040946,
+    "prices": [
+     108.71946053438965,
+     101.0940339338551,
+     96.25972170165022,
+     93.36811174411295,
+     93.17193603837337,
+     95.11755244993608,
+     98.93518693114711,
+     120.5452325779237,
+     130.74656929823416,
+     125.14954557061407,
+     113.39964275860261,
+     96.71120255548598,
+     94.24009950634726,
+     92.36652066248404,
+     94.97078185602906,
+     98.27630181738863,
+     116.3225686614447,
+     146.5469782602969,
+     161.3846935824976,
+     160.5299648485859,
+     138.34028174157515,
+     128.45163011834563,
+     118.36681850984756,
+     111.96565854714675
+    ]
+   },
+   {
+    "year": 2035,
+    "day": "Spring",
+    "num_days": 92,
+    "num_years": 5,
+    "weight_undiscounted": 460,
+    "weight_model_r2": 377.36021794257135,
+    "min": 23.42925119851346,
+    "max": 219.33600458059357,
+    "mean": 137.64203840024675,
+    "max_minus_min": 195.9067533820801,
+    "top4_mean_minus_bottom4_mean": 180.91760280386782,
+    "prices": [
+     217.0230296710326,
+     209.99824201851487,
+     208.44851193204005,
+     204.69577727304315,
+     206.35942742112906,
+     195.32639140036963,
+     196.8028410414554,
+     219.33600458059357,
+     122.28431492775071,
+     95.59595883112657,
+     58.733492155639084,
+     65.58316400740254,
+     48.40725913211555,
+     32.00716331485035,
+     28.083636366132577,
+     23.42925119851346,
+     47.615326107213434,
+     58.35793870673474,
+     98.98163036633551,
+     185.1176343498282,
+     197.79740226722652,
+     193.94361668221876,
+     188.1890452857103,
+     201.29186256894513
+    ]
+   },
+   {
+    "year": 2035,
+    "day": "Summer",
+    "num_days": 91,
+    "num_years": 5,
+    "weight_undiscounted": 455,
+    "weight_model_r2": 373.2584764431956,
+    "min": 41.52905268473293,
+    "max": 184.82398849712266,
+    "mean": 115.2785896694375,
+    "max_minus_min": 143.29493581238972,
+    "top4_mean_minus_bottom4_mean": 125.03281148665472,
+    "prices": [
+     156.85180629030327,
+     148.20994336426358,
+     143.6708742829267,
+     138.64562645267847,
+     142.8220148061956,
+     134.13989089909623,
+     139.49983194330184,
+     131.64730509653342,
+     99.05607826447371,
+     77.7512863482547,
+     73.2041798699488,
+     60.38661281895015,
+     47.41549358806468,
+     45.17955251738905,
+     41.52905268473293,
+     46.78828523309497,
+     63.96443168095774,
+     102.2627070778474,
+     136.09854854892126,
+     156.51900032866465,
+     184.82398849712266,
+     168.28429402409338,
+     167.24228782113454,
+     160.69305962755
+    ]
+   },
+   {
+    "year": 2035,
+    "day": "Autumn",
+    "num_days": 91,
+    "num_years": 5,
+    "weight_undiscounted": 455,
+    "weight_model_r2": 373.2584764431956,
+    "min": 40.999513777279745,
+    "max": 175.60124624913902,
+    "mean": 89.70368397337545,
+    "max_minus_min": 134.6017324718593,
+    "top4_mean_minus_bottom4_mean": 96.43000757372441,
+    "prices": [
+     98.24576781780945,
+     90.3766466456132,
+     78.15260863006532,
+     76.67565318194742,
+     73.36943751232285,
+     74.97706189926542,
+     71.8180912816289,
+     75.33473111322378,
+     81.02583276766107,
+     62.40432121171989,
+     70.09945343755223,
+     40.999513777279745,
+     50.19562583037321,
+     48.855705923424715,
+     61.532100297076326,
+     66.41775128263816,
+     89.6716716253064,
+     121.98799118690147,
+     127.57886880782387,
+     129.89739178208728,
+     175.60124624913902,
+     154.22546928400138,
+     121.82173448543865,
+     111.6237393307104
+    ]
+   },
+   {
+    "year": 2035,
+    "day": "Winter",
+    "num_days": 91,
+    "num_years": 5,
+    "weight_undiscounted": 455,
+    "weight_model_r2": 373.2584764431956,
+    "min": 115.33630857444551,
+    "max": 171.5098676994746,
+    "mean": 136.89315390496952,
+    "max_minus_min": 56.17355912502909,
+    "top4_mean_minus_bottom4_mean": 47.84640677072376,
+    "prices": [
+     126.38349232555845,
+     121.98874322699001,
+     118.21693992502686,
+     115.8064121535947,
+     115.33630857444551,
+     117.51475283610995,
+     125.7567966313851,
+     141.76423456071112,
+     157.2800944376909,
+     156.08914000100043,
+     140.97930301472783,
+     132.9203102308755,
+     129.21649121461536,
+     127.75362393324932,
+     125.2296274883647,
+     126.92165598788544,
+     138.4370889919129,
+     150.58391207412615,
+     168.69318341973275,
+     171.5098676994746,
+     160.77689501517378,
+     147.0553277372086,
+     138.64604639476818,
+     130.57544584464065
+    ]
+   }
+  ],
+  "spread_summary": {
+   "all_years_day_weighted_undiscounted": {
+    "max_minus_min": 116.92360725884495,
+    "top4_mean_minus_bottom4_mean": 97.99086039739976,
+    "mean_price": 108.41103934457303
+   },
+   "all_years_model_block_weight_r2": {
+    "max_minus_min": 115.8813447978125,
+    "top4_mean_minus_bottom4_mean": 97.01788674187569,
+    "mean_price": 107.59962048048975
+   },
+   "per_year_day_weighted": {
+    "2025": {
+     "max_minus_min": 101.04359365809823,
+     "top4_mean_minus_bottom4_mean": 83.21675130578895,
+     "mean_price": 95.37770015337686
+    },
+    "2030": {
+     "max_minus_min": 117.05925002146216,
+     "top4_mean_minus_bottom4_mean": 98.01183260261246,
+     "mean_price": 109.92738653877814
+    },
+    "2035": {
+     "max_minus_min": 132.66797809697445,
+     "top4_mean_minus_bottom4_mean": 112.7439972837978,
+     "mean_price": 119.92803134156412
+    }
+   }
+  },
+  "spread_formula": "per representative (year, day): max_p c_p - min_p c_p, and mean of the top-4 hourly prices minus mean of the bottom-4 (h = E/P = 4 h); averaged with weight num_years * num_days (undiscounted) and, separately, with the model block weight num_years * num_days / 1.02^(y-2025).",
+  "captured_spread": {
+   "formula": "captured spread [EUR/MWh per full cycle] = (V / E) / EFC_horizon, EFC_horizon = sum_y 365 * num_years * EFC/day_y (full equivalent cycles of the nameplate E over the 15 years; Z2 EFC, cell-side throughput / (2 E))",
+   "E_mwh": 1.0,
+   "EFC_horizon_cycles": 5471.348647585746,
+   "EFC_horizon_discounted_2pct_cycles": 5023.6890636280405,
+   "a_literal_V2pct_over_undiscounted_EFC": 47.85063451254076,
+   "b_consistent_undiscounted_V0_over_undiscounted_EFC": 52.608759160270516,
+   "c_consistent_discounted_V2pct_over_discounted_EFC": 52.11459170947094,
+   "per_year_undiscounted": {
+    "2025": {
+     "V_undiscounted": 103371.94794559479,
+     "EFC_block_cycles": 2088.736236633978,
+     "captured_eur_per_mwh_cycle": 49.490187479190695,
+     "soh_end_of_block": 0.8344560494683406
+    },
+    "2030": {
+     "V_undiscounted": 83234.79138600826,
+     "EFC_block_cycles": 1874.3005636396954,
+     "captured_eur_per_mwh_cycle": 44.40845454603877,
+     "soh_end_of_block": 0.7093750037117399
+    },
+    "2035": {
+     "V_undiscounted": 101234.12395110726,
+     "EFC_block_cycles": 1508.3118473120726,
+     "captured_eur_per_mwh_cycle": 67.11750234642408,
+     "soh_end_of_block": 0.622472246143986
+    }
+   },
+   "expert_prediction": "captured ~55-60 EUR/MWh per full cycle"
+  }
+ },
+ "checks": {
+  "inputs_all_tracked": true,
+  "candidate_key_recomputed_equals_expected": true,
+  "a1a_record_key_matches": true,
+  "a0_c7_record_key_matches": true,
+  "x0_record_key_matches": true,
+  "all_three_records_certified": true,
+  "z1_single_adjacent_branch_every_block": true,
+  "z1_same_reference_bus_and_branch_every_block": true,
+  "z1_rating_equals_that_branch_rate_every_block": true,
+  "z1_no_load_no_shunt_at_reference_bus": true,
+  "z1_dso_shared_storage_at_reference_bus": true,
+  "z1_dso_rows_structure_ok_every_block_every_period": true,
+  "z1_tso_storage_at_bus7_with_adn_load_every_block": true,
+  "z1_node7_only_node_at_rating": true,
+  "z1_node7_has_slots_on_the_branch_row_bound": true,
+  "z1_node7_never_exceeds_the_branch_row_bound_by_more_than_1e-5_mva": true,
+  "z1_ess_stride_sidecar_hash_matches_committed_child_manifest": true,
+  "z1_reference_generator_bound_inactive": true,
+  "z2_phi_cal_is_1": true,
+  "z2_k_equals_C3_calibration": true,
+  "z2_soh_chain_recomputes_within_1e-9": true,
+  "z2_available_equals_rated_times_soh": true,
+  "z2_sidecar_matches_record": true,
+  "z2_no_floor_row_active": true,
+  "z3_model_discount_factor_is_0_02": true,
+  "z3_a1a_and_a0_c7_candidate_blocks_bit_identical": true,
+  "z3_a1a_blocks_reconcile_to_gross_within_0.01_eur": true,
+  "z3_a1a_block_weights_match_formula": true,
+  "z3_a1a_undiscounted_times_factor_equals_weighted": true,
+  "z3_x0_blocks_reconcile_to_gross_within_0.01_eur": true,
+  "z3_x0_block_weights_match_formula": true,
+  "z3_x0_undiscounted_times_factor_equals_weighted": true,
+  "z3_T1_row_candidate_key_matches": true,
+  "z3_r2_reconstruction_within_tolerance": true,
+  "z4_tso_and_dso_price_arrays_are_the_planning_object": true,
+  "z4_one_market_scenario": true,
+  "z4_prices_equal_those_recorded_by_the_certified_run": true
+ },
+ "failed_checks": [],
+ "errors": {},
+ "solve_profile_guard": {
+  "permitted": [],
+  "counts": {
+   "permitted_solve": 0,
+   "permitted_exec": 0,
+   "blocked_solve": 0,
+   "blocked_exec": 0
+  },
+  "verify_0_failures": []
+ },
+ "ended_utc": "2026-09-21T10:17:55.666416+00:00",
+ "all_pass": true
+}

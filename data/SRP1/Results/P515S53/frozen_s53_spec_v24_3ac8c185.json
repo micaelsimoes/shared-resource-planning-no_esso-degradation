@@ -1,0 +1,380 @@
+{
+ "schema": "p515_frozen_spec_v24",
+ "version": 24,
+ "stage": "P5.15 Addendum 40 ruling 1 -- the R3.6 alpha row (settled, 2 x 2) + the unit at alpha = 0.5",
+ "authority": [
+  "PLANNER_BRIEF_2026-09-13.md Addendum 40 rulings 1 and 2",
+  "frozen spec v23 ruling1_alpha_row / ruling2_init_fix",
+  "Planner task W64"
+ ],
+ "predecessor": {
+  "path": "data/SRP1/Results/P515S53/frozen_s53_spec_v23_39a07fd8.json",
+  "sha256": "39a07fd85bd02aaee0f4042d9a7b201cf4df9027191ff70d7939b124061f685c"
+ },
+ "purpose": {
+  "statement": "The row is NOT a search for a coordinated alpha*. Independent review established there is no single threshold in range: the committed alpha_arb distribution (price spread / 2 pibar, instance data) has median 0.022, p90 0.157, max 0.668, so market-arbitrage suppression is essentially complete by alpha ~ 0.25; while the curtailment mechanism needs alpha of order 4+ to hold schedule where flexibility is exhausted. The row is a TWO-MECHANISM COST-OF-COMMITMENT CURVE: arbitrage collapse at low alpha, physical-waste growth at high alpha.",
+  "alpha_arb_recomputed_at_freeze": "the campaign spec freeze recomputes the distribution from the instance (extra.instance_facts.alpha_arb) and records it beside these"
+ },
+ "instance": {
+  "label": "s52_pilot_2x2",
+  "case_path": "data/SRP1/Results/P515S52/pilot_instance/SRP1__s52_pilot_2x2.json",
+  "case_sha256": "7ecff44a874892187d1dd2e3d5ed0664a2f90a4bfa4cdb820a4abcbbd828f949",
+  "scenario_checksum": "53b4bea4142001617282a08541079952564903b6d84db066f90d71a650b7d563",
+  "record_path": "data/SRP1/Results/P515S52/pilot_instance/instance_record.json",
+  "record_sha256": "af539cd13d0fde164c5328b8944e903a46bed177a023f8af985288c8df5afb81",
+  "structure": "5 representative years (2025/28/31/34/37, 3-year blocks) x 4 days x 2 market x 2 operation",
+  "ageing": "BASELINE (C2 + phi_cal 0.985 + soh_min 0.70)",
+  "aa": {
+   "enabled": true,
+   "memory": 5,
+   "regularization": 1e-10,
+   "reject_policy": "keep_memory"
+  },
+  "cost_file": {
+   "path": "data/SRP1/SharedESS/SRP1_ESS.xlsx",
+   "sha256": "e17bd5887e1d0738005ae17c3144593527081c9a0776e19cfaa50aafefe39cd6"
+  },
+  "budget_eur": 1000000.0,
+  "premium_floor": null
+ },
+ "cells": {
+  "alpha_grid_as_ordered": [
+   0.0,
+   0.1,
+   0.25,
+   0.5,
+   1.0
+  ],
+  "cells": {
+   "x0_a0p00": {
+    "point": "x0",
+    "alpha": 0.0,
+    "nodes": {
+     "5": [
+      0.0,
+      0.0
+     ],
+     "7": [
+      0.0,
+      0.0
+     ],
+     "9": [
+      0.0,
+      0.0
+     ]
+    },
+    "investment_year": 2025
+   },
+   "x0_a0p10": {
+    "point": "x0",
+    "alpha": 0.1,
+    "nodes": {
+     "5": [
+      0.0,
+      0.0
+     ],
+     "7": [
+      0.0,
+      0.0
+     ],
+     "9": [
+      0.0,
+      0.0
+     ]
+    },
+    "investment_year": 2025
+   },
+   "x0_a0p25": {
+    "point": "x0",
+    "alpha": 0.25,
+    "nodes": {
+     "5": [
+      0.0,
+      0.0
+     ],
+     "7": [
+      0.0,
+      0.0
+     ],
+     "9": [
+      0.0,
+      0.0
+     ]
+    },
+    "investment_year": 2025
+   },
+   "x0_a0p50": {
+    "point": "x0",
+    "alpha": 0.5,
+    "nodes": {
+     "5": [
+      0.0,
+      0.0
+     ],
+     "7": [
+      0.0,
+      0.0
+     ],
+     "9": [
+      0.0,
+      0.0
+     ]
+    },
+    "investment_year": 2025
+   },
+   "x0_a1p00": {
+    "point": "x0",
+    "alpha": 1.0,
+    "nodes": {
+     "5": [
+      0.0,
+      0.0
+     ],
+     "7": [
+      0.0,
+      0.0
+     ],
+     "9": [
+      0.0,
+      0.0
+     ]
+    },
+    "investment_year": 2025
+   },
+   "n7_4h_e1_a0p50": {
+    "point": "n7_4h_e1",
+    "alpha": 0.5,
+    "nodes": {
+     "5": [
+      0.0,
+      0.0
+     ],
+     "7": [
+      0.25,
+      1.0
+     ],
+     "9": [
+      0.0,
+      0.0
+     ]
+    },
+    "investment_year": 2025
+   }
+  },
+  "all_certified": true,
+  "cap": 500,
+  "required_consecutive_cycles": 10,
+  "post_certification": null,
+  "post_certification_note": "none: the ruling asks for certified cells; the hull polish is not requested (Worker question to the Planner)",
+  "concurrency": 2,
+  "run_order_pairs": {
+   "1": [
+    "x0_a0p50",
+    "n7_4h_e1_a0p50"
+   ],
+   "2": [
+    "x0_a0p00",
+    "x0_a1p00"
+   ],
+   "3": [
+    "x0_a0p10",
+    "x0_a0p25"
+   ]
+  },
+  "pair_rationale": {
+   "1": "by value: the alpha = 0.5 pair restates the pilot pair and R on the fixed initialisation",
+   "2": "by value: the two ends of the grid bound the curve (free deviation, strongest premium)",
+   "3": "by value: the interior of the arbitrage-collapse region"
+  }
+ },
+ "objective_convention": "Q(x) = certified_cost = gross_operational_cost (_get_operational_recourse_components: the CONTRACTED interface settlement and the solver-only interface-voltage pin excluded; the row 18 charge and the price-deviation covariance -- the settlement DEVIATION part -- included, Addendum 38 (C)); value = Q(0) - Q(x); F = I + Q; terminal salvage and net_operational_recourse = gross - salvage reported, excluded.",
+ "formulas": {
+  "notation": "b = DSO (node, year, day) block; w_b = admm_block_weight (_get_admm_block_weight: years x days x annualization -- the Q weighting); s = (s_m, s_o), omega_s = prob_market[s_m] * prob_operation[s_o]; t = hour; B_b = baseMVA; pibar_t = sum_m omega_m pi_{m,t} (model_construction_helpers.expected_market_price; = row18_premium, no floor); d_p[s,t] = p_int[s,t] - pbar_t (MW), d_q likewise (MVAr) -- production _get_local_interface_dispersion per_scenario, captured in multiscenario_terminal.json blocks[b].dispersion.per_scenario_d; all money EUR, horizon-weighted unless stated.",
+  "Q": "Q(alpha) = certified_cost = gross_operational_cost (objective convention above), the cell's certified value",
+  "charge": "charge(alpha) = sum_b w_b row18_deviation_charge_b = multiscenario_terminal summary.all_dso.row18_charge_weighted; row18_deviation_charge_b = sum_{s,t} omega_s alpha pibar_t B_b (dp+ + dp- + dq+ + dq-) (add_scenario_commitment_terms); 0 at alpha = 0 (row 18 not constructed)",
+  "C": "C(alpha) = Q(alpha) - charge(alpha): the comparable system-cost curve; must be NON-DECREASING in alpha",
+  "VP": "VP(alpha) = recourse_components.voltage_pin_total (weighted): the interface-voltage pin, in the SOLVER objective, excluded from Q",
+  "V": "V(alpha) = Q(alpha) + VP(alpha): the value of the solver's system problem (the function the envelope is about)",
+  "A": "A(alpha) = V(alpha) - charge(alpha) = C(alpha) + VP(alpha): non-decreasing at global optima (the rigorous form)",
+  "P_charge": "P(alpha) = charge(alpha) / alpha for alpha > 0: the pibar-weighted deviation volume (EUR per unit alpha)",
+  "P_posthoc": "P(alpha) |d| form, POST HOC from captured data (the alpha = 0 cell's P, so it sits on the same axis): P = sum_b w_b sum_s omega_s sum_t pibar_t (|d_p[s,t]| + |d_q[s,t]|), computed by p515_s44_campaign_harness.p_posthoc_block from multiscenario_terminal.json blocks[b].dispersion {per_scenario_d, probabilities, pibar_by_hour} and blocks[b].admm_block_weight. At alpha > 0 it is the minimal-split form of charge / alpha (d+ + d- >= |d|, equal at an exact minimal split): both are reported, P_charge is the one used for alpha > 0.",
+  "P_used": "P(0) = P_posthoc(0); P(alpha > 0) = P_charge(alpha)",
+  "envelope": {
+   "inequality": "for adjacent alpha1 < alpha2: (alpha2 - alpha1) P(alpha2) <= V(alpha2) - V(alpha1) <= (alpha2 - alpha1) P(alpha1)  (V = Q + VP: the voltage pin is in the solver objective and excluded from Q, so it enters the check; the Q-only form dQ is reported beside it)",
+   "validity": "holds at GLOBAL optima only (V(alpha) = min_x [A_x + alpha P_x] is concave with supergradient P). IPOPT is local and ADMM stops at a bar, so a violation WITHIN resolution is \"consistent\", not a proof; a violation BEYOND the bars means the two cells are not comparable optima.",
+   "violation": "viol = max(LB - dV, dV - UB, 0)",
+   "resolution": "res = bar(alpha1) + bar(alpha2), each the cell's record bar (max |gross step| over the last 10 cycles). Stated limitation: the bar bounds stopping slack of Q, not of VP or P.",
+   "verdict": "\"within\" if viol == 0; \"consistent\" if 0 < viol <= res; \"not comparable optima\" if viol > res"
+  },
+  "monotonicity": "C and A non-decreasing, P non-increasing, each checked per adjacent pair against res (a decrease of C beyond res, or an increase of P beyond the P-step equivalent res / (alpha2 - alpha1), is a finding)",
+  "dispersion": {
+   "E_abs_d": "sum_b [w_b] sum_s omega_s sum_t |d_p| (MWh), weighted and unweighted (all_dso summaries)",
+   "sum_omega_d2": "sum_b [w_b] sum_s omega_s sum_t d_p^2 (MW^2 h), weighted and unweighted",
+   "peak_block_rms": "max_b rms_mw_b (rms_mw_b = sqrt(sum_s omega_s sum_t d_p^2 / n_hours))",
+   "peak_abs_d": "max_b max_abs_mw_b",
+   "worst_block_share": "max_b rms_mw_b / mean_abs_committed_flow_mw_b, reported WITH that block's rms_mw and mean_abs_committed_flow_mw (absolute), and the max-absolute-RMS block with its share"
+  },
+  "split": "market / operation parts of sum omega d^2: p515_s51_coordinated_decomposition.block_decomposition (W46 committed definitions: market_part = sum_t sum_m omega_m dbar_{m,t}^2, operation_part = sum_t sum_s omega_s (d - dbar_{m(s)})^2) per DSO block, aggregated by .aggregate (unweighted, the W46 convention) and also weighted by w_b",
+  "covariance": "the earned price-deviation covariance = production interface_settlement_deviation_total (recourse components, weighted; negative = earned), and the W46 formula sum_t sum_m omega_m (pi_m - pibar) dbar_m (unweighted and weighted) beside it",
+  "curtailment": "per network / hour / scenario: c[g,s,t] = (pg_avail - pg) B (production definitional); V_plus = sum_g max(c, 0); priced at pi_s: sum_s omega_s sum_t pi_{m(s),t} V_plus[s,t]; weighted by w_b per network (response_terminal.json curtailment_by_block / summary.curtailment_per_network); entries above TOL = EQUALITY_TOLERANCE x B carry the dual-based cause (W53 audit classes)",
+  "row18_condition_entries": "DN entries with d_p[s,t] <= +D_TOL_MW (the audit constant) and pi_{m(s),t} < alpha pibar_t: count and volume per cell",
+  "flexibility": "DSO flexibility legs P up / P down / Q up / Q down (omega-weighted, w_b-weighted), per DSO",
+  "Q_leg_share": "charge_q / (charge_p + charge_q), legs from row18_dev_q_* / row18_dev_p_* at the charge coefficients",
+  "unit_value": "value = Q(x0, 0.5) - Q(unit, 0.5); resolution = bar(x0) + bar(unit); value per MWh = value / 1.0; ratio to SRP1 (259,427.77 EUR/MWh, res 34,734.63) against R = 0.937 and the pilot's 0.942; value against the pilot's 244,321.29",
+  "code": "p515_s53_alpha_row_campaign.cell_quantities (per cell) and .row_analysis (across cells); p515_s44_campaign_harness.p_posthoc_block (the P |d| form)"
+ },
+ "reporting_rules": [
+  "Q(alpha) is reported ONLY beside its tangent bounds (the envelope), never as a bare system-cost curve.",
+  "Every dispersion share is reported with its absolute value and its denominator (the mean committed flow moves with alpha).",
+  "Every difference carries its resolution (bar sum); a difference inside it is INDETERMINATE.",
+  "The rule-ten terminal-step-to-threshold ratio is reported for every cell.",
+  "State the objective convention on every table."
+ ],
+ "new_capture": {
+  "1_dual_based_curtailment": "response_terminal.json curtailment_entries: every curtaillable generator-hour-scenario with c > TOL, read at the TERMINAL (in-memory models, before the workbook and any post-certification step): pg, pg_avail, qg, sg_avail, sg, sg_capability slack and dual, class (capability_bound / interior, the audit's CAP_SLACK_TOL), zU(pg), the node-balance dual at the generator bus and at the reference bus (raw, and / (B omega_s) as EUR/MWh), the scenario price, d_p[s,t], d+, d-, the dual of row18_dev_p_def[s,t], zL(d+), zL(d-), the premium and alpha, the active voltage / branch rows of that network-hour (network_hour_rows, the audit's _network_hour_rows with no transformer set), and the IPOPT termination of the block's last solve. Helpers and tolerances BY IMPORT from p515_s53_curtailment_audit (guard disarmed at import).",
+  "2_coordination_state": "response_terminal.json coordination_by_dso_block: the W44 p515_s51_2x2_limit_gate.coordination_record BY IMPORT per DSO block (dual_pf_p/q_req as set for the last solve, rho_pf, the TSO request p/q_pf_req, pbar, the effective objective scale, lambda_AL, penalty_gen_curtailment, interface_settlement_weight, settlement parts, per-scenario curtailment) + the block's termination",
+  "3_per_cycle_response": "per_cycle_response.jsonl, appended every cycle (survives a crash), merged by cycle into per_cycle_record.jsonl: response_cycle, response_captured, response_capture_error, E_abs_d_p_mwh_weighted, E_abs_d_p_mwh_unweighted, sum_omega_d2_p_mw2h_weighted, sum_omega_d2_p_mw2h_unweighted, market_part_mw2h_weighted, operation_part_mw2h_weighted, market_part_mw2h_unweighted, operation_part_mw2h_unweighted, row18_charge_weighted, covariance_dso_weighted, curtailed_res_dso_mwh_weighted, curtailed_res_tso_mwh_weighted, max_abs_d_p_mw, n_non_optimal_block_terminations, non_optimal_blocks, cycle_wall_s, rss_bytes, ru_maxrss_bytes, response_capture_s",
+  "also": "activation_readback.json and initialisation_identity.json (+ <root>/init_identity/<eval dir>.json); row 18 charge by leg with the zL stationarity sanity identity; DSO flexibility legs; the P |d| form per block; voltage_pin_total",
+  "scope": "derived-instance / premium evaluations only; every other evaluation runs exactly as before"
+ },
+ "pre_run_assertions": {
+  "before_any_solve_in_the_parent": [
+   "campaign spec checks (entries, alphas, cap, concurrency, configuration, instance, no reference, eval keys recompute; x0_a0p50 / n7_4h_e1_a0p50 keys equal the superseded ones and every other key differs)",
+   "pins (spec v24/v23, instance, ESS params, cost file, sigma check) tracked, clean, hashing as pinned",
+   "rule eleven: H.assert_record_capture_paths + H.assert_alpha_row_capture_paths + this launcher's checklist (every spec-required quantity incl. the P(0) post-hoc formula and its inputs)",
+   "memory preflight at the stage concurrency (P52 rule, refusing)",
+   "declared solve profile 83 per cycle (from the instance, at freeze)",
+   "fresh campaign root / eval dirs / working-dir ids; protected roots snapshotted",
+   "pair order: pair N requires pairs < N complete with verified manifests; pair 1 requires the smoke gate committed and PASS"
+  ],
+  "before_any_solve_in_the_child": [
+   "H.assert_alpha_row_capture_paths (rule eleven, fail fast)",
+   "the configuration hook (premium alpha applied and read back, AA, ageing)"
+  ],
+  "at_activation_before_any_ADMM_cycle_solve": [
+   "alpha read-back on EVERY DSO block == the arm's alpha; every row 18 row active and no pair Var fixed where alpha > 0; row 18 ABSENT where alpha = 0; TSO carries no row 18",
+   "penalty_gen_curtailment == 0 and interface_settlement_weight == 1 on EVERY block (TSO and DSO)",
+   "the cycle-0 (initialisation) gross cost is BITWISE equal (float.hex) to every earlier record of the same candidate in <root>/init_identity (the smoke's x0 record is placed there before pair 1): the run-time form of the .nl identity. SCOPE: the five x = 0 cells (and the smoke); the unit is a different candidate and is compared with nothing.",
+   "any failure RAISES in the child: the evaluation stops before its first ADMM-cycle solve"
+  ],
+  "note": "the activation-time assertions cannot precede the initialisation solve (activation reads its solution); they precede every ADMM-cycle solve"
+ },
+ "hazard": {
+  "statement": "the alpha = 0.5 x = 0 cell (and the alpha = 0.5 unit) have the SAME evaluation key as the superseded pre-fix pilot cells in campaign_s52_pilot_nopersist: the key identifies candidate x configuration, not code, and the init fix changed code only. The launcher must refuse to consult, reuse or write into any artifact of that campaign.",
+  "protected_roots": [
+   "data/SRP1/Results/P515S52/campaign_s52_pilot_nopersist",
+   "data/SRP1/Results/P515S52/campaign_s52_pilot_repro_nopersist",
+   "data/SRP1/Results/P515S52/campaign_s52_pilot",
+   "data/SRP1/Results/P515S52/campaign_s52_pilot_repro"
+  ],
+  "superseded_keys": {
+   "x0_a0p50": {
+    "superseded_label": "x0",
+    "eval_key": "7d53b6f21b686a44db69f0901e03c870d14e15d00bfaaa6a5379822890918a94",
+    "eval_dir": "7d53b6f21b686a44_x0",
+    "working_dir_ids": {
+     "precheck": "p515s44_s52_pilot_nopersist_7d53b6f21b686a44_precheck",
+     "run": "p515s44_s52_pilot_nopersist_7d53b6f21b686a44_run"
+    }
+   },
+   "n7_4h_e1_a0p50": {
+    "superseded_label": "n7_4h_e1",
+    "eval_key": "711fce9aa74d687892b994e332472c7d59745ef74ce9030abc12d54a9aaf83b4",
+    "eval_dir": "711fce9aa74d6878_n7_4h_e1",
+    "working_dir_ids": {
+     "precheck": "p515s44_s52_pilot_nopersist_711fce9aa74d6878_precheck",
+     "run": "p515s44_s52_pilot_nopersist_711fce9aa74d6878_run"
+    }
+   }
+  },
+  "superseded_spec": {
+   "path": "data/SRP1/Results/P515S52/campaign_s52_pilot_nopersist/campaign_spec_s52_pilot_nopersist_08790b4d.json",
+   "sha256": "08790b4db71a8161ac968479f3547f7908942a910dc387e33b93018161e45f54",
+   "note": "recorded, never read by this launcher"
+  },
+  "enforcement": [
+   "fresh campaign ids (s53_alpha_row, s53_alpha_row_smoke) -> fresh roots, eval dirs and working-dir ids (asserted different from the superseded ones)",
+   "no post_certification.reference (nothing is read from another evaluation)",
+   "the harness evaluate() writes only under its own campaign root (asserted on its source)",
+   "the file metadata (relpath, size, mtime_ns) of every protected root is snapshotted before and after every run: any change fails the run; no file content under a protected root is read",
+   "the eval-key identity is ASSERTED (the hazard is known, not accidental): x0_a0p50 == s52 x0, n7_4h_e1_a0p50 == s52 n7_4h_e1"
+  ]
+ },
+ "smoke_gate": {
+  "what": "ONE 2-cycle x0 alpha = 0.5 evaluation (campaign s53_alpha_row_smoke, cap 2, concurrency 1, no post-certification) run in the launcher process through the harness child path H._child_real (the gate hooks s38/s39, run_admm_arm, the W47 multi-scenario capture, the W64 capture), attached, alone",
+  "declared_solve_profile": "SolveProfileGuard(p514_n_instrumented_cstar.PERMITTED) armed around the whole child path; expected = 83 x 3 = 249 + every retry ATTEMPTED (per-event reconciliation, W35); verified EXACTLY with GUARD.verify(expected) (solves and process launches); an unsupported reconciliation fails",
+  "checks": {
+   "G1_guard_exact": "GUARD.verify(expected) == [] and the child's own solve_profile identity holds",
+   "G2_child_ran": "evaluation_record status not_certified (cap 2) with cycles_run == 2, no child error; multiscenario_terminal, operational_workbook and response_terminal all \"written\"",
+   "G3_activation_readback": "all_ok; 60 DSO blocks each alpha_on_model == 0.5, 192 rows all active, 0 pair Vars fixed; 20 TSO blocks penalty 0 / weight 1 / no row 18",
+   "G4_init_identity": "record written with a finite gross cost and its float.hex; compared with 0 records",
+   "G5_per_cycle": "2 response lines, both captured, cycles 1..2 match the trajectory, every numeric response field finite; per_cycle_record.jsonl carries every PER_CYCLE_RECORD_FIELDS key",
+   "G6_row18_duals_nonempty_and_sane": "some DSO curtailment entries carry the row 18 fields, all finite; the zL stationarity identity |zL(d+) + zL(d-)| = 2 omega alpha pibar B holds to rel 1e-4 on >= 99% of the checked indices and to 1e-2 on all, with 0 missing suffix values (n_checked = 2 x 96 x 60 = 11,520)",
+   "G7_coordination_nonempty_and_sane": "60 DSO blocks, no capture error, 24 hours each, dual_pf_p_req / p_pf_req_mw / pbar_mw finite, rho_pf > 0, admm_objective_scale > 0, some dual_pf_p_req != 0",
+   "G8_curtailment_entries": "n > 0; c_mw > tol, pg / pg_avail / qg / sg_avail finite, bus dual present, termination available on every entry (LMP quantiles reported, not gated)",
+   "G9_capture_cost": "response_terminal.json < 10 MB; RSS after - before the capture < 1 GiB",
+   "G10_per_cycle_cost": "per-cycle capture < 60 s per cycle",
+   "G11_eval_key_unchanged": "x0_a0p50 key == the superseded s52 x0 key (computed by the pre-W64 harness) and the row spec's n7_4h_e1_a0p50 key == the s52 unit key",
+   "G12_hazard": "protected-root metadata unchanged before / after",
+   "G13_P_formulas": "cell_quantities runs on the smoke eval dir; the P |d| form from multiscenario_terminal.json (post hoc) equals the child-side live-model value to rel 1e-9; charge / alpha >= the |d| form and exceeds it by <= 1e-3 relative",
+   "G14_rule_eleven": "the child's alpha-row checklist all true",
+   "G1b_no_solve_after_verify": "the bounded guard's counts do not move while the (zero-solve) checks run"
+  },
+  "reported_not_gated": [
+   "smoke process peak RSS vs the s52 repro twin",
+   "LMP quantiles",
+   "Q-leg share",
+   "curtailment counts by class",
+   "wall time"
+  ]
+ },
+ "memory": {
+  "rule": "hw.memsize - (wired + anonymous + compressor-occupied) x page size >= 2 x 7 GiB + 4 GiB (one terminal-phase transient at a time: the harness terminal-phase lock)",
+  "required_gib_row": 18.0,
+  "required_gib_smoke": 11.0,
+  "claim_to_verify": "the new capture (1: dual-based curtailment, 2: coordination state) is a few thousand rows of ~25 floats, under 10 MB, no pickling, so the 18 GiB budget at concurrency 2 stands",
+  "how_verified": "the smoke gate MEASURES the capture: response_terminal.json size, RSS before/after the capture (psutil) and ru_maxrss before/after, per-cycle capture RSS and time; and the smoke process peak against the s52 repro twin (same configuration, 2 cycles, 12855246848 bytes)"
+ },
+ "predictions_recorded_before_run": {
+  "planner_spec_v23_ruling1": [
+   "at certified points the market-arbitrage part of sum omega d^2 falls monotonically with alpha and the earned covariance shrinks toward 0, as the 2-cycle sweep showed for that component",
+   "the operation part does NOT fall to zero: it is physical recourse, so dispersion plateaus rather than vanishing; I expect no alpha in this range to reach the 1e-2 MW tolerance",
+   "Q(0) rises with alpha, since the premium is a real cost inside Q: monotone increase across the row",
+   "the non-monotonicity seen at 2 cycles does NOT survive certification - if it does, that is a finding about the formulation rather than the coordination state"
+  ],
+  "planner_spec_v23_ruling2": [
+   "the re-run unit value stays within 10,000 EUR (~4 %) of the pilot's 244,321",
+   "the restated R ratio stays within 0.01 of 0.942"
+  ],
+  "worker_smoke": {
+   "W-S1": "solves observed exactly 249, 0 retries (the s52 repro twin: 249, 0)",
+   "W-S2": "activation read-back: 60/60 DSO blocks alpha 0.5 with 192 active rows and 0 fixed pair Vars; 20/20 TSO",
+   "W-S3": "initialisation gross cost finite; the smoke compares against 0 records",
+   "W-S4": "2 per-cycle response lines, all fields finite; per-cycle capture 0.5-10 s per cycle",
+   "W-S5": "curtailment entries above tol: 1,500-4,500 (the converged pilot x0 had 2,932), >= 95 % DSO-side",
+   "W-S6": "zL identity at rel <= 1e-4 on >= 99 % of the 11,520 indices (about 70 % confident: acceptable-level terminations at tol 1e-4 could loosen it)",
+   "W-S7": "charge / alpha exceeds the |d| form of P by <= 1e-4 relative (interior-point complementarity)",
+   "W-S8": "coordination: 60 blocks; every rho_pf in {0.198, 0.132}; some dual_pf_p_req nonzero",
+   "W-S9": "response_terminal.json 2-8 MB; capture 10-120 s; RSS delta < 0.3 GiB",
+   "W-S10": "smoke process peak RSS 12.3-13.5 GB (twin 12.86 GB): the capture does not move the peak",
+   "W-S11": "eval keys equal the superseded s52 keys (certain by construction; the check proves evaluation_key unchanged)",
+   "W-S12": "wall 15-25 min (twin 18.5 min)",
+   "W-S13": "Q-leg share of the charge at 2 cycles 5-40 % (low confidence)"
+  },
+  "worker_row": {
+   "W-R1": "all 6 cells certify inside cap 500 at 60-130 cycles each; each pair 4-6 h wall",
+   "W-R2": "the cycle-0 gross cost is bitwise equal across the five x = 0 cells and the smoke",
+   "W-R3": "P non-increasing: P(0) > P(0.1) >= P(0.25) >= P(0.5) >= P(1.0); P(0.5) ~ 40 M EUR (pilot charge 20.07 M / 0.5), P(0) 1.5-4 x P(0.5)",
+   "W-R4": "C and A non-decreasing within resolution; every adjacent envelope \"within\" or \"consistent\"",
+   "W-R5": "market part at alpha >= 0.25 <= 5 % of its alpha = 0 value; operation part within +-30 % across the row",
+   "W-R6": "earned covariance magnitude falls >= 10x from alpha = 0 to alpha = 0.25",
+   "W-R7": "DSO curtailed RES (V_plus, weighted) larger at alpha = 1.0 than at alpha = 0 beyond resolution of the priced value; row-18-condition entries grow from alpha 0.25 to 1.0",
+   "W-R8": "V(0.5) - V(0) in [15 M, 60 M] EUR (envelope lower bound 0.5 P(0.5) ~ 20 M)",
+   "W-R9": "Q-leg share of the charge at alpha = 0.5 certified: 2-25 %",
+   "W-R10": "unit value within 10,000 of 244,321 and R within 0.01 of 0.942 (agreeing with the Planner)"
+  }
+ },
+ "stop": "DO NOT LAUNCH the row in W64. After the row: STOP FOR REVIEW with the 3x3 prediction attached (v23).",
+ "frozen_utc": "2026-09-24T14:00:00.002584+00:00",
+ "git_head_at_freeze": "70950e8c8377d77552b86e18738970f253a2ed01"
+}

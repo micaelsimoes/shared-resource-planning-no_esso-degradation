@@ -1,0 +1,1020 @@
+{
+ "schema": "p516_tperf_restriction_equivalence_v1",
+ "utc_start": "2026-10-31T11:12:33.418754+00:00",
+ "lock": {
+  "path": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/.p516_tperf.lock",
+  "pid": 6145,
+  "other_copies_found": []
+ },
+ "objective_convention": "none computed or compared",
+ "provenance": {
+  "git_head": "7324aa9ce893bc48c2108eb9579eba62c5b1adf7",
+  "harness_sha256": "2c85fc936ccf034de7cfe324da7342918dee9508d2839c3cbca91c733fac046c",
+  "hw_model": "Mac17,3",
+  "git_status_build_inputs": "M p516_tperf_profile.py",
+  "repository_modules_loaded": [
+   "admm_anderson_acceleration.py",
+   "admm_parameters.py",
+   "admm_persistent_workers.py",
+   "benders_parameters.py",
+   "branch.py",
+   "centralized_coordination.py",
+   "definitions.py",
+   "energy_storage.py",
+   "gate_result_io.py",
+   "generator.py",
+   "helper_functions.py",
+   "hierarchical_coordination.py",
+   "load.py",
+   "model_construction_helpers.py",
+   "network.py",
+   "network_data.py",
+   "network_parameters.py",
+   "node.py",
+   "p510_oracle.py",
+   "p511_1_selfconsistent_t0.py",
+   "p512_a_cold_rescaled_convergence.py",
+   "p513_solve_profile_guard.py",
+   "p514_l_capacity_ladder.py",
+   "p514_n_instrumented_cstar.py",
+   "p515_g_g1_g4_admm_gates.py",
+   "p515_s44_scale_measurement.py",
+   "p516_tperf_profile.py",
+   "p54r_provenance.py",
+   "p56a_candidates.py",
+   "p56a_oracle.py",
+   "p56b_candidates.py",
+   "p56b_policy.py",
+   "p57_eval.py",
+   "p57_fingerprint.py",
+   "p58_eval.py",
+   "p58_rescale.py",
+   "p59_rho.py",
+   "planning_parameters.py",
+   "shared_energy_storage.py",
+   "shared_energy_storage_data.py",
+   "shared_energy_storage_parameters.py",
+   "shared_ess_price_taker.py",
+   "shared_resources_planning.py",
+   "solver_parameters.py"
+  ]
+ },
+ "derived_case": {
+  "instance": "srp1",
+  "path": "data/SRP1/Results/P516TPERF/studio_dry_equiv/derived_case_srp1.json",
+  "sha256": "e26652fe79b17d5fe13c379e5a5c381319d963004150599219338c33d540103b",
+  "spec": {
+   "description": "the current SRP1 case file unchanged (3 years x 4 days x 1 x 1 scenario)",
+   "years": null,
+   "num_market_scenarios": null,
+   "num_operation_scenarios": null
+  },
+  "changes_vs_source": [],
+  "source_case": "data/SRP1/SRP1.json",
+  "source_case_sha256": "61a794a7ce7a3fb983f2e92128eec446dd7dbb17ad75a3b3b1c5735f8bd4e4ef",
+  "derivation": "p515_s44_scale_measurement.derive_case('srp1', {})"
+ },
+ "scenario_checksum": "5a02b77ccbbbbbb869de92958a3851d095624711abc2dbfc0157466064410358",
+ "scenario_checksum_equals_srp1_canonical": true,
+ "baseline_label": "srp1_restriction_equivalence",
+ "planning_dimensions": {
+  "years": {
+   "2025": 5,
+   "2030": 5,
+   "2035": 5
+  },
+  "days": {
+   "Spring": 92,
+   "Summer": 91,
+   "Autumn": 91,
+   "Winter": 91
+  },
+  "num_instants": 24,
+  "random_seed": 2026,
+  "num_market_scenarios": 1,
+  "num_operation_scenarios": {
+   "case9": 1,
+   "case33_1": 1,
+   "case33_2": 1,
+   "case33_3": 1
+  },
+  "active_distribution_network_nodes": [
+   5,
+   7,
+   9
+  ],
+  "scenario_metadata": {
+   "random_seed": 2026,
+   "deterministic_scenarios": true,
+   "market_scenario_checksum": "a8c958289c1e0bdaaf0df36ce56fb4da6734621bf34be7711babcae94d79d907",
+   "operational_scenario_checksum": "502de30606ff8f0290498c56559b59ea01436ce43d9c21a0fc87c876a17ce30e",
+   "combined_scenario_checksum": "5a02b77ccbbbbbb869de92958a3851d095624711abc2dbfc0157466064410358"
+  }
+ },
+ "oracle_work_dir_redirect": {
+  "from": "data/SRP1/Results/P56A/evals",
+  "to": "data/SRP1/Results/P516TPERF/studio_dry_equiv/oracle_evals",
+  "reason": "p56a_oracle.fresh_planning creates <WORK_DIR>/<eval_id>/logs; kept under this output root"
+ },
+ "build_full": {
+  "construct_report": {
+   "results_dir_redirect": {
+    "target_results_dir": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry_equiv/arm_build_p516_tperf_equiv_full/results",
+    "planning": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry_equiv/arm_build_p516_tperf_equiv_full/results",
+    "transmission_network": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry_equiv/arm_build_p516_tperf_equiv_full/results",
+    "distribution_networks": {
+     "5": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry_equiv/arm_build_p516_tperf_equiv_full/results",
+     "7": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry_equiv/arm_build_p516_tperf_equiv_full/results",
+     "9": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry_equiv/arm_build_p516_tperf_equiv_full/results"
+    },
+    "shared_ess_data": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry_equiv/arm_build_p516_tperf_equiv_full/results",
+    "network_year_day_sample": {
+     "transmission_network": {
+      "2025": {
+       "Spring": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry_equiv/arm_build_p516_tperf_equiv_full/results",
+       "Summer": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry_equiv/arm_build_p516_tperf_equiv_full/results",
+       "Autumn": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry_equiv/arm_build_p516_tperf_equiv_full/results",
+       "Winter": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry_equiv/arm_build_p516_tperf_equiv_full/results"
+      },
+      "2030": {
+       "Spring": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry_equiv/arm_build_p516_tperf_equiv_full/results",
+       "Summer": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry_equiv/arm_build_p516_tperf_equiv_full/results",
+       "Autumn": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry_equiv/arm_build_p516_tperf_equiv_full/results",
+       "Winter": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry_equiv/arm_build_p516_tperf_equiv_full/results"
+      },
+      "2035": {
+       "Spring": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry_equiv/arm_build_p516_tperf_equiv_full/results",
+       "Summer": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry_equiv/arm_build_p516_tperf_equiv_full/results",
+       "Autumn": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry_equiv/arm_build_p516_tperf_equiv_full/results",
+       "Winter": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry_equiv/arm_build_p516_tperf_equiv_full/results"
+      }
+     },
+     "distribution_networks[5]": {
+      "2025": {
+       "Spring": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry_equiv/arm_build_p516_tperf_equiv_full/results",
+       "Summer": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry_equiv/arm_build_p516_tperf_equiv_full/results",
+       "Autumn": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry_equiv/arm_build_p516_tperf_equiv_full/results",
+       "Winter": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry_equiv/arm_build_p516_tperf_equiv_full/results"
+      },
+      "2030": {
+       "Spring": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry_equiv/arm_build_p516_tperf_equiv_full/results",
+       "Summer": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry_equiv/arm_build_p516_tperf_equiv_full/results",
+       "Autumn": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry_equiv/arm_build_p516_tperf_equiv_full/results",
+       "Winter": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry_equiv/arm_build_p516_tperf_equiv_full/results"
+      },
+      "2035": {
+       "Spring": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry_equiv/arm_build_p516_tperf_equiv_full/results",
+       "Summer": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry_equiv/arm_build_p516_tperf_equiv_full/results",
+       "Autumn": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry_equiv/arm_build_p516_tperf_equiv_full/results",
+       "Winter": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry_equiv/arm_build_p516_tperf_equiv_full/results"
+      }
+     },
+     "distribution_networks[7]": {
+      "2025": {
+       "Spring": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry_equiv/arm_build_p516_tperf_equiv_full/results",
+       "Summer": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry_equiv/arm_build_p516_tperf_equiv_full/results",
+       "Autumn": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry_equiv/arm_build_p516_tperf_equiv_full/results",
+       "Winter": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry_equiv/arm_build_p516_tperf_equiv_full/results"
+      },
+      "2030": {
+       "Spring": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry_equiv/arm_build_p516_tperf_equiv_full/results",
+       "Summer": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry_equiv/arm_build_p516_tperf_equiv_full/results",
+       "Autumn": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry_equiv/arm_build_p516_tperf_equiv_full/results",
+       "Winter": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry_equiv/arm_build_p516_tperf_equiv_full/results"
+      },
+      "2035": {
+       "Spring": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry_equiv/arm_build_p516_tperf_equiv_full/results",
+       "Summer": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry_equiv/arm_build_p516_tperf_equiv_full/results",
+       "Autumn": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry_equiv/arm_build_p516_tperf_equiv_full/results",
+       "Winter": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry_equiv/arm_build_p516_tperf_equiv_full/results"
+      }
+     },
+     "distribution_networks[9]": {
+      "2025": {
+       "Spring": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry_equiv/arm_build_p516_tperf_equiv_full/results",
+       "Summer": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry_equiv/arm_build_p516_tperf_equiv_full/results",
+       "Autumn": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry_equiv/arm_build_p516_tperf_equiv_full/results",
+       "Winter": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry_equiv/arm_build_p516_tperf_equiv_full/results"
+      },
+      "2030": {
+       "Spring": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry_equiv/arm_build_p516_tperf_equiv_full/results",
+       "Summer": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry_equiv/arm_build_p516_tperf_equiv_full/results",
+       "Autumn": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry_equiv/arm_build_p516_tperf_equiv_full/results",
+       "Winter": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry_equiv/arm_build_p516_tperf_equiv_full/results"
+      },
+      "2035": {
+       "Spring": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry_equiv/arm_build_p516_tperf_equiv_full/results",
+       "Summer": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry_equiv/arm_build_p516_tperf_equiv_full/results",
+       "Autumn": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry_equiv/arm_build_p516_tperf_equiv_full/results",
+       "Winter": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry_equiv/arm_build_p516_tperf_equiv_full/results"
+      }
+     }
+    }
+   },
+   "apply_rho": false,
+   "k_in_force": {
+    "2025": 35851.3609417964,
+    "2030": 35851.3609417964,
+    "2035": 35851.3609417964
+   },
+   "instance": {
+    "year": 2025,
+    "assignment": "per-node",
+    "investment_map": {
+     "5": [
+      0.0,
+      0.0
+     ],
+     "7": [
+      0.25,
+      1.0
+     ],
+     "9": [
+      0.0,
+      0.0
+     ]
+    }
+   }
+  },
+  "objective_scale_used": 93635360.0,
+  "admm_settings_in_force (set by _construct_arm_planning; none enters a block NLP at build)": {
+   "num_max_iters": 1,
+   "tol_objective_rel": 0.0001,
+   "adaptive_penalty": true,
+   "esso_budget": 5000000.0,
+   "rho": {
+    "v": {
+     "case9": 0.0077,
+     "case33_1": 0.0077,
+     "case33_2": 0.0077,
+     "case33_3": 0.0077
+    },
+    "pf": {
+     "case9": 0.198,
+     "case33_1": 0.198,
+     "case33_2": 0.198,
+     "case33_3": 0.198
+    },
+    "ess": {
+     "case9": 0.01,
+     "case33_1": 0.01,
+     "case33_2": 0.01,
+     "case33_3": 0.01,
+     "esso": 0.01
+    }
+   }
+  },
+  "al_scale_esso": 227210.9966521344,
+  "restriction": null,
+  "interceptor": {
+   "declared": {
+    "dso": 3,
+    "tso": 1,
+    "esso_init": 1
+   },
+   "observed": {
+    "dso": 3,
+    "tso": 1,
+    "esso_init": 1
+   },
+   "exact_match": true,
+   "mechanism": "instance attribute `.optimize` on this planning copy's TSO holder, the built DSO holder(s) and shared_ess_data, replaced by p515_s44_scale_measurement.Interceptor stubs (record the call, return None per block / node; never a solver); deleted after the build"
+  },
+  "models_built": {
+   "tso": {
+    "2025": [
+     "Autumn",
+     "Spring",
+     "Summer",
+     "Winter"
+    ],
+    "2030": [
+     "Autumn",
+     "Spring",
+     "Summer",
+     "Winter"
+    ],
+    "2035": [
+     "Autumn",
+     "Spring",
+     "Summer",
+     "Winter"
+    ]
+   },
+   "dso": {
+    "5": {
+     "2025": [
+      "Autumn",
+      "Spring",
+      "Summer",
+      "Winter"
+     ],
+     "2030": [
+      "Autumn",
+      "Spring",
+      "Summer",
+      "Winter"
+     ],
+     "2035": [
+      "Autumn",
+      "Spring",
+      "Summer",
+      "Winter"
+     ]
+    },
+    "7": {
+     "2025": [
+      "Autumn",
+      "Spring",
+      "Summer",
+      "Winter"
+     ],
+     "2030": [
+      "Autumn",
+      "Spring",
+      "Summer",
+      "Winter"
+     ],
+     "2035": [
+      "Autumn",
+      "Spring",
+      "Summer",
+      "Winter"
+     ]
+    },
+    "9": {
+     "2025": [
+      "Autumn",
+      "Spring",
+      "Summer",
+      "Winter"
+     ],
+     "2030": [
+      "Autumn",
+      "Spring",
+      "Summer",
+      "Winter"
+     ],
+     "2035": [
+      "Autumn",
+      "Spring",
+      "Summer",
+      "Winter"
+     ]
+    }
+   },
+   "esso_nodes": [
+    5,
+    7,
+    9
+   ]
+  },
+  "candidate": {
+   "investment_map": {
+    "5": [
+     0.0,
+     0.0
+    ],
+    "7": [
+     0.25,
+     1.0
+    ],
+    "9": [
+     0.0,
+     0.0
+    ]
+   },
+   "investment_year": 2025
+  },
+  "initialisation_capture": {
+   "dso": {
+    "optimize_args": [],
+    "optimize_kwargs": {}
+   },
+   "tso": {
+    "optimize_args": [],
+    "optimize_kwargs": {}
+   },
+   "esso": {
+    "optimize_args": [],
+    "optimize_kwargs": {}
+   }
+  },
+  "solved_problem": "the INITIALISATION problem of each block: the block cloned at the moment production calls `.optimize` inside create_*_model (NetworkData.optimize would run run_smopf(block, holder.params, from_warm_start=False) on it -- the round-0 solve). The ADMM-prepared blocks (after update_*_to_admm) are built and sized but NOT solvable as they stand: their objectives reference AL Params (dual_vmag_req, vmag_req, ...) that production sets only in the per-cycle update from the ADMM state"
+ },
+ "build_restricted": {
+  "construct_report": {
+   "results_dir_redirect": {
+    "target_results_dir": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry_equiv/arm_build_p516_tperf_equiv_restricted/results",
+    "planning": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry_equiv/arm_build_p516_tperf_equiv_restricted/results",
+    "transmission_network": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry_equiv/arm_build_p516_tperf_equiv_restricted/results",
+    "distribution_networks": {
+     "5": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry_equiv/arm_build_p516_tperf_equiv_restricted/results",
+     "7": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry_equiv/arm_build_p516_tperf_equiv_restricted/results",
+     "9": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry_equiv/arm_build_p516_tperf_equiv_restricted/results"
+    },
+    "shared_ess_data": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry_equiv/arm_build_p516_tperf_equiv_restricted/results",
+    "network_year_day_sample": {
+     "transmission_network": {
+      "2025": {
+       "Spring": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry_equiv/arm_build_p516_tperf_equiv_restricted/results",
+       "Summer": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry_equiv/arm_build_p516_tperf_equiv_restricted/results",
+       "Autumn": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry_equiv/arm_build_p516_tperf_equiv_restricted/results",
+       "Winter": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry_equiv/arm_build_p516_tperf_equiv_restricted/results"
+      },
+      "2030": {
+       "Spring": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry_equiv/arm_build_p516_tperf_equiv_restricted/results",
+       "Summer": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry_equiv/arm_build_p516_tperf_equiv_restricted/results",
+       "Autumn": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry_equiv/arm_build_p516_tperf_equiv_restricted/results",
+       "Winter": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry_equiv/arm_build_p516_tperf_equiv_restricted/results"
+      },
+      "2035": {
+       "Spring": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry_equiv/arm_build_p516_tperf_equiv_restricted/results",
+       "Summer": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry_equiv/arm_build_p516_tperf_equiv_restricted/results",
+       "Autumn": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry_equiv/arm_build_p516_tperf_equiv_restricted/results",
+       "Winter": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry_equiv/arm_build_p516_tperf_equiv_restricted/results"
+      }
+     },
+     "distribution_networks[5]": {
+      "2025": {
+       "Spring": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry_equiv/arm_build_p516_tperf_equiv_restricted/results",
+       "Summer": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry_equiv/arm_build_p516_tperf_equiv_restricted/results",
+       "Autumn": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry_equiv/arm_build_p516_tperf_equiv_restricted/results",
+       "Winter": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry_equiv/arm_build_p516_tperf_equiv_restricted/results"
+      },
+      "2030": {
+       "Spring": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry_equiv/arm_build_p516_tperf_equiv_restricted/results",
+       "Summer": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry_equiv/arm_build_p516_tperf_equiv_restricted/results",
+       "Autumn": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry_equiv/arm_build_p516_tperf_equiv_restricted/results",
+       "Winter": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry_equiv/arm_build_p516_tperf_equiv_restricted/results"
+      },
+      "2035": {
+       "Spring": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry_equiv/arm_build_p516_tperf_equiv_restricted/results",
+       "Summer": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry_equiv/arm_build_p516_tperf_equiv_restricted/results",
+       "Autumn": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry_equiv/arm_build_p516_tperf_equiv_restricted/results",
+       "Winter": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry_equiv/arm_build_p516_tperf_equiv_restricted/results"
+      }
+     },
+     "distribution_networks[7]": {
+      "2025": {
+       "Spring": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry_equiv/arm_build_p516_tperf_equiv_restricted/results",
+       "Summer": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry_equiv/arm_build_p516_tperf_equiv_restricted/results",
+       "Autumn": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry_equiv/arm_build_p516_tperf_equiv_restricted/results",
+       "Winter": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry_equiv/arm_build_p516_tperf_equiv_restricted/results"
+      },
+      "2030": {
+       "Spring": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry_equiv/arm_build_p516_tperf_equiv_restricted/results",
+       "Summer": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry_equiv/arm_build_p516_tperf_equiv_restricted/results",
+       "Autumn": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry_equiv/arm_build_p516_tperf_equiv_restricted/results",
+       "Winter": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry_equiv/arm_build_p516_tperf_equiv_restricted/results"
+      },
+      "2035": {
+       "Spring": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry_equiv/arm_build_p516_tperf_equiv_restricted/results",
+       "Summer": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry_equiv/arm_build_p516_tperf_equiv_restricted/results",
+       "Autumn": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry_equiv/arm_build_p516_tperf_equiv_restricted/results",
+       "Winter": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry_equiv/arm_build_p516_tperf_equiv_restricted/results"
+      }
+     },
+     "distribution_networks[9]": {
+      "2025": {
+       "Spring": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry_equiv/arm_build_p516_tperf_equiv_restricted/results",
+       "Summer": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry_equiv/arm_build_p516_tperf_equiv_restricted/results",
+       "Autumn": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry_equiv/arm_build_p516_tperf_equiv_restricted/results",
+       "Winter": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry_equiv/arm_build_p516_tperf_equiv_restricted/results"
+      },
+      "2030": {
+       "Spring": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry_equiv/arm_build_p516_tperf_equiv_restricted/results",
+       "Summer": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry_equiv/arm_build_p516_tperf_equiv_restricted/results",
+       "Autumn": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry_equiv/arm_build_p516_tperf_equiv_restricted/results",
+       "Winter": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry_equiv/arm_build_p516_tperf_equiv_restricted/results"
+      },
+      "2035": {
+       "Spring": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry_equiv/arm_build_p516_tperf_equiv_restricted/results",
+       "Summer": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry_equiv/arm_build_p516_tperf_equiv_restricted/results",
+       "Autumn": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry_equiv/arm_build_p516_tperf_equiv_restricted/results",
+       "Winter": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry_equiv/arm_build_p516_tperf_equiv_restricted/results"
+      }
+     }
+    }
+   },
+   "apply_rho": false,
+   "k_in_force": {
+    "2025": 35851.3609417964,
+    "2030": 35851.3609417964,
+    "2035": 35851.3609417964
+   },
+   "instance": {
+    "year": 2025,
+    "assignment": "per-node",
+    "investment_map": {
+     "5": [
+      0.0,
+      0.0
+     ],
+     "7": [
+      0.25,
+      1.0
+     ],
+     "9": [
+      0.0,
+      0.0
+     ]
+    }
+   }
+  },
+  "objective_scale_used": 93635360.0,
+  "admm_settings_in_force (set by _construct_arm_planning; none enters a block NLP at build)": {
+   "num_max_iters": 1,
+   "tol_objective_rel": 0.0001,
+   "adaptive_penalty": true,
+   "esso_budget": 5000000.0,
+   "rho": {
+    "v": {
+     "case9": 0.0077,
+     "case33_1": 0.0077,
+     "case33_2": 0.0077,
+     "case33_3": 0.0077
+    },
+    "pf": {
+     "case9": 0.198,
+     "case33_1": 0.198,
+     "case33_2": 0.198,
+     "case33_3": 0.198
+    },
+    "ess": {
+     "case9": 0.01,
+     "case33_1": 0.01,
+     "case33_2": 0.01,
+     "case33_3": 0.01,
+     "esso": 0.01
+    }
+   }
+  },
+  "al_scale_esso": 227210.9966521344,
+  "restriction": {
+   "tso": {
+    "years_full": {
+     "2025": 5,
+     "2030": 5,
+     "2035": 5
+    },
+    "days_full": {
+     "Spring": 92,
+     "Summer": 91,
+     "Autumn": 91,
+     "Winter": 91
+    },
+    "years_built": {
+     "2025": 5
+    },
+    "days_built": {
+     "Spring": 92
+    }
+   },
+   "dso_7": {
+    "years_full": {
+     "2025": 5,
+     "2030": 5,
+     "2035": 5
+    },
+    "days_full": {
+     "Spring": 92,
+     "Summer": 91,
+     "Autumn": 91,
+     "Winter": 91
+    },
+    "years_built": {
+     "2025": 5
+    },
+    "days_built": {
+     "Spring": 92
+    }
+   }
+  },
+  "interceptor": {
+   "declared": {
+    "dso": 1,
+    "tso": 1,
+    "esso_init": 1
+   },
+   "observed": {
+    "dso": 1,
+    "tso": 1,
+    "esso_init": 1
+   },
+   "exact_match": true,
+   "mechanism": "instance attribute `.optimize` on this planning copy's TSO holder, the built DSO holder(s) and shared_ess_data, replaced by p515_s44_scale_measurement.Interceptor stubs (record the call, return None per block / node; never a solver); deleted after the build"
+  },
+  "models_built": {
+   "tso": {
+    "2025": [
+     "Spring"
+    ]
+   },
+   "dso": {
+    "7": {
+     "2025": [
+      "Spring"
+     ]
+    }
+   },
+   "esso_nodes": [
+    5,
+    7,
+    9
+   ]
+  },
+  "candidate": {
+   "investment_map": {
+    "5": [
+     0.0,
+     0.0
+    ],
+    "7": [
+     0.25,
+     1.0
+    ],
+    "9": [
+     0.0,
+     0.0
+    ]
+   },
+   "investment_year": 2025
+  },
+  "initialisation_capture": {
+   "dso": {
+    "optimize_args": [],
+    "optimize_kwargs": {}
+   },
+   "tso": {
+    "optimize_args": [],
+    "optimize_kwargs": {}
+   },
+   "esso": {
+    "optimize_args": [],
+    "optimize_kwargs": {}
+   }
+  },
+  "solved_problem": "the INITIALISATION problem of each block: the block cloned at the moment production calls `.optimize` inside create_*_model (NetworkData.optimize would run run_smopf(block, holder.params, from_warm_start=False) on it -- the round-0 solve). The ADMM-prepared blocks (after update_*_to_admm) are built and sized but NOT solvable as they stand: their objectives reference AL Params (dual_vmag_req, vmag_req, ...) that production sets only in the per-cycle update from the ADMM state"
+ },
+ "admm_prepared_size_comparison": {
+  "tso": {
+   "full": {
+    "pyomo_vars": 3906,
+    "pyomo_vars_fixed": 1024,
+    "pyomo_vars_free": 2882,
+    "pyomo_active_constraints": 2848,
+    "pyomo_active_equalities": 1513,
+    "pyomo_active_inequalities": 1335,
+    "active_objectives": [
+     "p58_rescaled_admm_objective"
+    ],
+    "scenarios_market": 1,
+    "scenarios_operation": 1,
+    "periods": 24
+   },
+   "restricted": {
+    "pyomo_vars": 3906,
+    "pyomo_vars_fixed": 1024,
+    "pyomo_vars_free": 2882,
+    "pyomo_active_constraints": 2848,
+    "pyomo_active_equalities": 1513,
+    "pyomo_active_inequalities": 1335,
+    "active_objectives": [
+     "p58_rescaled_admm_objective"
+    ],
+    "scenarios_market": 1,
+    "scenarios_operation": 1,
+    "periods": 24
+   },
+   "identical": true
+  },
+  "dso": {
+   "full": {
+    "pyomo_vars": 10882,
+    "pyomo_vars_fixed": 64,
+    "pyomo_vars_free": 10818,
+    "pyomo_active_constraints": 7803,
+    "pyomo_active_equalities": 4305,
+    "pyomo_active_inequalities": 3498,
+    "active_objectives": [
+     "p58_rescaled_admm_objective"
+    ],
+    "scenarios_market": 1,
+    "scenarios_operation": 1,
+    "periods": 24
+   },
+   "restricted": {
+    "pyomo_vars": 10882,
+    "pyomo_vars_fixed": 64,
+    "pyomo_vars_free": 10818,
+    "pyomo_active_constraints": 7803,
+    "pyomo_active_equalities": 4305,
+    "pyomo_active_inequalities": 3498,
+    "active_objectives": [
+     "p58_rescaled_admm_objective"
+    ],
+    "scenarios_market": 1,
+    "scenarios_operation": 1,
+    "periods": 24
+   },
+   "identical": true
+  },
+  "esso_node7": {
+   "full": {
+    "pyomo_vars": 2949,
+    "pyomo_vars_fixed": 1176,
+    "pyomo_vars_free": 1773,
+    "pyomo_active_constraints": 1200,
+    "active_objectives": [
+     "admm_objective"
+    ]
+   },
+   "restricted": {
+    "pyomo_vars": 2949,
+    "pyomo_vars_fixed": 1176,
+    "pyomo_vars_free": 1773,
+    "pyomo_active_constraints": 1200,
+    "active_objectives": [
+     "admm_objective"
+    ]
+   },
+   "identical": true
+  }
+ },
+ "comparison": {
+  "tso": {
+   "full_sha256": {
+    ".nl": "0583e046a438ffdb11797637d812f67c8709bfe55965e655fc77161bd993b64a",
+    ".row": "c068ce3d300f4ee1696e5a3c703c6232342e8577b7c1f4f124ad1f6b4f168ca7",
+    ".col": "908b99e3773239d9d3212b0eceb29a70fcc06cde04f31a076f0a6a9f03b5cc3b"
+   },
+   "restricted_sha256": {
+    ".nl": "0583e046a438ffdb11797637d812f67c8709bfe55965e655fc77161bd993b64a",
+    ".row": "c068ce3d300f4ee1696e5a3c703c6232342e8577b7c1f4f124ad1f6b4f168ca7",
+    ".col": "908b99e3773239d9d3212b0eceb29a70fcc06cde04f31a076f0a6a9f03b5cc3b"
+   },
+   "nl_row_col_identical": true,
+   "full_size": {
+    "pyomo_vars": 3906,
+    "pyomo_vars_fixed": 1024,
+    "pyomo_vars_free": 2882,
+    "pyomo_active_constraints": 2848,
+    "pyomo_active_equalities": 1513,
+    "pyomo_active_inequalities": 1335,
+    "active_objectives": [
+     "objective"
+    ],
+    "scenarios_market": 1,
+    "scenarios_operation": 1,
+    "periods": 24
+   },
+   "restricted_size": {
+    "pyomo_vars": 3906,
+    "pyomo_vars_fixed": 1024,
+    "pyomo_vars_free": 2882,
+    "pyomo_active_constraints": 2848,
+    "pyomo_active_equalities": 1513,
+    "pyomo_active_inequalities": 1335,
+    "active_objectives": [
+     "objective"
+    ],
+    "scenarios_market": 1,
+    "scenarios_operation": 1,
+    "periods": 24
+   },
+   "sizes_identical": true
+  },
+  "dso": {
+   "full_sha256": {
+    ".nl": "e07839cb4f1b92b5cd35e89b6c55371660c90ea635023c3eb8c47f09459ff5e6",
+    ".row": "83cbb13baa0f7ed0b770503147a385ab37545275b995eb809d4d4660e29173a9",
+    ".col": "4d755abc3a10afc085d1eb765d25a677ce93037b4d432ae26839604f4cc9e662"
+   },
+   "restricted_sha256": {
+    ".nl": "e07839cb4f1b92b5cd35e89b6c55371660c90ea635023c3eb8c47f09459ff5e6",
+    ".row": "83cbb13baa0f7ed0b770503147a385ab37545275b995eb809d4d4660e29173a9",
+    ".col": "4d755abc3a10afc085d1eb765d25a677ce93037b4d432ae26839604f4cc9e662"
+   },
+   "nl_row_col_identical": true,
+   "full_size": {
+    "pyomo_vars": 10882,
+    "pyomo_vars_fixed": 64,
+    "pyomo_vars_free": 10818,
+    "pyomo_active_constraints": 7803,
+    "pyomo_active_equalities": 4305,
+    "pyomo_active_inequalities": 3498,
+    "active_objectives": [
+     "objective"
+    ],
+    "scenarios_market": 1,
+    "scenarios_operation": 1,
+    "periods": 24
+   },
+   "restricted_size": {
+    "pyomo_vars": 10882,
+    "pyomo_vars_fixed": 64,
+    "pyomo_vars_free": 10818,
+    "pyomo_active_constraints": 7803,
+    "pyomo_active_equalities": 4305,
+    "pyomo_active_inequalities": 3498,
+    "active_objectives": [
+     "objective"
+    ],
+    "scenarios_market": 1,
+    "scenarios_operation": 1,
+    "periods": 24
+   },
+   "sizes_identical": true
+  },
+  "esso_node7": {
+   "full_sha256": {
+    ".nl": "b2f8133ecb62a8d574441d1020efb10f4115882da345bcb87f8a66794556c3de",
+    ".row": "9cadcba06c8bb039a80b0e8ba0a8a9fce67ce4f0fec4657eedaca5e09ec147d8",
+    ".col": "ade7aa65ab940c7d82084b0b476e35e0537159a5136594a3569d55a7ca005f4e"
+   },
+   "restricted_sha256": {
+    ".nl": "b2f8133ecb62a8d574441d1020efb10f4115882da345bcb87f8a66794556c3de",
+    ".row": "9cadcba06c8bb039a80b0e8ba0a8a9fce67ce4f0fec4657eedaca5e09ec147d8",
+    ".col": "ade7aa65ab940c7d82084b0b476e35e0537159a5136594a3569d55a7ca005f4e"
+   },
+   "nl_row_col_identical": true,
+   "full_size": {
+    "pyomo_vars": 2949,
+    "pyomo_vars_fixed": 1752,
+    "pyomo_vars_free": 1197,
+    "pyomo_active_constraints": 1200,
+    "active_objectives": [
+     "objective"
+    ]
+   },
+   "restricted_size": {
+    "pyomo_vars": 2949,
+    "pyomo_vars_fixed": 1752,
+    "pyomo_vars_free": 1197,
+    "pyomo_active_constraints": 1200,
+    "active_objectives": [
+     "objective"
+    ]
+   },
+   "sizes_identical": true
+  }
+ },
+ "discrimination_control": {
+  "what": "the full build's DSO init capture written a second time: must hash IDENTICALLY to its first write (writer determinism) and DIFFERENTLY from the TSO init capture (the hash discriminates)",
+  "second_write_sha256": {
+   ".nl": "e07839cb4f1b92b5cd35e89b6c55371660c90ea635023c3eb8c47f09459ff5e6",
+   ".row": "83cbb13baa0f7ed0b770503147a385ab37545275b995eb809d4d4660e29173a9",
+   ".col": "4d755abc3a10afc085d1eb765d25a677ce93037b4d432ae26839604f4cc9e662"
+  },
+  "second_write_identical_to_first": true,
+  "differs_from_full_tso_spring_nl": true,
+  "unused_second_day": "Summer"
+ },
+ "guard": {
+  "counts": {
+   "permitted_solve": 0,
+   "permitted_exec": 0,
+   "blocked_solve": 0,
+   "blocked_exec": 0
+  },
+  "verify_0_failures": []
+ },
+ "status": "equivalent",
+ "stages": [
+  {
+   "stage": "read_planning_problem (data, copula/KDE scenario generation, networks, ESS)",
+   "wall_s": 17.21569883299526,
+   "rss_before": 222953472,
+   "rss_after": 401375232,
+   "self_ru_maxrss_after": 401391616,
+   "ok": true
+  },
+  {
+   "stage": "construct arm planning (p516_tperf_equiv_full; s44 path, apply_rho=False, unit-cell candidate)",
+   "wall_s": 0.03314824999688426,
+   "rss_before": 401391616,
+   "rss_after": 405716992,
+   "self_ru_maxrss_after": 405716992,
+   "ok": true
+  },
+  {
+   "stage": "ESSO AL scale (full block set, before any restriction)",
+   "wall_s": 0.000148667000757996,
+   "rss_before": 405716992,
+   "rss_after": 405766144,
+   "self_ru_maxrss_after": 405766144,
+   "ok": true
+  },
+  {
+   "stage": "create_admm_variables (full instance)",
+   "wall_s": 0.00036374999763211235,
+   "rss_before": 405766144,
+   "rss_after": 405979136,
+   "self_ru_maxrss_after": 405979136,
+   "ok": true
+  },
+  {
+   "stage": "create_distribution_networks_models (nodes [5, 7, 9]; optimize intercepted)",
+   "wall_s": 4.374971542005369,
+   "rss_before": 405979136,
+   "rss_after": 840777728,
+   "self_ru_maxrss_after": 840777728,
+   "ok": true
+  },
+  {
+   "stage": "create_transmission_network_model (optimize intercepted)",
+   "wall_s": 0.9781694999983301,
+   "rss_before": 840777728,
+   "rss_after": 916488192,
+   "self_ru_maxrss_after": 916488192,
+   "ok": true
+  },
+  {
+   "stage": "create_shared_energy_storage_model (optimize intercepted)",
+   "wall_s": 0.0919865409960039,
+   "rss_before": 916488192,
+   "rss_after": 929169408,
+   "self_ru_maxrss_after": 929169408,
+   "ok": true
+  },
+  {
+   "stage": "ADMM objective preparation (s44 child_build sequence)",
+   "wall_s": 0.1085367089981446,
+   "rss_before": 929169408,
+   "rss_after": 945340416,
+   "self_ru_maxrss_after": 945340416,
+   "ok": true
+  },
+  {
+   "stage": "construct arm planning (p516_tperf_equiv_restricted; s44 path, apply_rho=False, unit-cell candidate)",
+   "wall_s": 0.031218083000567276,
+   "rss_before": 945340416,
+   "rss_after": 953057280,
+   "self_ru_maxrss_after": 953057280,
+   "ok": true
+  },
+  {
+   "stage": "ESSO AL scale (full block set, before any restriction)",
+   "wall_s": 0.00013629200111608952,
+   "rss_before": 953057280,
+   "rss_after": 953057280,
+   "self_ru_maxrss_after": 953057280,
+   "ok": true
+  },
+  {
+   "stage": "create_admm_variables (full instance)",
+   "wall_s": 0.0004999579978175461,
+   "rss_before": 953057280,
+   "rss_after": 953319424,
+   "self_ru_maxrss_after": 953319424,
+   "ok": true
+  },
+  {
+   "stage": "create_distribution_networks_models (nodes [7]; optimize intercepted)",
+   "wall_s": 0.30977166600496275,
+   "rss_before": 953319424,
+   "rss_after": 995164160,
+   "self_ru_maxrss_after": 995164160,
+   "ok": true
+  },
+  {
+   "stage": "create_transmission_network_model (optimize intercepted)",
+   "wall_s": 0.11692325000331039,
+   "rss_before": 995164160,
+   "rss_after": 1001979904,
+   "self_ru_maxrss_after": 1001979904,
+   "ok": true
+  },
+  {
+   "stage": "create_shared_energy_storage_model (optimize intercepted)",
+   "wall_s": 1.3331056669994723,
+   "rss_before": 1001979904,
+   "rss_after": 1012826112,
+   "self_ru_maxrss_after": 1012826112,
+   "ok": true
+  },
+  {
+   "stage": "ADMM objective preparation (s44 child_build sequence)",
+   "wall_s": 0.01802295900415629,
+   "rss_before": 1012826112,
+   "rss_after": 1014317056,
+   "self_ru_maxrss_after": 1014317056,
+   "ok": true
+  }
+ ],
+ "watchdog": {
+  "limit_bytes": 17179869184,
+  "measure": "rss of this process + all descendants (psutil)",
+  "interval_s": 0.5,
+  "n_samples": 44,
+  "peak": {
+   "rss_tree": 1021067264,
+   "rss_self": 1021067264,
+   "rss_children": 0,
+   "stage": "ADMM objective preparation (s44 child_build sequence)",
+   "t": 25.09807014465332
+  }
+ },
+ "utc_end": "2026-10-31T11:13:00.933173+00:00"
+}

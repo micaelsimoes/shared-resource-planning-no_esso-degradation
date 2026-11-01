@@ -1,0 +1,73 @@
+{
+  "adaptive_rho_already_measured": "P5.9-B: same template, same start rho_pf = 1000. Adaptive OFF 16 cycles / 783.6 s; adaptive ON 6 cycles / 295.4 s with rho_pf driven to 131.69 and an objective better by 109,131 (of 8.28e8). A 2.67x cycle reduction. The negative feedback the S1 mechanism predicts is therefore SELF-CORRECTING in practice, not oscillatory, on this path.",
+  "headline": "Cold at rho_pf 300, capped at 21 cycles, still descending; warm-from-template at rho_pf 300, converged in 6. Same rho, same tolerances. Initialization dominates rho as a cost lever, and the P5.10 sweep varied the weaker of the two.",
+  "paths": {
+    "cold_uncapped": {
+      "Q_depends_on": "x alone",
+      "admm_local_solves": ">= 1071",
+      "caveat": "the trajectory was STOPPED BY CONFIGURATION, not stalled; its true cost to convergence is UNKNOWN and only bounded below",
+      "cycles": ">= 21 (LOWER BOUND \u2014 the only cold run was capped)",
+      "evidence": "P5.12-R: configuration cap = 21, still descending at cycle 20 (decrement 4.95e6 vs tolerance 1.42e6)",
+      "initialization": "none; cold start"
+    },
+    "warm_continuation_gen2plus": {
+      "Q_depends_on": "x AND the accumulated history of the campaign",
+      "admm_local_solves": 51,
+      "cycles": 1,
+      "evidence": "P5.9-B generations 1-3 in BOTH arms: 1 cycle each, 69-82 s",
+      "initialization": "inherits the previous generation\u2019s state"
+    },
+    "warm_from_template_gen1_adaptive_from_rho1000": {
+      "Q_depends_on": "x AND the template",
+      "admm_local_solves": 306,
+      "cycles": 6,
+      "evidence": "P5.9-B adaptive_on arm: 6 cycles, 295.4 s, rho_pf driven 1000 -> 131.69",
+      "initialization": "frozen T0 template, history_neutralised, adaptive_penalty = True"
+    },
+    "warm_from_template_gen1_rho1000_fixed": {
+      "Q_depends_on": "x AND the template",
+      "admm_local_solves": 816,
+      "cycles": 16,
+      "evidence": "P5.10-B (16 cycles) and P5.9-B adaptive_off arm (16 cycles, 783.6 s) \u2014 two stages agree",
+      "initialization": "frozen T0 template, history_neutralised"
+    },
+    "warm_from_template_gen1_rho300": {
+      "Q_depends_on": "x AND the template",
+      "admm_local_solves": 306,
+      "cycles": 6,
+      "evidence": "P5.10-B p510_b_fixedrho_pf300.json, 3 repeats x 6 cycles",
+      "initialization": "frozen T0 template, history_neutralised"
+    }
+  },
+  "polish_phase": {
+    "inferred": "one pass over the 48 network blocks (12 TSO + 36 DSO) per generation, inferred from blocks_rescaled = 48 and the failed_blocks accounting",
+    "status": "NOT separately counted in the preserved ledgers",
+    "treatment": "excluded from the solve counts above; adding it would raise each warm generation by ~48 solves"
+  },
+  "solve_profile": {
+    "declared": 0,
+    "failures": [],
+    "observed": {
+      "blocked_exec": 0,
+      "blocked_solve": 0,
+      "permitted_exec": 0,
+      "permitted_solve": 0
+    }
+  },
+  "solves_per_cycle": {
+    "source": "data/SRP1/Results/P512R/run.json ledger: 1095 attempted solves = 780 DSO + 252 TSO (12 blocks x 21) + 63 ESSO (3 x 21)",
+    "value": {
+      "DSO": 36,
+      "ESSO": 3,
+      "TSO": 12,
+      "total": 51
+    }
+  },
+  "stage": "S2 \u2014 cost model (design stage, no solves)",
+  "the_tension_to_be_resolved_by_the_outer_layer": "The cheap path is cheap because it inherits a template, and inheritance is what makes Q(x) depend on history rather than on x alone. history_neutralised exists to manage exactly that, and it is the same concern the Expert raised about P5.10 inherited-template comparison. So the choice is a cheap oracle whose value depends partly on where it started, or an independent oracle at several times the cost. Any outer method needs the second to mean anything; any campaign needs the first to be affordable. This is a formulation problem, not a tuning one.",
+  "timestamp_utc": "2026-09-12T16:10:49.062024+00:00",
+  "withdrawn_figures": {
+    "15x_ratio_cold_vs_warm": "WITHDRAWN as stated. The verifiable ratio is cold >= 1071 against warm gen-1 306, i.e. >= 3.5x, with the true cold cost unknown because the run was capped.",
+    "4600_solves_per_evaluation": "WITHDRAWN. It extrapolated ~69 further cycles from a trajectory that was capped at 21 by configuration."
+  }
+}

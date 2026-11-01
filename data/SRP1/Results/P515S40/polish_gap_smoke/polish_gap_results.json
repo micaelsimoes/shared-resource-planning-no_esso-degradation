@@ -1,0 +1,794 @@
+{
+ "stage": "P5.15 Addendum 22 item (4) -- Step 3.5 polish-gap gate",
+ "authority": [
+  "PLANNER_BRIEF_2026-09-13.md Step 3.5 and Addendum 22 item 4_step_3_5",
+  "data/SRP1/Results/P515S40/frozen_s40_closure_spec_v11_0e9a37be.json"
+ ],
+ "timestamp_utc": "2026-09-18T09:27:26.362481+00:00",
+ "arm_label": "s39_D",
+ "mode": "smoke",
+ "smoke_cycles": 2,
+ "num_max_iters_used": 2,
+ "out_dir": "data/SRP1/Results/P515S40/polish_gap_smoke",
+ "admm_report_path": "data/SRP1/Results/P515S40/polish_gap_smoke/g_s39_D.json",
+ "admm_cycles_run": 2,
+ "admm_gross_operational_cost": 740742829.5748339,
+ "admm_converged_at_cycle": null,
+ "reproduction": {
+  "mode": "truncated (cycle_trajectory[:2] + rows-derived top-level fields vs D's first 2 committed rows; cycle-count-dependent artifacts (esso_capture, solve_profile, network_failures_summary, esso_complementarity_diagnostics_by_round, esso_models_pickle) out of scope for a truncated comparison)",
+  "is_full_mode": false,
+  "n_cycles_compared": 2,
+  "d_reference_path": "data/SRP1/Results/P515S39_D_run/g_s39_D.json",
+  "d_reference_cycles_run": 139,
+  "excluded_field_names": [
+   "component_levels_terminal_and_settlement_detail_path",
+   "component_levels_terminal_path",
+   "ess_entry_stride_sidecar_path",
+   "esso_capture_dir",
+   "heartbeat_path",
+   "interface_voltage_terminal_path",
+   "leak_classification_path",
+   "log_path",
+   "recourse_jump_sidecar_path",
+   "results_dir_redirect",
+   "s34_ess_entry_stride_sidecar_path",
+   "s34_recourse_jump_sidecar_path",
+   "s35ref_soh_floor_sidecar_path",
+   "s38_pf_entry_stride_sidecar_path",
+   "s39_ess_exempt_until_state_sidecar_path",
+   "soh_floor_sidecar_path",
+   "stdout_path",
+   "timestamp_utc",
+   "wall_clock_s"
+  ],
+  "excluded_dotted_suffixes": [
+   "esso_models_pickle.path",
+   "network_failures_summary.path",
+   "soh_floor_multiplier_and_efc_per_cohort_year_terminal.path"
+  ],
+  "intentional_difference_suffixes": [
+   "rule_eleven_checklist.s40_tso_snapshot_capture_mode_requested"
+  ],
+  "scalar_checks": {},
+  "n_diffs": 0,
+  "diffs": [],
+  "first_diffs": [],
+  "reproduces": true
+ },
+ "stopped_before_polish": false,
+ "polish": {
+  "before_recourse_components": {
+   "gross_operational_cost": 740742829.5748339,
+   "gross_operational_cost_including_settlement": 698147075.8724363,
+   "interface_settlement_tso": -1272846714.8058145,
+   "interface_settlement_dso": {
+    "5": 441366948.370088,
+    "7": 368825151.46597624,
+    "9": 420058861.2673528
+   },
+   "interface_settlement_total": -42595753.702397585,
+   "terminal_salvage_value": 6.749009278652274e-35,
+   "net_operational_recourse": 740742829.5748339,
+   "detector_penalty_total": -12801.504187604527,
+   "detector_components": {
+    "voltage_slack": -11796.940754192956,
+    "node_balance_slack": 0.0,
+    "branch_flow_slack": 0.0,
+    "flexibility_p_day_balance_slack": -946.5084997405976,
+    "local_ess_day_balance_slack": 0.0,
+    "shared_ess_day_balance_slack": -58.05493367097045,
+    "detector_penalty_total": -12801.504187604527
+   },
+   "economic_recourse_all_D_excluded": 740755631.0790215,
+   "economic_recourse_voltage_excluded": 740754626.515588
+  },
+  "after_recourse_components": null,
+  "all_solved": false,
+  "failed_blocks": [
+   "TSO|2025|Spring",
+   "TSO|2025|Summer",
+   "TSO|2025|Autumn",
+   "TSO|2025|Winter",
+   "TSO|2030|Spring",
+   "TSO|2030|Summer",
+   "TSO|2030|Autumn",
+   "TSO|2030|Winter",
+   "TSO|2035|Spring",
+   "TSO|2035|Summer",
+   "TSO|2035|Autumn",
+   "TSO|2035|Winter",
+   "DSO5|2025|Spring"
+  ],
+  "n_blocks": 48,
+  "per_block": [
+   {
+    "block": "TSO|2025|Spring",
+    "solved": false,
+    "weighted_base_objective_before": -24362563.680686373,
+    "weighted_base_objective_after": -24362563.680686373,
+    "delta": 0.0
+   },
+   {
+    "block": "TSO|2025|Summer",
+    "solved": false,
+    "weighted_base_objective_before": -32667063.454315934,
+    "weighted_base_objective_after": -32667063.454315934,
+    "delta": 0.0
+   },
+   {
+    "block": "TSO|2025|Autumn",
+    "solved": false,
+    "weighted_base_objective_before": -49017981.38817877,
+    "weighted_base_objective_after": -49017981.38817877,
+    "delta": 0.0
+   },
+   {
+    "block": "TSO|2025|Winter",
+    "solved": false,
+    "weighted_base_objective_before": -49997412.11950753,
+    "weighted_base_objective_after": -49997412.11950753,
+    "delta": 0.0
+   },
+   {
+    "block": "TSO|2030|Spring",
+    "solved": false,
+    "weighted_base_objective_before": -39495209.19718889,
+    "weighted_base_objective_after": -39495209.19718889,
+    "delta": 0.0
+   },
+   {
+    "block": "TSO|2030|Summer",
+    "solved": false,
+    "weighted_base_objective_before": -57415019.79514842,
+    "weighted_base_objective_after": -57415019.79514842,
+    "delta": 0.0
+   },
+   {
+    "block": "TSO|2030|Autumn",
+    "solved": false,
+    "weighted_base_objective_before": -88073698.69865663,
+    "weighted_base_objective_after": -88073698.69865663,
+    "delta": 0.0
+   },
+   {
+    "block": "TSO|2030|Winter",
+    "solved": false,
+    "weighted_base_objective_before": -74249409.91905805,
+    "weighted_base_objective_after": -74249409.91905805,
+    "delta": 0.0
+   },
+   {
+    "block": "TSO|2035|Spring",
+    "solved": false,
+    "weighted_base_objective_before": -62374233.772873074,
+    "weighted_base_objective_after": -62374233.772873074,
+    "delta": 0.0
+   },
+   {
+    "block": "TSO|2035|Summer",
+    "solved": false,
+    "weighted_base_objective_before": -58453757.35607916,
+    "weighted_base_objective_after": -58453757.35607916,
+    "delta": 0.0
+   },
+   {
+    "block": "TSO|2035|Autumn",
+    "solved": false,
+    "weighted_base_objective_before": -57882283.446979344,
+    "weighted_base_objective_after": -57882283.446979344,
+    "delta": 0.0
+   },
+   {
+    "block": "TSO|2035|Winter",
+    "solved": false,
+    "weighted_base_objective_before": -93180144.31607057,
+    "weighted_base_objective_after": -93180144.31607057,
+    "delta": 0.0
+   },
+   {
+    "block": "DSO5|2025|Spring",
+    "solved": false,
+    "weighted_base_objective_before": 32223749.23610521,
+    "weighted_base_objective_after": 32833203.234560274,
+    "delta": 609453.9984550625
+   },
+   {
+    "block": "DSO5|2025|Summer",
+    "solved": true,
+    "weighted_base_objective_before": 42749667.50627872,
+    "weighted_base_objective_after": 43093937.699478514,
+    "delta": 344270.193199791
+   },
+   {
+    "block": "DSO5|2025|Autumn",
+    "solved": true,
+    "weighted_base_objective_before": 48009627.66021334,
+    "weighted_base_objective_after": 48403728.06941019,
+    "delta": 394100.40919685364
+   },
+   {
+    "block": "DSO5|2025|Winter",
+    "solved": true,
+    "weighted_base_objective_before": 46078168.56618281,
+    "weighted_base_objective_after": 46473908.42413829,
+    "delta": 395739.8579554856
+   },
+   {
+    "block": "DSO5|2030|Spring",
+    "solved": true,
+    "weighted_base_objective_before": 30997592.365242906,
+    "weighted_base_objective_after": 31883811.64648161,
+    "delta": 886219.2812387049
+   },
+   {
+    "block": "DSO5|2030|Summer",
+    "solved": true,
+    "weighted_base_objective_before": 42014615.33776106,
+    "weighted_base_objective_after": 42536831.4343236,
+    "delta": 522216.096562542
+   },
+   {
+    "block": "DSO5|2030|Autumn",
+    "solved": true,
+    "weighted_base_objective_before": 47864373.25078472,
+    "weighted_base_objective_after": 48393958.24622171,
+    "delta": 529584.9954369962
+   },
+   {
+    "block": "DSO5|2030|Winter",
+    "solved": true,
+    "weighted_base_objective_before": 46358005.67119135,
+    "weighted_base_objective_after": 47023860.86357199,
+    "delta": 665855.1923806369
+   },
+   {
+    "block": "DSO5|2035|Spring",
+    "solved": true,
+    "weighted_base_objective_before": 36224263.8644174,
+    "weighted_base_objective_after": 39705944.14841026,
+    "delta": 3481680.283992864
+   },
+   {
+    "block": "DSO5|2035|Summer",
+    "solved": true,
+    "weighted_base_objective_before": 44254746.9396406,
+    "weighted_base_objective_after": 44599595.6810023,
+    "delta": 344848.7413617
+   },
+   {
+    "block": "DSO5|2035|Autumn",
+    "solved": true,
+    "weighted_base_objective_before": 32938348.183970775,
+    "weighted_base_objective_after": 33676016.51037815,
+    "delta": 737668.3264073767
+   },
+   {
+    "block": "DSO5|2035|Winter",
+    "solved": true,
+    "weighted_base_objective_before": 50071939.30972021,
+    "weighted_base_objective_after": 51005945.727804676,
+    "delta": 934006.418084465
+   },
+   {
+    "block": "DSO7|2025|Spring",
+    "solved": true,
+    "weighted_base_objective_before": 31866805.802189294,
+    "weighted_base_objective_after": 31883553.942054044,
+    "delta": 16748.139864750206
+   },
+   {
+    "block": "DSO7|2025|Summer",
+    "solved": true,
+    "weighted_base_objective_before": 38775503.4068655,
+    "weighted_base_objective_after": 38789429.900649294,
+    "delta": 13926.493783794343
+   },
+   {
+    "block": "DSO7|2025|Autumn",
+    "solved": true,
+    "weighted_base_objective_before": 26457238.24441122,
+    "weighted_base_objective_after": 26473000.619321536,
+    "delta": 15762.374910317361
+   },
+   {
+    "block": "DSO7|2025|Winter",
+    "solved": true,
+    "weighted_base_objective_before": 33745091.125376396,
+    "weighted_base_objective_after": 33762431.340639636,
+    "delta": 17340.21526324004
+   },
+   {
+    "block": "DSO7|2030|Spring",
+    "solved": true,
+    "weighted_base_objective_before": 30100135.14536131,
+    "weighted_base_objective_after": 30250653.38829193,
+    "delta": 150518.24293061718
+   },
+   {
+    "block": "DSO7|2030|Summer",
+    "solved": true,
+    "weighted_base_objective_before": 45817475.89055493,
+    "weighted_base_objective_after": 45882299.21957626,
+    "delta": 64823.32902133465
+   },
+   {
+    "block": "DSO7|2030|Autumn",
+    "solved": true,
+    "weighted_base_objective_before": 28486187.0694089,
+    "weighted_base_objective_after": 28617625.677560877,
+    "delta": 131438.60815197602
+   },
+   {
+    "block": "DSO7|2030|Winter",
+    "solved": true,
+    "weighted_base_objective_before": 24948660.569382165,
+    "weighted_base_objective_after": 25096687.809473623,
+    "delta": 148027.24009145796
+   },
+   {
+    "block": "DSO7|2035|Spring",
+    "solved": true,
+    "weighted_base_objective_before": 44171244.70748893,
+    "weighted_base_objective_after": 44900999.23075949,
+    "delta": 729754.5232705548
+   },
+   {
+    "block": "DSO7|2035|Summer",
+    "solved": true,
+    "weighted_base_objective_before": 43448998.58840282,
+    "weighted_base_objective_after": 43486290.89660809,
+    "delta": 37292.30820526928
+   },
+   {
+    "block": "DSO7|2035|Autumn",
+    "solved": true,
+    "weighted_base_objective_before": 23979750.672430824,
+    "weighted_base_objective_after": 24157181.69824529,
+    "delta": 177431.02581446618
+   },
+   {
+    "block": "DSO7|2035|Winter",
+    "solved": true,
+    "weighted_base_objective_before": 31177908.809940945,
+    "weighted_base_objective_after": 31401512.41269828,
+    "delta": 223603.6027573347
+   },
+   {
+    "block": "DSO9|2025|Spring",
+    "solved": true,
+    "weighted_base_objective_before": 33906651.00448152,
+    "weighted_base_objective_after": 34025066.07730598,
+    "delta": 118415.07282446325
+   },
+   {
+    "block": "DSO9|2025|Summer",
+    "solved": true,
+    "weighted_base_objective_before": 39233757.00677539,
+    "weighted_base_objective_after": 39319390.332067005,
+    "delta": 85633.3252916187
+   },
+   {
+    "block": "DSO9|2025|Autumn",
+    "solved": true,
+    "weighted_base_objective_before": 53368345.05921287,
+    "weighted_base_objective_after": 53465864.02922299,
+    "delta": 97518.9700101167
+   },
+   {
+    "block": "DSO9|2025|Winter",
+    "solved": true,
+    "weighted_base_objective_before": 56285487.36436024,
+    "weighted_base_objective_after": 56390712.98216168,
+    "delta": 105225.61780143529
+   },
+   {
+    "block": "DSO9|2030|Spring",
+    "solved": true,
+    "weighted_base_objective_before": 28903551.342592776,
+    "weighted_base_objective_after": 29276779.98322619,
+    "delta": 373228.64063341543
+   },
+   {
+    "block": "DSO9|2030|Summer",
+    "solved": true,
+    "weighted_base_objective_before": 35722896.27033111,
+    "weighted_base_objective_after": 35909531.325464934,
+    "delta": 186635.05513382703
+   },
+   {
+    "block": "DSO9|2030|Autumn",
+    "solved": true,
+    "weighted_base_objective_before": 38821115.5874025,
+    "weighted_base_objective_after": 39061447.01442716,
+    "delta": 240331.4270246625
+   },
+   {
+    "block": "DSO9|2030|Winter",
+    "solved": true,
+    "weighted_base_objective_before": 42626173.31199784,
+    "weighted_base_objective_after": 42917638.53580504,
+    "delta": 291465.2238072008
+   },
+   {
+    "block": "DSO9|2035|Spring",
+    "solved": true,
+    "weighted_base_objective_before": 34880201.36205448,
+    "weighted_base_objective_after": 36654332.18387719,
+    "delta": 1774130.8218227103
+   },
+   {
+    "block": "DSO9|2035|Summer",
+    "solved": true,
+    "weighted_base_objective_before": 37249857.91631166,
+    "weighted_base_objective_after": 37367616.806585215,
+    "delta": 117758.89027355611
+   },
+   {
+    "block": "DSO9|2035|Autumn",
+    "solved": true,
+    "weighted_base_objective_before": 33827132.37862156,
+    "weighted_base_objective_after": 34215367.59651637,
+    "delta": 388235.21789480746
+   },
+   {
+    "block": "DSO9|2035|Winter",
+    "solved": true,
+    "weighted_base_objective_before": 47730586.48971497,
+    "weighted_base_objective_after": 48188628.586748205,
+    "delta": 458042.09703323245
+   }
+  ],
+  "per_block_by_largest_abs_delta": [
+   {
+    "block": "DSO5|2035|Spring",
+    "solved": true,
+    "weighted_base_objective_before": 36224263.8644174,
+    "weighted_base_objective_after": 39705944.14841026,
+    "delta": 3481680.283992864
+   },
+   {
+    "block": "DSO9|2035|Spring",
+    "solved": true,
+    "weighted_base_objective_before": 34880201.36205448,
+    "weighted_base_objective_after": 36654332.18387719,
+    "delta": 1774130.8218227103
+   },
+   {
+    "block": "DSO5|2035|Winter",
+    "solved": true,
+    "weighted_base_objective_before": 50071939.30972021,
+    "weighted_base_objective_after": 51005945.727804676,
+    "delta": 934006.418084465
+   },
+   {
+    "block": "DSO5|2030|Spring",
+    "solved": true,
+    "weighted_base_objective_before": 30997592.365242906,
+    "weighted_base_objective_after": 31883811.64648161,
+    "delta": 886219.2812387049
+   },
+   {
+    "block": "DSO5|2035|Autumn",
+    "solved": true,
+    "weighted_base_objective_before": 32938348.183970775,
+    "weighted_base_objective_after": 33676016.51037815,
+    "delta": 737668.3264073767
+   },
+   {
+    "block": "DSO7|2035|Spring",
+    "solved": true,
+    "weighted_base_objective_before": 44171244.70748893,
+    "weighted_base_objective_after": 44900999.23075949,
+    "delta": 729754.5232705548
+   },
+   {
+    "block": "DSO5|2030|Winter",
+    "solved": true,
+    "weighted_base_objective_before": 46358005.67119135,
+    "weighted_base_objective_after": 47023860.86357199,
+    "delta": 665855.1923806369
+   },
+   {
+    "block": "DSO5|2025|Spring",
+    "solved": false,
+    "weighted_base_objective_before": 32223749.23610521,
+    "weighted_base_objective_after": 32833203.234560274,
+    "delta": 609453.9984550625
+   },
+   {
+    "block": "DSO5|2030|Autumn",
+    "solved": true,
+    "weighted_base_objective_before": 47864373.25078472,
+    "weighted_base_objective_after": 48393958.24622171,
+    "delta": 529584.9954369962
+   },
+   {
+    "block": "DSO5|2030|Summer",
+    "solved": true,
+    "weighted_base_objective_before": 42014615.33776106,
+    "weighted_base_objective_after": 42536831.4343236,
+    "delta": 522216.096562542
+   },
+   {
+    "block": "DSO9|2035|Winter",
+    "solved": true,
+    "weighted_base_objective_before": 47730586.48971497,
+    "weighted_base_objective_after": 48188628.586748205,
+    "delta": 458042.09703323245
+   },
+   {
+    "block": "DSO5|2025|Winter",
+    "solved": true,
+    "weighted_base_objective_before": 46078168.56618281,
+    "weighted_base_objective_after": 46473908.42413829,
+    "delta": 395739.8579554856
+   },
+   {
+    "block": "DSO5|2025|Autumn",
+    "solved": true,
+    "weighted_base_objective_before": 48009627.66021334,
+    "weighted_base_objective_after": 48403728.06941019,
+    "delta": 394100.40919685364
+   },
+   {
+    "block": "DSO9|2035|Autumn",
+    "solved": true,
+    "weighted_base_objective_before": 33827132.37862156,
+    "weighted_base_objective_after": 34215367.59651637,
+    "delta": 388235.21789480746
+   },
+   {
+    "block": "DSO9|2030|Spring",
+    "solved": true,
+    "weighted_base_objective_before": 28903551.342592776,
+    "weighted_base_objective_after": 29276779.98322619,
+    "delta": 373228.64063341543
+   },
+   {
+    "block": "DSO5|2035|Summer",
+    "solved": true,
+    "weighted_base_objective_before": 44254746.9396406,
+    "weighted_base_objective_after": 44599595.6810023,
+    "delta": 344848.7413617
+   },
+   {
+    "block": "DSO5|2025|Summer",
+    "solved": true,
+    "weighted_base_objective_before": 42749667.50627872,
+    "weighted_base_objective_after": 43093937.699478514,
+    "delta": 344270.193199791
+   },
+   {
+    "block": "DSO9|2030|Winter",
+    "solved": true,
+    "weighted_base_objective_before": 42626173.31199784,
+    "weighted_base_objective_after": 42917638.53580504,
+    "delta": 291465.2238072008
+   },
+   {
+    "block": "DSO9|2030|Autumn",
+    "solved": true,
+    "weighted_base_objective_before": 38821115.5874025,
+    "weighted_base_objective_after": 39061447.01442716,
+    "delta": 240331.4270246625
+   },
+   {
+    "block": "DSO7|2035|Winter",
+    "solved": true,
+    "weighted_base_objective_before": 31177908.809940945,
+    "weighted_base_objective_after": 31401512.41269828,
+    "delta": 223603.6027573347
+   },
+   {
+    "block": "DSO9|2030|Summer",
+    "solved": true,
+    "weighted_base_objective_before": 35722896.27033111,
+    "weighted_base_objective_after": 35909531.325464934,
+    "delta": 186635.05513382703
+   },
+   {
+    "block": "DSO7|2035|Autumn",
+    "solved": true,
+    "weighted_base_objective_before": 23979750.672430824,
+    "weighted_base_objective_after": 24157181.69824529,
+    "delta": 177431.02581446618
+   },
+   {
+    "block": "DSO7|2030|Spring",
+    "solved": true,
+    "weighted_base_objective_before": 30100135.14536131,
+    "weighted_base_objective_after": 30250653.38829193,
+    "delta": 150518.24293061718
+   },
+   {
+    "block": "DSO7|2030|Winter",
+    "solved": true,
+    "weighted_base_objective_before": 24948660.569382165,
+    "weighted_base_objective_after": 25096687.809473623,
+    "delta": 148027.24009145796
+   },
+   {
+    "block": "DSO7|2030|Autumn",
+    "solved": true,
+    "weighted_base_objective_before": 28486187.0694089,
+    "weighted_base_objective_after": 28617625.677560877,
+    "delta": 131438.60815197602
+   },
+   {
+    "block": "DSO9|2025|Spring",
+    "solved": true,
+    "weighted_base_objective_before": 33906651.00448152,
+    "weighted_base_objective_after": 34025066.07730598,
+    "delta": 118415.07282446325
+   },
+   {
+    "block": "DSO9|2035|Summer",
+    "solved": true,
+    "weighted_base_objective_before": 37249857.91631166,
+    "weighted_base_objective_after": 37367616.806585215,
+    "delta": 117758.89027355611
+   },
+   {
+    "block": "DSO9|2025|Winter",
+    "solved": true,
+    "weighted_base_objective_before": 56285487.36436024,
+    "weighted_base_objective_after": 56390712.98216168,
+    "delta": 105225.61780143529
+   },
+   {
+    "block": "DSO9|2025|Autumn",
+    "solved": true,
+    "weighted_base_objective_before": 53368345.05921287,
+    "weighted_base_objective_after": 53465864.02922299,
+    "delta": 97518.9700101167
+   },
+   {
+    "block": "DSO9|2025|Summer",
+    "solved": true,
+    "weighted_base_objective_before": 39233757.00677539,
+    "weighted_base_objective_after": 39319390.332067005,
+    "delta": 85633.3252916187
+   },
+   {
+    "block": "DSO7|2030|Summer",
+    "solved": true,
+    "weighted_base_objective_before": 45817475.89055493,
+    "weighted_base_objective_after": 45882299.21957626,
+    "delta": 64823.32902133465
+   },
+   {
+    "block": "DSO7|2035|Summer",
+    "solved": true,
+    "weighted_base_objective_before": 43448998.58840282,
+    "weighted_base_objective_after": 43486290.89660809,
+    "delta": 37292.30820526928
+   },
+   {
+    "block": "DSO7|2025|Winter",
+    "solved": true,
+    "weighted_base_objective_before": 33745091.125376396,
+    "weighted_base_objective_after": 33762431.340639636,
+    "delta": 17340.21526324004
+   },
+   {
+    "block": "DSO7|2025|Spring",
+    "solved": true,
+    "weighted_base_objective_before": 31866805.802189294,
+    "weighted_base_objective_after": 31883553.942054044,
+    "delta": 16748.139864750206
+   },
+   {
+    "block": "DSO7|2025|Autumn",
+    "solved": true,
+    "weighted_base_objective_before": 26457238.24441122,
+    "weighted_base_objective_after": 26473000.619321536,
+    "delta": 15762.374910317361
+   },
+   {
+    "block": "DSO7|2025|Summer",
+    "solved": true,
+    "weighted_base_objective_before": 38775503.4068655,
+    "weighted_base_objective_after": 38789429.900649294,
+    "delta": 13926.493783794343
+   },
+   {
+    "block": "TSO|2025|Spring",
+    "solved": false,
+    "weighted_base_objective_before": -24362563.680686373,
+    "weighted_base_objective_after": -24362563.680686373,
+    "delta": 0.0
+   },
+   {
+    "block": "TSO|2025|Summer",
+    "solved": false,
+    "weighted_base_objective_before": -32667063.454315934,
+    "weighted_base_objective_after": -32667063.454315934,
+    "delta": 0.0
+   },
+   {
+    "block": "TSO|2025|Autumn",
+    "solved": false,
+    "weighted_base_objective_before": -49017981.38817877,
+    "weighted_base_objective_after": -49017981.38817877,
+    "delta": 0.0
+   },
+   {
+    "block": "TSO|2025|Winter",
+    "solved": false,
+    "weighted_base_objective_before": -49997412.11950753,
+    "weighted_base_objective_after": -49997412.11950753,
+    "delta": 0.0
+   },
+   {
+    "block": "TSO|2030|Spring",
+    "solved": false,
+    "weighted_base_objective_before": -39495209.19718889,
+    "weighted_base_objective_after": -39495209.19718889,
+    "delta": 0.0
+   },
+   {
+    "block": "TSO|2030|Summer",
+    "solved": false,
+    "weighted_base_objective_before": -57415019.79514842,
+    "weighted_base_objective_after": -57415019.79514842,
+    "delta": 0.0
+   },
+   {
+    "block": "TSO|2030|Autumn",
+    "solved": false,
+    "weighted_base_objective_before": -88073698.69865663,
+    "weighted_base_objective_after": -88073698.69865663,
+    "delta": 0.0
+   },
+   {
+    "block": "TSO|2030|Winter",
+    "solved": false,
+    "weighted_base_objective_before": -74249409.91905805,
+    "weighted_base_objective_after": -74249409.91905805,
+    "delta": 0.0
+   },
+   {
+    "block": "TSO|2035|Spring",
+    "solved": false,
+    "weighted_base_objective_before": -62374233.772873074,
+    "weighted_base_objective_after": -62374233.772873074,
+    "delta": 0.0
+   },
+   {
+    "block": "TSO|2035|Summer",
+    "solved": false,
+    "weighted_base_objective_before": -58453757.35607916,
+    "weighted_base_objective_after": -58453757.35607916,
+    "delta": 0.0
+   },
+   {
+    "block": "TSO|2035|Autumn",
+    "solved": false,
+    "weighted_base_objective_before": -57882283.446979344,
+    "weighted_base_objective_after": -57882283.446979344,
+    "delta": 0.0
+   },
+   {
+    "block": "TSO|2035|Winter",
+    "solved": false,
+    "weighted_base_objective_before": -93180144.31607057,
+    "weighted_base_objective_after": -93180144.31607057,
+    "delta": 0.0
+   }
+  ],
+  "solve_profile": {
+   "observed": {
+    "permitted_solve": 74,
+    "permitted_exec": 74,
+    "blocked_solve": 0,
+    "blocked_exec": 0
+   },
+   "n_blocks_dispatched": 48,
+   "retries_beyond_one_per_block": 26,
+   "blocked_calls": 0
+  },
+  "gate": null,
+  "runtime_s": 37.748427867889404
+ },
+ "wall_clock_s": 143.7079873085022
+}

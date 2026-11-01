@@ -1,0 +1,712 @@
+{
+ "stage": "P5.15 Addendum 21 (s39 preparation worker task) -- zero-solve open-loop replay of arm D's two-phase ESS policy on a donor trajectory",
+ "authority": [
+  "PLANNER_BRIEF_2026-09-13.md Addendum 21",
+  "data/SRP1/Results/P515S39/frozen_s39_oracle_spec_v10_f1b2b999.json"
+ ],
+ "label": "s38_B_pfbal",
+ "output_path": "data/SRP1/Results/P515S39/d_policy_replay_on_s38/d_policy_replay_on_s38_B_pfbal.json",
+ "result": {
+  "trajectory_path": "data/SRP1/Results/P515S38_B_PFBAL_run/g_s38_B_pfbal.json",
+  "trajectory_sha256": "2332ff99915d83875a73f74361a97f3e77697a10b1c6eedf0491d7b879770235",
+  "n_cycles": 151,
+  "d_policy_config": {
+   "balancing_exempt_channels": [],
+   "balancing_exempt_until": {
+    "ess": {
+     "dual_ratio_below": 1.0,
+     "consecutive_cycles": 5
+    }
+   },
+   "freeze_after_unchanged_cycles": 10,
+   "freeze_backstop_cycle": 200,
+   "tau": 0.0
+  },
+  "PREDICTED_ESS_LIFT_CYCLE": 35,
+  "FIRST_ESS_BALANCING_ACTION_AFTER_LIFT": {
+   "cycle": 35,
+   "direction": "increased",
+   "rho_before": 0.010000000000000004,
+   "rho_after": 0.015000000000000006,
+   "is_lift_cycle": true
+  },
+  "subsequent_open_loop_firings_after_lift_NOT_PREDICTIVE": [
+   {
+    "cycle": 36,
+    "direction": "increased",
+    "rho_before": 0.015000000000000006,
+    "rho_after": 0.02250000000000001,
+    "is_lift_cycle": false
+   },
+   {
+    "cycle": 37,
+    "direction": "increased",
+    "rho_before": 0.02250000000000001,
+    "rho_after": 0.033750000000000016,
+    "is_lift_cycle": false
+   },
+   {
+    "cycle": 38,
+    "direction": "increased",
+    "rho_before": 0.033750000000000016,
+    "rho_after": 0.050625000000000024,
+    "is_lift_cycle": false
+   },
+   {
+    "cycle": 39,
+    "direction": "increased",
+    "rho_before": 0.050625000000000024,
+    "rho_after": 0.07593750000000003,
+    "is_lift_cycle": false
+   },
+   {
+    "cycle": 40,
+    "direction": "increased",
+    "rho_before": 0.07593750000000003,
+    "rho_after": 0.11390625000000004,
+    "is_lift_cycle": false
+   },
+   {
+    "cycle": 43,
+    "direction": "increased",
+    "rho_before": 0.11390625000000004,
+    "rho_after": 0.17085937500000006,
+    "is_lift_cycle": false
+   },
+   {
+    "cycle": 44,
+    "direction": "increased",
+    "rho_before": 0.17085937500000006,
+    "rho_after": 0.2562890625000001,
+    "is_lift_cycle": false
+   },
+   {
+    "cycle": 45,
+    "direction": "increased",
+    "rho_before": 0.2562890625000001,
+    "rho_after": 0.38443359375000014,
+    "is_lift_cycle": false
+   },
+   {
+    "cycle": 46,
+    "direction": "increased",
+    "rho_before": 0.38443359375000014,
+    "rho_after": 0.5766503906250002,
+    "is_lift_cycle": false
+   },
+   {
+    "cycle": 47,
+    "direction": "increased",
+    "rho_before": 0.5766503906250002,
+    "rho_after": 0.8649755859375002,
+    "is_lift_cycle": false
+   },
+   {
+    "cycle": 48,
+    "direction": "increased",
+    "rho_before": 0.8649755859375002,
+    "rho_after": 1.2974633789062504,
+    "is_lift_cycle": false
+   },
+   {
+    "cycle": 49,
+    "direction": "increased",
+    "rho_before": 1.2974633789062504,
+    "rho_after": 1.9461950683593756,
+    "is_lift_cycle": false
+   },
+   {
+    "cycle": 50,
+    "direction": "increased",
+    "rho_before": 1.9461950683593756,
+    "rho_after": 2.919292602539064,
+    "is_lift_cycle": false
+   },
+   {
+    "cycle": 51,
+    "direction": "increased",
+    "rho_before": 2.919292602539064,
+    "rho_after": 4.378938903808596,
+    "is_lift_cycle": false
+   },
+   {
+    "cycle": 52,
+    "direction": "increased",
+    "rho_before": 4.378938903808596,
+    "rho_after": 6.568408355712894,
+    "is_lift_cycle": false
+   },
+   {
+    "cycle": 53,
+    "direction": "increased",
+    "rho_before": 6.568408355712894,
+    "rho_after": 9.85261253356934,
+    "is_lift_cycle": false
+   },
+   {
+    "cycle": 54,
+    "direction": "increased",
+    "rho_before": 9.85261253356934,
+    "rho_after": 14.778918800354012,
+    "is_lift_cycle": false
+   },
+   {
+    "cycle": 56,
+    "direction": "increased",
+    "rho_before": 14.778918800354012,
+    "rho_after": 22.16837820053102,
+    "is_lift_cycle": false
+   },
+   {
+    "cycle": 57,
+    "direction": "increased",
+    "rho_before": 22.16837820053102,
+    "rho_after": 33.25256730079653,
+    "is_lift_cycle": false
+   },
+   {
+    "cycle": 58,
+    "direction": "increased",
+    "rho_before": 33.25256730079653,
+    "rho_after": 49.878850951194785,
+    "is_lift_cycle": false
+   },
+   {
+    "cycle": 59,
+    "direction": "increased",
+    "rho_before": 49.878850951194785,
+    "rho_after": 74.81827642679218,
+    "is_lift_cycle": false
+   },
+   {
+    "cycle": 60,
+    "direction": "increased",
+    "rho_before": 74.81827642679218,
+    "rho_after": 112.22741464018827,
+    "is_lift_cycle": false
+   },
+   {
+    "cycle": 61,
+    "direction": "increased",
+    "rho_before": 112.22741464018827,
+    "rho_after": 168.3411219602824,
+    "is_lift_cycle": false
+   },
+   {
+    "cycle": 62,
+    "direction": "increased",
+    "rho_before": 168.3411219602824,
+    "rho_after": 252.5116829404236,
+    "is_lift_cycle": false
+   },
+   {
+    "cycle": 63,
+    "direction": "increased",
+    "rho_before": 252.5116829404236,
+    "rho_after": 378.7675244106354,
+    "is_lift_cycle": false
+   },
+   {
+    "cycle": 64,
+    "direction": "increased",
+    "rho_before": 378.7675244106354,
+    "rho_after": 568.1512866159532,
+    "is_lift_cycle": false
+   },
+   {
+    "cycle": 65,
+    "direction": "increased",
+    "rho_before": 568.1512866159532,
+    "rho_after": 852.2269299239297,
+    "is_lift_cycle": false
+   },
+   {
+    "cycle": 66,
+    "direction": "increased",
+    "rho_before": 852.2269299239297,
+    "rho_after": 1278.3403948858945,
+    "is_lift_cycle": false
+   },
+   {
+    "cycle": 67,
+    "direction": "increased",
+    "rho_before": 1278.3403948858945,
+    "rho_after": 1917.5105923288418,
+    "is_lift_cycle": false
+   },
+   {
+    "cycle": 68,
+    "direction": "increased",
+    "rho_before": 1917.5105923288418,
+    "rho_after": 2876.2658884932625,
+    "is_lift_cycle": false
+   },
+   {
+    "cycle": 69,
+    "direction": "increased",
+    "rho_before": 2876.2658884932625,
+    "rho_after": 4314.398832739894,
+    "is_lift_cycle": false
+   },
+   {
+    "cycle": 70,
+    "direction": "increased",
+    "rho_before": 4314.398832739894,
+    "rho_after": 6471.59824910984,
+    "is_lift_cycle": false
+   },
+   {
+    "cycle": 71,
+    "direction": "increased",
+    "rho_before": 6471.59824910984,
+    "rho_after": 9707.39737366476,
+    "is_lift_cycle": false
+   },
+   {
+    "cycle": 72,
+    "direction": "increased",
+    "rho_before": 9707.39737366476,
+    "rho_after": 10000.0,
+    "is_lift_cycle": false
+   },
+   {
+    "cycle": 73,
+    "direction": "increased",
+    "rho_before": 10000.0,
+    "rho_after": 10000.0,
+    "is_lift_cycle": false
+   },
+   {
+    "cycle": 74,
+    "direction": "increased",
+    "rho_before": 10000.0,
+    "rho_after": 10000.0,
+    "is_lift_cycle": false
+   },
+   {
+    "cycle": 75,
+    "direction": "increased",
+    "rho_before": 10000.0,
+    "rho_after": 10000.0,
+    "is_lift_cycle": false
+   },
+   {
+    "cycle": 76,
+    "direction": "increased",
+    "rho_before": 10000.0,
+    "rho_after": 10000.0,
+    "is_lift_cycle": false
+   },
+   {
+    "cycle": 77,
+    "direction": "increased",
+    "rho_before": 10000.0,
+    "rho_after": 10000.0,
+    "is_lift_cycle": false
+   },
+   {
+    "cycle": 78,
+    "direction": "increased",
+    "rho_before": 10000.0,
+    "rho_after": 10000.0,
+    "is_lift_cycle": false
+   },
+   {
+    "cycle": 79,
+    "direction": "increased",
+    "rho_before": 10000.0,
+    "rho_after": 10000.0,
+    "is_lift_cycle": false
+   },
+   {
+    "cycle": 80,
+    "direction": "increased",
+    "rho_before": 10000.0,
+    "rho_after": 10000.0,
+    "is_lift_cycle": false
+   },
+   {
+    "cycle": 81,
+    "direction": "increased",
+    "rho_before": 10000.0,
+    "rho_after": 10000.0,
+    "is_lift_cycle": false
+   },
+   {
+    "cycle": 82,
+    "direction": "increased",
+    "rho_before": 10000.0,
+    "rho_after": 10000.0,
+    "is_lift_cycle": false
+   },
+   {
+    "cycle": 83,
+    "direction": "increased",
+    "rho_before": 10000.0,
+    "rho_after": 10000.0,
+    "is_lift_cycle": false
+   },
+   {
+    "cycle": 86,
+    "direction": "increased",
+    "rho_before": 10000.0,
+    "rho_after": 10000.0,
+    "is_lift_cycle": false
+   },
+   {
+    "cycle": 88,
+    "direction": "increased",
+    "rho_before": 10000.0,
+    "rho_after": 10000.0,
+    "is_lift_cycle": false
+   },
+   {
+    "cycle": 89,
+    "direction": "increased",
+    "rho_before": 10000.0,
+    "rho_after": 10000.0,
+    "is_lift_cycle": false
+   },
+   {
+    "cycle": 90,
+    "direction": "increased",
+    "rho_before": 10000.0,
+    "rho_after": 10000.0,
+    "is_lift_cycle": false
+   }
+  ],
+  "n_subsequent_firings": 49,
+  "ess_streak_trajectory_matched_and_around_lift": [
+   {
+    "cycle": 1,
+    "streak": 0,
+    "lifted": false,
+    "action": "exempt (fixed)"
+   },
+   {
+    "cycle": 2,
+    "streak": 0,
+    "lifted": false,
+    "action": "exempt (fixed)"
+   },
+   {
+    "cycle": 5,
+    "streak": 0,
+    "lifted": false,
+    "action": "exempt (fixed)"
+   },
+   {
+    "cycle": 10,
+    "streak": 0,
+    "lifted": false,
+    "action": "exempt (fixed)"
+   },
+   {
+    "cycle": 20,
+    "streak": 0,
+    "lifted": false,
+    "action": "exempt (fixed)"
+   },
+   {
+    "cycle": 30,
+    "streak": 0,
+    "lifted": false,
+    "action": "exempt (fixed)"
+   },
+   {
+    "cycle": 32,
+    "streak": 2,
+    "lifted": false,
+    "action": "exempt (fixed)"
+   },
+   {
+    "cycle": 33,
+    "streak": 3,
+    "lifted": false,
+    "action": "exempt (fixed)"
+   },
+   {
+    "cycle": 34,
+    "streak": 4,
+    "lifted": false,
+    "action": "exempt (fixed)"
+   },
+   {
+    "cycle": 35,
+    "streak": 5,
+    "lifted": true,
+    "action": "increased"
+   },
+   {
+    "cycle": 36,
+    "streak": 5,
+    "lifted": true,
+    "action": "increased"
+   },
+   {
+    "cycle": 37,
+    "streak": 5,
+    "lifted": true,
+    "action": "increased"
+   },
+   {
+    "cycle": 38,
+    "streak": 5,
+    "lifted": true,
+    "action": "increased"
+   },
+   {
+    "cycle": 50,
+    "streak": 5,
+    "lifted": true,
+    "action": "increased"
+   },
+   {
+    "cycle": 75,
+    "streak": 5,
+    "lifted": true,
+    "action": "increased"
+   },
+   {
+    "cycle": 100,
+    "streak": 5,
+    "lifted": true,
+    "action": "held"
+   },
+   {
+    "cycle": 125,
+    "streak": 5,
+    "lifted": true,
+    "action": "held (frozen after 10 unchanged cycles)"
+   },
+   {
+    "cycle": 131,
+    "streak": 5,
+    "lifted": true,
+    "action": "held (frozen after 10 unchanged cycles)"
+   },
+   {
+    "cycle": 140,
+    "streak": 5,
+    "lifted": true,
+    "action": "held (frozen after 10 unchanged cycles)"
+   },
+   {
+    "cycle": 145,
+    "streak": 5,
+    "lifted": true,
+    "action": "held (frozen after 10 unchanged cycles)"
+   },
+   {
+    "cycle": 150,
+    "streak": 5,
+    "lifted": true,
+    "action": "held (frozen after 10 unchanged cycles)"
+   }
+  ],
+  "matched_cycle_series": [
+   {
+    "cycle": 1,
+    "action_ess": "exempt (fixed)",
+    "rho_ess_before": 0.010000000000000004,
+    "rho_ess_after": 0.010000000000000004,
+    "donor_boyd_ess_dual_ratio": 18.233606336898962,
+    "donor_boyd_ess_primal_ratio": 1114.6765307607402,
+    "donor_boyd_ess_dual_ratio_balance": 9.117397355750176,
+    "ess_exempt_until_streak": 0,
+    "ess_exempt_until_lifted": false,
+    "ess_exempt_until_lift_cycle": null
+   },
+   {
+    "cycle": 2,
+    "action_ess": "exempt (fixed)",
+    "rho_ess_before": 0.010000000000000004,
+    "rho_ess_after": 0.010000000000000004,
+    "donor_boyd_ess_dual_ratio": 13.759253309378822,
+    "donor_boyd_ess_primal_ratio": 509.15794467485216,
+    "donor_boyd_ess_dual_ratio_balance": 13.401170035470376,
+    "ess_exempt_until_streak": 0,
+    "ess_exempt_until_lifted": false,
+    "ess_exempt_until_lift_cycle": null
+   },
+   {
+    "cycle": 5,
+    "action_ess": "exempt (fixed)",
+    "rho_ess_before": 0.010000000000000004,
+    "rho_ess_after": 0.010000000000000004,
+    "donor_boyd_ess_dual_ratio": 6.1103127765455385,
+    "donor_boyd_ess_primal_ratio": 264.420348372121,
+    "donor_boyd_ess_dual_ratio_balance": 5.430232989446984,
+    "ess_exempt_until_streak": 0,
+    "ess_exempt_until_lifted": false,
+    "ess_exempt_until_lift_cycle": null
+   },
+   {
+    "cycle": 10,
+    "action_ess": "exempt (fixed)",
+    "rho_ess_before": 0.010000000000000004,
+    "rho_ess_after": 0.010000000000000004,
+    "donor_boyd_ess_dual_ratio": 3.5524964610736847,
+    "donor_boyd_ess_primal_ratio": 64.74544404440788,
+    "donor_boyd_ess_dual_ratio_balance": 3.096413960431381,
+    "ess_exempt_until_streak": 0,
+    "ess_exempt_until_lifted": false,
+    "ess_exempt_until_lift_cycle": null
+   },
+   {
+    "cycle": 20,
+    "action_ess": "exempt (fixed)",
+    "rho_ess_before": 0.010000000000000004,
+    "rho_ess_after": 0.010000000000000004,
+    "donor_boyd_ess_dual_ratio": 2.047397495432481,
+    "donor_boyd_ess_primal_ratio": 19.191346024055747,
+    "donor_boyd_ess_dual_ratio_balance": 1.7789108700332028,
+    "ess_exempt_until_streak": 0,
+    "ess_exempt_until_lifted": false,
+    "ess_exempt_until_lift_cycle": null
+   },
+   {
+    "cycle": 30,
+    "action_ess": "exempt (fixed)",
+    "rho_ess_before": 0.010000000000000004,
+    "rho_ess_after": 0.010000000000000004,
+    "donor_boyd_ess_dual_ratio": 1.0501125243587315,
+    "donor_boyd_ess_primal_ratio": 12.430403886129572,
+    "donor_boyd_ess_dual_ratio_balance": 0.9120515166942544,
+    "ess_exempt_until_streak": 0,
+    "ess_exempt_until_lifted": false,
+    "ess_exempt_until_lift_cycle": null
+   },
+   {
+    "cycle": 50,
+    "action_ess": "increased",
+    "rho_ess_before": 1.9461950683593756,
+    "rho_ess_after": 2.919292602539064,
+    "donor_boyd_ess_dual_ratio": 0.5734142634193427,
+    "donor_boyd_ess_primal_ratio": 3.0508558743351273,
+    "donor_boyd_ess_dual_ratio_balance": 0.4969296046846301,
+    "ess_exempt_until_streak": 5,
+    "ess_exempt_until_lifted": true,
+    "ess_exempt_until_lift_cycle": 35
+   },
+   {
+    "cycle": 75,
+    "action_ess": "increased",
+    "rho_ess_before": 10000.0,
+    "rho_ess_after": 10000.0,
+    "donor_boyd_ess_dual_ratio": 0.38328607238546647,
+    "donor_boyd_ess_primal_ratio": 2.8789353017358903,
+    "donor_boyd_ess_dual_ratio_balance": 0.3322069530928454,
+    "ess_exempt_until_streak": 5,
+    "ess_exempt_until_lifted": true,
+    "ess_exempt_until_lift_cycle": 35
+   },
+   {
+    "cycle": 100,
+    "action_ess": "held",
+    "rho_ess_before": 10000.0,
+    "rho_ess_after": 10000.0,
+    "donor_boyd_ess_dual_ratio": 0.2994097698687192,
+    "donor_boyd_ess_primal_ratio": 0.9548599057425401,
+    "donor_boyd_ess_dual_ratio_balance": 0.2593524934613105,
+    "ess_exempt_until_streak": 5,
+    "ess_exempt_until_lifted": true,
+    "ess_exempt_until_lift_cycle": 35
+   },
+   {
+    "cycle": 125,
+    "action_ess": "held (frozen after 10 unchanged cycles)",
+    "rho_ess_before": 10000.0,
+    "rho_ess_after": 10000.0,
+    "donor_boyd_ess_dual_ratio": 0.2626617919732157,
+    "donor_boyd_ess_primal_ratio": 1.3539671568816487,
+    "donor_boyd_ess_dual_ratio_balance": 0.22749808021654444,
+    "ess_exempt_until_streak": 5,
+    "ess_exempt_until_lifted": true,
+    "ess_exempt_until_lift_cycle": 35
+   },
+   {
+    "cycle": 131,
+    "action_ess": "held (frozen after 10 unchanged cycles)",
+    "rho_ess_before": 10000.0,
+    "rho_ess_after": 10000.0,
+    "donor_boyd_ess_dual_ratio": 0.25746318802646184,
+    "donor_boyd_ess_primal_ratio": 1.117634611473798,
+    "donor_boyd_ess_dual_ratio_balance": 0.22303830757404194,
+    "ess_exempt_until_streak": 5,
+    "ess_exempt_until_lifted": true,
+    "ess_exempt_until_lift_cycle": 35
+   },
+   {
+    "cycle": 140,
+    "action_ess": "held (frozen after 10 unchanged cycles)",
+    "rho_ess_before": 10000.0,
+    "rho_ess_after": 10000.0,
+    "donor_boyd_ess_dual_ratio": 0.250762025924651,
+    "donor_boyd_ess_primal_ratio": 0.9014840247771115,
+    "donor_boyd_ess_dual_ratio_balance": 0.21719490326486085,
+    "ess_exempt_until_streak": 5,
+    "ess_exempt_until_lifted": true,
+    "ess_exempt_until_lift_cycle": 35
+   },
+   {
+    "cycle": 145,
+    "action_ess": "held (frozen after 10 unchanged cycles)",
+    "rho_ess_before": 10000.0,
+    "rho_ess_after": 10000.0,
+    "donor_boyd_ess_dual_ratio": 0.24547894599557882,
+    "donor_boyd_ess_primal_ratio": 1.2462297096077664,
+    "donor_boyd_ess_dual_ratio_balance": 0.21265629012535298,
+    "ess_exempt_until_streak": 5,
+    "ess_exempt_until_lifted": true,
+    "ess_exempt_until_lift_cycle": 35
+   },
+   {
+    "cycle": 150,
+    "action_ess": "held (frozen after 10 unchanged cycles)",
+    "rho_ess_before": 10000.0,
+    "rho_ess_after": 10000.0,
+    "donor_boyd_ess_dual_ratio": 0.24274620837899433,
+    "donor_boyd_ess_primal_ratio": 0.9490026652655865,
+    "donor_boyd_ess_dual_ratio_balance": 0.2102540503654145,
+    "ess_exempt_until_streak": 5,
+    "ess_exempt_until_lifted": true,
+    "ess_exempt_until_lift_cycle": 35
+   },
+   {
+    "cycle": 151,
+    "action_ess": "held (frozen after 10 unchanged cycles)",
+    "rho_ess_before": 10000.0,
+    "rho_ess_after": 10000.0,
+    "donor_boyd_ess_dual_ratio": 0.24275828339457078,
+    "donor_boyd_ess_primal_ratio": 0.9152350867971799,
+    "donor_boyd_ess_dual_ratio_balance": 0.21025520452885618,
+    "ess_exempt_until_streak": 5,
+    "ess_exempt_until_lifted": true,
+    "ess_exempt_until_lift_cycle": 35
+   }
+  ],
+  "terminal_cycle_state": {
+   "cycle": 151,
+   "action_ess": "held (frozen after 10 unchanged cycles)",
+   "rho_ess_before": 10000.0,
+   "rho_ess_after": 10000.0,
+   "donor_boyd_ess_dual_ratio": 0.24275828339457078,
+   "donor_boyd_ess_primal_ratio": 0.9152350867971799,
+   "donor_boyd_ess_dual_ratio_balance": 0.21025520452885618,
+   "ess_exempt_until_streak": 5,
+   "ess_exempt_until_lifted": true,
+   "ess_exempt_until_lift_cycle": 35
+  },
+  "caveat": "Open-loop replay: boyd_metrics at every cycle are the OBSERVED ratios from the DONOR (real) trajectory, never updated in response to this replay's own counterfactual rho change -- there is no re-solve to produce them. Everything reported after FIRST_ESS_BALANCING_ACTION_AFTER_LIFT (the subsequent firings) is NOT predictive of what a real re-run of arm D would produce -- the real trajectory would itself change once rho differs from the donor's observed path, and this replay cannot follow that."
+ },
+ "solve_profile_guard": {
+  "counts": {
+   "permitted_solve": 0,
+   "permitted_exec": 0,
+   "blocked_solve": 0,
+   "blocked_exec": 0
+  },
+  "verify_failures": []
+ }
+}

@@ -1,0 +1,65 @@
+{
+  "design": "AB1 — adaptive rho on the COLD path",
+  "version": "v2",
+  "status": "FROZEN — authorized to run",
+  "supersedes": {"version": "v1", "file": "frozen_ab1_adaptive_cold_v1_5d996737.json",
+    "sha256_prefix": "5d996737",
+    "changes": ["cap set from the hypothesis (50) instead of inherited from the R run's num_max_iters = 21",
+                "hitting the cap predeclared as INCONCLUSIVE, not a data point",
+                "primary outcome restated as cold-path cycles-to-convergence; the attractor prediction demoted to a falsifiable secondary",
+                "the control arm promoted to a deliverable in its own right",
+                "attractor prediction sharpened to the multiplicative grid, now that decrease_factor = 1.5 is confirmed",
+                "solve profile declared as a bounded claim with an identity check, since the solve count is the measurement"]},
+
+  "authorization": "author, 2026-09-12: AB1 only; AB2 stays frozen. AB1 targets the cold path, the only path on which Q(x) depends on x alone and whose cost is the binding uncertainty in the project.",
+
+  "the_binding_condition": "The cap must come from the hypothesis, not from the inherited configuration. The R run's cap of 21 is what produced a capped trajectory that was then extrapolated from — repeating it would repeat that error. BOTH arms run at an identical cap of 50 cycles.",
+
+  "arms": {
+    "control": {"adaptive_penalty": false, "rho_pf": 300.0, "rho_v": 1.5, "rho_ess": 1.0, "cap": 50,
+      "status": "DELIVERABLE IN ITS OWN RIGHT — this is the R trajectory finally allowed to finish. It answers what the cold path actually costs, which no existing artifact does."},
+    "treatment": {"adaptive_penalty": true, "rho_pf": 300.0, "rho_v": 1.5, "rho_ess": 1.0, "cap": 50,
+      "penalty_update": "as configured in SRP1_params.json: residual_balance_ratio 5.0, residual_balance_ratio_pf_decrease 3.0, increase_factor 1.5, decrease_factor 1.5, bounds 1e-4 to 1e4"}
+  },
+  "single_varied_setting": "adaptive_penalty only. Cold start, RESCALED construction, history_neutralised, identical rho, identical tolerances, identical cap, same candidate.",
+
+  "primary_outcome": {
+    "quantity": "cold-path cycles to convergence in each arm, and the local-solve count implied at 51 solves per cycle",
+    "why": "this is the decision-relevant number and the binding uncertainty; the attractor is secondary",
+    "reporting": "cycles_to_convergence, converged flag, wall clock, and solves = 51 x cycles for each arm"
+  },
+
+  "secondary_prediction_attractor": {
+    "derivation": "The pf decrease branch fires when dual_pf_mean_ratio > 3 * primal_pf_ratio, and rho is multiplied by 1/1.5 each time it fires. From rho_pf = 300 the reachable values are the multiplicative grid 300, 200, 133.33, 88.89, 59.26, ... P5.9-B settled at 131.687 = 1000/1.5^5 starting from 1000, after five consecutive decreases and a hold at cycle 6.",
+    "prediction": "If the fixed point is a property of the problem and the dead band rather than of the starting value, the treatment arm settles in rho_pf in [80, 200] — most likely 133.33, the grid point adjacent to the 131.687 observed from above.",
+    "falsification": ["settling outside [80, 200]", "oscillation between the increase and decrease branches", "no settling within the cap"],
+    "caveat_recorded_in_advance": "the cold-path iterates differ from the warm-path iterates, so the fixed point MAY legitimately differ. A different settling point is informative, not a failure; only oscillation or non-settling falsifies the attractor idea itself.",
+    "evidence_format": "per-cycle rho_pf_before / rho_pf_after / rho_pf_action, as production already records them (shared_resources_planning.py:2507-2515), plus primal_pf_ratio and dual_pf_mean_ratio per cycle"
+  },
+
+  "predeclared_outcomes": {
+    "adaptation_helps": "treatment converges in materially fewer cycles than control with equal or better objective — the cost-versus-independence tension then largely dissolves",
+    "adaptation_neutral": "cycle counts within one of each other",
+    "adaptation_harms": "treatment needs more cycles, oscillates, or degrades the objective",
+    "INCONCLUSIVE": "EITHER arm reaching cycle 50 without converging. A capped arm yields NO cold-path cost number and must not be extrapolated from. This outcome is predeclared precisely because extrapolating from a capped run is the error this design exists to avoid."
+  },
+
+  "solve_profile": {
+    "mode": "bounded, armed (CLAUDE.md rule six)",
+    "note": "the solve count is the measurement here, so an exact predeclared count is impossible; the enforced claim is an upper bound plus an identity",
+    "upper_bound_per_arm": "50 cycles x 51 solves = 2550, plus initialization",
+    "identity_required": "observed permitted solves per arm == 51 x cycles_run (+ initialization), checked after the run; a mismatch invalidates the arm",
+    "permitted_call_sites": "the production ADMM local-solve path and the ESSO solve path",
+    "everything_else": "blocked and raising"
+  },
+
+  "cost": {
+    "per_arm_upper_bound": "2550 local solves; at P5.9-B's ~49 s/cycle this is ~41 minutes per arm at the cap",
+    "expected": "the treatment arm is expected to stop well before the cap; the control arm is the one that may approach it",
+    "both_arms_upper_bound": "5100 local solves"
+  },
+
+  "not_permitted": ["changing any tolerance, criterion or rho other than the single varied setting",
+                    "running AB2", "extrapolating a cost from a capped arm",
+                    "reading the attractor result as the decision-relevant outcome"]
+}

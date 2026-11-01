@@ -1,0 +1,1136 @@
+[14:08:38] repo HEAD ab1d8d7b767f97c4755c67ea168ed442622e72e5; tracked changes: [' M TASKS.md']
+[14:08:38] capture-path checklist: 104 inputs present
+[14:08:38] Z2: cap 281 used 281 remaining 0; v6 W142 uncertified; replay cross-check equal True; reachable within cap False
+[14:08:44] Z3: {'n_rows': 61, 'n_final_head_literal': 0, 'n_production_equal_final': 45, 'n_only_additions': 14, 'rows_with_modified_or_deleted_production_files': [1, 2], 'rows_head_moved_during_run_with_production_change': [16, 17, 18, 19, 20, 21, 24, 25, 40, 41], 'n_harness_equal_HEAD': 4}
+[14:08:44] Z4: five-block single-scenario build recorded: False
+[14:08:47] Z5: commit_now ['data/SRP1/Results/P515S53/w101_srp1_continuation/campaign_s53_w101_srp1_cont_n7_4h_e1/evals/3f084f2ffaeef2b7_n7_4h_e1/esso_capture/s39_D/node7_cycle172.jsonl']; files inventoried 2303
+[14:08:47] Z7: reverse entries 4 (material 4); W116 bitwise True
+=== Z2 row 40
+{
+ "cap_rule": {
+  "cap": 281,
+  "formula": "N_old + 100",
+  "kind": "fixed"
+ },
+ "N_old": 181,
+ "spec_cap": 281,
+ "G15_spec_cap": 281,
+ "G15_k_cap": 281,
+ "cycles_run": 281,
+ "stopped_by": "cap",
+ "remaining_cap_cycles": 0,
+ "cap_ceiling_replayed": 300,
+ "decision_file": {
+  "cap": 281,
+  "cap_mode": "fixed",
+  "decided_at_cycle": 281,
+  "gap_clause_refused_at_cap": true,
+  "first_residual_pass_run": 172
+ }
+}
+{
+ "remaining_cap_cycles": 0,
+ "v6_certificate_reachable_within_cap": false,
+ "rests_on": [
+  "the issuing run used its whole cap: cap 281 (rule N_old + 100, kind fixed), cycles_run 281, stopped_by cap (campaign_results G15)",
+  "v6 applied to the run's committed record over cycles 1..281 is UNCERTIFIED with k_cap 281 (W142 item 1, equal to the floor-replay AB arm); v6.replay stops at the first decision, so no cycle k <= 281 certifies under v6",
+  "the same decision is reproduced here by calling settling_criterion_v6.replay on the committed records (all fields compared: True)",
+  "the only refusal reason is the gap clause: 45 refusals (cycles 237..281, branch {'monotone': 45}), |t_sum| 9216.7..9234.4 EUR against gap_bound 2269.5 EUR = tau/2",
+  "beyond the cap nothing is recorded: whether the gap would close after cycle 281 is not knowable from the records (no new cycles were run)"
+ ]
+}
+{
+ "gap_bound": 2269.5341375000003,
+ "tau": 4539.0682750000005,
+ "refusal_cycles_first_last": [
+  237,
+  281
+ ],
+ "refusals_by_branch": {
+  "monotone": 45
+ },
+ "abs_t_sum_min_max_over_refusals": [
+  9216.67539530145,
+  9234.424422092314
+ ],
+ "abs_t_sum_over_gap_bound_min": 4.06104285589379,
+ "abs_t_sum_slope_per_cycle_over_refusals": 0.40375839482352294,
+ "t_sum_at_last_cycle": -9234.424422092314,
+ "reading": "every refusal is a cycle at which a branch test passed and the gap clause |t_sum| <= gap_bound refused; the rule does not decide before the cap"
+}
+  run of candidate: {"campaign_spec": "data/SRP1/Results/P515S47/campaign_s47_phase_b/campaign_spec_s47_phase_b_8cfa264e.json", "spec_cap": 500, "label": "y2030__n5_p0.25_e0.5__n7_p1_e3.5", "eval_key16": "bd3cbb82bc2bcd99", "flex_price_multiplier": null, "settling_declaration": null, "eval_dir_exists": false, "evaluation_record": null, "superseded_md_present": false}
+  run of candidate: {"campaign_spec": "data/SRP1/Results/P515S51/campaign_s51_f2_phase_b/campaign_spec_s51_f2_phase_b_5ce295e1.json", "spec_cap": 500, "label": "y2030__n5_p0.25_e0.5__n7_p1_e3.5_m2", "eval_key16": "5ca4f86c3406c042", "flex_price_multiplier": 2.0, "settling_declaration": null, "eval_dir_exists": true, "evaluation_record": {"status": "certified", "cycles_run": 181, "certification_cycle": 181, "cap": 500}, "superseded_md_present": false}
+  run of candidate: {"campaign_spec": "data/SRP1/Results/P515S53/campaign_s53_f2_certificate/campaign_spec_s53_f2_certificate_3b9d6df9.json", "spec_cap": 500, "label": "y2030__n5_p0.25_e0.5__n7_p1_e3.5_m2", "eval_key16": "5ca4f86c3406c042", "flex_price_multiplier": 2.0, "settling_declaration": null, "eval_dir_exists": false, "evaluation_record": null, "superseded_md_present": true}
+  run of candidate: {"campaign_spec": "data/SRP1/Results/P515S53/campaign_s53_f2_certificate_r1/campaign_spec_s53_f2_certificate_r1_803571c0.json", "spec_cap": 500, "label": "y2030__n5_p0.25_e0.5__n7_p1_e3.5_m2", "eval_key16": "5ca4f86c3406c042", "flex_price_multiplier": 2.0, "settling_declaration": null, "eval_dir_exists": false, "evaluation_record": null, "superseded_md_present": false}
+  run of candidate: {"campaign_spec": "data/SRP1/Results/P515S53/w118_resettle/campaign_s53_w118_resettle_f2_incumbent/campaign_spec_s53_w118_resettle_f2_incumbent_54d27495.json", "spec_cap": 281, "label": "f2_incumbent", "eval_key16": "24c5ccb6f285219f", "flex_price_multiplier": 2.0, "settling_declaration": "settling_resettle", "eval_dir_exists": false, "evaluation_record": null, "superseded_md_present": false}
+  run of candidate: {"campaign_spec": "data/SRP1/Results/P515S53/w118_resettle/campaign_s53_w118_resettle_r2_f2_incumbent/campaign_spec_s53_w118_resettle_r2_f2_incumbent_b1dd9b82.json", "spec_cap": 281, "label": "f2_incumbent", "eval_key16": "24c5ccb6f285219f", "flex_price_multiplier": 2.0, "settling_declaration": "settling_resettle", "eval_dir_exists": true, "evaluation_record": {"status": "certified", "cycles_run": 281, "certification_cycle": 281, "cap": 281}, "superseded_md_present": false}
+=== Z3
+{
+ "declared": "575bfec43ff47b03ed9f6ef955025cd35cfb28a2",
+ "definition": "last commit touching a production module := git-tracked root-level *.py not matching ^p[0-9]",
+ "recomputed_last_production_commit_at_HEAD": "575bfec43ff47b03ed9f6ef955025cd35cfb28a2",
+ "declared_equals_recomputed": true,
+ "repo_HEAD": "ab1d8d7b767f97c4755c67ea168ed442622e72e5",
+ "n_production_modules_at_final": 38,
+ "production_equal_HEAD_vs_final": true,
+ "harness_last_commit": "b4c3dc7a05a35e756684f1cfc68fcfd5cd517d20",
+ "harness_sha256_at_HEAD": "9c6bda1969eca917c7875c1e4a84ab004a3b55edf52ad87179e12c816bbb7f21",
+ "harness_sha256_at_final_head": "961dbb3e6a6808bcc3665a081024af12a196e8f4ddf2b80e2f70dbf7edb25638"
+}
+rows by cfg hash: {"83be7d9d34e05138": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29], "eda23b85e19cf022": [30, 31], "74e21b9a7f6de88f": [32, 33], "1cb225b67fa0ecfd": [34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53], "73937249d93e6de5": [54], "f89348e75af91413": [55], "836dff235b95e925": [56], "09b127ff014d2930": [57], "1fae56a61ab56441": [58], "5f975df0796c8427": [59], "e68c772fe02fa96e": [60], "1d59c18b4a138aca": [61]}
+modified production files and importers: {
+ "uncoordinated_benchmark.py": {
+  "importers_at_HEAD": [
+   "p515_s53_w106_benchmark_repoint.py",
+   "p515_s53_w109_tso_curtailment_look.py",
+   "p515_s53_w111_benchmark_spec_v2.py",
+   "p515_s53_w114_passive_infeasibility.py",
+   "p515_s53_w115_price_taker_infeasibility.py",
+   "p515_s53_w116_benchmark_spec_v3.py",
+   "p515_s53_w119_benchmark_spec_v4.py",
+   "p515_s53_w121_benchmark_spec_v5.py",
+   "p515_s53_w130_benchmark_addendum.py",
+   "p515_s53_w93_uncoordinated_benchmark.py"
+  ],
+  "imported_by_campaign_harness": false,
+  "imported_by_a_production_module": [],
+  "imported_by_a_row_campaign_script": []
+ }
+}
+rows by harness sha: {"3ad624cd": [1, 2], "961dbb3e": [3, 14], "ca46892b": [4, 5, 6, 7, 8, 9, 10, 11, 15, 22, 23, 26, 27, 28, 29, 30, 31, 34, 35, 36, 37, 38, 39, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59], "25cc4559": [12, 13], "4115fc83": [16, 17, 18, 19, 20, 21, 24, 25, 40, 41], "9c6bda19": [32, 33, 60, 61]}
+runtimes: ['{"NLP_SOLVER_PATH": "/usr/local/bin/ipopt", "interpreter": "/Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python", "thread_caps": {"MKL_NUM_THREADS": "1", "NUMEXPR_NUM_THREADS": "1", "OMP_NUM_THREADS": "1", "OPENBLAS_NUM_THREADS": "1", "VECLIB_MAXIMUM_THREADS": "1"}}']
+   1 ref:7aa017f0     freeze 4ca1573d end aad37370 dec 367f06f2 lit False prodeq False onlyA False diff [('settling_criterion_v2.py', 'A'), ('settling_criterion_v3.py', 'A'), ('settling_criterion_v4.py', 'A'), ('settling_criterion_v5.py', 'A'), ('settling_criterion_v6.py', 'A'), ('uncoordinated_benchmark.py', 'M')] harness 3ad624cd cfg 83be7d9d34e05138 rule settling_criterion.SettlingRule
+   2 ref:bd504ecf     freeze 4ca1573d end 6fbd4606 dec 367f06f2 lit False prodeq False onlyA False diff [('settling_criterion_v2.py', 'A'), ('settling_criterion_v3.py', 'A'), ('settling_criterion_v4.py', 'A'), ('settling_criterion_v5.py', 'A'), ('settling_criterion_v6.py', 'A'), ('uncoordinated_benchmark.py', 'M')] harness 3ad624cd cfg 83be7d9d34e05138 rule settling_criterion.SettlingRule
+   3 d_c52e1670       freeze ed767408 end 4b3be392 dec 367f06f2 lit False prodeq False onlyA True diff [('settling_criterion_v6.py', 'A')] harness 961dbb3e cfg 83be7d9d34e05138 rule settling_criterion_v5.SettlingRuleV5
+   4 d_4a82a64a       freeze 0a6642ec end b64a4233 dec b64a4233 lit False prodeq True onlyA False diff [] harness ca46892b cfg 83be7d9d34e05138 rule settling_criterion_v6.SettlingRuleV6
+   5 d_3632b0ae       freeze 0a6642ec end 354b362a dec 354b362a lit False prodeq True onlyA False diff [] harness ca46892b cfg 83be7d9d34e05138 rule settling_criterion_v6.SettlingRuleV6
+   6 d_36686489       freeze 0a6642ec end 48625326 dec 48625326 lit False prodeq True onlyA False diff [] harness ca46892b cfg 83be7d9d34e05138 rule settling_criterion_v6.SettlingRuleV6
+   7 d_d3709599       freeze 0a6642ec end e487cbde dec e487cbde lit False prodeq True onlyA False diff [] harness ca46892b cfg 83be7d9d34e05138 rule settling_criterion_v6.SettlingRuleV6
+   8 d_a12d95a2       freeze 0a6642ec end 02affadd dec 02affadd lit False prodeq True onlyA False diff [] harness ca46892b cfg 83be7d9d34e05138 rule settling_criterion_v6.SettlingRuleV6
+   9 d_f759dd48       freeze 0a6642ec end 73d41460 dec 73d41460 lit False prodeq True onlyA False diff [] harness ca46892b cfg 83be7d9d34e05138 rule settling_criterion_v6.SettlingRuleV6
+  10 d_c7fee8be       freeze 0a6642ec end dfdc2ccf dec dfdc2ccf lit False prodeq True onlyA False diff [] harness ca46892b cfg 83be7d9d34e05138 rule settling_criterion_v6.SettlingRuleV6
+  11 d_9246ed01       freeze 0a6642ec end d0a34c40 dec d0a34c40 lit False prodeq True onlyA False diff [] harness ca46892b cfg 83be7d9d34e05138 rule settling_criterion_v6.SettlingRuleV6
+  12 b_2a0ba8b2       freeze 3d610aa0 end 852fe22a dec 367f06f2 lit False prodeq False onlyA True diff [('settling_criterion_v5.py', 'A'), ('settling_criterion_v6.py', 'A')] harness 25cc4559 cfg 83be7d9d34e05138 rule settling_criterion_v4.SettlingRuleV4
+  13 b_0dd237f0       freeze 3d610aa0 end 903657de dec 367f06f2 lit False prodeq False onlyA True diff [('settling_criterion_v5.py', 'A'), ('settling_criterion_v6.py', 'A')] harness 25cc4559 cfg 83be7d9d34e05138 rule settling_criterion_v4.SettlingRuleV4
+  14 b_4649234b       freeze ed767408 end 07eb8890 dec 367f06f2 lit False prodeq False onlyA True diff [('settling_criterion_v6.py', 'A')] harness 961dbb3e cfg 83be7d9d34e05138 rule settling_criterion_v5.SettlingRuleV5
+  15 pb_y2025_n5_v6   freeze 55bb1e7d end 72d52c23 dec 72d52c23 lit False prodeq True onlyA False diff [] harness ca46892b cfg 83be7d9d34e05138 rule settling_criterion_v6.SettlingRuleV6
+  16 pb_y2025_n5      freeze b4aab001 end ad4e4747 dec 367f06f2 lit False prodeq False onlyA True diff [('settling_criterion_v3.py', 'A'), ('settling_criterion_v4.py', 'A'), ('settling_criterion_v5.py', 'A'), ('settling_criterion_v6.py', 'A')] harness 4115fc83 cfg 83be7d9d34e05138 rule settling_criterion_v2.SettlingRuleV2
+  17 pb_y2025_n7      freeze b4aab001 end bcc7669b dec 367f06f2 lit False prodeq False onlyA True diff [('settling_criterion_v3.py', 'A'), ('settling_criterion_v4.py', 'A'), ('settling_criterion_v5.py', 'A'), ('settling_criterion_v6.py', 'A')] harness 4115fc83 cfg 83be7d9d34e05138 rule settling_criterion_v2.SettlingRuleV2
+  18 pb_y2025_n9      freeze b4aab001 end d6333b6f dec 367f06f2 lit False prodeq False onlyA True diff [('settling_criterion_v3.py', 'A'), ('settling_criterion_v4.py', 'A'), ('settling_criterion_v5.py', 'A'), ('settling_criterion_v6.py', 'A')] harness 4115fc83 cfg 83be7d9d34e05138 rule settling_criterion_v2.SettlingRuleV2
+  19 pb_y2030_n5      freeze b4aab001 end 5cda0cd0 dec 367f06f2 lit False prodeq False onlyA True diff [('settling_criterion_v3.py', 'A'), ('settling_criterion_v4.py', 'A'), ('settling_criterion_v5.py', 'A'), ('settling_criterion_v6.py', 'A')] harness 4115fc83 cfg 83be7d9d34e05138 rule settling_criterion_v2.SettlingRuleV2
+  20 pb_y2030_n7      freeze b4aab001 end 6eb5f7ca dec 367f06f2 lit False prodeq False onlyA True diff [('settling_criterion_v3.py', 'A'), ('settling_criterion_v4.py', 'A'), ('settling_criterion_v5.py', 'A'), ('settling_criterion_v6.py', 'A')] harness 4115fc83 cfg 83be7d9d34e05138 rule settling_criterion_v2.SettlingRuleV2
+  21 pb_y2030_n9      freeze b4aab001 end 2cda084d dec 367f06f2 lit False prodeq False onlyA True diff [('settling_criterion_v3.py', 'A'), ('settling_criterion_v4.py', 'A'), ('settling_criterion_v5.py', 'A'), ('settling_criterion_v6.py', 'A')] harness 4115fc83 cfg 83be7d9d34e05138 rule settling_criterion_v2.SettlingRuleV2
+  22 c_156ce2d1       freeze 0a6642ec end fdd70605 dec fdd70605 lit False prodeq True onlyA False diff [] harness ca46892b cfg 83be7d9d34e05138 rule settling_criterion_v6.SettlingRuleV6
+  23 c_6597a79d       freeze 0a6642ec end 1fcbce4e dec 1fcbce4e lit False prodeq True onlyA False diff [] harness ca46892b cfg 83be7d9d34e05138 rule settling_criterion_v6.SettlingRuleV6
+  24 yl_y2030         freeze b4aab001 end af2210d2 dec 367f06f2 lit False prodeq False onlyA True diff [('settling_criterion_v3.py', 'A'), ('settling_criterion_v4.py', 'A'), ('settling_criterion_v5.py', 'A'), ('settling_criterion_v6.py', 'A')] harness 4115fc83 cfg 83be7d9d34e05138 rule settling_criterion_v2.SettlingRuleV2
+  25 yl_y2035         freeze b4aab001 end d5f150f6 dec 367f06f2 lit False prodeq False onlyA True diff [('settling_criterion_v3.py', 'A'), ('settling_criterion_v4.py', 'A'), ('settling_criterion_v5.py', 'A'), ('settling_criterion_v6.py', 'A')] harness 4115fc83 cfg 83be7d9d34e05138 rule settling_criterion_v2.SettlingRuleV2
+  26 g_37b5c499       freeze 0a6642ec end 3d9b8d94 dec 3d9b8d94 lit False prodeq True onlyA False diff [] harness ca46892b cfg 83be7d9d34e05138 rule settling_criterion_v6.SettlingRuleV6
+  27 g_47dce43c       freeze 0a6642ec end bf810183 dec bf810183 lit False prodeq True onlyA False diff [] harness ca46892b cfg 83be7d9d34e05138 rule settling_criterion_v6.SettlingRuleV6
+  28 g_48749148       freeze 0a6642ec end 4ab435aa dec 4ab435aa lit False prodeq True onlyA False diff [] harness ca46892b cfg 83be7d9d34e05138 rule settling_criterion_v6.SettlingRuleV6
+  29 g_9abf31d4       freeze 0a6642ec end 58f7209e dec 58f7209e lit False prodeq True onlyA False diff [] harness ca46892b cfg 83be7d9d34e05138 rule settling_criterion_v6.SettlingRuleV6
+  30 h_aa8a76d7       freeze 0a6642ec end 9d2f458f dec 9d2f458f lit False prodeq True onlyA False diff [] harness ca46892b cfg eda23b85e19cf022 rule settling_criterion_v6.SettlingRuleV6
+  31 h_f9eae48f       freeze 0a6642ec end 40568e6a dec 40568e6a lit False prodeq True onlyA False diff [] harness ca46892b cfg eda23b85e19cf022 rule settling_criterion_v6.SettlingRuleV6
+  32 h_x0_m175        freeze c0dac227 end 0e1d7c0e dec 0e1d7c0e lit False prodeq True onlyA False diff [] harness 9c6bda19 cfg 74e21b9a7f6de88f rule settling_criterion_v6.SettlingRuleV6
+  33 h_unit_m175      freeze c0dac227 end ae2b6574 dec ae2b6574 lit False prodeq True onlyA False diff [] harness 9c6bda19 cfg 74e21b9a7f6de88f rule settling_criterion_v6.SettlingRuleV6
+  34 h_50dea31c       freeze 0a6642ec end 3740b476 dec 3740b476 lit False prodeq True onlyA False diff [] harness ca46892b cfg 1cb225b67fa0ecfd rule settling_criterion_v6.SettlingRuleV6
+  35 h_74eda68d       freeze 0a6642ec end 72d74291 dec 72d74291 lit False prodeq True onlyA False diff [] harness ca46892b cfg 1cb225b67fa0ecfd rule settling_criterion_v6.SettlingRuleV6
+  36 i_5a6a88b4       freeze 0a6642ec end 4611e197 dec 4611e197 lit False prodeq True onlyA False diff [] harness ca46892b cfg 1cb225b67fa0ecfd rule settling_criterion_v6.SettlingRuleV6
+  37 j_f3aa335e       freeze 0a6642ec end 4b30ea00 dec 4b30ea00 lit False prodeq True onlyA False diff [] harness ca46892b cfg 1cb225b67fa0ecfd rule settling_criterion_v6.SettlingRuleV6
+  38 j_a11d7966       freeze 0a6642ec end b8a6e689 dec b8a6e689 lit False prodeq True onlyA False diff [] harness ca46892b cfg 1cb225b67fa0ecfd rule settling_criterion_v6.SettlingRuleV6
+  39 j_5f3cccb4       freeze 0a6642ec end 49c658da dec 49c658da lit False prodeq True onlyA False diff [] harness ca46892b cfg 1cb225b67fa0ecfd rule settling_criterion_v6.SettlingRuleV6
+  40 ref:5ca4f86c     freeze b4aab001 end 90b64dc0 dec 367f06f2 lit False prodeq False onlyA True diff [('settling_criterion_v3.py', 'A'), ('settling_criterion_v4.py', 'A'), ('settling_criterion_v5.py', 'A'), ('settling_criterion_v6.py', 'A')] harness 4115fc83 cfg 1cb225b67fa0ecfd rule settling_criterion_v2.SettlingRuleV2
+  41 ref:e28de4ac     freeze b4aab001 end eae4a359 dec 367f06f2 lit False prodeq False onlyA True diff [('settling_criterion_v3.py', 'A'), ('settling_criterion_v4.py', 'A'), ('settling_criterion_v5.py', 'A'), ('settling_criterion_v6.py', 'A')] harness 4115fc83 cfg 1cb225b67fa0ecfd rule settling_criterion_v2.SettlingRuleV2
+  42 l_0ee93aca       freeze 0a6642ec end eb9e3dd7 dec eb9e3dd7 lit False prodeq True onlyA False diff [] harness ca46892b cfg 1cb225b67fa0ecfd rule settling_criterion_v6.SettlingRuleV6
+  43 l_195156fa       freeze 0a6642ec end 9af8c950 dec 9af8c950 lit False prodeq True onlyA False diff [] harness ca46892b cfg 1cb225b67fa0ecfd rule settling_criterion_v6.SettlingRuleV6
+  44 l_2ab0ce2d       freeze 0a6642ec end 122f5bdf dec 122f5bdf lit False prodeq True onlyA False diff [] harness ca46892b cfg 1cb225b67fa0ecfd rule settling_criterion_v6.SettlingRuleV6
+  45 l_b2251bc5       freeze 0a6642ec end 56891699 dec 56891699 lit False prodeq True onlyA False diff [] harness ca46892b cfg 1cb225b67fa0ecfd rule settling_criterion_v6.SettlingRuleV6
+  46 l_76c78064       freeze 0a6642ec end a477ab96 dec a477ab96 lit False prodeq True onlyA False diff [] harness ca46892b cfg 1cb225b67fa0ecfd rule settling_criterion_v6.SettlingRuleV6
+  47 l_8e4c220e       freeze 0a6642ec end dcf3e87e dec dcf3e87e lit False prodeq True onlyA False diff [] harness ca46892b cfg 1cb225b67fa0ecfd rule settling_criterion_v6.SettlingRuleV6
+  48 l_e1da0984       freeze 0a6642ec end f42e7299 dec f42e7299 lit False prodeq True onlyA False diff [] harness ca46892b cfg 1cb225b67fa0ecfd rule settling_criterion_v6.SettlingRuleV6
+  49 l_7b199ef9       freeze 0a6642ec end bf84fd41 dec bf84fd41 lit False prodeq True onlyA False diff [] harness ca46892b cfg 1cb225b67fa0ecfd rule settling_criterion_v6.SettlingRuleV6
+  50 l_45aa25a6       freeze 0a6642ec end 714c9445 dec 714c9445 lit False prodeq True onlyA False diff [] harness ca46892b cfg 1cb225b67fa0ecfd rule settling_criterion_v6.SettlingRuleV6
+  51 l_7c455554       freeze 0a6642ec end 6f116e6c dec 6f116e6c lit False prodeq True onlyA False diff [] harness ca46892b cfg 1cb225b67fa0ecfd rule settling_criterion_v6.SettlingRuleV6
+  52 l_7db09f6c       freeze 0a6642ec end ad818c3a dec ad818c3a lit False prodeq True onlyA False diff [] harness ca46892b cfg 1cb225b67fa0ecfd rule settling_criterion_v6.SettlingRuleV6
+  53 l_df1a5525       freeze 0a6642ec end 7f2475bd dec 7f2475bd lit False prodeq True onlyA False diff [] harness ca46892b cfg 1cb225b67fa0ecfd rule settling_criterion_v6.SettlingRuleV6
+  54 e_no_ageing      freeze 55bb1e7d end d7602e1a dec d7602e1a lit False prodeq True onlyA False diff [] harness ca46892b cfg 73937249d93e6de5 rule settling_criterion_v6.SettlingRuleV6
+  55 e_c2             freeze 55bb1e7d end 22c7c116 dec 22c7c116 lit False prodeq True onlyA False diff [] harness ca46892b cfg f89348e75af91413 rule settling_criterion_v6.SettlingRuleV6
+  56 e_c2_calfade     freeze 55bb1e7d end afc6dbd7 dec afc6dbd7 lit False prodeq True onlyA False diff [] harness ca46892b cfg 836dff235b95e925 rule settling_criterion_v6.SettlingRuleV6
+  57 e_c4             freeze 55bb1e7d end 23cee034 dec 23cee034 lit False prodeq True onlyA False diff [] harness ca46892b cfg 09b127ff014d2930 rule settling_criterion_v6.SettlingRuleV6
+  58 e_c3_unit        freeze 55bb1e7d end 13c6f5b0 dec 13c6f5b0 lit False prodeq True onlyA False diff [] harness ca46892b cfg 1fae56a61ab56441 rule settling_criterion_v6.SettlingRuleV6
+  59 e_c3_midblock    freeze 55bb1e7d end 4c735dc3 dec 4c735dc3 lit False prodeq True onlyA False diff [] harness ca46892b cfg 5f975df0796c8427 rule settling_criterion_v6.SettlingRuleV6
+  60 e_soh050         freeze c0dac227 end 6cc4c8c1 dec 6cc4c8c1 lit False prodeq True onlyA False diff [] harness 9c6bda19 cfg e68c772fe02fa96e rule settling_criterion_v6.SettlingRuleV6
+  61 g070_neutrality  freeze c0dac227 end 241d3030 dec 241d3030 lit False prodeq True onlyA False diff [] harness 9c6bda19 cfg 1d59c18b4a138aca rule settling_criterion_v6.SettlingRuleV6
+{
+ "n_rows": 61,
+ "n_final_head_literal": 0,
+ "n_production_equal_final": 45,
+ "n_only_additions": 14,
+ "rows_with_modified_or_deleted_production_files": [
+  1,
+  2
+ ],
+ "rows_head_moved_during_run_with_production_change": [
+  16,
+  17,
+  18,
+  19,
+  20,
+  21,
+  24,
+  25,
+  40,
+  41
+ ],
+ "n_harness_equal_HEAD": 4
+}
+=== Z4
+{
+ "group": "pair",
+ "label": "x0",
+ "campaign_root": "data/SRP1/Results/P515S53/w90_3x3/campaign_s53_w91_3x3_pair",
+ "eval_dir": "data/SRP1/Results/P515S53/w90_3x3/campaign_s53_w91_3x3_pair/evals/f6e9cd53fdbb8ee8_x0",
+ "status": "certified",
+ "cycles_run": 72,
+ "certification_cycle": 72,
+ "cap": 500,
+ "per_cycle_record_cycles": [
+  1,
+  72
+ ],
+ "n_cycles_with_cycle_wall_s": 72,
+ "cycle_wall_s": {
+  "n": 72,
+  "mean": 386.006787776947,
+  "median": 373.2011613845825,
+  "min": 349.4438989162445,
+  "max": 695.2991330623627,
+  "sum": 27792.488719940186
+ },
+ "cycle_wall_s_first_cycle": 676.9451339244843,
+ "cycle_wall_s_excl_first": {
+  "n": 71,
+  "mean": 381.90906459177046,
+  "median": 373.16075897216797,
+  "min": 349.4438989162445,
+  "max": 695.2991330623627,
+  "sum": 27115.5435860157
+ },
+ "rss_bytes_end_of_cycle": {
+  "n": 72,
+  "mean": 14735774151.11111,
+  "median": 15121342464.0,
+  "min": 10870341632,
+  "max": 16215277568,
+  "sum": 1060975738880
+ },
+ "ru_maxrss_bytes_per_cycle_max": 16276684800,
+ "evaluation_record_wall_time_s": {
+  "child_process_s": 28499.819193840027,
+  "run_admm_arm_s": 28484.047895908356,
+  "run_admm_arm_reported_wall_clock_s": 28156.715409994125
+ },
+ "evaluation_record_peak_rss": {
+  "units": "bytes on macOS/BSD, kilobytes on Linux (ru_maxrss)",
+  "child_python_process_ru_maxrss": 16276684800,
+  "production_state_peak_rss_ru_maxrss": 16276684800,
+  "solver_subprocesses_max_ru_maxrss": 410976256,
+  "semantics": "child_python_process = RUSAGE_SELF of the evaluation process at record time (the evaluation's own peak); production_state = the same measure taken by production at the end of run_operational_planning; solver_subprocesses = RUSAGE_CHILDREN max over the IPOPT executables this evaluation launched; when a post-certification step ran, child_python_process includes it (the ADMM run alone is production_state)"
+ },
+ "derived_non_cycle_wall_s": 707.3304738998413
+}
+{
+ "group": "pair",
+ "label": "n7_4h_e1",
+ "campaign_root": "data/SRP1/Results/P515S53/w90_3x3/campaign_s53_w91_3x3_pair",
+ "eval_dir": "data/SRP1/Results/P515S53/w90_3x3/campaign_s53_w91_3x3_pair/evals/c82522f470b35b58_n7_4h_e1",
+ "status": "certified",
+ "cycles_run": 69,
+ "certification_cycle": 69,
+ "cap": 500,
+ "per_cycle_record_cycles": [
+  1,
+  69
+ ],
+ "n_cycles_with_cycle_wall_s": 69,
+ "cycle_wall_s": {
+  "n": 69,
+  "mean": 425.22104049074477,
+  "median": 413.4998939037323,
+  "min": 377.63498973846436,
+  "max": 714.4874758720398,
+  "sum": 29340.25179386139
+ },
+ "cycle_wall_s_first_cycle": 714.4874758720398,
+ "cycle_wall_s_excl_first": {
+  "n": 68,
+  "mean": 420.9671223233728,
+  "median": 413.25259947776794,
+  "min": 377.63498973846436,
+  "max": 705.0815908908844,
+  "sum": 28625.76431798935
+ },
+ "rss_bytes_end_of_cycle": {
+  "n": 69,
+  "mean": 14807016729.971014,
+  "median": 14768586752,
+  "min": 13790003200,
+  "max": 16101621760,
+  "sum": 1021684154368
+ },
+ "ru_maxrss_bytes_per_cycle_max": 16302620672,
+ "evaluation_record_wall_time_s": {
+  "child_process_s": 30076.599144935608,
+  "run_admm_arm_s": 30061.112764835358,
+  "run_admm_arm_reported_wall_clock_s": 29719.120921850204
+ },
+ "evaluation_record_peak_rss": {
+  "units": "bytes on macOS/BSD, kilobytes on Linux (ru_maxrss)",
+  "child_python_process_ru_maxrss": 16302620672,
+  "production_state_peak_rss_ru_maxrss": 16302620672,
+  "solver_subprocesses_max_ru_maxrss": 409567232,
+  "semantics": "child_python_process = RUSAGE_SELF of the evaluation process at record time (the evaluation's own peak); production_state = the same measure taken by production at the end of run_operational_planning; solver_subprocesses = RUSAGE_CHILDREN max over the IPOPT executables this evaluation launched; when a post-certification step ran, child_python_process includes it (the ADMM run alone is production_state)"
+ },
+ "derived_non_cycle_wall_s": 736.3473510742188
+}
+{
+ "group": "continuation",
+ "label": "x0_cont",
+ "campaign_root": "data/SRP1/Results/P515S53/w98_continuation/campaign_s53_w98_x0_continuation_r2",
+ "eval_dir": "data/SRP1/Results/P515S53/w98_continuation/campaign_s53_w98_x0_continuation_r2/evals/25b92ae0f1f2c02e_x0_cont",
+ "status": "certified",
+ "cycles_run": 88,
+ "certification_cycle": 88,
+ "cap": 102,
+ "per_cycle_record_cycles": [
+  1,
+  88
+ ],
+ "n_cycles_with_cycle_wall_s": 88,
+ "cycle_wall_s": {
+  "n": 88,
+  "mean": 384.45861454985356,
+  "median": 376.66186904907227,
+  "min": 353.3437559604645,
+  "max": 680.9831936359406,
+  "sum": 33832.358080387115
+ },
+ "cycle_wall_s_first_cycle": 669.1267981529236,
+ "cycle_wall_s_excl_first": {
+  "n": 87,
+  "mean": 381.186566462462,
+  "median": 376.66145396232605,
+  "min": 353.3437559604645,
+  "max": 680.9831936359406,
+  "sum": 33163.23128223419
+ },
+ "rss_bytes_end_of_cycle": {
+  "n": 88,
+  "mean": 15170154682.181818,
+  "median": 15434907648.0,
+  "min": 10828595200,
+  "max": 16256696320,
+  "sum": 1334973612032
+ },
+ "ru_maxrss_bytes_per_cycle_max": 16343547904,
+ "evaluation_record_wall_time_s": {
+  "child_process_s": 34554.50431418419,
+  "run_admm_arm_s": 34538.45023584366,
+  "run_admm_arm_reported_wall_clock_s": 34209.909012794495
+ },
+ "evaluation_record_peak_rss": {
+  "units": "bytes on macOS/BSD, kilobytes on Linux (ru_maxrss)",
+  "child_python_process_ru_maxrss": 16343547904,
+  "production_state_peak_rss_ru_maxrss": 16343547904,
+  "solver_subprocesses_max_ru_maxrss": 409600000,
+  "semantics": "child_python_process = RUSAGE_SELF of the evaluation process at record time (the evaluation's own peak); production_state = the same measure taken by production at the end of run_operational_planning; solver_subprocesses = RUSAGE_CHILDREN max over the IPOPT executables this evaluation launched; when a post-certification step ran, child_python_process includes it (the ADMM run alone is production_state)"
+ },
+ "derived_non_cycle_wall_s": 722.1462337970734,
+ "cycle_wall_s_cycles_73_on": {
+  "n": 16,
+  "mean": 380.4104314893484,
+  "median": 375.9677349328995,
+  "min": 374.3328399658203,
+  "max": 396.5420799255371,
+  "sum": 6086.566903829575
+ }
+}
+{
+ "group": "smoke (beside, labelled)",
+ "label": "x0 smoke_bon",
+ "campaign_root": "data/SRP1/Results/P515S53/w90_3x3/campaign_s53_w91_3x3_smoke_bon",
+ "eval_dir": "data/SRP1/Results/P515S53/w90_3x3/campaign_s53_w91_3x3_smoke_bon/evals/f6e9cd53fdbb8ee8_x0",
+ "status": "not_certified",
+ "cycles_run": 3,
+ "certification_cycle": null,
+ "cap": 3,
+ "per_cycle_record_cycles": [
+  1,
+  3
+ ],
+ "n_cycles_with_cycle_wall_s": 3,
+ "cycle_wall_s": {
+  "n": 3,
+  "mean": 581.7275253931681,
+  "median": 644.3028509616852,
+  "min": 415.823358297348,
+  "max": 685.0563669204712,
+  "sum": 1745.1825761795044
+ },
+ "cycle_wall_s_first_cycle": 644.3028509616852,
+ "cycle_wall_s_excl_first": {
+  "n": 2,
+  "mean": 550.4398626089096,
+  "median": 550.4398626089096,
+  "min": 415.823358297348,
+  "max": 685.0563669204712,
+  "sum": 1100.8797252178192
+ },
+ "rss_bytes_end_of_cycle": {
+  "n": 3,
+  "mean": 15144605013.333334,
+  "median": 15203254272,
+  "min": 14826291200,
+  "max": 15404269568,
+  "sum": 45433815040
+ },
+ "ru_maxrss_bytes_per_cycle_max": 16120676352,
+ "evaluation_record_wall_time_s": {
+  "child_process_s": 2423.195130109787,
+  "run_admm_arm_s": 2407.606794834137,
+  "run_admm_arm_reported_wall_clock_s": 2078.9983150959015
+ },
+ "evaluation_record_peak_rss": {
+  "units": "bytes on macOS/BSD, kilobytes on Linux (ru_maxrss)",
+  "child_python_process_ru_maxrss": 18292523008,
+  "production_state_peak_rss_ru_maxrss": 16120676352,
+  "solver_subprocesses_max_ru_maxrss": 428212224,
+  "semantics": "child_python_process = RUSAGE_SELF of the evaluation process at record time (the evaluation's own peak); production_state = the same measure taken by production at the end of run_operational_planning; solver_subprocesses = RUSAGE_CHILDREN max over the IPOPT executables this evaluation launched; when a post-certification step ran, child_python_process includes it (the ADMM run alone is production_state)"
+ },
+ "derived_non_cycle_wall_s": 678.0125539302826
+}
+{
+ "group": "smoke (beside, labelled)",
+ "label": "x0 smoke_boff",
+ "campaign_root": "data/SRP1/Results/P515S53/w90_3x3/campaign_s53_w91_3x3_smoke_boff",
+ "eval_dir": "data/SRP1/Results/P515S53/w90_3x3/campaign_s53_w91_3x3_smoke_boff/evals/f6e9cd53fdbb8ee8_x0",
+ "status": "not_certified",
+ "cycles_run": 3,
+ "certification_cycle": null,
+ "cap": 3,
+ "per_cycle_record_cycles": [
+  1,
+  3
+ ],
+ "n_cycles_with_cycle_wall_s": 3,
+ "cycle_wall_s": {
+  "n": 3,
+  "mean": 593.3511989911398,
+  "median": 668.2967300415039,
+  "min": 421.3084681034088,
+  "max": 690.4483988285065,
+  "sum": 1780.0535969734192
+ },
+ "cycle_wall_s_first_cycle": 668.2967300415039,
+ "cycle_wall_s_excl_first": {
+  "n": 2,
+  "mean": 555.8784334659576,
+  "median": 555.8784334659576,
+  "min": 421.3084681034088,
+  "max": 690.4483988285065,
+  "sum": 1111.7568669319153
+ },
+ "rss_bytes_end_of_cycle": {
+  "n": 3,
+  "mean": 14590956885.333334,
+  "median": 14234042368,
+  "min": 14124646400,
+  "max": 15414181888,
+  "sum": 43772870656
+ },
+ "ru_maxrss_bytes_per_cycle_max": 19882868736,
+ "evaluation_record_wall_time_s": {
+  "child_process_s": 3104.627618074417,
+  "run_admm_arm_s": 3088.731542825699,
+  "run_admm_arm_reported_wall_clock_s": 2099.7047600746155
+ },
+ "evaluation_record_peak_rss": {
+  "units": "bytes on macOS/BSD, kilobytes on Linux (ru_maxrss)",
+  "child_python_process_ru_maxrss": 19882868736,
+  "production_state_peak_rss_ru_maxrss": 19882868736,
+  "solver_subprocesses_max_ru_maxrss": 423690240,
+  "semantics": "child_python_process = RUSAGE_SELF of the evaluation process at record time (the evaluation's own peak); production_state = the same measure taken by production at the end of run_operational_planning; solver_subprocesses = RUSAGE_CHILDREN max over the IPOPT executables this evaluation launched; when a post-certification step ran, child_python_process includes it (the ADMM run alone is production_state)"
+ },
+ "derived_non_cycle_wall_s": 1324.574021100998
+}
+{
+ "definition": "five-block = the 3 x 3 horizon 2025/2028/2031/2034/2037 (Addendum 72 decision 2), i.e. 80 network blocks (5 years x 4 days x 4 networks); single-scenario = 1 market x 1 operation scenario",
+ "search_scope": "git-tracked *.json files containing \"n_network_blocks_built\" or \"expected_block_counts\" (git grep at HEAD), read in full, every dict at any depth carrying either key; scenario count from a sibling scenario_combinations or planning_dimensions (market x max operation); a hit = 80 network blocks and 1 scenario combination",
+ "n_files_searched": 54,
+ "found": [],
+ "recorded": false,
+ "nearest_records_beside_labelled": [
+  {
+   "json_path": "/",
+   "network_blocks": 80,
+   "scenario_combinations": 25,
+   "build_wall_s": 232.237,
+   "models_built_rss_bytes": null,
+   "rss_at_build_complete": 15148318720,
+   "ru_maxrss_self_at_build_complete": 16430546944,
+   "path": "data/SRP1/Results/P515S44/scale_measurement/paper_cycle_snapoff_memfix_r1/build_record.json"
+  },
+  {
+   "json_path": "/",
+   "network_blocks": 80,
+   "scenario_combinations": 25,
+   "build_wall_s": null,
+   "models_built_rss_bytes": null,
+   "rss_at_build_complete": null,
+   "ru_maxrss_self_at_build_complete": null,
+   "path": "data/SRP1/Results/P515S44/scale_measurement/paper_cycle_snapoff_memfix_r1/cycle_record.json"
+  },
+  {
+   "json_path": "/",
+   "network_blocks": 80,
+   "scenario_combinations": 25,
+   "build_wall_s": 232.837,
+   "models_built_rss_bytes": null,
+   "rss_at_build_complete": 15083896832,
+   "ru_maxrss_self_at_build_complete": 16285810688,
+   "path": "data/SRP1/Results/P515S44/scale_measurement/paper_cycle_snapoff_r1/build_record.json"
+  },
+  {
+   "json_path": "/",
+   "network_blocks": 80,
+   "scenario_combinations": 25,
+   "build_wall_s": 234.377,
+   "models_built_rss_bytes": null,
+   "rss_at_build_complete": 15251849216,
+   "ru_maxrss_self_at_build_complete": 16694280192,
+   "path": "data/SRP1/Results/P515S44/scale_measurement/paper_cycle_snapoff_r2/build_record.json"
+  },
+  {
+   "json_path": "/",
+   "network_blocks": 48,
+   "scenario_combinations": 1,
+   "build_wall_s": 20.279,
+   "models_built_rss_bytes": null,
+   "rss_at_build_complete": 973209600,
+   "ru_maxrss_self_at_build_complete": 973209600,
+   "path": "data/SRP1/Results/P515S44/scale_measurement/srp1_build_memfix_plumbing/build_record.json"
+  },
+  {
+   "json_path": "/",
+   "network_blocks": 48,
+   "scenario_combinations": 1,
+   "build_wall_s": 27.157,
+   "models_built_rss_bytes": null,
+   "rss_at_build_complete": 1170194432,
+   "ru_maxrss_self_at_build_complete": 1170194432,
+   "path": "data/SRP1/Results/P515S44/scale_measurement/srp1_calibration_r2/build_record.json"
+  },
+  {
+   "json_path": "/",
+   "network_blocks": 48,
+   "scenario_combinations": 1,
+   "build_wall_s": 20.426,
+   "models_built_rss_bytes": null,
+   "rss_at_build_complete": 902201344,
+   "ru_maxrss_self_at_build_complete": 902201344,
+   "path": "data/SRP1/Results/P515S44/scale_measurement/srp1_cycle_snapoff_r1/build_record.json"
+  },
+  {
+   "json_path": "/",
+   "network_blocks": 48,
+   "scenario_combinations": 1,
+   "build_wall_s": null,
+   "models_built_rss_bytes": null,
+   "rss_at_build_complete": null,
+   "ru_maxrss_self_at_build_complete": null,
+   "path": "data/SRP1/Results/P515S44/scale_measurement/srp1_cycle_snapoff_r1/cycle_record.json"
+  },
+  {
+   "json_path": "/",
+   "network_blocks": 16,
+   "scenario_combinations": 4,
+   "build_wall_s": null,
+   "models_built_rss_bytes": null,
+   "rss_at_build_complete": null,
+   "ru_maxrss_self_at_build_complete": null,
+   "path": "data/SRP1/Results/P515S50/multiscenario_smoke/w37_2x2_r1/launch.json"
+  },
+  {
+   "json_path": "/",
+   "network_blocks": 16,
+   "scenario_combinations": 4,
+   "build_wall_s": null,
+   "models_built_rss_bytes": null,
+   "rss_at_build_complete": null,
+   "ru_maxrss_self_at_build_complete": null,
+   "path": "data/SRP1/Results/P515S50/multiscenario_smoke/w37_2x2_r2/launch.json"
+  },
+  {
+   "json_path": "/",
+   "network_blocks": 16,
+   "scenario_combinations": 4,
+   "build_wall_s": null,
+   "models_built_rss_bytes": null,
+   "rss_at_build_complete": null,
+   "ru_maxrss_self_at_build_complete": null,
+   "path": "data/SRP1/Results/P515S50/multiscenario_smoke/w37_preflight_r1/launch.json"
+  },
+  {
+   "json_path": "/",
+   "network_blocks": 16,
+   "scenario_combinations": 4,
+   "build_wall_s": null,
+   "models_built_rss_bytes": null,
+   "rss_at_build_complete": null,
+   "ru_maxrss_self_at_build_complete": null,
+   "path": "data/SRP1/Results/P515S50/multiscenario_smoke/w37_x0_r1/launch.json"
+  },
+  {
+   "json_path": "/",
+   "network_blocks": 16,
+   "scenario_combinations": 4,
+   "build_wall_s": null,
+   "models_built_rss_bytes": null,
+   "rss_at_build_complete": null,
+   "ru_maxrss_self_at_build_complete": null,
+   "path": "data/SRP1/Results/P515S51/2x2_limit_gate/alpha_sweep_r1/gate.json"
+  },
+  {
+   "json_path": "/",
+   "network_blocks": 16,
+   "scenario_combinations": 4,
+   "build_wall_s": null,
+   "models_built_rss_bytes": null,
+   "rss_at_build_complete": null,
+   "ru_maxrss_self_at_build_complete": null,
+   "path": "data/SRP1/Results/P515S51/2x2_limit_gate/alpha_sweep_r1/launch.json"
+  },
+  {
+   "json_path": "/",
+   "network_blocks": 16,
+   "scenario_combinations": 4,
+   "build_wall_s": null,
+   "models_built_rss_bytes": null,
+   "rss_at_build_complete": null,
+   "ru_maxrss_self_at_build_complete": null,
+   "path": "data/SRP1/Results/P515S51/2x2_limit_gate/alpha_sweep_r2/gate.json"
+  },
+  {
+   "json_path": "/",
+   "network_blocks": 16,
+   "scenario_combinations": 4,
+   "build_wall_s": null,
+   "models_built_rss_bytes": null,
+   "rss_at_build_complete": null,
+   "ru_maxrss_self_at_build_complete": null,
+   "path": "data/SRP1/Results/P515S51/2x2_limit_gate/alpha_sweep_r2/launch.json"
+  },
+  {
+   "json_path": "/",
+   "network_blocks": 16,
+   "scenario_combinations": 4,
+   "build_wall_s": null,
+   "models_built_rss_bytes": null,
+   "rss_at_build_complete": null,
+   "ru_maxrss_self_at_build_complete": null,
+   "path": "data/SRP1/Results/P515S51/2x2_limit_gate/limit_r1/gate.json"
+  },
+  {
+   "json_path": "/",
+   "network_blocks": 16,
+   "scenario_combinations": 4,
+   "build_wall_s": null,
+   "models_built_rss_bytes": null,
+   "rss_at_build_complete": null,
+   "ru_maxrss_self_at_build_complete": null,
+   "path": "data/SRP1/Results/P515S51/2x2_limit_gate/limit_r1/launch.json"
+  },
+  {
+   "json_path": "/extra/instance_facts",
+   "network_blocks": 80,
+   "scenario_combinations": 4,
+   "build_wall_s": null,
+   "models_built_rss_bytes": null,
+   "rss_at_build_complete": null,
+   "ru_maxrss_self_at_build_complete": null,
+   "path": "data/SRP1/Results/P515S52/campaign_s52_pilot/campaign_spec_s52_pilot_b62dc2b5.json"
+  },
+  {
+   "json_path": "/points/x0/derived_instance_installed_in_child",
+   "network_blocks": 80,
+   "scenario_combinations": 4,
+   "build_wall_s": null,
+   "models_built_rss_bytes": null,
+   "rss_at_build_complete": null,
+   "ru_maxrss_self_at_build_complete": null,
+   "path": "data/SRP1/Results/P515S52/campaign_s52_pilot_nopersist/campaign_results.json"
+  },
+  {
+   "json_path": "/points/n7_4h_e1/derived_instance_installed_in_child",
+   "network_blocks": 80,
+   "scenario_combinations": 4,
+   "build_wall_s": null,
+   "models_built_rss_bytes": null,
+   "rss_at_build_complete": null,
+   "ru_maxrss_self_at_build_complete": null,
+   "path": "data/SRP1/Results/P515S52/campaign_s52_pilot_nopersist/campaign_results.json"
+  },
+  {
+   "json_path": "/extra/instance_facts",
+   "network_blocks": 80,
+   "scenario_combinations": 4,
+   "build_wall_s": null,
+   "models_built_rss_bytes": null,
+   "rss_at_build_complete": null,
+   "ru_maxrss_self_at_build_complete": null,
+   "path": "data/SRP1/Results/P515S52/campaign_s52_pilot_nopersist/campaign_spec_s52_pilot_nopersist_08790b4d.json"
+  },
+  {
+   "json_path": "/derived_instance_installed_in_child",
+   "network_blocks": 80,
+   "scenario_combinations": 4,
+   "build_wall_s": null,
+   "models_built_rss_bytes": null,
+   "rss_at_build_complete": null,
+   "ru_maxrss_self_at_build_complete": null,
+   "path": "data/SRP1/Results/P515S52/campaign_s52_pilot_nopersist/evals/711fce9aa74d6878_n7_4h_e1/evaluation_record.json"
+  },
+  {
+   "json_path": "/derived_instance_installed_in_child",
+   "network_blocks": 80,
+   "scenario_combinations": 4,
+   "build_wall_s": null,
+   "models_built_rss_bytes": null,
+   "rss_at_build_complete": null,
+   "ru_maxrss_self_at_build_complete": null,
+   "path": "data/SRP1/Results/P515S52/campaign_s52_pilot_nopersist/evals/7d53b6f21b686a44_x0/evaluation_record.json"
+  },
+  {
+   "json_path": "/extra/instance_facts",
+   "network_blocks": 80,
+   "scenario_combinations": 4,
+   "build_wall_s": null,
+   "models_built_rss_bytes": null,
+   "rss_at_build_complete": null,
+   "ru_maxrss_self_at_build_complete": null,
+   "path": "data/SRP1/Results/P515S52/campaign_s52_pilot_repro/campaign_spec_s52_pilot_repro_444ee0d0.json"
+  },
+  {
+   "json_path": "/points/x0/derived_instance_installed_in_child",
+   "network_blocks": 80,
+   "scenario_combinations": 4,
+   "build_wall_s": null,
+   "models_built_rss_bytes": null,
+   "rss_at_build_complete": null,
+   "ru_maxrss_self_at_build_complete": null,
+   "path": "data/SRP1/Results/P515S52/campaign_s52_pilot_repro_nopersist/campaign_results.json"
+  },
+  {
+   "json_path": "/extra/instance_facts",
+   "network_blocks": 80,
+   "scenario_combinations": 4,
+   "build_wall_s": null,
+   "models_built_rss_bytes": null,
+   "rss_at_build_complete": null,
+   "ru_maxrss_self_at_build_complete": null,
+   "path": "data/SRP1/Results/P515S52/campaign_s52_pilot_repro_nopersist/campaign_spec_s52_pilot_repro_nopersist_2d0fccd5.json"
+  },
+  {
+   "json_path": "/derived_instance_installed_in_child",
+   "network_blocks": 80,
+   "scenario_combinations": 4,
+   "build_wall_s": null,
+   "models_built_rss_bytes": null,
+   "rss_at_build_complete": null,
+   "ru_maxrss_self_at_build_complete": null,
+   "path": "data/SRP1/Results/P515S52/campaign_s52_pilot_repro_nopersist/evals/7d53b6f21b686a44_x0/evaluation_record.json"
+  },
+  {
+   "json_path": "/checks/C_child_prerun/install",
+   "network_blocks": 80,
+   "scenario_combinations": null,
+   "build_wall_s": null,
+   "models_built_rss_bytes": null,
+   "rss_at_build_complete": null,
+   "ru_maxrss_self_at_build_complete": null,
+   "path": "data/SRP1/Results/P515S52/pilot_checks/r1/pilot_checks.json"
+  },
+  {
+   "json_path": "/facts",
+   "network_blocks": 80,
+   "scenario_combinations": 4,
+   "build_wall_s": null,
+   "models_built_rss_bytes": null,
+   "rss_at_build_complete": null,
+   "ru_maxrss_self_at_build_complete": null,
+   "path": "data/SRP1/Results/P515S52/pilot_instance/instance_record.json"
+  },
+  {
+   "json_path": "/extra/instance_facts",
+   "network_blocks": 80,
+   "scenario_combinations": 4,
+   "build_wall_s": null,
+   "models_built_rss_bytes": null,
+   "rss_at_build_complete": null,
+   "ru_maxrss_self_at_build_complete": null,
+   "path": "data/SRP1/Results/P515S53/alpha_row/campaign_s53_alpha_row/campaign_spec_s53_alpha_row_870f3af8.json"
+  },
+  {
+   "json_path": "/extra/instance_facts",
+   "network_blocks": 80,
+   "scenario_combinations": 4,
+   "build_wall_s": null,
+   "models_built_rss_bytes": null,
+   "rss_at_build_complete": null,
+   "ru_maxrss_self_at_build_complete": null,
+   "path": "data/SRP1/Results/P515S53/alpha_row/campaign_s53_alpha_row_smoke/campaign_spec_s53_alpha_row_smoke_44bc7931.json"
+  },
+  {
+   "json_path": "/derived_instance_installed_in_child",
+   "network_blocks": 80,
+   "scenario_combinations": 4,
+   "build_wall_s": null,
+   "models_built_rss_bytes": null,
+   "rss_at_build_complete": null,
+   "ru_maxrss_self_at_build_complete": null,
+   "path": "data/SRP1/Results/P515S53/alpha_row/campaign_s53_alpha_row_smoke/evals/7d53b6f21b686a44_x0_a0p50/evaluation_record.json"
+  },
+  {
+   "json_path": "/extra/instance_facts",
+   "network_blocks": 80,
+   "scenario_combinations": 4,
+   "build_wall_s": null,
+   "models_built_rss_bytes": null,
+   "rss_at_build_complete": null,
+   "ru_maxrss_self_at_build_complete": null,
+   "path": "data/SRP1/Results/P515S53/alpha_row/campaign_s53_alpha_row_smoke_r2/campaign_spec_s53_alpha_row_smoke_r2_c28eaa4d.json"
+  },
+  {
+   "json_path": "/derived_instance_installed_in_child",
+   "network_blocks": 80,
+   "scenario_combinations": 4,
+   "build_wall_s": null,
+   "models_built_rss_bytes": null,
+   "rss_at_build_complete": null,
+   "ru_maxrss_self_at_build_complete": null,
+   "path": "data/SRP1/Results/P515S53/alpha_row/campaign_s53_alpha_row_smoke_r2/evals/7d53b6f21b686a44_x0_a0p50/evaluation_record.json"
+  },
+  {
+   "json_path": "/extra/instance_facts",
+   "network_blocks": 80,
+   "scenario_combinations": 4,
+   "build_wall_s": null,
+   "models_built_rss_bytes": null,
+   "rss_at_build_complete": null,
+   "ru_maxrss_self_at_build_complete": null,
+   "path": "data/SRP1/Results/P515S53/alpha_row/campaign_s53_alpha_row_v25/campaign_spec_s53_alpha_row_v25_70965374.json"
+  },
+  {
+   "json_path": "/derived_instance_installed_in_child",
+   "network_blocks": 80,
+   "scenario_combinations": 4,
+   "build_wall_s": null,
+   "models_built_rss_bytes": null,
+   "rss_at_build_complete": null,
+   "ru_maxrss_self_at_build_complete": null,
+   "path": "data/SRP1/Results/P515S53/alpha_row/campaign_s53_alpha_row_v25/evals/1bb2d63a07273887_x0_a1p00/evaluation_record.json"
+  },
+  {
+   "json_path": "/derived_instance_installed_in_child",
+   "network_blocks": 80,
+   "scenario_combinations": 4,
+   "build_wall_s": null,
+   "models_built_rss_bytes": null,
+   "rss_at_build_complete": null,
+   "ru_maxrss_self_at_build_complete": null,
+   "path": "data/SRP1/Results/P515S53/alpha_row/campaign_s53_alpha_row_v25/evals/62b46280a65f7744_x0_a0p25/evaluation_record.json"
+  },
+  {
+   "json_path": "/derived_instance_installed_in_child",
+   "network_blocks": 80,
+   "scenario_combinations": 4,
+   "build_wall_s": null,
+   "models_built_rss_bytes": null,
+   "rss_at_build_complete": null,
+   "ru_maxrss_self_at_build_complete": null,
+   "path": "data/SRP1/Results/P515S53/alpha_row/campaign_s53_alpha_row_v25/evals/711fce9aa74d6878_n7_4h_e1_a0p50/evaluation_record.json"
+  },
+  {
+   "json_path": "/derived_instance_installed_in_child",
+   "network_blocks": 80,
+   "scenario_combinations": 4,
+   "build_wall_s": null,
+   "models_built_rss_bytes": null,
+   "rss_at_build_complete": null,
+   "ru_maxrss_self_at_build_complete": null,
+   "path": "data/SRP1/Results/P515S53/alpha_row/campaign_s53_alpha_row_v25/evals/7516903c91153a29_x0_a0p10/evaluation_record.json"
+  },
+  {
+   "json_path": "/derived_instance_installed_in_child",
+   "network_blocks": 80,
+   "scenario_combinations": 4,
+   "build_wall_s": null,
+   "models_built_rss_bytes": null,
+   "rss_at_build_complete": null,
+   "ru_maxrss_self_at_build_complete": null,
+   "path": "data/SRP1/Results/P515S53/alpha_row/campaign_s53_alpha_row_v25/evals/7d53b6f21b686a44_x0_a0p50/evaluation_record.json"
+  },
+  {
+   "json_path": "/derived_instance_installed_in_child",
+   "network_blocks": 80,
+   "scenario_combinations": 4,
+   "build_wall_s": null,
+   "models_built_rss_bytes": null,
+   "rss_at_build_complete": null,
+   "ru_maxrss_self_at_build_complete": null,
+   "path": "data/SRP1/Results/P515S53/alpha_row/campaign_s53_alpha_row_v25/evals/b123cd978794d690_x0_a0p00/evaluation_record.json"
+  },
+  {
+   "json_path": "/instance/facts",
+   "network_blocks": 80,
+   "scenario_combinations": 9,
+   "build_wall_s": null,
+   "models_built_rss_bytes": null,
+   "rss_at_build_complete": null,
+   "ru_maxrss_self_at_build_complete": null,
+   "path": "data/SRP1/Results/P515S53/frozen_s53_spec_v33_f0f7a4a4.json"
+  },
+  {
+   "json_path": "/memory_model/probes/s52_pilot_2x2",
+   "network_blocks": 80,
+   "scenario_combinations": 4,
+   "build_wall_s": 37.20543694496155,
+   "models_built_rss_bytes": 3622699008,
+   "rss_at_build_complete": null,
+   "ru_maxrss_self_at_build_complete": null,
+   "path": "data/SRP1/Results/P515S53/frozen_s53_spec_v33_f0f7a4a4.json"
+  },
+  {
+   "json_path": "/memory_model/probes/s53_3x3",
+   "network_blocks": 80,
+   "scenario_combinations": 9,
+   "build_wall_s": 76.6831967830658,
+   "models_built_rss_bytes": 7436926976,
+   "rss_at_build_complete": null,
+   "ru_maxrss_self_at_build_complete": null,
+   "path": "data/SRP1/Results/P515S53/frozen_s53_spec_v33_f0f7a4a4.json"
+  },
+  {
+   "json_path": "/memory_model/probes/srp1",
+   "network_blocks": 48,
+   "scenario_combinations": 1,
+   "build_wall_s": 6.3847479820251465,
+   "models_built_rss_bytes": 941621248,
+   "rss_at_build_complete": null,
+   "ru_maxrss_self_at_build_complete": null,
+   "path": "data/SRP1/Results/P515S53/frozen_s53_spec_v33_f0f7a4a4.json"
+  },
+  {
+   "json_path": "/instance/facts",
+   "network_blocks": 80,
+   "scenario_combinations": 9,
+   "build_wall_s": null,
+   "models_built_rss_bytes": null,
+   "rss_at_build_complete": null,
+   "ru_maxrss_self_at_build_complete": null,
+   "path": "data/SRP1/Results/P515S53/frozen_s53_spec_v34_e1940b92.json"
+  },
+  {
+   "json_path": "/memory_model/probes/s52_pilot_2x2",
+   "network_blocks": 80,
+   "scenario_combinations": 4,
+   "build_wall_s": 37.20543694496155,
+   "models_built_rss_bytes": 3622699008,
+   "rss_at_build_complete": null,
+   "ru_maxrss_self_at_build_complete": null,
+   "path": "data/SRP1/Results/P515S53/frozen_s53_spec_v34_e1940b92.json"
+  },
+  {
+   "json_path": "/memory_model/probes/s53_3x3",
+   "network_blocks": 80,
+   "scenario_combinations": 9,
+   "build_wall_s": 76.6831967830658,
+   "models_built_rss_bytes": 7436926976,
+   "rss_at_build_complete": null,
+   "ru_maxrss_self_at_build_complete": null,
+   "path": "data/SRP1/Results/P515S53/frozen_s53_spec_v34_e1940b92.json"
+  },
+  {
+   "json_path": "/memory_model/probes/srp1",
+   "network_blocks": 48,
+   "scenario_combinations": 1,
+   "build_wall_s": 6.3847479820251465,
+   "models_built_rss_bytes": 941621248,
+   "rss_at_build_complete": null,
+   "ru_maxrss_self_at_build_complete": null,
+   "path": "data/SRP1/Results/P515S53/frozen_s53_spec_v34_e1940b92.json"
+  },
+  {
+   "json_path": "/instance/facts",
+   "network_blocks": 80,
+   "scenario_combinations": 9,
+   "build_wall_s": null,
+   "models_built_rss_bytes": null,
+   "rss_at_build_complete": null,
+   "ru_maxrss_self_at_build_complete": null,
+   "path": "data/SRP1/Results/P515S53/frozen_s53_spec_v35_8aa98dbf.json"
+  },
+  {
+   "json_path": "/instance/facts",
+   "network_blocks": 80,
+   "scenario_combinations": 9,
+   "build_wall_s": null,
+   "models_built_rss_bytes": null,
+   "rss_at_build_complete": null,
+   "ru_maxrss_self_at_build_complete": null,
+   "path": "data/SRP1/Results/P515S53/frozen_s53_spec_v36_14bbddc7.json"
+  },
+  {
+   "json_path": "/facts",
+   "network_blocks": 80,
+   "scenario_combinations": 9,
+   "build_wall_s": null,
+   "models_built_rss_bytes": null,
+   "rss_at_build_complete": null,
+   "ru_maxrss_self_at_build_complete": null,
+   "path": "data/SRP1/Results/P515S53/w89_3x3/instance/instance_record.json"
+  },
+  {
+   "json_path": "/",
+   "network_blocks": 80,
+   "scenario_combinations": 4,
+   "build_wall_s": 37.20543694496155,
+   "models_built_rss_bytes": 3622699008,
+   "rss_at_build_complete": null,
+   "ru_maxrss_self_at_build_complete": null,
+   "path": "data/SRP1/Results/P515S53/w89_3x3/memory_probe/memory_probe_s52_pilot_2x2.json"
+  },
+  {
+   "json_path": "/",
+   "network_blocks": 80,
+   "scenario_combinations": 9,
+   "build_wall_s": 76.6831967830658,
+   "models_built_rss_bytes": 7436926976,
+   "rss_at_build_complete": null,
+   "ru_maxrss_self_at_build_complete": null,
+   "path": "data/SRP1/Results/P515S53/w89_3x3/memory_probe/memory_probe_s53_3x3.json"
+  },
+  {
+   "json_path": "/",
+   "network_blocks": 48,
+   "scenario_combinations": 1,
+   "build_wall_s": 6.3847479820251465,
+   "models_built_rss_bytes": 941621248,
+   "rss_at_build_complete": null,
+   "ru_maxrss_self_at_build_complete": null,
+   "path": "data/SRP1/Results/P515S53/w89_3x3/memory_probe/memory_probe_srp1.json"
+  },
+  {
+   "json_path": "/derived_instance_installed_in_child",
+   "network_blocks": 80,
+   "scenario_combinations": 9,
+   "build_wall_s": null,
+   "models_built_rss_bytes": null,
+   "rss_at_build_complete": null,
+   "ru_maxrss_self_at_build_complete": null,
+   "path": "data/SRP1/Results/P515S53/w90_3x3/campaign_s53_w91_3x3_pair/evals/c82522f470b35b58_n7_4h_e1/evaluation_record.json"
+  },
+  {
+   "json_path": "/derived_instance_installed_in_child",
+   "network_blocks": 80,
+   "scenario_combinations": 9,
+   "build_wall_s": null,
+   "models_built_rss_bytes": null,
+   "rss_at_build_complete": null,
+   "ru_maxrss_self_at_build_complete": null,
+   "path": "data/SRP1/Results/P515S53/w90_3x3/campaign_s53_w91_3x3_pair/evals/f6e9cd53fdbb8ee8_x0/evaluation_record.json"
+  },
+  {
+   "json_path": "/derived_instance_installed_in_child",
+   "network_blocks": 80,
+   "scenario_combinations": 9,
+   "build_wall_s": null,
+   "models_built_rss_bytes": null,
+   "rss_at_build_complete": null,
+   "ru_maxrss_self_at_build_complete": null,
+   "path": "data/SRP1/Results/P515S53/w90_3x3/campaign_s53_w91_3x3_smoke_boff/evals/f6e9cd53fdbb8ee8_x0/evaluation_record.json"
+  },
+  {
+   "json_path": "/derived_instance_installed_in_child",
+   "network_blocks": 80,
+   "scenario_combinations": 9,
+   "build_wall_s": null,
+   "models_built_rss_bytes": null,
+   "rss_at_build_complete": null,
+   "ru_maxrss_self_at_build_complete": null,
+   "path": "data/SRP1/Results/P515S53/w90_3x3/campaign_s53_w91_3x3_smoke_bon/evals/f6e9cd53fdbb8ee8_x0/evaluation_record.json"
+  },
+  {
+   "json_path": "/derived_instance_installed_in_child",
+   "network_blocks": 80,
+   "scenario_combinations": 9,
+   "build_wall_s": null,
+   "models_built_rss_bytes": null,
+   "rss_at_build_complete": null,
+   "ru_maxrss_self_at_build_complete": null,
+   "path": "data/SRP1/Results/P515S53/w98_continuation/campaign_s53_w98_x0_continuation_r2/evals/25b92ae0f1f2c02e_x0_cont/evaluation_record.json"
+  }
+ ]
+}
+=== Z5
+row 1 ref:7aa017f0 k* 181 ess_schedule_per_cycle exists False
+   uncommitted text only        ESS hourly charge / discharge / net power, ESSO side, at k*  committed=[] uncommitted_text=['ess_entry_stride_baseline.jsonl'] pickle=['certified_models.pkl']
+   uncommitted text only        ESS hourly active power, network copies (TSO / DSO) and consensus z, at k*  committed=[] uncommitted_text=['ess_entry_stride_baseline.jsonl'] pickle=['certified_models.pkl']
+   uncommitted text only        ESS hourly reactive power (all copies), at k*  committed=[] uncommitted_text=['ess_entry_stride_baseline.jsonl'] pickle=['certified_models.pkl']
+   certified_models.pkl only    ESS hourly state of charge / stored energy, at k*  committed=[] uncommitted_text=[] pickle=['certified_models.pkl']
+   committed record             SoH per cohort and year, at k*  committed=['soh_floor_sidecar_baseline.jsonl', 'boyd_terminal.json'] uncommitted_text=[] pickle=[]
+   committed record             Available capacity per year (E^Av, S^Av), terminal  committed=['evaluation_record.json'] uncommitted_text=[] pickle=[]
+   committed record             EFC per day, at k*  committed=['per_cycle_record.jsonl'] uncommitted_text=['ess_entry_stride_baseline.jsonl'] pickle=[]
+   committed record             Market price per hour  committed=['interface_settlement_detail_s31c.json'] uncommitted_text=[] pickle=[]
+   committed record             Interface P / Q per hour, TSO and DSO side, terminal  committed=['interface_settlement_detail_s31c.json'] uncommitted_text=[] pickle=[]
+   committed record             Block weight per (year, day)  committed=['component_levels_terminal.json', 'interface_settlement_detail_s31c.json'] uncommitted_text=[] pickle=[]
+   committed record             Per-block cost components, terminal / at k*  committed=['component_levels_terminal.json', 'recourse_blocks_all.jsonl'] uncommitted_text=[] pickle=[]
+   committed record             Interface consensus duals per hour, at k* (scaled, unconverted)  committed=['interface_duals_per_cycle.jsonl'] uncommitted_text=[] pickle=[]
+   committed record             Interface voltage per hour, terminal  committed=['interface_voltage_terminal.json'] uncommitted_text=[] pickle=[]
+   committed record             Gross operational cost Q(k*)  committed=['per_cycle_record.jsonl'] uncommitted_text=[] pickle=[]
+   SoC key scan: {} files 28
+row 2 ref:bd504ecf k* 172 ess_schedule_per_cycle exists False
+   uncommitted text only        ESS hourly charge / discharge / net power, ESSO side, at k*  committed=[] uncommitted_text=['esso_capture/s39_D/node{n}_cycle{k}.jsonl', 'ess_entry_stride_baseline.jsonl'] pickle=['certified_models.pkl']
+   uncommitted text only        ESS hourly active power, network copies (TSO / DSO) and consensus z, at k*  committed=[] uncommitted_text=['ess_entry_stride_baseline.jsonl'] pickle=['certified_models.pkl']
+   uncommitted text only        ESS hourly reactive power (all copies), at k*  committed=[] uncommitted_text=['ess_entry_stride_baseline.jsonl'] pickle=['certified_models.pkl']
+   certified_models.pkl only    ESS hourly state of charge / stored energy, at k*  committed=[] uncommitted_text=[] pickle=['certified_models.pkl']
+   committed record             SoH per cohort and year, at k*  committed=['soh_floor_sidecar_baseline.jsonl', 'boyd_terminal.json'] uncommitted_text=[] pickle=[]
+   committed record             Available capacity per year (E^Av, S^Av), terminal  committed=['evaluation_record.json'] uncommitted_text=[] pickle=[]
+   committed record             EFC per day, at k*  committed=['per_cycle_record.jsonl'] uncommitted_text=['ess_entry_stride_baseline.jsonl'] pickle=[]
+   committed record             Market price per hour  committed=['interface_settlement_detail_s31c.json'] uncommitted_text=[] pickle=[]
+   committed record             Interface P / Q per hour, TSO and DSO side, terminal  committed=['interface_settlement_detail_s31c.json'] uncommitted_text=[] pickle=[]
+   committed record             Block weight per (year, day)  committed=['component_levels_terminal.json', 'interface_settlement_detail_s31c.json'] uncommitted_text=[] pickle=[]
+   committed record             Per-block cost components, terminal / at k*  committed=['component_levels_terminal.json', 'recourse_blocks_all.jsonl'] uncommitted_text=[] pickle=[]
+   committed record             Interface consensus duals per hour, at k* (scaled, unconverted)  committed=['interface_duals_per_cycle.jsonl'] uncommitted_text=[] pickle=[]
+   committed record             Interface voltage per hour, terminal  committed=['interface_voltage_terminal.json'] uncommitted_text=[] pickle=[]
+   committed record             Gross operational cost Q(k*)  committed=['per_cycle_record.jsonl'] uncommitted_text=[] pickle=[]
+   SoC key scan: {} files 202
+commit now: [
+ {
+  "row": 2,
+  "path": "data/SRP1/Results/P515S53/w101_srp1_continuation/campaign_s53_w101_srp1_cont_n7_4h_e1/evals/3f084f2ffaeef2b7_n7_4h_e1/esso_capture/s39_D/node7_cycle172.jsonl",
+  "size": 384593,
+  "sha256": "ac8bc61e6798cba31c1541c91df39d15311a0b4991be5ae9f547175c83db8a2a",
+  "why": "ESS hourly charge / discharge / net power, ESSO side, at k*"
+ }
+]
+ess_schedule search: {"scope": "every directory under data/ (os.walk) holding a file named ess_schedule_per_cycle.jsonl", "n_dirs_with_file": 62, "dirs_matching_row1_or_row2_eval_key": []}
+inventory: 2303 files, 2239 uncommitted, 3172648673 bytes uncommitted
+=== Z7
+   {"node_id": 7, "year": "2025", "day": "Autumn", "period": 18, "hour": 19, "p_int_dso_mw": -3.156856856401926, "p_int_tso_mw": -3.156878757433497, "material_dso": true, "admm_block_weight": 455.0, "market_price_eur_per_mwh": 161.80042086881863, "market_price_by_scenario": {"0_0": 161.80042086881863}, "reverse_energy_block_weighted_mwh": 1436.3698696628765, "first_order_value_eur_at_market_price": 232405.24943474357, "lambda_raw_at_cycle_181": {"lambda_pf_p_tso": 0.06499795641357435, "lambda_pf_p_dso": -0.06499795641357435}}
+   {"node_id": 7, "year": "2025", "day": "Spring", "period": 21, "hour": 22, "p_int_dso_mw": -2.4015618438831847, "p_int_tso_mw": -2.401574614468189, "material_dso": true, "admm_block_weight": 460.0, "market_price_eur_per_mwh": 134.53195913830874, "market_price_by_scenario": {"0_0": 134.53195913830874}, "reverse_energy_block_weighted_mwh": 1104.718448186265, "first_order_value_eur_at_market_price": 148619.93713073045, "lambda_raw_at_cycle_181": {"lambda_pf_p_tso": 0.8298793175040711, "lambda_pf_p_dso": -0.8298793175040711}}
+   {"node_id": 7, "year": "2025", "day": "Spring", "period": 1, "hour": 2, "p_int_dso_mw": -1.6016853043904722, "p_int_tso_mw": -1.6016853044222734, "material_dso": true, "admm_block_weight": 460.0, "market_price_eur_per_mwh": 117.72769218863633, "market_price_by_scenario": {"0_0": 117.72769218863633}, "reverse_energy_block_weighted_mwh": 736.7752400196172, "first_order_value_eur_at_market_price": 86738.84866923814, "lambda_raw_at_cycle_181": {"lambda_pf_p_tso": 0.03240023176354522, "lambda_pf_p_dso": -0.03240023176354522}}
+   {"node_id": 7, "year": "2025", "day": "Summer", "period": 21, "hour": 22, "p_int_dso_mw": -0.06689106638714658, "p_int_tso_mw": -0.06689114128683989, "material_dso": true, "admm_block_weight": 455.0, "market_price_eur_per_mwh": 131.71640251884176, "market_price_by_scenario": {"0_0": 131.71640251884176}, "reverse_energy_block_weighted_mwh": 30.43543520615169, "first_order_value_eur_at_market_price": 4008.846034449604, "lambda_raw_at_cycle_181": {"lambda_pf_p_tso": 0.5320498832558036, "lambda_pf_p_dso": -0.5320498832558036}}
+{"block_weight_sum": 1830.0, "reverse_energy_block_weighted_mwh": 3308.2989930749104, "first_order_value_eur": 471772.88126916176} {"path": "data/SRP1/Results/P515S53/w116_benchmark_nrf/w116_zero_solve_checks/reverse_flow_count_q181.json", "instance": {"candidate_key": "8435c71859ddde68e7ae5818b4ff91c03b4171791bcfaa70edcc3ddb52bacb57", "cell": "d110bd1a5977df1e_x0", "certification_cycle": 181, "certified_models": {"path": "data/SRP1/Results/P515S53/w101_srp1_continuation/campaign_s53_w101_srp1_cont_x0/evals/d110bd1a5977df1e_x0/certified_models.pkl", "sha256": "99ab1070b0e61cc7818975ce898069d2060d2668bae67c166b58913e9923c33a"}, "label": "x0", "problem": "SRP1", "q181": 653873702.1876609}, "entries_bitwise_equal": true, "count_equal": true, "count_day_weighted_equal": true, "energy_block_weighted_abs_diff": 0.0, "w116_totals_strict": {"count": 4, "count_day_weighted": 1830.0, "count_probability_weighted": 4.0, "energy_mwh_block_weighted": 3308.2989930749104, "energy_mwh_day_weighted": 3308.2989930749104, "energy_mwh_rep_day": 7.2269950710627295}, "report_v3_totals_strict": {"count": 4, "count_day_weighted": 1830.0, "count_probability_weighted": 4.0, "energy_mwh_block_weighted": 3308.2989930749104, "energy_mwh_day_weighted": 3308.2989930749104, "energy_mwh_rep_day": 7.2269950710627295}}
+guards: {"solve_profile_guard": {"label": "P5.15 W182f records Z2/Z3/Z4/Z5/Z7 (never solves)", "counts": {"permitted_solve": 0, "permitted_exec": 0, "blocked_solve": 0, "blocked_exec": 0}, "verify_0_failures": []}, "pickle_counts": {"load": 0, "loads": 0}, "pickle_blocked": true, "forbidden_modules_imported": []}
+output data/SRP1/Results/P515S53/w182f_records/w182f_records.json sha256 405c79c9e146600421a76443692fb23eb69d0d35d90358de14c899d66ddda085
+output data/SRP1/Results/P515S53/w182f_records/z5_rows12_file_manifest.json sha256 7f24d7c5d4b958d4107c25cf3cb21ade0f862a8e24d0a92457cf919bcf47b751

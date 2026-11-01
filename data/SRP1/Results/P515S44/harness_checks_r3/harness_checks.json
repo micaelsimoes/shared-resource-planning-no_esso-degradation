@@ -1,0 +1,998 @@
+{
+ "stage": "P5.15 Addendum 25 item 1 -- campaign harness zero-solve checks",
+ "timestamp_utc": "2026-09-19T11:27:23.108319+00:00",
+ "harness_sha256": "f0037b6acb4e3c595f4eb63bf1b463907bc92eaa69b0186707f23c2d102ccab5",
+ "git_head": "1fdf31421ed6ca111517892e0c8336584cba432e",
+ "C1_canonical_candidate": {
+  "checks": {
+   "key_independent_of_order_and_numeric_spelling": true,
+   "zero_spellings_same_key": true,
+   "gate_candidates_distinct_keys": true,
+   "all_invalid_candidates_rejected": true,
+   "canonical_c_star": true
+  },
+  "keys": {
+   "c_star": "578636daa6d6360d6701764c73ddf795e53c2c37e511e21be1400024f8f6350c",
+   "paper_plan": "d1a02e67107d0bace5f3de92e28df61f2f6be93f6c9d7020a68efffc6d836c0c",
+   "node7_empty": "e30704e6e4dd3765d2cc8960d5a3d48c5adb362bc6fd067dda567f14086b46b5"
+  },
+  "error_cases": {
+   "s_zero_e_positive": {
+    "raised": true,
+    "type": "ValueError",
+    "message": "node 5: s == 0 <=> e == 0 violated (s=0.0, e=1.0)"
+   },
+   "missing_node": {
+    "raised": true,
+    "type": "ValueError",
+    "message": "candidate must cover exactly the active nodes [5, 7, 9]: missing=[9] extra=[]"
+   },
+   "extra_node": {
+    "raised": true,
+    "type": "ValueError",
+    "message": "candidate must cover exactly the active nodes [5, 7, 9]: missing=[] extra=[11]"
+   },
+   "negative": {
+    "raised": true,
+    "type": "ValueError",
+    "message": "node 5: negative s=-1.0"
+   },
+   "nan": {
+    "raised": true,
+    "type": "ValueError",
+    "message": "node 5: non-finite s=nan"
+   }
+  },
+  "eval_ids_c_star_s44_gate": {
+   "run": "p515s44_s44_gate_578636daa6d6360d_run",
+   "precheck": "p515s44_s44_gate_578636daa6d6360d_precheck"
+  },
+  "pass": true
+ },
+ "C2_frozen_spec": {
+  "checks": {
+   "file_sha256_equals_returned": true,
+   "file_name_carries_sha8": true,
+   "load_by_hash_finds_same_file": true,
+   "spec_records_case_file_sha256": true,
+   "spec_records_harness_sha256": true,
+   "spec_records_thread_caps": true,
+   "all_refusals_raised": true
+  },
+  "spec_path": "data/SRP1/Results/P515S44/harness_checks_r3/c2_spec_root/campaign_spec_c2_1ea09b7b.json",
+  "spec_sha256": "1ea09b7b6a20c863150c68f4f405ecb78f01a0def8c33640913f387bb0167a16",
+  "refusals": {
+   "second_freeze_into_nonempty_root": {
+    "raised": true,
+    "type": "RuntimeError",
+    "message": "campaign root exists and is not empty (write-once): /Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S44/harness_checks_r3/c2_spec_root"
+   },
+   "unsupported_override": {
+    "raised": true,
+    "type": "ValueError",
+    "message": "unsupported configuration overrides ['rho']; supported: ['anderson_acceleration']"
+   },
+   "duplicate_candidate": {
+    "raised": true,
+    "type": "ValueError",
+    "message": "duplicate evaluation label or key (candidate x configuration): b / 578636daa6d6360d"
+   }
+  },
+  "pass": true
+ },
+ "C3_campaign_lock": {
+  "checks": {
+   "acquire_writes_pid_and_spec": true,
+   "second_acquire_refused": true,
+   "release_by_wrong_pid_refused": true,
+   "release_ok_and_removed": true,
+   "legacy_lock_blocks_campaign": true,
+   "no_leftover_lock_files": true
+  },
+  "second": {
+   "raised": true,
+   "type": "SystemExit",
+   "message": "REFUSING TO RUN: campaign lock held: /Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S44/harness_checks_r3/c3_campaign.lock ({\"pid\": 68481, \"campaign_id\": \"c3\", \"campaign_spec_sha256\": \"abc\", \"started_utc\": \"2026-09-19T11:27:23.149281+00:00\"})"
+  },
+  "wrong_pid": {
+   "raised": true,
+   "type": "RuntimeError",
+   "message": "campaign lock /Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S44/harness_checks_r3/c3_campaign.lock is not held by pid 1068480: {'pid': 68481, 'campaign_id': 'c3', 'campaign_spec_sha256': 'abc', 'started_utc': '2026-09-19T11:27:23.149281+00:00'}"
+  },
+  "legacy_refusal": {
+   "raised": true,
+   "type": "SystemExit",
+   "message": "REFUSING TO RUN: the legacy one-run lock exists: /Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S44/harness_checks_r3/c3_legacy.lock"
+  },
+  "pass": true
+ },
+ "C4_spawn_stub_evaluations": {
+  "checks": {
+   "four_records_in_batch_order": true,
+   "all_stub_ok_exit_0": true,
+   "spec_sha256_in_every_record": true,
+   "distinct_child_processes": true,
+   "children_are_direct_children_of_parent": true,
+   "child_saw_lock_naming_parent": true,
+   "thread_caps_in_every_child": true,
+   "slot_limit_respected_and_used": true,
+   "wall_consistent_with_2_slots": true,
+   "per_eval_files_present": true,
+   "wait4_rusage_captures_child_memory": true,
+   "reevaluation_in_same_campaign_refused": true,
+   "failing_child_gives_parent_barrier_record": true,
+   "child_refuses_foreign_lock": true,
+   "stub_refused_under_non_test_spec": true
+  },
+  "per_eval": [
+   {
+    "label": "s1",
+    "dir_files": [
+     "child_stderr.log",
+     "child_stdout.log",
+     "evaluation_record.json",
+     "exit_code.txt",
+     "launch.json",
+     "wait4_rusage.json"
+    ],
+    "exit_code": "0",
+    "record_status": "stub",
+    "record_spec_sha256_ok": true,
+    "child_pid": 68487,
+    "child_ppid": 68481,
+    "thread_caps_seen": {
+     "OMP_NUM_THREADS": "1",
+     "MKL_NUM_THREADS": "1",
+     "OPENBLAS_NUM_THREADS": "1",
+     "VECLIB_MAXIMUM_THREADS": "1",
+     "NUMEXPR_NUM_THREADS": "1"
+    },
+    "wait4_ru_maxrss": 121749504,
+    "child_self_ru_maxrss": 121241600,
+    "lock_pid_seen": 68481,
+    "PYTHONHASHSEED_in_child": null
+   },
+   {
+    "label": "s2",
+    "dir_files": [
+     "child_stderr.log",
+     "child_stdout.log",
+     "evaluation_record.json",
+     "exit_code.txt",
+     "launch.json",
+     "wait4_rusage.json"
+    ],
+    "exit_code": "0",
+    "record_status": "stub",
+    "record_spec_sha256_ok": true,
+    "child_pid": 68488,
+    "child_ppid": 68481,
+    "thread_caps_seen": {
+     "OMP_NUM_THREADS": "1",
+     "MKL_NUM_THREADS": "1",
+     "OPENBLAS_NUM_THREADS": "1",
+     "VECLIB_MAXIMUM_THREADS": "1",
+     "NUMEXPR_NUM_THREADS": "1"
+    },
+    "wait4_ru_maxrss": 121651200,
+    "child_self_ru_maxrss": 121143296,
+    "lock_pid_seen": 68481,
+    "PYTHONHASHSEED_in_child": null
+   },
+   {
+    "label": "s3",
+    "dir_files": [
+     "child_stderr.log",
+     "child_stdout.log",
+     "evaluation_record.json",
+     "exit_code.txt",
+     "launch.json",
+     "wait4_rusage.json"
+    ],
+    "exit_code": "0",
+    "record_status": "stub",
+    "record_spec_sha256_ok": true,
+    "child_pid": 68489,
+    "child_ppid": 68481,
+    "thread_caps_seen": {
+     "OMP_NUM_THREADS": "1",
+     "MKL_NUM_THREADS": "1",
+     "OPENBLAS_NUM_THREADS": "1",
+     "VECLIB_MAXIMUM_THREADS": "1",
+     "NUMEXPR_NUM_THREADS": "1"
+    },
+    "wait4_ru_maxrss": 121765888,
+    "child_self_ru_maxrss": 121290752,
+    "lock_pid_seen": 68481,
+    "PYTHONHASHSEED_in_child": null
+   },
+   {
+    "label": "s4",
+    "dir_files": [
+     "child_stderr.log",
+     "child_stdout.log",
+     "evaluation_record.json",
+     "exit_code.txt",
+     "launch.json",
+     "wait4_rusage.json"
+    ],
+    "exit_code": "0",
+    "record_status": "stub",
+    "record_spec_sha256_ok": true,
+    "child_pid": 68490,
+    "child_ppid": 68481,
+    "thread_caps_seen": {
+     "OMP_NUM_THREADS": "1",
+     "MKL_NUM_THREADS": "1",
+     "OPENBLAS_NUM_THREADS": "1",
+     "VECLIB_MAXIMUM_THREADS": "1",
+     "NUMEXPR_NUM_THREADS": "1"
+    },
+    "wait4_ru_maxrss": 122355712,
+    "child_self_ru_maxrss": 121896960,
+    "lock_pid_seen": 68481,
+    "PYTHONHASHSEED_in_child": null
+   }
+  ],
+  "batch_info": {
+   "max_concurrent_observed": 2,
+   "timeline": [
+    {
+     "event": "start",
+     "label": "s1",
+     "pid": 68487,
+     "t": 1789817243.181299
+    },
+    {
+     "event": "start",
+     "label": "s2",
+     "pid": 68488,
+     "t": 1789817243.182975
+    },
+    {
+     "event": "end",
+     "label": "s1",
+     "pid": 68487,
+     "t": 1789817248.188726,
+     "exit_code": 0
+    },
+    {
+     "event": "end",
+     "label": "s2",
+     "pid": 68488,
+     "t": 1789817248.190131,
+     "exit_code": 0
+    },
+    {
+     "event": "start",
+     "label": "s3",
+     "pid": 68489,
+     "t": 1789817253.197435
+    },
+    {
+     "event": "start",
+     "label": "s4",
+     "pid": 68490,
+     "t": 1789817253.200934
+    },
+    {
+     "event": "end",
+     "label": "s3",
+     "pid": 68489,
+     "t": 1789817258.207028,
+     "exit_code": 0
+    },
+    {
+     "event": "end",
+     "label": "s4",
+     "pid": 68490,
+     "t": 1789817258.2083042,
+     "exit_code": 0
+    }
+   ]
+  },
+  "wall_s": 15.029723882675171,
+  "peak_concurrency_from_timeline": 2,
+  "rerun_refusal": {
+   "raised": true,
+   "type": "RuntimeError",
+   "message": "evaluation dir already exists (write-once, never reusable): /Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S44/harness_checks_r3/c4_stub_campaign/evals/578636daa6d6360d_s1"
+  },
+  "fail_record": {
+   "schema": "p515_s44_evaluation_record_v2",
+   "campaign_id": "c4f",
+   "campaign_spec_path": "data/SRP1/Results/P515S44/harness_checks_r3/c4_fail_campaign/campaign_spec_c4f_0f059fc1.json",
+   "campaign_spec_sha256": "0f059fc1c7b154502ab40a2e20e2966f479e5b4139cdf05641605e8d84cb5628",
+   "candidate_label": "fail1",
+   "candidate_canonical": {
+    "investment_year": 2025,
+    "nodes": {
+     "5": [
+      0.96875,
+      3.875
+     ],
+     "7": [
+      0.96875,
+      3.875
+     ],
+     "9": [
+      0.96875,
+      3.875
+     ]
+    }
+   },
+   "candidate_key": "578636daa6d6360d6701764c73ddf795e53c2c37e511e21be1400024f8f6350c",
+   "eval_key": "578636daa6d6360d6701764c73ddf795e53c2c37e511e21be1400024f8f6350c",
+   "status": "harness_error",
+   "barrier": true,
+   "barrier_cause": "child exited with code 3 and wrote no evaluation_record.json",
+   "stderr_tail": [
+    "stub child: failing on purpose\n"
+   ],
+   "stdout_tail": [
+    "[S44-CHILD] pid=68497 ppid=68481 label=fail1 key=578636daa6d6360d caps={'OMP_NUM_THREADS': '1', 'MKL_NUM_THREADS': '1', 'OPENBLAS_NUM_THREADS': '1', 'VECLIB_MAXIMUM_THREADS': '1', 'NUMEXPR_NUM_THREADS': '1'} PYTHONHASHSEED=None\n"
+   ],
+   "synthesized_by_parent": true,
+   "parent_view": {
+    "exit_code": 3,
+    "wall_s": 5.0048301219940186,
+    "wait4_ru_maxrss": 20922368
+   }
+  },
+  "foreign_lock_record": {
+   "schema": "p515_s44_evaluation_record_v2",
+   "campaign_id": "c4l",
+   "campaign_spec_path": "data/SRP1/Results/P515S44/harness_checks_r3/c4_foreign_lock_campaign/campaign_spec_c4l_3029ea43.json",
+   "campaign_spec_sha256": "3029ea43d2c5eaa78ca6b2d4643d48e0582af773c2a4fce55258676bc0531ad4",
+   "candidate_label": "foreign",
+   "candidate_canonical": {
+    "investment_year": 2025,
+    "nodes": {
+     "5": [
+      0.96875,
+      3.875
+     ],
+     "7": [
+      0.96875,
+      3.875
+     ],
+     "9": [
+      0.96875,
+      3.875
+     ]
+    }
+   },
+   "candidate_key": "578636daa6d6360d6701764c73ddf795e53c2c37e511e21be1400024f8f6350c",
+   "eval_key": "578636daa6d6360d6701764c73ddf795e53c2c37e511e21be1400024f8f6350c",
+   "status": "harness_error",
+   "barrier": true,
+   "barrier_cause": "child exited with code 1 and wrote no evaluation_record.json",
+   "stderr_tail": [
+    "CHILD REFUSES: campaign lock pid 1 != parent pid 68481\n"
+   ],
+   "stdout_tail": [],
+   "synthesized_by_parent": true,
+   "parent_view": {
+    "exit_code": 1,
+    "wall_s": 5.006561994552612,
+    "wait4_ru_maxrss": 20873216
+   }
+  },
+  "nonstub_record": {
+   "schema": "p515_s44_evaluation_record_v2",
+   "campaign_id": "c4n",
+   "campaign_spec_path": "data/SRP1/Results/P515S44/harness_checks_r3/c4_nonstub_spec_campaign/campaign_spec_c4n_8ca5f6d7.json",
+   "campaign_spec_sha256": "8ca5f6d7174e6882496b0b3f276e61cada1c1c639211584d4dc882cff4cb95b5",
+   "candidate_label": "nonstub",
+   "candidate_canonical": {
+    "investment_year": 2025,
+    "nodes": {
+     "5": [
+      0.96875,
+      3.875
+     ],
+     "7": [
+      0.96875,
+      3.875
+     ],
+     "9": [
+      0.96875,
+      3.875
+     ]
+    }
+   },
+   "candidate_key": "578636daa6d6360d6701764c73ddf795e53c2c37e511e21be1400024f8f6350c",
+   "eval_key": "578636daa6d6360d6701764c73ddf795e53c2c37e511e21be1400024f8f6350c",
+   "status": "harness_error",
+   "barrier": true,
+   "barrier_cause": "child exited with code 1 and wrote no evaluation_record.json",
+   "stderr_tail": [
+    "CHILD REFUSES: stub mode requested but the frozen spec is not a test-only stub spec\n"
+   ],
+   "stdout_tail": [
+    "[S44-CHILD] pid=68506 ppid=68481 label=nonstub key=578636daa6d6360d caps={'OMP_NUM_THREADS': '1', 'MKL_NUM_THREADS': '1', 'OPENBLAS_NUM_THREADS': '1', 'VECLIB_MAXIMUM_THREADS': '1', 'NUMEXPR_NUM_THREADS': '1'} PYTHONHASHSEED=None\n"
+   ],
+   "synthesized_by_parent": true,
+   "parent_view": {
+    "exit_code": 1,
+    "wall_s": 5.006000757217407,
+    "wait4_ru_maxrss": 20774912
+   }
+  },
+  "pass": true
+ },
+ "C5_record_schema": {
+  "checks": {
+   "all_2_5_keys_present": true,
+   "certified": true,
+   "certification_cycle_139": true,
+   "certified_cost_equals_D": true,
+   "bar_is_max_step_last_10": true,
+   "pf_first_pass_matches_committed_s39_evaluation": true,
+   "ess_terminal_ratio_matches_committed_s39_evaluation": true,
+   "settlement_remainder_equals_component_levels": true,
+   "storage_per_node_three_nodes_with_efc": true,
+   "record_json_serializable": true,
+   "truncated_uncertified_is_barrier": true,
+   "zero_node_marked_no_storage": true
+  },
+  "record_path": "data/SRP1/Results/P515S44/harness_checks_r3/c5_record_from_D_reference.json",
+  "record_summary": {
+   "status": "certified",
+   "certification_cycle": 139,
+   "certified_cost": 650966975.2943751,
+   "first_pass_cycle_per_channel": {
+    "v": 48,
+    "pf": 125,
+    "ess": 75
+   },
+   "settlement_remainder": {
+    "definition": "recourse_components.interface_settlement_total: T_TSO + sum(T_DSO), the non-cancelling interface settlement at the terminal point, excluded from the cost",
+    "value": 36679.078142642975
+   }
+  },
+  "bar": 7898.630394935608,
+  "pass": true
+ },
+ "C6_capture_paths": {
+  "checks": {
+   "assert_record_capture_paths_passes": true
+  },
+  "detail": {
+   "trajectory_field_boyd_all_pass": true,
+   "trajectory_field_boyd_ess_channel_pass": true,
+   "trajectory_field_boyd_ess_dual_ratio": true,
+   "trajectory_field_boyd_ess_primal_ratio": true,
+   "trajectory_field_boyd_pf_channel_pass": true,
+   "trajectory_field_boyd_pf_dual_ratio": true,
+   "trajectory_field_boyd_pf_primal_ratio": true,
+   "trajectory_field_boyd_stop": true,
+   "trajectory_field_boyd_v_channel_pass": true,
+   "trajectory_field_boyd_v_dual_ratio": true,
+   "trajectory_field_boyd_v_primal_ratio": true,
+   "trajectory_field_consecutive_converged_cycles": true,
+   "trajectory_field_cycle": true,
+   "trajectory_field_cycle_convergence": true,
+   "trajectory_field_efc_per_day_max": true,
+   "trajectory_field_gross_operational_cost": true,
+   "trajectory_field_local_solves_ok": true,
+   "trajectory_field_objective_change_abs": true,
+   "trajectory_field_objective_change_ratio": true,
+   "trajectory_field_objective_tolerance": true,
+   "trajectory_field_recourse": true,
+   "trajectory_field_rho_ess_action": true,
+   "trajectory_field_rho_ess_after": true,
+   "trajectory_field_rho_freeze_active": true,
+   "trajectory_field_rho_pf_action": true,
+   "trajectory_field_rho_pf_after": true,
+   "trajectory_field_rho_v_action": true,
+   "trajectory_field_rho_v_after": true,
+   "trajectory_field_terminal_salvage_value": true,
+   "esso_capture_attr_es_avg_ch_dch_per_unit": true,
+   "esso_capture_attr_es_soh_per_unit_cumul": true,
+   "esso_capture_attr_es_e_rated_per_unit": true,
+   "harness_fn_run_admm_arm": true,
+   "harness_fn_write_boyd_terminal_s35ref": true,
+   "harness_fn_s38_pf_capture_hooks": true,
+   "harness_fn_s39_exempt_until_capture_hooks": true,
+   "harness_fn__s35ref_terminal_floor_and_efc": true,
+   "harness_fn__derive_stopped_by_from_trajectory": true,
+   "harness_fn__identify_soh_floor_rows": true,
+   "evaluator_fn__certification_from_trajectory": true,
+   "evaluator_fn__first_pass_cycle": true,
+   "evaluator_fn__terminal_ratios": true,
+   "component_levels_recourse_key_interface_settlement_total": true,
+   "run_admm_arm_accepts_investment_map": true,
+   "run_admm_arm_post_run_hook_gets_state": true,
+   "production_state_has_peak_rss": true
+  },
+  "pass": true
+ },
+ "C7_configuration_hook": {
+  "checks": {
+   "d_configuration_checks_all_pass_no_override": true,
+   "d_leaves_aa_off": true,
+   "aa_override_applied": true,
+   "hook_records_provenance_in_rule_eleven_checklist": true,
+   "instance_is_per_node_map": true
+  },
+  "configuration_checks": {
+   "rho_v_matches_D": true,
+   "rho_pf_matches_D": true,
+   "rho_ess_matches_D": true,
+   "tau_is_0": true,
+   "gamma_policy_tied_to_rho": true,
+   "balancing_exempt_until_matches_D": true,
+   "balancing_exempt_channels_empty": true,
+   "freeze_after_unchanged_cycles_is_10": true,
+   "freeze_backstop_cycle_is_200": true,
+   "minimum_consecutive_converged_cycles_matches_spec": true,
+   "shared_ess_initialization_is_standalone": true,
+   "num_max_iters_is_spec_cap": true,
+   "anderson_acceleration_off_before_overrides": true,
+   "persistent_workers_off": true,
+   "parallel_execution_off": true
+  },
+  "aa_settings_after_override": {
+   "anderson_acceleration": {
+    "enabled": true,
+    "memory": 5,
+    "regularization": 1e-10
+   }
+  },
+  "pass": true
+ },
+ "C8_per_evaluation_spec": {
+  "checks": {
+   "three_evaluations_two_share_a_candidate": true,
+   "d_eval_key_is_candidate_key": true,
+   "d_eval_dir_as_in_s44_gate": true,
+   "aa_eval_key_is_hash_of_candidate_and_overrides": true,
+   "distinct_eval_dirs_and_working_ids": true,
+   "overrides_recorded_per_entry": true,
+   "no_post_cert_for_plain_d": true,
+   "reference_resolved_and_hash_recorded": true,
+   "two_c_star_post_cert_without_reference": true,
+   "label_resolves_in_batch": true,
+   "all_refusals_raised": true
+  },
+  "spec_path": "data/SRP1/Results/P515S44/harness_checks_r3/c8_spec_root/campaign_spec_c8_d6300da7.json",
+  "spec_sha256": "d6300da794984cc43249c42ccff093b9b830468f91f706d08b36dde9d31f3411",
+  "entries": [
+   {
+    "label": "c_star_d",
+    "canonical": {
+     "investment_year": 2025,
+     "nodes": {
+      "5": [
+       0.96875,
+       3.875
+      ],
+      "7": [
+       0.96875,
+       3.875
+      ],
+      "9": [
+       0.96875,
+       3.875
+      ]
+     }
+    },
+    "key": "578636daa6d6360d6701764c73ddf795e53c2c37e511e21be1400024f8f6350c",
+    "eval_key": "578636daa6d6360d6701764c73ddf795e53c2c37e511e21be1400024f8f6350c",
+    "overrides": {},
+    "post_certification": null,
+    "eval_dir": "578636daa6d6360d_c_star_d",
+    "working_dir_ids": {
+     "run": "p515s44_c8_578636daa6d6360d_run",
+     "precheck": "p515s44_c8_578636daa6d6360d_precheck"
+    }
+   },
+   {
+    "label": "c_star_aa_keep",
+    "canonical": {
+     "investment_year": 2025,
+     "nodes": {
+      "5": [
+       0.96875,
+       3.875
+      ],
+      "7": [
+       0.96875,
+       3.875
+      ],
+      "9": [
+       0.96875,
+       3.875
+      ]
+     }
+    },
+    "key": "578636daa6d6360d6701764c73ddf795e53c2c37e511e21be1400024f8f6350c",
+    "eval_key": "837fc982565dbba32241ed21a46da14984395006e3dbb4b03d5f72b9b72c50a7",
+    "overrides": {
+     "anderson_acceleration": {
+      "enabled": true,
+      "reject_policy": "keep_memory"
+     }
+    },
+    "post_certification": {
+     "persist_certified_models": true,
+     "hull_polish": true,
+     "reference": {
+      "eval_dir": "data/SRP1/Results/P515S44/campaign_s44_gate/evals/578636daa6d6360d_c_star",
+      "evaluation_record_sha256": "f7722fc44a2785f1d085dbc2f72703bc0962d06cf9a3796dbd4bce89d9ed7870",
+      "component_levels_terminal_sha256": "ff9050bb1759cff14f9d4e94d7e095b7a9b7fc3fa7ca8439f2a9ed5c0aa0444d",
+      "certified_cost": 650966975.2943751,
+      "certification_cycle": 139,
+      "candidate_key": "578636daa6d6360d6701764c73ddf795e53c2c37e511e21be1400024f8f6350c",
+      "campaign_spec_sha256": "4047b4e3f1852c3616a80ad26f2d43f2aa4b333847e447fb5b9323fb3bce7f33",
+      "configuration_overrides": {}
+     }
+    },
+    "eval_dir": "837fc982565dbba3_c_star_aa_keep",
+    "working_dir_ids": {
+     "run": "p515s44_c8_837fc982565dbba3_run",
+     "precheck": "p515s44_c8_837fc982565dbba3_precheck"
+    }
+   },
+   {
+    "label": "two_c_star_d",
+    "canonical": {
+     "investment_year": 2025,
+     "nodes": {
+      "5": [
+       1.9375,
+       7.75
+      ],
+      "7": [
+       1.9375,
+       7.75
+      ],
+      "9": [
+       1.9375,
+       7.75
+      ]
+     }
+    },
+    "key": "4e53fa5560bbfa101c5ce8da78776179b92b0d817c42d04dd7330b077ab8c41c",
+    "eval_key": "4e53fa5560bbfa101c5ce8da78776179b92b0d817c42d04dd7330b077ab8c41c",
+    "overrides": {},
+    "post_certification": {
+     "persist_certified_models": true,
+     "hull_polish": true,
+     "reference": null
+    },
+    "eval_dir": "4e53fa5560bbfa10_two_c_star_d",
+    "working_dir_ids": {
+     "run": "p515s44_c8_4e53fa5560bbfa10_run",
+     "precheck": "p515s44_c8_4e53fa5560bbfa10_precheck"
+    }
+   }
+  ],
+  "refusals": {
+   "aa_memory_subkey": {
+    "raised": true,
+    "type": "ValueError",
+    "message": "unsupported anderson_acceleration override sub-keys ['memory']; supported: ['enabled', 'reject_policy']"
+   },
+   "aa_bogus_policy": {
+    "raised": true,
+    "type": "ValueError",
+    "message": "anderson_acceleration.reject_policy must be one of ('clear_memory', 'keep_memory')"
+   },
+   "aa_enabled_not_bool": {
+    "raised": true,
+    "type": "ValueError",
+    "message": "anderson_acceleration.enabled must be a bool"
+   },
+   "other_override_key": {
+    "raised": true,
+    "type": "ValueError",
+    "message": "unsupported configuration overrides ['rho']; supported: ['anderson_acceleration']"
+   },
+   "post_cert_unknown_key": {
+    "raised": true,
+    "type": "ValueError",
+    "message": "unsupported post_certification keys ['extra']; supported: ['hull_polish', 'persist_certified_models', 'reference']"
+   },
+   "reference_other_candidate": {
+    "raised": true,
+    "type": "ValueError",
+    "message": "invalid post_certification.reference data/SRP1/Results/P515S44/campaign_s44_gate/evals/578636daa6d6360d_c_star: ['reference candidate_key 578636daa6d6360d != 4e53fa5560bbfa10 (must be the SAME candidate)']"
+   },
+   "reference_missing_dir": {
+    "raised": true,
+    "type": "ValueError",
+    "message": "reference evaluation file missing: /Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/does/not/exist/evaluation_record.json"
+   },
+   "reference_uncertified": {
+    "raised": true,
+    "type": "ValueError",
+    "message": "invalid post_certification.reference data/SRP1/Results/P515S44/harness_checks_r3/c8_fake_refs/uncertified: ['reference not certified (status=not_certified)']"
+   },
+   "reference_not_D_configuration": {
+    "raised": true,
+    "type": "ValueError",
+    "message": "invalid post_certification.reference data/SRP1/Results/P515S44/harness_checks_r3/c8_fake_refs/aa_ref: [\"reference is not the case-file (D) configuration: overrides={'anderson_acceleration': {'enabled': True, 'reject_policy': 'keep_memory'}}\"]"
+   },
+   "duplicate_evaluation_same_config": {
+    "raised": true,
+    "type": "ValueError",
+    "message": "duplicate evaluation label or key (candidate x configuration): b / 837fc982565dbba3"
+   },
+   "unknown_evaluation_option": {
+    "raised": true,
+    "type": "ValueError",
+    "message": "unsupported evaluation options ['cap'] for a; supported: ['overrides', 'post_certification']"
+   },
+   "ambiguous_candidate_in_batch": {
+    "raised": true,
+    "type": "ValueError",
+    "message": "candidate 578636daa6d6360d appears under 2 configurations; name it by label"
+   },
+   "tampered_reference_detected": {
+    "raised": true,
+    "type": "RuntimeError",
+    "message": "post-certification reference changed since the spec was frozen: {'evaluation_record_sha256': ('0000000000000000000000000000000000000000000000000000000000000000', 'f7722fc44a2785f1d085dbc2f72703bc0962d06cf9a3796dbd4bce89d9ed7870')}"
+   }
+  },
+  "pass": true
+ },
+ "C9_stub_spawn_per_evaluation": {
+  "checks": {
+   "two_stub_records_in_order": true,
+   "same_candidate_key_both": true,
+   "separate_dirs_each_with_record": true,
+   "launch_json_carries_eval_key": true,
+   "ran_concurrently": true
+  },
+  "eval_dirs": [
+   "data/SRP1/Results/P515S44/harness_checks_r3/c9_stub_campaign/evals/578636daa6d6360d_c_star_d",
+   "data/SRP1/Results/P515S44/harness_checks_r3/c9_stub_campaign/evals/837fc982565dbba3_c_star_aa_keep"
+  ],
+  "pass": true
+ },
+ "C10_post_certification": {
+  "checks": {
+   "skip_path_clean_no_calls_no_files": true,
+   "certified_path_evaluated": true,
+   "gate_b_matches_committed_s43": true,
+   "gate_c_real_decomposition_reproduces_committed_s43_vs_new_reference": true,
+   "persist_called_before_polish": true,
+   "gate_d_summary_reproduces_committed_s43": true,
+   "non_degenerate_counts_reproduce_committed_s42_hull_counts": true,
+   "hull_bound_detail_written": true,
+   "summary_has_gates_b_c_d": true,
+   "not_requested_path": true
+  },
+  "skip_record": {
+   "requested": {
+    "persist_certified_models": true,
+    "hull_polish": true,
+    "reference": {
+     "eval_dir": "data/SRP1/Results/P515S44/campaign_s44_gate/evals/578636daa6d6360d_c_star",
+     "evaluation_record_sha256": "f7722fc44a2785f1d085dbc2f72703bc0962d06cf9a3796dbd4bce89d9ed7870",
+     "component_levels_terminal_sha256": "ff9050bb1759cff14f9d4e94d7e095b7a9b7fc3fa7ca8439f2a9ed5c0aa0444d",
+     "certified_cost": 650966975.2943751,
+     "certification_cycle": 139,
+     "candidate_key": "578636daa6d6360d6701764c73ddf795e53c2c37e511e21be1400024f8f6350c",
+     "campaign_spec_sha256": "4047b4e3f1852c3616a80ad26f2d43f2aa4b333847e447fb5b9323fb3bce7f33",
+     "configuration_overrides": {}
+    }
+   },
+   "status": "skipped",
+   "certification": {
+    "certified": false,
+    "certification_cycle": null,
+    "cycles_run": 3,
+    "cap": 3,
+    "required_consecutive_cycles": 10,
+    "terminal_cycle_convergence": false,
+    "terminal_consecutive_converged_cycles": 0,
+    "local_solve_failures_total": 0
+   },
+   "stopped_by": {
+    "stopped_by": "cap",
+    "converged_at_cycle": null,
+    "stop_run_cycles": []
+   },
+   "evaluated": false,
+   "skip_reason": "trajectory not certified under the spec's bar (cycles_run=3, cap=3, required_consecutive=10, terminal_consecutive_converged_cycles=0, stopped_by='cap'); post-certification items are never evaluated at an uncertified point"
+  },
+  "summary": {
+   "status": "evaluated",
+   "evaluated": true,
+   "skip_reason": null,
+   "error": null,
+   "certified_cost": 650974431.520926,
+   "gate_c_pass": true,
+   "persisted_models": {
+    "path": "FAKE",
+    "sha256": "FAKE",
+    "size_bytes": 0
+   },
+   "hull_bound_detail_path": "data/SRP1/Results/P515S44/harness_checks_r3/c10_certified_eval/hull_bound_detail.json",
+   "requested": {
+    "persist_certified_models": true,
+    "hull_polish": true,
+    "reference": {
+     "eval_dir": "data/SRP1/Results/P515S44/campaign_s44_gate/evals/578636daa6d6360d_c_star",
+     "evaluation_record_sha256": "f7722fc44a2785f1d085dbc2f72703bc0962d06cf9a3796dbd4bce89d9ed7870",
+     "component_levels_terminal_sha256": "ff9050bb1759cff14f9d4e94d7e095b7a9b7fc3fa7ca8439f2a9ed5c0aa0444d",
+     "certified_cost": 650966975.2943751,
+     "certification_cycle": 139,
+     "candidate_key": "578636daa6d6360d6701764c73ddf795e53c2c37e511e21be1400024f8f6350c",
+     "campaign_spec_sha256": "4047b4e3f1852c3616a80ad26f2d43f2aa4b333847e447fb5b9323fb3bce7f33",
+     "configuration_overrides": {}
+    }
+   },
+   "gate_b": {
+    "abs_diff": 7456.226550936699,
+    "abs_tolerance": 97645.04629415624,
+    "reference_certified_cost": 650966975.2943751,
+    "pass": true
+   },
+   "gate_c": {
+    "headline_diff_AA_minus_D": 7456.226550936699,
+    "dominant_two_diff": 7456.226613253355,
+    "unaccounted_residual": 3.5447919799480587e-07,
+    "other_priced_components_nonzero": [],
+    "reconciles": true
+   },
+   "gate_d": {
+    "blocks_solved": 48,
+    "n_blocks": 48,
+    "relative_pct": 0.00034672244777478865,
+    "threshold_pct": 0.1,
+    "settlement_excluded_change": 12266.55964076519,
+    "settlement_remainder_before": 39431.72301340103,
+    "settlement_remainder_after": 24908.08888912201,
+    "hull_bounds_non_degenerate_by_channel": {
+     "V": {
+      "total": 1728,
+      "degenerate": 0,
+      "non_degenerate": 1728,
+      "active_non_degenerate": 586
+     },
+     "PF_P": {
+      "total": 1728,
+      "degenerate": 0,
+      "non_degenerate": 1728,
+      "active_non_degenerate": 493
+     },
+     "PF_Q": {
+      "total": 1728,
+      "degenerate": 0,
+      "non_degenerate": 1728,
+      "active_non_degenerate": 215
+     },
+     "ESS_P": {
+      "total": 1728,
+      "degenerate": 0,
+      "non_degenerate": 1728,
+      "active_non_degenerate": 30
+     },
+     "ESS_Q": {
+      "total": 1728,
+      "degenerate": 0,
+      "non_degenerate": 1728,
+      "active_non_degenerate": 1414
+     }
+    },
+    "pass": true
+   }
+  },
+  "gate_c_vs_new_reference": {
+   "d_dir": "data/SRP1/Results/P515S44/campaign_s44_gate/evals/578636daa6d6360d_c_star",
+   "headline_diff_AA_minus_D": 7456.226550936699,
+   "unaccounted_residual": 3.5447919799480587e-07,
+   "reconciles": true
+  },
+  "non_degenerate_counts_s41": {
+   "V": {
+    "total": 1728,
+    "degenerate": 0,
+    "non_degenerate": 1728,
+    "active_non_degenerate": 564
+   },
+   "PF_P": {
+    "total": 1728,
+    "degenerate": 0,
+    "non_degenerate": 1728,
+    "active_non_degenerate": 458
+   },
+   "PF_Q": {
+    "total": 1728,
+    "degenerate": 0,
+    "non_degenerate": 1728,
+    "active_non_degenerate": 197
+   },
+   "ESS_P": {
+    "total": 1728,
+    "degenerate": 0,
+    "non_degenerate": 1728,
+    "active_non_degenerate": 27
+   },
+   "ESS_Q": {
+    "total": 1728,
+    "degenerate": 0,
+    "non_degenerate": 1728,
+    "active_non_degenerate": 1267
+   }
+  },
+  "decomposition_reference_dir_default_unchanged": true,
+  "pass": true
+ },
+ "C11_aa_sidecar": {
+  "checks": {
+   "sidecar_bytes_equal_committed_s43": true,
+   "summary_counts_step37": true,
+   "summary_sees_retained_memory": true
+  },
+  "step37_summary": {
+   "n_rows": 109,
+   "action_counts": {
+    "insufficient memory (m_k=0)": 27,
+    "accepted": 50,
+    "rejected (safeguard)": 22,
+    "off (all channels within Boyd tolerance)": 10
+   },
+   "n_accepted": 50,
+   "n_rejected": 22,
+   "rejections_with_memory_retained": [],
+   "first_accept_cycle": 4,
+   "first_reject_cycle": 14
+  },
+  "synthetic_summary": {
+   "n_rows": 3,
+   "action_counts": {
+    "insufficient memory (m_k=0)": 1,
+    "accepted": 1,
+    "rejected (safeguard; memory retained)": 1
+   },
+   "n_accepted": 1,
+   "n_rejected": 1,
+   "rejections_with_memory_retained": [
+    {
+     "cycle": 3,
+     "memory_size_before": 1,
+     "memory_size_after": 2,
+     "rho_changed_channels": []
+    }
+   ],
+   "first_accept_cycle": 2,
+   "first_reject_cycle": 3
+  },
+  "pass": true
+ },
+ "C12_keep_memory_config_hook": {
+  "checks": {
+   "settings_in_force_keep_memory": true,
+   "d_configuration_checks_pass": true,
+   "overrides_applied_recorded": true,
+   "state_built_from_settings_is_keep_memory": true,
+   "aa_layout_builds": true,
+   "hook_refuses_memory_override": true,
+   "post_certification_capture_paths_pass": true
+  },
+  "settings_in_force": {
+   "enabled": true,
+   "memory": 5,
+   "regularization": 1e-10,
+   "reject_policy": "keep_memory"
+  },
+  "layout_n": 12096,
+  "pass": true
+ },
+ "solve_profile_guard": {
+  "counts": {
+   "permitted_solve": 0,
+   "permitted_exec": 0,
+   "blocked_solve": 0,
+   "blocked_exec": 0
+  },
+  "verify_0_failures": []
+ },
+ "all_pass": true,
+ "wall_clock_s": 48.627299070358276
+}

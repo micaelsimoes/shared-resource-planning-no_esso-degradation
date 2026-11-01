@@ -1,0 +1,44 @@
+--- orig.tex	2026-10-14 20:12:58.190899120 +0000
++++ main.tex	2026-10-14 20:12:58.237155173 +0000
+@@ -309,6 +309,7 @@
+         \textcolor{blue}{$I(\boldsymbol{x})$, $C^{\text{Inv}}_c(\boldsymbol{x})$} & \textcolor{blue}{Expected investment cost; investment cost under trajectory $c$} \\
+         \textcolor{blue}{$Q^\star(\boldsymbol{x})$} & \textcolor{blue}{Minimum expected discounted operating cost for plan $\boldsymbol{x}$} \\
+         \textcolor{blue}{$Q(\boldsymbol{x})$} & \textcolor{blue}{Evaluated expected discounted operating cost for plan $\boldsymbol{x}$} \\
++        \textcolor{blue}{$C^{\text{Op}}_{y,d,m,o}(\boldsymbol{x})$} & \textcolor{blue}{Daily operating cost for representative year $y$, day $d$, and scenario $(m,o)$} \\
+         \textcolor{blue}{$C^{\text{Op}}_{s}$} & \textcolor{blue}{Operating cost of scenario $s$ over the horizon, weighted and discounted}\\
+         \textcolor{blue}{$C^{\text{Salvage}}(\boldsymbol{x})$} & \textcolor{blue}{Terminal salvage credit (reported, not optimized)} \\
+         \textcolor{blue}{$T^{\text{Rem}}_{e,y^{\text{Inv}}}$} & \textcolor{blue}{Remaining calendar life of a cohort at $y^{\text{End}}$} \\
+@@ -763,6 +764,8 @@
+     The network models and the shared-ESS agent maintain separate charging and discharging variables. The network models impose a relaxed complementarity constraint, while the shared-ESS agent uses a throughput regularisation term. Cell degradation is computed from the agent's charging and discharging variables.
+ }
+ 
++\subsubsection{\textcolor{blue}{Installed and Available Capacity}}
++
+ \textcolor{blue}{
+     Each capacity addition at node $e$ in installation year $y^{\text{Inv}}$ forms an investment cohort, whose ratings are the fixed additions $\hat{S}^{\text{Inv}}_{e,y^{\text{Inv}}}$ and $\hat{E}^{\text{Inv}}_{e,y^{\text{Inv}}}$ of the candidate plan ($\forall e\in E^S$, $\forall y\in Y$, $\forall y^{\text{Inv}}\in\mathcal{Y}^{\text{Act}}_{e,y}$):
+ }
+@@ -770,13 +773,14 @@
+ \textcolor{blue}{
+     \begin{equation}
+         S^{\text{Rated,Unit}}_{e,y^\text{Inv},y} = \hat{S}^{\text{Inv}}_{e,y^\text{Inv}}
++        \label{eq:cohort_rated}
+     \end{equation}
+ }
+ 
+ \textcolor{blue}{
+     \begin{equation}
+         E^{\text{Rated,Unit}}_{e,y^\text{Inv},y} = \hat{E}^{\text{Inv}}_{e,y^\text{Inv}}
+-        \label{eq:cohort_rated}
++        \label{eq:cohort_rated_energy}
+     \end{equation}
+ }
+ 
+@@ -1044,7 +1048,7 @@
+ \noindent
+ \textcolor{blue}{
+     The calibrations used, the calendar retention and the end-of-life floor $SoH^{\text{Min}}_e$ are given in Section~\ref{sec:case_ess_params}. The floor is the only intertemporal trade-off enforced in operation: no explicit cycling cost is charged, because a shared asset that has been paid for carries no operating cost of its own; degradation is tracked and propagated, and its economic effect appears through the available energy of later years and through the floor. 
+-    Equations \eqref{eq:cycling_loss} and \eqref{eq:soh_floor} are linear; \eqref{eq:soh_chain}, the available-energy product in \eqref{eq:cohort_available_energy}.
++    Equations \eqref{eq:cycling_loss} and \eqref{eq:soh_floor} are linear; \eqref{eq:soh_chain}, the available-energy product in \eqref{eq:cohort_available_energy} and the converter circle are the agent's nonlinear rows.
+ }
+ 
+ \textcolor{blue}{

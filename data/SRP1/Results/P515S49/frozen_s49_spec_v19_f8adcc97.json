@@ -1,0 +1,32 @@
+{
+ "authority": [
+  "PLANNER_BRIEF_2026-09-13.md Addendum 33 (zero-solve split only; siting variant withdrawn by Addendum 34) and Addendum 34"
+ ],
+ "flex_price_ladder": {
+  "design": "uniform multipliers m in {1.5, 2, 3} on the cost_flex profile applied through a harness override (no workbook edit; the multiplier enters the evaluation key); each m evaluated at x = 0 (Q(0) changes with the price) and at the smallest node-7 4 h unit (0.25/1.0, 2025) under the baseline: 6 evaluations; the m = 1 pair is the committed baseline (x = 0 from s48_x0_capture/A0, unit from S2/S3)",
+  "growth_rate_variant": "not used (Addendum 34)",
+  "no_stress_by_hand": "no other stress is applied; the paper-scale years and operation scenarios are the stressed instance (Addendum 34)",
+  "predictions_recorded_before_run": {
+   "author_expert": [
+    "value per full cycle rises with m toward a ceiling of about 65-80 EUR/MWh (60.4 at m = 1): once flexibility is priced above the spread the DSOs stop using it and the storage's value converges to pure arbitrage on the TSO marginal cost",
+    "the smallest unit becomes indeterminate between m = 2 and m = 3",
+    "the marginal MWh pays at no level"
+   ],
+   "planner": "agrees in direction; expects value(m) concave in m and value - I at m = 3 within resolution of zero but not determinately positive"
+  },
+  "report": "value(m) = Q_m(0) - Q_m(x) and value - I per m, with resolution; the flexibility price at which the smallest unit pays, if any; value per cycle per m",
+  "when": "after the memory task (Addendum 34 order: P/Q split alongside -> memory task -> flexibility ladder)"
+ },
+ "predecessor": {
+  "path": "data/SRP1/Results/P515S48/frozen_s48_spec_v18_8bda2a0a.json",
+  "sha256": "8bda2a0a94d6f6f23ed544bc9b0bb4ce3fcd32c547ed3f472ccb63c53fb36fe6"
+ },
+ "stage": "P5.15 Addenda 33-34 - zero-solve flexibility and P/Q splits; flexibility-price ladder (after the memory task)",
+ "stop": "Planner's reading, stated to the user: memory task -> flexibility ladder -> STOP FOR REVIEW (Addendum 34's order places the ladder after the memory task with no stop between; Addendum 32's stop after the memory task is taken to include the ladder)",
+ "withdrawn": "Addendum 33's siting variant (ESS at DN bus 2): withdrawn by Addendum 34 - the interface transformer is DSO-operated, so an ESS on its MV side would breach unbundling; the shared ESS stays at the HV busbar (DN bus 1). Recorded as the manuscript's explanation of why the storage has no active-power network value on the DN side. No Advisor review or Worker task on it.",
+ "zero_solve_items": {
+  "Z33_flex_split": "at x = 0 and at the smallest node-7 4 h unit (0.25/1.0, 2025) under the baseline: split each DSO's flexibility cost into the node-7 binding-period slots (congestion relief) and the rest (economic shifting); report the cost_flex profile actually applied (per hour, day, year, with growth factors); note that P and Q flexibility carry the same price",
+  "Z34_pq_split": "at the smallest unit under the baseline: split the storage's value and each DSO's flexibility saving into active (P) and reactive (Q) components; the storage's Q dispatch as a fraction of its rating; interface voltage-bound activity (entries at 1.1 pu) at x = 0 and with the unit; if Q is idle, record that voltage support is unmonetized because nothing binds",
+  "data_rule": "zero solves; where a quantity needs model internals not in committed records, use persisted certified models (the s48_x0_capture x = 0 models) and state exactly what is missing for the unit (no persisted baseline unit models exist) rather than solving"
+ }
+}

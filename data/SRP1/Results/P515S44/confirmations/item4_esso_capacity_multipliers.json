@@ -1,0 +1,444 @@
+{
+ "stage": "P5.15 Addendum 26 zero-solve confirmations (frozen spec v14)",
+ "authority": [
+  "PLANNER_BRIEF_2026-09-13.md Addendum 26",
+  "STEP4_DFO_METHOD.md v1 Sec 1.2-1.3, Sec 9",
+  "data/SRP1/Results/P515S44/frozen_s44_selection_spec_v14_e4500e27.json (key addendum26_confirmations_zero_solve)"
+ ],
+ "spec_sha256": "e4500e272be84e158e763256e1c7156593f89bdb50d197d0801dbf70d1d22c9b",
+ "spec_key": [
+  "confirm the committed data/SRP1/SharedESS/SRP1_ESS.xlsx is the author's corrected cost file (git history, content of the unit-cost sheets) and record its sha256",
+  "report I(x) (STEP4_DFO_METHOD.md 1.3: discounted, scenario-weighted, exactly model.investment_cost) and the budget slack B - I(x), B = budget 1e6, at the paper's plan and at C*; state units and whether budget and max_capacity (5.0) are active in the model",
+  "confirm whether x = 0 (no storage at ANY node) is evaluable by the oracle",
+  "report whether the ESSO capacity multipliers (duals of the capacity rows) are available without extra solves"
+ ],
+ "started_utc": "2026-09-19T08:14:35.598117+00:00",
+ "git_HEAD": "96fa8cc8b3c8727d3576da5b94cced5140bc3627",
+ "script_sha256": "95aba9475c2a57532215cbd238e8906606bd09892445246e67807d9c8c7f52c2",
+ "solve_profile_guard": {
+  "permitted": [],
+  "counts": {
+   "permitted_solve": 0,
+   "permitted_exec": 0,
+   "blocked_solve": 0,
+   "blocked_exec": 0
+  },
+  "verify_0_failures": []
+ },
+ "preflight": {
+  "checked_with": "ps -axo pid=,command=",
+  "other_p5_harness_processes": []
+ },
+ "result": {
+  "rows_linking_operation_to_installed_capacity": {
+   "rated_s_capacity_unit": "shared_energy_storage_data.py:551",
+   "rated_e_capacity_unit": "shared_energy_storage_data.py:552",
+   "energy_storage_capacity_degradation_D_row_(E_inv_as_coefficient)": "shared_energy_storage_data.py:654",
+   "downstream_rated_s_capacity_aggregate": "shared_energy_storage_data.py:563",
+   "downstream_energy_storage_limits_pch_pdch_le_s": "shared_energy_storage_data.py:692",
+   "downstream_converter_circle": "shared_energy_storage_data.py:731",
+   "downstream_available_e_capacity_unit": "shared_energy_storage_data.py:584"
+  },
+  "suffix_and_load": {
+   "dual_suffix_declared": "shared_energy_storage_data.py:805",
+   "bound_multiplier_suffixes": "shared_energy_storage_data.py:801",
+   "solution_load": "shared_energy_storage_data.py:1296",
+   "network_dual_suffix_declared": "network.py:535",
+   "harness_per_cycle_dual_families": "p515_g_g1_g4_admm_gates.py:252",
+   "network_benders_sensitivity_channel_retired": "network_data.py:2851"
+  },
+  "artifacts_read_no_solve": {
+   "esso_models_s39_D.pkl": {
+    "path": "data/SRP1/Results/P515S42/exact_fix_rerun/esso_models_s39_D.pkl",
+    "tracked_in_git": true,
+    "sha256": "6a840eb018026d43a81c1122244f2fabf1c7d53feb3de8ccf5c675d1f18f1894",
+    "manifest_sha256": "6a840eb018026d43a81c1122244f2fabf1c7d53feb3de8ccf5c675d1f18f1894",
+    "instance": "C* 0.96875 MVA / 3.875 MWh at nodes 5, 7, 9, 2025; oracle D; terminal (cycle 139) ESSO models pickled after the run (run_admm_arm)",
+    "per_node": {
+     "5": {
+      "dual_suffix_entries": 1200,
+      "zL_entries": 1194,
+      "zU_entries": 3,
+      "investment_s_mva": [
+       0.96875,
+       0.0,
+       0.0
+      ],
+      "investment_e_mwh": [
+       3.875,
+       0.0,
+       0.0
+      ],
+      "active_objective": [
+       "admm_objective"
+      ],
+      "rho_esso": 0.0225,
+      "admm_esso_al_scale": 227210.9966521344,
+      "families": {
+       "rated_s_capacity_unit": {
+        "rows": 6,
+        "active": 6,
+        "active_with_dual": 6,
+        "max_abs_dual": 80.03705285251425
+       },
+       "rated_e_capacity_unit": {
+        "rows": 6,
+        "active": 6,
+        "active_with_dual": 6,
+        "max_abs_dual": 0.018181818205275868
+       },
+       "rated_s_capacity": {
+        "rows": 3,
+        "active": 3,
+        "active_with_dual": 3,
+        "max_abs_dual": 80.03701953107333
+       },
+       "rated_e_capacity": {
+        "rows": 3,
+        "active": 3,
+        "active_with_dual": 3,
+        "max_abs_dual": 2.3459501405732664e-11
+       },
+       "energy_storage_limits": {
+        "rows": 1728,
+        "active": 576,
+        "active_with_dual": 576,
+        "max_abs_dual": 2.824756659281752e-05
+       },
+       "energy_storage_operation_agg": {
+        "rows": 576,
+        "active": 576,
+        "active_with_dual": 576,
+        "max_abs_dual": 5.344966455384579
+       },
+       "energy_storage_capacity_degradation": {
+        "rows": 18,
+        "active": 9,
+        "active_with_dual": 9,
+        "max_abs_dual": 9.784754848171085e-10
+       },
+       "available_e_capacity_unit": {
+        "rows": 9,
+        "active": 9,
+        "active_with_dual": 9,
+        "max_abs_dual": 0.009090909090908183
+       }
+      },
+      "capacity_row_duals": {
+       "rated_s_capacity_unit[1]": -80.03705285251425,
+       "rated_s_capacity_unit[2]": -52.22450092480454,
+       "rated_s_capacity_unit[3]": -24.775737389677115,
+       "rated_s_capacity_unit[4]": -52.24265012084657,
+       "rated_s_capacity_unit[5]": -24.7939166809749,
+       "rated_s_capacity_unit[6]": -24.7939166809749,
+       "rated_e_capacity_unit[1]": -7.037865292956773e-11,
+       "rated_e_capacity_unit[2]": -7.037876065650133e-11,
+       "rated_e_capacity_unit[3]": -7.037883633563759e-11,
+       "rated_e_capacity_unit[4]": -0.018181818205275868,
+       "rated_e_capacity_unit[5]": -0.018181818205275868,
+       "rated_e_capacity_unit[6]": -0.018181818205275868
+      },
+      "row_index_map": "rated_*_capacity_unit rows are added y_inv-major over the cohort lifetime window: [1..3] = cohort 2025 (y=2025,2030,2035), [4..5] = cohort 2030, [6] = cohort 2035 on this 3-year instance"
+     },
+     "7": {
+      "dual_suffix_entries": 1200,
+      "zL_entries": 1194,
+      "zU_entries": 3,
+      "investment_s_mva": [
+       0.96875,
+       0.0,
+       0.0
+      ],
+      "investment_e_mwh": [
+       3.875,
+       0.0,
+       0.0
+      ],
+      "active_objective": [
+       "admm_objective"
+      ],
+      "rho_esso": 0.0225,
+      "admm_esso_al_scale": 227210.9966521344,
+      "families": {
+       "rated_s_capacity_unit": {
+        "rows": 6,
+        "active": 6,
+        "active_with_dual": 6,
+        "max_abs_dual": 76.76448991193914
+       },
+       "rated_e_capacity_unit": {
+        "rows": 6,
+        "active": 6,
+        "active_with_dual": 6,
+        "max_abs_dual": 0.018181818205275865
+       },
+       "rated_s_capacity": {
+        "rows": 3,
+        "active": 3,
+        "active_with_dual": 3,
+        "max_abs_dual": 76.7642711843728
+       },
+       "rated_e_capacity": {
+        "rows": 3,
+        "active": 3,
+        "active_with_dual": 3,
+        "max_abs_dual": 2.3459501405732664e-11
+       },
+       "energy_storage_limits": {
+        "rows": 1728,
+        "active": 576,
+        "active_with_dual": 576,
+        "max_abs_dual": 0.00019812869475131984
+       },
+       "energy_storage_operation_agg": {
+        "rows": 576,
+        "active": 576,
+        "active_with_dual": 576,
+        "max_abs_dual": 5.398128718213985
+       },
+       "energy_storage_capacity_degradation": {
+        "rows": 18,
+        "active": 9,
+        "active_with_dual": 9,
+        "max_abs_dual": 9.861557035730376e-10
+       },
+       "available_e_capacity_unit": {
+        "rows": 9,
+        "active": 9,
+        "active_with_dual": 9,
+        "max_abs_dual": 0.009090909090908181
+       }
+      },
+      "capacity_row_duals": {
+       "rated_s_capacity_unit[1]": -76.76448991193914,
+       "rated_s_capacity_unit[2]": -50.26223569050507,
+       "rated_s_capacity_unit[3]": -20.484890214440988,
+       "rated_s_capacity_unit[4]": -50.28017668706494,
+       "rated_s_capacity_unit[5]": -20.503050499572165,
+       "rated_s_capacity_unit[6]": -20.503050499572165,
+       "rated_e_capacity_unit[1]": -7.03786533822058e-11,
+       "rated_e_capacity_unit[2]": -7.03787611965059e-11,
+       "rated_e_capacity_unit[3]": -7.037883737830635e-11,
+       "rated_e_capacity_unit[4]": -0.018181818205275865,
+       "rated_e_capacity_unit[5]": -0.018181818205275865,
+       "rated_e_capacity_unit[6]": -0.018181818205275865
+      },
+      "row_index_map": "rated_*_capacity_unit rows are added y_inv-major over the cohort lifetime window: [1..3] = cohort 2025 (y=2025,2030,2035), [4..5] = cohort 2030, [6] = cohort 2035 on this 3-year instance"
+     },
+     "9": {
+      "dual_suffix_entries": 1200,
+      "zL_entries": 1194,
+      "zU_entries": 3,
+      "investment_s_mva": [
+       0.96875,
+       0.0,
+       0.0
+      ],
+      "investment_e_mwh": [
+       3.875,
+       0.0,
+       0.0
+      ],
+      "active_objective": [
+       "admm_objective"
+      ],
+      "rho_esso": 0.0225,
+      "admm_esso_al_scale": 227210.9966521344,
+      "families": {
+       "rated_s_capacity_unit": {
+        "rows": 6,
+        "active": 6,
+        "active_with_dual": 6,
+        "max_abs_dual": 80.00727062128092
+       },
+       "rated_e_capacity_unit": {
+        "rows": 6,
+        "active": 6,
+        "active_with_dual": 6,
+        "max_abs_dual": 0.018181818205275868
+       },
+       "rated_s_capacity": {
+        "rows": 3,
+        "active": 3,
+        "active_with_dual": 3,
+        "max_abs_dual": 80.00724534660385
+       },
+       "rated_e_capacity": {
+        "rows": 3,
+        "active": 3,
+        "active_with_dual": 3,
+        "max_abs_dual": 2.3459501405732664e-11
+       },
+       "energy_storage_limits": {
+        "rows": 1728,
+        "active": 576,
+        "active_with_dual": 576,
+        "max_abs_dual": 2.062210626160622e-05
+       },
+       "energy_storage_operation_agg": {
+        "rows": 576,
+        "active": 576,
+        "active_with_dual": 576,
+        "max_abs_dual": 5.381235704088639
+       },
+       "energy_storage_capacity_degradation": {
+        "rows": 18,
+        "active": 9,
+        "active_with_dual": 9,
+        "max_abs_dual": 9.823599429799608e-10
+       },
+       "available_e_capacity_unit": {
+        "rows": 9,
+        "active": 9,
+        "active_with_dual": 9,
+        "max_abs_dual": 0.009090909090908183
+       }
+      },
+      "capacity_row_duals": {
+       "rated_s_capacity_unit[1]": -80.00727062128092,
+       "rated_s_capacity_unit[2]": -51.412311002992794,
+       "rated_s_capacity_unit[3]": -24.69686523879173,
+       "rated_s_capacity_unit[4]": -51.43046810186973,
+       "rated_s_capacity_unit[5]": -24.71504472758474,
+       "rated_s_capacity_unit[6]": -24.71504472758474,
+       "rated_e_capacity_unit[1]": -7.037865318057523e-11,
+       "rated_e_capacity_unit[2]": -7.037876099391812e-11,
+       "rated_e_capacity_unit[3]": -7.037883680312194e-11,
+       "rated_e_capacity_unit[4]": -0.018181818205275868,
+       "rated_e_capacity_unit[5]": -0.018181818205275868,
+       "rated_e_capacity_unit[6]": -0.018181818205275868
+      },
+      "row_index_map": "rated_*_capacity_unit rows are added y_inv-major over the cohort lifetime window: [1..3] = cohort 2025 (y=2025,2030,2035), [4..5] = cohort 2030, [6] = cohort 2035 on this 3-year instance"
+     }
+    }
+   },
+   "certified_models.pkl": {
+    "path": "data/SRP1/Results/P515S42/exact_fix_rerun/certified_models.pkl",
+    "tracked_in_git": false,
+    "sha256": "4e3d8bfc773f7ae41be3c653c2e5bfe4c2064e93747a5772a998f20548d5a797",
+    "manifest_sha256": "4e3d8bfc773f7ae41be3c653c2e5bfe4c2064e93747a5772a998f20548d5a797",
+    "matches_manifest": true,
+    "content": "certified TSO/DSO models at C*, D, cycle 139, pickled before polish (p515_s42_exact_fix_rerun._persist_certified_models)",
+    "network_capacity_row_duals": {
+     "tso:sess_converter_capability": {
+      "blocks": 12,
+      "active_rows": 864,
+      "active_rows_with_dual": 864,
+      "max_abs_dual": 143837.32121857652
+     },
+     "tso:sess_active_sum_limit": {
+      "blocks": 12,
+      "active_rows": 864,
+      "active_rows_with_dual": 864,
+      "max_abs_dual": 654.1976114171281
+     },
+     "tso:sess_soc_limit_upper": {
+      "blocks": 12,
+      "active_rows": 864,
+      "active_rows_with_dual": 864,
+      "max_abs_dual": 3588.3219416943243
+     },
+     "tso:sess_soc_limit_lower": {
+      "blocks": 12,
+      "active_rows": 864,
+      "active_rows_with_dual": 864,
+      "max_abs_dual": 3778.601084496963
+     },
+     "tso:sess_soc_def": {
+      "blocks": 12,
+      "active_rows": 864,
+      "active_rows_with_dual": 864,
+      "max_abs_dual": 14743.438991309642
+     },
+     "tso:sess_soc_final": {
+      "blocks": 12,
+      "active_rows": 36,
+      "active_rows_with_dual": 36,
+      "max_abs_dual": 14067.473293871202
+     },
+     "dso:sess_converter_capability": {
+      "blocks": 36,
+      "active_rows": 864,
+      "active_rows_with_dual": 864,
+      "max_abs_dual": 105068.3324751485
+     },
+     "dso:sess_active_sum_limit": {
+      "blocks": 36,
+      "active_rows": 864,
+      "active_rows_with_dual": 864,
+      "max_abs_dual": 362.02489246781766
+     },
+     "dso:sess_soc_limit_upper": {
+      "blocks": 36,
+      "active_rows": 864,
+      "active_rows_with_dual": 864,
+      "max_abs_dual": 2341.6535756296466
+     },
+     "dso:sess_soc_limit_lower": {
+      "blocks": 36,
+      "active_rows": 864,
+      "active_rows_with_dual": 864,
+      "max_abs_dual": 1697.244524929064
+     },
+     "dso:sess_soc_def": {
+      "blocks": 36,
+      "active_rows": 864,
+      "active_rows_with_dual": 864,
+      "max_abs_dual": 3348.118262505708
+     },
+     "dso:sess_soc_final": {
+      "blocks": 36,
+      "active_rows": 36,
+      "active_rows_with_dual": 36,
+      "max_abs_dual": 2160.8915096352507
+     }
+    }
+   },
+   "esso_capture_cycle139": {
+    "tracked_in_git": false,
+    "n_files_in_dir": 420,
+    "files": {
+     "data/SRP1/Results/P515S42/exact_fix_rerun/esso_capture/s39_D/node5_cycle139.jsonl": {
+      "sha256": "7d4f77c0cff89cae07bf8653de4c0af669cb1838a42939a5baf215c976bb2a68",
+      "manifest_sha256": "7d4f77c0cff89cae07bf8653de4c0af669cb1838a42939a5baf215c976bb2a68",
+      "records": 288,
+      "dual_entries_by_component": {
+       "energy_storage_limits": 576,
+       "energy_storage_operation_agg": 288,
+       "energy_storage_cohort_pnet_share_h3": 864,
+       "energy_storage_capacity_degradation": 1056
+      },
+      "dual_entries_None": 864,
+      "dual_entries_total": 2784
+     },
+     "data/SRP1/Results/P515S42/exact_fix_rerun/esso_capture/s39_D/node7_cycle139.jsonl": {
+      "sha256": "63e82f6be9708566565a1d3180640b0eb4e40114dff8cb781d4f5ea3ce6be8e4",
+      "manifest_sha256": "63e82f6be9708566565a1d3180640b0eb4e40114dff8cb781d4f5ea3ce6be8e4",
+      "records": 288,
+      "dual_entries_by_component": {
+       "energy_storage_limits": 576,
+       "energy_storage_operation_agg": 288,
+       "energy_storage_cohort_pnet_share_h3": 864,
+       "energy_storage_capacity_degradation": 1056
+      },
+      "dual_entries_None": 864,
+      "dual_entries_total": 2784
+     },
+     "data/SRP1/Results/P515S42/exact_fix_rerun/esso_capture/s39_D/node9_cycle139.jsonl": {
+      "sha256": "2a2825183a813524a41dee057f93bc8c1f940be1f42997ae45f49de7f1457506",
+      "manifest_sha256": "2a2825183a813524a41dee057f93bc8c1f940be1f42997ae45f49de7f1457506",
+      "records": 288,
+      "dual_entries_by_component": {
+       "energy_storage_limits": 576,
+       "energy_storage_operation_agg": 288,
+       "energy_storage_cohort_pnet_share_h3": 864,
+       "energy_storage_capacity_degradation": 1056
+      },
+      "dual_entries_None": 864,
+      "dual_entries_total": 2784
+     }
+    }
+   }
+  }
+ }
+}

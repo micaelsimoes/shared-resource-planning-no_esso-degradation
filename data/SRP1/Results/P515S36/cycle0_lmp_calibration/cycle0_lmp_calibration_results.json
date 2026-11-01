@@ -1,0 +1,543 @@
+{
+ "stage": "P5.15 Addendum 17 -- cycle-0 LMP unit calibration",
+ "authority": "Planner task, Bounded ZERO-SOLVE task: calibrate the units of the captured cycle-0 node-balance duals (2026-09-17)",
+ "timestamp_utc": "2026-09-17T06:17:09.982562+00:00",
+ "inputs": {
+  "cycle0_lmp_capture_results.json": {
+   "path": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S36/cycle0_lmp/cycle0_lmp_capture_results.json",
+   "sha256": "3b9c34703520719e489c662e5116e35e0a744a06695c7d9c0256bca6f62ec9b8",
+   "committed_manifest_sha256_for_this_file": "3b9c34703520719e489c662e5116e35e0a744a06695c7d9c0256bca6f62ec9b8"
+  },
+  "FrozenSMOPF_TSO_cycle7_pickle": {
+   "path": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/FrozenSMOPF/matched_success_TSO_case9_2025_Summer_cycle7.pkl",
+   "sha256": "fbfaa6b1291373302b61bf0b61d092d232d7965d80580d1abe7c8b7947b1a46c"
+  },
+  "case9_2025.json": {
+   "path": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/case9/case9_2025.json",
+   "sha256": "d5f7f579a56676b85fba980ff96e85a15620ae72c85f67f7551426a13ee0034f"
+  },
+  "case33_2_2025.json": {
+   "path": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/case33_2/case33_2_2025.json",
+   "sha256": "8d6bd989f05925b7671d70fe6e97da930ce3a3d37684110fdbe3107c3348e1a8"
+  }
+ },
+ "guard_counts": {
+  "permitted_solve": 0,
+  "permitted_exec": 0,
+  "blocked_solve": 0,
+  "blocked_exec": 0
+ },
+ "declared_pyomo_ipopt_solves": 0,
+ "observed_pyomo_ipopt_solves": 0,
+ "declared_scipy_lp_calls": 0,
+ "observed_scipy_lp_calls": 0,
+ "step1_active_objective_and_scale_factors": {
+  "question": "Which objective is active at capture time (model.objective vs model.admm_objective), and does /effective_scale apply?",
+  "finding": "model.objective (the RAW `objective_function_rule` expression) is the ONLY objective component that exists at the moment the 51 standalone construction solves run. `model.admm_objective` (the SEPARATE, later component `update_transmission_model_to_admm` / update_distribution_models_to_admm create, dividing by `effective_scale` and adding the AL/consensus terms) does not exist yet -- it is created at shared_resources_planning.py:4382 (TSO) / :4518 (DSO) / :4592 (ESSO), all reached from `update_transmission_model_to_admm` / `update_distribution_models_to_admm` / `update_shared_energy_storage_model_to_admm` (shared_resources_planning.py:2446-2448), which are called AFTER the standalone-solve success check (shared_resources_planning.py:2402, `if not _admm_local_solves_succeeded(...)`) that immediately follows the 51 solves. So at capture time: active objective = model.objective, UNSCALED (no /effective_scale, no admm_objective_scale Param -- that Param is created inside the SAME later update_*_to_admm calls, shared_resources_planning.py:4319/4472).",
+  "weights_multiplying_the_generation_cost_term_at_capture_time": {
+   "baseMVA": "generation_cost (model_construction_helpers.py:1663-1670) multiplies every controllable generator's pg[g] by `c_p[p] * network.baseMVA` -- baseMVA=100.0 for both case9 (TSO) and case33_2 (DSO node 7's own feeder), confirmed via case9_2025.json/case33_2_2025.json and cycle0_lmp_capture_results.json's own `tso_base_mva`/`dso_base_mva` (both 100.0 for nodes 5, 7, 9).",
+   "scenario_probabilities": "total_generation_cost_rule (model_construction_helpers.py:1677-1682) weights each (s_m, s_o) term by `network.prob_market_scenarios[s_m] * network.prob_operation_scenarios[s_o]`. In this configuration there is exactly ONE market scenario and ONE operation scenario per (year, day) -- confirmed both from `cycle0_lmp_capture_results.json`'s own `_dual_p_series_dollars_per_mwh` assertion (raises if more than one is found; it did not raise) and, independently here, from `FrozenSMOPF/.../cycle7.pkl`'s `model.scenarios_market=[0]`, `model.scenarios_operation=[0]`. For a single scenario, `prob_market_scenarios=[1.00]` (shared_resources_planning.py:7418, the branch this single-market-scenario configuration takes) and `prob_operation_scenarios=[1/num_oper_scenarios]*num_oper_scenarios` (network_data.py:191) reduces to [1.00] for num_oper_scenarios=1. So prob(s_m)*prob(s_o) = 1.0 exactly -- NOT a missing shrink factor.",
+   "day_weights_and_365_years_factor": "NOT present in `objective_function_rule`/`generation_cost`/`total_generation_cost_rule` (model_construction_helpers.py:1647-1682) at all -- these annualization/day-weight factors only enter via `_get_admm_block_weight` (shared_resources_planning.py:3136), which is read ONLY inside `update_transmission_model_to_admm`/`update_distribution_models_to_admm` (shared_resources_planning.py:4314-4320, :4467-4472) to compute `effective_scale = objective_scale/block_weight` -- i.e. strictly AFTER the 51-solve construction phase this capture stopped at. Not present at capture time.",
+   "admm_block_weight": "Same as above -- `admm_block_weight`/`admm_objective_scale`/`admm_common_objective_scale` are Params created for the FIRST time inside `update_transmission_model_to_admm` (shared_resources_planning.py:4317-4319) / `update_distribution_models_to_admm` (:4470-4472). At construction time these Params DO NOT YET EXIST on the model (confirmed independently below, step 2, on the FrozenSMOPF cycle-7 pickle, which DOES have them -- a positive control showing the Params exist once update_*_to_admm has run, and by implication do not before it).",
+   "interface_settlement_weight": "model.interface_settlement_weight is created at model_construction_helpers.py:1611 with `initialize=0.00` UNCONDITIONALLY, for every network, every time `build_objective` runs (i.e. also during the 51-solve construction). It is set to 1 only later, by `_prepare_transmission_objectives_for_admm`/`_prepare_distribution_objectives_for_admm` (shared_resources_planning.py:2440-2441), called -- like update_*_to_admm -- strictly AFTER the standalone-solve success check. So at capture time interface_settlement_weight = 0.00, confirmed (this matches WORKER_REPORT_S36_A17_CAPTURE.md's PART B claim)."
+  },
+  "conclusion": "At capture time, for BOTH the TSO (case9) and every DSO (case33_x) block: model.objective = total_gen_cost + total_flex_cost + total_load_curt_cost + total_gen_curt_penalty + total_ess_utilization_cost_penalty + total_slack_penalties + total_ess_complementarity_penalties + 0.00*interface_settlement (raw, UNSCALED). The ONLY factors multiplying a controllable generator's cost gradient are baseMVA (=100) and prob(s_m)*prob(s_o) (=1.0 here) -- no day weight, no 365/years factor, no admm_block_weight, no admm_objective_scale division. This part of WORKER_REPORT_S36_A17_CAPTURE.md's PART B claim ('genuine unscaled-objective duals, needing no further sigma correction') is CONFIRMED by source, not merely repeated."
+ },
+ "step2_identity_mechanism_check_on_independent_fixture": {
+  "fixture": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/FrozenSMOPF/matched_success_TSO_case9_2025_Summer_cycle7.pkl",
+  "fixture_sha256": "fbfaa6b1291373302b61bf0b61d092d232d7965d80580d1abe7c8b7947b1a46c",
+  "fixture_metadata": {
+   "agent": "TSO",
+   "node_id": null,
+   "network_name": "case9",
+   "year": 2025,
+   "day": "Summer",
+   "cycle": 7,
+   "from_warm_start": true,
+   "captured_outcome": "status=ok, termination=optimal, message=Ipopt 3.14.18\\x3a Optimal Solution Found",
+   "label": "matched_success"
+  },
+  "fixture_admm_scale_params_present": {
+   "admm_objective_scale": 94750.88682586973,
+   "admm_block_weight": 455.0,
+   "admm_common_objective_scale": 43111653.50577073
+  },
+  "note": "This fixture is cycle 7 of an UNRELATED run (not run 1/s35ref, not cycle 0) -- its objective IS scaled (admm_objective_scale Params present and populated, unlike at construction time -- positive control for step 1's claim that these Params do not exist before update_*_to_admm runs). It is used ONLY to validate the GENERAL MECHANISM (does `model.dual` on node_balance_p equal the ACTIVE objective's own local partial-derivative coefficient of pg, with no sign flip and no hidden extra factor?) on real IPOPT-exported output in this codebase -- not to supply a cycle-0 magnitude.",
+  "generator_used": "gen_id=1 (index 0), bus 1 (TSO case9 slack/CONV generator), pg[0,0,0,p] for all 24 periods",
+  "per_period": [
+   {
+    "period": 0,
+    "objective_coefficient_of_pg": 12174.287276332465,
+    "node_balance_p_dual": 12174.287250846444,
+    "pg_value": 0.8555672766224928,
+    "pg_lb": -1e-05,
+    "pg_ub": 2.50001,
+    "pg_strictly_interior": true,
+    "ratio_dual_over_coefficient": 0.9999999979065698
+   },
+   {
+    "period": 1,
+    "objective_coefficient_of_pg": 11532.886788799718,
+    "node_balance_p_dual": 11532.886760927082,
+    "pg_value": 0.8260400604577156,
+    "pg_lb": -1e-05,
+    "pg_ub": 2.50001,
+    "pg_strictly_interior": true,
+    "ratio_dual_over_coefficient": 0.9999999975832038
+   },
+   {
+    "period": 2,
+    "objective_coefficient_of_pg": 11200.342991401447,
+    "node_balance_p_dual": 11200.342959853586,
+    "pg_value": 0.7833359906258703,
+    "pg_lb": -1e-05,
+    "pg_ub": 2.50001,
+    "pg_strictly_interior": true,
+    "ratio_dual_over_coefficient": 0.999999997183313
+   },
+   {
+    "period": 3,
+    "objective_coefficient_of_pg": 10817.294045880144,
+    "node_balance_p_dual": 10817.294014078747,
+    "pg_value": 0.7805109496067152,
+    "pg_lb": -1e-05,
+    "pg_ub": 2.50001,
+    "pg_strictly_interior": true,
+    "ratio_dual_over_coefficient": 0.9999999970601338
+   },
+   {
+    "period": 4,
+    "objective_coefficient_of_pg": 11128.348464173461,
+    "node_balance_p_dual": 11128.348431831599,
+    "pg_value": 0.7745394376085577,
+    "pg_lb": -1e-05,
+    "pg_ub": 2.50001,
+    "pg_strictly_interior": true,
+    "ratio_dual_over_coefficient": 0.999999997093741
+   },
+   {
+    "period": 5,
+    "objective_coefficient_of_pg": 10515.514099547581,
+    "node_balance_p_dual": 10515.514067222783,
+    "pg_value": 0.7747269360047299,
+    "pg_lb": -1e-05,
+    "pg_ub": 2.50001,
+    "pg_strictly_interior": true,
+    "ratio_dual_over_coefficient": 0.9999999969259897
+   },
+   {
+    "period": 6,
+    "objective_coefficient_of_pg": 10957.559794692766,
+    "node_balance_p_dual": 10957.55976271725,
+    "pg_value": 0.7785796006773659,
+    "pg_lb": -1e-05,
+    "pg_ub": 2.50001,
+    "pg_strictly_interior": true,
+    "ratio_dual_over_coefficient": 0.9999999970818761
+   },
+   {
+    "period": 7,
+    "objective_coefficient_of_pg": 10454.72472304923,
+    "node_balance_p_dual": 10454.724691364794,
+    "pg_value": 0.7818123692056443,
+    "pg_lb": -1e-05,
+    "pg_ub": 2.50001,
+    "pg_strictly_interior": true,
+    "ratio_dual_over_coefficient": 0.9999999969693668
+   },
+   {
+    "period": 8,
+    "objective_coefficient_of_pg": 7915.592927859231,
+    "node_balance_p_dual": 7915.592897198283,
+    "pg_value": 0.7933401655498954,
+    "pg_lb": -1e-05,
+    "pg_ub": 2.50001,
+    "pg_strictly_interior": true,
+    "ratio_dual_over_coefficient": 0.9999999961265128
+   },
+   {
+    "period": 9,
+    "objective_coefficient_of_pg": 6211.984668781716,
+    "node_balance_p_dual": 6211.984634309029,
+    "pg_value": 0.7516620401059193,
+    "pg_lb": -1e-05,
+    "pg_ub": 2.50001,
+    "pg_strictly_interior": true,
+    "ratio_dual_over_coefficient": 0.9999999944506163
+   },
+   {
+    "period": 10,
+    "objective_coefficient_of_pg": 5776.247392536227,
+    "node_balance_p_dual": 5776.247352295515,
+    "pg_value": 0.6947977466110367,
+    "pg_lb": -1e-05,
+    "pg_ub": 2.50001,
+    "pg_strictly_interior": true,
+    "ratio_dual_over_coefficient": 0.999999993033416
+   },
+   {
+    "period": 11,
+    "objective_coefficient_of_pg": 4821.504917083688,
+    "node_balance_p_dual": 4821.5048767755625,
+    "pg_value": 0.6941744350257272,
+    "pg_lb": -1e-05,
+    "pg_ub": 2.50001,
+    "pg_strictly_interior": true,
+    "ratio_dual_over_coefficient": 0.9999999916399285
+   },
+   {
+    "period": 12,
+    "objective_coefficient_of_pg": 3842.4589573272583,
+    "node_balance_p_dual": 3842.4589181929014,
+    "pg_value": 0.7051564947945869,
+    "pg_lb": -1e-05,
+    "pg_ub": 2.50001,
+    "pg_strictly_interior": true,
+    "ratio_dual_over_coefficient": 0.999999989815283
+   },
+   {
+    "period": 13,
+    "objective_coefficient_of_pg": 3641.2287014896883,
+    "node_balance_p_dual": 3641.2286601581955,
+    "pg_value": 0.6848267949950434,
+    "pg_lb": -1e-05,
+    "pg_ub": 2.50001,
+    "pg_strictly_interior": true,
+    "ratio_dual_over_coefficient": 0.9999999886490258
+   },
+   {
+    "period": 14,
+    "objective_coefficient_of_pg": 3363.971087294918,
+    "node_balance_p_dual": 3363.971040288071,
+    "pg_value": 0.6366066852346376,
+    "pg_lb": -1e-05,
+    "pg_ub": 2.50001,
+    "pg_strictly_interior": true,
+    "ratio_dual_over_coefficient": 0.999999986026382
+   },
+   {
+    "period": 15,
+    "objective_coefficient_of_pg": 3788.721781582405,
+    "node_balance_p_dual": 3788.7217359555025,
+    "pg_value": 0.647790343549417,
+    "pg_lb": -1e-05,
+    "pg_ub": 2.50001,
+    "pg_strictly_interior": true,
+    "ratio_dual_over_coefficient": 0.9999999879571778
+   },
+   {
+    "period": 16,
+    "objective_coefficient_of_pg": 5135.847584956535,
+    "node_balance_p_dual": 5135.847553650149,
+    "pg_value": 0.7860411039594973,
+    "pg_lb": -1e-05,
+    "pg_ub": 2.50001,
+    "pg_strictly_interior": true,
+    "ratio_dual_over_coefficient": 0.999999993904339
+   },
+   {
+    "period": 17,
+    "objective_coefficient_of_pg": 8027.603961812194,
+    "node_balance_p_dual": 8027.603932380156,
+    "pg_value": 0.8075172820421894,
+    "pg_lb": -1e-05,
+    "pg_ub": 2.50001,
+    "pg_strictly_interior": true,
+    "ratio_dual_over_coefficient": 0.999999996333646
+   },
+   {
+    "period": 18,
+    "objective_coefficient_of_pg": 10645.642056661225,
+    "node_balance_p_dual": 10645.642026605083,
+    "pg_value": 0.8002701457594429,
+    "pg_lb": -1e-05,
+    "pg_ub": 2.50001,
+    "pg_strictly_interior": true,
+    "ratio_dual_over_coefficient": 0.9999999971766718
+   },
+   {
+    "period": 19,
+    "objective_coefficient_of_pg": 12307.440809088446,
+    "node_balance_p_dual": 12307.440786973457,
+    "pg_value": 0.8997371904944359,
+    "pg_lb": -1e-05,
+    "pg_ub": 2.50001,
+    "pg_strictly_interior": true,
+    "ratio_dual_over_coefficient": 0.9999999982031204
+   },
+   {
+    "period": 20,
+    "objective_coefficient_of_pg": 14426.264155595129,
+    "node_balance_p_dual": 14426.26413894179,
+    "pg_value": 0.9773807812597736,
+    "pg_lb": -1e-05,
+    "pg_ub": 2.50001,
+    "pg_strictly_interior": true,
+    "ratio_dual_over_coefficient": 0.9999999988456236
+   },
+   {
+    "period": 21,
+    "objective_coefficient_of_pg": 13171.640251884177,
+    "node_balance_p_dual": 13171.640225102963,
+    "pg_value": 0.8393651153168659,
+    "pg_lb": -1e-05,
+    "pg_ub": 2.50001,
+    "pg_strictly_interior": true,
+    "ratio_dual_over_coefficient": 0.9999999979667518
+   },
+   {
+    "period": 22,
+    "objective_coefficient_of_pg": 13012.115675729628,
+    "node_balance_p_dual": 13012.115664926814,
+    "pg_value": 1.0682490125425814,
+    "pg_lb": -1e-05,
+    "pg_ub": 2.50001,
+    "pg_strictly_interior": true,
+    "ratio_dual_over_coefficient": 0.999999999169788
+   },
+   {
+    "period": 23,
+    "objective_coefficient_of_pg": 12589.55307164759,
+    "node_balance_p_dual": 12589.553055906812,
+    "pg_value": 0.991060539661462,
+    "pg_lb": -1e-05,
+    "pg_ub": 2.50001,
+    "pg_strictly_interior": true,
+    "ratio_dual_over_coefficient": 0.9999999987496953
+   }
+  ],
+  "ratio_mean": 0.9999999952438404,
+  "ratio_min": 0.999999986026382,
+  "ratio_max": 0.999999999169788,
+  "all_periods_interior": true,
+  "identity_holds": true,
+  "sign_convention": "no sign flip: dual == +1 * objective_coefficient (ratio ~1.0, not ~-1.0)",
+  "cross_bus_dual_at_p0": {
+   "0": 12174.287250846444,
+   "1": 12174.287169473186,
+   "2": 12174.287125411878,
+   "3": 12174.287256223659,
+   "4": 12314.687576551589,
+   "5": 12174.287128593087,
+   "6": 12226.722571519513,
+   "7": 12174.287175399028,
+   "8": 12297.56116814069
+  },
+  "cross_bus_conclusion": "At p=0, node_idx 0 (bus1, the generator bus) dual=12174.29; node_idx 4,6,8 (bus 5,7,9, the SAME topological role as this diagnostic's storage buses) duals are 12314.69 / 12226.72 / 12297.56 -- within 0.4%-1.2% of the generator-bus value (small loss-driven LMP spread), NOT orders of magnitude smaller. In a properly cost-driven network, a load bus's dual should be COMPARABLE to a nearby interior generator's, not ~1e-9x smaller."
+ },
+ "step2b_no_controllable_generator_at_storage_buses": {
+  "source": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/case9/case9_2025.json",
+  "source_sha256": "d5f7f579a56676b85fba980ff96e85a15620ae72c85f67f7551426a13ee0034f",
+  "generators": [
+   {
+    "idx": 0,
+    "bus": 1,
+    "gen_type": 1,
+    "is_controllable": true
+   },
+   {
+    "idx": 1,
+    "bus": 2,
+    "gen_type": 1,
+    "is_controllable": true
+   },
+   {
+    "idx": 2,
+    "bus": 3,
+    "gen_type": 1,
+    "is_controllable": true
+   },
+   {
+    "idx": 3,
+    "bus": 4,
+    "gen_type": 2,
+    "is_controllable": false
+   },
+   {
+    "idx": 4,
+    "bus": 6,
+    "gen_type": 2,
+    "is_controllable": false
+   },
+   {
+    "idx": 5,
+    "bus": 8,
+    "gen_type": 2,
+    "is_controllable": false
+   },
+   {
+    "idx": 6,
+    "bus": 4,
+    "gen_type": 3,
+    "is_controllable": false
+   },
+   {
+    "idx": 7,
+    "bus": 6,
+    "gen_type": 3,
+    "is_controllable": false
+   },
+   {
+    "idx": 8,
+    "bus": 8,
+    "gen_type": 3,
+    "is_controllable": false
+   }
+  ],
+  "active_distribution_network_nodes": [
+   5,
+   7,
+   9
+  ],
+  "storage_bus_has_controllable_generator": {
+   "5": false,
+   "7": false,
+   "9": false
+  },
+  "conclusion": "None of buses 5, 7, 9 (the captured TSO storage buses = transmission_network.active_distribution_network_nodes, confirmed [5,7,9]) hosts a controllable, cost-bearing generator in case9 -- the 3 CONV generators sit at buses 1, 2, 3 (all is_controllable=True); buses 4, 6, 8 host WIND/PV generators (is_controllable=False, excluded from generation_cost). The Planner's literal identity check (a bus with an unconstrained cost-bearing generator, among the CAPTURED buses) cannot be performed at 5, 7, or 9 -- confirming the fallback used in step 2 was necessary, not a choice of convenience."
+ },
+ "step2c_analytic_identity_at_storage_buses": {
+  "question": "What IS the local KKT relationship governing model.dual at node_balance_p[bus in {5,7,9}] at construction time, if not dual = scale*baseMVA*c_p[p]?",
+  "finding": "compute_node_load (model_construction_helpers.py:1286-1327) builds Pd at each node by summing, for every load c at that bus: `model.pc[c,...]` (bounded to within EQUALITY_TOLERANCE of the case data Pd -- model_construction_helpers.py:272-275, i.e. essentially fixed) PLUS, for the TSO's own ADN-interface loads specifically (load_is_tso_adn_interface, model_construction_helpers.py:1685-1689 -- true exactly at buses 5, 7, 9), `model.interface_delta_p[dn,...]` (model_construction_helpers.py:1303-1306). create_transmission_network_model (shared_resources_planning.py:3440-3503, the SAME constructor the 51-solve standalone-init phase calls) FIXES `pc[adn_load_idx]` to the current consensus interface value (line 3477-3484) and FREES `interface_delta_p` (line 3498-3499), bounded by +/- the DSO's own interface transformer rating in p.u. (line 3500-3503; numeric values below -- 2.0/1.0/1.5 p.u. at nodes 5/7/9, NOT tiny). `interface_delta_p` has ZERO direct objective sensitivity at capture time: it enters ONLY the (fixed-weight-0) `interface_settlement` term (model_construction_helpers.py:1617-1644) and the (zero-weighted, per step 1) `interface_settlement_weight*interface_settlement` line of objective_function_rule (:1659) -- no other term in objective_function_rule references it. So, for any period where `interface_delta_p` is STRICTLY INTERIOR of its +/-rating bounds, KKT stationarity for that free variable (d(obj)/d(delta) + dual[node]*d(constraint)/d(delta) = 0, with d(obj)/d(delta)=0 and d(constraint)/d(delta)=+1, using the SAME sign convention step 2 validated) forces dual[node] = 0 EXACTLY (up to solver numerical tolerance), REGARDLESS of c_p[p]. The observed 1e-5 to 1e-8 p.u. values are consistent with this being IPOPT's own KKT-residual/duality-gap noise floor at termination, not a real (even tiny) priced quantity.",
+  "ruled_out_alternative_checked": "`_add_tso_scenario_tracking_penalty` (shared_resources_planning.py:3403-3436) DOES give `pc_adn` (hence indirectly interface_delta_p) a large (PENALTY_SCENARIO_DEVIATION*1e6 = 90000.0*1e6 = 9.000e+10) quadratic tracking cost -- but this function is called ONLY from `_run_operational_planning_without_coordination` (shared_resources_planning.py:7156-7270), the 'no_coordination' BASELINE run mode. It is NOT reached by the ADMM initialization path (`_run_operational_planning`, the one `p515_s35pt_phase2_checks._run_precycle1_capture` / this capture exercises) -- confirmed by reading both functions end-to-end. Checked and RULED OUT for this capture; recorded so a future reader does not have to re-derive this.",
+  "interface_delta_p_bounds_pu": {
+   "5": 2.0,
+   "7": 1.0,
+   "9": 1.5
+  },
+  "loads_at_storage_buses": [
+   {
+    "load_idx": 0,
+    "bus": 5,
+    "fl_reg": true
+   },
+   {
+    "load_idx": 1,
+    "bus": 7,
+    "fl_reg": true
+   },
+   {
+    "load_idx": 2,
+    "bus": 9,
+    "fl_reg": true
+   }
+  ],
+  "conclusion": "The Planner's proposed identity (dual = +/-(objective scale)*baseMVA*c_p[p]) DOES NOT HOLD at buses 5, 7, 9 at capture time -- not because a scale factor is missing, but because the quantity that is actually locally free and cost-relevant there (interface_delta_p) has ZERO objective sensitivity at this specific model-construction phase. The true (analytic) value is not proportional to c_p[p] at all; it is identically 0 (mod solver noise). No scale factor converts an analytically-zero quantity into a plausible $/MWh price."
+ },
+ "step3_calibrated_lmps_vs_pi": {
+  "tso_storage_bus_lmps": {
+   "5": {
+    "base_mva": 100.0,
+    "conversion_formula": "LMP[$/MWh] = dual_p_pu / base_mva  (UNCHANGED -- see step1/step2/step2c: no missing prob/day-weight/admm_block_weight/sigma factor at capture time)",
+    "calibrated_lmp_mean_dollars_per_mwh": 9.166534702886068e-08,
+    "calibrated_lmp_std_dollars_per_mwh": 4.577101071472353e-08,
+    "pi_mean_dollars_per_mwh": 95.41005247859619,
+    "pi_std_dollars_per_mwh": 34.70661294977371,
+    "ratio_lmp_mean_to_pi_mean": 9.607514580229839e-10,
+    "plausible_within_factor_2": false,
+    "pearson_correlation_lmp_vs_pi_shape": 0.7802619511888359,
+    "per_day_2025": {
+     "Spring": {
+      "lmp_dollars_per_mwh_mean": 1.0501771634216187e-07,
+      "pi_dollars_per_mwh_mean": 83.60145377354466
+     },
+     "Summer": {
+      "lmp_dollars_per_mwh_mean": 9.674890646863959e-08,
+      "pi_dollars_per_mwh_mean": 90.60782341050286
+     },
+     "Autumn": {
+      "lmp_dollars_per_mwh_mean": 7.915603606187832e-08,
+      "pi_dollars_per_mwh_mean": 104.31500466875927
+     },
+     "Winter": {
+      "lmp_dollars_per_mwh_mean": 8.573872924276296e-08,
+      "pi_dollars_per_mwh_mean": 103.11592806157795
+     }
+    }
+   },
+   "7": {
+    "base_mva": 100.0,
+    "conversion_formula": "LMP[$/MWh] = dual_p_pu / base_mva  (UNCHANGED -- see step1/step2/step2c: no missing prob/day-weight/admm_block_weight/sigma factor at capture time)",
+    "calibrated_lmp_mean_dollars_per_mwh": 1.1254819338863459e-07,
+    "calibrated_lmp_std_dollars_per_mwh": 5.944346040779382e-08,
+    "pi_mean_dollars_per_mwh": 95.41005247859619,
+    "pi_std_dollars_per_mwh": 34.70661294977371,
+    "ratio_lmp_mean_to_pi_mean": 1.179626155366418e-09,
+    "plausible_within_factor_2": false,
+    "pearson_correlation_lmp_vs_pi_shape": 0.7115599399083737,
+    "per_day_2025": {
+     "Spring": {
+      "lmp_dollars_per_mwh_mean": 1.3582983995228554e-07,
+      "pi_dollars_per_mwh_mean": 83.60145377354466
+     },
+     "Summer": {
+      "lmp_dollars_per_mwh_mean": 1.255565278972212e-07,
+      "pi_dollars_per_mwh_mean": 90.60782341050286
+     },
+     "Autumn": {
+      "lmp_dollars_per_mwh_mean": 8.435942036734421e-08,
+      "pi_dollars_per_mwh_mean": 104.31500466875927
+     },
+     "Winter": {
+      "lmp_dollars_per_mwh_mean": 1.0444698533768741e-07,
+      "pi_dollars_per_mwh_mean": 103.11592806157795
+     }
+    }
+   },
+   "9": {
+    "base_mva": 100.0,
+    "conversion_formula": "LMP[$/MWh] = dual_p_pu / base_mva  (UNCHANGED -- see step1/step2/step2c: no missing prob/day-weight/admm_block_weight/sigma factor at capture time)",
+    "calibrated_lmp_mean_dollars_per_mwh": 1.0589167804461672e-07,
+    "calibrated_lmp_std_dollars_per_mwh": 6.300632890636207e-08,
+    "pi_mean_dollars_per_mwh": 95.41005247859619,
+    "pi_std_dollars_per_mwh": 34.70661294977371,
+    "ratio_lmp_mean_to_pi_mean": 1.1098587129314484e-09,
+    "plausible_within_factor_2": false,
+    "pearson_correlation_lmp_vs_pi_shape": 0.8169688807026464,
+    "per_day_2025": {
+     "Spring": {
+      "lmp_dollars_per_mwh_mean": 1.196342711791568e-07,
+      "pi_dollars_per_mwh_mean": 83.60145377354466
+     },
+     "Summer": {
+      "lmp_dollars_per_mwh_mean": 1.0535583154132853e-07,
+      "pi_dollars_per_mwh_mean": 90.60782341050286
+     },
+     "Autumn": {
+      "lmp_dollars_per_mwh_mean": 9.13340740771078e-08,
+      "pi_dollars_per_mwh_mean": 104.31500466875927
+     },
+     "Winter": {
+      "lmp_dollars_per_mwh_mean": 1.0724253538087387e-07,
+      "pi_dollars_per_mwh_mean": 103.11592806157795
+     }
+    }
+   }
+  },
+  "dso_reference_node_lmps": {
+   "5": {
+    "base_mva": 100.0,
+    "calibrated_ref_node_lmp_mean_dollars_per_mwh": 1.2339664719895261e-08,
+    "calibrated_ref_node_lmp_std_dollars_per_mwh": 2.593660671943044e-09
+   },
+   "7": {
+    "base_mva": 100.0,
+    "calibrated_ref_node_lmp_mean_dollars_per_mwh": 7.064003700467553e-08,
+    "calibrated_ref_node_lmp_std_dollars_per_mwh": 4.027240069542143e-08
+   },
+   "9": {
+    "base_mva": 100.0,
+    "calibrated_ref_node_lmp_mean_dollars_per_mwh": 1.1620498547186949e-08,
+    "calibrated_ref_node_lmp_std_dollars_per_mwh": 3.5747483152991595e-08
+   }
+  },
+  "dso_reference_node_note": "Reported for completeness (task step 4), NOT used as a storage price. Independent review established the storage term cancels at the DSO reference node (its own generator is type=REF, structurally excluded from generation_cost -- model_construction_helpers.py:1667 `not (not network.is_transmission and gen_type==GEN_REFERENCE)` -- confirmed for node 7's own DSO feeder (case33_2_2025.json): the ONLY generator at bus 1 (the reference bus) is gen_id=1, type='REF'; the feeder's other generators (WIND/PV, non-controllable) sit elsewhere). The calibrated DSO reference-node values above (~1e-6 to 1e-7 $/MWh, i.e. also near the IPOPT numerical floor) AGREE with that structural-cancellation claim: they carry no plausible price signal either, consistent with (not contradicting) the independent finding."
+ },
+ "calibration_verdict": {
+  "identity_mechanism_validated_on_independent_fixture": true,
+  "identity_dual_proportional_to_cp_HOLDS_at_captured_buses_5_7_9": false,
+  "reason": "Buses 5/7/9 host no controllable generator (step2b) and, at construction time, the local free/cost-relevant variable there (interface_delta_p) carries zero objective weight (step2c) -- so dual is analytically ~0 there, independent of c_p[p]/pi, for ANY scale factor. This is 'the identity does not hold' under the Planner's own stop condition.",
+  "calibration_result": "FAILS (per the Planner's stated branch: stop after step 3, do not redo diagnostic 1(c))"
+ },
+ "diagnostic_1c_redo": "NOT PERFORMED -- calibration fails per the Planner's own stop condition (see calibration_verdict)."
+}

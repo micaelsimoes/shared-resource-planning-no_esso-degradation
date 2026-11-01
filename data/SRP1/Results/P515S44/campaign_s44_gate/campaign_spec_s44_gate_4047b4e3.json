@@ -1,0 +1,129 @@
+{
+ "authority": [
+  "PLANNER_BRIEF_2026-09-13.md Addendum 25 (campaign harness, gate)",
+  "PLANNER_BRIEF_2026-09-13.md Addendum 26",
+  "STEP4_DFO_METHOD.md section 2",
+  "data/SRP1/Results/P515S44/frozen_s44_selection_spec_v14_e4500e27.json item1_harness"
+ ],
+ "bar_window_cycles": 10,
+ "campaign_id": "s44_gate",
+ "candidates": [
+  {
+   "canonical": {
+    "investment_year": 2025,
+    "nodes": {
+     "5": [
+      0.96875,
+      3.875
+     ],
+     "7": [
+      0.96875,
+      3.875
+     ],
+     "9": [
+      0.96875,
+      3.875
+     ]
+    }
+   },
+   "eval_dir": "578636daa6d6360d_c_star",
+   "key": "578636daa6d6360d6701764c73ddf795e53c2c37e511e21be1400024f8f6350c",
+   "label": "c_star",
+   "working_dir_ids": {
+    "precheck": "p515s44_s44_gate_578636daa6d6360d_precheck",
+    "run": "p515s44_s44_gate_578636daa6d6360d_run"
+   }
+  },
+  {
+   "canonical": {
+    "investment_year": 2025,
+    "nodes": {
+     "5": [
+      0.0,
+      0.0
+     ],
+     "7": [
+      1.62,
+      3.24
+     ],
+     "9": [
+      0.0,
+      0.0
+     ]
+    }
+   },
+   "eval_dir": "d1a02e67107d0bac_paper_plan",
+   "key": "d1a02e67107d0bace5f3de92e28df61f2f6be93f6c9d7020a68efffc6d836c0c",
+   "label": "paper_plan",
+   "working_dir_ids": {
+    "precheck": "p515s44_s44_gate_d1a02e67107d0bac_precheck",
+    "run": "p515s44_s44_gate_d1a02e67107d0bac_run"
+   }
+  },
+  {
+   "canonical": {
+    "investment_year": 2025,
+    "nodes": {
+     "5": [
+      0.96875,
+      3.875
+     ],
+     "7": [
+      0.0,
+      0.0
+     ],
+     "9": [
+      0.96875,
+      3.875
+     ]
+    }
+   },
+   "eval_dir": "e30704e6e4dd3765_node7_empty",
+   "key": "e30704e6e4dd3765d2cc8960d5a3d48c5adb362bc6fd067dda567f14086b46b5",
+   "label": "node7_empty",
+   "working_dir_ids": {
+    "precheck": "p515s44_s44_gate_e30704e6e4dd3765_precheck",
+    "run": "p515s44_s44_gate_e30704e6e4dd3765_run"
+   }
+  }
+ ],
+ "cap": 500,
+ "concurrency": 3,
+ "configuration": {
+  "apply_rho": false,
+  "arm_label": "s39_D",
+  "case_file": "data/SRP1/SRP1_params.json",
+  "case_file_last_commit": "fb3de341b359422dfbfb77e6bbffd7dc83a80bab",
+  "case_file_sha256": "490e5b211f5083fe6ffca11d2aa07cd26739f141654fce3a23898258d610edf8",
+  "full_diagnostics_in_rows": true,
+  "name": "D (case file oracle, fb3de341)",
+  "note": "no Python-side overrides; num_max_iters := cap (run_admm_arm always sets it)",
+  "overrides": {}
+ },
+ "extra": {
+  "companions": "paper_plan, node7_empty: D-configuration selection-run evaluations (spec v14 item 3)",
+  "gate": "evaluation 1 (c_star) bitwise vs data/SRP1/Results/P515S39_D_run",
+  "gate_script": "p515_s44_gate.py",
+  "gate_script_sha256": "38408b3080b78d16c583eaf711899f63acb4fcd31f0a009fa4d6d795d481b803"
+ },
+ "frozen_utc": "2026-09-19T09:35:30.080329+00:00",
+ "git_head": "710dae7d426fd0514baaa6fe161baf3115f357d9",
+ "harness": {
+  "path": "p515_s44_campaign_harness.py",
+  "sha256": "42b99b9302f7005fdfa6a9f2d52d6701ba0d730f7ae0a66384e7ffbcde687cdb"
+ },
+ "interpreter": "/Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python",
+ "nlp_solver_path_env": {
+  "NLP_SOLVER_PATH": "/usr/local/bin/ipopt",
+  "source": "environment"
+ },
+ "required_consecutive_cycles": 10,
+ "schema": "p515_s44_campaign_spec_v1",
+ "thread_caps": {
+  "MKL_NUM_THREADS": "1",
+  "NUMEXPR_NUM_THREADS": "1",
+  "OMP_NUM_THREADS": "1",
+  "OPENBLAS_NUM_THREADS": "1",
+  "VECLIB_MAXIMUM_THREADS": "1"
+ }
+}

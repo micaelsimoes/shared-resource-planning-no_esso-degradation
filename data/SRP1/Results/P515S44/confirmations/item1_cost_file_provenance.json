@@ -1,0 +1,1139 @@
+{
+ "stage": "P5.15 Addendum 26 zero-solve confirmations (frozen spec v14)",
+ "authority": [
+  "PLANNER_BRIEF_2026-09-13.md Addendum 26",
+  "STEP4_DFO_METHOD.md v1 Sec 1.2-1.3, Sec 9",
+  "data/SRP1/Results/P515S44/frozen_s44_selection_spec_v14_e4500e27.json (key addendum26_confirmations_zero_solve)"
+ ],
+ "spec_sha256": "e4500e272be84e158e763256e1c7156593f89bdb50d197d0801dbf70d1d22c9b",
+ "spec_key": [
+  "confirm the committed data/SRP1/SharedESS/SRP1_ESS.xlsx is the author's corrected cost file (git history, content of the unit-cost sheets) and record its sha256",
+  "report I(x) (STEP4_DFO_METHOD.md 1.3: discounted, scenario-weighted, exactly model.investment_cost) and the budget slack B - I(x), B = budget 1e6, at the paper's plan and at C*; state units and whether budget and max_capacity (5.0) are active in the model",
+  "confirm whether x = 0 (no storage at ANY node) is evaluable by the oracle",
+  "report whether the ESSO capacity multipliers (duals of the capacity rows) are available without extra solves"
+ ],
+ "started_utc": "2026-09-19T08:14:35.598117+00:00",
+ "git_HEAD": "96fa8cc8b3c8727d3576da5b94cced5140bc3627",
+ "script_sha256": "95aba9475c2a57532215cbd238e8906606bd09892445246e67807d9c8c7f52c2",
+ "solve_profile_guard": {
+  "permitted": [],
+  "counts": {
+   "permitted_solve": 0,
+   "permitted_exec": 0,
+   "blocked_solve": 0,
+   "blocked_exec": 0
+  },
+  "verify_0_failures": []
+ },
+ "preflight": {
+  "checked_with": "ps -axo pid=,command=",
+  "other_p5_harness_processes": []
+ },
+ "result": {
+  "path": "data/SRP1/SharedESS/SRP1_ESS.xlsx",
+  "working_copy": {
+   "sha256": "1458147446e9b70190465f42cef761af9cfd8b209e91035d858e2e63941d1414",
+   "bytes": 25590,
+   "git_hash_object": "5ef61f5d638890fd60ef8b1e4291ada3f4e748e6",
+   "xlsx_core_properties": {
+    "created": "2015-06-05 18:17:20",
+    "modified": "2025-06-12 15:58:18",
+    "creator": "Micael Filipe Sim\u00f5es",
+    "last_modified_by": "Micael Filipe Sim\u00f5es"
+   }
+  },
+  "HEAD_blob": {
+   "blob": "5ef61f5d638890fd60ef8b1e4291ada3f4e748e6",
+   "sha256": "1458147446e9b70190465f42cef761af9cfd8b209e91035d858e2e63941d1414"
+  },
+  "git_status_porcelain": "",
+  "history_reachable_from_HEAD_follow": [
+   {
+    "commit": "072b13103061304d0b756933653271ec3231ffde",
+    "date": "2026-02-03T11:52:36+00:00",
+    "author": "micaelsimoes",
+    "subject": "Market and Shared ESS folders. Spaces removed for compatibility with Linux.",
+    "name_status": [
+     "R100\tdata/SRP1/Shared ESS/SRP1_ESS.xlsx\tdata/SRP1/SharedESS/SRP1_ESS.xlsx"
+    ]
+   },
+   {
+    "commit": "784346d7d31f2555798607e964b81f05e65a85ed",
+    "date": "2025-12-15T17:59:34+00:00",
+    "author": "micaelsimoes",
+    "subject": "Case studies. Update.",
+    "name_status": [
+     "R100\tdata/OP3/Shared ESS/CS7_ESS.xlsx\tdata/SRP1/Shared ESS/SRP1_ESS.xlsx"
+    ]
+   },
+   {
+    "commit": "a4a75c98c949bb0a59e4e045bb5d85dfa06e5a45",
+    "date": "2025-12-11T09:38:05+00:00",
+    "author": "micaelsimoes",
+    "subject": "Case studies. Update",
+    "name_status": [
+     "C100\tdata/CS7/Shared ESS/CS7_ESS.xlsx\tdata/OP3/Shared ESS/CS7_ESS.xlsx"
+    ]
+   },
+   {
+    "commit": "ed5895eedcfaad32b6241a4be16b22c8c5240aaf",
+    "date": "2025-06-12T16:58:26+01:00",
+    "author": "micaelsimoes",
+    "subject": "Test. Planning",
+    "name_status": [
+     "M\tdata/CS7/Shared ESS/CS7_ESS.xlsx"
+    ]
+   },
+   {
+    "commit": "d90733fe36f6d811629c027a0b0a233f17b963e1",
+    "date": "2025-06-12T15:24:29+01:00",
+    "author": "micaelsimoes",
+    "subject": "Test. Planning",
+    "name_status": [
+     "M\tdata/CS7/Shared ESS/CS7_ESS.xlsx"
+    ]
+   },
+   {
+    "commit": "5d1bc994c0844a247e709a93858817c9514b1ac4",
+    "date": "2024-11-26T15:25:47+00:00",
+    "author": "micaelsimoes",
+    "subject": "CS7. Upload.",
+    "name_status": [
+     "C100\tdata/CS5/Shared ESS/CS5_ESS.xlsx\tdata/CS7/Shared ESS/CS7_ESS.xlsx"
+    ]
+   },
+   {
+    "commit": "8bd10a74df994ec3b1ae0ec7fdde2d4a5933b1e1",
+    "date": "2024-10-28T11:33:02+00:00",
+    "author": "micaelsimoes",
+    "subject": "Rollback. Prices.",
+    "name_status": [
+     "M\tdata/CS5/Shared ESS/CS5_ESS.xlsx"
+    ]
+   },
+   {
+    "commit": "794ce1ba6c6ac899cb42708e285c96ed6a40bda9",
+    "date": "2024-10-26T23:51:26+01:00",
+    "author": "micaelsimoes",
+    "subject": "Investment costs. TEST.",
+    "name_status": [
+     "M\tdata/CS5/Shared ESS/CS5_ESS.xlsx"
+    ]
+   },
+   {
+    "commit": "f3d39cc058013c055650a04eb9143125b085b6b2",
+    "date": "2024-10-19T11:16:47+01:00",
+    "author": "micaelsimoes",
+    "subject": "Upload.",
+    "name_status": [
+     "C100\tdata/CS2/Shared ESS/CS2_ESS.xlsx\tdata/CS5/Shared ESS/CS5_ESS.xlsx"
+    ]
+   },
+   {
+    "commit": "ddc4a3c71c6671a95280dc26efb38ec62e7c5dc1",
+    "date": "2024-10-16T16:49:27+01:00",
+    "author": "micaelsimoes",
+    "subject": "Upload.",
+    "name_status": [
+     "M\tdata/CS2/Shared ESS/CS2_ESS.xlsx"
+    ]
+   },
+   {
+    "commit": "0344fbe688cb1ffaefc45bcaafca42e94d492f53",
+    "date": "2024-05-15T17:53:12+01:00",
+    "author": "Micael Filipe Sim\u00f5es",
+    "subject": "Upload",
+    "name_status": [
+     "C100\tdata/CS1/Shared ESS/CS1_ESS.xlsx\tdata/CS2/Shared ESS/CS2_ESS.xlsx"
+    ]
+   },
+   {
+    "commit": "4c6fef210ebc55d710d6100e9b53a0741a9d76b8",
+    "date": "2024-04-08T13:24:47+01:00",
+    "author": "Micael Filipe Sim\u00f5es",
+    "subject": "Initial commit.",
+    "name_status": [
+     "A\tdata/CS1/Shared ESS/CS1_ESS.xlsx"
+    ]
+   }
+  ],
+  "commits_on_any_ref_touching_exact_path": [
+   {
+    "commit": "7ce1d1ab33878ece678420717b858c7fe5c0036f",
+    "date": "2026-07-29T18:49:57+01:00",
+    "author": "micaelsimoes",
+    "subject": "Costs updated.",
+    "is_ancestor_of_HEAD": false,
+    "blob_after": "8a7e374445de4ccd9e5a07248967388fd804b552",
+    "blob_before": "5ef61f5d638890fd60ef8b1e4291ada3f4e748e6",
+    "refs_containing": [
+     "paper_revisions",
+     "remotes/origin/paper_revisions"
+    ]
+   },
+   {
+    "commit": "072b13103061304d0b756933653271ec3231ffde",
+    "date": "2026-02-03T11:52:36+00:00",
+    "author": "micaelsimoes",
+    "subject": "Market and Shared ESS folders. Spaces removed for compatibility with Linux.",
+    "is_ancestor_of_HEAD": true,
+    "blob_after": "5ef61f5d638890fd60ef8b1e4291ada3f4e748e6",
+    "blob_before": null,
+    "refs_containing": [
+     "admm_loop_corrections",
+     "benders_outer_loop",
+     "development",
+     "feature/derivative-free-planning",
+     "master",
+     "opf_refinements",
+     "paper_revisions",
+     "salvageable_value",
+     "smopf_qp_formulation",
+     "remotes/origin/admm_loop_corrections",
+     "remotes/origin/admm_residual_balancing_tests",
+     "remotes/origin/benders_outer_loop",
+     "remotes/origin/development",
+     "remotes/origin/feature/convex-planning",
+     "remotes/origin/feature/derivative-free-planning",
+     "remotes/origin/master",
+     "remotes/origin/opf_refinements",
+     "remotes/origin/paper_revisions",
+     "remotes/origin/paper_revisions_v2",
+     "remotes/origin/salvageable_value",
+     "remotes/origin/smopf_qp_formulation"
+    ]
+   }
+  ],
+  "distinct_blobs_across_refs": {
+   "5ef61f5d638890fd60ef8b1e4291ada3f4e748e6": {
+    "sha256": "1458147446e9b70190465f42cef761af9cfd8b209e91035d858e2e63941d1414",
+    "bytes": 25590,
+    "n_refs": 19,
+    "is_HEAD_blob": true,
+    "refs": [
+     "admm_loop_corrections",
+     "benders_outer_loop",
+     "development",
+     "feature/derivative-free-planning",
+     "master",
+     "opf_refinements",
+     "origin/admm_loop_corrections",
+     "origin/admm_residual_balancing_tests",
+     "origin/benders_outer_loop",
+     "origin/development",
+     "origin/feature/convex-planning",
+     "origin/feature/derivative-free-planning",
+     "origin/master",
+     "origin/opf_refinements",
+     "origin/paper_revisions_v2",
+     "origin/salvageable_value",
+     "origin/smopf_qp_formulation",
+     "salvageable_value",
+     "smopf_qp_formulation"
+    ],
+    "xlsx_core_properties": {
+     "created": "2015-06-05 18:17:20",
+     "modified": "2025-06-12 15:58:18",
+     "creator": "Micael Filipe Sim\u00f5es",
+     "last_modified_by": "Micael Filipe Sim\u00f5es"
+    }
+   },
+   "8a7e374445de4ccd9e5a07248967388fd804b552": {
+    "sha256": "e17bd5887e1d0738005ae17c3144593527081c9a0776e19cfaa50aafefe39cd6",
+    "bytes": 25525,
+    "n_refs": 2,
+    "is_HEAD_blob": false,
+    "refs": [
+     "origin/paper_revisions",
+     "paper_revisions"
+    ],
+    "xlsx_core_properties": {
+     "created": "2015-06-05 18:17:20",
+     "modified": "2026-07-29 12:47:08",
+     "creator": "Micael Filipe Sim\u00f5es",
+     "last_modified_by": "Micael Filipe Sim\u00f5es"
+    }
+   }
+  },
+  "refs_without_this_path": [
+   "add_adn_node",
+   "admm_initialization",
+   "admm_main_cycle_modification",
+   "admm_models_debug",
+   "admm_prev_iter_vars",
+   "admm_remove_previous_iter_vars",
+   "admm_remove_previous_values",
+   "admm_tests",
+   "admm_vmag_variable",
+   "balancing_modification",
+   "build_model_ineq",
+   "build_model_new_version",
+   "consensus_vars_modification",
+   "correction_consensus_vmag",
+   "correction_sess_day_balance",
+   "cs9_modification",
+   "cs_development/cs3",
+   "cs_development/ieee9",
+   "cs_ieee18",
+   "cs_ieee9",
+   "debug_consensus",
+   "debug_consensus_shared_ess",
+   "dso_model_initialization_mod",
+   "dso_parallel_execution",
+   "dso_problems_parallelization",
+   "equality_reformulation",
+   "ess_model_first_order",
+   "ess_models",
+   "ess_models_test",
+   "esso_active_and_reactive_power",
+   "esso_admm_model_modification",
+   "esso_admm_modification",
+   "esso_model_reformulation",
+   "esso_model_slacks",
+   "esso_only_s",
+   "esso_slacks",
+   "esso_subproblem_decomposition",
+   "expected_values_mod",
+   "expected_values_moved",
+   "expected_values_reformulation",
+   "file_structure_modification",
+   "hr1_new_version",
+   "interface_harmonization",
+   "interface_regularization",
+   "line_limit_redef",
+   "master_problem_stochastic",
+   "model_net_sess_values",
+   "network_model_bilinear_terms",
+   "network_model_mod",
+   "network_model_pf_tests",
+   "network_model_tests",
+   "network_model_var_lims",
+   "new_coordination_methodologies",
+   "operational_planning_modification",
+   "operational_planning_modification_admm_functions",
+   "operational_planning_scenario_generation",
+   "opf_formulation_revisited",
+   "opf_slack_tests",
+   "opf_slacks_redefinition",
+   "optimal_power_flow_qcqp_formulation",
+   "planning",
+   "primal_value_update",
+   "res_power_factor_control",
+   "res_power_factor_control_2",
+   "residual_balancing_mod",
+   "shared_ess_reactive_power",
+   "so_model_modification",
+   "test_interface_expected_values",
+   "test_shared_ess_no_scenarios",
+   "test_without_coordination",
+   "tn_initilization_test",
+   "update_operational_planning_procedure",
+   "vmag_redefinition",
+   "warm_start_tests",
+   "origin/add_adn_node",
+   "origin/admm_initialization",
+   "origin/admm_main_cycle_modification",
+   "origin/admm_models_debug",
+   "origin/admm_prev_iter_vars",
+   "origin/admm_remove_previous_iter_vars",
+   "origin/admm_remove_previous_values",
+   "origin/admm_tests",
+   "origin/admm_vmag_variable",
+   "origin/alternative_opf_formulation",
+   "origin/balancing_modification",
+   "origin/build_model_ineq",
+   "origin/build_model_new_version",
+   "origin/check_convergence_per_adn",
+   "origin/consensus_vars_modification",
+   "origin/consensus_vars_sess_prev_iter",
+   "origin/correction_consensus_vmag",
+   "origin/correction_sess_day_balance",
+   "origin/cs9_modification",
+   "origin/cs_development/cs3",
+   "origin/cs_development/ieee9",
+   "origin/cs_ieee18",
+   "origin/cs_ieee9",
+   "origin/data_format_modification",
+   "origin/debug_consensus",
+   "origin/debug_consensus_shared_ess",
+   "origin/degradation_model_mod",
+   "origin/dso_model_initialization_mod",
+   "origin/dso_parallel_execution",
+   "origin/dso_problems_parallelization",
+   "origin/equality_reformulation",
+   "origin/ess_model_first_order",
+   "origin/ess_models",
+   "origin/ess_models_test",
+   "origin/esso_active_and_reactive_power",
+   "origin/esso_admm_model_modification",
+   "origin/esso_admm_modification",
+   "origin/esso_model_reformulation",
+   "origin/esso_model_slacks",
+   "origin/esso_only_s",
+   "origin/esso_slacks",
+   "origin/esso_subproblem_decomposition",
+   "origin/expected_values_mod",
+   "origin/expected_values_moved",
+   "origin/expected_values_reformulation",
+   "origin/feature_prev_iter",
+   "origin/file_structure_modification",
+   "origin/fixed_vars_removed",
+   "origin/formulation_improvements_v2",
+   "origin/hierarchical_single_period",
+   "origin/hr1_new_version",
+   "origin/interface_harmonization",
+   "origin/interface_regularization",
+   "origin/line_limit_redef",
+   "origin/master_problem_stochastic",
+   "origin/model_corrections",
+   "origin/model_net_sess_values",
+   "origin/network_model_bilinear_terms",
+   "origin/network_model_mod",
+   "origin/network_model_pf_tests",
+   "origin/network_model_tests",
+   "origin/network_model_var_lims",
+   "origin/new_coordination_methodologies",
+   "origin/new_test_cases",
+   "origin/operational_planning_modification",
+   "origin/operational_planning_modification_admm_functions",
+   "origin/operational_planning_scenario_generation",
+   "origin/opf_formulation_revisited",
+   "origin/opf_formulation_tests",
+   "origin/opf_slack_tests",
+   "origin/opf_slacks_redefinition",
+   "origin/optimal_power_flow_qcqp_formulation",
+   "origin/planning",
+   "origin/prev_values_sess",
+   "origin/primal_value_update",
+   "origin/res_power_factor",
+   "origin/res_power_factor_control",
+   "origin/res_power_factor_control_2",
+   "origin/residual_balancing_mod",
+   "origin/sess_subproblem_mod",
+   "origin/shared_ess_reactive_power",
+   "origin/so_model_modification",
+   "origin/test_interface_expected_values",
+   "origin/test_no_esso",
+   "origin/test_shared_ess_no_scenarios",
+   "origin/test_without_coordination",
+   "origin/tn_initilization_test",
+   "origin/update_operational_planning_procedure",
+   "origin/vmag_redefinition",
+   "origin/warm_start_tests"
+  ],
+  "merge_base": {
+   "merge_base_HEAD_paper_revisions": "285cbb427c1562b1a7f1d2d3792973926a872034|2026-07-28T13:27:19+01:00|Debug.",
+   "blob_at_merge_base": "5ef61f5d638890fd60ef8b1e4291ada3f4e748e6"
+  },
+  "blob_comparisons_cell_by_cell": {
+   "HEAD(5ef61f5d) vs 8a7e3744": {
+    "Conversion rate": {
+     "present_in_both": true,
+     "n_differing_cells": 0
+    },
+    "Cost breakdown NREL": {
+     "present_in_both": true,
+     "n_differing_cells": 0
+    },
+    "Investment Cost NREL, EUR": {
+     "present_in_both": true,
+     "n_differing_cells": 1,
+     "first_differences": [
+      {
+       "row": 0,
+       "col": 0,
+       "a": "Total Cost (4-h System), [\u20ac/KWh]",
+       "b": "Total Cost (4-h System), [\u20ac/kW]"
+      }
+     ]
+    },
+    "Investment Cost NREL, USD": {
+     "present_in_both": true,
+     "n_differing_cells": 1,
+     "first_differences": [
+      {
+       "row": 0,
+       "col": 0,
+       "a": "Total Cost (4-h System), [$/KWh]",
+       "b": "Total Cost (4-h System), [$/kW]"
+      }
+     ]
+    },
+    "Investment Cost, Energy": {
+     "present_in_both": true,
+     "n_differing_cells": 105,
+     "first_differences": [
+      {
+       "row": 1,
+       "col": 1,
+       "a": 234285.20941424163,
+       "b": 292856.51176780206
+      },
+      {
+       "row": 1,
+       "col": 2,
+       "a": 234285.20941424163,
+       "b": 292856.51176780206
+      },
+      {
+       "row": 1,
+       "col": 3,
+       "a": 263326.05887093366,
+       "b": 329157.573588667
+      },
+      {
+       "row": 1,
+       "col": 4,
+       "a": 189436.6781891738,
+       "b": 236795.84773646726
+      },
+      {
+       "row": 1,
+       "col": 5,
+       "a": 178803.26491503586,
+       "b": 223504.08114379484
+      },
+      {
+       "row": 1,
+       "col": 6,
+       "a": 169706.26472766226,
+       "b": 212132.83090957787
+      }
+     ],
+     "numeric_ratio_b_over_a": {
+      "min": 1.2499999999999996,
+      "max": 1.2500000000000002,
+      "n": 105
+     }
+    },
+    "Investment Cost, Power": {
+     "present_in_both": true,
+     "n_differing_cells": 0
+    },
+    "Scenarios": {
+     "present_in_both": true,
+     "n_differing_cells": 0
+    }
+   }
+  },
+  "unit_cost_sheets_working_copy_raw": {
+   "Scenarios": [
+    [
+     "numScenarios",
+     3,
+     0.35,
+     0.55,
+     0.1
+    ]
+   ],
+   "Investment Cost, Power": [
+    [
+     "S, [\u20ac/MVA]",
+     2020.0,
+     2021.0,
+     2022.0,
+     2023.0,
+     2024.0,
+     2025.0,
+     2026.0,
+     2027.0,
+     2028.0,
+     2029.0,
+     2030.0,
+     2031.0,
+     2032.0,
+     2033.0,
+     2034.0,
+     2035.0,
+     2036.0,
+     2037.0,
+     2038.0,
+     2039.0,
+     2040.0,
+     2041.0,
+     2042.0,
+     2043.0,
+     2044.0,
+     2045.0,
+     2046.0,
+     2047.0,
+     2048.0,
+     2049.0,
+     2050.0,
+     2051.0,
+     2052.0,
+     2053.0,
+     2054.0
+    ],
+    [
+     "Scenario 1",
+     295670.72712234,
+     295670.72712234,
+     332320.6253236754,
+     239071.3460908257,
+     225651.8517812306,
+     214171.32910223768,
+     205080.57172721188,
+     195989.81435218608,
+     186899.05697716027,
+     177807.92704537965,
+     168720.15012439265,
+     165761.86321252867,
+     162803.57630066472,
+     159842.49521313942,
+     156884.39457965287,
+     153929.27440020515,
+     150968.00703430243,
+     148009.90640081587,
+     145051.61948895192,
+     142093.51885546543,
+     139132.25148956268,
+     136174.15085607613,
+     133219.03067662838,
+     130260.93004314188,
+     127299.66267723915,
+     124341.3757653752,
+     121383.2751318887,
+     118424.98822002472,
+     115463.72085412197,
+     112505.62022063546,
+     109550.68631956511,
+     109550.68631956511,
+     109550.68631956511,
+     109550.68631956511,
+     109550.68631956511
+    ],
+    [
+     "Scenario 2",
+     295670.72712234,
+     295670.72712234,
+     332320.6253236754,
+     319560.92902691476,
+     305268.34796233533,
+     267528.7212530719,
+     258874.41411634957,
+     250219.54814449497,
+     241563.93705913064,
+     232907.58086025662,
+     224250.2932694956,
+     220791.66263587188,
+     217333.21828062556,
+     213874.77392537927,
+     210416.329570133,
+     206958.25777164166,
+     203500.18597315016,
+     200042.11417465872,
+     196584.41493292214,
+     193126.71569118553,
+     189669.20272782643,
+     186211.8760428447,
+     182754.73563624034,
+     179297.78150801346,
+     175840.8273797866,
+     172384.24580831456,
+     168927.6642368425,
+     165471.4552221253,
+     162015.43248578554,
+     158559.5960278232,
+     155103.94584823828,
+     155103.94584823828,
+     155103.94584823828,
+     155103.94584823828,
+     155103.94584823828
+    ],
+    [
+     "Scenario 3",
+     295670.72712234,
+     295670.72712234,
+     332320.6253236754,
+     344629.900503826,
+     347090.2653128366,
+     342165.6238488894,
+     329351.534265921,
+     316537.6309613299,
+     303723.9139351164,
+     290910.38318728027,
+     278097.0387178216,
+     276193.0874221751,
+     274288.94984815124,
+     272384.8122741273,
+     270480.86097848084,
+     268576.723404457,
+     266672.5858304331,
+     264768.6345347866,
+     262864.4969607627,
+     260960.54566511625,
+     259056.40809109237,
+     257152.2705170685,
+     255248.319221422,
+     253344.1816473982,
+     251440.04407337433,
+     249536.0927777278,
+     247631.95520370395,
+     245727.81762968007,
+     243823.86633403358,
+     241919.7287600097,
+     240015.5911859858,
+     240015.5911859858,
+     240015.5911859858,
+     240015.5911859858,
+     240015.5911859858
+    ]
+   ],
+   "Investment Cost, Energy": [
+    [
+     "E, [\u20ac, MWh]",
+     2020.0,
+     2021.0,
+     2022.0,
+     2023.0,
+     2024.0,
+     2025.0,
+     2026.0,
+     2027.0,
+     2028.0,
+     2029.0,
+     2030.0,
+     2031.0,
+     2032.0,
+     2033.0,
+     2034.0,
+     2035.0,
+     2036.0,
+     2037.0,
+     2038.0,
+     2039.0,
+     2040.0,
+     2041.0,
+     2042.0,
+     2043.0,
+     2044.0,
+     2045.0,
+     2046.0,
+     2047.0,
+     2048.0,
+     2049.0,
+     2050.0,
+     2051.0,
+     2052.0,
+     2053.0,
+     2054.0
+    ],
+    [
+     "Scenario 1",
+     234285.20941424163,
+     234285.20941424163,
+     263326.05887093366,
+     189436.6781891738,
+     178803.26491503586,
+     169706.26472766226,
+     162502.88001632856,
+     155299.49530499487,
+     148096.11059366117,
+     140892.43067374133,
+     133691.40763109707,
+     131347.30385254926,
+     129003.20007400145,
+     126656.88223105727,
+     124312.92605680255,
+     121971.33155123725,
+     119624.86610400002,
+     117280.90992974529,
+     114936.80615119748,
+     112592.84997694279,
+     110246.38452970554,
+     107902.42835545079,
+     105560.8338498855,
+     103216.87767563078,
+     100870.41222839357,
+     98526.30844984575,
+     96182.35227559102,
+     93838.24849704318,
+     91491.78304980598,
+     89147.82687555125,
+     86806.37997427903,
+     86806.37997427903,
+     86806.37997427903,
+     86806.37997427903,
+     86806.37997427903
+    ],
+    [
+     "Scenario 2",
+     234285.20941424163,
+     234285.20941424163,
+     263326.05887093366,
+     253215.46000291719,
+     241890.22540707077,
+     211985.89083580763,
+     205128.34298318165,
+     198270.35231767647,
+     191411.7712349989,
+     184552.59973514895,
+     177692.69021383356,
+     174952.1213040485,
+     172211.69999855643,
+     169471.2786930644,
+     166730.8573875724,
+     163990.73129066662,
+     161250.60519376074,
+     158510.4790968549,
+     155770.64820853525,
+     153030.81732021557,
+     150291.13403618903,
+     147551.59835645556,
+     144812.21028101514,
+     142072.96980986785,
+     139333.72933872056,
+     136594.7840761594,
+     133855.8388135983,
+     131117.18875962336,
+     128378.6863099415,
+     125640.33146455274,
+     122902.12422345704,
+     122902.12422345704,
+     122902.12422345704,
+     122902.12422345704,
+     122902.12422345704
+    ],
+    [
+     "Scenario 3",
+     234285.20941424163,
+     234285.20941424163,
+     263326.05887093366,
+     273079.75055826054,
+     275029.3080613812,
+     271127.093364985,
+     260973.39404338662,
+     250819.8423260813,
+     240666.4382130691,
+     230513.18170434996,
+     220360.07279992398,
+     218851.4093202604,
+     217342.59823630378,
+     215833.7871523471,
+     214325.12367268346,
+     212816.31258872684,
+     211307.50150477022,
+     209798.8380251066,
+     208290.02694114993,
+     206781.36346148638,
+     205272.5523775297,
+     203763.74129357305,
+     202255.07781390948,
+     200746.26672995285,
+     199237.45564599618,
+     197728.79216633263,
+     196219.98108237592,
+     194711.16999841927,
+     193202.50651875572,
+     191693.695434799,
+     190184.8843508424,
+     190184.8843508424,
+     190184.8843508424,
+     190184.8843508424,
+     190184.8843508424
+    ]
+   ]
+  },
+  "as_read_by_production": {
+   "reader": "shared_energy_storage_data.py:1641-1651",
+   "scenario_weights_omega_m": [
+    0.35,
+    0.55,
+    0.1
+   ],
+   "scenario_weights_stored_at": "data/SRP1/SharedESS/SRP1_ESS.xlsx sheet \"Scenarios\", row 1, columns C-E (read into shared_ess_data.prob_market_scenarios; the name is historical -- they are the investment-cost scenario weights of this workbook)",
+   "cost_investment_power_eur_per_mva": {
+    "0": {
+     "2025": 214171.32910223768,
+     "2030": 168720.15012439265,
+     "2035": 153929.27440020515
+    },
+    "1": {
+     "2025": 267528.7212530719,
+     "2030": 224250.2932694956,
+     "2035": 206958.25777164166
+    },
+    "2": {
+     "2025": 342165.6238488894,
+     "2030": 278097.0387178216,
+     "2035": 268576.723404457
+    }
+   },
+   "cost_investment_energy_eur_per_mwh": {
+    "0": {
+     "2025": 169706.26472766226,
+     "2030": 133691.40763109707,
+     "2035": 121971.33155123725
+    },
+    "1": {
+     "2025": 211985.89083580763,
+     "2030": 177692.69021383356,
+     "2035": 163990.73129066662
+    },
+    "2": {
+     "2025": 271127.093364985,
+     "2030": 220360.07279992398,
+     "2035": 212816.31258872684
+    }
+   },
+   "discount_factor": 0.02,
+   "discount_factor_stored_at": "data/SRP1/SRP1.json \"DiscountFactor\" (line 15), assigned at shared_resources_planning.py:8008; NOT stored in the xlsx",
+   "expected_unit_costs_per_case_year": {
+    "2025": {
+     "discount_multiplier": 1.0,
+     "power_eur_per_mva_undiscounted": 256317.32425986166,
+     "energy_eur_per_mwh_undiscounted": 203102.14195087453,
+     "power_eur_per_mva_discounted": 256317.32425986166,
+     "energy_eur_per_mwh_discounted": 203102.14195087453
+    },
+    "2030": {
+     "discount_multiplier": 0.9057308098299159,
+     "power_eur_per_mva_undiscounted": 210199.41771354218,
+     "energy_eur_per_mwh_undiscounted": 166558.97956848482,
+     "power_eur_per_mva_discounted": 190384.08883146333,
+     "energy_eur_per_mwh_discounted": 150857.59944900818
+    },
+    "2035": {
+     "discount_multiplier": 0.8203482998751551,
+     "power_eur_per_mva_undiscounted": 194559.9601549204,
+     "energy_eur_per_mwh_undiscounted": 154166.49951167236,
+     "power_eur_per_mva_discounted": 159606.93253686687,
+     "energy_eur_per_mwh_discounted": 126470.22577210436
+    }
+   }
+  },
+  "document_search": {
+   "searched": {
+    "tracked_files_at_HEAD": "git grep -n -I -F <token> HEAD -- '*.md' '*.py' '*.json' '*.txt' (this script excluded)",
+    "documents_read_in_full_from_working_tree": [
+     "PLANNER_BRIEF_2026-09-13.md",
+     "STEP4_DFO_METHOD.md",
+     "EXPERT_REVIEW.md",
+     "EXPERT_REVIEW_2_ACTION_PLAN.md",
+     "CLAUDE_LEGACY_BACKUP.md"
+    ],
+    "tokens": [
+     "SRP1_ESS",
+     "Costs updated",
+     "7ce1d1ab",
+     "5ef61f5d",
+     "8a7e3744",
+     "14581474",
+     "e17bd588",
+     "cost file",
+     "Cost file",
+     "corrected (only on lines mentioning cost)",
+     "investment cost file"
+    ]
+   },
+   "tracked_hits": [
+    {
+     "token": "SRP1_ESS",
+     "hit": "HEAD:P5_13_C_PARAM_MOVE_REPORT.md:65:| `data/SRP1/SharedESS/SRP1_ESS_Params.json` | 13-line `ageing` block inserted, original tab formatting preserved (a first attempt reformatted the whole file and was discarded) |"
+    },
+    {
+     "token": "SRP1_ESS",
+     "hit": "HEAD:P5_15_0_REPORT.md:48:`data/SRP1/SharedESS/SRP1_ESS_Params.json`, unmodified."
+    },
+    {
+     "token": "SRP1_ESS",
+     "hit": "HEAD:P5_15_1A_REPORT.md:134:Per the brief's explicit instruction, `data/SRP1/SharedESS/SRP1_ESS_Params.json`"
+    },
+    {
+     "token": "SRP1_ESS",
+     "hit": "HEAD:P5_15_1A_REPORT.md:374:   `recovery_options` blocks (`SRP1_ESS_Params.json`, `case33_2_params.json`,"
+    },
+    {
+     "token": "SRP1_ESS",
+     "hit": "HEAD:P5_15_S31_PENALTY_TABLE_DRAFT.md:63:| 21 | Terminal salvage value | recourse only (subtracted, srp:750; sesd:775\u2013779) | salvage parameters (SRP1_ESS_Params.json) | subtracted | E | **E** (credit) | \u2014 |"
+    },
+    {
+     "token": "SRP1_ESS",
+     "hit": "HEAD:REVISION_CONTEXT.md:3345:`data/SRP1/SharedESS/SRP1_ESS_Params.json` (`ageing` block) and applied in"
+    },
+    {
+     "token": "SRP1_ESS",
+     "hit": "HEAD:WORKER_REPORT_G5.md:55:- `data/SRP1/SharedESS/SRP1_ESS_Params.json` (confirmed no case-file"
+    },
+    {
+     "token": "SRP1_ESS",
+     "hit": "HEAD:WORKER_REPORT_RECOVERY.md:51:  `case9/case9_params.json`, `SharedESS/SRP1_ESS_Params.json`,"
+    },
+    {
+     "token": "SRP1_ESS",
+     "hit": "HEAD:WORKER_REPORT_RECOVERY.md:70:`case33_1/2/3_params.json`, `case9_params.json`, `SRP1_ESS_Params.json` touched)."
+    },
+    {
+     "token": "SRP1_ESS",
+     "hit": "HEAD:WORKER_REPORT_S35_Z2.md:42:- `data/SRP1/SharedESS/SRP1_ESS_Params.json` (ageing block: `calibration.status"
+    },
+    {
+     "token": "SRP1_ESS",
+     "hit": "HEAD:WORKER_REPORT_S39_NODE7.md:35:  (sheet `Flex`), `data/SRP1/SharedESS/SRP1_ESS_Params.json`, `data/SRP1/SharedESS/SRP1_ESS.xlsx`."
+    },
+    {
+     "token": "SRP1_ESS",
+     "hit": "HEAD:data/SRP1/Results/P512R/R0_v2_ba202e2b/initial_repository.json:1733:  \"data/SRP1/SharedESS/SRP1_ESS.xlsx\": \"1458147446e9b70190465f42cef761af9cfd8b209e91035d858e2e63941d1414\","
+    },
+    {
+     "token": "SRP1_ESS",
+     "hit": "HEAD:data/SRP1/Results/P512R/R0_v2_ba202e2b/initial_repository.json:1734:  \"data/SRP1/SharedESS/SRP1_ESS_Params.json\": \"b3a86cf88ad43b55c5c5b613c485e95cd84cfa962271c45c3c5399c1a1f1185f\","
+    },
+    {
+     "token": "SRP1_ESS",
+     "hit": "HEAD:data/SRP1/Results/P513C/frozen_param_move_gate_v1_bd8ab535.json:2:  \"stage\": \"P5.13-C \u2014 relocation of the ESS ageing constants into SRP1_ESS_Params.json\","
+    },
+    {
+     "token": "SRP1_ESS",
+     "hit": "HEAD:data/SRP1/Results/P513C/frozen_param_move_gate_v1_bd8ab535.json:7:    \"files\": [\"shared_energy_storage_parameters.py\", \"shared_energy_storage_data.py\", \"data/SRP1/SharedESS/SRP1_ESS_Params.json\"],"
+    },
+    {
+     "token": "SRP1_ESS",
+     "hit": "HEAD:data/SRP1/Results/P513C/frozen_param_move_gate_v1_bd8ab535.json:15:    \"any change to case data other than adding the new keys to SRP1_ESS_Params.json\","
+    },
+    {
+     "token": "SRP1_ESS",
+     "hit": "HEAD:data/SRP1/Results/P515S44/frozen_s44_selection_spec_v14_e4500e27.json:3:  \"confirm the committed data/SRP1/SharedESS/SRP1_ESS.xlsx is the author's corrected cost file (git history, content of the unit-cost sheets) and record its sha256\","
+    },
+    {
+     "token": "SRP1_ESS",
+     "hit": "HEAD:data/SRP1/SRP1.json:54:\t\t\"params_file\": \"SRP1_ESS_Params.json\","
+    },
+    {
+     "token": "SRP1_ESS",
+     "hit": "HEAD:data/SRP1/SRP1.json:55:\t\t\"data_file\": \"SRP1_ESS.xlsx\""
+    },
+    {
+     "token": "SRP1_ESS",
+     "hit": "HEAD:p513_c_param_move_gate.py:4:`shared_energy_storage.py` into `SRP1_ESS_Params.json`."
+    },
+    {
+     "token": "SRP1_ESS",
+     "hit": "HEAD:p515_s35_z2_floor_slackness.py:71:SRP1_ESS_Params.json`, `ageing.calibration.status=\"ACTIVE\"`,"
+    },
+    {
+     "token": "SRP1_ESS",
+     "hit": "HEAD:p515_s35_z2_floor_slackness.py:77:`phi_cal = calendar_retention_per_year`, absent from `SRP1_ESS_Params.json`'s"
+    },
+    {
+     "token": "SRP1_ESS",
+     "hit": "HEAD:p515_s35_z2_floor_slackness.py:81:(`SRP1_ESS_Params.json:\"ageing\"`)."
+    },
+    {
+     "token": "SRP1_ESS",
+     "hit": "HEAD:shared_energy_storage_data.py:1007:# 1e-5 in `data/SRP1/SharedESS/SRP1_ESS_Params.json`, which this task may not"
+    },
+    {
+     "token": "SRP1_ESS",
+     "hit": "HEAD:shared_energy_storage_data.py:1213:        # configuration in data/SRP1/SharedESS/SRP1_ESS_Params.json (not"
+    },
+    {
+     "token": "14581474",
+     "hit": "HEAD:data/SRP1/Results/P512R/R0_v2_ba202e2b/initial_repository.json:821:  \"data/BCK/HR1/Shared ESS/HR1_ESS.xlsx\": \"1458147446e9b70190465f42cef761af9cfd8b209e91035d858e2e63941d1414\","
+    },
+    {
+     "token": "14581474",
+     "hit": "HEAD:data/SRP1/Results/P512R/R0_v2_ba202e2b/initial_repository.json:1275:  \"data/CS1/Shared ESS/CS1_ESS.xlsx\": \"1458147446e9b70190465f42cef761af9cfd8b209e91035d858e2e63941d1414\","
+    },
+    {
+     "token": "14581474",
+     "hit": "HEAD:data/SRP1/Results/P512R/R0_v2_ba202e2b/initial_repository.json:1351:  \"data/CS7/Shared ESS/CS7_ESS.xlsx\": \"1458147446e9b70190465f42cef761af9cfd8b209e91035d858e2e63941d1414\","
+    },
+    {
+     "token": "14581474",
+     "hit": "HEAD:data/SRP1/Results/P512R/R0_v2_ba202e2b/initial_repository.json:1476:  \"data/HR1/Shared ESS/HR1_ESS.xlsx\": \"1458147446e9b70190465f42cef761af9cfd8b209e91035d858e2e63941d1414\","
+    },
+    {
+     "token": "14581474",
+     "hit": "HEAD:data/SRP1/Results/P512R/R0_v2_ba202e2b/initial_repository.json:1510:  \"data/OP1/SharedESS/OP1_ESS.xlsx\": \"1458147446e9b70190465f42cef761af9cfd8b209e91035d858e2e63941d1414\","
+    },
+    {
+     "token": "14581474",
+     "hit": "HEAD:data/SRP1/Results/P512R/R0_v2_ba202e2b/initial_repository.json:1733:  \"data/SRP1/SharedESS/SRP1_ESS.xlsx\": \"1458147446e9b70190465f42cef761af9cfd8b209e91035d858e2e63941d1414\","
+    },
+    {
+     "token": "cost file",
+     "hit": "HEAD:data/SRP1/Results/P515S44/frozen_s44_selection_spec_v14_e4500e27.json:3:  \"confirm the committed data/SRP1/SharedESS/SRP1_ESS.xlsx is the author's corrected cost file (git history, content of the unit-cost sheets) and record its sha256\","
+    }
+   ],
+   "untracked_document_hits": [
+    {
+     "doc": "PLANNER_BRIEF_2026-09-13.md",
+     "line": 1119,
+     "token": "cost file",
+     "text": "master constraints; the investment cost file had a small error and was corrected (the Planner"
+    },
+    {
+     "doc": "PLANNER_BRIEF_2026-09-13.md",
+     "line": 1120,
+     "token": "SRP1_ESS",
+     "text": "confirms the committed `SRP1_ESS.xlsx` is the corrected one; its hash goes into the campaign"
+    },
+    {
+     "doc": "PLANNER_BRIEF_2026-09-13.md",
+     "line": 1129,
+     "token": "cost file",
+     "text": "paper's plan and at C\\* with the committed cost file; whether x = 0 (no storage) is evaluable;"
+    },
+    {
+     "doc": "STEP4_DFO_METHOD.md",
+     "line": 52,
+     "token": "SRP1_ESS",
+     "text": "and $c^S_{m,y}, c^E_{m,y}$ the per-year unit costs from `SRP1_ESS.xlsx` \u2014 exactly the expression in"
+    },
+    {
+     "doc": "STEP4_DFO_METHOD.md",
+     "line": 276,
+     "token": "cost file",
+     "text": "(a Step 5 sensitivity at most); the investment cost file corrected \u2014 its committed hash goes into the"
+    },
+    {
+     "doc": "EXPERT_REVIEW_2_ACTION_PLAN.md",
+     "line": 11,
+     "token": "SRP1_ESS",
+     "text": "`network.py:485-540`, `data/SRP1/SRP1_params.json`, `data/SRP1/SharedESS/SRP1_ESS_Params.json`,"
+    },
+    {
+     "doc": "EXPERT_REVIEW_2_ACTION_PLAN.md",
+     "line": 104,
+     "token": "corrected",
+     "text": "| R3.1 | No salvage value; SOC limits inconsistent with Table 2 | **Accept, and I recommend reversing the interim \"zero salvage\" decision.** Keep salvage *out of the operational objective* (operation does not internalize terminal value \u2014 say so) but *in the planning objective* as a post-evaluated cr"
+    }
+   ]
+  },
+  "provenance_verdict": {
+   "working_copy_sha256": "1458147446e9b70190465f42cef761af9cfd8b209e91035d858e2e63941d1414",
+   "working_copy_matches_HEAD_blob_bytes": true,
+   "git_status_porcelain_clean": true,
+   "HEAD_blob": "5ef61f5d638890fd60ef8b1e4291ada3f4e748e6",
+   "n_distinct_blobs_across_all_refs": 2,
+   "content_changing_commits_at_this_exact_path_on_any_ref": [
+    {
+     "commit": "7ce1d1ab33878ece678420717b858c7fe5c0036f",
+     "date": "2026-07-29T18:49:57+01:00",
+     "subject": "Costs updated.",
+     "is_ancestor_of_HEAD": false,
+     "blob_before": "5ef61f5d638890fd60ef8b1e4291ada3f4e748e6",
+     "blob_after": "8a7e374445de4ccd9e5a07248967388fd804b552"
+    }
+   ],
+   "content_changing_commits_NOT_on_HEAD": [
+    {
+     "commit": "7ce1d1ab33878ece678420717b858c7fe5c0036f",
+     "date": "2026-07-29T18:49:57+01:00",
+     "subject": "Costs updated.",
+     "refs_containing": [
+      "paper_revisions",
+      "remotes/origin/paper_revisions"
+     ]
+    }
+   ],
+   "blobs_introduced_by_commits_not_on_HEAD": [
+    "8a7e374445de4ccd9e5a07248967388fd804b552"
+   ],
+   "HEAD_blob_is_the_parent_version_of_every_such_commit": true,
+   "statement": "The committed file on this branch (blob 5ef61f5d, sha256 1458147446e9b701...) is byte-identical to the working copy. The repository holds 1 content-changing commit(s) to this exact path that are NOT ancestors of HEAD: 7ce1d1ab 2026-07-29T18:49:57+01:00 'Costs updated.' on paper_revisions, remotes/origin/paper_revisions. HEAD carries the version those commits replaced (parent blob == HEAD blob: True). Therefore the committed file on this branch is NOT the latest cost update present in the repository. Whether that update is the \"correction\" Addendum 26 refers to cannot be established from the repository: no document found by the recorded search names a commit, blob or hash for the corrected file."
+  }
+ }
+}

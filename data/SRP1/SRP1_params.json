@@ -2,38 +2,114 @@
 	"garbage_collection": false,
 	"benders": {
 		"tol_abs": 10e3,
-		"tol_rel": 1e-2,
-		"num_max_iters": 100
+		"tol_rel": 5e-3,
+		"num_max_iters": 6,
+		"positive_bootstrap": {
+			"enabled": true,
+			"budget_fraction": 5e-2,
+			"energy_to_power_ratio": 2.0
+		},
+		"sensitivity_probe": {
+			"enabled": true,
+			"budget_fraction": 5e-2,
+			"energy_to_power_ratio": 2.0
+		},
+		"finite_difference": {
+			"enabled": false,
+			"validate_after_heuristic_stop": true,
+			"directions": ["power_only", "energy_only", "fixed_ratio"],
+			"relative_step_sizes": [1e-2, 5e-3],
+			"node_id": null,
+			"year": null,
+			"relative_error_tolerance": 1e-1,
+			"replay_relative_tolerance": 1e-6,
+			"replay_absolute_tolerance": 1.0,
+			"max_replay_refinements": 10,
+			"minimum_signal_to_noise_ratio": 10.0,
+			"slope_consistency_tolerance": 1e-1,
+			"soh_active_tolerance": 1e-4
+		}
 	},
 	"admm": {
 		"tol": {
-			"consensus": {"v": 0.5e-2, "pf": 0.5e-2, "ess": 5e-2},
-			"stationarity": {"v": 5e-2, "pf": 5e-2, "ess": 50e-2}
+			"consensus": {
+				"v_mean": 0.1e-2, "v": 1.0e-2,
+				"pf_mean": 0.1e-2, "pf": 1.0e-2,
+				"ess_mean": 1.0e-2, "ess": 10.0e-2
+			},
+			"stationarity": {"v": 1e-2, "pf": 1e-2, "ess": 1e-2},
+			"objective": {"abs": 1e3, "rel": 0.1e-2},
+			"boyd": {"eps_abs": 1e-5, "eps_rel": 1e-4}
 		},
-		"num_max_iters": 50,
+		"num_max_iters": 300,
+		"minimum_consecutive_converged_cycles": 10,
+		"shared_ess_initialization": "standalone",
+		"shared_ess_normalization_floor_mva": 0.10,
 		"adaptive_penalty": true,
-		"rho": {
-			"v": {
-				"case9": 1.00,
-				"case33_1": 1.00,
-				"case33_2": 1.00,
-				"case33_3": 1.00
-			},
-			"pf": {
-				"case9": 1.00,
-				"case33_1": 1.00,
-				"case33_2": 1.00,
-				"case33_3": 1.00
-			},
-			"ess": {
-				"case9": 1.00,
-				"case33_1": 1.00,
-				"case33_2": 1.00,
-				"case33_3": 1.00,
-				"esso": 1.00
+		"objective_scale": 93635360.0,
+		"shared_ess_reference_rating_mva": 2.5,
+		"esso_al_scale": "sigma_over_median_block_weight",
+		"penalty_update": {
+			"residual_balance_ratio": 5.0,
+			"residual_balance_ratio_pf_decrease": 3.0,
+			"increase_factor": 1.5,
+			"decrease_factor": 1.5,
+			"min": 1e-4,
+			"max": 1e4,
+			"freeze_after_unchanged_cycles": 10,
+			"freeze_backstop_cycle": 200,
+			"balancing_exempt_until": {
+				"ess": {"dual_ratio_below": 1.0, "consecutive_cycles": 5}
 			}
 		},
-		"previous_iteration": {"ess": {"tso": true, "dso": true}},
+		"rho": {
+			"v": {
+				"case9": 0.0077,
+				"case33_1": 0.0077,
+				"case33_2": 0.0077,
+				"case33_3": 0.0077
+			},
+			"pf": {
+				"case9": 0.198,
+				"case33_1": 0.198,
+				"case33_2": 0.198,
+				"case33_3": 0.198
+			},
+			"ess": {
+				"case9": 0.01,
+				"case33_1": 0.01,
+				"case33_2": 0.01,
+				"case33_3": 0.01,
+				"esso": 0.01
+			}
+		},
+		"proximal_regularization": {
+			"enabled": true,
+			"tso": {
+				"enabled": true,
+				"gamma": {
+					"v": 1.0,
+					"pf": 1.0,
+					"ess": 1.0
+				},
+				"gamma_policy": "tied_to_rho",
+				"tau": 0.0
+			},
+			"dso": {
+				"enabled": false,
+				"gamma": {
+					"v": 1.0,
+					"pf": 1.0,
+					"ess": 1.0
+				}
+			}
+		},
+		"previous_iteration": {
+			"ess": {
+				"tso": false,
+				"dso": false
+			}
+		},
 		"rho_previous_iter": {
 			"ess": {
 				"case9": 0.10,
@@ -41,6 +117,12 @@
 				"case33_2": 0.10,
 				"case33_3": 0.10
 			}
+		},
+		"anderson_acceleration": {
+			"enabled": true,
+			"memory": 5,
+			"regularization": 1e-10,
+			"reject_policy": "keep_memory"
 		}
 	}
 }

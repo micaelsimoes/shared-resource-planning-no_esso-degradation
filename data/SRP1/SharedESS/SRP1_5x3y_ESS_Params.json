@@ -1,0 +1,51 @@
+{
+	"budget": 1.0e6,
+	"max_capacity": 5.00,
+	"min_energy_to_power_factor": 2.00,
+	"max_energy_to_power_factor": 4.00,
+	"slacks": true,
+	"available_energy_soh_point": "mid",
+	"print_results_to_file": true,
+	"salvage_value": {
+		"enabled": true,
+		"in_objective": true,
+		"energy_recovery_fraction": 1.0,
+		"recycling_floor_fraction": 0.0,
+		"cost_basis": "EXPECTED_INSTALLATION_ENERGY_COST",
+		"health_basis": "NORMALIZED_ABOVE_MINIMUM_SOH",
+		"calendar_life_basis": "REMAINING_FRACTION_AT_TERMINAL"
+	},
+	"ageing": {
+		"calendar_life_years": 15,
+		"cycle_life_nominal": 10000,
+		"depth_of_discharge_nominal": 0.80,
+		"minimum_soh": 0.70,
+		"calendar_retention_per_year": 0.985,
+		"calibration": {
+			"status": "ACTIVE",
+			"cycles_n": 10000,
+			"reference_dod_d": 0.80,
+			"eol_retention_r": 0.80,
+			"_note": "k = cycles_n * reference_dod_d / (-ln eol_retention_r). ACTIVE calibration since P5.15 Addendum 30: C2 = (10000, 0.80, 0.80), k = 35851.36, the ageing BASELINE together with calendar_retention_per_year 0.985 and minimum_soh 0.70 (frozen spec v17 baseline). HISTORY: ACTIVE from P5.13-D until Addendum 30: calibration C3 = (10000, 0.80, 0.50) gives k = 11541.560327111707, consumed by the degradation law in place of cycle_life_nominal. See P5_13_B_CYCLING_CALIBRATION.md for the candidates and P5_13_D_* for the impact gate. Setting status back to DECLARED_NOT_CONSUMED restores k = cycle_life_nominal exactly."
+		}
+	},
+	"solver": {
+		"name": "ipopt",
+		"verbose": false,
+		"options": {
+	  		"tol": 1e-6,
+	  		"acceptable_tol": 1e-5,
+	  		"acceptable_iter": 5,
+			"linear_solver": "ma57"
+		},
+		"recovery_options": {
+			"acceptable_tol": 1e-4,
+			"acceptable_iter": 1
+		}
+	},
+	"lp_solver": {
+		"name": "clp",
+		"verbose": false,
+		"options": {}
+	}
+}

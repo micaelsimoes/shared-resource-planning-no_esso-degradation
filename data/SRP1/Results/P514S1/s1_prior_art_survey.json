@@ -1,0 +1,112 @@
+{
+  "branches": {
+    "admm_initialization": {
+      "commit_messages": [],
+      "commits_ahead_of_merge_base": 0,
+      "exists": true,
+      "files_changed": null,
+      "fully_contained_in_HEAD": true,
+      "merge_base": "0512063d 2024-06-17 Update"
+    },
+    "admm_loop_corrections": {
+      "commit_messages": [],
+      "commits_ahead_of_merge_base": 0,
+      "exists": true,
+      "files_changed": null,
+      "fully_contained_in_HEAD": true,
+      "merge_base": "9a433546 2026-08-05 salvageable value added."
+    },
+    "admm_prev_iter_vars": {
+      "commit_messages": [],
+      "commits_ahead_of_merge_base": 0,
+      "exists": true,
+      "files_changed": null,
+      "fully_contained_in_HEAD": true,
+      "merge_base": "92e0427b 2024-06-26 Update"
+    },
+    "consensus_vars_sess_prev_iter": {
+      "exists": false,
+      "note": "no such ref in this repository"
+    },
+    "origin/admm_residual_balancing_tests": {
+      "commit_messages": [],
+      "commits_ahead_of_merge_base": 0,
+      "exists": true,
+      "files_changed": null,
+      "fully_contained_in_HEAD": true,
+      "merge_base": "e11b0b05 2026-09-07 Update governing documents with the planner's P5.4-D4 scope"
+    },
+    "origin/check_convergence_per_adn": {
+      "commit_messages": [],
+      "commits_ahead_of_merge_base": 0,
+      "exists": true,
+      "files_changed": null,
+      "fully_contained_in_HEAD": true,
+      "merge_base": "8219836b 2024-06-26 Update"
+    },
+    "primal_value_update": {
+      "commit_messages": [],
+      "commits_ahead_of_merge_base": 0,
+      "exists": true,
+      "files_changed": null,
+      "fully_contained_in_HEAD": true,
+      "merge_base": "d1c39982 2024-05-11 Updatee"
+    },
+    "residual_balancing_mod": {
+      "commit_messages": [
+        "2f7c0873 2024-06-19 Update",
+        "f84089fb 2024-06-18 Update",
+        "280ff78d 2024-06-18 Update.",
+        "d5f7ff69 2024-06-18 Update.",
+        "30cef54d 2024-06-18 Update.",
+        "f80e174d 2024-06-18 Update.",
+        "4c536a5e 2024-06-18 Update.",
+        "738f62b7 2024-06-18 Update.",
+        "76bf41b8 2024-06-18 Update.",
+        "f1a9c494 2024-06-18 Update."
+      ],
+      "commits_ahead_of_merge_base": 42,
+      "exists": true,
+      "files_changed": " 41 files changed, 742 insertions(+), 138 deletions(-)",
+      "fully_contained_in_HEAD": false,
+      "merge_base": "69c30df7 2024-06-17 Update"
+    },
+    "warm_start_tests": {
+      "commit_messages": [
+        "aa996083 2024-05-10 Blegh",
+        "280aa65a 2024-05-10 Debug",
+        "22fb555a 2024-05-10 Correction",
+        "6e06f9a0 2024-05-10 Small correction",
+        "0826ac7e 2024-05-10 Test."
+      ],
+      "commits_ahead_of_merge_base": 5,
+      "exists": true,
+      "files_changed": " 2 files changed, 31 insertions(+), 14 deletions(-)",
+      "fully_contained_in_HEAD": false,
+      "merge_base": "069f7841 2024-05-10 Update"
+    }
+  },
+  "limit": "Commit messages are claims, not evidence. No evaluation artifact was found for any branch.",
+  "method": "read-only: rev-parse, merge-base, rev-list, diff --stat. No checkout, no merge.",
+  "production_finding": "Boyd-style residual balancing ALREADY EXISTS in production and is DISABLED. shared_resources_planning.py:5472-5502 increases rho when primal_ratio > increase_balance_ratio * dual_ratio and decreases it when dual_ratio > decrease_balance_ratio * primal_ratio, then scales rho_v/rho_pf/rho_ess across TSO and DSO models. admm_parameters.py:18 defaults adaptive_penalty to False, and every P5.10 configuration is labelled ad0 (adaptive off). It balances RATIOS (residual/tolerance), which is exactly the quantity the rho/tolerance coupling distorts.",
+  "residual_balancing_mod_finding": "Despite its name this branch is NOT adaptive-rho work. Its diff REMOVES the blocks labelled \"Augmented Lagrangian -- Interface power flow (residual balancing)\" and replaces the interface normalization with one based on average interface power (avg_p/avg_q), an ancestor of today's /interface_rating and /interface_v_base normalization. Every commit message is \"Update\" or \"Update.\"; no evaluation artifact accompanies it.",
+  "stage": "S1 prior-art survey",
+  "summary": {
+    "carrying_unmerged_work": [
+      "residual_balancing_mod",
+      "warm_start_tests"
+    ],
+    "merged_not_abandoned": [
+      "origin/admm_residual_balancing_tests",
+      "origin/check_convergence_per_adn",
+      "admm_initialization",
+      "admm_prev_iter_vars",
+      "primal_value_update",
+      "admm_loop_corrections"
+    ],
+    "nonexistent": [
+      "consensus_vars_sess_prev_iter"
+    ]
+  },
+  "timestamp_utc": "2026-09-12T15:58:43.811186+00:00"
+}

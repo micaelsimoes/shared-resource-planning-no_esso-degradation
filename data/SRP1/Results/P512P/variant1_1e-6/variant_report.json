@@ -1,0 +1,249 @@
+{
+ "name": "variant1_1e-6",
+ "value": 1e-06,
+ "status": "SOLVED",
+ "reload_checks": {
+  "boundary": "pre_setup",
+  "cycle": 21,
+  "target": "DSO:case33_3|2025|Spring",
+  "from_warm_start": true,
+  "pre_setup_digest_recomputed": "22d5d85087b7a6eb632e2993f839f9e8ebcfe7f6f2d53b461ac39b543ef9a0e5",
+  "pre_setup_digest_expected": "22d5d85087b7a6eb632e2993f839f9e8ebcfe7f6f2d53b461ac39b543ef9a0e5"
+ },
+ "logs_dir_redirect": {
+  "old": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P512R/evals/cold/logs",
+  "new": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P512P/variant1_1e-6/logs"
+ },
+ "setup": {
+  "solver_log_path": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P512P/variant1_1e-6/logs/optim_log_case33_3_2025_Spring.log",
+  "solve_context": "case33_3, year=2025, day=Spring"
+ },
+ "override": {
+  "key": "warm_start_bound_push",
+  "before": 1e-05,
+  "after": 1e-06
+ },
+ "equality_gate": {
+  "prepared_state_digest": "3fd294d7b41ad3b2b62a140cb518a9ecbe32a0218eed8d6cd788fc027edda85f",
+  "prepared_state_digest_expected": "3fd294d7b41ad3b2b62a140cb518a9ecbe32a0218eed8d6cd788fc027edda85f",
+  "prepared_state_digest_equal": true,
+  "export": {
+   "nl_sha256": "5934341b1137271b7a86f440ff7a0d146c7b4b6c256f9331f8b96edc807d39a7",
+   "mapping_sha256": "c13732e842003fe2331c6eea869cd78d14cafc3541e259373d1fa42f7e88d2ff"
+  },
+  "nl_sha256_equal": true,
+  "mapping_sha256_equal": true,
+  "unexpected_option_diff_keys": [],
+  "warm_start_bound_push_now": 1e-06,
+  "warm_start_bound_push_expected_variant_value": 1e-06,
+  "warm_start_bound_push_matches_variant": true,
+  "output_file_now": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P512P/variant1_1e-6/logs/optim_log_case33_3_2025_Spring.log",
+  "output_file_differs_from_armA": true,
+  "effective_options_now": {
+   "tol": 1e-05,
+   "acceptable_tol": 0.0001,
+   "acceptable_iter": 5,
+   "linear_solver": "ma97",
+   "bound_push": 1e-05,
+   "bound_frac": 1e-05,
+   "slack_bound_frac": 1e-05,
+   "slack_bound_push": 1e-05,
+   "output_file": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P512P/variant1_1e-6/logs/optim_log_case33_3_2025_Spring.log",
+   "file_append": "yes",
+   "file_print_level": 6,
+   "warm_start_init_point": "yes",
+   "warm_start_bound_push": 1e-06,
+   "warm_start_bound_frac": 1e-05,
+   "warm_start_slack_bound_frac": 1e-05,
+   "warm_start_slack_bound_push": 1e-05,
+   "warm_start_mult_bound_push": 1e-05
+  },
+  "effective_options_armA_reference": {
+   "tol": 1e-05,
+   "acceptable_tol": 0.0001,
+   "acceptable_iter": 5,
+   "linear_solver": "ma97",
+   "bound_push": 1e-05,
+   "bound_frac": 1e-05,
+   "slack_bound_frac": 1e-05,
+   "slack_bound_push": 1e-05,
+   "output_file": "<ARM_A_LOG_PATH>",
+   "file_append": "yes",
+   "file_print_level": 6,
+   "warm_start_init_point": "yes",
+   "warm_start_bound_push": 1e-05,
+   "warm_start_bound_frac": 1e-05,
+   "warm_start_slack_bound_frac": 1e-05,
+   "warm_start_slack_bound_push": 1e-05,
+   "warm_start_mult_bound_push": 1e-05
+  }
+ },
+ "solve": {
+  "wall_seconds": 0.8125529289245605,
+  "status": "ok",
+  "termination_condition": "optimal",
+  "temp_problem_files": "('/var/folders/hg/hctq266s7210qrp5fl0qkhyc0000gn/T/tmpvuihk_j5.pyomo.nl',)",
+  "temp_soln_file": "/var/folders/hg/hctq266s7210qrp5fl0qkhyc0000gn/T/tmpvuihk_j5.pyomo.sol"
+ },
+ "copied_temp_files": {
+  "/var/folders/hg/hctq266s7210qrp5fl0qkhyc0000gn/T/tmpvuihk_j5.pyomo.nl": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P512P/variant1_1e-6/used_tmpvuihk_j5.pyomo.nl",
+  "/var/folders/hg/hctq266s7210qrp5fl0qkhyc0000gn/T/tmpvuihk_j5.pyomo.sol": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P512P/variant1_1e-6/used_tmpvuihk_j5.pyomo.sol"
+ },
+ "variant_log_path": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P512P/variant1_1e-6/logs/optim_log_case33_3_2025_Spring.log",
+ "comparison_vs_armA": {
+  "n_iteration_rows_variant": 90,
+  "n_iteration_rows_armA": 3001,
+  "iter0_norms_variant": {
+   "curr_x": "1.1093641510182890e+00",
+   "curr_s": "1.1093641510182890e+00",
+   "curr_y_c": "6.3521621152192813e+02",
+   "curr_y_d": "3.1955014920643356e+00",
+   "curr_z_L": "1.0116099216048768e+02",
+   "curr_z_U": "3.5303301219710320e-01",
+   "curr_v_L": "1.2097604615007907e-02",
+   "curr_v_U": "3.1955014920643356e+00"
+  },
+  "iter0_norms_armA_recomputed": {
+   "curr_x": "1.1093641510182890e+00",
+   "curr_s": "1.1093641510182890e+00",
+   "curr_y_c": "6.3521621152192813e+02",
+   "curr_y_d": "3.1955014920643356e+00",
+   "curr_z_L": "1.0116099216048768e+02",
+   "curr_z_U": "3.5303301219710320e-01",
+   "curr_v_L": "1.2097604615007907e-02",
+   "curr_v_U": "3.1955014920643356e+00"
+  },
+  "iter0_norms_identical_17digit": true,
+  "nlp_values_iter0_variant": {
+   "Objective": {
+    "scaled": 1.5200889685781984,
+    "unscaled": 1520.0889685781983
+   },
+   "Dual infeasibility": {
+    "scaled": 18.366791482401354,
+    "unscaled": 18366.791482401353
+   },
+   "Constraint violation": {
+    "scaled": 7.4901136714447e-05,
+    "unscaled": 7.4901136714447e-05
+   },
+   "Complementarity": {
+    "scaled": 0.00010116099216048768,
+    "unscaled": 0.10116099216048767
+   },
+   "Overall NLP error": {
+    "scaled": 18.366791482401354,
+    "unscaled": 18366.791482401353
+   }
+  },
+  "nlp_values_iter0_armA": {
+   "Objective": {
+    "scaled": 1.5266886921258345,
+    "unscaled": 1526.6886921258345
+   },
+   "Dual infeasibility": {
+    "scaled": 18.366791482401354,
+    "unscaled": 18366.791482401353
+   },
+   "Constraint violation": {
+    "scaled": 6.617113671444699e-05,
+    "unscaled": 6.617113671444699e-05
+   },
+   "Complementarity": {
+    "scaled": 0.001011609921604877,
+    "unscaled": 1.0116099216048768
+   },
+   "Overall NLP error": {
+    "scaled": 18.366791482401354,
+    "unscaled": 18366.791482401353
+   }
+  },
+  "first_material_divergence": {
+   "iter": 0,
+   "arma_row": "   0  1.5266887e+03 6.62e-05 1.84e+01  -1.0 0.00e+00    -  0.00e+00 0.00e+00   0 ",
+   "variant_row": "   0  1.5200890e+03 7.49e-05 1.84e+01  -1.0 0.00e+00    -  0.00e+00 0.00e+00   0 "
+  },
+  "z_marker_count_variant": 0,
+  "z_marker_count_armA": 2924,
+  "first_z_marker_iteration_variant": null,
+  "first_z_marker_iteration_armA": 77,
+  "zU_too_large_message_count_variant": 0,
+  "zU_too_large_message_count_armA": 2924,
+  "final_mu_variant": 9.090909090909092e-09,
+  "final_mu_armA": 1.8449144625279508e-06,
+  "nlp_values_final_variant": {
+   "Objective": {
+    "scaled": 1.2936668158879956,
+    "unscaled": 1293.6668158879957
+   },
+   "Dual infeasibility": {
+    "scaled": 1.6557008856137988e-06,
+    "unscaled": 0.0016557008856137988
+   },
+   "Constraint violation": {
+    "scaled": 1.4142748713205054e-07,
+    "unscaled": 1.9567576869938819e-07
+   },
+   "Complementarity": {
+    "scaled": 1.0628655231738294e-08,
+    "unscaled": 1.0628655231738295e-05
+   },
+   "Overall NLP error": {
+    "scaled": 1.6557008856137988e-06,
+    "unscaled": 0.0016557008856137988
+   }
+  },
+  "nlp_values_final_armA": {
+   "Objective": {
+    "scaled": 1.302213578469872,
+    "unscaled": 1302.2135784698721
+   },
+   "Dual infeasibility": {
+    "scaled": 0.05159805531732866,
+    "unscaled": 51.59805531732866
+   },
+   "Constraint violation": {
+    "scaled": 0.04479234735946976,
+    "unscaled": 0.061921343776988665
+   },
+   "Complementarity": {
+    "scaled": 6.203096785210042e-06,
+    "unscaled": 0.006203096785210042
+   },
+   "Overall NLP error": {
+    "scaled": 0.05159805531732866,
+    "unscaled": 51.59805531732866
+   }
+  },
+  "exit_line_variant": "EXIT: Optimal Solution Found.",
+  "terminal_analysis_variant": {
+   "n_equality_rows_checked": 4275,
+   "n_inequality_rows_checked": 3551,
+   "top_offending_rows": [],
+   "complementarity_zL_times_(x-l)": {
+    "n": 7390,
+    "max": 0.0010027307740397536,
+    "mean": 0.00011251926640298605,
+    "median": 9.090909040132173e-06,
+    "n_exceeding_terminal_mu": 7390
+   },
+   "complementarity_zU_times_(u-x)": {
+    "n": 7266,
+    "max": 1.0628497463085496e-05,
+    "mean": 9.071584625573267e-06,
+    "median": 9.09090805194829e-06,
+    "n_exceeding_terminal_mu": 7266
+   }
+  }
+ },
+ "artifact_manifest": {
+  "equality_gate.json": "9e43dec504dbe4830dd2418d7064179184a9a71f44d6d5d547ea1850850041c7",
+  "logs/optim_log_case33_3_2025_Spring.log": "3c5479835849bc859f3bcaf964a2791e89318bae0fe979d2eb7dbb3e155d2bd7",
+  "prepared_variant1_1e-6.nl": "5934341b1137271b7a86f440ff7a0d146c7b4b6c256f9331f8b96edc807d39a7",
+  "prepared_variant1_1e-6_mapping.json": "b39cd878bf2a337e4ab07bbe05a2f6371ef64a431d6824fde2fbe22230f7c0be",
+  "solver_results.pkl": "a3c9f43529a7f05fdf75a5c13c09e858b876733f61c64ad71de0fa93a464ab05",
+  "solver_results_summary.txt": "ab44364c843e3f88367d155dfc666eed90d0b4227ae05d33822f7a9597cb53be",
+  "used_tmpvuihk_j5.pyomo.nl": "5934341b1137271b7a86f440ff7a0d146c7b4b6c256f9331f8b96edc807d39a7",
+  "used_tmpvuihk_j5.pyomo.sol": "7918de37e03f93fdf210aee1c75570dcddf3402746a1778d5df8618ba0ebfe84"
+ }
+}

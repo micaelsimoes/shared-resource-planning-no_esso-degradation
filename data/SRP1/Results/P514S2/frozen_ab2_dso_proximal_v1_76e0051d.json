@@ -1,0 +1,25 @@
+{
+  "design": "AB2 — DSO proximal regularization (the untested asymmetry)",
+  "status": "FROZEN DESIGN — costed, NOT RUN. Running it requires separate authorization.",
+  "the_asymmetry": "data/SRP1/SRP1_params.json sets proximal_regularization.enabled = true, tso.enabled = true with gamma v/pf/ess = 1.0, and dso.enabled = FALSE with the same gammas present but inert. A standard convergence aid for nonconvex ADMM is therefore applied to one side of the interface and not the other, in the production configuration.",
+  "evaluation_status": "NO evaluation artifact exists for proximal regularization anywhere in data/SRP1/Results — searched; the only matches are provenance dumps and a docstring stating it was left unchanged. Unlike adaptive rho, this lever has genuinely never been measured.",
+  "single_varied_setting": "proximal_regularization.dso.enabled: False (control, production as configured) vs True with gamma v/pf/ess = 1.0 (treatment, matching the TSO). Nothing else changes.",
+  "path": "warm from the frozen T0 template with history_neutralised at rho_pf = 300 — the candidate-evaluation protocol, chosen because it is the cheap path and because the control's cost there is already known exactly (6 cycles)",
+  "analytic_prediction": {
+    "derivation": "A proximal term gamma/2 * ||x - x_prev||^2 penalizes movement of an agent's own iterate between cycles. It damps oscillation and, for nonconvex subproblems, discourages jumps between distinct local solutions. Applied to the DSO blocks it should REDUCE per-cycle DSO block movement, at the price of slower progress per cycle.",
+    "predeclared_prediction": "DSO block movement per cycle (already instrumented: _update_tso_proximal_centres_after_solve records block_movements for the TSO) should fall in the treatment arm. Cycle count may rise or fall: damping helps if the DSO iterates are oscillating and hurts if they are not. NO directional prediction is made for the cycle count, because the mechanism does not imply one.",
+    "what_would_be_informative_either_way": "a fall in movement WITH no cycle penalty argues the asymmetry is an oversight; a fall in movement WITH a cycle penalty argues it was a deliberate trade-off that was never written down"
+  },
+  "predeclared_outcomes": {
+    "asymmetry_is_an_oversight": "treatment reduces DSO movement at equal or fewer cycles and equal or better objective",
+    "asymmetry_is_justified": "treatment costs cycles or objective",
+    "no_effect": "movement and cycles both within noise — in which case gamma = 1.0 is too small to matter and that is itself worth recording"
+  },
+  "cost": {
+    "per_arm": "~306 local solves (6 cycles x 51) plus one polish pass over 48 blocks",
+    "both_arms": "~612 local solves plus polish",
+    "wall_clock_estimate": "P5.9-B's comparable 6-cycle generation took 295 s; ~10 minutes per arm",
+    "note": "this is roughly a fifth of AB1's lower bound and should therefore run first if both are authorized"
+  },
+  "control_requirement": "the control arm must reproduce the preserved 6-cycle result for rho_pf 300 from P5.10-B; if it does not, the comparison is invalid and must be reported as such before any treatment number is read"
+}

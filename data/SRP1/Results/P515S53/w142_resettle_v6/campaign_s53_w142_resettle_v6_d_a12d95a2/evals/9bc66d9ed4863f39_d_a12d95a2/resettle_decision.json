@@ -1,0 +1,128 @@
+{
+ "A": [],
+ "N": 94,
+ "N_definition": "the first residual pass (version 2; no non-clean reset)",
+ "N_old": 103,
+ "Q_N_old_recorded": 653333260.693016,
+ "Q_at_cap": 653341339.3098621,
+ "Q_cc_at_cap": 653341802.2112147,
+ "T": [
+  [
+   171,
+   "max",
+   653343186.2832766
+  ]
+ ],
+ "band": [
+  653341339.3098621,
+  653346655.7802166
+ ],
+ "band_width": 5316.470354437828,
+ "band_window": [
+  144,
+  203
+ ],
+ "band_window_length": 60,
+ "cap": 203,
+ "cap_ceiling": 300,
+ "cap_mode": "fixed",
+ "cell": "d_a12d95a2",
+ "certification_vetoed_at_cap": false,
+ "clean_rule": {
+  "factor": 10.0,
+  "metric_table": {
+   "complementarity": {
+    "column": "unscaled",
+    "ipopt_meaning": "max-norm of the unscaled complementarity; termination requires <= compl_inf_tol",
+    "log_line": "Complementarity",
+    "option": "compl_inf_tol"
+   },
+   "constraint_violation": {
+    "column": "unscaled",
+    "ipopt_meaning": "max-norm of the unscaled constraint violation; termination requires <= constr_viol_tol",
+    "log_line": "Constraint violation",
+    "option": "constr_viol_tol"
+   },
+   "dual_infeasibility": {
+    "column": "unscaled",
+    "ipopt_meaning": "max-norm of the unscaled dual infeasibility; termination requires <= dual_inf_tol",
+    "log_line": "Dual infeasibility",
+    "option": "dual_inf_tol"
+   },
+   "overall_nlp_error": {
+    "column": "scaled",
+    "ipopt_meaning": "the (scaled) NLP error; successful termination requires it <= tol",
+    "log_line": "Overall NLP error",
+    "option": "tol"
+   }
+  },
+  "tolerances": {
+   "esso": {
+    "compl_inf_tol": 0.0001,
+    "constr_viol_tol": 0.0001,
+    "dual_inf_tol": 1.0,
+    "tol": 1e-10
+   },
+   "network": {
+    "compl_inf_tol": 1e-06,
+    "constr_viol_tol": 0.0001,
+    "dual_inf_tol": 1.0,
+    "tol": 1e-05
+   }
+  }
+ },
+ "dQ_cc_n_steps": 25,
+ "dQ_cc_rate_mean_last_25": -42.4376128598774,
+ "decided_at_cycle": 203,
+ "drift_n_steps": 25,
+ "drift_rate_mean_dQ_last_25": -44.98476798057556,
+ "first_residual_pass_run": 94,
+ "gap_bound": 2269.5341375000003,
+ "gap_clause_refused_at_cap": false,
+ "gap_refusals": [],
+ "gated": true,
+ "k0": 165,
+ "k_cap": 203,
+ "lapse_events": [
+  {
+   "boyd_k": false,
+   "cycle": 164,
+   "k0_before": 94,
+   "q_is_none": false
+  }
+ ],
+ "n_vetoes": 0,
+ "non_clean_cycles": [
+  11,
+  22,
+  25,
+  41,
+  51,
+  87,
+  107,
+  127
+ ],
+ "out_of_window_reads": null,
+ "reading": "gamma_window_a_clean_10x_swing_floor_tau_over_10",
+ "reasons": [
+  "insufficient_turning_points",
+  "monotone_window_not_reached"
+ ],
+ "spec_cap": 203,
+ "status": "uncertified",
+ "swing_floor": {
+  "F": 453.9068275000001,
+  "carries": [
+   "A_growth_test_floor",
+   "B_turning_point_floor"
+  ],
+  "growth_test_floor": 453.9068275000001,
+  "turning_point_floor": 453.9068275000001
+ },
+ "t_sum_at_cap": 462.9013525260397,
+ "turning_point_floor_rejections": [],
+ "version": 6,
+ "vetoes": [],
+ "window_all_clean": null,
+ "window_rule": "Addendum 59 Supplement (unchanged in v5): the certifying window is the last W cycles the certification test reads at k -- oscillatory [k - W + 1, k], monotone [k - L + 1, k]; every cycle of it must be all-CLEAN on all 51 blocks, otherwise certification is refused at that cycle only (certification_vetoed_non_clean) and the state is unchanged"
+}
