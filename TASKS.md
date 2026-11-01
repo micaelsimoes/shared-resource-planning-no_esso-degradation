@@ -102,7 +102,11 @@ order below stands but W184/W185 are **held** (Planner recommendation R6).
   unresolved < 1 k€) — provisional H1 on this group; I1/I2/I3/I5 HELD, I4 FAILED below its band; Clarabel stall not
   explained by redundancy (216 duplicated pins) — rulings spec §15 (resolution column Σ|λ|·viol; bound_relax 0;
   Gurobi Feas/OptTol 1e-9; P1 misread fix) — `P5_16_D0_T02_IPOPT_INTERIOR_REPORT.md`, evidence `t02_ipopt_interior`
-- [ ] **▶ T0.2 harness update per §15** (zero-solve rehearsal) → commit → author pulls on the Studio → Step 4
+- [x] **T0.2 harness updated per §15–§17** (resolution pricing with the convexity-consistent firm interval; IPOPT
+  bound_relax 0 / ma97 / adaptive; Gurobi tolerances 1e-9, 1e-7 on the 24 freeze solves; dimension gate discounts fixed
+  columns; DSO freeze = W + U,C,D + ESSO with the inert chain free, pre-check ≤ 1e-8; ma97 preflight; schema v3) —
+  rehearsal 362 rows all pass; sha256 `5f5e500f…`
+- [ ] **▶ T0.2 launch** — here if Gurobi's licence is accepted on this host (VPN-dependent host ID), else on the Studio
 - [ ] **▶ Stopped for the expert (R8)** — no freeze, no campaign until ruled; author: Gurobi key for T0.2; Studio
   Part B files ESSO salvage term; `'mid'` baseline; five-block single-scenario case file;
   cumulative admissibility + general-lattice canonicalization; gate x = 0 bitwise + fixtures unpickle

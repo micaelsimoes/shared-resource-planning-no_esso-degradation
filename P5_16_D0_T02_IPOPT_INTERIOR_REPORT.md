@@ -351,3 +351,257 @@ All 8 pass.
   - three scratch zero-solve analyses under `/tmp/p516ipx/scripts` (`post.py`, `post2.py`, `post3.py`; not evidence):
     the bound-relaxation price, the certified-side price, the per-branch rank residuals and the transformer-branch
     column rows.
+
+## T0.2 harness update per §15 (Worker, 2026-11-01; zero solves)
+
+**Studio checkout target: `p516_d0_t02.py` sha256 `7fa39c4174be73ae32c72a1ccd3ed245d637d14f8aa44546a07cc0de577b4a1d`**
+(predecessor `25fff859…` = the harness at `ff3153ff`). Staged by filename, not committed. Record schema v2 → **v3**
+(`RECORD_SCHEMA`, `HARNESS_VERSION`, written to `predictions.json` and `t02.json`). Declared count unchanged
+(`DECLARED` 72 + 12 + 24 + 24 = 132; 108 Gurobi + 24 IPOPT check unchanged); exit codes unchanged; no gate added,
+removed or reworded. The terminated Worker's partial diff
+(`P516D0/t02_harness_update/partial_s15_update_20261101_104527.diff`, sha256 `fd41eff4…`) passed `git apply --check`
+and was applied as is; the rest was completed by hand.
+
+**Changes.**
+- **§15.1 resolution.** `resolution_price` (module level) prices Σ|λ|·max(0, violation) over linear rows, quadratic rows
+  and bounds at the solver's own multipliers (Gurobi Pi / QCPi / RC; IPOPT sign·Pyomo dual and zL + zU). It runs after
+  every solve (Gurobi in `gurobi_solve`, IPOPT in `ipopt_solve`; all variants, fixed-mode and freeze kinds).
+  - `res_LB` is priced at the returned point. `res_cert` is priced at the certified mapped point clipped into that
+    solve's bounds.
+  - Each solve record carries `resolution` (per-part totals, max violation, number violated, top families) and
+    `res_LB_eur` / `res_cert_eur`.
+  - Every gap reading (R / A / C group LPs and the IPOPT cross-check's new `gap_abs`) carries
+    `gap_interval_abs` / `_rel` = [gap − res_cert, gap + res_LB], as ruled.
+  - Per cell: `sum_res_LB_eur`, `sum_res_cert_eur`, `sum_gap_interval_eur`, `class_point` (= `class`) and
+    `class_upper_end`.
+  - P6: `D_interval_eur` = [lo(unit) − hi(x0), hi(unit) − lo(x0)], with `D_conservative_end_eur` and
+    `held_conservative_end`. Point verdicts are unchanged, and `verdict_{A,C,R}_conservative_end` is added.
+  - The fixed-mode cost and the freeze bracket carry both solves' `res_LB` beside them. The G-D0-5 agreement record
+    carries both resolutions beside it, without entering `held`.
+- **§15.2 IPOPT.** The options are now: `tol 1e-9`, `max_iter 3000`, `print_level 5`, `bound_relax_factor 0`,
+  `honor_original_bounds yes`, `bound_push 1e-10`, `bound_frac 1e-10`, `warm_start_init_point yes`.
+  - The start is the certified mapped point clipped into bounds, unchanged from v2.
+  - `iteration0` (objective, inf_pr, inf_du, lg μ) is parsed from the log. It is recorded in `start_kept_evidence`
+    beside the start's own unscaled LP violation.
+- **§15.3 Gurobi.** `FeasibilityTol 1e-9` and `OptimalityTol 1e-9` are added to the existing settings.
+- **§15.4 `rank_and_cycles`.** The `d0_cone` of an OLTC branch is excluded from the rank residual. An OLTC branch here
+  means `is_transformer`, in service, and with `d0_tr_U` columns in the block.
+  - The excluded rows are reported under `transformer_d0_cone_excluded`. Transformers flagged but without OLTC columns
+    are kept and listed.
+  - P1 reads non-transformer branches and records the excluded branches. P8 still reads `d0_tr_cone` (`oltc`).
+- **Resume.** A resumed group record whose `record_schema` ≠ v3 is refused (exit 5, as for any resume mismatch).
+
+**Rehearsal** (`P516_D0_T02_REHEARSAL_DIR=/tmp/…`, all 24 groups, HOME = an empty scratch dir with the matplotlib font
+cache pre-built; zero solves). The run used the final bytes `7fa39c41…` at HEAD `52f54a1b`. The /tmp roots were deleted
+afterwards.
+- **Child exit 0.** 362 gate rows, all pass, 0 stops. Guards counted 0 / 0 with no verify failures, and there were 0
+  repository writes outside the root. Wall 65.9 s.
+- **Bitwise baseline.** The HEAD harness (`25fff859…`) was rehearsed the same way and also gave 362 rows. All 362 rows
+  are identical in gate name, scope, achieved value and pass. The 338 recorded in TASKS.md / `ff3153ff` is not
+  reproduced by `25fff859` (Not confirmed below).
+  - Every other difference between the two rehearsals is either an added v3 field or a field that changes from run to
+    run (root path, timings, RSS).
+  - The one exception is the intended change: the DSO rank records lose the 24 transformer branch-periods each.
+- **New columns.** They are present and numeric on **132 / 132** planned solves (108 Gurobi + 24 IPOPT stand-ins). All
+  96 gap readings carry an interval.
+  - These are stand-in values: the certified point with zero row multipliers and RC = c. They exercise the path and
+    are not measurements.
+  - `iteration0` is `present: false` on the stand-ins, because no log exists.
+- **Option dicts as printed.** These are the final settings for both solvers.
+  - Gurobi:
+    `{"QCPDual": 1, "NonConvex": 0, "BarQCPConvTol": 1e-09, "BarConvTol": 1e-10, "FeasibilityTol": 1e-09,
+    "OptimalityTol": 1e-09, "Threads": 4, "LogToConsole": 0}`
+  - IPOPT:
+    `{"tol": 1e-09, "max_iter": 3000, "print_level": 5, "bound_relax_factor": 0.0, "honor_original_bounds": "yes",
+    "bound_push": 1e-10, "bound_frac": 1e-10, "warm_start_init_point": "yes"}`
+- **Transformer classification.** Branch 31 is classified as the OLTC transformer on DSO5 / DSO7 / DSO9 in every group,
+  every variant and both cells (72 / 72 per DSO, 24 branch-periods each). The TSO has none excluded and none flagged.
+- **Zero-solve cross-checks of the new code against this report's scratch figures.** These use the preserved vectors
+  `vectors/x0_2025_Spring_C.npz` and the hash-checked LP.
+  - `resolution_price` gives res_LB **5,653.97 €**: linear 0.014, quadratic 4,328.11, bounds 1,325.84.
+  - It gives res_cert **735.66 €**: linear 271.93, quadratic 463.73.
+  - Both equal Found §5 to the cent.
+  - `parse_ipopt_iteration0` on this run's log returns objective 1.7820914e8, inf_pr 6.94e-2 and inf_du 100, as in
+    Found §3.
+
+**For the Planner (not acted on).**
+- **The interval as ruled differs from Found §5's first-order bracket.** On this group the ruled
+  [gap − res_cert, gap + res_LB] is **[5.11, 11.50] k€**. Found §5 gives v(0) ≥ Q_LB + res_LB, so the exact gap is
+  ≲ gap − res_LB, and its lower end is −res_cert: **[−0.74, +0.19] k€**.
+  - The ruled interval excludes Found §5's first-order estimate of the exact gap.
+  - Implemented as ruled. Both prices are recorded per solve, so the other form is zero-solve post-processing.
+- **`warm_start_init_point yes`** was not named verbatim in §15.2. It came from the partial patch, as the reading of
+  "warm start from the certified mapped point", and I kept it.
+  - The IPOPT 3.14 source falls back to the user-set `bound_push` / `bound_frac` when `warm_start_bound_push` /
+    `warm_start_bound_frac` are unset (IpWarmStartIterateInitializer.cpp; slack pushes likewise). The certified start
+    is therefore pushed by 1e-10.
+  - The duals then start at z = 1, λ = 0 (AmplTNLP.cpp), with no least-squares λ estimate. Removing the option is a
+    one-line change.
+- **The IPOPT dimension gate will likely fail on the real run.** The gate is "IPOPT-reported dimensions == LP
+  dimensions"; this run's IPOPT reported 25,902 variables against the LP's 26,292 (390 fixed columns removed).
+  - It would fail on all 24 IPOPT solves, giving exit 2. It is not a stop.
+  - Not changed, because changing it would change a gate's meaning.
+- **The DSO freeze is not the §14.1 option (b).** `DSO_ESSO_frozen` freezes every `dso_*` / `esso_*` column, not the
+  DSO W (+ U, C, D) and ESSO columns that §14.1 ruled. §14.1 states that this full freeze is infeasible on C by
+  construction.
+  - This is outside §15. Not changed.
+- **The IPOPT options differ from the interior test's.** The interior test ran with `linear_solver ma97` and
+  `mu_strategy adaptive`; the harness uses the IPOPT defaults for both. I2's convergence evidence therefore does not
+  cover the harness's settings.
+
+## §16 fixes (Worker, 2026-11-01; zero solves)
+
+**Studio checkout target: `p516_d0_t02.py` sha256 `9fa3ef1e5a20c77284f7cec4d6511f2ad0277c2c07a5adc98273bcc403576b37`**
+(predecessor `7fa39c41…`, the §15 form above). Staged by filename, not committed. Record schema stays **v3**;
+`HARNESS_VERSION` and `RECORD_SCHEMA` cite §16. Declared count unchanged (132). No gate added or removed; one gate
+redefined as §16.3 rules. The closures pinned by `p516_d0_ipopt_interior.py` (`build_ipopt_model`, `parse_ipopt_log`)
+are unchanged; their hashes still match.
+
+**Changes.**
+- **§16.1, the firm interval.** `gap_interval` is replaced by `gap_firm_reading`. Every gap reading (R / A / C group LPs
+  and the IPOPT cross-check) now carries these fields, each also as `_rel`:
+  - `gap_firm_lower` = gap − res_LB − res_cert;
+  - `gap_firm_upper` = gap + res_cert;
+  - `gap_point_estimate` = gap − res_LB.
+- **Per cell.**
+  - The summed fields are `sum_gap_firm_lower_eur`, `sum_gap_firm_upper_eur` and `sum_gap_point_estimate_eur`, each also
+    over Q_cert+.
+  - The classes are `class` (raw gap, unchanged), `class_point_estimate` and `class_firm_upper` (conservative).
+  - The readings carry `absolute_class_on_C_firm_upper`, and P3 carries `class_{R,C}_firm_upper`.
+- **P6.** It is read conservatively at the firm upper ends. `D_firm_upper_eur` = Σ(gap + res_cert)(unit) −
+  Σ(gap + res_cert)(x0), with `held_at_firm_upper` and `verdict_{A,C,R}_at_firm_upper`.
+  - The interval-arithmetic range of the firm intervals is written beside it as `D_firm_interval_range_eur_informative`.
+    It carries no verdict.
+  - The raw-gap verdicts are unchanged.
+  - The withdrawn §15 fields are no longer written: `gap_interval_*`, `class_point`, `class_upper_end`,
+    `D_interval_eur` and `*_conservative_end`.
+- **§16.2 / §16.5, IPOPT options.** The options are now `{tol 1e-9, max_iter 3000, print_level 5, bound_relax_factor 0,
+  honor_original_bounds yes, bound_push 1e-10, bound_frac 1e-10, linear_solver ma97, mu_strategy adaptive}`.
+  `warm_start_init_point` is removed.
+- **§16.3, the dimension gate.** IPOPT-reported variables are compared with LP columns − columns with lb == ub, and eq +
+  ineq with LP rows. `lp_dimensions` records `n_fixed_columns`, `vars_expected_by_ipopt` and, on a real run,
+  `vars_reported_by_ipopt`.
+  - On the interior group: 26,292 − 390 = 25,902, which is IPOPT's logged count; 7,476 + 14,895 = 22,371 rows.
+  - Across the 24 groups the fixed count is 390 or 478.
+- **§16.4, the freeze.** `DSO_ESSO_frozen` now freezes only the DSO `vmag_sqr` / `voltage_product_real` /
+  `voltage_product_imag` columns, `d0_tr_U` / `d0_tr_C` / `d0_tr_D`, and every `esso_*` column. The columns are
+  identified through the name map.
+  - The key name is kept from v2. The pre-check record adds per-family frozen counts and a `[freeze]` console line.
+
+**Rehearsal.** All 24 groups were rehearsed (`P516_D0_T02_REHEARSAL_DIR` under /tmp; HOME = scratch with a pre-built
+matplotlib font cache; zero solves), on the final bytes `9fa3ef1e…`.
+- **Run.** Child exit 0. 362 gate rows, all pass, 0 stops. Guards 0 / 0, and 0 repository writes outside the root. Wall
+  63 s.
+- **Baseline.** The `7fa39c41` bytes were rehearsed the same way, from a symlinked scratch checkout.
+  - All 362 rows are identical in gate, scope, achieved value and pass.
+  - The rehearsal cannot exercise the log-based dimension gate, because there is no IPOPT log; the NL-header gate fires
+    instead and is unchanged.
+- **Interval cross-check (zero-solve).** It was run on the preserved interior vectors (manifest-checked) and the
+  hash-checked LP.
+  - `resolution_price` gives res_LB 5,653.97 € and res_cert 735.66 €. The gap is 5,843.89 €.
+  - `gap_firm_reading` gives the firm interval **[−545.74, +6,579.55] €** and the point estimate **189.92 €**.
+  - Relative to Q_cert+: firm upper end 1.028e-4, point estimate 2.97e-6.
+
+**Freeze pre-check, variant C, unit cell.** Max violation over rows whose columns are all fixed, at the certified point
+clipped into bounds:
+
+| freeze | columns frozen | rows checked | max violation | where |
+|---|---|---|---|---|
+| TN W (unchanged) | 648 | 840 | 8.7e-9 – 1.06e-8 | `tso.voltage_magnitude_upper_cons` |
+| DSO (b) + ESSO (new) | 9,618 | 9,810 | **3.73e-7** (all 12 groups) | `esso_7.energy_storage_charging_discharging[3]` |
+| full DSO + ESSO (`7fa39c41`) | 25,292 | — | 2.34e-4 – 4.86e-4 | `dso_7.sess_soc_final` |
+
+**For the Planner (not acted on).**
+- **The (b) pre-check is 3.73e-7, not ~1e-8.** A scratch zero-solve on 2025 Spring finds the excess only in the three
+  inert `esso_7.energy_storage_charging_discharging` rows.
+  - Cause: the certified ESSO `es_pch` / `es_pdch` sit at ≈ −1.0e-8. Clipping them to lb 0 (max clip 9.99e-9) shifts each
+    row (es_avg plus 192 pch / pdch terms at coefficient 0.2445) by up to 3.73e-7. The row residual at the unclipped point is ~1e-15.
+  - Leaving `es_avg_ch_dch_per_unit` / `es_D_per_unit` free makes the excess vanish: no row above 1e-8. These are the
+    §14.2 inert chain. This variant was a diagnostic only; it is not in the harness.
+- **The freezes may be infeasible for Gurobi.** Both frozen pre-checks exceed Gurobi `FeasibilityTol` 1e-9 (§15.3): TN W
+  at ~1e-8 and (b) at 3.7e-7. The 24 freeze solves may therefore return INFEASIBLE from presolve.
+  - The harness records that outcome; a freeze solve without an objective does not stop the run. The attribution bracket
+    is then absent.
+- **The interior group's conservative end classifies as H2.** It is 1.028e-4, and the harness rule is H1 ≤ 1e-4. §16.1's
+  "borderline H1" reads as H2 here. It is a single group; the class is decided on Σ over 12 groups.
+- **`linear_solver ma97` needs HSL on the Studio.** The preflight checks only that the IPOPT executable exists. Not
+  verified on the Studio.
+
+## §17 edits (Worker, 2026-11-01; zero solves)
+
+**Studio checkout target: `p516_d0_t02.py` sha256 `5f5e500f03497537f9c22eb7fd235e8c4c3c249898aadd88924aa810b254992b`**
+(predecessor `9fa3ef1e…`, the §16 form above). Staged by filename, not committed. Record schema stays **v3**;
+`HARNESS_VERSION` and `RECORD_SCHEMA.spec_reference` cite §17 rulings 1, 2 and 5. Declared count unchanged (132). No
+gate added, removed or redefined. Every §15 / §16 change is kept.
+
+**Changes.**
+- **§17.1, the DSO + ESSO freeze.** `DSO_ESSO_frozen` now leaves `es_avg_ch_dch_per_unit[*]` and `es_D_per_unit[*]`
+  free (`ESSO_FREE_FAMILIES`, identified through the name map). Everything else in the ESSO is frozen as before.
+  - The pre-check record adds `n_esso_columns_left_free_by_family`.
+  - The harness raises if no such column is found, so the freeze cannot silently revert to the full-ESSO set.
+- **§17.2, freeze feasibility tolerance.** `GUROBI_PARAMS_FREEZE` = `GUROBI_PARAMS` with `FeasibilityTol 1e-7`. It is
+  used for the 24 freeze solves only (both freezes).
+  - The 72 group LPs and the 12 fixed-mode solves keep `GUROBI_PARAMS` (1e-9).
+  - Every Gurobi solve record carries the dict it ran with (`params`) and `params_set` (`standard` / `freeze`).
+  - `predictions.json` records both dicts, and the console prints both.
+- **§17.5, the ma97 preflight.** `_ipopt_ma97_check` runs `ipopt -v` and `ipopt --print-options`, which solve nothing.
+  It parses the `linear_solver` entry's "Possible values", and the parent refuses with exit 6, writing nothing, unless
+  ma97 is listed.
+  - The banner, the `linear_solver` block, the listed solvers and the sha256 of the option listing are printed in the
+    `[preflight]` line and written to `provenance_parent.json` (`preflight`) on a real run.
+  - The rehearsal skips the preflight, as before.
+
+**Rehearsal.** All 24 groups were rehearsed (`P516_D0_T02_REHEARSAL_DIR` under /tmp; HOME = scratch with a pre-built
+matplotlib font cache; zero solves) on the final bytes `5f5e500f…`. The baseline was the `9fa3ef1e` bytes, rehearsed
+the same way immediately before the edit.
+- **Run.** Child exit 0. 362 gate rows, all pass, 0 stops. Guards counted 0 / 0 with no verify failures, there were 0
+  process launches, and tracked status was unchanged.
+- **Baseline.** All 362 rows are identical to the baseline in gate, scope, achieved value and pass.
+- **Record diff against the baseline (recursive).** The only non-volatile differences are the intended ones:
+  - the DSO + ESSO pre-check fields, on 12 / 12 unit groups;
+  - `FeasibilityTol` 1e-9 → 1e-7 on the 24 freeze solves;
+  - the new `params_set` field on all 108 Gurobi records;
+  - `n_esso_columns_left_free_by_family`, the harness version / hash, the schema change list, and the `preflight` key
+    (null in a rehearsal).
+- **Per-solve settings in the rehearsal records.**
+
+  | solves | `params_set` | `FeasibilityTol` | count |
+  |---|---|---|---|
+  | R / A / C group LPs | standard | 1e-9 | 72 |
+  | fixed-mode | standard | 1e-9 | 12 |
+  | TN W freeze | freeze | 1e-7 | 12 |
+  | DSO + ESSO freeze | freeze | 1e-7 | 12 |
+
+**Freeze pre-check, variant C, unit cell.** Max violation over rows whose columns are all fixed, at the certified point
+clipped into bounds:
+
+| freeze | columns frozen | rows checked | max violation | where |
+|---|---|---|---|---|
+| TN W (unchanged) | 648 | 840 | 8.68e-9 – 1.06e-8 | `tso.voltage_magnitude_upper_cons` |
+| DSO (b) + ESSO, §16 (`9fa3ef1e`) | 9,618 | 9,810 | 3.73e-7 (all 12 groups) | `esso_7.energy_storage_charging_discharging[3]` |
+| DSO (b) + ESSO, §17 (new) | 9,612 | 9,804 | **9.998e-9** (all 12 groups) | `esso_7.energy_storage_operation_agg[134]` |
+
+- The columns left free are `esso_7.es_avg_ch_dch_per_unit` and `esso_7.es_D_per_unit`, 3 each, in every unit group.
+  esso_5 and esso_9 have no columns of these families in the unit-cell LPs.
+- Six rows leave the all-fixed set.
+- The max clip into bounds is 9.994e-9; the worst row's violation is the size of that clip.
+- **Prediction (§17.1, pre-check ≤ 2e-8): held** on 12 / 12 groups.
+- **Prediction (worst row no longer a `energy_storage_charging_discharging` row): held.**
+
+**Option dicts as printed.**
+- Gurobi, for the group LPs and fixed-mode solves:
+  `{"QCPDual": 1, "NonConvex": 0, "BarQCPConvTol": 1e-09, "BarConvTol": 1e-10, "FeasibilityTol": 1e-09,
+  "OptimalityTol": 1e-09, "Threads": 4, "LogToConsole": 0}`
+- Gurobi, for the freeze solves: the same dict with `"FeasibilityTol": 1e-07`.
+
+**ma97 check, run on this machine (zero solves).**
+- The banner is `Ipopt 3.14.18 (aarch64-apple-darwin24.5.0), ASL(20241111)`.
+- The listed `linear_solver` values are ma27, ma57, ma77, ma86, ma97, pardiso, mumps and custom; ma97 is described as
+  "use the Harwell routine HSL_MA97".
+- The check gives ok = true. The option listing's sha256 is `f52b69af…`.
+- **Negative control.** The same check pointed at `/usr/bin/true` gives ok = false. `parent()` then printed the refusal
+  and returned **6** without creating its root (that root was under /tmp).
+- The Studio's banner is not verified here.
+
+The /tmp rehearsal roots and the earlier scratch (`/tmp/p516s16`, `/tmp/p516t02_*`) were deleted afterwards. None of
+it is evidence.

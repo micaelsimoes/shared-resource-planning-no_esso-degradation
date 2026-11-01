@@ -18,20 +18,53 @@ Two armed guards, both permitting only `p516_d0_t02.py:_leaf_solve`, each counti
   The leaf references gurobipy and the Pyomo solver factory only; a static check before the first solve asserts that
   its code object names no project module (production entry points unreachable from it).
 
-Gurobi settings (G-D0-5): QCPDual 1, NonConvex 0, BarQCPConvTol 1e-9, BarConvTol 1e-10, Threads 4, LogFile per solve,
-LogToConsole 0; everything else at Gurobi's defaults. A log containing "failed to compute QCP dual" marks the solve
+Gurobi settings (G-D0-5 + spec section 15 ruling 3): QCPDual 1, NonConvex 0, BarQCPConvTol 1e-9, BarConvTol 1e-10,
+FeasibilityTol 1e-9, OptimalityTol 1e-9, Threads 4, LogFile per solve, LogToConsole 0; everything else at Gurobi's
+defaults. The 24 freeze solves ONLY (both freezes; spec section 17 ruling 2) run with FeasibilityTol 1e-7
+(`GUROBI_PARAMS_FREEZE`): their all-fixed rows carry the certified point's own ~1e-8 slack by construction, and they are
+attribution diagnostics, never bounds; the 72 group LPs and the 12 fixed-mode solves keep 1e-9. Each solve records the
+dict it ran with (`params`, `params_set`). A log containing "failed to compute QCP dual" marks the solve
 dual-less (recorded; not a stop). A model Gurobi refuses as nonconvex is a STOP (the row is reported).
-IPOPT settings: tol 1e-9, max_iter 3000, print_level 5 (the whole stdout is the per-solve log); everything else at
-IPOPT 3.14 defaults. The IPOPT model is built from the SAME exported LP (read with gurobipy, no solve): every linear row,
+IPOPT settings (spec section 15 ruling 2; section 16 rulings 2 and 5): tol 1e-9, max_iter 3000, print_level 5 (the
+whole stdout is the per-solve log), bound_relax_factor 0, honor_original_bounds yes, bound_push 1e-10, bound_frac 1e-10,
+linear_solver ma97, mu_strategy adaptive (the interior test's linear solver and barrier strategy); everything else at
+IPOPT 3.14 defaults. No warm_start_init_point (section 16 ruling 2): the default initializer pushes the primal start
+into the bounds by bound_push / bound_frac = 1e-10, so the certified start is kept, and the multipliers take the default
+initialisation (bound multipliers bound_mult_init_val = 1; constraint multipliers the least-squares estimate, set to 0
+when it exceeds constr_mult_init_max). IPOPT dimension gate (section 16 ruling 3): IPOPT's reported variable count ==
+the LP's columns minus the columns fixed by their bounds (lb == ub), which IPOPT removes; both numbers recorded.
+Iteration 0 (objective, inf_pr, inf_du) is parsed from the log and recorded
+beside the start's own LP-row violation, to show whether the start is kept. The IPOPT model is built from the SAME
+exported LP (read with gurobipy, no solve): every linear row,
 every quadratic row as written (the rotated cone as the bilinear inequality WijR^2 + WijI^2 <= Wii * Wjj, with
 Wii >= v_min^2 > 0 asserted on the LP bounds), the same bounds, the same linear objective; initial point = the rank-1
 image of the certified point (T0.1c's mapped point), clipped into the bounds.
 
+Resolution column (spec section 15 ruling 1; record schema v3): after every solve (Gurobi and IPOPT, every variant and
+kind) res_LB = sum |multiplier| * max(0, violation) over every linear row, quadratic row and bound at the returned point,
+with the solver's own multipliers, and res_cert = the same pricing of the certified mapped point (clipped into the
+solve's bounds) at those multipliers (`resolution_price`, definition in RESOLUTION_DEFINITION). Every gap reading
+carries (section 16 ruling 1) the FIRM interval for the exact gap [gap - res_LB - res_cert, gap + res_cert]
+(`gap_firm_lower`, `gap_firm_upper`) and the first-order point estimate gap - res_LB (`gap_point_estimate`); the section
+15 form [gap - res_cert, gap + res_LB] is withdrawn and no longer written. The H class is stated on the raw gap
+(`class`), on the point estimate (`class_point_estimate`) and on the firm upper end gap + res_cert (conservative,
+`class_firm_upper`); P6 is read on the raw gap and, conservatively, at the firm upper ends. Rank residuals (ruling 4): the
+OLTC branch's `d0_cone` is excluded from the rank residual (its WR / WI carry no cost and sit in no balance row) and
+reported separately; the transformer is read on `d0_tr_cone` (the `oltc` record).
+Freeze attribution (c) (spec section 14.1 option (b), section 16 ruling 4): `TN_W_frozen` freezes the TSO W columns;
+`DSO_ESSO_frozen` freezes only the DSO W columns (vmag_sqr, voltage_product_real / imag), the DSO transformer U, C, D
+(d0_tr_U / d0_tr_C / d0_tr_D) and every ESSO column except the section 14.2 inert chain es_avg_ch_dch_per_unit ->
+es_D_per_unit, which stays FREE (section 17 ruling 1: frozen at clipped values it carried a 3.73e-7 pre-check) -- the
+rest of each DSO (dispatch, SoC, copies) is free. The key name is kept from v2; its column set is the section 14.1 (b)
+set with the section 17.1 exception.
+
 Stops: an input hash mismatch (refused before anything is solved, exit 5); a containment violation on any group
 (G-D0-4, exit 3, after that group's records are written); a nonconvex refusal by Gurobi (exit 3); the leaf-guard
 count disagreeing (exit 3); the projected wall time exceeding 3.5 h after the first group of each kind (resumable
-stop after whole groups, exit 7). The parent refuses before creating the root when the Gurobi licence does not start
-or the IPOPT executable is absent (exit 6, nothing written).
+stop after whole groups, exit 7). The parent refuses before creating the root when the Gurobi licence does not start,
+the IPOPT executable is absent, or (spec section 17 ruling 5) the executable's option listing (`ipopt --print-options`,
+zero solves) does not offer ma97 among the `linear_solver` values (exit 6, nothing written); the version banner
+(`ipopt -v`) and the listed linear solvers are recorded in provenance_parent.json.
 
 Usage (one process, attached, alone):
     /opt/anaconda3/envs/opf_env_py311/bin/python p516_d0_t02.py
@@ -96,15 +129,63 @@ VARIANT_NOTE = {
     'A': 'ATTRIBUTION DIAGNOSTIC, NOT a lower bound of production (spec section 11 D-1); never quoted as a bound',
     'C': 'calendar-only available energy (section 11 D-2, section 12 ruling 3); the Phase-2 object; absolute class',
 }
-GUROBI_PARAMS = {'QCPDual': 1, 'NonConvex': 0, 'BarQCPConvTol': 1e-9, 'BarConvTol': 1e-10, 'Threads': 4,
-                 'LogToConsole': 0}
-IPOPT_OPTIONS = {'tol': 1e-9, 'max_iter': 3000, 'print_level': 5}
+HARNESS_VERSION = ('p516_d0_t02 v3 (P5_16_D0_SPEC_v2.md section 15 rulings 1-4 as corrected by section 16 rulings 1-5 '
+                   'and section 17 rulings 1, 2, 5, 2026-11-01); v2 = the harness at ff3153ff; the section-15-only '
+                   'form of v3 = sha256 7fa39c41; the section-16 form = sha256 9fa3ef1e')
+RECORD_SCHEMA = {
+    'version': 'v3', 'previous': 'v2 (p516_d0_t02.py at commit ff3153ff; never launched)',
+    'spec_reference': ('P5_16_D0_SPEC_v2.md section 15 (rulings 1-4) as corrected by section 16 (rulings 1-5) and '
+                       'section 17 (rulings 1, 2, 5)'),
+    'changes_from_v2': [
+        'ruling 1 (section 15) with section 16 ruling 1: per solve `resolution` {res_LB, res_cert} and `res_LB_eur` / '
+        '`res_cert_eur`; per gap reading the firm interval `gap_firm_lower` = gap - res_LB - res_cert, `gap_firm_upper` '
+        '= gap + res_cert, the point estimate `gap_point_estimate` = gap - res_LB (each also `_rel`); readings per cell: '
+        'sums of both prices and of the three, `class` (raw gap), `class_point_estimate`, `class_firm_upper` '
+        '(conservative); P6 at the firm upper ends (`held_at_firm_upper`); IPOPT gap reading. The withdrawn section 15 '
+        'form [gap - res_cert, gap + res_LB] (`gap_interval_*`, `class_upper_end`, `D_interval_eur`) is not written',
+        'ruling 2 (section 15) with section 16 rulings 2 and 5: IPOPT options bound_relax_factor 0, '
+        'honor_original_bounds yes, bound_push 1e-10, bound_frac 1e-10, linear_solver ma97, mu_strategy adaptive; no '
+        'warm_start_init_point (start = certified mapped point); `iteration0` parsed from the log',
+        'section 16 ruling 3: IPOPT dimension gate on LP columns minus bound-fixed columns '
+        '(`lp_dimensions.n_fixed_columns`, `lp_dimensions.vars_expected_by_ipopt`)',
+        'section 16 ruling 4: `DSO_ESSO_frozen` = DSO W + transformer U, C, D + every ESSO column (section 14.1 (b))',
+        'section 17 ruling 1: `DSO_ESSO_frozen` leaves the inert chain es_avg_ch_dch_per_unit / es_D_per_unit free '
+        '(`zero_solve_precheck.n_esso_columns_left_free_by_family`)',
+        'ruling 3: Gurobi FeasibilityTol 1e-9, OptimalityTol 1e-9',
+        'section 17 ruling 2: the 24 freeze solves run with FeasibilityTol 1e-7 (`GUROBI_PARAMS_FREEZE`); every Gurobi '
+        'solve records `params` and `params_set` (standard / freeze)',
+        'section 17 ruling 5: preflight refuses (exit 6) unless `ipopt --print-options` lists ma97 among the '
+        'linear_solver values; banner recorded in provenance_parent.json (`preflight`)',
+        'ruling 4: rank_and_cycles excludes transformer branches\' d0_cone from the rank residual '
+        '(`transformer_branches_excluded`, `transformer_d0_cone_excluded`)']}
+GUROBI_PARAMS = {'QCPDual': 1, 'NonConvex': 0, 'BarQCPConvTol': 1e-9, 'BarConvTol': 1e-10, 'FeasibilityTol': 1e-9,
+                 'OptimalityTol': 1e-9, 'Threads': 4, 'LogToConsole': 0}
+# spec section 17 ruling 2: the 24 freeze solves ONLY; identical to GUROBI_PARAMS except FeasibilityTol
+GUROBI_PARAMS_FREEZE = {**GUROBI_PARAMS, 'FeasibilityTol': 1e-7}
+IPOPT_OPTIONS = {'tol': 1e-9, 'max_iter': 3000, 'print_level': 5, 'bound_relax_factor': 0.0,
+                 'honor_original_bounds': 'yes', 'bound_push': 1e-10, 'bound_frac': 1e-10,
+                 'linear_solver': 'ma97', 'mu_strategy': 'adaptive'}
+RESOLUTION_DEFINITION = (
+    'spec v2 section 15 ruling 1. res(x; y) = sum_i |Pi_i| viol_i(x) + sum_j |QCPi_j| viol_j(x) + sum_k |RC_k| '
+    'max(lb_k - x_k, x_k - ub_k, 0); linear viol_i = |a_i x - b_i| on =, max(a_i x - b_i, 0) on <=, '
+    'max(b_i - a_i x, 0) on >=; quadratic viol_j likewise on q_j(x) - d_j; lb / ub = the solve\'s own bounds (the '
+    'fixed-mode and freeze bounds for those solves). Multipliers: the solver\'s own -- Gurobi Pi / QCPi / RC; IPOPT '
+    'sign * Pyomo dual on rows (sign read off stationarity, `multiplier_sign_convention`) and ipopt_zL_out + '
+    'ipopt_zU_out on bounds. A term is priced only where its violation is > 0 (a missing multiplier there is counted, '
+    'and makes the total NaN). res_LB = res(x*; y*) at the returned point; res_cert = res(x_cert clipped into the '
+    'solve\'s bounds; y*), x_cert = the T0.1c certified mapped point (the solve\'s stand-in / IPOPT start). '
+    'Gap reading (section 16 ruling 1; v(delta) = Q_LB,returned <= v(0) <= Q_LB,returned + res_LB by convexity of the '
+    'perturbation function): firm interval for the exact gap [gap - res_LB - res_cert, gap + res_cert], first-order '
+    'point estimate gap - res_LB, conservative end gap + res_cert; the section 15 form [gap - res_cert, gap + res_LB] '
+    'is withdrawn.')
 DECLARED = {'gurobi_group_lp': 72, 'gurobi_fixed_mode': 12, 'gurobi_freeze': 24, 'ipopt_cross_check': 24}
 DECLARED_SOLVES = sum(DECLARED.values())          # 132
 PROJECTION_LIMIT_S = 3.5 * 3600.0
 QCP_DUAL_FAILURE_TEXT = 'failed to compute QCP dual'
 FIXED_MODE_TINY = 1e-9                            # P5.5-D4 TIE_RULE (p55d_d4_fixedmode.py)
 W_FAMILIES = ('vmag_sqr', 'voltage_product_real', 'voltage_product_imag')
+TR_UCD_FAMILIES = ('d0_tr_U', 'd0_tr_C', 'd0_tr_D')   # the OLTC transformer U, C, D (section 14.1 (b) freeze)
+ESSO_FREE_FAMILIES = ('es_avg_ch_dch_per_unit', 'es_D_per_unit')   # section 14.2 inert chain; free (section 17.1)
 STORAGE_VALUE_NOTE = ('storage value = recorded gross(x0) - recorded gross(unit), both from the cells\' '
                       'evaluation_record.json terminal_gross_operational_cost')
 
@@ -138,6 +219,29 @@ OPERATIONALISATION = {
     'agreement': '|Q_G - Q_I| / |Q_G| <= 1e-7 or |Q_G - Q_I| <= gap_G + gap_I (Gurobi vs IPOPT, variant C)',
     'H_class': 'sum_groups gap / Q_cert+(cell): H1 <= 1e-4 < H2 <= 1e-2 < H3',
     'lagrangian_check': 'g <= Q_LB <= g + 1e-6 |Q_LB| (informative in D0)',
+    'resolution': RESOLUTION_DEFINITION,
+    'H_class_firm': ('section 16 ruling 1: per cell sum_groups of the firm interval [gap - res_LB - res_cert, '
+                     'gap + res_cert] and of the point estimate gap - res_LB, over Q_cert+(cell); the class is stated on '
+                     'the raw gap (`class`, the decision rule\'s reading), on the point estimate '
+                     '(`class_point_estimate`) and on the firm upper end (conservative, `class_firm_upper`); '
+                     'H1 <= 1e-4 < H2 <= 1e-2 < H3'),
+    'P6_firm': ('section 16 ruling 1: conservative P6 read at the firm upper ends gap + res_cert: D_firm_upper = '
+                'sum_groups(gap + res_cert)(unit) - sum_groups(gap + res_cert)(x0); held iff |D_firm_upper| <= bar-sum '
+                '(`held_at_firm_upper`); raw-gap verdicts unchanged. The interval-arithmetic D range '
+                '[lo(unit) - hi(x0), hi(unit) - lo(x0)] of the firm intervals is reported beside it (informative, no '
+                'verdict)'),
+    'ipopt_dimension_gate': ('section 16 ruling 3: IPOPT-reported variables == LP columns - columns with lb == ub '
+                             '(removed by IPOPT as fixed); IPOPT-reported eq + ineq == LP rows'),
+    'DSO_freeze_b': ('section 14.1 option (b) / section 16 ruling 4 / section 17 ruling 1: `DSO_ESSO_frozen` fixes the '
+                     'DSO W columns (vmag_sqr, voltage_product_real, voltage_product_imag), the DSO transformer '
+                     'd0_tr_U / C / D and every ESSO column except es_avg_ch_dch_per_unit and es_D_per_unit (the '
+                     'section 14.2 inert chain, left free) at the certified point (clipped into bounds), identified by '
+                     'the name map; every other DSO column free'),
+    'freeze_feasibility_tol': ('section 17 ruling 2: the 24 freeze solves (both freezes) run with Gurobi FeasibilityTol '
+                               '1e-7, every other Gurobi setting as GUROBI_PARAMS; the 72 group LPs and the 12 '
+                               'fixed-mode solves keep 1e-9; recorded per solve (`params`, `params_set`)'),
+    'P1_transformer_exclusion': ('section 15 ruling 4: the DSO rank residual is read on non-transformer branches; the '
+                                 'OLTC branch\'s d0_cone is reported separately and the transformer on d0_tr_cone (P8)'),
 }
 
 REQUIRED_CAPTURES = {
@@ -158,6 +262,11 @@ REQUIRED_CAPTURES = {
     'guard counts (both guards), process launches, containment': ('t02.json', 'guard', None),
     'per-solve logs and multiplier vectors': ('t02.json', 'solve_index', '_leaf_solve'),
     'provenance and input hashes': ('t02.json', 'provenance', None),
+    '(section 15.1 / 16.1) resolution res_LB and res_cert per solve, firm gap interval and point estimate': (
+        't02.json', 'groups', 'resolution_price'),
+    '(section 15.2) IPOPT iteration-0 inf_pr beside the start\'s LP violation': ('t02.json', 'groups',
+                                                                                 'parse_ipopt_iteration0'),
+    'record schema and harness version (v3)': ('t02.json', 'record_schema', None),
 }
 OUTPUT_FILES = ('predictions.json', 't02.json')
 
@@ -198,7 +307,32 @@ def _preflight():
         out['gurobi'] = {'ok': False, 'error': f'{type(error).__name__}: {error}'}
     ipopt = _load_dotenv_ipopt()
     out['ipopt'] = {'ok': bool(ipopt and os.path.exists(ipopt)), 'path': ipopt}
+    out['ipopt_ma97'] = _ipopt_ma97_check(ipopt) if out['ipopt']['ok'] else {'ok': False,
+                                                                             'reason': 'executable absent'}
     return out
+
+
+def _ipopt_ma97_check(ipopt):
+    """Spec section 17 ruling 5, zero solves: the IPOPT executable's version banner (`-v`) and its option listing
+    (`--print-options`, no stub, nothing solved); ok iff the `linear_solver` entry's possible values include ma97."""
+    rec = {'ok': False, 'command_banner': [ipopt, '-v'], 'command_options': [ipopt, '--print-options']}
+    try:
+        ver = subprocess.run([ipopt, '-v'], capture_output=True, text=True, timeout=60)
+        opts = subprocess.run([ipopt, '--print-options'], capture_output=True, text=True, timeout=60)
+    except Exception as error:      # noqa: BLE001 -- recorded and refused
+        rec['error'] = f'{type(error).__name__}: {error}'
+        return rec
+    rec['banner'] = (ver.stdout + ver.stderr).strip()
+    rec['banner_returncode'] = ver.returncode
+    text = opts.stdout + opts.stderr
+    rec['print_options_returncode'] = opts.returncode
+    rec['print_options_sha256'] = hashlib.sha256(text.encode()).hexdigest()
+    m_ = re.search(r'^linear_solver\s.*?(?=^\S)', text + '\n~', re.M | re.S)
+    block = m_.group(0) if m_ else ''
+    rec['linear_solver_block'] = block.rstrip()
+    rec['linear_solvers_listed'] = re.findall(r'^\s+-\s+(\S+)', block, re.M)
+    rec['ok'] = 'ma97' in rec['linear_solvers_listed']
+    return rec
 
 
 def parent():
@@ -211,6 +345,10 @@ def parent():
         print(f'[preflight] {json.dumps(pre)}')
         if not (pre['gurobi']['ok'] and pre['ipopt']['ok']):
             print('[REFUSED] a declared solver is unavailable; nothing created, nothing solved.')
+            return 6
+        if not pre['ipopt_ma97']['ok']:
+            print('[REFUSED] the IPOPT executable does not list ma97 among its linear solvers (spec section 17 ruling '
+                  '5); nothing created, nothing solved.')
             return 6
     if os.path.exists(OUT_DIR):
         print(f'[REFUSED] {rel(OUT_DIR)} exists; refusing to run (no overwrite, no concurrent copy).')
@@ -226,7 +364,7 @@ def parent():
                   'tracked_status_before': T1B._git('status', '--porcelain', '--untracked-files=no'),
                   'platform': platform.platform(), 'parent_interpreter': sys.executable,
                   'started': time.strftime('%Y-%m-%dT%H:%M:%S%z'), 'rehearsal': bool(_REHEARSAL),
-                  'resume_from': _RESUME_FROM}
+                  'resume_from': _RESUME_FROM, 'preflight': None if _REHEARSAL else pre}
     with open(PROVENANCE_PARENT, 'w') as handle:
         json.dump(provenance, handle, indent=1)
     with open(LOG_PATH, 'w', buffering=1) as log:
@@ -800,6 +938,96 @@ def lagrangian_bound(data, x, pi, qcpi, rc_solver, q_lb, bounds=None):
     return out
 
 
+def _finite(value):
+    return value is not None and isinstance(value, (int, float)) and math.isfinite(value)
+
+
+def gap_firm_reading(gap, res_lb, res_cert, q_plus):
+    """Spec section 16 ruling 1 (correcting section 15.1): the firm interval for the exact gap
+    [gap - res_LB - res_cert, gap + res_cert] and the first-order point estimate gap - res_LB, in EUR and relative to
+    Q_cert+(group); every field None when the gap or either price is unavailable (dual-less solve, missing multiplier,
+    no point). The withdrawn section 15 form [gap - res_cert, gap + res_LB] is not produced."""
+    keys = ('gap_firm_lower', 'gap_firm_upper', 'gap_point_estimate')
+    if not (_finite(gap) and _finite(res_lb) and _finite(res_cert)):
+        return {**{k: None for k in keys}, **{f'{k}_rel': None for k in keys}}
+    out = {'gap_firm_lower': gap - res_lb - res_cert, 'gap_firm_upper': gap + res_cert, 'gap_point_estimate': gap - res_lb}
+    out.update({f'{k}_rel': out[k] / q_plus for k in keys})
+    return out
+
+
+def _row_family(name):
+    block, fam, _idx = parse_pyomo_name(name) if name else (None, str(name), ())
+    return f'{(block or "top").split("_")[0]}.{fam}'
+
+
+def resolution_price(data, x, pi, qcpi, rc, bounds=None, top=6):
+    """Spec section 15 ruling 1: the price of a point's violations at a solve's multipliers (RESOLUTION_DEFINITION).
+    Called with the returned point (res_LB) and with the certified mapped point clipped into the solve's bounds
+    (res_cert); the multipliers are the solve's own in both calls."""
+    lb = data['lb'] if bounds is None else bounds[0]
+    ub = data['ub'] if bounds is None else bounds[1]
+    if x is None or np.any(np.isnan(x)):
+        return {'available': False, 'reason': 'no point (X missing or NaN)'}
+    if pi is None or rc is None or (len(data['qrows']) and qcpi is None):
+        return {'available': False, 'reason': 'dual-less solve (Pi, QCPi or RC missing)'}
+    r = data['A'] @ x - data['rhs']
+    s = data['sense']
+    lin = np.where(s == '=', np.abs(r), np.where(s == '<', np.maximum(r, 0.0), np.maximum(-r, 0.0)))
+    qd = np.zeros(len(data['qrows']))
+    for j, q in enumerate(data['qrows']):
+        v = q['lin_const']
+        for i_, k_, c_ in q['quad']:
+            v += c_ * x[i_] * x[k_]
+        for i_, c_ in q['lin']:
+            v += c_ * x[i_]
+        qd[j] = v - data['qc_rhs'][j]
+    qs = data['qc_sense']
+    quad = np.where(qs == '<', np.maximum(qd, 0.0), np.where(qs == '>', np.maximum(-qd, 0.0), np.abs(qd)))
+    bnd = np.maximum(np.maximum(np.where(np.isfinite(lb), lb - x, 0.0), np.where(np.isfinite(ub), x - ub, 0.0)), 0.0)
+    parts, out = {}, {'available': True}
+    fams = {}
+    n_nan = 0
+    for key, viol, mult, names in (('linear', lin, pi, data['con_names']), ('quadratic', quad, qcpi, data['qc_names']),
+                                   ('bounds', bnd, rc, data['var_names'])):
+        mult = np.zeros(len(viol)) if mult is None else np.asarray(mult, dtype=float)
+        on = viol > 0.0
+        price = np.zeros(len(viol))
+        price[on] = np.abs(mult[on]) * viol[on]
+        n_nan += int(np.sum(np.isnan(price)))
+        parts[key] = float(np.sum(price))
+        out[f'{key}_max_violation'] = float(np.max(viol, initial=0.0))
+        out[f'{key}_n_violated'] = int(np.sum(on))
+        out[f'{key}_max_abs_multiplier_on_violated'] = float(np.max(np.abs(mult[on]), initial=0.0)) if on.any() else 0.0
+        for k in np.nonzero(on & (price > 0.0))[0]:
+            f_ = _row_family(names[k]) if key != 'bounds' else \
+                f'{(data["parsed"][k][0] or "top").split("_")[0]}.{data["parsed"][k][1]}'
+            fams[(key, f_)] = fams.get((key, f_), 0.0) + float(price[k])
+    out.update({'total_eur': parts['linear'] + parts['quadratic'] + parts['bounds'],
+                'linear_eur': parts['linear'], 'quadratic_eur': parts['quadratic'], 'bounds_eur': parts['bounds'],
+                'n_nan_multipliers_on_violated': n_nan,
+                'top_families_eur': [[k_, f_, v_] for (k_, f_), v_ in sorted(fams.items(), key=lambda t: -t[1])[:top]]})
+    return out
+
+
+_IPOPT_ITER0_RE = re.compile(r'^[ \t]*0[ \t]+([-+]?\d\.\d+e[-+]\d+)[ \t]+(\d\.\d+e[-+]\d+)[ \t]+(\d\.\d+e[-+]\d+)'
+                             r'[ \t]+(-?[ \t]*\d+\.\d|-[ \t]*inf)', re.M)
+
+
+def parse_ipopt_iteration0(path):
+    """Spec section 15 ruling 2: IPOPT's iteration-0 line (objective, inf_pr, inf_du, lg(mu)) -- the first non-
+    restoration line with iteration number 0 -- to show whether the warm start kept the certified point."""
+    if not os.path.exists(path):
+        return {'present': False}
+    text = open(path, errors='replace').read()
+    m_ = _IPOPT_ITER0_RE.search(text)
+    if not m_:
+        return {'present': True, 'found': False}
+    lg_mu = m_.group(4).replace(' ', '')
+    return {'present': True, 'found': True, 'objective': float(m_.group(1)), 'inf_pr': float(m_.group(2)),
+            'inf_du': float(m_.group(3)), 'lg_mu': None if 'inf' in lg_mu else float(lg_mu),
+            'note': 'IPOPT inf_pr is the max-norm of the (internally scaled) row residuals including the slacks'}
+
+
 def rank_and_cycles(data, x, networks, cycle_basis_fn):
     """(c) TN rank residual per branch-period and cycle-angle residual, (d) DSO rank residuals, (e) OLTC envelope
     slack (transformer-cone relative residual = P5.5-C8 rho_tr; plus the U-envelope bound slacks)."""
@@ -823,9 +1051,24 @@ def rank_and_cycles(data, x, networks, cycle_basis_fn):
                 wi = x[col[f'{prefix}.voltage_product_imag[{b},0,0,{p}]']]
                 rows.append({'branch': b, 'period': p, 'rel': (wii * wjj - wr * wr - wi * wi) / max(wii * wjj, 1e-12),
                              'angle': math.atan2(wi, wr), 'from': fn})
-        rec = {'n_branch_periods': len(rows), 'max_rel_rank_residual': max((r['rel'] for r in rows), default=None),
-               'min_rel_rank_residual': min((r['rel'] for r in rows), default=None),
-               'per_branch_period': [[r['branch'], r['period'], r['rel']] for r in rows]}
+        # spec section 15 ruling 4: the OLTC branch's d0_cone (WR / WI inert: no cost, no balance row) is excluded from
+        # the rank residual and reported separately; the transformer is read on d0_tr_cone (the 'oltc' record below)
+        tr_flagged = {b for b, br in enumerate(net.branches) if br.is_transformer and br.status}
+        tr_branches = {b for b in tr_flagged if any(f'{prefix}.d0_tr_U[{b},0,0,{p}]' in col for p in periods)}
+        rank_rows = [r for r in rows if r['branch'] not in tr_branches]
+        tr_d0 = [r for r in rows if r['branch'] in tr_branches]
+        rec = {'n_branch_periods': len(rank_rows),
+               'max_rel_rank_residual': max((r['rel'] for r in rank_rows), default=None),
+               'min_rel_rank_residual': min((r['rel'] for r in rank_rows), default=None),
+               'per_branch_period': [[r['branch'], r['period'], r['rel']] for r in rank_rows],
+               'transformer_branches_excluded': sorted({r['branch'] for r in tr_d0}),
+               'transformer_flagged_without_oltc_columns_kept': sorted(tr_flagged - tr_branches),
+               'transformer_d0_cone_excluded': {
+                   'n': len(tr_d0), 'max_rel': max((r['rel'] for r in tr_d0), default=None),
+                   'min_rel': min((r['rel'] for r in tr_d0), default=None),
+                   'per_branch_period': [[r['branch'], r['period'], r['rel']] for r in tr_d0],
+                   'note': ('spec v2 section 15 ruling 4: not a rank reading -- the OLTC branch\'s WR / WI carry no cost '
+                            'and sit in no balance row; the live transformer cone is d0_tr_cone (`oltc`)')}}
         cycles = cycle_basis_fn(net, [b for b, br in enumerate(net.branches) if br.status])
         if cycles:
             ang = {(r['branch'], r['period']): (r['angle'], r['from']) for r in rows}
@@ -896,10 +1139,16 @@ def child():
     # ---- predictions first, before any input is loaded -----------------------------------------------------------
     write_json('predictions.json', {'recorded_at': time.strftime('%Y-%m-%dT%H:%M:%S%z'), 'predictions': PREDICTIONS,
                                     'operationalisation': OPERATIONALISATION, 'declared_solves': DECLARED,
-                                    'gurobi_params': GUROBI_PARAMS, 'ipopt_options': IPOPT_OPTIONS,
+                                    'gurobi_params': GUROBI_PARAMS, 'gurobi_params_freeze': GUROBI_PARAMS_FREEZE,
+                                    'ipopt_options': IPOPT_OPTIONS,
+                                    'harness_version': HARNESS_VERSION, 'record_schema': RECORD_SCHEMA,
                                     'note': 'recorded by the harness before any input is loaded (task P5.16 D0 / '
                                             'T0.2; spec v2 section 6 P1-P9 and the expert\'s predictions E1-E5)'})
     print('[write] predictions.json')
+    print(f'[settings] {HARNESS_VERSION}; record schema {RECORD_SCHEMA["version"]}')
+    print(f'[settings] Gurobi params (72 group LPs, 12 fixed-mode) {json.dumps(GUROBI_PARAMS)}')
+    print(f'[settings] Gurobi params (24 freeze solves, section 17.2) {json.dumps(GUROBI_PARAMS_FREEZE)}')
+    print(f'[settings] IPOPT options {json.dumps(IPOPT_OPTIONS)}')
 
     # ---- capture-path assertion: a writer key AND a capture function for every required quantity ----------------
     missing = sorted({f for f, _k, _fn in REQUIRED_CAPTURES.values() if f not in OUTPUT_FILES})
@@ -975,6 +1224,12 @@ def child():
                     write_json('t02.json', {'refused': True, 'resume_mismatch': name})
                     return 5
                 g_rec = json.load(open(path))
+                if g_rec.get('record_schema') != RECORD_SCHEMA['version']:
+                    write_json('t02.json', {'refused': True, 'resume_schema_mismatch': name,
+                                            'found': g_rec.get('record_schema'), 'expected': RECORD_SCHEMA['version']})
+                    print(f'[REFUSED] resume: {name} has record schema {g_rec.get("record_schema")!r}, not '
+                          f'{RECORD_SCHEMA["version"]!r}')
+                    return 5
                 if g_rec.get('complete'):
                     resumed[(g_rec['cell'], g_rec['year'], g_rec['day'])] = {'path': rel(path), 'sha256': rec['sha256'],
                                                                              'record': g_rec}
@@ -1081,17 +1336,32 @@ def child():
         out['optimal_objective_line'] = float(m_.group(1)) if m_ else None
         return out
 
-    def gurobi_solve(tag, lp_path, data, x_stand_in, bounds=None):
+    def resolution_record(data, sol, x_cert, bounds):
+        """Section 15 ruling 1, per solve: res_LB at the returned point, res_cert at the certified mapped point clipped
+        into the solve's bounds, both priced at the solve's own multipliers."""
+        lb_s, ub_s = (data['lb'], data['ub']) if bounds is None else bounds
+        x_c = np.clip(x_cert, lb_s, ub_s)
+        res_lb = resolution_price(data, sol['X'], sol['Pi'], sol['QCPi'], sol['RC'], (lb_s, ub_s))
+        res_ct = resolution_price(data, x_c, sol['Pi'], sol['QCPi'], sol['RC'], (lb_s, ub_s))
+        return {'resolution': {'res_LB': res_lb, 'res_cert': res_ct,
+                               'certified_point': 'T0.1c certified mapped point clipped into this solve\'s bounds '
+                                                  f'(max clip {float(np.max(np.abs(x_c - x_cert), initial=0.0)):.3e})',
+                               'definition': RESOLUTION_DEFINITION},
+                'res_LB_eur': res_lb.get('total_eur'), 'res_cert_eur': res_ct.get('total_eur')}
+
+    def gurobi_solve(tag, lp_path, data, x_stand_in, bounds=None, params=None, params_set='standard'):
+        params = GUROBI_PARAMS if params is None else params
         log_path = os.path.join(OUT_DIR, 'logs', f'{tag}.gurobi.log')
         os.makedirs(os.path.dirname(log_path), exist_ok=True)
-        rec = {'tag': tag, 'solver': 'gurobi', 'lp': rel(lp_path), 'log': rel(log_path), 'params': GUROBI_PARAMS}
+        rec = {'tag': tag, 'solver': 'gurobi', 'lp': rel(lp_path), 'log': rel(log_path), 'params': dict(params),
+               'params_set': params_set}
         if DRY:
             rec.update({'STAND_IN': True, 'status': 'DRY', 'ObjVal': float(data['c'] @ x_stand_in) + data['obj_con'],
                         'wall_s': 0.0})
             sol = {'X': x_stand_in, 'Pi': np.zeros(len(data['rhs'])), 'QCPi': np.zeros(len(data['qc_rhs'])),
                    'RC': data['c'].copy()}
         else:
-            payload = {'lp_path': lp_path, 'params': GUROBI_PARAMS, 'log_path': log_path,
+            payload = {'lp_path': lp_path, 'params': params, 'log_path': log_path,
                        'lb': None if bounds is None else bounds[0], 'ub': None if bounds is None else bounds[1]}
             res = _leaf_solve('gurobi', payload)
             sol = {k: res.get(k) for k in ('X', 'Pi', 'QCPi', 'RC')}
@@ -1106,6 +1376,7 @@ def child():
         rec['dual_less'] = bool(rec['log_parse'].get('qcp_dual_failed')) or sol['Pi'] is None or \
             (len(data['qc_rhs']) > 0 and sol['QCPi'] is None)
         rec['solver_gap_abs'] = rec['log_parse'].get('gap_abs')
+        rec.update(resolution_record(data, sol, x_stand_in, bounds))
         rec['rss'] = note_rss()
         if rec.get('error') and re.search(r'not (positive semi-definite|PSD)|non-?convex|Q matrix',
                                           rec['error']['message'], re.I):
@@ -1226,8 +1497,23 @@ def child():
                                                                'multipliers z = ipopt_zL_out + ipopt_zU_out'}
             sol = {'X': x, 'Pi': sgn * duals_lin, 'QCPi': sgn * duals_q, 'RC': zl + zu}
         rec['log_parse'] = parse_ipopt_log(log_path)
+        rec.update(resolution_record(data, sol, x0, None))
+        x_start = np.clip(x0, data['lb'], data['ub'])        # = build_ipopt_model's start (max(lb), then min(ub))
+        start_v = resolution_price(data, x_start, np.zeros(len(data['rhs'])), np.zeros(len(data['qc_rhs'])),
+                                   np.zeros(len(x_start)))
+        rec['iteration0'] = parse_ipopt_iteration0(log_path)
+        rec['start_kept_evidence'] = {
+            'iteration0_inf_pr': rec['iteration0'].get('inf_pr'),
+            'start_lp_max_violation_unscaled': {k: start_v[f'{k}_max_violation']
+                                                for k in ('linear', 'quadratic', 'bounds')},
+            'note': ('section 15 ruling 2: with bound_push / bound_frac 1e-10 the iteration-0 inf_pr should be of the '
+                     'order of the start\'s own (scaled) row violation; the default push gave 6.9e-2 '
+                     '(P5_16_D0_T02_IPOPT_INTERIOR_REPORT.md)')}
+        n_fixed_cols = int(np.sum(data['lb'] == data['ub']))
         rec['lp_dimensions'] = {'vars': len(data['var_names']), 'rows': len(data['rhs']) + len(data['qrows']),
-                                'eq_rows': int(np.sum(data['sense'] == '='))}
+                                'eq_rows': int(np.sum(data['sense'] == '=')), 'n_fixed_columns': n_fixed_cols,
+                                'vars_expected_by_ipopt': len(data['var_names']) - n_fixed_cols,
+                                'note': 'section 16 ruling 3: IPOPT removes the columns with lb == ub'}
         if DRY:
             hdr = rec['nl_header_vars_cons_objs_ranges_eqns']
             gate('IPOPT smooth form: NL header (vars, cons, eqns) == LP dimensions (0 = equal)', tag,
@@ -1236,10 +1522,14 @@ def child():
         elif rec['log_parse'].get('n_variables') is not None:
             n_ineq = rec['log_parse'].get('n_inequality_constraints')
             n_eq = rec['log_parse'].get('n_equality_constraints')
-            gate('IPOPT smooth form: IPOPT-reported dimensions == LP dimensions (0 = equal)', tag,
-                 0.0 if (int(rec['log_parse']['n_variables']) == rec['lp_dimensions']['vars'] and
+            rec['lp_dimensions']['vars_reported_by_ipopt'] = int(rec['log_parse']['n_variables'])
+            gate('IPOPT smooth form: IPOPT-reported variables == LP columns - bound-fixed columns, eq + ineq == LP rows '
+                 '(0 = equal)', tag,
+                 0.0 if (int(rec['log_parse']['n_variables']) == rec['lp_dimensions']['vars_expected_by_ipopt'] and
                          int(n_eq) + int(n_ineq) == rec['lp_dimensions']['rows']) else 1.0, 0.0,
-                 note='IPOPT may drop variables fixed by bounds; a mismatch is investigated, not a stop')
+                 note=(f'section 16 ruling 3: LP columns {rec["lp_dimensions"]["vars"]}, bound-fixed '
+                       f'{rec["lp_dimensions"]["n_fixed_columns"]}, IPOPT-reported {rec["log_parse"]["n_variables"]}; '
+                       'a mismatch is investigated, not a stop'))
         rec['rss'] = note_rss()
         vec_path = os.path.join(OUT_DIR, 'vectors', f'{tag}.npz')
         os.makedirs(os.path.dirname(vec_path), exist_ok=True)
@@ -1404,7 +1694,8 @@ def child():
             networks[f'DSO{n_}'] = blocks['dso'][n_].node_balance_p._rule._fcn.keywords['network']
         q_plus = objective['q_cert_plus'][label]['per_group'][gkey]
         grec = {'cell': label, 'year': y, 'day': d, 'q_cert_plus_group': q_plus['q_cert_plus'],
-                'gross_group': q_plus['gross'], 'variants': {}, 'complete': False}
+                'gross_group': q_plus['gross'], 'variants': {}, 'complete': False,
+                'record_schema': RECORD_SCHEMA['version']}
         datas, xcerts, sols = {}, {}, {}
         for mode in MODES:
             var = VARIANT[mode]
@@ -1455,6 +1746,8 @@ def child():
                 v['Q_LB'] = q_lb
                 v['gap_abs'] = grec['q_cert_plus_group'] - q_lb
                 v['gap_rel'] = v['gap_abs'] / grec['q_cert_plus_group']
+                v['res_LB_eur'], v['res_cert_eur'] = rec.get('res_LB_eur'), rec.get('res_cert_eur')
+                v.update(gap_firm_reading(v['gap_abs'], v['res_LB_eur'], v['res_cert_eur'], grec['q_cert_plus_group']))
                 v['containment_held'] = bool(q_lb <= grec['q_cert_plus_group'] + gap_s)
                 if not gate('G-D0-4 containment: Q_LB - Q_cert+ - solver gap (<= 0)', f'{tag_g} {var}',
                             q_lb - grec['q_cert_plus_group'] - gap_s, 0.0):
@@ -1513,6 +1806,10 @@ def child():
             if fm_rec.get('ObjVal') is not None and grec['variants']['C'].get('Q_LB') is not None:
                 fm['cost_eur'] = fm_rec['ObjVal'] - grec['variants']['C']['Q_LB']
                 fm['cost_pct_of_group_gross'] = 100.0 * fm['cost_eur'] / grec['gross_group']
+            fm['cost_resolution_beside'] = {'res_LB_eur_fixed_mode': fm_rec.get('res_LB_eur'),
+                                            'res_LB_eur_C': grec['variants']['C'].get('res_LB_eur'),
+                                            'note': 'section 15 ruling 1: each solve\'s resolution, reported beside '
+                                                    'the cost (a difference of two solves, not a gap reading)'}
             if fm_sol['X'] is not None and not np.any(np.isnan(fm_sol['X'])):
                 fm['lagrangian'] = lagrangian_bound(data, fm_sol['X'], fm_sol['Pi'], fm_sol['QCPi'], fm_sol['RC'],
                                                     fm_rec['ObjVal'] if fm_rec.get('ObjVal') is not None else np.nan,
@@ -1520,8 +1817,9 @@ def child():
             grec['fixed_mode'] = fm
             freeze = {}
             for fz, select in (('TN_W_frozen', lambda b_, fam: b_ == 'tso' and fam in W_FAMILIES),
-                               ('DSO_ESSO_frozen', lambda b_, fam: bool(b_) and (b_.startswith('dso_') or
-                                                                                 b_.startswith('esso_')))):
+                               ('DSO_ESSO_frozen', lambda b_, fam: bool(b_) and (
+                                   (b_.startswith('dso_') and (fam in W_FAMILIES or fam in TR_UCD_FAMILIES)) or
+                                   (b_.startswith('esso_') and fam not in ESSO_FREE_FAMILIES)))):
                 lb_f, ub_f = data['lb'].copy(), data['ub'].copy()
                 cols = [k for k, (b_, fam, _i) in enumerate(data['parsed']) if select(b_, fam)]
                 val = np.clip(xcerts['C'][cols], data['lb'][cols], data['ub'][cols])
@@ -1529,13 +1827,35 @@ def child():
                 ub_f[cols] = val
                 pre = frozen_rows_check(data, lb_f, ub_f)
                 pre['n_columns_frozen'] = len(cols)
+                fam_count = {}
+                for k in cols:
+                    b_, fam, _i = data['parsed'][k]
+                    fk = f'{b_}.{fam}' if not b_.startswith('esso_') else f'{b_}.*'
+                    fam_count[fk] = fam_count.get(fk, 0) + 1
+                pre['n_columns_frozen_by_block_family'] = dict(sorted(fam_count.items()))
+                if fz == 'DSO_ESSO_frozen':
+                    free_count = {}
+                    for b_, fam, _i in data['parsed']:
+                        if b_ and b_.startswith('esso_') and fam in ESSO_FREE_FAMILIES:
+                            free_count[f'{b_}.{fam}'] = free_count.get(f'{b_}.{fam}', 0) + 1
+                    pre['n_esso_columns_left_free_by_family'] = dict(sorted(free_count.items()))
+                    if not free_count:
+                        raise RuntimeError(f'{tag_g}: section 17.1 inert-chain columns not found in the name map')
+                pre['n_columns_fixed_by_lp_bounds_before_freeze'] = int(np.sum(data['lb'] == data['ub']))
                 pre['max_clip_into_bounds'] = float(np.max(np.abs(val - xcerts['C'][cols]))) if cols else 0.0
+                print(f'[freeze] {tag_g} C {fz}: {len(cols)} columns frozen; {pre["n_all_fixed_rows"]} rows with every '
+                      f'column fixed, max violation at the certified point {pre["max_violation"]:.3e} '
+                      f'({pre["worst_row"]}); max clip {pre["max_clip_into_bounds"]:.3e}')
                 f_rec, f_sol = gurobi_solve(f'{tag_g}_C_{fz}', lp_c, data, np.clip(xcerts['C'], lb_f, ub_f),
-                                            bounds=(lb_f, ub_f))
+                                            bounds=(lb_f, ub_f), params=GUROBI_PARAMS_FREEZE, params_set='freeze')
                 fr = {'columns': ('tso W (vmag_sqr, voltage_product_real / imag) at the rank-1 image of the certified '
                                   'e, f' if fz == 'TN_W_frozen' else
-                                  'every dso_5 / dso_7 / dso_9 / esso_5 / esso_7 / esso_9 column at the certified point '
-                                  '(W, U, C, D at the rank-1 image; ESSO available at the C row; clipped into bounds)'),
+                                  'section 14.1 (b): the dso_5 / dso_7 / dso_9 W columns (vmag_sqr, voltage_product_real '
+                                  '/ imag) and transformer d0_tr_U / C / D at the rank-1 image of the certified e, f, '
+                                  'and every esso_5 / esso_7 / esso_9 column except es_avg_ch_dch_per_unit / '
+                                  'es_D_per_unit (section 14.2 inert chain, free per section 17.1) at the certified '
+                                  'point (ESSO available at the C row); clipped into bounds; every other DSO column '
+                                  'free'),
                       'zero_solve_precheck': pre, 'solve': f_rec}
                 if f_rec.get('ObjVal') is not None and grec['variants']['C'].get('Q_LB') is not None:
                     fr['Q_frozen_minus_Q_LB'] = f_rec['ObjVal'] - grec['variants']['C']['Q_LB']
@@ -1551,7 +1871,12 @@ def child():
                 lo_, hi_ = a_, g_c - b_
                 freeze['attribution_bracket'] = {
                     'label': 'two-way freeze ATTRIBUTION BRACKET (spec section 5 (c)); not a rank-gap cost',
-                    'G_group_C': g_c, 'A_TN_W_frozen_minus_Q_LB': a_, 'B_DSO_ESSO_frozen_minus_Q_LB': b_,
+                    'G_group_C': g_c,
+                    'G_group_C_firm': [grec['variants']['C'].get('gap_firm_lower'),
+                                       grec['variants']['C'].get('gap_firm_upper')],
+                    'G_group_C_point_estimate': grec['variants']['C'].get('gap_point_estimate'),
+                    'res_LB_eur_frozen': {k_: freeze[k_]['solve'].get('res_LB_eur') for k_ in freeze},
+                    'A_TN_W_frozen_minus_Q_LB': a_, 'B_DSO_ESSO_frozen_minus_Q_LB': b_,
                     'TN_share_bracket': [min(lo_, hi_), max(lo_, hi_)],
                     'DSO_ESSO_share_bracket': [min(b_, g_c - a_), max(b_, g_c - a_)],
                     'interaction_A_plus_B_minus_G': a_ + b_ - g_c}
@@ -1567,12 +1892,22 @@ def child():
                                                 ip_rec.get('ObjVal', np.nan))
             g_i = ip['lagrangian'].get('g_tight')
             ip['ipopt_gap_abs'] = (ip_rec['ObjVal'] - g_i) if (g_i is not None and math.isfinite(g_i)) else None
+        if ip_rec.get('ObjVal') is not None:
+            # section 15 ruling 1 / section 16 ruling 1: the IPOPT cross-check's own gap reading, firm interval, point
+            ip['gap_abs'] = grec['q_cert_plus_group'] - ip_rec['ObjVal']
+            ip['gap_rel'] = ip['gap_abs'] / grec['q_cert_plus_group']
+            ip['res_LB_eur'], ip['res_cert_eur'] = ip_rec.get('res_LB_eur'), ip_rec.get('res_cert_eur')
+            ip.update(gap_firm_reading(ip['gap_abs'], ip['res_LB_eur'], ip['res_cert_eur'], grec['q_cert_plus_group']))
         q_g = grec['variants']['C'].get('Q_LB')
         if q_g is not None and ip_rec.get('ObjVal') is not None:
             diff = abs(q_g - ip_rec['ObjVal'])
             gap_sum = (grec['variants']['C']['solve'].get('solver_gap_abs') or 0.0) + (ip.get('ipopt_gap_abs') or 0.0)
             ip['agreement'] = {'abs_diff': diff, 'rel_diff': diff / abs(q_g), 'gap_sum': gap_sum,
-                               'held': bool(diff / abs(q_g) <= 1e-7 or diff <= gap_sum)}
+                               'held': bool(diff / abs(q_g) <= 1e-7 or diff <= gap_sum),
+                               'res_LB_eur_beside': {'gurobi': grec['variants']['C'].get('res_LB_eur'),
+                                                     'ipopt': ip_rec.get('res_LB_eur')},
+                               'note': ('G-D0-5 rule unchanged; each solve\'s resolution (section 15 ruling 1) '
+                                        'reported beside, not entered into `held`')}
             gate('Gurobi vs IPOPT on C: rel diff <= 1e-7 or abs diff <= gap sum (0 = held)', tag_g,
                  0.0 if ip['agreement']['held'] else 1.0, 0.0)
         grec['ipopt'] = ip
@@ -1659,7 +1994,8 @@ def child():
     gates_out = {'rows': gate_rows, 'all_pass': all(r['pass'] for r in gate_rows),
                  'failed': [r for r in gate_rows if not r['pass']], 'stops': stops, 'stop_triggered': bool(stops),
                  'resumable_stop': stop_resumable}
-    payload = {'stage': 'P5.16 D0 / T0.2', 'rehearsal_stand_in': DRY,
+    payload = {'stage': 'P5.16 D0 / T0.2', 'rehearsal_stand_in': DRY, 'record_schema': RECORD_SCHEMA,
+               'harness_version': HARNESS_VERSION,
                'objective_convention': ('gross_operational_cost (settlement-EXCLUDED, salvage NOT subtracted) per '
                                         'group; Q_cert+ = gross with every detector slack at max(slack, 0) (spec '
                                         'section 12 ruling 5); gap = Q_cert+ - Q_LB'),
@@ -1784,6 +2120,9 @@ def readings_fn(group_records, groups, cell_records, storage_value, bar_sum, w18
     def sgap(c, g, var):
         return group_records[(c, *g)]['variants'][var]['solve'].get('solver_gap_abs') or 0.0
 
+    def h_class(r):
+        return None if r is None else ('H1' if r <= 1e-4 else ('H2' if r <= 1e-2 else 'H3'))
+
     sums = {}
     for c in cells:
         q_plus = sum(group_records[(c, *g)]['q_cert_plus_group'] for g in complete[c])
@@ -1797,12 +2136,47 @@ def readings_fn(group_records, groups, cell_records, storage_value, bar_sum, w18
                                 'sum_gap_over_Q_cert_plus': s / q_plus,
                                 'sum_solver_gap_eur': sum(sgap(c, g, var) for g in complete[c]),
                                 'class': ('H1' if s / q_plus <= 1e-4 else ('H2' if s / q_plus <= 1e-2 else 'H3'))}
+                # section 16 ruling 1: summed firm interval [sum(gap - res_LB - res_cert), sum(gap + res_cert)] and
+                # summed point estimate sum(gap - res_LB); class on the raw gap (`class`), on the point estimate and on
+                # the firm upper end (conservative, `class_firm_upper`)
+                rd = {k: [val(c, g, var, k) for g in complete[c]]
+                      for k in ('gap_firm_lower', 'gap_firm_upper', 'gap_point_estimate')}
+                n_missing = sum(1 for e_ in rd['gap_firm_upper'] if e_ is None)
+                fs = {k: (None if n_missing else sum(v_)) for k, v_ in rd.items()}
+                sums[c][var].update({
+                    'sum_res_LB_eur': None if n_missing else sum(val(c, g, var, 'res_LB_eur') for g in complete[c]),
+                    'sum_res_cert_eur': None if n_missing else sum(val(c, g, var, 'res_cert_eur')
+                                                                   for g in complete[c]),
+                    'n_groups_without_resolution': n_missing,
+                    'sum_gap_firm_lower_eur': fs['gap_firm_lower'], 'sum_gap_firm_upper_eur': fs['gap_firm_upper'],
+                    'sum_gap_point_estimate_eur': fs['gap_point_estimate'],
+                    **{f'sum_{k}_over_Q_cert_plus': (None if fs[k] is None else fs[k] / q_plus) for k in fs},
+                    'class_point_estimate': (None if fs['gap_point_estimate'] is None
+                                             else h_class(fs['gap_point_estimate'] / q_plus)),
+                    'class_firm_upper': (None if fs['gap_firm_upper'] is None
+                                         else h_class(fs['gap_firm_upper'] / q_plus))})
     readings['per_cell'] = sums
     readings['absolute_class_on_C'] = {c: sums[c].get('C', {}).get('class') for c in cells}
+    readings['absolute_class_on_C_firm_upper'] = {c: sums[c].get('C', {}).get('class_firm_upper') for c in cells}
+    readings['absolute_class_on_C_point_estimate'] = {c: sums[c].get('C', {}).get('class_point_estimate')
+                                                      for c in cells}
     readings['R4'] = {c: {'G_keur_C': sums[c]['C']['sum_gap_eur'] / 1e3 if 'C' in sums[c] else None,
                           'g_C': sums[c]['C']['sum_gap_over_Q_cert_plus'] if 'C' in sums[c] else None,
                           'stakes_storage_value_keur': storage_value / 1e3, 'bar_sum_keur': bar_sum / 1e3}
                       for c in cells}
+
+    def p6_firm(s_u, s_0):
+        """section 16 ruling 1 (OPERATIONALISATION 'P6_firm'): the conservative D read at the firm upper ends
+        (gap + res_cert), and the interval-arithmetic D range of the firm intervals beside it (informative)."""
+        if s_u.get('sum_gap_firm_upper_eur') is None or s_0.get('sum_gap_firm_upper_eur') is None:
+            return {'D_firm_upper_eur': None, 'D_firm_upper_abs_eur': None, 'held_at_firm_upper': None,
+                    'D_firm_interval_range_eur_informative': None}
+        d_up = s_u['sum_gap_firm_upper_eur'] - s_0['sum_gap_firm_upper_eur']
+        d_rng = [s_u['sum_gap_firm_lower_eur'] - s_0['sum_gap_firm_upper_eur'],
+                 s_u['sum_gap_firm_upper_eur'] - s_0['sum_gap_firm_lower_eur']]
+        return {'D_firm_upper_eur': d_up, 'D_firm_upper_abs_eur': abs(d_up),
+                'held_at_firm_upper': bool(abs(d_up) <= bar_sum), 'D_firm_interval_range_eur_informative': d_rng}
+
     p6 = {}
     if readings['all_12_groups_both_cells']:
         for var in ('R', 'A', 'C'):
@@ -1814,6 +2188,7 @@ def readings_fn(group_records, groups, cell_records, storage_value, bar_sum, w18
                            'held_D_le_bar_sum': bool(abs(diff) <= bar_sum),
                            'D_over_storage_value': abs(diff) / storage_value,
                            'point_estimate_le_5keur': bool(abs(diff) <= 5000.0),
+                           **p6_firm(sums['unit_n7'][var], sums['x0'][var]),
                            'role': {'A': 'mechanism (D-3); A is NOT a bound', 'C': 'decision relevance (D-3)',
                                     'R': 'reported; contains the plan-dependent degradation relaxation'}[var]}
     readings['P6'] = p6
@@ -1857,7 +2232,20 @@ def readings_fn(group_records, groups, cell_records, storage_value, bar_sum, w18
             out += [v['max_rel_rank_residual'] for k, v in rk.items() if k.startswith('DSO')]
         return max(out) if out else None
     p1 = {v: dso_max(v) for v in ('R', 'A', 'C')}
+
+    def dso_tr_excluded(var):
+        mx, branches = [], set()
+        for (c, y, d), r in group_records.items():
+            for k, v in (r['variants'][var].get('rank') or {}).items():
+                if k.startswith('DSO'):
+                    branches |= {f'{k}:{b}' for b in v.get('transformer_branches_excluded', [])}
+                    t_ = (v.get('transformer_d0_cone_excluded') or {}).get('max_rel')
+                    if t_ is not None:
+                        mx.append(t_)
+        return {'max_rel_excluded_d0_cone': max(mx) if mx else None, 'branches': sorted(branches)}
     preds['P1'] = {'achieved_max_dso_rel_rank_residual': p1,
+                   'transformer_d0_cone_excluded': {v: dso_tr_excluded(v) for v in ('R', 'A', 'C')},
+                   'reading': OPERATIONALISATION['P1_transformer_exclusion'],
                    'verdict': verdict(all_or_none([(x <= 1e-5) if x is not None else None for x in p1.values()]))}
     fm = [(f'{y}_{d}', group_records[('unit_n7', y, d)].get('fixed_mode', {}).get('cost_pct_of_group_gross'))
           for (y, d) in complete['unit_n7']]
@@ -1866,6 +2254,8 @@ def readings_fn(group_records, groups, cell_records, storage_value, bar_sum, w18
     preds['P3'] = {'sum_gap_over_Q_R': {c: sums[c].get('R', {}).get('sum_gap_over_Q_cert_plus') for c in cells},
                    'class_R': {c: sums[c].get('R', {}).get('class') for c in cells},
                    'class_C': readings['absolute_class_on_C'],
+                   'class_R_firm_upper': {c: sums[c].get('R', {}).get('class_firm_upper') for c in cells},
+                   'class_C_firm_upper': readings['absolute_class_on_C_firm_upper'],
                    'verdict': verdict(all_or_none([(sums[c]['R']['class'] == 'H2') if 'R' in sums[c] else None
                                                    for c in cells]))}
     lp_duals = [not r['variants'][v]['solve'].get('dual_less', True) for r in group_records.values()
@@ -1883,7 +2273,9 @@ def readings_fn(group_records, groups, cell_records, storage_value, bar_sum, w18
     preds['P6'] = {'per_variant': p6, 'verdict_A': verdict(p6['A']['held_D_le_bar_sum']) if 'A' in p6 else None,
                    'verdict_C': verdict(p6['C']['held_D_le_bar_sum']) if 'C' in p6 else None,
                    'verdict_R': verdict(p6['R']['held_D_le_bar_sum']) if 'R' in p6 else None,
-                   'verdict': verdict(p6['C']['held_D_le_bar_sum']) if 'C' in p6 else None}
+                   'verdict': verdict(p6['C']['held_D_le_bar_sum']) if 'C' in p6 else None,
+                   **{f'verdict_{v_}_at_firm_upper': (verdict(p6[v_]['held_at_firm_upper'])
+                                                      if v_ in p6 else None) for v_ in ('A', 'C', 'R')}}
     p7 = {}
     for var in ('R', 'C'):
         p7[var] = []

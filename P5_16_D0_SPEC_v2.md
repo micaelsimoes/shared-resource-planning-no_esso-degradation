@@ -309,3 +309,37 @@ Rulings for T0.2 (harness update before the Studio run; zero-solve rehearsal; th
    tolerance), which removes the 1e9 multipliers; recorded, not applied in D0.
 6. The group reading **H1 on this group** is provisional: single group, single solver; the class is decided on
    Σ over 12 groups per the decision rule.
+
+## 16. Planner rulings on the §15 harness update (2026-11-01; harness staged at sha256 `7fa39c41…`, rehearsal 362 gate rows)
+
+1. **§15.1 corrected (direction).** For the δ-relaxed solve, v(δ) = Q_LB,returned ≤ v(0) ≤ Q_LB,returned + res_LB by
+   convexity of the perturbation function, so pricing the returned point's violations **raises** the bound. The firm
+   interval for the exact gap is **[gap_raw − res_LB − res_cert, gap_raw + res_cert]**, the first-order point estimate
+   is gap_raw − res_LB, and the conservative class is read at **gap_raw + res_cert**. On the interior group:
+   [−0.55, +6.58] k€, point 0.19 k€, conservative end 1.0e-4 — borderline H1, which the §15.2–15.3 tolerances will
+   tighten by orders of magnitude. The earlier form [gap − res_cert, gap + res_LB] is withdrawn.
+2. **`warm_start_init_point` dropped.** With `bound_push`/`bound_frac` 1e-10 the primal start is kept either way, and the
+   default least-squares multiplier initialisation is preferable to z = 1, λ = 0.
+3. **IPOPT dimension gate corrected:** compare IPOPT's reported variable count with the LP's columns minus the fixed
+   columns Pyomo/ASL removes (390 on the interior group), so the 24 cross-checks are not failed for a definitional
+   reason.
+4. **DSO freeze per §14.1 option (b)** — the harness still froze every `dso_*`/`esso_*` column (the full freeze ruled
+   infeasible on C): freeze only the DSO W columns (Wii, WijR, WijI) and the transformer U, C, D, plus the ESSO.
+5. **IPOPT settings aligned with the interior test:** `linear_solver ma97`, `mu_strategy adaptive` (I2's convergence
+   evidence is under those).
+6. The 338-row count quoted for the earlier rehearsal was wrong; HEAD produces 362 — corrected in the record.
+
+## 17. Planner rulings on the §16 pass (2026-11-01; harness staged at `9fa3ef1e…`, rehearsal 362 rows, all pass)
+
+1. **DSO freeze:** the inert chain `es_avg_ch_dch_per_unit` → `es_D_per_unit` (§14.2) stays **free** in the DSO + ESSO
+   freeze; freezing those columns at clipped values (certified pch/pdch ≈ −1e-8 clipped to 0) is what produced the
+   3.73e-7 pre-check; with them free no all-fixed row exceeds ≈ 1e-8 (scratch check). Predicted pre-check ≤ 2e-8.
+2. **Freeze solves' feasibility tolerance:** the 24 attribution solves (both freezes) run with `FeasibilityTol 1e-7`
+   — their all-fixed rows carry the certified point's own ≈ 1e-8 slack by construction, and they are attribution
+   diagnostics, never bounds. The 72 group LPs and the fixed-mode solves keep 1e-9. Recorded per solve.
+3. **Interior group at the firm upper end reads H2 (1.028e-4)** — accepted as the rule gives; the class is decided on
+   the 12-group sums per cell, and the §15.2–15.3 tolerances are expected to shrink res_LB by orders of magnitude.
+4. **P6 reading confirmed:** D_firm_upper = Σ(gap + res_cert)(unit) − Σ(gap + res_cert)(x = 0), held iff |D| ≤ bar-sum;
+   the interval-arithmetic range reported beside it without a verdict.
+5. `linear_solver ma97`: the Studio's IPOPT is the production MA97 build (every campaign ran on it); the preflight adds a
+   one-line check that the IPOPT banner lists ma97 (zero solves).
