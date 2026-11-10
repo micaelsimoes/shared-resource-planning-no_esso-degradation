@@ -184,8 +184,8 @@ MODEL_DECLARATIONS = {'A': None, 'N': MODEL_VARIANT_N}
 WRAPPER_KEYS = ('certification_continuation', 'settling_continuation', 'settling_extension', 'settling_resettle')
 
 # ---- G0 (the screen's x = 0 alias; Addendum 85 ruling 4 (v), (vii); the E1 launcher's convention) ----
-G0_ARTIFACT_REL = os.path.join(P55, 'w183_nl_post_w183c_off', 'w183_nl_digest.json.gz')
-G0_ARTIFACT_SHA256 = 'ca195bd38fe2384493012dcf7127a36a8923d8a5029c2c821b5bb0f47f57ab6a'
+G0_ARTIFACT_REL = os.path.join(P55, 'pincheck_nl_head_f6c23977', 'w183_nl_digest.json.gz')
+G0_ARTIFACT_SHA256 = '315ca94a8d2ccd59d5c9ee045694fcc998030995ad322fc99fa2fe49bd0da5b4'
 G0_RECORD = {'path': os.path.join(P55, 'w183d_g0', 'g0.json'),
              'sha256': '8cef45d684bc7e5dc8b719fd504b8e7705933597a9ba07f44349650046b2911c'}
 SCREEN_ALIAS = {'alias': 'x0_N_1x', 'reuse_of': 'x0_A_1x'}
