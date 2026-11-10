@@ -4811,3 +4811,98 @@ freeze): expert round 10 with the landed numbers; W190 on paste. Week 4: marked 
 As `CLAUDE.md`. In addition: a failed P1 margin or P2 sign; any W183i gate; any run not named above; any solve on the
 P5.16 instance other than ruling 6's T0.2; any edit to a P5.16 spec or to `definitions.py`. A stop raised for a
 reporting ruling does not idle the queue (Addendum 63).
+
+
+# Addendum 90 — rulings on W188 (`f2adeda8`): W183i/W184/W185 recognised as run; P1, P2, P5 read against the record; W187 under spec v1.1; G10, §4.4 and §4.7 wording; figure chosen; supplement decisions; round 9b (2026-11-10)
+
+**Received.** `P5_15_W188_REPORT.md` and its six parts (`…W188A_SLACK_INVENTORY`, `…W188B_SUPPLEMENT`,
+`…W188C_CODE_READING`, `…W188D_OPERATIONAL_FIGURE`, `…A89_W184_W185_CLAIMS`, `…PINCHECK_F6C23977`), repo `f2adeda8`;
+zero solves (guards 0; builds only in the pin check with `optimize` stubbed; 2 + 2 allow-listed pickle loads).
+Overleaf still `a87e195` (round 9 not yet pasted).
+
+## Corrections to Addendum 89
+
+1. **W183i, W184 and W185 ran on 2026-10-26 under spec v1** (`frozen_step7_campaign_spec_v1_96345241.json`,
+   production `6f43479e`, harness `d9a944f2…`, hooks `9318ade3…`, launcher `3b990d19…`), before the R6 hold and before
+   `f6c23977`. Addendum 89 ordered them as if they had not run: the expert's error, the record was in the repo
+   (`ec87c098`, `f1cada84`, `f7c3f601`). They are the runs decision 1 and ruling 1 asked for; **no re-run.**
+2. **P1 and P2 were written after those runs.** They are therefore **checks against the record, not predictions**, and
+   the manuscript and letter must not call them predictions. The same applies to P5 (W188 (a) ran the same day; the
+   check was recorded before the inventory was read, and is reported as a check).
+
+## Rulings
+
+1. **P1 (W184, NRF arm) — held as a check.** NRF on the consensus exchange costs +20,463.88 € (determinate, 1.62× its
+   threshold), 0.0225 % of the 90,896.6 k€ gap; the saving is 12.202 % with NRF and 12.205 % without, on the
+   price-taker denominator. **Wording: one decimal, with the NRF cost in k€** — three decimals would print a
+   difference below the comparison resolution as if it were a result. The §4.4 sentence is in round 9b: "the
+   restriction raises the coordinated cost by 20.5 k€, a determinate increase at 1.62 times its threshold, which is
+   0.02 % of the 90.9 M€ saving: the saving relative to the price-taker arrangement is 12.2 % with reverse flow enabled
+   and 12.2 % with it prohibited. The coordination benefit reported here does not depend on the interface restriction".
+   Letter v12 carries the same in the benchmark bullet.
+2. **P2 (W185, penalty pilot) — held as a check.** Eight cells certified; H2 on 4 of 4 pairs; ρ read-back bitwise 8/8;
+   seven cells inside their frozen windows, `e2_x0_2x_rho0p5` 683 € above (0.10 of 3b); spread of the decisive
+   difference 1,573 € (1×) and 1,453 € (2×), ≈ 0.12 of the threshold, signs and verdicts unchanged. The §4.7 paragraph
+   is in round 9b, with the caveat that the check covers the penalty schedule and not the initialisation (the
+   limitation paragraph stands). The monotone-branch cell (`e2_unit_2x_rho0p5`, still descending) is reported through
+   its band in the record; no sentence in the main text.
+3. **P5 (W188 (a)) — held as a check; G10 wording adopted** with the Planner's qualifications: "at every certified
+   evaluation behind the tables … every penalised slack in Q … sits at its zero bound to within the solver's bound
+   relaxation, so no penalty is paid in Q; the relaxation itself leaves a common offset of −13.0 k€ in Q (−2 × 10⁻⁵
+   of Q), identical across evaluations to within 40 €, which cancels in every reported difference", plus the two
+   exceptions (the 3 × 3 unit ≤ 2.2 €; superseded evaluation 16 ≤ 171 € of voltage-slack content). In Appendix B.4
+   (round 9b). The equality of the offset with T0.1c's Q_cert⁺ − gross (1.8e-12 €) is recorded here, not in the paper.
+4. **W187 — spec v1.1 (option (a)) authorized.** Re-pin the production head and the three modules; declare
+   `data/SRP1/SRP1_5x3y_1x1.json` and `data/SRP1/SharedESS/SRP1_5x3y_ESS_Params.json` excluded; predecessor
+   `96345241` recorded in the spec; gates before any W187 solve: (i) the pin check `09b3e3cf` cited in the spec
+   (696/696 blocks, AST-equal aggregation); (ii) **the 153-solve two-cycle gate on HEAD into a new write-once root,
+   read under the ruled comparator** (`GATE_PASS_RULED` True; prediction: 0 genuine, provenance ≤ 4). If (ii) fails,
+   option (b) (worktree at `6f43479e`) is **not** taken without a further ruling: W187 is dropped and R3.6's planning
+   part stays "met in part". **Launch by 2026-11-20** (21 h serial, attached, one task), else not at all. P3 stands as a
+   blind prediction (recorded 11-10, before the run).
+5. **Ruling 5 closed.** The complementarity row is the product form divided by (S^Av)² — no difference. The sentence
+   reads "the rows of inactive cohorts are deactivated" (round 9b); the five node-level ESSO rows that stay active at
+   x = 0 and are satisfied only at zero need no mention.
+6. **Appendix D ±250/±100.** The submitted and the `a87e195` table printed ±250 MW/MVAr for every ADN; the node-7 ADN's
+   case file (`case33_2_2025.json`) has ±100, and every reported run used the case files. In round 9 the table has
+   left the paper; the supplement's `D_ieee33_tn_connection.csv` has one row per ADN with node 7 at ±100 (verified by
+   the expert in `a94d8193`). **Disclosed in letter v12** as a correction of the submitted table. No result changes.
+7. **Supplement decisions.** (i) Base profiles, not the plotted scenario curves — adopted; the README says so.
+   (ii) Keep the `over_budget` column in E24 (it is the Addendum 86 (ii) mark, moved with the table). (iii) **Add the
+   single-scenario years 2030 and 2035 to the RES-capacity tables** (`C_tn_res_generators.csv`,
+   `D_adn_res_generators.csv`), from the case files, so Table 2 of the paper is reproducible from the supplement.
+   (iv) The README prose is delivered (`supplement_README_prose_v1.md`); the generator prepends it to its generated
+   column section in place of `README_PLACEHOLDER.md`, regenerates **v2** with a new content hash and predecessor
+   `a94d8193`, and re-runs the verifier (expected 0 mismatches). The zip is the file submitted as supplementary
+   material.
+8. **Figure chosen: the SoC/SoH figure** (W188 (d) `soc_hourly_reference_unit_2025_2035.csv`,
+   `soc_limits_per_year_reference_unit.csv`, `soh_per_block_calibrations.csv`; manifest `…/w188d_operational_figure/
+   manifest_sha256.json`): panel (a) stored energy of the reference unit over the four days of 2025 and 2035 with the
+   10 %/90 % limits of each year; panel (b) end-of-block SoH under the seven calibrations with the 0.70 and 0.50
+   floors. Built by `fig_soc_soh_reference_unit.py` (delivered), placed in §4.3 as Figure 6 (round 9b); the E6 export
+   stays in the record. The prose reads the records: usable band 0.70 → 0.56 MWh; floor reached in 2035 by the
+   baseline and both 50 % arms; 0.68 under the 0.50 floor.
+9. **Deadline.** Still unconfirmed by the author; the plan keeps 2026-12-08 / freeze 2026-11-28.
+
+## Round 9b (expert, delivered with this addendum; supersedes round 9 / letter v11, which were never pasted)
+
+`main_a87e195_round9b.tex` (md5 `49139cc2…`, + `.diff` vs `a87e195`, 34 hunks), `response_to_reviewers_v12.tex`
+(md5 `ed8f5b13…`, + `letter_v10_v12.diff`), `fig_soc_soh_reference_unit.pdf` (+ `.py`), cover letter v3 unchanged,
+highlights v3 unchanged. Compile 0 / 0 / 0, 63 pages. Figures: 1–5 unchanged, new Figure 6 (SoC/SoH), benchmark 6 → 7,
+Q-versus-cycle 7 → 8; other numbering as in `STEP6_ROUND9_CORRECTIONS.md`. Letter v11's benchmark pointer
+("three-start bands, Table 6") was wrong by a double replacement; v12 prints Table 7.
+
+## Planner order (zero solves except W187 and its gate)
+
+- **W189a (zero-solve, now):** supplement v2 per ruling 7 (README prepended, 2030/2035 columns, verifier); report
+  `P5_15_W188B_SUPPLEMENT_v2.md`. Confirm `D_ieee33_tn_connection.csv` unchanged.
+- **W187 (solves):** spec v1.1 and its two gates per ruling 4; then the 15-key screen; report `P5_15_W187_REPORT.md`
+  with P3 against the outcome.
+- **W189 (zero-solve, after the round-9b paste):** as Addendum 89, at the new Overleaf HEAD, plus: the W184/W185/G10
+  sentences' numbers against `…A89_W184_W185_CLAIMS.md` and `…W188A_SLACK_INVENTORY.md`; the Figure 6 prose against
+  the W188 (d) CSVs; letter v12 pointers (expect Table 7 at the benchmark bullet and R2.6).
+- **W190** unchanged.
+
+## Stops
+
+As Addendum 89. In addition: W187's gate (ii) failing is a stop for the expert (ruling 4), not a fallback to (b).

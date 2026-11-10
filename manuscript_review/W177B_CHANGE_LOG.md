@@ -266,3 +266,27 @@ Kept by the expert during the author's whole-document read (2026-10-09 onward); 
   operational-figure data); W189/W190 audits; T0.2 optional on the Studio for one tightness sentence; predictions
   P1–P5; freeze assumed 2026-11-28, deadline assumed 2026-12-08). Copy in `manuscript_review/ADDENDUM89_2026-11-10.md`
   and the Project. Next expert deliverables: editor letter draft; round 9 = trimmed manuscript.
+- Round 9 delivered (expert, 2026-11-10; `STEP6_ROUND9_CORRECTIONS.md`; Addendum 89 ruling 7): `main_a87e195_round9.tex`
+  (md5 `5b03da7d…`, + `.diff`, 33 hunks) — the trimmed manuscript: Appendices B–D and E.3/E.5/E.6 (Tables E.21, E.23,
+  E.24) moved to the supplementary material (S1–S6), Appendix E → B compacted, A.7 folded into A.1, Table 8 → prose,
+  Tables 13/14 merged (Table 9(a)/(b)), §4.7–4.8 merged; the seven `Appendix~\ref` prefixes; "break-even" wording;
+  G1 zero-capacity conventions (eq. (28) in product form; active-cohort statement — pending W188 (c)); G2 first-order
+  characterization of an accepted point (A.4, §2.2.7); disclaimers 7 → 3; G9, G11, G14; future-work sentence.
+  Compile 0 errors / 0 undefined / 0 multiply defined; 61 pages (was 76); equations (1)–(40), figures 1–7 and
+  Tables 1–4 unchanged, the rest renumbered as listed in the corrections file. Letter v11 (md5 `40420b4c…`, +
+  `letter_v10_v11.diff`, 10 hunks: pointers renumbered; R2.5/R3.2 first-order statement; Appendix B/supplement bullet;
+  prediction-record bullet dropped). Cover letter v3 (+ diff, 1 hunk: wording; bracket narrowed to W184/W185).
+  Highlights v3 unchanged. Deferred: G8 rename; deeper main-text cut; supplement (W188 (b)). Not yet on Overleaf.
+- W188 received (`f2adeda8`; zero solves): W183i/W184/W185 had run on 2026-10-26 under spec v1 (expert's error in
+  Addendum 89); P1, P2, P5 held as checks against the record (NRF +20,463.88 €, 0.0225 % of the gap; penalty spread
+  1,573/1,453 €, ≈ 0.12 of threshold, 8/8 certified; slacks at zero bounds on 20/20 rows, common offset −13.0 k€);
+  W187 blocked by spec v1 pins; Appendix D ±250/±100 error found; supplement v1 `a94d8193` (0 mismatches); figure
+  data ready. **Addendum 90** appended: W187 under spec v1.1 with the two-cycle gate (launch by 11-20); G10/§4.4/§4.7
+  wording; SoC/SoH figure chosen; supplement v2 (README prose delivered, 2030/2035 columns, over_budget kept); ±100
+  disclosed in the letter.
+- **Round 9b delivered** (expert, 2026-11-10; supersedes round 9 / letter v11, never pasted): `main_a87e195_round9b.tex`
+  (md5 `49139cc2…`, + `.diff`, 34 hunks): round 9 plus the §4.4 NRF sentence, the §4.7 penalty paragraph, the B.4
+  slack sentence, the ruling-5 wording and **Figure 6** (`fig_soc_soh_reference_unit.pdf` + `.py` from the W188 (d)
+  CSVs); compile 0/0/0, 63 pages; figures 6 → 7, 7 → 8. Letter v12 (md5 `ed8f5b13…`, + `letter_v10_v12.diff`): R2.6
+  measurement, R3.2 figure, benchmark bullet, ±100 disclosure, v11's benchmark pointer fixed (Table 7). Cover letter
+  v3 and highlights v3 unchanged. `STEP6_ROUND9_CORRECTIONS.md` updated to 9b. Not yet on Overleaf.
