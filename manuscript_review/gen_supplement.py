@@ -5,6 +5,8 @@ WHAT IT WRITES. One deterministic zip, its hash inventory and a generation recor
     manuscript_review/supplement/                       (version 1; created if absent)
     manuscript_review/supplement_v<N>/                  (--force-new-version: the next free version N >= 2; it records
                                                          its predecessor's zip sha256)
+``--out-dir DIR --force-new-version`` writes the next version's bytes (same version number and predecessor) into a
+scratch DIR outside the repository, for the determinism check of a new version.
 The directory must be absent or hold nothing but this generator's launch log ``gen_launch.log``; anything else is
 refused (an existing supplement is never overwritten). ``--out-dir DIR`` writes a scratch copy OUTSIDE the repository
 (used for the determinism check); inside the repository only the canonical / versioned directories are accepted.
@@ -16,10 +18,14 @@ byte path, so the bytes do not depend on the zlib build):
   appendix_E/E20_E21_groups.csv                            the group titles of E.20 / E.21 (LaTeX source, verbatim)
   appendices_B_D/*.csv                                     the Appendix B-D profiles and network tables, from the case
                                                            files under data/SRP1/
-  README_PLACEHOLDER.md                                    column definitions generated from COLUMN_SPECS below, and
-                                                           marked placeholders for the expert's prose (tau, the
-                                                           objective convention, the certification rule's parameters,
-                                                           each filled from the code / constants where they exist)
+  README.md                                                the expert's prose (manuscript_review/supplement/
+                                                           supplement_README_prose_v1.md, prepended byte for byte;
+                                                           Addendum 90 ruling 7 (iv)), then the generated section: the
+                                                           rule parameters from the code / constants and the column
+                                                           definitions generated from COLUMN_SPECS below. (v1 carried
+                                                           README_PLACEHOLDER.md instead.)
+  The RES-capacity CSVs carry every case year 2025, 2028, 2030, 2031, 2034, 2035, 2037 (v2, Addendum 90 ruling 7
+  (iii): the single-scenario years 2030 and 2035 added to v1's printed years).
   SHA256SUMS.txt                                           sha256 of every other entry
 Outside the zip: ``supplement_v<N>_record.json`` (inventory of every entry and of the zip, input hashes, provenance,
 guard counts), written through the shared writer gate_result_io.
@@ -41,6 +47,10 @@ beside another copy of itself. Run it attached with both streams captured:
     mkdir manuscript_review/supplement && \\
     /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python -u manuscript_review/gen_supplement.py \\
         > manuscript_review/supplement/gen_launch.log 2>&1
+  version 2 (W189a, Addendum 90 ruling 7):
+    mkdir manuscript_review/supplement_v2 && \\
+    /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python -u manuscript_review/gen_supplement.py \\
+        --force-new-version > manuscript_review/supplement_v2/gen_launch.log 2>&1
 Exit: 0 = written and every check holds; 1 = precondition or guard fault (nothing written).
 """
 import argparse
@@ -119,6 +129,20 @@ ADNS = (('case33_1', 5), ('case33_2', 7), ('case33_3', 9))      # (network, TN c
 CONFIG_FILES = (os.path.join(DATA, 'SRP1.json'), os.path.join(DATA, 'SRP1_5x3y_1x1.json'))
 PRINTED_YEARS = (2025, 2028, 2031, 2034, 2037)   # the capacity columns printed in Appendices C-D (multi-scenario years)
 ALL_CASE_YEARS = (2025, 2028, 2030, 2031, 2034, 2035, 2037)   # SRP1.json and SRP1_5x3y_1x1.json years together
+SINGLE_SCENARIO_YEARS = (2025, 2030, 2035)       # tab:res_capacity_summary (the paper's Table 2), SRP1_5x3y_1x1.json
+RES_YEARS = ALL_CASE_YEARS   # capacity columns of the RES-generator CSVs (Addendum 90 ruling 7 (iii): 2030, 2035 added)
+README_PROSE_REL = os.path.join(MR, 'supplement', 'supplement_README_prose_v1.md')   # Addendum 90 ruling 7 (iv)
+README_NAME = 'README.md'
+
+
+def year_role(y):
+    if y in SINGLE_SCENARIO_YEARS and y in PRINTED_YEARS:
+        return 'single- and multi-scenario year'
+    if y in SINGLE_SCENARIO_YEARS:
+        return 'single-scenario year (tab:res_capacity_summary); not printed in Appendices C-D'
+    return 'multi-scenario year'
+
+
 HOURS = [f'h{h:02d}' for h in range(24)]
 GEN_TYPE_LABEL = {'WIND': 'Wind', 'PV': 'Solar PV'}       # the labels printed in the RES-generator tables
 BUS_TYPE_LABEL = {3: 'Ref.', 1: 'PQ'}                       # the labels printed in tab:cs1_ieee33_buses
@@ -266,9 +290,10 @@ COLUMN_SPECS = {
                    + [(h, 'as stored', f'price at hour {int(h[1:])}, as stored in the case file') for h in HOURS]},
     'appendices_B_D/C_tn_res_generators.csv': {
         'table': 'Appendix C (tab:cs3_tn_res_generators): TN RES generator locations and installed capacities',
-        'source': f'{DATA}/case9/case9_<year>.json, generators of type WIND / PV, field Pmax, years {list(PRINTED_YEARS)}',
+        'source': f'{DATA}/case9/case9_<year>.json, generators of type WIND / PV, field Pmax, years {list(RES_YEARS)}',
         'columns': [('generator_id', '', 'gen_id'), ('node_id', '', 'bus'), ('type', '', 'Wind or Solar PV (type WIND / PV)')]
-                   + [(f'capacity_{y}_MW', 'MW', f'installed capacity in {y} (Pmax of case9_{y}.json)') for y in PRINTED_YEARS]},
+                   + [(f'capacity_{y}_MW', 'MW', f'installed capacity in {y} (Pmax of case9_{y}.json); {year_role(y)}')
+                      for y in RES_YEARS]},
     'appendices_B_D/C_tn_res_profiles.csv': {
         'table': 'Appendix C (fig:cs3_tn_res_scenarios_2025): TN RES generation base profiles',
         'source': f'{net_xlsx(TN)}, sheet Pg (production reader network_data._read_network_base_profiles)',
@@ -308,10 +333,10 @@ COLUMN_SPECS = {
                        (f'qc_base_adn_node{k}_MVAr', 'MVAr', f'Qc of the ADN at TN node {k} (base reactive load; not printed)'))]},
     'appendices_B_D/D_adn_res_generators.csv': {
         'table': 'Appendix D (tab:cs3_adn_node_5/7/9_res_generators): ADN RES generator locations and installed capacities',
-        'source': f'data/SRP1/case33_<k>/case33_<k>_<year>.json, generators of type WIND / PV, field Pmax, years {list(PRINTED_YEARS)}',
+        'source': f'data/SRP1/case33_<k>/case33_<k>_<year>.json, generators of type WIND / PV, field Pmax, years {list(RES_YEARS)}',
         'columns': [('adn_node', '', 'TN node the ADN connects to'), ('network', '', 'case file'),
                     ('generator_id', '', 'gen_id'), ('node_id', '', 'bus'), ('type', '', 'Wind or Solar PV')]
-                   + [(f'capacity_{y}_MW', 'MW', f'installed capacity in {y}') for y in PRINTED_YEARS]},
+                   + [(f'capacity_{y}_MW', 'MW', f'installed capacity in {y}; {year_role(y)}') for y in RES_YEARS]},
     'appendices_B_D/D_adn_res_profiles.csv': {
         'table': 'Appendix D (fig:cs3_adn_node_5/7/9_res_scenarios_2025): ADN RES generation base profiles',
         'source': 'data/SRP1/case33_<k>/case33_<k>_operational_data.xlsx, sheet Pg',
@@ -697,7 +722,7 @@ def build_appendices_B_D():
         rr = []
         for gid in ids:
             per_year = []
-            for y in PRINTED_YEARS:
+            for y in RES_YEARS:
                 gg = [g for g in nets[n][y]['generators'] if g['gen_id'] == gid]
                 if len(gg) != 1:
                     raise RuntimeError(f'{n} {y}: generator {gid} found {len(gg)} times')
@@ -813,6 +838,13 @@ def build_appendices_B_D():
 #  README placeholder (generated from COLUMN_SPECS and from the code's constants)
 # ======================================================================================================================
 def readme(g, version):
+    """README.md: the expert's prose (README_PROSE_REL, byte for byte, Addendum 90 ruling 7 (iv)) followed by the
+    generated section (rule parameters from the code, column definitions from COLUMN_SPECS). Replaces v1's
+    README_PLACEHOLDER.md; the prose is prepended unchanged, never edited here."""
+    with open(os.path.join(REPO, README_PROSE_REL), 'rb') as h:
+        prose = h.read()
+    if not prose.endswith(b'\n') or b'PLACEHOLDER' in prose:
+        raise RuntimeError(f'{README_PROSE_REL}: does not end in a newline, or carries a placeholder mark')
     spec6 = _json(SPEC_V6_REL)
     pmax = sorted({c['declaration']['settling_rule']['p_max'] for c in spec6['cells'].values()})
     if len(pmax) != 1:
@@ -822,26 +854,21 @@ def readme(g, version):
     rules = sorted({r['rule'] for r in g.T1.values()} | {r['rule'] for r in g.T10.values()})
     L = []
     P = L.append
-    P(f'# SRP1 supplement, version {version} -- README PLACEHOLDER')
     P('')
-    P('> **[EXPERT PROSE PLACEHOLDER -- the expert writes this README.]** This file is generated by '
-      '`manuscript_review/gen_supplement.py`. The column definitions below are generated from the generator\'s own '
-      'column specifications; the values in the marked placeholders are filled from the code and the frozen tables '
-      'where they exist. Nothing below is typed by hand except the column descriptions in the generator.')
+    P(f'## Generated section (supplement version {version})')
     P('')
-    P('## [PLACEHOLDER: tau]')
+    P('Generated by `manuscript_review/gen_supplement.py`: the parameters below are read from the code and the frozen '
+      'tables, and the column definitions from the generator\'s own column specifications, against which the verifier '
+      'checks every CSV header. Nothing in this section is typed by hand except the column descriptions in the '
+      'generator.')
+    P('')
+    P('## Acceptance-rule parameters (read from the code)')
     P('')
     P(f'- `settling_criterion_v6.TAU` = {SC6.TAU!r} EUR (formula: {consts["TAU"]["formula"]}); printed 4,539.07 EUR.')
     P(f'- frozen tables `constants.TAU` = {fz["constants"]["TAU"]!r} EUR; `constants.TWO_TAU` = '
       f'{fz["constants"]["TWO_TAU"]!r} EUR.')
-    P('')
-    P('## [PLACEHOLDER: objective convention]')
-    P('')
     P('- Q: gross operational cost, contracted interface settlement excluded.')
     P(f'- frozen tables `objective_convention`: "{fz["objective_convention"]}"')
-    P('')
-    P('## [PLACEHOLDER: certification rule parameters]')
-    P('')
     P(f'- Stop rule: `settling_criterion_v6` (VERSION {SC6.VERSION}); P_MAX = {pmax[0]} cycles, read from '
       f'`{SPEC_V6_REL}` (every cell declares `settling_rule.p_max` = {pmax[0]}).')
     def _numeric(x):
@@ -882,13 +909,13 @@ def readme(g, version):
         for name, unit, dfn in s['columns']:
             P(f'| `{name}` | {unit} | {dfn} |')
     P('')
-    P('## [EXPERT PROSE PLACEHOLDER: figures of Appendices B-D]')
+    P('## Profiles: the base profiles of the case files')
     P('')
-    P('The Appendix B-D figures plot the mean and standard deviation over synthetic scenarios that production samples '
-      'from these base profiles (network_data.generate_*_profiles, shared_resources_planning._generate_market_price_'
-      'scenarios); the supplement carries the base profiles of the case files, not the plotted curves.')
+    P('The profile files carry the base profiles stored in the case files, not scenario curves: production samples the '
+      'synthetic scenarios from these base profiles (network_data.generate_*_profiles, shared_resources_planning._'
+      'generate_market_price_scenarios), and the supplement does not carry the sampled curves.')
     P('')
-    return ('\n'.join(L) + '\n').encode('utf-8')
+    return prose + ('\n'.join(L) + '\n').encode('utf-8'), _sha_bytes(prose)
 
 
 # ======================================================================================================================
@@ -911,11 +938,13 @@ def build_zip(members):
 #  main
 # ======================================================================================================================
 def resolve_out_dir(args):
+    scratch = None
     if args.out_dir:
-        od = os.path.abspath(args.out_dir)
-        if od == REPO or od.startswith(REPO + os.sep):
+        scratch = os.path.abspath(args.out_dir)
+        if scratch == REPO or scratch.startswith(REPO + os.sep):
             raise SystemExit('refused: --out-dir must be outside the repository (scratch copies only)')
-        return od, 1, None, False
+        if not args.force_new_version:
+            return scratch, 1, None, False
     canon = os.path.join(REPO, CANONICAL_DIR)
     if not args.force_new_version:
         return canon, 1, None, True
@@ -933,18 +962,20 @@ def resolve_out_dir(args):
     v = prev_v + 1
     with open(prev_rec, encoding='utf-8') as h:
         prev = json.load(h)
-    return os.path.join(REPO, MR, f'supplement_v{v}'), v, {'version': prev_v, 'record': os.path.relpath(prev_rec, REPO),
-                                                          'zip': prev['zip']['name'], 'zip_sha256': prev['zip']['sha256']}, True
+    pred = {'version': prev_v, 'record': os.path.relpath(prev_rec, REPO), 'zip': prev['zip']['name'],
+            'zip_sha256': prev['zip']['sha256']}
+    if scratch:     # --out-dir with --force-new-version: the next version's bytes, written to scratch (determinism)
+        return scratch, v, pred, False
+    return os.path.join(REPO, MR, f'supplement_v{v}'), v, pred, True
 
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__.split('\n')[0])
-    ap.add_argument('--out-dir', help='scratch output directory OUTSIDE the repository (determinism checks)')
+    ap.add_argument('--out-dir', help='scratch output directory OUTSIDE the repository (determinism checks); with '
+                                      '--force-new-version it writes the next version\'s bytes there instead')
     ap.add_argument('--force-new-version', action='store_true',
                     help='write the next version into manuscript_review/supplement_v<N>/ (never overwrites)')
     args = ap.parse_args()
-    if args.out_dir and args.force_new_version:
-        raise SystemExit('refused: --out-dir and --force-new-version are exclusive')
     copies = other_copies('gen_supplement.py')
     if copies:
         _log(f'refused: another copy is running: {copies}')
@@ -957,7 +988,8 @@ def main():
                  '(use --force-new-version for a new version)')
             return 1
     inputs = [GEN_REL, APPX_REL, FZ_REL, SPEC_V6_REL, 'settling_criterion_v6.py', 'settling_criterion_v5.py',
-              'shared_resources_planning.py', 'network_data.py'] + [os.path.join(EXPORT_DIR, f) for f in EXPORT_FILES]
+              'shared_resources_planning.py', 'network_data.py', README_PROSE_REL] \
+        + [os.path.join(EXPORT_DIR, f) for f in EXPORT_FILES]
     if canonical:
         dirty = [f for f in inputs + [SCRIPT_REL] if not _committed_clean(f)]
         if dirty:
@@ -979,14 +1011,17 @@ def main():
         header = [c[0] for c in COLUMN_SPECS[name]['columns']]
         members[name] = csv_bytes(header, tables[name])
         _log(f'{name}: {len(tables[name])} rows x {len(header)} columns')
-    members['README_PLACEHOLDER.md'] = readme(g, version)
+    members[README_NAME], prose_sha = readme(g, version)
     sums = ''.join(f'{_sha_bytes(members[n])}  {n}\n' for n in sorted(members))
     members['SHA256SUMS.txt'] = sums.encode('utf-8')
     zbytes = build_zip(members)
     zsha = _sha_bytes(zbytes)
     zname = f'{NAME_STEM}_v{version}_{zsha[:8]}.zip'
     record = {
-        'stage': 'W188 (b) supplement generator (Addendum 89 ruling 8)',
+        'stage': 'W188 (b) supplement generator (Addendum 89 ruling 8); W189a v2 (Addendum 90 ruling 7)',
+        'readme': {'entry': README_NAME, 'prose_prepended': README_PROSE_REL, 'prose_sha256': prose_sha,
+                   'prose_committed_clean': _committed_clean(README_PROSE_REL)},
+        'res_capacity_years': list(RES_YEARS),
         'version': version, 'predecessor': predecessor,
         'zip': {'name': zname, 'sha256': zsha, 'bytes': len(zbytes), 'compression': 'ZIP_STORED',
                 'entry_date_time': list(ZIP_DATE), 'entry_mode': oct(ZIP_MODE >> 16), 'entries_sorted': True},

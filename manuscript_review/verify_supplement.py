@@ -20,12 +20,26 @@ It reads the zip (never the generator's code) and checks:
   V5 Appendices B-D against the CASE FILES, read here with an independent reader (openpyxl for the xlsx, json for the
      network files): every cell equal (numbers exactly, as floats), every source row present.
   V6 Appendices B-D against the printed tables of Appendices C-D in main.tex at a87e195, at the printed rounding.
-  V7 the README placeholder: per file, its column table = the CSV header; the marked placeholders present; tau.
+  V7 the README: per file, its column table = the CSV header; tau. Version 1: README_PLACEHOLDER.md with its marked
+     placeholders. Version >= 2 (Addendum 90 ruling 7 (iv)): README.md begins with the committed expert prose
+     manuscript_review/supplement/supplement_README_prose_v1.md byte for byte, its sha256 = the record's, no
+     README_PLACEHOLDER.md entry and no placeholder mark anywhere.
+  V8 (version >= 2; Addendum 90 ruling 7 (iii)) the RES-capacity CSVs reproduce the paper's Table 2
+     (tab:res_capacity_summary, main.tex at a87e195 and the round-9b review copy): per network and technology, the sum
+     of capacity_2025/2030/2035 equals the printed aggregate; and the sentence beside it (2025 also in 2028, 2030 in
+     2031 and 2034, 2035 in 2037) holds generator by generator.
+  V9 (version >= 2) every entry against the predecessor zip named in the record (its sha256 checked): the entries that
+     differ must be exactly the declared ones (README, the two RES CSVs, SHA256SUMS.txt); each RES CSV restricted to
+     the predecessor's columns equals the predecessor's bytes; every other entry byte-identical (D_ieee33_tn_connection
+     .csv named explicitly).
+  V5 checks every capacity column of the RES CSVs (v2: all seven case years) against the case files, and that the
+  capacity columns are exactly the expected years.
   Negative controls, in memory only: an altered cell of each kind must be caught where it was altered.
 Guards: SolveProfileGuard(permitted=()) before any project import, pickle.load / loads blocked; both verified at 0.
 Outputs (opened 'x', never overwritten): verify_supplement_v<N>_result.json (gate_result_io) and a summary on stdout.
     /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python -u manuscript_review/verify_supplement.py \\
         > manuscript_review/supplement/verify_launch.log 2>&1
+    version 2: add --supplement-dir manuscript_review/supplement_v2 and write supplement_v2/verify_launch.log
 Exit: 0 = every check holds; 3 = a check failed (listed); 1 = precondition or guard fault.
 """
 import argparse
@@ -85,6 +99,22 @@ E24_DECLARED_OVER_BUDGET = [39, 6]     # W183h finding 1: E.24 prints these over
 DATA = os.path.join('data', 'SRP1')
 ADNS = (('case33_1', 5), ('case33_2', 7), ('case33_3', 9))
 PRINTED_YEARS = (2025, 2028, 2031, 2034, 2037)
+CAP_YEARS_BY_VERSION = {1: PRINTED_YEARS}          # version >= 2: every case year (Addendum 90 ruling 7 (iii))
+CAP_YEARS_V2 = (2025, 2028, 2030, 2031, 2034, 2035, 2037)
+TABLE2_LABEL = 'tab:res_capacity_summary'
+TABLE2_YEARS = ('2025', '2030', '2035')
+TABLE2_SENTENCE = ('the 2025 capacities also apply in 2028, the 2030 capacities apply in 2031 and 2034, and the 2035 '
+                   'capacities apply in 2037')
+ROUND9B_COPY = os.path.join(MR, 'main_a87e195_round9b.tex')
+README_PROSE_REL = os.path.join(MR, 'supplement', 'supplement_README_prose_v1.md')
+V9_DECLARED = {'changed': ['SHA256SUMS.txt', 'appendices_B_D/C_tn_res_generators.csv',
+                           'appendices_B_D/D_adn_res_generators.csv'],
+               'added': ['README.md'], 'removed': ['README_PLACEHOLDER.md']}
+STATE = {'cap_years': PRINTED_YEARS}
+
+
+def cap_years(version):
+    return CAP_YEARS_BY_VERSION.get(version, CAP_YEARS_V2)
 TYPE_CODE = {'Wind': 'WIND', 'Solar PV': 'PV'}
 BUS_LABEL = {'Ref.': 3, 'PQ': 1}
 FAILS = []
@@ -492,14 +522,19 @@ def v5_case_files(BD):
             'Pg', 3, ['gen_type', 'season', 'scenario'])
 
     def res_gens(fname, rows, net):
-        js = {y: jload(os.path.join(DATA, net, f'{net}_{y}.json')) for y in PRINTED_YEARS}
+        years = STATE['cap_years']
+        js = {y: jload(os.path.join(DATA, net, f'{net}_{y}.json')) for y in years}
         src_ids = [g['gen_id'] for g in js[2025]['generators'] if g['type'] in ('WIND', 'PV')]
         if [int(r['generator_id']) for r in rows] != src_ids:
             C.bad.append({'where': f'{fname} {net}', 'ids': [[r['generator_id'] for r in rows], src_ids]})
             return
+        caps = [k for k in rows[0] if k.startswith('capacity_')]
+        if caps != [f'capacity_{y}_MW' for y in years]:
+            C.bad.append({'where': f'{fname} {net} capacity columns', 'got': caps, 'expected_years': list(years)})
+            return
         for r in rows:
             C.rows += 1
-            for y in PRINTED_YEARS:
+            for y in years:
                 g = next(g for g in js[y]['generators'] if g['gen_id'] == int(r['generator_id']))
                 C.num(f'{fname} {net} gen {r["generator_id"]} {y}', r[f'capacity_{y}_MW'], g['Pmax'])
                 C.num(f'{fname} {net} gen {r["generator_id"]} node {y}', r['node_id'], g['bus'])
@@ -697,18 +732,156 @@ def v6_printed(BD, lines):
 # ======================================================================================================================
 #  V7: README placeholder
 # ======================================================================================================================
-def v7_readme(members):
-    rd = members['README_PLACEHOLDER.md'].decode('utf-8')
+def v7_readme(members, version=1, rec=None):
+    name = 'README_PLACEHOLDER.md' if version == 1 else 'README.md'
+    if name not in members:
+        return {'entry': name, 'holds': False, 'problem': f'{name} absent'}
+    rd = members[name].decode('utf-8')
     sections = re.split(r'^### `([^`]+)`$', rd, flags=re.M)
     cols = {sections[i]: re.findall(r'^\| `([^`]+)` \|', sections[i + 1], flags=re.M) for i in range(1, len(sections), 2)}
     csvs = {n: read_csv(b)[0] for n, b in members.items() if n.endswith('.csv')}
     probs = [n for n in csvs if cols.get(n) != csvs[n]] + [n for n in cols if n not in csvs]
-    marks = ['[EXPERT PROSE PLACEHOLDER', '[PLACEHOLDER: tau]', '[PLACEHOLDER: objective convention]',
-             '[PLACEHOLDER: certification rule parameters]',
-             'Q: gross operational cost, contracted interface settlement excluded.', repr(SC6.TAU)]
-    missing = [m for m in marks if m not in rd]
-    return {'files_with_column_table': len(cols), 'csv_files': len(csvs), 'header_mismatches': probs,
-            'placeholders_missing': missing, 'holds': not probs and not missing}
+    out = {'entry': name, 'files_with_column_table': len(cols), 'csv_files': len(csvs), 'header_mismatches': probs}
+    if version == 1:
+        marks = ['[EXPERT PROSE PLACEHOLDER', '[PLACEHOLDER: tau]', '[PLACEHOLDER: objective convention]',
+                 '[PLACEHOLDER: certification rule parameters]',
+                 'Q: gross operational cost, contracted interface settlement excluded.', repr(SC6.TAU)]
+        missing = [m for m in marks if m not in rd]
+        out.update({'placeholders_missing': missing, 'holds': not probs and not missing})
+        return out
+    with open(os.path.join(REPO, README_PROSE_REL), 'rb') as h:
+        prose = h.read()
+    committed = subprocess.run(['git', 'show', f'HEAD:{README_PROSE_REL}'], capture_output=True, cwd=REPO).stdout
+    rmeta = (rec or {}).get('readme', {})
+    required = ['Q: gross operational cost, contracted interface settlement excluded.', repr(SC6.TAU),
+                f'## Generated section (supplement version {version})']
+    missing = [m for m in required if m not in rd]
+    out.update({'prose_file': README_PROSE_REL, 'prose_sha256': _sha(prose), 'prose_equals_HEAD': prose == committed,
+                'record_prose_sha256': rmeta.get('prose_sha256'),
+                'record_prose_sha_equal': rmeta.get('prose_sha256') == _sha(prose),
+                'prose_prefix_equal': members[name][:len(prose)] == prose,
+                'placeholder_entry_absent': 'README_PLACEHOLDER.md' not in members,
+                'placeholder_marks_found': len(re.findall(r'PLACEHOLDER', rd)),
+                'generated_required_missing': missing})
+    out['holds'] = (not probs and out['prose_equals_HEAD'] and out['record_prose_sha_equal'] and out['prose_prefix_equal']
+                    and out['placeholder_entry_absent'] and out['placeholder_marks_found'] == 0 and not missing)
+    return out
+
+
+# ======================================================================================================================
+#  V8: the RES-capacity CSVs reproduce the paper's Table 2 (version >= 2)
+# ======================================================================================================================
+def v8_table2(BD, lines_by_source):
+    out = {'sources': {}, 'differences': [], 'cells_compared': 0}
+    C_rows, D_rows = BD['C_tn_res_generators.csv'], BD['D_adn_res_generators.csv']
+    tech = {'Wind': 'Wind', 'Solar PV': 'Solar PV'}
+
+    def total(net, tch, y):
+        rows = C_rows if net == 'TN' else [r for r in D_rows if r['adn_node'] == net]
+        return sum(float(r[f'capacity_{y}_MW']) for r in rows if r['type'] == tch), len([r for r in rows if r['type'] == tch])
+    for src, lines in lines_by_source.items():
+        i0, i1 = A.table_body(lines, TABLE2_LABEL, '\\end{tabular}')
+        body = lines[i0:i1]
+        hdr = [A.row_cells(ln) for ln in body if re.match(r'^\s*& & \d{4}', ln)]
+        mid = next(i for i, ln in enumerate(body) if ln.strip() == '\\midrule')
+        rows, net = [], None
+        for ln in body[mid + 1:]:
+            t = ln.strip()
+            if not t.endswith('\\\\') or t in ('\\midrule', '\\bottomrule'):
+                continue
+            c = A.row_cells(t)
+            if c[0]:
+                m = re.fullmatch(r'ADN at TN node~(\d)', c[0])
+                net = 'TN' if c[0] == 'TN' else (m.group(1) if m else None)
+            rows.append((net, c[1], c[2:]))
+        printed = []
+        for net_, tch, vals in rows:
+            for y, pv in zip(TABLE2_YEARS, vals):
+                out['cells_compared'] += 1
+                v, n = total(net_, tech.get(tch, tch), y)
+                ok = net_ is not None and n > 0 and A.at_print(pv, v)[0]
+                printed.append({'network': net_, 'technology': tch, 'year': y, 'printed': pv, 'supplement_sum': v,
+                                'generators': n, 'ok': ok})
+                if not ok:
+                    out['differences'].append({'source': src, 'network': net_, 'technology': tch, 'year': y,
+                                               'printed': pv, 'supplement_sum': v})
+        out['sources'][src] = {'header_years': hdr[0][2:] if hdr else None, 'rows': len(rows), 'cells': printed,
+                               'header_ok': bool(hdr) and hdr[0][2:] == list(TABLE2_YEARS), 'rows_ok': len(rows) == 8,
+                               'sentence_printed': any(TABLE2_SENTENCE in ln for ln in lines)}
+    viol = []
+    for fname, rows in (('C_tn_res_generators.csv', C_rows), ('D_adn_res_generators.csv', D_rows)):
+        for r in rows:
+            for a, bs in (('2025', ('2028',)), ('2030', ('2031', '2034')), ('2035', ('2037',))):
+                for b in bs:
+                    if float(r[f'capacity_{a}_MW']) != float(r[f'capacity_{b}_MW']):
+                        viol.append(f'{fname} {r.get("network", "case9")} gen {r["generator_id"]} {a} != {b}')
+    out['multi_scenario_sentence_violations'] = viol
+    out['holds'] = (not out['differences'] and not viol
+                    and all(v['header_ok'] and v['rows_ok'] and v['sentence_printed'] for v in out['sources'].values()))
+    return out
+
+
+# ======================================================================================================================
+#  V9: every entry against the predecessor zip (version >= 2)
+# ======================================================================================================================
+def csv_project(b, header):
+    """The CSV bytes restricted to the given columns, written as the generator writes (QUOTE_MINIMAL, '\\n')."""
+    rows = list(csv.reader(io.StringIO(b.decode('utf-8'))))
+    idx = [rows[0].index(h) for h in header]
+    buf = io.StringIO()
+    w = csv.writer(buf, lineterminator='\n', quoting=csv.QUOTE_MINIMAL)
+    for r in rows:
+        w.writerow([r[i] for i in idx])
+    return buf.getvalue().encode('utf-8')
+
+
+def load_predecessor(rec):
+    pred = rec.get('predecessor') or {}
+    zpath = os.path.join(REPO, os.path.dirname(pred['record']), pred['zip'])
+    with open(zpath, 'rb') as h:
+        zb = h.read()
+    with open(os.path.join(REPO, pred['record']), encoding='utf-8') as h:
+        prec = json.load(h)
+    z = zipfile.ZipFile(io.BytesIO(zb))
+    return pred, zpath, zb, prec, {n: z.read(n) for n in z.namelist()}
+
+
+def v9_predecessor(members, PRED):
+    pred, zpath, zb, prec, old = PRED
+    names = sorted(set(members) | set(old))
+    same = [n for n in names if n in members and n in old and members[n] == old[n]]
+    changed = [n for n in names if n in members and n in old and members[n] != old[n]]
+    added = [n for n in names if n in members and n not in old]
+    removed = [n for n in names if n not in members and n in old]
+    proj = {}
+    for n in ('appendices_B_D/C_tn_res_generators.csv', 'appendices_B_D/D_adn_res_generators.csv'):
+        if n in members and n in old:
+            oh = read_csv(old[n])[0]
+            nh = read_csv(members[n])[0]
+            try:
+                pb = csv_project(members[n], oh)
+                eq = pb == old[n]
+            except ValueError:
+                eq = False
+            proj[n] = {'predecessor_columns_retained_bytewise': eq, 'columns_added': [h for h in nh if h not in oh],
+                       'columns_removed': [h for h in oh if h not in nh],
+                       'column_order_kept': [h for h in nh if h in oh] == oh}
+    tn = 'appendices_B_D/D_ieee33_tn_connection.csv'
+    out = {'predecessor': pred, 'predecessor_zip_path': os.path.relpath(zpath, REPO), 'predecessor_zip_sha256': _sha(zb),
+           'predecessor_sha_equals_record': _sha(zb) == pred['zip_sha256'] == prec['zip']['sha256'],
+           'identical': same, 'changed': changed, 'added': added, 'removed': removed,
+           'declared': V9_DECLARED, 'res_projection': proj,
+           'entry_sha256': {n: {'predecessor': _sha(old[n]) if n in old else None,
+                                'this': _sha(members[n]) if n in members else None} for n in names},
+           'tn_connection_identical': tn in same,
+           'tn_connection_sha256': _sha(members[tn]) if tn in members else None}
+    out['holds'] = (out['predecessor_sha_equals_record'] and changed == V9_DECLARED['changed']
+                    and added == V9_DECLARED['added'] and removed == V9_DECLARED['removed']
+                    and out['tn_connection_identical']
+                    and all(p['predecessor_columns_retained_bytewise'] and p['column_order_kept']
+                            and p['columns_added'] == ['capacity_2030_MW', 'capacity_2035_MW']
+                            and not p['columns_removed'] for p in proj.values()) and len(proj) == 2)
+    return out
 
 
 # ======================================================================================================================
@@ -719,7 +892,7 @@ def _bump(s, step):
     return f'{float(s) + step:.{dp}f}'
 
 
-def controls(E, BD, FZ, main_lines, w182d, sdir):
+def controls(E, BD, FZ, main_lines, w182d, sdir, members=None, version=1, rec=None, T2LINES=None, PRED=None):
     out = []
 
     def bad_keys(v):
@@ -800,6 +973,58 @@ def controls(E, BD, FZ, main_lines, w182d, sdir):
     caught = any('zip sha256 differs' in p for p in probs)
     out.append({'id': 'C15', 'edit': 'one byte of the zip flipped', 'got': probs[:5], 'caught_exactly': caught})
     _ok(caught, f'control C15: zip byte flip -> {probs[:3]}')
+    if version < 2:
+        return out
+    # version >= 2 (Addendum 90 ruling 7): the new year columns, the README prose, the predecessor diff
+    def v58(_E2, BD2):
+        return [[d['where'] for d in v5_case_files(BD2)['differences']],
+                [(d['source'], d['network'], d['technology'], d['year']) for d in v8_table2(BD2, T2LINES)['differences']]]
+    ctl('C16', 'TN gen 4 capacity_2030_MW 30 -> 31', lambda E2, B2: at(B2['C_tn_res_generators.csv'], 'generator_id', '4').update(
+        capacity_2030_MW='31'), (v58, [['C_tn_res_generators.csv case9 gen 4 2030'],
+                                       [(src, 'TN', 'Wind', '2030') for src in T2LINES]]))
+    ctl('C17', 'ADN node 9 gen 5 capacity_2035_MW 40.0 -> 40.5 (V5 only: Table 2 prints 120 for 120.5)',
+        lambda E2, B2: next(r for r in B2['D_adn_res_generators.csv'] if r['adn_node'] == '9' and r['generator_id'] == '5').update(
+            capacity_2035_MW='40.5'), (v58, [['D_adn_res_generators.csv case33_3 gen 5 2035'], []]))
+
+    def v5cols(_E2, BD2):
+        return [d['where'] for d in v5_case_files(BD2)['differences']]
+
+    def drop35(_E2, B2):
+        for r in B2['D_adn_res_generators.csv']:
+            r.pop('capacity_2035_MW')
+    ctl('C18', 'capacity_2035_MW column dropped from D_adn_res_generators.csv', drop35,
+        (v5cols, [f'D_adn_res_generators.csv {n} capacity columns' for n, _k in ADNS]))
+
+    def mem_ctl(cid, desc, edit, fn, expect):
+        m2 = dict(members)
+        edit(m2)
+        got = fn(m2)
+        caught = got == expect
+        out.append({'id': cid, 'edit': desc, 'got': got, 'expected': expect, 'caught_exactly': caught})
+        _ok(caught, f'control {cid}: {desc} -> {got}')
+
+    def flip_prose(m2):
+        b = bytearray(m2['README.md'])
+        i = b.index('Peças'.encode('utf-8'))
+        b[i] = ord('p')
+        m2['README.md'] = bytes(b)
+    mem_ctl('C19', 'README.md: one byte of the prose changed', flip_prose,
+            lambda m2: [k for k in ('prose_prefix_equal',) if not v7_readme(m2, version, rec)[k]] + [v7_readme(m2, version, rec)['holds']],
+            ['prose_prefix_equal', False])
+
+    def tn250(m2):
+        m2['appendices_B_D/D_ieee33_tn_connection.csv'] = m2['appendices_B_D/D_ieee33_tn_connection.csv'].replace(
+            b'7,case33_2,1,1,100,-100,100,-100,', b'7,case33_2,1,1,250,-250,250,-250,')
+    mem_ctl('C20', 'D_ieee33_tn_connection.csv: node 7 set to the submitted +-250', tn250,
+            lambda m2: [v9_predecessor(m2, PRED)['changed'], v9_predecessor(m2, PRED)['tn_connection_identical']],
+            [sorted(V9_DECLARED['changed'] + ['appendices_B_D/D_ieee33_tn_connection.csv']), False])
+
+    def oldcol(m2):
+        n = 'appendices_B_D/C_tn_res_generators.csv'
+        m2[n] = m2[n].replace(b'\n5,6,Wind,40,40,', b'\n5,6,Wind,40,41,')
+    mem_ctl('C21', 'C_tn_res_generators.csv: a predecessor column (gen 5 capacity_2028_MW) changed', oldcol,
+            lambda m2: {k: v['predecessor_columns_retained_bytewise'] for k, v in v9_predecessor(m2, PRED)['res_projection'].items()},
+            {'appendices_B_D/C_tn_res_generators.csv': False, 'appendices_B_D/D_adn_res_generators.csv': True})
     return out
 
 
@@ -816,6 +1041,9 @@ def main():
     # V0
     zinfo, zprobs, members = check_zip(sdir)
     version = zinfo['record_version']
+    STATE['cap_years'] = cap_years(version)
+    with open(os.path.join(sdir, zinfo['record']), encoding='utf-8') as h:
+        rec = json.load(h)
     out_json = os.path.join(odir, f'verify_supplement_v{version}_result.json')
     if os.path.exists(out_json):
         _log(f'refused: {out_json} exists (never overwritten)')
@@ -880,11 +1108,35 @@ def main():
     _ok(v6['n_differences'] == 0, f'V6 Appendices C-D vs printed tables at a87e195: {v6["cells_compared"]} cells, '
                                   f'{v6["n_differences"]} differ {v6["differences"][:3]}; observations {v6["observations"]}')
     # V7
-    v7 = v7_readme(members)
-    _ok(v7['holds'], f'V7 README placeholder: {v7["files_with_column_table"]} column tables = {v7["csv_files"]} CSV '
-                     f'headers; placeholders missing {v7["placeholders_missing"]}')
+    v7 = v7_readme(members, version, rec)
+    if version == 1:
+        _ok(v7['holds'], f'V7 README placeholder: {v7["files_with_column_table"]} column tables = {v7["csv_files"]} CSV '
+                         f'headers; placeholders missing {v7["placeholders_missing"]}')
+    else:
+        _ok(v7['holds'], f'V7 README.md: {v7.get("files_with_column_table")} column tables = {v7.get("csv_files")} CSV '
+                         f'headers, mismatches {v7.get("header_mismatches")}; prose {README_PROSE_REL} sha256 '
+                         f'{str(v7.get("prose_sha256"))[:8]} = HEAD {v7.get("prose_equals_HEAD")} = record '
+                         f'{v7.get("record_prose_sha_equal")}, prepended byte for byte {v7.get("prose_prefix_equal")}; '
+                         f'README_PLACEHOLDER.md absent {v7.get("placeholder_entry_absent")}; PLACEHOLDER marks '
+                         f'{v7.get("placeholder_marks_found")}; generated items missing {v7.get("generated_required_missing")}')
+    v8 = v9 = T2LINES = PRED = None
+    if version >= 2:
+        with open(os.path.join(REPO, ROUND9B_COPY), 'rb') as h:
+            r9b = h.read()
+        T2LINES = {f'main.tex@{MAIN_REV[:7]}': main_lines, ROUND9B_COPY: r9b.decode('utf-8').split('\n')}
+        v8 = v8_table2(BD, T2LINES)
+        _ok(v8['holds'], f'V8 Table 2 ({TABLE2_LABEL}) from the RES CSVs: {v8["cells_compared"]} printed aggregates over '
+                         f'{list(v8["sources"])}, {len(v8["differences"])} differ {v8["differences"][:3]}; multi-scenario '
+                         f'sentence violations {v8["multi_scenario_sentence_violations"][:3]}')
+        PRED = load_predecessor(rec)
+        v9 = v9_predecessor(members, PRED)
+        _ok(v9['holds'], f'V9 vs predecessor {v9["predecessor"]["zip"]} (sha {v9["predecessor_zip_sha256"][:8]} = record '
+                         f'{v9["predecessor_sha_equals_record"]}): {len(v9["identical"])} identical, changed {v9["changed"]}, '
+                         f'added {v9["added"]}, removed {v9["removed"]}; RES CSVs keep the predecessor columns bytewise '
+                         f'{ {k.split("/")[1]: p["predecessor_columns_retained_bytewise"] for k, p in v9["res_projection"].items()} }; '
+                         f'D_ieee33_tn_connection.csv identical {v9["tn_connection_identical"]}')
     # controls
-    ctl = controls(E, BD, FZ, main_lines, w182d, sdir)
+    ctl = controls(E, BD, FZ, main_lines, w182d, sdir, members, version, rec, T2LINES, PRED)
     # guards
     g_fail = GUARD.verify(0) + A.GUARD.verify(0)
     _ok(not g_fail and not any(PICKLE_COUNTS.values()) and not any(A.PICKLE_COUNTS.values()),
@@ -892,7 +1144,8 @@ def main():
     result = {'stage': 'W188 (b) supplement verifier', 'supplement_dir': os.path.relpath(sdir, REPO),
               'zip': zinfo, 'zip_problems': zprobs, 'V1_frozen': {k: v for k, v in v1.items()},
               'V2_manuscript': v2, 'V3_budget': v3, 'V4_generator': v4, 'V5_case_files': v5, 'V6_printed': v6,
-              'V7_readme': v7, 'controls': ctl,
+              'V7_readme': v7, 'V8_table2': v8, 'V9_predecessor': v9, 'capacity_years_checked': list(STATE['cap_years']),
+              'controls': ctl, 'controls_all_caught': all(c['caught_exactly'] for c in ctl), 'n_controls': len(ctl),
               'guards': {'verifier': dict(GUARD.counts), 'w180a_module': dict(A.GUARD.counts), 'verify_0': g_fail,
                          'pickle': dict(PICKLE_COUNTS), 'pickle_w180a': dict(A.PICKLE_COUNTS)},
               'verifier_sha256': A._sha(os.path.join(MR, 'verify_supplement.py')),
