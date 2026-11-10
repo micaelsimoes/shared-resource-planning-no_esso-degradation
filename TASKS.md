@@ -9,10 +9,11 @@
 - [x] **W183i** (a)–(d) — done 2026-10-26: `299f6a4a`…`36af2aa9`, report `P5_15_W183I_REPORT.md` (`ec87c098`)
 - [x] **W184** (E3) — done 2026-10-26: `d7d4875e` / `bb4afafc` / `41cc3433`, report `P5_15_W184_REPORT.md` (`f1cada84`)
 - [x] **W185** (E2) — done 2026-10-26: cells `7311e0df`…`209a1af7`, diagnostics `333025d7`; report committed now (written 2026-10-27)
-- [ ] **▶ Addendum 89 ruling 2 claims** (Worker) — §4.4 sentence (X %, 12.2 %, four hours' share), W185 spread table, P1/P2 (recorded after the runs)
-- [ ] **▶ W188(a)** slack inventory (P5) · **▶ W188(b)** supplement generator · **▶ W188(c)** ruling-5 code reading (both heads) · **▶ W188(d)** operational figure data (Workers)
-- [ ] **▶ Pin check** (Worker, builds only) — current HEAD with `f6c23977`'s switches at defaults vs spec v1's NL/digests (evidence for re-pinning spec v1 → v1.1 before W187)
-- [ ] Planner: reports `P5_15_W183I_REPORT.md` (status section), `P5_15_W188_REPORT.md`; commit; push
+- [x] **Addendum 89 ruling 2 claims** — `5e0c2710` / `3baf0e77`: X 12.202 %, enabled 12.205 %, four hours 0.0225 % of the gap; P1 HELD, P2 HELD (recorded after the runs); spread 1× 1,573 €, 2× 1,453 €
+- [x] **W188(a)** `687c1a53`/`8ce38f88` P5 HELD on 20 certified rows (common −13.0 k€ relaxation offset; t11_3x3_unit not established; pb_y2025_n5 positive voltage slack) · **(b)** `5d7955da`/`958a658e` supplement verifier PASS (1,623 entries 0 MISMATCH; B–D 70,743 cells) · **(c)** `5d00d3bd`/`9bd9d66a` positive scaling only; 'rows of inactive cohorts' · **(d)** `d5cb6bbb`/`547167ed` E6 re-derived, SoC 2025/2035, SoH × 7
+- [x] **Pin check** — `09b3e3cf`: 696/696 blocks identical at HEAD (defaults); launcher would still refuse on head, 3 module hashes, 2 new P5.16 inputs
+- [x] Planner: `P5_15_W188_REPORT.md` (Decisions 1–6); Addendum 89 status section in `P5_15_W183I_REPORT.md`
+- [ ] **▶ Stopped for review:** W187 needs the spec-v1.1 ruling (decision 2; start by ≈ 11-20); G10 wording; §4.4 wording; TN-connection table (±100 at node 7); author: push, deadline date
 - [ ] **W187** (15-key 1× screen) — eligible (W185 reported before 2026-11-22) but **blocked by the spec v1 pins**: needs a ruling (re-pin after the pin check, or run from a `6f43479e` checkout)
 
 ## Realignment order (Addenda 87–88) — parked for the next paper (Addendum 89 decision 1)

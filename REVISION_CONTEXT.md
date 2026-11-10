@@ -67,6 +67,16 @@ section) — **stopped for review** before W184: the gate is passed under the ru
 E3/E2/cross needs a Step-7 hooks module + a harness router patch (validators accept only their own cells), which
 changes the harness pin of spec v1, and ruling 7's exact ρ check fails at ulp level on a correct run. No E3/E2 solve.
 
+## Current state (2026-11-10, Addendum 89 refocus)
+
+Revision completed on the frozen convention; realignment (Addenda 87–88, P5.16) parked. **W183i, W184 (E3) and W185
+(E2) ran on 2026-10-26 under spec v1** (production `6f43479e`) — reports `P5_15_W183I_REPORT.md`, `P5_15_W184_REPORT.md`,
+`P5_15_W185_REPORT.md`; Addendum 89's P1/P2 hold against those records (recorded after the runs). Production changed
+afterwards (`f6c23977`, defaults model-identical on 696/696 blocks) so spec v1's launchers refuse new launches; W187 needs a
+spec v1.1 ruling. W188 (a)–(d) done (`P5_15_W188_REPORT.md`): slacks at zero bound with a common −13.0 k€ relaxation
+offset; supplement generator + verifier PASS; complementarity = product form up to positive scaling; figure data ready.
+Overleaf `a87e195` (round 8). New manuscript mismatch: Appendix D TN-connection table ±250 vs ±100 at the node-7 ADN.
+
 ## Manuscript facts established from code and case files (W164–W167)
 
 - **Two horizons.** SRP1: 2025/2030/2035, 5-year blocks, one scenario. 3 × 3: 2025/2028/2031/2034/2037, 3-year blocks,

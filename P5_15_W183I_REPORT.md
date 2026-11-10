@@ -91,3 +91,26 @@ None before W184/W185. For Addendum 87 (before W186), from W183i (c):
 - **The E1 freeze and resumable `--run`** have not been exercised on real roots.
 - **The diagnostics read from the persisted pickle** have not been tested.
 - **The holder scan** covered git-tracked `data/*campaign_spec_*.json` only.
+
+---
+
+## Addendum 89 status (Planner, 2026-11-10; the sections above are unchanged since `ec87c098`)
+
+Addendum 89 orders W183i "as Addendum 86 (a)–(d), unchanged". It **ran on 2026-10-26** and is reported above. W184 and
+W185 followed the same day under spec v1, before Addendum 87's hold was drafted on 10-30:
+- W184: `P5_15_W184_REPORT.md`, `f1cada84`;
+- W185: `P5_15_W185_REPORT.md`, committed `f7c3f601`.
+
+**Spec v1 against HEAD (zero-solve re-check, 2026-11-10).** 157 of 160 pins still match the working tree. The three that
+differ are production modules changed by `f6c23977` (2026-10-31, P5.16 convention change):
+- `shared_energy_storage_data.py`;
+- `shared_energy_storage_parameters.py`;
+- `shared_resources_planning.py`.
+
+`f6c23977` also added two tracked inputs under `data/SRP1` (P5.16 files). With its switches at their defaults, the HEAD
+builds the same models as spec v1 on 696/696 blocks (`P5_15_PINCHECK_F6C23977.md`, `09b3e3cf`).
+
+**Consequences.**
+- (a), (b) and (d) **held** on 2026-10-26, and W184 was launched then on that basis. **No new W184 launch is needed.**
+- None is possible under spec v1 at HEAD: the launchers refuse on the changed pins.
+- A further launch (W187) needs the ruling in `P5_15_W188_REPORT.md`, decision 2.
