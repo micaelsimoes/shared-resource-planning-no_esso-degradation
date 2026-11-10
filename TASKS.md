@@ -1,5 +1,22 @@
 # TASKS — current order
 
+**Authority (2026-11-10):** `PLANNER_BRIEF_2026-09-13.md` Addendum 89 (refocus: revision completed on the frozen convention; realignment parked). Overleaf HEAD `a87e195` (main.tex md5 39f6fd86 = round 8). The realignment order below (Addenda 87–88) is parked for the next paper.
+
+## Addendum 89 order — state found by the Planner on 2026-11-10
+
+**Record found:** W183i (a)–(d), W184 (E3) and W185 (E2, 8/8) **already ran on 2026-10-26** under spec v1 (`frozen_step7_campaign_spec_v1_96345241.json`, production `6f43479e`), before Addendum 87's hold was written. `P5_15_W185_REPORT.md` was written then but its commit was cut off. Production then changed in `f6c23977` (2026-10-31, P5.16 convention change, "defaults bitwise"): 3 of spec v1's 160 pins differ, so the launchers refuse any new launch under spec v1. No re-run of W184/W185 is needed or possible under spec v1.
+
+- [x] **W183i** (a)–(d) — done 2026-10-26: `299f6a4a`…`36af2aa9`, report `P5_15_W183I_REPORT.md` (`ec87c098`)
+- [x] **W184** (E3) — done 2026-10-26: `d7d4875e` / `bb4afafc` / `41cc3433`, report `P5_15_W184_REPORT.md` (`f1cada84`)
+- [x] **W185** (E2) — done 2026-10-26: cells `7311e0df`…`209a1af7`, diagnostics `333025d7`; report committed now (written 2026-10-27)
+- [ ] **▶ Addendum 89 ruling 2 claims** (Worker) — §4.4 sentence (X %, 12.2 %, four hours' share), W185 spread table, P1/P2 (recorded after the runs)
+- [ ] **▶ W188(a)** slack inventory (P5) · **▶ W188(b)** supplement generator · **▶ W188(c)** ruling-5 code reading (both heads) · **▶ W188(d)** operational figure data (Workers)
+- [ ] **▶ Pin check** (Worker, builds only) — current HEAD with `f6c23977`'s switches at defaults vs spec v1's NL/digests (evidence for re-pinning spec v1 → v1.1 before W187)
+- [ ] Planner: reports `P5_15_W183I_REPORT.md` (status section), `P5_15_W188_REPORT.md`; commit; push
+- [ ] **W187** (15-key 1× screen) — eligible (W185 reported before 2026-11-22) but **blocked by the spec v1 pins**: needs a ruling (re-pin after the pin check, or run from a `6f43479e` checkout)
+
+## Realignment order (Addenda 87–88) — parked for the next paper (Addendum 89 decision 1)
+
 **Direction (author, 2026-10-30):** realignment per `REVISION_REALIGNMENT_ANALYSIS_2026-10-30.md` (v2); draft
 Addendum 87 `PLANNER_BRIEF_ADDENDUM87_DRAFT_2026-10-30.md` awaiting adoption. Until adopted, the Addendum 85/86
 order below stands but W184/W185 are **held** (Planner recommendation R6).
