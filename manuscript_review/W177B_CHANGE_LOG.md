@@ -246,6 +246,23 @@ Kept by the expert during the author's whole-document read (2026-10-09 onward); 
   prefixes, E.24 marks + legend, E.23 mark → `$^{s}$`, "break-even" wording at l. 1520/1806 and cover letter l. 19,
   the cover-letter paragraph; prediction-record bullet still the author's call (expert recommends dropping it).
   W183i ordered; W184/W185 re-authorized conditionally on W183i (a), (b), (d).
+- Author's decision (2026-10-26): the letter's prediction-record bullet (v10 l. 286, "The prediction record of the
+  revision (49 predictions, with outcomes) is provided as supplementary material") is **dropped** in letter v11
+  (round 9); the record stays internal (brief + change log). Addendum 86 forwarded to the Planner.
 - Still open: W183i; W184–W187 runs; round 9 (results text incl. the one-sentence B+ statement, the E6 figure, the
-  six wording items above, letter R2.5/R2.6/R3.6, cover-letter paragraph, marked copy); author's call on the
-  prediction-record bullet (letter l. 286).
+  six wording items above, the l. 286 bullet removed, letter R2.5/R2.6/R3.6, cover-letter paragraph, marked copy).
+- 2026-11-10 (expert): refocus analysis delivered — `manuscript_review/REFOCUS_ANALYSIS_2026-11-10.md` (also saved to the
+  Project). Overleaf HEAD verified `a87e195`, `main.tex` md5 `39f6fd86…` = `main_edd7a63_round8.tex`; repo `5696706f`.
+  Author's framing: hard deadline ≈ 4 weeks; Addendum 87 direction open; T0.2 still blocked. Recommendation: submit the
+  current manuscript + round 9 + a bounded set of additions (W184 NRF arm, W185 penalty pilot, optional 15-point
+  no-ageing screen, optional T0.2 tightness sentence; first-order characterization of a certified point; zero-capacity
+  conventions; one operational figure; Appendix E compacted with a machine-readable supplement); numbers freeze at
+  T − 10 days; the LB/UB realignment carried forward as the next paper. R8 ruled option (a) for the record. 18 findings
+  G1–G18, reviewer coverage matrix, predictions P1–P4 to be recorded in Addendum 89 once the author decides. No
+  manuscript, letter or brief file changed.
+- 2026-11-10 (expert): author decided not to withdraw; revision completed on the frozen convention; realignment parked as
+  the next paper. **Addendum 89** appended to the brief (rulings 1–8; W183i → W184 → W185 → W187 (conditional, by
+  11-22); W188 zero-solve support (slack inventory, supplement generator, code reading for the zero-capacity rows,
+  operational-figure data); W189/W190 audits; T0.2 optional on the Studio for one tightness sentence; predictions
+  P1–P5; freeze assumed 2026-11-28, deadline assumed 2026-12-08). Copy in `manuscript_review/ADDENDUM89_2026-11-10.md`
+  and the Project. Next expert deliverables: editor letter draft; round 9 = trimmed manuscript.
