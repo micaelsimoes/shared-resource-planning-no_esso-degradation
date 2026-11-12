@@ -187,14 +187,17 @@ V4_NAME_MAP = (
 # (a) entry matches and keeps the double quotes; the generated text writes "Sections S2-S3" with an ASCII hyphen (v4),
 # where the ruling writes "S2–S3", so the (c) entry matches the hyphen form. The replacement strings are the ruling's,
 # en dashes (U+2013) included. (d): the `table` column definitions ("E.20 or E.21", "E.20, E.22 or E.23") are untouched.
+# Three strings as re-ruled by the expert (2026-11-12, relayed by the author): "Case-data values" lower-case after the
+# semicolon; the capacity-column entry also consumes the leading "single-scenario year; " so the phrase appears once;
+# reported_start reads "mark b of Table S5: ..." (Table S5's mark b is the reported start, not the budget mark).
 V5_LABEL_RX = re.compile(r' \((?:fig|tab|app):[^()]*\)')
 V5_WORDING = (
     ('(Appendix E) printed "---"', '(evaluation-record files, Tables B.10, B.11 and S4–S6) printed "---"'),   # (a)
     ('Appendix E amounts', 'Evaluation-record amounts'),                                                         # (a)
-    ('Appendix B-D values', 'Case-data values (Sections S1–S3)'),                                            # (a)
-    ('not printed in Sections S2-S3', "the single-scenario years of the manuscript's Table 2; the remaining columns "
-                                      'are the multi-scenario years'),                                           # (c)
-    ('printed mark b of Table S5', 'the over-budget mark b of Table S5'),                                        # (c)
+    ('Appendix B-D values', 'case-data values (Sections S1–S3)'),                                            # (a)
+    ('single-scenario year; not printed in Sections S2-S3',
+     "the single-scenario years of the manuscript's Table 2; the remaining columns are the multi-scenario years"),  # (c)
+    ('printed mark b of Table S5', 'mark b of Table S5'),                                                         # (c)
     ('Table S6 itself prints no mark', 'Table S6 carries the mark in its over_budget column'),                   # (c)
 )
 

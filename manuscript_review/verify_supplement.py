@@ -159,15 +159,17 @@ V10_RESIDUE = (('Appendix E (bare)', r'Appendix E(?![.0-9])'), ('Appendix B-D', 
 # v5 (Amendment 2 to Addendum 91, ruling 1, written here from the ruling): (b) every parenthesised LaTeX label removed
 # with the space before it, then (a) and (c) as literal replacements. Nearest wording, as the ruling allows: the
 # generated text quotes "---" with double quotes (the ruling: '---') and writes "Sections S2-S3" with an ASCII hyphen
-# (the ruling: S2–S3); the replacement strings are the ruling's, en dashes included.
+# (the ruling: S2–S3); the replacement strings are the ruling's, en dashes included. Three strings as re-ruled by the
+# expert (2026-11-12): "case-data values" lower-case; the capacity-column entry consumes "single-scenario year; " so the
+# phrase appears once; reported_start reads "mark b of Table S5: ...".
 V10_V5_LABEL_RX = r' \((?:fig|tab|app):[^()]*\)'
 V10_V5_WORDING = (
     ('(Appendix E) printed "---"', '(evaluation-record files, Tables B.10, B.11 and S4–S6) printed "---"'),
     ('Appendix E amounts', 'Evaluation-record amounts'),
-    ('Appendix B-D values', 'Case-data values (Sections S1–S3)'),
-    ('not printed in Sections S2-S3',
+    ('Appendix B-D values', 'case-data values (Sections S1–S3)'),
+    ('single-scenario year; not printed in Sections S2-S3',
      "the single-scenario years of the manuscript's Table 2; the remaining columns are the multi-scenario years"),
-    ('printed mark b of Table S5', 'the over-budget mark b of Table S5'),
+    ('printed mark b of Table S5', 'mark b of Table S5'),
     ('Table S6 itself prints no mark', 'Table S6 carries the mark in its over_budget column'))
 V10_EDITS_BY_VERSION = {4: tuple(('lit', o, n) for o, n in V10_NAME_MAP),
                         5: (('rx', V10_V5_LABEL_RX, ''),) + tuple(('lit', o, n) for o, n in V10_V5_WORDING)}
