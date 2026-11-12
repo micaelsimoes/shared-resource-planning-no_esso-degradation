@@ -73,8 +73,9 @@ Submission inside the editorial window: upload 2026-11-19, numbers freeze 2026-1
 Round 9c pasted (`3c379fa`) and audited clean (W190a, `9a5a78b9`): identity = the expert's diffs, Appendix B is now
 generator output (`gen_appE.py --reduced`, bitwise, 218 lines), `verify_appE.py` 40 PASS, numbers 0 MISMATCH, letter
 v13 pointers 0 MISMATCH (W189's l. 285 B.8 → B.9 closed), blue on every changed line, numbering unchanged.
-Supplement v3 `e6f5ce6a` (README prose v2) verifies with 0 mismatches; its generated column descriptions still carry the
-`a87e195` table names (expert decision: v4 rewording). W187 (15-cell screen, spec v1.1) launched 13:29 UTC; P3 blind.
+Supplement **v4 `d175ea0e`** (Addendum 91 amendment: current table/section names, README prose v3) verifies with 0
+mismatches and is the submitted supplementary file; v3 `e6f5ce6a` is superseded. A few unmapped generated strings remain
+(expert's option, v5). W187 (15-cell screen, spec v1.1) launched 13:29 UTC; P3 blind.
 Next: W187 report; round 10; W190 final audit and submission-set check. Planner report `P5_15_A91_STATUS_REPORT.md`.
 
 ## Previous state (Addendum 90; W189 at Overleaf `46c9d77`, round 9b)
