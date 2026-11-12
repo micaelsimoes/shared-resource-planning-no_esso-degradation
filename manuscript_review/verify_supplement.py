@@ -23,7 +23,7 @@ It reads the zip (never the generator's code) and checks:
   V7 the README: per file, its column table = the CSV header; tau. Version 1: README_PLACEHOLDER.md with its marked
      placeholders. Version >= 2 (Addendum 90 ruling 7 (iv)): README.md begins with the committed expert prose
      manuscript_review/supplement/supplement_README_prose_v1.md (v2; prose _v2.md for v3, Addendum 91 ruling 3;
-     prose _v3.md from v4 on, Addendum 91 amendment) byte for byte, its sha256 and path = the record's, no
+     prose _v3.md from v4 on, v5 included, Addendum 91 amendment) byte for byte, its sha256 and path = the record's, no
      README_PLACEHOLDER.md entry and no placeholder mark anywhere.
   V8 (version >= 2; Addendum 90 ruling 7 (iii)) the RES-capacity CSVs reproduce the paper's Table 2
      (tab:res_capacity_summary, main.tex at a87e195 and the round-9b review copy): per network and technology, the sum
@@ -31,7 +31,7 @@ It reads the zip (never the generator's code) and checks:
      2031 and 2034, 2035 in 2037) holds generator by generator.
   V9 (version >= 2) every entry against the predecessor zip named in the record (its sha256 checked): the entries that
      differ must be exactly the declared ones (v2: README, the two RES CSVs, SHA256SUMS.txt; v3 and v4: README.md and
-     SHA256SUMS.txt only, V9_DECLARED_BY_VERSION); each RES CSV restricted to
+     SHA256SUMS.txt only; v5 likewise, V9_DECLARED_BY_VERSION); each RES CSV restricted to
      the predecessor's columns equals the predecessor's bytes; every other entry byte-identical (D_ieee33_tn_connection
      .csv named explicitly).
   V5 checks every capacity column of the RES CSVs (v2: all seven case years) against the case files, and that the
@@ -47,7 +47,12 @@ It reads the zip (never the generator's code) and checks:
      carries; Table B.10 / B.11, Fig. B.9 and Appendix B.2-B.4 must be the numbers of tab:appE_claims,
      tab:appE_neighbours, fig:investment_lattice and app:results_claims / _neighbours / _statistics; every A.n / B.n
      name in README.md must exist with its kind; S1-S6 must each be referenced in main.tex, and README.md names no
-     other S-number.
+     other S-number. Version >= 5: also Table 2 = tab:res_capacity_summary (the new wording names it).
+  Version 5 (W189a-v5, Amendment 2 to Addendum 91, ruling 1): V7 reads prose v3 (as v4); V9 declares README.md and
+     SHA256SUMS.txt only; V10 rebuilds v5's README from v4's with the heading and the ruling-1 edits
+     (V10_EDITS_BY_VERSION[5], written here from the ruling); V12 (new, version >= 5): no '(fig:', '(tab:', '(app:',
+     bare label, 'Appendix E' or 'Appendix B-D' in the generated half (CSV identifiers masked), the V10 stale patterns
+     0, and no punctuation artefact beyond the predecessor's. Controls C23-C25 (v >= 5) are V12's negative controls.
   Negative controls, in memory only: an altered cell of each kind must be caught where it was altered.
 Guards: SolveProfileGuard(permitted=()) before any project import, pickle.load / loads blocked; both verified at 0.
 Outputs (opened 'x', never overwritten): verify_supplement_v<N>_result.json (gate_result_io) and a summary on stdout.
@@ -130,9 +135,11 @@ V9_DECLARED = {'changed': ['SHA256SUMS.txt', 'appendices_B_D/C_tn_res_generators
 # 91 ruling 3): only the README prose changes, so README.md and SHA256SUMS.txt differ and the RES CSVs are identical.
 # v4 (W189a-v4, Addendum 91 amendment): README prose v3 and the round-9c names in the generated descriptions; no CSV
 # changes, so again README.md and SHA256SUMS.txt only.
+# v5 (W189a-v5, Amendment 2 to Addendum 91, ruling 1): the description wording only, again README.md and SHA256SUMS.txt.
 V9_DECLARED_BY_VERSION = {2: V9_DECLARED, 3: {'changed': ['README.md', 'SHA256SUMS.txt'], 'added': [], 'removed': []},
-                          4: {'changed': ['README.md', 'SHA256SUMS.txt'], 'added': [], 'removed': []}}
-V9_RES_COLUMNS_ADDED_BY_VERSION = {2: ['capacity_2030_MW', 'capacity_2035_MW'], 3: [], 4: []}
+                          4: {'changed': ['README.md', 'SHA256SUMS.txt'], 'added': [], 'removed': []},
+                          5: {'changed': ['README.md', 'SHA256SUMS.txt'], 'added': [], 'removed': []}}
+V9_RES_COLUMNS_ADDED_BY_VERSION = {2: ['capacity_2030_MW', 'capacity_2035_MW'], 3: [], 4: [], 5: []}
 # V10: the Addendum 91 amendment's mapping, written here from the amendment's table (not imported from the generator),
 # applied in this order to the predecessor's generated README half; the two plural phrases first.
 V10_NAME_MAP = (
@@ -148,11 +155,37 @@ V10_STALE = (('Table E.2x', r'Tables? E\.2\d'), ('Appendix E.', r'Appendix E\.')
 V10_MASK = r'[A-Za-z0-9_./<>*-]*\.csv|appendices_B_D/|appendix_E/'     # CSV file-name identifiers, excluded
 V10_RESIDUE = (('Appendix E (bare)', r'Appendix E(?![.0-9])'), ('Appendix B-D', r'Appendix B-D'),
                ('E.2x value', r'(?<![A-Za-z.])E\.2\d'))    # recorded (not failed): names the mapping does not cover
+# V10 from v5 on: the edits that rebuild version N's generated half from version N-1's. v4: the amendment's mapping.
+# v5 (Amendment 2 to Addendum 91, ruling 1, written here from the ruling): (b) every parenthesised LaTeX label removed
+# with the space before it, then (a) and (c) as literal replacements. Nearest wording, as the ruling allows: the
+# generated text quotes "---" with double quotes (the ruling: '---') and writes "Sections S2-S3" with an ASCII hyphen
+# (the ruling: S2–S3); the replacement strings are the ruling's, en dashes included.
+V10_V5_LABEL_RX = r' \((?:fig|tab|app):[^()]*\)'
+V10_V5_WORDING = (
+    ('(Appendix E) printed "---"', '(evaluation-record files, Tables B.10, B.11 and S4–S6) printed "---"'),
+    ('Appendix E amounts', 'Evaluation-record amounts'),
+    ('Appendix B-D values', 'Case-data values (Sections S1–S3)'),
+    ('not printed in Sections S2-S3',
+     "the single-scenario years of the manuscript's Table 2; the remaining columns are the multi-scenario years"),
+    ('printed mark b of Table S5', 'the over-budget mark b of Table S5'),
+    ('Table S6 itself prints no mark', 'Table S6 carries the mark in its over_budget column'))
+V10_EDITS_BY_VERSION = {4: tuple(('lit', o, n) for o, n in V10_NAME_MAP),
+                        5: (('rx', V10_V5_LABEL_RX, ''),) + tuple(('lit', o, n) for o, n in V10_V5_WORDING)}
+# V12 (version >= 5; Amendment 2 ruling 1): in the generated half, CSV identifiers masked (V10_MASK), none of these may
+# remain; the V10 stale patterns stay 0; and the punctuation artefacts below (counted on the UNMASKED generated half)
+# must not exceed the predecessor's counts (no double space or orphaned punctuation left by the label removal).
+V12_ABSENT = (('(fig:', r'\(fig:'), ('(tab:', r'\(tab:'), ('(app:', r'\(app:'),
+              ('label without parentheses', r'(?<![A-Za-z0-9_])(?:fig|tab|app):[A-Za-z]'),
+              ('Appendix E', r'Appendix E'), ('Appendix B-D', r'Appendix B-D'))
+V12_ARTEFACTS = (('double space', r'(?<=[^|\s])  +(?=[^|\s])'), ('space before punctuation', r' [,.;:)]'),
+                 ('( followed by space', r'\( '), ('empty ()', r'\(\)'), ('doubled punctuation', r'[,;:]\s*[,;:]|\.\s*\.(?!\.)'),
+                 ('line-leading punctuation', r'(?m)^[,;:.)]'), ('trailing space', r'(?m)[^|] +$'))
 MAIN9C_REV = '3c379fa44f3755dbdc6fd540df566b55527d921c'      # Overleaf round 9c (= manuscript_review/main_46c9d77_round9c.tex)
 MAIN9C_SHA = 'b13b390e31331abd8a45dd677dd453e336c58b9d63a6a7762bda4681bb8508fc'
 V11_EXPECTED = {'Table B.10': 'tab:appE_claims', 'Table B.11': 'tab:appE_neighbours', 'Fig. B.9': 'fig:investment_lattice',
                 'Appendix B.2': 'app:results_claims', 'Appendix B.3': 'app:results_neighbours',
                 'Appendix B.4': 'app:results_statistics'}
+V11_EXPECTED_V5 = {'Table 2': 'tab:res_capacity_summary'}   # v5's new wording names "the manuscript's Table 2"
 VERIFY_APPE_PASS = 40   # verify_appE.py at 441722c9 (Addendum 91: + 7 reduced-mode checks); 33 at 80778c12
 STATE = {'cap_years': PRINTED_YEARS}
 
@@ -963,9 +996,13 @@ def v10_names(members, PRED, version):
     hits = []
     exp = ogen.replace(h_old, h_new) if ogen.count(h_old) == 1 else None
     if exp is not None:
-        for o, n in V10_NAME_MAP:
-            hits.append([o, n, exp.count(o)])
-            exp = exp.replace(o, n)
+        for kind, o, n in V10_EDITS_BY_VERSION[version]:
+            if kind == 'rx':
+                hits.append([o, n, len(re.findall(o, exp))])
+                exp = re.sub(o, n, exp)
+            else:
+                hits.append([o, n, exp.count(o)])
+                exp = exp.replace(o, n)
     expected = prose + exp.encode('utf-8') if exp is not None else None
     out = {'prose_file': readme_prose_rel(version), 'generated_half_bytes': len(gen.encode('utf-8')),
            'csv_identifiers_masked': n_masked, 'stale_names': stale, 'stale_total': sum(stale.values()),
@@ -978,6 +1015,31 @@ def v10_names(members, PRED, version):
                                             min(len(expected), len(rd))))}
     out['holds'] = (rd.startswith(prose) and out['stale_total'] == 0 and out['predecessor_prose_prefix_equal']
                     and out['readme_equals_predecessor_mapped'])
+    return out
+
+
+def _generated_half(rd, prose):
+    return (rd[len(prose):] if rd.startswith(prose) else rd).decode('utf-8')
+
+
+def v12_wording(members, PRED, version):
+    """Version >= 5 (Amendment 2 to Addendum 91, ruling 1): no LaTeX label, no 'Appendix E' and no 'Appendix B-D' in the
+    generated half (CSV identifiers masked), the V10 stale patterns at 0, and no punctuation artefact beyond the
+    predecessor's (counted unmasked)."""
+    prose = _prose(version)
+    gen = _generated_half(members['README.md'], prose)
+    masked, n_masked = re.subn(V10_MASK, '', gen)
+    absent = {k: len(re.findall(rx, masked)) for k, rx in V12_ABSENT}
+    stale = {k: len(re.findall(rx, masked)) for k, rx in V10_STALE}
+    pred, _zp, _zb, _prec, old = PRED
+    ogen = _generated_half(old['README.md'], _prose(pred['version']))
+    art = {k: len(re.findall(rx, gen)) for k, rx in V12_ARTEFACTS}
+    oart = {k: len(re.findall(rx, ogen)) for k, rx in V12_ARTEFACTS}
+    out = {'csv_identifiers_masked': n_masked, 'absent_counts': absent, 'stale_names': stale,
+           'artefacts': art, 'artefacts_predecessor': oart,
+           'artefacts_new': {k: art[k] - oart[k] for k in art if art[k] > oart[k]},
+           'predecessor_absent_counts': {k: len(re.findall(rx, re.sub(V10_MASK, '', ogen))) for k, rx in V12_ABSENT}}
+    out['holds'] = (not any(absent.values()) and not any(stale.values()) and not out['artefacts_new'])
     return out
 
 
@@ -1022,15 +1084,16 @@ def tex_numbering(text):
     return labels, body
 
 
-def v11_main9c(members, main9c_b):
+def v11_main9c(members, main9c_b, version=4):
     labels, body = tex_numbering(main9c_b.decode('utf-8'))
     rd = members['README.md'].decode('utf-8')
     by_kind = {}
     for _lab, (kind, num) in labels.items():
         by_kind.setdefault(kind, set()).add(num)
+    names = dict(V11_EXPECTED, **(V11_EXPECTED_V5 if version >= 5 else {}))
     expected = {name: {'label': lab, 'computed': labels.get(lab), 'holds': labels.get(lab) == (
         {'Table': 'table', 'Fig.': 'figure', 'Appendix': 'section'}[name.split()[0]], name.split()[1])}
-        for name, lab in V11_EXPECTED.items()}
+        for name, lab in names.items()}
     kind_of = {'Table': 'table', 'Tables': 'table', 'Fig.': 'figure', 'Appendix': 'section', 'Section': 'section'}
     typed = sorted(set(re.findall(r'(Tables?|Fig\.|Appendix|Section) ([AB]\.\d+)(?![0-9])', rd)))
     typed_bad = [f'{k} {n}' for k, n in typed if n not in by_kind.get(kind_of[k], set())]
@@ -1196,12 +1259,41 @@ def controls(E, BD, FZ, main_lines, w182d, sdir, members=None, version=1, rec=No
 
     def stale20(m2):
         b = m2['README.md']
-        i = b.index(b'Table B.10 (tab:appE_claims)', len(_prose(version)))
+        anchor = b'Table B.10 (tab:appE_claims)' if version == 4 else b'Table B.10: every pairwise'   # v5: label removed
+        i = b.index(anchor, len(_prose(version)))
         m2['README.md'] = b[:i] + b'Table E.20' + b[i + len(b'Table B.10'):]
     mem_ctl('C22', 'README.md generated half: one Table B.10 set back to Table E.20', stale20,
             lambda m2: [v10_names(m2, PRED, version)['stale_names']['Table E.2x'],
                         v10_names(m2, PRED, version)['readme_equals_predecessor_mapped'], v10_names(m2, PRED, version)['holds']],
             [1, False, False])
+    if version < 5:
+        return out
+
+    def relabel(m2):
+        b = m2['README.md']
+        i = b.index(b'Table B.10: every pairwise', len(_prose(version))) + len(b'Table B.10')
+        m2['README.md'] = b[:i] + b' (tab:appE_claims)' + b[i:]
+    mem_ctl('C23', 'README.md generated half: the label (tab:appE_claims) put back after Table B.10', relabel,
+            lambda m2: [v12_wording(m2, PRED, version)['absent_counts']['(tab:'],
+                        v12_wording(m2, PRED, version)['holds'], v10_names(m2, PRED, version)['readme_equals_predecessor_mapped']],
+            [1, False, False])
+
+    def old_amounts(m2):
+        b = m2['README.md']
+        i = b.index(b'Evaluation-record amounts', len(_prose(version)))
+        m2['README.md'] = b[:i] + b'Appendix E amounts' + b[i + len(b'Evaluation-record amounts'):]
+    mem_ctl('C24', 'README.md generated half: "Evaluation-record amounts" set back to "Appendix E amounts"', old_amounts,
+            lambda m2: [v12_wording(m2, PRED, version)['absent_counts']['Appendix E'],
+                        v12_wording(m2, PRED, version)['holds'], v10_names(m2, PRED, version)['readme_equals_predecessor_mapped']],
+            [1, False, False])
+
+    def double_space(m2):
+        b = m2['README.md']
+        i = b.index(b'Section S1: wholesale', len(_prose(version))) + len(b'Section S1:')
+        m2['README.md'] = b[:i] + b' ' + b[i:]
+    mem_ctl('C25', 'README.md generated half: a double space left after "Section S1:"', double_space,
+            lambda m2: [v12_wording(m2, PRED, version)['artefacts_new'], v12_wording(m2, PRED, version)['holds']],
+            [{'double space': 1}, False])
     return out
 
 
@@ -1321,13 +1413,20 @@ def main():
                           f'{v10["readme_equals_predecessor_mapped"]}; residue not in the check '
                           f'{v10["residual_old_names_not_in_check"]}')
         main9c_b = subprocess.run(['git', '-C', CLONE, 'show', f'{MAIN9C_REV}:main.tex'], capture_output=True).stdout
-        v11 = v11_main9c(members, main9c_b)
+        v11 = v11_main9c(members, main9c_b, version)
         _ok(v11['holds'], f'V11 names vs main.tex at {MAIN9C_REV[:7]} (sha {v11["main_sha256"][:8]} = pinned '
                           f'{v11["main_sha_equal"]}): '
                           f'{ {k: (e["computed"], e["holds"]) for k, e in v11["expected_names"].items()} }; README '
                           f'typed names not in main {v11["typed_not_in_main"]}, numbers not in main '
                           f'{v11["numbers_not_in_main"]}; S references in main {v11["s_references_in_main"]}, README '
                           f'S-numbers {v11["s_numbers_in_readme"]}')
+    v12 = None
+    if version >= 5:
+        v12 = v12_wording(members, PRED, version)
+        _ok(v12['holds'], f'V12 README wording (Amendment 2 ruling 1): in the generated half {v12["absent_counts"]} '
+                          f'(predecessor {v12["predecessor_absent_counts"]}; {v12["csv_identifiers_masked"]} CSV '
+                          f'identifiers masked); stale names {v12["stale_names"]}; punctuation artefacts {v12["artefacts"]} '
+                          f'vs predecessor {v12["artefacts_predecessor"]}, new {v12["artefacts_new"]}')
     # controls
     ctl = controls(E, BD, FZ, main_lines, w182d, sdir, members, version, rec, T2LINES, PRED)
     # guards
@@ -1337,7 +1436,7 @@ def main():
     result = {'stage': 'W188 (b) supplement verifier', 'supplement_dir': os.path.relpath(sdir, REPO),
               'zip': zinfo, 'zip_problems': zprobs, 'V1_frozen': {k: v for k, v in v1.items()},
               'V2_manuscript': v2, 'V3_budget': v3, 'V4_generator': v4, 'V5_case_files': v5, 'V6_printed': v6,
-              'V7_readme': v7, 'V8_table2': v8, 'V9_predecessor': v9, 'V10_names': v10, 'V11_main9c': v11,
+              'V7_readme': v7, 'V8_table2': v8, 'V9_predecessor': v9, 'V10_names': v10, 'V11_main9c': v11, 'V12_wording': v12,
               'capacity_years_checked': list(STATE['cap_years']),
               'controls': ctl, 'controls_all_caught': all(c['caught_exactly'] for c in ctl), 'n_controls': len(ctl),
               'guards': {'verifier': dict(GUARD.counts), 'w180a_module': dict(A.GUARD.counts), 'verify_0': g_fail,

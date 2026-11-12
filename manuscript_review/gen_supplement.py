@@ -29,6 +29,10 @@ byte path, so the bytes do not depend on the zlib build):
                                                            appendix names in the generated descriptions are the round-9c
                                                            manuscript's (V4_NAME_MAP, applied when the README is written;
                                                            COLUMN_SPECS itself keeps the a87e195 names, so v2 and v3
+                                                           regenerate byte for byte). From v5 on (Amendment 2 to
+                                                           Addendum 91, ruling 1), the parenthesised LaTeX labels are
+                                                           removed and the V5_WORDING phrases replaced, in the
+                                                           descriptions and in the "Files and columns" paragraph (v2-v4
                                                            regenerate byte for byte). CSV file names never change.
   The RES-capacity CSVs carry every case year 2025, 2028, 2030, 2031, 2034, 2035, 2037 (v2, Addendum 90 ruling 7
   (iii): the single-scenario years 2030 and 2035 added to v1's printed years).
@@ -59,6 +63,8 @@ beside another copy of itself. Run it attached with both streams captured:
         --force-new-version > manuscript_review/supplement_v2/gen_launch.log 2>&1
   version 3 (W189a-v3, Addendum 91 ruling 3: README prose v2): the same command with supplement_v3.
   version 4 (W189a-v4, Addendum 91 amendment: README prose v3, round-9c names): the same command with supplement_v4.
+  version 5 (W189a-v5, Amendment 2 to Addendum 91, ruling 1: description wording; prose v3): the same command with
+    supplement_v5.
 Exit: 0 = written and every check holds; 1 = precondition or guard fault (nothing written).
 """
 import argparse
@@ -174,13 +180,45 @@ V4_NAME_MAP = (
 )
 
 
-def description_names(version, hits):
-    """The renaming applied to a generated description string: identity for versions <= 3, V4_NAME_MAP from 4 on
-    (hits: occurrences replaced per map entry, recorded)."""
+# Amendment 2 to Addendum 91, ruling 1: the wording of the generated description strings from supplement version 5 on,
+# applied after V4_NAME_MAP (so the old strings below are the v4 forms). (b) every parenthesised LaTeX label is removed
+# with the space before it (V5_LABEL_RX); then (a) and (c), literal replacements in this order. Nearest wording
+# (ruling 1, last sentence): the generated text quotes "---" with double quotes, where the ruling writes '---', so the
+# (a) entry matches and keeps the double quotes; the generated text writes "Sections S2-S3" with an ASCII hyphen (v4),
+# where the ruling writes "S2–S3", so the (c) entry matches the hyphen form. The replacement strings are the ruling's,
+# en dashes (U+2013) included. (d): the `table` column definitions ("E.20 or E.21", "E.20, E.22 or E.23") are untouched.
+V5_LABEL_RX = re.compile(r' \((?:fig|tab|app):[^()]*\)')
+V5_WORDING = (
+    ('(Appendix E) printed "---"', '(evaluation-record files, Tables B.10, B.11 and S4–S6) printed "---"'),   # (a)
+    ('Appendix E amounts', 'Evaluation-record amounts'),                                                         # (a)
+    ('Appendix B-D values', 'Case-data values (Sections S1–S3)'),                                            # (a)
+    ('not printed in Sections S2-S3', "the single-scenario years of the manuscript's Table 2; the remaining columns "
+                                      'are the multi-scenario years'),                                           # (c)
+    ('printed mark b of Table S5', 'the over-budget mark b of Table S5'),                                        # (c)
+    ('Table S6 itself prints no mark', 'Table S6 carries the mark in its over_budget column'),                   # (c)
+)
+
+
+def description_names(version, hits, labels_removed=None):
+    """The renaming applied to a generated description string: identity for versions <= 3, V4_NAME_MAP from 4 on, and
+    from 5 on also the Amendment 2 wording (labels removed, then V5_WORDING). hits: occurrences replaced per map /
+    wording entry; labels_removed: the labels removed (v >= 5); both recorded."""
     def rename(s):
         if version < 4:
             return s
         for old, new in V4_NAME_MAP:
+            n = s.count(old)
+            if n:
+                s = s.replace(old, new)
+                hits[old] = hits.get(old, 0) + n
+        if version < 5:
+            return s
+        found = V5_LABEL_RX.findall(s)
+        if found:
+            s = V5_LABEL_RX.sub('', s)
+            if labels_removed is not None:
+                labels_removed.extend(x.strip() for x in found)
+        for old, new in V5_WORDING:
             n = s.count(old)
             if n:
                 s = s.replace(old, new)
@@ -899,8 +937,8 @@ def readme(g, version):
     prose_rel = readme_prose_rel(version)
     with open(os.path.join(REPO, prose_rel), 'rb') as h:
         prose = h.read()
-    hits = {}
-    nm = description_names(version, hits)
+    hits, labels_removed = {}, []
+    nm = description_names(version, hits, labels_removed)
     if not prose.endswith(b'\n') or b'PLACEHOLDER' in prose:
         raise RuntimeError(f'{prose_rel}: does not end in a newline, or carries a placeholder mark')
     spec6 = _json(SPEC_V6_REL)
@@ -952,9 +990,10 @@ def readme(g, version):
     P('')
     P('## Files and columns')
     P('')
-    P('Empty CSV cell: not applicable, not recorded, or (Appendix E) printed "---". Booleans: yes / no. Appendix E '
-      'amounts are in k EUR as printed (rounded per export_W160/README.md); Appendix B-D values are at the full '
-      'precision of the case files.')
+    preamble = ('Empty CSV cell: not applicable, not recorded, or (Appendix E) printed "---". Booleans: yes / no. '
+                'Appendix E amounts are in k EUR as printed (rounded per export_W160/README.md); Appendix B-D values '
+                'are at the full precision of the case files.')
+    P(nm(preamble) if version >= 5 else preamble)      # Amendment 2 ruling 1 (a): reworded from v5 on only
     for f in sorted(COLUMN_SPECS):
         s = COLUMN_SPECS[f]
         P('')
@@ -973,7 +1012,7 @@ def readme(g, version):
       'synthetic scenarios from these base profiles (network_data.generate_*_profiles, shared_resources_planning._'
       'generate_market_price_scenarios), and the supplement does not carry the sampled curves.')
     P('')
-    return prose + ('\n'.join(L) + '\n').encode('utf-8'), _sha_bytes(prose), hits
+    return prose + ('\n'.join(L) + '\n').encode('utf-8'), _sha_bytes(prose), hits, labels_removed
 
 
 # ======================================================================================================================
@@ -1069,7 +1108,7 @@ def main():
         header = [c[0] for c in COLUMN_SPECS[name]['columns']]
         members[name] = csv_bytes(header, tables[name])
         _log(f'{name}: {len(tables[name])} rows x {len(header)} columns')
-    members[README_NAME], prose_sha, name_hits = readme(g, version)
+    members[README_NAME], prose_sha, name_hits, labels_removed = readme(g, version)
     sums = ''.join(f'{_sha_bytes(members[n])}  {n}\n' for n in sorted(members))
     members['SHA256SUMS.txt'] = sums.encode('utf-8')
     zbytes = build_zip(members)
@@ -1078,11 +1117,14 @@ def main():
     record = {
         'stage': 'W188 (b) supplement generator (Addendum 89 ruling 8); W189a v2 (Addendum 90 ruling 7); '
                  'W189a-v3 prose v2 (Addendum 91 ruling 3); W189a-v4 prose v3 and round-9c names (Addendum 91 '
-                 'amendment)',
+                 'amendment); W189a-v5 description wording (Amendment 2 to Addendum 91, ruling 1)',
         'readme': {'entry': README_NAME, 'prose_prepended': readme_prose_rel(version), 'prose_sha256': prose_sha,
                    'prose_committed_clean': _committed_clean(readme_prose_rel(version))},
         **({'description_names': {'map': [list(x) for x in V4_NAME_MAP],
                                   'hits': [[o, n, name_hits.get(o, 0)] for o, n in V4_NAME_MAP]}} if version >= 4 else {}),
+        **({'description_wording': {'label_pattern': V5_LABEL_RX.pattern, 'labels_removed': labels_removed,
+                                    'n_labels_removed': len(labels_removed),
+                                    'hits': [[o, n, name_hits.get(o, 0)] for o, n in V5_WORDING]}} if version >= 5 else {}),
         'res_capacity_years': list(RES_YEARS),
         'version': version, 'predecessor': predecessor,
         'zip': {'name': zname, 'sha256': zsha, 'bytes': len(zbytes), 'compression': 'ZIP_STORED',
