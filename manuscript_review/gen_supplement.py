@@ -19,8 +19,9 @@ byte path, so the bytes do not depend on the zlib build):
   appendices_B_D/*.csv                                     the Appendix B-D profiles and network tables, from the case
                                                            files under data/SRP1/
   README.md                                                the expert's prose (manuscript_review/supplement/
-                                                           supplement_README_prose_v1.md, prepended byte for byte;
-                                                           Addendum 90 ruling 7 (iv)), then the generated section: the
+                                                           supplement_README_prose_v1.md for v2, _v2.md from v3 on
+                                                           (Addendum 91 ruling 3; readme_prose_rel), prepended byte for
+                                                           byte; Addendum 90 ruling 7 (iv)), then the generated section: the
                                                            rule parameters from the code / constants and the column
                                                            definitions generated from COLUMN_SPECS below. (v1 carried
                                                            README_PLACEHOLDER.md instead.)
@@ -51,6 +52,7 @@ beside another copy of itself. Run it attached with both streams captured:
     mkdir manuscript_review/supplement_v2 && \\
     /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python -u manuscript_review/gen_supplement.py \\
         --force-new-version > manuscript_review/supplement_v2/gen_launch.log 2>&1
+  version 3 (W189a-v3, Addendum 91 ruling 3: README prose v2): the same command with supplement_v3.
 Exit: 0 = written and every check holds; 1 = precondition or guard fault (nothing written).
 """
 import argparse
@@ -132,6 +134,13 @@ ALL_CASE_YEARS = (2025, 2028, 2030, 2031, 2034, 2035, 2037)   # SRP1.json and SR
 SINGLE_SCENARIO_YEARS = (2025, 2030, 2035)       # tab:res_capacity_summary (the paper's Table 2), SRP1_5x3y_1x1.json
 RES_YEARS = ALL_CASE_YEARS   # capacity columns of the RES-generator CSVs (Addendum 90 ruling 7 (iii): 2030, 2035 added)
 README_PROSE_REL = os.path.join(MR, 'supplement', 'supplement_README_prose_v1.md')   # Addendum 90 ruling 7 (iv)
+README_PROSE_V2_REL = os.path.join(MR, 'supplement', 'supplement_README_prose_v2.md')   # Addendum 91 ruling 3
+
+
+def readme_prose_rel(version):
+    """The expert prose prepended to README.md: prose v1 for supplement versions <= 2 (v2's bytes unchanged), prose v2
+    from supplement version 3 on (W189a-v3, Addendum 91 ruling 3)."""
+    return README_PROSE_REL if version <= 2 else README_PROSE_V2_REL
 README_NAME = 'README.md'
 
 
@@ -838,13 +847,14 @@ def build_appendices_B_D():
 #  README placeholder (generated from COLUMN_SPECS and from the code's constants)
 # ======================================================================================================================
 def readme(g, version):
-    """README.md: the expert's prose (README_PROSE_REL, byte for byte, Addendum 90 ruling 7 (iv)) followed by the
+    """README.md: the expert's prose (readme_prose_rel(version), byte for byte, Addendum 90 ruling 7 (iv)) followed by the
     generated section (rule parameters from the code, column definitions from COLUMN_SPECS). Replaces v1's
     README_PLACEHOLDER.md; the prose is prepended unchanged, never edited here."""
-    with open(os.path.join(REPO, README_PROSE_REL), 'rb') as h:
+    prose_rel = readme_prose_rel(version)
+    with open(os.path.join(REPO, prose_rel), 'rb') as h:
         prose = h.read()
     if not prose.endswith(b'\n') or b'PLACEHOLDER' in prose:
-        raise RuntimeError(f'{README_PROSE_REL}: does not end in a newline, or carries a placeholder mark')
+        raise RuntimeError(f'{prose_rel}: does not end in a newline, or carries a placeholder mark')
     spec6 = _json(SPEC_V6_REL)
     pmax = sorted({c['declaration']['settling_rule']['p_max'] for c in spec6['cells'].values()})
     if len(pmax) != 1:
@@ -988,7 +998,7 @@ def main():
                  '(use --force-new-version for a new version)')
             return 1
     inputs = [GEN_REL, APPX_REL, FZ_REL, SPEC_V6_REL, 'settling_criterion_v6.py', 'settling_criterion_v5.py',
-              'shared_resources_planning.py', 'network_data.py', README_PROSE_REL] \
+              'shared_resources_planning.py', 'network_data.py', readme_prose_rel(version)] \
         + [os.path.join(EXPORT_DIR, f) for f in EXPORT_FILES]
     if canonical:
         dirty = [f for f in inputs + [SCRIPT_REL] if not _committed_clean(f)]
@@ -1018,9 +1028,10 @@ def main():
     zsha = _sha_bytes(zbytes)
     zname = f'{NAME_STEM}_v{version}_{zsha[:8]}.zip'
     record = {
-        'stage': 'W188 (b) supplement generator (Addendum 89 ruling 8); W189a v2 (Addendum 90 ruling 7)',
-        'readme': {'entry': README_NAME, 'prose_prepended': README_PROSE_REL, 'prose_sha256': prose_sha,
-                   'prose_committed_clean': _committed_clean(README_PROSE_REL)},
+        'stage': 'W188 (b) supplement generator (Addendum 89 ruling 8); W189a v2 (Addendum 90 ruling 7); '
+                 'W189a-v3 prose v2 (Addendum 91 ruling 3)',
+        'readme': {'entry': README_NAME, 'prose_prepended': readme_prose_rel(version), 'prose_sha256': prose_sha,
+                   'prose_committed_clean': _committed_clean(readme_prose_rel(version))},
         'res_capacity_years': list(RES_YEARS),
         'version': version, 'predecessor': predecessor,
         'zip': {'name': zname, 'sha256': zsha, 'bytes': len(zbytes), 'compression': 'ZIP_STORED',
