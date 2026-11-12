@@ -87,3 +87,26 @@
 - **Whether the restart was an app restart, a resume on another device, or a context reset** is not known here.
 - **Whether a Terminal.app process survives** an app update or a logout is not tested. A reboot would kill it in any
   case.
+
+---
+
+## Relaunch preparation under Amendment 3 (Planner, 2026-11-12 14:27 UTC)
+
+**Moves under ruling (a).** Nothing was deleted. Every moved file was re-hashed after the move and equals its recorded
+hash.
+
+| moved from | moved to `P515S55/w187_cell1_interruption_20261112/` | files | check |
+|---|---|---|---|
+| cell root `evals/` and `campaign_heartbeat.json` | `partial_root/` | 393 + the launch log in place, 394 in all | 394/394 = `sha256_inventory_partial_cell1.txt` (recorded in `996cb81a`) |
+| `.p515_s44_campaign.lock` (PID 31351, dead) | `moved_stale_lock.p515_s44_campaign.lock` | 1 | byte-identical to `stale_lock_copy.json` |
+| `P56A/evals/p515s44_s55_step7_x0_a_1x_5cfe69a615ae3708_{precheck,run}`, the harness working dirs (751 MB, untracked) | `p56a_working_dirs/` | 420 | 420/420 = `sha256_inventory_p56a_working_dirs.txt` (hashed before the move) |
+
+The working dirs were found by the launcher's own check: `pre_launch_assertion`'s `working_dirs_absent` refused in
+`run_x0_A_1x_preconditions_only_r2.log`. They are partial outputs of cell 1 and fall within ruling (a).
+
+**Preconditions.** `run_x0_A_1x_preconditions_only_r3.log`, at 14:27:14 UTC: exit 0, "every precondition holds",
+stopped before the lock and the child, guards all zero. The cell root holds only its frozen spec.
+
+**Chain.** `w187_terminal_chain.sh` holds the 15 `launch_command` strings of the stage spec `5cbf4a55`, verbatim and in
+`cell_order`. They are joined by `&&` under `set -e`. Cell 1's log is `run_x0_A_1x_launch_r2.log`, and the killed run's
+`run_x0_A_1x_launch.log` is kept. The author runs it in Terminal.app under `caffeinate -i`.
