@@ -300,3 +300,7 @@ Kept by the expert during the author's whole-document read (2026-10-09 onward); 
   items + blue), letter v13 (`74e88c78…`, B.9), cover letter v4 (`63b7ddee…`: W184/W185 paragraph, EST-D-26-06323,
   delay sentence, one bracket for W187); `gen_appE.py --reduced` prints Appendix B bitwise and `verify_appE.py` is
   extended (40 PASS, run on the Air); README prose v2 for supplement v3. Not yet on Overleaf.
+- Round 9c on Overleaf `3c379fa`; W190a (`9a5a78b9`) clean: Appendix B generator output byte for byte, 40/40, 0 number
+  and pointer mismatches, B.9 closed, supplement v3 `e6f5ce6a` 0 mismatches. Amendment to Addendum 91: supplement v4
+  with the manuscript's current names in the generated descriptions (mapping recorded), README prose v3
+  (`E20_E21_groups.csv` row corrected). W187 running since 13:29 UTC (11-12).
