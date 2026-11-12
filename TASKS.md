@@ -1,6 +1,16 @@
 # TASKS — current order
 
-**Authority (2026-11-10):** `PLANNER_BRIEF_2026-09-13.md` Addendum 89 (refocus: revision completed on the frozen convention; realignment parked). Overleaf HEAD `a87e195` (main.tex md5 39f6fd86 = round 8). The realignment order below (Addenda 87–88) is parked for the next paper.
+**Authority (2026-11-10):** `PLANNER_BRIEF_2026-09-13.md` Addendum 90 (corrections to 89; W187 under spec v1.1; round 9b). Overleaf HEAD `46c9d77` (round 9b: main.tex md5 49139cc2, letter v12 ed8f5b13). Realignment (Addenda 87–88) parked.
+
+## Addendum 90 order — W189a, W187 (spec v1.1 + gates, then the screen), W189
+
+- [x] **W189a** — `80778c12` / `3f396b1d`: v2 `864a5779` verifier PASS; TN-connection CSV unchanged; **README prose says "version 1" / 70,743 cells (v2: 70,851) → expert prose v2 → v3**
+- [x] **W189 part 1** — `1eac8803` / `4d03909d`: 0 number MISMATCH (472 tokens); W184/W185/G10 wording holds; **B.4 calls the ESSO net-power pair 'in Q' (it is not); reduced Appendix E hand-edited, not generator output, verify_appE not extended; Fig. 6 '10–90 %' holds 6/8 days**
+- [x] **W189 part 2** — `8c931b0b` / `f116cbba`: identity holds; 136 → 102 labels; letter 171/8/**1 MISMATCH (l. 285 Fig. B.8, static B.9)**; 0 dangling; 0 prefixes; **17 main floats (target ≤ 10)**; 5 changed lines without blue
+- [x] **W187 spec v1.1** — `68a612ed`…`c2743027`: G0 re-pinned to the pin-check artifact (Planner, within ruling 4); gate (ii) 153/153 solves, **GATE_PASS_RULED True, 0 genuine, provenance 3/4 — HELD**; spec v1.1 `frozen_step7_campaign_spec_v1_1_25071d2f.json`; screen frozen (15 cells, stage spec `5cbf4a55`), first cell preconditions hold
+- [ ] **▶ W187** screen (15 keys, ~21 h, attached, one task) — **ready; launch by 2026-11-20** (held for the go); P3 blind prediction
+- [x] Planner: `P5_15_W189_REPORT.md` (Decisions 1–6)
+- [ ] **▶ Open:** W187 launch (go); expert: reduced Appendix E via generator, supplement prose v2 → v3, round-9b wording (B.4 'in Q', Fig. 6 6/8 days, Fig. B.8/B.9, blue ×5); author: trimming (17 floats vs ≤ 10), push, deadline
 
 ## Addendum 89 order — state found by the Planner on 2026-11-10
 
@@ -13,7 +23,7 @@
 - [x] **W188(a)** `687c1a53`/`8ce38f88` P5 HELD on 20 certified rows (common −13.0 k€ relaxation offset; t11_3x3_unit not established; pb_y2025_n5 positive voltage slack) · **(b)** `5d7955da`/`958a658e` supplement verifier PASS (1,623 entries 0 MISMATCH; B–D 70,743 cells) · **(c)** `5d00d3bd`/`9bd9d66a` positive scaling only; 'rows of inactive cohorts' · **(d)** `d5cb6bbb`/`547167ed` E6 re-derived, SoC 2025/2035, SoH × 7
 - [x] **Pin check** — `09b3e3cf`: 696/696 blocks identical at HEAD (defaults); launcher would still refuse on head, 3 module hashes, 2 new P5.16 inputs
 - [x] Planner: `P5_15_W188_REPORT.md` (Decisions 1–6); Addendum 89 status section in `P5_15_W183I_REPORT.md`
-- [ ] **▶ Stopped for review:** W187 needs the spec-v1.1 ruling (decision 2; start by ≈ 11-20); G10 wording; §4.4 wording; TN-connection table (±100 at node 7); author: push, deadline date
+- [x] Stopped for review → Addendum 90 (spec v1.1 authorized; wording rulings; figure chosen; supplement decisions; round 9b): W187 needs the spec-v1.1 ruling (decision 2; start by ≈ 11-20); G10 wording; §4.4 wording; TN-connection table (±100 at node 7); author: push, deadline date
 - [ ] **W187** (15-key 1× screen) — eligible (W185 reported before 2026-11-22) but **blocked by the spec v1 pins**: needs a ruling (re-pin after the pin check, or run from a `6f43479e` checkout)
 
 ## Realignment order (Addenda 87–88) — parked for the next paper (Addendum 89 decision 1)

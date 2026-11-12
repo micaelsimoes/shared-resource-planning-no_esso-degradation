@@ -67,6 +67,14 @@ section) — **stopped for review** before W184: the gate is passed under the ru
 E3/E2/cross needs a Step-7 hooks module + a harness router patch (validators accept only their own cells), which
 changes the harness pin of spec v1, and ruling 7's exact ρ check fails at ulp level on a correct run. No E3/E2 solve.
 
+## Current state (Addendum 90; W189 at Overleaf `46c9d77`, round 9b)
+
+Round 9b pasted (`46c9d77`): numbers 0 MISMATCH, letter v12 pointers 1 MISMATCH (l. 285 Fig. B.8 vs static B.9), reduced
+Appendix E hand-edited (not generator output; `verify_appE.py` not extended), trimming not met (17 main floats).
+Supplement v2 `864a5779` verifies (0 MISMATCH) but its README prose still says v1. W187: spec v1.1
+`frozen_step7_campaign_spec_v1_1_25071d2f.json` (production `f6c23977` re-pinned; G0 re-pinned to the pin-check
+artifact), gate (ii) passed under the ruled comparator; screen frozen and ready to launch (by 2026-11-20).
+
 ## Current state (2026-11-10, Addendum 89 refocus)
 
 Revision completed on the frozen convention; realignment (Addenda 87–88, P5.16) parked. **W183i, W184 (E3) and W185
