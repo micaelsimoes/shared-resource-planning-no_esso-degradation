@@ -312,3 +312,10 @@ Kept by the expert during the author's whole-document read (2026-10-09 onward); 
   outputs and lock moved aside, cell 1 relaunched with the frozen command (`_r2`); the chain run by the author in
   Terminal.app under `caffeinate -i` (attached, stop-at-first-failure, streams captured, lock held); latest relaunch
   11-14 09:00 UTC for the freeze.
+- Handback `6a37dcc8`: **supplement v5 `SRP1_supplement_v5_d2fa2172.zip` (sha256 `d2fa21725399d4f5…`, predecessor
+  `d175ea0e`) is the file to submit** — the three re-ruled strings in (mark b of Table S5 = the reported start; the
+  2030/2035 columns "the single-scenario years of the manuscript's Table 2; the remaining columns are the
+  multi-scenario years"; "case-data values (Sections S1–S3)"); 20 labels removed; 0 failures, 1,623 entries, 70,851
+  cells, Table 2 48/48; TN-connection CSV byte-identical. Expert: no v6 (the 2025 row "single- and multi-scenario
+  year" is correct as written). W187 relaunched under amendment 3 from Terminal.app/caffeinate at 14:46:58 UTC 11-12
+  (chain `w187_terminal_chain.sh` `0cb6512e`); cell 1 expected ≈ midday 11-13.
