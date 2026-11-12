@@ -304,3 +304,7 @@ Kept by the expert during the author's whole-document read (2026-10-09 onward); 
   and pointer mismatches, B.9 closed, supplement v3 `e6f5ce6a` 0 mismatches. Amendment to Addendum 91: supplement v4
   with the manuscript's current names in the generated descriptions (mapping recorded), README prose v3
   (`E20_E21_groups.csv` row corrected). W187 running since 13:29 UTC (11-12).
+- Handback `688ab470`: supplement v4 `d175ea0e` (name mapping, prose v3; 0 mismatches; Table 2 rebuilt 48/48); W190a
+  clean; W187 running (cell 1 started in background mode — recorded, not restarted). Amendment 2 to Addendum 91:
+  supplement v5 wording for the strings outside the mapping (a)–(c), (d) kept; v5 is the submitted file; round 10 on
+  11-14 as scheduled.
