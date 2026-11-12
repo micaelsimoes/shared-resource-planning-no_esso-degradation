@@ -1,0 +1,5400 @@
+{
+ "schema": "p515_s55_w190a_numbers",
+ "task": "W190a part 1 (Addendum 91 ruling 4, W190a line): generator gate, verifier, numbers and ruling-4 wording at Overleaf 3c379fa",
+ "objective_convention": "no objective value is computed; rated numbers carry their own convention (Q = gross_operational_cost, contracted interface settlement excluded)",
+ "static_reading": "no TeX installation on this machine; nothing compiled",
+ "started_utc": "2026-11-12T13:45:27.474313+00:00",
+ "script": {
+  "path": "p515_s55_w190a_numbers.py",
+  "sha256": "ffe6c0c9a0e226b1a4f8d6a6b5d449ee91c9cbada7b5d8bb2f480328f41cd5bd",
+  "committed_clean": true
+ },
+ "repo_head": "ca71db16bde8bfe6bc973ca01399cb16ace1a2bf",
+ "repo_tracked_modified": "M TASKS.md",
+ "interpreter": "/Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python",
+ "imported": {
+  "p515_s55_w189_p1_numbers.py": "7ab5009cc85c3cc4e15a8c5361fb4092a671b54e3bf5313e743500d776e173b9",
+  "p515_s53_w183h_round8.py": "baab44160d6960fcfcb23f46864ac39753592959992a652a5235766d3435e121",
+  "p515_s53_w182c_labels_pointers_appE.py": "a933d3e8d58936ecc0f43e168031ccc58f365c5c0ba60a4b66a2d271acca2e83",
+  "p515_s53_w182b_number_check.py": "59c5dd1b8d5ba538a8642777bc6898353934647ebdb39be5677f982f35048ff3",
+  "p515_s53_w181a_identity_appendixE.py": "28da75460d70f20c8f49f1a2b2dd86f00950878776a7b00012ed1c94b977baec",
+  "p515_s53_w177a_section4_frame_check.py": "85df69fc6a115c0877ba61ceef0328bf28c29ffed676a4beef106d7423da3cfa",
+  "p515_s53_w177b_number_check.py": "9d3ec4ca28be3a0bf00baa64b583a70965769fef361bed90ca9e531d7e1b6a8a",
+  "p515_s53_w177b1r_number_check.py": "05e2efc34ef2f801421df0ff2bfa1eddc73a14795f1cdbead13cccfb1d844cc4",
+  "p515_s53_w178b_number_check.py": "17b5c8ce253443ed0e0d30464dc59b02c2fade2453109e1fadf1026924f6e4cb"
+ },
+ "revisions": {
+  "head_3c379fa": "3c379fa44f3755dbdc6fd540df566b55527d921c",
+  "mid_52a607d": "52a607d6ea4225154fa78047f5438fada03bb98a",
+  "base_9b_46c9d77": "46c9d779743b40a42da73c0050d8923e6af6fb55",
+  "round8_a87e195": "a87e1950fbdbb3667f37e64a43c298ba675e6cff"
+ },
+ "capture_checklist": {
+  "captures": {
+   "(a) state / provenance": "task_state",
+   "(b) generator gate": "task_generator",
+   "(c) verifier": "verifier_summary",
+   "(d) numbers": "declarations_w190a",
+   "(d) new tokens": "mark_new",
+   "(d) ruling 4 (i)-(iv)": "task_ruling4",
+   "(d) cover letter v4": "task_cover",
+   "guards": "verify_guards"
+  },
+  "symbols": {
+   "W189p1": [
+    "task_appendix",
+    "task_numbers",
+    "controls_appendix",
+    "declarations_w189p1",
+    "load_extras",
+    "verify_guards",
+    "tokens_of",
+    "DLF",
+    "by_w",
+    "texnorm",
+    "RULING3_PARTS",
+    "EX",
+    "OUT_NAMES",
+    "PREV_FULL",
+    "HEAD_FULL",
+    "CHECK_FAILURES",
+    "W188A_JSON",
+    "W188A_SHA"
+   ],
+   "W181a": [
+    "run_generator",
+    "run_verifier",
+    "locate_bytes",
+    "appendix_block"
+   ],
+   "W182b": [
+    "S",
+    "SF",
+    "U",
+    "LANG",
+    "added_lines"
+   ],
+   "W177a": [
+    "jget"
+   ]
+  },
+  "all_present": true
+ },
+ "extra_input_pins": {
+  "problems": []
+ },
+ "state": {
+  "clone_head": "3c379fa44f3755dbdc6fd540df566b55527d921c",
+  "origin_main": "3c379fa44f3755dbdc6fd540df566b55527d921c",
+  "clone_head_parent": "52a607d6ea4225154fa78047f5438fada03bb98a",
+  "trees": {
+   "46c9d779743b40a42da73c0050d8923e6af6fb55": "bba62cee9e886fbd0ba35094f32086d647759eb4",
+   "52a607d6ea4225154fa78047f5438fada03bb98a": "bba62cee9e886fbd0ba35094f32086d647759eb4",
+   "3c379fa44f3755dbdc6fd540df566b55527d921c": "ff51a0527ffb788a14e80218bb058db57fb54703"
+  },
+  "tracked_modified": "",
+  "files": {
+   "main.tex": {
+    "sha256": "b13b390e31331abd8a45dd677dd453e336c58b9d63a6a7762bda4681bb8508fc",
+    "md5": "cd1433d72a47804f7b12dd635512b36c",
+    "md5_declared_prefix": "cd1433d7",
+    "md5_matches_declared": true,
+    "working_equals_head_blob": true,
+    "review_copy": "manuscript_review/main_46c9d77_round9c.tex",
+    "equals_review_copy": true
+   },
+   "response_to_reviewers_draft.tex": {
+    "sha256": "9fc145ad730c41cd1e9d377affc18306fffcbbe5e64a75c11c267868e1a2418d",
+    "md5": "74e88c78b41e7bcdf95a1f40fceed12b",
+    "md5_declared_prefix": "74e88c78",
+    "md5_matches_declared": true,
+    "working_equals_head_blob": true,
+    "review_copy": "manuscript_review/response_to_reviewers_v13.tex",
+    "equals_review_copy": true
+   },
+   "cover_letter.tex": {
+    "sha256": "9469a67b778ecfd99bd86950932d3d142bbe25153a601b3621be0e297aa62828",
+    "md5": "63b7ddee20e9c7b3f3cf34e2ec9d19ec",
+    "md5_declared_prefix": "63b7ddee",
+    "md5_matches_declared": true,
+    "working_equals_head_blob": true,
+    "review_copy": "manuscript_review/cover_letter_v4.tex",
+    "equals_review_copy": true
+   },
+   "highlights.tex": {
+    "sha256": "13e37f6d452de934839042cf470e51787a1eb1a1b31417e9e16315843e1bf7af",
+    "md5": "4cedd45c2d725c47ad36802ce62a3d75",
+    "md5_declared_prefix": "4cedd45c",
+    "md5_matches_declared": true,
+    "working_equals_head_blob": true,
+    "review_copy": "manuscript_review/highlights_v3.tex",
+    "equals_review_copy": true
+   }
+  },
+  "diff_U0_line_preserving": {
+   "main.tex": {
+    "hunks_U0": 9,
+    "every_hunk_k_for_k": true
+   },
+   "response_to_reviewers_draft.tex": {
+    "hunks_U0": 2,
+    "every_hunk_k_for_k": true
+   },
+   "cover_letter.tex": {
+    "hunks_U0": 2,
+    "every_hunk_k_for_k": false
+   }
+  },
+  "holds": true,
+  "line_preserving_main_letter": true
+ },
+ "appendix_w189p1_method": {
+  "bitwise": {
+   "generator": {
+    "path": "manuscript_review/gen_appE.py",
+    "sha256": "8a5f60d76a9d59c6e902bfdfaa916807b2a8bf40a5728a7a76b6d2ad8ff4eedd",
+    "committed_clean": true,
+    "last_commit": "441722c9",
+    "output": "w190a_audit/numbers/appE_generated_full_w190a.tex",
+    "output_sha256": "66bd3dd0a4d7b623232d95c420d1ba50cdb4bb0c075cfc0093af38e34b3a3d14",
+    "output_lines": 391,
+    "stdout": "ok 58 61 full"
+   },
+   "equals_committed_appendix": true,
+   "committed_appendix_sha256": "66bd3dd0a4d7b623232d95c420d1ba50cdb4bb0c075cfc0093af38e34b3a3d14",
+   "equals_verifier_regeneration": true,
+   "occurrences_in_head_main": 0,
+   "occurrences_in_a87e195_main": 1,
+   "a87e195_block_lines": [
+    2556,
+    2946
+   ],
+   "head_block_lines": [
+    2104,
+    2321
+   ],
+   "head_block_n_lines": 218,
+   "generator_n_lines": 391,
+   "lines_equal_in_order": 213,
+   "diff_hunks_generator_to_head_block": [
+    {
+     "op": "replace",
+     "generator_lines": [
+      17,
+      17
+     ],
+     "head_lines": [
+      2120,
+      2120
+     ],
+     "n_generator": 1,
+     "n_head": 1,
+     "generator_first": "This appendix gives the record behind the comparisons of Section~\\ref{sec:results}: every pairwise comparison (Table~\\ref{tab:appE_claims}); every recourse evaluation those comparisons use, with its stopping status, band, gap and slack (Tab",
+     "head_first": "This appendix gives the record behind the comparisons of Section~\\ref{sec:results}: every pairwise comparison (Table~\\ref{tab:appE_claims}) and the neighbours of the plan without storage re-evaluated under the certification rule (Table~\\ref"
+    },
+    {
+     "op": "replace",
+     "generator_lines": [
+      59,
+      59
+     ],
+     "head_lines": [
+      2162,
+      2162
+     ],
+     "n_generator": 1,
+     "n_head": 1,
+     "generator_first": "\\caption{\\textcolor{blue}{Every pairwise comparison of the record. Eval.: the two evaluations of Table~\\ref{tab:appE_evaluations} (reference / other); $^{u}$ uncertified; $^{f}$ flagged certificate. Thr.: the determinacy threshold, or the u",
+     "head_first": "\\caption{\\textcolor{blue}{Every pairwise comparison of the record. Eval.: the two evaluations of Table~S4 (reference / other); $^{u}$ uncertified; $^{f}$ flagged certificate. Thr.: the determinacy threshold, or the uncertified bar where an "
+    },
+    {
+     "op": "delete",
+     "generator_lines": [
+      143,
+      242
+     ],
+     "head_lines": [
+      2246,
+      2245
+     ],
+     "n_generator": 100,
+     "n_head": 0,
+     "generator_first": "\\subsection{\\textcolor{blue}{Evaluations}} \\label{app:results_evaluations} \\textcolor{blue}{ Table~\\ref{tab:appE_evaluations} lists the 61 recourse evaluations behind Table~\\ref{tab:appE_claims} and the tables of Section~\\ref{sec:results}, ",
+     "head_first": ""
+    },
+    {
+     "op": "delete",
+     "generator_lines": [
+      287,
+      360
+     ],
+     "head_lines": [
+      2290,
+      2289
+     ],
+     "n_generator": 74,
+     "n_head": 0,
+     "generator_first": "\\subsection{\\textcolor{blue}{Static Arrangements: Solver Starts}} \\label{app:results_benchmark} \\textcolor{blue}{ In the passive arrangement, the DN dispatch objective includes a renewable-curtailment coefficient of 1~\\euro/MWh. This auxili",
+     "head_first": ""
+    },
+    {
+     "op": "replace",
+     "generator_lines": [
+      379,
+      379
+     ],
+     "head_lines": [
+      2308,
+      2308
+     ],
+     "n_generator": 1,
+     "n_head": 1,
+     "generator_first": "At every certificate used in a reported comparison, and at both multi-scenario evaluations, both daily closure slacks sat at their lower bound to within the solver's bound relaxation ($10^{-6}$~MWh per slack); in the superseded evaluation~1",
+     "head_first": "At every certificate used in a reported comparison, and at both multi-scenario evaluations, both daily closure slacks sat at their lower bound to within the solver's bound relaxation ($10^{-6}$~MWh per slack); in the superseded evaluation~1"
+    },
+    {
+     "op": "insert",
+     "generator_lines": [
+      381,
+      380
+     ],
+     "head_lines": [
+      2310,
+      2310
+     ],
+     "n_generator": 0,
+     "n_head": 1,
+     "generator_first": "",
+     "head_first": "More generally, at every certified evaluation behind the tables of Section~\\ref{sec:results}, every penalised slack in $Q$ (daily closure and network feasibility) sits at its zero bound to within the solver's bound relaxation, so no penalty"
+    },
+    {
+     "op": "replace",
+     "generator_lines": [
+      384,
+      384
+     ],
+     "head_lines": [
+      2314,
+      2314
+     ],
+     "n_generator": 1,
+     "n_head": 1,
+     "generator_first": "\\textbf{Certification statistics.} The 42 single-scenario evaluations of the certification campaign are evaluations 3--11, 15, 22, 23, 26--31, 34--39 and 42--59 of Table~\\ref{tab:appE_evaluations}. Of these, 32 certified, 24 on the oscillat",
+     "head_first": "\\textbf{Certification statistics.} The 42 single-scenario evaluations of the certification campaign are evaluations 3--11, 15, 22, 23, 26--31, 34--39 and 42--59 of Table~S4. Of these, 32 certified, 24 on the oscillatory branch and 8 on the "
+    }
+   ],
+   "n_diff_hunks": 7,
+   "head_block_is_generator_output_bitwise": false
+  },
+  "verifier": {
+   "path": "manuscript_review/verify_appE.py",
+   "sha256": "27a29d0ead53461eda5c0590a905a0567db228743b0686d78aecc4f783acf20b",
+   "last_commit": "441722c9",
+   "n_pass": 40,
+   "n_fail": 0,
+   "fail_lines": [],
+   "exception": null,
+   "tempdir_output": "w190a_audit/numbers/verify_appE_tmp/tmpy587bga2/appE_check.tex",
+   "tempdir_output_sha256": "66bd3dd0a4d7b623232d95c420d1ba50cdb4bb0c075cfc0093af38e34b3a3d14",
+   "reads_main_tex": false,
+   "mentions_reduced_table": true,
+   "extended_to_the_reduced_table": false,
+   "note": "verify_appE.py is unchanged since its last commit (see last_commit); it regenerates through gen_appE.py into its own tempfile.mkdtemp() (redirected here into the output directory) and never reads main.tex, so it checks the full generator output, not the reduced table printed at HEAD"
+  },
+  "entry_check_head": {
+   "summary": {
+    "E.20 (HEAD, printed)": {
+     "rows": 58,
+     "entries": 639,
+     "MATCH": 581,
+     "MISMATCH": 0,
+     "NOT_FROZEN_AGREES": 58,
+     "NOT_FROZEN_DISAGREES": 0
+    },
+    "E.22 (HEAD, printed)": {
+     "rows": 8,
+     "entries": 18,
+     "MATCH": 18,
+     "MISMATCH": 0,
+     "NOT_FROZEN_AGREES": 0,
+     "NOT_FROZEN_DISAGREES": 0
+    },
+    "E.21 (generator = Table S4 numbering; not printed)": {
+     "rows": 61,
+     "entries": 854,
+     "MATCH": 732,
+     "MISMATCH": 0,
+     "NOT_FROZEN_AGREES": 122,
+     "NOT_FROZEN_DISAGREES": 0
+    }
+   },
+   "bad": [],
+   "bad_e21_generator": [],
+   "mapping_problems": [],
+   "marks_removed_head_e20": [
+    {
+     "line": 2181,
+     "n_marks": 1
+    },
+    {
+     "line": 2182,
+     "n_marks": 1
+    },
+    {
+     "line": 2185,
+     "n_marks": 1
+    },
+    {
+     "line": 2186,
+     "n_marks": 1
+    },
+    {
+     "line": 2187,
+     "n_marks": 1
+    },
+    {
+     "line": 2205,
+     "n_marks": 1
+    },
+    {
+     "line": 2206,
+     "n_marks": 1
+    },
+    {
+     "line": 2209,
+     "n_marks": 1
+    },
+    {
+     "line": 2210,
+     "n_marks": 2
+    }
+   ],
+   "marks_removed_generator": 16,
+   "e20_rows_numbered": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31,
+    32,
+    33,
+    34,
+    35,
+    36,
+    37,
+    38,
+    39,
+    40,
+    41,
+    42,
+    43,
+    44,
+    45,
+    46,
+    47,
+    48,
+    49,
+    50,
+    51,
+    52,
+    53,
+    54,
+    55,
+    56,
+    57,
+    58
+   ],
+   "e21_rows_numbered_1_61": true
+  },
+  "entry_check_head_totals": {
+   "entries": 657,
+   "MATCH": 599,
+   "MISMATCH": 0,
+   "NOT_FROZEN_AGREES": 58,
+   "NOT_FROZEN_DISAGREES": 0
+  },
+  "entry_check_a87e195_same_method_totals": {
+   "E.20 (HEAD, printed)": {
+    "rows": 58,
+    "entries": 639,
+    "MATCH": 581,
+    "MISMATCH": 0,
+    "NOT_FROZEN_AGREES": 58,
+    "NOT_FROZEN_DISAGREES": 0
+   },
+   "E.22 (HEAD, printed)": {
+    "rows": 8,
+    "entries": 18,
+    "MATCH": 18,
+    "MISMATCH": 0,
+    "NOT_FROZEN_AGREES": 0,
+    "NOT_FROZEN_DISAGREES": 0
+   },
+   "E.21 (generator = Table S4 numbering; not printed)": {
+    "rows": 61,
+    "entries": 854,
+    "MATCH": 732,
+    "MISMATCH": 0,
+    "NOT_FROZEN_AGREES": 122,
+    "NOT_FROZEN_DISAGREES": 0
+   }
+  },
+  "idmap_generator_e21": {
+   "1": "ref:7aa017f0",
+   "2": "ref:bd504ecf",
+   "3": "d_c52e1670",
+   "4": "d_4a82a64a",
+   "5": "d_3632b0ae",
+   "6": "d_36686489",
+   "7": "d_d3709599",
+   "8": "d_a12d95a2",
+   "9": "d_f759dd48",
+   "10": "d_c7fee8be",
+   "11": "d_9246ed01",
+   "12": "b_2a0ba8b2",
+   "13": "b_0dd237f0",
+   "14": "b_4649234b",
+   "15": "pb_y2025_n5_v6",
+   "16": "pb_y2025_n5",
+   "17": "pb_y2025_n7",
+   "18": "pb_y2025_n9",
+   "19": "pb_y2030_n5",
+   "20": "pb_y2030_n7",
+   "21": "pb_y2030_n9",
+   "22": "c_156ce2d1",
+   "23": "c_6597a79d",
+   "24": "yl_y2030",
+   "25": "yl_y2035",
+   "26": "g_37b5c499",
+   "27": "g_47dce43c",
+   "28": "g_48749148",
+   "29": "g_9abf31d4",
+   "30": "h_aa8a76d7",
+   "31": "h_f9eae48f",
+   "32": "h_x0_m175",
+   "33": "h_unit_m175",
+   "34": "h_50dea31c",
+   "35": "h_74eda68d",
+   "36": "i_5a6a88b4",
+   "37": "j_f3aa335e",
+   "38": "j_a11d7966",
+   "39": "j_5f3cccb4",
+   "40": "ref:5ca4f86c",
+   "41": "ref:e28de4ac",
+   "42": "l_0ee93aca",
+   "43": "l_195156fa",
+   "44": "l_2ab0ce2d",
+   "45": "l_b2251bc5",
+   "46": "l_76c78064",
+   "47": "l_8e4c220e",
+   "48": "l_e1da0984",
+   "49": "l_7b199ef9",
+   "50": "l_45aa25a6",
+   "51": "l_7c455554",
+   "52": "l_7db09f6c",
+   "53": "l_df1a5525",
+   "54": "e_no_ageing",
+   "55": "e_c2",
+   "56": "e_c2_calfade",
+   "57": "e_c4",
+   "58": "e_c3_unit",
+   "59": "e_c3_midblock",
+   "60": "e_soh050",
+   "61": "g070_neutrality"
+  },
+  "rows_compared": {
+   "E.20 rows HEAD": 58,
+   "E.20 rows a87e195": 58,
+   "E.20 rows generator": 58,
+   "E.20 HEAD == a87e195 (cells, every row)": true,
+   "E.20 HEAD == generator (cells, every row)": true,
+   "E.22 rows HEAD": 8,
+   "E.22 HEAD == a87e195": true,
+   "E.22 HEAD == generator": true,
+   "E.20 rows differing from the generator": [],
+   "tables printed at HEAD": [
+    "tab:appE_claims",
+    "tab:appE_neighbours"
+   ]
+  },
+  "main_text_citations_of_tab_appE_claims": [
+   {
+    "line": 1411,
+    "text": "Table~\\ref{tab:appE_claims}",
+    "rows": null
+   },
+   {
+    "line": 1490,
+    "text": "Table~\\ref{tab:appE_claims}",
+    "rows": null
+   },
+   {
+    "line": 1495,
+    "text": "Table~\\ref{tab:appE_claims}",
+    "rows": null
+   },
+   {
+    "line": 1676,
+    "text": "Table~\\ref{tab:appE_claims}, rows~17--20",
+    "rows": "17--20"
+   }
+  ],
+  "outcome": {
+   "bitwise": false,
+   "generator_unchanged_since": "441722c9",
+   "verify_n_pass": 40,
+   "verify_n_fail": 0,
+   "verify_extended_to_reduced_table": false,
+   "entries": 657,
+   "mismatch": 0,
+   "not_frozen_disagrees": 0,
+   "mapping_problems": 0,
+   "e20_rows_printed": 58,
+   "e20_unchanged_vs_a87e195": true,
+   "e22_unchanged_vs_a87e195": true
+  }
+ },
+ "appendix_w189p1_method_note": "W189p1 task_appendix output: its \"bitwise\" / \"head_block_is_generator_output_bitwise\" fields refer to the FULL generator output (W189's question; 0 occurrences in the reduced manuscript by construction); the round-9c gate on the --reduced output is the \"generator\" item of this JSON. Its entry check rates the printed tables of the 9c main.tex against the frozen JSON.",
+ "verifier": {
+  "path": "manuscript_review/verify_appE.py",
+  "sha256": "27a29d0ead53461eda5c0590a905a0567db228743b0686d78aecc4f783acf20b",
+  "last_commit": "441722c9",
+  "n_pass": 40,
+  "n_fail": 0,
+  "fail_lines": [],
+  "exception": null,
+  "tempdir_output": "w190a_audit/numbers/verify_appE_tmp/tmpy587bga2/appE_check.tex",
+  "tempdir_output_sha256": "66bd3dd0a4d7b623232d95c420d1ba50cdb4bb0c075cfc0093af38e34b3a3d14",
+  "reads_main_tex": false,
+  "mentions_reduced_table": true,
+  "extended_to_the_reduced_table": false,
+  "note_w190a": "verify_appE.py was extended in 441722c9 (Addendum 91 ruling 2): after its 33 full-mode checks it runs gen_appE.py twice as a subprocess (full and --reduced, into its own tempfile.mkdtemp() directories, redirected here) and checks the reduced output (7 checks). It does not read main.tex; the link from the reduced output to the manuscript is item (b) of this stage. W189's static note on this field is superseded and removed here.",
+  "expected_pass": 40,
+  "pass_lines": [
+   "PASS row 1 = reference unit",
+   "PASS row 3 = n7 0.75/3",
+   "PASS rows 17-20 = G",
+   "PASS row 26 = J e4",
+   "PASS rows 30,31",
+   "PASS row 34 = salvage verdict change",
+   "PASS row 48 = calfade",
+   "PASS row 58",
+   "PASS flagged = 4, 38",
+   "PASS twins 56, 61",
+   "PASS 40, 42, 15, 16",
+   "PASS 55 T1 comparisons",
+   "PASS no sign change",
+   "PASS one verdict change ['L:y2030__n5_p0.25_e0.5__n7_p1_e3']",
+   "PASS 0.95 / 1.22",
+   "PASS G 85.1-223.6 all det",
+   "PASS 42 = T2 cells less B and references",
+   "PASS 32 = 24 osc + 8 mon",
+   "PASS 10 = 5 gap, 2 lapse, 3 growth",
+   "PASS 32,33,60,61 = T10 certified",
+   "PASS ten [2, 3, 5, 10, 11, 12, 14, 17, 20, 23]",
+   "PASS 46 = 49 certified - superseded - 2 twins",
+   "PASS 36 at 0.94 monotone",
+   "PASS 21 cycles in 10 evaluations [('d_c52e1670', 1), ('d_4a82a64a', 1), ('d_36686489', 5), ('d_a12d95a2', 2), ('d_f759dd48', 6), ('pb_y2025_n5_v6', 1), ('j_f3aa335e', 1), ('j_a11d7966', 1), ('j_5f3cccb4', 1), ('l_0ee93aca', 2)]",
+   "PASS continued 12, 14, 3",
+   "PASS row 16 printed as superseded, rule ---",
+   "PASS references 1, 2 (replay 132, 112; C* 87 not tabulated)",
+   "PASS gap -8.8..-9.4",
+   "PASS pf 0.682-0.7",
+   "PASS 55/14/31",
+   "PASS unit 1.5: -2.5, 0.027",
+   "PASS 5 MWh +1.1",
+   "PASS E.3 eight certified",
+   "PASS reduced: E.3, E.5, E.6 absent",
+   "PASS reduced: B.1-B.4 present",
+   "PASS reduced: no reference to a moved table",
+   "PASS reduced: S4-S6 pointers present",
+   "PASS reduced: kept labels once",
+   "PASS reduced: comparisons table keeps 58 rows",
+   "PASS reduced: every kept full-text line present (0 missing)"
+  ],
+  "reduced_mode_pass_lines": [
+   "PASS reduced: E.3, E.5, E.6 absent",
+   "PASS reduced: B.1-B.4 present",
+   "PASS reduced: no reference to a moved table",
+   "PASS reduced: S4-S6 pointers present",
+   "PASS reduced: kept labels once",
+   "PASS reduced: comparisons table keeps 58 rows",
+   "PASS reduced: every kept full-text line present (0 missing)"
+  ],
+  "outcome_40_pass_0_fail": true
+ },
+ "generator": {
+  "generator": {
+   "path": "manuscript_review/gen_appE.py",
+   "sha256": "8a5f60d76a9d59c6e902bfdfaa916807b2a8bf40a5728a7a76b6d2ad8ff4eedd",
+   "committed_clean": true,
+   "last_commit": "441722c9",
+   "imports": [
+    "csv",
+    "os",
+    "re",
+    "sys"
+   ]
+  },
+  "reduced": {
+   "output": "w190a_audit/numbers/appE_generated_reduced_w190a.tex",
+   "sha256": "8e61636b6e30a2fba400294f427efb53522a73111baf1b3673affa3336bc9793",
+   "stdout": "ok 58 61 reduced",
+   "n_lines": 218,
+   "line_count_variants": {
+    "all": 218,
+    "non_blank": 194,
+    "comment": 11,
+    "non_blank_non_comment": 183,
+    "without_trailing_blank": 216,
+    "note": "recorded because the expert reports 215 / 215 lines"
+   },
+   "occurrences_in_9c_main": [
+    {
+     "byte_start": 144828,
+     "byte_end": 168970,
+     "start_line": 2104,
+     "end_line": 2321,
+     "n_lines": 218,
+     "starts_at_line_start": true,
+     "ends_at_line_end": true
+    }
+   ],
+   "n_occurrences_in_9c_main": 1,
+   "n_occurrences_in_9b_main": 0,
+   "lines_equal_at_located_position": 218,
+   "expert_lines": 215,
+   "appendix_block_9c_lines": [
+    2104,
+    2321
+   ],
+   "appendix_block_n_lines": 218,
+   "block_lines_outside_the_generated_text": []
+  },
+  "full": {
+   "output": "w190a_audit/numbers/appE_generated_full_w190a.tex",
+   "sha256": "66bd3dd0a4d7b623232d95c420d1ba50cdb4bb0c075cfc0093af38e34b3a3d14",
+   "equals_committed_appendixE_evaluation_record": true,
+   "committed_appendix_sha256": "66bd3dd0a4d7b623232d95c420d1ba50cdb4bb0c075cfc0093af38e34b3a3d14",
+   "n_occurrences_in_9c_main": 0,
+   "stdout": "ok 58 61 full"
+  },
+  "verifier_regenerations": {
+   "verify_appE_tmp/tmpy587bga2/appE_check.tex": {
+    "sha256": "66bd3dd0a4d7b623232d95c420d1ba50cdb4bb0c075cfc0093af38e34b3a3d14",
+    "equals_reduced_output": false,
+    "equals_full_output": true
+   },
+   "verify_appE_tmp/tmpo3_u3bd6/appE_full_check.tex": {
+    "sha256": "66bd3dd0a4d7b623232d95c420d1ba50cdb4bb0c075cfc0093af38e34b3a3d14",
+    "equals_reduced_output": false,
+    "equals_full_output": true
+   },
+   "verify_appE_tmp/tmpjejkrrvz/appE_reduced_check.tex": {
+    "sha256": "8e61636b6e30a2fba400294f427efb53522a73111baf1b3673affa3336bc9793",
+    "equals_reduced_output": true,
+    "equals_full_output": false
+   }
+  },
+  "gate_bitwise_reduced_in_main": true,
+  "matches_expert_215": false,
+  "full_mode_bitwise_committed": true,
+  "verifier_reduced_regeneration_equals": true
+ },
+ "numbers": {
+  "e21_numbering_note": "the evaluation numbers now refer to supplementary Table S4; E.21 is no longer printed. W182b's e21-based specs read W181a's committed e21_map, valid only while the E.21 rows equal cd57efc's: checked on the generator's E.21 rows (= Table S4) with the round-8 $^{b}$ marks removed -> True",
+  "e21_rows_unchanged_marks_removed": true,
+  "files": {
+   "main.tex": {
+    "plus_lines": [
+     1250,
+     1353,
+     1565,
+     1627,
+     1685,
+     1695,
+     1708,
+     1710,
+     2310
+    ],
+    "n_plus_lines": 9,
+    "n_tokens": 50,
+    "by_rating": {
+     "NOT RATED": 6,
+     "MATCH": 41,
+     "DERIVED": 3
+    },
+    "not_rated_categories": {
+     "identifier (label)": 3,
+     "language": 1,
+     "structure: table structure": 2
+    },
+    "declarations": [
+     {
+      "file": "main.tex",
+      "line": 1250,
+      "tokens": [
+       {
+        "written": "2.50",
+        "col": 389,
+        "status": "match"
+       },
+       {
+        "written": "2.00",
+        "col": 443,
+        "status": "match"
+       }
+      ],
+      "note": null,
+      "context": "W189p1 l. 1250 (46c9d77; same line at 3c379fa), carried unchanged: blue wrapper added around the supplement sentence; numbers unchanged"
+     },
+     {
+      "file": "main.tex",
+      "line": 1353,
+      "tokens": [
+       {
+        "written": "three",
+        "col": 167,
+        "status": "match"
+       }
+      ],
+      "note": null,
+      "context": "W189p1 l. 1353 (46c9d77; same line at 3c379fa), carried unchanged: \"Section~S5\" -> \"Table~S5\"; numbers unchanged"
+     },
+     {
+      "file": "main.tex",
+      "line": 1565,
+      "tokens": [
+       {
+        "written": "four",
+        "col": 143,
+        "status": "match"
+       },
+       {
+        "written": "2025",
+        "col": 171,
+        "status": "match"
+       },
+       {
+        "written": "2035",
+        "col": 180,
+        "status": "match"
+       },
+       {
+        "written": "90",
+        "col": 290,
+        "status": "match"
+       },
+       {
+        "written": "10",
+        "col": 348,
+        "status": "match"
+       },
+       {
+        "written": "six",
+        "col": 364,
+        "status": "match"
+       },
+       {
+        "written": "eight",
+        "col": 375,
+        "status": "match"
+       },
+       {
+        "written": "14",
+        "col": 406,
+        "status": "match"
+       },
+       {
+        "written": "15",
+        "col": 410,
+        "status": "match"
+       },
+       {
+        "written": "2035",
+        "col": 426,
+        "status": "match"
+       },
+       {
+        "written": "0.70",
+        "col": 464,
+        "status": "match"
+       },
+       {
+        "written": "0.70",
+        "col": 510,
+        "status": "match"
+       },
+       {
+        "written": "0.56",
+        "col": 518,
+        "status": "match"
+       },
+       {
+        "written": "seven",
+        "col": 587,
+        "status": "match"
+       },
+       {
+        "written": "50",
+        "col": 629,
+        "status": "match"
+       },
+       {
+        "written": "2035",
+        "col": 682,
+        "status": "match"
+       },
+       {
+        "written": "0.50",
+        "col": 754,
+        "status": "match"
+       },
+       {
+        "written": "0.68",
+        "col": 807,
+        "status": "match"
+       }
+      ],
+      "note": null,
+      "context": "W189p1 l. 1565 specs re-used for the carried tokens (90 / 10 now in that order); new: six, eight, 14, 15 (ruling 4 (ii))"
+     },
+     {
+      "file": "main.tex",
+      "line": 1627,
+      "tokens": [
+       {
+        "written": "four",
+        "col": 186,
+        "status": "match"
+       },
+       {
+        "written": "one",
+        "col": 357,
+        "status": "match"
+       },
+       {
+        "written": "twelve",
+        "col": 364,
+        "status": "match"
+       },
+       {
+        "written": "eight",
+        "col": 432,
+        "status": "match"
+       },
+       {
+        "written": "two",
+        "col": 522,
+        "status": "unchecked"
+       },
+       {
+        "written": "20.5",
+        "col": 698,
+        "status": "match"
+       },
+       {
+        "written": "1.62",
+        "col": 739,
+        "status": "match"
+       },
+       {
+        "written": "0.02",
+        "col": 774,
+        "status": "match"
+       },
+       {
+        "written": "90.9",
+        "col": 790,
+        "status": "derived"
+       },
+       {
+        "written": "12.2",
+        "col": 866,
+        "status": "match"
+       },
+       {
+        "written": "12.2",
+        "col": 905,
+        "status": "match"
+       }
+      ],
+      "note": null,
+      "context": "W189p1 l. 1627 (46c9d77; same line at 3c379fa), carried unchanged: \"Section~S5\" -> \"Table~S5\"; numbers unchanged"
+     },
+     {
+      "file": "main.tex",
+      "line": 1685,
+      "tokens": [
+       {
+        "written": "2",
+        "col": 68,
+        "status": "match"
+       }
+      ],
+      "note": null,
+      "context": "W189p1 l. 1685 (46c9d77; same line at 3c379fa), carried unchanged: blue wrapper added (panel heading)"
+     },
+     {
+      "file": "main.tex",
+      "line": 1695,
+      "tokens": [
+       {
+        "written": "2025",
+        "col": 80,
+        "status": "match"
+       }
+      ],
+      "note": null,
+      "context": "W189p1 l. 1695 (46c9d77; same line at 3c379fa), carried unchanged: blue wrapper added (panel heading)"
+     },
+     {
+      "file": "main.tex",
+      "line": 1710,
+      "tokens": [
+       {
+        "written": "318.0",
+        "col": 32,
+        "status": "match"
+       },
+       {
+        "written": "2025",
+        "col": 57,
+        "status": "match"
+       },
+       {
+        "written": "2",
+        "col": 183,
+        "status": "match"
+       },
+       {
+        "written": "2",
+        "col": 232,
+        "status": "match"
+       }
+      ],
+      "note": null,
+      "context": "W189p1 l. 1710 (46c9d77; same line at 3c379fa), carried unchanged: wrapper closed at the end of the note"
+     },
+     {
+      "file": "main.tex",
+      "line": 2310,
+      "tokens": [
+       {
+        "written": "-13.0",
+        "col": 409,
+        "status": "derived"
+       },
+       {
+        "written": "-2",
+        "col": 434,
+        "status": "derived"
+       },
+       {
+        "written": "10^{-5}",
+        "col": 443,
+        "status": "match"
+       },
+       {
+        "written": "40",
+        "col": 500,
+        "status": "match"
+       },
+       {
+        "written": "2.2",
+        "col": 666,
+        "status": "match"
+       },
+       {
+        "written": "16",
+        "col": 709,
+        "status": "match"
+       },
+       {
+        "written": "171",
+        "col": 748,
+        "status": "match"
+       }
+      ],
+      "note": null,
+      "context": "W189p1 l. 2310 (46c9d77; same line at 3c379fa), carried unchanged: \"in Q\" parenthetical and the evaluation-16 clause reworded; the seven numbers unchanged (171 is now stated as the row total, \"slack content ... almost all of it voltage slack\")"
+     }
+    ]
+   },
+   "response_to_reviewers_draft.tex": {
+    "plus_lines": [
+     1,
+     285
+    ],
+    "n_plus_lines": 2,
+    "n_tokens": 43,
+    "by_rating": {
+     "NOT RATED": 43
+    },
+    "not_rated_categories": {
+     "identifier (label)": 14,
+     "identifier (date)": 8,
+     "identifier (alnum)": 2,
+     "comment (not typeset)": 18,
+     "identifier (hash)": 1
+    },
+    "declarations": []
+   },
+   "cover_letter.tex": {
+    "plus_lines": [
+     13,
+     21,
+     22,
+     23
+    ],
+    "n_plus_lines": 4,
+    "n_tokens": 12,
+    "by_rating": {
+     "NOT RATED": 5,
+     "MATCH": 5,
+     "DERIVED": 2
+    },
+    "not_rated_categories": {
+     "identifier": 2,
+     "identifier (label)": 1,
+     "pointer / citation number (W189 part 2 scope; not rated here)": 1,
+     "language": 1
+    },
+    "declarations": [
+     {
+      "file": "cover_letter.tex",
+      "line": 13,
+      "tokens": [
+       {
+        "written": "26",
+        "col": 217,
+        "status": "unchecked"
+       },
+       {
+        "written": "06323",
+        "col": 220,
+        "status": "unchecked"
+       },
+       {
+        "written": "three",
+        "col": 275,
+        "status": "match"
+       }
+      ],
+      "note": null,
+      "context": "JES-D-[number] -> EST-D-26-06323; \"three Reviewers\" unchanged"
+     },
+     {
+      "file": "cover_letter.tex",
+      "line": 21,
+      "tokens": [
+       {
+        "written": "two",
+        "col": 55,
+        "status": "match"
+       },
+       {
+        "written": "20.5",
+        "col": 221,
+        "status": "match"
+       },
+       {
+        "written": "0.02",
+        "col": 236,
+        "status": "match"
+       },
+       {
+        "written": "90.9",
+        "col": 252,
+        "status": "derived"
+       },
+       {
+        "written": "12.2",
+        "col": 290,
+        "status": "derived"
+       },
+       {
+        "written": "two",
+        "col": 350,
+        "status": "match"
+       }
+      ],
+      "note": null,
+      "context": "new (round 9c): the bracketed placeholder filled with W184 / W185; the specs are the W189p1 specs of the same quantities (section 4.4 l. 1627; letter l. 279 / 170)"
+     },
+     {
+      "file": "cover_letter.tex",
+      "line": 23,
+      "tokens": [
+       {
+        "written": "one",
+        "col": 266,
+        "status": "unchecked"
+       }
+      ],
+      "note": null,
+      "context": "new (round 9c): the delay paragraph"
+     }
+    ]
+   }
+  },
+  "by_rating_total": {
+   "NOT RATED": 54,
+   "MATCH": 46,
+   "DERIVED": 5
+  },
+  "tokens": [
+   {
+    "file": "main.tex",
+    "line": 1250,
+    "col": 306,
+    "written": "S1",
+    "type": "label",
+    "status": "excluded",
+    "rating": "NOT RATED",
+    "category": "identifier (label)",
+    "counterpart": null,
+    "counterpart_value": null,
+    "value_at_written_precision": null,
+    "rule": null,
+    "note": null,
+    "convention": null,
+    "spec_desc": null,
+    "line_text": "Baseline wholesale energy prices were obtained from the Portuguese TSO platform~\\cite{ren_market_platform}, whereas flexibility market prices were sourced from ",
+    "new_vs_9b": "carried",
+    "hunk_9b_lines": [
+     1250
+    ]
+   },
+   {
+    "file": "main.tex",
+    "line": 1250,
+    "col": 389,
+    "written": "2.50",
+    "type": "num",
+    "status": "match",
+    "rating": "MATCH",
+    "category": null,
+    "counterpart": "SRP1_market_data.xlsx sheet Growth Factors, Energy (x 100); the sheet production reads (shared_resources_planning.py, sheet_name='Growth Factors')",
+    "counterpart_value": 2.5,
+    "value_at_written_precision": "2.50",
+    "rule": "as recorded (the written precision)",
+    "note": null,
+    "convention": "n/a",
+    "spec_desc": "SRP1_market_data.xlsx sheet Growth Factors, Energy (x 100); the sheet production reads (shared_resources_planning.py, sheet_name='Growth Factors')",
+    "line_text": "Baseline wholesale energy prices were obtained from the Portuguese TSO platform~\\cite{ren_market_platform}, whereas flexibility market prices were sourced from ",
+    "new_vs_9b": "carried",
+    "hunk_9b_lines": [
+     1250
+    ]
+   },
+   {
+    "file": "main.tex",
+    "line": 1250,
+    "col": 443,
+    "written": "2.00",
+    "type": "num",
+    "status": "match",
+    "rating": "MATCH",
+    "category": null,
+    "counterpart": "SRP1_market_data.xlsx sheet Growth Factors, Flexibility (x 100)",
+    "counterpart_value": 2.0,
+    "value_at_written_precision": "2.00",
+    "rule": "as recorded (the written precision)",
+    "note": null,
+    "convention": "n/a",
+    "spec_desc": "SRP1_market_data.xlsx sheet Growth Factors, Flexibility (x 100)",
+    "line_text": "Baseline wholesale energy prices were obtained from the Portuguese TSO platform~\\cite{ren_market_platform}, whereas flexibility market prices were sourced from ",
+    "new_vs_9b": "carried",
+    "hunk_9b_lines": [
+     1250
+    ]
+   },
+   {
+    "file": "main.tex",
+    "line": 1353,
+    "col": 167,
+    "written": "three",
+    "type": "word",
+    "status": "match",
+    "rating": "MATCH",
+    "category": null,
+    "counterpart": "T6 n_starts (both arms)",
+    "counterpart_value": 3,
+    "value_at_written_precision": "3",
+    "rule": "count / integer (exact)",
+    "note": null,
+    "convention": "n/a",
+    "spec_desc": "T6 n_starts (both arms)",
+    "line_text": "All arrangements are evaluated using the same cost function $Q$, excluding the contracted interface settlement. For each static arrangement, the lowest cost fro",
+    "new_vs_9b": "carried",
+    "hunk_9b_lines": [
+     1353
+    ]
+   },
+   {
+    "file": "main.tex",
+    "line": 1353,
+    "col": 278,
+    "written": "S5",
+    "type": "label",
+    "status": "excluded",
+    "rating": "NOT RATED",
+    "category": "identifier (label)",
+    "counterpart": null,
+    "counterpart_value": null,
+    "value_at_written_precision": null,
+    "rule": null,
+    "note": null,
+    "convention": null,
+    "spec_desc": null,
+    "line_text": "All arrangements are evaluated using the same cost function $Q$, excluding the contracted interface settlement. For each static arrangement, the lowest cost fro",
+    "new_vs_9b": "carried",
+    "hunk_9b_lines": [
+     1353
+    ]
+   },
+   {
+    "file": "main.tex",
+    "line": 1565,
+    "col": 143,
+    "written": "four",
+    "type": "word",
+    "status": "match",
+    "rating": "MATCH",
+    "category": null,
+    "counterpart": "W188d SoC CSV: distinct representative days = SRP1.json Days (count)",
+    "counterpart_value": 4,
+    "value_at_written_precision": "4",
+    "rule": "count / integer (exact)",
+    "note": null,
+    "convention": "n/a",
+    "spec_desc": "W188d SoC CSV: distinct representative days = SRP1.json Days (count)",
+    "line_text": "Figure~\\ref{fig:res_soc_soh} shows how degradation reaches the dispatch. Panel~(a) gives the stored energy of the reference unit over the four representative da",
+    "new_vs_9b": "carried",
+    "hunk_9b_lines": [
+     1565
+    ]
+   },
+   {
+    "file": "main.tex",
+    "line": 1565,
+    "col": 171,
+    "written": "2025",
+    "type": "num",
+    "status": "match",
+    "rating": "MATCH",
+    "category": null,
+    "counterpart": "W188d SoC CSV year, in SRP1.json Years",
+    "counterpart_value": 2025,
+    "value_at_written_precision": "2025",
+    "rule": "count / integer (exact)",
+    "note": null,
+    "convention": "n/a",
+    "spec_desc": "W188d SoC CSV year, in SRP1.json Years",
+    "line_text": "Figure~\\ref{fig:res_soc_soh} shows how degradation reaches the dispatch. Panel~(a) gives the stored energy of the reference unit over the four representative da",
+    "new_vs_9b": "carried",
+    "hunk_9b_lines": [
+     1565
+    ]
+   },
+   {
+    "file": "main.tex",
+    "line": 1565,
+    "col": 180,
+    "written": "2035",
+    "type": "num",
+    "status": "match",
+    "rating": "MATCH",
+    "category": null,
+    "counterpart": "W188d SoC CSV year, in SRP1.json Years",
+    "counterpart_value": 2035,
+    "value_at_written_precision": "2035",
+    "rule": "count / integer (exact)",
+    "note": null,
+    "convention": "n/a",
+    "spec_desc": "W188d SoC CSV year, in SRP1.json Years",
+    "line_text": "Figure~\\ref{fig:res_soc_soh} shows how degradation reaches the dispatch. Panel~(a) gives the stored energy of the reference unit over the four representative da",
+    "new_vs_9b": "carried",
+    "hunk_9b_lines": [
+     1565
+    ]
+   },
+   {
+    "file": "main.tex",
+    "line": 1565,
+    "col": 290,
+    "written": "90",
+    "type": "num",
+    "status": "match",
+    "rating": "MATCH",
+    "category": null,
+    "counterpart": "definitions.py (sha256 7e5719af) lines [38] /^ENERGY_STORAGE_MAX_ENERGY_STORED = ([0-9.]+)/ -> [0.9]",
+    "counterpart_value": 90.0,
+    "value_at_written_precision": "90",
+    "rule": "code constant x 100, at the written precision (0 dp)",
+    "note": null,
+    "convention": "n/a",
+    "spec_desc": "None",
+    "line_text": "Figure~\\ref{fig:res_soc_soh} shows how degradation reaches the dispatch. Panel~(a) gives the stored energy of the reference unit over the four representative da",
+    "new_vs_9b": "carried",
+    "hunk_9b_lines": [
+     1565
+    ]
+   },
+   {
+    "file": "main.tex",
+    "line": 1565,
+    "col": 348,
+    "written": "10",
+    "type": "num",
+    "status": "match",
+    "rating": "MATCH",
+    "category": null,
+    "counterpart": "definitions.py (sha256 7e5719af) lines [39] /^ENERGY_STORAGE_MIN_ENERGY_STORED = ([0-9.]+)/ -> [0.1]",
+    "counterpart_value": 10.0,
+    "value_at_written_precision": "10",
+    "rule": "code constant x 100, at the written precision (0 dp)",
+    "note": null,
+    "convention": "n/a",
+    "spec_desc": "None",
+    "line_text": "Figure~\\ref{fig:res_soc_soh} shows how degradation reaches the dispatch. Panel~(a) gives the stored energy of the reference unit over the four representative da",
+    "new_vs_9b": "carried",
+    "hunk_9b_lines": [
+     1565
+    ]
+   },
+   {
+    "file": "main.tex",
+    "line": 1565,
+    "col": 364,
+    "written": "six",
+    "type": "word",
+    "status": "match",
+    "rating": "MATCH",
+    "category": null,
+    "counterpart": "W188d SoC block summary CSV: (year, day) blocks with n_contact_lower_tso > 0 (W188d contact rule, within 1e-4 MWh of the 10 % limit)",
+    "counterpart_value": 6,
+    "value_at_written_precision": "6",
+    "rule": "count / integer (exact)",
+    "note": null,
+    "convention": "n/a",
+    "spec_desc": "W188d SoC block summary CSV: (year, day) blocks with n_contact_lower_tso > 0 (W188d contact rule, within 1e-4 MWh of the 10 % limit)",
+    "line_text": "Figure~\\ref{fig:res_soc_soh} shows how degradation reaches the dispatch. Panel~(a) gives the stored energy of the reference unit over the four representative da",
+    "new_vs_9b": "NEW",
+    "hunk_9b_lines": [
+     1565
+    ]
+   },
+   {
+    "file": "main.tex",
+    "line": 1565,
+    "col": 375,
+    "written": "eight",
+    "type": "word",
+    "status": "match",
+    "rating": "MATCH",
+    "category": null,
+    "counterpart": "W188d SoC CSVs: (year, day) blocks plotted (2 years x 4 days)",
+    "counterpart_value": 8,
+    "value_at_written_precision": "8",
+    "rule": "count / integer (exact)",
+    "note": null,
+    "convention": "n/a",
+    "spec_desc": "W188d SoC CSVs: (year, day) blocks plotted (2 years x 4 days)",
+    "line_text": "Figure~\\ref{fig:res_soc_soh} shows how degradation reaches the dispatch. Panel~(a) gives the stored energy of the reference unit over the four representative da",
+    "new_vs_9b": "NEW",
+    "hunk_9b_lines": [
+     1565
+    ]
+   },
+   {
+    "file": "main.tex",
+    "line": 1565,
+    "col": 406,
+    "written": "14",
+    "type": "num",
+    "status": "match",
+    "rating": "MATCH",
+    "category": null,
+    "counterpart": "W188d: soc_min_tso_mwh(2025, Winter) / e_available_record_mwh(2025) x 100",
+    "counterpart_value": 13.878019310435176,
+    "value_at_written_precision": "14",
+    "rule": "as recorded (the written precision)",
+    "note": null,
+    "convention": "n/a",
+    "spec_desc": "W188d: soc_min_tso_mwh(2025, Winter) / e_available_record_mwh(2025) x 100",
+    "line_text": "Figure~\\ref{fig:res_soc_soh} shows how degradation reaches the dispatch. Panel~(a) gives the stored energy of the reference unit over the four representative da",
+    "new_vs_9b": "NEW",
+    "hunk_9b_lines": [
+     1565
+    ]
+   },
+   {
+    "file": "main.tex",
+    "line": 1565,
+    "col": 410,
+    "written": "15",
+    "type": "num",
+    "status": "match",
+    "rating": "MATCH",
+    "category": null,
+    "counterpart": "W188d: soc_min_tso_mwh(2035, Winter) / e_available_record_mwh(2035) x 100",
+    "counterpart_value": 15.403695311478156,
+    "value_at_written_precision": "15",
+    "rule": "as recorded (the written precision)",
+    "note": null,
+    "convention": "n/a",
+    "spec_desc": "W188d: soc_min_tso_mwh(2035, Winter) / e_available_record_mwh(2035) x 100",
+    "line_text": "Figure~\\ref{fig:res_soc_soh} shows how degradation reaches the dispatch. Panel~(a) gives the stored energy of the reference unit over the four representative da",
+    "new_vs_9b": "NEW",
+    "hunk_9b_lines": [
+     1565
+    ]
+   },
+   {
+    "file": "main.tex",
+    "line": 1565,
+    "col": 426,
+    "written": "2035",
+    "type": "num",
+    "status": "match",
+    "rating": "MATCH",
+    "category": null,
+    "counterpart": "W188d SoH CSV: first block with the floor row active, baseline",
+    "counterpart_value": 2035,
+    "value_at_written_precision": "2035",
+    "rule": "count / integer (exact)",
+    "note": null,
+    "convention": "n/a",
+    "spec_desc": "W188d SoH CSV: first block with the floor row active, baseline",
+    "line_text": "Figure~\\ref{fig:res_soc_soh} shows how degradation reaches the dispatch. Panel~(a) gives the stored energy of the reference unit over the four representative da",
+    "new_vs_9b": "carried",
+    "hunk_9b_lines": [
+     1565
+    ]
+   },
+   {
+    "file": "main.tex",
+    "line": 1565,
+    "col": 464,
+    "written": "0.70",
+    "type": "num",
+    "status": "match",
+    "rating": "MATCH",
+    "category": null,
+    "counterpart": "data/SRP1/SharedESS/SRP1_ESS_Params.json ageing.minimum_soh (sha256 39106f93)",
+    "counterpart_value": 0.7,
+    "value_at_written_precision": "0.70",
+    "rule": "as recorded (the written precision)",
+    "note": null,
+    "convention": "n/a",
+    "spec_desc": "SRP1_ESS_Params.json minimum_soh",
+    "line_text": "Figure~\\ref{fig:res_soc_soh} shows how degradation reaches the dispatch. Panel~(a) gives the stored energy of the reference unit over the four representative da",
+    "new_vs_9b": "carried",
+    "hunk_9b_lines": [
+     1565
+    ]
+   },
+   {
+    "file": "main.tex",
+    "line": 1565,
+    "col": 510,
+    "written": "0.70",
+    "type": "num",
+    "status": "match",
+    "rating": "MATCH",
+    "category": null,
+    "counterpart": "W188d limits CSV 2025: 90 % - 10 % of E^Av (MWh) = 0.7044",
+    "counterpart_value": 0.7043662033913805,
+    "value_at_written_precision": "0.70",
+    "rule": "as recorded (the written precision)",
+    "note": null,
+    "convention": "n/a",
+    "spec_desc": "W188d limits CSV 2025: 90 % - 10 % of E^Av (MWh) = 0.7044",
+    "line_text": "Figure~\\ref{fig:res_soc_soh} shows how degradation reaches the dispatch. Panel~(a) gives the stored energy of the reference unit over the four representative da",
+    "new_vs_9b": "carried",
+    "hunk_9b_lines": [
+     1565
+    ]
+   },
+   {
+    "file": "main.tex",
+    "line": 1565,
+    "col": 518,
+    "written": "0.56",
+    "type": "num",
+    "status": "match",
+    "rating": "MATCH",
+    "category": null,
+    "counterpart": "W188d limits CSV 2035: 90 % - 10 % of E^Av (MWh) = 0.5600",
+    "counterpart_value": 0.5599999920000448,
+    "value_at_written_precision": "0.56",
+    "rule": "as recorded (the written precision)",
+    "note": null,
+    "convention": "n/a",
+    "spec_desc": "W188d limits CSV 2035: 90 % - 10 % of E^Av (MWh) = 0.5600",
+    "line_text": "Figure~\\ref{fig:res_soc_soh} shows how degradation reaches the dispatch. Panel~(a) gives the stored energy of the reference unit over the four representative da",
+    "new_vs_9b": "carried",
+    "hunk_9b_lines": [
+     1565
+    ]
+   },
+   {
+    "file": "main.tex",
+    "line": 1565,
+    "col": 587,
+    "written": "seven",
+    "type": "word",
+    "status": "match",
+    "rating": "MATCH",
+    "category": null,
+    "counterpart": "W188d SoH CSV: calibrations",
+    "counterpart_value": 7,
+    "value_at_written_precision": "7",
+    "rule": "count / integer (exact)",
+    "note": null,
+    "convention": "n/a",
+    "spec_desc": "W188d SoH CSV: calibrations",
+    "line_text": "Figure~\\ref{fig:res_soc_soh} shows how degradation reaches the dispatch. Panel~(a) gives the stored energy of the reference unit over the four representative da",
+    "new_vs_9b": "carried",
+    "hunk_9b_lines": [
+     1565
+    ]
+   },
+   {
+    "file": "main.tex",
+    "line": 1565,
+    "col": 629,
+    "written": "50",
+    "type": "num",
+    "status": "match",
+    "rating": "MATCH",
+    "category": null,
+    "counterpart": "T8 k of C3_unit: R = exp(-N D / k), N D = 8,000",
+    "counterpart_value": 0.5,
+    "value_at_written_precision": "50",
+    "rule": "% (rate) 0 dp",
+    "note": null,
+    "convention": "n/a",
+    "spec_desc": "T8 k of C3_unit: R = exp(-N D / k), N D = 8,000",
+    "line_text": "Figure~\\ref{fig:res_soc_soh} shows how degradation reaches the dispatch. Panel~(a) gives the stored energy of the reference unit over the four representative da",
+    "new_vs_9b": "carried",
+    "hunk_9b_lines": [
+     1565
+    ]
+   },
+   {
+    "file": "main.tex",
+    "line": 1565,
+    "col": 682,
+    "written": "2035",
+    "type": "num",
+    "status": "match",
+    "rating": "MATCH",
+    "category": null,
+    "counterpart": "W188d SoH CSV: first floor block of the baseline and both 50 % retention arms (equal)",
+    "counterpart_value": 2035,
+    "value_at_written_precision": "2035",
+    "rule": "count / integer (exact)",
+    "note": null,
+    "convention": "n/a",
+    "spec_desc": "W188d SoH CSV: first floor block of the baseline and both 50 % retention arms (equal)",
+    "line_text": "Figure~\\ref{fig:res_soc_soh} shows how degradation reaches the dispatch. Panel~(a) gives the stored energy of the reference unit over the four representative da",
+    "new_vs_9b": "carried",
+    "hunk_9b_lines": [
+     1565
+    ]
+   },
+   {
+    "file": "main.tex",
+    "line": 1565,
+    "col": 754,
+    "written": "0.50",
+    "type": "num",
+    "status": "match",
+    "rating": "MATCH",
+    "category": null,
+    "counterpart": "data/SRP1/Results/P515S53/w155_a64_cells/w155_summary_after_04_e_soh050.json reports.e_soh050.minimum_soh (sha256 3c71d71d)",
+    "counterpart_value": 0.5,
+    "value_at_written_precision": "0.50",
+    "rule": "as recorded (the written precision)",
+    "note": null,
+    "convention": "n/a",
+    "spec_desc": "A64 e_soh050 minimum_soh",
+    "line_text": "Figure~\\ref{fig:res_soc_soh} shows how degradation reaches the dispatch. Panel~(a) gives the stored energy of the reference unit over the four representative da",
+    "new_vs_9b": "carried",
+    "hunk_9b_lines": [
+     1565
+    ]
+   },
+   {
+    "file": "main.tex",
+    "line": 1565,
+    "col": 807,
+    "written": "0.68",
+    "type": "num",
+    "status": "match",
+    "rating": "MATCH",
+    "category": null,
+    "counterpart": "W188d SoH CSV: baseline 0.50 floor, SoH at the end of the 2035 block (0.677290)",
+    "counterpart_value": 0.6772901357701443,
+    "value_at_written_precision": "0.68",
+    "rule": "as recorded (the written precision)",
+    "note": null,
+    "convention": "n/a",
+    "spec_desc": "W188d SoH CSV: baseline 0.50 floor, SoH at the end of the 2035 block (0.677290)",
+    "line_text": "Figure~\\ref{fig:res_soc_soh} shows how degradation reaches the dispatch. Panel~(a) gives the stored energy of the reference unit over the four representative da",
+    "new_vs_9b": "carried",
+    "hunk_9b_lines": [
+     1565
+    ]
+   },
+   {
+    "file": "main.tex",
+    "line": 1627,
+    "col": 186,
+    "written": "four",
+    "type": "word",
+    "status": "match",
+    "rating": "MATCH",
+    "category": null,
+    "counterpart": "data/SRP1/Results/P515S53/w160_step6_frozen/frozen_step6_tables_v1_590088fe.json tables.benchmark.reverse_flow_interface_hours",
+    "counterpart_value": 4,
+    "value_at_written_precision": "4",
+    "rule": "count / integer (exact)",
+    "note": null,
+    "convention": "n/a",
+    "spec_desc": "benchmark.reverse_flow_interface_hours",
+    "line_text": "The comparison also reflects differences in interface restrictions. Both static arrangements prohibit DN-to-TN active-power flow, whereas coordinated operation ",
+    "new_vs_9b": "carried",
+    "hunk_9b_lines": [
+     1627
+    ]
+   },
+   {
+    "file": "main.tex",
+    "line": 1627,
+    "col": 357,
+    "written": "one",
+    "type": "word",
+    "status": "match",
+    "rating": "MATCH",
+    "category": null,
+    "counterpart": "data/SRP1/Results/P515S53/w160_step6_frozen/frozen_step6_tables_v1_590088fe.json tables.benchmark.sweep.sweep_passive_cold.n_blocks",
+    "counterpart_value": 1,
+    "value_at_written_precision": "1",
+    "rule": "count / integer (exact)",
+    "note": null,
+    "convention": "n/a",
+    "spec_desc": "benchmark.sweep.sweep_passive_cold.n_blocks",
+    "line_text": "The comparison also reflects differences in interface restrictions. Both static arrangements prohibit DN-to-TN active-power flow, whereas coordinated operation ",
+    "new_vs_9b": "carried",
+    "hunk_9b_lines": [
+     1627
+    ]
+   },
+   {
+    "file": "main.tex",
+    "line": 1627,
+    "col": 364,
+    "written": "twelve",
+    "type": "word",
+    "status": "match",
+    "rating": "MATCH",
+    "category": null,
+    "counterpart": "SRP1.json: 3 years x 4 days = 12 TN blocks",
+    "counterpart_value": 12,
+    "value_at_written_precision": "12",
+    "rule": "count / integer (exact)",
+    "note": null,
+    "convention": "n/a",
+    "spec_desc": "SRP1.json: 3 years x 4 days = 12 TN blocks",
+    "line_text": "The comparison also reflects differences in interface restrictions. Both static arrangements prohibit DN-to-TN active-power flow, whereas coordinated operation ",
+    "new_vs_9b": "carried",
+    "hunk_9b_lines": [
+     1627
+    ]
+   },
+   {
+    "file": "main.tex",
+    "line": 1627,
+    "col": 432,
+    "written": "eight",
+    "type": "word",
+    "status": "match",
+    "rating": "MATCH",
+    "category": null,
+    "counterpart": "data/SRP1/Results/P515S53/w160_step6_frozen/frozen_step6_tables_v1_590088fe.json tables.benchmark.sweep.sweep_price_taker_cold.n_blocks",
+    "counterpart_value": 8,
+    "value_at_written_precision": "8",
+    "rule": "count / integer (exact)",
+    "note": null,
+    "convention": "n/a",
+    "spec_desc": "benchmark.sweep.sweep_price_taker_cold.n_blocks",
+    "line_text": "The comparison also reflects differences in interface restrictions. Both static arrangements prohibit DN-to-TN active-power flow, whereas coordinated operation ",
+    "new_vs_9b": "carried",
+    "hunk_9b_lines": [
+     1627
+    ]
+   },
+   {
+    "file": "main.tex",
+    "line": 1627,
+    "col": 471,
+    "written": "S5",
+    "type": "label",
+    "status": "excluded",
+    "rating": "NOT RATED",
+    "category": "identifier (label)",
+    "counterpart": null,
+    "counterpart_value": null,
+    "value_at_written_precision": null,
+    "rule": null,
+    "note": null,
+    "convention": null,
+    "spec_desc": null,
+    "line_text": "The comparison also reflects differences in interface restrictions. Both static arrangements prohibit DN-to-TN active-power flow, whereas coordinated operation ",
+    "new_vs_9b": "carried",
+    "hunk_9b_lines": [
+     1627
+    ]
+   },
+   {
+    "file": "main.tex",
+    "line": 1627,
+    "col": 522,
+    "written": "two",
+    "type": "word",
+    "status": "unchecked",
+    "rating": "NOT RATED",
+    "category": "language",
+    "counterpart": null,
+    "counterpart_value": null,
+    "value_at_written_precision": null,
+    "rule": null,
+    "note": "\"the two effects\"",
+    "convention": null,
+    "spec_desc": "\"the two effects\"",
+    "line_text": "The comparison also reflects differences in interface restrictions. Both static arrangements prohibit DN-to-TN active-power flow, whereas coordinated operation ",
+    "new_vs_9b": "carried",
+    "hunk_9b_lines": [
+     1627
+    ]
+   },
+   {
+    "file": "main.tex",
+    "line": 1627,
+    "col": 698,
+    "written": "20.5",
+    "type": "num",
+    "status": "match",
+    "rating": "MATCH",
+    "category": null,
+    "counterpart": "A89 claims JSON: Q(C_NRF) - Q(C_OPEN), the NRF restriction on the consensus exchange (W184 E3)",
+    "counterpart_value": 20463.88114476204,
+    "value_at_written_precision": "20.5",
+    "rule": "kEUR 1 dp",
+    "note": null,
+    "convention": "gross (Q = gross_operational_cost, settlement excluded)",
+    "spec_desc": "A89 claims JSON: Q(C_NRF) - Q(C_OPEN), the NRF restriction on the consensus exchange (W184 E3)",
+    "line_text": "The comparison also reflects differences in interface restrictions. Both static arrangements prohibit DN-to-TN active-power flow, whereas coordinated operation ",
+    "new_vs_9b": "carried",
+    "hunk_9b_lines": [
+     1627
+    ]
+   },
+   {
+    "file": "main.tex",
+    "line": 1627,
+    "col": 739,
+    "written": "1.62",
+    "type": "num",
+    "status": "match",
+    "rating": "MATCH",
+    "category": null,
+    "counterpart": "A89 claims JSON: |Q(C_NRF) - Q(C_OPEN)| / rule-v6 threshold 12,627.51 EUR (determinate)",
+    "counterpart_value": 1.620578771908061,
+    "value_at_written_precision": "1.62",
+    "rule": "as recorded (the written precision)",
+    "note": null,
+    "convention": "n/a",
+    "spec_desc": "A89 claims JSON: |Q(C_NRF) - Q(C_OPEN)| / rule-v6 threshold 12,627.51 EUR (determinate)",
+    "line_text": "The comparison also reflects differences in interface restrictions. Both static arrangements prohibit DN-to-TN active-power flow, whereas coordinated operation ",
+    "new_vs_9b": "carried",
+    "hunk_9b_lines": [
+     1627
+    ]
+   },
+   {
+    "file": "main.tex",
+    "line": 1627,
+    "col": 774,
+    "written": "0.02",
+    "type": "num",
+    "status": "match",
+    "rating": "MATCH",
+    "category": null,
+    "counterpart": "A89 claims JSON: (Q(C_NRF) - Q(C_OPEN)) / (Q(P_NRF) - Q(C_OPEN)) = 0.0225 %",
+    "counterpart_value": 0.0002251336051486132,
+    "value_at_written_precision": "0.02",
+    "rule": "% 1 dp",
+    "note": null,
+    "convention": "gross (ratio of gross Q differences)",
+    "spec_desc": "A89 claims JSON: (Q(C_NRF) - Q(C_OPEN)) / (Q(P_NRF) - Q(C_OPEN)) = 0.0225 %",
+    "line_text": "The comparison also reflects differences in interface restrictions. Both static arrangements prohibit DN-to-TN active-power flow, whereas coordinated operation ",
+    "new_vs_9b": "carried",
+    "hunk_9b_lines": [
+     1627
+    ]
+   },
+   {
+    "file": "main.tex",
+    "line": 1627,
+    "col": 790,
+    "written": "90.9",
+    "type": "num",
+    "status": "derived",
+    "rating": "DERIVED",
+    "category": null,
+    "counterpart": "derived: benefit 90,896,608.40 EUR = 90,896.6 kEUR = 90.8966 MEUR (data/SRP1/Results/P515S53/w160_step6_frozen/frozen_step6_tables_v1_590088fe.json tables.benchmark.benefit)",
+    "counterpart_value": 90.89660839950395,
+    "value_at_written_precision": "90.9",
+    "rule": "derived; compared at the written precision (1 dp)",
+    "note": "coordination saving vs the price-taker arrangement",
+    "convention": "gross (Q = gross_operational_cost, settlement excluded)",
+    "spec_desc": "coordination saving vs the price-taker arrangement",
+    "line_text": "The comparison also reflects differences in interface restrictions. Both static arrangements prohibit DN-to-TN active-power flow, whereas coordinated operation ",
+    "new_vs_9b": "carried",
+    "hunk_9b_lines": [
+     1627
+    ]
+   },
+   {
+    "file": "main.tex",
+    "line": 1627,
+    "col": 866,
+    "written": "12.2",
+    "type": "num",
+    "status": "match",
+    "rating": "MATCH",
+    "category": null,
+    "counterpart": "A89 claims JSON: enabled (Q(P_NRF) - Q(C_OPEN)) / Q(P_NRF) = 12.205 %",
+    "counterpart_value": 0.1220464982389571,
+    "value_at_written_precision": "12.2",
+    "rule": "% 1 dp",
+    "note": null,
+    "convention": "gross (price-taker denominator)",
+    "spec_desc": "A89 claims JSON: enabled (Q(P_NRF) - Q(C_OPEN)) / Q(P_NRF) = 12.205 %",
+    "line_text": "The comparison also reflects differences in interface restrictions. Both static arrangements prohibit DN-to-TN active-power flow, whereas coordinated operation ",
+    "new_vs_9b": "carried",
+    "hunk_9b_lines": [
+     1627
+    ]
+   },
+   {
+    "file": "main.tex",
+    "line": 1627,
+    "col": 905,
+    "written": "12.2",
+    "type": "num",
+    "status": "match",
+    "rating": "MATCH",
+    "category": null,
+    "counterpart": "A89 claims JSON: X (Q(P_NRF) - Q(C_NRF)) / Q(P_NRF) = 12.202 %",
+    "counterpart_value": 0.1220190214708128,
+    "value_at_written_precision": "12.2",
+    "rule": "% 1 dp",
+    "note": null,
+    "convention": "gross (price-taker denominator)",
+    "spec_desc": "A89 claims JSON: X (Q(P_NRF) - Q(C_NRF)) / Q(P_NRF) = 12.202 %",
+    "line_text": "The comparison also reflects differences in interface restrictions. Both static arrangements prohibit DN-to-TN active-power flow, whereas coordinated operation ",
+    "new_vs_9b": "carried",
+    "hunk_9b_lines": [
+     1627
+    ]
+   },
+   {
+    "file": "main.tex",
+    "line": 1685,
+    "col": 22,
+    "written": "4",
+    "type": "num",
+    "status": "excluded",
+    "rating": "NOT RATED",
+    "category": "structure: table structure",
+    "counterpart": null,
+    "counterpart_value": null,
+    "value_at_written_precision": null,
+    "rule": null,
+    "note": null,
+    "convention": null,
+    "spec_desc": null,
+    "line_text": "\\multicolumn{4}{l}{\\textcolor{blue}{(a) Installation year, 2\\,\\% discount rate}} \\\\",
+    "new_vs_9b": "carried",
+    "hunk_9b_lines": [
+     1685
+    ]
+   },
+   {
+    "file": "main.tex",
+    "line": 1685,
+    "col": 68,
+    "written": "2",
+    "type": "num",
+    "status": "match",
+    "rating": "MATCH",
+    "category": null,
+    "counterpart": "data/SRP1/SRP1.json DiscountFactor (sha256 61a794a7)",
+    "counterpart_value": 0.02,
+    "value_at_written_precision": "2",
+    "rule": "% (rate) 0 dp",
+    "note": null,
+    "convention": "n/a",
+    "spec_desc": "SRP1.json DiscountFactor (x 100)",
+    "line_text": "\\multicolumn{4}{l}{\\textcolor{blue}{(a) Installation year, 2\\,\\% discount rate}} \\\\",
+    "new_vs_9b": "carried",
+    "hunk_9b_lines": [
+     1685
+    ]
+   },
+   {
+    "file": "main.tex",
+    "line": 1695,
+    "col": 22,
+    "written": "4",
+    "type": "num",
+    "status": "excluded",
+    "rating": "NOT RATED",
+    "category": "structure: table structure",
+    "counterpart": null,
+    "counterpart_value": null,
+    "value_at_written_precision": null,
+    "rule": null,
+    "note": null,
+    "convention": null,
+    "spec_desc": null,
+    "line_text": "\\multicolumn{4}{l}{\\textcolor{blue}{(b) Discount rate, installation in 2025}} \\\\",
+    "new_vs_9b": "carried",
+    "hunk_9b_lines": [
+     1695
+    ]
+   },
+   {
+    "file": "main.tex",
+    "line": 1695,
+    "col": 80,
+    "written": "2025",
+    "type": "num",
+    "status": "match",
+    "rating": "MATCH",
+    "category": null,
+    "counterpart": "data/SRP1/Results/P515S53/w160_step6_frozen/frozen_step6_tables_v1_590088fe.json cells[ref:bd504ecf].candidate_canonical (year)",
+    "counterpart_value": 2025,
+    "value_at_written_precision": "2025",
+    "rule": "plan (candidate record)",
+    "note": null,
+    "convention": "n/a",
+    "spec_desc": "None",
+    "line_text": "\\multicolumn{4}{l}{\\textcolor{blue}{(b) Discount rate, installation in 2025}} \\\\",
+    "new_vs_9b": "carried",
+    "hunk_9b_lines": [
+     1695
+    ]
+   },
+   {
+    "file": "main.tex",
+    "line": 1710,
+    "col": 32,
+    "written": "318.0",
+    "type": "num",
+    "status": "match",
+    "rating": "MATCH",
+    "category": null,
+    "counterpart": "data/SRP1/Results/P515S53/w160_step6_frozen/frozen_step6_tables_v1_590088fe.json tables.discount[0.02].I",
+    "counterpart_value": 317957.0085035586,
+    "value_at_written_precision": "318.0",
+    "rule": "kEUR 1 dp",
+    "note": null,
+    "convention": "investment cost I",
+    "spec_desc": "discount[0.02].I",
+    "line_text": "(b) Investment cost $I=318.0$~k\\euro{}, paid in 2025; all investment margins are determinate under the criteria of Subsection~\\ref{subsubsec:certification}; rat",
+    "new_vs_9b": "carried",
+    "hunk_9b_lines": [
+     1710
+    ]
+   },
+   {
+    "file": "main.tex",
+    "line": 1710,
+    "col": 57,
+    "written": "2025",
+    "type": "num",
+    "status": "match",
+    "rating": "MATCH",
+    "category": null,
+    "counterpart": "data/SRP1/Results/P515S53/w160_step6_frozen/frozen_step6_tables_v1_590088fe.json cells[ref:bd504ecf].candidate_canonical (year)",
+    "counterpart_value": 2025,
+    "value_at_written_precision": "2025",
+    "rule": "plan (candidate record)",
+    "note": null,
+    "convention": "n/a",
+    "spec_desc": "None",
+    "line_text": "(b) Investment cost $I=318.0$~k\\euro{}, paid in 2025; all investment margins are determinate under the criteria of Subsection~\\ref{subsubsec:certification}; rat",
+    "new_vs_9b": "carried",
+    "hunk_9b_lines": [
+     1710
+    ]
+   },
+   {
+    "file": "main.tex",
+    "line": 1710,
+    "col": 183,
+    "written": "2",
+    "type": "num",
+    "status": "match",
+    "rating": "MATCH",
+    "category": null,
+    "counterpart": "data/SRP1/SRP1.json DiscountFactor (sha256 61a794a7)",
+    "counterpart_value": 0.02,
+    "value_at_written_precision": "2",
+    "rule": "% (rate) 0 dp",
+    "note": null,
+    "convention": "n/a",
+    "spec_desc": "SRP1.json DiscountFactor (x 100)",
+    "line_text": "(b) Investment cost $I=318.0$~k\\euro{}, paid in 2025; all investment margins are determinate under the criteria of Subsection~\\ref{subsubsec:certification}; rat",
+    "new_vs_9b": "carried",
+    "hunk_9b_lines": [
+     1710
+    ]
+   },
+   {
+    "file": "main.tex",
+    "line": 1710,
+    "col": 232,
+    "written": "2",
+    "type": "num",
+    "status": "match",
+    "rating": "MATCH",
+    "category": null,
+    "counterpart": "data/SRP1/SRP1.json DiscountFactor (sha256 61a794a7)",
+    "counterpart_value": 0.02,
+    "value_at_written_precision": "2",
+    "rule": "% (rate) 0 dp",
+    "note": null,
+    "convention": "n/a",
+    "spec_desc": "SRP1.json DiscountFactor (x 100)",
+    "line_text": "(b) Investment cost $I=318.0$~k\\euro{}, paid in 2025; all investment margins are determinate under the criteria of Subsection~\\ref{subsubsec:certification}; rat",
+    "new_vs_9b": "carried",
+    "hunk_9b_lines": [
+     1710
+    ]
+   },
+   {
+    "file": "main.tex",
+    "line": 2310,
+    "col": 409,
+    "written": "-13.0",
+    "type": "num",
+    "status": "derived",
+    "rating": "DERIVED",
+    "category": null,
+    "counterpart": "derived: W188a P5.named_certified (20 rows): signed EUR content in Q, median -13,032.47, range [-13,052.36, -13,012.57] (spread 39.80); rounded at 1 dp: [('-13.0', 19), ('-13.1', 1)]",
+    "counterpart_value": -13.032465347440677,
+    "value_at_written_precision": "13.0",
+    "rule": "derived; compared at the written precision (1 dp)",
+    "note": "common relaxation offset in Q (kEUR)",
+    "convention": "gross (Q = gross_operational_cost, settlement excluded)",
+    "spec_desc": "common relaxation offset in Q (kEUR)",
+    "line_text": "More generally, at every certified evaluation behind the tables of Section~\\ref{sec:results}, every penalised slack in $Q$ (daily closure and network feasibilit",
+    "new_vs_9b": "carried",
+    "hunk_9b_lines": [
+     2310
+    ]
+   },
+   {
+    "file": "main.tex",
+    "line": 2310,
+    "col": 434,
+    "written": "-2",
+    "type": "num",
+    "status": "derived",
+    "rating": "DERIVED",
+    "category": null,
+    "counterpart": "derived: signed content / gross_operational_cost_at_P over the 20 certified rows: median -1.9939e-05, range [-1.997e-05, -1.604e-05]; mantissas at 1 significant figure [('-2', 20)]",
+    "counterpart_value": -1.9938874891934395,
+    "value_at_written_precision": "2",
+    "rule": "derived; compared at the written precision (0 dp)",
+    "note": "offset / Q, mantissa",
+    "convention": "n/a",
+    "spec_desc": "offset / Q, mantissa",
+    "line_text": "More generally, at every certified evaluation behind the tables of Section~\\ref{sec:results}, every penalised slack in $Q$ (daily closure and network feasibilit",
+    "new_vs_9b": "carried",
+    "hunk_9b_lines": [
+     2310
+    ]
+   },
+   {
+    "file": "main.tex",
+    "line": 2310,
+    "col": 443,
+    "written": "10^{-5}",
+    "type": "sci",
+    "status": "match",
+    "rating": "MATCH",
+    "category": null,
+    "counterpart": "offset / Q, order of magnitude",
+    "counterpart_value": 1e-05,
+    "value_at_written_precision": null,
+    "rule": "exponent",
+    "note": null,
+    "convention": "n/a",
+    "spec_desc": "offset / Q, order of magnitude",
+    "line_text": "More generally, at every certified evaluation behind the tables of Section~\\ref{sec:results}, every penalised slack in $Q$ (daily closure and network feasibilit",
+    "new_vs_9b": "carried",
+    "hunk_9b_lines": [
+     2310
+    ]
+   },
+   {
+    "file": "main.tex",
+    "line": 2310,
+    "col": 500,
+    "written": "40",
+    "type": "num",
+    "status": "match",
+    "rating": "MATCH",
+    "category": null,
+    "counterpart": "W188a 20 certified rows: max - min signed content = 39.80 EUR",
+    "counterpart_value": 39.797109255292526,
+    "value_at_written_precision": "40 (recorded bound rounded up)",
+    "rule": "written upper bound = the recorded bound rounded up at the written precision",
+    "note": "variation of the offset across the 20 certified rows (EUR)",
+    "convention": "gross",
+    "spec_desc": "variation of the offset across the 20 certified rows (EUR)",
+    "line_text": "More generally, at every certified evaluation behind the tables of Section~\\ref{sec:results}, every penalised slack in $Q$ (daily closure and network feasibilit",
+    "new_vs_9b": "carried",
+    "hunk_9b_lines": [
+     2310
+    ]
+   },
+   {
+    "file": "main.tex",
+    "line": 2310,
+    "col": 666,
+    "written": "2.2",
+    "type": "num",
+    "status": "match",
+    "rating": "MATCH",
+    "category": null,
+    "counterpart": "W188a summary_rows[t11_3x3_unit].positive_content_bound_eur_in_Q_refined (flexibility P day-balance, not established <= 0; eval c82522f4, cycle 69) = 2.1593 EUR",
+    "counterpart_value": 2.159263542754485,
+    "value_at_written_precision": "2.2 (recorded bound rounded up)",
+    "rule": "written upper bound = the recorded bound rounded up at the written precision",
+    "note": "positive flexibility-balance content bound, 3 x 3 reference unit (EUR)",
+    "convention": "gross",
+    "spec_desc": "positive flexibility-balance content bound, 3 x 3 reference unit (EUR)",
+    "line_text": "More generally, at every certified evaluation behind the tables of Section~\\ref{sec:results}, every penalised slack in $Q$ (daily closure and network feasibilit",
+    "new_vs_9b": "carried",
+    "hunk_9b_lines": [
+     2310
+    ]
+   },
+   {
+    "file": "main.tex",
+    "line": 2310,
+    "col": 709,
+    "written": "16",
+    "type": "num",
+    "status": "match",
+    "rating": "MATCH",
+    "category": null,
+    "counterpart": "generator E.21 (= Table S4) row of pb_y2025_n5",
+    "counterpart_value": 16,
+    "value_at_written_precision": "16",
+    "rule": "count / integer (exact)",
+    "note": null,
+    "convention": "n/a",
+    "spec_desc": "generator E.21 (= Table S4) row of pb_y2025_n5",
+    "line_text": "More generally, at every certified evaluation behind the tables of Section~\\ref{sec:results}, every penalised slack in $Q$ (daily closure and network feasibilit",
+    "new_vs_9b": "carried",
+    "hunk_9b_lines": [
+     2310
+    ]
+   },
+   {
+    "file": "main.tex",
+    "line": 2310,
+    "col": 748,
+    "written": "171",
+    "type": "num",
+    "status": "match",
+    "rating": "MATCH",
+    "category": null,
+    "counterpart": "W188a cells[pb_y2025_n5].score.positive_content_bound_eur_in_Q_refined = 170.69 EUR (the row total: voltage 169.27 + closure 1.42 EUR); the voltage-slack part alone is 169.27 EUR",
+    "counterpart_value": 170.69387675148374,
+    "value_at_written_precision": "171 (recorded bound rounded up)",
+    "rule": "written upper bound = the recorded bound rounded up at the written precision",
+    "note": "positive content bound of the superseded evaluation 16 (EUR)",
+    "convention": "gross",
+    "spec_desc": "positive content bound of the superseded evaluation 16 (EUR)",
+    "line_text": "More generally, at every certified evaluation behind the tables of Section~\\ref{sec:results}, every penalised slack in $Q$ (daily closure and network feasibilit",
+    "new_vs_9b": "carried",
+    "hunk_9b_lines": [
+     2310
+    ]
+   },
+   {
+    "file": "response_to_reviewers_draft.tex",
+    "line": 1,
+    "col": 27,
+    "written": "v13",
+    "type": "label",
+    "status": "excluded",
+    "rating": "NOT RATED",
+    "category": "identifier (label)",
+    "counterpart": null,
+    "counterpart_value": null,
+    "value_at_written_precision": null,
+    "rule": null,
+    "note": null,
+    "convention": null,
+    "spec_desc": null,
+    "line_text": "% Response to reviewers — v13 (expert, 2026-11-12; round 9c: lattice figure pointer B.9). v12 (expert, 2026-11-10; round 9b: W184 NRF arm and W185 penalty pilot",
+    "new_vs_9b": "NEW",
+    "hunk_9b_lines": [
+     1
+    ]
+   },
+   {
+    "file": "response_to_reviewers_draft.tex",
+    "line": 1,
+    "col": 40,
+    "written": "2026-11-12",
+    "type": "date",
+    "status": "excluded",
+    "rating": "NOT RATED",
+    "category": "identifier (date)",
+    "counterpart": null,
+    "counterpart_value": null,
+    "value_at_written_precision": null,
+    "rule": null,
+    "note": null,
+    "convention": null,
+    "spec_desc": null,
+    "line_text": "% Response to reviewers — v13 (expert, 2026-11-12; round 9c: lattice figure pointer B.9). v12 (expert, 2026-11-10; round 9b: W184 NRF arm and W185 penalty pilot",
+    "new_vs_9b": "NEW",
+    "hunk_9b_lines": [
+     1
+    ]
+   },
+   {
+    "file": "response_to_reviewers_draft.tex",
+    "line": 1,
+    "col": 58,
+    "written": "9c",
+    "type": "alnum",
+    "status": "excluded",
+    "rating": "NOT RATED",
+    "category": "identifier (alnum)",
+    "counterpart": null,
+    "counterpart_value": null,
+    "value_at_written_precision": null,
+    "rule": null,
+    "note": null,
+    "convention": null,
+    "spec_desc": null,
+    "line_text": "% Response to reviewers — v13 (expert, 2026-11-12; round 9c: lattice figure pointer B.9). v12 (expert, 2026-11-10; round 9b: W184 NRF arm and W185 penalty pilot",
+    "new_vs_9b": "NEW",
+    "hunk_9b_lines": [
+     1
+    ]
+   },
+   {
+    "file": "response_to_reviewers_draft.tex",
+    "line": 1,
+    "col": 91,
+    "written": "v12",
+    "type": "label",
+    "status": "excluded",
+    "rating": "NOT RATED",
+    "category": "identifier (label)",
+    "counterpart": null,
+    "counterpart_value": null,
+    "value_at_written_precision": null,
+    "rule": null,
+    "note": null,
+    "convention": null,
+    "spec_desc": null,
+    "line_text": "% Response to reviewers — v13 (expert, 2026-11-12; round 9c: lattice figure pointer B.9). v12 (expert, 2026-11-10; round 9b: W184 NRF arm and W185 penalty pilot",
+    "new_vs_9b": "carried",
+    "hunk_9b_lines": [
+     1
+    ]
+   },
+   {
+    "file": "response_to_reviewers_draft.tex",
+    "line": 1,
+    "col": 104,
+    "written": "2026-11-10",
+    "type": "date",
+    "status": "excluded",
+    "rating": "NOT RATED",
+    "category": "identifier (date)",
+    "counterpart": null,
+    "counterpart_value": null,
+    "value_at_written_precision": null,
+    "rule": null,
+    "note": null,
+    "convention": null,
+    "spec_desc": null,
+    "line_text": "% Response to reviewers — v13 (expert, 2026-11-12; round 9c: lattice figure pointer B.9). v12 (expert, 2026-11-10; round 9b: W184 NRF arm and W185 penalty pilot",
+    "new_vs_9b": "carried",
+    "hunk_9b_lines": [
+     1
+    ]
+   },
+   {
+    "file": "response_to_reviewers_draft.tex",
+    "line": 1,
+    "col": 122,
+    "written": "9b",
+    "type": "alnum",
+    "status": "excluded",
+    "rating": "NOT RATED",
+    "category": "identifier (alnum)",
+    "counterpart": null,
+    "counterpart_value": null,
+    "value_at_written_precision": null,
+    "rule": null,
+    "note": null,
+    "convention": null,
+    "spec_desc": null,
+    "line_text": "% Response to reviewers — v13 (expert, 2026-11-12; round 9c: lattice figure pointer B.9). v12 (expert, 2026-11-10; round 9b: W184 NRF arm and W185 penalty pilot",
+    "new_vs_9b": "carried",
+    "hunk_9b_lines": [
+     1
+    ]
+   },
+   {
+    "file": "response_to_reviewers_draft.tex",
+    "line": 1,
+    "col": 126,
+    "written": "W184",
+    "type": "label",
+    "status": "excluded",
+    "rating": "NOT RATED",
+    "category": "identifier (label)",
+    "counterpart": null,
+    "counterpart_value": null,
+    "value_at_written_precision": null,
+    "rule": null,
+    "note": null,
+    "convention": null,
+    "spec_desc": null,
+    "line_text": "% Response to reviewers — v13 (expert, 2026-11-12; round 9c: lattice figure pointer B.9). v12 (expert, 2026-11-10; round 9b: W184 NRF arm and W185 penalty pilot",
+    "new_vs_9b": "carried",
+    "hunk_9b_lines": [
+     1
+    ]
+   },
+   {
+    "file": "response_to_reviewers_draft.tex",
+    "line": 1,
+    "col": 143,
+    "written": "W185",
+    "type": "label",
+    "status": "excluded",
+    "rating": "NOT RATED",
+    "category": "identifier (label)",
+    "counterpart": null,
+    "counterpart_value": null,
+    "value_at_written_precision": null,
+    "rule": null,
+    "note": null,
+    "convention": null,
+    "spec_desc": null,
+    "line_text": "% Response to reviewers — v13 (expert, 2026-11-12; round 9c: lattice figure pointer B.9). v12 (expert, 2026-11-10; round 9b: W184 NRF arm and W185 penalty pilot",
+    "new_vs_9b": "carried",
+    "hunk_9b_lines": [
+     1
+    ]
+   },
+   {
+    "file": "response_to_reviewers_draft.tex",
+    "line": 1,
+    "col": 174,
+    "written": "R2.6",
+    "type": "label",
+    "status": "excluded",
+    "rating": "NOT RATED",
+    "category": "identifier (label)",
+    "counterpart": null,
+    "counterpart_value": null,
+    "value_at_written_precision": null,
+    "rule": null,
+    "note": null,
+    "convention": null,
+    "spec_desc": null,
+    "line_text": "% Response to reviewers — v13 (expert, 2026-11-12; round 9c: lattice figure pointer B.9). v12 (expert, 2026-11-10; round 9b: W184 NRF arm and W185 penalty pilot",
+    "new_vs_9b": "carried",
+    "hunk_9b_lines": [
+     1
+    ]
+   },
+   {
+    "file": "response_to_reviewers_draft.tex",
+    "line": 1,
+    "col": 230,
+    "written": "R3.2",
+    "type": "label",
+    "status": "excluded",
+    "rating": "NOT RATED",
+    "category": "identifier (label)",
+    "counterpart": null,
+    "counterpart_value": null,
+    "value_at_written_precision": null,
+    "rule": null,
+    "note": null,
+    "convention": null,
+    "spec_desc": null,
+    "line_text": "% Response to reviewers — v13 (expert, 2026-11-12; round 9c: lattice figure pointer B.9). v12 (expert, 2026-11-10; round 9b: W184 NRF arm and W185 penalty pilot",
+    "new_vs_9b": "carried",
+    "hunk_9b_lines": [
+     1
+    ]
+   },
+   {
+    "file": "response_to_reviewers_draft.tex",
+    "line": 1,
+    "col": 248,
+    "written": "100",
+    "type": "num",
+    "status": "excluded",
+    "rating": "NOT RATED",
+    "category": "comment (not typeset)",
+    "counterpart": null,
+    "counterpart_value": null,
+    "value_at_written_precision": null,
+    "rule": null,
+    "note": null,
+    "convention": null,
+    "spec_desc": null,
+    "line_text": "% Response to reviewers — v13 (expert, 2026-11-12; round 9c: lattice figure pointer B.9). v12 (expert, 2026-11-10; round 9b: W184 NRF arm and W185 penalty pilot",
+    "new_vs_9b": "carried",
+    "hunk_9b_lines": [
+     1
+    ]
+   },
+   {
+    "file": "response_to_reviewers_draft.tex",
+    "line": 1,
+    "col": 275,
+    "written": "v11",
+    "type": "label",
+    "status": "excluded",
+    "rating": "NOT RATED",
+    "category": "identifier (label)",
+    "counterpart": null,
+    "counterpart_value": null,
+    "value_at_written_precision": null,
+    "rule": null,
+    "note": null,
+    "convention": null,
+    "spec_desc": null,
+    "line_text": "% Response to reviewers — v13 (expert, 2026-11-12; round 9c: lattice figure pointer B.9). v12 (expert, 2026-11-10; round 9b: W184 NRF arm and W185 penalty pilot",
+    "new_vs_9b": "carried",
+    "hunk_9b_lines": [
+     1
+    ]
+   },
+   {
+    "file": "response_to_reviewers_draft.tex",
+    "line": 1,
+    "col": 288,
+    "written": "2026-11-10",
+    "type": "date",
+    "status": "excluded",
+    "rating": "NOT RATED",
+    "category": "identifier (date)",
+    "counterpart": null,
+    "counterpart_value": null,
+    "value_at_written_precision": null,
+    "rule": null,
+    "note": null,
+    "convention": null,
+    "spec_desc": null,
+    "line_text": "% Response to reviewers — v13 (expert, 2026-11-12; round 9c: lattice figure pointer B.9). v12 (expert, 2026-11-10; round 9b: W184 NRF arm and W185 penalty pilot",
+    "new_vs_9b": "carried",
+    "hunk_9b_lines": [
+     1
+    ]
+   },
+   {
+    "file": "response_to_reviewers_draft.tex",
+    "line": 1,
+    "col": 306,
+    "written": "9",
+    "type": "num",
+    "status": "excluded",
+    "rating": "NOT RATED",
+    "category": "comment (not typeset)",
+    "counterpart": null,
+    "counterpart_value": null,
+    "value_at_written_precision": null,
+    "rule": null,
+    "note": null,
+    "convention": null,
+    "spec_desc": null,
+    "line_text": "% Response to reviewers — v13 (expert, 2026-11-12; round 9c: lattice figure pointer B.9). v12 (expert, 2026-11-10; round 9b: W184 NRF arm and W185 penalty pilot",
+    "new_vs_9b": "carried",
+    "hunk_9b_lines": [
+     1
+    ]
+   },
+   {
+    "file": "response_to_reviewers_draft.tex",
+    "line": 1,
+    "col": 319,
+    "written": "89",
+    "type": "num",
+    "status": "excluded",
+    "rating": "NOT RATED",
+    "category": "comment (not typeset)",
+    "counterpart": null,
+    "counterpart_value": null,
+    "value_at_written_precision": null,
+    "rule": null,
+    "note": null,
+    "convention": null,
+    "spec_desc": null,
+    "line_text": "% Response to reviewers — v13 (expert, 2026-11-12; round 9c: lattice figure pointer B.9). v12 (expert, 2026-11-10; round 9b: W184 NRF arm and W185 penalty pilot",
+    "new_vs_9b": "carried",
+    "hunk_9b_lines": [
+     1
+    ]
+   },
+   {
+    "file": "response_to_reviewers_draft.tex",
+    "line": 1,
+    "col": 469,
+    "written": "8",
+    "type": "num",
+    "status": "excluded",
+    "rating": "NOT RATED",
+    "category": "comment (not typeset)",
+    "counterpart": null,
+    "counterpart_value": null,
+    "value_at_written_precision": null,
+    "rule": null,
+    "note": null,
+    "convention": null,
+    "spec_desc": null,
+    "line_text": "% Response to reviewers — v13 (expert, 2026-11-12; round 9c: lattice figure pointer B.9). v12 (expert, 2026-11-10; round 9b: W184 NRF arm and W185 penalty pilot",
+    "new_vs_9b": "carried",
+    "hunk_9b_lines": [
+     1
+    ]
+   },
+   {
+    "file": "response_to_reviewers_draft.tex",
+    "line": 1,
+    "col": 487,
+    "written": "13",
+    "type": "num",
+    "status": "excluded",
+    "rating": "NOT RATED",
+    "category": "comment (not typeset)",
+    "counterpart": null,
+    "counterpart_value": null,
+    "value_at_written_precision": null,
+    "rule": null,
+    "note": null,
+    "convention": null,
+    "spec_desc": null,
+    "line_text": "% Response to reviewers — v13 (expert, 2026-11-12; round 9c: lattice figure pointer B.9). v12 (expert, 2026-11-10; round 9b: W184 NRF arm and W185 penalty pilot",
+    "new_vs_9b": "carried",
+    "hunk_9b_lines": [
+     1
+    ]
+   },
+   {
+    "file": "response_to_reviewers_draft.tex",
+    "line": 1,
+    "col": 490,
+    "written": "14",
+    "type": "num",
+    "status": "excluded",
+    "rating": "NOT RATED",
+    "category": "comment (not typeset)",
+    "counterpart": null,
+    "counterpart_value": null,
+    "value_at_written_precision": null,
+    "rule": null,
+    "note": null,
+    "convention": null,
+    "spec_desc": null,
+    "line_text": "% Response to reviewers — v13 (expert, 2026-11-12; round 9c: lattice figure pointer B.9). v12 (expert, 2026-11-10; round 9b: W184 NRF arm and W185 penalty pilot",
+    "new_vs_9b": "carried",
+    "hunk_9b_lines": [
+     1
+    ]
+   },
+   {
+    "file": "response_to_reviewers_draft.tex",
+    "line": 1,
+    "col": 502,
+    "written": "4.7",
+    "type": "num",
+    "status": "excluded",
+    "rating": "NOT RATED",
+    "category": "comment (not typeset)",
+    "counterpart": null,
+    "counterpart_value": null,
+    "value_at_written_precision": null,
+    "rule": null,
+    "note": null,
+    "convention": null,
+    "spec_desc": null,
+    "line_text": "% Response to reviewers — v13 (expert, 2026-11-12; round 9c: lattice figure pointer B.9). v12 (expert, 2026-11-10; round 9b: W184 NRF arm and W185 penalty pilot",
+    "new_vs_9b": "carried",
+    "hunk_9b_lines": [
+     1
+    ]
+   },
+   {
+    "file": "response_to_reviewers_draft.tex",
+    "line": 1,
+    "col": 506,
+    "written": "4.8",
+    "type": "num",
+    "status": "excluded",
+    "rating": "NOT RATED",
+    "category": "comment (not typeset)",
+    "counterpart": null,
+    "counterpart_value": null,
+    "value_at_written_precision": null,
+    "rule": null,
+    "note": null,
+    "convention": null,
+    "spec_desc": null,
+    "line_text": "% Response to reviewers — v13 (expert, 2026-11-12; round 9c: lattice figure pointer B.9). v12 (expert, 2026-11-10; round 9b: W184 NRF arm and W185 penalty pilot",
+    "new_vs_9b": "carried",
+    "hunk_9b_lines": [
+     1
+    ]
+   },
+   {
+    "file": "response_to_reviewers_draft.tex",
+    "line": 1,
+    "col": 572,
+    "written": "R2.5",
+    "type": "label",
+    "status": "excluded",
+    "rating": "NOT RATED",
+    "category": "identifier (label)",
+    "counterpart": null,
+    "counterpart_value": null,
+    "value_at_written_precision": null,
+    "rule": null,
+    "note": null,
+    "convention": null,
+    "spec_desc": null,
+    "line_text": "% Response to reviewers — v13 (expert, 2026-11-12; round 9c: lattice figure pointer B.9). v12 (expert, 2026-11-10; round 9b: W184 NRF arm and W185 penalty pilot",
+    "new_vs_9b": "carried",
+    "hunk_9b_lines": [
+     1
+    ]
+   },
+   {
+    "file": "response_to_reviewers_draft.tex",
+    "line": 1,
+    "col": 581,
+    "written": "R3.2",
+    "type": "label",
+    "status": "excluded",
+    "rating": "NOT RATED",
+    "category": "identifier (label)",
+    "counterpart": null,
+    "counterpart_value": null,
+    "value_at_written_precision": null,
+    "rule": null,
+    "note": null,
+    "convention": null,
+    "spec_desc": null,
+    "line_text": "% Response to reviewers — v13 (expert, 2026-11-12; round 9c: lattice figure pointer B.9). v12 (expert, 2026-11-10; round 9b: W184 NRF arm and W185 penalty pilot",
+    "new_vs_9b": "carried",
+    "hunk_9b_lines": [
+     1
+    ]
+   },
+   {
+    "file": "response_to_reviewers_draft.tex",
+    "line": 1,
+    "col": 622,
+    "written": "v10",
+    "type": "label",
+    "status": "excluded",
+    "rating": "NOT RATED",
+    "category": "identifier (label)",
+    "counterpart": null,
+    "counterpart_value": null,
+    "value_at_written_precision": null,
+    "rule": null,
+    "note": null,
+    "convention": null,
+    "spec_desc": null,
+    "line_text": "% Response to reviewers — v13 (expert, 2026-11-12; round 9c: lattice figure pointer B.9). v12 (expert, 2026-11-10; round 9b: W184 NRF arm and W185 penalty pilot",
+    "new_vs_9b": "carried",
+    "hunk_9b_lines": [
+     1
+    ]
+   },
+   {
+    "file": "response_to_reviewers_draft.tex",
+    "line": 1,
+    "col": 635,
+    "written": "2026-10-26",
+    "type": "date",
+    "status": "excluded",
+    "rating": "NOT RATED",
+    "category": "identifier (date)",
+    "counterpart": null,
+    "counterpart_value": null,
+    "value_at_written_precision": null,
+    "rule": null,
+    "note": null,
+    "convention": null,
+    "spec_desc": null,
+    "line_text": "% Response to reviewers — v13 (expert, 2026-11-12; round 9c: lattice figure pointer B.9). v12 (expert, 2026-11-10; round 9b: W184 NRF arm and W185 penalty pilot",
+    "new_vs_9b": "carried",
+    "hunk_9b_lines": [
+     1
+    ]
+   },
+   {
+    "file": "response_to_reviewers_draft.tex",
+    "line": 1,
+    "col": 653,
+    "written": "8",
+    "type": "num",
+    "status": "excluded",
+    "rating": "NOT RATED",
+    "category": "comment (not typeset)",
+    "counterpart": null,
+    "counterpart_value": null,
+    "value_at_written_precision": null,
+    "rule": null,
+    "note": null,
+    "convention": null,
+    "spec_desc": null,
+    "line_text": "% Response to reviewers — v13 (expert, 2026-11-12; round 9c: lattice figure pointer B.9). v12 (expert, 2026-11-10; round 9b: W184 NRF arm and W185 penalty pilot",
+    "new_vs_9b": "carried",
+    "hunk_9b_lines": [
+     1
+    ]
+   },
+   {
+    "file": "response_to_reviewers_draft.tex",
+    "line": 1,
+    "col": 666,
+    "written": "84",
+    "type": "num",
+    "status": "excluded",
+    "rating": "NOT RATED",
+    "category": "comment (not typeset)",
+    "counterpart": null,
+    "counterpart_value": null,
+    "value_at_written_precision": null,
+    "rule": null,
+    "note": null,
+    "convention": null,
+    "spec_desc": null,
+    "line_text": "% Response to reviewers — v13 (expert, 2026-11-12; round 9c: lattice figure pointer B.9). v12 (expert, 2026-11-10; round 9b: W184 NRF arm and W185 penalty pilot",
+    "new_vs_9b": "carried",
+    "hunk_9b_lines": [
+     1
+    ]
+   },
+   {
+    "file": "response_to_reviewers_draft.tex",
+    "line": 1,
+    "col": 702,
+    "written": "edd7a63",
+    "type": "hash",
+    "status": "excluded",
+    "rating": "NOT RATED",
+    "category": "identifier (hash)",
+    "counterpart": null,
+    "counterpart_value": null,
+    "value_at_written_precision": null,
+    "rule": null,
+    "note": null,
+    "convention": null,
+    "spec_desc": null,
+    "line_text": "% Response to reviewers — v13 (expert, 2026-11-12; round 9c: lattice figure pointer B.9). v12 (expert, 2026-11-10; round 9b: W184 NRF arm and W185 penalty pilot",
+    "new_vs_9b": "carried",
+    "hunk_9b_lines": [
+     1
+    ]
+   },
+   {
+    "file": "response_to_reviewers_draft.tex",
+    "line": 1,
+    "col": 722,
+    "written": "42",
+    "type": "num",
+    "status": "excluded",
+    "rating": "NOT RATED",
+    "category": "comment (not typeset)",
+    "counterpart": null,
+    "counterpart_value": null,
+    "value_at_written_precision": null,
+    "rule": null,
+    "note": null,
+    "convention": null,
+    "spec_desc": null,
+    "line_text": "% Response to reviewers — v13 (expert, 2026-11-12; round 9c: lattice figure pointer B.9). v12 (expert, 2026-11-10; round 9b: W184 NRF arm and W185 penalty pilot",
+    "new_vs_9b": "carried",
+    "hunk_9b_lines": [
+     1
+    ]
+   },
+   {
+    "file": "response_to_reviewers_draft.tex",
+    "line": 1,
+    "col": 727,
+    "written": "43",
+    "type": "num",
+    "status": "excluded",
+    "rating": "NOT RATED",
+    "category": "comment (not typeset)",
+    "counterpart": null,
+    "counterpart_value": null,
+    "value_at_written_precision": null,
+    "rule": null,
+    "note": null,
+    "convention": null,
+    "spec_desc": null,
+    "line_text": "% Response to reviewers — v13 (expert, 2026-11-12; round 9c: lattice figure pointer B.9). v12 (expert, 2026-11-10; round 9b: W184 NRF arm and W185 penalty pilot",
+    "new_vs_9b": "carried",
+    "hunk_9b_lines": [
+     1
+    ]
+   },
+   {
+    "file": "response_to_reviewers_draft.tex",
+    "line": 1,
+    "col": 732,
+    "written": "12.2",
+    "type": "num",
+    "status": "excluded",
+    "rating": "NOT RATED",
+    "category": "comment (not typeset)",
+    "counterpart": null,
+    "counterpart_value": null,
+    "value_at_written_precision": null,
+    "rule": null,
+    "note": null,
+    "convention": null,
+    "spec_desc": null,
+    "line_text": "% Response to reviewers — v13 (expert, 2026-11-12; round 9c: lattice figure pointer B.9). v12 (expert, 2026-11-10; round 9b: W184 NRF arm and W185 penalty pilot",
+    "new_vs_9b": "carried",
+    "hunk_9b_lines": [
+     1
+    ]
+   },
+   {
+    "file": "response_to_reviewers_draft.tex",
+    "line": 1,
+    "col": 776,
+    "written": "R3.6",
+    "type": "label",
+    "status": "excluded",
+    "rating": "NOT RATED",
+    "category": "identifier (label)",
+    "counterpart": null,
+    "counterpart_value": null,
+    "value_at_written_precision": null,
+    "rule": null,
+    "note": null,
+    "convention": null,
+    "spec_desc": null,
+    "line_text": "% Response to reviewers — v13 (expert, 2026-11-12; round 9c: lattice figure pointer B.9). v12 (expert, 2026-11-10; round 9b: W184 NRF arm and W185 penalty pilot",
+    "new_vs_9b": "carried",
+    "hunk_9b_lines": [
+     1
+    ]
+   },
+   {
+    "file": "response_to_reviewers_draft.tex",
+    "line": 1,
+    "col": 783,
+    "written": "v9",
+    "type": "label",
+    "status": "excluded",
+    "rating": "NOT RATED",
+    "category": "identifier (label)",
+    "counterpart": null,
+    "counterpart_value": null,
+    "value_at_written_precision": null,
+    "rule": null,
+    "note": null,
+    "convention": null,
+    "spec_desc": null,
+    "line_text": "% Response to reviewers — v13 (expert, 2026-11-12; round 9c: lattice figure pointer B.9). v12 (expert, 2026-11-10; round 9b: W184 NRF arm and W185 penalty pilot",
+    "new_vs_9b": "carried",
+    "hunk_9b_lines": [
+     1
+    ]
+   },
+   {
+    "file": "response_to_reviewers_draft.tex",
+    "line": 1,
+    "col": 795,
+    "written": "2026-10-16",
+    "type": "date",
+    "status": "excluded",
+    "rating": "NOT RATED",
+    "category": "identifier (date)",
+    "counterpart": null,
+    "counterpart_value": null,
+    "value_at_written_precision": null,
+    "rule": null,
+    "note": null,
+    "convention": null,
+    "spec_desc": null,
+    "line_text": "% Response to reviewers — v13 (expert, 2026-11-12; round 9c: lattice figure pointer B.9). v12 (expert, 2026-11-10; round 9b: W184 NRF arm and W185 penalty pilot",
+    "new_vs_9b": "carried",
+    "hunk_9b_lines": [
+     1
+    ]
+   },
+   {
+    "file": "response_to_reviewers_draft.tex",
+    "line": 1,
+    "col": 816,
+    "written": "81",
+    "type": "num",
+    "status": "excluded",
+    "rating": "NOT RATED",
+    "category": "comment (not typeset)",
+    "counterpart": null,
+    "counterpart_value": null,
+    "value_at_written_precision": null,
+    "rule": null,
+    "note": null,
+    "convention": null,
+    "spec_desc": null,
+    "line_text": "% Response to reviewers — v13 (expert, 2026-11-12; round 9c: lattice figure pointer B.9). v12 (expert, 2026-11-10; round 9b: W184 NRF arm and W185 penalty pilot",
+    "new_vs_9b": "carried",
+    "hunk_9b_lines": [
+     1
+    ]
+   },
+   {
+    "file": "response_to_reviewers_draft.tex",
+    "line": 1,
+    "col": 839,
+    "written": "v8",
+    "type": "label",
+    "status": "excluded",
+    "rating": "NOT RATED",
+    "category": "identifier (label)",
+    "counterpart": null,
+    "counterpart_value": null,
+    "value_at_written_precision": null,
+    "rule": null,
+    "note": null,
+    "convention": null,
+    "spec_desc": null,
+    "line_text": "% Response to reviewers — v13 (expert, 2026-11-12; round 9c: lattice figure pointer B.9). v12 (expert, 2026-11-10; round 9b: W184 NRF arm and W185 penalty pilot",
+    "new_vs_9b": "carried",
+    "hunk_9b_lines": [
+     1
+    ]
+   },
+   {
+    "file": "response_to_reviewers_draft.tex",
+    "line": 1,
+    "col": 851,
+    "written": "2026-10-16",
+    "type": "date",
+    "status": "excluded",
+    "rating": "NOT RATED",
+    "category": "identifier (date)",
+    "counterpart": null,
+    "counterpart_value": null,
+    "value_at_written_precision": null,
+    "rule": null,
+    "note": null,
+    "convention": null,
+    "spec_desc": null,
+    "line_text": "% Response to reviewers — v13 (expert, 2026-11-12; round 9c: lattice figure pointer B.9). v12 (expert, 2026-11-10; round 9b: W184 NRF arm and W185 penalty pilot",
+    "new_vs_9b": "carried",
+    "hunk_9b_lines": [
+     1
+    ]
+   },
+   {
+    "file": "response_to_reviewers_draft.tex",
+    "line": 1,
+    "col": 869,
+    "written": "7",
+    "type": "num",
+    "status": "excluded",
+    "rating": "NOT RATED",
+    "category": "comment (not typeset)",
+    "counterpart": null,
+    "counterpart_value": null,
+    "value_at_written_precision": null,
+    "rule": null,
+    "note": null,
+    "convention": null,
+    "spec_desc": null,
+    "line_text": "% Response to reviewers — v13 (expert, 2026-11-12; round 9c: lattice figure pointer B.9). v12 (expert, 2026-11-10; round 9b: W184 NRF arm and W185 penalty pilot",
+    "new_vs_9b": "carried",
+    "hunk_9b_lines": [
+     1
+    ]
+   },
+   {
+    "file": "response_to_reviewers_draft.tex",
+    "line": 1,
+    "col": 882,
+    "written": "80",
+    "type": "num",
+    "status": "excluded",
+    "rating": "NOT RATED",
+    "category": "comment (not typeset)",
+    "counterpart": null,
+    "counterpart_value": null,
+    "value_at_written_precision": null,
+    "rule": null,
+    "note": null,
+    "convention": null,
+    "spec_desc": null,
+    "line_text": "% Response to reviewers — v13 (expert, 2026-11-12; round 9c: lattice figure pointer B.9). v12 (expert, 2026-11-10; round 9b: W184 NRF arm and W185 penalty pilot",
+    "new_vs_9b": "carried",
+    "hunk_9b_lines": [
+     1
+    ]
+   },
+   {
+    "file": "response_to_reviewers_draft.tex",
+    "line": 1,
+    "col": 887,
+    "written": "v7",
+    "type": "label",
+    "status": "excluded",
+    "rating": "NOT RATED",
+    "category": "identifier (label)",
+    "counterpart": null,
+    "counterpart_value": null,
+    "value_at_written_precision": null,
+    "rule": null,
+    "note": null,
+    "convention": null,
+    "spec_desc": null,
+    "line_text": "% Response to reviewers — v13 (expert, 2026-11-12; round 9c: lattice figure pointer B.9). v12 (expert, 2026-11-10; round 9b: W184 NRF arm and W185 penalty pilot",
+    "new_vs_9b": "carried",
+    "hunk_9b_lines": [
+     1
+    ]
+   },
+   {
+    "file": "response_to_reviewers_draft.tex",
+    "line": 1,
+    "col": 899,
+    "written": "2026-10-15",
+    "type": "date",
+    "status": "excluded",
+    "rating": "NOT RATED",
+    "category": "identifier (date)",
+    "counterpart": null,
+    "counterpart_value": null,
+    "value_at_written_precision": null,
+    "rule": null,
+    "note": null,
+    "convention": null,
+    "spec_desc": null,
+    "line_text": "% Response to reviewers — v13 (expert, 2026-11-12; round 9c: lattice figure pointer B.9). v12 (expert, 2026-11-10; round 9b: W184 NRF arm and W185 penalty pilot",
+    "new_vs_9b": "carried",
+    "hunk_9b_lines": [
+     1
+    ]
+   },
+   {
+    "file": "response_to_reviewers_draft.tex",
+    "line": 1,
+    "col": 917,
+    "written": "6",
+    "type": "num",
+    "status": "excluded",
+    "rating": "NOT RATED",
+    "category": "comment (not typeset)",
+    "counterpart": null,
+    "counterpart_value": null,
+    "value_at_written_precision": null,
+    "rule": null,
+    "note": null,
+    "convention": null,
+    "spec_desc": null,
+    "line_text": "% Response to reviewers — v13 (expert, 2026-11-12; round 9c: lattice figure pointer B.9). v12 (expert, 2026-11-10; round 9b: W184 NRF arm and W185 penalty pilot",
+    "new_vs_9b": "carried",
+    "hunk_9b_lines": [
+     1
+    ]
+   },
+   {
+    "file": "response_to_reviewers_draft.tex",
+    "line": 1,
+    "col": 930,
+    "written": "79",
+    "type": "num",
+    "status": "excluded",
+    "rating": "NOT RATED",
+    "category": "comment (not typeset)",
+    "counterpart": null,
+    "counterpart_value": null,
+    "value_at_written_precision": null,
+    "rule": null,
+    "note": null,
+    "convention": null,
+    "spec_desc": null,
+    "line_text": "% Response to reviewers — v13 (expert, 2026-11-12; round 9c: lattice figure pointer B.9). v12 (expert, 2026-11-10; round 9b: W184 NRF arm and W185 penalty pilot",
+    "new_vs_9b": "carried",
+    "hunk_9b_lines": [
+     1
+    ]
+   },
+   {
+    "file": "response_to_reviewers_draft.tex",
+    "line": 1,
+    "col": 976,
+    "written": "2026-10-06",
+    "type": "date",
+    "status": "excluded",
+    "rating": "NOT RATED",
+    "category": "identifier (date)",
+    "counterpart": null,
+    "counterpart_value": null,
+    "value_at_written_precision": null,
+    "rule": null,
+    "note": null,
+    "convention": null,
+    "spec_desc": null,
+    "line_text": "% Response to reviewers — v13 (expert, 2026-11-12; round 9c: lattice figure pointer B.9). v12 (expert, 2026-11-10; round 9b: W184 NRF arm and W185 penalty pilot",
+    "new_vs_9b": "carried",
+    "hunk_9b_lines": [
+     1
+    ]
+   },
+   {
+    "file": "cover_letter.tex",
+    "line": 13,
+    "col": 217,
+    "written": "26",
+    "type": "num",
+    "status": "unchecked",
+    "rating": "NOT RATED",
+    "category": "identifier",
+    "counterpart": null,
+    "counterpart_value": null,
+    "value_at_written_precision": null,
+    "rule": null,
+    "note": "manuscript number EST-D-26-06323 (string-checked in the cover-letter checks)",
+    "convention": null,
+    "spec_desc": "manuscript number EST-D-26-06323 (string-checked in the cover-letter checks)",
+    "line_text": "Please find enclosed the revised version of our manuscript ``Degradation-Aware Planning of Shared Battery Energy Storage Systems for Coordinated Transmission an",
+    "new_vs_9b": "NEW",
+    "hunk_9b_lines": [
+     13
+    ]
+   },
+   {
+    "file": "cover_letter.tex",
+    "line": 13,
+    "col": 220,
+    "written": "06323",
+    "type": "num",
+    "status": "unchecked",
+    "rating": "NOT RATED",
+    "category": "identifier",
+    "counterpart": null,
+    "counterpart_value": null,
+    "value_at_written_precision": null,
+    "rule": null,
+    "note": "manuscript number EST-D-26-06323",
+    "convention": null,
+    "spec_desc": "manuscript number EST-D-26-06323",
+    "line_text": "Please find enclosed the revised version of our manuscript ``Degradation-Aware Planning of Shared Battery Energy Storage Systems for Coordinated Transmission an",
+    "new_vs_9b": "NEW",
+    "hunk_9b_lines": [
+     13
+    ]
+   },
+   {
+    "file": "cover_letter.tex",
+    "line": 13,
+    "col": 275,
+    "written": "three",
+    "type": "word",
+    "status": "match",
+    "rating": "MATCH",
+    "category": null,
+    "counterpart": "letter v13: \\section*{Reviewer k} headings",
+    "counterpart_value": 3,
+    "value_at_written_precision": "3",
+    "rule": "count / integer (exact)",
+    "note": null,
+    "convention": "n/a",
+    "spec_desc": "letter v13: \\section*{Reviewer k} headings",
+    "line_text": "Please find enclosed the revised version of our manuscript ``Degradation-Aware Planning of Shared Battery Energy Storage Systems for Coordinated Transmission an",
+    "new_vs_9b": "carried",
+    "hunk_9b_lines": [
+     13
+    ]
+   },
+   {
+    "file": "cover_letter.tex",
+    "line": 21,
+    "col": 55,
+    "written": "two",
+    "type": "word",
+    "status": "match",
+    "rating": "MATCH",
+    "category": null,
+    "counterpart": "A89 claims JSON experiment parts part1_w184_section_4_4 (W184, E3 NRF) and part2_w185_spread_table (W185, E2 penalty), named in the next two sentences",
+    "counterpart_value": 2,
+    "value_at_written_precision": "2",
+    "rule": "count / integer (exact)",
+    "note": null,
+    "convention": "n/a",
+    "spec_desc": "A89 claims JSON experiment parts part1_w184_section_4_4 (W184, E3 NRF) and part2_w185_spread_table (W185, E2 penalty), named in the next two sentences",
+    "line_text": "Beyond the Reviewers' requests, the revision adds two robustness checks. The coordinated arrangement was re-evaluated with the same no-reverse-flow restriction ",
+    "new_vs_9b": "NEW",
+    "hunk_9b_lines": [
+     21
+    ]
+   },
+   {
+    "file": "cover_letter.tex",
+    "line": 21,
+    "col": 221,
+    "written": "20.5",
+    "type": "num",
+    "status": "match",
+    "rating": "MATCH",
+    "category": null,
+    "counterpart": "A89 claims JSON: Q(C_NRF) - Q(C_OPEN), the NRF restriction on the consensus exchange (W184 E3)",
+    "counterpart_value": 20463.88114476204,
+    "value_at_written_precision": "20.5",
+    "rule": "kEUR 1 dp",
+    "note": null,
+    "convention": "gross (Q = gross_operational_cost, settlement excluded)",
+    "spec_desc": "A89 claims JSON: Q(C_NRF) - Q(C_OPEN), the NRF restriction on the consensus exchange (W184 E3)",
+    "line_text": "Beyond the Reviewers' requests, the revision adds two robustness checks. The coordinated arrangement was re-evaluated with the same no-reverse-flow restriction ",
+    "new_vs_9b": "NEW",
+    "hunk_9b_lines": [
+     21
+    ]
+   },
+   {
+    "file": "cover_letter.tex",
+    "line": 21,
+    "col": 236,
+    "written": "0.02",
+    "type": "num",
+    "status": "match",
+    "rating": "MATCH",
+    "category": null,
+    "counterpart": "A89 claims JSON: (Q(C_NRF) - Q(C_OPEN)) / (Q(P_NRF) - Q(C_OPEN)) = 0.0225 %",
+    "counterpart_value": 0.0002251336051486132,
+    "value_at_written_precision": "0.02",
+    "rule": "% 1 dp",
+    "note": null,
+    "convention": "gross (ratio of gross Q differences)",
+    "spec_desc": "A89 claims JSON: (Q(C_NRF) - Q(C_OPEN)) / (Q(P_NRF) - Q(C_OPEN)) = 0.0225 %",
+    "line_text": "Beyond the Reviewers' requests, the revision adds two robustness checks. The coordinated arrangement was re-evaluated with the same no-reverse-flow restriction ",
+    "new_vs_9b": "NEW",
+    "hunk_9b_lines": [
+     21
+    ]
+   },
+   {
+    "file": "cover_letter.tex",
+    "line": 21,
+    "col": 252,
+    "written": "90.9",
+    "type": "num",
+    "status": "derived",
+    "rating": "DERIVED",
+    "category": null,
+    "counterpart": "derived: benefit 90,896,608.40 EUR = 90,896.6 kEUR = 90.8966 MEUR (data/SRP1/Results/P515S53/w160_step6_frozen/frozen_step6_tables_v1_590088fe.json tables.benchmark.benefit)",
+    "counterpart_value": 90.89660839950395,
+    "value_at_written_precision": "90.9",
+    "rule": "derived; compared at the written precision (1 dp)",
+    "note": "coordination saving vs the price-taker arrangement",
+    "convention": "gross (Q = gross_operational_cost, settlement excluded)",
+    "spec_desc": "coordination saving vs the price-taker arrangement",
+    "line_text": "Beyond the Reviewers' requests, the revision adds two robustness checks. The coordinated arrangement was re-evaluated with the same no-reverse-flow restriction ",
+    "new_vs_9b": "NEW",
+    "hunk_9b_lines": [
+     21
+    ]
+   },
+   {
+    "file": "cover_letter.tex",
+    "line": 21,
+    "col": 290,
+    "written": "12.2",
+    "type": "num",
+    "status": "derived",
+    "rating": "DERIVED",
+    "category": null,
+    "counterpart": "derived: data/SRP1/Results/P515S53/w160_step6_frozen/frozen_step6_tables_v1_590088fe.json tables.benchmark.benefit 90,896,608.40 / benchmark.arms.price_taker.Q_best 744,770,310.59 x 100 = 12.2046 % (gross Q, settlement excluded; denominator the price-taker cost; benefit = decomposition.price_taker_NRF_minus_coordinated_eur 90,896,608.40)",
+    "counterpart_value": 12.204649823895709,
+    "value_at_written_precision": "12.2",
+    "rule": "derived; compared at the written precision (1 dp)",
+    "note": "coordination saving relative to the price-taker benchmark (gross Q)",
+    "convention": "gross (Q = gross_operational_cost, settlement excluded)",
+    "spec_desc": "coordination saving relative to the price-taker benchmark (gross Q)",
+    "line_text": "Beyond the Reviewers' requests, the revision adds two robustness checks. The coordinated arrangement was re-evaluated with the same no-reverse-flow restriction ",
+    "new_vs_9b": "NEW",
+    "hunk_9b_lines": [
+     21
+    ]
+   },
+   {
+    "file": "cover_letter.tex",
+    "line": 21,
+    "col": 350,
+    "written": "two",
+    "type": "word",
+    "status": "match",
+    "rating": "MATCH",
+    "category": null,
+    "counterpart": "A89 claims JSON part2: prices {1x, 2x} (the two decisive comparisons)",
+    "counterpart_value": 2,
+    "value_at_written_precision": "2",
+    "rule": "count / integer (exact)",
+    "note": null,
+    "convention": "n/a",
+    "spec_desc": "A89 claims JSON part2: prices {1x, 2x} (the two decisive comparisons)",
+    "line_text": "Beyond the Reviewers' requests, the revision adds two robustness checks. The coordinated arrangement was re-evaluated with the same no-reverse-flow restriction ",
+    "new_vs_9b": "NEW",
+    "hunk_9b_lines": [
+     21
+    ]
+   },
+   {
+    "file": "cover_letter.tex",
+    "line": 21,
+    "col": 568,
+    "written": "W187",
+    "type": "label",
+    "status": "excluded",
+    "rating": "NOT RATED",
+    "category": "identifier (label)",
+    "counterpart": null,
+    "counterpart_value": null,
+    "value_at_written_precision": null,
+    "rule": null,
+    "note": null,
+    "convention": null,
+    "spec_desc": null,
+    "line_text": "Beyond the Reviewers' requests, the revision adds two robustness checks. The coordinated arrangement was re-evaluated with the same no-reverse-flow restriction ",
+    "new_vs_9b": "NEW",
+    "hunk_9b_lines": [
+     21
+    ]
+   },
+   {
+    "file": "cover_letter.tex",
+    "line": 21,
+    "col": 694,
+    "written": "4.3",
+    "type": "num",
+    "status": "excluded",
+    "rating": "NOT RATED",
+    "category": "pointer / citation number (W189 part 2 scope; not rated here)",
+    "counterpart": null,
+    "counterpart_value": null,
+    "value_at_written_precision": null,
+    "rule": null,
+    "note": null,
+    "convention": null,
+    "spec_desc": null,
+    "line_text": "Beyond the Reviewers' requests, the revision adds two robustness checks. The coordinated arrangement was re-evaluated with the same no-reverse-flow restriction ",
+    "new_vs_9b": "NEW",
+    "hunk_9b_lines": [
+     21
+    ]
+   },
+   {
+    "file": "cover_letter.tex",
+    "line": 23,
+    "col": 266,
+    "written": "one",
+    "type": "word",
+    "status": "unchecked",
+    "rating": "NOT RATED",
+    "category": "language",
+    "counterpart": null,
+    "counterpart_value": null,
+    "value_at_written_precision": null,
+    "rule": null,
+    "note": "\"a prompt one\" (pronoun)",
+    "convention": null,
+    "spec_desc": "\"a prompt one\" (pronoun)",
+    "line_text": "We apologise for the delay in returning this revision. Rebuilding the method and recomputing every result under declared numerical acceptance criteria took long",
+    "new_vs_9b": "NEW",
+    "hunk_9b_lines": [
+     21
+    ]
+   }
+  ],
+  "non_match": [],
+  "derived": [
+   {
+    "file": "main.tex",
+    "line": 1627,
+    "col": 790,
+    "written": "90.9",
+    "type": "num",
+    "status": "derived",
+    "rating": "DERIVED",
+    "category": null,
+    "counterpart": "derived: benefit 90,896,608.40 EUR = 90,896.6 kEUR = 90.8966 MEUR (data/SRP1/Results/P515S53/w160_step6_frozen/frozen_step6_tables_v1_590088fe.json tables.benchmark.benefit)",
+    "counterpart_value": 90.89660839950395,
+    "value_at_written_precision": "90.9",
+    "rule": "derived; compared at the written precision (1 dp)",
+    "note": "coordination saving vs the price-taker arrangement",
+    "convention": "gross (Q = gross_operational_cost, settlement excluded)",
+    "spec_desc": "coordination saving vs the price-taker arrangement",
+    "line_text": "The comparison also reflects differences in interface restrictions. Both static arrangements prohibit DN-to-TN active-power flow, whereas coordinated operation ",
+    "new_vs_9b": "carried",
+    "hunk_9b_lines": [
+     1627
+    ]
+   },
+   {
+    "file": "main.tex",
+    "line": 2310,
+    "col": 409,
+    "written": "-13.0",
+    "type": "num",
+    "status": "derived",
+    "rating": "DERIVED",
+    "category": null,
+    "counterpart": "derived: W188a P5.named_certified (20 rows): signed EUR content in Q, median -13,032.47, range [-13,052.36, -13,012.57] (spread 39.80); rounded at 1 dp: [('-13.0', 19), ('-13.1', 1)]",
+    "counterpart_value": -13.032465347440677,
+    "value_at_written_precision": "13.0",
+    "rule": "derived; compared at the written precision (1 dp)",
+    "note": "common relaxation offset in Q (kEUR)",
+    "convention": "gross (Q = gross_operational_cost, settlement excluded)",
+    "spec_desc": "common relaxation offset in Q (kEUR)",
+    "line_text": "More generally, at every certified evaluation behind the tables of Section~\\ref{sec:results}, every penalised slack in $Q$ (daily closure and network feasibilit",
+    "new_vs_9b": "carried",
+    "hunk_9b_lines": [
+     2310
+    ]
+   },
+   {
+    "file": "main.tex",
+    "line": 2310,
+    "col": 434,
+    "written": "-2",
+    "type": "num",
+    "status": "derived",
+    "rating": "DERIVED",
+    "category": null,
+    "counterpart": "derived: signed content / gross_operational_cost_at_P over the 20 certified rows: median -1.9939e-05, range [-1.997e-05, -1.604e-05]; mantissas at 1 significant figure [('-2', 20)]",
+    "counterpart_value": -1.9938874891934395,
+    "value_at_written_precision": "2",
+    "rule": "derived; compared at the written precision (0 dp)",
+    "note": "offset / Q, mantissa",
+    "convention": "n/a",
+    "spec_desc": "offset / Q, mantissa",
+    "line_text": "More generally, at every certified evaluation behind the tables of Section~\\ref{sec:results}, every penalised slack in $Q$ (daily closure and network feasibilit",
+    "new_vs_9b": "carried",
+    "hunk_9b_lines": [
+     2310
+    ]
+   },
+   {
+    "file": "cover_letter.tex",
+    "line": 21,
+    "col": 252,
+    "written": "90.9",
+    "type": "num",
+    "status": "derived",
+    "rating": "DERIVED",
+    "category": null,
+    "counterpart": "derived: benefit 90,896,608.40 EUR = 90,896.6 kEUR = 90.8966 MEUR (data/SRP1/Results/P515S53/w160_step6_frozen/frozen_step6_tables_v1_590088fe.json tables.benchmark.benefit)",
+    "counterpart_value": 90.89660839950395,
+    "value_at_written_precision": "90.9",
+    "rule": "derived; compared at the written precision (1 dp)",
+    "note": "coordination saving vs the price-taker arrangement",
+    "convention": "gross (Q = gross_operational_cost, settlement excluded)",
+    "spec_desc": "coordination saving vs the price-taker arrangement",
+    "line_text": "Beyond the Reviewers' requests, the revision adds two robustness checks. The coordinated arrangement was re-evaluated with the same no-reverse-flow restriction ",
+    "new_vs_9b": "NEW",
+    "hunk_9b_lines": [
+     21
+    ]
+   },
+   {
+    "file": "cover_letter.tex",
+    "line": 21,
+    "col": 290,
+    "written": "12.2",
+    "type": "num",
+    "status": "derived",
+    "rating": "DERIVED",
+    "category": null,
+    "counterpart": "derived: data/SRP1/Results/P515S53/w160_step6_frozen/frozen_step6_tables_v1_590088fe.json tables.benchmark.benefit 90,896,608.40 / benchmark.arms.price_taker.Q_best 744,770,310.59 x 100 = 12.2046 % (gross Q, settlement excluded; denominator the price-taker cost; benefit = decomposition.price_taker_NRF_minus_coordinated_eur 90,896,608.40)",
+    "counterpart_value": 12.204649823895709,
+    "value_at_written_precision": "12.2",
+    "rule": "derived; compared at the written precision (1 dp)",
+    "note": "coordination saving relative to the price-taker benchmark (gross Q)",
+    "convention": "gross (Q = gross_operational_cost, settlement excluded)",
+    "spec_desc": "coordination saving relative to the price-taker benchmark (gross Q)",
+    "line_text": "Beyond the Reviewers' requests, the revision adds two robustness checks. The coordinated arrangement was re-evaluated with the same no-reverse-flow restriction ",
+    "new_vs_9b": "NEW",
+    "hunk_9b_lines": [
+     21
+    ]
+   }
+  ],
+  "stale_declarations": [],
+  "claimed_twice": [],
+  "duplicate_declaration_lines": [],
+  "unassigned": [],
+  "negative_control": {
+   "n": 51,
+   "n_refused": 51,
+   "not_refused": []
+  },
+  "inputs": {
+   "FRAME": {
+    "path": "section4_expert_draft.tex",
+    "sha256": "e73b6d918ff635164a54207e56f9ac9c9e1aef6307f87d018eac2684d4528a5d"
+   },
+   "FROZEN_JSON": {
+    "path": "data/SRP1/Results/P515S53/w160_step6_frozen/frozen_step6_tables_v1_590088fe.json",
+    "sha256": "590088fe6b364c265c97998c5491edea7ca70baad0dbe2ba5150273656d9b6f4"
+   },
+   "EXPORT_README": {
+    "path": "data/SRP1/Results/P515S53/w160_step6_frozen/export/README.md",
+    "sha256": "0602e86399f3863fe50a3d66bd8b856571af28463121bb078423e7b1d83c4bad"
+   },
+   "PARAGRAPHS_V5": {
+    "path": "data/SRP1/Results/P515S53/w160_step6_frozen/export/paragraphs_v5.md",
+    "sha256": "b86657069901ed62ccd80209295bf2d4ecc075a149f47b283148273a9c1a9841"
+   },
+   "T4_TEX": {
+    "path": "data/SRP1/Results/P515S53/w160_step6_frozen/export/T4.tex",
+    "sha256": "f925605508ffc189376193cf91bf975d1d26cb3568b882eae2e371f7bb8e1af8"
+   },
+   "T7_TEX": {
+    "path": "data/SRP1/Results/P515S53/w160_step6_frozen/export/T7.tex",
+    "sha256": "e769a722531f5c5d3083e9cc5b05bd9ae19f39248fd582502290e4e011aef0b4"
+   },
+   "T6_CSV": {
+    "path": "data/SRP1/Results/P515S53/w160_step6_frozen/export/T6.csv",
+    "sha256": "a3c0237a652d1ec1c96e695d5c0482e18b40d6e8a37f4348876daaa441ae5281"
+   },
+   "CAPTIONS_MD": {
+    "path": "data/SRP1/Results/P515S53/w160_step6_frozen/export/figures/captions.md",
+    "sha256": "f038bcfbfe4b83cde62d3ce6b5edad2ff4532b6a2ef4873bbeeef3cb1c56b6c2"
+   },
+   "FIG1_DATA": {
+    "path": "data/SRP1/Results/P515S53/w160_step6_frozen/export/figures/fig1_breakeven_data.json",
+    "sha256": "fa7b31dd3950688e6b4d9483bac9024bbb1b9b0dfa4f4e00d1a4a379efc1d116"
+   },
+   "FIG2_DATA": {
+    "path": "data/SRP1/Results/P515S53/w160_step6_frozen/export/figures/fig2_flexibility_ladder_data.json",
+    "sha256": "5eae35d9ce6c41a47d6d6d0b4d2c4f440cda44ad2175c0ae94e4cb8718a81e10"
+   },
+   "FIG4_DATA": {
+    "path": "data/SRP1/Results/P515S53/w160_step6_frozen/export/figures/fig4_q_versus_cycle_data.json",
+    "sha256": "aae0e1a72e531c723e94ab1f6a326c2ddd7d501ed0ff63400091b87e08d89322"
+   },
+   "FIG5_DATA": {
+    "path": "data/SRP1/Results/P515S53/w160_step6_frozen/export/figures/fig5_benchmark_data.json",
+    "sha256": "82d98c41edd1d2f337f7b4f8e9839cc700f768bda50c1d4fe3cbe6f113799e55"
+   },
+   "W165_MANIFEST": {
+    "path": "data/SRP1/Results/P515S53/w160_step6_frozen/export/figures/manifest_sha256.json",
+    "sha256": "d35c775a324d4c16e4e0c5cf97e1c8cfba351aaac01f0b0b0afa32a5be17e58d"
+   },
+   "W153_CERT": {
+    "path": "data/SRP1/Results/P515S53/w153_step5_rows/w153_certification_statistics.json",
+    "sha256": "ff037985439f46c38c7918318b0c711d73c35c93928bcc04ab743d1127fc581c"
+   },
+   "W153_SALV": {
+    "path": "data/SRP1/Results/P515S53/w153_step5_rows/w153_salvage_addback.json",
+    "sha256": "215fd21dd467a173307dd7ae724ea190a25bfa329bcfed2d830768daf3bcd1cb"
+   },
+   "W155_SOH050": {
+    "path": "data/SRP1/Results/P515S53/w155_a64_cells/w155_summary_after_04_e_soh050.json",
+    "sha256": "3c71d71dd3266880a18c14acc0ed3d477afe01c28f4d71f5883faccefad3122a"
+   },
+   "W99": {
+    "path": "data/SRP1/Results/P515S53/w99_stage1_posthoc/w99_stage1_posthoc_analysis.json",
+    "sha256": "8c9a003a4cef85288090fade3369761be629026b38bea122f0d3b828a9e715de"
+   },
+   "W98R2_RESULTS": {
+    "path": "data/SRP1/Results/P515S53/w98_continuation/campaign_s53_w98_x0_continuation_r2/campaign_results.json",
+    "sha256": "b0d58764b07d9654e7c99595d54f84b9e8677639594d47ceb66198f091d3b1e7"
+   },
+   "W98R2_CONT": {
+    "path": "data/SRP1/Results/P515S53/w98_continuation/campaign_s53_w98_x0_continuation_r2/evals/25b92ae0f1f2c02e_x0_cont/continuation_cycle_record.jsonl",
+    "sha256": "d879551ec50c463245d332e84a61a87dbb1f9fff402eeb8a1c9885e6e14b92a6"
+   },
+   "W173": {
+    "path": "data/SRP1/Results/P515S53/w173_search_counts/w173_search_counts.json",
+    "sha256": "0aa337fca5cfaf56da7489a4cdd872da86bc6eb2cd108fa8b7d5ca6ff2c1a5d9"
+   },
+   "W163": {
+    "path": "data/SRP1/Results/P515S53/w163_paragraphs_v4_check/w163_paragraphs_v4_figure_check.json",
+    "sha256": "34f53a2cb855653259c263934152fda224f068d3fbabe81d9ce9bfa4a8e6e625"
+   },
+   "W170": {
+    "path": "data/SRP1/Results/P515S53/w170_r_prediction/w170_r_prediction.json",
+    "sha256": "5ca6469c662cb96cdab76b58069f7f52b8dd5ee4b10ad1eac40062dee5a50c86"
+   },
+   "SRP1_JSON": {
+    "path": "data/SRP1/SRP1.json",
+    "sha256": "61a794a7ce7a3fb983f2e92128eec446dd7dbb17ad75a3b3b1c5735f8bd4e4ef"
+   },
+   "CASE_3X3": {
+    "path": "data/SRP1/Results/P515S53/w89_3x3/instance/SRP1__s53_3x3.json",
+    "sha256": "2a64e3c5bd06c30c8a015207f41b69257b001094cbd4b185a84394a6765c5871"
+   },
+   "ESS_PARAMS": {
+    "path": "data/SRP1/SharedESS/SRP1_ESS_Params.json",
+    "sha256": "39106f934bf3edbf18f01a5ef1fadfefc2f7a518706e6c8fa6d962617a312706"
+   },
+   "ESS_XLSX": {
+    "path": "data/SRP1/SharedESS/SRP1_ESS.xlsx",
+    "sha256": "e17bd5887e1d0738005ae17c3144593527081c9a0776e19cfaa50aafefe39cd6"
+   },
+   "YL2030_BOYD": {
+    "path": "data/SRP1/Results/P515S53/w118_resettle/campaign_s53_w118_resettle_r2_yl_y2030/evals/6e4f11a95dc3d585_yl_y2030/boyd_terminal.json",
+    "sha256": "3e9ab33b74a30b50d9a84c7bcc181e33c4b36de737ae73c85fe9927045120590"
+   },
+   "YL2035_BOYD": {
+    "path": "data/SRP1/Results/P515S53/w118_resettle/campaign_s53_w118_resettle_r2_yl_y2035/evals/3a2387f46448f9db_yl_y2035/boyd_terminal.json",
+    "sha256": "87bd261210071dc3341a4dcc7362a8a01695d310bd276bacad46d0778741f33d"
+   },
+   "CODE_SESD": {
+    "path": "shared_energy_storage_data.py",
+    "sha256": "e8bf4f923e28db83480e786340c32a291eca56288fa17f15ecac7fb72fc3cb85"
+   },
+   "CODE_SESP": {
+    "path": "shared_energy_storage_parameters.py",
+    "sha256": "f31a2caa83a7c07f8f2375bf2016dd2180ff470ee33c1df0a04ece038d46aff6"
+   },
+   "CODE_SES": {
+    "path": "shared_energy_storage.py",
+    "sha256": "d45c72d0db9a3743f3c26765f124ba7fbec44733ecb0d2d28b83b7e6a451f088"
+   },
+   "CODE_SRP": {
+    "path": "shared_resources_planning.py",
+    "sha256": "c9336a61a713ef6890fbffcda845395d757e26c41ae2422e82dd88bb881c33e8"
+   },
+   "CASE9": {
+    "path": "data/SRP1/case9/case9_2025.json",
+    "sha256": "d5f7f579a56676b85fba980ff96e85a15620ae72c85f67f7551426a13ee0034f"
+   },
+   "CASE33_1": {
+    "path": "data/SRP1/case33_1/case33_1_2025.json",
+    "sha256": "5cde824b69378604cf0415fae51c70b62c4b961bfdbcb24a526fc57c4a3612db"
+   },
+   "CASE33_2": {
+    "path": "data/SRP1/case33_2/case33_2_2025.json",
+    "sha256": "8d6bd989f05925b7671d70fe6e97da930ce3a3d37684110fdbe3107c3348e1a8"
+   },
+   "CASE33_3": {
+    "path": "data/SRP1/case33_3/case33_3_2025.json",
+    "sha256": "c9f430ce32b0b9599d929cf42e39e7683929a6f5e6bad739954524eb1bf652af"
+   },
+   "SUBMITTED_MAIN": {
+    "path": "manuscript_submitted/main.tex",
+    "sha256": "ca07d7dbd881e1f9a6889f42e78e38529504602a860906f526eca40b8d624c62"
+   },
+   "BRIEF": {
+    "path": "PLANNER_BRIEF_2026-09-13.md",
+    "sha256": "e0111e80a5d7a48c367a0daa790c9c46635d28b6a8d6f901c0cfe1a91db4fa8a"
+   },
+   "PDF_FIG1": {
+    "path": "data/SRP1/Results/P515S53/w160_step6_frozen/export/figures/fig1_breakeven.pdf",
+    "sha256": "99ec6a6bf869b1551545758ccbb47dfec76d6225500a83bdd5b73db97aa22808"
+   },
+   "PDF_FIG2": {
+    "path": "data/SRP1/Results/P515S53/w160_step6_frozen/export/figures/fig2_flexibility_ladder.pdf",
+    "sha256": "7d15f6970e26db9df7e912b96d8db23c5b446ca48a99716a9127ffc089bf3b98"
+   },
+   "PDF_FIG3": {
+    "path": "data/SRP1/Results/P515S53/w160_step6_frozen/export/figures/fig3_ageing_arms.pdf",
+    "sha256": "8f2438074dc57a65efc62b8af75ab7c2c2d1af2514869f8bc9c19cb10f3465e2"
+   },
+   "PDF_FIG4": {
+    "path": "data/SRP1/Results/P515S53/w160_step6_frozen/export/figures/fig4_q_versus_cycle.pdf",
+    "sha256": "45755c82927e04c75bb4d7dcbbf816347632b83eadaea42de631d20d5a3a13cf"
+   },
+   "PDF_FIG5": {
+    "path": "data/SRP1/Results/P515S53/w160_step6_frozen/export/figures/fig5_benchmark.pdf",
+    "sha256": "3a0184db064bfc47eeeb9c31464b927a56ffab4be12a5406e0ea6dc40f511841"
+   },
+   "W177A_SCRIPT": {
+    "path": "p515_s53_w177a_section4_frame_check.py",
+    "sha256": "85df69fc6a115c0877ba61ceef0328bf28c29ffed676a4beef106d7423da3cfa"
+   },
+   "W177A_JSON": {
+    "path": "data/SRP1/Results/P515S53/w177a_section4_frame/w177a_section4_frame_check.json",
+    "sha256": "76266f7f0fecdab61375aca4efb5b5516f63ab0c9f1a78a023621f22d3631cd0"
+   },
+   "W177A_REPORT": {
+    "path": "P5_15_ADDENDUM73_W177A_REPORT.md",
+    "sha256": "f81abb85a87f7a8ef13ab6b4e813622543c46ae8448d5e3b4810d5656fd009a2"
+   },
+   "W176_SCRIPT": {
+    "path": "p515_s53_w176_manuscript_number_check.py",
+    "sha256": "c66ed712e0e7ef78a612e35d19af6e7a45dd2ac19955a9921bc756e1ef4e843c"
+   },
+   "CHANGE_LOG": {
+    "path": "manuscript_review/W177B_CHANGE_LOG.md",
+    "sha256": "b2de3bc03f83eff550b0a934048aa6b54fc991f6b3b5ed720e7524dcc8cea31d"
+   },
+   "SRP1_PARAMS": {
+    "path": "data/SRP1/SRP1_params.json",
+    "sha256": "dbfdb2a07d12bfedab5e66bf94b3df98e5ab0305616652b4083266476972006b"
+   },
+   "SPEC_3X3": {
+    "path": "data/SRP1/Results/P515S53/w90_3x3/campaign_s53_w91_3x3_pair/campaign_spec_s53_w91_3x3_pair_231558f0.json",
+    "sha256": "231558f0705797327c10d8e0e82ff878e19ed3a4620766bd5b113995bb920e99"
+   },
+   "B1_SCRIPT": {
+    "path": "p515_s53_w177b_number_check.py",
+    "sha256": "9d3ec4ca28be3a0bf00baa64b583a70965769fef361bed90ca9e531d7e1b6a8a"
+   },
+   "B1_JSON": {
+    "path": "data/SRP1/Results/P515S53/w177b_number_check/overleaf_51a6fb5/w177b_number_check.json",
+    "sha256": "575cb337bc57c2df06771aec233a7cef872c343e242c6e9e03b7f9145983a7dc"
+   },
+   "B1_REPORT": {
+    "path": "P5_15_W177B_PART01.md",
+    "sha256": "2dc40f992efac3839ce1d4d17e2258cbf61c67a4393b59be0be21b56f7831156"
+   },
+   "W176B_JSON": {
+    "path": "data/SRP1/Results/P515S53/w176_manuscript_check/overleaf_8b76423/w176_manuscript_number_check.json",
+    "sha256": "1860dca47035779e8f329b49d041d006a78ec072abae0c2ce99072f1268720d2"
+   },
+   "DOCX": {
+    "path": "manuscript_review/Reviewers Comments.docx",
+    "sha256": "c7afdc8bb3d32fce41116a632397799c82df6c6f11316fb5fa013b0c4ed6e21c"
+   },
+   "LETTER_V2": {
+    "path": "manuscript_review/response_to_reviewers_v2.tex",
+    "sha256": "bc270fe2cf4b44f7e9547e17ccd85ecd94b56e8f99dd717486d9cf863c20a642"
+   },
+   "FIXES_M1": {
+    "path": "manuscript_review/section3_intro_conclusions_fixes.tex",
+    "sha256": "80d449e05b0d7c944956420e4164a35922e25b6d37fe3a7b4e3dc46a789477ae"
+   },
+   "INSTANCE_3X3": {
+    "path": "data/SRP1/Results/P515S53/w89_3x3/instance/instance_record.json",
+    "sha256": "a47dc358edc1a69279ddd1965a587efc2906eb6c770d336cb9c8f34227f910ea"
+   },
+   "CODE_DEFS": {
+    "path": "definitions.py",
+    "sha256": "7e5719af129df111db1b403feeffe0b566d0b7f2e72915829e16bf143a9321af"
+   },
+   "A1_CAMPAIGN": {
+    "path": "p515_s45_a1_campaign.py",
+    "sha256": "812c5abf8b874dfe36e497d5f454762556462b494277e740ed432ddf474fe24a"
+   },
+   "P2": {
+    "path": "data/SRP1/Results/P515S53/w160_step6_frozen/export/paragraphs_v2.md",
+    "sha256": "73b42c49cebc1cd9ae8515ad0803d69b63cf818e6030bfa898f77e0d70506a50"
+   },
+   "W167_Q4": {
+    "path": "data/SRP1/Results/P515S53/w167_nomenclature_years/question4_cost_file.json",
+    "sha256": "dff6a2b1e13bd014fddebb938bfce0406e238ecd4d3010d23310e42cd2468a49"
+   },
+   "B1R_SCRIPT": {
+    "path": "p515_s53_w177b1r_number_check.py",
+    "sha256": "05e2efc34ef2f801421df0ff2bfa1eddc73a14795f1cdbead13cccfb1d844cc4"
+   },
+   "B1R_JSON": {
+    "path": "data/SRP1/Results/P515S53/w177b_number_check/overleaf_e10c104/w177b1r_number_check.json",
+    "sha256": "331a67b16edee07905e54c242e5b9ce934aa92ed9973606a06c733002003adf7"
+   },
+   "B2R_JSON": {
+    "path": "data/SRP1/Results/P515S53/w177b_part2_e10c104/w177b2r_checks.json",
+    "sha256": "f52ca240a5c3edb0aea1d0255d02378d311d9bcdf20c5850eb6f18eadce6c668"
+   },
+   "B3R_JSON": {
+    "path": "data/SRP1/Results/P515S53/w177b_part3_e10c104/w177b3r_checks.json",
+    "sha256": "c27f40626a353344962e490b5059e56508ddca6adcebccfcfbefee27ef04ed3a"
+   },
+   "W174A_JSON": {
+    "path": "data/SRP1/Results/P515S53/w174_manuscript_check/overleaf_260bd83/w174_manuscript_number_check.json",
+    "sha256": "9263493814ad0f45d0c886a66365885cdc93fc7f3e2c9c28047cf6e60d3d7694"
+   },
+   "PART01_REPORT": {
+    "path": "P5_15_W177B_PART01_E10C104.md",
+    "sha256": "b6bd2d736e2c9ebf3219ffdff7729e2a4adb29eee4357153518ab645b9e43237"
+   },
+   "PART2_REPORT": {
+    "path": "P5_15_W177B_PART2_E10C104.md",
+    "sha256": "5bae0a1809bd840394fe6c0f191cb36f26d279d330f024595914a4015a1c8d5f"
+   },
+   "W177B_REPORT": {
+    "path": "P5_15_W177B_REPORT.md",
+    "sha256": "a721a158884095cf6846a3812a2e94fbd8c2e7f67f98183fcf2df8c3e90c56f6"
+   },
+   "FIXES": {
+    "path": "manuscript_review/w177b_fixes.tex",
+    "sha256": "ad5ea9a22347bae61d92049cff3ff39c128fb9af3eb14bd18494c2e458c6d093"
+   },
+   "FOLLOWUP_DIFF": {
+    "path": "manuscript_review/main_820ee1b_fixes.diff",
+    "sha256": "8322ac96105dd20f334fdb458faebe52114885ed4335f694c9928db2c8dd03fc"
+   },
+   "FIXED_COPY": {
+    "path": "manuscript_review/main_820ee1b_fixed.tex",
+    "sha256": "d18384d669b7a4fbbcfb95e7ead5181e6ffdc5001f51f60d773053e1473df15d"
+   },
+   "LETTER_V4": {
+    "path": "manuscript_review/response_to_reviewers_v4.tex",
+    "sha256": "18992d8f3bcb45f2030a16f981c6cc6f474e6332fe791e23ee7030d130c9857b"
+   },
+   "RESETTLE_V6": {
+    "path": "data/SRP1/Results/P515S53/w142_resettle_v6/frozen_s53_resettle_spec_v6_96c23404.json",
+    "sha256": "96c234045f15fa4f18ba7149b3b4a39c749f256657d436064c320b04d546e041"
+   },
+   "RESETTLE_EXT_V3": {
+    "path": "data/SRP1/Results/P515S53/w142_resettle_ext_v6/frozen_s53_resettle_ext_spec_v3_84775dc4.json",
+    "sha256": "84775dc41428ba6a6b504c86de728f3d2b44d19354c977c18d3b33f197c76ee6"
+   },
+   "A64_SPEC": {
+    "path": "data/SRP1/Results/P515S53/w155_a64_cells/frozen_s53_a64_cells_spec_v1_44a2dce8.json",
+    "sha256": "44a2dce8c2bb12f45bcb907956acda971c574ec6676ce02d8a3caa720524e366"
+   },
+   "SX_SUMMARY": {
+    "path": "data/SRP1/Results/P515S53/w142_resettle_ext_v6/w142_ext_summary_after_07_pb_y2025_n5_v6.json",
+    "sha256": "183871cd29c7f3309e6301cc32da90a4a7d4b58e385a82b1ba2530ec925c63ce"
+   },
+   "W155_RECORD": {
+    "path": "data/SRP1/Results/P515S53/w155_a64_cells/campaign_s53_w155_a64_r2_e_soh050/evals/3f01b9eaaab13c82_e_soh050/evaluation_record.json",
+    "sha256": "ab3573fc3bfe172721f1e3778c7dc6cd92beaab3703a1018ebdcd0c90b4e7afe"
+   },
+   "CODE_W157": {
+    "path": "p515_s53_w157_step6_tables.py",
+    "sha256": "35c5dd144e19b3e825a94dd56d20de7e8b1682eb48ee916cb1ea6e0bff99cd00"
+   },
+   "CODE_W142X": {
+    "path": "p515_s53_w142_resettle_ext_v6_campaign.py",
+    "sha256": "0a3232069d232b85815ea88b03478b52c54ff3be9b8b4b014f039addd94caa28"
+   },
+   "CODE_W155": {
+    "path": "p515_s53_w155_a64_campaign.py",
+    "sha256": "5210029065c22142cfc833a156bfb0f08a09c525c8080cb2012e925d5bdc0d6a"
+   },
+   "CODE_M46A": {
+    "path": "p515_s46_ageing_mechanism.py",
+    "sha256": "c2d4b1c56097a563d5230f4a1eece78abc6dbeb91b5e63aaeca2a53f823a4dd5"
+   },
+   "ELSARTICLE_DTX": {
+    "path": "manuscript/6a67305f25e8348fb71380c3/elsarticle.dtx",
+    "sha256": "0e8bdc4d34050ec6ccd4a54e43d15ed1f2ae8ea9c07c3efc688fad75a07ffac3"
+   },
+   "W178B_SCRIPT": {
+    "path": "p515_s53_w178b_number_check.py",
+    "sha256": "17b5c8ce253443ed0e0d30464dc59b02c2fade2453109e1fadf1026924f6e4cb"
+   },
+   "W181A_JSON": {
+    "path": "data/SRP1/Results/P515S53/w181a_identity_appendixE/w181a_identity_appendixE.json",
+    "sha256": "93c5c09c3ce1c25d1809e0d29d2a37619c2e4935b2393a55312a52a7bc584c94"
+   },
+   "W180D_JSON": {
+    "path": "data/SRP1/Results/P515S53/w180d_closure_sentence/w180d_closure_sentence.json",
+    "sha256": "49a8f72d5d8cab093940b4a40c724bf7aab1c47891963363e75291957c26bc70"
+   },
+   "W169_JSON": {
+    "path": "data/SRP1/Results/P515S53/w169_slack_inventory/w169_slack_inventory.json",
+    "sha256": "f5831567204bee2cd7e0a2b1ab666d999c45e356ca9570729735837066e3eab6"
+   },
+   "BENCH_SPEC_V5": {
+    "path": "data/SRP1/Results/P515S53/w116_benchmark_nrf/frozen_s53_benchmark_spec_v5_bca69f97.json",
+    "sha256": "bca69f97a6e60e92e3a7dc51d6bdc9f71fe463c50a840952d9d6fc78bac7d2c6"
+   },
+   "CODE_MCH": {
+    "path": "model_construction_helpers.py",
+    "sha256": "a20a224f11008de8c0206484583b00253677267d616e1051bb1583791ed47f64"
+   },
+   "CODE_NET": {
+    "path": "network.py",
+    "sha256": "18acaa84af7a043898a7b831223b4eab1d91f9bcf2c199f49beecfeb3bf91fb4"
+   },
+   "CODE_SC1": {
+    "path": "settling_criterion.py",
+    "sha256": "fbe5550b34a4062feed82476e1959b5e4e2786cb13ca61728bfa1803ba75f65f"
+   },
+   "CODE_SC6": {
+    "path": "settling_criterion_v6.py",
+    "sha256": "53f477118d51f5fd843190c0da920f1647618ef41f6a1973988653b10eb66e2d"
+   },
+   "CODE_S47PB": {
+    "path": "p515_s47_phase_b_record.py",
+    "sha256": "97f573e52fb574836a72dce8c61b3d5c6b8919aa509e0ffbc04a1a6473ed6c62"
+   },
+   "FIG_LATTICE_PY": {
+    "path": "manuscript_review/fig_lattice_case.py",
+    "sha256": "3b3513a1ae4d320f4a5c66bee58b22a58f27c8d1bc0c3e439c6c106f6abf54bf"
+   },
+   "W165_SCRIPT": {
+    "path": "p515_s53_w165_step6_figures.py",
+    "sha256": "397d49ce4d4f05465b46b5f1a61d4e3bbe67b7811e5c9ee4cedfe9bf44fee15f"
+   },
+   "FIG4_PDF_CLONE": {
+    "path": "manuscript/6a67305f25e8348fb71380c3/fig4_q_versus_cycle.pdf",
+    "sha256": "45755c82927e04c75bb4d7dcbbf816347632b83eadaea42de631d20d5a3a13cf"
+   },
+   "CASE_case9_2025": {
+    "path": "data/SRP1/case9/case9_2025.json",
+    "sha256": "d5f7f579a56676b85fba980ff96e85a15620ae72c85f67f7551426a13ee0034f"
+   },
+   "CASE_case9_2028": {
+    "path": "data/SRP1/case9/case9_2028.json",
+    "sha256": "d5f7f579a56676b85fba980ff96e85a15620ae72c85f67f7551426a13ee0034f"
+   },
+   "CASE_case9_2030": {
+    "path": "data/SRP1/case9/case9_2030.json",
+    "sha256": "c7f279992066189620332f1c5a9738d0cf0a80ce355487bfef52b2ec4792c55d"
+   },
+   "CASE_case9_2031": {
+    "path": "data/SRP1/case9/case9_2031.json",
+    "sha256": "c7f279992066189620332f1c5a9738d0cf0a80ce355487bfef52b2ec4792c55d"
+   },
+   "CASE_case9_2034": {
+    "path": "data/SRP1/case9/case9_2034.json",
+    "sha256": "c7f279992066189620332f1c5a9738d0cf0a80ce355487bfef52b2ec4792c55d"
+   },
+   "CASE_case9_2035": {
+    "path": "data/SRP1/case9/case9_2035.json",
+    "sha256": "14f53b046f62a56846b4249bebaad526dd8f69c83c79efd602436a9c48c91e0b"
+   },
+   "CASE_case9_2037": {
+    "path": "data/SRP1/case9/case9_2037.json",
+    "sha256": "14f53b046f62a56846b4249bebaad526dd8f69c83c79efd602436a9c48c91e0b"
+   },
+   "CASE_case33_1_2025": {
+    "path": "data/SRP1/case33_1/case33_1_2025.json",
+    "sha256": "5cde824b69378604cf0415fae51c70b62c4b961bfdbcb24a526fc57c4a3612db"
+   },
+   "CASE_case33_1_2028": {
+    "path": "data/SRP1/case33_1/case33_1_2028.json",
+    "sha256": "5cde824b69378604cf0415fae51c70b62c4b961bfdbcb24a526fc57c4a3612db"
+   },
+   "CASE_case33_1_2030": {
+    "path": "data/SRP1/case33_1/case33_1_2030.json",
+    "sha256": "0114453432afd3aa88e3ed7f187a0f165e2cf52c6070be2995a48305e5d7310e"
+   },
+   "CASE_case33_1_2031": {
+    "path": "data/SRP1/case33_1/case33_1_2031.json",
+    "sha256": "0114453432afd3aa88e3ed7f187a0f165e2cf52c6070be2995a48305e5d7310e"
+   },
+   "CASE_case33_1_2034": {
+    "path": "data/SRP1/case33_1/case33_1_2034.json",
+    "sha256": "0114453432afd3aa88e3ed7f187a0f165e2cf52c6070be2995a48305e5d7310e"
+   },
+   "CASE_case33_1_2035": {
+    "path": "data/SRP1/case33_1/case33_1_2035.json",
+    "sha256": "674b2d00809d93afc1c3443d525c899b939f357806282f735d3821bc6d094185"
+   },
+   "CASE_case33_1_2037": {
+    "path": "data/SRP1/case33_1/case33_1_2037.json",
+    "sha256": "674b2d00809d93afc1c3443d525c899b939f357806282f735d3821bc6d094185"
+   },
+   "OPDATA_case33_1": {
+    "path": "data/SRP1/case33_1/case33_1_operational_data.xlsx",
+    "sha256": "e4ddc6d95cfd6237bb486e2ffca9c42e0efbd30a8b211eca5357502619dccc43"
+   },
+   "CASE_case33_2_2025": {
+    "path": "data/SRP1/case33_2/case33_2_2025.json",
+    "sha256": "8d6bd989f05925b7671d70fe6e97da930ce3a3d37684110fdbe3107c3348e1a8"
+   },
+   "CASE_case33_2_2028": {
+    "path": "data/SRP1/case33_2/case33_2_2028.json",
+    "sha256": "8d6bd989f05925b7671d70fe6e97da930ce3a3d37684110fdbe3107c3348e1a8"
+   },
+   "CASE_case33_2_2030": {
+    "path": "data/SRP1/case33_2/case33_2_2030.json",
+    "sha256": "e4065145c214b1b54c8e3375665e9d5c480810f830ae427f0a02e4e67922ce2f"
+   },
+   "CASE_case33_2_2031": {
+    "path": "data/SRP1/case33_2/case33_2_2031.json",
+    "sha256": "e4065145c214b1b54c8e3375665e9d5c480810f830ae427f0a02e4e67922ce2f"
+   },
+   "CASE_case33_2_2034": {
+    "path": "data/SRP1/case33_2/case33_2_2034.json",
+    "sha256": "e4065145c214b1b54c8e3375665e9d5c480810f830ae427f0a02e4e67922ce2f"
+   },
+   "CASE_case33_2_2035": {
+    "path": "data/SRP1/case33_2/case33_2_2035.json",
+    "sha256": "6888045f33a07f33a515db369dafbca0854f0adb2bdfacdf996158b224185047"
+   },
+   "CASE_case33_2_2037": {
+    "path": "data/SRP1/case33_2/case33_2_2037.json",
+    "sha256": "6888045f33a07f33a515db369dafbca0854f0adb2bdfacdf996158b224185047"
+   },
+   "OPDATA_case33_2": {
+    "path": "data/SRP1/case33_2/case33_2_operational_data.xlsx",
+    "sha256": "44c8893a331899b1668f5af37228eaaf3bbd7e05fa13500f9b78345a15fcd720"
+   },
+   "CASE_case33_3_2025": {
+    "path": "data/SRP1/case33_3/case33_3_2025.json",
+    "sha256": "c9f430ce32b0b9599d929cf42e39e7683929a6f5e6bad739954524eb1bf652af"
+   },
+   "CASE_case33_3_2028": {
+    "path": "data/SRP1/case33_3/case33_3_2028.json",
+    "sha256": "c9f430ce32b0b9599d929cf42e39e7683929a6f5e6bad739954524eb1bf652af"
+   },
+   "CASE_case33_3_2030": {
+    "path": "data/SRP1/case33_3/case33_3_2030.json",
+    "sha256": "de8aa07d29d4be872d0b7afd5f4603b5d95091c3d554bf4493c6b982a6d1b11b"
+   },
+   "CASE_case33_3_2031": {
+    "path": "data/SRP1/case33_3/case33_3_2031.json",
+    "sha256": "de8aa07d29d4be872d0b7afd5f4603b5d95091c3d554bf4493c6b982a6d1b11b"
+   },
+   "CASE_case33_3_2034": {
+    "path": "data/SRP1/case33_3/case33_3_2034.json",
+    "sha256": "de8aa07d29d4be872d0b7afd5f4603b5d95091c3d554bf4493c6b982a6d1b11b"
+   },
+   "CASE_case33_3_2035": {
+    "path": "data/SRP1/case33_3/case33_3_2035.json",
+    "sha256": "f73ae82b1b240a8d4c41775e17cde951692e37e0f79c557e896d01f6d299da60"
+   },
+   "CASE_case33_3_2037": {
+    "path": "data/SRP1/case33_3/case33_3_2037.json",
+    "sha256": "f73ae82b1b240a8d4c41775e17cde951692e37e0f79c557e896d01f6d299da60"
+   },
+   "OPDATA_case33_3": {
+    "path": "data/SRP1/case33_3/case33_3_operational_data.xlsx",
+    "sha256": "866bcfc7afb24ee9a06277e550acc5a2d73549e81877cc7fc1480f7e5ecd8f45"
+   },
+   "OPDATA_case9": {
+    "path": "data/SRP1/case9/case9_operational_data.xlsx",
+    "sha256": "5eab94aa6eb6e661554db947cc2e3ff7d761350de569f8a1f36c6c13d418d6bb"
+   },
+   "W182D_JSON": {
+    "path": "data/SRP1/Results/P515S53/w182d_claims/w182d_claims.json",
+    "sha256": "4388c277404b80a5980c51ab3fcfeaca69e05c915c83a485f9030c9d56c3f7b1"
+   },
+   "W182G_JSON": {
+    "path": "data/SRP1/Results/P515S53/w182g_cost_horizon_budget/w182g_cost_horizon_budget.json",
+    "sha256": "f73d8b198d3f5a8d9742d2dacb3a94daedc022cc885a00c492b4b78f53ad3970"
+   }
+  }
+ },
+ "new_tokens_vs_9b": [
+  {
+   "file": "main.tex",
+   "line": 1565,
+   "col": 364,
+   "written": "six",
+   "type": "word",
+   "status": "match",
+   "rating": "MATCH",
+   "category": null,
+   "counterpart": "W188d SoC block summary CSV: (year, day) blocks with n_contact_lower_tso > 0 (W188d contact rule, within 1e-4 MWh of the 10 % limit)",
+   "counterpart_value": 6,
+   "value_at_written_precision": "6",
+   "rule": "count / integer (exact)",
+   "note": null,
+   "convention": "n/a",
+   "spec_desc": "W188d SoC block summary CSV: (year, day) blocks with n_contact_lower_tso > 0 (W188d contact rule, within 1e-4 MWh of the 10 % limit)",
+   "line_text": "Figure~\\ref{fig:res_soc_soh} shows how degradation reaches the dispatch. Panel~(a) gives the stored energy of the reference unit over the four representative da",
+   "new_vs_9b": "NEW",
+   "hunk_9b_lines": [
+    1565
+   ]
+  },
+  {
+   "file": "main.tex",
+   "line": 1565,
+   "col": 375,
+   "written": "eight",
+   "type": "word",
+   "status": "match",
+   "rating": "MATCH",
+   "category": null,
+   "counterpart": "W188d SoC CSVs: (year, day) blocks plotted (2 years x 4 days)",
+   "counterpart_value": 8,
+   "value_at_written_precision": "8",
+   "rule": "count / integer (exact)",
+   "note": null,
+   "convention": "n/a",
+   "spec_desc": "W188d SoC CSVs: (year, day) blocks plotted (2 years x 4 days)",
+   "line_text": "Figure~\\ref{fig:res_soc_soh} shows how degradation reaches the dispatch. Panel~(a) gives the stored energy of the reference unit over the four representative da",
+   "new_vs_9b": "NEW",
+   "hunk_9b_lines": [
+    1565
+   ]
+  },
+  {
+   "file": "main.tex",
+   "line": 1565,
+   "col": 406,
+   "written": "14",
+   "type": "num",
+   "status": "match",
+   "rating": "MATCH",
+   "category": null,
+   "counterpart": "W188d: soc_min_tso_mwh(2025, Winter) / e_available_record_mwh(2025) x 100",
+   "counterpart_value": 13.878019310435176,
+   "value_at_written_precision": "14",
+   "rule": "as recorded (the written precision)",
+   "note": null,
+   "convention": "n/a",
+   "spec_desc": "W188d: soc_min_tso_mwh(2025, Winter) / e_available_record_mwh(2025) x 100",
+   "line_text": "Figure~\\ref{fig:res_soc_soh} shows how degradation reaches the dispatch. Panel~(a) gives the stored energy of the reference unit over the four representative da",
+   "new_vs_9b": "NEW",
+   "hunk_9b_lines": [
+    1565
+   ]
+  },
+  {
+   "file": "main.tex",
+   "line": 1565,
+   "col": 410,
+   "written": "15",
+   "type": "num",
+   "status": "match",
+   "rating": "MATCH",
+   "category": null,
+   "counterpart": "W188d: soc_min_tso_mwh(2035, Winter) / e_available_record_mwh(2035) x 100",
+   "counterpart_value": 15.403695311478156,
+   "value_at_written_precision": "15",
+   "rule": "as recorded (the written precision)",
+   "note": null,
+   "convention": "n/a",
+   "spec_desc": "W188d: soc_min_tso_mwh(2035, Winter) / e_available_record_mwh(2035) x 100",
+   "line_text": "Figure~\\ref{fig:res_soc_soh} shows how degradation reaches the dispatch. Panel~(a) gives the stored energy of the reference unit over the four representative da",
+   "new_vs_9b": "NEW",
+   "hunk_9b_lines": [
+    1565
+   ]
+  },
+  {
+   "file": "response_to_reviewers_draft.tex",
+   "line": 1,
+   "col": 27,
+   "written": "v13",
+   "type": "label",
+   "status": "excluded",
+   "rating": "NOT RATED",
+   "category": "identifier (label)",
+   "counterpart": null,
+   "counterpart_value": null,
+   "value_at_written_precision": null,
+   "rule": null,
+   "note": null,
+   "convention": null,
+   "spec_desc": null,
+   "line_text": "% Response to reviewers — v13 (expert, 2026-11-12; round 9c: lattice figure pointer B.9). v12 (expert, 2026-11-10; round 9b: W184 NRF arm and W185 penalty pilot",
+   "new_vs_9b": "NEW",
+   "hunk_9b_lines": [
+    1
+   ]
+  },
+  {
+   "file": "response_to_reviewers_draft.tex",
+   "line": 1,
+   "col": 40,
+   "written": "2026-11-12",
+   "type": "date",
+   "status": "excluded",
+   "rating": "NOT RATED",
+   "category": "identifier (date)",
+   "counterpart": null,
+   "counterpart_value": null,
+   "value_at_written_precision": null,
+   "rule": null,
+   "note": null,
+   "convention": null,
+   "spec_desc": null,
+   "line_text": "% Response to reviewers — v13 (expert, 2026-11-12; round 9c: lattice figure pointer B.9). v12 (expert, 2026-11-10; round 9b: W184 NRF arm and W185 penalty pilot",
+   "new_vs_9b": "NEW",
+   "hunk_9b_lines": [
+    1
+   ]
+  },
+  {
+   "file": "response_to_reviewers_draft.tex",
+   "line": 1,
+   "col": 58,
+   "written": "9c",
+   "type": "alnum",
+   "status": "excluded",
+   "rating": "NOT RATED",
+   "category": "identifier (alnum)",
+   "counterpart": null,
+   "counterpart_value": null,
+   "value_at_written_precision": null,
+   "rule": null,
+   "note": null,
+   "convention": null,
+   "spec_desc": null,
+   "line_text": "% Response to reviewers — v13 (expert, 2026-11-12; round 9c: lattice figure pointer B.9). v12 (expert, 2026-11-10; round 9b: W184 NRF arm and W185 penalty pilot",
+   "new_vs_9b": "NEW",
+   "hunk_9b_lines": [
+    1
+   ]
+  },
+  {
+   "file": "cover_letter.tex",
+   "line": 13,
+   "col": 217,
+   "written": "26",
+   "type": "num",
+   "status": "unchecked",
+   "rating": "NOT RATED",
+   "category": "identifier",
+   "counterpart": null,
+   "counterpart_value": null,
+   "value_at_written_precision": null,
+   "rule": null,
+   "note": "manuscript number EST-D-26-06323 (string-checked in the cover-letter checks)",
+   "convention": null,
+   "spec_desc": "manuscript number EST-D-26-06323 (string-checked in the cover-letter checks)",
+   "line_text": "Please find enclosed the revised version of our manuscript ``Degradation-Aware Planning of Shared Battery Energy Storage Systems for Coordinated Transmission an",
+   "new_vs_9b": "NEW",
+   "hunk_9b_lines": [
+    13
+   ]
+  },
+  {
+   "file": "cover_letter.tex",
+   "line": 13,
+   "col": 220,
+   "written": "06323",
+   "type": "num",
+   "status": "unchecked",
+   "rating": "NOT RATED",
+   "category": "identifier",
+   "counterpart": null,
+   "counterpart_value": null,
+   "value_at_written_precision": null,
+   "rule": null,
+   "note": "manuscript number EST-D-26-06323",
+   "convention": null,
+   "spec_desc": "manuscript number EST-D-26-06323",
+   "line_text": "Please find enclosed the revised version of our manuscript ``Degradation-Aware Planning of Shared Battery Energy Storage Systems for Coordinated Transmission an",
+   "new_vs_9b": "NEW",
+   "hunk_9b_lines": [
+    13
+   ]
+  },
+  {
+   "file": "cover_letter.tex",
+   "line": 21,
+   "col": 55,
+   "written": "two",
+   "type": "word",
+   "status": "match",
+   "rating": "MATCH",
+   "category": null,
+   "counterpart": "A89 claims JSON experiment parts part1_w184_section_4_4 (W184, E3 NRF) and part2_w185_spread_table (W185, E2 penalty), named in the next two sentences",
+   "counterpart_value": 2,
+   "value_at_written_precision": "2",
+   "rule": "count / integer (exact)",
+   "note": null,
+   "convention": "n/a",
+   "spec_desc": "A89 claims JSON experiment parts part1_w184_section_4_4 (W184, E3 NRF) and part2_w185_spread_table (W185, E2 penalty), named in the next two sentences",
+   "line_text": "Beyond the Reviewers' requests, the revision adds two robustness checks. The coordinated arrangement was re-evaluated with the same no-reverse-flow restriction ",
+   "new_vs_9b": "NEW",
+   "hunk_9b_lines": [
+    21
+   ]
+  },
+  {
+   "file": "cover_letter.tex",
+   "line": 21,
+   "col": 221,
+   "written": "20.5",
+   "type": "num",
+   "status": "match",
+   "rating": "MATCH",
+   "category": null,
+   "counterpart": "A89 claims JSON: Q(C_NRF) - Q(C_OPEN), the NRF restriction on the consensus exchange (W184 E3)",
+   "counterpart_value": 20463.88114476204,
+   "value_at_written_precision": "20.5",
+   "rule": "kEUR 1 dp",
+   "note": null,
+   "convention": "gross (Q = gross_operational_cost, settlement excluded)",
+   "spec_desc": "A89 claims JSON: Q(C_NRF) - Q(C_OPEN), the NRF restriction on the consensus exchange (W184 E3)",
+   "line_text": "Beyond the Reviewers' requests, the revision adds two robustness checks. The coordinated arrangement was re-evaluated with the same no-reverse-flow restriction ",
+   "new_vs_9b": "NEW",
+   "hunk_9b_lines": [
+    21
+   ]
+  },
+  {
+   "file": "cover_letter.tex",
+   "line": 21,
+   "col": 236,
+   "written": "0.02",
+   "type": "num",
+   "status": "match",
+   "rating": "MATCH",
+   "category": null,
+   "counterpart": "A89 claims JSON: (Q(C_NRF) - Q(C_OPEN)) / (Q(P_NRF) - Q(C_OPEN)) = 0.0225 %",
+   "counterpart_value": 0.0002251336051486132,
+   "value_at_written_precision": "0.02",
+   "rule": "% 1 dp",
+   "note": null,
+   "convention": "gross (ratio of gross Q differences)",
+   "spec_desc": "A89 claims JSON: (Q(C_NRF) - Q(C_OPEN)) / (Q(P_NRF) - Q(C_OPEN)) = 0.0225 %",
+   "line_text": "Beyond the Reviewers' requests, the revision adds two robustness checks. The coordinated arrangement was re-evaluated with the same no-reverse-flow restriction ",
+   "new_vs_9b": "NEW",
+   "hunk_9b_lines": [
+    21
+   ]
+  },
+  {
+   "file": "cover_letter.tex",
+   "line": 21,
+   "col": 252,
+   "written": "90.9",
+   "type": "num",
+   "status": "derived",
+   "rating": "DERIVED",
+   "category": null,
+   "counterpart": "derived: benefit 90,896,608.40 EUR = 90,896.6 kEUR = 90.8966 MEUR (data/SRP1/Results/P515S53/w160_step6_frozen/frozen_step6_tables_v1_590088fe.json tables.benchmark.benefit)",
+   "counterpart_value": 90.89660839950395,
+   "value_at_written_precision": "90.9",
+   "rule": "derived; compared at the written precision (1 dp)",
+   "note": "coordination saving vs the price-taker arrangement",
+   "convention": "gross (Q = gross_operational_cost, settlement excluded)",
+   "spec_desc": "coordination saving vs the price-taker arrangement",
+   "line_text": "Beyond the Reviewers' requests, the revision adds two robustness checks. The coordinated arrangement was re-evaluated with the same no-reverse-flow restriction ",
+   "new_vs_9b": "NEW",
+   "hunk_9b_lines": [
+    21
+   ]
+  },
+  {
+   "file": "cover_letter.tex",
+   "line": 21,
+   "col": 290,
+   "written": "12.2",
+   "type": "num",
+   "status": "derived",
+   "rating": "DERIVED",
+   "category": null,
+   "counterpart": "derived: data/SRP1/Results/P515S53/w160_step6_frozen/frozen_step6_tables_v1_590088fe.json tables.benchmark.benefit 90,896,608.40 / benchmark.arms.price_taker.Q_best 744,770,310.59 x 100 = 12.2046 % (gross Q, settlement excluded; denominator the price-taker cost; benefit = decomposition.price_taker_NRF_minus_coordinated_eur 90,896,608.40)",
+   "counterpart_value": 12.204649823895709,
+   "value_at_written_precision": "12.2",
+   "rule": "derived; compared at the written precision (1 dp)",
+   "note": "coordination saving relative to the price-taker benchmark (gross Q)",
+   "convention": "gross (Q = gross_operational_cost, settlement excluded)",
+   "spec_desc": "coordination saving relative to the price-taker benchmark (gross Q)",
+   "line_text": "Beyond the Reviewers' requests, the revision adds two robustness checks. The coordinated arrangement was re-evaluated with the same no-reverse-flow restriction ",
+   "new_vs_9b": "NEW",
+   "hunk_9b_lines": [
+    21
+   ]
+  },
+  {
+   "file": "cover_letter.tex",
+   "line": 21,
+   "col": 350,
+   "written": "two",
+   "type": "word",
+   "status": "match",
+   "rating": "MATCH",
+   "category": null,
+   "counterpart": "A89 claims JSON part2: prices {1x, 2x} (the two decisive comparisons)",
+   "counterpart_value": 2,
+   "value_at_written_precision": "2",
+   "rule": "count / integer (exact)",
+   "note": null,
+   "convention": "n/a",
+   "spec_desc": "A89 claims JSON part2: prices {1x, 2x} (the two decisive comparisons)",
+   "line_text": "Beyond the Reviewers' requests, the revision adds two robustness checks. The coordinated arrangement was re-evaluated with the same no-reverse-flow restriction ",
+   "new_vs_9b": "NEW",
+   "hunk_9b_lines": [
+    21
+   ]
+  },
+  {
+   "file": "cover_letter.tex",
+   "line": 21,
+   "col": 568,
+   "written": "W187",
+   "type": "label",
+   "status": "excluded",
+   "rating": "NOT RATED",
+   "category": "identifier (label)",
+   "counterpart": null,
+   "counterpart_value": null,
+   "value_at_written_precision": null,
+   "rule": null,
+   "note": null,
+   "convention": null,
+   "spec_desc": null,
+   "line_text": "Beyond the Reviewers' requests, the revision adds two robustness checks. The coordinated arrangement was re-evaluated with the same no-reverse-flow restriction ",
+   "new_vs_9b": "NEW",
+   "hunk_9b_lines": [
+    21
+   ]
+  },
+  {
+   "file": "cover_letter.tex",
+   "line": 21,
+   "col": 694,
+   "written": "4.3",
+   "type": "num",
+   "status": "excluded",
+   "rating": "NOT RATED",
+   "category": "pointer / citation number (W189 part 2 scope; not rated here)",
+   "counterpart": null,
+   "counterpart_value": null,
+   "value_at_written_precision": null,
+   "rule": null,
+   "note": null,
+   "convention": null,
+   "spec_desc": null,
+   "line_text": "Beyond the Reviewers' requests, the revision adds two robustness checks. The coordinated arrangement was re-evaluated with the same no-reverse-flow restriction ",
+   "new_vs_9b": "NEW",
+   "hunk_9b_lines": [
+    21
+   ]
+  },
+  {
+   "file": "cover_letter.tex",
+   "line": 23,
+   "col": 266,
+   "written": "one",
+   "type": "word",
+   "status": "unchecked",
+   "rating": "NOT RATED",
+   "category": "language",
+   "counterpart": null,
+   "counterpart_value": null,
+   "value_at_written_precision": null,
+   "rule": null,
+   "note": "\"a prompt one\" (pronoun)",
+   "convention": null,
+   "spec_desc": "\"a prompt one\" (pronoun)",
+   "line_text": "We apologise for the delay in returning this revision. Rebuilding the method and recomputing every result under declared numerical acceptance criteria took long",
+   "new_vs_9b": "NEW",
+   "hunk_9b_lines": [
+    21
+   ]
+  }
+ ],
+ "ruling4": {
+  "checks": {
+   "(i) B.4 sentence located once": true,
+   "(i) \"every penalised slack in Q (daily closure and network feasibility)\"": true,
+   "(i) the net-power pair \"penalised in the agent's own objective\", at its bound": true,
+   "(i) no \"in Q\" parenthetical names the net-power pair": true,
+   "(i) the net-power pair is not placed \"in Q\" anywhere in the sentence": true,
+   "(i) W188 (a) code anchors for the ESSO pair present (W188 (a): its penalty is never summed into Q)": true,
+   "(i) ruling-3 part still present: \"sits at its zero bound to within the solver's boun...\"": true,
+   "(i) ruling-3 part still present: \"the relaxation itself leaves a common offset of -1...\"": true,
+   "(ii) Figure 6 paragraph located once": true,
+   "(ii) wording: 90 % limit \"on every day\", 10 % limit \"on six of the eight\", Winter \"14--15 %\"": true,
+   "(ii) the old \"between the 10 % and 90 % limits\" is gone": true,
+   "(ii) W188 (d): the upper (90 %) limit is touched on all 8 days": true,
+   "(ii) W188 (d): the lower (10 %) limit is touched on 6 of 8 days": true,
+   "(ii) W188 (d): the two days missing the lower limit are the two Winter days": true,
+   "(ii) W188 (d): Winter minima 13.9 % / 15.4 % of E^Av round to 14 and 15": true,
+   "(ii) \"cycles once or twice a day across the usable band\": charged energy / band in [1, 2] (W189 measure)": true,
+   "(iii) \"the superseded evaluation 16 a positive slack content of at most 171 €, almost all of it voltage slack\"": true,
+   "(iii) the old \"voltage-slack content of at most 171\" is gone": true,
+   "(iii) W188 (a): row total 170.69 <= 171 and rounds up to 171": true,
+   "(iii) W188 (a): voltage part + closure part = row total": true,
+   "(iii) W188 (a): \"almost all of it voltage slack\" (voltage share >= 0.99)": true,
+   "(iv) 9b had \"Section S5\" at exactly two places": true,
+   "(iv) both former places now read \"Table S5\"": true,
+   "(iv) 0 \"Section S5\" remaining in main.tex": true,
+   "(iv) 0 \"Section S5\" in the letter, cover letter and highlights": true
+  },
+  "values": {
+   "(i)": {
+    "line": 2310,
+    "in_Q_parentheticals": [
+     "daily closure and network feasibility",
+     "-2 × 10^-5 of q"
+    ],
+    "text": "More generally, at every certified evaluation behind the tables of Section~\\ref{sec:results}, every penalised slack in $Q$ (daily closure and network feasibility) sits at its zero bound to within the solver's bound relaxation, so no penalty is paid in $Q$, and the agent's net-power pair, penalised in the agent's own objective, is at its bound as well; the relaxation itself leaves a common offset of $-13.0$~k\\euro{} in $Q$ ($-2 \\times 10^{-5}$ of $Q$), identical across evaluations to within 40~\\euro{}, which cancels in every reported difference. The multi-scenario evaluation of the reference unit carries a positive flexibility-balance content of at most 2.2~\\euro{}, and the superseded evaluation~16 a positive slack content of at most 171~\\euro{}, almost all of it voltage slack."
+   },
+   "(ii)": {
+    "line": 1565,
+    "n_contact_upper_by_day": {
+     "2025 Spring": 4,
+     "2025 Summer": 5,
+     "2025 Autumn": 3,
+     "2025 Winter": 5,
+     "2035 Spring": 5,
+     "2035 Summer": 7,
+     "2035 Autumn": 5,
+     "2035 Winter": 4
+    },
+    "n_contact_lower_by_day": {
+     "2025 Spring": 7,
+     "2025 Summer": 11,
+     "2025 Autumn": 2,
+     "2025 Winter": 0,
+     "2035 Spring": 7,
+     "2035 Summer": 6,
+     "2035 Autumn": 8,
+     "2035 Winter": 0
+    },
+    "days_without_lower_contact": [
+     "2025 Winter",
+     "2035 Winter"
+    ],
+    "winter_min_pct_of_E_av": {
+     "2025": 13.878019310435176,
+     "2035": 15.403695311478156
+    },
+    "winter_min_soc_mwh": {
+     "2025": 0.1221900971535436,
+     "2035": 0.1078258656399862
+    },
+    "charged_over_band": {
+     "2025 Spring": 1.072,
+     "2025 Summer": 1.031,
+     "2025 Autumn": 1.902,
+     "2025 Winter": 1.952,
+     "2035 Spring": 1.031,
+     "2035 Summer": 1.031,
+     "2035 Autumn": 1.031,
+     "2035 Winter": 1.598
+    },
+    "rule": "W188 (d) contact rule: within 1e-4 MWh of the limit (n_contact_* columns of soc_block_summary_reference_unit.csv, the TSO copy, as W189 part 1)",
+    "text": "Figure~\\ref{fig:res_soc_soh} shows how degradation reaches the dispatch. Panel~(a) gives the stored energy of the reference unit over the four representative days of 2025 and 2035 under the baseline calibration: the unit cycles once or twice a day across the usable band, reaching the 90\\,\\% limit of its available energy on every day and the 10\\,\\% limit on six of the eight (the Winter days stop at 14--15\\,\\%), and in 2035, with the state of health at the 0.70 floor, the usable band has narrowed from 0.70 to 0.56~MWh. Panel~(b) gives the end-of-block state of health under the seven calibrations: the baseline and both 50\\,\\% retention calibrations reach the floor in the 2035 block, the cycling-only and datasheet calibrations do not, and the 0.50 floor lets the baseline calibration continue to 0.68."
+   },
+   "(iii)": {
+    "row_total_bound_eur": 170.69387675148374,
+    "voltage_part_eur": 169.27186513222338,
+    "closure_part_eur": 1.4220116192603596,
+    "voltage_share": 0.9916692288773153,
+    "source": "data/SRP1/Results/P515S55/w188a_slack_inventory/w188a_slack_inventory.json cells[pb_y2025_n5] (sha256 pinned fdcb1ba1)"
+   },
+   "(iv)": {
+    "section_S5_lines_9b": [
+     1353,
+     1627
+    ],
+    "section_S5_lines_9c": {
+     "main.tex": [],
+     "response_to_reviewers_draft.tex": [],
+     "cover_letter.tex": [],
+     "highlights.tex": []
+    },
+    "table_S5_lines_9c_main": [
+     1353,
+     1627,
+     2120
+    ],
+    "contexts_9c": {
+     "1353": "ported. The evaluation procedure and voltage-consistency checks are detailed in~Table~S5 of the supplementary material.",
+     "1627": "year--season blocks for passive operation and eight for price-taker operation (Table~S5 of the supplementary material). To sepa",
+     "2120": ", band, gap and slack (Table~S4), the solver starts of the static arrangements (Table~S5) and the evaluations refused by the gap"
+    }
+   }
+  },
+  "holds": true,
+  "(v)": "blue wrappers are checked in part 2 (p515_s55_w190a_structure.py, W189 P2 method)"
+ },
+ "cover_letter": {
+  "checks": {
+   "exactly one bracket left": true,
+   "the bracket left is the W187 one": true,
+   "manuscript number EST-D-26-06323 printed once": true,
+   "the placeholder JES-D-[number] is gone": true,
+   "EST-D-26-06323 is the number of the editorial notice (Addendum 91 / brief)": true,
+   "the delay paragraph present once": true,
+   "filled paragraph located once": true,
+   "NRF: \"the restriction costs 20.5 k€, 0.02 % of the 90.9 m€ saving, so the reported 12.2 % benefit does not depend\"": true,
+   "penalty: \"halved and doubled: every sign and verdict is unchanged\"": true,
+   "\"about a tenth of their determinacy threshold\": baseline spread / threshold at 1 significant figure = 0.1": true,
+   "A89: sign_kept and class_kept at both prices": true,
+   "A89: the eight cells certified, rho0 scale {0.5, 2.0}": true
+  },
+  "report_checks": {
+   "W184 report Q(C_NRF) - Q(C_OPEN) +20,463.88 € = A89 at 2 dp": true,
+   "W184 report threshold 12,627.51 € = A89 at 2 dp": true,
+   "W184 report \"determinate, positive, 1.62×\" = A89": true,
+   "W184 report Q(P_NRF) - Q(C_NRF) 90,876,144.52 € = A89 at 2 dp": true,
+   "W185 report pair table (4 rows: margin, threshold, verdict) = A89 at 2 dp": true,
+   "W185 report baselines (1x / 2x margin and threshold) = A89 at 2 dp": true,
+   "W185 report: spread / baseline threshold from the printed table is about a tenth at both prices": true,
+   "W185 report: every verdict \"determinate\", signs negative at 1x and positive at 2x": true
+  },
+  "record_checks": {
+   "E3 campaign_results Q_end = A89 instances.C_NRF.Q (bitwise)": true,
+   "E2 campaign_results Q_end = A89 new_cells Q, 8 / 8 (bitwise)": true
+  },
+  "values": {
+   "brackets": [
+    {
+     "line": 21,
+     "text": "[If W187 landed: A degradation-neutral evaluation of the unit neighbourhood of the plan without storage is also reported (Section~4.3).]"
+    }
+   ],
+   "manuscript_number_line": 13,
+   "delay": {
+    "line": 23,
+    "n_sentences": 2,
+    "sentences": [
+     "We apologise for the delay in returning this revision.",
+     "Rebuilding the method and recomputing every result under declared numerical acceptance criteria took longer than the revision period, and we preferred a late revision that answers the Reviewers to a prompt one that did not."
+    ]
+   },
+   "spread_over_threshold_baseline": {
+    "1x": 0.12048697672118792,
+    "2x": 0.11836719644279949
+   },
+   "a_tenth_note": "\"a tenth\" is not a token of the W182b / W174 tokenizer, so it is checked here as a statement: baseline ratios 0.1205 (1x) and 0.1184 (2x); the main text (section 4.7) and the letter print \"about 0.12\"",
+   "records": {
+    "E3": {
+     "path": "data/SRP1/Results/P515S55/e3_cnrf/campaign_s55_step7_e3_cnrf_x0_1x/campaign_results.json",
+     "sha256": "0db2edf9af390131bf88a12aae9ff5200894663530a3e9aafea289e00e5bf627",
+     "Q_end": 653894166.0688057,
+     "A89_Q": 653894166.0688057
+    },
+    "E2": {
+     "e2_x0_1x_rho0p5": {
+      "path": "data/SRP1/Results/P515S55/e2_rho/campaign_s55_step7_e2_x0_1x_rho0p5/campaign_results.json",
+      "sha256": "14f5e819a592f8e65d87fd4da53fd52cf7133544530b328b66b04d27dd515083",
+      "Q_end": 653874468.0886946,
+      "A89_Q": 653874468.0886946,
+      "equal": true
+     },
+     "e2_unit_1x_rho0p5": {
+      "path": "data/SRP1/Results/P515S55/e2_rho/campaign_s55_step7_e2_unit_1x_rho0p5/campaign_results.json",
+      "sha256": "edc9bd3763ce7e490a09137416fcfc23dda6d055f0033c5dca4e480e9f11cc40",
+      "Q_end": 653620775.4918147,
+      "A89_Q": 653620775.4918147,
+      "equal": true
+     },
+     "e2_x0_1x_rho2p0": {
+      "path": "data/SRP1/Results/P515S55/e2_rho/campaign_s55_step7_e2_x0_1x_rho2p0/campaign_results.json",
+      "sha256": "80e088a52d3a082a70bf88a4bf39a8151d633157c36fb831d8b95339298f6d83",
+      "Q_end": 653872972.5164962,
+      "A89_Q": 653872972.5164962,
+      "equal": true
+     },
+     "e2_unit_1x_rho2p0": {
+      "path": "data/SRP1/Results/P515S55/e2_rho/campaign_s55_step7_e2_unit_1x_rho2p0/campaign_results.json",
+      "sha256": "10bf033424b7c361fac4a8d9e95d4fb365c255c5a89c53c3a36bf1c227b283af",
+      "Q_end": 653620852.7833008,
+      "A89_Q": 653620852.7833008,
+      "equal": true
+     },
+     "e2_x0_2x_rho0p5": {
+      "path": "data/SRP1/Results/P515S55/e2_rho/campaign_s55_step7_e2_x0_2x_rho0p5/campaign_results.json",
+      "sha256": "0f9893adc3a4f4d452f688f9f7e67112347f6b5e91f36a2b4fbeb415e692e74b",
+      "Q_end": 811016337.915931,
+      "A89_Q": 811016337.915931,
+      "equal": true
+     },
+     "e2_unit_2x_rho0p5": {
+      "path": "data/SRP1/Results/P515S55/e2_rho/campaign_s55_step7_e2_unit_2x_rho0p5/campaign_results.json",
+      "sha256": "30c34f97093531a1fdd49e3e55eb49a9e9863b59e699532c7e194d16e84327f4",
+      "Q_end": 810651421.4856707,
+      "A89_Q": 810651421.4856707,
+      "equal": true
+     },
+     "e2_x0_2x_rho2p0": {
+      "path": "data/SRP1/Results/P515S55/e2_rho/campaign_s55_step7_e2_x0_2x_rho2p0/campaign_results.json",
+      "sha256": "00565ee86bba201748e4c043795be0317d31251cf2f37f42d5fb73c80fb8a12a",
+      "Q_end": 811014413.2702415,
+      "A89_Q": 811014413.2702415,
+      "equal": true
+     },
+     "e2_unit_2x_rho2p0": {
+      "path": "data/SRP1/Results/P515S55/e2_rho/campaign_s55_step7_e2_unit_2x_rho2p0/campaign_results.json",
+      "sha256": "c17d5c18c20e993412002c2263e827145e7547ddbe2b8aa55a62e71785dfdb57",
+      "Q_end": 810650949.4648235,
+      "A89_Q": 810650949.4648235,
+      "equal": true
+     }
+    },
+    "W185_report_spread": {
+     "1x": {
+      "margins_printed": [
+       -64264.41,
+       -65837.28,
+       -64417.39
+      ],
+      "spread": 1572.8699999999953,
+      "threshold_baseline": 13054.22,
+      "spread_over_threshold": 0.12048747454845984
+     },
+     "2x": {
+      "margins_printed": [
+       46959.42,
+       45506.8,
+       46285.46
+      ],
+      "spread": 1452.6199999999953,
+      "threshold_baseline": 12272.19,
+      "spread_over_threshold": 0.11836681146559785
+     }
+    }
+   },
+   "text": "Beyond the Reviewers' requests, the revision adds two robustness checks. The coordinated arrangement was re-evaluated with the same no-reverse-flow restriction that the static benchmarks carry: the restriction costs 20.5~k\\euro{}, 0.02\\,\\% of the 90.9~M\\euro{} saving, so the reported 12.2\\,\\% benefit does not depend on the interface rule. The two decisive storage comparisons were re-evaluated with the coordination penalties halved and doubled: every sign and verdict is unchanged, and the differences move by about a tenth of their determinacy threshold. [If W187 landed: A degradation-neutral evaluation of the unit neighbourhood of the plan without storage is also reported (Section~4.3).]"
+  },
+  "holds": true
+ },
+ "negative_controls": [
+  {
+   "id": "1b-1 E.20 row 1 Delta gross altered 64.4 -> 64.5",
+   "bad": [
+    [
+     1,
+     "d_gross_k"
+    ]
+   ],
+   "refused": true
+  },
+  {
+   "id": "1b-2 generated block with one byte changed is not located in main.tex at a87e195",
+   "refused": true
+  },
+  {
+   "id": "b-1 the reduced block with one byte changed is not located in the 9c main.tex",
+   "refused": true
+  },
+  {
+   "id": "d-1 a planted \"Section~S5\" in main.tex is counted",
+   "refused": true
+  },
+  {
+   "id": "d-2 the 9b parenthetical (net-power pair \"in Q\") planted back is detected",
+   "refused": true
+  },
+  {
+   "id": "d-3 a planted second bracket in the cover letter is counted",
+   "refused": true
+  },
+  {
+   "id": "d every rated number perturbed (51)",
+   "refused": true
+  }
+ ],
+ "guards": {
+  "w189p1_chain": {
+   "guards": {
+    "w189p1": {
+     "counts": {
+      "permitted_solve": 0,
+      "permitted_exec": 0,
+      "blocked_solve": 0,
+      "blocked_exec": 0
+     },
+     "verify_0_failures": []
+    },
+    "w183h": {
+     "counts": {
+      "permitted_solve": 0,
+      "permitted_exec": 0,
+      "blocked_solve": 0,
+      "blocked_exec": 0
+     },
+     "verify_0_failures": []
+    },
+    "w182c": {
+     "counts": {
+      "permitted_solve": 0,
+      "permitted_exec": 0,
+      "blocked_solve": 0,
+      "blocked_exec": 0
+     },
+     "verify_0_failures": []
+    },
+    "w181a": {
+     "counts": {
+      "permitted_solve": 0,
+      "permitted_exec": 0,
+      "blocked_solve": 0,
+      "blocked_exec": 0
+     },
+     "verify_0_failures": []
+    },
+    "w179b": {
+     "counts": {
+      "permitted_solve": 0,
+      "permitted_exec": 0,
+      "blocked_solve": 0,
+      "blocked_exec": 0
+     },
+     "verify_0_failures": []
+    },
+    "w178c": {
+     "counts": {
+      "permitted_solve": 0,
+      "permitted_exec": 0,
+      "blocked_solve": 0,
+      "blocked_exec": 0
+     },
+     "verify_0_failures": []
+    },
+    "w177b3r": {
+     "counts": {
+      "permitted_solve": 0,
+      "permitted_exec": 0,
+      "blocked_solve": 0,
+      "blocked_exec": 0
+     },
+     "verify_0_failures": []
+    },
+    "w177b3": {
+     "counts": {
+      "permitted_solve": 0,
+      "permitted_exec": 0,
+      "blocked_solve": 0,
+      "blocked_exec": 0
+     },
+     "verify_0_failures": []
+    },
+    "w167": {
+     "counts": {
+      "permitted_solve": 0,
+      "permitted_exec": 0,
+      "blocked_solve": 0,
+      "blocked_exec": 0
+     },
+     "verify_0_failures": []
+    },
+    "phase_b_record": {
+     "counts": {
+      "permitted_solve": 0,
+      "permitted_exec": 0,
+      "blocked_solve": 0,
+      "blocked_exec": 0
+     },
+     "verify_0_failures": []
+    },
+    "w180c": {
+     "counts": {
+      "permitted_solve": 0,
+      "permitted_exec": 0,
+      "blocked_solve": 0,
+      "blocked_exec": 0
+     },
+     "verify_0_failures": []
+    },
+    "w182b_number_check": {
+     "counts": {
+      "permitted_solve": 0,
+      "permitted_exec": 0,
+      "blocked_solve": 0,
+      "blocked_exec": 0
+     },
+     "verify_0_failures": []
+    },
+    "w178b_number_check": {
+     "counts": {
+      "permitted_solve": 0,
+      "permitted_exec": 0,
+      "blocked_solve": 0,
+      "blocked_exec": 0
+     },
+     "verify_0_failures": []
+    },
+    "w177b1r_number_check": {
+     "counts": {
+      "permitted_solve": 0,
+      "permitted_exec": 0,
+      "blocked_solve": 0,
+      "blocked_exec": 0
+     },
+     "verify_0_failures": []
+    },
+    "w177b_number_check": {
+     "counts": {
+      "permitted_solve": 0,
+      "permitted_exec": 0,
+      "blocked_solve": 0,
+      "blocked_exec": 0
+     },
+     "verify_0_failures": []
+    },
+    "w177a_section4_frame_check": {
+     "counts": {
+      "permitted_solve": 0,
+      "permitted_exec": 0,
+      "blocked_solve": 0,
+      "blocked_exec": 0
+     },
+     "verify_0_failures": []
+    },
+    "w176_manuscript_number_check": {
+     "counts": {
+      "permitted_solve": 0,
+      "permitted_exec": 0,
+      "blocked_solve": 0,
+      "blocked_exec": 0
+     },
+     "verify_0_failures": []
+    },
+    "w174_manuscript_number_check": {
+     "counts": {
+      "permitted_solve": 0,
+      "permitted_exec": 0,
+      "blocked_solve": 0,
+      "blocked_exec": 0
+     },
+     "verify_0_failures": []
+    },
+    "w171_manuscript_number_check": {
+     "counts": {
+      "permitted_solve": 0,
+      "permitted_exec": 0,
+      "blocked_solve": 0,
+      "blocked_exec": 0
+     },
+     "verify_0_failures": []
+    },
+    "w164_manuscript_number_check": {
+     "counts": {
+      "permitted_solve": 0,
+      "permitted_exec": 0,
+      "blocked_solve": 0,
+      "blocked_exec": 0
+     },
+     "verify_0_failures": []
+    },
+    "w163_paragraphs_v4_check": {
+     "counts": {
+      "permitted_solve": 0,
+      "permitted_exec": 0,
+      "blocked_solve": 0,
+      "blocked_exec": 0
+     },
+     "verify_0_failures": []
+    },
+    "w162_paragraphs_v3_check": {
+     "counts": {
+      "permitted_solve": 0,
+      "permitted_exec": 0,
+      "blocked_solve": 0,
+      "blocked_exec": 0
+     },
+     "verify_0_failures": []
+    },
+    "w161_paragraphs_v2": {
+     "counts": {
+      "permitted_solve": 0,
+      "permitted_exec": 0,
+      "blocked_solve": 0,
+      "blocked_exec": 0
+     },
+     "verify_0_failures": []
+    },
+    "w160_step6_freeze_export": {
+     "counts": {
+      "permitted_solve": 0,
+      "permitted_exec": 0,
+      "blocked_solve": 0,
+      "blocked_exec": 0
+     },
+     "verify_0_failures": []
+    },
+    "w157_step6_tables": {
+     "counts": {
+      "permitted_solve": 0,
+      "permitted_exec": 0,
+      "blocked_solve": 0,
+      "blocked_exec": 0
+     },
+     "verify_0_failures": []
+    },
+    "w145_banded_fit": {
+     "counts": {
+      "permitted_solve": 0,
+      "permitted_exec": 0,
+      "blocked_solve": 0,
+      "blocked_exec": 0
+     },
+     "verify_0_failures": []
+    },
+    "w142_checks": {
+     "counts": {
+      "permitted_solve": 0,
+      "permitted_exec": 0,
+      "blocked_solve": 0,
+      "blocked_exec": 0
+     },
+     "verify_0_failures": []
+    },
+    "w139_checks": {
+     "counts": {
+      "permitted_solve": 0,
+      "permitted_exec": 0,
+      "blocked_solve": 0,
+      "blocked_exec": 0
+     },
+     "verify_0_failures": []
+    },
+    "w137_checks": {
+     "counts": {
+      "permitted_solve": 0,
+      "permitted_exec": 0,
+      "blocked_solve": 0,
+      "blocked_exec": 0
+     },
+     "verify_0_failures": []
+    },
+    "w132_checks": {
+     "counts": {
+      "permitted_solve": 0,
+      "permitted_exec": 0,
+      "blocked_solve": 0,
+      "blocked_exec": 0
+     },
+     "verify_0_failures": []
+    },
+    "w118_checks": {
+     "counts": {
+      "permitted_solve": 0,
+      "permitted_exec": 0,
+      "blocked_solve": 0,
+      "blocked_exec": 0
+     },
+     "verify_0_failures": []
+    },
+    "w105_checks_imported": {
+     "counts": {
+      "permitted_solve": 0,
+      "permitted_exec": 0,
+      "blocked_solve": 0,
+      "blocked_exec": 0
+     },
+     "verify_0_failures": []
+    },
+    "w101_checks_imported": {
+     "counts": {
+      "permitted_solve": 0,
+      "permitted_exec": 0,
+      "blocked_solve": 0,
+      "blocked_exec": 0
+     },
+     "verify_0_failures": []
+    },
+    "w98_checks_imported": {
+     "counts": {
+      "permitted_solve": 0,
+      "permitted_exec": 0,
+      "blocked_solve": 0,
+      "blocked_exec": 0
+     },
+     "verify_0_failures": []
+    },
+    "w112_imported": {
+     "counts": {
+      "permitted_solve": 0,
+      "permitted_exec": 0,
+      "blocked_solve": 0,
+      "blocked_exec": 0
+     },
+     "verify_0_failures": []
+    },
+    "w141_swing_variants": {
+     "counts": {
+      "permitted_solve": 0,
+      "permitted_exec": 0,
+      "blocked_solve": 0,
+      "blocked_exec": 0
+     },
+     "verify_0_failures": []
+    },
+    "w139_v5_from_records": {
+     "counts": {
+      "permitted_solve": 0,
+      "permitted_exec": 0,
+      "blocked_solve": 0,
+      "blocked_exec": 0
+     },
+     "verify_0_failures": []
+    },
+    "w131_imported": {
+     "counts": {
+      "permitted_solve": 0,
+      "permitted_exec": 0,
+      "blocked_solve": 0,
+      "blocked_exec": 0
+     },
+     "verify_0_failures": []
+    },
+    "w137_ra_imported": {
+     "counts": {
+      "permitted_solve": 0,
+      "permitted_exec": 0,
+      "blocked_solve": 0,
+      "blocked_exec": 0
+     },
+     "verify_0_failures": []
+    },
+    "alpha_row_launcher": {
+     "counts": {
+      "permitted_solve": 0,
+      "permitted_exec": 0,
+      "blocked_solve": 0,
+      "blocked_exec": 0
+     },
+     "verify_0_failures": []
+    },
+    "w86_launcher": {
+     "counts": {
+      "permitted_solve": 0,
+      "permitted_exec": 0,
+      "blocked_solve": 0,
+      "blocked_exec": 0
+     },
+     "verify_0_failures": []
+    },
+    "w87": {
+     "counts": {
+      "permitted_solve": 0,
+      "permitted_exec": 0,
+      "blocked_solve": 0,
+      "blocked_exec": 0
+     },
+     "verify_0_failures": []
+    },
+    "w88": {
+     "counts": {
+      "permitted_solve": 0,
+      "permitted_exec": 0,
+      "blocked_solve": 0,
+      "blocked_exec": 0
+     },
+     "verify_0_failures": []
+    },
+    "w89_step1": {
+     "counts": {
+      "permitted_solve": 0,
+      "permitted_exec": 0,
+      "blocked_solve": 0,
+      "blocked_exec": 0
+     },
+     "verify_0_failures": []
+    },
+    "w89_3x3_launcher": {
+     "counts": {
+      "permitted_solve": 0,
+      "permitted_exec": 0,
+      "blocked_solve": 0,
+      "blocked_exec": 0
+     },
+     "verify_0_failures": []
+    },
+    "w90_3x3_parent": {
+     "counts": {
+      "permitted_solve": 0,
+      "permitted_exec": 0,
+      "blocked_solve": 0,
+      "blocked_exec": 0
+     },
+     "verify_0_failures": []
+    },
+    "w98_parent": {
+     "counts": {
+      "permitted_solve": 0,
+      "permitted_exec": 0,
+      "blocked_solve": 0,
+      "blocked_exec": 0
+     },
+     "verify_0_failures": []
+    },
+    "w101_parent": {
+     "counts": {
+      "permitted_solve": 0,
+      "permitted_exec": 0,
+      "blocked_solve": 0,
+      "blocked_exec": 0
+     },
+     "verify_0_failures": []
+    },
+    "w118_parent": {
+     "counts": {
+      "permitted_solve": 0,
+      "permitted_exec": 0,
+      "blocked_solve": 0,
+      "blocked_exec": 0
+     },
+     "verify_0_failures": []
+    },
+    "w132_parent": {
+     "counts": {
+      "permitted_solve": 0,
+      "permitted_exec": 0,
+      "blocked_solve": 0,
+      "blocked_exec": 0
+     },
+     "verify_0_failures": []
+    },
+    "w137_parent": {
+     "counts": {
+      "permitted_solve": 0,
+      "permitted_exec": 0,
+      "blocked_solve": 0,
+      "blocked_exec": 0
+     },
+     "verify_0_failures": []
+    },
+    "w139_parent": {
+     "counts": {
+      "permitted_solve": 0,
+      "permitted_exec": 0,
+      "blocked_solve": 0,
+      "blocked_exec": 0
+     },
+     "verify_0_failures": []
+    },
+    "w142_parent": {
+     "counts": {
+      "permitted_solve": 0,
+      "permitted_exec": 0,
+      "blocked_solve": 0,
+      "blocked_exec": 0
+     },
+     "verify_0_failures": []
+    },
+    "w142_ext_checks": {
+     "counts": {
+      "permitted_solve": 0,
+      "permitted_exec": 0,
+      "blocked_solve": 0,
+      "blocked_exec": 0
+     },
+     "verify_0_failures": []
+    },
+    "w135_checks": {
+     "counts": {
+      "permitted_solve": 0,
+      "permitted_exec": 0,
+      "blocked_solve": 0,
+      "blocked_exec": 0
+     },
+     "verify_0_failures": []
+    },
+    "s46_variant_checks_imported": {
+     "counts": {
+      "permitted_solve": 0,
+      "permitted_exec": 0,
+      "blocked_solve": 0,
+      "blocked_exec": 0
+     },
+     "verify_0_failures": []
+    },
+    "s46_ageing_mechanism_imported": {
+     "counts": {
+      "permitted_solve": 0,
+      "permitted_exec": 0,
+      "blocked_solve": 0,
+      "blocked_exec": 0
+     },
+     "verify_0_failures": []
+    },
+    "w142_ext_parent": {
+     "counts": {
+      "permitted_solve": 0,
+      "permitted_exec": 0,
+      "blocked_solve": 0,
+      "blocked_exec": 0
+     },
+     "verify_0_failures": []
+    }
+   },
+   "n_guards": 58,
+   "pickle_counts": {
+    "w189p1": {
+     "load": 0,
+     "loads": 0,
+     "Unpickler": 0
+    },
+    "w183h": {
+     "load": 0,
+     "loads": 0
+    },
+    "w182c": {
+     "load": 0,
+     "loads": 0
+    },
+    "w181a": {
+     "load": 0,
+     "loads": 0
+    },
+    "w182b": {
+     "load": 0,
+     "loads": 0
+    },
+    "w178b": {
+     "load": 0,
+     "loads": 0
+    },
+    "w177b1r": {
+     "load": 0,
+     "loads": 0
+    }
+   },
+   "pickle_blocked_at_end": true,
+   "ok": true
+  },
+  "w190a": {
+   "counts": {
+    "permitted_solve": 0,
+    "permitted_exec": 0,
+    "blocked_solve": 0,
+    "blocked_exec": 0
+   },
+   "verify_0_failures": []
+  },
+  "ok": true
+ },
+ "check_failures": [],
+ "finished_utc": "2026-11-12T13:45:33.942006+00:00"
+}
