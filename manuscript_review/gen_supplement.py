@@ -19,12 +19,17 @@ byte path, so the bytes do not depend on the zlib build):
   appendices_B_D/*.csv                                     the Appendix B-D profiles and network tables, from the case
                                                            files under data/SRP1/
   README.md                                                the expert's prose (manuscript_review/supplement/
-                                                           supplement_README_prose_v1.md for v2, _v2.md from v3 on
-                                                           (Addendum 91 ruling 3; readme_prose_rel), prepended byte for
+                                                           supplement_README_prose_v1.md for v2, _v2.md for v3
+                                                           (Addendum 91 ruling 3), _v3.md from v4 on (Addendum 91
+                                                           amendment; readme_prose_rel), prepended byte for
                                                            byte; Addendum 90 ruling 7 (iv)), then the generated section: the
                                                            rule parameters from the code / constants and the column
                                                            definitions generated from COLUMN_SPECS below. (v1 carried
-                                                           README_PLACEHOLDER.md instead.)
+                                                           README_PLACEHOLDER.md instead.) From v4 on, the table /
+                                                           appendix names in the generated descriptions are the round-9c
+                                                           manuscript's (V4_NAME_MAP, applied when the README is written;
+                                                           COLUMN_SPECS itself keeps the a87e195 names, so v2 and v3
+                                                           regenerate byte for byte). CSV file names never change.
   The RES-capacity CSVs carry every case year 2025, 2028, 2030, 2031, 2034, 2035, 2037 (v2, Addendum 90 ruling 7
   (iii): the single-scenario years 2030 and 2035 added to v1's printed years).
   SHA256SUMS.txt                                           sha256 of every other entry
@@ -53,6 +58,7 @@ beside another copy of itself. Run it attached with both streams captured:
     /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python -u manuscript_review/gen_supplement.py \\
         --force-new-version > manuscript_review/supplement_v2/gen_launch.log 2>&1
   version 3 (W189a-v3, Addendum 91 ruling 3: README prose v2): the same command with supplement_v3.
+  version 4 (W189a-v4, Addendum 91 amendment: README prose v3, round-9c names): the same command with supplement_v4.
 Exit: 0 = written and every check holds; 1 = precondition or guard fault (nothing written).
 """
 import argparse
@@ -135,12 +141,52 @@ SINGLE_SCENARIO_YEARS = (2025, 2030, 2035)       # tab:res_capacity_summary (the
 RES_YEARS = ALL_CASE_YEARS   # capacity columns of the RES-generator CSVs (Addendum 90 ruling 7 (iii): 2030, 2035 added)
 README_PROSE_REL = os.path.join(MR, 'supplement', 'supplement_README_prose_v1.md')   # Addendum 90 ruling 7 (iv)
 README_PROSE_V2_REL = os.path.join(MR, 'supplement', 'supplement_README_prose_v2.md')   # Addendum 91 ruling 3
+README_PROSE_V3_REL = os.path.join(MR, 'supplement', 'supplement_README_prose_v3.md')   # Addendum 91 amendment
 
 
 def readme_prose_rel(version):
     """The expert prose prepended to README.md: prose v1 for supplement versions <= 2 (v2's bytes unchanged), prose v2
-    from supplement version 3 on (W189a-v3, Addendum 91 ruling 3)."""
-    return README_PROSE_REL if version <= 2 else README_PROSE_V2_REL
+    for version 3 (W189a-v3, Addendum 91 ruling 3; v3's bytes unchanged), prose v3 from version 4 on (W189a-v4,
+    Addendum 91 amendment)."""
+    if version <= 2:
+        return README_PROSE_REL
+    return README_PROSE_V2_REL if version == 3 else README_PROSE_V3_REL
+
+
+# The Addendum 91 amendment's mapping (a87e195 names -> the round-9c manuscript's), applied from supplement version 4 on
+# to the generated description strings only (COLUMN_SPECS table / source text and column definitions), in this order
+# (the two plural phrases before the single names). Literal replacements; the CSV file names (E20_..., appendices_B_D/)
+# are identifiers and are not touched. 'Tables E.20 and E.21' is the plural form of the rows E.20 -> B.10, E.21 -> S4.
+V4_NAME_MAP = (
+    ('Tables E.20, E.22 and E.23', 'Tables B.10, B.11 and S5'),
+    ('Tables E.20 and E.21', 'Tables B.10 and S4'),
+    ('Table E.20', 'Table B.10'), ('Appendix E.2', 'Appendix B.2'),
+    ('Table E.22', 'Table B.11'), ('Appendix E.4', 'Appendix B.3'),
+    ('Table E.21', 'Table S4'), ('Appendix E.3', 'Table S4'),
+    ('Table E.23', 'Table S5'), ('Appendix E.5', 'Table S5'),
+    ('Table E.24', 'Table S6'), ('Appendix E.6', 'Table S6'),
+    ('Fig. E.19', 'Fig. B.9'),
+    ('Appendix E.7', 'Appendix B.4'),
+    ('Appendix B (', 'Section S1 ('),
+    ('Appendix C (', 'Section S2 ('),
+    ('Appendix D (', 'Section S3 ('),
+    ('Appendices C-D', 'Sections S2-S3'),
+)
+
+
+def description_names(version, hits):
+    """The renaming applied to a generated description string: identity for versions <= 3, V4_NAME_MAP from 4 on
+    (hits: occurrences replaced per map entry, recorded)."""
+    def rename(s):
+        if version < 4:
+            return s
+        for old, new in V4_NAME_MAP:
+            n = s.count(old)
+            if n:
+                s = s.replace(old, new)
+                hits[old] = hits.get(old, 0) + n
+        return s
+    return rename
 README_NAME = 'README.md'
 
 
@@ -853,6 +899,8 @@ def readme(g, version):
     prose_rel = readme_prose_rel(version)
     with open(os.path.join(REPO, prose_rel), 'rb') as h:
         prose = h.read()
+    hits = {}
+    nm = description_names(version, hits)
     if not prose.endswith(b'\n') or b'PLACEHOLDER' in prose:
         raise RuntimeError(f'{prose_rel}: does not end in a newline, or carries a placeholder mark')
     spec6 = _json(SPEC_V6_REL)
@@ -912,12 +960,12 @@ def readme(g, version):
         P('')
         P(f'### `{f}`')
         P('')
-        P(f'{s["table"]}. Source: {s["source"]}.')
+        P(f'{nm(s["table"])}. Source: {nm(s["source"])}.')
         P('')
         P('| column | unit | definition |')
         P('|---|---|---|')
         for name, unit, dfn in s['columns']:
-            P(f'| `{name}` | {unit} | {dfn} |')
+            P(f'| `{name}` | {unit} | {nm(dfn)} |')
     P('')
     P('## Profiles: the base profiles of the case files')
     P('')
@@ -925,7 +973,7 @@ def readme(g, version):
       'synthetic scenarios from these base profiles (network_data.generate_*_profiles, shared_resources_planning._'
       'generate_market_price_scenarios), and the supplement does not carry the sampled curves.')
     P('')
-    return prose + ('\n'.join(L) + '\n').encode('utf-8'), _sha_bytes(prose)
+    return prose + ('\n'.join(L) + '\n').encode('utf-8'), _sha_bytes(prose), hits
 
 
 # ======================================================================================================================
@@ -1021,7 +1069,7 @@ def main():
         header = [c[0] for c in COLUMN_SPECS[name]['columns']]
         members[name] = csv_bytes(header, tables[name])
         _log(f'{name}: {len(tables[name])} rows x {len(header)} columns')
-    members[README_NAME], prose_sha = readme(g, version)
+    members[README_NAME], prose_sha, name_hits = readme(g, version)
     sums = ''.join(f'{_sha_bytes(members[n])}  {n}\n' for n in sorted(members))
     members['SHA256SUMS.txt'] = sums.encode('utf-8')
     zbytes = build_zip(members)
@@ -1029,9 +1077,12 @@ def main():
     zname = f'{NAME_STEM}_v{version}_{zsha[:8]}.zip'
     record = {
         'stage': 'W188 (b) supplement generator (Addendum 89 ruling 8); W189a v2 (Addendum 90 ruling 7); '
-                 'W189a-v3 prose v2 (Addendum 91 ruling 3)',
+                 'W189a-v3 prose v2 (Addendum 91 ruling 3); W189a-v4 prose v3 and round-9c names (Addendum 91 '
+                 'amendment)',
         'readme': {'entry': README_NAME, 'prose_prepended': readme_prose_rel(version), 'prose_sha256': prose_sha,
                    'prose_committed_clean': _committed_clean(readme_prose_rel(version))},
+        **({'description_names': {'map': [list(x) for x in V4_NAME_MAP],
+                                  'hits': [[o, n, name_hits.get(o, 0)] for o, n in V4_NAME_MAP]}} if version >= 4 else {}),
         'res_capacity_years': list(RES_YEARS),
         'version': version, 'predecessor': predecessor,
         'zip': {'name': zname, 'sha256': zsha, 'bytes': len(zbytes), 'compression': 'ZIP_STORED',

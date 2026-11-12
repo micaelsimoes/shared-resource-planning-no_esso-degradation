@@ -22,20 +22,32 @@ It reads the zip (never the generator's code) and checks:
   V6 Appendices B-D against the printed tables of Appendices C-D in main.tex at a87e195, at the printed rounding.
   V7 the README: per file, its column table = the CSV header; tau. Version 1: README_PLACEHOLDER.md with its marked
      placeholders. Version >= 2 (Addendum 90 ruling 7 (iv)): README.md begins with the committed expert prose
-     manuscript_review/supplement/supplement_README_prose_v1.md (v2; prose _v2.md from v3 on, Addendum 91 ruling 3)
-     byte for byte, its sha256 and path = the record's, no
+     manuscript_review/supplement/supplement_README_prose_v1.md (v2; prose _v2.md for v3, Addendum 91 ruling 3;
+     prose _v3.md from v4 on, Addendum 91 amendment) byte for byte, its sha256 and path = the record's, no
      README_PLACEHOLDER.md entry and no placeholder mark anywhere.
   V8 (version >= 2; Addendum 90 ruling 7 (iii)) the RES-capacity CSVs reproduce the paper's Table 2
      (tab:res_capacity_summary, main.tex at a87e195 and the round-9b review copy): per network and technology, the sum
      of capacity_2025/2030/2035 equals the printed aggregate; and the sentence beside it (2025 also in 2028, 2030 in
      2031 and 2034, 2035 in 2037) holds generator by generator.
   V9 (version >= 2) every entry against the predecessor zip named in the record (its sha256 checked): the entries that
-     differ must be exactly the declared ones (v2: README, the two RES CSVs, SHA256SUMS.txt; v3: README.md and
+     differ must be exactly the declared ones (v2: README, the two RES CSVs, SHA256SUMS.txt; v3 and v4: README.md and
      SHA256SUMS.txt only, V9_DECLARED_BY_VERSION); each RES CSV restricted to
      the predecessor's columns equals the predecessor's bytes; every other entry byte-identical (D_ieee33_tn_connection
      .csv named explicitly).
   V5 checks every capacity column of the RES CSVs (v2: all seven case years) against the case files, and that the
   capacity columns are exactly the expected years.
+  V10 (version >= 4; Addendum 91 amendment) the names in the generated half of README.md (after the prose): none of
+     the a87e195 names (Table(s) E.2x, Appendix E., Fig. E.19, Appendix B (, Appendix C, Appendix D, Appendices C),
+     CSV file-name identifiers (E20_E21_groups.csv, appendices_B_D/, appendix_E/) masked first; and README.md equals
+     the predecessor's README with its prose replaced by this version's, its version heading replaced, and the
+     amendment's mapping (V10_NAME_MAP, written here from the amendment) applied to its generated half.
+  V11 (version >= 4) the names against the round-9c manuscript (main.tex at Overleaf 3c379fa, git show in the clone,
+     read-only): a static count of sections, subsections, figures and tables (no TeX on this machine; elsarticle's
+     \appendix keeps the figure and table counters and numbers them <letter>.<n>) gives the number each label
+     carries; Table B.10 / B.11, Fig. B.9 and Appendix B.2-B.4 must be the numbers of tab:appE_claims,
+     tab:appE_neighbours, fig:investment_lattice and app:results_claims / _neighbours / _statistics; every A.n / B.n
+     name in README.md must exist with its kind; S1-S6 must each be referenced in main.tex, and README.md names no
+     other S-number.
   Negative controls, in memory only: an altered cell of each kind must be caught where it was altered.
 Guards: SolveProfileGuard(permitted=()) before any project import, pickle.load / loads blocked; both verified at 0.
 Outputs (opened 'x', never overwritten): verify_supplement_v<N>_result.json (gate_result_io) and a summary on stdout.
@@ -110,20 +122,47 @@ TABLE2_SENTENCE = ('the 2025 capacities also apply in 2028, the 2030 capacities 
 ROUND9B_COPY = os.path.join(MR, 'main_a87e195_round9b.tex')
 README_PROSE_REL = os.path.join(MR, 'supplement', 'supplement_README_prose_v1.md')
 README_PROSE_V2_REL = os.path.join(MR, 'supplement', 'supplement_README_prose_v2.md')   # Addendum 91 ruling 3
+README_PROSE_V3_REL = os.path.join(MR, 'supplement', 'supplement_README_prose_v3.md')   # Addendum 91 amendment
 V9_DECLARED = {'changed': ['SHA256SUMS.txt', 'appendices_B_D/C_tn_res_generators.csv',
                            'appendices_B_D/D_adn_res_generators.csv'],
                'added': ['README.md'], 'removed': ['README_PLACEHOLDER.md']}
 # V9's declared difference per version (against its predecessor) and the RES columns it adds. v3 (W189a-v3, Addendum
 # 91 ruling 3): only the README prose changes, so README.md and SHA256SUMS.txt differ and the RES CSVs are identical.
-V9_DECLARED_BY_VERSION = {2: V9_DECLARED, 3: {'changed': ['README.md', 'SHA256SUMS.txt'], 'added': [], 'removed': []}}
-V9_RES_COLUMNS_ADDED_BY_VERSION = {2: ['capacity_2030_MW', 'capacity_2035_MW'], 3: []}
+# v4 (W189a-v4, Addendum 91 amendment): README prose v3 and the round-9c names in the generated descriptions; no CSV
+# changes, so again README.md and SHA256SUMS.txt only.
+V9_DECLARED_BY_VERSION = {2: V9_DECLARED, 3: {'changed': ['README.md', 'SHA256SUMS.txt'], 'added': [], 'removed': []},
+                          4: {'changed': ['README.md', 'SHA256SUMS.txt'], 'added': [], 'removed': []}}
+V9_RES_COLUMNS_ADDED_BY_VERSION = {2: ['capacity_2030_MW', 'capacity_2035_MW'], 3: [], 4: []}
+# V10: the Addendum 91 amendment's mapping, written here from the amendment's table (not imported from the generator),
+# applied in this order to the predecessor's generated README half; the two plural phrases first.
+V10_NAME_MAP = (
+    ('Tables E.20, E.22 and E.23', 'Tables B.10, B.11 and S5'), ('Tables E.20 and E.21', 'Tables B.10 and S4'),
+    ('Table E.20', 'Table B.10'), ('Appendix E.2', 'Appendix B.2'), ('Table E.22', 'Table B.11'),
+    ('Appendix E.4', 'Appendix B.3'), ('Table E.21', 'Table S4'), ('Appendix E.3', 'Table S4'),
+    ('Table E.23', 'Table S5'), ('Appendix E.5', 'Table S5'), ('Table E.24', 'Table S6'), ('Appendix E.6', 'Table S6'),
+    ('Fig. E.19', 'Fig. B.9'), ('Appendix E.7', 'Appendix B.4'), ('Appendix B (', 'Section S1 ('),
+    ('Appendix C (', 'Section S2 ('), ('Appendix D (', 'Section S3 ('), ('Appendices C-D', 'Sections S2-S3'))
+V10_STALE = (('Table E.2x', r'Tables? E\.2\d'), ('Appendix E.', r'Appendix E\.'), ('Fig. E.19', r'Fig\. E\.19'),
+             ('Appendix B (', r'Appendix B \('), ('Appendix C', r'Appendix C'), ('Appendix D', r'Appendix D'),
+             ('Appendices C', r'Appendices C'))
+V10_MASK = r'[A-Za-z0-9_./<>*-]*\.csv|appendices_B_D/|appendix_E/'     # CSV file-name identifiers, excluded
+V10_RESIDUE = (('Appendix E (bare)', r'Appendix E(?![.0-9])'), ('Appendix B-D', r'Appendix B-D'),
+               ('E.2x value', r'(?<![A-Za-z.])E\.2\d'))    # recorded (not failed): names the mapping does not cover
+MAIN9C_REV = '3c379fa44f3755dbdc6fd540df566b55527d921c'      # Overleaf round 9c (= manuscript_review/main_46c9d77_round9c.tex)
+MAIN9C_SHA = 'b13b390e31331abd8a45dd677dd453e336c58b9d63a6a7762bda4681bb8508fc'
+V11_EXPECTED = {'Table B.10': 'tab:appE_claims', 'Table B.11': 'tab:appE_neighbours', 'Fig. B.9': 'fig:investment_lattice',
+                'Appendix B.2': 'app:results_claims', 'Appendix B.3': 'app:results_neighbours',
+                'Appendix B.4': 'app:results_statistics'}
 VERIFY_APPE_PASS = 40   # verify_appE.py at 441722c9 (Addendum 91: + 7 reduced-mode checks); 33 at 80778c12
 STATE = {'cap_years': PRINTED_YEARS}
 
 
 def readme_prose_rel(version):
-    """The prose the generator prepends: v1 for supplement versions <= 2, v2 from version 3 on (Addendum 91 ruling 3)."""
-    return README_PROSE_REL if version <= 2 else README_PROSE_V2_REL
+    """The prose the generator prepends: v1 for supplement versions <= 2, v2 for version 3 (Addendum 91 ruling 3), v3
+    from version 4 on (Addendum 91 amendment)."""
+    if version <= 2:
+        return README_PROSE_REL
+    return README_PROSE_V2_REL if version == 3 else README_PROSE_V3_REL
 
 
 def cap_years(version):
@@ -901,6 +940,117 @@ def v9_predecessor(members, PRED, version=2):
 
 
 # ======================================================================================================================
+#  V10 / V11: the README's names (version >= 4, Addendum 91 amendment)
+# ======================================================================================================================
+def _prose(version):
+    with open(os.path.join(REPO, readme_prose_rel(version)), 'rb') as h:
+        return h.read()
+
+
+def v10_names(members, PRED, version):
+    rd = members['README.md']
+    prose = _prose(version)
+    gen = rd[len(prose):].decode('utf-8') if rd.startswith(prose) else rd.decode('utf-8')
+    masked, n_masked = re.subn(V10_MASK, '', gen)
+    stale = {k: len(re.findall(rx, masked)) for k, rx in V10_STALE}
+    residue = {k: len(re.findall(rx, masked)) for k, rx in V10_RESIDUE}
+    pred, _zp, _zb, _prec, old = PRED
+    pv = pred['version']
+    oprose = _prose(pv)
+    ord_ = old['README.md']
+    ogen = ord_[len(oprose):].decode('utf-8')
+    h_old, h_new = f'## Generated section (supplement version {pv})', f'## Generated section (supplement version {version})'
+    hits = []
+    exp = ogen.replace(h_old, h_new) if ogen.count(h_old) == 1 else None
+    if exp is not None:
+        for o, n in V10_NAME_MAP:
+            hits.append([o, n, exp.count(o)])
+            exp = exp.replace(o, n)
+    expected = prose + exp.encode('utf-8') if exp is not None else None
+    out = {'prose_file': readme_prose_rel(version), 'generated_half_bytes': len(gen.encode('utf-8')),
+           'csv_identifiers_masked': n_masked, 'stale_names': stale, 'stale_total': sum(stale.values()),
+           'residual_old_names_not_in_check': residue,
+           'predecessor_prose_prefix_equal': ord_.startswith(oprose), 'predecessor_heading_once': exp is not None,
+           'map_hits_on_predecessor': hits,
+           'readme_equals_predecessor_mapped': expected == rd,
+           'first_difference_offset': (None if expected == rd or expected is None else
+                                       next((i for i, (a, b) in enumerate(zip(expected, rd)) if a != b),
+                                            min(len(expected), len(rd))))}
+    out['holds'] = (rd.startswith(prose) and out['stale_total'] == 0 and out['predecessor_prose_prefix_equal']
+                    and out['readme_equals_predecessor_mapped'])
+    return out
+
+
+def tex_numbering(text):
+    """label -> (kind, number) by a static walk of main.tex (comments stripped): sections / subsections numbered, figure /
+    table counters never reset (elsarticle), \\addtocounter applied, numbers <letter>.<n> after \\appendix."""
+    body = '\n'.join(re.sub(r'(?<!\\)%.*', '', ln) for ln in text.split('\n'))
+    tok = re.compile(r'\\appendix(?![A-Za-z])|\\(section|subsection)(\*?)\{|\\begin\{(figure\*?|table\*?|longtable)\}'
+                     r'|\\end\{(figure\*?|table\*?|longtable)\}|\\addtocounter\{(table|figure)\}\{(-?\d+)\}'
+                     r'|\\label\{([^}]*)\}')
+    st = {'app': False, 'sec': 0, 'sub': 0, 'figure': 0, 'table': 0, 'cur': None}
+    labels = {}
+
+    def sec_letter():
+        return chr(64 + st['sec']) if st['app'] else str(st['sec'])
+    for m in tok.finditer(body):
+        t = m.group(0)
+        if t.startswith('\\appendix'):
+            st.update(app=True, sec=0, sub=0)
+        elif m.group(1):
+            if m.group(2) == '*':
+                continue
+            if m.group(1) == 'section':
+                st.update(sec=st['sec'] + 1, sub=0)
+            else:
+                st['sub'] += 1
+        elif m.group(3):
+            kind = 'figure' if m.group(3).startswith('figure') else 'table'
+            st[kind] += 1
+            st['cur'] = kind
+        elif m.group(4):
+            st['cur'] = None
+        elif m.group(5):
+            st[m.group(5)] += int(m.group(6))
+        elif m.group(7) is not None:
+            lab = m.group(7)
+            if st['cur'] and lab.startswith(('fig:', 'tab:')):
+                n = st[st['cur']]
+                labels[lab] = (st['cur'], f'{sec_letter()}.{n}' if st['app'] else str(n))
+            elif not st['cur']:
+                labels[lab] = ('section', f'{sec_letter()}.{st["sub"]}' if st['sub'] else sec_letter())
+    return labels, body
+
+
+def v11_main9c(members, main9c_b):
+    labels, body = tex_numbering(main9c_b.decode('utf-8'))
+    rd = members['README.md'].decode('utf-8')
+    by_kind = {}
+    for _lab, (kind, num) in labels.items():
+        by_kind.setdefault(kind, set()).add(num)
+    expected = {name: {'label': lab, 'computed': labels.get(lab), 'holds': labels.get(lab) == (
+        {'Table': 'table', 'Fig.': 'figure', 'Appendix': 'section'}[name.split()[0]], name.split()[1])}
+        for name, lab in V11_EXPECTED.items()}
+    kind_of = {'Table': 'table', 'Tables': 'table', 'Fig.': 'figure', 'Appendix': 'section', 'Section': 'section'}
+    typed = sorted(set(re.findall(r'(Tables?|Fig\.|Appendix|Section) ([AB]\.\d+)(?![0-9])', rd)))
+    typed_bad = [f'{k} {n}' for k, n in typed if n not in by_kind.get(kind_of[k], set())]
+    allnum = sorted(set(re.findall(r'(?<![A-Za-z0-9_.])([AB]\.\d+)(?![0-9])', rd)))
+    known = set().union(*by_kind.values())
+    untyped_bad = [n for n in allnum if n not in known]
+    s_main = {f'S{k}': len(re.findall(rf'(?<![A-Za-z0-9_\\$])S{k}(?![0-9])', body)) for k in range(1, 7)}
+    s_readme = sorted(set(re.findall(r'(?<![A-Za-z0-9_])S(\d+)(?![0-9])', rd)), key=int)
+    out = {'main_rev': MAIN9C_REV, 'main_sha256': _sha(main9c_b), 'main_sha_equal': _sha(main9c_b) == MAIN9C_SHA,
+           'expected_names': expected, 'readme_typed_names': [' '.join(x) for x in typed], 'typed_not_in_main': typed_bad,
+           'readme_numbers': allnum, 'numbers_not_in_main': untyped_bad, 's_references_in_main': s_main,
+           's_numbers_in_readme': [f'S{k}' for k in s_readme],
+           'labels_counted': len(labels)}
+    out['holds'] = (out['main_sha_equal'] and all(e['holds'] for e in expected.values()) and not typed_bad
+                    and not untyped_bad and all(v >= 1 for v in s_main.values())
+                    and set(out['s_numbers_in_readme']) <= set(s_main))
+    return out
+
+
+# ======================================================================================================================
 #  negative controls (in memory)
 # ======================================================================================================================
 def _bump(s, step):
@@ -1041,6 +1191,17 @@ def controls(E, BD, FZ, main_lines, w182d, sdir, members=None, version=1, rec=No
     mem_ctl('C21', 'C_tn_res_generators.csv: a predecessor column (gen 5 capacity_2028_MW) changed', oldcol,
             lambda m2: {k: v['predecessor_columns_retained_bytewise'] for k, v in v9_predecessor(m2, PRED, version)['res_projection'].items()},
             {'appendices_B_D/C_tn_res_generators.csv': False, 'appendices_B_D/D_adn_res_generators.csv': True})
+    if version < 4:
+        return out
+
+    def stale20(m2):
+        b = m2['README.md']
+        i = b.index(b'Table B.10 (tab:appE_claims)', len(_prose(version)))
+        m2['README.md'] = b[:i] + b'Table E.20' + b[i + len(b'Table B.10'):]
+    mem_ctl('C22', 'README.md generated half: one Table B.10 set back to Table E.20', stale20,
+            lambda m2: [v10_names(m2, PRED, version)['stale_names']['Table E.2x'],
+                        v10_names(m2, PRED, version)['readme_equals_predecessor_mapped'], v10_names(m2, PRED, version)['holds']],
+            [1, False, False])
     return out
 
 
@@ -1151,6 +1312,22 @@ def main():
                          f'added {v9["added"]}, removed {v9["removed"]}; RES CSVs keep the predecessor columns bytewise '
                          f'{ {k.split("/")[1]: p["predecessor_columns_retained_bytewise"] for k, p in v9["res_projection"].items()} }; '
                          f'D_ieee33_tn_connection.csv identical {v9["tn_connection_identical"]}')
+    v10 = v11 = None
+    if version >= 4:
+        v10 = v10_names(members, PRED, version)
+        _ok(v10['holds'], f'V10 README names: stale a87e195 names in the generated half {v10["stale_names"]} (total '
+                          f'{v10["stale_total"]}; {v10["csv_identifiers_masked"]} CSV identifiers masked); README = '
+                          f'predecessor README with prose {v10["prose_file"]}, heading and the amendment mapping '
+                          f'{v10["readme_equals_predecessor_mapped"]}; residue not in the check '
+                          f'{v10["residual_old_names_not_in_check"]}')
+        main9c_b = subprocess.run(['git', '-C', CLONE, 'show', f'{MAIN9C_REV}:main.tex'], capture_output=True).stdout
+        v11 = v11_main9c(members, main9c_b)
+        _ok(v11['holds'], f'V11 names vs main.tex at {MAIN9C_REV[:7]} (sha {v11["main_sha256"][:8]} = pinned '
+                          f'{v11["main_sha_equal"]}): '
+                          f'{ {k: (e["computed"], e["holds"]) for k, e in v11["expected_names"].items()} }; README '
+                          f'typed names not in main {v11["typed_not_in_main"]}, numbers not in main '
+                          f'{v11["numbers_not_in_main"]}; S references in main {v11["s_references_in_main"]}, README '
+                          f'S-numbers {v11["s_numbers_in_readme"]}')
     # controls
     ctl = controls(E, BD, FZ, main_lines, w182d, sdir, members, version, rec, T2LINES, PRED)
     # guards
@@ -1160,7 +1337,8 @@ def main():
     result = {'stage': 'W188 (b) supplement verifier', 'supplement_dir': os.path.relpath(sdir, REPO),
               'zip': zinfo, 'zip_problems': zprobs, 'V1_frozen': {k: v for k, v in v1.items()},
               'V2_manuscript': v2, 'V3_budget': v3, 'V4_generator': v4, 'V5_case_files': v5, 'V6_printed': v6,
-              'V7_readme': v7, 'V8_table2': v8, 'V9_predecessor': v9, 'capacity_years_checked': list(STATE['cap_years']),
+              'V7_readme': v7, 'V8_table2': v8, 'V9_predecessor': v9, 'V10_names': v10, 'V11_main9c': v11,
+              'capacity_years_checked': list(STATE['cap_years']),
               'controls': ctl, 'controls_all_caught': all(c['caught_exactly'] for c in ctl), 'n_controls': len(ctl),
               'guards': {'verifier': dict(GUARD.counts), 'w180a_module': dict(A.GUARD.counts), 'verify_0': g_fail,
                          'pickle': dict(PICKLE_COUNTS), 'pickle_w180a': dict(A.PICKLE_COUNTS)},
