@@ -117,3 +117,17 @@ supplementary material; the prediction-record bullet removed.
    `cover_letter.tex`; compile on Overleaf; expect 0 errors, 0 undefined, 63 pages ± layout, and the numbering above.
 3. Pull the Overleaf clone on the Air; commit the four deliverables and this file by filename; push; pull on the
    Studio; forward Addendum 90 (W189a, W187 under spec v1.1, W189 at the new HEAD).
+
+## Round 9c (expert, 2026-11-12; Addendum 91 ruling 4) — on Overleaf `46c9d77`/`52a607d` = round 9b
+
+| File | md5 | What |
+|---|---|---|
+| `main_46c9d77_round9c.tex` | `cd1433d7…` | paste over `main.tex` (8 hunks vs 9b: `main_round9b_round9c.diff`) |
+| `response_to_reviewers_v13.tex` | `74e88c78…` | paste over the response (1 hunk: Fig. B.8 → B.9) |
+| `cover_letter_v4.tex` | `63b7ddee…` | paste over `cover_letter.tex` (bracket filled with W184/W185; manuscript number; delay sentence; one bracket left for W187) |
+| `gen_appE.py`, `verify_appE.py` | — | `--reduced` mode prints Appendix B bitwise; verifier 40 PASS (`gen_appE_round9c.diff`) |
+| `supplement_README_prose_v2.md` | — | for supplement v3 |
+
+Edits: B.4 net-power pair "penalised in the agent's own objective"; Figure 6 prose (90 % limit every day, 10 % on six of
+eight, Winter 14–15 %); evaluation 16 "171 €, almost all voltage slack"; "Section S5" → "Table S5" ×2; blue on the five
+lines (§3.2 pointer; Table 9 panel headings and note). Compile 0/0/0, 63 pages, numbering identical to 9b.

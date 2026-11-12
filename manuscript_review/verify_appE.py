@@ -60,3 +60,27 @@ h=T9['h_f9eae48f']; ok((h['t_sum at cap (k€)'],h['pf_primal last'])==('-2.5','
 ok(T9['d_36686489']['t_sum at cap (k€)']=='1.1','5 MWh +1.1')
 # E.3
 ok(all(T2[c]['status']=='certified' for c in ['pb_y2025_n5_v6','pb_y2025_n7','pb_y2025_n9','pb_y2030_n5','pb_y2030_n7','pb_y2030_n9','c_156ce2d1','c_6597a79d']),'E.3 eight certified')
+
+# --- reduced mode (round 9, Addendum 91): the compact Appendix B of the trimmed manuscript
+import subprocess, re as _re
+_red=os.path.join(tempfile.mkdtemp(),'appE_reduced_check.tex')
+_full=os.path.join(tempfile.mkdtemp(),'appE_full_check.tex')
+subprocess.run([sys.executable,os.path.join(HERE,'gen_appE.py'),_full],check=True,capture_output=True)
+subprocess.run([sys.executable,os.path.join(HERE,'gen_appE.py'),_red,'--reduced'],check=True,capture_output=True)
+R=open(_red,encoding='utf-8').read(); F=open(_full,encoding='utf-8').read()
+ok(all(('\\subsection{\\textcolor{blue}{'+t+'}}') not in R for t in ('Evaluations','Static Arrangements: Solver Starts','Evaluations Refused by the Gap Clause')),'reduced: E.3, E.5, E.6 absent')
+ok(all(('\\subsection{\\textcolor{blue}{'+t+'}}') in R for t in ('Terminal Salvage Credit','Comparisons','Neighbours of the Plan without Storage','Certification Statistics and Reproducibility')),'reduced: B.1-B.4 present')
+ok(not _re.search(r'\\ref\{(tab:appE_evaluations|tab:appE_benchmark|tab:appE_gap|app:results_(evaluations|benchmark|gap))\}',R),'reduced: no reference to a moved table')
+ok(R.count('Table~S4')>=1 and R.count('Table~S5')>=1 and R.count('Table~S6')>=1,'reduced: S4-S6 pointers present')
+ok(R.count('\\label{tab:appE_claims}')==1 and R.count('\\label{tab:appE_neighbours}')==1 and R.count('\\label{fig:investment_lattice}')==1,'reduced: kept labels once')
+i=R.find('\\label{tab:appE_claims}'); j=R.find('\\end{longtable}',i)
+ok(len([l for l in R[i:j].splitlines() if _re.match(r'\s*\d+ & ',l)])==58,'reduced: comparisons table keeps 58 rows')
+# the reduced text is the full text minus the cut sections plus the declared edits: every kept full-text line not in the
+# three cut sections and not among the two rewritten paragraphs appears in the reduced text
+def body(E):
+    for t in ('Evaluations','Static Arrangements: Solver Starts','Evaluations Refused by the Gap Clause'):
+        i=E.find('\\subsection{\\textcolor{blue}{'+t+'}}'); j=E.find('\\subsection{',i+10); E=E[:i]+E[j:]
+    return E
+kept=[l for l in body(F).splitlines() if l.strip() and 'tab:appE_evaluations' not in l and 'tab:appE_benchmark' not in l and 'tab:appE_gap' not in l and 'app:results_benchmark' not in l and 'This appendix gives the record' not in l]
+missing=[l for l in kept if l not in R]
+ok(missing==[],f'reduced: every kept full-text line present ({len(missing)} missing)')

@@ -4906,3 +4906,87 @@ Q-versus-cycle 7 → 8; other numbering as in `STEP6_ROUND9_CORRECTIONS.md`. Let
 ## Stops
 
 As Addendum 89. In addition: W187's gate (ii) failing is a stop for the expert (ruling 4), not a fallback to (b).
+
+
+# Addendum 91 — the editorial window (withdrawal in 10 days); submission schedule compressed; rulings on W189 (`abbbc6da`); round 9c; W187 go; final package order W190 (2026-11-12)
+
+**Received.** `P5_15_W189_REPORT.md` (+ `…W189_P1_NUMBERS`, `…W189_P2_STRUCTURE`, `…W188B_SUPPLEMENT_v2`), repo
+`abbbc6da`; 153 solves (the W187 two-cycle gate), everything else zero-solve. Overleaf clone on the Air at `52a607d`
+(the Planner audited `46c9d77`, the same content): `main.tex` md5 `49139cc2…` = round 9b, letter v12 `ed8f5b13…`,
+cover letter v3 `0b9e4c21…`, all byte-identical to the deliverables; `fig_soc_soh_reference_unit.pdf` uploaded.
+
+**The deciding fact (author, 2026-11-12).** The editorial office (EST-D-26-06323) has scheduled the revision for
+withdrawal **10 days after its notice** unless the revision is submitted; a later submission would be a new submission.
+The package is submittable now except for the items below, all small. **The revision is submitted as the revision,
+within the window, with an internal upload date of 2026-11-19** (one day of margin against the earliest reading of
+"10 days"). The deadline question of Addendum 89 is closed by this.
+
+## Author decisions requested today
+
+1. **Give the W187 go now.** The screen takes ≈ 21 h attached; launched on 2026-11-12 it lands on 11-13. Its result
+   enters round 10 only if the report is in by **2026-11-15 12:00**; otherwise the paper goes without it and R3.6's
+   planning part stays "met in part", as already written.
+2. **Trimming.** 17 main-text floats and 6,692 prose words against the ≤ 10 / shorter target of Addendum 89 decision 4.
+   In the window there is no time for a safe deeper cut. **Recommendation: submit at 63 pages**; the appendices are
+   already three floats, and the main text is where the reviewers' requested content lives (the SoC physics, the
+   degradation equations, the acceptance criteria, the ladders).
+3. **Write to the editorial office today** (reply to the notice): the revision will be submitted within the window;
+   ask them to confirm the exact withdrawal date. No request for more time.
+
+## Rulings
+
+1. **W187 spec v1.1 (`25071d2f`): accepted as frozen**, including the G0 re-pin to the `f6c23977`-built artifact
+   (within ruling 4's re-pin authority; the check logic unchanged, 16/16) and the P5.16 inputs pinned rather than
+   excluded (stricter; fine). Gate (ii) held as predicted (153/153, `GATE_PASS_RULED`, 0 genuine, provenance 3/4, Q
+   bitwise to W48). The wrong pointer string `p516_inputs.static_search` is left as recorded (write-once) and noted here.
+   P3 stands blind.
+2. **Appendix B generated, not hand-edited (W189 item 2; Addendum 83 ruling 1).** `gen_appE.py` now has a `--reduced`
+   mode that prints the compact Appendix B; its output is **bitwise equal** to the round-9c manuscript's Appendix B block
+   (gate run by the expert: 215/215 lines). The B.4 slack sentences carry the W188A numbers as constants with the record
+   cited in the generator's comment. `verify_appE.py` extended: 40 PASS (33 + 7 reduced-mode checks: E.3/E.5/E.6
+   absent, B.1–B.4 present, no reference to a moved table, S4–S6 pointers, kept labels once, 58 comparison rows, every
+   kept full-text line present). The full mode is unchanged and still bitwise equal to `appendixE_evaluation_record.tex`.
+3. **Supplement v3 (W189a follow-up).** README prose v2 delivered (`supplement_README_prose_v2.md`): version-independent
+   wording, 70,851 cells, `E_table_notes.csv` and `E20_E21_groups.csv` described correctly, the RES-capacity years
+   listed. Regenerate with `--force-new-version` → **v3**, predecessor `864a5779`, verifier 0 mismatches; `D_ieee33_
+   tn_connection.csv` unchanged. v3's zip is the submitted supplementary file.
+4. **Round 9c (expert, delivered): the five W189 wording items.** (i) B.4: the agent's net-power pair is "penalised in
+   the agent's own objective", no longer "in Q". (ii) Figure 6 prose: the 90 % limit reached on every day, the 10 %
+   limit on six of eight (Winter stops at 14–15 %). (iii) Evaluation 16: "a positive slack content of at most 171 €,
+   almost all of it voltage slack". (iv) "Section S5" → "Table S5" at both places (one name). (v) Blue wrappers on the
+   five changed lines (§3.2 supplement pointer; Table 9's two panel headings and its note). Letter v13: `Fig.~B.8` →
+   `Fig.~B.9` (the figure counter continues through the appendix; my compile gives B.9, as the Planner's static count).
+   Cover letter v4: the bracketed paragraph filled with W184/W185 (one bracket left for W187), the manuscript number
+   EST-D-26-06323, and one sentence on the delay. Compile 0 / 0 / 0, 63 pages, numbering identical to 9b.
+5. **The 1 letter-pointer MISMATCH of W189**: the Planner names it in W189 P2; if it is the B.8 pointer, v13 closes it;
+   if not, W190 reports it with the line.
+
+## Schedule (hard; upload 2026-11-19)
+
+| Date | Who | What |
+|---|---|---|
+| 11-12 | author | W187 go; paste round 9c (`main_46c9d77_round9c.tex`, letter v13, cover letter v4); reply to the editorial office |
+| 11-12 | Planner | W189a → supplement v3; W190a: audit of round 9c at the new HEAD (numbers, pointers incl. the 1 MISMATCH, blue, `verify_appE.py --reduced` 40 PASS, 0 `[CONFIRM`, 0 prefixes) |
+| 11-13 | Planner | W187 lands (if launched 11-12) |
+| 11-14 | expert | round 10 (final): W187 sentence in §4.3 if in by 11-15 noon, else the bracket removed from cover letter v5; letter v14; highlights v4 only if wording changes; the marked copy (latexdiff vs `manuscript_submitted/main.tex`, blue wrappers stripped, `--math-markup=whole`) |
+| 11-15/16 | author | paste round 10; compile; pull |
+| 11-16/17 | Planner | **W190**: final audit at the final HEAD; the submission file set byte-identical to the deliverables; the marked copy compiles on Overleaf; supplement v3 hash in the change log; `TASKS.md` closed |
+| 11-18 | expert | final pointer recheck; go for upload |
+| **11-19** | **author** | **upload: manuscript PDF + source, highlights, cover letter, response, marked copy, supplement v3 zip, figure files** |
+
+**Numbers freeze: 2026-11-15 12:00** (replaces 11-28). Nothing not landed by then enters.
+
+## Planner order
+
+- **W189a-v3** (zero-solve): supplement v3 per ruling 3; report appended to `P5_15_W188B_SUPPLEMENT_v2.md` or as `_v3`.
+- **W187** (solves; on the author's go): as frozen; report `P5_15_W187_REPORT.md` with P3 against the outcome.
+- **W190a** (zero-solve, after the round-9c paste): the audit of ruling 4 at the new HEAD, plus the generator gate
+  (`gen_appE.py --reduced` output equal to the pasted Appendix B block) and `verify_appE.py` 40 PASS; name the 1
+  pointer MISMATCH. Report `P5_15_W190A_REPORT.md`.
+- **W190** (zero-solve, after the round-10 paste): final audit and submission-set check as scheduled; report
+  `P5_15_W190_REPORT.md`; close `TASKS.md` with the Overleaf HEAD and the hashes of the uploaded files.
+
+## Stops
+
+As Addendum 90. A W187 harness fault or a failed P3 margin is reported and the paper proceeds without W187; nothing
+delays the 11-19 upload except a compile or audit failure on the final package.

@@ -562,5 +562,42 @@ P(r"""
 }
 
 """)
-open(sys.argv[1] if len(sys.argv) > 1 else 'appE.tex', 'w', encoding='utf-8').write('\n'.join(out) + '\n')
-print('ok', no, n)
+# ---------------------------------------------------------------------------------------------------------------------
+# Round 9 (Addendum 90 / 91): --reduced prints the compact Appendix B of the trimmed manuscript. E.3 (evaluations), E.5
+# (static arrangements) and E.6 (gap-refused) move to the supplementary material as Tables S4-S6; the opening paragraph
+# says so; every reference to a moved table is retargeted; and the B.4 slack sentences of the W188 (a) inventory
+# (P5_15_W188A_SLACK_INVENTORY.md: common offset -13,012.57..-13,052.36 EUR, identical within 39.80 EUR; t11 unit
+# <= 2.16 EUR; superseded evaluation 16 <= 170.69 EUR, of which 169.27 voltage) are added. The full (non-reduced) output
+# is unchanged and remains the source of the supplement's Appendix-E CSVs.
+REDUCED = '--reduced' in sys.argv
+_args = [a for a in sys.argv[1:] if not a.startswith('--')]
+text = '\n'.join(out) + '\n'
+def _reduce(E):
+    import re as _re
+    def cut(E, title):
+        i = E.find('\\subsection{\\textcolor{blue}{' + title + '}}'); assert i > 0, title
+        j = E.find('\\subsection{', i + 10); assert j > 0
+        return E[:i] + E[j:]
+    for ttl in ('Evaluations', 'Static Arrangements: Solver Starts', 'Evaluations Refused by the Gap Clause'):
+        E = cut(E, ttl)
+    for a, b in {r'Table~\ref{tab:appE_evaluations}': 'Table~S4', r'Table~\ref{tab:appE_benchmark}': 'Table~S5',
+                 r'Table~\ref{tab:appE_gap}': 'Table~S6', r'\ref{app:results_benchmark}': 'Table~S5 of the supplementary material',
+                 r'\ref{app:results_evaluations}': 'Section~S4 of the supplementary material',
+                 r'\ref{app:results_gap}': 'Section~S6 of the supplementary material'}.items():
+        E = E.replace(a, b)
+    def rep(a, b):
+        nonlocal E
+        assert E.count(a) == 1, a[:70]; E = E.replace(a, b)
+    rep(r"This appendix gives the record behind the comparisons of Section~\ref{sec:results}: every pairwise comparison (Table~\ref{tab:appE_claims}); every recourse evaluation those comparisons use, with its stopping status, band, gap and slack (Table~S4); the neighbours of the plan without storage re-evaluated under the certification rule (Table~\ref{tab:appE_neighbours}); the solver starts of the static arrangements (Table~S5); and the evaluations refused by the gap clause (Table~S6). It closes with the certification statistics and the reproducibility record.",
+        r"This appendix gives the record behind the comparisons of Section~\ref{sec:results}: every pairwise comparison (Table~\ref{tab:appE_claims}) and the neighbours of the plan without storage re-evaluated under the certification rule (Table~\ref{tab:appE_neighbours}), followed by the certification statistics and the reproducibility record. The supplementary material lists every recourse evaluation the comparisons use, with its stopping status, band, gap and slack (Table~S4), the solver starts of the static arrangements (Table~S5) and the evaluations refused by the gap clause (Table~S6), together with the market, network and profile data of the case study (Sections~S1--S3), all generated from the same archived records.")
+    rep(r"""    The shared-ESS agent's net-active-power slacks $\sigma^\pm_{e,y,d,t}$ were at their lower bounds at every certified evaluation.
+}""",
+        r"""    The shared-ESS agent's net-active-power slacks $\sigma^\pm_{e,y,d,t}$ were at their lower bounds at every certified evaluation.
+    More generally, at every certified evaluation behind the tables of Section~\ref{sec:results}, every penalised slack in $Q$ (daily closure and network feasibility) sits at its zero bound to within the solver's bound relaxation, so no penalty is paid in $Q$, and the agent's net-power pair, penalised in the agent's own objective, is at its bound as well; the relaxation itself leaves a common offset of $-13.0$~k\euro{} in $Q$ ($-2 \times 10^{-5}$ of $Q$), identical across evaluations to within 40~\euro{}, which cancels in every reported difference. The multi-scenario evaluation of the reference unit carries a positive flexibility-balance content of at most 2.2~\euro{}, and the superseded evaluation~16 a positive slack content of at most 171~\euro{}, almost all of it voltage slack.
+}""")
+    assert not _re.search(r'\\ref\{(tab:appE_evaluations|tab:appE_benchmark|tab:appE_gap|app:results_(evaluations|benchmark|gap))\}', E)
+    return E
+if REDUCED:
+    text = _reduce(text)
+open(_args[0] if _args else ('appE_reduced.tex' if REDUCED else 'appE.tex'), 'w', encoding='utf-8').write(text)
+print('ok', no, n, 'reduced' if REDUCED else 'full')

@@ -1,0 +1,77 @@
+--- work/main_9b.tex	2026-11-12 13:12:31.144702608 +0000
++++ work/main.tex	2026-11-12 13:12:31.160195194 +0000
+@@ -1247,7 +1247,7 @@
+ 
+ \subsection{Market Data}
+ 
+-Baseline wholesale energy prices were obtained from the Portuguese TSO platform~\cite{ren_market_platform}, whereas flexibility market prices were sourced from the ATTEST project repository~\cite{attest_project_repo}. Seasonal profiles are provided in the supplementary material (Section~S1). Wholesale energy prices are assumed to increase at an average annual rate of 2.50\%, whereas flexibility market prices increase at 2.00\% per year.
++Baseline wholesale energy prices were obtained from the Portuguese TSO platform~\cite{ren_market_platform}, whereas flexibility market prices were sourced from the ATTEST project repository~\cite{attest_project_repo}. \textcolor{blue}{Seasonal profiles are provided in the supplementary material (Section~S1).} Wholesale energy prices are assumed to increase at an average annual rate of 2.50\%, whereas flexibility market prices increase at 2.00\% per year.
+ 
+ \subsection{Transmission and Distribution Networks}
+ \label{subsec:case_study_adns}
+@@ -1350,7 +1350,7 @@
+ 
+ \textcolor{blue}{
+     The value of coordination is assessed in the single-scenario configuration without shared storage. Two static arrangements are considered, both prohibiting reverse active-power flow from each DN to the TN. In the passive arrangement, DN flexibility is not activated and renewable generation is curtailed as required by the interface restriction. In the price-taker arrangement, each DSO dispatches its network against wholesale energy prices. In both arrangements, the TSO dispatches the TN with the DN interface schedules fixed.
+-    All arrangements are evaluated using the same cost function $Q$, excluding the contracted interface settlement. For each static arrangement, the lowest cost from three solver starts is reported. The evaluation procedure and voltage-consistency checks are detailed in~Section~S5 of the supplementary material.
++    All arrangements are evaluated using the same cost function $Q$, excluding the contracted interface settlement. For each static arrangement, the lowest cost from three solver starts is reported. The evaluation procedure and voltage-consistency checks are detailed in~Table~S5 of the supplementary material.
+ }
+ 
+ % ====================================================================================================================
+@@ -1562,7 +1562,7 @@
+ }
+ 
+ \textcolor{blue}{
+-    Figure~\ref{fig:res_soc_soh} shows how degradation reaches the dispatch. Panel~(a) gives the stored energy of the reference unit over the four representative days of 2025 and 2035 under the baseline calibration: the unit cycles once or twice a day between the 10\,\% and 90\,\% limits of its available energy, and in 2035, with the state of health at the 0.70 floor, the usable band has narrowed from 0.70 to 0.56~MWh. Panel~(b) gives the end-of-block state of health under the seven calibrations: the baseline and both 50\,\% retention calibrations reach the floor in the 2035 block, the cycling-only and datasheet calibrations do not, and the 0.50 floor lets the baseline calibration continue to 0.68.
++    Figure~\ref{fig:res_soc_soh} shows how degradation reaches the dispatch. Panel~(a) gives the stored energy of the reference unit over the four representative days of 2025 and 2035 under the baseline calibration: the unit cycles once or twice a day across the usable band, reaching the 90\,\% limit of its available energy on every day and the 10\,\% limit on six of the eight (the Winter days stop at 14--15\,\%), and in 2035, with the state of health at the 0.70 floor, the usable band has narrowed from 0.70 to 0.56~MWh. Panel~(b) gives the end-of-block state of health under the seven calibrations: the baseline and both 50\,\% retention calibrations reach the floor in the 2035 block, the cycling-only and datasheet calibrations do not, and the 0.50 floor lets the baseline calibration continue to 0.68.
+ }
+ 
+ \begin{figure}[htbp!]
+@@ -1624,7 +1624,7 @@
+ }
+ 
+ \textcolor{blue}{
+-    The comparison also reflects differences in interface restrictions. Both static arrangements prohibit DN-to-TN active-power flow, whereas coordinated operation uses reverse flow in four representative interface-hours. When this restriction was removed from the static arrangements, TN dispatch runs could not accommodate the prescribed DN exchanges in one of twelve representative year--season blocks for passive operation and eight for price-taker operation (Section~S5 of the supplementary material). To separate the two effects, coordinated operation was re-evaluated with the same no-reverse-flow restriction imposed on the consensus exchange. The restriction raises the coordinated cost by 20.5~k\euro{}, a determinate increase at 1.62 times its threshold, which is 0.02\,\% of the 90.9~M\euro{} saving: the saving relative to the price-taker arrangement is 12.2\,\% with reverse flow enabled and 12.2\,\% with it prohibited. The coordination benefit reported here does not depend on the interface restriction; it applies to the specific benchmark arrangements defined in Section~\ref{sec:case_settings}.
++    The comparison also reflects differences in interface restrictions. Both static arrangements prohibit DN-to-TN active-power flow, whereas coordinated operation uses reverse flow in four representative interface-hours. When this restriction was removed from the static arrangements, TN dispatch runs could not accommodate the prescribed DN exchanges in one of twelve representative year--season blocks for passive operation and eight for price-taker operation (Table~S5 of the supplementary material). To separate the two effects, coordinated operation was re-evaluated with the same no-reverse-flow restriction imposed on the consensus exchange. The restriction raises the coordinated cost by 20.5~k\euro{}, a determinate increase at 1.62 times its threshold, which is 0.02\,\% of the 90.9~M\euro{} saving: the saving relative to the price-taker arrangement is 12.2\,\% with reverse flow enabled and 12.2\,\% with it prohibited. The coordination benefit reported here does not depend on the interface restriction; it applies to the specific benchmark arrangements defined in Section~\ref{sec:case_settings}.
+ }
+ 
+ % --------------------------------------------------------------------------------------------------------------------
+@@ -1682,7 +1682,7 @@
+     \label{tab:res_year_ladder}
+     \footnotesize\setlength{\tabcolsep}{5pt}
+     \begin{tabular}{l c c c}
+-        \multicolumn{4}{l}{(a) Installation year, 2\,\% discount rate} \\
++        \multicolumn{4}{l}{\textcolor{blue}{(a) Installation year, 2\,\% discount rate}} \\
+         \toprule
+         Investment year & $M$ gross (k\euro) & Salvage (k\euro) & $M$ net (k\euro) \\
+         \midrule
+@@ -1692,7 +1692,7 @@
+         2035 $-$ 2030    & 42.5  & ---  & $-$2.3 \\
+         \bottomrule
+         \multicolumn{4}{c}{} \\
+-        \multicolumn{4}{l}{(b) Discount rate, installation in 2025} \\
++        \multicolumn{4}{l}{\textcolor{blue}{(b) Discount rate, installation in 2025}} \\
+         \toprule
+         Rate (\%) & Value (k\euro) & Value $- I$ (k\euro) & Threshold (k\euro) \\
+         \midrule
+@@ -1705,9 +1705,9 @@
+     \par\smallskip
+     \begin{minipage}{\linewidth}
+         \footnotesize\raggedright
+-        \textit{Note:}
++        \textcolor{blue}{\textit{Note:}
+         (a) $M = I + Q(\boldsymbol{x}) - Q(\boldsymbol{0})$ is the cost increase relative to the plan without storage; net cost deducts the terminal salvage credit \eqref{eq:salvage_credit}; the final row compares installation in 2035 with 2030: the gross difference is determinate, the net difference within numerical resolution (threshold: 12.3~k\euro{}).
+-        (b) Investment cost $I=318.0$~k\euro{}, paid in 2025; all investment margins are determinate under the criteria of Subsection~\ref{subsubsec:certification}; rates other than 2\,\% reweight the annual operating costs of the 2\,\% evaluations without re-optimising dispatch.
++        (b) Investment cost $I=318.0$~k\euro{}, paid in 2025; all investment margins are determinate under the criteria of Subsection~\ref{subsubsec:certification}; rates other than 2\,\% reweight the annual operating costs of the 2\,\% evaluations without re-optimising dispatch.}
+     \end{minipage}
+ \end{table}
+ 
+@@ -2307,7 +2307,7 @@
+ \textcolor{blue}{
+     At every certificate used in a reported comparison, and at both multi-scenario evaluations, both daily closure slacks sat at their lower bound to within the solver's bound relaxation ($10^{-6}$~MWh per slack); in the superseded evaluation~16 of Table~S4 their sum reached $1.8 \times 10^{-6}$~MWh, $5 \times 10^{-6}$ of the available energy. Without storage the closure row is deactivated and its slacks are fixed at zero.
+     The shared-ESS agent's net-active-power slacks $\sigma^\pm_{e,y,d,t}$ were at their lower bounds at every certified evaluation.
+-    More generally, at every certified evaluation behind the tables of Section~\ref{sec:results}, every penalised slack in $Q$ (daily closure, network feasibility and the agent's net-power pair) sits at its zero bound to within the solver's bound relaxation, so no penalty is paid in $Q$; the relaxation itself leaves a common offset of $-13.0$~k\euro{} in $Q$ ($-2 \times 10^{-5}$ of $Q$), identical across evaluations to within 40~\euro{}, which cancels in every reported difference. The multi-scenario evaluation of the reference unit carries a positive flexibility-balance content of at most 2.2~\euro{}, and the superseded evaluation~16 a positive voltage-slack content of at most 171~\euro{}.
++    More generally, at every certified evaluation behind the tables of Section~\ref{sec:results}, every penalised slack in $Q$ (daily closure and network feasibility) sits at its zero bound to within the solver's bound relaxation, so no penalty is paid in $Q$, and the agent's net-power pair, penalised in the agent's own objective, is at its bound as well; the relaxation itself leaves a common offset of $-13.0$~k\euro{} in $Q$ ($-2 \times 10^{-5}$ of $Q$), identical across evaluations to within 40~\euro{}, which cancels in every reported difference. The multi-scenario evaluation of the reference unit carries a positive flexibility-balance content of at most 2.2~\euro{}, and the superseded evaluation~16 a positive slack content of at most 171~\euro{}, almost all of it voltage slack.
+ }
+ 
+ \textcolor{blue}{

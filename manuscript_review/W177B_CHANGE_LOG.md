@@ -290,3 +290,13 @@ Kept by the expert during the author's whole-document read (2026-10-09 onward); 
   CSVs); compile 0/0/0, 63 pages; figures 6 → 7, 7 → 8. Letter v12 (md5 `ed8f5b13…`, + `letter_v10_v12.diff`): R2.6
   measurement, R3.2 figure, benchmark bullet, ±100 disclosure, v11's benchmark pointer fixed (Table 7). Cover letter
   v3 and highlights v3 unchanged. `STEP6_ROUND9_CORRECTIONS.md` updated to 9b. Not yet on Overleaf.
+- 2026-11-12: round 9b on Overleaf (`46c9d77`/`52a607d`; main md5 `49139cc2…`, letter v12 `ed8f5b13…`, cover letter v3
+  `0b9e4c21…`, figure uploaded). W189 received (`abbbc6da`): W187 spec v1.1 `25071d2f` frozen, its two-cycle gate held
+  (153/153); supplement v2 `864a5779` (README prose contradictions found); round 9b 0 number mismatches, five wording
+  items, five unwrapped lines, letter pointer B.8 → B.9; trimming target not met (17 floats, 6,692 words).
+  **Editorial office: the revision is withdrawn in 10 days unless submitted** → Addendum 91: submit as the revision,
+  upload 2026-11-19, numbers freeze 11-15 12:00; W187 go today (enters only if reported by 11-15 noon); submit at
+  63 pages. **Round 9c delivered**: `main_46c9d77_round9c.tex` (md5 `cd1433d7…`, 8 hunks vs 9b: the five W189
+  items + blue), letter v13 (`74e88c78…`, B.9), cover letter v4 (`63b7ddee…`: W184/W185 paragraph, EST-D-26-06323,
+  delay sentence, one bracket for W187); `gen_appE.py --reduced` prints Appendix B bitwise and `verify_appE.py` is
+  extended (40 PASS, run on the Air); README prose v2 for supplement v3. Not yet on Overleaf.
