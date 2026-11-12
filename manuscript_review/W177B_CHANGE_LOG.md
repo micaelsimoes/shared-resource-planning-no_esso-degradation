@@ -308,3 +308,7 @@ Kept by the expert during the author's whole-document read (2026-10-09 onward); 
   clean; W187 running (cell 1 started in background mode — recorded, not restarted). Amendment 2 to Addendum 91:
   supplement v5 wording for the strings outside the mapping (a)–(c), (d) kept; v5 is the submitted file; round 10 on
   11-14 as scheduled.
+- W187 cell 1 killed at cycle 122 (14:18 UTC, session restart; 0/15 results). Amendment 3 to Addendum 91: partial
+  outputs and lock moved aside, cell 1 relaunched with the frozen command (`_r2`); the chain run by the author in
+  Terminal.app under `caffeinate -i` (attached, stop-at-first-failure, streams captured, lock held); latest relaunch
+  11-14 09:00 UTC for the freeze.
