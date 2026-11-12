@@ -1,6 +1,15 @@
 # TASKS — current order
 
-**Authority (2026-11-10):** `PLANNER_BRIEF_2026-09-13.md` Addendum 90 (corrections to 89; W187 under spec v1.1; round 9b). Overleaf HEAD `46c9d77` (round 9b: main.tex md5 49139cc2, letter v12 ed8f5b13). Realignment (Addenda 87–88) parked.
+**Authority (2026-11-12):** `PLANNER_BRIEF_2026-09-13.md` Addendum 91 (editorial window: **upload 2026-11-19**, numbers freeze **11-15 12:00**; W187 go; round 9c). Overleaf HEAD **`3c379fa`** (round 9c: main.tex md5 cd1433d7 = `main_46c9d77_round9c.tex`, letter v13 74e88c78, cover letter v4 63b7ddee, highlights v3 4cedd45c; verified byte-identical by the Planner 13:26 UTC). Realignment (Addenda 87–88) parked.
+
+## Addendum 91 order — W189a-v3, W187, W190a, then W190
+
+- [ ] **▶ W187** screen (15 cells, ~21 h, attached, one Worker, each cell committed before the next) — **launched 2026-11-12 ~13:30 UTC**; enters round 10 only if reported by 11-15 12:00; P3 blind
+- [x] **W189a-v3** — `5c4074d2` / `13076571` / `4041dad3`: v3 `SRP1_supplement_v3_e6f5ce6a.zip` (sha `e6f5ce6a…`, predecessor `864a5779`), verifier PASS 0 failures (1,623 entries, 70,851 cells, Table 2 48/48), v2→v3 = README + SHA256SUMS only, TN CSV unchanged, deterministic ×4; verifier V4 now expects verify_appE 40. **Open (expert): generated README half still names a87e195 tables (Table E.20–E.24 ×16, Appendix C/D) → reword + v4?**
+- [x] **W190a** (`ca71db16` / `9a5a78b9`; all (a)–(f) held: Appendix B gate 218/218 bitwise, verify_appE 40 PASS, numbers 0 MISMATCH, letter v13 0 MISMATCH — W189's = v12 l. 285 B.8 → B.9) — audit of round 9c at `3c379fa` (identity, `gen_appE.py --reduced` bitwise to Appendix B, `verify_appE.py` 40 PASS, numbers, pointers incl. W189's l. 285 MISMATCH, blue, 0 `[CONFIRM`, 0 prefixes) → `P5_15_W190A_REPORT.md`
+- [x] Planner: `P5_15_A91_STATUS_REPORT.md` (W189a-v3 + W190a; decision 1: supplement README stale names → v4?)
+- [ ] Planner: report on W187 when it lands
+- [ ] 11-14 expert round 10 → 11-15/16 author paste → **W190** final audit + submission-set check → close TASKS.md with HEAD and uploaded-file hashes
 
 ## Addendum 90 order — W189a, W187 (spec v1.1 + gates, then the screen), W189
 
@@ -8,9 +17,9 @@
 - [x] **W189 part 1** — `1eac8803` / `4d03909d`: 0 number MISMATCH (472 tokens); W184/W185/G10 wording holds; **B.4 calls the ESSO net-power pair 'in Q' (it is not); reduced Appendix E hand-edited, not generator output, verify_appE not extended; Fig. 6 '10–90 %' holds 6/8 days**
 - [x] **W189 part 2** — `8c931b0b` / `f116cbba`: identity holds; 136 → 102 labels; letter 171/8/**1 MISMATCH (l. 285 Fig. B.8, static B.9)**; 0 dangling; 0 prefixes; **17 main floats (target ≤ 10)**; 5 changed lines without blue
 - [x] **W187 spec v1.1** — `68a612ed`…`c2743027`: G0 re-pinned to the pin-check artifact (Planner, within ruling 4); gate (ii) 153/153 solves, **GATE_PASS_RULED True, 0 genuine, provenance 3/4 — HELD**; spec v1.1 `frozen_step7_campaign_spec_v1_1_25071d2f.json`; screen frozen (15 cells, stage spec `5cbf4a55`), first cell preconditions hold
-- [ ] **▶ W187** screen (15 keys, ~21 h, attached, one task) — **ready; launch by 2026-11-20** (held for the go); P3 blind prediction
+- [x] W187 screen — go given in Addendum 91; launched under the Addendum 91 order
 - [x] Planner: `P5_15_W189_REPORT.md` (Decisions 1–6)
-- [ ] **▶ Open:** W187 launch (go); expert: reduced Appendix E via generator, supplement prose v2 → v3, round-9b wording (B.4 'in Q', Fig. 6 6/8 days, Fig. B.8/B.9, blue ×5); author: trimming (17 floats vs ≤ 10), push, deadline
+- [x] Open items → Addendum 91 (go; generator `--reduced`; prose v2; round 9c; trimming: submit at 63 pp). Were: expert: reduced Appendix E via generator, supplement prose v2 → v3, round-9b wording (B.4 'in Q', Fig. 6 6/8 days, Fig. B.8/B.9, blue ×5); author: trimming (17 floats vs ≤ 10), push, deadline
 
 ## Addendum 89 order — state found by the Planner on 2026-11-10
 

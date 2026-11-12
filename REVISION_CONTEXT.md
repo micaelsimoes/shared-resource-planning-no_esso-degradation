@@ -67,7 +67,17 @@ section) — **stopped for review** before W184: the gate is passed under the ru
 E3/E2/cross needs a Step-7 hooks module + a harness router patch (validators accept only their own cells), which
 changes the harness pin of spec v1, and ruling 7's exact ρ check fails at ulp level on a correct run. No E3/E2 solve.
 
-## Current state (Addendum 90; W189 at Overleaf `46c9d77`, round 9b)
+## Current state (Addendum 91; W190a at Overleaf `3c379fa`, round 9c; W187 running)
+
+Submission inside the editorial window: upload 2026-11-19, numbers freeze 2026-11-15 12:00, final round 10 on 11-14.
+Round 9c pasted (`3c379fa`) and audited clean (W190a, `9a5a78b9`): identity = the expert's diffs, Appendix B is now
+generator output (`gen_appE.py --reduced`, bitwise, 218 lines), `verify_appE.py` 40 PASS, numbers 0 MISMATCH, letter
+v13 pointers 0 MISMATCH (W189's l. 285 B.8 → B.9 closed), blue on every changed line, numbering unchanged.
+Supplement v3 `e6f5ce6a` (README prose v2) verifies with 0 mismatches; its generated column descriptions still carry the
+`a87e195` table names (expert decision: v4 rewording). W187 (15-cell screen, spec v1.1) launched 13:29 UTC; P3 blind.
+Next: W187 report; round 10; W190 final audit and submission-set check. Planner report `P5_15_A91_STATUS_REPORT.md`.
+
+## Previous state (Addendum 90; W189 at Overleaf `46c9d77`, round 9b)
 
 Round 9b pasted (`46c9d77`): numbers 0 MISMATCH, letter v12 pointers 1 MISMATCH (l. 285 Fig. B.8 vs static B.9), reduced
 Appendix E hand-edited (not generator output; `verify_appE.py` not extended), trimming not met (17 main floats).

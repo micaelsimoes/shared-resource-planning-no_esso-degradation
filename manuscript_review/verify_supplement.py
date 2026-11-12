@@ -16,20 +16,22 @@ It reads the zip (never the generator's code) and checks:
      prints no budget mark: its over_budget column is a declared difference, listed.
   V3 the over_budget columns against W182d's committed over-budget evaluations (w182d_claims.json A8_1_budget).
   V4 gen_appE.py run in-process into a temporary directory: equal to the committed appendixE_evaluation_record.tex
-     and found exactly once, line-aligned, in main.tex at a87e195; verify_appE.py: 33 PASS, 0 FAIL.
+     and found exactly once, line-aligned, in main.tex at a87e195; verify_appE.py: 40 PASS, 0 FAIL (33 before 441722c9).
   V5 Appendices B-D against the CASE FILES, read here with an independent reader (openpyxl for the xlsx, json for the
      network files): every cell equal (numbers exactly, as floats), every source row present.
   V6 Appendices B-D against the printed tables of Appendices C-D in main.tex at a87e195, at the printed rounding.
   V7 the README: per file, its column table = the CSV header; tau. Version 1: README_PLACEHOLDER.md with its marked
      placeholders. Version >= 2 (Addendum 90 ruling 7 (iv)): README.md begins with the committed expert prose
-     manuscript_review/supplement/supplement_README_prose_v1.md byte for byte, its sha256 = the record's, no
+     manuscript_review/supplement/supplement_README_prose_v1.md (v2; prose _v2.md from v3 on, Addendum 91 ruling 3)
+     byte for byte, its sha256 and path = the record's, no
      README_PLACEHOLDER.md entry and no placeholder mark anywhere.
   V8 (version >= 2; Addendum 90 ruling 7 (iii)) the RES-capacity CSVs reproduce the paper's Table 2
      (tab:res_capacity_summary, main.tex at a87e195 and the round-9b review copy): per network and technology, the sum
      of capacity_2025/2030/2035 equals the printed aggregate; and the sentence beside it (2025 also in 2028, 2030 in
      2031 and 2034, 2035 in 2037) holds generator by generator.
   V9 (version >= 2) every entry against the predecessor zip named in the record (its sha256 checked): the entries that
-     differ must be exactly the declared ones (README, the two RES CSVs, SHA256SUMS.txt); each RES CSV restricted to
+     differ must be exactly the declared ones (v2: README, the two RES CSVs, SHA256SUMS.txt; v3: README.md and
+     SHA256SUMS.txt only, V9_DECLARED_BY_VERSION); each RES CSV restricted to
      the predecessor's columns equals the predecessor's bytes; every other entry byte-identical (D_ieee33_tn_connection
      .csv named explicitly).
   V5 checks every capacity column of the RES CSVs (v2: all seven case years) against the case files, and that the
@@ -107,10 +109,21 @@ TABLE2_SENTENCE = ('the 2025 capacities also apply in 2028, the 2030 capacities 
                    'capacities apply in 2037')
 ROUND9B_COPY = os.path.join(MR, 'main_a87e195_round9b.tex')
 README_PROSE_REL = os.path.join(MR, 'supplement', 'supplement_README_prose_v1.md')
+README_PROSE_V2_REL = os.path.join(MR, 'supplement', 'supplement_README_prose_v2.md')   # Addendum 91 ruling 3
 V9_DECLARED = {'changed': ['SHA256SUMS.txt', 'appendices_B_D/C_tn_res_generators.csv',
                            'appendices_B_D/D_adn_res_generators.csv'],
                'added': ['README.md'], 'removed': ['README_PLACEHOLDER.md']}
+# V9's declared difference per version (against its predecessor) and the RES columns it adds. v3 (W189a-v3, Addendum
+# 91 ruling 3): only the README prose changes, so README.md and SHA256SUMS.txt differ and the RES CSVs are identical.
+V9_DECLARED_BY_VERSION = {2: V9_DECLARED, 3: {'changed': ['README.md', 'SHA256SUMS.txt'], 'added': [], 'removed': []}}
+V9_RES_COLUMNS_ADDED_BY_VERSION = {2: ['capacity_2030_MW', 'capacity_2035_MW'], 3: []}
+VERIFY_APPE_PASS = 40   # verify_appE.py at 441722c9 (Addendum 91: + 7 reduced-mode checks); 33 at 80778c12
 STATE = {'cap_years': PRINTED_YEARS}
+
+
+def readme_prose_rel(version):
+    """The prose the generator prepends: v1 for supplement versions <= 2, v2 from version 3 on (Addendum 91 ruling 3)."""
+    return README_PROSE_REL if version <= 2 else README_PROSE_V2_REL
 
 
 def cap_years(version):
@@ -749,14 +762,15 @@ def v7_readme(members, version=1, rec=None):
         missing = [m for m in marks if m not in rd]
         out.update({'placeholders_missing': missing, 'holds': not probs and not missing})
         return out
-    with open(os.path.join(REPO, README_PROSE_REL), 'rb') as h:
+    prose_rel = readme_prose_rel(version)
+    with open(os.path.join(REPO, prose_rel), 'rb') as h:
         prose = h.read()
-    committed = subprocess.run(['git', 'show', f'HEAD:{README_PROSE_REL}'], capture_output=True, cwd=REPO).stdout
+    committed = subprocess.run(['git', 'show', f'HEAD:{prose_rel}'], capture_output=True, cwd=REPO).stdout
     rmeta = (rec or {}).get('readme', {})
     required = ['Q: gross operational cost, contracted interface settlement excluded.', repr(SC6.TAU),
                 f'## Generated section (supplement version {version})']
     missing = [m for m in required if m not in rd]
-    out.update({'prose_file': README_PROSE_REL, 'prose_sha256': _sha(prose), 'prose_equals_HEAD': prose == committed,
+    out.update({'prose_file': prose_rel, 'record_prose_file': rmeta.get('prose_prepended'), 'prose_sha256': _sha(prose), 'prose_equals_HEAD': prose == committed,
                 'record_prose_sha256': rmeta.get('prose_sha256'),
                 'record_prose_sha_equal': rmeta.get('prose_sha256') == _sha(prose),
                 'prose_prefix_equal': members[name][:len(prose)] == prose,
@@ -764,7 +778,7 @@ def v7_readme(members, version=1, rec=None):
                 'placeholder_marks_found': len(re.findall(r'PLACEHOLDER', rd)),
                 'generated_required_missing': missing})
     out['holds'] = (not probs and out['prose_equals_HEAD'] and out['record_prose_sha_equal'] and out['prose_prefix_equal']
-                    and out['placeholder_entry_absent'] and out['placeholder_marks_found'] == 0 and not missing)
+                    and out['record_prose_file'] == prose_rel and out['placeholder_entry_absent'] and out['placeholder_marks_found'] == 0 and not missing)
     return out
 
 
@@ -846,8 +860,10 @@ def load_predecessor(rec):
     return pred, zpath, zb, prec, {n: z.read(n) for n in z.namelist()}
 
 
-def v9_predecessor(members, PRED):
+def v9_predecessor(members, PRED, version=2):
     pred, zpath, zb, prec, old = PRED
+    declared = V9_DECLARED_BY_VERSION[version]
+    res_added = V9_RES_COLUMNS_ADDED_BY_VERSION[version]
     names = sorted(set(members) | set(old))
     same = [n for n in names if n in members and n in old and members[n] == old[n]]
     changed = [n for n in names if n in members and n in old and members[n] != old[n]]
@@ -870,16 +886,16 @@ def v9_predecessor(members, PRED):
     out = {'predecessor': pred, 'predecessor_zip_path': os.path.relpath(zpath, REPO), 'predecessor_zip_sha256': _sha(zb),
            'predecessor_sha_equals_record': _sha(zb) == pred['zip_sha256'] == prec['zip']['sha256'],
            'identical': same, 'changed': changed, 'added': added, 'removed': removed,
-           'declared': V9_DECLARED, 'res_projection': proj,
+           'declared': declared, 'res_columns_added_expected': res_added, 'res_projection': proj,
            'entry_sha256': {n: {'predecessor': _sha(old[n]) if n in old else None,
                                 'this': _sha(members[n]) if n in members else None} for n in names},
            'tn_connection_identical': tn in same,
            'tn_connection_sha256': _sha(members[tn]) if tn in members else None}
-    out['holds'] = (out['predecessor_sha_equals_record'] and changed == V9_DECLARED['changed']
-                    and added == V9_DECLARED['added'] and removed == V9_DECLARED['removed']
+    out['holds'] = (out['predecessor_sha_equals_record'] and changed == declared['changed']
+                    and added == declared['added'] and removed == declared['removed']
                     and out['tn_connection_identical']
                     and all(p['predecessor_columns_retained_bytewise'] and p['column_order_kept']
-                            and p['columns_added'] == ['capacity_2030_MW', 'capacity_2035_MW']
+                            and p['columns_added'] == res_added
                             and not p['columns_removed'] for p in proj.values()) and len(proj) == 2)
     return out
 
@@ -1016,14 +1032,14 @@ def controls(E, BD, FZ, main_lines, w182d, sdir, members=None, version=1, rec=No
         m2['appendices_B_D/D_ieee33_tn_connection.csv'] = m2['appendices_B_D/D_ieee33_tn_connection.csv'].replace(
             b'7,case33_2,1,1,100,-100,100,-100,', b'7,case33_2,1,1,250,-250,250,-250,')
     mem_ctl('C20', 'D_ieee33_tn_connection.csv: node 7 set to the submitted +-250', tn250,
-            lambda m2: [v9_predecessor(m2, PRED)['changed'], v9_predecessor(m2, PRED)['tn_connection_identical']],
-            [sorted(V9_DECLARED['changed'] + ['appendices_B_D/D_ieee33_tn_connection.csv']), False])
+            lambda m2: [v9_predecessor(m2, PRED, version)['changed'], v9_predecessor(m2, PRED, version)['tn_connection_identical']],
+            [sorted(V9_DECLARED_BY_VERSION[version]['changed'] + ['appendices_B_D/D_ieee33_tn_connection.csv']), False])
 
     def oldcol(m2):
         n = 'appendices_B_D/C_tn_res_generators.csv'
         m2[n] = m2[n].replace(b'\n5,6,Wind,40,40,', b'\n5,6,Wind,40,41,')
     mem_ctl('C21', 'C_tn_res_generators.csv: a predecessor column (gen 5 capacity_2028_MW) changed', oldcol,
-            lambda m2: {k: v['predecessor_columns_retained_bytewise'] for k, v in v9_predecessor(m2, PRED)['res_projection'].items()},
+            lambda m2: {k: v['predecessor_columns_retained_bytewise'] for k, v in v9_predecessor(m2, PRED, version)['res_projection'].items()},
             {'appendices_B_D/C_tn_res_generators.csv': False, 'appendices_B_D/D_adn_res_generators.csv': True})
     return out
 
@@ -1097,7 +1113,7 @@ def main():
           'occurrences_in_main': len(occ), 'line_aligned': bool(occ) and occ[0]['starts_at_line_start'] and occ[0]['ends_at_line_end'],
           'main_lines': [occ[0]['start_line'], occ[0]['end_line']] if occ else None,
           'verify_appE': {'pass': ver['n_pass'], 'fail': ver['n_fail'], 'exception': ver['exception']}}
-    _ok(v4['equals_committed'] and len(occ) == 1 and v4['line_aligned'] and ver['n_pass'] == 33 and ver['n_fail'] == 0
+    _ok(v4['equals_committed'] and len(occ) == 1 and v4['line_aligned'] and ver['n_pass'] == VERIFY_APPE_PASS and ver['n_fail'] == 0
         and not ver['exception'], f'V4 gen_appE.py output = committed appendix, once in main.tex l. {v4["main_lines"]}; '
                                   f'verify_appE.py {ver["n_pass"]} PASS {ver["n_fail"]} FAIL')
     # V5 / V6
@@ -1114,7 +1130,7 @@ def main():
                          f'headers; placeholders missing {v7["placeholders_missing"]}')
     else:
         _ok(v7['holds'], f'V7 README.md: {v7.get("files_with_column_table")} column tables = {v7.get("csv_files")} CSV '
-                         f'headers, mismatches {v7.get("header_mismatches")}; prose {README_PROSE_REL} sha256 '
+                         f'headers, mismatches {v7.get("header_mismatches")}; prose {v7.get("prose_file")} sha256 '
                          f'{str(v7.get("prose_sha256"))[:8]} = HEAD {v7.get("prose_equals_HEAD")} = record '
                          f'{v7.get("record_prose_sha_equal")}, prepended byte for byte {v7.get("prose_prefix_equal")}; '
                          f'README_PLACEHOLDER.md absent {v7.get("placeholder_entry_absent")}; PLACEHOLDER marks '
@@ -1129,7 +1145,7 @@ def main():
                          f'{list(v8["sources"])}, {len(v8["differences"])} differ {v8["differences"][:3]}; multi-scenario '
                          f'sentence violations {v8["multi_scenario_sentence_violations"][:3]}')
         PRED = load_predecessor(rec)
-        v9 = v9_predecessor(members, PRED)
+        v9 = v9_predecessor(members, PRED, version)
         _ok(v9['holds'], f'V9 vs predecessor {v9["predecessor"]["zip"]} (sha {v9["predecessor_zip_sha256"][:8]} = record '
                          f'{v9["predecessor_sha_equals_record"]}): {len(v9["identical"])} identical, changed {v9["changed"]}, '
                          f'added {v9["added"]}, removed {v9["removed"]}; RES CSVs keep the predecessor columns bytewise '
