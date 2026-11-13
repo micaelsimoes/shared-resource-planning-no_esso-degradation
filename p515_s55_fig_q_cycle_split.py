@@ -11,9 +11,10 @@ must equal the committed fig4_q_versus_cycle.pdf (45755c82..., the file in the O
 therefore drawn from the data of the current figure, not from a re-derivation.
 
 PANELS. Each panel is drawn by the same calls as in W165.draw_fig4 (same limits, labels, tick format, colours,
-markers, turning points, refusal ticks, shading, panel letters), each in its own figure at its size in the composite
-(95 mm wide; (a) 112 mm tall, (b) and (c) 56 mm), so (b) over (c) beside (a) restores the composite layout. The only
-changes forced by the separation, recorded in the build record:
+markers, turning points, refusal ticks, shading, panel letters), each in its own figure. The changes, recorded in
+the build record:
+  all  one size, PANEL_W_MM x PANEL_H_MM (95 x 70 mm; v2 kept the composite sizes 95 x 112 / 56 / 56 mm) and y tick
+       labels at two decimals (the composite's formatter prints '5', '2.5'), both at the author's request (2026-11-13);
   (b) shows its own x tick labels and the x label 'ADMM cycle' (in the composite they are hidden: x shared with (c));
       its x limits are set explicitly to (k0 - 1, cap + 1), the limits it inherited from (c);
   (c) none.
@@ -44,17 +45,22 @@ OKABE_ITO = W165.OKABE_ITO
 MM = W165.MM
 
 SCRIPT_REL = os.path.basename(__file__)
-OUT_DIR_DEFAULT = os.path.join('Claude outputs', 'fig_q_cycle_v2')
+OUT_DIR_DEFAULT = os.path.join('Claude outputs', 'fig_q_cycle_v3')
 FIG4_COMMITTED = os.path.join(W165.OUT_DIR, 'fig4_q_versus_cycle.pdf')
 FIG4_SHA = '45755c82927e04c75bb4d7dcbbf816347632b83eadaea42de631d20d5a3a13cf'
 CLONE_FIG4 = os.path.join('manuscript', '6a67305f25e8348fb71380c3', 'fig4_q_versus_cycle.pdf')
 PANEL_W_MM = 95.0
-PANEL_H_MM = {'a': 112.0, 'b': 56.0, 'c': 56.0}
+PANEL_H_MM = {'a': 70.0, 'b': 70.0, 'c': 70.0}   # one size for all three (author, 2026-11-13)
 PDF_METADATA = {'Creator': SCRIPT_REL, 'Producer': 'Matplotlib pdf backend', 'CreationDate': None, 'ModDate': None}
 
 
 def _sha_bytes(b):
     return hashlib.sha256(b).hexdigest()
+
+
+def yfmt2(ax):
+    """y tick labels at two decimals, thousands separator, typographic minus (author, 2026-11-13)."""
+    ax.yaxis.set_major_formatter(W165.matplotlib.ticker.FuncFormatter(lambda v, _p=None: f'{v:,.2f}'.replace('-', '−')))
 
 
 def _fig(panel):
@@ -87,7 +93,7 @@ def draw_a(D):
     axa.set_xlim(a['k0'] - 1, a['kstar'] + 1)
     axa.set_xlabel('ADMM cycle')
     axa.set_ylabel('Q − Q(k*) (k€)')
-    W165.kfmt(axa, 'y')
+    yfmt2(axa)
     axa.legend(loc='upper right', bbox_to_anchor=(1.0, 0.9), handlelength=1.0, borderaxespad=0.2)
     W165.panel_label(axa, '(a)')
     return fig
@@ -112,7 +118,7 @@ def draw_b(D):
              transform=blended_transform_factory(axb.transData, axb.transAxes), fontsize=6.0,
              color=OKABE_ITO['grey'])
     axb.set_ylabel('Q − Q(cap) (k€)')
-    W165.kfmt(axb, 'y')
+    yfmt2(axb)
     # separation: the composite hides these (x shared with (c)); a standalone panel needs its own x axis
     axb.set_xlim(b['k0'] - 1, b['cap'] + 1)
     axb.set_xlabel('ADMM cycle')
@@ -142,7 +148,7 @@ def draw_c(D):
     axc.set_xlim(b['k0'] - 1, b['cap'] + 1)
     axc.set_xlabel('ADMM cycle')
     axc.set_ylabel('$t_{sum}$ (k€)')
-    W165.kfmt(axc, 'y')
+    yfmt2(axc)
     axc.legend(loc='lower right', bbox_to_anchor=(1.0, 0.07), handlelength=0.8, borderaxespad=0.2)
     W165.panel_label(axc, '(c)')
     return fig
@@ -239,6 +245,8 @@ def main():
         'composite': {'path': FIG4_COMMITTED, 'sha256': FIG4_SHA, 'clone_copy': CLONE_FIG4,
                       'rerender_sha256': _sha_bytes(comp_pdf)},
         'panel_size_mm': {p: [PANEL_W_MM, PANEL_H_MM[p]] for p in 'abc'},
+        'changes_all_panels': ['one size for all three panels (author, 2026-11-13)',
+                               'y tick labels at two decimals (author, 2026-11-13)'],
         'separation_changes': {'a': [], 'b': ['x tick labels shown and x label "ADMM cycle" (hidden in the composite, '
                                                'x shared with (c))', 'x limits set to (k0 - 1, cap + 1) explicitly '
                                                '(inherited from (c) in the composite)'], 'c': []},
@@ -276,7 +284,8 @@ therefore the current figure's.
 | `fig_q_cycle_b.pdf` | `{panels['b']['sha256'][:16]}` | {PANEL_W_MM:g} × {PANEL_H_MM['b']:g} | (b) objective of the reference unit at 1.5×, Q − Q(cap) |
 | `fig_q_cycle_c.pdf` | `{panels['c']['sha256'][:16]}` | {PANEL_W_MM:g} × {PANEL_H_MM['c']:g} | (c) priced interface-consensus gap t_sum of the same evaluation, with ±τ/2 |
 
-Each panel keeps its size in the composite, so (b) stacked over (c), beside (a), restores the original layout.
+All three panels have one size (the author's request, 2026-11-13). The predecessor `fig_q_cycle_v2/` kept the
+composite sizes (95 × 112, 95 × 56, 95 × 56 mm) and the composite's tick format; it is kept, not overwritten.
 
 ## The record each panel reads
 
@@ -301,7 +310,9 @@ Q(k*) = {a['Q_ref']:,.4f} €; (b) is relative to Q(cap) = {b['q'][b['cap']]:,.4
 
 ## What differs from the composite
 
-- **(a), (c):** nothing; the drawing calls are the composite's.
+- **All three (author, 2026-11-13):** one size, {PANEL_W_MM:g} × {PANEL_H_MM['a']:g} mm; y tick labels at two
+  decimals (the composite prints 5, 2.5, …).
+- **(a), (c):** nothing else; the drawing calls are the composite's.
 - **(b):** shows its own x tick labels and the x label "ADMM cycle". In the composite these are hidden because (b)
   shares its x axis with (c). Its x limits are set to ({b['k0']} − 1, {b['cap']} + 1), the limits it inherited from (c).
 
