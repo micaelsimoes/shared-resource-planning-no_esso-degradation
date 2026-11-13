@@ -6,6 +6,7 @@
 
 - [x] W187 held (P3) — ruled by Addendum 92: printed form = search criterion (8 worse / 6 within; 2.7–100.6 k€); salvage sensitivity and the 59.9 k€ bar not printed
 - [x] **W190b** — `05d86627` / `6b4c6891` at Overleaf **`5f4d3bd`**: (i)–(vii) all held (W187 numbers recomputed 14/14; numbers 0 MISMATCH; letter 174 MATCH / 8 SUBMITTED / 0 MISMATCH; blue OK; Appendix B 218/218 bitwise, verify_appE 40; structure 0/0/0, 102 labels; 17 floats, 41 eqs, 6,768 words (+56)). **10 findings for the author's next edit** (main 1374 scope 'no shared storage investment' + dropped 'search resolution', 1375 ties, 1509 pointer; letter 263/264 wording + curly apostrophes, l. 60 §4.7 future-work pointer; cover letter l. 26 vs letter l. 58–59 'met in part' lists). PRESENTATION_PASS_PLAN_2026-11-12.md not in the repo
+- [x] **Fig. res_q_cycle split** (presentation pass; zero solves) — script `6324b99f`, outputs `Claude outputs/fig_q_cycle_v2/`: `fig_q_cycle_a.pdf` c5ffaccb, `_b` 6b2ba416, `_c` 0245a487 + NOTE.md (records per panel), build record, manifest; composite re-rendered from the same data = committed fig4 45755c82 bitwise; 41 W165 checks; only change: (b) has its own x axis
 - [ ] Author presentation pass + expert pass; **prose freeze 11-16 12:00** (numbers freeze 11-15 12:00)
 - [ ] **W190** final audit at the final HEAD + submission-set check → close TASKS.md; upload 11-19 (supplement v5 `d2fa2172`)
 
