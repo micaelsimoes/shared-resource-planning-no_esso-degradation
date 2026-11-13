@@ -11,10 +11,11 @@ must equal the committed fig4_q_versus_cycle.pdf (45755c82..., the file in the O
 therefore drawn from the data of the current figure, not from a re-derivation.
 
 PANELS. Each panel is drawn by the same calls as in W165.draw_fig4 (same limits, labels, tick format, colours,
-markers, turning points, refusal ticks, shading, panel letters), each in its own figure. The changes, recorded in
+markers, turning points, refusal ticks, shading), each in its own figure. The changes, recorded in
 the build record:
   all  one size, PANEL_W_MM x PANEL_H_MM (95 x 70 mm; v2 kept the composite sizes 95 x 112 / 56 / 56 mm) and y tick
        labels at two decimals (the composite's formatter prints '5', '2.5'), both at the author's request (2026-11-13);
+       no panel letters (the composite prints (a)-(c) top left; the letters come from LaTeX), author, 2026-11-13 (v4);
   (b) shows its own x tick labels and the x label 'ADMM cycle' (in the composite they are hidden: x shared with (c));
       its x limits are set explicitly to (k0 - 1, cap + 1), the limits it inherited from (c);
   (c) none.
@@ -45,7 +46,7 @@ OKABE_ITO = W165.OKABE_ITO
 MM = W165.MM
 
 SCRIPT_REL = os.path.basename(__file__)
-OUT_DIR_DEFAULT = os.path.join('Claude outputs', 'fig_q_cycle_v3')
+OUT_DIR_DEFAULT = os.path.join('Claude outputs', 'fig_q_cycle_v4')
 FIG4_COMMITTED = os.path.join(W165.OUT_DIR, 'fig4_q_versus_cycle.pdf')
 FIG4_SHA = '45755c82927e04c75bb4d7dcbbf816347632b83eadaea42de631d20d5a3a13cf'
 CLONE_FIG4 = os.path.join('manuscript', '6a67305f25e8348fb71380c3', 'fig4_q_versus_cycle.pdf')
@@ -95,7 +96,7 @@ def draw_a(D):
     axa.set_ylabel('Q − Q(k*) (k€)')
     yfmt2(axa)
     axa.legend(loc='upper right', bbox_to_anchor=(1.0, 0.9), handlelength=1.0, borderaxespad=0.2)
-    W165.panel_label(axa, '(a)')
+    # no panel letter (author, 2026-11-13): the composite's W165.panel_label(axa, '(a)') is not drawn
     return fig
 
 
@@ -122,7 +123,7 @@ def draw_b(D):
     # separation: the composite hides these (x shared with (c)); a standalone panel needs its own x axis
     axb.set_xlim(b['k0'] - 1, b['cap'] + 1)
     axb.set_xlabel('ADMM cycle')
-    W165.panel_label(axb, '(b)')
+    # no panel letter (author, 2026-11-13): the composite's W165.panel_label(axb, '(b)') is not drawn
     return fig
 
 
@@ -150,7 +151,7 @@ def draw_c(D):
     axc.set_ylabel('$t_{sum}$ (k€)')
     yfmt2(axc)
     axc.legend(loc='lower right', bbox_to_anchor=(1.0, 0.07), handlelength=0.8, borderaxespad=0.2)
-    W165.panel_label(axc, '(c)')
+    # no panel letter (author, 2026-11-13): the composite's W165.panel_label(axc, '(c)') is not drawn
     return fig
 
 
@@ -246,7 +247,8 @@ def main():
                       'rerender_sha256': _sha_bytes(comp_pdf)},
         'panel_size_mm': {p: [PANEL_W_MM, PANEL_H_MM[p]] for p in 'abc'},
         'changes_all_panels': ['one size for all three panels (author, 2026-11-13)',
-                               'y tick labels at two decimals (author, 2026-11-13)'],
+                               'y tick labels at two decimals (author, 2026-11-13)',
+                               'no panel letters; labelled in LaTeX (author, 2026-11-13)'],
         'separation_changes': {'a': [], 'b': ['x tick labels shown and x label "ADMM cycle" (hidden in the composite, '
                                                'x shared with (c))', 'x limits set to (k0 - 1, cap + 1) explicitly '
                                                '(inherited from (c) in the composite)'], 'c': []},
@@ -284,8 +286,9 @@ therefore the current figure's.
 | `fig_q_cycle_b.pdf` | `{panels['b']['sha256'][:16]}` | {PANEL_W_MM:g} × {PANEL_H_MM['b']:g} | (b) objective of the reference unit at 1.5×, Q − Q(cap) |
 | `fig_q_cycle_c.pdf` | `{panels['c']['sha256'][:16]}` | {PANEL_W_MM:g} × {PANEL_H_MM['c']:g} | (c) priced interface-consensus gap t_sum of the same evaluation, with ±τ/2 |
 
-All three panels have one size (the author's request, 2026-11-13). The predecessor `fig_q_cycle_v2/` kept the
-composite sizes (95 × 112, 95 × 56, 95 × 56 mm) and the composite's tick format; it is kept, not overwritten.
+All three panels have one size and carry no panel letter; the letters come from LaTeX (the author's requests,
+2026-11-13). The predecessors are kept, not overwritten: `fig_q_cycle_v2/` (composite sizes 95 × 112, 95 × 56,
+95 × 56 mm; the composite's tick format; letters) and `fig_q_cycle_v3/` (one size, two-decimal ticks; letters).
 
 ## The record each panel reads
 
@@ -321,7 +324,7 @@ As in the current figure:
   belongs to an earlier run and was never a point of this trajectory, so W165 does not draw it.
 - **Ticks.** The refusal ticks are Okabe–Ito vermillion (`#D55E00`), which the caption calls orange. The legend reads
   "gap-clause refusals".
-- **Panel letters** (a)–(c) are kept on each file.
+- **Panel letters:** none on the files (the composite prints (a)–(c) top left); LaTeX labels the panels.
 
 Zero solves: the W165 and W157 guards were verified at 0, and the pickle load counters at 0.
 """
