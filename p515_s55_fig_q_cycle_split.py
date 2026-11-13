@@ -18,7 +18,10 @@ the build record:
        no panel letters (the composite prints (a)-(c) top left; the letters come from LaTeX), author, 2026-11-13 (v4);
   (b) shows its own x tick labels and the x label 'ADMM cycle' (in the composite they are hidden: x shared with (c));
       its x limits are set explicitly to (k0 - 1, cap + 1), the limits it inherited from (c);
-  (c) none.
+  (c) v5 (Expert, decision 1 (a), 2026-11-13): no gap-refusal ticks and no legend (v2-v4 drew 59 vermillion ticks with
+      the legend 'gap-clause refusals').
+  v5: panel (a) is adopted as is -- the v4 file (sha256 A_ADOPTED_SHA) is copied byte for byte after asserting that a
+      fresh render of (a) reproduces it bitwise; (b) and (c) are re-exported.
 
 OUTPUTS (OUT_DIR, which must not exist or be empty): fig_q_cycle_a.pdf, fig_q_cycle_b.pdf, fig_q_cycle_c.pdf (each
 rendered twice, sha256 asserted equal; TrueType fonts, no PDF dates), NOTE.md (the record each panel reads),
@@ -46,7 +49,10 @@ OKABE_ITO = W165.OKABE_ITO
 MM = W165.MM
 
 SCRIPT_REL = os.path.basename(__file__)
-OUT_DIR_DEFAULT = os.path.join('Claude outputs', 'fig_q_cycle_v4')
+OUT_DIR_DEFAULT = os.path.join('Claude outputs', 'fig_q_cycle_v5')
+A_ADOPTED_REL = os.path.join('Claude outputs', 'fig_q_cycle_v4', 'fig_q_cycle_a.pdf')   # Expert: adopted as is (v5)
+A_ADOPTED_SHA = '6bfb74a1abff991db4064935fd8b198d88b3ba27c13e9ca67ffe323e760a86a3'
+V4_B_SHA = 'f5c8cab9ff86cbb73ae1fa64df27d1160eef3b340980ec6cd17f0a7615edf551'
 FIG4_COMMITTED = os.path.join(W165.OUT_DIR, 'fig4_q_versus_cycle.pdf')
 FIG4_SHA = '45755c82927e04c75bb4d7dcbbf816347632b83eadaea42de631d20d5a3a13cf'
 CLONE_FIG4 = os.path.join('manuscript', '6a67305f25e8348fb71380c3', 'fig4_q_versus_cycle.pdf')
@@ -140,9 +146,7 @@ def draw_c(D):
     axc.axhline(0.0, color=OKABE_ITO['grey'], lw=0.5)
     axc.plot(kb, tc, '-', color=OKABE_ITO['black'], lw=0.8, zorder=3)
     axc.plot(kb, tc, '.', color=OKABE_ITO['black'], ms=2.0, zorder=3)
-    tr = blended_transform_factory(axc.transData, axc.transAxes)
-    axc.plot(b['refusals'], [0.04] * len(b['refusals']), '|', color=OKABE_ITO['vermillion'], ms=4.0, mew=0.7,
-             transform=tr, zorder=4, label='gap-clause refusals')
+    # v5 (Expert, 2026-11-13): the gap-refusal ticks and their legend entry are not drawn
     axc.text(b['cap'] - 0.6, gb, '±τ/2', ha='right', va='bottom', fontsize=6.0, color=OKABE_ITO['green'])
     axc.axvline(b['k0'], color=OKABE_ITO['green'], lw=0.7)
     axc.axvline(b['cap'], color=OKABE_ITO['black'], lw=0.7)
@@ -150,7 +154,6 @@ def draw_c(D):
     axc.set_xlabel('ADMM cycle')
     axc.set_ylabel('$t_{sum}$ (k€)')
     yfmt2(axc)
-    axc.legend(loc='lower right', bbox_to_anchor=(1.0, 0.07), handlelength=0.8, borderaxespad=0.2)
     # no panel letter (author, 2026-11-13): the composite's W165.panel_label(axc, '(c)') is not drawn
     return fig
 
@@ -185,6 +188,8 @@ def main():
             pre.append(f'{rel} not committed clean')
     if W165._sha(FIG4_COMMITTED) != FIG4_SHA:
         pre.append(f'{FIG4_COMMITTED} sha256 != {FIG4_SHA[:8]}')
+    if not W165.L132._committed_clean(A_ADOPTED_REL) or W165._sha(A_ADOPTED_REL) != A_ADOPTED_SHA:
+        pre.append(f'{A_ADOPTED_REL} not committed clean or sha256 != {A_ADOPTED_SHA[:8]}')
     clone_sha = W165._sha(CLONE_FIG4) if os.path.exists(os.path.join(REPO, CLONE_FIG4)) else None
     if pre:
         W165._log(f'[split PRECONDITION FAILED] {pre}')
@@ -222,6 +227,9 @@ def main():
               and not fr['has_creation_date'] and not fr['has_mod_date'])
         checks[f'{p}.deterministic_truetype_no_dates'] = (ok, fr)
         panels[p] = {'pdf': pdf1, 'png': png1, 'sha256': _sha_bytes(pdf1), 'fonts': fr}
+    checks['a.render_equals_adopted_v4'] = (panels['a']['sha256'] == A_ADOPTED_SHA, panels['a']['sha256'])
+    with open(os.path.join(REPO, A_ADOPTED_REL), 'rb') as h:
+        panels['a']['pdf'] = h.read()     # the adopted file itself, copied byte for byte
     guards, pk, gok = W165.guards_state()
     checks['guards_0_pickle_0'] = (gok, {'guards': guards, 'pickle': pk})
     bad = [k for k, (ok, _d) in checks.items() if not ok]
@@ -249,6 +257,10 @@ def main():
         'changes_all_panels': ['one size for all three panels (author, 2026-11-13)',
                                'y tick labels at two decimals (author, 2026-11-13)',
                                'no panel letters; labelled in LaTeX (author, 2026-11-13)'],
+        'v5': {'a': f'adopted as is: copy of {A_ADOPTED_REL} (sha256 {A_ADOPTED_SHA}); a fresh render reproduces it',
+               'b': 'unchanged in drawing from v4 (no legend, no ticks)',
+               'c': 'gap-refusal ticks and their legend entry removed (Expert, 2026-11-13)',
+               'legend_text_remaining': {'a': ['turning points'], 'b': [], 'c': []}},
         'separation_changes': {'a': [], 'b': ['x tick labels shown and x label "ADMM cycle" (hidden in the composite, '
                                                'x shared with (c))', 'x limits set to (k0 - 1, cap + 1) explicitly '
                                                '(inherited from (c) in the composite)'], 'c': []},
@@ -262,7 +274,7 @@ def main():
                         'band_window': b['band_window'], 'turning_points': [t for t, _k, _q in b['T']],
                         'Q_ref_cap': b['q'][b['cap']]},
                   'c': {'cell': b['cell'], 'cycles': [b['k0'], b['cap']], 'gap_bound': b['gap_bound'],
-                        'n_gap_refusal_ticks': len(b['refusals']), 'refusal_cycles': b['refusals']}},
+                        'n_gap_refusal_ticks': 0}},
         'checks': {k: {'ok': ok, 'detail': d} for k, (ok, d) in checks.items()},
     }
     build_rel = os.path.join(out_dir, 'build_record.json')
@@ -272,23 +284,27 @@ def main():
 
     def r(x):
         return f"`{x['path']}` (sha256 `{x['sha256'][:8]}`)"
-    note = f"""# Figure fig:res_q_cycle as three panels (zero solves)
+    note = f"""# Figure fig:res_q_cycle as three subfigure files, v5 (zero solves)
 
-Re-export of `fig4_q_versus_cycle.pdf` (sha256 `{FIG4_SHA[:8]}`, the file in the Overleaf clone) as three PDFs.
-Generated by `{SCRIPT_REL}`, which calls the W165 figure script's own data function (`data_fig4`, all
-{len(fd.d['checks'])} of its checks held) on the frozen tables `{os.path.basename(W165.FZ_REL)}`. Before drawing the
-panels it re-rendered the composite from the same data and matched the committed PDF bitwise. Every plotted value is
-therefore the current figure's.
+The manuscript uses these three files as subfigures (Expert, decision 1 option (a), 2026-11-13). Panel (a) is
+adopted as is from `fig_q_cycle_v4/`; (b) and (c) are re-exported. All three are {PANEL_W_MM:g} × {PANEL_H_MM['a']:g} mm
+with two-decimal y ticks and no panel letters (LaTeX labels them).
 
-| file | sha256 | size (mm) | panel |
-|---|---|---|---|
-| `fig_q_cycle_a.pdf` | `{panels['a']['sha256'][:16]}` | {PANEL_W_MM:g} × {PANEL_H_MM['a']:g} | (a) objective of the plan without storage (x = 0), Q − Q(k*) |
-| `fig_q_cycle_b.pdf` | `{panels['b']['sha256'][:16]}` | {PANEL_W_MM:g} × {PANEL_H_MM['b']:g} | (b) objective of the reference unit at 1.5×, Q − Q(cap) |
-| `fig_q_cycle_c.pdf` | `{panels['c']['sha256'][:16]}` | {PANEL_W_MM:g} × {PANEL_H_MM['c']:g} | (c) priced interface-consensus gap t_sum of the same evaluation, with ±τ/2 |
+## For W190: the three subfigure files
 
-All three panels have one size and carry no panel letter; the letters come from LaTeX (the author's requests,
-2026-11-13). The predecessors are kept, not overwritten: `fig_q_cycle_v2/` (composite sizes 95 × 112, 95 × 56,
-95 × 56 mm; the composite's tick format; letters) and `fig_q_cycle_v3/` (one size, two-decimal ticks; letters).
+| file | sha256 | panel |
+|---|---|---|
+| `fig_q_cycle_a.pdf` | `{A_ADOPTED_SHA}` | (a) objective of the plan without storage (x = 0), Q − Q(k*) |
+| `fig_q_cycle_b.pdf` | `{panels['b']['sha256']}` | (b) objective of the reference unit at 1.5×, Q − Q(cap) |
+| `fig_q_cycle_c.pdf` | `{panels['c']['sha256']}` | (c) priced interface-consensus gap of the same evaluation, with ±τ/2 |
+
+- **(a)** is a byte copy of `{A_ADOPTED_REL}`. A fresh render from the records reproduced it bitwise.
+- **(b)** draws exactly as in v4, so its bytes equal v4's `fig_q_cycle_b.pdf`
+  ({'identical' if panels['b']['sha256'] == V4_B_SHA else 'NOT identical'}). It has no legend and no ticks, so the v5
+  changes do not reach it.
+- **(c)** has no gap-refusal ticks and no legend. v2–v4 drew 59 vermillion ticks labelled "gap-clause refusals".
+
+**Legend text.** After v5 the only legend is (a)'s "turning points", in plain words; (b) and (c) have none.
 
 ## The record each panel reads
 
@@ -297,36 +313,41 @@ All three panels have one size and carry no panel letter; the letters come from 
   - k0 = {a['k0']}, N = {a['N']}, k* = {a['kstar']}, the window {a['window'][0]}–{a['window'][1]}, its band and the
     turning points from {r(rec['a']['settling_decision'])};
   - range/τ from the frozen tables (`tables.cells.{a['cell']}.range_over_tau`).
+
   Cross-checked against {r(rec['a']['w101_summary'])} and {r(rec['a']['continuation_record'])}.
 - **(b)** cell `{b['cell']}` (T2, chosen by the W165 panel rule), eval dir `{rec['b']['eval_dir']}`:
   - Q per cycle = `gross` from {r(rec['b']['resettle_cycle_record'])};
   - k0 = {b['k0']}, cap = {b['cap']}, the shaded last {b['band_window'][1] - b['band_window'][0] + 1} cycles
     ({b['band_window'][0]}–{b['band_window'][1]}) and the turning points from {r(rec['b']['resettle_decision'])}.
+
   Cross-checked against {r(rec['b']['per_cycle_record'])}.
 - **(c)** the same evaluation as (b):
-  - t_sum per cycle from {r(rec['b']['resettle_cycle_record'])};
-  - the gap bound τ/2 = {b['gap_bound']:,.3f} € and the {len(b['refusals'])} gap-clause refusal cycles (the ticks) from
-    {r(rec['b']['resettle_decision'])}.
+  - the gap per cycle (`t_sum`) from {r(rec['b']['resettle_cycle_record'])};
+  - the gap bound τ/2 = {b['gap_bound']:,.3f} € from {r(rec['b']['resettle_decision'])}.
 
-Objective convention: Q = `gross_operational_cost`, contracted interface settlement excluded. (a) is relative to
-Q(k*) = {a['Q_ref']:,.4f} €; (b) is relative to Q(cap) = {b['q'][b['cap']]:,.4f} €.
+**Source of the data.** All panels come from the W165 figure script's data function, `data_fig4`; all
+{len(fd.d['checks'])} of its checks held, on the frozen tables `{os.path.basename(W165.FZ_REL)}`. Before any panel was
+drawn, the composite re-rendered from the same data was byte-identical to the committed `fig4_q_versus_cycle.pdf`
+(sha256 `{FIG4_SHA[:8]}`).
 
-## What differs from the composite
+**Objective convention.** Q = `gross_operational_cost`, contracted interface settlement excluded.
+- (a) is relative to Q(k*) = {a['Q_ref']:,.4f} €.
+- (b) is relative to Q(cap) = {b['q'][b['cap']]:,.4f} €.
 
-- **All three (author, 2026-11-13):** one size, {PANEL_W_MM:g} × {PANEL_H_MM['a']:g} mm; y tick labels at two
-  decimals (the composite prints 5, 2.5, …).
-- **(a), (c):** nothing else; the drawing calls are the composite's.
-- **(b):** shows its own x tick labels and the x label "ADMM cycle". In the composite these are hidden because (b)
-  shares its x axis with (c). Its x limits are set to ({b['k0']} − 1, {b['cap']} + 1), the limits it inherited from (c).
+## What differs from the composite `fig4_q_versus_cycle.pdf`
 
-As in the current figure:
-- **Markers.** (b) and (c) carry k0 and the cap, not N or k*: the evaluation is uncertified, so it has no k*. Its N
-  belongs to an earlier run and was never a point of this trajectory, so W165 does not draw it.
-- **Ticks.** The refusal ticks are Okabe–Ito vermillion (`#D55E00`), which the caption calls orange. The legend reads
-  "gap-clause refusals".
-- **Panel letters:** none on the files (the composite prints (a)–(c) top left); LaTeX labels the panels.
+- **All three:** one size; y tick labels at two decimals; no panel letters (author, 2026-11-13).
+- **(b):** its own x tick labels and the x label "ADMM cycle". In the composite these were hidden because (b) shared
+  its x axis with (c). Its x limits are ({b['k0']} − 1, {b['cap']} + 1), as before.
+- **(c):** no gap-refusal ticks and no legend (Expert, 2026-11-13).
+- **Unchanged:**
+  - axes, limits and labels;
+  - the markers: $k_0$, N and k* in (a); $k_0$ and the cap in (b) and (c);
+  - turning points, shading, the band lines and the ±τ/2 band.
 
-Zero solves: the W165 and W157 guards were verified at 0, and the pickle load counters at 0.
+**Earlier versions, kept:** `fig_q_cycle_v2/`, `v3/` and `v4/`.
+
+**Zero solves:** the W165 and W157 guards were verified at 0, and the pickle load counters at 0.
 """
     note_rel = os.path.join(out_dir, 'NOTE.md')
     with open(os.path.join(REPO, note_rel), 'x', encoding='utf-8') as h:
