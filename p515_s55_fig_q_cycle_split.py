@@ -20,6 +20,9 @@ the build record:
       its x limits are set explicitly to (k0 - 1, cap + 1), the limits it inherited from (c);
   (c) v5 (Expert, decision 1 (a), 2026-11-13): no gap-refusal ticks and no legend (v2-v4 drew 59 vermillion ticks with
       the legend 'gap-clause refusals').
+  v6 (author, 2026-11-13): (b) and (c) share one axes rectangle (the same figure fractions in two 95 x 70 mm files) and
+      the same x ticks, so the x axes coincide when stacked; the x label 'ADMM cycle' on (c) only ((b) keeps its x tick
+      labels). The rectangle is the intersection of the two panels' constrained-layout axes; the ticks are (c)'s.
   v5: panel (a) is adopted as is -- the v4 file (sha256 A_ADOPTED_SHA) is copied byte for byte after asserting that a
       fresh render of (a) reproduces it bitwise; (b) and (c) are re-exported.
 
@@ -49,7 +52,7 @@ OKABE_ITO = W165.OKABE_ITO
 MM = W165.MM
 
 SCRIPT_REL = os.path.basename(__file__)
-OUT_DIR_DEFAULT = os.path.join('Claude outputs', 'fig_q_cycle_v5')
+OUT_DIR_DEFAULT = os.path.join('Claude outputs', 'fig_q_cycle_v6')
 A_ADOPTED_REL = os.path.join('Claude outputs', 'fig_q_cycle_v4', 'fig_q_cycle_a.pdf')   # Expert: adopted as is (v5)
 A_ADOPTED_SHA = '6bfb74a1abff991db4064935fd8b198d88b3ba27c13e9ca67ffe323e760a86a3'
 V4_B_SHA = 'f5c8cab9ff86cbb73ae1fa64df27d1160eef3b340980ec6cd17f0a7615edf551'
@@ -72,6 +75,43 @@ def yfmt2(ax):
 
 def _fig(panel):
     return plt.figure(figsize=(PANEL_W_MM * MM, PANEL_H_MM[panel] * MM), layout='constrained')
+
+
+def _fig_ax(panel, frame):
+    """(b), (c): with frame None, constrained layout (the measuring pass); else the shared fixed rectangle (v6)."""
+    if frame is None:
+        fig = _fig(panel)
+        return fig, fig.add_subplot(1, 1, 1)
+    fig = plt.figure(figsize=(PANEL_W_MM * MM, PANEL_H_MM[panel] * MM))
+    return fig, fig.add_axes(frame['rect'])
+
+
+def _apply_x(ax, b, frame, label):
+    ax.set_xlim(b['k0'] - 1, b['cap'] + 1)
+    if frame is not None:
+        ax.set_xticks(frame['xticks'])
+    if label:
+        ax.set_xlabel('ADMM cycle')
+
+
+def bc_frame(D):
+    """The shared axes rectangle of (b) and (c): the intersection of their constrained-layout axes; (c)'s x ticks."""
+    W165.set_style()
+    pos = {}
+    for p, fn in (('b', draw_b), ('c', draw_c)):
+        fig = fn(D)
+        fig.canvas.draw()
+        ax = fig.axes[0]
+        pos[p] = ax.get_position().bounds
+        if p == 'c':
+            lo, hi = ax.get_xlim()
+            xt = [float(t) for t in ax.get_xticks() if lo <= t <= hi]
+        plt.close(fig)
+    left = max(pos['b'][0], pos['c'][0])
+    bottom = max(pos['b'][1], pos['c'][1])
+    right = min(pos['b'][0] + pos['b'][2], pos['c'][0] + pos['c'][2])
+    top = min(pos['b'][1] + pos['b'][3], pos['c'][1] + pos['c'][3])
+    return {'rect': [left, bottom, right - left, top - bottom], 'xticks': xt, 'measured': pos}
 
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -106,9 +146,8 @@ def draw_a(D):
     return fig
 
 
-def draw_b(D):
-    fig = _fig('b')
-    axb = fig.add_subplot(1, 1, 1)
+def draw_b(D, frame=None):
+    fig, axb = _fig_ax('b', frame)
     b = D['b']
     kb = list(range(b['k0'], b['cap'] + 1))
     qref = b['q'][b['cap']]
@@ -127,15 +166,13 @@ def draw_b(D):
     axb.set_ylabel('Q − Q(cap) (k€)')
     yfmt2(axb)
     # separation: the composite hides these (x shared with (c)); a standalone panel needs its own x axis
-    axb.set_xlim(b['k0'] - 1, b['cap'] + 1)
-    axb.set_xlabel('ADMM cycle')
+    _apply_x(axb, b, frame, label=False)     # v6: x label on (c) only; (b) keeps its x tick labels
     # no panel letter (author, 2026-11-13): the composite's W165.panel_label(axb, '(b)') is not drawn
     return fig
 
 
-def draw_c(D):
-    fig = _fig('c')
-    axc = fig.add_subplot(1, 1, 1)
+def draw_c(D, frame=None):
+    fig, axc = _fig_ax('c', frame)
     b = D['b']
     kb = list(range(b['k0'], b['cap'] + 1))
     tc = [W165._k(b['t'][k]) for k in kb]
@@ -150,8 +187,7 @@ def draw_c(D):
     axc.text(b['cap'] - 0.6, gb, '±τ/2', ha='right', va='bottom', fontsize=6.0, color=OKABE_ITO['green'])
     axc.axvline(b['k0'], color=OKABE_ITO['green'], lw=0.7)
     axc.axvline(b['cap'], color=OKABE_ITO['black'], lw=0.7)
-    axc.set_xlim(b['k0'] - 1, b['cap'] + 1)
-    axc.set_xlabel('ADMM cycle')
+    _apply_x(axc, b, frame, label=True)
     axc.set_ylabel('$t_{sum}$ (k€)')
     yfmt2(axc)
     # no panel letter (author, 2026-11-13): the composite's W165.panel_label(axc, '(c)') is not drawn
@@ -219,7 +255,9 @@ def main():
         W165._log(f'[split CHECK FAILED] {bad}: {[checks[k][1] for k in bad]}')
         sys.exit(1)
     panels = {}
-    for p, fn in (('a', draw_a), ('b', draw_b), ('c', draw_c)):
+    frame = bc_frame(D)
+    checks['bc.frame_positive'] = (frame['rect'][2] > 0 and frame['rect'][3] > 0 and len(frame['xticks']) >= 2, frame)
+    for p, fn in (('a', draw_a), ('b', lambda d: draw_b(d, frame)), ('c', lambda d: draw_c(d, frame))):
         pdf1, png1 = render(fn, D)
         pdf2, _ = render(fn, D)
         fr = W165.pdf_font_report(pdf1)
@@ -257,6 +295,9 @@ def main():
         'changes_all_panels': ['one size for all three panels (author, 2026-11-13)',
                                'y tick labels at two decimals (author, 2026-11-13)',
                                'no panel letters; labelled in LaTeX (author, 2026-11-13)'],
+        'v6': {'bc_axes_rect_figure_fraction': frame['rect'], 'bc_xticks': frame['xticks'],
+               'measured_constrained_positions': frame['measured'],
+               'b': 'x label removed (on (c) only); x tick labels kept', 'author': '2026-11-13'},
         'v5': {'a': f'adopted as is: copy of {A_ADOPTED_REL} (sha256 {A_ADOPTED_SHA}); a fresh render reproduces it',
                'b': 'unchanged in drawing from v4 (no legend, no ticks)',
                'c': 'gap-refusal ticks and their legend entry removed (Expert, 2026-11-13)',
@@ -284,10 +325,11 @@ def main():
 
     def r(x):
         return f"`{x['path']}` (sha256 `{x['sha256'][:8]}`)"
-    note = f"""# Figure fig:res_q_cycle as three subfigure files, v5 (zero solves)
+    note = f"""# Figure fig:res_q_cycle as three subfigure files, v6 (zero solves)
 
 The manuscript uses these three files as subfigures (Expert, decision 1 option (a), 2026-11-13). Panel (a) is
-adopted as is from `fig_q_cycle_v4/`; (b) and (c) are re-exported. All three are {PANEL_W_MM:g} × {PANEL_H_MM['a']:g} mm
+adopted as is from `fig_q_cycle_v4/`; (b) and (c) are re-exported. v6 supersedes v5 (`fig_q_cycle_v5/`, kept): at the
+author's request (2026-11-13), (b) and (c) now have identical x axes, and the x label sits on (c) only. All three are {PANEL_W_MM:g} × {PANEL_H_MM['a']:g} mm
 with two-decimal y ticks and no panel letters (LaTeX labels them).
 
 ## For W190: the three subfigure files
@@ -299,12 +341,15 @@ with two-decimal y ticks and no panel letters (LaTeX labels them).
 | `fig_q_cycle_c.pdf` | `{panels['c']['sha256']}` | (c) priced interface-consensus gap of the same evaluation, with ±τ/2 |
 
 - **(a)** is a byte copy of `{A_ADOPTED_REL}`. A fresh render from the records reproduced it bitwise.
-- **(b)** draws exactly as in v4, so its bytes equal v4's `fig_q_cycle_b.pdf`
-  ({'identical' if panels['b']['sha256'] == V4_B_SHA else 'NOT identical'}). It has no legend and no ticks, so the v5
-  changes do not reach it.
+- **(b) and (c)** share one axes rectangle and one set of x ticks, so stacked at the same width their x axes coincide:
+  - rectangle (figure fractions): left {frame['rect'][0]:.4f}, bottom {frame['rect'][1]:.4f}, width {frame['rect'][2]:.4f},
+    height {frame['rect'][3]:.4f};
+  - x range {b['k0'] - 1}–{b['cap'] + 1};
+  - x ticks {', '.join(f'{t:g}' for t in frame['xticks'])}.
+- **(b)** keeps its x tick labels but drops the x label; "ADMM cycle" is on (c) only.
 - **(c)** has no gap-refusal ticks and no legend. v2–v4 drew 59 vermillion ticks labelled "gap-clause refusals".
 
-**Legend text.** After v5 the only legend is (a)'s "turning points", in plain words; (b) and (c) have none.
+**Legend text.** The only legend left is (a)'s "turning points", in plain words; (b) and (c) have none.
 
 ## The record each panel reads
 
@@ -337,15 +382,17 @@ drawn, the composite re-rendered from the same data was byte-identical to the co
 ## What differs from the composite `fig4_q_versus_cycle.pdf`
 
 - **All three:** one size; y tick labels at two decimals; no panel letters (author, 2026-11-13).
-- **(b):** its own x tick labels and the x label "ADMM cycle". In the composite these were hidden because (b) shared
-  its x axis with (c). Its x limits are ({b['k0']} − 1, {b['cap']} + 1), as before.
+- **(b):** its own x tick labels. In the composite these were hidden because (b) shared its x axis with (c). No x
+  label; (c) carries it, as in the composite.
+- **(b), (c):** one fixed axes rectangle and the same x ticks (v6), in place of each file's own constrained layout. The
+  x limits are ({b['k0']} − 1, {b['cap']} + 1), as before.
 - **(c):** no gap-refusal ticks and no legend (Expert, 2026-11-13).
 - **Unchanged:**
   - axes, limits and labels;
   - the markers: $k_0$, N and k* in (a); $k_0$ and the cap in (b) and (c);
   - turning points, shading, the band lines and the ±τ/2 band.
 
-**Earlier versions, kept:** `fig_q_cycle_v2/`, `v3/` and `v4/`.
+**Earlier versions, kept:** `fig_q_cycle_v2/`, `v3/`, `v4/` and `v5/`.
 
 **Zero solves:** the W165 and W157 guards were verified at 0, and the pickle load counters at 0.
 """
