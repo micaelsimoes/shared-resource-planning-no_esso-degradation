@@ -10,6 +10,7 @@
 - [x] **Fig. res_q_cycle split v3** (author's request: one size 95 × 70 mm, y ticks at 2 dp) — script `f5e87846`, outputs `Claude outputs/fig_q_cycle_v3/`: `fig_q_cycle_a.pdf` b6f37e76, `_b` cc64cff5, `_c` 5a0a426c; same data and checks as v2 (kept)
 - [x] **Fig. res_q_cycle split v4** (author's request: no panel letters; labelled in LaTeX) — script `5eb26da4`, outputs `Claude outputs/fig_q_cycle_v4/`: `fig_q_cycle_a.pdf` 6bfb74a1, `_b` f5c8cab9, `_c` 8cd35667; 95 × 70 mm, y ticks 2 dp; same data and checks (v2, v3 kept)
 - [x] **Fig. res_q_cycle v5 = the subfigure files** (Expert decision 1 (a): three files used) — script `b03f98ef`, `Claude outputs/fig_q_cycle_v5/`: `fig_q_cycle_a.pdf` 6bfb74a1 (v4, adopted as is), `_b` f5c8cab9 (= v4 bytes), `_c` 2bdc67a7 (no refusal ticks, no legend); NOTE.md lists them for **W190** (subfigure files + caption; the caption's tick sentence is removed by the author)
+- [x] **Fig. res_q_cycle v6 = the subfigure files** (supersedes v5; author: (b), (c) identical x axes, x label on (c) only) — script `e75a7d69`, `Claude outputs/fig_q_cycle_v6/`: `fig_q_cycle_a.pdf` 6bfb74a1 (v4, adopted as is), `_b` 65ec7013, `_c` cbad023b (no refusal ticks, no legend); NOTE.md lists them for **W190** (subfigure files + caption)
 - [ ] Author presentation pass + expert pass; **prose freeze 11-16 12:00** (numbers freeze 11-15 12:00)
 - [ ] **W190** final audit at the final HEAD + submission-set check → close TASKS.md; upload 11-19 (supplement v5 `d2fa2172`)
 
