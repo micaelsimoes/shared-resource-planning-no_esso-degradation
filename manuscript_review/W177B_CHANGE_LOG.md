@@ -319,3 +319,10 @@ Kept by the expert during the author's whole-document read (2026-10-09 onward); 
   cells, Table 2 48/48; TN-connection CSV byte-identical. Expert: no v6 (the 2025 row "single- and multi-scenario
   year" is correct as written). W187 relaunched under amendment 3 from Terminal.app/caffeinate at 14:46:58 UTC 11-12
   (chain `w187_terminal_chain.sh` `0cb6512e`); cell 1 expected ≈ midday 11-13.
+- Marked copy prepared ahead of round 10 (expert, 2026-11-12): `main_latexdiff_round9c.tex` = latexdiff 1.4.0 of
+  `manuscript_submitted/main.tex` vs round 9c (404 blue wrappers stripped; 4 whitespace-only lines inside display
+  math removed; `--math-markup=whole`; floats as whole blocks; 38 references to removed labels print the label;
+  `\sloppy`); container compile 0 errors / 0 undefined with a ulem stand-in and demo graphics, 63 pages; reproducible
+  by `make_marked_copy.py` (regenerated after round 10). `endmatter_statements_round10.tex` drafted (CRediT and
+  Funding for the author; competing interest; Data availability matching supplement v5) for insertion in round 10.
+  Highlights checked ≤ 85 characters (76–82).
