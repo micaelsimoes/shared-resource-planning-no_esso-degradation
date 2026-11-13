@@ -311,3 +311,48 @@ The closest are the three-node 2025 unit (+2.7 k€) and the node-5 2025 unit (+
 
 Whether §4.3 states this on F (the frozen comparator) or on Q (as ordered for P3) is decision 1. On Q, every neighbour
 is determinately cheaper to operate.
+
+---
+
+## Planner ruling on Blocked items 1–2 (2026-11-13; the Worker's sections above are unchanged)
+
+**Δ is on F = I + Q, the frozen comparator. P3 is read on ΔF.** The ΔQ reading came from the Planner's task brief,
+which wrote "Q(neighbour) − Q(x0)". That was the Planner's error, not the record's.
+
+- **Plan §5.3** (`STEP7_SIMULATION_PLAN_2026-10-25.md`), frozen into every screen cell spec through Addendum 85
+  ruling 4 (vii), says the fourteen neighbours are "compared with Q(0) by **the search's acceptance criterion**
+  max{bar sum, σ_Q}". The question it asks is whether a neighbour "improves on x = 0" (H1d). The search's acceptance
+  criterion is F(inc) − F(x) > max(bar_x + bar_inc, σ_Q), with F = I(x) + Q and salvage excluded
+  (`p515_s47_phase_b_record`; Addendum 27 item 3).
+- **The same section** records the reference unit's N cell as "−4.1 k€ certified". That is an F difference; its ΔQ is
+  of order −180 k€.
+- **ΔQ alone is negative for every non-empty investment.** Storage only adds flexibility, so ΔQ < 0 is no planning
+  statement.
+
+**Threshold.** P3 is worded max{3b, 2τ}, but production-exit cells have no rule-v6 band. The frozen screen comparator
+is max{bar sum, σ_Q}, and the Worker's T_v6bar form reads b as the screen bar. **P3 holds under both forms, so no ruling
+between them is needed:**
+
+| clause | T_frozen = max{bar sum, σ_Q} (the frozen comparator) | T_v6bar = max{3 × larger bar, 2τ} |
+|---|---|---|
+| no unit neighbour beats x = 0 beyond the threshold | **held**: 0 of 14 | **held**: 0 of 14 |
+| at least one within resolution | **held**: 6 within (8 with x = 0 determinately better) | **held**: 9 within (5 x = 0 better) |
+
+- **ΔF.** It is positive on all 14 cells: the smallest is +2,684 € (2025, all three nodes) and the largest +100,584 €
+  (2030, all three nodes). The minimum is not a near-miss: under the frozen comparator the closest row is at 0.12× its
+  threshold.
+- **H1d (plan §5.3) holds.** No neighbour improves on x = 0 beyond the criterion.
+- **The paper's scope sentence is plan §5.3's:** "a bounded unit-neighbourhood screen at the baseline price under the
+  no-ageing model … not a completed search and not a globally preferred zero investment". It is the N-side match of
+  the s47 aged-arm result.
+
+**Salvage (record).** Crediting salvage (ΔF_net) puts all 14 within resolution under T_v6bar. Salvage stays outside F
+(Addendum 27 item 3; plan §6 E5), so this is a sensitivity, not the comparator.
+
+**Planner spot-check.** Re-read from the committed `campaign_results.json` files:
+- Q(x0) = 653,858,731.5686 €;
+- ΔQ = −570,370.49 € (2025, n5+n7+n9), −325,061.86 € (2030, n5+n7+n9) and −185,008.28 € (2025, n5);
+- all equal to the report's table.
+
+**Status.** The screen ran in time for the numbers freeze (11-15 12:00). Whether, and in what words, it enters §4.3 and
+R3.6 is the expert's round-10 call.

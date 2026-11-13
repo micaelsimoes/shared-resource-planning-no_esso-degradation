@@ -76,7 +76,9 @@ v13 pointers 0 MISMATCH (W189's l. 285 B.8 → B.9 closed), blue on every change
 Supplement **v5 `d2fa2172`** (amendments 1–2: current names, labels removed, README prose v3, the expert's three
 re-ruled strings) verifies with 0 mismatches and is the submitted supplementary file; v4 `d175ea0e` is superseded. W187:
 cell 1 was killed by a Claude session restart (14:18 UTC); per amendment 3 the partial outputs were moved aside and the
-15-cell chain relaunched from Terminal.app at 14:46:58 UTC. W187 (15-cell screen, spec v1.1) launched 13:29 UTC; P3 blind.
+15-cell chain relaunched from Terminal.app at 14:46:58 UTC; all 15 cells certified (05:11 UTC 11-13). On F = I + Q (the
+frozen comparator, plan §5.3) no unit neighbour beats x = 0 (ΔF +2.7 k€ to +100.6 k€): P3 and H1d hold
+(`P5_15_W187_REPORT.md`). Next: expert round 10 (11-14), W190. W187 (15-cell screen, spec v1.1) launched 13:29 UTC; P3 blind.
 Next: W187 report; round 10; W190 final audit and submission-set check. Planner report `P5_15_A91_STATUS_REPORT.md`.
 
 ## Previous state (Addendum 90; W189 at Overleaf `46c9d77`, round 9b)
