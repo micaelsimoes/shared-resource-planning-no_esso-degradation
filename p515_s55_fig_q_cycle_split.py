@@ -25,6 +25,11 @@ the build record:
       labels). The rectangle is the intersection of the two panels' constrained-layout axes; the ticks are (c)'s.
   v5: panel (a) is adopted as is -- the v4 file (sha256 A_ADOPTED_SHA) is copied byte for byte after asserting that a
       fresh render of (a) reproduces it bitwise; (b) and (c) are re-exported.
+  v7 (Expert, 2026-11-13): y-axis labels in words, not symbols or record field names -- (a), (b) 'Objective change (k€)'
+      (were 'Q − Q(k*) (k€)', 'Q − Q(cap) (k€)'), (c) 'Interface-consensus gap (k€)' (was '$t_{sum}$ (k€)'); the x
+      label 'ADMM cycle' already in words. All three panels re-exported (so (a) is no longer the v4 copy). Before
+      relabelling, the predecessor labels are rendered and must reproduce v4 (a) and v6 (b), (c) bitwise, so the label
+      is the only change.
 
 OUTPUTS (OUT_DIR, which must not exist or be empty): fig_q_cycle_a.pdf, fig_q_cycle_b.pdf, fig_q_cycle_c.pdf (each
 rendered twice, sha256 asserted equal; TrueType fonts, no PDF dates), NOTE.md (the record each panel reads),
@@ -52,7 +57,16 @@ OKABE_ITO = W165.OKABE_ITO
 MM = W165.MM
 
 SCRIPT_REL = os.path.basename(__file__)
-OUT_DIR_DEFAULT = os.path.join('Claude outputs', 'fig_q_cycle_v6')
+OUT_DIR_DEFAULT = os.path.join('Claude outputs', 'fig_q_cycle_v7')
+YL_PRED = {'a': 'Q − Q(k*) (k€)', 'b': 'Q − Q(cap) (k€)', 'c': '$t_{sum}$ (k€)'}        # v4 (a), v6 (b), (c)
+YL_V7 = {'a': 'Objective change (k€)', 'b': 'Objective change (k€)', 'c': 'Interface-consensus gap (k€)'}
+YL = dict(YL_PRED)                                                                      # set by main()
+PRED_SHA = {'a': ('Claude outputs/fig_q_cycle_v4/fig_q_cycle_a.pdf',
+                  '6bfb74a1abff991db4064935fd8b198d88b3ba27c13e9ca67ffe323e760a86a3'),
+            'b': ('Claude outputs/fig_q_cycle_v6/fig_q_cycle_b.pdf',
+                  '65ec70139332477f4c0469a2e45e2c63e220f63dbc3f99435dd937356e96c549'),
+            'c': ('Claude outputs/fig_q_cycle_v6/fig_q_cycle_c.pdf',
+                  'cbad023bbf0e001373a9debdbc67d74cdb82757668fde8b2acc91ed38f5cc8ff')}
 A_ADOPTED_REL = os.path.join('Claude outputs', 'fig_q_cycle_v4', 'fig_q_cycle_a.pdf')   # Expert: adopted as is (v5)
 A_ADOPTED_SHA = '6bfb74a1abff991db4064935fd8b198d88b3ba27c13e9ca67ffe323e760a86a3'
 V4_B_SHA = 'f5c8cab9ff86cbb73ae1fa64df27d1160eef3b340980ec6cd17f0a7615edf551'
@@ -139,7 +153,7 @@ def draw_a(D):
              fontsize=6.0, color=OKABE_ITO['blue'])
     axa.set_xlim(a['k0'] - 1, a['kstar'] + 1)
     axa.set_xlabel('ADMM cycle')
-    axa.set_ylabel('Q − Q(k*) (k€)')
+    axa.set_ylabel(YL['a'])
     yfmt2(axa)
     axa.legend(loc='upper right', bbox_to_anchor=(1.0, 0.9), handlelength=1.0, borderaxespad=0.2)
     # no panel letter (author, 2026-11-13): the composite's W165.panel_label(axa, '(a)') is not drawn
@@ -163,7 +177,7 @@ def draw_b(D, frame=None):
     axb.text((blo + bhi) / 2, 0.80, f'last {bhi - blo + 1} cycles at the cap', ha='center', va='bottom',
              transform=blended_transform_factory(axb.transData, axb.transAxes), fontsize=6.0,
              color=OKABE_ITO['grey'])
-    axb.set_ylabel('Q − Q(cap) (k€)')
+    axb.set_ylabel(YL['b'])
     yfmt2(axb)
     # separation: the composite hides these (x shared with (c)); a standalone panel needs its own x axis
     _apply_x(axb, b, frame, label=False)     # v6: x label on (c) only; (b) keeps its x tick labels
@@ -188,7 +202,7 @@ def draw_c(D, frame=None):
     axc.axvline(b['k0'], color=OKABE_ITO['green'], lw=0.7)
     axc.axvline(b['cap'], color=OKABE_ITO['black'], lw=0.7)
     _apply_x(axc, b, frame, label=True)
-    axc.set_ylabel('$t_{sum}$ (k€)')
+    axc.set_ylabel(YL['c'])
     yfmt2(axc)
     # no panel letter (author, 2026-11-13): the composite's W165.panel_label(axc, '(c)') is not drawn
     return fig
@@ -224,8 +238,9 @@ def main():
             pre.append(f'{rel} not committed clean')
     if W165._sha(FIG4_COMMITTED) != FIG4_SHA:
         pre.append(f'{FIG4_COMMITTED} sha256 != {FIG4_SHA[:8]}')
-    if not W165.L132._committed_clean(A_ADOPTED_REL) or W165._sha(A_ADOPTED_REL) != A_ADOPTED_SHA:
-        pre.append(f'{A_ADOPTED_REL} not committed clean or sha256 != {A_ADOPTED_SHA[:8]}')
+    for _p, (prel, psha) in PRED_SHA.items():
+        if not W165.L132._committed_clean(prel) or W165._sha(prel) != psha:
+            pre.append(f'{prel} not committed clean or sha256 != {psha[:8]}')
     clone_sha = W165._sha(CLONE_FIG4) if os.path.exists(os.path.join(REPO, CLONE_FIG4)) else None
     if pre:
         W165._log(f'[split PRECONDITION FAILED] {pre}')
@@ -254,6 +269,14 @@ def main():
     if bad:
         W165._log(f'[split CHECK FAILED] {bad}: {[checks[k][1] for k in bad]}')
         sys.exit(1)
+    # predecessor labels first: must reproduce v4 (a) and v6 (b), (c) bitwise -- the label is then the only change
+    YL.update(YL_PRED)
+    fpred = bc_frame(D)
+    for p, fn in (('a', draw_a), ('b', lambda d: draw_b(d, fpred)), ('c', lambda d: draw_c(d, fpred))):
+        pp, _ = render(fn, D)
+        checks[f'{p}.predecessor_labels_reproduce_{os.path.basename(os.path.dirname(PRED_SHA[p][0]))}'] = (
+            _sha_bytes(pp) == PRED_SHA[p][1], _sha_bytes(pp))
+    YL.update(YL_V7)
     panels = {}
     frame = bc_frame(D)
     checks['bc.frame_positive'] = (frame['rect'][2] > 0 and frame['rect'][3] > 0 and len(frame['xticks']) >= 2, frame)
@@ -265,9 +288,6 @@ def main():
               and not fr['has_creation_date'] and not fr['has_mod_date'])
         checks[f'{p}.deterministic_truetype_no_dates'] = (ok, fr)
         panels[p] = {'pdf': pdf1, 'png': png1, 'sha256': _sha_bytes(pdf1), 'fonts': fr}
-    checks['a.render_equals_adopted_v4'] = (panels['a']['sha256'] == A_ADOPTED_SHA, panels['a']['sha256'])
-    with open(os.path.join(REPO, A_ADOPTED_REL), 'rb') as h:
-        panels['a']['pdf'] = h.read()     # the adopted file itself, copied byte for byte
     guards, pk, gok = W165.guards_state()
     checks['guards_0_pickle_0'] = (gok, {'guards': guards, 'pickle': pk})
     bad = [k for k, (ok, _d) in checks.items() if not ok]
@@ -295,6 +315,9 @@ def main():
         'changes_all_panels': ['one size for all three panels (author, 2026-11-13)',
                                'y tick labels at two decimals (author, 2026-11-13)',
                                'no panel letters; labelled in LaTeX (author, 2026-11-13)'],
+        'v7': {'y_labels': YL_V7, 'replaced': YL_PRED, 'x_label': 'ADMM cycle (unchanged, in words)',
+               'predecessors': {p: {'path': v[0], 'sha256': v[1]} for p, v in PRED_SHA.items()},
+               'author': 'Expert, 2026-11-13'},
         'v6': {'bc_axes_rect_figure_fraction': frame['rect'], 'bc_xticks': frame['xticks'],
                'measured_constrained_positions': frame['measured'],
                'b': 'x label removed (on (c) only); x tick labels kept', 'author': '2026-11-13'},
@@ -325,22 +348,41 @@ def main():
 
     def r(x):
         return f"`{x['path']}` (sha256 `{x['sha256'][:8]}`)"
-    note = f"""# Figure fig:res_q_cycle as three subfigure files, v6 (zero solves)
+    note = f"""# Figure fig:res_q_cycle as three subfigure files, v7 (zero solves)
 
-The manuscript uses these three files as subfigures (Expert, decision 1 option (a), 2026-11-13). Panel (a) is
-adopted as is from `fig_q_cycle_v4/`; (b) and (c) are re-exported. v6 supersedes v5 (`fig_q_cycle_v5/`, kept): at the
-author's request (2026-11-13), (b) and (c) now have identical x axes, and the x label sits on (c) only. All three are {PANEL_W_MM:g} × {PANEL_H_MM['a']:g} mm
-with two-decimal y ticks and no panel letters (LaTeX labels them).
+The manuscript uses these three files as subfigures (Expert, decision 1 option (a), 2026-11-13). v7 supersedes v6:
+the y-axis labels are now words, not symbols or record field names (Expert, 2026-11-13), and nothing else changed.
+
+| panel | y label, v7 | y label before |
+|---|---|---|
+| (a) | {YL_V7['a']} | {YL_PRED['a']} (v4) |
+| (b) | {YL_V7['b']} | {YL_PRED['b']} (v6) |
+| (c) | {YL_V7['c']} | t_sum (k€) (v6) |
+
+- **x label:** "ADMM cycle", already in words, on (a) and (c) only.
+- **Only the labels changed.** Before relabelling, the script rendered the panels with their old labels and
+  reproduced the predecessors bitwise:
+  - (a): `{PRED_SHA['a'][0]}` (`{PRED_SHA['a'][1][:8]}`);
+  - (b): `{PRED_SHA['b'][0]}` (`{PRED_SHA['b'][1][:8]}`);
+  - (c): `{PRED_SHA['c'][0]}` (`{PRED_SHA['c'][1][:8]}`).
+- **Other in-plot text, kept as before:**
+  - markers $k_0$, N and k* in (a), and $k_0$ and "cap" in (b) and (c);
+  - the shading notes;
+  - ±τ/2;
+  - the (a) legend "turning points".
+
+All three are {PANEL_W_MM:g} × {PANEL_H_MM['a']:g} mm with two-decimal y ticks and no panel letters (LaTeX labels
+them).
 
 ## For W190: the three subfigure files
 
 | file | sha256 | panel |
 |---|---|---|
-| `fig_q_cycle_a.pdf` | `{A_ADOPTED_SHA}` | (a) objective of the plan without storage (x = 0), Q − Q(k*) |
-| `fig_q_cycle_b.pdf` | `{panels['b']['sha256']}` | (b) objective of the reference unit at 1.5×, Q − Q(cap) |
+| `fig_q_cycle_a.pdf` | `{panels['a']['sha256']}` | (a) objective of the plan without storage (x = 0), relative to certification |
+| `fig_q_cycle_b.pdf` | `{panels['b']['sha256']}` | (b) objective of the reference unit at 1.5×, relative to the cap |
 | `fig_q_cycle_c.pdf` | `{panels['c']['sha256']}` | (c) priced interface-consensus gap of the same evaluation, with ±τ/2 |
 
-- **(a)** is a byte copy of `{A_ADOPTED_REL}`. A fresh render from the records reproduced it bitwise.
+- **(a)** is v4's panel (a) (the version adopted in v5) with the new y label.
 - **(b) and (c)** share one axes rectangle and one set of x ticks, so stacked at the same width their x axes coincide:
   - rectangle (figure fractions): left {frame['rect'][0]:.4f}, bottom {frame['rect'][1]:.4f}, width {frame['rect'][2]:.4f},
     height {frame['rect'][3]:.4f};
@@ -388,11 +430,11 @@ drawn, the composite re-rendered from the same data was byte-identical to the co
   x limits are ({b['k0']} − 1, {b['cap']} + 1), as before.
 - **(c):** no gap-refusal ticks and no legend (Expert, 2026-11-13).
 - **Unchanged:**
-  - axes, limits and labels;
+  - axes and limits (the y labels changed in v7, above);
   - the markers: $k_0$, N and k* in (a); $k_0$ and the cap in (b) and (c);
   - turning points, shading, the band lines and the ±τ/2 band.
 
-**Earlier versions, kept:** `fig_q_cycle_v2/`, `v3/`, `v4/` and `v5/`.
+**Earlier versions, kept:** `fig_q_cycle_v2/` to `v6/`.
 
 **Zero solves:** the W165 and W157 guards were verified at 0, and the pickle load counters at 0.
 """
