@@ -326,3 +326,9 @@ Kept by the expert during the author's whole-document read (2026-10-09 onward); 
   by `make_marked_copy.py` (regenerated after round 10). `endmatter_statements_round10.tex` drafted (CRediT and
   Funding for the author; competing interest; Data availability matching supplement v5) for insertion in round 10.
   Highlights checked ≤ 85 characters (76–82).
+- 2026-11-13: W187 complete (`31aa57c9`; report `c8e30b8f`): 15/15 cells, P3 held (ΔF > 0 on all 14 no-ageing unit
+  neighbours; 8 determinately worse, 6 within resolution under the search's criterion). Author's presentation pass
+  on Overleaf (`275398e` → `49f8836`): contributions rewritten, §4.1 opening, W187 paragraph in §4.3, letter l. 58 and
+  R3.6, cover letter v5 (bracket resolved). **Addendum 92**: P3 ruled held; printed form = the search's criterion;
+  salvage sensitivity not printed; prose freeze 11-16 12:00; W190b interim audit ordered now, W190 final after the
+  freeze.
