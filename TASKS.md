@@ -1,6 +1,13 @@
 # TASKS — current order
 
-**Authority (2026-11-12):** `PLANNER_BRIEF_2026-09-13.md` Addendum 91 (editorial window: **upload 2026-11-19**, numbers freeze **11-15 12:00**; W187 go; round 9c). Overleaf HEAD **`3c379fa`** (round 9c: main.tex md5 cd1433d7 = `main_46c9d77_round9c.tex`, letter v13 74e88c78, cover letter v4 63b7ddee, highlights v3 4cedd45c; verified byte-identical by the Planner 13:26 UTC). Realignment (Addenda 87–88) parked.
+**Authority (2026-11-13):** `PLANNER_BRIEF_2026-09-13.md` Addendum 92 (W187 held; presentation pass; W190b, W190). Previously Addendum 91 (editorial window: **upload 2026-11-19**, numbers freeze **11-15 12:00**; W187 go; round 9c). Overleaf HEAD **`3c379fa`** (round 9c: main.tex md5 cd1433d7 = `main_46c9d77_round9c.tex`, letter v13 74e88c78, cover letter v4 63b7ddee, highlights v3 4cedd45c; verified byte-identical by the Planner 13:26 UTC). Realignment (Addenda 87–88) parked.
+
+## Addendum 92 order — W190b (interim, now), then W190 after the prose freeze (2026-11-16 12:00)
+
+- [x] W187 held (P3) — ruled by Addendum 92: printed form = search criterion (8 worse / 6 within; 2.7–100.6 k€); salvage sensitivity and the 59.9 k€ bar not printed
+- [x] **W190b** — `05d86627` / `6b4c6891` at Overleaf **`5f4d3bd`**: (i)–(vii) all held (W187 numbers recomputed 14/14; numbers 0 MISMATCH; letter 174 MATCH / 8 SUBMITTED / 0 MISMATCH; blue OK; Appendix B 218/218 bitwise, verify_appE 40; structure 0/0/0, 102 labels; 17 floats, 41 eqs, 6,768 words (+56)). **10 findings for the author's next edit** (main 1374 scope 'no shared storage investment' + dropped 'search resolution', 1375 ties, 1509 pointer; letter 263/264 wording + curly apostrophes, l. 60 §4.7 future-work pointer; cover letter l. 26 vs letter l. 58–59 'met in part' lists). PRESENTATION_PASS_PLAN_2026-11-12.md not in the repo
+- [ ] Author presentation pass + expert pass; **prose freeze 11-16 12:00** (numbers freeze 11-15 12:00)
+- [ ] **W190** final audit at the final HEAD + submission-set check → close TASKS.md; upload 11-19 (supplement v5 `d2fa2172`)
 
 ## Addendum 91 order — W189a-v3, W187, W190a, then W190
 
