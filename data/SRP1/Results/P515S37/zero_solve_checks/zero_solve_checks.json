@@ -1,0 +1,145 @@
+{
+ "stage": "P5.15 Addendum 19 (s37 preparation worker task) -- zero-solve verification of the per-channel balancing exemption",
+ "authority": [
+  "PLANNER_BRIEF_2026-09-13.md Addendum 19",
+  "data/SRP1/Results/P515S37/frozen_s37_rho_ess_spec_v8_f91de983.json"
+ ],
+ "spec_file": "data/SRP1/Results/P515S37/frozen_s37_rho_ess_spec_v8_f91de983.json",
+ "spec_file_sha256_observed": "f91de9836d279a08767b7d84a5ca7e37cdc7e7a3fa05a240be6e713910714e72",
+ "pre_change_commit": "7323b2fb",
+ "timestamp_utc": "2026-09-17T07:03:08.198918+00:00",
+ "solve_profile_guard": {
+  "permitted": [],
+  "counts": {
+   "permitted_solve": 0,
+   "permitted_exec": 0,
+   "blocked_solve": 0,
+   "blocked_exec": 0
+  },
+  "verify_failures": []
+ },
+ "checks": {
+  "absent_key_bit_identical": {
+   "pre_change_commit": "7323b2fb",
+   "n_cycles_compared": 20,
+   "first_differing_field": null,
+   "new_code_exempt_marker_ever_true": false,
+   "pass": true
+  },
+  "ess_exempt_60_cycles": {
+   "n_cycles": 60,
+   "ess_ratios_used": {
+    "primal_ratio": 1000000.0,
+    "dual_ratio": 1e-06,
+    "dual_ratio_balance": 1e-06
+   },
+   "ess_rho_constant": true,
+   "ess_gamma_constant": true,
+   "ess_action_always_exempt_fixed": true,
+   "ess_frozen_from_cycle_1": true,
+   "ess_exempt_marker_from_cycle_1": true,
+   "ess_never_at_clamp": true,
+   "ess_reason_is_exempt": true,
+   "v_pf_bit_identical_to_no_exemption_run": true,
+   "v_pf_first_differing_field": null,
+   "plain_run_ess_increased_before_backstop_sanity_check": true,
+   "plain_run_ess_frozen_by_backstop_at_cycle_60": true,
+   "exempt_run_ess_survives_backstop_at_cycle_60": true,
+   "terminal_ess_rho": 1.0,
+   "terminal_ess_gamma": 1.0,
+   "pass": true
+  },
+  "invalid_channel_rejected": {
+   "valid_single_channel_accepted": true,
+   "valid_all_channels_accepted": true,
+   "invalid_channel_raises": true,
+   "invalid_mixed_channel_raises": true,
+   "non_list_value_raises": true,
+   "invalid_error_message": "ADMM penalty_update.balancing_exempt_channels entries must be drawn from {'v', 'pf', 'ess'}; got invalid entries: ['bogus'].",
+   "invalid_mixed_error_message": "ADMM penalty_update.balancing_exempt_channels entries must be drawn from {'v', 'pf', 'ess'}; got invalid entries: ['not_a_channel'].",
+   "non_list_error_message": "ADMM penalty_update.balancing_exempt_channels must be a list.",
+   "pass": true
+  },
+  "other_case_params_load": {
+   "other_cases": {
+    "CS1": {
+     "path": "data/CS1/CS1_params.json",
+     "balancing_exempt_channels": [],
+     "balancing_exempt_channels_source": "default"
+    },
+    "CS7": {
+     "path": "data/CS7/CS7_params.json",
+     "balancing_exempt_channels": [],
+     "balancing_exempt_channels_source": "default"
+    },
+    "HR1": {
+     "path": "data/HR1/HR1_params.json",
+     "balancing_exempt_channels": [],
+     "balancing_exempt_channels_source": "default"
+    },
+    "OP1": {
+     "path": "data/OP1/OP1_params.json",
+     "balancing_exempt_channels": [],
+     "balancing_exempt_channels_source": "default"
+    },
+    "OP2": {
+     "path": "data/OP2/OP2_params.json",
+     "balancing_exempt_channels": [],
+     "balancing_exempt_channels_source": "default"
+    }
+   },
+   "other_cases_all_default": true,
+   "srp1_case_file_default": true,
+   "note": "SRP1_params.json does not set balancing_exempt_channels; the s37 arms set it via a deep-copied params override at run time, never by editing this case file.",
+   "pass": true
+  },
+  "fixture_unpickling": {
+   "fixtures": [
+    {
+     "path": "data/SRP1/Results/P512R/cycle21_pre_setup/snapshot.pkl",
+     "loads": true
+    },
+    {
+     "path": "data/SRP1/Results/P512R/production_snapshots/FrozenSMOPF/matched_success_DSO_node7_case33_2_2025_Autumn_cycle7.pkl",
+     "loads": true
+    },
+    {
+     "path": "data/SRP1/Results/P515G3F_r2/results/FrozenSMOPF/frozen_DSO_node7_case33_2_2035_Autumn_cycle38.pkl",
+     "loads": true
+    },
+    {
+     "path": "data/SRP1/Results/FrozenSMOPF/matched_success_TSO_case9_2025_Summer_cycle7.pkl",
+     "loads": true
+    },
+    {
+     "path": "data/SRP1/Results/FrozenSMOPF/matched_success_DSO_node7_case33_2_2025_Autumn_cycle7.pkl",
+     "loads": true
+    }
+   ],
+   "pass": true
+  },
+  "hierarchical_uncoordinated_untouched": {
+   "method": "exact source-text equality (7323b2fb vs current tree) for both path functions, plus every diff hunk header in shared_resources_planning.py.",
+   "pre_change_commit": "7323b2fb",
+   "functions": {
+    "_run_operational_planning_hierarchical": {
+     "identical": true
+    },
+    "_run_operational_planning_without_coordination": {
+     "identical": true
+    }
+   },
+   "diff_hunk_count": 6,
+   "diff_hunk_headers": [
+    "@@ -2877,6 +2877,12 @@ def _run_operational_planning(planning_problem, candidate_solution, initial_stat",
+    "@@ -6544,7 +6550,13 @@ def _init_admm_freeze_state():",
+    "@@ -6553,6 +6565,7 @@ def _init_admm_freeze_state():",
+    "@@ -6645,6 +6658,23 @@ def _update_admm_penalties(tso_model, dso_models, esso_model, residual_metrics,",
+    "@@ -6667,6 +6697,10 @@ def _update_admm_penalties(tso_model, dso_models, esso_model, residual_metrics,",
+    "@@ -6711,20 +6745,41 @@ def _update_admm_penalties(tso_model, dso_models, esso_model, residual_metrics,"
+   ],
+   "pass": true
+  }
+ },
+ "all_checks_pass": true
+}

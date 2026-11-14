@@ -1,0 +1,366 @@
+{
+ "A": [
+  50088.48599600792,
+  24037.159923672676,
+  4473.180083036423
+ ],
+ "N": 83,
+ "N_definition": "the first residual pass (version 2; no non-clean reset)",
+ "N_old": 92,
+ "P_hat": 22,
+ "Q_N_old_recorded": 652554364.8333583,
+ "Q_cc_k_star": 652580922.1343696,
+ "Q_k_star": 652580074.7776817,
+ "T": [
+  [
+   93,
+   "min",
+   652553264.653682
+  ],
+  [
+   106,
+   "max",
+   652603353.139678
+  ],
+  [
+   117,
+   "min",
+   652579315.9797543
+  ],
+  [
+   128,
+   "max",
+   652583789.1598374
+  ]
+ ],
+ "W": 25,
+ "band": [
+  652579315.9797543,
+  652583789.1598374
+ ],
+ "band_width": 4473.180083036423,
+ "branch": "oscillatory",
+ "cap": 192,
+ "cap_ceiling": 300,
+ "cap_mode": "fixed",
+ "cell": "d_9246ed01",
+ "certA_parts": {
+  "P_hat": 22,
+  "W": 25,
+  "at_least_3_turning_points": true,
+  "band": [
+   652579315.9797543,
+   652583789.1598374
+  ],
+  "growth_floor": 453.9068275000001,
+  "n_turning_points": 4,
+  "range": 4473.180083036423,
+  "range_le_tau": true,
+  "swing_pairs_compared": [
+   [
+    0,
+    1
+   ],
+   [
+    1,
+    2
+   ]
+  ],
+  "swings_excluded_below_floor": [],
+  "swings_non_increasing_all_pairs": true,
+  "swings_non_increasing_all_pairs_note": "version 2's unfloored all-pairs value, REPORT-ONLY; version 6 decides on swings_non_increasing_floored",
+  "swings_non_increasing_floored": true,
+  "turning_point_floor": 453.9068275000001,
+  "window": [
+   114,
+   138
+  ],
+  "window_inside_run": true
+ },
+ "certB_parts": {
+  "L_MONO": 60,
+  "band": null,
+  "j_change": 130,
+  "last_step_abs": 473.0580984354019,
+  "last_step_times_L": 28383.485906124115,
+  "last_step_times_L_le_tau": false,
+  "lo_ge_k0_plus_K_EXCL": false,
+  "max_abs_dq": null,
+  "mean_abs_dq_first_half": null,
+  "mean_abs_dq_second_half": null,
+  "no_sign_change_in_window": false,
+  "range": null,
+  "range_le_tau": null,
+  "stationary": null,
+  "steps_decreasing": null,
+  "strictly_decreasing": null,
+  "window": [
+   79,
+   138
+  ]
+ },
+ "clean_rule": {
+  "factor": 10.0,
+  "metric_table": {
+   "complementarity": {
+    "column": "unscaled",
+    "ipopt_meaning": "max-norm of the unscaled complementarity; termination requires <= compl_inf_tol",
+    "log_line": "Complementarity",
+    "option": "compl_inf_tol"
+   },
+   "constraint_violation": {
+    "column": "unscaled",
+    "ipopt_meaning": "max-norm of the unscaled constraint violation; termination requires <= constr_viol_tol",
+    "log_line": "Constraint violation",
+    "option": "constr_viol_tol"
+   },
+   "dual_infeasibility": {
+    "column": "unscaled",
+    "ipopt_meaning": "max-norm of the unscaled dual infeasibility; termination requires <= dual_inf_tol",
+    "log_line": "Dual infeasibility",
+    "option": "dual_inf_tol"
+   },
+   "overall_nlp_error": {
+    "column": "scaled",
+    "ipopt_meaning": "the (scaled) NLP error; successful termination requires it <= tol",
+    "log_line": "Overall NLP error",
+    "option": "tol"
+   }
+  },
+  "tolerances": {
+   "esso": {
+    "compl_inf_tol": 0.0001,
+    "constr_viol_tol": 0.0001,
+    "dual_inf_tol": 1.0,
+    "tol": 1e-10
+   },
+   "network": {
+    "compl_inf_tol": 1e-06,
+    "constr_viol_tol": 0.0001,
+    "dual_inf_tol": 1.0,
+    "tol": 1e-05
+   }
+  }
+ },
+ "decided_at_cycle": 138,
+ "first_residual_pass_run": 83,
+ "gap_bound": 2269.5341375000003,
+ "gap_refusals": [],
+ "gated": true,
+ "k0": 83,
+ "k_star": 138,
+ "lapse_events": [],
+ "n_vetoes": 0,
+ "non_clean_cycles": [
+  5,
+  10,
+  14,
+  15,
+  17,
+  27,
+  39,
+  40,
+  53,
+  73,
+  81
+ ],
+ "out_of_window_reads": {
+  "W": 25,
+  "any_non_clean_read_outside_window": false,
+  "any_out_of_window_read": true,
+  "branch": "oscillatory",
+  "enumeration": "settling_criterion_v6.SUB_TEST_READS",
+  "k": 138,
+  "k0": 83,
+  "non_clean_cycles_read_outside_window": [],
+  "non_clean_turning_points_outside_window": [],
+  "reads": {
+   "P_hat": {
+    "P_hat": 22,
+    "positions": [
+     {
+      "Q_t": 652603353.139678,
+      "kind": "max",
+      "non_clean": false,
+      "outside_window": true,
+      "t": 106
+     },
+     {
+      "Q_t": 652583789.1598374,
+      "kind": "max",
+      "non_clean": false,
+      "outside_window": false,
+      "t": 128
+     }
+    ],
+    "positions_outside_window": [
+     {
+      "Q_t": 652603353.139678,
+      "kind": "max",
+      "non_clean": false,
+      "outside_window": true,
+      "t": 106
+     }
+    ],
+    "reads": "T[-1].t - T[-3].t"
+   },
+   "k0_no_boyd_lapse_span": {
+    "any_non_clean_outside_window": false,
+    "cycles": [
+     83,
+     138
+    ],
+    "non_clean_cycles_outside_window": [],
+    "outside_window": [
+     83,
+     113
+    ],
+    "reads": "boyd_k and Q not None (no lapse since k0)"
+   },
+   "sign_state_Q_span": {
+    "any_non_clean_outside_window": false,
+    "cycles": [
+     85,
+     138
+    ],
+    "non_clean_cycles_outside_window": [],
+    "outside_window": [
+     85,
+     113
+    ],
+    "reads": "Q (every step dQ_c, c >= k0 + K_EXCL, and the extremum search locating each turning point)"
+   },
+   "swings_excluded_below_growth_floor": {
+    "excluded_swing_indices": [],
+    "pairs_compared": [
+     [
+      0,
+      1
+     ],
+     [
+      1,
+      2
+     ]
+    ],
+    "reads": "(A): the swings < GROWTH_TEST_FLOOR excluded from the comparison"
+   },
+   "swings_non_increasing_all_pairs": {
+    "pairs_with_an_endpoint_outside_window": [
+     [
+      93,
+      106
+     ],
+     [
+      106,
+      117
+     ]
+    ],
+    "reads": "A[i] = |Q_T[i+1] - Q_T[i]| for every consecutive pair since k0",
+    "turning_points_outside_window": [
+     {
+      "Q_t": 652553264.653682,
+      "kind": "min",
+      "non_clean": false,
+      "outside_window": true,
+      "t": 93
+     },
+     {
+      "Q_t": 652603353.139678,
+      "kind": "max",
+      "non_clean": false,
+      "outside_window": true,
+      "t": 106
+     }
+    ],
+    "turning_points_read": [
+     {
+      "Q_t": 652553264.653682,
+      "kind": "min",
+      "non_clean": false,
+      "outside_window": true,
+      "t": 93
+     },
+     {
+      "Q_t": 652603353.139678,
+      "kind": "max",
+      "non_clean": false,
+      "outside_window": true,
+      "t": 106
+     },
+     {
+      "Q_t": 652579315.9797543,
+      "kind": "min",
+      "non_clean": false,
+      "outside_window": false,
+      "t": 117
+     },
+     {
+      "Q_t": 652583789.1598374,
+      "kind": "max",
+      "non_clean": false,
+      "outside_window": false,
+      "t": 128
+     }
+    ]
+   },
+   "turning_point_count": {
+    "n_turning_points": 4,
+    "reads": "len(T) >= 3",
+    "turning_points_outside_window": [
+     {
+      "Q_t": 652553264.653682,
+      "kind": "min",
+      "non_clean": false,
+      "outside_window": true,
+      "t": 93
+     },
+     {
+      "Q_t": 652603353.139678,
+      "kind": "max",
+      "non_clean": false,
+      "outside_window": true,
+      "t": 106
+     }
+    ]
+   },
+   "turning_point_floor": {
+    "reads": "the (B) rejections since k0: the candidate, the swing it closed, the point un-registered",
+    "rejections_outside_window": [],
+    "rejections_since_k0": []
+   }
+  },
+  "turning_points_outside_window": [
+   93,
+   106
+  ],
+  "window": [
+   114,
+   138
+  ],
+  "window_all_clean": true
+ },
+ "range": 4473.180083036423,
+ "range_over_tau": 0.9854842033713235,
+ "reading": "gamma_window_a_clean_10x_swing_floor_tau_over_10",
+ "spec_cap": 192,
+ "status": "certified",
+ "swing_floor": {
+  "F": 453.9068275000001,
+  "carries": [
+   "A_growth_test_floor",
+   "B_turning_point_floor"
+  ],
+  "growth_test_floor": 453.9068275000001,
+  "turning_point_floor": 453.9068275000001
+ },
+ "t_sum_k_star": 847.3566878695777,
+ "turning_point_floor_rejections": [],
+ "version": 6,
+ "vetoes": [],
+ "window": [
+  114,
+  138
+ ],
+ "window_all_clean": true,
+ "window_rule": "Addendum 59 Supplement (unchanged in v5): the certifying window is the last W cycles the certification test reads at k -- oscillatory [k - W + 1, k], monotone [k - L + 1, k]; every cycle of it must be all-CLEAN on all 51 blocks, otherwise certification is refused at that cycle only (certification_vetoed_non_clean) and the state is unchanged"
+}

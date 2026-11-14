@@ -1,0 +1,97 @@
+{
+ "arms": {
+  "s38_A_tau0": {
+   "interpretation_note": "Planner interpretation, recorded before running: Addendum 20 defines A by tau = 0 and B by PF balancing, and (c) authorizes a combined run only 'if both help'. A therefore isolates HP1 (proximal off, rho_pf held) and B isolates HP2 (proximal as run 1, PF balancing live); the combination is (c)'s confirmation run. If A also had PF balancing live, A would already be the combination and (c) would be redundant.",
+   "order": 1,
+   "output_root": "data/SRP1/Results/P515S38_A_TAU0_run",
+   "pf_balancing": "EXEMPT (rho_pf fixed at 0.198): balancing_exempt_channels = ['ess', 'pf']",
+   "production_change_required": "the case-file loader rejects tau <= 0 (admm_parameters.py 'must be positive'); relax to tau >= 0 after verifying no code path divides by tau or gamma; the arm sets tau by override",
+   "tau": 0.0,
+   "tau_scope": "global: tau is one parameter (proximal_regularization.tso.tau) shared by V, PF and ESS, so gamma_v = gamma_pf = gamma_ess = 0 - the TSO proximal term is off on every channel",
+   "v_balancing": "on (as run 1), with the Addendum 20 freeze rule"
+  },
+  "s38_A_tau0p25_fallback": {
+   "launch_condition": "only if s38_A_tau0 meets the TSO-instability trigger below; replaces A in the verdict; A's own run and evaluation are kept and reported",
+   "order": "1b (only if triggered)",
+   "otherwise": "identical to s38_A_tau0",
+   "output_root": "data/SRP1/Results/P515S38_A_TAU0P25_run",
+   "tau": 0.25
+  },
+  "s38_B_pfbal": {
+   "launch_condition": "after arm A (and A's fallback, if triggered) has exited; never concurrently",
+   "order": 2,
+   "output_root": "data/SRP1/Results/P515S38_B_PFBAL_run",
+   "pf_balancing": "ACTIVE: balancing_exempt_channels = ['ess']; freeze after 10 unchanged cycles (with a prior action), absolute freeze at cycle 200",
+   "tau": 1.0,
+   "v_balancing": "on (as run 1), with the Addendum 20 freeze rule"
+  },
+  "s38_C_combined": {
+   "launch_condition": "Addendum 20 (c): only if both A and B 'help' (definition below); prepared in code, launched only after the stop for review",
+   "order": "3 (NOT authorized to launch by this spec)",
+   "output_root": "data/SRP1/Results/P515S38_C_COMBINED_run",
+   "pf_balancing": "ACTIVE (balancing_exempt_channels = ['ess'])",
+   "tau": 0.0
+  }
+ },
+ "authority": [
+  "PLANNER_BRIEF_2026-09-13.md Addendum 20",
+  "P5_15_ADDENDUM19_EXPERT_REPORT.md (reviewed)"
+ ],
+ "capture_requirements": "everything v8 captured (ESS entry stride 1, EFC, recourse jump, SoH floor, Boyd terminal, interface settlement/voltage terminal) PLUS per-entry PF capture at every cycle (standard instrumentation from this stage on): for every PF consensus entry (node, year, day, power_type p/q, period): x_DSO, z_TSO current and previous, lambda_DSO, rho_pf and gamma_pf in force, and the per-entry r and s contributions exactly as get_admm_boyd_residual_metrics accumulates them (so the per-entry sums reproduce boyd_pf_r and boyd_pf_s to round-off - asserted per cycle). Also per-cycle rho/gamma per channel with action labels and freeze state. Rule-eleven checklist asserts every capture path and every configuration value (tau in force in the built TSO models' prox_gamma Params, exemption lists, freeze parameters, cap) before any solve.",
+ "certification_per_arm": {
+  "adoption": "Addendum 20 (c): if both help, one combined confirmation run (s38_C_combined), launched after review; the adopted configuration becomes the oracle and Step 3.5 follows. If exactly one helps and certifies, it is the candidate oracle configuration, pending review. If neither helps, stop for review.",
+  "certified_iff": [
+   "Boyd stop on all three channels with 3 consecutive converged cycles within 300, derived from the trajectory",
+   "no V or PF channel frozen at a rho clamp",
+   "storage-channel terminal ratio max(primal, dual) < 0.9",
+   "terminal system cost within the rule-nine bar of run 1: |Q_arm - Q_run1| <= terminal step (arm) + 256.26; valid only because both runs are then settled"
+  ],
+  "helps": "an arm HELPS iff its PF channel first passes (primal and dual, same cycle) at or before cycle 180 (at least 20% earlier than run 1's 226), whether or not it certifies"
+ },
+ "configuration_common": {
+  "base": "spec v8 arm s37_rho0p01 exactly (run 1 configuration via deep-copied parameter overrides; rho_v 0.0077, rho_pf 0.198 initial; rho_ess 0.01 fixed on every network and the ESSO; ESS exempt from balancing; shared_ess_initialization standalone - cold, no LP initialization), never by editing the case file",
+  "cap": 300,
+  "cap_reading": "Addendum 20: the cap is a budget, not a criterion",
+  "case_file": "data/SRP1/SRP1_params.json is NOT edited by this stage; the adopted configuration is written to the case file only under Addendum 20 (c), after review",
+  "freeze_rule": "Addendum 20: the cycle-60 backstop is removed for all channels. freeze_after_unchanged_cycles = 10 (Addendum 15 rule: requires at least one prior balancing action on that channel) plus an absolute freeze at cycle 200, implemented as freeze_backstop_cycle = 200 (the backstop parameter IS the absolute all-channel freeze; only its cycle changes)",
+  "unchanged": "tolerances untouched: Boyd eps_abs 1e-5 / eps_rel 1e-4, 3 consecutive converged cycles; sigma fixed 9.363536e7; al_scale_esso; S_ref 2.5 MVA; D5 ESSO AL scaling; gamma_policy tied_to_rho; balancing dead bands (5.0; PF decrease 3.0), factor 1.5, clamp [1e-4, 1e4]; network recovery policy"
+ },
+ "mechanism_under_test": "Addendum 20 reading HP1 + HP2: (HP1) the TSO proximal term with tau = 1 (gamma = rho) halves the TSO interface step every cycle, so the PF dual residual s = sqrt(rho^2+gamma^2)*||dz_TSO|| decays slowly (~0.988/cycle), invariant to rho_ess; (HP2) rho_pf = 0.198 is too large for the late phase (PF primal well inside tolerance, dual 2.7x outside at cycle 150) while the cycle-60 backstop froze balancing before the imbalance appeared. HP3 (the sqrt(2) accounting) is not a cause.",
+ "planner_risk_notes_not_predictions": [
+  "the Boyd stop also needs the ESS channel to pass for 3 consecutive cycles; at rho_ess 0.01 in s37 the ESS primal ratio hovered 0.92-1.62 after cycle 95 and passed on 13 of cycles 95-150, and Addendum 20 records the ESS channel as unsettled (two-phase schedule deferred). An arm may therefore help on PF yet fail certification on ESS, criterion (a) or (c); the report must attribute the failing criterion per channel",
+  "tau = 0 removes the proximal term on V and ESS as well as PF (tau is global); any V or ESS change in A is reported as a confound of the global parameter, not attributed to PF",
+  "in B, PF balancing decisions after the first decrease change the trajectory; the (a) zero-solve replay predicts only the first firing on the observed run-1/s37 trajectories"
+ ],
+ "predecessor": {
+  "note": "v8's configuration (rho_ess 0.01 fixed, ESS exempt, cold, standalone init) is the base; v8's arms did not certify (PF-bound at cap 150)",
+  "path": "data/SRP1/Results/P515S37/frozen_s37_rho_ess_spec_v8_f91de983.json",
+  "sha256": "f91de9836d279a08767b7d84a5ca7e37cdc7e7a3fa05a240be6e713910714e72"
+ },
+ "predictions_recorded_in_advance": [
+  "PF first pass well before 226 in at least one arm - operationalized as PF first channel pass <= 180 in at least one of A, B",
+  "A is the stronger candidate - operationalized as A's PF first pass cycle < B's (or A passes PF within 300 and B does not)"
+ ],
+ "reference": {
+  "boyd_stop_cycle": 477,
+  "matched_cycles_artifact": "data/SRP1/Results/P515S37/matched_cycles_vs_run1.json",
+  "pf_first_channel_pass_cycle": 226,
+  "reading": "certified evaluation (run 1)",
+  "run": "data/SRP1/Results/P515S35_REF_run",
+  "system_cost": 651039166.0347285,
+  "terminal_objective_step": 256.2581009864807,
+  "tso_case9_failure_rate_per_cycle": 0.12159329140461216,
+  "tso_case9_network_failures": 58
+ },
+ "report": "per arm: certification verdict and failing criteria per channel; cycle count; PF first-pass cycle (and V, ESS); rho/gamma trajectories with action labels; per-entry PF decomposition (share of s^2 and r^2 by node, year, day, p/q, period at matched cycles; late-phase per-group decay rate); cost against run 1's bar (with the settled caveat); local-solve and network failures by tier and agent; oscillation flags; EFC trajectory; whether the fallback trigger fired; the two predictions scored; the 'helps' determination; stop for review",
+ "sequencing": [
+  "(a) zero-solve balancing replay may run at any time (read-only, SolveProfileGuard armed, zero solves)",
+  "arm A, then (fallback A' if triggered), then arm B; one at a time, attached, stderr captured, exclusive lock; commit before each launch",
+  "Step 3.6 per-phase timing: implementation proceeds in parallel; its timing measurement runs only when no arm is running (never mixed with a numerical gate, Addendum 18)",
+  "stop for review after the arms"
+ ],
+ "stage": "P5.15 Addendum 20 - the PF-pace experiment (arms s38_A_tau0, s38_B_pfbal) - frozen specification v9",
+ "tso_instability_trigger_for_A_fallback": {
+  "definition": "evaluated on arm A's completed run, before arm B launches. TRIGGERED iff ANY of: (i) any unrecovered TSO (network case9) failure; (ii) TSO (case9) network-failure rate over A's cycles > 2x run 1's rate (58/477 = 0.1216 per cycle), i.e. > 0.2432 per cycle; (iii) OSCILLATION FLAG on the per-entry TSO PF consensus step (z_TSO PF, all nodes/years/days/p-q/periods): sign-change fraction > 0.2 for 10 consecutive cycles, or cosine between consecutive step vectors < 0 for 5 consecutive cycles (the v8 ESS definition applied to PF, entries with |step| < 1e-9 ignored); (iv) the same OSCILLATION FLAG on the ESS stride (v8 definition)",
+  "not_a_trigger": "failure to certify, slow PF convergence, or DSO failures alone"
+ }
+}

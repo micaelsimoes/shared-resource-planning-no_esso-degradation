@@ -1,0 +1,7173 @@
+{
+ "schema": "p515_s53_w177b_part3_checks",
+ "task": "W177b-3 (Addendum 76 Part 3)",
+ "started_utc": "2026-10-14T09:34:00.883963+00:00",
+ "repo_head": "99fdfabbc1f632df60a33545ec301290a285d857",
+ "script": {
+  "path": "p515_s53_w177b_part3_checks.py",
+  "sha256": "f7a389221601ef8880a04ea488d8d81c2e1459122e5b463c9cff90743ef7fd8d"
+ },
+ "w167_module": {
+  "path": "p515_s53_w167_nomenclature_years.py",
+  "sha256": "cae920e21ec9970953a929ae22079f5e7ad5cd1e32ee5577ac3e2067f051c662"
+ },
+ "identity": {
+  "clone_head": "51a6fb5",
+  "declared_head": "51a6fb5",
+  "head_ok": true,
+  "main_tex_sha256": "61fe630cc427d622a855e127f33f96d4be1a7362fe23552b87d2d54318a39346",
+  "sha_ok": true,
+  "main_tex_lines": 2312,
+  "lines_ok": true,
+  "main_and_bib_unmodified_in_clone": true,
+  "bibliography_sha256": "8db46aeab8bee2f271284aec0e29e3170479b4a2455682a3323ffc1635bb1f58"
+ },
+ "a_certification_rule": {
+  "appendix_region": [
+   1731,
+   1750
+  ],
+  "section_227_region": [
+   649,
+   684
+  ],
+  "clauses": [
+   {
+    "clause": "holds",
+    "manuscript": {
+     "needle": "Throughout the regime acceleration is off, the tight interior-point tail is on and the penalty",
+     "lines": [
+      1734
+     ]
+    },
+    "code": [
+     {
+      "file": "p515_s53_w118_resettle_hooks.py",
+      "line": 525,
+      "text": "def held(self, c):"
+     },
+     {
+      "file": "p515_s53_w118_resettle_hooks.py",
+      "line": 526,
+      "text": "return self.first_pass is not None and c > self.first_pass"
+     },
+     {
+      "file": "p515_s53_w101_settling_continuation_hooks.py",
+      "line": 19,
+      "text": "for every cycle > N the certifying regime HELD exactly as W98 did"
+     },
+     {
+      "file": "p515_s53_w142_resettle_v6_hooks.py",
+      "line": 45,
+      "text": "'pass (AA off, tight tail on, rho frozen); settling rule v6"
+     }
+    ]
+   },
+   {
+    "clause": "holds_start",
+    "manuscript": {
+     "needle": "from the next cycle in a fresh run or from the stopping cycle of the earlier run",
+     "lines": [
+      1734
+     ]
+    },
+    "code": [
+     {
+      "file": "p515_s53_w118_resettle_hooks.py",
+      "line": 526,
+      "text": "return self.first_pass is not None and c > self.first_pass"
+     },
+     {
+      "file": "p515_s53_w101_settling_continuation_hooks.py",
+      "line": 19,
+      "text": "for every cycle > N the certifying regime HELD exactly as W98 did"
+     },
+     {
+      "file": "p515_s53_w118_resettle_hooks.py",
+      "line": 14,
+      "text": "GATED cells (the six Phase B neighbours and the F2 pair): cycles 1..k0 (k0 = the original"
+     }
+    ]
+   },
+   {
+    "clause": "k0_reset_holds_stay",
+    "manuscript": {
+     "needle": "a later lapse of the residual test, or a cycle with a failed solve, resets $k_0$",
+     "lines": [
+      1734
+     ]
+    },
+    "code": [
+     {
+      "file": "settling_criterion_v2.py",
+      "line": 239,
+      "text": "if q is None or not boyd:"
+     },
+     {
+      "file": "settling_criterion_v2.py",
+      "line": 139,
+      "text": "self.sign = SC1._SignState()"
+     },
+     {
+      "file": "p515_s53_w118_resettle_hooks.py",
+      "line": 526,
+      "text": "return self.first_pass is not None and c > self.first_pass"
+     }
+    ]
+   },
+   {
+    "clause": "first_cycle_after_k0",
+    "manuscript": {
+     "needle": "at the first cycle $k^{\\star} > k_0$ at which",
+     "lines": [
+      1734
+     ]
+    },
+    "code": [
+     {
+      "file": "settling_criterion_v2.py",
+      "line": 258,
+      "text": "if k < self.k0 + K_EXCL:"
+     }
+    ]
+   },
+   {
+    "clause": "C1",
+    "manuscript": {
+     "needle": "\\item[(C1)] \\emph{Period}",
+     "lines": [
+      1739
+     ]
+    },
+    "code": [
+     {
+      "file": "settling_criterion.py",
+      "line": 225,
+      "text": "a_parts = {'n_turning_points': len(T), 'at_least_3_turning_points': len(T) >= 3,"
+     },
+     {
+      "file": "settling_criterion.py",
+      "line": 230,
+      "text": "p_hat = T[-1][0] - T[-3][0]"
+     }
+    ]
+   },
+   {
+    "clause": "C2",
+    "manuscript": {
+     "needle": "\\item[(C2)] \\emph{Damping}",
+     "lines": [
+      1740
+     ]
+    },
+    "code": [
+     {
+      "file": "settling_criterion_v6.py",
+      "line": 160,
+      "text": "ok = all(A[j2] <= A[j1] for j1, j2 in pairs)"
+     },
+     {
+      "file": "settling_criterion_v6.py",
+      "line": 158,
+      "text": "kept = [i for i, a in enumerate(A) if a >= floor]"
+     }
+    ]
+   },
+   {
+    "clause": "C3",
+    "manuscript": {
+     "needle": "\\item[(C3)] \\emph{Settling}",
+     "lines": [
+      1741
+     ]
+    },
+    "code": [
+     {
+      "file": "settling_criterion.py",
+      "line": 107,
+      "text": "return max(W_MIN, int(math.ceil(W_FACTOR * p_hat)))"
+     },
+     {
+      "file": "settling_criterion_v2.py",
+      "line": 169,
+      "text": "a_parts.update({'P_hat': p_hat, 'W': w, 'window': [lo, k], 'window_inside_run': lo >= self.k0})"
+     },
+     {
+      "file": "settling_criterion_v2.py",
+      "line": 172,
+      "text": "a_parts.update({'range': rng, 'range_le_tau': rng <= TAU, 'band': [mn, mx]})"
+     }
+    ]
+   },
+   {
+    "clause": "C4",
+    "manuscript": {
+     "needle": "\\item[(C4)] \\emph{Consensus}",
+     "lines": [
+      1742
+     ]
+    },
+    "code": [
+     {
+      "file": "settling_criterion_v2.py",
+      "line": 74,
+      "text": "GAP_BOUND = TAU / 2.0"
+     },
+     {
+      "file": "settling_criterion_v2.py",
+      "line": 277,
+      "text": "gap_ok = t_sum is not None and abs(t_sum) <= GAP_BOUND"
+     },
+     {
+      "file": "p515_s53_w118_resettle_hooks.py",
+      "line": 366,
+      "text": "term = w * pi * (xd[p] - zt[p])"
+     },
+     {
+      "file": "p515_s53_w118_resettle_hooks.py",
+      "line": 348,
+      "text": "out[(n, y, d, p)] = (srp_module._expected_market_price(tso_model[y][d], network, p), w)"
+     },
+     {
+      "file": "shared_resources_planning.py",
+      "line": 1059,
+      "text": "def _expected_market_price(model, network, p):"
+     }
+    ]
+   },
+   {
+    "clause": "C5",
+    "manuscript": {
+     "needle": "\\item[(C5)] \\emph{Clean evidence}",
+     "lines": [
+      1743
+     ]
+    },
+    "code": [
+     {
+      "file": "settling_criterion_v5.py",
+      "line": 225,
+      "text": "if exit_class == OPTIMAL_CLASS:"
+     },
+     {
+      "file": "settling_criterion_v5.py",
+      "line": 230,
+      "text": "elif attempt != PRIMARY_ATTEMPT:"
+     },
+     {
+      "file": "settling_criterion_v5.py",
+      "line": 232,
+      "text": "elif all(float(metrics[m]) <= CLEAN_FACTOR * tols[METRIC_TABLE[m]['option']] for m in METRICS):"
+     },
+     {
+      "file": "settling_criterion_v5.py",
+      "line": 89,
+      "text": "'network': {'tol': 1e-5, 'dual_inf_tol': 1.0, 'constr_viol_tol': 1e-4, 'compl_inf_tol': 1e-6},"
+     },
+     {
+      "file": "settling_criterion_v5.py",
+      "line": 90,
+      "text": "'esso': {'tol': 1e-10, 'dual_inf_tol': 1.0, 'constr_viol_tol': 1e-4, 'compl_inf_tol': 1e-4},"
+     },
+     {
+      "file": "settling_criterion_v6.py",
+      "line": 284,
+      "text": "hit = self._non_clean_in(a_parts['window'])"
+     }
+    ]
+   },
+   {
+    "clause": "noise_step",
+    "manuscript": {
+     "needle": "a step smaller than $\\tau/100$ carries no sign",
+     "lines": [
+      1748
+     ]
+    },
+    "code": [
+     {
+      "file": "settling_criterion.py",
+      "line": 58,
+      "text": "EPS0 = TAU / 100.0"
+     },
+     {
+      "file": "settling_criterion.py",
+      "line": 98,
+      "text": "if abs(dq) < eps0:"
+     }
+    ]
+   },
+   {
+    "clause": "noise_swing",
+    "manuscript": {
+     "needle": "a swing smaller than $\\tau/10$ is treated as noise",
+     "lines": [
+      1748
+     ]
+    },
+    "code": [
+     {
+      "file": "settling_criterion_v6.py",
+      "line": 80,
+      "text": "SWING_FLOOR = TAU / 10.0"
+     },
+     {
+      "file": "settling_criterion_v6.py",
+      "line": 196,
+      "text": "if swing < self.floor:"
+     },
+     {
+      "file": "settling_criterion_v6.py",
+      "line": 200,
+      "text": "self.j_change = self.jc_stack.pop()"
+     }
+    ]
+   },
+   {
+    "clause": "k_excl",
+    "manuscript": {
+     "needle": "the first three cycles after $k_0$ are not counted",
+     "lines": [
+      1748
+     ]
+    },
+    "code": [
+     {
+      "file": "settling_criterion.py",
+      "line": 59,
+      "text": "K_EXCL = 3"
+     },
+     {
+      "file": "settling_criterion_v2.py",
+      "line": 258,
+      "text": "if k < self.k0 + K_EXCL:"
+     }
+    ]
+   },
+   {
+    "clause": "monotone_window",
+    "manuscript": {
+     "needle": "over a window of $2P_{\\max}$ cycles after $k_0$",
+     "lines": [
+      1748
+     ]
+    },
+    "code": [
+     {
+      "file": "settling_criterion_v2.py",
+      "line": 175,
+      "text": "lo = k - self.l_mono + 1"
+     },
+     {
+      "file": "settling_criterion_v2.py",
+      "line": 177,
+      "text": "'lo_ge_k0_plus_K_EXCL': lo >= self.k0 + K_EXCL,"
+     },
+     {
+      "file": "settling_criterion_v2.py",
+      "line": 178,
+      "text": "'j_change': s.j_change, 'no_sign_change_in_window': s.j_change is None or s.j_change < lo,"
+     },
+     {
+      "file": "p515_s53_w118_resettle_hooks.py",
+      "line": 70,
+      "text": "P_MAX = 30"
+     }
+    ]
+   },
+   {
+    "clause": "M1",
+    "manuscript": {
+     "needle": "(M1) its steps are decreasing",
+     "lines": [
+      1748
+     ]
+    },
+    "code": [
+     {
+      "file": "settling_criterion_v2.py",
+      "line": 185,
+      "text": "steps = [abs(self._dq(c)) for c in range(lo, k + 1)]"
+     },
+     {
+      "file": "settling_criterion_v2.py",
+      "line": 192,
+      "text": "'steps_decreasing': bool(max(steps) < EPS0 or m2 < m1)})"
+     }
+    ]
+   },
+   {
+    "clause": "M2",
+    "manuscript": {
+     "needle": "(M2) its range is at most $\\tau$",
+     "lines": [
+      1748
+     ]
+    },
+    "code": [
+     {
+      "file": "settling_criterion_v2.py",
+      "line": 189,
+      "text": "b_parts.update({'range': rng, 'range_le_tau': rng <= TAU, 'band': [mn, mx], 'max_abs_dq': max(steps),"
+     }
+    ]
+   },
+   {
+    "clause": "M3",
+    "manuscript": {
+     "needle": "(M3) $|\\text{last step}| \\cdot 2P_{\\max} \\le \\tau$",
+     "lines": [
+      1748
+     ]
+    },
+    "code": [
+     {
+      "file": "settling_criterion_v2.py",
+      "line": 182,
+      "text": "'last_step_times_L_le_tau': last * self.l_mono <= TAU, 'band': None}"
+     }
+    ]
+   },
+   {
+    "clause": "M_C4_C5",
+    "manuscript": {
+     "needle": "and (C4)--(C5) hold on that window",
+     "lines": [
+      1748
+     ]
+    },
+    "code": [
+     {
+      "file": "settling_criterion_v6.py",
+      "line": 291,
+      "text": "hit = self._non_clean_in(b_parts['window'])"
+     },
+     {
+      "file": "settling_criterion_v2.py",
+      "line": 275,
+      "text": "if cert_a or cert_b:"
+     }
+    ]
+   },
+   {
+    "clause": "branch_priority",
+    "manuscript": {
+     "needle": "is certified instead on the monotone branch",
+     "lines": [
+      1748
+     ]
+    },
+    "code": [
+     {
+      "file": "settling_criterion_v6.py",
+      "line": 262,
+      "text": "cert_b = (not cert_a) and b_ok"
+     }
+    ]
+   },
+   {
+    "clause": "uncertified_gap",
+    "manuscript": {
+     "needle": "its consensus gap is $|t_{\\text{sum}}|$ at the cap",
+     "lines": [
+      1748
+     ]
+    },
+    "code": [
+     {
+      "file": "p515_s53_w132_resettle_v3_campaign.py",
+      "line": 1017,
+      "text": "'gap': None if certified or t is None else abs(t),"
+     }
+    ]
+   },
+   {
+    "clause": "uncertified_slack",
+    "manuscript": {
+     "needle": "its settling slack is the movement of the objective between the certification cycle",
+     "lines": [
+      1748
+     ]
+    },
+    "code": [
+     {
+      "file": "p515_s53_w132_resettle_v3_campaign.py",
+      "line": 1000,
+      "text": "rep.update({'Q_N_old': q_n_old, 's_signed': (q_end - q_n_old) if q_end is not None else None,"
+     },
+     {
+      "file": "p515_s53_w132_resettle_v3_campaign.py",
+      "line": 1018,
+      "text": "'slack': None if certified else (abs(s) if (rep.get('gated') and s is not None) else None),"
+     }
+    ]
+   }
+  ],
+  "uncertified_decisions_v6_ext_a64": [
+   {
+    "cell": "d_36686489",
+    "cap_mode": "fixed",
+    "k_cap": 191,
+    "reasons": [
+     "swings_growing",
+     "range_above_tau",
+     "monotone_window_not_reached"
+    ],
+    "path": "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_d_36686489/evals/4de61708589e6e26_d_36686489/resettle_decision.json",
+    "sha256": "68f525214af7e9bdeee203861bf2838288c7d02e42112a30475f2363d946d53c"
+   },
+   {
+    "cell": "d_a12d95a2",
+    "cap_mode": "fixed",
+    "k_cap": 203,
+    "reasons": [
+     "insufficient_turning_points",
+     "monotone_window_not_reached"
+    ],
+    "path": "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_d_a12d95a2/evals/9bc66d9ed4863f39_d_a12d95a2/resettle_decision.json",
+    "sha256": "3d394572f80bed8a1440f10d6bb4a265a469d5ed056c43d075c32e23f26f84c5"
+   },
+   {
+    "cell": "d_f759dd48",
+    "cap_mode": "fixed",
+    "k_cap": 198,
+    "reasons": [
+     "swings_growing",
+     "range_above_tau",
+     "monotone_window_not_reached"
+    ],
+    "path": "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_d_f759dd48/evals/5f1b1aa621d3450a_d_f759dd48/resettle_decision.json",
+    "sha256": "2bda1506c1035dac92161436566c0a88b9a0554b863f66d557dbe8ecbe830568"
+   },
+   {
+    "cell": "h_f9eae48f",
+    "cap_mode": "fixed",
+    "k_cap": 194,
+    "reasons": [
+     "gap_clause"
+    ],
+    "path": "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_h_f9eae48f/evals/aed2d618a19ca483_h_f9eae48f/resettle_decision.json",
+    "sha256": "462b2f3f04b97ef28265c079b65868cec415536cbf5732556355188156784c7b"
+   },
+   {
+    "cell": "j_5f3cccb4",
+    "cap_mode": "fixed",
+    "k_cap": 270,
+    "reasons": [
+     "insufficient_turning_points",
+     "monotone_window_not_reached"
+    ],
+    "path": "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_j_5f3cccb4/evals/cc7f005909db6741_j_5f3cccb4/resettle_decision.json",
+    "sha256": "a4c1cb0e72faca177a037751858b35d5d08eecb05965e6e5026de3d9ee783d09"
+   },
+   {
+    "cell": "j_f3aa335e",
+    "cap_mode": "fixed",
+    "k_cap": 260,
+    "reasons": [
+     "swings_growing",
+     "range_above_tau"
+    ],
+    "path": "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_j_f3aa335e/evals/af066d6bc9fdb74d_j_f3aa335e/resettle_decision.json",
+    "sha256": "6ff801e2d1d3a70a63dc7bd77224e64224d4592c0fac55ba78ea778b0ec19e58"
+   },
+   {
+    "cell": "l_0ee93aca",
+    "cap_mode": "fixed",
+    "k_cap": 284,
+    "reasons": [
+     "insufficient_turning_points",
+     "monotone_window_not_reached"
+    ],
+    "path": "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_l_0ee93aca/evals/86d27f42e98503ca_l_0ee93aca/resettle_decision.json",
+    "sha256": "8379a34e4c553a72051ea38c94debcd128e08d8c0972c0034708c69610df4ae9"
+   },
+   {
+    "cell": "l_45aa25a6",
+    "cap_mode": "fixed",
+    "k_cap": 291,
+    "reasons": [
+     "gap_clause"
+    ],
+    "path": "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_l_45aa25a6/evals/296e09ff97ac2db4_l_45aa25a6/resettle_decision.json",
+    "sha256": "1b1b4ed460f0f38307f1a56e30012bee196d3d755681a19528a4bd0030974454"
+   },
+   {
+    "cell": "l_7c455554",
+    "cap_mode": "fixed",
+    "k_cap": 282,
+    "reasons": [
+     "gap_clause"
+    ],
+    "path": "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_l_7c455554/evals/9906389c1cd682a9_l_7c455554/resettle_decision.json",
+    "sha256": "cfb368d92e620481577fdcf03d3919a42ccf1b092d8302ad966d15d6212b8465"
+   },
+   {
+    "cell": "l_b2251bc5",
+    "cap_mode": "fixed",
+    "k_cap": 320,
+    "reasons": [
+     "gap_clause"
+    ],
+    "path": "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_l_b2251bc5/evals/abf4ac0af85dcb5e_l_b2251bc5/resettle_decision.json",
+    "sha256": "661cef9da81d576297844372ef1828da72198419fde2b3eddef680d758a61245"
+   }
+  ],
+  "all_uncertified_are_gated": true,
+  "accepted_clause_absent": {
+   "paragraphs_v5_has_it": true,
+   "main_tex_lines": []
+  },
+  "section_227_summary": [
+   {
+    "id": "residual_test",
+    "manuscript": {
+     "needle": "pass the absolute-plus-relative test of Boyd et al.",
+     "lines": [
+      674
+     ]
+    }
+   },
+   {
+    "id": "successful_solves",
+    "manuscript": {
+     "needle": "in a cycle in which every local solve is successful",
+     "lines": [
+      674
+     ]
+    }
+   },
+   {
+    "id": "regime_opened",
+    "manuscript": {
+     "needle": "so the residual pass only opens a certifying regime, with the coordination settings held fixed",
+     "lines": [
+      674
+     ]
+    }
+   },
+   {
+    "id": "period",
+    "manuscript": {
+     "needle": "the oscillation must have a measured period",
+     "lines": [
+      674
+     ]
+    }
+   },
+   {
+    "id": "growth",
+    "manuscript": {
+     "needle": "must not be growing (the growth test)",
+     "lines": [
+      674
+     ]
+    }
+   },
+   {
+    "id": "tau_over_period",
+    "manuscript": {
+     "needle": "must stay within a tolerance $\\tau$ over that period",
+     "lines": [
+      674
+     ]
+    }
+   },
+   {
+    "id": "gap",
+    "manuscript": {
+     "needle": "must be within $\\tau/2$ (the gap clause)",
+     "lines": [
+      674
+     ]
+    }
+   },
+   {
+    "id": "clean",
+    "manuscript": {
+     "needle": "the evidence must come from cleanly solved cycles",
+     "lines": [
+      674
+     ]
+    }
+   },
+   {
+    "id": "monotone",
+    "manuscript": {
+     "needle": "is certified instead on a monotone branch that bounds its remaining descent",
+     "lines": [
+      674
+     ]
+    }
+   },
+   {
+    "id": "pointer",
+    "manuscript": {
+     "needle": "The rule is stated in full in \\ref{app:admm_updated_certification}",
+     "lines": [
+      674
+     ]
+    }
+   },
+   {
+    "id": "uncertified",
+    "manuscript": {
+     "needle": "is reported in an uncertified form, with its consensus gap at the cap and its settling slack",
+     "lines": [
+      674
+     ]
+    }
+   },
+   {
+    "id": "determinacy_certified",
+    "manuscript": {
+     "needle": "when it is at least $\\max\\{3\\,b, 2\\tau\\}$",
+     "lines": [
+      682
+     ]
+    }
+   },
+   {
+    "id": "determinacy_uncertified",
+    "manuscript": {
+     "needle": "exceeds three times the largest of their consensus gaps and settling slacks, in both gross and gap-corrected terms",
+     "lines": [
+      682
+     ]
+    }
+   }
+  ],
+  "determinacy_code": [
+   {
+    "file": "settling_criterion_v6.py",
+    "line": 371,
+    "text": "return abs(margin) >= thr, thr,"
+   },
+   {
+    "file": "p515_s53_w132_resettle_v3_campaign.py",
+    "line": 1076,
+    "text": "bar = 3.0 * max(comps)"
+   },
+   {
+    "file": "p515_s53_w132_resettle_v3_campaign.py",
+    "line": 1077,
+    "text": "det = abs(d_q) > bar and m_cc > bar"
+   }
+  ],
+  "hold_statements": [
+   {
+    "needle": "are frozen from the cycle after the first residual pass, or from the stopping cycle of the earlier run",
+    "lines": [
+     1710
+    ]
+   },
+   {
+    "needle": "the holds start at the first passing cycle",
+    "lines": [
+     1718
+    ]
+   },
+   {
+    "needle": "from the cycle after $k_0$ on (or after the earlier run's stopping cycle in a continued evaluation)",
+    "lines": [
+     1723
+    ]
+   },
+   {
+    "needle": "the certifying regime holds the tail on from the cycle after $k_0$",
+    "lines": [
+     1727
+    ]
+   },
+   {
+    "needle": "from the next cycle in a fresh run or from the stopping cycle of the earlier run",
+    "lines": [
+     1734
+    ]
+   }
+  ],
+  "v6_spec": {
+   "path": "data/SRP1/Results/P515S53/w142_resettle_v6/frozen_s53_resettle_spec_v6_96c23404.json",
+   "sha256": "96c234045f15fa4f18ba7149b3b4a39c749f256657d436064c320b04d546e041",
+   "caps_above_300": {
+    "l_2ab0ce2d": 437,
+    "l_b2251bc5": 320
+   },
+   "holds_after_first_residual_pass": {
+    "AA": "off (production's own off branch), every cycle > k0_run, even across a lapse",
+    "rho": "frozen",
+    "same_as": "W101 / W105 / W118 / W132 / W137 / W139",
+    "tail": "on"
+   },
+   "N_and_holds_and_dynamic_cap": "keyed on the first residual pass under the version-2 definition",
+   "n_gated": 30,
+   "n_ungated": 4,
+   "ungated": [
+    "g_37b5c499",
+    "g_47dce43c",
+    "g_48749148",
+    "g_9abf31d4"
+   ],
+   "gated_k0_is_N_old_minus_9_on_the_two_cells": {
+    "l_2ab0ce2d": true,
+    "l_b2251bc5": true
+   }
+  },
+  "cells_with_cap_above_300": {
+   "l_2ab0ce2d": {
+    "status": "certified",
+    "k_star": 400,
+    "k_cap": null,
+    "k0": 328,
+    "N": 328,
+    "cap": 437,
+    "cap_mode": "fixed",
+    "branch": "monotone",
+    "reasons": null,
+    "path": "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_l_2ab0ce2d/evals/75266862b990d2eb_l_2ab0ce2d/resettle_decision.json",
+    "sha256": "0e27d5889bff41f15564bd64ea26d7082800c6af838cc77184b0b72abc96e683"
+   },
+   "l_b2251bc5": {
+    "status": "uncertified",
+    "k_star": null,
+    "k_cap": 320,
+    "k0": 211,
+    "N": 211,
+    "cap": 320,
+    "cap_mode": "fixed",
+    "branch": null,
+    "reasons": [
+     "gap_clause"
+    ],
+    "path": "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_l_b2251bc5/evals/abf4ac0af85dcb5e_l_b2251bc5/resettle_decision.json",
+    "sha256": "661cef9da81d576297844372ef1828da72198419fde2b3eddef680d758a61245"
+   }
+  }
+ },
+ "b_settings": {
+  "region_3_6": [
+   1123,
+   1139
+  ],
+  "region_A7": [
+   1811,
+   1822
+  ],
+  "settings": [
+   {
+    "id": "ipopt_version",
+    "region": "A.7",
+    "needle": "IPOPT~3.14.18",
+    "lines": [
+     1815
+    ],
+    "printed": "3.14.18",
+    "source": {
+     "file": "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_c_156ce2d1/evals/3a4c10c859114e20_c_156ce2d1/stdout_s39_D.log",
+     "what": "IPOPT banner"
+    },
+    "source_value": [
+     "3.14.18"
+    ],
+    "match": true,
+    "note": null
+   },
+   {
+    "id": "pyomo_version",
+    "region": "A.7",
+    "needle": "Pyomo~6.9.5",
+    "lines": [
+     1815
+    ],
+    "printed": "6.9.5",
+    "source": {
+     "what": "importlib.metadata.version(\"pyomo\") in the canonical env"
+    },
+    "source_value": "6.9.5",
+    "match": true,
+    "note": null
+   },
+   {
+    "id": "python_version",
+    "region": "A.7",
+    "needle": "Python~3.11.11",
+    "lines": [
+     1815
+    ],
+    "printed": "3.11.11",
+    "source": {
+     "what": "sys.version_info of the canonical interpreter"
+    },
+    "source_value": "3.11.11",
+    "match": true,
+    "note": null
+   },
+   {
+    "id": "network_linear_solver",
+    "region": "A.7",
+    "needle": "the network models with the MA97 linear solver",
+    "lines": [
+     1815
+    ],
+    "printed": "ma97",
+    "source": {
+     "files": [
+      "data/SRP1/case9/case9_params.json",
+      "data/SRP1/case33_1/case33_1_params.json",
+      "data/SRP1/case33_2/case33_2_params.json",
+      "data/SRP1/case33_3/case33_3_params.json"
+     ],
+     "field": "solver.options.linear_solver"
+    },
+    "source_value": [
+     "ma97",
+     "ma97",
+     "ma97",
+     "ma97"
+    ],
+    "match": true,
+    "note": null
+   },
+   {
+    "id": "esso_linear_solver",
+    "region": "A.7",
+    "needle": "the storage agent with MA57",
+    "lines": [
+     1815
+    ],
+    "printed": "ma57",
+    "source": {
+     "file": "data/SRP1/SharedESS/SRP1_ESS_Params.json",
+     "field": "solver.options.linear_solver"
+    },
+    "source_value": "ma57",
+    "match": true,
+    "note": null
+   },
+   {
+    "id": "single_threaded",
+    "region": "A.7",
+    "needle": "single-threaded throughout",
+    "lines": [
+     1815
+    ],
+    "printed": "single-threaded",
+    "source": {
+     "file": "data/SRP1/Results/P515S53/w90_3x3/campaign_s53_w91_3x3_pair/campaign_spec_s53_w91_3x3_pair_231558f0.json",
+     "field": "thread_caps",
+     "also": "the v6 cell campaign specs carry the same field"
+    },
+    "source_value": {
+     "MKL_NUM_THREADS": "1",
+     "NUMEXPR_NUM_THREADS": "1",
+     "OMP_NUM_THREADS": "1",
+     "OPENBLAS_NUM_THREADS": "1",
+     "VECLIB_MAXIMUM_THREADS": "1"
+    },
+    "match": true,
+    "note": null
+   },
+   {
+    "id": "network_tol",
+    "region": "A.7",
+    "needle": "a convergence tolerance of $10^{-5}$",
+    "lines": [
+     1815
+    ],
+    "printed": 1e-05,
+    "source": {
+     "files": [
+      "data/SRP1/case9/case9_params.json",
+      "data/SRP1/case33_1/case33_1_params.json",
+      "data/SRP1/case33_2/case33_2_params.json",
+      "data/SRP1/case33_3/case33_3_params.json"
+     ],
+     "field": "solver.options.tol"
+    },
+    "source_value": [
+     1e-05,
+     1e-05,
+     1e-05,
+     1e-05
+    ],
+    "match": true,
+    "note": null
+   },
+   {
+    "id": "network_acceptable_tol",
+    "region": "A.7",
+    "needle": "an acceptable tolerance of $10^{-4}$",
+    "lines": [
+     1815
+    ],
+    "printed": 0.0001,
+    "source": {
+     "files": [
+      "data/SRP1/case9/case9_params.json",
+      "data/SRP1/case33_1/case33_1_params.json",
+      "data/SRP1/case33_2/case33_2_params.json",
+      "data/SRP1/case33_3/case33_3_params.json"
+     ],
+     "field": "solver.options.acceptable_tol"
+    },
+    "source_value": [
+     0.0001,
+     0.0001,
+     0.0001,
+     0.0001
+    ],
+    "match": true,
+    "note": null
+   },
+   {
+    "id": "network_compl_inf_tol",
+    "region": "A.7",
+    "needle": "a complementarity tolerance of $5 \\times 10^{-4}$ (TSO) and $10^{-4}$ (DSOs)",
+    "lines": [
+     1815
+    ],
+    "printed": {
+     "TSO": 0.0005,
+     "DSO": 0.0001
+    },
+    "source": {
+     "file": "data/SRP1/case9/case9_params.json",
+     "field": "solver.options.compl_inf_tol",
+     "DSOs": "not passed in case33_* -> IPOPT 3.14 default 1e-4 (settling_criterion_v5.TOLERANCE_SOURCES)",
+     "anchor": {
+      "file": "settling_criterion_v5.py",
+      "line": 100,
+      "text": "'compl_inf_tol': ('passed by the convergence-depth tail: 1e-6"
+     }
+    },
+    "source_value": {
+     "TSO": 0.0005,
+     "DSO_passed": [
+      null,
+      null,
+      null
+     ]
+    },
+    "match": true,
+    "note": null
+   },
+   {
+    "id": "network_max_iter",
+    "region": "A.7",
+    "needle": "and at most 500 iterations",
+    "lines": [
+     1815
+    ],
+    "printed": 500,
+    "source": {
+     "file": "network.py",
+     "line": 559,
+     "text": "options['max_iter'] = 500"
+    },
+    "source_value": 500,
+    "match": true,
+    "note": null
+   },
+   {
+    "id": "tail_compl",
+    "region": "A.7",
+    "needle": "the tight tail sets the complementarity tolerance to $10^{-6}$",
+    "lines": [
+     1815
+    ],
+    "printed": 1e-06,
+    "source": {
+     "file": "data/SRP1/Results/P515S53/w142_resettle_v6/frozen_s53_resettle_spec_v6_96c23404.json",
+     "field": "cells.*.configuration.convergence_depth_tail.compl_inf_tol"
+    },
+    "source_value": {
+     "compl_inf_tol": 1e-06,
+     "enabled": true
+    },
+    "match": true,
+    "note": null
+   },
+   {
+    "id": "esso_tol",
+    "region": "A.7",
+    "needle": "The storage agent solves to a tolerance of $10^{-10}$ with an acceptable tolerance of $10^{-9}$",
+    "lines": [
+     1815
+    ],
+    "printed": {
+     "tol": 1e-10,
+     "acceptable_tol": 1e-09
+    },
+    "source": {
+     "file": "shared_energy_storage_data.py",
+     "line": 1082,
+     "text": "ESSO_TOL_OVERRIDES = {'tol': 1e-10, 'acceptable_tol': 1e-9}"
+    },
+    "source_value": {
+     "tol": 1e-10,
+     "acceptable_tol": 1e-09
+    },
+    "match": true,
+    "note": "case file tol 1e-6 / acceptable_tol 1e-5 are overridden for every ESSO solve (option_overrides)"
+   },
+   {
+    "id": "retry_triggers",
+    "region": "A.7",
+    "needle": "A solve that ends at the iteration limit, infeasible or in a solver error is retried",
+    "lines": [
+     1815
+    ],
+    "printed": [
+     "maxIterations",
+     "infeasible",
+     "internalSolverError"
+    ],
+    "source": [
+     {
+      "file": "network.py",
+      "line": 786,
+      "text": "po.TerminationCondition.maxIterations,"
+     },
+     {
+      "file": "shared_energy_storage_data.py",
+      "line": 1230,
+      "text": "po.TerminationCondition.maxIterations,"
+     }
+    ],
+    "source_value": [
+     "maxIterations",
+     "infeasible",
+     "internalSolverError"
+    ],
+    "match": true,
+    "note": null
+   },
+   {
+    "id": "recovery_tso",
+    "region": "A.7",
+    "needle": "TSO: acceptable tolerance $10^{-4}$ after one acceptable iteration",
+    "lines": [
+     1815
+    ],
+    "printed": {
+     "acceptable_tol": 0.0001,
+     "acceptable_iter": 1
+    },
+    "source": {
+     "file": "data/SRP1/case9/case9_params.json",
+     "field": "solver.recovery_options"
+    },
+    "source_value": {
+     "acceptable_tol": 0.0001,
+     "acceptable_iter": 1
+    },
+    "match": true,
+    "note": null
+   },
+   {
+    "id": "recovery_dso",
+    "region": "A.7",
+    "needle": "DSOs: their primary settings",
+    "lines": [
+     1815
+    ],
+    "printed": "primary settings (cold)",
+    "source": {
+     "files": [
+      "data/SRP1/case33_1/case33_1_params.json",
+      "data/SRP1/case33_2/case33_2_params.json",
+      "data/SRP1/case33_3/case33_3_params.json"
+     ],
+     "field": "solver.recovery_options",
+     "code": {
+      "file": "network.py",
+      "line": 976,
+      "text": "recovery_options['warm_start_init_point'] = 'no'"
+     }
+    },
+    "source_value": [
+     null,
+     {},
+     {}
+    ],
+    "match": true,
+    "note": "case33_1 has no recovery_options key, case33_2/3 an empty dict"
+   },
+   {
+    "id": "recovery_esso",
+    "region": "A.7",
+    "needle": "storage agent: acceptable tolerance $10^{-9}$ after one iteration",
+    "lines": [
+     1815
+    ],
+    "printed": {
+     "acceptable_tol": 1e-09,
+     "acceptable_iter": 1
+    },
+    "source": {
+     "file": "data/SRP1/SharedESS/SRP1_ESS_Params.json",
+     "field": "solver.recovery_options",
+     "override": {
+      "file": "shared_energy_storage_data.py",
+      "line": 1285,
+      "text": "recovery_options.update(esso_option_overrides)"
+     }
+    },
+    "source_value": {
+     "case_file": {
+      "acceptable_tol": 0.0001,
+      "acceptable_iter": 1
+     },
+     "after_override_acceptable_tol": 1e-09
+    },
+    "match": true,
+    "note": null
+   },
+   {
+    "id": "recovery_tier2",
+    "region": "A.7",
+    "needle": "and then once more with the adaptive barrier strategy",
+    "lines": [
+     1815
+    ],
+    "printed": "mu_strategy='adaptive'",
+    "source": [
+     {
+      "file": "network.py",
+      "line": 999,
+      "text": "tier2_options['mu_strategy'] = 'adaptive'"
+     },
+     {
+      "file": "shared_energy_storage_data.py",
+      "line": 1335,
+      "text": "tier2_options['mu_strategy'] = 'adaptive'"
+     }
+    ],
+    "source_value": "adaptive",
+    "match": true,
+    "note": null
+   },
+   {
+    "id": "sigma",
+    "region": "A.7",
+    "needle": "common objective scale $\\sigma = 93{,}635{,}360$",
+    "lines": [
+     1819
+    ],
+    "printed": 93635360.0,
+    "source": {
+     "file": "data/SRP1/SRP1_params.json",
+     "field": "admm.objective_scale",
+     "line": 49
+    },
+    "source_value": 93635360.0,
+    "match": true,
+    "note": null
+   },
+   {
+    "id": "s_ref",
+    "region": "A.7",
+    "needle": "reference converter rating $S^{\\text{ref}} = 2.5$~MVA",
+    "lines": [
+     1819
+    ],
+    "printed": 2.5,
+    "source": {
+     "file": "data/SRP1/SRP1_params.json",
+     "field": "admm.shared_ess_reference_rating_mva",
+     "line": 50
+    },
+    "source_value": 2.5,
+    "match": true,
+    "note": null
+   },
+   {
+    "id": "interface_ratings",
+    "region": "A.7",
+    "needle": "$R^{\\text{I}} = 2.0$, $1.0$ and $1.5$~p.u. (200, 100 and 150~MVA",
+    "lines": [
+     1819
+    ],
+    "printed": [
+     2.0,
+     1.0,
+     1.5
+    ],
+    "source": {
+     "audit": "P5_15_W172_APPENDIX_A_AUDIT.md section \"R^I for section 3.5\" (case33_<i>_<year>.json transformers[1].rating; network.get_interface_branch_rating)",
+     "line": 32
+    },
+    "source_value": [
+     2.0,
+     1.0,
+     1.5
+    ],
+    "match": true,
+    "note": "not re-derived here; W172 read the case JSONs and the per-cycle worst_pf_primal_rating"
+   },
+   {
+    "id": "kappa",
+    "region": "A.7",
+    "needle": "$227{,}211$ at the single-scenario instance, $386{,}259$ at the multi-scenario instance",
+    "lines": [
+     1819
+    ],
+    "printed": {
+     "single": 227211,
+     "multi": 386259
+    },
+    "source": {
+     "logs": [
+      "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_c_156ce2d1/evals/3a4c10c859114e20_c_156ce2d1/stdout_s39_D.log",
+      "data/SRP1/Results/P515S53/w90_3x3/campaign_s53_w91_3x3_pair/evals/f6e9cd53fdbb8ee8_x0/child_stdout.log"
+     ],
+     "line": "[ADMM ESSO AL SCALE] ... al_scale_esso=",
+     "mode": "sigma_over_median_block_weight"
+    },
+    "source_value": {
+     "single": 227211.0,
+     "multi": 386258.7
+    },
+    "match": true,
+    "note": null
+   },
+   {
+    "id": "rho0",
+    "region": "A.7",
+    "needle": "initial penalties $\\rho^{V}_0 = 0.0077$, $\\rho^{\\text{PF}}_0 = 0.198$, $\\rho^{\\text{E}}_0 = 0.01$",
+    "lines": [
+     1819
+    ],
+    "printed": {
+     "v": 0.0077,
+     "pf": 0.198,
+     "ess": 0.01
+    },
+    "source": {
+     "file": "data/SRP1/SRP1_params.json",
+     "field": "admm.rho"
+    },
+    "source_value": {
+     "v": [
+      0.0077
+     ],
+     "pf": [
+      0.198
+     ],
+     "ess": [
+      0.01
+     ]
+    },
+    "match": true,
+    "note": null
+   },
+   {
+    "id": "residual_balancing",
+    "region": "A.7",
+    "needle": "residual balancing with ratio 5 (3 for the decrease of",
+    "lines": [
+     1819
+    ],
+    "printed": {
+     "ratio": 5,
+     "ratio_pf_decrease": 3,
+     "factor": 1.5,
+     "bounds": [
+      0.0001,
+      10000.0
+     ],
+     "freeze_after": 10,
+     "backstop": 200,
+     "ess_exempt": {
+      "dual_ratio_below": 1.0,
+      "consecutive_cycles": 5
+     }
+    },
+    "source": {
+     "file": "data/SRP1/SRP1_params.json",
+     "field": "admm.penalty_update",
+     "line": 52
+    },
+    "source_value": {
+     "residual_balance_ratio": 5.0,
+     "residual_balance_ratio_pf_decrease": 3.0,
+     "increase_factor": 1.5,
+     "decrease_factor": 1.5,
+     "min": 0.0001,
+     "max": 10000.0,
+     "freeze_after_unchanged_cycles": 10,
+     "freeze_backstop_cycle": 200,
+     "balancing_exempt_until": {
+      "ess": {
+       "dual_ratio_below": 1.0,
+       "consecutive_cycles": 5
+      }
+     }
+    },
+    "match": true,
+    "note": null
+   },
+   {
+    "id": "boyd_tolerances",
+    "region": "A.7",
+    "needle": "residual tolerances $\\varepsilon_{\\text{abs}} = 10^{-5}$, $\\varepsilon_{\\text{rel}} = 10^{-4}$",
+    "lines": [
+     1819
+    ],
+    "printed": {
+     "eps_abs": 1e-05,
+     "eps_rel": 0.0001
+    },
+    "source": {
+     "file": "data/SRP1/SRP1_params.json",
+     "field": "admm.tol.boyd"
+    },
+    "source_value": {
+     "eps_abs": 1e-05,
+     "eps_rel": 0.0001
+    },
+    "match": true,
+    "note": null
+   },
+   {
+    "id": "anderson",
+    "region": "A.7",
+    "needle": "Anderson acceleration with memory 5 and regularisation $10^{-10}$",
+    "lines": [
+     1819
+    ],
+    "printed": {
+     "memory": 5,
+     "regularization": 1e-10
+    },
+    "source": {
+     "file": "data/SRP1/SRP1_params.json",
+     "field": "admm.anderson_acceleration"
+    },
+    "source_value": {
+     "enabled": true,
+     "memory": 5,
+     "regularization": 1e-10,
+     "reject_policy": "keep_memory"
+    },
+    "match": true,
+    "note": null
+   },
+   {
+    "id": "production_exit_A7",
+    "region": "A.7",
+    "needle": "The production exit is ten consecutive passing cycles, with a cap of 500 cycles at the multi-scenario instance",
+    "lines": [
+     1819
+    ],
+    "printed": {
+     "consecutive": 10,
+     "cap_multi": 500
+    },
+    "source": {
+     "files": [
+      "data/SRP1/SRP1_params.json",
+      "data/SRP1/Results/P515S53/w90_3x3/campaign_s53_w91_3x3_pair/campaign_spec_s53_w91_3x3_pair_231558f0.json"
+     ],
+     "fields": [
+      "admm.minimum_consecutive_converged_cycles",
+      "cap",
+      "required_consecutive_cycles"
+     ]
+    },
+    "source_value": {
+     "case_file": 10,
+     "spec_cap": 500,
+     "spec_required": 10
+    },
+    "match": true,
+    "note": null
+   },
+   {
+    "id": "voltage_regularisation",
+    "region": "A.7",
+    "needle": "the solver-side voltage regularisation weight is $9 \\times 10^{4}$",
+    "lines": [
+     1820
+    ],
+    "printed": 90000.0,
+    "source": {
+     "file": "definitions.py",
+     "line": 75,
+     "text": "PENALTY_SCENARIO_DEVIATION = 9e4"
+    },
+    "source_value": 90000.0,
+    "match": true,
+    "note": null
+   },
+   {
+    "id": "alpha",
+    "region": "3.6",
+    "needle": "the commitment premium of Subsection~\\ref{subsubsec:commitment} is $\\alpha = 0.5$",
+    "lines": [
+     1126
+    ],
+    "printed": 0.5,
+    "source": {
+     "file": "data/SRP1/Results/P515S53/w90_3x3/campaign_s53_w91_3x3_pair/campaign_spec_s53_w91_3x3_pair_231558f0.json",
+     "field": "candidates[].interface_deviation_premium.alpha"
+    },
+    "source_value": 0.5,
+    "match": true,
+    "note": null
+   },
+   {
+    "id": "delta_R_V_tau",
+    "region": "3.6",
+    "needle": "uses $\\delta_R = 0.07$ on the reference value $\\mathcal{V} = 259{,}375.33$",
+    "lines": [
+     1130
+    ],
+    "printed": {
+     "delta_R": 0.07,
+     "V": 259375.33,
+     "tau": 4539.07
+    },
+    "source": [
+     {
+      "file": "settling_criterion.py",
+      "line": 55,
+      "text": "DELTA_R = 0.07"
+     },
+     {
+      "file": "settling_criterion.py",
+      "line": 56,
+      "text": "R_REF = 259375.33"
+     },
+     {
+      "file": "settling_criterion.py",
+      "line": 57,
+      "text": "TAU = DELTA_R * R_REF / 4.0"
+     }
+    ],
+    "source_value": {
+     "tau": 4539.0682750000005
+    },
+    "match": true,
+    "note": null
+   },
+   {
+    "id": "p_max",
+    "region": "3.6",
+    "needle": "and $P_{\\max} = 30$ cycles",
+    "lines": [
+     1130
+    ],
+    "printed": 30,
+    "source": {
+     "file": "p515_s53_w118_resettle_hooks.py",
+     "line": 70,
+     "text": "P_MAX = 30"
+    },
+    "source_value": 30,
+    "match": true,
+    "note": null
+   },
+   {
+    "id": "caps",
+    "region": "3.6",
+    "needle": "an evaluation continued from an earlier run is capped 100 cycles after that run",
+    "lines": [
+     1131
+    ],
+    "printed": {
+     "continued": "N_old + 100",
+     "fresh": "min(k0 + 109, 300)"
+    },
+    "source": {
+     "file": "data/SRP1/Results/P515S53/w142_resettle_v6/frozen_s53_resettle_spec_v6_96c23404.json",
+     "field": "stop_rule.caps",
+     "code": [
+      {
+       "file": "settling_criterion_v2.py",
+       "line": 17,
+       "text": "CAP_AFTER_K0 = 109"
+      },
+      {
+       "file": "settling_criterion_v2.py",
+       "line": 77,
+       "text": "CAP_CEILING = 300"
+      }
+     ]
+    },
+    "source_value": {
+     "above_300": {
+      "l_2ab0ce2d": 437,
+      "l_b2251bc5": 320
+     },
+     "gated": "N_old + 100 (fixed; the per-cell ceiling in the cell table)",
+     "ungated": "min(k0_run + 109, 300) (dynamic)"
+    },
+    "match": true,
+    "note": null
+   },
+   {
+    "id": "delta0",
+    "region": "3.6",
+    "needle": "used $\\Delta_0 = 4$ lattice units",
+    "lines": [
+     1131
+    ],
+    "printed": 4,
+    "source": {
+     "files": [
+      "data/SRP1/Results/P515S47/campaign_s47_phase_b/campaign_spec_s47_phase_b_8cfa264e.json",
+      "data/SRP1/Results/P515S51/campaign_s51_f2_phase_b/campaign_spec_s51_f2_phase_b_5ce295e1.json"
+     ],
+     "field": "extra.poll_design.delta_0"
+    },
+    "source_value": [
+     4,
+     4
+    ],
+    "match": true,
+    "note": null
+   },
+   {
+    "id": "budgets",
+    "region": "3.6",
+    "needle": "budgets of 20 new evaluations for the two variant-A searches and 60 for the variant-B certificate",
+    "lines": [
+     1131
+    ],
+    "printed": {
+     "s47": 20,
+     "s51": 20,
+     "s53": 60
+    },
+    "source": {
+     "files": [
+      "data/SRP1/Results/P515S47/campaign_s47_phase_b/campaign_spec_s47_phase_b_8cfa264e.json",
+      "data/SRP1/Results/P515S51/campaign_s51_f2_phase_b/campaign_spec_s51_f2_phase_b_5ce295e1.json",
+      "data/SRP1/Results/P515S53/campaign_s53_f2_certificate_r1/campaign_spec_s53_f2_certificate_r1_803571c0.json"
+     ],
+     "field": "extra.poll_design.max_new_evaluations"
+    },
+    "source_value": [
+     20,
+     20,
+     60
+    ],
+    "match": true,
+    "note": null
+   },
+   {
+    "id": "completion_cap",
+    "region": "3.6",
+    "needle": "a completion cap of 30 points",
+    "lines": [
+     1131
+    ],
+    "printed": 30,
+    "source": {
+     "files": [
+      "data/SRP1/Results/P515S47/campaign_s47_phase_b/campaign_spec_s47_phase_b_8cfa264e.json",
+      "data/SRP1/Results/P515S51/campaign_s51_f2_phase_b/campaign_spec_s51_f2_phase_b_5ce295e1.json",
+      "data/SRP1/Results/P515S53/campaign_s53_f2_certificate_r1/campaign_spec_s53_f2_certificate_r1_803571c0.json"
+     ],
+     "field": "extra.poll_design.completion_cap"
+    },
+    "source_value": [
+     30,
+     30,
+     30
+    ],
+    "match": true,
+    "note": null
+   },
+   {
+    "id": "sigma_Q",
+    "region": "3.6",
+    "needle": "the measured resolution $\\sigma_Q = 18{,}449.66$",
+    "lines": [
+     1131
+    ],
+    "printed": 18449.66,
+    "source": {
+     "files": [
+      "data/SRP1/Results/P515S47/campaign_s47_phase_b/campaign_spec_s47_phase_b_8cfa264e.json",
+      "data/SRP1/Results/P515S51/campaign_s51_f2_phase_b/campaign_spec_s51_f2_phase_b_5ce295e1.json",
+      "data/SRP1/Results/P515S53/campaign_s53_f2_certificate_r1/campaign_spec_s53_f2_certificate_r1_803571c0.json"
+     ],
+     "field": "extra.sigma_Q.sigma_Q_eur"
+    },
+    "source_value": [
+     18449.663947025518,
+     18449.663947025518,
+     18449.663947025518
+    ],
+    "match": true,
+    "note": null
+   },
+   {
+    "id": "production_exit_3_6",
+    "region": "3.6",
+    "needle": "The search evaluations ran under the production exit (ten consecutive passing cycles, cap 500 cycles)",
+    "lines": [
+     1132
+    ],
+    "printed": {
+     "consecutive": 10,
+     "cap": 500
+    },
+    "source": {
+     "files": [
+      "data/SRP1/Results/P515S47/campaign_s47_phase_b/campaign_spec_s47_phase_b_8cfa264e.json",
+      "data/SRP1/Results/P515S51/campaign_s51_f2_phase_b/campaign_spec_s51_f2_phase_b_5ce295e1.json",
+      "data/SRP1/Results/P515S53/campaign_s53_f2_certificate_r1/campaign_spec_s53_f2_certificate_r1_803571c0.json"
+     ],
+     "fields": [
+      "cap",
+      "required_consecutive_cycles"
+     ]
+    },
+    "source_value": [
+     [
+      500,
+      10
+     ],
+     [
+      500,
+      10
+     ],
+     [
+      500,
+      10
+     ]
+    ],
+    "match": true,
+    "note": null
+   },
+   {
+    "id": "variant_B_unit",
+    "region": "3.6",
+    "needle": "variant B polled at unit size throughout",
+    "lines": [
+     1132
+    ],
+    "printed": {
+     "delta": 1
+    },
+    "source": {
+     "file": "data/SRP1/Results/P515S53/campaign_s53_f2_certificate_r1/campaign_spec_s53_f2_certificate_r1_803571c0.json",
+     "field": "extra.poll_design.delta / on_success"
+    },
+    "source_value": {
+     "delta": 1,
+     "on_success": "Delta stays 1"
+    },
+    "match": true,
+    "note": null
+   },
+   {
+    "id": "review_stops",
+    "region": "3.6",
+    "needle": "when two barrier points occurred in one poll or three in all, and ran at most 60 polls",
+    "lines": [
+     1132
+    ],
+    "printed": {
+     "barrier": [
+      2,
+      3
+     ],
+     "max_polls": 60
+    },
+    "source": {
+     "files": [
+      "data/SRP1/Results/P515S47/campaign_s47_phase_b/campaign_spec_s47_phase_b_8cfa264e.json",
+      "data/SRP1/Results/P515S51/campaign_s51_f2_phase_b/campaign_spec_s51_f2_phase_b_5ce295e1.json",
+      "data/SRP1/Results/P515S53/campaign_s53_f2_certificate_r1/campaign_spec_s53_f2_certificate_r1_803571c0.json"
+     ],
+     "fields": [
+      "extra.stop_rule",
+      "extra.poll_design.max_polls"
+     ]
+    },
+    "source_value": {
+     "max_polls": [
+      60,
+      60,
+      60
+     ],
+     "barrier_stop_s53": [
+      2,
+      3
+     ],
+     "stop_rule_text_s47": "STOP_FOR_REVIEW (no further batch) if >= 2 NEW barrier evalu"
+    },
+    "match": true,
+    "note": null
+   },
+   {
+    "id": "cache_seed",
+    "region": "3.6",
+    "needle": "the cache was seeded with the single-node ladders of the initial design",
+    "lines": [
+     1132
+    ],
+    "printed": "single-node ladders, with and without the budget, and their combinations",
+    "source": {
+     "file": "data/SRP1/Results/P515S47/campaign_s47_phase_b/campaign_spec_s47_phase_b_8cfa264e.json",
+     "field": "extra.cache_sources_accepted[].campaign_id"
+    },
+    "source_value": [
+     "s47_a1a_baseline",
+     "s47_recert"
+    ],
+    "match": null,
+    "note": "partially read: s47 cache = s47_a1a_baseline + s47_recert; \"with and without the budget, and their combinations\" not verified (see Not confirmed)"
+   },
+   {
+    "id": "benchmark_curtailment_term",
+    "region": "3.6",
+    "needle": "by a minimum-curtailment term of 1~\\euro/MWh",
+    "lines": [
+     1137
+    ],
+    "printed": 1.0,
+    "source": {
+     "file": "p515_s53_w116_benchmark_nrf.py",
+     "line": 25,
+     "text": "tie-breaker 1 EUR/MWh"
+    },
+    "source_value": 1.0,
+    "match": true,
+    "note": null
+   },
+   {
+    "id": "benchmark_starts",
+    "region": "3.6",
+    "needle": "and reported as the best of three solver starts",
+    "lines": [
+     1137
+    ],
+    "printed": 3,
+    "source": {
+     "file": "p515_s53_w116_benchmark_spec_v3.py",
+     "line": 12,
+     "text": "passive and price-taker x three starts"
+    },
+    "source_value": 3,
+    "match": true,
+    "note": null
+   }
+  ],
+  "occurrences": {
+   "production_exit_10": {
+    "needles": [
+     "ten consecutive passing cycles",
+     "ten consecutive cycles passing"
+    ],
+    "in_3_6": [
+     1132
+    ],
+    "in_A7": [
+     1819
+    ],
+    "elsewhere": [
+     1407,
+     1718,
+     1795
+    ]
+   },
+   "cap_500": {
+    "needles": [
+     "cap 500",
+     "cap of 500"
+    ],
+    "in_3_6": [
+     1132
+    ],
+    "in_A7": [
+     1819
+    ],
+    "elsewhere": []
+   },
+   "tail_1e-6": {
+    "needles": [
+     "$10^{-6}$"
+    ],
+    "in_3_6": [],
+    "in_A7": [
+     1815
+    ],
+    "elsewhere": [
+     1523,
+     1727
+    ]
+   },
+   "eps_abs_rel": {
+    "needles": [
+     "\\varepsilon_{\\text{abs}} = 10^{-5}"
+    ],
+    "in_3_6": [],
+    "in_A7": [
+     1819
+    ],
+    "elsewhere": [
+     1717
+    ]
+   },
+   "rb_ratio_1.5": {
+    "needles": [
+     "1.5\\,\\rho_g",
+     "factor 1.5"
+    ],
+    "in_3_6": [],
+    "in_A7": [
+     1819
+    ],
+    "elsewhere": [
+     1710
+    ]
+   },
+   "rb_bounds": {
+    "needles": [
+     "[10^{-4}, 10^{4}]"
+    ],
+    "in_3_6": [],
+    "in_A7": [
+     1819
+    ],
+    "elsewhere": [
+     1710
+    ]
+   },
+   "aa_memory_5": {
+    "needles": [
+     "memory 5"
+    ],
+    "in_3_6": [],
+    "in_A7": [
+     1819
+    ],
+    "elsewhere": [
+     1722
+    ]
+   },
+   "retry_triggers": {
+    "needles": [
+     "iteration limit, infeasible or in a solver error"
+    ],
+    "in_3_6": [],
+    "in_A7": [
+     1815
+    ],
+    "elsewhere": [
+     1727
+    ]
+   },
+   "adaptive_barrier": {
+    "needles": [
+     "adaptive barrier strategy"
+    ],
+    "in_3_6": [],
+    "in_A7": [
+     1815
+    ],
+    "elsewhere": [
+     1727
+    ]
+   },
+   "single_threaded": {
+    "needles": [
+     "single-threaded"
+    ],
+    "in_3_6": [],
+    "in_A7": [
+     1815
+    ],
+    "elsewhere": [
+     1519
+    ]
+   },
+   "ipopt_version": {
+    "needles": [
+     "3.14.18"
+    ],
+    "in_3_6": [],
+    "in_A7": [
+     1815
+    ],
+    "elsewhere": []
+   },
+   "tau_value": {
+    "needles": [
+     "4{,}539.07"
+    ],
+    "in_3_6": [
+     1130
+    ],
+    "in_A7": [],
+    "elsewhere": []
+   },
+   "sigma_Q_value": {
+    "needles": [
+     "18{,}449.66"
+    ],
+    "in_3_6": [
+     1131
+    ],
+    "in_A7": [],
+    "elsewhere": []
+   },
+   "delta0": {
+    "needles": [
+     "\\Delta_0 = 4"
+    ],
+    "in_3_6": [
+     1131
+    ],
+    "in_A7": [],
+    "elsewhere": []
+   },
+   "alpha_value": {
+    "needles": [
+     "\\alpha = 0.5"
+    ],
+    "in_3_6": [
+     1126
+    ],
+    "in_A7": [],
+    "elsewhere": []
+   }
+  },
+  "omissions": [
+   {
+    "id": "acceptable_iter_primary",
+    "value": 5,
+    "source": [
+     {
+      "file": "data/SRP1/case9/case9_params.json",
+      "line": 39
+     },
+     {
+      "file": "data/SRP1/SharedESS/SRP1_ESS_Params.json",
+      "line": 36
+     }
+    ],
+    "printed_anywhere": [
+     1815
+    ]
+   },
+   {
+    "id": "esso_max_iter",
+    "value": 500,
+    "source": [
+     {
+      "file": "shared_energy_storage_data.py",
+      "line": 1099,
+      "text": "options['max_iter'] = 500"
+     }
+    ],
+    "printed_anywhere": [
+     1815
+    ]
+   },
+   {
+    "id": "network_bound_push_frac",
+    "value": {
+     "TSO": 1e-06,
+     "DSO": 1e-05
+    },
+    "source": [
+     {
+      "file": "data/SRP1/case9/case9_params.json",
+      "line": 42
+     },
+     {
+      "file": "data/SRP1/case33_1/case33_1_params.json",
+      "line": 41
+     }
+    ],
+    "printed_anywhere": []
+   },
+   {
+    "id": "warm_start_primary",
+    "value": "warm_start_init_point 'yes' on warm-started primary solves",
+    "source": [
+     {
+      "file": "network.py",
+      "line": 590,
+      "text": "solver.options['warm_start_init_point'] = 'yes'"
+     }
+    ],
+    "printed_anywhere": []
+   },
+   {
+    "id": "single_scenario_production_cap_300",
+    "value": 300,
+    "source": [
+     {
+      "file": "data/SRP1/SRP1_params.json",
+      "line": 44
+     }
+    ],
+    "printed_anywhere": [
+     1131
+    ]
+   },
+   {
+    "id": "proximal_tso_weight_zero",
+    "value": 0.0,
+    "source": [
+     {
+      "file": "data/SRP1/SRP1_params.json",
+      "line": 96
+     }
+    ],
+    "printed_anywhere": [
+     1666
+    ]
+   },
+   {
+    "id": "aa_reject_keep_memory",
+    "value": "keep_memory",
+    "source": [
+     {
+      "file": "data/SRP1/SRP1_params.json",
+      "line": 125
+     }
+    ],
+    "printed_anywhere": [
+     1722
+    ]
+   },
+   {
+    "id": "esso_initialisation_standalone",
+    "value": "standalone",
+    "source": [
+     {
+      "file": "data/SRP1/SRP1_params.json",
+      "line": 46
+     }
+    ],
+    "printed_anywhere": [
+     1773
+    ]
+   },
+   {
+    "id": "objective_change_tests_diagnostic",
+    "value": {
+     "abs": 1000.0,
+     "rel": 0.001
+    },
+    "source": [
+     {
+      "file": "data/SRP1/SRP1_params.json",
+      "line": 41
+     }
+    ],
+    "printed_anywhere": [
+     1718
+    ]
+   }
+  ],
+  "refs_to_sec_case_settings": [
+   {
+    "line": 489,
+    "context": "At unit poll size variant A completes the poll with every admissible unit neighbour of the incumbent, so that a failed unit poll certifies that no admissible neighbour improves it (Fig.~\\ref{fig:search_generic}d). Each new poll point is evaluated by the coordination procedure of Algorithm~\\ref{alg:operational_planning_degradation} and a point replaces the incumbent only if it improves $F$ by more than the two evaluations’ settling bars (the largest objective step over an evaluation’s last ten cycles) and the measured resolution $\\sigma_Q$ of the recourse (Section~\\ref{sec:case_settings})."
+   },
+   {
+    "line": 678,
+    "context": "\\paragraph{Resolution} The tolerance $\\tau$ is set from the value resolution $\\delta_R$ the study is to claim: $\\tau = \\delta_R \\mathcal{V}/4$, with $\\mathcal{V}$ a reference storage value, so that a ratio of two values --- four evaluations, each in error by at most $\\tau$ --- is resolved to $\\delta_R$. The rule bounds the stopping error of each evaluation at about $\\tau$, not well inside it (Subsection~\\ref{subsec:res_certification}); the values used in the case study are given in Section~\\ref{sec:case_settings}."
+   },
+   {
+    "line": 921,
+    "context": "The value of $\\alpha$ is given in Section~\\ref{sec:case_settings}."
+   },
+   {
+    "line": 1368,
+    "context": "Figure~\\ref{fig:res_benchmark} and Table~\\ref{tab:res_benchmark} compare coordinated operation with the passive and price-taker arrangements defined in Section~\\ref{sec:case_settings}. All three arrangements are evaluated without shared storage, thereby separating the benefit of coordination from that of storage investment. The discounted operational cost is 653{,}873.7~k\\euro{} under coordination, compared with 744{,}770.3~k\\euro{} for the price-taker arrangement and 895{,}049.9~k\\euro{} for the passive arrangement. The two static arrangements therefore cost 13.9\\% and 36.9\\% more than coordi"
+   },
+   {
+    "line": 1407,
+    "context": "The multi-scenario instance combines three market scenarios with three load and renewable-generation scenarios over five representative three-year blocks. The planning search again returned the plan without shared storage, $\\boldsymbol{x}=\\boldsymbol{0}$. As reported in Table~\\ref{tab:res_multiscenario}, the reference unit provides an estimated discounted operational value of 236.7~k\\euro{} against an investment cost of 318.0~k\\euro{}. The resulting shortfall of 81.3~k\\euro{} is 4.52 times the reported resolution of 18.0~k\\euro{}, supporting the same economic conclusion as the single-scenario "
+   },
+   {
+    "line": 1516,
+    "context": "The three planning searches of Algorithm~\\ref{alg:shared_ess_planning_mads} made 41 new recourse evaluations in all (14, 20 and 7 against budgets of 20, 20 and 60), each stopped by the production exit of the coordination procedure and compared at the search resolution $\\sigma_Q$ of Section~\\ref{sec:case_settings}; the evaluations behind the tables of this section are the re-evaluations of the incumbents, their neighbours and the sensitivity cells under the certification rule, on the final code."
+   },
+   {
+    "line": 1727,
+    "context": "In the cycle after a cycle in which every channel passed and every solve succeeded, the TSO and DSO solves are run with the interior-point complementarity tolerance tightened to $10^{-6}$ (the tight tail); the production setting restores each operator's own tolerance otherwise (the tail is a declared option, enabled in every campaign behind the reported tables), and the certifying regime holds the tail on from the cycle after $k_0$. A local solve that ends at the iteration limit, infeasible or in a solver error is retried in two tiers, a cold restart with the agent's recovery settings and the "
+   },
+   {
+    "line": 1814,
+    "context": "The frozen configuration of Section~\\ref{sec:case_settings} is as follows."
+   }
+  ],
+  "spec_hashes": {
+   "data/SRP1/Results/P515S53/w142_resettle_v6/frozen_s53_resettle_spec_v6_96c23404.json": "96c234045f15fa4f18ba7149b3b4a39c749f256657d436064c320b04d546e041",
+   "data/SRP1/Results/P515S53/w142_resettle_ext_v6/frozen_s53_resettle_ext_spec_v3_84775dc4.json": "84775dc41428ba6a6b504c86de728f3d2b44d19354c977c18d3b33f197c76ee6",
+   "data/SRP1/Results/P515S53/w155_a64_cells/frozen_s53_a64_cells_spec_v1_44a2dce8.json": "44a2dce8c2bb12f45bcb907956acda971c574ec6676ce02d8a3caa720524e366",
+   "data/SRP1/Results/P515S53/w90_3x3/campaign_s53_w91_3x3_pair/campaign_spec_s53_w91_3x3_pair_231558f0.json": "231558f0705797327c10d8e0e82ff878e19ed3a4620766bd5b113995bb920e99",
+   "data/SRP1/Results/P515S47/campaign_s47_phase_b/campaign_spec_s47_phase_b_8cfa264e.json": "8cfa264e7ab0d92ac0832657c9b328d70b45851ba92f4623384d11fddb334185",
+   "data/SRP1/Results/P515S51/campaign_s51_f2_phase_b/campaign_spec_s51_f2_phase_b_5ce295e1.json": "5ce295e17c5165ea2148d1240c918ebca05b8aafbeeb22e2ebfc03f9bf120094",
+   "data/SRP1/Results/P515S53/campaign_s53_f2_certificate_r1/campaign_spec_s53_f2_certificate_r1_803571c0.json": "803571c0efcf828eb9716d6c6255909da91d882a57a7bd4e053805f96f88027f",
+   "data/SRP1/SRP1_params.json": "dbfdb2a07d12bfedab5e66bf94b3df98e5ab0305616652b4083266476972006b",
+   "data/SRP1/SharedESS/SRP1_ESS_Params.json": "39106f934bf3edbf18f01a5ef1fadfefc2f7a518706e6c8fa6d962617a312706",
+   "data/SRP1/case9/case9_params.json": "f3eff0502c606a9076af19969ec3705c2e6204fa4d9172a218345e986dbbf4ab",
+   "data/SRP1/case33_1/case33_1_params.json": "8e9e5a536fd1ef2bca5694274a68795d1099884ef23f2134e7db7d3a58c80b8e",
+   "data/SRP1/case33_2/case33_2_params.json": "31b5fedf87b96724dc5676566fd87f1c21dc02ecfb8d2bd9fdf280a9b7be35ff",
+   "data/SRP1/case33_3/case33_3_params.json": "a19bd5b9d18a26deff44dc62a351f2e6c193012c3f7075d12cade4f230760c49"
+  }
+ },
+ "c_storage_agent": {
+  "eq_esso_objective": {
+   "needle": "\\label{eq:esso_objective}",
+   "lines": [
+    1659
+   ]
+  },
+  "constraint_list_sentence": {
+   "needle": "subject to \\eqref{eq:cohort_rated}--\\eqref{eq:available_capacity}, \\eqref{eq:esso_net_power}--\\eqref{eq:soh_floor}",
+   "lines": [
+    1647
+   ]
+  },
+  "code_objective": {
+   "objective_slack": {
+    "file": "shared_energy_storage_data.py",
+    "line": 829,
+    "text": "slack_penalty += PENALTY_ESSO_SLACK * (model.slack_es_pnet_up[y_inv, d, p] + model.slack_es_pnet_down[y_inv, d, p])"
+   },
+   "objective_throughput": {
+    "file": "shared_energy_storage_data.py",
+    "line": 843,
+    "text": "throughput += model.es_pch_per_unit[y_inv, y, d, p] + model.es_pdch_per_unit[y_inv, y, d, p]"
+   },
+   "objective_eps": {
+    "file": "shared_energy_storage_data.py",
+    "line": 844,
+    "text": "slack_penalty += EPS_ESSO_THROUGHPUT * throughput"
+   },
+   "objective_is_penalty_only": {
+    "file": "shared_energy_storage_data.py",
+    "line": 853,
+    "text": "expr=model.feasibility_penalty,"
+   },
+   "salvage_not_in_objective": {
+    "file": "shared_energy_storage_data.py",
+    "line": 850,
+    "text": "model.salvage_credit = pe.Expression(expr=-model.salvage_value)"
+   },
+   "c_sigma": {
+    "file": "definitions.py",
+    "line": 63,
+    "text": "PENALTY_ESSO_SLACK = 1e3"
+   },
+   "eps_E": {
+    "file": "definitions.py",
+    "line": 74,
+    "text": "EPS_ESSO_THROUGHPUT = 1e-5"
+   },
+   "slacks_enabled_case_file": {
+    "file": "data/SRP1/SharedESS/SRP1_ESS_Params.json",
+    "line": 6
+   },
+   "AL_terms_scaled_by_kappa": [
+    {
+     "file": "shared_resources_planning.py",
+     "line": 5515,
+     "text": "obj += models[node_id].admm_esso_al_scale * (models[node_id].dual_p_req[y, d, p] * constraint_p_req)"
+    },
+    {
+     "file": "shared_resources_planning.py",
+     "line": 5517,
+     "text": "obj += models[node_id].admm_esso_al_scale * ((models[node_id].rho / 2) * constraint_p_req ** 2)"
+    }
+   ],
+   "AL_normalisation_2Sref": [
+    {
+     "file": "shared_resources_planning.py",
+     "line": 5512,
+     "text": "constraint_p_req = (models[node_id].es_pnet[y, d, p] - models[node_id].p_req[y, d, p]) / (2 * shared_ess_rating)"
+    },
+    {
+     "file": "shared_resources_planning.py",
+     "line": 5018,
+     "text": "def _shared_ess_admm_normalization_mva(rating_mva, floor_mva, reference_mva=None):"
+    }
+   ],
+   "base_objective_not_scaled": {
+    "file": "shared_resources_planning.py",
+    "line": 5460,
+    "text": "obj = copy(models[node_id].objective.expr)",
+    "after": "def update_shared_energy_storage_model_to_admm(",
+    "after_line": 5455
+   }
+  },
+  "code_rows": {
+   "cohort_rated (eq:cohort_rated)": {
+    "file": "shared_energy_storage_data.py",
+    "line": 569,
+    "text": "model.rated_s_capacity_unit.add(model.es_s_rated_per_unit[y_inv, y] == model.es_s_investment_fixed[y_inv])"
+   },
+   "aggregate rated S^Rated, E^Rated (eq:master_rated_s form; not in the A.2 list)": {
+    "file": "shared_energy_storage_data.py",
+    "line": 581,
+    "text": "model.rated_s_capacity.add(model.es_s_rated[y] == total_s_capacity)"
+   },
+   "cohort_available (eq:cohort_available), end-of-block SoH": {
+    "file": "shared_energy_storage_data.py",
+    "line": 628,
+    "text": "model.available_e_capacity_unit.add(model.es_e_available_per_unit[y_inv, y] == model.es_e_rated_per_unit[y_inv, y] * model.es_soh_per_unit_cumul[y_inv, y])"
+   },
+   "cohort_available, mid-block variant (arm C3_midblock only)": {
+    "file": "shared_energy_storage_data.py",
+    "line": 625,
+    "text": "soh_mid = prev_soh * pe.exp(-model.es_D_per_unit[y_inv, y] / 2.00) * (phi_cal ** (num_years / 2.00))"
+   },
+   "available_capacity aggregate (eq:available_capacity): computed after the solve, not a row": {
+    "file": "shared_energy_storage_data.py",
+    "line": 1882,
+    "text": "s_available, e_available = shared_ess_data.get_available_capacities(models[node_id], y)"
+   },
+   "esso_net_power with slack pair (eq:esso_net_power)": {
+    "file": "shared_energy_storage_data.py",
+    "line": 782,
+    "text": "model.energy_storage_operation_agg.add(model.es_pnet[y, d, p] == agg_pnet + model.slack_es_pnet_up[y, d, p] - model.slack_es_pnet_down[y, d, p])"
+   },
+   "cohort_allocation H3 rows (eq:cohort_allocation), N_active-1 active": {
+    "file": "shared_energy_storage_data.py",
+    "line": 805,
+    "text": "== model.es_pnet_cohort_share_h3[y_inv, y] * agg_pnet)"
+   },
+   "cell_throughput (eq:cell_throughput)": {
+    "file": "shared_energy_storage_data.py",
+    "line": 665,
+    "text": "avg_ch_dch += (num_days / 365.00) * (eff_ch * pch * dt + pdch * dt / eff_dch)"
+   },
+   "cycling_loss (eq:cycling_loss)": {
+    "file": "shared_energy_storage_data.py",
+    "line": 702,
+    "text": "model.es_D_per_unit[y_inv, y] * (2 * shared_energy_storage.cl_eff * model.es_e_investment_fixed[y_inv])"
+   },
+   "cycling_loss, ageing off (arm no_ageing)": {
+    "file": "shared_energy_storage_data.py",
+    "line": 711,
+    "text": "model.es_D_per_unit[y_inv, y] == 0.00)"
+   },
+   "soh_chain (eq:soh_chain)": {
+    "file": "shared_energy_storage_data.py",
+    "line": 724,
+    "text": "== prev_soh * pe.exp(-model.es_D_per_unit[y_inv, y]) * (phi_cal ** num_years))"
+   },
+   "soh_floor (eq:soh_floor)": {
+    "file": "shared_energy_storage_data.py",
+    "line": 732,
+    "text": "model.es_soh_per_unit_cumul[y_inv, y] >= shared_energy_storage.soh_min)"
+   },
+   "power bounds 0 <= Pch, Pdch <= S^Rated,Unit": {
+    "file": "shared_energy_storage_data.py",
+    "line": 748,
+    "text": "_add_esso_cohort_constraint(model, 'energy_storage_limits', y_inv, y, pch <= s_max)"
+   },
+   "converter circle on the aggregate (bound: es_s_rated)": {
+    "file": "shared_energy_storage_data.py",
+    "line": 787,
+    "text": "model.es_pnet[y, d, p] ** 2 + model.es_qnet[y, d, p] ** 2 <= model.es_s_rated[y] ** 2)"
+   },
+   "available power = rated power (so S^Av = S^Rated)": {
+    "file": "shared_energy_storage_data.py",
+    "line": 619,
+    "text": "model.available_s_capacity_unit.add(model.es_s_available_per_unit[y_inv, y] == model.es_s_rated_per_unit[y_inv, y])"
+   },
+   "retired complementarity rows (none built)": {
+    "file": "shared_energy_storage_data.py",
+    "line": 735,
+    "text": "# P5.15-1 (Step 1 item 3): `energy_storage_complementarity`,"
+   }
+  },
+  "regularisation": {
+   "min_pch_pdch_bound_text": {
+    "needle": "at the certified points it was below $4 \\times 10^{-5}$ of the rating",
+    "lines": [
+     1665
+    ]
+   },
+   "record": "REVISION_CONTEXT.md \"Slacks at the certified point (W169)\": <= 3.6e-5 S",
+   "record_line": 49
+  }
+ },
+ "d_nomenclature": {
+  "normalisation": "W167 (p515_s53_w167_nomenclature_years: font wrappers dropped, bold dropped, decorations kept, iteration markers removed from superscripts, index subscripts dropped unless an upper-case label or digits, letter runs split except SoH/SoC/..., index letters cdegijklmnosty set aside) with ONE change: a subscript that is a single font-wrapped word or \\max/\\min is kept as a label (t_sum, n_w, eps_abs, P_max); every symbol of a multi-symbol nomenclature cell is audited; body = comment-stripped math after the nomenclature",
+  "current": {
+   "label": "51a6fb5",
+   "nomenclature_lines": [
+    184,
+    317
+   ],
+   "n_entries": 117,
+   "entry_tex": [
+    "E^S",
+    "Y",
+    "D",
+    "T",
+    "\\Omega_C",
+    "\\Omega_M",
+    "\\Omega_O",
+    "\\mathcal{X}",
+    "y^{\\text{Inv}}",
+    "s = (m,o)",
+    "i",
+    "a",
+    "\\omega_c",
+    "\\omega_m",
+    "\\omega_o",
+    "c^{\\text{Inv,S}}_{y,c}",
+    "c^{\\text{Inv,E}}_{y,c}",
+    "c^{\\text{Inv}}",
+    "r",
+    "y_0",
+    "y^{\\text{End}}",
+    "Y_y",
+    "D_d",
+    "\\Delta t",
+    "T^\\text{Cal}_{e,y^{\\text{Inv}}}",
+    "E^{\\text{Max}}_{e,y}",
+    "\\phi^{\\text{Min}}_e",
+    "\\phi^{\\text{Max}}_e",
+    "\\Delta^S",
+    "\\Delta^E",
+    "\\eta^{\\text{Ch}}_e",
+    "\\eta^{\\text{Dch}}_e",
+    "SoC^{\\text{Min}}_e",
+    "SoC^{\\text{Max}}_e",
+    "SoC^{0}_e",
+    "\\varepsilon^{\\text{Cl}}",
+    "c^{\\text{Cl}}",
+    "\\varepsilon^{\\text{C}}",
+    "c^{\\sigma}",
+    "\\varepsilon^{\\text{E}}",
+    "k_e",
+    "N^{\\text{DS}}",
+    "\\delta^{\\text{DS}}",
+    "R^{\\text{DS}}",
+    "\\phi^{\\text{Cal}}_e",
+    "SoH^{\\text{Min}}_e",
+    "\\pi_t",
+    "\\bar{\\pi}_t",
+    "\\alpha",
+    "R^{\\text{I}}_i",
+    "S^{\\text{ref}}",
+    "\\sigma",
+    "w_{y,d}",
+    "\\kappa^{\\text{E}}",
+    "\\rho^{V}",
+    "\\rho^{\\text{PF}}",
+    "\\rho^{\\text{E}}",
+    "\\varepsilon_{\\text{abs}}",
+    "\\varepsilon_{\\text{rel}}",
+    "\\tau",
+    "\\delta_R",
+    "\\mathcal{V}",
+    "P_{\\max}",
+    "n_{\\mathrm{w}}",
+    "\\sigma_Q",
+    "\\Delta_0",
+    "N^{\\max}",
+    "\\boldsymbol{x}",
+    "\\boldsymbol{z}",
+    "F(\\boldsymbol{x})",
+    "I(\\boldsymbol{x})",
+    "C^{\\text{Inv}}_c(\\boldsymbol{x})",
+    "Q(\\boldsymbol{x})",
+    "C^{\\text{Op}}_{y,d,m,o}(\\boldsymbol{x})",
+    "C^{\\text{Salvage}}(\\boldsymbol{x})",
+    "T^{\\text{Rem}}_{e,y^{\\text{Inv}}}",
+    "S^{\\text{Inv}}_{e,y^{\\text{Inv}}}",
+    "E^{\\text{Inv}}_{e,y^{\\text{Inv}}}",
+    "S^{\\text{Rated}}_{e,y}",
+    "E^{\\text{Rated}}_{e,y}",
+    "S^{\\text{Rated,Unit}}_{e,y^\\text{Inv},y}",
+    "E^{\\text{Rated,Unit}}_{e,y^\\text{Inv},y}",
+    "S^{\\text{Av,Unit}}_{e,y^\\text{Inv},y}",
+    "E^{\\text{Av,Unit}}_{e,y^\\text{Inv},y}",
+    "S^{\\text{Av}}_{e,y}",
+    "E^{\\text{Av}}_{e,y}",
+    "SoH_{e,y^\\text{Inv},y}",
+    "\\bar{E}^{\\text{Cell}}_{e,y^\\text{Inv},y}",
+    "D_{e,y^\\text{Inv},y}",
+    "\\boldsymbol{u}^{0}",
+    "\\boldsymbol{u}_o",
+    "P^{\\text{Ch}}_{e,y,d,t}",
+    "P^{\\text{Dch}}_{e,y,d,t}",
+    "P^{\\text{E}}_{e,y,d,t}",
+    "Q^{\\text{E}}_{e,y,d,t}",
+    "E^{\\text{SoC}}_{e,y,d,t}",
+    "s^{\\pm}_{e,y,d}",
+    "P^{\\text{Net}}_{e,y,d,t}",
+    "Q^{\\text{Net}}_{e,y,d,t}",
+    "\\sigma^{\\pm}_{e,y,d,t}",
+    "V^{\\text{I}}_{i}",
+    "P^{\\text{I}}_{i}",
+    "Q^{\\text{I}}_{i}",
+    "\\bar{P}^{\\text{I}}_{i,t}",
+    "d^{\\pm}_{i,s,t}",
+    "\\lambda_t",
+    "x_a",
+    "z",
+    "\\lambda_a",
+    "k_0",
+    "k^{*}",
+    "\\hat{P}",
+    "t_{\\text{sum}}",
+    "s",
+    "\\Delta",
+    "\\mathcal{P}",
+    "\\mathcal{C}"
+   ],
+   "n_keys": 106,
+   "entries": [
+    {
+     "line": 195,
+     "tex": "E^S",
+     "key": "E^{S}",
+     "index": false,
+     "description": "Set of shared ESSs at TN--DN interface nodes, indexed by $e$"
+    },
+    {
+     "line": 196,
+     "tex": "Y",
+     "key": "Y",
+     "index": false,
+     "description": "Set of representative years, indexed by $y$"
+    },
+    {
+     "line": 197,
+     "tex": "D",
+     "key": "D",
+     "index": false,
+     "description": "Set of representative days, indexed by $d$"
+    },
+    {
+     "line": 198,
+     "tex": "T",
+     "key": "T",
+     "index": false,
+     "description": "Set of intra-day time instants, indexed by $t$"
+    },
+    {
+     "line": 199,
+     "tex": "\\Omega_C",
+     "key": "Omega_{C}",
+     "index": false,
+     "description": "Set of investment-cost trajectories, indexed by $c$"
+    },
+    {
+     "line": 200,
+     "tex": "\\Omega_M",
+     "key": "Omega_{M}",
+     "index": false,
+     "description": "Set of market scenarios, indexed by $m$"
+    },
+    {
+     "line": 201,
+     "tex": "\\Omega_O",
+     "key": "Omega_{O}",
+     "index": false,
+     "description": "Set of operation scenarios (load, RES), indexed by $o$"
+    },
+    {
+     "line": 202,
+     "tex": "\\mathcal{X}",
+     "key": "cal(X)",
+     "index": false,
+     "description": "Set of admissible investment plans"
+    },
+    {
+     "line": 203,
+     "tex": "y^{\\text{Inv}}",
+     "key": "y^{Inv}",
+     "index": false,
+     "description": "Investment year"
+    },
+    {
+     "line": 204,
+     "tex": "s = (m,o)",
+     "key": "s",
+     "index": true,
+     "description": "Recourse scenario (market and operation pair)"
+    },
+    {
+     "line": 205,
+     "tex": "i",
+     "key": "i",
+     "index": true,
+     "description": "DN index; agent index (TSO, DSOs, shared-ESS agent)"
+    },
+    {
+     "line": 205,
+     "tex": "a",
+     "key": "a",
+     "index": false,
+     "description": "DN index; agent index (TSO, DSOs, shared-ESS agent)"
+    },
+    {
+     "line": 220,
+     "tex": "\\omega_c",
+     "key": "omega",
+     "index": false,
+     "description": "Probability of cost trajectory $c$"
+    },
+    {
+     "line": 221,
+     "tex": "\\omega_m",
+     "key": "omega",
+     "index": false,
+     "description": "Probabilities of market scenario $m$, operation scenario $o$"
+    },
+    {
+     "line": 221,
+     "tex": "\\omega_o",
+     "key": "omega",
+     "index": false,
+     "description": "Probabilities of market scenario $m$, operation scenario $o$"
+    },
+    {
+     "line": 222,
+     "tex": "c^{\\text{Inv,S}}_{y,c}",
+     "key": "c^{Inv,S}",
+     "index": false,
+     "description": "Unit cost of converter rating in year $y$, trajectory $c$"
+    },
+    {
+     "line": 223,
+     "tex": "c^{\\text{Inv,E}}_{y,c}",
+     "key": "c^{Inv,E}",
+     "index": false,
+     "description": "Unit cost of energy capacity in year $y$, trajectory $c$"
+    },
+    {
+     "line": 224,
+     "tex": "c^{\\text{Inv}}",
+     "key": "c^{Inv}",
+     "index": false,
+     "description": "Total investment budget"
+    },
+    {
+     "line": 225,
+     "tex": "r",
+     "key": "r",
+     "index": false,
+     "description": "Discount rate"
+    },
+    {
+     "line": 226,
+     "tex": "y_0",
+     "key": "y_{0}",
+     "index": false,
+     "description": "First year and end of the planning horizon"
+    },
+    {
+     "line": 226,
+     "tex": "y^{\\text{End}}",
+     "key": "y^{End}",
+     "index": false,
+     "description": "First year and end of the planning horizon"
+    },
+    {
+     "line": 227,
+     "tex": "Y_y",
+     "key": "Y",
+     "index": false,
+     "description": "Calendar years represented by $y$"
+    },
+    {
+     "line": 228,
+     "tex": "D_d",
+     "key": "D",
+     "index": false,
+     "description": "Calendar days represented by $d$"
+    },
+    {
+     "line": 229,
+     "tex": "\\Delta t",
+     "key": "Delta",
+     "index": false,
+     "description": "Duration of a time instant"
+    },
+    {
+     "line": 230,
+     "tex": "T^\\text{Cal}_{e,y^{\\text{Inv}}}",
+     "key": "T^{Cal}",
+     "index": false,
+     "description": "Calendar lifetime of ESS $e$ installed in $y^{\\text{Inv}}$"
+    },
+    {
+     "line": 231,
+     "tex": "E^{\\text{Max}}_{e,y}",
+     "key": "E^{Max}",
+     "index": false,
+     "description": "Maximum installable energy capacity at node $e$ in year $y$"
+    },
+    {
+     "line": 232,
+     "tex": "\\phi^{\\text{Min}}_e",
+     "key": "phi^{Min}",
+     "index": false,
+     "description": "Admissible energy-to-power ratio bounds at node $e$"
+    },
+    {
+     "line": 232,
+     "tex": "\\phi^{\\text{Max}}_e",
+     "key": "phi^{Max}",
+     "index": false,
+     "description": "Admissible energy-to-power ratio bounds at node $e$"
+    },
+    {
+     "line": 233,
+     "tex": "\\Delta^S",
+     "key": "Delta^{S}",
+     "index": false,
+     "description": "Lattice units of converter rating and energy capacity"
+    },
+    {
+     "line": 233,
+     "tex": "\\Delta^E",
+     "key": "Delta^{E}",
+     "index": false,
+     "description": "Lattice units of converter rating and energy capacity"
+    },
+    {
+     "line": 236,
+     "tex": "\\eta^{\\text{Ch}}_e",
+     "key": "eta^{Ch}",
+     "index": false,
+     "description": "Charging and discharging efficiencies"
+    },
+    {
+     "line": 236,
+     "tex": "\\eta^{\\text{Dch}}_e",
+     "key": "eta^{Dch}",
+     "index": false,
+     "description": "Charging and discharging efficiencies"
+    },
+    {
+     "line": 237,
+     "tex": "SoC^{\\text{Min}}_e",
+     "key": "SoC^{Min}",
+     "index": false,
+     "description": "Usable state-of-charge window (fractions of $E^{\\text{Av}$)}"
+    },
+    {
+     "line": 237,
+     "tex": "SoC^{\\text{Max}}_e",
+     "key": "SoC^{Max}",
+     "index": false,
+     "description": "Usable state-of-charge window (fractions of $E^{\\text{Av}$)}"
+    },
+    {
+     "line": 238,
+     "tex": "SoC^{0}_e",
+     "key": "SoC",
+     "index": false,
+     "description": "Daily initial state of charge (fraction of $E^{\\text{Av}$)}"
+    },
+    {
+     "line": 239,
+     "tex": "\\varepsilon^{\\text{Cl}}",
+     "key": "varepsilon^{Cl}",
+     "index": false,
+     "description": "Bound and price of the daily closure slack"
+    },
+    {
+     "line": 239,
+     "tex": "c^{\\text{Cl}}",
+     "key": "c^{Cl}",
+     "index": false,
+     "description": "Bound and price of the daily closure slack"
+    },
+    {
+     "line": 240,
+     "tex": "\\varepsilon^{\\text{C}}",
+     "key": "varepsilon^{C}",
+     "index": false,
+     "description": "Tolerance of the normalised complementarity condition"
+    },
+    {
+     "line": 241,
+     "tex": "c^{\\sigma}",
+     "key": "c^{\\sigma}",
+     "index": false,
+     "description": "Slack penalty and throughput weight of the shared-ESS agent"
+    },
+    {
+     "line": 241,
+     "tex": "\\varepsilon^{\\text{E}}",
+     "key": "varepsilon^{E}",
+     "index": false,
+     "description": "Slack penalty and throughput weight of the shared-ESS agent"
+    },
+    {
+     "line": 242,
+     "tex": "k_e",
+     "key": "k",
+     "index": true,
+     "description": "Effective cycle life (equivalent full cycles to $1/\\mathrm{e$ retention)}"
+    },
+    {
+     "line": 243,
+     "tex": "N^{\\text{DS}}",
+     "key": "N^{DS}",
+     "index": false,
+     "description": "Datasheet cycle count, depth of discharge and retention"
+    },
+    {
+     "line": 243,
+     "tex": "\\delta^{\\text{DS}}",
+     "key": "delta^{DS}",
+     "index": false,
+     "description": "Datasheet cycle count, depth of discharge and retention"
+    },
+    {
+     "line": 243,
+     "tex": "R^{\\text{DS}}",
+     "key": "R^{DS}",
+     "index": false,
+     "description": "Datasheet cycle count, depth of discharge and retention"
+    },
+    {
+     "line": 244,
+     "tex": "\\phi^{\\text{Cal}}_e",
+     "key": "phi^{Cal}",
+     "index": false,
+     "description": "Annual calendar retention factor"
+    },
+    {
+     "line": 245,
+     "tex": "SoH^{\\text{Min}}_e",
+     "key": "SoH^{Min}",
+     "index": false,
+     "description": "Minimum admissible SoH (end-of-life floor)"
+    },
+    {
+     "line": 248,
+     "tex": "\\pi_t",
+     "key": "pi",
+     "index": false,
+     "description": "Wholesale price and its expectation over market scenarios"
+    },
+    {
+     "line": 248,
+     "tex": "\\bar{\\pi}_t",
+     "key": "bar(pi)",
+     "index": false,
+     "description": "Wholesale price and its expectation over market scenarios"
+    },
+    {
+     "line": 249,
+     "tex": "\\alpha",
+     "key": "alpha",
+     "index": false,
+     "description": "Commitment premium on interface deviations"
+    },
+    {
+     "line": 250,
+     "tex": "R^{\\text{I}}_i",
+     "key": "R^{I}",
+     "index": false,
+     "description": "Interface-transformer rating of DN $i$ (interface scaling)"
+    },
+    {
+     "line": 251,
+     "tex": "S^{\\text{ref}}",
+     "key": "S^{ref}",
+     "index": false,
+     "description": "Reference converter rating (storage-channel scaling)"
+    },
+    {
+     "line": 252,
+     "tex": "\\sigma",
+     "key": "sigma",
+     "index": false,
+     "description": "Common objective scale; block weight $Y_y D_d (1+r)^{-(y-y_0)$}"
+    },
+    {
+     "line": 252,
+     "tex": "w_{y,d}",
+     "key": "w",
+     "index": false,
+     "description": "Common objective scale; block weight $Y_y D_d (1+r)^{-(y-y_0)$}"
+    },
+    {
+     "line": 253,
+     "tex": "\\kappa^{\\text{E}}",
+     "key": "kappa^{E}",
+     "index": false,
+     "description": "Scale of the shared-ESS agent's consensus terms"
+    },
+    {
+     "line": 254,
+     "tex": "\\rho^{V}",
+     "key": "rho^{V}",
+     "index": false,
+     "description": "ADMM penalties: voltage, interface-power and storage channels"
+    },
+    {
+     "line": 254,
+     "tex": "\\rho^{\\text{PF}}",
+     "key": "rho^{PF}",
+     "index": false,
+     "description": "ADMM penalties: voltage, interface-power and storage channels"
+    },
+    {
+     "line": 254,
+     "tex": "\\rho^{\\text{E}}",
+     "key": "rho^{E}",
+     "index": false,
+     "description": "ADMM penalties: voltage, interface-power and storage channels"
+    },
+    {
+     "line": 255,
+     "tex": "\\varepsilon_{\\text{abs}}",
+     "key": "varepsilon_{abs}",
+     "index": false,
+     "description": "Absolute and relative residual tolerances"
+    },
+    {
+     "line": 255,
+     "tex": "\\varepsilon_{\\text{rel}}",
+     "key": "varepsilon_{rel}",
+     "index": false,
+     "description": "Absolute and relative residual tolerances"
+    },
+    {
+     "line": 256,
+     "tex": "\\tau",
+     "key": "tau",
+     "index": false,
+     "description": "Certification threshold, $\\tau = \\delta_R \\mathcal{V/4$}"
+    },
+    {
+     "line": 257,
+     "tex": "\\delta_R",
+     "key": "delta_{R}",
+     "index": false,
+     "description": "Value resolution and reference storage value"
+    },
+    {
+     "line": 257,
+     "tex": "\\mathcal{V}",
+     "key": "cal(V)",
+     "index": false,
+     "description": "Value resolution and reference storage value"
+    },
+    {
+     "line": 258,
+     "tex": "P_{\\max}",
+     "key": "P_{max}",
+     "index": false,
+     "description": "Longest measured period; certifying-window length"
+    },
+    {
+     "line": 258,
+     "tex": "n_{\\mathrm{w}}",
+     "key": "n_{w}",
+     "index": false,
+     "description": "Longest measured period; certifying-window length"
+    },
+    {
+     "line": 259,
+     "tex": "\\sigma_Q",
+     "key": "sigma_{Q}",
+     "index": false,
+     "description": "Measured resolution of the recourse (planning search)"
+    },
+    {
+     "line": 260,
+     "tex": "\\Delta_0",
+     "key": "Delta_{0}",
+     "index": false,
+     "description": "Initial poll size and evaluation budget of the planning search"
+    },
+    {
+     "line": 260,
+     "tex": "N^{\\max}",
+     "key": "N^{max}",
+     "index": false,
+     "description": "Initial poll size and evaluation budget of the planning search"
+    },
+    {
+     "line": 275,
+     "tex": "\\boldsymbol{x}",
+     "key": "x",
+     "index": false,
+     "description": "Investment plan and its lattice coordinates"
+    },
+    {
+     "line": 275,
+     "tex": "\\boldsymbol{z}",
+     "key": "z",
+     "index": false,
+     "description": "Investment plan and its lattice coordinates"
+    },
+    {
+     "line": 276,
+     "tex": "F(\\boldsymbol{x})",
+     "key": "F",
+     "index": false,
+     "description": "Master objective, $I(\\boldsymbol{x) + Q(\\boldsymbol{x})$}"
+    },
+    {
+     "line": 277,
+     "tex": "I(\\boldsymbol{x})",
+     "key": "I",
+     "index": false,
+     "description": "Expected investment cost; investment cost under trajectory $c$"
+    },
+    {
+     "line": 277,
+     "tex": "C^{\\text{Inv}}_c(\\boldsymbol{x})",
+     "key": "C^{Inv}",
+     "index": false,
+     "description": "Expected investment cost; investment cost under trajectory $c$"
+    },
+    {
+     "line": 278,
+     "tex": "Q(\\boldsymbol{x})",
+     "key": "Q",
+     "index": false,
+     "description": "Recourse function; operating cost of block $(y,d)$, scenario $(m,o)$"
+    },
+    {
+     "line": 278,
+     "tex": "C^{\\text{Op}}_{y,d,m,o}(\\boldsymbol{x})",
+     "key": "C^{Op}",
+     "index": false,
+     "description": "Recourse function; operating cost of block $(y,d)$, scenario $(m,o)$"
+    },
+    {
+     "line": 279,
+     "tex": "C^{\\text{Salvage}}(\\boldsymbol{x})",
+     "key": "C^{Salvage}",
+     "index": false,
+     "description": "Terminal salvage credit (reported, not optimized)"
+    },
+    {
+     "line": 280,
+     "tex": "T^{\\text{Rem}}_{e,y^{\\text{Inv}}}",
+     "key": "T^{Rem}",
+     "index": false,
+     "description": "Remaining calendar life of a cohort at $y^{\\text{End}$}"
+    },
+    {
+     "line": 281,
+     "tex": "S^{\\text{Inv}}_{e,y^{\\text{Inv}}}",
+     "key": "S^{Inv}",
+     "index": false,
+     "description": "Converter rating and energy capacity installed at $e$ in $y^{\\text{Inv}$}"
+    },
+    {
+     "line": 281,
+     "tex": "E^{\\text{Inv}}_{e,y^{\\text{Inv}}}",
+     "key": "E^{Inv}",
+     "index": false,
+     "description": "Converter rating and energy capacity installed at $e$ in $y^{\\text{Inv}$}"
+    },
+    {
+     "line": 282,
+     "tex": "S^{\\text{Rated}}_{e,y}",
+     "key": "S^{Rated}",
+     "index": false,
+     "description": "Total rated power and energy at node $e$ in year $y$"
+    },
+    {
+     "line": 282,
+     "tex": "E^{\\text{Rated}}_{e,y}",
+     "key": "E^{Rated}",
+     "index": false,
+     "description": "Total rated power and energy at node $e$ in year $y$"
+    },
+    {
+     "line": 283,
+     "tex": "S^{\\text{Rated,Unit}}_{e,y^\\text{Inv},y}",
+     "key": "S^{Rated,Unit}",
+     "index": false,
+     "description": "Rated power of the cohort installed in $y^\\text{Inv$, in year $y$}"
+    },
+    {
+     "line": 284,
+     "tex": "E^{\\text{Rated,Unit}}_{e,y^\\text{Inv},y}",
+     "key": "E^{Rated,Unit}",
+     "index": false,
+     "description": "Rated energy of the cohort installed in $y^\\text{Inv$, in year $y$}"
+    },
+    {
+     "line": 285,
+     "tex": "S^{\\text{Av,Unit}}_{e,y^\\text{Inv},y}",
+     "key": "S^{Av,Unit}",
+     "index": false,
+     "description": "Available power of that cohort in year $y$"
+    },
+    {
+     "line": 286,
+     "tex": "E^{\\text{Av,Unit}}_{e,y^\\text{Inv},y}",
+     "key": "E^{Av,Unit}",
+     "index": false,
+     "description": "Available energy of that cohort in year $y$"
+    },
+    {
+     "line": 287,
+     "tex": "S^{\\text{Av}}_{e,y}",
+     "key": "S^{Av}",
+     "index": false,
+     "description": "Available power and energy at node $e$ in year $y$"
+    },
+    {
+     "line": 287,
+     "tex": "E^{\\text{Av}}_{e,y}",
+     "key": "E^{Av}",
+     "index": false,
+     "description": "Available power and energy at node $e$ in year $y$"
+    },
+    {
+     "line": 288,
+     "tex": "SoH_{e,y^\\text{Inv},y}",
+     "key": "SoH",
+     "index": false,
+     "description": "State of health of the cohort at the end of year $y$"
+    },
+    {
+     "line": 289,
+     "tex": "\\bar{E}^{\\text{Cell}}_{e,y^\\text{Inv},y}",
+     "key": "bar(E)^{Cell}",
+     "index": false,
+     "description": "Daily cell-side energy throughput of the cohort"
+    },
+    {
+     "line": 290,
+     "tex": "D_{e,y^\\text{Inv},y}",
+     "key": "D",
+     "index": false,
+     "description": "Fractional cycling loss of the cohort over block $y$"
+    },
+    {
+     "line": 291,
+     "tex": "\\boldsymbol{u}^{0}",
+     "key": "u",
+     "index": false,
+     "description": "Day-ahead decisions common to all scenarios; dispatch of scenario $o$"
+    },
+    {
+     "line": 291,
+     "tex": "\\boldsymbol{u}_o",
+     "key": "u",
+     "index": false,
+     "description": "Day-ahead decisions common to all scenarios; dispatch of scenario $o$"
+    },
+    {
+     "line": 294,
+     "tex": "P^{\\text{Ch}}_{e,y,d,t}",
+     "key": "P^{Ch}",
+     "index": false,
+     "description": "Charging and discharging active power of ESS $e$"
+    },
+    {
+     "line": 294,
+     "tex": "P^{\\text{Dch}}_{e,y,d,t}",
+     "key": "P^{Dch}",
+     "index": false,
+     "description": "Charging and discharging active power of ESS $e$"
+    },
+    {
+     "line": 295,
+     "tex": "P^{\\text{E}}_{e,y,d,t}",
+     "key": "P^{E}",
+     "index": false,
+     "description": "Net active and reactive power of ESS $e$ (consumption sign)"
+    },
+    {
+     "line": 295,
+     "tex": "Q^{\\text{E}}_{e,y,d,t}",
+     "key": "Q^{E}",
+     "index": false,
+     "description": "Net active and reactive power of ESS $e$ (consumption sign)"
+    },
+    {
+     "line": 296,
+     "tex": "E^{\\text{SoC}}_{e,y,d,t}",
+     "key": "E^{SoC}",
+     "index": false,
+     "description": "Stored energy of ESS $e$"
+    },
+    {
+     "line": 297,
+     "tex": "s^{\\pm}_{e,y,d}",
+     "key": "s^{\\pm}",
+     "index": false,
+     "description": "Daily closure slacks of the stored energy"
+    },
+    {
+     "line": 298,
+     "tex": "P^{\\text{Net}}_{e,y,d,t}",
+     "key": "P^{Net}",
+     "index": false,
+     "description": "Net active and reactive schedule of ESS $e$ (consensus variables)"
+    },
+    {
+     "line": 298,
+     "tex": "Q^{\\text{Net}}_{e,y,d,t}",
+     "key": "Q^{Net}",
+     "index": false,
+     "description": "Net active and reactive schedule of ESS $e$ (consensus variables)"
+    },
+    {
+     "line": 299,
+     "tex": "\\sigma^{\\pm}_{e,y,d,t}",
+     "key": "sigma^{\\pm}",
+     "index": false,
+     "description": "Slacks of the shared-ESS agent on the net schedule"
+    },
+    {
+     "line": 300,
+     "tex": "V^{\\text{I}}_{i}",
+     "key": "V^{I}",
+     "index": false,
+     "description": "Voltage, active and reactive power at the interface of DN $i$"
+    },
+    {
+     "line": 300,
+     "tex": "P^{\\text{I}}_{i}",
+     "key": "P^{I}",
+     "index": false,
+     "description": "Voltage, active and reactive power at the interface of DN $i$"
+    },
+    {
+     "line": 300,
+     "tex": "Q^{\\text{I}}_{i}",
+     "key": "Q^{I}",
+     "index": false,
+     "description": "Voltage, active and reactive power at the interface of DN $i$"
+    },
+    {
+     "line": 301,
+     "tex": "\\bar{P}^{\\text{I}}_{i,t}",
+     "key": "bar(P)^{I}",
+     "index": false,
+     "description": "Day-ahead interface expectation and its deviation in scenario $s$"
+    },
+    {
+     "line": 301,
+     "tex": "d^{\\pm}_{i,s,t}",
+     "key": "d^{\\pm}",
+     "index": false,
+     "description": "Day-ahead interface expectation and its deviation in scenario $s$"
+    },
+    {
+     "line": 302,
+     "tex": "\\lambda_t",
+     "key": "lambda",
+     "index": false,
+     "description": "Marginal value of the TN at the interface (interface-power dual)"
+    },
+    {
+     "line": 305,
+     "tex": "x_a",
+     "key": "x",
+     "index": false,
+     "description": "Agent copy, global value and agent dual of a consensus variable"
+    },
+    {
+     "line": 305,
+     "tex": "z",
+     "key": "z",
+     "index": false,
+     "description": "Agent copy, global value and agent dual of a consensus variable"
+    },
+    {
+     "line": 305,
+     "tex": "\\lambda_a",
+     "key": "lambda",
+     "index": false,
+     "description": "Agent copy, global value and agent dual of a consensus variable"
+    },
+    {
+     "line": 306,
+     "tex": "k_0",
+     "key": "k_{0}",
+     "index": false,
+     "description": "First residual pass and certification cycle of an evaluation"
+    },
+    {
+     "line": 306,
+     "tex": "k^{*}",
+     "key": "k^{*}",
+     "index": false,
+     "description": "First residual pass and certification cycle of an evaluation"
+    },
+    {
+     "line": 307,
+     "tex": "\\hat{P}",
+     "key": "hat(P)",
+     "index": false,
+     "description": "Measured period over the three most recent turning points"
+    },
+    {
+     "line": 308,
+     "tex": "t_{\\text{sum}}",
+     "key": "t_{sum}",
+     "index": false,
+     "description": "Priced interface-consensus gap; settling slack (uncertified form)"
+    },
+    {
+     "line": 308,
+     "tex": "s",
+     "key": "s",
+     "index": true,
+     "description": "Priced interface-consensus gap; settling slack (uncertified form)"
+    },
+    {
+     "line": 309,
+     "tex": "\\Delta",
+     "key": "Delta",
+     "index": false,
+     "description": "Poll size, poll set and evaluation cache of the planning search"
+    },
+    {
+     "line": 309,
+     "tex": "\\mathcal{P}",
+     "key": "cal(P)",
+     "index": false,
+     "description": "Poll size, poll set and evaluation cache of the planning search"
+    },
+    {
+     "line": 309,
+     "tex": "\\mathcal{C}",
+     "key": "cal(C)",
+     "index": false,
+     "description": "Poll size, poll set and evaluation cache of the planning search"
+    }
+   ],
+   "defined_unused": [
+    {
+     "key": "pi",
+     "entries": [
+      {
+       "line": 248,
+       "tex": "\\pi_t",
+       "description": "Wholesale price and its expectation over market scenarios"
+      }
+     ]
+    }
+   ],
+   "used_undefined": [
+    {
+     "key": "cal(U)",
+     "first_line": 407,
+     "count": 1,
+     "lines": [
+      407
+     ],
+     "section_first": "subsection Planning--Operation Decomposition Architecture"
+    },
+    {
+     "key": "x^{*}",
+     "first_line": 465,
+     "count": 1,
+     "lines": [
+      465
+     ],
+     "section_first": "subsection Planning--Operation Decomposition Architecture"
+    },
+    {
+     "key": "x^{inc}",
+     "first_line": 467,
+     "count": 5,
+     "lines": [
+      467,
+      477,
+      478,
+      480,
+      484
+     ],
+     "section_first": "subsection Planning--Operation Decomposition Architecture"
+    },
+    {
+     "key": "N",
+     "first_line": 467,
+     "count": 5,
+     "lines": [
+      467,
+      475,
+      476,
+      1511
+     ],
+     "section_first": "subsection Planning--Operation Decomposition Architecture"
+    },
+    {
+     "key": "z^{inc}",
+     "first_line": 470,
+     "count": 3,
+     "lines": [
+      470,
+      473
+     ],
+     "section_first": "subsection Planning--Operation Decomposition Architecture"
+    },
+    {
+     "key": "v",
+     "first_line": 470,
+     "count": 3,
+     "lines": [
+      470,
+      473,
+      1427
+     ],
+     "section_first": "subsection Planning--Operation Decomposition Architecture"
+    },
+    {
+     "key": "bar",
+     "first_line": 477,
+     "count": 1,
+     "lines": [
+      477
+     ],
+     "section_first": "subsection Planning--Operation Decomposition Architecture"
+    },
+    {
+     "key": "bar_{inc}",
+     "first_line": 477,
+     "count": 1,
+     "lines": [
+      477
+     ],
+     "section_first": "subsection Planning--Operation Decomposition Architecture"
+    },
+    {
+     "key": "b",
+     "first_line": 682,
+     "count": 13,
+     "lines": [
+      682,
+      1227,
+      1591,
+      1717,
+      1819,
+      1888,
+      1889
+     ],
+     "section_first": "subsubsection Recourse Evaluation and Certification"
+    },
+    {
+     "key": "hat(S)^{Inv}",
+     "first_line": 708,
+     "count": 1,
+     "lines": [
+      708
+     ],
+     "section_first": "subsubsection Installed and Available Capacity"
+    },
+    {
+     "key": "hat(E)^{Inv}",
+     "first_line": 709,
+     "count": 1,
+     "lines": [
+      709
+     ],
+     "section_first": "subsubsection Installed and Available Capacity"
+    },
+    {
+     "key": "eta",
+     "first_line": 791,
+     "count": 1,
+     "lines": [
+      791
+     ],
+     "section_first": "subsubsection Storage Operation in the Network Models"
+    },
+    {
+     "key": "y^{'}",
+     "first_line": 812,
+     "count": 2,
+     "lines": [
+      812
+     ],
+     "section_first": "subsubsection Degradation Chain of the Shared-ESS Agent"
+    },
+    {
+     "key": "y^{''}",
+     "first_line": 813,
+     "count": 3,
+     "lines": [
+      813
+     ],
+     "section_first": "subsubsection Degradation Chain of the Shared-ESS Agent"
+    },
+    {
+     "key": "f",
+     "first_line": 1193,
+     "count": 6,
+     "lines": [
+      1193,
+      1213,
+      1290,
+      1300,
+      1598,
+      1605
+     ],
+     "section_first": "subsection Planning Result at the Baseline"
+    },
+    {
+     "key": "value",
+     "first_line": 1213,
+     "count": 2,
+     "lines": [
+      1213,
+      1227
+     ],
+     "section_first": "subsection Planning Result at the Baseline"
+    },
+    {
+     "key": "E",
+     "first_line": 1227,
+     "count": 6,
+     "lines": [
+      1227,
+      1337,
+      1354,
+      1636,
+      1673,
+      1710
+     ],
+     "section_first": "subsection Break-even Conditions"
+    },
+    {
+     "key": "P",
+     "first_line": 1227,
+     "count": 6,
+     "lines": [
+      1227,
+      1610,
+      1614,
+      1635,
+      1673,
+      1691
+     ],
+     "section_first": "subsection Break-even Conditions"
+    },
+    {
+     "key": "e^{*}",
+     "first_line": 1227,
+     "count": 4,
+     "lines": [
+      1227,
+      1246
+     ],
+     "section_first": "subsection Break-even Conditions"
+    },
+    {
+     "key": "p",
+     "first_line": 1227,
+     "count": 2,
+     "lines": [
+      1227
+     ],
+     "section_first": "subsection Break-even Conditions"
+    },
+    {
+     "key": "A",
+     "first_line": 1337,
+     "count": 2,
+     "lines": [
+      1337,
+      1354
+     ],
+     "section_first": "subsection Degradation Decides the Investment"
+    },
+    {
+     "key": "R",
+     "first_line": 1417,
+     "count": 4,
+     "lines": [
+      1417,
+      1430,
+      1431,
+      1432
+     ],
+     "section_first": "subsection Multi-Scenario Instance"
+    },
+    {
+     "key": "unit",
+     "first_line": 1424,
+     "count": 1,
+     "lines": [
+      1424
+     ],
+     "section_first": "subsection Multi-Scenario Instance"
+    },
+    {
+     "key": "V",
+     "first_line": 1430,
+     "count": 3,
+     "lines": [
+      1430,
+      1431,
+      1710
+     ],
+     "section_first": "subsection Multi-Scenario Instance"
+    },
+    {
+     "key": "V^{single}",
+     "first_line": 1430,
+     "count": 2,
+     "lines": [
+      1430,
+      1431
+     ],
+     "section_first": "subsection Multi-Scenario Instance"
+    },
+    {
+     "key": "M",
+     "first_line": 1451,
+     "count": 3,
+     "lines": [
+      1451,
+      1456
+     ],
+     "section_first": "subsection Investment Year and Discount Rate"
+    },
+    {
+     "key": "cap",
+     "first_line": 1511,
+     "count": 1,
+     "lines": [
+      1511
+     ],
+     "section_first": "subsection Certification Statistics and Computational Performance"
+    },
+    {
+     "key": "c^{flex}",
+     "first_line": 1531,
+     "count": 1,
+     "lines": [
+      1531
+     ],
+     "section_first": "subsection Limitations"
+    },
+    {
+     "key": "varepsilon_{AE}",
+     "first_line": 1539,
+     "count": 1,
+     "lines": [
+      1539
+     ],
+     "section_first": "subsection Limitations"
+    },
+    {
+     "key": "N^{I}",
+     "first_line": 1582,
+     "count": 2,
+     "lines": [
+      1582,
+      1767
+     ],
+     "section_first": "subsection Agents, Blocks and Consensus Variables"
+    },
+    {
+     "key": "z^{P}",
+     "first_line": 1586,
+     "count": 1,
+     "lines": [
+      1586
+     ],
+     "section_first": "subsection Agents, Blocks and Consensus Variables"
+    },
+    {
+     "key": "z^{Q}",
+     "first_line": 1586,
+     "count": 1,
+     "lines": [
+      1586
+     ],
+     "section_first": "subsection Agents, Blocks and Consensus Variables"
+    },
+    {
+     "key": "median",
+     "first_line": 1591,
+     "count": 2,
+     "lines": [
+      1591,
+      1819
+     ],
+     "section_first": "subsection Agents, Blocks and Consensus Variables"
+    },
+    {
+     "key": "hat(x)",
+     "first_line": 1598,
+     "count": 1,
+     "lines": [
+      1598
+     ],
+     "section_first": "subsection Local Problems"
+    },
+    {
+     "key": "lambda^{V}",
+     "first_line": 1607,
+     "count": 3,
+     "lines": [
+      1607,
+      1696
+     ],
+     "section_first": "subsection Local Problems"
+    },
+    {
+     "key": "hat(V)^{I}",
+     "first_line": 1607,
+     "count": 4,
+     "lines": [
+      1607,
+      1608,
+      1782,
+      1786
+     ],
+     "section_first": "subsection Local Problems"
+    },
+    {
+     "key": "xi",
+     "first_line": 1610,
+     "count": 7,
+     "lines": [
+      1610,
+      1614,
+      1635,
+      1673,
+      1680,
+      1683,
+      1691
+     ],
+     "section_first": "subsection Local Problems"
+    },
+    {
+     "key": "lambda^{\\xi}",
+     "first_line": 1611,
+     "count": 8,
+     "lines": [
+      1611,
+      1615,
+      1636,
+      1680,
+      1682,
+      1698
+     ],
+     "section_first": "subsection Local Problems"
+    },
+    {
+     "key": "xi^{I}",
+     "first_line": 1611,
+     "count": 4,
+     "lines": [
+      1611,
+      1612,
+      1699
+     ],
+     "section_first": "subsection Local Problems"
+    },
+    {
+     "key": "hat(xi)^{I}",
+     "first_line": 1611,
+     "count": 2,
+     "lines": [
+      1611,
+      1612
+     ],
+     "section_first": "subsection Local Problems"
+    },
+    {
+     "key": "xi^{E}",
+     "first_line": 1615,
+     "count": 2,
+     "lines": [
+      1615,
+      1616
+     ],
+     "section_first": "subsection Local Problems"
+    },
+    {
+     "key": "z^{\\xi}",
+     "first_line": 1615,
+     "count": 6,
+     "lines": [
+      1615,
+      1616,
+      1636,
+      1638,
+      1679,
+      1683
+     ],
+     "section_first": "subsection Local Problems"
+    },
+    {
+     "key": "x_{E}",
+     "first_line": 1633,
+     "count": 3,
+     "lines": [
+      1633,
+      1634,
+      1653
+     ],
+     "section_first": "subsection Local Problems"
+    },
+    {
+     "key": "f_{E}",
+     "first_line": 1634,
+     "count": 3,
+     "lines": [
+      1634,
+      1647,
+      1653
+     ],
+     "section_first": "subsection Local Problems"
+    },
+    {
+     "key": "xi^{Net}",
+     "first_line": 1636,
+     "count": 2,
+     "lines": [
+      1636,
+      1638
+     ],
+     "section_first": "subsection Local Problems"
+    },
+    {
+     "key": "TSO",
+     "first_line": 1673,
+     "count": 1,
+     "lines": [
+      1673
+     ],
+     "section_first": "subsection Consensus, Dual and Penalty Updates"
+    },
+    {
+     "key": "DSO",
+     "first_line": 1673,
+     "count": 1,
+     "lines": [
+      1673
+     ],
+     "section_first": "subsection Consensus, Dual and Penalty Updates"
+    },
+    {
+     "key": "bar(a)",
+     "first_line": 1706,
+     "count": 1,
+     "lines": [
+      1706
+     ],
+     "section_first": "subsection Consensus, Dual and Penalty Updates"
+    },
+    {
+     "key": "PF",
+     "first_line": 1710,
+     "count": 1,
+     "lines": [
+      1710
+     ],
+     "section_first": "subsection Consensus, Dual and Penalty Updates"
+    },
+    {
+     "key": "varepsilon^{pri}",
+     "first_line": 1710,
+     "count": 4,
+     "lines": [
+      1710,
+      1717
+     ],
+     "section_first": "subsection Consensus, Dual and Penalty Updates"
+    },
+    {
+     "key": "varepsilon^{dual}",
+     "first_line": 1710,
+     "count": 4,
+     "lines": [
+      1710,
+      1717
+     ],
+     "section_first": "subsection Consensus, Dual and Penalty Updates"
+    },
+    {
+     "key": "rho",
+     "first_line": 1710,
+     "count": 15,
+     "lines": [
+      1710,
+      1717,
+      1722,
+      1734,
+      1775,
+      1793,
+      1794
+     ],
+     "section_first": "subsection Consensus, Dual and Penalty Updates"
+    },
+    {
+     "key": "mu",
+     "first_line": 1710,
+     "count": 2,
+     "lines": [
+      1710
+     ],
+     "section_first": "subsection Consensus, Dual and Penalty Updates"
+    },
+    {
+     "key": "mu^{'}",
+     "first_line": 1710,
+     "count": 3,
+     "lines": [
+      1710
+     ],
+     "section_first": "subsection Consensus, Dual and Penalty Updates"
+    },
+    {
+     "key": "r_{E}",
+     "first_line": 1717,
+     "count": 1,
+     "lines": [
+      1717
+     ],
+     "section_first": "subsection Stopping Test, Acceleration and Tail"
+    },
+    {
+     "key": "s_{E}",
+     "first_line": 1717,
+     "count": 1,
+     "lines": [
+      1717
+     ],
+     "section_first": "subsection Stopping Test, Acceleration and Tail"
+    },
+    {
+     "key": "x_{DSO}",
+     "first_line": 1717,
+     "count": 1,
+     "lines": [
+      1717
+     ],
+     "section_first": "subsection Stopping Test, Acceleration and Tail"
+    },
+    {
+     "key": "x_{TSO}",
+     "first_line": 1717,
+     "count": 2,
+     "lines": [
+      1717
+     ],
+     "section_first": "subsection Stopping Test, Acceleration and Tail"
+    },
+    {
+     "key": "rho^{V}_{0}",
+     "first_line": 1763,
+     "count": 2,
+     "lines": [
+      1763,
+      1819
+     ],
+     "section_first": "subsection Algorithm"
+    },
+    {
+     "key": "rho^{PF}_{0}",
+     "first_line": 1763,
+     "count": 2,
+     "lines": [
+      1763,
+      1819
+     ],
+     "section_first": "subsection Algorithm"
+    },
+    {
+     "key": "rho^{E}_{0}",
+     "first_line": 1763,
+     "count": 2,
+     "lines": [
+      1763,
+      1819
+     ],
+     "section_first": "subsection Algorithm"
+    },
+    {
+     "key": "k^{max}",
+     "first_line": 1763,
+     "count": 2,
+     "lines": [
+      1763,
+      1779
+     ],
+     "section_first": "subsection Algorithm"
+    },
+    {
+     "key": "hat(P)^{I}",
+     "first_line": 1782,
+     "count": 2,
+     "lines": [
+      1782,
+      1786
+     ],
+     "section_first": "subsection Algorithm"
+    },
+    {
+     "key": "hat(Q)^{I}",
+     "first_line": 1782,
+     "count": 2,
+     "lines": [
+      1782,
+      1786
+     ],
+     "section_first": "subsection Algorithm"
+    },
+    {
+     "key": "V^{Base}",
+     "first_line": 1888,
+     "count": 2,
+     "lines": [
+      1888,
+      1889
+     ],
+     "section_first": "Appendix: section Distribution Networks"
+    },
+    {
+     "key": "V^{max}",
+     "first_line": 1888,
+     "count": 2,
+     "lines": [
+      1888,
+      1889
+     ],
+     "section_first": "Appendix: section Distribution Networks"
+    },
+    {
+     "key": "V^{min}",
+     "first_line": 1888,
+     "count": 2,
+     "lines": [
+      1888,
+      1889
+     ],
+     "section_first": "Appendix: section Distribution Networks"
+    },
+    {
+     "key": "b^{Sh}",
+     "first_line": 1923,
+     "count": 2,
+     "lines": [
+      1923,
+      1924
+     ],
+     "section_first": "Appendix: section Distribution Networks"
+    },
+    {
+     "key": "P^{G,max}",
+     "first_line": 1982,
+     "count": 1,
+     "lines": [
+      1982
+     ],
+     "section_first": "Appendix: section Distribution Networks"
+    },
+    {
+     "key": "P^{G,min}",
+     "first_line": 1982,
+     "count": 1,
+     "lines": [
+      1982
+     ],
+     "section_first": "Appendix: section Distribution Networks"
+    },
+    {
+     "key": "Q^{G,max}",
+     "first_line": 1982,
+     "count": 1,
+     "lines": [
+      1982
+     ],
+     "section_first": "Appendix: section Distribution Networks"
+    },
+    {
+     "key": "Q^{G,min}",
+     "first_line": 1982,
+     "count": 1,
+     "lines": [
+      1982
+     ],
+     "section_first": "Appendix: section Distribution Networks"
+    },
+    {
+     "key": "V^{S}",
+     "first_line": 1982,
+     "count": 1,
+     "lines": [
+      1982
+     ],
+     "section_first": "Appendix: section Distribution Networks"
+    }
+   ],
+   "n_used_undefined": 73,
+   "duplicate_keys": {
+    "Y": [
+     {
+      "line": 196,
+      "tex": "Y",
+      "description": "Set of representative years, indexed by $y$"
+     },
+     {
+      "line": 227,
+      "tex": "Y_y",
+      "description": "Calendar years represented by $y$"
+     }
+    ],
+    "D": [
+     {
+      "line": 197,
+      "tex": "D",
+      "description": "Set of representative days, indexed by $d$"
+     },
+     {
+      "line": 228,
+      "tex": "D_d",
+      "description": "Calendar days represented by $d$"
+     },
+     {
+      "line": 290,
+      "tex": "D_{e,y^\\text{Inv},y}",
+      "description": "Fractional cycling loss of the cohort over block $y$"
+     }
+    ],
+    "s": [
+     {
+      "line": 204,
+      "tex": "s = (m,o)",
+      "description": "Recourse scenario (market and operation pair)"
+     },
+     {
+      "line": 308,
+      "tex": "s",
+      "description": "Priced interface-consensus gap; settling slack (uncertified form)"
+     }
+    ],
+    "omega": [
+     {
+      "line": 220,
+      "tex": "\\omega_c",
+      "description": "Probability of cost trajectory $c$"
+     },
+     {
+      "line": 221,
+      "tex": "\\omega_m",
+      "description": "Probabilities of market scenario $m$, operation scenario $o$"
+     },
+     {
+      "line": 221,
+      "tex": "\\omega_o",
+      "description": "Probabilities of market scenario $m$, operation scenario $o$"
+     }
+    ],
+    "Delta": [
+     {
+      "line": 229,
+      "tex": "\\Delta t",
+      "description": "Duration of a time instant"
+     },
+     {
+      "line": 309,
+      "tex": "\\Delta",
+      "description": "Poll size, poll set and evaluation cache of the planning search"
+     }
+    ],
+    "x": [
+     {
+      "line": 275,
+      "tex": "\\boldsymbol{x}",
+      "description": "Investment plan and its lattice coordinates"
+     },
+     {
+      "line": 305,
+      "tex": "x_a",
+      "description": "Agent copy, global value and agent dual of a consensus variable"
+     }
+    ],
+    "z": [
+     {
+      "line": 275,
+      "tex": "\\boldsymbol{z}",
+      "description": "Investment plan and its lattice coordinates"
+     },
+     {
+      "line": 305,
+      "tex": "z",
+      "description": "Agent copy, global value and agent dual of a consensus variable"
+     }
+    ],
+    "u": [
+     {
+      "line": 291,
+      "tex": "\\boldsymbol{u}^{0}",
+      "description": "Day-ahead decisions common to all scenarios; dispatch of scenario $o$"
+     },
+     {
+      "line": 291,
+      "tex": "\\boldsymbol{u}_o",
+      "description": "Day-ahead decisions common to all scenarios; dispatch of scenario $o$"
+     }
+    ],
+    "lambda": [
+     {
+      "line": 302,
+      "tex": "\\lambda_t",
+      "description": "Marginal value of the TN at the interface (interface-power dual)"
+     },
+     {
+      "line": 305,
+      "tex": "\\lambda_a",
+      "description": "Agent copy, global value and agent dual of a consensus variable"
+     }
+    ]
+   },
+   "raw_checks": {
+    "\\pi_t (wholesale price)": {
+     "patterns": [
+      "\\pi_t",
+      "\\pi_{t}",
+      "\\pi_{t,"
+     ],
+     "body_lines": []
+    },
+    "\\bar{\\pi}_t (expected price)": {
+     "patterns": [
+      "\\bar{\\pi}_t",
+      "\\bar{\\pi}"
+     ],
+     "body_lines": [
+      910,
+      918
+     ]
+    },
+    "\\lambda_t (TN marginal value at the interface)": {
+     "patterns": [
+      "\\lambda_t",
+      "\\lambda_{t}",
+      "\\lambda_{t,"
+     ],
+     "body_lines": []
+    },
+    "\\lambda_a (agent dual)": {
+     "patterns": [
+      "\\lambda_a",
+      "\\lambda_{a",
+      "\\lambda^{\\xi",
+      "\\lambda^{V"
+     ],
+     "body_lines": [
+      1586,
+      1607,
+      1611,
+      1615,
+      1636,
+      1680,
+      1682,
+      1696,
+      1698,
+      1722
+     ]
+    },
+    "s (settling slack, uncertified form)": {
+     "patterns": [
+      "|s|",
+      "slack $s$",
+      "slack~$s$",
+      "slack $s "
+     ],
+     "body_lines": []
+    },
+    "s (ADMM dual residual, A.3-A.4; not in the nomenclature)": {
+     "patterns": [
+      "$s = \\rho",
+      "s_{\\text{E}}",
+      "s_g"
+     ],
+     "body_lines": [
+      996,
+      1017,
+      1023,
+      1039,
+      1056,
+      1073,
+      1710,
+      1717,
+      1722,
+      1880
+     ]
+    },
+    "s = (m,o) (recourse scenario)": {
+     "patterns": [
+      "$s = (m, o)$",
+      "\\omega_s",
+      "_{i,s,t}",
+      "s \\in \\Omega_M \\times \\Omega_O"
+     ],
+     "body_lines": [
+      891,
+      892,
+      897,
+      898,
+      910,
+      911,
+      1586
+     ]
+    },
+    "x_a (agent copy)": {
+     "patterns": [
+      "x_a",
+      "x_{a",
+      "x_{\\text{E}}"
+     ],
+     "body_lines": [
+      1586,
+      1604,
+      1605,
+      1633,
+      1634,
+      1653
+     ]
+    },
+    "\\boldsymbol{x} (plan)": {
+     "patterns": [
+      "\\boldsymbol{x}"
+     ],
+     "body_lines": [
+      383,
+      385,
+      392,
+      396,
+      402,
+      406,
+      407,
+      418,
+      419,
+      439,
+      465,
+      466,
+      467,
+      477,
+      478,
+      480,
+      484,
+      511,
+      523,
+      534,
+      613,
+      623,
+      657,
+      661,
+      790,
+      880,
+      919,
+      987,
+      1148,
+      1152,
+      1165,
+      1176,
+      1187,
+      1213,
+      1407,
+      1417,
+      1428,
+      1433,
+      1451,
+      1755,
+      1763,
+      1764,
+      1773
+     ]
+    },
+    "z (global value)": {
+     "patterns": [
+      "z_{e,y,d,t}",
+      "z^{\\xi",
+      "- z^{",
+      "$z$"
+     ],
+     "body_lines": [
+      1574,
+      1586,
+      1615,
+      1616,
+      1636,
+      1638,
+      1679,
+      1683,
+      1691,
+      1706,
+      1722,
+      1783,
+      1787,
+      1790,
+      1791
+     ]
+    },
+    "\\boldsymbol{z} (lattice coordinates)": {
+     "patterns": [
+      "\\boldsymbol{z}"
+     ],
+     "body_lines": [
+      466,
+      470,
+      473
+     ]
+    },
+    "\\Delta (poll size)": {
+     "patterns": [
+      "$\\Delta$",
+      "\\Delta \\gets",
+      "\\Delta = ",
+      "\\Delta \\boldsymbol{v}"
+     ],
+     "body_lines": [
+      444,
+      450,
+      467,
+      470,
+      472,
+      478,
+      480,
+      481,
+      488,
+      490
+     ]
+    },
+    "\\Delta t (time instant)": {
+     "patterns": [
+      "\\Delta t"
+     ],
+     "body_lines": [
+      752,
+      790,
+      824
+     ]
+    },
+    "D (set of days)": {
+     "patterns": [
+      "d \\in D",
+      "\\in D}"
+     ],
+     "body_lines": [
+      659,
+      746,
+      824,
+      1654,
+      1656
+     ]
+    },
+    "D_d (days represented)": {
+     "patterns": [
+      "D_d"
+     ],
+     "body_lines": [
+      659,
+      824,
+      1582
+     ]
+    },
+    "D_{e,y^Inv,y} (cycling loss)": {
+     "patterns": [
+      "D_{e,y"
+     ],
+     "body_lines": [
+      838,
+      850
+     ]
+    },
+    "k_e (cycle life)": {
+     "patterns": [
+      "k_e"
+     ],
+     "body_lines": [
+      840,
+      846,
+      864,
+      868,
+      1103,
+      1108
+     ]
+    },
+    "\\sigma (common scale)": {
+     "patterns": [
+      "\\sigma$",
+      "{\\sigma}",
+      "\\sigma /",
+      "\\sigma = 93"
+     ],
+     "body_lines": [
+      1082,
+      1582,
+      1591,
+      1605,
+      1654,
+      1665,
+      1819
+     ]
+    },
+    "w_{y,d} (block weight)": {
+     "patterns": [
+      "w_{y,d}",
+      "w_b"
+     ],
+     "body_lines": [
+      1582,
+      1591,
+      1605,
+      1819
+     ]
+    },
+    "\\alpha (commitment premium)": {
+     "patterns": [
+      "\\alpha \\, \\bar{\\pi}_t",
+      "$\\alpha = 0.5$",
+      "$\\alpha$ an imbalance premium",
+      "fraction $\\alpha$"
+     ],
+     "body_lines": [
+      910,
+      918,
+      1126
+     ]
+    },
+    "\\alpha = 1/(2 S^ref) (A.3-A.4 storage-channel factor; not in the nomenclature)": {
+     "patterns": [
+      "\\alpha = 1/(2 S^{\\text{ref}})",
+      "\\rho^{\\text{E}} \\alpha",
+      "\\lVert \\alpha (x - z)"
+     ],
+     "body_lines": [
+      1673,
+      1680,
+      1681,
+      1682,
+      1717
+     ]
+    },
+    "D (post-hoc settled descent, tab:res_multiscenario; not in the nomenclature)": {
+     "patterns": [
+      "$D$ is the post-hoc",
+      "(V - D)",
+      "descent $D$"
+     ],
+     "body_lines": [
+      1417,
+      1428,
+      1431
+     ]
+    },
+    "b (band, section 2.2.7) / b (channel normalisation, A.4) / b (fit slope, section 4.2)": {
+     "patterns": [
+      "where $b$ is the larger",
+      "with $b$ the channel",
+      "a+bE+cP",
+      "e^{*}=b+c/4"
+     ],
+     "body_lines": [
+      682,
+      1227,
+      1717
+     ]
+    },
+    "R (ratio, tab:res_multiscenario; not in the nomenclature)": {
+     "patterns": [
+      "the ratio $R$",
+      "$R$ at operational",
+      "$R$ after",
+      "$R$ predicted"
+     ],
+     "body_lines": [
+      1417,
+      1430,
+      1431,
+      1432
+     ]
+    },
+    "V (value, tab:res_multiscenario; not in the nomenclature)": {
+     "patterns": [
+      "$V / V^{\\text{single}}$",
+      "(V - D)"
+     ],
+     "body_lines": [
+      1430,
+      1431
+     ]
+    }
+   },
+   "n_body_atoms": 1895,
+   "body_chars": 167558,
+   "used_keys": [
+    "A",
+    "C^{Inv}",
+    "C^{Op}",
+    "C^{Salvage}",
+    "D",
+    "DSO",
+    "Delta",
+    "Delta^{E}",
+    "Delta^{S}",
+    "Delta_{0}",
+    "E",
+    "E^{Av,Unit}",
+    "E^{Av}",
+    "E^{Inv}",
+    "E^{Max}",
+    "E^{Rated,Unit}",
+    "E^{Rated}",
+    "E^{SoC}",
+    "E^{S}",
+    "F",
+    "I",
+    "M",
+    "N",
+    "N^{DS}",
+    "N^{I}",
+    "N^{max}",
+    "Omega_{C}",
+    "Omega_{M}",
+    "Omega_{O}",
+    "P",
+    "PF",
+    "P^{Ch}",
+    "P^{Dch}",
+    "P^{E}",
+    "P^{G,max}",
+    "P^{G,min}",
+    "P^{I}",
+    "P^{Net}",
+    "P_{max}",
+    "Q",
+    "Q^{E}",
+    "Q^{G,max}",
+    "Q^{G,min}",
+    "Q^{I}",
+    "Q^{Net}",
+    "R",
+    "R^{DS}",
+    "R^{I}",
+    "S^{Av,Unit}",
+    "S^{Av}",
+    "S^{Inv}",
+    "S^{Rated,Unit}",
+    "S^{Rated}",
+    "S^{ref}",
+    "SoC",
+    "SoC^{Max}",
+    "SoC^{Min}",
+    "SoH",
+    "SoH^{Min}",
+    "T",
+    "TSO",
+    "T^{Cal}",
+    "T^{Rem}",
+    "V",
+    "V^{Base}",
+    "V^{I}",
+    "V^{S}",
+    "V^{max}",
+    "V^{min}",
+    "V^{single}",
+    "Y",
+    "a",
+    "alpha",
+    "b",
+    "b^{Sh}",
+    "bar",
+    "bar(E)^{Cell}",
+    "bar(P)^{I}",
+    "bar(a)",
+    "bar(pi)",
+    "bar_{inc}",
+    "c^{Cl}",
+    "c^{Inv,E}",
+    "c^{Inv,S}",
+    "c^{Inv}",
+    "c^{\\sigma}",
+    "c^{flex}",
+    "cal(C)",
+    "cal(P)",
+    "cal(U)",
+    "cal(V)",
+    "cal(X)",
+    "cap",
+    "d^{+}",
+    "d^{-}",
+    "d^{\\pm}",
+    "delta^{DS}",
+    "delta_{R}",
+    "e^{*}",
+    "eta",
+    "eta^{Ch}",
+    "eta^{Dch}",
+    "f",
+    "f_{E}",
+    "hat(E)^{Inv}",
+    "hat(P)",
+    "hat(P)^{I}",
+    "hat(Q)^{I}",
+    "hat(S)^{Inv}",
+    "hat(V)^{I}",
+    "hat(x)",
+    "hat(xi)^{I}",
+    "k^{*}",
+    "k^{max}",
+    "k_{0}",
+    "kappa^{E}",
+    "lambda",
+    "lambda^{V}",
+    "lambda^{\\xi}",
+    "median",
+    "mu",
+    "mu^{'}",
+    "n_{w}",
+    "omega",
+    "p",
+    "phi^{Cal}",
+    "phi^{Max}",
+    "phi^{Min}",
+    "r",
+    "r_{E}",
+    "rho",
+    "rho^{E}",
+    "rho^{E}_{0}",
+    "rho^{PF}",
+    "rho^{PF}_{0}",
+    "rho^{V}",
+    "rho^{V}_{0}",
+    "s^{+}",
+    "s^{-}",
+    "s^{\\pm}",
+    "s_{E}",
+    "sigma",
+    "sigma^{+}",
+    "sigma^{-}",
+    "sigma^{\\pm}",
+    "sigma_{Q}",
+    "t_{sum}",
+    "tau",
+    "u",
+    "unit",
+    "v",
+    "value",
+    "varepsilon^{Cl}",
+    "varepsilon^{C}",
+    "varepsilon^{E}",
+    "varepsilon^{dual}",
+    "varepsilon^{pri}",
+    "varepsilon_{AE}",
+    "varepsilon_{abs}",
+    "varepsilon_{rel}",
+    "w",
+    "x",
+    "x^{*}",
+    "x^{inc}",
+    "x_{DSO}",
+    "x_{E}",
+    "x_{TSO}",
+    "xi",
+    "xi^{E}",
+    "xi^{I}",
+    "xi^{Net}",
+    "y^{''}",
+    "y^{'}",
+    "y^{End}",
+    "y^{Inv}",
+    "y_{0}",
+    "z",
+    "z^{P}",
+    "z^{Q}",
+    "z^{\\xi}",
+    "z^{inc}"
+   ]
+  },
+  "pre_move": {
+   "e6e58e8": {
+    "nomenclature_lines": [
+     185,
+     267
+    ],
+    "n_entries": 34,
+    "n_keys": 31,
+    "defined_unused": [
+     {
+      "key": "L^{B}",
+      "entries": [
+       {
+        "line": 202,
+        "tex": "L^B",
+        "description": "Set of Benders' iterations"
+       }
+      ]
+     },
+     {
+      "key": "alpha^{Down}",
+      "entries": [
+       {
+        "line": 216,
+        "tex": "\\alpha^{\\text{Down}}",
+        "description": "Lower bound on the Benders underestimator"
+       }
+      ]
+     },
+     {
+      "key": "SoH^{min}",
+      "entries": [
+       {
+        "line": 217,
+        "tex": "SoH_{e,y}^{\\text{min}}",
+        "description": "Minimum admissible SoH of unit $e$ in year $y$"
+       }
+      ]
+     },
+     {
+      "key": "CL^{Nom}",
+      "entries": [
+       {
+        "line": 220,
+        "tex": "\\mathrm{CL}^\\text{Nom}_e",
+        "description": "Nominal cycle life of unit $e \\in E^S$"
+       }
+      ]
+     },
+     {
+      "key": "delta",
+      "entries": [
+       {
+        "line": 247,
+        "tex": "\\delta_{e,y^\\text{Inv},y}",
+        "description": "Average equivalent daily degradation rate of unit $e$ installed"
+       }
+      ]
+     },
+     {
+      "key": "S^{Ch}",
+      "entries": [
+       {
+        "line": 249,
+        "tex": "S^\\text{Ch}_{e,y^\\text{Inv},y,d,t}",
+        "description": "Charging apparent power of unit $e$, installed in year $y^\\text{Inv}$ and"
+       }
+      ]
+     },
+     {
+      "key": "S^{Dch}",
+      "entries": [
+       {
+        "line": 251,
+        "tex": "S^\\text{Dch}_{e,y^\\text{Inv},y,d,t}",
+        "description": "Discharging apparent power of unit $e$, installed in year $y^\\text{Inv}$"
+       }
+      ]
+     }
+    ],
+    "n_used_undefined": 161,
+    "raw_checks": {
+     "\\pi_t (wholesale price)": {
+      "patterns": [
+       "\\pi_t",
+       "\\pi_{t}",
+       "\\pi_{t,"
+      ],
+      "body_lines": []
+     },
+     "\\bar{\\pi}_t (expected price)": {
+      "patterns": [
+       "\\bar{\\pi}_t",
+       "\\bar{\\pi}"
+      ],
+      "body_lines": [
+       888,
+       896
+      ]
+     },
+     "\\lambda_t (TN marginal value at the interface)": {
+      "patterns": [
+       "\\lambda_t",
+       "\\lambda_{t}",
+       "\\lambda_{t,"
+      ],
+      "body_lines": []
+     },
+     "\\lambda_a (agent dual)": {
+      "patterns": [
+       "\\lambda_a",
+       "\\lambda_{a",
+       "\\lambda^{\\xi",
+       "\\lambda^{V"
+      ],
+      "body_lines": [
+       1637,
+       1658,
+       1662,
+       1666,
+       1687,
+       1712,
+       1714,
+       1728,
+       1730,
+       1754
+      ]
+     },
+     "s (settling slack, uncertified form)": {
+      "patterns": [
+       "|s|",
+       "slack $s$",
+       "slack~$s$",
+       "slack $s "
+      ],
+      "body_lines": [
+       1182,
+       1250
+      ]
+     },
+     "s (ADMM dual residual, A.3-A.4; not in the nomenclature)": {
+      "patterns": [
+       "$s = \\rho",
+       "s_{\\text{E}}",
+       "s_g"
+      ],
+      "body_lines": [
+       974,
+       995,
+       1001,
+       1017,
+       1034,
+       1051,
+       1742,
+       1749,
+       1754,
+       1878
+      ]
+     },
+     "s = (m,o) (recourse scenario)": {
+      "patterns": [
+       "$s = (m, o)$",
+       "\\omega_s",
+       "_{i,s,t}",
+       "s \\in \\Omega_M \\times \\Omega_O"
+      ],
+      "body_lines": [
+       869,
+       870,
+       875,
+       876,
+       888,
+       889,
+       1637
+      ]
+     },
+     "x_a (agent copy)": {
+      "patterns": [
+       "x_a",
+       "x_{a",
+       "x_{\\text{E}}"
+      ],
+      "body_lines": [
+       1637,
+       1655,
+       1656,
+       1684,
+       1685
+      ]
+     },
+     "\\boldsymbol{x} (plan)": {
+      "patterns": [
+       "\\boldsymbol{x}"
+      ],
+      "body_lines": [
+       335,
+       337,
+       344,
+       348,
+       354,
+       358,
+       359,
+       371,
+       372,
+       379,
+       391,
+       410,
+       413,
+       417,
+       434,
+       435,
+       437,
+       441,
+       445,
+       462,
+       463,
+       479,
+       480,
+       481,
+       567,
+       599,
+       603,
+       611,
+       747,
+       838,
+       897,
+       965,
+       1131,
+       1135,
+       1148,
+       1182,
+       1187,
+       1459,
+       1470,
+       1475,
+       1502,
+       1766,
+       1774,
+       1775,
+       1784
+      ]
+     },
+     "z (global value)": {
+      "patterns": [
+       "z_{e,y,d,t}",
+       "z^{\\xi",
+       "- z^{",
+       "$z$"
+      ],
+      "body_lines": [
+       1625,
+       1637,
+       1666,
+       1667,
+       1687,
+       1689,
+       1711,
+       1715,
+       1723,
+       1738,
+       1754,
+       1794,
+       1798,
+       1801,
+       1802
+      ]
+     },
+     "\\boldsymbol{z} (lattice coordinates)": {
+      "patterns": [
+       "\\boldsymbol{z}"
+      ],
+      "body_lines": [
+       413,
+       422,
+       425,
+       429
+      ]
+     },
+     "\\Delta (poll size)": {
+      "patterns": [
+       "$\\Delta$",
+       "\\Delta \\gets",
+       "\\Delta = ",
+       "\\Delta \\boldsymbol{v}"
+      ],
+      "body_lines": [
+       417,
+       422,
+       424,
+       428,
+       435,
+       437,
+       438
+      ]
+     },
+     "\\Delta t (time instant)": {
+      "patterns": [
+       "\\Delta t"
+      ],
+      "body_lines": [
+       709,
+       747,
+       781
+      ]
+     },
+     "D (set of days)": {
+      "patterns": [
+       "d \\in D",
+       "\\in D}"
+      ],
+      "body_lines": [
+       601,
+       703,
+       781,
+       844,
+       846,
+       848
+      ]
+     },
+     "D_d (days represented)": {
+      "patterns": [
+       "D_d"
+      ],
+      "body_lines": [
+       601,
+       781,
+       1633
+      ]
+     },
+     "D_{e,y^Inv,y} (cycling loss)": {
+      "patterns": [
+       "D_{e,y"
+      ],
+      "body_lines": [
+       795,
+       807
+      ]
+     },
+     "k_e (cycle life)": {
+      "patterns": [
+       "k_e"
+      ],
+      "body_lines": [
+       797,
+       803,
+       821,
+       825,
+       1072,
+       1077
+      ]
+     },
+     "\\sigma (common scale)": {
+      "patterns": [
+       "\\sigma$",
+       "{\\sigma}",
+       "\\sigma /",
+       "\\sigma = 93"
+      ],
+      "body_lines": [
+       844,
+       858,
+       1062,
+       1099,
+       1633,
+       1642,
+       1656
+      ]
+     },
+     "w_{y,d} (block weight)": {
+      "patterns": [
+       "w_{y,d}",
+       "w_b"
+      ],
+      "body_lines": [
+       1102,
+       1633,
+       1642,
+       1656
+      ]
+     },
+     "\\alpha (commitment premium)": {
+      "patterns": [
+       "\\alpha \\, \\bar{\\pi}_t",
+       "$\\alpha = 0.5$",
+       "$\\alpha$ an imbalance premium",
+       "fraction $\\alpha$"
+      ],
+      "body_lines": [
+       888,
+       896,
+       1109
+      ]
+     },
+     "\\alpha = 1/(2 S^ref) (A.3-A.4 storage-channel factor; not in the nomenclature)": {
+      "patterns": [
+       "\\alpha = 1/(2 S^{\\text{ref}})",
+       "\\rho^{\\text{E}} \\alpha",
+       "\\lVert \\alpha (x - z)"
+      ],
+      "body_lines": [
+       1705,
+       1712,
+       1713,
+       1714,
+       1749
+      ]
+     },
+     "D (post-hoc settled descent, tab:res_multiscenario; not in the nomenclature)": {
+      "patterns": [
+       "$D$ is the post-hoc",
+       "(V - D)",
+       "descent $D$"
+      ],
+      "body_lines": [
+       1459,
+       1470,
+       1473
+      ]
+     },
+     "b (band, section 2.2.7) / b (channel normalisation, A.4) / b (fit slope, section 4.2)": {
+      "patterns": [
+       "where $b$ is the larger",
+       "with $b$ the channel",
+       "a+bE+cP",
+       "e^{*}=b+c/4"
+      ],
+      "body_lines": [
+       639,
+       1749
+      ]
+     },
+     "R (ratio, tab:res_multiscenario; not in the nomenclature)": {
+      "patterns": [
+       "the ratio $R$",
+       "$R$ at operational",
+       "$R$ after",
+       "$R$ predicted"
+      ],
+      "body_lines": [
+       1459,
+       1473,
+       1474
+      ]
+     },
+     "V (value, tab:res_multiscenario; not in the nomenclature)": {
+      "patterns": [
+       "$V / V^{\\text{single}}$",
+       "(V - D)"
+      ],
+      "body_lines": [
+       1472,
+       1473
+      ]
+     }
+    }
+   },
+   "dce05d0": {
+    "nomenclature_lines": [
+     183,
+     317
+    ],
+    "n_entries": 119,
+    "n_keys": 108,
+    "defined_unused": [
+     {
+      "key": "pi",
+      "entries": [
+       {
+        "line": 247,
+        "tex": "\\pi_t",
+        "description": "Wholesale price and its expectation over market scenarios"
+       }
+      ]
+     }
+    ],
+    "n_used_undefined": 73,
+    "raw_checks": {
+     "\\pi_t (wholesale price)": {
+      "patterns": [
+       "\\pi_t",
+       "\\pi_{t}",
+       "\\pi_{t,"
+      ],
+      "body_lines": []
+     },
+     "\\bar{\\pi}_t (expected price)": {
+      "patterns": [
+       "\\bar{\\pi}_t",
+       "\\bar{\\pi}"
+      ],
+      "body_lines": [
+       946,
+       954
+      ]
+     },
+     "\\lambda_t (TN marginal value at the interface)": {
+      "patterns": [
+       "\\lambda_t",
+       "\\lambda_{t}",
+       "\\lambda_{t,"
+      ],
+      "body_lines": []
+     },
+     "\\lambda_a (agent dual)": {
+      "patterns": [
+       "\\lambda_a",
+       "\\lambda_{a",
+       "\\lambda^{\\xi",
+       "\\lambda^{V"
+      ],
+      "body_lines": [
+       1689,
+       1710,
+       1714,
+       1718,
+       1739,
+       1764,
+       1766,
+       1780,
+       1782,
+       1806
+      ]
+     },
+     "s (settling slack, uncertified form)": {
+      "patterns": [
+       "|s|",
+       "slack $s$",
+       "slack~$s$",
+       "slack $s "
+      ],
+      "body_lines": [
+       1248,
+       1311
+      ]
+     },
+     "s (ADMM dual residual, A.3-A.4; not in the nomenclature)": {
+      "patterns": [
+       "$s = \\rho",
+       "s_{\\text{E}}",
+       "s_g"
+      ],
+      "body_lines": [
+       1032,
+       1053,
+       1059,
+       1075,
+       1092,
+       1109,
+       1794,
+       1801,
+       1806,
+       1930
+      ]
+     },
+     "s = (m,o) (recourse scenario)": {
+      "patterns": [
+       "$s = (m, o)$",
+       "\\omega_s",
+       "_{i,s,t}",
+       "s \\in \\Omega_M \\times \\Omega_O"
+      ],
+      "body_lines": [
+       927,
+       928,
+       933,
+       934,
+       946,
+       947,
+       1689
+      ]
+     },
+     "x_a (agent copy)": {
+      "patterns": [
+       "x_a",
+       "x_{a",
+       "x_{\\text{E}}"
+      ],
+      "body_lines": [
+       1689,
+       1707,
+       1708,
+       1736,
+       1737
+      ]
+     },
+     "\\boldsymbol{x} (plan)": {
+      "patterns": [
+       "\\boldsymbol{x}"
+      ],
+      "body_lines": [
+       383,
+       385,
+       392,
+       396,
+       402,
+       406,
+       407,
+       418,
+       419,
+       439,
+       465,
+       466,
+       467,
+       477,
+       478,
+       480,
+       484,
+       511,
+       523,
+       534,
+       613,
+       623,
+       657,
+       661,
+       805,
+       896,
+       955,
+       1023,
+       1198,
+       1202,
+       1215,
+       1248,
+       1253,
+       1514,
+       1525,
+       1530,
+       1556,
+       1818,
+       1826,
+       1827,
+       1836
+      ]
+     },
+     "z (global value)": {
+      "patterns": [
+       "z_{e,y,d,t}",
+       "z^{\\xi",
+       "- z^{",
+       "$z$"
+      ],
+      "body_lines": [
+       1677,
+       1689,
+       1718,
+       1719,
+       1739,
+       1741,
+       1763,
+       1767,
+       1775,
+       1790,
+       1806,
+       1846,
+       1850,
+       1853,
+       1854
+      ]
+     },
+     "\\boldsymbol{z} (lattice coordinates)": {
+      "patterns": [
+       "\\boldsymbol{z}"
+      ],
+      "body_lines": [
+       466,
+       470,
+       473
+      ]
+     },
+     "\\Delta (poll size)": {
+      "patterns": [
+       "$\\Delta$",
+       "\\Delta \\gets",
+       "\\Delta = ",
+       "\\Delta \\boldsymbol{v}"
+      ],
+      "body_lines": [
+       444,
+       450,
+       467,
+       470,
+       472,
+       478,
+       480,
+       481,
+       488,
+       490
+      ]
+     },
+     "\\Delta t (time instant)": {
+      "patterns": [
+       "\\Delta t"
+      ],
+      "body_lines": [
+       767,
+       805,
+       839
+      ]
+     },
+     "D (set of days)": {
+      "patterns": [
+       "d \\in D",
+       "\\in D}"
+      ],
+      "body_lines": [
+       659,
+       761,
+       839,
+       902,
+       904,
+       906
+      ]
+     },
+     "D_d (days represented)": {
+      "patterns": [
+       "D_d"
+      ],
+      "body_lines": [
+       659,
+       839,
+       1685
+      ]
+     },
+     "D_{e,y^Inv,y} (cycling loss)": {
+      "patterns": [
+       "D_{e,y"
+      ],
+      "body_lines": [
+       853,
+       865
+      ]
+     },
+     "k_e (cycle life)": {
+      "patterns": [
+       "k_e"
+      ],
+      "body_lines": [
+       855,
+       861,
+       879,
+       883,
+       1141,
+       1146
+      ]
+     },
+     "\\sigma (common scale)": {
+      "patterns": [
+       "\\sigma$",
+       "{\\sigma}",
+       "\\sigma /",
+       "\\sigma = 93"
+      ],
+      "body_lines": [
+       902,
+       916,
+       1120,
+       1168,
+       1685,
+       1694,
+       1708
+      ]
+     },
+     "w_{y,d} (block weight)": {
+      "patterns": [
+       "w_{y,d}",
+       "w_b"
+      ],
+      "body_lines": [
+       1171,
+       1685,
+       1694,
+       1708
+      ]
+     },
+     "\\alpha (commitment premium)": {
+      "patterns": [
+       "\\alpha \\, \\bar{\\pi}_t",
+       "$\\alpha = 0.5$",
+       "$\\alpha$ an imbalance premium",
+       "fraction $\\alpha$"
+      ],
+      "body_lines": [
+       946,
+       954,
+       1178
+      ]
+     },
+     "\\alpha = 1/(2 S^ref) (A.3-A.4 storage-channel factor; not in the nomenclature)": {
+      "patterns": [
+       "\\alpha = 1/(2 S^{\\text{ref}})",
+       "\\rho^{\\text{E}} \\alpha",
+       "\\lVert \\alpha (x - z)"
+      ],
+      "body_lines": [
+       1757,
+       1764,
+       1765,
+       1766,
+       1801
+      ]
+     },
+     "D (post-hoc settled descent, tab:res_multiscenario; not in the nomenclature)": {
+      "patterns": [
+       "$D$ is the post-hoc",
+       "(V - D)",
+       "descent $D$"
+      ],
+      "body_lines": [
+       1514,
+       1525,
+       1528
+      ]
+     },
+     "b (band, section 2.2.7) / b (channel normalisation, A.4) / b (fit slope, section 4.2)": {
+      "patterns": [
+       "where $b$ is the larger",
+       "with $b$ the channel",
+       "a+bE+cP",
+       "e^{*}=b+c/4"
+      ],
+      "body_lines": [
+       697,
+       1801
+      ]
+     },
+     "R (ratio, tab:res_multiscenario; not in the nomenclature)": {
+      "patterns": [
+       "the ratio $R$",
+       "$R$ at operational",
+       "$R$ after",
+       "$R$ predicted"
+      ],
+      "body_lines": [
+       1514,
+       1528,
+       1529
+      ]
+     },
+     "V (value, tab:res_multiscenario; not in the nomenclature)": {
+      "patterns": [
+       "$V / V^{\\text{single}}$",
+       "(V - D)"
+      ],
+      "body_lines": [
+       1527,
+       1528
+      ]
+     }
+    }
+   }
+  },
+  "unused_now_status_then": {
+   "pi": {
+    "e6e58e8": {
+     "key_used_in_body_then": false,
+     "key_in_nomenclature_then": false
+    },
+    "dce05d0": {
+     "key_used_in_body_then": false,
+     "key_in_nomenclature_then": true
+    }
+   }
+  },
+  "raw_checks_then": {
+   "\\pi_t (wholesale price)": {
+    "e6e58e8": [],
+    "dce05d0": []
+   },
+   "\\bar{\\pi}_t (expected price)": {
+    "e6e58e8": [
+     888,
+     896
+    ],
+    "dce05d0": [
+     946,
+     954
+    ]
+   },
+   "\\lambda_t (TN marginal value at the interface)": {
+    "e6e58e8": [],
+    "dce05d0": []
+   },
+   "\\lambda_a (agent dual)": {
+    "e6e58e8": [
+     1637,
+     1658,
+     1662,
+     1666,
+     1687,
+     1712,
+     1714,
+     1728,
+     1730,
+     1754
+    ],
+    "dce05d0": [
+     1689,
+     1710,
+     1714,
+     1718,
+     1739,
+     1764,
+     1766,
+     1780,
+     1782,
+     1806
+    ]
+   },
+   "s (settling slack, uncertified form)": {
+    "e6e58e8": [
+     1182,
+     1250
+    ],
+    "dce05d0": [
+     1248,
+     1311
+    ]
+   },
+   "s (ADMM dual residual, A.3-A.4; not in the nomenclature)": {
+    "e6e58e8": [
+     974,
+     995,
+     1001,
+     1017,
+     1034,
+     1051,
+     1742,
+     1749,
+     1754,
+     1878
+    ],
+    "dce05d0": [
+     1032,
+     1053,
+     1059,
+     1075,
+     1092,
+     1109,
+     1794,
+     1801,
+     1806,
+     1930
+    ]
+   },
+   "s = (m,o) (recourse scenario)": {
+    "e6e58e8": [
+     869,
+     870,
+     875,
+     876,
+     888,
+     889,
+     1637
+    ],
+    "dce05d0": [
+     927,
+     928,
+     933,
+     934,
+     946,
+     947,
+     1689
+    ]
+   },
+   "x_a (agent copy)": {
+    "e6e58e8": [
+     1637,
+     1655,
+     1656,
+     1684,
+     1685
+    ],
+    "dce05d0": [
+     1689,
+     1707,
+     1708,
+     1736,
+     1737
+    ]
+   },
+   "\\boldsymbol{x} (plan)": {
+    "e6e58e8": [
+     335,
+     337,
+     344,
+     348,
+     354,
+     358,
+     359,
+     371,
+     372,
+     379,
+     391,
+     410,
+     413,
+     417,
+     434,
+     435,
+     437,
+     441,
+     445,
+     462,
+     463,
+     479,
+     480,
+     481,
+     567,
+     599,
+     603,
+     611,
+     747,
+     838,
+     897,
+     965,
+     1131,
+     1135,
+     1148,
+     1182,
+     1187,
+     1459,
+     1470,
+     1475,
+     1502,
+     1766,
+     1774,
+     1775,
+     1784
+    ],
+    "dce05d0": [
+     383,
+     385,
+     392,
+     396,
+     402,
+     406,
+     407,
+     418,
+     419,
+     439,
+     465,
+     466,
+     467,
+     477,
+     478,
+     480,
+     484,
+     511,
+     523,
+     534,
+     613,
+     623,
+     657,
+     661,
+     805,
+     896,
+     955,
+     1023,
+     1198,
+     1202,
+     1215,
+     1248,
+     1253,
+     1514,
+     1525,
+     1530,
+     1556,
+     1818,
+     1826,
+     1827,
+     1836
+    ]
+   },
+   "z (global value)": {
+    "e6e58e8": [
+     1625,
+     1637,
+     1666,
+     1667,
+     1687,
+     1689,
+     1711,
+     1715,
+     1723,
+     1738,
+     1754,
+     1794,
+     1798,
+     1801,
+     1802
+    ],
+    "dce05d0": [
+     1677,
+     1689,
+     1718,
+     1719,
+     1739,
+     1741,
+     1763,
+     1767,
+     1775,
+     1790,
+     1806,
+     1846,
+     1850,
+     1853,
+     1854
+    ]
+   },
+   "\\boldsymbol{z} (lattice coordinates)": {
+    "e6e58e8": [
+     413,
+     422,
+     425,
+     429
+    ],
+    "dce05d0": [
+     466,
+     470,
+     473
+    ]
+   },
+   "\\Delta (poll size)": {
+    "e6e58e8": [
+     417,
+     422,
+     424,
+     428,
+     435,
+     437,
+     438
+    ],
+    "dce05d0": [
+     444,
+     450,
+     467,
+     470,
+     472,
+     478,
+     480,
+     481,
+     488,
+     490
+    ]
+   },
+   "\\Delta t (time instant)": {
+    "e6e58e8": [
+     709,
+     747,
+     781
+    ],
+    "dce05d0": [
+     767,
+     805,
+     839
+    ]
+   },
+   "D (set of days)": {
+    "e6e58e8": [
+     601,
+     703,
+     781,
+     844,
+     846,
+     848
+    ],
+    "dce05d0": [
+     659,
+     761,
+     839,
+     902,
+     904,
+     906
+    ]
+   },
+   "D_d (days represented)": {
+    "e6e58e8": [
+     601,
+     781,
+     1633
+    ],
+    "dce05d0": [
+     659,
+     839,
+     1685
+    ]
+   },
+   "D_{e,y^Inv,y} (cycling loss)": {
+    "e6e58e8": [
+     795,
+     807
+    ],
+    "dce05d0": [
+     853,
+     865
+    ]
+   },
+   "k_e (cycle life)": {
+    "e6e58e8": [
+     797,
+     803,
+     821,
+     825,
+     1072,
+     1077
+    ],
+    "dce05d0": [
+     855,
+     861,
+     879,
+     883,
+     1141,
+     1146
+    ]
+   },
+   "\\sigma (common scale)": {
+    "e6e58e8": [
+     844,
+     858,
+     1062,
+     1099,
+     1633,
+     1642,
+     1656
+    ],
+    "dce05d0": [
+     902,
+     916,
+     1120,
+     1168,
+     1685,
+     1694,
+     1708
+    ]
+   },
+   "w_{y,d} (block weight)": {
+    "e6e58e8": [
+     1102,
+     1633,
+     1642,
+     1656
+    ],
+    "dce05d0": [
+     1171,
+     1685,
+     1694,
+     1708
+    ]
+   },
+   "\\alpha (commitment premium)": {
+    "e6e58e8": [
+     888,
+     896,
+     1109
+    ],
+    "dce05d0": [
+     946,
+     954,
+     1178
+    ]
+   },
+   "\\alpha = 1/(2 S^ref) (A.3-A.4 storage-channel factor; not in the nomenclature)": {
+    "e6e58e8": [
+     1705,
+     1712,
+     1713,
+     1714,
+     1749
+    ],
+    "dce05d0": [
+     1757,
+     1764,
+     1765,
+     1766,
+     1801
+    ]
+   },
+   "D (post-hoc settled descent, tab:res_multiscenario; not in the nomenclature)": {
+    "e6e58e8": [
+     1459,
+     1470,
+     1473
+    ],
+    "dce05d0": [
+     1514,
+     1525,
+     1528
+    ]
+   },
+   "b (band, section 2.2.7) / b (channel normalisation, A.4) / b (fit slope, section 4.2)": {
+    "e6e58e8": [
+     639,
+     1749
+    ],
+    "dce05d0": [
+     697,
+     1801
+    ]
+   },
+   "R (ratio, tab:res_multiscenario; not in the nomenclature)": {
+    "e6e58e8": [
+     1459,
+     1473,
+     1474
+    ],
+    "dce05d0": [
+     1514,
+     1528,
+     1529
+    ]
+   },
+   "V (value, tab:res_multiscenario; not in the nomenclature)": {
+    "e6e58e8": [
+     1472,
+     1473
+    ],
+    "dce05d0": [
+     1527,
+     1528
+    ]
+   }
+  },
+  "nomenclature_entries_diff": {
+   "e6e58e8": {
+    "only_now": [
+     "C^{\\text{Inv}}_c(\\boldsymbol{x})",
+     "C^{\\text{Op}}_{y,d,m,o}(\\boldsymbol{x})",
+     "C^{\\text{Salvage}}(\\boldsymbol{x})",
+     "D_{e,y^\\text{Inv},y}",
+     "E^{\\text{Av}}_{e,y}",
+     "E^{\\text{Inv}}_{e,y^{\\text{Inv}}}",
+     "E^{\\text{Rated,Unit}}_{e,y^\\text{Inv},y}",
+     "E^{\\text{Rated}}_{e,y}",
+     "E^{\\text{SoC}}_{e,y,d,t}",
+     "F(\\boldsymbol{x})",
+     "I(\\boldsymbol{x})",
+     "N^{\\max}",
+     "N^{\\text{DS}}",
+     "P^{\\text{Ch}}_{e,y,d,t}",
+     "P^{\\text{Dch}}_{e,y,d,t}",
+     "P^{\\text{E}}_{e,y,d,t}",
+     "P^{\\text{I}}_{i}",
+     "P_{\\max}",
+     "Q(\\boldsymbol{x})",
+     "Q^{\\text{E}}_{e,y,d,t}",
+     "Q^{\\text{I}}_{i}",
+     "R^{\\text{DS}}",
+     "R^{\\text{I}}_i",
+     "S^{\\text{Av}}_{e,y}",
+     "S^{\\text{Inv}}_{e,y^{\\text{Inv}}}",
+     "S^{\\text{Rated,Unit}}_{e,y^\\text{Inv},y}",
+     "S^{\\text{Rated}}_{e,y}",
+     "S^{\\text{ref}}",
+     "SoC^{0}_e",
+     "SoC^{\\text{Max}}_e",
+     "SoC^{\\text{Min}}_e",
+     "SoH^{\\text{Min}}_e",
+     "T^\\text{Cal}_{e,y^{\\text{Inv}}}",
+     "T^{\\text{Rem}}_{e,y^{\\text{Inv}}}",
+     "V^{\\text{I}}_{i}",
+     "\\Delta",
+     "\\Delta t",
+     "\\Delta^E",
+     "\\Delta^S",
+     "\\Delta_0",
+     "\\Omega_M",
+     "\\alpha",
+     "\\bar{E}^{\\text{Cell}}_{e,y^\\text{Inv},y}",
+     "\\bar{P}^{\\text{I}}_{i,t}",
+     "\\bar{\\pi}_t",
+     "\\boldsymbol{u}^{0}",
+     "\\boldsymbol{u}_o",
+     "\\boldsymbol{x}",
+     "\\boldsymbol{z}",
+     "\\delta^{\\text{DS}}",
+     "\\delta_R",
+     "\\eta^{\\text{Ch}}_e",
+     "\\eta^{\\text{Dch}}_e",
+     "\\hat{P}",
+     "\\kappa^{\\text{E}}",
+     "\\lambda_a",
+     "\\lambda_t",
+     "\\mathcal{C}",
+     "\\mathcal{P}",
+     "\\mathcal{V}",
+     "\\mathcal{X}",
+     "\\omega_m",
+     "\\phi^{\\text{Cal}}_e",
+     "\\pi_t",
+     "\\rho^{V}",
+     "\\rho^{\\text{E}}",
+     "\\rho^{\\text{PF}}",
+     "\\sigma",
+     "\\sigma^{\\pm}_{e,y,d,t}",
+     "\\sigma_Q",
+     "\\tau",
+     "\\varepsilon^{\\text{Cl}}",
+     "\\varepsilon^{\\text{C}}",
+     "\\varepsilon^{\\text{E}}",
+     "\\varepsilon_{\\text{abs}}",
+     "\\varepsilon_{\\text{rel}}",
+     "a",
+     "c^{\\sigma}",
+     "c^{\\text{Cl}}",
+     "d^{\\pm}_{i,s,t}",
+     "i",
+     "k^{*}",
+     "k_0",
+     "k_e",
+     "n_{\\mathrm{w}}",
+     "s",
+     "s = (m,o)",
+     "s^{\\pm}_{e,y,d}",
+     "t_{\\text{sum}}",
+     "w_{y,d}",
+     "x_a",
+     "y^{\\text{End}}",
+     "y^{\\text{Inv}}",
+     "y_0",
+     "z"
+    ],
+    "only_then": [
+     "E^{\\mathrm{Inv}(l)}_{e,y}",
+     "E^{\\text{Rated}}_{e,y^\\text{Inv},y}",
+     "L^B",
+     "S^\\text{Ch}_{e,y^\\text{Inv},y,d,t}",
+     "S^\\text{Dch}_{e,y^\\text{Inv},y,d,t}",
+     "S^{\\mathrm{Inv}(l)}_{e,y}",
+     "S^{\\text{Rated}}_{e,y^\\text{Inv},y}",
+     "SoH_{e,y}^{\\text{min}}",
+     "T^\\text{Cal}_{e,y}",
+     "\\alpha^{\\text{Down}}",
+     "\\delta_{e,y^\\text{Inv},y}",
+     "\\mathrm{CL}^\\text{Nom}_e"
+    ]
+   },
+   "dce05d0": {
+    "only_now": [],
+    "only_then": [
+     "\\mathcal{L}^{E,P}",
+     "\\mathcal{L}^{E,Q}"
+    ]
+   }
+  },
+  "git_log_S_in_clone": {
+   "|s|\\}": [
+    "bc8959d",
+    "e6e58e8"
+   ],
+   "\\pi_t": [
+    "0bbabf9"
+   ],
+   "\\lambda_t": [
+    "0bbabf9"
+   ],
+   "\\mathcal{L}^{E,P}": [
+    "cfee0ba",
+    "0bbabf9",
+    "98fb953",
+    "f8ae6f5",
+    "2615994",
+    "6cb4492"
+   ]
+  },
+  "used_undefined_diff": {
+   "e6e58e8": {
+    "undefined_now_not_then": [],
+    "undefined_then_not_now": [
+     "C^{Inv}",
+     "C^{Op}",
+     "C^{Salvage}",
+     "Delta",
+     "Delta^{E}",
+     "Delta^{S}",
+     "Delta_{0}",
+     "E^{Av}",
+     "E^{Rated,Unit}",
+     "E^{SoC}",
+     "F",
+     "I",
+     "N^{DS}",
+     "N^{max}",
+     "Omega_{M}",
+     "P^{Ch}",
+     "P^{Dch}",
+     "P^{E}",
+     "P^{I}",
+     "P_{max}",
+     "Q",
+     "Q^{E}",
+     "Q^{I}",
+     "Q^{coord}",
+     "R^{DS}",
+     "R^{I}",
+     "S",
+     "S^{Av}",
+     "S^{Rated,Unit}",
+     "S^{ref}",
+     "SoC",
+     "SoC^{Max}",
+     "SoC^{Min}",
+     "SoH^{Min}",
+     "T^{Rem}",
+     "V^{I}",
+     "a",
+     "alpha",
+     "bar(E)^{Cell}",
+     "bar(P)^{I}",
+     "bar(pi)",
+     "c^{Cl}",
+     "c^{\\sigma}",
+     "cal(C)",
+     "cal(L)^{E,P}",
+     "cal(L)^{E,Q}",
+     "cal(P)",
+     "cal(V)",
+     "cal(X)",
+     "d^{+}",
+     "d^{-}",
+     "d^{\\pm}",
+     "delta^{DS}",
+     "delta_{R}",
+     "eta^{Ch}",
+     "eta^{Dch}",
+     "hat(P)",
+     "k^{*}",
+     "k_{0}",
+     "kappa^{E}",
+     "lambda",
+     "n_{w}",
+     "phi^{Cal}",
+     "rho^{E}",
+     "rho^{PF}",
+     "rho^{V}",
+     "s^{+}",
+     "s^{-}",
+     "s^{\\pm}",
+     "sigma",
+     "sigma^{+}",
+     "sigma^{-}",
+     "sigma^{\\pm}",
+     "sigma_{Q}",
+     "t_{sum}",
+     "tau",
+     "u",
+     "varepsilon^{Cl}",
+     "varepsilon^{C}",
+     "varepsilon^{E}",
+     "varepsilon_{abs}",
+     "varepsilon_{rel}",
+     "w",
+     "x",
+     "y^{End}",
+     "y^{Inv}",
+     "y_{0}",
+     "z"
+    ]
+   },
+   "dce05d0": {
+    "undefined_now_not_then": [],
+    "undefined_then_not_now": []
+   }
+  }
+ },
+ "e_ageing_figure": {
+  "script": {
+   "path": "manuscript_review/fig3_ageing_arms_v2.py",
+   "sha256": "d183a5b399580b4664c631295ed1014a3d71c7e7356ab3c0369b45cbb9504296",
+   "rows": [
+    [
+     "Baseline (cycling + calendar)",
+     -64.4,
+     13.1,
+     true,
+     "2035"
+    ],
+    [
+     "Cycling only",
+     -31.6,
+     12.6,
+     true,
+     "never"
+    ],
+    [
+     "Retention 50 %",
+     -73.7,
+     12.8,
+     true,
+     "2035"
+    ],
+    [
+     "Retention 50 %, mid-block",
+     -65.9,
+     12.9,
+     true,
+     "2035"
+    ],
+    [
+     "Datasheet 8,000 cycles",
+     -45.2,
+     12.6,
+     true,
+     "never"
+    ],
+    [
+     "No ageing",
+     -4.1,
+     12.9,
+     false,
+     "n/a"
+    ]
+   ],
+   "executed": false
+  },
+  "pdf_v2": {
+   "path": "manuscript_review/fig3_ageing_arms_v2.pdf",
+   "sha256": "c2aec232c2fb464bc6104a63afe8f73b28382e0560d3638acb74d1c4feefb71a",
+   "clone_copy_sha256": "c2aec232c2fb464bc6104a63afe8f73b28382e0560d3638acb74d1c4feefb71a",
+   "clone_copy_equal": true,
+   "metadata": {
+    "Creator": "Matplotlib v3.11.2, https://matplotlib.org",
+    "Producer": "Matplotlib pdf backend v3.11.2",
+    "CreationDate": "D:20261013162415Z"
+   },
+   "read": {
+    "x_ticks_pt": [
+     134.6965,
+     162.1606,
+     189.6246,
+     217.0886,
+     244.5526
+    ],
+    "x_tick_values": [
+     -80.0,
+     -60.0,
+     -40.0,
+     -20.0,
+     0.0
+    ],
+    "pt_per_kEUR": 1.3732012500000004,
+    "rows": [
+     {
+      "y": 147.7984,
+      "label": "Baseline (cycling + calendar)",
+      "bar_centre_kEUR": -64.4,
+      "bar_half_width_kEUR": 13.1,
+      "stroke": [
+       0.0,
+       0.4471,
+       0.698
+      ],
+      "value_text": "−64.4",
+      "right_text": "2035"
+     },
+     {
+      "y": 130.0581,
+      "label": "Cycling only",
+      "bar_centre_kEUR": -31.6,
+      "bar_half_width_kEUR": 12.6,
+      "stroke": [
+       0.0,
+       0.4471,
+       0.698
+      ],
+      "value_text": "−31.6",
+      "right_text": "never"
+     },
+     {
+      "y": 112.3179,
+      "label": "Retention 50 %",
+      "bar_centre_kEUR": -73.7,
+      "bar_half_width_kEUR": 12.8,
+      "stroke": [
+       0.0,
+       0.4471,
+       0.698
+      ],
+      "value_text": "−73.7",
+      "right_text": "2035"
+     },
+     {
+      "y": 94.5776,
+      "label": "Retention 50 %, mid-block",
+      "bar_centre_kEUR": -65.9,
+      "bar_half_width_kEUR": 12.9,
+      "stroke": [
+       0.0,
+       0.4471,
+       0.698
+      ],
+      "value_text": "−65.9",
+      "right_text": "2035"
+     },
+     {
+      "y": 76.8374,
+      "label": "Datasheet 8,000 cycles",
+      "bar_centre_kEUR": -45.2,
+      "bar_half_width_kEUR": 12.6,
+      "stroke": [
+       0.0,
+       0.4471,
+       0.698
+      ],
+      "value_text": "−45.2",
+      "right_text": "never"
+     },
+     {
+      "y": 59.0971,
+      "label": "No ageing",
+      "bar_centre_kEUR": -4.1,
+      "bar_half_width_kEUR": 12.9,
+      "stroke": [
+       0.8353,
+       0.3686,
+       0.0
+      ],
+      "value_text": "−4.1",
+      "right_text": "n/a"
+     }
+    ],
+    "all_texts": [
+     "−80",
+     "−60",
+     "−40",
+     "−20",
+     "0",
+     "value − I of the reference unit (k€)",
+     "No ageing",
+     "Datasheet 8,000 cycles",
+     "Retention 50 %, mid-block",
+     "Retention 50 %",
+     "Cycling only",
+     "Baseline (cycling + calendar)",
+     "−64.4",
+     "2035",
+     "−31.6",
+     "never",
+     "−73.7",
+     "2035",
+     "−65.9",
+     "2035",
+     "−45.2",
+     "never",
+     "−4.1",
+     "n/a",
+     "0.70 floor",
+     "binds",
+     "determinate (± threshold)",
+     "within resolution"
+    ]
+   }
+  },
+  "pdf_w165": {
+   "path": "data/SRP1/Results/P515S53/w160_step6_frozen/export/figures/fig3_ageing_arms.pdf",
+   "sha256": "8f2438074dc57a65efc62b8af75ab7c2c2d1af2514869f8bc9c19cb10f3465e2",
+   "metadata": {
+    "Creator": "p515_s53_w165_step6_figures.py",
+    "Producer": "Matplotlib pdf backend"
+   },
+   "read": {
+    "x_ticks_pt": [
+     88.6165,
+     117.5886,
+     146.5606,
+     175.5327,
+     204.5047
+    ],
+    "x_tick_values": [
+     -80.0,
+     -60.0,
+     -40.0,
+     -20.0,
+     0.0
+    ],
+    "pt_per_kEUR": 1.4486025000000002,
+    "rows": [
+     {
+      "y": 153.6225,
+      "label": "no_ageing",
+      "bar_centre_kEUR": -4.141,
+      "bar_half_width_kEUR": 12.859,
+      "stroke": [
+       0.8353,
+       0.3686,
+       0.0
+      ],
+      "value_text": "−4.1",
+      "right_text": "never"
+     },
+     {
+      "y": 133.6766,
+      "label": "C2",
+      "bar_centre_kEUR": -31.607,
+      "bar_half_width_kEUR": 12.628,
+      "stroke": [
+       0.0,
+       0.4471,
+       0.698
+      ],
+      "value_text": "−31.6",
+      "right_text": "never"
+     },
+     {
+      "y": 113.7308,
+      "label": "C2_calfade (baseline)",
+      "bar_centre_kEUR": -64.417,
+      "bar_half_width_kEUR": 13.054,
+      "stroke": [
+       0.0,
+       0.4471,
+       0.698
+      ],
+      "value_text": "−64.4",
+      "right_text": "2035"
+     },
+     {
+      "y": 93.7849,
+      "label": "C3_unit",
+      "bar_centre_kEUR": -73.747,
+      "bar_half_width_kEUR": 12.84,
+      "stroke": [
+       0.0,
+       0.4471,
+       0.698
+      ],
+      "value_text": "−73.7",
+      "right_text": "2035"
+     },
+     {
+      "y": 73.8391,
+      "label": "C3_midblock",
+      "bar_centre_kEUR": -65.892,
+      "bar_half_width_kEUR": 12.867,
+      "stroke": [
+       0.0,
+       0.4471,
+       0.698
+      ],
+      "value_text": "−65.9",
+      "right_text": "2035"
+     },
+     {
+      "y": 53.8932,
+      "label": "C4",
+      "bar_centre_kEUR": -45.197,
+      "bar_half_width_kEUR": 12.628,
+      "stroke": [
+       0.0,
+       0.4471,
+       0.698
+      ],
+      "value_text": "−45.2",
+      "right_text": "never"
+     }
+    ],
+    "all_texts": [
+     "−80",
+     "−60",
+     "−40",
+     "−20",
+     "0",
+     "value − I of the unit (k€)",
+     "no_ageing",
+     "C2",
+     "C2_calfade (baseline)",
+     "C3_unit",
+     "C3_midblock",
+     "C4",
+     "−4.1",
+     "never",
+     "−31.6",
+     "never",
+     "−64.4",
+     "2035",
+     "−73.7",
+     "2035",
+     "−65.9",
+     "2035",
+     "−45.2",
+     "never",
+     "0.70 floor",
+     "binds",
+     "determinate (± threshold)",
+     "within resolution"
+    ]
+   },
+   "data_json_sha256": "7acbf843d30d464e224a75eafa53d89938bf6c0f8aaef550687679e82672805e"
+  },
+  "script_vs_T8": [
+   {
+    "label": "Baseline (cycling + calendar)",
+    "arm": "C2_calfade",
+    "script_value_minus_I": -64.4,
+    "T8_value_minus_I_kEUR": -64.41738662493462,
+    "value_ok": true,
+    "script_threshold": 13.1,
+    "T1_E_threshold_kEUR": 13.05422152018547,
+    "threshold_ok": true,
+    "script_determinate": true,
+    "T8_verdict": "determinate",
+    "verdict_ok": true,
+    "script_year": "2035",
+    "T8_floor_year_070": 2035,
+    "year_ok": true,
+    "variant": {
+     "ageing_enabled": true,
+     "available_energy_soh_point": "end",
+     "calendar_retention_per_year": 0.985,
+     "eol_retention_r": 0.8
+    },
+    "k": 35851.3609417964
+   },
+   {
+    "label": "Cycling only",
+    "arm": "C2",
+    "script_value_minus_I": -31.6,
+    "T8_value_minus_I_kEUR": -31.607236165883485,
+    "value_ok": true,
+    "script_threshold": 12.6,
+    "T1_E_threshold_kEUR": 12.627514008879661,
+    "threshold_ok": true,
+    "script_determinate": true,
+    "T8_verdict": "determinate",
+    "verdict_ok": true,
+    "script_year": "never",
+    "T8_floor_year_070": null,
+    "year_ok": true,
+    "variant": {
+     "ageing_enabled": true,
+     "available_energy_soh_point": "end",
+     "calendar_retention_per_year": 1.0,
+     "eol_retention_r": 0.8
+    },
+    "k": 35851.3609417964
+   },
+   {
+    "label": "Retention 50 %",
+    "arm": "C3_unit",
+    "script_value_minus_I": -73.7,
+    "T8_value_minus_I_kEUR": -73.74665554356808,
+    "value_ok": true,
+    "script_threshold": 12.8,
+    "T1_E_threshold_kEUR": 12.840020701289177,
+    "threshold_ok": true,
+    "script_determinate": true,
+    "T8_verdict": "determinate",
+    "verdict_ok": true,
+    "script_year": "2035",
+    "T8_floor_year_070": 2035,
+    "year_ok": true,
+    "variant": {
+     "ageing_enabled": true,
+     "available_energy_soh_point": "end",
+     "calendar_retention_per_year": 1.0,
+     "eol_retention_r": 0.5
+    },
+    "k": 11541.560327111707
+   },
+   {
+    "label": "Retention 50 %, mid-block",
+    "arm": "C3_midblock",
+    "script_value_minus_I": -65.9,
+    "T8_value_minus_I_kEUR": -65.89187730801338,
+    "value_ok": true,
+    "script_threshold": 12.9,
+    "T1_E_threshold_kEUR": 12.867481023073196,
+    "threshold_ok": true,
+    "script_determinate": true,
+    "T8_verdict": "determinate",
+    "verdict_ok": true,
+    "script_year": "2035",
+    "T8_floor_year_070": 2035,
+    "year_ok": true,
+    "variant": {
+     "ageing_enabled": true,
+     "available_energy_soh_point": "mid",
+     "calendar_retention_per_year": 1.0,
+     "eol_retention_r": 0.5
+    },
+    "k": 11541.560327111707
+   },
+   {
+    "label": "Datasheet 8,000 cycles",
+    "arm": "C4",
+    "script_value_minus_I": -45.2,
+    "T8_value_minus_I_kEUR": -45.19669533992047,
+    "value_ok": true,
+    "script_threshold": 12.6,
+    "T1_E_threshold_kEUR": 12.627514008879661,
+    "threshold_ok": true,
+    "script_determinate": true,
+    "T8_verdict": "determinate",
+    "verdict_ok": true,
+    "script_year": "never",
+    "T8_floor_year_070": null,
+    "year_ok": true,
+    "variant": {
+     "ageing_enabled": true,
+     "available_energy_soh_point": "end",
+     "calendar_retention_per_year": 1.0,
+     "eol_retention_r": 0.7
+    },
+    "k": 22429.38601645703
+   },
+   {
+    "label": "No ageing",
+    "arm": "no_ageing",
+    "script_value_minus_I": -4.1,
+    "T8_value_minus_I_kEUR": -4.1405379110598,
+    "value_ok": true,
+    "script_threshold": 12.9,
+    "T1_E_threshold_kEUR": 12.858703612804414,
+    "threshold_ok": true,
+    "script_determinate": false,
+    "T8_verdict": "within resolution",
+    "verdict_ok": true,
+    "script_year": "n/a",
+    "T8_floor_year_070": null,
+    "year_ok": true,
+    "variant": {
+     "ageing_enabled": false,
+     "available_energy_soh_point": "end",
+     "calendar_retention_per_year": 1.0,
+     "eol_retention_r": 0.5
+    },
+    "k": 11541.560327111707
+   }
+  ],
+  "pdf_v2_vs_script": [
+   {
+    "pdf_label": "Baseline (cycling + calendar)",
+    "script_label": "Baseline (cycling + calendar)",
+    "pdf_value_text": "−64.4",
+    "pdf_bar_centre": -64.4,
+    "pdf_bar_half_width": 13.1,
+    "pdf_right_text": "2035",
+    "pdf_colour": [
+     0.0,
+     0.4471,
+     0.698
+    ],
+    "value_text_ok": true,
+    "centre_ok": true,
+    "half_width_ok": true,
+    "right_text_ok": true,
+    "colour_ok": true
+   },
+   {
+    "pdf_label": "Cycling only",
+    "script_label": "Cycling only",
+    "pdf_value_text": "−31.6",
+    "pdf_bar_centre": -31.6,
+    "pdf_bar_half_width": 12.6,
+    "pdf_right_text": "never",
+    "pdf_colour": [
+     0.0,
+     0.4471,
+     0.698
+    ],
+    "value_text_ok": true,
+    "centre_ok": true,
+    "half_width_ok": true,
+    "right_text_ok": true,
+    "colour_ok": true
+   },
+   {
+    "pdf_label": "Retention 50 %",
+    "script_label": "Retention 50 %",
+    "pdf_value_text": "−73.7",
+    "pdf_bar_centre": -73.7,
+    "pdf_bar_half_width": 12.8,
+    "pdf_right_text": "2035",
+    "pdf_colour": [
+     0.0,
+     0.4471,
+     0.698
+    ],
+    "value_text_ok": true,
+    "centre_ok": true,
+    "half_width_ok": true,
+    "right_text_ok": true,
+    "colour_ok": true
+   },
+   {
+    "pdf_label": "Retention 50 %, mid-block",
+    "script_label": "Retention 50 %, mid-block",
+    "pdf_value_text": "−65.9",
+    "pdf_bar_centre": -65.9,
+    "pdf_bar_half_width": 12.9,
+    "pdf_right_text": "2035",
+    "pdf_colour": [
+     0.0,
+     0.4471,
+     0.698
+    ],
+    "value_text_ok": true,
+    "centre_ok": true,
+    "half_width_ok": true,
+    "right_text_ok": true,
+    "colour_ok": true
+   },
+   {
+    "pdf_label": "Datasheet 8,000 cycles",
+    "script_label": "Datasheet 8,000 cycles",
+    "pdf_value_text": "−45.2",
+    "pdf_bar_centre": -45.2,
+    "pdf_bar_half_width": 12.6,
+    "pdf_right_text": "never",
+    "pdf_colour": [
+     0.0,
+     0.4471,
+     0.698
+    ],
+    "value_text_ok": true,
+    "centre_ok": true,
+    "half_width_ok": true,
+    "right_text_ok": true,
+    "colour_ok": true
+   },
+   {
+    "pdf_label": "No ageing",
+    "script_label": "No ageing",
+    "pdf_value_text": "−4.1",
+    "pdf_bar_centre": -4.1,
+    "pdf_bar_half_width": 12.9,
+    "pdf_right_text": "n/a",
+    "pdf_colour": [
+     0.8353,
+     0.3686,
+     0.0
+    ],
+    "value_text_ok": true,
+    "centre_ok": true,
+    "half_width_ok": true,
+    "right_text_ok": true,
+    "colour_ok": true
+   }
+  ],
+  "pdf_w165_vs_T8": [
+   {
+    "pdf_label": "no_ageing",
+    "arm": "no_ageing",
+    "pdf_value_text": "−4.1",
+    "pdf_bar_centre": -4.141,
+    "pdf_bar_half_width": 12.859,
+    "pdf_right_text": "never",
+    "T8_value_minus_I_kEUR": -4.1405379110598,
+    "value_ok": true,
+    "T8_floor_year_070": null
+   },
+   {
+    "pdf_label": "C2",
+    "arm": "C2",
+    "pdf_value_text": "−31.6",
+    "pdf_bar_centre": -31.607,
+    "pdf_bar_half_width": 12.628,
+    "pdf_right_text": "never",
+    "T8_value_minus_I_kEUR": -31.607236165883485,
+    "value_ok": true,
+    "T8_floor_year_070": null
+   },
+   {
+    "pdf_label": "C2_calfade (baseline)",
+    "arm": "C2_calfade",
+    "pdf_value_text": "−64.4",
+    "pdf_bar_centre": -64.417,
+    "pdf_bar_half_width": 13.054,
+    "pdf_right_text": "2035",
+    "T8_value_minus_I_kEUR": -64.41738662493462,
+    "value_ok": true,
+    "T8_floor_year_070": 2035
+   },
+   {
+    "pdf_label": "C3_unit",
+    "arm": "C3_unit",
+    "pdf_value_text": "−73.7",
+    "pdf_bar_centre": -73.747,
+    "pdf_bar_half_width": 12.84,
+    "pdf_right_text": "2035",
+    "T8_value_minus_I_kEUR": -73.74665554356808,
+    "value_ok": true,
+    "T8_floor_year_070": 2035
+   },
+   {
+    "pdf_label": "C3_midblock",
+    "arm": "C3_midblock",
+    "pdf_value_text": "−65.9",
+    "pdf_bar_centre": -65.892,
+    "pdf_bar_half_width": 12.867,
+    "pdf_right_text": "2035",
+    "T8_value_minus_I_kEUR": -65.89187730801338,
+    "value_ok": true,
+    "T8_floor_year_070": 2035
+   },
+   {
+    "pdf_label": "C4",
+    "arm": "C4",
+    "pdf_value_text": "−45.2",
+    "pdf_bar_centre": -45.197,
+    "pdf_bar_half_width": 12.628,
+    "pdf_right_text": "never",
+    "T8_value_minus_I_kEUR": -45.19669533992047,
+    "value_ok": true,
+    "T8_floor_year_070": null
+   }
+  ],
+  "frozen": {
+   "path": "data/SRP1/Results/P515S53/w160_step6_frozen/frozen_step6_tables_v1_590088fe.json",
+   "sha256": "590088fe6b364c265c97998c5491edea7ca70baad0dbe2ba5150273656d9b6f4",
+   "T8_json_path": "tables.ageing.rows[]",
+   "threshold_json_path": "tables.claims[] E:*:value_minus_I .gross_threshold_or_bar"
+  },
+  "T8_csv": {
+   "path": "data/SRP1/Results/P515S53/w160_step6_frozen/export/T8.csv",
+   "sha256": "35259da9f45a62acb409253020cd8fe8ed3ea8e02a73726ab621f68909c1abe1",
+   "no_ageing_floor_cell": [
+    "no_ageing,e_no_ageing,313.8,318.0,-4.1,12.9,0.32,within resolution,never,1.000,1.29,11542,1.04,yes,0.62"
+   ]
+  }
+ },
+ "f_refs_labels": {
+  "n_labels": 111,
+  "n_ref_keys": 93,
+  "n_ref_uses": 188,
+  "n_cite_keys": 47,
+  "n_cite_uses": 66,
+  "n_bib_keys": 48,
+  "bibliography_command": [
+   "bibliography"
+  ],
+  "duplicate_labels": {},
+  "undefined_refs": {},
+  "undefined_cites": {},
+  "duplicate_bib_keys": [],
+  "labels_never_referenced": [
+   "app:admm_updated_agents",
+   "app:admm_updated_scenarios",
+   "app:admm_updated_updates",
+   "app:adn_node5_description",
+   "app:adn_node7_description",
+   "app:adn_node9_description",
+   "eq:cell_throughput",
+   "eq:cohort_allocation",
+   "eq:esso_objective",
+   "eq:master_duration",
+   "eq:master_objective",
+   "eq:operational_recourse_function",
+   "eq:salvage_remaining_life",
+   "eq:soc_limits",
+   "eq:two_stage_planning_problem",
+   "subsec:res_sensitivities",
+   "tab:cs1_ieee33_branches",
+   "tab:cs1_ieee33_generators"
+  ],
+  "refs_only_in_comments": [
+   "eq:two_stage_planning_problem"
+  ],
+  "refs_to_subsubsec_certification": [
+   {
+    "line": 418,
+    "context": "$m \\in \\Omega_M$ and an operation scenario of load and RES generation, with probability $\\omega_m \\omega_o$, and the expansion of $Q(\\boldsymbol{x})$ over representative years, days and scenarios is given in Subsection~\\ref{subsubsec:certification}.};"
+   },
+   {
+    "line": 439,
+    "context": "od avoids the communication of gradients, dual multipliers, or traditional linear cuts to the upward level, since $Q(\\boldsymbol{x})$ is the value of a certified consensus point of a \\emph{nonconvex} problem (Subsection~\\ref{subsubsec:certification})."
+   },
+   {
+    "line": 494,
+    "context": "The search is a heuristic: it proposes the incumbents, and every planning statement in this paper is a pairwise comparison of evaluations re-run on the final code under the certification rule of Subsection~\\ref{subsubsec:certification}, at its determinacy threshold."
+   },
+   {
+    "line": 534,
+    "context": "ext{Inv}}}$ and $E^{\\text{Inv}}_{e,y^{\\text{Inv}}}$ are the investment decisions, and $Q(\\boldsymbol{x})$ is the expected discounted operating cost of the plan returned by the recourse, described hereafter in Subsection~\\ref{subsubsec:certification}."
+   },
+   {
+    "line": 919,
+    "context": "the scenario price: the contracted part of the interface settlement, at the committed schedule, is a transfer between operators and is excluded from $Q(\\boldsymbol{x})$, while the deviation part is inside it (Subsection~\\ref{subsubsec:certification}). The TSO carries no deviation term. The interface voltage carries no priced term either, being a physical state rather"
+   },
+   {
+    "line": 1130,
+    "context": "Certification (Subsection~\\ref{subsubsec:certification}) uses $\\delta_R = 0.07$ on the reference value $\\mathcal{V} = 259{,}375.33$~\\euro{}, the value of the reference unit in"
+   },
+   {
+    "line": 1148,
+    "context": "n the $3 \\times 3$ multi-scenario instance. Every reported number is a certified recourse evaluation or a difference between two of them; a difference is called determinate or within resolution by the rule of Subsection~\\ref{subsubsec:certification}, and an evaluation that did not certify by its cap enters a comparison in the uncertified form of that subsection, with"
+   },
+   {
+    "line": 1148,
+    "context": "subsec:certification}, and an evaluation that did not certify by its cap enters a comparison in the uncertified form of that subsection, with its bar stated. The objective is the gross operational cost $Q$ of Subsection~\\ref{subsubsec:certification}, with the interface settlement excluded; the value of a plan is $Q(\\boldsymbol{0}) - Q(\\boldsymbol{x})$, and a plan pay"
+   },
+   {
+    "line": 1213,
+    "context": "$F(\\boldsymbol{x})-F(\\boldsymbol{0}) = I(\\boldsymbol{x})-\\text{value}$. Thresholds and uncertified bars follow Subsection~\\ref{subsubsec:certification}; $\\times$ denotes the cost difference divided by the corresponding threshold or bar. $^{u}$: uncertified evaluation. $^"
+   },
+   {
+    "line": 1354,
+    "context": "\\textit{Note:} Value is the operating-cost reduction relative to the plan without storage under the same calibration; $I=318.0$~k\\euro{}. Thresholds follow Subsection~\\ref{subsubsec:certification}; $\\times$ is the absolute investment margin divided by its threshold. $^{w}$: within resolution; all other margins are"
+   },
+   {
+    "line": 1407,
+    "context": "he production exit of the coordination procedure (ten consecutive cycles passing the residual test with every local solve successful; Section~\\ref{sec:case_settings}), rather than by the certification rule of Subsection~\\ref{subsubsec:certification}."
+   },
+   {
+    "line": 1500,
+    "context": "Every certificate reported in this paper was decided, or re-decided from its committed record, under the rule of Subsection~\\ref{subsubsec:certification}, stated in full in \\ref{app:admm_updated_certification}, and certifies at the cycle reported; the single-scenario table"
+   },
+   {
+    "line": 1501,
+    "context": "Of the 42 single-scenario evaluations run under the certification rule of Subsection~\\ref{subsubsec:certification} for the comparisons above, 32 certified (24 on the oscillatory branch, 8 on the monotone branch). The 10 uncertified ev"
+   },
+   {
+    "line": 1501,
+    "context": "error: on the reference evaluations the objective moved by a further 15--21~k\\euro{} after the residual-based stopping rule had certified them, which is why every reported difference carries the threshold of Subsection~\\ref{subsubsec:certification} rather than the residual tolerances."
+   },
+   {
+    "line": 1523,
+    "context": "o distribution blocks (node~7 in 2025 Winter, node~5 in 2035 Winter) end some primary solves at IPOPT's acceptable level within ten times the tight-tail tolerances; they are counted as clean under the rule of Subsection~\\ref{subsubsec:certification}. Two offsets are common to every evaluation and cancel in every reported difference: tightening the interior-point tail"
+   },
+   {
+    "line": 1575,
+    "context": "The stopping test is stated here; the certification rule that decides when an evaluation's value may be used is Subsection~\\ref{subsubsec:certification}."
+   },
+   {
+    "line": 1582,
+    "context": "is divided by a common scale $\\sigma$ and multiplied by its block weight $w_{y,d} = Y_y D_d (1+r)^{-(y-y_0)}$, so that every block is solved in the same units and the sum over blocks, after the exclusions of Subsection~\\ref{subsubsec:certification}, is the discounted operating cost of \\eqref{eq:recourse_value}."
+   },
+   {
+    "line": 1665,
+    "context": "a feasibility penalty on the slack pair of \\eqref{eq:esso_net_power} and a linear regularization of throughput. The weight $\\varepsilon^{\\text{E}}$ is far below the resolution of Subsection~\\ref{subsubsec:certification} and serves one purpose: with a linear, strictly positive price on $P^{\\text{Ch}} + P^{\\text{Dch}}$, simultaneous chargi"
+   },
+   {
+    "line": 1710,
+    "context": "ng after having acted, every channel freezes at cycle 200, and a cycle with a failed solve leaves every $\\rho_g$ unchanged. Any change of a $\\rho_g$ clears the acceleration memory. In the certifying regime of Subsection~\\ref{subsubsec:certification} all $\\rho_g$ are frozen from the cycle after the first residual pass, or from the stopping cycle of the earlier run in"
+   },
+   {
+    "line": 1718,
+    "context": "The production exit is ten consecutive passing cycles; it stopped the multi-scenario evaluations. The single-scenario evaluations of this paper were stopped by the certification rule of Subsection~\\ref{subsubsec:certification} or by its cycle cap, whichever came first; the holds start at the first passing cycle, while the rule's own $k_0$ reset"
+   },
+   {
+    "line": 1734,
+    "context": "The certifying regime of Subsection~\\ref{subsubsec:certification} opens at the residual pass $k_0$. Throughout the regime acceleration is off, the tight interior-point tail is on and th"
+   },
+   {
+    "line": 1748,
+    "context": "\\le \\tau$, a linear bound on the remaining descent that uses no fit; and (C4)--(C5) hold on that window. An evaluation that satisfies neither branch within its cycle cap is reported in the uncertified form of Subsection~\\ref{subsubsec:certification}: its consensus gap is $|t_{\\text{sum}}|$ at the cap, and its settling slack is the movement of the objective between th"
+   },
+   {
+    "line": 1763,
+    "context": "market data of every block; ESS parameters; $\\rho^{V}_0$, $\\rho^{\\text{PF}}_0$, $\\rho^{\\text{E}}_0$; $\\varepsilon_{\\text{abs}}$, $\\varepsilon_{\\text{rel}}$; cycle cap $k^{\\max}$; certification parameters of Subsection~\\ref{subsubsec:certification}.}"
+   }
+  ]
+ },
+ "guards": {
+  "solve_profile_guard": {
+   "permitted": [],
+   "counts": {
+    "permitted_solve": 0,
+    "permitted_exec": 0,
+    "blocked_solve": 0,
+    "blocked_exec": 0
+   },
+   "verify_0_failures": []
+  },
+  "w167_guard": {
+   "counts": {
+    "permitted_solve": 0,
+    "permitted_exec": 0,
+    "blocked_solve": 0,
+    "blocked_exec": 0
+   },
+   "verify_0_failures": []
+  },
+  "pickle_counts": {
+   "load": 0,
+   "loads": 0
+  },
+  "w167_pickle_counts": {
+   "load": 0,
+   "loads": 0
+  },
+  "production_modules_imported": []
+ },
+ "check_failures": [],
+ "finished_utc": "2026-10-14T09:34:01.255103+00:00"
+}

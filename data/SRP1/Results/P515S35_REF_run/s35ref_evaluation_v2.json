@@ -1,0 +1,648 @@
+{
+ "stage": "P5.15 Addendum 16 run 1 (s35ref, spec v5) - evaluation v2",
+ "predecessor": {
+  "path": "data/SRP1/Results/P515S35_REF_run/s35ref_evaluation.json",
+  "sha256": "6f5ef634c5c16ef58846099eee7095973ecd0619a14e0fb93ea5cd9f81567346",
+  "why_superseded": "v1 took the stop cause from boyd_terminal.stopped_by, which is wrong whenever more than one consecutive converged cycle is required"
+ },
+ "run_dir": "data/SRP1/Results/P515S35_REF_run",
+ "instance": {
+  "s_mva": 0.96875,
+  "e_mwh": 3.875,
+  "year": 2025,
+  "assignment": "uniform across active nodes (control/perturbation)"
+ },
+ "spec": {
+  "file": "data/SRP1/Results/P515S35/frozen_s35_reference_spec_v5_995548ab.json",
+  "sha256": "995548ababa1b428e9bc4354a078ffd8322cc54d00f04b9ef7a694e43311c7ba"
+ },
+ "REFERENCE_ESTABLISHED": {
+  "stopped_by_trajectory": "boyd",
+  "stopped_by_harness_field": "cap",
+  "harness_field_defect": "boyd_terminal.stopped_by disagrees with the trajectory: the writer compares converged_at_cycle (first cycle of the consecutive run) with the last cycle",
+  "cycles": 477,
+  "cap": 500,
+  "converged_at_cycle": 475,
+  "required_consecutive_cycles": 3,
+  "stop_run_cycles": [
+   475,
+   476,
+   477
+  ],
+  "stop_run_first_cycle": 475,
+  "rho_at_clamp_any": false,
+  "verdict": "ESTABLISHED"
+ },
+ "settling_quality": {
+  "terminal_ratio_to_threshold_per_channel": {
+   "v": 0.013309484713471289,
+   "pf": 0.09036127684768241,
+   "ess": 0.9875860265288469
+  },
+  "objective_rule_ten": 0.00393613800043001,
+  "rule": "CLAUDE.md: a run that genuinely settled stops well inside its threshold; ~99 % means stopped, not converged"
+ },
+ "terminal_per_channel": {
+  "v": {
+   "primal_ratio": 0.007325267193314389,
+   "dual_ratio": 0.013309484713471289,
+   "dual_ratio_balance": 0.009411226894994238,
+   "proximal_share": 0.7071067811865472,
+   "primal_pass": true,
+   "dual_pass": true,
+   "channel_pass": true,
+   "rho_in_force": 0.011549999999999998,
+   "gamma_in_force": 0.011550000000000003,
+   "freeze_cycle": 11,
+   "cycles_channel_pass": 433,
+   "first_channel_pass": 45
+  },
+  "pf": {
+   "primal_ratio": 0.004046784100291359,
+   "dual_ratio": 0.09036127684768241,
+   "dual_ratio_balance": 0.0638950716156712,
+   "proximal_share": 0.7071067811865475,
+   "primal_pass": true,
+   "dual_pass": true,
+   "channel_pass": true,
+   "rho_in_force": 0.1980000000000002,
+   "gamma_in_force": 0.19799999999999998,
+   "freeze_cycle": 60,
+   "cycles_channel_pass": 252,
+   "first_channel_pass": 226
+  },
+  "ess": {
+   "primal_ratio": 0.19322499533271104,
+   "dual_ratio": 0.9875860265288469,
+   "dual_ratio_balance": 0.85543534031104,
+   "proximal_share": 0.49971796184603723,
+   "primal_pass": true,
+   "dual_pass": true,
+   "channel_pass": true,
+   "rho_in_force": 0.16875000000000007,
+   "gamma_in_force": 0.16874999999999998,
+   "freeze_cycle": 11,
+   "cycles_channel_pass": 3,
+   "first_channel_pass": 475
+  }
+ },
+ "efc": {
+  "terminal_max": 1.058952279550704,
+  "late_slope_per_cycle_last_30": 0.00017576414017363983,
+  "sampled": [
+   [
+    1,
+    0.0002874939717676194
+   ],
+   [
+    2,
+    0.027210071258745718
+   ],
+   [
+    5,
+    0.08850566070697109
+   ],
+   [
+    10,
+    0.14628223472782748
+   ],
+   [
+    30,
+    0.4027017428076155
+   ],
+   [
+    50,
+    0.5324369861160451
+   ],
+   [
+    100,
+    0.6347371940654765
+   ],
+   [
+    150,
+    0.7217881534803908
+   ],
+   [
+    200,
+    0.8008933036573274
+   ],
+   [
+    250,
+    0.8694564980375196
+   ],
+   [
+    300,
+    0.9345691353724267
+   ],
+   [
+    350,
+    0.9937031670058567
+   ],
+   [
+    400,
+    1.0352219688493713
+   ],
+   [
+    450,
+    1.0541635717457902
+   ],
+   [
+    477,
+    1.058952279550704
+   ]
+  ],
+  "price_taker_harness_definition": {
+   "2025": 1.1918,
+   "2030": 1.1888,
+   "2035": 0.9647
+  },
+  "fraction_of_price_taker_2025": 0.8885318673860582,
+  "soh_threshold": 1.4612,
+  "fraction_of_threshold": 0.7247141250689187,
+  "efc_star_single_day": 1.852,
+  "expectation": "revised, pre-registered (a993b088): approach ~1.19 from below with the floor slack"
+ },
+ "soh_floor": {
+  "available": true,
+  "cycle": 477,
+  "dual_sign_convention": "model.dual.get(con) as returned by Pyomo (Suffix direction=IMPORT_EXPORT, populated from the IPOPT .sol file) for the row es_soh_per_unit_cumul[y_inv, y] >= soh_min; NO sign flip applied -- the SAME mechanism _duals_for_keys uses elsewhere in this harness",
+  "n_rows": 18,
+  "n_active": 0,
+  "floor_multiplier_max_abs_over_active_rows": 0.0,
+  "min_soh": 0.6593548806214651,
+  "soh_min": 0.5,
+  "rows": [
+   {
+    "node_id": 5,
+    "y_inv": "0",
+    "y": "0",
+    "constraint_idx": 3,
+    "dual": 2.6273278870167215e-10,
+    "es_soh_per_unit_cumul": 0.8460122893774782,
+    "soh_min": 0.5,
+    "active": false,
+    "efc_per_day": 1.057531942818879
+   },
+   {
+    "node_id": 5,
+    "y_inv": "0",
+    "y": "1",
+    "constraint_idx": 6,
+    "dual": 3.876891757320059e-10,
+    "es_soh_per_unit_cumul": 0.7344890687754341,
+    "soh_min": 0.5,
+    "active": false,
+    "efc_per_day": 0.893973044490028
+   },
+   {
+    "node_id": 5,
+    "y_inv": "0",
+    "y": "2",
+    "constraint_idx": 9,
+    "dual": 5.703096986624578e-10,
+    "es_soh_per_unit_cumul": 0.6594027599613688,
+    "soh_min": 0.5,
+    "active": false,
+    "efc_per_day": 0.6819993168987664
+   },
+   {
+    "node_id": 5,
+    "y_inv": "1",
+    "y": "1",
+    "constraint_idx": 12,
+    "dual": null,
+    "es_soh_per_unit_cumul": 1.0,
+    "soh_min": 0.5,
+    "active": false,
+    "efc_per_day": null
+   },
+   {
+    "node_id": 5,
+    "y_inv": "1",
+    "y": "2",
+    "constraint_idx": 15,
+    "dual": null,
+    "es_soh_per_unit_cumul": 1.0,
+    "soh_min": 0.5,
+    "active": false,
+    "efc_per_day": null
+   },
+   {
+    "node_id": 5,
+    "y_inv": "2",
+    "y": "2",
+    "constraint_idx": 18,
+    "dual": null,
+    "es_soh_per_unit_cumul": 1.0,
+    "soh_min": 0.5,
+    "active": false,
+    "efc_per_day": null
+   },
+   {
+    "node_id": 7,
+    "y_inv": "0",
+    "y": "0",
+    "constraint_idx": 3,
+    "dual": 2.6287713806072836e-10,
+    "es_soh_per_unit_cumul": 0.8458223051421574,
+    "soh_min": 0.5,
+    "active": false,
+    "efc_per_day": 1.058952279550704
+   },
+   {
+    "node_id": 7,
+    "y_inv": "0",
+    "y": "1",
+    "constraint_idx": 6,
+    "dual": 3.877406072427958e-10,
+    "es_soh_per_unit_cumul": 0.7344579856446181,
+    "soh_min": 0.5,
+    "active": false,
+    "efc_per_day": 0.892820347292786
+   },
+   {
+    "node_id": 7,
+    "y_inv": "0",
+    "y": "2",
+    "constraint_idx": 9,
+    "dual": 5.704811570451324e-10,
+    "es_soh_per_unit_cumul": 0.6593548806214651,
+    "soh_min": 0.5,
+    "active": false,
+    "efc_per_day": 0.6821908910442298
+   },
+   {
+    "node_id": 7,
+    "y_inv": "1",
+    "y": "1",
+    "constraint_idx": 12,
+    "dual": null,
+    "es_soh_per_unit_cumul": 1.0,
+    "soh_min": 0.5,
+    "active": false,
+    "efc_per_day": null
+   },
+   {
+    "node_id": 7,
+    "y_inv": "1",
+    "y": "2",
+    "constraint_idx": 15,
+    "dual": null,
+    "es_soh_per_unit_cumul": 1.0,
+    "soh_min": 0.5,
+    "active": false,
+    "efc_per_day": null
+   },
+   {
+    "node_id": 7,
+    "y_inv": "2",
+    "y": "2",
+    "constraint_idx": 18,
+    "dual": null,
+    "es_soh_per_unit_cumul": 1.0,
+    "soh_min": 0.5,
+    "active": false,
+    "efc_per_day": null
+   },
+   {
+    "node_id": 9,
+    "y_inv": "0",
+    "y": "0",
+    "constraint_idx": 3,
+    "dual": 2.6277243470169195e-10,
+    "es_soh_per_unit_cumul": 0.8459600846991073,
+    "soh_min": 0.5,
+    "active": false,
+    "efc_per_day": 1.0579221972200623
+   },
+   {
+    "node_id": 9,
+    "y_inv": "0",
+    "y": "1",
+    "constraint_idx": 6,
+    "dual": 3.8793223443092947e-10,
+    "es_soh_per_unit_cumul": 0.7343421502281333,
+    "soh_min": 0.5,
+    "active": false,
+    "efc_per_day": 0.8948479236746806
+   },
+   {
+    "node_id": 9,
+    "y_inv": "0",
+    "y": "2",
+    "constraint_idx": 9,
+    "dual": 5.703168151855661e-10,
+    "es_soh_per_unit_cumul": 0.6594007711487611,
+    "soh_min": 0.5,
+    "active": false,
+    "efc_per_day": 0.6807532574721135
+   },
+   {
+    "node_id": 9,
+    "y_inv": "1",
+    "y": "1",
+    "constraint_idx": 12,
+    "dual": null,
+    "es_soh_per_unit_cumul": 1.0,
+    "soh_min": 0.5,
+    "active": false,
+    "efc_per_day": null
+   },
+   {
+    "node_id": 9,
+    "y_inv": "1",
+    "y": "2",
+    "constraint_idx": 15,
+    "dual": null,
+    "es_soh_per_unit_cumul": 1.0,
+    "soh_min": 0.5,
+    "active": false,
+    "efc_per_day": null
+   },
+   {
+    "node_id": 9,
+    "y_inv": "2",
+    "y": "2",
+    "constraint_idx": 18,
+    "dual": null,
+    "es_soh_per_unit_cumul": 1.0,
+    "soh_min": 0.5,
+    "active": false,
+    "efc_per_day": null
+   }
+  ],
+  "efc_per_day_per_cohort_year": {
+   "node5_yinv0_y0": 1.057531942818879,
+   "node5_yinv0_y1": 0.893973044490028,
+   "node5_yinv0_y2": 0.6819993168987664,
+   "node7_yinv0_y0": 1.058952279550704,
+   "node7_yinv0_y1": 0.892820347292786,
+   "node7_yinv0_y2": 0.6821908910442298,
+   "node9_yinv0_y0": 1.0579221972200623,
+   "node9_yinv0_y1": 0.8948479236746806,
+   "node9_yinv0_y2": 0.6807532574721135
+  }
+ },
+ "price_taker_terminal_soh_for_comparison": 0.589209,
+ "storage_dual_ratio_sampled": [
+  [
+   1,
+   19.398718953708162
+  ],
+  [
+   2,
+   17.84838313764675
+  ],
+  [
+   5,
+   15.21488345828518
+  ],
+  [
+   10,
+   13.913194271823379
+  ],
+  [
+   30,
+   13.246486589369258
+  ],
+  [
+   50,
+   6.026901267407565
+  ],
+  [
+   100,
+   4.323889752290661
+  ],
+  [
+   150,
+   3.343426837464828
+  ],
+  [
+   200,
+   3.0072740867331795
+  ],
+  [
+   250,
+   2.550965313411584
+  ],
+  [
+   300,
+   2.07199497762972
+  ],
+  [
+   350,
+   1.7694257819486923
+  ],
+  [
+   400,
+   1.3678122035323834
+  ],
+  [
+   450,
+   1.103157121613243
+  ],
+  [
+   477,
+   0.9875860265288469
+  ]
+ ],
+ "system_cost_matched_cycles": [
+  {
+   "cycle": 1,
+   "s35ref_gross": 908027813.2045348,
+   "s35ref_efc": 0.0002874939717676194,
+   "s34_gross": 907716715.668015,
+   "minus_s34": 311097.53651976585,
+   "s33e2_gross": 968494925.0938367,
+   "minus_s33e2": -60467111.889301896,
+   "s32_gross": 968494925.0938367,
+   "minus_s32": -60467111.889301896,
+   "s31c_gross": 2359311749.284464,
+   "minus_s31c": -1451283936.079929
+  },
+  {
+   "cycle": 2,
+   "s35ref_gross": 1125214331.3945236,
+   "s35ref_efc": 0.027210071258745718,
+   "s34_gross": 1124883514.3571718,
+   "minus_s34": 330817.0373518467,
+   "s33e2_gross": 1219820650.0962644,
+   "minus_s33e2": -94606318.70174074,
+   "s32_gross": 1219820650.0962644,
+   "minus_s32": -94606318.70174074,
+   "s31c_gross": 1635793408.6698973,
+   "minus_s31c": -510579077.2753737
+  },
+  {
+   "cycle": 5,
+   "s35ref_gross": 696051821.6086357,
+   "s35ref_efc": 0.08850566070697109,
+   "s34_gross": 695849750.9617386,
+   "minus_s34": 202070.64689707756,
+   "s33e2_gross": 754691931.0576913,
+   "minus_s33e2": -58640109.44905567,
+   "s32_gross": 799099849.7294499,
+   "minus_s32": -103048028.1208142,
+   "s31c_gross": 1357909196.3566816,
+   "minus_s31c": -661857374.7480459
+  },
+  {
+   "cycle": 10,
+   "s35ref_gross": 677728909.7616192,
+   "s35ref_efc": 0.14628223472782748,
+   "s34_gross": 677327878.808085,
+   "minus_s34": 401030.9535342455,
+   "s33e2_gross": 729117524.632208,
+   "minus_s33e2": -51388614.87058878,
+   "s32_gross": 651281159.4925663,
+   "minus_s32": 26447750.269052863,
+   "s31c_gross": 1191551992.2462602,
+   "minus_s31c": -513823082.48464096
+  },
+  {
+   "cycle": 30,
+   "s35ref_gross": 654099207.4848181,
+   "s35ref_efc": 0.4027017428076155,
+   "s34_gross": 653639902.2050092,
+   "minus_s34": 459305.2798088789,
+   "s33e2_gross": 656532453.3443153,
+   "minus_s33e2": -2433245.8594971895,
+   "s32_gross": 663771540.0656254,
+   "minus_s32": -9672332.580807328,
+   "s31c_gross": 698488996.893102,
+   "minus_s31c": -44389789.40828395
+  },
+  {
+   "cycle": 50,
+   "s35ref_gross": 652063867.9551711,
+   "s35ref_efc": 0.5324369861160451,
+   "s34_gross": 651856201.6016469,
+   "minus_s34": 207666.35352420807,
+   "s33e2_gross": 654342996.6751572,
+   "minus_s33e2": -2279128.719986081,
+   "s32_gross": 659201581.6713443,
+   "minus_s32": -7137713.716173172,
+   "s31c_gross": 674927476.3556473,
+   "minus_s31c": -22863608.400476217
+  },
+  {
+   "cycle": 100,
+   "s35ref_gross": 651631770.4502223,
+   "s35ref_efc": 0.6347371940654765,
+   "s34_gross": 651430412.147897,
+   "minus_s34": 201358.30232524872,
+   "s33e2_gross": 653965596.2455195,
+   "minus_s33e2": -2333825.795297265,
+   "s32_gross": 655370576.9586096,
+   "minus_s32": -3738806.508387327
+  },
+  {
+   "cycle": 150,
+   "s35ref_gross": 651337599.7744539,
+   "s35ref_efc": 0.7217881534803908,
+   "s34_gross": 651180637.2519937,
+   "minus_s34": 156962.52246022224,
+   "s33e2_gross": 653826841.6344557,
+   "minus_s33e2": -2489241.8600018024,
+   "s32_gross": 654413409.7351172,
+   "minus_s32": -3075809.9606633186
+  },
+  {
+   "cycle": 200,
+   "s35ref_gross": 651224708.3088539,
+   "s35ref_efc": 0.8008933036573274
+  },
+  {
+   "cycle": 250,
+   "s35ref_gross": 651141591.4319336,
+   "s35ref_efc": 0.8694564980375196
+  },
+  {
+   "cycle": 300,
+   "s35ref_gross": 651084349.4404198,
+   "s35ref_efc": 0.9345691353724267
+  },
+  {
+   "cycle": 350,
+   "s35ref_gross": 651045614.0230732,
+   "s35ref_efc": 0.9937031670058567
+  },
+  {
+   "cycle": 400,
+   "s35ref_gross": 651038509.7489475,
+   "s35ref_efc": 1.0352219688493713
+  },
+  {
+   "cycle": 450,
+   "s35ref_gross": 651043300.5225978,
+   "s35ref_efc": 1.0541635717457902
+  }
+ ],
+ "system_cost_terminal": 651039166.0347285,
+ "objective_diagnostic": {
+  "terminal_step": 256.2581009864807,
+  "tolerance": 65103.942229282955,
+  "rule_ten": 0.00393613800043001
+ },
+ "network_failures_summary": {
+  "n_blocks": 298,
+  "classes": {
+   "recovered_tier1": 284,
+   "recovered_tier2": 14,
+   "unrecovered": 0,
+   "not_attempted": 0,
+   "indeterminate": 0,
+   "recovered": 298
+  },
+  "n_frozen_snapshots": 2,
+  "n_esso_recovery_events": 0,
+  "path": "data/SRP1/Results/P515S35_REF_run/network_failures_baseline.jsonl"
+ },
+ "local_solve_failures": 0,
+ "solves": {
+  "observed": {
+   "permitted_solve": 24690,
+   "permitted_exec": 24690,
+   "blocked_solve": 0,
+   "blocked_exec": 0
+  },
+  "identity_holds": false
+ },
+ "wall_clock_s": 17429.054521799088,
+ "scaling_in_force": {
+  "sigma_fixed": 93635360.0,
+  "sigma_computed": 93635360.28800085,
+  "al_scale_esso": 227210.9966521344,
+  "shared_ess_reference_rating_mva": 2.5
+ },
+ "interface_voltage_terminal_summary": {
+  "n_entries": 864,
+  "min_distance_to_bound_pu_overall": 2.9227475883963905e-07,
+  "min_distance_to_bound_pu_per_node": {
+   "5": 2.9227475883963905e-07,
+   "7": 3.4451171695426552e-06,
+   "9": 3.122966134583294e-07
+  },
+  "n_entries_at_bound_within_1e-6_pu": 52,
+  "n_entries_within_0p005_pu": 348,
+  "stage": "P5.15 Step 3.2 E2 -- per-entry terminal interface voltage vs TSO node bounds",
+  "authority": "data/SRP1/Results/P515S33/frozen_s33_e2_spec_v3_825f1f02.json report_terminal",
+  "timestamp_utc": "2026-09-16T19:20:42.966240+00:00",
+  "label": "baseline",
+  "cycle": 477
+ },
+ "cancellation": {
+  "t_sum": 76.42558908462524,
+  "priced_residual_total": -76.42558906610867,
+  "closure": 1.851657316365163e-08
+ },
+ "solve_profile_guard": {
+  "counts": {
+   "permitted_solve": 0,
+   "permitted_exec": 0,
+   "blocked_solve": 0,
+   "blocked_exec": 0
+  },
+  "verify_failures": []
+ }
+}

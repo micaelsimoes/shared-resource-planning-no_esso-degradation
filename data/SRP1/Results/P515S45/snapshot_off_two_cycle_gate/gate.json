@@ -1,0 +1,1277 @@
+{
+ "schema": "p515_s45_snapshot_off_two_cycle_gate_v1",
+ "stage": "P5.15 Addendum 27 item 5(a), W10 -- SRP1 two-cycle bitwise gate: pristine snapshot clones off vs on",
+ "authority": [
+  "PLANNER_BRIEF_2026-09-13.md Addendum 27 item 5(a)",
+  "Planner task W10 (two-cycle bitwise gate, snapshots off vs on; THIS TASK SOLVES)",
+  "commit b1272593 (W9: switchable pristine snapshot clones, default unchanged)",
+  "data/SRP1/Results/P515S45/frozen_s45_phaseA_spec_v15_5feefd7b.json (configuration.oracle)"
+ ],
+ "timestamp_utc": "2026-09-19T22:11:39.967056+00:00",
+ "git_head_at_run": "b127259308fcc18054fb912000b4f2ff1077e569",
+ "script": "p515_s45_snapshot_off_two_cycle_gate.py",
+ "script_sha256": "f5e103577a7dc0c465144984e28b50ab4b1efc0405c3c23f2ab3afc7f917f4a2",
+ "harness_sha256": "d7457f79b239527aac55eece29eec7b057ef7d77d3f328ea1a72fe1d5e2891b6",
+ "case_file": {
+  "path": "data/SRP1/SRP1_params.json",
+  "sha256": "dbfdb2a07d12bfedab5e66bf94b3df98e5ab0305616652b4083266476972006b",
+  "anderson_acceleration_loaded": {
+   "enabled": true,
+   "memory": 5,
+   "regularization": 1e-10,
+   "reject_policy": "keep_memory"
+  },
+  "declaration": {
+   "enabled": true,
+   "memory": 5,
+   "regularization": 1e-10,
+   "reject_policy": "keep_memory"
+  }
+ },
+ "instance": {
+  "candidate_label": "C* (0.96875 MVA / 3.875 MWh at nodes 5, 7, 9, investment year 2025)",
+  "candidate_canonical": {
+   "investment_year": 2025,
+   "nodes": {
+    "5": [
+     0.96875,
+     3.875
+    ],
+    "7": [
+     0.96875,
+     3.875
+    ],
+    "9": [
+     0.96875,
+     3.875
+    ]
+   }
+  },
+  "candidate_key": "578636daa6d6360d6701764c73ddf795e53c2c37e511e21be1400024f8f6350c",
+  "candidate_key_pin_matches": true
+ },
+ "configuration": {
+  "arm_label": "s39_D",
+  "cap": 2,
+  "required_consecutive_cycles": 10,
+  "apply_rho": false,
+  "full_diagnostics_in_rows": true,
+  "configuration_verified_by": "p515_s44_campaign_harness._config_hook_factory with the case-file AA declaration (the campaign child's own hook)",
+  "the_only_difference_between_arms": "p515_s44_scale_measurement.snapshot_hook_wrapper's `snapshots` argument: 'on' (no assignment at all, modes stay at the ADMMParameters defaults) vs 'off' (both modes set to off and read back)",
+  "thread_caps": {
+   "before": {
+    "OMP_NUM_THREADS": null,
+    "MKL_NUM_THREADS": null,
+    "OPENBLAS_NUM_THREADS": null,
+    "VECLIB_MAXIMUM_THREADS": null,
+    "NUMEXPR_NUM_THREADS": null
+   },
+   "after": {
+    "OMP_NUM_THREADS": "1",
+    "MKL_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1",
+    "VECLIB_MAXIMUM_THREADS": "1",
+    "NUMEXPR_NUM_THREADS": "1"
+   },
+   "source": "p515_s44_campaign_harness.THREAD_CAP_ENV"
+  },
+  "PYTHONHASHSEED": null,
+  "nlp_solver_path": {
+   "NLP_SOLVER_PATH": "/usr/local/bin/ipopt",
+   "source": "environment"
+  },
+  "both_arms_in_one_process": true,
+  "note_on_one_process": "both arms run sequentially in THIS process, so the per-process string-hash seed -- the cause of the sort-tie non-determinism documented in p515_s43_aa_flagoff_gate -- is identical for the two arms and cannot explain any difference between them"
+ },
+ "objective_convention": "gross_operational_cost is the settlement-excluded gross cost; net_operational_recourse differs by the terminal salvage credit",
+ "capture_path_checklist_asserted_before_run": {
+  "record_capture_paths (campaign harness)": true,
+  "callable_p515_g_g1_g4_admm_gates.run_admm_arm": true,
+  "callable_p515_g_g1_g4_admm_gates.write_boyd_terminal_s35ref": true,
+  "callable_p515_g_g1_g4_admm_gates.s38_pf_capture_hooks": true,
+  "callable_p515_g_g1_g4_admm_gates.s39_exempt_until_capture_hooks": true,
+  "callable_p515_g_g1_g4_admm_gates._acquire_exclusive_run_lock": true,
+  "callable_p515_s44_campaign_harness._config_hook_factory": true,
+  "callable_p515_s44_campaign_harness.canonical_candidate": true,
+  "callable_p515_s44_campaign_harness.investment_map_from_canonical": true,
+  "callable_p515_s44_campaign_harness.eval_ids": true,
+  "callable_p515_s44_scale_measurement.apply_snapshot_setting": true,
+  "callable_p515_s44_scale_measurement.snapshot_hook_wrapper": true,
+  "callable_p515_s44_scale_measurement.expected_block_counts": true,
+  "callable_p515_s43_aa_run._build_aa_per_cycle_sidecar": true,
+  "callable_p515_s40_polish_gap._build_floor_rows": true,
+  "callable_p515_s40_polish_gap._derive_top_level_from_rows": true,
+  "callable_p515_s40_clone_capture_preflight._diff": true,
+  "callable_p515_s40_clone_capture_preflight._load_json": true,
+  "callable_p515_s40_clone_capture_preflight._load_jsonl": true,
+  "callable_p515_s40_clone_capture_preflight._sha256_file": true,
+  "callable_p515_s43_aa_flagoff_gate._classify_diffs": true,
+  "callable_p515_s43_aa_flagoff_gate._capture_returned_state": true,
+  "callable_p515_s44_tie_classifier.reclassify_sidecar_diffs": true,
+  "callable_shared_resources_planning._validate_snapshot_capture_modes": true,
+  "callable_shared_resources_planning._build_pristine_snapshot_bases": true,
+  "production_SNAPSHOT_CAPTURE_MODES_has_off": true,
+  "production_capture_block_mutable_state_is_module_attr": true,
+  "BlockData_clone_is_the_method_ConcreteModel_uses": true,
+  "comparator_convention_EXCLUDE_KEY_NAMES": true,
+  "comparator_convention_EXCLUDE_DOTTED_SUFFIXES": true,
+  "comparator_convention_INTENTIONAL_DIFF_SUFFIXES": true,
+  "comparator_convention_ARTIFACT_FILES": true,
+  "comparator_convention_SIDECAR_JSONL_FILES": true,
+  "trajectory_field_list_RECORD_TRAJECTORY_FIELDS": true,
+  "run_admm_arm_parameter_investment_map": true,
+  "run_admm_arm_parameter_num_max_iters_override": true,
+  "run_admm_arm_parameter_eval_id": true,
+  "run_admm_arm_parameter_apply_rho": true,
+  "run_admm_arm_parameter_full_diagnostics_in_rows": true,
+  "run_admm_arm_parameter_post_run_hook": true,
+  "run_admm_arm_parameter_pre_solve_hook": true,
+  "report_field_network_failures_summary_classes": true,
+  "report_field_solve_profile_observed": true,
+  "production_state_peak_rss": true
+ },
+ "preconditions": {
+  "forbidden_live_process_substrings": [
+   "p515_g_g1_g4_admm_gates.py",
+   "p515_s39_",
+   "p515_s36_step36_timing_run.py",
+   "p515_s40_",
+   "p515_s41_",
+   "p515_s42_",
+   "p515_s43_",
+   "p515_s44_",
+   "p515_s45_"
+  ],
+  "production_files_checked_clean": [
+   "shared_resources_planning.py",
+   "network.py",
+   "network_data.py",
+   "shared_energy_storage_data.py",
+   "admm_parameters.py",
+   "p515_g_g1_g4_admm_gates.py",
+   "data/SRP1/SRP1_params.json",
+   "admm_anderson_acceleration.py",
+   "admm_persistent_workers.py",
+   "p515_s44_campaign_harness.py",
+   "p515_s44_scale_measurement.py"
+  ]
+ },
+ "arms": {
+  "on": {
+   "arm": "on",
+   "snapshots_requested": "on",
+   "out_dir": "data/SRP1/Results/P515S45/snapshot_off_two_cycle_gate/on",
+   "working_dir_ids": {
+    "run": "p515s44_s45_w10_snapoff_on_578636daa6d6360d_run",
+    "precheck": "p515s44_s45_w10_snapoff_on_578636daa6d6360d_precheck"
+   },
+   "report_path": "data/SRP1/Results/P515S45/snapshot_off_two_cycle_gate/on/g_s39_D.json",
+   "candidate_canonical": {
+    "investment_year": 2025,
+    "nodes": {
+     "5": [
+      0.96875,
+      3.875
+     ],
+     "7": [
+      0.96875,
+      3.875
+     ],
+     "9": [
+      0.96875,
+      3.875
+     ]
+    }
+   },
+   "candidate_key": "578636daa6d6360d6701764c73ddf795e53c2c37e511e21be1400024f8f6350c",
+   "cycles_run": 2,
+   "recourse": 740742829.5748339,
+   "gross_operational_cost": 740742829.5748339,
+   "terminal_objective_change_abs": 845717094.9825618,
+   "terminal_objective_tolerance": 158645.9924557396,
+   "rule_ten_terminal_step_over_threshold": 5330.844365441549,
+   "local_solve_failures": 0,
+   "network_failures_summary": {
+    "n_blocks": 0,
+    "classes": {
+     "recovered_tier1": 0,
+     "recovered_tier2": 0,
+     "unrecovered": 0,
+     "not_attempted": 0,
+     "indeterminate": 0,
+     "recovered": 0
+    },
+    "n_frozen_snapshots": 0,
+    "n_esso_recovery_events": 0,
+    "path": "data/SRP1/Results/P515S45/snapshot_off_two_cycle_gate/on/network_failures_s39_D.jsonl"
+   },
+   "solve_profile": {
+    "observed": {
+     "permitted_solve": 153,
+     "permitted_exec": 153,
+     "blocked_solve": 0,
+     "blocked_exec": 0
+    },
+    "identity_holds": true
+   },
+   "snapshot_setting": {
+    "requested": "on",
+    "tso_mode_before": "lightweight",
+    "dso_mode_before": "lightweight",
+    "tso_mode_after": "lightweight",
+    "dso_mode_after": "lightweight",
+    "expected": [
+     "lightweight",
+     "lightweight"
+    ],
+    "took_effect": true,
+    "persistent_workers_enabled": false
+   },
+   "configuration_checks": {
+    "rho_v_matches_D": true,
+    "rho_pf_matches_D": true,
+    "rho_ess_matches_D": true,
+    "tau_is_0": true,
+    "gamma_policy_tied_to_rho": true,
+    "balancing_exempt_until_matches_D": true,
+    "balancing_exempt_channels_empty": true,
+    "freeze_after_unchanged_cycles_is_10": true,
+    "freeze_backstop_cycle_is_200": true,
+    "minimum_consecutive_converged_cycles_matches_spec": true,
+    "shared_ess_initialization_is_standalone": true,
+    "num_max_iters_is_spec_cap": true,
+    "anderson_acceleration_case_file_matches_declaration": true,
+    "anderson_acceleration_case_file_memory_regularization_frozen": true,
+    "persistent_workers_off": true,
+    "parallel_execution_off": true
+   },
+   "anderson_acceleration_effective": {
+    "enabled": true,
+    "memory": 5,
+    "regularization": 1e-10,
+    "reject_policy": "keep_memory"
+   },
+   "expected_block_counts_from_planning": {
+    "tso_blocks": 12,
+    "dso_blocks": 36,
+    "network_blocks": 48,
+    "esso_models": 3,
+    "solves_per_cycle": 51
+   },
+   "frozen_smopf_dir": "data/SRP1/Results/P515S45/snapshot_off_two_cycle_gate/on/results/FrozenSMOPF",
+   "frozen_smopf_inventory": [],
+   "frozen_smopf_n_pkl": 0,
+   "frozen_smopf_n_skipped_markers": 0,
+   "wall_clock_s": {
+    "measured_here": 87.6796281337738,
+    "reported_by_run_admm_arm": 87.07535099983215
+   },
+   "peak_rss": {
+    "units": "bytes on macOS/BSD (ru_maxrss)",
+    "process_ru_maxrss_before_arm": 373030912,
+    "process_ru_maxrss_after_arm": 2182397952,
+    "production_state_peak_rss_ru_maxrss": 2182397952,
+    "production_state_peak_rss_platform_units": "bytes on macOS/BSD, kilobytes on Linux (Python resource module, RUSAGE_SELF.ru_maxrss)",
+    "solver_subprocesses_ru_maxrss_before": 12632064,
+    "solver_subprocesses_ru_maxrss_after": 51232768,
+    "semantics": "ru_maxrss is a process high-water mark, so \"after arm 2\" is the max over both arms; the production_state figure is taken by production at the end of run_operational_planning and is per-arm"
+   },
+   "published_caps": {
+    "5": {
+     "2025": {
+      "s_available": 0.96875,
+      "e_available": 3.6311723898010655
+     },
+     "2030": {
+      "s_available": 0.96875,
+      "e_available": 3.3968431947658186
+     },
+     "2035": {
+      "s_available": 0.96875,
+      "e_available": 3.1928006892305216
+     }
+    },
+    "7": {
+     "2025": {
+      "s_available": 0.96875,
+      "e_available": 3.6316570164669373
+     },
+     "2030": {
+      "s_available": 0.96875,
+      "e_available": 3.3977972853593355
+     },
+     "2035": {
+      "s_available": 0.96875,
+      "e_available": 3.1939810899358902
+     }
+    },
+    "9": {
+     "2025": {
+      "s_available": 0.96875,
+      "e_available": 3.6313364920818567
+     },
+     "2030": {
+      "s_available": 0.96875,
+      "e_available": 3.3971126098646702
+     },
+     "2035": {
+      "s_available": 0.96875,
+      "e_available": 3.1930507634333605
+     }
+    }
+   }
+  },
+  "off": {
+   "arm": "off",
+   "snapshots_requested": "off",
+   "out_dir": "data/SRP1/Results/P515S45/snapshot_off_two_cycle_gate/off",
+   "working_dir_ids": {
+    "run": "p515s44_s45_w10_snapoff_off_578636daa6d6360d_run",
+    "precheck": "p515s44_s45_w10_snapoff_off_578636daa6d6360d_precheck"
+   },
+   "report_path": "data/SRP1/Results/P515S45/snapshot_off_two_cycle_gate/off/g_s39_D.json",
+   "candidate_canonical": {
+    "investment_year": 2025,
+    "nodes": {
+     "5": [
+      0.96875,
+      3.875
+     ],
+     "7": [
+      0.96875,
+      3.875
+     ],
+     "9": [
+      0.96875,
+      3.875
+     ]
+    }
+   },
+   "candidate_key": "578636daa6d6360d6701764c73ddf795e53c2c37e511e21be1400024f8f6350c",
+   "cycles_run": 2,
+   "recourse": 740742829.5748339,
+   "gross_operational_cost": 740742829.5748339,
+   "terminal_objective_change_abs": 845717094.9825618,
+   "terminal_objective_tolerance": 158645.9924557396,
+   "rule_ten_terminal_step_over_threshold": 5330.844365441549,
+   "local_solve_failures": 0,
+   "network_failures_summary": {
+    "n_blocks": 0,
+    "classes": {
+     "recovered_tier1": 0,
+     "recovered_tier2": 0,
+     "unrecovered": 0,
+     "not_attempted": 0,
+     "indeterminate": 0,
+     "recovered": 0
+    },
+    "n_frozen_snapshots": 0,
+    "n_esso_recovery_events": 0,
+    "path": "data/SRP1/Results/P515S45/snapshot_off_two_cycle_gate/off/network_failures_s39_D.jsonl"
+   },
+   "solve_profile": {
+    "observed": {
+     "permitted_solve": 153,
+     "permitted_exec": 153,
+     "blocked_solve": 0,
+     "blocked_exec": 0
+    },
+    "identity_holds": true
+   },
+   "snapshot_setting": {
+    "requested": "off",
+    "tso_mode_before": "lightweight",
+    "dso_mode_before": "lightweight",
+    "tso_mode_after": "off",
+    "dso_mode_after": "off",
+    "expected": [
+     "off",
+     "off"
+    ],
+    "took_effect": true,
+    "persistent_workers_enabled": false
+   },
+   "configuration_checks": {
+    "rho_v_matches_D": true,
+    "rho_pf_matches_D": true,
+    "rho_ess_matches_D": true,
+    "tau_is_0": true,
+    "gamma_policy_tied_to_rho": true,
+    "balancing_exempt_until_matches_D": true,
+    "balancing_exempt_channels_empty": true,
+    "freeze_after_unchanged_cycles_is_10": true,
+    "freeze_backstop_cycle_is_200": true,
+    "minimum_consecutive_converged_cycles_matches_spec": true,
+    "shared_ess_initialization_is_standalone": true,
+    "num_max_iters_is_spec_cap": true,
+    "anderson_acceleration_case_file_matches_declaration": true,
+    "anderson_acceleration_case_file_memory_regularization_frozen": true,
+    "persistent_workers_off": true,
+    "parallel_execution_off": true
+   },
+   "anderson_acceleration_effective": {
+    "enabled": true,
+    "memory": 5,
+    "regularization": 1e-10,
+    "reject_policy": "keep_memory"
+   },
+   "expected_block_counts_from_planning": {
+    "tso_blocks": 12,
+    "dso_blocks": 36,
+    "network_blocks": 48,
+    "esso_models": 3,
+    "solves_per_cycle": 51
+   },
+   "frozen_smopf_dir": "data/SRP1/Results/P515S45/snapshot_off_two_cycle_gate/off/results/FrozenSMOPF",
+   "frozen_smopf_inventory": [],
+   "frozen_smopf_n_pkl": 0,
+   "frozen_smopf_n_skipped_markers": 0,
+   "wall_clock_s": {
+    "measured_here": 82.58004975318909,
+    "reported_by_run_admm_arm": 81.9813940525055
+   },
+   "peak_rss": {
+    "units": "bytes on macOS/BSD (ru_maxrss)",
+    "process_ru_maxrss_before_arm": 2182742016,
+    "process_ru_maxrss_after_arm": 2182742016,
+    "production_state_peak_rss_ru_maxrss": 2182742016,
+    "production_state_peak_rss_platform_units": "bytes on macOS/BSD, kilobytes on Linux (Python resource module, RUSAGE_SELF.ru_maxrss)",
+    "solver_subprocesses_ru_maxrss_before": 51232768,
+    "solver_subprocesses_ru_maxrss_after": 51642368,
+    "semantics": "ru_maxrss is a process high-water mark, so \"after arm 2\" is the max over both arms; the production_state figure is taken by production at the end of run_operational_planning and is per-arm"
+   },
+   "published_caps": {
+    "5": {
+     "2025": {
+      "s_available": 0.96875,
+      "e_available": 3.6311723898010655
+     },
+     "2030": {
+      "s_available": 0.96875,
+      "e_available": 3.3968431947658186
+     },
+     "2035": {
+      "s_available": 0.96875,
+      "e_available": 3.1928006892305216
+     }
+    },
+    "7": {
+     "2025": {
+      "s_available": 0.96875,
+      "e_available": 3.6316570164669373
+     },
+     "2030": {
+      "s_available": 0.96875,
+      "e_available": 3.3977972853593355
+     },
+     "2035": {
+      "s_available": 0.96875,
+      "e_available": 3.1939810899358902
+     }
+    },
+    "9": {
+     "2025": {
+      "s_available": 0.96875,
+      "e_available": 3.6313364920818567
+     },
+     "2030": {
+      "s_available": 0.96875,
+      "e_available": 3.3971126098646702
+     },
+     "2035": {
+      "s_available": 0.96875,
+      "e_available": 3.1930507634333605
+     }
+    }
+   }
+  }
+ },
+ "clone_capture_counters": {
+  "buckets": {
+   "on_precheck": {
+    "clone": 0,
+    "capture": 0,
+    "clone_sites": {},
+    "capture_sites": {}
+   },
+   "arm_on": {
+    "clone": 24,
+    "capture": 48,
+    "clone_sites": {
+     "p515_s45_snapshot_off_two_cycle_gate.py:340 in counting_clone": 24
+    },
+    "capture_sites": {
+     "p515_s45_snapshot_off_two_cycle_gate.py:344 in counting_capture": 48
+    }
+   },
+   "off_precheck": {
+    "clone": 0,
+    "capture": 0,
+    "clone_sites": {},
+    "capture_sites": {}
+   },
+   "arm_off": {
+    "clone": 0,
+    "capture": 0,
+    "clone_sites": {},
+    "capture_sites": {}
+   }
+  },
+  "arm_on": {
+   "clone": 24,
+   "capture": 48
+  },
+  "arm_off": {
+   "clone": 0,
+   "capture": 0
+  },
+  "gate_on_positive": true,
+  "gate_off_zero": true,
+  "reconciliation_arm_on": {
+   "expected_pristine_base_clones": 24,
+   "note": "12 TSO blocks + 12 node-7 DSO blocks cloned once per _run_operational_planning call (_build_pristine_snapshot_bases), plus one on-demand rebuild clone per snapshot actually written",
+   "snapshots_written": 0,
+   "expected_total_clones": 24,
+   "observed_clones": 24,
+   "identity_holds": true,
+   "expected_captures": 48,
+   "observed_captures": 48,
+   "capture_identity_holds": true,
+   "gating": false
+  }
+ },
+ "solve_profile": {
+  "declared_before_the_run": {
+   "case_file": "data/SRP1/SRP1.json",
+   "years": [
+    "2025",
+    "2030",
+    "2035"
+   ],
+   "days": [
+    "Autumn",
+    "Spring",
+    "Summer",
+    "Winter"
+   ],
+   "n_year_day_blocks": 12,
+   "n_networks": 4,
+   "network_solves_per_cycle": 48,
+   "active_distribution_network_nodes": [
+    5,
+    7,
+    9
+   ],
+   "esso_solves_per_cycle": 3,
+   "solves_per_cycle": 51,
+   "cap": 2,
+   "declared_base_solves_per_arm": 153,
+   "declared_base_solves_both_arms": 306,
+   "identity": "observed_arm == base + 1 * recovered_tier1 + 2 * recovered_tier2 (recovery counts from the arm own network_failures_summary)"
+  },
+  "per_arm": {
+   "on": {
+    "base_declared": 153,
+    "recovered_tier1": 0,
+    "recovered_tier2": 0,
+    "expected_after_reconciliation": 153,
+    "observed": 153,
+    "identity_holds": true,
+    "expected_block_counts_from_planning": {
+     "tso_blocks": 12,
+     "dso_blocks": 36,
+     "network_blocks": 48,
+     "esso_models": 3,
+     "solves_per_cycle": 51
+    },
+    "planning_derivation_agrees_with_case_file": true,
+    "arm_inner_guard_counts": {
+     "permitted_solve": 153,
+     "permitted_exec": 153,
+     "blocked_solve": 0,
+     "blocked_exec": 0
+    }
+   },
+   "off": {
+    "base_declared": 153,
+    "recovered_tier1": 0,
+    "recovered_tier2": 0,
+    "expected_after_reconciliation": 153,
+    "observed": 153,
+    "identity_holds": true,
+    "expected_block_counts_from_planning": {
+     "tso_blocks": 12,
+     "dso_blocks": 36,
+     "network_blocks": 48,
+     "esso_models": 3,
+     "solves_per_cycle": 51
+    },
+    "planning_derivation_agrees_with_case_file": true,
+    "arm_inner_guard_counts": {
+     "permitted_solve": 153,
+     "permitted_exec": 153,
+     "blocked_solve": 0,
+     "blocked_exec": 0
+    }
+   }
+  },
+  "method": "the base count was declared in advance and the gate is on the reconciliation identity (an exact number cannot be declared for failures not known in advance); the process-wide guard is additionally verify()-ed EXACTLY against the reconciled total",
+  "process_guard": {
+   "permitted_call_sites": [
+    [
+     "network.py",
+     "_run_smopf_solver_attempt"
+    ],
+    [
+     "shared_energy_storage_data.py",
+     "_run_solver_attempt"
+    ]
+   ],
+   "counts": {
+    "permitted_solve": 306,
+    "permitted_exec": 306,
+    "blocked_solve": 0,
+    "blocked_exec": 0
+   },
+   "reconciled_total_expected": 306,
+   "verify_failures": [],
+   "sum_of_arm_counts": 306,
+   "no_solves_outside_the_arms": true
+  },
+  "identity_holds_both_arms": true
+ },
+ "comparison_on_vs_off": {
+  "comparator": "p515_s40_clone_capture_preflight._diff (+ EXCLUDE_KEY_NAMES, EXCLUDE_DOTTED_SUFFIXES, INTENTIONAL_DIFF_SUFFIXES, ARTIFACT_FILES, SIDECAR_JSONL_FILES) + p515_s43_aa_flagoff_gate._classify_diffs + p515_s44_tie_classifier.reclassify_sidecar_diffs, all BY IMPORT",
+  "diff_value_naming": "CP._diff names arm ON's value 'legacy' and arm OFF's value 'lightweight'",
+  "excluded_field_names": [
+   "component_levels_terminal_and_settlement_detail_path",
+   "component_levels_terminal_path",
+   "ess_entry_stride_sidecar_path",
+   "esso_capture_dir",
+   "heartbeat_path",
+   "interface_voltage_terminal_path",
+   "leak_classification_path",
+   "log_path",
+   "recourse_jump_sidecar_path",
+   "results_dir_redirect",
+   "s34_ess_entry_stride_sidecar_path",
+   "s34_recourse_jump_sidecar_path",
+   "s35ref_soh_floor_sidecar_path",
+   "s38_pf_entry_stride_sidecar_path",
+   "s39_ess_exempt_until_state_sidecar_path",
+   "soh_floor_sidecar_path",
+   "stdout_path",
+   "timestamp_utc",
+   "wall_clock_s"
+  ],
+  "excluded_dotted_suffixes": [
+   "esso_models_pickle.path",
+   "network_failures_summary.path",
+   "soh_floor_multiplier_and_efc_per_cohort_year_terminal.path"
+  ],
+  "intentional_difference_suffixes_excluded": [
+   "rule_eleven_checklist.s40_tso_snapshot_capture_mode_requested"
+  ],
+  "permitted_provenance_suffixes": {
+   "network_failures_summary.n_frozen_snapshots": "the count of FrozenSMOPF snapshots written; switching capture off is exactly what this counts (Planner task W10 names it as permitted provenance)"
+  },
+  "arm_path_normalization_tokens": [
+   [
+    "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S45/snapshot_off_two_cycle_gate/on",
+    "data/SRP1/Results/P515S45/snapshot_off_two_cycle_gate/on",
+    "p515s44_s45_w10_snapoff_on_578636daa6d6360d_run",
+    "p515s44_s45_w10_snapoff_on_578636daa6d6360d_precheck"
+   ],
+   [
+    "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S45/snapshot_off_two_cycle_gate/off",
+    "data/SRP1/Results/P515S45/snapshot_off_two_cycle_gate/off",
+    "p515s44_s45_w10_snapoff_off_578636daa6d6360d_run",
+    "p515s44_s45_w10_snapoff_off_578636daa6d6360d_precheck"
+   ]
+  ],
+  "gating_files": [
+   "g_s39_D.json",
+   "boyd_terminal.json",
+   "component_levels_terminal.json",
+   "interface_settlement_detail_s31c.json",
+   "interface_voltage_terminal.json",
+   "recourse_jump_sidecar_baseline.jsonl",
+   "ess_entry_stride_baseline.jsonl",
+   "soh_floor_sidecar_baseline.jsonl",
+   "pf_entry_stride_s39_D.jsonl",
+   "ess_exempt_until_state_s39_D.jsonl",
+   "aa_per_cycle.jsonl",
+   "per_cycle_record.jsonl"
+  ],
+  "files": {
+   "g_s39_D.json": {
+    "n_raw_diffs": 6,
+    "fg_buckets_raw_counts": {
+     "provenance": 6,
+     "aa_new_field": 0,
+     "known_tie_break_alias": 0,
+     "genuine": 0
+    },
+    "n": {
+     "provenance": 6,
+     "tie_order": 0,
+     "genuine": 0
+    },
+    "provenance_diffs": [
+     {
+      "field": "g_s39_D.json.rule_eleven_checklist.s44_snapshot_setting.dso_mode_after",
+      "legacy": "lightweight",
+      "lightweight": "off",
+      "reason": "rule_eleven_checklist subtree (how the run was configured/verified, including the recorded snapshot modes)"
+     },
+     {
+      "field": "g_s39_D.json.rule_eleven_checklist.s44_snapshot_setting.expected[0]",
+      "legacy": "lightweight",
+      "lightweight": "off",
+      "reason": "rule_eleven_checklist subtree (how the run was configured/verified, including the recorded snapshot modes)"
+     },
+     {
+      "field": "g_s39_D.json.rule_eleven_checklist.s44_snapshot_setting.expected[1]",
+      "legacy": "lightweight",
+      "lightweight": "off",
+      "reason": "rule_eleven_checklist subtree (how the run was configured/verified, including the recorded snapshot modes)"
+     },
+     {
+      "field": "g_s39_D.json.rule_eleven_checklist.s44_snapshot_setting.requested",
+      "legacy": "on",
+      "lightweight": "off",
+      "reason": "rule_eleven_checklist subtree (how the run was configured/verified, including the recorded snapshot modes)"
+     },
+     {
+      "field": "g_s39_D.json.rule_eleven_checklist.s44_snapshot_setting.tso_mode_after",
+      "legacy": "lightweight",
+      "lightweight": "off",
+      "reason": "rule_eleven_checklist subtree (how the run was configured/verified, including the recorded snapshot modes)"
+     },
+     {
+      "field": "g_s39_D.json.rule_eleven_checklist.w10_arm",
+      "legacy": "on",
+      "lightweight": "off",
+      "reason": "rule_eleven_checklist subtree (how the run was configured/verified, including the recorded snapshot modes)"
+     }
+    ],
+    "tie_order_diffs": [],
+    "tie_order_row_classes": {},
+    "genuine_diffs_first": [],
+    "genuine_diffs_listed_truncated": false
+   },
+   "boyd_terminal.json": {
+    "n_raw_diffs": 0,
+    "fg_buckets_raw_counts": {
+     "provenance": 0,
+     "aa_new_field": 0,
+     "known_tie_break_alias": 0,
+     "genuine": 0
+    },
+    "n": {
+     "provenance": 0,
+     "tie_order": 0,
+     "genuine": 0
+    },
+    "provenance_diffs": [],
+    "tie_order_diffs": [],
+    "tie_order_row_classes": {},
+    "genuine_diffs_first": [],
+    "genuine_diffs_listed_truncated": false
+   },
+   "component_levels_terminal.json": {
+    "n_raw_diffs": 0,
+    "fg_buckets_raw_counts": {
+     "provenance": 0,
+     "aa_new_field": 0,
+     "known_tie_break_alias": 0,
+     "genuine": 0
+    },
+    "n": {
+     "provenance": 0,
+     "tie_order": 0,
+     "genuine": 0
+    },
+    "provenance_diffs": [],
+    "tie_order_diffs": [],
+    "tie_order_row_classes": {},
+    "genuine_diffs_first": [],
+    "genuine_diffs_listed_truncated": false
+   },
+   "interface_settlement_detail_s31c.json": {
+    "n_raw_diffs": 0,
+    "fg_buckets_raw_counts": {
+     "provenance": 0,
+     "aa_new_field": 0,
+     "known_tie_break_alias": 0,
+     "genuine": 0
+    },
+    "n": {
+     "provenance": 0,
+     "tie_order": 0,
+     "genuine": 0
+    },
+    "provenance_diffs": [],
+    "tie_order_diffs": [],
+    "tie_order_row_classes": {},
+    "genuine_diffs_first": [],
+    "genuine_diffs_listed_truncated": false
+   },
+   "interface_voltage_terminal.json": {
+    "n_raw_diffs": 0,
+    "fg_buckets_raw_counts": {
+     "provenance": 0,
+     "aa_new_field": 0,
+     "known_tie_break_alias": 0,
+     "genuine": 0
+    },
+    "n": {
+     "provenance": 0,
+     "tie_order": 0,
+     "genuine": 0
+    },
+    "provenance_diffs": [],
+    "tie_order_diffs": [],
+    "tie_order_row_classes": {},
+    "genuine_diffs_first": [],
+    "genuine_diffs_listed_truncated": false
+   },
+   "recourse_jump_sidecar_baseline.jsonl": {
+    "n_raw_diffs": 0,
+    "fg_buckets_raw_counts": {
+     "provenance": 0,
+     "aa_new_field": 0,
+     "known_tie_break_alias": 0,
+     "genuine": 0
+    },
+    "n": {
+     "provenance": 0,
+     "tie_order": 0,
+     "genuine": 0
+    },
+    "provenance_diffs": [],
+    "tie_order_diffs": [],
+    "tie_order_row_classes": {},
+    "genuine_diffs_first": [],
+    "genuine_diffs_listed_truncated": false,
+    "n_rows": {
+     "on": 2,
+     "off": 2
+    }
+   },
+   "ess_entry_stride_baseline.jsonl": {
+    "n_raw_diffs": 0,
+    "fg_buckets_raw_counts": {
+     "provenance": 0,
+     "aa_new_field": 0,
+     "known_tie_break_alias": 0,
+     "genuine": 0
+    },
+    "n": {
+     "provenance": 0,
+     "tie_order": 0,
+     "genuine": 0
+    },
+    "provenance_diffs": [],
+    "tie_order_diffs": [],
+    "tie_order_row_classes": {},
+    "genuine_diffs_first": [],
+    "genuine_diffs_listed_truncated": false,
+    "n_rows": {
+     "on": 2,
+     "off": 2
+    }
+   },
+   "soh_floor_sidecar_baseline.jsonl": {
+    "n_raw_diffs": 0,
+    "fg_buckets_raw_counts": {
+     "provenance": 0,
+     "aa_new_field": 0,
+     "known_tie_break_alias": 0,
+     "genuine": 0
+    },
+    "n": {
+     "provenance": 0,
+     "tie_order": 0,
+     "genuine": 0
+    },
+    "provenance_diffs": [],
+    "tie_order_diffs": [],
+    "tie_order_row_classes": {},
+    "genuine_diffs_first": [],
+    "genuine_diffs_listed_truncated": false,
+    "n_rows": {
+     "on": 2,
+     "off": 2
+    }
+   },
+   "pf_entry_stride_s39_D.jsonl": {
+    "n_raw_diffs": 0,
+    "fg_buckets_raw_counts": {
+     "provenance": 0,
+     "aa_new_field": 0,
+     "known_tie_break_alias": 0,
+     "genuine": 0
+    },
+    "n": {
+     "provenance": 0,
+     "tie_order": 0,
+     "genuine": 0
+    },
+    "provenance_diffs": [],
+    "tie_order_diffs": [],
+    "tie_order_row_classes": {},
+    "genuine_diffs_first": [],
+    "genuine_diffs_listed_truncated": false,
+    "n_rows": {
+     "on": 2,
+     "off": 2
+    }
+   },
+   "ess_exempt_until_state_s39_D.jsonl": {
+    "n_raw_diffs": 0,
+    "fg_buckets_raw_counts": {
+     "provenance": 0,
+     "aa_new_field": 0,
+     "known_tie_break_alias": 0,
+     "genuine": 0
+    },
+    "n": {
+     "provenance": 0,
+     "tie_order": 0,
+     "genuine": 0
+    },
+    "provenance_diffs": [],
+    "tie_order_diffs": [],
+    "tie_order_row_classes": {},
+    "genuine_diffs_first": [],
+    "genuine_diffs_listed_truncated": false,
+    "n_rows": {
+     "on": 2,
+     "off": 2
+    }
+   },
+   "aa_per_cycle.jsonl": {
+    "n_raw_diffs": 0,
+    "fg_buckets_raw_counts": {
+     "provenance": 0,
+     "aa_new_field": 0,
+     "known_tie_break_alias": 0,
+     "genuine": 0
+    },
+    "n": {
+     "provenance": 0,
+     "tie_order": 0,
+     "genuine": 0
+    },
+    "provenance_diffs": [],
+    "tie_order_diffs": [],
+    "tie_order_row_classes": {},
+    "genuine_diffs_first": [],
+    "genuine_diffs_listed_truncated": false,
+    "n_rows": {
+     "on": 2,
+     "off": 2
+    }
+   },
+   "per_cycle_record.jsonl": {
+    "n_raw_diffs": 0,
+    "fg_buckets_raw_counts": {
+     "provenance": 0,
+     "aa_new_field": 0,
+     "known_tie_break_alias": 0,
+     "genuine": 0
+    },
+    "n": {
+     "provenance": 0,
+     "tie_order": 0,
+     "genuine": 0
+    },
+    "provenance_diffs": [],
+    "tie_order_diffs": [],
+    "tie_order_row_classes": {},
+    "genuine_diffs_first": [],
+    "genuine_diffs_listed_truncated": false,
+    "n_rows": {
+     "on": 2,
+     "off": 2
+    }
+   }
+  },
+  "totals_by_class": {
+   "provenance": 6,
+   "tie_order": 0,
+   "genuine": 0
+  },
+  "all_files_present": true,
+  "supplementary_not_gating": {
+   "leak_classification_s39_D.jsonl": {
+    "n_rows": {
+     "on": 9,
+     "off": 9
+    },
+    "n_raw_diffs": 0,
+    "n_diffs_ignoring_path_like_keys": 0,
+    "path_like_keys_ignored_in_that_count": [
+     "log_path",
+     "primary_log",
+     "recovery_log",
+     "tier2_log",
+     "path",
+     "mtime_utc"
+    ],
+    "first_diffs_ignoring_path_like_keys": []
+   },
+   "network_failures_s39_D.jsonl": {
+    "n_rows": {
+     "on": 0,
+     "off": 0
+    },
+    "n_raw_diffs": 0,
+    "n_diffs_ignoring_path_like_keys": 0,
+    "path_like_keys_ignored_in_that_count": [
+     "log_path",
+     "primary_log",
+     "recovery_log",
+     "tier2_log",
+     "path",
+     "mtime_utc"
+    ],
+    "first_diffs_ignoring_path_like_keys": []
+   },
+   "esso_recovery_events_s39_D.jsonl": {
+    "n_rows": {
+     "on": 0,
+     "off": 0
+    },
+    "n_raw_diffs": 0,
+    "n_diffs_ignoring_path_like_keys": 0,
+    "path_like_keys_ignored_in_that_count": [
+     "log_path",
+     "primary_log",
+     "recovery_log",
+     "tier2_log",
+     "path",
+     "mtime_utc"
+    ],
+    "first_diffs_ignoring_path_like_keys": []
+   },
+   "frozen_snapshots_s39_D.jsonl": {
+    "n_rows": {
+     "on": 0,
+     "off": 0
+    },
+    "n_raw_diffs": 0,
+    "n_diffs_ignoring_path_like_keys": 0,
+    "path_like_keys_ignored_in_that_count": [
+     "log_path",
+     "primary_log",
+     "recovery_log",
+     "tier2_log",
+     "path",
+     "mtime_utc"
+    ],
+    "first_diffs_ignoring_path_like_keys": []
+   }
+  },
+  "not_compared": {
+   "esso_models_s39_D.pkl": "binary pickle; its size is compared via the report field esso_models_pickle.bytes; sha256 recorded (informational)",
+   "esso_capture/, results/, logs": "per-arm working files and logs (absolute paths by construction); hash-recorded in manifest_sha256.json"
+  },
+  "esso_models_pickle_sha256_informational": {
+   "on": "dbb9ea74192bff17b55cc705f1cd55994a1ee4b09757f38d1398e53df52cdddc",
+   "off": "941f950d8e60954d234257c41d9e515e01406fe7f0a886ecbc6b4cd5af018d0c",
+   "sha256_equal": false
+  }
+ },
+ "trajectory_field_table": {
+  "field_list_source": "p515_s44_campaign_harness.RECORD_TRAJECTORY_FIELDS (BY IMPORT)",
+  "n_fields": 29,
+  "n_rows_on": 2,
+  "n_rows_off": 2,
+  "rows_length_equal": true,
+  "total_mismatches": 0,
+  "fields_with_mismatch": [],
+  "per_field": {
+   "boyd_all_pass": {
+    "n_compared": 2,
+    "n_mismatch": 0,
+    "mismatches": []
+   },
+   "boyd_ess_channel_pass": {
+    "n_compared": 2,
+    "n_mismatch": 0,
+    "mismatches": []
+   },
+   "boyd_ess_dual_ratio": {
+    "n_compared": 2,
+    "n_mismatch": 0,
+    "mismatches": []
+   },
+   "boyd_ess_primal_ratio": {
+    "n_compared": 2,
+    "n_mismatch": 0,
+    "mismatches": []
+   },
+   "boyd_pf_channel_pass": {
+    "n_compared": 2,
+    "n_mismatch": 0,
+    "mismatches": []
+   },
+   "boyd_pf_dual_ratio": {
+    "n_compared": 2,
+    "n_mismatch": 0,
+    "mismatches": []
+   },
+   "boyd_pf_primal_ratio": {
+    "n_compared": 2,
+    "n_mismatch": 0,
+    "mismatches": []
+   },
+   "boyd_stop": {
+    "n_compared": 2,
+    "n_mismatch": 0,
+    "mismatches": []
+   },
+   "boyd_v_channel_pass": {
+    "n_compared": 2,
+    "n_mismatch": 0,
+    "mismatches": []
+   },
+   "boyd_v_dual_ratio": {
+    "n_compared": 2,
+    "n_mismatch": 0,
+    "mismatches": []
+   },
+   "boyd_v_primal_ratio": {
+    "n_compared": 2,
+    "n_mismatch": 0,
+    "mismatches": []
+   },
+   "consecutive_converged_cycles": {
+    "n_compared": 2,
+    "n_mismatch": 0,
+    "mismatches": []
+   },
+   "cycle": {
+    "n_compared": 2,
+    "n_mismatch": 0,
+    "mismatches": []
+   },
+   "cycle_convergence": {
+    "n_compared": 2,
+    "n_mismatch": 0,
+    "mismatches": []
+   },
+   "efc_per_day_max": {
+    "n_compared": 2,
+    "n_mismatch": 0,
+    "mismatches": []
+   },
+   "gross_operational_cost": {
+    "n_compared": 2,
+    "n_mismatch": 0,
+    "mismatches": []
+   },
+   "local_solves_ok": {
+    "n_compared": 2,
+    "n_mismatch": 0,
+    "mismatches": []
+   },
+   "objective_change_abs": {
+    "n_compared": 2,
+    "n_mismatch": 0,
+    "mismatches": []
+   },
+   "objective_change_ratio": {
+    "n_compared": 2,
+    "n_mismatch": 0,
+    "mismatches": []
+   },
+   "objective_tolerance": {
+    "n_compared": 2,
+    "n_mismatch": 0,
+    "mismatches": []
+   },
+   "recourse": {
+    "n_compared": 2,
+    "n_mismatch": 0,
+    "mismatches": []
+   },
+   "rho_ess_action": {
+    "n_compared": 2,
+    "n_mismatch": 0,
+    "mismatches": []
+   },
+   "rho_ess_after": {
+    "n_compared": 2,
+    "n_mismatch": 0,
+    "mismatches": []
+   },
+   "rho_freeze_active": {
+    "n_compared": 2,
+    "n_mismatch": 0,
+    "mismatches": []
+   },
+   "rho_pf_action": {
+    "n_compared": 2,
+    "n_mismatch": 0,
+    "mismatches": []
+   },
+   "rho_pf_after": {
+    "n_compared": 2,
+    "n_mismatch": 0,
+    "mismatches": []
+   },
+   "rho_v_action": {
+    "n_compared": 2,
+    "n_mismatch": 0,
+    "mismatches": []
+   },
+   "rho_v_after": {
+    "n_compared": 2,
+    "n_mismatch": 0,
+    "mismatches": []
+   },
+   "terminal_salvage_value": {
+    "n_compared": 2,
+    "n_mismatch": 0,
+    "mismatches": []
+   }
+  }
+ },
+ "arm_on_vs_committed_aa_reference_NON_GATING": {
+  "gating": false,
+  "reference_report": "data/SRP1/Results/P515S45/reverify_aa_c_star/evals/3e741dac72c9e1bc_c_star_aa_case_file/g_s39_D.json",
+  "reference_sha256": "7959be12a16a8c8be46fa6209ab581036ec177c9c21a2a47f4e7d9e67ba558be",
+  "reference_campaign": "s45_reverify_aa_c_star (spec 4a214b99), cap 500, certified at cycle 107, gross_operational_cost 650982939.9389359",
+  "reference_cycles_run": 107,
+  "reference_gross_operational_cost": 650982939.9389359,
+  "mode": "truncated: cycle_trajectory[:2] + the rows-derived top-level fields, vs the reference's first 2 committed rows (cycle-count-dependent artifacts -- esso_capture, solve_profile, network_failures_summary, esso_complementarity_diagnostics_by_round, esso_models_pickle -- out of scope)",
+  "n_cycles_compared": 2,
+  "diff_value_naming": "CP._diff names the reference value 'legacy' and arm ON's value 'lightweight'",
+  "n_provenance_diffs": 0,
+  "n_diffs": 0,
+  "reproduces": true,
+  "first_differing_field": null,
+  "first_diffs": [],
+  "caveat": "the reference ran at cap 500 and this arm at cap 2; cap-independence with AA on is UNVERIFIED, so this comparison is reported and not gated"
+ },
+ "gate_items": {
+  "both_arms_ran_two_cycles": true,
+  "snapshot_setting_verified_both_arms": true,
+  "arm_on_clones_and_captures_positive": true,
+  "arm_off_clones_and_captures_exactly_zero": true,
+  "arm_off_wrote_no_pkl_snapshot": true,
+  "all_compared_files_present": true,
+  "zero_genuine_diffs": true,
+  "trajectory_fields_identical": true,
+  "solve_reconciliation_identity_holds": true,
+  "process_guard_verified_exactly": true,
+  "no_solves_outside_the_arms": true,
+  "no_blocked_solver_calls": true,
+  "shared_frozen_smopf_untouched": true
+ },
+ "gate_pass": true,
+ "wall_clock_s": 184.82634687423706
+}

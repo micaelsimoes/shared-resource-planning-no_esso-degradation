@@ -1,0 +1,707 @@
+{
+ "arm_network_compl_inf_tol": 1e-06,
+ "authority": [
+  "PLANNER_BRIEF_2026-09-13.md Addendum 49 (rulings 1-3, consistency convention, resolution, timing)",
+  "PLANNER_BRIEF_2026-09-13.md Addendum 49 clarification 2026-09-26 (tie-breaker roles; lambda_t recovery)",
+  "TASKS.md Addendum 49 order",
+  "Planner task W93",
+  "PLANNER_BRIEF_2026-09-13.md Addendum 53 Ruling 4 (coordinated arm reported only as the settled x = 0 value)",
+  "PLANNER_BRIEF_2026-09-13.md Addendum 54 Ruling 3 (common-Q gate and lambda_t look on the settled cycle-181 x = 0 models; the gate reference is the settled value)",
+  "Planner task W106",
+  "TASKS.md Addendum 54 order (W106)"
+ ],
+ "claim": {
+  "decomposition": [
+   "passive - price_taker",
+   "price_taker - coordinated",
+   "passive - coordinated"
+  ],
+  "definition": "benefit = min(Q_passive, Q_price_taker) - Q_coordinated (Addendum 49 Ruling 1)",
+  "gate_first": "no arm is reported unless the common-Q gate PASSED (Addendum 49 Ruling 3)",
+  "q_arm": "each uncoordinated arm's Q is the MINIMUM over its three starts (cold, warm_from_certified, perturbed); this is CONSERVATIVE AGAINST THE COORDINATION CLAIM: the uncoordinated side gets its best local optimum of three, while the coordinated side is one certified cell (W106: the settled cycle-181 cell d110bd1a5977df1e_x0, not re-run; W94 named the W86 cell 5cfe69a615ae3708_x0, now unwired)",
+  "q_coordinated": "Q181 = 653,873,702.1876609 (settled; not re-run)",
+  "resolution": "claimed only above the larger of the best arm's multimodality band (spread over its three starts) and the coordinated reproducibility band (0.011 %); the Step-5 DSO band is re-read when available (Addendum 49 Resolution)",
+  "verdicts": [
+   "coordination beats the best uncoordinated arrangement",
+   "inside the band",
+   "the best uncoordinated arrangement beats coordination"
+  ]
+ },
+ "code_sha256_binding": {
+  "definitions.py": "7e5719af129df111db1b403feeffe0b566d0b7f2e72915829e16bf143a9321af",
+  "gate_result_io.py": "26cadaa5c3105f9adb879ece756ef6d659b374f647a7756030efe80a2df6d07d",
+  "helper_functions.py": "808c60a08b8e157381f28e0c1da5741b0efd39e35f36dd531f88b84deebce1e2",
+  "interface_dual_capture.py": "e4223ac25fa488970ec195b4c3bb6b1171faa3aeba4824e0d6ee6482ab58f55c",
+  "model_construction_helpers.py": "a20a224f11008de8c0206484583b00253677267d616e1051bb1583791ed47f64",
+  "network.py": "18acaa84af7a043898a7b831223b4eab1d91f9bcf2c199f49beecfeb3bf91fb4",
+  "network_data.py": "2938bc4bd4ecc74f42aa90d347cdc1162eebcefaba15bc87b8281a798d457d6b",
+  "p513_solve_profile_guard.py": "9921682e5b825e0b76551b78c4765bfe039bccc414d727520f2c22b6f192a5ab",
+  "p515_s53_w93_uncoordinated_benchmark.py": "2726a0ac3e01d0de0ed915ba9dbfd23391ac478ae742492bbebe3c64a190ce56",
+  "p515_s53_w93_uncoordinated_benchmark_checks.py": "c34e14301b518bdd814ca356c2809e4003f32d37ecf2d7ce616b3ac5b1d3e43f",
+  "p56a_oracle.py": "699d571a2d69b14fd89024c535fa8b3ffa0625aa647f1714060dcc9cf6fa2f11",
+  "p58_rescale.py": "2c9d4f2a7125d4103da0d9cc7bba6d600bf97a3f03805d32955738d71b537cf0",
+  "shared_energy_storage_data.py": "9acd095fb5e50e9b64c253600ae05ebb8e6463fd7a999d3a90f96ee82f037796",
+  "shared_resources_planning.py": "0610d745a41c86c71dae9e776f0dc8e38c7099f73128a3d2c2e8f861ab9fc9c0",
+  "uncoordinated_benchmark.py": "fd80c93e5b0df9a39c2583e1b6b53df179af7b229276d29fb3611b1c3680360e"
+ },
+ "code_sha256_binding_rule": "every benchmark stage refuses unless each listed file on disk has exactly this sha256 (p515_s53_w93_uncoordinated_benchmark.frozen_spec_binding_failures)",
+ "code_sha256_informational": {
+  "gate_result_bool_typing_historical.json": {
+   "disk": "5230b3fa67e35c2603afdbd5fe5cc3c63e66c87ea23c4a90c7d99f65794bc05f",
+   "head": "5230b3fa67e35c2603afdbd5fe5cc3c63e66c87ea23c4a90c7d99f65794bc05f",
+   "working_tree_differs_from_head": false
+  },
+  "p515_gate_result_bool_typing_test.py": {
+   "disk": "dbd6f92b772a5816ab929cef66e7132aaec0adc96c6ac55bc6ec0bf651652e76",
+   "head": "dbd6f92b772a5816ab929cef66e7132aaec0adc96c6ac55bc6ec0bf651652e76",
+   "working_tree_differs_from_head": false
+  },
+  "p515_s44_campaign_harness.py": {
+   "disk": "68a9265afe71d374a3058cee24ad1d614d71c6d10d5c4cb69bfc32cd78637b82",
+   "head": "3ad624cd74f9a832037d20d2480adb9b03d559aee1c5d9675dc8aeb6c3b9d8a2",
+   "working_tree_differs_from_head": true
+  },
+  "p515_s53_w106_benchmark_repoint.py": {
+   "disk": "43a46b115fa128bb652260e9429b6ff2ba7994d1b10e427e11d34b0492c791fa",
+   "head": "43a46b115fa128bb652260e9429b6ff2ba7994d1b10e427e11d34b0492c791fa",
+   "working_tree_differs_from_head": false
+  },
+  "settling_criterion.py": {
+   "disk": "fbe5550b34a4062feed82476e1959b5e4e2786cb13ca61728bfa1803ba75f65f",
+   "head": "fbe5550b34a4062feed82476e1959b5e4e2786cb13ca61728bfa1803ba75f65f",
+   "working_tree_differs_from_head": false
+  }
+ },
+ "consistency_convention": "Addendum 49: TN voltages bounded; each DN re-evaluated at the TN's actual interface voltage with the DSO decisions fixed (phase B, 36 solves per arm run); max |dV| at nodes 5/7/9 per hour and any DN violation reported; one sequential pass (48 solves) defines the arm cost if a DN limit is violated",
+ "coordinated": {
+  "campaign_manifest": {
+   "path": "data/SRP1/Results/P515S53/w101_srp1_continuation/campaign_s53_w101_srp1_cont_x0/campaign_manifest_sha256.json",
+   "sha256": "284d5bd50273e9aa20d4527d3c263ef6281a107695c109913ce20afcce1f6265"
+  },
+  "campaign_spec_sha256": "d1d5c3bcbdc261d297282382ce4a54263a811059d17230613a1765ee915ebd33",
+  "cell": "d110bd1a5977df1e_x0",
+  "certified_models": {
+   "path": "data/SRP1/Results/P515S53/w101_srp1_continuation/campaign_s53_w101_srp1_cont_x0/evals/d110bd1a5977df1e_x0/certified_models.pkl",
+   "sha256": "99ab1070b0e61cc7818975ce898069d2060d2668bae67c166b58913e9923c33a"
+  },
+  "esso_models": {
+   "path": "data/SRP1/Results/P515S53/w101_srp1_continuation/campaign_s53_w101_srp1_cont_x0/evals/d110bd1a5977df1e_x0/esso_models_s39_D.pkl",
+   "sha256": "118487e1853bbad176f324b1173df8c4198cb6c7709c25d7dce9f94ce4c199fa"
+  },
+  "eval_key": "d110bd1a5977df1e811a1b3963afc565de6daa65f76dcc096ead3fdc70b08546",
+  "evaluation_record": {
+   "path": "data/SRP1/Results/P515S53/w101_srp1_continuation/campaign_s53_w101_srp1_cont_x0/evals/d110bd1a5977df1e_x0/evaluation_record.json",
+   "sha256": "c08fa4335c7e266d6d61439fe36d28d56cc7ead31b4956d0f2c6d1fe2b0e8956"
+  },
+  "evidence_commit": "e4b5c9928d96b413c77039c377e5f7a82a6549f5",
+  "interface_duals": {
+   "path": "data/SRP1/Results/P515S53/w101_srp1_continuation/campaign_s53_w101_srp1_cont_x0/evals/d110bd1a5977df1e_x0/interface_duals_per_cycle.jsonl",
+   "sha256": "10c986c79eebe9e6d84bbd9c3978b802b2760c00399cb427125a0b797b41e8cb"
+  },
+  "not_re_run": "the coordinated arm is the settled cell, reported as its settled value (Addendum 53 Ruling 4)",
+  "pf_entry_stride": {
+   "path": "data/SRP1/Results/P515S53/w101_srp1_continuation/campaign_s53_w101_srp1_cont_x0/evals/d110bd1a5977df1e_x0/pf_entry_stride_s39_D.jsonl",
+   "sha256": "f71147584175a42f7c503e905e8e519841424b5a89bf33724dfce753769f498a"
+  },
+  "previous_reference_reported_only": {
+   "cell": "W86 5cfe69a615ae3708_x0 (campaign s53_w86_tail_recert, spec ddd6cd44) -- UNWIRED",
+   "certification_cycle": 132,
+   "certified_gross": 653858731.5686293,
+   "res_curtailment_definitional_at_weight_1": 589.1778397145646,
+   "source": "committed W86 evaluation_record.json (certified_cost; component_decomposition_totals_weighted.res_curtailment_definitional_at_weight_1)"
+  },
+  "reference_q": {
+   "certification_cycle": 181,
+   "certification_rule": "settling criterion of stage spec v39 (Boyd residuals + three turning points, swings not growing, one-period range <= tau = 4,539.07 EUR); branch oscillatory; band width 4,209.17",
+   "hex": "0x1.37ca913180546p+29",
+   "source": "settling_decision.json Q_k_star; equal (bitwise, checked) to evaluation_record certified_cost, recourse_components.gross_operational_cost and post_certification certified_cost",
+   "value": 653873702.1876609
+  },
+  "reproducibility_band_eur": 71926.10724064271,
+  "reproducibility_band_rel": 0.00011,
+  "res_curtailment_definitional_at_weight_1": 589.425936658749,
+  "settling_decision": {
+   "path": "data/SRP1/Results/P515S53/w101_srp1_continuation/campaign_s53_w101_srp1_cont_x0/evals/d110bd1a5977df1e_x0/settling_decision.json",
+   "sha256": "6c559f2fc39a79dcd54e9339541fb09b599f87689c26a489a8e7e77b17e80be6"
+  },
+  "stage_spec": {
+   "path": "data/SRP1/Results/P515S53/frozen_s53_spec_v39_8a612429.json",
+   "version": 39
+  }
+ },
+ "curtailment_reporting": "author requirement (TASKS.md Addendum 49): curtailed energy per arm and start beside the coordinated figure on the SAME weighting -- EUR at 1 EUR/MWh, block-weighted (years x days x discount) -- with raw MWh (day-weighted and per representative day) alongside; coordinated: 589.425936658749 at cycle 181 (record) and recomputed from the models by the gate; 589.1778397145646 at cycle 132 (W86) reported beside it",
+ "declared_choices_status": "W93 declared for the Planner to confirm: arm network compl_inf_tol 1e-6, perturbation seed 20260926 / delta 0.05, lambda != pi tolerance 0.05 EUR/MWh. No confirmation found in PLANNER_BRIEF_2026-09-13.md, TASKS.md or REVISION_CONTEXT.md (searched for W93, 20260926, compl_inf_tol); frozen here as declared",
+ "frozen_utc": "2026-09-28T09:44:35.970716+00:00",
+ "git_head": "64a1a18247be68567d60c600773fb74d05992c3d",
+ "instance": {
+  "candidate": {
+   "5": [
+    0.0,
+    0.0
+   ],
+   "7": [
+    0.0,
+    0.0
+   ],
+   "9": [
+    0.0,
+    0.0
+   ]
+  },
+  "candidate_key": "8435c71859ddde68e7ae5818b4ff91c03b4171791bcfaa70edcc3ddb52bacb57",
+  "investment_year": 2025,
+  "label": "x0",
+  "problem": "SRP1"
+ },
+ "lambda_t": {
+  "channel_scaling": {
+   "accepted_by": "Planner, task W94 (correction to the Addendum 49 clarification wording)",
+   "addendum_49_wording": "undo sigma, S_ref, D5 when converting lambda_t to EUR/MWh",
+   "correction": "on the interface-P channel only sigma (through admm_objective_scale = sigma / block weight) and the interface rating apply; S_ref (shared_ess_reference_rating_mva) and D5 (the ESSO AL scale, al_scale_esso) act ONLY on the shared-ESS channel and are therefore not undone",
+   "source": {
+    "at_commit": "a8c58da0",
+    "d5": "update_shared_energy_storage_model_to_admm L5486 (admm_esso_al_scale = al_scale_esso) and L5515-5518 (multiplies ONLY the ESSO AL terms); al_scale_esso is never passed to the TSO/DSO updates",
+    "file": "shared_resources_planning.py",
+    "implemented_in": "uncoordinated_benchmark.interface_price_terms (docstring carries the same citation)",
+    "rating_dso": "update_distribution_models_to_admm L5428-5429 (same as TSO)",
+    "rating_tso": "update_transmission_model_to_admm L5156-5157: constraint_p_req/q_req = (E - z) / interface_transf_rating",
+    "sigma_dso": "update_distribution_models_to_admm L5402-5407 (same as TSO)",
+    "sigma_tso": "update_transmission_model_to_admm L5137-5142: effective_scale = objective_scale / block_weight; obj = copy(objective.expr) / effective_scale",
+    "sref_dso": "update_distribution_models_to_admm L5410-5415: only in shared_ess_rating (ESS channel)",
+    "sref_tso": "update_transmission_model_to_admm L5179: _admm_shared_ess_reference_mva(params) only in the shared-ESS loop (shared_ess_rating)"
+   }
+  },
+  "prediction_usable_rule": "units check (S48: W28/W31 reproduced) AND identities on the settled models AND the sidecar cross-check; the units check runs first",
+  "sidecar_rule": "interface_dual_capture: the sidecar row of cycle n holds dual_vars['pf'][agent]['current'] after cycle n's dual updates and before the AA step; 'The dual_vars value is the model Param dual_pf_p_req of the NEXT cycle's solve'. The persisted models are the cycle-k* models, so their Param = sidecar row k*-1 / s_base, bitwise (AA not accepted at k*-1 or k*: aa_per_cycle.jsonl). Row k* is the dual AFTER the last update = one dual step past the Param: converted by the same interface-P scaling (sigma via admm_objective_scale, the interface rating, B) it is the lambda_t the next cycle would price at, compared with the Param-derived lambda_dso_full (the Param plus the current AL gradient term) within the consensus tolerance",
+  "sources": [
+   "consensus-dual Param dual_pf_p_req in the settled persisted models (DSO and TSO)",
+   "TN interface-bus power-balance dual (TSO dual suffix)",
+   "lambda_t sidecar interface_duals_per_cycle.jsonl rows 180 and 181 (committed in e4b5c992) -- third source, new in W106",
+   "DN reference-bus dual (y0) and the pf-stride capture (informational, as in W93)"
+  ]
+ },
+ "launch_rules": "one stage at a time, attached, alone, both streams to a NEW log (noclobber); never detached; the order above; run after the C* extension (TASKS.md Addendum 54 order); each stage refuses while a campaign / G1-G4 gate / other p515_s53_* process or lock is live",
+ "not_permitted": [
+  "running any benchmark stage before the C* extension (TASKS.md Addendum 54 order)",
+  "any production-file change",
+  "any change to the formulation or to the Addendum 49 definitions"
+ ],
+ "objective_convention": "Q = gross_operational_cost, settlement EXCLUDED (production _get_operational_recourse_components); evaluation tie-breaker 0 in every arm; salvage reported separately",
+ "perturbation": {
+  "delta": 0.05,
+  "seed": 20260926
+ },
+ "predecessor": null,
+ "predecessor_note": "first frozen benchmark spec: W93/W94 carried the configuration in the harness only (a8c58da0, b9ba413d; writers migrated in ed5ba42a); nothing ran under them",
+ "predictions_recorded_before_any_run": {
+  "arm_band": "no quantitative arm-band expectation is recorded in Addendum 49, TASKS.md or W93/W94 (searched: PLANNER_BRIEF_2026-09-13.md Addendum 49, TASKS.md Addendum 49 order, the W93/W94 commit messages and harness docstrings). Restated against the settled models: each arm's band is the spread of its three starts; a difference is claimed only above max(arm band, the coordinated reproducibility band 0.011 % x Q181 = 71,926.11 EUR); the C3-era DSO multimodality ~0.3 % is context only (\"not used as a number\", Addendum 49 Resolution). The settled cell's settling band width (4,209.17 EUR) is far inside the 0.011 % band and does not change the larger band",
+  "common_q_gate": "PASS_BITWISE: evaluate_common_q at tie-breaker 0 on the settled models returns gross_operational_cost == 653,873,702.1876609 (hex 0x1.37ca913180546p+29) -- the W93 design reproduces production's own _get_operational_recourse_components on the models it was computed from; the gate can discriminate tie-breaker 0 from 1 because the settled cell curtails (589.43 EUR at weight 1 > 0), and the repriced difference equals the priced curtailment to 1e-5 EUR",
+  "coordinated_curtailment": "the settled cycle-181 figure is 589.425936658749 (record); recomputed from the persisted models by the gate it matches the record; 589.1778397145646 at cycle 132 (W86) -- both reported",
+  "lambda_t_sidecar_third_source": "row 180 / s_base equals the persisted Params BITWISE on both sides (interface_dual_capture: the sidecar value is the Param of the NEXT cycle's solve; AA not accepted at 180/181). Row 181 lambda_dso in EUR/MWh agrees with the Param-derived lambda_dso_full within 0.05 EUR/MWh; it differs from lambda_dso_full only through the TSO interface step of cycle 181 (the DSO solves before the TSO within a cycle, so the DSO AL term used the cycle-180 TSO value while the dual update uses the cycle-181 one), hence expected well inside the tolerance at a settled point (pf primal residual 6.4e-6 at 181)",
+  "lambda_t_vs_pi_t_addendum_49": {
+   "competing_advisor": "the Advisor's \"inside the band\" expectation (Addendum 49 Ruling 1; TASKS.md Addendum 49 order): at SRP1, coordination proper -- min(passive, price-taker) - coordinated -- is inside the larger band, i.e. not determinate. Recovered as quoted in the brief and TASKS.md; the Advisor's original note is not in the repository (searched: *.md at the root, the W93 commit a8c58da0 message and docstrings)",
+   "framing": "Addendum 49 Ruling 1: coordination proper is the value of pricing DN flexibility at lambda_t rather than at the wholesale price; it lives where lambda_t != pi_t -- congested or voltage-constrained interfaces, and RES-covered hours (Addendum 32 mechanism: the TN marginal cost is conventional at zero there). From the settled cycle-181 x = 0 cell, lambda_t (interface-P consensus dual, converted to EUR/MWh with sigma and the interface rating only) is tabulated against pi_t per node and hour; the hours with |lambda_t - pi_t| > 0.05 EUR/MWh AND c_flex < pi_t bound coordination proper from above. That table, produced by the lambda-look stage, IS the prediction and is recorded before any arm runs; it is usable only if prediction_usable",
+   "sign_note": "the sign of passive - price-taker is not guaranteed: where lambda_t < pi_t (RES-covered hours) a price-taker activates downward flexibility the system does not need and its cost can exceed the passive arm's -- a finding (a misaligned tariff is worse than passivity), not an error (Addendum 49 Ruling 1)"
+  },
+  "recorded_before_any_run": true,
+  "restated_from_w93_w94": {
+   "coupling_check_pin_feasible_by_construction": "the fixed side's V targets come from the settled coordinated point, where the TN held those voltages at buses 5/7/9 (W94, restated for cycle 181)",
+   "coupling_check_role": "reported, not gating: it decides whether the 9e10 scaling hazard was live",
+   "passive_tie_breaker_value_independence": "re-solving passive at 0.1 and 10 EUR/MWh leaves the interface schedule within solver tolerance of the 1 EUR/MWh run; any residual is the non-unique distribution of curtailment among units (Addendum 49 clarification)",
+   "q_min_over_starts": "each uncoordinated arm's Q is the MINIMUM over its three starts (cold, warm_from_certified, perturbed); this is CONSERVATIVE AGAINST THE COORDINATION CLAIM: the uncoordinated side gets its best local optimum of three, while the coordinated side is one certified cell (W106: the settled cycle-181 cell d110bd1a5977df1e_x0, not re-run; W94 named the W86 cell 5cfe69a615ae3708_x0, now unwired)",
+   "w93_checks_srp1_solves": "re-evaluation of one settled DSO block at its own voltage triggers nothing; one fixed-interface TSO block at the settled DSO schedule solves with interface residual <= 1e-6 MW (W93 checks, group srp1-solves, not part of the order)"
+  },
+  "units_check": "the S48 units check reproduces W28's LMP7 and W31's per-hour lmp / y0 / pi to 1e-9 EUR/MWh and lambda_E to 1e-3 (Addendum 32: bus-7 marginal cost = DSO flexibility shadow price) -- unchanged from W93 (the S48 models are not re-pointed); the Param-vs-dual identities hold on the settled models to 1e-3 (KKT) and DSO vs TSO lambda within 0.05"
+ },
+ "preparation_command": "mkdir -p data/SRP1/Results/P515S53/w106_uncoordinated_settled/launch_logs",
+ "repointed_inputs": [
+  {
+   "now": "settled d110bd1a5977df1e_x0, cycle 181, Q181, 99ab1070 / 118487e1; w106_uncoordinated_settled",
+   "was": "W86 cell 5cfe69a615ae3708_x0, cycle 132, 653,858,731.5686293, d816bb4b / 15f38409; w93_uncoordinated",
+   "where": "p515_s53_w93_uncoordinated_benchmark.py module docstring (INSTANCE / COORDINATED ARM; stages 1, 2; commands; OUTPUT)"
+  },
+  {
+   "now": "w106_uncoordinated_settled (old kept as _W93_OUT_ROOT_REL, unwired)",
+   "was": "w93_uncoordinated",
+   "where": "p515_s53_w93_uncoordinated_benchmark.py OUT_ROOT_REL"
+  },
+  {
+   "now": "p515s53w106_ (old kept as _W93_EVAL_ID_PREFIX, unwired)",
+   "was": "p515s53w93_",
+   "where": "p515_s53_w93_uncoordinated_benchmark.py EVAL_ID_PREFIX (IPOPT log dirs)"
+  },
+  {
+   "now": "UNWIRED, RETAINED; COORDINATED = SETTLED carries every input",
+   "was": "the coordinated cell",
+   "where": "p515_s53_w93_uncoordinated_benchmark.py W86 / _W86_EVAL constants (eval key 5cfe69a6, spec ddd6cd44, certified_models d816bb4b, esso 15f38409, pf_entry_stride 38631ea3, certified_gross 653858731.5686293, cycle 132)"
+  },
+  {
+   "now": "COORDINATED (+ previous, reported)",
+   "was": "W86",
+   "where": "p515_s53_w93_uncoordinated_benchmark.py provenance() coordinated_cell"
+  },
+  {
+   "now": "coordinated_* entries on the settled record, child AND campaign manifest, settling_decision Q_k*, sidecar sha, evidence-commit blob",
+   "was": "W86 record / child manifest",
+   "where": "p515_s53_w93_uncoordinated_benchmark.py common_capture_checklist (w86_* entries: record, manifest, post_certification, shas)"
+  },
+  {
+   "now": "'coordinated'",
+   "was": "'w86'",
+   "where": "p515_s53_w93_uncoordinated_benchmark.py _model_capture_checks prefix"
+  },
+  {
+   "now": "COORDINATED['pf_entry_stride'] (f7114758), cycle 181",
+   "was": "W86['pf_entry_stride'] (38631ea3), cycle 132",
+   "where": "p515_s53_w93_uncoordinated_benchmark.py pf_capture_cross_check"
+  },
+  {
+   "now": "settled models; *_coordinated keys; + lambda_sidecar_cross_check (third source, new)",
+   "was": "W86 models; identities_w86, pf_capture_cross_check_w86, summary_w86, coordination_proper_hours_w86, table_w86",
+   "where": "p515_s53_w93_uncoordinated_benchmark.py stage_lambda_look (models + output keys *_w86)"
+  },
+  {
+   "now": "UNWIRED, RETAINED; _load_coordinated_models",
+   "was": "called by the common-Q gate and the W93 checks",
+   "where": "p515_s53_w93_uncoordinated_benchmark.py _load_w86_models"
+  },
+  {
+   "now": "settled record recourse_components; reference_q = Q181 from settling_decision, bitwise-compared",
+   "was": "W86 record recourse_components (Q132)",
+   "where": "p515_s53_w93_uncoordinated_benchmark.py stage_common_q_gate (record + models; reference Q)"
+  },
+  {
+   "now": "settled models",
+   "was": "W86 models",
+   "where": "p515_s53_w93_uncoordinated_benchmark.py stage_tso_coupling_check (reference structure; targets incl. the V pin)"
+  },
+  {
+   "now": "settled models + ESSO",
+   "was": "W86 models + W86 ESSO",
+   "where": "p515_s53_w93_uncoordinated_benchmark.py stage_arm (reference structure; warm-from-certified values; perturbed start base; coordinated schedule; ESSO salvage)"
+  },
+  {
+   "now": "Q181; + curtailment table and report capture check",
+   "was": "W86['certified_gross'] (Q132)",
+   "where": "p515_s53_w93_uncoordinated_benchmark.py stage_report (q_coord; coordinated source; lambda summary key)"
+  },
+  {
+   "now": "names the settled cell",
+   "was": "names W86 5cfe69a615ae3708_x0",
+   "where": "p515_s53_w93_uncoordinated_benchmark.py Q_MIN_OVER_STARTS_NOTE"
+  },
+  {
+   "now": "settled; w106_uncoordinated_settled",
+   "was": "W86; w93_uncoordinated",
+   "where": "p515_s53_w93_uncoordinated_benchmark_checks.py docstring (srp1-zero; commands; output path)"
+  },
+  {
+   "now": "BENCH.COORDINATED['certified_gross'] (Q181)",
+   "was": "653858731.5686293 (Q132)",
+   "where": "p515_s53_w93_uncoordinated_benchmark_checks.py unit_common_q_gate_bitwise literal"
+  },
+  {
+   "now": "BENCH.COORDINATED['evaluation_record'], BENCH._load_coordinated_models()",
+   "was": "BENCH.W86['evaluation_record'], BENCH._load_w86_models()",
+   "where": "p515_s53_w93_uncoordinated_benchmark_checks.py srp1_zero_checks / srp1_solve_checks"
+  },
+  {
+   "now": "unchanged",
+   "was": "no cell constant (models are arguments)",
+   "where": "uncoordinated_benchmark.py (production module)"
+  },
+  {
+   "now": "589.425936658749 (settled record, cycle 181); the 132 figure reported beside it",
+   "was": "589.1778397145646 (W86 record, cycle 132)",
+   "where": "coordinated curtailment figure"
+  }
+ ],
+ "report_capture_paths": {
+  "arm_consistency_max_abs_dv": {
+   "key_path": [
+    "phase_B_consistency",
+    "max_abs_dv_dn_pu"
+   ],
+   "stage_output": "arm_*"
+  },
+  "arm_consistency_trigger": {
+   "key_path": [
+    "phase_B_consistency",
+    "reevaluation",
+    "trigger_sequential_pass"
+   ],
+   "stage_output": "arm_*"
+  },
+  "arm_cost": {
+   "key_path": [
+    "arm_cost",
+    "gross_operational_cost"
+   ],
+   "stage_output": "arm_*"
+  },
+  "arm_curtailment_totals": {
+   "key_path": [
+    "phase_A",
+    "evaluation",
+    "curtailment",
+    "totals"
+   ],
+   "stage_output": "arm_*"
+  },
+  "common_q_gate_status": {
+   "key_path": [
+    "status"
+   ],
+   "stage_output": "common_q_gate"
+  },
+  "common_q_reference_q181": {
+   "key_path": [
+    "gate",
+    "gross_certified"
+   ],
+   "stage_output": "common_q_gate"
+  },
+  "coordinated_curtailment_recomputed": {
+   "key_path": [
+    "evaluation_at_0",
+    "curtailment",
+    "totals"
+   ],
+   "stage_output": "common_q_gate"
+  },
+  "coordinated_curtailment_record": {
+   "key_path": [
+    "negative_controls",
+    "certified_record_res_curtailment_definitional_at_weight_1"
+   ],
+   "stage_output": "common_q_gate"
+  },
+  "coupling_check_solve_summary": {
+   "key_path": [
+    "solve_summary"
+   ],
+   "stage_output": "tso_coupling_check"
+  },
+  "coupling_check_tn_cost_totals": {
+   "key_path": [
+    "tn_cost_weighted_totals"
+   ],
+   "stage_output": "tso_coupling_check"
+  },
+  "lambda_t_identities_coordinated": {
+   "key_path": [
+    "identities_coordinated",
+    "passed"
+   ],
+   "stage_output": "lambda_look"
+  },
+  "lambda_t_prediction_usable": {
+   "key_path": [
+    "prediction_usable"
+   ],
+   "stage_output": "lambda_look"
+  },
+  "lambda_t_sidecar_cross_check": {
+   "key_path": [
+    "lambda_sidecar_cross_check",
+    "passed"
+   ],
+   "stage_output": "lambda_look"
+  },
+  "lambda_t_units_check_s48": {
+   "key_path": [
+    "units_check_s48",
+    "passed"
+   ],
+   "stage_output": "lambda_look"
+  },
+  "lambda_t_vs_pi_t_summary": {
+   "key_path": [
+    "summary_coordinated"
+   ],
+   "stage_output": "lambda_look"
+  },
+  "variant_cost": {
+   "key_path": [
+    "arm_cost",
+    "gross_operational_cost"
+   ],
+   "stage_output": "passive_tie_breaker_*"
+  },
+  "variant_curtailment_totals": {
+   "key_path": [
+    "phase_A",
+    "evaluation",
+    "curtailment",
+    "totals"
+   ],
+   "stage_output": "passive_tie_breaker_*"
+  },
+  "variant_dso_interface_schedule": {
+   "key_path": [
+    "phase_A",
+    "dso_interface_schedule"
+   ],
+   "stage_output": "passive_tie_breaker_*"
+  }
+ },
+ "schema": "frozen_s53_benchmark_spec/v1",
+ "solve_counts": {
+  "per_stage_exact": "each stage verifies its own declared count EXACTLY (too few fails)",
+  "total_declared": 624,
+  "total_if_every_arm_triggers_the_sequential_pass": 912
+ },
+ "stage": "P5.15 Addendum 54 Ruling 3 (W106): SRP1 uncoordinated benchmark on the settled cycle-181 x = 0 models",
+ "stages_in_addendum_49_order": [
+  {
+   "command": "set -o noclobber && /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python -u p515_s53_w93_uncoordinated_benchmark.py --stage lambda-look > data/SRP1/Results/P515S53/w106_uncoordinated_settled/launch_logs/lambda_look.log 2>&1",
+   "declared_solves": 0,
+   "guard": "SolveProfileGuard(permitted=()); verify(0) at the end",
+   "order": 1,
+   "run_id": "lambda_look",
+   "stage": "lambda-look",
+   "wall_estimate_min": [
+    2,
+    6
+   ],
+   "what": "units check on the S48 models (W28/W31 reproduced to 1e-9; Param-vs-dual identities to 1e-3), then the settled cycle-181 models: identities, the sidecar third-source cross-check, the pf-stride capture (informational) and the lambda_t vs pi_t table; prediction_usable = units AND identities AND sidecar"
+  },
+  {
+   "command": "set -o noclobber && /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python -u p515_s53_w93_uncoordinated_benchmark.py --stage common-q-gate > data/SRP1/Results/P515S53/w106_uncoordinated_settled/launch_logs/common_q_gate.log 2>&1",
+   "declared_solves": 0,
+   "guard": "SolveProfileGuard(permitted=()); verify(0) at the end",
+   "order": 2,
+   "run_id": "common_q_gate",
+   "stage": "common-q-gate",
+   "wall_estimate_min": [
+    2,
+    5
+   ],
+   "what": "evaluate_common_q (evaluation tie-breaker 0, require_unchanged) on the settled models reproduces Q181 = 653,873,702.1876609 BITWISE (and the record's other recourse fields); idempotent repeat; negative controls (tie-breaker 1 refused; repriced differs by exactly the priced curtailment)"
+  },
+  {
+   "command": "set -o noclobber && /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python -u p515_s53_w93_uncoordinated_benchmark.py --stage tso-coupling-check > data/SRP1/Results/P515S53/w106_uncoordinated_settled/launch_logs/tso_coupling_check.log 2>&1",
+   "declared_solves": 24,
+   "declared_solves_detail": {
+    "fixed_side": 12,
+    "penalty_side": 12
+   },
+   "guard": "SolveProfileGuard(permitted=(('uncoordinated_benchmark.py', '_solve_block'),)); verify(0) before solves, verify(24) at the end",
+   "order": 3,
+   "reported_not_gating": true,
+   "run_id": "tso_coupling_check",
+   "stage": "tso-coupling-check",
+   "wall_estimate_min": [
+    3,
+    8
+   ],
+   "what": "penalty (9e10 tracking) vs fixed interface at the SAME targets = the settled cycle-181 DSO schedule (P, Q, and the fixed side's V pin): TN cost, interface residual, iterations, dual infeasibility"
+  },
+  {
+   "arm": "passive",
+   "command": "set -o noclobber && /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python -u p515_s53_w93_uncoordinated_benchmark.py --stage arm --arm passive --start cold > data/SRP1/Results/P515S53/w106_uncoordinated_settled/launch_logs/arm_passive_cold.log 2>&1",
+   "declared_solves": 84,
+   "declared_solves_detail": {
+    "phase_A_arm": 48,
+    "phase_B_consistency_reevaluation": 36,
+    "phase_C_sequential_pass_only_if_triggered": 48,
+    "total_if_triggered": 132
+   },
+   "dso_decision_tie_breaker": 1.0,
+   "guard": "SolveProfileGuard(permitted=(('uncoordinated_benchmark.py', '_solve_block'),)); exact cumulative verify at every phase boundary: 0, 48, 84 (132 if the declared trigger fires)",
+   "order": 4,
+   "run_id": "arm_passive_cold",
+   "stage": "arm",
+   "start": "cold",
+   "wall_estimate_min": [
+    3,
+    10
+   ]
+  },
+  {
+   "arm": "passive",
+   "command": "set -o noclobber && /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python -u p515_s53_w93_uncoordinated_benchmark.py --stage arm --arm passive --start warm_from_certified > data/SRP1/Results/P515S53/w106_uncoordinated_settled/launch_logs/arm_passive_warm_from_certified.log 2>&1",
+   "declared_solves": 84,
+   "declared_solves_detail": {
+    "phase_A_arm": 48,
+    "phase_B_consistency_reevaluation": 36,
+    "phase_C_sequential_pass_only_if_triggered": 48,
+    "total_if_triggered": 132
+   },
+   "dso_decision_tie_breaker": 1.0,
+   "guard": "SolveProfileGuard(permitted=(('uncoordinated_benchmark.py', '_solve_block'),)); exact cumulative verify at every phase boundary: 0, 48, 84 (132 if the declared trigger fires)",
+   "order": 5,
+   "run_id": "arm_passive_warm_from_certified",
+   "stage": "arm",
+   "start": "warm_from_certified",
+   "wall_estimate_min": [
+    3,
+    10
+   ]
+  },
+  {
+   "arm": "passive",
+   "command": "set -o noclobber && /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python -u p515_s53_w93_uncoordinated_benchmark.py --stage arm --arm passive --start perturbed > data/SRP1/Results/P515S53/w106_uncoordinated_settled/launch_logs/arm_passive_perturbed.log 2>&1",
+   "declared_solves": 84,
+   "declared_solves_detail": {
+    "phase_A_arm": 48,
+    "phase_B_consistency_reevaluation": 36,
+    "phase_C_sequential_pass_only_if_triggered": 48,
+    "total_if_triggered": 132
+   },
+   "dso_decision_tie_breaker": 1.0,
+   "guard": "SolveProfileGuard(permitted=(('uncoordinated_benchmark.py', '_solve_block'),)); exact cumulative verify at every phase boundary: 0, 48, 84 (132 if the declared trigger fires)",
+   "order": 6,
+   "run_id": "arm_passive_perturbed",
+   "stage": "arm",
+   "start": "perturbed",
+   "wall_estimate_min": [
+    3,
+    10
+   ]
+  },
+  {
+   "arm": "price_taker",
+   "command": "set -o noclobber && /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python -u p515_s53_w93_uncoordinated_benchmark.py --stage arm --arm price_taker --start cold > data/SRP1/Results/P515S53/w106_uncoordinated_settled/launch_logs/arm_price_taker_cold.log 2>&1",
+   "declared_solves": 84,
+   "declared_solves_detail": {
+    "phase_A_arm": 48,
+    "phase_B_consistency_reevaluation": 36,
+    "phase_C_sequential_pass_only_if_triggered": 48,
+    "total_if_triggered": 132
+   },
+   "dso_decision_tie_breaker": 0.0,
+   "guard": "SolveProfileGuard(permitted=(('uncoordinated_benchmark.py', '_solve_block'),)); exact cumulative verify at every phase boundary: 0, 48, 84 (132 if the declared trigger fires)",
+   "order": 7,
+   "run_id": "arm_price_taker_cold",
+   "stage": "arm",
+   "start": "cold",
+   "wall_estimate_min": [
+    3,
+    10
+   ]
+  },
+  {
+   "arm": "price_taker",
+   "command": "set -o noclobber && /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python -u p515_s53_w93_uncoordinated_benchmark.py --stage arm --arm price_taker --start warm_from_certified > data/SRP1/Results/P515S53/w106_uncoordinated_settled/launch_logs/arm_price_taker_warm_from_certified.log 2>&1",
+   "declared_solves": 84,
+   "declared_solves_detail": {
+    "phase_A_arm": 48,
+    "phase_B_consistency_reevaluation": 36,
+    "phase_C_sequential_pass_only_if_triggered": 48,
+    "total_if_triggered": 132
+   },
+   "dso_decision_tie_breaker": 0.0,
+   "guard": "SolveProfileGuard(permitted=(('uncoordinated_benchmark.py', '_solve_block'),)); exact cumulative verify at every phase boundary: 0, 48, 84 (132 if the declared trigger fires)",
+   "order": 8,
+   "run_id": "arm_price_taker_warm_from_certified",
+   "stage": "arm",
+   "start": "warm_from_certified",
+   "wall_estimate_min": [
+    3,
+    10
+   ]
+  },
+  {
+   "arm": "price_taker",
+   "command": "set -o noclobber && /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python -u p515_s53_w93_uncoordinated_benchmark.py --stage arm --arm price_taker --start perturbed > data/SRP1/Results/P515S53/w106_uncoordinated_settled/launch_logs/arm_price_taker_perturbed.log 2>&1",
+   "declared_solves": 84,
+   "declared_solves_detail": {
+    "phase_A_arm": 48,
+    "phase_B_consistency_reevaluation": 36,
+    "phase_C_sequential_pass_only_if_triggered": 48,
+    "total_if_triggered": 132
+   },
+   "dso_decision_tie_breaker": 0.0,
+   "guard": "SolveProfileGuard(permitted=(('uncoordinated_benchmark.py', '_solve_block'),)); exact cumulative verify at every phase boundary: 0, 48, 84 (132 if the declared trigger fires)",
+   "order": 9,
+   "run_id": "arm_price_taker_perturbed",
+   "stage": "arm",
+   "start": "perturbed",
+   "wall_estimate_min": [
+    3,
+    10
+   ]
+  },
+  {
+   "command": "set -o noclobber && /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python -u p515_s53_w93_uncoordinated_benchmark.py --stage passive-tie-breaker --value 0.1 > data/SRP1/Results/P515S53/w106_uncoordinated_settled/launch_logs/passive_tie_breaker_0p1.log 2>&1",
+   "declared_solves": 48,
+   "guard": "SolveProfileGuard(permitted=(('uncoordinated_benchmark.py', '_solve_block'),)); verify(0) before, verify(48) at the end",
+   "order": 10,
+   "run_id": "passive_tie_breaker_0p1",
+   "stage": "passive-tie-breaker",
+   "value": 0.1,
+   "wall_estimate_min": [
+    2,
+    6
+   ],
+   "what": "passive, cold, DSO decision tie-breaker at the variant value; no consistency step (declared)"
+  },
+  {
+   "command": "set -o noclobber && /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python -u p515_s53_w93_uncoordinated_benchmark.py --stage passive-tie-breaker --value 10 > data/SRP1/Results/P515S53/w106_uncoordinated_settled/launch_logs/passive_tie_breaker_10.log 2>&1",
+   "declared_solves": 48,
+   "guard": "SolveProfileGuard(permitted=(('uncoordinated_benchmark.py', '_solve_block'),)); verify(0) before, verify(48) at the end",
+   "order": 11,
+   "run_id": "passive_tie_breaker_10",
+   "stage": "passive-tie-breaker",
+   "value": 10.0,
+   "wall_estimate_min": [
+    2,
+    6
+   ],
+   "what": "passive, cold, DSO decision tie-breaker at the variant value; no consistency step (declared)"
+  },
+  {
+   "command": "set -o noclobber && /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python -u p515_s53_w93_uncoordinated_benchmark.py --stage report > data/SRP1/Results/P515S53/w106_uncoordinated_settled/launch_logs/report.log 2>&1",
+   "declared_solves": 0,
+   "guard": "SolveProfileGuard(permitted=()); verify(0) at the end",
+   "order": 12,
+   "run_id": "report",
+   "stage": "report",
+   "wall_estimate_min": [
+    0,
+    1
+   ]
+  }
+ ],
+ "tie_breaker": {
+  "authority": "Addendum 49 clarification 2026-09-26",
+  "decision": {
+   "passive_dso": 1.0,
+   "price_taker_dso": 0.0,
+   "tso": 0.0
+  },
+  "evaluation": 0.0,
+  "passive_value_independence_variants": [
+   0.1,
+   10.0
+  ]
+ },
+ "tolerances": {
+  "consistency": {
+   "hard_tol_pu2": 1e-06,
+   "soft_excess_tol_pu2": 1e-06,
+   "thermal_tol_pu2": 1e-06
+  },
+  "lambda_neq_pi_eur": 0.05,
+  "negative_control_explained_abs_eur": 1e-05,
+  "units_check": {
+   "consensus_eur": 0.05,
+   "kkt_eur": 0.001,
+   "repro_eur": 1e-09
+  }
+ },
+ "version": 1,
+ "wall_estimate": {
+  "basis": "ESTIMATES, not measurements: the settled continuation ran 181 cycles of 48 network solves + the ESSO in 4,288 s (~0.5 s per network solve incl. overhead); IPOPT time per SRP1 network solve 0.02-0.43 s (logs of that run); planning load ~10.8 s (p56a_oracle docstring); model build and the 164 MB unpickling not measured before the freeze (the W106 checks time the unpickling). Addendum 54 Ruling 3 sizes the whole benchmark at ~1 h",
+  "total_min": [
+   29,
+   92
+  ]
+ },
+ "zero_solve_checks": {
+  "command": "set -o noclobber && /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python -u p515_s53_w106_benchmark_repoint.py --checks > data/SRP1/Results/P515S53/w106_uncoordinated_settled/launch_logs/w106_zero_solve_checks.log 2>&1",
+  "note": "run AFTER this freeze; C7 verifies this spec binds",
+  "output": "data/SRP1/Results/P515S53/w106_uncoordinated_settled/w106_zero_solve_checks"
+ }
+}

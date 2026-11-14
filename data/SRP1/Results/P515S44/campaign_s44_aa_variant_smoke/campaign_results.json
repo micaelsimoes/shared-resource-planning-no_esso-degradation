@@ -1,0 +1,306 @@
+{
+ "stage": "P5.15 Addendum 25 item 2 -- AA keep_memory variant arm at C* + 2xC* under D (campaign harness)",
+ "mode": "smoke",
+ "authority": [
+  "PLANNER_BRIEF_2026-09-13.md Addendum 25 (AA variant arm; selection run)",
+  "data/SRP1/Results/P515S44/frozen_s44_selection_spec_v14_e4500e27.json item2_aa_variant, item3_selection_run",
+  "P5_15_S44_GATE_RULING.md (8ce0b872) Deviation / Follow-ups"
+ ],
+ "timestamp_utc": "2026-09-19T12:31:11.949900+00:00",
+ "campaign_spec_path": "data/SRP1/Results/P515S44/campaign_s44_aa_variant_smoke/campaign_spec_s44_aa_variant_smoke_e3f83174.json",
+ "campaign_spec_sha256": "e3f83174b2f784e0ed4dccae61ba27e414a8c9cbe9495b3b7723a5f2512abeed",
+ "evaluations": {
+  "c_star_aa_keep_memory": {
+   "label": "c_star_aa_keep_memory",
+   "candidate_key": "578636daa6d6360d",
+   "eval_key": "837fc982565dbba3",
+   "overrides": {
+    "anderson_acceleration": {
+     "enabled": true,
+     "reject_policy": "keep_memory"
+    }
+   },
+   "status": "not_certified",
+   "barrier": true,
+   "barrier_cause": "cap reached without certification",
+   "certification_cycle": null,
+   "cycles_run": 3,
+   "certified_cost_gross": null,
+   "terminal_gross_operational_cost": 704411902.1572279,
+   "objective_convention": "gross_operational_cost, settlement-excluded",
+   "bar": 845717094.9825618,
+   "first_pass_cycle_per_channel": {
+    "v": null,
+    "pf": null,
+    "ess": null
+   },
+   "terminal_ratios_per_channel": {
+    "v": {
+     "primal": 19.188979497414195,
+     "dual": 7.959253835872506,
+     "max": 19.188979497414195
+    },
+    "pf": {
+     "primal": 462.8972815173506,
+     "dual": 437.9871040046616,
+     "max": 462.8972815173506
+    },
+    "ess": {
+     "primal": 372.64822718963256,
+     "dual": 8.99230249870067,
+     "max": 372.64822718963256
+    }
+   },
+   "rule_ten_terminal_step_over_threshold": 490.4661370594563,
+   "settlement_remainder": -50358049.8162477,
+   "local_solve_failures": 0,
+   "network_failures_classes": {
+    "recovered_tier1": 1,
+    "recovered_tier2": 0,
+    "unrecovered": 0,
+    "not_attempted": 0,
+    "indeterminate": 0,
+    "recovered": 1
+   },
+   "post_certification": {
+    "status": "skipped",
+    "evaluated": false,
+    "skip_reason": "trajectory not certified under the spec's bar (cycles_run=3, cap=3, required_consecutive=10, terminal_consecutive_converged_cycles=0, stopped_by='cap'); post-certification items are never evaluated at an uncertified point",
+    "error": null,
+    "certified_cost": null,
+    "gate_c_pass": null,
+    "persisted_models": null,
+    "hull_bound_detail_path": null,
+    "requested": {
+     "hull_polish": true,
+     "persist_certified_models": true,
+     "reference": {
+      "campaign_spec_sha256": "4047b4e3f1852c3616a80ad26f2d43f2aa4b333847e447fb5b9323fb3bce7f33",
+      "candidate_key": "578636daa6d6360d6701764c73ddf795e53c2c37e511e21be1400024f8f6350c",
+      "certification_cycle": 139,
+      "certified_cost": 650966975.2943751,
+      "component_levels_terminal_sha256": "ff9050bb1759cff14f9d4e94d7e095b7a9b7fc3fa7ca8439f2a9ed5c0aa0444d",
+      "configuration_overrides": {},
+      "eval_dir": "data/SRP1/Results/P515S44/campaign_s44_gate/evals/578636daa6d6360d_c_star",
+      "evaluation_record_sha256": "f7722fc44a2785f1d085dbc2f72703bc0962d06cf9a3796dbd4bce89d9ed7870"
+     }
+    },
+    "gate_b": null,
+    "gate_c": null,
+    "gate_d": null
+   },
+   "aa_per_cycle": {
+    "path": "data/SRP1/Results/P515S44/campaign_s44_aa_variant_smoke/evals/837fc982565dbba3_c_star_aa_keep_memory/aa_per_cycle.jsonl",
+    "n_rows": 3,
+    "action_counts": {
+     "insufficient memory (m_k=0)": 3
+    },
+    "n_accepted": 0,
+    "n_rejected": 0,
+    "rejections_with_memory_retained": [],
+    "first_accept_cycle": null,
+    "first_reject_cycle": null
+   },
+   "peak_rss": {
+    "units": "bytes on macOS/BSD, kilobytes on Linux (ru_maxrss)",
+    "child_python_process_ru_maxrss": 2265464832,
+    "production_state_peak_rss_ru_maxrss": 2257125376,
+    "solver_subprocesses_max_ru_maxrss": 51888128,
+    "semantics": "child_python_process = RUSAGE_SELF of the evaluation process at record time (the evaluation's own peak); production_state = the same measure taken by production at the end of run_operational_planning; solver_subprocesses = RUSAGE_CHILDREN max over the IPOPT executables this evaluation launched; when a post-certification step ran, child_python_process includes it (the ADMM run alone is production_state)"
+   },
+   "wall_time_s": {
+    "child_process_s": 147.03072905540466,
+    "run_admm_arm_s": 132.8556571006775,
+    "run_admm_arm_reported_wall_clock_s": 132.1689338684082
+   },
+   "parent_view": {
+    "exit_code": 0,
+    "wall_s": 155.15016913414001,
+    "wait4_ru_maxrss": 2265497600
+   },
+   "campaign_spec_sha256": "e3f83174b2f784e0ed4dccae61ba27e414a8c9cbe9495b3b7723a5f2512abeed"
+  },
+  "c_star_d": {
+   "label": "c_star_d",
+   "candidate_key": "578636daa6d6360d",
+   "eval_key": "578636daa6d6360d",
+   "overrides": {},
+   "status": "not_certified",
+   "barrier": true,
+   "barrier_cause": "cap reached without certification",
+   "certification_cycle": null,
+   "cycles_run": 3,
+   "certified_cost_gross": null,
+   "terminal_gross_operational_cost": 704411902.1572279,
+   "objective_convention": "gross_operational_cost, settlement-excluded",
+   "bar": 845717094.9825618,
+   "first_pass_cycle_per_channel": {
+    "v": null,
+    "pf": null,
+    "ess": null
+   },
+   "terminal_ratios_per_channel": {
+    "v": {
+     "primal": 19.188979497414195,
+     "dual": 7.959253835872506,
+     "max": 19.188979497414195
+    },
+    "pf": {
+     "primal": 462.8972815173506,
+     "dual": 437.9871040046616,
+     "max": 462.8972815173506
+    },
+    "ess": {
+     "primal": 372.64822718963256,
+     "dual": 8.99230249870067,
+     "max": 372.64822718963256
+    }
+   },
+   "rule_ten_terminal_step_over_threshold": 490.4661370594563,
+   "settlement_remainder": -50358049.8162477,
+   "local_solve_failures": 0,
+   "network_failures_classes": {
+    "recovered_tier1": 1,
+    "recovered_tier2": 0,
+    "unrecovered": 0,
+    "not_attempted": 0,
+    "indeterminate": 0,
+    "recovered": 1
+   },
+   "post_certification": null,
+   "aa_per_cycle": null,
+   "peak_rss": {
+    "units": "bytes on macOS/BSD, kilobytes on Linux (ru_maxrss)",
+    "child_python_process_ru_maxrss": 2259582976,
+    "production_state_peak_rss_ru_maxrss": 2251915264,
+    "solver_subprocesses_max_ru_maxrss": 51544064,
+    "semantics": "child_python_process = RUSAGE_SELF of the evaluation process at record time (the evaluation's own peak); production_state = the same measure taken by production at the end of run_operational_planning; solver_subprocesses = RUSAGE_CHILDREN max over the IPOPT executables this evaluation launched; when a post-certification step ran, child_python_process includes it (the ADMM run alone is production_state)"
+   },
+   "wall_time_s": {
+    "child_process_s": 146.8838198184967,
+    "run_admm_arm_s": 132.7173547744751,
+    "run_admm_arm_reported_wall_clock_s": 132.03681898117065
+   },
+   "parent_view": {
+    "exit_code": 0,
+    "wall_s": 155.14356899261475,
+    "wait4_ru_maxrss": 2259632128
+   },
+   "campaign_spec_sha256": "e3f83174b2f784e0ed4dccae61ba27e414a8c9cbe9495b3b7723a5f2512abeed"
+  }
+ },
+ "aa_trajectory_vs_committed_step37_aa_run": {
+  "first_differing_cycle": null,
+  "n_rows_compared": 3,
+  "identical_over_compared_rows": true
+ },
+ "choice_rule_inputs_spec_v14_item2": {
+  "variant_certified": false,
+  "variant_certification_cycle": null,
+  "step37_arm_certification_cycle": 109,
+  "D_certification_cycle_at_c_star": 139,
+  "variant_gates_b_c_d": {
+   "b": null,
+   "c": null,
+   "d": null
+  },
+  "mechanical_reading": null,
+  "note": "reported for the Planner; the ruling is the Planner's"
+ },
+ "stop_rule_spec_v14_item3": null,
+ "predictions_recorded_in_advance": {
+  "source": "frozen spec v14 predictions_recorded_in_advance.item2_variant",
+  "expert": "80-95 cycles",
+  "planner": "central 88, range 78-100; (b)-(d) pass"
+ },
+ "smoke_checks": {
+  "both_records_present_not_certified_at_cap_3": true,
+  "aa_post_certification_skipped_with_reason": true,
+  "aa_post_certification_file_written": true,
+  "aa_no_persisted_models_no_hull_detail": true,
+  "aa_settings_in_force_keep_memory": true,
+  "aa_sidecar_3_rows_aa_enabled": true,
+  "d_no_aa_sidecar_no_post_cert": true,
+  "d_first_3_rows_vs_D_committed_zero_genuine": true,
+  "aa_first_3_rows_identical_to_step37_aa_run": true,
+  "spec_sha256_in_every_record": true
+ },
+ "smoke_detail": {
+  "aa_sidecar_actions": [
+   [
+    1,
+    "insufficient memory (m_k=0)",
+    0,
+    0,
+    [
+     "v"
+    ]
+   ],
+   [
+    2,
+    "insufficient memory (m_k=0)",
+    0,
+    0,
+    [
+     "pf",
+     "v"
+    ]
+   ],
+   [
+    3,
+    "insufficient memory (m_k=0)",
+    0,
+    0,
+    []
+   ]
+  ],
+  "aa_accept_or_reject_present": false,
+  "d_vs_D_committed": {
+   "mode": "truncated (cycle_trajectory[:3] + rows-derived top-level fields vs D's first 3 committed rows; cycle-count-dependent artifacts (esso_capture, solve_profile, network_failures_summary, esso_complementarity_diagnostics_by_round, esso_models_pickle) out of scope for a truncated comparison)",
+   "n_aa_new_field_diffs": 36,
+   "n_known_tie_break_diffs": 0,
+   "genuine_diffs": []
+  }
+ },
+ "batch_info": {
+  "max_concurrent_observed": 2,
+  "timeline": [
+   {
+    "event": "start",
+    "label": "c_star_aa_keep_memory",
+    "pid": 69447,
+    "t": 1789820916.7583108
+   },
+   {
+    "event": "start",
+    "label": "c_star_d",
+    "pid": 69448,
+    "t": 1789820916.767552
+   },
+   {
+    "event": "end",
+    "label": "c_star_aa_keep_memory",
+    "pid": 69447,
+    "t": 1789821071.90848,
+    "exit_code": 0
+   },
+   {
+    "event": "end",
+    "label": "c_star_d",
+    "pid": 69448,
+    "t": 1789821071.911121,
+    "exit_code": 0
+   }
+  ]
+ },
+ "parent_solve_profile_guard": {
+  "counts": {
+   "permitted_solve": 0,
+   "permitted_exec": 0,
+   "blocked_solve": 0,
+   "blocked_exec": 0
+  },
+  "verify_0_failures": []
+ },
+ "wall_clock_s": 155.33374094963074
+}

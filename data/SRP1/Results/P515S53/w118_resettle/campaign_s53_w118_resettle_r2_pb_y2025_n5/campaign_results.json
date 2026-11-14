@@ -1,0 +1,4781 @@
+{
+ "stage": "P5.15 Addendum 57, W118 -- SRP1 re-settling campaign (10 cells) under the current production configuration: gated cells replayed bitwise against their original record through the first residual pass k0 (abort on the first divergence), the year-ladder cells as first C2 evaluations; the certifying regime held after the run's k0 (AA off, tight tail on, rho frozen); settling rule v2 (gap clause |t_sum| <= tau/2; monotone branch with |dQ| x 60 <= tau) until it certifies or the cap; W105 captures + per-cycle t_sum and Q_cc",
+ "cell": "pb_y2025_n5",
+ "utc": "2026-09-29T09:34:12.415789+00:00",
+ "git_head_at_run": "ad4e474779461505a0187ed9b6365573ca4081aa",
+ "campaign_spec_path": "data/SRP1/Results/P515S53/w118_resettle/campaign_s53_w118_resettle_r2_pb_y2025_n5/campaign_spec_s53_w118_resettle_r2_pb_y2025_n5_d3223edb.json",
+ "campaign_spec_sha256": "d3223edbf3f9961ade557848453efd2f3b9f4c90e5c3fbb7efa48e61976fafe4",
+ "stage_spec": {
+  "path": "data/SRP1/Results/P515S53/w118_resettle/frozen_s53_resettle_spec_v2_fc791891.json",
+  "sha256": "fc791891e794fb029c194be5691a4d055a50e08891cd0831ac18b4dde9014b6c"
+ },
+ "objective_convention": "Q = gross_operational_cost, settlement EXCLUDED; t_sum = the priced interface-consensus gap sum w * pi * (p_DSO - p_TSO) (EUR); Q_cc = Q + t_sum is a FIRST-ORDER, consensus-consistent DIAGNOSTIC, reported beside gross, never a costed quantity; verdicts are read on GROSS",
+ "eval_key": "ca29c5e818366a6e37669b8390b1931fd8daf5d04cd2f8922f479b72aa54859e",
+ "candidate_key": "33031c083b68c6556f4c4a0f7683de83fb9995d73b98814e44bac374d5fc803c",
+ "original_eval_key": "4a8527254a85b9cca48e1eb872b35ed9f3d5209f84002e2c255516b8af5b304a",
+ "replay_divergence_abort": null,
+ "gates": {
+  "G1_harness_clean": true,
+  "G2_eval_key": true,
+  "G3_append_reconcile": true,
+  "G4_tail_state_check": true,
+  "G5_solve_profile_reconciled_per_event": true,
+  "G6_v37_optimal_and_four_metrics": false,
+  "G7_append_sealed": true,
+  "G8_persistence_as_w101": true,
+  "G9_ess_ageing_readback": true,
+  "G11_acceptance_cross_check": true,
+  "G13_holds_inert_through_first_pass_held_after": true,
+  "G14_all_block_capture": true,
+  "G15_stopping_consistent": true,
+  "G16_lambda_sidecar_complete": true,
+  "G17_rule_v2_replay_reproduces_in_cycle": true,
+  "G18_line_fields_every_cycle": true,
+  "G19_replay_bitwise_1_k0_every_field": true,
+  "G20_production_counters_in_per_cycle_record": true,
+  "G21_creep_captures_complete": true,
+  "G22_t_sum_in_cycle_equals_stride_and_terminal": true,
+  "G23_overlap_recorded": true
+ },
+ "gates_pass": false,
+ "gate_detail": {
+  "exit_code": 0,
+  "gate_scope": {
+   "G19_replay_bitwise_1_k0_every_field": "gated cells only (the year ladder has no replay reference: SKIPPED)",
+   "G23_overlap_recorded": "gated cells: k0+1..N_old recorded; ungated: none (asserted empty)",
+   "all_other_gates": "every cell"
+  },
+  "w86_evaluation_checks": {
+   "checks": {
+    "append_reconciles_byte_identical": true,
+    "checklist_line1_before_any_solve": true,
+    "tail_state_check_matches": true,
+    "solve_profile_reconciled_per_event": true,
+    "floor_records_at_compl_inf_tol_in_force": true,
+    "append_sealed_after_reconcile": true,
+    "post_certification_persisted": true,
+    "ess_ageing_readback_all_match": true,
+    "all_files_present": true
+   },
+   "detail": {
+    "files_present": {
+     "network_ipopt_solve_records.jsonl": true,
+     "network_ipopt_solve_records_append.jsonl": true,
+     "convergence_depth_append_events.jsonl": true,
+     "convergence_depth_tail_state.json": true
+    },
+    "append": {
+     "record_field": {
+      "records_append_path": "data/SRP1/Results/P515S53/w118_resettle/campaign_s53_w118_resettle_r2_pb_y2025_n5/evals/ca29c5e818366a6e_pb_y2025_n5/network_ipopt_solve_records_append.jsonl",
+      "records_append_sha256": "89fda5d4aeaddc6355aaf9b259d0279b962f084188d7954db1354007a42a99d2",
+      "end_of_run_records_sha256": "89fda5d4aeaddc6355aaf9b259d0279b962f084188d7954db1354007a42a99d2",
+      "n_records_appended": 8067,
+      "rounds_appended": [
+       0,
+       1,
+       2,
+       3,
+       4,
+       5,
+       6,
+       7,
+       8,
+       9,
+       10,
+       11,
+       12,
+       13,
+       14,
+       15,
+       16,
+       17,
+       18,
+       19,
+       20,
+       21,
+       22,
+       23,
+       24,
+       25,
+       26,
+       27,
+       28,
+       29,
+       30,
+       31,
+       32,
+       33,
+       34,
+       35,
+       36,
+       37,
+       38,
+       39,
+       40,
+       41,
+       42,
+       43,
+       44,
+       45,
+       46,
+       47,
+       48,
+       49,
+       50,
+       51,
+       52,
+       53,
+       54,
+       55,
+       56,
+       57,
+       58,
+       59,
+       60,
+       61,
+       62,
+       63,
+       64,
+       65,
+       66,
+       67,
+       68,
+       69,
+       70,
+       71,
+       72,
+       73,
+       74,
+       75,
+       76,
+       77,
+       78,
+       79,
+       80,
+       81,
+       82,
+       83,
+       84,
+       85,
+       86,
+       87,
+       88,
+       89,
+       90,
+       91,
+       92,
+       93,
+       94,
+       95,
+       96,
+       97,
+       98,
+       99,
+       100,
+       101,
+       102,
+       103,
+       104,
+       105,
+       106,
+       107,
+       108,
+       109,
+       110,
+       111,
+       112,
+       113,
+       114,
+       115,
+       116,
+       117,
+       118,
+       119,
+       120,
+       121,
+       122,
+       123,
+       124,
+       125,
+       126,
+       127,
+       128,
+       129,
+       130,
+       131,
+       132,
+       133,
+       134,
+       135,
+       136,
+       137,
+       138,
+       139,
+       140,
+       141,
+       142,
+       143,
+       144,
+       145,
+       146,
+       147,
+       148,
+       149,
+       150,
+       151,
+       152,
+       153,
+       154,
+       155,
+       156,
+       157,
+       158,
+       159,
+       160,
+       161,
+       162,
+       163,
+       164,
+       165,
+       166,
+       167
+      ],
+      "events_path": "data/SRP1/Results/P515S53/w118_resettle/campaign_s53_w118_resettle_r2_pb_y2025_n5/evals/ca29c5e818366a6e_pb_y2025_n5/convergence_depth_append_events.jsonl",
+      "records_append_byte_identical_to_end_of_run_file": true,
+      "tail_state_rebuilt_from_events_equals_returned_state": true,
+      "write_errors": [],
+      "ok": true
+     },
+     "end_of_run_sha256": "89fda5d4aeaddc6355aaf9b259d0279b962f084188d7954db1354007a42a99d2",
+     "append_sha256": "89fda5d4aeaddc6355aaf9b259d0279b962f084188d7954db1354007a42a99d2",
+     "n_end_of_run": 8067,
+     "rounds_drained": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23,
+      24,
+      25,
+      26,
+      27,
+      28,
+      29,
+      30,
+      31,
+      32,
+      33,
+      34,
+      35,
+      36,
+      37,
+      38,
+      39,
+      40,
+      41,
+      42,
+      43,
+      44,
+      45,
+      46,
+      47,
+      48,
+      49,
+      50,
+      51,
+      52,
+      53,
+      54,
+      55,
+      56,
+      57,
+      58,
+      59,
+      60,
+      61,
+      62,
+      63,
+      64,
+      65,
+      66,
+      67,
+      68,
+      69,
+      70,
+      71,
+      72,
+      73,
+      74,
+      75,
+      76,
+      77,
+      78,
+      79,
+      80,
+      81,
+      82,
+      83,
+      84,
+      85,
+      86,
+      87,
+      88,
+      89,
+      90,
+      91,
+      92,
+      93,
+      94,
+      95,
+      96,
+      97,
+      98,
+      99,
+      100,
+      101,
+      102,
+      103,
+      104,
+      105,
+      106,
+      107,
+      108,
+      109,
+      110,
+      111,
+      112,
+      113,
+      114,
+      115,
+      116,
+      117,
+      118,
+      119,
+      120,
+      121,
+      122,
+      123,
+      124,
+      125,
+      126,
+      127,
+      128,
+      129,
+      130,
+      131,
+      132,
+      133,
+      134,
+      135,
+      136,
+      137,
+      138,
+      139,
+      140,
+      141,
+      142,
+      143,
+      144,
+      145,
+      146,
+      147,
+      148,
+      149,
+      150,
+      151,
+      152,
+      153,
+      154,
+      155,
+      156,
+      157,
+      158,
+      159,
+      160,
+      161,
+      162,
+      163,
+      164,
+      165,
+      166,
+      167
+     ],
+     "n_bytes": 6261130
+    },
+    "checklist": {
+     "first_event": "checklist",
+     "utc": "2026-09-29T08:22:41.946669+00:00",
+     "pid": 94823,
+     "record_child_pid": 94823,
+     "work_logs_dir": "data/SRP1/Results/P56A/evals/p515s44_s53_w118_resettle_r2_pb_y2025_n5_ca29c5e818366a6e_run/logs",
+     "n_log_files": 555,
+     "earliest_log_birth_utc": "2026-09-29T08:22:44.097612+00:00",
+     "first_drain_utc": "2026-09-29T08:23:05.098740+00:00",
+     "seconds_before_first_log": 2.15094256401062
+    },
+    "solve_profile": {
+     "observed": {
+      "permitted_solve": 8571,
+      "permitted_exec": 8571,
+      "blocked_solve": 0,
+      "blocked_exec": 0
+     },
+     "identity_holds": true,
+     "identity": "observed == base + sum over network-failure events of [recovery_attempted] + [tier2_attempted]; unsupported when an ESSO recovery event or an 'indeterminate' network event exists",
+     "derivation": "(1 + n_dso) * n_years * n_days + n_esso_nodes, per cycle, from the planning object",
+     "n_dso": 3,
+     "n_years": 3,
+     "n_days": 4,
+     "n_esso_nodes": 3,
+     "solves_per_cycle": 51,
+     "rounds": 168,
+     "rounds_note": "one initialization round + cycles_run ADMM cycles",
+     "base_solves": 8568,
+     "retry_solves_credited": 3,
+     "reconciliation_supported": true,
+     "expected_solves": 8571,
+     "recovered_only_identity": {
+      "expected": 8571,
+      "holds": true,
+      "note": "pre-W35 rule, REPORTED not gated: credits retries only to RECOVERED blocks, so an unrecovered block's attempts go uncounted (78a9b230)"
+     }
+    },
+    "floor": {
+     "production_compl_inf_tol": {
+      "case9": 0.0005,
+      "case33_1": 0.0001,
+      "case33_2": 0.0001,
+      "case33_3": 0.0001
+     },
+     "tail_active_cycles": [
+      111,
+      112,
+      113,
+      114,
+      115,
+      116,
+      117,
+      118,
+      119,
+      120,
+      121,
+      122,
+      123,
+      124,
+      125,
+      126,
+      127,
+      128,
+      129,
+      130,
+      131,
+      132,
+      133,
+      134,
+      135,
+      136,
+      137,
+      138,
+      139,
+      140,
+      141,
+      142,
+      143,
+      144,
+      145,
+      146,
+      147,
+      148,
+      149,
+      150,
+      151,
+      152,
+      153,
+      154,
+      155,
+      156,
+      157,
+      158,
+      159,
+      160,
+      161,
+      162,
+      163,
+      164,
+      165,
+      166,
+      167
+     ],
+     "n_records": 8067,
+     "n_bad": 0,
+     "bad_first": [],
+     "floor_status_tally": {
+      "DSO|above": 2,
+      "DSO|at": 6048,
+      "TSO|above": 2,
+      "TSO|at": 2015
+     },
+     "floor_status_tally_tail_cycles": {
+      "DSO|at": 2052,
+      "TSO|above": 2,
+      "TSO|at": 683
+     },
+     "exit_tally": {
+      "Maximum Number of Iterations Exceeded.": 3,
+      "Optimal Solution Found.": 8063,
+      "Solved To Acceptable Level.": 1
+     },
+     "records_per_round": {
+      "0": 48,
+      "1": 48,
+      "2": 48,
+      "3": 48,
+      "4": 48,
+      "5": 48,
+      "6": 48,
+      "7": 48,
+      "8": 49,
+      "9": 48,
+      "10": 48,
+      "11": 48,
+      "12": 48,
+      "13": 48,
+      "14": 48,
+      "15": 48,
+      "16": 48,
+      "17": 48,
+      "18": 48,
+      "19": 49,
+      "20": 48,
+      "21": 48,
+      "22": 48,
+      "23": 48,
+      "24": 48,
+      "25": 48,
+      "26": 48,
+      "27": 48,
+      "28": 48,
+      "29": 48,
+      "30": 48,
+      "31": 48,
+      "32": 48,
+      "33": 48,
+      "34": 48,
+      "35": 48,
+      "36": 48,
+      "37": 48,
+      "38": 48,
+      "39": 48,
+      "40": 48,
+      "41": 48,
+      "42": 48,
+      "43": 48,
+      "44": 48,
+      "45": 48,
+      "46": 48,
+      "47": 48,
+      "48": 48,
+      "49": 48,
+      "50": 48,
+      "51": 48,
+      "52": 48,
+      "53": 48,
+      "54": 48,
+      "55": 48,
+      "56": 48,
+      "57": 48,
+      "58": 48,
+      "59": 48,
+      "60": 48,
+      "61": 48,
+      "62": 48,
+      "63": 48,
+      "64": 48,
+      "65": 48,
+      "66": 48,
+      "67": 48,
+      "68": 48,
+      "69": 48,
+      "70": 48,
+      "71": 48,
+      "72": 48,
+      "73": 48,
+      "74": 48,
+      "75": 48,
+      "76": 48,
+      "77": 48,
+      "78": 48,
+      "79": 48,
+      "80": 48,
+      "81": 48,
+      "82": 48,
+      "83": 48,
+      "84": 48,
+      "85": 48,
+      "86": 48,
+      "87": 48,
+      "88": 48,
+      "89": 48,
+      "90": 48,
+      "91": 48,
+      "92": 48,
+      "93": 48,
+      "94": 48,
+      "95": 48,
+      "96": 48,
+      "97": 48,
+      "98": 48,
+      "99": 48,
+      "100": 48,
+      "101": 48,
+      "102": 48,
+      "103": 48,
+      "104": 48,
+      "105": 48,
+      "106": 48,
+      "107": 48,
+      "108": 48,
+      "109": 48,
+      "110": 48,
+      "111": 48,
+      "112": 48,
+      "113": 48,
+      "114": 48,
+      "115": 48,
+      "116": 48,
+      "117": 48,
+      "118": 48,
+      "119": 48,
+      "120": 48,
+      "121": 48,
+      "122": 48,
+      "123": 48,
+      "124": 48,
+      "125": 48,
+      "126": 48,
+      "127": 48,
+      "128": 48,
+      "129": 48,
+      "130": 48,
+      "131": 48,
+      "132": 48,
+      "133": 48,
+      "134": 48,
+      "135": 48,
+      "136": 48,
+      "137": 48,
+      "138": 48,
+      "139": 48,
+      "140": 48,
+      "141": 48,
+      "142": 48,
+      "143": 48,
+      "144": 48,
+      "145": 48,
+      "146": 48,
+      "147": 48,
+      "148": 48,
+      "149": 48,
+      "150": 48,
+      "151": 48,
+      "152": 48,
+      "153": 48,
+      "154": 48,
+      "155": 48,
+      "156": 48,
+      "157": 48,
+      "158": 48,
+      "159": 48,
+      "160": 48,
+      "161": 48,
+      "162": 48,
+      "163": 48,
+      "164": 48,
+      "165": 48,
+      "166": 48,
+      "167": 49
+     }
+    },
+    "post_certification": {
+     "status": "evaluated",
+     "evaluated": true,
+     "skip_reason": null,
+     "error": null,
+     "certified_cost": 653733946.832507,
+     "gate_c_pass": null,
+     "persisted_models": {
+      "path": "data/SRP1/Results/P515S53/w118_resettle/campaign_s53_w118_resettle_r2_pb_y2025_n5/evals/ca29c5e818366a6e_pb_y2025_n5/certified_models.pkl",
+      "sha256": "15ad6adc92e3ae752f20c2bcd56f225783356b1e17ee116f180b7a11b30988b7",
+      "size_bytes": 164609603
+     },
+     "hull_bound_detail_path": null,
+     "requested": {
+      "hull_polish": false,
+      "persist_certified_models": true,
+      "reference": null
+     },
+     "gate_b": null,
+     "gate_c": null,
+     "gate_d": null
+    },
+    "certified_models_pkl": {
+     "path": "data/SRP1/Results/P515S53/w118_resettle/campaign_s53_w118_resettle_r2_pb_y2025_n5/evals/ca29c5e818366a6e_pb_y2025_n5/certified_models.pkl",
+     "bytes": 164609603,
+     "sha256": "15ad6adc92e3ae752f20c2bcd56f225783356b1e17ee116f180b7a11b30988b7"
+    },
+    "tail_state_check": {
+     "expected_enabled": true,
+     "enabled_in_state": true,
+     "expected_compl_inf_tol_tail": 1e-06,
+     "compl_inf_tol_tail_in_state": 1e-06,
+     "match": true,
+     "n_cycles_recorded": 167,
+     "cycles_tail_active": [
+      111,
+      112,
+      113,
+      114,
+      115,
+      116,
+      117,
+      118,
+      119,
+      120,
+      121,
+      122,
+      123,
+      124,
+      125,
+      126,
+      127,
+      128,
+      129,
+      130,
+      131,
+      132,
+      133,
+      134,
+      135,
+      136,
+      137,
+      138,
+      139,
+      140,
+      141,
+      142,
+      143,
+      144,
+      145,
+      146,
+      147,
+      148,
+      149,
+      150,
+      151,
+      152,
+      153,
+      154,
+      155,
+      156,
+      157,
+      158,
+      159,
+      160,
+      161,
+      162,
+      163,
+      164,
+      165,
+      166,
+      167
+     ],
+     "n_cycles_acted": 1,
+     "restore_at_exit_acted": true
+    },
+    "tail_state_summary": {
+     "n_per_cycle": 167,
+     "cycles_active": [
+      111,
+      112,
+      113,
+      114,
+      115,
+      116,
+      117,
+      118,
+      119,
+      120,
+      121,
+      122,
+      123,
+      124,
+      125,
+      126,
+      127,
+      128,
+      129,
+      130,
+      131,
+      132,
+      133,
+      134,
+      135,
+      136,
+      137,
+      138,
+      139,
+      140,
+      141,
+      142,
+      143,
+      144,
+      145,
+      146,
+      147,
+      148,
+      149,
+      150,
+      151,
+      152,
+      153,
+      154,
+      155,
+      156,
+      157,
+      158,
+      159,
+      160,
+      161,
+      162,
+      163,
+      164,
+      165,
+      166,
+      167
+     ],
+     "n_acted": 1,
+     "restore_at_exit_acted": true
+    }
+   }
+  },
+  "G5": {
+   "solve_profile": {
+    "observed": {
+     "permitted_solve": 8571,
+     "permitted_exec": 8571,
+     "blocked_solve": 0,
+     "blocked_exec": 0
+    },
+    "identity_holds": true,
+    "identity": "observed == base + sum over network-failure events of [recovery_attempted] + [tier2_attempted]; unsupported when an ESSO recovery event or an 'indeterminate' network event exists",
+    "derivation": "(1 + n_dso) * n_years * n_days + n_esso_nodes, per cycle, from the planning object",
+    "n_dso": 3,
+    "n_years": 3,
+    "n_days": 4,
+    "n_esso_nodes": 3,
+    "solves_per_cycle": 51,
+    "rounds": 168,
+    "rounds_note": "one initialization round + cycles_run ADMM cycles",
+    "base_solves": 8568,
+    "retry_solves_credited": 3,
+    "reconciliation_supported": true,
+    "expected_solves": 8571,
+    "recovered_only_identity": {
+     "expected": 8571,
+     "holds": true,
+     "note": "pre-W35 rule, REPORTED not gated: credits retries only to RECOVERED blocks, so an unrecovered block's attempts go uncounted (78a9b230)"
+    }
+   },
+   "n_network_records": 8067,
+   "rounds": 168
+  },
+  "G6_v37": {
+   "definition": "**G6 for future specs \u2014 adopted as the Planner states it:** `Optimal Solution Found` plus the four error metrics within the tail tolerances for the final accepted attempt; \u03bc/floor reported per solve, never gated \u2014 the floor test measured scaling, not depth. Frozen into v37.",
+   "terminal_round": 167,
+   "B": 48,
+   "n_blocks": 48,
+   "n_records_in_round": 49,
+   "n_failing_blocks": 1,
+   "failing_blocks": [
+    {
+     "block": [
+      "case9",
+      2035,
+      "Spring"
+     ],
+     "failures": [
+      "final_exit_not_optimal: 'Solved To Acceptable Level.'",
+      "error_metrics_outside_tolerance: ['complementarity_unscaled_le_compl_inf_tol', 'overall_nlp_error_scaled_le_tol']"
+     ]
+    }
+   ],
+   "worst_metric_over_tolerance": {
+    "overall_nlp_error_over_tol": 9.370554348706039,
+    "dual_infeasibility_over_dual_inf_tol": 0.09370554348706037,
+    "constraint_violation_over_constr_viol_tol": 0.0007233028465059022,
+    "complementarity_over_compl_inf_tol": 2234.36260103811
+   },
+   "mu_over_floor_reported_not_gated": {
+    "n": 48,
+    "min": 0.9999999999999999,
+    "max": 20294.059087807458,
+    "n_at_floor": 47
+   },
+   "per_block": [
+    {
+     "block": [
+      "case33_1",
+      2025,
+      "Autumn"
+     ],
+     "agent": "DSO5",
+     "attempts": [
+      "primary"
+     ],
+     "final_attempt": "primary",
+     "final_exit": "Optimal Solution Found.",
+     "compl_inf_tol_in_force": 1e-06,
+     "tolerances": {
+      "tol": 1e-05,
+      "tol_source": "options_list",
+      "dual_inf_tol": 1.0,
+      "dual_inf_tol_source": "ipopt_default",
+      "constr_viol_tol": 0.0001,
+      "constr_viol_tol_source": "ipopt_default",
+      "compl_inf_tol": 1e-06,
+      "compl_inf_tol_source": "options_list"
+     },
+     "metrics": {
+      "objective": {
+       "scaled": 103.9265739577282,
+       "unscaled": 103926.5739577282
+      },
+      "dual_infeasibility": {
+       "scaled": 7.217320074914824e-10,
+       "unscaled": 7.217320074914824e-07
+      },
+      "constraint_violation": {
+       "scaled": 2.272973206914438e-12,
+       "unscaled": 3.7948533204712476e-12
+      },
+      "variable_bound_violation": {
+       "scaled": 9.999163586778317e-09,
+       "unscaled": 9.999163586778317e-09
+      },
+      "complementarity": {
+       "scaled": 2.018154303620818e-10,
+       "unscaled": 2.018154303620818e-07
+      },
+      "overall_nlp_error": {
+       "scaled": 7.217320074914824e-10,
+       "unscaled": 7.217320074914824e-07
+      }
+     },
+     "checks": {
+      "overall_nlp_error_scaled_le_tol": true,
+      "dual_infeasibility_unscaled_le_dual_inf_tol": true,
+      "constraint_violation_unscaled_le_constr_viol_tol": true,
+      "complementarity_unscaled_le_compl_inf_tol": true
+     },
+     "metric_over_tolerance": {
+      "overall_nlp_error_over_tol": 7.217320074914824e-05,
+      "dual_infeasibility_over_dual_inf_tol": 7.217320074914824e-07,
+      "constraint_violation_over_constr_viol_tol": 3.7948533204712476e-08,
+      "complementarity_over_compl_inf_tol": 0.2018154303620818
+     },
+     "log_segment_sha256": "208bca2098473b274a8d40b49c8aff9a94b8aa163038765c5a5f734ee71968a7",
+     "mu_final": 9.090909090909091e-11,
+     "mu_floor": 9.090909090909091e-11,
+     "mu_over_floor_reported_not_gated": 1.0,
+     "floor_status_reported_not_gated": "at",
+     "failures": []
+    },
+    {
+     "block": [
+      "case33_1",
+      2025,
+      "Spring"
+     ],
+     "agent": "DSO5",
+     "attempts": [
+      "primary"
+     ],
+     "final_attempt": "primary",
+     "final_exit": "Optimal Solution Found.",
+     "compl_inf_tol_in_force": 1e-06,
+     "tolerances": {
+      "tol": 1e-05,
+      "tol_source": "options_list",
+      "dual_inf_tol": 1.0,
+      "dual_inf_tol_source": "ipopt_default",
+      "constr_viol_tol": 0.0001,
+      "constr_viol_tol_source": "ipopt_default",
+      "compl_inf_tol": 1e-06,
+      "compl_inf_tol_source": "options_list"
+     },
+     "metrics": {
+      "objective": {
+       "scaled": 68.36635959306963,
+       "unscaled": 68366.35959306963
+      },
+      "dual_infeasibility": {
+       "scaled": 2.7423064217811105e-10,
+       "unscaled": 2.7423064217811106e-07
+      },
+      "constraint_violation": {
+       "scaled": 3.58001399919726e-12,
+       "unscaled": 5.758206411687894e-12
+      },
+      "variable_bound_violation": {
+       "scaled": 9.99915025738257e-09,
+       "unscaled": 9.99915025738257e-09
+      },
+      "complementarity": {
+       "scaled": 1.6127857672110283e-10,
+       "unscaled": 1.6127857672110283e-07
+      },
+      "overall_nlp_error": {
+       "scaled": 2.7423064217811105e-10,
+       "unscaled": 2.7423064217811106e-07
+      }
+     },
+     "checks": {
+      "overall_nlp_error_scaled_le_tol": true,
+      "dual_infeasibility_unscaled_le_dual_inf_tol": true,
+      "constraint_violation_unscaled_le_constr_viol_tol": true,
+      "complementarity_unscaled_le_compl_inf_tol": true
+     },
+     "metric_over_tolerance": {
+      "overall_nlp_error_over_tol": 2.7423064217811104e-05,
+      "dual_infeasibility_over_dual_inf_tol": 2.7423064217811106e-07,
+      "constraint_violation_over_constr_viol_tol": 5.758206411687894e-08,
+      "complementarity_over_compl_inf_tol": 0.16127857672110285
+     },
+     "log_segment_sha256": "9e59e37c75ba91508d8149ef7ade8ca3fd8a3a9791b0c03730f2a559bcf1b788",
+     "mu_final": 9.090909090909091e-11,
+     "mu_floor": 9.090909090909091e-11,
+     "mu_over_floor_reported_not_gated": 1.0,
+     "floor_status_reported_not_gated": "at",
+     "failures": []
+    },
+    {
+     "block": [
+      "case33_1",
+      2025,
+      "Summer"
+     ],
+     "agent": "DSO5",
+     "attempts": [
+      "primary"
+     ],
+     "final_attempt": "primary",
+     "final_exit": "Optimal Solution Found.",
+     "compl_inf_tol_in_force": 1e-06,
+     "tolerances": {
+      "tol": 1e-05,
+      "tol_source": "options_list",
+      "dual_inf_tol": 1.0,
+      "dual_inf_tol_source": "ipopt_default",
+      "constr_viol_tol": 0.0001,
+      "constr_viol_tol_source": "ipopt_default",
+      "compl_inf_tol": 1e-06,
+      "compl_inf_tol_source": "options_list"
+     },
+     "metrics": {
+      "objective": {
+       "scaled": 90.71451058540045,
+       "unscaled": 90714.51058540045
+      },
+      "dual_infeasibility": {
+       "scaled": 1.7249868468976142e-11,
+       "unscaled": 1.7249868468976143e-08
+      },
+      "constraint_violation": {
+       "scaled": 4.102094002844757e-14,
+       "unscaled": 9.963297548098994e-14
+      },
+      "variable_bound_violation": {
+       "scaled": 9.999147016933502e-09,
+       "unscaled": 9.999147016933502e-09
+      },
+      "complementarity": {
+       "scaled": 1.1786032414160065e-10,
+       "unscaled": 1.1786032414160065e-07
+      },
+      "overall_nlp_error": {
+       "scaled": 1.1786032414160065e-10,
+       "unscaled": 1.1786032414160065e-07
+      }
+     },
+     "checks": {
+      "overall_nlp_error_scaled_le_tol": true,
+      "dual_infeasibility_unscaled_le_dual_inf_tol": true,
+      "constraint_violation_unscaled_le_constr_viol_tol": true,
+      "complementarity_unscaled_le_compl_inf_tol": true
+     },
+     "metric_over_tolerance": {
+      "overall_nlp_error_over_tol": 1.1786032414160064e-05,
+      "dual_infeasibility_over_dual_inf_tol": 1.7249868468976143e-08,
+      "constraint_violation_over_constr_viol_tol": 9.963297548098993e-10,
+      "complementarity_over_compl_inf_tol": 0.11786032414160065
+     },
+     "log_segment_sha256": "8443d9b2d297e665a0c7d451de84b8d824a97dfd890033237602b90603e461fb",
+     "mu_final": 9.090909090909091e-11,
+     "mu_floor": 9.090909090909091e-11,
+     "mu_over_floor_reported_not_gated": 1.0,
+     "floor_status_reported_not_gated": "at",
+     "failures": []
+    },
+    {
+     "block": [
+      "case33_1",
+      2025,
+      "Winter"
+     ],
+     "agent": "DSO5",
+     "attempts": [
+      "primary"
+     ],
+     "final_attempt": "primary",
+     "final_exit": "Optimal Solution Found.",
+     "compl_inf_tol_in_force": 1e-06,
+     "tolerances": {
+      "tol": 1e-05,
+      "tol_source": "options_list",
+      "dual_inf_tol": 1.0,
+      "dual_inf_tol_source": "ipopt_default",
+      "constr_viol_tol": 0.0001,
+      "constr_viol_tol_source": "ipopt_default",
+      "compl_inf_tol": 1e-06,
+      "compl_inf_tol_source": "options_list"
+     },
+     "metrics": {
+      "objective": {
+       "scaled": 98.79786479994871,
+       "unscaled": 98797.86479994871
+      },
+      "dual_infeasibility": {
+       "scaled": 1.0181310993015949e-09,
+       "unscaled": 1.0181310993015949e-06
+      },
+      "constraint_violation": {
+       "scaled": 4.287712481422286e-11,
+       "unscaled": 7.155176451334455e-11
+      },
+      "variable_bound_violation": {
+       "scaled": 9.99916796353703e-09,
+       "unscaled": 9.99916796353703e-09
+      },
+      "complementarity": {
+       "scaled": 2.180066274242671e-10,
+       "unscaled": 2.1800662742426708e-07
+      },
+      "overall_nlp_error": {
+       "scaled": 1.0181310993015949e-09,
+       "unscaled": 1.0181310993015949e-06
+      }
+     },
+     "checks": {
+      "overall_nlp_error_scaled_le_tol": true,
+      "dual_infeasibility_unscaled_le_dual_inf_tol": true,
+      "constraint_violation_unscaled_le_constr_viol_tol": true,
+      "complementarity_unscaled_le_compl_inf_tol": true
+     },
+     "metric_over_tolerance": {
+      "overall_nlp_error_over_tol": 0.00010181310993015948,
+      "dual_infeasibility_over_dual_inf_tol": 1.0181310993015949e-06,
+      "constraint_violation_over_constr_viol_tol": 7.155176451334455e-07,
+      "complementarity_over_compl_inf_tol": 0.21800662742426707
+     },
+     "log_segment_sha256": "ffa877dba015b378709355b9d10790c59299092b056f14560a66d5a0bf9d9240",
+     "mu_final": 9.090909090909091e-11,
+     "mu_floor": 9.090909090909091e-11,
+     "mu_over_floor_reported_not_gated": 1.0,
+     "floor_status_reported_not_gated": "at",
+     "failures": []
+    },
+    {
+     "block": [
+      "case33_1",
+      2030,
+      "Autumn"
+     ],
+     "agent": "DSO5",
+     "attempts": [
+      "primary"
+     ],
+     "final_attempt": "primary",
+     "final_exit": "Optimal Solution Found.",
+     "compl_inf_tol_in_force": 1e-06,
+     "tolerances": {
+      "tol": 1e-05,
+      "tol_source": "options_list",
+      "dual_inf_tol": 1.0,
+      "dual_inf_tol_source": "ipopt_default",
+      "constr_viol_tol": 0.0001,
+      "constr_viol_tol_source": "ipopt_default",
+      "compl_inf_tol": 1e-06,
+      "compl_inf_tol_source": "options_list"
+     },
+     "metrics": {
+      "objective": {
+       "scaled": 115.4464600076915,
+       "unscaled": 115446.46000769152
+      },
+      "dual_infeasibility": {
+       "scaled": 4.979662800446469e-08,
+       "unscaled": 4.9796628004464704e-05
+      },
+      "constraint_violation": {
+       "scaled": 5.465939629447065e-12,
+       "unscaled": 9.116207788650854e-12
+      },
+      "variable_bound_violation": {
+       "scaled": 9.99916732218779e-09,
+       "unscaled": 9.99916732218779e-09
+      },
+      "complementarity": {
+       "scaled": 2.60284164604168e-10,
+       "unscaled": 2.602841646041681e-07
+      },
+      "overall_nlp_error": {
+       "scaled": 4.979662800446469e-08,
+       "unscaled": 4.9796628004464704e-05
+      }
+     },
+     "checks": {
+      "overall_nlp_error_scaled_le_tol": true,
+      "dual_infeasibility_unscaled_le_dual_inf_tol": true,
+      "constraint_violation_unscaled_le_constr_viol_tol": true,
+      "complementarity_unscaled_le_compl_inf_tol": true
+     },
+     "metric_over_tolerance": {
+      "overall_nlp_error_over_tol": 0.004979662800446469,
+      "dual_infeasibility_over_dual_inf_tol": 4.9796628004464704e-05,
+      "constraint_violation_over_constr_viol_tol": 9.116207788650854e-08,
+      "complementarity_over_compl_inf_tol": 0.2602841646041681
+     },
+     "log_segment_sha256": "58a52889197a7aa56c62ed858f6b5fd219c879a89d95208386e53d1e66501ab5",
+     "mu_final": 9.09090909090909e-11,
+     "mu_floor": 9.090909090909091e-11,
+     "mu_over_floor_reported_not_gated": 0.9999999999999999,
+     "floor_status_reported_not_gated": "at",
+     "failures": []
+    },
+    {
+     "block": [
+      "case33_1",
+      2030,
+      "Spring"
+     ],
+     "agent": "DSO5",
+     "attempts": [
+      "primary"
+     ],
+     "final_attempt": "primary",
+     "final_exit": "Optimal Solution Found.",
+     "compl_inf_tol_in_force": 1e-06,
+     "tolerances": {
+      "tol": 1e-05,
+      "tol_source": "options_list",
+      "dual_inf_tol": 1.0,
+      "dual_inf_tol_source": "ipopt_default",
+      "constr_viol_tol": 0.0001,
+      "constr_viol_tol_source": "ipopt_default",
+      "compl_inf_tol": 1e-06,
+      "compl_inf_tol_source": "options_list"
+     },
+     "metrics": {
+      "objective": {
+       "scaled": 76.12376430988337,
+       "unscaled": 76123.76430988337
+      },
+      "dual_infeasibility": {
+       "scaled": 3.537817635510152e-11,
+       "unscaled": 3.537817635510152e-08
+      },
+      "constraint_violation": {
+       "scaled": 4.017433232478124e-14,
+       "unscaled": 9.688083668635272e-14
+      },
+      "variable_bound_violation": {
+       "scaled": 9.999133569638922e-09,
+       "unscaled": 9.999133569638922e-09
+      },
+      "complementarity": {
+       "scaled": 1.2867326020847066e-10,
+       "unscaled": 1.2867326020847066e-07
+      },
+      "overall_nlp_error": {
+       "scaled": 1.2867326020847066e-10,
+       "unscaled": 1.2867326020847066e-07
+      }
+     },
+     "checks": {
+      "overall_nlp_error_scaled_le_tol": true,
+      "dual_infeasibility_unscaled_le_dual_inf_tol": true,
+      "constraint_violation_unscaled_le_constr_viol_tol": true,
+      "complementarity_unscaled_le_compl_inf_tol": true
+     },
+     "metric_over_tolerance": {
+      "overall_nlp_error_over_tol": 1.2867326020847066e-05,
+      "dual_infeasibility_over_dual_inf_tol": 3.537817635510152e-08,
+      "constraint_violation_over_constr_viol_tol": 9.688083668635272e-10,
+      "complementarity_over_compl_inf_tol": 0.12867326020847067
+     },
+     "log_segment_sha256": "90f9003387ae5f233b64b6daa98c344e9833dd2080bf8d2731c579b49abad095",
+     "mu_final": 9.090909090909091e-11,
+     "mu_floor": 9.090909090909091e-11,
+     "mu_over_floor_reported_not_gated": 1.0,
+     "floor_status_reported_not_gated": "at",
+     "failures": []
+    },
+    {
+     "block": [
+      "case33_1",
+      2030,
+      "Summer"
+     ],
+     "agent": "DSO5",
+     "attempts": [
+      "primary"
+     ],
+     "final_attempt": "primary",
+     "final_exit": "Optimal Solution Found.",
+     "compl_inf_tol_in_force": 1e-06,
+     "tolerances": {
+      "tol": 1e-05,
+      "tol_source": "options_list",
+      "dual_inf_tol": 1.0,
+      "dual_inf_tol_source": "ipopt_default",
+      "constr_viol_tol": 0.0001,
+      "constr_viol_tol_source": "ipopt_default",
+      "compl_inf_tol": 1e-06,
+      "compl_inf_tol_source": "options_list"
+     },
+     "metrics": {
+      "objective": {
+       "scaled": 97.32709663101323,
+       "unscaled": 97327.09663101325
+      },
+      "dual_infeasibility": {
+       "scaled": 1.427450462612213e-10,
+       "unscaled": 1.4274504626122134e-07
+      },
+      "constraint_violation": {
+       "scaled": 1.056932319443149e-13,
+       "unscaled": 1.056932319443149e-13
+      },
+      "variable_bound_violation": {
+       "scaled": 9.999157572029633e-09,
+       "unscaled": 9.999157572029633e-09
+      },
+      "complementarity": {
+       "scaled": 1.5282190570022248e-10,
+       "unscaled": 1.528219057002225e-07
+      },
+      "overall_nlp_error": {
+       "scaled": 1.5282190570022248e-10,
+       "unscaled": 1.528219057002225e-07
+      }
+     },
+     "checks": {
+      "overall_nlp_error_scaled_le_tol": true,
+      "dual_infeasibility_unscaled_le_dual_inf_tol": true,
+      "constraint_violation_unscaled_le_constr_viol_tol": true,
+      "complementarity_unscaled_le_compl_inf_tol": true
+     },
+     "metric_over_tolerance": {
+      "overall_nlp_error_over_tol": 1.5282190570022247e-05,
+      "dual_infeasibility_over_dual_inf_tol": 1.4274504626122134e-07,
+      "constraint_violation_over_constr_viol_tol": 1.056932319443149e-09,
+      "complementarity_over_compl_inf_tol": 0.15282190570022253
+     },
+     "log_segment_sha256": "8ed9d6f582618f499d696b11642f7c7caf4b04ab9796296cebd9f227ff07fba5",
+     "mu_final": 9.09090909090909e-11,
+     "mu_floor": 9.090909090909091e-11,
+     "mu_over_floor_reported_not_gated": 0.9999999999999999,
+     "floor_status_reported_not_gated": "at",
+     "failures": []
+    },
+    {
+     "block": [
+      "case33_1",
+      2030,
+      "Winter"
+     ],
+     "agent": "DSO5",
+     "attempts": [
+      "primary"
+     ],
+     "final_attempt": "primary",
+     "final_exit": "Optimal Solution Found.",
+     "compl_inf_tol_in_force": 1e-06,
+     "tolerances": {
+      "tol": 1e-05,
+      "tol_source": "options_list",
+      "dual_inf_tol": 1.0,
+      "dual_inf_tol_source": "ipopt_default",
+      "constr_viol_tol": 0.0001,
+      "constr_viol_tol_source": "ipopt_default",
+      "compl_inf_tol": 1e-06,
+      "compl_inf_tol_source": "options_list"
+     },
+     "metrics": {
+      "objective": {
+       "scaled": 111.61132818688078,
+       "unscaled": 111611.32818688081
+      },
+      "dual_infeasibility": {
+       "scaled": 1.6957839367803321e-09,
+       "unscaled": 1.6957839367803326e-06
+      },
+      "constraint_violation": {
+       "scaled": 7.569998142037459e-11,
+       "unscaled": 1.2633688539764876e-10
+      },
+      "variable_bound_violation": {
+       "scaled": 9.999173429961691e-09,
+       "unscaled": 9.999173429961691e-09
+      },
+      "complementarity": {
+       "scaled": 2.6015179640491375e-10,
+       "unscaled": 2.601517964049138e-07
+      },
+      "overall_nlp_error": {
+       "scaled": 1.6957839367803321e-09,
+       "unscaled": 1.6957839367803326e-06
+      }
+     },
+     "checks": {
+      "overall_nlp_error_scaled_le_tol": true,
+      "dual_infeasibility_unscaled_le_dual_inf_tol": true,
+      "constraint_violation_unscaled_le_constr_viol_tol": true,
+      "complementarity_unscaled_le_compl_inf_tol": true
+     },
+     "metric_over_tolerance": {
+      "overall_nlp_error_over_tol": 0.0001695783936780332,
+      "dual_infeasibility_over_dual_inf_tol": 1.6957839367803326e-06,
+      "constraint_violation_over_constr_viol_tol": 1.2633688539764876e-06,
+      "complementarity_over_compl_inf_tol": 0.2601517964049138
+     },
+     "log_segment_sha256": "6e93c5bff54a7c7eb5b270e2c5f3b65e576715e34ed530f54c56015b69164e42",
+     "mu_final": 9.09090909090909e-11,
+     "mu_floor": 9.090909090909091e-11,
+     "mu_over_floor_reported_not_gated": 0.9999999999999999,
+     "floor_status_reported_not_gated": "at",
+     "failures": []
+    },
+    {
+     "block": [
+      "case33_1",
+      2035,
+      "Autumn"
+     ],
+     "agent": "DSO5",
+     "attempts": [
+      "primary"
+     ],
+     "final_attempt": "primary",
+     "final_exit": "Optimal Solution Found.",
+     "compl_inf_tol_in_force": 1e-06,
+     "tolerances": {
+      "tol": 1e-05,
+      "tol_source": "options_list",
+      "dual_inf_tol": 1.0,
+      "dual_inf_tol_source": "ipopt_default",
+      "constr_viol_tol": 0.0001,
+      "constr_viol_tol_source": "ipopt_default",
+      "compl_inf_tol": 1e-06,
+      "compl_inf_tol_source": "options_list"
+     },
+     "metrics": {
+      "objective": {
+       "scaled": 88.24237825349607,
+       "unscaled": 88242.37825349606
+      },
+      "dual_infeasibility": {
+       "scaled": 1.0218969319560038e-08,
+       "unscaled": 1.0218969319560037e-05
+      },
+      "constraint_violation": {
+       "scaled": 4.069660142718503e-10,
+       "unscaled": 6.794516060892875e-10
+      },
+      "variable_bound_violation": {
+       "scaled": 9.999133665215456e-09,
+       "unscaled": 9.999133665215456e-09
+      },
+      "complementarity": {
+       "scaled": 2.4318500211009207e-10,
+       "unscaled": 2.4318500211009207e-07
+      },
+      "overall_nlp_error": {
+       "scaled": 1.0218969319560038e-08,
+       "unscaled": 1.0218969319560037e-05
+      }
+     },
+     "checks": {
+      "overall_nlp_error_scaled_le_tol": true,
+      "dual_infeasibility_unscaled_le_dual_inf_tol": true,
+      "constraint_violation_unscaled_le_constr_viol_tol": true,
+      "complementarity_unscaled_le_compl_inf_tol": true
+     },
+     "metric_over_tolerance": {
+      "overall_nlp_error_over_tol": 0.0010218969319560037,
+      "dual_infeasibility_over_dual_inf_tol": 1.0218969319560037e-05,
+      "constraint_violation_over_constr_viol_tol": 6.7945160608928745e-06,
+      "complementarity_over_compl_inf_tol": 0.24318500211009209
+     },
+     "log_segment_sha256": "d6853ec14650819afb8a6654fc39d0a770febba2957088a788686b5169d527a1",
+     "mu_final": 9.090909090909091e-11,
+     "mu_floor": 9.090909090909091e-11,
+     "mu_over_floor_reported_not_gated": 1.0,
+     "floor_status_reported_not_gated": "at",
+     "failures": []
+    },
+    {
+     "block": [
+      "case33_1",
+      2035,
+      "Spring"
+     ],
+     "agent": "DSO5",
+     "attempts": [
+      "primary"
+     ],
+     "final_attempt": "primary",
+     "final_exit": "Optimal Solution Found.",
+     "compl_inf_tol_in_force": 1e-06,
+     "tolerances": {
+      "tol": 1e-05,
+      "tol_source": "options_list",
+      "dual_inf_tol": 1.0,
+      "dual_inf_tol_source": "ipopt_default",
+      "constr_viol_tol": 0.0001,
+      "constr_viol_tol_source": "ipopt_default",
+      "compl_inf_tol": 1e-06,
+      "compl_inf_tol_source": "options_list"
+     },
+     "metrics": {
+      "objective": {
+       "scaled": 102.46233494121105,
+       "unscaled": 102462.33494121103
+      },
+      "dual_infeasibility": {
+       "scaled": 1.590064757322683e-09,
+       "unscaled": 1.5900647573226827e-06
+      },
+      "constraint_violation": {
+       "scaled": 1.0895639505218665e-12,
+       "unscaled": 1.835392948734693e-12
+      },
+      "variable_bound_violation": {
+       "scaled": 9.999149915700456e-09,
+       "unscaled": 9.999149915700456e-09
+      },
+      "complementarity": {
+       "scaled": 2.678568083712435e-10,
+       "unscaled": 2.678568083712434e-07
+      },
+      "overall_nlp_error": {
+       "scaled": 1.590064757322683e-09,
+       "unscaled": 1.5900647573226827e-06
+      }
+     },
+     "checks": {
+      "overall_nlp_error_scaled_le_tol": true,
+      "dual_infeasibility_unscaled_le_dual_inf_tol": true,
+      "constraint_violation_unscaled_le_constr_viol_tol": true,
+      "complementarity_unscaled_le_compl_inf_tol": true
+     },
+     "metric_over_tolerance": {
+      "overall_nlp_error_over_tol": 0.00015900647573226828,
+      "dual_infeasibility_over_dual_inf_tol": 1.5900647573226827e-06,
+      "constraint_violation_over_constr_viol_tol": 1.835392948734693e-08,
+      "complementarity_over_compl_inf_tol": 0.2678568083712434
+     },
+     "log_segment_sha256": "ceb92019177ada6fca8757aa91511468c057ffac9c9b34b841102922c6597325",
+     "mu_final": 9.090909090909094e-11,
+     "mu_floor": 9.090909090909091e-11,
+     "mu_over_floor_reported_not_gated": 1.0000000000000002,
+     "floor_status_reported_not_gated": "at",
+     "failures": []
+    },
+    {
+     "block": [
+      "case33_1",
+      2035,
+      "Summer"
+     ],
+     "agent": "DSO5",
+     "attempts": [
+      "primary"
+     ],
+     "final_attempt": "primary",
+     "final_exit": "Optimal Solution Found.",
+     "compl_inf_tol_in_force": 1e-06,
+     "tolerances": {
+      "tol": 1e-05,
+      "tol_source": "options_list",
+      "dual_inf_tol": 1.0,
+      "dual_inf_tol_source": "ipopt_default",
+      "constr_viol_tol": 0.0001,
+      "constr_viol_tol_source": "ipopt_default",
+      "compl_inf_tol": 1e-06,
+      "compl_inf_tol_source": "options_list"
+     },
+     "metrics": {
+      "objective": {
+       "scaled": 111.46299635435157,
+       "unscaled": 111462.99635435158
+      },
+      "dual_infeasibility": {
+       "scaled": 4.902319439281655e-09,
+       "unscaled": 4.902319439281655e-06
+      },
+      "constraint_violation": {
+       "scaled": 5.5203956059902814e-11,
+       "unscaled": 9.216599705652584e-11
+      },
+      "variable_bound_violation": {
+       "scaled": 9.999159638018182e-09,
+       "unscaled": 9.999159638018182e-09
+      },
+      "complementarity": {
+       "scaled": 2.6920021069487216e-10,
+       "unscaled": 2.6920021069487213e-07
+      },
+      "overall_nlp_error": {
+       "scaled": 4.902319439281655e-09,
+       "unscaled": 4.902319439281655e-06
+      }
+     },
+     "checks": {
+      "overall_nlp_error_scaled_le_tol": true,
+      "dual_infeasibility_unscaled_le_dual_inf_tol": true,
+      "constraint_violation_unscaled_le_constr_viol_tol": true,
+      "complementarity_unscaled_le_compl_inf_tol": true
+     },
+     "metric_over_tolerance": {
+      "overall_nlp_error_over_tol": 0.0004902319439281655,
+      "dual_infeasibility_over_dual_inf_tol": 4.902319439281655e-06,
+      "constraint_violation_over_constr_viol_tol": 9.216599705652584e-07,
+      "complementarity_over_compl_inf_tol": 0.26920021069487216
+     },
+     "log_segment_sha256": "28dcf18591852f5125743b36011c9366f28704df5fc2fea2e568b3966311df2b",
+     "mu_final": 9.090909090909091e-11,
+     "mu_floor": 9.090909090909091e-11,
+     "mu_over_floor_reported_not_gated": 1.0,
+     "floor_status_reported_not_gated": "at",
+     "failures": []
+    },
+    {
+     "block": [
+      "case33_1",
+      2035,
+      "Winter"
+     ],
+     "agent": "DSO5",
+     "attempts": [
+      "primary"
+     ],
+     "final_attempt": "primary",
+     "final_exit": "Optimal Solution Found.",
+     "compl_inf_tol_in_force": 1e-06,
+     "tolerances": {
+      "tol": 1e-05,
+      "tol_source": "options_list",
+      "dual_inf_tol": 1.0,
+      "dual_inf_tol_source": "ipopt_default",
+      "constr_viol_tol": 0.0001,
+      "constr_viol_tol_source": "ipopt_default",
+      "compl_inf_tol": 1e-06,
+      "compl_inf_tol_source": "options_list"
+     },
+     "metrics": {
+      "objective": {
+       "scaled": 133.01541001768751,
+       "unscaled": 133015.4100176875
+      },
+      "dual_infeasibility": {
+       "scaled": 7.058638086070851e-06,
+       "unscaled": 0.007058638086070851
+      },
+      "constraint_violation": {
+       "scaled": 2.1200774510421876e-09,
+       "unscaled": 3.539030457577752e-09
+      },
+      "variable_bound_violation": {
+       "scaled": 9.999999225382734e-09,
+       "unscaled": 9.999999225382734e-09
+      },
+      "complementarity": {
+       "scaled": 2.5403639360094223e-10,
+       "unscaled": 2.5403639360094225e-07
+      },
+      "overall_nlp_error": {
+       "scaled": 7.058638086070851e-06,
+       "unscaled": 0.007058638086070851
+      }
+     },
+     "checks": {
+      "overall_nlp_error_scaled_le_tol": true,
+      "dual_infeasibility_unscaled_le_dual_inf_tol": true,
+      "constraint_violation_unscaled_le_constr_viol_tol": true,
+      "complementarity_unscaled_le_compl_inf_tol": true
+     },
+     "metric_over_tolerance": {
+      "overall_nlp_error_over_tol": 0.705863808607085,
+      "dual_infeasibility_over_dual_inf_tol": 0.007058638086070851,
+      "constraint_violation_over_constr_viol_tol": 3.539030457577752e-05,
+      "complementarity_over_compl_inf_tol": 0.25403639360094227
+     },
+     "log_segment_sha256": "4533aea932207eeab8b2c4eeae4808e4c93f2ea40510c781f4dea10b83ef95e0",
+     "mu_final": 9.090909090909091e-11,
+     "mu_floor": 9.090909090909091e-11,
+     "mu_over_floor_reported_not_gated": 1.0,
+     "floor_status_reported_not_gated": "at",
+     "failures": []
+    },
+    {
+     "block": [
+      "case33_2",
+      2025,
+      "Autumn"
+     ],
+     "agent": "DSO7",
+     "attempts": [
+      "primary"
+     ],
+     "final_attempt": "primary",
+     "final_exit": "Optimal Solution Found.",
+     "compl_inf_tol_in_force": 1e-06,
+     "tolerances": {
+      "tol": 1e-05,
+      "tol_source": "options_list",
+      "dual_inf_tol": 1.0,
+      "dual_inf_tol_source": "ipopt_default",
+      "constr_viol_tol": 0.0001,
+      "constr_viol_tol_source": "ipopt_default",
+      "compl_inf_tol": 1e-06,
+      "compl_inf_tol_source": "options_list"
+     },
+     "metrics": {
+      "objective": {
+       "scaled": 57.89375359560004,
+       "unscaled": 57893.753595600036
+      },
+      "dual_infeasibility": {
+       "scaled": 1.9456671113962462e-10,
+       "unscaled": 1.9456671113962463e-07
+      },
+      "constraint_violation": {
+       "scaled": 2.0961010704922955e-13,
+       "unscaled": 2.0961010704922955e-13
+      },
+      "variable_bound_violation": {
+       "scaled": 9.999163381808159e-09,
+       "unscaled": 9.999163381808159e-09
+      },
+      "complementarity": {
+       "scaled": 2.9538112987724814e-10,
+       "unscaled": 2.9538112987724816e-07
+      },
+      "overall_nlp_error": {
+       "scaled": 2.9538112987724814e-10,
+       "unscaled": 2.9538112987724816e-07
+      }
+     },
+     "checks": {
+      "overall_nlp_error_scaled_le_tol": true,
+      "dual_infeasibility_unscaled_le_dual_inf_tol": true,
+      "constraint_violation_unscaled_le_constr_viol_tol": true,
+      "complementarity_unscaled_le_compl_inf_tol": true
+     },
+     "metric_over_tolerance": {
+      "overall_nlp_error_over_tol": 2.9538112987724812e-05,
+      "dual_infeasibility_over_dual_inf_tol": 1.9456671113962463e-07,
+      "constraint_violation_over_constr_viol_tol": 2.0961010704922955e-09,
+      "complementarity_over_compl_inf_tol": 0.2953811298772482
+     },
+     "log_segment_sha256": "e23a0f1bd54b7e5fae3b852bd1bbf346e340cd03353749b3861e6cb18b5323ef",
+     "mu_final": 9.090909090909091e-11,
+     "mu_floor": 9.090909090909091e-11,
+     "mu_over_floor_reported_not_gated": 1.0,
+     "floor_status_reported_not_gated": "at",
+     "failures": []
+    },
+    {
+     "block": [
+      "case33_2",
+      2025,
+      "Spring"
+     ],
+     "agent": "DSO7",
+     "attempts": [
+      "primary"
+     ],
+     "final_attempt": "primary",
+     "final_exit": "Optimal Solution Found.",
+     "compl_inf_tol_in_force": 1e-06,
+     "tolerances": {
+      "tol": 1e-05,
+      "tol_source": "options_list",
+      "dual_inf_tol": 1.0,
+      "dual_inf_tol_source": "ipopt_default",
+      "constr_viol_tol": 0.0001,
+      "constr_viol_tol_source": "ipopt_default",
+      "compl_inf_tol": 1e-06,
+      "compl_inf_tol_source": "options_list"
+     },
+     "metrics": {
+      "objective": {
+       "scaled": 54.559765424977385,
+       "unscaled": 54559.765424977384
+      },
+      "dual_infeasibility": {
+       "scaled": 4.1942330237003066e-11,
+       "unscaled": 4.1942330237003066e-08
+      },
+      "constraint_violation": {
+       "scaled": 8.593126210598712e-14,
+       "unscaled": 1.1128944987781608e-13
+      },
+      "variable_bound_violation": {
+       "scaled": 9.999150093280004e-09,
+       "unscaled": 9.999150093280004e-09
+      },
+      "complementarity": {
+       "scaled": 1.261468936245043e-10,
+       "unscaled": 1.261468936245043e-07
+      },
+      "overall_nlp_error": {
+       "scaled": 1.261468936245043e-10,
+       "unscaled": 1.261468936245043e-07
+      }
+     },
+     "checks": {
+      "overall_nlp_error_scaled_le_tol": true,
+      "dual_infeasibility_unscaled_le_dual_inf_tol": true,
+      "constraint_violation_unscaled_le_constr_viol_tol": true,
+      "complementarity_unscaled_le_compl_inf_tol": true
+     },
+     "metric_over_tolerance": {
+      "overall_nlp_error_over_tol": 1.261468936245043e-05,
+      "dual_infeasibility_over_dual_inf_tol": 4.1942330237003066e-08,
+      "constraint_violation_over_constr_viol_tol": 1.1128944987781608e-09,
+      "complementarity_over_compl_inf_tol": 0.1261468936245043
+     },
+     "log_segment_sha256": "b213813aa8839a9d210ef29a7a532f8d0ada4621065c144fdda8ef018c157d96",
+     "mu_final": 9.090909090909091e-11,
+     "mu_floor": 9.090909090909091e-11,
+     "mu_over_floor_reported_not_gated": 1.0,
+     "floor_status_reported_not_gated": "at",
+     "failures": []
+    },
+    {
+     "block": [
+      "case33_2",
+      2025,
+      "Summer"
+     ],
+     "agent": "DSO7",
+     "attempts": [
+      "primary"
+     ],
+     "final_attempt": "primary",
+     "final_exit": "Optimal Solution Found.",
+     "compl_inf_tol_in_force": 1e-06,
+     "tolerances": {
+      "tol": 1e-05,
+      "tol_source": "options_list",
+      "dual_inf_tol": 1.0,
+      "dual_inf_tol_source": "ipopt_default",
+      "constr_viol_tol": 0.0001,
+      "constr_viol_tol_source": "ipopt_default",
+      "compl_inf_tol": 1e-06,
+      "compl_inf_tol_source": "options_list"
+     },
+     "metrics": {
+      "objective": {
+       "scaled": 78.75296242514744,
+       "unscaled": 78752.96242514745
+      },
+      "dual_infeasibility": {
+       "scaled": 1.1821008648659495e-10,
+       "unscaled": 1.1821008648659496e-07
+      },
+      "constraint_violation": {
+       "scaled": 2.950972799453666e-13,
+       "unscaled": 2.950972799453666e-13
+      },
+      "variable_bound_violation": {
+       "scaled": 9.999146910829236e-09,
+       "unscaled": 9.999146910829236e-09
+      },
+      "complementarity": {
+       "scaled": 2.9793333882937117e-10,
+       "unscaled": 2.9793333882937115e-07
+      },
+      "overall_nlp_error": {
+       "scaled": 2.9793333882937117e-10,
+       "unscaled": 2.9793333882937115e-07
+      }
+     },
+     "checks": {
+      "overall_nlp_error_scaled_le_tol": true,
+      "dual_infeasibility_unscaled_le_dual_inf_tol": true,
+      "constraint_violation_unscaled_le_constr_viol_tol": true,
+      "complementarity_unscaled_le_compl_inf_tol": true
+     },
+     "metric_over_tolerance": {
+      "overall_nlp_error_over_tol": 2.9793333882937114e-05,
+      "dual_infeasibility_over_dual_inf_tol": 1.1821008648659496e-07,
+      "constraint_violation_over_constr_viol_tol": 2.950972799453666e-09,
+      "complementarity_over_compl_inf_tol": 0.2979333388293712
+     },
+     "log_segment_sha256": "96ad77d44288eaba08f80c124bf198d13195b3d3bc9130420b18f948a4e20e8a",
+     "mu_final": 9.090909090909091e-11,
+     "mu_floor": 9.090909090909091e-11,
+     "mu_over_floor_reported_not_gated": 1.0,
+     "floor_status_reported_not_gated": "at",
+     "failures": []
+    },
+    {
+     "block": [
+      "case33_2",
+      2025,
+      "Winter"
+     ],
+     "agent": "DSO7",
+     "attempts": [
+      "primary"
+     ],
+     "final_attempt": "primary",
+     "final_exit": "Optimal Solution Found.",
+     "compl_inf_tol_in_force": 1e-06,
+     "tolerances": {
+      "tol": 1e-05,
+      "tol_source": "options_list",
+      "dual_inf_tol": 1.0,
+      "dual_inf_tol_source": "ipopt_default",
+      "constr_viol_tol": 0.0001,
+      "constr_viol_tol_source": "ipopt_default",
+      "compl_inf_tol": 1e-06,
+      "compl_inf_tol_source": "options_list"
+     },
+     "metrics": {
+      "objective": {
+       "scaled": 73.08869168854716,
+       "unscaled": 73088.69168854716
+      },
+      "dual_infeasibility": {
+       "scaled": 2.838709333675999e-07,
+       "unscaled": 0.00028387093336759993
+      },
+      "constraint_violation": {
+       "scaled": 6.729002970274645e-13,
+       "unscaled": 1.1152106516598379e-12
+      },
+      "variable_bound_violation": {
+       "scaled": 9.999167024865538e-09,
+       "unscaled": 9.999167024865538e-09
+      },
+      "complementarity": {
+       "scaled": 2.2550087821358633e-10,
+       "unscaled": 2.2550087821358633e-07
+      },
+      "overall_nlp_error": {
+       "scaled": 2.838709333675999e-07,
+       "unscaled": 0.00028387093336759993
+      }
+     },
+     "checks": {
+      "overall_nlp_error_scaled_le_tol": true,
+      "dual_infeasibility_unscaled_le_dual_inf_tol": true,
+      "constraint_violation_unscaled_le_constr_viol_tol": true,
+      "complementarity_unscaled_le_compl_inf_tol": true
+     },
+     "metric_over_tolerance": {
+      "overall_nlp_error_over_tol": 0.02838709333675999,
+      "dual_infeasibility_over_dual_inf_tol": 0.00028387093336759993,
+      "constraint_violation_over_constr_viol_tol": 1.1152106516598379e-08,
+      "complementarity_over_compl_inf_tol": 0.22550087821358633
+     },
+     "log_segment_sha256": "e94b1bb16633ac43aa8574bdcb9c4756d4debd3e449f8c6dd1fd775d71b9a912",
+     "mu_final": 9.090909090909091e-11,
+     "mu_floor": 9.090909090909091e-11,
+     "mu_over_floor_reported_not_gated": 1.0,
+     "floor_status_reported_not_gated": "at",
+     "failures": []
+    },
+    {
+     "block": [
+      "case33_2",
+      2030,
+      "Autumn"
+     ],
+     "agent": "DSO7",
+     "attempts": [
+      "primary"
+     ],
+     "final_attempt": "primary",
+     "final_exit": "Optimal Solution Found.",
+     "compl_inf_tol_in_force": 1e-06,
+     "tolerances": {
+      "tol": 1e-05,
+      "tol_source": "options_list",
+      "dual_inf_tol": 1.0,
+      "dual_inf_tol_source": "ipopt_default",
+      "constr_viol_tol": 0.0001,
+      "constr_viol_tol_source": "ipopt_default",
+      "compl_inf_tol": 1e-06,
+      "compl_inf_tol_source": "options_list"
+     },
+     "metrics": {
+      "objective": {
+       "scaled": 69.07921302650956,
+       "unscaled": 69079.21302650958
+      },
+      "dual_infeasibility": {
+       "scaled": 1.2131953906510576e-10,
+       "unscaled": 1.2131953906510578e-07
+      },
+      "constraint_violation": {
+       "scaled": 2.546851618490109e-13,
+       "unscaled": 2.546851618490109e-13
+      },
+      "variable_bound_violation": {
+       "scaled": 9.9991661657187e-09,
+       "unscaled": 9.9991661657187e-09
+      },
+      "complementarity": {
+       "scaled": 2.086851792267871e-10,
+       "unscaled": 2.0868517922678715e-07
+      },
+      "overall_nlp_error": {
+       "scaled": 2.086851792267871e-10,
+       "unscaled": 2.0868517922678715e-07
+      }
+     },
+     "checks": {
+      "overall_nlp_error_scaled_le_tol": true,
+      "dual_infeasibility_unscaled_le_dual_inf_tol": true,
+      "constraint_violation_unscaled_le_constr_viol_tol": true,
+      "complementarity_unscaled_le_compl_inf_tol": true
+     },
+     "metric_over_tolerance": {
+      "overall_nlp_error_over_tol": 2.0868517922678707e-05,
+      "dual_infeasibility_over_dual_inf_tol": 1.2131953906510578e-07,
+      "constraint_violation_over_constr_viol_tol": 2.546851618490109e-09,
+      "complementarity_over_compl_inf_tol": 0.20868517922678717
+     },
+     "log_segment_sha256": "42639961e554596680cce549dc0da79de4574b6c0cd3924bf0edddfad933b7f5",
+     "mu_final": 9.09090909090909e-11,
+     "mu_floor": 9.090909090909091e-11,
+     "mu_over_floor_reported_not_gated": 0.9999999999999999,
+     "floor_status_reported_not_gated": "at",
+     "failures": []
+    },
+    {
+     "block": [
+      "case33_2",
+      2030,
+      "Spring"
+     ],
+     "agent": "DSO7",
+     "attempts": [
+      "primary"
+     ],
+     "final_attempt": "primary",
+     "final_exit": "Optimal Solution Found.",
+     "compl_inf_tol_in_force": 1e-06,
+     "tolerances": {
+      "tol": 1e-05,
+      "tol_source": "options_list",
+      "dual_inf_tol": 1.0,
+      "dual_inf_tol_source": "ipopt_default",
+      "constr_viol_tol": 0.0001,
+      "constr_viol_tol_source": "ipopt_default",
+      "compl_inf_tol": 1e-06,
+      "compl_inf_tol_source": "options_list"
+     },
+     "metrics": {
+      "objective": {
+       "scaled": 61.14562966389589,
+       "unscaled": 61145.62966389589
+      },
+      "dual_infeasibility": {
+       "scaled": 9.118005941956111e-11,
+       "unscaled": 9.118005941956111e-08
+      },
+      "constraint_violation": {
+       "scaled": 2.8888003100746573e-13,
+       "unscaled": 4.0600856010541975e-13
+      },
+      "variable_bound_violation": {
+       "scaled": 9.999133163791358e-09,
+       "unscaled": 9.999133163791358e-09
+      },
+      "complementarity": {
+       "scaled": 1.6852610871087466e-10,
+       "unscaled": 1.6852610871087466e-07
+      },
+      "overall_nlp_error": {
+       "scaled": 1.6852610871087466e-10,
+       "unscaled": 1.6852610871087466e-07
+      }
+     },
+     "checks": {
+      "overall_nlp_error_scaled_le_tol": true,
+      "dual_infeasibility_unscaled_le_dual_inf_tol": true,
+      "constraint_violation_unscaled_le_constr_viol_tol": true,
+      "complementarity_unscaled_le_compl_inf_tol": true
+     },
+     "metric_over_tolerance": {
+      "overall_nlp_error_over_tol": 1.6852610871087466e-05,
+      "dual_infeasibility_over_dual_inf_tol": 9.118005941956111e-08,
+      "constraint_violation_over_constr_viol_tol": 4.0600856010541975e-09,
+      "complementarity_over_compl_inf_tol": 0.16852610871087467
+     },
+     "log_segment_sha256": "289b2a28257b15b671768f55ff680552632259227615fd19c6bc51dbbe738b25",
+     "mu_final": 9.090909090909091e-11,
+     "mu_floor": 9.090909090909091e-11,
+     "mu_over_floor_reported_not_gated": 1.0,
+     "floor_status_reported_not_gated": "at",
+     "failures": []
+    },
+    {
+     "block": [
+      "case33_2",
+      2030,
+      "Summer"
+     ],
+     "agent": "DSO7",
+     "attempts": [
+      "primary"
+     ],
+     "final_attempt": "primary",
+     "final_exit": "Optimal Solution Found.",
+     "compl_inf_tol_in_force": 1e-06,
+     "tolerances": {
+      "tol": 1e-05,
+      "tol_source": "options_list",
+      "dual_inf_tol": 1.0,
+      "dual_inf_tol_source": "ipopt_default",
+      "constr_viol_tol": 0.0001,
+      "constr_viol_tol_source": "ipopt_default",
+      "compl_inf_tol": 1e-06,
+      "compl_inf_tol_source": "options_list"
+     },
+     "metrics": {
+      "objective": {
+       "scaled": 104.21559923968228,
+       "unscaled": 104215.5992396823
+      },
+      "dual_infeasibility": {
+       "scaled": 4.3752485360403694e-10,
+       "unscaled": 4.3752485360403703e-07
+      },
+      "constraint_violation": {
+       "scaled": 5.094704325591708e-13,
+       "unscaled": 8.06667233010927e-13
+      },
+      "variable_bound_violation": {
+       "scaled": 9.999156994109463e-09,
+       "unscaled": 9.999156994109463e-09
+      },
+      "complementarity": {
+       "scaled": 2.977769671407398e-10,
+       "unscaled": 2.977769671407399e-07
+      },
+      "overall_nlp_error": {
+       "scaled": 4.3752485360403694e-10,
+       "unscaled": 4.3752485360403703e-07
+      }
+     },
+     "checks": {
+      "overall_nlp_error_scaled_le_tol": true,
+      "dual_infeasibility_unscaled_le_dual_inf_tol": true,
+      "constraint_violation_unscaled_le_constr_viol_tol": true,
+      "complementarity_unscaled_le_compl_inf_tol": true
+     },
+     "metric_over_tolerance": {
+      "overall_nlp_error_over_tol": 4.3752485360403694e-05,
+      "dual_infeasibility_over_dual_inf_tol": 4.3752485360403703e-07,
+      "constraint_violation_over_constr_viol_tol": 8.06667233010927e-09,
+      "complementarity_over_compl_inf_tol": 0.2977769671407399
+     },
+     "log_segment_sha256": "995f0accea7af8c46ce2fdb33686e52ce42833d06e4c37eb3084791c147f2970",
+     "mu_final": 9.09090909090909e-11,
+     "mu_floor": 9.090909090909091e-11,
+     "mu_over_floor_reported_not_gated": 0.9999999999999999,
+     "floor_status_reported_not_gated": "at",
+     "failures": []
+    },
+    {
+     "block": [
+      "case33_2",
+      2030,
+      "Winter"
+     ],
+     "agent": "DSO7",
+     "attempts": [
+      "primary"
+     ],
+     "final_attempt": "primary",
+     "final_exit": "Optimal Solution Found.",
+     "compl_inf_tol_in_force": 1e-06,
+     "tolerances": {
+      "tol": 1e-05,
+      "tol_source": "options_list",
+      "dual_inf_tol": 1.0,
+      "dual_inf_tol_source": "ipopt_default",
+      "constr_viol_tol": 0.0001,
+      "constr_viol_tol_source": "ipopt_default",
+      "compl_inf_tol": 1e-06,
+      "compl_inf_tol_source": "options_list"
+     },
+     "metrics": {
+      "objective": {
+       "scaled": 60.19614132329191,
+       "unscaled": 60196.14132329192
+      },
+      "dual_infeasibility": {
+       "scaled": 1.446558304979252e-06,
+       "unscaled": 0.0014465583049792523
+      },
+      "constraint_violation": {
+       "scaled": 2.148771908489287e-12,
+       "unscaled": 3.587491415046884e-12
+      },
+      "variable_bound_violation": {
+       "scaled": 9.9991721922744e-09,
+       "unscaled": 9.9991721922744e-09
+      },
+      "complementarity": {
+       "scaled": 2.0865097326332094e-10,
+       "unscaled": 2.0865097326332099e-07
+      },
+      "overall_nlp_error": {
+       "scaled": 1.446558304979252e-06,
+       "unscaled": 0.0014465583049792523
+      }
+     },
+     "checks": {
+      "overall_nlp_error_scaled_le_tol": true,
+      "dual_infeasibility_unscaled_le_dual_inf_tol": true,
+      "constraint_violation_unscaled_le_constr_viol_tol": true,
+      "complementarity_unscaled_le_compl_inf_tol": true
+     },
+     "metric_over_tolerance": {
+      "overall_nlp_error_over_tol": 0.1446558304979252,
+      "dual_infeasibility_over_dual_inf_tol": 0.0014465583049792523,
+      "constraint_violation_over_constr_viol_tol": 3.587491415046884e-08,
+      "complementarity_over_compl_inf_tol": 0.208650973263321
+     },
+     "log_segment_sha256": "c71abd541b1b3e589eb0037738ae52e99d32bc63330d89348fca9809426dd488",
+     "mu_final": 9.09090909090909e-11,
+     "mu_floor": 9.090909090909091e-11,
+     "mu_over_floor_reported_not_gated": 0.9999999999999999,
+     "floor_status_reported_not_gated": "at",
+     "failures": []
+    },
+    {
+     "block": [
+      "case33_2",
+      2035,
+      "Autumn"
+     ],
+     "agent": "DSO7",
+     "attempts": [
+      "primary"
+     ],
+     "final_attempt": "primary",
+     "final_exit": "Optimal Solution Found.",
+     "compl_inf_tol_in_force": 1e-06,
+     "tolerances": {
+      "tol": 1e-05,
+      "tol_source": "options_list",
+      "dual_inf_tol": 1.0,
+      "dual_inf_tol_source": "ipopt_default",
+      "constr_viol_tol": 0.0001,
+      "constr_viol_tol_source": "ipopt_default",
+      "compl_inf_tol": 1e-06,
+      "compl_inf_tol_source": "options_list"
+     },
+     "metrics": {
+      "objective": {
+       "scaled": 63.525185257806,
+       "unscaled": 63525.185257806
+      },
+      "dual_infeasibility": {
+       "scaled": 2.937316719583116e-07,
+       "unscaled": 0.00029373167195831157
+      },
+      "constraint_violation": {
+       "scaled": 2.149391775674303e-13,
+       "unscaled": 2.149391775674303e-13
+      },
+      "variable_bound_violation": {
+       "scaled": 9.999133585131295e-09,
+       "unscaled": 9.999133585131295e-09
+      },
+      "complementarity": {
+       "scaled": 2.2551430116529227e-10,
+       "unscaled": 2.2551430116529226e-07
+      },
+      "overall_nlp_error": {
+       "scaled": 2.937316719583116e-07,
+       "unscaled": 0.00029373167195831157
+      }
+     },
+     "checks": {
+      "overall_nlp_error_scaled_le_tol": true,
+      "dual_infeasibility_unscaled_le_dual_inf_tol": true,
+      "constraint_violation_unscaled_le_constr_viol_tol": true,
+      "complementarity_unscaled_le_compl_inf_tol": true
+     },
+     "metric_over_tolerance": {
+      "overall_nlp_error_over_tol": 0.029373167195831155,
+      "dual_infeasibility_over_dual_inf_tol": 0.00029373167195831157,
+      "constraint_violation_over_constr_viol_tol": 2.149391775674303e-09,
+      "complementarity_over_compl_inf_tol": 0.22551430116529228
+     },
+     "log_segment_sha256": "6ed0d9ab747dee1fac8a5d9617b924c8717899dc01fa3193ce84f0411cdd282b",
+     "mu_final": 9.090909090909091e-11,
+     "mu_floor": 9.090909090909091e-11,
+     "mu_over_floor_reported_not_gated": 1.0,
+     "floor_status_reported_not_gated": "at",
+     "failures": []
+    },
+    {
+     "block": [
+      "case33_2",
+      2035,
+      "Spring"
+     ],
+     "agent": "DSO7",
+     "attempts": [
+      "primary"
+     ],
+     "final_attempt": "primary",
+     "final_exit": "Optimal Solution Found.",
+     "compl_inf_tol_in_force": 1e-06,
+     "tolerances": {
+      "tol": 1e-05,
+      "tol_source": "options_list",
+      "dual_inf_tol": 1.0,
+      "dual_inf_tol_source": "ipopt_default",
+      "constr_viol_tol": 0.0001,
+      "constr_viol_tol_source": "ipopt_default",
+      "compl_inf_tol": 1e-06,
+      "compl_inf_tol_source": "options_list"
+     },
+     "metrics": {
+      "objective": {
+       "scaled": 104.68727814326454,
+       "unscaled": 104687.27814326451
+      },
+      "dual_infeasibility": {
+       "scaled": 6.991569181846003e-11,
+       "unscaled": 6.991569181846e-08
+      },
+      "constraint_violation": {
+       "scaled": 1.0125233984581428e-13,
+       "unscaled": 1.0125233984581428e-13
+      },
+      "variable_bound_violation": {
+       "scaled": 9.999150020254014e-09,
+       "unscaled": 9.999150020254014e-09
+      },
+      "complementarity": {
+       "scaled": 1.316444247607629e-10,
+       "unscaled": 1.316444247607629e-07
+      },
+      "overall_nlp_error": {
+       "scaled": 1.316444247607629e-10,
+       "unscaled": 1.316444247607629e-07
+      }
+     },
+     "checks": {
+      "overall_nlp_error_scaled_le_tol": true,
+      "dual_infeasibility_unscaled_le_dual_inf_tol": true,
+      "constraint_violation_unscaled_le_constr_viol_tol": true,
+      "complementarity_unscaled_le_compl_inf_tol": true
+     },
+     "metric_over_tolerance": {
+      "overall_nlp_error_over_tol": 1.316444247607629e-05,
+      "dual_infeasibility_over_dual_inf_tol": 6.991569181846e-08,
+      "constraint_violation_over_constr_viol_tol": 1.0125233984581428e-09,
+      "complementarity_over_compl_inf_tol": 0.1316444247607629
+     },
+     "log_segment_sha256": "7f3aba6515e7d96d666322ee095dd9c38b8fe1d017979d81c9afacff424e9e20",
+     "mu_final": 9.090909090909094e-11,
+     "mu_floor": 9.090909090909091e-11,
+     "mu_over_floor_reported_not_gated": 1.0000000000000002,
+     "floor_status_reported_not_gated": "at",
+     "failures": []
+    },
+    {
+     "block": [
+      "case33_2",
+      2035,
+      "Summer"
+     ],
+     "agent": "DSO7",
+     "attempts": [
+      "primary"
+     ],
+     "final_attempt": "primary",
+     "final_exit": "Optimal Solution Found.",
+     "compl_inf_tol_in_force": 1e-06,
+     "tolerances": {
+      "tol": 1e-05,
+      "tol_source": "options_list",
+      "dual_inf_tol": 1.0,
+      "dual_inf_tol_source": "ipopt_default",
+      "constr_viol_tol": 0.0001,
+      "constr_viol_tol_source": "ipopt_default",
+      "compl_inf_tol": 1e-06,
+      "compl_inf_tol_source": "options_list"
+     },
+     "metrics": {
+      "objective": {
+       "scaled": 108.65610477019506,
+       "unscaled": 108656.10477019506
+      },
+      "dual_infeasibility": {
+       "scaled": 1.3740656450819909e-11,
+       "unscaled": 1.3740656450819909e-08
+      },
+      "constraint_violation": {
+       "scaled": 4.559696627451414e-14,
+       "unscaled": 8.73164388015546e-14
+      },
+      "variable_bound_violation": {
+       "scaled": 9.999159443247047e-09,
+       "unscaled": 9.999159443247047e-09
+      },
+      "complementarity": {
+       "scaled": 1.0582590089758242e-10,
+       "unscaled": 1.0582590089758241e-07
+      },
+      "overall_nlp_error": {
+       "scaled": 1.0582590089758242e-10,
+       "unscaled": 1.0582590089758241e-07
+      }
+     },
+     "checks": {
+      "overall_nlp_error_scaled_le_tol": true,
+      "dual_infeasibility_unscaled_le_dual_inf_tol": true,
+      "constraint_violation_unscaled_le_constr_viol_tol": true,
+      "complementarity_unscaled_le_compl_inf_tol": true
+     },
+     "metric_over_tolerance": {
+      "overall_nlp_error_over_tol": 1.058259008975824e-05,
+      "dual_infeasibility_over_dual_inf_tol": 1.3740656450819909e-08,
+      "constraint_violation_over_constr_viol_tol": 8.73164388015546e-10,
+      "complementarity_over_compl_inf_tol": 0.10582590089758241
+     },
+     "log_segment_sha256": "e8741fa90740d77657b9475483259a5f9b9d1de77920b608e216d257faccdbcd",
+     "mu_final": 9.090909090909091e-11,
+     "mu_floor": 9.090909090909091e-11,
+     "mu_over_floor_reported_not_gated": 1.0,
+     "floor_status_reported_not_gated": "at",
+     "failures": []
+    },
+    {
+     "block": [
+      "case33_2",
+      2035,
+      "Winter"
+     ],
+     "agent": "DSO7",
+     "attempts": [
+      "primary"
+     ],
+     "final_attempt": "primary",
+     "final_exit": "Optimal Solution Found.",
+     "compl_inf_tol_in_force": 1e-06,
+     "tolerances": {
+      "tol": 1e-05,
+      "tol_source": "options_list",
+      "dual_inf_tol": 1.0,
+      "dual_inf_tol_source": "ipopt_default",
+      "constr_viol_tol": 0.0001,
+      "constr_viol_tol_source": "ipopt_default",
+      "compl_inf_tol": 1e-06,
+      "compl_inf_tol_source": "options_list"
+     },
+     "metrics": {
+      "objective": {
+       "scaled": 83.51376774480494,
+       "unscaled": 83513.76774480494
+      },
+      "dual_infeasibility": {
+       "scaled": 4.087782650375077e-09,
+       "unscaled": 4.087782650375077e-06
+      },
+      "constraint_violation": {
+       "scaled": 1.063869564379712e-10,
+       "unscaled": 1.7757140202689925e-10
+      },
+      "variable_bound_violation": {
+       "scaled": 9.999189387820331e-09,
+       "unscaled": 9.999189387820331e-09
+      },
+      "complementarity": {
+       "scaled": 1.9430434685069506e-10,
+       "unscaled": 1.9430434685069507e-07
+      },
+      "overall_nlp_error": {
+       "scaled": 4.087782650375077e-09,
+       "unscaled": 4.087782650375077e-06
+      }
+     },
+     "checks": {
+      "overall_nlp_error_scaled_le_tol": true,
+      "dual_infeasibility_unscaled_le_dual_inf_tol": true,
+      "constraint_violation_unscaled_le_constr_viol_tol": true,
+      "complementarity_unscaled_le_compl_inf_tol": true
+     },
+     "metric_over_tolerance": {
+      "overall_nlp_error_over_tol": 0.00040877826503750767,
+      "dual_infeasibility_over_dual_inf_tol": 4.087782650375077e-06,
+      "constraint_violation_over_constr_viol_tol": 1.7757140202689925e-06,
+      "complementarity_over_compl_inf_tol": 0.1943043468506951
+     },
+     "log_segment_sha256": "342e7fc37d00e2334fc082e0ef5d71f96b4377b8c27098658a33705897b9bc7b",
+     "mu_final": 9.090909090909091e-11,
+     "mu_floor": 9.090909090909091e-11,
+     "mu_over_floor_reported_not_gated": 1.0,
+     "floor_status_reported_not_gated": "at",
+     "failures": []
+    },
+    {
+     "block": [
+      "case33_3",
+      2025,
+      "Autumn"
+     ],
+     "agent": "DSO9",
+     "attempts": [
+      "primary"
+     ],
+     "final_attempt": "primary",
+     "final_exit": "Optimal Solution Found.",
+     "compl_inf_tol_in_force": 1e-06,
+     "tolerances": {
+      "tol": 1e-05,
+      "tol_source": "options_list",
+      "dual_inf_tol": 1.0,
+      "dual_inf_tol_source": "ipopt_default",
+      "constr_viol_tol": 0.0001,
+      "constr_viol_tol_source": "ipopt_default",
+      "compl_inf_tol": 1e-06,
+      "compl_inf_tol_source": "options_list"
+     },
+     "metrics": {
+      "objective": {
+       "scaled": 115.25699303871646,
+       "unscaled": 115256.99303871645
+      },
+      "dual_infeasibility": {
+       "scaled": 5.256443413873512e-07,
+       "unscaled": 0.0005256443413873512
+      },
+      "constraint_violation": {
+       "scaled": 2.061239867196492e-08,
+       "unscaled": 3.4411974825232505e-08
+      },
+      "variable_bound_violation": {
+       "scaled": 9.999163080188008e-09,
+       "unscaled": 9.999163080188008e-09
+      },
+      "complementarity": {
+       "scaled": 2.0851295892047725e-10,
+       "unscaled": 2.0851295892047726e-07
+      },
+      "overall_nlp_error": {
+       "scaled": 5.256443413873512e-07,
+       "unscaled": 0.0005256443413873512
+      }
+     },
+     "checks": {
+      "overall_nlp_error_scaled_le_tol": true,
+      "dual_infeasibility_unscaled_le_dual_inf_tol": true,
+      "constraint_violation_unscaled_le_constr_viol_tol": true,
+      "complementarity_unscaled_le_compl_inf_tol": true
+     },
+     "metric_over_tolerance": {
+      "overall_nlp_error_over_tol": 0.05256443413873512,
+      "dual_infeasibility_over_dual_inf_tol": 0.0005256443413873512,
+      "constraint_violation_over_constr_viol_tol": 0.00034411974825232505,
+      "complementarity_over_compl_inf_tol": 0.20851295892047728
+     },
+     "log_segment_sha256": "9f7cb1c9131a957c8df784563a98a1d4372b9ad0628c0f515f565846d60af187",
+     "mu_final": 9.090909090909091e-11,
+     "mu_floor": 9.090909090909091e-11,
+     "mu_over_floor_reported_not_gated": 1.0,
+     "floor_status_reported_not_gated": "at",
+     "failures": []
+    },
+    {
+     "block": [
+      "case33_3",
+      2025,
+      "Spring"
+     ],
+     "agent": "DSO9",
+     "attempts": [
+      "primary"
+     ],
+     "final_attempt": "primary",
+     "final_exit": "Optimal Solution Found.",
+     "compl_inf_tol_in_force": 1e-06,
+     "tolerances": {
+      "tol": 1e-05,
+      "tol_source": "options_list",
+      "dual_inf_tol": 1.0,
+      "dual_inf_tol_source": "ipopt_default",
+      "constr_viol_tol": 0.0001,
+      "constr_viol_tol_source": "ipopt_default",
+      "compl_inf_tol": 1e-06,
+      "compl_inf_tol_source": "options_list"
+     },
+     "metrics": {
+      "objective": {
+       "scaled": 68.35051835780725,
+       "unscaled": 68350.51835780725
+      },
+      "dual_infeasibility": {
+       "scaled": 5.3146292484035564e-11,
+       "unscaled": 5.314629248403557e-08
+      },
+      "constraint_violation": {
+       "scaled": 4.183532207436466e-12,
+       "unscaled": 6.984635092521785e-12
+      },
+      "variable_bound_violation": {
+       "scaled": 9.999149405298443e-09,
+       "unscaled": 9.999149405298443e-09
+      },
+      "complementarity": {
+       "scaled": 1.247633976363615e-10,
+       "unscaled": 1.247633976363615e-07
+      },
+      "overall_nlp_error": {
+       "scaled": 1.247633976363615e-10,
+       "unscaled": 1.247633976363615e-07
+      }
+     },
+     "checks": {
+      "overall_nlp_error_scaled_le_tol": true,
+      "dual_infeasibility_unscaled_le_dual_inf_tol": true,
+      "constraint_violation_unscaled_le_constr_viol_tol": true,
+      "complementarity_unscaled_le_compl_inf_tol": true
+     },
+     "metric_over_tolerance": {
+      "overall_nlp_error_over_tol": 1.247633976363615e-05,
+      "dual_infeasibility_over_dual_inf_tol": 5.314629248403557e-08,
+      "constraint_violation_over_constr_viol_tol": 6.984635092521785e-08,
+      "complementarity_over_compl_inf_tol": 0.12476339763636152
+     },
+     "log_segment_sha256": "5f971d8d443ca641ce7b01d20f956f95d32332789e503a9f18d8597622462d8a",
+     "mu_final": 9.090909090909091e-11,
+     "mu_floor": 9.090909090909091e-11,
+     "mu_over_floor_reported_not_gated": 1.0,
+     "floor_status_reported_not_gated": "at",
+     "failures": []
+    },
+    {
+     "block": [
+      "case33_3",
+      2025,
+      "Summer"
+     ],
+     "agent": "DSO9",
+     "attempts": [
+      "primary"
+     ],
+     "final_attempt": "primary",
+     "final_exit": "Optimal Solution Found.",
+     "compl_inf_tol_in_force": 1e-06,
+     "tolerances": {
+      "tol": 1e-05,
+      "tol_source": "options_list",
+      "dual_inf_tol": 1.0,
+      "dual_inf_tol_source": "ipopt_default",
+      "constr_viol_tol": 0.0001,
+      "constr_viol_tol_source": "ipopt_default",
+      "compl_inf_tol": 1e-06,
+      "compl_inf_tol_source": "options_list"
+     },
+     "metrics": {
+      "objective": {
+       "scaled": 82.27299024773215,
+       "unscaled": 82272.99024773214
+      },
+      "dual_infeasibility": {
+       "scaled": 1.456924014540893e-10,
+       "unscaled": 1.456924014540893e-07
+      },
+      "constraint_violation": {
+       "scaled": 5.664357871637549e-13,
+       "unscaled": 5.664357871637549e-13
+      },
+      "variable_bound_violation": {
+       "scaled": 9.999146127696513e-09,
+       "unscaled": 9.999146127696513e-09
+      },
+      "complementarity": {
+       "scaled": 2.7313522992584093e-10,
+       "unscaled": 2.731352299258409e-07
+      },
+      "overall_nlp_error": {
+       "scaled": 2.7313522992584093e-10,
+       "unscaled": 2.731352299258409e-07
+      }
+     },
+     "checks": {
+      "overall_nlp_error_scaled_le_tol": true,
+      "dual_infeasibility_unscaled_le_dual_inf_tol": true,
+      "constraint_violation_unscaled_le_constr_viol_tol": true,
+      "complementarity_unscaled_le_compl_inf_tol": true
+     },
+     "metric_over_tolerance": {
+      "overall_nlp_error_over_tol": 2.731352299258409e-05,
+      "dual_infeasibility_over_dual_inf_tol": 1.456924014540893e-07,
+      "constraint_violation_over_constr_viol_tol": 5.664357871637549e-09,
+      "complementarity_over_compl_inf_tol": 0.27313522992584094
+     },
+     "log_segment_sha256": "6849e1399b352be68a7b3cc9b4d5fa62e8115f75aab9cc5a17c93dda8f7b31ec",
+     "mu_final": 9.090909090909091e-11,
+     "mu_floor": 9.090909090909091e-11,
+     "mu_over_floor_reported_not_gated": 1.0,
+     "floor_status_reported_not_gated": "at",
+     "failures": []
+    },
+    {
+     "block": [
+      "case33_3",
+      2025,
+      "Winter"
+     ],
+     "agent": "DSO9",
+     "attempts": [
+      "primary"
+     ],
+     "final_attempt": "primary",
+     "final_exit": "Optimal Solution Found.",
+     "compl_inf_tol_in_force": 1e-06,
+     "tolerances": {
+      "tol": 1e-05,
+      "tol_source": "options_list",
+      "dual_inf_tol": 1.0,
+      "dual_inf_tol_source": "ipopt_default",
+      "constr_viol_tol": 0.0001,
+      "constr_viol_tol_source": "ipopt_default",
+      "compl_inf_tol": 1e-06,
+      "compl_inf_tol_source": "options_list"
+     },
+     "metrics": {
+      "objective": {
+       "scaled": 120.74422176052343,
+       "unscaled": 120744.22176052343
+      },
+      "dual_infeasibility": {
+       "scaled": 3.015285152632529e-10,
+       "unscaled": 3.015285152632529e-07
+      },
+      "constraint_violation": {
+       "scaled": 3.836930773104541e-13,
+       "unscaled": 3.836930773104541e-13
+      },
+      "variable_bound_violation": {
+       "scaled": 9.999168281820663e-09,
+       "unscaled": 9.999168281820663e-09
+      },
+      "complementarity": {
+       "scaled": 1.5620909372488157e-10,
+       "unscaled": 1.5620909372488157e-07
+      },
+      "overall_nlp_error": {
+       "scaled": 3.015285152632529e-10,
+       "unscaled": 3.015285152632529e-07
+      }
+     },
+     "checks": {
+      "overall_nlp_error_scaled_le_tol": true,
+      "dual_infeasibility_unscaled_le_dual_inf_tol": true,
+      "constraint_violation_unscaled_le_constr_viol_tol": true,
+      "complementarity_unscaled_le_compl_inf_tol": true
+     },
+     "metric_over_tolerance": {
+      "overall_nlp_error_over_tol": 3.0152851526325287e-05,
+      "dual_infeasibility_over_dual_inf_tol": 3.015285152632529e-07,
+      "constraint_violation_over_constr_viol_tol": 3.836930773104541e-09,
+      "complementarity_over_compl_inf_tol": 0.15620909372488156
+     },
+     "log_segment_sha256": "0d67f5ec68b5708e573e137924aea84172ab80235444777d27246b7caca2b42e",
+     "mu_final": 9.090909090909091e-11,
+     "mu_floor": 9.090909090909091e-11,
+     "mu_over_floor_reported_not_gated": 1.0,
+     "floor_status_reported_not_gated": "at",
+     "failures": []
+    },
+    {
+     "block": [
+      "case33_3",
+      2030,
+      "Autumn"
+     ],
+     "agent": "DSO9",
+     "attempts": [
+      "primary"
+     ],
+     "final_attempt": "primary",
+     "final_exit": "Optimal Solution Found.",
+     "compl_inf_tol_in_force": 1e-06,
+     "tolerances": {
+      "tol": 1e-05,
+      "tol_source": "options_list",
+      "dual_inf_tol": 1.0,
+      "dual_inf_tol_source": "ipopt_default",
+      "constr_viol_tol": 0.0001,
+      "constr_viol_tol_source": "ipopt_default",
+      "compl_inf_tol": 1e-06,
+      "compl_inf_tol_source": "options_list"
+     },
+     "metrics": {
+      "objective": {
+       "scaled": 93.68653578215519,
+       "unscaled": 93686.5357821552
+      },
+      "dual_infeasibility": {
+       "scaled": 1.2954611855589497e-10,
+       "unscaled": 1.29546118555895e-07
+      },
+      "constraint_violation": {
+       "scaled": 1.3491614751366469e-12,
+       "unscaled": 2.2510604491543518e-12
+      },
+      "variable_bound_violation": {
+       "scaled": 9.999166460176631e-09,
+       "unscaled": 9.999166460176631e-09
+      },
+      "complementarity": {
+       "scaled": 2.250832338520672e-10,
+       "unscaled": 2.2508323385206724e-07
+      },
+      "overall_nlp_error": {
+       "scaled": 2.250832338520672e-10,
+       "unscaled": 2.2508323385206724e-07
+      }
+     },
+     "checks": {
+      "overall_nlp_error_scaled_le_tol": true,
+      "dual_infeasibility_unscaled_le_dual_inf_tol": true,
+      "constraint_violation_unscaled_le_constr_viol_tol": true,
+      "complementarity_unscaled_le_compl_inf_tol": true
+     },
+     "metric_over_tolerance": {
+      "overall_nlp_error_over_tol": 2.2508323385206717e-05,
+      "dual_infeasibility_over_dual_inf_tol": 1.29546118555895e-07,
+      "constraint_violation_over_constr_viol_tol": 2.2510604491543518e-08,
+      "complementarity_over_compl_inf_tol": 0.22508323385206724
+     },
+     "log_segment_sha256": "45c6184630281c15efb664ccbe8b4cd1d428543763f1cf1c8941ddb0fceb71c5",
+     "mu_final": 9.09090909090909e-11,
+     "mu_floor": 9.090909090909091e-11,
+     "mu_over_floor_reported_not_gated": 0.9999999999999999,
+     "floor_status_reported_not_gated": "at",
+     "failures": []
+    },
+    {
+     "block": [
+      "case33_3",
+      2030,
+      "Spring"
+     ],
+     "agent": "DSO9",
+     "attempts": [
+      "primary"
+     ],
+     "final_attempt": "primary",
+     "final_exit": "Optimal Solution Found.",
+     "compl_inf_tol_in_force": 1e-06,
+     "tolerances": {
+      "tol": 1e-05,
+      "tol_source": "options_list",
+      "dual_inf_tol": 1.0,
+      "dual_inf_tol_source": "ipopt_default",
+      "constr_viol_tol": 0.0001,
+      "constr_viol_tol_source": "ipopt_default",
+      "compl_inf_tol": 1e-06,
+      "compl_inf_tol_source": "options_list"
+     },
+     "metrics": {
+      "objective": {
+       "scaled": 66.10895363224503,
+       "unscaled": 66108.95363224503
+      },
+      "dual_infeasibility": {
+       "scaled": 3.8879414296290604e-10,
+       "unscaled": 3.8879414296290607e-07
+      },
+      "constraint_violation": {
+       "scaled": 7.1483521271730216e-12,
+       "unscaled": 1.1934564447813045e-11
+      },
+      "variable_bound_violation": {
+       "scaled": 9.999132691123905e-09,
+       "unscaled": 9.999132691123905e-09
+      },
+      "complementarity": {
+       "scaled": 2.743069775189125e-10,
+       "unscaled": 2.7430697751891247e-07
+      },
+      "overall_nlp_error": {
+       "scaled": 3.8879414296290604e-10,
+       "unscaled": 3.8879414296290607e-07
+      }
+     },
+     "checks": {
+      "overall_nlp_error_scaled_le_tol": true,
+      "dual_infeasibility_unscaled_le_dual_inf_tol": true,
+      "constraint_violation_unscaled_le_constr_viol_tol": true,
+      "complementarity_unscaled_le_compl_inf_tol": true
+     },
+     "metric_over_tolerance": {
+      "overall_nlp_error_over_tol": 3.8879414296290604e-05,
+      "dual_infeasibility_over_dual_inf_tol": 3.8879414296290607e-07,
+      "constraint_violation_over_constr_viol_tol": 1.1934564447813045e-07,
+      "complementarity_over_compl_inf_tol": 0.2743069775189125
+     },
+     "log_segment_sha256": "ef8fcde3746d49c077fffe6321afff66b154c4fc8268571f66242c8b2bffaa63",
+     "mu_final": 9.090909090909091e-11,
+     "mu_floor": 9.090909090909091e-11,
+     "mu_over_floor_reported_not_gated": 1.0,
+     "floor_status_reported_not_gated": "at",
+     "failures": []
+    },
+    {
+     "block": [
+      "case33_3",
+      2030,
+      "Summer"
+     ],
+     "agent": "DSO9",
+     "attempts": [
+      "primary"
+     ],
+     "final_attempt": "primary",
+     "final_exit": "Optimal Solution Found.",
+     "compl_inf_tol_in_force": 1e-06,
+     "tolerances": {
+      "tol": 1e-05,
+      "tol_source": "options_list",
+      "dual_inf_tol": 1.0,
+      "dual_inf_tol_source": "ipopt_default",
+      "constr_viol_tol": 0.0001,
+      "constr_viol_tol_source": "ipopt_default",
+      "compl_inf_tol": 1e-06,
+      "compl_inf_tol_source": "options_list"
+     },
+     "metrics": {
+      "objective": {
+       "scaled": 82.19272113099991,
+       "unscaled": 82192.72113099993
+      },
+      "dual_infeasibility": {
+       "scaled": 1.263201549505087e-10,
+       "unscaled": 1.2632015495050873e-07
+      },
+      "constraint_violation": {
+       "scaled": 2.3375116525087617e-13,
+       "unscaled": 4.649822193947273e-13
+      },
+      "variable_bound_violation": {
+       "scaled": 9.999156179542024e-09,
+       "unscaled": 9.999156179542024e-09
+      },
+      "complementarity": {
+       "scaled": 1.6910165445774787e-10,
+       "unscaled": 1.691016544577479e-07
+      },
+      "overall_nlp_error": {
+       "scaled": 1.6910165445774787e-10,
+       "unscaled": 1.691016544577479e-07
+      }
+     },
+     "checks": {
+      "overall_nlp_error_scaled_le_tol": true,
+      "dual_infeasibility_unscaled_le_dual_inf_tol": true,
+      "constraint_violation_unscaled_le_constr_viol_tol": true,
+      "complementarity_unscaled_le_compl_inf_tol": true
+     },
+     "metric_over_tolerance": {
+      "overall_nlp_error_over_tol": 1.6910165445774785e-05,
+      "dual_infeasibility_over_dual_inf_tol": 1.2632015495050873e-07,
+      "constraint_violation_over_constr_viol_tol": 4.649822193947273e-09,
+      "complementarity_over_compl_inf_tol": 0.1691016544577479
+     },
+     "log_segment_sha256": "97c857d7e4af15465f288ab3874900089da6a6595e75b299caa34085c6a5a8c6",
+     "mu_final": 9.09090909090909e-11,
+     "mu_floor": 9.090909090909091e-11,
+     "mu_over_floor_reported_not_gated": 0.9999999999999999,
+     "floor_status_reported_not_gated": "at",
+     "failures": []
+    },
+    {
+     "block": [
+      "case33_3",
+      2030,
+      "Winter"
+     ],
+     "agent": "DSO9",
+     "attempts": [
+      "primary"
+     ],
+     "final_attempt": "primary",
+     "final_exit": "Optimal Solution Found.",
+     "compl_inf_tol_in_force": 1e-06,
+     "tolerances": {
+      "tol": 1e-05,
+      "tol_source": "options_list",
+      "dual_inf_tol": 1.0,
+      "dual_inf_tol_source": "ipopt_default",
+      "constr_viol_tol": 0.0001,
+      "constr_viol_tol_source": "ipopt_default",
+      "compl_inf_tol": 1e-06,
+      "compl_inf_tol_source": "options_list"
+     },
+     "metrics": {
+      "objective": {
+       "scaled": 102.5235781195929,
+       "unscaled": 102523.57811959292
+      },
+      "dual_infeasibility": {
+       "scaled": 1.707202579434912e-10,
+       "unscaled": 1.7072025794349122e-07
+      },
+      "constraint_violation": {
+       "scaled": 5.335731856348502e-13,
+       "unscaled": 5.335731856348502e-13
+      },
+      "variable_bound_violation": {
+       "scaled": 9.999172872607576e-09,
+       "unscaled": 9.999172872607576e-09
+      },
+      "complementarity": {
+       "scaled": 2.8657014354942847e-10,
+       "unscaled": 2.8657014354942855e-07
+      },
+      "overall_nlp_error": {
+       "scaled": 2.8657014354942847e-10,
+       "unscaled": 2.8657014354942855e-07
+      }
+     },
+     "checks": {
+      "overall_nlp_error_scaled_le_tol": true,
+      "dual_infeasibility_unscaled_le_dual_inf_tol": true,
+      "constraint_violation_unscaled_le_constr_viol_tol": true,
+      "complementarity_unscaled_le_compl_inf_tol": true
+     },
+     "metric_over_tolerance": {
+      "overall_nlp_error_over_tol": 2.8657014354942843e-05,
+      "dual_infeasibility_over_dual_inf_tol": 1.7072025794349122e-07,
+      "constraint_violation_over_constr_viol_tol": 5.335731856348502e-09,
+      "complementarity_over_compl_inf_tol": 0.28657014354942856
+     },
+     "log_segment_sha256": "85f08f4fc19cd1bde2763fc32dac806014984673daf3e7c83f1bd090aed01b33",
+     "mu_final": 9.09090909090909e-11,
+     "mu_floor": 9.090909090909091e-11,
+     "mu_over_floor_reported_not_gated": 0.9999999999999999,
+     "floor_status_reported_not_gated": "at",
+     "failures": []
+    },
+    {
+     "block": [
+      "case33_3",
+      2035,
+      "Autumn"
+     ],
+     "agent": "DSO9",
+     "attempts": [
+      "primary"
+     ],
+     "final_attempt": "primary",
+     "final_exit": "Optimal Solution Found.",
+     "compl_inf_tol_in_force": 1e-06,
+     "tolerances": {
+      "tol": 1e-05,
+      "tol_source": "options_list",
+      "dual_inf_tol": 1.0,
+      "dual_inf_tol_source": "ipopt_default",
+      "constr_viol_tol": 0.0001,
+      "constr_viol_tol_source": "ipopt_default",
+      "compl_inf_tol": 1e-06,
+      "compl_inf_tol_source": "options_list"
+     },
+     "metrics": {
+      "objective": {
+       "scaled": 90.15710655298739,
+       "unscaled": 90157.10655298739
+      },
+      "dual_infeasibility": {
+       "scaled": 4.267104143354067e-09,
+       "unscaled": 4.267104143354067e-06
+      },
+      "constraint_violation": {
+       "scaled": 7.358018038539089e-11,
+       "unscaled": 1.228460666524711e-10
+      },
+      "variable_bound_violation": {
+       "scaled": 9.999133839089142e-09,
+       "unscaled": 9.999133839089142e-09
+      },
+      "complementarity": {
+       "scaled": 2.380082791917165e-10,
+       "unscaled": 2.3800827919171651e-07
+      },
+      "overall_nlp_error": {
+       "scaled": 4.267104143354067e-09,
+       "unscaled": 4.267104143354067e-06
+      }
+     },
+     "checks": {
+      "overall_nlp_error_scaled_le_tol": true,
+      "dual_infeasibility_unscaled_le_dual_inf_tol": true,
+      "constraint_violation_unscaled_le_constr_viol_tol": true,
+      "complementarity_unscaled_le_compl_inf_tol": true
+     },
+     "metric_over_tolerance": {
+      "overall_nlp_error_over_tol": 0.0004267104143354067,
+      "dual_infeasibility_over_dual_inf_tol": 4.267104143354067e-06,
+      "constraint_violation_over_constr_viol_tol": 1.228460666524711e-06,
+      "complementarity_over_compl_inf_tol": 0.23800827919171652
+     },
+     "log_segment_sha256": "bd1d17b85f71b64905d4da2f1451879ba5d2424aed66d1f389e8de2a164e619e",
+     "mu_final": 9.090909090909091e-11,
+     "mu_floor": 9.090909090909091e-11,
+     "mu_over_floor_reported_not_gated": 1.0,
+     "floor_status_reported_not_gated": "at",
+     "failures": []
+    },
+    {
+     "block": [
+      "case33_3",
+      2035,
+      "Spring"
+     ],
+     "agent": "DSO9",
+     "attempts": [
+      "primary"
+     ],
+     "final_attempt": "primary",
+     "final_exit": "Optimal Solution Found.",
+     "compl_inf_tol_in_force": 1e-06,
+     "tolerances": {
+      "tol": 1e-05,
+      "tol_source": "options_list",
+      "dual_inf_tol": 1.0,
+      "dual_inf_tol_source": "ipopt_default",
+      "constr_viol_tol": 0.0001,
+      "constr_viol_tol_source": "ipopt_default",
+      "compl_inf_tol": 1e-06,
+      "compl_inf_tol_source": "options_list"
+     },
+     "metrics": {
+      "objective": {
+       "scaled": 92.9881946786114,
+       "unscaled": 92988.19467861138
+      },
+      "dual_infeasibility": {
+       "scaled": 2.3240699566298554e-08,
+       "unscaled": 2.3240699566298547e-05
+      },
+      "constraint_violation": {
+       "scaled": 1.489011699052638e-09,
+       "unscaled": 2.4859827252310396e-09
+      },
+      "variable_bound_violation": {
+       "scaled": 9.999149100755585e-09,
+       "unscaled": 9.999149100755585e-09
+      },
+      "complementarity": {
+       "scaled": 2.28349891558449e-10,
+       "unscaled": 2.2834989155844896e-07
+      },
+      "overall_nlp_error": {
+       "scaled": 2.3240699566298554e-08,
+       "unscaled": 2.3240699566298547e-05
+      }
+     },
+     "checks": {
+      "overall_nlp_error_scaled_le_tol": true,
+      "dual_infeasibility_unscaled_le_dual_inf_tol": true,
+      "constraint_violation_unscaled_le_constr_viol_tol": true,
+      "complementarity_unscaled_le_compl_inf_tol": true
+     },
+     "metric_over_tolerance": {
+      "overall_nlp_error_over_tol": 0.002324069956629855,
+      "dual_infeasibility_over_dual_inf_tol": 2.3240699566298547e-05,
+      "constraint_violation_over_constr_viol_tol": 2.4859827252310396e-05,
+      "complementarity_over_compl_inf_tol": 0.22834989155844898
+     },
+     "log_segment_sha256": "449d35561a263ea38a625e6b8b617677f3b85bcf16984baeb8c6bf98f7bc7b67",
+     "mu_final": 9.090909090909094e-11,
+     "mu_floor": 9.090909090909091e-11,
+     "mu_over_floor_reported_not_gated": 1.0000000000000002,
+     "floor_status_reported_not_gated": "at",
+     "failures": []
+    },
+    {
+     "block": [
+      "case33_3",
+      2035,
+      "Summer"
+     ],
+     "agent": "DSO9",
+     "attempts": [
+      "primary"
+     ],
+     "final_attempt": "primary",
+     "final_exit": "Optimal Solution Found.",
+     "compl_inf_tol_in_force": 1e-06,
+     "tolerances": {
+      "tol": 1e-05,
+      "tol_source": "options_list",
+      "dual_inf_tol": 1.0,
+      "dual_inf_tol_source": "ipopt_default",
+      "constr_viol_tol": 0.0001,
+      "constr_viol_tol_source": "ipopt_default",
+      "compl_inf_tol": 1e-06,
+      "compl_inf_tol_source": "options_list"
+     },
+     "metrics": {
+      "objective": {
+       "scaled": 91.51829335292602,
+       "unscaled": 91518.29335292602
+      },
+      "dual_infeasibility": {
+       "scaled": 2.106253164125346e-10,
+       "unscaled": 2.1062531641253462e-07
+      },
+      "constraint_violation": {
+       "scaled": 5.939187670351176e-12,
+       "unscaled": 9.84212017440811e-12
+      },
+      "variable_bound_violation": {
+       "scaled": 9.99915851153873e-09,
+       "unscaled": 9.99915851153873e-09
+      },
+      "complementarity": {
+       "scaled": 2.0889627197120767e-10,
+       "unscaled": 2.0889627197120766e-07
+      },
+      "overall_nlp_error": {
+       "scaled": 2.106253164125346e-10,
+       "unscaled": 2.1062531641253462e-07
+      }
+     },
+     "checks": {
+      "overall_nlp_error_scaled_le_tol": true,
+      "dual_infeasibility_unscaled_le_dual_inf_tol": true,
+      "constraint_violation_unscaled_le_constr_viol_tol": true,
+      "complementarity_unscaled_le_compl_inf_tol": true
+     },
+     "metric_over_tolerance": {
+      "overall_nlp_error_over_tol": 2.1062531641253457e-05,
+      "dual_infeasibility_over_dual_inf_tol": 2.1062531641253462e-07,
+      "constraint_violation_over_constr_viol_tol": 9.84212017440811e-08,
+      "complementarity_over_compl_inf_tol": 0.20889627197120766
+     },
+     "log_segment_sha256": "f1e723e4ab9ea8e59951332ac2f3d6460b79f4609278084cdb40253fff6eafad",
+     "mu_final": 9.090909090909091e-11,
+     "mu_floor": 9.090909090909091e-11,
+     "mu_over_floor_reported_not_gated": 1.0,
+     "floor_status_reported_not_gated": "at",
+     "failures": []
+    },
+    {
+     "block": [
+      "case33_3",
+      2035,
+      "Winter"
+     ],
+     "agent": "DSO9",
+     "attempts": [
+      "primary"
+     ],
+     "final_attempt": "primary",
+     "final_exit": "Optimal Solution Found.",
+     "compl_inf_tol_in_force": 1e-06,
+     "tolerances": {
+      "tol": 1e-05,
+      "tol_source": "options_list",
+      "dual_inf_tol": 1.0,
+      "dual_inf_tol_source": "ipopt_default",
+      "constr_viol_tol": 0.0001,
+      "constr_viol_tol_source": "ipopt_default",
+      "compl_inf_tol": 1e-06,
+      "compl_inf_tol_source": "options_list"
+     },
+     "metrics": {
+      "objective": {
+       "scaled": 127.26591882042213,
+       "unscaled": 127265.91882042213
+      },
+      "dual_infeasibility": {
+       "scaled": 2.8442688333209116e-10,
+       "unscaled": 2.8442688333209116e-07
+      },
+      "constraint_violation": {
+       "scaled": 4.7903490250040195e-12,
+       "unscaled": 7.996547868316384e-12
+      },
+      "variable_bound_violation": {
+       "scaled": 9.999190165195365e-09,
+       "unscaled": 9.999190165195365e-09
+      },
+      "complementarity": {
+       "scaled": 1.190486484282581e-10,
+       "unscaled": 1.1904864842825809e-07
+      },
+      "overall_nlp_error": {
+       "scaled": 2.8442688333209116e-10,
+       "unscaled": 2.8442688333209116e-07
+      }
+     },
+     "checks": {
+      "overall_nlp_error_scaled_le_tol": true,
+      "dual_infeasibility_unscaled_le_dual_inf_tol": true,
+      "constraint_violation_unscaled_le_constr_viol_tol": true,
+      "complementarity_unscaled_le_compl_inf_tol": true
+     },
+     "metric_over_tolerance": {
+      "overall_nlp_error_over_tol": 2.8442688333209112e-05,
+      "dual_infeasibility_over_dual_inf_tol": 2.8442688333209116e-07,
+      "constraint_violation_over_constr_viol_tol": 7.996547868316384e-08,
+      "complementarity_over_compl_inf_tol": 0.11904864842825809
+     },
+     "log_segment_sha256": "f6cfb48ae1def6b0d7a4b6609b5cc8513a5753152e1aac4f5511d036fd659c34",
+     "mu_final": 9.090909090909091e-11,
+     "mu_floor": 9.090909090909091e-11,
+     "mu_over_floor_reported_not_gated": 1.0,
+     "floor_status_reported_not_gated": "at",
+     "failures": []
+    },
+    {
+     "block": [
+      "case9",
+      2025,
+      "Autumn"
+     ],
+     "agent": "TSO",
+     "attempts": [
+      "primary"
+     ],
+     "final_attempt": "primary",
+     "final_exit": "Optimal Solution Found.",
+     "compl_inf_tol_in_force": 1e-06,
+     "tolerances": {
+      "tol": 1e-05,
+      "tol_source": "options_list",
+      "dual_inf_tol": 1.0,
+      "dual_inf_tol_source": "ipopt_default",
+      "constr_viol_tol": 0.0001,
+      "constr_viol_tol_source": "ipopt_default",
+      "compl_inf_tol": 1e-06,
+      "compl_inf_tol_source": "options_list"
+     },
+     "metrics": {
+      "objective": {
+       "scaled": -107.79800921313677,
+       "unscaled": -107798.00921313676
+      },
+      "dual_infeasibility": {
+       "scaled": 6.550361754008876e-12,
+       "unscaled": 6.550361754008876e-09
+      },
+      "constraint_violation": {
+       "scaled": 1.389999226830696e-12,
+       "unscaled": 1.389999226830696e-12
+      },
+      "variable_bound_violation": {
+       "scaled": 9.999189665061975e-09,
+       "unscaled": 9.999189665061975e-09
+      },
+      "complementarity": {
+       "scaled": 9.303103713717235e-11,
+       "unscaled": 9.303103713717235e-08
+      },
+      "overall_nlp_error": {
+       "scaled": 9.303103713717235e-11,
+       "unscaled": 9.303103713717235e-08
+      }
+     },
+     "checks": {
+      "overall_nlp_error_scaled_le_tol": true,
+      "dual_infeasibility_unscaled_le_dual_inf_tol": true,
+      "constraint_violation_unscaled_le_constr_viol_tol": true,
+      "complementarity_unscaled_le_compl_inf_tol": true
+     },
+     "metric_over_tolerance": {
+      "overall_nlp_error_over_tol": 9.303103713717235e-06,
+      "dual_infeasibility_over_dual_inf_tol": 6.550361754008876e-09,
+      "constraint_violation_over_constr_viol_tol": 1.389999226830696e-08,
+      "complementarity_over_compl_inf_tol": 0.09303103713717235
+     },
+     "log_segment_sha256": "6b13abdda8663b07ca24d333245b2e804b0fecb4444979be43930222297f7246",
+     "mu_final": 9.090909090909091e-11,
+     "mu_floor": 9.090909090909091e-11,
+     "mu_over_floor_reported_not_gated": 1.0,
+     "floor_status_reported_not_gated": "at",
+     "failures": []
+    },
+    {
+     "block": [
+      "case9",
+      2025,
+      "Spring"
+     ],
+     "agent": "TSO",
+     "attempts": [
+      "primary"
+     ],
+     "final_attempt": "primary",
+     "final_exit": "Optimal Solution Found.",
+     "compl_inf_tol_in_force": 1e-06,
+     "tolerances": {
+      "tol": 1e-05,
+      "tol_source": "options_list",
+      "dual_inf_tol": 1.0,
+      "dual_inf_tol_source": "ipopt_default",
+      "constr_viol_tol": 0.0001,
+      "constr_viol_tol_source": "ipopt_default",
+      "compl_inf_tol": 1e-06,
+      "compl_inf_tol_source": "options_list"
+     },
+     "metrics": {
+      "objective": {
+       "scaled": -52.20318284304356,
+       "unscaled": -52203.182843043556
+      },
+      "dual_infeasibility": {
+       "scaled": 1.5161238489159491e-12,
+       "unscaled": 1.5161238489159491e-09
+      },
+      "constraint_violation": {
+       "scaled": 8.400906776117668e-15,
+       "unscaled": 8.400906776117668e-15
+      },
+      "variable_bound_violation": {
+       "scaled": 9.999197663508154e-09,
+       "unscaled": 9.999197663508154e-09
+      },
+      "complementarity": {
+       "scaled": 1.1638669489372812e-10,
+       "unscaled": 1.1638669489372812e-07
+      },
+      "overall_nlp_error": {
+       "scaled": 1.1638669489372812e-10,
+       "unscaled": 1.1638669489372812e-07
+      }
+     },
+     "checks": {
+      "overall_nlp_error_scaled_le_tol": true,
+      "dual_infeasibility_unscaled_le_dual_inf_tol": true,
+      "constraint_violation_unscaled_le_constr_viol_tol": true,
+      "complementarity_unscaled_le_compl_inf_tol": true
+     },
+     "metric_over_tolerance": {
+      "overall_nlp_error_over_tol": 1.1638669489372812e-05,
+      "dual_infeasibility_over_dual_inf_tol": 1.5161238489159491e-09,
+      "constraint_violation_over_constr_viol_tol": 8.400906776117668e-11,
+      "complementarity_over_compl_inf_tol": 0.11638669489372813
+     },
+     "log_segment_sha256": "486608fac4eb79224144c26242aac85a32bf676bd3f8d27df9e5dece78451476",
+     "mu_final": 9.090909090909091e-11,
+     "mu_floor": 9.090909090909091e-11,
+     "mu_over_floor_reported_not_gated": 1.0,
+     "floor_status_reported_not_gated": "at",
+     "failures": []
+    },
+    {
+     "block": [
+      "case9",
+      2025,
+      "Summer"
+     ],
+     "agent": "TSO",
+     "attempts": [
+      "primary"
+     ],
+     "final_attempt": "primary",
+     "final_exit": "Optimal Solution Found.",
+     "compl_inf_tol_in_force": 1e-06,
+     "tolerances": {
+      "tol": 1e-05,
+      "tol_source": "options_list",
+      "dual_inf_tol": 1.0,
+      "dual_inf_tol_source": "ipopt_default",
+      "constr_viol_tol": 0.0001,
+      "constr_viol_tol_source": "ipopt_default",
+      "compl_inf_tol": 1e-06,
+      "compl_inf_tol_source": "options_list"
+     },
+     "metrics": {
+      "objective": {
+       "scaled": -71.33192813348923,
+       "unscaled": -71331.92813348923
+      },
+      "dual_infeasibility": {
+       "scaled": 3.792796404676331e-09,
+       "unscaled": 3.792796404676331e-06
+      },
+      "constraint_violation": {
+       "scaled": 1.0797348574046293e-14,
+       "unscaled": 1.0797348574046293e-14
+      },
+      "variable_bound_violation": {
+       "scaled": 9.999187659589914e-09,
+       "unscaled": 9.999187659589914e-09
+      },
+      "complementarity": {
+       "scaled": 1.938963491376037e-10,
+       "unscaled": 1.9389634913760368e-07
+      },
+      "overall_nlp_error": {
+       "scaled": 3.792796404676331e-09,
+       "unscaled": 3.792796404676331e-06
+      }
+     },
+     "checks": {
+      "overall_nlp_error_scaled_le_tol": true,
+      "dual_infeasibility_unscaled_le_dual_inf_tol": true,
+      "constraint_violation_unscaled_le_constr_viol_tol": true,
+      "complementarity_unscaled_le_compl_inf_tol": true
+     },
+     "metric_over_tolerance": {
+      "overall_nlp_error_over_tol": 0.00037927964046763303,
+      "dual_infeasibility_over_dual_inf_tol": 3.792796404676331e-06,
+      "constraint_violation_over_constr_viol_tol": 1.0797348574046292e-10,
+      "complementarity_over_compl_inf_tol": 0.19389634913760367
+     },
+     "log_segment_sha256": "18bda5759d8e415638deaa4c9c17babd11aed99618e15a593f01fc81c6a6444e",
+     "mu_final": 9.090909090909091e-11,
+     "mu_floor": 9.090909090909091e-11,
+     "mu_over_floor_reported_not_gated": 1.0,
+     "floor_status_reported_not_gated": "at",
+     "failures": []
+    },
+    {
+     "block": [
+      "case9",
+      2025,
+      "Winter"
+     ],
+     "agent": "TSO",
+     "attempts": [
+      "primary"
+     ],
+     "final_attempt": "primary",
+     "final_exit": "Optimal Solution Found.",
+     "compl_inf_tol_in_force": 1e-06,
+     "tolerances": {
+      "tol": 1e-05,
+      "tol_source": "options_list",
+      "dual_inf_tol": 1.0,
+      "dual_inf_tol_source": "ipopt_default",
+      "constr_viol_tol": 0.0001,
+      "constr_viol_tol_source": "ipopt_default",
+      "compl_inf_tol": 1e-06,
+      "compl_inf_tol_source": "options_list"
+     },
+     "metrics": {
+      "objective": {
+       "scaled": -110.01013624947642,
+       "unscaled": -110010.13624947642
+      },
+      "dual_infeasibility": {
+       "scaled": 5.309944227073699e-10,
+       "unscaled": 5.309944227073699e-07
+      },
+      "constraint_violation": {
+       "scaled": 1.2212453270876722e-14,
+       "unscaled": 1.2212453270876722e-14
+      },
+      "variable_bound_violation": {
+       "scaled": 9.999179885515542e-09,
+       "unscaled": 9.999179885515542e-09
+      },
+      "complementarity": {
+       "scaled": 1.78031201966848e-10,
+       "unscaled": 1.78031201966848e-07
+      },
+      "overall_nlp_error": {
+       "scaled": 5.309944227073699e-10,
+       "unscaled": 5.309944227073699e-07
+      }
+     },
+     "checks": {
+      "overall_nlp_error_scaled_le_tol": true,
+      "dual_infeasibility_unscaled_le_dual_inf_tol": true,
+      "constraint_violation_unscaled_le_constr_viol_tol": true,
+      "complementarity_unscaled_le_compl_inf_tol": true
+     },
+     "metric_over_tolerance": {
+      "overall_nlp_error_over_tol": 5.309944227073698e-05,
+      "dual_infeasibility_over_dual_inf_tol": 5.309944227073699e-07,
+      "constraint_violation_over_constr_viol_tol": 1.2212453270876722e-10,
+      "complementarity_over_compl_inf_tol": 0.17803120196684802
+     },
+     "log_segment_sha256": "e1fe1abd53e574361a52fba6e491e19cc1466593682b4a94d532de7d9fa7a729",
+     "mu_final": 9.090909090909091e-11,
+     "mu_floor": 9.090909090909091e-11,
+     "mu_over_floor_reported_not_gated": 1.0,
+     "floor_status_reported_not_gated": "at",
+     "failures": []
+    },
+    {
+     "block": [
+      "case9",
+      2030,
+      "Autumn"
+     ],
+     "agent": "TSO",
+     "attempts": [
+      "primary"
+     ],
+     "final_attempt": "primary",
+     "final_exit": "Optimal Solution Found.",
+     "compl_inf_tol_in_force": 1e-06,
+     "tolerances": {
+      "tol": 1e-05,
+      "tol_source": "options_list",
+      "dual_inf_tol": 1.0,
+      "dual_inf_tol_source": "ipopt_default",
+      "constr_viol_tol": 0.0001,
+      "constr_viol_tol_source": "ipopt_default",
+      "compl_inf_tol": 1e-06,
+      "compl_inf_tol_source": "options_list"
+     },
+     "metrics": {
+      "objective": {
+       "scaled": -213.72545539191543,
+       "unscaled": -213725.4553919155
+      },
+      "dual_infeasibility": {
+       "scaled": 3.638643928464947e-10,
+       "unscaled": 3.638643928464948e-07
+      },
+      "constraint_violation": {
+       "scaled": 8.672171175718358e-15,
+       "unscaled": 8.672171175718358e-15
+      },
+      "variable_bound_violation": {
+       "scaled": 9.999198433150659e-09,
+       "unscaled": 9.999198433150659e-09
+      },
+      "complementarity": {
+       "scaled": 1.17606166793731e-10,
+       "unscaled": 1.1760616679373102e-07
+      },
+      "overall_nlp_error": {
+       "scaled": 3.638643928464947e-10,
+       "unscaled": 3.638643928464948e-07
+      }
+     },
+     "checks": {
+      "overall_nlp_error_scaled_le_tol": true,
+      "dual_infeasibility_unscaled_le_dual_inf_tol": true,
+      "constraint_violation_unscaled_le_constr_viol_tol": true,
+      "complementarity_unscaled_le_compl_inf_tol": true
+     },
+     "metric_over_tolerance": {
+      "overall_nlp_error_over_tol": 3.638643928464947e-05,
+      "dual_infeasibility_over_dual_inf_tol": 3.638643928464948e-07,
+      "constraint_violation_over_constr_viol_tol": 8.672171175718358e-11,
+      "complementarity_over_compl_inf_tol": 0.11760616679373102
+     },
+     "log_segment_sha256": "54806a64b2fd211f9016363ab4fe28764b9b804b9569742956f82f902059defb",
+     "mu_final": 9.09090909090909e-11,
+     "mu_floor": 9.090909090909091e-11,
+     "mu_over_floor_reported_not_gated": 0.9999999999999999,
+     "floor_status_reported_not_gated": "at",
+     "failures": []
+    },
+    {
+     "block": [
+      "case9",
+      2030,
+      "Spring"
+     ],
+     "agent": "TSO",
+     "attempts": [
+      "primary"
+     ],
+     "final_attempt": "primary",
+     "final_exit": "Optimal Solution Found.",
+     "compl_inf_tol_in_force": 1e-06,
+     "tolerances": {
+      "tol": 1e-05,
+      "tol_source": "options_list",
+      "dual_inf_tol": 1.0,
+      "dual_inf_tol_source": "ipopt_default",
+      "constr_viol_tol": 0.0001,
+      "constr_viol_tol_source": "ipopt_default",
+      "compl_inf_tol": 1e-06,
+      "compl_inf_tol_source": "options_list"
+     },
+     "metrics": {
+      "objective": {
+       "scaled": -93.9016099094686,
+       "unscaled": -93901.6099094686
+      },
+      "dual_infeasibility": {
+       "scaled": 8.289223799549938e-13,
+       "unscaled": 8.289223799549938e-10
+      },
+      "constraint_violation": {
+       "scaled": 7.155881448589043e-15,
+       "unscaled": 7.155881448589043e-15
+      },
+      "variable_bound_violation": {
+       "scaled": 9.999159345847867e-09,
+       "unscaled": 9.999159345847867e-09
+      },
+      "complementarity": {
+       "scaled": 1.1520971947845578e-10,
+       "unscaled": 1.1520971947845577e-07
+      },
+      "overall_nlp_error": {
+       "scaled": 1.1520971947845578e-10,
+       "unscaled": 1.1520971947845577e-07
+      }
+     },
+     "checks": {
+      "overall_nlp_error_scaled_le_tol": true,
+      "dual_infeasibility_unscaled_le_dual_inf_tol": true,
+      "constraint_violation_unscaled_le_constr_viol_tol": true,
+      "complementarity_unscaled_le_compl_inf_tol": true
+     },
+     "metric_over_tolerance": {
+      "overall_nlp_error_over_tol": 1.1520971947845576e-05,
+      "dual_infeasibility_over_dual_inf_tol": 8.289223799549938e-10,
+      "constraint_violation_over_constr_viol_tol": 7.155881448589043e-11,
+      "complementarity_over_compl_inf_tol": 0.11520971947845578
+     },
+     "log_segment_sha256": "c2c37bd4c480742479bafc2ddb6d14144d2813cb9014fccb8b8a95538cb19c6e",
+     "mu_final": 9.090909090909091e-11,
+     "mu_floor": 9.090909090909091e-11,
+     "mu_over_floor_reported_not_gated": 1.0,
+     "floor_status_reported_not_gated": "at",
+     "failures": []
+    },
+    {
+     "block": [
+      "case9",
+      2030,
+      "Summer"
+     ],
+     "agent": "TSO",
+     "attempts": [
+      "primary"
+     ],
+     "final_attempt": "primary",
+     "final_exit": "Optimal Solution Found.",
+     "compl_inf_tol_in_force": 1e-06,
+     "tolerances": {
+      "tol": 1e-05,
+      "tol_source": "options_list",
+      "dual_inf_tol": 1.0,
+      "dual_inf_tol_source": "ipopt_default",
+      "constr_viol_tol": 0.0001,
+      "constr_viol_tol_source": "ipopt_default",
+      "compl_inf_tol": 1e-06,
+      "compl_inf_tol_source": "options_list"
+     },
+     "metrics": {
+      "objective": {
+       "scaled": -138.69043105617146,
+       "unscaled": -138690.43105617148
+      },
+      "dual_infeasibility": {
+       "scaled": 1.533919882388754e-13,
+       "unscaled": 1.5339198823887542e-10
+      },
+      "constraint_violation": {
+       "scaled": 8.059246035301099e-15,
+       "unscaled": 8.059246035301099e-15
+      },
+      "variable_bound_violation": {
+       "scaled": 9.999186930149452e-09,
+       "unscaled": 9.999186930149452e-09
+      },
+      "complementarity": {
+       "scaled": 1.0256671505025382e-10,
+       "unscaled": 1.0256671505025384e-07
+      },
+      "overall_nlp_error": {
+       "scaled": 1.0256671505025382e-10,
+       "unscaled": 1.0256671505025384e-07
+      }
+     },
+     "checks": {
+      "overall_nlp_error_scaled_le_tol": true,
+      "dual_infeasibility_unscaled_le_dual_inf_tol": true,
+      "constraint_violation_unscaled_le_constr_viol_tol": true,
+      "complementarity_unscaled_le_compl_inf_tol": true
+     },
+     "metric_over_tolerance": {
+      "overall_nlp_error_over_tol": 1.025667150502538e-05,
+      "dual_infeasibility_over_dual_inf_tol": 1.5339198823887542e-10,
+      "constraint_violation_over_constr_viol_tol": 8.059246035301099e-11,
+      "complementarity_over_compl_inf_tol": 0.10256671505025385
+     },
+     "log_segment_sha256": "bea6576c6199b706f748c3998b1f382547957ff427eb9d66d75f9c898db4e083",
+     "mu_final": 9.09090909090909e-11,
+     "mu_floor": 9.090909090909091e-11,
+     "mu_over_floor_reported_not_gated": 0.9999999999999999,
+     "floor_status_reported_not_gated": "at",
+     "failures": []
+    },
+    {
+     "block": [
+      "case9",
+      2030,
+      "Winter"
+     ],
+     "agent": "TSO",
+     "attempts": [
+      "primary"
+     ],
+     "final_attempt": "primary",
+     "final_exit": "Optimal Solution Found.",
+     "compl_inf_tol_in_force": 1e-06,
+     "tolerances": {
+      "tol": 1e-05,
+      "tol_source": "options_list",
+      "dual_inf_tol": 1.0,
+      "dual_inf_tol_source": "ipopt_default",
+      "constr_viol_tol": 0.0001,
+      "constr_viol_tol_source": "ipopt_default",
+      "compl_inf_tol": 1e-06,
+      "compl_inf_tol_source": "options_list"
+     },
+     "metrics": {
+      "objective": {
+       "scaled": -180.28417115122915,
+       "unscaled": -180284.17115122918
+      },
+      "dual_infeasibility": {
+       "scaled": 4.168820365681777e-12,
+       "unscaled": 4.1688203656817775e-09
+      },
+      "constraint_violation": {
+       "scaled": 9.94142277883299e-15,
+       "unscaled": 9.94142277883299e-15
+      },
+      "variable_bound_violation": {
+       "scaled": 9.999186747850947e-09,
+       "unscaled": 9.999186747850947e-09
+      },
+      "complementarity": {
+       "scaled": 1.1774837964990064e-10,
+       "unscaled": 1.1774837964990067e-07
+      },
+      "overall_nlp_error": {
+       "scaled": 1.1774837964990064e-10,
+       "unscaled": 1.1774837964990067e-07
+      }
+     },
+     "checks": {
+      "overall_nlp_error_scaled_le_tol": true,
+      "dual_infeasibility_unscaled_le_dual_inf_tol": true,
+      "constraint_violation_unscaled_le_constr_viol_tol": true,
+      "complementarity_unscaled_le_compl_inf_tol": true
+     },
+     "metric_over_tolerance": {
+      "overall_nlp_error_over_tol": 1.1774837964990063e-05,
+      "dual_infeasibility_over_dual_inf_tol": 4.1688203656817775e-09,
+      "constraint_violation_over_constr_viol_tol": 9.941422778832989e-11,
+      "complementarity_over_compl_inf_tol": 0.11774837964990068
+     },
+     "log_segment_sha256": "502b7ed8650cea7754d08c07aa118cbe4da8202036eedfee4405127e7269a3f5",
+     "mu_final": 9.09090909090909e-11,
+     "mu_floor": 9.090909090909091e-11,
+     "mu_over_floor_reported_not_gated": 0.9999999999999999,
+     "floor_status_reported_not_gated": "at",
+     "failures": []
+    },
+    {
+     "block": [
+      "case9",
+      2035,
+      "Autumn"
+     ],
+     "agent": "TSO",
+     "attempts": [
+      "primary"
+     ],
+     "final_attempt": "primary",
+     "final_exit": "Optimal Solution Found.",
+     "compl_inf_tol_in_force": 1e-06,
+     "tolerances": {
+      "tol": 1e-05,
+      "tol_source": "options_list",
+      "dual_inf_tol": 1.0,
+      "dual_inf_tol_source": "ipopt_default",
+      "constr_viol_tol": 0.0001,
+      "constr_viol_tol_source": "ipopt_default",
+      "compl_inf_tol": 1e-06,
+      "compl_inf_tol_source": "options_list"
+     },
+     "metrics": {
+      "objective": {
+       "scaled": -154.95212579020662,
+       "unscaled": -154952.12579020663
+      },
+      "dual_infeasibility": {
+       "scaled": 6.1183540601538605e-12,
+       "unscaled": 6.1183540601538605e-09
+      },
+      "constraint_violation": {
+       "scaled": 8.55503769287111e-15,
+       "unscaled": 8.55503769287111e-15
+      },
+      "variable_bound_violation": {
+       "scaled": 9.999172281134033e-09,
+       "unscaled": 9.999172281134033e-09
+      },
+      "complementarity": {
+       "scaled": 1.2140802927372145e-10,
+       "unscaled": 1.2140802927372145e-07
+      },
+      "overall_nlp_error": {
+       "scaled": 1.2140802927372145e-10,
+       "unscaled": 1.2140802927372145e-07
+      }
+     },
+     "checks": {
+      "overall_nlp_error_scaled_le_tol": true,
+      "dual_infeasibility_unscaled_le_dual_inf_tol": true,
+      "constraint_violation_unscaled_le_constr_viol_tol": true,
+      "complementarity_unscaled_le_compl_inf_tol": true
+     },
+     "metric_over_tolerance": {
+      "overall_nlp_error_over_tol": 1.2140802927372143e-05,
+      "dual_infeasibility_over_dual_inf_tol": 6.1183540601538605e-09,
+      "constraint_violation_over_constr_viol_tol": 8.55503769287111e-11,
+      "complementarity_over_compl_inf_tol": 0.12140802927372145
+     },
+     "log_segment_sha256": "d9d61b1b3dbdba42c3b2b945af169d326fa8ca6f3954a1d3ee35ed30f106159f",
+     "mu_final": 9.090909090909091e-11,
+     "mu_floor": 9.090909090909091e-11,
+     "mu_over_floor_reported_not_gated": 1.0,
+     "floor_status_reported_not_gated": "at",
+     "failures": []
+    },
+    {
+     "block": [
+      "case9",
+      2035,
+      "Spring"
+     ],
+     "agent": "TSO",
+     "attempts": [
+      "primary",
+      "recovery"
+     ],
+     "final_attempt": "recovery",
+     "final_exit": "Solved To Acceptable Level.",
+     "compl_inf_tol_in_force": 1e-06,
+     "tolerances": {
+      "tol": 1e-05,
+      "tol_source": "options_list",
+      "dual_inf_tol": 1.0,
+      "dual_inf_tol_source": "ipopt_default",
+      "constr_viol_tol": 0.0001,
+      "constr_viol_tol_source": "ipopt_default",
+      "compl_inf_tol": 1e-06,
+      "compl_inf_tol_source": "options_list"
+     },
+     "metrics": {
+      "objective": {
+       "scaled": -164.3425344196633,
+       "unscaled": -164342.53441966328
+      },
+      "dual_infeasibility": {
+       "scaled": 9.37055434870604e-05,
+       "unscaled": 0.09370554348706037
+      },
+      "constraint_violation": {
+       "scaled": 7.233028465059022e-08,
+       "unscaled": 7.233028465059022e-08
+      },
+      "variable_bound_violation": {
+       "scaled": 0.0,
+       "unscaled": 0.0
+      },
+      "complementarity": {
+       "scaled": 2.23436260103811e-06,
+       "unscaled": 0.0022343626010381096
+      },
+      "overall_nlp_error": {
+       "scaled": 9.37055434870604e-05,
+       "unscaled": 0.09370554348706037
+      }
+     },
+     "checks": {
+      "overall_nlp_error_scaled_le_tol": false,
+      "dual_infeasibility_unscaled_le_dual_inf_tol": true,
+      "constraint_violation_unscaled_le_constr_viol_tol": true,
+      "complementarity_unscaled_le_compl_inf_tol": false
+     },
+     "metric_over_tolerance": {
+      "overall_nlp_error_over_tol": 9.370554348706039,
+      "dual_infeasibility_over_dual_inf_tol": 0.09370554348706037,
+      "constraint_violation_over_constr_viol_tol": 0.0007233028465059022,
+      "complementarity_over_compl_inf_tol": 2234.36260103811
+     },
+     "log_segment_sha256": "50c8da2ec9971ac2c0a5b41c2aaf4dfbeb570741d7af92e7429c0e4e7abfc738",
+     "mu_final": 1.8449144625279508e-06,
+     "mu_floor": 9.090909090909091e-11,
+     "mu_over_floor_reported_not_gated": 20294.059087807458,
+     "floor_status_reported_not_gated": "above",
+     "failures": [
+      "final_exit_not_optimal: 'Solved To Acceptable Level.'",
+      "error_metrics_outside_tolerance: ['complementarity_unscaled_le_compl_inf_tol', 'overall_nlp_error_scaled_le_tol']"
+     ]
+    },
+    {
+     "block": [
+      "case9",
+      2035,
+      "Summer"
+     ],
+     "agent": "TSO",
+     "attempts": [
+      "primary"
+     ],
+     "final_attempt": "primary",
+     "final_exit": "Optimal Solution Found.",
+     "compl_inf_tol_in_force": 1e-06,
+     "tolerances": {
+      "tol": 1e-05,
+      "tol_source": "options_list",
+      "dual_inf_tol": 1.0,
+      "dual_inf_tol_source": "ipopt_default",
+      "constr_viol_tol": 0.0001,
+      "constr_viol_tol_source": "ipopt_default",
+      "compl_inf_tol": 1e-06,
+      "compl_inf_tol_source": "options_list"
+     },
+     "metrics": {
+      "objective": {
+       "scaled": -156.04256895233894,
+       "unscaled": -156042.56895233894
+      },
+      "dual_infeasibility": {
+       "scaled": 2.7330615886828548e-08,
+       "unscaled": 2.7330615886828547e-05
+      },
+      "constraint_violation": {
+       "scaled": 6.550315845288424e-14,
+       "unscaled": 6.550315845288424e-14
+      },
+      "variable_bound_violation": {
+       "scaled": 9.999201062166701e-09,
+       "unscaled": 9.999201062166701e-09
+      },
+      "complementarity": {
+       "scaled": 2.3172695071600748e-10,
+       "unscaled": 2.3172695071600748e-07
+      },
+      "overall_nlp_error": {
+       "scaled": 2.7330615886828548e-08,
+       "unscaled": 2.7330615886828547e-05
+      }
+     },
+     "checks": {
+      "overall_nlp_error_scaled_le_tol": true,
+      "dual_infeasibility_unscaled_le_dual_inf_tol": true,
+      "constraint_violation_unscaled_le_constr_viol_tol": true,
+      "complementarity_unscaled_le_compl_inf_tol": true
+     },
+     "metric_over_tolerance": {
+      "overall_nlp_error_over_tol": 0.002733061588682855,
+      "dual_infeasibility_over_dual_inf_tol": 2.7330615886828547e-05,
+      "constraint_violation_over_constr_viol_tol": 6.550315845288424e-10,
+      "complementarity_over_compl_inf_tol": 0.2317269507160075
+     },
+     "log_segment_sha256": "f45263afbddc3909674d0c02598fa568e0de7bf3089c6a1fcd54081d62326cf1",
+     "mu_final": 9.090909090909091e-11,
+     "mu_floor": 9.090909090909091e-11,
+     "mu_over_floor_reported_not_gated": 1.0,
+     "floor_status_reported_not_gated": "at",
+     "failures": []
+    },
+    {
+     "block": [
+      "case9",
+      2035,
+      "Winter"
+     ],
+     "agent": "TSO",
+     "attempts": [
+      "primary"
+     ],
+     "final_attempt": "primary",
+     "final_exit": "Optimal Solution Found.",
+     "compl_inf_tol_in_force": 1e-06,
+     "tolerances": {
+      "tol": 1e-05,
+      "tol_source": "options_list",
+      "dual_inf_tol": 1.0,
+      "dual_inf_tol_source": "ipopt_default",
+      "constr_viol_tol": 0.0001,
+      "constr_viol_tol_source": "ipopt_default",
+      "compl_inf_tol": 1e-06,
+      "compl_inf_tol_source": "options_list"
+     },
+     "metrics": {
+      "objective": {
+       "scaled": -249.87461320348743,
+       "unscaled": -249874.61320348742
+      },
+      "dual_infeasibility": {
+       "scaled": 8.163508694050761e-14,
+       "unscaled": 8.163508694050761e-11
+      },
+      "constraint_violation": {
+       "scaled": 1.0878271850029442e-14,
+       "unscaled": 1.0878271850029442e-14
+      },
+      "variable_bound_violation": {
+       "scaled": 9.999204517575571e-09,
+       "unscaled": 9.999204517575571e-09
+      },
+      "complementarity": {
+       "scaled": 1.186485514350569e-10,
+       "unscaled": 1.186485514350569e-07
+      },
+      "overall_nlp_error": {
+       "scaled": 1.186485514350569e-10,
+       "unscaled": 1.186485514350569e-07
+      }
+     },
+     "checks": {
+      "overall_nlp_error_scaled_le_tol": true,
+      "dual_infeasibility_unscaled_le_dual_inf_tol": true,
+      "constraint_violation_unscaled_le_constr_viol_tol": true,
+      "complementarity_unscaled_le_compl_inf_tol": true
+     },
+     "metric_over_tolerance": {
+      "overall_nlp_error_over_tol": 1.186485514350569e-05,
+      "dual_infeasibility_over_dual_inf_tol": 8.163508694050761e-11,
+      "constraint_violation_over_constr_viol_tol": 1.0878271850029441e-10,
+      "complementarity_over_compl_inf_tol": 0.11864855143505691
+     },
+     "log_segment_sha256": "f878d3f60b573e439d6f77ac66c2fc08f7988732ad8065fe5a97fe855e8f58b9",
+     "mu_final": 9.090909090909091e-11,
+     "mu_floor": 9.090909090909091e-11,
+     "mu_over_floor_reported_not_gated": 1.0,
+     "floor_status_reported_not_gated": "at",
+     "failures": []
+    }
+   ],
+   "gate_pass": false
+  },
+  "G8": {
+   "record_status": "certified",
+   "post_certification_status": "evaluated",
+   "certified_models_pkl": true,
+   "note": "persist_certified_models as the recert: runs iff the harness's residual certificate holds on the last row (consecutive Boyd-pass cycles >= 10), whatever the settling verdict"
+  },
+  "G11": {
+   "events_file": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S53/w118_resettle/campaign_s53_w118_resettle_r2_pb_y2025_n5/evals/ca29c5e818366a6e_pb_y2025_n5/network_failures_s39_D.jsonl",
+   "n_events": 3,
+   "n_blocks_with_expected_event": 3,
+   "n_observed": 3,
+   "expected_class_counts": {
+    "recovered_tier1": 3
+   },
+   "observed_class_counts": {
+    "recovered_tier1": 3
+   },
+   "duplicate_event_blocks": [],
+   "n_mismatches": 0,
+   "mismatches": [],
+   "agrees": true
+  },
+  "G13": {
+   "parts": {
+    "one_line_per_cycle_contiguous": true,
+    "first_pass_as_declared_for_gated": true,
+    "no_hold_acted_through_first_pass": true,
+    "aa_held_off_after_first_pass": true,
+    "tail_held_on_after_first_pass": true,
+    "rho_frozen_after_first_pass_at_its_values": true,
+    "certificate_length_disabled_except_the_rule_end": true,
+    "replay_equal_every_gated_cycle": true,
+    "summary_ok": true,
+    "decision_present": true
+   },
+   "first_pass": 110,
+   "rho_at_first_pass": {
+    "v": 0.01732500000000001,
+    "pf": 0.13199999999999992,
+    "ess": 0.3844335937499999
+   },
+   "n_cycles_where_the_hold_changed_a_value": {
+    "aa": 0,
+    "tail_apply": 0,
+    "tail_next": 0
+   }
+  },
+  "G14": {
+   "parts": {
+    "one_line_per_successful_cycle": true,
+    "all_blocks_every_line": true,
+    "every_line_reconciles_to_net": true,
+    "deltas_every_line_after_the_first": true
+   },
+   "n_lines": 167
+  },
+  "G15": {
+   "cycles_run": 167,
+   "decision_status": "certified",
+   "k_star": 167,
+   "k_cap": null,
+   "stopped_by": "settling_rule",
+   "spec_cap": 219
+  },
+  "G16": {
+   "parts": {
+    "header": true,
+    "one_line_per_cycle": true,
+    "every_line_captured": true,
+    "shape_every_line": true,
+    "summary_ok": true,
+    "metadata_admm_objective_scale_non_mutable": true
+   },
+   "bytes": 12669362,
+   "bytes_per_cycle_line_max": 76134
+  },
+  "G17": {
+   "parts": {
+    "every_cycle_record_reproduced": true,
+    "decision_reproduced": true,
+    "decision_file_present": true
+   }
+  },
+  "G18": {
+   "n_lines": 167,
+   "missing_by_cycle": {}
+  },
+  "G19": {
+   "bitwise_through_k0": true,
+   "k0": 110,
+   "first_divergence_cycle": null,
+   "divergence": null
+  },
+  "G21": {
+   "parts": {
+    "one_creep_line_per_cycle": true,
+    "fields_every_line": true,
+    "q_decomposition_every_successful_cycle_reconciles": true,
+    "ess_movement_available_from_cycle_2": true,
+    "boyd_captured_every_cycle_equals_production_rows": true,
+    "ess_schedule_header_plus_one_line_per_cycle": true,
+    "no_capture_errors": true
+   },
+   "boyd_mismatch_first10": []
+  },
+  "G22": {
+   "parts": {
+    "every_cycle_has_t_sum_and_a_stride_line": true,
+    "in_cycle_equals_stride_formula_to_1e-6": true,
+    "terminal_identity_within_0_01": true
+   },
+   "max_abs_diff_vs_stride": 0.0,
+   "n_bitwise_equal": 167,
+   "n_cycles": 167,
+   "missing_first10": [],
+   "terminal_abs_diff": 4.5710748963756487e-07,
+   "terminal_t_tso_plus_t_dso": -586.6045644283295
+  },
+  "G23": {
+   "n": 9
+  }
+ },
+ "cell_report": {
+  "cell": "pb_y2025_n5",
+  "group": "phase_b",
+  "gated": true,
+  "eval_key": "ca29c5e818366a6e37669b8390b1931fd8daf5d04cd2f8922f479b72aa54859e",
+  "candidate_key": "33031c083b68c6556f4c4a0f7683de83fb9995d73b98814e44bac374d5fc803c",
+  "candidate_canonical": {
+   "investment_year": 2025,
+   "nodes": {
+    "5": [
+     0.25,
+     0.5
+    ],
+    "7": [
+     0.0,
+     0.0
+    ],
+    "9": [
+     0.0,
+     0.0
+    ]
+   }
+  },
+  "original_eval_key": "4a8527254a85b9cca48e1eb872b35ed9f3d5209f84002e2c255516b8af5b304a",
+  "k0_run": 110,
+  "k0_original": 110,
+  "N_old": 119,
+  "rule_cap": 219,
+  "cycles_run": 167,
+  "status": "certified",
+  "k_star": 167,
+  "branch": "oscillatory",
+  "band": [
+   653729685.9275218,
+   653734194.5570776
+  ],
+  "band_width": 4508.629555821419,
+  "range_over_tau": 0.9932940600725858,
+  "Q_k_star": 653733946.832507,
+  "T": [
+   [
+    119,
+    "min",
+    653710770.7396618
+   ],
+   [
+    133,
+    "max",
+    653741943.2813642
+   ],
+   [
+    147,
+    "min",
+    653729685.9275218
+   ],
+   [
+    161,
+    "max",
+    653734194.5570776
+   ],
+   [
+    166,
+    "min",
+    653733507.5341799
+   ]
+  ],
+  "A": [
+   31172.541702389717,
+   12257.353842377663,
+   4508.629555821419,
+   687.0228977203369
+  ],
+  "P_hat": 19,
+  "t_sum_k_star": -586.604564885437,
+  "Q_cc_k_star": 653733360.2279421,
+  "lapse_events": [],
+  "gap_refusals": [],
+  "net_operational_recourse_last": 653733946.832507,
+  "terminal_salvage_value_last": -1.4405701449936352e-33,
+  "terminal_step_abs": 439.298327088356,
+  "terminal_step_over_EPS0": 9.67816081348448,
+  "rule_ten_last_cycle": 0.006719833492154699,
+  "boyd_lapses_after_k0": 0,
+  "pf_primal_ratio_after_k0": {
+   "max": 0.5416233108733108,
+   "last": 0.04900862277168193
+  },
+  "objective_convention": "Q = gross_operational_cost, settlement EXCLUDED; t_sum = the priced interface-consensus gap sum w * pi * (p_DSO - p_TSO) (EUR); Q_cc = Q + t_sum is a FIRST-ORDER, consensus-consistent DIAGNOSTIC, reported beside gross, never a costed quantity; verdicts are read on GROSS",
+  "Q_N_old": 653711463.530828,
+  "s_signed": 22483.30167901516,
+  "s_resolution_band_width": 4508.629555821419,
+  "s_flag": null,
+  "overlap": [
+   {
+    "cycle": 111,
+    "Q_old": 653755815.6997988,
+    "Q_new": 653754831.0431606,
+    "Q_new_minus_Q_old": -984.6566382646561,
+    "relative": -1.5061535432929978e-06
+   },
+   {
+    "cycle": 112,
+    "Q_old": 653745933.5104828,
+    "Q_new": 653745492.8258185,
+    "Q_new_minus_Q_old": -440.68466424942017,
+    "relative": -6.740916335540829e-07
+   },
+   {
+    "cycle": 113,
+    "Q_old": 653736799.651068,
+    "Q_new": 653736460.6054647,
+    "Q_new_minus_Q_old": -339.0456032752991,
+    "relative": -5.186270735504942e-07
+   },
+   {
+    "cycle": 114,
+    "Q_old": 653728732.284343,
+    "Q_new": 653728400.0951812,
+    "Q_new_minus_Q_old": -332.18916177749634,
+    "relative": -5.081452678647277e-07
+   },
+   {
+    "cycle": 115,
+    "Q_old": 653722057.5404117,
+    "Q_new": 653721680.1339341,
+    "Q_new_minus_Q_old": -377.40647757053375,
+    "relative": -5.773194788477873e-07
+   },
+   {
+    "cycle": 116,
+    "Q_old": 653717064.4380058,
+    "Q_new": 653716635.8871331,
+    "Q_new_minus_Q_old": -428.5508726835251,
+    "relative": -6.555601742658288e-07
+   },
+   {
+    "cycle": 117,
+    "Q_old": 653713699.8799467,
+    "Q_new": 653713196.4468321,
+    "Q_new_minus_Q_old": -503.4331146478653,
+    "relative": -7.70112535105689e-07
+   },
+   {
+    "cycle": 118,
+    "Q_old": 653711874.7054828,
+    "Q_new": 653711279.7428728,
+    "Q_new_minus_Q_old": -594.9626100063324,
+    "relative": -9.101297269142942e-07
+   },
+   {
+    "cycle": 119,
+    "Q_old": 653711463.530828,
+    "Q_new": 653710770.7396618,
+    "Q_new_minus_Q_old": -692.7911661863327,
+    "relative": -1.0597812717623573e-06
+   }
+  ],
+  "overlap_at_N_old": {
+   "cycle": 119,
+   "Q_old": 653711463.530828,
+   "Q_new": 653710770.7396618,
+   "Q_new_minus_Q_old": -692.7911661863327,
+   "relative": -1.0597812717623573e-06
+  },
+  "replay_bitwise_through": 110,
+  "replay_first_divergence": null
+ },
+ "pre_launch_assertion": {
+  "holds": true,
+  "parts": {
+   "base_key_original_configuration_equals_original_eval_key": true,
+   "resettle_key_differs_from_original_and_base": true,
+   "resettle_key_absent_from_committed_specs_outside_w118_root": true,
+   "campaign_root_differs_from_original": true,
+   "eval_dir_name_differs_from_original": true,
+   "working_dir_ids_differ_from_original": true,
+   "working_dirs_absent": true,
+   "frozen_entry_equals_recomputed": true
+  },
+  "base_key_current_configuration": "70e25ba765d954f0d3199591caf4fec436c40e19b7122088f7ad28c096da280a",
+  "resettle_key": "ca29c5e818366a6e37669b8390b1931fd8daf5d04cd2f8922f479b72aa54859e",
+  "base_key_original_configuration": "4a8527254a85b9cca48e1eb872b35ed9f3d5209f84002e2c255516b8af5b304a",
+  "original_eval_key": "4a8527254a85b9cca48e1eb872b35ed9f3d5209f84002e2c255516b8af5b304a",
+  "eval_dir_name": "ca29c5e818366a6e_pb_y2025_n5",
+  "working_dir_ids": {
+   "run": "p515s44_s53_w118_resettle_r2_pb_y2025_n5_ca29c5e818366a6e_run",
+   "precheck": "p515s44_s53_w118_resettle_r2_pb_y2025_n5_ca29c5e818366a6e_precheck"
+  },
+  "n_committed_keys_scanned": 3528,
+  "excluded_roots": [
+   "data/SRP1/Results/P515S53/w118_resettle"
+  ]
+ },
+ "parent_capture_checklist": {
+  "a_boyd_all_pass_key_in_production": true,
+  "a_aa_step_called_with_boyd_metrics": true,
+  "a_anderson_acceleration_on": true,
+  "b_source_order_aa_step_lt_recourse_lt_convergence_test": true,
+  "c_no_early_stop_in_declaration": true,
+  "c_certificate_length_written_only_by_disable_restore_rule_end": true,
+  "c_certificate_length_read_only_by_the_loop_test_the_record_and_the_print": true,
+  "d_spec_cap_equals_the_cell_cap": true,
+  "f_rule_constants_equal_settling_criterion_v2": true,
+  "f_rule_class_callable": true,
+  "tail_enabled_for_this_run": true,
+  "aa_off_literal_is_production": true,
+  "loop_exit_is_the_convergence_break": true,
+  "block_functions_callable": true,
+  "efc_read_once_per_cycle_after_penalties_before_the_row": true,
+  "signature:_capture_convergence_depth_tail_baseline": true,
+  "signature:_apply_convergence_depth_tail": true,
+  "signature:get_admm_boyd_residual_metrics": true,
+  "signature:_anderson_acceleration_cycle_step": true,
+  "signature:_convergence_depth_tail_next_state": true,
+  "signature:_update_admm_penalties": true,
+  "signature:_get_operational_recourse_components": true,
+  "signature:_get_admm_efc_per_day_max": true,
+  "e_original_record_hashes_holds_1_N_old_first_pass_k0": true,
+  "h_lambda_t_capture_path": true,
+  "capture:source:q_gross_is_tso_plus_dso": true,
+  "capture:source:q_blocks_tso_dso_salvage": true,
+  "capture:source:q_components_classified_total": true,
+  "capture:source:ess_consensus_four_copies": true,
+  "capture:source:ess_copies_written_from_models": true,
+  "capture:source:boyd_channel_fields": true,
+  "capture:source:esso_not_in_gross_Q": true,
+  "capture:loop:boyd_call_once_per_cycle": true,
+  "capture:loop:boyd_after_esso_update_before_aa": true,
+  "capture:loop:boyd_metrics_passed_to_penalties": true,
+  "capture:model_source:shared_energy_storage_data": true,
+  "capture:model_source:network": true,
+  "capture:writer_is_gate_result_io": true,
+  "t_sum:source:reporting_detail_price": true,
+  "t_sum:source:expected_price_definition": true,
+  "t_sum:source:block_weight_definition": true,
+  "t_sum:source:pf_consensus_layout": true,
+  "t_sum:signature:_expected_market_price": true,
+  "t_sum:signature:_get_admm_block_weight": true,
+  "t_sum:gates:terminal_identity_and_pf_stride_use_the_same_copies_and_weight": true
+ },
+ "memory_preflight_at_run": {
+  "utc": "2026-09-29T08:22:28.775975+00:00",
+  "vm_stat_header": "Mach Virtual Memory Statistics: (page size of 16384 bytes)",
+  "page_size_bytes": 16384,
+  "vm_stat_pages": {
+   "pages_free": 4886,
+   "pages_inactive": 811195,
+   "pages_wired_down": 153825,
+   "anonymous_pages": 540206,
+   "pages_occupied_by_compressor": 265091
+  },
+  "hw_memsize_bytes": 34359738368,
+  "concurrency": 1,
+  "required_bytes": 3758096384,
+  "required_gib": 3.5,
+  "per_child_budget_gib": 3.5,
+  "rule": "hw.memsize - (wired + anonymous + compressor-occupied) x page size >= 1 x 3.5 GiB",
+  "rule_rationale": "non-reclaimable load = wired + anonymous + compressor-occupied pages; file-backed pages (active or inactive) are cache the kernel reclaims on demand, so free + inactive under-counts what new processes can obtain (free + inactive recorded alongside)",
+  "budget_derivation": {
+   "x0_capture_child_peak_with_persist_bytes": 3470491648,
+   "x0_capture_production_peak_before_persist_bytes": 2395537408,
+   "s47_recert_c_star_child_peak_no_persist_bytes": 2577645568,
+   "s47_recert_unit_child_peak_no_persist_bytes": 2574581760,
+   "source": "data/SRP1/Results/P515S48/x0_capture/evals/d2c96b1480402a3b_x0/{evaluation_record,post_certification}.json and data/SRP1/Results/P515S47/campaign_s47_recert/evals/*/evaluation_record.json peak_rss",
+   "budget": "3.5 GiB per child = the measured persist peak (3.23 GiB) + 0.27 GiB margin"
+  },
+  "missing_vm_stat_figures": [],
+  "non_reclaimable_gib": 14.635040283203125,
+  "available_bytes": 18645483520,
+  "available_gib": 17.364959716796875,
+  "free_plus_inactive_gib": 12.452407836914062,
+  "pass": true
+ },
+ "solver": {
+  "resolved": {
+   "NLP_SOLVER_PATH": "/usr/local/bin/ipopt",
+   "source": "environment"
+  },
+  "expected": "/usr/local/bin/ipopt",
+  "sha256": "b316abbe38cd851d9a9a87a6a1a1714a4334304c9539df1976d2f7101360ff05",
+  "recert_x0_child_path": "/usr/local/bin/ipopt",
+  "ok": true
+ },
+ "batch_info": {
+  "max_concurrent_observed": 1,
+  "timeline": [
+   {
+    "event": "start",
+    "label": "pb_y2025_n5",
+    "pid": 94823,
+    "t": 1790670148.7810419
+   },
+   {
+    "event": "end",
+    "label": "pb_y2025_n5",
+    "pid": 94823,
+    "t": 1790674450.476005,
+    "exit_code": 0
+   }
+  ]
+ },
+ "parent_view": {
+  "exit_code": 0,
+  "wall_s": 4301.694963216782,
+  "wait4_ru_maxrss": 3623124992
+ },
+ "guards": {
+  "w118_checks": {
+   "counts": {
+    "permitted_solve": 0,
+    "permitted_exec": 0,
+    "blocked_solve": 0,
+    "blocked_exec": 0
+   },
+   "verify_0_failures": []
+  },
+  "w105_checks_imported": {
+   "counts": {
+    "permitted_solve": 0,
+    "permitted_exec": 0,
+    "blocked_solve": 0,
+    "blocked_exec": 0
+   },
+   "verify_0_failures": []
+  },
+  "w101_checks_imported": {
+   "counts": {
+    "permitted_solve": 0,
+    "permitted_exec": 0,
+    "blocked_solve": 0,
+    "blocked_exec": 0
+   },
+   "verify_0_failures": []
+  },
+  "w98_checks_imported": {
+   "counts": {
+    "permitted_solve": 0,
+    "permitted_exec": 0,
+    "blocked_solve": 0,
+    "blocked_exec": 0
+   },
+   "verify_0_failures": []
+  },
+  "w112_imported": {
+   "counts": {
+    "permitted_solve": 0,
+    "permitted_exec": 0,
+    "blocked_solve": 0,
+    "blocked_exec": 0
+   },
+   "verify_0_failures": []
+  },
+  "alpha_row_launcher": {
+   "counts": {
+    "permitted_solve": 0,
+    "permitted_exec": 0,
+    "blocked_solve": 0,
+    "blocked_exec": 0
+   },
+   "verify_0_failures": []
+  },
+  "w86_launcher": {
+   "counts": {
+    "permitted_solve": 0,
+    "permitted_exec": 0,
+    "blocked_solve": 0,
+    "blocked_exec": 0
+   },
+   "verify_0_failures": []
+  },
+  "w87": {
+   "counts": {
+    "permitted_solve": 0,
+    "permitted_exec": 0,
+    "blocked_solve": 0,
+    "blocked_exec": 0
+   },
+   "verify_0_failures": []
+  },
+  "w88": {
+   "counts": {
+    "permitted_solve": 0,
+    "permitted_exec": 0,
+    "blocked_solve": 0,
+    "blocked_exec": 0
+   },
+   "verify_0_failures": []
+  },
+  "w89_step1": {
+   "counts": {
+    "permitted_solve": 0,
+    "permitted_exec": 0,
+    "blocked_solve": 0,
+    "blocked_exec": 0
+   },
+   "verify_0_failures": []
+  },
+  "w89_3x3_launcher": {
+   "counts": {
+    "permitted_solve": 0,
+    "permitted_exec": 0,
+    "blocked_solve": 0,
+    "blocked_exec": 0
+   },
+   "verify_0_failures": []
+  },
+  "w90_3x3_parent": {
+   "counts": {
+    "permitted_solve": 0,
+    "permitted_exec": 0,
+    "blocked_solve": 0,
+    "blocked_exec": 0
+   },
+   "verify_0_failures": []
+  },
+  "w98_parent": {
+   "counts": {
+    "permitted_solve": 0,
+    "permitted_exec": 0,
+    "blocked_solve": 0,
+    "blocked_exec": 0
+   },
+   "verify_0_failures": []
+  },
+  "w101_parent": {
+   "counts": {
+    "permitted_solve": 0,
+    "permitted_exec": 0,
+    "blocked_solve": 0,
+    "blocked_exec": 0
+   },
+   "verify_0_failures": []
+  },
+  "w118_parent": {
+   "counts": {
+    "permitted_solve": 0,
+    "permitted_exec": 0,
+    "blocked_solve": 0,
+    "blocked_exec": 0
+   },
+   "verify_0_failures": []
+  }
+ },
+ "wall_clock_s": 4351.2403111457825
+}

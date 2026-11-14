@@ -1,0 +1,66 @@
+{
+ "stage": "P5.15 ablation B zero-solve precheck",
+ "dso7": {
+  "sess_converter_capability": 24,
+  "sess_phi_limit_lower": 24,
+  "sess_phi_limit_upper": 24
+ },
+ "dso7_active": {
+  "sess_phi_limit_lower": true,
+  "sess_phi_limit_upper": true
+ },
+ "tso": {
+  "sess_converter_capability": 72,
+  "sess_phi_limit_lower": 72,
+  "sess_phi_limit_upper": 72
+ },
+ "tuple": [
+  "sess_pnet_def",
+  "sess_pch_hat_link",
+  "sess_pdch_hat_link",
+  "sess_converter_capability",
+  "sess_active_sum_limit",
+  "sess_phi_limit_lower",
+  "sess_phi_limit_upper",
+  "sess_soc_def",
+  "sess_soc_limit_upper",
+  "sess_soc_limit_lower",
+  "sess_soc_final",
+  "sess_comp"
+ ],
+ "tuple_position_ok": true,
+ "consumers_reading_global": [
+  "configure_shared_ess_operational_state"
+ ],
+ "day_balance": {
+  "TSO": true,
+  "5": true,
+  "7": true,
+  "9": true
+ },
+ "recovery": {
+  "TSO": [
+   true,
+   false
+  ],
+  "5": [
+   false,
+   false
+  ],
+  "7": [
+   true,
+   false
+  ],
+  "9": [
+   true,
+   false
+  ]
+ },
+ "solve_profile": {
+  "permitted_solve": 0,
+  "permitted_exec": 0,
+  "blocked_solve": 0,
+  "blocked_exec": 0
+ },
+ "precheck_pass": true
+}

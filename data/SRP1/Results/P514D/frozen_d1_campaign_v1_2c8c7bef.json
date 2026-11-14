@@ -1,0 +1,42 @@
+{
+  "design": "Track D1 — three-cell storage/coordination campaign on the cold path",
+  "status": "FROZEN — written and hashed before any cell runs",
+  "authorization": "author, 2026-09-12: budget 5.0e6 and admm.tol.objective.rel 1e-4, both by harness override; cold path throughout; configuration otherwise inherited from the 2x2's adaptive cells.",
+
+  "cells": {
+    "cell1_uncoordinated_no_storage": "type='uncoordinated' — one DSO optimize per node plus one TSO optimize, NO consensus loop, NO ESSO. ~48 solves, single pass. Baseline for the 18.25% claim.",
+    "cell2_coordinated_no_storage": "cold ADMM, zero shared-ESS investment. Baseline for the 2.01% claim.",
+    "cell3_coordinated_with_plan": "cold ADMM, 1.00 MVA / 4.00 MWh per node invested 2025 only, zero 2030/2035, single cohort. The proposal."
+  },
+
+  "predeclared_varied_settings": {
+    "budget": {"value": 5.0e6, "baseline": 1.0e6, "mechanism": "harness override after load; the case file is NOT edited",
+      "derivation": "NOT chosen for headroom around this plan. A budget sized to just fit one plan makes the BUDGET the binding constraint on any later optimization, so the preferred plan would be a financial artifact rather than an economic choice — the same boundary-degeneracy argument that kept the capacity off max_capacity. Derived instead: the most expensive way to reach max_capacity = 5.00 MWh per node is at the minimum ratio 2.0, i.e. 2.50 MVA per node at a probability-weighted 662,521.6 per MVA, giving 4,968,912 across three nodes; at ratio 10 it is 3,431,008. 5.0e6 is therefore the SMALLEST ROUND BUDGET that permits the capacity ceiling at every admissible E/S ratio, making max_capacity — a physical siting limit — the binding constraint throughout the design space and the budget never binding.",
+      "note": "4.0e6 was rejected additionally as near-degenerate: the capacity ceiling at ratio 4 costs 3,206,177 x 1.25 = 4,007,722, so budget and capacity would bind almost together.",
+      "inertness_recorded": "verified in pre-flight: on the cold path no code path consults the budget. Applied anyway for configuration consistency and to protect any later oracle-gated step."},
+    "tol_objective_rel": {"value": 1e-4, "baseline": 1e-3, "mechanism": "harness override, as in Track C1"}
+  },
+  "configuration_inherited": {"rho": {"v": 1.5, "pf": 300.0, "ess": 1.0}, "adaptive_penalty": true,
+    "cap": 90, "path": "cold", "note": "so the only varied ADMM setting against C1's cold reference is the candidate"},
+
+  "reporting_requirements": {
+    "penalties_and_slacks": {
+      "rule": "every penalty and slack term named INDIVIDUALLY per cell — complementarity, SOC up and down, ESSO feasibility, network voltage/flow slacks, and any others found",
+      "predeclared_vanishing_threshold": "a term meant to vanish counts as NON-VANISHING if max |value| over all indices exceeds 1e-6 in per-unit terms — two orders below the model's own SMALL_TOLERANCE of 1e-4",
+      "suspension_rule": "if ANY feasibility penalty is active in cell 3 the comparison is SUSPENDED pending penalty classification, not reported with a caveat. Cell 2 has no shared ESS and therefore no such terms, so an active penalty in cell 3 makes the difference an artifact rather than a cost."},
+    "rule_ten": "terminal-step-to-threshold ratio for every cell, so a cell that was stopped rather than converged is visible",
+    "rule_nine_per_pair": {
+      "cell3_minus_cell2": "error bar = SUM of the two cells' terminal steps (both are ADMM evaluations)",
+      "cell3_minus_cell1": "error bar = cell 3's terminal step ALONE. Cell 1 has no consensus loop and therefore no ADMM stopping slack, only its own IPOPT tolerances. Do NOT double-count.",
+      "bounded_bar": "also report twice the tolerance as the bounded error bar; use the BOUND for any claim"},
+    "soh_margin": "report cell 3's realized EFC per day per cohort alongside terminal SoH, WITH ITS MARGIN to the 1.4612 EFC/day binding threshold. A pass at 1.40 and a pass at 0.60 are very different results and only the margin distinguishes them.",
+    "if_the_floor_binds": "treat it as a FINDING, not only an obstacle: a plan cycling hard enough to reach the floor in fifteen years is one whose degradation is economically material, which is what the paper claims to model. In that case penalty classification becomes a PREREQUISITE for reporting either comparison, since the floor's penalized slack would be active in cell 3 alone.",
+    "transfer_caveats_measured": "cycles and solves per evaluation at real capacity against 1,683 (rel 1e-3) and 3,519 (rel 1e-4) at negligible capacity; local-solve failure count against the 1-in-1,095 baseline",
+    "comparability_across_the_18.25_pair": "cell 1 has no consensus loop, no ESSO, and hence no complementarity, SOC or feasibility slack terms at all. The 18.25% comparison therefore spans a LARGER STRUCTURAL DIFFERENCE than the 2.01% one — different solve mode, different constraint set, different penalty surface. Record what is and is not comparable across it; do not present the two percentages as like-for-like.",
+    "instance_and_configuration": "recorded per rule eight",
+    "solve_profile": "armed and counted, failing in either direction"
+  },
+
+  "scoping_statement_required_in_the_report": "This is NOT the paper's reported plan. Three MVA and twelve MWh system-wide across three case33 networks is a substantial penetration and the measured effect will very likely exceed 2.01%. The purpose is to establish that the oracle resolves a material storage effect and to measure the transfer caveats at real capacity. Reproducing the paper's headline needs the paper's own plan, which by construction fits inside the original 1.0e6 budget. This must NOT be presented as validating the 2.01% figure.",
+  "not_permitted": ["editing any file in data/", "presenting this as the paper's plan", "reporting a suspended comparison with a caveat instead of suspending it"]
+}

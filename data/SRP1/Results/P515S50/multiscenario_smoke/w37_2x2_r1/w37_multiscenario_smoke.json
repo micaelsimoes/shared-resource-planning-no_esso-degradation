@@ -1,0 +1,145 @@
+{
+ "fatal_error": "RuntimeError: refusing to start: eval dir already exists (network logs append): /Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P56A/evals/p515s50_w37_x0",
+ "fatal_traceback": "Traceback (most recent call last):\n  File \"/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/p515_s50_w37_multiscenario_smoke.py\", line 1051, in main\n    run_arm(arm, out_dir, planning0, holder, timer, watchdog)\n  File \"/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/p515_s50_w37_multiscenario_smoke.py\", line 842, in run_arm\n    report, report_path = G.run_admm_arm(\n                          ^^^^^^^^^^^^^^^\n  File \"/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/p515_g_g1_g4_admm_gates.py\", line 1250, in run_admm_arm\n    planning, sed, candidate = _construct_arm_planning(\n                               ^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/p515_g_g1_g4_admm_gates.py\", line 1095, in _construct_arm_planning\n    raise RuntimeError(\nRuntimeError: refusing to start: eval dir already exists (network logs append): /Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P56A/evals/p515s50_w37_x0\n",
+ "schema": "p515_s50_w37_multiscenario_smoke_v1",
+ "stage": "P5.15 Addendum 36 W37 -- 2x2 multi-scenario SMOKE of the >1x1 hull-polish and settlement branches (quadratic scenario-deviation penalty active; NOT the pilot)",
+ "authority": [
+  "PLANNER_BRIEF_2026-09-13.md Addendum 36 (W37 task text)",
+  "commit cb545653 (W35 item 3: the four single-scenario code paths generalized)",
+  "W36: the signed linear row 18 is NOT implemented; the quadratic scenario-deviation penalty is what exists -- the formulation decision is PENDING"
+ ],
+ "WARNING": "SMOKE UNDER THE CURRENT QUADRATIC SCENARIO-DEVIATION PENALTY (definitions.PENALTY_SCENARIO_DEVIATION = 9e4 on voltage + interface power, definitions.PENALTY_SHARED_ESS_SCENARIO_DEVIATION = 1e4 on the shared ESS, added to model.objective.expr and therefore OUTSIDE Q(x)); NOT THE PILOT INSTANCE; THE ROW-18 / alpha DECISION IS PENDING. Branch-execution and sanity evidence only -- not a result, not comparable with any SRP1 (1x1) figure.",
+ "label": "w37_2x2_r1",
+ "instance": "w37_2x2_smoke",
+ "preflight_only": false,
+ "launch": "launch.json",
+ "cycles": 2,
+ "arms": [
+  "x0"
+ ],
+ "solve_profile": {
+  "permitted": [
+   [
+    "network.py",
+    "_run_smopf_solver_attempt"
+   ],
+   [
+    "shared_energy_storage_data.py",
+    "_run_solver_attempt"
+   ]
+  ],
+  "counts": {
+   "permitted_solve": 0,
+   "permitted_exec": 0,
+   "blocked_solve": 0,
+   "blocked_exec": 0
+  },
+  "declared_total_strict": 73,
+  "declared_per_arm": 73,
+  "declared_per_arm_note": "= [(1 + n_dso) * n_years * n_days + n_esso] * (cycles + 1) + (1 + n_dso) * n_years * n_days polish solves; recorded in launch.json before the run",
+  "admm_retries_credited_per_event": 0,
+  "polish_retries_beyond_one_per_block": 0,
+  "expected_gated": null,
+  "observed": 0,
+  "identity": "observed == declared_total_strict + sum over arms of [ADMM retries credited per failure event] + [polish inner-guard surplus over one solve per block]",
+  "verify_failures": [
+   "event-level reconciliation UNSUPPORTED: [{\"arm\": \"x0\", \"reconciliation\": {}}]"
+  ],
+  "unsupported_reconciliations": [
+   {
+    "arm": "x0",
+    "reconciliation": {}
+   }
+  ],
+  "permitted_sites": {}
+ },
+ "apply_common_values_tripwire": {
+  "n_unexpected_calls": 0,
+  "unexpected_call_stacks": [],
+  "n_probe_calls": 0,
+  "declared": "exactly 0 unexpected calls; exactly 1 probe call per arm, each raising NotImplementedError"
+ },
+ "checks": {
+  "x0": {
+   "hook_ok": null,
+   "c1_all_multi_scenario": null,
+   "c1_all_expectation_mode": null,
+   "c2_hull_pass": null,
+   "c3_polish_all_solved": null,
+   "c4_decomposition_pass": null,
+   "c5_s31c_pass": null,
+   "c6_prices_pass": null,
+   "c7_probe_pass": null
+  }
+ },
+ "all_pass": false,
+ "memory": {
+  "watchdog_peak": {
+   "measure": 419430400,
+   "rss_tree": 419430400,
+   "rss_self": 419430400,
+   "footprint_self": 308446432,
+   "stage_at_peak_measure": "rule eleven checklist",
+   "t_at_peak_measure": 11.576,
+   "gating_measure": "rss_tree",
+   "gating_value": 419430400,
+   "stage_at_peak_gating_value": "rule eleven checklist",
+   "t_at_peak_gating_value": 11.576,
+   "swap_used": 643760128,
+   "stage_at_peak_swap_used": "derive case"
+  },
+  "memory_final": {
+   "t": 11.576,
+   "stage": "rule eleven checklist",
+   "rss_self": 419430400,
+   "rss_children": 0,
+   "n_children": 0,
+   "rss_tree": 419430400,
+   "footprint_self": 308446432,
+   "measure": 419430400,
+   "sys_available": 16314433536,
+   "sys_used_pct": 52.5,
+   "swap_used": 643760128,
+   "gating_measure": "rss_tree",
+   "gating_value": 419430400
+  },
+  "ru_maxrss_self_bytes": 419463168,
+  "ru_maxrss_children_ipopt_bytes": 13418496,
+  "units_note": "ru_maxrss is in BYTES on macOS"
+ },
+ "solve_times_all_phases": {
+  "n": 0,
+  "by_agent": {
+   "TSO": {
+    "n": 0
+   },
+   "DSO": {
+    "n": 0
+   }
+  },
+  "scope_note": "NETWORK solves only -- wrapped at network.Network.run_smopf. The ESSO solves (3 per round) go through shared_energy_storage_data._run_solver_attempt and are NOT in this table; they ARE in the guard counts."
+ },
+ "solve_times_by_phase": {},
+ "wall_clock_s": 11.57683515548706,
+ "ended_utc": "2026-09-22T20:14:09.951339+00:00",
+ "arms_detail": {
+  "x0": {
+   "investment_map": {
+    "5": [
+     0.0,
+     0.0
+    ],
+    "7": [
+     0.0,
+     0.0
+    ],
+    "9": [
+     0.0,
+     0.0
+    ]
+   },
+   "investment_year": 2025,
+   "eval_id": "p515s50_w37_x0"
+  }
+ }
+}

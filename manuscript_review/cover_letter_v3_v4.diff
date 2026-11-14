@@ -1,0 +1,22 @@
+--- work/cover_letter_v3.tex	2026-11-10 13:55:46.481769165 +0000
++++ work/cover_letter_v4.tex	2026-11-12 13:13:47.048938628 +0000
+@@ -10,7 +10,7 @@
+ 
+     \opening{Dear Editor,}
+ 
+-    Please find enclosed the revised version of our manuscript ``Degradation-Aware Planning of Shared Battery Energy Storage Systems for Coordinated Transmission and Distribution System Operation'' (Manuscript JES-D-[number]), together with a point-by-point response to the three Reviewers and a copy of the manuscript with the changes marked.
++    Please find enclosed the revised version of our manuscript ``Degradation-Aware Planning of Shared Battery Energy Storage Systems for Coordinated Transmission and Distribution System Operation'' (Manuscript EST-D-26-06323), together with a point-by-point response to the three Reviewers and a copy of the manuscript with the changes marked.
+ 
+     We are grateful to the Reviewers. Their comments identified two defects of the submitted version that could not be repaired by editing: the Benders-type cuts of the planning layer were not valid for a nonconvex operational recourse, and the battery model aged the cells with apparent-energy throughput and did not expose the state-of-charge dynamics. We therefore rebuilt the method rather than defend it, and we want to state plainly what changed, because the revised results differ from the submitted ones in kind, not only in value.
+ 
+@@ -18,7 +18,9 @@
+ 
+     Under the revised method and inputs the conclusions change. On the test system none of the evaluated storage plans recovers its investment cost at the baseline assumptions; the reference unit loses 64.4~k\euro{} over the horizon, while its margin without ageing is within the numerical resolution of zero, so its sign is not resolved; at this fixed plan, ageing accounts for the difference. The paper now reports the conditions under which shared storage does pay, in energy-capacity cost and in flexibility price, and quantifies the value of coordinated operation itself at 12.2\,\% of the operating cost of a price-taking arrangement that prohibits reverse flow from distribution to transmission. The 18.25\,\% and 92.16\,\% figures of the submitted version are withdrawn with the results they came from; the new figure is a differently defined quantity and is not a replacement for them.
+ 
+-    [Paragraph on the additional experiments of the revision --- the coordination benchmark under an identical reverse-flow restriction and the numerical robustness checks under perturbed coordination penalties --- to be completed from their results in round 10.]
++    Beyond the Reviewers' requests, the revision adds two robustness checks. The coordinated arrangement was re-evaluated with the same no-reverse-flow restriction that the static benchmarks carry: the restriction costs 20.5~k\euro{}, 0.02\,\% of the 90.9~M\euro{} saving, so the reported 12.2\,\% benefit does not depend on the interface rule. The two decisive storage comparisons were re-evaluated with the coordination penalties halved and doubled: every sign and verdict is unchanged, and the differences move by about a tenth of their determinacy threshold. [If W187 landed: A degradation-neutral evaluation of the unit neighbourhood of the plan without storage is also reported (Section~4.3).]
++
++    We apologise for the delay in returning this revision. Rebuilding the method and recomputing every result under declared numerical acceptance criteria took longer than the revision period, and we preferred a late revision that answers the Reviewers to a prompt one that did not.
+ 
+     Two requests were met only in part, and the response says so: we do not attribute degradation separately to the TSO and the DSO, because the shared storage follows a jointly determined schedule and no unique attribution exists; and we report the terminal salvage value as a post-evaluation sensitivity rather than internalising it in the optimisation, so no preferred installation year is claimed. We also pushed back, with reasons, where a request would have added claims the evidence does not support.
+ 

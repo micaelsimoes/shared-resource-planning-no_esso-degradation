@@ -1,0 +1,145 @@
+{
+ "utc": "2026-10-31T11:15:49.250953+00:00",
+ "predictions": {
+  "recorded": "before any solve (task text, Planner, 2026-10-31); also written to predictions.json before solve 1",
+  "A1": {
+   "text": "identical problem with mu_init 1e-6: TSO <= 8 and DSO <= 15 iterations (from 22 / 51)",
+   "tso_max_iterations": 8,
+   "dso_max_iterations": 15
+  },
+  "A2": {
+   "text": "(2) within +-30 % of Part A's warm counts",
+   "part_a_warm": {
+    "tso": 22,
+    "dso": 51
+   },
+   "rel_band": 0.3
+  },
+  "A3": {
+   "text": "(3) at least 40 % fewer iterations than (2)",
+   "min_reduction": 0.4
+  },
+  "A4": {
+   "text": "all solution agreements within the gate (same optimum, no restoration)",
+   "obj_rel_gate": 1e-09,
+   "var_abs_gate": 1e-06,
+   "gate_scope_per_ruling_b": "c1: objective vs Part A's warm limit only (Vars reported vs certified, not gated); c3 vs c2: objective and every free Var"
+  },
+  "A5": {
+   "text": "wall-time reduction of (3) vs (2) >= 30 % on the DSO (run_smopf wall)",
+   "min_reduction": 0.3
+  }
+ },
+ "perturbation_deltas": {
+  "tso": {
+   "vmag_req": {
+    "channel": "v",
+    "shift_physical": 0.02155036446708891,
+    "unit_physical": "kV",
+    "base": 345.0,
+    "shift_param_units": 6.24648245422867e-05,
+    "param_units": "pu of v_base (vmag)"
+   },
+   "p_pf_req": {
+    "channel": "pf_p",
+    "shift_physical": 0.019050954821686616,
+    "unit_physical": "MW",
+    "base": 100.0,
+    "shift_param_units": 0.00019050954821686616,
+    "param_units": "pu of s_base"
+   },
+   "q_pf_req": {
+    "channel": "pf_q",
+    "shift_physical": 0.0016975111307715451,
+    "unit_physical": "Mvar",
+    "base": 100.0,
+    "shift_param_units": 1.697511130771545e-05,
+    "param_units": "pu of s_base"
+   },
+   "p_ess_req": {
+    "channel": "ess_p",
+    "shift_physical": 0.0011188548712298685,
+    "unit_physical": "MW",
+    "base": 100.0,
+    "shift_param_units": 1.1188548712298685e-05,
+    "param_units": "pu of s_base"
+   },
+   "q_ess_req": {
+    "channel": "ess_q",
+    "shift_physical": 1.7774234417223395e-05,
+    "unit_physical": "Mvar",
+    "base": 100.0,
+    "shift_param_units": 1.7774234417223394e-07,
+    "param_units": "pu of s_base"
+   }
+  },
+  "dso": {
+   "vmag_req": {
+    "channel": "v",
+    "shift_physical": 0.010580041413277286,
+    "unit_physical": "kV",
+    "base": 345.0,
+    "shift_param_units": 3.066678670515155e-05,
+    "param_units": "pu of v_base (vmag)"
+   },
+   "p_pf_req": {
+    "channel": "pf_p",
+    "shift_physical": 0.0027148257408349252,
+    "unit_physical": "MW",
+    "base": 100.0,
+    "shift_param_units": 2.7148257408349252e-05,
+    "param_units": "pu of s_base"
+   },
+   "q_pf_req": {
+    "channel": "pf_q",
+    "shift_physical": 8.829338675298004e-05,
+    "unit_physical": "Mvar",
+    "base": 100.0,
+    "shift_param_units": 8.829338675298005e-07,
+    "param_units": "pu of s_base"
+   },
+   "p_ess_req": {
+    "channel": "ess_p",
+    "shift_physical": 0.0006460573971125982,
+    "unit_physical": "MW",
+    "base": 100.0,
+    "shift_param_units": 6.460573971125983e-06,
+    "param_units": "pu of s_base"
+   },
+   "q_ess_req": {
+    "channel": "ess_q",
+    "shift_physical": 1.777043817508331e-05,
+    "unit_physical": "Mvar",
+    "base": 100.0,
+    "shift_param_units": 1.7770438175083308e-07,
+    "param_units": "pu of s_base"
+   }
+  }
+ },
+ "harness_sha256": "cb3ca3a99d2054fdac5dfb9811f29645292ee800ee85b9b64245af94fd15b516",
+ "ruling_a": "Planner ruling (a), 2026-10-31: the six declared solves span two launches, a2 (1 solve, done) + a2b (the five unrun; verify(5) exact); objective gates restated to the stopping-slack basis (|df| <= max over the two solves of the terminal unscaled complementarity; ratio < 1 = indeterminate (inside stopping slack) = pass, >= 1 = real difference); 1e-9 relative reported beside, not gated; c3 vs c2 Vars: agreement iff max |dx| <= 1e-4 p.u., reported not stopped; c1-gate stop removed (stops: failed solve, restoration, hash mismatch); TSO c1 not re-run",
+ "split": {
+  "declared_total": 6,
+  "a2": {
+   "solves": [
+    "tso_c1_ident_mu"
+   ],
+   "count": 1,
+   "status": "done (stopped run)",
+   "manifest_sha256": "c22e94d3ac566783afcbeafa68a4d3a25e1f4a517149f027c390a58183be8d72",
+   "a2_json_sha256": "e87d67b2aefe053ba1deec04f237f0c673530fdec6adc120b7585e6d8bdb178b"
+  },
+  "a2b": {
+   "solves": [
+    "tso_c2_pert",
+    "tso_c3_pert_mu",
+    "dso_c1_ident_mu",
+    "dso_c2_pert",
+    "dso_c3_pert_mu"
+   ],
+   "count": 5,
+   "guard": "bounded SolveProfileGuard, verify(5) exact"
+  }
+ },
+ "note": "predictions unchanged from a2 (recorded before a2, a2/predictions.json ca4b850d...); gates restated by ruling (a) before any a2b solve"
+}

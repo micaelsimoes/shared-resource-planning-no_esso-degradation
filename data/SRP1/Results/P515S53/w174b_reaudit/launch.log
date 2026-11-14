@@ -1,0 +1,33 @@
+W174b checks: manuscript 260bd83 sha256 cb237b2d lines 2209
+blocks: {'present_verbatim': 67, 'present_with_changes': 2, 'absent': 1, 'old_text_absent': 2}
+  R2-A.2 Algorithm 1 (round-2 text as written): present_with_changes old_absent=None lines=[394, 442]
+     replace: expected [\KwIn{Candidate] found [\KwIn{ Candidate]
+     insert: expected [] found [initial poll size $\Delta_0$;]
+     replace: expected [B).} \KwOut{Incumbent] found [B). } \KwOut{ Incumbent]
+     replace: expected [scope).}] found [scope). }]
+     replace: expected [\Delta_0$;] found [\Delta_0$ ($\Delta_0 = 4$ lattice units in variant A; $\Delta = 1$ throughout in variant B);]
+     replace: expected [\While{$N < N^{\max}$}{] found [\While{polls remain (at most 60) and a poll can be launched}{]
+     insert: expected [] found [every]
+     replace: expected [neighbours until $n+1$\;] found [neighbour (the poll is refused for review beyond 30 points)\;]
+  R2-A.3 paragraph (round-2 text as written): present_with_changes old_absent=None lines=[448, 450]
+     replace: expected [\textcolor{blue}{Algorithm~\ref{alg:shared_ess_planning_mads}] found [\textcolor{blue}{ Algorithm~\ref{alg:shared_ess_planning_mads}]
+     insert: expected [] found [in which every rounded poll direction was inadmissible at every poll, so that every evaluated point came from the unit-neighbour completion,]
+     replace: expected [price] found [price, seventeen of its 61 admissible unit neighbours were evaluated (the ten points of]
+     replace: expected [evaluated twelve neighbours, which do not positively span] found [and seven earlier evaluations) and none is determinately better; of]
+     replace: expected [space, and] found [thirteen re-evaluated under the certification rule]
+     delete: expected [reported as] found []
+     replace: expected [each of them,] found [twelve,]
+     insert: expected [] found [and within resolution of the thirteenth --- it is]
+     insert: expected [] found [reported]
+     replace: expected [certificates.}] found [certificates. }]
+  R2-C.5(a): absent old_absent=None lines=None
+  adjacent R3-A.2(c) k <- k+1: present=False lines=[]
+  adjacent R3-A.3(m) AA off clause: present=False lines=[]
+  adjacent R3-A.3(d) join: present=True lines=[(1497, 1497)]
+code identity: 46 campaign results, 46 distinct heads, 0 changed; control {'head': '353e094b', 'last_line': ' 5 files changed, 1507 insertions(+), 84 deletions(-)'}; search heads {'s47': {'git_head_at_run': '353e094b55e2575340e8279a3faa0fde5c4daeaa', 'last_line': ' 5 files changed, 1507 insertions(+), 84 deletions(-)'}, 's51': {'git_head_at_run': 'c39c483641e312f97b347278e53fbb58dddef546', 'last_line': ' 4 files changed, 1376 insertions(+), 81 deletions(-)'}, 's53': {'git_head_at_run': 'e1f98be8360697125fbd9c71e54f6483dd5e3f81', 'last_line': ' 3 files changed, 504 insertions(+)'}}
+search s47: termination mesh_local_optimum_unit_poll_failed; new 14/20; every direction inadmissible at every poll True; admissible per poll [0, 0, 0]
+search s51: termination STOP_FOR_REVIEW_completion_cap; new 20/20; every direction inadmissible at every poll False; admissible per poll [0, 0, 0, 0, 1]
+search s53: termination poll_failure_at_unit_mesh; new 7/60; every direction inadmissible at every poll False; admissible per poll [1]
+search tail: {"s47": {"spec_configuration_declares_convergence_depth_tail": false, "spec_text_mentions_tail": false, "git_head_at_run": "353e094b55e2575340e8279a3faa0fde5c4daeaa", "tail_code_occurrences_at_head": {"shared_resources_planning.py": 0, "admm_parameters.py": 0, "p515_s44_campaign_harness.py": 0}}, "s51": {"spec_configuration_declares_convergence_depth_tail": false, "spec_text_mentions_tail": false, "git_head_at_run": "c39c483641e312f97b347278e53fbb58dddef546", "tail_code_occurrences_at_head": {"shared_resources_planning.py": 0, "admm_parameters.py": 0, "p515_s44_campaign_harness.py": 0}}, "s53": {"spec_configuration_declares_convergence_depth_tail": false, "spec_text_mentions_tail": false, "git_head_at_run": "e1f98be8360697125fbd9c71e54f6483dd5e3f81", "tail_code_occurrences_at_head": {"shared_resources_planning.py": 0, "admm_parameters.py": 0, "p515_s44_campaign_harness.py": 0}}}
+guards: {'solve_profile_guard': {'label': 'P5.15 W174b re-audit checks (never solves)', 'counts': {'permitted_solve': 0, 'permitted_exec': 0, 'blocked_solve': 0, 'blocked_exec': 0}, 'verify_0_failures': []}, 'pickle_counts': {'load': 0, 'loads': 0}, 'production_modules_imported': []}
+output data/SRP1/Results/P515S53/w174b_reaudit/w174b_checks.json sha256 b58f5d8342130d477df5f64a37c755628e875eb82f721a0c394315b5b85be383

@@ -1,0 +1,143 @@
+{
+ "schema": "p515_s44_scale_measurement_v1",
+ "stage": "P5.15 Addendum 25 paper-scale build measurement (frozen spec v14 item4_scale_measurement)",
+ "authority": [
+  "PLANNER_BRIEF_2026-09-13.md Addendum 25 (Scale)",
+  "STEP4_DFO_METHOD.md section 7",
+  "data/SRP1/Results/P515S44/frozen_s44_selection_spec_v14_e4500e27.json item4_scale_measurement"
+ ],
+ "label": "paper_cycle_snapoff_r1",
+ "instance": "paper",
+ "instance_definition": {
+  "description": "the paper instance: 5 representative years (2025, 2028, 2031, 2034, 2037; each a 3-year block, sum 15) x 4 days x 5 market x 5 operation scenarios (25 combinations per block)",
+  "years": {
+   "2025": 3,
+   "2028": 3,
+   "2031": 3,
+   "2034": 3,
+   "2037": 3
+  },
+  "num_market_scenarios": 5,
+  "num_operation_scenarios": 5,
+  "sources": [
+   "EXPERT_REVIEW.md:81 (five representative years, 25 market/operational combinations per day)",
+   "EXPERT_REVIEW.md:147 (five three-year blocks beginning in 2025; 2037 last label)",
+   "git 0198407e:data/SRP1/SRP1.json (Years 2025/2028/2031/2034/2037 x 3; NumMarketScenarios 5; num_operation_scenarios 5 for case9 and case33_1..3)",
+   "data/SRP1/Results/20251221_3 years/ Main Info (5 years, 5 market / 5 operation scenarios)"
+  ]
+ },
+ "derived_case": {
+  "path": "data/SRP1/Results/P515S44/scale_measurement/paper_cycle_snapoff_r1/case/SRP1__paper.json",
+  "sha256": "d726307c1949d91b34b00241fbc713412c689b113222929133eda38d9756ca14",
+  "source": "data/SRP1/SRP1.json",
+  "source_sha256": "61a794a7ce7a3fb983f2e92128eec446dd7dbb17ad75a3b3b1c5735f8bd4e4ef",
+  "source_last_commit": "9568835ad7774244c8838fc02a2263e1d2e859d6",
+  "changes_vs_source": [
+   {
+    "key": "Years",
+    "from": {
+     "2025": 5,
+     "2030": 5,
+     "2035": 5
+    },
+    "to": {
+     "2025": 3,
+     "2028": 3,
+     "2031": 3,
+     "2034": 3,
+     "2037": 3
+    }
+   },
+   {
+    "key": "NumMarketScenarios",
+    "from": 1,
+    "to": 5
+   },
+   {
+    "key": "TransmissionNetwork[case9].num_operation_scenarios",
+    "from": 1,
+    "to": 5
+   },
+   {
+    "key": "DistributionNetworks[case33_1].num_operation_scenarios",
+    "from": 1,
+    "to": 5
+   },
+   {
+    "key": "DistributionNetworks[case33_2].num_operation_scenarios",
+    "from": 1,
+    "to": 5
+   },
+   {
+    "key": "DistributionNetworks[case33_3].num_operation_scenarios",
+    "from": 1,
+    "to": 5
+   }
+  ],
+  "cli_overrides": {}
+ },
+ "candidate": "0.96875 MVA / 3.875 MWh at nodes 5, 7, 9, investment year 2025 (spec v14 C_star)",
+ "argv": [
+  "p515_s44_scale_measurement.py",
+  "--instance",
+  "paper",
+  "--label",
+  "paper_cycle_snapoff_r1",
+  "--snapshots",
+  "off",
+  "--time-one-cycle"
+ ],
+ "interpreter": "/Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python",
+ "script": "p515_s44_scale_measurement.py",
+ "script_sha256": "34cac22f8d619cfb1c174eeb52a965e6755a8c29e58b6a22f534960d3a1ea98e",
+ "git_head": "e6d7ddb9927081161266cda0af459e33d81b0b84",
+ "git_tracked_changes": [
+  "M PLANNER_BRIEF_2026-09-13.md"
+ ],
+ "nlp_solver_path_env": null,
+ "thresholds": {
+  "rss_limit_bytes": 25769803776,
+  "rss_limit_gib": 24,
+  "rss_limit_is_spec_default": true,
+  "parent_backstop_bytes": 26843545600,
+  "min_available_bytes": 1073741824,
+  "sample_interval_s": 0.5
+ },
+ "runs_alone_enforced": true,
+ "time_one_cycle_requested": true,
+ "case_file_anderson_acceleration_declared": {
+  "enabled": true,
+  "memory": 5,
+  "regularization": 1e-10,
+  "reject_policy": "keep_memory"
+ },
+ "case_file_aa_declaration_agreement": {
+  "declared_here": {
+   "enabled": true,
+   "memory": 5,
+   "regularization": 1e-10,
+   "reject_policy": "keep_memory"
+  },
+  "source_file": "p515_s45_a0_campaign.py",
+  "source_name": "CASE_FILE_AA",
+  "source_present": true,
+  "method": "ast.literal_eval of the assignment in the source (never imported)",
+  "source_literal": {
+   "enabled": true,
+   "memory": 5,
+   "regularization": 1e-10,
+   "reject_policy": "keep_memory"
+  },
+  "agree": true
+ },
+ "case_file_aa_note": "the harness hook (p515_s44_campaign_harness._config_hook_factory) checks the LOADED admm.anderson_acceleration equals this declaration exactly and RAISES otherwise; a case file without AA loads the admm_parameters default (enabled False, no reject_policy), which does not equal the declaration, so the hook refuses rather than proceeding",
+ "snapshots": "off",
+ "snapshots_note": "P5.15 Addendum 27 item 5(a): \"on\" = committed behaviour (capture modes untouched); \"off\" = both admm_parameters.*_snapshot_capture_mode set to 'off' on the planning object, verified per child and recorded in build_record.json / cycle_record.json under \"snapshot_setting\"",
+ "machine": {
+  "total_memory_bytes": 34359738368,
+  "cpu_count": 12,
+  "available_at_launch": 21530099712
+ },
+ "started_utc": "2026-09-19T23:49:19.495085+00:00",
+ "parent_pid": 88300
+}

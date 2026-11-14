@@ -1,0 +1,531 @@
+{
+ "arm_network_compl_inf_tol": 1e-06,
+ "authority": [
+  "PLANNER_BRIEF_2026-09-13.md Addendum 49 (rulings 1-3, consistency convention, resolution, timing)",
+  "PLANNER_BRIEF_2026-09-13.md Addendum 49 clarification 2026-09-26 (tie-breaker roles; lambda_t recovery)",
+  "TASKS.md Addendum 49 order",
+  "Planner task W93",
+  "PLANNER_BRIEF_2026-09-13.md Addendum 53 Ruling 4 (coordinated arm reported only as the settled x = 0 value)",
+  "PLANNER_BRIEF_2026-09-13.md Addendum 54 Ruling 3 (common-Q gate and lambda_t look on the settled cycle-181 x = 0 models; the gate reference is the settled value)",
+  "Planner task W106",
+  "PLANNER_BRIEF_2026-09-13.md Addendum 55 (option (a): the lambda consensus item gated on the settled cycle-181 models, tolerance 0.05 unchanged; candidate lambda != pi hour; signed curtailment reporting after W109 f6e3533f)",
+  "Planner task W111 (benchmark spec v2)"
+ ],
+ "claim": {
+  "computed": false,
+  "reason": "arm runs missing: ['arm_passive_cold', 'arm_passive_warm_from_certified', 'arm_passive_perturbed', 'arm_price_taker_cold', 'arm_price_taker_warm_from_certified', 'arm_price_taker_perturbed', 'passive_tie_breaker_0p1', 'passive_tie_breaker_10']"
+ },
+ "common_q_gate_status": "PASS",
+ "consistency": {},
+ "coordinated": {
+  "previous_reference_reported_only": {
+   "cell": "W86 5cfe69a615ae3708_x0 (campaign s53_w86_tail_recert, spec ddd6cd44) -- UNWIRED",
+   "certification_cycle": 132,
+   "certified_gross": 653858731.5686293,
+   "res_curtailment_definitional_at_weight_1": 589.1778397145646,
+   "source": "committed W86 evaluation_record.json (certified_cost; component_decomposition_totals_weighted.res_curtailment_definitional_at_weight_1)"
+  },
+  "q": 653873702.1876609,
+  "q_hex": "0x1.37ca913180546p+29",
+  "reproducibility_band_eur": 71926.10724064271,
+  "settling_band_width_eur_reported_only": 4209.1713362932205,
+  "source": "settled cycle-181 x = 0 cell d110bd1a5977df1e_x0 (not re-run; Addendum 53 Ruling 4 / Addendum 54 Ruling 3): settling_decision.json Q_k_star; equal (bitwise, checked) to evaluation_record certified_cost, recourse_components.gross_operational_cost and post_certification certified_cost"
+ },
+ "coordinated_cell": {
+  "campaign_manifest": "data/SRP1/Results/P515S53/w101_srp1_continuation/campaign_s53_w101_srp1_cont_x0/campaign_manifest_sha256.json",
+  "campaign_spec_sha256": "d1d5c3bcbdc261d297282382ce4a54263a811059d17230613a1765ee915ebd33",
+  "certification_cycle": 181,
+  "certification_rule": "settling criterion of stage spec v39 (Boyd residuals + three turning points, swings not growing, one-period range <= tau = 4,539.07 EUR); branch oscillatory; band width 4,209.17",
+  "certified_gross": 653873702.1876609,
+  "certified_gross_source": "settling_decision.json Q_k_star; equal (bitwise, checked) to evaluation_record certified_cost, recourse_components.gross_operational_cost and post_certification certified_cost",
+  "certified_models": {
+   "path": "data/SRP1/Results/P515S53/w101_srp1_continuation/campaign_s53_w101_srp1_cont_x0/evals/d110bd1a5977df1e_x0/certified_models.pkl",
+   "sha256": "99ab1070b0e61cc7818975ce898069d2060d2668bae67c166b58913e9923c33a"
+  },
+  "child_manifest": "data/SRP1/Results/P515S53/w101_srp1_continuation/campaign_s53_w101_srp1_cont_x0/evals/d110bd1a5977df1e_x0/child_manifest_sha256.json",
+  "esso_models": {
+   "path": "data/SRP1/Results/P515S53/w101_srp1_continuation/campaign_s53_w101_srp1_cont_x0/evals/d110bd1a5977df1e_x0/esso_models_s39_D.pkl",
+   "sha256": "118487e1853bbad176f324b1173df8c4198cb6c7709c25d7dce9f94ce4c199fa"
+  },
+  "eval_dir": "data/SRP1/Results/P515S53/w101_srp1_continuation/campaign_s53_w101_srp1_cont_x0/evals/d110bd1a5977df1e_x0",
+  "eval_key": "d110bd1a5977df1e811a1b3963afc565de6daa65f76dcc096ead3fdc70b08546",
+  "evaluation_record": "data/SRP1/Results/P515S53/w101_srp1_continuation/campaign_s53_w101_srp1_cont_x0/evals/d110bd1a5977df1e_x0/evaluation_record.json",
+  "evidence_commit": "e4b5c9928d96b413c77039c377e5f7a82a6549f5",
+  "interface_duals": {
+   "path": "data/SRP1/Results/P515S53/w101_srp1_continuation/campaign_s53_w101_srp1_cont_x0/evals/d110bd1a5977df1e_x0/interface_duals_per_cycle.jsonl",
+   "sha256": "10c986c79eebe9e6d84bbd9c3978b802b2760c00399cb427125a0b797b41e8cb"
+  },
+  "pf_entry_stride": {
+   "path": "data/SRP1/Results/P515S53/w101_srp1_continuation/campaign_s53_w101_srp1_cont_x0/evals/d110bd1a5977df1e_x0/pf_entry_stride_s39_D.jsonl",
+   "sha256": "f71147584175a42f7c503e905e8e519841424b5a89bf33724dfce753769f498a"
+  },
+  "post_certification": "data/SRP1/Results/P515S53/w101_srp1_continuation/campaign_s53_w101_srp1_cont_x0/evals/d110bd1a5977df1e_x0/post_certification.json",
+  "res_curtailment_definitional_at_weight_1": 589.425936658749,
+  "settling_decision": "data/SRP1/Results/P515S53/w101_srp1_continuation/campaign_s53_w101_srp1_cont_x0/evals/d110bd1a5977df1e_x0/settling_decision.json",
+  "stage_spec": {
+   "path": "data/SRP1/Results/P515S53/frozen_s53_spec_v39_8a612429.json",
+   "version": 39
+  }
+ },
+ "coordinated_cell_description": "W102 settled SRP1 x = 0 cell (settling continuation of the W86 re-certification: bitwise replay through cycle 132, then certified by the settling rule at k* = 181; terminal models persisted)",
+ "coordinated_previous_reference_reported_only": {
+  "cell": "W86 5cfe69a615ae3708_x0 (campaign s53_w86_tail_recert, spec ddd6cd44) -- UNWIRED",
+  "certification_cycle": 132,
+  "certified_gross": 653858731.5686293,
+  "res_curtailment_definitional_at_weight_1": 589.1778397145646,
+  "source": "committed W86 evaluation_record.json (certified_cost; component_decomposition_totals_weighted.res_curtailment_definitional_at_weight_1)"
+ },
+ "curtailment_table": {
+  "arms_and_variants_phase_A": {},
+  "convention_status": "net is the primary (production definitional quantity, frozen); positive and negative parts reported beside it; the convention is pending the author (W109, TASKS.md Addendum 55)",
+  "coordinated": {
+   "previous_cycle_132_record_eur_at_1_block_weighted_reported_only": 589.1778397145646,
+   "settled_cycle_181_recomputed_from_models": {
+    "by_agent": {
+     "DSO": {
+      "eur_at_1_block_weighted": 608.6677991851257,
+      "mwh_day_weighted": 681.6614408448545,
+      "mwh_rep_day_sum": 1.4930020979937129
+     },
+     "TSO": {
+      "eur_at_1_block_weighted": -19.241862526376515,
+      "mwh_day_weighted": -21.006826875664466,
+      "mwh_rep_day_sum": -0.04609955859345323
+     }
+    },
+    "eur_at_1_block_weighted": 589.4259366587492,
+    "mwh_day_weighted": 660.65461396919,
+    "mwh_rep_day_sum": 1.4469025394002597
+   },
+   "settled_cycle_181_record_eur_at_1_block_weighted": 589.425936658749,
+   "settled_cycle_181_signed_parts_from_models": {
+    "negative_part": {
+     "by_agent": {
+      "DSO": {
+       "eur_at_1_block_weighted": -42.67056179555638,
+       "mwh_day_weighted": -46.46500918143206,
+       "mwh_rep_day_sum": -0.10199135620900607
+      },
+      "TSO": {
+       "eur_at_1_block_weighted": -19.241862526376515,
+       "mwh_day_weighted": -21.006826875664466,
+       "mwh_rep_day_sum": -0.04609955859345323
+      }
+     },
+     "eur_at_1_block_weighted": -61.912424321932896,
+     "mwh_day_weighted": -67.47183605709652,
+     "mwh_rep_day_sum": -0.14809091480245928
+    },
+    "net": {
+     "by_agent": {
+      "DSO": {
+       "eur_at_1_block_weighted": 608.6677991851257,
+       "mwh_day_weighted": 681.6614408448545,
+       "mwh_rep_day_sum": 1.4930020979937129
+      },
+      "TSO": {
+       "eur_at_1_block_weighted": -19.241862526376515,
+       "mwh_day_weighted": -21.006826875664466,
+       "mwh_rep_day_sum": -0.04609955859345323
+      }
+     },
+     "eur_at_1_block_weighted": 589.4259366587492,
+     "mwh_day_weighted": 660.65461396919,
+     "mwh_rep_day_sum": 1.4469025394002597
+    },
+    "positive_part": {
+     "by_agent": {
+      "DSO": {
+       "eur_at_1_block_weighted": 651.3383609806822,
+       "mwh_day_weighted": 728.1264500262866,
+       "mwh_rep_day_sum": 1.5949934542027189
+      },
+      "TSO": {
+       "eur_at_1_block_weighted": 0.0,
+       "mwh_day_weighted": 0.0,
+       "mwh_rep_day_sum": 0.0
+      }
+     },
+     "eur_at_1_block_weighted": 651.3383609806822,
+     "mwh_day_weighted": 728.1264500262866,
+     "mwh_rep_day_sum": 1.5949934542027189
+    },
+    "primary": "net"
+   }
+  },
+  "signed_parts_definition": "W111 (Addendum 55; W109 f6e3533f: the negative entries are the model, not the helper). Per entry (curtaillable generator g, scenarios s_m/s_o, period p) c = baseMVA x (pg_avail[g,s_o,p] - pg[g,s_m,s_o,p]) [MWh per representative day], the exact term of model_construction_helpers.gen_curtailment_definitional_value (weight 1; zero when params.rg_curt is off); block value = sum over scenarios of omega x sum over entries. NET = production's definitional quantity, taken from uncoordinated_benchmark.curtailment_report UNCHANGED (the primary figure; frozen); POSITIVE PART = entries with c > 0 only; NEGATIVE PART = entries with c < 0 only; each on the same weightings as the net (EUR at 1 EUR/MWh block-weighted = years x days x discount; raw MWh day-weighted = years x days, undiscounted; and the plain sum over representative days), TSO and DSO separately. The helper, the model and Q are unchanged; which figure the manuscript uses is pending the author",
+  "weighting": "eur_at_1_block_weighted = res_curtailment_definitional_at_weight_1 convention (EUR at 1 EUR/MWh, block-weighted: years x days x discount), i.e. weighted MWh-equivalent; raw: mwh_day_weighted (years x days, undiscounted) and mwh_rep_day_sum"
+ },
+ "frozen_benchmark_spec": {
+  "path": "data/SRP1/Results/P515S53/w106_uncoordinated_settled/frozen_s53_benchmark_spec_v2_bb659122.json",
+  "sha256": "bb659122af30b70a878c039c63d6458bf2c87d2a8971222f76f5c7cbb7576112",
+  "version": 2
+ },
+ "git_head": "aba272afdab0f977b886eedc83e9fb37068a2ad0",
+ "instance": {
+  "candidate_key": "8435c71859ddde68e7ae5818b4ff91c03b4171791bcfaa70edcc3ddb52bacb57",
+  "candidate_key_declared": "8435c71859ddde68e7ae5818b4ff91c03b4171791bcfaa70edcc3ddb52bacb57",
+  "candidate_key_matches": true,
+  "canonical_candidate": {
+   "investment_year": 2025,
+   "nodes": {
+    "5": [
+     0.0,
+     0.0
+    ],
+    "7": [
+     0.0,
+     0.0
+    ],
+    "9": [
+     0.0,
+     0.0
+    ]
+   }
+  },
+  "label": "x0",
+  "problem": "SRP1"
+ },
+ "interpreter": "/Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python",
+ "lambda_channel_scaling": {
+  "accepted_by": "Planner, task W94 (correction to the Addendum 49 clarification wording)",
+  "addendum_49_wording": "undo sigma, S_ref, D5 when converting lambda_t to EUR/MWh",
+  "correction": "on the interface-P channel only sigma (through admm_objective_scale = sigma / block weight) and the interface rating apply; S_ref (shared_ess_reference_rating_mva) and D5 (the ESSO AL scale, al_scale_esso) act ONLY on the shared-ESS channel and are therefore not undone",
+  "source": {
+   "at_commit": "a8c58da0",
+   "d5": "update_shared_energy_storage_model_to_admm L5486 (admm_esso_al_scale = al_scale_esso) and L5515-5518 (multiplies ONLY the ESSO AL terms); al_scale_esso is never passed to the TSO/DSO updates",
+   "file": "shared_resources_planning.py",
+   "implemented_in": "uncoordinated_benchmark.interface_price_terms (docstring carries the same citation)",
+   "rating_dso": "update_distribution_models_to_admm L5428-5429 (same as TSO)",
+   "rating_tso": "update_transmission_model_to_admm L5156-5157: constraint_p_req/q_req = (E - z) / interface_transf_rating",
+   "sigma_dso": "update_distribution_models_to_admm L5402-5407 (same as TSO)",
+   "sigma_tso": "update_transmission_model_to_admm L5137-5142: effective_scale = objective_scale / block_weight; obj = copy(objective.expr) / effective_scale",
+   "sref_dso": "update_distribution_models_to_admm L5410-5415: only in shared_ess_rating (ESS channel)",
+   "sref_tso": "update_transmission_model_to_admm L5179: _admm_shared_ess_reference_mva(params) only in the shared-ESS loop (shared_ess_rating)"
+  }
+ },
+ "lambda_look_candidate_hours_addendum_55": {
+  "declared": [
+   {
+    "day": "Summer",
+    "hour": 6,
+    "node_id": 7,
+    "source": "Addendum 55: the row of the S48 consensus item 0.0583 > 0.05 (W106 C4, spec v1); 0.026 on the settled cycle-181 models; candidate lambda != pi hour for the mechanism table",
+    "year": "2030"
+   }
+  ],
+  "n_matched_per_declared": [
+   1
+  ],
+  "rows": [
+   {
+    "abs_lambda_dso_minus_lambda_tso_eur_per_mwh": 0.02602274373327873,
+    "c_flex": 50.903154804578605,
+    "cflex_lt_pi": true,
+    "coordination_proper_hour": true,
+    "day": "Summer",
+    "hour": 6,
+    "lambda_dso_full": 124.7637866516548,
+    "lambda_dso_linear": 124.78987344267232,
+    "lambda_minus_pi": 0.15314247125606073,
+    "lambda_neq_pi": true,
+    "lambda_neq_pi_by_source": {
+     "lambda_dso_full": true,
+     "lambda_dso_linear": true,
+     "lambda_tso_full": true,
+     "lmp_tn_bus": true,
+     "y0_dn_ref": true
+    },
+    "lambda_t": 124.7637866516548,
+    "lambda_tso_full": 124.78980939538808,
+    "lmp_tn_bus": 124.78980939582429,
+    "node_id": 7,
+    "period": 5,
+    "pi": 124.61064418039874,
+    "source": "Addendum 55: the row of the S48 consensus item 0.0583 > 0.05 (W106 C4, spec v1); 0.026 on the settled cycle-181 models; candidate lambda != pi hour for the mechanism table",
+    "y0_dn_ref": 124.76378665196157,
+    "year": "2030"
+   }
+  ]
+ },
+ "lambda_look_prediction_usable": true,
+ "lambda_look_summary": {
+  "by_node": {
+   "5": {
+    "cflex_lt_pi": 272,
+    "coordination_proper_hours": 271,
+    "lambda_neq_pi": 286,
+    "rows": 288
+   },
+   "7": {
+    "cflex_lt_pi": 272,
+    "coordination_proper_hours": 264,
+    "lambda_neq_pi": 277,
+    "rows": 288
+   },
+   "9": {
+    "cflex_lt_pi": 272,
+    "coordination_proper_hours": 272,
+    "lambda_neq_pi": 285,
+    "rows": 288
+   }
+  },
+  "coordination_proper_hours_by_node_hour_of_day": {
+   "5|1": 12,
+   "5|10": 11,
+   "5|11": 12,
+   "5|12": 11,
+   "5|13": 9,
+   "5|14": 8,
+   "5|15": 10,
+   "5|16": 9,
+   "5|17": 10,
+   "5|18": 12,
+   "5|19": 12,
+   "5|2": 12,
+   "5|20": 12,
+   "5|21": 12,
+   "5|22": 12,
+   "5|23": 12,
+   "5|24": 12,
+   "5|3": 12,
+   "5|4": 12,
+   "5|5": 12,
+   "5|6": 12,
+   "5|7": 12,
+   "5|8": 12,
+   "5|9": 11,
+   "7|1": 10,
+   "7|10": 11,
+   "7|11": 12,
+   "7|12": 11,
+   "7|13": 9,
+   "7|14": 8,
+   "7|15": 10,
+   "7|16": 9,
+   "7|17": 10,
+   "7|18": 11,
+   "7|19": 12,
+   "7|2": 12,
+   "7|20": 11,
+   "7|21": 12,
+   "7|22": 12,
+   "7|23": 12,
+   "7|24": 12,
+   "7|3": 11,
+   "7|4": 12,
+   "7|5": 11,
+   "7|6": 11,
+   "7|7": 12,
+   "7|8": 11,
+   "7|9": 12,
+   "9|1": 12,
+   "9|10": 11,
+   "9|11": 12,
+   "9|12": 11,
+   "9|13": 9,
+   "9|14": 8,
+   "9|15": 10,
+   "9|16": 9,
+   "9|17": 10,
+   "9|18": 12,
+   "9|19": 12,
+   "9|2": 12,
+   "9|20": 12,
+   "9|21": 12,
+   "9|22": 12,
+   "9|23": 12,
+   "9|24": 12,
+   "9|3": 12,
+   "9|4": 12,
+   "9|5": 12,
+   "9|6": 12,
+   "9|7": 12,
+   "9|8": 12,
+   "9|9": 12
+  },
+  "coordination_proper_hours_by_node_year": {
+   "5|2025": 89,
+   "5|2030": 91,
+   "5|2035": 91,
+   "7|2025": 86,
+   "7|2030": 90,
+   "7|2035": 88,
+   "9|2025": 90,
+   "9|2030": 91,
+   "9|2035": 91
+  },
+  "coordination_proper_hours_day_weighted_by_node": {
+   "5": 123610.0,
+   "7": 120425.0,
+   "9": 124065.0
+  },
+  "n_coordination_proper_hours": 807,
+  "n_rows": 864,
+  "n_rows_sources_disagree_on_neq": 0
+ },
+ "missing_inputs": [
+  "arm_passive_cold",
+  "arm_passive_warm_from_certified",
+  "arm_passive_perturbed",
+  "arm_price_taker_cold",
+  "arm_price_taker_warm_from_certified",
+  "arm_price_taker_perturbed",
+  "passive_tie_breaker_0p1",
+  "passive_tie_breaker_10"
+ ],
+ "module_sha256": {
+  "model_construction_helpers.py": "a20a224f11008de8c0206484583b00253677267d616e1051bb1583791ed47f64",
+  "network.py": "18acaa84af7a043898a7b831223b4eab1d91f9bcf2c199f49beecfeb3bf91fb4",
+  "network_data.py": "2938bc4bd4ecc74f42aa90d347cdc1162eebcefaba15bc87b8281a798d457d6b",
+  "p513_solve_profile_guard.py": "9921682e5b825e0b76551b78c4765bfe039bccc414d727520f2c22b6f192a5ab",
+  "p56a_oracle.py": "699d571a2d69b14fd89024c535fa8b3ffa0625aa647f1714060dcc9cf6fa2f11",
+  "p58_rescale.py": "2c9d4f2a7125d4103da0d9cc7bba6d600bf97a3f03805d32955738d71b537cf0",
+  "shared_resources_planning.py": "0610d745a41c86c71dae9e776f0dc8e38c7099f73128a3d2c2e8f861ab9fc9c0",
+  "uncoordinated_benchmark.py": "fd80c93e5b0df9a39c2583e1b6b53df179af7b229276d29fb3611b1c3680360e"
+ },
+ "nlp_solver_path": {
+  "NLP_SOLVER_PATH": "/usr/local/bin/ipopt",
+  "source": ".env"
+ },
+ "objective_convention": "Q = gross_operational_cost, settlement EXCLUDED (production _get_operational_recourse_components); every block priced for the evaluation with production's ADMM-subproblem pricing and the curtailment tie-breaker at the EVALUATION value; salvage reported separately",
+ "passive_tie_breaker_value_independence": {},
+ "per_arm": {},
+ "perturbation": {
+  "delta": 0.05,
+  "seed": 20260926
+ },
+ "q_min_over_starts_note": "each uncoordinated arm's Q is the MINIMUM over its three starts (cold, warm_from_certified, perturbed); this is CONSERVATIVE AGAINST THE COORDINATION CLAIM: the uncoordinated side gets its best local optimum of three, while the coordinated side is one certified cell (W106: the settled cycle-181 cell d110bd1a5977df1e_x0, not re-run; W94 named the W86 cell 5cfe69a615ae3708_x0, now unwired)",
+ "report_capture_check": {
+  "absent": [
+   "arm_cost@arm_passive_cold",
+   "arm_cost@arm_passive_warm_from_certified",
+   "arm_cost@arm_passive_perturbed",
+   "arm_cost@arm_price_taker_cold",
+   "arm_cost@arm_price_taker_warm_from_certified",
+   "arm_cost@arm_price_taker_perturbed",
+   "arm_curtailment_totals@arm_passive_cold",
+   "arm_curtailment_totals@arm_passive_warm_from_certified",
+   "arm_curtailment_totals@arm_passive_perturbed",
+   "arm_curtailment_totals@arm_price_taker_cold",
+   "arm_curtailment_totals@arm_price_taker_warm_from_certified",
+   "arm_curtailment_totals@arm_price_taker_perturbed",
+   "arm_consistency_max_abs_dv@arm_passive_cold",
+   "arm_consistency_max_abs_dv@arm_passive_warm_from_certified",
+   "arm_consistency_max_abs_dv@arm_passive_perturbed",
+   "arm_consistency_max_abs_dv@arm_price_taker_cold",
+   "arm_consistency_max_abs_dv@arm_price_taker_warm_from_certified",
+   "arm_consistency_max_abs_dv@arm_price_taker_perturbed",
+   "arm_consistency_trigger@arm_passive_cold",
+   "arm_consistency_trigger@arm_passive_warm_from_certified",
+   "arm_consistency_trigger@arm_passive_perturbed",
+   "arm_consistency_trigger@arm_price_taker_cold",
+   "arm_consistency_trigger@arm_price_taker_warm_from_certified",
+   "arm_consistency_trigger@arm_price_taker_perturbed",
+   "variant_dso_interface_schedule@passive_tie_breaker_0p1",
+   "variant_dso_interface_schedule@passive_tie_breaker_10",
+   "variant_cost@passive_tie_breaker_0p1",
+   "variant_cost@passive_tie_breaker_10",
+   "variant_curtailment_totals@passive_tie_breaker_0p1",
+   "variant_curtailment_totals@passive_tie_breaker_10",
+   "arm_curtailment_signed_parts@arm_passive_cold",
+   "arm_curtailment_signed_parts@arm_passive_warm_from_certified",
+   "arm_curtailment_signed_parts@arm_passive_perturbed",
+   "arm_curtailment_signed_parts@arm_price_taker_cold",
+   "arm_curtailment_signed_parts@arm_price_taker_warm_from_certified",
+   "arm_curtailment_signed_parts@arm_price_taker_perturbed",
+   "variant_curtailment_signed_parts@passive_tie_breaker_0p1",
+   "variant_curtailment_signed_parts@passive_tie_breaker_10"
+  ],
+  "all_present": false,
+  "n_checked": 51
+ },
+ "run": "report",
+ "script": "p515_s53_w93_uncoordinated_benchmark.py",
+ "script_sha256": "342b89cea9058e1b26453fb61bf1830ce7dd9186a3d96f3cf4103f5668f2b071",
+ "solve_profile_guard": {
+  "counts": {
+   "blocked_exec": 0,
+   "blocked_solve": 0,
+   "permitted_exec": 0,
+   "permitted_solve": 0
+  },
+  "expected": 0,
+  "verified": true,
+  "where": "report end"
+ },
+ "stage": "P5.15 Addendum 49 W93 -- uncoordinated benchmark: three arms, fixed interface, common Q",
+ "tie_breaker": {
+  "authority": "Addendum 49 clarification 2026-09-26",
+  "decision": {
+   "passive_dso": 1.0,
+   "price_taker_dso": 0.0,
+   "tso": 0.0
+  },
+  "evaluation": 0.0,
+  "passive_value_independence_variants": [
+   0.1,
+   10.0
+  ]
+ },
+ "tolerances": {
+  "consistency": {
+   "hard_tol_pu2": 1e-06,
+   "soft_excess_tol_pu2": 1e-06,
+   "thermal_tol_pu2": 1e-06
+  },
+  "lambda_neq_pi_eur": 0.05,
+  "negative_control_explained_abs_eur": 1e-05,
+  "units_check": {
+   "consensus_eur": 0.05,
+   "kkt_eur": 0.001,
+   "repro_eur": 1e-09
+  }
+ },
+ "tso_coupling_check": {
+  "fixed_minus_penalty_tn_cost_weighted": -9.878473699092865,
+  "fixed_side_voltage_pin": {
+   "applies_to": "the 'fixed_interface' side of the 24-solve TSO coupling check ONLY; the TSO arm is unpinned (TSO_ARM_PIN_INTERFACE_VOLTAGE = False)",
+   "authority": "Planner task W94 (ruling on W93 item 3)",
+   "pin_interface_voltage": true,
+   "row": "uncoord_interface_v_fixed: expected_interface_vmag[dn,t] == uncoord_interface_v_target[dn,t] (mutable Param)",
+   "target": "targets['v_kv'][t] / TN node base kV (_tso_interface_vmag_targets_pu) -- the SAME values production's _add_tso_scenario_tracking_penalty receives as interface_vmag on the tracking-penalty side",
+   "why": "production's _add_tso_scenario_tracking_penalty tracks P, Q AND V; pinning P and Q only would leave V free on the fixed side, so a TN-cost difference could come from the voltage freedom rather than from the scaling hazard the check measures (Addendum 49 ruling 2). With the pin both sides are the same mathematical problem (the penalty's limit P = P_req, Q = Q_req, V = V_req); any difference is numerical"
+  },
+  "solve_summary": {
+   "fixed_interface": {
+    "all_succeeded": true,
+    "dual_infeasibility_unscaled_max": 0.0001342022591349888,
+    "floor_status_counts": {
+     "at": 12
+    },
+    "ipopt_terminal_error_over_tol_max": 0.026840451826997756,
+    "iterations_max": 36,
+    "iterations_sum": 382,
+    "n_retried": 0,
+    "n_solves": 12,
+    "wall_s_sum": 1.7503352165222168
+   },
+   "tracking_penalty": {
+    "all_succeeded": true,
+    "dual_infeasibility_unscaled_max": 3198.832922373123,
+    "floor_status_counts": {
+     "above": 5,
+     "at": 7
+    },
+    "ipopt_terminal_error_over_tol_max": 3.1988329223731227,
+    "iterations_max": 42,
+    "iterations_sum": 478,
+    "n_retried": 0,
+    "n_solves": 12,
+    "wall_s_sum": 1.592484951019287
+   }
+  },
+  "tn_cost_weighted_totals": {
+   "certified_coordinated": 445665710.71273184,
+   "fixed_interface": 445666116.86399734,
+   "tracking_penalty": 445666126.74247104
+  }
+ },
+ "utc": "2026-09-28T15:29:45.545598+00:00"
+}

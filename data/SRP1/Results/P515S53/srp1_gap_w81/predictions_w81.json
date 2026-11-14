@@ -1,0 +1,27 @@
+{
+ "stage": "P5.15 Addendum 45 item 3, task W81: SRP1 barrier-gap estimate on the terminal ADMM solves, x = 0 vs the smallest node-7 unit (Phase A cells), against Phase A's bars",
+ "recorded_utc": "2026-09-25 (before the harness was written or run; before any unit-cell or DSO IPOPT log was read)",
+ "author": "Worker (W81)",
+ "seen_before_recording": [
+  "Phase A bars from phase_a_tables.md / .json: x0 (a0_c7:x0) bar 9,629.98; n7 0.25/1.0 (a0_c7:n7_p0.25_e1.0, dup a1a:n7_4h_e1) bar 11,340; bar-sum 20,970 (the table's res. bar column)",
+  "ONE x0 IPOPT log only: optim_log_case9_2025_Spring.log of run dir p515s44_s45_a0_c7_7aa017f09989b56d_run: 133 solves (= cycles_run 132 + 1), solve #1 cold (||z_L||_inf = 1.0), last solve: obj scaling 0.002, final mu 9.0909e-08, n_pairs 4,251 (72 + 2x1482 + 0 + 432 + 0 + 783), 15 iterations, final unscaled objective -52,154.1313, final unscaled complementarity 1.707e-04",
+  "x0 terminal component levels for TSO|2025|Spring: generation 72,838.235, settlement -124,992.254, detector slacks -0.109 (sum -52,154.128, matching that log's final unscaled objective)",
+  "x0 evaluation_record: post_certification None, cycles_run 132, solve_profile permitted_solve 6,783 (= 48 x 133 + 399 ESSO)",
+  "W73/W74 2x2 figures (TSO only): terminal-ADMM x0_a0p50 18,637.75, unit 3,558.84, difference 15,078.91 (0.91x the 2x2 two-cell resolution)",
+  "production code: p515_g_g1_g4_admm_gates.run_admm_arm solves under p58_rescale.patched_admm_objectives (solved objective = effective_scale x admm_objective)"
+ ],
+ "not_seen_before_recording": "every unit-cell IPOPT log (a0_c7 and a1a), every DSO IPOPT log of either cell, every x0 TSO log other than 2025 Spring, and every gap figure for SRP1",
+ "predictions": {
+  "P1_identification": {"statement": "In both cells (and the a1a duplicate of the unit) every one of the 48 TSO/DSO network logs has n_solves == cycles_run + 1 (initialisation + one solve per ADMM cycle), solve #1 is the ONLY cold-multiplier solve, there is no hull-polish solve (post_certification is None), no recovery log exists, and 48 x (cycles_run + 1) + ESSO log count == solve_profile.permitted_solve", "expected": true},
+  "P2_units": {"statement": "The terminal ADMM solve's final unscaled IPOPT objective is in EUR per representative day: for every block |f_ipopt / base_unweighted - 1| <= 0.05 and the median over blocks <= 0.01, where base_unweighted = the block's non-definitional unweighted components + unweighted interface settlement (the alternative, f in units of base / effective_scale, predicts a ratio ~ w_b / sigma ~ 5e-6)", "expected": true},
+  "P3_x0_TSO_level": {"statement": "G_TSO(x0) = sum over the 12 TSO blocks of w_b x n_pairs x mu_last / obj_scale lies in [300, 5,000] EUR", "expected": true},
+  "P4_unit_TSO_scale": {"statement": "The unit cell's TSO objective scaling factor is strictly lower than x0's in >= 9 of the 12 TSO blocks (the structural scaling mismatch found at 2x2 carries to SRP1)", "expected": true},
+  "P5_TSO_sign": {"statement": "G_TSO(unit) < G_TSO(x0), i.e. the TSO gap difference x0 - unit is positive (as at 2x2)", "expected": true},
+  "P6_DSO_similar": {"statement": "|G_DSO(x0) - G_DSO(unit)| <= 0.10 x G_DSO(x0)", "expected": true},
+  "P7_headline": {"statement": "|Delta G_total| / (bar(x0) + bar(unit)) < 0.25, Delta G_total = G_total(x0) - G_total(unit), G_total = G_TSO + G_DSO (primary formula)", "expected": true},
+  "P8_upper_variant": {"statement": "|Delta G_upper_total| / bar-sum < 1, G_upper = sum of w_b x n_pairs x (final unscaled complementarity, IPOPT max-norm) -- the looser bound", "expected": true},
+  "P9_duplicate": {"statement": "The a1a duplicate unit evaluation's terminal-solve fields (obj_scale, mu_last, n_pairs, iterations, final unscaled objective, final unscaled complementarity) are identical to the a0_c7 unit's in all 48 blocks", "expected": true},
+  "P10_control": {"statement": "The same parser and identification rule applied to W74's 2x2 TSO logs (x0_a0p50, n7_4h_e1_a0p50) reproduce W74's terminal-ADMM difference 15,078.913057791275 to 1e-9 relative, and reading the LAST solve instead reproduces W73's 18,790.22018567154 (negative control)", "expected": true}
+ },
+ "frozen_verdict_rule": "R = |Delta G_total| / bar_sum with the PRIMARY formula; bar_sum = bar(a0_c7:x0) + bar(a0_c7:n7_p0.25_e1.0) from phase_a_tables.json T1 (Addendum 44 ruling 6: the bar-sum is the operative test; sigma_Q provenance only). R < 1 -> SUB-RESOLUTION at SRP1: the estimated barrier-gap difference cannot by itself produce a determinate value difference, and the sub-resolution caveat applies at SRP1 as at 2x2. R >= 1 -> AT/ABOVE RESOLUTION at SRP1: the caveat does not suffice there and the gap difference is material to the SRP1 value. The upper-bound variant is reported beside R and does not change the verdict; if it crosses 1 while R < 1 that is reported as a qualification."
+}

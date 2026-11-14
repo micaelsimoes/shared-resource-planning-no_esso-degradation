@@ -1,0 +1,340 @@
+{
+ "stage": "P5.15 Addendum 22 item (2), first half -- clone-capture 2-cycle bitwise preflight",
+ "authority": [
+  "PLANNER_BRIEF_2026-09-13.md Addendum 22",
+  "data/SRP1/Results/P515S40/frozen_s40_closure_spec_v11_0e9a37be.json"
+ ],
+ "timestamp_utc": "2026-09-17T23:16:55.395816+00:00",
+ "arm": "s39_D",
+ "num_cycles": 2,
+ "legacy": {
+  "out_dir": "data/SRP1/Results/P515S40/clone_preflight/legacy",
+  "mode_label": "preflight_s40cpre_legacy",
+  "capture_mode_requested": "legacy_clone",
+  "report_path": "data/SRP1/Results/P515S40/clone_preflight/legacy/g_s39_D.json",
+  "clone_counts_by_cycle": {
+   "1": 12,
+   "2": 12
+  },
+  "frozen_snapshot_files": []
+ },
+ "lightweight": {
+  "out_dir": "data/SRP1/Results/P515S40/clone_preflight/lightweight",
+  "mode_label": "preflight_s40cpre_lightweight",
+  "capture_mode_requested": "lightweight",
+  "report_path": "data/SRP1/Results/P515S40/clone_preflight/lightweight/g_s39_D.json",
+  "clone_counts_by_cycle": {},
+  "frozen_snapshot_files": []
+ },
+ "clone_counts_match_expected": {
+  "legacy_all_cycles_equal_12": true,
+  "lightweight_all_cycles_zero": true,
+  "note": "legacy: one BlockData.clone() per (year, day) TSO block, every cycle, via NetworkData.optimize -- 12 (year, day) blocks in the production case file, so 12/cycle is the expected count, not an assumed one (cross-checked against p515_s36_clone_capture_checks.py case A, which found the same 12). lightweight: zero per cycle unless a failure or the cycle-7 comparator needs a snapshot -- neither condition is reachable in a 2-cycle run, so 0/cycle is expected here."
+ },
+ "excluded_field_names": [
+  "component_levels_terminal_and_settlement_detail_path",
+  "component_levels_terminal_path",
+  "ess_entry_stride_sidecar_path",
+  "esso_capture_dir",
+  "heartbeat_path",
+  "interface_voltage_terminal_path",
+  "leak_classification_path",
+  "recourse_jump_sidecar_path",
+  "results_dir_redirect",
+  "s34_ess_entry_stride_sidecar_path",
+  "s34_recourse_jump_sidecar_path",
+  "s35ref_soh_floor_sidecar_path",
+  "s38_pf_entry_stride_sidecar_path",
+  "s39_ess_exempt_until_state_sidecar_path",
+  "soh_floor_sidecar_path",
+  "stdout_path",
+  "timestamp_utc",
+  "wall_clock_s"
+ ],
+ "excluded_dotted_fields": [
+  "esso_models_pickle.path",
+  "network_failures_summary.path"
+ ],
+ "bitwise_diff": {
+  "report_g_s39_D": {
+   "diffs": [
+    {
+     "field": "report.esso_complementarity_diagnostics_by_round.flat_diagnostics[0].log_path",
+     "legacy": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P56A/evals/p515s39_d_arm_preflight_s40cpre_legacy/logs/optim_log_esso_node5_init.txt",
+     "lightweight": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P56A/evals/p515s39_d_arm_preflight_s40cpre_lightweight/logs/optim_log_esso_node5_init.txt"
+    },
+    {
+     "field": "report.esso_complementarity_diagnostics_by_round.flat_diagnostics[1].log_path",
+     "legacy": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P56A/evals/p515s39_d_arm_preflight_s40cpre_legacy/logs/optim_log_esso_node7_init.txt",
+     "lightweight": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P56A/evals/p515s39_d_arm_preflight_s40cpre_lightweight/logs/optim_log_esso_node7_init.txt"
+    },
+    {
+     "field": "report.esso_complementarity_diagnostics_by_round.flat_diagnostics[2].log_path",
+     "legacy": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P56A/evals/p515s39_d_arm_preflight_s40cpre_legacy/logs/optim_log_esso_node9_init.txt",
+     "lightweight": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P56A/evals/p515s39_d_arm_preflight_s40cpre_lightweight/logs/optim_log_esso_node9_init.txt"
+    },
+    {
+     "field": "report.esso_complementarity_diagnostics_by_round.flat_diagnostics[3].log_path",
+     "legacy": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P56A/evals/p515s39_d_arm_preflight_s40cpre_legacy/logs/optim_log_esso_node5_cycle001.txt",
+     "lightweight": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P56A/evals/p515s39_d_arm_preflight_s40cpre_lightweight/logs/optim_log_esso_node5_cycle001.txt"
+    },
+    {
+     "field": "report.esso_complementarity_diagnostics_by_round.flat_diagnostics[4].log_path",
+     "legacy": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P56A/evals/p515s39_d_arm_preflight_s40cpre_legacy/logs/optim_log_esso_node7_cycle001.txt",
+     "lightweight": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P56A/evals/p515s39_d_arm_preflight_s40cpre_lightweight/logs/optim_log_esso_node7_cycle001.txt"
+    },
+    {
+     "field": "report.esso_complementarity_diagnostics_by_round.flat_diagnostics[5].log_path",
+     "legacy": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P56A/evals/p515s39_d_arm_preflight_s40cpre_legacy/logs/optim_log_esso_node9_cycle001.txt",
+     "lightweight": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P56A/evals/p515s39_d_arm_preflight_s40cpre_lightweight/logs/optim_log_esso_node9_cycle001.txt"
+    },
+    {
+     "field": "report.esso_complementarity_diagnostics_by_round.flat_diagnostics[6].log_path",
+     "legacy": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P56A/evals/p515s39_d_arm_preflight_s40cpre_legacy/logs/optim_log_esso_node5_cycle002.txt",
+     "lightweight": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P56A/evals/p515s39_d_arm_preflight_s40cpre_lightweight/logs/optim_log_esso_node5_cycle002.txt"
+    },
+    {
+     "field": "report.esso_complementarity_diagnostics_by_round.flat_diagnostics[7].log_path",
+     "legacy": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P56A/evals/p515s39_d_arm_preflight_s40cpre_legacy/logs/optim_log_esso_node7_cycle002.txt",
+     "lightweight": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P56A/evals/p515s39_d_arm_preflight_s40cpre_lightweight/logs/optim_log_esso_node7_cycle002.txt"
+    },
+    {
+     "field": "report.esso_complementarity_diagnostics_by_round.flat_diagnostics[8].log_path",
+     "legacy": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P56A/evals/p515s39_d_arm_preflight_s40cpre_legacy/logs/optim_log_esso_node9_cycle002.txt",
+     "lightweight": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P56A/evals/p515s39_d_arm_preflight_s40cpre_lightweight/logs/optim_log_esso_node9_cycle002.txt"
+    },
+    {
+     "field": "report.esso_complementarity_diagnostics_by_round.per_round[0].entries[0].log_path",
+     "legacy": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P56A/evals/p515s39_d_arm_preflight_s40cpre_legacy/logs/optim_log_esso_node5_init.txt",
+     "lightweight": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P56A/evals/p515s39_d_arm_preflight_s40cpre_lightweight/logs/optim_log_esso_node5_init.txt"
+    },
+    {
+     "field": "report.esso_complementarity_diagnostics_by_round.per_round[0].entries[1].log_path",
+     "legacy": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P56A/evals/p515s39_d_arm_preflight_s40cpre_legacy/logs/optim_log_esso_node7_init.txt",
+     "lightweight": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P56A/evals/p515s39_d_arm_preflight_s40cpre_lightweight/logs/optim_log_esso_node7_init.txt"
+    },
+    {
+     "field": "report.esso_complementarity_diagnostics_by_round.per_round[0].entries[2].log_path",
+     "legacy": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P56A/evals/p515s39_d_arm_preflight_s40cpre_legacy/logs/optim_log_esso_node9_init.txt",
+     "lightweight": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P56A/evals/p515s39_d_arm_preflight_s40cpre_lightweight/logs/optim_log_esso_node9_init.txt"
+    },
+    {
+     "field": "report.esso_complementarity_diagnostics_by_round.per_round[1].entries[0].log_path",
+     "legacy": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P56A/evals/p515s39_d_arm_preflight_s40cpre_legacy/logs/optim_log_esso_node5_cycle001.txt",
+     "lightweight": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P56A/evals/p515s39_d_arm_preflight_s40cpre_lightweight/logs/optim_log_esso_node5_cycle001.txt"
+    },
+    {
+     "field": "report.esso_complementarity_diagnostics_by_round.per_round[1].entries[1].log_path",
+     "legacy": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P56A/evals/p515s39_d_arm_preflight_s40cpre_legacy/logs/optim_log_esso_node7_cycle001.txt",
+     "lightweight": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P56A/evals/p515s39_d_arm_preflight_s40cpre_lightweight/logs/optim_log_esso_node7_cycle001.txt"
+    },
+    {
+     "field": "report.esso_complementarity_diagnostics_by_round.per_round[1].entries[2].log_path",
+     "legacy": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P56A/evals/p515s39_d_arm_preflight_s40cpre_legacy/logs/optim_log_esso_node9_cycle001.txt",
+     "lightweight": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P56A/evals/p515s39_d_arm_preflight_s40cpre_lightweight/logs/optim_log_esso_node9_cycle001.txt"
+    },
+    {
+     "field": "report.esso_complementarity_diagnostics_by_round.per_round[2].entries[0].log_path",
+     "legacy": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P56A/evals/p515s39_d_arm_preflight_s40cpre_legacy/logs/optim_log_esso_node5_cycle002.txt",
+     "lightweight": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P56A/evals/p515s39_d_arm_preflight_s40cpre_lightweight/logs/optim_log_esso_node5_cycle002.txt"
+    },
+    {
+     "field": "report.esso_complementarity_diagnostics_by_round.per_round[2].entries[1].log_path",
+     "legacy": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P56A/evals/p515s39_d_arm_preflight_s40cpre_legacy/logs/optim_log_esso_node7_cycle002.txt",
+     "lightweight": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P56A/evals/p515s39_d_arm_preflight_s40cpre_lightweight/logs/optim_log_esso_node7_cycle002.txt"
+    },
+    {
+     "field": "report.esso_complementarity_diagnostics_by_round.per_round[2].entries[2].log_path",
+     "legacy": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P56A/evals/p515s39_d_arm_preflight_s40cpre_legacy/logs/optim_log_esso_node9_cycle002.txt",
+     "lightweight": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P56A/evals/p515s39_d_arm_preflight_s40cpre_lightweight/logs/optim_log_esso_node9_cycle002.txt"
+    },
+    {
+     "field": "report.esso_models_pickle.path",
+     "legacy": "data/SRP1/Results/P515S40/clone_preflight/legacy/esso_models_s39_D.pkl",
+     "lightweight": "data/SRP1/Results/P515S40/clone_preflight/lightweight/esso_models_s39_D.pkl"
+    },
+    {
+     "field": "report.network_failures_summary.path",
+     "legacy": "data/SRP1/Results/P515S40/clone_preflight/legacy/network_failures_s39_D.jsonl",
+     "lightweight": "data/SRP1/Results/P515S40/clone_preflight/lightweight/network_failures_s39_D.jsonl"
+    },
+    {
+     "field": "report.rule_eleven_checklist.s40_tso_snapshot_capture_mode_requested",
+     "legacy": "legacy_clone",
+     "lightweight": "lightweight"
+    }
+   ],
+   "n_diffs": 21
+  },
+  "artifacts": {
+   "g_s39_D.json": {
+    "diffs": [
+     {
+      "field": "g_s39_D.json.esso_complementarity_diagnostics_by_round.flat_diagnostics[0].log_path",
+      "legacy": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P56A/evals/p515s39_d_arm_preflight_s40cpre_legacy/logs/optim_log_esso_node5_init.txt",
+      "lightweight": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P56A/evals/p515s39_d_arm_preflight_s40cpre_lightweight/logs/optim_log_esso_node5_init.txt"
+     },
+     {
+      "field": "g_s39_D.json.esso_complementarity_diagnostics_by_round.flat_diagnostics[1].log_path",
+      "legacy": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P56A/evals/p515s39_d_arm_preflight_s40cpre_legacy/logs/optim_log_esso_node7_init.txt",
+      "lightweight": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P56A/evals/p515s39_d_arm_preflight_s40cpre_lightweight/logs/optim_log_esso_node7_init.txt"
+     },
+     {
+      "field": "g_s39_D.json.esso_complementarity_diagnostics_by_round.flat_diagnostics[2].log_path",
+      "legacy": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P56A/evals/p515s39_d_arm_preflight_s40cpre_legacy/logs/optim_log_esso_node9_init.txt",
+      "lightweight": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P56A/evals/p515s39_d_arm_preflight_s40cpre_lightweight/logs/optim_log_esso_node9_init.txt"
+     },
+     {
+      "field": "g_s39_D.json.esso_complementarity_diagnostics_by_round.flat_diagnostics[3].log_path",
+      "legacy": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P56A/evals/p515s39_d_arm_preflight_s40cpre_legacy/logs/optim_log_esso_node5_cycle001.txt",
+      "lightweight": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P56A/evals/p515s39_d_arm_preflight_s40cpre_lightweight/logs/optim_log_esso_node5_cycle001.txt"
+     },
+     {
+      "field": "g_s39_D.json.esso_complementarity_diagnostics_by_round.flat_diagnostics[4].log_path",
+      "legacy": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P56A/evals/p515s39_d_arm_preflight_s40cpre_legacy/logs/optim_log_esso_node7_cycle001.txt",
+      "lightweight": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P56A/evals/p515s39_d_arm_preflight_s40cpre_lightweight/logs/optim_log_esso_node7_cycle001.txt"
+     },
+     {
+      "field": "g_s39_D.json.esso_complementarity_diagnostics_by_round.flat_diagnostics[5].log_path",
+      "legacy": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P56A/evals/p515s39_d_arm_preflight_s40cpre_legacy/logs/optim_log_esso_node9_cycle001.txt",
+      "lightweight": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P56A/evals/p515s39_d_arm_preflight_s40cpre_lightweight/logs/optim_log_esso_node9_cycle001.txt"
+     },
+     {
+      "field": "g_s39_D.json.esso_complementarity_diagnostics_by_round.flat_diagnostics[6].log_path",
+      "legacy": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P56A/evals/p515s39_d_arm_preflight_s40cpre_legacy/logs/optim_log_esso_node5_cycle002.txt",
+      "lightweight": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P56A/evals/p515s39_d_arm_preflight_s40cpre_lightweight/logs/optim_log_esso_node5_cycle002.txt"
+     },
+     {
+      "field": "g_s39_D.json.esso_complementarity_diagnostics_by_round.flat_diagnostics[7].log_path",
+      "legacy": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P56A/evals/p515s39_d_arm_preflight_s40cpre_legacy/logs/optim_log_esso_node7_cycle002.txt",
+      "lightweight": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P56A/evals/p515s39_d_arm_preflight_s40cpre_lightweight/logs/optim_log_esso_node7_cycle002.txt"
+     },
+     {
+      "field": "g_s39_D.json.esso_complementarity_diagnostics_by_round.flat_diagnostics[8].log_path",
+      "legacy": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P56A/evals/p515s39_d_arm_preflight_s40cpre_legacy/logs/optim_log_esso_node9_cycle002.txt",
+      "lightweight": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P56A/evals/p515s39_d_arm_preflight_s40cpre_lightweight/logs/optim_log_esso_node9_cycle002.txt"
+     },
+     {
+      "field": "g_s39_D.json.esso_complementarity_diagnostics_by_round.per_round[0].entries[0].log_path",
+      "legacy": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P56A/evals/p515s39_d_arm_preflight_s40cpre_legacy/logs/optim_log_esso_node5_init.txt",
+      "lightweight": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P56A/evals/p515s39_d_arm_preflight_s40cpre_lightweight/logs/optim_log_esso_node5_init.txt"
+     },
+     {
+      "field": "g_s39_D.json.esso_complementarity_diagnostics_by_round.per_round[0].entries[1].log_path",
+      "legacy": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P56A/evals/p515s39_d_arm_preflight_s40cpre_legacy/logs/optim_log_esso_node7_init.txt",
+      "lightweight": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P56A/evals/p515s39_d_arm_preflight_s40cpre_lightweight/logs/optim_log_esso_node7_init.txt"
+     },
+     {
+      "field": "g_s39_D.json.esso_complementarity_diagnostics_by_round.per_round[0].entries[2].log_path",
+      "legacy": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P56A/evals/p515s39_d_arm_preflight_s40cpre_legacy/logs/optim_log_esso_node9_init.txt",
+      "lightweight": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P56A/evals/p515s39_d_arm_preflight_s40cpre_lightweight/logs/optim_log_esso_node9_init.txt"
+     },
+     {
+      "field": "g_s39_D.json.esso_complementarity_diagnostics_by_round.per_round[1].entries[0].log_path",
+      "legacy": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P56A/evals/p515s39_d_arm_preflight_s40cpre_legacy/logs/optim_log_esso_node5_cycle001.txt",
+      "lightweight": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P56A/evals/p515s39_d_arm_preflight_s40cpre_lightweight/logs/optim_log_esso_node5_cycle001.txt"
+     },
+     {
+      "field": "g_s39_D.json.esso_complementarity_diagnostics_by_round.per_round[1].entries[1].log_path",
+      "legacy": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P56A/evals/p515s39_d_arm_preflight_s40cpre_legacy/logs/optim_log_esso_node7_cycle001.txt",
+      "lightweight": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P56A/evals/p515s39_d_arm_preflight_s40cpre_lightweight/logs/optim_log_esso_node7_cycle001.txt"
+     },
+     {
+      "field": "g_s39_D.json.esso_complementarity_diagnostics_by_round.per_round[1].entries[2].log_path",
+      "legacy": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P56A/evals/p515s39_d_arm_preflight_s40cpre_legacy/logs/optim_log_esso_node9_cycle001.txt",
+      "lightweight": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P56A/evals/p515s39_d_arm_preflight_s40cpre_lightweight/logs/optim_log_esso_node9_cycle001.txt"
+     },
+     {
+      "field": "g_s39_D.json.esso_complementarity_diagnostics_by_round.per_round[2].entries[0].log_path",
+      "legacy": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P56A/evals/p515s39_d_arm_preflight_s40cpre_legacy/logs/optim_log_esso_node5_cycle002.txt",
+      "lightweight": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P56A/evals/p515s39_d_arm_preflight_s40cpre_lightweight/logs/optim_log_esso_node5_cycle002.txt"
+     },
+     {
+      "field": "g_s39_D.json.esso_complementarity_diagnostics_by_round.per_round[2].entries[1].log_path",
+      "legacy": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P56A/evals/p515s39_d_arm_preflight_s40cpre_legacy/logs/optim_log_esso_node7_cycle002.txt",
+      "lightweight": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P56A/evals/p515s39_d_arm_preflight_s40cpre_lightweight/logs/optim_log_esso_node7_cycle002.txt"
+     },
+     {
+      "field": "g_s39_D.json.esso_complementarity_diagnostics_by_round.per_round[2].entries[2].log_path",
+      "legacy": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P56A/evals/p515s39_d_arm_preflight_s40cpre_legacy/logs/optim_log_esso_node9_cycle002.txt",
+      "lightweight": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P56A/evals/p515s39_d_arm_preflight_s40cpre_lightweight/logs/optim_log_esso_node9_cycle002.txt"
+     },
+     {
+      "field": "g_s39_D.json.esso_models_pickle.path",
+      "legacy": "data/SRP1/Results/P515S40/clone_preflight/legacy/esso_models_s39_D.pkl",
+      "lightweight": "data/SRP1/Results/P515S40/clone_preflight/lightweight/esso_models_s39_D.pkl"
+     },
+     {
+      "field": "g_s39_D.json.network_failures_summary.path",
+      "legacy": "data/SRP1/Results/P515S40/clone_preflight/legacy/network_failures_s39_D.jsonl",
+      "lightweight": "data/SRP1/Results/P515S40/clone_preflight/lightweight/network_failures_s39_D.jsonl"
+     },
+     {
+      "field": "g_s39_D.json.rule_eleven_checklist.s40_tso_snapshot_capture_mode_requested",
+      "legacy": "legacy_clone",
+      "lightweight": "lightweight"
+     }
+    ],
+    "n_diffs": 21
+   },
+   "boyd_terminal.json": {
+    "diffs": [
+     {
+      "field": "boyd_terminal.json.network_failures_summary.path",
+      "legacy": "data/SRP1/Results/P515S40/clone_preflight/legacy/network_failures_s39_D.jsonl",
+      "lightweight": "data/SRP1/Results/P515S40/clone_preflight/lightweight/network_failures_s39_D.jsonl"
+     },
+     {
+      "field": "boyd_terminal.json.soh_floor_multiplier_and_efc_per_cohort_year_terminal.path",
+      "legacy": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S40/clone_preflight/legacy/soh_floor_sidecar_baseline.jsonl",
+      "lightweight": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S40/clone_preflight/lightweight/soh_floor_sidecar_baseline.jsonl"
+     }
+    ],
+    "n_diffs": 2
+   },
+   "component_levels_terminal.json": {
+    "diffs": [],
+    "n_diffs": 0
+   },
+   "interface_settlement_detail_s31c.json": {
+    "diffs": [],
+    "n_diffs": 0
+   },
+   "interface_voltage_terminal.json": {
+    "diffs": [],
+    "n_diffs": 0
+   }
+  },
+  "sidecars": {
+   "recourse_jump_sidecar_baseline.jsonl": {
+    "diffs": [],
+    "n_diffs": 0,
+    "n_rows": 2
+   },
+   "ess_entry_stride_baseline.jsonl": {
+    "diffs": [],
+    "n_diffs": 0,
+    "n_rows": 2
+   },
+   "soh_floor_sidecar_baseline.jsonl": {
+    "diffs": [],
+    "n_diffs": 0,
+    "n_rows": 2
+   },
+   "pf_entry_stride_s39_D.jsonl": {
+    "diffs": [],
+    "n_diffs": 0,
+    "n_rows": 2
+   },
+   "ess_exempt_until_state_s39_D.jsonl": {
+    "diffs": [],
+    "n_diffs": 0,
+    "n_rows": 2
+   }
+  },
+  "total_n_diffs": 44,
+  "all_artifacts_present": true
+ },
+ "bitwise_identical": false,
+ "wall_clock_s": 207.42732310295105
+}

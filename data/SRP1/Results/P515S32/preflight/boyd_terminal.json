@@ -1,0 +1,115 @@
+{
+ "stage": "P5.15 Step 3.2 + 3.3(a) (s32) -- Boyd stopping rule / residual balancing terminal report",
+ "authority": [
+  "PLANNER_BRIEF_2026-09-13.md Addendum 9 sections 3.2, 3.3(a)",
+  "PLANNER_BRIEF_2026-09-13.md Addendum 13"
+ ],
+ "spec_file": "data/SRP1/Results/P515S32/frozen_s32_spec_v1_14a18674.json",
+ "spec_file_sha256": "14a18674c2f2f7119781fafb72c569a3a4788b8edbfc821a9ffc2921934e7356",
+ "timestamp_utc": "2026-09-15T16:10:24.374871+00:00",
+ "label": "preflight",
+ "cycles": 1,
+ "stopped_by": "cap",
+ "converged_at_cycle": null,
+ "binding_test_per_channel": {
+  "v": {
+   "r": 0.10116633210621236,
+   "s": 0.053027160802523655,
+   "eps_pri": 0.0032282193024014898,
+   "eps_dual": 0.0002976883556678706,
+   "primal_ratio": 31.338122546678964,
+   "dual_ratio": 178.12977831650826,
+   "primal_pass": false,
+   "dual_pass": false,
+   "channel_pass": false
+  },
+  "pf": {
+   "r": 3.6407372288890447,
+   "s": 7.127406410524604,
+   "eps_pri": 0.00143245289516299,
+   "eps_dual": 0.0009215440706379952,
+   "primal_ratio": 2541.610437022285,
+   "dual_ratio": 7734.200281479996,
+   "primal_pass": false,
+   "dual_pass": false,
+   "channel_pass": false
+  },
+  "ess": {
+   "r": 0.0052877172482701,
+   "s": 0.005875285332869096,
+   "eps_pri": 0.0007300121172934493,
+   "eps_dual": 0.0007205287717248271,
+   "primal_ratio": 7.243328053066481,
+   "dual_ratio": 8.154130082556776,
+   "primal_pass": false,
+   "dual_pass": false,
+   "channel_pass": false
+  }
+ },
+ "rho_trajectory_per_channel": {
+  "v": [
+   {
+    "cycle": 1,
+    "rho_before": 1.0,
+    "rho_after": 0.6666666666666671,
+    "action": "decreased"
+   }
+  ],
+  "pf": [
+   {
+    "cycle": 1,
+    "rho_before": 1.0,
+    "rho_after": 0.6666666666666671,
+    "action": "decreased"
+   }
+  ],
+  "ess": [
+   {
+    "cycle": 1,
+    "rho_before": 1.0,
+    "rho_after": 1.0,
+    "action": "held"
+   }
+  ]
+ },
+ "system_cost_vs_s31c": {
+  "available": true,
+  "s31c_reference_path": "data/SRP1/Results/P515S31C_run/g_baseline.json",
+  "matched_cycles": [
+   {
+    "cycle": 1,
+    "s32_recourse": 968494925.0938367,
+    "s31c_recourse": 2359311749.284464,
+    "difference": -1390816824.190627
+   }
+  ],
+  "terminal": {
+   "s32_cycle": 1,
+   "s31c_cycle": 90,
+   "s32_recourse": 968494925.0938367,
+   "s31c_recourse": 661400927.7360976,
+   "difference": 307093997.3577391,
+   "s32_terminal_step_objective_change_abs": null,
+   "s31c_terminal_step_objective_change_abs": 129616.68283557892,
+   "error_bar_sum_of_terminal_steps": null,
+   "determinate_at_gt_error_bar": null
+  },
+  "reading_rule": "s31c (cap 90, rule-ten 1.96) was NOT converged (Addendum 13: \"still descending\"), so this bar bounds stopping slack only, not path divergence (CLAUDE.md evidence rule, 2026-09-13 refinement): a difference smaller than error_bar_sum_of_terminal_steps is indeterminate, not a result; a difference larger than it is only \"not explained by stopping slack\", not evidence of a real limiting difference, because s31c has not settled. Trajectories differ by initial rho (pf 1.0 vs 300, v 1.0 vs 1.5) and by the balancing rule (freeze clause removed), so matched-cycle differences are NOT attributable to the stopping rule alone (frozen spec `gates.not_a_pass_criterion`)."
+ },
+ "network_failures_summary": {
+  "n_blocks": 0,
+  "classes": {
+   "recovered_tier1": 0,
+   "recovered_tier2": 0,
+   "unrecovered": 0,
+   "not_attempted": 0,
+   "indeterminate": 0,
+   "recovered": 0
+  },
+  "n_frozen_snapshots": 0,
+  "n_esso_recovery_events": 0,
+  "path": "data/SRP1/Results/P515S32/preflight/network_failures_preflight.jsonl"
+ },
+ "component_levels_terminal_and_settlement_detail_path": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S32/preflight/interface_settlement_detail_s31c.json",
+ "note_D_rows_and_cancellation_residual": "D rows are in component_levels_terminal.json (written by write_component_levels_terminal, called first by write_interface_settlement_detail_s31c above); the cancellation residual T_TSO + sum(T_DSO) is \"t_tso_plus_t_dso_terminal\" and per-DSO settlement/flexibility volumes are \"interface_consensus_residual_per_dso\" / \"flexibility_volumes_per_dso\" in interface_settlement_detail_s31c.json."
+}

@@ -1,0 +1,747 @@
+{
+ "stage": "P5.5-C8",
+ "provenance": {
+  "timestamp_utc": "2026-09-08T00:17:59.999712+00:00",
+  "git_head": "3f7a251fbef531ee25f0069fdb9aa770cd9f0b78",
+  "sys_executable": "/opt/anaconda3/envs/opf_env_py311/bin/python",
+  "conda_default_env": null,
+  "conda_env_from_path": "opf_env_py311",
+  "python_version": "3.11.11",
+  "numpy_version": "2.4.2",
+  "pandas_version": "3.0.0",
+  "scipy_version": "1.17.0",
+  "pyomo_version": "6.9.5",
+  "ipopt": {
+   "path": "/usr/local/bin/ipopt",
+   "version": "3.14.18",
+   "exists": true,
+   "banner": "Ipopt 3.14.18 (aarch64-apple-darwin24.5.0), ASL(20241111)"
+  },
+  "hsl_linear_solver": "ma97",
+  "gurobi": {
+   "gurobipy": "13.0.1",
+   "gurobi_runtime": "13.0.1",
+   "licence": "ACADEMIC",
+   "licence_expiry": "2027-04-10",
+   "available": true,
+   "licence_id": "2805683",
+   "licence_version": "13"
+  },
+  "scenario_checksum": "5a02b77ccbbbbbb869de92958a3851d095624711abc2dbfc0157466064410358",
+  "canonical_checksum": "5a02b77ccbbbbbb869de92958a3851d095624711abc2dbfc0157466064410358",
+  "checksum_matches_canonical": true,
+  "stage": "P5.5-C8 tightness"
+ },
+ "timestamp_utc": "2026-09-08T00:18:36.912241+00:00",
+ "model_size": {
+  "variables": 322596,
+  "constraints": 247608,
+  "ac_blocks": 48
+ },
+ "solve": {
+  "settings": {
+   "BarHomogeneous": 1
+  },
+  "gurobi_status": 13,
+  "ObjVal": 653192095.0730587,
+  "ObjBound": -Infinity,
+  "certified": false,
+  "BarIterCount": 70,
+  "Runtime": 25.896284103393555
+ },
+ "note": "The primal point diagnosed here comes from a solve that did not yield a dual certificate (see P5.5-C7).  The rank and angle gaps below are properties of that primal point and are reported as such; they are not attached to a proven bound.",
+ "rho_ij_ac_rank_gap": {
+  "per_block": [
+   {
+    "block": "TSO|2025|Spring|0|0",
+    "max_relative_rank_gap": 0.024183937605535468
+   },
+   {
+    "block": "TSO|2025|Summer|0|0",
+    "max_relative_rank_gap": 0.024498503052893722
+   },
+   {
+    "block": "TSO|2025|Autumn|0|0",
+    "max_relative_rank_gap": 0.01141079177248243
+   },
+   {
+    "block": "TSO|2025|Winter|0|0",
+    "max_relative_rank_gap": 0.014193305347460867
+   },
+   {
+    "block": "TSO|2030|Spring|0|0",
+    "max_relative_rank_gap": 0.02404508368255631
+   },
+   {
+    "block": "TSO|2030|Summer|0|0",
+    "max_relative_rank_gap": 0.023652323782155177
+   },
+   {
+    "block": "TSO|2030|Autumn|0|0",
+    "max_relative_rank_gap": 0.009517807873755866
+   },
+   {
+    "block": "TSO|2030|Winter|0|0",
+    "max_relative_rank_gap": 0.00984064202725708
+   },
+   {
+    "block": "TSO|2035|Spring|0|0",
+    "max_relative_rank_gap": 0.02407624599264159
+   },
+   {
+    "block": "TSO|2035|Summer|0|0",
+    "max_relative_rank_gap": 0.024176709504969474
+   },
+   {
+    "block": "TSO|2035|Autumn|0|0",
+    "max_relative_rank_gap": 0.009603965830481447
+   },
+   {
+    "block": "TSO|2035|Winter|0|0",
+    "max_relative_rank_gap": 0.009961775869017095
+   },
+   {
+    "block": "DSO5|2025|Spring|0|0",
+    "max_relative_rank_gap": 6.7521795191531896e-06
+   },
+   {
+    "block": "DSO5|2025|Summer|0|0",
+    "max_relative_rank_gap": 7.948362633269991e-06
+   },
+   {
+    "block": "DSO5|2025|Autumn|0|0",
+    "max_relative_rank_gap": 6.308160539758024e-06
+   },
+   {
+    "block": "DSO5|2025|Winter|0|0",
+    "max_relative_rank_gap": 4.86968474253097e-06
+   },
+   {
+    "block": "DSO5|2030|Spring|0|0",
+    "max_relative_rank_gap": 3.6466003377613545e-06
+   },
+   {
+    "block": "DSO5|2030|Summer|0|0",
+    "max_relative_rank_gap": 9.548227985422525e-06
+   },
+   {
+    "block": "DSO5|2030|Autumn|0|0",
+    "max_relative_rank_gap": 7.830292204501e-06
+   },
+   {
+    "block": "DSO5|2030|Winter|0|0",
+    "max_relative_rank_gap": 6.022200018893083e-06
+   },
+   {
+    "block": "DSO5|2035|Spring|0|0",
+    "max_relative_rank_gap": 6.067211028118206e-06
+   },
+   {
+    "block": "DSO5|2035|Summer|0|0",
+    "max_relative_rank_gap": 4.191135916859748e-06
+   },
+   {
+    "block": "DSO5|2035|Autumn|0|0",
+    "max_relative_rank_gap": 4.267752846069696e-06
+   },
+   {
+    "block": "DSO5|2035|Winter|0|0",
+    "max_relative_rank_gap": 7.160419687906035e-06
+   },
+   {
+    "block": "DSO7|2025|Spring|0|0",
+    "max_relative_rank_gap": 6.273073839550352e-06
+   },
+   {
+    "block": "DSO7|2025|Summer|0|0",
+    "max_relative_rank_gap": 7.843194553578816e-06
+   },
+   {
+    "block": "DSO7|2025|Autumn|0|0",
+    "max_relative_rank_gap": 5.201307809179247e-06
+   },
+   {
+    "block": "DSO7|2025|Winter|0|0",
+    "max_relative_rank_gap": 5.3878024734129e-06
+   },
+   {
+    "block": "DSO7|2030|Spring|0|0",
+    "max_relative_rank_gap": 3.535804442484453e-06
+   },
+   {
+    "block": "DSO7|2030|Summer|0|0",
+    "max_relative_rank_gap": 9.719106347661175e-06
+   },
+   {
+    "block": "DSO7|2030|Autumn|0|0",
+    "max_relative_rank_gap": 7.301087386794837e-06
+   },
+   {
+    "block": "DSO7|2030|Winter|0|0",
+    "max_relative_rank_gap": 6.3336510516629935e-06
+   },
+   {
+    "block": "DSO7|2035|Spring|0|0",
+    "max_relative_rank_gap": 6.6367617320314396e-06
+   },
+   {
+    "block": "DSO7|2035|Summer|0|0",
+    "max_relative_rank_gap": 7.421319847069843e-06
+   },
+   {
+    "block": "DSO7|2035|Autumn|0|0",
+    "max_relative_rank_gap": 4.0114146844097545e-06
+   },
+   {
+    "block": "DSO7|2035|Winter|0|0",
+    "max_relative_rank_gap": 5.152500777954202e-06
+   },
+   {
+    "block": "DSO9|2025|Spring|0|0",
+    "max_relative_rank_gap": 6.1702177598498285e-06
+   },
+   {
+    "block": "DSO9|2025|Summer|0|0",
+    "max_relative_rank_gap": 8.382314812433972e-06
+   },
+   {
+    "block": "DSO9|2025|Autumn|0|0",
+    "max_relative_rank_gap": 4.895736368785707e-06
+   },
+   {
+    "block": "DSO9|2025|Winter|0|0",
+    "max_relative_rank_gap": 4.225738440207692e-06
+   },
+   {
+    "block": "DSO9|2030|Spring|0|0",
+    "max_relative_rank_gap": 3.6312734033800764e-06
+   },
+   {
+    "block": "DSO9|2030|Summer|0|0",
+    "max_relative_rank_gap": 6.491138228339726e-06
+   },
+   {
+    "block": "DSO9|2030|Autumn|0|0",
+    "max_relative_rank_gap": 4.5135902606473645e-06
+   },
+   {
+    "block": "DSO9|2030|Winter|0|0",
+    "max_relative_rank_gap": 6.818111452631523e-06
+   },
+   {
+    "block": "DSO9|2035|Spring|0|0",
+    "max_relative_rank_gap": 4.549440317799826e-06
+   },
+   {
+    "block": "DSO9|2035|Summer|0|0",
+    "max_relative_rank_gap": 7.143525205142354e-06
+   },
+   {
+    "block": "DSO9|2035|Autumn|0|0",
+    "max_relative_rank_gap": 5.1111693864978665e-06
+   },
+   {
+    "block": "DSO9|2035|Winter|0|0",
+    "max_relative_rank_gap": 5.562249832491392e-06
+   }
+  ],
+  "max_over_model": 0.024498503052893722
+ },
+ "rho_tr_oltc_rank_gap": {
+  "per_block": [
+   {
+    "block": "DSO5|2025|Spring|0|0",
+    "max_relative_rank_gap": 2.762515969905729e-06
+   },
+   {
+    "block": "DSO5|2025|Summer|0|0",
+    "max_relative_rank_gap": 2.1442558278112453e-06
+   },
+   {
+    "block": "DSO5|2025|Autumn|0|0",
+    "max_relative_rank_gap": 2.532417905697339e-06
+   },
+   {
+    "block": "DSO5|2025|Winter|0|0",
+    "max_relative_rank_gap": 1.4490936896574694e-06
+   },
+   {
+    "block": "DSO5|2030|Spring|0|0",
+    "max_relative_rank_gap": 1.3441032722978235e-06
+   },
+   {
+    "block": "DSO5|2030|Summer|0|0",
+    "max_relative_rank_gap": 2.2581959066012032e-06
+   },
+   {
+    "block": "DSO5|2030|Autumn|0|0",
+    "max_relative_rank_gap": 1.8401013355267919e-06
+   },
+   {
+    "block": "DSO5|2030|Winter|0|0",
+    "max_relative_rank_gap": 4.656228694098283e-06
+   },
+   {
+    "block": "DSO5|2035|Spring|0|0",
+    "max_relative_rank_gap": 1.7451920268582878e-06
+   },
+   {
+    "block": "DSO5|2035|Summer|0|0",
+    "max_relative_rank_gap": 1.4355433269500869e-06
+   },
+   {
+    "block": "DSO5|2035|Autumn|0|0",
+    "max_relative_rank_gap": 1.4193655955740227e-06
+   },
+   {
+    "block": "DSO5|2035|Winter|0|0",
+    "max_relative_rank_gap": 1.645338675485563e-06
+   },
+   {
+    "block": "DSO7|2025|Spring|0|0",
+    "max_relative_rank_gap": 2.3249425781585824e-06
+   },
+   {
+    "block": "DSO7|2025|Summer|0|0",
+    "max_relative_rank_gap": 2.6213363859345738e-06
+   },
+   {
+    "block": "DSO7|2025|Autumn|0|0",
+    "max_relative_rank_gap": 1.181203691672009e-06
+   },
+   {
+    "block": "DSO7|2025|Winter|0|0",
+    "max_relative_rank_gap": 1.480937073333787e-06
+   },
+   {
+    "block": "DSO7|2030|Spring|0|0",
+    "max_relative_rank_gap": 2.2003868792790767e-06
+   },
+   {
+    "block": "DSO7|2030|Summer|0|0",
+    "max_relative_rank_gap": 2.3600184160794332e-06
+   },
+   {
+    "block": "DSO7|2030|Autumn|0|0",
+    "max_relative_rank_gap": 1.5542781923034015e-06
+   },
+   {
+    "block": "DSO7|2030|Winter|0|0",
+    "max_relative_rank_gap": 3.579246367334409e-06
+   },
+   {
+    "block": "DSO7|2035|Spring|0|0",
+    "max_relative_rank_gap": 4.282343998699145e-06
+   },
+   {
+    "block": "DSO7|2035|Summer|0|0",
+    "max_relative_rank_gap": 1.7422910633414143e-06
+   },
+   {
+    "block": "DSO7|2035|Autumn|0|0",
+    "max_relative_rank_gap": 1.7807646598784619e-06
+   },
+   {
+    "block": "DSO7|2035|Winter|0|0",
+    "max_relative_rank_gap": 1.6480488802603968e-06
+   },
+   {
+    "block": "DSO9|2025|Spring|0|0",
+    "max_relative_rank_gap": 2.8798104914296286e-06
+   },
+   {
+    "block": "DSO9|2025|Summer|0|0",
+    "max_relative_rank_gap": 1.8213764603054515e-06
+   },
+   {
+    "block": "DSO9|2025|Autumn|0|0",
+    "max_relative_rank_gap": 4.139009213590635e-06
+   },
+   {
+    "block": "DSO9|2025|Winter|0|0",
+    "max_relative_rank_gap": 1.0513340891173432e-06
+   },
+   {
+    "block": "DSO9|2030|Spring|0|0",
+    "max_relative_rank_gap": 2.307921251356841e-06
+   },
+   {
+    "block": "DSO9|2030|Summer|0|0",
+    "max_relative_rank_gap": 1.473599207679303e-06
+   },
+   {
+    "block": "DSO9|2030|Autumn|0|0",
+    "max_relative_rank_gap": 2.971576931626152e-06
+   },
+   {
+    "block": "DSO9|2030|Winter|0|0",
+    "max_relative_rank_gap": 2.078201006044482e-06
+   },
+   {
+    "block": "DSO9|2035|Spring|0|0",
+    "max_relative_rank_gap": 1.9471891569442645e-06
+   },
+   {
+    "block": "DSO9|2035|Summer|0|0",
+    "max_relative_rank_gap": 1.5381191701290855e-06
+   },
+   {
+    "block": "DSO9|2035|Autumn|0|0",
+    "max_relative_rank_gap": 1.1954128530254736e-06
+   },
+   {
+    "block": "DSO9|2035|Winter|0|0",
+    "max_relative_rank_gap": 2.778907832857696e-06
+   }
+  ],
+  "max_over_model": 4.656228694098283e-06
+ },
+ "cycle_consistency": {
+  "per_block": [
+   {
+    "block": "TSO|2025|Spring|0|0",
+    "n_cycles": 1,
+    "max_cycle_angle_residual_rad": 0.008671943912756941
+   },
+   {
+    "block": "TSO|2025|Summer|0|0",
+    "n_cycles": 1,
+    "max_cycle_angle_residual_rad": 0.006159280390815702
+   },
+   {
+    "block": "TSO|2025|Autumn|0|0",
+    "n_cycles": 1,
+    "max_cycle_angle_residual_rad": 0.008026100377696466
+   },
+   {
+    "block": "TSO|2025|Winter|0|0",
+    "n_cycles": 1,
+    "max_cycle_angle_residual_rad": 0.012236920831555587
+   },
+   {
+    "block": "TSO|2030|Spring|0|0",
+    "n_cycles": 1,
+    "max_cycle_angle_residual_rad": 0.010307874144526608
+   },
+   {
+    "block": "TSO|2030|Summer|0|0",
+    "n_cycles": 1,
+    "max_cycle_angle_residual_rad": 0.005631193775046395
+   },
+   {
+    "block": "TSO|2030|Autumn|0|0",
+    "n_cycles": 1,
+    "max_cycle_angle_residual_rad": 0.009245660667422051
+   },
+   {
+    "block": "TSO|2030|Winter|0|0",
+    "n_cycles": 1,
+    "max_cycle_angle_residual_rad": 0.006851730297695813
+   },
+   {
+    "block": "TSO|2035|Spring|0|0",
+    "n_cycles": 1,
+    "max_cycle_angle_residual_rad": 0.008953616231687445
+   },
+   {
+    "block": "TSO|2035|Summer|0|0",
+    "n_cycles": 1,
+    "max_cycle_angle_residual_rad": 0.007854234500537238
+   },
+   {
+    "block": "TSO|2035|Autumn|0|0",
+    "n_cycles": 1,
+    "max_cycle_angle_residual_rad": 0.012344218263422135
+   },
+   {
+    "block": "TSO|2035|Winter|0|0",
+    "n_cycles": 1,
+    "max_cycle_angle_residual_rad": 0.006965825916279034
+   }
+  ],
+  "max_over_model": 0.012344218263422135
+ },
+ "ess_circulation": {
+  "per_block": [
+   {
+    "block": "TSO|2025|Spring|0|0",
+    "max_circulation_over_S": 0.4952995109484326
+   },
+   {
+    "block": "TSO|2025|Summer|0|0",
+    "max_circulation_over_S": 0.49088262359511603
+   },
+   {
+    "block": "TSO|2025|Autumn|0|0",
+    "max_circulation_over_S": 0.4958087094843985
+   },
+   {
+    "block": "TSO|2025|Winter|0|0",
+    "max_circulation_over_S": 0.48865421438202816
+   },
+   {
+    "block": "TSO|2030|Spring|0|0",
+    "max_circulation_over_S": 0.497935927530274
+   },
+   {
+    "block": "TSO|2030|Summer|0|0",
+    "max_circulation_over_S": 0.4957531662099702
+   },
+   {
+    "block": "TSO|2030|Autumn|0|0",
+    "max_circulation_over_S": 0.4984785142406976
+   },
+   {
+    "block": "TSO|2030|Winter|0|0",
+    "max_circulation_over_S": 0.49892623168155664
+   },
+   {
+    "block": "TSO|2035|Spring|0|0",
+    "max_circulation_over_S": 0.024728112866141468
+   },
+   {
+    "block": "TSO|2035|Summer|0|0",
+    "max_circulation_over_S": 0.013795430788275281
+   },
+   {
+    "block": "TSO|2035|Autumn|0|0",
+    "max_circulation_over_S": 0.016922988371084417
+   },
+   {
+    "block": "TSO|2035|Winter|0|0",
+    "max_circulation_over_S": 0.0064897163575387915
+   },
+   {
+    "block": "DSO5|2025|Spring|0|0",
+    "max_circulation_over_S": 0.4930951985787245
+   },
+   {
+    "block": "DSO5|2025|Summer|0|0",
+    "max_circulation_over_S": 0.48689661911432075
+   },
+   {
+    "block": "DSO5|2025|Autumn|0|0",
+    "max_circulation_over_S": 0.48993999959473117
+   },
+   {
+    "block": "DSO5|2025|Winter|0|0",
+    "max_circulation_over_S": 0.4831677800827265
+   },
+   {
+    "block": "DSO5|2030|Spring|0|0",
+    "max_circulation_over_S": 0.4732101817807522
+   },
+   {
+    "block": "DSO5|2030|Summer|0|0",
+    "max_circulation_over_S": 0.34754196112387237
+   },
+   {
+    "block": "DSO5|2030|Autumn|0|0",
+    "max_circulation_over_S": 0.0286796038364458
+   },
+   {
+    "block": "DSO5|2030|Winter|0|0",
+    "max_circulation_over_S": 0.044891673718780646
+   },
+   {
+    "block": "DSO5|2035|Spring|0|0",
+    "max_circulation_over_S": 0.02198489936404088
+   },
+   {
+    "block": "DSO5|2035|Summer|0|0",
+    "max_circulation_over_S": 0.011751820026942394
+   },
+   {
+    "block": "DSO5|2035|Autumn|0|0",
+    "max_circulation_over_S": 0.010653560233280042
+   },
+   {
+    "block": "DSO5|2035|Winter|0|0",
+    "max_circulation_over_S": 0.006280056945342701
+   },
+   {
+    "block": "DSO7|2025|Spring|0|0",
+    "max_circulation_over_S": 0.4929255748646953
+   },
+   {
+    "block": "DSO7|2025|Summer|0|0",
+    "max_circulation_over_S": 0.4884434238288254
+   },
+   {
+    "block": "DSO7|2025|Autumn|0|0",
+    "max_circulation_over_S": 0.49111420097267194
+   },
+   {
+    "block": "DSO7|2025|Winter|0|0",
+    "max_circulation_over_S": 0.484019612287158
+   },
+   {
+    "block": "DSO7|2030|Spring|0|0",
+    "max_circulation_over_S": 0.49847868797278067
+   },
+   {
+    "block": "DSO7|2030|Summer|0|0",
+    "max_circulation_over_S": 0.4977632512723164
+   },
+   {
+    "block": "DSO7|2030|Autumn|0|0",
+    "max_circulation_over_S": 0.49824889056130056
+   },
+   {
+    "block": "DSO7|2030|Winter|0|0",
+    "max_circulation_over_S": 0.4986121322072584
+   },
+   {
+    "block": "DSO7|2035|Spring|0|0",
+    "max_circulation_over_S": 0.025829095273699396
+   },
+   {
+    "block": "DSO7|2035|Summer|0|0",
+    "max_circulation_over_S": 0.019340516562161642
+   },
+   {
+    "block": "DSO7|2035|Autumn|0|0",
+    "max_circulation_over_S": 0.010631725545770347
+   },
+   {
+    "block": "DSO7|2035|Winter|0|0",
+    "max_circulation_over_S": 0.006618522495778925
+   },
+   {
+    "block": "DSO9|2025|Spring|0|0",
+    "max_circulation_over_S": 0.49320561234266774
+   },
+   {
+    "block": "DSO9|2025|Summer|0|0",
+    "max_circulation_over_S": 0.48420938582904377
+   },
+   {
+    "block": "DSO9|2025|Autumn|0|0",
+    "max_circulation_over_S": 0.4883021594112283
+   },
+   {
+    "block": "DSO9|2025|Winter|0|0",
+    "max_circulation_over_S": 0.48299084536142733
+   },
+   {
+    "block": "DSO9|2030|Spring|0|0",
+    "max_circulation_over_S": 0.4664857220459642
+   },
+   {
+    "block": "DSO9|2030|Summer|0|0",
+    "max_circulation_over_S": 0.24829072511239766
+   },
+   {
+    "block": "DSO9|2030|Autumn|0|0",
+    "max_circulation_over_S": 0.020380535420478338
+   },
+   {
+    "block": "DSO9|2030|Winter|0|0",
+    "max_circulation_over_S": 0.02490668170257342
+   },
+   {
+    "block": "DSO9|2035|Spring|0|0",
+    "max_circulation_over_S": 0.014367711576225206
+   },
+   {
+    "block": "DSO9|2035|Summer|0|0",
+    "max_circulation_over_S": 0.011773267341525397
+   },
+   {
+    "block": "DSO9|2035|Autumn|0|0",
+    "max_circulation_over_S": 0.009709436845497514
+   },
+   {
+    "block": "DSO9|2035|Winter|0|0",
+    "max_circulation_over_S": 0.005864053800097386
+   }
+  ],
+  "max_over_model": 0.49892623168155664
+ },
+ "esso_energy_headroom": {
+  "per_node_year": [
+   {
+    "node": 5,
+    "year": 2025,
+    "E_rated": 0.021269785612254323,
+    "E_available": 0.02122071445728472,
+    "E_available_over_rated": 0.9976929172741011,
+    "S_rated": 0.010634892806127162,
+    "S_available": 0.010634892806127162
+   },
+   {
+    "node": 5,
+    "year": 2030,
+    "E_rated": 0.042539571224508646,
+    "E_available": 0.04248354351774113,
+    "E_available_over_rated": 0.9986829273273156,
+    "S_rated": 0.021269785612254323,
+    "S_available": 0.021269785612254323
+   },
+   {
+    "node": 5,
+    "year": 2035,
+    "E_rated": 0.06380935683676298,
+    "E_available": 0.06374936146750938,
+    "E_available_over_rated": 0.9990597716036055,
+    "S_rated": 0.03190467841838149,
+    "S_available": 0.03190467841838149
+   },
+   {
+    "node": 7,
+    "year": 2025,
+    "E_rated": 0.021269785612254323,
+    "E_available": 0.021217456170452228,
+    "E_available_over_rated": 0.9975397287609732,
+    "S_rated": 0.010634892806127162,
+    "S_available": 0.010634892806127162
+   },
+   {
+    "node": 7,
+    "year": 2030,
+    "E_rated": 0.042539571224508646,
+    "E_available": 0.04248049832087241,
+    "E_available_over_rated": 0.9986113422882316,
+    "S_rated": 0.021269785612254323,
+    "S_available": 0.021269785612254323
+   },
+   {
+    "node": 7,
+    "year": 2035,
+    "E_rated": 0.06380935683676298,
+    "E_available": 0.0637448175329006,
+    "E_available_over_rated": 0.9989885605017539,
+    "S_rated": 0.03190467841838149,
+    "S_available": 0.03190467841838149
+   },
+   {
+    "node": 9,
+    "year": 2025,
+    "E_rated": 0.021269785612254323,
+    "E_available": 0.02122098083659863,
+    "E_available_over_rated": 0.9977054411104372,
+    "S_rated": 0.010634892806127162,
+    "S_available": 0.010634892806127162
+   },
+   {
+    "node": 9,
+    "year": 2030,
+    "E_rated": 0.042539571224508646,
+    "E_available": 0.04248358598972486,
+    "E_available_over_rated": 0.9986839257385008,
+    "S_rated": 0.021269785612254323,
+    "S_available": 0.021269785612254323
+   },
+   {
+    "node": 9,
+    "year": 2035,
+    "E_rated": 0.06380935683676298,
+    "E_available": 0.06374948000209034,
+    "E_available_over_rated": 0.999061629239959,
+    "S_rated": 0.03190467841838149,
+    "S_available": 0.03190467841838149
+   }
+  ],
+  "min_available_over_rated": 0.9975397287609732
+ }
+}

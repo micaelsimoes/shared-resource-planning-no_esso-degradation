@@ -1,0 +1,473 @@
+{
+ "stage": "P5.15 Addendum 68 decision 2, W170 -- provenance of the 3 x 3 mean-profile prediction R = 0.9331",
+ "started_utc": "2026-10-08T08:30:17.770398+00:00",
+ "git_HEAD": "71f8d2aa3479dc30df80a6a92792ad8d46698fb8",
+ "script_sha256": "76860caf5570411769afd8166af72c23d9c6dbefaa5e25c9140e2f70cb53826f",
+ "inputs": {
+  "selection_3x3": {
+   "path": "data/SRP1/Results/P515S53/selection_3x3/selection_3x3.json",
+   "sha256": "291be9c798d7914a8d5962871aa266e3e88d9a6f01ef8cbaa9a69101605cdd12",
+   "declared": "291be9c798d7914a8d5962871aa266e3e88d9a6f01ef8cbaa9a69101605cdd12"
+  },
+  "z4": {
+   "path": "data/SRP1/Results/P515S46/zero_solve_reports/zero_solve_reports.json",
+   "sha256": "16579f3202781f74b1d2d83ae2809340d1334718a2dee4e73f4895f05e570ef6",
+   "declared": "16579f3202781f74b1d2d83ae2809340d1334718a2dee4e73f4895f05e570ef6"
+  },
+  "instance_record_3x3": {
+   "path": "data/SRP1/Results/P515S53/w89_3x3/instance/instance_record.json",
+   "sha256": "a47dc358edc1a69279ddd1965a587efc2906eb6c770d336cb9c8f34227f910ea",
+   "declared": "a47dc358edc1a69279ddd1965a587efc2906eb6c770d336cb9c8f34227f910ea"
+  },
+  "case_3x3": {
+   "path": "data/SRP1/Results/P515S53/w89_3x3/instance/SRP1__s53_3x3.json",
+   "sha256": "2a64e3c5bd06c30c8a015207f41b69257b001094cbd4b185a84394a6765c5871",
+   "declared": "2a64e3c5bd06c30c8a015207f41b69257b001094cbd4b185a84394a6765c5871"
+  },
+  "campaign_3x3": {
+   "path": "data/SRP1/Results/P515S53/w90_3x3/campaign_s53_w91_3x3_pair/campaign_results.json",
+   "sha256": "587d3f1afb658e8a501d34b51bb8b269dd0c229391c1a26469f01001a8aad566",
+   "declared": "587d3f1afb658e8a501d34b51bb8b269dd0c229391c1a26469f01001a8aad566"
+  },
+  "frozen_tables": {
+   "path": "data/SRP1/Results/P515S53/w160_step6_frozen/frozen_step6_tables_v1_590088fe.json",
+   "sha256": "590088fe6b364c265c97998c5491edea7ca70baad0dbe2ba5150273656d9b6f4",
+   "declared": "590088fe6b364c265c97998c5491edea7ca70baad0dbe2ba5150273656d9b6f4"
+  },
+  "case_srp1": {
+   "path": "data/SRP1/SRP1.json",
+   "sha256": "61a794a7ce7a3fb983f2e92128eec446dd7dbb17ad75a3b3b1c5735f8bd4e4ef",
+   "declared": "61a794a7ce7a3fb983f2e92128eec446dd7dbb17ad75a3b3b1c5735f8bd4e4ef"
+  },
+  "w52_script": {
+   "path": "p515_s53_3x3_selection.py",
+   "sha256": "f129a01e9e6492c3ab668cc8b075e4048c5fd7f7a0ff9269ec73899babb607d8",
+   "declared": "f129a01e9e6492c3ab668cc8b075e4048c5fd7f7a0ff9269ec73899babb607d8"
+  },
+  "w22_script": {
+   "path": "p515_s47_market_spreads.py",
+   "sha256": "7524f32e4a9eea642833baef410b942bb949ff6db7a557d5dd47fbbe89863cc1",
+   "declared": "7524f32e4a9eea642833baef410b942bb949ff6db7a557d5dd47fbbe89863cc1"
+  }
+ },
+ "formula": "R_r2 = [sum_(y,d) w_r2 * s_mp(y,d) / sum w_r2]_(3x3 horizon, mean profile of market scen. 1-3, pm 1/3) / [sum_(y,d) w_r2 * s(y,d) / sum w_r2]_(SRP1 horizon, its single scenario); s = mean of the 4 highest minus mean of the 4 lowest of the 24 hourly market prices; w_r2 = num_years * num_days / 1.02^(y - 2025)",
+ "numerator": {
+  "horizon_years": {
+   "2025": 3,
+   "2028": 3,
+   "2031": 3,
+   "2034": 3,
+   "2037": 3
+  },
+  "days": {
+   "Spring": 92,
+   "Summer": 91,
+   "Autumn": 91,
+   "Winter": 91
+  },
+  "spread_r2": 90.53144561322347,
+  "spread_u": 91.29940620053189,
+  "recorded_spread_r2": 90.53144561322347,
+  "per_block": [
+   {
+    "year": 2025,
+    "day": "Spring",
+    "num_years": 3,
+    "num_days": 92,
+    "w_u": 276,
+    "w_r2": 276.0,
+    "s": 131.00785801038754
+   },
+   {
+    "year": 2025,
+    "day": "Summer",
+    "num_years": 3,
+    "num_days": 91,
+    "w_u": 273,
+    "w_r2": 273.0,
+    "s": 87.89037542229705
+   },
+   {
+    "year": 2025,
+    "day": "Autumn",
+    "num_years": 3,
+    "num_days": 91,
+    "w_u": 273,
+    "w_r2": 273.0,
+    "s": 56.716541323102575
+   },
+   {
+    "year": 2025,
+    "day": "Winter",
+    "num_years": 3,
+    "num_days": 91,
+    "w_u": 273,
+    "w_r2": 273.0,
+    "s": 44.05968240864543
+   },
+   {
+    "year": 2028,
+    "day": "Spring",
+    "num_years": 3,
+    "num_days": 92,
+    "w_u": 276,
+    "w_r2": 260.08096433498423,
+    "s": 141.27903846247017
+   },
+   {
+    "year": 2028,
+    "day": "Summer",
+    "num_years": 3,
+    "num_days": 91,
+    "w_u": 273,
+    "w_r2": 257.2539973313431,
+    "s": 86.40388200419207
+   },
+   {
+    "year": 2028,
+    "day": "Autumn",
+    "num_years": 3,
+    "num_days": 91,
+    "w_u": 273,
+    "w_r2": 257.2539973313431,
+    "s": 59.563526993036646
+   },
+   {
+    "year": 2028,
+    "day": "Winter",
+    "num_years": 3,
+    "num_days": 91,
+    "w_u": 273,
+    "w_r2": 257.2539973313431,
+    "s": 39.71970397150953
+   },
+   {
+    "year": 2031,
+    "day": "Spring",
+    "num_years": 3,
+    "num_days": 92,
+    "w_u": 276,
+    "w_r2": 245.080101483389,
+    "s": 154.09659730655943
+   },
+   {
+    "year": 2031,
+    "day": "Summer",
+    "num_years": 3,
+    "num_days": 91,
+    "w_u": 273,
+    "w_r2": 242.4161873368304,
+    "s": 94.42186002814867
+   },
+   {
+    "year": 2031,
+    "day": "Autumn",
+    "num_years": 3,
+    "num_days": 91,
+    "w_u": 273,
+    "w_r2": 242.4161873368304,
+    "s": 65.5141724968534
+   },
+   {
+    "year": 2031,
+    "day": "Winter",
+    "num_years": 3,
+    "num_days": 91,
+    "w_u": 273,
+    "w_r2": 242.4161873368304,
+    "s": 50.93832514988806
+   },
+   {
+    "year": 2034,
+    "day": "Spring",
+    "num_years": 3,
+    "num_days": 92,
+    "w_u": 276,
+    "w_r2": 230.94445338085367,
+    "s": 167.73278735637564
+   },
+   {
+    "year": 2034,
+    "day": "Summer",
+    "num_years": 3,
+    "num_days": 91,
+    "w_u": 273,
+    "w_r2": 228.4341875832357,
+    "s": 106.57306386336285
+   },
+   {
+    "year": 2034,
+    "day": "Autumn",
+    "num_years": 3,
+    "num_days": 91,
+    "w_u": 273,
+    "w_r2": 228.4341875832357,
+    "s": 71.36853631460211
+   },
+   {
+    "year": 2034,
+    "day": "Winter",
+    "num_years": 3,
+    "num_days": 91,
+    "w_u": 273,
+    "w_r2": 228.4341875832357,
+    "s": 51.0559948191609
+   },
+   {
+    "year": 2037,
+    "day": "Spring",
+    "num_years": 3,
+    "num_days": 92,
+    "w_u": 276,
+    "w_r2": 217.62411646053712,
+    "s": 174.9429712729476
+   },
+   {
+    "year": 2037,
+    "day": "Summer",
+    "num_years": 3,
+    "num_days": 91,
+    "w_u": 273,
+    "w_r2": 215.25863693379216,
+    "s": 111.57720505740437
+   },
+   {
+    "year": 2037,
+    "day": "Autumn",
+    "num_years": 3,
+    "num_days": 91,
+    "w_u": 273,
+    "w_r2": 215.25863693379216,
+    "s": 75.09780172203634
+   },
+   {
+    "year": 2037,
+    "day": "Winter",
+    "num_years": 3,
+    "num_days": 91,
+    "w_u": 273,
+    "w_r2": 215.25863693379216,
+    "s": 52.593450341876036
+   }
+  ]
+ },
+ "denominator": {
+  "horizon_years": {
+   "2025": 5,
+   "2030": 5,
+   "2035": 5
+  },
+  "spread_r2": 97.01788674187569,
+  "spread_u": 97.99086039739976,
+  "per_block": [
+   {
+    "year": 2025,
+    "day": "Spring",
+    "num_years": 5,
+    "num_days": 92,
+    "w_u": 460,
+    "w_r2": 460.0,
+    "w_r2_recomputed": 460.0,
+    "s": 133.3715969399047
+   },
+   {
+    "year": 2025,
+    "day": "Summer",
+    "num_years": 5,
+    "num_days": 91,
+    "w_u": 455,
+    "w_r2": 455.0,
+    "w_r2_recomputed": 455.0,
+    "s": 96.40798156790564
+   },
+   {
+    "year": 2025,
+    "day": "Autumn",
+    "num_years": 5,
+    "num_days": 91,
+    "w_u": 455,
+    "w_r2": 455.0,
+    "w_r2_recomputed": 455.0,
+    "s": 56.25985147000799
+   },
+   {
+    "year": 2025,
+    "day": "Winter",
+    "num_years": 5,
+    "num_days": 91,
+    "w_u": 455,
+    "w_r2": 455.0,
+    "w_r2_recomputed": 455.0,
+    "s": 46.27642309551209
+   },
+   {
+    "year": 2030,
+    "day": "Spring",
+    "num_years": 5,
+    "num_days": 92,
+    "w_u": 460,
+    "w_r2": 416.6361725217613,
+    "w_r2_recomputed": 416.6361725217613,
+    "s": 150.89772014414626
+   },
+   {
+    "year": 2030,
+    "day": "Summer",
+    "num_years": 5,
+    "num_days": 91,
+    "w_u": 455,
+    "w_r2": 412.10751847261173,
+    "w_r2_recomputed": 412.10751847261173,
+    "s": 118.99378651634143
+   },
+   {
+    "year": 2030,
+    "day": "Autumn",
+    "num_years": 5,
+    "num_days": 91,
+    "w_u": 455,
+    "w_r2": 412.10751847261173,
+    "w_r2_recomputed": 412.10751847261173,
+    "s": 63.16084753019511
+   },
+   {
+    "year": 2030,
+    "day": "Winter",
+    "num_years": 5,
+    "num_days": 91,
+    "w_u": 455,
+    "w_r2": 412.10751847261173,
+    "w_r2_recomputed": 412.10751847261173,
+    "s": 58.41381262040946
+   },
+   {
+    "year": 2035,
+    "day": "Spring",
+    "num_years": 5,
+    "num_days": 92,
+    "w_u": 460,
+    "w_r2": 377.36021794257135,
+    "w_r2_recomputed": 377.36021794257135,
+    "s": 180.91760280386782
+   },
+   {
+    "year": 2035,
+    "day": "Summer",
+    "num_years": 5,
+    "num_days": 91,
+    "w_u": 455,
+    "w_r2": 373.2584764431956,
+    "w_r2_recomputed": 373.2584764431956,
+    "s": 125.03281148665472
+   },
+   {
+    "year": 2035,
+    "day": "Autumn",
+    "num_years": 5,
+    "num_days": 91,
+    "w_u": 455,
+    "w_r2": 373.2584764431956,
+    "w_r2_recomputed": 373.2584764431956,
+    "s": 96.43000757372441
+   },
+   {
+    "year": 2035,
+    "day": "Winter",
+    "num_years": 5,
+    "num_days": 91,
+    "w_u": 455,
+    "w_r2": 373.2584764431956,
+    "w_r2_recomputed": 373.2584764431956,
+    "s": 47.84640677072376
+   }
+  ]
+ },
+ "R_r2_reproduced": 0.933141801512231,
+ "R_u_reproduced": 0.9317134866483382,
+ "R_r2_recorded": 0.933141801512231,
+ "R_recorded_4dp": 0.9331,
+ "readings": {
+  "total_block_weight_undiscounted": {
+   "3x3": 5475,
+   "SRP1": 5475,
+   "ratio_3x3_over_SRP1": 1.0
+  },
+  "total_block_weight_model_r2": {
+   "3x3": 4878.818663215367,
+   "SRP1": 4975.0943752117555,
+   "ratio_3x3_over_SRP1": 0.9806484651877
+  },
+  "ratio_of_weighted_totals_r2": 0.9150840754554548,
+  "ratio_of_weighted_totals_u": 0.9317134866483383,
+  "note_totals": "R_r2 is a ratio of weighted AVERAGES (each instance normalised by its own total weight). Under the same first-order model the ratio of weighted TOTALS (which is what a value ratio V_3x3 / V_SRP1 compares) is R_r2 x (sum w_r2 3x3 / sum w_r2 SRP1). Reading only.",
+  "per_year_spread_u_3x3_subset_123": {
+   "2025": 80.05858482184591,
+   "2028": 81.9046542978149,
+   "2031": 91.41494109758484,
+   "2034": 99.37040433294523,
+   "2037": 103.7484464524685
+  },
+  "per_year_spread_u_SRP1": {
+   "2025": 83.21675130578895,
+   "2030": 98.01183260261246,
+   "2035": 112.7439972837978
+  },
+  "same_year_2025_ratio_u": 0.9620489092113437,
+  "note_2025": "2025 is the only year both horizons share; SRP1 2025 prices = paper scenario 1 in 2025 (Addendum 32). The ratio at 2025 holds the year fixed; R itself mixes the scenario set with the two horizons. Reading only, not a prediction.",
+  "R_gn_recorded": 0.9111032979671895,
+  "decomposition_r2": {
+   "R_r2": 0.933141801512231,
+   "mean_year_weighted_r2_3x3": 2030.6440967010897,
+   "mean_year_weighted_r2_SRP1": 2029.6704943383966
+  }
+ },
+ "value_ratio_definition_T11": "[(V - D) / V_SRP1_settled, V / V_SRP1_settled]; V = 3 x 3 value at certification, D = the post-hoc settled descent of the 3 x 3 x = 0 cell (W99), V_SRP1_settled = 253,539.62 EUR",
+ "guard": {
+  "counts": {
+   "permitted_solve": 0,
+   "permitted_exec": 0,
+   "blocked_solve": 0,
+   "blocked_exec": 0
+  },
+  "verify_0_failures": []
+ },
+ "pickle_counts": {
+  "load": 0,
+  "loads": 0
+ },
+ "checks": {
+  "input_sha256_selection_3x3": true,
+  "input_sha256_z4": true,
+  "input_sha256_instance_record_3x3": true,
+  "input_sha256_case_3x3": true,
+  "input_sha256_campaign_3x3": true,
+  "input_sha256_frozen_tables": true,
+  "input_sha256_case_srp1": true,
+  "input_sha256_w52_script": true,
+  "input_sha256_w22_script": true,
+  "subset_123_found_once": true,
+  "per_block_spread_covers_all_20_blocks": true,
+  "z4_weights_equal_formula": true,
+  "z4_years_equal_srp1_case": true,
+  "num_r2_reproduces_recorded": true,
+  "num_u_reproduces_recorded": true,
+  "den_r2_reproduces_Z4": true,
+  "den_u_reproduces_Z4": true,
+  "R_r2_reproduces_recorded": true,
+  "R_u_reproduces_recorded": true,
+  "R_r2_rounds_to_0.9331": true,
+  "campaign_R_prefix_recorded_is_0.9331": true,
+  "T11_row_is_0.9331": true,
+  "case_3x3_years_equal_numerator_years": true,
+  "case_3x3_days_equal_numerator_days": true,
+  "case_3x3_discount_equals_rate": true,
+  "3x3_realized_market_subset_is_123": true,
+  "3x3_prefix_holds_bitwise_0_mismatches": true,
+  "3x3_probabilities_one_third": true,
+  "numerator_pm_renormalized_one_third": true,
+  "solve_guard_verify_0": true,
+  "pickle_blocked_and_unused": true
+ },
+ "ok": true,
+ "ended_utc": "2026-10-08T08:30:17.785161+00:00"
+}

@@ -1,0 +1,64 @@
+{
+ "schema": "p515_s53_row18_structural_spec_v1",
+ "stage": "P5.15 Addendum 40 ruling 2, Planner task W54 -- row 18 inactive at the ADMM initialisation solve by STRUCTURAL inactivation (replacing W51's Param-only form); zero-solve .nl probe and zero-solve checks",
+ "authority": [
+  "Planner task W54 (2026-09-24)",
+  "PLANNER_BRIEF_2026-09-13.md Addendum 40 ruling 2",
+  "P5_15_ADDENDUM39_PILOT_REPORT.md section 6 item 2"
+ ],
+ "predecessor": null,
+ "amends": {
+  "path": "data/SRP1/Results/P515S53/frozen_s53_spec_v23_39a07fd8.json",
+  "sha256": "39a07fd85bd02aaee0f4042d9a7b201cf4df9027191ff70d7939b124061f685c",
+  "key": "ruling2_init_fix",
+  "what_is_amended": "the MECHANISM only. v23 reads 'using the existing mutable row18_alpha Param' (W51, d7962d4e: row18_alpha set to 0 at initialisation, restored from a recorded row18_alpha_admm Param at activation). Independent review rejected that as the final form; W54 replaces it with structural inactivation. The ruling itself (row 18 inactive at initialisation, activated with the settlement weight) and v23's recorded predictions are unchanged. v23 is not modified in place.",
+  "review_reason_recorded": "with the charge zeroed but the rows and the nonnegative, unbounded-above deviation pair retained, each pair admits a zero-cost ray (d+ + t, d- + t); stationarity gives z+ = -lambda, z- = lambda, both >= 0, so lambda = z+ = z- = 0, contradicting d z = mu for every mu > 0: the central path does not exist. IPOPT can still terminate on the mu = 0 error, which is attainable at finite d, so the expected outcome is a SUCCESS status at arbitrary d. The objection is determinism and confounding (alpha > 0 arms initialising from a differently-conditioned NLP than the alpha = 0 arm, on the very row about to be measured), not a crash."
+ },
+ "mechanism": {
+  "initialisation": "shared_resources_planning._set_row18_inactive_for_initialisation(block), called by both DSO initialisation builders (create_distribution_networks_models_sequential, create_distribution_network_model) right after add_scenario_commitment_terms and before the initialisation solve: per index, DEACTIVATE row18_dev_p_def / row18_dev_q_def, then FIX row18_dev_{p,q}_{up,down} at 0. row18_alpha keeps the run's value; row18_alpha_admm no longer exists. The charge folds to the constant 0.0 because every deviation Var in it is fixed at 0.",
+  "activation": "shared_resources_planning._activate_row18_with_settlement(block), called in _prepare_distribution_objectives_for_admm right after interface_settlement_weight.set_value(1.00): refuses (raises) unless every index is in the initialisation state; then per index e = value(pg_adn[s,t]) - value(expected_interface_pf_p[t]) (resp. qg_adn / expected_interface_pf_q), set the minimal split up = max(e, 0), down = max(-e, 0), UNFIX the pair, and only then ACTIVATE the row.",
+  "not_wired": "both functions return at once where row18_alpha does not exist (one scenario, or alpha = 0): SRP1 untouched.",
+  "hazard_excluded": "a deviation pair fixed while its row is ACTIVE would turn the row into pg_adn[s,t] == expected_interface_pf_p[t] (hard non-anticipativity on interface flow), which Pyomo 6.9.5's nl_v2 linear_presolve (default True) substitutes away, visible only in the .nl column count. Ordering: deactivate before fix; unfix before activate. The checks assert both states per index in both phases."
+ },
+ "nl_probe": {
+  "script": "p515_s53_row18_structural_nl_probe.py",
+  "template": "p515_s51_nl_identity_probe.py (sha256 5c9f16482511d12b02c6ba7c8eab506916b0fae6fbb0d042a3cc48d1018d0ab3)",
+  "guard": "p513_solve_profile_guard.SolveProfileGuard(permitted=()) installed before any production import, armed for the whole run, verified at exactly 0 solves",
+  "instance": {
+   "derivation": "p515_s44_scale_measurement.derive_case('srp1', {'years': {'2025': 5}, 'num_market_scenarios': 2, 'num_operation_scenarios': 2}) -- the W39/W51 2 x 2 instance",
+   "n_scenarios": 4,
+   "n_periods_T": 24,
+   "block": "the FIRST DSO node in planning.distribution_networks order, its FIRST (year, day) block, captured at the moment production would hand it to IPOPT (the node's .optimize replaced on the instance by a recording stub that writes the .nl files and returns no result)",
+   "builder": "production shared_resources_planning.create_distribution_networks_models_sequential on {node_id: network}, consensus Vars from create_admm_variables, candidate = get_initial_candidate_solution()['total_capacity'], premium_floor None"
+  },
+  "writer": {
+   "call": "block.write(path, format='nl', io_options={'symbolic_solver_labels': flag})",
+   "flags": {"off": "production form (production calls solver.solve(model, tee, load_solutions=False): symbolic labels off, linear_presolve default True)", "on": "names; also writes .row / .col"},
+   "pyomo": "6.9.5 (nl_v2)",
+   "header_counts": "columns = n_vars and rows = n_cons read from the second header line of the .nl file"
+  },
+  "arms": {
+   "A": "alpha = 0 build (row 18 not constructed; both functions are no-ops)",
+   "A_repeat": "DECLARED DETERMINISM CONTROL: a second, independent alpha = 0 build on the same planning instance; separates writer/build nondeterminism from a real A-vs-B difference",
+   "B": "alpha = 0.5 build with the W54 structural fix applied: initialisation state (rows inactive, deviation Vars fixed at 0)",
+   "C": "alpha = 0.5 build in W51's Param-only state: the builder calls W51's _set_row18_inactive_for_initialisation, extracted verbatim from shared_resources_planning.py at 7a98b25e (source sha256 recorded) and patched in for this arm only (row18_alpha = 0, rows active, deviation Vars free)",
+   "D": "NEGATIVE CONTROL: alpha = 0.5, deviation Vars fixed at 0, rows left ACTIVE (a probe-local function patched in for this arm only; never production)"
+  },
+  "predictions_recorded_before_run": [
+   {"id": "P0", "claim": "sha256(A) == sha256(A_repeat) for both label settings (and .row/.col identical)", "role": "control; if false, P1 cannot be read"},
+   {"id": "P1", "claim": "sha256(A) == sha256(B) EXACTLY, for both label settings, and the .row/.col files identical", "basis": "writer source: pyomo/repn/ampl.py::_before_var folds a fixed Var to a constant at visit time; constraints are collected with active=True; nl_v2 has no output_fixed_variable_bounds option. NOT previously verified.", "on_false": "STOP and report the difference; do not work around it", "licenses": "the whole structural approach"},
+   {"id": "P2", "claim": "C has exactly 4 n T = 384 more columns and 2 n T = 192 more rows than A (n = 4, T = 24); with labels on, the extra .col names are exactly the row18_dev_{p,q}_{up,down} entries and the extra .row names exactly the row18_dev_{p,q}_def entries"},
+   {"id": "P3", "claim": "D has FEWER columns than A (linear presolve substituting one Var per active 2-Var row pg_adn[s,t] - expected_interface_pf_p[t] == 0, resp. q); the exact number is not predicted", "on_false": "STOP and report: the stated hazard reading would be wrong"}
+  ],
+  "output": "data/SRP1/Results/P515S53/row18_structural/nl_probe/<label>/ (write-once); the .nl/.row/.col files go to --scratch outside the repository and are hash-recorded in the output JSON"
+ },
+ "zero_solve_checks": {
+  "script": "p515_s53_init_fix_zero_solve_checks.py (extended by W54; the W51 r4 artifact is not re-run onto -- new label)",
+  "replaced_as_vacuous": "W51 check A's (and A2's) finite-difference unit steps on the deviation Vars at initialisation: under the structural fix d is fixed, so a unit step is not an admissible move and the probe would test nothing",
+  "asserted_per_index": [
+   "initialisation (A, A2): every row18_dev_{p,q}_def index inactive; every row18_dev_{p,q}_{up,down} index fixed at value 0.0; row18_alpha == run alpha; row18_alpha_admm absent; value(row18_deviation_charge) == 0.0 exactly; no index has a fixed pair with an active row",
+   "after _prepare_distribution_objectives_for_admm (B): every row index active; every deviation index unfixed; up == max(e, 0) and down == max(-e, 0) exactly with e = value(flow) - value(expectation); the defining row's residual == 0.0; no index has a fixed pair with an active row"
+  ]
+ },
+ "not_permitted": "no solves of any kind; no edits to model_construction_helpers.py, the uncoordinated benchmark or any TSO path; the SRP1 two-cycle bitwise gate p515_s53_srp1_bitwise_gate.py is updated but NOT run"
+}

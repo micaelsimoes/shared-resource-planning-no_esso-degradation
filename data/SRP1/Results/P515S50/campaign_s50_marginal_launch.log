@@ -1,0 +1,87 @@
+18:33:24 [S50-MARGINAL] memory preflight: available (memsize - wired - anonymous - compressor-occupied) = 21.06 GiB [wired 2.10, anonymous 8.12, compressor-occupied 0.71]; free+inactive = 15.33 GiB (recorded only); required 5.50 GiB (hw.memsize - (wired + anonymous + compressor-occupied) x page size >= 2 x 2.75 GiB) -> PASS; vm_stat pages {'pages_free': 17731, 'pages_active': 854404, 'pages_inactive': 986619, 'pages_speculative': 5070, 'pages_wired_down': 137676, 'pages_purgeable': 3164, 'file_backed_pages': 1313660, 'anonymous_pages': 532433, 'pages_stored_in_compressor': 150292, 'pages_occupied_by_compressor': 46787}
+18:33:24 [S50-MARGINAL] MODEL VARIANT — flexibility price × m under BASELINE (C2 + phi_cal 0.985 + soh_min 0.70) -- marginal-MWh test (2 MWh at node 7, m in [2.0, 3.0])
+18:33:24 [S50-MARGINAL] preconditions passed; spec data/SRP1/Results/P515S50/campaign_s50_marginal/campaign_spec_s50_marginal_fa4b30ee.json sha256=fa4b30eee63d9b137df559379ed5cdd13a1b93e2a7b5622fd681b643618cb8a0; git HEAD a4d23ab982b6dd2e3a04f6eefd13a43bd8468a8e (spec frozen at 2389d79b39928f646975f5e2d58cf32d75a5eb27)
+18:33:24 [S50-MARGINAL] 2 points in 1 wave(s) [['n7_4h_e2_m2', 'n7_4h_e2_m3']]; stop rule: as a1a (Planner task W15, spec v15 execution.barrier): after every wave, STOP (launch no further wave) if (a) 2 or more non-certified points fall in ONE region (node+duration ladder) or (b) 3 or more non-certified points occur overall. A single isolated non-certified point does NOT stop the campaign. Points already running always finish; unlaunched points are recorded as not_launched_stop_rule and campaign_results.json carries STOP_FOR_REVIEW true (exit 3).
+18:33:24 [S50-MARGINAL] campaign lock acquired: {'pid': 51827, 'campaign_id': 's50_marginal', 'campaign_spec_sha256': 'fa4b30eee63d9b137df559379ed5cdd13a1b93e2a7b5622fd681b643618cb8a0', 'started_utc': '2026-09-22T18:33:24.975940+00:00'}
+18:33:24 [S50-MARGINAL] launching wave 1/1: ['n7_4h_e2_m2', 'n7_4h_e2_m3'] (concurrency 2)
+18:33:24 [S44-HARNESS] launched n7_4h_e2_m2 (key cc4eb5df385852e6) pid=51867
+18:33:24 [S44-HARNESS] launched n7_4h_e2_m3 (key cc4eb5df385852e6) pid=51868
+18:33:24 [S44-HARNESS] heartbeat n7_4h_e2_m2: 0s cycle=None; n7_4h_e2_m3: 0s cycle=None
+18:34:25 [S44-HARNESS] heartbeat n7_4h_e2_m2: 60s cycle=None; n7_4h_e2_m3: 60s cycle=None
+18:35:25 [S44-HARNESS] heartbeat n7_4h_e2_m2: 120s cycle=2; n7_4h_e2_m3: 120s cycle=2
+18:36:25 [S44-HARNESS] heartbeat n7_4h_e2_m2: 180s cycle=4; n7_4h_e2_m3: 180s cycle=4
+18:37:25 [S44-HARNESS] heartbeat n7_4h_e2_m2: 240s cycle=6; n7_4h_e2_m3: 240s cycle=6
+18:38:25 [S44-HARNESS] heartbeat n7_4h_e2_m2: 300s cycle=8; n7_4h_e2_m3: 300s cycle=8
+18:39:25 [S44-HARNESS] heartbeat n7_4h_e2_m2: 360s cycle=10; n7_4h_e2_m3: 360s cycle=10
+18:40:25 [S44-HARNESS] heartbeat n7_4h_e2_m2: 421s cycle=12; n7_4h_e2_m3: 421s cycle=12
+18:41:25 [S44-HARNESS] heartbeat n7_4h_e2_m2: 481s cycle=14; n7_4h_e2_m3: 481s cycle=14
+18:42:25 [S44-HARNESS] heartbeat n7_4h_e2_m2: 541s cycle=16; n7_4h_e2_m3: 541s cycle=16
+18:43:25 [S44-HARNESS] heartbeat n7_4h_e2_m2: 601s cycle=18; n7_4h_e2_m3: 601s cycle=18
+18:44:26 [S44-HARNESS] heartbeat n7_4h_e2_m2: 661s cycle=20; n7_4h_e2_m3: 661s cycle=20
+18:45:26 [S44-HARNESS] heartbeat n7_4h_e2_m2: 721s cycle=23; n7_4h_e2_m3: 721s cycle=22
+18:46:26 [S44-HARNESS] heartbeat n7_4h_e2_m2: 781s cycle=25; n7_4h_e2_m3: 781s cycle=25
+18:47:26 [S44-HARNESS] heartbeat n7_4h_e2_m2: 841s cycle=27; n7_4h_e2_m3: 841s cycle=27
+18:48:26 [S44-HARNESS] heartbeat n7_4h_e2_m2: 902s cycle=29; n7_4h_e2_m3: 902s cycle=29
+18:49:26 [S44-HARNESS] heartbeat n7_4h_e2_m2: 962s cycle=31; n7_4h_e2_m3: 962s cycle=31
+18:50:26 [S44-HARNESS] heartbeat n7_4h_e2_m2: 1022s cycle=33; n7_4h_e2_m3: 1022s cycle=33
+18:51:26 [S44-HARNESS] heartbeat n7_4h_e2_m2: 1082s cycle=35; n7_4h_e2_m3: 1082s cycle=35
+18:52:27 [S44-HARNESS] heartbeat n7_4h_e2_m2: 1142s cycle=37; n7_4h_e2_m3: 1142s cycle=37
+18:53:27 [S44-HARNESS] heartbeat n7_4h_e2_m2: 1202s cycle=39; n7_4h_e2_m3: 1202s cycle=39
+18:54:27 [S44-HARNESS] heartbeat n7_4h_e2_m2: 1262s cycle=41; n7_4h_e2_m3: 1262s cycle=41
+18:55:27 [S44-HARNESS] heartbeat n7_4h_e2_m2: 1322s cycle=43; n7_4h_e2_m3: 1322s cycle=43
+18:56:27 [S44-HARNESS] heartbeat n7_4h_e2_m2: 1382s cycle=45; n7_4h_e2_m3: 1382s cycle=46
+18:57:27 [S44-HARNESS] heartbeat n7_4h_e2_m2: 1443s cycle=48; n7_4h_e2_m3: 1443s cycle=48
+18:58:27 [S44-HARNESS] heartbeat n7_4h_e2_m2: 1503s cycle=50; n7_4h_e2_m3: 1503s cycle=50
+18:59:27 [S44-HARNESS] heartbeat n7_4h_e2_m2: 1563s cycle=52; n7_4h_e2_m3: 1563s cycle=52
+19:00:27 [S44-HARNESS] heartbeat n7_4h_e2_m2: 1623s cycle=54; n7_4h_e2_m3: 1623s cycle=54
+19:01:28 [S44-HARNESS] heartbeat n7_4h_e2_m2: 1683s cycle=56; n7_4h_e2_m3: 1683s cycle=56
+19:02:28 [S44-HARNESS] heartbeat n7_4h_e2_m2: 1743s cycle=58; n7_4h_e2_m3: 1743s cycle=59
+19:03:28 [S44-HARNESS] heartbeat n7_4h_e2_m2: 1803s cycle=60; n7_4h_e2_m3: 1803s cycle=61
+19:04:28 [S44-HARNESS] heartbeat n7_4h_e2_m2: 1863s cycle=62; n7_4h_e2_m3: 1863s cycle=63
+19:05:28 [S44-HARNESS] heartbeat n7_4h_e2_m2: 1924s cycle=65; n7_4h_e2_m3: 1924s cycle=65
+19:06:28 [S44-HARNESS] heartbeat n7_4h_e2_m2: 1984s cycle=67; n7_4h_e2_m3: 1984s cycle=67
+19:07:28 [S44-HARNESS] heartbeat n7_4h_e2_m2: 2044s cycle=69; n7_4h_e2_m3: 2044s cycle=69
+19:08:28 [S44-HARNESS] heartbeat n7_4h_e2_m2: 2104s cycle=71; n7_4h_e2_m3: 2104s cycle=71
+19:09:28 [S44-HARNESS] heartbeat n7_4h_e2_m2: 2164s cycle=74; n7_4h_e2_m3: 2164s cycle=73
+19:10:29 [S44-HARNESS] heartbeat n7_4h_e2_m2: 2224s cycle=76; n7_4h_e2_m3: 2224s cycle=75
+19:11:29 [S44-HARNESS] heartbeat n7_4h_e2_m2: 2284s cycle=78; n7_4h_e2_m3: 2284s cycle=77
+19:12:29 [S44-HARNESS] heartbeat n7_4h_e2_m2: 2344s cycle=80; n7_4h_e2_m3: 2344s cycle=80
+19:13:29 [S44-HARNESS] heartbeat n7_4h_e2_m2: 2404s cycle=82; n7_4h_e2_m3: 2404s cycle=82
+19:14:29 [S44-HARNESS] heartbeat n7_4h_e2_m2: 2465s cycle=84; n7_4h_e2_m3: 2465s cycle=84
+19:15:29 [S44-HARNESS] heartbeat n7_4h_e2_m2: 2525s cycle=87; n7_4h_e2_m3: 2525s cycle=86
+19:16:29 [S44-HARNESS] heartbeat n7_4h_e2_m2: 2585s cycle=89; n7_4h_e2_m3: 2585s cycle=88
+19:17:29 [S44-HARNESS] heartbeat n7_4h_e2_m2: 2645s cycle=91; n7_4h_e2_m3: 2645s cycle=91
+19:18:29 [S44-HARNESS] heartbeat n7_4h_e2_m2: 2705s cycle=93; n7_4h_e2_m3: 2705s cycle=93
+19:19:30 [S44-HARNESS] heartbeat n7_4h_e2_m2: 2765s cycle=95; n7_4h_e2_m3: 2765s cycle=95
+19:20:30 [S44-HARNESS] heartbeat n7_4h_e2_m2: 2825s cycle=98; n7_4h_e2_m3: 2825s cycle=97
+19:21:30 [S44-HARNESS] heartbeat n7_4h_e2_m2: 2885s cycle=100; n7_4h_e2_m3: 2885s cycle=100
+19:22:30 [S44-HARNESS] heartbeat n7_4h_e2_m2: 2945s cycle=102; n7_4h_e2_m3: 2945s cycle=102
+19:23:30 [S44-HARNESS] heartbeat n7_4h_e2_m2: 3006s cycle=104; n7_4h_e2_m3: 3006s cycle=104
+19:24:30 [S44-HARNESS] heartbeat n7_4h_e2_m2: 3066s cycle=107; n7_4h_e2_m3: 3066s cycle=106
+19:25:30 [S44-HARNESS] heartbeat n7_4h_e2_m2: 3126s cycle=109; n7_4h_e2_m3: 3126s cycle=108
+19:26:30 [S44-HARNESS] heartbeat n7_4h_e2_m2: 3186s cycle=111; n7_4h_e2_m3: 3186s cycle=111
+19:27:30 [S44-HARNESS] heartbeat n7_4h_e2_m2: 3246s cycle=113; n7_4h_e2_m3: 3246s cycle=113
+19:28:31 [S44-HARNESS] heartbeat n7_4h_e2_m2: 3306s cycle=116; n7_4h_e2_m3: 3306s cycle=115
+19:29:31 [S44-HARNESS] heartbeat n7_4h_e2_m2: 3366s cycle=118; n7_4h_e2_m3: 3366s cycle=117
+19:30:31 [S44-HARNESS] heartbeat n7_4h_e2_m2: 3426s cycle=120; n7_4h_e2_m3: 3426s cycle=120
+19:31:31 [S44-HARNESS] heartbeat n7_4h_e2_m2: 3486s cycle=122; n7_4h_e2_m3: 3486s cycle=122
+19:32:31 [S44-HARNESS] heartbeat n7_4h_e2_m2: 3546s cycle=124; n7_4h_e2_m3: 3546s cycle=124
+19:33:31 [S44-HARNESS] heartbeat n7_4h_e2_m2: 3606s cycle=127; n7_4h_e2_m3: 3606s cycle=126
+19:33:51 [S44-HARNESS] finished n7_4h_e2_m3 pid=51868 exit=0 status=certified wall=3626s
+19:34:31 [S44-HARNESS] heartbeat n7_4h_e2_m2: 3666s cycle=129
+19:35:31 [S44-HARNESS] heartbeat n7_4h_e2_m2: 3727s cycle=131
+19:36:31 [S44-HARNESS] heartbeat n7_4h_e2_m2: 3787s cycle=133
+19:37:31 [S44-HARNESS] heartbeat n7_4h_e2_m2: 3847s cycle=136
+19:38:31 [S44-HARNESS] heartbeat n7_4h_e2_m2: 3907s cycle=138
+19:39:31 [S44-HARNESS] heartbeat n7_4h_e2_m2: 3967s cycle=140
+19:40:31 [S44-HARNESS] heartbeat n7_4h_e2_m2: 4027s cycle=143
+19:41:01 [S44-HARNESS] finished n7_4h_e2_m2 pid=51867 exit=0 status=certified wall=4057s
+19:41:01 [S50-MARGINAL] campaign lock released
+19:41:02 [S50-MARGINAL] MODEL VARIANT — flexibility price × m under BASELINE (C2 + phi_cal 0.985 + soh_min 0.70) -- objective convention: Q(x) = certified_cost = gross_operational_cost (settlement-excluded); value(m) = Q_m(0) - Q_m(x) with Q_m(0) PINNED from the committed ladder (dc468ab4); terminal salvage and net_operational_recourse = gross - salvage reported, excluded. At m != 1 the DSO flexibility cost inside Q is priced at m x cost_flex.
+19:41:02 [S50-MARGINAL] {'m': 2.0, 'source': 'this campaign (2 MWh) against the pinned ladder x = 0 and 1 MWh (dc468ab4)', 'E_mwh': 2.0, 'Q_x0_pinned': 811016062.203051, 'Q_2mwh': 810288986.5544469, 'value': 727075.6486040354, 'I': 635914.0170071172, 'value_minus_I': 91161.63159691822, 'resolution': 1742.0747516155243, 'reading': 'pays (value - I > resolution)', 'value_per_mwh_energy': 363537.8243020177, 'energy_unit_cost': 253877.6774385931, 'I_per_mwh_energy': 317957.0085035586, 'T_mwh': 8487.802011668686, 'value_per_full_cycle': 85.66124040175316, 'resolution_per_full_cycle': 0.20524450843935693, 'rule_ten_gross_2mwh': 0.0014623359263887454, 'rule_ten_gross_x0_pinned': 0.005266569918220755, 'dso_flex_saving_total': 526436.901345402, 'value_1mwh': 366352.53585350513, 'value_minus_I_1mwh': 48395.527349946555, 'value_per_mwh_energy_1mwh': 366352.53585350513, 'value_per_full_cycle_1mwh': 86.49341525660546, 'second_mwh_delta_value': 360723.11275053024, 'second_mwh_delta_value_minus_delta_I': 42766.10424697166, 'second_mwh_resolution': 6588.8188844919205, 'second_mwh_reading': 'the second MWh pays'}
+19:41:02 [S50-MARGINAL] {'m': 3.0, 'source': 'this campaign (2 MWh) against the pinned ladder x = 0 and 1 MWh (dc468ab4)', 'E_mwh': 2.0, 'Q_x0_pinned': 876022706.3641598, 'Q_2mwh': 875158546.4330769, 'value': 864159.931082964, 'I': 635914.0170071172, 'value_minus_I': 228245.91407584678, 'resolution': 26556.827291965485, 'reading': 'pays (value - I > resolution)', 'value_per_mwh_energy': 432079.965541482, 'energy_unit_cost': 253877.6774385931, 'I_per_mwh_energy': 317957.0085035586, 'T_mwh': 8458.913481232938, 'value_per_full_cycle': 102.15968433773452, 'resolution_per_full_cycle': 3.1395080882296322, 'rule_ten_gross_2mwh': 0.0015735925551018505, 'rule_ten_gross_x0_pinned': 0.06325973881881414, 'dso_flex_saving_total': 167732.26740159467, 'value_1mwh': 434573.7294034958, 'value_minus_I_1mwh': 116616.72089993721, 'value_per_mwh_energy_1mwh': 434573.7294034958, 'value_per_full_cycle_1mwh': 102.88288813256356, 'second_mwh_delta_value': 429586.20167946815, 'second_mwh_delta_value_minus_delta_I': 111629.19317590958, 'second_mwh_resolution': 62044.51004958153, 'second_mwh_reading': 'the second MWh pays'}
+19:41:02 [S50-MARGINAL] n7_4h_e2_m2: status=certified cycles=144 Q=810288986.5544469 bar=445.81965148448944 rule_ten_gross=0.0014623359263887454 solves=7407/7407
+19:41:02 [S50-MARGINAL] n7_4h_e2_m3: status=certified cycles=127 Q=875158546.4330769 bar=188.8336844444275 rule_ten_gross=0.0015735925551018505 solves=6542/6542
+19:41:02 [S50-MARGINAL] budget corner: under the EUR 1,000,000 budget the node-7 4 h ladder at 2025 is feasible up to 3.0 MWh (I = 953871.0255106756, slack 46128.97448932438); the next rung is infeasible. The budget corner is that point. This campaign evaluates 2 MWh; 1 MWh is committed (dc468ab4); the corner itself is NOT evaluated here.
+19:41:02 [S50-MARGINAL] guards: parent {'permitted_solve': 0, 'permitted_exec': 0, 'blocked_solve': 0, 'blocked_exec': 0} / ladder parent {'permitted_solve': 0, 'permitted_exec': 0, 'blocked_solve': 0, 'blocked_exec': 0} / W25 module {'permitted_solve': 0, 'permitted_exec': 0, 'blocked_solve': 0, 'blocked_exec': 0}; verify0 failures={'parent': [], 'ladder_parent': [], 'w25_module': []}
+19:41:02 [S50-MARGINAL] OK: all 2 points certified

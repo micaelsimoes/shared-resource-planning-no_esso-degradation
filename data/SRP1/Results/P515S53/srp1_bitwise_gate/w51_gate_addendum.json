@@ -1,0 +1,481 @@
+{
+ "schema": "p515_s53_srp1_bitwise_gate_v1_addendum",
+ "stage": "P5.15 Addendum 40 ruling 2 W51 -- SRP1 two-cycle bitwise identity: row 18 inactive at the initialisation solve is inert at one scenario, vs committed baseline C* and the committed W48 arm",
+ "authority": [
+  "Planner task W51",
+  "Planner task W56 (structural form)",
+  "Planner task W57 (activation body check)",
+  "PLANNER_BRIEF_2026-09-13.md Addendum 40 ruling 2",
+  "data/SRP1/Results/P515S53/frozen_s53_spec_v23_39a07fd8.json ruling2_init_fix",
+  "data/SRP1/Results/P515S53/row18_structural/frozen_s53_row18_structural_spec_v2_5123e67b.json",
+  "data/SRP1/Results/P515S53/row18_structural/frozen_s53_row18_structural_spec_v3_1064db50.json"
+ ],
+ "recorded_prediction": "the SRP1 bitwise gate passes unchanged (nothing is wired at one scenario)",
+ "timestamp_utc": "2026-09-24T12:55:17.294599+00:00",
+ "git_head_at_run": "2167c0d995386e3349f15912058b27910000828d",
+ "script": "p515_s53_srp1_bitwise_gate.py",
+ "script_sha256": "b63b1fb94ec305a782cb139d6e9c42be8b7a49b2ef78cb0d174f09e3d53f6766",
+ "imported_gate_sha256": {
+  "p515_s52_srp1_bitwise_gate.py": "7bd3009ad4c263159ec84b929c921b5cf4f2d702c71154963754b3a906f28545",
+  "p515_s51_srp1_bitwise_gate.py": "c4adb3b8f98dc2570fcf4e8ccc3c5def0209f874d95b2c5efeae868b33640760",
+  "p515_s50_generalization_gate.py": "5abfe5c2b9a67533942cc77cdfcca523e17c998f42210620f7d852d18968cc43",
+  "p515_s49_memory_fix_gate.py": "c75d26dd313b2bdec74d97854ad9a3f4d2adbf07b1a654dd15cced432ad63bfc",
+  "p515_s45_snapshot_off_two_cycle_gate.py": "f5e103577a7dc0c465144984e28b50ab4b1efc0405c3c23f2ab3afc7f917f4a2"
+ },
+ "module_sha256": {
+  "shared_resources_planning.py": "543dc9958cdfc59ce713198c6bd058c1e842d9f1db4b5bbb64be2511afbfd269",
+  "model_construction_helpers.py": "a20a224f11008de8c0206484583b00253677267d616e1051bb1583791ed47f64",
+  "admm_parameters.py": "2bd733913a99986cf669d13580a41658e15c4320e1a21343a6652a1a13436a1b",
+  "p515_s44_campaign_harness.py": "abf797989997535e610b614ce051848cfa780b5ead311cbe7dc169345bcedeb5",
+  "p515_g_g1_g4_admm_gates.py": "172260450ba167c13c8776881a01c1b0ee096baa79cb98fa2650f83385ad458b"
+ },
+ "declared_substitutions": {
+  "1_identifiers": {
+   "STAGE": "P5.15 Addendum 40 ruling 2 W51 -- SRP1 two-cycle bitwise identity: row 18 inactive at the initialisation solve is inert at one scenario, vs committed baseline C* and the committed W48 arm",
+   "SCHEMA": "p515_s53_srp1_bitwise_gate_v1",
+   "ARM": "s53w51gate",
+   "OUT_REL": "data/SRP1/Results/P515S53/srp1_bitwise_gate"
+  },
+  "2_extra_clean_files": [
+   "network.py",
+   "solver_parameters.py",
+   "model_construction_helpers.py",
+   "shared_resources_planning.py",
+   "p56a_oracle.py",
+   "p515_s41_hull_polish.py",
+   "p515_g_g1_g4_admm_gates.py",
+   "p515_s44_scale_measurement.py",
+   "p515_s45_snapshot_off_two_cycle_gate.py",
+   "p515_s49_memory_fix_gate.py",
+   "p515_s44_campaign_harness.py",
+   "shared_energy_storage_data.py",
+   "data/SRP1/SharedESS/SRP1_ESS_Params.json",
+   "admm_parameters.py",
+   "p515_s31c_evaluate.py",
+   "p515_s51_row18_zero_solve_checks.py",
+   "p515_s51_srp1_bitwise_gate.py",
+   "p515_s52_pilot_checks.py",
+   "p515_s52_srp1_bitwise_gate.py",
+   "p515_s53_init_fix_zero_solve_checks.py",
+   "p515_s53_srp1_bitwise_gate.py"
+  ],
+  "3_presence": "W39 row 18 checks + W48 w47_code_presence + w51_code_presence",
+  "4_extra_forbidden": [
+   "p515_s46_",
+   "p515_s47_",
+   "p515_s48_",
+   "p515_s49_",
+   "p515_s50_",
+   "p515_s51_",
+   "p515_s52_",
+   "p515_s53_"
+  ],
+  "5_reference_arm": {
+   "gate_dir": "data/SRP1/Results/P515S52/srp1_bitwise_gate",
+   "arm_dir": "data/SRP1/Results/P515S52/srp1_bitwise_gate/arm",
+   "manifest": "data/SRP1/Results/P515S52/srp1_bitwise_gate/manifest_sha256.json",
+   "manifest_sha256": "9a5d6b78bfdb4738e83389878eba3236b298a4e5e5b05308a48b44ebe094ba69",
+   "gate_json": "data/SRP1/Results/P515S52/srp1_bitwise_gate/gate.json",
+   "arm_name": "s52w48gate",
+   "commit": "e75a575e (run at fe0319d6)"
+  }
+ },
+ "declared_solve_profile": {
+  "case_file": "data/SRP1/SRP1.json",
+  "years": [
+   "2025",
+   "2030",
+   "2035"
+  ],
+  "days": [
+   "Autumn",
+   "Spring",
+   "Summer",
+   "Winter"
+  ],
+  "n_year_day_blocks": 12,
+  "n_networks": 4,
+  "network_solves_per_cycle": 48,
+  "active_distribution_network_nodes": [
+   5,
+   7,
+   9
+  ],
+  "esso_solves_per_cycle": 3,
+  "solves_per_cycle": 51,
+  "cap": 2,
+  "declared_base_solves_per_arm": 153,
+  "declared_base_solves_both_arms": 306,
+  "identity": "observed_arm == base + 1 * recovered_tier1 + 2 * recovered_tier2 (recovery counts from the arm own network_failures_summary)"
+ },
+ "w51_code_presence_asserted_before_run": {
+  "family_table_present_and_as_declared": true,
+  "inactive_function_present": true,
+  "inactive_returns_where_row18_not_wired": true,
+  "inactive_deactivates_row_before_fixing_pair_at_zero": true,
+  "inactive_never_writes_alpha": true,
+  "activate_function_present": true,
+  "activate_returns_where_row18_not_wired": true,
+  "activate_refuses_unless_initialisation_state": true,
+  "activate_minimal_split_then_unfix_then_activate": true,
+  "activate_never_writes_alpha": true,
+  "activate_checks_defining_row_bodies_after_activation": true,
+  "activation_body_tolerance_as_declared": true,
+  "w51_param_retired_from_module": true,
+  "sequential_builder_deactivates_after_wiring_before_solve": true,
+  "parallel_builder_deactivates_after_wiring_before_solve": true,
+  "prepare_activates_with_the_settlement_weight": true,
+  "run_passes_the_run_alpha_to_the_build": true,
+  "run_prepares_before_scale_and_admm_update": true,
+  "model_construction_helpers_file_unchanged_by_w51_w54": true,
+  "add_scenario_commitment_terms_source_unchanged": true,
+  "uncoordinated_benchmark_source_unchanged": true
+ },
+ "w51_counter_ARMED": {
+  "mechanism": "pass-through wrappers on both new functions, armed at the run-lock acquisition after the W35 precondition/presence stage and before the arm, removed when S51G.main returns (CLAUDE.md rule six: armed, never asserted); count declared from the case file before the run",
+  "expected_calls_each": 36,
+  "calls": {
+   "_set_row18_inactive_for_initialisation": 36,
+   "_activate_row18_with_settlement": 36
+  },
+  "acting_calls": {
+   "_set_row18_inactive_for_initialisation": [],
+   "_activate_row18_with_settlement": []
+  },
+  "pass": true
+ },
+ "comparison_vs_committed_w48_arm_GATING": {
+  "reference_arm": {
+   "gate_dir": "data/SRP1/Results/P515S52/srp1_bitwise_gate",
+   "arm_dir": "data/SRP1/Results/P515S52/srp1_bitwise_gate/arm",
+   "manifest": "data/SRP1/Results/P515S52/srp1_bitwise_gate/manifest_sha256.json",
+   "manifest_sha256": "9a5d6b78bfdb4738e83389878eba3236b298a4e5e5b05308a48b44ebe094ba69",
+   "gate_json": "data/SRP1/Results/P515S52/srp1_bitwise_gate/gate.json",
+   "arm_name": "s52w48gate",
+   "commit": "e75a575e (run at fe0319d6)"
+  },
+  "comparator": "W10.classify (BY IMPORT): CP._diff bitwise, CP.EXCLUDE_KEY_NAMES / EXCLUDE_DOTTED_SUFFIXES, rule_eleven_checklist subtree = provenance, arm-path tokens normalized, recourse-jump tie order reclassified by TC; everything else genuine. CP._diff's 'legacy' = the W39 arm, 'lightweight' = this arm",
+  "token_groups": [
+   [
+    "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S53/srp1_bitwise_gate/arm",
+    "data/SRP1/Results/P515S53/srp1_bitwise_gate/arm",
+    "p515s44_s45_w10_snapoff_s53w51gate_578636daa6d6360d_run",
+    "p515s44_s45_w10_snapoff_s53w51gate_578636daa6d6360d_precheck",
+    "s53w51gate"
+   ],
+   [
+    "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S52/srp1_bitwise_gate/arm",
+    "data/SRP1/Results/P515S52/srp1_bitwise_gate/arm",
+    "p515s44_s45_w10_snapoff_s52w48gate_578636daa6d6360d_run",
+    "p515s44_s45_w10_snapoff_s52w48gate_578636daa6d6360d_precheck",
+    "s52w48gate"
+   ]
+  ],
+  "files_compared": [
+   "g_s39_D.json",
+   "boyd_terminal.json",
+   "component_levels_terminal.json",
+   "interface_settlement_detail_s31c.json",
+   "interface_voltage_terminal.json",
+   "recourse_jump_sidecar_baseline.jsonl",
+   "ess_entry_stride_baseline.jsonl",
+   "soh_floor_sidecar_baseline.jsonl",
+   "pf_entry_stride_s39_D.jsonl",
+   "ess_exempt_until_state_s39_D.jsonl",
+   "aa_per_cycle.jsonl",
+   "per_cycle_record.jsonl"
+  ],
+  "per_file": {
+   "g_s39_D.json": {
+    "n_raw_diffs": 1,
+    "fg_buckets_raw_counts": {
+     "provenance": 1,
+     "aa_new_field": 0,
+     "known_tie_break_alias": 0,
+     "genuine": 0
+    },
+    "n": {
+     "provenance": 1,
+     "tie_order": 0,
+     "genuine": 0
+    },
+    "provenance_diffs": [
+     {
+      "field": "g_s39_D.json.rule_eleven_checklist.w10_arm",
+      "legacy": "s52w48gate",
+      "lightweight": "s53w51gate",
+      "reason": "rule_eleven_checklist subtree (how the run was configured/verified, including the recorded snapshot modes)"
+     }
+    ],
+    "tie_order_diffs": [],
+    "tie_order_row_classes": {},
+    "genuine_diffs_first": [],
+    "genuine_diffs_listed_truncated": false
+   },
+   "boyd_terminal.json": {
+    "n_raw_diffs": 0,
+    "fg_buckets_raw_counts": {
+     "provenance": 0,
+     "aa_new_field": 0,
+     "known_tie_break_alias": 0,
+     "genuine": 0
+    },
+    "n": {
+     "provenance": 0,
+     "tie_order": 0,
+     "genuine": 0
+    },
+    "provenance_diffs": [],
+    "tie_order_diffs": [],
+    "tie_order_row_classes": {},
+    "genuine_diffs_first": [],
+    "genuine_diffs_listed_truncated": false
+   },
+   "component_levels_terminal.json": {
+    "n_raw_diffs": 0,
+    "fg_buckets_raw_counts": {
+     "provenance": 0,
+     "aa_new_field": 0,
+     "known_tie_break_alias": 0,
+     "genuine": 0
+    },
+    "n": {
+     "provenance": 0,
+     "tie_order": 0,
+     "genuine": 0
+    },
+    "provenance_diffs": [],
+    "tie_order_diffs": [],
+    "tie_order_row_classes": {},
+    "genuine_diffs_first": [],
+    "genuine_diffs_listed_truncated": false
+   },
+   "interface_settlement_detail_s31c.json": {
+    "n_raw_diffs": 0,
+    "fg_buckets_raw_counts": {
+     "provenance": 0,
+     "aa_new_field": 0,
+     "known_tie_break_alias": 0,
+     "genuine": 0
+    },
+    "n": {
+     "provenance": 0,
+     "tie_order": 0,
+     "genuine": 0
+    },
+    "provenance_diffs": [],
+    "tie_order_diffs": [],
+    "tie_order_row_classes": {},
+    "genuine_diffs_first": [],
+    "genuine_diffs_listed_truncated": false
+   },
+   "interface_voltage_terminal.json": {
+    "n_raw_diffs": 0,
+    "fg_buckets_raw_counts": {
+     "provenance": 0,
+     "aa_new_field": 0,
+     "known_tie_break_alias": 0,
+     "genuine": 0
+    },
+    "n": {
+     "provenance": 0,
+     "tie_order": 0,
+     "genuine": 0
+    },
+    "provenance_diffs": [],
+    "tie_order_diffs": [],
+    "tie_order_row_classes": {},
+    "genuine_diffs_first": [],
+    "genuine_diffs_listed_truncated": false
+   },
+   "recourse_jump_sidecar_baseline.jsonl": {
+    "n_raw_diffs": 0,
+    "fg_buckets_raw_counts": {
+     "provenance": 0,
+     "aa_new_field": 0,
+     "known_tie_break_alias": 0,
+     "genuine": 0
+    },
+    "n": {
+     "provenance": 0,
+     "tie_order": 0,
+     "genuine": 0
+    },
+    "provenance_diffs": [],
+    "tie_order_diffs": [],
+    "tie_order_row_classes": {},
+    "genuine_diffs_first": [],
+    "genuine_diffs_listed_truncated": false,
+    "n_rows": {
+     "w39": 2,
+     "w48": 2
+    }
+   },
+   "ess_entry_stride_baseline.jsonl": {
+    "n_raw_diffs": 0,
+    "fg_buckets_raw_counts": {
+     "provenance": 0,
+     "aa_new_field": 0,
+     "known_tie_break_alias": 0,
+     "genuine": 0
+    },
+    "n": {
+     "provenance": 0,
+     "tie_order": 0,
+     "genuine": 0
+    },
+    "provenance_diffs": [],
+    "tie_order_diffs": [],
+    "tie_order_row_classes": {},
+    "genuine_diffs_first": [],
+    "genuine_diffs_listed_truncated": false,
+    "n_rows": {
+     "w39": 2,
+     "w48": 2
+    }
+   },
+   "soh_floor_sidecar_baseline.jsonl": {
+    "n_raw_diffs": 0,
+    "fg_buckets_raw_counts": {
+     "provenance": 0,
+     "aa_new_field": 0,
+     "known_tie_break_alias": 0,
+     "genuine": 0
+    },
+    "n": {
+     "provenance": 0,
+     "tie_order": 0,
+     "genuine": 0
+    },
+    "provenance_diffs": [],
+    "tie_order_diffs": [],
+    "tie_order_row_classes": {},
+    "genuine_diffs_first": [],
+    "genuine_diffs_listed_truncated": false,
+    "n_rows": {
+     "w39": 2,
+     "w48": 2
+    }
+   },
+   "pf_entry_stride_s39_D.jsonl": {
+    "n_raw_diffs": 0,
+    "fg_buckets_raw_counts": {
+     "provenance": 0,
+     "aa_new_field": 0,
+     "known_tie_break_alias": 0,
+     "genuine": 0
+    },
+    "n": {
+     "provenance": 0,
+     "tie_order": 0,
+     "genuine": 0
+    },
+    "provenance_diffs": [],
+    "tie_order_diffs": [],
+    "tie_order_row_classes": {},
+    "genuine_diffs_first": [],
+    "genuine_diffs_listed_truncated": false,
+    "n_rows": {
+     "w39": 2,
+     "w48": 2
+    }
+   },
+   "ess_exempt_until_state_s39_D.jsonl": {
+    "n_raw_diffs": 0,
+    "fg_buckets_raw_counts": {
+     "provenance": 0,
+     "aa_new_field": 0,
+     "known_tie_break_alias": 0,
+     "genuine": 0
+    },
+    "n": {
+     "provenance": 0,
+     "tie_order": 0,
+     "genuine": 0
+    },
+    "provenance_diffs": [],
+    "tie_order_diffs": [],
+    "tie_order_row_classes": {},
+    "genuine_diffs_first": [],
+    "genuine_diffs_listed_truncated": false,
+    "n_rows": {
+     "w39": 2,
+     "w48": 2
+    }
+   },
+   "aa_per_cycle.jsonl": {
+    "n_raw_diffs": 0,
+    "fg_buckets_raw_counts": {
+     "provenance": 0,
+     "aa_new_field": 0,
+     "known_tie_break_alias": 0,
+     "genuine": 0
+    },
+    "n": {
+     "provenance": 0,
+     "tie_order": 0,
+     "genuine": 0
+    },
+    "provenance_diffs": [],
+    "tie_order_diffs": [],
+    "tie_order_row_classes": {},
+    "genuine_diffs_first": [],
+    "genuine_diffs_listed_truncated": false,
+    "n_rows": {
+     "w39": 2,
+     "w48": 2
+    }
+   },
+   "per_cycle_record.jsonl": {
+    "n_raw_diffs": 0,
+    "fg_buckets_raw_counts": {
+     "provenance": 0,
+     "aa_new_field": 0,
+     "known_tie_break_alias": 0,
+     "genuine": 0
+    },
+    "n": {
+     "provenance": 0,
+     "tie_order": 0,
+     "genuine": 0
+    },
+    "provenance_diffs": [],
+    "tie_order_diffs": [],
+    "tie_order_row_classes": {},
+    "genuine_diffs_first": [],
+    "genuine_diffs_listed_truncated": false,
+    "n_rows": {
+     "w39": 2,
+     "w48": 2
+    }
+   }
+  },
+  "totals": {
+   "provenance": 1,
+   "tie_order": 0,
+   "genuine": 0
+  },
+  "all_files_present": true,
+  "zero_genuine_diffs": true,
+  "esso_models_pickle_sha256_informational": {
+   "w39": "4e9876eadd47138498bc2e9e83e316fa338300039dcf35cab8a8c1d20dc237ae",
+   "w48": "828fc85dc86f18cd22e113316b04f7ac3d4379dea2580ccc89b6bbfe946672ba",
+   "sha256_equal": false
+  }
+ },
+ "not_covered_by_this_gate": "the fix above one scenario (it is designed to change the initialisation solve there -- the subject of the alpha row; structure covered by the W51 zero-solve checks A-C); the parallel DSO builder, entered only with parallel_execution true (zero-solve check A2).",
+ "guard_counts_at_end": {
+  "permitted_solve": 153,
+  "permitted_exec": 153,
+  "blocked_solve": 0,
+  "blocked_exec": 0
+ },
+ "gate_items": {
+  "w39_w35_gate_pass": true,
+  "w51_code_present_in_the_modules_that_ran": true,
+  "w51_counter_exact_and_never_acting": true,
+  "vs_committed_w48_arm_all_files_present": true,
+  "vs_committed_w48_arm_zero_genuine_diffs": true
+ },
+ "gate_pass": true
+}

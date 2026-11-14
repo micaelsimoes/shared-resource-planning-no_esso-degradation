@@ -1,0 +1,86 @@
+{
+ "LEAD": {
+  "arm": "s38_B_pfbal",
+  "tau": 1.0,
+  "certification_verdict": false,
+  "helps": true,
+  "pf_first_pass_cycle": 146,
+  "cycle_count": 151,
+  "tso_instability_triggered": null
+ },
+ "CERTIFICATION": {
+  "criterion_a_boyd_stop_within_300": {
+   "stopped_by": "boyd",
+   "stop_run_cycles": [
+    149,
+    150,
+    151
+   ],
+   "cycles": 151,
+   "cap": 300,
+   "required_consecutive_cycles": 3,
+   "pass": true
+  },
+  "criterion_b_no_v_pf_clamp": {
+   "clamp_v_pf_any": false,
+   "clamp_ess_any_reported_only": false,
+   "pass": true
+  },
+  "criterion_c_storage_terminal_ratio_below_0p9": {
+   "storage_terminal_ratio": 0.9152350867971799,
+   "bound": 0.9,
+   "boyd_ess_primal_ratio": 0.9152350867971799,
+   "boyd_ess_dual_ratio": 0.24275828339457078,
+   "pass": false
+  },
+  "criterion_d_cost_within_rule_nine_bar_of_run1": {
+   "arm_cost": 651022935.4800234,
+   "run1_cost": 651039166.0347285,
+   "abs_diff": 16230.554705142975,
+   "arm_terminal_step": 771.9926595687866,
+   "run1_terminal_step": 256.2581009864807,
+   "bar": 1028.2507605552673,
+   "run1_g_baseline_path": "data/SRP1/Results/P515S35_REF_run/g_baseline.json",
+   "run1_g_baseline_sha256": "8c72a1560dc90b40d9cb653962d64dda9389c77659d7a153eea1839bc3a90124",
+   "valid_note": "valid because both runs are then settled (criterion a already requires the arm itself to have stopped under Boyd)",
+   "pass": false
+  },
+  "CERTIFIED": false
+ },
+ "HELPS": {
+  "value": true,
+  "pf_first_pass_cycle": 146,
+  "bound": 180,
+  "run1_pf_first_pass_cycle": 226
+ },
+ "TSO_INSTABILITY_TRIGGER": null,
+ "cross_arm": {
+  "a_used_for_verdict_arm": "s38_A_tau0",
+  "PREDICTIONS": {
+   "status": "SCORED",
+   "a_used_for_verdict_arm": "s38_A_tau0",
+   "prediction_1_pf_first_pass_well_before_226": {
+    "a_pf_first_pass_cycle": 131,
+    "b_pf_first_pass_cycle": 146,
+    "bound": 180,
+    "run1_reference": 226,
+    "pass": true
+   },
+   "prediction_2_a_is_stronger_candidate": {
+    "a_pf_first_pass_cycle": 131,
+    "b_pf_first_pass_cycle": 146,
+    "pass": true
+   }
+  },
+  "ADOPTION": {
+   "status": "DECIDED",
+   "a_helps": true,
+   "b_helps": true,
+   "both_help": true,
+   "a_certified": false,
+   "b_certified": false,
+   "verdict": "Addendum 20 (c): both A (or its fallback) and B HELP -- one combined confirmation run (s38_C_combined) is authorized, launched only after the Planner's stop-for-review."
+  }
+ }
+}
+[S38 evaluate] wrote /Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S38_B_PFBAL_run/s38_evaluation.json

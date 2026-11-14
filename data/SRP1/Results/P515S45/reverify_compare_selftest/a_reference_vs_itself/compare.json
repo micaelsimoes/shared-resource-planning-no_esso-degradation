@@ -1,0 +1,726 @@
+{
+ "stage": "P5.15 Addendum 27 item 1 (W4) -- re-verification comparator (zero solves)",
+ "authority": [
+  "PLANNER_BRIEF_2026-09-13.md Addendum 27 item 1 (re-verification; W4 comparator)",
+  "data/SRP1/Results/P515S45/frozen_s45_phaseA_spec_v15_5feefd7b.json configuration.reverification_gate",
+  "p515_s44_gate.compare_c_star_to_d (model); p515_s44_tie_classifier (tie order)"
+ ],
+ "gate_text_spec_v15": "a case-file-alone C* evaluation through the campaign harness (no overrides) reproduces the committed AA C* evaluation (campaign_s44_aa_variant, 107 cycles, 650,982,939.9389359) bitwise on every numeric trajectory field and cost; tie-order in the recourse-jump top-10 classified with p515_s44_tie_classifier; provenance non-gating",
+ "timestamp_utc": "2026-09-19T16:54:00.799414+00:00",
+ "git_head": "25470496b5a512ad46c17e9dce5581fc14d7bfc9",
+ "script": "p515_s45_reverify_compare.py",
+ "script_sha256": "d648133a274efa356b17694f2d9a13bdc3b98e0c7a0211307e83f81c69e748e1",
+ "script_git_status": "?? p515_s45_reverify_compare.py",
+ "mode": "self_test",
+ "self_test": {
+  "name": "a_reference_vs_itself",
+  "expect": "pass",
+  "declared_differences_from_real_mode": [
+   "capture-path failures recorded, comparison proceeds over files present on both sides (missing file = gating error)",
+   "candidate effective AA falls back to overrides_applied_in_child.anderson_acceleration when the record predates anderson_acceleration_effective_in_child; case_file_sha256_in_child presence not required",
+   "wait-free guard (lock / evaluation_record) not applied; candidate must lie outside the campaign root"
+  ],
+  "expectation_met": true
+ },
+ "inputs": {
+  "reference_dir": "data/SRP1/Results/P515S44/campaign_s44_aa_variant/evals/837fc982565dbba3_c_star_aa_keep_memory",
+  "candidate_dir": "data/SRP1/Results/P515S44/campaign_s44_aa_variant/evals/837fc982565dbba3_c_star_aa_keep_memory",
+  "reference_pins": {
+   "evaluation_record.json": "6e90d4424df3405b0cc066bba1f57c28666a1524e5cdcc62890c6e6a74e69a4f",
+   "component_levels_terminal.json": "8452f6261b1bf1fe84d4dfd8a177fa8f4145ade4c042a4904a29d4483a745782"
+  },
+  "reference_pins_verified": true,
+  "campaign_spec": "data/SRP1/Results/P515S45/reverify_aa_c_star/campaign_spec_s45_reverify_aa_c_star_4a214b99.json",
+  "campaign_spec_sha256": "4a214b99df34e58791d31d842f2ad6c5293f83e82064d52320934b6d32b6e58d",
+  "spec_v15": "data/SRP1/Results/P515S45/frozen_s45_phaseA_spec_v15_5feefd7b.json",
+  "spec_v15_sha256": "5feefd7b642fc3d480156ad5e52ed6e1cf9d6698cfd40dbb33389bab6e6229fe",
+  "candidate_campaign_outputs_sha256": null,
+  "input_file_sha256": {
+   "data/SRP1/Results/P515S44/campaign_s44_aa_variant/evals/837fc982565dbba3_c_star_aa_keep_memory/g_s39_D.json": "f69e4c1fa817f63d70efc91485ceb6c908b064e9ae3002ba3aed55e17a63e3c0",
+   "data/SRP1/Results/P515S44/campaign_s44_aa_variant/evals/837fc982565dbba3_c_star_aa_keep_memory/boyd_terminal.json": "c492bb792a4a271e06223bd94b16d9e914175a45deefeab7156e9724b05d3fcc",
+   "data/SRP1/Results/P515S44/campaign_s44_aa_variant/evals/837fc982565dbba3_c_star_aa_keep_memory/component_levels_terminal.json": "8452f6261b1bf1fe84d4dfd8a177fa8f4145ade4c042a4904a29d4483a745782",
+   "data/SRP1/Results/P515S44/campaign_s44_aa_variant/evals/837fc982565dbba3_c_star_aa_keep_memory/interface_settlement_detail_s31c.json": "2e1f386f2261ba11655d3b8b41df5189c989eca51636c506c87e943baa88aadb",
+   "data/SRP1/Results/P515S44/campaign_s44_aa_variant/evals/837fc982565dbba3_c_star_aa_keep_memory/interface_voltage_terminal.json": "eb11fe35e2a8b83bbb0bed4f238e12c67c16218cceaf9edf58d9cd6ad8826cba",
+   "data/SRP1/Results/P515S44/campaign_s44_aa_variant/evals/837fc982565dbba3_c_star_aa_keep_memory/evaluation_record.json": "6e90d4424df3405b0cc066bba1f57c28666a1524e5cdcc62890c6e6a74e69a4f",
+   "data/SRP1/Results/P515S44/campaign_s44_aa_variant/evals/837fc982565dbba3_c_star_aa_keep_memory/recourse_jump_sidecar_baseline.jsonl": "ddebdd33cc3bf720179af209051db6190696bbefdfee38960b9ccf8be5cecb85",
+   "data/SRP1/Results/P515S44/campaign_s44_aa_variant/evals/837fc982565dbba3_c_star_aa_keep_memory/ess_entry_stride_baseline.jsonl": "9e60334c9cf0a03ed0b4cf7533c6951ed374e619a5519874f1bc8c933c63cfc0",
+   "data/SRP1/Results/P515S44/campaign_s44_aa_variant/evals/837fc982565dbba3_c_star_aa_keep_memory/soh_floor_sidecar_baseline.jsonl": "d79bbce3bc5659c59ed0bf6c295a8fece412c40faec64aaa4aade433c73395fe",
+   "data/SRP1/Results/P515S44/campaign_s44_aa_variant/evals/837fc982565dbba3_c_star_aa_keep_memory/pf_entry_stride_s39_D.jsonl": "11d36302a5dc9d7083ff4f7a4ee33ed6424944ab44fbed5c7a324dc0618ac042",
+   "data/SRP1/Results/P515S44/campaign_s44_aa_variant/evals/837fc982565dbba3_c_star_aa_keep_memory/ess_exempt_until_state_s39_D.jsonl": "2afcf36760c08b12a6428ff8e0540ac13eae2bfeae4efce980dcfb9f635ef43f",
+   "data/SRP1/Results/P515S44/campaign_s44_aa_variant/evals/837fc982565dbba3_c_star_aa_keep_memory/aa_per_cycle.jsonl": "02a7d20398b163caf335dde8104bb412c8a46b2aa5b55cb150c363f09c91364a",
+   "data/SRP1/Results/P515S44/campaign_s44_aa_variant/evals/837fc982565dbba3_c_star_aa_keep_memory/per_cycle_record.jsonl": "f38b0bdf0473424f5f5db67d54c78c5e15575df4030d0d49c46d497f10441f7d",
+   "data/SRP1/Results/P515S44/campaign_s44_aa_variant/evals/837fc982565dbba3_c_star_aa_keep_memory/leak_classification_s39_D.jsonl": "4c803d56965d1544dc175aac9f6aaa45d94a900244d2ca8a81f69da6837a1e34",
+   "data/SRP1/Results/P515S44/campaign_s44_aa_variant/evals/837fc982565dbba3_c_star_aa_keep_memory/network_failures_s39_D.jsonl": "abf810d62d5c7f3dc6fba840435d41e2e4866999b0b825ddaf3162394fdfead0",
+   "data/SRP1/Results/P515S44/campaign_s44_aa_variant/evals/837fc982565dbba3_c_star_aa_keep_memory/esso_recovery_events_s39_D.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "data/SRP1/Results/P515S44/campaign_s44_aa_variant/evals/837fc982565dbba3_c_star_aa_keep_memory/frozen_snapshots_s39_D.jsonl": "7d507f27ebc9561e81b660290a738973b00cbd8a9206390960ce2d209bbf521a"
+  }
+ },
+ "capture_path_checklist_asserted_before_compare": {
+  "reference_file_g_s39_D.json": true,
+  "reference_file_boyd_terminal.json": true,
+  "reference_file_component_levels_terminal.json": true,
+  "reference_file_interface_settlement_detail_s31c.json": true,
+  "reference_file_interface_voltage_terminal.json": true,
+  "reference_file_evaluation_record.json": true,
+  "reference_file_recourse_jump_sidecar_baseline.jsonl": true,
+  "reference_file_ess_entry_stride_baseline.jsonl": true,
+  "reference_file_soh_floor_sidecar_baseline.jsonl": true,
+  "reference_file_pf_entry_stride_s39_D.jsonl": true,
+  "reference_file_ess_exempt_until_state_s39_D.jsonl": true,
+  "reference_file_aa_per_cycle.jsonl": true,
+  "reference_file_per_cycle_record.jsonl": true,
+  "candidate_file_g_s39_D.json": true,
+  "candidate_file_boyd_terminal.json": true,
+  "candidate_file_component_levels_terminal.json": true,
+  "candidate_file_interface_settlement_detail_s31c.json": true,
+  "candidate_file_interface_voltage_terminal.json": true,
+  "candidate_file_evaluation_record.json": true,
+  "candidate_file_recourse_jump_sidecar_baseline.jsonl": true,
+  "candidate_file_ess_entry_stride_baseline.jsonl": true,
+  "candidate_file_soh_floor_sidecar_baseline.jsonl": true,
+  "candidate_file_pf_entry_stride_s39_D.jsonl": true,
+  "candidate_file_ess_exempt_until_state_s39_D.jsonl": true,
+  "candidate_file_aa_per_cycle.jsonl": true,
+  "candidate_file_per_cycle_record.jsonl": true,
+  "reference_record_field_status": true,
+  "reference_record_field_certification": true,
+  "reference_record_field_cycles_run": true,
+  "reference_record_field_certification_cycle": true,
+  "reference_record_field_certified_cost": true,
+  "reference_record_field_candidate_key": true,
+  "reference_record_field_rule_ten": true,
+  "candidate_record_field_status": true,
+  "candidate_record_field_certification": true,
+  "candidate_record_field_cycles_run": true,
+  "candidate_record_field_certification_cycle": true,
+  "candidate_record_field_certified_cost": true,
+  "candidate_record_field_candidate_key": true,
+  "candidate_record_field_rule_ten": true,
+  "reference_record_field_overrides_applied_in_child.anderson_acceleration": true,
+  "candidate_record_field_effective_anderson_acceleration": true,
+  "candidate_record_field_case_file_sha256_in_child": true,
+  "candidate_report_field_cycles_run": true,
+  "candidate_report_field_gross_operational_cost": true,
+  "candidate_report_field_cycle_trajectory": true,
+  "comparator_CP__diff": true,
+  "comparator_FG__classify_diffs": true,
+  "tie_classifier_TC_reclassify_sidecar_diffs": true
+ },
+ "capture_path_checklist_false_items": [],
+ "candidate_aa_source": "SELF-TEST FALLBACK: overrides_applied_in_child.anderson_acceleration",
+ "comparison": {
+  "reference_dir": "data/SRP1/Results/P515S44/campaign_s44_aa_variant/evals/837fc982565dbba3_c_star_aa_keep_memory",
+  "candidate_dir": "data/SRP1/Results/P515S44/campaign_s44_aa_variant/evals/837fc982565dbba3_c_star_aa_keep_memory",
+  "instance": {
+   "reference_candidate_key": "578636daa6d6360d6701764c73ddf795e53c2c37e511e21be1400024f8f6350c",
+   "candidate_candidate_key": "578636daa6d6360d6701764c73ddf795e53c2c37e511e21be1400024f8f6350c",
+   "reference_candidate_canonical": {
+    "investment_year": 2025,
+    "nodes": {
+     "5": [
+      0.96875,
+      3.875
+     ],
+     "7": [
+      0.96875,
+      3.875
+     ],
+     "9": [
+      0.96875,
+      3.875
+     ]
+    }
+   },
+   "candidate_candidate_canonical": {
+    "investment_year": 2025,
+    "nodes": {
+     "5": [
+      0.96875,
+      3.875
+     ],
+     "7": [
+      0.96875,
+      3.875
+     ],
+     "9": [
+      0.96875,
+      3.875
+     ]
+    }
+   }
+  },
+  "comparator": "p515_s40_clone_capture_preflight._diff (8f5cff48) + p515_s43_aa_flagoff_gate._classify_diffs + record provenance keys (this script) + p515_s44_tie_classifier.reclassify_sidecar_diffs",
+  "diff_value_naming": "CP._diff names the reference value 'legacy' and the candidate value 'lightweight'",
+  "excluded_field_names": [
+   "component_levels_terminal_and_settlement_detail_path",
+   "component_levels_terminal_path",
+   "ess_entry_stride_sidecar_path",
+   "esso_capture_dir",
+   "heartbeat_path",
+   "interface_voltage_terminal_path",
+   "leak_classification_path",
+   "log_path",
+   "recourse_jump_sidecar_path",
+   "results_dir_redirect",
+   "s34_ess_entry_stride_sidecar_path",
+   "s34_recourse_jump_sidecar_path",
+   "s35ref_soh_floor_sidecar_path",
+   "s38_pf_entry_stride_sidecar_path",
+   "s39_ess_exempt_until_state_sidecar_path",
+   "soh_floor_sidecar_path",
+   "stdout_path",
+   "timestamp_utc",
+   "wall_clock_s"
+  ],
+  "excluded_dotted_suffixes": [
+   "esso_models_pickle.path",
+   "network_failures_summary.path",
+   "soh_floor_multiplier_and_efc_per_cohort_year_terminal.path"
+  ],
+  "intentional_difference_suffixes_excluded": [
+   "rule_eleven_checklist.s40_tso_snapshot_capture_mode_requested"
+  ],
+  "record_provenance_keys": {
+   "campaign_id": "campaign identity",
+   "campaign_spec_path": "campaign identity (spec path)",
+   "campaign_spec_sha256": "campaign identity (spec hash)",
+   "candidate_label": "campaign identity (label)",
+   "working_dir_ids": "campaign identity (working-dir ids derive from campaign id + eval key)",
+   "eval_dir": "campaign identity (eval dir)",
+   "eval_key": "campaign identity (eval key = candidate key + effective overrides + case-file AA declaration)",
+   "report_path": "path under the run's own eval dir",
+   "per_cycle_record_path": "path under the run's own eval dir",
+   "campaign_lock_seen_by_child": "run provenance (lock content: pid, campaign id, spec hash, start time)",
+   "child_pid": "run provenance (pid)",
+   "parent_pid": "run provenance (pid)",
+   "configuration": "configuration bookkeeping (name, note, case_file_sha256, case_file_last_commit, case_file_anderson_acceleration declaration)",
+   "evaluation_overrides_effective": "configuration bookkeeping (override vs case file)",
+   "overrides_applied_in_child": "configuration bookkeeping (override vs case file); AA dict gated separately",
+   "anderson_acceleration_effective_in_child": "configuration bookkeeping (Addendum 27 field); AA dict gated separately",
+   "case_file_sha256_in_child": "configuration bookkeeping (Addendum 27 field; case-file sha256)",
+   "configuration_checks_in_child": "configuration bookkeeping (check names differ: AA-off-before-overrides vs case-file-AA-matches-declaration)",
+   "record_capture_checklist_asserted_before_run": "run provenance (rule-eleven checklist)",
+   "thread_caps_seen_by_child": "run provenance (environment)",
+   "PYTHONHASHSEED_in_child": "run provenance (environment)",
+   "nlp_solver_path_in_child": "run provenance (environment)",
+   "schema": "record schema version",
+   "wall_time_s": "run measurement (wall time; not reproducible)",
+   "peak_rss": "run measurement (peak RSS; not reproducible)"
+  },
+  "record_provenance_dotted": {
+   "aa_per_cycle.path": "path under the run's own eval dir"
+  },
+  "record_post_certification_keys_conditional": [
+   "post_certification",
+   "post_certification_path",
+   "post_certification_capture_checklist_asserted_before_run"
+  ],
+  "gating_files": [
+   "g_s39_D.json",
+   "boyd_terminal.json",
+   "component_levels_terminal.json",
+   "interface_settlement_detail_s31c.json",
+   "interface_voltage_terminal.json",
+   "evaluation_record.json",
+   "recourse_jump_sidecar_baseline.jsonl",
+   "ess_entry_stride_baseline.jsonl",
+   "soh_floor_sidecar_baseline.jsonl",
+   "pf_entry_stride_s39_D.jsonl",
+   "ess_exempt_until_state_s39_D.jsonl",
+   "aa_per_cycle.jsonl",
+   "per_cycle_record.jsonl"
+  ],
+  "files": {
+   "g_s39_D.json": {
+    "n_raw_diffs": 0,
+    "fg_buckets_raw_counts": {
+     "provenance": 0,
+     "aa_new_field": 0,
+     "known_tie_break_alias": 0,
+     "genuine": 0
+    },
+    "n": {
+     "provenance": 0,
+     "tie_order": 0,
+     "genuine": 0
+    },
+    "provenance_diffs": [],
+    "tie_order_diffs": [],
+    "tie_order_row_classes": {},
+    "genuine_field_patterns": {},
+    "genuine_diffs_first": [],
+    "genuine_diffs_listed_truncated": false
+   },
+   "boyd_terminal.json": {
+    "n_raw_diffs": 0,
+    "fg_buckets_raw_counts": {
+     "provenance": 0,
+     "aa_new_field": 0,
+     "known_tie_break_alias": 0,
+     "genuine": 0
+    },
+    "n": {
+     "provenance": 0,
+     "tie_order": 0,
+     "genuine": 0
+    },
+    "provenance_diffs": [],
+    "tie_order_diffs": [],
+    "tie_order_row_classes": {},
+    "genuine_field_patterns": {},
+    "genuine_diffs_first": [],
+    "genuine_diffs_listed_truncated": false
+   },
+   "component_levels_terminal.json": {
+    "n_raw_diffs": 0,
+    "fg_buckets_raw_counts": {
+     "provenance": 0,
+     "aa_new_field": 0,
+     "known_tie_break_alias": 0,
+     "genuine": 0
+    },
+    "n": {
+     "provenance": 0,
+     "tie_order": 0,
+     "genuine": 0
+    },
+    "provenance_diffs": [],
+    "tie_order_diffs": [],
+    "tie_order_row_classes": {},
+    "genuine_field_patterns": {},
+    "genuine_diffs_first": [],
+    "genuine_diffs_listed_truncated": false
+   },
+   "interface_settlement_detail_s31c.json": {
+    "n_raw_diffs": 0,
+    "fg_buckets_raw_counts": {
+     "provenance": 0,
+     "aa_new_field": 0,
+     "known_tie_break_alias": 0,
+     "genuine": 0
+    },
+    "n": {
+     "provenance": 0,
+     "tie_order": 0,
+     "genuine": 0
+    },
+    "provenance_diffs": [],
+    "tie_order_diffs": [],
+    "tie_order_row_classes": {},
+    "genuine_field_patterns": {},
+    "genuine_diffs_first": [],
+    "genuine_diffs_listed_truncated": false
+   },
+   "interface_voltage_terminal.json": {
+    "n_raw_diffs": 0,
+    "fg_buckets_raw_counts": {
+     "provenance": 0,
+     "aa_new_field": 0,
+     "known_tie_break_alias": 0,
+     "genuine": 0
+    },
+    "n": {
+     "provenance": 0,
+     "tie_order": 0,
+     "genuine": 0
+    },
+    "provenance_diffs": [],
+    "tie_order_diffs": [],
+    "tie_order_row_classes": {},
+    "genuine_field_patterns": {},
+    "genuine_diffs_first": [],
+    "genuine_diffs_listed_truncated": false
+   },
+   "evaluation_record.json": {
+    "n_raw_diffs": 0,
+    "fg_buckets_raw_counts": {
+     "provenance": 0,
+     "aa_new_field": 0,
+     "known_tie_break_alias": 0,
+     "genuine": 0
+    },
+    "n": {
+     "provenance": 0,
+     "tie_order": 0,
+     "genuine": 0
+    },
+    "provenance_diffs": [],
+    "tie_order_diffs": [],
+    "tie_order_row_classes": {},
+    "genuine_field_patterns": {},
+    "genuine_diffs_first": [],
+    "genuine_diffs_listed_truncated": false
+   },
+   "recourse_jump_sidecar_baseline.jsonl": {
+    "n_raw_diffs": 0,
+    "fg_buckets_raw_counts": {
+     "provenance": 0,
+     "aa_new_field": 0,
+     "known_tie_break_alias": 0,
+     "genuine": 0
+    },
+    "n": {
+     "provenance": 0,
+     "tie_order": 0,
+     "genuine": 0
+    },
+    "provenance_diffs": [],
+    "tie_order_diffs": [],
+    "tie_order_row_classes": {},
+    "genuine_field_patterns": {},
+    "genuine_diffs_first": [],
+    "genuine_diffs_listed_truncated": false,
+    "n_rows": {
+     "reference": 107,
+     "candidate": 107
+    }
+   },
+   "ess_entry_stride_baseline.jsonl": {
+    "n_raw_diffs": 0,
+    "fg_buckets_raw_counts": {
+     "provenance": 0,
+     "aa_new_field": 0,
+     "known_tie_break_alias": 0,
+     "genuine": 0
+    },
+    "n": {
+     "provenance": 0,
+     "tie_order": 0,
+     "genuine": 0
+    },
+    "provenance_diffs": [],
+    "tie_order_diffs": [],
+    "tie_order_row_classes": {},
+    "genuine_field_patterns": {},
+    "genuine_diffs_first": [],
+    "genuine_diffs_listed_truncated": false,
+    "n_rows": {
+     "reference": 107,
+     "candidate": 107
+    }
+   },
+   "soh_floor_sidecar_baseline.jsonl": {
+    "n_raw_diffs": 0,
+    "fg_buckets_raw_counts": {
+     "provenance": 0,
+     "aa_new_field": 0,
+     "known_tie_break_alias": 0,
+     "genuine": 0
+    },
+    "n": {
+     "provenance": 0,
+     "tie_order": 0,
+     "genuine": 0
+    },
+    "provenance_diffs": [],
+    "tie_order_diffs": [],
+    "tie_order_row_classes": {},
+    "genuine_field_patterns": {},
+    "genuine_diffs_first": [],
+    "genuine_diffs_listed_truncated": false,
+    "n_rows": {
+     "reference": 107,
+     "candidate": 107
+    }
+   },
+   "pf_entry_stride_s39_D.jsonl": {
+    "n_raw_diffs": 0,
+    "fg_buckets_raw_counts": {
+     "provenance": 0,
+     "aa_new_field": 0,
+     "known_tie_break_alias": 0,
+     "genuine": 0
+    },
+    "n": {
+     "provenance": 0,
+     "tie_order": 0,
+     "genuine": 0
+    },
+    "provenance_diffs": [],
+    "tie_order_diffs": [],
+    "tie_order_row_classes": {},
+    "genuine_field_patterns": {},
+    "genuine_diffs_first": [],
+    "genuine_diffs_listed_truncated": false,
+    "n_rows": {
+     "reference": 107,
+     "candidate": 107
+    }
+   },
+   "ess_exempt_until_state_s39_D.jsonl": {
+    "n_raw_diffs": 0,
+    "fg_buckets_raw_counts": {
+     "provenance": 0,
+     "aa_new_field": 0,
+     "known_tie_break_alias": 0,
+     "genuine": 0
+    },
+    "n": {
+     "provenance": 0,
+     "tie_order": 0,
+     "genuine": 0
+    },
+    "provenance_diffs": [],
+    "tie_order_diffs": [],
+    "tie_order_row_classes": {},
+    "genuine_field_patterns": {},
+    "genuine_diffs_first": [],
+    "genuine_diffs_listed_truncated": false,
+    "n_rows": {
+     "reference": 107,
+     "candidate": 107
+    }
+   },
+   "aa_per_cycle.jsonl": {
+    "n_raw_diffs": 0,
+    "fg_buckets_raw_counts": {
+     "provenance": 0,
+     "aa_new_field": 0,
+     "known_tie_break_alias": 0,
+     "genuine": 0
+    },
+    "n": {
+     "provenance": 0,
+     "tie_order": 0,
+     "genuine": 0
+    },
+    "provenance_diffs": [],
+    "tie_order_diffs": [],
+    "tie_order_row_classes": {},
+    "genuine_field_patterns": {},
+    "genuine_diffs_first": [],
+    "genuine_diffs_listed_truncated": false,
+    "n_rows": {
+     "reference": 107,
+     "candidate": 107
+    }
+   },
+   "per_cycle_record.jsonl": {
+    "n_raw_diffs": 0,
+    "fg_buckets_raw_counts": {
+     "provenance": 0,
+     "aa_new_field": 0,
+     "known_tie_break_alias": 0,
+     "genuine": 0
+    },
+    "n": {
+     "provenance": 0,
+     "tie_order": 0,
+     "genuine": 0
+    },
+    "provenance_diffs": [],
+    "tie_order_diffs": [],
+    "tie_order_row_classes": {},
+    "genuine_field_patterns": {},
+    "genuine_diffs_first": [],
+    "genuine_diffs_listed_truncated": false,
+    "n_rows": {
+     "reference": 107,
+     "candidate": 107
+    }
+   }
+  },
+  "supplementary_not_gating": {
+   "leak_classification_s39_D.jsonl": {
+    "n_rows": {
+     "reference": 324,
+     "candidate": 324
+    },
+    "n_raw_diffs": 0,
+    "n_diffs_ignoring_path_like_keys": 0,
+    "path_like_keys_ignored_in_that_count": [
+     "log_path",
+     "primary_log",
+     "recovery_log",
+     "tier2_log",
+     "path",
+     "mtime_utc"
+    ],
+    "first_raw_diffs_ignoring_path_like_keys": []
+   },
+   "network_failures_s39_D.jsonl": {
+    "n_rows": {
+     "reference": 43,
+     "candidate": 43
+    },
+    "n_raw_diffs": 0,
+    "n_diffs_ignoring_path_like_keys": 0,
+    "path_like_keys_ignored_in_that_count": [
+     "log_path",
+     "primary_log",
+     "recovery_log",
+     "tier2_log",
+     "path",
+     "mtime_utc"
+    ],
+    "first_raw_diffs_ignoring_path_like_keys": []
+   },
+   "esso_recovery_events_s39_D.jsonl": {
+    "n_rows": {
+     "reference": 0,
+     "candidate": 0
+    },
+    "n_raw_diffs": 0,
+    "n_diffs_ignoring_path_like_keys": 0,
+    "path_like_keys_ignored_in_that_count": [
+     "log_path",
+     "primary_log",
+     "recovery_log",
+     "tier2_log",
+     "path",
+     "mtime_utc"
+    ],
+    "first_raw_diffs_ignoring_path_like_keys": []
+   },
+   "frozen_snapshots_s39_D.jsonl": {
+    "n_rows": {
+     "reference": 2,
+     "candidate": 2
+    },
+    "n_raw_diffs": 0,
+    "n_diffs_ignoring_path_like_keys": 0,
+    "path_like_keys_ignored_in_that_count": [
+     "log_path",
+     "primary_log",
+     "recovery_log",
+     "tier2_log",
+     "path",
+     "mtime_utc"
+    ],
+    "first_raw_diffs_ignoring_path_like_keys": []
+   }
+  },
+  "not_compared": {
+   "esso_models_s39_D.pkl": "binary pickle; its size is compared via the report field esso_models_pickle.bytes; sha256 equality recorded (informational)",
+   "post_certification.json": "reference only (post-certification requested there, not in this campaign)",
+   "hull_bound_detail.json": "reference only (post-certification)",
+   "certified_models.pkl": "reference only (post-certification)",
+   "child_manifest_sha256.json": "hashes of files under each run's own eval dir (paths differ by construction)",
+   "launch.json / heartbeat_s39_D.json / child_stdout.log / child_stderr.log / stdout_s39_D.log / exit_code.txt / wait4_rusage.json / esso_capture/ / results/": "process bookkeeping, logs and working files"
+  },
+  "esso_models_pickle_informational": {
+   "reference_sha256": "258abcd69a51226b24072b5e2e432d6319c941b4b8972b9ec9d51aae55cc9e59",
+   "candidate_sha256": "258abcd69a51226b24072b5e2e432d6319c941b4b8972b9ec9d51aae55cc9e59",
+   "sha256_equal": true
+  },
+  "totals_by_class": {
+   "provenance": 0,
+   "tie_order": 0,
+   "genuine": 0
+  },
+  "provenance_field_patterns_with_reason": [],
+  "all_gating_files_present": true,
+  "n_genuine_diffs": 0,
+  "scalar_checks": {
+   "candidate_status_certified": {
+    "value": "certified",
+    "expected": "certified",
+    "match": true
+   },
+   "candidate_certification.certified": {
+    "value": true,
+    "expected": true,
+    "match": true
+   },
+   "candidate_record_cycles_run": {
+    "value": 107,
+    "expected": 107,
+    "match": true
+   },
+   "candidate_record_certification_cycle": {
+    "value": 107,
+    "expected": 107,
+    "match": true
+   },
+   "candidate_report_cycles_run": {
+    "value": 107,
+    "expected": 107,
+    "match": true
+   },
+   "candidate_record_certified_cost": {
+    "value": 650982939.9389359,
+    "expected": 650982939.9389359,
+    "match": true
+   },
+   "candidate_report_gross_operational_cost": {
+    "value": 650982939.9389359,
+    "expected": 650982939.9389359,
+    "match": true
+   },
+   "candidate_record_candidate_key_is_c_star": {
+    "value": "578636daa6d6360d6701764c73ddf795e53c2c37e511e21be1400024f8f6350c",
+    "expected": "578636daa6d6360d6701764c73ddf795e53c2c37e511e21be1400024f8f6350c",
+    "match": true
+   },
+   "reference_record_certified_cost": {
+    "value": 650982939.9389359,
+    "expected": 650982939.9389359,
+    "match": true
+   },
+   "reference_record_certification_cycle": {
+    "value": 107,
+    "expected": 107,
+    "match": true
+   }
+  },
+  "aa_checks": {
+   "candidate_effective_aa": {
+    "source": "SELF-TEST FALLBACK: overrides_applied_in_child.anderson_acceleration",
+    "value": {
+     "enabled": true,
+     "memory": 5,
+     "regularization": 1e-10,
+     "reject_policy": "keep_memory"
+    },
+    "expected": {
+     "enabled": true,
+     "memory": 5,
+     "regularization": 1e-10,
+     "reject_policy": "keep_memory"
+    },
+    "match": true
+   },
+   "reference_applied_override_aa": {
+    "source": "overrides_applied_in_child.anderson_acceleration",
+    "value": {
+     "enabled": true,
+     "memory": 5,
+     "regularization": 1e-10,
+     "reject_policy": "keep_memory"
+    },
+    "expected": {
+     "enabled": true,
+     "memory": 5,
+     "regularization": 1e-10,
+     "reject_policy": "keep_memory"
+    },
+    "match": true
+   }
+  },
+  "rule_ten_terminal_step_over_threshold": {
+   "reference": 0.039388223126442946,
+   "candidate": 0.039388223126442946
+  },
+  "objective_convention": "gross_operational_cost (settlement-excluded; = certified_cost)"
+ },
+ "gate_items": {
+  "capture_path_checklist_all_true": true,
+  "all_gating_files_present": true,
+  "zero_genuine_diffs": true,
+  "scalar_checks_all_match": true,
+  "aa_checks_all_match": true,
+  "reference_pins_verified": true,
+  "solve_profile_guard_verified_0": true
+ },
+ "gate_pass": true,
+ "solve_profile_guard": {
+  "counts": {
+   "permitted_solve": 0,
+   "permitted_exec": 0,
+   "blocked_solve": 0,
+   "blocked_exec": 0
+  },
+  "verify_0_failures": []
+ },
+ "wall_clock_s": 5.144896984100342
+}

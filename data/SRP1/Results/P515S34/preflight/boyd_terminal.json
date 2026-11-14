@@ -1,0 +1,278 @@
+{
+ "stage": "P5.15 Step 3.4 (+3.3(b) folded in) (s34) -- D5 ESSO AL scaling, fixed sigma, v4 rho/freeze policy, S_ref -- terminal report",
+ "authority": [
+  "PLANNER_BRIEF_2026-09-13.md Addendum 15 item 5",
+  "data/SRP1/Results/P515S34/frozen_s34_spec_v4_966940a7.json"
+ ],
+ "spec_file": "data/SRP1/Results/P515S34/frozen_s34_spec_v4_966940a7.json",
+ "spec_file_sha256": "966940a789db3093a57d5fdc23be8ccb172b762bf02d0cd09eeaaf0f52f544e9",
+ "predecessor_spec_file": "data/SRP1/Results/P515S33/frozen_s33_e2_spec_v3_825f1f02.json",
+ "predecessor_spec_sha256": "825f1f02d5319137e0248fc529b9aefdca0251272529ee140e09af6e73a04780",
+ "timestamp_utc": "2026-09-16T09:53:47.448990+00:00",
+ "label": "preflight",
+ "objective_convention": "gross_operational_cost (matched-cycle and terminal comparisons below use gross, NOT net_operational_recourse -- see CLAUDE.md \"Reporting conventions\")",
+ "cycles": 2,
+ "stopped_by": "cap",
+ "converged_at_cycle": null,
+ "consecutive_converged_at_stop": 0,
+ "consecutive_converged_run_began_at_cycle": null,
+ "binding_test_per_channel": {
+  "v": {
+   "r": 0.09863873357012996,
+   "s": 0.0032085774812212094,
+   "eps_pri": 0.0032592504548246727,
+   "eps_dual": 0.0002941656497886862,
+   "primal_ratio": 30.264238645457553,
+   "dual_ratio": 10.907383249968477,
+   "dual_ratio_balance": 7.712684661053274,
+   "primal_pass": false,
+   "dual_pass": false,
+   "channel_pass": false
+  },
+  "pf": {
+   "r": 2.8156352978433064,
+   "s": 0.7135658069934804,
+   "eps_pri": 0.0014218308804269787,
+   "eps_dual": 0.00046829791881298203,
+   "primal_ratio": 1980.288469327495,
+   "dual_ratio": 1523.7432803506601,
+   "dual_ratio_balance": 1077.4492063233868,
+   "primal_pass": false,
+   "dual_pass": false,
+   "channel_pass": false
+  },
+  "ess": {
+   "r": 0.10836003079363275,
+   "s": 0.012880357787748063,
+   "eps_pri": 0.0007528206313000404,
+   "eps_dual": 0.0007218006593943595,
+   "primal_ratio": 143.93871034924564,
+   "dual_ratio": 17.844757579683524,
+   "dual_ratio_balance": 17.63999366875184,
+   "primal_pass": false,
+   "dual_pass": false,
+   "channel_pass": false
+  }
+ },
+ "rho_gamma_freeze_trajectory_per_channel": {
+  "v": [
+   {
+    "cycle": 1,
+    "rho_before": 0.0076999999999999985,
+    "rho_after": 0.011549999999999998,
+    "action": "increased",
+    "gamma_before": 0.007699999999999999,
+    "gamma_after": 0.011550000000000003,
+    "rho_frozen": false,
+    "rho_unchanged_streak": 0,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 2,
+    "rho_before": 0.011549999999999998,
+    "rho_after": 0.011549999999999998,
+    "action": "held",
+    "gamma_before": 0.011550000000000003,
+    "gamma_after": 0.011550000000000003,
+    "rho_frozen": false,
+    "rho_unchanged_streak": 1,
+    "rho_at_clamp": false
+   }
+  ],
+  "pf": [
+   {
+    "cycle": 1,
+    "rho_before": 0.1980000000000002,
+    "rho_after": 0.1980000000000002,
+    "action": "held",
+    "gamma_before": 0.19799999999999998,
+    "gamma_after": 0.19799999999999998,
+    "rho_frozen": false,
+    "rho_unchanged_streak": 1,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 2,
+    "rho_before": 0.1980000000000002,
+    "rho_after": 0.1980000000000002,
+    "action": "held",
+    "gamma_before": 0.19799999999999998,
+    "gamma_after": 0.19799999999999998,
+    "rho_frozen": false,
+    "rho_unchanged_streak": 2,
+    "rho_at_clamp": false
+   }
+  ],
+  "ess": [
+   {
+    "cycle": 1,
+    "rho_before": 0.04999999999999998,
+    "rho_after": 0.07500000000000007,
+    "action": "increased",
+    "gamma_before": 0.049999999999999996,
+    "gamma_after": 0.075,
+    "rho_frozen": false,
+    "rho_unchanged_streak": 0,
+    "rho_at_clamp": false
+   },
+   {
+    "cycle": 2,
+    "rho_before": 0.07500000000000007,
+    "rho_after": 0.11249999999999989,
+    "action": "increased",
+    "gamma_before": 0.075,
+    "gamma_after": 0.11250000000000003,
+    "rho_frozen": false,
+    "rho_unchanged_streak": 0,
+    "rho_at_clamp": false
+   }
+  ]
+ },
+ "sigma_fixed": 93635360.0,
+ "sigma_computed": 93635360.28800085,
+ "al_scale_esso": 227210.9966521344,
+ "shared_ess_reference_rating_mva": 2.5,
+ "initial_rho": {
+  "v": {
+   "case9": 0.0077,
+   "case33_1": 0.0077,
+   "case33_2": 0.0077,
+   "case33_3": 0.0077
+  },
+  "pf": {
+   "case9": 0.198,
+   "case33_1": 0.198,
+   "case33_2": 0.198,
+   "case33_3": 0.198
+  },
+  "ess": {
+   "case9": 0.05,
+   "case33_1": 0.05,
+   "case33_2": 0.05,
+   "case33_3": 0.05,
+   "esso": 0.05
+  }
+ },
+ "freeze_after_unchanged_cycles": 10,
+ "freeze_backstop_cycle": 60,
+ "freeze_cycle_per_channel": {
+  "v": null,
+  "pf": null,
+  "ess": null
+ },
+ "rho_at_clamp_per_channel_at_terminal": {
+  "v": false,
+  "pf": false,
+  "ess": false
+ },
+ "rho_at_clamp_any_true_gate_failure_flag": false,
+ "efc_per_day_max_terminal": 0.061096691475554556,
+ "system_cost_vs_s31c_s32_s33e2": {
+  "s31c": {
+   "available": true,
+   "reference_path": "data/SRP1/Results/P515S31C_run/g_baseline.json",
+   "matched_cycles": [
+    {
+     "cycle": 1,
+     "s34_gross_operational_cost": 907716715.668015,
+     "s31c_gross_operational_cost": 2359311749.284464,
+     "difference": -1451595033.6164489
+    },
+    {
+     "cycle": 2,
+     "s34_gross_operational_cost": 1124883514.3571718,
+     "s31c_gross_operational_cost": 1635793408.6698973,
+     "difference": -510909894.31272554
+    }
+   ],
+   "terminal": {
+    "s34_cycle": 2,
+    "s31c_cycle": 90,
+    "s34_gross_operational_cost": 1124883514.3571718,
+    "s31c_gross_operational_cost": 661400927.7360976,
+    "difference": 463482586.6210742,
+    "s34_terminal_step_objective_change_abs": 217166798.68915677,
+    "s31c_terminal_step_objective_change_abs": 129616.68283557892,
+    "error_bar_sum_of_terminal_steps": 217296415.37199235,
+    "determinate_at_gt_error_bar": true
+   }
+  },
+  "s32": {
+   "available": true,
+   "reference_path": "data/SRP1/Results/P515S32_run/g_baseline.json",
+   "matched_cycles": [
+    {
+     "cycle": 1,
+     "s34_gross_operational_cost": 907716715.668015,
+     "s32_gross_operational_cost": 968494925.0938367,
+     "difference": -60778209.42582166
+    },
+    {
+     "cycle": 2,
+     "s34_gross_operational_cost": 1124883514.3571718,
+     "s32_gross_operational_cost": 1219820650.0962644,
+     "difference": -94937135.73909259
+    }
+   ],
+   "terminal": {
+    "s34_cycle": 2,
+    "s32_cycle": 150,
+    "s34_gross_operational_cost": 1124883514.3571718,
+    "s32_gross_operational_cost": 654413409.7351172,
+    "difference": 470470104.6220546,
+    "s34_terminal_step_objective_change_abs": 217166798.68915677,
+    "s32_terminal_step_objective_change_abs": 30394.44314610958,
+    "error_bar_sum_of_terminal_steps": 217197193.13230288,
+    "determinate_at_gt_error_bar": true
+   }
+  },
+  "s33e2": {
+   "available": true,
+   "reference_path": "data/SRP1/Results/P515S33_E2_run/g_baseline.json",
+   "matched_cycles": [
+    {
+     "cycle": 1,
+     "s34_gross_operational_cost": 907716715.668015,
+     "s33e2_gross_operational_cost": 968494925.0938367,
+     "difference": -60778209.42582166
+    },
+    {
+     "cycle": 2,
+     "s34_gross_operational_cost": 1124883514.3571718,
+     "s33e2_gross_operational_cost": 1219820650.0962644,
+     "difference": -94937135.73909259
+    }
+   ],
+   "terminal": {
+    "s34_cycle": 2,
+    "s33e2_cycle": 150,
+    "s34_gross_operational_cost": 1124883514.3571718,
+    "s33e2_gross_operational_cost": 653826841.6344557,
+    "difference": 471056672.7227161,
+    "s34_terminal_step_objective_change_abs": 217166798.68915677,
+    "s33e2_terminal_step_objective_change_abs": 5179.306692242622,
+    "error_bar_sum_of_terminal_steps": 217171977.995849,
+    "determinate_at_gt_error_bar": true
+   }
+  }
+ },
+ "network_failures_summary": {
+  "n_blocks": 0,
+  "classes": {
+   "recovered_tier1": 0,
+   "recovered_tier2": 0,
+   "unrecovered": 0,
+   "not_attempted": 0,
+   "indeterminate": 0,
+   "recovered": 0
+  },
+  "n_frozen_snapshots": 0,
+  "n_esso_recovery_events": 0,
+  "path": "data/SRP1/Results/P515S34/preflight/network_failures_preflight.jsonl"
+ },
+ "component_levels_terminal_and_settlement_detail_path": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P515S34/preflight/interface_settlement_detail_s31c.json",
+ "interface_voltage_terminal_path": "data/SRP1/Results/P515S34/preflight/interface_voltage_terminal.json",
+ "recourse_jump_sidecar_path": "data/SRP1/Results/P515S34/preflight/recourse_jump_sidecar_preflight.jsonl",
+ "ess_entry_stride_sidecar_path": "data/SRP1/Results/P515S34/preflight/ess_entry_stride_preflight.jsonl",
+ "note_D_rows_and_cancellation_residual": "D rows are in component_levels_terminal.json (written by write_component_levels_terminal, called first by write_interface_settlement_detail_s31c above); the cancellation residual T_TSO + sum(T_DSO) is \"t_tso_plus_t_dso_terminal\" and per-DSO settlement/flexibility volumes are \"interface_consensus_residual_per_dso\" / \"flexibility_volumes_per_dso\" in interface_settlement_detail_s31c.json."
+}

@@ -1,0 +1,37 @@
+{
+  "design": "P5.14-N — instrumented C* control arm",
+  "status": "FROZEN — written and hashed before the run",
+  "authorization": "author, 2026-09-13: option (a), reframed.",
+
+  "REFRAMING": "This is NOT a pre-check that might be avoided. It is THE CONTROL ARM THE PERTURBATION NEEDS ANYWAY: running the perturbation against the existing C* artifact would compare an instrumented arm against an uninstrumented one, with no determinism check on either. So none of this cost is contingent on what the EFC number turns out to be.",
+
+  "cell": "identical to the completed C* run — 0.96875 MVA / 3.875 MWh per node, 2025 only, single cohort, cold, rho_pf 300 adaptive, rel 1e-4, budget 5.0e6, cap 90, C3 ACTIVE (k = 11541.560327111707)",
+
+  "DETERMINISM GATE — also the gate on the instrumentation": {
+    "reference": 816121464.1554238,
+    "pass": "exact reproduction confirms the campaign's only material-capacity number AND proves the added capture is non-perturbing — NO separate neutrality run is required",
+    "fail_branch_predeclared": "A FAILURE TO REPRODUCE IS A MAJOR FINDING IN ITS OWN RIGHT AND SUPERSEDES THE EFC QUESTION ENTIRELY. Non-determinism at material capacity would matter far more than anything about the ageing model, and the stage would stop and report that instead.",
+    "secondary_checks": ["cycles == 67", "solves == 3468", "rule ten == 0.9329", "zero local-solve failures", "no non-vanishing slacks"]
+  },
+
+  "captures_required_rule_eleven": {
+    "assertion": "the harness asserts, BEFORE running, that an extractor exists for every quantity below, and after building the models that each attribute is present. It fails fast if not.",
+    "quantities": ["es_avg_ch_dch_per_unit per cohort per year",
+                   "es_degradation_per_unit per cohort per year",
+                   "es_soh_per_unit_cumul per cohort per year",
+                   "es_e_rated_per_unit per cohort per year",
+                   "derived EFC/day = es_avg_ch_dch_per_unit / (2 * es_e_rated_per_unit), with its margin to 1.4612",
+                   "serialized ESSO models, so the next stage does not hit this wall again"]
+  },
+
+  "DERIVED THRESHOLD — decides whether the perturbation is interpretable": {
+    "derivation_verified": "terminal retention is exp(-EFC_total/k) over 5,475 days, so k = 11541.56 against 10000 differ by exp(-EFC_total * 1.33565e-5). At 1.00 EFC/day that is 0.6223 -> 0.5784, a 7.06% relative change; 1% needs 0.1374 EFC/day.",
+    "mapping_to_recourse": "step 2 gave 3,023,877 for 0.9368 MVA per node, i.e. ~30,239 of recourse per 1% of capacity, against a bounded bar of 164,149. The retention change must therefore exceed ~5.43% to be measurable, which needs realized cycling above ~0.76 EFC/day.",
+    "branch_below_0.76": "the perturbation CANNOT move the recourse past the bar EVEN IF THE AGEING MODEL IS WORKING PERFECTLY. Running it would be uninformative by construction. Report inertness as ARITHMETICALLY EXPECTED, not as a defect, and close the question.",
+    "branch_above_0.76": "the perturbation should clear the bar. If it does not, THAT is the defect, and the Track E claim stands on a direct measurement.",
+    "caveat_recorded": "0.76 is an ORDER-OF-MAGNITUDE GUIDE: the value-per-capacity mapping is linearly extrapolated from a single step and the relationship need not be linear. Any actual perturbation is compared against the BAR, never against this estimate; the threshold only decides whether to spend the second 35 minutes."
+  },
+
+  "solve_profile": {"expected": 3468, "identity": "51 x cycles + 51", "mode": "armed and counted"},
+  "not_permitted": ["running the perturbation in this stage", "comparing the perturbation against the 0.76 estimate instead of the bar"]
+}

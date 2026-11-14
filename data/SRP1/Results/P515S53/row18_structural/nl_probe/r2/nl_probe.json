@@ -1,0 +1,4649 @@
+{
+ "schema": "p515_s53_row18_structural_nl_probe_v2",
+ "stage": "P5.15 Addendum 40 ruling 2 (W57) -- .nl probe r2: row 18 structurally inactive at initialisation, every 2 x 2 DSO block",
+ "frozen_spec": {
+  "path": "data/SRP1/Results/P515S53/row18_structural/frozen_s53_row18_structural_spec_v3_1064db50.json",
+  "key": "nl_probe_r2",
+  "sha256_pinned": "1064db50f8d339ac8bbc9ffdcdb2485e9e06b20707dbb73748dd840fe3878ff7",
+  "sha256_observed": "1064db50f8d339ac8bbc9ffdcdb2485e9e06b20707dbb73748dd840fe3878ff7"
+ },
+ "timestamp_utc": "2026-09-24T10:28:35.221210+00:00",
+ "interpreter": "/Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python",
+ "argv": [
+  "p515_s53_row18_structural_nl_probe.py",
+  "--label",
+  "r2",
+  "--scratch",
+  "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl"
+ ],
+ "pyomo_version": "6.9.5",
+ "script": "p515_s53_row18_structural_nl_probe.py",
+ "script_sha256": "f7987f865b12c826ce3c4796e663be56b545cddecb3d00c5f71ad00eb03c794d",
+ "production_sha256": {
+  "shared_resources_planning.py": "e7e69c2cd33a4e624c652977b28fe8f574900c8cfd48734a1d2280e995e47895",
+  "model_construction_helpers.py": "a20a224f11008de8c0206484583b00253677267d616e1051bb1583791ed47f64",
+  "admm_parameters.py": "2bd733913a99986cf669d13580a41658e15c4320e1a21343a6652a1a13436a1b"
+ },
+ "git_head": "82393ee583cd69d9eec503da3aae11d42b0b2faa",
+ "git_tracked_changes": [],
+ "capture_path_checklist": {
+  "frozen_spec_sha256_matches": true,
+  "frozen_spec_declares_these_blocks_and_predictions": true,
+  "production_init_is_structural": true,
+  "production_families_constant_present": true,
+  "w51_function_is_param_only": true
+ },
+ "w51_function": {
+  "commit": "7a98b25e",
+  "source_sha256": "99ff70648385bce37924b30641a926979536bf4fb761b94047da963f58e6df8e"
+ },
+ "production_init_function_source_sha256": "241a7a30f18402ad16f37b5adb98b829fc826b13961bcbbbd67a3daca4749b92",
+ "instance": {
+  "overrides": {
+   "years": {
+    "2025": 5
+   },
+   "num_market_scenarios": 2,
+   "num_operation_scenarios": 2
+  },
+  "definition": {
+   "description": "the current SRP1 case file unchanged (3 years x 4 days x 1 x 1 scenario)",
+   "years": {
+    "2025": 5
+   },
+   "num_market_scenarios": 2,
+   "num_operation_scenarios": 2
+  },
+  "changes_vs_source": [
+   {
+    "key": "Years",
+    "from": {
+     "2025": 5,
+     "2030": 5,
+     "2035": 5
+    },
+    "to": {
+     "2025": 5
+    }
+   },
+   {
+    "key": "NumMarketScenarios",
+    "from": 1,
+    "to": 2
+   },
+   {
+    "key": "TransmissionNetwork[case9].num_operation_scenarios",
+    "from": 1,
+    "to": 2
+   },
+   {
+    "key": "DistributionNetworks[case33_1].num_operation_scenarios",
+    "from": 1,
+    "to": 2
+   },
+   {
+    "key": "DistributionNetworks[case33_2].num_operation_scenarios",
+    "from": 1,
+    "to": 2
+   },
+   {
+    "key": "DistributionNetworks[case33_3].num_operation_scenarios",
+    "from": 1,
+    "to": 2
+   }
+  ],
+  "case_path": "data/SRP1/Results/P515S53/row18_structural/nl_probe/r2/cases/SRP1__2x2.json",
+  "case_sha256": "fe054c22ff4c9e0195d0260b63986d4b697b60e3b3f8900b8329ed81d52c3688",
+  "blocks": [
+   "DSO:5:2025:Spring",
+   "DSO:5:2025:Summer",
+   "DSO:5:2025:Autumn",
+   "DSO:5:2025:Winter",
+   "DSO:7:2025:Spring",
+   "DSO:7:2025:Summer",
+   "DSO:7:2025:Autumn",
+   "DSO:7:2025:Winter",
+   "DSO:9:2025:Spring",
+   "DSO:9:2025:Summer",
+   "DSO:9:2025:Autumn",
+   "DSO:9:2025:Winter"
+  ]
+ },
+ "scratch": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl",
+ "arms": {
+  "A": {
+   "DSO:5:2025:Spring": {
+    "arm": "A",
+    "alpha": 0.0,
+    "block": "DSO:5:2025:Spring",
+    "init_function": "production",
+    "stub_calls_for_node": 1,
+    "row18_state_at_would_be_solve": {
+     "row18_wired": false,
+     "row18_alpha_admm_present": false
+    },
+    "nl": {
+     "labels_off": {
+      "path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/A_5_2025_Spring_labels_off.nl",
+      "sha256": "a65a93ff3c49f0e1362dea6b100b5b85ef315c6aa59e7aa68cf5fb6556e9d87d",
+      "bytes": 4539184,
+      "line1": "g3 1 1 0\t# problem case33_1",
+      "line2": " 36232 29828 1 0 16424 \t# vars, constraints, objectives, ranges, eqns",
+      "n_vars_columns": 36232,
+      "n_cons_rows": 29828,
+      "n_objs": 1,
+      "n_ranges": 0,
+      "n_eqns": 16424
+     },
+     "labels_on": {
+      "path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/A_5_2025_Spring_labels_on.nl",
+      "sha256": "8379c362fb5e261da8e0c1fe6605803a671820d18e05b21e396c2a506ccfe968",
+      "bytes": 9902337,
+      "line1": "g3 1 1 0\t# problem case33_1",
+      "line2": " 36232 29828 1 0 16424 \t# vars, constraints, objectives, ranges, eqns",
+      "n_vars_columns": 36232,
+      "n_cons_rows": 29828,
+      "n_objs": 1,
+      "n_ranges": 0,
+      "n_eqns": 16424,
+      "row_path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/A_5_2025_Spring_labels_on.row",
+      "row_sha256": "59af856a5034545b99343c68d767abcf794f873663a74964bd81c8430b69b389",
+      "col_path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/A_5_2025_Spring_labels_on.col",
+      "col_sha256": "a12d53c2cd24bcb67c35047c0324c2b1e9bcfab6bf9b7ea0878ce692b5d05144"
+     }
+    }
+   },
+   "DSO:5:2025:Summer": {
+    "arm": "A",
+    "alpha": 0.0,
+    "block": "DSO:5:2025:Summer",
+    "init_function": "production",
+    "stub_calls_for_node": 1,
+    "row18_state_at_would_be_solve": {
+     "row18_wired": false,
+     "row18_alpha_admm_present": false
+    },
+    "nl": {
+     "labels_off": {
+      "path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/A_5_2025_Summer_labels_off.nl",
+      "sha256": "b72863106af4c5fbf67bd1a0020a1c1c72294edd83b87d6418911f75bdec0df4",
+      "bytes": 4541078,
+      "line1": "g3 1 1 0\t# problem case33_1",
+      "line2": " 36232 29828 1 0 16424 \t# vars, constraints, objectives, ranges, eqns",
+      "n_vars_columns": 36232,
+      "n_cons_rows": 29828,
+      "n_objs": 1,
+      "n_ranges": 0,
+      "n_eqns": 16424
+     },
+     "labels_on": {
+      "path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/A_5_2025_Summer_labels_on.nl",
+      "sha256": "445b7093e88c9a77c72d963cc3486962d648e61bb5c8f8fb4db4d9deb835840d",
+      "bytes": 9904231,
+      "line1": "g3 1 1 0\t# problem case33_1",
+      "line2": " 36232 29828 1 0 16424 \t# vars, constraints, objectives, ranges, eqns",
+      "n_vars_columns": 36232,
+      "n_cons_rows": 29828,
+      "n_objs": 1,
+      "n_ranges": 0,
+      "n_eqns": 16424,
+      "row_path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/A_5_2025_Summer_labels_on.row",
+      "row_sha256": "59af856a5034545b99343c68d767abcf794f873663a74964bd81c8430b69b389",
+      "col_path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/A_5_2025_Summer_labels_on.col",
+      "col_sha256": "a12d53c2cd24bcb67c35047c0324c2b1e9bcfab6bf9b7ea0878ce692b5d05144"
+     }
+    }
+   },
+   "DSO:5:2025:Autumn": {
+    "arm": "A",
+    "alpha": 0.0,
+    "block": "DSO:5:2025:Autumn",
+    "init_function": "production",
+    "stub_calls_for_node": 1,
+    "row18_state_at_would_be_solve": {
+     "row18_wired": false,
+     "row18_alpha_admm_present": false
+    },
+    "nl": {
+     "labels_off": {
+      "path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/A_5_2025_Autumn_labels_off.nl",
+      "sha256": "ac23f62616ba0c63839a055239a151455b3a0cad4f0cf0ee7a705a726fa209b9",
+      "bytes": 4528777,
+      "line1": "g3 1 1 0\t# problem case33_1",
+      "line2": " 36232 29684 1 0 16424 \t# vars, constraints, objectives, ranges, eqns",
+      "n_vars_columns": 36232,
+      "n_cons_rows": 29684,
+      "n_objs": 1,
+      "n_ranges": 0,
+      "n_eqns": 16424
+     },
+     "labels_on": {
+      "path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/A_5_2025_Autumn_labels_on.nl",
+      "sha256": "e006ecf3af68907d59d7637ffc740fd2e7008a23f0253f21125d5fa4d520b7cb",
+      "bytes": 9878226,
+      "line1": "g3 1 1 0\t# problem case33_1",
+      "line2": " 36232 29684 1 0 16424 \t# vars, constraints, objectives, ranges, eqns",
+      "n_vars_columns": 36232,
+      "n_cons_rows": 29684,
+      "n_objs": 1,
+      "n_ranges": 0,
+      "n_eqns": 16424,
+      "row_path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/A_5_2025_Autumn_labels_on.row",
+      "row_sha256": "cd4fc3bc822cdb9a670222823bd2d5e7a19a1284db36718338d5445fa249e367",
+      "col_path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/A_5_2025_Autumn_labels_on.col",
+      "col_sha256": "9be5f8ab52cce993462e48441a6ecb4d368382d16e18422bd322ee458d92ab6c"
+     }
+    }
+   },
+   "DSO:5:2025:Winter": {
+    "arm": "A",
+    "alpha": 0.0,
+    "block": "DSO:5:2025:Winter",
+    "init_function": "production",
+    "stub_calls_for_node": 1,
+    "row18_state_at_would_be_solve": {
+     "row18_wired": false,
+     "row18_alpha_admm_present": false
+    },
+    "nl": {
+     "labels_off": {
+      "path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/A_5_2025_Winter_labels_off.nl",
+      "sha256": "706fef58b0ef9796b42b3aadfbf5490b5ef375037e79d736a081d26f7dddbc51",
+      "bytes": 4523955,
+      "line1": "g3 1 1 0\t# problem case33_1",
+      "line2": " 36232 29684 1 0 16424 \t# vars, constraints, objectives, ranges, eqns",
+      "n_vars_columns": 36232,
+      "n_cons_rows": 29684,
+      "n_objs": 1,
+      "n_ranges": 0,
+      "n_eqns": 16424
+     },
+     "labels_on": {
+      "path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/A_5_2025_Winter_labels_on.nl",
+      "sha256": "0d62fedf7fdc655bfecc8b317ac71f329c0d0724a770c664f0f9b85a1a750796",
+      "bytes": 9873404,
+      "line1": "g3 1 1 0\t# problem case33_1",
+      "line2": " 36232 29684 1 0 16424 \t# vars, constraints, objectives, ranges, eqns",
+      "n_vars_columns": 36232,
+      "n_cons_rows": 29684,
+      "n_objs": 1,
+      "n_ranges": 0,
+      "n_eqns": 16424,
+      "row_path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/A_5_2025_Winter_labels_on.row",
+      "row_sha256": "cd4fc3bc822cdb9a670222823bd2d5e7a19a1284db36718338d5445fa249e367",
+      "col_path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/A_5_2025_Winter_labels_on.col",
+      "col_sha256": "9be5f8ab52cce993462e48441a6ecb4d368382d16e18422bd322ee458d92ab6c"
+     }
+    }
+   },
+   "DSO:7:2025:Spring": {
+    "arm": "A",
+    "alpha": 0.0,
+    "block": "DSO:7:2025:Spring",
+    "init_function": "production",
+    "stub_calls_for_node": 1,
+    "row18_state_at_would_be_solve": {
+     "row18_wired": false,
+     "row18_alpha_admm_present": false
+    },
+    "nl": {
+     "labels_off": {
+      "path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/A_7_2025_Spring_labels_off.nl",
+      "sha256": "de0c46744b84456942772a6e80e6f803c98c1ce45bb55be79b794bac88f28f93",
+      "bytes": 4548694,
+      "line1": "g3 1 1 0\t# problem case33_2",
+      "line2": " 36232 29936 1 0 16424 \t# vars, constraints, objectives, ranges, eqns",
+      "n_vars_columns": 36232,
+      "n_cons_rows": 29936,
+      "n_objs": 1,
+      "n_ranges": 0,
+      "n_eqns": 16424
+     },
+     "labels_on": {
+      "path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/A_7_2025_Spring_labels_on.nl",
+      "sha256": "285d2645263c415f4b280f06742979ff413d00d9093d74c0c63b9fc25513481b",
+      "bytes": 9922099,
+      "line1": "g3 1 1 0\t# problem case33_2",
+      "line2": " 36232 29936 1 0 16424 \t# vars, constraints, objectives, ranges, eqns",
+      "n_vars_columns": 36232,
+      "n_cons_rows": 29936,
+      "n_objs": 1,
+      "n_ranges": 0,
+      "n_eqns": 16424,
+      "row_path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/A_7_2025_Spring_labels_on.row",
+      "row_sha256": "7526229d12f746669691d95b24495f17da13cc629578e8016dd7148cd0e88ec6",
+      "col_path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/A_7_2025_Spring_labels_on.col",
+      "col_sha256": "73585c925db5515c99cf06252bad0ea1d7ae31d3c54a9b45046c22baba60e7ef"
+     }
+    }
+   },
+   "DSO:7:2025:Summer": {
+    "arm": "A",
+    "alpha": 0.0,
+    "block": "DSO:7:2025:Summer",
+    "init_function": "production",
+    "stub_calls_for_node": 1,
+    "row18_state_at_would_be_solve": {
+     "row18_wired": false,
+     "row18_alpha_admm_present": false
+    },
+    "nl": {
+     "labels_off": {
+      "path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/A_7_2025_Summer_labels_off.nl",
+      "sha256": "92461ba30e1ec5935f64ec75a4245736c10098ced6fa85b9b21d502d4d85df51",
+      "bytes": 4550732,
+      "line1": "g3 1 1 0\t# problem case33_2",
+      "line2": " 36232 29936 1 0 16424 \t# vars, constraints, objectives, ranges, eqns",
+      "n_vars_columns": 36232,
+      "n_cons_rows": 29936,
+      "n_objs": 1,
+      "n_ranges": 0,
+      "n_eqns": 16424
+     },
+     "labels_on": {
+      "path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/A_7_2025_Summer_labels_on.nl",
+      "sha256": "5aa6305d37dcce8223a053ffcfee0fe80925b2f6e6d60fc0c8c29353a1c9b467",
+      "bytes": 9924137,
+      "line1": "g3 1 1 0\t# problem case33_2",
+      "line2": " 36232 29936 1 0 16424 \t# vars, constraints, objectives, ranges, eqns",
+      "n_vars_columns": 36232,
+      "n_cons_rows": 29936,
+      "n_objs": 1,
+      "n_ranges": 0,
+      "n_eqns": 16424,
+      "row_path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/A_7_2025_Summer_labels_on.row",
+      "row_sha256": "7526229d12f746669691d95b24495f17da13cc629578e8016dd7148cd0e88ec6",
+      "col_path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/A_7_2025_Summer_labels_on.col",
+      "col_sha256": "73585c925db5515c99cf06252bad0ea1d7ae31d3c54a9b45046c22baba60e7ef"
+     }
+    }
+   },
+   "DSO:7:2025:Autumn": {
+    "arm": "A",
+    "alpha": 0.0,
+    "block": "DSO:7:2025:Autumn",
+    "init_function": "production",
+    "stub_calls_for_node": 1,
+    "row18_state_at_would_be_solve": {
+     "row18_wired": false,
+     "row18_alpha_admm_present": false
+    },
+    "nl": {
+     "labels_off": {
+      "path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/A_7_2025_Autumn_labels_off.nl",
+      "sha256": "1335381f8bfe7107a1e279692b0fd9529a41364e9f13a12c401d19e42bfc2edc",
+      "bytes": 4542735,
+      "line1": "g3 1 1 0\t# problem case33_2",
+      "line2": " 36232 29840 1 0 16424 \t# vars, constraints, objectives, ranges, eqns",
+      "n_vars_columns": 36232,
+      "n_cons_rows": 29840,
+      "n_objs": 1,
+      "n_ranges": 0,
+      "n_eqns": 16424
+     },
+     "labels_on": {
+      "path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/A_7_2025_Autumn_labels_on.nl",
+      "sha256": "9468f4fbbb088793cd21a671916874857eb4eb0a23deb456cc66ca3c503abd21",
+      "bytes": 9907004,
+      "line1": "g3 1 1 0\t# problem case33_2",
+      "line2": " 36232 29840 1 0 16424 \t# vars, constraints, objectives, ranges, eqns",
+      "n_vars_columns": 36232,
+      "n_cons_rows": 29840,
+      "n_objs": 1,
+      "n_ranges": 0,
+      "n_eqns": 16424,
+      "row_path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/A_7_2025_Autumn_labels_on.row",
+      "row_sha256": "5f11ea91063fec8ea04193fc956d3f52bc0460882534daaebe176148a1cd01b8",
+      "col_path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/A_7_2025_Autumn_labels_on.col",
+      "col_sha256": "11c9bf6c48470c28d0d3edf6db9d1858d42035508c08888262208cca9826b200"
+     }
+    }
+   },
+   "DSO:7:2025:Winter": {
+    "arm": "A",
+    "alpha": 0.0,
+    "block": "DSO:7:2025:Winter",
+    "init_function": "production",
+    "stub_calls_for_node": 1,
+    "row18_state_at_would_be_solve": {
+     "row18_wired": false,
+     "row18_alpha_admm_present": false
+    },
+    "nl": {
+     "labels_off": {
+      "path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/A_7_2025_Winter_labels_off.nl",
+      "sha256": "1f8a684d4f03b3634ae0cc76cc7c6546164d840151e30e265f737cde1c05bd9d",
+      "bytes": 4537839,
+      "line1": "g3 1 1 0\t# problem case33_2",
+      "line2": " 36232 29840 1 0 16424 \t# vars, constraints, objectives, ranges, eqns",
+      "n_vars_columns": 36232,
+      "n_cons_rows": 29840,
+      "n_objs": 1,
+      "n_ranges": 0,
+      "n_eqns": 16424
+     },
+     "labels_on": {
+      "path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/A_7_2025_Winter_labels_on.nl",
+      "sha256": "887845ba37a0b68c0966b3aafa19f4921087d45013c5b38057c04b77716c8645",
+      "bytes": 9902108,
+      "line1": "g3 1 1 0\t# problem case33_2",
+      "line2": " 36232 29840 1 0 16424 \t# vars, constraints, objectives, ranges, eqns",
+      "n_vars_columns": 36232,
+      "n_cons_rows": 29840,
+      "n_objs": 1,
+      "n_ranges": 0,
+      "n_eqns": 16424,
+      "row_path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/A_7_2025_Winter_labels_on.row",
+      "row_sha256": "5f11ea91063fec8ea04193fc956d3f52bc0460882534daaebe176148a1cd01b8",
+      "col_path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/A_7_2025_Winter_labels_on.col",
+      "col_sha256": "11c9bf6c48470c28d0d3edf6db9d1858d42035508c08888262208cca9826b200"
+     }
+    }
+   },
+   "DSO:9:2025:Spring": {
+    "arm": "A",
+    "alpha": 0.0,
+    "block": "DSO:9:2025:Spring",
+    "init_function": "production",
+    "stub_calls_for_node": 1,
+    "row18_state_at_would_be_solve": {
+     "row18_wired": false,
+     "row18_alpha_admm_present": false
+    },
+    "nl": {
+     "labels_off": {
+      "path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/A_9_2025_Spring_labels_off.nl",
+      "sha256": "a9e5e650b6b3b91ca16d4d72222692beca0ba31bf764b09738556044ff3a0e63",
+      "bytes": 4536800,
+      "line1": "g3 1 1 0\t# problem case33_3",
+      "line2": " 36232 29828 1 0 16424 \t# vars, constraints, objectives, ranges, eqns",
+      "n_vars_columns": 36232,
+      "n_cons_rows": 29828,
+      "n_objs": 1,
+      "n_ranges": 0,
+      "n_eqns": 16424
+     },
+     "labels_on": {
+      "path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/A_9_2025_Spring_labels_on.nl",
+      "sha256": "b5089556562127779e4bc5798cd8ebaa0c14b4e9299fab30e8c09f1558ad3fe1",
+      "bytes": 9899953,
+      "line1": "g3 1 1 0\t# problem case33_3",
+      "line2": " 36232 29828 1 0 16424 \t# vars, constraints, objectives, ranges, eqns",
+      "n_vars_columns": 36232,
+      "n_cons_rows": 29828,
+      "n_objs": 1,
+      "n_ranges": 0,
+      "n_eqns": 16424,
+      "row_path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/A_9_2025_Spring_labels_on.row",
+      "row_sha256": "59af856a5034545b99343c68d767abcf794f873663a74964bd81c8430b69b389",
+      "col_path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/A_9_2025_Spring_labels_on.col",
+      "col_sha256": "a12d53c2cd24bcb67c35047c0324c2b1e9bcfab6bf9b7ea0878ce692b5d05144"
+     }
+    }
+   },
+   "DSO:9:2025:Summer": {
+    "arm": "A",
+    "alpha": 0.0,
+    "block": "DSO:9:2025:Summer",
+    "init_function": "production",
+    "stub_calls_for_node": 1,
+    "row18_state_at_would_be_solve": {
+     "row18_wired": false,
+     "row18_alpha_admm_present": false
+    },
+    "nl": {
+     "labels_off": {
+      "path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/A_9_2025_Summer_labels_off.nl",
+      "sha256": "957f18d2aa8f8a0cef370d648a58c558c2692733ca10374aee30b7d520bc1475",
+      "bytes": 4538938,
+      "line1": "g3 1 1 0\t# problem case33_3",
+      "line2": " 36232 29828 1 0 16424 \t# vars, constraints, objectives, ranges, eqns",
+      "n_vars_columns": 36232,
+      "n_cons_rows": 29828,
+      "n_objs": 1,
+      "n_ranges": 0,
+      "n_eqns": 16424
+     },
+     "labels_on": {
+      "path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/A_9_2025_Summer_labels_on.nl",
+      "sha256": "c80e2e84fae7e4081c3e2e34c50b257b827c21de1b2448bd8fc0dad8e93ed55f",
+      "bytes": 9902091,
+      "line1": "g3 1 1 0\t# problem case33_3",
+      "line2": " 36232 29828 1 0 16424 \t# vars, constraints, objectives, ranges, eqns",
+      "n_vars_columns": 36232,
+      "n_cons_rows": 29828,
+      "n_objs": 1,
+      "n_ranges": 0,
+      "n_eqns": 16424,
+      "row_path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/A_9_2025_Summer_labels_on.row",
+      "row_sha256": "59af856a5034545b99343c68d767abcf794f873663a74964bd81c8430b69b389",
+      "col_path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/A_9_2025_Summer_labels_on.col",
+      "col_sha256": "a12d53c2cd24bcb67c35047c0324c2b1e9bcfab6bf9b7ea0878ce692b5d05144"
+     }
+    }
+   },
+   "DSO:9:2025:Autumn": {
+    "arm": "A",
+    "alpha": 0.0,
+    "block": "DSO:9:2025:Autumn",
+    "init_function": "production",
+    "stub_calls_for_node": 1,
+    "row18_state_at_would_be_solve": {
+     "row18_wired": false,
+     "row18_alpha_admm_present": false
+    },
+    "nl": {
+     "labels_off": {
+      "path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/A_9_2025_Autumn_labels_off.nl",
+      "sha256": "51e9c8a9e3f5028738000b26c28aa7cd6d43ef7f4e2b731ef23de6e2f604f76f",
+      "bytes": 4526563,
+      "line1": "g3 1 1 0\t# problem case33_3",
+      "line2": " 36232 29684 1 0 16424 \t# vars, constraints, objectives, ranges, eqns",
+      "n_vars_columns": 36232,
+      "n_cons_rows": 29684,
+      "n_objs": 1,
+      "n_ranges": 0,
+      "n_eqns": 16424
+     },
+     "labels_on": {
+      "path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/A_9_2025_Autumn_labels_on.nl",
+      "sha256": "9d684453906852aa4a6013a77d67f56b609bdb01834636d292e9d03a585e33e4",
+      "bytes": 9876012,
+      "line1": "g3 1 1 0\t# problem case33_3",
+      "line2": " 36232 29684 1 0 16424 \t# vars, constraints, objectives, ranges, eqns",
+      "n_vars_columns": 36232,
+      "n_cons_rows": 29684,
+      "n_objs": 1,
+      "n_ranges": 0,
+      "n_eqns": 16424,
+      "row_path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/A_9_2025_Autumn_labels_on.row",
+      "row_sha256": "cd4fc3bc822cdb9a670222823bd2d5e7a19a1284db36718338d5445fa249e367",
+      "col_path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/A_9_2025_Autumn_labels_on.col",
+      "col_sha256": "9be5f8ab52cce993462e48441a6ecb4d368382d16e18422bd322ee458d92ab6c"
+     }
+    }
+   },
+   "DSO:9:2025:Winter": {
+    "arm": "A",
+    "alpha": 0.0,
+    "block": "DSO:9:2025:Winter",
+    "init_function": "production",
+    "stub_calls_for_node": 1,
+    "row18_state_at_would_be_solve": {
+     "row18_wired": false,
+     "row18_alpha_admm_present": false
+    },
+    "nl": {
+     "labels_off": {
+      "path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/A_9_2025_Winter_labels_off.nl",
+      "sha256": "a80c4cab8058af54936ee99e81359f8498b1c5b998802e5dc798bccc6ca7c299",
+      "bytes": 4521756,
+      "line1": "g3 1 1 0\t# problem case33_3",
+      "line2": " 36232 29684 1 0 16424 \t# vars, constraints, objectives, ranges, eqns",
+      "n_vars_columns": 36232,
+      "n_cons_rows": 29684,
+      "n_objs": 1,
+      "n_ranges": 0,
+      "n_eqns": 16424
+     },
+     "labels_on": {
+      "path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/A_9_2025_Winter_labels_on.nl",
+      "sha256": "828bb425cafc61006bce8f5701c8aa906ecbe43a39151503c93b2f27a1410609",
+      "bytes": 9871205,
+      "line1": "g3 1 1 0\t# problem case33_3",
+      "line2": " 36232 29684 1 0 16424 \t# vars, constraints, objectives, ranges, eqns",
+      "n_vars_columns": 36232,
+      "n_cons_rows": 29684,
+      "n_objs": 1,
+      "n_ranges": 0,
+      "n_eqns": 16424,
+      "row_path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/A_9_2025_Winter_labels_on.row",
+      "row_sha256": "cd4fc3bc822cdb9a670222823bd2d5e7a19a1284db36718338d5445fa249e367",
+      "col_path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/A_9_2025_Winter_labels_on.col",
+      "col_sha256": "9be5f8ab52cce993462e48441a6ecb4d368382d16e18422bd322ee458d92ab6c"
+     }
+    }
+   }
+  },
+  "A_repeat": {
+   "DSO:5:2025:Spring": {
+    "arm": "A_repeat",
+    "alpha": 0.0,
+    "block": "DSO:5:2025:Spring",
+    "init_function": "production",
+    "stub_calls_for_node": 1,
+    "row18_state_at_would_be_solve": {
+     "row18_wired": false,
+     "row18_alpha_admm_present": false
+    },
+    "nl": {
+     "labels_off": {
+      "path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/A_repeat_5_2025_Spring_labels_off.nl",
+      "sha256": "a65a93ff3c49f0e1362dea6b100b5b85ef315c6aa59e7aa68cf5fb6556e9d87d",
+      "bytes": 4539184,
+      "line1": "g3 1 1 0\t# problem case33_1",
+      "line2": " 36232 29828 1 0 16424 \t# vars, constraints, objectives, ranges, eqns",
+      "n_vars_columns": 36232,
+      "n_cons_rows": 29828,
+      "n_objs": 1,
+      "n_ranges": 0,
+      "n_eqns": 16424
+     },
+     "labels_on": {
+      "path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/A_repeat_5_2025_Spring_labels_on.nl",
+      "sha256": "8379c362fb5e261da8e0c1fe6605803a671820d18e05b21e396c2a506ccfe968",
+      "bytes": 9902337,
+      "line1": "g3 1 1 0\t# problem case33_1",
+      "line2": " 36232 29828 1 0 16424 \t# vars, constraints, objectives, ranges, eqns",
+      "n_vars_columns": 36232,
+      "n_cons_rows": 29828,
+      "n_objs": 1,
+      "n_ranges": 0,
+      "n_eqns": 16424,
+      "row_path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/A_repeat_5_2025_Spring_labels_on.row",
+      "row_sha256": "59af856a5034545b99343c68d767abcf794f873663a74964bd81c8430b69b389",
+      "col_path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/A_repeat_5_2025_Spring_labels_on.col",
+      "col_sha256": "a12d53c2cd24bcb67c35047c0324c2b1e9bcfab6bf9b7ea0878ce692b5d05144"
+     }
+    }
+   },
+   "DSO:5:2025:Summer": {
+    "arm": "A_repeat",
+    "alpha": 0.0,
+    "block": "DSO:5:2025:Summer",
+    "init_function": "production",
+    "stub_calls_for_node": 1,
+    "row18_state_at_would_be_solve": {
+     "row18_wired": false,
+     "row18_alpha_admm_present": false
+    },
+    "nl": {
+     "labels_off": {
+      "path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/A_repeat_5_2025_Summer_labels_off.nl",
+      "sha256": "b72863106af4c5fbf67bd1a0020a1c1c72294edd83b87d6418911f75bdec0df4",
+      "bytes": 4541078,
+      "line1": "g3 1 1 0\t# problem case33_1",
+      "line2": " 36232 29828 1 0 16424 \t# vars, constraints, objectives, ranges, eqns",
+      "n_vars_columns": 36232,
+      "n_cons_rows": 29828,
+      "n_objs": 1,
+      "n_ranges": 0,
+      "n_eqns": 16424
+     },
+     "labels_on": {
+      "path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/A_repeat_5_2025_Summer_labels_on.nl",
+      "sha256": "445b7093e88c9a77c72d963cc3486962d648e61bb5c8f8fb4db4d9deb835840d",
+      "bytes": 9904231,
+      "line1": "g3 1 1 0\t# problem case33_1",
+      "line2": " 36232 29828 1 0 16424 \t# vars, constraints, objectives, ranges, eqns",
+      "n_vars_columns": 36232,
+      "n_cons_rows": 29828,
+      "n_objs": 1,
+      "n_ranges": 0,
+      "n_eqns": 16424,
+      "row_path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/A_repeat_5_2025_Summer_labels_on.row",
+      "row_sha256": "59af856a5034545b99343c68d767abcf794f873663a74964bd81c8430b69b389",
+      "col_path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/A_repeat_5_2025_Summer_labels_on.col",
+      "col_sha256": "a12d53c2cd24bcb67c35047c0324c2b1e9bcfab6bf9b7ea0878ce692b5d05144"
+     }
+    }
+   },
+   "DSO:5:2025:Autumn": {
+    "arm": "A_repeat",
+    "alpha": 0.0,
+    "block": "DSO:5:2025:Autumn",
+    "init_function": "production",
+    "stub_calls_for_node": 1,
+    "row18_state_at_would_be_solve": {
+     "row18_wired": false,
+     "row18_alpha_admm_present": false
+    },
+    "nl": {
+     "labels_off": {
+      "path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/A_repeat_5_2025_Autumn_labels_off.nl",
+      "sha256": "ac23f62616ba0c63839a055239a151455b3a0cad4f0cf0ee7a705a726fa209b9",
+      "bytes": 4528777,
+      "line1": "g3 1 1 0\t# problem case33_1",
+      "line2": " 36232 29684 1 0 16424 \t# vars, constraints, objectives, ranges, eqns",
+      "n_vars_columns": 36232,
+      "n_cons_rows": 29684,
+      "n_objs": 1,
+      "n_ranges": 0,
+      "n_eqns": 16424
+     },
+     "labels_on": {
+      "path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/A_repeat_5_2025_Autumn_labels_on.nl",
+      "sha256": "e006ecf3af68907d59d7637ffc740fd2e7008a23f0253f21125d5fa4d520b7cb",
+      "bytes": 9878226,
+      "line1": "g3 1 1 0\t# problem case33_1",
+      "line2": " 36232 29684 1 0 16424 \t# vars, constraints, objectives, ranges, eqns",
+      "n_vars_columns": 36232,
+      "n_cons_rows": 29684,
+      "n_objs": 1,
+      "n_ranges": 0,
+      "n_eqns": 16424,
+      "row_path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/A_repeat_5_2025_Autumn_labels_on.row",
+      "row_sha256": "cd4fc3bc822cdb9a670222823bd2d5e7a19a1284db36718338d5445fa249e367",
+      "col_path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/A_repeat_5_2025_Autumn_labels_on.col",
+      "col_sha256": "9be5f8ab52cce993462e48441a6ecb4d368382d16e18422bd322ee458d92ab6c"
+     }
+    }
+   },
+   "DSO:5:2025:Winter": {
+    "arm": "A_repeat",
+    "alpha": 0.0,
+    "block": "DSO:5:2025:Winter",
+    "init_function": "production",
+    "stub_calls_for_node": 1,
+    "row18_state_at_would_be_solve": {
+     "row18_wired": false,
+     "row18_alpha_admm_present": false
+    },
+    "nl": {
+     "labels_off": {
+      "path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/A_repeat_5_2025_Winter_labels_off.nl",
+      "sha256": "706fef58b0ef9796b42b3aadfbf5490b5ef375037e79d736a081d26f7dddbc51",
+      "bytes": 4523955,
+      "line1": "g3 1 1 0\t# problem case33_1",
+      "line2": " 36232 29684 1 0 16424 \t# vars, constraints, objectives, ranges, eqns",
+      "n_vars_columns": 36232,
+      "n_cons_rows": 29684,
+      "n_objs": 1,
+      "n_ranges": 0,
+      "n_eqns": 16424
+     },
+     "labels_on": {
+      "path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/A_repeat_5_2025_Winter_labels_on.nl",
+      "sha256": "0d62fedf7fdc655bfecc8b317ac71f329c0d0724a770c664f0f9b85a1a750796",
+      "bytes": 9873404,
+      "line1": "g3 1 1 0\t# problem case33_1",
+      "line2": " 36232 29684 1 0 16424 \t# vars, constraints, objectives, ranges, eqns",
+      "n_vars_columns": 36232,
+      "n_cons_rows": 29684,
+      "n_objs": 1,
+      "n_ranges": 0,
+      "n_eqns": 16424,
+      "row_path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/A_repeat_5_2025_Winter_labels_on.row",
+      "row_sha256": "cd4fc3bc822cdb9a670222823bd2d5e7a19a1284db36718338d5445fa249e367",
+      "col_path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/A_repeat_5_2025_Winter_labels_on.col",
+      "col_sha256": "9be5f8ab52cce993462e48441a6ecb4d368382d16e18422bd322ee458d92ab6c"
+     }
+    }
+   },
+   "DSO:7:2025:Spring": {
+    "arm": "A_repeat",
+    "alpha": 0.0,
+    "block": "DSO:7:2025:Spring",
+    "init_function": "production",
+    "stub_calls_for_node": 1,
+    "row18_state_at_would_be_solve": {
+     "row18_wired": false,
+     "row18_alpha_admm_present": false
+    },
+    "nl": {
+     "labels_off": {
+      "path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/A_repeat_7_2025_Spring_labels_off.nl",
+      "sha256": "de0c46744b84456942772a6e80e6f803c98c1ce45bb55be79b794bac88f28f93",
+      "bytes": 4548694,
+      "line1": "g3 1 1 0\t# problem case33_2",
+      "line2": " 36232 29936 1 0 16424 \t# vars, constraints, objectives, ranges, eqns",
+      "n_vars_columns": 36232,
+      "n_cons_rows": 29936,
+      "n_objs": 1,
+      "n_ranges": 0,
+      "n_eqns": 16424
+     },
+     "labels_on": {
+      "path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/A_repeat_7_2025_Spring_labels_on.nl",
+      "sha256": "285d2645263c415f4b280f06742979ff413d00d9093d74c0c63b9fc25513481b",
+      "bytes": 9922099,
+      "line1": "g3 1 1 0\t# problem case33_2",
+      "line2": " 36232 29936 1 0 16424 \t# vars, constraints, objectives, ranges, eqns",
+      "n_vars_columns": 36232,
+      "n_cons_rows": 29936,
+      "n_objs": 1,
+      "n_ranges": 0,
+      "n_eqns": 16424,
+      "row_path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/A_repeat_7_2025_Spring_labels_on.row",
+      "row_sha256": "7526229d12f746669691d95b24495f17da13cc629578e8016dd7148cd0e88ec6",
+      "col_path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/A_repeat_7_2025_Spring_labels_on.col",
+      "col_sha256": "73585c925db5515c99cf06252bad0ea1d7ae31d3c54a9b45046c22baba60e7ef"
+     }
+    }
+   },
+   "DSO:7:2025:Summer": {
+    "arm": "A_repeat",
+    "alpha": 0.0,
+    "block": "DSO:7:2025:Summer",
+    "init_function": "production",
+    "stub_calls_for_node": 1,
+    "row18_state_at_would_be_solve": {
+     "row18_wired": false,
+     "row18_alpha_admm_present": false
+    },
+    "nl": {
+     "labels_off": {
+      "path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/A_repeat_7_2025_Summer_labels_off.nl",
+      "sha256": "92461ba30e1ec5935f64ec75a4245736c10098ced6fa85b9b21d502d4d85df51",
+      "bytes": 4550732,
+      "line1": "g3 1 1 0\t# problem case33_2",
+      "line2": " 36232 29936 1 0 16424 \t# vars, constraints, objectives, ranges, eqns",
+      "n_vars_columns": 36232,
+      "n_cons_rows": 29936,
+      "n_objs": 1,
+      "n_ranges": 0,
+      "n_eqns": 16424
+     },
+     "labels_on": {
+      "path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/A_repeat_7_2025_Summer_labels_on.nl",
+      "sha256": "5aa6305d37dcce8223a053ffcfee0fe80925b2f6e6d60fc0c8c29353a1c9b467",
+      "bytes": 9924137,
+      "line1": "g3 1 1 0\t# problem case33_2",
+      "line2": " 36232 29936 1 0 16424 \t# vars, constraints, objectives, ranges, eqns",
+      "n_vars_columns": 36232,
+      "n_cons_rows": 29936,
+      "n_objs": 1,
+      "n_ranges": 0,
+      "n_eqns": 16424,
+      "row_path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/A_repeat_7_2025_Summer_labels_on.row",
+      "row_sha256": "7526229d12f746669691d95b24495f17da13cc629578e8016dd7148cd0e88ec6",
+      "col_path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/A_repeat_7_2025_Summer_labels_on.col",
+      "col_sha256": "73585c925db5515c99cf06252bad0ea1d7ae31d3c54a9b45046c22baba60e7ef"
+     }
+    }
+   },
+   "DSO:7:2025:Autumn": {
+    "arm": "A_repeat",
+    "alpha": 0.0,
+    "block": "DSO:7:2025:Autumn",
+    "init_function": "production",
+    "stub_calls_for_node": 1,
+    "row18_state_at_would_be_solve": {
+     "row18_wired": false,
+     "row18_alpha_admm_present": false
+    },
+    "nl": {
+     "labels_off": {
+      "path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/A_repeat_7_2025_Autumn_labels_off.nl",
+      "sha256": "1335381f8bfe7107a1e279692b0fd9529a41364e9f13a12c401d19e42bfc2edc",
+      "bytes": 4542735,
+      "line1": "g3 1 1 0\t# problem case33_2",
+      "line2": " 36232 29840 1 0 16424 \t# vars, constraints, objectives, ranges, eqns",
+      "n_vars_columns": 36232,
+      "n_cons_rows": 29840,
+      "n_objs": 1,
+      "n_ranges": 0,
+      "n_eqns": 16424
+     },
+     "labels_on": {
+      "path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/A_repeat_7_2025_Autumn_labels_on.nl",
+      "sha256": "9468f4fbbb088793cd21a671916874857eb4eb0a23deb456cc66ca3c503abd21",
+      "bytes": 9907004,
+      "line1": "g3 1 1 0\t# problem case33_2",
+      "line2": " 36232 29840 1 0 16424 \t# vars, constraints, objectives, ranges, eqns",
+      "n_vars_columns": 36232,
+      "n_cons_rows": 29840,
+      "n_objs": 1,
+      "n_ranges": 0,
+      "n_eqns": 16424,
+      "row_path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/A_repeat_7_2025_Autumn_labels_on.row",
+      "row_sha256": "5f11ea91063fec8ea04193fc956d3f52bc0460882534daaebe176148a1cd01b8",
+      "col_path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/A_repeat_7_2025_Autumn_labels_on.col",
+      "col_sha256": "11c9bf6c48470c28d0d3edf6db9d1858d42035508c08888262208cca9826b200"
+     }
+    }
+   },
+   "DSO:7:2025:Winter": {
+    "arm": "A_repeat",
+    "alpha": 0.0,
+    "block": "DSO:7:2025:Winter",
+    "init_function": "production",
+    "stub_calls_for_node": 1,
+    "row18_state_at_would_be_solve": {
+     "row18_wired": false,
+     "row18_alpha_admm_present": false
+    },
+    "nl": {
+     "labels_off": {
+      "path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/A_repeat_7_2025_Winter_labels_off.nl",
+      "sha256": "1f8a684d4f03b3634ae0cc76cc7c6546164d840151e30e265f737cde1c05bd9d",
+      "bytes": 4537839,
+      "line1": "g3 1 1 0\t# problem case33_2",
+      "line2": " 36232 29840 1 0 16424 \t# vars, constraints, objectives, ranges, eqns",
+      "n_vars_columns": 36232,
+      "n_cons_rows": 29840,
+      "n_objs": 1,
+      "n_ranges": 0,
+      "n_eqns": 16424
+     },
+     "labels_on": {
+      "path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/A_repeat_7_2025_Winter_labels_on.nl",
+      "sha256": "887845ba37a0b68c0966b3aafa19f4921087d45013c5b38057c04b77716c8645",
+      "bytes": 9902108,
+      "line1": "g3 1 1 0\t# problem case33_2",
+      "line2": " 36232 29840 1 0 16424 \t# vars, constraints, objectives, ranges, eqns",
+      "n_vars_columns": 36232,
+      "n_cons_rows": 29840,
+      "n_objs": 1,
+      "n_ranges": 0,
+      "n_eqns": 16424,
+      "row_path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/A_repeat_7_2025_Winter_labels_on.row",
+      "row_sha256": "5f11ea91063fec8ea04193fc956d3f52bc0460882534daaebe176148a1cd01b8",
+      "col_path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/A_repeat_7_2025_Winter_labels_on.col",
+      "col_sha256": "11c9bf6c48470c28d0d3edf6db9d1858d42035508c08888262208cca9826b200"
+     }
+    }
+   },
+   "DSO:9:2025:Spring": {
+    "arm": "A_repeat",
+    "alpha": 0.0,
+    "block": "DSO:9:2025:Spring",
+    "init_function": "production",
+    "stub_calls_for_node": 1,
+    "row18_state_at_would_be_solve": {
+     "row18_wired": false,
+     "row18_alpha_admm_present": false
+    },
+    "nl": {
+     "labels_off": {
+      "path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/A_repeat_9_2025_Spring_labels_off.nl",
+      "sha256": "a9e5e650b6b3b91ca16d4d72222692beca0ba31bf764b09738556044ff3a0e63",
+      "bytes": 4536800,
+      "line1": "g3 1 1 0\t# problem case33_3",
+      "line2": " 36232 29828 1 0 16424 \t# vars, constraints, objectives, ranges, eqns",
+      "n_vars_columns": 36232,
+      "n_cons_rows": 29828,
+      "n_objs": 1,
+      "n_ranges": 0,
+      "n_eqns": 16424
+     },
+     "labels_on": {
+      "path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/A_repeat_9_2025_Spring_labels_on.nl",
+      "sha256": "b5089556562127779e4bc5798cd8ebaa0c14b4e9299fab30e8c09f1558ad3fe1",
+      "bytes": 9899953,
+      "line1": "g3 1 1 0\t# problem case33_3",
+      "line2": " 36232 29828 1 0 16424 \t# vars, constraints, objectives, ranges, eqns",
+      "n_vars_columns": 36232,
+      "n_cons_rows": 29828,
+      "n_objs": 1,
+      "n_ranges": 0,
+      "n_eqns": 16424,
+      "row_path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/A_repeat_9_2025_Spring_labels_on.row",
+      "row_sha256": "59af856a5034545b99343c68d767abcf794f873663a74964bd81c8430b69b389",
+      "col_path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/A_repeat_9_2025_Spring_labels_on.col",
+      "col_sha256": "a12d53c2cd24bcb67c35047c0324c2b1e9bcfab6bf9b7ea0878ce692b5d05144"
+     }
+    }
+   },
+   "DSO:9:2025:Summer": {
+    "arm": "A_repeat",
+    "alpha": 0.0,
+    "block": "DSO:9:2025:Summer",
+    "init_function": "production",
+    "stub_calls_for_node": 1,
+    "row18_state_at_would_be_solve": {
+     "row18_wired": false,
+     "row18_alpha_admm_present": false
+    },
+    "nl": {
+     "labels_off": {
+      "path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/A_repeat_9_2025_Summer_labels_off.nl",
+      "sha256": "957f18d2aa8f8a0cef370d648a58c558c2692733ca10374aee30b7d520bc1475",
+      "bytes": 4538938,
+      "line1": "g3 1 1 0\t# problem case33_3",
+      "line2": " 36232 29828 1 0 16424 \t# vars, constraints, objectives, ranges, eqns",
+      "n_vars_columns": 36232,
+      "n_cons_rows": 29828,
+      "n_objs": 1,
+      "n_ranges": 0,
+      "n_eqns": 16424
+     },
+     "labels_on": {
+      "path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/A_repeat_9_2025_Summer_labels_on.nl",
+      "sha256": "c80e2e84fae7e4081c3e2e34c50b257b827c21de1b2448bd8fc0dad8e93ed55f",
+      "bytes": 9902091,
+      "line1": "g3 1 1 0\t# problem case33_3",
+      "line2": " 36232 29828 1 0 16424 \t# vars, constraints, objectives, ranges, eqns",
+      "n_vars_columns": 36232,
+      "n_cons_rows": 29828,
+      "n_objs": 1,
+      "n_ranges": 0,
+      "n_eqns": 16424,
+      "row_path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/A_repeat_9_2025_Summer_labels_on.row",
+      "row_sha256": "59af856a5034545b99343c68d767abcf794f873663a74964bd81c8430b69b389",
+      "col_path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/A_repeat_9_2025_Summer_labels_on.col",
+      "col_sha256": "a12d53c2cd24bcb67c35047c0324c2b1e9bcfab6bf9b7ea0878ce692b5d05144"
+     }
+    }
+   },
+   "DSO:9:2025:Autumn": {
+    "arm": "A_repeat",
+    "alpha": 0.0,
+    "block": "DSO:9:2025:Autumn",
+    "init_function": "production",
+    "stub_calls_for_node": 1,
+    "row18_state_at_would_be_solve": {
+     "row18_wired": false,
+     "row18_alpha_admm_present": false
+    },
+    "nl": {
+     "labels_off": {
+      "path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/A_repeat_9_2025_Autumn_labels_off.nl",
+      "sha256": "51e9c8a9e3f5028738000b26c28aa7cd6d43ef7f4e2b731ef23de6e2f604f76f",
+      "bytes": 4526563,
+      "line1": "g3 1 1 0\t# problem case33_3",
+      "line2": " 36232 29684 1 0 16424 \t# vars, constraints, objectives, ranges, eqns",
+      "n_vars_columns": 36232,
+      "n_cons_rows": 29684,
+      "n_objs": 1,
+      "n_ranges": 0,
+      "n_eqns": 16424
+     },
+     "labels_on": {
+      "path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/A_repeat_9_2025_Autumn_labels_on.nl",
+      "sha256": "9d684453906852aa4a6013a77d67f56b609bdb01834636d292e9d03a585e33e4",
+      "bytes": 9876012,
+      "line1": "g3 1 1 0\t# problem case33_3",
+      "line2": " 36232 29684 1 0 16424 \t# vars, constraints, objectives, ranges, eqns",
+      "n_vars_columns": 36232,
+      "n_cons_rows": 29684,
+      "n_objs": 1,
+      "n_ranges": 0,
+      "n_eqns": 16424,
+      "row_path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/A_repeat_9_2025_Autumn_labels_on.row",
+      "row_sha256": "cd4fc3bc822cdb9a670222823bd2d5e7a19a1284db36718338d5445fa249e367",
+      "col_path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/A_repeat_9_2025_Autumn_labels_on.col",
+      "col_sha256": "9be5f8ab52cce993462e48441a6ecb4d368382d16e18422bd322ee458d92ab6c"
+     }
+    }
+   },
+   "DSO:9:2025:Winter": {
+    "arm": "A_repeat",
+    "alpha": 0.0,
+    "block": "DSO:9:2025:Winter",
+    "init_function": "production",
+    "stub_calls_for_node": 1,
+    "row18_state_at_would_be_solve": {
+     "row18_wired": false,
+     "row18_alpha_admm_present": false
+    },
+    "nl": {
+     "labels_off": {
+      "path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/A_repeat_9_2025_Winter_labels_off.nl",
+      "sha256": "a80c4cab8058af54936ee99e81359f8498b1c5b998802e5dc798bccc6ca7c299",
+      "bytes": 4521756,
+      "line1": "g3 1 1 0\t# problem case33_3",
+      "line2": " 36232 29684 1 0 16424 \t# vars, constraints, objectives, ranges, eqns",
+      "n_vars_columns": 36232,
+      "n_cons_rows": 29684,
+      "n_objs": 1,
+      "n_ranges": 0,
+      "n_eqns": 16424
+     },
+     "labels_on": {
+      "path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/A_repeat_9_2025_Winter_labels_on.nl",
+      "sha256": "828bb425cafc61006bce8f5701c8aa906ecbe43a39151503c93b2f27a1410609",
+      "bytes": 9871205,
+      "line1": "g3 1 1 0\t# problem case33_3",
+      "line2": " 36232 29684 1 0 16424 \t# vars, constraints, objectives, ranges, eqns",
+      "n_vars_columns": 36232,
+      "n_cons_rows": 29684,
+      "n_objs": 1,
+      "n_ranges": 0,
+      "n_eqns": 16424,
+      "row_path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/A_repeat_9_2025_Winter_labels_on.row",
+      "row_sha256": "cd4fc3bc822cdb9a670222823bd2d5e7a19a1284db36718338d5445fa249e367",
+      "col_path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/A_repeat_9_2025_Winter_labels_on.col",
+      "col_sha256": "9be5f8ab52cce993462e48441a6ecb4d368382d16e18422bd322ee458d92ab6c"
+     }
+    }
+   }
+  },
+  "B": {
+   "DSO:5:2025:Spring": {
+    "arm": "B",
+    "alpha": 0.5,
+    "block": "DSO:5:2025:Spring",
+    "init_function": "production",
+    "stub_calls_for_node": 1,
+    "row18_state_at_would_be_solve": {
+     "row18_wired": true,
+     "row18_alpha": 0.5,
+     "row18_alpha_admm_present": false,
+     "n_rows": 192,
+     "n_rows_active": 0,
+     "n_dev_vars": 384,
+     "n_dev_vars_fixed": 384,
+     "fixed_dev_values": [
+      0.0
+     ],
+     "n_indices_fixed_pair_with_active_row": 0,
+     "charge_value": 0.0,
+     "n_scenarios": 4,
+     "n_periods": 24
+    },
+    "nl": {
+     "labels_off": {
+      "path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/B_5_2025_Spring_labels_off.nl",
+      "sha256": "a65a93ff3c49f0e1362dea6b100b5b85ef315c6aa59e7aa68cf5fb6556e9d87d",
+      "bytes": 4539184,
+      "line1": "g3 1 1 0\t# problem case33_1",
+      "line2": " 36232 29828 1 0 16424 \t# vars, constraints, objectives, ranges, eqns",
+      "n_vars_columns": 36232,
+      "n_cons_rows": 29828,
+      "n_objs": 1,
+      "n_ranges": 0,
+      "n_eqns": 16424
+     },
+     "labels_on": {
+      "path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/B_5_2025_Spring_labels_on.nl",
+      "sha256": "8379c362fb5e261da8e0c1fe6605803a671820d18e05b21e396c2a506ccfe968",
+      "bytes": 9902337,
+      "line1": "g3 1 1 0\t# problem case33_1",
+      "line2": " 36232 29828 1 0 16424 \t# vars, constraints, objectives, ranges, eqns",
+      "n_vars_columns": 36232,
+      "n_cons_rows": 29828,
+      "n_objs": 1,
+      "n_ranges": 0,
+      "n_eqns": 16424,
+      "row_path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/B_5_2025_Spring_labels_on.row",
+      "row_sha256": "59af856a5034545b99343c68d767abcf794f873663a74964bd81c8430b69b389",
+      "col_path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/B_5_2025_Spring_labels_on.col",
+      "col_sha256": "a12d53c2cd24bcb67c35047c0324c2b1e9bcfab6bf9b7ea0878ce692b5d05144"
+     }
+    }
+   },
+   "DSO:5:2025:Summer": {
+    "arm": "B",
+    "alpha": 0.5,
+    "block": "DSO:5:2025:Summer",
+    "init_function": "production",
+    "stub_calls_for_node": 1,
+    "row18_state_at_would_be_solve": {
+     "row18_wired": true,
+     "row18_alpha": 0.5,
+     "row18_alpha_admm_present": false,
+     "n_rows": 192,
+     "n_rows_active": 0,
+     "n_dev_vars": 384,
+     "n_dev_vars_fixed": 384,
+     "fixed_dev_values": [
+      0.0
+     ],
+     "n_indices_fixed_pair_with_active_row": 0,
+     "charge_value": 0.0,
+     "n_scenarios": 4,
+     "n_periods": 24
+    },
+    "nl": {
+     "labels_off": {
+      "path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/B_5_2025_Summer_labels_off.nl",
+      "sha256": "b72863106af4c5fbf67bd1a0020a1c1c72294edd83b87d6418911f75bdec0df4",
+      "bytes": 4541078,
+      "line1": "g3 1 1 0\t# problem case33_1",
+      "line2": " 36232 29828 1 0 16424 \t# vars, constraints, objectives, ranges, eqns",
+      "n_vars_columns": 36232,
+      "n_cons_rows": 29828,
+      "n_objs": 1,
+      "n_ranges": 0,
+      "n_eqns": 16424
+     },
+     "labels_on": {
+      "path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/B_5_2025_Summer_labels_on.nl",
+      "sha256": "445b7093e88c9a77c72d963cc3486962d648e61bb5c8f8fb4db4d9deb835840d",
+      "bytes": 9904231,
+      "line1": "g3 1 1 0\t# problem case33_1",
+      "line2": " 36232 29828 1 0 16424 \t# vars, constraints, objectives, ranges, eqns",
+      "n_vars_columns": 36232,
+      "n_cons_rows": 29828,
+      "n_objs": 1,
+      "n_ranges": 0,
+      "n_eqns": 16424,
+      "row_path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/B_5_2025_Summer_labels_on.row",
+      "row_sha256": "59af856a5034545b99343c68d767abcf794f873663a74964bd81c8430b69b389",
+      "col_path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/B_5_2025_Summer_labels_on.col",
+      "col_sha256": "a12d53c2cd24bcb67c35047c0324c2b1e9bcfab6bf9b7ea0878ce692b5d05144"
+     }
+    }
+   },
+   "DSO:5:2025:Autumn": {
+    "arm": "B",
+    "alpha": 0.5,
+    "block": "DSO:5:2025:Autumn",
+    "init_function": "production",
+    "stub_calls_for_node": 1,
+    "row18_state_at_would_be_solve": {
+     "row18_wired": true,
+     "row18_alpha": 0.5,
+     "row18_alpha_admm_present": false,
+     "n_rows": 192,
+     "n_rows_active": 0,
+     "n_dev_vars": 384,
+     "n_dev_vars_fixed": 384,
+     "fixed_dev_values": [
+      0.0
+     ],
+     "n_indices_fixed_pair_with_active_row": 0,
+     "charge_value": 0.0,
+     "n_scenarios": 4,
+     "n_periods": 24
+    },
+    "nl": {
+     "labels_off": {
+      "path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/B_5_2025_Autumn_labels_off.nl",
+      "sha256": "ac23f62616ba0c63839a055239a151455b3a0cad4f0cf0ee7a705a726fa209b9",
+      "bytes": 4528777,
+      "line1": "g3 1 1 0\t# problem case33_1",
+      "line2": " 36232 29684 1 0 16424 \t# vars, constraints, objectives, ranges, eqns",
+      "n_vars_columns": 36232,
+      "n_cons_rows": 29684,
+      "n_objs": 1,
+      "n_ranges": 0,
+      "n_eqns": 16424
+     },
+     "labels_on": {
+      "path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/B_5_2025_Autumn_labels_on.nl",
+      "sha256": "e006ecf3af68907d59d7637ffc740fd2e7008a23f0253f21125d5fa4d520b7cb",
+      "bytes": 9878226,
+      "line1": "g3 1 1 0\t# problem case33_1",
+      "line2": " 36232 29684 1 0 16424 \t# vars, constraints, objectives, ranges, eqns",
+      "n_vars_columns": 36232,
+      "n_cons_rows": 29684,
+      "n_objs": 1,
+      "n_ranges": 0,
+      "n_eqns": 16424,
+      "row_path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/B_5_2025_Autumn_labels_on.row",
+      "row_sha256": "cd4fc3bc822cdb9a670222823bd2d5e7a19a1284db36718338d5445fa249e367",
+      "col_path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/B_5_2025_Autumn_labels_on.col",
+      "col_sha256": "9be5f8ab52cce993462e48441a6ecb4d368382d16e18422bd322ee458d92ab6c"
+     }
+    }
+   },
+   "DSO:5:2025:Winter": {
+    "arm": "B",
+    "alpha": 0.5,
+    "block": "DSO:5:2025:Winter",
+    "init_function": "production",
+    "stub_calls_for_node": 1,
+    "row18_state_at_would_be_solve": {
+     "row18_wired": true,
+     "row18_alpha": 0.5,
+     "row18_alpha_admm_present": false,
+     "n_rows": 192,
+     "n_rows_active": 0,
+     "n_dev_vars": 384,
+     "n_dev_vars_fixed": 384,
+     "fixed_dev_values": [
+      0.0
+     ],
+     "n_indices_fixed_pair_with_active_row": 0,
+     "charge_value": 0.0,
+     "n_scenarios": 4,
+     "n_periods": 24
+    },
+    "nl": {
+     "labels_off": {
+      "path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/B_5_2025_Winter_labels_off.nl",
+      "sha256": "706fef58b0ef9796b42b3aadfbf5490b5ef375037e79d736a081d26f7dddbc51",
+      "bytes": 4523955,
+      "line1": "g3 1 1 0\t# problem case33_1",
+      "line2": " 36232 29684 1 0 16424 \t# vars, constraints, objectives, ranges, eqns",
+      "n_vars_columns": 36232,
+      "n_cons_rows": 29684,
+      "n_objs": 1,
+      "n_ranges": 0,
+      "n_eqns": 16424
+     },
+     "labels_on": {
+      "path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/B_5_2025_Winter_labels_on.nl",
+      "sha256": "0d62fedf7fdc655bfecc8b317ac71f329c0d0724a770c664f0f9b85a1a750796",
+      "bytes": 9873404,
+      "line1": "g3 1 1 0\t# problem case33_1",
+      "line2": " 36232 29684 1 0 16424 \t# vars, constraints, objectives, ranges, eqns",
+      "n_vars_columns": 36232,
+      "n_cons_rows": 29684,
+      "n_objs": 1,
+      "n_ranges": 0,
+      "n_eqns": 16424,
+      "row_path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/B_5_2025_Winter_labels_on.row",
+      "row_sha256": "cd4fc3bc822cdb9a670222823bd2d5e7a19a1284db36718338d5445fa249e367",
+      "col_path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/B_5_2025_Winter_labels_on.col",
+      "col_sha256": "9be5f8ab52cce993462e48441a6ecb4d368382d16e18422bd322ee458d92ab6c"
+     }
+    }
+   },
+   "DSO:7:2025:Spring": {
+    "arm": "B",
+    "alpha": 0.5,
+    "block": "DSO:7:2025:Spring",
+    "init_function": "production",
+    "stub_calls_for_node": 1,
+    "row18_state_at_would_be_solve": {
+     "row18_wired": true,
+     "row18_alpha": 0.5,
+     "row18_alpha_admm_present": false,
+     "n_rows": 192,
+     "n_rows_active": 0,
+     "n_dev_vars": 384,
+     "n_dev_vars_fixed": 384,
+     "fixed_dev_values": [
+      0.0
+     ],
+     "n_indices_fixed_pair_with_active_row": 0,
+     "charge_value": 0.0,
+     "n_scenarios": 4,
+     "n_periods": 24
+    },
+    "nl": {
+     "labels_off": {
+      "path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/B_7_2025_Spring_labels_off.nl",
+      "sha256": "de0c46744b84456942772a6e80e6f803c98c1ce45bb55be79b794bac88f28f93",
+      "bytes": 4548694,
+      "line1": "g3 1 1 0\t# problem case33_2",
+      "line2": " 36232 29936 1 0 16424 \t# vars, constraints, objectives, ranges, eqns",
+      "n_vars_columns": 36232,
+      "n_cons_rows": 29936,
+      "n_objs": 1,
+      "n_ranges": 0,
+      "n_eqns": 16424
+     },
+     "labels_on": {
+      "path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/B_7_2025_Spring_labels_on.nl",
+      "sha256": "285d2645263c415f4b280f06742979ff413d00d9093d74c0c63b9fc25513481b",
+      "bytes": 9922099,
+      "line1": "g3 1 1 0\t# problem case33_2",
+      "line2": " 36232 29936 1 0 16424 \t# vars, constraints, objectives, ranges, eqns",
+      "n_vars_columns": 36232,
+      "n_cons_rows": 29936,
+      "n_objs": 1,
+      "n_ranges": 0,
+      "n_eqns": 16424,
+      "row_path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/B_7_2025_Spring_labels_on.row",
+      "row_sha256": "7526229d12f746669691d95b24495f17da13cc629578e8016dd7148cd0e88ec6",
+      "col_path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/B_7_2025_Spring_labels_on.col",
+      "col_sha256": "73585c925db5515c99cf06252bad0ea1d7ae31d3c54a9b45046c22baba60e7ef"
+     }
+    }
+   },
+   "DSO:7:2025:Summer": {
+    "arm": "B",
+    "alpha": 0.5,
+    "block": "DSO:7:2025:Summer",
+    "init_function": "production",
+    "stub_calls_for_node": 1,
+    "row18_state_at_would_be_solve": {
+     "row18_wired": true,
+     "row18_alpha": 0.5,
+     "row18_alpha_admm_present": false,
+     "n_rows": 192,
+     "n_rows_active": 0,
+     "n_dev_vars": 384,
+     "n_dev_vars_fixed": 384,
+     "fixed_dev_values": [
+      0.0
+     ],
+     "n_indices_fixed_pair_with_active_row": 0,
+     "charge_value": 0.0,
+     "n_scenarios": 4,
+     "n_periods": 24
+    },
+    "nl": {
+     "labels_off": {
+      "path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/B_7_2025_Summer_labels_off.nl",
+      "sha256": "92461ba30e1ec5935f64ec75a4245736c10098ced6fa85b9b21d502d4d85df51",
+      "bytes": 4550732,
+      "line1": "g3 1 1 0\t# problem case33_2",
+      "line2": " 36232 29936 1 0 16424 \t# vars, constraints, objectives, ranges, eqns",
+      "n_vars_columns": 36232,
+      "n_cons_rows": 29936,
+      "n_objs": 1,
+      "n_ranges": 0,
+      "n_eqns": 16424
+     },
+     "labels_on": {
+      "path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/B_7_2025_Summer_labels_on.nl",
+      "sha256": "5aa6305d37dcce8223a053ffcfee0fe80925b2f6e6d60fc0c8c29353a1c9b467",
+      "bytes": 9924137,
+      "line1": "g3 1 1 0\t# problem case33_2",
+      "line2": " 36232 29936 1 0 16424 \t# vars, constraints, objectives, ranges, eqns",
+      "n_vars_columns": 36232,
+      "n_cons_rows": 29936,
+      "n_objs": 1,
+      "n_ranges": 0,
+      "n_eqns": 16424,
+      "row_path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/B_7_2025_Summer_labels_on.row",
+      "row_sha256": "7526229d12f746669691d95b24495f17da13cc629578e8016dd7148cd0e88ec6",
+      "col_path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/B_7_2025_Summer_labels_on.col",
+      "col_sha256": "73585c925db5515c99cf06252bad0ea1d7ae31d3c54a9b45046c22baba60e7ef"
+     }
+    }
+   },
+   "DSO:7:2025:Autumn": {
+    "arm": "B",
+    "alpha": 0.5,
+    "block": "DSO:7:2025:Autumn",
+    "init_function": "production",
+    "stub_calls_for_node": 1,
+    "row18_state_at_would_be_solve": {
+     "row18_wired": true,
+     "row18_alpha": 0.5,
+     "row18_alpha_admm_present": false,
+     "n_rows": 192,
+     "n_rows_active": 0,
+     "n_dev_vars": 384,
+     "n_dev_vars_fixed": 384,
+     "fixed_dev_values": [
+      0.0
+     ],
+     "n_indices_fixed_pair_with_active_row": 0,
+     "charge_value": 0.0,
+     "n_scenarios": 4,
+     "n_periods": 24
+    },
+    "nl": {
+     "labels_off": {
+      "path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/B_7_2025_Autumn_labels_off.nl",
+      "sha256": "1335381f8bfe7107a1e279692b0fd9529a41364e9f13a12c401d19e42bfc2edc",
+      "bytes": 4542735,
+      "line1": "g3 1 1 0\t# problem case33_2",
+      "line2": " 36232 29840 1 0 16424 \t# vars, constraints, objectives, ranges, eqns",
+      "n_vars_columns": 36232,
+      "n_cons_rows": 29840,
+      "n_objs": 1,
+      "n_ranges": 0,
+      "n_eqns": 16424
+     },
+     "labels_on": {
+      "path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/B_7_2025_Autumn_labels_on.nl",
+      "sha256": "9468f4fbbb088793cd21a671916874857eb4eb0a23deb456cc66ca3c503abd21",
+      "bytes": 9907004,
+      "line1": "g3 1 1 0\t# problem case33_2",
+      "line2": " 36232 29840 1 0 16424 \t# vars, constraints, objectives, ranges, eqns",
+      "n_vars_columns": 36232,
+      "n_cons_rows": 29840,
+      "n_objs": 1,
+      "n_ranges": 0,
+      "n_eqns": 16424,
+      "row_path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/B_7_2025_Autumn_labels_on.row",
+      "row_sha256": "5f11ea91063fec8ea04193fc956d3f52bc0460882534daaebe176148a1cd01b8",
+      "col_path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/B_7_2025_Autumn_labels_on.col",
+      "col_sha256": "11c9bf6c48470c28d0d3edf6db9d1858d42035508c08888262208cca9826b200"
+     }
+    }
+   },
+   "DSO:7:2025:Winter": {
+    "arm": "B",
+    "alpha": 0.5,
+    "block": "DSO:7:2025:Winter",
+    "init_function": "production",
+    "stub_calls_for_node": 1,
+    "row18_state_at_would_be_solve": {
+     "row18_wired": true,
+     "row18_alpha": 0.5,
+     "row18_alpha_admm_present": false,
+     "n_rows": 192,
+     "n_rows_active": 0,
+     "n_dev_vars": 384,
+     "n_dev_vars_fixed": 384,
+     "fixed_dev_values": [
+      0.0
+     ],
+     "n_indices_fixed_pair_with_active_row": 0,
+     "charge_value": 0.0,
+     "n_scenarios": 4,
+     "n_periods": 24
+    },
+    "nl": {
+     "labels_off": {
+      "path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/B_7_2025_Winter_labels_off.nl",
+      "sha256": "1f8a684d4f03b3634ae0cc76cc7c6546164d840151e30e265f737cde1c05bd9d",
+      "bytes": 4537839,
+      "line1": "g3 1 1 0\t# problem case33_2",
+      "line2": " 36232 29840 1 0 16424 \t# vars, constraints, objectives, ranges, eqns",
+      "n_vars_columns": 36232,
+      "n_cons_rows": 29840,
+      "n_objs": 1,
+      "n_ranges": 0,
+      "n_eqns": 16424
+     },
+     "labels_on": {
+      "path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/B_7_2025_Winter_labels_on.nl",
+      "sha256": "887845ba37a0b68c0966b3aafa19f4921087d45013c5b38057c04b77716c8645",
+      "bytes": 9902108,
+      "line1": "g3 1 1 0\t# problem case33_2",
+      "line2": " 36232 29840 1 0 16424 \t# vars, constraints, objectives, ranges, eqns",
+      "n_vars_columns": 36232,
+      "n_cons_rows": 29840,
+      "n_objs": 1,
+      "n_ranges": 0,
+      "n_eqns": 16424,
+      "row_path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/B_7_2025_Winter_labels_on.row",
+      "row_sha256": "5f11ea91063fec8ea04193fc956d3f52bc0460882534daaebe176148a1cd01b8",
+      "col_path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/B_7_2025_Winter_labels_on.col",
+      "col_sha256": "11c9bf6c48470c28d0d3edf6db9d1858d42035508c08888262208cca9826b200"
+     }
+    }
+   },
+   "DSO:9:2025:Spring": {
+    "arm": "B",
+    "alpha": 0.5,
+    "block": "DSO:9:2025:Spring",
+    "init_function": "production",
+    "stub_calls_for_node": 1,
+    "row18_state_at_would_be_solve": {
+     "row18_wired": true,
+     "row18_alpha": 0.5,
+     "row18_alpha_admm_present": false,
+     "n_rows": 192,
+     "n_rows_active": 0,
+     "n_dev_vars": 384,
+     "n_dev_vars_fixed": 384,
+     "fixed_dev_values": [
+      0.0
+     ],
+     "n_indices_fixed_pair_with_active_row": 0,
+     "charge_value": 0.0,
+     "n_scenarios": 4,
+     "n_periods": 24
+    },
+    "nl": {
+     "labels_off": {
+      "path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/B_9_2025_Spring_labels_off.nl",
+      "sha256": "a9e5e650b6b3b91ca16d4d72222692beca0ba31bf764b09738556044ff3a0e63",
+      "bytes": 4536800,
+      "line1": "g3 1 1 0\t# problem case33_3",
+      "line2": " 36232 29828 1 0 16424 \t# vars, constraints, objectives, ranges, eqns",
+      "n_vars_columns": 36232,
+      "n_cons_rows": 29828,
+      "n_objs": 1,
+      "n_ranges": 0,
+      "n_eqns": 16424
+     },
+     "labels_on": {
+      "path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/B_9_2025_Spring_labels_on.nl",
+      "sha256": "b5089556562127779e4bc5798cd8ebaa0c14b4e9299fab30e8c09f1558ad3fe1",
+      "bytes": 9899953,
+      "line1": "g3 1 1 0\t# problem case33_3",
+      "line2": " 36232 29828 1 0 16424 \t# vars, constraints, objectives, ranges, eqns",
+      "n_vars_columns": 36232,
+      "n_cons_rows": 29828,
+      "n_objs": 1,
+      "n_ranges": 0,
+      "n_eqns": 16424,
+      "row_path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/B_9_2025_Spring_labels_on.row",
+      "row_sha256": "59af856a5034545b99343c68d767abcf794f873663a74964bd81c8430b69b389",
+      "col_path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/B_9_2025_Spring_labels_on.col",
+      "col_sha256": "a12d53c2cd24bcb67c35047c0324c2b1e9bcfab6bf9b7ea0878ce692b5d05144"
+     }
+    }
+   },
+   "DSO:9:2025:Summer": {
+    "arm": "B",
+    "alpha": 0.5,
+    "block": "DSO:9:2025:Summer",
+    "init_function": "production",
+    "stub_calls_for_node": 1,
+    "row18_state_at_would_be_solve": {
+     "row18_wired": true,
+     "row18_alpha": 0.5,
+     "row18_alpha_admm_present": false,
+     "n_rows": 192,
+     "n_rows_active": 0,
+     "n_dev_vars": 384,
+     "n_dev_vars_fixed": 384,
+     "fixed_dev_values": [
+      0.0
+     ],
+     "n_indices_fixed_pair_with_active_row": 0,
+     "charge_value": 0.0,
+     "n_scenarios": 4,
+     "n_periods": 24
+    },
+    "nl": {
+     "labels_off": {
+      "path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/B_9_2025_Summer_labels_off.nl",
+      "sha256": "957f18d2aa8f8a0cef370d648a58c558c2692733ca10374aee30b7d520bc1475",
+      "bytes": 4538938,
+      "line1": "g3 1 1 0\t# problem case33_3",
+      "line2": " 36232 29828 1 0 16424 \t# vars, constraints, objectives, ranges, eqns",
+      "n_vars_columns": 36232,
+      "n_cons_rows": 29828,
+      "n_objs": 1,
+      "n_ranges": 0,
+      "n_eqns": 16424
+     },
+     "labels_on": {
+      "path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/B_9_2025_Summer_labels_on.nl",
+      "sha256": "c80e2e84fae7e4081c3e2e34c50b257b827c21de1b2448bd8fc0dad8e93ed55f",
+      "bytes": 9902091,
+      "line1": "g3 1 1 0\t# problem case33_3",
+      "line2": " 36232 29828 1 0 16424 \t# vars, constraints, objectives, ranges, eqns",
+      "n_vars_columns": 36232,
+      "n_cons_rows": 29828,
+      "n_objs": 1,
+      "n_ranges": 0,
+      "n_eqns": 16424,
+      "row_path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/B_9_2025_Summer_labels_on.row",
+      "row_sha256": "59af856a5034545b99343c68d767abcf794f873663a74964bd81c8430b69b389",
+      "col_path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/B_9_2025_Summer_labels_on.col",
+      "col_sha256": "a12d53c2cd24bcb67c35047c0324c2b1e9bcfab6bf9b7ea0878ce692b5d05144"
+     }
+    }
+   },
+   "DSO:9:2025:Autumn": {
+    "arm": "B",
+    "alpha": 0.5,
+    "block": "DSO:9:2025:Autumn",
+    "init_function": "production",
+    "stub_calls_for_node": 1,
+    "row18_state_at_would_be_solve": {
+     "row18_wired": true,
+     "row18_alpha": 0.5,
+     "row18_alpha_admm_present": false,
+     "n_rows": 192,
+     "n_rows_active": 0,
+     "n_dev_vars": 384,
+     "n_dev_vars_fixed": 384,
+     "fixed_dev_values": [
+      0.0
+     ],
+     "n_indices_fixed_pair_with_active_row": 0,
+     "charge_value": 0.0,
+     "n_scenarios": 4,
+     "n_periods": 24
+    },
+    "nl": {
+     "labels_off": {
+      "path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/B_9_2025_Autumn_labels_off.nl",
+      "sha256": "51e9c8a9e3f5028738000b26c28aa7cd6d43ef7f4e2b731ef23de6e2f604f76f",
+      "bytes": 4526563,
+      "line1": "g3 1 1 0\t# problem case33_3",
+      "line2": " 36232 29684 1 0 16424 \t# vars, constraints, objectives, ranges, eqns",
+      "n_vars_columns": 36232,
+      "n_cons_rows": 29684,
+      "n_objs": 1,
+      "n_ranges": 0,
+      "n_eqns": 16424
+     },
+     "labels_on": {
+      "path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/B_9_2025_Autumn_labels_on.nl",
+      "sha256": "9d684453906852aa4a6013a77d67f56b609bdb01834636d292e9d03a585e33e4",
+      "bytes": 9876012,
+      "line1": "g3 1 1 0\t# problem case33_3",
+      "line2": " 36232 29684 1 0 16424 \t# vars, constraints, objectives, ranges, eqns",
+      "n_vars_columns": 36232,
+      "n_cons_rows": 29684,
+      "n_objs": 1,
+      "n_ranges": 0,
+      "n_eqns": 16424,
+      "row_path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/B_9_2025_Autumn_labels_on.row",
+      "row_sha256": "cd4fc3bc822cdb9a670222823bd2d5e7a19a1284db36718338d5445fa249e367",
+      "col_path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/B_9_2025_Autumn_labels_on.col",
+      "col_sha256": "9be5f8ab52cce993462e48441a6ecb4d368382d16e18422bd322ee458d92ab6c"
+     }
+    }
+   },
+   "DSO:9:2025:Winter": {
+    "arm": "B",
+    "alpha": 0.5,
+    "block": "DSO:9:2025:Winter",
+    "init_function": "production",
+    "stub_calls_for_node": 1,
+    "row18_state_at_would_be_solve": {
+     "row18_wired": true,
+     "row18_alpha": 0.5,
+     "row18_alpha_admm_present": false,
+     "n_rows": 192,
+     "n_rows_active": 0,
+     "n_dev_vars": 384,
+     "n_dev_vars_fixed": 384,
+     "fixed_dev_values": [
+      0.0
+     ],
+     "n_indices_fixed_pair_with_active_row": 0,
+     "charge_value": 0.0,
+     "n_scenarios": 4,
+     "n_periods": 24
+    },
+    "nl": {
+     "labels_off": {
+      "path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/B_9_2025_Winter_labels_off.nl",
+      "sha256": "a80c4cab8058af54936ee99e81359f8498b1c5b998802e5dc798bccc6ca7c299",
+      "bytes": 4521756,
+      "line1": "g3 1 1 0\t# problem case33_3",
+      "line2": " 36232 29684 1 0 16424 \t# vars, constraints, objectives, ranges, eqns",
+      "n_vars_columns": 36232,
+      "n_cons_rows": 29684,
+      "n_objs": 1,
+      "n_ranges": 0,
+      "n_eqns": 16424
+     },
+     "labels_on": {
+      "path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/B_9_2025_Winter_labels_on.nl",
+      "sha256": "828bb425cafc61006bce8f5701c8aa906ecbe43a39151503c93b2f27a1410609",
+      "bytes": 9871205,
+      "line1": "g3 1 1 0\t# problem case33_3",
+      "line2": " 36232 29684 1 0 16424 \t# vars, constraints, objectives, ranges, eqns",
+      "n_vars_columns": 36232,
+      "n_cons_rows": 29684,
+      "n_objs": 1,
+      "n_ranges": 0,
+      "n_eqns": 16424,
+      "row_path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/B_9_2025_Winter_labels_on.row",
+      "row_sha256": "cd4fc3bc822cdb9a670222823bd2d5e7a19a1284db36718338d5445fa249e367",
+      "col_path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/B_9_2025_Winter_labels_on.col",
+      "col_sha256": "9be5f8ab52cce993462e48441a6ecb4d368382d16e18422bd322ee458d92ab6c"
+     }
+    }
+   }
+  },
+  "C": {
+   "DSO:5:2025:Spring": {
+    "arm": "C",
+    "alpha": 0.5,
+    "block": "DSO:5:2025:Spring",
+    "init_function": "_set_row18_inactive_for_initialisation (7a98b25e)",
+    "stub_calls_for_node": 1,
+    "row18_state_at_would_be_solve": {
+     "row18_wired": true,
+     "row18_alpha": 0.0,
+     "row18_alpha_admm_present": true,
+     "n_rows": 192,
+     "n_rows_active": 192,
+     "n_dev_vars": 384,
+     "n_dev_vars_fixed": 0,
+     "fixed_dev_values": [],
+     "n_indices_fixed_pair_with_active_row": 0,
+     "charge_value": 0.0,
+     "n_scenarios": 4,
+     "n_periods": 24
+    },
+    "nl": {
+     "labels_off": {
+      "path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/C_5_2025_Spring_labels_off.nl",
+      "sha256": "8357ddf7a2460e0ae21905c7b791b9ff330dd72ed9c21aa837576fa0028aa3ed",
+      "bytes": 4557904,
+      "line1": "g3 1 1 0\t# problem case33_1",
+      "line2": " 36616 30020 1 0 16616 \t# vars, constraints, objectives, ranges, eqns",
+      "n_vars_columns": 36616,
+      "n_cons_rows": 30020,
+      "n_objs": 1,
+      "n_ranges": 0,
+      "n_eqns": 16616
+     },
+     "labels_on": {
+      "path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/C_5_2025_Spring_labels_on.nl",
+      "sha256": "f3eed059e80cdc9091118ebe3b2cad85dfa8cfc8b1a1f02e5baf2e3b3c397a07",
+      "bytes": 9954097,
+      "line1": "g3 1 1 0\t# problem case33_1",
+      "line2": " 36616 30020 1 0 16616 \t# vars, constraints, objectives, ranges, eqns",
+      "n_vars_columns": 36616,
+      "n_cons_rows": 30020,
+      "n_objs": 1,
+      "n_ranges": 0,
+      "n_eqns": 16616,
+      "row_path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/C_5_2025_Spring_labels_on.row",
+      "row_sha256": "77d8487dbec8dbf71aad5853dd1fc687ea67774d33d360142c2dbebbaef4c8f9",
+      "col_path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/C_5_2025_Spring_labels_on.col",
+      "col_sha256": "508ecdd0af87a88918c6ff3a19d7dd2fdca1698b50112e5c86bc0f3b7440eabb"
+     }
+    }
+   },
+   "DSO:5:2025:Summer": {
+    "arm": "C",
+    "alpha": 0.5,
+    "block": "DSO:5:2025:Summer",
+    "init_function": "_set_row18_inactive_for_initialisation (7a98b25e)",
+    "stub_calls_for_node": 1,
+    "row18_state_at_would_be_solve": {
+     "row18_wired": true,
+     "row18_alpha": 0.0,
+     "row18_alpha_admm_present": true,
+     "n_rows": 192,
+     "n_rows_active": 192,
+     "n_dev_vars": 384,
+     "n_dev_vars_fixed": 0,
+     "fixed_dev_values": [],
+     "n_indices_fixed_pair_with_active_row": 0,
+     "charge_value": 0.0,
+     "n_scenarios": 4,
+     "n_periods": 24
+    },
+    "nl": {
+     "labels_off": {
+      "path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/C_5_2025_Summer_labels_off.nl",
+      "sha256": "ded80672f998639b9eb97db1cdadea3835628f8836dd7db47a4f46f2d94602c2",
+      "bytes": 4559798,
+      "line1": "g3 1 1 0\t# problem case33_1",
+      "line2": " 36616 30020 1 0 16616 \t# vars, constraints, objectives, ranges, eqns",
+      "n_vars_columns": 36616,
+      "n_cons_rows": 30020,
+      "n_objs": 1,
+      "n_ranges": 0,
+      "n_eqns": 16616
+     },
+     "labels_on": {
+      "path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/C_5_2025_Summer_labels_on.nl",
+      "sha256": "2f79640b8aa0a3c27f9e8407cf09c69200d47fa91855afbb0cfdecf81391e8d5",
+      "bytes": 9955991,
+      "line1": "g3 1 1 0\t# problem case33_1",
+      "line2": " 36616 30020 1 0 16616 \t# vars, constraints, objectives, ranges, eqns",
+      "n_vars_columns": 36616,
+      "n_cons_rows": 30020,
+      "n_objs": 1,
+      "n_ranges": 0,
+      "n_eqns": 16616,
+      "row_path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/C_5_2025_Summer_labels_on.row",
+      "row_sha256": "77d8487dbec8dbf71aad5853dd1fc687ea67774d33d360142c2dbebbaef4c8f9",
+      "col_path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/C_5_2025_Summer_labels_on.col",
+      "col_sha256": "508ecdd0af87a88918c6ff3a19d7dd2fdca1698b50112e5c86bc0f3b7440eabb"
+     }
+    }
+   },
+   "DSO:5:2025:Autumn": {
+    "arm": "C",
+    "alpha": 0.5,
+    "block": "DSO:5:2025:Autumn",
+    "init_function": "_set_row18_inactive_for_initialisation (7a98b25e)",
+    "stub_calls_for_node": 1,
+    "row18_state_at_would_be_solve": {
+     "row18_wired": true,
+     "row18_alpha": 0.0,
+     "row18_alpha_admm_present": true,
+     "n_rows": 192,
+     "n_rows_active": 192,
+     "n_dev_vars": 384,
+     "n_dev_vars_fixed": 0,
+     "fixed_dev_values": [],
+     "n_indices_fixed_pair_with_active_row": 0,
+     "charge_value": 0.0,
+     "n_scenarios": 4,
+     "n_periods": 24
+    },
+    "nl": {
+     "labels_off": {
+      "path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/C_5_2025_Autumn_labels_off.nl",
+      "sha256": "51e3f0d4507945d6f3e8ce85ec5098ae4e3b148441f05805535fd21b811c2c59",
+      "bytes": 4547497,
+      "line1": "g3 1 1 0\t# problem case33_1",
+      "line2": " 36616 29876 1 0 16616 \t# vars, constraints, objectives, ranges, eqns",
+      "n_vars_columns": 36616,
+      "n_cons_rows": 29876,
+      "n_objs": 1,
+      "n_ranges": 0,
+      "n_eqns": 16616
+     },
+     "labels_on": {
+      "path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/C_5_2025_Autumn_labels_on.nl",
+      "sha256": "3527c766c6b7ff51c5dd2371130148bfddf237ca41419b0239620ce6b3774ae2",
+      "bytes": 9929986,
+      "line1": "g3 1 1 0\t# problem case33_1",
+      "line2": " 36616 29876 1 0 16616 \t# vars, constraints, objectives, ranges, eqns",
+      "n_vars_columns": 36616,
+      "n_cons_rows": 29876,
+      "n_objs": 1,
+      "n_ranges": 0,
+      "n_eqns": 16616,
+      "row_path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/C_5_2025_Autumn_labels_on.row",
+      "row_sha256": "12f13aec30cdd1ef21fee69a796a69d836e78a85afc3f919986a24a59d69c9d5",
+      "col_path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/C_5_2025_Autumn_labels_on.col",
+      "col_sha256": "6887ad3116d09b655b3108461c684c033849d6cc9122bba41fc1d579b5f70bf5"
+     }
+    }
+   },
+   "DSO:5:2025:Winter": {
+    "arm": "C",
+    "alpha": 0.5,
+    "block": "DSO:5:2025:Winter",
+    "init_function": "_set_row18_inactive_for_initialisation (7a98b25e)",
+    "stub_calls_for_node": 1,
+    "row18_state_at_would_be_solve": {
+     "row18_wired": true,
+     "row18_alpha": 0.0,
+     "row18_alpha_admm_present": true,
+     "n_rows": 192,
+     "n_rows_active": 192,
+     "n_dev_vars": 384,
+     "n_dev_vars_fixed": 0,
+     "fixed_dev_values": [],
+     "n_indices_fixed_pair_with_active_row": 0,
+     "charge_value": 0.0,
+     "n_scenarios": 4,
+     "n_periods": 24
+    },
+    "nl": {
+     "labels_off": {
+      "path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/C_5_2025_Winter_labels_off.nl",
+      "sha256": "80945409543ea2406b8f87d9c23550c76a5f2185963cb225c9324bcc558d02e7",
+      "bytes": 4542675,
+      "line1": "g3 1 1 0\t# problem case33_1",
+      "line2": " 36616 29876 1 0 16616 \t# vars, constraints, objectives, ranges, eqns",
+      "n_vars_columns": 36616,
+      "n_cons_rows": 29876,
+      "n_objs": 1,
+      "n_ranges": 0,
+      "n_eqns": 16616
+     },
+     "labels_on": {
+      "path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/C_5_2025_Winter_labels_on.nl",
+      "sha256": "4918cbc11ba5532a1b361707cb2aa53e1f0ecd65085a750b4994e817d12a58d2",
+      "bytes": 9925164,
+      "line1": "g3 1 1 0\t# problem case33_1",
+      "line2": " 36616 29876 1 0 16616 \t# vars, constraints, objectives, ranges, eqns",
+      "n_vars_columns": 36616,
+      "n_cons_rows": 29876,
+      "n_objs": 1,
+      "n_ranges": 0,
+      "n_eqns": 16616,
+      "row_path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/C_5_2025_Winter_labels_on.row",
+      "row_sha256": "12f13aec30cdd1ef21fee69a796a69d836e78a85afc3f919986a24a59d69c9d5",
+      "col_path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/C_5_2025_Winter_labels_on.col",
+      "col_sha256": "6887ad3116d09b655b3108461c684c033849d6cc9122bba41fc1d579b5f70bf5"
+     }
+    }
+   },
+   "DSO:7:2025:Spring": {
+    "arm": "C",
+    "alpha": 0.5,
+    "block": "DSO:7:2025:Spring",
+    "init_function": "_set_row18_inactive_for_initialisation (7a98b25e)",
+    "stub_calls_for_node": 1,
+    "row18_state_at_would_be_solve": {
+     "row18_wired": true,
+     "row18_alpha": 0.0,
+     "row18_alpha_admm_present": true,
+     "n_rows": 192,
+     "n_rows_active": 192,
+     "n_dev_vars": 384,
+     "n_dev_vars_fixed": 0,
+     "fixed_dev_values": [],
+     "n_indices_fixed_pair_with_active_row": 0,
+     "charge_value": 0.0,
+     "n_scenarios": 4,
+     "n_periods": 24
+    },
+    "nl": {
+     "labels_off": {
+      "path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/C_7_2025_Spring_labels_off.nl",
+      "sha256": "22f4b3f6b53b3914580c2890e2c2232f43e8dfcf655a8807c1a16d531024b72d",
+      "bytes": 4567414,
+      "line1": "g3 1 1 0\t# problem case33_2",
+      "line2": " 36616 30128 1 0 16616 \t# vars, constraints, objectives, ranges, eqns",
+      "n_vars_columns": 36616,
+      "n_cons_rows": 30128,
+      "n_objs": 1,
+      "n_ranges": 0,
+      "n_eqns": 16616
+     },
+     "labels_on": {
+      "path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/C_7_2025_Spring_labels_on.nl",
+      "sha256": "f9c626789f097619a2762ba9d821ae7d4a857b8380660846cc88737caaab71ba",
+      "bytes": 9973859,
+      "line1": "g3 1 1 0\t# problem case33_2",
+      "line2": " 36616 30128 1 0 16616 \t# vars, constraints, objectives, ranges, eqns",
+      "n_vars_columns": 36616,
+      "n_cons_rows": 30128,
+      "n_objs": 1,
+      "n_ranges": 0,
+      "n_eqns": 16616,
+      "row_path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/C_7_2025_Spring_labels_on.row",
+      "row_sha256": "7ba810772073ec850e853e174fa00c0a7915ed87a298cc2743bdb8457c51a274",
+      "col_path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/C_7_2025_Spring_labels_on.col",
+      "col_sha256": "4970932c617181e35b71d1bc4dd237344d7449fde4d5a4fd985bf4a143c8bc11"
+     }
+    }
+   },
+   "DSO:7:2025:Summer": {
+    "arm": "C",
+    "alpha": 0.5,
+    "block": "DSO:7:2025:Summer",
+    "init_function": "_set_row18_inactive_for_initialisation (7a98b25e)",
+    "stub_calls_for_node": 1,
+    "row18_state_at_would_be_solve": {
+     "row18_wired": true,
+     "row18_alpha": 0.0,
+     "row18_alpha_admm_present": true,
+     "n_rows": 192,
+     "n_rows_active": 192,
+     "n_dev_vars": 384,
+     "n_dev_vars_fixed": 0,
+     "fixed_dev_values": [],
+     "n_indices_fixed_pair_with_active_row": 0,
+     "charge_value": 0.0,
+     "n_scenarios": 4,
+     "n_periods": 24
+    },
+    "nl": {
+     "labels_off": {
+      "path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/C_7_2025_Summer_labels_off.nl",
+      "sha256": "f1d1e2fcda1a4689be47cc28cfa45c53f616a5eb71dc691e6f50420972c47300",
+      "bytes": 4569452,
+      "line1": "g3 1 1 0\t# problem case33_2",
+      "line2": " 36616 30128 1 0 16616 \t# vars, constraints, objectives, ranges, eqns",
+      "n_vars_columns": 36616,
+      "n_cons_rows": 30128,
+      "n_objs": 1,
+      "n_ranges": 0,
+      "n_eqns": 16616
+     },
+     "labels_on": {
+      "path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/C_7_2025_Summer_labels_on.nl",
+      "sha256": "6eae5f648311bca99c638a6b11f0fb31d345735dae3f2e3bfff3b5f522fee8a4",
+      "bytes": 9975897,
+      "line1": "g3 1 1 0\t# problem case33_2",
+      "line2": " 36616 30128 1 0 16616 \t# vars, constraints, objectives, ranges, eqns",
+      "n_vars_columns": 36616,
+      "n_cons_rows": 30128,
+      "n_objs": 1,
+      "n_ranges": 0,
+      "n_eqns": 16616,
+      "row_path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/C_7_2025_Summer_labels_on.row",
+      "row_sha256": "7ba810772073ec850e853e174fa00c0a7915ed87a298cc2743bdb8457c51a274",
+      "col_path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/C_7_2025_Summer_labels_on.col",
+      "col_sha256": "4970932c617181e35b71d1bc4dd237344d7449fde4d5a4fd985bf4a143c8bc11"
+     }
+    }
+   },
+   "DSO:7:2025:Autumn": {
+    "arm": "C",
+    "alpha": 0.5,
+    "block": "DSO:7:2025:Autumn",
+    "init_function": "_set_row18_inactive_for_initialisation (7a98b25e)",
+    "stub_calls_for_node": 1,
+    "row18_state_at_would_be_solve": {
+     "row18_wired": true,
+     "row18_alpha": 0.0,
+     "row18_alpha_admm_present": true,
+     "n_rows": 192,
+     "n_rows_active": 192,
+     "n_dev_vars": 384,
+     "n_dev_vars_fixed": 0,
+     "fixed_dev_values": [],
+     "n_indices_fixed_pair_with_active_row": 0,
+     "charge_value": 0.0,
+     "n_scenarios": 4,
+     "n_periods": 24
+    },
+    "nl": {
+     "labels_off": {
+      "path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/C_7_2025_Autumn_labels_off.nl",
+      "sha256": "05e283b1703e47e2af541773ef83442754dba29963f9ca2b56155ad1a5046535",
+      "bytes": 4561455,
+      "line1": "g3 1 1 0\t# problem case33_2",
+      "line2": " 36616 30032 1 0 16616 \t# vars, constraints, objectives, ranges, eqns",
+      "n_vars_columns": 36616,
+      "n_cons_rows": 30032,
+      "n_objs": 1,
+      "n_ranges": 0,
+      "n_eqns": 16616
+     },
+     "labels_on": {
+      "path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/C_7_2025_Autumn_labels_on.nl",
+      "sha256": "c23836414f6568ae372d52afd1f81aa5dad16e623d6eababb950c4ff201a5ce6",
+      "bytes": 9958764,
+      "line1": "g3 1 1 0\t# problem case33_2",
+      "line2": " 36616 30032 1 0 16616 \t# vars, constraints, objectives, ranges, eqns",
+      "n_vars_columns": 36616,
+      "n_cons_rows": 30032,
+      "n_objs": 1,
+      "n_ranges": 0,
+      "n_eqns": 16616,
+      "row_path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/C_7_2025_Autumn_labels_on.row",
+      "row_sha256": "f3da51b8ea77627e499e8e02b4a8f394a6bb2056f777ed3ab6c7a4ade6c350f5",
+      "col_path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/C_7_2025_Autumn_labels_on.col",
+      "col_sha256": "a1454781a14d193696dbca979b2f718e2fb8e4f71e492e6a3ab4c672fd46abd8"
+     }
+    }
+   },
+   "DSO:7:2025:Winter": {
+    "arm": "C",
+    "alpha": 0.5,
+    "block": "DSO:7:2025:Winter",
+    "init_function": "_set_row18_inactive_for_initialisation (7a98b25e)",
+    "stub_calls_for_node": 1,
+    "row18_state_at_would_be_solve": {
+     "row18_wired": true,
+     "row18_alpha": 0.0,
+     "row18_alpha_admm_present": true,
+     "n_rows": 192,
+     "n_rows_active": 192,
+     "n_dev_vars": 384,
+     "n_dev_vars_fixed": 0,
+     "fixed_dev_values": [],
+     "n_indices_fixed_pair_with_active_row": 0,
+     "charge_value": 0.0,
+     "n_scenarios": 4,
+     "n_periods": 24
+    },
+    "nl": {
+     "labels_off": {
+      "path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/C_7_2025_Winter_labels_off.nl",
+      "sha256": "539d11abeba0e3adefede08ba39c756636907c2f30b2d50fca31fbb5be14861f",
+      "bytes": 4556559,
+      "line1": "g3 1 1 0\t# problem case33_2",
+      "line2": " 36616 30032 1 0 16616 \t# vars, constraints, objectives, ranges, eqns",
+      "n_vars_columns": 36616,
+      "n_cons_rows": 30032,
+      "n_objs": 1,
+      "n_ranges": 0,
+      "n_eqns": 16616
+     },
+     "labels_on": {
+      "path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/C_7_2025_Winter_labels_on.nl",
+      "sha256": "67d27eb7111c2d7d22f4d9388baaf227716e26bde4e05458787976b82a3feb36",
+      "bytes": 9953868,
+      "line1": "g3 1 1 0\t# problem case33_2",
+      "line2": " 36616 30032 1 0 16616 \t# vars, constraints, objectives, ranges, eqns",
+      "n_vars_columns": 36616,
+      "n_cons_rows": 30032,
+      "n_objs": 1,
+      "n_ranges": 0,
+      "n_eqns": 16616,
+      "row_path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/C_7_2025_Winter_labels_on.row",
+      "row_sha256": "f3da51b8ea77627e499e8e02b4a8f394a6bb2056f777ed3ab6c7a4ade6c350f5",
+      "col_path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/C_7_2025_Winter_labels_on.col",
+      "col_sha256": "a1454781a14d193696dbca979b2f718e2fb8e4f71e492e6a3ab4c672fd46abd8"
+     }
+    }
+   },
+   "DSO:9:2025:Spring": {
+    "arm": "C",
+    "alpha": 0.5,
+    "block": "DSO:9:2025:Spring",
+    "init_function": "_set_row18_inactive_for_initialisation (7a98b25e)",
+    "stub_calls_for_node": 1,
+    "row18_state_at_would_be_solve": {
+     "row18_wired": true,
+     "row18_alpha": 0.0,
+     "row18_alpha_admm_present": true,
+     "n_rows": 192,
+     "n_rows_active": 192,
+     "n_dev_vars": 384,
+     "n_dev_vars_fixed": 0,
+     "fixed_dev_values": [],
+     "n_indices_fixed_pair_with_active_row": 0,
+     "charge_value": 0.0,
+     "n_scenarios": 4,
+     "n_periods": 24
+    },
+    "nl": {
+     "labels_off": {
+      "path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/C_9_2025_Spring_labels_off.nl",
+      "sha256": "949bbdf9501014ed84d5b5bf88ff421dda22331c7b466f69eb79571a7a5d446d",
+      "bytes": 4555520,
+      "line1": "g3 1 1 0\t# problem case33_3",
+      "line2": " 36616 30020 1 0 16616 \t# vars, constraints, objectives, ranges, eqns",
+      "n_vars_columns": 36616,
+      "n_cons_rows": 30020,
+      "n_objs": 1,
+      "n_ranges": 0,
+      "n_eqns": 16616
+     },
+     "labels_on": {
+      "path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/C_9_2025_Spring_labels_on.nl",
+      "sha256": "0554b820aa5428b0b94020bac268039ad294de6600fd5a6af40e99743c89a49a",
+      "bytes": 9951713,
+      "line1": "g3 1 1 0\t# problem case33_3",
+      "line2": " 36616 30020 1 0 16616 \t# vars, constraints, objectives, ranges, eqns",
+      "n_vars_columns": 36616,
+      "n_cons_rows": 30020,
+      "n_objs": 1,
+      "n_ranges": 0,
+      "n_eqns": 16616,
+      "row_path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/C_9_2025_Spring_labels_on.row",
+      "row_sha256": "77d8487dbec8dbf71aad5853dd1fc687ea67774d33d360142c2dbebbaef4c8f9",
+      "col_path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/C_9_2025_Spring_labels_on.col",
+      "col_sha256": "508ecdd0af87a88918c6ff3a19d7dd2fdca1698b50112e5c86bc0f3b7440eabb"
+     }
+    }
+   },
+   "DSO:9:2025:Summer": {
+    "arm": "C",
+    "alpha": 0.5,
+    "block": "DSO:9:2025:Summer",
+    "init_function": "_set_row18_inactive_for_initialisation (7a98b25e)",
+    "stub_calls_for_node": 1,
+    "row18_state_at_would_be_solve": {
+     "row18_wired": true,
+     "row18_alpha": 0.0,
+     "row18_alpha_admm_present": true,
+     "n_rows": 192,
+     "n_rows_active": 192,
+     "n_dev_vars": 384,
+     "n_dev_vars_fixed": 0,
+     "fixed_dev_values": [],
+     "n_indices_fixed_pair_with_active_row": 0,
+     "charge_value": 0.0,
+     "n_scenarios": 4,
+     "n_periods": 24
+    },
+    "nl": {
+     "labels_off": {
+      "path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/C_9_2025_Summer_labels_off.nl",
+      "sha256": "8803f84e34864f516f3e965c0737a0564fd83e3be82e10ff83b2d9529399ed2e",
+      "bytes": 4557658,
+      "line1": "g3 1 1 0\t# problem case33_3",
+      "line2": " 36616 30020 1 0 16616 \t# vars, constraints, objectives, ranges, eqns",
+      "n_vars_columns": 36616,
+      "n_cons_rows": 30020,
+      "n_objs": 1,
+      "n_ranges": 0,
+      "n_eqns": 16616
+     },
+     "labels_on": {
+      "path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/C_9_2025_Summer_labels_on.nl",
+      "sha256": "8cb49cba9f7000afcc135554bf11d160e56bb070fac7240b264664243f669556",
+      "bytes": 9953851,
+      "line1": "g3 1 1 0\t# problem case33_3",
+      "line2": " 36616 30020 1 0 16616 \t# vars, constraints, objectives, ranges, eqns",
+      "n_vars_columns": 36616,
+      "n_cons_rows": 30020,
+      "n_objs": 1,
+      "n_ranges": 0,
+      "n_eqns": 16616,
+      "row_path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/C_9_2025_Summer_labels_on.row",
+      "row_sha256": "77d8487dbec8dbf71aad5853dd1fc687ea67774d33d360142c2dbebbaef4c8f9",
+      "col_path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/C_9_2025_Summer_labels_on.col",
+      "col_sha256": "508ecdd0af87a88918c6ff3a19d7dd2fdca1698b50112e5c86bc0f3b7440eabb"
+     }
+    }
+   },
+   "DSO:9:2025:Autumn": {
+    "arm": "C",
+    "alpha": 0.5,
+    "block": "DSO:9:2025:Autumn",
+    "init_function": "_set_row18_inactive_for_initialisation (7a98b25e)",
+    "stub_calls_for_node": 1,
+    "row18_state_at_would_be_solve": {
+     "row18_wired": true,
+     "row18_alpha": 0.0,
+     "row18_alpha_admm_present": true,
+     "n_rows": 192,
+     "n_rows_active": 192,
+     "n_dev_vars": 384,
+     "n_dev_vars_fixed": 0,
+     "fixed_dev_values": [],
+     "n_indices_fixed_pair_with_active_row": 0,
+     "charge_value": 0.0,
+     "n_scenarios": 4,
+     "n_periods": 24
+    },
+    "nl": {
+     "labels_off": {
+      "path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/C_9_2025_Autumn_labels_off.nl",
+      "sha256": "89bf9660f0248e77d36582acc94d5792700c4323aefb6c6f402fc43ea19a4a88",
+      "bytes": 4545283,
+      "line1": "g3 1 1 0\t# problem case33_3",
+      "line2": " 36616 29876 1 0 16616 \t# vars, constraints, objectives, ranges, eqns",
+      "n_vars_columns": 36616,
+      "n_cons_rows": 29876,
+      "n_objs": 1,
+      "n_ranges": 0,
+      "n_eqns": 16616
+     },
+     "labels_on": {
+      "path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/C_9_2025_Autumn_labels_on.nl",
+      "sha256": "5a8b25d5a94a486029febd40efec9c4ff25d8ab1c6c16ccb6679529b052a94e3",
+      "bytes": 9927772,
+      "line1": "g3 1 1 0\t# problem case33_3",
+      "line2": " 36616 29876 1 0 16616 \t# vars, constraints, objectives, ranges, eqns",
+      "n_vars_columns": 36616,
+      "n_cons_rows": 29876,
+      "n_objs": 1,
+      "n_ranges": 0,
+      "n_eqns": 16616,
+      "row_path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/C_9_2025_Autumn_labels_on.row",
+      "row_sha256": "12f13aec30cdd1ef21fee69a796a69d836e78a85afc3f919986a24a59d69c9d5",
+      "col_path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/C_9_2025_Autumn_labels_on.col",
+      "col_sha256": "6887ad3116d09b655b3108461c684c033849d6cc9122bba41fc1d579b5f70bf5"
+     }
+    }
+   },
+   "DSO:9:2025:Winter": {
+    "arm": "C",
+    "alpha": 0.5,
+    "block": "DSO:9:2025:Winter",
+    "init_function": "_set_row18_inactive_for_initialisation (7a98b25e)",
+    "stub_calls_for_node": 1,
+    "row18_state_at_would_be_solve": {
+     "row18_wired": true,
+     "row18_alpha": 0.0,
+     "row18_alpha_admm_present": true,
+     "n_rows": 192,
+     "n_rows_active": 192,
+     "n_dev_vars": 384,
+     "n_dev_vars_fixed": 0,
+     "fixed_dev_values": [],
+     "n_indices_fixed_pair_with_active_row": 0,
+     "charge_value": 0.0,
+     "n_scenarios": 4,
+     "n_periods": 24
+    },
+    "nl": {
+     "labels_off": {
+      "path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/C_9_2025_Winter_labels_off.nl",
+      "sha256": "fc518ae28c23890fd35b76d52a711ac8422a0e82ecb3c5cfc04ee06ab028c64d",
+      "bytes": 4540476,
+      "line1": "g3 1 1 0\t# problem case33_3",
+      "line2": " 36616 29876 1 0 16616 \t# vars, constraints, objectives, ranges, eqns",
+      "n_vars_columns": 36616,
+      "n_cons_rows": 29876,
+      "n_objs": 1,
+      "n_ranges": 0,
+      "n_eqns": 16616
+     },
+     "labels_on": {
+      "path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/C_9_2025_Winter_labels_on.nl",
+      "sha256": "22c3dd4fc627d69429fe8c8829cf1525f9e1342b1471518916b2ce36411271df",
+      "bytes": 9922965,
+      "line1": "g3 1 1 0\t# problem case33_3",
+      "line2": " 36616 29876 1 0 16616 \t# vars, constraints, objectives, ranges, eqns",
+      "n_vars_columns": 36616,
+      "n_cons_rows": 29876,
+      "n_objs": 1,
+      "n_ranges": 0,
+      "n_eqns": 16616,
+      "row_path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/C_9_2025_Winter_labels_on.row",
+      "row_sha256": "12f13aec30cdd1ef21fee69a796a69d836e78a85afc3f919986a24a59d69c9d5",
+      "col_path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/C_9_2025_Winter_labels_on.col",
+      "col_sha256": "6887ad3116d09b655b3108461c684c033849d6cc9122bba41fc1d579b5f70bf5"
+     }
+    }
+   }
+  },
+  "D": {
+   "DSO:5:2025:Spring": {
+    "arm": "D",
+    "alpha": 0.5,
+    "block": "DSO:5:2025:Spring",
+    "init_function": "negative_control_fix_rows_active (probe-local negative control)",
+    "stub_calls_for_node": 1,
+    "row18_state_at_would_be_solve": {
+     "row18_wired": true,
+     "row18_alpha": 0.5,
+     "row18_alpha_admm_present": false,
+     "n_rows": 192,
+     "n_rows_active": 192,
+     "n_dev_vars": 384,
+     "n_dev_vars_fixed": 384,
+     "fixed_dev_values": [
+      0.0
+     ],
+     "n_indices_fixed_pair_with_active_row": 192,
+     "charge_value": 0.0,
+     "n_scenarios": 4,
+     "n_periods": 24
+    },
+    "nl": {
+     "labels_off": {
+      "path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/D_5_2025_Spring_labels_off.nl",
+      "sha256": "df9e2ae0fca40046a0754dba888346e75aafc04999ac52e2f7af652a72f6f66f",
+      "bytes": 4547268,
+      "line1": "g3 1 1 0\t# problem case33_1",
+      "line2": " 36232 30020 1 0 16616 \t# vars, constraints, objectives, ranges, eqns",
+      "n_vars_columns": 36232,
+      "n_cons_rows": 30020,
+      "n_objs": 1,
+      "n_ranges": 0,
+      "n_eqns": 16616
+     },
+     "labels_on": {
+      "path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/D_5_2025_Spring_labels_on.nl",
+      "sha256": "913fcbcfb0250d774a28d9219c5f779f56c4047eab76f3c4a7f2199af30d2ce8",
+      "bytes": 9924581,
+      "line1": "g3 1 1 0\t# problem case33_1",
+      "line2": " 36232 30020 1 0 16616 \t# vars, constraints, objectives, ranges, eqns",
+      "n_vars_columns": 36232,
+      "n_cons_rows": 30020,
+      "n_objs": 1,
+      "n_ranges": 0,
+      "n_eqns": 16616,
+      "row_path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/D_5_2025_Spring_labels_on.row",
+      "row_sha256": "77d8487dbec8dbf71aad5853dd1fc687ea67774d33d360142c2dbebbaef4c8f9",
+      "col_path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/D_5_2025_Spring_labels_on.col",
+      "col_sha256": "a12d53c2cd24bcb67c35047c0324c2b1e9bcfab6bf9b7ea0878ce692b5d05144"
+     }
+    }
+   },
+   "DSO:5:2025:Summer": {
+    "arm": "D",
+    "alpha": 0.5,
+    "block": "DSO:5:2025:Summer",
+    "init_function": "negative_control_fix_rows_active (probe-local negative control)",
+    "stub_calls_for_node": 1,
+    "row18_state_at_would_be_solve": {
+     "row18_wired": true,
+     "row18_alpha": 0.5,
+     "row18_alpha_admm_present": false,
+     "n_rows": 192,
+     "n_rows_active": 192,
+     "n_dev_vars": 384,
+     "n_dev_vars_fixed": 384,
+     "fixed_dev_values": [
+      0.0
+     ],
+     "n_indices_fixed_pair_with_active_row": 192,
+     "charge_value": 0.0,
+     "n_scenarios": 4,
+     "n_periods": 24
+    },
+    "nl": {
+     "labels_off": {
+      "path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/D_5_2025_Summer_labels_off.nl",
+      "sha256": "739173ebea524986190a696f0b5f4479fbeaabf84520665cc0b04db86cd7388c",
+      "bytes": 4549162,
+      "line1": "g3 1 1 0\t# problem case33_1",
+      "line2": " 36232 30020 1 0 16616 \t# vars, constraints, objectives, ranges, eqns",
+      "n_vars_columns": 36232,
+      "n_cons_rows": 30020,
+      "n_objs": 1,
+      "n_ranges": 0,
+      "n_eqns": 16616
+     },
+     "labels_on": {
+      "path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/D_5_2025_Summer_labels_on.nl",
+      "sha256": "bdf3e2a80352008ba820267be95898c647d3b31568885caa1d392f50ff477ee4",
+      "bytes": 9926475,
+      "line1": "g3 1 1 0\t# problem case33_1",
+      "line2": " 36232 30020 1 0 16616 \t# vars, constraints, objectives, ranges, eqns",
+      "n_vars_columns": 36232,
+      "n_cons_rows": 30020,
+      "n_objs": 1,
+      "n_ranges": 0,
+      "n_eqns": 16616,
+      "row_path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/D_5_2025_Summer_labels_on.row",
+      "row_sha256": "77d8487dbec8dbf71aad5853dd1fc687ea67774d33d360142c2dbebbaef4c8f9",
+      "col_path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/D_5_2025_Summer_labels_on.col",
+      "col_sha256": "a12d53c2cd24bcb67c35047c0324c2b1e9bcfab6bf9b7ea0878ce692b5d05144"
+     }
+    }
+   },
+   "DSO:5:2025:Autumn": {
+    "arm": "D",
+    "alpha": 0.5,
+    "block": "DSO:5:2025:Autumn",
+    "init_function": "negative_control_fix_rows_active (probe-local negative control)",
+    "stub_calls_for_node": 1,
+    "row18_state_at_would_be_solve": {
+     "row18_wired": true,
+     "row18_alpha": 0.5,
+     "row18_alpha_admm_present": false,
+     "n_rows": 192,
+     "n_rows_active": 192,
+     "n_dev_vars": 384,
+     "n_dev_vars_fixed": 384,
+     "fixed_dev_values": [
+      0.0
+     ],
+     "n_indices_fixed_pair_with_active_row": 192,
+     "charge_value": 0.0,
+     "n_scenarios": 4,
+     "n_periods": 24
+    },
+    "nl": {
+     "labels_off": {
+      "path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/D_5_2025_Autumn_labels_off.nl",
+      "sha256": "928ef34791a1fc8870972ee511e8523cf1edf32c3c471bfde834c5dd9c4ecfc5",
+      "bytes": 4536860,
+      "line1": "g3 1 1 0\t# problem case33_1",
+      "line2": " 36232 29876 1 0 16616 \t# vars, constraints, objectives, ranges, eqns",
+      "n_vars_columns": 36232,
+      "n_cons_rows": 29876,
+      "n_objs": 1,
+      "n_ranges": 0,
+      "n_eqns": 16616
+     },
+     "labels_on": {
+      "path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/D_5_2025_Autumn_labels_on.nl",
+      "sha256": "6c83779a259d11f8c2a7bbd3b42b8c22abf4dcc27ddeb079a1c3e6fa207052df",
+      "bytes": 9900469,
+      "line1": "g3 1 1 0\t# problem case33_1",
+      "line2": " 36232 29876 1 0 16616 \t# vars, constraints, objectives, ranges, eqns",
+      "n_vars_columns": 36232,
+      "n_cons_rows": 29876,
+      "n_objs": 1,
+      "n_ranges": 0,
+      "n_eqns": 16616,
+      "row_path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/D_5_2025_Autumn_labels_on.row",
+      "row_sha256": "12f13aec30cdd1ef21fee69a796a69d836e78a85afc3f919986a24a59d69c9d5",
+      "col_path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/D_5_2025_Autumn_labels_on.col",
+      "col_sha256": "9be5f8ab52cce993462e48441a6ecb4d368382d16e18422bd322ee458d92ab6c"
+     }
+    }
+   },
+   "DSO:5:2025:Winter": {
+    "arm": "D",
+    "alpha": 0.5,
+    "block": "DSO:5:2025:Winter",
+    "init_function": "negative_control_fix_rows_active (probe-local negative control)",
+    "stub_calls_for_node": 1,
+    "row18_state_at_would_be_solve": {
+     "row18_wired": true,
+     "row18_alpha": 0.5,
+     "row18_alpha_admm_present": false,
+     "n_rows": 192,
+     "n_rows_active": 192,
+     "n_dev_vars": 384,
+     "n_dev_vars_fixed": 384,
+     "fixed_dev_values": [
+      0.0
+     ],
+     "n_indices_fixed_pair_with_active_row": 192,
+     "charge_value": 0.0,
+     "n_scenarios": 4,
+     "n_periods": 24
+    },
+    "nl": {
+     "labels_off": {
+      "path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/D_5_2025_Winter_labels_off.nl",
+      "sha256": "94d7d8d566d03a0b3d61fc4faca9928f6748cdc3b3b8bc8d1925a237651eef6f",
+      "bytes": 4532038,
+      "line1": "g3 1 1 0\t# problem case33_1",
+      "line2": " 36232 29876 1 0 16616 \t# vars, constraints, objectives, ranges, eqns",
+      "n_vars_columns": 36232,
+      "n_cons_rows": 29876,
+      "n_objs": 1,
+      "n_ranges": 0,
+      "n_eqns": 16616
+     },
+     "labels_on": {
+      "path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/D_5_2025_Winter_labels_on.nl",
+      "sha256": "aa34985e08eb236c8ac6d74d2c23bf6bf13a426603609d4120bca23bb4e18634",
+      "bytes": 9895647,
+      "line1": "g3 1 1 0\t# problem case33_1",
+      "line2": " 36232 29876 1 0 16616 \t# vars, constraints, objectives, ranges, eqns",
+      "n_vars_columns": 36232,
+      "n_cons_rows": 29876,
+      "n_objs": 1,
+      "n_ranges": 0,
+      "n_eqns": 16616,
+      "row_path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/D_5_2025_Winter_labels_on.row",
+      "row_sha256": "12f13aec30cdd1ef21fee69a796a69d836e78a85afc3f919986a24a59d69c9d5",
+      "col_path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/D_5_2025_Winter_labels_on.col",
+      "col_sha256": "9be5f8ab52cce993462e48441a6ecb4d368382d16e18422bd322ee458d92ab6c"
+     }
+    }
+   },
+   "DSO:7:2025:Spring": {
+    "arm": "D",
+    "alpha": 0.5,
+    "block": "DSO:7:2025:Spring",
+    "init_function": "negative_control_fix_rows_active (probe-local negative control)",
+    "stub_calls_for_node": 1,
+    "row18_state_at_would_be_solve": {
+     "row18_wired": true,
+     "row18_alpha": 0.5,
+     "row18_alpha_admm_present": false,
+     "n_rows": 192,
+     "n_rows_active": 192,
+     "n_dev_vars": 384,
+     "n_dev_vars_fixed": 384,
+     "fixed_dev_values": [
+      0.0
+     ],
+     "n_indices_fixed_pair_with_active_row": 192,
+     "charge_value": 0.0,
+     "n_scenarios": 4,
+     "n_periods": 24
+    },
+    "nl": {
+     "labels_off": {
+      "path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/D_7_2025_Spring_labels_off.nl",
+      "sha256": "2e52a90274d744e248b03365e4e3189be17ddb37aa1bcf420002edb8980e0840",
+      "bytes": 4556777,
+      "line1": "g3 1 1 0\t# problem case33_2",
+      "line2": " 36232 30128 1 0 16616 \t# vars, constraints, objectives, ranges, eqns",
+      "n_vars_columns": 36232,
+      "n_cons_rows": 30128,
+      "n_objs": 1,
+      "n_ranges": 0,
+      "n_eqns": 16616
+     },
+     "labels_on": {
+      "path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/D_7_2025_Spring_labels_on.nl",
+      "sha256": "a36a2924a91146ce62f5532ee52804510c9dc73cee2c8537ba1e635618192006",
+      "bytes": 9944342,
+      "line1": "g3 1 1 0\t# problem case33_2",
+      "line2": " 36232 30128 1 0 16616 \t# vars, constraints, objectives, ranges, eqns",
+      "n_vars_columns": 36232,
+      "n_cons_rows": 30128,
+      "n_objs": 1,
+      "n_ranges": 0,
+      "n_eqns": 16616,
+      "row_path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/D_7_2025_Spring_labels_on.row",
+      "row_sha256": "7ba810772073ec850e853e174fa00c0a7915ed87a298cc2743bdb8457c51a274",
+      "col_path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/D_7_2025_Spring_labels_on.col",
+      "col_sha256": "73585c925db5515c99cf06252bad0ea1d7ae31d3c54a9b45046c22baba60e7ef"
+     }
+    }
+   },
+   "DSO:7:2025:Summer": {
+    "arm": "D",
+    "alpha": 0.5,
+    "block": "DSO:7:2025:Summer",
+    "init_function": "negative_control_fix_rows_active (probe-local negative control)",
+    "stub_calls_for_node": 1,
+    "row18_state_at_would_be_solve": {
+     "row18_wired": true,
+     "row18_alpha": 0.5,
+     "row18_alpha_admm_present": false,
+     "n_rows": 192,
+     "n_rows_active": 192,
+     "n_dev_vars": 384,
+     "n_dev_vars_fixed": 384,
+     "fixed_dev_values": [
+      0.0
+     ],
+     "n_indices_fixed_pair_with_active_row": 192,
+     "charge_value": 0.0,
+     "n_scenarios": 4,
+     "n_periods": 24
+    },
+    "nl": {
+     "labels_off": {
+      "path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/D_7_2025_Summer_labels_off.nl",
+      "sha256": "abf16a1bb69bea66867c69c3cd4f8ee535078dc3f97dbcafc6ea60d62c3fd5b4",
+      "bytes": 4558815,
+      "line1": "g3 1 1 0\t# problem case33_2",
+      "line2": " 36232 30128 1 0 16616 \t# vars, constraints, objectives, ranges, eqns",
+      "n_vars_columns": 36232,
+      "n_cons_rows": 30128,
+      "n_objs": 1,
+      "n_ranges": 0,
+      "n_eqns": 16616
+     },
+     "labels_on": {
+      "path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/D_7_2025_Summer_labels_on.nl",
+      "sha256": "754b9065ce66c8c7ad344120d1a54d091bfa463557f5037c50e03613e01f015f",
+      "bytes": 9946380,
+      "line1": "g3 1 1 0\t# problem case33_2",
+      "line2": " 36232 30128 1 0 16616 \t# vars, constraints, objectives, ranges, eqns",
+      "n_vars_columns": 36232,
+      "n_cons_rows": 30128,
+      "n_objs": 1,
+      "n_ranges": 0,
+      "n_eqns": 16616,
+      "row_path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/D_7_2025_Summer_labels_on.row",
+      "row_sha256": "7ba810772073ec850e853e174fa00c0a7915ed87a298cc2743bdb8457c51a274",
+      "col_path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/D_7_2025_Summer_labels_on.col",
+      "col_sha256": "73585c925db5515c99cf06252bad0ea1d7ae31d3c54a9b45046c22baba60e7ef"
+     }
+    }
+   },
+   "DSO:7:2025:Autumn": {
+    "arm": "D",
+    "alpha": 0.5,
+    "block": "DSO:7:2025:Autumn",
+    "init_function": "negative_control_fix_rows_active (probe-local negative control)",
+    "stub_calls_for_node": 1,
+    "row18_state_at_would_be_solve": {
+     "row18_wired": true,
+     "row18_alpha": 0.5,
+     "row18_alpha_admm_present": false,
+     "n_rows": 192,
+     "n_rows_active": 192,
+     "n_dev_vars": 384,
+     "n_dev_vars_fixed": 384,
+     "fixed_dev_values": [
+      0.0
+     ],
+     "n_indices_fixed_pair_with_active_row": 192,
+     "charge_value": 0.0,
+     "n_scenarios": 4,
+     "n_periods": 24
+    },
+    "nl": {
+     "labels_off": {
+      "path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/D_7_2025_Autumn_labels_off.nl",
+      "sha256": "6977c624d16cd16b80a4b2b4dc4e5863ba9f981799f5fe7c67e14b7f9a73a27b",
+      "bytes": 4550818,
+      "line1": "g3 1 1 0\t# problem case33_2",
+      "line2": " 36232 30032 1 0 16616 \t# vars, constraints, objectives, ranges, eqns",
+      "n_vars_columns": 36232,
+      "n_cons_rows": 30032,
+      "n_objs": 1,
+      "n_ranges": 0,
+      "n_eqns": 16616
+     },
+     "labels_on": {
+      "path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/D_7_2025_Autumn_labels_on.nl",
+      "sha256": "f13557c18b23ca4821766fd848fbe5a8118dc5635aceec45e134721bd139022e",
+      "bytes": 9929247,
+      "line1": "g3 1 1 0\t# problem case33_2",
+      "line2": " 36232 30032 1 0 16616 \t# vars, constraints, objectives, ranges, eqns",
+      "n_vars_columns": 36232,
+      "n_cons_rows": 30032,
+      "n_objs": 1,
+      "n_ranges": 0,
+      "n_eqns": 16616,
+      "row_path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/D_7_2025_Autumn_labels_on.row",
+      "row_sha256": "f3da51b8ea77627e499e8e02b4a8f394a6bb2056f777ed3ab6c7a4ade6c350f5",
+      "col_path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/D_7_2025_Autumn_labels_on.col",
+      "col_sha256": "11c9bf6c48470c28d0d3edf6db9d1858d42035508c08888262208cca9826b200"
+     }
+    }
+   },
+   "DSO:7:2025:Winter": {
+    "arm": "D",
+    "alpha": 0.5,
+    "block": "DSO:7:2025:Winter",
+    "init_function": "negative_control_fix_rows_active (probe-local negative control)",
+    "stub_calls_for_node": 1,
+    "row18_state_at_would_be_solve": {
+     "row18_wired": true,
+     "row18_alpha": 0.5,
+     "row18_alpha_admm_present": false,
+     "n_rows": 192,
+     "n_rows_active": 192,
+     "n_dev_vars": 384,
+     "n_dev_vars_fixed": 384,
+     "fixed_dev_values": [
+      0.0
+     ],
+     "n_indices_fixed_pair_with_active_row": 192,
+     "charge_value": 0.0,
+     "n_scenarios": 4,
+     "n_periods": 24
+    },
+    "nl": {
+     "labels_off": {
+      "path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/D_7_2025_Winter_labels_off.nl",
+      "sha256": "f7ed3e8222e1b5ac5ca6587e75feaf17d0b407c3fd978b7a1e095c683bcd6abb",
+      "bytes": 4545922,
+      "line1": "g3 1 1 0\t# problem case33_2",
+      "line2": " 36232 30032 1 0 16616 \t# vars, constraints, objectives, ranges, eqns",
+      "n_vars_columns": 36232,
+      "n_cons_rows": 30032,
+      "n_objs": 1,
+      "n_ranges": 0,
+      "n_eqns": 16616
+     },
+     "labels_on": {
+      "path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/D_7_2025_Winter_labels_on.nl",
+      "sha256": "489ebfb9fd4692b50b6df59394f18caa786922624119875478d7c29e48046945",
+      "bytes": 9924351,
+      "line1": "g3 1 1 0\t# problem case33_2",
+      "line2": " 36232 30032 1 0 16616 \t# vars, constraints, objectives, ranges, eqns",
+      "n_vars_columns": 36232,
+      "n_cons_rows": 30032,
+      "n_objs": 1,
+      "n_ranges": 0,
+      "n_eqns": 16616,
+      "row_path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/D_7_2025_Winter_labels_on.row",
+      "row_sha256": "f3da51b8ea77627e499e8e02b4a8f394a6bb2056f777ed3ab6c7a4ade6c350f5",
+      "col_path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/D_7_2025_Winter_labels_on.col",
+      "col_sha256": "11c9bf6c48470c28d0d3edf6db9d1858d42035508c08888262208cca9826b200"
+     }
+    }
+   },
+   "DSO:9:2025:Spring": {
+    "arm": "D",
+    "alpha": 0.5,
+    "block": "DSO:9:2025:Spring",
+    "init_function": "negative_control_fix_rows_active (probe-local negative control)",
+    "stub_calls_for_node": 1,
+    "row18_state_at_would_be_solve": {
+     "row18_wired": true,
+     "row18_alpha": 0.5,
+     "row18_alpha_admm_present": false,
+     "n_rows": 192,
+     "n_rows_active": 192,
+     "n_dev_vars": 384,
+     "n_dev_vars_fixed": 384,
+     "fixed_dev_values": [
+      0.0
+     ],
+     "n_indices_fixed_pair_with_active_row": 192,
+     "charge_value": 0.0,
+     "n_scenarios": 4,
+     "n_periods": 24
+    },
+    "nl": {
+     "labels_off": {
+      "path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/D_9_2025_Spring_labels_off.nl",
+      "sha256": "05b776ad05585cea28355347d7d1416ed3a184150afc5562131ca8736fb237bf",
+      "bytes": 4544884,
+      "line1": "g3 1 1 0\t# problem case33_3",
+      "line2": " 36232 30020 1 0 16616 \t# vars, constraints, objectives, ranges, eqns",
+      "n_vars_columns": 36232,
+      "n_cons_rows": 30020,
+      "n_objs": 1,
+      "n_ranges": 0,
+      "n_eqns": 16616
+     },
+     "labels_on": {
+      "path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/D_9_2025_Spring_labels_on.nl",
+      "sha256": "c7ce49b782ae5eb123a5322f265fe9612f757e2a72625ad9721b4c56cf288eb0",
+      "bytes": 9922197,
+      "line1": "g3 1 1 0\t# problem case33_3",
+      "line2": " 36232 30020 1 0 16616 \t# vars, constraints, objectives, ranges, eqns",
+      "n_vars_columns": 36232,
+      "n_cons_rows": 30020,
+      "n_objs": 1,
+      "n_ranges": 0,
+      "n_eqns": 16616,
+      "row_path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/D_9_2025_Spring_labels_on.row",
+      "row_sha256": "77d8487dbec8dbf71aad5853dd1fc687ea67774d33d360142c2dbebbaef4c8f9",
+      "col_path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/D_9_2025_Spring_labels_on.col",
+      "col_sha256": "a12d53c2cd24bcb67c35047c0324c2b1e9bcfab6bf9b7ea0878ce692b5d05144"
+     }
+    }
+   },
+   "DSO:9:2025:Summer": {
+    "arm": "D",
+    "alpha": 0.5,
+    "block": "DSO:9:2025:Summer",
+    "init_function": "negative_control_fix_rows_active (probe-local negative control)",
+    "stub_calls_for_node": 1,
+    "row18_state_at_would_be_solve": {
+     "row18_wired": true,
+     "row18_alpha": 0.5,
+     "row18_alpha_admm_present": false,
+     "n_rows": 192,
+     "n_rows_active": 192,
+     "n_dev_vars": 384,
+     "n_dev_vars_fixed": 384,
+     "fixed_dev_values": [
+      0.0
+     ],
+     "n_indices_fixed_pair_with_active_row": 192,
+     "charge_value": 0.0,
+     "n_scenarios": 4,
+     "n_periods": 24
+    },
+    "nl": {
+     "labels_off": {
+      "path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/D_9_2025_Summer_labels_off.nl",
+      "sha256": "70d1db2015ea012e69dc5994b83bc9a85daf6684395a4bde7091aba21372eba3",
+      "bytes": 4547022,
+      "line1": "g3 1 1 0\t# problem case33_3",
+      "line2": " 36232 30020 1 0 16616 \t# vars, constraints, objectives, ranges, eqns",
+      "n_vars_columns": 36232,
+      "n_cons_rows": 30020,
+      "n_objs": 1,
+      "n_ranges": 0,
+      "n_eqns": 16616
+     },
+     "labels_on": {
+      "path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/D_9_2025_Summer_labels_on.nl",
+      "sha256": "6222239e9c88611049957aa8af4661aced0c4a1bed3af3958a67a9550306de27",
+      "bytes": 9924335,
+      "line1": "g3 1 1 0\t# problem case33_3",
+      "line2": " 36232 30020 1 0 16616 \t# vars, constraints, objectives, ranges, eqns",
+      "n_vars_columns": 36232,
+      "n_cons_rows": 30020,
+      "n_objs": 1,
+      "n_ranges": 0,
+      "n_eqns": 16616,
+      "row_path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/D_9_2025_Summer_labels_on.row",
+      "row_sha256": "77d8487dbec8dbf71aad5853dd1fc687ea67774d33d360142c2dbebbaef4c8f9",
+      "col_path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/D_9_2025_Summer_labels_on.col",
+      "col_sha256": "a12d53c2cd24bcb67c35047c0324c2b1e9bcfab6bf9b7ea0878ce692b5d05144"
+     }
+    }
+   },
+   "DSO:9:2025:Autumn": {
+    "arm": "D",
+    "alpha": 0.5,
+    "block": "DSO:9:2025:Autumn",
+    "init_function": "negative_control_fix_rows_active (probe-local negative control)",
+    "stub_calls_for_node": 1,
+    "row18_state_at_would_be_solve": {
+     "row18_wired": true,
+     "row18_alpha": 0.5,
+     "row18_alpha_admm_present": false,
+     "n_rows": 192,
+     "n_rows_active": 192,
+     "n_dev_vars": 384,
+     "n_dev_vars_fixed": 384,
+     "fixed_dev_values": [
+      0.0
+     ],
+     "n_indices_fixed_pair_with_active_row": 192,
+     "charge_value": 0.0,
+     "n_scenarios": 4,
+     "n_periods": 24
+    },
+    "nl": {
+     "labels_off": {
+      "path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/D_9_2025_Autumn_labels_off.nl",
+      "sha256": "125701b219335980a6f62742f59e660a09a3e790f427978ea2c62e54cde22317",
+      "bytes": 4534646,
+      "line1": "g3 1 1 0\t# problem case33_3",
+      "line2": " 36232 29876 1 0 16616 \t# vars, constraints, objectives, ranges, eqns",
+      "n_vars_columns": 36232,
+      "n_cons_rows": 29876,
+      "n_objs": 1,
+      "n_ranges": 0,
+      "n_eqns": 16616
+     },
+     "labels_on": {
+      "path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/D_9_2025_Autumn_labels_on.nl",
+      "sha256": "72ac41e861f2daeb616df767d513897d1629a9a9059849bbff56e2653cb0cdf2",
+      "bytes": 9898255,
+      "line1": "g3 1 1 0\t# problem case33_3",
+      "line2": " 36232 29876 1 0 16616 \t# vars, constraints, objectives, ranges, eqns",
+      "n_vars_columns": 36232,
+      "n_cons_rows": 29876,
+      "n_objs": 1,
+      "n_ranges": 0,
+      "n_eqns": 16616,
+      "row_path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/D_9_2025_Autumn_labels_on.row",
+      "row_sha256": "12f13aec30cdd1ef21fee69a796a69d836e78a85afc3f919986a24a59d69c9d5",
+      "col_path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/D_9_2025_Autumn_labels_on.col",
+      "col_sha256": "9be5f8ab52cce993462e48441a6ecb4d368382d16e18422bd322ee458d92ab6c"
+     }
+    }
+   },
+   "DSO:9:2025:Winter": {
+    "arm": "D",
+    "alpha": 0.5,
+    "block": "DSO:9:2025:Winter",
+    "init_function": "negative_control_fix_rows_active (probe-local negative control)",
+    "stub_calls_for_node": 1,
+    "row18_state_at_would_be_solve": {
+     "row18_wired": true,
+     "row18_alpha": 0.5,
+     "row18_alpha_admm_present": false,
+     "n_rows": 192,
+     "n_rows_active": 192,
+     "n_dev_vars": 384,
+     "n_dev_vars_fixed": 384,
+     "fixed_dev_values": [
+      0.0
+     ],
+     "n_indices_fixed_pair_with_active_row": 192,
+     "charge_value": 0.0,
+     "n_scenarios": 4,
+     "n_periods": 24
+    },
+    "nl": {
+     "labels_off": {
+      "path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/D_9_2025_Winter_labels_off.nl",
+      "sha256": "7388ed67128f32eecec3ed3552dea979689df93e4ea2b0af55a367bc3e2ccf03",
+      "bytes": 4529839,
+      "line1": "g3 1 1 0\t# problem case33_3",
+      "line2": " 36232 29876 1 0 16616 \t# vars, constraints, objectives, ranges, eqns",
+      "n_vars_columns": 36232,
+      "n_cons_rows": 29876,
+      "n_objs": 1,
+      "n_ranges": 0,
+      "n_eqns": 16616
+     },
+     "labels_on": {
+      "path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/D_9_2025_Winter_labels_on.nl",
+      "sha256": "701b43975cc44557601643205a7f533284d7f182a6e5a1fd4ba77dec4e384a2b",
+      "bytes": 9893448,
+      "line1": "g3 1 1 0\t# problem case33_3",
+      "line2": " 36232 29876 1 0 16616 \t# vars, constraints, objectives, ranges, eqns",
+      "n_vars_columns": 36232,
+      "n_cons_rows": 29876,
+      "n_objs": 1,
+      "n_ranges": 0,
+      "n_eqns": 16616,
+      "row_path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/D_9_2025_Winter_labels_on.row",
+      "row_sha256": "12f13aec30cdd1ef21fee69a796a69d836e78a85afc3f919986a24a59d69c9d5",
+      "col_path": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w57_nl/r2/nl/D_9_2025_Winter_labels_on.col",
+      "col_sha256": "9be5f8ab52cce993462e48441a6ecb4d368382d16e18422bd322ee458d92ab6c"
+     }
+    }
+   }
+  }
+ },
+ "stub_calls_per_arm_node": {
+  "A:5": 1,
+  "A:7": 1,
+  "A:9": 1,
+  "A_repeat:5": 1,
+  "A_repeat:7": 1,
+  "A_repeat:9": 1,
+  "B:5": 1,
+  "B:7": 1,
+  "B:9": 1,
+  "C:5": 1,
+  "C:7": 1,
+  "C:9": 1,
+  "D:5": 1,
+  "D:7": 1,
+  "D:9": 1
+ },
+ "header_counts_identical_between_label_settings": true,
+ "labels_on_row_col_written_for_every_arm_and_block": true,
+ "every_arm_wrote_every_declared_block": true,
+ "one_stub_call_per_arm_node": true,
+ "per_block": {
+  "DSO:5:2025:Spring": {
+   "n_scenarios": 4,
+   "n_periods": 24,
+   "columns_by_arm": {
+    "A": 36232,
+    "A_repeat": 36232,
+    "B": 36232,
+    "C": 36616,
+    "D": 36232
+   },
+   "rows_by_arm": {
+    "A": 29828,
+    "A_repeat": 29828,
+    "B": 29828,
+    "C": 30020,
+    "D": 30020
+   },
+   "sha256_labels_off_by_arm": {
+    "A": "a65a93ff3c49f0e1362dea6b100b5b85ef315c6aa59e7aa68cf5fb6556e9d87d",
+    "A_repeat": "a65a93ff3c49f0e1362dea6b100b5b85ef315c6aa59e7aa68cf5fb6556e9d87d",
+    "B": "a65a93ff3c49f0e1362dea6b100b5b85ef315c6aa59e7aa68cf5fb6556e9d87d",
+    "C": "8357ddf7a2460e0ae21905c7b791b9ff330dd72ed9c21aa837576fa0028aa3ed",
+    "D": "df9e2ae0fca40046a0754dba888346e75aafc04999ac52e2f7af652a72f6f66f"
+   },
+   "sha256_labels_on_by_arm": {
+    "A": "8379c362fb5e261da8e0c1fe6605803a671820d18e05b21e396c2a506ccfe968",
+    "A_repeat": "8379c362fb5e261da8e0c1fe6605803a671820d18e05b21e396c2a506ccfe968",
+    "B": "8379c362fb5e261da8e0c1fe6605803a671820d18e05b21e396c2a506ccfe968",
+    "C": "f3eed059e80cdc9091118ebe3b2cad85dfa8cfc8b1a1f02e5baf2e3b3c397a07",
+    "D": "913fcbcfb0250d774a28d9219c5f779f56c4047eab76f3c4a7f2199af30d2ce8"
+   },
+   "arm_state_assertions": {
+    "A_not_wired": true,
+    "B_structural_init_state": true,
+    "C_w51_param_only_state": true,
+    "D_negative_control_state": true
+   },
+   "predictions": {
+    "P0_control_A_equals_A_repeat": {
+     "outcome": {
+      "labels_off": {
+       "nl": true
+      },
+      "labels_on": {
+       "nl": true,
+       "row": true,
+       "col": true
+      }
+     },
+     "holds": true
+    },
+    "P1_A_equals_B": {
+     "outcome": {
+      "labels_off": {
+       "nl": true
+      },
+      "labels_on": {
+       "nl": true,
+       "row": true,
+       "col": true
+      }
+     },
+     "holds": true,
+     "on_false": "STOP and report the difference; no workaround"
+    },
+    "P2_C_minus_A": {
+     "n": 4,
+     "T": 24,
+     "column_delta": 384,
+     "row_delta": 192,
+     "expected_column_delta": 384,
+     "expected_row_delta": 192,
+     "extra_names": {
+      "col": {
+       "n_x": 36232,
+       "n_y": 36616,
+       "only_in_y_by_family": {
+        "row18_dev_p_down": 96,
+        "row18_dev_p_up": 96,
+        "row18_dev_q_down": 96,
+        "row18_dev_q_up": 96
+       },
+       "only_in_x_by_family": {},
+       "only_in_x_first_20": []
+      },
+      "row": {
+       "n_x": 29829,
+       "n_y": 30021,
+       "only_in_y_by_family": {
+        "row18_dev_p_def": 96,
+        "row18_dev_q_def": 96
+       },
+       "only_in_x_by_family": {},
+       "only_in_x_first_20": []
+      }
+     },
+     "holds": true
+    },
+    "P3_D_same_columns_plus_2nT_rows": {
+     "column_delta": 0,
+     "row_delta": 192,
+     "expected_column_delta": 0,
+     "expected_row_delta": 192,
+     "col_file_identical_to_A": true,
+     "names_vs_A": {
+      "col": {
+       "n_x": 36232,
+       "n_y": 36232,
+       "only_in_y_by_family": {},
+       "only_in_x_by_family": {},
+       "only_in_x_first_20": []
+      },
+      "row": {
+       "n_x": 29829,
+       "n_y": 30021,
+       "only_in_y_by_family": {
+        "row18_dev_p_def": 96,
+        "row18_dev_q_def": 96
+       },
+       "only_in_x_by_family": {},
+       "only_in_x_first_20": []
+      }
+     },
+     "holds": true
+    },
+    "P4_reproduces_r1_hashes": {
+     "r1_hashes": {
+      "labels_off": {
+       "nl": "a65a93ff3c49f0e1362dea6b100b5b85ef315c6aa59e7aa68cf5fb6556e9d87d"
+      },
+      "labels_on": {
+       "nl": "8379c362fb5e261da8e0c1fe6605803a671820d18e05b21e396c2a506ccfe968",
+       "row": "59af856a5034545b99343c68d767abcf794f873663a74964bd81c8430b69b389",
+       "col": "a12d53c2cd24bcb67c35047c0324c2b1e9bcfab6bf9b7ea0878ce692b5d05144"
+      }
+     },
+     "outcome": {
+      "A": {
+       "labels_off": {
+        "nl": true
+       },
+       "labels_on": {
+        "nl": true,
+        "row": true,
+        "col": true
+       }
+      },
+      "B": {
+       "labels_off": {
+        "nl": true
+       },
+       "labels_on": {
+        "nl": true,
+        "row": true,
+        "col": true
+       }
+      }
+     },
+     "holds": true
+    }
+   }
+  },
+  "DSO:5:2025:Summer": {
+   "n_scenarios": 4,
+   "n_periods": 24,
+   "columns_by_arm": {
+    "A": 36232,
+    "A_repeat": 36232,
+    "B": 36232,
+    "C": 36616,
+    "D": 36232
+   },
+   "rows_by_arm": {
+    "A": 29828,
+    "A_repeat": 29828,
+    "B": 29828,
+    "C": 30020,
+    "D": 30020
+   },
+   "sha256_labels_off_by_arm": {
+    "A": "b72863106af4c5fbf67bd1a0020a1c1c72294edd83b87d6418911f75bdec0df4",
+    "A_repeat": "b72863106af4c5fbf67bd1a0020a1c1c72294edd83b87d6418911f75bdec0df4",
+    "B": "b72863106af4c5fbf67bd1a0020a1c1c72294edd83b87d6418911f75bdec0df4",
+    "C": "ded80672f998639b9eb97db1cdadea3835628f8836dd7db47a4f46f2d94602c2",
+    "D": "739173ebea524986190a696f0b5f4479fbeaabf84520665cc0b04db86cd7388c"
+   },
+   "sha256_labels_on_by_arm": {
+    "A": "445b7093e88c9a77c72d963cc3486962d648e61bb5c8f8fb4db4d9deb835840d",
+    "A_repeat": "445b7093e88c9a77c72d963cc3486962d648e61bb5c8f8fb4db4d9deb835840d",
+    "B": "445b7093e88c9a77c72d963cc3486962d648e61bb5c8f8fb4db4d9deb835840d",
+    "C": "2f79640b8aa0a3c27f9e8407cf09c69200d47fa91855afbb0cfdecf81391e8d5",
+    "D": "bdf3e2a80352008ba820267be95898c647d3b31568885caa1d392f50ff477ee4"
+   },
+   "arm_state_assertions": {
+    "A_not_wired": true,
+    "B_structural_init_state": true,
+    "C_w51_param_only_state": true,
+    "D_negative_control_state": true
+   },
+   "predictions": {
+    "P0_control_A_equals_A_repeat": {
+     "outcome": {
+      "labels_off": {
+       "nl": true
+      },
+      "labels_on": {
+       "nl": true,
+       "row": true,
+       "col": true
+      }
+     },
+     "holds": true
+    },
+    "P1_A_equals_B": {
+     "outcome": {
+      "labels_off": {
+       "nl": true
+      },
+      "labels_on": {
+       "nl": true,
+       "row": true,
+       "col": true
+      }
+     },
+     "holds": true,
+     "on_false": "STOP and report the difference; no workaround"
+    },
+    "P2_C_minus_A": {
+     "n": 4,
+     "T": 24,
+     "column_delta": 384,
+     "row_delta": 192,
+     "expected_column_delta": 384,
+     "expected_row_delta": 192,
+     "extra_names": {
+      "col": {
+       "n_x": 36232,
+       "n_y": 36616,
+       "only_in_y_by_family": {
+        "row18_dev_p_down": 96,
+        "row18_dev_p_up": 96,
+        "row18_dev_q_down": 96,
+        "row18_dev_q_up": 96
+       },
+       "only_in_x_by_family": {},
+       "only_in_x_first_20": []
+      },
+      "row": {
+       "n_x": 29829,
+       "n_y": 30021,
+       "only_in_y_by_family": {
+        "row18_dev_p_def": 96,
+        "row18_dev_q_def": 96
+       },
+       "only_in_x_by_family": {},
+       "only_in_x_first_20": []
+      }
+     },
+     "holds": true
+    },
+    "P3_D_same_columns_plus_2nT_rows": {
+     "column_delta": 0,
+     "row_delta": 192,
+     "expected_column_delta": 0,
+     "expected_row_delta": 192,
+     "col_file_identical_to_A": true,
+     "names_vs_A": {
+      "col": {
+       "n_x": 36232,
+       "n_y": 36232,
+       "only_in_y_by_family": {},
+       "only_in_x_by_family": {},
+       "only_in_x_first_20": []
+      },
+      "row": {
+       "n_x": 29829,
+       "n_y": 30021,
+       "only_in_y_by_family": {
+        "row18_dev_p_def": 96,
+        "row18_dev_q_def": 96
+       },
+       "only_in_x_by_family": {},
+       "only_in_x_first_20": []
+      }
+     },
+     "holds": true
+    }
+   }
+  },
+  "DSO:5:2025:Autumn": {
+   "n_scenarios": 4,
+   "n_periods": 24,
+   "columns_by_arm": {
+    "A": 36232,
+    "A_repeat": 36232,
+    "B": 36232,
+    "C": 36616,
+    "D": 36232
+   },
+   "rows_by_arm": {
+    "A": 29684,
+    "A_repeat": 29684,
+    "B": 29684,
+    "C": 29876,
+    "D": 29876
+   },
+   "sha256_labels_off_by_arm": {
+    "A": "ac23f62616ba0c63839a055239a151455b3a0cad4f0cf0ee7a705a726fa209b9",
+    "A_repeat": "ac23f62616ba0c63839a055239a151455b3a0cad4f0cf0ee7a705a726fa209b9",
+    "B": "ac23f62616ba0c63839a055239a151455b3a0cad4f0cf0ee7a705a726fa209b9",
+    "C": "51e3f0d4507945d6f3e8ce85ec5098ae4e3b148441f05805535fd21b811c2c59",
+    "D": "928ef34791a1fc8870972ee511e8523cf1edf32c3c471bfde834c5dd9c4ecfc5"
+   },
+   "sha256_labels_on_by_arm": {
+    "A": "e006ecf3af68907d59d7637ffc740fd2e7008a23f0253f21125d5fa4d520b7cb",
+    "A_repeat": "e006ecf3af68907d59d7637ffc740fd2e7008a23f0253f21125d5fa4d520b7cb",
+    "B": "e006ecf3af68907d59d7637ffc740fd2e7008a23f0253f21125d5fa4d520b7cb",
+    "C": "3527c766c6b7ff51c5dd2371130148bfddf237ca41419b0239620ce6b3774ae2",
+    "D": "6c83779a259d11f8c2a7bbd3b42b8c22abf4dcc27ddeb079a1c3e6fa207052df"
+   },
+   "arm_state_assertions": {
+    "A_not_wired": true,
+    "B_structural_init_state": true,
+    "C_w51_param_only_state": true,
+    "D_negative_control_state": true
+   },
+   "predictions": {
+    "P0_control_A_equals_A_repeat": {
+     "outcome": {
+      "labels_off": {
+       "nl": true
+      },
+      "labels_on": {
+       "nl": true,
+       "row": true,
+       "col": true
+      }
+     },
+     "holds": true
+    },
+    "P1_A_equals_B": {
+     "outcome": {
+      "labels_off": {
+       "nl": true
+      },
+      "labels_on": {
+       "nl": true,
+       "row": true,
+       "col": true
+      }
+     },
+     "holds": true,
+     "on_false": "STOP and report the difference; no workaround"
+    },
+    "P2_C_minus_A": {
+     "n": 4,
+     "T": 24,
+     "column_delta": 384,
+     "row_delta": 192,
+     "expected_column_delta": 384,
+     "expected_row_delta": 192,
+     "extra_names": {
+      "col": {
+       "n_x": 36232,
+       "n_y": 36616,
+       "only_in_y_by_family": {
+        "row18_dev_p_down": 96,
+        "row18_dev_p_up": 96,
+        "row18_dev_q_down": 96,
+        "row18_dev_q_up": 96
+       },
+       "only_in_x_by_family": {},
+       "only_in_x_first_20": []
+      },
+      "row": {
+       "n_x": 29685,
+       "n_y": 29877,
+       "only_in_y_by_family": {
+        "row18_dev_p_def": 96,
+        "row18_dev_q_def": 96
+       },
+       "only_in_x_by_family": {},
+       "only_in_x_first_20": []
+      }
+     },
+     "holds": true
+    },
+    "P3_D_same_columns_plus_2nT_rows": {
+     "column_delta": 0,
+     "row_delta": 192,
+     "expected_column_delta": 0,
+     "expected_row_delta": 192,
+     "col_file_identical_to_A": true,
+     "names_vs_A": {
+      "col": {
+       "n_x": 36232,
+       "n_y": 36232,
+       "only_in_y_by_family": {},
+       "only_in_x_by_family": {},
+       "only_in_x_first_20": []
+      },
+      "row": {
+       "n_x": 29685,
+       "n_y": 29877,
+       "only_in_y_by_family": {
+        "row18_dev_p_def": 96,
+        "row18_dev_q_def": 96
+       },
+       "only_in_x_by_family": {},
+       "only_in_x_first_20": []
+      }
+     },
+     "holds": true
+    }
+   }
+  },
+  "DSO:5:2025:Winter": {
+   "n_scenarios": 4,
+   "n_periods": 24,
+   "columns_by_arm": {
+    "A": 36232,
+    "A_repeat": 36232,
+    "B": 36232,
+    "C": 36616,
+    "D": 36232
+   },
+   "rows_by_arm": {
+    "A": 29684,
+    "A_repeat": 29684,
+    "B": 29684,
+    "C": 29876,
+    "D": 29876
+   },
+   "sha256_labels_off_by_arm": {
+    "A": "706fef58b0ef9796b42b3aadfbf5490b5ef375037e79d736a081d26f7dddbc51",
+    "A_repeat": "706fef58b0ef9796b42b3aadfbf5490b5ef375037e79d736a081d26f7dddbc51",
+    "B": "706fef58b0ef9796b42b3aadfbf5490b5ef375037e79d736a081d26f7dddbc51",
+    "C": "80945409543ea2406b8f87d9c23550c76a5f2185963cb225c9324bcc558d02e7",
+    "D": "94d7d8d566d03a0b3d61fc4faca9928f6748cdc3b3b8bc8d1925a237651eef6f"
+   },
+   "sha256_labels_on_by_arm": {
+    "A": "0d62fedf7fdc655bfecc8b317ac71f329c0d0724a770c664f0f9b85a1a750796",
+    "A_repeat": "0d62fedf7fdc655bfecc8b317ac71f329c0d0724a770c664f0f9b85a1a750796",
+    "B": "0d62fedf7fdc655bfecc8b317ac71f329c0d0724a770c664f0f9b85a1a750796",
+    "C": "4918cbc11ba5532a1b361707cb2aa53e1f0ecd65085a750b4994e817d12a58d2",
+    "D": "aa34985e08eb236c8ac6d74d2c23bf6bf13a426603609d4120bca23bb4e18634"
+   },
+   "arm_state_assertions": {
+    "A_not_wired": true,
+    "B_structural_init_state": true,
+    "C_w51_param_only_state": true,
+    "D_negative_control_state": true
+   },
+   "predictions": {
+    "P0_control_A_equals_A_repeat": {
+     "outcome": {
+      "labels_off": {
+       "nl": true
+      },
+      "labels_on": {
+       "nl": true,
+       "row": true,
+       "col": true
+      }
+     },
+     "holds": true
+    },
+    "P1_A_equals_B": {
+     "outcome": {
+      "labels_off": {
+       "nl": true
+      },
+      "labels_on": {
+       "nl": true,
+       "row": true,
+       "col": true
+      }
+     },
+     "holds": true,
+     "on_false": "STOP and report the difference; no workaround"
+    },
+    "P2_C_minus_A": {
+     "n": 4,
+     "T": 24,
+     "column_delta": 384,
+     "row_delta": 192,
+     "expected_column_delta": 384,
+     "expected_row_delta": 192,
+     "extra_names": {
+      "col": {
+       "n_x": 36232,
+       "n_y": 36616,
+       "only_in_y_by_family": {
+        "row18_dev_p_down": 96,
+        "row18_dev_p_up": 96,
+        "row18_dev_q_down": 96,
+        "row18_dev_q_up": 96
+       },
+       "only_in_x_by_family": {},
+       "only_in_x_first_20": []
+      },
+      "row": {
+       "n_x": 29685,
+       "n_y": 29877,
+       "only_in_y_by_family": {
+        "row18_dev_p_def": 96,
+        "row18_dev_q_def": 96
+       },
+       "only_in_x_by_family": {},
+       "only_in_x_first_20": []
+      }
+     },
+     "holds": true
+    },
+    "P3_D_same_columns_plus_2nT_rows": {
+     "column_delta": 0,
+     "row_delta": 192,
+     "expected_column_delta": 0,
+     "expected_row_delta": 192,
+     "col_file_identical_to_A": true,
+     "names_vs_A": {
+      "col": {
+       "n_x": 36232,
+       "n_y": 36232,
+       "only_in_y_by_family": {},
+       "only_in_x_by_family": {},
+       "only_in_x_first_20": []
+      },
+      "row": {
+       "n_x": 29685,
+       "n_y": 29877,
+       "only_in_y_by_family": {
+        "row18_dev_p_def": 96,
+        "row18_dev_q_def": 96
+       },
+       "only_in_x_by_family": {},
+       "only_in_x_first_20": []
+      }
+     },
+     "holds": true
+    }
+   }
+  },
+  "DSO:7:2025:Spring": {
+   "n_scenarios": 4,
+   "n_periods": 24,
+   "columns_by_arm": {
+    "A": 36232,
+    "A_repeat": 36232,
+    "B": 36232,
+    "C": 36616,
+    "D": 36232
+   },
+   "rows_by_arm": {
+    "A": 29936,
+    "A_repeat": 29936,
+    "B": 29936,
+    "C": 30128,
+    "D": 30128
+   },
+   "sha256_labels_off_by_arm": {
+    "A": "de0c46744b84456942772a6e80e6f803c98c1ce45bb55be79b794bac88f28f93",
+    "A_repeat": "de0c46744b84456942772a6e80e6f803c98c1ce45bb55be79b794bac88f28f93",
+    "B": "de0c46744b84456942772a6e80e6f803c98c1ce45bb55be79b794bac88f28f93",
+    "C": "22f4b3f6b53b3914580c2890e2c2232f43e8dfcf655a8807c1a16d531024b72d",
+    "D": "2e52a90274d744e248b03365e4e3189be17ddb37aa1bcf420002edb8980e0840"
+   },
+   "sha256_labels_on_by_arm": {
+    "A": "285d2645263c415f4b280f06742979ff413d00d9093d74c0c63b9fc25513481b",
+    "A_repeat": "285d2645263c415f4b280f06742979ff413d00d9093d74c0c63b9fc25513481b",
+    "B": "285d2645263c415f4b280f06742979ff413d00d9093d74c0c63b9fc25513481b",
+    "C": "f9c626789f097619a2762ba9d821ae7d4a857b8380660846cc88737caaab71ba",
+    "D": "a36a2924a91146ce62f5532ee52804510c9dc73cee2c8537ba1e635618192006"
+   },
+   "arm_state_assertions": {
+    "A_not_wired": true,
+    "B_structural_init_state": true,
+    "C_w51_param_only_state": true,
+    "D_negative_control_state": true
+   },
+   "predictions": {
+    "P0_control_A_equals_A_repeat": {
+     "outcome": {
+      "labels_off": {
+       "nl": true
+      },
+      "labels_on": {
+       "nl": true,
+       "row": true,
+       "col": true
+      }
+     },
+     "holds": true
+    },
+    "P1_A_equals_B": {
+     "outcome": {
+      "labels_off": {
+       "nl": true
+      },
+      "labels_on": {
+       "nl": true,
+       "row": true,
+       "col": true
+      }
+     },
+     "holds": true,
+     "on_false": "STOP and report the difference; no workaround"
+    },
+    "P2_C_minus_A": {
+     "n": 4,
+     "T": 24,
+     "column_delta": 384,
+     "row_delta": 192,
+     "expected_column_delta": 384,
+     "expected_row_delta": 192,
+     "extra_names": {
+      "col": {
+       "n_x": 36232,
+       "n_y": 36616,
+       "only_in_y_by_family": {
+        "row18_dev_p_down": 96,
+        "row18_dev_p_up": 96,
+        "row18_dev_q_down": 96,
+        "row18_dev_q_up": 96
+       },
+       "only_in_x_by_family": {},
+       "only_in_x_first_20": []
+      },
+      "row": {
+       "n_x": 29937,
+       "n_y": 30129,
+       "only_in_y_by_family": {
+        "row18_dev_p_def": 96,
+        "row18_dev_q_def": 96
+       },
+       "only_in_x_by_family": {},
+       "only_in_x_first_20": []
+      }
+     },
+     "holds": true
+    },
+    "P3_D_same_columns_plus_2nT_rows": {
+     "column_delta": 0,
+     "row_delta": 192,
+     "expected_column_delta": 0,
+     "expected_row_delta": 192,
+     "col_file_identical_to_A": true,
+     "names_vs_A": {
+      "col": {
+       "n_x": 36232,
+       "n_y": 36232,
+       "only_in_y_by_family": {},
+       "only_in_x_by_family": {},
+       "only_in_x_first_20": []
+      },
+      "row": {
+       "n_x": 29937,
+       "n_y": 30129,
+       "only_in_y_by_family": {
+        "row18_dev_p_def": 96,
+        "row18_dev_q_def": 96
+       },
+       "only_in_x_by_family": {},
+       "only_in_x_first_20": []
+      }
+     },
+     "holds": true
+    }
+   }
+  },
+  "DSO:7:2025:Summer": {
+   "n_scenarios": 4,
+   "n_periods": 24,
+   "columns_by_arm": {
+    "A": 36232,
+    "A_repeat": 36232,
+    "B": 36232,
+    "C": 36616,
+    "D": 36232
+   },
+   "rows_by_arm": {
+    "A": 29936,
+    "A_repeat": 29936,
+    "B": 29936,
+    "C": 30128,
+    "D": 30128
+   },
+   "sha256_labels_off_by_arm": {
+    "A": "92461ba30e1ec5935f64ec75a4245736c10098ced6fa85b9b21d502d4d85df51",
+    "A_repeat": "92461ba30e1ec5935f64ec75a4245736c10098ced6fa85b9b21d502d4d85df51",
+    "B": "92461ba30e1ec5935f64ec75a4245736c10098ced6fa85b9b21d502d4d85df51",
+    "C": "f1d1e2fcda1a4689be47cc28cfa45c53f616a5eb71dc691e6f50420972c47300",
+    "D": "abf16a1bb69bea66867c69c3cd4f8ee535078dc3f97dbcafc6ea60d62c3fd5b4"
+   },
+   "sha256_labels_on_by_arm": {
+    "A": "5aa6305d37dcce8223a053ffcfee0fe80925b2f6e6d60fc0c8c29353a1c9b467",
+    "A_repeat": "5aa6305d37dcce8223a053ffcfee0fe80925b2f6e6d60fc0c8c29353a1c9b467",
+    "B": "5aa6305d37dcce8223a053ffcfee0fe80925b2f6e6d60fc0c8c29353a1c9b467",
+    "C": "6eae5f648311bca99c638a6b11f0fb31d345735dae3f2e3bfff3b5f522fee8a4",
+    "D": "754b9065ce66c8c7ad344120d1a54d091bfa463557f5037c50e03613e01f015f"
+   },
+   "arm_state_assertions": {
+    "A_not_wired": true,
+    "B_structural_init_state": true,
+    "C_w51_param_only_state": true,
+    "D_negative_control_state": true
+   },
+   "predictions": {
+    "P0_control_A_equals_A_repeat": {
+     "outcome": {
+      "labels_off": {
+       "nl": true
+      },
+      "labels_on": {
+       "nl": true,
+       "row": true,
+       "col": true
+      }
+     },
+     "holds": true
+    },
+    "P1_A_equals_B": {
+     "outcome": {
+      "labels_off": {
+       "nl": true
+      },
+      "labels_on": {
+       "nl": true,
+       "row": true,
+       "col": true
+      }
+     },
+     "holds": true,
+     "on_false": "STOP and report the difference; no workaround"
+    },
+    "P2_C_minus_A": {
+     "n": 4,
+     "T": 24,
+     "column_delta": 384,
+     "row_delta": 192,
+     "expected_column_delta": 384,
+     "expected_row_delta": 192,
+     "extra_names": {
+      "col": {
+       "n_x": 36232,
+       "n_y": 36616,
+       "only_in_y_by_family": {
+        "row18_dev_p_down": 96,
+        "row18_dev_p_up": 96,
+        "row18_dev_q_down": 96,
+        "row18_dev_q_up": 96
+       },
+       "only_in_x_by_family": {},
+       "only_in_x_first_20": []
+      },
+      "row": {
+       "n_x": 29937,
+       "n_y": 30129,
+       "only_in_y_by_family": {
+        "row18_dev_p_def": 96,
+        "row18_dev_q_def": 96
+       },
+       "only_in_x_by_family": {},
+       "only_in_x_first_20": []
+      }
+     },
+     "holds": true
+    },
+    "P3_D_same_columns_plus_2nT_rows": {
+     "column_delta": 0,
+     "row_delta": 192,
+     "expected_column_delta": 0,
+     "expected_row_delta": 192,
+     "col_file_identical_to_A": true,
+     "names_vs_A": {
+      "col": {
+       "n_x": 36232,
+       "n_y": 36232,
+       "only_in_y_by_family": {},
+       "only_in_x_by_family": {},
+       "only_in_x_first_20": []
+      },
+      "row": {
+       "n_x": 29937,
+       "n_y": 30129,
+       "only_in_y_by_family": {
+        "row18_dev_p_def": 96,
+        "row18_dev_q_def": 96
+       },
+       "only_in_x_by_family": {},
+       "only_in_x_first_20": []
+      }
+     },
+     "holds": true
+    }
+   }
+  },
+  "DSO:7:2025:Autumn": {
+   "n_scenarios": 4,
+   "n_periods": 24,
+   "columns_by_arm": {
+    "A": 36232,
+    "A_repeat": 36232,
+    "B": 36232,
+    "C": 36616,
+    "D": 36232
+   },
+   "rows_by_arm": {
+    "A": 29840,
+    "A_repeat": 29840,
+    "B": 29840,
+    "C": 30032,
+    "D": 30032
+   },
+   "sha256_labels_off_by_arm": {
+    "A": "1335381f8bfe7107a1e279692b0fd9529a41364e9f13a12c401d19e42bfc2edc",
+    "A_repeat": "1335381f8bfe7107a1e279692b0fd9529a41364e9f13a12c401d19e42bfc2edc",
+    "B": "1335381f8bfe7107a1e279692b0fd9529a41364e9f13a12c401d19e42bfc2edc",
+    "C": "05e283b1703e47e2af541773ef83442754dba29963f9ca2b56155ad1a5046535",
+    "D": "6977c624d16cd16b80a4b2b4dc4e5863ba9f981799f5fe7c67e14b7f9a73a27b"
+   },
+   "sha256_labels_on_by_arm": {
+    "A": "9468f4fbbb088793cd21a671916874857eb4eb0a23deb456cc66ca3c503abd21",
+    "A_repeat": "9468f4fbbb088793cd21a671916874857eb4eb0a23deb456cc66ca3c503abd21",
+    "B": "9468f4fbbb088793cd21a671916874857eb4eb0a23deb456cc66ca3c503abd21",
+    "C": "c23836414f6568ae372d52afd1f81aa5dad16e623d6eababb950c4ff201a5ce6",
+    "D": "f13557c18b23ca4821766fd848fbe5a8118dc5635aceec45e134721bd139022e"
+   },
+   "arm_state_assertions": {
+    "A_not_wired": true,
+    "B_structural_init_state": true,
+    "C_w51_param_only_state": true,
+    "D_negative_control_state": true
+   },
+   "predictions": {
+    "P0_control_A_equals_A_repeat": {
+     "outcome": {
+      "labels_off": {
+       "nl": true
+      },
+      "labels_on": {
+       "nl": true,
+       "row": true,
+       "col": true
+      }
+     },
+     "holds": true
+    },
+    "P1_A_equals_B": {
+     "outcome": {
+      "labels_off": {
+       "nl": true
+      },
+      "labels_on": {
+       "nl": true,
+       "row": true,
+       "col": true
+      }
+     },
+     "holds": true,
+     "on_false": "STOP and report the difference; no workaround"
+    },
+    "P2_C_minus_A": {
+     "n": 4,
+     "T": 24,
+     "column_delta": 384,
+     "row_delta": 192,
+     "expected_column_delta": 384,
+     "expected_row_delta": 192,
+     "extra_names": {
+      "col": {
+       "n_x": 36232,
+       "n_y": 36616,
+       "only_in_y_by_family": {
+        "row18_dev_p_down": 96,
+        "row18_dev_p_up": 96,
+        "row18_dev_q_down": 96,
+        "row18_dev_q_up": 96
+       },
+       "only_in_x_by_family": {},
+       "only_in_x_first_20": []
+      },
+      "row": {
+       "n_x": 29841,
+       "n_y": 30033,
+       "only_in_y_by_family": {
+        "row18_dev_p_def": 96,
+        "row18_dev_q_def": 96
+       },
+       "only_in_x_by_family": {},
+       "only_in_x_first_20": []
+      }
+     },
+     "holds": true
+    },
+    "P3_D_same_columns_plus_2nT_rows": {
+     "column_delta": 0,
+     "row_delta": 192,
+     "expected_column_delta": 0,
+     "expected_row_delta": 192,
+     "col_file_identical_to_A": true,
+     "names_vs_A": {
+      "col": {
+       "n_x": 36232,
+       "n_y": 36232,
+       "only_in_y_by_family": {},
+       "only_in_x_by_family": {},
+       "only_in_x_first_20": []
+      },
+      "row": {
+       "n_x": 29841,
+       "n_y": 30033,
+       "only_in_y_by_family": {
+        "row18_dev_p_def": 96,
+        "row18_dev_q_def": 96
+       },
+       "only_in_x_by_family": {},
+       "only_in_x_first_20": []
+      }
+     },
+     "holds": true
+    }
+   }
+  },
+  "DSO:7:2025:Winter": {
+   "n_scenarios": 4,
+   "n_periods": 24,
+   "columns_by_arm": {
+    "A": 36232,
+    "A_repeat": 36232,
+    "B": 36232,
+    "C": 36616,
+    "D": 36232
+   },
+   "rows_by_arm": {
+    "A": 29840,
+    "A_repeat": 29840,
+    "B": 29840,
+    "C": 30032,
+    "D": 30032
+   },
+   "sha256_labels_off_by_arm": {
+    "A": "1f8a684d4f03b3634ae0cc76cc7c6546164d840151e30e265f737cde1c05bd9d",
+    "A_repeat": "1f8a684d4f03b3634ae0cc76cc7c6546164d840151e30e265f737cde1c05bd9d",
+    "B": "1f8a684d4f03b3634ae0cc76cc7c6546164d840151e30e265f737cde1c05bd9d",
+    "C": "539d11abeba0e3adefede08ba39c756636907c2f30b2d50fca31fbb5be14861f",
+    "D": "f7ed3e8222e1b5ac5ca6587e75feaf17d0b407c3fd978b7a1e095c683bcd6abb"
+   },
+   "sha256_labels_on_by_arm": {
+    "A": "887845ba37a0b68c0966b3aafa19f4921087d45013c5b38057c04b77716c8645",
+    "A_repeat": "887845ba37a0b68c0966b3aafa19f4921087d45013c5b38057c04b77716c8645",
+    "B": "887845ba37a0b68c0966b3aafa19f4921087d45013c5b38057c04b77716c8645",
+    "C": "67d27eb7111c2d7d22f4d9388baaf227716e26bde4e05458787976b82a3feb36",
+    "D": "489ebfb9fd4692b50b6df59394f18caa786922624119875478d7c29e48046945"
+   },
+   "arm_state_assertions": {
+    "A_not_wired": true,
+    "B_structural_init_state": true,
+    "C_w51_param_only_state": true,
+    "D_negative_control_state": true
+   },
+   "predictions": {
+    "P0_control_A_equals_A_repeat": {
+     "outcome": {
+      "labels_off": {
+       "nl": true
+      },
+      "labels_on": {
+       "nl": true,
+       "row": true,
+       "col": true
+      }
+     },
+     "holds": true
+    },
+    "P1_A_equals_B": {
+     "outcome": {
+      "labels_off": {
+       "nl": true
+      },
+      "labels_on": {
+       "nl": true,
+       "row": true,
+       "col": true
+      }
+     },
+     "holds": true,
+     "on_false": "STOP and report the difference; no workaround"
+    },
+    "P2_C_minus_A": {
+     "n": 4,
+     "T": 24,
+     "column_delta": 384,
+     "row_delta": 192,
+     "expected_column_delta": 384,
+     "expected_row_delta": 192,
+     "extra_names": {
+      "col": {
+       "n_x": 36232,
+       "n_y": 36616,
+       "only_in_y_by_family": {
+        "row18_dev_p_down": 96,
+        "row18_dev_p_up": 96,
+        "row18_dev_q_down": 96,
+        "row18_dev_q_up": 96
+       },
+       "only_in_x_by_family": {},
+       "only_in_x_first_20": []
+      },
+      "row": {
+       "n_x": 29841,
+       "n_y": 30033,
+       "only_in_y_by_family": {
+        "row18_dev_p_def": 96,
+        "row18_dev_q_def": 96
+       },
+       "only_in_x_by_family": {},
+       "only_in_x_first_20": []
+      }
+     },
+     "holds": true
+    },
+    "P3_D_same_columns_plus_2nT_rows": {
+     "column_delta": 0,
+     "row_delta": 192,
+     "expected_column_delta": 0,
+     "expected_row_delta": 192,
+     "col_file_identical_to_A": true,
+     "names_vs_A": {
+      "col": {
+       "n_x": 36232,
+       "n_y": 36232,
+       "only_in_y_by_family": {},
+       "only_in_x_by_family": {},
+       "only_in_x_first_20": []
+      },
+      "row": {
+       "n_x": 29841,
+       "n_y": 30033,
+       "only_in_y_by_family": {
+        "row18_dev_p_def": 96,
+        "row18_dev_q_def": 96
+       },
+       "only_in_x_by_family": {},
+       "only_in_x_first_20": []
+      }
+     },
+     "holds": true
+    }
+   }
+  },
+  "DSO:9:2025:Spring": {
+   "n_scenarios": 4,
+   "n_periods": 24,
+   "columns_by_arm": {
+    "A": 36232,
+    "A_repeat": 36232,
+    "B": 36232,
+    "C": 36616,
+    "D": 36232
+   },
+   "rows_by_arm": {
+    "A": 29828,
+    "A_repeat": 29828,
+    "B": 29828,
+    "C": 30020,
+    "D": 30020
+   },
+   "sha256_labels_off_by_arm": {
+    "A": "a9e5e650b6b3b91ca16d4d72222692beca0ba31bf764b09738556044ff3a0e63",
+    "A_repeat": "a9e5e650b6b3b91ca16d4d72222692beca0ba31bf764b09738556044ff3a0e63",
+    "B": "a9e5e650b6b3b91ca16d4d72222692beca0ba31bf764b09738556044ff3a0e63",
+    "C": "949bbdf9501014ed84d5b5bf88ff421dda22331c7b466f69eb79571a7a5d446d",
+    "D": "05b776ad05585cea28355347d7d1416ed3a184150afc5562131ca8736fb237bf"
+   },
+   "sha256_labels_on_by_arm": {
+    "A": "b5089556562127779e4bc5798cd8ebaa0c14b4e9299fab30e8c09f1558ad3fe1",
+    "A_repeat": "b5089556562127779e4bc5798cd8ebaa0c14b4e9299fab30e8c09f1558ad3fe1",
+    "B": "b5089556562127779e4bc5798cd8ebaa0c14b4e9299fab30e8c09f1558ad3fe1",
+    "C": "0554b820aa5428b0b94020bac268039ad294de6600fd5a6af40e99743c89a49a",
+    "D": "c7ce49b782ae5eb123a5322f265fe9612f757e2a72625ad9721b4c56cf288eb0"
+   },
+   "arm_state_assertions": {
+    "A_not_wired": true,
+    "B_structural_init_state": true,
+    "C_w51_param_only_state": true,
+    "D_negative_control_state": true
+   },
+   "predictions": {
+    "P0_control_A_equals_A_repeat": {
+     "outcome": {
+      "labels_off": {
+       "nl": true
+      },
+      "labels_on": {
+       "nl": true,
+       "row": true,
+       "col": true
+      }
+     },
+     "holds": true
+    },
+    "P1_A_equals_B": {
+     "outcome": {
+      "labels_off": {
+       "nl": true
+      },
+      "labels_on": {
+       "nl": true,
+       "row": true,
+       "col": true
+      }
+     },
+     "holds": true,
+     "on_false": "STOP and report the difference; no workaround"
+    },
+    "P2_C_minus_A": {
+     "n": 4,
+     "T": 24,
+     "column_delta": 384,
+     "row_delta": 192,
+     "expected_column_delta": 384,
+     "expected_row_delta": 192,
+     "extra_names": {
+      "col": {
+       "n_x": 36232,
+       "n_y": 36616,
+       "only_in_y_by_family": {
+        "row18_dev_p_down": 96,
+        "row18_dev_p_up": 96,
+        "row18_dev_q_down": 96,
+        "row18_dev_q_up": 96
+       },
+       "only_in_x_by_family": {},
+       "only_in_x_first_20": []
+      },
+      "row": {
+       "n_x": 29829,
+       "n_y": 30021,
+       "only_in_y_by_family": {
+        "row18_dev_p_def": 96,
+        "row18_dev_q_def": 96
+       },
+       "only_in_x_by_family": {},
+       "only_in_x_first_20": []
+      }
+     },
+     "holds": true
+    },
+    "P3_D_same_columns_plus_2nT_rows": {
+     "column_delta": 0,
+     "row_delta": 192,
+     "expected_column_delta": 0,
+     "expected_row_delta": 192,
+     "col_file_identical_to_A": true,
+     "names_vs_A": {
+      "col": {
+       "n_x": 36232,
+       "n_y": 36232,
+       "only_in_y_by_family": {},
+       "only_in_x_by_family": {},
+       "only_in_x_first_20": []
+      },
+      "row": {
+       "n_x": 29829,
+       "n_y": 30021,
+       "only_in_y_by_family": {
+        "row18_dev_p_def": 96,
+        "row18_dev_q_def": 96
+       },
+       "only_in_x_by_family": {},
+       "only_in_x_first_20": []
+      }
+     },
+     "holds": true
+    }
+   }
+  },
+  "DSO:9:2025:Summer": {
+   "n_scenarios": 4,
+   "n_periods": 24,
+   "columns_by_arm": {
+    "A": 36232,
+    "A_repeat": 36232,
+    "B": 36232,
+    "C": 36616,
+    "D": 36232
+   },
+   "rows_by_arm": {
+    "A": 29828,
+    "A_repeat": 29828,
+    "B": 29828,
+    "C": 30020,
+    "D": 30020
+   },
+   "sha256_labels_off_by_arm": {
+    "A": "957f18d2aa8f8a0cef370d648a58c558c2692733ca10374aee30b7d520bc1475",
+    "A_repeat": "957f18d2aa8f8a0cef370d648a58c558c2692733ca10374aee30b7d520bc1475",
+    "B": "957f18d2aa8f8a0cef370d648a58c558c2692733ca10374aee30b7d520bc1475",
+    "C": "8803f84e34864f516f3e965c0737a0564fd83e3be82e10ff83b2d9529399ed2e",
+    "D": "70d1db2015ea012e69dc5994b83bc9a85daf6684395a4bde7091aba21372eba3"
+   },
+   "sha256_labels_on_by_arm": {
+    "A": "c80e2e84fae7e4081c3e2e34c50b257b827c21de1b2448bd8fc0dad8e93ed55f",
+    "A_repeat": "c80e2e84fae7e4081c3e2e34c50b257b827c21de1b2448bd8fc0dad8e93ed55f",
+    "B": "c80e2e84fae7e4081c3e2e34c50b257b827c21de1b2448bd8fc0dad8e93ed55f",
+    "C": "8cb49cba9f7000afcc135554bf11d160e56bb070fac7240b264664243f669556",
+    "D": "6222239e9c88611049957aa8af4661aced0c4a1bed3af3958a67a9550306de27"
+   },
+   "arm_state_assertions": {
+    "A_not_wired": true,
+    "B_structural_init_state": true,
+    "C_w51_param_only_state": true,
+    "D_negative_control_state": true
+   },
+   "predictions": {
+    "P0_control_A_equals_A_repeat": {
+     "outcome": {
+      "labels_off": {
+       "nl": true
+      },
+      "labels_on": {
+       "nl": true,
+       "row": true,
+       "col": true
+      }
+     },
+     "holds": true
+    },
+    "P1_A_equals_B": {
+     "outcome": {
+      "labels_off": {
+       "nl": true
+      },
+      "labels_on": {
+       "nl": true,
+       "row": true,
+       "col": true
+      }
+     },
+     "holds": true,
+     "on_false": "STOP and report the difference; no workaround"
+    },
+    "P2_C_minus_A": {
+     "n": 4,
+     "T": 24,
+     "column_delta": 384,
+     "row_delta": 192,
+     "expected_column_delta": 384,
+     "expected_row_delta": 192,
+     "extra_names": {
+      "col": {
+       "n_x": 36232,
+       "n_y": 36616,
+       "only_in_y_by_family": {
+        "row18_dev_p_down": 96,
+        "row18_dev_p_up": 96,
+        "row18_dev_q_down": 96,
+        "row18_dev_q_up": 96
+       },
+       "only_in_x_by_family": {},
+       "only_in_x_first_20": []
+      },
+      "row": {
+       "n_x": 29829,
+       "n_y": 30021,
+       "only_in_y_by_family": {
+        "row18_dev_p_def": 96,
+        "row18_dev_q_def": 96
+       },
+       "only_in_x_by_family": {},
+       "only_in_x_first_20": []
+      }
+     },
+     "holds": true
+    },
+    "P3_D_same_columns_plus_2nT_rows": {
+     "column_delta": 0,
+     "row_delta": 192,
+     "expected_column_delta": 0,
+     "expected_row_delta": 192,
+     "col_file_identical_to_A": true,
+     "names_vs_A": {
+      "col": {
+       "n_x": 36232,
+       "n_y": 36232,
+       "only_in_y_by_family": {},
+       "only_in_x_by_family": {},
+       "only_in_x_first_20": []
+      },
+      "row": {
+       "n_x": 29829,
+       "n_y": 30021,
+       "only_in_y_by_family": {
+        "row18_dev_p_def": 96,
+        "row18_dev_q_def": 96
+       },
+       "only_in_x_by_family": {},
+       "only_in_x_first_20": []
+      }
+     },
+     "holds": true
+    }
+   }
+  },
+  "DSO:9:2025:Autumn": {
+   "n_scenarios": 4,
+   "n_periods": 24,
+   "columns_by_arm": {
+    "A": 36232,
+    "A_repeat": 36232,
+    "B": 36232,
+    "C": 36616,
+    "D": 36232
+   },
+   "rows_by_arm": {
+    "A": 29684,
+    "A_repeat": 29684,
+    "B": 29684,
+    "C": 29876,
+    "D": 29876
+   },
+   "sha256_labels_off_by_arm": {
+    "A": "51e9c8a9e3f5028738000b26c28aa7cd6d43ef7f4e2b731ef23de6e2f604f76f",
+    "A_repeat": "51e9c8a9e3f5028738000b26c28aa7cd6d43ef7f4e2b731ef23de6e2f604f76f",
+    "B": "51e9c8a9e3f5028738000b26c28aa7cd6d43ef7f4e2b731ef23de6e2f604f76f",
+    "C": "89bf9660f0248e77d36582acc94d5792700c4323aefb6c6f402fc43ea19a4a88",
+    "D": "125701b219335980a6f62742f59e660a09a3e790f427978ea2c62e54cde22317"
+   },
+   "sha256_labels_on_by_arm": {
+    "A": "9d684453906852aa4a6013a77d67f56b609bdb01834636d292e9d03a585e33e4",
+    "A_repeat": "9d684453906852aa4a6013a77d67f56b609bdb01834636d292e9d03a585e33e4",
+    "B": "9d684453906852aa4a6013a77d67f56b609bdb01834636d292e9d03a585e33e4",
+    "C": "5a8b25d5a94a486029febd40efec9c4ff25d8ab1c6c16ccb6679529b052a94e3",
+    "D": "72ac41e861f2daeb616df767d513897d1629a9a9059849bbff56e2653cb0cdf2"
+   },
+   "arm_state_assertions": {
+    "A_not_wired": true,
+    "B_structural_init_state": true,
+    "C_w51_param_only_state": true,
+    "D_negative_control_state": true
+   },
+   "predictions": {
+    "P0_control_A_equals_A_repeat": {
+     "outcome": {
+      "labels_off": {
+       "nl": true
+      },
+      "labels_on": {
+       "nl": true,
+       "row": true,
+       "col": true
+      }
+     },
+     "holds": true
+    },
+    "P1_A_equals_B": {
+     "outcome": {
+      "labels_off": {
+       "nl": true
+      },
+      "labels_on": {
+       "nl": true,
+       "row": true,
+       "col": true
+      }
+     },
+     "holds": true,
+     "on_false": "STOP and report the difference; no workaround"
+    },
+    "P2_C_minus_A": {
+     "n": 4,
+     "T": 24,
+     "column_delta": 384,
+     "row_delta": 192,
+     "expected_column_delta": 384,
+     "expected_row_delta": 192,
+     "extra_names": {
+      "col": {
+       "n_x": 36232,
+       "n_y": 36616,
+       "only_in_y_by_family": {
+        "row18_dev_p_down": 96,
+        "row18_dev_p_up": 96,
+        "row18_dev_q_down": 96,
+        "row18_dev_q_up": 96
+       },
+       "only_in_x_by_family": {},
+       "only_in_x_first_20": []
+      },
+      "row": {
+       "n_x": 29685,
+       "n_y": 29877,
+       "only_in_y_by_family": {
+        "row18_dev_p_def": 96,
+        "row18_dev_q_def": 96
+       },
+       "only_in_x_by_family": {},
+       "only_in_x_first_20": []
+      }
+     },
+     "holds": true
+    },
+    "P3_D_same_columns_plus_2nT_rows": {
+     "column_delta": 0,
+     "row_delta": 192,
+     "expected_column_delta": 0,
+     "expected_row_delta": 192,
+     "col_file_identical_to_A": true,
+     "names_vs_A": {
+      "col": {
+       "n_x": 36232,
+       "n_y": 36232,
+       "only_in_y_by_family": {},
+       "only_in_x_by_family": {},
+       "only_in_x_first_20": []
+      },
+      "row": {
+       "n_x": 29685,
+       "n_y": 29877,
+       "only_in_y_by_family": {
+        "row18_dev_p_def": 96,
+        "row18_dev_q_def": 96
+       },
+       "only_in_x_by_family": {},
+       "only_in_x_first_20": []
+      }
+     },
+     "holds": true
+    }
+   }
+  },
+  "DSO:9:2025:Winter": {
+   "n_scenarios": 4,
+   "n_periods": 24,
+   "columns_by_arm": {
+    "A": 36232,
+    "A_repeat": 36232,
+    "B": 36232,
+    "C": 36616,
+    "D": 36232
+   },
+   "rows_by_arm": {
+    "A": 29684,
+    "A_repeat": 29684,
+    "B": 29684,
+    "C": 29876,
+    "D": 29876
+   },
+   "sha256_labels_off_by_arm": {
+    "A": "a80c4cab8058af54936ee99e81359f8498b1c5b998802e5dc798bccc6ca7c299",
+    "A_repeat": "a80c4cab8058af54936ee99e81359f8498b1c5b998802e5dc798bccc6ca7c299",
+    "B": "a80c4cab8058af54936ee99e81359f8498b1c5b998802e5dc798bccc6ca7c299",
+    "C": "fc518ae28c23890fd35b76d52a711ac8422a0e82ecb3c5cfc04ee06ab028c64d",
+    "D": "7388ed67128f32eecec3ed3552dea979689df93e4ea2b0af55a367bc3e2ccf03"
+   },
+   "sha256_labels_on_by_arm": {
+    "A": "828bb425cafc61006bce8f5701c8aa906ecbe43a39151503c93b2f27a1410609",
+    "A_repeat": "828bb425cafc61006bce8f5701c8aa906ecbe43a39151503c93b2f27a1410609",
+    "B": "828bb425cafc61006bce8f5701c8aa906ecbe43a39151503c93b2f27a1410609",
+    "C": "22c3dd4fc627d69429fe8c8829cf1525f9e1342b1471518916b2ce36411271df",
+    "D": "701b43975cc44557601643205a7f533284d7f182a6e5a1fd4ba77dec4e384a2b"
+   },
+   "arm_state_assertions": {
+    "A_not_wired": true,
+    "B_structural_init_state": true,
+    "C_w51_param_only_state": true,
+    "D_negative_control_state": true
+   },
+   "predictions": {
+    "P0_control_A_equals_A_repeat": {
+     "outcome": {
+      "labels_off": {
+       "nl": true
+      },
+      "labels_on": {
+       "nl": true,
+       "row": true,
+       "col": true
+      }
+     },
+     "holds": true
+    },
+    "P1_A_equals_B": {
+     "outcome": {
+      "labels_off": {
+       "nl": true
+      },
+      "labels_on": {
+       "nl": true,
+       "row": true,
+       "col": true
+      }
+     },
+     "holds": true,
+     "on_false": "STOP and report the difference; no workaround"
+    },
+    "P2_C_minus_A": {
+     "n": 4,
+     "T": 24,
+     "column_delta": 384,
+     "row_delta": 192,
+     "expected_column_delta": 384,
+     "expected_row_delta": 192,
+     "extra_names": {
+      "col": {
+       "n_x": 36232,
+       "n_y": 36616,
+       "only_in_y_by_family": {
+        "row18_dev_p_down": 96,
+        "row18_dev_p_up": 96,
+        "row18_dev_q_down": 96,
+        "row18_dev_q_up": 96
+       },
+       "only_in_x_by_family": {},
+       "only_in_x_first_20": []
+      },
+      "row": {
+       "n_x": 29685,
+       "n_y": 29877,
+       "only_in_y_by_family": {
+        "row18_dev_p_def": 96,
+        "row18_dev_q_def": 96
+       },
+       "only_in_x_by_family": {},
+       "only_in_x_first_20": []
+      }
+     },
+     "holds": true
+    },
+    "P3_D_same_columns_plus_2nT_rows": {
+     "column_delta": 0,
+     "row_delta": 192,
+     "expected_column_delta": 0,
+     "expected_row_delta": 192,
+     "col_file_identical_to_A": true,
+     "names_vs_A": {
+      "col": {
+       "n_x": 36232,
+       "n_y": 36232,
+       "only_in_y_by_family": {},
+       "only_in_x_by_family": {},
+       "only_in_x_first_20": []
+      },
+      "row": {
+       "n_x": 29685,
+       "n_y": 29877,
+       "only_in_y_by_family": {
+        "row18_dev_p_def": 96,
+        "row18_dev_q_def": 96
+       },
+       "only_in_x_by_family": {},
+       "only_in_x_first_20": []
+      }
+     },
+     "holds": true
+    }
+   }
+  }
+ },
+ "predictions_holds_by_block": {
+  "P0_control_A_equals_A_repeat": {
+   "DSO:5:2025:Spring": true,
+   "DSO:5:2025:Summer": true,
+   "DSO:5:2025:Autumn": true,
+   "DSO:5:2025:Winter": true,
+   "DSO:7:2025:Spring": true,
+   "DSO:7:2025:Summer": true,
+   "DSO:7:2025:Autumn": true,
+   "DSO:7:2025:Winter": true,
+   "DSO:9:2025:Spring": true,
+   "DSO:9:2025:Summer": true,
+   "DSO:9:2025:Autumn": true,
+   "DSO:9:2025:Winter": true
+  },
+  "P1_A_equals_B": {
+   "DSO:5:2025:Spring": true,
+   "DSO:5:2025:Summer": true,
+   "DSO:5:2025:Autumn": true,
+   "DSO:5:2025:Winter": true,
+   "DSO:7:2025:Spring": true,
+   "DSO:7:2025:Summer": true,
+   "DSO:7:2025:Autumn": true,
+   "DSO:7:2025:Winter": true,
+   "DSO:9:2025:Spring": true,
+   "DSO:9:2025:Summer": true,
+   "DSO:9:2025:Autumn": true,
+   "DSO:9:2025:Winter": true
+  },
+  "P2_C_minus_A": {
+   "DSO:5:2025:Spring": true,
+   "DSO:5:2025:Summer": true,
+   "DSO:5:2025:Autumn": true,
+   "DSO:5:2025:Winter": true,
+   "DSO:7:2025:Spring": true,
+   "DSO:7:2025:Summer": true,
+   "DSO:7:2025:Autumn": true,
+   "DSO:7:2025:Winter": true,
+   "DSO:9:2025:Spring": true,
+   "DSO:9:2025:Summer": true,
+   "DSO:9:2025:Autumn": true,
+   "DSO:9:2025:Winter": true
+  },
+  "P3_D_same_columns_plus_2nT_rows": {
+   "DSO:5:2025:Spring": true,
+   "DSO:5:2025:Summer": true,
+   "DSO:5:2025:Autumn": true,
+   "DSO:5:2025:Winter": true,
+   "DSO:7:2025:Spring": true,
+   "DSO:7:2025:Summer": true,
+   "DSO:7:2025:Autumn": true,
+   "DSO:7:2025:Winter": true,
+   "DSO:9:2025:Spring": true,
+   "DSO:9:2025:Summer": true,
+   "DSO:9:2025:Autumn": true,
+   "DSO:9:2025:Winter": true
+  },
+  "P4_reproduces_r1_hashes": {
+   "DSO:5:2025:Spring": true
+  }
+ },
+ "P1_holds_on_every_block": true,
+ "solve_profile_guard": {
+  "permitted": [],
+  "counts": {
+   "permitted_solve": 0,
+   "permitted_exec": 0,
+   "blocked_solve": 0,
+   "blocked_exec": 0
+  },
+  "verify_failures": []
+ },
+ "all_checks_pass": true,
+ "wall_s": 121.92359685897827
+}

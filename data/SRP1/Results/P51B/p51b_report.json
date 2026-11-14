@@ -1,0 +1,1663 @@
+{
+ "stage": "P5.1-B",
+ "git_head": "4f214c901b1f3d088e2328f19ed25c0c723ad10f",
+ "timestamp_utc": "2026-09-06T17:01:51.657117+00:00",
+ "ladder": [
+  "100",
+  "300",
+  "1000",
+  "3000",
+  "production"
+ ],
+ "scenario_checksum": "5a02b77ccbbbbbb869de92958a3851d095624711abc2dbfc0157466064410358",
+ "candidate_total_capacity": {
+  "5": {
+   "2025": {
+    "s": 0.010634892806127162,
+    "e": 0.021269785612254323
+   },
+   "2030": {
+    "s": 0.021269785612254323,
+    "e": 0.042539571224508646
+   },
+   "2035": {
+    "s": 0.03190467841838149,
+    "e": 0.06380935683676298
+   }
+  },
+  "7": {
+   "2025": {
+    "s": 0.010634892806127162,
+    "e": 0.021269785612254323
+   },
+   "2030": {
+    "s": 0.021269785612254323,
+    "e": 0.042539571224508646
+   },
+   "2035": {
+    "s": 0.03190467841838149,
+    "e": 0.06380935683676298
+   }
+  },
+  "9": {
+   "2025": {
+    "s": 0.010634892806127162,
+    "e": 0.021269785612254323
+   },
+   "2030": {
+    "s": 0.021269785612254323,
+    "e": 0.042539571224508646
+   },
+   "2035": {
+    "s": 0.03190467841838149,
+    "e": 0.06380935683676298
+   }
+  }
+ },
+ "cases": [
+  {
+   "label": "n5_2030_Winter",
+   "group": "production_failing",
+   "network": "case33_1",
+   "node_id": 5,
+   "year": 2030,
+   "day": "Winter",
+   "shared_ess_index": 0,
+   "s_rated_pu": 0.00021269785612254322,
+   "s_rated_MVA": 0.021269785612254323,
+   "kappa_production": 4701.504839916499,
+   "branches": {
+    "100": {
+     "branch": "100",
+     "status": "ok",
+     "termination_condition": "optimal",
+     "message": "Ipopt 3.14.18\\x3a Optimal Solution Found",
+     "succeeded": true,
+     "runtime_s": 2.4570391178131104,
+     "ipopt": {
+      "iterations": "240",
+      "objective": [
+       "-8.0129839923196822e-04",
+       "-8.0129839923196822e-01"
+      ],
+      "primal_infeasibility": [
+       "4.1196928816972609e-14",
+       "6.2640864717522504e-14"
+      ],
+      "dual_infeasibility": [
+       "8.1476325136421317e-06",
+       "8.1476325136421324e-03"
+      ],
+      "complementarity": [
+       "9.0909090916553649e-09",
+       "9.0909090916553643e-06"
+      ],
+      "overall_nlp_error": [
+       "8.1476325136421317e-06",
+       "8.1476325136421324e-03"
+      ],
+      "exit_status": "Optimal Solution Found"
+     },
+     "recovery_attempted": false,
+     "shared_ess_solution": {
+      "available": true,
+      "sch_range": [
+       3.481742677143344e-06,
+       3.980538966231109e-06
+      ],
+      "sdch_range": [
+       3.246635945384593e-06,
+       3.7206915250504424e-06
+      ],
+      "pnet_range": [
+       -2.389488472287047e-07,
+       7.339030209933663e-07
+      ],
+      "qnet_range": [
+       -6.471313764129356e-10,
+       2.5928507630414437e-09
+      ],
+      "max_abs_original_g": 3.27301916488001e-18,
+      "max_abs_original_g_normalized_by_s_rated_sq": 7.234729924102832e-11
+     },
+     "kappa": 100.0,
+     "row_second_derivative_coefficient": 200.0,
+     "kappa_is_capped": true,
+     "pre_solve_identity_checks": {
+      "primal_start_identical": true,
+      "bounds_identical": true,
+      "objective_at_start_identical": true,
+      "component_names_identical": true,
+      "index_tuples_identical": true,
+      "total_constraint_data_identical": true,
+      "row_activity_identical": true,
+      "sess_comp_rows_identical": true,
+      "capacity_identical": true,
+      "no_replacement_component": true
+     },
+     "structure_unchanged_after_solve": true
+    },
+    "300": {
+     "branch": "300",
+     "status": "warning",
+     "termination_condition": "maxIterations",
+     "message": "Ipopt 3.14.18\\x3a Maximum Number of Iterations Exceeded.",
+     "succeeded": false,
+     "runtime_s": 28.510025024414062,
+     "ipopt": {
+      "iterations": "3000",
+      "objective": [
+       "2.5195043065655856e+01",
+       "2.5195043065655856e+04"
+      ],
+      "primal_infeasibility": [
+       "2.3898444090342252e-07",
+       "2.3898444090342252e-07"
+      ],
+      "dual_infeasibility": [
+       "3.2415941139567273e+01",
+       "3.2415941139567272e+04"
+      ],
+      "complementarity": [
+       "2.8284271247461931e-03",
+       "2.8284271247461930e+00"
+      ],
+      "overall_nlp_error": [
+       "4.9826675284247033e+00",
+       "3.2415941139567272e+04"
+      ],
+      "exit_status": "Maximum Number of Iterations Exceeded"
+     },
+     "recovery_attempted": false,
+     "shared_ess_solution": {
+      "available": true,
+      "sch_range": [
+       0.0,
+       0.0
+      ],
+      "sdch_range": [
+       0.0,
+       0.0
+      ],
+      "pnet_range": [
+       0.0,
+       0.0
+      ],
+      "qnet_range": [
+       0.0,
+       0.0
+      ],
+      "max_abs_original_g": 0.0,
+      "max_abs_original_g_normalized_by_s_rated_sq": 0.0
+     },
+     "kappa": 300.0,
+     "row_second_derivative_coefficient": 600.0,
+     "kappa_is_capped": true,
+     "pre_solve_identity_checks": {
+      "primal_start_identical": true,
+      "bounds_identical": true,
+      "objective_at_start_identical": true,
+      "component_names_identical": true,
+      "index_tuples_identical": true,
+      "total_constraint_data_identical": true,
+      "row_activity_identical": true,
+      "sess_comp_rows_identical": true,
+      "capacity_identical": true,
+      "no_replacement_component": true
+     },
+     "structure_unchanged_after_solve": true
+    },
+    "1000": {
+     "branch": "1000",
+     "status": "ok",
+     "termination_condition": "optimal",
+     "message": "Ipopt 3.14.18\\x3a Optimal Solution Found",
+     "succeeded": true,
+     "runtime_s": 2.7314980030059814,
+     "ipopt": {
+      "iterations": "334",
+      "objective": [
+       "-8.0129956761817176e-04",
+       "-8.0129956761817178e-01"
+      ],
+      "primal_infeasibility": [
+       "6.2479326614021937e-14",
+       "8.6208817862143405e-14"
+      ],
+      "dual_infeasibility": [
+       "5.9990664833323160e-08",
+       "5.9990664833323160e-05"
+      ],
+      "complementarity": [
+       "9.0909090917431304e-09",
+       "9.0909090917431305e-06"
+      ],
+      "overall_nlp_error": [
+       "5.9990664833323160e-08",
+       "5.9990664833323160e-05"
+      ],
+      "exit_status": "Optimal Solution Found"
+     },
+     "recovery_attempted": false,
+     "shared_ess_solution": {
+      "available": true,
+      "sch_range": [
+       3.5099376256066307e-06,
+       3.9428158526143675e-06
+      ],
+      "sdch_range": [
+       3.266485350461969e-06,
+       3.6752212981697725e-06
+      ],
+      "pnet_range": [
+       -1.6528367256458252e-07,
+       6.763305021526642e-07
+      ],
+      "qnet_range": [
+       -1.408265587573442e-12,
+       -4.243283251863068e-14
+      ],
+      "max_abs_original_g": 1.8919815595926308e-21,
+      "max_abs_original_g_normalized_by_s_rated_sq": 4.182063995197339e-14
+     },
+     "kappa": 1000.0,
+     "row_second_derivative_coefficient": 2000.0,
+     "kappa_is_capped": true,
+     "pre_solve_identity_checks": {
+      "primal_start_identical": true,
+      "bounds_identical": true,
+      "objective_at_start_identical": true,
+      "component_names_identical": true,
+      "index_tuples_identical": true,
+      "total_constraint_data_identical": true,
+      "row_activity_identical": true,
+      "sess_comp_rows_identical": true,
+      "capacity_identical": true,
+      "no_replacement_component": true
+     },
+     "structure_unchanged_after_solve": true
+    },
+    "3000": {
+     "branch": "3000",
+     "status": "error",
+     "termination_condition": "internalSolverError",
+     "message": "Ipopt 3.14.18\\x3a Restoration Phase Failed.",
+     "succeeded": false,
+     "runtime_s": 3.8841302394866943,
+     "ipopt": {
+      "iterations": "408",
+      "objective": [
+       "1.6938936813492296e+02",
+       "1.6938936813492296e+05"
+      ],
+      "primal_infeasibility": [
+       "1.3501007528770894e-03",
+       "2.6034704704708915e-03"
+      ],
+      "dual_infeasibility": [
+       "1.0000000000000000e+03",
+       "1.0000000000000000e+06"
+      ],
+      "complementarity": [
+       "3.8050961347308804e-01",
+       "3.8050961347308805e+02"
+      ],
+      "overall_nlp_error": [
+       "7.1184487774605805e+02",
+       "1.0000000000000000e+06"
+      ]
+     },
+     "recovery_attempted": false,
+     "shared_ess_solution": {
+      "available": true,
+      "sch_range": [
+       0.0,
+       0.0
+      ],
+      "sdch_range": [
+       0.0,
+       0.0
+      ],
+      "pnet_range": [
+       0.0,
+       0.0
+      ],
+      "qnet_range": [
+       0.0,
+       0.0
+      ],
+      "max_abs_original_g": 0.0,
+      "max_abs_original_g_normalized_by_s_rated_sq": 0.0
+     },
+     "kappa": 3000.0,
+     "row_second_derivative_coefficient": 6000.0,
+     "kappa_is_capped": true,
+     "pre_solve_identity_checks": {
+      "primal_start_identical": true,
+      "bounds_identical": true,
+      "objective_at_start_identical": true,
+      "component_names_identical": true,
+      "index_tuples_identical": true,
+      "total_constraint_data_identical": true,
+      "row_activity_identical": true,
+      "sess_comp_rows_identical": true,
+      "capacity_identical": true,
+      "no_replacement_component": true
+     },
+     "structure_unchanged_after_solve": true
+    },
+    "production": {
+     "branch": "production",
+     "status": "warning",
+     "termination_condition": "maxIterations",
+     "message": "Ipopt 3.14.18\\x3a Maximum Number of Iterations Exceeded.",
+     "succeeded": false,
+     "runtime_s": 19.219313859939575,
+     "ipopt": {
+      "iterations": "3000",
+      "objective": [
+       "1.6679918843650810e+02",
+       "1.6679918843650809e+05"
+      ],
+      "primal_infeasibility": [
+       "8.2866099626432155e-03",
+       "1.1433843603618599e-02"
+      ],
+      "dual_infeasibility": [
+       "1.1612773911346684e+06",
+       "1.1612773911346684e+09"
+      ],
+      "complementarity": [
+       "1.0000000000385748e-01",
+       "1.0000000000385748e+02"
+      ],
+      "overall_nlp_error": [
+       "3.5483173430694973e+04",
+       "1.1612773911346684e+09"
+      ],
+      "exit_status": "Maximum Number of Iterations Exceeded"
+     },
+     "recovery_attempted": false,
+     "shared_ess_solution": {
+      "available": true,
+      "sch_range": [
+       0.0,
+       0.0
+      ],
+      "sdch_range": [
+       0.0,
+       0.0
+      ],
+      "pnet_range": [
+       0.0,
+       0.0
+      ],
+      "qnet_range": [
+       0.0,
+       0.0
+      ],
+      "max_abs_original_g": 0.0,
+      "max_abs_original_g_normalized_by_s_rated_sq": 0.0
+     },
+     "kappa": 4701.504839916499,
+     "row_second_derivative_coefficient": 9403.009679832998,
+     "kappa_is_capped": false,
+     "pre_solve_identity_checks": {
+      "primal_start_identical": true,
+      "bounds_identical": true,
+      "objective_at_start_identical": true,
+      "component_names_identical": true,
+      "index_tuples_identical": true,
+      "total_constraint_data_identical": true,
+      "row_activity_identical": true,
+      "sess_comp_rows_identical": true,
+      "capacity_identical": true,
+      "no_replacement_component": true
+     },
+     "structure_unchanged_after_solve": true
+    }
+   }
+  },
+  {
+   "label": "n5_2035_Winter",
+   "group": "production_failing",
+   "network": "case33_1",
+   "node_id": 5,
+   "year": 2035,
+   "day": "Winter",
+   "shared_ess_index": 0,
+   "s_rated_pu": 0.00031904678418381486,
+   "s_rated_MVA": 0.03190467841838149,
+   "kappa_production": 3134.3365599443323,
+   "branches": {
+    "100": {
+     "branch": "100",
+     "status": "ok",
+     "termination_condition": "optimal",
+     "message": "Ipopt 3.14.18\\x3a Optimal Solution Found",
+     "succeeded": true,
+     "runtime_s": 3.5433850288391113,
+     "ipopt": {
+      "iterations": "434",
+      "objective": [
+       "-8.0863345475005815e-04",
+       "-8.0863345475005810e-01"
+      ],
+      "primal_infeasibility": [
+       "5.0204333979794103e-14",
+       "6.9271813870397290e-14"
+      ],
+      "dual_infeasibility": [
+       "3.0256031196239663e-06",
+       "3.0256031196239661e-03"
+      ],
+      "complementarity": [
+       "9.0909090922128019e-09",
+       "9.0909090922128018e-06"
+      ],
+      "overall_nlp_error": [
+       "3.0256031196239663e-06",
+       "3.0256031196239661e-03"
+      ],
+      "exit_status": "Optimal Solution Found"
+     },
+     "recovery_attempted": false,
+     "shared_ess_solution": {
+      "available": true,
+      "sch_range": [
+       3.5609445004148383e-06,
+       3.892891648553253e-06
+      ],
+      "sdch_range": [
+       3.315862636575614e-06,
+       3.6292386269001903e-06
+      ],
+      "pnet_range": [
+       -6.829410654643024e-08,
+       5.770290119736799e-07
+      ],
+      "qnet_range": [
+       -5.4445778569946694e-09,
+       2.13781793529048e-12
+      ],
+      "max_abs_original_g": 2.4639377703491717e-18,
+      "max_abs_original_g_normalized_by_s_rated_sq": 2.420588646517662e-11
+     },
+     "kappa": 100.0,
+     "row_second_derivative_coefficient": 200.0,
+     "kappa_is_capped": true,
+     "pre_solve_identity_checks": {
+      "primal_start_identical": true,
+      "bounds_identical": true,
+      "objective_at_start_identical": true,
+      "component_names_identical": true,
+      "index_tuples_identical": true,
+      "total_constraint_data_identical": true,
+      "row_activity_identical": true,
+      "sess_comp_rows_identical": true,
+      "capacity_identical": true,
+      "no_replacement_component": true
+     },
+     "structure_unchanged_after_solve": true
+    },
+    "300": {
+     "branch": "300",
+     "status": "ok",
+     "termination_condition": "optimal",
+     "message": "Ipopt 3.14.18\\x3a Optimal Solution Found",
+     "succeeded": true,
+     "runtime_s": 2.070087194442749,
+     "ipopt": {
+      "iterations": "178",
+      "objective": [
+       "-8.0863367521064055e-04",
+       "-8.0863367521064056e-01"
+      ],
+      "primal_infeasibility": [
+       "5.0584745697821221e-14",
+       "6.9796705003021384e-14"
+      ],
+      "dual_infeasibility": [
+       "2.0684081442950532e-06",
+       "2.0684081442950532e-03"
+      ],
+      "complementarity": [
+       "9.0909103734068891e-09",
+       "9.0909103734068891e-06"
+      ],
+      "overall_nlp_error": [
+       "2.0684081442950532e-06",
+       "2.0684081442950532e-03"
+      ],
+      "exit_status": "Optimal Solution Found"
+     },
+     "recovery_attempted": false,
+     "shared_ess_solution": {
+      "available": true,
+      "sch_range": [
+       3.5790858474776272e-06,
+       3.874201905921599e-06
+      ],
+      "sdch_range": [
+       3.331376083412679e-06,
+       3.609993372496493e-06
+      ],
+      "pnet_range": [
+       -3.1307299254330215e-08,
+       5.428224238648542e-07
+      ],
+      "qnet_range": [
+       -1.2460509574555548e-11,
+       1.2724850176630129e-12
+      ],
+      "max_abs_original_g": 2.4872039072679893e-17,
+      "max_abs_original_g_normalized_by_s_rated_sq": 2.4434454522177647e-10
+     },
+     "kappa": 300.0,
+     "row_second_derivative_coefficient": 600.0,
+     "kappa_is_capped": true,
+     "pre_solve_identity_checks": {
+      "primal_start_identical": true,
+      "bounds_identical": true,
+      "objective_at_start_identical": true,
+      "component_names_identical": true,
+      "index_tuples_identical": true,
+      "total_constraint_data_identical": true,
+      "row_activity_identical": true,
+      "sess_comp_rows_identical": true,
+      "capacity_identical": true,
+      "no_replacement_component": true
+     },
+     "structure_unchanged_after_solve": true
+    },
+    "1000": {
+     "branch": "1000",
+     "status": "ok",
+     "termination_condition": "optimal",
+     "message": "Ipopt 3.14.18\\x3a Optimal Solution Found",
+     "succeeded": true,
+     "runtime_s": 7.0084569454193115,
+     "ipopt": {
+      "iterations": "545",
+      "objective": [
+       "-8.0863368219158687e-04",
+       "-8.0863368219158682e-01"
+      ],
+      "primal_infeasibility": [
+       "1.7107382657013593e-12",
+       "1.7107382657013593e-12"
+      ],
+      "dual_infeasibility": [
+       "7.2071172618262915e-06",
+       "7.2071172618262914e-03"
+      ],
+      "complementarity": [
+       "9.0909235700014222e-09",
+       "9.0909235700014224e-06"
+      ],
+      "overall_nlp_error": [
+       "7.2071172618262915e-06",
+       "7.2071172618262914e-03"
+      ],
+      "exit_status": "Optimal Solution Found"
+     },
+     "recovery_attempted": false,
+     "shared_ess_solution": {
+      "available": true,
+      "sch_range": [
+       3.5772884024477244e-06,
+       3.874647693200229e-06
+      ],
+      "sdch_range": [
+       3.3307304165861103e-06,
+       3.6117827158510495e-06
+      ],
+      "pnet_range": [
+       -3.91520649840157e-08,
+       5.454876163570174e-07
+      ],
+      "qnet_range": [
+       -3.253300716973662e-10,
+       4.966044791541692e-11
+      ],
+      "max_abs_original_g": 1.710738265701336e-15,
+      "max_abs_original_g_normalized_by_s_rated_sq": 1.6806405068148848e-08
+     },
+     "kappa": 1000.0,
+     "row_second_derivative_coefficient": 2000.0,
+     "kappa_is_capped": true,
+     "pre_solve_identity_checks": {
+      "primal_start_identical": true,
+      "bounds_identical": true,
+      "objective_at_start_identical": true,
+      "component_names_identical": true,
+      "index_tuples_identical": true,
+      "total_constraint_data_identical": true,
+      "row_activity_identical": true,
+      "sess_comp_rows_identical": true,
+      "capacity_identical": true,
+      "no_replacement_component": true
+     },
+     "structure_unchanged_after_solve": true
+    },
+    "3000": {
+     "branch": "3000",
+     "status": "ok",
+     "termination_condition": "optimal",
+     "message": "Ipopt 3.14.18\\x3a Optimal Solution Found",
+     "succeeded": true,
+     "runtime_s": 3.9301838874816895,
+     "ipopt": {
+      "iterations": "469",
+      "objective": [
+       "-8.0863355745005726e-04",
+       "-8.0863355745005727e-01"
+      ],
+      "primal_infeasibility": [
+       "1.1524445054887516e-11",
+       "1.1524445054887516e-11"
+      ],
+      "dual_infeasibility": [
+       "8.8310030980054208e-06",
+       "8.8310030980054202e-03"
+      ],
+      "complementarity": [
+       "9.0909090921836719e-09",
+       "9.0909090921836723e-06"
+      ],
+      "overall_nlp_error": [
+       "8.8310030980054208e-06",
+       "8.8310030980054202e-03"
+      ],
+      "exit_status": "Optimal Solution Found"
+     },
+     "recovery_attempted": false,
+     "shared_ess_solution": {
+      "available": true,
+      "sch_range": [
+       3.5667079377947642e-06,
+       3.873653157991137e-06
+      ],
+      "sdch_range": [
+       3.3316868760153474e-06,
+       3.62229552286283e-06
+      ],
+      "pnet_range": [
+       -8.325376117439729e-08,
+       5.422505873312019e-07
+      ],
+      "qnet_range": [
+       -5.220622361350745e-10,
+       4.3732445352755336e-10
+      ],
+      "max_abs_original_g": 3.841481684962505e-15,
+      "max_abs_original_g_normalized_by_s_rated_sq": 3.7738968347029486e-08
+     },
+     "kappa": 3000.0,
+     "row_second_derivative_coefficient": 6000.0,
+     "kappa_is_capped": true,
+     "pre_solve_identity_checks": {
+      "primal_start_identical": true,
+      "bounds_identical": true,
+      "objective_at_start_identical": true,
+      "component_names_identical": true,
+      "index_tuples_identical": true,
+      "total_constraint_data_identical": true,
+      "row_activity_identical": true,
+      "sess_comp_rows_identical": true,
+      "capacity_identical": true,
+      "no_replacement_component": true
+     },
+     "structure_unchanged_after_solve": true
+    },
+    "production": {
+     "branch": "production",
+     "status": "warning",
+     "termination_condition": "maxIterations",
+     "message": "Ipopt 3.14.18\\x3a Maximum Number of Iterations Exceeded.",
+     "succeeded": false,
+     "runtime_s": 18.622141361236572,
+     "ipopt": {
+      "iterations": "3000",
+      "objective": [
+       "1.9685310169726273e+02",
+       "1.9685310169726273e+05"
+      ],
+      "primal_infeasibility": [
+       "1.2454482791792326e-01",
+       "1.7184664060125476e-01"
+      ],
+      "dual_infeasibility": [
+       "1.3080316285540373e+06",
+       "1.3080316285540373e+09"
+      ],
+      "complementarity": [
+       "1.2454482797554199e-01",
+       "1.2454482797554199e+02"
+      ],
+      "overall_nlp_error": [
+       "6.7564018067015626e+04",
+       "1.3080316285540373e+09"
+      ],
+      "exit_status": "Maximum Number of Iterations Exceeded"
+     },
+     "recovery_attempted": false,
+     "shared_ess_solution": {
+      "available": true,
+      "sch_range": [
+       0.0,
+       0.0
+      ],
+      "sdch_range": [
+       0.0,
+       0.0
+      ],
+      "pnet_range": [
+       0.0,
+       0.0
+      ],
+      "qnet_range": [
+       0.0,
+       0.0
+      ],
+      "max_abs_original_g": 0.0,
+      "max_abs_original_g_normalized_by_s_rated_sq": 0.0
+     },
+     "kappa": 3134.3365599443323,
+     "row_second_derivative_coefficient": 6268.673119888665,
+     "kappa_is_capped": false,
+     "pre_solve_identity_checks": {
+      "primal_start_identical": true,
+      "bounds_identical": true,
+      "objective_at_start_identical": true,
+      "component_names_identical": true,
+      "index_tuples_identical": true,
+      "total_constraint_data_identical": true,
+      "row_activity_identical": true,
+      "sess_comp_rows_identical": true,
+      "capacity_identical": true,
+      "no_replacement_component": true
+     },
+     "structure_unchanged_after_solve": true
+    }
+   }
+  },
+  {
+   "label": "n9_2025_Summer",
+   "group": "production_failing",
+   "network": "case33_3",
+   "node_id": 9,
+   "year": 2025,
+   "day": "Summer",
+   "shared_ess_index": 0,
+   "s_rated_pu": 0.00010634892806127161,
+   "s_rated_MVA": 0.010634892806127162,
+   "kappa_production": 9403.009679832998,
+   "branches": {
+    "100": {
+     "branch": "100",
+     "status": "ok",
+     "termination_condition": "optimal",
+     "message": "Ipopt 3.14.18\\x3a Solved To Acceptable Level.",
+     "succeeded": true,
+     "runtime_s": 1.6915528774261475,
+     "ipopt": {
+      "iterations": "154",
+      "objective": [
+       "-8.1520440191386410e-04",
+       "-8.1520440191386412e-01"
+      ],
+      "primal_infeasibility": [
+       "4.9886905989302766e-14",
+       "6.8833827526759706e-14"
+      ],
+      "dual_infeasibility": [
+       "3.3514619911135152e-05",
+       "3.3514619911135149e-02"
+      ],
+      "complementarity": [
+       "9.0909090916372215e-09",
+       "9.0909090916372209e-06"
+      ],
+      "overall_nlp_error": [
+       "3.3514619911135152e-05",
+       "3.3514619911135149e-02"
+      ],
+      "exit_status": "Solved To Acceptable Level"
+     },
+     "recovery_attempted": false,
+     "shared_ess_solution": {
+      "available": true,
+      "sch_range": [
+       3.0763159596237513e-06,
+       4.4773161447659766e-06
+      ],
+      "sdch_range": [
+       2.864058847702045e-06,
+       4.1874500391532374e-06
+      ],
+      "pnet_range": [
+       -1.1111340780843763e-06,
+       1.6132572938542277e-06
+      ],
+      "qnet_range": [
+       -1.3056547705140926e-10,
+       -3.151219321222039e-11
+      ],
+      "max_abs_original_g": 1.931655558508296e-20,
+      "max_abs_original_g_normalized_by_s_rated_sq": 1.7079039954490297e-12
+     },
+     "kappa": 100.0,
+     "row_second_derivative_coefficient": 200.0,
+     "kappa_is_capped": true,
+     "pre_solve_identity_checks": {
+      "primal_start_identical": true,
+      "bounds_identical": true,
+      "objective_at_start_identical": true,
+      "component_names_identical": true,
+      "index_tuples_identical": true,
+      "total_constraint_data_identical": true,
+      "row_activity_identical": true,
+      "sess_comp_rows_identical": true,
+      "capacity_identical": true,
+      "no_replacement_component": true
+     },
+     "structure_unchanged_after_solve": true
+    },
+    "300": {
+     "branch": "300",
+     "status": "ok",
+     "termination_condition": "optimal",
+     "message": "Ipopt 3.14.18\\x3a Optimal Solution Found",
+     "succeeded": true,
+     "runtime_s": 3.459555149078369,
+     "ipopt": {
+      "iterations": "165",
+      "objective": [
+       "-8.4532374372259256e-04",
+       "-8.4532374372259256e-01"
+      ],
+      "primal_infeasibility": [
+       "5.0098120712241351e-14",
+       "6.9125261070723809e-14"
+      ],
+      "dual_infeasibility": [
+       "9.7004761460457874e-06",
+       "9.7004761460457879e-03"
+      ],
+      "complementarity": [
+       "6.0909227730442020e-11",
+       "6.0909227730442021e-08"
+      ],
+      "overall_nlp_error": [
+       "9.7004761460457874e-06",
+       "9.7004761460457879e-03"
+      ],
+      "exit_status": "Optimal Solution Found"
+     },
+     "recovery_attempted": true,
+     "shared_ess_solution": {
+      "available": true,
+      "sch_range": [
+       7.9390306752693e-09,
+       8.006577246139719e-09
+      ],
+      "sdch_range": [
+       7.367632596098104e-09,
+       7.436439058597651e-09
+      ],
+      "pnet_range": [
+       4.826177676202894e-10,
+       6.597743145571262e-10
+      ],
+      "qnet_range": [
+       -9.793266798724082e-12,
+       1.3737963219648077e-10
+      ],
+      "max_abs_original_g": 1.0308435229156129e-19,
+      "max_abs_original_g_normalized_by_s_rated_sq": 9.114367019086582e-12
+     },
+     "kappa": 300.0,
+     "row_second_derivative_coefficient": 600.0,
+     "kappa_is_capped": true,
+     "pre_solve_identity_checks": {
+      "primal_start_identical": true,
+      "bounds_identical": true,
+      "objective_at_start_identical": true,
+      "component_names_identical": true,
+      "index_tuples_identical": true,
+      "total_constraint_data_identical": true,
+      "row_activity_identical": true,
+      "sess_comp_rows_identical": true,
+      "capacity_identical": true,
+      "no_replacement_component": true
+     },
+     "structure_unchanged_after_solve": true
+    },
+    "1000": {
+     "branch": "1000",
+     "status": "ok",
+     "termination_condition": "optimal",
+     "message": "Ipopt 3.14.18\\x3a Optimal Solution Found",
+     "succeeded": true,
+     "runtime_s": 4.310207366943359,
+     "ipopt": {
+      "iterations": "385",
+      "objective": [
+       "-8.1521426589794015e-04",
+       "-8.1521426589794010e-01"
+      ],
+      "primal_infeasibility": [
+       "6.1554004970671961e-14",
+       "8.4932061383824475e-14"
+      ],
+      "dual_infeasibility": [
+       "3.9830797508073635e-06",
+       "3.9830797508073638e-03"
+      ],
+      "complementarity": [
+       "9.0909479117038729e-09",
+       "9.0909479117038720e-06"
+      ],
+      "overall_nlp_error": [
+       "3.9830797508073635e-06",
+       "3.9830797508073638e-03"
+      ],
+      "exit_status": "Optimal Solution Found"
+     },
+     "recovery_attempted": false,
+     "shared_ess_solution": {
+      "available": true,
+      "sch_range": [
+       3.3241873477618488e-06,
+       4.137921589559607e-06
+      ],
+      "sdch_range": [
+       3.0926715043277814e-06,
+       3.861009265814923e-06
+      ],
+      "pnet_range": [
+       -5.368219176696633e-07,
+       1.0452500849404284e-06
+      ],
+      "qnet_range": [
+       -2.361504833591806e-10,
+       7.94204797756576e-11
+      ],
+      "max_abs_original_g": 1.1402943704350295e-19,
+      "max_abs_original_g_normalized_by_s_rated_sq": 1.0082094101486566e-11
+     },
+     "kappa": 1000.0,
+     "row_second_derivative_coefficient": 2000.0,
+     "kappa_is_capped": true,
+     "pre_solve_identity_checks": {
+      "primal_start_identical": true,
+      "bounds_identical": true,
+      "objective_at_start_identical": true,
+      "component_names_identical": true,
+      "index_tuples_identical": true,
+      "total_constraint_data_identical": true,
+      "row_activity_identical": true,
+      "sess_comp_rows_identical": true,
+      "capacity_identical": true,
+      "no_replacement_component": true
+     },
+     "structure_unchanged_after_solve": true
+    },
+    "3000": {
+     "branch": "3000",
+     "status": "ok",
+     "termination_condition": "optimal",
+     "message": "Ipopt 3.14.18\\x3a Optimal Solution Found",
+     "succeeded": true,
+     "runtime_s": 6.129003047943115,
+     "ipopt": {
+      "iterations": "646",
+      "objective": [
+       "-8.1521405077045260e-04",
+       "-8.1521405077045261e-01"
+      ],
+      "primal_infeasibility": [
+       "3.4413918857459347e-13",
+       "4.7484238763217945e-13"
+      ],
+      "dual_infeasibility": [
+       "3.9112913891945628e-06",
+       "3.9112913891945628e-03"
+      ],
+      "complementarity": [
+       "9.0909090917683296e-09",
+       "9.0909090917683297e-06"
+      ],
+      "overall_nlp_error": [
+       "3.9112913891945628e-06",
+       "3.9112913891945628e-03"
+      ],
+      "exit_status": "Optimal Solution Found"
+     },
+     "recovery_attempted": false,
+     "shared_ess_solution": {
+      "available": true,
+      "sch_range": [
+       3.3404633071033393e-06,
+       4.122036402372578e-06
+      ],
+      "sdch_range": [
+       3.108215417667661e-06,
+       3.846356652378145e-06
+      ],
+      "pnet_range": [
+       -5.058933451141538e-07,
+       1.013820985246021e-06
+      ],
+      "qnet_range": [
+       -5.062857725893618e-11,
+       -8.892145194212087e-12
+      ],
+      "max_abs_original_g": 1.5995092182064679e-19,
+      "max_abs_original_g_normalized_by_s_rated_sq": 1.4142315240932473e-11
+     },
+     "kappa": 3000.0,
+     "row_second_derivative_coefficient": 6000.0,
+     "kappa_is_capped": true,
+     "pre_solve_identity_checks": {
+      "primal_start_identical": true,
+      "bounds_identical": true,
+      "objective_at_start_identical": true,
+      "component_names_identical": true,
+      "index_tuples_identical": true,
+      "total_constraint_data_identical": true,
+      "row_activity_identical": true,
+      "sess_comp_rows_identical": true,
+      "capacity_identical": true,
+      "no_replacement_component": true
+     },
+     "structure_unchanged_after_solve": true
+    },
+    "production": {
+     "branch": "production",
+     "status": "warning",
+     "termination_condition": "maxIterations",
+     "message": "Ipopt 3.14.18\\x3a Maximum Number of Iterations Exceeded.",
+     "succeeded": false,
+     "runtime_s": 23.880481004714966,
+     "ipopt": {
+      "iterations": "3000",
+      "objective": [
+       "1.7579288665181636e+02",
+       "1.7579288665181637e+05"
+      ],
+      "primal_infeasibility": [
+       "1.3987410428880982e-02",
+       "1.9299793761794887e-02"
+      ],
+      "dual_infeasibility": [
+       "2.6793012496658002e+03",
+       "2.6793012496658000e+06"
+      ],
+      "complementarity": [
+       "1.0000000000000012e-01",
+       "1.0000000000000011e+02"
+      ],
+      "overall_nlp_error": [
+       "2.1539074691067208e+02",
+       "2.6793012496658000e+06"
+      ],
+      "exit_status": "Maximum Number of Iterations Exceeded"
+     },
+     "recovery_attempted": false,
+     "shared_ess_solution": {
+      "available": true,
+      "sch_range": [
+       0.0,
+       0.0
+      ],
+      "sdch_range": [
+       0.0,
+       0.0
+      ],
+      "pnet_range": [
+       0.0,
+       0.0
+      ],
+      "qnet_range": [
+       0.0,
+       0.0
+      ],
+      "max_abs_original_g": 0.0,
+      "max_abs_original_g_normalized_by_s_rated_sq": 0.0
+     },
+     "kappa": 9403.009679832998,
+     "row_second_derivative_coefficient": 18806.019359665996,
+     "kappa_is_capped": false,
+     "pre_solve_identity_checks": {
+      "primal_start_identical": true,
+      "bounds_identical": true,
+      "objective_at_start_identical": true,
+      "component_names_identical": true,
+      "index_tuples_identical": true,
+      "total_constraint_data_identical": true,
+      "row_activity_identical": true,
+      "sess_comp_rows_identical": true,
+      "capacity_identical": true,
+      "no_replacement_component": true
+     },
+     "structure_unchanged_after_solve": true
+    }
+   }
+  },
+  {
+   "label": "n9_2025_Autumn",
+   "group": "b100_regression",
+   "network": "case33_3",
+   "node_id": 9,
+   "year": 2025,
+   "day": "Autumn",
+   "shared_ess_index": 0,
+   "s_rated_pu": 0.00010634892806127161,
+   "s_rated_MVA": 0.010634892806127162,
+   "kappa_production": 9403.009679832998,
+   "branches": {
+    "100": {
+     "branch": "100",
+     "status": "warning",
+     "termination_condition": "maxIterations",
+     "message": "Ipopt 3.14.18\\x3a Maximum Number of Iterations Exceeded.",
+     "succeeded": false,
+     "runtime_s": 17.614920377731323,
+     "ipopt": {
+      "iterations": "3000",
+      "objective": [
+       "1.8159674197014152e+02",
+       "1.8159674197014151e+05"
+      ],
+      "primal_infeasibility": [
+       "5.0792140187913655e-03",
+       "7.0082867399303963e-03"
+      ],
+      "dual_infeasibility": [
+       "1.2313500427381009e+03",
+       "1.2313500427381010e+06"
+      ],
+      "complementarity": [
+       "1.0000000000000007e-01",
+       "1.0000000000000007e+02"
+      ],
+      "overall_nlp_error": [
+       "9.8184348756378526e+01",
+       "1.2313500427381010e+06"
+      ],
+      "exit_status": "Maximum Number of Iterations Exceeded"
+     },
+     "recovery_attempted": false,
+     "shared_ess_solution": {
+      "available": true,
+      "sch_range": [
+       0.0,
+       0.0
+      ],
+      "sdch_range": [
+       0.0,
+       0.0
+      ],
+      "pnet_range": [
+       0.0,
+       0.0
+      ],
+      "qnet_range": [
+       0.0,
+       0.0
+      ],
+      "max_abs_original_g": 0.0,
+      "max_abs_original_g_normalized_by_s_rated_sq": 0.0
+     },
+     "kappa": 100.0,
+     "row_second_derivative_coefficient": 200.0,
+     "kappa_is_capped": true,
+     "pre_solve_identity_checks": {
+      "primal_start_identical": true,
+      "bounds_identical": true,
+      "objective_at_start_identical": true,
+      "component_names_identical": true,
+      "index_tuples_identical": true,
+      "total_constraint_data_identical": true,
+      "row_activity_identical": true,
+      "sess_comp_rows_identical": true,
+      "capacity_identical": true,
+      "no_replacement_component": true
+     },
+     "structure_unchanged_after_solve": true
+    },
+    "300": {
+     "branch": "300",
+     "status": "ok",
+     "termination_condition": "optimal",
+     "message": "Ipopt 3.14.18\\x3a Optimal Solution Found",
+     "succeeded": true,
+     "runtime_s": 1.6222660541534424,
+     "ipopt": {
+      "iterations": "154",
+      "objective": [
+       "-8.2604212444590186e-04",
+       "-8.2604212444590186e-01"
+      ],
+      "primal_infeasibility": [
+       "5.3285268365995399e-14",
+       "7.4721479004224989e-14"
+      ],
+      "dual_infeasibility": [
+       "2.7523407304060376e-06",
+       "2.7523407304060376e-03"
+      ],
+      "complementarity": [
+       "9.0909276234348740e-09",
+       "9.0909276234348739e-06"
+      ],
+      "overall_nlp_error": [
+       "2.7523407304060376e-06",
+       "2.7523407304060376e-03"
+      ],
+      "exit_status": "Optimal Solution Found"
+     },
+     "recovery_attempted": false,
+     "shared_ess_solution": {
+      "available": true,
+      "sch_range": [
+       3.34126115153148e-06,
+       4.121127525410312e-06
+      ],
+      "sdch_range": [
+       3.108929234424818e-06,
+       3.845457727663659e-06
+      ],
+      "pnet_range": [
+       -5.041965761321754e-07,
+       1.0121982909854944e-06
+      ],
+      "qnet_range": [
+       -7.475016666301006e-13,
+       1.0559990584237764e-13
+      ],
+      "max_abs_original_g": 4.940488821155591e-23,
+      "max_abs_original_g_normalized_by_s_rated_sq": 4.3682117963302835e-15
+     },
+     "kappa": 300.0,
+     "row_second_derivative_coefficient": 600.0,
+     "kappa_is_capped": true,
+     "pre_solve_identity_checks": {
+      "primal_start_identical": true,
+      "bounds_identical": true,
+      "objective_at_start_identical": true,
+      "component_names_identical": true,
+      "index_tuples_identical": true,
+      "total_constraint_data_identical": true,
+      "row_activity_identical": true,
+      "sess_comp_rows_identical": true,
+      "capacity_identical": true,
+      "no_replacement_component": true
+     },
+     "structure_unchanged_after_solve": true
+    },
+    "1000": {
+     "branch": "1000",
+     "status": "ok",
+     "termination_condition": "optimal",
+     "message": "Ipopt 3.14.18\\x3a Optimal Solution Found",
+     "succeeded": true,
+     "runtime_s": 4.24701189994812,
+     "ipopt": {
+      "iterations": "378",
+      "objective": [
+       "-8.2604212444588733e-04",
+       "-8.2604212444588732e-01"
+      ],
+      "primal_infeasibility": [
+       "6.6341538690613112e-14",
+       "9.1537888380344157e-14"
+      ],
+      "dual_infeasibility": [
+       "2.7388534246646098e-06",
+       "2.7388534246646098e-03"
+      ],
+      "complementarity": [
+       "9.0909276101857881e-09",
+       "9.0909276101857878e-06"
+      ],
+      "overall_nlp_error": [
+       "2.7388534246646098e-06",
+       "2.7388534246646098e-03"
+      ],
+      "exit_status": "Optimal Solution Found"
+     },
+     "recovery_attempted": false,
+     "shared_ess_solution": {
+      "available": true,
+      "sch_range": [
+       3.341261151401306e-06,
+       4.121127525651933e-06
+      ],
+      "sdch_range": [
+       3.108929234457573e-06,
+       3.845457728170224e-06
+      ],
+      "pnet_range": [
+       -5.041965767689145e-07,
+       1.01219829119436e-06
+      ],
+      "qnet_range": [
+       -7.410554818962694e-13,
+       1.0559858329827166e-13
+      ],
+      "max_abs_original_g": 4.9509317783100224e-23,
+      "max_abs_original_g_normalized_by_s_rated_sq": 4.377445103049898e-15
+     },
+     "kappa": 1000.0,
+     "row_second_derivative_coefficient": 2000.0,
+     "kappa_is_capped": true,
+     "pre_solve_identity_checks": {
+      "primal_start_identical": true,
+      "bounds_identical": true,
+      "objective_at_start_identical": true,
+      "component_names_identical": true,
+      "index_tuples_identical": true,
+      "total_constraint_data_identical": true,
+      "row_activity_identical": true,
+      "sess_comp_rows_identical": true,
+      "capacity_identical": true,
+      "no_replacement_component": true
+     },
+     "structure_unchanged_after_solve": true
+    },
+    "3000": {
+     "branch": "3000",
+     "status": "ok",
+     "termination_condition": "optimal",
+     "message": "Ipopt 3.14.18\\x3a Optimal Solution Found",
+     "succeeded": true,
+     "runtime_s": 2.157104253768921,
+     "ipopt": {
+      "iterations": "154",
+      "objective": [
+       "-8.2604212444590186e-04",
+       "-8.2604212444590186e-01"
+      ],
+      "primal_infeasibility": [
+       "4.3369423110055151e-14",
+       "7.3177575110605630e-14"
+      ],
+      "dual_infeasibility": [
+       "2.7523407282316570e-06",
+       "2.7523407282316571e-03"
+      ],
+      "complementarity": [
+       "9.0909276234348724e-09",
+       "9.0909276234348722e-06"
+      ],
+      "overall_nlp_error": [
+       "2.7523407282316570e-06",
+       "2.7523407282316571e-03"
+      ],
+      "exit_status": "Optimal Solution Found"
+     },
+     "recovery_attempted": false,
+     "shared_ess_solution": {
+      "available": true,
+      "sch_range": [
+       3.341261151531484e-06,
+       4.121127525410316e-06
+      ],
+      "sdch_range": [
+       3.108929234424815e-06,
+       3.845457727663654e-06
+      ],
+      "pnet_range": [
+       -5.041965761321668e-07,
+       1.0121982909855018e-06
+      ],
+      "qnet_range": [
+       -7.475016676611959e-13,
+       1.0559990570639037e-13
+      ],
+      "max_abs_original_g": 4.940493869297192e-23,
+      "max_abs_original_g_normalized_by_s_rated_sq": 4.368216259724998e-15
+     },
+     "kappa": 3000.0,
+     "row_second_derivative_coefficient": 6000.0,
+     "kappa_is_capped": true,
+     "pre_solve_identity_checks": {
+      "primal_start_identical": true,
+      "bounds_identical": true,
+      "objective_at_start_identical": true,
+      "component_names_identical": true,
+      "index_tuples_identical": true,
+      "total_constraint_data_identical": true,
+      "row_activity_identical": true,
+      "sess_comp_rows_identical": true,
+      "capacity_identical": true,
+      "no_replacement_component": true
+     },
+     "structure_unchanged_after_solve": true
+    },
+    "production": {
+     "branch": "production",
+     "status": "ok",
+     "termination_condition": "optimal",
+     "message": "Ipopt 3.14.18\\x3a Optimal Solution Found",
+     "succeeded": true,
+     "runtime_s": 6.919682025909424,
+     "ipopt": {
+      "iterations": "438",
+      "objective": [
+       "-8.2604212444588733e-04",
+       "-8.2604212444588732e-01"
+      ],
+      "primal_infeasibility": [
+       "5.6497260534029052e-14",
+       "8.8259261010747991e-14"
+      ],
+      "dual_infeasibility": [
+       "2.7388514357186959e-06",
+       "2.7388514357186960e-03"
+      ],
+      "complementarity": [
+       "9.0909276101850189e-09",
+       "9.0909276101850187e-06"
+      ],
+      "overall_nlp_error": [
+       "2.7388514357186959e-06",
+       "2.7388514357186960e-03"
+      ],
+      "exit_status": "Optimal Solution Found"
+     },
+     "recovery_attempted": false,
+     "shared_ess_solution": {
+      "available": true,
+      "sch_range": [
+       3.341261151401282e-06,
+       4.12112752565197e-06
+      ],
+      "sdch_range": [
+       3.1089292344575633e-06,
+       3.845457728170283e-06
+      ],
+      "pnet_range": [
+       -5.041965767689974e-07,
+       1.0121982911944064e-06
+      ],
+      "qnet_range": [
+       -7.410549878981159e-13,
+       1.0559858304224006e-13
+      ],
+      "max_abs_original_g": 4.9509065348737464e-23,
+      "max_abs_original_g_normalized_by_s_rated_sq": 4.3774227836640825e-15
+     },
+     "kappa": 9403.009679832998,
+     "row_second_derivative_coefficient": 18806.019359665996,
+     "kappa_is_capped": false,
+     "pre_solve_identity_checks": {
+      "primal_start_identical": true,
+      "bounds_identical": true,
+      "objective_at_start_identical": true,
+      "component_names_identical": true,
+      "index_tuples_identical": true,
+      "total_constraint_data_identical": true,
+      "row_activity_identical": true,
+      "sess_comp_rows_identical": true,
+      "capacity_identical": true,
+      "no_replacement_component": true
+     },
+     "structure_unchanged_after_solve": true
+    }
+   }
+  }
+ ],
+ "success_matrix": {
+  "n5_2030_Winter": {
+   "100": {
+    "succeeded": true,
+    "termination": "optimal",
+    "iterations": "240",
+    "kappa": 100.0
+   },
+   "300": {
+    "succeeded": false,
+    "termination": "maxIterations",
+    "iterations": "3000",
+    "kappa": 300.0
+   },
+   "1000": {
+    "succeeded": true,
+    "termination": "optimal",
+    "iterations": "334",
+    "kappa": 1000.0
+   },
+   "3000": {
+    "succeeded": false,
+    "termination": "internalSolverError",
+    "iterations": "408",
+    "kappa": 3000.0
+   },
+   "production": {
+    "succeeded": false,
+    "termination": "maxIterations",
+    "iterations": "3000",
+    "kappa": 4701.504839916499
+   }
+  },
+  "n5_2035_Winter": {
+   "100": {
+    "succeeded": true,
+    "termination": "optimal",
+    "iterations": "434",
+    "kappa": 100.0
+   },
+   "300": {
+    "succeeded": true,
+    "termination": "optimal",
+    "iterations": "178",
+    "kappa": 300.0
+   },
+   "1000": {
+    "succeeded": true,
+    "termination": "optimal",
+    "iterations": "545",
+    "kappa": 1000.0
+   },
+   "3000": {
+    "succeeded": true,
+    "termination": "optimal",
+    "iterations": "469",
+    "kappa": 3000.0
+   },
+   "production": {
+    "succeeded": false,
+    "termination": "maxIterations",
+    "iterations": "3000",
+    "kappa": 3134.3365599443323
+   }
+  },
+  "n9_2025_Summer": {
+   "100": {
+    "succeeded": true,
+    "termination": "optimal",
+    "iterations": "154",
+    "kappa": 100.0
+   },
+   "300": {
+    "succeeded": true,
+    "termination": "optimal",
+    "iterations": "165",
+    "kappa": 300.0
+   },
+   "1000": {
+    "succeeded": true,
+    "termination": "optimal",
+    "iterations": "385",
+    "kappa": 1000.0
+   },
+   "3000": {
+    "succeeded": true,
+    "termination": "optimal",
+    "iterations": "646",
+    "kappa": 3000.0
+   },
+   "production": {
+    "succeeded": false,
+    "termination": "maxIterations",
+    "iterations": "3000",
+    "kappa": 9403.009679832998
+   }
+  },
+  "n9_2025_Autumn": {
+   "100": {
+    "succeeded": false,
+    "termination": "maxIterations",
+    "iterations": "3000",
+    "kappa": 100.0
+   },
+   "300": {
+    "succeeded": true,
+    "termination": "optimal",
+    "iterations": "154",
+    "kappa": 300.0
+   },
+   "1000": {
+    "succeeded": true,
+    "termination": "optimal",
+    "iterations": "378",
+    "kappa": 1000.0
+   },
+   "3000": {
+    "succeeded": true,
+    "termination": "optimal",
+    "iterations": "154",
+    "kappa": 3000.0
+   },
+   "production": {
+    "succeeded": true,
+    "termination": "optimal",
+    "iterations": "438",
+    "kappa": 9403.009679832998
+   }
+  }
+ },
+ "common_successful_kmax": [
+  "1000"
+ ],
+ "selected_kmax": "1000",
+ "full_initialization_gate": {
+  "run": true,
+  "cap": 1000.0,
+  "cap_applied_in_memory_only": true,
+  "total_local_solves": 3,
+  "n_failures": 0,
+  "failures": {},
+  "all_solves": {
+   "dso_unparsed": "Unknown attribute `solver' for object with type <class 'pyomo.opt.results.problem.ProblemInformation'>",
+   "tso_unparsed": "Unknown attribute `solver' for object with type <class 'pyomo.opt.results.problem.ProblemInformation'>",
+   "esso_unparsed": "Unknown attribute `solver' for object with type <class 'pyomo.opt.results.problem.ProblemInformation'>"
+  },
+  "admm_local_solves_succeeded": false,
+  "would_enter_admm": false
+ }
+}

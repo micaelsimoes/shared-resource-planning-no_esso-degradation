@@ -1,7 +1,10 @@
+import re
+import sys
+from collections import deque
 import pandas as pd
 from functools import partial
 import pyomo.opt as po
-from math import pi, isclose, sqrt
+from math import pi, isclose, sqrt, atan2
 import networkx as nx
 import matplotlib.pyplot as plt
 from node import Node
@@ -11,6 +14,8 @@ from generator import Generator
 from energy_storage import EnergyStorage
 from model_construction_helpers import *
 from hierarchical_coordination import *
+from helper_functions import (derive_random_seed, solver_result_succeeded, solver_result_summary,
+                              replace_warm_start_suffix, IPOPT_FIXED_VARIABLE_TREATMENT)
 
 
 # ======================================================================================================================
@@ -28,6 +33,7 @@ class Network:
         self.day = str()
         self.num_instants = 0
         self.num_oper_scenarios = int()
+        self.random_seed = None
         self.operational_data_file = str()
         self.data_loaded = False
         self.is_transmission = False
@@ -43,6 +49,8 @@ class Network:
         self.cost_energy_p = list()
         self.cost_flex = list()
         self.active_distribution_network_nodes = list()
+        # P5.15 Addendum 46 ruling 7: per-attempt IPOPT floor-status records (see `_append_ipopt_solve_record`).
+        self.ipopt_solve_records = deque(maxlen=IPOPT_SOLVE_RECORDS_MAXLEN)
 
     def build_model(self, params):
         return _build_model(self, params)
@@ -251,9 +259,20 @@ def _build_model(network, params):
     model.scenarios_market = range(len(network.prob_market_scenarios))
     model.scenarios_operation = range(len(network.prob_operation_scenarios))
     model.nodes = range(len(network.nodes))
+    model.vmag_nodes = pe.Set(
+        initialize=get_vmag_node_indices(network),
+        ordered=True,
+    )
     model.loads = range(len(network.loads))
     model.generators = range(len(network.generators))
     model.branches = range(len(network.branches))
+    model.apparent_power_limited_branches = pe.Set(
+        initialize=[
+            b for b, branch in enumerate(network.branches)
+            if branch.status and branch_uses_apparent_power_limit(branch, params)
+        ],
+        ordered=True,
+    )
     model.energy_storages = range(len(network.energy_storages))
     model.shared_energy_storages = range(len(network.shared_energy_storages))
     if network.is_transmission:
@@ -262,20 +281,15 @@ def _build_model(network, params):
     # ------------------------------------------------------------------------------------------------------------------
     # Decision variables
     # - Voltage
-    model.e = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=partial(e_initialize, network=network), bounds=partial(e_bounds, network=network))
-    model.f = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=partial(f_initialize, network=network), bounds=partial(f_bounds, network=network))
+    model.e = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=partial(e_initialize, network=network), bounds=partial(e_bounds, network=network, params=params))
+    model.f = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=partial(f_initialize, network=network), bounds=partial(f_bounds, network=network, params=params))
     if params.slacks.grid_operation.voltage:
-        model.slack_e_up = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0, bounds=partial(voltage_slack_bounds, network=network))
-        model.slack_e_down = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0, bounds=partial(voltage_slack_bounds, network=network))
-        model.slack_f_up = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0, bounds=partial(voltage_slack_bounds, network=network))
-        model.slack_f_down = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0, bounds=partial(voltage_slack_bounds, network=network))
-    model.e_actual = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, initialize=1.00)
-    model.f_actual = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, initialize=0.00)
-    model.vmag = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, initialize=1.00)
-    model.vmag_sqr = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, initialize=1.00)
-    model.e_e = pe.Var(model.nodes, model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, initialize=1.00)
-    model.e_f = pe.Var(model.nodes, model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, initialize=0.00)
-    model.f_f = pe.Var(model.nodes, model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, initialize=0.00)
+        model.slack_v_sqr_down = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0, bounds=partial(voltage_slack_down_bounds, network=network, params=params))
+        model.slack_v_sqr_up = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0, bounds=partial(voltage_slack_up_bounds, network=network, params=params))
+    model.vmag = pe.Var(model.vmag_nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=1.00, bounds=partial(vmag_bounds, network=network, params=params))
+    model.vmag_sqr = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=1.00, bounds=partial(vmag_sqr_bounds, network=network, params=params))
+    model.voltage_product_real = pe.Var(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=1.00)
+    model.voltage_product_imag = pe.Var(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.00)
     if params.slacks.node_balance.active_power:
         model.slack_node_balance_p_up = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.00, bounds=partial(node_balance_slack_bounds, network=network))
         model.slack_node_balance_p_down = pe.Var(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.00, bounds=partial(node_balance_slack_bounds, network=network))
@@ -290,11 +304,11 @@ def _build_model(network, params):
         model.pg_avail = pe.Param(model.generators, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=partial(pg_avail_init, network=network, params=params), mutable=False)
         model.sg_avail = pe.Param(model.generators, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=partial(sg_avail_init, network=network, params=params), mutable=False)
         model.sg_sqr = pe.Expression(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(sg_sqr_rule, network=network))
-        model.sg_curt = pe.Expression(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(sg_curt_rule, network=network))
 
     # - Branch power flow
     if params.slacks.grid_operation.branch_flow:
         model.slack_flow_ij_sqr = pe.Var(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0, bounds=partial(slack_flow_bounds, network=network, params=params))
+        model.slack_flow_ji_sqr = pe.Var(model.apparent_power_limited_branches, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0, bounds=partial(slack_flow_bounds, network=network, params=params))
 
     # - Loads
     if network.is_transmission: # Note: PC and Qc considered vars for transmission, due to coordination procedure (i.e., this can change)
@@ -313,6 +327,28 @@ def _build_model(network, params):
             model.slack_flex_p_balance_down = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, domain=pe.NonNegativeReals, initialize=0.0, bounds=(0.00, 0.01))
             model.slack_flex_q_balance_up = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, domain=pe.NonNegativeReals, initialize=0.0, bounds=(0.00, 0.01))
             model.slack_flex_q_balance_down = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, domain=pe.NonNegativeReals, initialize=0.0, bounds=(0.00, 0.01))
+            # P5.15 Step 3 (row 14 / D2, signed table
+            # `P5_15_S31_PENALTY_TABLE_DRAFT.md`): the Q day-balance constraint
+            # is unwired for EVERY load (`flex_energy_balance_q` is never
+            # activated below), and the TSO's ADN-interface loads have no P
+            # day-balance constraint either (`flex_energy_balance_p_rule`
+            # skips them). Both families of slacks are orphaned -- no
+            # governing constraint, and (since Step 3) no objective term
+            # (`flexibility_p_day_balance_slack_penalty`,
+            # `model_construction_helpers.py`) -- so they are fixed to 0 here
+            # rather than left to float free in the NLP. The variables are
+            # KEPT (not deleted) so results-processing code
+            # (`_process_results_detail`, ~1490-1530 below) can still read
+            # them unconditionally for every load.
+            for c in model.loads:
+                load_is_adn_interface = load_is_tso_adn_interface(network, network.loads[c])
+                for s_m in model.scenarios_market:
+                    for s_o in model.scenarios_operation:
+                        model.slack_flex_q_balance_up[c, s_m, s_o].fix(0.0)
+                        model.slack_flex_q_balance_down[c, s_m, s_o].fix(0.0)
+                        if load_is_adn_interface:
+                            model.slack_flex_p_balance_up[c, s_m, s_o].fix(0.0)
+                            model.slack_flex_p_balance_down[c, s_m, s_o].fix(0.0)
     if params.l_curt:
         model.pc_curt_down = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, bounds=partial(pc_curt_down_bounds, network=network, params=params))
         model.pc_curt_up = pe.Var(model.loads, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, bounds=partial(pc_curt_up_bounds, network=network, params=params))
@@ -324,17 +360,20 @@ def _build_model(network, params):
     model.r_sqr = pe.Var(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals)
 
     # Branch power flows (aux)
-    model.pij = pe.Var(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, initialize=0.00)
-    model.qij = pe.Var(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, initialize=0.00)
+    model.pij = pe.Var(model.apparent_power_limited_branches, model.scenarios_market, model.scenarios_operation, model.periods, initialize=0.00)
+    model.qij = pe.Var(model.apparent_power_limited_branches, model.scenarios_market, model.scenarios_operation, model.periods, initialize=0.00)
+    model.pji = pe.Var(model.apparent_power_limited_branches, model.scenarios_market, model.scenarios_operation, model.periods, initialize=0.00)
+    model.qji = pe.Var(model.apparent_power_limited_branches, model.scenarios_market, model.scenarios_operation, model.periods, initialize=0.00)
 
     # - Energy Storage devices
     if params.es_reg:
+        # P5.4-B: es_sch / es_sdch and the ess_snet_def kappa_es scale are retired --
+        # the ordinary ESS now uses the same active-energy formulation as the shared ESS.
         model.es_pch = pe.Var(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0, bounds=partial(p_bounds, network=network))
-        model.es_qch = pe.Var(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0, bounds=partial(q_bounds, network=network))
         model.es_pdch = pe.Var(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0, bounds=partial(p_bounds, network=network))
-        model.es_qdch = pe.Var(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0, bounds=partial(q_bounds, network=network))
-        model.es_sch = pe.Var(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0, bounds=partial(s_bounds, network=network))
-        model.es_sdch = pe.Var(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0, bounds=partial(s_bounds, network=network))
+        # P5.4-H1: dimensionless charge/discharge, used ONLY by the complementarity row.
+        model.es_pch_hat = pe.Var(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, bounds=(0.0, 1.0), initialize=0.0)
+        model.es_pdch_hat = pe.Var(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, bounds=(0.0, 1.0), initialize=0.0)
         model.es_pnet = pe.Var(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0, bounds=partial(snet_bounds, network=network))
         model.es_qnet = pe.Var(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0, bounds=partial(q_bounds, network=network))
         model.es_soc = pe.Var(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=partial(soc_initialize, network=network)) # [e_min, e_max] enforced with ess_soc_limits_rule
@@ -343,16 +382,24 @@ def _build_model(network, params):
             model.slack_es_soc_final_down = pe.Var(model.energy_storages, model.scenarios_market, model.scenarios_operation, domain=pe.NonNegativeReals, initialize=0.0, bounds=partial(slack_es_balance_bounds, network=network))
 
     # - Shared Energy Storage devices
-    model.shared_es_s_rated_fixed = pe.Param(model.shared_energy_storages, mutable=True, initialize=0.00)          # Benders' -- used to get the dual variables (sensitivities)
-    model.shared_es_e_rated_fixed = pe.Param(model.shared_energy_storages, mutable=True, initialize=0.00)          # (...)
-    model.shared_es_s_rated = pe.Var(model.shared_energy_storages, domain=pe.NonNegativeReals, initialize=0.0)
-    model.shared_es_e_rated = pe.Var(model.shared_energy_storages, domain=pe.NonNegativeReals, initialize=0.0)
+    # P5.15-1b (PLANNER_BRIEF_2026-09-13.md, Step 2 Candidate 2): capacity is
+    # carried ONLY by these two mutable Params now. The `shared_es_s_rated`/
+    # `shared_es_e_rated` `Var`s (formerly pinned to these Params by the
+    # `shared_energy_storage_s/e_sensitivities` equalities, which carried the
+    # Benders capacity-sensitivity duals) are deleted: the outer Benders
+    # sensitivity channel is retired (Addendum 1; `_add_benders_cut` already
+    # returns False unconditionally). This makes `sess_converter_capability` a
+    # convex SOC row and the two H1 hat-links linear.
+    model.shared_es_s_rated_fixed = pe.Param(model.shared_energy_storages, mutable=True, initialize=0.00)
+    model.shared_es_e_rated_fixed = pe.Param(model.shared_energy_storages, mutable=True, initialize=0.00)
     model.shared_es_pch = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
-    model.shared_es_qch = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0)
     model.shared_es_pdch = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
-    model.shared_es_qdch = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0)
-    model.shared_es_sch = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation,model.periods, domain=pe.NonNegativeReals, initialize=0.0)
-    model.shared_es_sdch = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
+    # P5.4-H1: dimensionless charge/discharge, used ONLY by the complementarity row.
+    # Bounds [0, 1] are implied by the existing `pch + pdch <= S_rated` envelope, so
+    # they add no restriction. These are internal: nothing outside the local ESS
+    # formulation reads them.
+    model.shared_es_pch_hat = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, bounds=(0.0, 1.0), initialize=0.0)
+    model.shared_es_pdch_hat = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, bounds=(0.0, 1.0), initialize=0.0)
     model.shared_es_pnet = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0)
     model.shared_es_qnet = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0)
     model.shared_es_soc = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.NonNegativeReals, initialize=0.0)
@@ -360,12 +407,34 @@ def _build_model(network, params):
         model.slack_shared_es_soc_final_up = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, domain=pe.NonNegativeReals, initialize=0.0)
         model.slack_shared_es_soc_final_down = pe.Var(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, domain=pe.NonNegativeReals, initialize=0.0)
 
+    # - ADN interface signed reparametrization (P5.15 Step 3.1-C, PLANNER_BRIEF_2026-09-13.md
+    # Addendum 12 item 2). One signed variable per interface, per scenario, per period,
+    # FIXED AT 0 by default in every TSO model. `create_transmission_network_model`
+    # (shared_resources_planning.py, ADMM path only) frees these with bounds
+    # [-rating, +rating] and fixes the ADN load legs (`flex_p_up/down`,
+    # `flex_q_up/down`) at 0 instead -- the redundant pair is removed there.
+    # The hierarchical and uncoordinated paths never touch these Vars, so they
+    # stay fixed at 0 and those paths keep using the legs exactly as today
+    # (`interface_pf_p_transmission_def` / `compute_node_load` add this term
+    # ADDITIVELY to the existing pc + legs terms, so the interface expression and
+    # the node-balance contribution are identical whichever channel is active).
+    if network.is_transmission:
+        model.interface_delta_p = pe.Var(model.adn_nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0)
+        model.interface_delta_q = pe.Var(model.adn_nodes, model.scenarios_market, model.scenarios_operation, model.periods, domain=pe.Reals, initialize=0.0)
+        for dn in model.adn_nodes:
+            for s_m in model.scenarios_market:
+                for s_o in model.scenarios_operation:
+                    for p in model.periods:
+                        model.interface_delta_p[dn, s_m, s_o, p].fix(0.0)
+                        model.interface_delta_q[dn, s_m, s_o, p].fix(0.0)
+
     # Expressions
     model.pg_node = pe.Expression(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(net_gen_p_per_node_def, network=network))
     model.qg_node = pe.Expression(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(net_gen_q_per_node_def, network=network))
     model.pc_node = pe.Expression(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(net_load_p_per_node_def, network=network, params=params))      # Net load at node i
     model.qc_node = pe.Expression(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(net_load_q_per_node_def, network=network, params=params))
     model.flow_ij_sqr = pe.Expression(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(branch_flow_def, network=network, params=params))
+    model.flow_ji_sqr = pe.Expression(model.apparent_power_limited_branches, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(branch_flow_ji_def, network=network, params=params))
     if network.is_transmission: # Note: used coordinated operation
         model.vmag_adn = pe.Expression(model.adn_nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(interface_vmag_transmission_def, network=network))
         model.pc_adn = pe.Expression(model.adn_nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(interface_pf_p_transmission_def, network=network, params=params))
@@ -378,29 +447,33 @@ def _build_model(network, params):
     # ------------------------------------------------------------------------------------------------------------------
     # Constraints
     # - Voltage
-    model.voltage_mag_def = pe.Constraint(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=vmag_def)
+    model.voltage_mag_def = pe.Constraint(model.vmag_nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=vmag_def)
     model.voltage_mag_sqr_def = pe.Constraint(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=vmag_sqr_def)
-    model.e_actual_def = pe.Constraint(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(e_actual_def, params=params))
-    model.f_actual_def = pe.Constraint(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(f_actual_def, params=params))
-    model.voltage_magnitude_cons = pe.Constraint(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(voltage_magnitude_cons_rule, network=network, params=params))
-    model.e_e_def = pe.Constraint(model.nodes, model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(e_e_rule, network=network))
-    model.e_f_def = pe.Constraint(model.nodes, model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(e_f_rule, network=network))
-    model.f_f_def = pe.Constraint(model.nodes, model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(f_f_rule, network=network))
+    model.voltage_setpoint_cons = pe.Constraint(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(voltage_setpoint_cons_rule, network=network, params=params))
+    model.voltage_magnitude_lower_cons = pe.Constraint(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(voltage_magnitude_lower_cons_rule, network=network, params=params))
+    model.voltage_magnitude_upper_cons = pe.Constraint(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(voltage_magnitude_upper_cons_rule, network=network, params=params))
+    model.voltage_product_real_def = pe.Constraint(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(voltage_product_real_rule, network=network))
+    model.voltage_product_imag_def = pe.Constraint(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(voltage_product_imag_rule, network=network))
+    model.voltage_product_real_nonnegative = pe.Constraint(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, rule=voltage_product_real_nonnegative_rule)
+    # model.branch_angle_difference_lower_cons = pe.Constraint(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(branch_angle_difference_lower_rule, network=network),)
+    # model.branch_angle_difference_upper_cons = pe.Constraint(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(branch_angle_difference_upper_rule, network=network),)
 
     # - Transformers
     model.r_sqr_def = pe.Constraint(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(r_sqr_rule, network=network))
 
     # - Branch power flows
     if params.branch_limit_type == BRANCH_LIMIT_APPARENT_POWER or params.branch_limit_type == BRANCH_LIMIT_MIXED:
-        model.pij_def = pe.Constraint(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(pij_rule, network=network, params=params))
-        model.qij_def = pe.Constraint(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(qij_rule, network=network, params=params))
+        model.pij_def = pe.Constraint(model.apparent_power_limited_branches, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(pij_rule, network=network, params=params))
+        model.qij_def = pe.Constraint(model.apparent_power_limited_branches, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(qij_rule, network=network, params=params))
+        model.pji_def = pe.Constraint(model.apparent_power_limited_branches, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(pji_rule, network=network, params=params))
+        model.qji_def = pe.Constraint(model.apparent_power_limited_branches, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(qji_rule, network=network, params=params))
 
     # - Generation
     if params.rg_curt:
-        # model.sg_def = pe.Constraint(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(sg_def_rule, network=network, params=params))
         model.sg_capability = pe.Constraint(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(sg_avail_rule, network=network, params=params))
         model.gen_pf_upper = pe.Constraint(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(power_factor_rule_upper, network=network))
         model.gen_pf_lower = pe.Constraint(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(power_factor_rule_lower, network=network))
+        model.gen_pf_profile = pe.Constraint(model.generators, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(power_factor_profile_rule, network=network))
 
     # - Flexible Loads -- Daily energy balance
     if params.fl_reg:
@@ -411,13 +484,12 @@ def _build_model(network, params):
     # - Energy Storage constraints
     if params.es_reg:
         model.ess_pnet_def = pe.Constraint(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=ess_pnet_rule)
-        model.ess_qnet_def = pe.Constraint(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=ess_qnet_rule)
-        model.ess_sch_def = pe.Constraint(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=ess_sch_def_rule)
-        model.ess_sdch_def = pe.Constraint(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=ess_sdch_def_rule)
-        model.ess_phi_ch_lower = pe.Constraint(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(ess_phi_ch_limits_lower, network=network))
-        model.ess_phi_ch_upper = pe.Constraint(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(ess_phi_ch_limits_upper, network=network))
-        model.ess_phi_dch_lower = pe.Constraint(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(ess_phi_dch_limits_lower, network=network))
-        model.ess_phi_dch_upper = pe.Constraint(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(ess_phi_dch_limits_upper, network=network))
+        model.ess_pch_hat_link = pe.Constraint(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(ess_pch_hat_link_rule, network=network))
+        model.ess_pdch_hat_link = pe.Constraint(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(ess_pdch_hat_link_rule, network=network))
+        model.ess_converter_capability = pe.Constraint(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(ess_converter_capability_rule, network=network))
+        model.ess_active_sum_limit = pe.Constraint(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(ess_active_sum_limit_rule, network=network))
+        model.ess_phi_lower = pe.Constraint(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(ess_phi_limits_lower, network=network))
+        model.ess_phi_upper = pe.Constraint(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(ess_phi_limits_upper, network=network))
         model.ess_soc_def = pe.Constraint(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(ess_soc_rule, network=network, params=params))
         model.ess_soc_limits = pe.Constraint(model.energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(ess_soc_limits_rule, network=network))
         model.ess_soc_final = pe.Constraint(model.energy_storages, model.scenarios_market, model.scenarios_operation, rule=partial(ess_soc_final_rule, network=network, params=params))
@@ -425,22 +497,25 @@ def _build_model(network, params):
 
     # - Shared Energy Storage constraints
     model.sess_pnet_def = pe.Constraint(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=sess_pnet_rule)
-    model.sess_qnet_def = pe.Constraint(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=sess_qnet_rule)
-    model.sess_sch_def = pe.Constraint(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=sess_sch_def)
-    model.sess_sdch_def = pe.Constraint(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=sess_sdch_def)
-    model.sess_sch_limit = pe.Constraint(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=sess_sch_limit_rule)
-    model.sess_sdch_limit = pe.Constraint(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=sess_sdch_limit_rule)
-    model.sess_phi_ch_limit_lower = pe.Constraint(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(sess_phi_ch_limits_lower, network=network))
-    model.sess_phi_ch_limit_upper = pe.Constraint(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(sess_phi_ch_limits_upper, network=network))
-    model.sess_phi_dch_limit_lower = pe.Constraint(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(sess_phi_dch_limits_lower, network=network))
-    model.sess_phi_dch_limit_upper = pe.Constraint(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(sess_phi_dch_limits_upper, network=network))
+    model.sess_pch_hat_link = pe.Constraint(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=sess_pch_hat_link_rule)
+    model.sess_pdch_hat_link = pe.Constraint(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=sess_pdch_hat_link_rule)
+    model.sess_converter_capability = pe.Constraint(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=sess_converter_capability_rule)
+    model.sess_active_sum_limit = pe.Constraint(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=sess_active_sum_limit_rule)
+    # P5.15-1b (Step 2 Candidate 1, form (a)): `sess_phi_limit_lower`/`_upper`
+    # (tying |qnet| to instantaneous pch+pdch) are deleted; `sess_converter_capability`
+    # carries the reactive limit alone. See the deletion note in
+    # `model_construction_helpers.py` above `period_duration_hours`.
     model.sess_soc_def = pe.Constraint(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(sess_soc_rule, network=network, params=params))
     model.sess_soc_limit_upper = pe.Constraint(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=sess_soc_upper_limit)
     model.sess_soc_limit_lower = pe.Constraint(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=sess_soc_lower_limit)
     model.sess_soc_final = pe.Constraint(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, rule=partial(sess_soc_final_rule, network=network, params=params))
     model.sess_comp = pe.Constraint(model.shared_energy_storages, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(sess_comp_rule, network=network, params=params))
-    model.shared_energy_storage_s_sensitivities = pe.Constraint(model.shared_energy_storages, rule=sess_s_sensitivities)
-    model.shared_energy_storage_e_sensitivities = pe.Constraint(model.shared_energy_storages, rule=sess_e_sensitivities)
+    # P5.15-1b (Step 2 Candidate 2): `shared_energy_storage_s_sensitivities` /
+    # `_e_sensitivities` (the pinning equalities for the deleted
+    # `shared_es_s_rated`/`shared_es_e_rated` Vars) are DELETED. See the note
+    # in `model_construction_helpers.py` where their rule functions used to be
+    # defined, and `network_data.py::_get_sensitivities` for the deactivated
+    # consumer of their duals.
 
     # - Node Balance constraints
     model.node_balance_p = pe.Constraint(model.nodes, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(node_balance_p_rule, network=network, params=params))
@@ -448,6 +523,7 @@ def _build_model(network, params):
 
     # - Branch Power Flow constraints
     model.branch_flow_limit = pe.Constraint(model.branches, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(branch_flow_limit_rule, network=network, params=params))
+    model.branch_flow_limit_ji = pe.Constraint(model.apparent_power_limited_branches, model.scenarios_market, model.scenarios_operation, model.periods, rule=partial(branch_flow_limit_ji_rule, network=network, params=params))
 
     # ------------------------------------------------------------------------------------------------------------------
     # Costs (penalties)
@@ -466,36 +542,490 @@ def _build_model(network, params):
     return model
 
 
-def _run_smopf(network, model, params, from_warm_start=False):
+def _create_smopf_solver(network, model, params, from_warm_start=False, option_overrides=None, log_suffix=None):
 
-    solver = po.SolverFactory(params.solver_params.solver, executable=params.solver_params.solver_path)
+    solver_params = params.solver_params
+    solver = po.SolverFactory(solver_params.solver, executable=solver_params.solver_path)
+    solve_context = f'{network.name}, year={network.year}, day={network.day}'
+    options = dict()
+    if solver_params.solver.lower() == 'ipopt':
+        # P5.13-D: pinned explicitly; equals the in-use IPOPT 3.14.18 default,
+        # so neutral today, and no longer silently dependent on it.
+        # Configuration still wins, being applied afterwards.
+        options['fixed_variable_treatment'] = IPOPT_FIXED_VARIABLE_TREATMENT
+        # P5.15-1a (PLANNER_BRIEF_2026-09-13.md Step 1a / Addendum 1): bound the
+        # cost of a non-converging solve. Configuration may still override it,
+        # since solver_params.options / option_overrides are applied afterwards.
+        options['max_iter'] = 500
+    if solver_params.options:
+        options.update(solver_params.options)
+    if option_overrides:
+        options.update(option_overrides)
 
-    if params.solver_params.options:
-        for key, value in params.solver_params.options.items():
+    solver_log_path = None
+    if options:
+        for key, value in options.items():
             if key == 'output_file':
-                solver.options[key] = os.path.join(network.logs_dir, value)
+                configured_path = os.path.join(network.logs_dir, value)
+                path_stem, path_extension = os.path.splitext(configured_path)
+                day_label = ''.join(
+                    character if character.isalnum() or character in ('-', '_') else '_'
+                    for character in str(network.day)
+                )
+                suffix = f'_{network.year}_{day_label}'
+                if log_suffix:
+                    suffix += f'_{log_suffix}'
+                solver_log_path = f'{path_stem}{suffix}{path_extension}'
+                solver.options[key] = solver_log_path
+                if solver_params.solver.lower() == 'ipopt':
+                    solver.options['file_append'] = 'yes'
             else:
                 solver.options[key] = value
 
-    if from_warm_start:
-        model.ipopt_zL_in.update(model.ipopt_zL_out)
-        model.ipopt_zU_in.update(model.ipopt_zU_out)
+    if from_warm_start and solver_params.solver.lower() == 'ipopt':
+        # P5.13-D: assignment, not merge -- see
+        # helper_functions.replace_warm_start_suffix for the argument.
+        replace_warm_start_suffix(model.ipopt_zL_in, model.ipopt_zL_out)
+        replace_warm_start_suffix(model.ipopt_zU_in, model.ipopt_zU_out)
         solver.options['warm_start_init_point'] = 'yes'
-        solver.options['warm_start_bound_push'] = 1e-9
-        solver.options['warm_start_bound_frac'] = 1e-9
-        solver.options['warm_start_slack_bound_frac'] = 1e-9
-        solver.options['warm_start_slack_bound_push'] = 1e-9
-        solver.options['warm_start_mult_bound_push'] = 1e-9
+        # P5.15-1a (PLANNER_BRIEF_2026-09-13.md Step 1a / Addendum 1): the five
+        # warm_start_*_push/frac options are left at IPOPT's compiled default
+        # (1e-3) unless the case file (solver_params.options) or the caller's
+        # option_overrides explicitly set the warm_start_* key itself -- both
+        # are already merged into `options` and applied to `solver.options`
+        # above, *before* this block runs, so an explicit value is never lost
+        # here. The former derivation from the generic
+        # bound_push/bound_frac/slack_bound_push/slack_bound_frac keys (with a
+        # hardcoded 1e-6 fallback) is removed, including
+        # warm_start_mult_bound_push's derivation from bound_push, since it
+        # silently re-hardened the warm start whenever a case file set only the
+        # generic key (H-WS, PLANNER_BRIEF_2026-09-13.md Step 0). The TSO-only
+        # acceptable_iter=0 / acceptable_tol override is also removed; both
+        # network families now use the case-file values.
 
+    return solver, solver_log_path, solve_context
+
+
+# ======================================================================================================================
+#   P5.15 Addendum 46 ruling 7 -- per-solve IPOPT floor status (capture only; changes no solver input)
+# ======================================================================================================================
+# "Per-solve floor status reported for every cell from now on" (PLANNER_BRIEF_2026-09-13.md Addendum 46; frozen
+# spec data/SRP1/Results/P515S53/frozen_s53_spec_v28_*.json). Every TSO/DSO IPOPT attempt (primary, tier-1
+# recovery, tier-2 recovery) appends ONE record to its `Network` object's `ipopt_solve_records` deque; the ADMM
+# loop (`shared_resources_planning._drain_network_ipopt_solve_records`) drains it once per round into the run
+# state. The record is read from THIS attempt's own bytes of the (appended, `file_append yes`) IPOPT output file --
+# the byte range the attempt wrote, [size before the solve, size after] -- so no attribution heuristic over the
+# whole log is involved. Nothing here is read by the solver or by the ADMM iteration: the capture cannot change a
+# solve. A parse problem is RECORDED (`parse_reason`), never raised, so a diagnostic cannot abort a campaign;
+# harnesses assert completeness.
+#
+# Formulas (the W81/W82 conventions, validated there against committed figures):
+#   compl_inf_tol_in_force = the value passed to IPOPT (solver.options) or, when absent, IPOPT's default 1e-4
+#   tol_in_force           = the value passed, or IPOPT's default 1e-8
+#   obj_scaling_factor     = FIRST 'objective scaling factor = S' line of the attempt (restoration phases print more)
+#   mu_final               = LAST 'Current barrier parameter mu = X' line of the attempt
+#   mu_floor               = min(tol, compl_inf_tol * S) / (barrier_tol_factor + 1), barrier_tol_factor = 10
+#                            (IPOPT 3.14.18 IpMonotoneMuUpdate: Min(tol, apply_obj_scaling(compl_inf_tol)) /
+#                            (barrier_tol_factor + 1)); NOT applied (None, reason recorded) when the attempt passes
+#                            mu_strategy / barrier_tol_factor / mu_target / mu_min (tier 2 passes mu_strategy adaptive)
+#   floor_status           = 'at' iff |mu_final / mu_floor - 1| <= 1e-3; 'above' iff > 1 + 1e-3; 'below' otherwise
+IPOPT_DEFAULT_COMPL_INF_TOL = 1e-4
+IPOPT_DEFAULT_TOL = 1e-8
+IPOPT_DEFAULT_BARRIER_TOL_FACTOR = 10.0
+IPOPT_FLOOR_STATUS_RTOL = 1e-3
+IPOPT_MU_FLOOR_FORMULA_BLOCKERS = ('mu_strategy', 'barrier_tol_factor', 'mu_target', 'mu_min')
+# Bounded: the ADMM loop drains every round (at most 3 attempts per block per round); a caller that never drains
+# keeps only the most recent records instead of growing without bound.
+IPOPT_SOLVE_RECORDS_MAXLEN = 64
+_IPOPT_BANNER = 'This is Ipopt version'
+_IPOPT_OPTIONS_HEADER = 'List of options:'
+_IPOPT_OBJ_SCALING_RE = re.compile(r'objective scaling factor = (\S+)')
+_IPOPT_MU_RE = re.compile(r'Current barrier parameter mu = (\S+)')
+_IPOPT_ITERATIONS_RE = re.compile(r'Number of Iterations\.+: (\d+)')
+_IPOPT_EXIT_RE = re.compile(r'EXIT: (.*)')
+
+
+def _ipopt_log_size(log_path):
+    if not log_path:
+        return None
     try:
-        result = solver.solve(model, tee=params.solver_params.verbose)
-        model.solutions.load_from(result)
-    except ValueError as e:
-        print(f"[WARNING] Solver failed for network {network.name}: {e}")
-        result = None  # Or store partial result
+        return os.path.getsize(log_path)
+    except OSError:
+        return 0
+
+
+def _ipopt_logged_option(options_block, name):
+    """Merge-aware read of one entry of IPOPT's printed options list: an entry may share its physical line with a
+    preceding over-long `output_file` entry (IPOPT PrintList Snprintf(buffer, 255) drops that entry's newline; spec
+    v27 formulas.option_list_parsing), so the name is matched at a line start OR after whitespace."""
+    match = re.search(rf'(?:^|(?<=\s)){re.escape(name)} = (\S+)', options_block, re.M)
+    return match.group(1) if match else None
+
+
+def parse_ipopt_attempt_segment(text, passed_options):
+    """The floor-status fields of ONE IPOPT attempt, from the text that attempt wrote to its output file and the
+    options dict actually passed to the solver. Pure function (no I/O) so it can be validated on committed logs."""
+    record = {
+        'compl_inf_tol_passed': None, 'compl_inf_tol_in_force': None, 'compl_inf_tol_logged': None,
+        'tol_in_force': None, 'mu_strategy_passed': None, 'options_list_agrees': None,
+        'obj_scaling_factor': None, 'mu_final': None, 'mu_floor': None, 'mu_over_floor': None,
+        'floor_status': None, 'iterations': None, 'exit': None, 'parse_reason': None,
+    }
+    passed = dict(passed_options or {})
+    cit_passed = passed.get('compl_inf_tol')
+    record['compl_inf_tol_passed'] = float(cit_passed) if cit_passed is not None else None
+    cit = float(cit_passed) if cit_passed is not None else IPOPT_DEFAULT_COMPL_INF_TOL
+    record['compl_inf_tol_in_force'] = cit
+    tol = float(passed['tol']) if passed.get('tol') is not None else IPOPT_DEFAULT_TOL
+    record['tol_in_force'] = tol
+    record['mu_strategy_passed'] = passed.get('mu_strategy')
+
+    reasons = []
+    n_banners = text.count(_IPOPT_BANNER)
+    if n_banners != 1:
+        reasons.append(f'attempt segment holds {n_banners} IPOPT banners (expected 1)')
+    banner_at = text.find(_IPOPT_BANNER)
+    options_at = text.find(_IPOPT_OPTIONS_HEADER)
+    if 0 <= options_at and (banner_at < 0 or options_at < banner_at):
+        block = text[options_at:banner_at if banner_at >= 0 else len(text)]
+        logged = _ipopt_logged_option(block, 'compl_inf_tol')
+        record['compl_inf_tol_logged'] = float(logged) if logged is not None else None
+        record['options_list_agrees'] = record['compl_inf_tol_logged'] == record['compl_inf_tol_passed']
+    else:
+        reasons.append('no IPOPT options list precedes the banner in the attempt segment')
+
+    scale = _IPOPT_OBJ_SCALING_RE.search(text)
+    record['obj_scaling_factor'] = float(scale.group(1)) if scale else None
+    mus = _IPOPT_MU_RE.findall(text)
+    record['mu_final'] = float(mus[-1]) if mus else None
+    iterations = _IPOPT_ITERATIONS_RE.search(text)
+    record['iterations'] = int(iterations.group(1)) if iterations else None
+    exits = _IPOPT_EXIT_RE.findall(text)
+    record['exit'] = exits[-1].strip() if exits else None
+    if record['obj_scaling_factor'] is None:
+        reasons.append("no 'objective scaling factor' line (needs file_print_level >= 6)")
+    if record['mu_final'] is None:
+        reasons.append("no 'Current barrier parameter mu' line (needs file_print_level >= 6)")
+
+    blockers = [key for key in IPOPT_MU_FLOOR_FORMULA_BLOCKERS if passed.get(key) is not None]
+    if blockers:
+        reasons.append(f'monotone mu-floor formula not applicable: {blockers} passed')
+    elif record['obj_scaling_factor'] is not None and record['mu_final'] is not None:
+        floor = min(tol, cit * record['obj_scaling_factor']) / (IPOPT_DEFAULT_BARRIER_TOL_FACTOR + 1.0)
+        ratio = record['mu_final'] / floor
+        record['mu_floor'] = floor
+        record['mu_over_floor'] = ratio
+        if abs(ratio - 1.0) <= IPOPT_FLOOR_STATUS_RTOL:
+            record['floor_status'] = 'at'
+        elif ratio > 1.0:
+            record['floor_status'] = 'above'
+        else:
+            record['floor_status'] = 'below'
+    record['parse_reason'] = '; '.join(reasons) if reasons else None
+    return record
+
+
+def _append_ipopt_solve_record(network, params, solver, solver_log_path, log_offset, log_suffix, from_warm_start):
+    if params.solver_params.solver.lower() != 'ipopt':
+        return
+    records = getattr(network, 'ipopt_solve_records', None)
+    if records is None:
+        # Networks built (or unpickled) before this attribute existed.
+        records = deque(maxlen=IPOPT_SOLVE_RECORDS_MAXLEN)
+        network.ipopt_solve_records = records
+    record = {'network': network.name, 'year': network.year, 'day': network.day,
+              'attempt': log_suffix or 'primary', 'warm_start': bool(from_warm_start),
+              'log_path': sys.intern(solver_log_path) if solver_log_path else None,
+              'log_bytes': None}
+    try:
+        passed = dict(solver.options)
+        if not solver_log_path:
+            fields = parse_ipopt_attempt_segment('', passed)
+            fields['parse_reason'] = 'no IPOPT output_file configured'
+        else:
+            end = _ipopt_log_size(solver_log_path)
+            record['log_bytes'] = [log_offset, end]
+            with open(solver_log_path, 'r', errors='replace') as handle:
+                handle.seek(log_offset or 0)
+                text = handle.read()
+            fields = parse_ipopt_attempt_segment(text, passed)
+        record.update(fields)
+    except Exception as error:  # noqa: BLE001 -- a diagnostic must never abort a run; the reason is recorded
+        record['parse_reason'] = f'capture failed: {type(error).__name__}: {error}'
+    records.append(record)
+
+
+def _run_smopf_solver_attempt(network, model, params, from_warm_start=False, option_overrides=None, log_suffix=None):
+    solver, solver_log_path, solve_context = _create_smopf_solver(network, model, params, from_warm_start=from_warm_start, option_overrides=option_overrides, log_suffix=log_suffix)
+    # P5.15 Addendum 46 ruling 7: the attempt's own byte range of its output file (capture only, see above).
+    log_offset = _ipopt_log_size(solver_log_path)
+    result = None
+    try:
+        result = solver.solve(model, tee=params.solver_params.verbose, load_solutions=False)
+    except (ValueError, RuntimeError) as error:
+        print(f'[WARNING] Solver execution failed for network {solve_context}: {error}')
+    _append_ipopt_solve_record(network, params, solver, solver_log_path, log_offset, log_suffix, from_warm_start)
+    return result, solver_log_path
+
+
+def _is_recoverable_network_failure(result, params):
+    solver_params = params.solver_params
+    if solver_params.solver.lower() != 'ipopt' or result is None:
+        return False
+    # P5.15 Addendum 7 Part 1 item 1 (PLANNER_BRIEF_2026-09-13.md): eligibility
+    # is now the explicit `recovery.enabled` flag, independent of whether
+    # `recovery_options` happens to be populated (previously an empty/absent
+    # `recovery_options` silently made a network ineligible -- case33_1's case
+    # file has none, so its failures were never retried).
+    if not getattr(solver_params, 'recovery_enabled', True) or not hasattr(result, 'solver'):
+        return False
+    # P5.15-1a (PLANNER_BRIEF_2026-09-13.md Step 1a / Addendum 1): recovery now
+    # also fires on maxIterations and infeasible, not only internalSolverError.
+    return result.solver.termination_condition in (
+        po.TerminationCondition.internalSolverError,
+        po.TerminationCondition.maxIterations,
+        po.TerminationCondition.infeasible,
+    )
+
+
+def _format_solver_options(options):
+    return ', '.join(f'{key}={value}' for key, value in sorted(options.items()))
+
+
+def _snapshot_multiplier_suffixes(model):
+    snapshot = dict()
+    for suffix_name in ('ipopt_zL_in', 'ipopt_zU_in', 'dual'):
+        if hasattr(model, suffix_name):
+            snapshot[suffix_name] = list(getattr(model, suffix_name).items())
+    return snapshot
+
+
+def _clear_multiplier_suffixes(model):
+    for suffix_name in ('ipopt_zL_in', 'ipopt_zU_in', 'dual'):
+        if hasattr(model, suffix_name):
+            getattr(model, suffix_name).clear()
+
+
+def _restore_multiplier_suffixes(model, snapshot):
+    _clear_multiplier_suffixes(model)
+    for suffix_name, values in snapshot.items():
+        suffix = getattr(model, suffix_name)
+        for component, value in values:
+            suffix[component] = value
+
+
+def capture_block_mutable_state(model):
+    """P5.15 Step 3.6 (PLANNER_BRIEF_2026-09-13.md Addendum 21 item 4,
+    WORKER_REPORT_S36_CLONE_CAPTURE.md): a lightweight, `clone()`-free
+    capture of everything the ADMM loop can mutate on an already-built
+    block between cycles -- every MUTABLE Param's value (immutable, i.e.
+    static network-data, Params are skipped: they never change and never
+    need `set_value`, e.g. `pg_avail`/`sg_avail`/DSO's `pc`/`qc`), every
+    Var's value/lower bound/upper bound/fixed flag (covers both ordinary
+    value updates -- e.g. from `model.solutions.load_from` -- and the
+    `.fix()`/`.unfix()`/`.setlb()`/`.setub()` mutations
+    `configure_shared_ess_operational_state` performs), every Constraint's
+    and Objective's per-entry active flag (covers the same function's
+    `.activate()`/`.deactivate()` calls), and the warm-start multiplier
+    suffixes (`_snapshot_multiplier_suffixes`, reused as-is). Deliberately
+    does NOT capture component STRUCTURE (Sets, constraint/objective
+    expression trees, Var/Param declarations) -- those are assumed
+    unchanged from whatever pristine, structurally-identical block this
+    capture will later be replayed onto via `apply_block_mutable_state`;
+    true for both the DSO and TSO ADMM loops, which never add, remove, or
+    redefine a component after construction. See
+    `WORKER_REPORT_S36_CLONE_CAPTURE.md` for the equivalence checks that
+    verify this against a real `clone()`."""
+    state = {'params': {}, 'vars': {}, 'constraints': {}, 'objectives': {}}
+    for comp in model.component_objects(pe.Param, active=None):
+        if not comp.mutable:
+            continue
+        state['params'][comp.name] = {index: comp[index].value for index in comp}
+    for comp in model.component_objects(pe.Var, active=None):
+        # P5.15 Addendum 23/24, Step 3.6 persistent-worker bounded task
+        # (WORKER_REPORT_S40_PERSISTENT_WORKERS.md "esso_models_pickle.bytes"
+        # finding): capture the RAW, explicitly-stored bound
+        # (`._lb`/`._ub`, `None` when the Var was never given an explicit
+        # bound and its effective bound is purely domain-derived), not the
+        # RESOLVED `.lb`/`.ub` property (which always returns a concrete
+        # number, folding the domain bound in). Capturing the resolved value
+        # and replaying it via `setlb`/`setub` in `apply_block_mutable_state`
+        # silently turns an implicit (domain) bound into an explicit one --
+        # same effective bound, different internal Pyomo representation --
+        # which is numerically inert everywhere production reads `.lb`/`.ub`
+        # but changes the model's pickled byte size. Capturing the raw value
+        # and replaying it with `setlb(None)`/`setub(None)` when unset
+        # reproduces the exact original representation (Pyomo's
+        # `_process_bound` passes `None` straight through).
+        state['vars'][comp.name] = {
+            index: (comp[index].value, comp[index]._lb, comp[index]._ub, comp[index].fixed)
+            for index in comp
+        }
+    for comp in model.component_objects(pe.Constraint, active=None):
+        state['constraints'][comp.name] = {index: comp[index].active for index in comp}
+    for comp in model.component_objects(pe.Objective, active=None):
+        state['objectives'][comp.name] = {index: comp[index].active for index in comp}
+    state['suffixes'] = _snapshot_multiplier_suffixes(model)
+    return state
+
+
+def apply_block_mutable_state(model, state):
+    """Inverse of `capture_block_mutable_state`: replays a captured state
+    onto a structurally-identical block (typically a fresh `clone()` of the
+    pristine, pre-ADMM-loop block) in place, and returns it. Bounds are
+    restored before the fixed flag/value, so a value never has to satisfy a
+    bound that has not been set yet."""
+    for name, entries in state['params'].items():
+        comp = getattr(model, name)
+        for index, value in entries.items():
+            comp[index].set_value(value)
+    for name, entries in state['vars'].items():
+        comp = getattr(model, name)
+        for index, (value, lb, ub, fixed) in entries.items():
+            var_data = comp[index]
+            # `lb`/`ub` are the RAW captured bound (possibly `None` --
+            # see `capture_block_mutable_state`); `setlb(None)`/`setub(None)`
+            # restores the implicit (domain-derived) representation exactly,
+            # rather than converting it to an explicit stored bound.
+            var_data.setlb(lb)
+            var_data.setub(ub)
+            if var_data.fixed and not fixed:
+                var_data.unfix()
+            # `skip_validation=True`: this generic restore loop legitimately
+            # replays values captured mid-ADMM-cycle (e.g. IPOPT slack
+            # values a hair outside their nominal domain, ~1e-9) that the
+            # original `model.solutions.load_from()` warm-start path never
+            # validates either -- validating them here only produces Pyomo
+            # W1001 log noise (WORKER_REPORT_S40_PERSISTENT_WORKERS.md), not
+            # a real domain violation caught anywhere else.
+            var_data.set_value(value, skip_validation=True)
+            if fixed:
+                var_data.fix(value, skip_validation=True)
+    for name, entries in state['constraints'].items():
+        comp = getattr(model, name)
+        for index, active in entries.items():
+            comp[index].activate() if active else comp[index].deactivate()
+    for name, entries in state['objectives'].items():
+        comp = getattr(model, name)
+        for index, active in entries.items():
+            comp[index].activate() if active else comp[index].deactivate()
+    _restore_multiplier_suffixes(model, state.get('suffixes', {}))
+    return model
+
+
+def _print_network_failure_context(network, model, result, from_warm_start, solver_log_path, attempt_label='solver'):
+    solve_context = f'{network.name}, year={network.year}, day={network.day}'
+    print(f'[WARNING] Network {attempt_label} did not converge for {solve_context}: {solver_result_summary(result)} | warm_start={from_warm_start}')
+    penalty_values = []
+    for penalty_name in ('rho_v', 'rho_pf', 'rho_ess', 'rho_ess_prev'):
+        if hasattr(model, penalty_name):
+            penalty_values.append(f'{penalty_name}={pe.value(getattr(model, penalty_name)):.6g}')
+    if penalty_values:
+        print(f'[WARNING] ADMM penalties for {solve_context}: {", ".join(penalty_values)}')
+    if solver_log_path:
+        print(f'[WARNING] IPOPT {attempt_label} log for {solve_context}: {solver_log_path}')
+
+
+def _release_solution_bookkeeping(model, result):
+    # P5.15 Addendum 29 (W32; data/SRP1/Results/P515S49/memory_profile): called by
+    # `_run_smopf` only when `solver_params.release_solution_bookkeeping` is on, and
+    # only after `model.solutions.load_from(result)` succeeded -- i.e. after every
+    # value has been copied into the Vars and the import suffixes (dual,
+    # ipopt_zL_out, ipopt_zU_out). It drops the two copies of the solution Pyomo
+    # keeps afterwards and production never reads: the ModelSolution in
+    # `model.solutions` (one (component, entry) pair per Var and per active
+    # constraint) and the SolverResults' own `solution` container (the entry
+    # dicts both share). ~154 MiB per paper-scale DSO block. The Var values, the
+    # suffixes (warm start) and `result.solver` (status, termination, message,
+    # time) are untouched. `model.solutions.clear()` also empties the symbol-map
+    # registry, which `load_from` has already emptied (delete_symbol_map=True).
+    model.solutions.clear()
+    result.solution.clear()
+
+
+def _run_smopf(network, model, params, from_warm_start=False):
+
+    solve_context = f'{network.name}, year={network.year}, day={network.day}'
+    primary_result, primary_log_path = _run_smopf_solver_attempt(network, model, params, from_warm_start=from_warm_start)
+    result = primary_result
+    recovery_result = None
+    recovery_log_path = None
+    tier2_result = None
+    tier2_log_path = None
+    multiplier_snapshot = None
+    recovery_attempted = _is_recoverable_network_failure(primary_result, params)
+    tier2_attempted = False
+    final_attempt_label = 'solver'
+    final_log_path = primary_log_path
+    final_warm_start = from_warm_start
+
+    if recovery_attempted:
+        _print_network_failure_context(network, model, primary_result, from_warm_start, primary_log_path, attempt_label='primary solve')
+        # P5.15-1a (PLANNER_BRIEF_2026-09-13.md Step 1a / Addendum 1): recovery
+        # is exactly one change -- cold start, with the same primary options
+        # and the exact Hessian. The case-file recovery_options'
+        # 'hessian_approximation' entry (limited-memory) is deliberately not
+        # applied here, so that a recovery success identifies its cause (the
+        # warm start, not the Hessian approximation); it is therefore dead
+        # configuration in the case JSON (not edited -- reported to the
+        # Planner, see P5_15_1A_REPORT.md).
+        recovery_options = {
+            key: value for key, value in (params.solver_params.recovery_options or {}).items()
+            if key != 'hessian_approximation'
+        }
+        recovery_options['warm_start_init_point'] = 'no'
+        print(f'[INFO] Retrying network solve once for {solve_context}, cold start, with {_format_solver_options(recovery_options)}.')
+        multiplier_snapshot = _snapshot_multiplier_suffixes(model)
+        _clear_multiplier_suffixes(model)
+        recovery_result, recovery_log_path = _run_smopf_solver_attempt(network, model, params, from_warm_start=False, option_overrides=recovery_options, log_suffix='recovery')
+        result = recovery_result
+        final_attempt_label = 'recovery solve'
+        final_log_path = recovery_log_path
+        final_warm_start = False
+
+        if not solver_result_succeeded(recovery_result):
+            _restore_multiplier_suffixes(model, multiplier_snapshot)
+            # P5.15 Addendum 7 Part 1 item 2: tier-2 retry -- one further solve
+            # after a failed tier-1 cold retry, cold start + mu_strategy=adaptive,
+            # same other recovery options, only if `recovery.tier2_enabled` is on
+            # and the tier-1 failure is itself of a recoverable class.
+            tier2_attempted = (
+                getattr(params.solver_params, 'recovery_tier2_enabled', True)
+                and _is_recoverable_network_failure(recovery_result, params)
+            )
+            if tier2_attempted:
+                _print_network_failure_context(network, model, recovery_result, False, recovery_log_path, attempt_label='recovery solve')
+                tier2_options = dict(recovery_options)
+                tier2_options['mu_strategy'] = 'adaptive'
+                print(f'[INFO] Retrying network solve (tier 2: cold, mu_strategy=adaptive) for {solve_context}, with {_format_solver_options(tier2_options)}.')
+                _clear_multiplier_suffixes(model)
+                tier2_result, tier2_log_path = _run_smopf_solver_attempt(network, model, params, from_warm_start=False, option_overrides=tier2_options, log_suffix='recovery_tier2')
+                result = tier2_result
+                final_attempt_label = 'tier-2 recovery solve'
+                final_log_path = tier2_log_path
+                if not solver_result_succeeded(tier2_result):
+                    _restore_multiplier_suffixes(model, multiplier_snapshot)
+
+    if solver_result_succeeded(result):
+        try:
+            model.solutions.load_from(result)
+        except ValueError as error:
+            print(f'[WARNING] Could not load solution for network {solve_context}: {error}')
+            if recovery_attempted:
+                _restore_multiplier_suffixes(model, multiplier_snapshot)
+            result = None
+        if result is not None and getattr(params.solver_params, 'release_solution_bookkeeping', False):
+            _release_solution_bookkeeping(model, result)
+        if recovery_attempted and result is not None:
+            if tier2_attempted:
+                print(f'[INFO] Network tier-2 recovery solve succeeded for {solve_context}.')
+            else:
+                print(f'[INFO] Network recovery solve succeeded for {solve_context}.')
+    else:
+        _print_network_failure_context(network, model, result, final_warm_start, final_log_path, attempt_label=final_attempt_label)
 
     #if params.solver_params.verbose:
-    if not result or result.solver.termination_condition != po.TerminationCondition.optimal:
+    if not solver_result_succeeded(result):
 
         if params.solver_params.verbose:
 
@@ -609,6 +1139,8 @@ def _read_network_from_json_file(network, filename):
         branch.x = float(line_data['x'])
         branch.b_sh = float(line_data['b'])
         branch.rate = float(line_data['rating'])
+        branch.angle_min = float(line_data.get('angle_min', branch.angle_min))
+        branch.angle_max = float(line_data.get('angle_max', branch.angle_max))
         branch.status = bool(line_data['status'])
         network.branches.append(branch)
 
@@ -630,6 +1162,8 @@ def _read_network_from_json_file(network, filename):
             branch.b_sh = float(transf_data['b'])
             branch.rate = float(transf_data['rating'])
             branch.ratio = float(transf_data['ratio'])
+            branch.angle_min = float(transf_data.get('angle_min', branch.angle_min))
+            branch.angle_max = float(transf_data.get('angle_max', branch.angle_max))
             branch.status = bool(transf_data['status'])
             branch.is_transformer = True
             branch.vmag_reg = bool(transf_data['vmag_reg'])
@@ -890,11 +1424,26 @@ def _update_network_with_operational_data(network, base_data, synthetic_profiles
         load_growth_cumul = (1 + load_growth_factor) ** (network.year - initial_year)
         flexibility_growth_cumul = (1 + flexibility_growth_factor) ** (network.year - initial_year)
 
-        pc = np.array(synthetic_profiles['consumption'][network.day][load_id]['pc'].sample(n=network.num_oper_scenarios)) * pc_base * load_growth_cumul
-        qc = np.array(synthetic_profiles['consumption'][network.day][load_id]['qc'].sample(n=network.num_oper_scenarios)) * qc_base * load_growth_cumul
-        pc_flex = np.array(synthetic_profiles['flexibility'][network.day]['pc'].sample(n=network.num_oper_scenarios)) * pc_flex_base * flexibility_growth_cumul
-        pc_flex_up = np.array(synthetic_profiles['flexibility'][network.day]['pc_flex_up'].sample(n=network.num_oper_scenarios)) * pc_flex_base * flexibility_growth_cumul
-        pc_flex_down = np.array(synthetic_profiles['flexibility'][network.day]['pc_flex_down'].sample(n=network.num_oper_scenarios)) * pc_flex_base * flexibility_growth_cumul
+        pc = np.array(synthetic_profiles['consumption'][network.day][load_id]['pc'].sample(
+            n=network.num_oper_scenarios,
+            random_state=derive_random_seed(network.random_seed, 'load', str(load_id), 'pc'),
+        )) * pc_base * load_growth_cumul
+        qc = np.array(synthetic_profiles['consumption'][network.day][load_id]['qc'].sample(
+            n=network.num_oper_scenarios,
+            random_state=derive_random_seed(network.random_seed, 'load', str(load_id), 'qc'),
+        )) * qc_base * load_growth_cumul
+        pc_flex = np.array(synthetic_profiles['flexibility'][network.day]['pc'].sample(
+            n=network.num_oper_scenarios,
+            random_state=derive_random_seed(network.random_seed, 'load', str(load_id), 'pc_flex'),
+        )) * pc_flex_base * flexibility_growth_cumul
+        pc_flex_up = np.array(synthetic_profiles['flexibility'][network.day]['pc_flex_up'].sample(
+            n=network.num_oper_scenarios,
+            random_state=derive_random_seed(network.random_seed, 'load', str(load_id), 'pc_flex_up'),
+        )) * pc_flex_base * flexibility_growth_cumul
+        pc_flex_down = np.array(synthetic_profiles['flexibility'][network.day]['pc_flex_down'].sample(
+            n=network.num_oper_scenarios,
+            random_state=derive_random_seed(network.random_seed, 'load', str(load_id), 'pc_flex_down'),
+        )) * pc_flex_base * flexibility_growth_cumul
 
         load.pd = (pc + pc_flex) / network.baseMVA
         load.qd = qc / network.baseMVA
@@ -917,8 +1466,14 @@ def _update_network_with_operational_data(network, base_data, synthetic_profiles
                 print(f'[ERROR] Error! Gen type {generator.gen_type} not yet being processed! Network {network.name}, generator {generator.gen_id}')
                 exit(ERROR_NETWORK_FILE)
 
-            pg = np.array(synthetic_profiles['generation'][network.day][gen_type]['pg'].sample(n=network.num_oper_scenarios)) * gen_capacity
-            qg = np.array(synthetic_profiles['generation'][network.day][gen_type]['qg'].sample(n=network.num_oper_scenarios)) * gen_capacity
+            pg = np.array(synthetic_profiles['generation'][network.day][gen_type]['pg'].sample(
+                n=network.num_oper_scenarios,
+                random_state=derive_random_seed(network.random_seed, 'generator', str(generator.gen_id), 'pg'),
+            )) * gen_capacity
+            qg = np.array(synthetic_profiles['generation'][network.day][gen_type]['qg'].sample(
+                n=network.num_oper_scenarios,
+                random_state=derive_random_seed(network.random_seed, 'generator', str(generator.gen_id), 'qg'),
+            )) * gen_capacity
             generator.pg = pg / network.baseMVA
             generator.qg = qg / network.baseMVA
         else:
@@ -938,13 +1493,14 @@ def _process_results(network, model, params, results=dict()):
     s_base = network.baseMVA
 
     processed_results = dict()
-    processed_results['obj'] = network.compute_objective_function_value(model)
+    processed_results['obj'] = network.get_primal_value(model, params)                  # Base SMOPF objective: excludes scenario-deviation regularization and ADMM augmentation terms.
     processed_results['total_load'] = _compute_total_load(network, model, params)
     processed_results['total_gen'] = _compute_total_generation(network, model, params)
     processed_results['total_conventional_gen'] = _compute_conventional_generation(network, model)
     processed_results['total_renewable_gen'] = _compute_renewable_generation(network, model, params)
     processed_results['losses'] = _compute_losses(network, model, params)
     processed_results['gen_curt'] = _compute_generation_curtailment(network, model, params)
+    processed_results['gen_curt_penalty'] = pe.value(model.total_gen_curt_penalty)
     processed_results['load_curt'] = _compute_load_curtailment(network, model, params)
     processed_results['flex_used'] = _compute_flexibility_used(network, model, params)
     processed_results['ess_penalty'] = pe.value(model.total_ess_utilization_cost_penalty)
@@ -974,7 +1530,8 @@ def _process_results(network, model, params, results=dict()):
                 'consumption': {'pc': {}, 'qc': {}, 'pc_net': {}, 'qc_net': {}},
                 'generation': {'pg': {}, 'qg': {}, 'sg': {}},
                 'branches': {'power_flow': {'pij': {}, 'pji': {}, 'qij': {}, 'qji': {}, 'sij': {}, 'sji': {}},
-                             'losses': {}, 'ratio': {}, 'branch_flow': {'flow_ij_perc': {}}},
+                             'losses': {}, 'ratio': {},
+                             'branch_flow': {'flow_ij_perc': {}, 'flow_ji_perc': {}}},
                 'energy_storages': {'p': {}, 'q': {}, 's': {}, 'soc': {}, 'soc_percent': {}},
                 'shared_energy_storages': {'p': {}, 'q': {}, 's': {}, 'soc': {}, 'soc_percent': {}}
             }
@@ -1006,11 +1563,12 @@ def _process_results(network, model, params, results=dict()):
             processed_results['scenarios'][s_m][s_o]['relaxation_slacks'] = dict()
             processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['voltage'] = dict()
             if params.slacks.grid_operation.voltage:
-                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['voltage']['e'] = dict()
-                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['voltage']['f'] = dict()
+                for quantity in ('squared_down', 'squared_up', 'physical_down', 'physical_up', 'violation_down', 'violation_up'):
+                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['voltage'][quantity] = dict()
             processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['branch_flow'] = dict()
             if params.slacks.grid_operation.branch_flow:
                 processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['branch_flow']['flow_ij_sqr'] = dict()
+                processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['branch_flow']['flow_ji_sqr'] = dict()
             processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['node_balance'] = dict()
             if params.slacks.node_balance.active_power:
                 processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['node_balance']['p'] = dict()
@@ -1034,8 +1592,8 @@ def _process_results(network, model, params, results=dict()):
                 processed_results['scenarios'][s_m][s_o]['voltage']['vmag'][node_id] = []
                 processed_results['scenarios'][s_m][s_o]['voltage']['vang'][node_id] = []
                 for p in model.periods:
-                    e = pe.value(model.e_actual[i, s_m, s_o, p])
-                    f = pe.value(model.f_actual[i, s_m, s_o, p])
+                    e = pe.value(model.e[i, s_m, s_o, p])
+                    f = pe.value(model.f[i, s_m, s_o, p])
                     v_mag = sqrt(e**2 + f**2)
                     v_ang = atan2(f, e) * (180.0 / pi)
                     processed_results['scenarios'][s_m][s_o]['voltage']['vmag'][node_id].append(v_mag)
@@ -1090,13 +1648,20 @@ def _process_results(network, model, params, results=dict()):
                     processed_results['scenarios'][s_m][s_o]['generation']['sg_curt'][gen_id] = []
                 for p in model.periods:
                     if params.rg_curt and generator.is_curtaillable():
-                        pg = generator.pg[s_o][p] * network.baseMVA
-                        qg = generator.qg[s_o][p] * network.baseMVA
-                        sg = pe.value(model.sg_avail[g, s_o, p]) * network.baseMVA
+                        sg_available = pe.value(model.sg_avail[g, s_o, p])
+                        pg = pe.value(model.pg_avail[g, s_o, p]) * network.baseMVA
+                        qg = (
+                            generator.qg[s_o][p] * network.baseMVA
+                            if sg_available > 0.0
+                            else 0.0
+                        )
+                        sg = sg_available * network.baseMVA
                         pg_net = pe.value(model.pg[g, s_m, s_o, p]) * network.baseMVA
                         qg_net = pe.value(model.qg[g, s_m, s_o, p]) * network.baseMVA
-                        sg_net = sqrt(pe.value(model.sg_sqr[g, s_m, s_o, p])) * network.baseMVA
-                        sg_curt = pe.value(model.sg_curt[g, s_m, s_o, p]) * network.baseMVA
+                        sg_net = sqrt(max(pe.value(model.sg_sqr[g, s_m, s_o, p]), 0.0)) * network.baseMVA
+                        sg_curt = _compute_renewable_apparent_power_curtailment(
+                            model, g, s_m, s_o, p
+                        ) * network.baseMVA
                         processed_results['scenarios'][s_m][s_o]['generation']['pg_net'][gen_id].append(pg_net)
                         processed_results['scenarios'][s_m][s_o]['generation']['qg_net'][gen_id].append(qg_net)
                         processed_results['scenarios'][s_m][s_o]['generation']['sg_net'][gen_id].append(sg_net)
@@ -1126,6 +1691,8 @@ def _process_results(network, model, params, results=dict()):
                 processed_results['scenarios'][s_m][s_o]['branches']['power_flow']['sji'][branch_id] = []
                 processed_results['scenarios'][s_m][s_o]['branches']['losses'][branch_id] = []
                 processed_results['scenarios'][s_m][s_o]['branches']['branch_flow']['flow_ij_perc'][branch_id] = []
+                if k in model.apparent_power_limited_branches:
+                    processed_results['scenarios'][s_m][s_o]['branches']['branch_flow']['flow_ji_perc'][branch_id] = []
                 if branch.is_transformer:
                     processed_results['scenarios'][s_m][s_o]['branches']['ratio'][branch_id] = []
                 for p in model.periods:
@@ -1154,6 +1721,9 @@ def _process_results(network, model, params, results=dict()):
                     # Branch flow (limits)
                     flow_ij_perc = max(pe.value(model.flow_ij_sqr[k, s_m, s_o, p]), 0.00) ** 0.50 / rating
                     processed_results['scenarios'][s_m][s_o]['branches']['branch_flow']['flow_ij_perc'][branch_id].append(flow_ij_perc)
+                    if k in model.apparent_power_limited_branches:
+                        flow_ji_perc = max(pe.value(model.flow_ji_sqr[k, s_m, s_o, p]), 0.00) ** 0.50 / rating
+                        processed_results['scenarios'][s_m][s_o]['branches']['branch_flow']['flow_ji_perc'][branch_id].append(flow_ji_perc)
 
             # Energy Storage devices
             if params.es_reg:
@@ -1168,9 +1738,17 @@ def _process_results(network, model, params, results=dict()):
                     processed_results['scenarios'][s_m][s_o]['energy_storages']['soc'][es_id] = []
                     processed_results['scenarios'][s_m][s_o]['energy_storages']['soc_percent'][es_id] = []
                     for p in model.periods:
-                        s_ess = pe.value(model.es_sch[e, s_m, s_o, p] - model.es_sdch[e, s_m, s_o, p]) * network.baseMVA
-                        p_ess = pe.value(model.es_pch[e, s_m, s_o, p] - model.es_pdch[e, s_m, s_o, p]) * network.baseMVA
-                        q_ess = pe.value(model.es_qch[e, s_m, s_o, p] - model.es_qdch[e, s_m, s_o, p]) * network.baseMVA
+                        # P5.4-B: es_sch/es_sdch are retired, so `s` is now the converter
+                        # LOADING MAGNITUDE sqrt(pnet^2 + qnet^2) in MVA, not the former
+                        # signed apparent charge/discharge difference. Direction is not
+                        # lost -- `p` below remains the signed load-positive active power.
+                        s_ess = sqrt(max(pe.value(model.es_pnet[e, s_m, s_o, p]) ** 2
+                                         + pe.value(model.es_qnet[e, s_m, s_o, p]) ** 2, 0.0)) * network.baseMVA
+                        # P4.6-B1: the model itself is now load-positive, so the
+                        # reported values are the model values -- no compensating
+                        # sign flip and no re-derivation from pch/pdch.
+                        p_ess = pe.value(model.es_pnet[e, s_m, s_o, p]) * network.baseMVA
+                        q_ess = pe.value(model.es_qnet[e, s_m, s_o, p]) * network.baseMVA
                         soc_ess = pe.value(model.es_soc[e, s_m, s_o, p]) * network.baseMVA
                         processed_results['scenarios'][s_m][s_o]['energy_storages']['p'][es_id].append(p_ess)
                         processed_results['scenarios'][s_m][s_o]['energy_storages']['q'][es_id].append(q_ess)
@@ -1181,7 +1759,7 @@ def _process_results(network, model, params, results=dict()):
             # Shared Energy Storages
             for e in model.shared_energy_storages:
                 node_id = network.shared_energy_storages[e].bus
-                capacity = pe.value(model.shared_es_e_rated[e]) * network.baseMVA
+                capacity = pe.value(model.shared_es_e_rated_fixed[e]) * network.baseMVA
                 if isclose(capacity, 0.0, abs_tol=1e-6):
                     capacity = 1.00
                 processed_results['scenarios'][s_m][s_o]['shared_energy_storages']['p'][node_id] = []
@@ -1190,10 +1768,19 @@ def _process_results(network, model, params, results=dict()):
                 processed_results['scenarios'][s_m][s_o]['shared_energy_storages']['soc'][node_id] = []
                 processed_results['scenarios'][s_m][s_o]['shared_energy_storages']['soc_percent'][node_id] = []
                 for p in model.periods:
-                    s_ess = pe.value(model.shared_es_sch[e, s_m, s_o, p] - model.shared_es_sdch[e, s_m, s_o, p]) * network.baseMVA
-                    p_ess = pe.value(model.shared_es_pch[e, s_m, s_o, p] - model.shared_es_pdch[e, s_m, s_o, p]) * network.baseMVA
-                    q_ess = pe.value(model.shared_es_qch[e, s_m, s_o, p] - model.shared_es_qdch[e, s_m, s_o, p]) * network.baseMVA
-                    soc_ess = pe.value(model.shared_es_soc[e, s_m, s_o, p]) * network.baseMVA
+                    # P5.4-A: the shared-ESS apparent power is now the converter
+                    # loading magnitude sqrt(pnet^2 + qnet^2) in MVA. The retired
+                    # sch/sdch difference was a signed apparent charge/discharge
+                    # quantity; direction remains available from 'p' (load-positive).
+                    # P5.15 Addendum 38 (B): the shared-ESS schedule is scenario-free
+                    # (`sess_na_scenario`), so every scenario's results table reports the
+                    # ONE committed schedule rather than the unwired per-scenario copies.
+                    # At one scenario these indices are (s_m, s_o) themselves.
+                    s_m0, s_o0 = sess_na_scenario(model)
+                    s_ess = sqrt(max(pe.value(model.shared_es_pnet[e, s_m0, s_o0, p]) ** 2 + pe.value(model.shared_es_qnet[e, s_m0, s_o0, p]) ** 2, 0.0)) * network.baseMVA
+                    p_ess = pe.value(model.shared_es_pch[e, s_m0, s_o0, p] - model.shared_es_pdch[e, s_m0, s_o0, p]) * network.baseMVA
+                    q_ess = pe.value(model.shared_es_qnet[e, s_m0, s_o0, p]) * network.baseMVA
+                    soc_ess = pe.value(model.shared_es_soc[e, s_m0, s_o0, p]) * network.baseMVA
                     processed_results['scenarios'][s_m][s_o]['shared_energy_storages']['p'][node_id].append(p_ess)
                     processed_results['scenarios'][s_m][s_o]['shared_energy_storages']['q'][node_id].append(q_ess)
                     processed_results['scenarios'][s_m][s_o]['shared_energy_storages']['s'][node_id].append(s_ess)
@@ -1203,30 +1790,44 @@ def _process_results(network, model, params, results=dict()):
             # Voltage slacks
             if params.slacks.grid_operation.voltage:
                 for i in model.nodes:
+                    node = network.nodes[i]
                     node_id = network.nodes[i].bus_i
-                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['voltage']['e'][node_id] = []
-                    processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['voltage']['f'][node_id] = []
+                    voltage_slacks = processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['voltage']
+                    for quantity in voltage_slacks:
+                        voltage_slacks[quantity][node_id] = []
                     for p in model.periods:
-                        slack_e = pe.value(model.slack_e_up[i, s_m, s_o, p] - model.slack_e_down[i, s_m, s_o, p])
-                        slack_f = pe.value(model.slack_f_up[i, s_m, s_o, p] - model.slack_f_down[i, s_m, s_o, p])
-                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['voltage']['e'][node_id].append(slack_e)
-                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['voltage']['f'][node_id].append(slack_f)
+                        diagnostics = voltage_slack_diagnostics(
+                            node.v_min,
+                            node.v_max,
+                            pe.value(model.vmag_sqr[i, s_m, s_o, p]),
+                            pe.value(model.slack_v_sqr_down[i, s_m, s_o, p]),
+                            pe.value(model.slack_v_sqr_up[i, s_m, s_o, p]),
+                        )
+                        for quantity, value in diagnostics.items():
+                            voltage_slacks[quantity][node_id].append(value)
 
             # Branch current slacks
             if params.slacks.grid_operation.branch_flow:
                 for b in model.branches:
                     branch_id = network.branches[b].branch_id
                     processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['branch_flow']['flow_ij_sqr'][branch_id] = []
+                    if b in model.apparent_power_limited_branches:
+                        processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['branch_flow']['flow_ji_sqr'][branch_id] = []
                     for p in model.periods:
                         slack_flow_ij_sqr = pe.value(model.slack_flow_ij_sqr[b, s_m, s_o, p]) * (s_base ** 2)
                         processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['branch_flow']['flow_ij_sqr'][branch_id].append(slack_flow_ij_sqr)
+                        if b in model.apparent_power_limited_branches:
+                            slack_flow_ji_sqr = pe.value(model.slack_flow_ji_sqr[b, s_m, s_o, p]) * (s_base ** 2)
+                            processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['branch_flow']['flow_ji_sqr'][branch_id].append(slack_flow_ji_sqr)
 
             # Slacks
             # - SharedESS
             for e in model.shared_energy_storages:
                 node_id = network.shared_energy_storages[e].bus
                 if params.slacks.shared_ess.day_balance:
-                    slack_soc_final = pe.value(model.slack_shared_es_soc_final_up[e, s_m, s_o] - model.slack_shared_es_soc_final_down[e, s_m, s_o]) * s_base
+                    # P5.15 Addendum 38 (B): scenario-free day-balance slacks.
+                    s_m0, s_o0 = sess_na_scenario(model)
+                    slack_soc_final = pe.value(model.slack_shared_es_soc_final_up[e, s_m0, s_o0] - model.slack_shared_es_soc_final_down[e, s_m0, s_o0]) * s_base
                     processed_results['scenarios'][s_m][s_o]['relaxation_slacks']['shared_energy_storages']['soc_final'][node_id] = slack_soc_final
 
             # - Node balance
@@ -1290,6 +1891,7 @@ def _process_results_summary_detail(network, model, params):
             results['scenarios'][s_m][s_o]['generation_conventional_cost'] = _compute_cost_conventional_generation_per_scenario(network, model, params, s_m, s_o)
             results['scenarios'][s_m][s_o]['generation_renewable'] = _compute_renewable_generation_per_scenario(network, model, params, s_m, s_o)
             results['scenarios'][s_m][s_o]['generation_renewable_curtailed'] = _compute_renewable_generation_curtailed_per_scenario(network, model, params, s_m, s_o)
+            results['scenarios'][s_m][s_o]['generation_renewable_curtailment_penalty'] = pe.value(model.gen_curt_penalty_scenario[s_m, s_o])
             results['scenarios'][s_m][s_o]['losses'] = _compute_losses_per_scenario(network, model, params, s_m, s_o)
 
     return results
@@ -1304,7 +1906,6 @@ def _process_results_interface(network, model):
 
             node_id = network.active_distribution_network_nodes[dn]
             node_idx = network.get_node_idx(node_id)
-            load_idx = network.get_adn_load_idx(node_id)
 
             # Power flow results per market and operation scenario
             results[node_id] = dict()
@@ -1316,9 +1917,9 @@ def _process_results_interface(network, model):
                     results[node_id][s_m][s_o]['p'] = [0.0 for _ in model.periods]
                     results[node_id][s_m][s_o]['q'] = [0.0 for _ in model.periods]
                     for p in model.periods:
-                        vmag = sqrt(pe.value(model.e_actual[node_idx, s_m, s_o, p]**2 + model.f_actual[node_idx, s_m, s_o, p]**2))
-                        pf_p = pe.value(model.pc[load_idx, s_m, s_o, p] + model.flex_p_up[load_idx, s_m, s_o, p] - model.flex_p_down[load_idx, s_m, s_o, p]) * network.baseMVA
-                        pf_q = pe.value(model.qc[load_idx, s_m, s_o, p] + model.flex_q_up[load_idx, s_m, s_o, p] - model.flex_q_down[load_idx, s_m, s_o, p]) * network.baseMVA
+                        vmag = sqrt(pe.value(model.e[node_idx, s_m, s_o, p]**2 + model.f[node_idx, s_m, s_o, p]**2))
+                        pf_p = pe.value(model.pc_adn[dn, s_m, s_o, p]) * network.baseMVA
+                        pf_q = pe.value(model.qc_adn[dn, s_m, s_o, p]) * network.baseMVA
                         results[node_id][s_m][s_o]['v'][p] = vmag
                         results[node_id][s_m][s_o]['p'][p] = pf_p
                         results[node_id][s_m][s_o]['q'][p] = pf_q
@@ -1327,7 +1928,6 @@ def _process_results_interface(network, model):
         # Power flow results per market and operation scenario
         ref_node_id = network.get_reference_node_id()
         ref_node_idx = network.get_node_idx(ref_node_id)
-        ref_gen_idx = network.get_reference_gen_idx()
         for s_m in model.scenarios_market:
             results[s_m] = dict()
             for s_o in model.scenarios_operation:
@@ -1336,9 +1936,9 @@ def _process_results_interface(network, model):
                 results[s_m][s_o]['p'] = [0.0 for _ in model.periods]
                 results[s_m][s_o]['q'] = [0.0 for _ in model.periods]
                 for p in model.periods:
-                    vmag = pe.value(model.e_actual[ref_node_idx, s_m, s_o, p])
-                    pf_p = pe.value(model.pg[ref_gen_idx, s_m, s_o, p]) * network.baseMVA
-                    pf_q = pe.value(model.qg[ref_gen_idx, s_m, s_o, p]) * network.baseMVA
+                    vmag = sqrt(pe.value(model.e[ref_node_idx, s_m, s_o, p]**2 + model.f[ref_node_idx, s_m, s_o, p]**2))
+                    pf_p = pe.value(model.pg_adn[s_m, s_o, p]) * network.baseMVA
+                    pf_q = pe.value(model.qg_adn[s_m, s_o, p]) * network.baseMVA
                     results[s_m][s_o]['v'][p] = vmag
                     results[s_m][s_o]['p'][p] = pf_p
                     results[s_m][s_o]['q'][p] = pf_q
@@ -1347,17 +1947,22 @@ def _process_results_interface(network, model):
 
 
 def _compute_objective_function_value_per_scenario(network, model, params, s_m, s_o):
-    obj = 0.00
+
+    obj = 0.0
+
     if params.obj_type == OBJ_MIN_COST:
         obj += pe.value(model.gen_cost_scenario[s_m, s_o])
         obj += pe.value(model.flex_cost_scenario[s_m, s_o])
         obj += pe.value(model.load_curt_cost_scenario[s_m, s_o])
+        obj += pe.value(model.gen_curt_penalty_scenario[s_m, s_o])
     elif params.obj_type == OBJ_CONGESTION_MANAGEMENT:
         obj += pe.value(model.gen_curt_penalty_scenario[s_m, s_o])
         obj += pe.value(model.load_curt_penalty_scenario[s_m, s_o])
         obj += pe.value(model.flex_penalty_scenario[s_m, s_o])
     obj += pe.value(model.ess_utilization_cost_penalty_scenario[s_m, s_o])
     obj += pe.value(model.slack_penalties_scenario[s_m, s_o])
+    obj += pe.value(model.ess_complementarity_penalty_scenario[s_m, s_o])
+
     return obj
 
 
@@ -1417,6 +2022,9 @@ def _compute_load_per_scenario(network, model, params, s_m, s_o):
         for p in model.periods:
             total_load['p'] += network.baseMVA * pe.value(model.pc[c, s_m, s_o, p])
             total_load['q'] += network.baseMVA * pe.value(model.qc[c, s_m, s_o, p])
+            if params.fl_reg:
+                total_load['p'] += network.baseMVA * pe.value(model.flex_p_up[c, s_m, s_o, p] - model.flex_p_down[c, s_m, s_o, p])
+                total_load['q'] += network.baseMVA * pe.value(model.flex_q_up[c, s_m, s_o, p] - model.flex_q_down[c, s_m, s_o, p])
             if params.l_curt:
                 total_load['p'] -= network.baseMVA * pe.value(model.pc_curt_down[c, s_m, s_o, p] - model.pc_curt_up[c, s_m, s_o, p])
                 total_load['q'] -= network.baseMVA * pe.value(model.qc_curt_down[c, s_m, s_o, p] - model.qc_curt_up[c, s_m, s_o, p])
@@ -1424,9 +2032,7 @@ def _compute_load_per_scenario(network, model, params, s_m, s_o):
 
 
 def _compute_total_generation(network, model, params):
-
     total_gen = {'p': 0.00, 'q': 0.00}
-
     for s_m in model.scenarios_market:
         for s_o in model.scenarios_operation:
             total_gen_scenario = {'p': 0.00, 'q': 0.00}
@@ -1436,7 +2042,6 @@ def _compute_total_generation(network, model, params):
                     total_gen_scenario['q'] += network.baseMVA * pe.value(model.qg[g, s_m, s_o, p])
             total_gen['p'] += total_gen_scenario['p'] * (network.prob_market_scenarios[s_m] * network.prob_operation_scenarios[s_o])
             total_gen['q'] += total_gen_scenario['q'] * (network.prob_market_scenarios[s_m] * network.prob_operation_scenarios[s_o])
-
     return total_gen
 
 
@@ -1532,6 +2137,12 @@ def _compute_losses_per_scenario(network, model, params, s_m, s_o):
     return power_losses
 
 
+def _compute_renewable_apparent_power_curtailment(model, g, s_m, s_o, p):
+    available = pe.value(model.sg_avail[g, s_o, p])
+    dispatched = sqrt(max(pe.value(model.sg_sqr[g, s_m, s_o, p]), 0.0))
+    return max(available - dispatched, 0.0)
+
+
 def _compute_generation_curtailment(network, model, params):
 
     gen_curtailment = {'s': 0.00}
@@ -1544,27 +2155,25 @@ def _compute_generation_curtailment(network, model, params):
                     if network.generators[g].is_curtaillable():
                         for p in model.periods:
                             if network.generators[g].status[p]:
-                                gen_curtailment_scenario['s'] += pe.value(model.sg_curt[g, s_m, s_o, p]) * network.baseMVA
+                                gen_curtailment_scenario['s'] += _compute_renewable_apparent_power_curtailment(model, g, s_m, s_o, p) * network.baseMVA
                 gen_curtailment['s'] += gen_curtailment_scenario['s'] * (network.prob_market_scenarios[s_m] * network.prob_operation_scenarios[s_o])
 
     return gen_curtailment
 
 
 def _compute_renewable_generation_curtailed_per_scenario(network, model, params, s_m, s_o):
-    gen_curtailment = {'p': 0.00, 'q': 0.00, 's': 0.00}
+    gen_curtailment = {'s': 0.00}
     if params.rg_curt:
         for g in model.generators:
             if network.generators[g].is_curtaillable():
                 for p in model.periods:
                     if network.generators[g].status[p]:
-                        gen_curtailment['s'] += pe.value(model.sg_curt[g, s_m, s_o, p]) * network.baseMVA
+                        gen_curtailment['s'] += _compute_renewable_apparent_power_curtailment(model, g, s_m, s_o, p) * network.baseMVA
     return gen_curtailment
 
 
 def _compute_load_curtailment(network, model, params):
-
     load_curtailment = {'p': 0.00, 'q': 0.00}
-
     if params.l_curt:
         for s_m in model.scenarios_market:
             for s_o in model.scenarios_operation:
@@ -1573,39 +2182,34 @@ def _compute_load_curtailment(network, model, params):
                     for p in model.periods:
                         load_curtailment_scenario['p'] += pe.value(model.pc_curt_down[c, s_m, s_o, p] - model.pc_curt_up[c, s_m, s_o, p]) * network.baseMVA
                         load_curtailment_scenario['q'] += pe.value(model.qc_curt_down[c, s_m, s_o, p] - model.qc_curt_up[c, s_m, s_o, p]) * network.baseMVA
-
                 load_curtailment['p'] += load_curtailment_scenario['p'] * (network.prob_market_scenarios[s_m] * network.prob_operation_scenarios[s_o])
                 load_curtailment['q'] += load_curtailment_scenario['q'] * (network.prob_market_scenarios[s_m] * network.prob_operation_scenarios[s_o])
-
     return load_curtailment
 
 
 def _compute_load_curtailment_per_scenario(network, model, params, s_m, s_o):
     load_curtailment = {'p': 0.00, 'q': 0.00}
     if params.l_curt:
-        load_curtailment_scenario = {'p': 0.00, 'q': 0.00}
         for c in model.loads:
             for p in model.periods:
-                load_curtailment_scenario['p'] += pe.value(model.pc_curt_down[c, s_m, s_o, p] - model.pc_curt_up[c, s_m, s_o, p]) * network.baseMVA
-                load_curtailment_scenario['q'] += pe.value(model.qc_curt_down[c, s_m, s_o, p] - model.qc_curt_up[c, s_m, s_o, p]) * network.baseMVA
+                load_curtailment['p'] += pe.value(model.pc_curt_down[c, s_m, s_o, p] - model.pc_curt_up[c, s_m, s_o, p]) * network.baseMVA
+                load_curtailment['q'] += pe.value(model.qc_curt_down[c, s_m, s_o, p] - model.qc_curt_up[c, s_m, s_o, p]) * network.baseMVA
     return load_curtailment
 
 
 def _compute_flexibility_used(network, model, params):
-
     flexibility_used = {'p': 0.0, 'q': 0.0}
-
     if params.fl_reg:
         for s_m in model.scenarios_market:
             for s_o in model.scenarios_operation:
                 flexibility_used_scenario = {'p': 0.0, 'q': 0.0}
                 for c in model.loads:
-                    for p in model.periods:
-                        flexibility_used_scenario['p'] += pe.value(model.flex_p_up[c, s_m, s_o, p] + model.flex_p_down[c, s_m, s_o, p]) * network.baseMVA
-                        flexibility_used_scenario['q'] += pe.value(model.flex_q_up[c, s_m, s_o, p] + model.flex_q_down[c, s_m, s_o, p]) * network.baseMVA
+                    if network.loads[c].fl_reg:
+                        for p in model.periods:
+                            flexibility_used_scenario['p'] += pe.value(model.flex_p_up[c, s_m, s_o, p] + model.flex_p_down[c, s_m, s_o, p]) * network.baseMVA
+                            flexibility_used_scenario['q'] += pe.value(model.flex_q_up[c, s_m, s_o, p] + model.flex_q_down[c, s_m, s_o, p]) * network.baseMVA
                 flexibility_used['p'] += flexibility_used_scenario['p'] * (network.prob_market_scenarios[s_m] * network.prob_operation_scenarios[s_o])
                 flexibility_used['q'] += flexibility_used_scenario['q'] * (network.prob_market_scenarios[s_m] * network.prob_operation_scenarios[s_o])
-
     return flexibility_used
 
 
@@ -1613,21 +2217,21 @@ def _compute_flexibility_per_scenario(network, model, params, s_m, s_o):
     flexibility_used = {'p': 0.0, 'q': 0.0}
     if params.fl_reg:
         for c in model.loads:
-            for p in model.periods:
-                flexibility_used['p'] += pe.value(model.flex_p_up[c, s_m, s_o, p] + model.flex_p_down[c, s_m, s_o, p]) * network.baseMVA
-                flexibility_used['q'] += pe.value(model.flex_q_up[c, s_m, s_o, p] + model.flex_q_down[c, s_m, s_o, p]) * network.baseMVA
+            if network.loads[c].fl_reg:
+                for p in model.periods:
+                    flexibility_used['p'] += pe.value(model.flex_p_up[c, s_m, s_o, p] + model.flex_p_down[c, s_m, s_o, p]) * network.baseMVA
+                    flexibility_used['q'] += pe.value(model.flex_q_up[c, s_m, s_o, p] + model.flex_q_down[c, s_m, s_o, p]) * network.baseMVA
     return flexibility_used
 
 
 def _compute_cost_flexibility_per_scenario(network, model, params, s_m, s_o):
     cost = 0.0
-    if params.obj_type == OBJ_MIN_COST:
+    if params.obj_type == OBJ_MIN_COST and params.fl_reg:
         c_flex = network.cost_flex[s_m]
-        if params.fl_reg:
-            for c in model.loads:
+        for c in model.loads:
+            if network.loads[c].fl_reg:
                 for p in model.periods:
-                    cost += c_flex[p] * pe.value(model.flex_p_up[c, s_m, s_o, p] + model.flex_p_down[c, s_m, s_o, p]) * network.baseMVA
-                    cost += c_flex[p] * pe.value(model.flex_q_up[c, s_m, s_o, p] + model.flex_q_down[c, s_m, s_o, p]) * network.baseMVA
+                    cost += c_flex[p] * network.baseMVA * pe.value(model.flex_p_down[c, s_m, s_o, p] + model.flex_q_down[c, s_m, s_o, p])
     return cost
 
 
@@ -1723,8 +2327,23 @@ def _perform_network_check(network):
         print(f'[ERROR] Reading network {network.name}. No branches imported.')
         exit(ERROR_NETWORK_FILE)
 
+    _check_branch_angle_limits(network)
+
+
+def _check_branch_angle_limits(network):
+    for branch in network.branches:
+        if not (-90.0 < branch.angle_min <= branch.angle_max < 90.0):
+            print(
+                f'[ERROR] Reading network {network.name}. Branch {branch.branch_id} has invalid '
+                f'angle limits [{branch.angle_min}, {branch.angle_max}] degrees. Limits must satisfy '
+                f'-90 < angle_min <= angle_max < 90.'
+            )
+            exit(ERROR_NETWORK_FILE)
+
 
 def _pre_process_network(network):
+
+    _check_branch_angle_limits(network)
 
     processed_nodes = []
     for node in network.nodes:
@@ -1758,12 +2377,18 @@ def _pre_process_network(network):
         if len(connected_parallel_branches) > 1:
             processed_branch = connected_parallel_branches[0]
             r_eq, x_eq, g_eq, b_eq = _pre_process_parallel_branches(connected_parallel_branches)
+            angle_min, angle_max = _pre_process_parallel_branch_angle_limits(
+                connected_parallel_branches,
+                processed_branch,
+            )
             processed_branch.r = r_eq
             processed_branch.x = x_eq
             processed_branch.g_sh = g_eq
             processed_branch.b_sh = b_eq
             processed_branch.rate = sum([branch.rate for branch in connected_parallel_branches])
             processed_branch.ratio = branch.ratio
+            processed_branch.angle_min = angle_min
+            processed_branch.angle_max = angle_max
             processed_branch.pre_processed = True
             for branch_parallel in parallel_branches:
                 branch_parallel.pre_processed = True
@@ -1789,6 +2414,20 @@ def _pre_process_parallel_branches(branches):
     return abs(z_eq.real), abs(z_eq.imag), ysh_eq.real, ysh_eq.imag
 
 
+def _pre_process_parallel_branch_angle_limits(branches, reference_branch):
+    oriented_limits = []
+    for branch in branches:
+        if branch.fbus == reference_branch.fbus and branch.tbus == reference_branch.tbus:
+            oriented_limits.append((branch.angle_min, branch.angle_max))
+        else:
+            oriented_limits.append((-branch.angle_max, -branch.angle_min))
+
+    return (
+        max(angle_min for angle_min, _ in oriented_limits),
+        min(angle_max for _, angle_max in oriented_limits),
+    )
+
+
 def _get_branch_power_losses(network, params, model, branch_idx, s_m, s_o, p):
 
     # Active power flow, from i to j and from j to i
@@ -1805,28 +2444,21 @@ def _get_branch_power_flow(network, params, branch, fbus, tbus, model, s_m, s_o,
     tbus_idx = network.get_node_idx(tbus)
     branch_idx = network.get_branch_idx(branch)
 
-    rij = pe.value(model.r[branch_idx, s_m, s_o, p])
-    ei = pe.value(model.e_actual[fbus_idx, s_m, s_o, p])
-    fi = pe.value(model.f_actual[fbus_idx, s_m, s_o, p])
-    ej = pe.value(model.e_actual[tbus_idx, s_m, s_o, p])
-    fj = pe.value(model.f_actual[tbus_idx, s_m, s_o, p])
+    rij = pe.value(model.r[branch_idx, s_m, s_o, p]) if branch.is_transformer else 1.0
+    ei = pe.value(model.e[fbus_idx, s_m, s_o, p])
+    fi = pe.value(model.f[fbus_idx, s_m, s_o, p])
+    ej = pe.value(model.e[tbus_idx, s_m, s_o, p])
+    fj = pe.value(model.f[tbus_idx, s_m, s_o, p])
 
-    if branch.fbus == fbus:
-        pij = branch.g * (ei ** 2 + fi ** 2) * rij ** 2
-        pij -= branch.g * (ei * ej + fi * fj) * rij
-        pij -= branch.b * (fi * ej - ei * fj) * rij
-
-        qij = - (branch.b + branch.b_sh * 0.50) * (ei ** 2 + fi ** 2) * rij ** 2
-        qij += branch.b * (ei * ej + fi * fj) * rij
-        qij -= branch.g * (fi * ej - ei * fj) * rij
-    else:
-        pij = branch.g * (ei ** 2 + fi ** 2)
-        pij -= branch.g * (ei * ej + fi * fj) * rij
-        pij -= branch.b * (fi * ej - ei * fj) * rij
-
-        qij = - (branch.b + branch.b_sh * 0.50) * (ei ** 2 + fi ** 2)
-        qij += branch.b * (ei * ej + fi * fj) * rij
-        qij -= branch.g * (fi * ej - ei * fj) * rij
+    terminal_ratio_sqr = rij ** 2 if branch.is_transformer and branch.fbus == fbus else 1.0
+    pij, qij = compute_branch_terminal_power(
+        branch,
+        ei ** 2 + fi ** 2,
+        ei * ej + fi * fj,
+        fi * ej - ei * fj,
+        coupling_ratio=rij,
+        terminal_ratio_sqr=terminal_ratio_sqr,
+    )
 
     return pij * network.baseMVA, qij * network.baseMVA
 

@@ -1,0 +1,235 @@
+{
+ "stage": "P5.6-A2.1/A2.2",
+ "provenance": {
+  "timestamp_utc": "2026-09-08T09:08:30.871199+00:00",
+  "git_head": "24350e8d5f4a5c568431950db556ce2559a9d280",
+  "sys_executable": "/opt/anaconda3/envs/opf_env_py311/bin/python",
+  "conda_default_env": null,
+  "conda_env_from_path": "opf_env_py311",
+  "python_version": "3.11.11",
+  "numpy_version": "2.4.2",
+  "pandas_version": "3.0.0",
+  "scipy_version": "1.17.0",
+  "pyomo_version": "6.9.5",
+  "ipopt": {
+   "path": "/usr/local/bin/ipopt",
+   "version": "3.14.18",
+   "exists": true,
+   "banner": "Ipopt 3.14.18 (aarch64-apple-darwin24.5.0), ASL(20241111)"
+  },
+  "hsl_linear_solver": "ma97",
+  "gurobi": {
+   "gurobipy": "13.0.1",
+   "gurobi_runtime": "13.0.1",
+   "licence": "ACADEMIC",
+   "licence_expiry": "2027-04-10",
+   "available": true,
+   "licence_id": "2805683",
+   "licence_version": "13"
+  },
+  "scenario_checksum": "5a02b77ccbbbbbb869de92958a3851d095624711abc2dbfc0157466064410358",
+  "canonical_checksum": "5a02b77ccbbbbbb869de92958a3851d095624711abc2dbfc0157466064410358",
+  "checksum_matches_canonical": true,
+  "stage": "P5.6-A2.1/A2.2 branch"
+ },
+ "timestamp_utc": "2026-09-08T09:17:58.860147+00:00",
+ "esso_solved": {
+  "5": true,
+  "7": true,
+  "9": true
+ },
+ "blocks": {
+  "DSO5|2035|Autumn": {
+   "has_augmented_objective": true,
+   "common_initial_point": "the ADMM-converged local iterate",
+   "A_augmented": {
+    "solved": true,
+    "solver": {
+     "termination": "optimal",
+     "status": "ok"
+    },
+    "fingerprint": {
+     "base_objective": 2554.812449168131,
+     "generation_cost": 0.0,
+     "flexibility_cost": 2223.597854939364,
+     "gen_curtailment_penalty": 2.2140512362003566,
+     "slack_penalties": 328.0132548459666,
+     "sum_abs_pg": 16.91245046751137,
+     "sum_abs_qg": 2.7328576188008626,
+     "sum_abs_flex_p_down": 0.28072177266384196,
+     "sum_abs_flex_q_down": 0.006491463058614726,
+     "sum_abs_slack_v_sqr_up": 0.003280160411725896,
+     "sum_abs_slack_v_sqr_down": 0.0032801046851934526,
+     "sum_abs_shared_es_pch": 0.0008051859009942746,
+     "sum_abs_shared_es_pdch": 0.0007426362107353584,
+     "sum_abs_vmag_sqr": 821.2917271687937
+    },
+    "augmented_objective": 0.020741007079563938
+   },
+   "B_base": {
+    "solved": true,
+    "solver": {
+     "termination": "optimal",
+     "status": "ok"
+    },
+    "fingerprint": {
+     "base_objective": 1850.7400735971096,
+     "generation_cost": 0.0,
+     "flexibility_cost": 1849.483999253767,
+     "gen_curtailment_penalty": 1.2906193964224992,
+     "slack_penalties": -0.7540363425925568,
+     "sum_abs_pg": 16.921684785909154,
+     "sum_abs_qg": 2.799582211841687,
+     "sum_abs_flex_p_down": 0.23062162189566227,
+     "sum_abs_flex_q_down": 6.617934216213038e-06,
+     "sum_abs_slack_v_sqr_up": 7.540363235884959e-06,
+     "sum_abs_slack_v_sqr_down": 7.540363615966165e-06,
+     "sum_abs_shared_es_pch": 0.0008084808782522597,
+     "sum_abs_shared_es_pdch": 0.0007459311879933436,
+     "sum_abs_vmag_sqr": 827.316155996414
+    },
+    "augmented_objective": 0.014672686040366254
+   },
+   "affine_equivalence": {
+    "points": {
+     "admm_iterate": {
+      "base": 2595.9865549921224,
+      "augmented": 0.02150746911848163
+     },
+     "solution_A": {
+      "base": 2554.812449168131,
+      "augmented": 0.020741007079563938
+     },
+     "solution_B": {
+      "base": 1850.7400735971096,
+      "augmented": 0.014672686040366254
+     }
+    },
+    "pairs": [
+     {
+      "pair": "admm_iterate->solution_A",
+      "delta_base": -41.17410582399134,
+      "delta_augmented": -0.000766462038917691,
+      "ratio": 1.861514715569339e-05
+     },
+     {
+      "pair": "admm_iterate->solution_B",
+      "delta_base": -745.2464813950128,
+      "delta_augmented": -0.006834783078115374,
+      "ratio": 9.171171214819389e-06
+     },
+     {
+      "pair": "solution_A->solution_B",
+      "delta_base": -704.0723755710214,
+      "delta_augmented": -0.006068321039197683,
+      "ratio": 8.618888128192948e-06
+     }
+    ],
+    "ratios": [
+     1.861514715569339e-05,
+     9.171171214819389e-06,
+     8.618888128192948e-06
+    ],
+    "ratio_spread": 9.996259027500442e-06,
+    "consistent_positive_scale": false
+   },
+   "objective_difference_A_minus_B": 704.0723755710214
+  },
+  "TSO|2025|Spring": {
+   "has_augmented_objective": true,
+   "common_initial_point": "the ADMM-converged local iterate",
+   "A_augmented": {
+    "solved": true,
+    "solver": {
+     "termination": "optimal",
+     "status": "ok"
+    },
+    "fingerprint": {
+     "base_objective": 172745.0315080872,
+     "generation_cost": 140452.59031958578,
+     "flexibility_cost": 32249.838460906045,
+     "gen_curtailment_penalty": 0.0,
+     "slack_penalties": 41.565124292774144,
+     "sum_abs_pg": 28.442363011879298,
+     "sum_abs_qg": 32.35417443837527,
+     "sum_abs_flex_p_down": 6.613078652805385,
+     "sum_abs_flex_q_down": 0.0036554921380947797,
+     "sum_abs_slack_v_sqr_up": 0.0004156553435659268,
+     "sum_abs_slack_v_sqr_down": 0.00041564714228955644,
+     "sum_abs_shared_es_pch": 0.0008088980625878323,
+     "sum_abs_shared_es_pdch": 0.0007533017521432979,
+     "sum_abs_vmag_sqr": 231.4149809078606
+    },
+    "augmented_objective": 1.8350129763235519
+   },
+   "B_base": {
+    "solved": true,
+    "solver": {
+     "termination": "optimal",
+     "status": "ok"
+    },
+    "fingerprint": {
+     "base_objective": 172639.37863642693,
+     "generation_cost": 140415.47962595703,
+     "flexibility_cost": 32223.992895445,
+     "gen_curtailment_penalty": 0.0,
+     "slack_penalties": -0.10909090913678805,
+     "sum_abs_pg": 28.442343824675685,
+     "sum_abs_qg": 32.34796860156607,
+     "sum_abs_flex_p_down": 6.609520157090003,
+     "sum_abs_flex_q_down": 2.516673373252505e-07,
+     "sum_abs_slack_v_sqr_up": 1.090909091087006e-06,
+     "sum_abs_slack_v_sqr_down": 1.0909090916487549e-06,
+     "sum_abs_shared_es_pch": 0.0008087132644478499,
+     "sum_abs_shared_es_pdch": 0.0007531169540033155,
+     "sum_abs_vmag_sqr": 231.4146066560825
+    },
+    "augmented_objective": 1.8338907493526546
+   },
+   "affine_equivalence": {
+    "points": {
+     "admm_iterate": {
+      "base": 172731.18573358704,
+      "augmented": 1.835008658757601
+     },
+     "solution_A": {
+      "base": 172745.0315080872,
+      "augmented": 1.8350129763235519
+     },
+     "solution_B": {
+      "base": 172639.37863642693,
+      "augmented": 1.8338907493526546
+     }
+    },
+    "pairs": [
+     {
+      "pair": "admm_iterate->solution_A",
+      "delta_base": 13.845774500165135,
+      "delta_augmented": 4.317565950762159e-06,
+      "ratio": 3.118327509024984e-07
+     },
+     {
+      "pair": "admm_iterate->solution_B",
+      "delta_base": -91.80709716011188,
+      "delta_augmented": -0.0011179094049464933,
+      "ratio": 1.2176720967409041e-05
+     },
+     {
+      "pair": "solution_A->solution_B",
+      "delta_base": -105.65287166027701,
+      "delta_augmented": -0.0011222269708972554,
+      "ratio": 1.0621831222020502e-05
+     }
+    ],
+    "ratios": [
+     3.118327509024984e-07,
+     1.2176720967409041e-05,
+     1.0621831222020502e-05
+    ],
+    "ratio_spread": 1.1864888216506542e-05,
+    "consistent_positive_scale": false
+   },
+   "objective_difference_A_minus_B": 105.65287166027701
+  }
+ }
+}

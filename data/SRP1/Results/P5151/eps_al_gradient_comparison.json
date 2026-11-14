@@ -1,0 +1,27 @@
+{
+  "instance": "data/SRP1/Results/P514N/esso_models_control.pkl",
+  "convention": "AL gradient = d(admm_objective)/d(es_pnet[y,d,p]) via Pyomo exact symbolic differentiation, evaluated at the pickled (converged) point. EPS gradient = EPS_ESSO_THROUGHPUT (constant; the throughput regularization term is linear in pch/pdch). Both are gradients w.r.t. the same physical quantity (a cohort pch/pdch, since d(es_pnet)/d(pch) = 1 for an active cohort).",
+  "eps_esso_throughput": 0.001,
+  "nodes": {
+    "7": {
+      "n": 288,
+      "max_abs": 1.69249537803581e-05,
+      "mean_abs": 5.832416090203325e-06,
+      "median_abs": 4.234654840138205e-06,
+      "min_abs": 3.820755396427103e-09,
+      "ratio_eps_over_al_max": 59.08435632837763,
+      "ratio_eps_over_al_mean": 171.45553138427385,
+      "ratio_eps_over_al_median": 236.14675522583164
+    },
+    "9": {
+      "n": 288,
+      "max_abs": 1.693296524570482e-05,
+      "mean_abs": 5.872478652233537e-06,
+      "median_abs": 4.285391029881791e-06,
+      "min_abs": 4.50128489283205e-09,
+      "ratio_eps_over_al_max": 59.056401846313236,
+      "ratio_eps_over_al_mean": 170.28584678118162,
+      "ratio_eps_over_al_median": 233.35093414511212
+    }
+  }
+}

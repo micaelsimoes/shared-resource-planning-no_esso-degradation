@@ -1,0 +1,953 @@
+{
+ "provenance": {
+  "stage": "P5.16 convention change C5 -- gate G-CC-4 (general lattice; zero solves)",
+  "schema": "p516_lattice_gate_v1",
+  "started_utc": "2026-10-31T10:51:40Z",
+  "python": "/opt/anaconda3/envs/opf_env_py311/bin/python",
+  "git_HEAD": "0b92e24ad5306912131ee6b53b2c2bb16abdb2ec",
+  "git_status_of_hashed_sources": "?? p516_lattice.py\n?? p516_lattice_gate.py",
+  "sources_sha256": {
+   "p516_lattice.py": "ff5d63ef897ccd04e5bbaa719b352537108180a31b83c1b8574506612af86e88",
+   "p516_lattice_gate.py": "5942e7b22fa050c20e46ab0c4d34bcb14d0121ade6d88f4820c9be0d058af9e5",
+   "p515_s47_phase_b_record.py": "97f573e52fb574836a72dce8c61b3d5c6b8919aa509e0ffbc04a1a6473ed6c62",
+   "p515_s44_campaign_harness.py": "c34ebdc5463a1fe0fd6398c6acad4dcfb61dbfbd142ef3de517ca517168d77be",
+   "p515_s44_scale_measurement.py": "284abb4d12811886f5ee1c28809db34ccc8425ba4bb9eb726abafd9c764a0a3e",
+   "p56a_oracle.py": "699d571a2d69b14fd89024c535fa8b3ffa0625aa647f1714060dcc9cf6fa2f11",
+   "shared_energy_storage_data.py": "9acd095fb5e50e9b64c253600ae05ebb8e6463fd7a999d3a90f96ee82f037796",
+   "shared_resources_planning.py": "ade9c843bc7c5b6514ab91ecc54f327330a5249709766699ff2f50c8288473d6",
+   "p513_solve_profile_guard.py": "9921682e5b825e0b76551b78c4765bfe039bccc414d727520f2c22b6f192a5ab",
+   "gate_result_io.py": "26cadaa5c3105f9adb879ece756ef6d659b374f647a7756030efe80a2df6d07d",
+   "data/SRP1/SRP1.json": "61a794a7ce7a3fb983f2e92128eec446dd7dbb17ad75a3b3b1c5735f8bd4e4ef",
+   "data/SRP1/SharedESS/SRP1_ESS.xlsx": "e17bd5887e1d0738005ae17c3144593527081c9a0776e19cfaa50aafefe39cd6",
+   "data/SRP1/SharedESS/SRP1_ESS_Params.json": "39106f934bf3edbf18f01a5ef1fadfefc2f7a518706e6c8fa6d962617a312706",
+   "data/SRP1/Results/P515S45/investment_cost/investment_cost_results.json": "28152120f5c7acc57655d40871f764a5e797b93428f5a9f87b7eed55fbe4790b"
+  },
+  "seed": 20261031,
+  "predictions": {
+   "recorded": "in this script before the run (Planner task, P5.16 C5 + G-CC-4)",
+   "L1": "old-domain round trip exact (counts equal)",
+   "L2": "the master-row oracle agrees with the module on 200/200 points and I(x) to <= 1e-12 relative",
+   "L3": "|N(x=0)| = 30 on the five-block instance years (all 15 activations x 2 energies admissible under the budget)",
+   "L4": "a staged two-cohort plan of 3 + 3 MWh at one node is rejected by the cumulative rule and by the master row alike"
+  },
+  "guards": [
+   "p516_lattice_gate GUARD permitted=() (armed before project imports)",
+   "p515_s47_phase_b_record.PARENT_GUARD permitted=() (installed at its import)"
+  ]
+ },
+ "instances": {
+  "srp1": {
+   "nodes": [
+    5,
+    7,
+    9
+   ],
+   "years": [
+    2025,
+    2030,
+    2035
+   ],
+   "block_widths": {
+    "2025": 5,
+    "2030": 5,
+    "2035": 5
+   },
+   "t_cal_years": 15.0,
+   "max_capacity_mwh": 5.0,
+   "min_energy_to_power_ratio": 2.0,
+   "max_energy_to_power_ratio": 4.0,
+   "budget_eur": 1000000.0,
+   "discount_factor": 0.02,
+   "prob_market": [
+    0.35,
+    0.55,
+    0.1
+   ],
+   "cost_power": {
+    "0": {
+     "2025": 214171.32910223768,
+     "2030": 168720.15012439265,
+     "2035": 153929.27440020515
+    },
+    "1": {
+     "2025": 267528.7212530719,
+     "2030": 224250.2932694956,
+     "2035": 206958.25777164166
+    },
+    "2": {
+     "2025": 342165.6238488894,
+     "2030": 278097.0387178216,
+     "2035": 268576.723404457
+    }
+   },
+   "cost_energy": {
+    "0": {
+     "2025": 212132.83090957787,
+     "2030": 167114.2595388713,
+     "2035": 152464.16443904658
+    },
+    "1": {
+     "2025": 264982.3635447595,
+     "2030": 222115.86276729195,
+     "2035": 204988.41411333327
+    },
+    "2": {
+     "2025": 338908.86670623126,
+     "2030": 275450.090999905,
+     "2035": 266020.3907359085
+    }
+   },
+   "sources": {
+    "case": {
+     "path": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/SRP1.json",
+     "sha256": "61a794a7ce7a3fb983f2e92128eec446dd7dbb17ad75a3b3b1c5735f8bd4e4ef"
+    },
+    "params_file": {
+     "path": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/SharedESS/SRP1_ESS_Params.json",
+     "sha256": "39106f934bf3edbf18f01a5ef1fadfefc2f7a518706e6c8fa6d962617a312706",
+     "fields": "budget, max_capacity, min_energy_to_power_factor, max_energy_to_power_factor, ageing.calendar_life_years"
+    },
+    "cost_file": {
+     "path": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/SharedESS/SRP1_ESS.xlsx",
+     "sha256": "e17bd5887e1d0738005ae17c3144593527081c9a0776e19cfaa50aafefe39cd6",
+     "sheets": {
+      "scenarios": "Scenarios",
+      "power": "Investment Cost, Power",
+      "energy": "Investment Cost, Energy"
+     },
+     "cells": "Scenarios!B1 = number of market scenarios, Scenarios!C1.. = omega_m; 'Investment Cost, Power'/'Investment Cost, Energy' row 1 (from column B) = years, row 1 + m = scenario m (EUR/MVA, EUR/MWh, undiscounted)"
+    },
+    "num_market_scenarios_case_file": 1,
+    "note": "omega_m is read from the workbook Scenarios sheet, as production does; it is independent of the case file NumMarketScenarios"
+   }
+  },
+  "five_block": {
+   "nodes": [
+    5,
+    7,
+    9
+   ],
+   "years": [
+    2025,
+    2028,
+    2031,
+    2034,
+    2037
+   ],
+   "block_widths": {
+    "2025": 3,
+    "2028": 3,
+    "2031": 3,
+    "2034": 3,
+    "2037": 3
+   },
+   "t_cal_years": 15.0,
+   "max_capacity_mwh": 5.0,
+   "min_energy_to_power_ratio": 2.0,
+   "max_energy_to_power_ratio": 4.0,
+   "budget_eur": 1000000.0,
+   "discount_factor": 0.02,
+   "prob_market": [
+    0.35,
+    0.55,
+    0.1
+   ],
+   "cost_power": {
+    "0": {
+     "2025": 214171.32910223768,
+     "2028": 186899.05697716027,
+     "2031": 165761.86321252867,
+     "2034": 156884.39457965287,
+     "2037": 148009.90640081587
+    },
+    "1": {
+     "2025": 267528.7212530719,
+     "2028": 241563.93705913064,
+     "2031": 220791.66263587188,
+     "2034": 210416.329570133,
+     "2037": 200042.11417465872
+    },
+    "2": {
+     "2025": 342165.6238488894,
+     "2028": 303723.9139351164,
+     "2031": 276193.0874221751,
+     "2034": 270480.86097848084,
+     "2037": 264768.6345347866
+    }
+   },
+   "cost_energy": {
+    "0": {
+     "2025": 212132.83090957787,
+     "2028": 185120.13824207647,
+     "2031": 164184.12981568652,
+     "2034": 155391.1575710032,
+     "2037": 146601.13741218162
+    },
+    "1": {
+     "2025": 264982.3635447595,
+     "2028": 239264.7140437486,
+     "2031": 218690.15163006057,
+     "2034": 208413.5717344655,
+     "2037": 198138.09887106865
+    },
+    "2": {
+     "2025": 338908.86670623126,
+     "2028": 300833.04776633636,
+     "2031": 273564.2616503255,
+     "2034": 267906.40459085436,
+     "2037": 262248.5475313832
+    }
+   },
+   "sources": {
+    "case": {
+     "derived_by": "p515_s44_scale_measurement.derive_case('paper', {num_market_scenarios: 1, num_operation_scenarios: 1})",
+     "from": "data/SRP1/SRP1.json",
+     "changes": [
+      {
+       "key": "Years",
+       "from": {
+        "2025": 5,
+        "2030": 5,
+        "2035": 5
+       },
+       "to": {
+        "2025": 3,
+        "2028": 3,
+        "2031": 3,
+        "2034": 3,
+        "2037": 3
+       }
+      },
+      {
+       "key": "NumMarketScenarios",
+       "from": 1,
+       "to": 1
+      },
+      {
+       "key": "TransmissionNetwork[case9].num_operation_scenarios",
+       "from": 1,
+       "to": 1
+      },
+      {
+       "key": "DistributionNetworks[case33_1].num_operation_scenarios",
+       "from": 1,
+       "to": 1
+      },
+      {
+       "key": "DistributionNetworks[case33_2].num_operation_scenarios",
+       "from": 1,
+       "to": 1
+      },
+      {
+       "key": "DistributionNetworks[case33_3].num_operation_scenarios",
+       "from": 1,
+       "to": 1
+      }
+     ]
+    },
+    "params_file": {
+     "path": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/SharedESS/SRP1_ESS_Params.json",
+     "sha256": "39106f934bf3edbf18f01a5ef1fadfefc2f7a518706e6c8fa6d962617a312706",
+     "fields": "budget, max_capacity, min_energy_to_power_factor, max_energy_to_power_factor, ageing.calendar_life_years"
+    },
+    "cost_file": {
+     "path": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/SharedESS/SRP1_ESS.xlsx",
+     "sha256": "e17bd5887e1d0738005ae17c3144593527081c9a0776e19cfaa50aafefe39cd6",
+     "sheets": {
+      "scenarios": "Scenarios",
+      "power": "Investment Cost, Power",
+      "energy": "Investment Cost, Energy"
+     },
+     "cells": "Scenarios!B1 = number of market scenarios, Scenarios!C1.. = omega_m; 'Investment Cost, Power'/'Investment Cost, Energy' row 1 (from column B) = years, row 1 + m = scenario m (EUR/MVA, EUR/MWh, undiscounted)"
+    },
+    "num_market_scenarios_case_file": 1,
+    "note": "omega_m is read from the workbook Scenarios sheet, as production does; it is independent of the case file NumMarketScenarios"
+   }
+  }
+ },
+ "alive_blocks": {
+  "srp1": {
+   "2025": [
+    2025,
+    2030,
+    2035
+   ],
+   "2030": [
+    2030,
+    2035
+   ],
+   "2035": [
+    2035
+   ]
+  },
+  "five_block": {
+   "2025": [
+    2025,
+    2028,
+    2031,
+    2034,
+    2037
+   ],
+   "2028": [
+    2028,
+    2031,
+    2034,
+    2037
+   ],
+   "2031": [
+    2031,
+    2034,
+    2037
+   ],
+   "2034": [
+    2034,
+    2037
+   ],
+   "2037": [
+    2037
+   ]
+  }
+ },
+ "informational_cap_vs_budget": {
+  "srp1": {
+   "n_over_cap_plans_enumerated (one node, <= 2 cohorts, zE <= 11)": 4266,
+   "min_I_over_cap_eur": 1108893.2009885178,
+   "argmin": "n5_y2035_p1.5_e5.5",
+   "budget_eur": 1000000.0,
+   "cap_can_bind_with_budget_slack": false
+  },
+  "five_block": {
+   "n_over_cap_plans_enumerated (one node, <= 2 cohorts, zE <= 11)": 14190,
+   "min_I_over_cap_eur": 1031559.5067040769,
+   "argmin": "n5_y2037_p1.5_e5.5",
+   "budget_eur": 1000000.0,
+   "cap_can_bind_with_budget_slack": false
+  }
+ },
+ "checks": [
+  {
+   "id": "C0_constants_equal_old_lattice",
+   "pass": true,
+   "detail": {
+    "granules": [
+     0.25,
+     0.5
+    ],
+    "old": [
+     0.25,
+     0.5
+    ],
+    "max_capacity": 5.0,
+    "budget": 1000000.0,
+    "nodes": [
+     5,
+     7,
+     9
+    ],
+    "ratios": [
+     2.0,
+     4.0
+    ]
+   }
+  },
+  {
+   "id": "C0_five_block_tcal_norm_5",
+   "pass": true,
+   "detail": {
+    "years": [
+     2025,
+     2028,
+     2031,
+     2034,
+     2037
+    ],
+    "alive_first": [
+     2025,
+     2028,
+     2031,
+     2034,
+     2037
+    ]
+   }
+  },
+  {
+   "id": "B1_old_years_equal_instance",
+   "pass": true,
+   "detail": {
+    "old": [
+     2025,
+     2030,
+     2035
+    ],
+    "instance": [
+     2025,
+     2030,
+     2035
+    ]
+   }
+  },
+  {
+   "id": "B1_unit_costs_module_vs_W2",
+   "pass": true,
+   "detail": {
+    "max_rel_diff": 1.8409917609653325e-16,
+    "per_year": {
+     "2025": {
+      "power_module": 256317.32425986166,
+      "power_w2": 256317.32425986166,
+      "energy_module": 253877.6774385931,
+      "energy_w2": 253877.6774385931
+     },
+     "2030": {
+      "power_module": 190384.0888314633,
+      "power_w2": 190384.08883146333,
+      "energy_module": 188571.99931126024,
+      "energy_w2": 188571.99931126024
+     },
+     "2035": {
+      "power_module": 159606.9325368669,
+      "power_w2": 159606.93253686687,
+      "energy_module": 158087.78221513046,
+      "energy_w2": 158087.7822151305
+     }
+    }
+   }
+  },
+  {
+   "id": "B1_old_domain_maps_admissible_one_year",
+   "pass": true,
+   "detail": {
+    "n_old_domain": 1705,
+    "n_fail": 0,
+    "first_fail": []
+   }
+  },
+  {
+   "id": "B1_round_trip_counts_equal (L1)",
+   "pass": true,
+   "detail": {
+    "old_domain": 1705,
+    "general_le1_year_per_node_admissible": 6694,
+    "general_common_year_admissible": 1705,
+    "general_le1_year_per_node_mixed_years (new, not in the old lattice)": 4989,
+    "enumerated_per_node_options": 124,
+    "enumeration_s": 20.8,
+    "n_back_fail": 0,
+    "first_back_fail": [],
+    "key_sets_equal": true,
+    "z7_sets_equal": true
+   }
+  },
+  {
+   "id": "B1_reason_classes_agree_2000",
+   "pass": true,
+   "detail": {
+    "agree": 2000,
+    "n": 2000,
+    "draws": 2106,
+    "old_class_multisets": {
+     "duration+duration+duration": 192,
+     "bound+duration": 261,
+     "bound+duration+duration+duration": 63,
+     "budget": 254,
+     "duration+duration": 263,
+     "duration": 388,
+     "bound+bound+duration": 86,
+     "bound": 125,
+     "bound+bound+bound": 10,
+     "bound+duration+duration": 276,
+     "bound+bound+duration+duration": 38,
+     "bound+bound+bound+duration": 5,
+     "bound+bound": 33,
+     "bound+bound+duration+duration+duration": 6
+    },
+    "first_disagreements": []
+   }
+  },
+  {
+   "id": "B2_planning_read_canonical_srp1",
+   "pass": true,
+   "detail": {
+    "checksum": "5a02b77ccbbbbbb869de92958a3851d095624711abc2dbfc0157466064410358",
+    "canonical": "5a02b77ccbbbbbb869de92958a3851d095624711abc2dbfc0157466064410358"
+   }
+  },
+  {
+   "id": "B2_no_side_write_into_data_SRP1_Diagrams",
+   "pass": true,
+   "detail": {
+    "n_before": 176,
+    "n_after": 176,
+    "side_writes": [
+     "SRP1_market_prices_2025_Autumn.pdf",
+     "SRP1_market_prices_2025_Spring.pdf",
+     "SRP1_market_prices_2025_Summer.pdf",
+     "SRP1_market_prices_2025_Winter.pdf",
+     "case33_1_RES_generation_scenarios_2025_Autumn.pdf",
+     "case33_1_RES_generation_scenarios_2025_Spring.pdf",
+     "case33_1_RES_generation_scenarios_2025_Summer.pdf",
+     "case33_1_RES_generation_scenarios_2025_Winter.pdf",
+     "case33_1_flexibility_scenarios_2025_Autumn.pdf",
+     "case33_1_flexibility_scenarios_2025_Spring.pdf",
+     "case33_1_flexibility_scenarios_2025_Summer.pdf",
+     "case33_1_flexibility_scenarios_2025_Winter.pdf",
+     "case33_1_load_scenarios_2025_Autumn.pdf",
+     "case33_1_load_scenarios_2025_Spring.pdf",
+     "case33_1_load_scenarios_2025_Summer.pdf",
+     "case33_1_load_scenarios_2025_Winter.pdf",
+     "case33_2_RES_generation_scenarios_2025_Autumn.pdf",
+     "case33_2_RES_generation_scenarios_2025_Spring.pdf",
+     "case33_2_RES_generation_scenarios_2025_Summer.pdf",
+     "case33_2_RES_generation_scenarios_2025_Winter.pdf",
+     "case33_2_flexibility_scenarios_2025_Autumn.pdf",
+     "case33_2_flexibility_scenarios_2025_Spring.pdf",
+     "case33_2_flexibility_scenarios_2025_Summer.pdf",
+     "case33_2_flexibility_scenarios_2025_Winter.pdf",
+     "case33_2_load_scenarios_2025_Autumn.pdf",
+     "case33_2_load_scenarios_2025_Spring.pdf",
+     "case33_2_load_scenarios_2025_Summer.pdf",
+     "case33_2_load_scenarios_2025_Winter.pdf",
+     "case33_3_RES_generation_scenarios_2025_Autumn.pdf",
+     "case33_3_RES_generation_scenarios_2025_Spring.pdf",
+     "case33_3_RES_generation_scenarios_2025_Summer.pdf",
+     "case33_3_RES_generation_scenarios_2025_Winter.pdf",
+     "case33_3_flexibility_scenarios_2025_Autumn.pdf",
+     "case33_3_flexibility_scenarios_2025_Spring.pdf",
+     "case33_3_flexibility_scenarios_2025_Summer.pdf",
+     "case33_3_flexibility_scenarios_2025_Winter.pdf",
+     "case33_3_load_scenarios_2025_Autumn.pdf",
+     "case33_3_load_scenarios_2025_Spring.pdf",
+     "case33_3_load_scenarios_2025_Summer.pdf",
+     "case33_3_load_scenarios_2025_Winter.pdf",
+     "case9_RES_generation_scenarios_2025_Autumn.pdf",
+     "case9_RES_generation_scenarios_2025_Spring.pdf",
+     "case9_RES_generation_scenarios_2025_Summer.pdf",
+     "case9_RES_generation_scenarios_2025_Winter.pdf",
+     "case9_flexibility_scenarios_2025_Autumn.pdf",
+     "case9_flexibility_scenarios_2025_Spring.pdf",
+     "case9_flexibility_scenarios_2025_Summer.pdf",
+     "case9_flexibility_scenarios_2025_Winter.pdf",
+     "case9_load_scenarios_2025_Autumn.pdf",
+     "case9_load_scenarios_2025_Spring.pdf",
+     "case9_load_scenarios_2025_Summer.pdf",
+     "case9_load_scenarios_2025_Winter.pdf"
+    ]
+   }
+  },
+  {
+   "id": "B2_module_loader_reads_what_production_reads (bitwise)",
+   "pass": true,
+   "detail": {
+    "years": true,
+    "nodes": true,
+    "active_dn_nodes": true,
+    "block_widths": true,
+    "t_cal": true,
+    "max_capacity": true,
+    "ratios": true,
+    "budget": true,
+    "discount": true,
+    "prob_market": true,
+    "cost_power": true,
+    "cost_energy": true
+   }
+  },
+  {
+   "id": "B2_oracle_verdict_and_families_agree_200 (L2 part 1)",
+   "pass": true,
+   "detail": {
+    "agree": 200,
+    "n": 200,
+    "by_category": {
+     "fixed:x0": {
+      "n": 1,
+      "module_admissible": 1,
+      "master_feasible": 1,
+      "agree": 1
+     },
+     "fixed:L4_staged_3+3MWh_one_node": {
+      "n": 1,
+      "module_admissible": 0,
+      "master_feasible": 0,
+      "agree": 1
+     },
+     "sparse_random": {
+      "n": 40,
+      "module_admissible": 17,
+      "master_feasible": 17,
+      "agree": 40
+     },
+     "staged_two_cohort_one_node": {
+      "n": 40,
+      "module_admissible": 14,
+      "master_feasible": 14,
+      "agree": 40
+     },
+     "over_5MWh_cumulative": {
+      "n": 40,
+      "module_admissible": 0,
+      "master_feasible": 0,
+      "agree": 40
+     },
+     "near_budget": {
+      "n": 39,
+      "module_admissible": 18,
+      "master_feasible": 18,
+      "agree": 39
+     },
+     "multi_node_staged": {
+      "n": 39,
+      "module_admissible": 13,
+      "master_feasible": 13,
+      "agree": 39
+     }
+    },
+    "first_disagreements": []
+   }
+  },
+  {
+   "id": "B2_I_equals_master_investment_cost_1e-9 (gate)",
+   "pass": true,
+   "detail": {
+    "max_rel_diff": 0.0,
+    "max_rel_diff_vs_p56a_replica": 4.018123939773147e-16,
+    "min_abs_budget_margin_eur": 1963.9276206119685
+   }
+  },
+  {
+   "id": "B2_I_equals_master_investment_cost_1e-12 (L2 part 2)",
+   "pass": true,
+   "detail": {
+    "max_rel_diff": 0.0
+   }
+  },
+  {
+   "id": "B2_L4_staged_3+3MWh_rejected_by_cumulative_and_master_row (L4)",
+   "pass": true,
+   "detail": {
+    "label": "n5_y2025_p1_e3__n5_y2030_p1_e3",
+    "module_reasons": [
+     "bound: node 5 cumulative rated energy > 5 MWh in blocks [2030: 6, 2035: 6]"
+    ],
+    "module_families": {
+     "sign": [],
+     "p0_iff_e0": [],
+     "energy_storage_power_to_energy_factor": [],
+     "energy_storage_maximum_capacity": [
+      [
+       5,
+       2030
+      ],
+      [
+       5,
+       2035
+      ]
+     ],
+     "energy_storage_investment": [
+      "budget"
+     ]
+    },
+    "master_violated_rows": {
+     "energy_storage_maximum_capacity": [
+      "(5, 2030)",
+      "(5, 2035)"
+     ],
+     "energy_storage_investment": [
+      "budget"
+     ]
+    },
+    "I_module_eur": 1774050.4433408848
+   }
+  },
+  {
+   "id": "B3_five_block_x0",
+   "pass": true,
+   "detail": {
+    "label": "x0",
+    "A": 0,
+    "n_raw": 30,
+    "size_bound": 30,
+    "n_admissible": 30,
+    "dropped_by_reason_class": {},
+    "budget_slack_eur": 1000000.0,
+    "x0_expected": 30
+   }
+  },
+  {
+   "id": "B3_five_block_single_cohort",
+   "pass": true,
+   "detail": {
+    "label": "n5_y2028_p0.75_e2.5",
+    "A": 1,
+    "n_raw": 34,
+    "size_bound": 35,
+    "n_admissible": 30,
+    "dropped_by_reason_class": {
+     "duration": 1,
+     "budget": 3
+    },
+    "budget_slack_eur": 304883.8825639414
+   }
+  },
+  {
+   "id": "B3_five_block_two_node",
+   "pass": true,
+   "detail": {
+    "label": "n7_y2031_p0.25_e1__n9_y2028_p0.25_e0.5",
+    "A": 2,
+    "n_raw": 40,
+    "size_bound": 40,
+    "n_admissible": 35,
+    "dropped_by_reason_class": {
+     "duration": 5
+    },
+    "budget_slack_eur": 611339.1393174606
+   }
+  },
+  {
+   "id": "B3_five_block_staged",
+   "pass": true,
+   "detail": {
+    "label": "n5_y2028_p0.5_e2__n5_y2031_p0.5_e1.5",
+    "A": 2,
+    "n_raw": 38,
+    "size_bound": 40,
+    "n_admissible": 8,
+    "dropped_by_reason_class": {
+     "duration": 3,
+     "budget": 27
+    },
+    "budget_slack_eur": 100331.31545646943
+   }
+  },
+  {
+   "id": "B3_five_block_at_budget",
+   "pass": true,
+   "detail": {
+    "label": "n5_y2028_p0.25_e0.5__n5_y2037_p0.5_e1__n7_y2025_p0.25_e0.5__n7_y2037_p0.25_e1__n9_y2034_p0.25_e0.5__n9_y2037_p0.25_e0.5",
+    "A": 6,
+    "n_raw": 55,
+    "size_bound": 60,
+    "n_admissible": 10,
+    "dropped_by_reason_class": {
+     "duration": 16,
+     "budget": 29
+    },
+    "budget_slack_eur": 9005.349501917372
+   }
+  },
+  {
+   "id": "B3_srp1_x0",
+   "pass": true,
+   "detail": {
+    "label": "x0",
+    "A": 0,
+    "n_raw": 18,
+    "size_bound": 18,
+    "n_admissible": 18,
+    "dropped_by_reason_class": {},
+    "budget_slack_eur": 1000000.0,
+    "x0_expected": 18,
+    "master_agree": true
+   }
+  },
+  {
+   "id": "B3_srp1_single_cohort",
+   "pass": true,
+   "detail": {
+    "label": "n7_y2035_p0.25_e0.5",
+    "A": 1,
+    "n_raw": 22,
+    "size_bound": 23,
+    "n_admissible": 19,
+    "dropped_by_reason_class": {
+     "duration": 3
+    },
+    "budget_slack_eur": 881054.375758218,
+    "master_agree": true
+   }
+  },
+  {
+   "id": "B3_srp1_two_node",
+   "pass": true,
+   "detail": {
+    "label": "n7_y2035_p0.25_e1__n9_y2025_p0.25_e0.5",
+    "A": 2,
+    "n_raw": 26,
+    "size_bound": 28,
+    "n_admissible": 21,
+    "dropped_by_reason_class": {
+     "duration": 5
+    },
+    "budget_slack_eur": 610992.3148663908,
+    "master_agree": true
+   }
+  },
+  {
+   "id": "B3_srp1_staged",
+   "pass": true,
+   "detail": {
+    "label": "n5_y2025_p0.25_e0.5__n5_y2030_p0.25_e1",
+    "A": 2,
+    "n_raw": 27,
+    "size_bound": 28,
+    "n_admissible": 22,
+    "dropped_by_reason_class": {
+     "duration": 5
+    },
+    "budget_slack_eur": 572813.8086966119,
+    "master_agree": true
+   }
+  },
+  {
+   "id": "B3_srp1_at_budget",
+   "pass": true,
+   "detail": {
+    "label": "n5_y2025_p0.25_e1__n5_y2030_p0.25_e1__n7_y2030_p0.25_e1__n9_y2035_p0.25_e1",
+    "A": 4,
+    "n_raw": 36,
+    "size_bound": 38,
+    "n_admissible": 11,
+    "dropped_by_reason_class": {
+     "budget": 17,
+     "duration": 8
+    },
+    "budget_slack_eur": 11717.433108842117,
+    "master_agree": true
+   }
+  },
+  {
+   "id": "B3_L3_five_block_x0_neighbourhood_is_30",
+   "pass": true,
+   "detail": {
+    "n_admissible": 30,
+    "expected_by_budget": 30
+   }
+  },
+  {
+   "id": "B3_resolution_by_bound_pure",
+   "pass": true,
+   "detail": {
+    "k": 3,
+    "expected": 3,
+    "k_no_lb": 0,
+    "k_margin_map": 6,
+    "expected_margin_map": 6,
+    "statement": "resolved by the lower bound: 3 of 8",
+    "rule": "resolved iff F_LB - margin >= UB (synthetic F_LB = UB + {5, 1, -1}; margin 2 then 1)"
+   }
+  },
+  {
+   "id": "B4_canonical_idempotent_keys_round_trip",
+   "pass": true,
+   "detail": {
+    "n": 2065,
+    "failures": []
+   }
+  },
+  {
+   "id": "B4_x0_alias_single_v2_key",
+   "pass": true,
+   "detail": {
+    "old_schema_x0_keys": 3,
+    "v2_x0_keys": [
+     "dcb43218986e026f00649f3988dbc50bbd67f4e4ef3670aa43b3c7805f8aee1f"
+    ]
+   }
+  },
+  {
+   "id": "B4_canonicalize_refuses_bad_input",
+   "pass": true,
+   "detail": {
+    "off_lattice": true,
+    "unknown_node": true,
+    "unknown_year": true,
+    "negative": true
+   }
+  },
+  {
+   "id": "G_zero_solves_guard_0_0",
+   "pass": true,
+   "detail": {
+    "gate_guard": {
+     "permitted_solve": 0,
+     "permitted_exec": 0,
+     "blocked_solve": 0,
+     "blocked_exec": 0
+    },
+    "pb_parent_guard": {
+     "permitted_solve": 0,
+     "permitted_exec": 0,
+     "blocked_solve": 0,
+     "blocked_exec": 0
+    },
+    "failures": []
+   }
+  }
+ ],
+ "all_pass": true,
+ "predictions_vs_outcomes": {
+  "L1": {
+   "prediction": "old-domain round trip exact (counts equal)",
+   "outcome": {
+    "old_domain": 1705,
+    "general_le1_year_per_node_admissible": 6694,
+    "general_common_year_admissible": 1705,
+    "general_le1_year_per_node_mixed_years (new, not in the old lattice)": 4989,
+    "enumerated_per_node_options": 124,
+    "enumeration_s": 20.8
+   },
+   "held": true
+  },
+  "L2": {
+   "prediction": "the master-row oracle agrees with the module on 200/200 points and I(x) to <= 1e-12 relative",
+   "outcome": {
+    "agree": 200,
+    "n": 200,
+    "max_rel_I": 0.0
+   },
+   "held": true
+  },
+  "L3": {
+   "prediction": "|N(x=0)| = 30 on the five-block instance years (all 15 activations x 2 energies admissible under the budget)",
+   "outcome": {
+    "n_x0_neighbourhood": 30
+   },
+   "held": true
+  },
+  "L4": {
+   "prediction": "a staged two-cohort plan of 3 + 3 MWh at one node is rejected by the cumulative rule and by the master row alike",
+   "outcome": {
+    "module_reasons": [
+     "bound: node 5 cumulative rated energy > 5 MWh in blocks [2030: 6, 2035: 6]"
+    ],
+    "master_violated": {
+     "energy_storage_maximum_capacity": [
+      "(5, 2030)",
+      "(5, 2035)"
+     ],
+     "energy_storage_investment": [
+      "budget"
+     ]
+    }
+   },
+   "held": true
+  }
+ },
+ "guard_counts": {
+  "gate": {
+   "permitted_solve": 0,
+   "permitted_exec": 0,
+   "blocked_solve": 0,
+   "blocked_exec": 0
+  },
+  "pb_parent": {
+   "permitted_solve": 0,
+   "permitted_exec": 0,
+   "blocked_solve": 0,
+   "blocked_exec": 0
+  }
+ },
+ "wall_s": 31.0,
+ "finished_utc": "2026-10-31T10:52:10Z"
+}

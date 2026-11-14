@@ -1,0 +1,247 @@
+{
+ "stage": "P5.15-1 Part A",
+ "objective": "Validate the Step 1a network.py warm-start policy change by solving on the preserved cycle-21 DSO fixture (DSO:case33_3|2025|Spring), through the production network.py path.",
+ "snapshot_path": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P512R/cycle21_pre_setup/snapshot.pkl",
+ "preflight": {
+  "boundary": "pre_setup",
+  "cycle": 21,
+  "target": "DSO:case33_3|2025|Spring",
+  "from_warm_start": true,
+  "active_objectives": [
+   "p58_rescaled_admm_objective"
+  ],
+  "n_active_objectives": 1,
+  "pass": true
+ },
+ "derivation_gone_probe": {
+  "option_overrides_requested": {
+   "bound_push": 1e-05
+  },
+  "bound_push_observed": 1e-05,
+  "warm_start_keys_unset": {
+   "warm_start_mult_bound_push": true,
+   "warm_start_bound_push": true,
+   "warm_start_bound_frac": true,
+   "warm_start_slack_bound_push": true,
+   "warm_start_slack_bound_frac": true
+  },
+  "all_warm_start_keys_unset": true,
+  "full_observed_options": {
+   "fixed_variable_treatment": "make_parameter",
+   "max_iter": 500,
+   "tol": 1e-05,
+   "acceptable_tol": 0.0001,
+   "acceptable_iter": 5,
+   "linear_solver": "ma97",
+   "bound_push": 1e-05,
+   "bound_frac": 1e-05,
+   "slack_bound_frac": 1e-05,
+   "slack_bound_push": 1e-05,
+   "output_file": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P5151/partA_logs/derivation_gone_probe_2025_Spring_derivation_gone_probe.txt",
+   "file_append": "yes",
+   "file_print_level": 6,
+   "warm_start_init_point": "yes"
+  }
+ },
+ "arms": {
+  "default": {
+   "arm": "default",
+   "from_warm_start": true,
+   "option_overrides_requested": null,
+   "solve_context": "case33_3, year=2025, day=Spring",
+   "solver_options_observed_warm_start_keys": {
+    "warm_start_init_point": "yes"
+   },
+   "solver_log_path": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P5151/partA_logs/optim_log_case33_3_2025_Spring_default.log",
+   "wall_seconds": 0.7938849925994873,
+   "solver_error": null,
+   "termination_condition": "optimal",
+   "status": "ok",
+   "result_summary": "status=ok, termination=optimal, message=Ipopt 3.14.18\\x3a Optimal Solution Found",
+   "ipopt_log_tail": {
+    "exit_line": "EXIT: Optimal Solution Found.",
+    "n_iterations": 85,
+    "total_seconds_in_ipopt": 0.568,
+    "nlp_error_summary_unscaled": {
+     "Objective": 1293.6668171230008,
+     "Dual infeasibility": 3.5609678129605235e-05,
+     "Constraint violation": 1.575033437006823e-10,
+     "Complementarity": 9.127058383136478e-06,
+     "Overall NLP error": 3.5609678129605235e-05
+    },
+    "n_iteration_table_rows": 172
+   },
+   "load_solutions_error": null,
+   "objective_name": "p58_rescaled_admm_objective",
+   "objective_value": 1293.666817122966,
+   "max_constraint_violation": 7.134997561525358e-09,
+   "worst_constraint": "gen_pf_upper[1,0,0,18]",
+   "n_constraints_checked": 7826
+  },
+  "old_policy": {
+   "arm": "old_policy",
+   "from_warm_start": true,
+   "option_overrides_requested": {
+    "warm_start_mult_bound_push": 1e-06,
+    "warm_start_bound_push": 1e-06,
+    "warm_start_bound_frac": 1e-06,
+    "warm_start_slack_bound_push": 1e-06,
+    "warm_start_slack_bound_frac": 1e-06
+   },
+   "solve_context": "case33_3, year=2025, day=Spring",
+   "solver_options_observed_warm_start_keys": {
+    "warm_start_mult_bound_push": 1e-06,
+    "warm_start_bound_push": 1e-06,
+    "warm_start_bound_frac": 1e-06,
+    "warm_start_slack_bound_push": 1e-06,
+    "warm_start_slack_bound_frac": 1e-06,
+    "warm_start_init_point": "yes"
+   },
+   "solver_log_path": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P5151/partA_logs/optim_log_case33_3_2025_Spring_old_policy.log",
+   "wall_seconds": 0.8644700050354004,
+   "solver_error": null,
+   "termination_condition": "optimal",
+   "status": "ok",
+   "result_summary": "status=ok, termination=optimal, message=Ipopt 3.14.18\\x3a Optimal Solution Found",
+   "ipopt_log_tail": {
+    "exit_line": "EXIT: Optimal Solution Found.",
+    "n_iterations": 96,
+    "total_seconds_in_ipopt": 0.642,
+    "nlp_error_summary_unscaled": {
+     "Objective": 1293.666815520209,
+     "Dual infeasibility": 0.0003945923019142445,
+     "Constraint violation": 8.342093682500717e-11,
+     "Complementarity": 9.479152814709958e-06,
+     "Overall NLP error": 0.0003945923019142445
+    },
+    "n_iteration_table_rows": 194
+   },
+   "load_solutions_error": null,
+   "objective_name": "p58_rescaled_admm_objective",
+   "objective_value": 1293.6668155201835,
+   "max_constraint_violation": 7.134997571933699e-09,
+   "worst_constraint": "gen_pf_upper[1,0,0,18]",
+   "n_constraints_checked": 7826
+  },
+  "cold": {
+   "arm": "cold",
+   "from_warm_start": false,
+   "option_overrides_requested": {
+    "warm_start_init_point": "no"
+   },
+   "solve_context": "case33_3, year=2025, day=Spring",
+   "solver_options_observed_warm_start_keys": {
+    "warm_start_init_point": "no"
+   },
+   "solver_log_path": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P5151/partA_logs/optim_log_case33_3_2025_Spring_cold.log",
+   "wall_seconds": 0.7058079242706299,
+   "solver_error": null,
+   "termination_condition": "optimal",
+   "status": "ok",
+   "result_summary": "status=ok, termination=optimal, message=Ipopt 3.14.18\\x3a Optimal Solution Found",
+   "ipopt_log_tail": {
+    "exit_line": "EXIT: Optimal Solution Found.",
+    "n_iterations": 77,
+    "total_seconds_in_ipopt": 0.514,
+    "nlp_error_summary_unscaled": {
+     "Objective": 1293.6668125362712,
+     "Dual infeasibility": 0.0008636098961227901,
+     "Constraint violation": 1.1304027713876508e-09,
+     "Complementarity": 1.0287148981522008e-05,
+     "Overall NLP error": 0.0008636098961227901
+    },
+    "n_iteration_table_rows": 156
+   },
+   "load_solutions_error": null,
+   "objective_name": "p58_rescaled_admm_objective",
+   "objective_value": 1293.6668125362894,
+   "max_constraint_violation": 7.134997585811487e-09,
+   "worst_constraint": "gen_pf_upper[1,0,0,18]",
+   "n_constraints_checked": 7826
+  },
+  "old_policy_1e5_diagnostic": {
+   "arm": "old_policy_1e5_diagnostic",
+   "from_warm_start": true,
+   "option_overrides_requested": {
+    "warm_start_mult_bound_push": 1e-05,
+    "warm_start_bound_push": 1e-05,
+    "warm_start_bound_frac": 1e-05,
+    "warm_start_slack_bound_push": 1e-05,
+    "warm_start_slack_bound_frac": 1e-05
+   },
+   "solve_context": "case33_3, year=2025, day=Spring",
+   "solver_options_observed_warm_start_keys": {
+    "warm_start_mult_bound_push": 1e-05,
+    "warm_start_bound_push": 1e-05,
+    "warm_start_bound_frac": 1e-05,
+    "warm_start_slack_bound_push": 1e-05,
+    "warm_start_slack_bound_frac": 1e-05,
+    "warm_start_init_point": "yes"
+   },
+   "solver_log_path": "/Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P5151/partA_logs/optim_log_case33_3_2025_Spring_old_policy_1e5_diagnostic.log",
+   "wall_seconds": 3.0213019847869873,
+   "solver_error": null,
+   "termination_condition": "maxIterations",
+   "status": "warning",
+   "result_summary": "status=warning, termination=maxIterations, message=Ipopt 3.14.18\\x3a Maximum Number of Iterations Exceeded.",
+   "ipopt_log_tail": {
+    "exit_line": "EXIT: Maximum Number of Iterations Exceeded.",
+    "n_iterations": 500,
+    "total_seconds_in_ipopt": 2.797,
+    "nlp_error_summary_unscaled": {
+     "Objective": 1302.2785427051563,
+     "Dual infeasibility": 59.085905794745656,
+     "Constraint violation": 0.0709049219062578,
+     "Complementarity": 0.006867493750239294,
+     "Overall NLP error": 59.085905794745656
+    },
+    "n_iteration_table_rows": 1002
+   },
+   "load_solutions_error": null,
+   "objective_name": "p58_rescaled_admm_objective",
+   "objective_value": 1302.2785427050633,
+   "max_constraint_violation": 0.07090492190626252,
+   "worst_constraint": "node_balance_p[0,0,0,15]",
+   "n_constraints_checked": 7826
+  }
+ },
+ "gates": {
+  "old_policy_reproduces_maxIterations": {
+   "required": "termination_condition == maxIterations (literal brief value: all five warm_start_* at 1e-6)",
+   "observed": "optimal",
+   "n_iterations": 96,
+   "pass": false
+  },
+  "old_policy_1e5_diagnostic_reproduces_maxIterations": {
+   "required": "diagnostic only, not a brief gate -- reproduces the value the pre-1a code actually derived on this fixture (case33_3_params.json bound_push/bound_frac/slack_bound_push/slack_bound_frac = 1e-5)",
+   "observed": "maxIterations",
+   "n_iterations": 500,
+   "pass": true
+  },
+  "default_and_cold_objective_agree": {
+   "required": "default and cold objective agree to 1e-6 relative",
+   "default_objective": 1293.666817122966,
+   "cold_objective": 1293.6668125362894,
+   "relative_difference": 3.5454852324835994e-09,
+   "pass": true
+  },
+  "derivation_gone": {
+   "required": "setting only bound_push in an override leaves warm_start_mult_bound_push (and siblings) UNSET",
+   "observed": {
+    "warm_start_mult_bound_push": true,
+    "warm_start_bound_push": true,
+    "warm_start_bound_frac": true,
+    "warm_start_slack_bound_push": true,
+    "warm_start_slack_bound_frac": true
+   },
+   "pass": true
+  }
+ },
+ "required_gates": [
+  "old_policy_reproduces_maxIterations",
+  "default_and_cold_objective_agree",
+  "derivation_gone"
+ ],
+ "all_gates_pass": false,
+ "status": "DONE"
+}

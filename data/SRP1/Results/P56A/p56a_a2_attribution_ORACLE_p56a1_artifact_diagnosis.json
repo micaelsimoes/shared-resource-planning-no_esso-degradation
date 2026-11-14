@@ -1,0 +1,2139 @@
+{
+ "stage": "P5.6-A2",
+ "provenance": {
+  "timestamp_utc": "2026-09-08T08:39:06.900945+00:00",
+  "git_head": "24350e8d5f4a5c568431950db556ce2559a9d280",
+  "sys_executable": "/opt/anaconda3/envs/opf_env_py311/bin/python",
+  "conda_default_env": null,
+  "conda_env_from_path": "opf_env_py311",
+  "python_version": "3.11.11",
+  "numpy_version": "2.4.2",
+  "pandas_version": "3.0.0",
+  "scipy_version": "1.17.0",
+  "pyomo_version": "6.9.5",
+  "ipopt": {
+   "path": "/usr/local/bin/ipopt",
+   "version": "3.14.18",
+   "exists": true,
+   "banner": "Ipopt 3.14.18 (aarch64-apple-darwin24.5.0), ASL(20241111)"
+  },
+  "hsl_linear_solver": "ma97",
+  "gurobi": {
+   "gurobipy": "13.0.1",
+   "gurobi_runtime": "13.0.1",
+   "licence": "ACADEMIC",
+   "licence_expiry": "2027-04-10",
+   "available": true,
+   "licence_id": "2805683",
+   "licence_version": "13"
+  },
+  "scenario_checksum": "5a02b77ccbbbbbb869de92958a3851d095624711abc2dbfc0157466064410358",
+  "canonical_checksum": "5a02b77ccbbbbbb869de92958a3851d095624711abc2dbfc0157466064410358",
+  "checksum_matches_canonical": true,
+  "stage": "P5.6-A1 certificate"
+ },
+ "timestamp_utc": "2026-09-08T08:54:39.939873+00:00",
+ "source": "p56a_a1_certificate.json (single evaluation, both snapshots)",
+ "total_admm_base_objective": 838500270.3685527,
+ "total_polished_base_objective": 729364462.324936,
+ "total_delta": -109135808.04361665,
+ "total_delta_relative": -0.13015596046933572,
+ "delta_by_family": {
+  "generation_cost": -367282.7899559699,
+  "flexibility_cost": -104228155.89928183,
+  "load_curtailment_cost": 0.0,
+  "gen_curtailment_penalty": -7133.468806324314,
+  "ess_utilization_cost_penalty": 0.0,
+  "slack_penalties": -4523294.271380056,
+  "ess_complementarity_penalties": -9941.61419278662
+ },
+ "delta_by_family_sum": -109135808.04361697,
+ "delta_by_agent": {
+  "TSO": -100551018.88029796,
+  "DSO5": -2910980.860458448,
+  "DSO7": -3001747.259530742,
+  "DSO9": -2672061.043329807
+ },
+ "ten_largest_negative_block_deltas": [
+  {
+   "block": "TSO|2035|Spring",
+   "admm": 60600633.768422715,
+   "polished": 34327942.340941586,
+   "delta": -26272691.42748113
+  },
+  {
+   "block": "TSO|2035|Summer",
+   "admm": 68121943.75424972,
+   "polished": 47387789.40529568,
+   "delta": -20734154.348954044
+  },
+  {
+   "block": "TSO|2030|Spring",
+   "admm": 60181940.153777175,
+   "polished": 44080645.87002776,
+   "delta": -16101294.283749416
+  },
+  {
+   "block": "TSO|2025|Spring",
+   "admm": 79456345.43745004,
+   "polished": 64591077.4408517,
+   "delta": -14865267.996598333
+  },
+  {
+   "block": "TSO|2030|Summer",
+   "admm": 69981241.89021716,
+   "polished": 58846265.515688226,
+   "delta": -11134976.37452893
+  },
+  {
+   "block": "TSO|2025|Summer",
+   "admm": 92814035.59518525,
+   "polished": 87520282.74428906,
+   "delta": -5293752.850896195
+  },
+  {
+   "block": "TSO|2035|Autumn",
+   "admm": 35079688.45415388,
+   "polished": 32996396.480305213,
+   "delta": -2083291.973848667
+  },
+  {
+   "block": "TSO|2030|Autumn",
+   "admm": 27799994.79553304,
+   "polished": 26394403.87126832,
+   "delta": -1405590.9242647178
+  },
+  {
+   "block": "TSO|2035|Winter",
+   "admm": 36248335.72946342,
+   "polished": 35151966.295307174,
+   "delta": -1096369.4341562465
+  },
+  {
+   "block": "TSO|2030|Winter",
+   "admm": 40859428.48523894,
+   "polished": 39889992.44807102,
+   "delta": -969436.0371679217
+  }
+ ],
+ "tso_spring_total_delta": -57239253.70782888,
+ "tso_spring_share_of_total": 0.5244772979089772,
+ "per_block": {
+  "TSO|2025|Spring": {
+   "admm": 79456345.43745004,
+   "polished": 64591077.4408517,
+   "delta": -14865267.996598333,
+   "families": {
+    "generation_cost": {
+     "admm": 64599065.67283899,
+     "polished": 64591120.62794026,
+     "delta": -7945.044898733497
+    },
+    "flexibility_cost": {
+     "admm": 14837682.261909312,
+     "polished": 0.0,
+     "delta": -14837682.261909312
+    },
+    "load_curtailment_cost": {
+     "admm": 0.0,
+     "polished": 0.0,
+     "delta": 0.0
+    },
+    "gen_curtailment_penalty": {
+     "admm": 0.0,
+     "polished": 0.0,
+     "delta": 0.0
+    },
+    "ess_utilization_cost_penalty": {
+     "admm": 0.0,
+     "polished": 0.0,
+     "delta": 0.0
+    },
+    "slack_penalties": {
+     "admm": 19119.95718542366,
+     "polished": -50.18181820292251,
+     "delta": -19170.139003626584
+    },
+    "ess_complementarity_penalties": {
+     "admm": 477.54551631052044,
+     "polished": 6.994729647574751,
+     "delta": -470.5507866629457
+    }
+   }
+  },
+  "TSO|2025|Summer": {
+   "admm": 92814035.59518525,
+   "polished": 87520282.74428906,
+   "delta": -5293752.850896195,
+   "families": {
+    "generation_cost": {
+     "admm": 87543227.75593713,
+     "polished": 87520268.21366493,
+     "delta": -22959.54227219522
+    },
+    "flexibility_cost": {
+     "admm": 5251202.760393605,
+     "polished": 0.0,
+     "delta": -5251202.760393605
+    },
+    "load_curtailment_cost": {
+     "admm": 0.0,
+     "polished": 0.0,
+     "delta": 0.0
+    },
+    "gen_curtailment_penalty": {
+     "admm": 0.0,
+     "polished": -0.0,
+     "delta": -0.0
+    },
+    "ess_utilization_cost_penalty": {
+     "admm": 0.0,
+     "polished": 0.0,
+     "delta": 0.0
+    },
+    "slack_penalties": {
+     "admm": 19120.55649986499,
+     "polished": -49.63636365705741,
+     "delta": -19170.192863522047
+    },
+    "ess_complementarity_penalties": {
+     "admm": 484.5223546570671,
+     "polished": 64.16698776875485,
+     "delta": -420.3553668883123
+    }
+   }
+  },
+  "TSO|2025|Autumn": {
+   "admm": 77963472.57551242,
+   "polished": 77756276.45518896,
+   "delta": -207196.12032346427,
+   "families": {
+    "generation_cost": {
+     "admm": 77902200.36323118,
+     "polished": 77756124.58297406,
+     "delta": -146075.78025712073
+    },
+    "flexibility_cost": {
+     "admm": 41594.971239698316,
+     "polished": 0.0,
+     "delta": -41594.971239698316
+    },
+    "load_curtailment_cost": {
+     "admm": 0.0,
+     "polished": 0.0,
+     "delta": 0.0
+    },
+    "gen_curtailment_penalty": {
+     "admm": 0.0,
+     "polished": -0.0,
+     "delta": -0.0
+    },
+    "ess_utilization_cost_penalty": {
+     "admm": 0.0,
+     "polished": 0.0,
+     "delta": 0.0
+    },
+    "slack_penalties": {
+     "admm": 19120.55173831044,
+     "polished": -49.63636365737632,
+     "delta": -19170.18810196782
+    },
+    "ess_complementarity_penalties": {
+     "admm": 556.6893032430152,
+     "polished": 201.50857854946858,
+     "delta": -355.1807246935466
+    }
+   }
+  },
+  "TSO|2025|Winter": {
+   "admm": 85179688.18263224,
+   "polished": 84792691.07430333,
+   "delta": -386997.1083289087,
+   "families": {
+    "generation_cost": {
+     "admm": 84826911.1728844,
+     "polished": 84792643.64561625,
+     "delta": -34267.52726815641
+    },
+    "flexibility_cost": {
+     "admm": 333131.15472553135,
+     "polished": 0.0,
+     "delta": -333131.15472553135
+    },
+    "load_curtailment_cost": {
+     "admm": 0.0,
+     "polished": 0.0,
+     "delta": 0.0
+    },
+    "gen_curtailment_penalty": {
+     "admm": 0.0,
+     "polished": -0.0,
+     "delta": -0.0
+    },
+    "ess_utilization_cost_penalty": {
+     "admm": 0.0,
+     "polished": 0.0,
+     "delta": 0.0
+    },
+    "slack_penalties": {
+     "admm": 19120.531374658352,
+     "polished": -49.63636365874126,
+     "delta": -19170.167738317094
+    },
+    "ess_complementarity_penalties": {
+     "admm": 525.3236476340763,
+     "polished": 97.06505073406564,
+     "delta": -428.25859690001073
+    }
+   }
+  },
+  "TSO|2030|Spring": {
+   "admm": 60181940.153777175,
+   "polished": 44080645.87002776,
+   "delta": -16101294.283749416,
+   "families": {
+    "generation_cost": {
+     "admm": 44097073.88473139,
+     "polished": 44080687.47055619,
+     "delta": -16386.414175197482
+    },
+    "flexibility_cost": {
+     "admm": 16065263.002992814,
+     "polished": 0.0,
+     "delta": -16065263.002992814
+    },
+    "load_curtailment_cost": {
+     "admm": 0.0,
+     "polished": 0.0,
+     "delta": 0.0
+    },
+    "gen_curtailment_penalty": {
+     "admm": 0.0,
+     "polished": 0.0,
+     "delta": 0.0
+    },
+    "ess_utilization_cost_penalty": {
+     "admm": 0.0,
+     "polished": 0.0,
+     "delta": 0.0
+    },
+    "slack_penalties": {
+     "admm": 19125.10444646035,
+     "polished": -45.45121884103812,
+     "delta": -19170.55566530139
+    },
+    "ess_complementarity_penalties": {
+     "admm": 478.16160650936,
+     "polished": 3.850690403975243,
+     "delta": -474.31091610538476
+    }
+   }
+  },
+  "TSO|2030|Summer": {
+   "admm": 69981241.89021716,
+   "polished": 58846265.515688226,
+   "delta": -11134976.37452893,
+   "families": {
+    "generation_cost": {
+     "admm": 58876153.04007271,
+     "polished": 58846210.466373734,
+     "delta": -29942.573698975146
+    },
+    "flexibility_cost": {
+     "admm": 11085452.922981897,
+     "polished": 0.0,
+     "delta": -11085452.922981897
+    },
+    "load_curtailment_cost": {
+     "admm": 0.0,
+     "polished": 0.0,
+     "delta": 0.0
+    },
+    "gen_curtailment_penalty": {
+     "admm": 0.0,
+     "polished": 0.0,
+     "delta": 0.0
+    },
+    "ess_utilization_cost_penalty": {
+     "admm": 0.0,
+     "polished": 0.0,
+     "delta": 0.0
+    },
+    "slack_penalties": {
+     "admm": 19125.654467316297,
+     "polished": -44.957183853053095,
+     "delta": -19170.61165116935
+    },
+    "ess_complementarity_penalties": {
+     "admm": 510.2726952310103,
+     "polished": 100.00649834626957,
+     "delta": -410.26619688474074
+    }
+   }
+  },
+  "TSO|2030|Autumn": {
+   "admm": 27799994.79553304,
+   "polished": 26394403.87126832,
+   "delta": -1405590.9242647178,
+   "families": {
+    "generation_cost": {
+     "admm": 26373942.56617716,
+     "polished": 26394392.491353147,
+     "delta": 20449.925175987184
+    },
+    "flexibility_cost": {
+     "admm": 1406439.9059178263,
+     "polished": 0.0,
+     "delta": -1406439.9059178263
+    },
+    "load_curtailment_cost": {
+     "admm": 0.0,
+     "polished": 0.0,
+     "delta": 0.0
+    },
+    "gen_curtailment_penalty": {
+     "admm": 0.0,
+     "polished": 0.0,
+     "delta": 0.0
+    },
+    "ess_utilization_cost_penalty": {
+     "admm": 0.0,
+     "polished": 0.0,
+     "delta": 0.0
+    },
+    "slack_penalties": {
+     "admm": 19125.67252475806,
+     "polished": -44.95718385205848,
+     "delta": -19170.62970861012
+    },
+    "ess_complementarity_penalties": {
+     "admm": 486.6509132963015,
+     "polished": 56.33709902653275,
+     "delta": -430.3138142697687
+    }
+   }
+  },
+  "TSO|2030|Winter": {
+   "admm": 40859428.48523894,
+   "polished": 39889992.44807102,
+   "delta": -969436.0371679217,
+   "families": {
+    "generation_cost": {
+     "admm": 39921498.962564774,
+     "polished": 39889973.60488868,
+     "delta": -31525.35767609626
+    },
+    "flexibility_cost": {
+     "admm": 918320.8687358361,
+     "polished": 0.0,
+     "delta": -918320.8687358361
+    },
+    "load_curtailment_cost": {
+     "admm": 0.0,
+     "polished": 0.0,
+     "delta": 0.0
+    },
+    "gen_curtailment_penalty": {
+     "admm": 0.0,
+     "polished": -0.0,
+     "delta": -0.0
+    },
+    "ess_utilization_cost_penalty": {
+     "admm": 0.0,
+     "polished": 0.0,
+     "delta": 0.0
+    },
+    "slack_penalties": {
+     "admm": 19125.66648432577,
+     "polished": -44.95718385239122,
+     "delta": -19170.623668178163
+    },
+    "ess_complementarity_penalties": {
+     "admm": 482.98745400581413,
+     "polished": 63.80036619651407,
+     "delta": -419.18708780930007
+    }
+   }
+  },
+  "TSO|2035|Spring": {
+   "admm": 60600633.768422715,
+   "polished": 34327942.340941586,
+   "delta": -26272691.42748113,
+   "families": {
+    "generation_cost": {
+     "admm": 34241523.07142899,
+     "polished": 34327985.54924687,
+     "delta": 86462.47781787813
+    },
+    "flexibility_cost": {
+     "admm": 26339497.564291928,
+     "polished": 0.0,
+     "delta": -26339497.564291928
+    },
+    "load_curtailment_cost": {
+     "admm": 0.0,
+     "polished": 0.0,
+     "delta": 0.0
+    },
+    "gen_curtailment_penalty": {
+     "admm": 0.0,
+     "polished": 0.0,
+     "delta": 0.0
+    },
+    "ess_utilization_cost_penalty": {
+     "admm": 0.0,
+     "polished": 0.0,
+     "delta": 0.0
+    },
+    "slack_penalties": {
+     "admm": 19129.79690616438,
+     "polished": -41.1665692478522,
+     "delta": -19170.963475412234
+    },
+    "ess_complementarity_penalties": {
+     "admm": 483.33579563483426,
+     "polished": -2.0417360371706996,
+     "delta": -485.377531672005
+    }
+   }
+  },
+  "TSO|2035|Summer": {
+   "admm": 68121943.75424972,
+   "polished": 47387789.40529568,
+   "delta": -20734154.348954044,
+   "families": {
+    "generation_cost": {
+     "admm": 47404568.30527491,
+     "polished": 47387352.821051106,
+     "delta": -17215.484223805368
+    },
+    "flexibility_cost": {
+     "admm": 20697444.992216274,
+     "polished": 0.0,
+     "delta": -20697444.992216274
+    },
+    "load_curtailment_cost": {
+     "admm": 0.0,
+     "polished": 0.0,
+     "delta": 0.0
+    },
+    "gen_curtailment_penalty": {
+     "admm": 0.0,
+     "polished": 0.0,
+     "delta": 0.0
+    },
+    "ess_utilization_cost_penalty": {
+     "admm": 0.0,
+     "polished": 0.0,
+     "delta": 0.0
+    },
+    "slack_penalties": {
+     "admm": 19130.2858060063,
+     "polished": -40.719106538594176,
+     "delta": -19171.004912544897
+    },
+    "ess_complementarity_penalties": {
+     "admm": 800.1709525258943,
+     "polished": 477.3033511108561,
+     "delta": -322.8676014150382
+    }
+   }
+  },
+  "TSO|2035|Autumn": {
+   "admm": 35079688.45415388,
+   "polished": 32996396.480305213,
+   "delta": -2083291.973848667,
+   "families": {
+    "generation_cost": {
+     "admm": 33064941.28563698,
+     "polished": 32995644.660653315,
+     "delta": -69296.6249836646
+    },
+    "flexibility_cost": {
+     "admm": 1994506.8658902852,
+     "polished": 0.0,
+     "delta": -1994506.8658902852
+    },
+    "load_curtailment_cost": {
+     "admm": 0.0,
+     "polished": 0.0,
+     "delta": 0.0
+    },
+    "gen_curtailment_penalty": {
+     "admm": 0.0,
+     "polished": 0.0,
+     "delta": 0.0
+    },
+    "ess_utilization_cost_penalty": {
+     "admm": 0.0,
+     "polished": 0.0,
+     "delta": 0.0
+    },
+    "slack_penalties": {
+     "admm": 19130.29118759543,
+     "polished": -40.71910653835163,
+     "delta": -19171.010294133783
+    },
+    "ess_complementarity_penalties": {
+     "admm": 1110.0114390198028,
+     "polished": 792.5387584360997,
+     "delta": -317.4726805837031
+    }
+   }
+  },
+  "TSO|2035|Winter": {
+   "admm": 36248335.72946342,
+   "polished": 35151966.295307174,
+   "delta": -1096369.4341562465,
+   "families": {
+    "generation_cost": {
+     "admm": 35250589.99385655,
+     "polished": 35152009.15036066,
+     "delta": -98580.8434958905
+    },
+    "flexibility_cost": {
+     "admm": 978132.2313397968,
+     "polished": 0.0,
+     "delta": -978132.2313397968
+    },
+    "load_curtailment_cost": {
+     "admm": 0.0,
+     "polished": 0.0,
+     "delta": 0.0
+    },
+    "gen_curtailment_penalty": {
+     "admm": 0.0,
+     "polished": 0.0,
+     "delta": 0.0
+    },
+    "ess_utilization_cost_penalty": {
+     "admm": 0.0,
+     "polished": 0.0,
+     "delta": 0.0
+    },
+    "slack_penalties": {
+     "admm": 19130.295409360326,
+     "polished": -40.7191065381612,
+     "delta": -19171.014515898485
+    },
+    "ess_complementarity_penalties": {
+     "admm": 483.2088577205012,
+     "polished": -2.1359469476076165,
+     "delta": -485.34480466810885
+    }
+   }
+  },
+  "DSO5|2025|Spring": {
+   "admm": 5238585.064640788,
+   "polished": 5018839.239647631,
+   "delta": -219745.82499315776,
+   "families": {
+    "generation_cost": {
+     "admm": 0.0,
+     "polished": 0.0,
+     "delta": 0.0
+    },
+    "flexibility_cost": {
+     "admm": 5115510.47877082,
+     "polished": 5019084.359696961,
+     "delta": -96426.11907385942
+    },
+    "load_curtailment_cost": {
+     "admm": 0.0,
+     "polished": 0.0,
+     "delta": 0.0
+    },
+    "gen_curtailment_penalty": {
+     "admm": 547.7741896067363,
+     "polished": 97.31006415432915,
+     "delta": -450.46412545240713
+    },
+    "ess_utilization_cost_penalty": {
+     "admm": 0.0,
+     "polished": 0.0,
+     "delta": 0.0
+    },
+    "slack_penalties": {
+     "admm": 122367.7151091169,
+     "polished": -346.8567082956475,
+     "delta": -122714.57181741255
+    },
+    "ess_complementarity_penalties": {
+     "admm": 159.09657124464215,
+     "polished": 4.426594810738697,
+     "delta": -154.66997643390346
+    }
+   }
+  },
+  "DSO5|2025|Summer": {
+   "admm": 1395706.377997464,
+   "polished": 1145843.96461202,
+   "delta": -249862.4133854441,
+   "families": {
+    "generation_cost": {
+     "admm": 0.0,
+     "polished": 0.0,
+     "delta": 0.0
+    },
+    "flexibility_cost": {
+     "admm": 1272914.0194471837,
+     "polished": 1146105.5921077481,
+     "delta": -126808.42733943556
+    },
+    "load_curtailment_cost": {
+     "admm": 0.0,
+     "polished": 0.0,
+     "delta": 0.0
+    },
+    "gen_curtailment_penalty": {
+     "admm": 255.70286073556056,
+     "polished": 56.3184113557663,
+     "delta": -199.38444937979426
+    },
+    "ess_utilization_cost_penalty": {
+     "admm": 0.0,
+     "polished": 0.0,
+     "delta": 0.0
+    },
+    "slack_penalties": {
+     "admm": 122371.72448097357,
+     "polished": -343.0865188630502,
+     "delta": -122714.81099983663
+    },
+    "ess_complementarity_penalties": {
+     "admm": 164.9312085712406,
+     "polished": 25.140611778986674,
+     "delta": -139.79059679225392
+    }
+   }
+  },
+  "DSO5|2025|Autumn": {
+   "admm": 267934.61454943626,
+   "polished": -308.5926234347198,
+   "delta": -268243.207172871,
+   "families": {
+    "generation_cost": {
+     "admm": 0.0,
+     "polished": 0.0,
+     "delta": 0.0
+    },
+    "flexibility_cost": {
+     "admm": 145262.70988067772,
+     "polished": -31.916272705184483,
+     "delta": -145294.6261533829
+    },
+    "load_curtailment_cost": {
+     "admm": 0.0,
+     "polished": 0.0,
+     "delta": 0.0
+    },
+    "gen_curtailment_penalty": {
+     "admm": 120.56220620495496,
+     "polished": 24.151559047176757,
+     "delta": -96.4106471577782
+    },
+    "ess_utilization_cost_penalty": {
+     "admm": 0.0,
+     "polished": 0.0,
+     "delta": 0.0
+    },
+    "slack_penalties": {
+     "admm": 122371.93085626051,
+     "polished": -343.0865454598663,
+     "delta": -122715.01740172038
+    },
+    "ess_complementarity_penalties": {
+     "admm": 179.41160629305088,
+     "polished": 42.25863568315417,
+     "delta": -137.15297060989673
+    }
+   }
+  },
+  "DSO5|2025|Winter": {
+   "admm": 282687.4487952571,
+   "polished": 41238.575580287536,
+   "delta": -241448.87321496953,
+   "families": {
+    "generation_cost": {
+     "admm": 0.0,
+     "polished": 0.0,
+     "delta": 0.0
+    },
+    "flexibility_cost": {
+     "admm": 160026.0968543248,
+     "polished": 41523.696032510685,
+     "delta": -118502.40082181411
+    },
+    "load_curtailment_cost": {
+     "admm": 0.0,
+     "polished": 0.0,
+     "delta": 0.0
+    },
+    "gen_curtailment_penalty": {
+     "admm": 128.09649637563712,
+     "polished": 39.4125158732181,
+     "delta": -88.68398050241902
+    },
+    "ess_utilization_cost_penalty": {
+     "admm": 0.0,
+     "polished": 0.0,
+     "delta": 0.0
+    },
+    "slack_penalties": {
+     "admm": 122371.94890177071,
+     "polished": -343.08653908097375,
+     "delta": -122715.03544085169
+    },
+    "ess_complementarity_penalties": {
+     "admm": 161.30654278594463,
+     "polished": 18.553570984600317,
+     "delta": -142.7529718013443
+    }
+   }
+  },
+  "DSO5|2030|Spring": {
+   "admm": 6139277.786944941,
+   "polished": 5904183.783186396,
+   "delta": -235094.00375854503,
+   "families": {
+    "generation_cost": {
+     "admm": 0.0,
+     "polished": 0.0,
+     "delta": 0.0
+    },
+    "flexibility_cost": {
+     "admm": 6016234.430400297,
+     "polished": 5904411.457200362,
+     "delta": -111822.9731999347
+    },
+    "load_curtailment_cost": {
+     "admm": 0.0,
+     "polished": 0.0,
+     "delta": 0.0
+    },
+    "gen_curtailment_penalty": {
+     "admm": 482.1286506697518,
+     "polished": 85.63439890402037,
+     "delta": -396.4942517657314
+    },
+    "ess_utilization_cost_penalty": {
+     "admm": 0.0,
+     "polished": 0.0,
+     "delta": 0.0
+    },
+    "slack_penalties": {
+     "admm": 122400.82067173738,
+     "polished": -314.15880645284386,
+     "delta": -122714.97947819023
+    },
+    "ess_complementarity_penalties": {
+     "admm": 160.4072222364823,
+     "polished": 0.8503935816520448,
+     "delta": -159.55682865483027
+    }
+   }
+  },
+  "DSO5|2030|Summer": {
+   "admm": 3487663.3318469785,
+   "polished": 3240506.1815482895,
+   "delta": -247157.15029868903,
+   "families": {
+    "generation_cost": {
+     "admm": 0.0,
+     "polished": 0.0,
+     "delta": 0.0
+    },
+    "flexibility_cost": {
+     "admm": 3364810.4696011622,
+     "polished": 3240671.626700478,
+     "delta": -124138.8429006841
+    },
+    "load_curtailment_cost": {
+     "admm": 0.0,
+     "polished": 0.0,
+     "delta": 0.0
+    },
+    "gen_curtailment_penalty": {
+     "admm": 277.22560560487943,
+     "polished": 109.83010666480806,
+     "delta": -167.39549894007138
+    },
+    "ess_utilization_cost_penalty": {
+     "admm": 0.0,
+     "polished": 0.0,
+     "delta": 0.0
+    },
+    "slack_penalties": {
+     "admm": 122404.4722624237,
+     "polished": -310.74403224742997,
+     "delta": -122715.21629467113
+    },
+    "ess_complementarity_penalties": {
+     "admm": 171.16437778811755,
+     "polished": 35.46877339397789,
+     "delta": -135.69560439413965
+    }
+   }
+  },
+  "DSO5|2030|Autumn": {
+   "admm": 761307.47271021,
+   "polished": 511599.54821897496,
+   "delta": -249707.92449123506,
+   "families": {
+    "generation_cost": {
+     "admm": 0.0,
+     "polished": 0.0,
+     "delta": 0.0
+    },
+    "flexibility_cost": {
+     "admm": 638419.3214689029,
+     "polished": 511838.5525357373,
+     "delta": -126580.76893316559
+    },
+    "load_curtailment_cost": {
+     "admm": 0.0,
+     "polished": 0.0,
+     "delta": 0.0
+    },
+    "gen_curtailment_penalty": {
+     "admm": 316.67246068270975,
+     "polished": 50.42372436091988,
+     "delta": -266.24873632178986
+    },
+    "ess_utilization_cost_penalty": {
+     "admm": 0.0,
+     "polished": 0.0,
+     "delta": 0.0
+    },
+    "slack_penalties": {
+     "admm": 122404.24699959533,
+     "polished": -310.7440108942517,
+     "delta": -122714.99101048958
+    },
+    "ess_complementarity_penalties": {
+     "admm": 167.2317810290803,
+     "polished": 21.315969770966532,
+     "delta": -145.91581125811376
+    }
+   }
+  },
+  "DSO5|2030|Winter": {
+   "admm": 496922.89148869074,
+   "polished": 268361.2780850706,
+   "delta": -228561.61340362014,
+   "families": {
+    "generation_cost": {
+     "admm": 0.0,
+     "polished": 0.0,
+     "delta": 0.0
+    },
+    "flexibility_cost": {
+     "admm": 374234.68608054076,
+     "polished": 268615.207693829,
+     "delta": -105619.47838671174
+    },
+    "load_curtailment_cost": {
+     "admm": 0.0,
+     "polished": 0.0,
+     "delta": 0.0
+    },
+    "gen_curtailment_penalty": {
+     "admm": 119.88253450449115,
+     "polished": 41.84710107918261,
+     "delta": -78.03543342530854
+    },
+    "ess_utilization_cost_penalty": {
+     "admm": 0.0,
+     "polished": 0.0,
+     "delta": 0.0
+    },
+    "slack_penalties": {
+     "admm": 122404.81473970372,
+     "polished": -310.74404960580773,
+     "delta": -122715.55878930954
+    },
+    "ess_complementarity_penalties": {
+     "admm": 163.50813394175884,
+     "polished": 14.967339768184234,
+     "delta": -148.5407941735746
+    }
+   }
+  },
+  "DSO5|2035|Spring": {
+   "admm": 9727744.976280969,
+   "polished": 9522995.02706345,
+   "delta": -204749.9492175188,
+   "families": {
+    "generation_cost": {
+     "admm": 0.0,
+     "polished": 0.0,
+     "delta": 0.0
+    },
+    "flexibility_cost": {
+     "admm": 9604821.669918457,
+     "polished": 9523081.274068827,
+     "delta": -81740.39584963024
+    },
+    "load_curtailment_cost": {
+     "admm": 0.0,
+     "polished": 0.0,
+     "delta": 0.0
+    },
+    "gen_curtailment_penalty": {
+     "admm": 330.2097868868663,
+     "polished": 199.04275031318156,
+     "delta": -131.16703657368475
+    },
+    "ess_utilization_cost_penalty": {
+     "admm": 0.0,
+     "polished": 0.0,
+     "delta": 0.0
+    },
+    "slack_penalties": {
+     "admm": 122431.0234142707,
+     "polished": -284.5433043782696,
+     "delta": -122715.56671864897
+    },
+    "ess_complementarity_penalties": {
+     "admm": 162.07316135317572,
+     "polished": -0.7464513102718363,
+     "delta": -162.81961266344754
+    }
+   }
+  },
+  "DSO5|2035|Summer": {
+   "admm": 7132337.934765971,
+   "polished": 6889506.710834812,
+   "delta": -242831.2239311589,
+   "families": {
+    "generation_cost": {
+     "admm": 0.0,
+     "polished": 0.0,
+     "delta": 0.0
+    },
+    "flexibility_cost": {
+     "admm": 7008513.5580786895,
+     "polished": 6888764.255319246,
+     "delta": -119749.30275944341
+    },
+    "load_curtailment_cost": {
+     "admm": 0.0,
+     "polished": 0.0,
+     "delta": 0.0
+    },
+    "gen_curtailment_penalty": {
+     "admm": 1189.8893322615743,
+     "polished": 943.4108955785698,
+     "delta": -246.47843668300447
+    },
+    "ess_utilization_cost_penalty": {
+     "admm": 0.0,
+     "polished": 0.0,
+     "delta": 0.0
+    },
+    "slack_penalties": {
+     "admm": 122433.98581656894,
+     "polished": -281.45043730430916,
+     "delta": -122715.43625387325
+    },
+    "ess_complementarity_penalties": {
+     "admm": 200.50153845064528,
+     "polished": 80.4950572931108,
+     "delta": -120.00648115753448
+    }
+   }
+  },
+  "DSO5|2035|Autumn": {
+   "admm": 968973.9863833797,
+   "polished": 690804.4201632248,
+   "delta": -278169.56622015487,
+   "families": {
+    "generation_cost": {
+     "admm": 0.0,
+     "polished": 0.0,
+     "delta": 0.0
+    },
+    "flexibility_cost": {
+     "admm": 845675.7197412548,
+     "polished": 690335.5797675294,
+     "delta": -155340.13997372543
+    },
+    "load_curtailment_cost": {
+     "admm": 0.0,
+     "polished": 0.0,
+     "delta": 0.0
+    },
+    "gen_curtailment_penalty": {
+     "admm": 490.24846319847336,
+     "polished": 481.73462957669875,
+     "delta": -8.513833621774609
+    },
+    "ess_utilization_cost_penalty": {
+     "admm": 0.0,
+     "polished": 0.0,
+     "delta": 0.0
+    },
+    "slack_penalties": {
+     "admm": 122433.78790652794,
+     "polished": -281.45045641889726,
+     "delta": -122715.23836294684
+    },
+    "ess_complementarity_penalties": {
+     "admm": 374.2302723983877,
+     "polished": 268.5562225376401,
+     "delta": -105.67404986074757
+    }
+   }
+  },
+  "DSO5|2035|Winter": {
+   "admm": 506480.0047133254,
+   "polished": 261070.89434224187,
+   "delta": -245409.11037108355,
+   "families": {
+    "generation_cost": {
+     "admm": 0.0,
+     "polished": 0.0,
+     "delta": 0.0
+    },
+    "flexibility_cost": {
+     "admm": 383751.1724336439,
+     "polished": 261304.9913747573,
+     "delta": -122446.1810588866
+    },
+    "load_curtailment_cost": {
+     "admm": 0.0,
+     "polished": 0.0,
+     "delta": 0.0
+    },
+    "gen_curtailment_penalty": {
+     "admm": 134.96703912890626,
+     "polished": 48.09250168211785,
+     "delta": -86.87453744678842
+    },
+    "ess_utilization_cost_penalty": {
+     "admm": 0.0,
+     "polished": 0.0,
+     "delta": 0.0
+    },
+    "slack_penalties": {
+     "admm": 122434.33053502401,
+     "polished": -281.4504495051688,
+     "delta": -122715.78098452918
+    },
+    "ess_complementarity_penalties": {
+     "admm": 159.53470552861305,
+     "polished": -0.7390846924019063,
+     "delta": -160.27379022101496
+    }
+   }
+  },
+  "DSO7|2025|Spring": {
+   "admm": 3345352.561771335,
+   "polished": 3105653.7626377633,
+   "delta": -239698.7991335718,
+   "families": {
+    "generation_cost": {
+     "admm": 0.0,
+     "polished": 0.0,
+     "delta": 0.0
+    },
+    "flexibility_cost": {
+     "admm": 3221874.1289960584,
+     "polished": 3105332.839555037,
+     "delta": -116541.28944102116
+    },
+    "load_curtailment_cost": {
+     "admm": 0.0,
+     "polished": 0.0,
+     "delta": 0.0
+    },
+    "gen_curtailment_penalty": {
+     "admm": 951.7340146916539,
+     "polished": 668.691325556026,
+     "delta": -283.04268913562794
+    },
+    "ess_utilization_cost_penalty": {
+     "admm": 0.0,
+     "polished": 0.0,
+     "delta": 0.0
+    },
+    "slack_penalties": {
+     "admm": 122367.68613631671,
+     "polished": -346.8567055299526,
+     "delta": -122714.54284184666
+    },
+    "ess_complementarity_penalties": {
+     "admm": 159.012624268352,
+     "polished": -0.9115373001553021,
+     "delta": -159.9241615685073
+    }
+   }
+  },
+  "DSO7|2025|Summer": {
+   "admm": 1562560.6004025436,
+   "polished": 1312427.593626569,
+   "delta": -250133.00677597453,
+   "families": {
+    "generation_cost": {
+     "admm": 0.0,
+     "polished": 0.0,
+     "delta": 0.0
+    },
+    "flexibility_cost": {
+     "admm": 1439303.562899642,
+     "polished": 1312267.1463235484,
+     "delta": -127036.41657609353
+    },
+    "load_curtailment_cost": {
+     "admm": 0.0,
+     "polished": 0.0,
+     "delta": 0.0
+    },
+    "gen_curtailment_penalty": {
+     "admm": 720.4450256543355,
+     "polished": 478.2724167707314,
+     "delta": -242.17260888360408
+    },
+    "ess_utilization_cost_penalty": {
+     "admm": 0.0,
+     "polished": 0.0,
+     "delta": 0.0
+    },
+    "slack_penalties": {
+     "admm": 122371.58654045672,
+     "polished": -343.08652412356935,
+     "delta": -122714.67306458029
+    },
+    "ess_complementarity_penalties": {
+     "admm": 165.00593679058244,
+     "polished": 25.261410373272632,
+     "delta": -139.7445264173098
+    }
+   }
+  },
+  "DSO7|2025|Autumn": {
+   "admm": 271824.25733194296,
+   "polished": 2972.062554070291,
+   "delta": -268852.19477787265,
+   "families": {
+    "generation_cost": {
+     "admm": 0.0,
+     "polished": 0.0,
+     "delta": 0.0
+    },
+    "flexibility_cost": {
+     "admm": 147776.52235379518,
+     "polished": 1897.2452041521528,
+     "delta": -145879.27714964302
+    },
+    "load_curtailment_cost": {
+     "admm": 0.0,
+     "polished": 0.0,
+     "delta": 0.0
+    },
+    "gen_curtailment_penalty": {
+     "admm": 1498.638368557382,
+     "polished": 1364.7961614700441,
+     "delta": -133.84220708733778
+    },
+    "ess_utilization_cost_penalty": {
+     "admm": 0.0,
+     "polished": 0.0,
+     "delta": 0.0
+    },
+    "slack_penalties": {
+     "admm": 122371.71595012183,
+     "polished": -343.0865379150481,
+     "delta": -122714.80248803688
+    },
+    "ess_complementarity_penalties": {
+     "admm": 177.38065946859265,
+     "polished": 53.10772636314204,
+     "delta": -124.27293310545062
+    }
+   }
+  },
+  "DSO7|2025|Winter": {
+   "admm": 355330.9382692491,
+   "polished": 115476.43601842524,
+   "delta": -239854.50225082386,
+   "families": {
+    "generation_cost": {
+     "admm": 0.0,
+     "polished": 0.0,
+     "delta": 0.0
+    },
+    "flexibility_cost": {
+     "admm": 231649.48890235042,
+     "polished": 114759.26181685638,
+     "delta": -116890.22708549404
+    },
+    "load_curtailment_cost": {
+     "admm": 0.0,
+     "polished": 0.0,
+     "delta": 0.0
+    },
+    "gen_curtailment_penalty": {
+     "admm": 1105.1773113846737,
+     "polished": 985.841821414104,
+     "delta": -119.33548997056971
+    },
+    "ess_utilization_cost_penalty": {
+     "admm": 0.0,
+     "polished": 0.0,
+     "delta": 0.0
+    },
+    "slack_penalties": {
+     "admm": 122371.80648005927,
+     "polished": -343.08654047127936,
+     "delta": -122714.89302053055
+    },
+    "ess_complementarity_penalties": {
+     "admm": 204.46557545471015,
+     "polished": 74.41892062604667,
+     "delta": -130.04665482866346
+    }
+   }
+  },
+  "DSO7|2030|Spring": {
+   "admm": 3470737.7063138513,
+   "polished": 3224202.4799795602,
+   "delta": -246535.22633429104,
+   "families": {
+    "generation_cost": {
+     "admm": 0.0,
+     "polished": 0.0,
+     "delta": 0.0
+    },
+    "flexibility_cost": {
+     "admm": 3346353.481601656,
+     "polished": 3222983.5698534334,
+     "delta": -123369.91174822254
+    },
+    "load_curtailment_cost": {
+     "admm": 0.0,
+     "polished": 0.0,
+     "delta": 0.0
+    },
+    "gen_curtailment_penalty": {
+     "admm": 1823.5253321795985,
+     "polished": 1532.4202593254781,
+     "delta": -291.1050728541204
+    },
+    "ess_utilization_cost_penalty": {
+     "admm": 0.0,
+     "polished": 0.0,
+     "delta": 0.0
+    },
+    "slack_penalties": {
+     "admm": 122400.8117926306,
+     "polished": -314.1588049453995,
+     "delta": -122714.970597576
+    },
+    "ess_complementarity_penalties": {
+     "admm": 159.8875873849066,
+     "polished": 0.6486717467968313,
+     "delta": -159.23891563810977
+    }
+   }
+  },
+  "DSO7|2030|Summer": {
+   "admm": 3295084.163307342,
+   "polished": 3042232.671355929,
+   "delta": -252851.491951413,
+   "families": {
+    "generation_cost": {
+     "admm": 0.0,
+     "polished": 0.0,
+     "delta": 0.0
+    },
+    "flexibility_cost": {
+     "admm": 3171242.9005870707,
+     "polished": 3041485.2124002436,
+     "delta": -129757.68818682712
+    },
+    "load_curtailment_cost": {
+     "admm": 0.0,
+     "polished": 0.0,
+     "delta": 0.0
+    },
+    "gen_curtailment_penalty": {
+     "admm": 1266.9401342984675,
+     "polished": 1023.0924644456537,
+     "delta": -243.84766985281374
+    },
+    "ess_utilization_cost_penalty": {
+     "admm": 0.0,
+     "polished": 0.0,
+     "delta": 0.0
+    },
+    "slack_penalties": {
+     "admm": 122404.46720629187,
+     "polished": -310.7440269234868,
+     "delta": -122715.21123321536
+    },
+    "ess_complementarity_penalties": {
+     "admm": 169.8553796812857,
+     "polished": 35.11051816318941,
+     "delta": -134.7448615180963
+    }
+   }
+  },
+  "DSO7|2030|Autumn": {
+   "admm": 557926.5695903522,
+   "polished": 308419.9412026465,
+   "delta": -249506.6283877057,
+   "families": {
+    "generation_cost": {
+     "admm": 0.0,
+     "polished": 0.0,
+     "delta": 0.0
+    },
+    "flexibility_cost": {
+     "admm": 431755.5967885656,
+     "polished": 305330.3482513212,
+     "delta": -126425.24853724445
+    },
+    "load_curtailment_cost": {
+     "admm": 0.0,
+     "polished": 0.0,
+     "delta": 0.0
+    },
+    "gen_curtailment_penalty": {
+     "admm": 3597.987581522669,
+     "polished": 3378.357655809308,
+     "delta": -219.629925713361
+    },
+    "ess_utilization_cost_penalty": {
+     "admm": 0.0,
+     "polished": 0.0,
+     "delta": 0.0
+    },
+    "slack_penalties": {
+     "admm": 122404.1818638382,
+     "polished": -310.74401630076795,
+     "delta": -122714.92588013897
+    },
+    "ess_complementarity_penalties": {
+     "admm": 168.80335642574482,
+     "polished": 21.979311816792233,
+     "delta": -146.8240446089526
+    }
+   }
+  },
+  "DSO7|2030|Winter": {
+   "admm": 320228.6924210997,
+   "polished": 78282.57862137085,
+   "delta": -241946.11379972886,
+   "families": {
+    "generation_cost": {
+     "admm": 0.0,
+     "polished": 0.0,
+     "delta": 0.0
+    },
+    "flexibility_cost": {
+     "admm": 195152.1583850739,
+     "polished": 76196.9669728584,
+     "delta": -118955.19141221551
+    },
+    "load_curtailment_cost": {
+     "admm": 0.0,
+     "polished": 0.0,
+     "delta": 0.0
+    },
+    "gen_curtailment_penalty": {
+     "admm": 2501.195978608275,
+     "polished": 2366.8632683361952,
+     "delta": -134.33271027207957
+    },
+    "ess_utilization_cost_penalty": {
+     "admm": 0.0,
+     "polished": 0.0,
+     "delta": 0.0
+    },
+    "slack_penalties": {
+     "admm": 122404.57504061805,
+     "polished": -310.7440400492241,
+     "delta": -122715.31908066726
+    },
+    "ess_complementarity_penalties": {
+     "admm": 170.76301679945155,
+     "polished": 29.49242022548358,
+     "delta": -141.27059657396796
+    }
+   }
+  },
+  "DSO7|2035|Spring": {
+   "admm": 6546368.011642336,
+   "polished": 6302026.749534713,
+   "delta": -244341.2621076228,
+   "families": {
+    "generation_cost": {
+     "admm": 0.0,
+     "polished": 0.0,
+     "delta": 0.0
+    },
+    "flexibility_cost": {
+     "admm": 6421944.672888624,
+     "polished": 6300685.051361504,
+     "delta": -121259.62152711954
+    },
+    "load_curtailment_cost": {
+     "admm": 0.0,
+     "polished": 0.0,
+     "delta": 0.0
+    },
+    "gen_curtailment_penalty": {
+     "admm": 1832.870203163454,
+     "polished": 1626.9881085592613,
+     "delta": -205.88209460419284
+    },
+    "ess_utilization_cost_penalty": {
+     "admm": 0.0,
+     "polished": 0.0,
+     "delta": 0.0
+    },
+    "slack_penalties": {
+     "admm": 122431.09732884844,
+     "polished": -284.54328762539546,
+     "delta": -122715.64061647383
+    },
+    "ess_complementarity_penalties": {
+     "admm": 159.3712216998913,
+     "polished": -0.7466477260760235,
+     "delta": -160.1178694259673
+    }
+   }
+  },
+  "DSO7|2035|Summer": {
+   "admm": 5200148.059349235,
+   "polished": 4946826.258475185,
+   "delta": -253321.80087404978,
+   "families": {
+    "generation_cost": {
+     "admm": 0.0,
+     "polished": 0.0,
+     "delta": 0.0
+    },
+    "flexibility_cost": {
+     "admm": 5072801.77538207,
+     "polished": 4942700.628062217,
+     "delta": -130101.1473198533
+    },
+    "load_curtailment_cost": {
+     "admm": 0.0,
+     "polished": 0.0,
+     "delta": 0.0
+    },
+    "gen_curtailment_penalty": {
+     "admm": 4710.178605561351,
+     "polished": 4329.033164658838,
+     "delta": -381.14544090251275
+    },
+    "ess_utilization_cost_penalty": {
+     "admm": 0.0,
+     "polished": 0.0,
+     "delta": 0.0
+    },
+    "slack_penalties": {
+     "admm": 122433.91744266398,
+     "polished": -281.4504372494322,
+     "delta": -122715.3678799134
+    },
+    "ess_complementarity_penalties": {
+     "admm": 202.18791893964703,
+     "polished": 78.04768555985103,
+     "delta": -124.140233379796
+    }
+   }
+  },
+  "DSO7|2035|Autumn": {
+   "admm": 575518.2905555472,
+   "polished": 303024.0616359889,
+   "delta": -272494.22891955834,
+   "families": {
+    "generation_cost": {
+     "admm": 0.0,
+     "polished": 0.0,
+     "delta": 0.0
+    },
+    "flexibility_cost": {
+     "admm": 447087.7520252632,
+     "polished": 297275.29750459926,
+     "delta": -149812.45452066395
+    },
+    "load_curtailment_cost": {
+     "admm": 0.0,
+     "polished": 0.0,
+     "delta": 0.0
+    },
+    "gen_curtailment_penalty": {
+     "admm": 5600.514692467342,
+     "polished": 5742.336088822986,
+     "delta": 141.82139635564454
+    },
+    "ess_utilization_cost_penalty": {
+     "admm": 0.0,
+     "polished": 0.0,
+     "delta": 0.0
+    },
+    "slack_penalties": {
+     "admm": 122433.74907003026,
+     "polished": -281.45041791355084,
+     "delta": -122715.19948794381
+    },
+    "ess_complementarity_penalties": {
+     "admm": 396.2747677864289,
+     "polished": 287.8784604801892,
+     "delta": -108.39630730623975
+    }
+   }
+  },
+  "DSO7|2035|Winter": {
+   "admm": 408184.88165928214,
+   "polished": 165972.87744115226,
+   "delta": -242212.00421812988,
+   "families": {
+    "generation_cost": {
+     "admm": 0.0,
+     "polished": 0.0,
+     "delta": 0.0
+    },
+    "flexibility_cost": {
+     "admm": 282942.2286096097,
+     "polished": 163754.3205293653,
+     "delta": -119187.90808024441
+    },
+    "load_curtailment_cost": {
+     "admm": 0.0,
+     "polished": 0.0,
+     "delta": 0.0
+    },
+    "gen_curtailment_penalty": {
+     "admm": 2649.394905070018,
+     "polished": 2500.7465515742233,
+     "delta": -148.6483534957947
+    },
+    "ess_utilization_cost_penalty": {
+     "admm": 0.0,
+     "polished": 0.0,
+     "delta": 0.0
+    },
+    "slack_penalties": {
+     "admm": 122434.15192642767,
+     "polished": -281.45043733163584,
+     "delta": -122715.6023637593
+    },
+    "ess_complementarity_penalties": {
+     "admm": 159.10621817467143,
+     "polished": -0.7392024556076479,
+     "delta": -159.84542063027908
+    }
+   }
+  },
+  "DSO9|2025|Spring": {
+   "admm": 6364215.784290084,
+   "polished": 6131917.510855027,
+   "delta": -232298.27343505714,
+   "families": {
+    "generation_cost": {
+     "admm": 0.0,
+     "polished": 0.0,
+     "delta": 0.0
+    },
+    "flexibility_cost": {
+     "admm": 6239397.047704394,
+     "polished": 6130394.664787105,
+     "delta": -109002.38291728869
+    },
+    "load_curtailment_cost": {
+     "admm": 0.0,
+     "polished": 0.0,
+     "delta": 0.0
+    },
+    "gen_curtailment_penalty": {
+     "admm": 2291.8484640326146,
+     "polished": 1867.1397587074564,
+     "delta": -424.70870532515823
+    },
+    "ess_utilization_cost_penalty": {
+     "admm": 0.0,
+     "polished": 0.0,
+     "delta": 0.0
+    },
+    "slack_penalties": {
+     "admm": 122367.6285501129,
+     "polished": -346.85671301964,
+     "delta": -122714.48526313255
+    },
+    "ess_complementarity_penalties": {
+     "admm": 159.2595715431981,
+     "polished": 2.563022233730558,
+     "delta": -156.69654930946754
+    }
+   }
+  },
+  "DSO9|2025|Summer": {
+   "admm": 2667090.537160546,
+   "polished": 2409498.123253642,
+   "delta": -257592.41390690394,
+   "families": {
+    "generation_cost": {
+     "admm": 0.0,
+     "polished": 0.0,
+     "delta": 0.0
+    },
+    "flexibility_cost": {
+     "admm": 2541211.484138984,
+     "polished": 2406770.1160815903,
+     "delta": -134441.36805739347
+    },
+    "load_curtailment_cost": {
+     "admm": 0.0,
+     "polished": 0.0,
+     "delta": 0.0
+    },
+    "gen_curtailment_penalty": {
+     "admm": 3346.389527809229,
+     "polished": 3058.2579743043384,
+     "delta": -288.1315535048907
+    },
+    "ess_utilization_cost_penalty": {
+     "admm": 0.0,
+     "polished": 0.0,
+     "delta": 0.0
+    },
+    "slack_penalties": {
+     "admm": 122371.71899923278,
+     "polished": -343.0865102366832,
+     "delta": -122714.80550946946
+    },
+    "ess_complementarity_penalties": {
+     "admm": 160.9444945207107,
+     "polished": 12.835707984415238,
+     "delta": -148.10878653629544
+    }
+   }
+  },
+  "DSO9|2025|Autumn": {
+   "admm": 265415.9608119215,
+   "polished": 2904.225457068217,
+   "delta": -262511.73535485327,
+   "families": {
+    "generation_cost": {
+     "admm": 0.0,
+     "polished": 0.0,
+     "delta": 0.0
+    },
+    "flexibility_cost": {
+     "admm": 142643.61088646023,
+     "polished": 3073.3621286841076,
+     "delta": -139570.24875777613
+    },
+    "load_curtailment_cost": {
+     "admm": 0.0,
+     "polished": 0.0,
+     "delta": 0.0
+    },
+    "gen_curtailment_penalty": {
+     "admm": 192.18684145887025,
+     "polished": 68.73937738831242,
+     "delta": -123.44746407055783
+    },
+    "ess_utilization_cost_penalty": {
+     "admm": 0.0,
+     "polished": 0.0,
+     "delta": 0.0
+    },
+    "slack_penalties": {
+     "admm": 122371.70777663735,
+     "polished": -343.08654030731105,
+     "delta": -122714.79431694467
+    },
+    "ess_complementarity_penalties": {
+     "admm": 208.45530736510744,
+     "polished": 105.21049130310811,
+     "delta": -103.24481606199933
+    }
+   }
+  },
+  "DSO9|2025|Winter": {
+   "admm": 350373.56411831634,
+   "polished": 118621.87682527861,
+   "delta": -231751.6872930377,
+   "families": {
+    "generation_cost": {
+     "admm": 0.0,
+     "polished": 0.0,
+     "delta": 0.0
+    },
+    "flexibility_cost": {
+     "admm": 227722.51248121215,
+     "polished": 118925.25521086328,
+     "delta": -108797.25727034887
+    },
+    "load_curtailment_cost": {
+     "admm": 0.0,
+     "polished": 0.0,
+     "delta": 0.0
+    },
+    "gen_curtailment_penalty": {
+     "admm": 119.27835635532924,
+     "polished": 37.1767080166998,
+     "delta": -82.10164833862945
+    },
+    "ess_utilization_cost_penalty": {
+     "admm": 0.0,
+     "polished": 0.0,
+     "delta": 0.0
+    },
+    "slack_penalties": {
+     "admm": 122372.2562221433,
+     "polished": -343.0865435536025,
+     "delta": -122715.3427656969
+    },
+    "ess_complementarity_penalties": {
+     "admm": 159.51705860553523,
+     "polished": 2.5314499522294147,
+     "delta": -156.9856086533058
+    }
+   }
+  },
+  "DSO9|2030|Spring": {
+   "admm": 6617776.003637244,
+   "polished": 6378892.5972677255,
+   "delta": -238883.4063695185,
+   "families": {
+    "generation_cost": {
+     "admm": 0.0,
+     "polished": 0.0,
+     "delta": 0.0
+    },
+    "flexibility_cost": {
+     "admm": 6492841.090650576,
+     "polished": 6377222.234485509,
+     "delta": -115618.8561650673
+    },
+    "load_curtailment_cost": {
+     "admm": 0.0,
+     "polished": 0.0,
+     "delta": 0.0
+    },
+    "gen_curtailment_penalty": {
+     "admm": 2374.334629006662,
+     "polished": 1983.849674929539,
+     "delta": -390.4849540771229
+    },
+    "ess_utilization_cost_penalty": {
+     "admm": 0.0,
+     "polished": 0.0,
+     "delta": 0.0
+    },
+    "slack_penalties": {
+     "admm": 122400.7075397345,
+     "polished": -314.1588118156526,
+     "delta": -122714.86635155015
+    },
+    "ess_complementarity_penalties": {
+     "admm": 159.8708179267041,
+     "polished": 0.6719191020396799,
+     "delta": -159.1988988246644
+    }
+   }
+  },
+  "DSO9|2030|Summer": {
+   "admm": 4396780.827009102,
+   "polished": 4260044.721529615,
+   "delta": -136736.10547948722,
+   "families": {
+    "generation_cost": {
+     "admm": 0.0,
+     "polished": 0.0,
+     "delta": 0.0
+    },
+    "flexibility_cost": {
+     "admm": 4332863.442884206,
+     "polished": 4256822.817279911,
+     "delta": -76040.62560429517
+    },
+    "load_curtailment_cost": {
+     "admm": 0.0,
+     "polished": 0.0,
+     "delta": 0.0
+    },
+    "gen_curtailment_penalty": {
+     "admm": 3682.343862256955,
+     "polished": 3504.2652519939506,
+     "delta": -178.07861026300452
+    },
+    "ess_utilization_cost_penalty": {
+     "admm": 0.0,
+     "polished": 0.0,
+     "delta": 0.0
+    },
+    "slack_penalties": {
+     "admm": 60155.54630200432,
+     "polished": -310.7440286280631,
+     "delta": -60466.29033063238
+    },
+    "ess_complementarity_penalties": {
+     "admm": 79.49396063532242,
+     "polished": 28.383026338699114,
+     "delta": -51.11093429662331
+    }
+   }
+  },
+  "DSO9|2030|Autumn": {
+   "admm": 547521.4727883574,
+   "polished": 421707.1957808784,
+   "delta": -125814.27700747899,
+   "families": {
+    "generation_cost": {
+     "admm": 0.0,
+     "polished": 0.0,
+     "delta": 0.0
+    },
+    "flexibility_cost": {
+     "admm": 486663.98972979997,
+     "polished": 421515.4843300155,
+     "delta": -65148.50539978448
+    },
+    "load_curtailment_cost": {
+     "admm": 0.0,
+     "polished": 0.0,
+     "delta": 0.0
+    },
+    "gen_curtailment_penalty": {
+     "admm": 622.7616973413589,
+     "polished": 490.3450754292452,
+     "delta": -132.41662191211367
+    },
+    "ess_utilization_cost_penalty": {
+     "admm": 0.0,
+     "polished": 0.0,
+     "delta": 0.0
+    },
+    "slack_penalties": {
+     "admm": 60155.403700761766,
+     "polished": -310.74401909613283,
+     "delta": -60466.1477198579
+    },
+    "ess_complementarity_penalties": {
+     "admm": 79.31766045438577,
+     "polished": 12.110394529848502,
+     "delta": -67.20726592453727
+    }
+   }
+  },
+  "DSO9|2030|Winter": {
+   "admm": 735365.5010933143,
+   "polished": 510466.2281505351,
+   "delta": -224899.27294277918,
+   "families": {
+    "generation_cost": {
+     "admm": 0.0,
+     "polished": 0.0,
+     "delta": 0.0
+    },
+    "flexibility_cost": {
+     "admm": 612611.778380456,
+     "polished": 510649.47663250554,
+     "delta": -101962.30174795049
+    },
+    "load_curtailment_cost": {
+     "admm": 0.0,
+     "polished": 0.0,
+     "delta": 0.0
+    },
+    "gen_curtailment_penalty": {
+     "admm": 184.04454030564835,
+     "polished": 109.13462466373971,
+     "delta": -74.90991564190864
+    },
+    "ess_utilization_cost_penalty": {
+     "admm": 0.0,
+     "polished": 0.0,
+     "delta": 0.0
+    },
+    "slack_penalties": {
+     "admm": 122404.68696460026,
+     "polished": -310.74405037605794,
+     "delta": -122715.43101497632
+    },
+    "ess_complementarity_penalties": {
+     "admm": 164.99120795231406,
+     "polished": 18.360943741843684,
+     "delta": -146.6302642104704
+    }
+   }
+  },
+  "DSO9|2035|Spring": {
+   "admm": 9829958.06314861,
+   "polished": 9612559.845990477,
+   "delta": -217398.21715813316,
+   "families": {
+    "generation_cost": {
+     "admm": 0.0,
+     "polished": 0.0,
+     "delta": 0.0
+    },
+    "flexibility_cost": {
+     "admm": 9705013.034996653,
+     "polished": 9610642.047092183,
+     "delta": -94370.98790447041
+    },
+    "load_curtailment_cost": {
+     "admm": 0.0,
+     "polished": 0.0,
+     "delta": 0.0
+    },
+    "gen_curtailment_penalty": {
+     "admm": 2355.1035836184083,
+     "polished": 2203.089432604849,
+     "delta": -152.01415101355906
+    },
+    "ess_utilization_cost_penalty": {
+     "admm": 0.0,
+     "polished": 0.0,
+     "delta": 0.0
+    },
+    "slack_penalties": {
+     "admm": 122430.8731188965,
+     "polished": -284.54330455777443,
+     "delta": -122715.41642345428
+    },
+    "ess_complementarity_penalties": {
+     "admm": 159.05144944207058,
+     "polished": -0.747229753155331,
+     "delta": -159.7986791952259
+    }
+   }
+  },
+  "DSO9|2035|Summer": {
+   "admm": 8186765.275550372,
+   "polished": 7938369.759502875,
+   "delta": -248395.51604749728,
+   "families": {
+    "generation_cost": {
+     "admm": 0.0,
+     "polished": 0.0,
+     "delta": 0.0
+    },
+    "flexibility_cost": {
+     "admm": 8054971.467032884,
+     "polished": 7929741.642216757,
+     "delta": -125229.82481612731
+    },
+    "load_curtailment_cost": {
+     "admm": 0.0,
+     "polished": 0.0,
+     "delta": 0.0
+    },
+    "gen_curtailment_penalty": {
+     "admm": 8948.13297548632,
+     "polished": 8591.732980639194,
+     "delta": -356.39999484712644
+    },
+    "ess_utilization_cost_penalty": {
+     "admm": 0.0,
+     "polished": 0.0,
+     "delta": 0.0
+    },
+    "slack_penalties": {
+     "admm": 122433.85664581477,
+     "polished": -281.45044129101154,
+     "delta": -122715.30708710579
+    },
+    "ess_complementarity_penalties": {
+     "admm": 411.81889618722124,
+     "polished": 317.8347467703967,
+     "delta": -93.98414941682455
+    }
+   }
+  },
+  "DSO9|2035|Autumn": {
+   "admm": 1240056.806172298,
+   "polished": 981999.5503091156,
+   "delta": -258057.25586318248,
+   "families": {
+    "generation_cost": {
+     "admm": 0.0,
+     "polished": 0.0,
+     "delta": 0.0
+    },
+    "flexibility_cost": {
+     "admm": 1115140.639091607,
+     "polished": 980268.4768949365,
+     "delta": -134872.16219667043
+    },
+    "load_curtailment_cost": {
+     "admm": 0.0,
+     "polished": 0.0,
+     "delta": 0.0
+    },
+    "gen_curtailment_penalty": {
+     "admm": 2134.3716217592932,
+     "polished": 1777.3544078998589,
+     "delta": -357.0172138594344
+    },
+    "ess_utilization_cost_penalty": {
+     "admm": 0.0,
+     "polished": 0.0,
+     "delta": 0.0
+    },
+    "slack_penalties": {
+     "admm": 122433.73823433925,
+     "polished": -281.45045097049905,
+     "delta": -122715.18868530975
+    },
+    "ess_complementarity_penalties": {
+     "admm": 348.0572245925032,
+     "polished": 235.16945724981798,
+     "delta": -112.88776734268521
+    }
+   }
+  },
+  "DSO9|2035|Winter": {
+   "admm": 697315.1272052276,
+   "polished": 459592.24473334965,
+   "delta": -237722.88247187797,
+   "families": {
+    "generation_cost": {
+     "admm": 0.0,
+     "polished": 0.0,
+     "delta": 0.0
+    },
+    "flexibility_cost": {
+     "admm": 574411.1124680048,
+     "polished": 459665.2746934323,
+     "delta": -114745.83777457249
+    },
+    "load_curtailment_cost": {
+     "admm": 0.0,
+     "polished": 0.0,
+     "delta": 0.0
+    },
+    "gen_curtailment_penalty": {
+     "admm": 305.6037414341861,
+     "polished": 209.15960165030097,
+     "delta": -96.4441397838851
+    },
+    "ess_utilization_cost_penalty": {
+     "admm": 0.0,
+     "polished": 0.0,
+     "delta": 0.0
+    },
+    "slack_penalties": {
+     "admm": 122434.29175820903,
+     "polished": -281.450447873062,
+     "delta": -122715.7422060821
+    },
+    "ess_complementarity_penalties": {
+     "admm": 164.1192375796662,
+     "polished": -0.7391138598501462,
+     "delta": -164.85835143951633
+    }
+   }
+  }
+ }
+}

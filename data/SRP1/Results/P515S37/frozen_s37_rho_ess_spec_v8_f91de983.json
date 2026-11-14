@@ -1,0 +1,69 @@
+{
+ "arms": {
+  "s37_rho0p001": {
+   "launch_condition": "after arm 1 has exited; never concurrently",
+   "order": 2,
+   "output_root": "data/SRP1/Results/P515S37_RHO0P001_run",
+   "rho_ess": 0.001
+  },
+  "s37_rho0p01": {
+   "order": 1,
+   "output_root": "data/SRP1/Results/P515S37_RHO0P01_run",
+   "rho_ess": 0.01
+  }
+ },
+ "authority": [
+  "PLANNER_BRIEF_2026-09-13.md Addendum 19"
+ ],
+ "capture_requirements": "per-entry storage x (per agent) and z at EVERY cycle (stride 1); EFC per cycle; ESS action labels; everything s35ref captured; rule-eleven checklist asserts every capture path and every configuration value (including rho_ess fixed and the exemption active) before any solve",
+ "certification_per_arm": {
+  "adoption": "if both arms certify, adopt the LARGER rho_ess (0.01); if exactly one certifies, that one; if neither, stop for review (Option 1, settlement active at initialization, is the parked fallback)",
+  "certified_iff": [
+   "Boyd stop on all three channels with 3 consecutive converged cycles within 150, derived from the trajectory (not the harness stopped_by field)",
+   "no V or PF channel frozen at a rho clamp",
+   "storage-channel terminal ratio max(primal, dual) < 0.9 (settled, not stopped)",
+   "terminal system cost within the rule-nine bar of run 1: |Q_arm - Q_run1| <= terminal step (arm) + terminal step (run 1, 256.26); valid because both runs are then settled"
+  ]
+ },
+ "configuration_common": {
+  "base": "run 1 (s35ref) exactly, applied through deep-copied parameter overrides, never by editing the case file",
+  "ess_balancing": "EXEMPT: no increase or decrease is ever applied to the ESS channel; action recorded as a distinct label (e.g. \"exempt (fixed)\"); gamma_ess = tau * rho_ess stays tied (tau = 1) and therefore constant",
+  "production_change": "a per-channel balancing exemption keyed in the case-file ADMM block (default: no channel exempt, so every other case study and every previous arm is unchanged); the arms set it to [\"ess\"] by override",
+  "rho_ess": "fixed at the arm value for every network and the ESSO, for the whole run",
+  "rho_pf_initial": 0.198,
+  "rho_v_initial": 0.0077,
+  "shared_ess_initialization": "standalone (cold, no LP initialization) - overrides the case-file price_taker flag",
+  "unchanged": "sigma fixed 9.363536e7, al_scale_esso (sigma/median block weight), S_ref 2.5 MVA, D5 ESSO AL scaling, gamma = tau*rho, Boyd eps_abs 1e-5 / eps_rel 1e-4, 3 consecutive converged cycles, network recovery policy, cap 150",
+  "v_pf_balancing": "on, exactly as run 1: freeze after 10 unchanged cycles with at least one prior action, backstop cycle 60, clamp detection"
+ },
+ "mechanism_under_test": "Addendum 19: per-cycle storage block move ~ grad f_i / (rho_ess * a^2) (~2e-4 normalized units per cycle at rho_ess 0.1125); the dual increment is rho-invariant and the primal step scales as 1/rho_ess. Residual balancing is mis-specified on the ESS channel (gradient-dominated dual residual that does not shrink with rho drove rho_ess UP, 0.05 -> 0.1125).",
+ "monitoring_reported_not_gated": {
+  "channel_ratios": "per-cycle primal and dual ratios for all channels",
+  "efc_trajectory": "EFC/day per cycle per node and per cohort-year at termination",
+  "ess_step_direction_sign_changes": "per cycle: fraction of storage consensus entries (P, all nodes/years/days/periods) whose step z_c - z_(c-1) changes sign relative to z_(c-1) - z_(c-2), ignoring entries with |step| < 1e-9 MW; plus the cosine between consecutive step vectors. OSCILLATION FLAG if the sign-change fraction exceeds 0.2 for 10 consecutive cycles or the cosine is negative for 5 consecutive cycles",
+  "local_solve_failures": "count per cycle and total, with network-failure tiers; compared with run 1 (0 local failures; 0.625 network failures per cycle)",
+  "rho_gamma": "per-channel trajectories; ESS constant by construction",
+  "step_sizes": "per-cycle RMS and max per-entry storage consensus step, in MW and in normalized units a*step"
+ },
+ "predecessor": {
+  "note": "run 1 (s35ref) configuration is the base; spec v6/v7 dual-initialization route closed by Addendum 19",
+  "path": "data/SRP1/Results/P515S35/frozen_s35_reference_spec_v5_995548ab.json",
+  "sha256": "995548ababa1b428e9bc4354a078ffd8322cc54d00f04b9ef7a694e43311c7ba"
+ },
+ "predictions_recorded_in_advance": [
+  "storage step per cycle scales ~ 1/rho_ess: early per-entry ESS consensus step at 0.01 is ~11x run 1 at 0.1125 for comparable gradient, and at 0.001 ~10x the 0.01 arm",
+  "EFC/day reaches 1.06 within ~50 cycles in the 0.01 arm",
+  "at least one arm certifies under the criteria above"
+ ],
+ "reference": {
+  "boyd_stop_cycle": 477,
+  "commit": "ed1377c4",
+  "efc_per_day": 1.058952279550704,
+  "reading": "certified evaluation; v2 trajectory-derived evaluator accepted (Addendum 17)",
+  "run": "data/SRP1/Results/P515S35_REF_run",
+  "system_cost": 651039166.0347285,
+  "terminal_objective_step": 256.2581009864807
+ },
+ "report": "lead with the certification verdict per arm, the cycle count, and the EFC trajectory; then step sizes, failures and oscillation monitoring; stop for review",
+ "stage": "P5.15 Addendum 19 - the rho_ess experiment (arms s37_rho0p01, s37_rho0p001) - frozen specification v8"
+}

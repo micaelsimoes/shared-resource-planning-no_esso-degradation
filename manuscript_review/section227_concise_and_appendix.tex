@@ -1,0 +1,32 @@
+% ====================================================================================================================
+% PART 1 -- Section 2.2.7: replaces everything from \paragraph{Stopping and certification} up to (not including)
+% \paragraph{Resolution}. The Resolution paragraph of section227_certification_v2.tex and the existing Determinacy
+% paragraph stay as they are.
+% ====================================================================================================================
+\textcolor{blue}{
+    \paragraph{Stopping and certification} Each recourse evaluation runs the coordination procedure of \ref{app:admm_updated} until the primal and dual residuals of every consensus channel pass the absolute-plus-relative test of Boyd et al.~\cite{boyd_admm_2011} in a cycle in which every local solve is successful. On a nonconvex recourse this does not imply that the objective has settled (Subsection~\ref{subsec:res_certification}), so the residual pass only opens a certifying regime, with the coordination settings held fixed, in which the evaluation continues until the trajectory of its objective shows that it has settled. On the oscillatory branch, the oscillation must have a measured period, must not be growing (the growth test) and must stay within a tolerance $\tau$ over that period; the operators' remaining disagreement at the interface, priced, must be within $\tau/2$ (the gap clause); and the evidence must come from cleanly solved cycles. An objective that descends without oscillating is certified instead on a monotone branch that bounds its remaining descent, under the same gap clause and clean-evidence condition. The rule is stated in full in \ref{app:admm_updated_certification}. An evaluation that does not certify within its cycle cap is reported in an uncertified form, with its consensus gap at the cap and its settling slack, the movement of the objective since the certification cycle of its earlier, residual-based run.
+}
+
+% ====================================================================================================================
+% PART 2 -- Appendix A: new subsection, inserted after "Stopping Test, Acceleration and Tail" and before "Algorithm".
+% ====================================================================================================================
+\subsection{\textcolor{blue}{Certification Rule}}
+\label{app:admm_updated_certification}
+
+\textcolor{blue}{
+    The certifying regime of Subsection~\ref{subsubsec:certification} opens at the residual pass $k_0$. Throughout the regime acceleration is off, the tight interior-point tail is on and the penalty parameters $\rho$ are frozen, from the next cycle in a fresh run or from the stopping cycle of the earlier run in an evaluation continued from one; a later lapse of the residual test, or a cycle with a failed solve, resets $k_0$ and the turning-point record while these holds stay. With $Q_k$ the value of the recourse objective at cycle $k$, the evaluation is certified on the oscillatory branch at the first cycle $k^{\star} > k_0$ at which:
+}
+
+\textcolor{blue}{
+    \begin{enumerate}
+        \item[(C1)] \emph{Period}: $Q_k$ has shown at least three turning points since $k_0$, and its period $\hat{P}$, the number of cycles spanned by the three most recent, is measured rather than assumed;
+        \item[(C2)] \emph{Damping} (the growth test): its successive half-swings are not growing;
+        \item[(C3)] \emph{Settling}: its range over the window of the last $n_{\mathrm{w}} = \max\{20, \lceil 1.1\,\hat{P} \rceil\}$ cycles, all after $k_0$, is at most $\tau$;
+        \item[(C4)] \emph{Consensus} (the gap clause): the priced interface-consensus gap $t_{\text{sum}}$, the value of the residual mismatch between the operators' interface schedules at the interface price, satisfies $|t_{\text{sum}}| \le \tau/2$;
+        \item[(C5)] \emph{Clean evidence}: every cycle in that window was solved cleanly, every local solve ending at the solver's optimal status, or at its acceptable status on a primary attempt with all four termination metrics within ten times the tight-tail tolerances.
+    \end{enumerate}
+}
+
+\textcolor{blue}{
+    In (C1)--(C2) a step smaller than $\tau/100$ carries no sign, a swing smaller than $\tau/10$ is treated as noise and is neither compared nor counted as a turning point, and the first three cycles after $k_0$ are not counted. An objective that descends without a sign change is certified instead on the monotone branch, over a window of $2P_{\max}$ cycles after $k_0$ with $P_{\max}$ the longest period measured on the instance, when (M1) its steps are decreasing --- the mean step over the second half of the window is below that over the first half, or every step is below $\tau/100$; (M2) its range is at most $\tau$; (M3) $|\text{last step}| \cdot 2P_{\max} \le \tau$, a linear bound on the remaining descent that uses no fit; and (C4)--(C5) hold on that window. An evaluation that satisfies neither branch within its cycle cap is reported in the uncertified form of Subsection~\ref{subsubsec:certification}: its consensus gap is $|t_{\text{sum}}|$ at the cap, and its settling slack is the movement of the objective between the certification cycle of its earlier, residual-based run and the cap.
+}

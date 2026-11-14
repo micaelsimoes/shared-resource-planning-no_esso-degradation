@@ -1,0 +1,47 @@
+[R0] provenance for P5.9-D oracle replay
+    executable      : /Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python
+    CONDA_DEFAULT_ENV: None (from path: opf_env_py311)
+    python 3.11.11  numpy 2.4.2  pandas 3.0.0  scipy 1.17.0  pyomo 6.9.5
+    IPOPT           : 3.14.18 ASL(20241111) @ /usr/local/bin/ipopt (exists=True)
+    HSL solver      : ma97
+    gurobipy        : 13.0.1 available=True licence=ACADEMIC expires=2027-04-14
+    checksum        : 5a02b77ccbbbbbb869de92958a3851d095624711abc2dbfc0157466064410358
+    canonical match : True
+    -> /Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P59/provenance.json
+[P5.9-D] stage A selected A2_rho_pf_1000 -> rho={'v': 1.5, 'pf': 1000.0}
+
+
+[P5.9-D] base -- CURRENT formulation
+      gen 1: VALID            cycles=2 pre-polish=837188510.9012293 Q=828021090.3608505 fail=0 step=None
+      gen 2: VALID            cycles=1 pre-polish=836578781.2448345 Q=827415318.5639443 fail=0 step=-605771.7969061136
+      gen 3: VALID            cycles=1 pre-polish=835829460.6145617 Q=826824028.8454782 fail=0 step=-591289.7184661627
+      gen 4: VALID            cycles=1 pre-polish=835374067.3601586 Q=826405022.1934375 fail=0 step=-419006.65204072
+      gen 5: VALID            cycles=1 pre-polish=834868654.7161627 Q=825961521.8823205 fail=0 step=-443500.3111169338
+      gen 6: VALID            cycles=1 pre-polish=834572685.7694608 Q=825531306.7469851 fail=0 step=-430215.1353354454
+      gen 7: VALID            cycles=1 pre-polish=834070246.6930151 Q=825108709.6951807 fail=0 step=-422597.05180442333
+      gen 8: VALID            cycles=1 pre-polish=833879437.3269556 Q=824795363.7186278 fail=0 step=-313345.97655284405
+
+[P5.9-D] base -- RESCALED + rho={'v': 1.5, 'pf': 1000.0}
+      gen 1: VALID            cycles=6 pre-polish=827845392.2019303 Q=828298310.2179484 fail=0 step=None
+      gen 2: VALID            cycles=1 pre-polish=827752586.9864466 Q=829004868.4196392 fail=0 step=706558.201690793
+      gen 3: VALID            cycles=1 pre-polish=827705119.9289944 Q=827952825.6268431 fail=0 step=-1052042.792796135
+      gen 4: VALID            cycles=1 pre-polish=827674698.7150891 Q=827844231.9061286 fail=0 step=-108593.72071444988
+      gen 5: VALID            cycles=1 pre-polish=827644262.5875541 Q=827728630.2357488 fail=0 step=-115601.67037987709
+      gen 6: VALID            cycles=1 pre-polish=827613549.9211483 Q=827716272.3126332 fail=0 step=-12357.923115611076
+      gen 7: VALID            cycles=1 pre-polish=827581679.5503707 Q=827652447.4001483 fail=0 step=-63824.91248488426
+      gen 8: VALID            cycles=1 pre-polish=827552134.9434288 Q=827614426.3100634 fail=0 step=-38021.09008491039
+
+[P5.9-D] summary
+
+   base
+                                          CURRENT             RESCALED
+      generation_1_polish_clean                 True                 True
+      n_polish_failures                         0                    0
+      H2                        827415318.5639443    829004868.4196392
+      H4                        826405022.1934375    827844231.9061286
+      H8                        824795363.7186278    827614426.3100634
+      total_drift              -3225726.642222643   -683883.9078850746
+      final_step_delta        -313345.97655284405   -38021.09008491039
+      reaches_planning_signal_at_generation                 None                    6
+
+[P5.9-D] report -> /Users/micaelsimoes/Projects/share-resource-planning-no_esso-degradation/data/SRP1/Results/P59/p59_d_replay_base.json

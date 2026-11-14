@@ -1,0 +1,332 @@
+{
+ "N": 72,
+ "all_hold": true,
+ "checks": {
+  "C1_aa_hold_standin": {
+   "acts_after_N": true,
+   "boundary": {
+    "72": {
+     "action": "accepted",
+     "inert": true
+    },
+    "73": {
+     "action": "off (all channels within Boyd tolerance)",
+     "acts": true
+    }
+   },
+   "holds": true,
+   "id": "C1_aa_hold_standin",
+   "inert_through_N": true,
+   "natural_action_at_boundary_plus_1": "accepted (stand-in, all_boyd_pass False)"
+  },
+  "C2_aa_hold_real_production": {
+   "aam_functions_restored": true,
+   "acts_after_N": true,
+   "after_N_ref_vs_wrapped": [
+    {
+     "cycle": 73,
+     "iterates_differ": true,
+     "unwrapped_action": "accepted",
+     "wrapped_action": "off (all channels within Boyd tolerance)"
+    },
+    {
+     "cycle": 74,
+     "iterates_differ": true,
+     "unwrapped_action": "accepted",
+     "wrapped_action": "off (all channels within Boyd tolerance)"
+    },
+    {
+     "cycle": 75,
+     "iterates_differ": true,
+     "unwrapped_action": "accepted",
+     "wrapped_action": "off (all channels within Boyd tolerance)"
+    },
+    {
+     "cycle": 76,
+     "iterates_differ": true,
+     "unwrapped_action": "accepted",
+     "wrapped_action": "off (all channels within Boyd tolerance)"
+    }
+   ],
+   "holds": true,
+   "id": "C2_aa_hold_real_production",
+   "inert_through_N_bitwise": true,
+   "n_accepted_extrapolations_through_N_in_both_runs": 71
+  },
+  "C3_tail_hold_real_production": {
+   "acts_after_N": true,
+   "certificate_length_after_baseline": 1000000000,
+   "held_next_state_at_N_plus_1_despite_disagreement": true,
+   "holds": true,
+   "id": "C3_tail_hold_real_production",
+   "inert_through_N": true,
+   "production_raise_on_disagreement_preserved_at_N": true,
+   "unwrapped_tail_after_N": [
+    true,
+    false,
+    false,
+    false
+   ],
+   "wrapped_tail_after_N": [
+    true,
+    true,
+    true,
+    true
+   ]
+  },
+  "C4_rho_hold_real_production": {
+   "acts_after_N": true,
+   "case_file_penalty_update": {
+    "balancing_exempt_channels": [],
+    "balancing_exempt_until": {
+     "ess": {
+      "consecutive_cycles": 5,
+      "dual_ratio_below": 1.0
+     }
+    },
+    "decrease_factor": 1.5,
+    "freeze_after_cycle": null,
+    "freeze_after_unchanged_cycles": 10,
+    "freeze_backstop_cycle": 200,
+    "increase_factor": 1.5,
+    "max": 10000.0,
+    "min": 0.0001,
+    "residual_balance_ratio": 5.0,
+    "residual_balance_ratio_pf_decrease": 3.0
+   },
+   "cycle_lines_emitted_by_wrapper": 76,
+   "cycles_with_rho_change_through_N_both_runs": 72,
+   "holds": true,
+   "id": "C4_rho_hold_real_production",
+   "inert_through_N_bitwise": true,
+   "unwrapped_rho_changed_after_N": [
+    true,
+    true,
+    true,
+    true
+   ],
+   "wrapped_actions_after_N": [
+    {
+     "ess": "held after solver failure",
+     "pf": "held after solver failure",
+     "v": "held after solver failure"
+    },
+    {
+     "ess": "held after solver failure",
+     "pf": "held after solver failure",
+     "v": "held after solver failure"
+    },
+    {
+     "ess": "held after solver failure",
+     "pf": "held after solver failure",
+     "v": "held after solver failure"
+    },
+    {
+     "ess": "held after solver failure",
+     "pf": "held after solver failure",
+     "v": "held after solver failure"
+    }
+   ],
+   "wrapped_rho_after_N_equals_rho_at_N_bitwise": true,
+   "wrapped_rho_changed_after_N": [
+    false,
+    false,
+    false,
+    false
+   ]
+  },
+  "C5_certificate_disabled_and_early_stop": {
+   "holds": true,
+   "id": "C5_certificate_disabled_and_early_stop",
+   "rule": "from the tail baseline (before cycle 1) the certificate length is 10**9; for cycle > N the early stop fires on the 3rd consecutive post-certification step with |dQ| < 500 EUR (a step >= 500 or a failed cycle resets the streak, and the step after a failed cycle is unavailable); firing sets the length to 0 so production exits at the end of that cycle; the loop exit restores 10",
+   "scenarios": {
+    "failed_cycle_resets_streak": {
+     "certificate_length_after_baseline": 1000000000,
+     "certificate_length_at_early_stop_cycle": 0,
+     "certificate_length_in_force_through_N": [
+      1000000000
+     ],
+     "certificate_length_restored_at_exit": 10,
+     "early_stop_cycle": 79,
+     "stopped_by": "early_stop",
+     "streaks_after_N": [
+      1,
+      2,
+      0,
+      0,
+      1,
+      2,
+      3
+     ],
+     "summary_ok": true
+    },
+    "fires_on_third_small_step": {
+     "certificate_length_after_baseline": 1000000000,
+     "certificate_length_at_early_stop_cycle": 0,
+     "certificate_length_in_force_through_N": [
+      1000000000
+     ],
+     "certificate_length_restored_at_exit": 10,
+     "early_stop_cycle": 76,
+     "stopped_by": "early_stop",
+     "streaks_after_N": [
+      0,
+      1,
+      2,
+      3
+     ],
+     "summary_ok": true
+    },
+    "never_fires": {
+     "certificate_length_after_baseline": 1000000000,
+     "certificate_length_at_early_stop_cycle": null,
+     "certificate_length_in_force_through_N": [
+      1000000000
+     ],
+     "certificate_length_restored_at_exit": 10,
+     "early_stop_cycle": null,
+     "stopped_by": "other",
+     "streaks_after_N": [
+      0,
+      0,
+      0,
+      1,
+      0
+     ],
+     "summary_ok": true
+    }
+   }
+  },
+  "C6_layering_real_install": {
+   "appender_recorded_held_tail_value_after_N": true,
+   "certificate_length_restored_at_exit": 10,
+   "child_real_enters_continuation_first": true,
+   "holds": true,
+   "id": "C6_layering_real_install",
+   "next_state_values_seen_by_appender_last4": [
+    true,
+    true,
+    true,
+    true
+   ],
+   "production_functions_restored_on_exit": true,
+   "summary": {
+    "certificate_length_original": 10,
+    "certificate_length_restored_at_exit": 10,
+    "errors": [],
+    "phase": "ended"
+   }
+  },
+  "C7_keys": {
+   "continuation_key_absent_from_committed_specs": true,
+   "continuation_key_differs_from_certified_key": true,
+   "continuation_key_equals_declared_formula": true,
+   "continuation_key_x0": "25b92ae0f1f2c02eea9b3811f16edf210479e461e653f474bd23d451ff7bf3e3",
+   "default_off_regression": {
+    "committed_entries_scanned": 7032,
+    "committed_specs_scanned": 61,
+    "errors": [],
+    "mismatches": [],
+    "new_equals_pre_w98": 7032
+   },
+   "frozen_key_rebuild_reported": {
+    "entries_with_eval_key": 7011,
+    "not_rebuilt_from_spec_alone": [],
+    "rebuilt_equal": 7011
+   },
+   "holds": true,
+   "id": "C7_keys",
+   "pair_keys_now": {
+    "n7_4h_e1": "c82522f470b35b58399bfe47ebd45612a95641ae308128de5d1c3c08ad5408a1",
+    "x0": "f6e9cd53fdbb8ee8c80388a13d723c49de5b18173bcfa5c7351cbe0d9e5000d4"
+   },
+   "pair_keys_recomputed_byte_identical": true,
+   "pre_w98_harness": {
+    "commit": "b736e4e5",
+    "sha256": "252996a170c30bba69e9d09778a89186683dfbaf715652415c8493abe5e1bc92",
+    "sha256_loaded": "252996a170c30bba69e9d09778a89186683dfbaf715652415c8493abe5e1bc92"
+   }
+  },
+  "C8_preconditions_and_validator": {
+   "holds": true,
+   "id": "C8_preconditions_and_validator",
+   "negative_controls": {
+    "aa_off": "refused: W98 continuation preconditions fail (before any solve): ['anderson_acceleration_on']",
+    "cap_500": "refused: W98 continuation preconditions fail (before any solve): ['cap_equals_N_plus_continuation']",
+    "tail_off": "refused: W98 continuation preconditions fail (before any solve): ['tail_enabled_for_this_run']"
+   },
+   "preconditions_hold_for_stage1": {
+    "aa_off_literal_is_production": true,
+    "anderson_acceleration_on": true,
+    "block_functions_callable": true,
+    "cap_equals_N_plus_continuation": true,
+    "certificate_length_read_only_by_the_loop_test_the_record_and_the_print": true,
+    "loop_exit_is_the_convergence_break": true,
+    "replay_reference_hashes_to_declaration": true,
+    "signature:_anderson_acceleration_cycle_step": true,
+    "signature:_apply_convergence_depth_tail": true,
+    "signature:_capture_convergence_depth_tail_baseline": true,
+    "signature:_convergence_depth_tail_next_state": true,
+    "signature:_get_operational_recourse_components": true,
+    "signature:_update_admm_penalties": true,
+    "tail_enabled_for_this_run": true
+   },
+   "validator_refuses": {
+    "extra_key": true,
+    "int_threshold": true,
+    "n_mismatch": true,
+    "wrong_label": true
+   }
+  }
+ },
+ "code_sha256": {
+  "admm_anderson_acceleration.py": "24cf3bea9b07725ae15029dd0d9d81ed46ab8e75ecf1c9141a4b0afc6be2659e",
+  "p515_s44_campaign_harness.py": "f7bcfac6677457d46ba588df86d57ac22327be4038a94d0d4943bbb048b995f2",
+  "p515_s53_w98_continuation_checks.py": "799b4da6e669a2dacf9cb9bd825e017aedd710f1d590dc117e28295ed7bf89c2",
+  "p515_s53_w98_continuation_hooks.py": "9920f7d6d569fc78c2e4c638c619ccf3f2a09ccbac137833802de61b99717680",
+  "shared_resources_planning.py": "0610d745a41c86c71dae9e776f0dc8e38c7099f73128a3d2c2e8f861ab9fc9c0"
+ },
+ "declaration": {
+  "continuation_cycles": 30,
+  "early_stop": {
+   "abs_gross_step_below_eur": 500.0,
+   "consecutive_cycles": 3
+  },
+  "hold_after_cycle": 72,
+  "label": "CONTINUATION RUN (W98, spec v37) -- NOT a certification: certification rule disabled; regime held after cycle N (AA off, tight tail on, rho frozen)",
+  "record_all_blocks": true,
+  "replay_reference": {
+   "n_cycles": 72,
+   "per_cycle_record": "data/SRP1/Results/P515S53/w90_3x3/campaign_s53_w91_3x3_pair/evals/f6e9cd53fdbb8ee8_x0/per_cycle_record.jsonl",
+   "sha256": "3f0908014805cbd2e0af558cdca2d1cc07842efc55202db727539c0f9812fe80"
+  }
+ },
+ "finished_utc": "2026-09-27T07:03:57.833789+00:00",
+ "git_head": "f5885044fe770e0c61ddeff3e6146f0c9fc126a0",
+ "guard": {
+  "counts": {
+   "blocked_exec": 0,
+   "blocked_solve": 0,
+   "permitted_exec": 0,
+   "permitted_solve": 0
+  },
+  "verify_0_failures": []
+ },
+ "inertness_proof": {
+  "AA": {
+   "acts_after_N": true,
+   "inert_through_N": true
+  },
+  "rho": {
+   "acts_after_N": true,
+   "inert_through_N": true
+  },
+  "tail": {
+   "acts_after_N": true,
+   "inert_through_N": true
+  }
+ },
+ "schema": "p515_s53_w98_zero_solve_checks_v1",
+ "started_utc": "2026-09-27T07:03:56.320007+00:00",
+ "task": "W98 (PLANNER_BRIEF_2026-09-13.md Addendum 51)"
+}

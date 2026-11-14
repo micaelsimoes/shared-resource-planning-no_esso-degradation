@@ -1,0 +1,493 @@
+{
+ "schema": "p515_s44_scale_measurement_v1",
+ "stage": "P5.15 Addendum 25 paper-scale build measurement (frozen spec v14 item4_scale_measurement)",
+ "authority": [
+  "PLANNER_BRIEF_2026-09-13.md Addendum 25 (Scale)",
+  "STEP4_DFO_METHOD.md section 7",
+  "data/SRP1/Results/P515S44/frozen_s44_selection_spec_v14_e4500e27.json item4_scale_measurement"
+ ],
+ "mode": "cycle",
+ "label": "paper_cycle_snapoff_memfix_r1",
+ "instance": "paper",
+ "derived_case": {
+  "path": "data/SRP1/Results/P515S44/scale_measurement/paper_cycle_snapoff_memfix_r1/case/SRP1__paper.json",
+  "sha256": "d726307c1949d91b34b00241fbc713412c689b113222929133eda38d9756ca14",
+  "source": "data/SRP1/SRP1.json",
+  "source_sha256": "61a794a7ce7a3fb983f2e92128eec446dd7dbb17ad75a3b3b1c5735f8bd4e4ef",
+  "source_last_commit": "9568835ad7774244c8838fc02a2263e1d2e859d6",
+  "changes_vs_source": [
+   {
+    "key": "Years",
+    "from": {
+     "2025": 5,
+     "2030": 5,
+     "2035": 5
+    },
+    "to": {
+     "2025": 3,
+     "2028": 3,
+     "2031": 3,
+     "2034": 3,
+     "2037": 3
+    }
+   },
+   {
+    "key": "NumMarketScenarios",
+    "from": 1,
+    "to": 5
+   },
+   {
+    "key": "TransmissionNetwork[case9].num_operation_scenarios",
+    "from": 1,
+    "to": 5
+   },
+   {
+    "key": "DistributionNetworks[case33_1].num_operation_scenarios",
+    "from": 1,
+    "to": 5
+   },
+   {
+    "key": "DistributionNetworks[case33_2].num_operation_scenarios",
+    "from": 1,
+    "to": 5
+   },
+   {
+    "key": "DistributionNetworks[case33_3].num_operation_scenarios",
+    "from": 1,
+    "to": 5
+   }
+  ],
+  "cli_overrides": {}
+ },
+ "candidate": "0.96875 MVA / 3.875 MWh at nodes 5, 7, 9, investment year 2025 (spec v14 C_star)",
+ "status": "solve_count_mismatch",
+ "pid": 512,
+ "cap": 1,
+ "path": "p515_g_g1_g4_admm_gates.run_admm_arm (the campaign child's evaluation call), D configuration verified by p515_s44_campaign_harness._config_hook_factory, cap 1; includes run_admm_arm's own esso_capture_hooks; without the s38/s39 capture wrappers and the floor-row precheck",
+ "scenario_checksum": "1e8bdd3e5233442a87fbe44b78281c8ae61b09c09700388fed20ab9684d18aef",
+ "planning_dimensions": {
+  "years": {
+   "2025": 3,
+   "2028": 3,
+   "2031": 3,
+   "2034": 3,
+   "2037": 3
+  },
+  "days": {
+   "Spring": 92,
+   "Summer": 91,
+   "Autumn": 91,
+   "Winter": 91
+  },
+  "num_instants": 24,
+  "random_seed": 2026,
+  "num_market_scenarios": 5,
+  "num_operation_scenarios": {
+   "case9": 5,
+   "case33_1": 5,
+   "case33_2": 5,
+   "case33_3": 5
+  },
+  "active_distribution_network_nodes": [
+   5,
+   7,
+   9
+  ],
+  "scenario_metadata": {
+   "random_seed": 2026,
+   "deterministic_scenarios": true,
+   "market_scenario_checksum": "13a1755eda70e2c4756114e3fd8f81eb9b0240c1f96dc6268216996a4ae04df2",
+   "operational_scenario_checksum": "3691bc287762a4598d72d434b31a37f4a020e44edc124514558fb43049859bc8",
+   "combined_scenario_checksum": "1e8bdd3e5233442a87fbe44b78281c8ae61b09c09700388fed20ab9684d18aef"
+  }
+ },
+ "expected_block_counts": {
+  "tso_blocks": 20,
+  "dso_blocks": 60,
+  "network_blocks": 80,
+  "esso_models": 3,
+  "solves_per_cycle": 83
+ },
+ "declared_solve_profile": {
+  "derivation": "(1 + n_dso) * n_years * n_days + n_esso_nodes, per cycle, from the planning object",
+  "n_years": 5,
+  "n_days": 4,
+  "n_year_day_blocks": 20,
+  "n_dso": 3,
+  "n_networks": 4,
+  "network_solves_per_cycle": 80,
+  "n_esso_nodes": 3,
+  "esso_solves_per_cycle": 3,
+  "solves_per_cycle": 83,
+  "cap": 1,
+  "rounds": 2,
+  "rounds_note": "one initialization round + cap ADMM cycles",
+  "declared_base_solves": 166,
+  "identity": "observed == base + 1 * recovered_tier1 + 2 * recovered_tier2 (recovery counts from the run's own network_failures_summary)"
+ },
+ "declared_solves": 166,
+ "case_file_anderson_acceleration_declared": {
+  "enabled": true,
+  "memory": 5,
+  "regularization": 1e-10,
+  "reject_policy": "keep_memory"
+ },
+ "case_file_aa_declaration_agreement": {
+  "declared_here": {
+   "enabled": true,
+   "memory": 5,
+   "regularization": 1e-10,
+   "reject_policy": "keep_memory"
+  },
+  "source_file": "p515_s45_a0_campaign.py",
+  "source_name": "CASE_FILE_AA",
+  "source_present": true,
+  "method": "ast.literal_eval of the assignment in the source (never imported)",
+  "source_literal": {
+   "enabled": true,
+   "memory": 5,
+   "regularization": 1e-10,
+   "reject_policy": "keep_memory"
+  },
+  "agree": true
+ },
+ "objective_scale_assert_factor_from_case_file": 3.0,
+ "provenance": {
+  "timestamp_utc": "2026-09-22T12:34:10.535784+00:00",
+  "git_head": "67dd7d71a6c5af63bc3d37208605a09406a73a79",
+  "sys_executable": "/Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python",
+  "conda_default_env": null,
+  "conda_env_from_path": "opf_env_py311",
+  "python_version": "3.11.11",
+  "numpy_version": "2.4.2",
+  "pandas_version": "3.0.0",
+  "scipy_version": "1.17.0",
+  "pyomo_version": "6.9.5",
+  "ipopt": {
+   "path": "/usr/local/bin/ipopt",
+   "exists": true,
+   "version": "3.14.18",
+   "asl": "20241111",
+   "banner": "Ipopt 3.14.18 (aarch64-apple-darwin24.5.0), ASL(20241111)",
+   "path_ipopt_not_used": {
+    "path": "/usr/local/bin/ipopt",
+    "version": "3.14.18",
+    "shadows_canonical": false
+   }
+  },
+  "hsl_linear_solver": "ma97",
+  "gurobi": {
+   "gurobipy": "13.0.1",
+   "gurobi_runtime": "13.0.1",
+   "licence": "ACADEMIC",
+   "licence_expiry": "2027-04-14",
+   "available": true,
+   "licence_id": "2807206",
+   "licence_version": "13"
+  },
+  "scenario_checksum": "1e8bdd3e5233442a87fbe44b78281c8ae61b09c09700388fed20ab9684d18aef",
+  "canonical_checksum": "5a02b77ccbbbbbb869de92958a3851d095624711abc2dbfc0157466064410358",
+  "checksum_matches_canonical": false,
+  "canonical_ipopt_path": "/usr/local/bin/ipopt",
+  "canonical_ipopt_version": "3.14.18",
+  "canonical_ipopt_asl": "20241111",
+  "canonical_hsl_linear_solver": "ma97",
+  "gate_failures": [
+   {
+    "identity": "scenario checksum",
+    "observed": "1e8bdd3e5233442a87fbe44b78281c8ae61b09c09700388fed20ab9684d18aef",
+    "canonical": "5a02b77ccbbbbbb869de92958a3851d095624711abc2dbfc0157466064410358"
+   }
+  ],
+  "checksum_expected_to_differ": true,
+  "gate_passes_for_this_instance": true
+ },
+ "snapshot_setting": {
+  "requested": "off",
+  "tso_mode_before": "lightweight",
+  "dso_mode_before": "lightweight",
+  "tso_mode_after": "off",
+  "dso_mode_after": "off",
+  "expected": [
+   "off",
+   "off"
+  ],
+  "took_effect": true,
+  "persistent_workers_enabled": false
+ },
+ "release_solution_bookkeeping": {
+  "requested": true,
+  "before": {
+   "tso": false,
+   "dso_5": false,
+   "dso_7": false,
+   "dso_9": false
+  },
+  "read_back": {
+   "tso": true,
+   "dso_5": true,
+   "dso_7": true,
+   "dso_9": true
+  },
+  "solver_params_objects_distinct": true,
+  "took_effect": true
+ },
+ "objective_scale": {
+  "sigma_fixed": 93635360.0,
+  "sigma_computed": 55899327.546773635,
+  "al_scale_esso": 386258.6943086285,
+  "assert_factor_from_case_file": 3.0,
+  "source": "cycle_trajectory row 1 (run-level constants) + the arm stdout prints",
+  "printed_of_scale_line": "[ADMM OF SCALE] Fixed sigma in force sigma_fixed=9.363536e+07 | sigma_computed=5.589933e+07 | ratio=5.969895e-01 | assert_factor=3.000",
+  "printed": {
+   "sigma_fixed": 93635360.0,
+   "sigma_computed": 55899330.0,
+   "ratio": 0.5969895,
+   "assert_factor": 3.0
+  },
+  "printed_esso_al_scale_line": "[ADMM ESSO AL SCALE] mode=sigma_over_median_block_weight | sigma=9.363536e+07 | median_block_weight=2.424162e+02 | al_scale_esso=3.862587e+05",
+  "printed_al_scale_esso": 386258.7,
+  "ratio_sigma_computed_over_fixed": 0.5969895085229943,
+  "calibration_range": [
+   0.3333333333333333,
+   3.0
+  ],
+  "calibration_check_passed": true,
+  "calibration_note": "production raises ValueError in _resolve_common_admm_objective_scale outside the range; a completed run necessarily passed it -- the value here makes the margin explicit",
+  "row_agrees_with_print": true,
+  "row_print_agreement_tolerance": "relative 1e-6 (the prints are :.6e)"
+ },
+ "guard": {
+  "permitted": [
+   [
+    "network.py",
+    "_run_smopf_solver_attempt"
+   ],
+   [
+    "shared_energy_storage_data.py",
+    "_run_solver_attempt"
+   ]
+  ],
+  "counts": {
+   "permitted_solve": 168,
+   "permitted_exec": 168,
+   "blocked_solve": 0,
+   "blocked_exec": 0
+  },
+  "declared_base_solves": 166,
+  "recovered_tier1": 0,
+  "recovered_tier2": 0,
+  "reconciled_expected_solves": 166,
+  "observed_solves": 168,
+  "identity": "observed == base + 1 * recovered_tier1 + 2 * recovered_tier2 (recovery counts from the run's own network_failures_summary)",
+  "identity_holds": false,
+  "declared_solves": 166,
+  "verify_failures": [
+   "solve count 168 != declared 166 (too few means the path under test did not run)",
+   "process-launch count 168 != declared 166 (a retry would raise this above the solve count)"
+  ]
+ },
+ "run_admm_arm_identity_holds_note": "run_admm_arm's own solve_profile.identity_holds uses the SRP1 constant 51 per cycle and no recovery term; superseded here by the declared base reconciled with the run's own tier counts",
+ "anderson_acceleration_effective_in_child": {
+  "enabled": true,
+  "memory": 5,
+  "regularization": 1e-10,
+  "reject_policy": "keep_memory"
+ },
+ "configuration_checks": {
+  "rho_v_matches_D": true,
+  "rho_pf_matches_D": true,
+  "rho_ess_matches_D": true,
+  "tau_is_0": true,
+  "gamma_policy_tied_to_rho": true,
+  "balancing_exempt_until_matches_D": true,
+  "balancing_exempt_channels_empty": true,
+  "freeze_after_unchanged_cycles_is_10": true,
+  "freeze_backstop_cycle_is_200": true,
+  "minimum_consecutive_converged_cycles_matches_spec": true,
+  "shared_ess_initialization_is_standalone": true,
+  "num_max_iters_is_spec_cap": true,
+  "anderson_acceleration_case_file_matches_declaration": true,
+  "anderson_acceleration_case_file_memory_regularization_frozen": true,
+  "persistent_workers_off": true,
+  "parallel_execution_off": true
+ },
+ "timing_s": {
+  "initialization (create_admm_variables -> first cycle DSO dispatch)": 1565.2442507743835,
+  "cycle_1 (first DSO dispatch -> ESSO coordination return)": 2535.1204931735992,
+  "cycle_1_production_printed (Iteration 1: X s)": 2540.42,
+  "run_admm_arm_wall_clock_s": 4105.872456073761,
+  "child_total_s": 4120.1318600177765
+ },
+ "stage_stamps": {
+  "create_admm_variables": [
+   {
+    "t_start": 1790080450.8496761,
+    "t_end": 1790080450.85024
+   }
+  ],
+  "create_distribution_networks_models": [
+   {
+    "t_start": 1790080450.850241,
+    "t_end": 1790081855.608896
+   }
+  ],
+  "create_transmission_network_model": [
+   {
+    "t_start": 1790081855.6089191,
+    "t_end": 1790082007.2231638
+   }
+  ],
+  "create_shared_energy_storage_model": [
+   {
+    "t_start": 1790082007.223202,
+    "t_end": 1790082007.6503701
+   }
+  ],
+  "update_distribution_coordination_models_and_solve": [
+   {
+    "t_start": 1790082016.093927,
+    "t_end": 1790084399.702374
+   }
+  ],
+  "update_transmission_coordination_model_and_solve": [
+   {
+    "t_start": 1790084405.100941,
+    "t_end": 1790084545.4420211
+   }
+  ],
+  "update_shared_energy_storages_coordination_model_and_solve": [
+   {
+    "t_start": 1790084550.803488,
+    "t_end": 1790084551.21442
+   }
+  ]
+ },
+ "cycle_row": {
+  "cycle": 1,
+  "local_solves_ok": false,
+  "recourse": null,
+  "gross_operational_cost": null,
+  "objective_change_abs": null
+ },
+ "network_failures_summary": {
+  "n_blocks": 1,
+  "classes": {
+   "recovered_tier1": 0,
+   "recovered_tier2": 0,
+   "unrecovered": 1,
+   "not_attempted": 0,
+   "indeterminate": 0,
+   "recovered": 0
+  },
+  "n_frozen_snapshots": 0,
+  "n_esso_recovery_events": 0,
+  "path": "data/SRP1/Results/P515S44/scale_measurement/paper_cycle_snapoff_memfix_r1/one_cycle/network_failures_s44_scale_cycle.jsonl"
+ },
+ "arm_solve_profile": {
+  "observed": {
+   "permitted_solve": 168,
+   "permitted_exec": 168,
+   "blocked_solve": 0,
+   "blocked_exec": 0
+  },
+  "identity_holds": false
+ },
+ "g_report_path": "data/SRP1/Results/P515S44/scale_measurement/paper_cycle_snapoff_memfix_r1/one_cycle/g_s44_scale_cycle.json",
+ "watchdog": {
+  "limit_bytes": 30064771072,
+  "n_samples": 7681,
+  "peak": {
+   "measure": 31963651856,
+   "rss_tree": 17120542720,
+   "rss_self": 16903028736,
+   "footprint_self": 31387639568,
+   "stage_at_peak_measure": "cycle: DSO solves :: solve case33_3 2037 Winter",
+   "t_at_peak_measure": 3961.271,
+   "gating_measure": "rss_tree",
+   "gating_value": 17120542720,
+   "stage_at_peak_gating_value": "init: DSO build + solve :: solve case33_2 2034 Summer",
+   "t_at_peak_gating_value": 767.924,
+   "swap_used": 928776192,
+   "stage_at_peak_swap_used": "child start"
+  },
+  "gating_measure": "rss_tree",
+  "thresholds": {
+   "gating_measure": "rss_tree",
+   "gating_measure_sample_field": "rss_tree",
+   "gating_measures_available": [
+    "rss_tree",
+    "footprint"
+   ],
+   "rss_limit_bytes": 30064771072,
+   "rss_limit_gib": 28.0,
+   "min_available_bytes": 1073741824,
+   "swap_used_limit_bytes": 2147483648,
+   "swap_growth_limit_bytes": 1073741824,
+   "swap_growth_window_s": 60.0,
+   "sample_interval_s": 0.5
+  }
+ },
+ "memory_final": {
+  "t": 4120.137,
+  "stage": "child start",
+  "rss_self": 5609930752,
+  "rss_children": 0,
+  "n_children": 0,
+  "rss_tree": 5609930752,
+  "footprint_self": 31151791912,
+  "measure": 31151791912,
+  "sys_available": 8399470592,
+  "sys_used_pct": 75.6,
+  "swap_used": 928776192,
+  "gating_measure": "rss_tree",
+  "gating_value": 5609930752
+ },
+ "ru_maxrss_self": 17476190208,
+ "ru_maxrss_children_ipopt": 1242234880,
+ "stages": [
+  {
+   "event": "end",
+   "stage": "import production modules",
+   "ok": true,
+   "error": null,
+   "t_start": 1.641,
+   "wall_s": 0.014,
+   "rss_tree_before": 214155264,
+   "rss_tree_after": 215138304,
+   "rss_self_after": 215138304,
+   "footprint_self_after": 175178640,
+   "peak_measure_so_far": 202293248,
+   "ru_maxrss_self_after": 215138304
+  },
+  {
+   "event": "end",
+   "stage": "read_planning_problem (data, copula/KDE scenario generation, networks, ESS)",
+   "ok": true,
+   "error": null,
+   "t_start": 1.655,
+   "wall_s": 12.205,
+   "rss_tree_before": 215138304,
+   "rss_tree_after": 390938624,
+   "rss_self_after": 390938624,
+   "footprint_self_after": 268977424,
+   "peak_measure_so_far": 387432448,
+   "ru_maxrss_self_after": 390938624
+  },
+  {
+   "event": "end",
+   "stage": "run_admm_arm, cap 1 (initialization + one ADMM cycle)",
+   "ok": true,
+   "error": null,
+   "t_start": 13.971,
+   "wall_s": 4106.16,
+   "rss_tree_before": 397410304,
+   "rss_tree_after": 5609308160,
+   "rss_self_after": 5609308160,
+   "footprint_self_after": 31151824680,
+   "peak_measure_so_far": 31963651856,
+   "ru_maxrss_self_after": 17476190208
+  }
+ ],
+ "utc_end": "2026-09-22T13:42:36.809706+00:00"
+}

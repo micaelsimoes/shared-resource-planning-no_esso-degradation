@@ -1,0 +1,1745 @@
+{
+ "schema": "p515_s52_sigma_check_v1",
+ "stage": "P5.15 Addendum 39 W45 -- will the pilot pass the sigma calibration assertion (zero solves)",
+ "authority": [
+  "PLANNER_BRIEF_2026-09-13.md Addenda 36, 39",
+  "data/SRP1/Results/P515S52/frozen_s52_spec_v22_5d8df1e8.json pilot"
+ ],
+ "label": "r2",
+ "argv": [
+  "p515_s52_sigma_check.py",
+  "--label",
+  "r2",
+  "--scratch",
+  "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w45_read"
+ ],
+ "interpreter": "/Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python",
+ "script_sha256": "0ac424955d18ac5653cf6c979fb406608ab15a99543f37ce130f39a365f7663b",
+ "git_head": "6dc87aa3b947b6091afc3944ae02526151e93014",
+ "git_tracked_changes": [
+  "M PLANNER_BRIEF_2026-09-13.md"
+ ],
+ "started_utc": "2026-09-23T18:17:26.808519+00:00",
+ "production_sources": {
+  "shared_resources_planning.py": "a0787855da454e755b6b7715cc817d4e5148f8ffde3aa7da1a8965cd2b245249",
+  "admm_parameters.py": "2bd733913a99986cf669d13580a41658e15c4320e1a21343a6652a1a13436a1b"
+ },
+ "sigma_definition": "sigma_computed = max_b |w_b * f_b| over every TSO and DSO (year, day) block (shared_resources_planning._compute_common_admm_objective_scale), f_b = pe.value(model.objective.expr) after the initialization solve, w_b = _get_admm_block_weight = N_years * N_days / (1+discount)^(year-first_year); raise ValueError unless 1/F <= sigma_computed/sigma_fixed <= F (_resolve_common_admm_objective_scale)",
+ "measured": [
+  {
+   "key": "srp1_1x1_s44",
+   "instance": "SRP1 1x1 (3 years x 4 days, 1 market x 1 operation)",
+   "years": {
+    "2025": 5,
+    "2030": 5,
+    "2035": 5
+   },
+   "scenarios": "1x1",
+   "code": "pre-Addendum-38 (S44 scale measurement)",
+   "candidate": "C* = 0.96875 MVA / 3.875 MWh at nodes 5, 7, 9, investment year 2025 (spec v14 C_star)",
+   "log": "data/SRP1/Results/P515S44/scale_measurement/srp1_cycle_snapoff_r1/cycle_child_stdout.log",
+   "log_sha256": "dd2ad75d99b38e3dbabb52b2b654bb583a608ec342d3cd64d5d1cee0424e129c",
+   "log_tracked_in_git": true,
+   "summary_line_index": 96,
+   "n_blocks_printed": 48,
+   "n_blocks_expected": 48,
+   "weighted_min": 24301920.0,
+   "weighted_median": 45638720.0,
+   "weighted_max": 93635360.0,
+   "sigma_computed_printed": 93635360.0,
+   "sigma_fixed_printed": 93635360.0,
+   "ratio_printed": 1.0,
+   "assert_factor_printed": 3.0,
+   "ratio_recomputed": 1.0,
+   "argmax_block": {
+    "agent": "TSO",
+    "node": null,
+    "year": "2035",
+    "day": "Winter",
+    "block_weight": 373.2584764431956,
+    "raw_expected_daily_cost": -250859.29967956108
+   },
+   "block_weight_max": 460.0,
+   "block_weight_min": 373.2584764431956,
+   "block_weight_median_recomputed": 412.10751847261173,
+   "esso_al_line": {
+    "mode": "sigma_over_median_block_weight",
+    "sigma": 93635360.0,
+    "median_block_weight": 412.1075,
+    "al_scale_esso": 227211.0
+   },
+   "top10": [
+    {
+     "agent": "TSO",
+     "node": null,
+     "year": "2035",
+     "day": "Winter",
+     "weighted_total": -93635360.0,
+     "weighted_base": -93635360.0,
+     "weighted_scenario_term": 0.0,
+     "block_weight": 373.2584764431956,
+     "raw_expected_daily_cost": -250859.29967956108
+    },
+    {
+     "agent": "TSO",
+     "node": null,
+     "year": "2030",
+     "day": "Autumn",
+     "weighted_total": -88315570.0,
+     "weighted_base": -88315570.0,
+     "weighted_scenario_term": 0.0,
+     "block_weight": 412.10751847261173,
+     "raw_expected_daily_cost": -214302.2537597051
+    },
+    {
+     "agent": "TSO",
+     "node": null,
+     "year": "2030",
+     "day": "Winter",
+     "weighted_total": -74639300.0,
+     "weighted_base": -74639300.0,
+     "weighted_scenario_term": 0.0,
+     "block_weight": 412.10751847261173,
+     "raw_expected_daily_cost": -181116.08416326542
+    },
+    {
+     "agent": "TSO",
+     "node": null,
+     "year": "2035",
+     "day": "Spring",
+     "weighted_total": -62330220.0,
+     "weighted_base": -62330220.0,
+     "weighted_scenario_term": 0.0,
+     "block_weight": 377.36021794257135,
+     "raw_expected_daily_cost": -165174.32690662093
+    },
+    {
+     "agent": "TSO",
+     "node": null,
+     "year": "2035",
+     "day": "Summer",
+     "weighted_total": -58468250.0,
+     "weighted_base": -58468250.0,
+     "weighted_scenario_term": 0.0,
+     "block_weight": 373.2584764431956,
+     "raw_expected_daily_cost": -156642.79230078784
+    },
+    {
+     "agent": "TSO",
+     "node": null,
+     "year": "2035",
+     "day": "Autumn",
+     "weighted_total": -58080040.0,
+     "weighted_base": -58080040.0,
+     "weighted_scenario_term": 0.0,
+     "block_weight": 373.2584764431956,
+     "raw_expected_daily_cost": -155602.73554521386
+    },
+    {
+     "agent": "TSO",
+     "node": null,
+     "year": "2030",
+     "day": "Summer",
+     "weighted_total": -57470690.0,
+     "weighted_base": -57470690.0,
+     "weighted_scenario_term": 0.0,
+     "block_weight": 412.10751847261173,
+     "raw_expected_daily_cost": -139455.5726937543
+    },
+    {
+     "agent": "DSO",
+     "node": 7,
+     "year": "2035",
+     "day": "Spring",
+     "weighted_total": 57223200.0,
+     "weighted_base": 57223200.0,
+     "weighted_scenario_term": 0.0,
+     "block_weight": 377.36021794257135,
+     "raw_expected_daily_cost": 151640.78585705216
+    },
+    {
+     "agent": "DSO",
+     "node": 9,
+     "year": "2025",
+     "day": "Winter",
+     "weighted_total": 55787610.0,
+     "weighted_base": 55787610.0,
+     "weighted_scenario_term": 0.0,
+     "block_weight": 455.0,
+     "raw_expected_daily_cost": 122610.13186813187
+    },
+    {
+     "agent": "DSO",
+     "node": 5,
+     "year": "2035",
+     "day": "Spring",
+     "weighted_total": 55616070.0,
+     "weighted_base": 55616070.0,
+     "weighted_scenario_term": 0.0,
+     "block_weight": 377.36021794257135,
+     "raw_expected_daily_cost": 147381.91085225614
+    }
+   ]
+  },
+  {
+   "key": "srp1_1x1_bitwise_gate",
+   "instance": "SRP1 1x1 (3 years x 4 days, 1 market x 1 operation)",
+   "years": {
+    "2025": 5,
+    "2030": 5,
+    "2035": 5
+   },
+   "scenarios": "1x1",
+   "code": "post-Addendum-38 (S51 SRP1 bitwise gate)",
+   "candidate": "C* (gate.json candidate_label; candidate_key 578636da...)",
+   "log": "data/SRP1/Results/P515S51/srp1_bitwise_gate/arm/stdout_s39_D.log",
+   "log_sha256": "5354189c1bac80787e2c392dc435894aa2ba9c9988e77e09b62e5f40c7dc72b4",
+   "log_tracked_in_git": true,
+   "summary_line_index": 61,
+   "n_blocks_printed": 48,
+   "n_blocks_expected": 48,
+   "weighted_min": 24301920.0,
+   "weighted_median": 45638720.0,
+   "weighted_max": 93635360.0,
+   "sigma_computed_printed": 93635360.0,
+   "sigma_fixed_printed": 93635360.0,
+   "ratio_printed": 1.0,
+   "assert_factor_printed": 3.0,
+   "ratio_recomputed": 1.0,
+   "argmax_block": {
+    "agent": "TSO",
+    "node": null,
+    "year": "2035",
+    "day": "Winter",
+    "block_weight": 373.2584764431956,
+    "raw_expected_daily_cost": -250859.29967956108
+   },
+   "block_weight_max": 460.0,
+   "block_weight_min": 373.2584764431956,
+   "block_weight_median_recomputed": 412.10751847261173,
+   "esso_al_line": {
+    "mode": "sigma_over_median_block_weight",
+    "sigma": 93635360.0,
+    "median_block_weight": 412.1075,
+    "al_scale_esso": 227211.0
+   },
+   "top10": [
+    {
+     "agent": "TSO",
+     "node": null,
+     "year": "2035",
+     "day": "Winter",
+     "weighted_total": -93635360.0,
+     "weighted_base": -93635360.0,
+     "weighted_scenario_term": 0.0,
+     "block_weight": 373.2584764431956,
+     "raw_expected_daily_cost": -250859.29967956108
+    },
+    {
+     "agent": "TSO",
+     "node": null,
+     "year": "2030",
+     "day": "Autumn",
+     "weighted_total": -88315570.0,
+     "weighted_base": -88315570.0,
+     "weighted_scenario_term": 0.0,
+     "block_weight": 412.10751847261173,
+     "raw_expected_daily_cost": -214302.2537597051
+    },
+    {
+     "agent": "TSO",
+     "node": null,
+     "year": "2030",
+     "day": "Winter",
+     "weighted_total": -74639300.0,
+     "weighted_base": -74639300.0,
+     "weighted_scenario_term": 0.0,
+     "block_weight": 412.10751847261173,
+     "raw_expected_daily_cost": -181116.08416326542
+    },
+    {
+     "agent": "TSO",
+     "node": null,
+     "year": "2035",
+     "day": "Spring",
+     "weighted_total": -62330220.0,
+     "weighted_base": -62330220.0,
+     "weighted_scenario_term": 0.0,
+     "block_weight": 377.36021794257135,
+     "raw_expected_daily_cost": -165174.32690662093
+    },
+    {
+     "agent": "TSO",
+     "node": null,
+     "year": "2035",
+     "day": "Summer",
+     "weighted_total": -58468250.0,
+     "weighted_base": -58468250.0,
+     "weighted_scenario_term": 0.0,
+     "block_weight": 373.2584764431956,
+     "raw_expected_daily_cost": -156642.79230078784
+    },
+    {
+     "agent": "TSO",
+     "node": null,
+     "year": "2035",
+     "day": "Autumn",
+     "weighted_total": -58080040.0,
+     "weighted_base": -58080040.0,
+     "weighted_scenario_term": 0.0,
+     "block_weight": 373.2584764431956,
+     "raw_expected_daily_cost": -155602.73554521386
+    },
+    {
+     "agent": "TSO",
+     "node": null,
+     "year": "2030",
+     "day": "Summer",
+     "weighted_total": -57470690.0,
+     "weighted_base": -57470690.0,
+     "weighted_scenario_term": 0.0,
+     "block_weight": 412.10751847261173,
+     "raw_expected_daily_cost": -139455.5726937543
+    },
+    {
+     "agent": "DSO",
+     "node": 7,
+     "year": "2035",
+     "day": "Spring",
+     "weighted_total": 57223200.0,
+     "weighted_base": 57223200.0,
+     "weighted_scenario_term": 0.0,
+     "block_weight": 377.36021794257135,
+     "raw_expected_daily_cost": 151640.78585705216
+    },
+    {
+     "agent": "DSO",
+     "node": 9,
+     "year": "2025",
+     "day": "Winter",
+     "weighted_total": 55787610.0,
+     "weighted_base": 55787610.0,
+     "weighted_scenario_term": 0.0,
+     "block_weight": 455.0,
+     "raw_expected_daily_cost": 122610.13186813187
+    },
+    {
+     "agent": "DSO",
+     "node": 5,
+     "year": "2035",
+     "day": "Spring",
+     "weighted_total": 55616070.0,
+     "weighted_base": 55616070.0,
+     "weighted_scenario_term": 0.0,
+     "block_weight": 377.36021794257135,
+     "raw_expected_daily_cost": 147381.91085225614
+    }
+   ]
+  },
+  {
+   "key": "srp1_1x1_s47_n5_4h",
+   "instance": "SRP1 1x1 (3 years x 4 days, 1 market x 1 operation)",
+   "years": {
+    "2025": 5,
+    "2030": 5,
+    "2035": 5
+   },
+   "scenarios": "1x1",
+   "code": "pre-Addendum-38 (S47 campaign eval)",
+   "candidate": "eval 2a0ba8b2f3d3b99e_n5_4h_e1 (node-5 4 h unit, per the eval directory name)",
+   "log": "data/SRP1/Results/P515S47/campaign_s47_a1a_baseline/evals/2a0ba8b2f3d3b99e_n5_4h_e1/stdout_s39_D.log",
+   "log_sha256": "aa025f01353d1b00e4db4e9525873af67c5832c56290f167dfbc12e95d9f9dc0",
+   "log_tracked_in_git": true,
+   "summary_line_index": 61,
+   "n_blocks_printed": 48,
+   "n_blocks_expected": 48,
+   "weighted_min": 24302050.0,
+   "weighted_median": 45638720.0,
+   "weighted_max": 93637790.0,
+   "sigma_computed_printed": 93637790.0,
+   "sigma_fixed_printed": 93635360.0,
+   "ratio_printed": 1.000026,
+   "assert_factor_printed": 3.0,
+   "ratio_recomputed": 1.000025951734473,
+   "argmax_block": {
+    "agent": "TSO",
+    "node": null,
+    "year": "2035",
+    "day": "Winter",
+    "block_weight": 373.2584764431956,
+    "raw_expected_daily_cost": -250865.80991349646
+   },
+   "block_weight_max": 460.0,
+   "block_weight_min": 373.2584764431956,
+   "block_weight_median_recomputed": 412.10751847261173,
+   "esso_al_line": {
+    "mode": "sigma_over_median_block_weight",
+    "sigma": 93635360.0,
+    "median_block_weight": 412.1075,
+    "al_scale_esso": 227211.0
+   },
+   "top10": [
+    {
+     "agent": "TSO",
+     "node": null,
+     "year": "2035",
+     "day": "Winter",
+     "weighted_total": -93637790.0,
+     "weighted_base": -93637790.0,
+     "weighted_scenario_term": 0.0,
+     "block_weight": 373.2584764431956,
+     "raw_expected_daily_cost": -250865.80991349646
+    },
+    {
+     "agent": "TSO",
+     "node": null,
+     "year": "2030",
+     "day": "Autumn",
+     "weighted_total": -88315750.0,
+     "weighted_base": -88315750.0,
+     "weighted_scenario_term": 0.0,
+     "block_weight": 412.10751847261173,
+     "raw_expected_daily_cost": -214302.69053892395
+    },
+    {
+     "agent": "TSO",
+     "node": null,
+     "year": "2030",
+     "day": "Winter",
+     "weighted_total": -74639450.0,
+     "weighted_base": -74639450.0,
+     "weighted_scenario_term": 0.0,
+     "block_weight": 412.10751847261173,
+     "raw_expected_daily_cost": -181116.44814594777
+    },
+    {
+     "agent": "TSO",
+     "node": null,
+     "year": "2035",
+     "day": "Spring",
+     "weighted_total": -62330380.0,
+     "weighted_base": -62330380.0,
+     "weighted_scenario_term": 0.0,
+     "block_weight": 377.36021794257135,
+     "raw_expected_daily_cost": -165174.75090468006
+    },
+    {
+     "agent": "TSO",
+     "node": null,
+     "year": "2035",
+     "day": "Summer",
+     "weighted_total": -58468390.0,
+     "weighted_base": -58468390.0,
+     "weighted_scenario_term": 0.0,
+     "block_weight": 373.2584764431956,
+     "raw_expected_daily_cost": -156643.167375994
+    },
+    {
+     "agent": "TSO",
+     "node": null,
+     "year": "2035",
+     "day": "Autumn",
+     "weighted_total": -58080150.0,
+     "weighted_base": -58080150.0,
+     "weighted_scenario_term": 0.0,
+     "block_weight": 373.2584764431956,
+     "raw_expected_daily_cost": -155603.03024716154
+    },
+    {
+     "agent": "TSO",
+     "node": null,
+     "year": "2030",
+     "day": "Summer",
+     "weighted_total": -57470860.0,
+     "weighted_base": -57470860.0,
+     "weighted_scenario_term": 0.0,
+     "block_weight": 412.10751847261173,
+     "raw_expected_daily_cost": -139455.985207461
+    },
+    {
+     "agent": "DSO",
+     "node": 7,
+     "year": "2035",
+     "day": "Spring",
+     "weighted_total": 57223200.0,
+     "weighted_base": 57223200.0,
+     "weighted_scenario_term": 0.0,
+     "block_weight": 377.36021794257135,
+     "raw_expected_daily_cost": 151640.78585705216
+    },
+    {
+     "agent": "DSO",
+     "node": 9,
+     "year": "2025",
+     "day": "Winter",
+     "weighted_total": 55787610.0,
+     "weighted_base": 55787610.0,
+     "weighted_scenario_term": 0.0,
+     "block_weight": 455.0,
+     "raw_expected_daily_cost": 122610.13186813187
+    },
+    {
+     "agent": "DSO",
+     "node": 5,
+     "year": "2035",
+     "day": "Spring",
+     "weighted_total": 55616070.0,
+     "weighted_base": 55616070.0,
+     "weighted_scenario_term": 0.0,
+     "block_weight": 377.36021794257135,
+     "raw_expected_daily_cost": 147381.91085225614
+    }
+   ]
+  },
+  {
+   "key": "w37_2x2_x0",
+   "instance": "W37 2x2 smoke (1 year x 4 days, 2 market x 2 operation)",
+   "years": {
+    "2025": 5
+   },
+   "scenarios": "2x2",
+   "code": "pre-Addendum-38 (quadratic scenario-deviation penalty)",
+   "candidate": "x = 0",
+   "log": "data/SRP1/Results/P515S50/multiscenario_smoke/w37_2x2_r2/arm_x0/stdout_w37_x0.log",
+   "log_sha256": "35cbb4ef82fc27dd49d894c859ab19e67d18a97427badf9e57c3f0e0336ad725",
+   "log_tracked_in_git": true,
+   "summary_line_index": 29,
+   "n_blocks_printed": 16,
+   "n_blocks_expected": 16,
+   "weighted_min": 27476180.0,
+   "weighted_median": 45971090.0,
+   "weighted_max": 56274000.0,
+   "sigma_computed_printed": 56274000.0,
+   "sigma_fixed_printed": 93635360.0,
+   "ratio_printed": 0.6009909,
+   "assert_factor_printed": 3.0,
+   "ratio_recomputed": 0.60099090770837,
+   "argmax_block": {
+    "agent": "DSO",
+    "node": 9,
+    "year": "2025",
+    "day": "Winter",
+    "block_weight": 455.0,
+    "raw_expected_daily_cost": 123679.12087912088
+   },
+   "block_weight_max": 460.0,
+   "block_weight_min": 455.0,
+   "block_weight_median_recomputed": 455.0,
+   "esso_al_line": {
+    "mode": "sigma_over_median_block_weight",
+    "sigma": 93635360.0,
+    "median_block_weight": 455.0,
+    "al_scale_esso": 205792.0
+   },
+   "top10": [
+    {
+     "agent": "DSO",
+     "node": 9,
+     "year": "2025",
+     "day": "Winter",
+     "weighted_total": 56274000.0,
+     "weighted_base": 56274000.0,
+     "weighted_scenario_term": 1.835119,
+     "block_weight": 455.0,
+     "raw_expected_daily_cost": 123679.12087912088
+    },
+    {
+     "agent": "DSO",
+     "node": 9,
+     "year": "2025",
+     "day": "Autumn",
+     "weighted_total": 54442540.0,
+     "weighted_base": 54442540.0,
+     "weighted_scenario_term": 2.739833,
+     "block_weight": 455.0,
+     "raw_expected_daily_cost": 119653.93406593407
+    },
+    {
+     "agent": "DSO",
+     "node": 9,
+     "year": "2025",
+     "day": "Spring",
+     "weighted_total": 50737950.0,
+     "weighted_base": 50737950.0,
+     "weighted_scenario_term": 1.808666,
+     "block_weight": 460.0,
+     "raw_expected_daily_cost": 110299.89130434782
+    },
+    {
+     "agent": "TSO",
+     "node": null,
+     "year": "2025",
+     "day": "Autumn",
+     "weighted_total": -48997740.0,
+     "weighted_base": -48997750.0,
+     "weighted_scenario_term": 9.379145,
+     "block_weight": 455.0,
+     "raw_expected_daily_cost": -107687.34065934065
+    },
+    {
+     "agent": "TSO",
+     "node": null,
+     "year": "2025",
+     "day": "Winter",
+     "weighted_total": -48646520.0,
+     "weighted_base": -48646580.0,
+     "weighted_scenario_term": 50.45433,
+     "block_weight": 455.0,
+     "raw_expected_daily_cost": -106915.42857142857
+    },
+    {
+     "agent": "DSO",
+     "node": 5,
+     "year": "2025",
+     "day": "Spring",
+     "weighted_total": 48234040.0,
+     "weighted_base": 48234040.0,
+     "weighted_scenario_term": 2.547204,
+     "block_weight": 460.0,
+     "raw_expected_daily_cost": 104856.60869565218
+    },
+    {
+     "agent": "DSO",
+     "node": 5,
+     "year": "2025",
+     "day": "Autumn",
+     "weighted_total": 47177400.0,
+     "weighted_base": 47177400.0,
+     "weighted_scenario_term": 2.829021,
+     "block_weight": 455.0,
+     "raw_expected_daily_cost": 103686.59340659341
+    },
+    {
+     "agent": "DSO",
+     "node": 5,
+     "year": "2025",
+     "day": "Summer",
+     "weighted_total": 46030750.0,
+     "weighted_base": 46030740.0,
+     "weighted_scenario_term": 2.171925,
+     "block_weight": 455.0,
+     "raw_expected_daily_cost": 101166.48351648351
+    },
+    {
+     "agent": "DSO",
+     "node": 5,
+     "year": "2025",
+     "day": "Winter",
+     "weighted_total": 45911430.0,
+     "weighted_base": 45911430.0,
+     "weighted_scenario_term": 2.827809,
+     "block_weight": 455.0,
+     "raw_expected_daily_cost": 100904.24175824175
+    },
+    {
+     "agent": "DSO",
+     "node": 7,
+     "year": "2025",
+     "day": "Spring",
+     "weighted_total": 42730570.0,
+     "weighted_base": 42730570.0,
+     "weighted_scenario_term": 2.440628,
+     "block_weight": 460.0,
+     "raw_expected_daily_cost": 92892.54347826086
+    }
+   ]
+  },
+  {
+   "key": "w37_2x2_unit",
+   "instance": "W37 2x2 smoke (1 year x 4 days, 2 market x 2 operation)",
+   "years": {
+    "2025": 5
+   },
+   "scenarios": "2x2",
+   "code": "pre-Addendum-38 (quadratic scenario-deviation penalty)",
+   "candidate": "node-7 0.25 MVA / 1.0 MWh at 2025 (W37_MULTISCENARIO_SMOKE.md, arm unit) = the pilot unit arm",
+   "log": "data/SRP1/Results/P515S50/multiscenario_smoke/w37_2x2_r2/arm_unit/stdout_w37_unit.log",
+   "log_sha256": "fa6eb90dfa6e5a341a6fa3d1b023a4d1a47d64456eccde57d4acf42f9a72b587",
+   "log_tracked_in_git": true,
+   "summary_line_index": 29,
+   "n_blocks_printed": 16,
+   "n_blocks_expected": 16,
+   "weighted_min": 27466140.0,
+   "weighted_median": 44689470.0,
+   "weighted_max": 56274000.0,
+   "sigma_computed_printed": 56274000.0,
+   "sigma_fixed_printed": 93635360.0,
+   "ratio_printed": 0.6009909,
+   "assert_factor_printed": 3.0,
+   "ratio_recomputed": 0.60099090770837,
+   "argmax_block": {
+    "agent": "DSO",
+    "node": 9,
+    "year": "2025",
+    "day": "Winter",
+    "block_weight": 455.0,
+    "raw_expected_daily_cost": 123679.12087912088
+   },
+   "block_weight_max": 460.0,
+   "block_weight_min": 455.0,
+   "block_weight_median_recomputed": 455.0,
+   "esso_al_line": {
+    "mode": "sigma_over_median_block_weight",
+    "sigma": 93635360.0,
+    "median_block_weight": 455.0,
+    "al_scale_esso": 205792.0
+   },
+   "top10": [
+    {
+     "agent": "DSO",
+     "node": 9,
+     "year": "2025",
+     "day": "Winter",
+     "weighted_total": 56274000.0,
+     "weighted_base": 56274000.0,
+     "weighted_scenario_term": 1.835119,
+     "block_weight": 455.0,
+     "raw_expected_daily_cost": 123679.12087912088
+    },
+    {
+     "agent": "DSO",
+     "node": 9,
+     "year": "2025",
+     "day": "Autumn",
+     "weighted_total": 54442540.0,
+     "weighted_base": 54442540.0,
+     "weighted_scenario_term": 2.739833,
+     "block_weight": 455.0,
+     "raw_expected_daily_cost": 119653.93406593407
+    },
+    {
+     "agent": "DSO",
+     "node": 9,
+     "year": "2025",
+     "day": "Spring",
+     "weighted_total": 50737950.0,
+     "weighted_base": 50737950.0,
+     "weighted_scenario_term": 1.808666,
+     "block_weight": 460.0,
+     "raw_expected_daily_cost": 110299.89130434782
+    },
+    {
+     "agent": "TSO",
+     "node": null,
+     "year": "2025",
+     "day": "Autumn",
+     "weighted_total": -48999200.0,
+     "weighted_base": -48999210.0,
+     "weighted_scenario_term": 9.421547,
+     "block_weight": 455.0,
+     "raw_expected_daily_cost": -107690.54945054946
+    },
+    {
+     "agent": "DSO",
+     "node": 5,
+     "year": "2025",
+     "day": "Spring",
+     "weighted_total": 48234040.0,
+     "weighted_base": 48234040.0,
+     "weighted_scenario_term": 2.547204,
+     "block_weight": 460.0,
+     "raw_expected_daily_cost": 104856.60869565218
+    },
+    {
+     "agent": "DSO",
+     "node": 5,
+     "year": "2025",
+     "day": "Autumn",
+     "weighted_total": 47177400.0,
+     "weighted_base": 47177400.0,
+     "weighted_scenario_term": 2.829021,
+     "block_weight": 455.0,
+     "raw_expected_daily_cost": 103686.59340659341
+    },
+    {
+     "agent": "DSO",
+     "node": 5,
+     "year": "2025",
+     "day": "Summer",
+     "weighted_total": 46030750.0,
+     "weighted_base": 46030740.0,
+     "weighted_scenario_term": 2.171925,
+     "block_weight": 455.0,
+     "raw_expected_daily_cost": 101166.48351648351
+    },
+    {
+     "agent": "DSO",
+     "node": 5,
+     "year": "2025",
+     "day": "Winter",
+     "weighted_total": 45911430.0,
+     "weighted_base": 45911430.0,
+     "weighted_scenario_term": 2.827809,
+     "block_weight": 455.0,
+     "raw_expected_daily_cost": 100904.24175824175
+    },
+    {
+     "agent": "TSO",
+     "node": null,
+     "year": "2025",
+     "day": "Winter",
+     "weighted_total": -43467510.0,
+     "weighted_base": -43467760.0,
+     "weighted_scenario_term": 248.2545,
+     "block_weight": 455.0,
+     "raw_expected_daily_cost": -95532.98901098901
+    },
+    {
+     "agent": "DSO",
+     "node": 7,
+     "year": "2025",
+     "day": "Spring",
+     "weighted_total": 42730570.0,
+     "weighted_base": 42730560.0,
+     "weighted_scenario_term": 2.440622,
+     "block_weight": 460.0,
+     "raw_expected_daily_cost": 92892.54347826086
+    }
+   ]
+  },
+  {
+   "key": "gate_2x2_alpha0p5",
+   "instance": "2x2 limit gate (1 year x 4 days, 2 market x 2 operation)",
+   "years": {
+    "2025": 5
+   },
+   "scenarios": "2x2",
+   "code": "post-Addendum-38, row 18 alpha = 0.50",
+   "candidate": "x = 0",
+   "log": "data/SRP1/Results/P515S51/2x2_limit_gate/limit_r1/arm_pilot/stdout_s51limit_pilot.log",
+   "log_sha256": "5e0c5ad9c61439eb5c3830217708a87a90ebbc920bf158e556b96f60da24eba4",
+   "log_tracked_in_git": true,
+   "summary_line_index": 29,
+   "n_blocks_printed": 16,
+   "n_blocks_expected": 16,
+   "weighted_min": 18183610.0,
+   "weighted_median": 42650490.0,
+   "weighted_max": 56274390.0,
+   "sigma_computed_printed": 56274390.0,
+   "sigma_fixed_printed": 93635360.0,
+   "ratio_printed": 0.600995,
+   "assert_factor_printed": 3.0,
+   "ratio_recomputed": 0.6009950728015571,
+   "argmax_block": {
+    "agent": "DSO",
+    "node": 9,
+    "year": "2025",
+    "day": "Winter",
+    "block_weight": 455.0,
+    "raw_expected_daily_cost": 123679.97802197802
+   },
+   "block_weight_max": 460.0,
+   "block_weight_min": 455.0,
+   "block_weight_median_recomputed": 455.0,
+   "esso_al_line": {
+    "mode": "sigma_over_median_block_weight",
+    "sigma": 93635360.0,
+    "median_block_weight": 455.0,
+    "al_scale_esso": 205792.0
+   },
+   "top10": [
+    {
+     "agent": "DSO",
+     "node": 9,
+     "year": "2025",
+     "day": "Winter",
+     "weighted_total": 56274390.0,
+     "weighted_base": 56274390.0,
+     "weighted_scenario_term": 1.949159e-09,
+     "block_weight": 455.0,
+     "raw_expected_daily_cost": 123679.97802197802
+    },
+    {
+     "agent": "DSO",
+     "node": 9,
+     "year": "2025",
+     "day": "Autumn",
+     "weighted_total": 54443140.0,
+     "weighted_base": 54443140.0,
+     "weighted_scenario_term": 2.720312e-09,
+     "block_weight": 455.0,
+     "raw_expected_daily_cost": 119655.25274725274
+    },
+    {
+     "agent": "DSO",
+     "node": 9,
+     "year": "2025",
+     "day": "Spring",
+     "weighted_total": 50738120.0,
+     "weighted_base": 50738120.0,
+     "weighted_scenario_term": 1.869747e-09,
+     "block_weight": 460.0,
+     "raw_expected_daily_cost": 110300.26086956522
+    },
+    {
+     "agent": "DSO",
+     "node": 5,
+     "year": "2025",
+     "day": "Spring",
+     "weighted_total": 48234520.0,
+     "weighted_base": 48234520.0,
+     "weighted_scenario_term": 2.273929e-09,
+     "block_weight": 460.0,
+     "raw_expected_daily_cost": 104857.65217391304
+    },
+    {
+     "agent": "DSO",
+     "node": 5,
+     "year": "2025",
+     "day": "Autumn",
+     "weighted_total": 47178010.0,
+     "weighted_base": 47178010.0,
+     "weighted_scenario_term": 2.70796e-09,
+     "block_weight": 455.0,
+     "raw_expected_daily_cost": 103687.93406593407
+    },
+    {
+     "agent": "DSO",
+     "node": 5,
+     "year": "2025",
+     "day": "Summer",
+     "weighted_total": 46031180.0,
+     "weighted_base": 46031180.0,
+     "weighted_scenario_term": 2.021123e-09,
+     "block_weight": 455.0,
+     "raw_expected_daily_cost": 101167.42857142857
+    },
+    {
+     "agent": "DSO",
+     "node": 5,
+     "year": "2025",
+     "day": "Winter",
+     "weighted_total": 45912040.0,
+     "weighted_base": 45912040.0,
+     "weighted_scenario_term": 2.787469e-09,
+     "block_weight": 455.0,
+     "raw_expected_daily_cost": 100905.58241758242
+    },
+    {
+     "agent": "DSO",
+     "node": 7,
+     "year": "2025",
+     "day": "Spring",
+     "weighted_total": 42731040.0,
+     "weighted_base": 42731040.0,
+     "weighted_scenario_term": 2.453168e-09,
+     "block_weight": 460.0,
+     "raw_expected_daily_cost": 92893.56521739131
+    },
+    {
+     "agent": "DSO",
+     "node": 9,
+     "year": "2025",
+     "day": "Summer",
+     "weighted_total": 42569940.0,
+     "weighted_base": 42569940.0,
+     "weighted_scenario_term": 1.859702e-09,
+     "block_weight": 455.0,
+     "raw_expected_daily_cost": 93560.30769230769
+    },
+    {
+     "agent": "DSO",
+     "node": 7,
+     "year": "2025",
+     "day": "Summer",
+     "weighted_total": 41588510.0,
+     "weighted_base": 41588510.0,
+     "weighted_scenario_term": 2.604672e-09,
+     "block_weight": 455.0,
+     "raw_expected_daily_cost": 91403.31868131868
+    }
+   ]
+  },
+  {
+   "key": "gate_2x2_alpha1000",
+   "instance": "2x2 limit gate (1 year x 4 days, 2 market x 2 operation)",
+   "years": {
+    "2025": 5
+   },
+   "scenarios": "2x2",
+   "code": "post-Addendum-38, row 18 alpha = 1000",
+   "candidate": "x = 0",
+   "log": "data/SRP1/Results/P515S51/2x2_limit_gate/limit_r1/arm_large/stdout_s51limit_large.log",
+   "log_sha256": "3b5a36519741a3c8654afcdf85ecf178a3205b1a21d8a90fcdfda8aee3444d80",
+   "log_tracked_in_git": true,
+   "summary_line_index": 29,
+   "n_blocks_printed": 16,
+   "n_blocks_expected": 16,
+   "weighted_min": 18183770.0,
+   "weighted_median": 42806480.0,
+   "weighted_max": 56422100.0,
+   "sigma_computed_printed": 56422100.0,
+   "sigma_fixed_printed": 93635360.0,
+   "ratio_printed": 0.6025725,
+   "assert_factor_printed": 3.0,
+   "ratio_recomputed": 0.6025725751468248,
+   "argmax_block": {
+    "agent": "DSO",
+    "node": 9,
+    "year": "2025",
+    "day": "Winter",
+    "block_weight": 455.0,
+    "raw_expected_daily_cost": 124004.61538461539
+   },
+   "block_weight_max": 460.0,
+   "block_weight_min": 455.0,
+   "block_weight_median_recomputed": 455.0,
+   "esso_al_line": {
+    "mode": "sigma_over_median_block_weight",
+    "sigma": 93635360.0,
+    "median_block_weight": 455.0,
+    "al_scale_esso": 205792.0
+   },
+   "top10": [
+    {
+     "agent": "DSO",
+     "node": 9,
+     "year": "2025",
+     "day": "Winter",
+     "weighted_total": 56422100.0,
+     "weighted_base": 56422100.0,
+     "weighted_scenario_term": 2.601371e-06,
+     "block_weight": 455.0,
+     "raw_expected_daily_cost": 124004.61538461539
+    },
+    {
+     "agent": "DSO",
+     "node": 9,
+     "year": "2025",
+     "day": "Autumn",
+     "weighted_total": 54444290.0,
+     "weighted_base": 54444290.0,
+     "weighted_scenario_term": 2.206727e-07,
+     "block_weight": 455.0,
+     "raw_expected_daily_cost": 119657.78021978022
+    },
+    {
+     "agent": "DSO",
+     "node": 9,
+     "year": "2025",
+     "day": "Spring",
+     "weighted_total": 50886980.0,
+     "weighted_base": 50886980.0,
+     "weighted_scenario_term": 3.343921e-06,
+     "block_weight": 460.0,
+     "raw_expected_daily_cost": 110623.86956521739
+    },
+    {
+     "agent": "DSO",
+     "node": 5,
+     "year": "2025",
+     "day": "Spring",
+     "weighted_total": 48234660.0,
+     "weighted_base": 48234660.0,
+     "weighted_scenario_term": 1.318708e-07,
+     "block_weight": 460.0,
+     "raw_expected_daily_cost": 104857.95652173914
+    },
+    {
+     "agent": "DSO",
+     "node": 5,
+     "year": "2025",
+     "day": "Autumn",
+     "weighted_total": 47179920.0,
+     "weighted_base": 47179920.0,
+     "weighted_scenario_term": 1.468746e-07,
+     "block_weight": 455.0,
+     "raw_expected_daily_cost": 103692.13186813187
+    },
+    {
+     "agent": "DSO",
+     "node": 5,
+     "year": "2025",
+     "day": "Summer",
+     "weighted_total": 46030060.0,
+     "weighted_base": 46030060.0,
+     "weighted_scenario_term": 1.064073e-07,
+     "block_weight": 455.0,
+     "raw_expected_daily_cost": 101164.96703296703
+    },
+    {
+     "agent": "DSO",
+     "node": 5,
+     "year": "2025",
+     "day": "Winter",
+     "weighted_total": 45913060.0,
+     "weighted_base": 45913060.0,
+     "weighted_scenario_term": 1.310009e-07,
+     "block_weight": 455.0,
+     "raw_expected_daily_cost": 100907.82417582418
+    },
+    {
+     "agent": "DSO",
+     "node": 7,
+     "year": "2025",
+     "day": "Spring",
+     "weighted_total": 42870950.0,
+     "weighted_base": 42870950.0,
+     "weighted_scenario_term": 8.803636e-07,
+     "block_weight": 460.0,
+     "raw_expected_daily_cost": 93197.71739130435
+    },
+    {
+     "agent": "DSO",
+     "node": 9,
+     "year": "2025",
+     "day": "Summer",
+     "weighted_total": 42742000.0,
+     "weighted_base": 42742000.0,
+     "weighted_scenario_term": 3.313357e-06,
+     "block_weight": 455.0,
+     "raw_expected_daily_cost": 93938.46153846153
+    },
+    {
+     "agent": "DSO",
+     "node": 7,
+     "year": "2025",
+     "day": "Summer",
+     "weighted_total": 41732460.0,
+     "weighted_base": 41732460.0,
+     "weighted_scenario_term": 1.282552e-06,
+     "block_weight": 455.0,
+     "raw_expected_daily_cost": 91719.69230769231
+    }
+   ]
+  },
+  {
+   "key": "paper_5x5",
+   "instance": "paper (5 years x 4 days, 5 market x 5 operation)",
+   "years": {
+    "2025": 3,
+    "2028": 3,
+    "2031": 3,
+    "2034": 3,
+    "2037": 3
+   },
+   "scenarios": "5x5",
+   "code": "pre-Addendum-38 (S44 scale measurement)",
+   "candidate": "C* = 0.96875 MVA / 3.875 MWh at nodes 5, 7, 9, investment year 2025 (spec v14 C_star)",
+   "log": "data/SRP1/Results/P515S44/scale_measurement/paper_cycle_snapoff_memfix_r1/cycle_child_stdout.log",
+   "log_sha256": "f0ed1193df74346c51cc1eeca68b9ad9d5492f05446e38f58dadc8613e9bcbfe",
+   "log_tracked_in_git": true,
+   "summary_line_index": 128,
+   "n_blocks_printed": 80,
+   "n_blocks_expected": 80,
+   "weighted_min": 15081690.0,
+   "weighted_median": 29653710.0,
+   "weighted_max": 55899330.0,
+   "sigma_computed_printed": 55899330.0,
+   "sigma_fixed_printed": 93635360.0,
+   "ratio_printed": 0.5969895,
+   "assert_factor_printed": 3.0,
+   "ratio_recomputed": 0.5969895347227799,
+   "argmax_block": {
+    "agent": "TSO",
+    "node": null,
+    "year": "2037",
+    "day": "Winter",
+    "block_weight": 215.25863693379213,
+    "raw_expected_daily_cost": -259684.49301847597
+   },
+   "block_weight_max": 276.0,
+   "block_weight_min": 215.25863693379213,
+   "block_weight_median_recomputed": 242.4161873368304,
+   "esso_al_line": {
+    "mode": "sigma_over_median_block_weight",
+    "sigma": 93635360.0,
+    "median_block_weight": 242.4162,
+    "al_scale_esso": 386258.7
+   },
+   "top10": [
+    {
+     "agent": "TSO",
+     "node": null,
+     "year": "2037",
+     "day": "Winter",
+     "weighted_total": -55899330.0,
+     "weighted_base": -55899350.0,
+     "weighted_scenario_term": 26.75097,
+     "block_weight": 215.25863693379213,
+     "raw_expected_daily_cost": -259684.49301847597
+    },
+    {
+     "agent": "TSO",
+     "node": null,
+     "year": "2037",
+     "day": "Autumn",
+     "weighted_total": -46894800.0,
+     "weighted_base": -46894820.0,
+     "weighted_scenario_term": 21.41803,
+     "block_weight": 215.25863693379213,
+     "raw_expected_daily_cost": -217853.27951520757
+    },
+    {
+     "agent": "TSO",
+     "node": null,
+     "year": "2034",
+     "day": "Winter",
+     "weighted_total": -46426300.0,
+     "weighted_base": -46426400.0,
+     "weighted_scenario_term": 102.0297,
+     "block_weight": 228.4341875832357,
+     "raw_expected_daily_cost": -203237.0920096337
+    },
+    {
+     "agent": "TSO",
+     "node": null,
+     "year": "2031",
+     "day": "Winter",
+     "weighted_total": -44814280.0,
+     "weighted_base": -44814730.0,
+     "weighted_scenario_term": 447.0408,
+     "block_weight": 242.4161873368304,
+     "raw_expected_daily_cost": -184865.0475544846
+    },
+    {
+     "agent": "TSO",
+     "node": null,
+     "year": "2031",
+     "day": "Autumn",
+     "weighted_total": -41874530.0,
+     "weighted_base": -41874680.0,
+     "weighted_scenario_term": 158.8819,
+     "block_weight": 242.4161873368304,
+     "raw_expected_daily_cost": -172738.17586206208
+    },
+    {
+     "agent": "DSO",
+     "node": 9,
+     "year": "2028",
+     "day": "Winter",
+     "weighted_total": 38933070.0,
+     "weighted_base": 38933060.0,
+     "weighted_scenario_term": 6.169268,
+     "block_weight": 257.2539973313431,
+     "raw_expected_daily_cost": 151340.97197274727
+    },
+    {
+     "agent": "DSO",
+     "node": 9,
+     "year": "2037",
+     "day": "Winter",
+     "weighted_total": 38303830.0,
+     "weighted_base": 38303830.0,
+     "weighted_scenario_term": 5.191558,
+     "block_weight": 215.25863693379213,
+     "raw_expected_daily_cost": 177943.28973559954
+    },
+    {
+     "agent": "TSO",
+     "node": null,
+     "year": "2034",
+     "day": "Autumn",
+     "weighted_total": -36518190.0,
+     "weighted_base": -36518210.0,
+     "weighted_scenario_term": 18.64375,
+     "block_weight": 228.4341875832357,
+     "raw_expected_daily_cost": -159863.06772358093
+    },
+    {
+     "agent": "DSO",
+     "node": 9,
+     "year": "2028",
+     "day": "Autumn",
+     "weighted_total": 35748320.0,
+     "weighted_base": 35748310.0,
+     "weighted_scenario_term": 5.778907,
+     "block_weight": 257.2539973313431,
+     "raw_expected_daily_cost": 138961.1837749451
+    },
+    {
+     "agent": "DSO",
+     "node": 5,
+     "year": "2037",
+     "day": "Winter",
+     "weighted_total": 35517240.0,
+     "weighted_base": 35517240.0,
+     "weighted_scenario_term": 4.930591,
+     "block_weight": 215.25863693379213,
+     "raw_expected_daily_cost": 164997.97873812684
+    }
+   ]
+  }
+ ],
+ "all_committed_fixed_sigma_lines": {
+  "search": "git grep 'Fixed sigma in force' over tracked data/SRP1/Results/* at HEAD",
+  "n_files": 445,
+  "distinct_sigma_ratio_strings": {
+   "sigma_computed=9.363549e+07 | ratio=1.000001e+00": 154,
+   "sigma_computed=9.363536e+07 | ratio=1.000000e+00": 134,
+   "sigma_computed=9.363550e+07 | ratio=1.000002e+00": 38,
+   "sigma_computed=9.363550e+07 | ratio=1.000001e+00": 36,
+   "sigma_computed=9.363543e+07 | ratio=1.000001e+00": 26,
+   "sigma_computed=9.363542e+07 | ratio=1.000001e+00": 16,
+   "sigma_computed=9.363557e+07 | ratio=1.000002e+00": 10,
+   "sigma_computed=9.363534e+07 | ratio=9.999998e-01": 6,
+   "sigma_computed=9.363551e+07 | ratio=1.000002e+00": 6,
+   "sigma_computed=9.363779e+07 | ratio=1.000026e+00": 6,
+   "sigma_computed=9.363535e+07 | ratio=9.999999e-01": 6,
+   "sigma_computed=5.627400e+07 | ratio=6.009909e-01": 5,
+   "sigma_computed=5.627439e+07 | ratio=6.009950e-01": 4,
+   "sigma_computed=5.589933e+07 | ratio=5.969895e-01": 3,
+   "sigma_computed=5.581903e+07 | ratio=5.961319e-01": 2,
+   "sigma_computed=5.627452e+07 | ratio=6.009965e-01": 2,
+   "sigma_computed=5.642210e+07 | ratio=6.025725e-01": 2,
+   "sigma_computed=9.363552e+07 | ratio=1.000002e+00": 2
+  }
+ },
+ "instances": {
+  "gate_2x2": {
+   "case_path": "data/SRP1/Results/P515S52/sigma_check/r2/case/SRP1__w45_gate_2x2.json",
+   "case_sha256": "fe054c22ff4c9e0195d0260b63986d4b697b60e3b3f8900b8329ed81d52c3688",
+   "changes_vs_source": [
+    {
+     "key": "Years",
+     "from": {
+      "2025": 5,
+      "2030": 5,
+      "2035": 5
+     },
+     "to": {
+      "2025": 5
+     }
+    },
+    {
+     "key": "NumMarketScenarios",
+     "from": 1,
+     "to": 2
+    },
+    {
+     "key": "TransmissionNetwork[case9].num_operation_scenarios",
+     "from": 1,
+     "to": 2
+    },
+    {
+     "key": "DistributionNetworks[case33_1].num_operation_scenarios",
+     "from": 1,
+     "to": 2
+    },
+    {
+     "key": "DistributionNetworks[case33_2].num_operation_scenarios",
+     "from": 1,
+     "to": 2
+    },
+    {
+     "key": "DistributionNetworks[case33_3].num_operation_scenarios",
+     "from": 1,
+     "to": 2
+    }
+   ],
+   "plot_output_redirected_to": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w45_read/w45_w45_gate_2x2_92w3tmi2",
+   "years": {
+    "2025": 5
+   },
+   "days": {
+    "Spring": 92,
+    "Summer": 91,
+    "Autumn": 91,
+    "Winter": 91
+   },
+   "discount_factor": 0.02,
+   "num_market_scenarios": 2,
+   "num_operation_scenarios": {
+    "tso": 2,
+    "5": 2,
+    "7": 2,
+    "9": 2
+   },
+   "n_admm_blocks": 16,
+   "block_weights": {
+    "TSO": {
+     "2025/Spring": 460.0,
+     "2025/Summer": 455.0,
+     "2025/Autumn": 455.0,
+     "2025/Winter": 455.0
+    },
+    "DSO node=5": {
+     "2025/Spring": 460.0,
+     "2025/Summer": 455.0,
+     "2025/Autumn": 455.0,
+     "2025/Winter": 455.0
+    },
+    "DSO node=7": {
+     "2025/Spring": 460.0,
+     "2025/Summer": 455.0,
+     "2025/Autumn": 455.0,
+     "2025/Winter": 455.0
+    },
+    "DSO node=9": {
+     "2025/Spring": 460.0,
+     "2025/Summer": 455.0,
+     "2025/Autumn": 455.0,
+     "2025/Winter": 455.0
+    }
+   },
+   "median_block_weight_production": 455.0,
+   "combined_scenario_checksum": "9d6335848b80ee9bb484ffd0c82fc70362b0ee02d79c5d351c15da1e25b0c857",
+   "admm_objective_scale": 93635360.0,
+   "admm_objective_scale_source": "case_file",
+   "admm_objective_scale_assert_factor": 3.0,
+   "esso_al_scale_cfg": {
+    "mode": "sigma_over_median_block_weight",
+    "value": null,
+    "source": "case_file"
+   }
+  },
+  "pilot_2x2": {
+   "case_path": "data/SRP1/Results/P515S52/sigma_check/r2/case/SRP1__w45_pilot_2x2.json",
+   "case_sha256": "7ecff44a874892187d1dd2e3d5ed0664a2f90a4bfa4cdb820a4abcbbd828f949",
+   "changes_vs_source": [
+    {
+     "key": "Years",
+     "from": {
+      "2025": 5,
+      "2030": 5,
+      "2035": 5
+     },
+     "to": {
+      "2025": 3,
+      "2028": 3,
+      "2031": 3,
+      "2034": 3,
+      "2037": 3
+     }
+    },
+    {
+     "key": "NumMarketScenarios",
+     "from": 1,
+     "to": 2
+    },
+    {
+     "key": "TransmissionNetwork[case9].num_operation_scenarios",
+     "from": 1,
+     "to": 2
+    },
+    {
+     "key": "DistributionNetworks[case33_1].num_operation_scenarios",
+     "from": 1,
+     "to": 2
+    },
+    {
+     "key": "DistributionNetworks[case33_2].num_operation_scenarios",
+     "from": 1,
+     "to": 2
+    },
+    {
+     "key": "DistributionNetworks[case33_3].num_operation_scenarios",
+     "from": 1,
+     "to": 2
+    }
+   ],
+   "plot_output_redirected_to": "/private/tmp/claude-501/-Users-micaelsimoes-Projects-share-resource-planning-no-esso-degradation/ce1f88a8-5176-446e-89bd-7b0ea6787216/scratchpad/w45_read/w45_w45_pilot_2x2_qy2trnh0",
+   "years": {
+    "2025": 3,
+    "2028": 3,
+    "2031": 3,
+    "2034": 3,
+    "2037": 3
+   },
+   "days": {
+    "Spring": 92,
+    "Summer": 91,
+    "Autumn": 91,
+    "Winter": 91
+   },
+   "discount_factor": 0.02,
+   "num_market_scenarios": 2,
+   "num_operation_scenarios": {
+    "tso": 2,
+    "5": 2,
+    "7": 2,
+    "9": 2
+   },
+   "n_admm_blocks": 80,
+   "block_weights": {
+    "TSO": {
+     "2025/Spring": 276.0,
+     "2025/Summer": 273.0,
+     "2025/Autumn": 273.0,
+     "2025/Winter": 273.0,
+     "2028/Spring": 260.08096433498423,
+     "2028/Summer": 257.2539973313431,
+     "2028/Autumn": 257.2539973313431,
+     "2028/Winter": 257.2539973313431,
+     "2031/Spring": 245.080101483389,
+     "2031/Summer": 242.4161873368304,
+     "2031/Autumn": 242.4161873368304,
+     "2031/Winter": 242.4161873368304,
+     "2034/Spring": 230.94445338085367,
+     "2034/Summer": 228.4341875832357,
+     "2034/Autumn": 228.4341875832357,
+     "2034/Winter": 228.4341875832357,
+     "2037/Spring": 217.62411646053712,
+     "2037/Summer": 215.25863693379213,
+     "2037/Autumn": 215.25863693379213,
+     "2037/Winter": 215.25863693379213
+    },
+    "DSO node=5": {
+     "2025/Spring": 276.0,
+     "2025/Summer": 273.0,
+     "2025/Autumn": 273.0,
+     "2025/Winter": 273.0,
+     "2028/Spring": 260.08096433498423,
+     "2028/Summer": 257.2539973313431,
+     "2028/Autumn": 257.2539973313431,
+     "2028/Winter": 257.2539973313431,
+     "2031/Spring": 245.080101483389,
+     "2031/Summer": 242.4161873368304,
+     "2031/Autumn": 242.4161873368304,
+     "2031/Winter": 242.4161873368304,
+     "2034/Spring": 230.94445338085367,
+     "2034/Summer": 228.4341875832357,
+     "2034/Autumn": 228.4341875832357,
+     "2034/Winter": 228.4341875832357,
+     "2037/Spring": 217.62411646053712,
+     "2037/Summer": 215.25863693379213,
+     "2037/Autumn": 215.25863693379213,
+     "2037/Winter": 215.25863693379213
+    },
+    "DSO node=7": {
+     "2025/Spring": 276.0,
+     "2025/Summer": 273.0,
+     "2025/Autumn": 273.0,
+     "2025/Winter": 273.0,
+     "2028/Spring": 260.08096433498423,
+     "2028/Summer": 257.2539973313431,
+     "2028/Autumn": 257.2539973313431,
+     "2028/Winter": 257.2539973313431,
+     "2031/Spring": 245.080101483389,
+     "2031/Summer": 242.4161873368304,
+     "2031/Autumn": 242.4161873368304,
+     "2031/Winter": 242.4161873368304,
+     "2034/Spring": 230.94445338085367,
+     "2034/Summer": 228.4341875832357,
+     "2034/Autumn": 228.4341875832357,
+     "2034/Winter": 228.4341875832357,
+     "2037/Spring": 217.62411646053712,
+     "2037/Summer": 215.25863693379213,
+     "2037/Autumn": 215.25863693379213,
+     "2037/Winter": 215.25863693379213
+    },
+    "DSO node=9": {
+     "2025/Spring": 276.0,
+     "2025/Summer": 273.0,
+     "2025/Autumn": 273.0,
+     "2025/Winter": 273.0,
+     "2028/Spring": 260.08096433498423,
+     "2028/Summer": 257.2539973313431,
+     "2028/Autumn": 257.2539973313431,
+     "2028/Winter": 257.2539973313431,
+     "2031/Spring": 245.080101483389,
+     "2031/Summer": 242.4161873368304,
+     "2031/Autumn": 242.4161873368304,
+     "2031/Winter": 242.4161873368304,
+     "2034/Spring": 230.94445338085367,
+     "2034/Summer": 228.4341875832357,
+     "2034/Autumn": 228.4341875832357,
+     "2034/Winter": 228.4341875832357,
+     "2037/Spring": 217.62411646053712,
+     "2037/Summer": 215.25863693379213,
+     "2037/Autumn": 215.25863693379213,
+     "2037/Winter": 215.25863693379213
+    }
+   },
+   "median_block_weight_production": 242.4161873368304,
+   "combined_scenario_checksum": "53b4bea4142001617282a08541079952564903b6d84db066f90d71a650b7d563",
+   "admm_objective_scale": 93635360.0,
+   "admm_objective_scale_source": "case_file",
+   "admm_objective_scale_assert_factor": 3.0,
+   "esso_al_scale_cfg": {
+    "mode": "sigma_over_median_block_weight",
+    "value": null,
+    "source": "case_file"
+   }
+  }
+ },
+ "identity_2025": {
+  "gate_case_sha256_equals_committed_limit_r1": true,
+  "gate_scenario_checksum_equals_committed_limit_r1": true,
+  "n_2025_digests_compared": 20,
+  "mismatched_2025_digests": [],
+  "all_2025_block_data_identical": true,
+  "digests_gate": {
+   "market/2025/Autumn": "e6e56103e782cde94aea0f0e084a67f0f43e9cd89ff290e6bf1d67b64a6ceb10",
+   "market/2025/Spring": "53f6e454d4be506b06db9f9ea15d890bf360aec0828ce64bad12fc1f51e63d70",
+   "market/2025/Summer": "7195f9145b0dd1c668b3530f16fff5ca4c0fe1f65ef4bbb4774d201336fd817c",
+   "market/2025/Winter": "055acfe4af47f6d932a998cb370293cb8b56a5cc328c11b6a192bbda0f0e14d5",
+   "tso/None/case9/2025/Autumn": "982c45436af7e8a0a6138ab935b34abf24bb2af1ab8fc438674c311e7fe64936",
+   "tso/None/case9/2025/Spring": "9a4d661f26069980c9a475ed5929649f904054970e04e737807d18f9f28512a1",
+   "tso/None/case9/2025/Summer": "8c3817b053e3412d2e4449c90cf27c5c367cbc3ea54d40714401fef11e5bc841",
+   "tso/None/case9/2025/Winter": "0987b0e0e404b9adc87fe612d22e5c04c72facabf27330688a9e323d2c778e7d",
+   "dso/5/case33_1/2025/Autumn": "066e5771be03c9772f2be8f436fbcc4a08a48636b7744d487ef36bc103457717",
+   "dso/5/case33_1/2025/Spring": "5d6ff7490c1525cafa525973aba14658d12cfaa5862fcc6ecca4f044b7b8f7d6",
+   "dso/5/case33_1/2025/Summer": "8a2cc2c15b5d98645b56ee79e49852e253267eba524e1cb894755aaa5accc31a",
+   "dso/5/case33_1/2025/Winter": "ca799b04922c85c557206d26fa2d65cf204150bfbcbe089e9d05c05700337958",
+   "dso/7/case33_2/2025/Autumn": "1786fbbafcd600ab1a1008ab44545e3665bccaaa4ed251c5e457dddca25a200a",
+   "dso/7/case33_2/2025/Spring": "0ed8a11dde01fe450e11dd131ae849315b9cb6f8b174b384427b321ac6005f06",
+   "dso/7/case33_2/2025/Summer": "c9d0fa856b43215e4eaddac317769ecf09b1a7bd3a4237e72601c57d29188dda",
+   "dso/7/case33_2/2025/Winter": "740bea1de09bafee490fcd85795bac8b6b6c168dc6acdd63dbc0e909d761a1a9",
+   "dso/9/case33_3/2025/Autumn": "beba45f2f1bd0dcf239056eb380bd2959a54cc6f41af605f2736bdcf1f4856b6",
+   "dso/9/case33_3/2025/Spring": "eab02f8bb26dffd8d472a6ec782a25efa7be53ee40836ac5a01f41e36bd57377",
+   "dso/9/case33_3/2025/Summer": "18305a8e6637772da1caf3dfd0e632991d61622bfd3ce5f5a55a27e83b662189",
+   "dso/9/case33_3/2025/Winter": "fa3294da1fdd3858c45b1dec489b4904f21495661db228e65d72a37e039e2b47"
+  },
+  "digests_pilot": {
+   "market/2025/Autumn": "e6e56103e782cde94aea0f0e084a67f0f43e9cd89ff290e6bf1d67b64a6ceb10",
+   "market/2025/Spring": "53f6e454d4be506b06db9f9ea15d890bf360aec0828ce64bad12fc1f51e63d70",
+   "market/2025/Summer": "7195f9145b0dd1c668b3530f16fff5ca4c0fe1f65ef4bbb4774d201336fd817c",
+   "market/2025/Winter": "055acfe4af47f6d932a998cb370293cb8b56a5cc328c11b6a192bbda0f0e14d5",
+   "tso/None/case9/2025/Autumn": "982c45436af7e8a0a6138ab935b34abf24bb2af1ab8fc438674c311e7fe64936",
+   "tso/None/case9/2025/Spring": "9a4d661f26069980c9a475ed5929649f904054970e04e737807d18f9f28512a1",
+   "tso/None/case9/2025/Summer": "8c3817b053e3412d2e4449c90cf27c5c367cbc3ea54d40714401fef11e5bc841",
+   "tso/None/case9/2025/Winter": "0987b0e0e404b9adc87fe612d22e5c04c72facabf27330688a9e323d2c778e7d",
+   "dso/5/case33_1/2025/Autumn": "066e5771be03c9772f2be8f436fbcc4a08a48636b7744d487ef36bc103457717",
+   "dso/5/case33_1/2025/Spring": "5d6ff7490c1525cafa525973aba14658d12cfaa5862fcc6ecca4f044b7b8f7d6",
+   "dso/5/case33_1/2025/Summer": "8a2cc2c15b5d98645b56ee79e49852e253267eba524e1cb894755aaa5accc31a",
+   "dso/5/case33_1/2025/Winter": "ca799b04922c85c557206d26fa2d65cf204150bfbcbe089e9d05c05700337958",
+   "dso/7/case33_2/2025/Autumn": "1786fbbafcd600ab1a1008ab44545e3665bccaaa4ed251c5e457dddca25a200a",
+   "dso/7/case33_2/2025/Spring": "0ed8a11dde01fe450e11dd131ae849315b9cb6f8b174b384427b321ac6005f06",
+   "dso/7/case33_2/2025/Summer": "c9d0fa856b43215e4eaddac317769ecf09b1a7bd3a4237e72601c57d29188dda",
+   "dso/7/case33_2/2025/Winter": "740bea1de09bafee490fcd85795bac8b6b6c168dc6acdd63dbc0e909d761a1a9",
+   "dso/9/case33_3/2025/Autumn": "beba45f2f1bd0dcf239056eb380bd2959a54cc6f41af605f2736bdcf1f4856b6",
+   "dso/9/case33_3/2025/Spring": "eab02f8bb26dffd8d472a6ec782a25efa7be53ee40836ac5a01f41e36bd57377",
+   "dso/9/case33_3/2025/Summer": "18305a8e6637772da1caf3dfd0e632991d61622bfd3ce5f5a55a27e83b662189",
+   "dso/9/case33_3/2025/Winter": "fa3294da1fdd3858c45b1dec489b4904f21495661db228e65d72a37e039e2b47"
+  }
+ },
+ "prediction": {
+  "formula_floor": "floor = max_b |weighted_total_b(gate alpha=0.50)| * w_pilot(b) / w_gate(b) over the gate arm's ten printed blocks (all 2025); a hard lower bound on the pilot sigma_computed conditional on identity_2025 and the same alpha/candidate/code",
+  "floor_rows": [
+   {
+    "block": "DSO node=9 2025 Winter",
+    "gate_weighted_abs": 56274390.0,
+    "w_gate": 455.0,
+    "w_pilot": 273.0,
+    "pilot_weighted_abs": 33764634.0
+   },
+   {
+    "block": "DSO node=9 2025 Autumn",
+    "gate_weighted_abs": 54443140.0,
+    "w_gate": 455.0,
+    "w_pilot": 273.0,
+    "pilot_weighted_abs": 32665884.0
+   },
+   {
+    "block": "DSO node=9 2025 Spring",
+    "gate_weighted_abs": 50738120.0,
+    "w_gate": 460.0,
+    "w_pilot": 276.0,
+    "pilot_weighted_abs": 30442872.0
+   },
+   {
+    "block": "DSO node=5 2025 Spring",
+    "gate_weighted_abs": 48234520.0,
+    "w_gate": 460.0,
+    "w_pilot": 276.0,
+    "pilot_weighted_abs": 28940712.0
+   },
+   {
+    "block": "DSO node=5 2025 Autumn",
+    "gate_weighted_abs": 47178010.0,
+    "w_gate": 455.0,
+    "w_pilot": 273.0,
+    "pilot_weighted_abs": 28306806.0
+   },
+   {
+    "block": "DSO node=5 2025 Summer",
+    "gate_weighted_abs": 46031180.0,
+    "w_gate": 455.0,
+    "w_pilot": 273.0,
+    "pilot_weighted_abs": 27618708.0
+   },
+   {
+    "block": "DSO node=5 2025 Winter",
+    "gate_weighted_abs": 45912040.0,
+    "w_gate": 455.0,
+    "w_pilot": 273.0,
+    "pilot_weighted_abs": 27547224.0
+   },
+   {
+    "block": "DSO node=7 2025 Spring",
+    "gate_weighted_abs": 42731040.0,
+    "w_gate": 460.0,
+    "w_pilot": 276.0,
+    "pilot_weighted_abs": 25638624.0
+   },
+   {
+    "block": "DSO node=9 2025 Summer",
+    "gate_weighted_abs": 42569940.0,
+    "w_gate": 455.0,
+    "w_pilot": 273.0,
+    "pilot_weighted_abs": 25541964.0
+   },
+   {
+    "block": "DSO node=7 2025 Summer",
+    "gate_weighted_abs": 41588510.0,
+    "w_gate": 455.0,
+    "w_pilot": 273.0,
+    "pilot_weighted_abs": 24953106.0
+   }
+  ],
+  "sigma_floor_from_printed_top10": 33764634.0,
+  "gate_sigma_exact": {
+   "path": "data/SRP1/Results/P515S51/2x2_limit_gate/limit_r1/gate.json",
+   "sha256": "6b4ea95d62e116a1713a75f17d6f687445d902282bd9ccfed96d2856e063b96a",
+   "value": 56274385.453676455
+  },
+  "weight_ratio_pilot_over_gate_2025": 0.6,
+  "sigma_floor": 33764631.272205874,
+  "ratio_floor": 0.36059701454884,
+  "band": [
+   0.3333333333333333,
+   3.0
+  ],
+  "ratio_floor_over_lower_band_edge": 1.0817910436465201,
+  "paper_5x5_reference": {
+   "sigma_computed": 55899330.0,
+   "ratio": 0.5969895347227799,
+   "argmax": {
+    "agent": "TSO",
+    "node": null,
+    "year": "2037",
+    "day": "Winter",
+    "block_weight": 215.25863693379213,
+    "raw_expected_daily_cost": -259684.49301847597
+   },
+   "largest_DSO_block": {
+    "node": 9,
+    "year": "2028",
+    "day": "Winter",
+    "weighted_total": 38933070.0
+   },
+   "ratio_of_largest_DSO_block": 0.4157945246325747
+  },
+  "tso_change_w37_to_gate_2025": {
+   "w37_x0_TSO_blocks_printed": [
+    {
+     "day": "Autumn",
+     "abs_weighted": 48997740.0
+    },
+    {
+     "day": "Winter",
+     "abs_weighted": 48646520.0
+    }
+   ],
+   "gate_alpha0p5_no_TSO_block_in_top10_so_every_TSO_abs_weighted_below": 41588510.0,
+   "implied_min_relative_drop": [
+    0.15121574995091613,
+    0.1450876650580556
+   ]
+  },
+  "upper_edge_sigma": 280906080.0,
+  "upper_edge_over_paper_sigma": 5.02521371901953
+ },
+ "finished_utc": "2026-09-23T18:17:53.876568+00:00",
+ "solve_profile": {
+  "declared": "zero solves",
+  "counts": {
+   "permitted_solve": 0,
+   "permitted_exec": 0,
+   "blocked_solve": 0,
+   "blocked_exec": 0
+  },
+  "verify_failures": []
+ }
+}

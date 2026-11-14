@@ -1,0 +1,56 @@
+{
+  "design": "P5.14-Y2 — offset reproducibility on a second candidate",
+  "status": "FROZEN — NOT AUTHORIZED TO RUN. Held for the author's decision.",
+  "instruction": "author, 2026-09-12: repeat the cold/warm pair on a second candidate; predeclare in offset terms; state the achievable numerical resolution BEFORE reading any result; if the achievable resolution is coarser than the bar, that is itself the finding and a more important one than either outcome.",
+
+  "the_bar": {
+    "stabilized_best_to_second_gap": 32.87,
+    "templated_path_cross_depth_uncertainty": 22.09,
+    "ratio": 0.67,
+    "pre_stabilized_PLANNING_SIGNAL": 33031.0,
+    "source_note": "PLANNING_SIGNAL = 33031.0 at p510_e_criteria.py:53 is the PRE-stabilized gap; 32.87 and 22.09 are the stabilized oracle's. They are the same quantity on two different oracles and must not be divided by one another.",
+    "offset_measured_in_X22": {"vs_warm_fixed": 1055598.4, "vs_warm_adaptive": 905573.4},
+    "requirement": "rankings are formed from differences within one path, so a CONSTANT offset cancels exactly. For the ranking to survive, the offset must reproduce across candidates to within about 33 absolute units out of ~1.06e6, i.e. 0.0031%."
+  },
+
+  "PRE-REGISTERED RESOLUTION ANALYSIS — the decisive part": {
+    "question": "what resolution on the offset is achievable at all, before any result is read?",
+    "arithmetic_source_is_not_the_limit": "the warm path reproduced a pre-C3 run to 16 digits, so the pipeline is bitwise deterministic; floating-point representation gives ~1e-7 absolute on 8.28e8 and is irrelevant here",
+    "the_actual_limit_is_the_stopping_point": {
+      "reasoning": "Q is read where the run stops, and each run stops when its per-cycle objective change falls under the tolerance. Q is therefore known only to within roughly the size of the last step taken.",
+      "measured_terminal_steps": {"cold_adaptive": 706603.5, "warm_fixed": 59458.6, "warm_adaptive": 212488.8},
+      "objective_tolerance_in_force": 827944.7,
+      "error_bar_on_the_offset": "sum of the two cells' terminal steps = 766062.1 for the cold/warm_fixed pair",
+      "verdict": "the measured offset 1055598 is only 1.4x its own error bar 766062, and the bar the ranking requires is 33 units — about 23,000x finer than the error bar. THE EXPERIMENT AS POSED CANNOT MEET ITS BAR, and this is established before running it."
+    },
+    "the_finding_this_yields": {
+      "statement": "The objective criterion -- the only rho-independent member of the composite test -- is itself far too loose to resolve the ranking it is being used to support.",
+      "numbers": {"objective_tolerance": 827944.7, "stabilized_signal": 32.87, "tolerance_over_signal": 25188,
+                   "tolerance_over_pre_stabilized_signal": 25.07},
+      "consequence": "Q is defined only to within ~+/-8.3e5 by its own stopping rule, while the quantity to be resolved is 32.87. The empirical cross-depth uncertainty of 22.09 is FOUR ORDERS OF MAGNITUDE smaller than that bound, which means the templated ranking works -- when it works -- by the determinism of identical code paths cancelling the slack, not because the criterion resolves anything. That is fragile: anything that perturbs a trajectory (a different candidate, a solver retry, a code edit) can move a stopping point by up to a tolerance width."
+    },
+    "cost_of_a_resolution_adequate_oracle": {
+      "method": "the cold cell's late per-cycle decrement ratio is 0.8216 (mean of the last four); continuing until the decrement falls under the 33-unit bar",
+      "indicative_cycles": 50.7,
+      "indicative_extra_solves_per_evaluation": 2588,
+      "EXTRAPOLATION_WARNING": "this is an extrapolation of a decrement ratio, which is exactly the operation that has gone wrong three times in this project. The ratio is not stable -- it ran 0.87 -> 0.98 in the R trajectory and 0.8216 here -- so this is an ORDER-OF-MAGNITUDE INDICATION ONLY and must never be quoted as a cost.",
+      "note": "the resulting total (~1683 + ~2588 = ~4271) lands near the withdrawn 4600 figure by a completely different route. That is a coincidence and does NOT vindicate the withdrawn number, whose derivation was wrong."
+    }
+  },
+
+  "recommended_redesign": {
+    "why": "measuring the offset as a subtraction of two ~8.28e8 numbers read at two different criterion-dependent stopping points cannot reach 33 units",
+    "primary_measurement": "compare the two initializations at a COMMON, CRITERION-FREE reference: a fixed cycle budget identical for both cells, with the offset reported together with each cell's per-cycle objective change AT that budget as an explicit error bar",
+    "secondary": "repeat on the second candidate and report whether the offset reproduces WITHIN THE STATED ERROR BAR -- a far weaker claim than the 33-unit bar, and the strongest one the current stopping rule supports",
+    "what_would_actually_settle_it": "tightening the objective tolerance until the per-cycle change at termination is below the signal. That is a parameter change and is NOT authorized here; its cost is the indicative figure above, with the extrapolation warning attached."
+  },
+
+  "if_run_as_originally_posed": {
+    "cells": "cold_adaptive + warm_adaptive on a second candidate, same formulation, instance recorded per the eighth rule",
+    "cost": "~1938 solves, about half an hour",
+    "predeclared_outcome": "INDETERMINATE -- the offset difference between candidates will be reported, but any value under ~7.7e5 is inside the error bar and cannot distinguish 'reproduces to 33 units' from 'varies by 10^5'. Predeclaring this prevents the result from being read as support for either conclusion."
+  },
+
+  "not_permitted_without_separate_authorization": ["running any cell of this design",
+    "changing the objective tolerance or any other criterion", "quoting the indicative extra-solve figure as a cost"]
+}

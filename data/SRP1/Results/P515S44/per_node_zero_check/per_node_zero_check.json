@@ -1,0 +1,3540 @@
+{
+ "stage": "P5.15 Addendum 25 item 1 Task A -- per-node zero-storage evaluability (zero solves)",
+ "authority": [
+  "PLANNER_BRIEF_2026-09-13.md Addendum 25",
+  "data/SRP1/Results/P515S44/frozen_s44_selection_spec_v14_e4500e27.json item1_harness.per_node_zero_check"
+ ],
+ "spec_v14_sha256": "e4500e272be84e158e763256e1c7156593f89bdb50d197d0801dbf70d1d22c9b",
+ "case_file_sha256": "490e5b211f5083fe6ffca11d2aa07cd26739f141654fce3a23898258d610edf8",
+ "timestamp_utc": "2026-09-19T08:09:21.304862+00:00",
+ "scope": "per-node zero (some nodes zero, others positive); the all-zero x = 0 case is NOT examined here",
+ "candidates": {
+  "c_star": {
+   "5": [
+    0.96875,
+    3.875
+   ],
+   "7": [
+    0.96875,
+    3.875
+   ],
+   "9": [
+    0.96875,
+    3.875
+   ]
+  },
+  "paper_plan": {
+   "5": [
+    0.0,
+    0.0
+   ],
+   "7": [
+    1.62,
+    3.24
+   ],
+   "9": [
+    0.0,
+    0.0
+   ]
+  },
+  "node7_empty": {
+   "5": [
+    0.96875,
+    3.875
+   ],
+   "7": [
+    0.0,
+    0.0
+   ],
+   "9": [
+    0.96875,
+    3.875
+   ]
+  }
+ },
+ "per_candidate": {
+  "c_star": {
+   "construction": {
+    "investment_year": 2025,
+    "active_nodes": [
+     5,
+     7,
+     9
+    ],
+    "years": [
+     "2025",
+     "2030",
+     "2035"
+    ],
+    "report_instance": {
+     "year": 2025,
+     "assignment": "per-node",
+     "investment_map": {
+      "5": [
+       0.96875,
+       3.875
+      ],
+      "7": [
+       0.96875,
+       3.875
+      ],
+      "9": [
+       0.96875,
+       3.875
+      ]
+     }
+    },
+    "candidate": {
+     "5": {
+      "investment": {
+       "2025": {
+        "s": 0.96875,
+        "e": 3.875
+       },
+       "2030": {
+        "s": 0.0,
+        "e": 0.0
+       },
+       "2035": {
+        "s": 0.0,
+        "e": 0.0
+       }
+      },
+      "total_capacity": {
+       "2025": {
+        "s": 0.96875,
+        "e": 3.875
+       },
+       "2030": {
+        "s": 0.96875,
+        "e": 3.875
+       },
+       "2035": {
+        "s": 0.96875,
+        "e": 3.875
+       }
+      }
+     },
+     "7": {
+      "investment": {
+       "2025": {
+        "s": 0.96875,
+        "e": 3.875
+       },
+       "2030": {
+        "s": 0.0,
+        "e": 0.0
+       },
+       "2035": {
+        "s": 0.0,
+        "e": 0.0
+       }
+      },
+      "total_capacity": {
+       "2025": {
+        "s": 0.96875,
+        "e": 3.875
+       },
+       "2030": {
+        "s": 0.96875,
+        "e": 3.875
+       },
+       "2035": {
+        "s": 0.96875,
+        "e": 3.875
+       }
+      }
+     },
+     "9": {
+      "investment": {
+       "2025": {
+        "s": 0.96875,
+        "e": 3.875
+       },
+       "2030": {
+        "s": 0.0,
+        "e": 0.0
+       },
+       "2035": {
+        "s": 0.0,
+        "e": 0.0
+       }
+      },
+      "total_capacity": {
+       "2025": {
+        "s": 0.96875,
+        "e": 3.875
+       },
+       "2030": {
+        "s": 0.96875,
+        "e": 3.875
+       },
+       "2035": {
+        "s": 0.96875,
+        "e": 3.875
+       }
+      }
+     }
+    },
+    "map_honoured_per_node": {
+     "5": {
+      "investment_year_entry_equals_map": true,
+      "other_years_zero": true,
+      "zero_node": false,
+      "total_capacity_all_years_zero": false
+     },
+     "7": {
+      "investment_year_entry_equals_map": true,
+      "other_years_zero": true,
+      "zero_node": false,
+      "total_capacity_all_years_zero": false
+     },
+     "9": {
+      "investment_year_entry_equals_map": true,
+      "other_years_zero": true,
+      "zero_node": false,
+      "total_capacity_all_years_zero": false
+     }
+    },
+    "map_honoured_all": true,
+    "zero_nodes_have_zero_total_capacity_every_year": true,
+    "uniform_path_report_instance": {
+     "s_mva": 0.96875,
+     "e_mwh": 3.875,
+     "year": 2025,
+     "assignment": "uniform across active nodes (control/perturbation)"
+    },
+    "map_path_candidate_equals_uniform_path_candidate_exactly": true
+   },
+   "models_per_node": {
+    "5": {
+     "zero_node": false,
+     "esso_cohort_inactive": {
+      "0": false,
+      "1": true,
+      "2": true
+     },
+     "esso_family_counts": {
+      "rated_s_capacity_unit": {
+       "rows": 6,
+       "active": 6
+      },
+      "rated_e_capacity_unit": {
+       "rows": 6,
+       "active": 6
+      },
+      "rated_s_capacity": {
+       "rows": 3,
+       "active": 3
+      },
+      "rated_e_capacity": {
+       "rows": 3,
+       "active": 3
+      },
+      "available_s_capacity_unit": {
+       "rows": 9,
+       "active": 9
+      },
+      "available_e_capacity_unit": {
+       "rows": 9,
+       "active": 9
+      },
+      "energy_storage_charging_discharging": {
+       "rows": 9,
+       "active": 3
+      },
+      "energy_storage_capacity_degradation": {
+       "rows": 18,
+       "active": 9
+      },
+      "energy_storage_limits": {
+       "rows": 1728,
+       "active": 576
+      },
+      "energy_storage_cohort_pnet_share_h3": {
+       "rows": 864,
+       "active": 0
+      },
+      "energy_storage_operation_agg": {
+       "rows": 576,
+       "active": 576
+      },
+      "_vars": {
+       "total": 2949,
+       "unfixed": 1197
+      }
+     },
+     "esso_converter_circle_rows": {
+      "n_rows": 288,
+      "n_active": 288,
+      "es_s_rated_forced_zero_by_equalities_per_year": {
+       "0": false,
+       "1": false,
+       "2": false
+      }
+     },
+     "dso_shared_ess_gate_all_blocks_inactive": false,
+     "dso_shared_ess_gate_all_blocks_active": true,
+     "tso_shared_ess_gate_all_blocks_inactive": false,
+     "tso_shared_ess_gate_all_blocks_active": true,
+     "dso_blocks": {
+      "2025|Spring": {
+       "s_rated_fixed_pu": 0.0096875,
+       "e_rated_fixed_pu": 0.03875,
+       "expected_shared_ess_p_all_fixed": false
+      },
+      "2025|Summer": {
+       "s_rated_fixed_pu": 0.0096875,
+       "e_rated_fixed_pu": 0.03875,
+       "expected_shared_ess_p_all_fixed": false
+      },
+      "2025|Autumn": {
+       "s_rated_fixed_pu": 0.0096875,
+       "e_rated_fixed_pu": 0.03875,
+       "expected_shared_ess_p_all_fixed": false
+      },
+      "2025|Winter": {
+       "s_rated_fixed_pu": 0.0096875,
+       "e_rated_fixed_pu": 0.03875,
+       "expected_shared_ess_p_all_fixed": false
+      },
+      "2030|Spring": {
+       "s_rated_fixed_pu": 0.0096875,
+       "e_rated_fixed_pu": 0.03875,
+       "expected_shared_ess_p_all_fixed": false
+      },
+      "2030|Summer": {
+       "s_rated_fixed_pu": 0.0096875,
+       "e_rated_fixed_pu": 0.03875,
+       "expected_shared_ess_p_all_fixed": false
+      },
+      "2030|Autumn": {
+       "s_rated_fixed_pu": 0.0096875,
+       "e_rated_fixed_pu": 0.03875,
+       "expected_shared_ess_p_all_fixed": false
+      },
+      "2030|Winter": {
+       "s_rated_fixed_pu": 0.0096875,
+       "e_rated_fixed_pu": 0.03875,
+       "expected_shared_ess_p_all_fixed": false
+      },
+      "2035|Spring": {
+       "s_rated_fixed_pu": 0.0096875,
+       "e_rated_fixed_pu": 0.03875,
+       "expected_shared_ess_p_all_fixed": false
+      },
+      "2035|Summer": {
+       "s_rated_fixed_pu": 0.0096875,
+       "e_rated_fixed_pu": 0.03875,
+       "expected_shared_ess_p_all_fixed": false
+      },
+      "2035|Autumn": {
+       "s_rated_fixed_pu": 0.0096875,
+       "e_rated_fixed_pu": 0.03875,
+       "expected_shared_ess_p_all_fixed": false
+      },
+      "2035|Winter": {
+       "s_rated_fixed_pu": 0.0096875,
+       "e_rated_fixed_pu": 0.03875,
+       "expected_shared_ess_p_all_fixed": false
+      }
+     },
+     "tso_blocks": {
+      "2025|Spring": {
+       "s_rated_fixed_pu": 0.0096875,
+       "e_rated_fixed_pu": 0.03875,
+       "expected_shared_ess_p_all_fixed": false
+      },
+      "2025|Summer": {
+       "s_rated_fixed_pu": 0.0096875,
+       "e_rated_fixed_pu": 0.03875,
+       "expected_shared_ess_p_all_fixed": false
+      },
+      "2025|Autumn": {
+       "s_rated_fixed_pu": 0.0096875,
+       "e_rated_fixed_pu": 0.03875,
+       "expected_shared_ess_p_all_fixed": false
+      },
+      "2025|Winter": {
+       "s_rated_fixed_pu": 0.0096875,
+       "e_rated_fixed_pu": 0.03875,
+       "expected_shared_ess_p_all_fixed": false
+      },
+      "2030|Spring": {
+       "s_rated_fixed_pu": 0.0096875,
+       "e_rated_fixed_pu": 0.03875,
+       "expected_shared_ess_p_all_fixed": false
+      },
+      "2030|Summer": {
+       "s_rated_fixed_pu": 0.0096875,
+       "e_rated_fixed_pu": 0.03875,
+       "expected_shared_ess_p_all_fixed": false
+      },
+      "2030|Autumn": {
+       "s_rated_fixed_pu": 0.0096875,
+       "e_rated_fixed_pu": 0.03875,
+       "expected_shared_ess_p_all_fixed": false
+      },
+      "2030|Winter": {
+       "s_rated_fixed_pu": 0.0096875,
+       "e_rated_fixed_pu": 0.03875,
+       "expected_shared_ess_p_all_fixed": false
+      },
+      "2035|Spring": {
+       "s_rated_fixed_pu": 0.0096875,
+       "e_rated_fixed_pu": 0.03875,
+       "expected_shared_ess_p_all_fixed": false
+      },
+      "2035|Summer": {
+       "s_rated_fixed_pu": 0.0096875,
+       "e_rated_fixed_pu": 0.03875,
+       "expected_shared_ess_p_all_fixed": false
+      },
+      "2035|Autumn": {
+       "s_rated_fixed_pu": 0.0096875,
+       "e_rated_fixed_pu": 0.03875,
+       "expected_shared_ess_p_all_fixed": false
+      },
+      "2035|Winter": {
+       "s_rated_fixed_pu": 0.0096875,
+       "e_rated_fixed_pu": 0.03875,
+       "expected_shared_ess_p_all_fixed": false
+      }
+     }
+    },
+    "7": {
+     "zero_node": false,
+     "esso_cohort_inactive": {
+      "0": false,
+      "1": true,
+      "2": true
+     },
+     "esso_family_counts": {
+      "rated_s_capacity_unit": {
+       "rows": 6,
+       "active": 6
+      },
+      "rated_e_capacity_unit": {
+       "rows": 6,
+       "active": 6
+      },
+      "rated_s_capacity": {
+       "rows": 3,
+       "active": 3
+      },
+      "rated_e_capacity": {
+       "rows": 3,
+       "active": 3
+      },
+      "available_s_capacity_unit": {
+       "rows": 9,
+       "active": 9
+      },
+      "available_e_capacity_unit": {
+       "rows": 9,
+       "active": 9
+      },
+      "energy_storage_charging_discharging": {
+       "rows": 9,
+       "active": 3
+      },
+      "energy_storage_capacity_degradation": {
+       "rows": 18,
+       "active": 9
+      },
+      "energy_storage_limits": {
+       "rows": 1728,
+       "active": 576
+      },
+      "energy_storage_cohort_pnet_share_h3": {
+       "rows": 864,
+       "active": 0
+      },
+      "energy_storage_operation_agg": {
+       "rows": 576,
+       "active": 576
+      },
+      "_vars": {
+       "total": 2949,
+       "unfixed": 1197
+      }
+     },
+     "esso_converter_circle_rows": {
+      "n_rows": 288,
+      "n_active": 288,
+      "es_s_rated_forced_zero_by_equalities_per_year": {
+       "0": false,
+       "1": false,
+       "2": false
+      }
+     },
+     "dso_shared_ess_gate_all_blocks_inactive": false,
+     "dso_shared_ess_gate_all_blocks_active": true,
+     "tso_shared_ess_gate_all_blocks_inactive": false,
+     "tso_shared_ess_gate_all_blocks_active": true,
+     "dso_blocks": {
+      "2025|Spring": {
+       "s_rated_fixed_pu": 0.0096875,
+       "e_rated_fixed_pu": 0.03875,
+       "expected_shared_ess_p_all_fixed": false
+      },
+      "2025|Summer": {
+       "s_rated_fixed_pu": 0.0096875,
+       "e_rated_fixed_pu": 0.03875,
+       "expected_shared_ess_p_all_fixed": false
+      },
+      "2025|Autumn": {
+       "s_rated_fixed_pu": 0.0096875,
+       "e_rated_fixed_pu": 0.03875,
+       "expected_shared_ess_p_all_fixed": false
+      },
+      "2025|Winter": {
+       "s_rated_fixed_pu": 0.0096875,
+       "e_rated_fixed_pu": 0.03875,
+       "expected_shared_ess_p_all_fixed": false
+      },
+      "2030|Spring": {
+       "s_rated_fixed_pu": 0.0096875,
+       "e_rated_fixed_pu": 0.03875,
+       "expected_shared_ess_p_all_fixed": false
+      },
+      "2030|Summer": {
+       "s_rated_fixed_pu": 0.0096875,
+       "e_rated_fixed_pu": 0.03875,
+       "expected_shared_ess_p_all_fixed": false
+      },
+      "2030|Autumn": {
+       "s_rated_fixed_pu": 0.0096875,
+       "e_rated_fixed_pu": 0.03875,
+       "expected_shared_ess_p_all_fixed": false
+      },
+      "2030|Winter": {
+       "s_rated_fixed_pu": 0.0096875,
+       "e_rated_fixed_pu": 0.03875,
+       "expected_shared_ess_p_all_fixed": false
+      },
+      "2035|Spring": {
+       "s_rated_fixed_pu": 0.0096875,
+       "e_rated_fixed_pu": 0.03875,
+       "expected_shared_ess_p_all_fixed": false
+      },
+      "2035|Summer": {
+       "s_rated_fixed_pu": 0.0096875,
+       "e_rated_fixed_pu": 0.03875,
+       "expected_shared_ess_p_all_fixed": false
+      },
+      "2035|Autumn": {
+       "s_rated_fixed_pu": 0.0096875,
+       "e_rated_fixed_pu": 0.03875,
+       "expected_shared_ess_p_all_fixed": false
+      },
+      "2035|Winter": {
+       "s_rated_fixed_pu": 0.0096875,
+       "e_rated_fixed_pu": 0.03875,
+       "expected_shared_ess_p_all_fixed": false
+      }
+     },
+     "tso_blocks": {
+      "2025|Spring": {
+       "s_rated_fixed_pu": 0.0096875,
+       "e_rated_fixed_pu": 0.03875,
+       "expected_shared_ess_p_all_fixed": false
+      },
+      "2025|Summer": {
+       "s_rated_fixed_pu": 0.0096875,
+       "e_rated_fixed_pu": 0.03875,
+       "expected_shared_ess_p_all_fixed": false
+      },
+      "2025|Autumn": {
+       "s_rated_fixed_pu": 0.0096875,
+       "e_rated_fixed_pu": 0.03875,
+       "expected_shared_ess_p_all_fixed": false
+      },
+      "2025|Winter": {
+       "s_rated_fixed_pu": 0.0096875,
+       "e_rated_fixed_pu": 0.03875,
+       "expected_shared_ess_p_all_fixed": false
+      },
+      "2030|Spring": {
+       "s_rated_fixed_pu": 0.0096875,
+       "e_rated_fixed_pu": 0.03875,
+       "expected_shared_ess_p_all_fixed": false
+      },
+      "2030|Summer": {
+       "s_rated_fixed_pu": 0.0096875,
+       "e_rated_fixed_pu": 0.03875,
+       "expected_shared_ess_p_all_fixed": false
+      },
+      "2030|Autumn": {
+       "s_rated_fixed_pu": 0.0096875,
+       "e_rated_fixed_pu": 0.03875,
+       "expected_shared_ess_p_all_fixed": false
+      },
+      "2030|Winter": {
+       "s_rated_fixed_pu": 0.0096875,
+       "e_rated_fixed_pu": 0.03875,
+       "expected_shared_ess_p_all_fixed": false
+      },
+      "2035|Spring": {
+       "s_rated_fixed_pu": 0.0096875,
+       "e_rated_fixed_pu": 0.03875,
+       "expected_shared_ess_p_all_fixed": false
+      },
+      "2035|Summer": {
+       "s_rated_fixed_pu": 0.0096875,
+       "e_rated_fixed_pu": 0.03875,
+       "expected_shared_ess_p_all_fixed": false
+      },
+      "2035|Autumn": {
+       "s_rated_fixed_pu": 0.0096875,
+       "e_rated_fixed_pu": 0.03875,
+       "expected_shared_ess_p_all_fixed": false
+      },
+      "2035|Winter": {
+       "s_rated_fixed_pu": 0.0096875,
+       "e_rated_fixed_pu": 0.03875,
+       "expected_shared_ess_p_all_fixed": false
+      }
+     }
+    },
+    "9": {
+     "zero_node": false,
+     "esso_cohort_inactive": {
+      "0": false,
+      "1": true,
+      "2": true
+     },
+     "esso_family_counts": {
+      "rated_s_capacity_unit": {
+       "rows": 6,
+       "active": 6
+      },
+      "rated_e_capacity_unit": {
+       "rows": 6,
+       "active": 6
+      },
+      "rated_s_capacity": {
+       "rows": 3,
+       "active": 3
+      },
+      "rated_e_capacity": {
+       "rows": 3,
+       "active": 3
+      },
+      "available_s_capacity_unit": {
+       "rows": 9,
+       "active": 9
+      },
+      "available_e_capacity_unit": {
+       "rows": 9,
+       "active": 9
+      },
+      "energy_storage_charging_discharging": {
+       "rows": 9,
+       "active": 3
+      },
+      "energy_storage_capacity_degradation": {
+       "rows": 18,
+       "active": 9
+      },
+      "energy_storage_limits": {
+       "rows": 1728,
+       "active": 576
+      },
+      "energy_storage_cohort_pnet_share_h3": {
+       "rows": 864,
+       "active": 0
+      },
+      "energy_storage_operation_agg": {
+       "rows": 576,
+       "active": 576
+      },
+      "_vars": {
+       "total": 2949,
+       "unfixed": 1197
+      }
+     },
+     "esso_converter_circle_rows": {
+      "n_rows": 288,
+      "n_active": 288,
+      "es_s_rated_forced_zero_by_equalities_per_year": {
+       "0": false,
+       "1": false,
+       "2": false
+      }
+     },
+     "dso_shared_ess_gate_all_blocks_inactive": false,
+     "dso_shared_ess_gate_all_blocks_active": true,
+     "tso_shared_ess_gate_all_blocks_inactive": false,
+     "tso_shared_ess_gate_all_blocks_active": true,
+     "dso_blocks": {
+      "2025|Spring": {
+       "s_rated_fixed_pu": 0.0096875,
+       "e_rated_fixed_pu": 0.03875,
+       "expected_shared_ess_p_all_fixed": false
+      },
+      "2025|Summer": {
+       "s_rated_fixed_pu": 0.0096875,
+       "e_rated_fixed_pu": 0.03875,
+       "expected_shared_ess_p_all_fixed": false
+      },
+      "2025|Autumn": {
+       "s_rated_fixed_pu": 0.0096875,
+       "e_rated_fixed_pu": 0.03875,
+       "expected_shared_ess_p_all_fixed": false
+      },
+      "2025|Winter": {
+       "s_rated_fixed_pu": 0.0096875,
+       "e_rated_fixed_pu": 0.03875,
+       "expected_shared_ess_p_all_fixed": false
+      },
+      "2030|Spring": {
+       "s_rated_fixed_pu": 0.0096875,
+       "e_rated_fixed_pu": 0.03875,
+       "expected_shared_ess_p_all_fixed": false
+      },
+      "2030|Summer": {
+       "s_rated_fixed_pu": 0.0096875,
+       "e_rated_fixed_pu": 0.03875,
+       "expected_shared_ess_p_all_fixed": false
+      },
+      "2030|Autumn": {
+       "s_rated_fixed_pu": 0.0096875,
+       "e_rated_fixed_pu": 0.03875,
+       "expected_shared_ess_p_all_fixed": false
+      },
+      "2030|Winter": {
+       "s_rated_fixed_pu": 0.0096875,
+       "e_rated_fixed_pu": 0.03875,
+       "expected_shared_ess_p_all_fixed": false
+      },
+      "2035|Spring": {
+       "s_rated_fixed_pu": 0.0096875,
+       "e_rated_fixed_pu": 0.03875,
+       "expected_shared_ess_p_all_fixed": false
+      },
+      "2035|Summer": {
+       "s_rated_fixed_pu": 0.0096875,
+       "e_rated_fixed_pu": 0.03875,
+       "expected_shared_ess_p_all_fixed": false
+      },
+      "2035|Autumn": {
+       "s_rated_fixed_pu": 0.0096875,
+       "e_rated_fixed_pu": 0.03875,
+       "expected_shared_ess_p_all_fixed": false
+      },
+      "2035|Winter": {
+       "s_rated_fixed_pu": 0.0096875,
+       "e_rated_fixed_pu": 0.03875,
+       "expected_shared_ess_p_all_fixed": false
+      }
+     },
+     "tso_blocks": {
+      "2025|Spring": {
+       "s_rated_fixed_pu": 0.0096875,
+       "e_rated_fixed_pu": 0.03875,
+       "expected_shared_ess_p_all_fixed": false
+      },
+      "2025|Summer": {
+       "s_rated_fixed_pu": 0.0096875,
+       "e_rated_fixed_pu": 0.03875,
+       "expected_shared_ess_p_all_fixed": false
+      },
+      "2025|Autumn": {
+       "s_rated_fixed_pu": 0.0096875,
+       "e_rated_fixed_pu": 0.03875,
+       "expected_shared_ess_p_all_fixed": false
+      },
+      "2025|Winter": {
+       "s_rated_fixed_pu": 0.0096875,
+       "e_rated_fixed_pu": 0.03875,
+       "expected_shared_ess_p_all_fixed": false
+      },
+      "2030|Spring": {
+       "s_rated_fixed_pu": 0.0096875,
+       "e_rated_fixed_pu": 0.03875,
+       "expected_shared_ess_p_all_fixed": false
+      },
+      "2030|Summer": {
+       "s_rated_fixed_pu": 0.0096875,
+       "e_rated_fixed_pu": 0.03875,
+       "expected_shared_ess_p_all_fixed": false
+      },
+      "2030|Autumn": {
+       "s_rated_fixed_pu": 0.0096875,
+       "e_rated_fixed_pu": 0.03875,
+       "expected_shared_ess_p_all_fixed": false
+      },
+      "2030|Winter": {
+       "s_rated_fixed_pu": 0.0096875,
+       "e_rated_fixed_pu": 0.03875,
+       "expected_shared_ess_p_all_fixed": false
+      },
+      "2035|Spring": {
+       "s_rated_fixed_pu": 0.0096875,
+       "e_rated_fixed_pu": 0.03875,
+       "expected_shared_ess_p_all_fixed": false
+      },
+      "2035|Summer": {
+       "s_rated_fixed_pu": 0.0096875,
+       "e_rated_fixed_pu": 0.03875,
+       "expected_shared_ess_p_all_fixed": false
+      },
+      "2035|Autumn": {
+       "s_rated_fixed_pu": 0.0096875,
+       "e_rated_fixed_pu": 0.03875,
+       "expected_shared_ess_p_all_fixed": false
+      },
+      "2035|Winter": {
+       "s_rated_fixed_pu": 0.0096875,
+       "e_rated_fixed_pu": 0.03875,
+       "expected_shared_ess_p_all_fixed": false
+      }
+     }
+    }
+   },
+   "admm_preparation": {
+    "sigma_fixed_used": 93635360.0,
+    "al_scale_esso": 227210.9966521344,
+    "al_scale_applied": true,
+    "esso_admm_objective_active_per_node": {
+     "5": true,
+     "7": true,
+     "9": true
+    },
+    "get_updated_capacities_structure_ok": true,
+    "note": "values read at the unsolved point (never solved); structure/finite only. _compute_common_admm_objective_scale (the calibration assertion of the computed sigma) needs solved block objectives and is NOT exercised here."
+   },
+   "s_ref_normalization": {
+    "S_ref_mva": 2.5,
+    "floor_mva": 0.1,
+    "per_node": {
+     "5": {
+      "rating_args_min_max_mva": {
+       "tso_rating_arg_mva": [
+        0.96875,
+        0.96875
+       ],
+       "dso_rating_arg_mva": [
+        0.96875,
+        0.96875
+       ],
+       "esso_rating_arg_mva": [
+        0.0,
+        0.96875
+       ]
+      },
+      "normalizations_min_max_mva": {
+       "tso_norm_pu_times_sbase": [
+        2.5,
+        2.5
+       ],
+       "dso_norm_pu_times_sbase": [
+        2.5,
+        2.5
+       ],
+       "tso_norm_mva": [
+        2.5,
+        2.5
+       ],
+       "dso_norm_mva": [
+        2.5,
+        2.5
+       ],
+       "esso_norm_mva": [
+        2.5,
+        2.5
+       ]
+      },
+      "all_normalizations_equal_S_ref_finite_positive": true
+     },
+     "7": {
+      "rating_args_min_max_mva": {
+       "tso_rating_arg_mva": [
+        0.96875,
+        0.96875
+       ],
+       "dso_rating_arg_mva": [
+        0.96875,
+        0.96875
+       ],
+       "esso_rating_arg_mva": [
+        0.0,
+        0.96875
+       ]
+      },
+      "normalizations_min_max_mva": {
+       "tso_norm_pu_times_sbase": [
+        2.5,
+        2.5
+       ],
+       "dso_norm_pu_times_sbase": [
+        2.5,
+        2.5
+       ],
+       "tso_norm_mva": [
+        2.5,
+        2.5
+       ],
+       "dso_norm_mva": [
+        2.5,
+        2.5
+       ],
+       "esso_norm_mva": [
+        2.5,
+        2.5
+       ]
+      },
+      "all_normalizations_equal_S_ref_finite_positive": true
+     },
+     "9": {
+      "rating_args_min_max_mva": {
+       "tso_rating_arg_mva": [
+        0.96875,
+        0.96875
+       ],
+       "dso_rating_arg_mva": [
+        0.96875,
+        0.96875
+       ],
+       "esso_rating_arg_mva": [
+        0.0,
+        0.96875
+       ]
+      },
+      "normalizations_min_max_mva": {
+       "tso_norm_pu_times_sbase": [
+        2.5,
+        2.5
+       ],
+       "dso_norm_pu_times_sbase": [
+        2.5,
+        2.5
+       ],
+       "tso_norm_mva": [
+        2.5,
+        2.5
+       ],
+       "dso_norm_mva": [
+        2.5,
+        2.5
+       ],
+       "esso_norm_mva": [
+        2.5,
+        2.5
+       ]
+      },
+      "all_normalizations_equal_S_ref_finite_positive": true
+     }
+    },
+    "all_nodes_all_sites_equal_S_ref": true,
+    "call_sites_covered": [
+     "update_transmission_model_to_admm (_shared_ess_admm_normalization_pu, TSO network .s)",
+     "update_distribution_models_to_admm (_shared_ess_admm_normalization_pu, DSO network .s)",
+     "update_shared_energy_storage_model_to_admm (_shared_ess_admm_normalization_mva, ESSO .s)",
+     "get_admm_residual_metrics / get_admm_boyd_residual_metrics (_mva, TSO/DSO/ESSO .s)",
+     "TSO dual/proximal update (_pu, TSO network .s)"
+    ]
+   },
+   "consensus_entries": {
+    "per_node": {
+     "5": {
+      "tso": {
+       "n": 576,
+       "all_finite": true
+      },
+      "dso": {
+       "n": 576,
+       "all_finite": true
+      },
+      "esso": {
+       "n": 576,
+       "all_finite": true
+      },
+      "z": {
+       "n": 576,
+       "all_finite": true
+      },
+      "dual_ess_all_agents": {
+       "n": 1728,
+       "all_finite": true
+      }
+     },
+     "7": {
+      "tso": {
+       "n": 576,
+       "all_finite": true
+      },
+      "dso": {
+       "n": 576,
+       "all_finite": true
+      },
+      "esso": {
+       "n": 576,
+       "all_finite": true
+      },
+      "z": {
+       "n": 576,
+       "all_finite": true
+      },
+      "dual_ess_all_agents": {
+       "n": 1728,
+       "all_finite": true
+      }
+     },
+     "9": {
+      "tso": {
+       "n": 576,
+       "all_finite": true
+      },
+      "dso": {
+       "n": 576,
+       "all_finite": true
+      },
+      "esso": {
+       "n": 576,
+       "all_finite": true
+      },
+      "z": {
+       "n": 576,
+       "all_finite": true
+      },
+      "dual_ess_all_agents": {
+       "n": 1728,
+       "all_finite": true
+      }
+     }
+    },
+    "all_present_and_finite": true,
+    "expected_entries_per_agent_per_node": 576
+   },
+   "per_cycle_evaluators_and_captures": {
+    "get_admm_residual_metrics_nonfinite": {
+     "n_numeric_leaves": 51,
+     "n_nonfinite": 0,
+     "first_nonfinite": []
+    },
+    "get_admm_boyd_residual_metrics_nonfinite": {
+     "n_numeric_leaves": 47,
+     "n_nonfinite": 0,
+     "first_nonfinite": []
+    },
+    "update_admm_penalties_returned_tuple_len": 7,
+    "sidecars": {
+     "recourse_jump": {
+      "n_lines": 1,
+      "nonfinite": {
+       "n_numeric_leaves": 2,
+       "n_nonfinite": 0,
+       "first_nonfinite": []
+      }
+     },
+     "ess_stride": {
+      "n_lines": 1,
+      "nonfinite": {
+       "n_numeric_leaves": 6986,
+       "n_nonfinite": 0,
+       "first_nonfinite": []
+      }
+     },
+     "floor": {
+      "n_lines": 1,
+      "nonfinite": {
+       "n_numeric_leaves": 73,
+       "n_nonfinite": 0,
+       "first_nonfinite": []
+      }
+     },
+     "pf_stride": {
+      "n_lines": 1,
+      "nonfinite": {
+       "n_numeric_leaves": 20744,
+       "n_nonfinite": 0,
+       "first_nonfinite": []
+      }
+     },
+     "exempt": {
+      "n_lines": 1,
+      "nonfinite": {
+       "n_numeric_leaves": 4,
+       "n_nonfinite": 0,
+       "first_nonfinite": []
+      }
+     }
+    },
+    "soh_floor_rows_per_node_structural": {
+     "5": 6,
+     "7": 6,
+     "9": 6
+    },
+    "soh_floor_sidecar_entries_per_node": {
+     "5": {
+      "n_entries": 6,
+      "efc_per_day_all_none": true,
+      "soh_values_distinct": [
+       1.0
+      ]
+     },
+     "7": {
+      "n_entries": 6,
+      "efc_per_day_all_none": true,
+      "soh_values_distinct": [
+       1.0
+      ]
+     },
+     "9": {
+      "n_entries": 6,
+      "efc_per_day_all_none": true,
+      "soh_values_distinct": [
+       1.0
+      ]
+     }
+    },
+    "capture_esso_per_node_keys": {
+     "5": [
+      "degradation_fraction_per_year_per_cohort_year",
+      "efc_per_day_max",
+      "efc_per_day_min",
+      "efc_per_day_per_cohort_year",
+      "es_D_per_unit",
+      "es_avg_ch_dch_per_unit",
+      "es_e_rated_per_unit",
+      "es_soh_per_unit_cumul"
+     ],
+     "7": [
+      "degradation_fraction_per_year_per_cohort_year",
+      "efc_per_day_max",
+      "efc_per_day_min",
+      "efc_per_day_per_cohort_year",
+      "es_D_per_unit",
+      "es_avg_ch_dch_per_unit",
+      "es_e_rated_per_unit",
+      "es_soh_per_unit_cumul"
+     ],
+     "9": [
+      "degradation_fraction_per_year_per_cohort_year",
+      "efc_per_day_max",
+      "efc_per_day_min",
+      "efc_per_day_per_cohort_year",
+      "es_D_per_unit",
+      "es_avg_ch_dch_per_unit",
+      "es_e_rated_per_unit",
+      "es_soh_per_unit_cumul"
+     ]
+    },
+    "capture_esso_efc_per_day_max_per_node": {
+     "5": null,
+     "7": null,
+     "9": null
+    },
+    "capture_esso_nonfinite": {
+     "n_numeric_leaves": 135,
+     "n_nonfinite": 0,
+     "first_nonfinite": []
+    },
+    "_get_admm_efc_per_day_max": null,
+    "note": "one call of each per-cycle function at the UNSOLVED point, inside the oracle run's own capture wrappers; checks structure (no exception, no zero-rating division, finite leaves), not values"
+   },
+   "terminal_evaluators": {
+    "write_boyd_terminal_s35ref_ok": true,
+    "error": null,
+    "files": {
+     "boyd_terminal.json": {
+      "exists": true,
+      "nonfinite": {
+       "n_numeric_leaves": 120,
+       "n_nonfinite": 0,
+       "first_nonfinite": []
+      }
+     },
+     "component_levels_terminal.json": {
+      "exists": true,
+      "nonfinite": {
+       "n_numeric_leaves": 1948,
+       "n_nonfinite": 0,
+       "first_nonfinite": []
+      }
+     },
+     "interface_settlement_detail_s31c.json": {
+      "exists": true,
+      "nonfinite": {
+       "n_numeric_leaves": 13170,
+       "n_nonfinite": 0,
+       "first_nonfinite": []
+      }
+     },
+     "interface_voltage_terminal.json": {
+      "exists": true,
+      "nonfinite": {
+       "n_numeric_leaves": 6056,
+       "n_nonfinite": 0,
+       "first_nonfinite": []
+      }
+     }
+    },
+    "recourse_components_keys": [
+     "detector_components",
+     "detector_penalty_total",
+     "economic_recourse_all_D_excluded",
+     "economic_recourse_voltage_excluded",
+     "gross_operational_cost",
+     "gross_operational_cost_including_settlement",
+     "interface_settlement_dso",
+     "interface_settlement_total",
+     "interface_settlement_tso",
+     "net_operational_recourse",
+     "terminal_salvage_value"
+    ],
+    "synthetic_trajectory_row_used": {
+     "cycle": 1,
+     "cycle_convergence": false,
+     "consecutive_converged_cycles": 0,
+     "recourse": null,
+     "gross_operational_cost": null
+    }
+   },
+   "exception": null
+  },
+  "paper_plan": {
+   "construction": {
+    "investment_year": 2025,
+    "active_nodes": [
+     5,
+     7,
+     9
+    ],
+    "years": [
+     "2025",
+     "2030",
+     "2035"
+    ],
+    "report_instance": {
+     "year": 2025,
+     "assignment": "per-node",
+     "investment_map": {
+      "5": [
+       0.0,
+       0.0
+      ],
+      "7": [
+       1.62,
+       3.24
+      ],
+      "9": [
+       0.0,
+       0.0
+      ]
+     }
+    },
+    "candidate": {
+     "5": {
+      "investment": {
+       "2025": {
+        "s": 0.0,
+        "e": 0.0
+       },
+       "2030": {
+        "s": 0.0,
+        "e": 0.0
+       },
+       "2035": {
+        "s": 0.0,
+        "e": 0.0
+       }
+      },
+      "total_capacity": {
+       "2025": {
+        "s": 0.0,
+        "e": 0.0
+       },
+       "2030": {
+        "s": 0.0,
+        "e": 0.0
+       },
+       "2035": {
+        "s": 0.0,
+        "e": 0.0
+       }
+      }
+     },
+     "7": {
+      "investment": {
+       "2025": {
+        "s": 1.62,
+        "e": 3.24
+       },
+       "2030": {
+        "s": 0.0,
+        "e": 0.0
+       },
+       "2035": {
+        "s": 0.0,
+        "e": 0.0
+       }
+      },
+      "total_capacity": {
+       "2025": {
+        "s": 1.62,
+        "e": 3.24
+       },
+       "2030": {
+        "s": 1.62,
+        "e": 3.24
+       },
+       "2035": {
+        "s": 1.62,
+        "e": 3.24
+       }
+      }
+     },
+     "9": {
+      "investment": {
+       "2025": {
+        "s": 0.0,
+        "e": 0.0
+       },
+       "2030": {
+        "s": 0.0,
+        "e": 0.0
+       },
+       "2035": {
+        "s": 0.0,
+        "e": 0.0
+       }
+      },
+      "total_capacity": {
+       "2025": {
+        "s": 0.0,
+        "e": 0.0
+       },
+       "2030": {
+        "s": 0.0,
+        "e": 0.0
+       },
+       "2035": {
+        "s": 0.0,
+        "e": 0.0
+       }
+      }
+     }
+    },
+    "map_honoured_per_node": {
+     "5": {
+      "investment_year_entry_equals_map": true,
+      "other_years_zero": true,
+      "zero_node": true,
+      "total_capacity_all_years_zero": true
+     },
+     "7": {
+      "investment_year_entry_equals_map": true,
+      "other_years_zero": true,
+      "zero_node": false,
+      "total_capacity_all_years_zero": false
+     },
+     "9": {
+      "investment_year_entry_equals_map": true,
+      "other_years_zero": true,
+      "zero_node": true,
+      "total_capacity_all_years_zero": true
+     }
+    },
+    "map_honoured_all": true,
+    "zero_nodes_have_zero_total_capacity_every_year": true
+   },
+   "models_per_node": {
+    "5": {
+     "zero_node": true,
+     "esso_cohort_inactive": {
+      "0": true,
+      "1": true,
+      "2": true
+     },
+     "esso_family_counts": {
+      "rated_s_capacity_unit": {
+       "rows": 6,
+       "active": 6
+      },
+      "rated_e_capacity_unit": {
+       "rows": 6,
+       "active": 6
+      },
+      "rated_s_capacity": {
+       "rows": 3,
+       "active": 3
+      },
+      "rated_e_capacity": {
+       "rows": 3,
+       "active": 3
+      },
+      "available_s_capacity_unit": {
+       "rows": 9,
+       "active": 9
+      },
+      "available_e_capacity_unit": {
+       "rows": 9,
+       "active": 9
+      },
+      "energy_storage_charging_discharging": {
+       "rows": 9,
+       "active": 0
+      },
+      "energy_storage_capacity_degradation": {
+       "rows": 18,
+       "active": 0
+      },
+      "energy_storage_limits": {
+       "rows": 1728,
+       "active": 0
+      },
+      "energy_storage_cohort_pnet_share_h3": {
+       "rows": 864,
+       "active": 0
+      },
+      "energy_storage_operation_agg": {
+       "rows": 576,
+       "active": 576
+      },
+      "_vars": {
+       "total": 2949,
+       "unfixed": 612
+      }
+     },
+     "esso_converter_circle_rows": {
+      "n_rows": 288,
+      "n_active": 288,
+      "es_s_rated_forced_zero_by_equalities_per_year": {
+       "0": true,
+       "1": true,
+       "2": true
+      }
+     },
+     "dso_shared_ess_gate_all_blocks_inactive": true,
+     "dso_shared_ess_gate_all_blocks_active": false,
+     "tso_shared_ess_gate_all_blocks_inactive": true,
+     "tso_shared_ess_gate_all_blocks_active": false,
+     "dso_blocks": {
+      "2025|Spring": {
+       "s_rated_fixed_pu": 0.0,
+       "e_rated_fixed_pu": 0.0,
+       "expected_shared_ess_p_all_fixed": true
+      },
+      "2025|Summer": {
+       "s_rated_fixed_pu": 0.0,
+       "e_rated_fixed_pu": 0.0,
+       "expected_shared_ess_p_all_fixed": true
+      },
+      "2025|Autumn": {
+       "s_rated_fixed_pu": 0.0,
+       "e_rated_fixed_pu": 0.0,
+       "expected_shared_ess_p_all_fixed": true
+      },
+      "2025|Winter": {
+       "s_rated_fixed_pu": 0.0,
+       "e_rated_fixed_pu": 0.0,
+       "expected_shared_ess_p_all_fixed": true
+      },
+      "2030|Spring": {
+       "s_rated_fixed_pu": 0.0,
+       "e_rated_fixed_pu": 0.0,
+       "expected_shared_ess_p_all_fixed": true
+      },
+      "2030|Summer": {
+       "s_rated_fixed_pu": 0.0,
+       "e_rated_fixed_pu": 0.0,
+       "expected_shared_ess_p_all_fixed": true
+      },
+      "2030|Autumn": {
+       "s_rated_fixed_pu": 0.0,
+       "e_rated_fixed_pu": 0.0,
+       "expected_shared_ess_p_all_fixed": true
+      },
+      "2030|Winter": {
+       "s_rated_fixed_pu": 0.0,
+       "e_rated_fixed_pu": 0.0,
+       "expected_shared_ess_p_all_fixed": true
+      },
+      "2035|Spring": {
+       "s_rated_fixed_pu": 0.0,
+       "e_rated_fixed_pu": 0.0,
+       "expected_shared_ess_p_all_fixed": true
+      },
+      "2035|Summer": {
+       "s_rated_fixed_pu": 0.0,
+       "e_rated_fixed_pu": 0.0,
+       "expected_shared_ess_p_all_fixed": true
+      },
+      "2035|Autumn": {
+       "s_rated_fixed_pu": 0.0,
+       "e_rated_fixed_pu": 0.0,
+       "expected_shared_ess_p_all_fixed": true
+      },
+      "2035|Winter": {
+       "s_rated_fixed_pu": 0.0,
+       "e_rated_fixed_pu": 0.0,
+       "expected_shared_ess_p_all_fixed": true
+      }
+     },
+     "tso_blocks": {
+      "2025|Spring": {
+       "s_rated_fixed_pu": 0.0,
+       "e_rated_fixed_pu": 0.0,
+       "expected_shared_ess_p_all_fixed": true
+      },
+      "2025|Summer": {
+       "s_rated_fixed_pu": 0.0,
+       "e_rated_fixed_pu": 0.0,
+       "expected_shared_ess_p_all_fixed": true
+      },
+      "2025|Autumn": {
+       "s_rated_fixed_pu": 0.0,
+       "e_rated_fixed_pu": 0.0,
+       "expected_shared_ess_p_all_fixed": true
+      },
+      "2025|Winter": {
+       "s_rated_fixed_pu": 0.0,
+       "e_rated_fixed_pu": 0.0,
+       "expected_shared_ess_p_all_fixed": true
+      },
+      "2030|Spring": {
+       "s_rated_fixed_pu": 0.0,
+       "e_rated_fixed_pu": 0.0,
+       "expected_shared_ess_p_all_fixed": true
+      },
+      "2030|Summer": {
+       "s_rated_fixed_pu": 0.0,
+       "e_rated_fixed_pu": 0.0,
+       "expected_shared_ess_p_all_fixed": true
+      },
+      "2030|Autumn": {
+       "s_rated_fixed_pu": 0.0,
+       "e_rated_fixed_pu": 0.0,
+       "expected_shared_ess_p_all_fixed": true
+      },
+      "2030|Winter": {
+       "s_rated_fixed_pu": 0.0,
+       "e_rated_fixed_pu": 0.0,
+       "expected_shared_ess_p_all_fixed": true
+      },
+      "2035|Spring": {
+       "s_rated_fixed_pu": 0.0,
+       "e_rated_fixed_pu": 0.0,
+       "expected_shared_ess_p_all_fixed": true
+      },
+      "2035|Summer": {
+       "s_rated_fixed_pu": 0.0,
+       "e_rated_fixed_pu": 0.0,
+       "expected_shared_ess_p_all_fixed": true
+      },
+      "2035|Autumn": {
+       "s_rated_fixed_pu": 0.0,
+       "e_rated_fixed_pu": 0.0,
+       "expected_shared_ess_p_all_fixed": true
+      },
+      "2035|Winter": {
+       "s_rated_fixed_pu": 0.0,
+       "e_rated_fixed_pu": 0.0,
+       "expected_shared_ess_p_all_fixed": true
+      }
+     }
+    },
+    "7": {
+     "zero_node": false,
+     "esso_cohort_inactive": {
+      "0": false,
+      "1": true,
+      "2": true
+     },
+     "esso_family_counts": {
+      "rated_s_capacity_unit": {
+       "rows": 6,
+       "active": 6
+      },
+      "rated_e_capacity_unit": {
+       "rows": 6,
+       "active": 6
+      },
+      "rated_s_capacity": {
+       "rows": 3,
+       "active": 3
+      },
+      "rated_e_capacity": {
+       "rows": 3,
+       "active": 3
+      },
+      "available_s_capacity_unit": {
+       "rows": 9,
+       "active": 9
+      },
+      "available_e_capacity_unit": {
+       "rows": 9,
+       "active": 9
+      },
+      "energy_storage_charging_discharging": {
+       "rows": 9,
+       "active": 3
+      },
+      "energy_storage_capacity_degradation": {
+       "rows": 18,
+       "active": 9
+      },
+      "energy_storage_limits": {
+       "rows": 1728,
+       "active": 576
+      },
+      "energy_storage_cohort_pnet_share_h3": {
+       "rows": 864,
+       "active": 0
+      },
+      "energy_storage_operation_agg": {
+       "rows": 576,
+       "active": 576
+      },
+      "_vars": {
+       "total": 2949,
+       "unfixed": 1197
+      }
+     },
+     "esso_converter_circle_rows": {
+      "n_rows": 288,
+      "n_active": 288,
+      "es_s_rated_forced_zero_by_equalities_per_year": {
+       "0": false,
+       "1": false,
+       "2": false
+      }
+     },
+     "dso_shared_ess_gate_all_blocks_inactive": false,
+     "dso_shared_ess_gate_all_blocks_active": true,
+     "tso_shared_ess_gate_all_blocks_inactive": false,
+     "tso_shared_ess_gate_all_blocks_active": true,
+     "dso_blocks": {
+      "2025|Spring": {
+       "s_rated_fixed_pu": 0.016200000000000003,
+       "e_rated_fixed_pu": 0.032400000000000005,
+       "expected_shared_ess_p_all_fixed": false
+      },
+      "2025|Summer": {
+       "s_rated_fixed_pu": 0.016200000000000003,
+       "e_rated_fixed_pu": 0.032400000000000005,
+       "expected_shared_ess_p_all_fixed": false
+      },
+      "2025|Autumn": {
+       "s_rated_fixed_pu": 0.016200000000000003,
+       "e_rated_fixed_pu": 0.032400000000000005,
+       "expected_shared_ess_p_all_fixed": false
+      },
+      "2025|Winter": {
+       "s_rated_fixed_pu": 0.016200000000000003,
+       "e_rated_fixed_pu": 0.032400000000000005,
+       "expected_shared_ess_p_all_fixed": false
+      },
+      "2030|Spring": {
+       "s_rated_fixed_pu": 0.016200000000000003,
+       "e_rated_fixed_pu": 0.032400000000000005,
+       "expected_shared_ess_p_all_fixed": false
+      },
+      "2030|Summer": {
+       "s_rated_fixed_pu": 0.016200000000000003,
+       "e_rated_fixed_pu": 0.032400000000000005,
+       "expected_shared_ess_p_all_fixed": false
+      },
+      "2030|Autumn": {
+       "s_rated_fixed_pu": 0.016200000000000003,
+       "e_rated_fixed_pu": 0.032400000000000005,
+       "expected_shared_ess_p_all_fixed": false
+      },
+      "2030|Winter": {
+       "s_rated_fixed_pu": 0.016200000000000003,
+       "e_rated_fixed_pu": 0.032400000000000005,
+       "expected_shared_ess_p_all_fixed": false
+      },
+      "2035|Spring": {
+       "s_rated_fixed_pu": 0.016200000000000003,
+       "e_rated_fixed_pu": 0.032400000000000005,
+       "expected_shared_ess_p_all_fixed": false
+      },
+      "2035|Summer": {
+       "s_rated_fixed_pu": 0.016200000000000003,
+       "e_rated_fixed_pu": 0.032400000000000005,
+       "expected_shared_ess_p_all_fixed": false
+      },
+      "2035|Autumn": {
+       "s_rated_fixed_pu": 0.016200000000000003,
+       "e_rated_fixed_pu": 0.032400000000000005,
+       "expected_shared_ess_p_all_fixed": false
+      },
+      "2035|Winter": {
+       "s_rated_fixed_pu": 0.016200000000000003,
+       "e_rated_fixed_pu": 0.032400000000000005,
+       "expected_shared_ess_p_all_fixed": false
+      }
+     },
+     "tso_blocks": {
+      "2025|Spring": {
+       "s_rated_fixed_pu": 0.016200000000000003,
+       "e_rated_fixed_pu": 0.032400000000000005,
+       "expected_shared_ess_p_all_fixed": false
+      },
+      "2025|Summer": {
+       "s_rated_fixed_pu": 0.016200000000000003,
+       "e_rated_fixed_pu": 0.032400000000000005,
+       "expected_shared_ess_p_all_fixed": false
+      },
+      "2025|Autumn": {
+       "s_rated_fixed_pu": 0.016200000000000003,
+       "e_rated_fixed_pu": 0.032400000000000005,
+       "expected_shared_ess_p_all_fixed": false
+      },
+      "2025|Winter": {
+       "s_rated_fixed_pu": 0.016200000000000003,
+       "e_rated_fixed_pu": 0.032400000000000005,
+       "expected_shared_ess_p_all_fixed": false
+      },
+      "2030|Spring": {
+       "s_rated_fixed_pu": 0.016200000000000003,
+       "e_rated_fixed_pu": 0.032400000000000005,
+       "expected_shared_ess_p_all_fixed": false
+      },
+      "2030|Summer": {
+       "s_rated_fixed_pu": 0.016200000000000003,
+       "e_rated_fixed_pu": 0.032400000000000005,
+       "expected_shared_ess_p_all_fixed": false
+      },
+      "2030|Autumn": {
+       "s_rated_fixed_pu": 0.016200000000000003,
+       "e_rated_fixed_pu": 0.032400000000000005,
+       "expected_shared_ess_p_all_fixed": false
+      },
+      "2030|Winter": {
+       "s_rated_fixed_pu": 0.016200000000000003,
+       "e_rated_fixed_pu": 0.032400000000000005,
+       "expected_shared_ess_p_all_fixed": false
+      },
+      "2035|Spring": {
+       "s_rated_fixed_pu": 0.016200000000000003,
+       "e_rated_fixed_pu": 0.032400000000000005,
+       "expected_shared_ess_p_all_fixed": false
+      },
+      "2035|Summer": {
+       "s_rated_fixed_pu": 0.016200000000000003,
+       "e_rated_fixed_pu": 0.032400000000000005,
+       "expected_shared_ess_p_all_fixed": false
+      },
+      "2035|Autumn": {
+       "s_rated_fixed_pu": 0.016200000000000003,
+       "e_rated_fixed_pu": 0.032400000000000005,
+       "expected_shared_ess_p_all_fixed": false
+      },
+      "2035|Winter": {
+       "s_rated_fixed_pu": 0.016200000000000003,
+       "e_rated_fixed_pu": 0.032400000000000005,
+       "expected_shared_ess_p_all_fixed": false
+      }
+     }
+    },
+    "9": {
+     "zero_node": true,
+     "esso_cohort_inactive": {
+      "0": true,
+      "1": true,
+      "2": true
+     },
+     "esso_family_counts": {
+      "rated_s_capacity_unit": {
+       "rows": 6,
+       "active": 6
+      },
+      "rated_e_capacity_unit": {
+       "rows": 6,
+       "active": 6
+      },
+      "rated_s_capacity": {
+       "rows": 3,
+       "active": 3
+      },
+      "rated_e_capacity": {
+       "rows": 3,
+       "active": 3
+      },
+      "available_s_capacity_unit": {
+       "rows": 9,
+       "active": 9
+      },
+      "available_e_capacity_unit": {
+       "rows": 9,
+       "active": 9
+      },
+      "energy_storage_charging_discharging": {
+       "rows": 9,
+       "active": 0
+      },
+      "energy_storage_capacity_degradation": {
+       "rows": 18,
+       "active": 0
+      },
+      "energy_storage_limits": {
+       "rows": 1728,
+       "active": 0
+      },
+      "energy_storage_cohort_pnet_share_h3": {
+       "rows": 864,
+       "active": 0
+      },
+      "energy_storage_operation_agg": {
+       "rows": 576,
+       "active": 576
+      },
+      "_vars": {
+       "total": 2949,
+       "unfixed": 612
+      }
+     },
+     "esso_converter_circle_rows": {
+      "n_rows": 288,
+      "n_active": 288,
+      "es_s_rated_forced_zero_by_equalities_per_year": {
+       "0": true,
+       "1": true,
+       "2": true
+      }
+     },
+     "dso_shared_ess_gate_all_blocks_inactive": true,
+     "dso_shared_ess_gate_all_blocks_active": false,
+     "tso_shared_ess_gate_all_blocks_inactive": true,
+     "tso_shared_ess_gate_all_blocks_active": false,
+     "dso_blocks": {
+      "2025|Spring": {
+       "s_rated_fixed_pu": 0.0,
+       "e_rated_fixed_pu": 0.0,
+       "expected_shared_ess_p_all_fixed": true
+      },
+      "2025|Summer": {
+       "s_rated_fixed_pu": 0.0,
+       "e_rated_fixed_pu": 0.0,
+       "expected_shared_ess_p_all_fixed": true
+      },
+      "2025|Autumn": {
+       "s_rated_fixed_pu": 0.0,
+       "e_rated_fixed_pu": 0.0,
+       "expected_shared_ess_p_all_fixed": true
+      },
+      "2025|Winter": {
+       "s_rated_fixed_pu": 0.0,
+       "e_rated_fixed_pu": 0.0,
+       "expected_shared_ess_p_all_fixed": true
+      },
+      "2030|Spring": {
+       "s_rated_fixed_pu": 0.0,
+       "e_rated_fixed_pu": 0.0,
+       "expected_shared_ess_p_all_fixed": true
+      },
+      "2030|Summer": {
+       "s_rated_fixed_pu": 0.0,
+       "e_rated_fixed_pu": 0.0,
+       "expected_shared_ess_p_all_fixed": true
+      },
+      "2030|Autumn": {
+       "s_rated_fixed_pu": 0.0,
+       "e_rated_fixed_pu": 0.0,
+       "expected_shared_ess_p_all_fixed": true
+      },
+      "2030|Winter": {
+       "s_rated_fixed_pu": 0.0,
+       "e_rated_fixed_pu": 0.0,
+       "expected_shared_ess_p_all_fixed": true
+      },
+      "2035|Spring": {
+       "s_rated_fixed_pu": 0.0,
+       "e_rated_fixed_pu": 0.0,
+       "expected_shared_ess_p_all_fixed": true
+      },
+      "2035|Summer": {
+       "s_rated_fixed_pu": 0.0,
+       "e_rated_fixed_pu": 0.0,
+       "expected_shared_ess_p_all_fixed": true
+      },
+      "2035|Autumn": {
+       "s_rated_fixed_pu": 0.0,
+       "e_rated_fixed_pu": 0.0,
+       "expected_shared_ess_p_all_fixed": true
+      },
+      "2035|Winter": {
+       "s_rated_fixed_pu": 0.0,
+       "e_rated_fixed_pu": 0.0,
+       "expected_shared_ess_p_all_fixed": true
+      }
+     },
+     "tso_blocks": {
+      "2025|Spring": {
+       "s_rated_fixed_pu": 0.0,
+       "e_rated_fixed_pu": 0.0,
+       "expected_shared_ess_p_all_fixed": true
+      },
+      "2025|Summer": {
+       "s_rated_fixed_pu": 0.0,
+       "e_rated_fixed_pu": 0.0,
+       "expected_shared_ess_p_all_fixed": true
+      },
+      "2025|Autumn": {
+       "s_rated_fixed_pu": 0.0,
+       "e_rated_fixed_pu": 0.0,
+       "expected_shared_ess_p_all_fixed": true
+      },
+      "2025|Winter": {
+       "s_rated_fixed_pu": 0.0,
+       "e_rated_fixed_pu": 0.0,
+       "expected_shared_ess_p_all_fixed": true
+      },
+      "2030|Spring": {
+       "s_rated_fixed_pu": 0.0,
+       "e_rated_fixed_pu": 0.0,
+       "expected_shared_ess_p_all_fixed": true
+      },
+      "2030|Summer": {
+       "s_rated_fixed_pu": 0.0,
+       "e_rated_fixed_pu": 0.0,
+       "expected_shared_ess_p_all_fixed": true
+      },
+      "2030|Autumn": {
+       "s_rated_fixed_pu": 0.0,
+       "e_rated_fixed_pu": 0.0,
+       "expected_shared_ess_p_all_fixed": true
+      },
+      "2030|Winter": {
+       "s_rated_fixed_pu": 0.0,
+       "e_rated_fixed_pu": 0.0,
+       "expected_shared_ess_p_all_fixed": true
+      },
+      "2035|Spring": {
+       "s_rated_fixed_pu": 0.0,
+       "e_rated_fixed_pu": 0.0,
+       "expected_shared_ess_p_all_fixed": true
+      },
+      "2035|Summer": {
+       "s_rated_fixed_pu": 0.0,
+       "e_rated_fixed_pu": 0.0,
+       "expected_shared_ess_p_all_fixed": true
+      },
+      "2035|Autumn": {
+       "s_rated_fixed_pu": 0.0,
+       "e_rated_fixed_pu": 0.0,
+       "expected_shared_ess_p_all_fixed": true
+      },
+      "2035|Winter": {
+       "s_rated_fixed_pu": 0.0,
+       "e_rated_fixed_pu": 0.0,
+       "expected_shared_ess_p_all_fixed": true
+      }
+     }
+    }
+   },
+   "admm_preparation": {
+    "sigma_fixed_used": 93635360.0,
+    "al_scale_esso": 227210.9966521344,
+    "al_scale_applied": true,
+    "esso_admm_objective_active_per_node": {
+     "5": true,
+     "7": true,
+     "9": true
+    },
+    "get_updated_capacities_structure_ok": true,
+    "note": "values read at the unsolved point (never solved); structure/finite only. _compute_common_admm_objective_scale (the calibration assertion of the computed sigma) needs solved block objectives and is NOT exercised here."
+   },
+   "s_ref_normalization": {
+    "S_ref_mva": 2.5,
+    "floor_mva": 0.1,
+    "per_node": {
+     "5": {
+      "rating_args_min_max_mva": {
+       "tso_rating_arg_mva": [
+        0.0,
+        0.0
+       ],
+       "dso_rating_arg_mva": [
+        0.0,
+        0.0
+       ],
+       "esso_rating_arg_mva": [
+        0.0,
+        0.0
+       ]
+      },
+      "normalizations_min_max_mva": {
+       "tso_norm_pu_times_sbase": [
+        2.5,
+        2.5
+       ],
+       "dso_norm_pu_times_sbase": [
+        2.5,
+        2.5
+       ],
+       "tso_norm_mva": [
+        2.5,
+        2.5
+       ],
+       "dso_norm_mva": [
+        2.5,
+        2.5
+       ],
+       "esso_norm_mva": [
+        2.5,
+        2.5
+       ]
+      },
+      "all_normalizations_equal_S_ref_finite_positive": true
+     },
+     "7": {
+      "rating_args_min_max_mva": {
+       "tso_rating_arg_mva": [
+        1.6200000000000003,
+        1.6200000000000003
+       ],
+       "dso_rating_arg_mva": [
+        1.6200000000000003,
+        1.6200000000000003
+       ],
+       "esso_rating_arg_mva": [
+        0.0,
+        1.62
+       ]
+      },
+      "normalizations_min_max_mva": {
+       "tso_norm_pu_times_sbase": [
+        2.5,
+        2.5
+       ],
+       "dso_norm_pu_times_sbase": [
+        2.5,
+        2.5
+       ],
+       "tso_norm_mva": [
+        2.5,
+        2.5
+       ],
+       "dso_norm_mva": [
+        2.5,
+        2.5
+       ],
+       "esso_norm_mva": [
+        2.5,
+        2.5
+       ]
+      },
+      "all_normalizations_equal_S_ref_finite_positive": true
+     },
+     "9": {
+      "rating_args_min_max_mva": {
+       "tso_rating_arg_mva": [
+        0.0,
+        0.0
+       ],
+       "dso_rating_arg_mva": [
+        0.0,
+        0.0
+       ],
+       "esso_rating_arg_mva": [
+        0.0,
+        0.0
+       ]
+      },
+      "normalizations_min_max_mva": {
+       "tso_norm_pu_times_sbase": [
+        2.5,
+        2.5
+       ],
+       "dso_norm_pu_times_sbase": [
+        2.5,
+        2.5
+       ],
+       "tso_norm_mva": [
+        2.5,
+        2.5
+       ],
+       "dso_norm_mva": [
+        2.5,
+        2.5
+       ],
+       "esso_norm_mva": [
+        2.5,
+        2.5
+       ]
+      },
+      "all_normalizations_equal_S_ref_finite_positive": true
+     }
+    },
+    "all_nodes_all_sites_equal_S_ref": true,
+    "call_sites_covered": [
+     "update_transmission_model_to_admm (_shared_ess_admm_normalization_pu, TSO network .s)",
+     "update_distribution_models_to_admm (_shared_ess_admm_normalization_pu, DSO network .s)",
+     "update_shared_energy_storage_model_to_admm (_shared_ess_admm_normalization_mva, ESSO .s)",
+     "get_admm_residual_metrics / get_admm_boyd_residual_metrics (_mva, TSO/DSO/ESSO .s)",
+     "TSO dual/proximal update (_pu, TSO network .s)"
+    ]
+   },
+   "consensus_entries": {
+    "per_node": {
+     "5": {
+      "tso": {
+       "n": 576,
+       "all_finite": true
+      },
+      "dso": {
+       "n": 576,
+       "all_finite": true
+      },
+      "esso": {
+       "n": 576,
+       "all_finite": true
+      },
+      "z": {
+       "n": 576,
+       "all_finite": true
+      },
+      "dual_ess_all_agents": {
+       "n": 1728,
+       "all_finite": true
+      }
+     },
+     "7": {
+      "tso": {
+       "n": 576,
+       "all_finite": true
+      },
+      "dso": {
+       "n": 576,
+       "all_finite": true
+      },
+      "esso": {
+       "n": 576,
+       "all_finite": true
+      },
+      "z": {
+       "n": 576,
+       "all_finite": true
+      },
+      "dual_ess_all_agents": {
+       "n": 1728,
+       "all_finite": true
+      }
+     },
+     "9": {
+      "tso": {
+       "n": 576,
+       "all_finite": true
+      },
+      "dso": {
+       "n": 576,
+       "all_finite": true
+      },
+      "esso": {
+       "n": 576,
+       "all_finite": true
+      },
+      "z": {
+       "n": 576,
+       "all_finite": true
+      },
+      "dual_ess_all_agents": {
+       "n": 1728,
+       "all_finite": true
+      }
+     }
+    },
+    "all_present_and_finite": true,
+    "expected_entries_per_agent_per_node": 576
+   },
+   "per_cycle_evaluators_and_captures": {
+    "get_admm_residual_metrics_nonfinite": {
+     "n_numeric_leaves": 51,
+     "n_nonfinite": 0,
+     "first_nonfinite": []
+    },
+    "get_admm_boyd_residual_metrics_nonfinite": {
+     "n_numeric_leaves": 47,
+     "n_nonfinite": 0,
+     "first_nonfinite": []
+    },
+    "update_admm_penalties_returned_tuple_len": 7,
+    "sidecars": {
+     "recourse_jump": {
+      "n_lines": 1,
+      "nonfinite": {
+       "n_numeric_leaves": 2,
+       "n_nonfinite": 0,
+       "first_nonfinite": []
+      }
+     },
+     "ess_stride": {
+      "n_lines": 1,
+      "nonfinite": {
+       "n_numeric_leaves": 6986,
+       "n_nonfinite": 0,
+       "first_nonfinite": []
+      }
+     },
+     "floor": {
+      "n_lines": 1,
+      "nonfinite": {
+       "n_numeric_leaves": 73,
+       "n_nonfinite": 0,
+       "first_nonfinite": []
+      }
+     },
+     "pf_stride": {
+      "n_lines": 1,
+      "nonfinite": {
+       "n_numeric_leaves": 20744,
+       "n_nonfinite": 0,
+       "first_nonfinite": []
+      }
+     },
+     "exempt": {
+      "n_lines": 1,
+      "nonfinite": {
+       "n_numeric_leaves": 4,
+       "n_nonfinite": 0,
+       "first_nonfinite": []
+      }
+     }
+    },
+    "soh_floor_rows_per_node_structural": {
+     "5": 6,
+     "7": 6,
+     "9": 6
+    },
+    "soh_floor_sidecar_entries_per_node": {
+     "5": {
+      "n_entries": 6,
+      "efc_per_day_all_none": true,
+      "soh_values_distinct": [
+       1.0
+      ]
+     },
+     "7": {
+      "n_entries": 6,
+      "efc_per_day_all_none": true,
+      "soh_values_distinct": [
+       1.0
+      ]
+     },
+     "9": {
+      "n_entries": 6,
+      "efc_per_day_all_none": true,
+      "soh_values_distinct": [
+       1.0
+      ]
+     }
+    },
+    "capture_esso_per_node_keys": {
+     "5": [
+      "degradation_fraction_per_year_per_cohort_year",
+      "efc_per_day_max",
+      "efc_per_day_min",
+      "efc_per_day_per_cohort_year",
+      "es_D_per_unit",
+      "es_avg_ch_dch_per_unit",
+      "es_e_rated_per_unit",
+      "es_soh_per_unit_cumul"
+     ],
+     "7": [
+      "degradation_fraction_per_year_per_cohort_year",
+      "efc_per_day_max",
+      "efc_per_day_min",
+      "efc_per_day_per_cohort_year",
+      "es_D_per_unit",
+      "es_avg_ch_dch_per_unit",
+      "es_e_rated_per_unit",
+      "es_soh_per_unit_cumul"
+     ],
+     "9": [
+      "degradation_fraction_per_year_per_cohort_year",
+      "efc_per_day_max",
+      "efc_per_day_min",
+      "efc_per_day_per_cohort_year",
+      "es_D_per_unit",
+      "es_avg_ch_dch_per_unit",
+      "es_e_rated_per_unit",
+      "es_soh_per_unit_cumul"
+     ]
+    },
+    "capture_esso_efc_per_day_max_per_node": {
+     "5": null,
+     "7": null,
+     "9": null
+    },
+    "capture_esso_nonfinite": {
+     "n_numeric_leaves": 135,
+     "n_nonfinite": 0,
+     "first_nonfinite": []
+    },
+    "_get_admm_efc_per_day_max": null,
+    "note": "one call of each per-cycle function at the UNSOLVED point, inside the oracle run's own capture wrappers; checks structure (no exception, no zero-rating division, finite leaves), not values"
+   },
+   "terminal_evaluators": {
+    "write_boyd_terminal_s35ref_ok": true,
+    "error": null,
+    "files": {
+     "boyd_terminal.json": {
+      "exists": true,
+      "nonfinite": {
+       "n_numeric_leaves": 120,
+       "n_nonfinite": 0,
+       "first_nonfinite": []
+      }
+     },
+     "component_levels_terminal.json": {
+      "exists": true,
+      "nonfinite": {
+       "n_numeric_leaves": 1948,
+       "n_nonfinite": 0,
+       "first_nonfinite": []
+      }
+     },
+     "interface_settlement_detail_s31c.json": {
+      "exists": true,
+      "nonfinite": {
+       "n_numeric_leaves": 13170,
+       "n_nonfinite": 0,
+       "first_nonfinite": []
+      }
+     },
+     "interface_voltage_terminal.json": {
+      "exists": true,
+      "nonfinite": {
+       "n_numeric_leaves": 6056,
+       "n_nonfinite": 0,
+       "first_nonfinite": []
+      }
+     }
+    },
+    "recourse_components_keys": [
+     "detector_components",
+     "detector_penalty_total",
+     "economic_recourse_all_D_excluded",
+     "economic_recourse_voltage_excluded",
+     "gross_operational_cost",
+     "gross_operational_cost_including_settlement",
+     "interface_settlement_dso",
+     "interface_settlement_total",
+     "interface_settlement_tso",
+     "net_operational_recourse",
+     "terminal_salvage_value"
+    ],
+    "synthetic_trajectory_row_used": {
+     "cycle": 1,
+     "cycle_convergence": false,
+     "consecutive_converged_cycles": 0,
+     "recourse": null,
+     "gross_operational_cost": null
+    }
+   },
+   "exception": null
+  },
+  "node7_empty": {
+   "construction": {
+    "investment_year": 2025,
+    "active_nodes": [
+     5,
+     7,
+     9
+    ],
+    "years": [
+     "2025",
+     "2030",
+     "2035"
+    ],
+    "report_instance": {
+     "year": 2025,
+     "assignment": "per-node",
+     "investment_map": {
+      "5": [
+       0.96875,
+       3.875
+      ],
+      "7": [
+       0.0,
+       0.0
+      ],
+      "9": [
+       0.96875,
+       3.875
+      ]
+     }
+    },
+    "candidate": {
+     "5": {
+      "investment": {
+       "2025": {
+        "s": 0.96875,
+        "e": 3.875
+       },
+       "2030": {
+        "s": 0.0,
+        "e": 0.0
+       },
+       "2035": {
+        "s": 0.0,
+        "e": 0.0
+       }
+      },
+      "total_capacity": {
+       "2025": {
+        "s": 0.96875,
+        "e": 3.875
+       },
+       "2030": {
+        "s": 0.96875,
+        "e": 3.875
+       },
+       "2035": {
+        "s": 0.96875,
+        "e": 3.875
+       }
+      }
+     },
+     "7": {
+      "investment": {
+       "2025": {
+        "s": 0.0,
+        "e": 0.0
+       },
+       "2030": {
+        "s": 0.0,
+        "e": 0.0
+       },
+       "2035": {
+        "s": 0.0,
+        "e": 0.0
+       }
+      },
+      "total_capacity": {
+       "2025": {
+        "s": 0.0,
+        "e": 0.0
+       },
+       "2030": {
+        "s": 0.0,
+        "e": 0.0
+       },
+       "2035": {
+        "s": 0.0,
+        "e": 0.0
+       }
+      }
+     },
+     "9": {
+      "investment": {
+       "2025": {
+        "s": 0.96875,
+        "e": 3.875
+       },
+       "2030": {
+        "s": 0.0,
+        "e": 0.0
+       },
+       "2035": {
+        "s": 0.0,
+        "e": 0.0
+       }
+      },
+      "total_capacity": {
+       "2025": {
+        "s": 0.96875,
+        "e": 3.875
+       },
+       "2030": {
+        "s": 0.96875,
+        "e": 3.875
+       },
+       "2035": {
+        "s": 0.96875,
+        "e": 3.875
+       }
+      }
+     }
+    },
+    "map_honoured_per_node": {
+     "5": {
+      "investment_year_entry_equals_map": true,
+      "other_years_zero": true,
+      "zero_node": false,
+      "total_capacity_all_years_zero": false
+     },
+     "7": {
+      "investment_year_entry_equals_map": true,
+      "other_years_zero": true,
+      "zero_node": true,
+      "total_capacity_all_years_zero": true
+     },
+     "9": {
+      "investment_year_entry_equals_map": true,
+      "other_years_zero": true,
+      "zero_node": false,
+      "total_capacity_all_years_zero": false
+     }
+    },
+    "map_honoured_all": true,
+    "zero_nodes_have_zero_total_capacity_every_year": true
+   },
+   "models_per_node": {
+    "5": {
+     "zero_node": false,
+     "esso_cohort_inactive": {
+      "0": false,
+      "1": true,
+      "2": true
+     },
+     "esso_family_counts": {
+      "rated_s_capacity_unit": {
+       "rows": 6,
+       "active": 6
+      },
+      "rated_e_capacity_unit": {
+       "rows": 6,
+       "active": 6
+      },
+      "rated_s_capacity": {
+       "rows": 3,
+       "active": 3
+      },
+      "rated_e_capacity": {
+       "rows": 3,
+       "active": 3
+      },
+      "available_s_capacity_unit": {
+       "rows": 9,
+       "active": 9
+      },
+      "available_e_capacity_unit": {
+       "rows": 9,
+       "active": 9
+      },
+      "energy_storage_charging_discharging": {
+       "rows": 9,
+       "active": 3
+      },
+      "energy_storage_capacity_degradation": {
+       "rows": 18,
+       "active": 9
+      },
+      "energy_storage_limits": {
+       "rows": 1728,
+       "active": 576
+      },
+      "energy_storage_cohort_pnet_share_h3": {
+       "rows": 864,
+       "active": 0
+      },
+      "energy_storage_operation_agg": {
+       "rows": 576,
+       "active": 576
+      },
+      "_vars": {
+       "total": 2949,
+       "unfixed": 1197
+      }
+     },
+     "esso_converter_circle_rows": {
+      "n_rows": 288,
+      "n_active": 288,
+      "es_s_rated_forced_zero_by_equalities_per_year": {
+       "0": false,
+       "1": false,
+       "2": false
+      }
+     },
+     "dso_shared_ess_gate_all_blocks_inactive": false,
+     "dso_shared_ess_gate_all_blocks_active": true,
+     "tso_shared_ess_gate_all_blocks_inactive": false,
+     "tso_shared_ess_gate_all_blocks_active": true,
+     "dso_blocks": {
+      "2025|Spring": {
+       "s_rated_fixed_pu": 0.0096875,
+       "e_rated_fixed_pu": 0.03875,
+       "expected_shared_ess_p_all_fixed": false
+      },
+      "2025|Summer": {
+       "s_rated_fixed_pu": 0.0096875,
+       "e_rated_fixed_pu": 0.03875,
+       "expected_shared_ess_p_all_fixed": false
+      },
+      "2025|Autumn": {
+       "s_rated_fixed_pu": 0.0096875,
+       "e_rated_fixed_pu": 0.03875,
+       "expected_shared_ess_p_all_fixed": false
+      },
+      "2025|Winter": {
+       "s_rated_fixed_pu": 0.0096875,
+       "e_rated_fixed_pu": 0.03875,
+       "expected_shared_ess_p_all_fixed": false
+      },
+      "2030|Spring": {
+       "s_rated_fixed_pu": 0.0096875,
+       "e_rated_fixed_pu": 0.03875,
+       "expected_shared_ess_p_all_fixed": false
+      },
+      "2030|Summer": {
+       "s_rated_fixed_pu": 0.0096875,
+       "e_rated_fixed_pu": 0.03875,
+       "expected_shared_ess_p_all_fixed": false
+      },
+      "2030|Autumn": {
+       "s_rated_fixed_pu": 0.0096875,
+       "e_rated_fixed_pu": 0.03875,
+       "expected_shared_ess_p_all_fixed": false
+      },
+      "2030|Winter": {
+       "s_rated_fixed_pu": 0.0096875,
+       "e_rated_fixed_pu": 0.03875,
+       "expected_shared_ess_p_all_fixed": false
+      },
+      "2035|Spring": {
+       "s_rated_fixed_pu": 0.0096875,
+       "e_rated_fixed_pu": 0.03875,
+       "expected_shared_ess_p_all_fixed": false
+      },
+      "2035|Summer": {
+       "s_rated_fixed_pu": 0.0096875,
+       "e_rated_fixed_pu": 0.03875,
+       "expected_shared_ess_p_all_fixed": false
+      },
+      "2035|Autumn": {
+       "s_rated_fixed_pu": 0.0096875,
+       "e_rated_fixed_pu": 0.03875,
+       "expected_shared_ess_p_all_fixed": false
+      },
+      "2035|Winter": {
+       "s_rated_fixed_pu": 0.0096875,
+       "e_rated_fixed_pu": 0.03875,
+       "expected_shared_ess_p_all_fixed": false
+      }
+     },
+     "tso_blocks": {
+      "2025|Spring": {
+       "s_rated_fixed_pu": 0.0096875,
+       "e_rated_fixed_pu": 0.03875,
+       "expected_shared_ess_p_all_fixed": false
+      },
+      "2025|Summer": {
+       "s_rated_fixed_pu": 0.0096875,
+       "e_rated_fixed_pu": 0.03875,
+       "expected_shared_ess_p_all_fixed": false
+      },
+      "2025|Autumn": {
+       "s_rated_fixed_pu": 0.0096875,
+       "e_rated_fixed_pu": 0.03875,
+       "expected_shared_ess_p_all_fixed": false
+      },
+      "2025|Winter": {
+       "s_rated_fixed_pu": 0.0096875,
+       "e_rated_fixed_pu": 0.03875,
+       "expected_shared_ess_p_all_fixed": false
+      },
+      "2030|Spring": {
+       "s_rated_fixed_pu": 0.0096875,
+       "e_rated_fixed_pu": 0.03875,
+       "expected_shared_ess_p_all_fixed": false
+      },
+      "2030|Summer": {
+       "s_rated_fixed_pu": 0.0096875,
+       "e_rated_fixed_pu": 0.03875,
+       "expected_shared_ess_p_all_fixed": false
+      },
+      "2030|Autumn": {
+       "s_rated_fixed_pu": 0.0096875,
+       "e_rated_fixed_pu": 0.03875,
+       "expected_shared_ess_p_all_fixed": false
+      },
+      "2030|Winter": {
+       "s_rated_fixed_pu": 0.0096875,
+       "e_rated_fixed_pu": 0.03875,
+       "expected_shared_ess_p_all_fixed": false
+      },
+      "2035|Spring": {
+       "s_rated_fixed_pu": 0.0096875,
+       "e_rated_fixed_pu": 0.03875,
+       "expected_shared_ess_p_all_fixed": false
+      },
+      "2035|Summer": {
+       "s_rated_fixed_pu": 0.0096875,
+       "e_rated_fixed_pu": 0.03875,
+       "expected_shared_ess_p_all_fixed": false
+      },
+      "2035|Autumn": {
+       "s_rated_fixed_pu": 0.0096875,
+       "e_rated_fixed_pu": 0.03875,
+       "expected_shared_ess_p_all_fixed": false
+      },
+      "2035|Winter": {
+       "s_rated_fixed_pu": 0.0096875,
+       "e_rated_fixed_pu": 0.03875,
+       "expected_shared_ess_p_all_fixed": false
+      }
+     }
+    },
+    "7": {
+     "zero_node": true,
+     "esso_cohort_inactive": {
+      "0": true,
+      "1": true,
+      "2": true
+     },
+     "esso_family_counts": {
+      "rated_s_capacity_unit": {
+       "rows": 6,
+       "active": 6
+      },
+      "rated_e_capacity_unit": {
+       "rows": 6,
+       "active": 6
+      },
+      "rated_s_capacity": {
+       "rows": 3,
+       "active": 3
+      },
+      "rated_e_capacity": {
+       "rows": 3,
+       "active": 3
+      },
+      "available_s_capacity_unit": {
+       "rows": 9,
+       "active": 9
+      },
+      "available_e_capacity_unit": {
+       "rows": 9,
+       "active": 9
+      },
+      "energy_storage_charging_discharging": {
+       "rows": 9,
+       "active": 0
+      },
+      "energy_storage_capacity_degradation": {
+       "rows": 18,
+       "active": 0
+      },
+      "energy_storage_limits": {
+       "rows": 1728,
+       "active": 0
+      },
+      "energy_storage_cohort_pnet_share_h3": {
+       "rows": 864,
+       "active": 0
+      },
+      "energy_storage_operation_agg": {
+       "rows": 576,
+       "active": 576
+      },
+      "_vars": {
+       "total": 2949,
+       "unfixed": 612
+      }
+     },
+     "esso_converter_circle_rows": {
+      "n_rows": 288,
+      "n_active": 288,
+      "es_s_rated_forced_zero_by_equalities_per_year": {
+       "0": true,
+       "1": true,
+       "2": true
+      }
+     },
+     "dso_shared_ess_gate_all_blocks_inactive": true,
+     "dso_shared_ess_gate_all_blocks_active": false,
+     "tso_shared_ess_gate_all_blocks_inactive": true,
+     "tso_shared_ess_gate_all_blocks_active": false,
+     "dso_blocks": {
+      "2025|Spring": {
+       "s_rated_fixed_pu": 0.0,
+       "e_rated_fixed_pu": 0.0,
+       "expected_shared_ess_p_all_fixed": true
+      },
+      "2025|Summer": {
+       "s_rated_fixed_pu": 0.0,
+       "e_rated_fixed_pu": 0.0,
+       "expected_shared_ess_p_all_fixed": true
+      },
+      "2025|Autumn": {
+       "s_rated_fixed_pu": 0.0,
+       "e_rated_fixed_pu": 0.0,
+       "expected_shared_ess_p_all_fixed": true
+      },
+      "2025|Winter": {
+       "s_rated_fixed_pu": 0.0,
+       "e_rated_fixed_pu": 0.0,
+       "expected_shared_ess_p_all_fixed": true
+      },
+      "2030|Spring": {
+       "s_rated_fixed_pu": 0.0,
+       "e_rated_fixed_pu": 0.0,
+       "expected_shared_ess_p_all_fixed": true
+      },
+      "2030|Summer": {
+       "s_rated_fixed_pu": 0.0,
+       "e_rated_fixed_pu": 0.0,
+       "expected_shared_ess_p_all_fixed": true
+      },
+      "2030|Autumn": {
+       "s_rated_fixed_pu": 0.0,
+       "e_rated_fixed_pu": 0.0,
+       "expected_shared_ess_p_all_fixed": true
+      },
+      "2030|Winter": {
+       "s_rated_fixed_pu": 0.0,
+       "e_rated_fixed_pu": 0.0,
+       "expected_shared_ess_p_all_fixed": true
+      },
+      "2035|Spring": {
+       "s_rated_fixed_pu": 0.0,
+       "e_rated_fixed_pu": 0.0,
+       "expected_shared_ess_p_all_fixed": true
+      },
+      "2035|Summer": {
+       "s_rated_fixed_pu": 0.0,
+       "e_rated_fixed_pu": 0.0,
+       "expected_shared_ess_p_all_fixed": true
+      },
+      "2035|Autumn": {
+       "s_rated_fixed_pu": 0.0,
+       "e_rated_fixed_pu": 0.0,
+       "expected_shared_ess_p_all_fixed": true
+      },
+      "2035|Winter": {
+       "s_rated_fixed_pu": 0.0,
+       "e_rated_fixed_pu": 0.0,
+       "expected_shared_ess_p_all_fixed": true
+      }
+     },
+     "tso_blocks": {
+      "2025|Spring": {
+       "s_rated_fixed_pu": 0.0,
+       "e_rated_fixed_pu": 0.0,
+       "expected_shared_ess_p_all_fixed": true
+      },
+      "2025|Summer": {
+       "s_rated_fixed_pu": 0.0,
+       "e_rated_fixed_pu": 0.0,
+       "expected_shared_ess_p_all_fixed": true
+      },
+      "2025|Autumn": {
+       "s_rated_fixed_pu": 0.0,
+       "e_rated_fixed_pu": 0.0,
+       "expected_shared_ess_p_all_fixed": true
+      },
+      "2025|Winter": {
+       "s_rated_fixed_pu": 0.0,
+       "e_rated_fixed_pu": 0.0,
+       "expected_shared_ess_p_all_fixed": true
+      },
+      "2030|Spring": {
+       "s_rated_fixed_pu": 0.0,
+       "e_rated_fixed_pu": 0.0,
+       "expected_shared_ess_p_all_fixed": true
+      },
+      "2030|Summer": {
+       "s_rated_fixed_pu": 0.0,
+       "e_rated_fixed_pu": 0.0,
+       "expected_shared_ess_p_all_fixed": true
+      },
+      "2030|Autumn": {
+       "s_rated_fixed_pu": 0.0,
+       "e_rated_fixed_pu": 0.0,
+       "expected_shared_ess_p_all_fixed": true
+      },
+      "2030|Winter": {
+       "s_rated_fixed_pu": 0.0,
+       "e_rated_fixed_pu": 0.0,
+       "expected_shared_ess_p_all_fixed": true
+      },
+      "2035|Spring": {
+       "s_rated_fixed_pu": 0.0,
+       "e_rated_fixed_pu": 0.0,
+       "expected_shared_ess_p_all_fixed": true
+      },
+      "2035|Summer": {
+       "s_rated_fixed_pu": 0.0,
+       "e_rated_fixed_pu": 0.0,
+       "expected_shared_ess_p_all_fixed": true
+      },
+      "2035|Autumn": {
+       "s_rated_fixed_pu": 0.0,
+       "e_rated_fixed_pu": 0.0,
+       "expected_shared_ess_p_all_fixed": true
+      },
+      "2035|Winter": {
+       "s_rated_fixed_pu": 0.0,
+       "e_rated_fixed_pu": 0.0,
+       "expected_shared_ess_p_all_fixed": true
+      }
+     }
+    },
+    "9": {
+     "zero_node": false,
+     "esso_cohort_inactive": {
+      "0": false,
+      "1": true,
+      "2": true
+     },
+     "esso_family_counts": {
+      "rated_s_capacity_unit": {
+       "rows": 6,
+       "active": 6
+      },
+      "rated_e_capacity_unit": {
+       "rows": 6,
+       "active": 6
+      },
+      "rated_s_capacity": {
+       "rows": 3,
+       "active": 3
+      },
+      "rated_e_capacity": {
+       "rows": 3,
+       "active": 3
+      },
+      "available_s_capacity_unit": {
+       "rows": 9,
+       "active": 9
+      },
+      "available_e_capacity_unit": {
+       "rows": 9,
+       "active": 9
+      },
+      "energy_storage_charging_discharging": {
+       "rows": 9,
+       "active": 3
+      },
+      "energy_storage_capacity_degradation": {
+       "rows": 18,
+       "active": 9
+      },
+      "energy_storage_limits": {
+       "rows": 1728,
+       "active": 576
+      },
+      "energy_storage_cohort_pnet_share_h3": {
+       "rows": 864,
+       "active": 0
+      },
+      "energy_storage_operation_agg": {
+       "rows": 576,
+       "active": 576
+      },
+      "_vars": {
+       "total": 2949,
+       "unfixed": 1197
+      }
+     },
+     "esso_converter_circle_rows": {
+      "n_rows": 288,
+      "n_active": 288,
+      "es_s_rated_forced_zero_by_equalities_per_year": {
+       "0": false,
+       "1": false,
+       "2": false
+      }
+     },
+     "dso_shared_ess_gate_all_blocks_inactive": false,
+     "dso_shared_ess_gate_all_blocks_active": true,
+     "tso_shared_ess_gate_all_blocks_inactive": false,
+     "tso_shared_ess_gate_all_blocks_active": true,
+     "dso_blocks": {
+      "2025|Spring": {
+       "s_rated_fixed_pu": 0.0096875,
+       "e_rated_fixed_pu": 0.03875,
+       "expected_shared_ess_p_all_fixed": false
+      },
+      "2025|Summer": {
+       "s_rated_fixed_pu": 0.0096875,
+       "e_rated_fixed_pu": 0.03875,
+       "expected_shared_ess_p_all_fixed": false
+      },
+      "2025|Autumn": {
+       "s_rated_fixed_pu": 0.0096875,
+       "e_rated_fixed_pu": 0.03875,
+       "expected_shared_ess_p_all_fixed": false
+      },
+      "2025|Winter": {
+       "s_rated_fixed_pu": 0.0096875,
+       "e_rated_fixed_pu": 0.03875,
+       "expected_shared_ess_p_all_fixed": false
+      },
+      "2030|Spring": {
+       "s_rated_fixed_pu": 0.0096875,
+       "e_rated_fixed_pu": 0.03875,
+       "expected_shared_ess_p_all_fixed": false
+      },
+      "2030|Summer": {
+       "s_rated_fixed_pu": 0.0096875,
+       "e_rated_fixed_pu": 0.03875,
+       "expected_shared_ess_p_all_fixed": false
+      },
+      "2030|Autumn": {
+       "s_rated_fixed_pu": 0.0096875,
+       "e_rated_fixed_pu": 0.03875,
+       "expected_shared_ess_p_all_fixed": false
+      },
+      "2030|Winter": {
+       "s_rated_fixed_pu": 0.0096875,
+       "e_rated_fixed_pu": 0.03875,
+       "expected_shared_ess_p_all_fixed": false
+      },
+      "2035|Spring": {
+       "s_rated_fixed_pu": 0.0096875,
+       "e_rated_fixed_pu": 0.03875,
+       "expected_shared_ess_p_all_fixed": false
+      },
+      "2035|Summer": {
+       "s_rated_fixed_pu": 0.0096875,
+       "e_rated_fixed_pu": 0.03875,
+       "expected_shared_ess_p_all_fixed": false
+      },
+      "2035|Autumn": {
+       "s_rated_fixed_pu": 0.0096875,
+       "e_rated_fixed_pu": 0.03875,
+       "expected_shared_ess_p_all_fixed": false
+      },
+      "2035|Winter": {
+       "s_rated_fixed_pu": 0.0096875,
+       "e_rated_fixed_pu": 0.03875,
+       "expected_shared_ess_p_all_fixed": false
+      }
+     },
+     "tso_blocks": {
+      "2025|Spring": {
+       "s_rated_fixed_pu": 0.0096875,
+       "e_rated_fixed_pu": 0.03875,
+       "expected_shared_ess_p_all_fixed": false
+      },
+      "2025|Summer": {
+       "s_rated_fixed_pu": 0.0096875,
+       "e_rated_fixed_pu": 0.03875,
+       "expected_shared_ess_p_all_fixed": false
+      },
+      "2025|Autumn": {
+       "s_rated_fixed_pu": 0.0096875,
+       "e_rated_fixed_pu": 0.03875,
+       "expected_shared_ess_p_all_fixed": false
+      },
+      "2025|Winter": {
+       "s_rated_fixed_pu": 0.0096875,
+       "e_rated_fixed_pu": 0.03875,
+       "expected_shared_ess_p_all_fixed": false
+      },
+      "2030|Spring": {
+       "s_rated_fixed_pu": 0.0096875,
+       "e_rated_fixed_pu": 0.03875,
+       "expected_shared_ess_p_all_fixed": false
+      },
+      "2030|Summer": {
+       "s_rated_fixed_pu": 0.0096875,
+       "e_rated_fixed_pu": 0.03875,
+       "expected_shared_ess_p_all_fixed": false
+      },
+      "2030|Autumn": {
+       "s_rated_fixed_pu": 0.0096875,
+       "e_rated_fixed_pu": 0.03875,
+       "expected_shared_ess_p_all_fixed": false
+      },
+      "2030|Winter": {
+       "s_rated_fixed_pu": 0.0096875,
+       "e_rated_fixed_pu": 0.03875,
+       "expected_shared_ess_p_all_fixed": false
+      },
+      "2035|Spring": {
+       "s_rated_fixed_pu": 0.0096875,
+       "e_rated_fixed_pu": 0.03875,
+       "expected_shared_ess_p_all_fixed": false
+      },
+      "2035|Summer": {
+       "s_rated_fixed_pu": 0.0096875,
+       "e_rated_fixed_pu": 0.03875,
+       "expected_shared_ess_p_all_fixed": false
+      },
+      "2035|Autumn": {
+       "s_rated_fixed_pu": 0.0096875,
+       "e_rated_fixed_pu": 0.03875,
+       "expected_shared_ess_p_all_fixed": false
+      },
+      "2035|Winter": {
+       "s_rated_fixed_pu": 0.0096875,
+       "e_rated_fixed_pu": 0.03875,
+       "expected_shared_ess_p_all_fixed": false
+      }
+     }
+    }
+   },
+   "admm_preparation": {
+    "sigma_fixed_used": 93635360.0,
+    "al_scale_esso": 227210.9966521344,
+    "al_scale_applied": true,
+    "esso_admm_objective_active_per_node": {
+     "5": true,
+     "7": true,
+     "9": true
+    },
+    "get_updated_capacities_structure_ok": true,
+    "note": "values read at the unsolved point (never solved); structure/finite only. _compute_common_admm_objective_scale (the calibration assertion of the computed sigma) needs solved block objectives and is NOT exercised here."
+   },
+   "s_ref_normalization": {
+    "S_ref_mva": 2.5,
+    "floor_mva": 0.1,
+    "per_node": {
+     "5": {
+      "rating_args_min_max_mva": {
+       "tso_rating_arg_mva": [
+        0.96875,
+        0.96875
+       ],
+       "dso_rating_arg_mva": [
+        0.96875,
+        0.96875
+       ],
+       "esso_rating_arg_mva": [
+        0.0,
+        0.96875
+       ]
+      },
+      "normalizations_min_max_mva": {
+       "tso_norm_pu_times_sbase": [
+        2.5,
+        2.5
+       ],
+       "dso_norm_pu_times_sbase": [
+        2.5,
+        2.5
+       ],
+       "tso_norm_mva": [
+        2.5,
+        2.5
+       ],
+       "dso_norm_mva": [
+        2.5,
+        2.5
+       ],
+       "esso_norm_mva": [
+        2.5,
+        2.5
+       ]
+      },
+      "all_normalizations_equal_S_ref_finite_positive": true
+     },
+     "7": {
+      "rating_args_min_max_mva": {
+       "tso_rating_arg_mva": [
+        0.0,
+        0.0
+       ],
+       "dso_rating_arg_mva": [
+        0.0,
+        0.0
+       ],
+       "esso_rating_arg_mva": [
+        0.0,
+        0.0
+       ]
+      },
+      "normalizations_min_max_mva": {
+       "tso_norm_pu_times_sbase": [
+        2.5,
+        2.5
+       ],
+       "dso_norm_pu_times_sbase": [
+        2.5,
+        2.5
+       ],
+       "tso_norm_mva": [
+        2.5,
+        2.5
+       ],
+       "dso_norm_mva": [
+        2.5,
+        2.5
+       ],
+       "esso_norm_mva": [
+        2.5,
+        2.5
+       ]
+      },
+      "all_normalizations_equal_S_ref_finite_positive": true
+     },
+     "9": {
+      "rating_args_min_max_mva": {
+       "tso_rating_arg_mva": [
+        0.96875,
+        0.96875
+       ],
+       "dso_rating_arg_mva": [
+        0.96875,
+        0.96875
+       ],
+       "esso_rating_arg_mva": [
+        0.0,
+        0.96875
+       ]
+      },
+      "normalizations_min_max_mva": {
+       "tso_norm_pu_times_sbase": [
+        2.5,
+        2.5
+       ],
+       "dso_norm_pu_times_sbase": [
+        2.5,
+        2.5
+       ],
+       "tso_norm_mva": [
+        2.5,
+        2.5
+       ],
+       "dso_norm_mva": [
+        2.5,
+        2.5
+       ],
+       "esso_norm_mva": [
+        2.5,
+        2.5
+       ]
+      },
+      "all_normalizations_equal_S_ref_finite_positive": true
+     }
+    },
+    "all_nodes_all_sites_equal_S_ref": true,
+    "call_sites_covered": [
+     "update_transmission_model_to_admm (_shared_ess_admm_normalization_pu, TSO network .s)",
+     "update_distribution_models_to_admm (_shared_ess_admm_normalization_pu, DSO network .s)",
+     "update_shared_energy_storage_model_to_admm (_shared_ess_admm_normalization_mva, ESSO .s)",
+     "get_admm_residual_metrics / get_admm_boyd_residual_metrics (_mva, TSO/DSO/ESSO .s)",
+     "TSO dual/proximal update (_pu, TSO network .s)"
+    ]
+   },
+   "consensus_entries": {
+    "per_node": {
+     "5": {
+      "tso": {
+       "n": 576,
+       "all_finite": true
+      },
+      "dso": {
+       "n": 576,
+       "all_finite": true
+      },
+      "esso": {
+       "n": 576,
+       "all_finite": true
+      },
+      "z": {
+       "n": 576,
+       "all_finite": true
+      },
+      "dual_ess_all_agents": {
+       "n": 1728,
+       "all_finite": true
+      }
+     },
+     "7": {
+      "tso": {
+       "n": 576,
+       "all_finite": true
+      },
+      "dso": {
+       "n": 576,
+       "all_finite": true
+      },
+      "esso": {
+       "n": 576,
+       "all_finite": true
+      },
+      "z": {
+       "n": 576,
+       "all_finite": true
+      },
+      "dual_ess_all_agents": {
+       "n": 1728,
+       "all_finite": true
+      }
+     },
+     "9": {
+      "tso": {
+       "n": 576,
+       "all_finite": true
+      },
+      "dso": {
+       "n": 576,
+       "all_finite": true
+      },
+      "esso": {
+       "n": 576,
+       "all_finite": true
+      },
+      "z": {
+       "n": 576,
+       "all_finite": true
+      },
+      "dual_ess_all_agents": {
+       "n": 1728,
+       "all_finite": true
+      }
+     }
+    },
+    "all_present_and_finite": true,
+    "expected_entries_per_agent_per_node": 576
+   },
+   "per_cycle_evaluators_and_captures": {
+    "get_admm_residual_metrics_nonfinite": {
+     "n_numeric_leaves": 51,
+     "n_nonfinite": 0,
+     "first_nonfinite": []
+    },
+    "get_admm_boyd_residual_metrics_nonfinite": {
+     "n_numeric_leaves": 47,
+     "n_nonfinite": 0,
+     "first_nonfinite": []
+    },
+    "update_admm_penalties_returned_tuple_len": 7,
+    "sidecars": {
+     "recourse_jump": {
+      "n_lines": 1,
+      "nonfinite": {
+       "n_numeric_leaves": 2,
+       "n_nonfinite": 0,
+       "first_nonfinite": []
+      }
+     },
+     "ess_stride": {
+      "n_lines": 1,
+      "nonfinite": {
+       "n_numeric_leaves": 6986,
+       "n_nonfinite": 0,
+       "first_nonfinite": []
+      }
+     },
+     "floor": {
+      "n_lines": 1,
+      "nonfinite": {
+       "n_numeric_leaves": 73,
+       "n_nonfinite": 0,
+       "first_nonfinite": []
+      }
+     },
+     "pf_stride": {
+      "n_lines": 1,
+      "nonfinite": {
+       "n_numeric_leaves": 20744,
+       "n_nonfinite": 0,
+       "first_nonfinite": []
+      }
+     },
+     "exempt": {
+      "n_lines": 1,
+      "nonfinite": {
+       "n_numeric_leaves": 4,
+       "n_nonfinite": 0,
+       "first_nonfinite": []
+      }
+     }
+    },
+    "soh_floor_rows_per_node_structural": {
+     "5": 6,
+     "7": 6,
+     "9": 6
+    },
+    "soh_floor_sidecar_entries_per_node": {
+     "5": {
+      "n_entries": 6,
+      "efc_per_day_all_none": true,
+      "soh_values_distinct": [
+       1.0
+      ]
+     },
+     "7": {
+      "n_entries": 6,
+      "efc_per_day_all_none": true,
+      "soh_values_distinct": [
+       1.0
+      ]
+     },
+     "9": {
+      "n_entries": 6,
+      "efc_per_day_all_none": true,
+      "soh_values_distinct": [
+       1.0
+      ]
+     }
+    },
+    "capture_esso_per_node_keys": {
+     "5": [
+      "degradation_fraction_per_year_per_cohort_year",
+      "efc_per_day_max",
+      "efc_per_day_min",
+      "efc_per_day_per_cohort_year",
+      "es_D_per_unit",
+      "es_avg_ch_dch_per_unit",
+      "es_e_rated_per_unit",
+      "es_soh_per_unit_cumul"
+     ],
+     "7": [
+      "degradation_fraction_per_year_per_cohort_year",
+      "efc_per_day_max",
+      "efc_per_day_min",
+      "efc_per_day_per_cohort_year",
+      "es_D_per_unit",
+      "es_avg_ch_dch_per_unit",
+      "es_e_rated_per_unit",
+      "es_soh_per_unit_cumul"
+     ],
+     "9": [
+      "degradation_fraction_per_year_per_cohort_year",
+      "efc_per_day_max",
+      "efc_per_day_min",
+      "efc_per_day_per_cohort_year",
+      "es_D_per_unit",
+      "es_avg_ch_dch_per_unit",
+      "es_e_rated_per_unit",
+      "es_soh_per_unit_cumul"
+     ]
+    },
+    "capture_esso_efc_per_day_max_per_node": {
+     "5": null,
+     "7": null,
+     "9": null
+    },
+    "capture_esso_nonfinite": {
+     "n_numeric_leaves": 135,
+     "n_nonfinite": 0,
+     "first_nonfinite": []
+    },
+    "_get_admm_efc_per_day_max": null,
+    "note": "one call of each per-cycle function at the UNSOLVED point, inside the oracle run's own capture wrappers; checks structure (no exception, no zero-rating division, finite leaves), not values"
+   },
+   "terminal_evaluators": {
+    "write_boyd_terminal_s35ref_ok": true,
+    "error": null,
+    "files": {
+     "boyd_terminal.json": {
+      "exists": true,
+      "nonfinite": {
+       "n_numeric_leaves": 120,
+       "n_nonfinite": 0,
+       "first_nonfinite": []
+      }
+     },
+     "component_levels_terminal.json": {
+      "exists": true,
+      "nonfinite": {
+       "n_numeric_leaves": 1948,
+       "n_nonfinite": 0,
+       "first_nonfinite": []
+      }
+     },
+     "interface_settlement_detail_s31c.json": {
+      "exists": true,
+      "nonfinite": {
+       "n_numeric_leaves": 13170,
+       "n_nonfinite": 0,
+       "first_nonfinite": []
+      }
+     },
+     "interface_voltage_terminal.json": {
+      "exists": true,
+      "nonfinite": {
+       "n_numeric_leaves": 6056,
+       "n_nonfinite": 0,
+       "first_nonfinite": []
+      }
+     }
+    },
+    "recourse_components_keys": [
+     "detector_components",
+     "detector_penalty_total",
+     "economic_recourse_all_D_excluded",
+     "economic_recourse_voltage_excluded",
+     "gross_operational_cost",
+     "gross_operational_cost_including_settlement",
+     "interface_settlement_dso",
+     "interface_settlement_total",
+     "interface_settlement_tso",
+     "net_operational_recourse",
+     "terminal_salvage_value"
+    ],
+    "synthetic_trajectory_row_used": {
+     "cycle": 1,
+     "cycle_convergence": false,
+     "consecutive_converged_cycles": 0,
+     "recourse": null,
+     "gross_operational_cost": null
+    }
+   },
+   "exception": null
+  }
+ },
+ "verdict": {
+  "items": {
+   "c_star": {
+    "no_exception": true,
+    "map_honoured": true,
+    "zero_nodes_zero_total_capacity": true,
+    "zero_nodes_esso_all_cohorts_inactive": true,
+    "positive_nodes_esso_2025_cohort_active": true,
+    "zero_nodes_network_gate_inactive_every_block": true,
+    "positive_nodes_network_gate_active_every_block": true,
+    "s_ref_all_sites_all_nodes": true,
+    "consensus_entries_present_finite": true,
+    "residual_metrics_finite": true,
+    "boyd_metrics_finite": true,
+    "sidecars_written_finite": true,
+    "capture_esso_finite": true,
+    "zero_nodes_efc_none_not_error": true,
+    "terminal_evaluators_ok": true,
+    "c_star_map_equals_uniform": true
+   },
+   "paper_plan": {
+    "no_exception": true,
+    "map_honoured": true,
+    "zero_nodes_zero_total_capacity": true,
+    "zero_nodes_esso_all_cohorts_inactive": true,
+    "positive_nodes_esso_2025_cohort_active": true,
+    "zero_nodes_network_gate_inactive_every_block": true,
+    "positive_nodes_network_gate_active_every_block": true,
+    "s_ref_all_sites_all_nodes": true,
+    "consensus_entries_present_finite": true,
+    "residual_metrics_finite": true,
+    "boyd_metrics_finite": true,
+    "sidecars_written_finite": true,
+    "capture_esso_finite": true,
+    "zero_nodes_efc_none_not_error": true,
+    "terminal_evaluators_ok": true
+   },
+   "node7_empty": {
+    "no_exception": true,
+    "map_honoured": true,
+    "zero_nodes_zero_total_capacity": true,
+    "zero_nodes_esso_all_cohorts_inactive": true,
+    "positive_nodes_esso_2025_cohort_active": true,
+    "zero_nodes_network_gate_inactive_every_block": true,
+    "positive_nodes_network_gate_active_every_block": true,
+    "s_ref_all_sites_all_nodes": true,
+    "consensus_entries_present_finite": true,
+    "residual_metrics_finite": true,
+    "boyd_metrics_finite": true,
+    "sidecars_written_finite": true,
+    "capture_esso_finite": true,
+    "zero_nodes_efc_none_not_error": true,
+    "terminal_evaluators_ok": true
+   }
+  },
+  "structural_evaluability_pass": true,
+  "solve_profile_guard": {
+   "counts": {
+    "permitted_solve": 0,
+    "permitted_exec": 0,
+    "blocked_solve": 0,
+    "blocked_exec": 0
+   },
+   "verify_0_failures": []
+  },
+  "not_established_zero_solve": [
+   "numerical behaviour of the ESSO at a zero node: the converter-circle rows es_pnet^2 + es_qnet^2 <= es_s_rated^2 stay ACTIVE with es_s_rated forced to 0 by the linear rated-capacity equalities -- a degenerate (LICQ-failing) feasible set {q = 0}; whether IPOPT solves it cleanly every cycle is observable only in a run",
+   "the zero node's PUBLISHED available capacity each cycle (get_updated_capacities reads SOLVED es_s/e_available_per_unit); the networks gate on |cap| <= 1e-10 (SHARED_ESS_ZERO_CAPACITY_TOLERANCE), so a solver residue above 1e-10 would publish a tiny ACTIVE storage -- observable only in a run (the harness records the terminal published capacities per node)"
+  ]
+ },
+ "wall_clock_s": 37.60234713554382
+}

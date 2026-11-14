@@ -1,0 +1,60 @@
+12:56:46 [W20-casefile] P5.15 Addenda 28-29 W20 item 3 -- SRP1_ESS_Params.json max_energy_to_power_factor 10 -> 4: zero-solve gate; phase after; git HEAD e5721b6d99e1f0a49f0598d4e89e62c10d79926e; data/SRP1/SharedESS/SRP1_ESS_Params.json sha256 fdce321ffe1bf0f4b81424cdf081d826c3c81c410a4eb9f3b3561675e26b80f0
+12:56:49 [W20-casefile] readers: 30 hits, unclassified []
+12:56:49 [W20-casefile]   shared_energy_storage_data.py:363 in _build_master_problem -> the Benders MASTER problem (E <= ratio * S row); called only by shared_resources_planning._run_planning_problem, never on the oracle path
+12:56:49 [W20-casefile]   p56b_b5_coordinates.py:94 in main -> P5.6-B diagnostic (candidate coordinates); not on the oracle path
+12:56:49 [W20-casefile]   p56a_oracle.py:789 in _config_hash -> the P5.6 oracle CACHE key (evaluate_planning_candidate); the campaign harness does not use the p56a cache (it calls run_admm_arm directly); a changed value would only invalidate p56a cache entries
+12:56:49 [W20-casefile]   p515_s44_addendum26_confirmations.py:622 in item2_investment_cost -> W-stage confirmation record (reads and reports the value)
+12:56:49 [W20-casefile]   p515_s44_addendum26_confirmations.py:648 in item2_investment_cost -> W-stage confirmation record (reads and reports the value)
+12:56:49 [W20-casefile]   p515_s45_investment_cost_recompute.py:632 in main -> W2 I(x) recompute (records the value); not the oracle
+12:56:49 [W20-casefile]   shared_resources_planning.py:1868 in _check_candidate_first_stage_feasibility -> first-stage feasibility of a candidate; called by _validate_local_sensitivities_with_finite_differences and _build_positive_bootstrap_candidate (both inside _run_planning_problem, the Benders loop), never by _run_operational_planning
+12:56:49 [W20-casefile]   shared_resources_planning.py:1899 in _build_positive_bootstrap_candidate -> Benders bootstrap candidate; called by _run_planning_problem and _complete_missing_sensitivities_with_probe (Benders loop)
+12:56:49 [W20-casefile]   shared_resources_planning.py:1903 in _build_positive_bootstrap_candidate -> Benders bootstrap candidate; called by _run_planning_problem and _complete_missing_sensitivities_with_probe (Benders loop)
+12:56:49 [W20-casefile]   p514_d_preflight.py:67 in main -> P5.14-D preflight record; not on the oracle path
+12:56:49 [W20-casefile]   p514_d_preflight.py:68 in main -> P5.14-D preflight record; not on the oracle path
+12:56:49 [W20-casefile]   p515_s46_case_file_edit_check.py:4 in <module> -> this gate
+12:56:49 [W20-casefile]   p515_s46_case_file_edit_check.py:17 in <module> -> this gate
+12:56:49 [W20-casefile]   p515_s46_case_file_edit_check.py:18 in <module> -> this gate
+12:56:49 [W20-casefile]   p515_s46_case_file_edit_check.py:36 in <module> -> this gate
+12:56:49 [W20-casefile]   p515_s46_case_file_edit_check.py:77 in <module> -> this gate
+12:56:49 [W20-casefile]   p515_s46_case_file_edit_check.py:84 in <module> -> this gate
+12:56:49 [W20-casefile]   p515_s46_case_file_edit_check.py:85 in <module> -> this gate
+12:56:49 [W20-casefile]   p515_s46_case_file_edit_check.py:101 in <module> -> this gate
+12:56:49 [W20-casefile]   p515_s46_case_file_edit_check.py:171 in readers -> this gate
+12:56:49 [W20-casefile]   p515_s46_case_file_edit_check.py:188 in readers -> this gate
+12:56:49 [W20-casefile]   p515_s46_case_file_edit_check.py:236 in _RatioReadCounter -> this gate
+12:56:49 [W20-casefile]   p515_s46_case_file_edit_check.py:292 in oracle_path_build -> this gate
+12:56:49 [W20-casefile]   p515_s46_case_file_edit_check.py:308 in oracle_path_build -> this gate
+12:56:49 [W20-casefile]   p515_s46_case_file_edit_check.py:314 in oracle_path_build -> this gate
+12:56:49 [W20-casefile]   p515_s46_case_file_edit_check.py:373 in main -> this gate
+12:56:49 [W20-casefile]   p515_s46_case_file_edit_check.py:382 in main -> this gate
+12:56:49 [W20-casefile]   p56b_candidates.py:91 in describe -> P5.6-B diagnostic (candidate generation); not on the oracle path
+12:56:49 [W20-casefile]   shared_energy_storage_parameters.py:227 in SharedEnergyStorageParameters.__init__ -> default value of the attribute (10.00); not a reader of the file
+12:56:49 [W20-casefile]   shared_energy_storage_parameters.py:256 in _read_parameters_from_file -> THE LOADER: reads the JSON key into params.max_energy_to_power_ratio; loads the value, consumes nothing
+[INFO] 		 - Distribution Network node 5...
+[INFO] 		 - Distribution Network node 7...
+[INFO] 		 - Distribution Network node 9...
+[INFO] 		 - Transmission Network...
+12:57:08 [W20-casefile] c_star: key 578636daa6d6360d blocks 51 ratio loaded 4.0 ratio reads during build 0
+[INFO] 		 - Distribution Network node 5...
+[INFO] 		 - Distribution Network node 7...
+[INFO] 		 - Distribution Network node 9...
+[INFO] 		 - Transmission Network...
+12:57:18 [W20-casefile] x0: key 8435c71859ddde68 blocks 51 ratio loaded 4.0 ratio reads during build 0
+12:57:18 [W20-casefile]   OK   readers_all_classified
+12:57:18 [W20-casefile]   OK   readers_none_on_oracle_path
+12:57:18 [W20-casefile]   OK   c_star_key_is_pinned_c_star
+12:57:18 [W20-casefile]   OK   loaded_ratio_is_file_value
+12:57:18 [W20-casefile]   OK   json_key_value_is_expected
+12:57:18 [W20-casefile]   OK   no_ratio_read_during_oracle_build
+12:57:18 [W20-casefile]   OK   read_counter_positive_control
+12:57:18 [W20-casefile]   OK   blocks_48_network_plus_3_esso_per_instance
+12:57:18 [W20-casefile]   OK   digest_discriminates_c_star_from_x0_in_every_block
+12:57:18 [W20-casefile]   OK   configuration_hook_passed
+12:57:18 [W20-casefile]   OK   every_block_digest_identical_before_after
+12:57:18 [W20-casefile]   OK   only_the_one_key_changed
+12:57:18 [W20-casefile]   OK   value_10_to_4
+12:57:18 [W20-casefile]   OK   before_record_phase_is_before
+12:57:18 [W20-casefile]   OK   guard_zero_solves_verified
+12:57:18 [W20-casefile] comparison: {"c_star": {"n_blocks_before": 51, "n_blocks_after": 51, "n_differing": 0}, "x0": {"n_blocks_before": 51, "n_blocks_after": 51, "n_differing": 0}} keys changed ['max_energy_to_power_factor']
+12:57:18 [W20-casefile] wrote data/SRP1/Results/P515S46/case_file_edit/after/case_file_edit_after.json sha256=1611416c88e043fabcfd2a7116c8542ffd16e58886f50c3ccfe4fa4c00ca78a8
+12:57:18 [W20-casefile] ALL_OK=True guard={'permitted_solve': 0, 'permitted_exec': 0, 'blocked_solve': 0, 'blocked_exec': 0} wall=31.9s

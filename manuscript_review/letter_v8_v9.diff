@@ -1,0 +1,44 @@
+--- response_to_reviewers_v8.tex
++++ response_to_reviewers_v9.tex
+@@ -1,4 +1,4 @@
+-% Response to reviewers — v8 (expert, 2026-10-16; round 7 / Addendum 80). v7 (expert, 2026-10-15; round 6 / Addendum 79). DRAFT for the author (expert's skeleton, 2026-10-06).
++% Response to reviewers — v9 (expert, 2026-10-16; Addendum 81: ageing citations [43], [44]). v8 (expert, 2026-10-16; round 7 / Addendum 80). v7 (expert, 2026-10-15; round 6 / Addendum 79). DRAFT for the author (expert's skeleton, 2026-10-06).
+ % Quote every reviewer comment verbatim where [COMMENT: ...] appears; the paraphrases there are the
+ % expert's and must not go to the journal. Section and table references point to the revised manuscript
+ % as mapped in STEP6_REVISION_MAP.md; fix them to the final numbering before submission.
+@@ -42,7 +42,7 @@
+ siting--sizing--timing lattice (Sections~2.1 and~2.2), in which each candidate plan is evaluated by the
+ coordinated TSO--DSO recourse under an explicit stopping and certification rule (Section~2.2.7 and
+ Appendix~A.5). We also corrected the investment-cost input file, adopted a
+-datasheet-based cycling calibration with calendar fade and an end-of-life floor (Section~3.5), and
++cycle-life calibration bracketed by a manufacturer datasheet, with calendar fade and an end-of-life floor (Section~3.5), and
+ retired a transfer-payment term from the recourse objective that the submitted results had included. Under
+ the revised method and inputs, the baseline instance supports no shared-storage investment: the reference
+ unit (0.25~MVA / 1~MWh at node~7) loses 64.4~k\euro{} over the horizon, determinately, as does every other plan
+@@ -74,7 +74,7 @@
+ \rresponse{
+ On (i): the investment-cost uncertainty is uncertainty about future technology cost --- alternative trajectories of the unit cost of storage over the horizon --- not about the cost of capital; the cost of capital is treated separately through the discount-rate sensitivity requested in R1.4. Operational uncertainty is represented through scenarios of load, RES generation and market prices (Section~3), and
+ the abstract now says both. 
+-On (iv): the reference technology is utility-scale lithium-ion battery storage; the cycling calibrations are datasheet readings (Section~3.5) and the abstract names the chemistry. The revised results are given on the single-scenario instance and on a $3\times3$ market$\times$operation scenario instance; 
++On (iv): the reference technology is utility-scale lithium-ion battery storage; the cycling calibrations are stated in Section~3.5, one of them read from a manufacturer datasheet [44], and the abstract names the chemistry. The revised results are given on the single-scenario instance and on a $3\times3$ market$\times$operation scenario instance; 
+ on the latter, run on a finer five-block horizon, the reference unit again loses determinately to the plan without storage, and its value is 0.909--0.934 of its single-scenario value, against 0.933 predicted from the mean-profile price spread (Section~4.5). The test system (IEEE 9-bus transmission network with three IEEE 33-bus distribution networks, 108 buses) is unchanged; its size
+ limits the generality of the conclusions and we say so (Section~4.8), and the abstract now states it.
+ On (iii): the 18.25\,\% and 92.16\,\% figures are withdrawn with the results they came from (see the opening of this letter); the abstract reports instead the value of coordination, 13.9\,\% of the discounted operating cost over the 15-year horizon against the best static no-reverse-flow arrangement, a horizon total rather than the figure of a particular year.
+@@ -246,14 +246,14 @@
+ \rcomment{
+ Regarding the degradation formulation in Section 2.3.2, Eqs. (22)-(23):the manuscript quantifies battery cycling degradation using apparent-energy throughput, thereby treating reactive-power provision as equivalent battery-cell charge/discharge throughput. However, cell capacity degradation is primarily driven by DC-side active-energy throughput, SOC variation, depth of discharge, and C-rate. Reactive-power provision mainly increases the AC-side current, losses, and thermal stress of the power conversion system (PCS), thereby contributing to the current- and temperature-induced aging of PCS power semiconductor devices, DC-link capacitors, and related components, rather than directly representing electrochemical cycling of the battery cells. This assumption may substantially overestimate cell degradation when the ESS provides significant reactive support and may consequently distort the optimal operating and sizing decisions. The authors should provide experimental or literature-based validation for this apparent-energy degradation proxy, or separately model battery-cell cycling degradation and PCS current/thermal aging.
+ }
+-\rresponse{See R2.10.}
+-\rchanges{Section~2.3.4.}
++\rresponse{See R2.10 for the throughput definition. On validation of the cycling inputs: the calibrations are stated in Section~3.5 (Table~6) with the cycle-life statement each one reads. The baseline assumes 10,000 cycles at 80\,\% depth of discharge to 80\,\% retention, at the favourable end of current LFP cell datasheets, and the datasheet sensitivity reads the manufacturer's statement of 8,000 full cycles to 70\,\% retention for a 314~Ah LFP cell [44]; the paper now says which is which. The favourable baseline strengthens the negative result: storage does not pay under an optimistic cycle life, and it loses more under the datasheet calibration (Section~4.3).}
++\rchanges{Section~2.3.4; Section~3.5 and Table~6.}
+ 
+ \subsection*{R3.5 --- Calendar ageing}
+ \rcomment{
+ Regarding the degradation model in Section 2.3.2, Eqs. (22)-(25), and the 15-year planning horizon defined in Section 3:the manuscript considers only throughput-induced cycling degradation while completely neglecting calendar aging. Cycling degradation and calendar degradation are the two most fundamental and important mechanisms governing long-term battery capacity loss. Even under limited cycling or standby operation, batteries continue to age as a function of elapsed time, temperature, and sustained SOC level. Over a 15-year planning horizon, omitting calendar aging may substantially underestimate capacity loss and lifetime consumption, thereby overstating the long-term availability and economic value of the shared ESS. The SoH model should therefore incorporate both calendar and cycling degradation, and their impacts on investment timing, sizing, and degradation trajectories should be assessed through sensitivity analysis.
+ }
+-\rresponse{Calendar ageing is included as an annual retention factor of 0.985 in the baseline calibration (cycling and calendar ageing, Table~6); the cycling-only calibration is the sensitivity. Their values differ materially: the reference unit loses 31.6~k\euro{} under cycling only and 64.4~k\euro{} with calendar ageing, both determinate (Table~11).}
++\rresponse{Calendar ageing is included as an annual retention factor of 0.985 in the baseline calibration (cycling and calendar ageing, Table~6), stated as a modelling assumption in the range reported for LFP cells [43]; the cycling-only calibration is the sensitivity. Their values differ materially: the reference unit loses 31.6~k\euro{} under cycling only and 64.4~k\euro{} with calendar ageing, both determinate (Table~11).}
+ \rchanges{Section~3.5 and Table~6; Section~4.3; Table~11.}
+ 
+ \subsection*{R3.6 --- A degradation-neutral benchmark}

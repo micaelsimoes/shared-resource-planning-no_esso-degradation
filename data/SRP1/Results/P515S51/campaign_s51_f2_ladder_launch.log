@@ -1,0 +1,110 @@
+20:47:01 [S51-F2] memory preflight: available (memsize - wired - anonymous - compressor-occupied) = 20.59 GiB [wired 2.33, anonymous 7.69, compressor-occupied 1.39]; free+inactive = 14.56 GiB (recorded only); required 8.25 GiB (hw.memsize - (wired + anonymous + compressor-occupied) x page size >= 3 x 2.75 GiB) -> PASS; vm_stat pages {'pages_free': 6568, 'pages_active': 843320, 'pages_inactive': 947719, 'pages_speculative': 6769, 'pages_wired_down': 152965, 'pages_purgeable': 6287, 'file_backed_pages': 1294020, 'anonymous_pages': 503788, 'pages_stored_in_compressor': 211357, 'pages_occupied_by_compressor': 90946}
+20:47:01 [S51-F2] FLEXIBILITY-PRICE SCENARIO m = 2 (MODEL VARIANT -- flexibility price x 2); NOT the baseline. Every figure in this stage is a figure of that scenario.
+20:47:01 [S51-F2] MODEL VARIANT — flexibility price × m (m = 2) under BASELINE (C2 + phi_cal 0.985 + soh_min 0.70) -- F2 node-7 4 h ladder, evaluating E = [3, 4, 5] MWh
+20:47:01 [S51-F2] preconditions passed; spec data/SRP1/Results/P515S51/campaign_s51_f2_ladder/campaign_spec_s51_f2_ladder_c4455767.json sha256=c4455767d58955c523eef59973f54442daac70a0dd7da59e2ef9bd46784fe87e; git HEAD 6a6da6860f15360f01dac2104a777fa2f67c5591 (spec frozen at a071411725f3dff9c8266e6ad8b86e07ae887d41)
+20:47:01 [S51-F2] 3 points in 1 wave(s) [['n7_4h_e3_m2', 'n7_4h_e4_m2', 'n7_4h_e5_m2']]; stop rule: as a1a (Planner task W15, spec v15 execution.barrier): after every wave, STOP (launch no further wave) if (a) 2 or more non-certified points fall in ONE region (node+duration ladder) or (b) 3 or more non-certified points occur overall. A single isolated non-certified point does NOT stop the campaign. Points already running always finish; unlaunched points are recorded as not_launched_stop_rule and campaign_results.json carries STOP_FOR_REVIEW true (exit 3).
+20:47:01 [S51-F2] campaign lock acquired: {'pid': 70783, 'campaign_id': 's51_f2_ladder', 'campaign_spec_sha256': 'c4455767d58955c523eef59973f54442daac70a0dd7da59e2ef9bd46784fe87e', 'started_utc': '2026-09-22T20:47:01.692560+00:00'}
+20:47:01 [S51-F2] launching wave 1/1: ['n7_4h_e3_m2', 'n7_4h_e4_m2', 'n7_4h_e5_m2'] (concurrency 3)
+20:47:01 [S44-HARNESS] launched n7_4h_e3_m2 (key fb21d822e145ba68) pid=70831
+20:47:01 [S44-HARNESS] launched n7_4h_e4_m2 (key 11725e45371a0c7f) pid=70832
+20:47:01 [S44-HARNESS] launched n7_4h_e5_m2 (key cab98853bb31f72f) pid=70833
+20:47:01 [S44-HARNESS] heartbeat n7_4h_e3_m2: 0s cycle=None; n7_4h_e4_m2: 0s cycle=None; n7_4h_e5_m2: 0s cycle=None
+20:48:01 [S44-HARNESS] heartbeat n7_4h_e3_m2: 60s cycle=None; n7_4h_e4_m2: 60s cycle=None; n7_4h_e5_m2: 60s cycle=None
+20:49:01 [S44-HARNESS] heartbeat n7_4h_e3_m2: 120s cycle=2; n7_4h_e4_m2: 120s cycle=2; n7_4h_e5_m2: 120s cycle=2
+20:50:01 [S44-HARNESS] heartbeat n7_4h_e3_m2: 180s cycle=3; n7_4h_e4_m2: 180s cycle=4; n7_4h_e5_m2: 180s cycle=3
+20:51:01 [S44-HARNESS] heartbeat n7_4h_e3_m2: 240s cycle=5; n7_4h_e4_m2: 240s cycle=5; n7_4h_e5_m2: 240s cycle=6
+20:52:01 [S44-HARNESS] heartbeat n7_4h_e3_m2: 300s cycle=7; n7_4h_e4_m2: 300s cycle=7; n7_4h_e5_m2: 300s cycle=7
+20:53:02 [S44-HARNESS] heartbeat n7_4h_e3_m2: 360s cycle=9; n7_4h_e4_m2: 360s cycle=9; n7_4h_e5_m2: 360s cycle=9
+20:54:02 [S44-HARNESS] heartbeat n7_4h_e3_m2: 420s cycle=11; n7_4h_e4_m2: 420s cycle=11; n7_4h_e5_m2: 420s cycle=11
+20:55:02 [S44-HARNESS] heartbeat n7_4h_e3_m2: 480s cycle=13; n7_4h_e4_m2: 480s cycle=13; n7_4h_e5_m2: 480s cycle=13
+20:56:02 [S44-HARNESS] heartbeat n7_4h_e3_m2: 540s cycle=15; n7_4h_e4_m2: 540s cycle=15; n7_4h_e5_m2: 540s cycle=15
+20:57:02 [S44-HARNESS] heartbeat n7_4h_e3_m2: 601s cycle=17; n7_4h_e4_m2: 601s cycle=17; n7_4h_e5_m2: 601s cycle=17
+20:58:02 [S44-HARNESS] heartbeat n7_4h_e3_m2: 661s cycle=19; n7_4h_e4_m2: 661s cycle=19; n7_4h_e5_m2: 661s cycle=19
+20:59:02 [S44-HARNESS] heartbeat n7_4h_e3_m2: 721s cycle=21; n7_4h_e4_m2: 721s cycle=21; n7_4h_e5_m2: 721s cycle=21
+21:00:02 [S44-HARNESS] heartbeat n7_4h_e3_m2: 781s cycle=23; n7_4h_e4_m2: 781s cycle=23; n7_4h_e5_m2: 781s cycle=23
+21:01:02 [S44-HARNESS] heartbeat n7_4h_e3_m2: 841s cycle=25; n7_4h_e4_m2: 841s cycle=25; n7_4h_e5_m2: 841s cycle=25
+21:02:02 [S44-HARNESS] heartbeat n7_4h_e3_m2: 901s cycle=27; n7_4h_e4_m2: 901s cycle=27; n7_4h_e5_m2: 901s cycle=27
+21:03:02 [S44-HARNESS] heartbeat n7_4h_e3_m2: 961s cycle=29; n7_4h_e4_m2: 961s cycle=29; n7_4h_e5_m2: 961s cycle=29
+21:04:02 [S44-HARNESS] heartbeat n7_4h_e3_m2: 1021s cycle=31; n7_4h_e4_m2: 1021s cycle=31; n7_4h_e5_m2: 1021s cycle=31
+21:05:02 [S44-HARNESS] heartbeat n7_4h_e3_m2: 1081s cycle=33; n7_4h_e4_m2: 1081s cycle=33; n7_4h_e5_m2: 1081s cycle=33
+21:06:02 [S44-HARNESS] heartbeat n7_4h_e3_m2: 1141s cycle=35; n7_4h_e4_m2: 1141s cycle=35; n7_4h_e5_m2: 1141s cycle=35
+21:07:02 [S44-HARNESS] heartbeat n7_4h_e3_m2: 1201s cycle=37; n7_4h_e4_m2: 1201s cycle=37; n7_4h_e5_m2: 1201s cycle=37
+21:08:02 [S44-HARNESS] heartbeat n7_4h_e3_m2: 1261s cycle=39; n7_4h_e4_m2: 1261s cycle=39; n7_4h_e5_m2: 1261s cycle=40
+21:09:02 [S44-HARNESS] heartbeat n7_4h_e3_m2: 1321s cycle=41; n7_4h_e4_m2: 1321s cycle=41; n7_4h_e5_m2: 1321s cycle=42
+21:10:03 [S44-HARNESS] heartbeat n7_4h_e3_m2: 1381s cycle=43; n7_4h_e4_m2: 1381s cycle=43; n7_4h_e5_m2: 1381s cycle=44
+21:11:03 [S44-HARNESS] heartbeat n7_4h_e3_m2: 1441s cycle=46; n7_4h_e4_m2: 1441s cycle=45; n7_4h_e5_m2: 1441s cycle=46
+21:12:03 [S44-HARNESS] heartbeat n7_4h_e3_m2: 1501s cycle=48; n7_4h_e4_m2: 1501s cycle=47; n7_4h_e5_m2: 1501s cycle=48
+21:13:03 [S44-HARNESS] heartbeat n7_4h_e3_m2: 1562s cycle=50; n7_4h_e4_m2: 1562s cycle=49; n7_4h_e5_m2: 1562s cycle=50
+21:14:03 [S44-HARNESS] heartbeat n7_4h_e3_m2: 1622s cycle=52; n7_4h_e4_m2: 1622s cycle=52; n7_4h_e5_m2: 1622s cycle=52
+21:15:03 [S44-HARNESS] heartbeat n7_4h_e3_m2: 1682s cycle=54; n7_4h_e4_m2: 1682s cycle=54; n7_4h_e5_m2: 1682s cycle=54
+21:16:03 [S44-HARNESS] heartbeat n7_4h_e3_m2: 1742s cycle=55; n7_4h_e4_m2: 1742s cycle=56; n7_4h_e5_m2: 1742s cycle=56
+21:17:03 [S44-HARNESS] heartbeat n7_4h_e3_m2: 1802s cycle=57; n7_4h_e4_m2: 1802s cycle=58; n7_4h_e5_m2: 1802s cycle=58
+21:18:03 [S44-HARNESS] heartbeat n7_4h_e3_m2: 1862s cycle=60; n7_4h_e4_m2: 1862s cycle=60; n7_4h_e5_m2: 1862s cycle=61
+21:19:03 [S44-HARNESS] heartbeat n7_4h_e3_m2: 1922s cycle=62; n7_4h_e4_m2: 1922s cycle=62; n7_4h_e5_m2: 1922s cycle=63
+21:20:04 [S44-HARNESS] heartbeat n7_4h_e3_m2: 1982s cycle=64; n7_4h_e4_m2: 1982s cycle=64; n7_4h_e5_m2: 1982s cycle=65
+21:21:04 [S44-HARNESS] heartbeat n7_4h_e3_m2: 2042s cycle=66; n7_4h_e4_m2: 2042s cycle=66; n7_4h_e5_m2: 2042s cycle=67
+21:22:04 [S44-HARNESS] heartbeat n7_4h_e3_m2: 2103s cycle=68; n7_4h_e4_m2: 2103s cycle=68; n7_4h_e5_m2: 2103s cycle=69
+21:23:04 [S44-HARNESS] heartbeat n7_4h_e3_m2: 2163s cycle=70; n7_4h_e4_m2: 2163s cycle=70; n7_4h_e5_m2: 2163s cycle=71
+21:24:04 [S44-HARNESS] heartbeat n7_4h_e3_m2: 2223s cycle=73; n7_4h_e4_m2: 2223s cycle=73; n7_4h_e5_m2: 2223s cycle=73
+21:25:04 [S44-HARNESS] heartbeat n7_4h_e3_m2: 2283s cycle=75; n7_4h_e4_m2: 2283s cycle=75; n7_4h_e5_m2: 2283s cycle=75
+21:26:04 [S44-HARNESS] heartbeat n7_4h_e3_m2: 2343s cycle=77; n7_4h_e4_m2: 2343s cycle=77; n7_4h_e5_m2: 2343s cycle=77
+21:27:04 [S44-HARNESS] heartbeat n7_4h_e3_m2: 2403s cycle=79; n7_4h_e4_m2: 2403s cycle=79; n7_4h_e5_m2: 2403s cycle=79
+21:28:04 [S44-HARNESS] heartbeat n7_4h_e3_m2: 2463s cycle=81; n7_4h_e4_m2: 2463s cycle=81; n7_4h_e5_m2: 2463s cycle=81
+21:29:04 [S44-HARNESS] heartbeat n7_4h_e3_m2: 2523s cycle=83; n7_4h_e4_m2: 2523s cycle=83; n7_4h_e5_m2: 2523s cycle=83
+21:30:05 [S44-HARNESS] heartbeat n7_4h_e3_m2: 2583s cycle=86; n7_4h_e4_m2: 2583s cycle=85; n7_4h_e5_m2: 2583s cycle=85
+21:31:05 [S44-HARNESS] heartbeat n7_4h_e3_m2: 2644s cycle=88; n7_4h_e4_m2: 2643s cycle=87; n7_4h_e5_m2: 2643s cycle=87
+21:32:05 [S44-HARNESS] heartbeat n7_4h_e3_m2: 2704s cycle=90; n7_4h_e4_m2: 2704s cycle=90; n7_4h_e5_m2: 2704s cycle=89
+21:33:05 [S44-HARNESS] heartbeat n7_4h_e3_m2: 2764s cycle=92; n7_4h_e4_m2: 2764s cycle=92; n7_4h_e5_m2: 2764s cycle=91
+21:34:05 [S44-HARNESS] heartbeat n7_4h_e3_m2: 2824s cycle=94; n7_4h_e4_m2: 2824s cycle=94; n7_4h_e5_m2: 2824s cycle=94
+21:35:05 [S44-HARNESS] heartbeat n7_4h_e3_m2: 2884s cycle=96; n7_4h_e4_m2: 2884s cycle=96; n7_4h_e5_m2: 2884s cycle=96
+21:36:05 [S44-HARNESS] heartbeat n7_4h_e3_m2: 2944s cycle=98; n7_4h_e4_m2: 2944s cycle=98; n7_4h_e5_m2: 2944s cycle=98
+21:37:05 [S44-HARNESS] heartbeat n7_4h_e3_m2: 3004s cycle=100; n7_4h_e4_m2: 3004s cycle=100; n7_4h_e5_m2: 3004s cycle=100
+21:38:05 [S44-HARNESS] heartbeat n7_4h_e3_m2: 3064s cycle=102; n7_4h_e4_m2: 3064s cycle=102; n7_4h_e5_m2: 3064s cycle=102
+21:39:06 [S44-HARNESS] heartbeat n7_4h_e3_m2: 3124s cycle=104; n7_4h_e4_m2: 3124s cycle=104; n7_4h_e5_m2: 3124s cycle=104
+21:40:06 [S44-HARNESS] heartbeat n7_4h_e3_m2: 3184s cycle=106; n7_4h_e4_m2: 3184s cycle=106; n7_4h_e5_m2: 3184s cycle=106
+21:41:06 [S44-HARNESS] heartbeat n7_4h_e3_m2: 3245s cycle=108; n7_4h_e4_m2: 3245s cycle=109; n7_4h_e5_m2: 3245s cycle=109
+21:42:06 [S44-HARNESS] heartbeat n7_4h_e3_m2: 3305s cycle=110; n7_4h_e4_m2: 3305s cycle=111; n7_4h_e5_m2: 3305s cycle=111
+21:43:06 [S44-HARNESS] heartbeat n7_4h_e3_m2: 3365s cycle=112; n7_4h_e4_m2: 3365s cycle=113; n7_4h_e5_m2: 3365s cycle=113
+21:44:06 [S44-HARNESS] heartbeat n7_4h_e3_m2: 3425s cycle=114; n7_4h_e4_m2: 3425s cycle=115; n7_4h_e5_m2: 3425s cycle=115
+21:45:06 [S44-HARNESS] heartbeat n7_4h_e3_m2: 3485s cycle=117; n7_4h_e4_m2: 3485s cycle=117; n7_4h_e5_m2: 3485s cycle=117
+21:46:06 [S44-HARNESS] heartbeat n7_4h_e3_m2: 3545s cycle=119; n7_4h_e4_m2: 3545s cycle=119; n7_4h_e5_m2: 3545s cycle=119
+21:47:06 [S44-HARNESS] heartbeat n7_4h_e3_m2: 3605s cycle=121; n7_4h_e4_m2: 3605s cycle=121; n7_4h_e5_m2: 3605s cycle=121
+21:48:06 [S44-HARNESS] heartbeat n7_4h_e3_m2: 3665s cycle=123; n7_4h_e4_m2: 3665s cycle=123; n7_4h_e5_m2: 3665s cycle=124
+21:49:07 [S44-HARNESS] heartbeat n7_4h_e3_m2: 3725s cycle=125; n7_4h_e4_m2: 3725s cycle=125; n7_4h_e5_m2: 3725s cycle=126
+21:50:07 [S44-HARNESS] heartbeat n7_4h_e3_m2: 3785s cycle=127; n7_4h_e4_m2: 3785s cycle=127; n7_4h_e5_m2: 3785s cycle=128
+21:51:07 [S44-HARNESS] heartbeat n7_4h_e3_m2: 3845s cycle=129; n7_4h_e4_m2: 3845s cycle=129; n7_4h_e5_m2: 3845s cycle=130
+21:52:07 [S44-HARNESS] heartbeat n7_4h_e3_m2: 3906s cycle=132; n7_4h_e4_m2: 3906s cycle=132; n7_4h_e5_m2: 3906s cycle=132
+21:53:07 [S44-HARNESS] heartbeat n7_4h_e3_m2: 3966s cycle=134; n7_4h_e4_m2: 3966s cycle=134; n7_4h_e5_m2: 3966s cycle=134
+21:54:07 [S44-HARNESS] heartbeat n7_4h_e3_m2: 4026s cycle=136; n7_4h_e4_m2: 4026s cycle=136; n7_4h_e5_m2: 4026s cycle=136
+21:54:17 [S44-HARNESS] finished n7_4h_e4_m2 pid=70832 exit=0 status=certified wall=4036s
+21:55:07 [S44-HARNESS] heartbeat n7_4h_e3_m2: 4086s cycle=138; n7_4h_e5_m2: 4086s cycle=138
+21:56:07 [S44-HARNESS] heartbeat n7_4h_e3_m2: 4146s cycle=140; n7_4h_e5_m2: 4146s cycle=140
+21:57:07 [S44-HARNESS] heartbeat n7_4h_e3_m2: 4206s cycle=142; n7_4h_e5_m2: 4206s cycle=143
+21:58:07 [S44-HARNESS] heartbeat n7_4h_e3_m2: 4266s cycle=144; n7_4h_e5_m2: 4266s cycle=145
+21:59:07 [S44-HARNESS] heartbeat n7_4h_e3_m2: 4326s cycle=147; n7_4h_e5_m2: 4326s cycle=147
+22:00:07 [S44-HARNESS] heartbeat n7_4h_e3_m2: 4386s cycle=149; n7_4h_e5_m2: 4386s cycle=149
+22:01:07 [S44-HARNESS] heartbeat n7_4h_e3_m2: 4446s cycle=151; n7_4h_e5_m2: 4446s cycle=152
+22:02:07 [S44-HARNESS] heartbeat n7_4h_e3_m2: 4506s cycle=153; n7_4h_e5_m2: 4506s cycle=154
+22:03:08 [S44-HARNESS] heartbeat n7_4h_e3_m2: 4566s cycle=155; n7_4h_e5_m2: 4566s cycle=156
+22:04:08 [S44-HARNESS] heartbeat n7_4h_e3_m2: 4626s cycle=157; n7_4h_e5_m2: 4626s cycle=158
+22:05:08 [S44-HARNESS] finished n7_4h_e3_m2 pid=70831 exit=0 status=certified wall=4687s
+22:05:08 [S44-HARNESS] heartbeat n7_4h_e5_m2: 4687s cycle=161
+22:06:08 [S44-HARNESS] heartbeat n7_4h_e5_m2: 4747s cycle=163
+22:07:08 [S44-HARNESS] heartbeat n7_4h_e5_m2: 4807s cycle=166
+22:08:08 [S44-HARNESS] heartbeat n7_4h_e5_m2: 4867s cycle=168
+22:08:53 [S44-HARNESS] finished n7_4h_e5_m2 pid=70833 exit=0 status=certified wall=4912s
+22:08:53 [S51-F2] campaign lock released
+22:08:54 [S51-F2] FLEXIBILITY-PRICE SCENARIO m = 2 (MODEL VARIANT -- flexibility price x 2); NOT the baseline. Every figure in this stage is a figure of that scenario.
+22:08:54 [S51-F2] objective convention: Q(x) = certified_cost = gross_operational_cost (settlement-excluded); value(x) = Q_m(0) - Q_m(x) at m = 2 with Q_m(0) PINNED from the committed ladder (dc468ab4); terminal salvage and net_operational_recourse = gross - salvage reported, excluded. At m = 2 the DSO flexibility cost inside Q is priced at 2 x cost_flex -- a SCENARIO figure, not a baseline figure.
+22:08:54 [S51-F2] {'E_mwh': 1.0, 'S_mva': 0.25, 'label': 'n7_4h_e1_m2', 'source': 'committed flexibility-price ladder (dc468ab4)', 'status': 'certified', 'cycles': 132, 'Q_x0_pinned': 811016062.203051, 'Q': 810649709.6671975, 'bar': 3550.4890327453613, 'value': 366352.53585350513, 'I': 317957.0085035586, 'value_minus_I': 48395.527349946555, 'resolution': 4846.744132876396, 'value_minus_I_over_resolution': 9.985162414840593, 'reading': 'pays (value - I > resolution)', 'value_per_mwh_energy': 366352.53585350513, 'I_per_mwh_energy': 317957.0085035586, 'energy_unit_cost': 253877.6774385931, 'T_mwh': 4235.611864401747, 'value_per_full_cycle': 86.49341525660546, 'resolution_per_full_cycle': 1.1442842942269849, 'rule_ten_gross': 0.008709680073431978, 'rule_ten_gross_x0_pinned': 0.005266569918220755, 'marginal_delta_value': 366352.53585350513, 'marginal_delta_I': 317957.0085035586, 'marginal_delta_value_minus_delta_I': 48395.527349946555, 'marginal_resolution': 4846.744132876396, 'marginal_reading': 'the first MWh pays', 'I_budget_slack': 682042.9914964414, 'budget_feasible': True, 'is_budget_corner': False, 'at_max_capacity_cap': False, 'dso_flex_saving_total': 268803.2073183805, 'per_cycle_trajectory_path': 'data/SRP1/Results/P515S49/campaign_s49_flex_ladder/evals/74eda68d74d990b2_n7_4h_e1_m2/per_cycle_record.jsonl'}
+22:08:54 [S51-F2] {'E_mwh': 2.0, 'S_mva': 0.5, 'label': 'n7_4h_e2_m2', 'source': 'committed marginal-MWh test (0e36ec0a)', 'status': 'certified', 'cycles': 144, 'Q_x0_pinned': 811016062.203051, 'Q': 810288986.5544469, 'bar': 445.81965148448944, 'value': 727075.6486040354, 'I': 635914.0170071172, 'value_minus_I': 91161.63159691822, 'resolution': 1742.0747516155243, 'value_minus_I_over_resolution': 52.32934551882971, 'reading': 'pays (value - I > resolution)', 'value_per_mwh_energy': 363537.8243020177, 'I_per_mwh_energy': 317957.0085035586, 'energy_unit_cost': 253877.6774385931, 'T_mwh': 8487.802011668686, 'value_per_full_cycle': 85.66124040175316, 'resolution_per_full_cycle': 0.20524450843935693, 'rule_ten_gross': 0.0014623359263887454, 'rule_ten_gross_x0_pinned': 0.005266569918220755, 'marginal_delta_value': 360723.11275053024, 'marginal_delta_I': 317957.0085035586, 'marginal_delta_value_minus_delta_I': 42766.10424697166, 'marginal_resolution': 6588.8188844919205, 'marginal_reading': 'the second MWh pays', 'I_budget_slack': 364085.98299288284, 'budget_feasible': True, 'is_budget_corner': False, 'at_max_capacity_cap': False, 'dso_flex_saving_total': 526436.901345402, 'per_cycle_trajectory_path': 'data/SRP1/Results/P515S50/campaign_s50_marginal/evals/5a6a88b46bd3a8fe_n7_4h_e2_m2/per_cycle_record.jsonl'}
+22:08:54 [S51-F2] {'E_mwh': 3.0, 'S_mva': 0.75, 'label': 'n7_4h_e3_m2', 'source': 'this campaign', 'status': 'certified', 'cycles': 160, 'Q_x0_pinned': 811016062.203051, 'Q': 809936004.2872474, 'bar': 1196.60147190094, 'value': 1080057.9158035517, 'I': 953871.0255106756, 'value_minus_I': 126186.89029287605, 'resolution': 2492.856572031975, 'value_minus_I_over_resolution': 50.61939451655605, 'reading': 'pays (value - I > resolution)', 'value_per_mwh_energy': 360019.3052678506, 'I_per_mwh_energy': 317957.0085035585, 'energy_unit_cost': 253877.6774385931, 'T_mwh': 12746.595120672058, 'value_per_full_cycle': 84.73305267631393, 'resolution_per_full_cycle': 0.1955703894594669, 'rule_ten_gross': 0.000374610607818399, 'rule_ten_gross_x0_pinned': 0.005266569918220755, 'marginal_delta_value': 352982.2671995163, 'marginal_delta_I': 317957.00850355846, 'marginal_delta_value_minus_delta_I': 35025.25869595783, 'marginal_resolution': 4234.931323647499, 'marginal_reading': 'the third MWh pays', 'I_budget_slack': 46128.97448932438, 'budget_feasible': True, 'is_budget_corner': True, 'at_max_capacity_cap': False, 'dso_flex_saving_total': 765074.537624754, 'per_cycle_trajectory_path': 'data/SRP1/Results/P515S51/campaign_s51_f2_ladder/evals/f3aa335e6c1eda69_n7_4h_e3_m2/per_cycle_record.jsonl'}
+22:08:54 [S51-F2] {'E_mwh': 4.0, 'S_mva': 1.0, 'label': 'n7_4h_e4_m2', 'source': 'this campaign', 'status': 'certified', 'cycles': 136, 'Q_x0_pinned': 811016062.203051, 'Q': 809571301.5214276, 'bar': 2531.5334564447403, 'value': 1444760.6816233397, 'I': 1271828.0340142343, 'value_minus_I': 172932.64760910533, 'resolution': 3827.788556575775, 'value_minus_I_over_resolution': 45.178213230201436, 'reading': 'pays (value - I > resolution)', 'value_per_mwh_energy': 361190.1704058349, 'I_per_mwh_energy': 317957.0085035586, 'energy_unit_cost': 253877.6774385931, 'T_mwh': 16983.246237571686, 'value_per_full_cycle': 85.06976001014019, 'resolution_per_full_cycle': 0.22538615427406555, 'rule_ten_gross': 0.000310469987516388, 'rule_ten_gross_x0_pinned': 0.005266569918220755, 'marginal_delta_value': 364702.765819788, 'marginal_delta_I': 317957.0085035587, 'marginal_delta_value_minus_delta_I': 46745.75731622928, 'marginal_resolution': 6320.64512860775, 'marginal_reading': 'the fourth MWh pays', 'I_budget_slack': -271828.0340142343, 'budget_feasible': False, 'is_budget_corner': False, 'at_max_capacity_cap': False, 'dso_flex_saving_total': 1046255.7660445273, 'per_cycle_trajectory_path': 'data/SRP1/Results/P515S51/campaign_s51_f2_ladder/evals/a11d79663bf5a954_n7_4h_e4_m2/per_cycle_record.jsonl'}
+22:08:54 [S51-F2] {'E_mwh': 5.0, 'S_mva': 1.25, 'label': 'n7_4h_e5_m2', 'source': 'this campaign', 'status': 'certified', 'cycles': 170, 'Q_x0_pinned': 811016062.203051, 'Q': 809202421.3581351, 'bar': 277.1885994672775, 'value': 1813640.8449158669, 'I': 1589785.0425177924, 'value_minus_I': 223855.80239807442, 'resolution': 1573.4436995983124, 'value_minus_I_over_resolution': 142.2712502870125, 'reading': 'pays (value - I > resolution)', 'value_per_mwh_energy': 362728.1689831734, 'I_per_mwh_energy': 317957.00850355846, 'energy_unit_cost': 253877.6774385931, 'T_mwh': 21188.499053326603, 'value_per_full_cycle': 85.59553181899992, 'resolution_per_full_cycle': 0.0742593279324937, 'rule_ten_gross': 0.0008072083106893682, 'rule_ten_gross_x0_pinned': 0.005266569918220755, 'marginal_delta_value': 368880.1632925272, 'marginal_delta_I': 317957.0085035581, 'marginal_delta_value_minus_delta_I': 50923.154788969085, 'marginal_resolution': 5401.2322561740875, 'marginal_reading': 'the fifth MWh pays', 'I_budget_slack': -589785.0425177924, 'budget_feasible': False, 'is_budget_corner': False, 'at_max_capacity_cap': True, 'dso_flex_saving_total': 1351238.7519282103, 'per_cycle_trajectory_path': 'data/SRP1/Results/P515S51/campaign_s51_f2_ladder/evals/5f3cccb4cad36ee5_n7_4h_e5_m2/per_cycle_record.jsonl'}
+22:08:54 [S51-F2] n7_4h_e3_m2: status=certified cycles=160 Q=809936004.2872474 bar=1196.60147190094 rule_ten_gross=0.000374610607818399 solves=8242/8242
+22:08:54 [S51-F2] n7_4h_e4_m2: status=certified cycles=136 Q=809571301.5214276 bar=2531.5334564447403 rule_ten_gross=0.000310469987516388 solves=7017/7017
+22:08:54 [S51-F2] n7_4h_e5_m2: status=certified cycles=170 Q=809202421.3581351 bar=277.1885994672775 rule_ten_gross=0.0008072083106893682 solves=8756/8756
+22:08:54 [S51-F2] BUDGET CORNER: under the EUR 1,000,000 budget the node-7 4 h ladder at 2025 is feasible up to 3.0 MWh (I = 953871.0255106756, slack 46128.97448932438); the next rung is infeasible. The BUDGET CORNER is that point, E = 3 MWh, and THIS campaign evaluates it, together with E = 4 and E = 5 (both budget-infeasible, evaluated to trace the ladder up to the max_capacity cap of 5.0 MWh). E = 1 and E = 2 are committed (dc468ab4, 0e36ec0a) and are not re-run.
+22:08:54 [S51-F2] pinned rows reproduce the committed ones: all=True failing=[]
+22:08:54 [S51-F2] guards: parent {'permitted_solve': 0, 'permitted_exec': 0, 'blocked_solve': 0, 'blocked_exec': 0} / marginal parent {'permitted_solve': 0, 'permitted_exec': 0, 'blocked_solve': 0, 'blocked_exec': 0} / ladder parent {'permitted_solve': 0, 'permitted_exec': 0, 'blocked_solve': 0, 'blocked_exec': 0} / W25 module {'permitted_solve': 0, 'permitted_exec': 0, 'blocked_solve': 0, 'blocked_exec': 0}; verify0 failures={'parent': [], 'marginal_parent': [], 'ladder_parent': [], 'w25_module': []}
+22:08:54 [S51-F2] OK: all 3 points certified

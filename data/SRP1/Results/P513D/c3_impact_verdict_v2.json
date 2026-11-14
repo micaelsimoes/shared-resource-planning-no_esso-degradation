@@ -1,0 +1,49 @@
+{
+  "E1b_degradation_rows_differing": 6,
+  "E1b_sample_post": "es_degradation_per_unit[0,0]*(23083.120654223414*es_e_rated_per_unit[0,0])  ==  es_avg_ch_dch_per_unit[0,0]",
+  "E1b_sample_pre": "es_degradation_per_unit[0,0]*(20000*es_e_rated_per_unit[0,0])  ==  es_avg_ch_dch_per_unit[0,0]",
+  "E1b_structural_differences": [
+    "constraints.energy_storage_capacity_degradation"
+  ],
+  "E1c_components_with_moved_values": [
+    "es_avg_ch_dch_per_unit",
+    "es_degradation_per_unit",
+    "es_degradation_per_unit_cumul",
+    "es_e_available_per_unit",
+    "es_pch_hat_agg",
+    "es_pch_hat_per_unit",
+    "es_pch_per_unit",
+    "es_pdch_hat_agg",
+    "es_pdch_hat_per_unit",
+    "es_pdch_per_unit",
+    "es_soh_per_unit",
+    "es_soh_per_unit_cumul",
+    "slack_es_ch_comp_per_unit",
+    "slack_es_pnet_down",
+    "slack_es_pnet_up",
+    "slack_es_soh_per_unit_cumul_down",
+    "slack_es_soh_per_unit_cumul_up",
+    "slack_es_soh_per_unit_down",
+    "slack_es_soh_per_unit_up"
+  ],
+  "E1c_degradation_ratio_expected": 0.8664339756999316,
+  "E1c_degradation_ratio_observed": 0.8664416996289592,
+  "E1c_unexpected_movers": [],
+  "E1c_worst_relative_move": {
+    "component": "es_degradation_per_unit[(2, 2)]",
+    "relative": 0.1335611695531073
+  },
+  "calibration": {
+    "D": 0.8,
+    "N": 10000,
+    "R": 0.5,
+    "k": 11541.560327111707,
+    "two_k": 23083.120654223414
+  },
+  "failures": [],
+  "gate_spec": "data/SRP1/Results/P513D/frozen_c3_impact_gate_v2_afc863a1.json",
+  "post_file": "state_v2_post_node5.json",
+  "pre_file": "state_v2_pre_node5.json",
+  "stage": "P5.13-E",
+  "verdict": "PASS"
+}

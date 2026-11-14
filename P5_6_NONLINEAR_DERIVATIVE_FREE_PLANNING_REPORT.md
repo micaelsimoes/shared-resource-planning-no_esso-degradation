@@ -1,0 +1,1691 @@
+# P5.6 — Nonlinear derivative-free planning
+
+Branch `feature/derivative-free-planning`, created from the accepted P5.5-D HEAD
+(`24350e8d`) with all P5.5 evidence and history preserved.
+
+Canonical runtime throughout: `/opt/anaconda3/envs/opf_env_py311/bin/python`;
+canonical SRP1 checksum
+`5a02b77ccbbbbbb869de92958a3851d095624711abc2dbfc0157466064410358`, verified by
+the oracle itself on load and by the R0 provenance gate in every harness.
+Evidence under `data/SRP1/Results/P56A/`; P5.4 and P5.5 evidence untouched.
+
+---
+
+# P5.6-A — deterministic nonlinear recourse oracle
+
+This stage builds and validates the candidate-evaluation oracle. It implements
+no search, no cut, no master problem and no MISOCP. The accepted nonlinear
+operational formulation (P5.4-D2-P / H1) is used exactly as production defines
+it: every model is built by the production constructors and solved by the
+production solvers, and no optimization mathematics was modified.
+
+## A0 — corrections to the P5.5-D record
+
+Applied to `P5_5_CONVEX_PLANNING_ARCHITECTURE_REPORT.md` before any new work.
+
+**A0.1** `P5.5-D-C — practical rigorous lower-bound architecture is unavailable`
+stands unchanged.
+
+**A0.2** The fixed-mode objective is no longer called a lower bound. Fixing the
+operating mode *restricts* the feasible set, so
+
+```
+Q_MISOCP*  <=  Q_fixed_mode        hence        UB - Q_MISOCP*  >=  UB - Q_fixed_mode
+```
+
+The screen delivers an **upper** bound on the MISOCP optimum and therefore a
+**lower bound on the unavoidable MISOCP-to-UB gap** — which is what makes the
+rejection decisive — but neither `Q_fixed_mode` nor
+`Q_fixed_mode − V_salvage_max` is "the MISOCP lower bound". Every gap quoted in
+D7 is a minimum; the true gap can only be larger.
+
+**A0.3** The D1 value `729361086.642965` is renamed **"polished feasible-network
+candidate, pending complete nonlinear ESSO/coupled feasibility certification"**.
+D1 established feasibility of the 48 *network* SMOPFs only; it never audited the
+original nonlinear ESSO. A1 below performs that certification.
+
+**A0.4** The attribution of the ~13 % difference to the augmented ADMM objective
+is **withdrawn as unproved** and recorded as a mechanism to be attributed in A2.
+A2 then shows the original attribution was wrong twice over — see below.
+
+**A0.5** D8 now reads "the TSO is the dominant remaining relaxation defect"
+rather than asserting the whole gap is caused exclusively by the TSO. The
+numerical per-agent decomposition is unchanged.
+
+## A1 — complete feasibility certificate
+
+The oracle follows A1's prescribed consistency sequence exactly, and reuses
+production's own constructors rather than reimplementing the ESSO:
+
+1. the canonical converged ADMM state;
+2. the ADMM's explicit consensus **z** wherever one exists — the shared-ESS
+   family has `consensus_vars['ess']['z']` and it is taken directly; the
+   interface power-flow and voltage families have only TSO and DSO copies and no
+   z, so a common value must be constructed and the midpoint is used, with the
+   convention recorded per entry;
+3. `create_shared_energy_storage_model` — production's own constructor — solves
+   the **ORIGINAL nonlinear ESSO** with the investment and the common
+   coordinated P/Q fixed;
+4. `S_available` / `E_available` taken from that physical solution;
+5. those exact capacities pushed into both the TSO and the DSO copies;
+6. common interface P/Q, voltage and shared-ESS P/Q fixed;
+7. all 48 nonlinear network SMOPFs re-solved;
+8. mutual consistency verified.
+
+**Result on the canonical base candidate — status VALID.**
+
+| coordinated residual | value | target |
+|---|---|---|
+| interface P | 5.551e-17 | 1e-7 |
+| interface Q | 2.776e-17 | 1e-7 |
+| interface voltage | 0.000e+00 | 1e-7 |
+| shared-ESS P, TSO vs DSO | 0.000e+00 | 1e-7 |
+| shared-ESS Q, TSO vs DSO | 0.000e+00 | 1e-7 |
+| shared-ESS P, networks vs **ESSO** | 0.000e+00 | 1e-7 |
+| shared-ESS Q, networks vs **ESSO** | 0.000e+00 | 1e-7 |
+| `S_available` | 0.000e+00 | 1e-7 |
+| `E_available` | 3.469e-18 | 1e-7 |
+| **max coordinated** | **5.551e-17** | **1e-7** |
+
+| physical-feasibility audit | value |
+|---|---|
+| ORIGINAL nonlinear ESSO, max constraint violation | **2.035e-13** (worst family `energy_storage_capacity_degradation`) |
+| production `get_feasibility_violation` on the ESSO | −3.240e-05 (tolerance 1e-03) → feasible |
+| network H1 complementarity | **0.000e+00** |
+| network converter capability | 1.628e-08 |
+| network constraint residual | **1.093e-05** at `DSO5\|2030\|Winter`, family `node_balance_p` |
+
+The ESSO audit scans every constraint family of the original formulation — the
+cohort rated S/E rows, the availability rows including
+`E_available = E_rated · soh_cumul`, throughput, degradation, annual and
+cumulative SoH, minimum SoH, lifetime gating, cohort complementarity, the
+aggregate P/Q capability and consensus rows and every ESSO slack — and reports
+the worst per node as well as production's own aggregate measure.
+
+> **Model-specific feasibility tolerance, reported separately as required.** The
+> 1.093e-05 p.u. network residual is not a coordination residual: it is IPOPT's
+> own constraint tolerance on the nonlinear SMOPF (1.09e-03 MW on a 100 MVA
+> base, about 1 kW). It sits far above the 1e-7 coordinated target and far below
+> anything physically meaningful, and it is a property of the nonlinear solver,
+> not of the coupling.
+
+**Exact objective accounting**
+
+```
+gross operational cost        829291677.522120
+actual physical salvage            3439.659877
+net operational recourse      829288237.862242
+investment cost                   50000.000000
+TOTAL PLANNING OBJECTIVE      829338237.862242
+```
+
+The complete original nonlinear system passes, so the point may be renamed
+
+```
+RIGOROUS FEASIBLE NONLINEAR UB INCUMBENT   =   829338237.862242  (total planning objective)
+                                                829288237.862242  (net operational recourse)
+```
+
+> **Superseded by P5.6-B0.1.** This is the certificate for the **START-1 cold**
+> evaluation. A5's START-2 evaluation of the same candidate returned a better
+> value, and P5.6-B0.1 re-audited the persisted evidence to confirm it passed the
+> *identical* complete pipeline — master feasibility, original nonlinear ESSO
+> (solved at all three nodes, max violation 1.050e-13, production feasibility
+> −3.240e-05 against the 1e-03 tolerance), exact TSO/DSO/ESSO P/Q consistency
+> (0.000e+00), exact S/E availability consistency (0.000e+00 and 3.469e-18), the
+> 48-block network audit (max 1.500e-05, H1 0.000e+00, converter capability
+> 9.999e-09) and physical salvage taken from the physical ESSO. It is therefore
+> promoted:
+>
+> ```
+> BEST RIGOROUS FEASIBLE NONLINEAR PLANNING INCUMBENT
+>     total planning objective   828021090.360850
+>     net operational recourse   827971090.360850
+>     gross operational cost     827974518.717105
+>     physical salvage                3428.356255
+>     investment cost                50000.000000
+> ```
+>
+> for the canonical base investment candidate. The cold certificate above stands
+> as a valid but weaker feasible point.
+
+Note this is **not** D1's `729361086.642965`. Two things changed: the capacities
+now come from the physical ESSO rather than from the ADMM's own ESSO, and — far
+more importantly — the polish itself was corrected. A2 explains why.
+
+## A2 — the ~13 % explained, and largely withdrawn
+
+### The original figure was 95.5 % an artefact of my own polish
+
+Production's coordinated transmission model computes the interface power as
+`pc_adn = pc + flex_p_up − flex_p_down`, **fixes** `pc` at the DSO's consensus
+value (`shared_resources_planning.py:2905-2918`, via `fix_or_set`, which fixes),
+and charges `flexibility_cost = c_flex · baseMVA · (flex_p_down + flex_q_down)`
+for downward deviation. The transmission system pays to move away from the
+consensus.
+
+The first polish fixed `pc` at the *achieved* interface power and pinned the
+interface flexibility to zero. That reproduces the same physical interface power
+at **zero flexibility cost** — not a cheaper plan, only a different accounting
+of the same one. Attributed by family, that single choice was:
+
+| family | delta | share |
+|---|---|---|
+| **flexibility_cost** | **−104 228 155.90** | **95.50 %** |
+| slack_penalties | −4 523 294.27 | 4.15 % |
+| generation_cost | −367 282.79 | 0.34 % |
+| others | −17 075.08 | 0.02 % |
+| **total** | **−109 135 808.04** | −13.02 % |
+
+Evidence retained at
+`data/SRP1/Results/P56A/p56a_a2_attribution_ORACLE_p56a1_artifact_diagnosis.json`.
+
+### The corrected polish, and the honest number
+
+The polish now leaves `pc` exactly where production put it, leaves the interface
+flexibility free within production's bounds, and pins only the **total**
+interface power:
+
+```
+pc + flex_p_up - flex_p_down  ==  common_p          (and the reactive analogue)
+```
+
+so the flexibility cost is incurred wherever production incurs it. The honest
+improvement is **−9 208 592.85, or −1.0982 %**:
+
+| family | delta | share |
+|---|---|---|
+| slack_penalties | −4 523 294.27 | 49.12 % |
+| flexibility_cost | −4 300 940.70 | 46.71 % |
+| generation_cost | −367 282.79 | 3.99 % |
+| ess_complementarity_penalties | −9 941.61 | 0.11 % |
+| gen_curtailment_penalty | −7 133.47 | 0.08 % |
+| load_curtailment_cost | 0.00 | — |
+| ess_utilization_cost_penalty | 0.00 | — |
+
+By agent: DSO7 −3 001 747.26, DSO5 −2 910 980.86, DSO9 −2 672 061.04,
+TSO −623 803.68. The ten largest negative block deltas are all distribution
+Summer/Autumn blocks, dominated by flexibility cost.
+
+**Do the previously problematic TSO Spring blocks dominate? No.** Under the
+corrected polish they account for **0.43 %** of the change. Under the artefact
+they accounted for 52.45 % — which is precisely why the question had to be
+re-asked after the correction rather than inherited from the first run.
+
+### A2.1 — base versus augmented objective, at fixed consensus
+
+One representative affected block, same fixed consensus values, same initial
+point, solved twice.
+
+| | `DSO5\|2035\|Autumn` | `TSO\|2025\|Spring` |
+|---|---|---|
+| base objective, A (augmented objective active) | 2554.812449 | 172745.031508 |
+| base objective, B (base objective active) | 1850.740074 | 172639.378636 |
+| A − B | **704.07** | **105.65** |
+| augmented objective at A | 0.020741007 | 1.835012976 |
+| augmented objective at B | 0.014672686 | 1.833890749 |
+| d(augmented)/d(base), A→B | 8.62e-06 | 1.06e-05 |
+
+Once every coordinated variable is fixed, the consensus penalties, the proximal
+term and the single-scenario deviation penalty are all **constants**, so the
+augmented objective reduces to `base / scale + constant` with a scale of order
+1.1e5. The measured A→B ratio, 8.62e-06, is `1/116 000` — consistent with that.
+The two problems therefore have the **same optimizer set**.
+
+They nevertheless return solutions 704 apart on the distribution block. Per
+A2.1's own instruction that is classified as **local NLP branch / solver-path
+selection, not an economic effect of the ADMM objective.**
+
+There is a quantitative reason it is easy for the solver to stop short: at a
+scale of 1.1e5 the base objective contributes ~0.02 to an augmented objective of
+~0.02, so an ordinary solver tolerance on the augmented objective corresponds to
+a base-objective slack five orders of magnitude larger. The ADMM's local
+solutions are not base-objective-optimal, and the polish — which minimises the
+base objective directly — finds the remaining savings.
+
+### A2.2 — branch fingerprint
+
+| quantity | A (augmented) | B (base) | delta |
+|---|---|---|---|
+| base objective | 2554.812449 | 1850.740074 | −704.07 |
+| flexibility cost | 2223.597855 | 1849.483999 | −374.11 |
+| slack penalties | 328.013255 | −0.754036 | −328.77 |
+| Σ\|pg\| | 16.912450 | 16.921685 | **+0.009** |
+| Σ\|qg\| | 2.732858 | 2.799582 | +0.067 |
+| Σ\|slack_v_sqr_up\| | 0.003280 | 0.000008 | −0.0033 |
+| Σ\|shared_es_pch\| | 0.000805 | 0.000808 | +0.000003 |
+
+Dispatch is essentially unchanged — `Σ|pg|` moves by 0.009 out of 16.9 — while
+the entire difference sits in slack penalties and flexibility. **The polish is
+not recovering the P5.4-D4 lower branch**, which was a dispatch-level branch
+worth ~1.9e6 in recourse. It is a different mechanism: the same dispatch branch
+with the slack and flexibility usage cleaned up.
+
+## A3 — purity
+
+`fresh_planning()` gives every evaluation its own deep copy of the baseline
+(0.03 s, against 10.8 s to re-read the case), its own solver-log directory —
+production configures IPOPT with `file_append='yes'`, so a shared path
+interleaves runs — and its own `solver_recovery_diagnostics`. The baseline is
+never mutated, so the A12 in-place mutation of
+`network[year][day].shared_energy_storages[i]` and of the ESSO storage objects
+can no longer leak between candidates.
+
+**Tolerance declared before the run:** `|dQ| <= 1.0` absolute, which is
+1.4e-09 of the total objective and **1.4e-06 × `tol_cut`** — materially below the
+investment signal, as required. Bit-identical agreement was reported separately
+and was not the pass criterion. Caching was disabled, since a cache hit would
+return the first result and hide the defect under test.
+
+| sequence | candidate | status | total objective |
+|---|---|---|---|
+| 1st | x_A | VALID | **829338237.8622425** |
+| 2nd | x_B (`s\|node5\|2025\|-10%`) | VALID | 829325610.1726934 |
+| 3rd | x_A | VALID | **829338237.8622425** |
+| 4th | x_C (`e\|node9\|2025\|-10%`) | INVALID_INVESTMENT | — |
+| 5th | x_A | VALID | **829338237.8622425** |
+
+```
+objective difference vs the first evaluation :  A2  0.000000e+00      A3  0.000000e+00
+bit-identical : True          PASS : True
+```
+
+A separate purity check covers the START-2 template, which is shared across
+evaluations: re-evaluating the first candidate after every other candidate had
+consumed the template returned `828021090.3608505` against `828021090.3608505` —
+**delta exactly 0.0**.
+
+> **Incidental finding.** The canonical base candidate sits *exactly* at the
+> minimum energy-to-power ratio of 2.0, so any E-only reduction is first-stage
+> infeasible. P5.4-R/D3's `e|node9|2025|-x%` perturbation candidates violate
+> `min_energy_to_power_ratio` and the oracle rejects them as
+> `INVALID_INVESTMENT` before running anything. They were used for sensitivity
+> work without a first-stage check. Retained here as a deliberate negative test.
+
+## A4 — the candidate-evaluation contract
+
+`p56a_oracle.evaluate_planning_candidate(x, start_policy, ...)`.
+
+**Input** — the 18 investment variables (S and E for nodes 5/7/9 and years
+2025/2030/2035), as a `(node, year) -> {'s','e'}` mapping or a flat sequence; the
+canonical scenario and configuration; a declared initialization policy.
+
+**Master feasibility is checked before any operational model runs**, reusing
+production's own `_check_candidate_first_stage_feasibility` (nonnegativity,
+minimum and maximum E/S ratio, maximum energy capacity, investment budget) on
+totals rebuilt by production's own `_rebuild_candidate_total_capacities`, which
+is the cohort/calendar-life mapping.
+
+**Pipeline** — clean candidate data; apply investment; nonlinear operational
+ADMM; common coordinated values; original nonlinear ESSO; exact-consensus
+polish; audit ESSO and all networks; physical salvage; `total_objective =
+investment_cost + polished_net_operational_recourse`.
+
+**Status is always explicit**, and a failed evaluation never returns a
+fabricated objective:
+
+`VALID`, `INVALID_INVESTMENT`, `LOCAL_SOLVE_FAILURE`, `POLISH_FAILURE`,
+`ESSO_SOLVE_FAILURE`, `ESSO_FEASIBILITY_FAILURE`, `COUPLING_FAILURE`,
+`SOLVER_CRASH`.
+
+`SOLVER_CRASH` was added during A6 after an IPOPT process failure propagated a
+`pyomo.common.errors.ApplicationError` out of the contract. A search must be able
+to continue past a crashed solver, so the ADMM, ESSO and polish stages are now
+each wrapped and report the failing stage.
+
+## A5 — initialization policy
+
+Both policies are fixed by configuration and neither consults the history of
+previously evaluated candidates. A "nearest previously evaluated candidate" warm
+start was explicitly not implemented, because it would make the returned
+objective depend on search order — exactly what P5.4-D3/D4 showed can move the
+recourse by more than the investment signal.
+
+- **START-1** — canonical cold initialization.
+- **START-2** — one fixed archived branch template: the cold solution of the
+  **canonical base candidate**, built once per process and remapped to each
+  candidate's capacities by production's own `initial_state` warm-start path.
+
+`Q_oracle(x)` is the minimum total objective among all VALID polished solutions
+returned by the fixed start set.
+
+**START-2 is both better and cheaper**, on every candidate where both succeeded:
+
+| candidate | START-1 cold | START-2 template | benefit | cold cycles | template cycles |
+|---|---|---|---|---|---|
+| base | 829 338 237.86 (562.0 s) | **828 021 090.36** (603.2 s ¹) | 1 317 147.50 | 17 | **2** |
+| `s\|node5\|2025\|-10%` | 829 325 610.17 (555.2 s) | **828 023 009.86** (101.7 s) | 1 302 600.31 | 17 | **2** |
+| `s\|node9\|2025\|-5%` | 828 663 900.91 (580.3 s) | **828 020 986.17** (99.6 s) | 642 914.75 | 18 | **2** |
+
+¹ includes the one-off template build; subsequent START-2 evaluations cost ~100 s.
+
+> **Correction of record (P5.6-B0.2).** `Q_oracle(x) = min(START-1, START-2)`
+> requires **both** starts, so its recurring cost is approximately their **sum**,
+> about **660 s**, not ~100 s. The ~100 s figure is the cost of a
+> **START-2-only** recurring oracle after the one-off template construction has
+> been amortised, and it is only available once a start policy has been locked —
+> which is P5.6-B3's job, not A5's. Two quantities must be kept apart from here
+> on:
+>
+> - **SEARCH EVALUATION COST** — the recurring per-candidate cost of whatever
+>   single policy the search actually uses;
+> - **FINAL INCUMBENT CERTIFICATION COST** — the one-off cost of certifying a
+>   chosen incumbent, where evaluating several starts and both anchors and
+>   keeping the best VALID polished solution is affordable and desirable.
+
+The second start improved **3 of 3** candidates, by up to **1 317 147.50 = 1.84 ×
+`tol_cut`** — a material benefit, not a marginal one — while converging in 2 ADMM
+cycles instead of 17–18, i.e. 144 nonlinear local solves instead of 864. It does
+not double runtime; after the template is amortised it *divides* runtime by about
+5.5.
+
+The start also changes the shape of the landscape. Across the three candidates
+the cold objectives span **674 336.95** (0.94 × `tol_cut`) while the
+template-started objectives span **2 023.69** (0.0028 × `tol_cut`). For a
+derivative-free search that difference matters more than the levels do: the cold
+oracle's start-dependence is comparable to the signal being searched for, and the
+template-started oracle's is not.
+
+## A6 — reproducibility and cost benchmark
+
+No search was launched. The population is four candidates: the canonical base
+plus three P5.4-R/D3 perturbations, all pre-existing rather than invented (the
+third had to be changed from an E-only to a joint S+E perturbation because of the
+E/S-ratio finding above).
+
+**Cost of one trustworthy nonlinear planning evaluation**
+
+| | value |
+|---|---|
+| valid evaluations measured | 6 |
+| median | **558.6 s** |
+| p95 | **603.2 s** |
+| range | 99.6 – 603.2 s |
+| mean | 417.0 s |
+| cold evaluation | ~555 – 580 s |
+| template-started evaluation | **~100 s** |
+| nonlinear local solves, cold | 864 (17 ADMM cycles × 48, plus 48 polish) |
+| nonlinear local solves, template | 144 (2 cycles × 48, plus 48 polish) |
+| ESSO solves per evaluation | 3 |
+| polish solves per evaluation | 48 |
+| ADMM recovery solves observed | 0 |
+
+**Benefit of polishing** — the ADMM recourse minus the polished recourse: median
+**9 203 528.96**, range 9 091 171.73 … 9 217 422.35. That is 12.8 × `tol_cut`, so
+polishing is not optional bookkeeping; without it the oracle would report a
+materially worse point than the model actually admits.
+
+**Failure rate: 1 of 4 candidates.** `s+e|node9|2025|-10%` returned
+`POLISH_FAILURE` under **both** start policies. Diagnosed: the ADMM itself
+converged (9 cycles, no recovery solves), but exactly **1 of the 48** network
+solves failed — `DSO9|2030|Spring`. That candidate's ADMM interface residual is
+larger than the base candidate's (1.967e-02 against 1.341e-02 p.u.), so the
+midpoint asks that distribution block to move further than it can.
+
+**Remedy tested.** Anchoring the common interface on the DSO's own achieved value
+instead of the midpoint asks only the transmission side to move, and the
+transmission side has interface flexibility for exactly that purpose. On the
+failing candidate this **restores validity**: `POLISH_FAILURE` → `VALID` with
+total objective 838 978 240.79.
+
+**And it is nearly free.** A controlled comparison on the base candidate, same
+start and same everything else:
+
+| interface anchor | status | total objective | wall clock |
+|---|---|---|---|
+| midpoint (default) | VALID | 829 338 237.8622425 | 515.7 s |
+| DSO-anchored | VALID | 829 351 291.8352123 | 515.4 s |
+
+The DSO anchor costs **13 053.97**, which is **0.018 × `tol_cut`** — two orders
+below the investment signal — and costs nothing in runtime. On this evidence it
+is the better default, but it has been tested on two candidates only and is left
+as a configuration option rather than switched blind; validating it across a
+wider population is the obvious next step and is not something P5.6-A was
+authorised to conclude on its own.
+
+The midpoint control also reproduced `829338237.8622425` exactly, in a fresh
+process — a fourth bit-identical reproduction of the base candidate on top of the
+three in A3.
+
+## A7 — caching
+
+Deterministic evaluation caching keyed on the exact investment vector, the
+canonical scenario checksum, a configuration hash (objective type, flexibility /
+curtailment / storage flags, shared-ESS model, ADMM tolerances and iteration
+cap, ESSO budget, capacity and ratio limits), the oracle version and the
+initialization-policy id — plus the interface-anchor convention added in A6.
+
+Only VALID completed evaluations are cached; failed or incomplete runs are never
+stored as objective values. The cache changes no mathematics; it only avoids
+recomputing an identical candidate.
+
+**Demonstrated cache hit** on the base benchmark candidate:
+
+```
+cache_hit = True     wall clock 0.040 s     Q = 829338237.8622425
+cache holds 6 VALID entries
+```
+
+against ~560 s for the computed evaluation — a factor of ~14 000, returning the
+identical objective.
+
+## A8 — convex / MISOCP status
+
+The P5.5 convex and disjunctive code is retained in full and **classified as
+diagnostic / research benchmark only**. It is not imported or invoked anywhere in
+`p56a_oracle.py` or any P5.6-A harness. Nothing from it has been merged into the
+nonlinear production path.
+
+Not pursued during P5.6-A, as instructed: full MISOCP, QCP dual recovery, Benders
+cuts, and TSO SDP/QC strengthening. The TSO-only stronger-relaxation idea is
+recorded as **optional future benchmark work**, not the active planning path.
+
+## A9 — no derivative-free search
+
+None implemented: no coordinate search, pattern search, MADS, Bayesian
+optimization, surrogate optimization, evolutionary algorithm or random search.
+The search method should be selected against the measured evaluation cost,
+repeatability and failure rate reported above.
+
+## What the numbers imply for a search budget
+
+At the template-started cost of ~100 s per evaluation plus a ~560 s one-off
+template, a 200-evaluation search is about 5.7 hours and a 1000-evaluation search
+about 28 hours, single-threaded. At the cold cost of ~560 s the same searches are
+31 hours and 6.5 days. The template start is therefore not a convenience; it is
+what makes a search of useful size practical at all. Candidates are independent,
+so the wall clock divides by whatever parallelism the planner is willing to
+spend.
+
+Against that, two facts have to be weighed: the oracle failed to return a value
+on 1 of 4 benchmark candidates under the default convention, and the choice of
+interface anchor moves the returned objective.
+
+> **Correction of record (P5.6-B0.3).** "Far more than `tol_cut`" is wrong. The
+> measured base-candidate change from midpoint to DSO anchoring is
+> **13 053.97 = 0.018 × `tol_cut`** — two orders *below* it. What makes it worth
+> attention is a different comparison: it is about **six times** the ~2 024
+> objective span observed across the three START-2 benchmark candidates, so an
+> anchor switch could reorder candidates that the search is trying to
+> distinguish. That is a resolution question, addressed in P5.6-B2 and B4, not a
+> `tol_cut` question.
+
+> **Correction of record (P5.6-B0.4) — `tol_cut` is retired as a resolution
+> criterion.** Every ratio quoted against `tol_cut` in this P5.6-A section is
+> retained only as *historical context*: `tol_cut = 7.164e5` was the acceptance
+> threshold of the Benders cut machinery, and that architecture was retired at
+> P5.5-D-C. It is not the tolerance a derivative-free search should use, and
+> nothing in P5.6 should be accepted or rejected against it. A search-specific
+> tolerance `tau_search` is derived from measured oracle behaviour in P5.6-B4.
+
+## Verdict
+
+**What is resolved.**
+
+- *Feasibility.* The complete original nonlinear coupled system — the ESSO in its
+  original nonlinear formulation, all 48 network SMOPFs, and every coordinated
+  quantity across the TSO, DSO and ESSO copies — is certified on the canonical
+  base candidate, with a maximum coordinated residual of 5.551e-17 against a
+  1e-7 target and an ESSO constraint violation of 2.035e-13. The only residual
+  above target is IPOPT's own 1.093e-05 constraint tolerance on the nonlinear
+  SMOPF, reported separately as A1 requires.
+- *Purity.* Bit-identical across three different call histories in A3, and again
+  in two further independent processes. The A12 mutable-state defect is closed by
+  per-evaluation deep copies, isolated solver-log directories and reset
+  accumulators, with no change to optimization mathematics.
+- *Contract.* One API, master feasibility checked before any operational model
+  runs, explicit statuses, no fabricated objectives, deterministic caching with a
+  demonstrated 0.040 s hit.
+- *Cost.* Measured, not estimated: ~560 s cold and ~100 s template-started per
+  evaluation, 864 versus 144 nonlinear local solves.
+
+**What is not.**
+
+- *A failure rate that a search would meet.* One of four benchmark candidates
+  returned no VALID objective under the default interface convention, from a
+  single distribution block that could not reach the midpoint. The DSO-anchored
+  remedy fixes that candidate and costs 0.018 × `tol_cut` on the control, but it
+  has been tested on two candidates and is not yet the default. Until the failure
+  rate is characterised on a wider population, a search cannot be told how often
+  it will be handed nothing.
+- *Start dependence larger than the signal.* `Q_oracle` over a fixed start set is
+  deterministic, but its *level* depends on that set by up to 1 317 147.50,
+  and the spread across candidates differs by a factor of 300 between the two
+  starts (674 337 cold against 2 024 template-started). Which start set to adopt
+  is a planner decision with consequences larger than the investment signal.
+- *A2.1's residue.* Two mathematically equivalent problems return local solutions
+  704 apart on one distribution block. The oracle is deterministic about which one
+  it takes, but the underlying local-solution sensitivity has not been removed,
+  only pinned down.
+
+Feasibility and purity are settled; failure rate and start/branch stability are
+not. That is the definition of the middle verdict.
+
+```
+P5.6-A PARTIAL — nonlinear oracle works but feasibility, purity, branch stability or computational cost remains unresolved
+```
+
+```
+P5.6-A COMPLETE — ready for planner review before selecting the derivative-free search method
+```
+
+---
+
+# P5.6-B — oracle policy stabilization and search-readiness
+
+Branch `feature/derivative-free-planning`. Canonical runtime and checksum gate as
+above, enforced by the oracle on load and by the R0 provenance gate in every
+harness. Evidence under `data/SRP1/Results/P56B/`; P5.6-A evidence untouched.
+
+Nothing in the accepted nonlinear SMOPF, ADMM, H1, IPOPT settings, the
+convex/MISOCP diagnostics or the Benders/master-cut code was modified. `p56b_policy.py`
+composes the P5.6-A building blocks unchanged and adds only two things they
+lacked: an explicit template argument, so templates can be **chained**; and a
+split between the operational stage and the polish, so one ADMM result can be
+polished under two anchors from `_clone_operational_models` copies. No search was
+launched.
+
+The B0 corrections are applied in place in the P5.6-A section above.
+
+## B1 — the template does not stabilize
+
+START-2 archives the canonical base candidate's **cold** solution, yet START-2
+then finds a materially better solution for that same candidate. So the template
+is not a fixed point of its own procedure, and B1 chains the refinement to find
+out whether it settles. Declared before evaluating: **stabilization tolerance
+100 monetary units**, at most 5 refinements, every refinement from a fresh
+candidate-specific deep copy, same candidate, same anchor policy, same physical
+ESSO/polish pipeline, no dependence on any non-base candidate.
+
+| refinement | template | total objective | delta | within 100 |
+|---|---|---|---|---|
+| 0 | T0 (archived cold base) | 828 021 090.360850 | — | — |
+| 1 | T1 | 827 415 318.563944 | −605 771.80 | no |
+| 2 | T2 | 826 824 028.845478 | −591 289.72 | no |
+| 3 | T3 | 826 405 022.193437 | −419 006.65 | no |
+| 4 | T4 | 825 961 521.882321 | −443 500.31 | no |
+
+**Not stabilized.** The chain improves monotonically, drifts **−2 059 568.48**
+over four refinements, and the last step is *larger* than the one before it, so
+it is not even reliably decelerating. Per B1's own instruction the result is
+reported as unstabilized rather than adopting whichever refinement happened to be
+last.
+
+Two consequences, and the second matters more than the first:
+
+- **T_STAR cannot be frozen by stabilization.** It is frozen by **rule** instead:
+  `T_STAR := T0`, the cold solution of the canonical base candidate — exactly what
+  P5.6-A used, reproducible from the rule alone, id
+  `a81f7f5191dd42dbf50d1726149b8909`, config hash and canonical checksum recorded
+  with it. It is a **declared** template, not a converged fixed point, and the
+  objective level it produces is demonstrably not the best available.
+- **The template must be frozen for the whole search.** Candidates evaluated
+  against different template generations are not comparable: one refinement moves
+  the base objective by ~4–6e5, which is four orders above the smallest
+  meaningful difference between candidates measured in B2 (33.27). Refining the
+  template mid-search would silently reorder everything evaluated before it.
+
+Purity was re-run against T_STAR under the locked pipeline: evaluating the base,
+then another candidate, then the base again returned `828021090.3608505` both
+times — **delta exactly 0.0**, bit-identical, matching the P5.6-A6 value from a
+different process.
+
+## B2 — interface anchor
+
+Twelve master-feasible candidates, none random: the canonical base, S-only and
+fixed-ratio S/E moves both negative and positive across nodes 5/7/9 and years
+2025/2030/2035, two duration increases at fixed power, a global move, and one
+candidate at the first-stage budget boundary (the base uses 5% of the budget, so
+scaling every investment by 19 uses 95% — built from the existing planning rules,
+not a new one). Master-infeasible candidates are never evaluated operationally.
+For each candidate the ADMM was solved **once** with T_STAR and the polish run
+**twice** from clones, so the comparison isolates the polish convention.
+
+| candidate | midpoint | DSO | Q(DSO) − Q(mid) |
+|---|---|---|---|
+| base | VALID | VALID | +1 482.45 |
+| `s\|node5\|2025\|-10%` | VALID | VALID | −702.16 |
+| `se\|node5\|2025\|-10%` | **POLISH_FAILURE** | **POLISH_FAILURE** | — |
+| `se\|node7\|2030\|-10%` | VALID | VALID | −771.08 |
+| `se\|node9\|2025\|-10%` | **POLISH_FAILURE** | **POLISH_FAILURE** | — |
+| `se\|node5\|2030\|+10%` | VALID | VALID | −705.00 |
+| `se\|node7\|2035\|+10%` | VALID | VALID | +1 487.34 |
+| `se\|node9\|2025\|+10%` | VALID | VALID | +11 175.98 |
+| `e\|node5\|2025\|+25%` | VALID | VALID | −13 365.80 |
+| `e\|node9\|2030\|+50%` | VALID | VALID | +5 607.92 |
+| `se\|ALL\|-10%` | **POLISH_FAILURE** | **POLISH_FAILURE** | — |
+| `se\|ALL\|x19` (boundary) | **SOLVER_CRASH** | — | — |
+
+```
+success rate, midpoint : 8 / 11 operationally evaluated  = 72.7 %
+success rate, DSO      : 8 / 11 operationally evaluated  = 72.7 %
+overall VALID          : 8 / 12 candidates               = 66.7 %
+anchor delta   mean +526.21   std 6 507.45   range -13 365.80 .. +11 175.98
+Spearman rank correlation between the two anchors : 0.9048
+```
+
+**The DSO anchor rescues nothing here.** All three polish failures fail under
+*both* anchors, and the failing blocks are the same physics either way
+(`se|node5|2025|-10%`: TSO 2025 Winter and DSO5 2025 Autumn; `se|node9|2025|-10%`:
+TSO 2025 Autumn and DSO9 2025 Autumn; `se|ALL|-10%`: **33 of the 48 blocks**).
+
+> **This contradicts P5.6-A and supersedes it.** In A6 the DSO anchor turned
+> `se|node9|2025|-10%` from POLISH_FAILURE into VALID. That evaluation used a
+> **cold** start. Under T_STAR the same candidate fails under both anchors. The
+> A-stage rescue was therefore a property of the *start*, not of the anchor, and
+> the "midpoint-first with DSO fallback" policy the A report recommended
+> investigating buys nothing at T_STAR while costing a second polish (~35 s)
+> every time it fires.
+
+**Ranking is not preserved.** Five of the eight jointly valid candidates change
+rank between anchors, and the worst pairwise reversal is
+`s|node5|2025|-10%` against `se|node7|2035|+10%`: the midpoint ranks them
+1 790.84 apart one way, the DSO anchor 398.67 apart the *other* way. Set against
+the spread of the valid population (46 146.04 under midpoint) and, more sharply,
+against the **smallest adjacent gap between candidates, 33.27**, the maximum
+anchor-induced variation of 13 365.80 is **402 times** the resolution the search
+would need. Mixing conventions within one search would therefore destroy the
+ordering the search exists to discover.
+
+**Locked recurring search-anchor policy: MIDPOINT-ONLY.** Both anchors have
+identical success rates, so nothing is bought by the fallback; midpoint is the
+convention under which the certified incumbent was computed, and a single fixed
+convention removes the mixed-convention inconsistency entirely — which is what
+makes `tau_search` meaningful in B4. DSO-always is equally defensible on success
+rate alone and remains available as a configuration; what is *not* defensible is
+mixing them. For **final incumbent certification** both anchors may still be run
+and the best VALID polished solution retained.
+
+## B3 — recurring start policy
+
+T_STAR was evaluated on the whole population. Cold was evaluated only on the
+strategic subset B3 prescribes: the base, the lowest and highest T_STAR
+objectives, the boundary candidate, and one candidate that failed under T_STAR.
+
+| candidate | cold | Q(cold) | Q(T_STAR) | cold − T_STAR |
+|---|---|---|---|---|
+| base | VALID | 829 338 237.86 | 828 021 090.36 | **+1 317 147.50** |
+| `e\|node5\|2025\|+25%` | VALID | 829 326 565.42 | 827 989 614.23 | **+1 336 951.19** |
+| `se\|node9\|2025\|+10%` | VALID | 838 922 190.37 | 828 035 760.28 | **+10 886 430.09** |
+| `se\|ALL\|x19` (boundary) | SOLVER_CRASH | — | — (crash) | — |
+| `se\|node5\|2025\|-10%` | **VALID** 838 974 140.19 | | **POLISH_FAILURE** | — |
+
+**Cold is never better on objective**, on any point where both succeeded — it is
+worse by 1.32e6 to 1.09e7. On the decision rule of B3 that authorizes
+
+```
+SEARCH START POLICY = T_STAR ONLY
+Q_search(x) = the deterministic T_STAR result under the midpoint anchor
+```
+
+with cold demoted to a final-certification / periodic-audit start rather than a
+recurring search cost.
+
+**But the two starts have different failure sets, and that is not a detail.**
+`se|node5|2025|-10%` is VALID under cold and POLISH_FAILURE under T_STAR; the
+boundary candidate crashes under both. So a T_STAR-only search will be handed
+nothing for candidates a cold start could have evaluated. That is tolerable for a
+pattern search, which treats a failed poll point as unsuccessful, but it means the
+recurring policy's ~27% failure rate is a property to design around rather than a
+defect to be fixed by choosing the other start.
+
+## B4 — search objective resolution, `tau_search`
+
+`tol_cut` is retired (B0.4). `tau_search` is derived from the measured behaviour
+of the **final proposed recurring policy** — T_STAR only, midpoint anchor only —
+and the two kinds of variation are kept apart, as B4 requires.
+
+**NUMERICAL REPEATABILITY** — what the same candidate under the same policy
+returns twice:
+
+| source | measured |
+|---|---|
+| repeat evaluation, identical candidate and policy (P5.6-A3) | **0.000000e+00**, three call histories |
+| repeat evaluation against T_STAR (P5.6-B2) | **0.000000e+00** |
+| repeat across independent processes (A6, A6 control, B2) | **0.000000e+00** |
+| polish reproducibility | **0.000000e+00** |
+| deterministic fallback path, with the anchor locked | **0.000000e+00** (no fallback exists) |
+
+**HEURISTIC BRANCH UNCERTAINTY** — explicitly *excluded* from `tau_search`, per
+B4's instruction not to inflate it:
+
+| source | measured | why excluded |
+|---|---|---|
+| cold versus T_STAR | 1.32e6 … 1.09e7 | a different fixed start finding a better branch is an optimality limitation, not noise |
+| template refinement (B1) | 4.19e5 … 6.06e5 per refinement | neutralised by freezing T_STAR for the whole search |
+| anchor convention | up to 1.34e4 | neutralised by locking one anchor; it would be *included* if the fallback were kept |
+
+**Smallest meaningful planning-objective difference observed** across the eight
+valid B2 candidates: adjacent gaps of 33.27, 128.68, 436.42, 1 401.27, 1 790.84,
+10 879.51, 31 476.13 — so **33.27** is the finest distinction the population
+actually contains.
+
+The numerical repeatability floor is exactly zero, so any positive threshold is
+defensible against noise; the binding constraint is that `tau_search` must stay
+well below the smallest difference worth resolving.
+
+```
+RECOMMENDED   tau_search = 10.0 monetary units
+
+    > 0        the measured repeatability floor, with margin for any future
+               non-determinism (a different BLAS, a threaded linear solver)
+    < 33.27    the smallest meaningful difference observed, by a factor of 3.3
+
+Acceptance rule:   accept a candidate only if   Q_new < Q_incumbent - tau_search
+```
+
+`tau_search` is only meaningful because the anchor is locked. Under
+midpoint-first-with-DSO-fallback the effective within-policy uncertainty would be
+13 365.80 — **402 ×** the smallest meaningful gap — and no acceptance threshold
+could both reject that artefact and resolve real differences.
+
+## B5 — first-stage search coordinates
+
+The first-stage feasible set is a polyhedron in the 18 investment variables:
+`s, e >= 0`; `e >= phi_min*s` with `phi_min = 2`; `e <= phi_max*s` with
+`phi_max = 10`; cumulative energy per node/year `<= max_capacity = 5.0` under the
+cohort/calendar-life mapping; and the expected discounted investment cost
+`<= budget = 1e6`. The base candidate sits **exactly** on `e = phi_min*s` at all
+nine (node, investment year) pairs, so the minimum-duration constraint is active
+everywhere.
+
+Feasible directions were counted, not argued (`p56b_b5_coordinates.py`):
+
+| point | Option A, native S/E | Option B, `(S, h)` with `h = E − phi_min*S` |
+|---|---|---|
+| **base** (`E = phi_min*S` active) | **18 / 36** (50 %) — every `+s` and every `−e` blocked | **27 / 36** (75 %) — only `−h` blocked |
+| interior (`E = 1.25*phi_min*S`) | 36 / 36 | 36 / 36 |
+
+In native coordinates at the base, a step in `+s` alone drops the ratio below
+`phi_min` and a step in `−e` alone does the same, so **half** the poll is rejected
+before any model is solved — and the search could only ever decrease power and
+increase energy. That is not a tuning inefficiency; it is a directionally
+incomplete poll at exactly the point the problem starts from.
+
+**Recommended: Option B — `(S, h)` with `h = E − phi_min*S >= 0`.** The map
+`E = phi_min*S + h` is a bijection onto `{e >= phi_min*s, s >= 0}`, so it is a
+change of variables and not a projection: the requested candidate is exactly
+representable and nothing is silently altered. Its value is precisely that it
+converts the binding general constraint `e >= 2s` into a simple **bound**
+`h >= 0`, which every pattern-search implementation handles natively, and which
+is where the base — and any minimum-duration-optimal solution — will sit. The
+remaining constraints stay general and are handled as Option C prescribes:
+`h <= (phi_max − phi_min)*s`, cumulative capacity and budget by exact
+master-feasibility rejection, with tangent-cone poll directions added only if the
+search actually reaches the capacity or budget face.
+
+## B6 — search-method selection (design only, not implemented)
+
+Measured properties to design against: 18 continuous variables; a linear
+first-stage polyhedron; ~115 s per evaluation; a **deterministic** oracle with
+**exactly zero** numerical noise; a ~27 % rate of operationally invalid points;
+nonsmooth branch structure (P5.6-A2.1: two mathematically equivalent problems
+return solutions 704 apart); a working cache; independent evaluations.
+
+| method | verdict |
+|---|---|
+| **Deterministic pattern search / MADS** | **Selected.** Failed evaluations are handled natively as unsuccessful poll points (the extreme-barrier treatment of hidden constraints) — which is exactly the ~27 % case. Bound constraints are native in `(S, h)`. Polling is embarrassingly parallel. Fully reproducible. Smallest implementation burden of anything that handles hidden constraints properly. |
+| Trust-region model-based DFO | Rejected. A linear model needs 19 well-poised points and a quadratic 190; failed evaluations poison the interpolation set, and the branch nonsmoothness breaks the model assumption the method's convergence rests on. |
+| Bayesian / surrogate | Rejected. Needs a separate feasibility classifier for the 27 % failures; the GP smoothness prior is contradicted by the measured branch structure; 18 dimensions is marginal; and reproducibility requires pinning every seed, giving up the method's main advantage. |
+| Evolutionary / random | Rejected on budget alone: thousands of evaluations at ~115 s. |
+
+Between plain GPS and MADS, the evidence favours MADS-style: GPS with a fixed
+`2n` direction set can stall on a nonsmooth function, and nonsmoothness is
+measured here rather than assumed. **OrthoMADS** is the specific recommendation
+because its direction sequence is deterministic, which preserves the
+reproducibility the whole stage has been built on.
+
+**Specification**
+
+| item | value |
+|---|---|
+| coordinates | `(S, h)` per (node, investment year); 18 variables; `S >= 0`, `h >= 0` as bounds |
+| general constraints | `h <= 8S`, cumulative capacity, budget — exact master rejection, no projection |
+| initial poll size | `Delta_S = 0.10 x s_base = 1.063e-3`; `Delta_h = 0.10 x phi_min x s_base = 2.127e-3` (a 10 % power move and a 10 % duration move) |
+| poll | OrthoMADS directions, opportunistic (accept the first improvement and move on) |
+| expansion / contraction | `x2` on a successful poll, `x0.5` on an unsuccessful one |
+| acceptance | `Q_new < Q_incumbent − tau_search`, `tau_search = 10.0` |
+| stopping | poll size below `0.01 x Delta_0`, or the evaluation budget |
+| max evaluations | 200 for a first campaign (see B7) |
+| parallel poll | 4 workers recommended, 8 only with the contention caveat in B7 |
+| cache | checked before every evaluation; key includes the template id and the anchor policy |
+| `INVALID_INVESTMENT` | rejected by the master check at zero solver cost; an infeasible poll point, not charged to the evaluation budget |
+| `POLISH_FAILURE` / `SOLVER_CRASH` | unsuccessful poll point under the extreme barrier; recorded, never assigned a value, never extrapolated |
+| final certification | re-evaluate the incumbent under both starts and both anchors, keep the best VALID, and report the full A1-style certificate |
+
+## B7 — search-cost estimate
+
+Measured under the final proposed recurring policy (T_STAR, midpoint anchor):
+
+| quantity | measured |
+|---|---|
+| ADMM with T_STAR | median **79.4 s** (23.4 – 90.6 s) |
+| polish | median **35.2 s** (24.4 – 451.6 s) |
+| **one uncached successful search evaluation** | **~115 s** |
+| one failed evaluation (typical, 2 blocks fail) | 132 s |
+| one failed evaluation (worst observed, 33 of 48 blocks fail) | 531 s |
+| one crashed evaluation | 23 s |
+| blended over the observed 8 valid / 3 failed / 1 crashed mix | **~134 s** |
+| one fallback-anchor evaluation (if the fallback were kept) | ~150 s |
+| one cold evaluation | 446 – 590 s |
+| **one final multi-start certification** (cold + T_STAR, both anchors) | **~740 s** |
+| one-off T_STAR construction | 518 s |
+| cache hit | 0.040 s |
+
+Wall clock at the blended 134 s, with the one-off 518 s template build included in every cell. **These
+are ideal upper-level concurrency figures**: they assume candidates are dispatched
+to workers with no scheduling loss and no resource contention, which is not what
+was observed.
+
+| uncached evaluations | 1 worker | 4 workers | 8 workers |
+|---|---|---|---|
+| 50 | 2.0 h | 0.6 h | 0.4 h |
+| 100 | 3.9 h | 1.1 h | 0.6 h |
+| 200 | 7.6 h | 2.0 h | 1.1 h |
+| 500 | 18.8 h | 4.8 h | 2.5 h |
+
+> **Correction of record (P5.6-C).** The ~115 s figure above is the sum of the
+> measured ADMM and polish stages only. The **end-to-end** wall clock of one
+> evaluation — including the per-evaluation baseline deep copy, candidate
+> construction, the physical ESSO solve and the full audits — was measured across
+> 36 evaluations in P5.6-C2 at a median of **135 s** for a VALID evaluation and
+> **186 s** for a failed one, with an overall success rate of 28/36 = 77.8 %.
+> Every wall-clock estimate in the table above is therefore optimistic by about
+> 17 %; the ordering of the conclusions is unaffected.
+
+**Resource contention is an observed risk, not a hypothetical one.** Each worker
+runs one evaluation, and each evaluation runs IPOPT sequentially over 48 network
+blocks per ADMM cycle, so `W` workers means `W` simultaneous IPOPT processes on
+top of whatever threading MA97 uses. On this 8-core machine, a `SOLVER_CRASH`
+(`ApplicationError: Solver (ipopt) did not exit normally`) was actually observed
+during P5.6-A while several heavy processes ran concurrently, and that failure
+mode is now trapped and reported rather than propagated. **4 workers is the
+recommended parallelism**; 8 saturates the physical cores and reproduces the
+conditions under which that crash was seen.
+
+## Verdict
+
+**What B settled.**
+
+- *Anchor policy* — locked to **midpoint-only**. Both anchors have identical
+  72.7 % success, the DSO fallback rescues nothing at T_STAR, and mixing
+  conventions would inject up to 13 365.80 of variation and reverse candidate
+  orderings.
+- *Start policy* — **T_STAR only** for the search, cold demoted to certification.
+  Cold was never better on objective, by 1.32e6 to 1.09e7.
+- *`tau_search` = 10.0*, derived from a measured repeatability floor of exactly
+  zero and the smallest meaningful candidate gap of 33.27, with heuristic branch
+  uncertainty deliberately excluded.
+- *Coordinates* — `(S, h)`, which recovers the half of the poll that native S/E
+  loses at the base.
+- *Method and specification* — deterministic OrthoMADS pattern search, fully
+  specified above.
+- *Cost* — ~115 s per successful evaluation, ~134 s blended, ~740 s per final
+  certification, with a measured contention caveat on parallelism.
+
+**What B did not settle.**
+
+- *The template is not a fixed point.* Four refinements moved the base objective
+  by −2 059 568.48 with no sign of convergence, so T_STAR is frozen by rule and
+  the objective level it reports is knowingly not the best available. The search
+  will optimise a surface defined by that declared template, and a later
+  refinement would shift the whole surface by ~4–6e5 — four orders above
+  `tau_search`.
+- *The failure rate is ~27 %, and the two starts fail on different candidates.*
+  Three of eleven operationally evaluated candidates failed the polish under both
+  anchors, one crashed the solver, and one candidate that T_STAR fails on is
+  solvable from cold. A pattern search can absorb this as hidden constraints, but
+  a quarter of the poll returning nothing is a real efficiency and coverage cost
+  that has not been reduced, only characterised.
+- *The budget-boundary candidate is unsolvable.* `se|ALL|x19` crashed IPOPT under
+  both starts, so the region of the feasible polyhedron near the budget face is
+  currently unreachable by the oracle — which is the region an investment search
+  is most likely to want to explore.
+
+  > **Withdrawn by P5.6-C.** That crash was not reproducible. `se|ALL|x19` is
+  > VALID under T0, T2 and T4 in C2 and under continuation in C4. The budget-face
+  > region is reachable, and the P5.6-B2 SOLVER_CRASH is reclassified as a
+  > transient solver failure.
+
+The policies are locked and the search is fully specified; the surface those
+policies define is stable to evaluate but not stable to refine, and a quarter of
+it cannot be evaluated at all. That is the middle verdict.
+
+> **Correction of record (P5.6-C1) — what "PARTIAL" actually refers to.** The
+> verdict line below is retained, but its wording is broader than the evidence.
+> P5.6-B *did* settle the anchor convention, a declared recurring direct start,
+> numerical repeatability, the search coordinates, the candidate-evaluation cost
+> and a candidate search method. **Anchor robustness in particular is NOT
+> unresolved: midpoint-only is locked**, on the measurement that both anchors
+> have identical success and the DSO fallback rescues nothing at T_STAR.
+>
+> The three things that genuinely remain open are narrower and are the subject of
+> P5.6-C:
+>
+> 1. **branch/template landscape representativeness** — whether different
+>    deterministic template generations produce the same *investment ordering*,
+>    which is a different question from whether the template converges to a fixed
+>    point, and the only one a search actually depends on;
+> 2. **operational domain coverage / false hidden infeasibility** — whether a
+>    solver failure at a master-feasible candidate means the candidate is
+>    physically infeasible or only that this start could not reach it;
+> 3. **deterministic parallel search semantics** — the B6 specification pairs
+>    parallel workers with opportunistic acceptance, which would make the search
+>    path depend on completion order (corrected in P5.6-C7).
+
+```
+P5.6-B PARTIAL — oracle policy, anchor robustness, start policy or search resolution remains unresolved
+```
+
+```
+P5.6-B COMPLETE — ready for planner review before launching derivative-free optimization
+```
+
+---
+
+# P5.6-C — landscape robustness and oracle coverage gate
+
+Branch `feature/derivative-free-planning`. Canonical runtime and checksum gate as
+above, enforced by the oracle on load and by the R0 provenance gate in every
+harness. Evidence under `data/SRP1/Results/P56C/`; P5.6-A and P5.6-B evidence
+untouched. Nothing in the nonlinear production SMOPF, ADMM, H1, IPOPT settings,
+the convex/MISOCP models or the Benders/master-cut code was modified, and the
+full derivative-free optimization was not launched.
+
+The C1 correction is applied in place in the P5.6-B verdict above.
+
+## C2 — cross-template landscape test
+
+B1 established that the template chain does not converge. That is a statement
+about **levels**, and a search does not follow levels — it follows the ordering
+of candidates. So the chain was regenerated deterministically in a single process
+(`T0` = the cold base solution; `Tk+1` = the operational state of the base
+candidate evaluated from `Tk`) and the twelve-candidate population evaluated
+under **T0, T2 and T4** with the locked midpoint anchor, fresh candidate data and
+no call-history warm starts.
+
+The regenerated chain reproduced B1 **bit-identically** in a different process:
+`828021090.360850`, `827415318.563944`, `826824028.845478`, `826405022.193437`.
+
+Nine of the twelve candidates were jointly VALID under all three templates.
+Everything below is the delta relative to **each template's own base**.
+
+| candidate | Δ under T0 | Δ under T2 | Δ under T4 | spread | sign consistent |
+|---|---|---|---|---|---|
+| base | 0.00 | 0.00 | 0.00 | 0.00 | — |
+| `s\|node5\|2025\|-10%` | **+1 919.50** | −422 148.89 | −406 452.25 | 424 068.39 | **no** |
+| `se\|node7\|2030\|-10%` | **+2 389.18** | −416 605.10 | −426 973.82 | **429 363.00** | **no** |
+| `se\|node5\|2030\|+10%` | **+2 355.91** | −408 237.21 | −426 675.47 | 429 031.38 | **no** |
+| `se\|node7\|2035\|+10%` | **+128.66** | −418 790.62 | −425 409.70 | 425 538.37 | **no** |
+| `se\|node9\|2025\|+10%` | **+14 669.92** | −403 600.49 | −412 407.94 | 427 077.85 | **no** |
+| `e\|node5\|2025\|+25%` | −31 476.13 | −433 721.70 | −406 522.22 | 402 245.58 | yes |
+| `e\|node9\|2030\|+50%` | **+13 268.63** | −401 411.58 | −409 080.82 | 422 349.46 | **no** |
+| `se\|ALL\|x19` (boundary) | +748 643.03 | +385 555.80 | +374 165.04 | 374 478.00 | yes |
+
+```
+candidates whose improvement CHANGES SIGN : 6 of 9
+max delta spread across templates         : 429 363.00
+median delta spread                       : 424 803.38
+```
+
+| pair | Spearman (levels = deltas) | Kendall | reversals | max rank displacement | affine fit `Q_b = a + b·Q_a` |
+|---|---|---|---|---|---|
+| T0 vs T2 | 0.6000 | 0.5000 | 9 | 6 of 9 | `b = 0.999250`, R² 0.767, max\|resid\| 363 366 |
+| **T0 vs T4** | **−0.0333** | **−0.0556** | **19** | 6 of 9 | `b = 0.983320`, R² 0.758, max\|resid\| **364 302** |
+| T2 vs T4 | 0.3667 | 0.3333 | 12 | 5 of 9 | `b = 0.988805`, R² 0.997, max\|resid\| 27 744 |
+
+**The template effect is not a common offset.** The affine fit's residual against
+T0 is 364 302, while the entire spread of T0's local candidate deltas — excluding
+the boundary point — is only **46 146**. The part of the template effect that is
+*not* explained by a shift is eight times larger than the whole signal the search
+would be trying to read.
+
+**The ordering is not preserved.** T0 against T4 gives a Spearman rank
+correlation of **−0.033** — no relationship at all, marginally negative — with 19
+pairwise reversals and a maximum rank displacement of 6 out of 9 positions. The
+ranked orders share no common prefix: T0 leads with `e|node5|2025|+25%`, `base`,
+`se|node7|2035|+10%`; T4 leads with `se|node7|2030|-10%`, `se|node5|2030|+10%`,
+`se|node7|2035|+10%`.
+
+**And the direction of improvement reverses at the incumbent, which is the part
+that matters.** Under T0 every local move except one duration increase is
+*worse* than base, by +128.66 to +14 669.92 — so a search launched on T0 would
+poll its neighbourhood, find nothing better, contract the mesh and terminate at
+the base, reporting it as a local optimum. Under T2 and T4 those same moves are
+roughly **400 000 better** than base. The T0 landscape does not merely rank
+candidates differently; it inverts the conclusion the search exists to reach.
+
+## C3 — template-landscape decision
+
+Against C3's criteria: candidates that improve over base under T0 do **not**
+improve under T2 and T4 in the same direction; the incumbent-direction reversal
+is material and affects 6 of 9 candidates; rank correlation is 0.600, −0.033 and
+0.367, not high; and the template-to-template variation is demonstrably **not**
+predominantly a common offset.
+
+```
+LANDSCAPE-UNSTABLE
+```
+
+**Do not launch MADS.** Following C3, and explicitly *not* selecting whichever
+template gives the lowest base objective:
+
+- **Option A — adopt one better fixed template such as T4.** Not supported. T4
+  does not dominate landscape quality; it is simply further along the same
+  non-convergent chain, and T2-vs-T4 still shows 12 reversals and a Spearman of
+  0.367. Choosing T4 would be choosing the lowest base objective under another
+  name, which C3 forbids.
+- **Option B — a small fixed template ensemble evaluated at every candidate.**
+  Plausible and testable: if the *ensemble minimum* is more stable than any single
+  member, the ordering may be recoverable. Untested here; it multiplies the
+  evaluation cost by the ensemble size.
+- **Option C — a deterministic continuation oracle.** The most promising, because
+  C4 shows continuation both fixes coverage and behaves like a uniform refinement
+  applied identically to every candidate. Also untested for landscape stability.
+
+The evidence points at a single underlying mechanism rather than three separate
+problems: **every deterministic refinement improves every candidate by a large,
+nearly common amount, and what survives after that shift is not stable.** The
+right next step is to test one uniformly-refined oracle for landscape stability,
+not to keep choosing between template generations.
+
+## C4 — deterministic continuation fallback
+
+The straight segment `x(lambda) = (1-lambda)*x0 + lambda*x` is first-stage
+feasible for every `lambda`, because the first-stage set is a polyhedron. The
+fixed schedule `0.25, 0.50, 0.75, 1.00` was walked from the frozen T0 base state,
+each VALID intermediate initializing the next, with the original nonlinear ESSO,
+the production ADMM, the exact midpoint polish and the complete audit at every
+point. No anchor switching, no adaptive schedule; the path is identical every
+time the same target is evaluated.
+
+| target | origin | λ=0.25 | λ=0.50 | λ=0.75 | λ=1.00 | rescued | total |
+|---|---|---|---|---|---|---|---|
+| `se\|node5\|2025\|-10%` | B2 POLISH_FAILURE | VALID | VALID | VALID | **825 109 566.57** | **yes** | 486 s |
+| `se\|node9\|2025\|-10%` | B2 POLISH_FAILURE | VALID | VALID | VALID | **825 127 965.36** | **yes** | 499 s |
+| `se\|ALL\|-10%` | B2 POLISH_FAILURE | VALID | VALID | VALID | **825 162 191.47** | **yes** | 508 s |
+| `se\|ALL\|x19` (boundary) | B2 SOLVER_CRASH | VALID | VALID | VALID | **825 558 551.30** | **yes** | 542 s |
+| `e\|node5\|2025\|+25%` | control, direct VALID | VALID | VALID | VALID | 825 131 197.19 | yes | 508 s |
+| `se\|node9\|2025\|+10%` | control, direct VALID | VALID | VALID | VALID | 825 147 046.95 | yes | 498 s |
+
+**Coverage: 6 of 6.** Every candidate that direct-T0 could not solve — including
+the budget-boundary candidate — is reached by continuation, all with 2 ADMM
+cycles per step and full feasibility audits passing.
+
+> **P5.6-D0.1 — best known incumbent.** The persisted C4 evidence for
+> `se|node5|2025|-10%` at λ=1.0 was re-opened and checked field by field:
+> first-stage feasibility **True**; original nonlinear ESSO max violation
+> **2.262e-11** with production feasibility **−3.240e-05** against the 1e-03
+> tolerance; TSO/DSO and network-versus-ESSO shared-ESS P and Q consensus all
+> **0.000e+00**; S and E availability consistency **3.469e-18**; H1
+> complementarity **0.000e+00**; network max violation **1.328e-05** (IPOPT's own
+> constraint tolerance); physical salvage **3 326.194400**; investment cost
+> **49 295.415372**; and the accounting closing as
+> `825 060 271.155711 + 49 295.415372 = 825 109 566.571083`.
+>
+> Two of the fields D0.1 lists were **not** persisted by the C4 harness — the
+> converter-capability violation and the per-block detail behind the 48-block
+> network audit — so the promotion is completed against the P5.6-D4 re-run of
+> this candidate at K=4, which records the full certificate. Subject to that
+> confirmation:
+>
+> ```
+> BEST KNOWN RIGOROUS FEASIBLE NONLINEAR PLANNING INCUMBENT
+>     candidate                  se|node5|2025|-10%
+>     total planning objective   825109566.571083
+>     net operational recourse   825060271.155711
+>     investment cost                49295.415372
+>     physical salvage                3326.194400
+>     oracle                     H_4 continuation from x0 via T0, midpoint anchor
+> ```
+>
+> Investment vector, full precision (MVA / MVAh) — identical to the canonical base
+> except at node 5 / 2025:
+>
+> ```
+> node 5 2025   s = 0.0095714035255144454   e = 0.019142807051028891
+> node 5 2030   s = 0.010634892806127162    e = 0.021269785612254323
+> node 5 2035   s = 0.010634892806127162    e = 0.021269785612254323
+> node 7 2025   s = 0.010634892806127162    e = 0.021269785612254323
+> node 7 2030   s = 0.010634892806127162    e = 0.021269785612254323
+> node 7 2035   s = 0.010634892806127162    e = 0.021269785612254323
+> node 9 2025   s = 0.010634892806127162    e = 0.021269785612254323
+> node 9 2030   s = 0.010634892806127162    e = 0.021269785612254323
+> node 9 2035   s = 0.010634892806127162    e = 0.021269785612254323
+> ```
+>
+> It supersedes the P5.6-B0.1 incumbent of `828021090.360850`. Note the two are
+> **not** measured on the same surface — that one is a direct T0 evaluation, this
+> one an H_4 continuation — which is exactly the incompatibility P5.6-D exists to
+> resolve. A solver failure at a
+master-feasible candidate is therefore **not** evidence of physical infeasibility,
+which is what C4 was posed to establish.
+
+**But continuation is not a neutral fallback.** On the two controls that direct
+evaluation already solved:
+
+| control | direct T0 | continuation | difference |
+|---|---|---|---|
+| `e\|node5\|2025\|+25%` | 827 989 614.2338 | 825 131 197.1930 | **−2 858 417.04** |
+| `se\|node9\|2025\|+10%` | 828 035 760.2761 | 825 147 046.9545 | **−2 888 713.32** |
+
+Continuation returns objectives ~2.9e6 lower on candidates direct evaluation
+handles perfectly well — three orders above the T0 candidate deltas and larger
+even than the whole T0→T4 template drift of 2.06e6. The objective falls
+monotonically along every path (≈828.0e6 → 826.8e6 → 826.0e6 → 825.1e6), which is
+the same profile as the template chain. Continuation is selecting a materially
+better branch, not restoring feasibility on the same one.
+
+## C5 — coverage policy
+
+| policy | success | cost | verdict |
+|---|---|---|---|
+| **A** direct-T0 only; failure ⇒ hidden-infeasible | 28/36 = 77.8 % measured in C2 | 135 s median | **Rejected**: C4 proves the failures are not infeasibility, so A discards reachable parts of the polyhedron — including the budget boundary. |
+| **B** direct-T0, continuation only on failure | ~100 % | 135 s, plus ~507 s on failures | **Rejected by C5's own criterion**: the two surfaces differ by ~2.9e6 on controls, so a population evaluated under B would mix two incompatible objective surfaces, with the mixing determined by which candidates happened to fail. |
+| **C** continuation for every candidate | 6/6 on the tested set | **~507 s** (mean; 486–542 s) | The only self-consistent option, at ~3.8× the direct cost. Its landscape stability is **untested**. |
+
+Policy B is exactly the case C5 warns about and is excluded rather than adopted
+silently. Policy C gives one surface for every candidate and fixes coverage, but
+it is a uniform refinement of the same kind that C2 just showed to be
+landscape-unstable between generations, so adopting it without its own C2-style
+test would repeat the error one level up. Under Policy C the deltas relative to
+the equivalently-refined base (`826 405 022.19`) are −846 470.90 for the boundary
+and −1 242 830.73 … −1 295 455.62 for the five local targets, a spread of
+**52 624.89** — the same order as the within-template discrimination it would have
+to resolve.
+
+**Recommendation: Policy C is the candidate, conditional on a landscape test.**
+Recomputed expectations if it is adopted: success ~100 % on the tested set,
+ordinary evaluation ~507 s, failed-candidate cost bounded by the same ~507 s
+since every λ step is audited, blended ~507 s.
+
+## C6 — two thresholds
+
+**`tau_numerical` = 10.0**, renamed from B4's `tau_search` and unchanged. Nothing
+in C2–C5 requires a larger value: the C2 template chain reproduced B1
+bit-identically in a separate process, and repeat evaluations remain exactly
+`0.000000e+00` apart. This is only the deterministic numerical comparison
+threshold for the locked oracle — *did the black box improve?*
+
+**`tau_planning`**, measured from the cross-template landscape uncertainty in the
+relative-to-base deltas, not from absolute offsets:
+
+```
+per-candidate delta spread across T0/T2/T4 :  374 478.00  ..  429 363.00
+median                                      :  424 803.38
+
+              P56C_TEMPLATE_LANDSCAPE_UNCERTAINTY ~ 4.25e5
+```
+
+> **Renamed by P5.6-D0.2.** This quantity was called `tau_planning` above. It is
+> **not** a permanent planning tolerance — it measures the ambiguity of *one
+> specific broken policy*, namely comparing candidates evaluated against
+> different template generations of a non-convergent chain. It is retained under
+> the name **`P56C_TEMPLATE_LANDSCAPE_UNCERTAINTY`** as the benchmark P5.6-D has
+> to beat. A refined-oracle planning uncertainty is measured in P5.6-D7.
+
+Set that against the discrimination available **within** a single template — the
+spread of local candidate deltas, excluding the boundary point:
+
+| template | within-template local delta spread |
+|---|---|
+| T0 | 46 146 |
+| T2 | 32 310 |
+| T4 | 20 522 |
+
+`tau_planning` is **9 to 21 times larger** than the differences any single
+template can resolve between local candidates. The consequence is blunt and is
+the central finding of this stage: **no local investment improvement measured so
+far is robust to the known template ambiguity.** A search could report an
+improvement of 30 000 with perfect numerical determinism and it would still be
+inside the landscape's own uncertainty.
+
+`tau_numerical` may still be used internally by a future search to decide whether
+the black box improved. Candidate promotion and any final planning claim must
+respect `tau_planning` — and at its present value that means no local claim can
+be made at all until the landscape ambiguity is reduced.
+
+## C7 — deterministic parallel poll semantics
+
+The B6 specification paired parallel workers with opportunistic acceptance. That
+is withdrawn: accepting whichever improvement finishes first makes the search path
+depend on OS scheduling and solver completion order, and the whole oracle was
+built to be reproducible.
+
+**Required semantics — DETERMINISTIC BATCH POLL.** Each poll iteration:
+
+1. generate the ordered deterministic poll set;
+2. apply the exact first-stage feasibility screen, dropping infeasible points at
+   zero solver cost;
+3. remove cache hits and duplicate points;
+4. select the poll batch by deterministic candidate ordering;
+5. evaluate up to 4 points in parallel;
+6. **wait for the complete selected batch** — no early exit;
+7. among all VALID completed candidates choose the best objective;
+8. break ties within `tau_numerical` by deterministic poll index;
+9. only then update the incumbent and the mesh.
+
+The search path is then a function of the poll ordering alone, and is identical
+whatever order the workers finish in.
+
+> **Note on opportunistic polling.** Classical GPS and MADS permit an
+> opportunistic poll — stop at the first improvement — and it is often the faster
+> strategy. It is deliberately given up here. With a complete-poll strategy the
+> convergence theory is unaffected (a complete poll is the stronger of the two
+> standard variants), so nothing is lost except speed, and reproducibility is
+> worth more than the speed at 135 s per evaluation.
+
+## C8 — search implementation inventory
+
+Audited in the canonical environment without installing anything:
+
+| component | status |
+|---|---|
+| `PyNomad` / `pynomad` / `nomad` / `nomadlib` | **not present** |
+| `nomad` binary on `PATH` | **not present** |
+| `directsearch`, `SQSnobFit`, `dfols`, `pdfo`, `cma`, `skopt`, `GPyOpt`, `botorch`, `nevergrad` | **not present** |
+| SciPy 1.17.0 | present — `direct`, Nelder-Mead, Powell, COBYLA |
+| pattern-search or MADS utilities in this repository | **none** |
+
+No trustworthy MADS implementation is available. SciPy's offerings do not meet
+the requirements: none accepts a hidden-constraint evaluator that can return "no
+value", none takes an exact linear feasibility screen, none exposes a
+deterministic direction sequence that can be replayed, and none supports batch
+evaluation against an external cache.
+
+Comparing the two remaining routes:
+
+- **Implement deterministic OrthoMADS mechanics.** Correct implementation requires
+  the mesh and poll-size update rules, the Halton-based deterministic direction
+  generation with its scaling and rounding onto the mesh, and the orthogonality
+  construction. Getting any of these wrong produces something that is not MADS and
+  carries none of its convergence properties while claiming them. That burden is
+  disproportionate at this stage.
+- **Deterministic generalized pattern search first.** A positive spanning set in
+  the `(S, h)` coordinates — the `2n = 36` coordinate directions, or the `n+1 = 19`
+  minimal set — with the standard expansion/contraction rules, a complete
+  deterministic batch poll and the extreme-barrier treatment of failures. Simple
+  enough to implement correctly and audit.
+
+**Recommendation: deterministic GPS for the first campaign, with its limitation
+stated explicitly** — a fixed direction set gives directional stationarity with
+respect to those directions only, and does not carry MADS's Clarke-stationarity
+guarantee on a nonsmooth objective. That limitation is acceptable for a first
+campaign and is not the binding problem: the binding problem is the landscape.
+
+## C9 — pre-search decision
+
+Three of the four things this gate had to establish came out positively, and one
+did not.
+
+**Resolved.** The recurring oracle policy is deterministic and reproduces
+bit-identically across processes. False hidden infeasibility is real and
+fixable — continuation rescued 6 of 6, including every P5.6-B polish failure. The
+budget/remote-region issue is **withdrawn rather than bounded**: `se|ALL|x19` is
+VALID under all three templates and under continuation, so P5.6-B's SOLVER_CRASH
+was a non-reproducible transient and the boundary region is reachable. Parallel
+polling semantics are now deterministic (C7), and a practical implementation path
+exists (C8).
+
+**Not resolved, and decisive.** Deterministic template generations materially
+reorder candidate improvements: Spearman −0.033 between T0 and T4, 19 pairwise
+reversals, and 6 of 9 candidates flipping the sign of their improvement over
+base. `tau_planning ≈ 4.25e5` exceeds the within-template discrimination of
+20 522 … 46 146 by an order of magnitude. A search on T0 would terminate at the
+base and report it as a local optimum; the same search on T4 would not.
+
+That is C9's first C-C trigger, met directly. A campaign launched now would
+produce a reproducible, fully certified, and misleading answer — which is worse
+than no answer, because every downstream artefact would carry the oracle's
+authority.
+
+The obstruction is no longer physics, feasibility, purity or determinism; all of
+those are settled. It is that the oracle's *branch selection* is a free
+parameter with more influence on the ranking than the investment variables have.
+The natural next stage is to test whether one uniformly-refined oracle — Policy C
+continuation, or a fixed template ensemble — produces a landscape stable enough
+for `tau_planning` to fall below the within-template discrimination, using exactly
+the C2 protocol.
+
+```
+P5.6-C-C — derivative-free search is not ready
+```
+
+```
+P5.6-C COMPLETE — ready for planner review before any optimization campaign
+```
+
+---
+
+# P5.6-D — uniformly refined nonlinear oracle
+
+Branch `feature/derivative-free-planning`. Canonical runtime and checksum gate
+enforced by the oracle on load and by the R0 provenance gate in every harness.
+Evidence under `data/SRP1/Results/P56D/`; P5.6-A/B/C evidence untouched. Nothing
+in the nonlinear SMOPF, ADMM, H1, IPOPT settings, the convex/MISOCP models or the
+Benders/master-cut code was modified, and no search campaign was launched.
+
+The D0 corrections are applied in place in the P5.6-C section above.
+
+## D1/D2 — the oracle, and the fair reference
+
+```
+x0     = the canonical positive-bootstrap base investment      FIXED FOREVER
+T0     = the frozen cold-base template a81f7f5191dd42dbf50d1726149b8909
+anchor = MIDPOINT
+
+lambda_j = j / K       x_j = (1 - lambda_j) * x0 + lambda_j * x      j = 1..K
+
+state_0 = T0
+for j = 1..K:  evaluate x_j from state_{j-1}; on VALID, state_j is its state
+H_K(x) = total planning objective at x_K = x
+```
+
+The origin is always `x0` — never the incumbent, the previous candidate, the
+nearest cached point or search history, any of which would reintroduce the
+search-order dependence the whole P5.6 line has been removing.
+
+**Generation labelling**, to retire the off-by-one ambiguity of the earlier
+reports: the *input* state of step `j` is `state_{j-1}`, the *output* state is
+`state_j`. So the template P5.6-C called `T4` is the **output of the fourth base
+evaluation**, and `H_K(x0)` is the output of the `K`-th.
+
+For `x = x0` every continuation point is `x0`, so `H_K(x0)` is `K` deterministic
+repeated refinements of the base. That is the only fair reference, and every
+delta below is `Delta_K(x) = H_K(x) - H_K(x0)` at the **same** `K`. No quantity
+in this section compares `H_K(x)` against `H_J(x0)` with `K != J`.
+
+The base refinement chain reproduced P5.6-C's first four values **bit-identically
+in a different process**, and is still moving at step 9:
+
+| step | H(base) | step delta |
+|---|---|---|
+| 1 | 828 021 090.360850 | — |
+| 2 | **827 415 318.563944** = `H_2(x0)` | −605 771.80 |
+| 3 | 826 824 028.845478 | −591 289.72 |
+| 4 | **826 405 022.193437** = `H_4(x0)` | −419 006.65 |
+| 5 | 825 961 521.882321 | −443 500.31 |
+| 6 | 825 531 306.746985 | −430 215.14 |
+| 7 | 825 108 709.695181 | −422 597.05 |
+| 8 | **824 795 363.718628** = `H_8(x0)` | −313 346.98 |
+| 9 | **824 488 243.726694** = `H_8plus(x0)` | −307 120.00 |
+| 12 | **823 731 333.558647** = `H_12(x0)` | (D9) |
+
+## D3/D4 — depth sweep over the core population
+
+All eight core candidates passed first-stage feasibility before any nonlinear
+solve. K=4 evidence was **reused** from P5.6-C4 for five candidates whose
+definition matches D1 exactly (λ = 0.25/0.50/0.75/1.00 from T0, midpoint anchor,
+full audit). Two were re-run rather than reused: `se|node7|2030|-10%`, which C4
+never evaluated, and `se|node5|2025|-10%`, because the C4 harness did not persist
+the converter-capability violation or the per-block network detail that D0.1
+requires. That re-run returned **825 109 566.5710827** — bit-identical to the C4
+value — which both confirms cross-stage determinism and completes the D0.1
+promotion.
+
+**Same-depth deltas** (negative = better than the base at that same depth):
+
+| candidate | Δ₂ | Δ₄ | Δ₈ | spread | sign consistent |
+|---|---|---|---|---|---|
+| base | 0.00 | 0.00 | 0.00 | 0.00 | — |
+| `se\|node5\|2025\|-10%` | −1 030 977.00 | −1 295 455.62 | −1 823 012.39 | 792 035.39 | yes |
+| `se\|node9\|2025\|-10%` | −1 009 158.46 | −1 277 056.83 | −2 088 494.88 | 1 079 336.42 | yes |
+| `e\|node5\|2025\|+25%` | −598 854.99 | −1 273 825.00 | −1 821 534.76 | 1 222 679.76 | yes |
+| `se\|node9\|2025\|+10%` | −593 486.66 | −1 257 975.24 | −2 055 463.54 | 1 461 976.88 | yes |
+| `se\|node7\|2030\|-10%` | −589 433.00 | −1 287 120.75 | −1 831 004.51 | 1 241 571.51 | yes |
+| `se\|ALL\|x19` (boundary) | **+172 583.48** | −846 470.90 | −1 085 192.62 | 1 257 776.10 | **no** |
+| `se\|ALL\|-10%` | POLISH_FAILURE | −1 242 830.73 | −1 853 053.64 | — | — |
+
+## D5 — landscape-stability metrics
+
+```
+jointly VALID at K = 2, 4, 8 : 7 of 8
+improvement sign reversals   : 1 of 7   (only the budget-boundary candidate,
+                                         and only between K=2 and deeper)
+```
+
+**That is a real improvement over P5.6-C**, where 6 of 9 candidates reversed the
+sign of their improvement. Under uniform refinement every local candidate is
+consistently better than the same-depth base at every depth. The *direction*
+problem is fixed.
+
+The *ordering* problem is not.
+
+| pair | Spearman | Kendall | reversals | max rank displacement | max \|ΔΔ\| |
+|---|---|---|---|---|---|
+| K2 vs K4 | 0.7500 | 0.6190 | 4 | 3 | 1 019 054.38 |
+| K2 vs K8 | 0.5714 | 0.4286 | 6 | 3 | 1 461 976.88 |
+| **K4 vs K8** | **0.5714** | **0.4286** | **6** | **3** | **811 438.05** |
+
+**The identity of the best candidate changes at every depth transition tested:**
+
+| depth | best | Δ | second | gap best→second |
+|---|---|---|---|---|
+| K=2 | `se\|node5\|2025\|-10%` | −1 030 977.00 | `se\|node9\|2025\|-10%` | 21 818.54 |
+| K=4 | `se\|node5\|2025\|-10%` | −1 295 455.62 | `se\|node7\|2030\|-10%` | 8 334.87 |
+| K=8 | `se\|node9\|2025\|-10%` | −2 088 494.88 | `se\|node9\|2025\|+10%` | 33 031.34 |
+| K=12 | `se\|node9\|2025\|+10%` | −2 370 665.32 | `se\|node9\|2025\|-10%` | 130 252.95 |
+
+## D6 — terminal self-refinement
+
+One additional evaluation at exactly the target investment, initialized from each
+H_8 final state. All eight succeeded. The relative deltas moved by:
+
+```
+54 738  ..  88 374        max 88 374 (se|ALL|x19)
+```
+
+An order of magnitude less than the 811 438 of K4→K8 — the landscape *is*
+converging with depth. But 88 374 from a **single** extra refinement already
+exceeds the K=8 best-to-second gap of 33 031 by a factor of 2.7. Even a perfectly
+converged K would have to move the deltas by less than that gap, and one step
+does not.
+
+## D7 — refined uncertainty
+
+```
+tau_numerical         = 10.0        unchanged; repeat evaluations remain exactly
+                                    0.000000e+00 apart, confirmed again here by
+                                    the bit-identical base chain and the
+                                    bit-identical K=4 re-run
+
+u_depth(x) = max( |Delta_8 - Delta_4| , |Delta_8plus - Delta_8| )
+
+    se|node9|2025|-10%           811 438.05
+    se|node9|2025|+10%           797 488.30
+    e|node5|2025|+25%            547 709.76
+    se|node7|2030|-10%           543 883.76
+    se|node5|2025|-10%           527 556.77
+    se|ALL|x19 (boundary)        238 721.72
+
+    max 811 438.05   p95 811 438.05   median 545 796.76
+
+tau_planning_refined  = 811 438.05
+```
+
+Against the benchmark it had to beat, `P56C_TEMPLATE_LANDSCAPE_UNCERTAINTY`
+= 4.25e5, this is an **improvement factor of 0.52** — the uniformly refined
+oracle is **1.9 × worse**, not better. Uniform refinement removed the sign
+reversals but did not reduce the magnitude of the landscape ambiguity; it moved
+the ambiguity from *which direction* to *how far*.
+
+The comparison that decides the stage is `tau_planning_refined` against the
+signal it must resolve: the best-to-second gaps are **8 335 … 33 031**. The
+uncertainty is **25 to 97 times** the difference between the best and second-best
+candidate.
+
+## D8 — no `K_STAR`
+
+D8 asks for the shallowest depth stable against the next deeper tested level.
+
+- **K=2 against K=4** — Spearman 0.7500, four reversals, max \|ΔΔ\| 1 019 054.
+  Not stable.
+- **K=4 against K=8** — Spearman 0.5714, six reversals, max \|ΔΔ\| 811 438, and
+  the best candidate changes identity. Not stable.
+
+```
+no K_STAR exists among the tested depths
+```
+
+Absolute offsets between depths were not used as grounds for rejection; every
+comparison above is between same-depth relative deltas.
+
+## D9 — K=12 escalation
+
+Entered because K4 versus K8 is materially unstable. Run on D9's reduced subset —
+the base, the best K=8 candidate, the one candidate whose improvement sign changed
+(which is also the budget-boundary control), and the candidate with the second
+largest depth movement. K=12 is this stage's hard maximum and was not exceeded.
+
+| candidate | Δ₈ | Δ₁₂ | movement K8→K12 | sign consistent |
+|---|---|---|---|---|
+| `se\|node9\|2025\|-10%` | −2 088 494.88 | −2 240 412.37 | 151 917.49 | yes |
+| `se\|node9\|2025\|+10%` | −2 055 463.54 | −2 370 665.32 | 315 201.78 | yes |
+| `se\|ALL\|x19` (boundary) | −1 085 192.62 | −1 472 170.87 | 386 978.25 | yes |
+
+```
+max movement K8 -> K12 :  386 978.25
+prior max K4 -> K8     :  811 438.05
+decay factor           :  2.10
+```
+
+The movement is decaying — it roughly halved while the depth went from the 4→8
+transition to the 8→12 one. But it is still **386 978** at the deepest authorized
+depth, and separating the top two candidates needs it below **33 031**: a further
+factor of 11.7. At the observed rate that is several more depth doublings, and
+cost is linear in `K` at ~124 s per step, so the required oracle would be well
+beyond both the K=12 ceiling this stage was given and any practical evaluation
+budget. The precise depth is not worth extrapolating from two transitions; what
+the two transitions do establish is that K=12 is not close.
+
+**And the decisive observation is not the magnitude but the sign of the move.**
+At node 9, investment year 2025, the two candidates `-10%` and `+10%` are
+*opposite* investment directions at the same decision variable:
+
+| depth | Δ for `-10%` | Δ for `+10%` | preferred direction |
+|---|---|---|---|
+| K=2 | −1 009 158.46 | −593 486.66 | **decrease** |
+| K=4 | −1 277 056.83 | −1 257 975.24 | **decrease** |
+| K=8 | −2 088 494.88 | −2 055 463.54 | **decrease** |
+| **K=12** | −2 240 412.37 | **−2 370 665.32** | **increase** |
+
+The oracle cannot determine even the **sign** of the optimal investment move at
+node 9 / 2025: it says "decrease" at three depths and "increase" at the fourth,
+and it has not converged at the deepest depth authorized. A pattern search polling
+`±` at that coordinate would be told different things by different depths of the
+same deterministic oracle.
+
+## D10 — path-schedule robustness
+
+**Not run.** D10 is conditional on a `K_STAR` being found, and D8 found none.
+Testing whether the `(j/K)²` schedule preserves a ranking would be premature when
+the uniform schedule does not preserve its own ranking between depths. It remains
+the right check once a depth-stable oracle exists.
+
+## D11 — coverage
+
+| depth | coverage | failures |
+|---|---|---|
+| K=2 | 7/8 = 87.5 % | `se\|ALL\|-10%` |
+| K=4 | **8/8 = 100 %** | — |
+| K=8 | **8/8 = 100 %** | — |
+| K=8plus | **8/8 = 100 %** | — |
+| K=12 (subset) | 4/4 = 100 % | — |
+
+Coverage is a solved problem. From K=4 onward every master-feasible candidate in
+the population — including the budget-boundary candidate that P5.6-B recorded as
+a solver crash and the three that direct-T0 evaluation could not polish — is
+reached with full feasibility audits passing. A master-feasible target is never
+declared physically infeasible on the strength of one failed path, and the
+recurring policy is a single fixed one with no fallback to an incompatible
+surface.
+
+## D12 — computational cost
+
+End-to-end per candidate, median over VALID evaluations:
+
+| depth | median | p95 | polish solves | ESSO solves |
+|---|---|---|---|---|
+| K=2 | 250.3 s | 280.8 s | 96 | 6 |
+| K=4 | 503.6 s | 541.9 s | 192 | 12 |
+| K=8 | 999.1 s | 1 028.8 s | 384 | 24 |
+| K=12 | 1 489.2 s | — | 576 | 36 |
+| one terminal refinement | 100.8 s | 101.9 s | 48 | 3 |
+
+Median failed-candidate runtime at K=2 was 173.0 s; there were no failures at
+K≥4.
+
+Campaign wall clock, ideal top-level concurrency, including one 500 s T0 build.
+**8 workers is not offered**, per D12, and the MA97/IPOPT contention warning from
+P5.6-B7 stands — a `SOLVER_CRASH` was actually observed under concurrent load
+earlier in this line of work.
+
+| evaluations | K=4, 1 w | K=4, 4 w | K=8, 1 w | K=8, 4 w | K=12, 1 w | K=12, 4 w |
+|---|---|---|---|---|---|---|
+| 50 | 7.1 h | 1.9 h | 14.0 h | 3.6 h | 20.8 h | 5.3 h |
+| 100 | 14.1 h | 3.6 h | 27.9 h | 7.1 h | 41.5 h | 10.5 h |
+| 200 | 28.1 h | 7.1 h | 55.6 h | 14.0 h | 82.9 h | 20.8 h |
+
+## D13 — search algorithm status
+
+P5.6-C8 is accepted unchanged: no trustworthy MADS implementation is installed,
+nothing was installed here, and nothing hand-written is called OrthoMADS. If the
+oracle becomes search-ready the first campaign will use a **deterministic
+generalized pattern search** in `(S, h)` coordinates with an exact first-stage
+feasibility screen, extreme-barrier treatment of hidden operational failures, the
+cache, deterministic positive-spanning poll directions, deterministic batch
+evaluation and at most 4 parallel workers. None of it was implemented or run in
+this stage.
+
+## D14 — search-readiness decision
+
+**What uniform refinement fixed.** Coverage is complete from K=4 (8/8, including
+every previously unreachable candidate). Improvement *directions* are now
+consistent — 1 sign reversal in 7 against 6 in 9 under the P5.6-C policy. The
+oracle is a single fixed surface with no fallback, determinism is unchanged and
+confirmed bit-identically twice more, and the incumbent promotion of D0.1 is
+complete.
+
+**What it did not fix.** `tau_planning_refined` is **811 438**, against the
+`P56C_TEMPLATE_LANDSCAPE_UNCERTAINTY` of 4.25e5 it had to beat — a factor of
+**1.9 in the wrong direction**. The best candidate changes identity at every one
+of the three depth transitions tested. Depth movement decays by a factor of only
+2.10 between the two transitions measured, leaving 386 978 at K=12 against the
+33 031 needed. And at node 9 / 2025 the oracle reverses the preferred *sign* of
+the investment between K=8 and K=12.
+
+That last point is the one that settles it. A derivative-free search exists to
+answer "should this coordinate go up or down". On the tested population this
+oracle answers that question differently depending on a refinement depth that is
+a free parameter, and it has not converged at the deepest depth authorized. The
+result would be reproducible, fully certified, and wrong in a way no downstream
+check would catch.
+
+**Recommendation: do not launch GPS.** The three routes D14 offers for planner
+decision, with what this stage learned about each:
+
+1. **Fixed multi-start / template ensemble.** Untested. Its appeal is that an
+   ensemble minimum may be less depth-sensitive than any single member; its cost
+   is the ensemble size multiplying an already 500–1500 s evaluation.
+2. **A different nonlinear coordination strategy.** The root cause is now well
+   localised: every refinement of the ADMM warm start finds a better local
+   solution, without converging, because the ADMM's own objective scaling makes
+   the base cost nearly invisible to the local solver (P5.6-A2.1 measured the
+   scale at ~1.1e5). That is a coordination-level property, not a planning-level
+   one, and addressing it there would attack the cause rather than average over
+   it. It is outside every current authorization and would reopen accepted
+   nonlinear decisions.
+3. **Report the planning problem as heuristic / non-identifiable under the
+   current local-NLP solution architecture.** Defensible on this evidence, and
+   the honest position if neither of the above is authorized: the operational
+   recourse is well defined and certifiable at a point, but the *differences*
+   between nearby investment candidates are smaller than the local-solution
+   ambiguity of the model that evaluates them.
+
+```
+P5.6-D-C — uniform refinement does not stabilize the investment landscape
+```
+
+```
+P5.6-D COMPLETE — ready for planner review before any search campaign
+```

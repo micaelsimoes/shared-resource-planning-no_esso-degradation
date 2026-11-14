@@ -1,0 +1,114 @@
+{
+ "stage": "P5.15 Addendum 22 item (4) -- Step 3.5 polish-gap gate",
+ "authority": [
+  "PLANNER_BRIEF_2026-09-13.md Step 3.5 and Addendum 22 item 4_step_3_5",
+  "data/SRP1/Results/P515S40/frozen_s40_closure_spec_v11_0e9a37be.json"
+ ],
+ "timestamp_utc": "2026-09-18T11:54:20.953498+00:00",
+ "arm_label": "s39_D",
+ "mode": "full",
+ "smoke_cycles": null,
+ "num_max_iters_used": 300,
+ "out_dir": "data/SRP1/Results/P515S40/polish_gap",
+ "admm_report_path": "data/SRP1/Results/P515S40/polish_gap/g_s39_D.json",
+ "admm_cycles_run": 139,
+ "admm_gross_operational_cost": 650966975.2943751,
+ "admm_converged_at_cycle": 125,
+ "reproduction": {
+  "mode": "full (entire report vs D's entire committed report)",
+  "is_full_mode": true,
+  "n_cycles_compared": 139,
+  "d_reference_path": "data/SRP1/Results/P515S39_D_run/g_s39_D.json",
+  "d_reference_cycles_run": 139,
+  "excluded_field_names": [
+   "component_levels_terminal_and_settlement_detail_path",
+   "component_levels_terminal_path",
+   "ess_entry_stride_sidecar_path",
+   "esso_capture_dir",
+   "heartbeat_path",
+   "interface_voltage_terminal_path",
+   "leak_classification_path",
+   "log_path",
+   "recourse_jump_sidecar_path",
+   "results_dir_redirect",
+   "s34_ess_entry_stride_sidecar_path",
+   "s34_recourse_jump_sidecar_path",
+   "s35ref_soh_floor_sidecar_path",
+   "s38_pf_entry_stride_sidecar_path",
+   "s39_ess_exempt_until_state_sidecar_path",
+   "soh_floor_sidecar_path",
+   "stdout_path",
+   "timestamp_utc",
+   "wall_clock_s"
+  ],
+  "excluded_dotted_suffixes": [
+   "esso_models_pickle.path",
+   "network_failures_summary.path",
+   "soh_floor_multiplier_and_efc_per_cohort_year_terminal.path"
+  ],
+  "intentional_difference_suffixes": [
+   "rule_eleven_checklist.s40_tso_snapshot_capture_mode_requested"
+  ],
+  "scalar_checks": {
+   "cycles_run": {
+    "mine": 139,
+    "expected": 139,
+    "match": true
+   },
+   "gross_operational_cost": {
+    "mine": 650966975.2943751,
+    "expected": 650966975.2943751,
+    "match": true
+   }
+  },
+  "n_diffs": 1,
+  "diffs": [
+   {
+    "field": "report.rule_eleven_checklist.s39_pre_solve_override_verification",
+    "legacy": {
+     "rho_v_is_0p0077": true,
+     "rho_pf_is_0p198": true,
+     "rho_ess_is_0p01": true,
+     "rho_ess_on_esso_present": true,
+     "tau_is_0p0": true,
+     "balancing_exempt_channels_matches_arm": true,
+     "balancing_exempt_channels_source_is_override": true,
+     "balancing_exempt_until_matches_arm": true,
+     "balancing_exempt_until_source_is_override": true,
+     "freeze_after_unchanged_cycles_is_10": true,
+     "freeze_backstop_cycle_is_200": true,
+     "minimum_consecutive_converged_cycles_is_10": true,
+     "shared_ess_initialization_is_standalone": true,
+     "shared_ess_initialization_source_is_override": true
+    },
+    "lightweight": "<MISSING>"
+   }
+  ],
+  "first_diffs": [
+   {
+    "field": "report.rule_eleven_checklist.s39_pre_solve_override_verification",
+    "legacy": {
+     "rho_v_is_0p0077": true,
+     "rho_pf_is_0p198": true,
+     "rho_ess_is_0p01": true,
+     "rho_ess_on_esso_present": true,
+     "tau_is_0p0": true,
+     "balancing_exempt_channels_matches_arm": true,
+     "balancing_exempt_channels_source_is_override": true,
+     "balancing_exempt_until_matches_arm": true,
+     "balancing_exempt_until_source_is_override": true,
+     "freeze_after_unchanged_cycles_is_10": true,
+     "freeze_backstop_cycle_is_200": true,
+     "minimum_consecutive_converged_cycles_is_10": true,
+     "shared_ess_initialization_is_standalone": true,
+     "shared_ess_initialization_source_is_override": true
+    },
+    "lightweight": "<MISSING>"
+   }
+  ],
+  "reproduces": false
+ },
+ "stopped_before_polish": true,
+ "polish": null,
+ "wall_clock_s": 4631.950066804886
+}

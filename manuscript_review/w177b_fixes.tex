@@ -1,0 +1,186 @@
+% =====================================================================================================================
+% W177(b) FOLLOW-UP -- manuscript fixes at Overleaf 9a697cc (2026-10-14). Expert rulings in Addendum 77.
+% Group A: the Planner's report (audited e10c104).  Group B: new, in sections 2.2-2.3 edited after e10c104.
+% In document order inside each group. Old text quoted in comments; new text uncommented.
+% =====================================================================================================================
+
+% ---------------------------------------------------------------------------------------------------------------------
+% A1 -- Abstract (letter R1.2 says the abstract names the chemistry; the rewrite dropped it). Replace
+%   "The framework is evaluated on an integrated 108-bus transmission--distribution test system over a 15-year planning horizon."
+        The framework is evaluated on an integrated 108-bus transmission--distribution test system with utility-scale lithium-ion storage over a 15-year planning horizon.
+
+% A2 -- Nomenclature: the three caption-less longtables step the table counter, so every table after them is numbered
+%   +3 (Table 1 became 4, ...). Add this line right after EACH of the three "\end{longtable}":
+\addtocounter{table}{-1}
+%   and, in "Variables and Functions":
+%   (a) row "$\pi_t$, $\bar{\pi}_t$ & Wholesale price and its expectation over market scenarios" -> only pi-bar is used:
+        \textcolor{blue}{$\bar{\pi}_t$} & \textcolor{blue}{Expected wholesale price of hour $t$ over the market scenarios} \\
+%   (b) row "$t_{\text{sum}}$, $s$ & Priced interface-consensus gap; settling slack (uncertified form)" -> s is no longer
+%       used for the slack (and s is now the scenario index):
+        \textcolor{blue}{$t_{\text{sum}}$} & \textcolor{blue}{Priced interface-consensus gap} \\
+%   (c) add, next to C^Op_{y,d,m,o}:
+        \textcolor{blue}{$C^{\text{Op}}_{s}$} & \textcolor{blue}{Operating cost of scenario $s$ over the horizon, weighted and discounted} \\
+
+% A3 -- Introduction, "To address this gap" paragraph (letter R1.4 (i) relies on it; it was dropped again in the
+%   rewrite). After "...operational scenarios of load, RES generation and market prices." add:
+    Demand growth and RES capacity follow predefined trajectories, while policy changes, infrastructure retirements and the cost of capital as a stochastic quantity are outside the present formulation and left to future work.
+
+% A4 -- Section 2.2.7, "Stopping and certification" paragraph (letter R2.5 says the paper states that no convergence
+%   guarantee exists). Insert as its first sentence, before "Each recourse evaluation runs ...":
+    No convergence guarantee is available for consensus ADMM on a nonconvex recourse of this kind; each evaluation is therefore stopped by an explicit rule.
+%   and in the same paragraph replace "the operators' remaining disagreement at the interface, priced, must be within"
+%   by (A-3: the gap is priced at the expected wholesale price, not at the interface dual):
+    the operators' remaining disagreement at the interface, priced at the expected wholesale price, must be within
+
+% A5 -- Section 3 opening: "(Subsection~3.1)" is hard-coded. Add under "\subsection{Investment Costs}":
+\label{subsec:case_investment_costs}
+%   and write "(Subsection~\ref{subsec:case_investment_costs})".
+
+% A6 -- Section 3.6, cap sentence (A-1: 30 of the evaluations were re-run from an earlier record with that record's cap).
+%   Replace "an evaluation continued from an earlier run is capped 100 cycles after that run's stopping cycle, a fresh one at"
+%   by:
+    an evaluation continued from, or re-run on, an earlier record is capped 100 cycles after that record's stopping cycle, a fresh one at
+%   and the cache clause "the cache was seeded with the single-node ladders of the initial design, run with and without
+%   the budget, and their combinations" (only the first part is the baseline search's) by:
+    the cache of the baseline search was seeded with the single-node ladders of the initial design, including ladder points over the budget, and the caches of the two searches under the doubled flexibility price with the certified evaluations at that price, which for the variant-B run include multi-node plans installed in 2030
+
+% A7 -- Section 4 opening: "Every reported number is a certified recourse evaluation or a difference between two of
+%   them; a difference is called determinate ..." -> discount re-weightings, the 3x3 values, D and uncertified cells
+%   are not certified evaluations. Replace that first clause by:
+    Every reported number is a recourse evaluation, a difference between two of them or a quantity derived from them, and its status is stated: certified, uncertified with its bar, or, at the multi-scenario instance, stopped by the production exit;
+%   (keep the rest: "a difference is called determinate or within resolution by the rule of ...")
+
+% A8 -- Section 4 opening, salvage credit (the printed form is not the one behind the reported net values; the coded
+%   form reproduces the recorded 11.76 and 56.50 kEUR exactly, the printed one gives 4.22x and 1.86x those).
+%   Replace equation eq:salvage_credit by:
+\textcolor{blue}{
+    \begin{equation}
+        C^\text{Salvage}(\boldsymbol{x}) =
+        \sum_{e \in E^S} \sum_{y^\text{Inv} \in Y}
+        \frac{\bar{c}^{\text{Inv,E}}_{y^\text{Inv}}\, E^{\text{Inv}}_{e,y^\text{Inv}}}{(1+r)^{\,y^\text{End}-y_0}}
+        \;\frac{T^\text{Rem}_{e,y^\text{Inv}}}{T^\text{Cal}_{e,y^\text{Inv}}}
+        \;\frac{SoH_{e,y^\text{Inv},y^\text{End}} - SoH^{\text{Min}}_e}{1 - SoH^{\text{Min}}_e},
+        \label{eq:salvage_credit}
+    \end{equation}
+}
+%   keep eq:salvage_remaining_life, and replace the where-clause up to "its terminal state of health." by:
+    where $\bar{c}^{\text{Inv,E}}_{y^\text{Inv}} = \sum_{c \in \Omega_C} \omega_c\, c^{\text{Inv,E}}_{y^\text{Inv},c}$ is the expected undiscounted energy cost per MWh in the installation year, $y^\text{End}$ the end of the planning horizon, $T^\text{Rem}$ the remaining calendar life of the cohort at $y^\text{End}$ and $SoH_{e,y^\text{Inv},y^\text{End}}$ its terminal state of health. The credit returns the energy part of the cohort's cost in proportion to its remaining calendar life and to its state of health above the end-of-life floor; the converter is not credited.
+%   (keep "The credit is reported, not optimized: ..." and delete the three-line [CONFIRM — W177] comment under it)
+
+% A9 -- Table tab:res_energy_ladder_m2, row 4 MWh (Addendum 64, ruling 4: nothing rests on the flagged certificate, so
+%   the row prints the uncertified bar and the note the certified threshold). Replace the row
+%   "4$^{f}$ & 176.6 & 9.7 & 18.14 & 42.8 & 27.7 & 1.55 \\" by
+        4$^{f}$   & 176.6 & 15.9 & 11.12 & 42.8 & 27.7 & 1.55 \\
+%   and the note's first sentence by:
+            \textit{Note:} The 4~MWh evaluation carries a flagged certificate and is entered at its uncertified bar (15.9~k\euro{}, $11.12\times$); its certified threshold would be 9.7~k\euro{} ($18.14\times$).
+
+% A10 -- Table tab:res_ageing, row "Baseline, 0.50 floor": value = I + (value - I) = 318.0 - 59.5 = 258.5. Write
+        Baseline, 0.50 floor & 258.5 & $-$59.5 & 12.6 & 4.71 & never & --- & --- \\
+%   (AE and EFC/day of this row are requested from the Planner, W155; until then "---" stands, as the note says.)
+
+% A11 -- Section 4.5, second sentence (no planning search was run at the multi-scenario instance). Replace
+%   "The planning search again returned the plan without shared storage, $\boldsymbol{x}=\boldsymbol{0}$."
+    The planning search was not repeated at this instance; the reference unit was evaluated against the plan without storage.
+%   and in the same paragraph "(...; Section~\ref{sec:case_settings})" -> "(...; \ref{app:admm_updated_settings})"
+
+% A12 -- Section 4.6, discount paragraph (letter R1.4 and the Planner: the 0/5/8 % rows re-weight the 2 % evaluations).
+%   After "...and every difference is determinate." add:
+    The rates other than 2\,\% re-weight the per-year costs of the 2\,\% evaluations rather than re-solving them; this is exact at the plan without storage and first-order at the reference unit, whose ageing couples the years.
+%   Table tab:res_discount caption: after "$I$ paid in 2025;" add " rates other than 2\,\% re-weight the 2\,\% evaluations;"
+
+% A13 -- Section 4.6, salvage paragraph (W153: one verdict among the 60; the year pair is not one of the 60). Replace the
+%   paragraph "Across the 60 pairwise comparisons reported in this section, ... in the returned plan's favour." by
+%   (and delete the [CONFIRM — W177] comment under it):
+\textcolor{blue}{
+    Across the 60 pairwise comparisons of the full claims table (\ref{app:results}), applying the salvage credit changes no sign and one verdict: the comparison of the plan returned at twice the base flexibility price with one of its unit neighbours, which is within the uncertified bar in gross terms (0.95 times) and determinate net of salvage (1.22 times), in the returned plan's favour. The investment-year comparison above is not among the 60; on it the credit changes the verdict, from determinate in gross terms to within resolution.
+}
+
+% A14 -- Section 4.7: "they are counted as clean under the rule of Subsection~\ref{subsubsec:certification}." ->
+    they are counted as clean under the rule of \ref{app:admm_updated_certification}.
+
+% A15 -- Section 4.8, "Scope of the study": after the sentence ending "...with four representative days per year;
+%   the discretization is a modelling choice and the degradation chain is applied at block boundaries." add (letter,
+%   opening paragraph):
+    The multi-scenario evidence is the $3 \times 3$ instance: the $5 \times 5$ scenario set of the submitted version could not be evaluated within the memory available and is left to future work.
+
+% A16 -- Conclusions (three overstatements):
+%   (a) first paragraph: "instead, each evaluation is certified by an explicit stopping rule, and every planning
+%       comparison is reported with the resolution at which it is decided." ->
+    instead, each evaluation behind a reported comparison is either certified by an explicit stopping rule or reported in an uncertified form with its error bar, and every planning comparison is reported with the resolution at which it is decided.
+%   (b) second paragraph: "and every other evaluated plan, from 0.5 to 5~MWh and at one or two nodes, also loses
+%       determinately." ->
+    and every other plan of Table~\ref{tab:res_value_ladder}, from 0.5 to 5~MWh and at one or two nodes, also loses determinately.
+%   (c) third paragraph: "For planning, the value of shared storage cannot be assessed apart from its ageing or from the
+%       coordination of the operators who share it: on this system, the coordinated operation ..." ->
+    For planning, ageing decides the value of shared storage on this system, the same unit being at break-even without it and losing with it; and the coordinated operation that would give storage its value is itself the larger benefit, while storage becomes worthwhile where flexibility is expensive.
+%       (the sentence continues with "For the method, ..." unchanged)
+
+% A17 -- Appendix A.3, last sentence (A-1). Replace
+%   "all $\rho_g$ are frozen from the cycle after the first residual pass, or from the stopping cycle of the earlier run in
+%    an evaluation continued from one."
+    all $\rho_g$ are frozen from the cycle after the first residual pass $k_0$, or, in the three reference evaluations continued from an earlier run, from that run's stopping cycle.
+% A18 -- Appendix A.4: "(Section~\ref{sec:case_settings})" after the recovery tiers -> "(\ref{app:admm_updated_settings})".
+% A19 -- Appendix A.5, first paragraph (A-1). Replace
+%   "from the next cycle in a fresh run or from the stopping cycle of the earlier run in an evaluation continued from one;"
+    from the cycle after $k_0$, or, in the three reference evaluations continued from an earlier run, from that run's stopping cycle (an evaluation re-run on an earlier record replays it bitwise to its first residual pass and holds from the cycle after it);
+%   and in (C4) replace "the value of the residual mismatch between the operators' interface schedules at the interface price" by
+    the value of the residual mismatch between the operators' interface active-power schedules at the expected wholesale price of each hour, block-weighted
+% A20 -- Algorithm 2 input line: "certification parameters of  Subsection~\ref{subsubsec:certification}" ->
+    certification parameters of \ref{app:admm_updated_certification}
+
+% =====================================================================================================================
+% GROUP B -- sections 2.1-2.3 as edited after e10c104 (not yet audited by the Planner)
+% =====================================================================================================================
+% B1 -- Section 2.3.2 "Installed and Available Capacity": the block now prints eq:available_power and
+%   eq:available_capacity TWICE (duplicate labels, equations 14-15 and 18-19), and the equation defining the cohort
+%   ratings (eq:cohort_rated) was removed, so S^{Rated,Unit} and E^{Rated,Unit} are undefined in the text while
+%   eqs. (16), (17), (30), (32) use them and Appendix A.2 cites \eqref{eq:cohort_rated} (undefined reference).
+%   Replace everything between "\subsubsection{\textcolor{blue}{Installed and Available Capacity}}" and the comment
+%   line "% ---- C.2 New: storage operation ..." by:
+\textcolor{blue}{
+    Each capacity addition at node $e$ in installation year $y^{\text{Inv}}$ forms an investment cohort, whose ratings are the fixed additions $\hat{S}^{\text{Inv}}_{e,y^{\text{Inv}}}$ and $\hat{E}^{\text{Inv}}_{e,y^{\text{Inv}}}$ of the candidate plan ($\forall e\in E^S$, $\forall y\in Y$, $\forall y^{\text{Inv}}\in\mathcal{Y}^{\text{Act}}_{e,y}$):
+}
+\textcolor{blue}{
+    \begin{equation}
+        S^{\text{Rated,Unit}}_{e,y^\text{Inv},y} = \hat{S}^{\text{Inv}}_{e,y^\text{Inv}}, \qquad
+        E^{\text{Rated,Unit}}_{e,y^\text{Inv},y} = \hat{E}^{\text{Inv}}_{e,y^\text{Inv}}
+        \label{eq:cohort_rated}
+    \end{equation}
+}
+\textcolor{blue}{
+    The model keeps each cohort's converter rating unchanged over its calendar lifetime, while its available energy decreases with its state of health, evaluated at the end of the block represented by year $y$. This gives a conservative capacity estimate within the block; evaluation at the block midpoint is examined in Subsection~\ref{subsec:res_degradation}:
+}
+\textcolor{blue}{
+    \begin{equation}
+        S^{\text{Av,Unit}}_{e,y^\text{Inv},y} = S^{\text{Rated,Unit}}_{e,y^\text{Inv},y}
+        \label{eq:cohort_available}
+    \end{equation}
+    \begin{equation}
+        E^{\text{Av,Unit}}_{e,y^\text{Inv},y} = E^{\text{Rated,Unit}}_{e,y^\text{Inv},y}\, SoH_{e,y^\text{Inv},y}
+        \label{eq:cohort_available_energy}
+    \end{equation}
+}
+\textcolor{blue}{
+    The capacities seen by the network models in year $y$ are the sums over the active cohorts ($\forall e \in E^S$, $\forall y \in Y$):
+}
+\textcolor{blue}{
+    \begin{equation}
+        S^{\text{Av}}_{e,y} = \sum_{y^{\text{Inv}}\in\mathcal{Y}^{\text{Act}}_{e,y}} S^{\text{Av,Unit}}_{e,y^{\text{Inv}},y}
+        \label{eq:available_power}
+    \end{equation}
+    \begin{equation}
+        E^{\text{Av}}_{e,y} = \sum_{y^{\text{Inv}}\in\mathcal{Y}^{\text{Act}}_{e,y}} E^{\text{Av,Unit}}_{e,y^{\text{Inv}},y}
+        \label{eq:available_capacity}
+    \end{equation}
+}
+
+% B2 -- Section 2.3.4, last paragraph: "the available-energy product in \eqref{eq:cohort_available}" ->
+    the available-energy product in \eqref{eq:cohort_available_energy}
+
+% B3 -- Section 2.1, MADS paragraph: the search also stops for review when a poll exceeds the completion cap (one of the
+%   three runs did). Replace "or when an evaluation limit is reached." by
+    or when a poll exceeds the completion cap or the evaluation budget is reached (Section~\ref{sec:case_settings}).
+
+% B4 -- Optional. Section 2 opening: the sentence "%The decomposition is computational; it is not a leader--follower
+%   structure." is commented out again. Reviewer 2 (R2.1) asked whether the model is a Stackelberg problem; the
+%   sentence answers it in one line. Remove the "%".

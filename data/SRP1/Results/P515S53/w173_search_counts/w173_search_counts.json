@@ -1,0 +1,3731 @@
+{
+ "stage": "P5.15 Addendum 69 W173 -- section 2.1 CONFIRM points: search frame (Delta_0, frame rule, N^max, directions, snap) and the neighbour counts of the x = 0 and F2 certificates",
+ "script": "p515_s53_w173_search_counts.py",
+ "script_sha256": "21ca9cb73a4df7c465a5a4a342df9f70a40985badb627f65ddffd06e48a114c1",
+ "git_HEAD": "80fa18242e4d11be73b382e3da6c16b6f5f37437",
+ "interpreter": "/Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python",
+ "started_utc": "2026-10-08T11:39:54.885114+00:00",
+ "finished_utc": "2026-10-08T11:39:55.691844+00:00",
+ "objective_convention": "F = I + Q, Q = certified gross_operational_cost (settlement excluded); search-time differences use the record Q the search read; frozen-table differences are d_gross (F(other) - F(ref), positive = the neighbour is worse) under the table rule",
+ "box_definition": "PB.Lattice.neighbourhood(inc): every bound-, rule- (P = 0 <=> E = 0; 2 h <= E/P <= 4 h; E <= 5 MWh; year index in range) and budget- (I(x) <= 1e6 EUR) feasible canonical lattice point z != inc with ||z - inc||_inf <= 1 in (zP5, zE5, zP7, zE7, zP9, zE9, zY); granules 0.25 MVA, 0.5 MWh, one year index = 5 years",
+ "instances": {
+  "x0": {
+   "label": "x0",
+   "z": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "eval_key": "d2c96b1480402a3b61aca4abc188e41c6009eb582d8e6ccdd380e51651f996c7"
+  },
+  "F2": {
+   "label": "y2030__n5_p0.25_e0.5__n7_p1_e3.5",
+   "z": [
+    1,
+    1,
+    4,
+    7,
+    0,
+    0,
+    1
+   ],
+   "eval_key": "5ca4f86c3406c0424d3b63b8f39df4568f1be77f7f2d72642491539c0eb42663",
+   "flex_price_multiplier": 2.0
+  }
+ },
+ "item1": {
+  "s47": {
+   "variant": "A",
+   "script": "p515_s47_phase_b_record.py",
+   "spec": {
+    "path": "data/SRP1/Results/P515S47/campaign_s47_phase_b/campaign_spec_s47_phase_b_8cfa264e.json",
+    "sha256": "8cfa264e7ab0d92ac0832657c9b328d70b45851ba92f4623384d11fddb334185",
+    "field": "extra.poll_design",
+    "poll_design": {
+     "batch_size": 5,
+     "completion_cap": 30,
+     "completion_size_at_x0": 14,
+     "delta_0": 4,
+     "delta_min": 1,
+     "design": "orthomads_n_plus_1_neg",
+     "failure": "Delta = max(1, Delta // 2)",
+     "full_poll": true,
+     "halton_index": "t = t0 + k (k = poll counter from 0)",
+     "halton_t0": 17,
+     "max_new_evaluations": 20,
+     "max_polls": 60,
+     "mesh_size": 1,
+     "n_directions": 8,
+     "n_vars": 7,
+     "primes": [
+      2,
+      3,
+      5,
+      7,
+      11,
+      13,
+      17
+     ],
+     "rounding": "d = round_half_away(Delta h / ||h||_inf)",
+     "success": "Delta *= 2",
+     "unit_poll_completion": true
+    }
+   },
+   "spec_iteration_rule": null,
+   "spec_poll_rule": null,
+   "spec_snap_rule": null,
+   "results": {
+    "path": "data/SRP1/Results/P515S47/campaign_s47_phase_b/campaign_results.json",
+    "sha256": "906f9da353ebe2158c13176c22ea49602d9cdbfab142f7334b7e54e9db1fdb58"
+   },
+   "delta_sequence": [
+    4,
+    2,
+    1
+   ],
+   "polls": [
+    {
+     "poll_index": 0,
+     "halton_t": 17,
+     "delta": 4,
+     "incumbent": "x0",
+     "dispositions": {
+      "rejected_infeasible": 8
+     },
+     "n_new_evaluations": 0,
+     "n_cache_hits": 0,
+     "completion_n_feasible": null,
+     "decision": "failure",
+     "next_incumbent": "x0",
+     "next_poll_size": 2,
+     "n_direction_points_feasible": 0,
+     "directions_recomputed_equal_record": true,
+     "n_directions": 8
+    },
+    {
+     "poll_index": 1,
+     "halton_t": 18,
+     "delta": 2,
+     "incumbent": "x0",
+     "dispositions": {
+      "rejected_infeasible": 8
+     },
+     "n_new_evaluations": 0,
+     "n_cache_hits": 0,
+     "completion_n_feasible": null,
+     "decision": "failure",
+     "next_incumbent": "x0",
+     "next_poll_size": 1,
+     "n_direction_points_feasible": 0,
+     "directions_recomputed_equal_record": true,
+     "n_directions": 8
+    },
+    {
+     "poll_index": 2,
+     "halton_t": 19,
+     "delta": 1,
+     "incumbent": "x0",
+     "dispositions": {
+      "rejected_infeasible": 8,
+      "new_evaluation": 14
+     },
+     "n_new_evaluations": 14,
+     "n_cache_hits": 0,
+     "completion_n_feasible": 14,
+     "decision": "failure_at_unit_poll_size",
+     "next_incumbent": "x0",
+     "next_poll_size": null,
+     "n_direction_points_feasible": 0,
+     "directions_recomputed_equal_record": true,
+     "n_directions": 8
+    }
+   ],
+   "termination": {
+    "reason": "mesh_local_optimum_unit_poll_failed",
+    "poll_size_reached": 1
+   },
+   "n_new_evaluations_total": 14,
+   "max_new_evaluations": 20
+  },
+  "s51": {
+   "variant": "A",
+   "script": "p515_s51_f2_phase_b.py",
+   "spec": {
+    "path": "data/SRP1/Results/P515S51/campaign_s51_f2_phase_b/campaign_spec_s51_f2_phase_b_5ce295e1.json",
+    "sha256": "5ce295e17c5165ea2148d1240c918ebca05b8aafbeeb22e2ebfc03f9bf120094",
+    "field": "extra.poll_design",
+    "poll_design": {
+     "batch_size": 5,
+     "completion_cap": 30,
+     "completion_size_at_the_incumbent": 20,
+     "delta_0": 4,
+     "delta_min": 1,
+     "design": "orthomads_n_plus_1_neg",
+     "failure": "Delta = max(1, Delta // 2)",
+     "full_poll": true,
+     "halton_index": "t = t0 + k (k = poll counter from 0)",
+     "halton_t0": 17,
+     "max_new_evaluations": 20,
+     "max_polls": 60,
+     "mesh_size": 1,
+     "n_directions": 8,
+     "n_vars": 7,
+     "primes": [
+      2,
+      3,
+      5,
+      7,
+      11,
+      13,
+      17
+     ],
+     "rounding": "d = round_half_away(Delta h / ||h||_inf)",
+     "success": "Delta *= 2",
+     "unit_poll_completion": true
+    }
+   },
+   "spec_iteration_rule": null,
+   "spec_poll_rule": null,
+   "spec_snap_rule": null,
+   "results": {
+    "path": "data/SRP1/Results/P515S51/campaign_s51_f2_phase_b/campaign_results.json",
+    "sha256": "2cdd5d6048919980b6d3d7109709b3441a99b5eb353be3285a09210a9a996eb7"
+   },
+   "delta_sequence": [
+    4,
+    2,
+    1,
+    2,
+    1
+   ],
+   "polls": [
+    {
+     "poll_index": 0,
+     "halton_t": 17,
+     "delta": 4,
+     "incumbent": "y2025__n7_p0.75_e3",
+     "dispositions": {
+      "rejected_infeasible": 8
+     },
+     "n_new_evaluations": 0,
+     "n_cache_hits": 0,
+     "completion_n_feasible": null,
+     "decision": "failure",
+     "next_incumbent": "y2025__n7_p0.75_e3",
+     "next_poll_size": 2,
+     "n_direction_points_feasible": 0,
+     "directions_recomputed_equal_record": true,
+     "n_directions": 8
+    },
+    {
+     "poll_index": 1,
+     "halton_t": 18,
+     "delta": 2,
+     "incumbent": "y2025__n7_p0.75_e3",
+     "dispositions": {
+      "rejected_infeasible": 8
+     },
+     "n_new_evaluations": 0,
+     "n_cache_hits": 0,
+     "completion_n_feasible": null,
+     "decision": "failure",
+     "next_incumbent": "y2025__n7_p0.75_e3",
+     "next_poll_size": 1,
+     "n_direction_points_feasible": 0,
+     "directions_recomputed_equal_record": true,
+     "n_directions": 8
+    },
+    {
+     "poll_index": 2,
+     "halton_t": 19,
+     "delta": 1,
+     "incumbent": "y2025__n7_p0.75_e3",
+     "dispositions": {
+      "rejected_infeasible": 8,
+      "new_evaluation": 20
+     },
+     "n_new_evaluations": 20,
+     "n_cache_hits": 0,
+     "completion_n_feasible": 20,
+     "decision": "success",
+     "next_incumbent": "y2030__n5_p0.25_e0.5__n7_p1_e3.5",
+     "next_poll_size": 2,
+     "n_direction_points_feasible": 0,
+     "directions_recomputed_equal_record": true,
+     "n_directions": 8
+    },
+    {
+     "poll_index": 3,
+     "halton_t": 20,
+     "delta": 2,
+     "incumbent": "y2030__n5_p0.25_e0.5__n7_p1_e3.5",
+     "dispositions": {
+      "rejected_infeasible": 8
+     },
+     "n_new_evaluations": 0,
+     "n_cache_hits": 0,
+     "completion_n_feasible": null,
+     "decision": "failure",
+     "next_incumbent": "y2030__n5_p0.25_e0.5__n7_p1_e3.5",
+     "next_poll_size": 1,
+     "n_direction_points_feasible": 0,
+     "directions_recomputed_equal_record": true,
+     "n_directions": 8
+    },
+    {
+     "poll_index": 4,
+     "halton_t": 21,
+     "delta": 1,
+     "incumbent": "y2030__n5_p0.25_e0.5__n7_p1_e3.5",
+     "dispositions": {
+      "rejected_infeasible": 7,
+      "new_evaluation": 1
+     },
+     "n_new_evaluations": 1,
+     "n_cache_hits": 0,
+     "completion_n_feasible": 61,
+     "decision": "stopped_for_review_completion_cap",
+     "next_incumbent": null,
+     "next_poll_size": null,
+     "n_direction_points_feasible": 1,
+     "directions_recomputed_equal_record": true,
+     "n_directions": 8
+    }
+   ],
+   "termination": {
+    "reason": "STOP_FOR_REVIEW_completion_cap",
+    "poll_size_reached": 1,
+    "completion_n_feasible": 61,
+    "cap": 30,
+    "rule": "at every poll of unit size (Delta = 1) the poll set is the union of the rounded OrthoMADS directions and the POLL COMPLETION: every bound-, rule- and budget-feasible canonical lattice point within l_inf distance 1 of the incumbent in the 7 variables (zP5, zE5, zP7, zE7, zP9, zE9, zY); if the completion has more than 30 feasible points the poll is refused (nothing evaluated, never truncated) and the run STOPS FOR REVIEW (STOP_FOR_REVIEW_completion_cap); the cap is checked before the evaluation budget",
+    "detail": "poll 4: the unit-poll completion of y2030__n5_p0.25_e0.5__n7_p1_e3.5 has 61 feasible points > 30; refused, nothing of this poll evaluated, not truncated"
+   },
+   "n_new_evaluations_total": 20,
+   "max_new_evaluations": 20
+  },
+  "s53": {
+   "variant": "B",
+   "script": "p515_s53_f2_certificate.py",
+   "spec": {
+    "path": "data/SRP1/Results/P515S53/campaign_s53_f2_certificate_r1/campaign_spec_s53_f2_certificate_r1_803571c0.json",
+    "sha256": "803571c0efcf828eb9716d6c6255909da91d882a57a7bd4e053805f96f88027f",
+    "field": "extra.poll_design",
+    "poll_design": {
+     "barrier_stop": [
+      2,
+      3
+     ],
+     "batch_size": 5,
+     "completion_cap": 30,
+     "delta": 1,
+     "design": "orthomads_2n",
+     "first_halton_k": 4,
+     "halton_index": "t = t0 + k; k continues the s51 counter from k = 4",
+     "halton_t0": 17,
+     "max_new_evaluations": 60,
+     "max_polls": 60,
+     "mesh_size": 1,
+     "min_feasible_poll_points": 8,
+     "n_directions": 14,
+     "n_vars": 7,
+     "on_success": "Delta stays 1",
+     "primes": [
+      2,
+      3,
+      5,
+      7,
+      11,
+      13,
+      17
+     ],
+     "rounding": "d = round_half_away(h / ||h||_inf)"
+    }
+   },
+   "spec_iteration_rule": "on SUCCESS (at least one determinate improvement: F(inc) - F(x) > max(bar_x + bar_inc, sigma_Q)) the incumbent moves to the argmin F among determinate improvers (ties: lower I, then label) and the NEXT POLL IS AGAIN A UNIT POLL (Delta stays 1: the STEP4 5.2 / ruling A3 doubling is NOT applied in this continuation); the Halton index advances by one per poll, CONTINUING the s51 F2 Phase B counter (first poll k = 4, t = 21: the poll the completion cap refused). On FAILURE the continuation terminates with the certificate. At most 60 NEW evaluations over the whole continuation: a poll whose new evaluations would exceed what remains is NOT launched (termination evaluation_budget_exhausted; no certificate claim).",
+   "spec_poll_rule": "at unit mesh (Delta = 1; EVERY poll of this continuation) the poll set is: (1) the 2n = 14 OrthoMADS directions +h_j and -h_j, h_j the columns of H = I - 2 v v^T with v = (2 u_t - 1)/||2 u_t - 1||, u_t the Halton point (bases = the first 7 primes) of index t = 17 + k, each rounded to the lattice as d = round_half_away(h / ||h||_inf) (PB.project_direction at Delta = 1); (2) every rounded point inc + d that is INFEASIBLE is SNAPPED (SNAP_RULE); (3) the COMPLETION -- every bound-, rule- and budget-feasible canonical lattice point within l_inf distance 1 of the incumbent (PB.Lattice.completion) -- is added ONLY IF FEWER THAN n + 1 = 8 DISTINCT feasible poll points remain after snapping (counted as distinct canonical points != the incumbent, i.e. the cache-hit plus new-evaluation candidates); the completion cap of 30 applies to it and REFUSES the poll (STOP_FOR_REVIEW_completion_cap), never truncates; the cap is checked before the evaluation budget. Full poll, batches of <= 5, cache hits never re-evaluated, duplicate eval keys dropped.",
+   "spec_snap_rule": "an infeasible rounded point r = inc + d is replaced by the NEAREST point of the SNAP SET = every feasible canonical lattice point z != inc with ||z - inc||_inf <= 1 (the unit frame of the incumbent, PB.Lattice.neighbourhood -- the same set as the completion). NEAREST = lexicographic minimum of (1) ||z - r||_1, (2) ||z - r||_inf, (3) ||z - inc||_1, (4) the SAME INVESTMENT YEAR AS THE INCUMBENT first (a point without storage has no active year and counts as a different year; level inserted by the W50 Planner ruling 1), (5) I(z) (lower first), (6) the lattice label (string order). Distances are in lattice units over the 7 coordinates (zP5, zE5, zP7, zE7, zP9, zE9, zY); the year coordinate is counted only when z holds storage (it is inactive otherwise, STEP4 5.4). If the snap set is empty the direction is recorded 'no feasible snap' and contributes no poll point (extreme barrier, not evaluated). Recorded for EVERY direction: the rounded point, whether it is feasible or the reasons it is not, the snapped point or 'no feasible snap', the snap distances, every point tied at the minimum l1 distance and the tie-break level that decided.",
+   "results": {
+    "path": "data/SRP1/Results/P515S53/campaign_s53_f2_certificate_r1/campaign_results.json",
+    "sha256": "61b9c501a2dc3a957fe06246c0048bfc4c61798626dc3a91783bd463602f4a94"
+   },
+   "delta_sequence": [
+    1
+   ],
+   "polls": [
+    {
+     "poll_index": 4,
+     "halton_t": 21,
+     "delta": 1,
+     "incumbent": "y2030__n5_p0.25_e0.5__n7_p1_e3.5",
+     "dispositions": {
+      "cache_hit": 3,
+      "new_evaluation": 7,
+      "duplicate_of_direction_0": 3,
+      "duplicate_of_direction_3": 1
+     },
+     "n_new_evaluations": 7,
+     "n_cache_hits": 3,
+     "completion_n_feasible": null,
+     "decision": "failure_at_unit_mesh",
+     "next_incumbent": "y2030__n5_p0.25_e0.5__n7_p1_e3.5",
+     "next_poll_size": null,
+     "n_direction_points_feasible": 10,
+     "directions_recomputed_equal_record": true,
+     "n_directions": 14,
+     "snap_decided_by": {
+      "snapped:same_year_as_incumbent": 4,
+      "snapped:l1_to_rounded": 8,
+      "feasible_as_rounded:None": 1,
+      "snapped:l1_to_incumbent": 1
+     },
+     "n_distinct_feasible_poll_points": 10,
+     "completion_triggered": false
+    }
+   ],
+   "termination": {
+    "reason": "poll_failure_at_unit_mesh",
+    "poll_size_reached": 1
+   },
+   "n_new_evaluations_total": 7,
+   "max_new_evaluations": 60
+  }
+ },
+ "item2": {
+  "x0": {
+   "incumbent": "x0",
+   "incumbent_z": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "certificate_record": {
+    "path": "data/SRP1/Results/P515S47/campaign_s47_phase_b/campaign_results.json",
+    "field": "termination_certificate",
+    "value": {
+     "statement": "no feasible lattice neighbour of the incumbent improves F: every bound-, rule- and budget-feasible lattice point within l_inf distance 1 of the incumbent in (zP5, zE5, zP7, zE7, zP9, zE9, zY) was polled at the final unit poll and none is a determinate improvement (F(inc) - F(x) > max(bar_x + bar_inc, sigma_Q)); indeterminate neighbours are listed unresolved, barrier neighbours are F = +inf (extreme barrier)",
+     "incumbent": "x0",
+     "n_feasible_neighbours": 14,
+     "all_feasible_neighbours_polled": true,
+     "n_no_improvement": 14,
+     "n_indeterminate_unresolved": 0,
+     "n_barrier": 0,
+     "n_improvement": 0,
+     "holds": true
+    }
+   },
+   "a_final_poll": {
+    "poll_index": 2,
+    "delta": 1,
+    "n_points_listed": 22,
+    "n_directions_rejected_infeasible": 8,
+    "n_poll_set_feasible_distinct": 14,
+    "n_evaluated_new": 14,
+    "n_cache_hits": 0
+   },
+   "b_box": {
+    "n_feasible": 14,
+    "n_evaluated": 14,
+    "n_not_evaluated": 0,
+    "box_equals_final_poll_set": true
+   },
+   "c_search_time": {
+    "worse": 14
+   },
+   "c_resettled_in_frozen_tables": {
+    "n": 8,
+    "labels": [
+     "y2025__n9_p0.25_e0.5",
+     "y2030__n9_p0.25_e0.5",
+     "y2025__n7_p0.25_e0.5",
+     "y2030__n7_p0.25_e0.5",
+     "y2025__n5_p0.25_e0.5",
+     "y2030__n5_p0.25_e0.5",
+     "y2025__n5_p0.25_e0.5__n9_p0.25_e0.5",
+     "y2030__n5_p0.25_e0.5__n7_p0.25_e0.5"
+    ],
+    "verdicts": [
+     {
+      "label": "y2025__n9_p0.25_e0.5",
+      "phase_b": [
+       {
+        "cell": "pb_y2025_n9",
+        "status": "certified",
+        "superseded": false,
+        "M_gross": 52460.2600646019,
+        "v6_threshold": 12627.514008879662,
+        "v6_multiple": 4.154440852547213,
+        "v6_verdict": "determinate"
+       }
+      ],
+      "claims": []
+     },
+     {
+      "label": "y2030__n9_p0.25_e0.5",
+      "phase_b": [
+       {
+        "cell": "pb_y2030_n9",
+        "status": "certified",
+        "superseded": false,
+        "M_gross": 46705.97347736359,
+        "v6_threshold": 12826.328862905502,
+        "v6_multiple": 3.6414139990157284,
+        "v6_verdict": "determinate"
+       }
+      ],
+      "claims": []
+     },
+     {
+      "label": "y2025__n7_p0.25_e0.5",
+      "phase_b": [
+       {
+        "cell": "pb_y2025_n7",
+        "status": "certified",
+        "superseded": false,
+        "M_gross": 54940.73541390896,
+        "v6_threshold": 13265.218827724457,
+        "v6_multiple": 4.1417134634132236,
+        "v6_verdict": "determinate"
+       }
+      ],
+      "claims": []
+     },
+     {
+      "label": "y2030__n7_p0.25_e0.5",
+      "phase_b": [
+       {
+        "cell": "pb_y2030_n7",
+        "status": "certified",
+        "superseded": false,
+        "M_gross": 49021.7031853199,
+        "v6_threshold": 13536.046451926231,
+        "v6_multiple": 3.621567298798973,
+        "v6_verdict": "determinate"
+       }
+      ],
+      "claims": []
+     },
+     {
+      "label": "y2025__n5_p0.25_e0.5",
+      "phase_b": [],
+      "claims": [
+       {
+        "claim_id": "C:y2025__n5_p0.25_e0.5",
+        "d_gross": 49692.730476140976,
+        "gross_threshold_or_bar": 12627.514008879662,
+        "gross_verdict": "determinate"
+       }
+      ]
+     },
+     {
+      "label": "y2030__n5_p0.25_e0.5",
+      "phase_b": [
+       {
+        "cell": "pb_y2030_n5",
+        "status": "certified",
+        "superseded": false,
+        "M_gross": 43325.65419757366,
+        "v6_threshold": 12748.136409401894,
+        "v6_multiple": 3.3985872763034215,
+        "v6_verdict": "determinate"
+       }
+      ],
+      "claims": []
+     },
+     {
+      "label": "y2025__n5_p0.25_e0.5__n9_p0.25_e0.5",
+      "phase_b": [],
+      "claims": [
+       {
+        "claim_id": "C:y2025__n5_p0.25_e0.5__n9_p0.25_e0.5",
+        "d_gross": 102096.792314291,
+        "gross_threshold_or_bar": 12627.514008879662,
+        "gross_verdict": "determinate"
+       }
+      ]
+     },
+     {
+      "label": "y2030__n5_p0.25_e0.5__n7_p0.25_e0.5",
+      "phase_b": [],
+      "claims": [
+       {
+        "claim_id": "C:y2030__n5_p0.25_e0.5__n7_p0.25_e0.5",
+        "d_gross": 93877.52067863941,
+        "gross_threshold_or_bar": 13405.843914985657,
+        "gross_verdict": "determinate"
+       }
+      ]
+     }
+    ]
+   },
+   "rows": [
+    {
+     "label": "y2025__n9_p0.25_e0.5",
+     "z": [
+      0,
+      0,
+      0,
+      0,
+      1,
+      1,
+      0
+     ],
+     "in_final_poll": true,
+     "disposition": "new_evaluation",
+     "search_F_minus_F_inc_eur": 54489.41713190079,
+     "search_resolution_eur": 47205.25432550907,
+     "search_outcome_A4": "no_improvement",
+     "search_symmetric_class": "worse",
+     "frozen_table_rows": [
+      [
+       "phase_b",
+       "pb_y2025_n9"
+      ]
+     ],
+     "frozen_phase_b": [
+      {
+       "cell": "pb_y2025_n9",
+       "status": "certified",
+       "superseded": false,
+       "M_gross": 52460.2600646019,
+       "v6_threshold": 12627.514008879662,
+       "v6_multiple": 4.154440852547213,
+       "v6_verdict": "determinate"
+      }
+     ],
+     "frozen_claims_vs_x0": []
+    },
+    {
+     "label": "y2030__n9_p0.25_e0.5",
+     "z": [
+      0,
+      0,
+      0,
+      0,
+      1,
+      1,
+      1
+     ],
+     "in_final_poll": true,
+     "disposition": "new_evaluation",
+     "search_F_minus_F_inc_eur": 33459.32584691048,
+     "search_resolution_eur": 18449.663947025518,
+     "search_outcome_A4": "no_improvement",
+     "search_symmetric_class": "worse",
+     "frozen_table_rows": [
+      [
+       "phase_b",
+       "pb_y2030_n9"
+      ]
+     ],
+     "frozen_phase_b": [
+      {
+       "cell": "pb_y2030_n9",
+       "status": "certified",
+       "superseded": false,
+       "M_gross": 46705.97347736359,
+       "v6_threshold": 12826.328862905502,
+       "v6_multiple": 3.6414139990157284,
+       "v6_verdict": "determinate"
+      }
+     ],
+     "frozen_claims_vs_x0": []
+    },
+    {
+     "label": "y2025__n7_p0.25_e0.5",
+     "z": [
+      0,
+      0,
+      1,
+      1,
+      0,
+      0,
+      0
+     ],
+     "in_final_poll": true,
+     "disposition": "new_evaluation",
+     "search_F_minus_F_inc_eur": 57411.39735484123,
+     "search_resolution_eur": 22145.024706721306,
+     "search_outcome_A4": "no_improvement",
+     "search_symmetric_class": "worse",
+     "frozen_table_rows": [
+      [
+       "phase_b",
+       "pb_y2025_n7"
+      ]
+     ],
+     "frozen_phase_b": [
+      {
+       "cell": "pb_y2025_n7",
+       "status": "certified",
+       "superseded": false,
+       "M_gross": 54940.73541390896,
+       "v6_threshold": 13265.218827724457,
+       "v6_multiple": 4.1417134634132236,
+       "v6_verdict": "determinate"
+      }
+     ],
+     "frozen_claims_vs_x0": []
+    },
+    {
+     "label": "y2030__n7_p0.25_e0.5",
+     "z": [
+      0,
+      0,
+      1,
+      1,
+      0,
+      0,
+      1
+     ],
+     "in_final_poll": true,
+     "disposition": "new_evaluation",
+     "search_F_minus_F_inc_eur": 42268.278532743454,
+     "search_resolution_eur": 18449.663947025518,
+     "search_outcome_A4": "no_improvement",
+     "search_symmetric_class": "worse",
+     "frozen_table_rows": [
+      [
+       "phase_b",
+       "pb_y2030_n7"
+      ]
+     ],
+     "frozen_phase_b": [
+      {
+       "cell": "pb_y2030_n7",
+       "status": "certified",
+       "superseded": false,
+       "M_gross": 49021.7031853199,
+       "v6_threshold": 13536.046451926231,
+       "v6_multiple": 3.621567298798973,
+       "v6_verdict": "determinate"
+      }
+     ],
+     "frozen_claims_vs_x0": []
+    },
+    {
+     "label": "y2025__n7_p0.25_e0.5__n9_p0.25_e0.5",
+     "z": [
+      0,
+      0,
+      1,
+      1,
+      1,
+      1,
+      0
+     ],
+     "in_final_poll": true,
+     "disposition": "new_evaluation",
+     "search_F_minus_F_inc_eur": 113662.7636013031,
+     "search_resolution_eur": 18449.663947025518,
+     "search_outcome_A4": "no_improvement",
+     "search_symmetric_class": "worse",
+     "frozen_table_rows": [],
+     "frozen_phase_b": [],
+     "frozen_claims_vs_x0": []
+    },
+    {
+     "label": "y2030__n7_p0.25_e0.5__n9_p0.25_e0.5",
+     "z": [
+      0,
+      0,
+      1,
+      1,
+      1,
+      1,
+      1
+     ],
+     "in_final_poll": true,
+     "disposition": "new_evaluation",
+     "search_F_minus_F_inc_eur": 102829.59660160542,
+     "search_resolution_eur": 18449.663947025518,
+     "search_outcome_A4": "no_improvement",
+     "search_symmetric_class": "worse",
+     "frozen_table_rows": [],
+     "frozen_phase_b": [],
+     "frozen_claims_vs_x0": []
+    },
+    {
+     "label": "y2025__n5_p0.25_e0.5",
+     "z": [
+      1,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     "in_final_poll": true,
+     "disposition": "new_evaluation",
+     "search_F_minus_F_inc_eur": 43020.47268676758,
+     "search_resolution_eur": 40188.720626711845,
+     "search_outcome_A4": "no_improvement",
+     "search_symmetric_class": "worse",
+     "frozen_table_rows": [
+      [
+       "cells",
+       "pb_y2025_n5_v6"
+      ],
+      [
+       "phase_b",
+       "pb_y2025_n5"
+      ]
+     ],
+     "frozen_phase_b": [
+      {
+       "cell": "pb_y2025_n5",
+       "status": "certified",
+       "superseded": true,
+       "M_gross": 51262.81463038921,
+       "v6_threshold": 13525.888667464256,
+       "v6_multiple": 3.7899775675145806,
+       "v6_verdict": "determinate"
+      }
+     ],
+     "frozen_claims_vs_x0": [
+      {
+       "claim_id": "C:y2025__n5_p0.25_e0.5",
+       "family": "C",
+       "ref_cell": "ref:7aa017f0",
+       "other_cell": "pb_y2025_n5_v6",
+       "ref_status": "cert. k*181 r/\u03c4 0.927",
+       "other_status": "cert. oscillatory k*199 r/\u03c4 0.158",
+       "d_gross": 49692.730476140976,
+       "gross_rule": "max(3 x larger bar, 2 tau)",
+       "gross_threshold_or_bar": 12627.514008879662,
+       "gross_multiple": 3.935274230636139,
+       "gross_verdict": "determinate",
+       "d_Qcc_report_only": 49798.48662960529,
+       "Qcc_verdict_report_only": "determinate"
+      }
+     ]
+    },
+    {
+     "label": "y2030__n5_p0.25_e0.5",
+     "z": [
+      1,
+      1,
+      0,
+      0,
+      0,
+      0,
+      1
+     ],
+     "in_final_poll": true,
+     "disposition": "new_evaluation",
+     "search_F_minus_F_inc_eur": 43675.91406595707,
+     "search_resolution_eur": 18449.663947025518,
+     "search_outcome_A4": "no_improvement",
+     "search_symmetric_class": "worse",
+     "frozen_table_rows": [
+      [
+       "phase_b",
+       "pb_y2030_n5"
+      ]
+     ],
+     "frozen_phase_b": [
+      {
+       "cell": "pb_y2030_n5",
+       "status": "certified",
+       "superseded": false,
+       "M_gross": 43325.65419757366,
+       "v6_threshold": 12748.136409401894,
+       "v6_multiple": 3.3985872763034215,
+       "v6_verdict": "determinate"
+      }
+     ],
+     "frozen_claims_vs_x0": []
+    },
+    {
+     "label": "y2025__n5_p0.25_e0.5__n9_p0.25_e0.5",
+     "z": [
+      1,
+      1,
+      0,
+      0,
+      1,
+      1,
+      0
+     ],
+     "in_final_poll": true,
+     "disposition": "new_evaluation",
+     "search_F_minus_F_inc_eur": 97071.82376909256,
+     "search_resolution_eur": 22128.837436795235,
+     "search_outcome_A4": "no_improvement",
+     "search_symmetric_class": "worse",
+     "frozen_table_rows": [
+      [
+       "cells",
+       "c_156ce2d1"
+      ]
+     ],
+     "frozen_phase_b": [],
+     "frozen_claims_vs_x0": [
+      {
+       "claim_id": "C:y2025__n5_p0.25_e0.5__n9_p0.25_e0.5",
+       "family": "C",
+       "ref_cell": "ref:7aa017f0",
+       "other_cell": "c_156ce2d1",
+       "ref_status": "cert. k*181 r/\u03c4 0.927",
+       "other_status": "cert. oscillatory k*176 r/\u03c4 0.858",
+       "d_gross": 102096.792314291,
+       "gross_rule": "max(3 x larger bar, 2 tau)",
+       "gross_threshold_or_bar": 12627.514008879662,
+       "gross_multiple": 8.08526462473109,
+       "gross_verdict": "determinate",
+       "d_Qcc_report_only": 102671.97009313107,
+       "Qcc_verdict_report_only": "determinate"
+      }
+     ]
+    },
+    {
+     "label": "y2030__n5_p0.25_e0.5__n9_p0.25_e0.5",
+     "z": [
+      1,
+      1,
+      0,
+      0,
+      1,
+      1,
+      1
+     ],
+     "in_final_poll": true,
+     "disposition": "new_evaluation",
+     "search_F_minus_F_inc_eur": 112016.98084282875,
+     "search_resolution_eur": 18449.663947025518,
+     "search_outcome_A4": "no_improvement",
+     "search_symmetric_class": "worse",
+     "frozen_table_rows": [],
+     "frozen_phase_b": [],
+     "frozen_claims_vs_x0": []
+    },
+    {
+     "label": "y2025__n5_p0.25_e0.5__n7_p0.25_e0.5",
+     "z": [
+      1,
+      1,
+      1,
+      1,
+      0,
+      0,
+      0
+     ],
+     "in_final_poll": true,
+     "disposition": "new_evaluation",
+     "search_F_minus_F_inc_eur": 101828.96571481228,
+     "search_resolution_eur": 18449.663947025518,
+     "search_outcome_A4": "no_improvement",
+     "search_symmetric_class": "worse",
+     "frozen_table_rows": [],
+     "frozen_phase_b": [],
+     "frozen_claims_vs_x0": []
+    },
+    {
+     "label": "y2030__n5_p0.25_e0.5__n7_p0.25_e0.5",
+     "z": [
+      1,
+      1,
+      1,
+      1,
+      0,
+      0,
+      1
+     ],
+     "in_final_poll": true,
+     "disposition": "new_evaluation",
+     "search_F_minus_F_inc_eur": 130638.5022149086,
+     "search_resolution_eur": 44086.654787778854,
+     "search_outcome_A4": "no_improvement",
+     "search_symmetric_class": "worse",
+     "frozen_table_rows": [
+      [
+       "cells",
+       "c_6597a79d"
+      ]
+     ],
+     "frozen_phase_b": [],
+     "frozen_claims_vs_x0": [
+      {
+       "claim_id": "C:y2030__n5_p0.25_e0.5__n7_p0.25_e0.5",
+       "family": "C",
+       "ref_cell": "ref:7aa017f0",
+       "other_cell": "c_6597a79d",
+       "ref_status": "cert. k*181 r/\u03c4 0.927",
+       "other_status": "cert. oscillatory k*193 r/\u03c4 0.984 [\u22650.95\u03c4]",
+       "d_gross": 93877.52067863941,
+       "gross_rule": "max(3 x larger bar, 2 tau)",
+       "gross_threshold_or_bar": 13405.843914985657,
+       "gross_multiple": 7.002731142774151,
+       "gross_verdict": "determinate",
+       "d_Qcc_report_only": 93676.39942872524,
+       "Qcc_verdict_report_only": "determinate"
+      }
+     ]
+    },
+    {
+     "label": "y2025__n5_p0.25_e0.5__n7_p0.25_e0.5__n9_p0.25_e0.5",
+     "z": [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0
+     ],
+     "in_final_poll": true,
+     "disposition": "new_evaluation",
+     "search_F_minus_F_inc_eur": 151806.59216177464,
+     "search_resolution_eur": 43788.42256844044,
+     "search_outcome_A4": "no_improvement",
+     "search_symmetric_class": "worse",
+     "frozen_table_rows": [],
+     "frozen_phase_b": [],
+     "frozen_claims_vs_x0": []
+    },
+    {
+     "label": "y2030__n5_p0.25_e0.5__n7_p0.25_e0.5__n9_p0.25_e0.5",
+     "z": [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1
+     ],
+     "in_final_poll": true,
+     "disposition": "new_evaluation",
+     "search_F_minus_F_inc_eur": 132203.98239135742,
+     "search_resolution_eur": 18449.663947025518,
+     "search_outcome_A4": "no_improvement",
+     "search_symmetric_class": "worse",
+     "frozen_table_rows": [],
+     "frozen_phase_b": [],
+     "frozen_claims_vs_x0": []
+    }
+   ]
+  },
+  "F2": {
+   "incumbent": "y2030__n5_p0.25_e0.5__n7_p1_e3.5",
+   "incumbent_z": [
+    1,
+    1,
+    4,
+    7,
+    0,
+    0,
+    1
+   ],
+   "certificate_record": {
+    "path": "data/SRP1/Results/P515S53/campaign_s53_f2_certificate_r1/campaign_results.json",
+    "field": "termination_certificate",
+    "scope_claim": "poll failure over the recorded poll set at unit mesh, NOT a positive-spanning-set certificate, NOT the full-box certificate",
+    "holds": true,
+    "poll_set_spanning": {
+     "n_vectors": 10,
+     "rank": 5,
+     "zero_strictly_interior": false,
+     "positively_spans_R7": false,
+     "signed_unit_vectors_not_in_cone": [
+      "+zP5",
+      "+zE5",
+      "-zE5",
+      "+zP7",
+      "-zP7",
+      "+zE7",
+      "+zP9",
+      "-zP9",
+      "+zE9",
+      "-zE9",
+      "-zY"
+     ],
+     "method": "rank: numpy.linalg.matrix_rank; positive spanning: rank == 7 and linprog(A_eq = D, b_eq = 0, lambda >= 1) feasible (HiGHS); cone membership of +-e_i: linprog(A_eq = D, b_eq = e_i, lambda >= 0)"
+    },
+    "box_neighbourhood_counts": {
+     "n_feasible": 61,
+     "n_in_poll_set": 10,
+     "n_outside_poll_set": 51
+    },
+    "cached_box_neighbours_counts": {
+     "better": 0,
+     "worse": 5,
+     "indeterminate": 2,
+     "barrier": 0
+    }
+   },
+   "a_final_poll": {
+    "poll_index": 4,
+    "halton_t": 21,
+    "n_poll_points": 10,
+    "n_evaluated_new": 7,
+    "n_cache_hits": 3,
+    "search_classes": {
+     "worse": 8,
+     "indeterminate": 2
+    },
+    "completion_triggered": false
+   },
+   "b_box": {
+    "n_feasible": 61,
+    "n_evaluated_in_search": 17,
+    "n_in_final_poll_set": 10,
+    "n_cached_outside_poll_set": 7,
+    "n_not_evaluated_in_search": 44,
+    "not_evaluated_but_found_in_another_m2_campaign": [],
+    "scan_scope": {
+     "n_campaign_results_files_tracked": 89,
+     "n_evaluation_records_on_disk": 274,
+     "n_evaluation_records_tracked": 274,
+     "n_evaluation_records_on_disk_untracked": 0,
+     "n_points_with_canonical": 429,
+     "match": "same canonical candidate on the search lattice and flex_price_multiplier == 2.0 (point field, else top-level, else 1.0)"
+    }
+   },
+   "c_search_time_evaluated": {
+    "worse": 13,
+    "within_resolution": 4
+   },
+   "c_L_claims_all": {
+    "n": 14,
+    "n_positive_plan_better": 13,
+    "n_positive_determinate": 8,
+    "n_positive_within_bar": 5,
+    "n_negative_neighbour_better": 1,
+    "negative": [
+     {
+      "label": "y2030__n5_p0.25_e1__n7_p1_e3",
+      "other_cell": "ref:e28de4ac",
+      "d_gross": -6107.638909578323,
+      "gross_threshold_or_bar": 27900.378565777683,
+      "gross_verdict": "within the uncertified bar"
+     }
+    ]
+   },
+   "c_L_claims_box_neighbours": {
+    "n": 13,
+    "n_positive_plan_better": 12,
+    "n_positive_determinate": 7,
+    "n_positive_within_bar": 5,
+    "n_negative_neighbour_better": 1,
+    "negative": [
+     {
+      "label": "y2030__n5_p0.25_e1__n7_p1_e3",
+      "other_cell": "ref:e28de4ac",
+      "d_gross": -6107.638909578323,
+      "gross_threshold_or_bar": 27900.378565777683,
+      "gross_verdict": "within the uncertified bar"
+     }
+    ]
+   },
+   "c_L_claims_twelve_l_cells": {
+    "n": 12,
+    "n_positive_plan_better": 12,
+    "n_positive_determinate": 7,
+    "n_positive_within_bar": 5,
+    "n_negative_neighbour_better": 0,
+    "negative": []
+   },
+   "L_claims_not_box_neighbours": [
+    {
+     "claim_id": "L:df1a5525_not_a_neighbour",
+     "other_cell": "l_df1a5525",
+     "label": "y2030__n5_p0.25_e0.5__n7_p0.75_e2.5",
+     "linf_to_incumbent": 2,
+     "is_box_neighbour": false,
+     "d_gross": 47651.09383904934,
+     "gross_threshold_or_bar": 27703.27326627694,
+     "gross_multiple": 1.7200528392814427,
+     "gross_verdict": "determinate",
+     "d_Qcc_report_only": 56812.49450600147,
+     "Qcc_verdict_report_only": "in the verdict (the uncertified form tests gross AND Q_cc)"
+    }
+   ],
+   "l_cells_T1": [
+    "l_0ee93aca",
+    "l_195156fa",
+    "l_2ab0ce2d",
+    "l_45aa25a6",
+    "l_76c78064",
+    "l_7b199ef9",
+    "l_7c455554",
+    "l_7db09f6c",
+    "l_8e4c220e",
+    "l_b2251bc5",
+    "l_df1a5525",
+    "l_e1da0984"
+   ],
+   "l_cells_that_are_box_neighbours": [
+    "l_0ee93aca",
+    "l_195156fa",
+    "l_2ab0ce2d",
+    "l_45aa25a6",
+    "l_76c78064",
+    "l_7b199ef9",
+    "l_7c455554",
+    "l_7db09f6c",
+    "l_8e4c220e",
+    "l_b2251bc5",
+    "l_e1da0984"
+   ],
+   "evaluated_box_neighbours_without_L_claim": [
+    {
+     "label": "y2035__n5_p0.25_e0.5__n7_p1_e3",
+     "where": "final_poll_set",
+     "search_F_minus_F_inc_eur": 446656.61800551414,
+     "search_resolution_eur": 18449.663947025518,
+     "search_symmetric_class": "worse",
+     "frozen_table_rows": []
+    },
+    {
+     "label": "y2035__n5_p0.25_e0.5__n7_p1_e4",
+     "where": "final_poll_set",
+     "search_F_minus_F_inc_eur": 493561.2212911844,
+     "search_resolution_eur": 18449.663947025518,
+     "search_symmetric_class": "worse",
+     "frozen_table_rows": []
+    },
+    {
+     "label": "y2035__n5_p0.25_e1__n7_p1_e3",
+     "where": "final_poll_set",
+     "search_F_minus_F_inc_eur": 465235.6507552862,
+     "search_resolution_eur": 18449.663947025518,
+     "search_symmetric_class": "worse",
+     "frozen_table_rows": []
+    },
+    {
+     "label": "y2035__n5_p0.25_e1__n7_p1_e4",
+     "where": "final_poll_set",
+     "search_F_minus_F_inc_eur": 511160.33009028435,
+     "search_resolution_eur": 18449.663947025518,
+     "search_symmetric_class": "worse",
+     "frozen_table_rows": []
+    }
+   ],
+   "L_claims_detail": [
+    {
+     "claim_id": "L:df1a5525_not_a_neighbour",
+     "other_cell": "l_df1a5525",
+     "label": "y2030__n5_p0.25_e0.5__n7_p0.75_e2.5",
+     "linf_to_incumbent": 2,
+     "is_box_neighbour": false,
+     "d_gross": 47651.09383904934,
+     "gross_threshold_or_bar": 27703.27326627694,
+     "gross_multiple": 1.7200528392814427,
+     "gross_verdict": "determinate",
+     "d_Qcc_report_only": 56812.49450600147,
+     "Qcc_verdict_report_only": "in the verdict (the uncertified form tests gross AND Q_cc)"
+    },
+    {
+     "claim_id": "L:y2025__n7_p0.75_e3",
+     "other_cell": "j_f3aa335e",
+     "label": "y2025__n7_p0.75_e3",
+     "linf_to_incumbent": 1,
+     "is_box_neighbour": true,
+     "d_gross": 94347.05011618137,
+     "gross_threshold_or_bar": 27703.27326627694,
+     "gross_multiple": 3.4056282522769457,
+     "gross_verdict": "determinate",
+     "d_Qcc_report_only": 103833.02729821205,
+     "Qcc_verdict_report_only": "in the verdict (the uncertified form tests gross AND Q_cc)"
+    },
+    {
+     "claim_id": "L:y2030__n5_p0.25_e0.5__n7_p0.75_e3",
+     "other_cell": "l_195156fa",
+     "label": "y2030__n5_p0.25_e0.5__n7_p0.75_e3",
+     "linf_to_incumbent": 1,
+     "is_box_neighbour": true,
+     "d_gross": 28621.206088781357,
+     "gross_threshold_or_bar": 27703.27326627694,
+     "gross_multiple": 1.0331344535962041,
+     "gross_verdict": "determinate",
+     "d_Qcc_report_only": 37774.50586795807,
+     "Qcc_verdict_report_only": "in the verdict (the uncertified form tests gross AND Q_cc)"
+    },
+    {
+     "claim_id": "L:y2030__n5_p0.25_e0.5__n7_p0.75_e3__n9_p0.25_e0.5",
+     "other_cell": "l_b2251bc5",
+     "label": "y2030__n5_p0.25_e0.5__n7_p0.75_e3__n9_p0.25_e0.5",
+     "linf_to_incumbent": 1,
+     "is_box_neighbour": true,
+     "d_gross": 9803.705368995667,
+     "gross_threshold_or_bar": 28205.566421167616,
+     "gross_multiple": 0.34758051735625545,
+     "gross_verdict": "within the uncertified bar",
+     "d_Qcc_report_only": 9636.274317383766,
+     "Qcc_verdict_report_only": "in the verdict (the uncertified form tests gross AND Q_cc)"
+    },
+    {
+     "claim_id": "L:y2030__n5_p0.25_e0.5__n7_p1.25_e3",
+     "other_cell": "l_2ab0ce2d",
+     "label": "y2030__n5_p0.25_e0.5__n7_p1.25_e3",
+     "linf_to_incumbent": 1,
+     "is_box_neighbour": true,
+     "d_gross": 53259.294523477554,
+     "gross_threshold_or_bar": 27703.27326627694,
+     "gross_multiple": 1.9224910360433773,
+     "gross_verdict": "determinate",
+     "d_Qcc_report_only": 62494.61073088646,
+     "Qcc_verdict_report_only": "in the verdict (the uncertified form tests gross AND Q_cc)"
+    },
+    {
+     "claim_id": "L:y2030__n5_p0.25_e0.5__n7_p1_e3",
+     "other_cell": "l_0ee93aca",
+     "label": "y2030__n5_p0.25_e0.5__n7_p1_e3",
+     "linf_to_incumbent": 1,
+     "is_box_neighbour": true,
+     "d_gross": 26427.213258624077,
+     "gross_threshold_or_bar": 27900.265224859322,
+     "gross_multiple": 0.9472029403891563,
+     "gross_verdict": "within the uncertified bar",
+     "d_Qcc_report_only": 26361.54927253723,
+     "Qcc_verdict_report_only": "in the verdict (the uncertified form tests gross AND Q_cc)"
+    },
+    {
+     "claim_id": "L:y2030__n5_p0.25_e1__n7_p1_e3",
+     "other_cell": "ref:e28de4ac",
+     "label": "y2030__n5_p0.25_e1__n7_p1_e3",
+     "linf_to_incumbent": 1,
+     "is_box_neighbour": true,
+     "d_gross": -6107.638909578323,
+     "gross_threshold_or_bar": 27900.378565777683,
+     "gross_multiple": 0.21890881857316052,
+     "gross_verdict": "within the uncertified bar",
+     "d_Qcc_report_only": -6173.34067606926,
+     "Qcc_verdict_report_only": "in the verdict (the uncertified form tests gross AND Q_cc)"
+    },
+    {
+     "claim_id": "L:y2030__n7_p0.75_e3",
+     "other_cell": "l_8e4c220e",
+     "label": "y2030__n7_p0.75_e3",
+     "linf_to_incumbent": 1,
+     "is_box_neighbour": true,
+     "d_gross": 61485.983201265335,
+     "gross_threshold_or_bar": 27703.27326627694,
+     "gross_multiple": 2.219448316098875,
+     "gross_verdict": "determinate",
+     "d_Qcc_report_only": 70642.79553365707,
+     "Qcc_verdict_report_only": "in the verdict (the uncertified form tests gross AND Q_cc)"
+    },
+    {
+     "claim_id": "L:y2030__n7_p0.75_e3__n9_p0.25_e0.5",
+     "other_cell": "l_7db09f6c",
+     "label": "y2030__n7_p0.75_e3__n9_p0.25_e0.5",
+     "linf_to_incumbent": 1,
+     "is_box_neighbour": true,
+     "d_gross": 35335.93312430382,
+     "gross_threshold_or_bar": 27703.27326627694,
+     "gross_multiple": 1.275514730142668,
+     "gross_verdict": "determinate",
+     "d_Qcc_report_only": 44506.895567417145,
+     "Qcc_verdict_report_only": "in the verdict (the uncertified form tests gross AND Q_cc)"
+    },
+    {
+     "claim_id": "L:y2030__n7_p1_e3",
+     "other_cell": "l_76c78064",
+     "label": "y2030__n7_p1_e3",
+     "linf_to_incumbent": 1,
+     "is_box_neighbour": true,
+     "d_gross": 50616.85681569576,
+     "gross_threshold_or_bar": 27703.27326627694,
+     "gross_multiple": 1.8271074442784858,
+     "gross_verdict": "determinate",
+     "d_Qcc_report_only": 59782.58179831505,
+     "Qcc_verdict_report_only": "in the verdict (the uncertified form tests gross AND Q_cc)"
+    },
+    {
+     "claim_id": "L:y2030__n7_p1_e3.5",
+     "other_cell": "l_e1da0984",
+     "label": "y2030__n7_p1_e3.5",
+     "linf_to_incumbent": 1,
+     "is_box_neighbour": true,
+     "d_gross": 23868.866812109947,
+     "gross_threshold_or_bar": 27703.27326627694,
+     "gross_multiple": 0.8615901298986717,
+     "gross_verdict": "within the uncertified bar",
+     "d_Qcc_report_only": 33062.26594376564,
+     "Qcc_verdict_report_only": "in the verdict (the uncertified form tests gross AND Q_cc)"
+    },
+    {
+     "claim_id": "L:y2030__n7_p1_e3.5__n9_p0.25_e0.5",
+     "other_cell": "l_7c455554",
+     "label": "y2030__n7_p1_e3.5__n9_p0.25_e0.5",
+     "linf_to_incumbent": 1,
+     "is_box_neighbour": true,
+     "d_gross": 5576.815958738327,
+     "gross_threshold_or_bar": 27743.278844739456,
+     "gross_multiple": 0.20101502745757016,
+     "gross_verdict": "within the uncertified bar",
+     "d_Qcc_report_only": 5563.480765938759,
+     "Qcc_verdict_report_only": "in the verdict (the uncertified form tests gross AND Q_cc)"
+    },
+    {
+     "claim_id": "L:y2030__n7_p1_e3__n9_p0.25_e0.5",
+     "other_cell": "l_45aa25a6",
+     "label": "y2030__n7_p1_e3__n9_p0.25_e0.5",
+     "linf_to_incumbent": 1,
+     "is_box_neighbour": true,
+     "d_gross": 31329.46891772747,
+     "gross_threshold_or_bar": 27703.27326627694,
+     "gross_multiple": 1.1308941227484723,
+     "gross_verdict": "determinate",
+     "d_Qcc_report_only": 31366.281391739845,
+     "Qcc_verdict_report_only": "in the verdict (the uncertified form tests gross AND Q_cc)"
+    },
+    {
+     "claim_id": "L:y2030__n7_p1_e4",
+     "other_cell": "l_7b199ef9",
+     "label": "y2030__n7_p1_e4",
+     "linf_to_incumbent": 1,
+     "is_box_neighbour": true,
+     "d_gross": 6384.107126951218,
+     "gross_threshold_or_bar": 27703.27326627694,
+     "gross_multiple": 0.23044595003589557,
+     "gross_verdict": "within the uncertified bar",
+     "d_Qcc_report_only": 15885.355198383331,
+     "Qcc_verdict_report_only": "in the verdict (the uncertified form tests gross AND Q_cc)"
+    }
+   ],
+   "rows": [
+    {
+     "label": "y2025__n7_p0.75_e3",
+     "z": [
+      0,
+      0,
+      3,
+      6,
+      0,
+      0,
+      0
+     ],
+     "where": "cached_outside_poll_set",
+     "in_cache_recorded": true,
+     "polled_in_final_poll_recorded": false,
+     "search_F_minus_F_inc_eur": 102117.05680727959,
+     "search_resolution_eur": 18449.663947025518,
+     "search_symmetric_class": "worse",
+     "frozen_table_rows": [
+      [
+       "cells",
+       "d_4a82a64a"
+      ],
+      [
+       "cells",
+       "j_f3aa335e"
+      ]
+     ],
+     "frozen_L_claims": [
+      {
+       "claim_id": "L:y2025__n7_p0.75_e3",
+       "family": "L",
+       "ref_cell": "ref:5ca4f86c",
+       "other_cell": "j_f3aa335e",
+       "ref_status": "UNCERT. (gap clause) end 281",
+       "other_status": "UNCERT. (growth test) end 260",
+       "d_gross": 94347.05011618137,
+       "gross_rule": "uncertified form",
+       "gross_threshold_or_bar": 27703.27326627694,
+       "gross_multiple": 3.4056282522769457,
+       "gross_verdict": "determinate",
+       "d_Qcc_report_only": 103833.02729821205,
+       "Qcc_verdict_report_only": "in the verdict (the uncertified form tests gross AND Q_cc)"
+      }
+     ],
+     "other_campaign_evaluations_at_m2": [
+      {
+       "file": "data/SRP1/Results/P515S51/campaign_s51_f2_ladder/evals/f3aa335e6c1eda69_n7_4h_e3_m2/evaluation_record.json",
+       "label": "n7_4h_e3_m2",
+       "status": "certified",
+       "eval_key": null,
+       "kind": "evaluation_record"
+      },
+      {
+       "file": "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_j_f3aa335e/evals/af066d6bc9fdb74d_j_f3aa335e/evaluation_record.json",
+       "label": "j_f3aa335e",
+       "status": "not_certified",
+       "eval_key": null,
+       "kind": "evaluation_record"
+      },
+      {
+       "file": "data/SRP1/Results/P515S51/campaign_s51_f2_ladder/campaign_results.json",
+       "label": "n7_4h_e3_m2",
+       "status": "certified",
+       "eval_key": "f3aa335e6c1eda6950712aec00aff122d4578760f0dd02ff64996b95998eaace",
+       "kind": "campaign_results_point"
+      }
+     ]
+    },
+    {
+     "label": "y2030__n7_p0.75_e3",
+     "z": [
+      0,
+      0,
+      3,
+      6,
+      0,
+      0,
+      1
+     ],
+     "where": "cached_outside_poll_set",
+     "in_cache_recorded": true,
+     "polled_in_final_poll_recorded": false,
+     "search_F_minus_F_inc_eur": 60659.36826765537,
+     "search_resolution_eur": 18449.663947025518,
+     "search_symmetric_class": "worse",
+     "frozen_table_rows": [
+      [
+       "cells",
+       "l_8e4c220e"
+      ]
+     ],
+     "frozen_L_claims": [
+      {
+       "claim_id": "L:y2030__n7_p0.75_e3",
+       "family": "L",
+       "ref_cell": "ref:5ca4f86c",
+       "other_cell": "l_8e4c220e",
+       "ref_status": "UNCERT. (gap clause) end 281",
+       "other_status": "cert. monotone k*233 r/\u03c4 0.171",
+       "d_gross": 61485.983201265335,
+       "gross_rule": "uncertified form",
+       "gross_threshold_or_bar": 27703.27326627694,
+       "gross_multiple": 2.219448316098875,
+       "gross_verdict": "determinate",
+       "d_Qcc_report_only": 70642.79553365707,
+       "Qcc_verdict_report_only": "in the verdict (the uncertified form tests gross AND Q_cc)"
+      }
+     ],
+     "other_campaign_evaluations_at_m2": [
+      {
+       "file": "data/SRP1/Results/P515S51/campaign_s51_f2_phase_b/evals/8e4c220e4d03411b_y2030__n7_p0_75_e3_m2/evaluation_record.json",
+       "label": "y2030__n7_p0.75_e3_m2",
+       "status": "certified",
+       "eval_key": null,
+       "kind": "evaluation_record"
+      },
+      {
+       "file": "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_l_8e4c220e/evals/5775a50cf6c84503_l_8e4c220e/evaluation_record.json",
+       "label": "l_8e4c220e",
+       "status": "certified",
+       "eval_key": null,
+       "kind": "evaluation_record"
+      },
+      {
+       "file": "data/SRP1/Results/P515S51/campaign_s51_f2_phase_b/campaign_results.json",
+       "label": "y2030__n7_p0.75_e3_m2",
+       "status": "certified",
+       "eval_key": "8e4c220e4d03411bfb3caf8e5c50fc752addcf737b582d73faefcd86fada87c3",
+       "kind": "campaign_results_point"
+      }
+     ]
+    },
+    {
+     "label": "y2035__n7_p0.75_e3",
+     "z": [
+      0,
+      0,
+      3,
+      6,
+      0,
+      0,
+      2
+     ],
+     "where": "not_evaluated_in_search",
+     "in_cache_recorded": false,
+     "polled_in_final_poll_recorded": false,
+     "search_F_minus_F_inc_eur": null,
+     "search_resolution_eur": null,
+     "search_symmetric_class": null,
+     "frozen_table_rows": [],
+     "frozen_L_claims": [],
+     "other_campaign_evaluations_at_m2": []
+    },
+    {
+     "label": "y2030__n7_p0.75_e3__n9_p0.25_e0.5",
+     "z": [
+      0,
+      0,
+      3,
+      6,
+      1,
+      1,
+      1
+     ],
+     "where": "cached_outside_poll_set",
+     "in_cache_recorded": true,
+     "polled_in_final_poll_recorded": false,
+     "search_F_minus_F_inc_eur": 34755.042051792145,
+     "search_resolution_eur": 18449.663947025518,
+     "search_symmetric_class": "worse",
+     "frozen_table_rows": [
+      [
+       "cells",
+       "l_7db09f6c"
+      ]
+     ],
+     "frozen_L_claims": [
+      {
+       "claim_id": "L:y2030__n7_p0.75_e3__n9_p0.25_e0.5",
+       "family": "L",
+       "ref_cell": "ref:5ca4f86c",
+       "other_cell": "l_7db09f6c",
+       "ref_status": "UNCERT. (gap clause) end 281",
+       "other_status": "cert. monotone k*251 r/\u03c4 0.092",
+       "d_gross": 35335.93312430382,
+       "gross_rule": "uncertified form",
+       "gross_threshold_or_bar": 27703.27326627694,
+       "gross_multiple": 1.275514730142668,
+       "gross_verdict": "determinate",
+       "d_Qcc_report_only": 44506.895567417145,
+       "Qcc_verdict_report_only": "in the verdict (the uncertified form tests gross AND Q_cc)"
+      }
+     ],
+     "other_campaign_evaluations_at_m2": [
+      {
+       "file": "data/SRP1/Results/P515S51/campaign_s51_f2_phase_b/evals/7db09f6c11a99cd1_y2030__n7_p0_75_e3__n9_p0_25_e0_5_m2/evaluation_record.json",
+       "label": "y2030__n7_p0.75_e3__n9_p0.25_e0.5_m2",
+       "status": "certified",
+       "eval_key": null,
+       "kind": "evaluation_record"
+      },
+      {
+       "file": "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_l_7db09f6c/evals/7f5a857b06a6083a_l_7db09f6c/evaluation_record.json",
+       "label": "l_7db09f6c",
+       "status": "certified",
+       "eval_key": null,
+       "kind": "evaluation_record"
+      },
+      {
+       "file": "data/SRP1/Results/P515S51/campaign_s51_f2_phase_b/campaign_results.json",
+       "label": "y2030__n7_p0.75_e3__n9_p0.25_e0.5_m2",
+       "status": "certified",
+       "eval_key": "7db09f6c11a99cd173cd4ed2a0e69b643ef689f974387d669a88936472f2b3cd",
+       "kind": "campaign_results_point"
+      }
+     ]
+    },
+    {
+     "label": "y2035__n7_p0.75_e3__n9_p0.25_e0.5",
+     "z": [
+      0,
+      0,
+      3,
+      6,
+      1,
+      1,
+      2
+     ],
+     "where": "not_evaluated_in_search",
+     "in_cache_recorded": false,
+     "polled_in_final_poll_recorded": false,
+     "search_F_minus_F_inc_eur": null,
+     "search_resolution_eur": null,
+     "search_symmetric_class": null,
+     "frozen_table_rows": [],
+     "frozen_L_claims": [],
+     "other_campaign_evaluations_at_m2": []
+    },
+    {
+     "label": "y2030__n7_p1_e3",
+     "z": [
+      0,
+      0,
+      4,
+      6,
+      0,
+      0,
+      1
+     ],
+     "where": "cached_outside_poll_set",
+     "in_cache_recorded": true,
+     "polled_in_final_poll_recorded": false,
+     "search_F_minus_F_inc_eur": 49554.6650493145,
+     "search_resolution_eur": 18449.663947025518,
+     "search_symmetric_class": "worse",
+     "frozen_table_rows": [
+      [
+       "cells",
+       "l_76c78064"
+      ]
+     ],
+     "frozen_L_claims": [
+      {
+       "claim_id": "L:y2030__n7_p1_e3",
+       "family": "L",
+       "ref_cell": "ref:5ca4f86c",
+       "other_cell": "l_76c78064",
+       "ref_status": "UNCERT. (gap clause) end 281",
+       "other_status": "cert. monotone k*229 r/\u03c4 0.012",
+       "d_gross": 50616.85681569576,
+       "gross_rule": "uncertified form",
+       "gross_threshold_or_bar": 27703.27326627694,
+       "gross_multiple": 1.8271074442784858,
+       "gross_verdict": "determinate",
+       "d_Qcc_report_only": 59782.58179831505,
+       "Qcc_verdict_report_only": "in the verdict (the uncertified form tests gross AND Q_cc)"
+      }
+     ],
+     "other_campaign_evaluations_at_m2": [
+      {
+       "file": "data/SRP1/Results/P515S51/campaign_s51_f2_phase_b/evals/76c7806434358b47_y2030__n7_p1_e3_m2/evaluation_record.json",
+       "label": "y2030__n7_p1_e3_m2",
+       "status": "certified",
+       "eval_key": null,
+       "kind": "evaluation_record"
+      },
+      {
+       "file": "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_l_76c78064/evals/571ed31e4139a567_l_76c78064/evaluation_record.json",
+       "label": "l_76c78064",
+       "status": "certified",
+       "eval_key": null,
+       "kind": "evaluation_record"
+      },
+      {
+       "file": "data/SRP1/Results/P515S51/campaign_s51_f2_phase_b/campaign_results.json",
+       "label": "y2030__n7_p1_e3_m2",
+       "status": "certified",
+       "eval_key": "76c7806434358b47dea377831341c3c9d3a25fe9a24c1ebcd8ae48010c86428b",
+       "kind": "campaign_results_point"
+      }
+     ]
+    },
+    {
+     "label": "y2035__n7_p1_e3",
+     "z": [
+      0,
+      0,
+      4,
+      6,
+      0,
+      0,
+      2
+     ],
+     "where": "not_evaluated_in_search",
+     "in_cache_recorded": false,
+     "polled_in_final_poll_recorded": false,
+     "search_F_minus_F_inc_eur": null,
+     "search_resolution_eur": null,
+     "search_symmetric_class": null,
+     "frozen_table_rows": [],
+     "frozen_L_claims": [],
+     "other_campaign_evaluations_at_m2": []
+    },
+    {
+     "label": "y2030__n7_p1_e3__n9_p0.25_e0.5",
+     "z": [
+      0,
+      0,
+      4,
+      6,
+      1,
+      1,
+      1
+     ],
+     "where": "cached_outside_poll_set",
+     "in_cache_recorded": true,
+     "polled_in_final_poll_recorded": false,
+     "search_F_minus_F_inc_eur": 32059.601380825043,
+     "search_resolution_eur": 18449.663947025518,
+     "search_symmetric_class": "worse",
+     "frozen_table_rows": [
+      [
+       "cells",
+       "l_45aa25a6"
+      ]
+     ],
+     "frozen_L_claims": [
+      {
+       "claim_id": "L:y2030__n7_p1_e3__n9_p0.25_e0.5",
+       "family": "L",
+       "ref_cell": "ref:5ca4f86c",
+       "other_cell": "l_45aa25a6",
+       "ref_status": "UNCERT. (gap clause) end 281",
+       "other_status": "UNCERT. (gap clause) end 291",
+       "d_gross": 31329.46891772747,
+       "gross_rule": "uncertified form",
+       "gross_threshold_or_bar": 27703.27326627694,
+       "gross_multiple": 1.1308941227484723,
+       "gross_verdict": "determinate",
+       "d_Qcc_report_only": 31366.281391739845,
+       "Qcc_verdict_report_only": "in the verdict (the uncertified form tests gross AND Q_cc)"
+      }
+     ],
+     "other_campaign_evaluations_at_m2": [
+      {
+       "file": "data/SRP1/Results/P515S51/campaign_s51_f2_phase_b/evals/45aa25a6d2a59455_y2030__n7_p1_e3__n9_p0_25_e0_5_m2/evaluation_record.json",
+       "label": "y2030__n7_p1_e3__n9_p0.25_e0.5_m2",
+       "status": "certified",
+       "eval_key": null,
+       "kind": "evaluation_record"
+      },
+      {
+       "file": "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_l_45aa25a6/evals/296e09ff97ac2db4_l_45aa25a6/evaluation_record.json",
+       "label": "l_45aa25a6",
+       "status": "not_certified",
+       "eval_key": null,
+       "kind": "evaluation_record"
+      },
+      {
+       "file": "data/SRP1/Results/P515S51/campaign_s51_f2_phase_b/campaign_results.json",
+       "label": "y2030__n7_p1_e3__n9_p0.25_e0.5_m2",
+       "status": "certified",
+       "eval_key": "45aa25a6d2a5945507c58ff8a3d3649f3d771a9d597e9f38dbd425c7e677d2c6",
+       "kind": "campaign_results_point"
+      }
+     ]
+    },
+    {
+     "label": "y2035__n7_p1_e3__n9_p0.25_e0.5",
+     "z": [
+      0,
+      0,
+      4,
+      6,
+      1,
+      1,
+      2
+     ],
+     "where": "not_evaluated_in_search",
+     "in_cache_recorded": false,
+     "polled_in_final_poll_recorded": false,
+     "search_F_minus_F_inc_eur": null,
+     "search_resolution_eur": null,
+     "search_symmetric_class": null,
+     "frozen_table_rows": [],
+     "frozen_L_claims": [],
+     "other_campaign_evaluations_at_m2": []
+    },
+    {
+     "label": "y2030__n7_p1_e3.5",
+     "z": [
+      0,
+      0,
+      4,
+      7,
+      0,
+      0,
+      1
+     ],
+     "where": "final_poll_set",
+     "in_cache_recorded": true,
+     "polled_in_final_poll_recorded": true,
+     "search_F_minus_F_inc_eur": 22761.239747047424,
+     "search_resolution_eur": 18449.663947025518,
+     "search_symmetric_class": "worse",
+     "frozen_table_rows": [
+      [
+       "cells",
+       "l_e1da0984"
+      ]
+     ],
+     "frozen_L_claims": [
+      {
+       "claim_id": "L:y2030__n7_p1_e3.5",
+       "family": "L",
+       "ref_cell": "ref:5ca4f86c",
+       "other_cell": "l_e1da0984",
+       "ref_status": "UNCERT. (gap clause) end 281",
+       "other_status": "cert. monotone k*235 r/\u03c4 0.037",
+       "d_gross": 23868.866812109947,
+       "gross_rule": "uncertified form",
+       "gross_threshold_or_bar": 27703.27326627694,
+       "gross_multiple": 0.8615901298986717,
+       "gross_verdict": "within the uncertified bar",
+       "d_Qcc_report_only": 33062.26594376564,
+       "Qcc_verdict_report_only": "in the verdict (the uncertified form tests gross AND Q_cc)"
+      }
+     ],
+     "other_campaign_evaluations_at_m2": [
+      {
+       "file": "data/SRP1/Results/P515S51/campaign_s51_f2_phase_b/evals/e1da0984365060a9_y2030__n7_p1_e3_5_m2/evaluation_record.json",
+       "label": "y2030__n7_p1_e3.5_m2",
+       "status": "certified",
+       "eval_key": null,
+       "kind": "evaluation_record"
+      },
+      {
+       "file": "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_l_e1da0984/evals/2587ab4987bc3125_l_e1da0984/evaluation_record.json",
+       "label": "l_e1da0984",
+       "status": "certified",
+       "eval_key": null,
+       "kind": "evaluation_record"
+      },
+      {
+       "file": "data/SRP1/Results/P515S51/campaign_s51_f2_phase_b/campaign_results.json",
+       "label": "y2030__n7_p1_e3.5_m2",
+       "status": "certified",
+       "eval_key": "e1da0984365060a9eb8bb857e0fa176ff7c9a84f62b556d235533ee6a66454d0",
+       "kind": "campaign_results_point"
+      }
+     ]
+    },
+    {
+     "label": "y2035__n7_p1_e3.5",
+     "z": [
+      0,
+      0,
+      4,
+      7,
+      0,
+      0,
+      2
+     ],
+     "where": "not_evaluated_in_search",
+     "in_cache_recorded": false,
+     "polled_in_final_poll_recorded": false,
+     "search_F_minus_F_inc_eur": null,
+     "search_resolution_eur": null,
+     "search_symmetric_class": null,
+     "frozen_table_rows": [],
+     "frozen_L_claims": [],
+     "other_campaign_evaluations_at_m2": []
+    },
+    {
+     "label": "y2030__n7_p1_e3.5__n9_p0.25_e0.5",
+     "z": [
+      0,
+      0,
+      4,
+      7,
+      1,
+      1,
+      1
+     ],
+     "where": "cached_outside_poll_set",
+     "in_cache_recorded": true,
+     "polled_in_final_poll_recorded": false,
+     "search_F_minus_F_inc_eur": 5584.135411024094,
+     "search_resolution_eur": 18449.663947025518,
+     "search_symmetric_class": "within_resolution",
+     "frozen_table_rows": [
+      [
+       "cells",
+       "l_7c455554"
+      ]
+     ],
+     "frozen_L_claims": [
+      {
+       "claim_id": "L:y2030__n7_p1_e3.5__n9_p0.25_e0.5",
+       "family": "L",
+       "ref_cell": "ref:5ca4f86c",
+       "other_cell": "l_7c455554",
+       "ref_status": "UNCERT. (gap clause) end 281",
+       "other_status": "UNCERT. (gap clause) end 282",
+       "d_gross": 5576.815958738327,
+       "gross_rule": "uncertified form",
+       "gross_threshold_or_bar": 27743.278844739456,
+       "gross_multiple": 0.20101502745757016,
+       "gross_verdict": "within the uncertified bar",
+       "d_Qcc_report_only": 5563.480765938759,
+       "Qcc_verdict_report_only": "in the verdict (the uncertified form tests gross AND Q_cc)"
+      }
+     ],
+     "other_campaign_evaluations_at_m2": [
+      {
+       "file": "data/SRP1/Results/P515S51/campaign_s51_f2_phase_b/evals/7c45555407d8f3e8_y2030__n7_p1_e3_5__n9_p0_25_e0_5_m2/evaluation_record.json",
+       "label": "y2030__n7_p1_e3.5__n9_p0.25_e0.5_m2",
+       "status": "certified",
+       "eval_key": null,
+       "kind": "evaluation_record"
+      },
+      {
+       "file": "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_l_7c455554/evals/9906389c1cd682a9_l_7c455554/evaluation_record.json",
+       "label": "l_7c455554",
+       "status": "not_certified",
+       "eval_key": null,
+       "kind": "evaluation_record"
+      },
+      {
+       "file": "data/SRP1/Results/P515S51/campaign_s51_f2_phase_b/campaign_results.json",
+       "label": "y2030__n7_p1_e3.5__n9_p0.25_e0.5_m2",
+       "status": "certified",
+       "eval_key": "7c45555407d8f3e8b08ef3ad85bebf3509918fee21d044e3fcc3a6690eb4bbec",
+       "kind": "campaign_results_point"
+      }
+     ]
+    },
+    {
+     "label": "y2035__n7_p1_e3.5__n9_p0.25_e0.5",
+     "z": [
+      0,
+      0,
+      4,
+      7,
+      1,
+      1,
+      2
+     ],
+     "where": "not_evaluated_in_search",
+     "in_cache_recorded": false,
+     "polled_in_final_poll_recorded": false,
+     "search_F_minus_F_inc_eur": null,
+     "search_resolution_eur": null,
+     "search_symmetric_class": null,
+     "frozen_table_rows": [],
+     "frozen_L_claims": [],
+     "other_campaign_evaluations_at_m2": []
+    },
+    {
+     "label": "y2030__n7_p1_e4",
+     "z": [
+      0,
+      0,
+      4,
+      8,
+      0,
+      0,
+      1
+     ],
+     "where": "final_poll_set",
+     "in_cache_recorded": true,
+     "polled_in_final_poll_recorded": true,
+     "search_F_minus_F_inc_eur": 6338.459216475487,
+     "search_resolution_eur": 18449.663947025518,
+     "search_symmetric_class": "within_resolution",
+     "frozen_table_rows": [
+      [
+       "cells",
+       "l_7b199ef9"
+      ]
+     ],
+     "frozen_L_claims": [
+      {
+       "claim_id": "L:y2030__n7_p1_e4",
+       "family": "L",
+       "ref_cell": "ref:5ca4f86c",
+       "other_cell": "l_7b199ef9",
+       "ref_status": "UNCERT. (gap clause) end 281",
+       "other_status": "cert. oscillatory k*188 r/\u03c4 0.312",
+       "d_gross": 6384.107126951218,
+       "gross_rule": "uncertified form",
+       "gross_threshold_or_bar": 27703.27326627694,
+       "gross_multiple": 0.23044595003589557,
+       "gross_verdict": "within the uncertified bar",
+       "d_Qcc_report_only": 15885.355198383331,
+       "Qcc_verdict_report_only": "in the verdict (the uncertified form tests gross AND Q_cc)"
+      }
+     ],
+     "other_campaign_evaluations_at_m2": [
+      {
+       "file": "data/SRP1/Results/P515S53/campaign_s53_f2_certificate_r1/evals/7b199ef9da3880d3_y2030__n7_p1_e4_m2/evaluation_record.json",
+       "label": "y2030__n7_p1_e4_m2",
+       "status": "certified",
+       "eval_key": null,
+       "kind": "evaluation_record"
+      },
+      {
+       "file": "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_l_7b199ef9/evals/331e76c7c613b64e_l_7b199ef9/evaluation_record.json",
+       "label": "l_7b199ef9",
+       "status": "certified",
+       "eval_key": null,
+       "kind": "evaluation_record"
+      },
+      {
+       "file": "data/SRP1/Results/P515S53/campaign_s53_f2_certificate_r1/campaign_results.json",
+       "label": "y2030__n7_p1_e4_m2",
+       "status": "certified",
+       "eval_key": "7b199ef9da3880d30dfa3bfb9cfef1ef0c16efc7c16b94710a227d7e9977262a",
+       "kind": "campaign_results_point"
+      }
+     ]
+    },
+    {
+     "label": "y2035__n7_p1_e4",
+     "z": [
+      0,
+      0,
+      4,
+      8,
+      0,
+      0,
+      2
+     ],
+     "where": "not_evaluated_in_search",
+     "in_cache_recorded": false,
+     "polled_in_final_poll_recorded": false,
+     "search_F_minus_F_inc_eur": null,
+     "search_resolution_eur": null,
+     "search_symmetric_class": null,
+     "frozen_table_rows": [],
+     "frozen_L_claims": [],
+     "other_campaign_evaluations_at_m2": []
+    },
+    {
+     "label": "y2035__n7_p1_e4__n9_p0.25_e0.5",
+     "z": [
+      0,
+      0,
+      4,
+      8,
+      1,
+      1,
+      2
+     ],
+     "where": "not_evaluated_in_search",
+     "in_cache_recorded": false,
+     "polled_in_final_poll_recorded": false,
+     "search_F_minus_F_inc_eur": null,
+     "search_resolution_eur": null,
+     "search_symmetric_class": null,
+     "frozen_table_rows": [],
+     "frozen_L_claims": [],
+     "other_campaign_evaluations_at_m2": []
+    },
+    {
+     "label": "y2030__n7_p1.25_e3",
+     "z": [
+      0,
+      0,
+      5,
+      6,
+      0,
+      0,
+      1
+     ],
+     "where": "not_evaluated_in_search",
+     "in_cache_recorded": false,
+     "polled_in_final_poll_recorded": false,
+     "search_F_minus_F_inc_eur": null,
+     "search_resolution_eur": null,
+     "search_symmetric_class": null,
+     "frozen_table_rows": [],
+     "frozen_L_claims": [],
+     "other_campaign_evaluations_at_m2": []
+    },
+    {
+     "label": "y2035__n7_p1.25_e3",
+     "z": [
+      0,
+      0,
+      5,
+      6,
+      0,
+      0,
+      2
+     ],
+     "where": "not_evaluated_in_search",
+     "in_cache_recorded": false,
+     "polled_in_final_poll_recorded": false,
+     "search_F_minus_F_inc_eur": null,
+     "search_resolution_eur": null,
+     "search_symmetric_class": null,
+     "frozen_table_rows": [],
+     "frozen_L_claims": [],
+     "other_campaign_evaluations_at_m2": []
+    },
+    {
+     "label": "y2030__n7_p1.25_e3__n9_p0.25_e0.5",
+     "z": [
+      0,
+      0,
+      5,
+      6,
+      1,
+      1,
+      1
+     ],
+     "where": "not_evaluated_in_search",
+     "in_cache_recorded": false,
+     "polled_in_final_poll_recorded": false,
+     "search_F_minus_F_inc_eur": null,
+     "search_resolution_eur": null,
+     "search_symmetric_class": null,
+     "frozen_table_rows": [],
+     "frozen_L_claims": [],
+     "other_campaign_evaluations_at_m2": []
+    },
+    {
+     "label": "y2035__n7_p1.25_e3__n9_p0.25_e0.5",
+     "z": [
+      0,
+      0,
+      5,
+      6,
+      1,
+      1,
+      2
+     ],
+     "where": "not_evaluated_in_search",
+     "in_cache_recorded": false,
+     "polled_in_final_poll_recorded": false,
+     "search_F_minus_F_inc_eur": null,
+     "search_resolution_eur": null,
+     "search_symmetric_class": null,
+     "frozen_table_rows": [],
+     "frozen_L_claims": [],
+     "other_campaign_evaluations_at_m2": []
+    },
+    {
+     "label": "y2030__n7_p1.25_e3.5",
+     "z": [
+      0,
+      0,
+      5,
+      7,
+      0,
+      0,
+      1
+     ],
+     "where": "not_evaluated_in_search",
+     "in_cache_recorded": false,
+     "polled_in_final_poll_recorded": false,
+     "search_F_minus_F_inc_eur": null,
+     "search_resolution_eur": null,
+     "search_symmetric_class": null,
+     "frozen_table_rows": [],
+     "frozen_L_claims": [],
+     "other_campaign_evaluations_at_m2": []
+    },
+    {
+     "label": "y2035__n7_p1.25_e3.5",
+     "z": [
+      0,
+      0,
+      5,
+      7,
+      0,
+      0,
+      2
+     ],
+     "where": "not_evaluated_in_search",
+     "in_cache_recorded": false,
+     "polled_in_final_poll_recorded": false,
+     "search_F_minus_F_inc_eur": null,
+     "search_resolution_eur": null,
+     "search_symmetric_class": null,
+     "frozen_table_rows": [],
+     "frozen_L_claims": [],
+     "other_campaign_evaluations_at_m2": []
+    },
+    {
+     "label": "y2035__n7_p1.25_e3.5__n9_p0.25_e0.5",
+     "z": [
+      0,
+      0,
+      5,
+      7,
+      1,
+      1,
+      2
+     ],
+     "where": "not_evaluated_in_search",
+     "in_cache_recorded": false,
+     "polled_in_final_poll_recorded": false,
+     "search_F_minus_F_inc_eur": null,
+     "search_resolution_eur": null,
+     "search_symmetric_class": null,
+     "frozen_table_rows": [],
+     "frozen_L_claims": [],
+     "other_campaign_evaluations_at_m2": []
+    },
+    {
+     "label": "y2030__n7_p1.25_e4",
+     "z": [
+      0,
+      0,
+      5,
+      8,
+      0,
+      0,
+      1
+     ],
+     "where": "not_evaluated_in_search",
+     "in_cache_recorded": false,
+     "polled_in_final_poll_recorded": false,
+     "search_F_minus_F_inc_eur": null,
+     "search_resolution_eur": null,
+     "search_symmetric_class": null,
+     "frozen_table_rows": [],
+     "frozen_L_claims": [],
+     "other_campaign_evaluations_at_m2": []
+    },
+    {
+     "label": "y2035__n7_p1.25_e4",
+     "z": [
+      0,
+      0,
+      5,
+      8,
+      0,
+      0,
+      2
+     ],
+     "where": "not_evaluated_in_search",
+     "in_cache_recorded": false,
+     "polled_in_final_poll_recorded": false,
+     "search_F_minus_F_inc_eur": null,
+     "search_resolution_eur": null,
+     "search_symmetric_class": null,
+     "frozen_table_rows": [],
+     "frozen_L_claims": [],
+     "other_campaign_evaluations_at_m2": []
+    },
+    {
+     "label": "y2035__n7_p1.25_e4__n9_p0.25_e0.5",
+     "z": [
+      0,
+      0,
+      5,
+      8,
+      1,
+      1,
+      2
+     ],
+     "where": "not_evaluated_in_search",
+     "in_cache_recorded": false,
+     "polled_in_final_poll_recorded": false,
+     "search_F_minus_F_inc_eur": null,
+     "search_resolution_eur": null,
+     "search_symmetric_class": null,
+     "frozen_table_rows": [],
+     "frozen_L_claims": [],
+     "other_campaign_evaluations_at_m2": []
+    },
+    {
+     "label": "y2030__n5_p0.25_e0.5__n7_p0.75_e3",
+     "z": [
+      1,
+      1,
+      3,
+      6,
+      0,
+      0,
+      1
+     ],
+     "where": "final_poll_set",
+     "in_cache_recorded": true,
+     "polled_in_final_poll_recorded": true,
+     "search_F_minus_F_inc_eur": 28172.88354766369,
+     "search_resolution_eur": 18449.663947025518,
+     "search_symmetric_class": "worse",
+     "frozen_table_rows": [
+      [
+       "cells",
+       "l_195156fa"
+      ]
+     ],
+     "frozen_L_claims": [
+      {
+       "claim_id": "L:y2030__n5_p0.25_e0.5__n7_p0.75_e3",
+       "family": "L",
+       "ref_cell": "ref:5ca4f86c",
+       "other_cell": "l_195156fa",
+       "ref_status": "UNCERT. (gap clause) end 281",
+       "other_status": "cert. monotone k*252 r/\u03c4 0.098",
+       "d_gross": 28621.206088781357,
+       "gross_rule": "uncertified form",
+       "gross_threshold_or_bar": 27703.27326627694,
+       "gross_multiple": 1.0331344535962041,
+       "gross_verdict": "determinate",
+       "d_Qcc_report_only": 37774.50586795807,
+       "Qcc_verdict_report_only": "in the verdict (the uncertified form tests gross AND Q_cc)"
+      }
+     ],
+     "other_campaign_evaluations_at_m2": [
+      {
+       "file": "data/SRP1/Results/P515S51/campaign_s51_f2_phase_b/evals/195156fa819625db_y2030__n5_p0_25_e0_5__n7_p0_75_e3_m2/evaluation_record.json",
+       "label": "y2030__n5_p0.25_e0.5__n7_p0.75_e3_m2",
+       "status": "certified",
+       "eval_key": null,
+       "kind": "evaluation_record"
+      },
+      {
+       "file": "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_l_195156fa/evals/1fd23b8db2be1ba0_l_195156fa/evaluation_record.json",
+       "label": "l_195156fa",
+       "status": "certified",
+       "eval_key": null,
+       "kind": "evaluation_record"
+      },
+      {
+       "file": "data/SRP1/Results/P515S51/campaign_s51_f2_phase_b/campaign_results.json",
+       "label": "y2030__n5_p0.25_e0.5__n7_p0.75_e3_m2",
+       "status": "certified",
+       "eval_key": "195156fa819625db81fddc4db3969613914bbcfa11ac4cc11d73d9ee6c8f4bb9",
+       "kind": "campaign_results_point"
+      }
+     ]
+    },
+    {
+     "label": "y2035__n5_p0.25_e0.5__n7_p0.75_e3",
+     "z": [
+      1,
+      1,
+      3,
+      6,
+      0,
+      0,
+      2
+     ],
+     "where": "not_evaluated_in_search",
+     "in_cache_recorded": false,
+     "polled_in_final_poll_recorded": false,
+     "search_F_minus_F_inc_eur": null,
+     "search_resolution_eur": null,
+     "search_symmetric_class": null,
+     "frozen_table_rows": [],
+     "frozen_L_claims": [],
+     "other_campaign_evaluations_at_m2": []
+    },
+    {
+     "label": "y2030__n5_p0.25_e0.5__n7_p0.75_e3__n9_p0.25_e0.5",
+     "z": [
+      1,
+      1,
+      3,
+      6,
+      1,
+      1,
+      1
+     ],
+     "where": "cached_outside_poll_set",
+     "in_cache_recorded": true,
+     "polled_in_final_poll_recorded": false,
+     "search_F_minus_F_inc_eur": 10677.225507259369,
+     "search_resolution_eur": 18449.663947025518,
+     "search_symmetric_class": "within_resolution",
+     "frozen_table_rows": [
+      [
+       "cells",
+       "l_b2251bc5"
+      ]
+     ],
+     "frozen_L_claims": [
+      {
+       "claim_id": "L:y2030__n5_p0.25_e0.5__n7_p0.75_e3__n9_p0.25_e0.5",
+       "family": "L",
+       "ref_cell": "ref:5ca4f86c",
+       "other_cell": "l_b2251bc5",
+       "ref_status": "UNCERT. (gap clause) end 281",
+       "other_status": "UNCERT. (gap clause) end 320",
+       "d_gross": 9803.705368995667,
+       "gross_rule": "uncertified form",
+       "gross_threshold_or_bar": 28205.566421167616,
+       "gross_multiple": 0.34758051735625545,
+       "gross_verdict": "within the uncertified bar",
+       "d_Qcc_report_only": 9636.274317383766,
+       "Qcc_verdict_report_only": "in the verdict (the uncertified form tests gross AND Q_cc)"
+      }
+     ],
+     "other_campaign_evaluations_at_m2": [
+      {
+       "file": "data/SRP1/Results/P515S51/campaign_s51_f2_phase_b/evals/b2251bc53ca992aa_y2030__n5_p0_25_e0_5__n7_p0_75_e3__n9_p0_25_e0_5_m2/evaluation_record.json",
+       "label": "y2030__n5_p0.25_e0.5__n7_p0.75_e3__n9_p0.25_e0.5_m2",
+       "status": "certified",
+       "eval_key": null,
+       "kind": "evaluation_record"
+      },
+      {
+       "file": "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_l_b2251bc5/evals/abf4ac0af85dcb5e_l_b2251bc5/evaluation_record.json",
+       "label": "l_b2251bc5",
+       "status": "not_certified",
+       "eval_key": null,
+       "kind": "evaluation_record"
+      },
+      {
+       "file": "data/SRP1/Results/P515S51/campaign_s51_f2_phase_b/campaign_results.json",
+       "label": "y2030__n5_p0.25_e0.5__n7_p0.75_e3__n9_p0.25_e0.5_m2",
+       "status": "certified",
+       "eval_key": "b2251bc53ca992aa50579a57ea15f54d939fd47ccbebaf078d8e7c36b300ea4e",
+       "kind": "campaign_results_point"
+      }
+     ]
+    },
+    {
+     "label": "y2035__n5_p0.25_e0.5__n7_p0.75_e3__n9_p0.25_e0.5",
+     "z": [
+      1,
+      1,
+      3,
+      6,
+      1,
+      1,
+      2
+     ],
+     "where": "not_evaluated_in_search",
+     "in_cache_recorded": false,
+     "polled_in_final_poll_recorded": false,
+     "search_F_minus_F_inc_eur": null,
+     "search_resolution_eur": null,
+     "search_symmetric_class": null,
+     "frozen_table_rows": [],
+     "frozen_L_claims": [],
+     "other_campaign_evaluations_at_m2": []
+    },
+    {
+     "label": "y2030__n5_p0.25_e0.5__n7_p1_e3",
+     "z": [
+      1,
+      1,
+      4,
+      6,
+      0,
+      0,
+      1
+     ],
+     "where": "final_poll_set",
+     "in_cache_recorded": true,
+     "polled_in_final_poll_recorded": true,
+     "search_F_minus_F_inc_eur": 26438.137573242188,
+     "search_resolution_eur": 18449.663947025518,
+     "search_symmetric_class": "worse",
+     "frozen_table_rows": [
+      [
+       "cells",
+       "l_0ee93aca"
+      ]
+     ],
+     "frozen_L_claims": [
+      {
+       "claim_id": "L:y2030__n5_p0.25_e0.5__n7_p1_e3",
+       "family": "L",
+       "ref_cell": "ref:5ca4f86c",
+       "other_cell": "l_0ee93aca",
+       "ref_status": "UNCERT. (gap clause) end 281",
+       "other_status": "UNCERT. (lapse reset) end 284",
+       "d_gross": 26427.213258624077,
+       "gross_rule": "uncertified form",
+       "gross_threshold_or_bar": 27900.265224859322,
+       "gross_multiple": 0.9472029403891563,
+       "gross_verdict": "within the uncertified bar",
+       "d_Qcc_report_only": 26361.54927253723,
+       "Qcc_verdict_report_only": "in the verdict (the uncertified form tests gross AND Q_cc)"
+      }
+     ],
+     "other_campaign_evaluations_at_m2": [
+      {
+       "file": "data/SRP1/Results/P515S51/campaign_s51_f2_phase_b/evals/0ee93aca71ed71d2_y2030__n5_p0_25_e0_5__n7_p1_e3_m2/evaluation_record.json",
+       "label": "y2030__n5_p0.25_e0.5__n7_p1_e3_m2",
+       "status": "certified",
+       "eval_key": null,
+       "kind": "evaluation_record"
+      },
+      {
+       "file": "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_l_0ee93aca/evals/86d27f42e98503ca_l_0ee93aca/evaluation_record.json",
+       "label": "l_0ee93aca",
+       "status": "not_certified",
+       "eval_key": null,
+       "kind": "evaluation_record"
+      },
+      {
+       "file": "data/SRP1/Results/P515S51/campaign_s51_f2_phase_b/campaign_results.json",
+       "label": "y2030__n5_p0.25_e0.5__n7_p1_e3_m2",
+       "status": "certified",
+       "eval_key": "0ee93aca71ed71d26f7735aab6d274ea210f1a607212931f1e24e6959bec2706",
+       "kind": "campaign_results_point"
+      }
+     ]
+    },
+    {
+     "label": "y2035__n5_p0.25_e0.5__n7_p1_e3",
+     "z": [
+      1,
+      1,
+      4,
+      6,
+      0,
+      0,
+      2
+     ],
+     "where": "final_poll_set",
+     "in_cache_recorded": true,
+     "polled_in_final_poll_recorded": true,
+     "search_F_minus_F_inc_eur": 446656.61800551414,
+     "search_resolution_eur": 18449.663947025518,
+     "search_symmetric_class": "worse",
+     "frozen_table_rows": [],
+     "frozen_L_claims": [],
+     "other_campaign_evaluations_at_m2": [
+      {
+       "file": "data/SRP1/Results/P515S53/campaign_s53_f2_certificate_r1/evals/86c316f44d7ddf5a_y2035__n5_p0_25_e0_5__n7_p1_e3_m2/evaluation_record.json",
+       "label": "y2035__n5_p0.25_e0.5__n7_p1_e3_m2",
+       "status": "certified",
+       "eval_key": null,
+       "kind": "evaluation_record"
+      },
+      {
+       "file": "data/SRP1/Results/P515S53/campaign_s53_f2_certificate_r1/campaign_results.json",
+       "label": "y2035__n5_p0.25_e0.5__n7_p1_e3_m2",
+       "status": "certified",
+       "eval_key": "86c316f44d7ddf5acc017f80a5c194767ba4a46cc21cc7646352120d94dba7fd",
+       "kind": "campaign_results_point"
+      }
+     ]
+    },
+    {
+     "label": "y2035__n5_p0.25_e0.5__n7_p1_e3__n9_p0.25_e0.5",
+     "z": [
+      1,
+      1,
+      4,
+      6,
+      1,
+      1,
+      2
+     ],
+     "where": "not_evaluated_in_search",
+     "in_cache_recorded": false,
+     "polled_in_final_poll_recorded": false,
+     "search_F_minus_F_inc_eur": null,
+     "search_resolution_eur": null,
+     "search_symmetric_class": null,
+     "frozen_table_rows": [],
+     "frozen_L_claims": [],
+     "other_campaign_evaluations_at_m2": []
+    },
+    {
+     "label": "y2035__n5_p0.25_e0.5__n7_p1_e3.5",
+     "z": [
+      1,
+      1,
+      4,
+      7,
+      0,
+      0,
+      2
+     ],
+     "where": "not_evaluated_in_search",
+     "in_cache_recorded": false,
+     "polled_in_final_poll_recorded": false,
+     "search_F_minus_F_inc_eur": null,
+     "search_resolution_eur": null,
+     "search_symmetric_class": null,
+     "frozen_table_rows": [],
+     "frozen_L_claims": [],
+     "other_campaign_evaluations_at_m2": []
+    },
+    {
+     "label": "y2035__n5_p0.25_e0.5__n7_p1_e3.5__n9_p0.25_e0.5",
+     "z": [
+      1,
+      1,
+      4,
+      7,
+      1,
+      1,
+      2
+     ],
+     "where": "not_evaluated_in_search",
+     "in_cache_recorded": false,
+     "polled_in_final_poll_recorded": false,
+     "search_F_minus_F_inc_eur": null,
+     "search_resolution_eur": null,
+     "search_symmetric_class": null,
+     "frozen_table_rows": [],
+     "frozen_L_claims": [],
+     "other_campaign_evaluations_at_m2": []
+    },
+    {
+     "label": "y2035__n5_p0.25_e0.5__n7_p1_e4",
+     "z": [
+      1,
+      1,
+      4,
+      8,
+      0,
+      0,
+      2
+     ],
+     "where": "final_poll_set",
+     "in_cache_recorded": true,
+     "polled_in_final_poll_recorded": true,
+     "search_F_minus_F_inc_eur": 493561.2212911844,
+     "search_resolution_eur": 18449.663947025518,
+     "search_symmetric_class": "worse",
+     "frozen_table_rows": [],
+     "frozen_L_claims": [],
+     "other_campaign_evaluations_at_m2": [
+      {
+       "file": "data/SRP1/Results/P515S53/campaign_s53_f2_certificate_r1/evals/c5fb0f13d6eaf783_y2035__n5_p0_25_e0_5__n7_p1_e4_m2/evaluation_record.json",
+       "label": "y2035__n5_p0.25_e0.5__n7_p1_e4_m2",
+       "status": "certified",
+       "eval_key": null,
+       "kind": "evaluation_record"
+      },
+      {
+       "file": "data/SRP1/Results/P515S53/campaign_s53_f2_certificate_r1/campaign_results.json",
+       "label": "y2035__n5_p0.25_e0.5__n7_p1_e4_m2",
+       "status": "certified",
+       "eval_key": "c5fb0f13d6eaf78387b96fc5626de5bdd0e99247618fdb755c5314f952859025",
+       "kind": "campaign_results_point"
+      }
+     ]
+    },
+    {
+     "label": "y2030__n5_p0.25_e0.5__n7_p1.25_e3",
+     "z": [
+      1,
+      1,
+      5,
+      6,
+      0,
+      0,
+      1
+     ],
+     "where": "final_poll_set",
+     "in_cache_recorded": true,
+     "polled_in_final_poll_recorded": true,
+     "search_F_minus_F_inc_eur": 53170.44731807709,
+     "search_resolution_eur": 18449.663947025518,
+     "search_symmetric_class": "worse",
+     "frozen_table_rows": [
+      [
+       "cells",
+       "l_2ab0ce2d"
+      ]
+     ],
+     "frozen_L_claims": [
+      {
+       "claim_id": "L:y2030__n5_p0.25_e0.5__n7_p1.25_e3",
+       "family": "L",
+       "ref_cell": "ref:5ca4f86c",
+       "other_cell": "l_2ab0ce2d",
+       "ref_status": "UNCERT. (gap clause) end 281",
+       "other_status": "cert. monotone k*400 r/\u03c4 0.092",
+       "d_gross": 53259.294523477554,
+       "gross_rule": "uncertified form",
+       "gross_threshold_or_bar": 27703.27326627694,
+       "gross_multiple": 1.9224910360433773,
+       "gross_verdict": "determinate",
+       "d_Qcc_report_only": 62494.61073088646,
+       "Qcc_verdict_report_only": "in the verdict (the uncertified form tests gross AND Q_cc)"
+      }
+     ],
+     "other_campaign_evaluations_at_m2": [
+      {
+       "file": "data/SRP1/Results/P515S53/campaign_s53_f2_certificate_r1/evals/2ab0ce2dbd07d42c_y2030__n5_p0_25_e0_5__n7_p1_25_e3_m2/evaluation_record.json",
+       "label": "y2030__n5_p0.25_e0.5__n7_p1.25_e3_m2",
+       "status": "certified",
+       "eval_key": null,
+       "kind": "evaluation_record"
+      },
+      {
+       "file": "data/SRP1/Results/P515S53/w142_resettle_v6/campaign_s53_w142_resettle_v6_l_2ab0ce2d/evals/75266862b990d2eb_l_2ab0ce2d/evaluation_record.json",
+       "label": "l_2ab0ce2d",
+       "status": "certified",
+       "eval_key": null,
+       "kind": "evaluation_record"
+      },
+      {
+       "file": "data/SRP1/Results/P515S53/campaign_s53_f2_certificate_r1/campaign_results.json",
+       "label": "y2030__n5_p0.25_e0.5__n7_p1.25_e3_m2",
+       "status": "certified",
+       "eval_key": "2ab0ce2dbd07d42c4fcecce5529240a9525aba5948dc5c00c4c6603bfdf22b08",
+       "kind": "campaign_results_point"
+      }
+     ]
+    },
+    {
+     "label": "y2035__n5_p0.25_e0.5__n7_p1.25_e3",
+     "z": [
+      1,
+      1,
+      5,
+      6,
+      0,
+      0,
+      2
+     ],
+     "where": "not_evaluated_in_search",
+     "in_cache_recorded": false,
+     "polled_in_final_poll_recorded": false,
+     "search_F_minus_F_inc_eur": null,
+     "search_resolution_eur": null,
+     "search_symmetric_class": null,
+     "frozen_table_rows": [],
+     "frozen_L_claims": [],
+     "other_campaign_evaluations_at_m2": []
+    },
+    {
+     "label": "y2035__n5_p0.25_e0.5__n7_p1.25_e3__n9_p0.25_e0.5",
+     "z": [
+      1,
+      1,
+      5,
+      6,
+      1,
+      1,
+      2
+     ],
+     "where": "not_evaluated_in_search",
+     "in_cache_recorded": false,
+     "polled_in_final_poll_recorded": false,
+     "search_F_minus_F_inc_eur": null,
+     "search_resolution_eur": null,
+     "search_symmetric_class": null,
+     "frozen_table_rows": [],
+     "frozen_L_claims": [],
+     "other_campaign_evaluations_at_m2": []
+    },
+    {
+     "label": "y2035__n5_p0.25_e0.5__n7_p1.25_e3.5",
+     "z": [
+      1,
+      1,
+      5,
+      7,
+      0,
+      0,
+      2
+     ],
+     "where": "not_evaluated_in_search",
+     "in_cache_recorded": false,
+     "polled_in_final_poll_recorded": false,
+     "search_F_minus_F_inc_eur": null,
+     "search_resolution_eur": null,
+     "search_symmetric_class": null,
+     "frozen_table_rows": [],
+     "frozen_L_claims": [],
+     "other_campaign_evaluations_at_m2": []
+    },
+    {
+     "label": "y2035__n5_p0.25_e0.5__n7_p1.25_e3.5__n9_p0.25_e0.5",
+     "z": [
+      1,
+      1,
+      5,
+      7,
+      1,
+      1,
+      2
+     ],
+     "where": "not_evaluated_in_search",
+     "in_cache_recorded": false,
+     "polled_in_final_poll_recorded": false,
+     "search_F_minus_F_inc_eur": null,
+     "search_resolution_eur": null,
+     "search_symmetric_class": null,
+     "frozen_table_rows": [],
+     "frozen_L_claims": [],
+     "other_campaign_evaluations_at_m2": []
+    },
+    {
+     "label": "y2035__n5_p0.25_e0.5__n7_p1.25_e4",
+     "z": [
+      1,
+      1,
+      5,
+      8,
+      0,
+      0,
+      2
+     ],
+     "where": "not_evaluated_in_search",
+     "in_cache_recorded": false,
+     "polled_in_final_poll_recorded": false,
+     "search_F_minus_F_inc_eur": null,
+     "search_resolution_eur": null,
+     "search_symmetric_class": null,
+     "frozen_table_rows": [],
+     "frozen_L_claims": [],
+     "other_campaign_evaluations_at_m2": []
+    },
+    {
+     "label": "y2030__n5_p0.25_e1__n7_p0.75_e3",
+     "z": [
+      1,
+      2,
+      3,
+      6,
+      0,
+      0,
+      1
+     ],
+     "where": "not_evaluated_in_search",
+     "in_cache_recorded": false,
+     "polled_in_final_poll_recorded": false,
+     "search_F_minus_F_inc_eur": null,
+     "search_resolution_eur": null,
+     "search_symmetric_class": null,
+     "frozen_table_rows": [],
+     "frozen_L_claims": [],
+     "other_campaign_evaluations_at_m2": []
+    },
+    {
+     "label": "y2035__n5_p0.25_e1__n7_p0.75_e3",
+     "z": [
+      1,
+      2,
+      3,
+      6,
+      0,
+      0,
+      2
+     ],
+     "where": "not_evaluated_in_search",
+     "in_cache_recorded": false,
+     "polled_in_final_poll_recorded": false,
+     "search_F_minus_F_inc_eur": null,
+     "search_resolution_eur": null,
+     "search_symmetric_class": null,
+     "frozen_table_rows": [],
+     "frozen_L_claims": [],
+     "other_campaign_evaluations_at_m2": []
+    },
+    {
+     "label": "y2035__n5_p0.25_e1__n7_p0.75_e3__n9_p0.25_e0.5",
+     "z": [
+      1,
+      2,
+      3,
+      6,
+      1,
+      1,
+      2
+     ],
+     "where": "not_evaluated_in_search",
+     "in_cache_recorded": false,
+     "polled_in_final_poll_recorded": false,
+     "search_F_minus_F_inc_eur": null,
+     "search_resolution_eur": null,
+     "search_symmetric_class": null,
+     "frozen_table_rows": [],
+     "frozen_L_claims": [],
+     "other_campaign_evaluations_at_m2": []
+    },
+    {
+     "label": "y2030__n5_p0.25_e1__n7_p1_e3",
+     "z": [
+      1,
+      2,
+      4,
+      6,
+      0,
+      0,
+      1
+     ],
+     "where": "final_poll_set",
+     "in_cache_recorded": true,
+     "polled_in_final_poll_recorded": true,
+     "search_F_minus_F_inc_eur": -6571.2879548072815,
+     "search_resolution_eur": 18449.663947025518,
+     "search_symmetric_class": "within_resolution",
+     "frozen_table_rows": [
+      [
+       "cells",
+       "ref:e28de4ac"
+      ]
+     ],
+     "frozen_L_claims": [
+      {
+       "claim_id": "L:y2030__n5_p0.25_e1__n7_p1_e3",
+       "family": "L",
+       "ref_cell": "ref:5ca4f86c",
+       "other_cell": "ref:e28de4ac",
+       "ref_status": "UNCERT. (gap clause) end 281",
+       "other_status": "UNCERT. (gap clause) end 261",
+       "d_gross": -6107.638909578323,
+       "gross_rule": "uncertified form",
+       "gross_threshold_or_bar": 27900.378565777683,
+       "gross_multiple": 0.21890881857316052,
+       "gross_verdict": "within the uncertified bar",
+       "d_Qcc_report_only": -6173.34067606926,
+       "Qcc_verdict_report_only": "in the verdict (the uncertified form tests gross AND Q_cc)"
+      }
+     ],
+     "other_campaign_evaluations_at_m2": [
+      {
+       "file": "data/SRP1/Results/P515S53/campaign_s53_f2_certificate_r1/evals/e28de4acf80bbbe9_y2030__n5_p0_25_e1__n7_p1_e3_m2/evaluation_record.json",
+       "label": "y2030__n5_p0.25_e1__n7_p1_e3_m2",
+       "status": "certified",
+       "eval_key": null,
+       "kind": "evaluation_record"
+      },
+      {
+       "file": "data/SRP1/Results/P515S53/w118_resettle/campaign_s53_w118_resettle_r2_f2_challenger/evals/1fe91e86f11e76af_f2_challenger/evaluation_record.json",
+       "label": "f2_challenger",
+       "status": "certified",
+       "eval_key": null,
+       "kind": "evaluation_record"
+      },
+      {
+       "file": "data/SRP1/Results/P515S53/campaign_s53_f2_certificate_r1/campaign_results.json",
+       "label": "y2030__n5_p0.25_e1__n7_p1_e3_m2",
+       "status": "certified",
+       "eval_key": "e28de4acf80bbbe9f4b176296fc16b17929804f72255249aa2b139633aef6401",
+       "kind": "campaign_results_point"
+      }
+     ]
+    },
+    {
+     "label": "y2035__n5_p0.25_e1__n7_p1_e3",
+     "z": [
+      1,
+      2,
+      4,
+      6,
+      0,
+      0,
+      2
+     ],
+     "where": "final_poll_set",
+     "in_cache_recorded": true,
+     "polled_in_final_poll_recorded": true,
+     "search_F_minus_F_inc_eur": 465235.6507552862,
+     "search_resolution_eur": 18449.663947025518,
+     "search_symmetric_class": "worse",
+     "frozen_table_rows": [],
+     "frozen_L_claims": [],
+     "other_campaign_evaluations_at_m2": [
+      {
+       "file": "data/SRP1/Results/P515S53/campaign_s53_f2_certificate_r1/evals/b7523e484378a5a5_y2035__n5_p0_25_e1__n7_p1_e3_m2/evaluation_record.json",
+       "label": "y2035__n5_p0.25_e1__n7_p1_e3_m2",
+       "status": "certified",
+       "eval_key": null,
+       "kind": "evaluation_record"
+      },
+      {
+       "file": "data/SRP1/Results/P515S53/campaign_s53_f2_certificate_r1/campaign_results.json",
+       "label": "y2035__n5_p0.25_e1__n7_p1_e3_m2",
+       "status": "certified",
+       "eval_key": "b7523e484378a5a5948ba7a46635ad9a7efa6f60f9f5ee411c6c3a17fae1db2d",
+       "kind": "campaign_results_point"
+      }
+     ]
+    },
+    {
+     "label": "y2035__n5_p0.25_e1__n7_p1_e3__n9_p0.25_e0.5",
+     "z": [
+      1,
+      2,
+      4,
+      6,
+      1,
+      1,
+      2
+     ],
+     "where": "not_evaluated_in_search",
+     "in_cache_recorded": false,
+     "polled_in_final_poll_recorded": false,
+     "search_F_minus_F_inc_eur": null,
+     "search_resolution_eur": null,
+     "search_symmetric_class": null,
+     "frozen_table_rows": [],
+     "frozen_L_claims": [],
+     "other_campaign_evaluations_at_m2": []
+    },
+    {
+     "label": "y2035__n5_p0.25_e1__n7_p1_e3.5",
+     "z": [
+      1,
+      2,
+      4,
+      7,
+      0,
+      0,
+      2
+     ],
+     "where": "not_evaluated_in_search",
+     "in_cache_recorded": false,
+     "polled_in_final_poll_recorded": false,
+     "search_F_minus_F_inc_eur": null,
+     "search_resolution_eur": null,
+     "search_symmetric_class": null,
+     "frozen_table_rows": [],
+     "frozen_L_claims": [],
+     "other_campaign_evaluations_at_m2": []
+    },
+    {
+     "label": "y2035__n5_p0.25_e1__n7_p1_e4",
+     "z": [
+      1,
+      2,
+      4,
+      8,
+      0,
+      0,
+      2
+     ],
+     "where": "final_poll_set",
+     "in_cache_recorded": true,
+     "polled_in_final_poll_recorded": true,
+     "search_F_minus_F_inc_eur": 511160.33009028435,
+     "search_resolution_eur": 18449.663947025518,
+     "search_symmetric_class": "worse",
+     "frozen_table_rows": [],
+     "frozen_L_claims": [],
+     "other_campaign_evaluations_at_m2": [
+      {
+       "file": "data/SRP1/Results/P515S53/campaign_s53_f2_certificate_r1/evals/6c52257bb61c482c_y2035__n5_p0_25_e1__n7_p1_e4_m2/evaluation_record.json",
+       "label": "y2035__n5_p0.25_e1__n7_p1_e4_m2",
+       "status": "certified",
+       "eval_key": null,
+       "kind": "evaluation_record"
+      },
+      {
+       "file": "data/SRP1/Results/P515S53/campaign_s53_f2_certificate_r1/campaign_results.json",
+       "label": "y2035__n5_p0.25_e1__n7_p1_e4_m2",
+       "status": "certified",
+       "eval_key": "6c52257bb61c482cc7859c0415b4c4fc8328b5b21cb97dd5d9c00fa6edf36179",
+       "kind": "campaign_results_point"
+      }
+     ]
+    },
+    {
+     "label": "y2035__n5_p0.25_e1__n7_p1.25_e3",
+     "z": [
+      1,
+      2,
+      5,
+      6,
+      0,
+      0,
+      2
+     ],
+     "where": "not_evaluated_in_search",
+     "in_cache_recorded": false,
+     "polled_in_final_poll_recorded": false,
+     "search_F_minus_F_inc_eur": null,
+     "search_resolution_eur": null,
+     "search_symmetric_class": null,
+     "frozen_table_rows": [],
+     "frozen_L_claims": [],
+     "other_campaign_evaluations_at_m2": []
+    },
+    {
+     "label": "y2035__n5_p0.25_e1__n7_p1.25_e3__n9_p0.25_e0.5",
+     "z": [
+      1,
+      2,
+      5,
+      6,
+      1,
+      1,
+      2
+     ],
+     "where": "not_evaluated_in_search",
+     "in_cache_recorded": false,
+     "polled_in_final_poll_recorded": false,
+     "search_F_minus_F_inc_eur": null,
+     "search_resolution_eur": null,
+     "search_symmetric_class": null,
+     "frozen_table_rows": [],
+     "frozen_L_claims": [],
+     "other_campaign_evaluations_at_m2": []
+    },
+    {
+     "label": "y2035__n5_p0.25_e1__n7_p1.25_e3.5",
+     "z": [
+      1,
+      2,
+      5,
+      7,
+      0,
+      0,
+      2
+     ],
+     "where": "not_evaluated_in_search",
+     "in_cache_recorded": false,
+     "polled_in_final_poll_recorded": false,
+     "search_F_minus_F_inc_eur": null,
+     "search_resolution_eur": null,
+     "search_symmetric_class": null,
+     "frozen_table_rows": [],
+     "frozen_L_claims": [],
+     "other_campaign_evaluations_at_m2": []
+    },
+    {
+     "label": "y2030__n5_p0.5_e1__n7_p0.75_e3",
+     "z": [
+      2,
+      2,
+      3,
+      6,
+      0,
+      0,
+      1
+     ],
+     "where": "not_evaluated_in_search",
+     "in_cache_recorded": false,
+     "polled_in_final_poll_recorded": false,
+     "search_F_minus_F_inc_eur": null,
+     "search_resolution_eur": null,
+     "search_symmetric_class": null,
+     "frozen_table_rows": [],
+     "frozen_L_claims": [],
+     "other_campaign_evaluations_at_m2": []
+    },
+    {
+     "label": "y2035__n5_p0.5_e1__n7_p0.75_e3",
+     "z": [
+      2,
+      2,
+      3,
+      6,
+      0,
+      0,
+      2
+     ],
+     "where": "not_evaluated_in_search",
+     "in_cache_recorded": false,
+     "polled_in_final_poll_recorded": false,
+     "search_F_minus_F_inc_eur": null,
+     "search_resolution_eur": null,
+     "search_symmetric_class": null,
+     "frozen_table_rows": [],
+     "frozen_L_claims": [],
+     "other_campaign_evaluations_at_m2": []
+    },
+    {
+     "label": "y2035__n5_p0.5_e1__n7_p0.75_e3__n9_p0.25_e0.5",
+     "z": [
+      2,
+      2,
+      3,
+      6,
+      1,
+      1,
+      2
+     ],
+     "where": "not_evaluated_in_search",
+     "in_cache_recorded": false,
+     "polled_in_final_poll_recorded": false,
+     "search_F_minus_F_inc_eur": null,
+     "search_resolution_eur": null,
+     "search_symmetric_class": null,
+     "frozen_table_rows": [],
+     "frozen_L_claims": [],
+     "other_campaign_evaluations_at_m2": []
+    },
+    {
+     "label": "y2035__n5_p0.5_e1__n7_p1_e3",
+     "z": [
+      2,
+      2,
+      4,
+      6,
+      0,
+      0,
+      2
+     ],
+     "where": "not_evaluated_in_search",
+     "in_cache_recorded": false,
+     "polled_in_final_poll_recorded": false,
+     "search_F_minus_F_inc_eur": null,
+     "search_resolution_eur": null,
+     "search_symmetric_class": null,
+     "frozen_table_rows": [],
+     "frozen_L_claims": [],
+     "other_campaign_evaluations_at_m2": []
+    },
+    {
+     "label": "y2035__n5_p0.5_e1__n7_p1_e3__n9_p0.25_e0.5",
+     "z": [
+      2,
+      2,
+      4,
+      6,
+      1,
+      1,
+      2
+     ],
+     "where": "not_evaluated_in_search",
+     "in_cache_recorded": false,
+     "polled_in_final_poll_recorded": false,
+     "search_F_minus_F_inc_eur": null,
+     "search_resolution_eur": null,
+     "search_symmetric_class": null,
+     "frozen_table_rows": [],
+     "frozen_L_claims": [],
+     "other_campaign_evaluations_at_m2": []
+    },
+    {
+     "label": "y2035__n5_p0.5_e1__n7_p1_e3.5",
+     "z": [
+      2,
+      2,
+      4,
+      7,
+      0,
+      0,
+      2
+     ],
+     "where": "not_evaluated_in_search",
+     "in_cache_recorded": false,
+     "polled_in_final_poll_recorded": false,
+     "search_F_minus_F_inc_eur": null,
+     "search_resolution_eur": null,
+     "search_symmetric_class": null,
+     "frozen_table_rows": [],
+     "frozen_L_claims": [],
+     "other_campaign_evaluations_at_m2": []
+    },
+    {
+     "label": "y2035__n5_p0.5_e1__n7_p1.25_e3",
+     "z": [
+      2,
+      2,
+      5,
+      6,
+      0,
+      0,
+      2
+     ],
+     "where": "not_evaluated_in_search",
+     "in_cache_recorded": false,
+     "polled_in_final_poll_recorded": false,
+     "search_F_minus_F_inc_eur": null,
+     "search_resolution_eur": null,
+     "search_symmetric_class": null,
+     "frozen_table_rows": [],
+     "frozen_L_claims": [],
+     "other_campaign_evaluations_at_m2": []
+    },
+    {
+     "label": "y2035__n5_p0.5_e1__n7_p1.25_e3.5",
+     "z": [
+      2,
+      2,
+      5,
+      7,
+      0,
+      0,
+      2
+     ],
+     "where": "not_evaluated_in_search",
+     "in_cache_recorded": false,
+     "polled_in_final_poll_recorded": false,
+     "search_F_minus_F_inc_eur": null,
+     "search_resolution_eur": null,
+     "search_symmetric_class": null,
+     "frozen_table_rows": [],
+     "frozen_L_claims": [],
+     "other_campaign_evaluations_at_m2": []
+    }
+   ],
+   "evaluated_not_in_L_labels": [
+    "y2035__n5_p0.25_e0.5__n7_p1_e3",
+    "y2035__n5_p0.25_e0.5__n7_p1_e4",
+    "y2035__n5_p0.25_e1__n7_p1_e3",
+    "y2035__n5_p0.25_e1__n7_p1_e4"
+   ]
+  }
+ },
+ "manuscript": {
+  "clone": "manuscript/6a67305f25e8348fb71380c3",
+  "head": "407f8df",
+  "main_tex_sha256": "9891057c03437cda16da749885001dbdedddde2d917d4a11deeeb2d68ade3062",
+  "locations": {
+   "alg_init_delta0": {
+    "text": "$\\Delta \\gets \\Delta_0$; $N \\gets 0$",
+    "lines": [
+     410
+    ]
+   },
+   "alg_while": {
+    "text": "\\While{$N < N^{\\max}$}",
+    "lines": [
+     412
+    ]
+   },
+   "alg_variantA_poll": {
+    "text": "the $n+1$ OrthoMADS points $\\boldsymbol{z}^{\\text{inc}} + \\Delta \\boldsymbol{v}$",
+    "lines": [
+     415
+    ]
+   },
+   "alg_completion": {
+    "text": "\\If{$\\Delta = 1$}",
+    "lines": [
+     417
+    ]
+   },
+   "alg_cap": {
+    "text": "\\lIf{$|\\mathcal{P}| > 30$}",
+    "lines": [
+     418
+    ]
+   },
+   "alg_variantB": {
+    "text": "variant B, $\\Delta = 1$ throughout",
+    "lines": [
+     421
+    ]
+   },
+   "alg_variantB_completion": {
+    "text": "add admissible unit neighbours until $n+1$",
+    "lines": [
+     423
+    ]
+   },
+   "alg_budget": {
+    "text": "\\lIf{the new points of $\\mathcal{P}$ exceed $N^{\\max} - N$}",
+    "lines": [
+     425
+    ]
+   },
+   "alg_success": {
+    "text": "$\\Delta \\gets 2\\Delta$ (variant A) or $1$ (variant B)",
+    "lines": [
+     429
+    ]
+   },
+   "alg_failure_terminate": {
+    "text": "\\lIf{$\\Delta = 1$}{\\textbf{terminate}",
+    "lines": [
+     431
+    ]
+   },
+   "alg_halve": {
+    "text": "$\\Delta \\gets \\Delta/2$",
+    "lines": [
+     432
+    ]
+   },
+   "confirm_438": {
+    "text": "% [CONFIRM \u2014 W173] Delta_0",
+    "lines": [
+     438
+    ]
+   },
+   "confirm_446": {
+    "text": "% [CONFIRM \u2014 W173] \"fourteen\"",
+    "lines": [
+     446
+    ]
+   },
+   "sentence_scope_start": {
+    "text": "What the search certifies is the scope of its final unit poll",
+    "lines": [
+     443
+    ]
+   },
+   "sentence_fourteen": {
+    "text": "every admissible unit neighbour was evaluated (fourteen, the full box;",
+    "lines": [
+     443
+    ]
+   },
+   "sentence_twelve": {
+    "text": "the final poll evaluated twelve neighbours, which do not positively span the space, and the plan is reported as better than each of them, seven determinately and five within resolution, not as a mesh-local optimum.",
+    "lines": [
+     443
+    ]
+   }
+  },
+  "sentence_l443_scope": "What the search certifies is the scope of its final unit poll, which the paper states with each plan: at the baseline incumbent, $\\boldsymbol{x} = 0$, every admissible unit neighbour was evaluated (fourteen, the full box; at a boundary point no positive spanning set is admissible); at the plan found under the doubled flexibility price the final poll evaluated twelve neighbours, which do not positively span the space, and the plan is reported as better than each of them, seven determinately and five within resolution, not as a mesh-local optimum."
+ },
+ "code_locations": [
+  {
+   "file": "p515_s47_phase_b_record.py",
+   "text": "DELTA_0 = 4",
+   "lines": [
+    194
+   ]
+  },
+  {
+   "file": "p515_s47_phase_b_record.py",
+   "text": "DELTA_MIN = 1",
+   "lines": [
+    195
+   ]
+  },
+  {
+   "file": "p515_s47_phase_b_record.py",
+   "text": "POLL_DESIGN = 'orthomads_n_plus_1_neg'",
+   "lines": [
+    199
+   ]
+  },
+  {
+   "file": "p515_s47_phase_b_record.py",
+   "text": "MAX_NEW_EVALUATIONS = 20",
+   "lines": [
+    100,
+    200,
+    289
+   ]
+  },
+  {
+   "file": "p515_s47_phase_b_record.py",
+   "text": "MAX_POLLS = 60",
+   "lines": [
+    100,
+    201,
+    289
+   ]
+  },
+  {
+   "file": "p515_s47_phase_b_record.py",
+   "text": "COMPLETION_CAP = 30",
+   "lines": [
+    52,
+    205
+   ]
+  },
+  {
+   "file": "p515_s47_phase_b_record.py",
+   "text": "def householder_columns(t, n=N_VARS):",
+   "lines": [
+    487
+   ]
+  },
+  {
+   "file": "p515_s47_phase_b_record.py",
+   "text": "def poll_directions(k, delta, n=N_VARS, t0=HALTON_T0, design=POLL_DESIGN):",
+   "lines": [
+    502
+   ]
+  },
+  {
+   "file": "p515_s47_phase_b_record.py",
+   "text": "neg = [-sum(c[i] for c in cols) for i in range(n)]",
+   "lines": [
+    509
+   ]
+  },
+  {
+   "file": "p515_s47_phase_b_record.py",
+   "text": "return tuple(_round_half_away(delta * a / m) for a in h)",
+   "lines": [
+    499
+   ]
+  },
+  {
+   "file": "p515_s47_phase_b_record.py",
+   "text": "delta = int(delta0)",
+   "lines": [
+    594
+   ]
+  },
+  {
+   "file": "p515_s47_phase_b_record.py",
+   "text": "completion = lattice.completion(tuple(inc['z'])) if (UNIT_POLL_COMPLETION and delta == DELTA_MIN) else None",
+   "lines": [
+    607
+   ]
+  },
+  {
+   "file": "p515_s47_phase_b_record.py",
+   "text": "if completion is not None and completion['over_cap']:",
+   "lines": [
+    650
+   ]
+  },
+  {
+   "file": "p515_s47_phase_b_record.py",
+   "text": "if n_new + len(new) > max_new_evaluations:",
+   "lines": [
+    663
+   ]
+  },
+  {
+   "file": "p515_s47_phase_b_record.py",
+   "text": "for k in range(max_polls):",
+   "lines": [
+    603
+   ]
+  },
+  {
+   "file": "p515_s47_phase_b_record.py",
+   "text": "delta *= 2",
+   "lines": [
+    720
+   ]
+  },
+  {
+   "file": "p515_s47_phase_b_record.py",
+   "text": "elif delta == DELTA_MIN:",
+   "lines": [
+    721
+   ]
+  },
+  {
+   "file": "p515_s47_phase_b_record.py",
+   "text": "delta = max(DELTA_MIN, delta // 2)",
+   "lines": [
+    730
+   ]
+  },
+  {
+   "file": "p515_s47_phase_b_record.py",
+   "text": "def neighbourhood(self, z_inc):",
+   "lines": [
+    428
+   ]
+  },
+  {
+   "file": "p515_s51_f2_phase_b.py",
+   "text": "import p515_s47_phase_b_record as PB",
+   "lines": [
+    122
+   ]
+  },
+  {
+   "file": "p515_s51_f2_phase_b.py",
+   "text": "result = PB.run_mads(lattice, cache, key_of, inc, evaluate_fn, sigma_q, on_poll=on_poll,",
+   "lines": [
+    1153
+   ]
+  },
+  {
+   "file": "p515_s51_f2_phase_b.py",
+   "text": "'pb_delta0_4': PB.DELTA_0 == 4",
+   "lines": [
+    327
+   ]
+  },
+  {
+   "file": "p515_s53_f2_certificate.py",
+   "text": "N_DIRECTIONS = 2 * N_VARS",
+   "lines": [
+    151
+   ]
+  },
+  {
+   "file": "p515_s53_f2_certificate.py",
+   "text": "MIN_FEASIBLE_POLL_POINTS = N_VARS + 1",
+   "lines": [
+    152
+   ]
+  },
+  {
+   "file": "p515_s53_f2_certificate.py",
+   "text": "POLL_DESIGN = 'orthomads_2n'",
+   "lines": [
+    153
+   ]
+  },
+  {
+   "file": "p515_s53_f2_certificate.py",
+   "text": "DELTA_UNIT = PB.DELTA_MIN",
+   "lines": [
+    154
+   ]
+  },
+  {
+   "file": "p515_s53_f2_certificate.py",
+   "text": "MAX_NEW_EVALUATIONS = 60",
+   "lines": [
+    156
+   ]
+  },
+  {
+   "file": "p515_s53_f2_certificate.py",
+   "text": "FIRST_HALTON_K = 4",
+   "lines": [
+    158
+   ]
+  },
+  {
+   "file": "p515_s53_f2_certificate.py",
+   "text": "def directions_2n(k, delta=DELTA_UNIT):",
+   "lines": [
+    321
+   ]
+  },
+  {
+   "file": "p515_s53_f2_certificate.py",
+   "text": "def snap_key(lattice, z, r, z_inc):",
+   "lines": [
+    345
+   ]
+  },
+  {
+   "file": "p515_s53_f2_certificate.py",
+   "text": "SNAP_KEY_LEVELS = ('l1_to_rounded', 'linf_to_rounded', 'l1_to_incumbent', 'same_year_as_incumbent', 'lower_I',",
+   "lines": [
+    351
+   ]
+  },
+  {
+   "file": "p515_s53_f2_certificate.py",
+   "text": "triggered = n_distinct < MIN_FEASIBLE_POLL_POINTS",
+   "lines": [
+    470
+   ]
+  },
+  {
+   "file": "p515_s53_f2_certificate.py",
+   "text": "def certificate_scope(lattice, key_of, cache, inc, record, sigma_q):",
+   "lines": [
+    572
+   ]
+  }
+ ],
+ "I_x_cross_check_vs_W2": {
+  "n": 105,
+  "max_abs_diff_eur": 2.3283064365386963e-10,
+  "worst_label": "n9_4h_e5_y2030",
+  "ok": true
+ },
+ "integrity": {
+  "failures": [],
+  "inputs_sha256": {
+   "manuscript/6a67305f25e8348fb71380c3/main.tex": "9891057c03437cda16da749885001dbdedddde2d917d4a11deeeb2d68ade3062",
+   "data/SRP1/Results/P515S53/w160_step6_frozen/frozen_step6_tables_v1_590088fe.json": "590088fe6b364c265c97998c5491edea7ca70baad0dbe2ba5150273656d9b6f4",
+   "data/SRP1/Results/P515S45/investment_cost/investment_cost_results.json": "28152120f5c7acc57655d40871f764a5e797b93428f5a9f87b7eed55fbe4790b",
+   "p515_s47_phase_b_record.py": "97f573e52fb574836a72dce8c61b3d5c6b8919aa509e0ffbc04a1a6473ed6c62",
+   "p515_s51_f2_phase_b.py": "87ab3b2d23729d1fa10fe8c4bae0cec7d8daf0644f1cb8e6c314b441dcd13b29",
+   "p515_s53_f2_certificate.py": "59f75ce46b42f41053478f8ea50e495555259ef6b92b91766aeda1e013d21df6",
+   "p513_solve_profile_guard.py": "9921682e5b825e0b76551b78c4765bfe039bccc414d727520f2c22b6f192a5ab",
+   "data/SRP1/Results/P515S47/campaign_s47_phase_b/campaign_results.json": "906f9da353ebe2158c13176c22ea49602d9cdbfab142f7334b7e54e9db1fdb58",
+   "data/SRP1/Results/P515S47/campaign_s47_phase_b/campaign_spec_s47_phase_b_8cfa264e.json": "8cfa264e7ab0d92ac0832657c9b328d70b45851ba92f4623384d11fddb334185",
+   "data/SRP1/Results/P515S51/campaign_s51_f2_phase_b/campaign_results.json": "2cdd5d6048919980b6d3d7109709b3441a99b5eb353be3285a09210a9a996eb7",
+   "data/SRP1/Results/P515S51/campaign_s51_f2_phase_b/campaign_spec_s51_f2_phase_b_5ce295e1.json": "5ce295e17c5165ea2148d1240c918ebca05b8aafbeeb22e2ebfc03f9bf120094",
+   "data/SRP1/Results/P515S53/campaign_s53_f2_certificate_r1/campaign_results.json": "61b9c501a2dc3a957fe06246c0048bfc4c61798626dc3a91783bd463602f4a94",
+   "data/SRP1/Results/P515S53/campaign_s53_f2_certificate_r1/campaign_spec_s53_f2_certificate_r1_803571c0.json": "803571c0efcf828eb9716d6c6255909da91d882a57a7bd4e053805f96f88027f"
+  }
+ },
+ "guards": {
+  "own": {
+   "label": "P5.15 W173 search counts (never solves)",
+   "counts": {
+    "permitted_solve": 0,
+    "permitted_exec": 0,
+    "blocked_solve": 0,
+    "blocked_exec": 0
+   },
+   "verify_0_failures": []
+  },
+  "imported_parent_guards": [
+   {
+    "module": "p515_s47_phase_b_record",
+    "attr": "PARENT_GUARD",
+    "label": "P5.15-S47 Phase B record parent (never solves)",
+    "verify_0": []
+   },
+   {
+    "module": "p515_s49_flex_ladder_campaign",
+    "attr": "PARENT_GUARD",
+    "label": "P5.15-S49 flexibility-price ladder parent (never solves)",
+    "verify_0": []
+   },
+   {
+    "module": "p515_s50_marginal_campaign",
+    "attr": "PARENT_GUARD",
+    "label": "P5.15-S50 marginal-MWh campaign parent (never solves)",
+    "verify_0": []
+   },
+   {
+    "module": "p515_s51_f2_ladder_campaign",
+    "attr": "PARENT_GUARD",
+    "label": "P5.15-S51 F2 ladder campaign parent (never solves)",
+    "verify_0": []
+   },
+   {
+    "module": "p515_s51_f2_phase_b",
+    "attr": "PARENT_GUARD",
+    "label": "P5.15-S51 F2 Phase B parent (never solves)",
+    "verify_0": []
+   },
+   {
+    "module": "p515_s53_f2_certificate",
+    "attr": "PARENT_GUARD",
+    "label": "P5.15-S53 F2 certificate parent (never solves)",
+    "verify_0": []
+   }
+  ],
+  "pickle_counts": {
+   "load": 0,
+   "loads": 0
+  }
+ }
+}

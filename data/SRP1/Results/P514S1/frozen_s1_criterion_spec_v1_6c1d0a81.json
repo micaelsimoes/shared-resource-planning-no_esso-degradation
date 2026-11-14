@@ -1,0 +1,71 @@
+{
+  "stage": "S1 — criterion validity for stationarity_pf (ADMM stabilization track)",
+  "status": "FROZEN SPECIFICATION — written and hashed BEFORE the analysis is run",
+  "scope": "diagnose only. No tolerance, criterion, rho or parameter may be changed. Zero solves, ENFORCED by SolveProfileGuard in blocking mode (CLAUDE.md rule six), never asserted. The prior-art branch survey is read-only: no checkout of the working tree, no merge.",
+
+  "mechanism_under_test": {
+    "statement": "The pf dual residual scales linearly with rho and is compared against a FIXED ABSOLUTE tolerance, so raising rho_pf to tighten primal consensus inflates the stationarity residual by the same factor. The lever and the yardstick are coupled.",
+    "code": {
+      "dual_residual_v": "shared_resources_planning.py:4897 — normalized_dual_residual = rho * abs(current - previous) / interface_v_base",
+      "dual_residual_pf": "shared_resources_planning.py:4938 — normalized_dual_residual = rho * abs(current - previous) / interface_rating",
+      "ratio": "shared_resources_planning.py:2454 — dual_pf_mean_ratio = residual_metrics['dual']['pf_mean'] / admm_parameters.tol['stationarity']['pf'] (residual OVER tolerance)",
+      "slack": "p510_e_criteria.py:83-84 — slacks['stationarity_pf'] = 1.0 / dual_pf_mean_ratio (tolerance OVER residual)",
+      "binding": "p510_e_criteria.py:132 — binding = min(slacks), i.e. the criterion with the LEAST slack"
+    },
+    "direction_established_before_prediction": "slack = tolerance / residual, and residual is proportional to rho, so a HIGHER rho_pf must LOWER the stationarity_pf slack. The sign is read from the code above, not assumed.",
+    "what_is_and_is_not_wrong": "The formula rho*(z^k - z^{k-1}) is the standard ADMM dual residual (Boyd et al.). What is questionable is pairing a rho-scaled residual with an ABSOLUTE tolerance; standard treatments use relative tolerances scaled by problem data and adapt rho by residual balancing to keep primal and dual residuals commensurate."
+  },
+
+  "primary_artifacts": {
+    "rule": "re-derive from the primary per-cycle artifacts, not from the P5.10-E summary (P5.12-Z convention)",
+    "files": ["data/SRP1/Results/P510/p510_b_fixedrho_pf300.json (18 cycles)", "data/SRP1/Results/P510/p510_b_fixedrho_pf500.json (27 cycles)", "data/SRP1/Results/P510/p510_b_fixedrho_pf1000.json (48 cycles)"],
+    "cross_check": "the re-derived stationarity_pf slacks must reproduce the 93 binding_slack values in data/SRP1/Results/P510/p510_e_criteria.json on the cycles where stationarity_pf is the binding criterion; a mismatch invalidates the analysis"
+  },
+
+  "predeclared_predictions": {
+    "P1_increment_invariance": {
+      "quantity": "g = dual_pf_mean / rho_pf, which by the code equals the mean of abs(current - previous)/interface_rating — the iterate increment alone, with rho divided out",
+      "prediction": "if the criterion is rho-dominated, g is approximately INVARIANT across rho_pf in {300, 500, 1000}; if instead the iterates fully compensate, g scales as 1/rho and the residual is invariant",
+      "report": "median g per setting, and the ratios g(500)/g(300) and g(1000)/g(300)"
+    },
+    "P2_slack_scaling": {
+      "quantity": "median stationarity_pf slack per rho setting",
+      "prediction": "slack(1000)/slack(300) ≈ 300/1000 = 0.300 exactly IF the increments are unchanged; the observed departure from 0.300 measures how much the iterates compensate",
+      "predeclared_outcomes": {
+        "rho_dominated": "ratio in [0.25, 0.40] — the mechanism is confirmed: the criterion moves with the parameter meant to fix it",
+        "compensating": "ratio in [0.85, 1.15] — the mechanism is absent: increments shrink in proportion and the criterion is rho-invariant",
+        "partial": "anything else — quantify the exponent p in slack ~ rho^(-p) by least squares on log-log, and report p with its three points"
+      }
+    },
+    "P3_matched_index": "the three runs have different lengths (18/27/48), so the comparison is made BOTH at matched cycle indices over the common range 1..18 AND over each full trajectory; both are reported, and a material disagreement between them is itself a finding"
+  },
+
+  "additional_questions": {
+    "Q1_trend": "within each rho setting, is the stationarity_pf slack approaching 1 (satisfaction), static, or falling? Report the log-slack-versus-cycle slope and the terminal slack.",
+    "Q2_commensurability": "is an absolute stationarity tolerance commensurate with objective_tolerance = max(1e3, 1e-3 * recourse), which is relative? Report the stationarity tolerance actually in force (derivable as dual_pf_mean / dual_pf_mean_ratio) and state the mismatch in kind, not merely in magnitude.",
+    "Q3_aggregation": "consensus criteria use BOTH a max and a mean per family, while stationarity uses only dual_<group>_mean_ratio. Report whether a max-based stationarity measure exists in the artifacts and how it would compare."
+  },
+
+  "scope_limit_predeclared": {
+    "statement": "All 93 cycles have the same binding criterion, so the dataset contains NO counterexample. It cannot support any claim about what distinguishes a binding criterion from a non-binding one — only a characterisation of the binding criterion's own behaviour.",
+    "shape": "the same selection-on-success limitation as the P5.12-W/X/Y breadth probe",
+    "why_the_rho_test_survives_it": "P1 and P2 are WITHIN-criterion comparisons across parameter settings, not BETWEEN-criteria comparisons, so they are unaffected by the absence of a counterexample"
+  },
+
+  "prior_art_survey": {
+    "rationale": "the residual-balancing branches address exactly the mechanism above, so the survey and this finding are one thread",
+    "branches": ["origin/admm_residual_balancing_tests", "residual_balancing_mod", "origin/check_convergence_per_adn", "admm_initialization", "admm_prev_iter_vars", "primal_value_update", "admm_loop_corrections", "consensus_vars_sess_prev_iter", "warm_start_tests"],
+    "method": "read-only: git log --full-history, git show, git diff against the merge base. No checkout, no merge.",
+    "report": "for each branch — what was tried, what the commit messages claim, whether any evaluation artifact exists, and whether it bears on the rho/tolerance coupling",
+    "limit": "commit messages are claims, not evidence; absence of an evaluation artifact must be reported as such"
+  },
+
+  "not_permitted": [
+    "any solve",
+    "changing any tolerance, criterion, rho or parameter",
+    "proposing or running a lever — S1 reports and stops",
+    "any between-criteria discrimination claim from this dataset"
+  ],
+
+  "decision_rule": "the analysis stands or falls on P1 and P2 as predeclared above; the prediction is recorded before the numbers are computed, in the manner of the cl_nom/k prediction in P5.13-D gate v2"
+}

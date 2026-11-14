@@ -1,0 +1,997 @@
+# p516_d0_t01c parent start 2026-10-31T11:05:07+0000 interpreter /opt/anaconda3/envs/opf_env_py311/bin/python
+[write] predictions.json
+[capture] 21 required quantities -> writers present for ['capacity.json', 'identities.json', 'inventory.json', 'lp/index.json', 'objective.json', 'predictions.json']
+[inputs] x0       certified_models.pkl     d816bb4b1ade4b44ad4a77872443fe2668986663c524fc4239815d4657974e21 match=True
+[inputs] x0       esso_models_s39_D.pkl    15f384090089e123a295d8a3f5d0d6b2dc4e953effed55b28eae456a38529d8d match=True
+[inputs] x0       ess_params               39106f934bf3edbf18f01a5ef1fadfefc2f7a518706e6c8fa6d962617a312706 match=True
+[inputs] x0       case_params              dbfdb2a07d12bfedab5e66bf94b3df98e5ab0305616652b4083266476972006b match=True
+[inputs] unit_n7  certified_models.pkl     fe06ca485003b4fc9c0fd9788279bd287dd813d659179b311885e8ab03efda04 match=True
+[inputs] unit_n7  esso_models_s39_D.pkl    95f7b38a6ec21833f7b5521ec8332d8022ef6801b4095d1410225438b2cedfc9 match=True
+[inputs] unit_n7  ess_params               39106f934bf3edbf18f01a5ef1fadfefc2f7a518706e6c8fa6d962617a312706 match=True
+[inputs] unit_n7  case_params              dbfdb2a07d12bfedab5e66bf94b3df98e5ab0305616652b4083266476972006b match=True
+[inputs] t01b manifest 4e5bbd45234598094593a8daca807a576590eee52f492f5281b63cf621876562 match=True; files read {'identities.json': True, 'coupling.json': True, 'lp/index.json': True}
+[INFO] Scenario random seed: 2026
+[INFO] Reading MARKET DATA from file(s)...
+[INFO] 	 - Generating market scenarios...
+[INFO] 	 - Plotting market scenarios...
+[INFO] Reading DISTRIBUTION NETWORK DATA from file(s)...
+[INFO]	 - Generating load stochastic scenarios...
+[INFO]	 - Generating RES generation stochastic scenarios...
+[INFO]	 - Generating flexibility stochastic scenarios...
+[INFO]	 - Plotting flexibility profiles...
+[INFO]	 - Plotting load scenarios...
+[INFO]	 - Plotting RES generation scenarios...
+[INFO] Reading DISTRIBUTION NETWORK DATA from file(s)...
+[INFO]	 - Generating load stochastic scenarios...
+[INFO]	 - Generating RES generation stochastic scenarios...
+[INFO]	 - Generating flexibility stochastic scenarios...
+[INFO]	 - Plotting flexibility profiles...
+[INFO]	 - Plotting load scenarios...
+[INFO]	 - Plotting RES generation scenarios...
+[INFO] Reading DISTRIBUTION NETWORK DATA from file(s)...
+[INFO]	 - Generating load stochastic scenarios...
+[INFO]	 - Generating RES generation stochastic scenarios...
+[INFO]	 - Generating flexibility stochastic scenarios...
+[INFO]	 - Plotting flexibility profiles...
+[INFO]	 - Plotting load scenarios...
+[INFO]	 - Plotting RES generation scenarios...
+[INFO] Reading TRANSMISSION NETWORK DATA from file(s)...
+[INFO]	 - Generating load stochastic scenarios...
+[INFO]	 - Generating RES generation stochastic scenarios...
+[INFO]	 - Generating flexibility stochastic scenarios...
+[INFO]	 - Plotting flexibility profiles...
+[INFO]	 - Plotting load scenarios...
+[INFO]	 - Plotting RES generation scenarios...
+[INFO] Scenario checksum: 5a02b77ccbbbbbb869de92958a3851d095624711abc2dbfc0157466064410358
+[INFO] Reading SHARED ESS DATA from file(s)...
+[INFO] Reading PLANNING PARAMETERS from file...
+[planning] read in 9.3 s; years [2025, 2030, 2035] days ['Spring', 'Summer', 'Autumn', 'Winter']
+[variant C] phi_cal 0.985 (file) / [0.985] (objects); Years {'2025': 5, '2030': 5, '2035': 5}; soh point end; factors [0.927217, 0.85973, 0.797156, 1.0, 0.927217, 0.85973, 1.0, 1.0, 0.927217]
+
+========== cell x0 (data/SRP1/Results/P515S53/tight_tail_w86/campaign_s53_w86_tail_recert/evals/5cfe69a615ae3708_x0) ==========
+[bounds] x0: value-dependent {'slack_shared_es_soc_final_up': 72, 'slack_shared_es_soc_final_down': 72} over 72 shared-ESS copies; zero-gated {'shared_es_pch': 1728, 'shared_es_pdch': 1728, 'shared_es_pnet': 1728, 'shared_es_qnet': 1728}; ESSO value-dependent 0
+WARNING: EXPORT Suffix 'ipopt_zL_in' found on 7 blocks:
+        tso.ipopt_zL_in dso_5.ipopt_zL_in esso_5.ipopt_zL_in dso_7.ipopt_zL_in
+        esso_7.ipopt_zL_in dso_9.ipopt_zL_in esso_9.ipopt_zL_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'ipopt_zU_in' found on 4 blocks:
+        tso.ipopt_zU_in dso_5.ipopt_zU_in dso_7.ipopt_zU_in dso_9.ipopt_zU_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'dual' found on 7 blocks:
+        tso.dual dso_5.dual esso_5.dual dso_7.dual esso_7.dual dso_9.dual
+        esso_9.dual
+    LP writer cannot export suffixes to LP files.  Skipping.
+[group] x0 2025_Spring R: same-point max 0.0e+00; retained over 0 (max ratio 1.000); envelope over 0 (max ratio 0.9767); cones 6.2e-16; coupling unequal 0; obj rel 0.0e+00; lp {'variables': 26292, 'constraints': 22371, 'objectives': 1, 'other': 0}
+WARNING: EXPORT Suffix 'ipopt_zL_in' found on 7 blocks:
+        tso.ipopt_zL_in dso_5.ipopt_zL_in esso_5.ipopt_zL_in dso_7.ipopt_zL_in
+        esso_7.ipopt_zL_in dso_9.ipopt_zL_in esso_9.ipopt_zL_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'ipopt_zU_in' found on 4 blocks:
+        tso.ipopt_zU_in dso_5.ipopt_zU_in dso_7.ipopt_zU_in dso_9.ipopt_zU_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'dual' found on 7 blocks:
+        tso.dual dso_5.dual esso_5.dual dso_7.dual esso_7.dual dso_9.dual
+        esso_9.dual
+    LP writer cannot export suffixes to LP files.  Skipping.
+[group] x0 2025_Spring A: same-point max 0.0e+00; retained over 0 (max ratio 1.000); envelope over 0 (max ratio 0.9767); cones 6.2e-16; coupling unequal 0; obj rel 0.0e+00; lp {'variables': 26292, 'constraints': 22371, 'objectives': 1, 'other': 0}
+WARNING: EXPORT Suffix 'ipopt_zL_in' found on 7 blocks:
+        tso.ipopt_zL_in dso_5.ipopt_zL_in esso_5.ipopt_zL_in dso_7.ipopt_zL_in
+        esso_7.ipopt_zL_in dso_9.ipopt_zL_in esso_9.ipopt_zL_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'ipopt_zU_in' found on 4 blocks:
+        tso.ipopt_zU_in dso_5.ipopt_zU_in dso_7.ipopt_zU_in dso_9.ipopt_zU_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'dual' found on 7 blocks:
+        tso.dual dso_5.dual esso_5.dual dso_7.dual esso_7.dual dso_9.dual
+        esso_9.dual
+    LP writer cannot export suffixes to LP files.  Skipping.
+[group] x0 2025_Spring C: same-point max 0.0e+00; retained over 0 (max ratio 1.000); envelope over 0 (max ratio 0.9767); cones 6.2e-16; coupling unequal 0; obj rel 0.0e+00; lp {'variables': 26292, 'constraints': 22371, 'objectives': 1, 'other': 0}
+[group] x0 2025_Spring done in 28.3 s; LP compare: R_vs_A raw=False body=True ndiff=0; R_vs_C raw=False body=False ndiff=45; A_vs_C raw=False body=False ndiff=45; R_vs_t01b_R raw=False body=True ndiff=0; A_vs_t01b_A raw=False body=True ndiff=0
+WARNING: EXPORT Suffix 'ipopt_zL_in' found on 7 blocks:
+        tso.ipopt_zL_in dso_5.ipopt_zL_in esso_5.ipopt_zL_in dso_7.ipopt_zL_in
+        esso_7.ipopt_zL_in dso_9.ipopt_zL_in esso_9.ipopt_zL_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'ipopt_zU_in' found on 4 blocks:
+        tso.ipopt_zU_in dso_5.ipopt_zU_in dso_7.ipopt_zU_in dso_9.ipopt_zU_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'dual' found on 7 blocks:
+        tso.dual dso_5.dual esso_5.dual dso_7.dual esso_7.dual dso_9.dual
+        esso_9.dual
+    LP writer cannot export suffixes to LP files.  Skipping.
+[group] x0 2025_Summer R: same-point max 0.0e+00; retained over 0 (max ratio 1.000); envelope over 0 (max ratio 0.6110); cones 7.3e-16; coupling unequal 0; obj rel 1.8e-16; lp {'variables': 26292, 'constraints': 22371, 'objectives': 1, 'other': 0}
+WARNING: EXPORT Suffix 'ipopt_zL_in' found on 7 blocks:
+        tso.ipopt_zL_in dso_5.ipopt_zL_in esso_5.ipopt_zL_in dso_7.ipopt_zL_in
+        esso_7.ipopt_zL_in dso_9.ipopt_zL_in esso_9.ipopt_zL_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'ipopt_zU_in' found on 4 blocks:
+        tso.ipopt_zU_in dso_5.ipopt_zU_in dso_7.ipopt_zU_in dso_9.ipopt_zU_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'dual' found on 7 blocks:
+        tso.dual dso_5.dual esso_5.dual dso_7.dual esso_7.dual dso_9.dual
+        esso_9.dual
+    LP writer cannot export suffixes to LP files.  Skipping.
+[group] x0 2025_Summer A: same-point max 0.0e+00; retained over 0 (max ratio 1.000); envelope over 0 (max ratio 0.6110); cones 7.3e-16; coupling unequal 0; obj rel 1.8e-16; lp {'variables': 26292, 'constraints': 22371, 'objectives': 1, 'other': 0}
+WARNING: EXPORT Suffix 'ipopt_zL_in' found on 7 blocks:
+        tso.ipopt_zL_in dso_5.ipopt_zL_in esso_5.ipopt_zL_in dso_7.ipopt_zL_in
+        esso_7.ipopt_zL_in dso_9.ipopt_zL_in esso_9.ipopt_zL_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'ipopt_zU_in' found on 4 blocks:
+        tso.ipopt_zU_in dso_5.ipopt_zU_in dso_7.ipopt_zU_in dso_9.ipopt_zU_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'dual' found on 7 blocks:
+        tso.dual dso_5.dual esso_5.dual dso_7.dual esso_7.dual dso_9.dual
+        esso_9.dual
+    LP writer cannot export suffixes to LP files.  Skipping.
+[group] x0 2025_Summer C: same-point max 0.0e+00; retained over 0 (max ratio 1.000); envelope over 0 (max ratio 0.6110); cones 7.3e-16; coupling unequal 0; obj rel 1.8e-16; lp {'variables': 26292, 'constraints': 22371, 'objectives': 1, 'other': 0}
+[group] x0 2025_Summer done in 32.0 s; LP compare: R_vs_A raw=False body=True ndiff=0; R_vs_C raw=False body=False ndiff=45; A_vs_C raw=False body=False ndiff=45; R_vs_t01b_R raw=False body=True ndiff=0; A_vs_t01b_A raw=False body=True ndiff=0
+WARNING: EXPORT Suffix 'ipopt_zL_in' found on 7 blocks:
+        tso.ipopt_zL_in dso_5.ipopt_zL_in esso_5.ipopt_zL_in dso_7.ipopt_zL_in
+        esso_7.ipopt_zL_in dso_9.ipopt_zL_in esso_9.ipopt_zL_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'ipopt_zU_in' found on 4 blocks:
+        tso.ipopt_zU_in dso_5.ipopt_zU_in dso_7.ipopt_zU_in dso_9.ipopt_zU_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'dual' found on 7 blocks:
+        tso.dual dso_5.dual esso_5.dual dso_7.dual esso_7.dual dso_9.dual
+        esso_9.dual
+    LP writer cannot export suffixes to LP files.  Skipping.
+[group] x0 2025_Autumn R: same-point max 0.0e+00; retained over 0 (max ratio 1.000); envelope over 0 (max ratio 1.0000); cones 6.3e-16; coupling unequal 0; obj rel 1.9e-16; lp {'variables': 26292, 'constraints': 22239, 'objectives': 1, 'other': 0}
+WARNING: EXPORT Suffix 'ipopt_zL_in' found on 7 blocks:
+        tso.ipopt_zL_in dso_5.ipopt_zL_in esso_5.ipopt_zL_in dso_7.ipopt_zL_in
+        esso_7.ipopt_zL_in dso_9.ipopt_zL_in esso_9.ipopt_zL_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'ipopt_zU_in' found on 4 blocks:
+        tso.ipopt_zU_in dso_5.ipopt_zU_in dso_7.ipopt_zU_in dso_9.ipopt_zU_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'dual' found on 7 blocks:
+        tso.dual dso_5.dual esso_5.dual dso_7.dual esso_7.dual dso_9.dual
+        esso_9.dual
+    LP writer cannot export suffixes to LP files.  Skipping.
+[group] x0 2025_Autumn A: same-point max 0.0e+00; retained over 0 (max ratio 1.000); envelope over 0 (max ratio 1.0000); cones 6.3e-16; coupling unequal 0; obj rel 1.9e-16; lp {'variables': 26292, 'constraints': 22239, 'objectives': 1, 'other': 0}
+WARNING: EXPORT Suffix 'ipopt_zL_in' found on 7 blocks:
+        tso.ipopt_zL_in dso_5.ipopt_zL_in esso_5.ipopt_zL_in dso_7.ipopt_zL_in
+        esso_7.ipopt_zL_in dso_9.ipopt_zL_in esso_9.ipopt_zL_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'ipopt_zU_in' found on 4 blocks:
+        tso.ipopt_zU_in dso_5.ipopt_zU_in dso_7.ipopt_zU_in dso_9.ipopt_zU_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'dual' found on 7 blocks:
+        tso.dual dso_5.dual esso_5.dual dso_7.dual esso_7.dual dso_9.dual
+        esso_9.dual
+    LP writer cannot export suffixes to LP files.  Skipping.
+[group] x0 2025_Autumn C: same-point max 0.0e+00; retained over 0 (max ratio 1.000); envelope over 0 (max ratio 1.0000); cones 6.3e-16; coupling unequal 0; obj rel 1.9e-16; lp {'variables': 26292, 'constraints': 22239, 'objectives': 1, 'other': 0}
+[group] x0 2025_Autumn done in 30.2 s; LP compare: R_vs_A raw=False body=True ndiff=0; R_vs_C raw=False body=False ndiff=45; A_vs_C raw=False body=False ndiff=45; R_vs_t01b_R raw=False body=True ndiff=0; A_vs_t01b_A raw=False body=True ndiff=0
+WARNING: EXPORT Suffix 'ipopt_zL_in' found on 7 blocks:
+        tso.ipopt_zL_in dso_5.ipopt_zL_in esso_5.ipopt_zL_in dso_7.ipopt_zL_in
+        esso_7.ipopt_zL_in dso_9.ipopt_zL_in esso_9.ipopt_zL_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'ipopt_zU_in' found on 4 blocks:
+        tso.ipopt_zU_in dso_5.ipopt_zU_in dso_7.ipopt_zU_in dso_9.ipopt_zU_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'dual' found on 7 blocks:
+        tso.dual dso_5.dual esso_5.dual dso_7.dual esso_7.dual dso_9.dual
+        esso_9.dual
+    LP writer cannot export suffixes to LP files.  Skipping.
+[group] x0 2025_Winter R: same-point max 0.0e+00; retained over 0 (max ratio 1.000); envelope over 0 (max ratio 0.9866); cones 6.0e-16; coupling unequal 0; obj rel 1.8e-16; lp {'variables': 26292, 'constraints': 22239, 'objectives': 1, 'other': 0}
+WARNING: EXPORT Suffix 'ipopt_zL_in' found on 7 blocks:
+        tso.ipopt_zL_in dso_5.ipopt_zL_in esso_5.ipopt_zL_in dso_7.ipopt_zL_in
+        esso_7.ipopt_zL_in dso_9.ipopt_zL_in esso_9.ipopt_zL_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'ipopt_zU_in' found on 4 blocks:
+        tso.ipopt_zU_in dso_5.ipopt_zU_in dso_7.ipopt_zU_in dso_9.ipopt_zU_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'dual' found on 7 blocks:
+        tso.dual dso_5.dual esso_5.dual dso_7.dual esso_7.dual dso_9.dual
+        esso_9.dual
+    LP writer cannot export suffixes to LP files.  Skipping.
+[group] x0 2025_Winter A: same-point max 0.0e+00; retained over 0 (max ratio 1.000); envelope over 0 (max ratio 0.9866); cones 6.0e-16; coupling unequal 0; obj rel 1.8e-16; lp {'variables': 26292, 'constraints': 22239, 'objectives': 1, 'other': 0}
+WARNING: EXPORT Suffix 'ipopt_zL_in' found on 7 blocks:
+        tso.ipopt_zL_in dso_5.ipopt_zL_in esso_5.ipopt_zL_in dso_7.ipopt_zL_in
+        esso_7.ipopt_zL_in dso_9.ipopt_zL_in esso_9.ipopt_zL_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'ipopt_zU_in' found on 4 blocks:
+        tso.ipopt_zU_in dso_5.ipopt_zU_in dso_7.ipopt_zU_in dso_9.ipopt_zU_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'dual' found on 7 blocks:
+        tso.dual dso_5.dual esso_5.dual dso_7.dual esso_7.dual dso_9.dual
+        esso_9.dual
+    LP writer cannot export suffixes to LP files.  Skipping.
+[group] x0 2025_Winter C: same-point max 0.0e+00; retained over 0 (max ratio 1.000); envelope over 0 (max ratio 0.9866); cones 6.0e-16; coupling unequal 0; obj rel 1.8e-16; lp {'variables': 26292, 'constraints': 22239, 'objectives': 1, 'other': 0}
+[group] x0 2025_Winter done in 34.1 s; LP compare: R_vs_A raw=False body=True ndiff=0; R_vs_C raw=False body=False ndiff=45; A_vs_C raw=False body=False ndiff=45; R_vs_t01b_R raw=False body=True ndiff=0; A_vs_t01b_A raw=False body=True ndiff=0
+WARNING: EXPORT Suffix 'ipopt_zL_in' found on 7 blocks:
+        tso.ipopt_zL_in dso_5.ipopt_zL_in esso_5.ipopt_zL_in dso_7.ipopt_zL_in
+        esso_7.ipopt_zL_in dso_9.ipopt_zL_in esso_9.ipopt_zL_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'ipopt_zU_in' found on 4 blocks:
+        tso.ipopt_zU_in dso_5.ipopt_zU_in dso_7.ipopt_zU_in dso_9.ipopt_zU_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'dual' found on 7 blocks:
+        tso.dual dso_5.dual esso_5.dual dso_7.dual esso_7.dual dso_9.dual
+        esso_9.dual
+    LP writer cannot export suffixes to LP files.  Skipping.
+[group] x0 2030_Spring R: same-point max 0.0e+00; retained over 0 (max ratio 1.000); envelope over 0 (max ratio 0.9760); cones 6.4e-16; coupling unequal 0; obj rel 0.0e+00; lp {'variables': 26292, 'constraints': 22371, 'objectives': 1, 'other': 0}
+WARNING: EXPORT Suffix 'ipopt_zL_in' found on 7 blocks:
+        tso.ipopt_zL_in dso_5.ipopt_zL_in esso_5.ipopt_zL_in dso_7.ipopt_zL_in
+        esso_7.ipopt_zL_in dso_9.ipopt_zL_in esso_9.ipopt_zL_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'ipopt_zU_in' found on 4 blocks:
+        tso.ipopt_zU_in dso_5.ipopt_zU_in dso_7.ipopt_zU_in dso_9.ipopt_zU_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'dual' found on 7 blocks:
+        tso.dual dso_5.dual esso_5.dual dso_7.dual esso_7.dual dso_9.dual
+        esso_9.dual
+    LP writer cannot export suffixes to LP files.  Skipping.
+[group] x0 2030_Spring A: same-point max 0.0e+00; retained over 0 (max ratio 1.000); envelope over 0 (max ratio 0.9760); cones 6.4e-16; coupling unequal 0; obj rel 0.0e+00; lp {'variables': 26292, 'constraints': 22371, 'objectives': 1, 'other': 0}
+WARNING: EXPORT Suffix 'ipopt_zL_in' found on 7 blocks:
+        tso.ipopt_zL_in dso_5.ipopt_zL_in esso_5.ipopt_zL_in dso_7.ipopt_zL_in
+        esso_7.ipopt_zL_in dso_9.ipopt_zL_in esso_9.ipopt_zL_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'ipopt_zU_in' found on 4 blocks:
+        tso.ipopt_zU_in dso_5.ipopt_zU_in dso_7.ipopt_zU_in dso_9.ipopt_zU_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'dual' found on 7 blocks:
+        tso.dual dso_5.dual esso_5.dual dso_7.dual esso_7.dual dso_9.dual
+        esso_9.dual
+    LP writer cannot export suffixes to LP files.  Skipping.
+[group] x0 2030_Spring C: same-point max 0.0e+00; retained over 0 (max ratio 1.000); envelope over 0 (max ratio 0.9760); cones 6.4e-16; coupling unequal 0; obj rel 0.0e+00; lp {'variables': 26292, 'constraints': 22371, 'objectives': 1, 'other': 0}
+[group] x0 2030_Spring done in 40.3 s; LP compare: R_vs_A raw=False body=True ndiff=0; R_vs_C raw=False body=False ndiff=45; A_vs_C raw=False body=False ndiff=45; R_vs_t01b_R raw=False body=True ndiff=0; A_vs_t01b_A raw=False body=True ndiff=0
+WARNING: EXPORT Suffix 'ipopt_zL_in' found on 7 blocks:
+        tso.ipopt_zL_in dso_5.ipopt_zL_in esso_5.ipopt_zL_in dso_7.ipopt_zL_in
+        esso_7.ipopt_zL_in dso_9.ipopt_zL_in esso_9.ipopt_zL_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'ipopt_zU_in' found on 4 blocks:
+        tso.ipopt_zU_in dso_5.ipopt_zU_in dso_7.ipopt_zU_in dso_9.ipopt_zU_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'dual' found on 7 blocks:
+        tso.dual dso_5.dual esso_5.dual dso_7.dual esso_7.dual dso_9.dual
+        esso_9.dual
+    LP writer cannot export suffixes to LP files.  Skipping.
+[group] x0 2030_Summer R: same-point max 0.0e+00; retained over 0 (max ratio 1.000); envelope over 0 (max ratio 0.8934); cones 6.5e-16; coupling unequal 0; obj rel 1.2e-16; lp {'variables': 26292, 'constraints': 22371, 'objectives': 1, 'other': 0}
+WARNING: EXPORT Suffix 'ipopt_zL_in' found on 7 blocks:
+        tso.ipopt_zL_in dso_5.ipopt_zL_in esso_5.ipopt_zL_in dso_7.ipopt_zL_in
+        esso_7.ipopt_zL_in dso_9.ipopt_zL_in esso_9.ipopt_zL_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'ipopt_zU_in' found on 4 blocks:
+        tso.ipopt_zU_in dso_5.ipopt_zU_in dso_7.ipopt_zU_in dso_9.ipopt_zU_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'dual' found on 7 blocks:
+        tso.dual dso_5.dual esso_5.dual dso_7.dual esso_7.dual dso_9.dual
+        esso_9.dual
+    LP writer cannot export suffixes to LP files.  Skipping.
+[group] x0 2030_Summer A: same-point max 0.0e+00; retained over 0 (max ratio 1.000); envelope over 0 (max ratio 0.8934); cones 6.5e-16; coupling unequal 0; obj rel 1.2e-16; lp {'variables': 26292, 'constraints': 22371, 'objectives': 1, 'other': 0}
+WARNING: EXPORT Suffix 'ipopt_zL_in' found on 7 blocks:
+        tso.ipopt_zL_in dso_5.ipopt_zL_in esso_5.ipopt_zL_in dso_7.ipopt_zL_in
+        esso_7.ipopt_zL_in dso_9.ipopt_zL_in esso_9.ipopt_zL_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'ipopt_zU_in' found on 4 blocks:
+        tso.ipopt_zU_in dso_5.ipopt_zU_in dso_7.ipopt_zU_in dso_9.ipopt_zU_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'dual' found on 7 blocks:
+        tso.dual dso_5.dual esso_5.dual dso_7.dual esso_7.dual dso_9.dual
+        esso_9.dual
+    LP writer cannot export suffixes to LP files.  Skipping.
+[group] x0 2030_Summer C: same-point max 0.0e+00; retained over 0 (max ratio 1.000); envelope over 0 (max ratio 0.8934); cones 6.5e-16; coupling unequal 0; obj rel 1.2e-16; lp {'variables': 26292, 'constraints': 22371, 'objectives': 1, 'other': 0}
+[group] x0 2030_Summer done in 38.0 s; LP compare: R_vs_A raw=False body=True ndiff=0; R_vs_C raw=False body=False ndiff=45; A_vs_C raw=False body=False ndiff=45; R_vs_t01b_R raw=False body=True ndiff=0; A_vs_t01b_A raw=False body=True ndiff=0
+WARNING: EXPORT Suffix 'ipopt_zL_in' found on 7 blocks:
+        tso.ipopt_zL_in dso_5.ipopt_zL_in esso_5.ipopt_zL_in dso_7.ipopt_zL_in
+        esso_7.ipopt_zL_in dso_9.ipopt_zL_in esso_9.ipopt_zL_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'ipopt_zU_in' found on 4 blocks:
+        tso.ipopt_zU_in dso_5.ipopt_zU_in dso_7.ipopt_zU_in dso_9.ipopt_zU_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'dual' found on 7 blocks:
+        tso.dual dso_5.dual esso_5.dual dso_7.dual esso_7.dual dso_9.dual
+        esso_9.dual
+    LP writer cannot export suffixes to LP files.  Skipping.
+[group] x0 2030_Autumn R: same-point max 0.0e+00; retained over 0 (max ratio 1.000); envelope over 0 (max ratio 0.8179); cones 6.9e-16; coupling unequal 0; obj rel 1.4e-16; lp {'variables': 26292, 'constraints': 22239, 'objectives': 1, 'other': 0}
+WARNING: EXPORT Suffix 'ipopt_zL_in' found on 7 blocks:
+        tso.ipopt_zL_in dso_5.ipopt_zL_in esso_5.ipopt_zL_in dso_7.ipopt_zL_in
+        esso_7.ipopt_zL_in dso_9.ipopt_zL_in esso_9.ipopt_zL_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'ipopt_zU_in' found on 4 blocks:
+        tso.ipopt_zU_in dso_5.ipopt_zU_in dso_7.ipopt_zU_in dso_9.ipopt_zU_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'dual' found on 7 blocks:
+        tso.dual dso_5.dual esso_5.dual dso_7.dual esso_7.dual dso_9.dual
+        esso_9.dual
+    LP writer cannot export suffixes to LP files.  Skipping.
+[group] x0 2030_Autumn A: same-point max 0.0e+00; retained over 0 (max ratio 1.000); envelope over 0 (max ratio 0.8179); cones 6.9e-16; coupling unequal 0; obj rel 1.4e-16; lp {'variables': 26292, 'constraints': 22239, 'objectives': 1, 'other': 0}
+WARNING: EXPORT Suffix 'ipopt_zL_in' found on 7 blocks:
+        tso.ipopt_zL_in dso_5.ipopt_zL_in esso_5.ipopt_zL_in dso_7.ipopt_zL_in
+        esso_7.ipopt_zL_in dso_9.ipopt_zL_in esso_9.ipopt_zL_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'ipopt_zU_in' found on 4 blocks:
+        tso.ipopt_zU_in dso_5.ipopt_zU_in dso_7.ipopt_zU_in dso_9.ipopt_zU_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'dual' found on 7 blocks:
+        tso.dual dso_5.dual esso_5.dual dso_7.dual esso_7.dual dso_9.dual
+        esso_9.dual
+    LP writer cannot export suffixes to LP files.  Skipping.
+[group] x0 2030_Autumn C: same-point max 0.0e+00; retained over 0 (max ratio 1.000); envelope over 0 (max ratio 0.8179); cones 6.9e-16; coupling unequal 0; obj rel 1.4e-16; lp {'variables': 26292, 'constraints': 22239, 'objectives': 1, 'other': 0}
+[group] x0 2030_Autumn done in 44.4 s; LP compare: R_vs_A raw=False body=True ndiff=0; R_vs_C raw=False body=False ndiff=45; A_vs_C raw=False body=False ndiff=45; R_vs_t01b_R raw=False body=True ndiff=0; A_vs_t01b_A raw=False body=True ndiff=0
+WARNING: EXPORT Suffix 'ipopt_zL_in' found on 7 blocks:
+        tso.ipopt_zL_in dso_5.ipopt_zL_in esso_5.ipopt_zL_in dso_7.ipopt_zL_in
+        esso_7.ipopt_zL_in dso_9.ipopt_zL_in esso_9.ipopt_zL_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'ipopt_zU_in' found on 4 blocks:
+        tso.ipopt_zU_in dso_5.ipopt_zU_in dso_7.ipopt_zU_in dso_9.ipopt_zU_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'dual' found on 7 blocks:
+        tso.dual dso_5.dual esso_5.dual dso_7.dual esso_7.dual dso_9.dual
+        esso_9.dual
+    LP writer cannot export suffixes to LP files.  Skipping.
+[group] x0 2030_Winter R: same-point max 0.0e+00; retained over 0 (max ratio 1.000); envelope over 0 (max ratio 0.9942); cones 6.3e-16; coupling unequal 0; obj rel 1.9e-16; lp {'variables': 26292, 'constraints': 22239, 'objectives': 1, 'other': 0}
+WARNING: EXPORT Suffix 'ipopt_zL_in' found on 7 blocks:
+        tso.ipopt_zL_in dso_5.ipopt_zL_in esso_5.ipopt_zL_in dso_7.ipopt_zL_in
+        esso_7.ipopt_zL_in dso_9.ipopt_zL_in esso_9.ipopt_zL_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'ipopt_zU_in' found on 4 blocks:
+        tso.ipopt_zU_in dso_5.ipopt_zU_in dso_7.ipopt_zU_in dso_9.ipopt_zU_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'dual' found on 7 blocks:
+        tso.dual dso_5.dual esso_5.dual dso_7.dual esso_7.dual dso_9.dual
+        esso_9.dual
+    LP writer cannot export suffixes to LP files.  Skipping.
+[group] x0 2030_Winter A: same-point max 0.0e+00; retained over 0 (max ratio 1.000); envelope over 0 (max ratio 0.9942); cones 6.3e-16; coupling unequal 0; obj rel 1.9e-16; lp {'variables': 26292, 'constraints': 22239, 'objectives': 1, 'other': 0}
+WARNING: EXPORT Suffix 'ipopt_zL_in' found on 7 blocks:
+        tso.ipopt_zL_in dso_5.ipopt_zL_in esso_5.ipopt_zL_in dso_7.ipopt_zL_in
+        esso_7.ipopt_zL_in dso_9.ipopt_zL_in esso_9.ipopt_zL_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'ipopt_zU_in' found on 4 blocks:
+        tso.ipopt_zU_in dso_5.ipopt_zU_in dso_7.ipopt_zU_in dso_9.ipopt_zU_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'dual' found on 7 blocks:
+        tso.dual dso_5.dual esso_5.dual dso_7.dual esso_7.dual dso_9.dual
+        esso_9.dual
+    LP writer cannot export suffixes to LP files.  Skipping.
+[group] x0 2030_Winter C: same-point max 0.0e+00; retained over 0 (max ratio 1.000); envelope over 0 (max ratio 0.9942); cones 6.3e-16; coupling unequal 0; obj rel 1.9e-16; lp {'variables': 26292, 'constraints': 22239, 'objectives': 1, 'other': 0}
+[group] x0 2030_Winter done in 35.9 s; LP compare: R_vs_A raw=False body=True ndiff=0; R_vs_C raw=False body=False ndiff=45; A_vs_C raw=False body=False ndiff=45; R_vs_t01b_R raw=False body=True ndiff=0; A_vs_t01b_A raw=False body=True ndiff=0
+WARNING: EXPORT Suffix 'ipopt_zL_in' found on 7 blocks:
+        tso.ipopt_zL_in dso_5.ipopt_zL_in esso_5.ipopt_zL_in dso_7.ipopt_zL_in
+        esso_7.ipopt_zL_in dso_9.ipopt_zL_in esso_9.ipopt_zL_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'ipopt_zU_in' found on 4 blocks:
+        tso.ipopt_zU_in dso_5.ipopt_zU_in dso_7.ipopt_zU_in dso_9.ipopt_zU_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'dual' found on 7 blocks:
+        tso.dual dso_5.dual esso_5.dual dso_7.dual esso_7.dual dso_9.dual
+        esso_9.dual
+    LP writer cannot export suffixes to LP files.  Skipping.
+[group] x0 2035_Spring R: same-point max 0.0e+00; retained over 0 (max ratio 1.000); envelope over 0 (max ratio 0.9994); cones 6.0e-16; coupling unequal 0; obj rel 0.0e+00; lp {'variables': 26292, 'constraints': 22371, 'objectives': 1, 'other': 0}
+WARNING: EXPORT Suffix 'ipopt_zL_in' found on 7 blocks:
+        tso.ipopt_zL_in dso_5.ipopt_zL_in esso_5.ipopt_zL_in dso_7.ipopt_zL_in
+        esso_7.ipopt_zL_in dso_9.ipopt_zL_in esso_9.ipopt_zL_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'ipopt_zU_in' found on 4 blocks:
+        tso.ipopt_zU_in dso_5.ipopt_zU_in dso_7.ipopt_zU_in dso_9.ipopt_zU_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'dual' found on 7 blocks:
+        tso.dual dso_5.dual esso_5.dual dso_7.dual esso_7.dual dso_9.dual
+        esso_9.dual
+    LP writer cannot export suffixes to LP files.  Skipping.
+[group] x0 2035_Spring A: same-point max 0.0e+00; retained over 0 (max ratio 1.000); envelope over 0 (max ratio 0.9994); cones 6.0e-16; coupling unequal 0; obj rel 0.0e+00; lp {'variables': 26292, 'constraints': 22371, 'objectives': 1, 'other': 0}
+WARNING: EXPORT Suffix 'ipopt_zL_in' found on 7 blocks:
+        tso.ipopt_zL_in dso_5.ipopt_zL_in esso_5.ipopt_zL_in dso_7.ipopt_zL_in
+        esso_7.ipopt_zL_in dso_9.ipopt_zL_in esso_9.ipopt_zL_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'ipopt_zU_in' found on 4 blocks:
+        tso.ipopt_zU_in dso_5.ipopt_zU_in dso_7.ipopt_zU_in dso_9.ipopt_zU_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'dual' found on 7 blocks:
+        tso.dual dso_5.dual esso_5.dual dso_7.dual esso_7.dual dso_9.dual
+        esso_9.dual
+    LP writer cannot export suffixes to LP files.  Skipping.
+[group] x0 2035_Spring C: same-point max 0.0e+00; retained over 0 (max ratio 1.000); envelope over 0 (max ratio 0.9994); cones 6.0e-16; coupling unequal 0; obj rel 0.0e+00; lp {'variables': 26292, 'constraints': 22371, 'objectives': 1, 'other': 0}
+[group] x0 2035_Spring done in 25.9 s; LP compare: R_vs_A raw=False body=True ndiff=0; R_vs_C raw=False body=False ndiff=45; A_vs_C raw=False body=False ndiff=45; R_vs_t01b_R raw=False body=True ndiff=0; A_vs_t01b_A raw=False body=True ndiff=0
+WARNING: EXPORT Suffix 'ipopt_zL_in' found on 7 blocks:
+        tso.ipopt_zL_in dso_5.ipopt_zL_in esso_5.ipopt_zL_in dso_7.ipopt_zL_in
+        esso_7.ipopt_zL_in dso_9.ipopt_zL_in esso_9.ipopt_zL_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'ipopt_zU_in' found on 4 blocks:
+        tso.ipopt_zU_in dso_5.ipopt_zU_in dso_7.ipopt_zU_in dso_9.ipopt_zU_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'dual' found on 7 blocks:
+        tso.dual dso_5.dual esso_5.dual dso_7.dual esso_7.dual dso_9.dual
+        esso_9.dual
+    LP writer cannot export suffixes to LP files.  Skipping.
+[group] x0 2035_Summer R: same-point max 0.0e+00; retained over 0 (max ratio 1.000); envelope over 0 (max ratio 0.9901); cones 6.7e-16; coupling unequal 0; obj rel 0.0e+00; lp {'variables': 26292, 'constraints': 22371, 'objectives': 1, 'other': 0}
+WARNING: EXPORT Suffix 'ipopt_zL_in' found on 7 blocks:
+        tso.ipopt_zL_in dso_5.ipopt_zL_in esso_5.ipopt_zL_in dso_7.ipopt_zL_in
+        esso_7.ipopt_zL_in dso_9.ipopt_zL_in esso_9.ipopt_zL_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'ipopt_zU_in' found on 4 blocks:
+        tso.ipopt_zU_in dso_5.ipopt_zU_in dso_7.ipopt_zU_in dso_9.ipopt_zU_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'dual' found on 7 blocks:
+        tso.dual dso_5.dual esso_5.dual dso_7.dual esso_7.dual dso_9.dual
+        esso_9.dual
+    LP writer cannot export suffixes to LP files.  Skipping.
+[group] x0 2035_Summer A: same-point max 0.0e+00; retained over 0 (max ratio 1.000); envelope over 0 (max ratio 0.9901); cones 6.7e-16; coupling unequal 0; obj rel 0.0e+00; lp {'variables': 26292, 'constraints': 22371, 'objectives': 1, 'other': 0}
+WARNING: EXPORT Suffix 'ipopt_zL_in' found on 7 blocks:
+        tso.ipopt_zL_in dso_5.ipopt_zL_in esso_5.ipopt_zL_in dso_7.ipopt_zL_in
+        esso_7.ipopt_zL_in dso_9.ipopt_zL_in esso_9.ipopt_zL_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'ipopt_zU_in' found on 4 blocks:
+        tso.ipopt_zU_in dso_5.ipopt_zU_in dso_7.ipopt_zU_in dso_9.ipopt_zU_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'dual' found on 7 blocks:
+        tso.dual dso_5.dual esso_5.dual dso_7.dual esso_7.dual dso_9.dual
+        esso_9.dual
+    LP writer cannot export suffixes to LP files.  Skipping.
+[group] x0 2035_Summer C: same-point max 0.0e+00; retained over 0 (max ratio 1.000); envelope over 0 (max ratio 0.9901); cones 6.7e-16; coupling unequal 0; obj rel 0.0e+00; lp {'variables': 26292, 'constraints': 22371, 'objectives': 1, 'other': 0}
+[group] x0 2035_Summer done in 30.9 s; LP compare: R_vs_A raw=False body=True ndiff=0; R_vs_C raw=False body=False ndiff=45; A_vs_C raw=False body=False ndiff=45; R_vs_t01b_R raw=False body=True ndiff=0; A_vs_t01b_A raw=False body=True ndiff=0
+WARNING: EXPORT Suffix 'ipopt_zL_in' found on 7 blocks:
+        tso.ipopt_zL_in dso_5.ipopt_zL_in esso_5.ipopt_zL_in dso_7.ipopt_zL_in
+        esso_7.ipopt_zL_in dso_9.ipopt_zL_in esso_9.ipopt_zL_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'ipopt_zU_in' found on 4 blocks:
+        tso.ipopt_zU_in dso_5.ipopt_zU_in dso_7.ipopt_zU_in dso_9.ipopt_zU_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'dual' found on 7 blocks:
+        tso.dual dso_5.dual esso_5.dual dso_7.dual esso_7.dual dso_9.dual
+        esso_9.dual
+    LP writer cannot export suffixes to LP files.  Skipping.
+[group] x0 2035_Autumn R: same-point max 0.0e+00; retained over 0 (max ratio 1.000); envelope over 0 (max ratio 0.8836); cones 6.7e-16; coupling unequal 0; obj rel 1.1e-16; lp {'variables': 26292, 'constraints': 22239, 'objectives': 1, 'other': 0}
+WARNING: EXPORT Suffix 'ipopt_zL_in' found on 7 blocks:
+        tso.ipopt_zL_in dso_5.ipopt_zL_in esso_5.ipopt_zL_in dso_7.ipopt_zL_in
+        esso_7.ipopt_zL_in dso_9.ipopt_zL_in esso_9.ipopt_zL_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'ipopt_zU_in' found on 4 blocks:
+        tso.ipopt_zU_in dso_5.ipopt_zU_in dso_7.ipopt_zU_in dso_9.ipopt_zU_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'dual' found on 7 blocks:
+        tso.dual dso_5.dual esso_5.dual dso_7.dual esso_7.dual dso_9.dual
+        esso_9.dual
+    LP writer cannot export suffixes to LP files.  Skipping.
+[group] x0 2035_Autumn A: same-point max 0.0e+00; retained over 0 (max ratio 1.000); envelope over 0 (max ratio 0.8836); cones 6.7e-16; coupling unequal 0; obj rel 1.1e-16; lp {'variables': 26292, 'constraints': 22239, 'objectives': 1, 'other': 0}
+WARNING: EXPORT Suffix 'ipopt_zL_in' found on 7 blocks:
+        tso.ipopt_zL_in dso_5.ipopt_zL_in esso_5.ipopt_zL_in dso_7.ipopt_zL_in
+        esso_7.ipopt_zL_in dso_9.ipopt_zL_in esso_9.ipopt_zL_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'ipopt_zU_in' found on 4 blocks:
+        tso.ipopt_zU_in dso_5.ipopt_zU_in dso_7.ipopt_zU_in dso_9.ipopt_zU_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'dual' found on 7 blocks:
+        tso.dual dso_5.dual esso_5.dual dso_7.dual esso_7.dual dso_9.dual
+        esso_9.dual
+    LP writer cannot export suffixes to LP files.  Skipping.
+[group] x0 2035_Autumn C: same-point max 0.0e+00; retained over 0 (max ratio 1.000); envelope over 0 (max ratio 0.8836); cones 6.7e-16; coupling unequal 0; obj rel 1.1e-16; lp {'variables': 26292, 'constraints': 22239, 'objectives': 1, 'other': 0}
+[group] x0 2035_Autumn done in 37.9 s; LP compare: R_vs_A raw=False body=True ndiff=0; R_vs_C raw=False body=False ndiff=45; A_vs_C raw=False body=False ndiff=45; R_vs_t01b_R raw=False body=True ndiff=0; A_vs_t01b_A raw=False body=True ndiff=0
+WARNING: EXPORT Suffix 'ipopt_zL_in' found on 7 blocks:
+        tso.ipopt_zL_in dso_5.ipopt_zL_in esso_5.ipopt_zL_in dso_7.ipopt_zL_in
+        esso_7.ipopt_zL_in dso_9.ipopt_zL_in esso_9.ipopt_zL_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'ipopt_zU_in' found on 4 blocks:
+        tso.ipopt_zU_in dso_5.ipopt_zU_in dso_7.ipopt_zU_in dso_9.ipopt_zU_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'dual' found on 7 blocks:
+        tso.dual dso_5.dual esso_5.dual dso_7.dual esso_7.dual dso_9.dual
+        esso_9.dual
+    LP writer cannot export suffixes to LP files.  Skipping.
+[group] x0 2035_Winter R: same-point max 0.0e+00; retained over 0 (max ratio 1.000); envelope over 0 (max ratio 0.9999); cones 6.6e-16; coupling unequal 0; obj rel 0.0e+00; lp {'variables': 26292, 'constraints': 22239, 'objectives': 1, 'other': 0}
+WARNING: EXPORT Suffix 'ipopt_zL_in' found on 7 blocks:
+        tso.ipopt_zL_in dso_5.ipopt_zL_in esso_5.ipopt_zL_in dso_7.ipopt_zL_in
+        esso_7.ipopt_zL_in dso_9.ipopt_zL_in esso_9.ipopt_zL_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'ipopt_zU_in' found on 4 blocks:
+        tso.ipopt_zU_in dso_5.ipopt_zU_in dso_7.ipopt_zU_in dso_9.ipopt_zU_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'dual' found on 7 blocks:
+        tso.dual dso_5.dual esso_5.dual dso_7.dual esso_7.dual dso_9.dual
+        esso_9.dual
+    LP writer cannot export suffixes to LP files.  Skipping.
+[group] x0 2035_Winter A: same-point max 0.0e+00; retained over 0 (max ratio 1.000); envelope over 0 (max ratio 0.9999); cones 6.6e-16; coupling unequal 0; obj rel 0.0e+00; lp {'variables': 26292, 'constraints': 22239, 'objectives': 1, 'other': 0}
+WARNING: EXPORT Suffix 'ipopt_zL_in' found on 7 blocks:
+        tso.ipopt_zL_in dso_5.ipopt_zL_in esso_5.ipopt_zL_in dso_7.ipopt_zL_in
+        esso_7.ipopt_zL_in dso_9.ipopt_zL_in esso_9.ipopt_zL_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'ipopt_zU_in' found on 4 blocks:
+        tso.ipopt_zU_in dso_5.ipopt_zU_in dso_7.ipopt_zU_in dso_9.ipopt_zU_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'dual' found on 7 blocks:
+        tso.dual dso_5.dual esso_5.dual dso_7.dual esso_7.dual dso_9.dual
+        esso_9.dual
+    LP writer cannot export suffixes to LP files.  Skipping.
+[group] x0 2035_Winter C: same-point max 0.0e+00; retained over 0 (max ratio 1.000); envelope over 0 (max ratio 0.9999); cones 6.6e-16; coupling unequal 0; obj rel 0.0e+00; lp {'variables': 26292, 'constraints': 22239, 'objectives': 1, 'other': 0}
+[group] x0 2035_Winter done in 40.3 s; LP compare: R_vs_A raw=False body=True ndiff=0; R_vs_C raw=False body=False ndiff=45; A_vs_C raw=False body=False ndiff=45; R_vs_t01b_R raw=False body=True ndiff=0; A_vs_t01b_A raw=False body=True ndiff=0
+[Q+] x0: gross 653858731.5686294; correction 13012.566792632126 (path 2 13012.56679263243); Q_cert+ 653871744.135422; -recorded detector total 13012.566792632124
+[cell] x0 done in 459.4 s
+
+========== cell unit_n7 (data/SRP1/Results/P515S53/tight_tail_w86/campaign_s53_w86_tail_recert/evals/ca8927e75d628bd1_n7_4h_e1) ==========
+[bounds] unit_n7: value-dependent {'slack_shared_es_soc_final_up': 72, 'slack_shared_es_soc_final_down': 72} over 72 shared-ESS copies; zero-gated {'shared_es_pch': 1728, 'shared_es_pdch': 1728, 'shared_es_pnet': 1728, 'shared_es_qnet': 1728}; ESSO value-dependent 0
+WARNING: EXPORT Suffix 'ipopt_zL_in' found on 7 blocks:
+        tso.ipopt_zL_in dso_5.ipopt_zL_in esso_5.ipopt_zL_in dso_7.ipopt_zL_in
+        esso_7.ipopt_zL_in dso_9.ipopt_zL_in esso_9.ipopt_zL_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'ipopt_zU_in' found on 5 blocks:
+        tso.ipopt_zU_in dso_5.ipopt_zU_in dso_7.ipopt_zU_in esso_7.ipopt_zU_in
+        dso_9.ipopt_zU_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'dual' found on 7 blocks:
+        tso.dual dso_5.dual esso_5.dual dso_7.dual esso_7.dual dso_9.dual
+        esso_9.dual
+    LP writer cannot export suffixes to LP files.  Skipping.
+[group] unit_n7 2025_Spring R: same-point max 0.0e+00; retained over 0 (max ratio 1.000); envelope over 0 (max ratio 0.9796); cones 7.1e-16; coupling unequal 0; obj rel 1.2e-16; lp {'variables': 27310, 'constraints': 23435, 'objectives': 1, 'other': 0}
+WARNING: EXPORT Suffix 'ipopt_zL_in' found on 7 blocks:
+        tso.ipopt_zL_in dso_5.ipopt_zL_in esso_5.ipopt_zL_in dso_7.ipopt_zL_in
+        esso_7.ipopt_zL_in dso_9.ipopt_zL_in esso_9.ipopt_zL_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'ipopt_zU_in' found on 5 blocks:
+        tso.ipopt_zU_in dso_5.ipopt_zU_in dso_7.ipopt_zU_in esso_7.ipopt_zU_in
+        dso_9.ipopt_zU_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'dual' found on 7 blocks:
+        tso.dual dso_5.dual esso_5.dual dso_7.dual esso_7.dual dso_9.dual
+        esso_9.dual
+    LP writer cannot export suffixes to LP files.  Skipping.
+[group] unit_n7 2025_Spring A: same-point max 0.0e+00; retained over 0 (max ratio 1.000); envelope over 0 (max ratio 0.9796); cones 7.1e-16; coupling unequal 0; obj rel 1.2e-16; lp {'variables': 27310, 'constraints': 23435, 'objectives': 1, 'other': 0}
+WARNING: EXPORT Suffix 'ipopt_zL_in' found on 7 blocks:
+        tso.ipopt_zL_in dso_5.ipopt_zL_in esso_5.ipopt_zL_in dso_7.ipopt_zL_in
+        esso_7.ipopt_zL_in dso_9.ipopt_zL_in esso_9.ipopt_zL_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'ipopt_zU_in' found on 5 blocks:
+        tso.ipopt_zU_in dso_5.ipopt_zU_in dso_7.ipopt_zU_in esso_7.ipopt_zU_in
+        dso_9.ipopt_zU_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'dual' found on 7 blocks:
+        tso.dual dso_5.dual esso_5.dual dso_7.dual esso_7.dual dso_9.dual
+        esso_9.dual
+    LP writer cannot export suffixes to LP files.  Skipping.
+[group] unit_n7 2025_Spring C: same-point max 0.0e+00; retained over 0 (max ratio 1.000); envelope over 0 (max ratio 0.9796); cones 7.1e-16; coupling unequal 0; obj rel 1.2e-16; lp {'variables': 27310, 'constraints': 23435, 'objectives': 1, 'other': 0}
+[group] unit_n7 2025_Spring done in 42.8 s; LP compare: R_vs_A raw=False body=False ndiff=104; R_vs_C raw=False body=False ndiff=149; A_vs_C raw=False body=False ndiff=149; R_vs_t01b_R raw=False body=False ndiff=4; A_vs_t01b_A raw=False body=True ndiff=0
+WARNING: EXPORT Suffix 'ipopt_zL_in' found on 7 blocks:
+        tso.ipopt_zL_in dso_5.ipopt_zL_in esso_5.ipopt_zL_in dso_7.ipopt_zL_in
+        esso_7.ipopt_zL_in dso_9.ipopt_zL_in esso_9.ipopt_zL_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'ipopt_zU_in' found on 5 blocks:
+        tso.ipopt_zU_in dso_5.ipopt_zU_in dso_7.ipopt_zU_in esso_7.ipopt_zU_in
+        dso_9.ipopt_zU_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'dual' found on 7 blocks:
+        tso.dual dso_5.dual esso_5.dual dso_7.dual esso_7.dual dso_9.dual
+        esso_9.dual
+    LP writer cannot export suffixes to LP files.  Skipping.
+[group] unit_n7 2025_Summer R: same-point max 0.0e+00; retained over 0 (max ratio 1.000); envelope over 0 (max ratio 0.6384); cones 6.4e-16; coupling unequal 0; obj rel 1.8e-16; lp {'variables': 27310, 'constraints': 23435, 'objectives': 1, 'other': 0}
+WARNING: EXPORT Suffix 'ipopt_zL_in' found on 7 blocks:
+        tso.ipopt_zL_in dso_5.ipopt_zL_in esso_5.ipopt_zL_in dso_7.ipopt_zL_in
+        esso_7.ipopt_zL_in dso_9.ipopt_zL_in esso_9.ipopt_zL_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'ipopt_zU_in' found on 5 blocks:
+        tso.ipopt_zU_in dso_5.ipopt_zU_in dso_7.ipopt_zU_in esso_7.ipopt_zU_in
+        dso_9.ipopt_zU_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'dual' found on 7 blocks:
+        tso.dual dso_5.dual esso_5.dual dso_7.dual esso_7.dual dso_9.dual
+        esso_9.dual
+    LP writer cannot export suffixes to LP files.  Skipping.
+[group] unit_n7 2025_Summer A: same-point max 0.0e+00; retained over 0 (max ratio 1.000); envelope over 0 (max ratio 0.6384); cones 6.4e-16; coupling unequal 0; obj rel 1.8e-16; lp {'variables': 27310, 'constraints': 23435, 'objectives': 1, 'other': 0}
+WARNING: EXPORT Suffix 'ipopt_zL_in' found on 7 blocks:
+        tso.ipopt_zL_in dso_5.ipopt_zL_in esso_5.ipopt_zL_in dso_7.ipopt_zL_in
+        esso_7.ipopt_zL_in dso_9.ipopt_zL_in esso_9.ipopt_zL_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'ipopt_zU_in' found on 5 blocks:
+        tso.ipopt_zU_in dso_5.ipopt_zU_in dso_7.ipopt_zU_in esso_7.ipopt_zU_in
+        dso_9.ipopt_zU_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'dual' found on 7 blocks:
+        tso.dual dso_5.dual esso_5.dual dso_7.dual esso_7.dual dso_9.dual
+        esso_9.dual
+    LP writer cannot export suffixes to LP files.  Skipping.
+[group] unit_n7 2025_Summer C: same-point max 0.0e+00; retained over 0 (max ratio 1.000); envelope over 0 (max ratio 0.6384); cones 6.4e-16; coupling unequal 0; obj rel 1.8e-16; lp {'variables': 27310, 'constraints': 23435, 'objectives': 1, 'other': 0}
+[group] unit_n7 2025_Summer done in 34.4 s; LP compare: R_vs_A raw=False body=False ndiff=104; R_vs_C raw=False body=False ndiff=149; A_vs_C raw=False body=False ndiff=149; R_vs_t01b_R raw=False body=False ndiff=4; A_vs_t01b_A raw=False body=True ndiff=0
+WARNING: EXPORT Suffix 'ipopt_zL_in' found on 7 blocks:
+        tso.ipopt_zL_in dso_5.ipopt_zL_in esso_5.ipopt_zL_in dso_7.ipopt_zL_in
+        esso_7.ipopt_zL_in dso_9.ipopt_zL_in esso_9.ipopt_zL_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'ipopt_zU_in' found on 5 blocks:
+        tso.ipopt_zU_in dso_5.ipopt_zU_in dso_7.ipopt_zU_in esso_7.ipopt_zU_in
+        dso_9.ipopt_zU_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'dual' found on 7 blocks:
+        tso.dual dso_5.dual esso_5.dual dso_7.dual esso_7.dual dso_9.dual
+        esso_9.dual
+    LP writer cannot export suffixes to LP files.  Skipping.
+[group] unit_n7 2025_Autumn R: same-point max 0.0e+00; retained over 0 (max ratio 1.000); envelope over 0 (max ratio 1.0000); cones 7.1e-16; coupling unequal 0; obj rel 1.9e-16; lp {'variables': 27310, 'constraints': 23303, 'objectives': 1, 'other': 0}
+WARNING: EXPORT Suffix 'ipopt_zL_in' found on 7 blocks:
+        tso.ipopt_zL_in dso_5.ipopt_zL_in esso_5.ipopt_zL_in dso_7.ipopt_zL_in
+        esso_7.ipopt_zL_in dso_9.ipopt_zL_in esso_9.ipopt_zL_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'ipopt_zU_in' found on 5 blocks:
+        tso.ipopt_zU_in dso_5.ipopt_zU_in dso_7.ipopt_zU_in esso_7.ipopt_zU_in
+        dso_9.ipopt_zU_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'dual' found on 7 blocks:
+        tso.dual dso_5.dual esso_5.dual dso_7.dual esso_7.dual dso_9.dual
+        esso_9.dual
+    LP writer cannot export suffixes to LP files.  Skipping.
+[group] unit_n7 2025_Autumn A: same-point max 0.0e+00; retained over 0 (max ratio 1.000); envelope over 0 (max ratio 1.0000); cones 7.1e-16; coupling unequal 0; obj rel 1.9e-16; lp {'variables': 27310, 'constraints': 23303, 'objectives': 1, 'other': 0}
+WARNING: EXPORT Suffix 'ipopt_zL_in' found on 7 blocks:
+        tso.ipopt_zL_in dso_5.ipopt_zL_in esso_5.ipopt_zL_in dso_7.ipopt_zL_in
+        esso_7.ipopt_zL_in dso_9.ipopt_zL_in esso_9.ipopt_zL_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'ipopt_zU_in' found on 5 blocks:
+        tso.ipopt_zU_in dso_5.ipopt_zU_in dso_7.ipopt_zU_in esso_7.ipopt_zU_in
+        dso_9.ipopt_zU_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'dual' found on 7 blocks:
+        tso.dual dso_5.dual esso_5.dual dso_7.dual esso_7.dual dso_9.dual
+        esso_9.dual
+    LP writer cannot export suffixes to LP files.  Skipping.
+[group] unit_n7 2025_Autumn C: same-point max 0.0e+00; retained over 0 (max ratio 1.000); envelope over 0 (max ratio 1.0000); cones 7.1e-16; coupling unequal 0; obj rel 1.9e-16; lp {'variables': 27310, 'constraints': 23303, 'objectives': 1, 'other': 0}
+[group] unit_n7 2025_Autumn done in 34.0 s; LP compare: R_vs_A raw=False body=False ndiff=104; R_vs_C raw=False body=False ndiff=149; A_vs_C raw=False body=False ndiff=149; R_vs_t01b_R raw=False body=False ndiff=4; A_vs_t01b_A raw=False body=True ndiff=0
+WARNING: EXPORT Suffix 'ipopt_zL_in' found on 7 blocks:
+        tso.ipopt_zL_in dso_5.ipopt_zL_in esso_5.ipopt_zL_in dso_7.ipopt_zL_in
+        esso_7.ipopt_zL_in dso_9.ipopt_zL_in esso_9.ipopt_zL_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'ipopt_zU_in' found on 5 blocks:
+        tso.ipopt_zU_in dso_5.ipopt_zU_in dso_7.ipopt_zU_in esso_7.ipopt_zU_in
+        dso_9.ipopt_zU_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'dual' found on 7 blocks:
+        tso.dual dso_5.dual esso_5.dual dso_7.dual esso_7.dual dso_9.dual
+        esso_9.dual
+    LP writer cannot export suffixes to LP files.  Skipping.
+[group] unit_n7 2025_Winter R: same-point max 0.0e+00; retained over 0 (max ratio 1.000); envelope over 0 (max ratio 0.9829); cones 5.9e-16; coupling unequal 0; obj rel 1.8e-16; lp {'variables': 27310, 'constraints': 23303, 'objectives': 1, 'other': 0}
+WARNING: EXPORT Suffix 'ipopt_zL_in' found on 7 blocks:
+        tso.ipopt_zL_in dso_5.ipopt_zL_in esso_5.ipopt_zL_in dso_7.ipopt_zL_in
+        esso_7.ipopt_zL_in dso_9.ipopt_zL_in esso_9.ipopt_zL_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'ipopt_zU_in' found on 5 blocks:
+        tso.ipopt_zU_in dso_5.ipopt_zU_in dso_7.ipopt_zU_in esso_7.ipopt_zU_in
+        dso_9.ipopt_zU_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'dual' found on 7 blocks:
+        tso.dual dso_5.dual esso_5.dual dso_7.dual esso_7.dual dso_9.dual
+        esso_9.dual
+    LP writer cannot export suffixes to LP files.  Skipping.
+[group] unit_n7 2025_Winter A: same-point max 0.0e+00; retained over 0 (max ratio 1.000); envelope over 0 (max ratio 0.9829); cones 5.9e-16; coupling unequal 0; obj rel 1.8e-16; lp {'variables': 27310, 'constraints': 23303, 'objectives': 1, 'other': 0}
+WARNING: EXPORT Suffix 'ipopt_zL_in' found on 7 blocks:
+        tso.ipopt_zL_in dso_5.ipopt_zL_in esso_5.ipopt_zL_in dso_7.ipopt_zL_in
+        esso_7.ipopt_zL_in dso_9.ipopt_zL_in esso_9.ipopt_zL_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'ipopt_zU_in' found on 5 blocks:
+        tso.ipopt_zU_in dso_5.ipopt_zU_in dso_7.ipopt_zU_in esso_7.ipopt_zU_in
+        dso_9.ipopt_zU_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'dual' found on 7 blocks:
+        tso.dual dso_5.dual esso_5.dual dso_7.dual esso_7.dual dso_9.dual
+        esso_9.dual
+    LP writer cannot export suffixes to LP files.  Skipping.
+[group] unit_n7 2025_Winter C: same-point max 0.0e+00; retained over 0 (max ratio 1.000); envelope over 0 (max ratio 0.9829); cones 5.9e-16; coupling unequal 0; obj rel 1.8e-16; lp {'variables': 27310, 'constraints': 23303, 'objectives': 1, 'other': 0}
+[group] unit_n7 2025_Winter done in 30.5 s; LP compare: R_vs_A raw=False body=False ndiff=104; R_vs_C raw=False body=False ndiff=149; A_vs_C raw=False body=False ndiff=149; R_vs_t01b_R raw=False body=False ndiff=4; A_vs_t01b_A raw=False body=True ndiff=0
+WARNING: EXPORT Suffix 'ipopt_zL_in' found on 7 blocks:
+        tso.ipopt_zL_in dso_5.ipopt_zL_in esso_5.ipopt_zL_in dso_7.ipopt_zL_in
+        esso_7.ipopt_zL_in dso_9.ipopt_zL_in esso_9.ipopt_zL_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'ipopt_zU_in' found on 5 blocks:
+        tso.ipopt_zU_in dso_5.ipopt_zU_in dso_7.ipopt_zU_in esso_7.ipopt_zU_in
+        dso_9.ipopt_zU_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'dual' found on 7 blocks:
+        tso.dual dso_5.dual esso_5.dual dso_7.dual esso_7.dual dso_9.dual
+        esso_9.dual
+    LP writer cannot export suffixes to LP files.  Skipping.
+[group] unit_n7 2030_Spring R: same-point max 0.0e+00; retained over 0 (max ratio 1.000); envelope over 0 (max ratio 0.9414); cones 6.9e-16; coupling unequal 0; obj rel 0.0e+00; lp {'variables': 27310, 'constraints': 23435, 'objectives': 1, 'other': 0}
+WARNING: EXPORT Suffix 'ipopt_zL_in' found on 7 blocks:
+        tso.ipopt_zL_in dso_5.ipopt_zL_in esso_5.ipopt_zL_in dso_7.ipopt_zL_in
+        esso_7.ipopt_zL_in dso_9.ipopt_zL_in esso_9.ipopt_zL_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'ipopt_zU_in' found on 5 blocks:
+        tso.ipopt_zU_in dso_5.ipopt_zU_in dso_7.ipopt_zU_in esso_7.ipopt_zU_in
+        dso_9.ipopt_zU_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'dual' found on 7 blocks:
+        tso.dual dso_5.dual esso_5.dual dso_7.dual esso_7.dual dso_9.dual
+        esso_9.dual
+    LP writer cannot export suffixes to LP files.  Skipping.
+[group] unit_n7 2030_Spring A: same-point max 0.0e+00; retained over 0 (max ratio 1.000); envelope over 0 (max ratio 0.9414); cones 6.9e-16; coupling unequal 0; obj rel 0.0e+00; lp {'variables': 27310, 'constraints': 23435, 'objectives': 1, 'other': 0}
+WARNING: EXPORT Suffix 'ipopt_zL_in' found on 7 blocks:
+        tso.ipopt_zL_in dso_5.ipopt_zL_in esso_5.ipopt_zL_in dso_7.ipopt_zL_in
+        esso_7.ipopt_zL_in dso_9.ipopt_zL_in esso_9.ipopt_zL_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'ipopt_zU_in' found on 5 blocks:
+        tso.ipopt_zU_in dso_5.ipopt_zU_in dso_7.ipopt_zU_in esso_7.ipopt_zU_in
+        dso_9.ipopt_zU_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'dual' found on 7 blocks:
+        tso.dual dso_5.dual esso_5.dual dso_7.dual esso_7.dual dso_9.dual
+        esso_9.dual
+    LP writer cannot export suffixes to LP files.  Skipping.
+[group] unit_n7 2030_Spring C: same-point max 0.0e+00; retained over 0 (max ratio 1.000); envelope over 0 (max ratio 0.9414); cones 6.9e-16; coupling unequal 0; obj rel 0.0e+00; lp {'variables': 27310, 'constraints': 23435, 'objectives': 1, 'other': 0}
+[group] unit_n7 2030_Spring done in 26.8 s; LP compare: R_vs_A raw=False body=False ndiff=104; R_vs_C raw=False body=False ndiff=149; A_vs_C raw=False body=False ndiff=149; R_vs_t01b_R raw=False body=False ndiff=4; A_vs_t01b_A raw=False body=True ndiff=0
+WARNING: EXPORT Suffix 'ipopt_zL_in' found on 7 blocks:
+        tso.ipopt_zL_in dso_5.ipopt_zL_in esso_5.ipopt_zL_in dso_7.ipopt_zL_in
+        esso_7.ipopt_zL_in dso_9.ipopt_zL_in esso_9.ipopt_zL_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'ipopt_zU_in' found on 5 blocks:
+        tso.ipopt_zU_in dso_5.ipopt_zU_in dso_7.ipopt_zU_in esso_7.ipopt_zU_in
+        dso_9.ipopt_zU_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'dual' found on 7 blocks:
+        tso.dual dso_5.dual esso_5.dual dso_7.dual esso_7.dual dso_9.dual
+        esso_9.dual
+    LP writer cannot export suffixes to LP files.  Skipping.
+[group] unit_n7 2030_Summer R: same-point max 0.0e+00; retained over 0 (max ratio 1.000); envelope over 0 (max ratio 0.9035); cones 6.9e-16; coupling unequal 0; obj rel 0.0e+00; lp {'variables': 27310, 'constraints': 23435, 'objectives': 1, 'other': 0}
+WARNING: EXPORT Suffix 'ipopt_zL_in' found on 7 blocks:
+        tso.ipopt_zL_in dso_5.ipopt_zL_in esso_5.ipopt_zL_in dso_7.ipopt_zL_in
+        esso_7.ipopt_zL_in dso_9.ipopt_zL_in esso_9.ipopt_zL_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'ipopt_zU_in' found on 5 blocks:
+        tso.ipopt_zU_in dso_5.ipopt_zU_in dso_7.ipopt_zU_in esso_7.ipopt_zU_in
+        dso_9.ipopt_zU_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'dual' found on 7 blocks:
+        tso.dual dso_5.dual esso_5.dual dso_7.dual esso_7.dual dso_9.dual
+        esso_9.dual
+    LP writer cannot export suffixes to LP files.  Skipping.
+[group] unit_n7 2030_Summer A: same-point max 0.0e+00; retained over 0 (max ratio 1.000); envelope over 0 (max ratio 0.9035); cones 6.9e-16; coupling unequal 0; obj rel 0.0e+00; lp {'variables': 27310, 'constraints': 23435, 'objectives': 1, 'other': 0}
+WARNING: EXPORT Suffix 'ipopt_zL_in' found on 7 blocks:
+        tso.ipopt_zL_in dso_5.ipopt_zL_in esso_5.ipopt_zL_in dso_7.ipopt_zL_in
+        esso_7.ipopt_zL_in dso_9.ipopt_zL_in esso_9.ipopt_zL_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'ipopt_zU_in' found on 5 blocks:
+        tso.ipopt_zU_in dso_5.ipopt_zU_in dso_7.ipopt_zU_in esso_7.ipopt_zU_in
+        dso_9.ipopt_zU_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'dual' found on 7 blocks:
+        tso.dual dso_5.dual esso_5.dual dso_7.dual esso_7.dual dso_9.dual
+        esso_9.dual
+    LP writer cannot export suffixes to LP files.  Skipping.
+[group] unit_n7 2030_Summer C: same-point max 0.0e+00; retained over 0 (max ratio 1.000); envelope over 0 (max ratio 0.9035); cones 6.9e-16; coupling unequal 0; obj rel 0.0e+00; lp {'variables': 27310, 'constraints': 23435, 'objectives': 1, 'other': 0}
+[group] unit_n7 2030_Summer done in 26.6 s; LP compare: R_vs_A raw=False body=False ndiff=104; R_vs_C raw=False body=False ndiff=149; A_vs_C raw=False body=False ndiff=149; R_vs_t01b_R raw=False body=False ndiff=4; A_vs_t01b_A raw=False body=True ndiff=0
+WARNING: EXPORT Suffix 'ipopt_zL_in' found on 7 blocks:
+        tso.ipopt_zL_in dso_5.ipopt_zL_in esso_5.ipopt_zL_in dso_7.ipopt_zL_in
+        esso_7.ipopt_zL_in dso_9.ipopt_zL_in esso_9.ipopt_zL_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'ipopt_zU_in' found on 5 blocks:
+        tso.ipopt_zU_in dso_5.ipopt_zU_in dso_7.ipopt_zU_in esso_7.ipopt_zU_in
+        dso_9.ipopt_zU_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'dual' found on 7 blocks:
+        tso.dual dso_5.dual esso_5.dual dso_7.dual esso_7.dual dso_9.dual
+        esso_9.dual
+    LP writer cannot export suffixes to LP files.  Skipping.
+[group] unit_n7 2030_Autumn R: same-point max 0.0e+00; retained over 0 (max ratio 1.000); envelope over 0 (max ratio 0.7899); cones 6.7e-16; coupling unequal 0; obj rel 5.6e-16; lp {'variables': 27310, 'constraints': 23303, 'objectives': 1, 'other': 0}
+WARNING: EXPORT Suffix 'ipopt_zL_in' found on 7 blocks:
+        tso.ipopt_zL_in dso_5.ipopt_zL_in esso_5.ipopt_zL_in dso_7.ipopt_zL_in
+        esso_7.ipopt_zL_in dso_9.ipopt_zL_in esso_9.ipopt_zL_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'ipopt_zU_in' found on 5 blocks:
+        tso.ipopt_zU_in dso_5.ipopt_zU_in dso_7.ipopt_zU_in esso_7.ipopt_zU_in
+        dso_9.ipopt_zU_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'dual' found on 7 blocks:
+        tso.dual dso_5.dual esso_5.dual dso_7.dual esso_7.dual dso_9.dual
+        esso_9.dual
+    LP writer cannot export suffixes to LP files.  Skipping.
+[group] unit_n7 2030_Autumn A: same-point max 0.0e+00; retained over 0 (max ratio 1.000); envelope over 0 (max ratio 0.7899); cones 6.7e-16; coupling unequal 0; obj rel 5.6e-16; lp {'variables': 27310, 'constraints': 23303, 'objectives': 1, 'other': 0}
+WARNING: EXPORT Suffix 'ipopt_zL_in' found on 7 blocks:
+        tso.ipopt_zL_in dso_5.ipopt_zL_in esso_5.ipopt_zL_in dso_7.ipopt_zL_in
+        esso_7.ipopt_zL_in dso_9.ipopt_zL_in esso_9.ipopt_zL_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'ipopt_zU_in' found on 5 blocks:
+        tso.ipopt_zU_in dso_5.ipopt_zU_in dso_7.ipopt_zU_in esso_7.ipopt_zU_in
+        dso_9.ipopt_zU_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'dual' found on 7 blocks:
+        tso.dual dso_5.dual esso_5.dual dso_7.dual esso_7.dual dso_9.dual
+        esso_9.dual
+    LP writer cannot export suffixes to LP files.  Skipping.
+[group] unit_n7 2030_Autumn C: same-point max 0.0e+00; retained over 0 (max ratio 1.000); envelope over 0 (max ratio 0.7899); cones 6.7e-16; coupling unequal 0; obj rel 5.6e-16; lp {'variables': 27310, 'constraints': 23303, 'objectives': 1, 'other': 0}
+[group] unit_n7 2030_Autumn done in 29.5 s; LP compare: R_vs_A raw=False body=False ndiff=104; R_vs_C raw=False body=False ndiff=149; A_vs_C raw=False body=False ndiff=149; R_vs_t01b_R raw=False body=False ndiff=4; A_vs_t01b_A raw=False body=True ndiff=0
+WARNING: EXPORT Suffix 'ipopt_zL_in' found on 7 blocks:
+        tso.ipopt_zL_in dso_5.ipopt_zL_in esso_5.ipopt_zL_in dso_7.ipopt_zL_in
+        esso_7.ipopt_zL_in dso_9.ipopt_zL_in esso_9.ipopt_zL_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'ipopt_zU_in' found on 5 blocks:
+        tso.ipopt_zU_in dso_5.ipopt_zU_in dso_7.ipopt_zU_in esso_7.ipopt_zU_in
+        dso_9.ipopt_zU_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'dual' found on 7 blocks:
+        tso.dual dso_5.dual esso_5.dual dso_7.dual esso_7.dual dso_9.dual
+        esso_9.dual
+    LP writer cannot export suffixes to LP files.  Skipping.
+[group] unit_n7 2030_Winter R: same-point max 0.0e+00; retained over 0 (max ratio 1.000); envelope over 0 (max ratio 0.9950); cones 6.6e-16; coupling unequal 0; obj rel 1.9e-16; lp {'variables': 27310, 'constraints': 23303, 'objectives': 1, 'other': 0}
+WARNING: EXPORT Suffix 'ipopt_zL_in' found on 7 blocks:
+        tso.ipopt_zL_in dso_5.ipopt_zL_in esso_5.ipopt_zL_in dso_7.ipopt_zL_in
+        esso_7.ipopt_zL_in dso_9.ipopt_zL_in esso_9.ipopt_zL_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'ipopt_zU_in' found on 5 blocks:
+        tso.ipopt_zU_in dso_5.ipopt_zU_in dso_7.ipopt_zU_in esso_7.ipopt_zU_in
+        dso_9.ipopt_zU_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'dual' found on 7 blocks:
+        tso.dual dso_5.dual esso_5.dual dso_7.dual esso_7.dual dso_9.dual
+        esso_9.dual
+    LP writer cannot export suffixes to LP files.  Skipping.
+[group] unit_n7 2030_Winter A: same-point max 0.0e+00; retained over 0 (max ratio 1.000); envelope over 0 (max ratio 0.9950); cones 6.6e-16; coupling unequal 0; obj rel 1.9e-16; lp {'variables': 27310, 'constraints': 23303, 'objectives': 1, 'other': 0}
+WARNING: EXPORT Suffix 'ipopt_zL_in' found on 7 blocks:
+        tso.ipopt_zL_in dso_5.ipopt_zL_in esso_5.ipopt_zL_in dso_7.ipopt_zL_in
+        esso_7.ipopt_zL_in dso_9.ipopt_zL_in esso_9.ipopt_zL_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'ipopt_zU_in' found on 5 blocks:
+        tso.ipopt_zU_in dso_5.ipopt_zU_in dso_7.ipopt_zU_in esso_7.ipopt_zU_in
+        dso_9.ipopt_zU_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'dual' found on 7 blocks:
+        tso.dual dso_5.dual esso_5.dual dso_7.dual esso_7.dual dso_9.dual
+        esso_9.dual
+    LP writer cannot export suffixes to LP files.  Skipping.
+[group] unit_n7 2030_Winter C: same-point max 0.0e+00; retained over 0 (max ratio 1.000); envelope over 0 (max ratio 0.9950); cones 6.6e-16; coupling unequal 0; obj rel 1.9e-16; lp {'variables': 27310, 'constraints': 23303, 'objectives': 1, 'other': 0}
+[group] unit_n7 2030_Winter done in 28.5 s; LP compare: R_vs_A raw=False body=False ndiff=104; R_vs_C raw=False body=False ndiff=149; A_vs_C raw=False body=False ndiff=149; R_vs_t01b_R raw=False body=False ndiff=4; A_vs_t01b_A raw=False body=True ndiff=0
+WARNING: EXPORT Suffix 'ipopt_zL_in' found on 7 blocks:
+        tso.ipopt_zL_in dso_5.ipopt_zL_in esso_5.ipopt_zL_in dso_7.ipopt_zL_in
+        esso_7.ipopt_zL_in dso_9.ipopt_zL_in esso_9.ipopt_zL_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'ipopt_zU_in' found on 5 blocks:
+        tso.ipopt_zU_in dso_5.ipopt_zU_in dso_7.ipopt_zU_in esso_7.ipopt_zU_in
+        dso_9.ipopt_zU_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'dual' found on 7 blocks:
+        tso.dual dso_5.dual esso_5.dual dso_7.dual esso_7.dual dso_9.dual
+        esso_9.dual
+    LP writer cannot export suffixes to LP files.  Skipping.
+[group] unit_n7 2035_Spring R: same-point max 0.0e+00; retained over 0 (max ratio 1.000); envelope over 0 (max ratio 0.9999); cones 6.2e-16; coupling unequal 0; obj rel 0.0e+00; lp {'variables': 27310, 'constraints': 23435, 'objectives': 1, 'other': 0}
+WARNING: EXPORT Suffix 'ipopt_zL_in' found on 7 blocks:
+        tso.ipopt_zL_in dso_5.ipopt_zL_in esso_5.ipopt_zL_in dso_7.ipopt_zL_in
+        esso_7.ipopt_zL_in dso_9.ipopt_zL_in esso_9.ipopt_zL_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'ipopt_zU_in' found on 5 blocks:
+        tso.ipopt_zU_in dso_5.ipopt_zU_in dso_7.ipopt_zU_in esso_7.ipopt_zU_in
+        dso_9.ipopt_zU_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'dual' found on 7 blocks:
+        tso.dual dso_5.dual esso_5.dual dso_7.dual esso_7.dual dso_9.dual
+        esso_9.dual
+    LP writer cannot export suffixes to LP files.  Skipping.
+[group] unit_n7 2035_Spring A: same-point max 0.0e+00; retained over 0 (max ratio 1.000); envelope over 0 (max ratio 0.9999); cones 6.2e-16; coupling unequal 0; obj rel 0.0e+00; lp {'variables': 27310, 'constraints': 23435, 'objectives': 1, 'other': 0}
+WARNING: EXPORT Suffix 'ipopt_zL_in' found on 7 blocks:
+        tso.ipopt_zL_in dso_5.ipopt_zL_in esso_5.ipopt_zL_in dso_7.ipopt_zL_in
+        esso_7.ipopt_zL_in dso_9.ipopt_zL_in esso_9.ipopt_zL_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'ipopt_zU_in' found on 5 blocks:
+        tso.ipopt_zU_in dso_5.ipopt_zU_in dso_7.ipopt_zU_in esso_7.ipopt_zU_in
+        dso_9.ipopt_zU_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'dual' found on 7 blocks:
+        tso.dual dso_5.dual esso_5.dual dso_7.dual esso_7.dual dso_9.dual
+        esso_9.dual
+    LP writer cannot export suffixes to LP files.  Skipping.
+[group] unit_n7 2035_Spring C: same-point max 0.0e+00; retained over 0 (max ratio 1.000); envelope over 0 (max ratio 0.9999); cones 6.2e-16; coupling unequal 0; obj rel 0.0e+00; lp {'variables': 27310, 'constraints': 23435, 'objectives': 1, 'other': 0}
+[group] unit_n7 2035_Spring done in 28.5 s; LP compare: R_vs_A raw=False body=False ndiff=104; R_vs_C raw=False body=False ndiff=149; A_vs_C raw=False body=False ndiff=149; R_vs_t01b_R raw=False body=False ndiff=4; A_vs_t01b_A raw=False body=True ndiff=0
+WARNING: EXPORT Suffix 'ipopt_zL_in' found on 7 blocks:
+        tso.ipopt_zL_in dso_5.ipopt_zL_in esso_5.ipopt_zL_in dso_7.ipopt_zL_in
+        esso_7.ipopt_zL_in dso_9.ipopt_zL_in esso_9.ipopt_zL_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'ipopt_zU_in' found on 5 blocks:
+        tso.ipopt_zU_in dso_5.ipopt_zU_in dso_7.ipopt_zU_in esso_7.ipopt_zU_in
+        dso_9.ipopt_zU_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'dual' found on 7 blocks:
+        tso.dual dso_5.dual esso_5.dual dso_7.dual esso_7.dual dso_9.dual
+        esso_9.dual
+    LP writer cannot export suffixes to LP files.  Skipping.
+[group] unit_n7 2035_Summer R: same-point max 0.0e+00; retained over 0 (max ratio 1.000); envelope over 0 (max ratio 0.9679); cones 6.3e-16; coupling unequal 0; obj rel 0.0e+00; lp {'variables': 27310, 'constraints': 23435, 'objectives': 1, 'other': 0}
+WARNING: EXPORT Suffix 'ipopt_zL_in' found on 7 blocks:
+        tso.ipopt_zL_in dso_5.ipopt_zL_in esso_5.ipopt_zL_in dso_7.ipopt_zL_in
+        esso_7.ipopt_zL_in dso_9.ipopt_zL_in esso_9.ipopt_zL_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'ipopt_zU_in' found on 5 blocks:
+        tso.ipopt_zU_in dso_5.ipopt_zU_in dso_7.ipopt_zU_in esso_7.ipopt_zU_in
+        dso_9.ipopt_zU_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'dual' found on 7 blocks:
+        tso.dual dso_5.dual esso_5.dual dso_7.dual esso_7.dual dso_9.dual
+        esso_9.dual
+    LP writer cannot export suffixes to LP files.  Skipping.
+[group] unit_n7 2035_Summer A: same-point max 0.0e+00; retained over 0 (max ratio 1.000); envelope over 0 (max ratio 0.9679); cones 6.3e-16; coupling unequal 0; obj rel 0.0e+00; lp {'variables': 27310, 'constraints': 23435, 'objectives': 1, 'other': 0}
+WARNING: EXPORT Suffix 'ipopt_zL_in' found on 7 blocks:
+        tso.ipopt_zL_in dso_5.ipopt_zL_in esso_5.ipopt_zL_in dso_7.ipopt_zL_in
+        esso_7.ipopt_zL_in dso_9.ipopt_zL_in esso_9.ipopt_zL_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'ipopt_zU_in' found on 5 blocks:
+        tso.ipopt_zU_in dso_5.ipopt_zU_in dso_7.ipopt_zU_in esso_7.ipopt_zU_in
+        dso_9.ipopt_zU_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'dual' found on 7 blocks:
+        tso.dual dso_5.dual esso_5.dual dso_7.dual esso_7.dual dso_9.dual
+        esso_9.dual
+    LP writer cannot export suffixes to LP files.  Skipping.
+[group] unit_n7 2035_Summer C: same-point max 0.0e+00; retained over 0 (max ratio 1.000); envelope over 0 (max ratio 0.9679); cones 6.3e-16; coupling unequal 0; obj rel 0.0e+00; lp {'variables': 27310, 'constraints': 23435, 'objectives': 1, 'other': 0}
+[group] unit_n7 2035_Summer done in 34.0 s; LP compare: R_vs_A raw=False body=False ndiff=104; R_vs_C raw=False body=False ndiff=149; A_vs_C raw=False body=False ndiff=149; R_vs_t01b_R raw=False body=False ndiff=4; A_vs_t01b_A raw=False body=True ndiff=0
+WARNING: EXPORT Suffix 'ipopt_zL_in' found on 7 blocks:
+        tso.ipopt_zL_in dso_5.ipopt_zL_in esso_5.ipopt_zL_in dso_7.ipopt_zL_in
+        esso_7.ipopt_zL_in dso_9.ipopt_zL_in esso_9.ipopt_zL_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'ipopt_zU_in' found on 5 blocks:
+        tso.ipopt_zU_in dso_5.ipopt_zU_in dso_7.ipopt_zU_in esso_7.ipopt_zU_in
+        dso_9.ipopt_zU_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'dual' found on 7 blocks:
+        tso.dual dso_5.dual esso_5.dual dso_7.dual esso_7.dual dso_9.dual
+        esso_9.dual
+    LP writer cannot export suffixes to LP files.  Skipping.
+[group] unit_n7 2035_Autumn R: same-point max 0.0e+00; retained over 0 (max ratio 1.000); envelope over 0 (max ratio 0.9149); cones 6.8e-16; coupling unequal 0; obj rel 4.6e-16; lp {'variables': 27310, 'constraints': 23303, 'objectives': 1, 'other': 0}
+WARNING: EXPORT Suffix 'ipopt_zL_in' found on 7 blocks:
+        tso.ipopt_zL_in dso_5.ipopt_zL_in esso_5.ipopt_zL_in dso_7.ipopt_zL_in
+        esso_7.ipopt_zL_in dso_9.ipopt_zL_in esso_9.ipopt_zL_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'ipopt_zU_in' found on 5 blocks:
+        tso.ipopt_zU_in dso_5.ipopt_zU_in dso_7.ipopt_zU_in esso_7.ipopt_zU_in
+        dso_9.ipopt_zU_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'dual' found on 7 blocks:
+        tso.dual dso_5.dual esso_5.dual dso_7.dual esso_7.dual dso_9.dual
+        esso_9.dual
+    LP writer cannot export suffixes to LP files.  Skipping.
+[group] unit_n7 2035_Autumn A: same-point max 0.0e+00; retained over 0 (max ratio 1.000); envelope over 0 (max ratio 0.9149); cones 6.8e-16; coupling unequal 0; obj rel 4.6e-16; lp {'variables': 27310, 'constraints': 23303, 'objectives': 1, 'other': 0}
+WARNING: EXPORT Suffix 'ipopt_zL_in' found on 7 blocks:
+        tso.ipopt_zL_in dso_5.ipopt_zL_in esso_5.ipopt_zL_in dso_7.ipopt_zL_in
+        esso_7.ipopt_zL_in dso_9.ipopt_zL_in esso_9.ipopt_zL_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'ipopt_zU_in' found on 5 blocks:
+        tso.ipopt_zU_in dso_5.ipopt_zU_in dso_7.ipopt_zU_in esso_7.ipopt_zU_in
+        dso_9.ipopt_zU_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'dual' found on 7 blocks:
+        tso.dual dso_5.dual esso_5.dual dso_7.dual esso_7.dual dso_9.dual
+        esso_9.dual
+    LP writer cannot export suffixes to LP files.  Skipping.
+[group] unit_n7 2035_Autumn C: same-point max 0.0e+00; retained over 0 (max ratio 1.000); envelope over 0 (max ratio 0.9149); cones 6.8e-16; coupling unequal 0; obj rel 4.6e-16; lp {'variables': 27310, 'constraints': 23303, 'objectives': 1, 'other': 0}
+[group] unit_n7 2035_Autumn done in 34.3 s; LP compare: R_vs_A raw=False body=False ndiff=104; R_vs_C raw=False body=False ndiff=149; A_vs_C raw=False body=False ndiff=149; R_vs_t01b_R raw=False body=False ndiff=4; A_vs_t01b_A raw=False body=True ndiff=0
+WARNING: EXPORT Suffix 'ipopt_zL_in' found on 7 blocks:
+        tso.ipopt_zL_in dso_5.ipopt_zL_in esso_5.ipopt_zL_in dso_7.ipopt_zL_in
+        esso_7.ipopt_zL_in dso_9.ipopt_zL_in esso_9.ipopt_zL_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'ipopt_zU_in' found on 5 blocks:
+        tso.ipopt_zU_in dso_5.ipopt_zU_in dso_7.ipopt_zU_in esso_7.ipopt_zU_in
+        dso_9.ipopt_zU_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'dual' found on 7 blocks:
+        tso.dual dso_5.dual esso_5.dual dso_7.dual esso_7.dual dso_9.dual
+        esso_9.dual
+    LP writer cannot export suffixes to LP files.  Skipping.
+[group] unit_n7 2035_Winter R: same-point max 0.0e+00; retained over 0 (max ratio 1.000); envelope over 0 (max ratio 0.9999); cones 6.8e-16; coupling unequal 0; obj rel 0.0e+00; lp {'variables': 27310, 'constraints': 23303, 'objectives': 1, 'other': 0}
+WARNING: EXPORT Suffix 'ipopt_zL_in' found on 7 blocks:
+        tso.ipopt_zL_in dso_5.ipopt_zL_in esso_5.ipopt_zL_in dso_7.ipopt_zL_in
+        esso_7.ipopt_zL_in dso_9.ipopt_zL_in esso_9.ipopt_zL_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'ipopt_zU_in' found on 5 blocks:
+        tso.ipopt_zU_in dso_5.ipopt_zU_in dso_7.ipopt_zU_in esso_7.ipopt_zU_in
+        dso_9.ipopt_zU_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'dual' found on 7 blocks:
+        tso.dual dso_5.dual esso_5.dual dso_7.dual esso_7.dual dso_9.dual
+        esso_9.dual
+    LP writer cannot export suffixes to LP files.  Skipping.
+[group] unit_n7 2035_Winter A: same-point max 0.0e+00; retained over 0 (max ratio 1.000); envelope over 0 (max ratio 0.9999); cones 6.8e-16; coupling unequal 0; obj rel 0.0e+00; lp {'variables': 27310, 'constraints': 23303, 'objectives': 1, 'other': 0}
+WARNING: EXPORT Suffix 'ipopt_zL_in' found on 7 blocks:
+        tso.ipopt_zL_in dso_5.ipopt_zL_in esso_5.ipopt_zL_in dso_7.ipopt_zL_in
+        esso_7.ipopt_zL_in dso_9.ipopt_zL_in esso_9.ipopt_zL_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'ipopt_zU_in' found on 5 blocks:
+        tso.ipopt_zU_in dso_5.ipopt_zU_in dso_7.ipopt_zU_in esso_7.ipopt_zU_in
+        dso_9.ipopt_zU_in
+    LP writer cannot export suffixes to LP files.  Skipping.
+WARNING: EXPORT Suffix 'dual' found on 7 blocks:
+        tso.dual dso_5.dual esso_5.dual dso_7.dual esso_7.dual dso_9.dual
+        esso_9.dual
+    LP writer cannot export suffixes to LP files.  Skipping.
+[group] unit_n7 2035_Winter C: same-point max 0.0e+00; retained over 0 (max ratio 1.000); envelope over 0 (max ratio 0.9999); cones 6.8e-16; coupling unequal 0; obj rel 0.0e+00; lp {'variables': 27310, 'constraints': 23303, 'objectives': 1, 'other': 0}
+[group] unit_n7 2035_Winter done in 28.8 s; LP compare: R_vs_A raw=False body=False ndiff=104; R_vs_C raw=False body=False ndiff=149; A_vs_C raw=False body=False ndiff=149; R_vs_t01b_R raw=False body=False ndiff=4; A_vs_t01b_A raw=False body=True ndiff=0
+[Q+] unit_n7: gross 653599356.242088; correction 13032.465347571979 (path 2 13032.465347572272); Q_cert+ 653612388.7074355; -recorded detector total 13032.465347571977
+[cell] unit_n7 done in 434.7 s
+[write] inventory.json
+[write] identities.json
+[write] capacity.json
+[write] objective.json
+[write] lp/index.json
+[summary] gates: 3637 rows, all pass: True; failed gate kinds: []
+[summary] stops: 0 ([])
+[prediction] C1: held=True
+[prediction] C2: held=False
+[prediction] C3: held=True
+[prediction] C4: held=True
+[prediction] C5: held=True
+[summary] guard counts {'permitted_solve': 0, 'permitted_exec': 0, 'blocked_solve': 0, 'blocked_exec': 0}; process launches 0; solver libraries imported: []; repo writes outside OUT_DIR: 0; wall 906.6 s
+# child exit code 0; wall 907.3 s

@@ -1,0 +1,342 @@
+{
+ "stage": "P5.15 Step 3.2 + 3.3(a) (s32 worker task) -- zero-solve verification",
+ "authority": [
+  "PLANNER_BRIEF_2026-09-13.md Addendum 9 sections 3.2, 3.3(a)",
+  "data/SRP1/Results/P515S32/frozen_s32_spec_v1_14a18674.json"
+ ],
+ "timestamp_utc": "2026-09-15T16:08:12.720306+00:00",
+ "solve_profile_guard": {
+  "permitted": [],
+  "counts": {
+   "permitted_solve": 0,
+   "permitted_exec": 0,
+   "blocked_solve": 0,
+   "blocked_exec": 0
+  },
+  "verify_failures": []
+ },
+ "checks": {
+  "legacy_metrics_bit_identical": {
+   "snapshot_path": "data/SRP1/Results/P515S32/zero_solve_checks/synthetic_admm_snapshot.pkl",
+   "snapshot_provenance": "Synthetic ADMM-ready state built via the production zero-solve pipeline (create_transmission_network_model / create_distribution_networks_models with .optimize monkeypatched to a never-solving stub, plus shared_ess_data.build_subproblem()), with one synthetic single-entry perturbation so every primal/dual residual is nonzero and hand-derivable. No pre-existing full multi-agent ADMM-state pickle was found for this comparison.",
+   "new_module_primal_dual": {
+    "primal": {
+     "v": 0.08000000000000007,
+     "pf": 0.01,
+     "ess": 1.5000000000000002,
+     "v_mean": 9.259259259259267e-05,
+     "pf_mean": 5.787037037037037e-06,
+     "ess_mean": 0.0004822530864197533
+    },
+    "dual": {
+     "v": 0.10000000000000016,
+     "pf": 0.05,
+     "ess": 2.0,
+     "v_mean": 6.94444444444446e-05,
+     "pf_mean": 1.8807870370370372e-05,
+     "ess_mean": 0.0011574074074074073
+    }
+   },
+   "pre_change_module_primal_dual": {
+    "primal": {
+     "v": 0.08000000000000007,
+     "pf": 0.01,
+     "ess": 1.5000000000000002,
+     "v_mean": 9.259259259259267e-05,
+     "pf_mean": 5.787037037037037e-06,
+     "ess_mean": 0.0004822530864197533
+    },
+    "dual": {
+     "v": 0.10000000000000016,
+     "pf": 0.05,
+     "ess": 2.0,
+     "v_mean": 6.94444444444446e-05,
+     "pf_mean": 1.8807870370370372e-05,
+     "ess_mean": 0.0011574074074074073
+    }
+   },
+   "pass": true
+  },
+  "boyd_matches_legacy_entries": {
+   "coordinate": {
+    "node_id": 5,
+    "year": "2025",
+    "day": "Spring",
+    "p": 0,
+    "power_type": "p",
+    "v_base": 345.0
+   },
+   "v": {
+    "tso_term_v": 0.020000000000000098,
+    "dso_term_v": 0.10000000000000016,
+    "legacy_dual_v_max": 0.10000000000000016,
+    "boyd_s_rho_part_v": 0.020000000000000098,
+    "legacy_equals_max_of_both_terms": true,
+    "boyd_s_rho_part_equals_tso_term_only": true,
+    "dso_term_is_the_excluded_difference": true
+   },
+   "pf": {
+    "tso_term_pf": 0.015,
+    "dso_term_pf": 0.05,
+    "legacy_dual_pf_max": 0.05,
+    "boyd_s_rho_part_pf": 0.015,
+    "legacy_equals_max_of_both_terms": true,
+    "boyd_s_rho_part_equals_tso_term_only": true,
+    "dso_term_is_the_excluded_difference": true
+   },
+   "ess": {
+    "per_agent_primal_terms": {
+     "tso": 0.5000000000000004,
+     "dso": 0.4999999999999999,
+     "esso": 1.5000000000000002
+    },
+    "legacy_primal_ess_max": 1.5000000000000002,
+    "legacy_equals_max_of_agent_terms": true,
+    "boyd_ess_r": 1.6583123951777001,
+    "boyd_ess_r_equals_sqrt_sum_of_squares_of_same_agent_terms": true
+   },
+   "pass": true
+  },
+  "lambda_antisymmetry": {
+   "method": "cold-start (lambda==0) dual_vars, fresh consensus values, ONE call to the real production `_update_interface_power_flow_variables` with fake successful SolverResults (zero solves) -- both TSO and DSO rho started equal (verified below, required for exact antisymmetry) and both agents succeeded, so both dual entries update on the SAME cycle.",
+   "rho_v_tso_before": 1.0,
+   "rho_v_dso_before": 1.0,
+   "rho_pf_tso_before": 1.0,
+   "rho_pf_dso_before": 1.0,
+   "equal_rho_precondition": true,
+   "raw_stored_lambda_v_tso": 27.600000000000023,
+   "raw_stored_lambda_v_dso": -27.600000000000023,
+   "raw_stored_antisymmetric": true,
+   "model_units_y_v_tso": 0.08000000000000007,
+   "model_units_y_v_dso": -0.08000000000000007,
+   "model_units_y_pf_p_tso": 0.065,
+   "model_units_y_pf_p_dso": -0.065,
+   "model_units_y_pf_q_tso": -0.05,
+   "model_units_y_pf_q_dso": 0.05,
+   "pass": true
+  },
+  "unit_conversions": {
+   "method": "source-text presence of the exact production DSO-loading division lines (update_distribution_coordination_models_and_solve_sequential) and the SAME divisions in get_admm_boyd_residual_metrics.",
+   "dso_loading_v_line_present": true,
+   "dso_loading_pf_p_line_present": true,
+   "dso_loading_pf_q_line_present": true,
+   "dso_loading_ess_no_division_present": true,
+   "boyd_v_uses_same_v_base_division": true,
+   "boyd_pf_uses_same_dso_s_base_division": true,
+   "boyd_ess_uses_no_conversion": true,
+   "pass": true
+  },
+  "penalties_update_isolated": {
+   "actions": {
+    "v": "increased",
+    "pf": "held",
+    "ess": "held"
+   },
+   "rho_before": {
+    "v": 1.0,
+    "pf": 1.0,
+    "ess": 1.0
+   },
+   "rho_after": {
+    "v": 1.5,
+    "pf": 1.0,
+    "ess": 1.0
+   },
+   "consensus_vars_unchanged": true,
+   "dual_vars_unchanged": true,
+   "rho_v_changed_as_expected": true,
+   "pass": true
+  },
+  "al_objective_unchanged": {
+   "functions": {
+    "update_transmission_model_to_admm": {
+     "identical": true,
+     "new_sha256": "190334b54a6a63c6266466658609921029b98740381e551864a91de6d52f0b0f",
+     "pre_sha256": "190334b54a6a63c6266466658609921029b98740381e551864a91de6d52f0b0f"
+    },
+    "update_distribution_models_to_admm": {
+     "identical": true,
+     "new_sha256": "f219775d8d89f7e8a89fc34f72c7c01f0b757939639eba6c92ff8d71d1d6e63c",
+     "pre_sha256": "f219775d8d89f7e8a89fc34f72c7c01f0b757939639eba6c92ff8d71d1d6e63c"
+    },
+    "update_shared_energy_storage_model_to_admm": {
+     "identical": true,
+     "new_sha256": "ef660ce1b73753e2f02bbff4c279bf5f98d36028748b97776833a7cbf0d251b0",
+     "pre_sha256": "ef660ce1b73753e2f02bbff4c279bf5f98d36028748b97776833a7cbf0d251b0"
+    },
+    "_prepare_transmission_objectives_for_admm": {
+     "identical": true,
+     "new_sha256": "85878ed70648314a1618e43f6174c31e95c38be843d6116ea689d9013774dfda",
+     "pre_sha256": "85878ed70648314a1618e43f6174c31e95c38be843d6116ea689d9013774dfda"
+    },
+    "_prepare_distribution_objectives_for_admm": {
+     "identical": true,
+     "new_sha256": "e07fb20003b59b44e974ea3cc5694335616e020ee0dafc88a1bcffe2e44faec1",
+     "pre_sha256": "e07fb20003b59b44e974ea3cc5694335616e020ee0dafc88a1bcffe2e44faec1"
+    },
+    "_update_tso_proximal_centres_after_solve": {
+     "identical": true,
+     "new_sha256": "2429e090f753b7eec5b1696f8dabc19032b523da5f7498830690bb017951dd5d",
+     "pre_sha256": "2429e090f753b7eec5b1696f8dabc19032b523da5f7498830690bb017951dd5d"
+    }
+   },
+   "pass": true
+  },
+  "balancing_unit_test": {
+   "sub_results": {
+    "increase": {
+     "action": "increased",
+     "before": 1.0,
+     "after": 1.5,
+     "pass": true
+    },
+    "decrease": {
+     "action": "decreased",
+     "before": 1.0,
+     "after": 0.6666666666666671,
+     "pass": true
+    },
+    "dead_band_held": {
+     "action": "held",
+     "before": 1.0,
+     "after": 1.0,
+     "pass": true
+    },
+    "no_freeze": {
+     "primal_ratio": 0.5,
+     "dual_ratio": 0.05,
+     "both_ratios_le_1_legacy_converged": true,
+     "action": "increased",
+     "before": 1.0,
+     "after": 1.5,
+     "pass": true
+    },
+    "failure_hold": {
+     "action_v": "held after solver failure",
+     "action_pf": "held after solver failure",
+     "before": {
+      "v": 1.0,
+      "pf": 1.0,
+      "ess": 1.0
+     },
+     "after": {
+      "v": 1.0,
+      "pf": 1.0,
+      "ess": 1.0
+     },
+     "pass": true
+    }
+   },
+   "pass": true
+  },
+  "stop_rule_unit_test": {
+   "gating_line_present": true,
+   "gating_line": "cycle_convergence = boyd_all_pass and local_solves_ok",
+   "objective_convergence_not_on_gating_line": true,
+   "baseline_all_true_all_boyd_pass": true,
+   "six_blocking_cases": {
+    "v_primal_false": {
+     "all_boyd_pass": false,
+     "channel_pass": {
+      "v": false,
+      "pf": true,
+      "ess": true
+     },
+     "blocks_as_expected": true
+    },
+    "v_dual_false": {
+     "all_boyd_pass": false,
+     "channel_pass": {
+      "v": false,
+      "pf": true,
+      "ess": true
+     },
+     "blocks_as_expected": true
+    },
+    "pf_primal_false": {
+     "all_boyd_pass": false,
+     "channel_pass": {
+      "v": true,
+      "pf": false,
+      "ess": true
+     },
+     "blocks_as_expected": true
+    },
+    "pf_dual_false": {
+     "all_boyd_pass": false,
+     "channel_pass": {
+      "v": true,
+      "pf": false,
+      "ess": true
+     },
+     "blocks_as_expected": true
+    },
+    "ess_primal_false": {
+     "all_boyd_pass": false,
+     "channel_pass": {
+      "v": true,
+      "pf": true,
+      "ess": false
+     },
+     "blocks_as_expected": true
+    },
+    "ess_dual_false": {
+     "all_boyd_pass": false,
+     "channel_pass": {
+      "v": true,
+      "pf": true,
+      "ess": false
+     },
+     "blocks_as_expected": true
+    }
+   },
+   "pass": true
+  },
+  "other_case_params_load": {
+   "cs1_params_path": "data/CS1/CS1_params.json",
+   "cs1_boyd_eps_source": "default",
+   "cs1_boyd_tol": {
+    "eps_abs": 1e-05,
+    "eps_rel": 0.0001
+   },
+   "srp1_params_path": "data/SRP1/SRP1_params.json",
+   "srp1_boyd_eps_source": "case_file",
+   "srp1_boyd_tol": {
+    "eps_abs": 1e-05,
+    "eps_rel": 0.0001
+   },
+   "pass": true
+  },
+  "fixture_unpickling": {
+   "fixtures": [
+    {
+     "path": "data/SRP1/Results/P512R/cycle21_pre_setup/snapshot.pkl",
+     "loads": true
+    },
+    {
+     "path": "data/SRP1/Results/P512R/production_snapshots/FrozenSMOPF/matched_success_DSO_node7_case33_2_2025_Autumn_cycle7.pkl",
+     "loads": true
+    },
+    {
+     "path": "data/SRP1/Results/P515G3F_r2/results/FrozenSMOPF/frozen_DSO_node7_case33_2_2035_Autumn_cycle38.pkl",
+     "loads": true
+    }
+   ],
+   "pass": true
+  },
+  "hierarchical_uncoordinated_untouched": {
+   "method": "exact source-text equality (git HEAD vs current) for both path functions, PLUS a listing of every diff hunk header in shared_resources_planning.py for manual inspection.",
+   "functions": {
+    "_run_operational_planning_hierarchical": {
+     "identical": true
+    },
+    "_run_operational_planning_without_coordination": {
+     "identical": true
+    }
+   },
+   "diff_hunk_count": 8,
+   "pass": true
+  }
+ },
+ "all_checks_pass": true
+}

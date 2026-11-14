@@ -1,0 +1,160 @@
+14:04:04 [W33-checks] P5.15 Addendum 34 W33 items 1-2 -- flexibility-price multiplier override: zero-solve checks
+14:04:04 [W33-checks] git HEAD 78a9b23002350605e058db77c9f516603bc5fd6d; harness sha256 5c198bd8b2a4bc87c5297f092c1f03d95c0b82a9fe9eb30afadb8fc768832d6c; uncommitted: M p515_s44_campaign_harness.py
+?? p515_s49_flex_price_checks.py
+14:04:05 [W33-checks] K1: {'K1_committed_specs_found': True, 'K1_committed_spec_keys_eval_keys_dirs_ids_identical': True, 'K1_committed_records_keys_identical': True, 'K1_declared_specs_covered': True} scope {'searched': 'git ls-files -- data/SRP1/Results/P515S44 data/SRP1/Results/P515S45 data/SRP1/Results/P515S46 data/SRP1/Results/P515S47 data/SRP1/Results/P515S48 data/SRP1/Results/P515S49', 'included': ['campaign_spec_*.json', 'evaluation_record.json'], 'excluded': ['frozen_s4x_*_spec_*.json (Planner specs: no candidate / eval keys)', 'uncommitted campaign roots'], 'committed_campaign_specs_per_dir': {'data/SRP1/Results/P515S44': 22, 'data/SRP1/Results/P515S45': 7, 'data/SRP1/Results/P515S46': 1, 'data/SRP1/Results/P515S47': 3, 'data/SRP1/Results/P515S48': 1, 'data/SRP1/Results/P515S49': 0}, 'note_p515s49': 'P515S49 holds no committed campaign spec or evaluation record at the time of this run', 'n_campaign_specs': 34, 'n_spec_entries': 1865, 'n_evaluation_records': 147, 'n_record_eval_keys_recomputed': 128}
+14:04:05 [W33-checks] K2: {'K2_invalid_values_refused': True, 'K2_valid_values_normalized_to_float': True, 'K2_key_form_absent_and_1_are_none': True, 'K2_key_form_2_is_float_2': True}
+14:04:05 [W33-checks] K3: {'K3_absent_none_1_0_equal_committed_baseline_keys': True, 'K3_six_ladder_keys_pairwise_distinct': True, 'K3_ladder_keys_distinct_from_baseline_keys': True, 'K3_ladder_keys_distinct_from_every_committed_eval_key': True, 'K3_ladder_keys_distinct_from_bare_candidate_keys': True, 'K3_int_2_equals_float_2': True, 'K3_key_sensitive_to_one_ulp_of_m': True}
+14:04:05 [W33-checks]    x0: omitted=d2c96b1480402a3b, None=d2c96b1480402a3b, 1.0=d2c96b1480402a3b, 1.5=aa8a76d71ae49f13, 2.0=50dea31c5780df57, 3.0=75c65e733528d4c4
+14:04:05 [W33-checks]    unit_n7_4h_e1: omitted=bd504ecf5a288d44, None=bd504ecf5a288d44, 1.0=bd504ecf5a288d44, 1.5=f9eae48ff6133f6c, 2.0=74eda68d74d990b2, 3.0=0513054158970f16
+14:04:05 [W33-checks] K4: {'K4_fixture_freezes_entries_keys_labels_recompute': True, 'K4_spec_carries_the_label': True, 'K4_label_text': True, 'K4_m1_beside_absent_refused_as_duplicate': True, 'K4_invalid_multiplier_refused_no_directory': True, 'K4_spec_without_option_has_no_new_fields': True}
+14:04:16 [W33-checks] K5 x0: build without the multiplier
+[INFO] 		 - Distribution Network node 5...
+[INFO] 		 - Distribution Network node 7...
+[INFO] 		 - Distribution Network node 9...
+[INFO] 		 - Transmission Network...
+14:04:33 [W33-checks] K5 x0: build at m = 1.0
+[INFO] 		 - Distribution Network node 5...
+[INFO] 		 - Distribution Network node 7...
+[INFO] 		 - Distribution Network node 9...
+[INFO] 		 - Transmission Network...
+14:05:03 [W33-checks] K5 x0 m=1.0: differing blocks 0, components outside flex [], repn True (55296/55296 bitwise, max rel dev 0.0); hook True; post True; hook 12.9s
+14:05:03 [W33-checks] K5 x0: build at m = 1.5
+[INFO] 		 - Distribution Network node 5...
+[INFO] 		 - Distribution Network node 7...
+[INFO] 		 - Distribution Network node 9...
+[INFO] 		 - Transmission Network...
+14:05:33 [W33-checks] K5 x0 m=1.5: differing blocks 36, components outside flex [], repn True (33600/55296 bitwise, max rel dev 2.38003161127893e-16); hook True; post True; hook 12.8s
+14:05:33 [W33-checks] K5 x0: build at m = 2.0
+[INFO] 		 - Distribution Network node 5...
+[INFO] 		 - Distribution Network node 7...
+[INFO] 		 - Distribution Network node 9...
+[INFO] 		 - Transmission Network...
+14:06:03 [W33-checks] K5 x0 m=2.0: differing blocks 36, components outside flex [], repn True (55296/55296 bitwise, max rel dev 0.0); hook True; post True; hook 12.8s
+14:06:03 [W33-checks] K5 x0: build at m = 3.0
+[INFO] 		 - Distribution Network node 5...
+[INFO] 		 - Distribution Network node 7...
+[INFO] 		 - Distribution Network node 9...
+[INFO] 		 - Transmission Network...
+14:06:35 [W33-checks] K5 x0 m=3.0: differing blocks 36, components outside flex [], repn True (33600/55296 bitwise, max rel dev 2.38003161127893e-16); hook True; post True; hook 14.7s
+14:06:35 [W33-checks] K5 unit_n7_4h_e1: build without the multiplier
+[INFO] 		 - Distribution Network node 5...
+[INFO] 		 - Distribution Network node 7...
+[INFO] 		 - Distribution Network node 9...
+[INFO] 		 - Transmission Network...
+14:06:53 [W33-checks] K5 unit_n7_4h_e1: build at m = 1.0
+[INFO] 		 - Distribution Network node 5...
+[INFO] 		 - Distribution Network node 7...
+[INFO] 		 - Distribution Network node 9...
+[INFO] 		 - Transmission Network...
+14:07:24 [W33-checks] K5 unit_n7_4h_e1 m=1.0: differing blocks 0, components outside flex [], repn True (55296/55296 bitwise, max rel dev 0.0); hook True; post True; hook 13.9s
+14:07:24 [W33-checks] K5 unit_n7_4h_e1: build at m = 1.5
+[INFO] 		 - Distribution Network node 5...
+[INFO] 		 - Distribution Network node 7...
+[INFO] 		 - Distribution Network node 9...
+[INFO] 		 - Transmission Network...
+14:07:55 [W33-checks] K5 unit_n7_4h_e1 m=1.5: differing blocks 36, components outside flex [], repn True (33600/55296 bitwise, max rel dev 2.38003161127893e-16); hook True; post True; hook 14.0s
+14:07:55 [W33-checks] K5 unit_n7_4h_e1: build at m = 2.0
+[INFO] 		 - Distribution Network node 5...
+[INFO] 		 - Distribution Network node 7...
+[INFO] 		 - Distribution Network node 9...
+[INFO] 		 - Transmission Network...
+14:08:26 [W33-checks] K5 unit_n7_4h_e1 m=2.0: differing blocks 36, components outside flex [], repn True (55296/55296 bitwise, max rel dev 0.0); hook True; post True; hook 14.1s
+14:08:26 [W33-checks] K5 unit_n7_4h_e1: build at m = 3.0
+[INFO] 		 - Distribution Network node 5...
+[INFO] 		 - Distribution Network node 7...
+[INFO] 		 - Distribution Network node 9...
+[INFO] 		 - Transmission Network...
+14:08:57 [W33-checks] K5 unit_n7_4h_e1 m=3.0: differing blocks 36, components outside flex [], repn True (33600/55296 bitwise, max rel dev 2.38003161127893e-16); hook True; post True; hook 14.0s
+14:09:11 [W33-checks] K6: {'K6_sabotaged_scaling_makes_the_hook_raise': True, 'K6_monkeypatch_restored': True, 'K6_unlabelled_child_refuses_before_any_build': True}
+14:09:11 [W33-checks]   OK   K0_recert_and_x0_capture_configurations_identical
+14:09:11 [W33-checks]   OK   K1_committed_specs_found
+14:09:11 [W33-checks]   OK   K1_committed_spec_keys_eval_keys_dirs_ids_identical
+14:09:11 [W33-checks]   OK   K1_committed_records_keys_identical
+14:09:11 [W33-checks]   OK   K1_declared_specs_covered
+14:09:11 [W33-checks]   OK   K2_invalid_values_refused
+14:09:11 [W33-checks]   OK   K2_valid_values_normalized_to_float
+14:09:11 [W33-checks]   OK   K2_key_form_absent_and_1_are_none
+14:09:11 [W33-checks]   OK   K2_key_form_2_is_float_2
+14:09:11 [W33-checks]   OK   K3_absent_none_1_0_equal_committed_baseline_keys
+14:09:11 [W33-checks]   OK   K3_six_ladder_keys_pairwise_distinct
+14:09:11 [W33-checks]   OK   K3_ladder_keys_distinct_from_baseline_keys
+14:09:11 [W33-checks]   OK   K3_ladder_keys_distinct_from_every_committed_eval_key
+14:09:11 [W33-checks]   OK   K3_ladder_keys_distinct_from_bare_candidate_keys
+14:09:11 [W33-checks]   OK   K3_int_2_equals_float_2
+14:09:11 [W33-checks]   OK   K3_key_sensitive_to_one_ulp_of_m
+14:09:11 [W33-checks]   OK   K4_fixture_freezes_entries_keys_labels_recompute
+14:09:11 [W33-checks]   OK   K4_spec_carries_the_label
+14:09:11 [W33-checks]   OK   K4_label_text
+14:09:11 [W33-checks]   OK   K4_m1_beside_absent_refused_as_duplicate
+14:09:11 [W33-checks]   OK   K4_invalid_multiplier_refused_no_directory
+14:09:11 [W33-checks]   OK   K4_spec_without_option_has_no_new_fields
+14:09:11 [W33-checks]   OK   K5_x0_m1.0_hook_applied_and_read_back
+14:09:11 [W33-checks]   OK   K5_x0_m1.0_ess_ageing_readback_still_matches
+14:09:11 [W33-checks]   OK   K5_x0_m1.0_same_block_set
+14:09:11 [W33-checks]   OK   K5_x0_m1.0_post_run_readback_function_matches
+14:09:11 [W33-checks]   OK   K5_x0_m1.0_dso_objective_flex_coefficients_scale_rest_identical
+14:09:11 [W33-checks]   OK   K5_x0_m1.0_every_block_digest_identical
+14:09:11 [W33-checks]   OK   K5_x0_m1.0_bitwise_coefficients
+14:09:11 [W33-checks]   OK   K5_x0_m1.5_hook_applied_and_read_back
+14:09:11 [W33-checks]   OK   K5_x0_m1.5_ess_ageing_readback_still_matches
+14:09:11 [W33-checks]   OK   K5_x0_m1.5_same_block_set
+14:09:11 [W33-checks]   OK   K5_x0_m1.5_post_run_readback_function_matches
+14:09:11 [W33-checks]   OK   K5_x0_m1.5_dso_objective_flex_coefficients_scale_rest_identical
+14:09:11 [W33-checks]   OK   K5_x0_m1.5_tso_esso_blocks_identical
+14:09:11 [W33-checks]   OK   K5_x0_m1.5_only_flex_components_differ
+14:09:11 [W33-checks]   OK   K5_x0_m1.5_every_dso_block_differs
+14:09:11 [W33-checks]   OK   K5_x0_m2.0_hook_applied_and_read_back
+14:09:11 [W33-checks]   OK   K5_x0_m2.0_ess_ageing_readback_still_matches
+14:09:11 [W33-checks]   OK   K5_x0_m2.0_same_block_set
+14:09:11 [W33-checks]   OK   K5_x0_m2.0_post_run_readback_function_matches
+14:09:11 [W33-checks]   OK   K5_x0_m2.0_dso_objective_flex_coefficients_scale_rest_identical
+14:09:11 [W33-checks]   OK   K5_x0_m2.0_tso_esso_blocks_identical
+14:09:11 [W33-checks]   OK   K5_x0_m2.0_only_flex_components_differ
+14:09:11 [W33-checks]   OK   K5_x0_m2.0_every_dso_block_differs
+14:09:11 [W33-checks]   OK   K5_x0_m2.0_power_of_two_bitwise
+14:09:11 [W33-checks]   OK   K5_x0_m3.0_hook_applied_and_read_back
+14:09:11 [W33-checks]   OK   K5_x0_m3.0_ess_ageing_readback_still_matches
+14:09:11 [W33-checks]   OK   K5_x0_m3.0_same_block_set
+14:09:11 [W33-checks]   OK   K5_x0_m3.0_post_run_readback_function_matches
+14:09:11 [W33-checks]   OK   K5_x0_m3.0_dso_objective_flex_coefficients_scale_rest_identical
+14:09:11 [W33-checks]   OK   K5_x0_m3.0_tso_esso_blocks_identical
+14:09:11 [W33-checks]   OK   K5_x0_m3.0_only_flex_components_differ
+14:09:11 [W33-checks]   OK   K5_x0_m3.0_every_dso_block_differs
+14:09:11 [W33-checks]   OK   K5_unit_n7_4h_e1_m1.0_hook_applied_and_read_back
+14:09:11 [W33-checks]   OK   K5_unit_n7_4h_e1_m1.0_ess_ageing_readback_still_matches
+14:09:11 [W33-checks]   OK   K5_unit_n7_4h_e1_m1.0_same_block_set
+14:09:11 [W33-checks]   OK   K5_unit_n7_4h_e1_m1.0_post_run_readback_function_matches
+14:09:11 [W33-checks]   OK   K5_unit_n7_4h_e1_m1.0_dso_objective_flex_coefficients_scale_rest_identical
+14:09:11 [W33-checks]   OK   K5_unit_n7_4h_e1_m1.0_every_block_digest_identical
+14:09:11 [W33-checks]   OK   K5_unit_n7_4h_e1_m1.0_bitwise_coefficients
+14:09:11 [W33-checks]   OK   K5_unit_n7_4h_e1_m1.5_hook_applied_and_read_back
+14:09:11 [W33-checks]   OK   K5_unit_n7_4h_e1_m1.5_ess_ageing_readback_still_matches
+14:09:11 [W33-checks]   OK   K5_unit_n7_4h_e1_m1.5_same_block_set
+14:09:11 [W33-checks]   OK   K5_unit_n7_4h_e1_m1.5_post_run_readback_function_matches
+14:09:11 [W33-checks]   OK   K5_unit_n7_4h_e1_m1.5_dso_objective_flex_coefficients_scale_rest_identical
+14:09:11 [W33-checks]   OK   K5_unit_n7_4h_e1_m1.5_tso_esso_blocks_identical
+14:09:11 [W33-checks]   OK   K5_unit_n7_4h_e1_m1.5_only_flex_components_differ
+14:09:11 [W33-checks]   OK   K5_unit_n7_4h_e1_m1.5_every_dso_block_differs
+14:09:11 [W33-checks]   OK   K5_unit_n7_4h_e1_m2.0_hook_applied_and_read_back
+14:09:11 [W33-checks]   OK   K5_unit_n7_4h_e1_m2.0_ess_ageing_readback_still_matches
+14:09:11 [W33-checks]   OK   K5_unit_n7_4h_e1_m2.0_same_block_set
+14:09:11 [W33-checks]   OK   K5_unit_n7_4h_e1_m2.0_post_run_readback_function_matches
+14:09:11 [W33-checks]   OK   K5_unit_n7_4h_e1_m2.0_dso_objective_flex_coefficients_scale_rest_identical
+14:09:11 [W33-checks]   OK   K5_unit_n7_4h_e1_m2.0_tso_esso_blocks_identical
+14:09:11 [W33-checks]   OK   K5_unit_n7_4h_e1_m2.0_only_flex_components_differ
+14:09:11 [W33-checks]   OK   K5_unit_n7_4h_e1_m2.0_every_dso_block_differs
+14:09:11 [W33-checks]   OK   K5_unit_n7_4h_e1_m2.0_power_of_two_bitwise
+14:09:11 [W33-checks]   OK   K5_unit_n7_4h_e1_m3.0_hook_applied_and_read_back
+14:09:11 [W33-checks]   OK   K5_unit_n7_4h_e1_m3.0_ess_ageing_readback_still_matches
+14:09:11 [W33-checks]   OK   K5_unit_n7_4h_e1_m3.0_same_block_set
+14:09:11 [W33-checks]   OK   K5_unit_n7_4h_e1_m3.0_post_run_readback_function_matches
+14:09:11 [W33-checks]   OK   K5_unit_n7_4h_e1_m3.0_dso_objective_flex_coefficients_scale_rest_identical
+14:09:11 [W33-checks]   OK   K5_unit_n7_4h_e1_m3.0_tso_esso_blocks_identical
+14:09:11 [W33-checks]   OK   K5_unit_n7_4h_e1_m3.0_only_flex_components_differ
+14:09:11 [W33-checks]   OK   K5_unit_n7_4h_e1_m3.0_every_dso_block_differs
+14:09:11 [W33-checks]   OK   K6_sabotaged_scaling_makes_the_hook_raise
+14:09:11 [W33-checks]   OK   K6_monkeypatch_restored
+14:09:11 [W33-checks]   OK   K6_unlabelled_child_refuses_before_any_build
+14:09:11 [W33-checks]   OK   guard_zero_solves_verified
+14:09:11 [W33-checks]   OK   w21_module_guard_zero_solves_verified
+14:09:11 [W33-checks] ALL_OK=True guard={'permitted_solve': 0, 'permitted_exec': 0, 'blocked_solve': 0, 'blocked_exec': 0} w21_guard={'permitted_solve': 0, 'permitted_exec': 0, 'blocked_solve': 0, 'blocked_exec': 0} wall=307.8s

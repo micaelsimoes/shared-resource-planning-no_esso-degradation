@@ -1,0 +1,2528 @@
+{
+ "schema": "p516_tperf_studio_dry_v1",
+ "stage": "P5.16 T-perf Part B (studio_dry)",
+ "authority": [
+  "P5_16_TPERF_SPEC_v1.md (author-authorized 2026-10-31)",
+  "TASKS.md T-perf line"
+ ],
+ "mode": "studio_dry",
+ "utc_start": "2026-10-31T11:13:09.525997+00:00",
+ "lock": {
+  "path": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/.p516_tperf.lock",
+  "pid": 6569,
+  "other_copies_found": []
+ },
+ "objective_convention": "none computed or compared (sizes / timing / iterations / memory only)",
+ "instance": {
+  "case": "p515_s44_scale_measurement.derive_case('paper', {}) of the committed case file",
+  "candidate": "unit cell: node 7 0.25 MVA / 1.0 MWh, nodes 5 and 9 empty, cohort 2025",
+  "blocks": "TSO 2025 Spring; DSO node 7 2025 Spring; ESSO (0 solves)"
+ },
+ "declared_solves": 0,
+ "thread_env_before": {
+  "OMP_NUM_THREADS": null,
+  "MKL_NUM_THREADS": null,
+  "OPENBLAS_NUM_THREADS": null,
+  "VECLIB_MAXIMUM_THREADS": null,
+  "NUMEXPR_NUM_THREADS": null
+ },
+ "thread_env_in_force": {
+  "OMP_NUM_THREADS": "1",
+  "MKL_NUM_THREADS": "1",
+  "OPENBLAS_NUM_THREADS": "1",
+  "VECLIB_MAXIMUM_THREADS": "1",
+  "NUMEXPR_NUM_THREADS": "1"
+ },
+ "provenance": {
+  "python": "/opt/anaconda3/envs/opf_env_py311/bin/python",
+  "python_version": "3.11.11 | packaged by conda-forge | (main, Dec  5 2024, 08:47:03) [Clang 18.1.8 ]",
+  "platform": "macOS-27.0-arm64-arm-64bit",
+  "hw_model": "Mac17,3",
+  "mem_total_bytes": 25769803776,
+  "mem_available_at_start": 7356776448,
+  "cpu_count_logical": 10,
+  "cpu_count_physical": 10,
+  "git_head": "7324aa9ce893bc48c2108eb9579eba62c5b1adf7",
+  "git_branch": "feature/derivative-free-planning",
+  "git_status_tracked": "A  P5_16_TPERF_A2_REPORT.md\n M manuscript_review/W177B_CHANGE_LOG.md\n M p516_d0_build_relaxation.py\nAM p516_tperf_a2.py\n M p516_tperf_profile.py",
+  "production_files_sha256": {
+   "network.py": "18acaa84af7a043898a7b831223b4eab1d91f9bcf2c199f49beecfeb3bf91fb4",
+   "network_data.py": "2938bc4bd4ecc74f42aa90d347cdc1162eebcefaba15bc87b8281a798d457d6b",
+   "shared_resources_planning.py": "ade9c843bc7c5b6514ab91ecc54f327330a5249709766699ff2f50c8288473d6",
+   "model_construction_helpers.py": "a20a224f11008de8c0206484583b00253677267d616e1051bb1583791ed47f64",
+   "helper_functions.py": "808c60a08b8e157381f28e0c1da5741b0efd39e35f36dd531f88b84deebce1e2",
+   "network_parameters.py": "30ea1b23982c8839f593e98030f99d764704912dfb6b344dd8a2454d06438a92",
+   "p513_solve_profile_guard.py": "9921682e5b825e0b76551b78c4765bfe039bccc414d727520f2c22b6f192a5ab"
+  },
+  "harness_sha256": "2c85fc936ccf034de7cfe324da7342918dee9508d2839c3cbca91c733fac046c",
+  "harness_git_status": "M p516_tperf_profile.py",
+  "other_compute_processes_at_start": [
+   {
+    "pid": 1712,
+    "name": "python3.11",
+    "cmdline": "/opt/anaconda3/envs/opf_env_py311/bin/python p516_d0_t01c.py"
+   },
+   {
+    "pid": 1722,
+    "name": "python3.11",
+    "cmdline": "/opt/anaconda3/envs/opf_env_py311/bin/python -u /Users/micaelsimoes/PycharmProjects/shared-resources-planning/p516_d0_t01c.py --child"
+   }
+  ],
+  "loadavg_1_5_15_at_start": [
+   3.52392578125,
+   3.85205078125,
+   3.02001953125
+  ],
+  "git_status_build_inputs": "M p516_tperf_profile.py",
+  "repository_modules_loaded": [
+   "admm_anderson_acceleration.py",
+   "admm_parameters.py",
+   "admm_persistent_workers.py",
+   "benders_parameters.py",
+   "branch.py",
+   "centralized_coordination.py",
+   "definitions.py",
+   "energy_storage.py",
+   "gate_result_io.py",
+   "generator.py",
+   "helper_functions.py",
+   "hierarchical_coordination.py",
+   "load.py",
+   "model_construction_helpers.py",
+   "network.py",
+   "network_data.py",
+   "network_parameters.py",
+   "node.py",
+   "p510_oracle.py",
+   "p511_1_selfconsistent_t0.py",
+   "p512_a_cold_rescaled_convergence.py",
+   "p513_solve_profile_guard.py",
+   "p514_l_capacity_ladder.py",
+   "p514_n_instrumented_cstar.py",
+   "p515_g_g1_g4_admm_gates.py",
+   "p515_s44_scale_measurement.py",
+   "p516_tperf_profile.py",
+   "p54r_provenance.py",
+   "p56a_candidates.py",
+   "p56a_oracle.py",
+   "p56b_candidates.py",
+   "p56b_policy.py",
+   "p57_eval.py",
+   "p57_fingerprint.py",
+   "p58_eval.py",
+   "p58_rescale.py",
+   "p59_rho.py",
+   "planning_parameters.py",
+   "shared_energy_storage.py",
+   "shared_energy_storage_data.py",
+   "shared_energy_storage_parameters.py",
+   "shared_ess_price_taker.py",
+   "shared_resources_planning.py",
+   "solver_parameters.py"
+  ]
+ },
+ "predictions_recorded_before_run": {
+  "D1_dso_block_variables": "a paper-scale DSO block (node 7, 2025 Spring, 25 scenario combinations) has about 269k variables (Planner, citing REVISION_CONTEXT.md; the figure appears in P5_15_S44_SELECTION_REPORT.md:85 and STEP4_DFO_METHOD.md:258 and is the s44 per-block len(Var data) 269,050 at Network.build_model)",
+  "D2_build_rss": "peak RSS of this process over the build of the TSO block + the DSO block + the ESSO <= 6 GiB"
+ },
+ "memory": {
+  "rss_at_start": 222855168,
+  "rss_after_read": 434601984,
+  "rss_after_release_of_unused": 1259372544,
+  "rss_before_first_solve": 2093416448,
+  "rusage_end": {
+   "self_ru_maxrss": 2275115008,
+   "children_ru_maxrss": 16580608,
+   "units": "bytes (macOS ru_maxrss)"
+  }
+ },
+ "build": {
+  "construct_report": {
+   "results_dir_redirect": {
+    "target_results_dir": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry/arm_build_p516_tperf_studio_dry_build/results",
+    "planning": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry/arm_build_p516_tperf_studio_dry_build/results",
+    "transmission_network": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry/arm_build_p516_tperf_studio_dry_build/results",
+    "distribution_networks": {
+     "5": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry/arm_build_p516_tperf_studio_dry_build/results",
+     "7": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry/arm_build_p516_tperf_studio_dry_build/results",
+     "9": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry/arm_build_p516_tperf_studio_dry_build/results"
+    },
+    "shared_ess_data": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry/arm_build_p516_tperf_studio_dry_build/results",
+    "network_year_day_sample": {
+     "transmission_network": {
+      "2025": {
+       "Spring": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry/arm_build_p516_tperf_studio_dry_build/results",
+       "Summer": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry/arm_build_p516_tperf_studio_dry_build/results",
+       "Autumn": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry/arm_build_p516_tperf_studio_dry_build/results",
+       "Winter": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry/arm_build_p516_tperf_studio_dry_build/results"
+      },
+      "2028": {
+       "Spring": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry/arm_build_p516_tperf_studio_dry_build/results",
+       "Summer": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry/arm_build_p516_tperf_studio_dry_build/results",
+       "Autumn": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry/arm_build_p516_tperf_studio_dry_build/results",
+       "Winter": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry/arm_build_p516_tperf_studio_dry_build/results"
+      },
+      "2031": {
+       "Spring": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry/arm_build_p516_tperf_studio_dry_build/results",
+       "Summer": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry/arm_build_p516_tperf_studio_dry_build/results",
+       "Autumn": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry/arm_build_p516_tperf_studio_dry_build/results",
+       "Winter": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry/arm_build_p516_tperf_studio_dry_build/results"
+      },
+      "2034": {
+       "Spring": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry/arm_build_p516_tperf_studio_dry_build/results",
+       "Summer": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry/arm_build_p516_tperf_studio_dry_build/results",
+       "Autumn": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry/arm_build_p516_tperf_studio_dry_build/results",
+       "Winter": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry/arm_build_p516_tperf_studio_dry_build/results"
+      },
+      "2037": {
+       "Spring": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry/arm_build_p516_tperf_studio_dry_build/results",
+       "Summer": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry/arm_build_p516_tperf_studio_dry_build/results",
+       "Autumn": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry/arm_build_p516_tperf_studio_dry_build/results",
+       "Winter": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry/arm_build_p516_tperf_studio_dry_build/results"
+      }
+     },
+     "distribution_networks[5]": {
+      "2025": {
+       "Spring": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry/arm_build_p516_tperf_studio_dry_build/results",
+       "Summer": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry/arm_build_p516_tperf_studio_dry_build/results",
+       "Autumn": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry/arm_build_p516_tperf_studio_dry_build/results",
+       "Winter": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry/arm_build_p516_tperf_studio_dry_build/results"
+      },
+      "2028": {
+       "Spring": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry/arm_build_p516_tperf_studio_dry_build/results",
+       "Summer": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry/arm_build_p516_tperf_studio_dry_build/results",
+       "Autumn": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry/arm_build_p516_tperf_studio_dry_build/results",
+       "Winter": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry/arm_build_p516_tperf_studio_dry_build/results"
+      },
+      "2031": {
+       "Spring": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry/arm_build_p516_tperf_studio_dry_build/results",
+       "Summer": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry/arm_build_p516_tperf_studio_dry_build/results",
+       "Autumn": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry/arm_build_p516_tperf_studio_dry_build/results",
+       "Winter": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry/arm_build_p516_tperf_studio_dry_build/results"
+      },
+      "2034": {
+       "Spring": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry/arm_build_p516_tperf_studio_dry_build/results",
+       "Summer": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry/arm_build_p516_tperf_studio_dry_build/results",
+       "Autumn": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry/arm_build_p516_tperf_studio_dry_build/results",
+       "Winter": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry/arm_build_p516_tperf_studio_dry_build/results"
+      },
+      "2037": {
+       "Spring": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry/arm_build_p516_tperf_studio_dry_build/results",
+       "Summer": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry/arm_build_p516_tperf_studio_dry_build/results",
+       "Autumn": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry/arm_build_p516_tperf_studio_dry_build/results",
+       "Winter": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry/arm_build_p516_tperf_studio_dry_build/results"
+      }
+     },
+     "distribution_networks[7]": {
+      "2025": {
+       "Spring": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry/arm_build_p516_tperf_studio_dry_build/results",
+       "Summer": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry/arm_build_p516_tperf_studio_dry_build/results",
+       "Autumn": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry/arm_build_p516_tperf_studio_dry_build/results",
+       "Winter": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry/arm_build_p516_tperf_studio_dry_build/results"
+      },
+      "2028": {
+       "Spring": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry/arm_build_p516_tperf_studio_dry_build/results",
+       "Summer": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry/arm_build_p516_tperf_studio_dry_build/results",
+       "Autumn": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry/arm_build_p516_tperf_studio_dry_build/results",
+       "Winter": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry/arm_build_p516_tperf_studio_dry_build/results"
+      },
+      "2031": {
+       "Spring": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry/arm_build_p516_tperf_studio_dry_build/results",
+       "Summer": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry/arm_build_p516_tperf_studio_dry_build/results",
+       "Autumn": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry/arm_build_p516_tperf_studio_dry_build/results",
+       "Winter": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry/arm_build_p516_tperf_studio_dry_build/results"
+      },
+      "2034": {
+       "Spring": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry/arm_build_p516_tperf_studio_dry_build/results",
+       "Summer": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry/arm_build_p516_tperf_studio_dry_build/results",
+       "Autumn": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry/arm_build_p516_tperf_studio_dry_build/results",
+       "Winter": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry/arm_build_p516_tperf_studio_dry_build/results"
+      },
+      "2037": {
+       "Spring": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry/arm_build_p516_tperf_studio_dry_build/results",
+       "Summer": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry/arm_build_p516_tperf_studio_dry_build/results",
+       "Autumn": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry/arm_build_p516_tperf_studio_dry_build/results",
+       "Winter": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry/arm_build_p516_tperf_studio_dry_build/results"
+      }
+     },
+     "distribution_networks[9]": {
+      "2025": {
+       "Spring": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry/arm_build_p516_tperf_studio_dry_build/results",
+       "Summer": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry/arm_build_p516_tperf_studio_dry_build/results",
+       "Autumn": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry/arm_build_p516_tperf_studio_dry_build/results",
+       "Winter": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry/arm_build_p516_tperf_studio_dry_build/results"
+      },
+      "2028": {
+       "Spring": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry/arm_build_p516_tperf_studio_dry_build/results",
+       "Summer": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry/arm_build_p516_tperf_studio_dry_build/results",
+       "Autumn": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry/arm_build_p516_tperf_studio_dry_build/results",
+       "Winter": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry/arm_build_p516_tperf_studio_dry_build/results"
+      },
+      "2031": {
+       "Spring": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry/arm_build_p516_tperf_studio_dry_build/results",
+       "Summer": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry/arm_build_p516_tperf_studio_dry_build/results",
+       "Autumn": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry/arm_build_p516_tperf_studio_dry_build/results",
+       "Winter": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry/arm_build_p516_tperf_studio_dry_build/results"
+      },
+      "2034": {
+       "Spring": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry/arm_build_p516_tperf_studio_dry_build/results",
+       "Summer": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry/arm_build_p516_tperf_studio_dry_build/results",
+       "Autumn": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry/arm_build_p516_tperf_studio_dry_build/results",
+       "Winter": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry/arm_build_p516_tperf_studio_dry_build/results"
+      },
+      "2037": {
+       "Spring": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry/arm_build_p516_tperf_studio_dry_build/results",
+       "Summer": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry/arm_build_p516_tperf_studio_dry_build/results",
+       "Autumn": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry/arm_build_p516_tperf_studio_dry_build/results",
+       "Winter": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry/arm_build_p516_tperf_studio_dry_build/results"
+      }
+     }
+    }
+   },
+   "apply_rho": false,
+   "k_in_force": {
+    "2025": 35851.3609417964,
+    "2028": 35851.3609417964,
+    "2031": 35851.3609417964,
+    "2034": 35851.3609417964,
+    "2037": 35851.3609417964
+   },
+   "instance": {
+    "year": 2025,
+    "assignment": "per-node",
+    "investment_map": {
+     "5": [
+      0.0,
+      0.0
+     ],
+     "7": [
+      0.25,
+      1.0
+     ],
+     "9": [
+      0.0,
+      0.0
+     ]
+    }
+   }
+  },
+  "objective_scale_used": 93635360.0,
+  "admm_settings_in_force (set by _construct_arm_planning; none enters a block NLP at build)": {
+   "num_max_iters": 1,
+   "tol_objective_rel": 0.0001,
+   "adaptive_penalty": true,
+   "esso_budget": 5000000.0,
+   "rho": {
+    "v": {
+     "case9": 0.0077,
+     "case33_1": 0.0077,
+     "case33_2": 0.0077,
+     "case33_3": 0.0077
+    },
+    "pf": {
+     "case9": 0.198,
+     "case33_1": 0.198,
+     "case33_2": 0.198,
+     "case33_3": 0.198
+    },
+    "ess": {
+     "case9": 0.01,
+     "case33_1": 0.01,
+     "case33_2": 0.01,
+     "case33_3": 0.01,
+     "esso": 0.01
+    }
+   }
+  },
+  "al_scale_esso": 386258.6943086285,
+  "restriction": {
+   "tso": {
+    "years_full": {
+     "2025": 3,
+     "2028": 3,
+     "2031": 3,
+     "2034": 3,
+     "2037": 3
+    },
+    "days_full": {
+     "Spring": 92,
+     "Summer": 91,
+     "Autumn": 91,
+     "Winter": 91
+    },
+    "years_built": {
+     "2025": 3
+    },
+    "days_built": {
+     "Spring": 92
+    }
+   },
+   "dso_7": {
+    "years_full": {
+     "2025": 3,
+     "2028": 3,
+     "2031": 3,
+     "2034": 3,
+     "2037": 3
+    },
+    "days_full": {
+     "Spring": 92,
+     "Summer": 91,
+     "Autumn": 91,
+     "Winter": 91
+    },
+    "years_built": {
+     "2025": 3
+    },
+    "days_built": {
+     "Spring": 92
+    }
+   }
+  },
+  "interceptor": {
+   "declared": {
+    "dso": 1,
+    "tso": 1,
+    "esso_init": 1
+   },
+   "observed": {
+    "dso": 1,
+    "tso": 1,
+    "esso_init": 1
+   },
+   "exact_match": true,
+   "mechanism": "instance attribute `.optimize` on this planning copy's TSO holder, the built DSO holder(s) and shared_ess_data, replaced by p515_s44_scale_measurement.Interceptor stubs (record the call, return None per block / node; never a solver); deleted after the build"
+  },
+  "models_built": {
+   "tso": {
+    "2025": [
+     "Spring"
+    ]
+   },
+   "dso": {
+    "7": {
+     "2025": [
+      "Spring"
+     ]
+    }
+   },
+   "esso_nodes": [
+    5,
+    7,
+    9
+   ]
+  },
+  "candidate": {
+   "investment_map": {
+    "5": [
+     0.0,
+     0.0
+    ],
+    "7": [
+     0.25,
+     1.0
+    ],
+    "9": [
+     0.0,
+     0.0
+    ]
+   },
+   "investment_year": 2025
+  },
+  "initialisation_capture": {
+   "dso": {
+    "optimize_args": [],
+    "optimize_kwargs": {}
+   },
+   "tso": {
+    "optimize_args": [],
+    "optimize_kwargs": {}
+   },
+   "esso": {
+    "optimize_args": [],
+    "optimize_kwargs": {}
+   }
+  },
+  "solved_problem": "the INITIALISATION problem of each block: the block cloned at the moment production calls `.optimize` inside create_*_model (NetworkData.optimize would run run_smopf(block, holder.params, from_warm_start=False) on it -- the round-0 solve). The ADMM-prepared blocks (after update_*_to_admm) are built and sized but NOT solvable as they stand: their objectives reference AL Params (dual_vmag_req, vmag_req, ...) that production sets only in the per-cycle update from the ADMM state"
+ },
+ "derived_case": {
+  "instance": "paper",
+  "path": "data/SRP1/Results/P516TPERF/studio_dry/derived_case_paper.json",
+  "sha256": "c9b1822d6a739a8423ae05f8b1820e9ccbdf55f25f221496b1cb95becce23ffd",
+  "spec": {
+   "description": "the paper instance: 5 representative years (2025, 2028, 2031, 2034, 2037; each a 3-year block, sum 15) x 4 days x 5 market x 5 operation scenarios (25 combinations per block)",
+   "years": {
+    "2025": 3,
+    "2028": 3,
+    "2031": 3,
+    "2034": 3,
+    "2037": 3
+   },
+   "num_market_scenarios": 5,
+   "num_operation_scenarios": 5,
+   "sources": [
+    "EXPERT_REVIEW.md:81 (five representative years, 25 market/operational combinations per day)",
+    "EXPERT_REVIEW.md:147 (five three-year blocks beginning in 2025; 2037 last label)",
+    "git 0198407e:data/SRP1/SRP1.json (Years 2025/2028/2031/2034/2037 x 3; NumMarketScenarios 5; num_operation_scenarios 5 for case9 and case33_1..3)",
+    "data/SRP1/Results/20251221_3 years/ Main Info (5 years, 5 market / 5 operation scenarios)"
+   ]
+  },
+  "changes_vs_source": [
+   {
+    "key": "Years",
+    "from": {
+     "2025": 5,
+     "2030": 5,
+     "2035": 5
+    },
+    "to": {
+     "2025": 3,
+     "2028": 3,
+     "2031": 3,
+     "2034": 3,
+     "2037": 3
+    }
+   },
+   {
+    "key": "NumMarketScenarios",
+    "from": 1,
+    "to": 5
+   },
+   {
+    "key": "TransmissionNetwork[case9].num_operation_scenarios",
+    "from": 1,
+    "to": 5
+   },
+   {
+    "key": "DistributionNetworks[case33_1].num_operation_scenarios",
+    "from": 1,
+    "to": 5
+   },
+   {
+    "key": "DistributionNetworks[case33_2].num_operation_scenarios",
+    "from": 1,
+    "to": 5
+   },
+   {
+    "key": "DistributionNetworks[case33_3].num_operation_scenarios",
+    "from": 1,
+    "to": 5
+   }
+  ],
+  "source_case": "data/SRP1/SRP1.json",
+  "source_case_sha256": "61a794a7ce7a3fb983f2e92128eec446dd7dbb17ad75a3b3b1c5735f8bd4e4ef",
+  "derivation": "p515_s44_scale_measurement.derive_case('paper', {})"
+ },
+ "scenario_checksum": "1e8bdd3e5233442a87fbe44b78281c8ae61b09c09700388fed20ab9684d18aef",
+ "scenario_checksum_equals_srp1_canonical": false,
+ "baseline_label": "paper",
+ "planning_dimensions": {
+  "years": {
+   "2025": 3,
+   "2028": 3,
+   "2031": 3,
+   "2034": 3,
+   "2037": 3
+  },
+  "days": {
+   "Spring": 92,
+   "Summer": 91,
+   "Autumn": 91,
+   "Winter": 91
+  },
+  "num_instants": 24,
+  "random_seed": 2026,
+  "num_market_scenarios": 5,
+  "num_operation_scenarios": {
+   "case9": 5,
+   "case33_1": 5,
+   "case33_2": 5,
+   "case33_3": 5
+  },
+  "active_distribution_network_nodes": [
+   5,
+   7,
+   9
+  ],
+  "scenario_metadata": {
+   "random_seed": 2026,
+   "deterministic_scenarios": true,
+   "market_scenario_checksum": "13a1755eda70e2c4756114e3fd8f81eb9b0240c1f96dc6268216996a4ae04df2",
+   "operational_scenario_checksum": "3691bc287762a4598d72d434b31a37f4a020e44edc124514558fb43049859bc8",
+   "combined_scenario_checksum": "1e8bdd3e5233442a87fbe44b78281c8ae61b09c09700388fed20ab9684d18aef"
+  }
+ },
+ "oracle_work_dir_redirect": {
+  "from": "data/SRP1/Results/P56A/evals",
+  "to": "data/SRP1/Results/P516TPERF/studio_dry/oracle_evals",
+  "reason": "p56a_oracle.fresh_planning creates <WORK_DIR>/<eval_id>/logs; kept under this output root"
+ },
+ "build_wall_s": 23.501763749998645,
+ "build_stages": [
+  {
+   "stage": "read_planning_problem (data, copula/KDE scenario generation, networks, ESS)",
+   "wall_s": 11.572102208003344,
+   "rss_before": 222887936,
+   "rss_after": 434601984,
+   "self_ru_maxrss_after": 434601984,
+   "ok": true
+  },
+  {
+   "stage": "construct arm planning (p516_tperf_studio_dry_build; s44 path, apply_rho=False, unit-cell candidate)",
+   "wall_s": 0.05769937500008382,
+   "rss_before": 434601984,
+   "rss_after": 454901760,
+   "self_ru_maxrss_after": 454901760,
+   "ok": true
+  },
+  {
+   "stage": "ESSO AL scale (full block set, before any restriction)",
+   "wall_s": 0.00015249999705702066,
+   "rss_before": 454901760,
+   "rss_after": 454950912,
+   "self_ru_maxrss_after": 454950912,
+   "ok": true
+  },
+  {
+   "stage": "create_admm_variables (full instance)",
+   "wall_s": 0.04262416600249708,
+   "rss_before": 454950912,
+   "rss_after": 455049216,
+   "self_ru_maxrss_after": 455049216,
+   "ok": true
+  },
+  {
+   "stage": "create_distribution_networks_models (nodes [7]; optimize intercepted)",
+   "wall_s": 6.723307374995784,
+   "rss_before": 455049216,
+   "rss_after": 1286225920,
+   "self_ru_maxrss_after": 1499119616,
+   "ok": true
+  },
+  {
+   "stage": "create_transmission_network_model (optimize intercepted)",
+   "wall_s": 3.4918909580010222,
+   "rss_before": 1286225920,
+   "rss_after": 1240743936,
+   "self_ru_maxrss_after": 1499119616,
+   "ok": true
+  },
+  {
+   "stage": "create_shared_energy_storage_model (optimize intercepted)",
+   "wall_s": 1.5698987080031657,
+   "rss_before": 1240743936,
+   "rss_after": 1257144320,
+   "self_ru_maxrss_after": 1499119616,
+   "ok": true
+  },
+  {
+   "stage": "ADMM objective preparation (s44 child_build sequence)",
+   "wall_s": 0.03689183400274487,
+   "rss_before": 1257144320,
+   "rss_after": 1259012096,
+   "self_ru_maxrss_after": 1499119616,
+   "ok": true
+  }
+ ],
+ "stages_all": [
+  {
+   "stage": "read_planning_problem (data, copula/KDE scenario generation, networks, ESS)",
+   "wall_s": 11.572102208003344,
+   "rss_before": 222887936,
+   "rss_after": 434601984,
+   "self_ru_maxrss_after": 434601984,
+   "ok": true
+  },
+  {
+   "stage": "construct arm planning (p516_tperf_studio_dry_build; s44 path, apply_rho=False, unit-cell candidate)",
+   "wall_s": 0.05769937500008382,
+   "rss_before": 434601984,
+   "rss_after": 454901760,
+   "self_ru_maxrss_after": 454901760,
+   "ok": true
+  },
+  {
+   "stage": "ESSO AL scale (full block set, before any restriction)",
+   "wall_s": 0.00015249999705702066,
+   "rss_before": 454901760,
+   "rss_after": 454950912,
+   "self_ru_maxrss_after": 454950912,
+   "ok": true
+  },
+  {
+   "stage": "create_admm_variables (full instance)",
+   "wall_s": 0.04262416600249708,
+   "rss_before": 454950912,
+   "rss_after": 455049216,
+   "self_ru_maxrss_after": 455049216,
+   "ok": true
+  },
+  {
+   "stage": "create_distribution_networks_models (nodes [7]; optimize intercepted)",
+   "wall_s": 6.723307374995784,
+   "rss_before": 455049216,
+   "rss_after": 1286225920,
+   "self_ru_maxrss_after": 1499119616,
+   "ok": true
+  },
+  {
+   "stage": "create_transmission_network_model (optimize intercepted)",
+   "wall_s": 3.4918909580010222,
+   "rss_before": 1286225920,
+   "rss_after": 1240743936,
+   "self_ru_maxrss_after": 1499119616,
+   "ok": true
+  },
+  {
+   "stage": "create_shared_energy_storage_model (optimize intercepted)",
+   "wall_s": 1.5698987080031657,
+   "rss_before": 1240743936,
+   "rss_after": 1257144320,
+   "self_ru_maxrss_after": 1499119616,
+   "ok": true
+  },
+  {
+   "stage": "ADMM objective preparation (s44 child_build sequence)",
+   "wall_s": 0.03689183400274487,
+   "rss_before": 1257144320,
+   "rss_after": 1259012096,
+   "self_ru_maxrss_after": 1499119616,
+   "ok": true
+  },
+  {
+   "stage": "size tso block (Pyomo vars / rows / nnz; the solved initialisation problem)",
+   "wall_s": 0.42265383299672976,
+   "rss_before": 1270300672,
+   "rss_after": 1270317056,
+   "self_ru_maxrss_after": 1499119616,
+   "ok": true
+  },
+  {
+   "stage": "size dso block (Pyomo vars / rows / nnz; the solved initialisation problem)",
+   "wall_s": 1.308069582999451,
+   "rss_before": 1270317056,
+   "rss_after": 1270562816,
+   "self_ru_maxrss_after": 1499119616,
+   "ok": true
+  },
+  {
+   "stage": "prepare 6 case stand-ins (clones of the built blocks)",
+   "wall_s": 16.674288166002952,
+   "rss_before": 1259372544,
+   "rss_after": 2093383680,
+   "self_ru_maxrss_after": 2275115008,
+   "ok": true
+  }
+ ],
+ "build_memory": {
+  "rss_at_build_end": 1270300672,
+  "self_ru_maxrss_at_build_end": 1499119616,
+  "ru_units": "bytes (macOS)",
+  "watchdog_peak_at_build_end": {
+   "rss_tree": 1499119616,
+   "rss_self": 1499119616,
+   "rss_children": 0,
+   "stage": "create_distribution_networks_models (nodes [7]; optimize intercepted)",
+   "t": 18.404765844345093
+  },
+  "rss_after_read_before_construct": 434601984
+ },
+ "guard_counts_at_build_end": {
+  "permitted_solve": 0,
+  "permitted_exec": 0,
+  "blocked_solve": 0,
+  "blocked_exec": 0
+ },
+ "build_produced_zero_solves": true,
+ "blocks": {
+  "tso": {
+   "network": "case9",
+   "year": 2025,
+   "day": "Spring",
+   "baseMVA": 100.0,
+   "size_pyomo_built": {
+    "pyomo_vars": 89010,
+    "pyomo_vars_fixed": 26752,
+    "pyomo_vars_free": 62258,
+    "pyomo_active_constraints": 59656,
+    "pyomo_active_equalities": 29161,
+    "pyomo_active_inequalities": 30495,
+    "active_objectives": [
+     "objective"
+    ],
+    "scenarios_market": 5,
+    "scenarios_operation": 5,
+    "periods": 24,
+    "pyomo_nnz": {
+     "eq": {
+      "rows": 29161,
+      "nnz_all_vars": 169922,
+      "nnz_free_vars": 145922
+     },
+     "ineq": {
+      "rows": 30495,
+      "nnz_all_vars": 60942,
+      "nnz_free_vars": 57342
+     },
+     "objective_gradient_nnz_free": 14594,
+     "total_nnz_free_vars": 203264,
+     "compute_s": 0.3514334579958813,
+     "definition": "per active constraint: number of distinct Vars in its body (pyomo identify_variables); free = Var not fixed; Pyomo level, before NL presolve / IPOPT fixed-variable removal"
+    }
+   },
+   "size_pyomo_admm_prepared_reference (not solved)": {
+    "pyomo_vars": 89010,
+    "pyomo_vars_fixed": 26752,
+    "pyomo_vars_free": 62258,
+    "pyomo_active_constraints": 59656,
+    "pyomo_active_equalities": 29161,
+    "pyomo_active_inequalities": 30495,
+    "active_objectives": [
+     "p58_rescaled_admm_objective"
+    ],
+    "scenarios_market": 5,
+    "scenarios_operation": 5,
+    "periods": 24
+   }
+  },
+  "dso": {
+   "network": "case33_2",
+   "year": 2025,
+   "day": "Spring",
+   "baseMVA": 100.0,
+   "size_pyomo_built": {
+    "pyomo_vars": 269170,
+    "pyomo_vars_fixed": 1600,
+    "pyomo_vars_free": 267570,
+    "pyomo_active_constraints": 186987,
+    "pyomo_active_equalities": 102417,
+    "pyomo_active_inequalities": 84570,
+    "active_objectives": [
+     "objective"
+    ],
+    "scenarios_market": 5,
+    "scenarios_operation": 5,
+    "periods": 24,
+    "pyomo_nnz": {
+     "eq": {
+      "rows": 102417,
+      "nnz_all_vars": 590082,
+      "nnz_free_vars": 590082
+     },
+     "ineq": {
+      "rows": 84570,
+      "nnz_all_vars": 168492,
+      "nnz_free_vars": 168492
+     },
+     "objective_gradient_nnz_free": 83298,
+     "total_nnz_free_vars": 758574,
+     "compute_s": 1.0955977919948054,
+     "definition": "per active constraint: number of distinct Vars in its body (pyomo identify_variables); free = Var not fixed; Pyomo level, before NL presolve / IPOPT fixed-variable removal"
+    }
+   },
+   "size_pyomo_admm_prepared_reference (not solved)": {
+    "pyomo_vars": 269170,
+    "pyomo_vars_fixed": 1600,
+    "pyomo_vars_free": 267570,
+    "pyomo_active_constraints": 186987,
+    "pyomo_active_equalities": 102417,
+    "pyomo_active_inequalities": 84570,
+    "active_objectives": [
+     "p58_rescaled_admm_objective"
+    ],
+    "scenarios_market": 5,
+    "scenarios_operation": 5,
+    "periods": 24
+   }
+  }
+ },
+ "esso": {
+  "node_5": {
+   "pyomo_vars": 6905,
+   "pyomo_vars_fixed": 4895,
+   "pyomo_vars_free": 2010,
+   "pyomo_active_constraints": 1050,
+   "active_objectives": [
+    "admm_objective"
+   ]
+  },
+  "node_7": {
+   "pyomo_vars": 6905,
+   "pyomo_vars_fixed": 3920,
+   "pyomo_vars_free": 2985,
+   "pyomo_active_constraints": 2030,
+   "active_objectives": [
+    "admm_objective"
+   ]
+  },
+  "node_9": {
+   "pyomo_vars": 6905,
+   "pyomo_vars_fixed": 4895,
+   "pyomo_vars_free": 2010,
+   "pyomo_active_constraints": 1050,
+   "active_objectives": [
+    "admm_objective"
+   ]
+  },
+  "node_7_initialisation_problem": {
+   "pyomo_vars": 6905,
+   "pyomo_vars_fixed": 4880,
+   "pyomo_vars_free": 2025,
+   "pyomo_active_constraints": 2030,
+   "active_objectives": [
+    "objective"
+   ]
+  }
+ },
+ "solved_problem": "the INITIALISATION problem of each block: the block cloned at the moment production calls `.optimize` inside create_*_model (NetworkData.optimize would run run_smopf(block, holder.params, from_warm_start=False) on it -- the round-0 solve). The ADMM-prepared blocks (after update_*_to_admm) are built and sized but NOT solvable as they stand: their objectives reference AL Params (dual_vmag_req, vmag_req, ...) that production sets only in the per-cycle update from the ADMM state",
+ "predictions_outcome": {
+  "D1_dso_block_variables": {
+   "measured_pyomo_vars": 269170,
+   "relative_to_269k": 1.000631970260223,
+   "within_5pct": true
+  },
+  "D2_build_rss": {
+   "measured_self_ru_maxrss_bytes": 1499119616,
+   "measured_gib": 1.3961639404296875,
+   "watchdog_peak_rss_tree_bytes": 1499119616,
+   "holds": true
+  }
+ },
+ "capture_checklist": {
+  "instrument_wrappers_live (NL write, presolve, process, sol read, load_from, per-case cap)": true,
+  "nl_writer_is_the_wrapped_class": true,
+  "run_smopf_calls_load_from": true,
+  "run_smopf_attempt_uses_solver_solve": true,
+  "production_attempt_parser_exists": true,
+  "guard_installed": true,
+  "psutil_monitor": true,
+  "rusage": true,
+  "per_case": {
+   "tso_ii_cold": {
+    "output_file_set": true,
+    "log_dir_is_out_logs": true,
+    "log_path_fresh": true,
+    "file_print_level_ge_6 (mu lines, objective scaling factor, iteration table)": true,
+    "print_timing_statistics_yes": true,
+    "scaling_defaults_untouched": true,
+    "solver_executable_exists": true,
+    "network_records_deque": true,
+    "warm_suffixes_present": true,
+    "cold_suffixes_cleared": true,
+    "iii_diagnostic_options": true
+   },
+   "tso_i_warm": {
+    "output_file_set": true,
+    "log_dir_is_out_logs": true,
+    "log_path_fresh": true,
+    "file_print_level_ge_6 (mu lines, objective scaling factor, iteration table)": true,
+    "print_timing_statistics_yes": true,
+    "scaling_defaults_untouched": true,
+    "solver_executable_exists": true,
+    "network_records_deque": true,
+    "warm_suffixes_present": false,
+    "cold_suffixes_cleared": true,
+    "iii_diagnostic_options": true
+   },
+   "tso_iii_warm_diag": {
+    "output_file_set": true,
+    "log_dir_is_out_logs": true,
+    "log_path_fresh": true,
+    "file_print_level_ge_6 (mu lines, objective scaling factor, iteration table)": true,
+    "print_timing_statistics_yes": true,
+    "scaling_defaults_untouched": true,
+    "solver_executable_exists": true,
+    "network_records_deque": true,
+    "warm_suffixes_present": false,
+    "cold_suffixes_cleared": true,
+    "iii_diagnostic_options": true
+   },
+   "dso_ii_cold": {
+    "output_file_set": true,
+    "log_dir_is_out_logs": true,
+    "log_path_fresh": true,
+    "file_print_level_ge_6 (mu lines, objective scaling factor, iteration table)": true,
+    "print_timing_statistics_yes": true,
+    "scaling_defaults_untouched": true,
+    "solver_executable_exists": true,
+    "network_records_deque": true,
+    "warm_suffixes_present": true,
+    "cold_suffixes_cleared": true,
+    "iii_diagnostic_options": true
+   },
+   "dso_i_warm": {
+    "output_file_set": true,
+    "log_dir_is_out_logs": true,
+    "log_path_fresh": true,
+    "file_print_level_ge_6 (mu lines, objective scaling factor, iteration table)": true,
+    "print_timing_statistics_yes": true,
+    "scaling_defaults_untouched": true,
+    "solver_executable_exists": true,
+    "network_records_deque": true,
+    "warm_suffixes_present": false,
+    "cold_suffixes_cleared": true,
+    "iii_diagnostic_options": true
+   },
+   "dso_iii_warm_diag": {
+    "output_file_set": true,
+    "log_dir_is_out_logs": true,
+    "log_path_fresh": true,
+    "file_print_level_ge_6 (mu lines, objective scaling factor, iteration table)": true,
+    "print_timing_statistics_yes": true,
+    "scaling_defaults_untouched": true,
+    "solver_executable_exists": true,
+    "network_records_deque": true,
+    "warm_suffixes_present": false,
+    "cold_suffixes_cleared": true,
+    "iii_diagnostic_options": true
+   }
+  },
+  "nl_dir_exists": true,
+  "failures": [],
+  "asserted_before_first_solve": true,
+  "deferred_per_case_items (asserted per case immediately before that case's solve)": [
+   "warm_suffixes_present"
+  ]
+ },
+ "capture_checklist_studio": {
+  "memory_watchdog_running": true,
+  "out_logs_dir_exists": true,
+  "out_nl_dir_exists": true,
+  "derived_case_written_and_hashed": true,
+  "build_wall_and_stages_recorded": true,
+  "build_memory_recorded": true,
+  "block_sizes_recorded (vars, rows, Pyomo nnz)": true,
+  "esso_size_recorded": true,
+  "build_produced_zero_solves (guard counts all 0 at build end)": true,
+  "scaling_replica_callable": true,
+  "rss_monitor_class (per-solve peak RSS, 25 ms)": true,
+  "failures": []
+ },
+ "solves": {
+  "tso_ii_cold": {
+   "case_key": "tso_ii_cold",
+   "block": "tso",
+   "case": "ii_cold",
+   "from_warm_start": false,
+   "ipopt_output_file": "data/SRP1/Results/P516TPERF/studio_dry/logs/tperf_tso_ii_cold_2025_Spring.log",
+   "concurrent_before": {
+    "loadavg_1_5_15": [
+     3.82080078125,
+     3.9228515625,
+     3.0888671875
+    ],
+    "other_python_or_ipopt_processes": [
+     {
+      "pid": 1711,
+      "cmdline": "/bin/zsh -c source /Users/micaelsimoes/.claude/shell-snapshots/snapshot-zsh-1793381931459-22mvu7.sh 2>/dev/null || true && setopt NO_EXTENDED_GLOB NO_BARE_GLOB_QUAL 2>/dev/null || true && { \\builtin u"
+     },
+     {
+      "pid": 1712,
+      "cmdline": "/opt/anaconda3/envs/opf_env_py311/bin/python p516_d0_t01c.py"
+     },
+     {
+      "pid": 1722,
+      "cmdline": "/opt/anaconda3/envs/opf_env_py311/bin/python -u /Users/micaelsimoes/PycharmProjects/shared-resources-planning/p516_d0_t01c.py --child"
+     },
+     {
+      "pid": 1783,
+      "cmdline": "/bin/zsh -c source /Users/micaelsimoes/.claude/shell-snapshots/snapshot-zsh-1793381931459-22mvu7.sh 2>/dev/null || true && setopt NO_EXTENDED_GLOB NO_BARE_GLOB_QUAL 2>/dev/null || true && { \\builtin u"
+     },
+     {
+      "pid": 1784,
+      "cmdline": "/opt/anaconda3/envs/opf_env_py311/bin/python -"
+     },
+     {
+      "pid": 6568,
+      "cmdline": "/bin/zsh -c source /Users/micaelsimoes/.claude/shell-snapshots/snapshot-zsh-1793381931459-22mvu7.sh 2>/dev/null || true && setopt NO_EXTENDED_GLOB NO_BARE_GLOB_QUAL 2>/dev/null || true && { \\builtin u"
+     },
+     {
+      "pid": 53993,
+      "cmdline": "/bin/zsh -c source /Users/micaelsimoes/.claude/shell-snapshots/snapshot-zsh-1793375629313-omxnmq.sh 2>/dev/null || true && setopt NO_EXTENDED_GLOB NO_BARE_GLOB_QUAL 2>/dev/null || true && { \\builtin u"
+     },
+     {
+      "pid": 53994,
+      "cmdline": "python3 -m http.server 8765 --bind 127.0.0.1"
+     },
+     {
+      "pid": 82478,
+      "cmdline": "/opt/anaconda3/envs/opf_env_py311/bin/python /Applications/PyCharm.app/Contents/plugins/python-ce/helpers/pydev/pydevconsole.py --mode=client --host=127.0.0.1 --port=56956"
+     }
+    ]
+   },
+   "rusage_before": {
+    "self_ru_maxrss": 2275115008,
+    "children_ru_maxrss": 16580608,
+    "units": "bytes (macOS ru_maxrss)"
+   },
+   "rss_before": 2093629440,
+   "rss_monitor": {
+    "peak_self_rss": 2093678592,
+    "peak_child_rss": 0,
+    "peak_self_plus_child_rss": 2093678592,
+    "n_samples": 1,
+    "interval_s": 0.025,
+    "child_pids_seen": []
+   },
+   "rusage_after": {
+    "self_ru_maxrss": 2275115008,
+    "children_ru_maxrss": 16580608,
+    "units": "bytes (macOS ru_maxrss)"
+   },
+   "rss_after": 2093727744,
+   "concurrent_after": {
+    "loadavg_1_5_15": [
+     3.82080078125,
+     3.9228515625,
+     3.0888671875
+    ],
+    "other_python_or_ipopt_processes": [
+     {
+      "pid": 1711,
+      "cmdline": "/bin/zsh -c source /Users/micaelsimoes/.claude/shell-snapshots/snapshot-zsh-1793381931459-22mvu7.sh 2>/dev/null || true && setopt NO_EXTENDED_GLOB NO_BARE_GLOB_QUAL 2>/dev/null || true && { \\builtin u"
+     },
+     {
+      "pid": 1712,
+      "cmdline": "/opt/anaconda3/envs/opf_env_py311/bin/python p516_d0_t01c.py"
+     },
+     {
+      "pid": 1722,
+      "cmdline": "/opt/anaconda3/envs/opf_env_py311/bin/python -u /Users/micaelsimoes/PycharmProjects/shared-resources-planning/p516_d0_t01c.py --child"
+     },
+     {
+      "pid": 1783,
+      "cmdline": "/bin/zsh -c source /Users/micaelsimoes/.claude/shell-snapshots/snapshot-zsh-1793381931459-22mvu7.sh 2>/dev/null || true && setopt NO_EXTENDED_GLOB NO_BARE_GLOB_QUAL 2>/dev/null || true && { \\builtin u"
+     },
+     {
+      "pid": 1784,
+      "cmdline": "/opt/anaconda3/envs/opf_env_py311/bin/python -"
+     },
+     {
+      "pid": 6568,
+      "cmdline": "/bin/zsh -c source /Users/micaelsimoes/.claude/shell-snapshots/snapshot-zsh-1793381931459-22mvu7.sh 2>/dev/null || true && setopt NO_EXTENDED_GLOB NO_BARE_GLOB_QUAL 2>/dev/null || true && { \\builtin u"
+     },
+     {
+      "pid": 53993,
+      "cmdline": "/bin/zsh -c source /Users/micaelsimoes/.claude/shell-snapshots/snapshot-zsh-1793375629313-omxnmq.sh 2>/dev/null || true && setopt NO_EXTENDED_GLOB NO_BARE_GLOB_QUAL 2>/dev/null || true && { \\builtin u"
+     },
+     {
+      "pid": 53994,
+      "cmdline": "python3 -m http.server 8765 --bind 127.0.0.1"
+     },
+     {
+      "pid": 82478,
+      "cmdline": "/opt/anaconda3/envs/opf_env_py311/bin/python /Applications/PyCharm.app/Contents/plugins/python-ce/helpers/pydev/pydevconsole.py --mode=client --host=127.0.0.1 --port=56956"
+     }
+    ]
+   },
+   "guard_delta": {
+    "permitted_solve": 0,
+    "permitted_exec": 0,
+    "blocked_solve": 1,
+    "blocked_exec": 0
+   },
+   "solve_calls_in_case": 1,
+   "cap_blocked_in_case": 0,
+   "solver_options_passed": {
+    "fixed_variable_treatment": "make_parameter",
+    "max_iter": 500,
+    "tol": 1e-05,
+    "acceptable_tol": 0.0001,
+    "acceptable_iter": 5,
+    "linear_solver": "ma97",
+    "compl_inf_tol": 0.0005,
+    "bound_push": 1e-06,
+    "bound_frac": 1e-06,
+    "slack_bound_frac": 1e-06,
+    "slack_bound_push": 1e-06,
+    "output_file": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry/logs/tperf_tso_ii_cold_2025_Spring.log",
+    "file_append": "yes",
+    "file_print_level": 6,
+    "print_timing_statistics": "yes"
+   },
+   "command": null,
+   "returncode": null,
+   "succeeded": false,
+   "termination_condition": null,
+   "solver_status": null,
+   "solver_message": null,
+   "ipopt_stdout_stderr_file": null,
+   "timing": {
+    "run_smopf_wall_s": 0.0026837500045076013,
+    "opt_solver_solve_wall_s": 1.2415999663062394e-05,
+    "presolve_wall_s (NL write + command build + NL capture)": null,
+    "nl_write_wall_s (NLWriter.__call__)": null,
+    "nl_capture_hardlink_s (harness overhead, inside presolve)": 0,
+    "ipopt_process_wall_s (_execute_command)": null,
+    "sol_read_wall_s (_postsolve)": null,
+    "load_from_wall_s (ModelSolutions.load_from)": null,
+    "result_load_wall_s (sol read + load_from)": null
+   },
+   "nl_capture": [],
+   "ipopt_log": null,
+   "production_attempt_parse": null,
+   "production_solve_records": [
+    {
+     "network": "case9",
+     "year": 2025,
+     "day": "Spring",
+     "attempt": "primary",
+     "warm_start": false,
+     "log_path": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry/logs/tperf_tso_ii_cold_2025_Spring.log",
+     "log_bytes": [
+      0,
+      0
+     ],
+     "parse_reason": "capture failed: FileNotFoundError: [Errno 2] No such file or directory: '/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry/logs/tperf_tso_ii_cold_2025_Spring.log'"
+    }
+   ],
+   "dry_run_note": "blocked by the zero-solve guard inside run_smopf (expected); no IPOPT process",
+   "preparation": {
+    "options_added_or_changed": {
+     "output_file": "tperf_tso_ii_cold.log",
+     "print_timing_statistics": "yes"
+    },
+    "production_options": {
+     "tol": 1e-05,
+     "acceptable_tol": 0.0001,
+     "acceptable_iter": 5,
+     "linear_solver": "ma97",
+     "compl_inf_tol": 0.0005,
+     "bound_push": 1e-06,
+     "bound_frac": 1e-06,
+     "slack_bound_frac": 1e-06,
+     "slack_bound_push": 1e-06,
+     "output_file": "optim_log_case9.log",
+     "file_print_level": 6
+    },
+    "solver": "ipopt",
+    "solver_path": "/usr/local/bin/ipopt",
+    "recovery_enabled": true,
+    "recovery_tier2_enabled": true,
+    "network": "case9",
+    "year": 2025,
+    "day": "Spring",
+    "baseMVA": 100.0,
+    "clone_s": 1.2136175409978023
+   },
+   "options_intended": {
+    "fixed_variable_treatment": "make_parameter",
+    "max_iter": 500,
+    "tol": 1e-05,
+    "acceptable_tol": 0.0001,
+    "acceptable_iter": 5,
+    "linear_solver": "ma97",
+    "compl_inf_tol": 0.0005,
+    "bound_push": 1e-06,
+    "bound_frac": 1e-06,
+    "slack_bound_frac": 1e-06,
+    "slack_bound_push": 1e-06,
+    "output_file": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry/logs/tperf_tso_ii_cold_2025_Spring.log",
+    "file_print_level": 6,
+    "print_timing_statistics": "yes",
+    "file_append": "yes"
+   },
+   "options_match_intended": true,
+   "options_diff": {}
+  },
+  "tso_i_warm": {
+   "case_key": "tso_i_warm",
+   "block": "tso",
+   "case": "i_warm",
+   "from_warm_start": true,
+   "ipopt_output_file": "data/SRP1/Results/P516TPERF/studio_dry/logs/tperf_tso_i_warm_2025_Spring.log",
+   "concurrent_before": {
+    "loadavg_1_5_15": [
+     3.82080078125,
+     3.9228515625,
+     3.0888671875
+    ],
+    "other_python_or_ipopt_processes": [
+     {
+      "pid": 1711,
+      "cmdline": "/bin/zsh -c source /Users/micaelsimoes/.claude/shell-snapshots/snapshot-zsh-1793381931459-22mvu7.sh 2>/dev/null || true && setopt NO_EXTENDED_GLOB NO_BARE_GLOB_QUAL 2>/dev/null || true && { \\builtin u"
+     },
+     {
+      "pid": 1712,
+      "cmdline": "/opt/anaconda3/envs/opf_env_py311/bin/python p516_d0_t01c.py"
+     },
+     {
+      "pid": 1722,
+      "cmdline": "/opt/anaconda3/envs/opf_env_py311/bin/python -u /Users/micaelsimoes/PycharmProjects/shared-resources-planning/p516_d0_t01c.py --child"
+     },
+     {
+      "pid": 1783,
+      "cmdline": "/bin/zsh -c source /Users/micaelsimoes/.claude/shell-snapshots/snapshot-zsh-1793381931459-22mvu7.sh 2>/dev/null || true && setopt NO_EXTENDED_GLOB NO_BARE_GLOB_QUAL 2>/dev/null || true && { \\builtin u"
+     },
+     {
+      "pid": 1784,
+      "cmdline": "/opt/anaconda3/envs/opf_env_py311/bin/python -"
+     },
+     {
+      "pid": 6568,
+      "cmdline": "/bin/zsh -c source /Users/micaelsimoes/.claude/shell-snapshots/snapshot-zsh-1793381931459-22mvu7.sh 2>/dev/null || true && setopt NO_EXTENDED_GLOB NO_BARE_GLOB_QUAL 2>/dev/null || true && { \\builtin u"
+     },
+     {
+      "pid": 53993,
+      "cmdline": "/bin/zsh -c source /Users/micaelsimoes/.claude/shell-snapshots/snapshot-zsh-1793375629313-omxnmq.sh 2>/dev/null || true && setopt NO_EXTENDED_GLOB NO_BARE_GLOB_QUAL 2>/dev/null || true && { \\builtin u"
+     },
+     {
+      "pid": 53994,
+      "cmdline": "python3 -m http.server 8765 --bind 127.0.0.1"
+     },
+     {
+      "pid": 82478,
+      "cmdline": "/opt/anaconda3/envs/opf_env_py311/bin/python /Applications/PyCharm.app/Contents/plugins/python-ce/helpers/pydev/pydevconsole.py --mode=client --host=127.0.0.1 --port=56956"
+     }
+    ]
+   },
+   "rusage_before": {
+    "self_ru_maxrss": 2275115008,
+    "children_ru_maxrss": 16580608,
+    "units": "bytes (macOS ru_maxrss)"
+   },
+   "rss_before": 2093744128,
+   "rss_monitor": {
+    "peak_self_rss": 2093793280,
+    "peak_child_rss": 0,
+    "peak_self_plus_child_rss": 2093793280,
+    "n_samples": 1,
+    "interval_s": 0.025,
+    "child_pids_seen": []
+   },
+   "rusage_after": {
+    "self_ru_maxrss": 2275115008,
+    "children_ru_maxrss": 16580608,
+    "units": "bytes (macOS ru_maxrss)"
+   },
+   "rss_after": 2093760512,
+   "concurrent_after": {
+    "loadavg_1_5_15": [
+     3.82080078125,
+     3.9228515625,
+     3.0888671875
+    ],
+    "other_python_or_ipopt_processes": [
+     {
+      "pid": 1711,
+      "cmdline": "/bin/zsh -c source /Users/micaelsimoes/.claude/shell-snapshots/snapshot-zsh-1793381931459-22mvu7.sh 2>/dev/null || true && setopt NO_EXTENDED_GLOB NO_BARE_GLOB_QUAL 2>/dev/null || true && { \\builtin u"
+     },
+     {
+      "pid": 1712,
+      "cmdline": "/opt/anaconda3/envs/opf_env_py311/bin/python p516_d0_t01c.py"
+     },
+     {
+      "pid": 1722,
+      "cmdline": "/opt/anaconda3/envs/opf_env_py311/bin/python -u /Users/micaelsimoes/PycharmProjects/shared-resources-planning/p516_d0_t01c.py --child"
+     },
+     {
+      "pid": 1783,
+      "cmdline": "/bin/zsh -c source /Users/micaelsimoes/.claude/shell-snapshots/snapshot-zsh-1793381931459-22mvu7.sh 2>/dev/null || true && setopt NO_EXTENDED_GLOB NO_BARE_GLOB_QUAL 2>/dev/null || true && { \\builtin u"
+     },
+     {
+      "pid": 1784,
+      "cmdline": "/opt/anaconda3/envs/opf_env_py311/bin/python -"
+     },
+     {
+      "pid": 6568,
+      "cmdline": "/bin/zsh -c source /Users/micaelsimoes/.claude/shell-snapshots/snapshot-zsh-1793381931459-22mvu7.sh 2>/dev/null || true && setopt NO_EXTENDED_GLOB NO_BARE_GLOB_QUAL 2>/dev/null || true && { \\builtin u"
+     },
+     {
+      "pid": 53993,
+      "cmdline": "/bin/zsh -c source /Users/micaelsimoes/.claude/shell-snapshots/snapshot-zsh-1793375629313-omxnmq.sh 2>/dev/null || true && setopt NO_EXTENDED_GLOB NO_BARE_GLOB_QUAL 2>/dev/null || true && { \\builtin u"
+     },
+     {
+      "pid": 53994,
+      "cmdline": "python3 -m http.server 8765 --bind 127.0.0.1"
+     },
+     {
+      "pid": 82478,
+      "cmdline": "/opt/anaconda3/envs/opf_env_py311/bin/python /Applications/PyCharm.app/Contents/plugins/python-ce/helpers/pydev/pydevconsole.py --mode=client --host=127.0.0.1 --port=56956"
+     }
+    ]
+   },
+   "guard_delta": {
+    "permitted_solve": 0,
+    "permitted_exec": 0,
+    "blocked_solve": 1,
+    "blocked_exec": 0
+   },
+   "solve_calls_in_case": 1,
+   "cap_blocked_in_case": 0,
+   "solver_options_passed": {
+    "fixed_variable_treatment": "make_parameter",
+    "max_iter": 500,
+    "tol": 1e-05,
+    "acceptable_tol": 0.0001,
+    "acceptable_iter": 5,
+    "linear_solver": "ma97",
+    "compl_inf_tol": 0.0005,
+    "bound_push": 1e-06,
+    "bound_frac": 1e-06,
+    "slack_bound_frac": 1e-06,
+    "slack_bound_push": 1e-06,
+    "output_file": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry/logs/tperf_tso_i_warm_2025_Spring.log",
+    "file_append": "yes",
+    "file_print_level": 6,
+    "print_timing_statistics": "yes",
+    "warm_start_init_point": "yes"
+   },
+   "command": null,
+   "returncode": null,
+   "succeeded": false,
+   "termination_condition": null,
+   "solver_status": null,
+   "solver_message": null,
+   "ipopt_stdout_stderr_file": null,
+   "timing": {
+    "run_smopf_wall_s": 0.002596333004476037,
+    "opt_solver_solve_wall_s": 7.999995432328433e-06,
+    "presolve_wall_s (NL write + command build + NL capture)": null,
+    "nl_write_wall_s (NLWriter.__call__)": null,
+    "nl_capture_hardlink_s (harness overhead, inside presolve)": 0,
+    "ipopt_process_wall_s (_execute_command)": null,
+    "sol_read_wall_s (_postsolve)": null,
+    "load_from_wall_s (ModelSolutions.load_from)": null,
+    "result_load_wall_s (sol read + load_from)": null
+   },
+   "nl_capture": [],
+   "ipopt_log": null,
+   "production_attempt_parse": null,
+   "production_solve_records": [
+    {
+     "network": "case9",
+     "year": 2025,
+     "day": "Spring",
+     "attempt": "primary",
+     "warm_start": true,
+     "log_path": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry/logs/tperf_tso_i_warm_2025_Spring.log",
+     "log_bytes": [
+      0,
+      0
+     ],
+     "parse_reason": "capture failed: FileNotFoundError: [Errno 2] No such file or directory: '/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry/logs/tperf_tso_i_warm_2025_Spring.log'"
+    }
+   ],
+   "dry_run_note": "blocked by the zero-solve guard inside run_smopf (expected); no IPOPT process",
+   "preparation": {
+    "options_added_or_changed": {
+     "output_file": "tperf_tso_i_warm.log",
+     "print_timing_statistics": "yes"
+    },
+    "production_options": {
+     "tol": 1e-05,
+     "acceptable_tol": 0.0001,
+     "acceptable_iter": 5,
+     "linear_solver": "ma97",
+     "compl_inf_tol": 0.0005,
+     "bound_push": 1e-06,
+     "bound_frac": 1e-06,
+     "slack_bound_frac": 1e-06,
+     "slack_bound_push": 1e-06,
+     "output_file": "optim_log_case9.log",
+     "file_print_level": 6
+    },
+    "solver": "ipopt",
+    "solver_path": "/usr/local/bin/ipopt",
+    "recovery_enabled": true,
+    "recovery_tier2_enabled": true,
+    "network": "case9",
+    "year": 2025,
+    "day": "Spring",
+    "baseMVA": 100.0,
+    "clone_s": 1.232264333004423
+   },
+   "options_intended": {
+    "fixed_variable_treatment": "make_parameter",
+    "max_iter": 500,
+    "tol": 1e-05,
+    "acceptable_tol": 0.0001,
+    "acceptable_iter": 5,
+    "linear_solver": "ma97",
+    "compl_inf_tol": 0.0005,
+    "bound_push": 1e-06,
+    "bound_frac": 1e-06,
+    "slack_bound_frac": 1e-06,
+    "slack_bound_push": 1e-06,
+    "output_file": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry/logs/tperf_tso_i_warm_2025_Spring.log",
+    "file_print_level": 6,
+    "print_timing_statistics": "yes",
+    "file_append": "yes",
+    "warm_start_init_point": "yes"
+   },
+   "options_match_intended": true,
+   "options_diff": {}
+  },
+  "tso_iii_warm_diag": {
+   "case_key": "tso_iii_warm_diag",
+   "block": "tso",
+   "case": "iii_warm_diag",
+   "from_warm_start": true,
+   "ipopt_output_file": "data/SRP1/Results/P516TPERF/studio_dry/logs/tperf_tso_iii_warm_diag_2025_Spring.log",
+   "concurrent_before": {
+    "loadavg_1_5_15": [
+     3.82080078125,
+     3.9228515625,
+     3.0888671875
+    ],
+    "other_python_or_ipopt_processes": [
+     {
+      "pid": 1711,
+      "cmdline": "/bin/zsh -c source /Users/micaelsimoes/.claude/shell-snapshots/snapshot-zsh-1793381931459-22mvu7.sh 2>/dev/null || true && setopt NO_EXTENDED_GLOB NO_BARE_GLOB_QUAL 2>/dev/null || true && { \\builtin u"
+     },
+     {
+      "pid": 1712,
+      "cmdline": "/opt/anaconda3/envs/opf_env_py311/bin/python p516_d0_t01c.py"
+     },
+     {
+      "pid": 1722,
+      "cmdline": "/opt/anaconda3/envs/opf_env_py311/bin/python -u /Users/micaelsimoes/PycharmProjects/shared-resources-planning/p516_d0_t01c.py --child"
+     },
+     {
+      "pid": 1783,
+      "cmdline": "/bin/zsh -c source /Users/micaelsimoes/.claude/shell-snapshots/snapshot-zsh-1793381931459-22mvu7.sh 2>/dev/null || true && setopt NO_EXTENDED_GLOB NO_BARE_GLOB_QUAL 2>/dev/null || true && { \\builtin u"
+     },
+     {
+      "pid": 1784,
+      "cmdline": "/opt/anaconda3/envs/opf_env_py311/bin/python -"
+     },
+     {
+      "pid": 6568,
+      "cmdline": "/bin/zsh -c source /Users/micaelsimoes/.claude/shell-snapshots/snapshot-zsh-1793381931459-22mvu7.sh 2>/dev/null || true && setopt NO_EXTENDED_GLOB NO_BARE_GLOB_QUAL 2>/dev/null || true && { \\builtin u"
+     },
+     {
+      "pid": 53993,
+      "cmdline": "/bin/zsh -c source /Users/micaelsimoes/.claude/shell-snapshots/snapshot-zsh-1793375629313-omxnmq.sh 2>/dev/null || true && setopt NO_EXTENDED_GLOB NO_BARE_GLOB_QUAL 2>/dev/null || true && { \\builtin u"
+     },
+     {
+      "pid": 53994,
+      "cmdline": "python3 -m http.server 8765 --bind 127.0.0.1"
+     },
+     {
+      "pid": 82478,
+      "cmdline": "/opt/anaconda3/envs/opf_env_py311/bin/python /Applications/PyCharm.app/Contents/plugins/python-ce/helpers/pydev/pydevconsole.py --mode=client --host=127.0.0.1 --port=56956"
+     }
+    ]
+   },
+   "rusage_before": {
+    "self_ru_maxrss": 2275115008,
+    "children_ru_maxrss": 16580608,
+    "units": "bytes (macOS ru_maxrss)"
+   },
+   "rss_before": 2093776896,
+   "rss_monitor": {
+    "peak_self_rss": 2093809664,
+    "peak_child_rss": 0,
+    "peak_self_plus_child_rss": 2093809664,
+    "n_samples": 1,
+    "interval_s": 0.025,
+    "child_pids_seen": []
+   },
+   "rusage_after": {
+    "self_ru_maxrss": 2275115008,
+    "children_ru_maxrss": 16580608,
+    "units": "bytes (macOS ru_maxrss)"
+   },
+   "rss_after": 2093776896,
+   "concurrent_after": {
+    "loadavg_1_5_15": [
+     3.82080078125,
+     3.9228515625,
+     3.0888671875
+    ],
+    "other_python_or_ipopt_processes": [
+     {
+      "pid": 1711,
+      "cmdline": "/bin/zsh -c source /Users/micaelsimoes/.claude/shell-snapshots/snapshot-zsh-1793381931459-22mvu7.sh 2>/dev/null || true && setopt NO_EXTENDED_GLOB NO_BARE_GLOB_QUAL 2>/dev/null || true && { \\builtin u"
+     },
+     {
+      "pid": 1712,
+      "cmdline": "/opt/anaconda3/envs/opf_env_py311/bin/python p516_d0_t01c.py"
+     },
+     {
+      "pid": 1722,
+      "cmdline": "/opt/anaconda3/envs/opf_env_py311/bin/python -u /Users/micaelsimoes/PycharmProjects/shared-resources-planning/p516_d0_t01c.py --child"
+     },
+     {
+      "pid": 1783,
+      "cmdline": "/bin/zsh -c source /Users/micaelsimoes/.claude/shell-snapshots/snapshot-zsh-1793381931459-22mvu7.sh 2>/dev/null || true && setopt NO_EXTENDED_GLOB NO_BARE_GLOB_QUAL 2>/dev/null || true && { \\builtin u"
+     },
+     {
+      "pid": 1784,
+      "cmdline": "/opt/anaconda3/envs/opf_env_py311/bin/python -"
+     },
+     {
+      "pid": 6568,
+      "cmdline": "/bin/zsh -c source /Users/micaelsimoes/.claude/shell-snapshots/snapshot-zsh-1793381931459-22mvu7.sh 2>/dev/null || true && setopt NO_EXTENDED_GLOB NO_BARE_GLOB_QUAL 2>/dev/null || true && { \\builtin u"
+     },
+     {
+      "pid": 53993,
+      "cmdline": "/bin/zsh -c source /Users/micaelsimoes/.claude/shell-snapshots/snapshot-zsh-1793375629313-omxnmq.sh 2>/dev/null || true && setopt NO_EXTENDED_GLOB NO_BARE_GLOB_QUAL 2>/dev/null || true && { \\builtin u"
+     },
+     {
+      "pid": 53994,
+      "cmdline": "python3 -m http.server 8765 --bind 127.0.0.1"
+     },
+     {
+      "pid": 82478,
+      "cmdline": "/opt/anaconda3/envs/opf_env_py311/bin/python /Applications/PyCharm.app/Contents/plugins/python-ce/helpers/pydev/pydevconsole.py --mode=client --host=127.0.0.1 --port=56956"
+     }
+    ]
+   },
+   "guard_delta": {
+    "permitted_solve": 0,
+    "permitted_exec": 0,
+    "blocked_solve": 1,
+    "blocked_exec": 0
+   },
+   "solve_calls_in_case": 1,
+   "cap_blocked_in_case": 0,
+   "solver_options_passed": {
+    "fixed_variable_treatment": "make_parameter",
+    "max_iter": 500,
+    "tol": 1e-05,
+    "acceptable_tol": 0.0001,
+    "acceptable_iter": 5,
+    "linear_solver": "ma97",
+    "compl_inf_tol": 0.0005,
+    "bound_push": 1e-06,
+    "bound_frac": 1e-06,
+    "slack_bound_frac": 1e-06,
+    "slack_bound_push": 1e-06,
+    "output_file": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry/logs/tperf_tso_iii_warm_diag_2025_Spring.log",
+    "file_append": "yes",
+    "file_print_level": 6,
+    "print_timing_statistics": "yes",
+    "print_info_string": "yes",
+    "print_level": 5,
+    "nlp_scaling_method": "gradient-based",
+    "warm_start_init_point": "yes"
+   },
+   "command": null,
+   "returncode": null,
+   "succeeded": false,
+   "termination_condition": null,
+   "solver_status": null,
+   "solver_message": null,
+   "ipopt_stdout_stderr_file": null,
+   "timing": {
+    "run_smopf_wall_s": 0.0020887920036329888,
+    "opt_solver_solve_wall_s": 6.624999514315277e-06,
+    "presolve_wall_s (NL write + command build + NL capture)": null,
+    "nl_write_wall_s (NLWriter.__call__)": null,
+    "nl_capture_hardlink_s (harness overhead, inside presolve)": 0,
+    "ipopt_process_wall_s (_execute_command)": null,
+    "sol_read_wall_s (_postsolve)": null,
+    "load_from_wall_s (ModelSolutions.load_from)": null,
+    "result_load_wall_s (sol read + load_from)": null
+   },
+   "nl_capture": [],
+   "ipopt_log": null,
+   "production_attempt_parse": null,
+   "production_solve_records": [
+    {
+     "network": "case9",
+     "year": 2025,
+     "day": "Spring",
+     "attempt": "primary",
+     "warm_start": true,
+     "log_path": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry/logs/tperf_tso_iii_warm_diag_2025_Spring.log",
+     "log_bytes": [
+      0,
+      0
+     ],
+     "parse_reason": "capture failed: FileNotFoundError: [Errno 2] No such file or directory: '/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry/logs/tperf_tso_iii_warm_diag_2025_Spring.log'"
+    }
+   ],
+   "dry_run_note": "blocked by the zero-solve guard inside run_smopf (expected); no IPOPT process",
+   "preparation": {
+    "options_added_or_changed": {
+     "output_file": "tperf_tso_iii_warm_diag.log",
+     "print_timing_statistics": "yes",
+     "print_info_string": "yes",
+     "print_level": 5,
+     "nlp_scaling_method": "gradient-based"
+    },
+    "production_options": {
+     "tol": 1e-05,
+     "acceptable_tol": 0.0001,
+     "acceptable_iter": 5,
+     "linear_solver": "ma97",
+     "compl_inf_tol": 0.0005,
+     "bound_push": 1e-06,
+     "bound_frac": 1e-06,
+     "slack_bound_frac": 1e-06,
+     "slack_bound_push": 1e-06,
+     "output_file": "optim_log_case9.log",
+     "file_print_level": 6
+    },
+    "solver": "ipopt",
+    "solver_path": "/usr/local/bin/ipopt",
+    "recovery_enabled": true,
+    "recovery_tier2_enabled": true,
+    "network": "case9",
+    "year": 2025,
+    "day": "Spring",
+    "baseMVA": 100.0,
+    "clone_s": 1.3635448749992065
+   },
+   "options_intended": {
+    "fixed_variable_treatment": "make_parameter",
+    "max_iter": 500,
+    "tol": 1e-05,
+    "acceptable_tol": 0.0001,
+    "acceptable_iter": 5,
+    "linear_solver": "ma97",
+    "compl_inf_tol": 0.0005,
+    "bound_push": 1e-06,
+    "bound_frac": 1e-06,
+    "slack_bound_frac": 1e-06,
+    "slack_bound_push": 1e-06,
+    "output_file": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry/logs/tperf_tso_iii_warm_diag_2025_Spring.log",
+    "file_print_level": 6,
+    "print_timing_statistics": "yes",
+    "print_info_string": "yes",
+    "print_level": 5,
+    "nlp_scaling_method": "gradient-based",
+    "file_append": "yes",
+    "warm_start_init_point": "yes"
+   },
+   "options_match_intended": true,
+   "options_diff": {}
+  },
+  "dso_ii_cold": {
+   "case_key": "dso_ii_cold",
+   "block": "dso",
+   "case": "ii_cold",
+   "from_warm_start": false,
+   "ipopt_output_file": "data/SRP1/Results/P516TPERF/studio_dry/logs/tperf_dso_ii_cold_2025_Spring.log",
+   "concurrent_before": {
+    "loadavg_1_5_15": [
+     3.82080078125,
+     3.9228515625,
+     3.0888671875
+    ],
+    "other_python_or_ipopt_processes": [
+     {
+      "pid": 1711,
+      "cmdline": "/bin/zsh -c source /Users/micaelsimoes/.claude/shell-snapshots/snapshot-zsh-1793381931459-22mvu7.sh 2>/dev/null || true && setopt NO_EXTENDED_GLOB NO_BARE_GLOB_QUAL 2>/dev/null || true && { \\builtin u"
+     },
+     {
+      "pid": 1712,
+      "cmdline": "/opt/anaconda3/envs/opf_env_py311/bin/python p516_d0_t01c.py"
+     },
+     {
+      "pid": 1722,
+      "cmdline": "/opt/anaconda3/envs/opf_env_py311/bin/python -u /Users/micaelsimoes/PycharmProjects/shared-resources-planning/p516_d0_t01c.py --child"
+     },
+     {
+      "pid": 1783,
+      "cmdline": "/bin/zsh -c source /Users/micaelsimoes/.claude/shell-snapshots/snapshot-zsh-1793381931459-22mvu7.sh 2>/dev/null || true && setopt NO_EXTENDED_GLOB NO_BARE_GLOB_QUAL 2>/dev/null || true && { \\builtin u"
+     },
+     {
+      "pid": 1784,
+      "cmdline": "/opt/anaconda3/envs/opf_env_py311/bin/python -"
+     },
+     {
+      "pid": 6568,
+      "cmdline": "/bin/zsh -c source /Users/micaelsimoes/.claude/shell-snapshots/snapshot-zsh-1793381931459-22mvu7.sh 2>/dev/null || true && setopt NO_EXTENDED_GLOB NO_BARE_GLOB_QUAL 2>/dev/null || true && { \\builtin u"
+     },
+     {
+      "pid": 53993,
+      "cmdline": "/bin/zsh -c source /Users/micaelsimoes/.claude/shell-snapshots/snapshot-zsh-1793375629313-omxnmq.sh 2>/dev/null || true && setopt NO_EXTENDED_GLOB NO_BARE_GLOB_QUAL 2>/dev/null || true && { \\builtin u"
+     },
+     {
+      "pid": 53994,
+      "cmdline": "python3 -m http.server 8765 --bind 127.0.0.1"
+     },
+     {
+      "pid": 82478,
+      "cmdline": "/opt/anaconda3/envs/opf_env_py311/bin/python /Applications/PyCharm.app/Contents/plugins/python-ce/helpers/pydev/pydevconsole.py --mode=client --host=127.0.0.1 --port=56956"
+     }
+    ]
+   },
+   "rusage_before": {
+    "self_ru_maxrss": 2275115008,
+    "children_ru_maxrss": 16580608,
+    "units": "bytes (macOS ru_maxrss)"
+   },
+   "rss_before": 2093793280,
+   "rss_monitor": {
+    "peak_self_rss": 2093826048,
+    "peak_child_rss": 0,
+    "peak_self_plus_child_rss": 2093826048,
+    "n_samples": 1,
+    "interval_s": 0.025,
+    "child_pids_seen": []
+   },
+   "rusage_after": {
+    "self_ru_maxrss": 2275115008,
+    "children_ru_maxrss": 16580608,
+    "units": "bytes (macOS ru_maxrss)"
+   },
+   "rss_after": 2093793280,
+   "concurrent_after": {
+    "loadavg_1_5_15": [
+     3.82080078125,
+     3.9228515625,
+     3.0888671875
+    ],
+    "other_python_or_ipopt_processes": [
+     {
+      "pid": 1711,
+      "cmdline": "/bin/zsh -c source /Users/micaelsimoes/.claude/shell-snapshots/snapshot-zsh-1793381931459-22mvu7.sh 2>/dev/null || true && setopt NO_EXTENDED_GLOB NO_BARE_GLOB_QUAL 2>/dev/null || true && { \\builtin u"
+     },
+     {
+      "pid": 1712,
+      "cmdline": "/opt/anaconda3/envs/opf_env_py311/bin/python p516_d0_t01c.py"
+     },
+     {
+      "pid": 1722,
+      "cmdline": "/opt/anaconda3/envs/opf_env_py311/bin/python -u /Users/micaelsimoes/PycharmProjects/shared-resources-planning/p516_d0_t01c.py --child"
+     },
+     {
+      "pid": 1783,
+      "cmdline": "/bin/zsh -c source /Users/micaelsimoes/.claude/shell-snapshots/snapshot-zsh-1793381931459-22mvu7.sh 2>/dev/null || true && setopt NO_EXTENDED_GLOB NO_BARE_GLOB_QUAL 2>/dev/null || true && { \\builtin u"
+     },
+     {
+      "pid": 1784,
+      "cmdline": "/opt/anaconda3/envs/opf_env_py311/bin/python -"
+     },
+     {
+      "pid": 6568,
+      "cmdline": "/bin/zsh -c source /Users/micaelsimoes/.claude/shell-snapshots/snapshot-zsh-1793381931459-22mvu7.sh 2>/dev/null || true && setopt NO_EXTENDED_GLOB NO_BARE_GLOB_QUAL 2>/dev/null || true && { \\builtin u"
+     },
+     {
+      "pid": 53993,
+      "cmdline": "/bin/zsh -c source /Users/micaelsimoes/.claude/shell-snapshots/snapshot-zsh-1793375629313-omxnmq.sh 2>/dev/null || true && setopt NO_EXTENDED_GLOB NO_BARE_GLOB_QUAL 2>/dev/null || true && { \\builtin u"
+     },
+     {
+      "pid": 53994,
+      "cmdline": "python3 -m http.server 8765 --bind 127.0.0.1"
+     },
+     {
+      "pid": 82478,
+      "cmdline": "/opt/anaconda3/envs/opf_env_py311/bin/python /Applications/PyCharm.app/Contents/plugins/python-ce/helpers/pydev/pydevconsole.py --mode=client --host=127.0.0.1 --port=56956"
+     }
+    ]
+   },
+   "guard_delta": {
+    "permitted_solve": 0,
+    "permitted_exec": 0,
+    "blocked_solve": 1,
+    "blocked_exec": 0
+   },
+   "solve_calls_in_case": 1,
+   "cap_blocked_in_case": 0,
+   "solver_options_passed": {
+    "fixed_variable_treatment": "make_parameter",
+    "max_iter": 500,
+    "tol": 1e-05,
+    "acceptable_tol": 0.0001,
+    "acceptable_iter": 5,
+    "linear_solver": "ma97",
+    "bound_push": 1e-05,
+    "bound_frac": 1e-05,
+    "slack_bound_frac": 1e-05,
+    "slack_bound_push": 1e-05,
+    "output_file": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry/logs/tperf_dso_ii_cold_2025_Spring.log",
+    "file_append": "yes",
+    "file_print_level": 6,
+    "print_timing_statistics": "yes"
+   },
+   "command": null,
+   "returncode": null,
+   "succeeded": false,
+   "termination_condition": null,
+   "solver_status": null,
+   "solver_message": null,
+   "ipopt_stdout_stderr_file": null,
+   "timing": {
+    "run_smopf_wall_s": 0.002231582999229431,
+    "opt_solver_solve_wall_s": 6.624999514315277e-06,
+    "presolve_wall_s (NL write + command build + NL capture)": null,
+    "nl_write_wall_s (NLWriter.__call__)": null,
+    "nl_capture_hardlink_s (harness overhead, inside presolve)": 0,
+    "ipopt_process_wall_s (_execute_command)": null,
+    "sol_read_wall_s (_postsolve)": null,
+    "load_from_wall_s (ModelSolutions.load_from)": null,
+    "result_load_wall_s (sol read + load_from)": null
+   },
+   "nl_capture": [],
+   "ipopt_log": null,
+   "production_attempt_parse": null,
+   "production_solve_records": [
+    {
+     "network": "case33_2",
+     "year": 2025,
+     "day": "Spring",
+     "attempt": "primary",
+     "warm_start": false,
+     "log_path": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry/logs/tperf_dso_ii_cold_2025_Spring.log",
+     "log_bytes": [
+      0,
+      0
+     ],
+     "parse_reason": "capture failed: FileNotFoundError: [Errno 2] No such file or directory: '/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry/logs/tperf_dso_ii_cold_2025_Spring.log'"
+    }
+   ],
+   "dry_run_note": "blocked by the zero-solve guard inside run_smopf (expected); no IPOPT process",
+   "preparation": {
+    "options_added_or_changed": {
+     "output_file": "tperf_dso_ii_cold.log",
+     "print_timing_statistics": "yes"
+    },
+    "production_options": {
+     "tol": 1e-05,
+     "acceptable_tol": 0.0001,
+     "acceptable_iter": 5,
+     "linear_solver": "ma97",
+     "bound_push": 1e-05,
+     "bound_frac": 1e-05,
+     "slack_bound_frac": 1e-05,
+     "slack_bound_push": 1e-05,
+     "output_file": "optim_log_case33_2.log",
+     "file_print_level": 6
+    },
+    "solver": "ipopt",
+    "solver_path": "/usr/local/bin/ipopt",
+    "recovery_enabled": true,
+    "recovery_tier2_enabled": true,
+    "network": "case33_2",
+    "year": 2025,
+    "day": "Spring",
+    "baseMVA": 100.0,
+    "clone_s": 4.1949855420025415
+   },
+   "options_intended": {
+    "fixed_variable_treatment": "make_parameter",
+    "max_iter": 500,
+    "tol": 1e-05,
+    "acceptable_tol": 0.0001,
+    "acceptable_iter": 5,
+    "linear_solver": "ma97",
+    "bound_push": 1e-05,
+    "bound_frac": 1e-05,
+    "slack_bound_frac": 1e-05,
+    "slack_bound_push": 1e-05,
+    "output_file": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry/logs/tperf_dso_ii_cold_2025_Spring.log",
+    "file_print_level": 6,
+    "print_timing_statistics": "yes",
+    "file_append": "yes"
+   },
+   "options_match_intended": true,
+   "options_diff": {}
+  },
+  "dso_i_warm": {
+   "case_key": "dso_i_warm",
+   "block": "dso",
+   "case": "i_warm",
+   "from_warm_start": true,
+   "ipopt_output_file": "data/SRP1/Results/P516TPERF/studio_dry/logs/tperf_dso_i_warm_2025_Spring.log",
+   "concurrent_before": {
+    "loadavg_1_5_15": [
+     3.82080078125,
+     3.9228515625,
+     3.0888671875
+    ],
+    "other_python_or_ipopt_processes": [
+     {
+      "pid": 1711,
+      "cmdline": "/bin/zsh -c source /Users/micaelsimoes/.claude/shell-snapshots/snapshot-zsh-1793381931459-22mvu7.sh 2>/dev/null || true && setopt NO_EXTENDED_GLOB NO_BARE_GLOB_QUAL 2>/dev/null || true && { \\builtin u"
+     },
+     {
+      "pid": 1712,
+      "cmdline": "/opt/anaconda3/envs/opf_env_py311/bin/python p516_d0_t01c.py"
+     },
+     {
+      "pid": 1722,
+      "cmdline": "/opt/anaconda3/envs/opf_env_py311/bin/python -u /Users/micaelsimoes/PycharmProjects/shared-resources-planning/p516_d0_t01c.py --child"
+     },
+     {
+      "pid": 1783,
+      "cmdline": "/bin/zsh -c source /Users/micaelsimoes/.claude/shell-snapshots/snapshot-zsh-1793381931459-22mvu7.sh 2>/dev/null || true && setopt NO_EXTENDED_GLOB NO_BARE_GLOB_QUAL 2>/dev/null || true && { \\builtin u"
+     },
+     {
+      "pid": 1784,
+      "cmdline": "/opt/anaconda3/envs/opf_env_py311/bin/python -"
+     },
+     {
+      "pid": 6568,
+      "cmdline": "/bin/zsh -c source /Users/micaelsimoes/.claude/shell-snapshots/snapshot-zsh-1793381931459-22mvu7.sh 2>/dev/null || true && setopt NO_EXTENDED_GLOB NO_BARE_GLOB_QUAL 2>/dev/null || true && { \\builtin u"
+     },
+     {
+      "pid": 53993,
+      "cmdline": "/bin/zsh -c source /Users/micaelsimoes/.claude/shell-snapshots/snapshot-zsh-1793375629313-omxnmq.sh 2>/dev/null || true && setopt NO_EXTENDED_GLOB NO_BARE_GLOB_QUAL 2>/dev/null || true && { \\builtin u"
+     },
+     {
+      "pid": 53994,
+      "cmdline": "python3 -m http.server 8765 --bind 127.0.0.1"
+     },
+     {
+      "pid": 82478,
+      "cmdline": "/opt/anaconda3/envs/opf_env_py311/bin/python /Applications/PyCharm.app/Contents/plugins/python-ce/helpers/pydev/pydevconsole.py --mode=client --host=127.0.0.1 --port=56956"
+     }
+    ]
+   },
+   "rusage_before": {
+    "self_ru_maxrss": 2275115008,
+    "children_ru_maxrss": 16580608,
+    "units": "bytes (macOS ru_maxrss)"
+   },
+   "rss_before": 2093891584,
+   "rss_monitor": {
+    "peak_self_rss": 2093924352,
+    "peak_child_rss": 0,
+    "peak_self_plus_child_rss": 2093924352,
+    "n_samples": 1,
+    "interval_s": 0.025,
+    "child_pids_seen": []
+   },
+   "rusage_after": {
+    "self_ru_maxrss": 2275115008,
+    "children_ru_maxrss": 16580608,
+    "units": "bytes (macOS ru_maxrss)"
+   },
+   "rss_after": 2093891584,
+   "concurrent_after": {
+    "loadavg_1_5_15": [
+     3.82080078125,
+     3.9228515625,
+     3.0888671875
+    ],
+    "other_python_or_ipopt_processes": [
+     {
+      "pid": 1711,
+      "cmdline": "/bin/zsh -c source /Users/micaelsimoes/.claude/shell-snapshots/snapshot-zsh-1793381931459-22mvu7.sh 2>/dev/null || true && setopt NO_EXTENDED_GLOB NO_BARE_GLOB_QUAL 2>/dev/null || true && { \\builtin u"
+     },
+     {
+      "pid": 1712,
+      "cmdline": "/opt/anaconda3/envs/opf_env_py311/bin/python p516_d0_t01c.py"
+     },
+     {
+      "pid": 1722,
+      "cmdline": "/opt/anaconda3/envs/opf_env_py311/bin/python -u /Users/micaelsimoes/PycharmProjects/shared-resources-planning/p516_d0_t01c.py --child"
+     },
+     {
+      "pid": 1783,
+      "cmdline": "/bin/zsh -c source /Users/micaelsimoes/.claude/shell-snapshots/snapshot-zsh-1793381931459-22mvu7.sh 2>/dev/null || true && setopt NO_EXTENDED_GLOB NO_BARE_GLOB_QUAL 2>/dev/null || true && { \\builtin u"
+     },
+     {
+      "pid": 1784,
+      "cmdline": "/opt/anaconda3/envs/opf_env_py311/bin/python -"
+     },
+     {
+      "pid": 6568,
+      "cmdline": "/bin/zsh -c source /Users/micaelsimoes/.claude/shell-snapshots/snapshot-zsh-1793381931459-22mvu7.sh 2>/dev/null || true && setopt NO_EXTENDED_GLOB NO_BARE_GLOB_QUAL 2>/dev/null || true && { \\builtin u"
+     },
+     {
+      "pid": 53993,
+      "cmdline": "/bin/zsh -c source /Users/micaelsimoes/.claude/shell-snapshots/snapshot-zsh-1793375629313-omxnmq.sh 2>/dev/null || true && setopt NO_EXTENDED_GLOB NO_BARE_GLOB_QUAL 2>/dev/null || true && { \\builtin u"
+     },
+     {
+      "pid": 53994,
+      "cmdline": "python3 -m http.server 8765 --bind 127.0.0.1"
+     },
+     {
+      "pid": 82478,
+      "cmdline": "/opt/anaconda3/envs/opf_env_py311/bin/python /Applications/PyCharm.app/Contents/plugins/python-ce/helpers/pydev/pydevconsole.py --mode=client --host=127.0.0.1 --port=56956"
+     }
+    ]
+   },
+   "guard_delta": {
+    "permitted_solve": 0,
+    "permitted_exec": 0,
+    "blocked_solve": 1,
+    "blocked_exec": 0
+   },
+   "solve_calls_in_case": 1,
+   "cap_blocked_in_case": 0,
+   "solver_options_passed": {
+    "fixed_variable_treatment": "make_parameter",
+    "max_iter": 500,
+    "tol": 1e-05,
+    "acceptable_tol": 0.0001,
+    "acceptable_iter": 5,
+    "linear_solver": "ma97",
+    "bound_push": 1e-05,
+    "bound_frac": 1e-05,
+    "slack_bound_frac": 1e-05,
+    "slack_bound_push": 1e-05,
+    "output_file": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry/logs/tperf_dso_i_warm_2025_Spring.log",
+    "file_append": "yes",
+    "file_print_level": 6,
+    "print_timing_statistics": "yes",
+    "warm_start_init_point": "yes"
+   },
+   "command": null,
+   "returncode": null,
+   "succeeded": false,
+   "termination_condition": null,
+   "solver_status": null,
+   "solver_message": null,
+   "ipopt_stdout_stderr_file": null,
+   "timing": {
+    "run_smopf_wall_s": 0.002633166004670784,
+    "opt_solver_solve_wall_s": 5.791000148747116e-06,
+    "presolve_wall_s (NL write + command build + NL capture)": null,
+    "nl_write_wall_s (NLWriter.__call__)": null,
+    "nl_capture_hardlink_s (harness overhead, inside presolve)": 0,
+    "ipopt_process_wall_s (_execute_command)": null,
+    "sol_read_wall_s (_postsolve)": null,
+    "load_from_wall_s (ModelSolutions.load_from)": null,
+    "result_load_wall_s (sol read + load_from)": null
+   },
+   "nl_capture": [],
+   "ipopt_log": null,
+   "production_attempt_parse": null,
+   "production_solve_records": [
+    {
+     "network": "case33_2",
+     "year": 2025,
+     "day": "Spring",
+     "attempt": "primary",
+     "warm_start": true,
+     "log_path": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry/logs/tperf_dso_i_warm_2025_Spring.log",
+     "log_bytes": [
+      0,
+      0
+     ],
+     "parse_reason": "capture failed: FileNotFoundError: [Errno 2] No such file or directory: '/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry/logs/tperf_dso_i_warm_2025_Spring.log'"
+    }
+   ],
+   "dry_run_note": "blocked by the zero-solve guard inside run_smopf (expected); no IPOPT process",
+   "preparation": {
+    "options_added_or_changed": {
+     "output_file": "tperf_dso_i_warm.log",
+     "print_timing_statistics": "yes"
+    },
+    "production_options": {
+     "tol": 1e-05,
+     "acceptable_tol": 0.0001,
+     "acceptable_iter": 5,
+     "linear_solver": "ma97",
+     "bound_push": 1e-05,
+     "bound_frac": 1e-05,
+     "slack_bound_frac": 1e-05,
+     "slack_bound_push": 1e-05,
+     "output_file": "optim_log_case33_2.log",
+     "file_print_level": 6
+    },
+    "solver": "ipopt",
+    "solver_path": "/usr/local/bin/ipopt",
+    "recovery_enabled": true,
+    "recovery_tier2_enabled": true,
+    "network": "case33_2",
+    "year": 2025,
+    "day": "Spring",
+    "baseMVA": 100.0,
+    "clone_s": 4.3932856249957695
+   },
+   "options_intended": {
+    "fixed_variable_treatment": "make_parameter",
+    "max_iter": 500,
+    "tol": 1e-05,
+    "acceptable_tol": 0.0001,
+    "acceptable_iter": 5,
+    "linear_solver": "ma97",
+    "bound_push": 1e-05,
+    "bound_frac": 1e-05,
+    "slack_bound_frac": 1e-05,
+    "slack_bound_push": 1e-05,
+    "output_file": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry/logs/tperf_dso_i_warm_2025_Spring.log",
+    "file_print_level": 6,
+    "print_timing_statistics": "yes",
+    "file_append": "yes",
+    "warm_start_init_point": "yes"
+   },
+   "options_match_intended": true,
+   "options_diff": {}
+  },
+  "dso_iii_warm_diag": {
+   "case_key": "dso_iii_warm_diag",
+   "block": "dso",
+   "case": "iii_warm_diag",
+   "from_warm_start": true,
+   "ipopt_output_file": "data/SRP1/Results/P516TPERF/studio_dry/logs/tperf_dso_iii_warm_diag_2025_Spring.log",
+   "concurrent_before": {
+    "loadavg_1_5_15": [
+     3.82080078125,
+     3.9228515625,
+     3.0888671875
+    ],
+    "other_python_or_ipopt_processes": [
+     {
+      "pid": 1711,
+      "cmdline": "/bin/zsh -c source /Users/micaelsimoes/.claude/shell-snapshots/snapshot-zsh-1793381931459-22mvu7.sh 2>/dev/null || true && setopt NO_EXTENDED_GLOB NO_BARE_GLOB_QUAL 2>/dev/null || true && { \\builtin u"
+     },
+     {
+      "pid": 1712,
+      "cmdline": "/opt/anaconda3/envs/opf_env_py311/bin/python p516_d0_t01c.py"
+     },
+     {
+      "pid": 1722,
+      "cmdline": "/opt/anaconda3/envs/opf_env_py311/bin/python -u /Users/micaelsimoes/PycharmProjects/shared-resources-planning/p516_d0_t01c.py --child"
+     },
+     {
+      "pid": 1783,
+      "cmdline": "/bin/zsh -c source /Users/micaelsimoes/.claude/shell-snapshots/snapshot-zsh-1793381931459-22mvu7.sh 2>/dev/null || true && setopt NO_EXTENDED_GLOB NO_BARE_GLOB_QUAL 2>/dev/null || true && { \\builtin u"
+     },
+     {
+      "pid": 1784,
+      "cmdline": "/opt/anaconda3/envs/opf_env_py311/bin/python -"
+     },
+     {
+      "pid": 6568,
+      "cmdline": "/bin/zsh -c source /Users/micaelsimoes/.claude/shell-snapshots/snapshot-zsh-1793381931459-22mvu7.sh 2>/dev/null || true && setopt NO_EXTENDED_GLOB NO_BARE_GLOB_QUAL 2>/dev/null || true && { \\builtin u"
+     },
+     {
+      "pid": 53993,
+      "cmdline": "/bin/zsh -c source /Users/micaelsimoes/.claude/shell-snapshots/snapshot-zsh-1793375629313-omxnmq.sh 2>/dev/null || true && setopt NO_EXTENDED_GLOB NO_BARE_GLOB_QUAL 2>/dev/null || true && { \\builtin u"
+     },
+     {
+      "pid": 53994,
+      "cmdline": "python3 -m http.server 8765 --bind 127.0.0.1"
+     },
+     {
+      "pid": 82478,
+      "cmdline": "/opt/anaconda3/envs/opf_env_py311/bin/python /Applications/PyCharm.app/Contents/plugins/python-ce/helpers/pydev/pydevconsole.py --mode=client --host=127.0.0.1 --port=56956"
+     }
+    ]
+   },
+   "rusage_before": {
+    "self_ru_maxrss": 2275115008,
+    "children_ru_maxrss": 16580608,
+    "units": "bytes (macOS ru_maxrss)"
+   },
+   "rss_before": 2094022656,
+   "rss_monitor": {
+    "peak_self_rss": 2094055424,
+    "peak_child_rss": 0,
+    "peak_self_plus_child_rss": 2094055424,
+    "n_samples": 1,
+    "interval_s": 0.025,
+    "child_pids_seen": []
+   },
+   "rusage_after": {
+    "self_ru_maxrss": 2275115008,
+    "children_ru_maxrss": 16580608,
+    "units": "bytes (macOS ru_maxrss)"
+   },
+   "rss_after": 2094022656,
+   "concurrent_after": {
+    "loadavg_1_5_15": [
+     3.82080078125,
+     3.9228515625,
+     3.0888671875
+    ],
+    "other_python_or_ipopt_processes": [
+     {
+      "pid": 1711,
+      "cmdline": "/bin/zsh -c source /Users/micaelsimoes/.claude/shell-snapshots/snapshot-zsh-1793381931459-22mvu7.sh 2>/dev/null || true && setopt NO_EXTENDED_GLOB NO_BARE_GLOB_QUAL 2>/dev/null || true && { \\builtin u"
+     },
+     {
+      "pid": 1712,
+      "cmdline": "/opt/anaconda3/envs/opf_env_py311/bin/python p516_d0_t01c.py"
+     },
+     {
+      "pid": 1722,
+      "cmdline": "/opt/anaconda3/envs/opf_env_py311/bin/python -u /Users/micaelsimoes/PycharmProjects/shared-resources-planning/p516_d0_t01c.py --child"
+     },
+     {
+      "pid": 1783,
+      "cmdline": "/bin/zsh -c source /Users/micaelsimoes/.claude/shell-snapshots/snapshot-zsh-1793381931459-22mvu7.sh 2>/dev/null || true && setopt NO_EXTENDED_GLOB NO_BARE_GLOB_QUAL 2>/dev/null || true && { \\builtin u"
+     },
+     {
+      "pid": 1784,
+      "cmdline": "/opt/anaconda3/envs/opf_env_py311/bin/python -"
+     },
+     {
+      "pid": 6568,
+      "cmdline": "/bin/zsh -c source /Users/micaelsimoes/.claude/shell-snapshots/snapshot-zsh-1793381931459-22mvu7.sh 2>/dev/null || true && setopt NO_EXTENDED_GLOB NO_BARE_GLOB_QUAL 2>/dev/null || true && { \\builtin u"
+     },
+     {
+      "pid": 53993,
+      "cmdline": "/bin/zsh -c source /Users/micaelsimoes/.claude/shell-snapshots/snapshot-zsh-1793375629313-omxnmq.sh 2>/dev/null || true && setopt NO_EXTENDED_GLOB NO_BARE_GLOB_QUAL 2>/dev/null || true && { \\builtin u"
+     },
+     {
+      "pid": 53994,
+      "cmdline": "python3 -m http.server 8765 --bind 127.0.0.1"
+     },
+     {
+      "pid": 82478,
+      "cmdline": "/opt/anaconda3/envs/opf_env_py311/bin/python /Applications/PyCharm.app/Contents/plugins/python-ce/helpers/pydev/pydevconsole.py --mode=client --host=127.0.0.1 --port=56956"
+     }
+    ]
+   },
+   "guard_delta": {
+    "permitted_solve": 0,
+    "permitted_exec": 0,
+    "blocked_solve": 1,
+    "blocked_exec": 0
+   },
+   "solve_calls_in_case": 1,
+   "cap_blocked_in_case": 0,
+   "solver_options_passed": {
+    "fixed_variable_treatment": "make_parameter",
+    "max_iter": 500,
+    "tol": 1e-05,
+    "acceptable_tol": 0.0001,
+    "acceptable_iter": 5,
+    "linear_solver": "ma97",
+    "bound_push": 1e-05,
+    "bound_frac": 1e-05,
+    "slack_bound_frac": 1e-05,
+    "slack_bound_push": 1e-05,
+    "output_file": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry/logs/tperf_dso_iii_warm_diag_2025_Spring.log",
+    "file_append": "yes",
+    "file_print_level": 6,
+    "print_timing_statistics": "yes",
+    "print_info_string": "yes",
+    "print_level": 5,
+    "nlp_scaling_method": "gradient-based",
+    "warm_start_init_point": "yes"
+   },
+   "command": null,
+   "returncode": null,
+   "succeeded": false,
+   "termination_condition": null,
+   "solver_status": null,
+   "solver_message": null,
+   "ipopt_stdout_stderr_file": null,
+   "timing": {
+    "run_smopf_wall_s": 0.002013625002291519,
+    "opt_solver_solve_wall_s": 5.416994099505246e-06,
+    "presolve_wall_s (NL write + command build + NL capture)": null,
+    "nl_write_wall_s (NLWriter.__call__)": null,
+    "nl_capture_hardlink_s (harness overhead, inside presolve)": 0,
+    "ipopt_process_wall_s (_execute_command)": null,
+    "sol_read_wall_s (_postsolve)": null,
+    "load_from_wall_s (ModelSolutions.load_from)": null,
+    "result_load_wall_s (sol read + load_from)": null
+   },
+   "nl_capture": [],
+   "ipopt_log": null,
+   "production_attempt_parse": null,
+   "production_solve_records": [
+    {
+     "network": "case33_2",
+     "year": 2025,
+     "day": "Spring",
+     "attempt": "primary",
+     "warm_start": true,
+     "log_path": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry/logs/tperf_dso_iii_warm_diag_2025_Spring.log",
+     "log_bytes": [
+      0,
+      0
+     ],
+     "parse_reason": "capture failed: FileNotFoundError: [Errno 2] No such file or directory: '/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry/logs/tperf_dso_iii_warm_diag_2025_Spring.log'"
+    }
+   ],
+   "dry_run_note": "blocked by the zero-solve guard inside run_smopf (expected); no IPOPT process",
+   "preparation": {
+    "options_added_or_changed": {
+     "output_file": "tperf_dso_iii_warm_diag.log",
+     "print_timing_statistics": "yes",
+     "print_info_string": "yes",
+     "print_level": 5,
+     "nlp_scaling_method": "gradient-based"
+    },
+    "production_options": {
+     "tol": 1e-05,
+     "acceptable_tol": 0.0001,
+     "acceptable_iter": 5,
+     "linear_solver": "ma97",
+     "bound_push": 1e-05,
+     "bound_frac": 1e-05,
+     "slack_bound_frac": 1e-05,
+     "slack_bound_push": 1e-05,
+     "output_file": "optim_log_case33_2.log",
+     "file_print_level": 6
+    },
+    "solver": "ipopt",
+    "solver_path": "/usr/local/bin/ipopt",
+    "recovery_enabled": true,
+    "recovery_tier2_enabled": true,
+    "network": "case33_2",
+    "year": 2025,
+    "day": "Spring",
+    "baseMVA": 100.0,
+    "clone_s": 4.260319209002773
+   },
+   "options_intended": {
+    "fixed_variable_treatment": "make_parameter",
+    "max_iter": 500,
+    "tol": 1e-05,
+    "acceptable_tol": 0.0001,
+    "acceptable_iter": 5,
+    "linear_solver": "ma97",
+    "bound_push": 1e-05,
+    "bound_frac": 1e-05,
+    "slack_bound_frac": 1e-05,
+    "slack_bound_push": 1e-05,
+    "output_file": "/Users/micaelsimoes/PycharmProjects/shared-resources-planning/data/SRP1/Results/P516TPERF/studio_dry/logs/tperf_dso_iii_warm_diag_2025_Spring.log",
+    "file_print_level": 6,
+    "print_timing_statistics": "yes",
+    "print_info_string": "yes",
+    "print_level": 5,
+    "nlp_scaling_method": "gradient-based",
+    "file_append": "yes",
+    "warm_start_init_point": "yes"
+   },
+   "options_match_intended": true,
+   "options_diff": {}
+  }
+ },
+ "nl_selftest": {
+  "tso": {
+   "dry_nl_write_s": 0.8719982079928741,
+   "dry_gradient_scaling_selftest": {
+    "method": "replica_of_IpGradientScaling_3.14.18 (NL file evaluated at AmplTNLP starting point)",
+    "n_free_vars": 44828,
+    "n_nl_vars": 47378,
+    "n_fixed_lb_eq_ub_removed": 2550,
+    "n_eq_rows": 29161,
+    "n_ineq_rows": 30495,
+    "nnz_jac_c_free_cols": 135572,
+    "nnz_jac_d_free_cols": 56142,
+    "nl_header": {
+     "n_vars": 47378,
+     "n_cons": 59656,
+     "n_eqns": 29161,
+     "nnz_jacobian": 194264,
+     "nnz_obj_gradient": 14522
+    },
+    "n_defined_variables": 2926,
+    "x0_from_nl_x_segment": 47378,
+    "max_abs_obj_gradient": 100000.00000000001,
+    "df": 0.0009999999999999998,
+    "c": {
+     "scaling_provided": false,
+     "arow_max": 39.30888872611898,
+     "row_max_gradient_min_nonzero": 1.0,
+     "row_max_gradient_span_decades": 1.594490766360505,
+     "rows_scaled_below_1": 0,
+     "factor_min": 1.0,
+     "factor_max": 1.0,
+     "zero_rows": 0
+    },
+    "d": {
+     "scaling_provided": true,
+     "arow_max": 602.8163580246913,
+     "row_max_gradient_min_nonzero": 0.002172130132902269,
+     "row_max_gradient_span_decades": 5.443299188421746,
+     "rows_scaled_below_1": 4200,
+     "factor_min": 0.165888,
+     "factor_max": 1.0,
+     "zero_rows": 48
+    },
+    "factor_min_all": 0.0009999999999999998,
+    "factor_max_all": 1.0,
+    "factor_span_decades_all": 3.0,
+    "constraint_factor_span_decades": 0.780185028817557,
+    "row_max_gradient_span_decades_all": 5.443299188421746,
+    "compute_s": 7.286529292003252,
+    "span_definition": "log10(max/min) over {df} U {dc_i} U {dd_i}; unscaled rows count as 1"
+   }
+  },
+  "dso": {
+   "dry_nl_write_s": 5.235975833005796,
+   "dry_gradient_scaling_selftest": {
+    "method": "replica_of_IpGradientScaling_3.14.18 (NL file evaluated at AmplTNLP starting point)",
+    "n_free_vars": 224190,
+    "n_nl_vars": 226290,
+    "n_fixed_lb_eq_ub_removed": 2100,
+    "n_eq_rows": 102417,
+    "n_ineq_rows": 84570,
+    "nnz_jac_c_free_cols": 589182,
+    "nnz_jac_d_free_cols": 167292,
+    "nl_header": {
+     "n_vars": 226290,
+     "n_cons": 186987,
+     "n_eqns": 102417,
+     "nnz_jacobian": 758574,
+     "nnz_obj_gradient": 82674
+    },
+    "n_defined_variables": 3151,
+    "x0_from_nl_x_segment": 225690,
+    "max_abs_obj_gradient": 100000.00000000001,
+    "df": 0.0009999999999999998,
+    "c": {
+     "scaling_provided": true,
+     "arow_max": 336.239540451105,
+     "row_max_gradient_min_nonzero": 1.0,
+     "row_max_gradient_span_decades": 2.5266487834341946,
+     "rows_scaled_below_1": 15000,
+     "factor_min": 0.29740702079784614,
+     "factor_max": 1.0,
+     "zero_rows": 0
+    },
+    "d": {
+     "scaling_provided": true,
+     "arow_max": 107841.86585782134,
+     "row_max_gradient_min_nonzero": 0.0019456935226814785,
+     "row_max_gradient_span_decades": 7.743712960219299,
+     "rows_scaled_below_1": 18600,
+     "factor_min": 0.0009272836593150192,
+     "factor_max": 1.0,
+     "zero_rows": 1248
+    },
+    "factor_min_all": 0.0009272836593150192,
+    "factor_max_all": 1.0,
+    "factor_span_decades_all": 3.032787393330207,
+    "constraint_factor_span_decades": 3.032787393330207,
+    "row_max_gradient_span_decades_all": 7.743712960219299,
+    "compute_s": 2.3949054590048036,
+    "span_definition": "log10(max/min) over {df} U {dc_i} U {dd_i}; unscaled rows count as 1"
+   }
+  }
+ },
+ "guard": {
+  "permitted": [],
+  "declared_solves": 0,
+  "counts": {
+   "permitted_solve": 0,
+   "permitted_exec": 0,
+   "blocked_solve": 6,
+   "blocked_exec": 0
+  },
+  "verify_failures": [],
+  "per_case_cap_blocks": 0,
+  "note": "dry: every case reaches OptSolver.solve and is blocked there (6 expected); no NL write by a solver, no IPOPT process"
+ },
+ "stopped": null,
+ "status": "complete",
+ "summary": null,
+ "loadavg_1_5_15_at_end": [
+  3.77392578125,
+  3.9091796875,
+  3.09765625
+ ],
+ "other_compute_processes_at_end": [
+  {
+   "pid": 1712,
+   "name": "python3.11",
+   "cmdline": "/opt/anaconda3/envs/opf_env_py311/bin/python p516_d0_t01c.py"
+  },
+  {
+   "pid": 1722,
+   "name": "python3.11",
+   "cmdline": "/opt/anaconda3/envs/opf_env_py311/bin/python -u /Users/micaelsimoes/PycharmProjects/shared-resources-planning/p516_d0_t01c.py --child"
+  }
+ ],
+ "watchdog": {
+  "limit_bytes": 17179869184,
+  "measure": "rss of this process + all descendants (psutil)",
+  "interval_s": 0.5,
+  "n_samples": 94,
+  "peak": {
+   "rss_tree": 2240937984,
+   "rss_self": 2240937984,
+   "rss_children": 0,
+   "stage": "NL write (not a solve) dso",
+   "t": 59.03818964958191
+  }
+ },
+ "utc_end": "2026-10-31T11:14:10.975913+00:00",
+ "wall_s": 61.48727488517761
+}

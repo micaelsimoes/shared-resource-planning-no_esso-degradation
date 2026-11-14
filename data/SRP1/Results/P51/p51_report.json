@@ -1,0 +1,997 @@
+{
+ "stage": "P5.1",
+ "git_head": "5ea241abccf7af1c089c5e973aaf38763b3a0698",
+ "timestamp_utc": "2026-09-06T15:31:30.318542+00:00",
+ "kappa_cap": 100.0,
+ "scenario_checksum": "5a02b77ccbbbbbb869de92958a3851d095624711abc2dbfc0157466064410358",
+ "candidate": {
+  "source": "production _build_positive_bootstrap_candidate",
+  "investment": {
+   "5": {
+    "2025": {
+     "s": 0.010634892806127162,
+     "e": 0.021269785612254323
+    },
+    "2030": {
+     "s": 0.010634892806127162,
+     "e": 0.021269785612254323
+    },
+    "2035": {
+     "s": 0.010634892806127162,
+     "e": 0.021269785612254323
+    }
+   },
+   "7": {
+    "2025": {
+     "s": 0.010634892806127162,
+     "e": 0.021269785612254323
+    },
+    "2030": {
+     "s": 0.010634892806127162,
+     "e": 0.021269785612254323
+    },
+    "2035": {
+     "s": 0.010634892806127162,
+     "e": 0.021269785612254323
+    }
+   },
+   "9": {
+    "2025": {
+     "s": 0.010634892806127162,
+     "e": 0.021269785612254323
+    },
+    "2030": {
+     "s": 0.010634892806127162,
+     "e": 0.021269785612254323
+    },
+    "2035": {
+     "s": 0.010634892806127162,
+     "e": 0.021269785612254323
+    }
+   }
+  },
+  "total_capacity": {
+   "5": {
+    "2025": {
+     "s": 0.010634892806127162,
+     "e": 0.021269785612254323
+    },
+    "2030": {
+     "s": 0.021269785612254323,
+     "e": 0.042539571224508646
+    },
+    "2035": {
+     "s": 0.03190467841838149,
+     "e": 0.06380935683676298
+    }
+   },
+   "7": {
+    "2025": {
+     "s": 0.010634892806127162,
+     "e": 0.021269785612254323
+    },
+    "2030": {
+     "s": 0.021269785612254323,
+     "e": 0.042539571224508646
+    },
+    "2035": {
+     "s": 0.03190467841838149,
+     "e": 0.06380935683676298
+    }
+   },
+   "9": {
+    "2025": {
+     "s": 0.010634892806127162,
+     "e": 0.021269785612254323
+    },
+    "2030": {
+     "s": 0.021269785612254323,
+     "e": 0.042539571224508646
+    },
+    "2035": {
+     "s": 0.03190467841838149,
+     "e": 0.06380935683676298
+    }
+   }
+  }
+ },
+ "pre_solve_state_captured": true,
+ "cases": [
+  {
+   "case": "failed",
+   "network": "case33_1",
+   "node_id": 5,
+   "year": 2030,
+   "day": "Winter",
+   "shared_ess_index": 0,
+   "s_rated_pu": 0.00021269785612254322,
+   "s_rated_MVA": 0.021269785612254323,
+   "kappa_A": 4701.504839916499,
+   "kappa_B100": 100.0,
+   "row_second_derivative_coefficient_A": 9403.009679832998,
+   "row_second_derivative_coefficient_B": 200.0,
+   "pre_solve_identity_checks": {
+    "primal_start_identical": true,
+    "bounds_identical": true,
+    "objective_at_start_identical": true,
+    "constraint_component_names_identical": true,
+    "index_tuples_identical": true,
+    "total_constraint_data_identical": true,
+    "row_activity_identical": true,
+    "sess_comp_rows_identical": true,
+    "ordinary_scale_present_both": true,
+    "shared_ess_capacity_identical": true,
+    "only_kappa_differs": true,
+    "no_replacement_component_either": true
+   },
+   "A": {
+    "branch": "A_production",
+    "status": "warning",
+    "termination_condition": "maxIterations",
+    "message": "Ipopt 3.14.18\\x3a Maximum Number of Iterations Exceeded.",
+    "succeeded": false,
+    "runtime_s": 19.835347890853882,
+    "ipopt": {
+     "iterations": "3000",
+     "objective": [
+      "1.6679918843650810e+02",
+      "1.6679918843650809e+05"
+     ],
+     "primal_infeasibility": [
+      "8.2866099626432155e-03",
+      "1.1433843603618599e-02"
+     ],
+     "dual_infeasibility": [
+      "1.1612773911346684e+06",
+      "1.1612773911346684e+09"
+     ],
+     "complementarity": [
+      "1.0000000000385748e-01",
+      "1.0000000000385748e+02"
+     ],
+     "overall_nlp_error": [
+      "3.5483173430694973e+04",
+      "1.1612773911346684e+09"
+     ],
+     "exit_status": "Maximum Number of Iterations Exceeded"
+    },
+    "recovery_attempted": false,
+    "shared_ess_solution": {
+     "available": true,
+     "sch_range": [
+      0.0,
+      0.0
+     ],
+     "sdch_range": [
+      0.0,
+      0.0
+     ],
+     "pnet_range": [
+      0.0,
+      0.0
+     ],
+     "qnet_range": [
+      0.0,
+      0.0
+     ],
+     "max_abs_original_g": 0.0,
+     "max_abs_original_g_normalized_by_s_rated_sq": 0.0
+    }
+   },
+   "B100": {
+    "branch": "B100_capped",
+    "status": "ok",
+    "termination_condition": "optimal",
+    "message": "Ipopt 3.14.18\\x3a Optimal Solution Found",
+    "succeeded": true,
+    "runtime_s": 1.9405949115753174,
+    "ipopt": {
+     "iterations": "240",
+     "objective": [
+      "-8.0129839923196822e-04",
+      "-8.0129839923196822e-01"
+     ],
+     "primal_infeasibility": [
+      "4.1196928816972609e-14",
+      "6.2640864717522504e-14"
+     ],
+     "dual_infeasibility": [
+      "8.1476325136421317e-06",
+      "8.1476325136421324e-03"
+     ],
+     "complementarity": [
+      "9.0909090916553649e-09",
+      "9.0909090916553643e-06"
+     ],
+     "overall_nlp_error": [
+      "8.1476325136421317e-06",
+      "8.1476325136421324e-03"
+     ],
+     "exit_status": "Optimal Solution Found"
+    },
+    "recovery_attempted": false,
+    "shared_ess_solution": {
+     "available": true,
+     "sch_range": [
+      3.481742677143344e-06,
+      3.980538966231109e-06
+     ],
+     "sdch_range": [
+      3.246635945384593e-06,
+      3.7206915250504424e-06
+     ],
+     "pnet_range": [
+      -2.389488472287047e-07,
+      7.339030209933663e-07
+     ],
+     "qnet_range": [
+      -6.471313764129356e-10,
+      2.5928507630414437e-09
+     ],
+     "max_abs_original_g": 3.27301916488001e-18,
+     "max_abs_original_g_normalized_by_s_rated_sq": 7.234729924102832e-11
+    }
+   },
+   "structural_post_checks": {
+    "structure_A_unchanged_after_solve": true,
+    "structure_B_unchanged_after_solve": true,
+    "B_row_object_ids_unchanged": true
+   }
+  },
+  {
+   "case": "failed",
+   "network": "case33_1",
+   "node_id": 5,
+   "year": 2035,
+   "day": "Winter",
+   "shared_ess_index": 0,
+   "s_rated_pu": 0.00031904678418381486,
+   "s_rated_MVA": 0.03190467841838149,
+   "kappa_A": 3134.3365599443323,
+   "kappa_B100": 100.0,
+   "row_second_derivative_coefficient_A": 6268.673119888665,
+   "row_second_derivative_coefficient_B": 200.0,
+   "pre_solve_identity_checks": {
+    "primal_start_identical": true,
+    "bounds_identical": true,
+    "objective_at_start_identical": true,
+    "constraint_component_names_identical": true,
+    "index_tuples_identical": true,
+    "total_constraint_data_identical": true,
+    "row_activity_identical": true,
+    "sess_comp_rows_identical": true,
+    "ordinary_scale_present_both": true,
+    "shared_ess_capacity_identical": true,
+    "only_kappa_differs": true,
+    "no_replacement_component_either": true
+   },
+   "A": {
+    "branch": "A_production",
+    "status": "warning",
+    "termination_condition": "maxIterations",
+    "message": "Ipopt 3.14.18\\x3a Maximum Number of Iterations Exceeded.",
+    "succeeded": false,
+    "runtime_s": 20.08920693397522,
+    "ipopt": {
+     "iterations": "3000",
+     "objective": [
+      "1.9685310169726273e+02",
+      "1.9685310169726273e+05"
+     ],
+     "primal_infeasibility": [
+      "1.2454482791792326e-01",
+      "1.7184664060125476e-01"
+     ],
+     "dual_infeasibility": [
+      "1.3080316285540373e+06",
+      "1.3080316285540373e+09"
+     ],
+     "complementarity": [
+      "1.2454482797554199e-01",
+      "1.2454482797554199e+02"
+     ],
+     "overall_nlp_error": [
+      "6.7564018067015626e+04",
+      "1.3080316285540373e+09"
+     ],
+     "exit_status": "Maximum Number of Iterations Exceeded"
+    },
+    "recovery_attempted": false,
+    "shared_ess_solution": {
+     "available": true,
+     "sch_range": [
+      0.0,
+      0.0
+     ],
+     "sdch_range": [
+      0.0,
+      0.0
+     ],
+     "pnet_range": [
+      0.0,
+      0.0
+     ],
+     "qnet_range": [
+      0.0,
+      0.0
+     ],
+     "max_abs_original_g": 0.0,
+     "max_abs_original_g_normalized_by_s_rated_sq": 0.0
+    }
+   },
+   "B100": {
+    "branch": "B100_capped",
+    "status": "ok",
+    "termination_condition": "optimal",
+    "message": "Ipopt 3.14.18\\x3a Optimal Solution Found",
+    "succeeded": true,
+    "runtime_s": 3.5985920429229736,
+    "ipopt": {
+     "iterations": "434",
+     "objective": [
+      "-8.0863345475005815e-04",
+      "-8.0863345475005810e-01"
+     ],
+     "primal_infeasibility": [
+      "5.0204333979794103e-14",
+      "6.9271813870397290e-14"
+     ],
+     "dual_infeasibility": [
+      "3.0256031196239663e-06",
+      "3.0256031196239661e-03"
+     ],
+     "complementarity": [
+      "9.0909090922128019e-09",
+      "9.0909090922128018e-06"
+     ],
+     "overall_nlp_error": [
+      "3.0256031196239663e-06",
+      "3.0256031196239661e-03"
+     ],
+     "exit_status": "Optimal Solution Found"
+    },
+    "recovery_attempted": false,
+    "shared_ess_solution": {
+     "available": true,
+     "sch_range": [
+      3.5609445004148383e-06,
+      3.892891648553253e-06
+     ],
+     "sdch_range": [
+      3.315862636575614e-06,
+      3.6292386269001903e-06
+     ],
+     "pnet_range": [
+      -6.829410654643024e-08,
+      5.770290119736799e-07
+     ],
+     "qnet_range": [
+      -5.4445778569946694e-09,
+      2.13781793529048e-12
+     ],
+     "max_abs_original_g": 2.4639377703491717e-18,
+     "max_abs_original_g_normalized_by_s_rated_sq": 2.420588646517662e-11
+    }
+   },
+   "structural_post_checks": {
+    "structure_A_unchanged_after_solve": true,
+    "structure_B_unchanged_after_solve": true,
+    "B_row_object_ids_unchanged": true
+   }
+  },
+  {
+   "case": "failed",
+   "network": "case33_3",
+   "node_id": 9,
+   "year": 2025,
+   "day": "Summer",
+   "shared_ess_index": 0,
+   "s_rated_pu": 0.00010634892806127161,
+   "s_rated_MVA": 0.010634892806127162,
+   "kappa_A": 9403.009679832998,
+   "kappa_B100": 100.0,
+   "row_second_derivative_coefficient_A": 18806.019359665996,
+   "row_second_derivative_coefficient_B": 200.0,
+   "pre_solve_identity_checks": {
+    "primal_start_identical": true,
+    "bounds_identical": true,
+    "objective_at_start_identical": true,
+    "constraint_component_names_identical": true,
+    "index_tuples_identical": true,
+    "total_constraint_data_identical": true,
+    "row_activity_identical": true,
+    "sess_comp_rows_identical": true,
+    "ordinary_scale_present_both": true,
+    "shared_ess_capacity_identical": true,
+    "only_kappa_differs": true,
+    "no_replacement_component_either": true
+   },
+   "A": {
+    "branch": "A_production",
+    "status": "warning",
+    "termination_condition": "maxIterations",
+    "message": "Ipopt 3.14.18\\x3a Maximum Number of Iterations Exceeded.",
+    "succeeded": false,
+    "runtime_s": 24.754375219345093,
+    "ipopt": {
+     "iterations": "3000",
+     "objective": [
+      "1.7579288665181636e+02",
+      "1.7579288665181637e+05"
+     ],
+     "primal_infeasibility": [
+      "1.3987410428880982e-02",
+      "1.9299793761794887e-02"
+     ],
+     "dual_infeasibility": [
+      "2.6793012496658002e+03",
+      "2.6793012496658000e+06"
+     ],
+     "complementarity": [
+      "1.0000000000000012e-01",
+      "1.0000000000000011e+02"
+     ],
+     "overall_nlp_error": [
+      "2.1539074691067208e+02",
+      "2.6793012496658000e+06"
+     ],
+     "exit_status": "Maximum Number of Iterations Exceeded"
+    },
+    "recovery_attempted": false,
+    "shared_ess_solution": {
+     "available": true,
+     "sch_range": [
+      0.0,
+      0.0
+     ],
+     "sdch_range": [
+      0.0,
+      0.0
+     ],
+     "pnet_range": [
+      0.0,
+      0.0
+     ],
+     "qnet_range": [
+      0.0,
+      0.0
+     ],
+     "max_abs_original_g": 0.0,
+     "max_abs_original_g_normalized_by_s_rated_sq": 0.0
+    }
+   },
+   "B100": {
+    "branch": "B100_capped",
+    "status": "ok",
+    "termination_condition": "optimal",
+    "message": "Ipopt 3.14.18\\x3a Solved To Acceptable Level.",
+    "succeeded": true,
+    "runtime_s": 1.7193541526794434,
+    "ipopt": {
+     "iterations": "154",
+     "objective": [
+      "-8.1520440191386410e-04",
+      "-8.1520440191386412e-01"
+     ],
+     "primal_infeasibility": [
+      "4.9886905989302766e-14",
+      "6.8833827526759706e-14"
+     ],
+     "dual_infeasibility": [
+      "3.3514619911135152e-05",
+      "3.3514619911135149e-02"
+     ],
+     "complementarity": [
+      "9.0909090916372215e-09",
+      "9.0909090916372209e-06"
+     ],
+     "overall_nlp_error": [
+      "3.3514619911135152e-05",
+      "3.3514619911135149e-02"
+     ],
+     "exit_status": "Solved To Acceptable Level"
+    },
+    "recovery_attempted": false,
+    "shared_ess_solution": {
+     "available": true,
+     "sch_range": [
+      3.0763159596237513e-06,
+      4.4773161447659766e-06
+     ],
+     "sdch_range": [
+      2.864058847702045e-06,
+      4.1874500391532374e-06
+     ],
+     "pnet_range": [
+      -1.1111340780843763e-06,
+      1.6132572938542277e-06
+     ],
+     "qnet_range": [
+      -1.3056547705140926e-10,
+      -3.151219321222039e-11
+     ],
+     "max_abs_original_g": 1.931655558508296e-20,
+     "max_abs_original_g_normalized_by_s_rated_sq": 1.7079039954490297e-12
+    }
+   },
+   "structural_post_checks": {
+    "structure_A_unchanged_after_solve": true,
+    "structure_B_unchanged_after_solve": true,
+    "B_row_object_ids_unchanged": true
+   }
+  },
+  {
+   "case": "control",
+   "network": "case33_1",
+   "node_id": 5,
+   "year": 2025,
+   "day": "Winter",
+   "shared_ess_index": 0,
+   "s_rated_pu": 0.00010634892806127161,
+   "s_rated_MVA": 0.010634892806127162,
+   "kappa_A": 9403.009679832998,
+   "kappa_B100": 100.0,
+   "row_second_derivative_coefficient_A": 18806.019359665996,
+   "row_second_derivative_coefficient_B": 200.0,
+   "pre_solve_identity_checks": {
+    "primal_start_identical": true,
+    "bounds_identical": true,
+    "objective_at_start_identical": true,
+    "constraint_component_names_identical": true,
+    "index_tuples_identical": true,
+    "total_constraint_data_identical": true,
+    "row_activity_identical": true,
+    "sess_comp_rows_identical": true,
+    "ordinary_scale_present_both": true,
+    "shared_ess_capacity_identical": true,
+    "only_kappa_differs": true,
+    "no_replacement_component_either": true
+   },
+   "A": {
+    "branch": "A_production",
+    "status": "ok",
+    "termination_condition": "optimal",
+    "message": "Ipopt 3.14.18\\x3a Optimal Solution Found",
+    "succeeded": true,
+    "runtime_s": 1.1595268249511719,
+    "ipopt": {
+     "iterations": "122",
+     "objective": [
+      "-7.9644313097214023e-04",
+      "-7.9644313097214026e-01"
+     ],
+     "primal_infeasibility": [
+      "6.4289738524924057e-14",
+      "8.8706819667550020e-14"
+     ],
+     "dual_infeasibility": [
+      "7.3260874506198698e-08",
+      "7.3260874506198698e-05"
+     ],
+     "complementarity": [
+      "9.0909091144643525e-09",
+      "9.0909091144643522e-06"
+     ],
+     "overall_nlp_error": [
+      "7.3260874506198698e-08",
+      "7.3260874506198698e-05"
+     ],
+     "exit_status": "Optimal Solution Found"
+    },
+    "recovery_attempted": false,
+    "shared_ess_solution": {
+     "available": true,
+     "sch_range": [
+      3.341262486534161e-06,
+      4.121126784645479e-06
+     ],
+     "sdch_range": [
+      3.108929662894199e-06,
+      3.8454557516712295e-06
+     ],
+     "pnet_range": [
+      -5.041932651370391e-07,
+      1.0121971217512554e-06
+     ],
+     "qnet_range": [
+      -1.1035692568920418e-13,
+      2.988953192744533e-13
+     ],
+     "max_abs_original_g": 3.6933859514348164e-20,
+     "max_abs_original_g_normalized_by_s_rated_sq": 3.265565952173221e-12
+    }
+   },
+   "B100": {
+    "branch": "B100_capped",
+    "status": "ok",
+    "termination_condition": "optimal",
+    "message": "Ipopt 3.14.18\\x3a Optimal Solution Found",
+    "succeeded": true,
+    "runtime_s": 0.684049129486084,
+    "ipopt": {
+     "iterations": "76",
+     "objective": [
+      "-7.9644313309761299e-04",
+      "-7.9644313309761294e-01"
+     ],
+     "primal_infeasibility": [
+      "4.8317882333187601e-14",
+      "7.0832228971084987e-14"
+     ],
+     "dual_infeasibility": [
+      "7.4421740154390764e-06",
+      "7.4421740154390764e-03"
+     ],
+     "complementarity": [
+      "9.0909573129942230e-09",
+      "9.0909573129942227e-06"
+     ],
+     "overall_nlp_error": [
+      "7.4421740154390764e-06",
+      "7.4421740154390764e-03"
+     ],
+     "exit_status": "Optimal Solution Found"
+    },
+    "recovery_attempted": false,
+    "shared_ess_solution": {
+     "available": true,
+     "sch_range": [
+      3.3412705014253005e-06,
+      4.121117615298529e-06
+     ],
+     "sdch_range": [
+      3.10893523690805e-06,
+      3.845441155971332e-06
+     ],
+     "pnet_range": [
+      -5.041706545459522e-07,
+      1.0121823783904638e-06
+     ],
+     "qnet_range": [
+      -1.0866076449183312e-13,
+      2.3771928259194016e-13
+     ],
+     "max_abs_original_g": 4.209379680705544e-19,
+     "max_abs_original_g_normalized_by_s_rated_sq": 3.721790017569576e-11
+    }
+   },
+   "structural_post_checks": {
+    "structure_A_unchanged_after_solve": true,
+    "structure_B_unchanged_after_solve": true,
+    "B_row_object_ids_unchanged": true
+   }
+  },
+  {
+   "case": "control",
+   "network": "case33_3",
+   "node_id": 9,
+   "year": 2030,
+   "day": "Summer",
+   "shared_ess_index": 0,
+   "s_rated_pu": 0.00021269785612254322,
+   "s_rated_MVA": 0.021269785612254323,
+   "kappa_A": 4701.504839916499,
+   "kappa_B100": 100.0,
+   "row_second_derivative_coefficient_A": 9403.009679832998,
+   "row_second_derivative_coefficient_B": 200.0,
+   "pre_solve_identity_checks": {
+    "primal_start_identical": true,
+    "bounds_identical": true,
+    "objective_at_start_identical": true,
+    "constraint_component_names_identical": true,
+    "index_tuples_identical": true,
+    "total_constraint_data_identical": true,
+    "row_activity_identical": true,
+    "sess_comp_rows_identical": true,
+    "ordinary_scale_present_both": true,
+    "shared_ess_capacity_identical": true,
+    "only_kappa_differs": true,
+    "no_replacement_component_either": true
+   },
+   "A": {
+    "branch": "A_production",
+    "status": "ok",
+    "termination_condition": "optimal",
+    "message": "Ipopt 3.14.18\\x3a Optimal Solution Found",
+    "succeeded": true,
+    "runtime_s": 4.055256128311157,
+    "ipopt": {
+     "iterations": "488",
+     "objective": [
+      "-8.2277936021104767e-04",
+      "-8.2277936021104769e-01"
+     ],
+     "primal_infeasibility": [
+      "5.0611070753663618e-14",
+      "7.1088968045529555e-14"
+     ],
+     "dual_infeasibility": [
+      "1.6006082009813703e-06",
+      "1.6006082009813703e-03"
+     ],
+     "complementarity": [
+      "9.0909090921007735e-09",
+      "9.0909090921007732e-06"
+     ],
+     "overall_nlp_error": [
+      "1.6006082009813703e-06",
+      "1.6006082009813703e-03"
+     ],
+     "exit_status": "Optimal Solution Found"
+    },
+    "recovery_attempted": false,
+    "shared_ess_solution": {
+     "available": true,
+     "sch_range": [
+      3.5099575262363304e-06,
+      3.942722673642002e-06
+     ],
+     "sdch_range": [
+      3.2664957289828815e-06,
+      3.6750092951113945e-06
+     ],
+     "pnet_range": [
+      -1.6505176887506303e-07,
+      6.762269446591207e-07
+     ],
+     "qnet_range": [
+      -2.429286779490968e-14,
+      3.947142607658224e-13
+     ],
+     "max_abs_original_g": 9.334468743493034e-23,
+     "max_abs_original_g_normalized_by_s_rated_sq": 2.0633047636501507e-15
+    }
+   },
+   "B100": {
+    "branch": "B100_capped",
+    "status": "ok",
+    "termination_condition": "optimal",
+    "message": "Ipopt 3.14.18\\x3a Optimal Solution Found",
+    "succeeded": true,
+    "runtime_s": 3.8859400749206543,
+    "ipopt": {
+     "iterations": "370",
+     "objective": [
+      "-8.2277938140704911e-04",
+      "-8.2277938140704909e-01"
+     ],
+     "primal_infeasibility": [
+      "5.1274888454327723e-14",
+      "7.0748962244238101e-14"
+     ],
+     "dual_infeasibility": [
+      "2.8405401996697659e-06",
+      "2.8405401996697659e-03"
+     ],
+     "complementarity": [
+      "9.0909090921008198e-09",
+      "9.0909090921008190e-06"
+     ],
+     "overall_nlp_error": [
+      "2.8405401996697659e-06",
+      "2.8405401996697659e-03"
+     ],
+     "exit_status": "Optimal Solution Found"
+    },
+    "recovery_attempted": false,
+    "shared_ess_solution": {
+     "available": true,
+     "sch_range": [
+      3.5099089805528546e-06,
+      3.942390043694049e-06
+     ],
+     "sdch_range": [
+      3.2664785663783653e-06,
+      3.67452774308194e-06
+     ],
+     "pnet_range": [
+      -1.6461876252908445e-07,
+      6.759114773156834e-07
+     ],
+     "qnet_range": [
+      -2.409149149900738e-14,
+      1.324534240326157e-13
+     ],
+     "max_abs_original_g": 2.4389757603204274e-21,
+     "max_abs_original_g_normalized_by_s_rated_sq": 5.3911480588591474e-14
+    }
+   },
+   "structural_post_checks": {
+    "structure_A_unchanged_after_solve": true,
+    "structure_B_unchanged_after_solve": true,
+    "B_row_object_ids_unchanged": true
+   }
+  },
+  {
+   "case": "control",
+   "network": "case33_2",
+   "node_id": 7,
+   "year": 2025,
+   "day": "Winter",
+   "shared_ess_index": 0,
+   "s_rated_pu": 0.00010634892806127161,
+   "s_rated_MVA": 0.010634892806127162,
+   "kappa_A": 9403.009679832998,
+   "kappa_B100": 100.0,
+   "row_second_derivative_coefficient_A": 18806.019359665996,
+   "row_second_derivative_coefficient_B": 200.0,
+   "pre_solve_identity_checks": {
+    "primal_start_identical": true,
+    "bounds_identical": true,
+    "objective_at_start_identical": true,
+    "constraint_component_names_identical": true,
+    "index_tuples_identical": true,
+    "total_constraint_data_identical": true,
+    "row_activity_identical": true,
+    "sess_comp_rows_identical": true,
+    "ordinary_scale_present_both": true,
+    "shared_ess_capacity_identical": true,
+    "only_kappa_differs": true,
+    "no_replacement_component_either": true
+   },
+   "A": {
+    "branch": "A_production",
+    "status": "ok",
+    "termination_condition": "optimal",
+    "message": "Ipopt 3.14.18\\x3a Optimal Solution Found",
+    "succeeded": true,
+    "runtime_s": 10.419070959091187,
+    "ipopt": {
+     "iterations": "1058",
+     "objective": [
+      "-7.9499595605400089e-04",
+      "-7.9499595605400086e-01"
+     ],
+     "primal_infeasibility": [
+      "1.1791816246342454e-13",
+      "1.6270318425881672e-13"
+     ],
+     "dual_infeasibility": [
+      "4.9415184514071714e-07",
+      "4.9415184514071714e-04"
+     ],
+     "complementarity": [
+      "9.0909135071392394e-09",
+      "9.0909135071392391e-06"
+     ],
+     "overall_nlp_error": [
+      "4.9415184514071714e-07",
+      "4.9415184514071714e-04"
+     ],
+     "exit_status": "Optimal Solution Found"
+    },
+    "recovery_attempted": false,
+    "shared_ess_solution": {
+     "available": true,
+     "sch_range": [
+      3.341262039280627e-06,
+      4.121127359734882e-06
+     ],
+     "sdch_range": [
+      3.1089292265403896e-06,
+      3.845456202089307e-06
+     ],
+     "pnet_range": [
+      -5.04194162806774e-07,
+      1.0121981331815746e-06
+     ],
+     "qnet_range": [
+      -3.808785144741969e-13,
+      1.9099982070878647e-10
+     ],
+     "max_abs_original_g": 8.84633533359635e-20,
+     "max_abs_original_g_normalized_by_s_rated_sq": 7.821628133847364e-12
+    }
+   },
+   "B100": {
+    "branch": "B100_capped",
+    "status": "ok",
+    "termination_condition": "optimal",
+    "message": "Ipopt 3.14.18\\x3a Optimal Solution Found",
+    "succeeded": true,
+    "runtime_s": 1.8895578384399414,
+    "ipopt": {
+     "iterations": "196",
+     "objective": [
+      "-7.9499595511327748e-04",
+      "-7.9499595511327747e-01"
+     ],
+     "primal_infeasibility": [
+      "5.8576883161632930e-14",
+      "8.0824236192711396e-14"
+     ],
+     "dual_infeasibility": [
+      "3.0029848513975251e-07",
+      "3.0029848513975254e-04"
+     ],
+     "complementarity": [
+      "9.0909091251608549e-09",
+      "9.0909091251608554e-06"
+     ],
+     "overall_nlp_error": [
+      "3.0029848513975251e-07",
+      "3.0029848513975254e-04"
+     ],
+     "exit_status": "Optimal Solution Found"
+    },
+    "recovery_attempted": false,
+    "shared_ess_solution": {
+     "available": true,
+     "sch_range": [
+      3.3412486391107286e-06,
+      4.12114480217093e-06
+     ],
+     "sdch_range": [
+      3.1089172245490275e-06,
+      3.84547339795603e-06
+     ],
+     "pnet_range": [
+      -5.042247604060536e-07,
+      1.0122275778232544e-06
+     ],
+     "qnet_range": [
+      -1.201763959711356e-11,
+      -3.932659825401566e-12
+     ],
+     "max_abs_original_g": 1.110924898845823e-19,
+     "max_abs_original_g_normalized_by_s_rated_sq": 9.822419245633028e-12
+    }
+   },
+   "structural_post_checks": {
+    "structure_A_unchanged_after_solve": true,
+    "structure_B_unchanged_after_solve": true,
+    "B_row_object_ids_unchanged": true
+   }
+  }
+ ],
+ "decision_gate": {
+  "all_failed_cases_fail_under_A": true,
+  "all_failed_cases_succeed_under_B100": true,
+  "all_controls_succeed_under_A": true,
+  "all_controls_still_succeed_under_B100": true,
+  "proceed_to_integration_check": true
+ },
+ "integration_check": {
+  "cap_applied_in_memory_only": true,
+  "all_local_initialization_solves_succeeded": false,
+  "would_enter_admm": false,
+  "dso_terminations": {
+   "dso_5_2025_Spring": "optimal",
+   "dso_5_2025_Summer": "optimal",
+   "dso_5_2025_Autumn": "optimal",
+   "dso_5_2025_Winter": "optimal",
+   "dso_5_2030_Spring": "optimal",
+   "dso_5_2030_Summer": "optimal",
+   "dso_5_2030_Autumn": "optimal",
+   "dso_5_2030_Winter": "optimal",
+   "dso_5_2035_Spring": "optimal",
+   "dso_5_2035_Summer": "optimal",
+   "dso_5_2035_Autumn": "optimal",
+   "dso_5_2035_Winter": "optimal",
+   "dso_7_2025_Spring": "optimal",
+   "dso_7_2025_Summer": "optimal",
+   "dso_7_2025_Autumn": "optimal",
+   "dso_7_2025_Winter": "optimal",
+   "dso_7_2030_Spring": "optimal",
+   "dso_7_2030_Summer": "optimal",
+   "dso_7_2030_Autumn": "optimal",
+   "dso_7_2030_Winter": "optimal",
+   "dso_7_2035_Spring": "optimal",
+   "dso_7_2035_Summer": "optimal",
+   "dso_7_2035_Autumn": "optimal",
+   "dso_7_2035_Winter": "optimal",
+   "dso_9_2025_Spring": "optimal",
+   "dso_9_2025_Summer": "optimal",
+   "dso_9_2025_Autumn": "maxIterations",
+   "dso_9_2025_Winter": "optimal",
+   "dso_9_2030_Spring": "optimal",
+   "dso_9_2030_Summer": "optimal",
+   "dso_9_2030_Autumn": "optimal",
+   "dso_9_2030_Winter": "optimal",
+   "dso_9_2035_Spring": "optimal",
+   "dso_9_2035_Summer": "optimal",
+   "dso_9_2035_Autumn": "optimal",
+   "dso_9_2035_Winter": "optimal"
+  }
+ }
+}

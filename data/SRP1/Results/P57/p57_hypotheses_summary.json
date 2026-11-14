@@ -1,0 +1,1193 @@
+{
+ "stage": "P5.7 hypotheses",
+ "provenance": {
+  "timestamp_utc": "2026-09-09T06:29:45.205975+00:00",
+  "git_head": "668de111ec55f008d3d019991716917649c302f9",
+  "sys_executable": "/opt/anaconda3/envs/opf_env_py311/bin/python",
+  "conda_default_env": null,
+  "conda_env_from_path": "opf_env_py311",
+  "python_version": "3.11.11",
+  "numpy_version": "2.4.2",
+  "pandas_version": "3.0.0",
+  "scipy_version": "1.17.0",
+  "pyomo_version": "6.9.5",
+  "ipopt": {
+   "path": "/usr/local/bin/ipopt",
+   "version": "3.14.18",
+   "exists": true,
+   "banner": "Ipopt 3.14.18 (aarch64-apple-darwin24.5.0), ASL(20241111)"
+  },
+  "hsl_linear_solver": "ma97",
+  "gurobi": {
+   "gurobipy": "13.0.1",
+   "gurobi_runtime": "13.0.1",
+   "licence": "ACADEMIC",
+   "licence_expiry": "2027-04-10",
+   "available": true,
+   "licence_id": "2805683",
+   "licence_version": "13"
+  },
+  "scenario_checksum": "5a02b77ccbbbbbb869de92958a3851d095624711abc2dbfc0157466064410358",
+  "canonical_checksum": "5a02b77ccbbbbbb869de92958a3851d095624711abc2dbfc0157466064410358",
+  "checksum_matches_canonical": true,
+  "stage": "P5.7 hypotheses"
+ },
+ "timestamp_utc": "2026-09-09T06:29:45.288490+00:00",
+ "fixed_candidate": "canonical base x0",
+ "D_target_candidate": "se|node9|2025|-10%",
+ "A": {
+  "generation": 1,
+  "admm": {
+   "status": null,
+   "converged": true,
+   "initialization_failed": false,
+   "cycles": 2,
+   "runtime_s": 70.65224814414978,
+   "n_recovery_diagnostics": 0,
+   "gross_operational_cost": 837191939.3227628,
+   "net_operational_recourse": 837188510.9012293
+  },
+  "A2_admm_subproblems": {
+   "per_block": [
+    {
+     "variant": "as-is",
+     "block": "TSO|2025|Spring",
+     "effective_scale": 94145.72488468012,
+     "solved": true,
+     "weighted_base_before": 79084125.21136701,
+     "weighted_base_after": 79031017.67099041,
+     "delta": -53107.5403766036
+    },
+    {
+     "variant": "as-is",
+     "block": "TSO|2025|Summer",
+     "effective_scale": 95180.29329000627,
+     "solved": true,
+     "weighted_base_before": 92998516.29367754,
+     "weighted_base_after": 93029614.69330162,
+     "delta": 31098.399624079466
+    },
+    {
+     "variant": "as-is",
+     "block": "TSO|2025|Autumn",
+     "effective_scale": 95180.29329000627,
+     "solved": true,
+     "weighted_base_before": 77929341.6538994,
+     "weighted_base_after": 77926517.90272866,
+     "delta": -2823.7511707395315
+    },
+    {
+     "variant": "as-is",
+     "block": "TSO|2025|Winter",
+     "effective_scale": 95180.29329000627,
+     "solved": true,
+     "weighted_base_before": 85211870.31102541,
+     "weighted_base_after": 85218463.81816287,
+     "delta": 6593.507137462497
+    },
+    {
+     "variant": "as-is",
+     "block": "TSO|2030|Spring",
+     "effective_scale": 103944.48754852384,
+     "solved": true,
+     "weighted_base_before": 59744439.07269652,
+     "weighted_base_after": 59651807.303958476,
+     "delta": -92631.76873804629
+    },
+    {
+     "variant": "as-is",
+     "block": "TSO|2030|Summer",
+     "effective_scale": 105086.7346644417,
+     "solved": true,
+     "weighted_base_before": 69996507.77700028,
+     "weighted_base_after": 70010915.60897452,
+     "delta": 14407.831974238157
+    },
+    {
+     "variant": "as-is",
+     "block": "TSO|2030|Autumn",
+     "effective_scale": 105086.7346644417,
+     "solved": true,
+     "weighted_base_before": 27761714.599293474,
+     "weighted_base_after": 27759196.795774445,
+     "delta": -2517.8035190291703
+    },
+    {
+     "variant": "as-is",
+     "block": "TSO|2030|Winter",
+     "effective_scale": 105086.7346644417,
+     "solved": true,
+     "weighted_base_before": 40865651.1121484,
+     "weighted_base_after": 40867071.955346644,
+     "delta": 1420.843198247254
+    },
+    {
+     "variant": "as-is",
+     "block": "TSO|2035|Spring",
+     "effective_scale": 114763.11330078664,
+     "solved": true,
+     "weighted_base_before": 60108500.24369215,
+     "weighted_base_after": 60009702.64559589,
+     "delta": -98797.59809625894
+    },
+    {
+     "variant": "as-is",
+     "block": "TSO|2035|Summer",
+     "effective_scale": 116024.2464139821,
+     "solved": true,
+     "weighted_base_before": 67942352.37969375,
+     "weighted_base_after": 67915763.64813939,
+     "delta": -26588.731554359198
+    },
+    {
+     "variant": "as-is",
+     "block": "TSO|2035|Autumn",
+     "effective_scale": 116024.2464139821,
+     "solved": true,
+     "weighted_base_before": 34953498.24917244,
+     "weighted_base_after": 34935655.503746994,
+     "delta": -17842.74542544782
+    },
+    {
+     "variant": "as-is",
+     "block": "TSO|2035|Winter",
+     "effective_scale": 116024.2464139821,
+     "solved": true,
+     "weighted_base_before": 36061876.810207635,
+     "weighted_base_after": 36039298.52967234,
+     "delta": -22578.280535295606
+    },
+    {
+     "variant": "as-is",
+     "block": "DSO5|2025|Spring",
+     "effective_scale": 94145.72488468012,
+     "solved": true,
+     "weighted_base_before": 5260379.668861992,
+     "weighted_base_after": 5260379.730484595,
+     "delta": 0.06162260286509991
+    },
+    {
+     "variant": "as-is",
+     "block": "DSO5|2025|Summer",
+     "effective_scale": 95180.29329000627,
+     "solved": true,
+     "weighted_base_before": 1293071.0795099542,
+     "weighted_base_after": 1293158.026385105,
+     "delta": 86.94687515078112
+    },
+    {
+     "variant": "as-is",
+     "block": "DSO5|2025|Autumn",
+     "effective_scale": 95180.29329000627,
+     "solved": true,
+     "weighted_base_before": 266927.12275768555,
+     "weighted_base_after": 266927.7692190379,
+     "delta": 0.6464613523567095
+    },
+    {
+     "variant": "as-is",
+     "block": "DSO5|2025|Winter",
+     "effective_scale": 95180.29329000627,
+     "solved": true,
+     "weighted_base_before": 271531.27520176664,
+     "weighted_base_after": 271531.2752017422,
+     "delta": -2.444721758365631e-08
+    },
+    {
+     "variant": "as-is",
+     "block": "DSO5|2030|Spring",
+     "effective_scale": 103944.48754852384,
+     "solved": true,
+     "weighted_base_before": 6207667.157735189,
+     "weighted_base_after": 6207667.155902016,
+     "delta": -0.0018331734463572502
+    },
+    {
+     "variant": "as-is",
+     "block": "DSO5|2030|Summer",
+     "effective_scale": 105086.7346644417,
+     "solved": true,
+     "weighted_base_before": 3450334.6705991584,
+     "weighted_base_after": 3450334.6701122103,
+     "delta": -0.00048694806173443794
+    },
+    {
+     "variant": "as-is",
+     "block": "DSO5|2030|Autumn",
+     "effective_scale": 105086.7346644417,
+     "solved": true,
+     "weighted_base_before": 776016.5008311564,
+     "weighted_base_after": 776016.500888459,
+     "delta": 5.7302648201584816e-05
+    },
+    {
+     "variant": "as-is",
+     "block": "DSO5|2030|Winter",
+     "effective_scale": 105086.7346644417,
+     "solved": true,
+     "weighted_base_before": 455449.8608040472,
+     "weighted_base_after": 455449.8052157253,
+     "delta": -0.05558832187671214
+    },
+    {
+     "variant": "as-is",
+     "block": "DSO5|2035|Spring",
+     "effective_scale": 114763.11330078664,
+     "solved": true,
+     "weighted_base_before": 9794174.279353043,
+     "weighted_base_after": 9794174.27935275,
+     "delta": -2.9243528842926025e-07
+    },
+    {
+     "variant": "as-is",
+     "block": "DSO5|2035|Summer",
+     "effective_scale": 116024.2464139821,
+     "solved": true,
+     "weighted_base_before": 7158236.261215482,
+     "weighted_base_after": 7158236.261266588,
+     "delta": 5.1106326282024384e-05
+    },
+    {
+     "variant": "as-is",
+     "block": "DSO5|2035|Autumn",
+     "effective_scale": 116024.2464139821,
+     "solved": true,
+     "weighted_base_before": 1011009.0595208056,
+     "weighted_base_after": 1011009.0595250288,
+     "delta": 4.223198629915714e-06
+    },
+    {
+     "variant": "as-is",
+     "block": "DSO5|2035|Winter",
+     "effective_scale": 116024.2464139821,
+     "solved": true,
+     "weighted_base_before": 521884.598108526,
+     "weighted_base_after": 521884.59811404237,
+     "delta": 5.516340024769306e-06
+    },
+    {
+     "variant": "as-is",
+     "block": "DSO7|2025|Spring",
+     "effective_scale": 94145.72488468012,
+     "solved": true,
+     "weighted_base_before": 3436144.055161857,
+     "weighted_base_after": 3436144.054864614,
+     "delta": -0.00029724324122071266
+    },
+    {
+     "variant": "as-is",
+     "block": "DSO7|2025|Summer",
+     "effective_scale": 95180.29329000627,
+     "solved": true,
+     "weighted_base_before": 1467307.6199529103,
+     "weighted_base_after": 1467307.6199525648,
+     "delta": -3.4552067518234253e-07
+    },
+    {
+     "variant": "as-is",
+     "block": "DSO7|2025|Autumn",
+     "effective_scale": 95180.29329000627,
+     "solved": true,
+     "weighted_base_before": 268746.1713321734,
+     "weighted_base_after": 268747.2043169806,
+     "delta": 1.032984807214234
+    },
+    {
+     "variant": "as-is",
+     "block": "DSO7|2025|Winter",
+     "effective_scale": 95180.29329000627,
+     "solved": true,
+     "weighted_base_before": 344851.11398979195,
+     "weighted_base_after": 224726.73969323805,
+     "delta": -120124.3742965539
+    },
+    {
+     "variant": "as-is",
+     "block": "DSO7|2030|Spring",
+     "effective_scale": 103944.48754852384,
+     "solved": true,
+     "weighted_base_before": 3568545.4561840985,
+     "weighted_base_after": 3568545.4576157588,
+     "delta": 0.0014316602610051632
+    },
+    {
+     "variant": "as-is",
+     "block": "DSO7|2030|Summer",
+     "effective_scale": 105086.7346644417,
+     "solved": true,
+     "weighted_base_before": 3255454.09587668,
+     "weighted_base_after": 3255454.095855187,
+     "delta": -2.1493062376976013e-05
+    },
+    {
+     "variant": "as-is",
+     "block": "DSO7|2030|Autumn",
+     "effective_scale": 105086.7346644417,
+     "solved": true,
+     "weighted_base_before": 562189.0089199976,
+     "weighted_base_after": 562189.0089207926,
+     "delta": 7.950002327561378e-07
+    },
+    {
+     "variant": "as-is",
+     "block": "DSO7|2030|Winter",
+     "effective_scale": 105086.7346644417,
+     "solved": true,
+     "weighted_base_before": 315005.54022035503,
+     "weighted_base_after": 315005.5407789627,
+     "delta": 0.0005586076877079904
+    },
+    {
+     "variant": "as-is",
+     "block": "DSO7|2035|Spring",
+     "effective_scale": 114763.11330078664,
+     "solved": true,
+     "weighted_base_before": 6607629.813193531,
+     "weighted_base_after": 6607629.813193831,
+     "delta": 2.998858690261841e-07
+    },
+    {
+     "variant": "as-is",
+     "block": "DSO7|2035|Summer",
+     "effective_scale": 116024.2464139821,
+     "solved": true,
+     "weighted_base_before": 5214345.229241624,
+     "weighted_base_after": 5214345.229240805,
+     "delta": -8.186325430870056e-07
+    },
+    {
+     "variant": "as-is",
+     "block": "DSO7|2035|Autumn",
+     "effective_scale": 116024.2464139821,
+     "solved": true,
+     "weighted_base_before": 574487.3440479884,
+     "weighted_base_after": 574487.3432772869,
+     "delta": -0.0007707015611231327
+    },
+    {
+     "variant": "as-is",
+     "block": "DSO7|2035|Winter",
+     "effective_scale": 116024.2464139821,
+     "solved": true,
+     "weighted_base_before": 414667.50789826864,
+     "weighted_base_after": 414667.50789833994,
+     "delta": 7.130438461899757e-08
+    },
+    {
+     "variant": "as-is",
+     "block": "DSO9|2025|Spring",
+     "effective_scale": 94145.72488468012,
+     "solved": true,
+     "weighted_base_before": 6412974.199593917,
+     "weighted_base_after": 6412974.199594266,
+     "delta": 3.4924596548080444e-07
+    },
+    {
+     "variant": "as-is",
+     "block": "DSO9|2025|Summer",
+     "effective_scale": 95180.29329000627,
+     "solved": true,
+     "weighted_base_before": 2493171.556837255,
+     "weighted_base_after": 2493171.556940195,
+     "delta": 0.00010294001549482346
+    },
+    {
+     "variant": "as-is",
+     "block": "DSO9|2025|Autumn",
+     "effective_scale": 95180.29329000627,
+     "solved": true,
+     "weighted_base_before": 265605.9591582434,
+     "weighted_base_after": 265605.95915820025,
+     "delta": -4.313187673687935e-08
+    },
+    {
+     "variant": "as-is",
+     "block": "DSO9|2025|Winter",
+     "effective_scale": 95180.29329000627,
+     "solved": true,
+     "weighted_base_before": 331176.6220468193,
+     "weighted_base_after": 331176.618189191,
+     "delta": -0.003857628325931728
+    },
+    {
+     "variant": "as-is",
+     "block": "DSO9|2030|Spring",
+     "effective_scale": 103944.48754852384,
+     "solved": true,
+     "weighted_base_before": 6686069.813113109,
+     "weighted_base_after": 6686069.81311277,
+     "delta": -3.390014171600342e-07
+    },
+    {
+     "variant": "as-is",
+     "block": "DSO9|2030|Summer",
+     "effective_scale": 105086.7346644417,
+     "solved": true,
+     "weighted_base_before": 4336274.026085217,
+     "weighted_base_after": 4336274.026091259,
+     "delta": 6.042420864105225e-06
+    },
+    {
+     "variant": "as-is",
+     "block": "DSO9|2030|Autumn",
+     "effective_scale": 105086.7346644417,
+     "solved": true,
+     "weighted_base_before": 685059.8701732466,
+     "weighted_base_after": 685059.8703169244,
+     "delta": 0.0001436778111383319
+    },
+    {
+     "variant": "as-is",
+     "block": "DSO9|2030|Winter",
+     "effective_scale": 105086.7346644417,
+     "solved": true,
+     "weighted_base_before": 699143.0702843172,
+     "weighted_base_after": 699144.7695443713,
+     "delta": 1.6992600540397689
+    },
+    {
+     "variant": "as-is",
+     "block": "DSO9|2035|Spring",
+     "effective_scale": 114763.11330078664,
+     "solved": true,
+     "weighted_base_before": 9951709.098842891,
+     "weighted_base_after": 9951709.098843258,
+     "delta": 3.6694109439849854e-07
+    },
+    {
+     "variant": "as-is",
+     "block": "DSO9|2035|Summer",
+     "effective_scale": 116024.2464139821,
+     "solved": true,
+     "weighted_base_before": 8213763.080696226,
+     "weighted_base_after": 8213763.084835434,
+     "delta": 0.004139208234846592
+    },
+    {
+     "variant": "as-is",
+     "block": "DSO9|2035|Autumn",
+     "effective_scale": 116024.2464139821,
+     "solved": true,
+     "weighted_base_before": 1258629.9627924522,
+     "weighted_base_after": 1258629.9627926007,
+     "delta": 1.4854595065116882e-07
+    },
+    {
+     "variant": "as-is",
+     "block": "DSO9|2035|Winter",
+     "effective_scale": 116024.2464139821,
+     "solved": true,
+     "weighted_base_before": 703913.8587470741,
+     "weighted_base_after": 703913.860587323,
+     "delta": 0.0018402488203719258
+    },
+    {
+     "variant": "x effective_scale",
+     "block": "TSO|2025|Spring",
+     "effective_scale": 94145.72488468012,
+     "solved": true,
+     "weighted_base_before": 79084125.21136701,
+     "weighted_base_after": 78983368.31234875,
+     "delta": -100756.89901825786
+    },
+    {
+     "variant": "x effective_scale",
+     "block": "TSO|2025|Summer",
+     "effective_scale": 95180.29329000627,
+     "solved": true,
+     "weighted_base_before": 92998516.29367754,
+     "weighted_base_after": 93003910.4840251,
+     "delta": 5394.190347567201
+    },
+    {
+     "variant": "x effective_scale",
+     "block": "TSO|2025|Autumn",
+     "effective_scale": 95180.29329000627,
+     "solved": true,
+     "weighted_base_before": 77929341.6538994,
+     "weighted_base_after": 77854082.01066525,
+     "delta": -75259.64323414862
+    },
+    {
+     "variant": "x effective_scale",
+     "block": "TSO|2025|Winter",
+     "effective_scale": 95180.29329000627,
+     "solved": true,
+     "weighted_base_before": 85211870.31102541,
+     "weighted_base_after": 85129938.72422685,
+     "delta": -81931.5867985636
+    },
+    {
+     "variant": "x effective_scale",
+     "block": "TSO|2030|Spring",
+     "effective_scale": 103944.48754852384,
+     "solved": true,
+     "weighted_base_before": 59744439.07269652,
+     "weighted_base_after": 59629360.406265356,
+     "delta": -115078.66643116623
+    },
+    {
+     "variant": "x effective_scale",
+     "block": "TSO|2030|Summer",
+     "effective_scale": 105086.7346644417,
+     "solved": true,
+     "weighted_base_before": 69996507.77700028,
+     "weighted_base_after": 69982947.29955986,
+     "delta": -13560.477440416813
+    },
+    {
+     "variant": "x effective_scale",
+     "block": "TSO|2030|Autumn",
+     "effective_scale": 105086.7346644417,
+     "solved": true,
+     "weighted_base_before": 27761714.599293474,
+     "weighted_base_after": 27742394.664857373,
+     "delta": -19319.934436101466
+    },
+    {
+     "variant": "x effective_scale",
+     "block": "TSO|2030|Winter",
+     "effective_scale": 105086.7346644417,
+     "solved": true,
+     "weighted_base_before": 40865651.1121484,
+     "weighted_base_after": 40776266.14859257,
+     "delta": -89384.96355582774
+    },
+    {
+     "variant": "x effective_scale",
+     "block": "TSO|2035|Spring",
+     "effective_scale": 114763.11330078664,
+     "solved": true,
+     "weighted_base_before": 60108500.24369215,
+     "weighted_base_after": 59982451.60588435,
+     "delta": -126048.63780780137
+    },
+    {
+     "variant": "x effective_scale",
+     "block": "TSO|2035|Summer",
+     "effective_scale": 116024.2464139821,
+     "solved": true,
+     "weighted_base_before": 67942352.37969375,
+     "weighted_base_after": 67882681.33626881,
+     "delta": -59671.04342493415
+    },
+    {
+     "variant": "x effective_scale",
+     "block": "TSO|2035|Autumn",
+     "effective_scale": 116024.2464139821,
+     "solved": true,
+     "weighted_base_before": 34953498.24917244,
+     "weighted_base_after": 34899321.34073049,
+     "delta": -54176.90844195336
+    },
+    {
+     "variant": "x effective_scale",
+     "block": "TSO|2035|Winter",
+     "effective_scale": 116024.2464139821,
+     "solved": true,
+     "weighted_base_before": 36061876.810207635,
+     "weighted_base_after": 36019667.6506465,
+     "delta": -42209.159561134875
+    },
+    {
+     "variant": "x effective_scale",
+     "block": "DSO5|2025|Spring",
+     "effective_scale": 94145.72488468012,
+     "solved": true,
+     "weighted_base_before": 5260379.668861992,
+     "weighted_base_after": 5082750.594092131,
+     "delta": -177629.07476986106
+    },
+    {
+     "variant": "x effective_scale",
+     "block": "DSO5|2025|Summer",
+     "effective_scale": 95180.29329000627,
+     "solved": true,
+     "weighted_base_before": 1293071.0795099542,
+     "weighted_base_after": 1040518.028910292,
+     "delta": -252553.05059966224
+    },
+    {
+     "variant": "x effective_scale",
+     "block": "DSO5|2025|Autumn",
+     "effective_scale": 95180.29329000627,
+     "solved": true,
+     "weighted_base_before": 266927.12275768555,
+     "weighted_base_after": 6506.324097642868,
+     "delta": -260420.79866004267
+    },
+    {
+     "variant": "x effective_scale",
+     "block": "DSO5|2025|Winter",
+     "effective_scale": 95180.29329000627,
+     "solved": true,
+     "weighted_base_before": 271531.27520176664,
+     "weighted_base_after": 6980.495269304759,
+     "delta": -264550.77993246185
+    },
+    {
+     "variant": "x effective_scale",
+     "block": "DSO5|2030|Spring",
+     "effective_scale": 103944.48754852384,
+     "solved": true,
+     "weighted_base_before": 6207667.157735189,
+     "weighted_base_after": 6030755.62035985,
+     "delta": -176911.5373753393
+    },
+    {
+     "variant": "x effective_scale",
+     "block": "DSO5|2030|Summer",
+     "effective_scale": 105086.7346644417,
+     "solved": true,
+     "weighted_base_before": 3450334.6705991584,
+     "weighted_base_after": 3230868.139806781,
+     "delta": -219466.53079237742
+    },
+    {
+     "variant": "x effective_scale",
+     "block": "DSO5|2030|Autumn",
+     "effective_scale": 105086.7346644417,
+     "solved": true,
+     "weighted_base_before": 776016.5008311564,
+     "weighted_base_after": 466426.55442184466,
+     "delta": -309589.9464093117
+    },
+    {
+     "variant": "x effective_scale",
+     "block": "DSO5|2030|Winter",
+     "effective_scale": 105086.7346644417,
+     "solved": true,
+     "weighted_base_before": 455449.8608040472,
+     "weighted_base_after": 204569.46267133104,
+     "delta": -250880.39813271616
+    },
+    {
+     "variant": "x effective_scale",
+     "block": "DSO5|2035|Spring",
+     "effective_scale": 114763.11330078664,
+     "solved": true,
+     "weighted_base_before": 9794174.279353043,
+     "weighted_base_after": 9641933.863877274,
+     "delta": -152240.41547576897
+    },
+    {
+     "variant": "x effective_scale",
+     "block": "DSO5|2035|Summer",
+     "effective_scale": 116024.2464139821,
+     "solved": true,
+     "weighted_base_before": 7158236.261215482,
+     "weighted_base_after": 6980028.29997811,
+     "delta": -178207.9612373719
+    },
+    {
+     "variant": "x effective_scale",
+     "block": "DSO5|2035|Autumn",
+     "effective_scale": 116024.2464139821,
+     "solved": true,
+     "weighted_base_before": 1011009.0595208056,
+     "weighted_base_after": 753114.156387683,
+     "delta": -257894.9031331226
+    },
+    {
+     "variant": "x effective_scale",
+     "block": "DSO5|2035|Winter",
+     "effective_scale": 116024.2464139821,
+     "solved": true,
+     "weighted_base_before": 521884.598108526,
+     "weighted_base_after": 255427.1931752541,
+     "delta": -266457.40493327193
+    },
+    {
+     "variant": "x effective_scale",
+     "block": "DSO7|2025|Spring",
+     "effective_scale": 94145.72488468012,
+     "solved": true,
+     "weighted_base_before": 3436144.055161857,
+     "weighted_base_after": 3212235.122301946,
+     "delta": -223908.93285991112
+    },
+    {
+     "variant": "x effective_scale",
+     "block": "DSO7|2025|Summer",
+     "effective_scale": 95180.29329000627,
+     "solved": true,
+     "weighted_base_before": 1467307.6199529103,
+     "weighted_base_after": 1236712.473116669,
+     "delta": -230595.14683624124
+    },
+    {
+     "variant": "x effective_scale",
+     "block": "DSO7|2025|Autumn",
+     "effective_scale": 95180.29329000627,
+     "solved": true,
+     "weighted_base_before": 268746.1713321734,
+     "weighted_base_after": 8002.19899572021,
+     "delta": -260743.97233645318
+    },
+    {
+     "variant": "x effective_scale",
+     "block": "DSO7|2025|Winter",
+     "effective_scale": 95180.29329000627,
+     "solved": true,
+     "weighted_base_before": 344851.11398979195,
+     "weighted_base_after": 101805.50303764694,
+     "delta": -243045.610952145
+    },
+    {
+     "variant": "x effective_scale",
+     "block": "DSO7|2030|Spring",
+     "effective_scale": 103944.48754852384,
+     "solved": true,
+     "weighted_base_before": 3568545.4561840985,
+     "weighted_base_after": 3346758.0814392692,
+     "delta": -221787.37474482926
+    },
+    {
+     "variant": "x effective_scale",
+     "block": "DSO7|2030|Summer",
+     "effective_scale": 105086.7346644417,
+     "solved": true,
+     "weighted_base_before": 3255454.09587668,
+     "weighted_base_after": 3040064.214148825,
+     "delta": -215389.8817278552
+    },
+    {
+     "variant": "x effective_scale",
+     "block": "DSO7|2030|Autumn",
+     "effective_scale": 105086.7346644417,
+     "solved": true,
+     "weighted_base_before": 562189.0089199976,
+     "weighted_base_after": 303340.3510756049,
+     "delta": -258848.6578443927
+    },
+    {
+     "variant": "x effective_scale",
+     "block": "DSO7|2030|Winter",
+     "effective_scale": 105086.7346644417,
+     "solved": true,
+     "weighted_base_before": 315005.54022035503,
+     "weighted_base_after": 60406.753445995244,
+     "delta": -254598.7867743598
+    },
+    {
+     "variant": "x effective_scale",
+     "block": "DSO7|2035|Spring",
+     "effective_scale": 114763.11330078664,
+     "solved": true,
+     "weighted_base_before": 6607629.813193531,
+     "weighted_base_after": 6505883.043340457,
+     "delta": -101746.7698530741
+    },
+    {
+     "variant": "x effective_scale",
+     "block": "DSO7|2035|Summer",
+     "effective_scale": 116024.2464139821,
+     "solved": true,
+     "weighted_base_before": 5214345.229241624,
+     "weighted_base_after": 5005308.504698483,
+     "delta": -209036.72454314027
+    },
+    {
+     "variant": "x effective_scale",
+     "block": "DSO7|2035|Autumn",
+     "effective_scale": 116024.2464139821,
+     "solved": true,
+     "weighted_base_before": 574487.3440479884,
+     "weighted_base_after": 253874.90583918753,
+     "delta": -320612.43820880086
+    },
+    {
+     "variant": "x effective_scale",
+     "block": "DSO7|2035|Winter",
+     "effective_scale": 116024.2464139821,
+     "solved": true,
+     "weighted_base_before": 414667.50789826864,
+     "weighted_base_after": 165299.43496024027,
+     "delta": -249368.07293802837
+    },
+    {
+     "variant": "x effective_scale",
+     "block": "DSO9|2025|Spring",
+     "effective_scale": 94145.72488468012,
+     "solved": true,
+     "weighted_base_before": 6412974.199593917,
+     "weighted_base_after": 6239999.335991025,
+     "delta": -172974.86360289156
+    },
+    {
+     "variant": "x effective_scale",
+     "block": "DSO9|2025|Summer",
+     "effective_scale": 95180.29329000627,
+     "solved": true,
+     "weighted_base_before": 2493171.556837255,
+     "weighted_base_after": 2269603.3383019343,
+     "delta": -223568.21853532083
+    },
+    {
+     "variant": "x effective_scale",
+     "block": "DSO9|2025|Autumn",
+     "effective_scale": 95180.29329000627,
+     "solved": true,
+     "weighted_base_before": 265605.9591582434,
+     "weighted_base_after": 8814.621805646319,
+     "delta": -256791.33735259707
+    },
+    {
+     "variant": "x effective_scale",
+     "block": "DSO9|2025|Winter",
+     "effective_scale": 95180.29329000627,
+     "solved": true,
+     "weighted_base_before": 331176.6220468193,
+     "weighted_base_after": 88838.15104995185,
+     "delta": -242338.47099686746
+    },
+    {
+     "variant": "x effective_scale",
+     "block": "DSO9|2030|Spring",
+     "effective_scale": 103944.48754852384,
+     "solved": true,
+     "weighted_base_before": 6686069.813113109,
+     "weighted_base_after": 6510355.878639308,
+     "delta": -175713.9344738014
+    },
+    {
+     "variant": "x effective_scale",
+     "block": "DSO9|2030|Summer",
+     "effective_scale": 105086.7346644417,
+     "solved": true,
+     "weighted_base_before": 4336274.026085217,
+     "weighted_base_after": 4229258.260713432,
+     "delta": -107015.76537178457
+    },
+    {
+     "variant": "x effective_scale",
+     "block": "DSO9|2030|Autumn",
+     "effective_scale": 105086.7346644417,
+     "solved": true,
+     "weighted_base_before": 685059.8701732466,
+     "weighted_base_after": 391812.2267249405,
+     "delta": -293247.6434483061
+    },
+    {
+     "variant": "x effective_scale",
+     "block": "DSO9|2030|Winter",
+     "effective_scale": 105086.7346644417,
+     "solved": true,
+     "weighted_base_before": 699143.0702843172,
+     "weighted_base_after": 466872.5693640737,
+     "delta": -232270.50092024356
+    },
+    {
+     "variant": "x effective_scale",
+     "block": "DSO9|2035|Spring",
+     "effective_scale": 114763.11330078664,
+     "solved": true,
+     "weighted_base_before": 9951709.098842891,
+     "weighted_base_after": 9785580.721090224,
+     "delta": -166128.3777526673
+    },
+    {
+     "variant": "x effective_scale",
+     "block": "DSO9|2035|Summer",
+     "effective_scale": 116024.2464139821,
+     "solved": true,
+     "weighted_base_before": 8213763.080696226,
+     "weighted_base_after": 8021147.50462168,
+     "delta": -192615.5760745462
+    },
+    {
+     "variant": "x effective_scale",
+     "block": "DSO9|2035|Autumn",
+     "effective_scale": 116024.2464139821,
+     "solved": true,
+     "weighted_base_before": 1258629.9627924522,
+     "weighted_base_after": 1009853.6985700444,
+     "delta": -248776.26422240783
+    },
+    {
+     "variant": "x effective_scale",
+     "block": "DSO9|2035|Winter",
+     "effective_scale": 116024.2464139821,
+     "solved": true,
+     "weighted_base_before": 703913.8587470741,
+     "weighted_base_after": 451379.954093154,
+     "delta": -252533.90465392015
+    }
+   ],
+   "summary": {
+    "as-is": {
+     "n_blocks": 48,
+     "n_solved": 48,
+     "total_weighted_base_before": 837191939.3227628,
+     "total_weighted_base_after": 836808537.6436739,
+     "total_delta": -383401.6790891475,
+     "worst_block": "DSO7|2025|Winter",
+     "worst_delta": -120124.3742965539
+    },
+    "x effective_scale": {
+     "n_blocks": 48,
+     "n_solved": 48,
+     "total_weighted_base_before": 837191939.3227628,
+     "total_weighted_base_after": 828299475.5644842,
+     "total_delta": -8892463.758278634,
+     "worst_block": "DSO7|2035|Autumn",
+     "worst_delta": -320612.43820880086
+    }
+   }
+  },
+  "A1_polish_scalings": {
+   "polish, production scale": {
+    "variant": "A1__production_scale",
+    "rescale": null,
+    "polish_all_solved": true,
+    "failed_blocks": [],
+    "max_coordinated_residual": 1.1102230246251565e-16,
+    "network_max_violation": 1.5000220759397997e-05,
+    "network_worst_block": "DSO9|2035|Autumn",
+    "network_h1_violation": 0.0,
+    "converter_capability_violation": 9.998696299213639e-09,
+    "esso_production_feasible": true,
+    "gross_operational_cost": 827974518.7171049,
+    "physical_salvage": 3428.356254506647,
+    "net_operational_recourse": 827971090.3608505,
+    "investment_cost": 50000.0,
+    "runtime_s": 48.30050301551819,
+    "total_objective": 828021090.3608505,
+    "status": "VALID",
+    "fingerprint_archive": "data/SRP1/Results/P57/archives/A1__production_scale.npz"
+   },
+   "polish x 1/effective_scale": {
+    "variant": "A1__inv_effective_scale",
+    "rescale": "admm_scale",
+    "rescale_factor_min": 8.618888128192918e-06,
+    "rescale_factor_max": 1.0621831222022118e-05,
+    "polish_all_solved": true,
+    "failed_blocks": [],
+    "max_coordinated_residual": 2.220446049250313e-16,
+    "network_max_violation": 9.089215893709479e-06,
+    "network_worst_block": "TSO|2035|Spring",
+    "network_h1_violation": 0.0,
+    "converter_capability_violation": 2.0779253543386076e-10,
+    "esso_production_feasible": true,
+    "gross_operational_cost": 837020865.514887,
+    "physical_salvage": 3428.356254506647,
+    "net_operational_recourse": 837017437.1586325,
+    "investment_cost": 50000.0,
+    "runtime_s": 39.008541107177734,
+    "total_objective": 837067437.1586325,
+    "status": "VALID",
+    "fingerprint_archive": "data/SRP1/Results/P57/archives/A1__inv_effective_scale.npz"
+   },
+   "polish x 1e3": {
+    "variant": "A1__x1e3",
+    "rescale": "1000.0",
+    "rescale_factor_min": 1000.0,
+    "rescale_factor_max": 1000.0,
+    "polish_all_solved": true,
+    "failed_blocks": [],
+    "max_coordinated_residual": 2.220446049250313e-16,
+    "network_max_violation": 1.414258534276902e-05,
+    "network_worst_block": "DSO5|2030|Autumn",
+    "network_h1_violation": 9.920465717744927e-09,
+    "converter_capability_violation": 1.0011830108014319e-08,
+    "esso_production_feasible": true,
+    "gross_operational_cost": 827973773.8008778,
+    "physical_salvage": 3428.356254506647,
+    "net_operational_recourse": 827970345.4446234,
+    "investment_cost": 50000.0,
+    "runtime_s": 50.87644910812378,
+    "total_objective": 828020345.4446234,
+    "status": "VALID",
+    "fingerprint_archive": "data/SRP1/Results/P57/archives/A1__x1e3.npz"
+   },
+   "polish x 1e-3": {
+    "variant": "A1__x1e-3",
+    "rescale": "0.001",
+    "rescale_factor_min": 0.001,
+    "rescale_factor_max": 0.001,
+    "polish_all_solved": true,
+    "failed_blocks": [],
+    "max_coordinated_residual": 1.1102230246251565e-16,
+    "network_max_violation": 9.2620739233773e-06,
+    "network_worst_block": "DSO9|2030|Spring",
+    "network_h1_violation": 0.0,
+    "converter_capability_violation": 9.822337395496384e-09,
+    "esso_production_feasible": true,
+    "gross_operational_cost": 828075154.7953635,
+    "physical_salvage": 3428.356254506647,
+    "net_operational_recourse": 828071726.4391091,
+    "investment_cost": 50000.0,
+    "runtime_s": 40.79740071296692,
+    "total_objective": 828121726.4391091,
+    "status": "VALID",
+    "fingerprint_archive": "data/SRP1/Results/P57/archives/A1__x1e-3.npz"
+   }
+  },
+  "A1_deltas_vs_production_scale": {
+   "polish, production scale": 0.0,
+   "polish x 1/effective_scale": 9046346.797782063,
+   "polish x 1e3": -744.9162271022797,
+   "polish x 1e-3": 100636.07825863361
+  }
+ },
+ "B": {
+  "generation_1": {
+   "status": "VALID",
+   "total_objective": 828021090.3608505
+  },
+  "generation": 2,
+  "admm": {
+   "status": null,
+   "converged": true,
+   "initialization_failed": false,
+   "cycles": 1,
+   "runtime_s": 50.08345079421997,
+   "n_recovery_diagnostics": 0,
+   "gross_operational_cost": 836582203.4293616,
+   "net_operational_recourse": 836578781.2448345
+  },
+  "variants": {
+   "ADMM state (production default)": {
+    "variant": "B__ADMM_state",
+    "rescale": null,
+    "polish_all_solved": true,
+    "failed_blocks": [],
+    "max_coordinated_residual": 1.1102230246251565e-16,
+    "network_max_violation": 1.2994872649746414e-05,
+    "network_worst_block": "DSO5|2035|Summer",
+    "network_h1_violation": 0.0,
+    "converter_capability_violation": 1.0768152224061023e-08,
+    "esso_production_feasible": true,
+    "gross_operational_cost": 827368741.3635893,
+    "physical_salvage": 3422.7996449958696,
+    "net_operational_recourse": 827365318.5639443,
+    "investment_cost": 50000.0,
+    "runtime_s": 49.53269815444946,
+    "total_objective": 827415318.5639443,
+    "status": "VALID",
+    "fingerprint_archive": "data/SRP1/Results/P57/archives/B__ADMM_state.npz"
+   },
+   "previous continuation state": {
+    "variant": "B__previous_continuation_state",
+    "rescale": null,
+    "initial_point_transfer": {
+     "n_set": 383904,
+     "n_skipped_fixed": 10368,
+     "n_missing_or_misaligned": 0
+    },
+    "polish_all_solved": true,
+    "failed_blocks": [],
+    "max_coordinated_residual": 1.1102230246251565e-16,
+    "network_max_violation": 1.4488704877191338e-05,
+    "network_worst_block": "DSO5|2025|Summer",
+    "network_h1_violation": 0.0,
+    "converter_capability_violation": 1.076815223793881e-08,
+    "esso_production_feasible": true,
+    "gross_operational_cost": 827368742.1427715,
+    "physical_salvage": 3422.7996449958696,
+    "net_operational_recourse": 827365319.3431265,
+    "investment_cost": 50000.0,
+    "runtime_s": 45.42458391189575,
+    "total_objective": 827415319.3431265,
+    "status": "VALID",
+    "fingerprint_archive": "data/SRP1/Results/P57/archives/B__previous_continuation_state.npz"
+   },
+   "best known state (chain step 12)": {
+    "variant": "B__best_known_state",
+    "rescale": null,
+    "initial_point_transfer": {
+     "n_set": 383904,
+     "n_skipped_fixed": 10368,
+     "n_missing_or_misaligned": 0
+    },
+    "polish_all_solved": true,
+    "failed_blocks": [],
+    "max_coordinated_residual": 1.1102230246251565e-16,
+    "network_max_violation": 8.544042528757512e-06,
+    "network_worst_block": "DSO9|2035|Winter",
+    "network_h1_violation": 0.0,
+    "converter_capability_violation": 1.0768152203244341e-08,
+    "esso_production_feasible": true,
+    "gross_operational_cost": 827368744.6996564,
+    "physical_salvage": 3422.7996449958696,
+    "net_operational_recourse": 827365321.9000114,
+    "investment_cost": 50000.0,
+    "runtime_s": 44.80714511871338,
+    "total_objective": 827415321.9000114,
+    "status": "VALID",
+    "fingerprint_archive": "data/SRP1/Results/P57/archives/B__best_known_state.npz"
+   },
+   "cold state": {
+    "variant": "B__cold_state",
+    "rescale": null,
+    "initial_point_transfer": {
+     "n_set": 383040,
+     "n_skipped_fixed": 10368,
+     "n_missing_or_misaligned": 0
+    },
+    "polish_all_solved": true,
+    "failed_blocks": [],
+    "max_coordinated_residual": 1.1102230246251565e-16,
+    "network_max_violation": 1.3308821591229147e-05,
+    "network_worst_block": "DSO5|2025|Summer",
+    "network_h1_violation": 0.0,
+    "converter_capability_violation": 1.0768152224061023e-08,
+    "esso_production_feasible": true,
+    "gross_operational_cost": 827369044.6069038,
+    "physical_salvage": 3422.7996449958696,
+    "net_operational_recourse": 827365621.8072588,
+    "investment_cost": 50000.0,
+    "runtime_s": 46.496150970458984,
+    "total_objective": 827415621.8072588,
+    "status": "VALID",
+    "fingerprint_archive": "data/SRP1/Results/P57/archives/B__cold_state.npz"
+   }
+  },
+  "deltas_vs_admm_start": {
+   "ADMM state (production default)": 0.0,
+   "previous continuation state": 0.7791821956634521,
+   "best known state (chain step 12)": 3.3360670804977417,
+   "cold state": 303.2433145046234
+  }
+ },
+ "D": {
+  "target": "se|node9|2025|-10%",
+  "direct": {
+   "status": "POLISH_FAILURE",
+   "total_objective": null,
+   "wall_clock_s": 135.83043670654297
+  },
+  "capacity_continuation": {
+   "status": "VALID",
+   "total_objective": 825127965.3618163,
+   "lambdas": [
+    0.25,
+    0.5,
+    0.75,
+    1.0
+   ],
+   "step_objectives": [
+    828008580.7076772,
+    826824735.6079463,
+    825952055.0697217,
+    825127965.3618163
+   ],
+   "total_runtime_s": 511.32534289360046
+  },
+  "self_refinement": {
+   "objectives": []
+  },
+  "penalty_continuation": {
+   "steps": [
+    {
+     "exponent_t": 1.0,
+     "status": "POLISH_FAILURE",
+     "rescale_factor_min": 8.618888128192918e-06,
+     "rescale_factor_max": 1.0621831222022118e-05,
+     "total_objective": null,
+     "runtime_s": 1160.9207441806793
+    }
+   ]
+  }
+ }
+}

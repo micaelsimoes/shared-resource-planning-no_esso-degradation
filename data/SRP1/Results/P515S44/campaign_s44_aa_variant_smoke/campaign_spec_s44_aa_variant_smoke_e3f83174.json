@@ -1,0 +1,137 @@
+{
+ "authority": [
+  "PLANNER_BRIEF_2026-09-13.md Addendum 25 (AA variant arm; selection run)",
+  "data/SRP1/Results/P515S44/frozen_s44_selection_spec_v14_e4500e27.json item2_aa_variant, item3_selection_run",
+  "P5_15_S44_GATE_RULING.md (8ce0b872) Deviation / Follow-ups"
+ ],
+ "bar_window_cycles": 10,
+ "campaign_id": "s44_aa_variant_smoke",
+ "candidates": [
+  {
+   "canonical": {
+    "investment_year": 2025,
+    "nodes": {
+     "5": [
+      0.96875,
+      3.875
+     ],
+     "7": [
+      0.96875,
+      3.875
+     ],
+     "9": [
+      0.96875,
+      3.875
+     ]
+    }
+   },
+   "eval_dir": "837fc982565dbba3_c_star_aa_keep_memory",
+   "eval_key": "837fc982565dbba32241ed21a46da14984395006e3dbb4b03d5f72b9b72c50a7",
+   "key": "578636daa6d6360d6701764c73ddf795e53c2c37e511e21be1400024f8f6350c",
+   "label": "c_star_aa_keep_memory",
+   "overrides": {
+    "anderson_acceleration": {
+     "enabled": true,
+     "reject_policy": "keep_memory"
+    }
+   },
+   "post_certification": {
+    "hull_polish": true,
+    "persist_certified_models": true,
+    "reference": {
+     "campaign_spec_sha256": "4047b4e3f1852c3616a80ad26f2d43f2aa4b333847e447fb5b9323fb3bce7f33",
+     "candidate_key": "578636daa6d6360d6701764c73ddf795e53c2c37e511e21be1400024f8f6350c",
+     "certification_cycle": 139,
+     "certified_cost": 650966975.2943751,
+     "component_levels_terminal_sha256": "ff9050bb1759cff14f9d4e94d7e095b7a9b7fc3fa7ca8439f2a9ed5c0aa0444d",
+     "configuration_overrides": {},
+     "eval_dir": "data/SRP1/Results/P515S44/campaign_s44_gate/evals/578636daa6d6360d_c_star",
+     "evaluation_record_sha256": "f7722fc44a2785f1d085dbc2f72703bc0962d06cf9a3796dbd4bce89d9ed7870"
+    }
+   },
+   "working_dir_ids": {
+    "precheck": "p515s44_s44_aa_variant_smoke_837fc982565dbba3_precheck",
+    "run": "p515s44_s44_aa_variant_smoke_837fc982565dbba3_run"
+   }
+  },
+  {
+   "canonical": {
+    "investment_year": 2025,
+    "nodes": {
+     "5": [
+      0.96875,
+      3.875
+     ],
+     "7": [
+      0.96875,
+      3.875
+     ],
+     "9": [
+      0.96875,
+      3.875
+     ]
+    }
+   },
+   "eval_dir": "578636daa6d6360d_c_star_d",
+   "eval_key": "578636daa6d6360d6701764c73ddf795e53c2c37e511e21be1400024f8f6350c",
+   "key": "578636daa6d6360d6701764c73ddf795e53c2c37e511e21be1400024f8f6350c",
+   "label": "c_star_d",
+   "overrides": {},
+   "post_certification": null,
+   "working_dir_ids": {
+    "precheck": "p515s44_s44_aa_variant_smoke_578636daa6d6360d_precheck",
+    "run": "p515s44_s44_aa_variant_smoke_578636daa6d6360d_run"
+   }
+  }
+ ],
+ "cap": 3,
+ "concurrency": 2,
+ "configuration": {
+  "apply_rho": false,
+  "arm_label": "s39_D",
+  "case_file": "data/SRP1/SRP1_params.json",
+  "case_file_last_commit": "fb3de341b359422dfbfb77e6bbffd7dc83a80bab",
+  "case_file_sha256": "490e5b211f5083fe6ffca11d2aa07cd26739f141654fce3a23898258d610edf8",
+  "full_diagnostics_in_rows": true,
+  "name": "per-evaluation: AA keep_memory (override) and D (case file, fb3de341)",
+  "note": "campaign-level overrides empty; each entry carries its own (AA entry only); num_max_iters := cap (run_admm_arm always sets it)",
+  "overrides": {}
+ },
+ "extra": {
+  "campaign_script": "p515_s44_aa_variant_campaign.py",
+  "campaign_script_sha256": "de1f61be916bc2f0c2cbe298c370405eca229ef63e0b8e49575863c002f518ba",
+  "choice_rule": "spec v14 item2: fewer certification cycles among arms passing (b)-(d); tie -> Step 3.7 arm",
+  "mode": "smoke",
+  "predictions_recorded_in_advance": {
+   "expert": "80-95 cycles",
+   "planner": "central 88, range 78-100; (b)-(d) pass",
+   "source": "frozen spec v14 predictions_recorded_in_advance.item2_variant"
+  },
+  "step37_aa_reference": {
+   "certification_cycle": 109,
+   "dir": "data/SRP1/Results/P515S43/aa_run",
+   "g_s39_D_sha256": "4296fbd4e511e3e81074b3d35b545b0d7671dc5ec3f5d3f386a61254c967ff4f"
+  },
+  "stop_rule": "spec v14 item3: a candidate at which D fails to certify within cap 500 stops the run"
+ },
+ "frozen_utc": "2026-09-19T12:28:36.751618+00:00",
+ "git_head": "92ddc7224f946a616a92e06d923d139a5899ae75",
+ "harness": {
+  "path": "p515_s44_campaign_harness.py",
+  "sha256": "f0037b6acb4e3c595f4eb63bf1b463907bc92eaa69b0186707f23c2d102ccab5"
+ },
+ "interpreter": "/Users/micaelsimoes/miniconda3/envs/opf_env_py311/bin/python",
+ "nlp_solver_path_env": {
+  "NLP_SOLVER_PATH": "/usr/local/bin/ipopt",
+  "source": "environment"
+ },
+ "required_consecutive_cycles": 10,
+ "schema": "p515_s44_campaign_spec_v2",
+ "thread_caps": {
+  "MKL_NUM_THREADS": "1",
+  "NUMEXPR_NUM_THREADS": "1",
+  "OMP_NUM_THREADS": "1",
+  "OPENBLAS_NUM_THREADS": "1",
+  "VECLIB_MAXIMUM_THREADS": "1"
+ }
+}

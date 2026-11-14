@@ -1,0 +1,187 @@
+{
+ "stage": "P5.15 Step 3.5 polish-failure hypothesis checks (zero solves)",
+ "run": "data/SRP1/Results/P515S40/polish_gap_v2",
+ "H_V_voltage_midpoint": {
+  "n_entries": 864,
+  "n_midpoint_outside_bounds": 0,
+  "n_either_side_within_1e-6_of_vmax": 39,
+  "near_vmax_by_node_year_day": [
+   [
+    [
+     5,
+     "2025",
+     "Winter"
+    ],
+    3
+   ],
+   [
+    [
+     5,
+     "2035",
+     "Winter"
+    ],
+    3
+   ],
+   [
+    [
+     9,
+     "2025",
+     "Autumn"
+    ],
+    1
+   ],
+   [
+    [
+     9,
+     "2025",
+     "Spring"
+    ],
+    4
+   ],
+   [
+    [
+     9,
+     "2025",
+     "Summer"
+    ],
+    5
+   ],
+   [
+    [
+     9,
+     "2030",
+     "Autumn"
+    ],
+    1
+   ],
+   [
+    [
+     9,
+     "2030",
+     "Spring"
+    ],
+    3
+   ],
+   [
+    [
+     9,
+     "2030",
+     "Summer"
+    ],
+    5
+   ],
+   [
+    [
+     9,
+     "2030",
+     "Winter"
+    ],
+    1
+   ],
+   [
+    [
+     9,
+     "2035",
+     "Autumn"
+    ],
+    3
+   ],
+   [
+    [
+     9,
+     "2035",
+     "Spring"
+    ],
+    3
+   ],
+   [
+    [
+     9,
+     "2035",
+     "Summer"
+    ],
+    6
+   ],
+   [
+    [
+     9,
+     "2035",
+     "Winter"
+    ],
+    1
+   ]
+  ],
+  "max_abs_tso_minus_dso_pu": 7.048221740735272e-05,
+  "verdict": "falsified"
+ },
+ "H_S_interface_rating_midpoint": {
+  "stride_path": "data/SRP1/Results/P515S40/polish_gap_v2/pf_entry_stride_s39_D.jsonl",
+  "certified_cycle": 139,
+  "midpoint_over_rating_by_node_year_day": [
+   [
+    [
+     7,
+     "2025",
+     "Spring"
+    ],
+    4
+   ],
+   [
+    [
+     7,
+     "2025",
+     "Summer"
+    ],
+    4
+   ],
+   [
+    [
+     7,
+     "2030",
+     "Spring"
+    ],
+    5
+   ],
+   [
+    [
+     7,
+     "2030",
+     "Summer"
+    ],
+    3
+   ],
+   [
+    [
+     7,
+     "2035",
+     "Spring"
+    ],
+    3
+   ],
+   [
+    [
+     7,
+     "2035",
+     "Summer"
+    ],
+    3
+   ]
+  ],
+  "n_tso_year_day_blocks_touched": 6,
+  "max_midpoint_utilization_by_node": {
+   "5": 0.5099139802174006,
+   "7": 1.0000050056326242,
+   "9": 0.6716199366409116
+  }
+ },
+ "solve_profile_guard": {
+  "counts": {
+   "permitted_solve": 0,
+   "permitted_exec": 0,
+   "blocked_solve": 0,
+   "blocked_exec": 0
+  },
+  "verify_failures": []
+ },
+ "definitions": "P5.15 Step 3.5 -- zero-solve checks of two hypotheses for the polish failures (Planner).\n\nThe v2 polish-gap run (`data/SRP1/Results/P515S40/polish_gap_v2/`) reproduced arm D bitwise and then\nfailed to polish 17 of 48 blocks at fixed consensus: all 12 TSO blocks ('Converged to a point of local\ninfeasibility') and 5 DSO blocks. The polish fixes each interface quantity at the MIDPOINT of the two\nsides' own achieved values (p56a_oracle design). This script tests, from the committed terminal\nartifacts of that run, whether the midpoint lands outside a bound that is active at the certified point.\n\nH-V (voltage): for every interface entry in `interface_voltage_terminal.json` (TSO and DSO side values\n  in pu, with the TSO node's bounds), midpoint m = (tso_pu + dso_pu) / 2. Count entries with\n  m > v_max_pu or m < v_min_pu. Also report entries with either side within 1e-6 pu of v_max, and the\n  largest |tso_pu - dso_pu|.\n\nH-S (interface rating): from the LAST row of `pf_entry_stride_<label>.jsonl` (the certified cycle), for\n  every (node, year, day, period), midpoint P and Q are ((x_dso + z_tso_current) / 2) per power type, in\n  the units the stride records (the same units as `interface_rating`, MVA). S = hypot(Pm, Qm);\n  utilization u = S / interface_rating. Count entries with u > 1, grouped by (node, year, day), and the\n  number of distinct TSO (year, day) blocks they touch.\n\nZero solves: SolveProfileGuard armed for the whole script, verify(0). Write-once output.\n"
+}

@@ -1,0 +1,23 @@
+% W167: generated from data/SRP1/SharedESS/SRP1_ESS.xlsx (HEAD blob == 7ce1d1ab blob) through production's
+% reader; values in k EUR (file values / 1000, 2 dp). The planning objective uses the probability-weighted
+% sum over the three scenarios (expected 2025 / 2030 / 2035 below, comment only; not a row of the submitted table):
+%   E[c^Inv,S] k EUR/MVA: 256.32 / 210.20 / 194.56
+%   E[c^Inv,E] k EUR/MWh: 253.88 / 208.20 / 192.71
+\begin{table}[htbp!]
+    \centering
+    \caption{Investment costs of shared ESSs~\cite{nrel_ess_costs}.}
+    \begin{tabular}{lcc ccc}
+        \toprule
+        Parameter & Scn. & Prob., [\%] & 2025 & 2030 & 2035 \\ 
+        \midrule
+        $c^\text{Inv,S}_{y,c}$,     & 1 & 35.00\% & 214.17 & 168.72 & 153.93\\
+        $\left[\text{k\euro/MVA}\right]$ & 2 & 55.00\% & 267.53 & 224.25 & 206.96\\
+        ~                           & 3 & 10.00\% & 342.17 & 278.10 & 268.58\\
+        \midrule
+        $c^\text{Inv,E}_{y,c}$, & 1 & 35.00\% & 212.13 & 167.11 & 152.46\\
+        $\left[\text{k\euro/MWh}\right]$ & 2 & 55.00\% & 264.98 & 222.12 & 204.99\\
+        ~                           & 3 & 10.00\% & 338.91 & 275.45 & 266.02\\
+        \bottomrule
+    \end{tabular}
+    \label{tab:investment_cost}
+\end{table}

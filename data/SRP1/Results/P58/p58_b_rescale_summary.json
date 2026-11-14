@@ -1,0 +1,516 @@
+{
+ "stage": "P5.8-B",
+ "provenance": {
+  "timestamp_utc": "2026-09-09T09:54:49.370172+00:00",
+  "git_head": "f6db8fceb563f16e23475dbd928894d281ab1470",
+  "sys_executable": "/opt/anaconda3/envs/opf_env_py311/bin/python",
+  "conda_default_env": null,
+  "conda_env_from_path": "opf_env_py311",
+  "python_version": "3.11.11",
+  "numpy_version": "2.4.2",
+  "pandas_version": "3.0.0",
+  "scipy_version": "1.17.0",
+  "pyomo_version": "6.9.5",
+  "ipopt": {
+   "path": "/usr/local/bin/ipopt",
+   "version": "3.14.18",
+   "exists": true,
+   "banner": "Ipopt 3.14.18 (aarch64-apple-darwin24.5.0), ASL(20241111)"
+  },
+  "hsl_linear_solver": "ma97",
+  "gurobi": {
+   "gurobipy": "13.0.1",
+   "gurobi_runtime": "13.0.1",
+   "licence": "ACADEMIC",
+   "licence_expiry": "2027-04-10",
+   "available": true,
+   "licence_id": "2805683",
+   "licence_version": "13"
+  },
+  "scenario_checksum": "5a02b77ccbbbbbb869de92958a3851d095624711abc2dbfc0157466064410358",
+  "canonical_checksum": "5a02b77ccbbbbbb869de92958a3851d095624711abc2dbfc0157466064410358",
+  "checksum_matches_canonical": true,
+  "stage": "P5.8-B rescaling validation"
+ },
+ "timestamp_utc": "2026-09-09T09:54:49.480182+00:00",
+ "candidate": "canonical positive-bootstrap base x0",
+ "formulations": {
+  "CURRENT": "base_objective / effective_scale + ADMM terms",
+  "RESCALED": "base_objective + effective_scale * ADMM terms"
+ },
+ "identical": [
+  "initialization (the same converged ADMM state)",
+  "consensus variables",
+  "rho",
+  "proximal terms",
+  "IPOPT settings",
+  "model objects up to a clone"
+ ],
+ "B1_one_block": [
+  {
+   "block": "DSO5|2035|Autumn",
+   "variant": "CURRENT",
+   "effective_scale": 116024.2464139821,
+   "solved": true,
+   "runtime_s": 0.48792290687561035,
+   "weighted_base_before": 1011009.0595208056,
+   "weighted_base_after": 1011009.0595250288,
+   "base_delta": 4.223198629915714e-06,
+   "augmented_before_current_scale": 0.021932182627376205,
+   "augmented_after_current_scale": 0.02193218262750336,
+   "consensus_residual_before": {
+    "vmag": 0.00011862134951945436,
+    "pf": 0.007706406357413154,
+    "ess": 1.2283363990929714e-06,
+    "max": 0.007706406357413154
+   },
+   "consensus_residual_after": {
+    "vmag": 0.00011862134952544956,
+    "pf": 0.0077064063581123166,
+    "ess": 1.228336401004745e-06,
+    "max": 0.0077064063581123166
+   },
+   "ipopt_iterations": 26,
+   "ipopt_exit": "Optimal Solution Found",
+   "ipopt_scaled": {
+    "objective": 0.02193218262750296,
+    "dual_infeasibility": 1.2215074819948296e-06,
+    "constraint_violation": 6.8361892534516e-07,
+    "complementarity": 1.8479205543411073e-06,
+    "overall_nlp_error": 1.8479205543411073e-06,
+    "variable_bound_violation": 0.0
+   },
+   "ipopt_unscaled": {
+    "objective": 0.02193218262750296,
+    "dual_infeasibility": 1.2215074819948296e-06,
+    "constraint_violation": 1.0425175137607212e-06,
+    "complementarity": 1.8479205543411073e-06,
+    "overall_nlp_error": 1.8479205543411073e-06,
+    "variable_bound_violation": 0.0
+   }
+  },
+  {
+   "block": "DSO5|2035|Autumn",
+   "variant": "RESCALED",
+   "effective_scale": 116024.2464139821,
+   "solved": true,
+   "runtime_s": 0.7452023029327393,
+   "weighted_base_before": 1011009.0595208056,
+   "weighted_base_after": 753114.156387683,
+   "base_delta": -257894.9031331226,
+   "augmented_before_current_scale": 0.021932182627376205,
+   "augmented_after_current_scale": 0.015213433288164909,
+   "consensus_residual_before": {
+    "vmag": 0.00011862134951945436,
+    "pf": 0.007706406357413154,
+    "ess": 1.2283363990929714e-06,
+    "max": 0.007706406357413154
+   },
+   "consensus_residual_after": {
+    "vmag": 0.00010459861682399207,
+    "pf": 0.011282614163874605,
+    "ess": 2.2714000997919805e-06,
+    "max": 0.011282614163874605
+   },
+   "ipopt_iterations": 36,
+   "ipopt_exit": "Optimal Solution Found",
+   "ipopt_scaled": {
+    "objective": 1.7651271326287137,
+    "dual_infeasibility": 9.525717513757716e-08,
+    "constraint_violation": 1.9052721806472764e-08,
+    "complementarity": 1.4462665879047389e-08,
+    "overall_nlp_error": 9.525717513757716e-08,
+    "variable_bound_violation": 9.95453871634326e-09
+   },
+   "ipopt_unscaled": {
+    "objective": 1765.1271326287138,
+    "dual_infeasibility": 9.525717513757716e-05,
+    "constraint_violation": 2.734286088518223e-08,
+    "complementarity": 1.4462665879047388e-05,
+    "overall_nlp_error": 9.525717513757716e-05,
+    "variable_bound_violation": 9.95453871634326e-09
+   }
+  },
+  {
+   "block": "TSO|2025|Spring",
+   "variant": "CURRENT",
+   "effective_scale": 94145.72488468012,
+   "solved": true,
+   "runtime_s": 0.22844982147216797,
+   "weighted_base_before": 79084125.21136701,
+   "weighted_base_after": 79031017.67099041,
+   "base_delta": -53107.5403766036,
+   "augmented_before_current_scale": 1.8264663846846614,
+   "augmented_after_current_scale": 1.8263664458270712,
+   "consensus_residual_before": {
+    "vmag": 1.7302733072321885e-05,
+    "pf": 0.0018410941167341655,
+    "ess": 7.375917680318071e-07,
+    "max": 0.0018410941167341655
+   },
+   "consensus_residual_after": {
+    "vmag": 5.589251707527332e-05,
+    "pf": 0.003950881417904256,
+    "ess": 1.0968421360644497e-06,
+    "max": 0.003950881417904256
+   },
+   "ipopt_iterations": 23,
+   "ipopt_exit": "Optimal Solution Found",
+   "ipopt_scaled": {
+    "objective": 1.8263664458270723,
+    "dual_infeasibility": 8.007962560424575e-09,
+    "constraint_violation": 6.616225345368321e-10,
+    "complementarity": 1.8451017456717128e-06,
+    "overall_nlp_error": 1.8451017456717128e-06,
+    "variable_bound_violation": 0.0
+   },
+   "ipopt_unscaled": {
+    "objective": 1.8263664458270723,
+    "dual_infeasibility": 8.007962560424575e-09,
+    "constraint_violation": 6.616225345368321e-10,
+    "complementarity": 1.8451017456717128e-06,
+    "overall_nlp_error": 1.8451017456717128e-06,
+    "variable_bound_violation": 0.0
+   }
+  },
+  {
+   "block": "TSO|2025|Spring",
+   "variant": "RESCALED",
+   "effective_scale": 94145.72488468012,
+   "solved": true,
+   "runtime_s": 0.3653120994567871,
+   "weighted_base_before": 79084125.21136701,
+   "weighted_base_after": 78983368.31234875,
+   "base_delta": -100756.89901825786,
+   "augmented_before_current_scale": 1.8264663846846614,
+   "augmented_after_current_scale": 1.825195937010386,
+   "consensus_residual_before": {
+    "vmag": 1.7302733072321885e-05,
+    "pf": 0.0018410941167341655,
+    "ess": 7.375917680318071e-07,
+    "max": 0.0018410941167341655
+   },
+   "consensus_residual_after": {
+    "vmag": 7.666772226144758e-05,
+    "pf": 0.003976423003455382,
+    "ess": 3.513198637030264e-07,
+    "max": 0.003976423003455382
+   },
+   "ipopt_iterations": 24,
+   "ipopt_exit": "Optimal Solution Found",
+   "ipopt_scaled": {
+    "objective": 171.83439454641518,
+    "dual_infeasibility": 5.833706481197989e-08,
+    "constraint_violation": 2.4424906541753444e-14,
+    "complementarity": 4.572987901228966e-08,
+    "overall_nlp_error": 5.833706481197989e-08,
+    "variable_bound_violation": 9.572764529234125e-09
+   },
+   "ipopt_unscaled": {
+    "objective": 171834.3945464152,
+    "dual_infeasibility": 5.833706481197989e-05,
+    "constraint_violation": 2.4424906541753444e-14,
+    "complementarity": 4.5729879012289655e-05,
+    "overall_nlp_error": 5.833706481197989e-05,
+    "variable_bound_violation": 9.572764529234125e-09
+   }
+  },
+  {
+   "block": "DSO7|2035|Autumn",
+   "variant": "CURRENT",
+   "effective_scale": 116024.2464139821,
+   "solved": true,
+   "runtime_s": 0.5730061531066895,
+   "weighted_base_before": 574487.3440479884,
+   "weighted_base_after": 574487.3432772869,
+   "base_delta": -0.0007707015611231327,
+   "augmented_before_current_scale": 0.01302299781366742,
+   "augmented_after_current_scale": 0.013022997766948607,
+   "consensus_residual_before": {
+    "vmag": 0.00011004712375450865,
+    "pf": 0.0029919616587012476,
+    "ess": 1.1601764179462212e-06,
+    "max": 0.0029919616587012476
+   },
+   "consensus_residual_after": {
+    "vmag": 0.00011004712677720185,
+    "pf": 0.0029919617352663352,
+    "ess": 1.1601763512827055e-06,
+    "max": 0.0029919617352663352
+   },
+   "ipopt_iterations": 27,
+   "ipopt_exit": "Optimal Solution Found",
+   "ipopt_scaled": {
+    "objective": 0.013022997766948603,
+    "dual_infeasibility": 2.616331989889996e-06,
+    "constraint_violation": 1.3781119159194197e-06,
+    "complementarity": 1.8511129928115775e-06,
+    "overall_nlp_error": 2.616331989889996e-06,
+    "variable_bound_violation": 0.0
+   },
+   "ipopt_unscaled": {
+    "objective": 0.013022997766948603,
+    "dual_infeasibility": 2.616331989889996e-06,
+    "constraint_violation": 2.088005001565918e-06,
+    "complementarity": 1.8511129928115775e-06,
+    "overall_nlp_error": 2.616331989889996e-06,
+    "variable_bound_violation": 0.0
+   }
+  },
+  {
+   "block": "DSO7|2035|Autumn",
+   "variant": "RESCALED",
+   "effective_scale": 116024.2464139821,
+   "solved": true,
+   "runtime_s": 0.5895211696624756,
+   "weighted_base_before": 574487.3440479884,
+   "weighted_base_after": 253874.90583918753,
+   "base_delta": -320612.43820880086,
+   "augmented_before_current_scale": 0.01302299781366742,
+   "augmented_after_current_scale": 0.006656665874905492,
+   "consensus_residual_before": {
+    "vmag": 0.00011004712375450865,
+    "pf": 0.0029919616587012476,
+    "ess": 1.1601764179462212e-06,
+    "max": 0.0029919616587012476
+   },
+   "consensus_residual_after": {
+    "vmag": 0.0001667738978634592,
+    "pf": 0.004961399257134291,
+    "ess": 2.132348767853152e-06,
+    "max": 0.004961399257134291
+   },
+   "ipopt_iterations": 44,
+   "ipopt_exit": "Optimal Solution Found",
+   "ipopt_scaled": {
+    "objective": 0.7723346417656023,
+    "dual_infeasibility": 7.781174549359598e-07,
+    "constraint_violation": 1.2336584373140168e-07,
+    "complementarity": 1.204794384566479e-08,
+    "overall_nlp_error": 7.781174549359598e-07,
+    "variable_bound_violation": 9.95454324307159e-09
+   },
+   "ipopt_unscaled": {
+    "objective": 772.3346417656023,
+    "dual_infeasibility": 0.0007781174549359598,
+    "constraint_violation": 1.760311307126785e-07,
+    "complementarity": 1.204794384566479e-05,
+    "overall_nlp_error": 0.0007781174549359598,
+    "variable_bound_violation": 9.95454324307159e-09
+   }
+  }
+ ],
+ "admm": {
+  "status": null,
+  "converged": true,
+  "initialization_failed": false,
+  "cycles": 2,
+  "runtime_s": 72.07956075668335,
+  "n_recovery_diagnostics": 0,
+  "gross_operational_cost": 837191939.3227628,
+  "net_operational_recourse": 837188510.9012293
+ },
+ "B2_gap_reduction": {
+  "current_total_base_delta": -383401.6790891475,
+  "rescaled_total_base_delta": -8892463.758278634,
+  "additional_base_objective_recovered_by_rescaling": -8509062.079189487
+ },
+ "B2_full_replay": {
+  "CURRENT": {
+   "summary": {
+    "n_blocks": 48,
+    "n_solved": 48,
+    "total_weighted_base_before": 837191939.3227628,
+    "total_weighted_base_after": 836808537.6436739,
+    "total_base_delta": -383401.6790891475,
+    "total_ipopt_iterations": 1309,
+    "max_unscaled_dual_infeasibility": 9.31329899813739e-06,
+    "max_unscaled_constraint_violation": 1.2241388419820256e-05,
+    "max_scaled_dual_infeasibility": 9.31329899813739e-06,
+    "max_consensus_residual_after": 0.01605341367789659,
+    "total_runtime_s": 16.669695138931274
+   }
+  },
+  "RESCALED": {
+   "summary": {
+    "n_blocks": 48,
+    "n_solved": 48,
+    "total_weighted_base_before": 837191939.3227628,
+    "total_weighted_base_after": 828299475.5644842,
+    "total_base_delta": -8892463.758278634,
+    "total_ipopt_iterations": 1740,
+    "max_unscaled_dual_infeasibility": 0.009019171890915648,
+    "max_unscaled_constraint_violation": 1.760311307126785e-07,
+    "max_scaled_dual_infeasibility": 9.019171890915648e-06,
+    "max_consensus_residual_after": 0.01978047419452253,
+    "total_runtime_s": 27.141207456588745
+   }
+  }
+ },
+ "B2_per_block_worst": {
+  "CURRENT": [
+   {
+    "block": "DSO7|2025|Winter",
+    "effective_scale": 95180.29329000627,
+    "base_delta": -120124.3742965539,
+    "ipopt_iterations": 26,
+    "unscaled_dual_infeasibility": 7.348396409584016e-07,
+    "unscaled_constraint_violation": 6.637146573895691e-06
+   },
+   {
+    "block": "TSO|2035|Spring",
+    "effective_scale": 114763.11330078664,
+    "base_delta": -98797.59809625894,
+    "ipopt_iterations": 27,
+    "unscaled_dual_infeasibility": 4.773314982234322e-07,
+    "unscaled_constraint_violation": 1.2172129426613054e-07
+   },
+   {
+    "block": "TSO|2030|Spring",
+    "effective_scale": 103944.48754852384,
+    "base_delta": -92631.76873804629,
+    "ipopt_iterations": 24,
+    "unscaled_dual_infeasibility": 6.889168963700176e-07,
+    "unscaled_constraint_violation": 1.5787160911884257e-07
+   },
+   {
+    "block": "TSO|2025|Spring",
+    "effective_scale": 94145.72488468012,
+    "base_delta": -53107.5403766036,
+    "ipopt_iterations": 23,
+    "unscaled_dual_infeasibility": 8.007962560424575e-09,
+    "unscaled_constraint_violation": 6.616225345368321e-10
+   },
+   {
+    "block": "TSO|2035|Summer",
+    "effective_scale": 116024.2464139821,
+    "base_delta": -26588.731554359198,
+    "ipopt_iterations": 37,
+    "unscaled_dual_infeasibility": 5.480376434107391e-06,
+    "unscaled_constraint_violation": 7.229106202544244e-12
+   },
+   {
+    "block": "TSO|2035|Winter",
+    "effective_scale": 116024.2464139821,
+    "base_delta": -22578.280535295606,
+    "ipopt_iterations": 31,
+    "unscaled_dual_infeasibility": 4.7374081412181884e-06,
+    "unscaled_constraint_violation": 1.4609899845474672e-07
+   },
+   {
+    "block": "TSO|2035|Autumn",
+    "effective_scale": 116024.2464139821,
+    "base_delta": -17842.74542544782,
+    "ipopt_iterations": 36,
+    "unscaled_dual_infeasibility": 1.3475690002588692e-07,
+    "unscaled_constraint_violation": 9.474055390049025e-15
+   },
+   {
+    "block": "TSO|2025|Autumn",
+    "effective_scale": 95180.29329000627,
+    "base_delta": -2823.7511707395315,
+    "ipopt_iterations": 23,
+    "unscaled_dual_infeasibility": 7.789064893560377e-06,
+    "unscaled_constraint_violation": 9.409557799600066e-09
+   },
+   {
+    "block": "TSO|2030|Autumn",
+    "effective_scale": 105086.7346644417,
+    "base_delta": -2517.8035190291703,
+    "ipopt_iterations": 39,
+    "unscaled_dual_infeasibility": 2.6462509244758875e-06,
+    "unscaled_constraint_violation": 9.779487403337463e-15
+   },
+   {
+    "block": "DSO5|2030|Winter",
+    "effective_scale": 105086.7346644417,
+    "base_delta": -0.05558832187671214,
+    "ipopt_iterations": 27,
+    "unscaled_dual_infeasibility": 7.523403766429093e-10,
+    "unscaled_constraint_violation": 2.197327046010722e-09
+   }
+  ],
+  "RESCALED": [
+   {
+    "block": "DSO7|2035|Autumn",
+    "effective_scale": 116024.2464139821,
+    "base_delta": -320612.43820880086,
+    "ipopt_iterations": 44,
+    "unscaled_dual_infeasibility": 0.0007781174549359598,
+    "unscaled_constraint_violation": 1.760311307126785e-07
+   },
+   {
+    "block": "DSO5|2030|Autumn",
+    "effective_scale": 105086.7346644417,
+    "base_delta": -309589.9464093117,
+    "ipopt_iterations": 39,
+    "unscaled_dual_infeasibility": 0.0001395857466873416,
+    "unscaled_constraint_violation": 3.576640758948346e-11
+   },
+   {
+    "block": "DSO9|2030|Autumn",
+    "effective_scale": 105086.7346644417,
+    "base_delta": -293247.6434483061,
+    "ipopt_iterations": 41,
+    "unscaled_dual_infeasibility": 0.00021561542739177074,
+    "unscaled_constraint_violation": 3.771472023572642e-11
+   },
+   {
+    "block": "DSO5|2035|Winter",
+    "effective_scale": 116024.2464139821,
+    "base_delta": -266457.40493327193,
+    "ipopt_iterations": 40,
+    "unscaled_dual_infeasibility": 0.003736546426608767,
+    "unscaled_constraint_violation": 1.8562928971732617e-13
+   },
+   {
+    "block": "DSO5|2025|Winter",
+    "effective_scale": 95180.29329000627,
+    "base_delta": -264550.77993246185,
+    "ipopt_iterations": 35,
+    "unscaled_dual_infeasibility": 0.007941596635737583,
+    "unscaled_constraint_violation": 1.031648724780787e-13
+   },
+   {
+    "block": "DSO7|2025|Autumn",
+    "effective_scale": 95180.29329000627,
+    "base_delta": -260743.97233645318,
+    "ipopt_iterations": 41,
+    "unscaled_dual_infeasibility": 0.001489534742229797,
+    "unscaled_constraint_violation": 7.530642776032437e-12
+   },
+   {
+    "block": "DSO5|2025|Autumn",
+    "effective_scale": 95180.29329000627,
+    "base_delta": -260420.79866004267,
+    "ipopt_iterations": 35,
+    "unscaled_dual_infeasibility": 0.0002247466854130204,
+    "unscaled_constraint_violation": 4.7970072358793914e-11
+   },
+   {
+    "block": "DSO7|2030|Autumn",
+    "effective_scale": 105086.7346644417,
+    "base_delta": -258848.6578443927,
+    "ipopt_iterations": 42,
+    "unscaled_dual_infeasibility": 0.0010148933112406335,
+    "unscaled_constraint_violation": 6.659561790911539e-11
+   },
+   {
+    "block": "DSO5|2035|Autumn",
+    "effective_scale": 116024.2464139821,
+    "base_delta": -257894.9031331226,
+    "ipopt_iterations": 36,
+    "unscaled_dual_infeasibility": 9.525717513757716e-05,
+    "unscaled_constraint_violation": 2.734286088518223e-08
+   },
+   {
+    "block": "DSO9|2025|Autumn",
+    "effective_scale": 95180.29329000627,
+    "base_delta": -256791.33735259707,
+    "ipopt_iterations": 36,
+    "unscaled_dual_infeasibility": 0.003350015711086782,
+    "unscaled_constraint_violation": 1.1953460443692165e-10
+   }
+  ]
+ }
+}
