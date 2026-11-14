@@ -341,3 +341,8 @@ Kept by the expert during the author's whole-document read (2026-10-09 onward); 
   degradation / economic conditions / multi-scenario+timing+discount+scope; year and discount tables kept.
   Floats 8+12 → 5+8. Prose freeze moves to 11-17 12:00; numbers freeze 11-15 unchanged; upload 11-19 holds; W190c
   interim audit ordered on the round-10 HEAD. Author to state the build HEAD; expert delivers round 10 on it.
+- 2026-11-14 (expert, with the author, change by change on the clone): M1 + M10 committed as `b955ff9`. M2 applied
+  (B.2 removed; pointers → Table S7). **Amendment to Addendum 93**: no PDF supplement — the CSV archive stays the only
+  supplement; Table S7 = `E20_comparisons.csv`, Table S8 = `E22_neighbours.csv`; figures leaving the paper are dropped;
+  search settings and convergence evidence stay condensed in Appendix B; supplement v6 = README pointer names (and the
+  stale "Table B.10/B.11" names of v5, wrong since `0516bd7`). Compile 0/0, 61 pages.
