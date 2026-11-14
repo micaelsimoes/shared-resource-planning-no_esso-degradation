@@ -332,3 +332,12 @@ Kept by the expert during the author's whole-document read (2026-10-09 onward); 
   R3.6, cover letter v5 (bracket resolved). **Addendum 92**: P3 ruled held; printed form = the search's criterion;
   salvage sensitivity not printed; prose freeze 11-16 12:00; W190b interim audit ordered now, W190 final after the
   freeze.
+- 2026-11-14 (expert): reviewer-style assessment of the author's content map (`REFOCUS_ASSESSMENT_2026-11-14.md`):
+  plan agreed except the installation-year/discount-rate tables (reviewer-requested; stay in the paper). Overleaf HEAD
+  `7dbf361` (author's presentation pass, main.tex md5 `7d0be065…`, not an expert deliverable). **Addendum 93**: the
+  bounded structural cut adopted (zero-solve, whole-block moves only, no number changes): Appendix B.2–B.4 + lattice
+  and q-cycle figures → supplement v6 S9–S11; Algorithm 1 variants, search settings → S7; break-even figure and m = 2
+  ladder → S8; §2.2.6 shortened; multi-scenario table → prose; Results reordered to coordination+baseline /
+  degradation / economic conditions / multi-scenario+timing+discount+scope; year and discount tables kept.
+  Floats 8+12 → 5+8. Prose freeze moves to 11-17 12:00; numbers freeze 11-15 unchanged; upload 11-19 holds; W190c
+  interim audit ordered on the round-10 HEAD. Author to state the build HEAD; expert delivers round 10 on it.
