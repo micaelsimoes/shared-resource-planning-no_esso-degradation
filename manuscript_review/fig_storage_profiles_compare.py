@@ -52,6 +52,7 @@ def ops(path, tol, ignore_dash=False):
     q = lambda v: round(float(v) / tol) * tol   # noqa: E731
     fmt = lambda v: f'{q(v):.3f}'                 # noqa: E731
     state = {'w': None, 'RG': None, 'G': None, 'd': '[]'}
+    gstack = []
     res, path_pts = [], []
     cm = None
     toks = re.findall(rb'\[[^\]]*\]\s*TJ|\[[^\]]*\]\s*[-0-9.]+\s*d|/[A-Za-z0-9]+|[-0-9.]+|[A-Za-z*]+', t)
@@ -93,6 +94,10 @@ def ops(path, tol, ignore_dash=False):
             path_pts = []
         elif op == 're':
             path_pts.append(('re',) + tuple(fmt(v) for v in stack[-4:]))
+        if op == 'q':                      # graphics-state save/restore (2026-11-16: the dash pattern, colour and
+            gstack.append(dict(state))     # width set inside q ... Q no longer leak into later paths)
+        elif op == 'Q' and gstack:
+            state = gstack.pop()
         if op not in ('BT', 'ET', 'q', 'Q', 'Td'):
             stack = [] if op != 'cm' else stack
         if op in ('Q',):

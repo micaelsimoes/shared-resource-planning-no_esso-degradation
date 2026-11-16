@@ -24,13 +24,20 @@ CHANGES (author/Expert, 2026-11-13): seasonal y label 'SoC (MWh)' -> 'Stored ene
 bound dash pattern [1.4 1.4] pt -> [3.5 1.75] pt, so that the lines read as dashed (same positions, width, colours).
 The SoH figure is drawn unchanged.
 
+CHANGES (Expert, 2026-11-16; only with --v2, so that the 2026-11-13 files still reproduce without it):
+  - SoH figure: a horizontal line at SoH = 0.70, the minimum state of health of the aged calibrations other than
+    'Baseline, 0.50 floor' (legend entry 'Minimum SoH, 0.70'; grey dash-dot, so it is not read as a trajectory);
+  - font family and printed sizes common to the SoC, SoH and flexibility figures: DejaVu Serif; axis labels 8 pt, tick
+    labels 7.5 pt, legend 7 pt, as printed at the inclusion widths (0.48 and 1.00 \\textwidth). The pages keep their size
+    (geometry, data and line styles unchanged); each font size is divided by the inclusion scale of its figure.
+
 CHECKS: every text artist (tick labels, axis labels, legend entries) must lie inside the page; the run fails if one is
 clipped. --preview-dir writes the two figures at their inclusion sizes in main.tex: each seasonal file at
 0.48 \\textwidth (\\subfloat, two per row, \\hfill) and the SoH file at 1.00 \\textwidth, with \\textwidth = 390 pt
 (elsarticle 'preprint,12pt' loads article at 12 pt, a4paper, no geometry), at 300 dpi.
 
-Usage: <canonical python> manuscript_review/fig_storage_profiles.py --out-dir DIR [--legacy-labels] [--png-dir DIR]
-                                                                        [--preview-dir DIR]
+Usage: <canonical python> manuscript_review/fig_storage_profiles.py --out-dir DIR [--legacy-labels] [--v2]
+                                                                        [--png-dir DIR] [--preview-dir DIR]
 """
 import argparse
 import csv
@@ -73,6 +80,10 @@ SOH_SERIES = (
     ('Retention 50 %, mid-block', 'Retention 50 %, mid-block', '#1baf7a', (0, (4, 2)), 's'),
 )
 SOH_X = (2025, 2030, 2035, 2040)   # installation 1 Jan 2025; ends of the 2025-29, 2030-34, 2035-39 blocks
+SOH_MIN_LINE = 0.70                 # --v2: the minimum SoH of the aged calibrations except 'Baseline, 0.50 floor'
+SOH_MIN_STYLE = {'color': '#555555', 'lw': 0.8, 'ls': (0, (6, 2, 1, 2)), 'label': 'Minimum SoH, 0.70'}
+PRINTED_PT = {'tick': 7.5, 'label': 8.0, 'legend': 7.0}   # --v2: common printed sizes (SoC, SoH, flexibility figures)
+V2 = {'on': False}
 
 
 def style():
@@ -133,12 +144,16 @@ def draw_seasonal(day, series, bounds, labels):
     ax.xaxis.set_major_formatter(FuncFormatter(lambda v, _p=None: f'{int(round(v)):02d}:00'))
     ax.yaxis.set_major_locator(FixedLocator([0.0, 0.2, 0.4, 0.6, 0.8]))
     ax.yaxis.set_major_formatter(FuncFormatter(lambda v, _p=None: f'{v:.2f}'))
-    ax.set_xlabel('Hour', labelpad=2.0)
-    ax.set_ylabel(labels['soc_y'], labelpad=3.0)
+    fs = _fs('seasonal')
+    if fs:
+        ax.tick_params(labelsize=fs['tick'])
+    ax.set_xlabel('Hour', labelpad=2.0, **({'fontsize': fs['label']} if fs else {}))
+    ax.set_ylabel(labels['soc_y'], labelpad=3.0, **({'fontsize': fs['label']} if fs else {}))
     handles = [Line2D([], [], color=C_YEAR['2025'], lw=1.4, label='2025'),
                Line2D([], [], color=C_YEAR['2035'], lw=1.4, label='2035'),
                Line2D([], [], color='#555555', lw=0.7, ls=BOUND_DASH, label=labels['bound'])]
-    ax.legend(handles=handles, loc='lower left', bbox_to_anchor=(0.0, 1.0), borderaxespad=0.0, fontsize=6.5,
+    ax.legend(handles=handles, loc='lower left', bbox_to_anchor=(0.0, 1.0), borderaxespad=0.0,
+              fontsize=fs['legend'] if fs else 6.5,
               handlelength=1.8, handletextpad=0.5, labelspacing=0.2)
     return fig
 
@@ -148,21 +163,36 @@ def draw_soh(sohs):
     ax.grid(True)
     for lab, key, c, ls, mk in SOH_SERIES:
         ax.plot(SOH_X, sohs[key], color=c, ls=ls, lw=1.4, marker=mk, ms=3.5, mfc='white', mec=c, mew=1.0, label=lab)
+    if V2['on']:
+        ax.axhline(SOH_MIN_LINE, zorder=1.5, **SOH_MIN_STYLE)
     ax.set_xlim(2024.4, 2040.6)
     ax.set_ylim(0.56, 1.02)
     ax.xaxis.set_major_locator(FixedLocator(list(SOH_X)))
     ax.xaxis.set_major_formatter(FuncFormatter(lambda v, _p=None: f'{int(round(v))}'))
     ax.yaxis.set_major_locator(FixedLocator([0.6, 0.7, 0.8, 0.9, 1.0]))
     ax.yaxis.set_major_formatter(FuncFormatter(lambda v, _p=None: f'{v:.2f}'))
-    ax.set_xlabel('Year', labelpad=3.0)
-    ax.set_ylabel('SoH (–)')
-    ax.legend(loc='lower left', ncol=2, fontsize=7, borderaxespad=0.4, handlelength=2.4, labelspacing=0.3,
+    fs = _fs('soh')
+    if fs:
+        ax.tick_params(labelsize=fs['tick'])
+    ax.set_xlabel('Year', labelpad=3.0, **({'fontsize': fs['label']} if fs else {}))
+    ax.set_ylabel('SoH (–)', **({'fontsize': fs['label']} if fs else {}))
+    ax.legend(loc='lower left', ncol=2, fontsize=fs['legend'] if fs else 7, borderaxespad=0.4, handlelength=2.4,
+              labelspacing=0.3,
               columnspacing=1.2)
     return fig
 
 
 TEXTWIDTH_PT = 390.0
 INCLUDE_FRAC = {'seasonal': 0.48, 'soh': 1.00}
+
+
+def _fs(kind):
+    """--v2 font sizes in figure points: the common printed size divided by the inclusion scale of the figure."""
+    if not V2['on']:
+        return None
+    page_w = SEASONAL_PAGE_PT[0] if kind == 'seasonal' else SOH_PAGE_PT[0]
+    scale = INCLUDE_FRAC[kind] * TEXTWIDTH_PT / page_w
+    return {k: v / scale for k, v in PRINTED_PT.items()}
 
 
 def clipped_text(fig):
@@ -209,7 +239,11 @@ def main():
     ap.add_argument('--legacy-labels', action='store_true')
     ap.add_argument('--png-dir', default=None)
     ap.add_argument('--preview-dir', default=None)
+    ap.add_argument('--v2', action='store_true', help='2026-11-16: SoH 0.70 line; common printed font sizes')
     args = ap.parse_args()
+    if args.v2 and args.legacy_labels:
+        raise SystemExit('--v2 and --legacy-labels are exclusive')
+    V2['on'] = args.v2
     labels = LABELS['legacy' if args.legacy_labels else 'current']
     global BOUND_DASH
     if args.legacy_labels:
